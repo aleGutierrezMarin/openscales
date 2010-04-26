@@ -1,0 +1,44 @@
+<project>
+
+  <skin>
+    <groupId>org.apache.tapestry</groupId>
+    <artifactId>maven-skin</artifactId>
+    <version>1.2</version>
+  </skin>
+  
+  	<bannerLeft>
+	    <name>OpenScales</name>
+	    <src>images/OpenscalesLogo-GBl-BgCurs-Rounded.png</src>
+ 	</bannerLeft>
+  
+	<body>
+		<menu name="Documentation">
+			<item name="Introduction" href="/index.html"/>
+			<item name="Download" href="http://openscales.org/index.php/p/openscales/downloads/"/>
+			<item name="How to develop ?" href="/dev.html"/>
+			<item name="XML configuration" href="/configuration.html"/>
+		</menu>
+
+		<menu name="Demo">
+			<item name="Flex Examples" href="/examples/osExamples.html"/>
+			<item name="AS3 Example" href="/examples/OpenscalesApplication.html"/>
+			<item name="Examples source code" href="/sources.html" />
+		</menu>
+
+		<menu name="API documentation">
+			<item name="Core AsDocs" href="openscales-core/asdoc/index.html"/>
+			<item name="Flex components" href="/flex.html"/>
+			<item name="Flex AsDocs" href="openscales-fx/asdoc/index.html"/>
+			<item name="Proj4as AsDocs" href="openscales-proj4as/asdoc/index.html"/>
+		</menu>
+
+		<menu name="Useful links">
+			<item name="OpenScales homepage" href="http://openscales.org/"/>
+			<item name="Discussion group" href="http://groups.google.com/group/openscales-dev"/>
+			<item name="Bugtracker" href="http://openscales.org/index.php/p/openscales/issues/"/>
+		</menu>
+				
+		<menu ref="reports" />
+	</body>
+</project>
+
