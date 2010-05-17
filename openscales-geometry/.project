@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>openscales-core</name>
+	<name>openscales-geometry</name>
 	<comment></comment>
 	<projects>
-		<project>openscales-commons</project>
-		<project>openscales-geometry</project>
 		<project>openscales-proj4as</project>
 	</projects>
 	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.wst.common.project.facet.core.builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 		<buildCommand>
 			<name>com.adobe.flexbuilder.project.flexbuilder</name>
 			<arguments>
@@ -22,6 +15,5 @@
 	<natures>
 		<nature>com.adobe.flexbuilder.project.flexlibnature</nature>
 		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
-		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 	</natures>
 </projectDescription>
