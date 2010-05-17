@@ -7,9 +7,9 @@ package org.openscales.core.geometry
 	 */
 	public class MultiPoint extends Collection
 	{
-		public function MultiPoint(components:Array = null) {
+		public function MultiPoint(components:Vector.<Geometry> = null) {
 			super(components);
-			this.componentTypes = ["org.openscales.core.geometry::Point"];
+			this.componentTypes = new <String>["org.openscales.core.geometry::Point"];
 		}
 		
 		/**
@@ -31,11 +31,10 @@ package org.openscales.core.geometry
 		override public function toShortString():String {
 			var s:String = "(";
 			for(var i:int=0; i<this.componentsLength; i++) {
-				s = s + this.componentByIndex(i).toShortString();
+				s = s + this._components[i].toShortString();
 			}
 			return s + ")";
 		}
-		
 		/**
 		 * Method to convert the multipoint (x/y) from a projection system to an other.
 		 *
@@ -44,7 +43,7 @@ package org.openscales.core.geometry
 		 */
 		override public function transform(source:ProjProjection, dest:ProjProjection):void {
 			for(var i:int=0; i<this.componentsLength; i++) {
-				this.componentByIndex(i).transform(source, dest);
+				this._components[i].transform(source, dest);
 			}
 		}
 		
@@ -60,7 +59,7 @@ package org.openscales.core.geometry
 		 * */
 		override public function clone():Geometry{
 			var MultiPointClone:MultiPoint=new MultiPoint();
-			var component:Array=this.getcomponentsClone();
+			var component:Vector.<Geometry>=this.getcomponentsClone();
 			MultiPointClone.addComponents(component);
 			return MultiPointClone;
 		}

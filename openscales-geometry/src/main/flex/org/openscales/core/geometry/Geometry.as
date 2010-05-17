@@ -1,16 +1,16 @@
 package org.openscales.core.geometry
 {
-	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.Bounds;
 	import org.openscales.core.basetypes.LonLat;
 	import org.openscales.proj4as.ProjProjection;
+
 
 	/**
 	 * A Geometry is a description of a geographic object.
 	 * Create an instance of this class with the Geometry constructor.
 	 * This is a base class, typical geometry types are described by subclasses of this class.
 	 */
-	public class Geometry
+	public class Geometry 
 	{
 		/**
      	 * A unique identifier for this geometry.
@@ -26,6 +26,12 @@ package org.openscales.core.geometry
      	 * The bounds of this geometry
      	 */
 		protected var _bounds:Bounds = null;
+		
+		/**
+		 * projection of the geometry 
+		 */
+		protected var _projection:String = "EPSG:4326";
+		
 
 		/**
 		 * Geometry constructor
@@ -53,7 +59,6 @@ package org.openscales.core.geometry
 		public function toShortString():String {
 			return "";
 		}
-
 		/**
 		 * Method to convert the lon/lat (x/y) value of the geometry from a projection system to an other.
 		 *
@@ -114,8 +119,8 @@ package org.openscales.core.geometry
 		/**
 		 * Return an array of all the vertices (Point) of this geometry
 		 */
-		public function toVertices():Array {
-			return new Array();
+		public function toVertices():Vector.<Geometry> {
+			return new Vector.<Geometry>;
 		}
 
 		/**
@@ -157,7 +162,7 @@ package org.openscales.core.geometry
      	 *     properties represent the coordinates of the closest point on the
      	 *     target geometry.
       	 */
-    	public function distanceTo(geom:Geometry):Number{
+		 public function distanceTo(geometry:Geometry, options:Object=null):Number{
     		var distance:Number;
     		// TODO
     		return distance;
@@ -189,7 +194,7 @@ package org.openscales.core.geometry
 			}
 			// The two geometries intersect, so the inclusion may be tested by
 			// using the containsPoint for each vertex of the input geometry.
-			var vertices:Array = geom.toVertices();
+			var vertices:Vector.<Geometry> = geom.toVertices();
 			if (vertices.length == 0) {
 				return false;
 			}
@@ -235,14 +240,14 @@ package org.openscales.core.geometry
  		 *   than this tolerance are considered intersecting
  		 * @return Boolean caracterizing if the two input segments intersect
  		 */
-		static public function segmentsIntersect(seg1:Array, seg2:Array, tolerance:Number=0.0):Boolean {
+		static public function segmentsIntersect(seg1:Vector.<Point>, seg2:Vector.<Point>, tolerance:Number=0.0):Boolean {
 			// Check the validity of the segments
 			if ((seg1[1] as Point).x < (seg1[0] as Point).x) {
-				Trace.error("segmentsIntersect : invalid seg1");
+				//Trace.error("segmentsIntersect : invalid seg1");
 				return false;
 			}
 			if ((seg2[1] as Point).x < (seg2[0] as Point).x) {
-				Trace.error("segmentsIntersect : invalid seg2");
+				//Trace.error("segmentsIntersect : invalid seg2");
 				return false;
 			}
 			
@@ -296,7 +301,7 @@ package org.openscales.core.geometry
 
 			// The tolerance must be managed to test if an approximated
 			//   intersection exists or not.
-			Trace.error("segmentsIntersect NOK but tolerance should be tested : TODO");
+			//Trace.error("segmentsIntersect NOK but tolerance should be tested : TODO");
 			return false; // TODO
 			
 			/*var dist;
@@ -319,15 +324,19 @@ package org.openscales.core.geometry
 			}
 			return false;*/
 		 }
- 
+		/**
+		 * Returns the geometry's length. Overrided by subclasses.
+		 */
+		public function get projection():String {
+			return this._projection;
+		}
 		/**
 		 * Returns the geometry's length. Overrided by subclasses.
 		 */
 		public function get length():Number {
 			return 0.0;
 		}
-
-		/**
+        /**
 		 * Returns the geometry's area. Overrided by subclasses.
 		 */
 		public function get area():Number {
@@ -338,6 +347,10 @@ package org.openscales.core.geometry
 			return this._id;
 		}
 
+		public function set projection(value:String):void {
+			this._projection = value;
+		}
+		
 		public function set id(value:String):void {
 			this._id = value;
 		}

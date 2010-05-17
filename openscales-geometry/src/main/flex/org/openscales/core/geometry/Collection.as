@@ -1,10 +1,11 @@
 package org.openscales.core.geometry
 {
+	import flash.trace.Trace;
 	import flash.utils.getQualifiedClassName;
 	
-	import org.openscales.core.Trace;
-	import org.openscales.core.Util;
+	import org.openscales.core.UtilGeometry;
 	import org.openscales.proj4as.ProjProjection;
+
 
 	/**
 	 * A Collection is exactly what it sounds like: A collection of different Geometries.
@@ -19,24 +20,24 @@ package org.openscales.core.geometry
 		/**
      	 * The component parts of this geometry
      	 */
-		private var _components:Array = null;
+		protected var _components:Vector.<Geometry> = null;
 		
 		/**
      	 * An array of class names representing the types of
      	 * components that the collection can include.  A null value means the
      	 * component types are not restricted.
      	 */
-		private var _componentTypes:Array = null;
+		private var _componentTypes:Vector.<String> = null;
 		
 		/**
      	 * Creates a Geometry Collection
      	 *
      	 * @param components
      	 */
-		public function Collection(components:Array) {
+		public function Collection(components:Vector.<Geometry>) {
 			super();
-			this.components = new Array();
-			if (components != null) {
+			this._components = new Vector.<Geometry>();
+            if (components != null) {
 				this.addComponents(components);
 			}
 		}
@@ -49,14 +50,18 @@ package org.openscales.core.geometry
 			this._components = null;
 		}
 		
+		public function componentByIndex(i:int):Geometry {
+			return ((i<0)||(i>=this._components.length)) ? null : (this._components[i] as Geometry);
+		}
+		
 		/**
 		 * Getter and setter of the authorized types for the components
 		 *   (children) of this collection
 		 */
-		public function get componentTypes():Array {
+		public function get componentTypes():Vector.<String> {
 			return this._componentTypes;
 		}		
-		public function set componentTypes(value:Array):void {
+		public function set componentTypes(value:Vector.<String>):void {
 			this._componentTypes = value;
 		}
 
@@ -65,11 +70,8 @@ package org.openscales.core.geometry
 		 * The getter is not defined to avoid to return a untyped array.
 		 * Use componentsLength() and componentByIndex(i) instead.
 		 */
-		/*private function get components():Array {
-			return this._components;
-		}*/		
-		public function set components(value:Array):void {
-			this._components = (value==null) ? new Array() : value;
+		public function set components(value:Vector.<Geometry>):void {
+			this._components = (value==null) ? new Vector.<Geometry>() : value;
 		}
 
 		/**
@@ -78,26 +80,17 @@ package org.openscales.core.geometry
 		public function get componentsLength():int {
 			return this._components.length;
 		}
-		
-		/**
-		 * Component of the specified index, casted to the Geometry type
-		 */
-		public function componentByIndex(i:int):Geometry {
-			return ((i<0)||(i>=this._components.length)) ? null : (this._components[i] as Geometry);
-		}
-
-
-		/**
+    	/**
 		 * TO get component clone
 		 * */
 		
-		public function getcomponentsClone():Array{
-			var componentsClone:Array=null;
+		public function getcomponentsClone():Vector.<Geometry>{
+			var componentsClone:Vector.<Geometry>=null;
 			var componentslength:Number=this._components.length;
 			if(componentslength<=0) return null;
-			else componentsClone=new Array();
+			else componentsClone=new Vector.<Geometry>(componentslength);
 			for(var i:int=0;i<componentslength;i++)	{
-				componentsClone.push((this._components[i] as Geometry).clone());
+				componentsClone.push((this._components[i]).clone());
 			}
 			return componentsClone;
 		}
@@ -108,7 +101,7 @@ package org.openscales.core.geometry
 		override public function clone():Geometry{		
 			//All collection
 			var Collectionclone:Collection=new Collection(null);
-			var component:Array=this.getcomponentsClone();
+			var component:Vector.<Geometry>=this.getcomponentsClone();
 			Collectionclone.addComponents(component);
 			return Collectionclone;		
 		}
@@ -119,9 +112,9 @@ package org.openscales.core.geometry
      	 * @return A string representation of the components of this collection
       	 */
 		public function get componentsString():String {
-			var strings:Array = [];
+			var strings:Vector.<String> = new Vector.<String>(this.componentsLength);
 			for(var i:int = 0; i < this.componentsLength; i++) {
-				strings.push(this.componentByIndex(i).toShortString());
+				strings[i]=(this._components[i].toShortString());
 			}
 			return strings.join(",");
 		}
@@ -136,11 +129,11 @@ package org.openscales.core.geometry
 		/**
 		 * Return an array of all the vertices (Point) of this geometry
 		 */
-		override public function toVertices():Array {
-			var vertices:Array = new Array();
-			var componentVertices:Array;
+		override public function toVertices():Vector.<Geometry> {
+			var vertices:Vector.<Geometry> = new Vector.<Geometry>();
+			var componentVertices:Vector.<Geometry>;
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				componentVertices = this.componentByIndex(i).toVertices();
+				componentVertices = this._components[i].toVertices();
 				vertices = vertices.concat(componentVertices);
 			}
 			return vertices;
@@ -153,9 +146,9 @@ package org.openscales.core.geometry
 		override public function calculateBounds():void {
 			this._bounds = null;
 			if (this.componentsLength > 0) {
-				this._bounds = this.componentByIndex(0).bounds;
+				this._bounds = this._components[0].bounds;
 				for (var i:int=1; i<this.componentsLength; i++) {
-					this.extendBounds(this.componentByIndex(i).bounds);
+					this.extendBounds(this._components[i].bounds);
 				}
 			}
 		}
@@ -165,7 +158,7 @@ package org.openscales.core.geometry
      	 *
      	 * @param components An array of geometries to add
      	 */
-		public function addComponents(components:Array):void {
+		public function addComponents(components:Vector.<Geometry>):void {
 			for(var i:int=0; i < components.length; i++) {
 				this.addComponent(components[i]);
 			}
@@ -184,12 +177,12 @@ package org.openscales.core.geometry
 		public function addComponent(component:Geometry, index:Number = NaN):Boolean {
 			var added:Boolean = false;
 			if(component) {
-				if(!(component is Array) && (this.componentTypes == null ||
-					(Util.indexOf(this.componentTypes, getQualifiedClassName(component)) > -1))) {
+				if(!(component is Vector.<Geometry>) && (this.componentTypes == null ||
+					(componentTypes.indexOf(getQualifiedClassName(component)) > -1))) {
 
 					if(!isNaN(index) && (index < this.componentsLength)) {
-						var components1:Array = this._components.slice(0, index);
-						var components2:Array = this._components.slice(index, this.componentsLength);
+						var components1:Vector.<Geometry> = this._components.slice(0, index);
+						var components2:Vector.<Geometry> = this._components.slice(index, this.componentsLength);
 						components1.push(component);
 						this.components = components1.concat(components2);
 					} else {
@@ -202,7 +195,7 @@ package org.openscales.core.geometry
 				}
 			}
 			if (! added) {
-				Trace.error("collection.addComponent ERROR : impossible to add geometry, componentTypes="+this.componentTypes);
+				 trace("collection.addComponent ERROR : impossible to add geometry, componentTypes="+this.componentTypes);
 			}
 			return added;
 		}
@@ -224,7 +217,8 @@ package org.openscales.core.geometry
      	 * @param component 
      	 */
 		public function removeComponent(component:Geometry):void {    
-			Util.removeItem(this._components, component);
+			var indice:int = this._components.indexOf(component);
+			this._components.splice(indice,1);
 			this.clearBounds();
 		}
 		
@@ -237,7 +231,7 @@ package org.openscales.core.geometry
 		public function replaceComponent(index:int, component:Geometry):Boolean {
 			// Test if the index is valid
 			if ((index<0) || (index>=this._components.length)) {
-				Trace.error("Collection.replaceComponent ERROR : invalid index "+index);
+				trace("Collection.replaceComponent ERROR : invalid index "+index);
 				return false;
 			}
 			// Test if the type of component is one of the allowed types
@@ -248,7 +242,7 @@ package org.openscales.core.geometry
 				}
 			}
 			if (! validComponentType) {
-				Trace.error("Collection.replaceComponent ERROR : invalid component type "+getQualifiedClassName(component)+" for "+getQualifiedClassName(this));
+				trace("Collection.replaceComponent ERROR : invalid component type "+getQualifiedClassName(component)+" for "+getQualifiedClassName(this));
 				return false;
 			}
 			// All is ok, replace the specified component by the input one
@@ -262,15 +256,25 @@ package org.openscales.core.geometry
      	 *
      	 * @return The length of the geometry
       	 */
-// TODO (in all classes)
-		/*override public function get length():Number {
+		 // TODO (in all classes)
+		 /*override public function get length():Number {
 			var length:Number = 0.0;
 			for (var i:int = 0; i < this.componentsLength; i++) {
 				length += this.componentByIndex(i).getLength();
 			}
 			return length;
 		}*/
-		
+		/**
+		 * Method to convert the collection from a projection system to an other.
+		 *
+		 * @param source The source projection
+		 * @param dest The destination projection
+		 */
+		override public function transform(source:ProjProjection, dest:ProjProjection):void {
+			for(var i:int=0; i<this.componentsLength; i++) {
+				this._components[i].transform(source, dest);
+			}
+		}
 		/**
 		 * Calculate the approximate area of this geometry (the projection and
 		 * the geodesic are not managed).
@@ -287,7 +291,7 @@ package org.openscales.core.geometry
 		override public function get area():Number {
 			var _area:Number = 0.0;
 			for (var i:int=0; i<this.componentsLength; i++) {
-				_area += this.componentByIndex(i).area;
+				_area += this._components[i].area;
 			}
 			return _area;
 		}
@@ -300,7 +304,7 @@ package org.openscales.core.geometry
      	 * @param x Distance to move geometry in positive x direction. 
      	 * @param y Distance to move geometry in positive y direction.
      	 */
-// TODO (in all classes)
+        // TODO (in all classes)
 		/*public function move(x:Number, y:Number):void {
 			for(var i:int = 0; i < this.componentsLength; i++) {
 				this.componentByIndex(i).move(x, y);
@@ -314,7 +318,7 @@ package org.openscales.core.geometry
      	 *                 from the positive x-axis)
      	 * @param origin Center point for the rotation
      	 */
-// TODO (in all classes)
+       // TODO (in all classes)
    		/*public function rotate(angle:Number, origin:Point):void{
         	var i:Number=0;
         	var len:Number = this.componentsLength;
@@ -336,14 +340,14 @@ package org.openscales.core.geometry
       	 * 
      	 * @return The current geometry. 
      	 */
-// TODO (in all classes)
-    	/*public function resize(scale:Number, origin:Point, ratio:Number):Geometry {
+		 // TODO (in all classes)
+    	 /*public function resize(scale:Number, origin:Point, ratio:Number):Geometry {
         	var i:Number=0;
         	for(i; i<this.componentsLength; ++i) {
             	(this.components[i] as Geometry).resize(scale, origin, ratio);
         	}
         	return this;
-    	}*/
+    	 }*/
 
 		/** 
      	 * Determine whether another geometry is equivalent to this one.  Geometries
@@ -353,8 +357,8 @@ package org.openscales.core.geometry
      	 *
      	 * @return The supplied geometry is equivalent to this geometry.
      	 */
-// TODO (in all classes)
-     	/*public function equals(geom:Collection):Boolean {
+         // TODO (in all classes)
+     	 /*public function equals(geom:Collection):Boolean {
 			if(getQualifiedClassName(this) != getQualifiedClassName(geom)) {
 				return false;
 			} else if(geom.componentsLength != this.componentsLength) {
@@ -367,19 +371,8 @@ package org.openscales.core.geometry
 				}
 			}
 			return true;
-		}*/
+		  }*/
 
-		/**
-		 * Method to convert the collection from a projection system to an other.
-		 *
-		 * @param source The source projection
-		 * @param dest The destination projection
-		 */
-		override public function transform(source:ProjProjection, dest:ProjProjection):void {
-			for(var i:int=0; i<this.componentsLength; i++) {
-				this.componentByIndex(i).transform(source, dest);
-			}
-		}
 		
 		/**
     	* Determine if the input geometry intersects this one.
@@ -390,7 +383,7 @@ package org.openscales.core.geometry
      	*/
     	override public function intersects(geom:Geometry):Boolean {
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				if (geom.intersects(this.componentByIndex(i))) {
+				if (geom.intersects(this._components[i])) {
 					return true;
 				}
 			}
@@ -405,7 +398,7 @@ package org.openscales.core.geometry
      	 */
 		override public function containsPoint(p:Point):Boolean {
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				if (this.componentByIndex(i).contains(p)) {
+				if (this._components[i].contains(p)) {
 					return true;
 				}
 			}
@@ -439,17 +432,16 @@ package org.openscales.core.geometry
      	 *     properties represent the coordinates of the closest point on the
      	 *     target geometry.
       	 */
-//TODO implement me
-     	/* public function distanceTo(geometry, options) {
-        	var edge = !(options && options.edge === false);
-        	var details = edge && options && options.details;
-        	var result, best;
-        	var min = Number.POSITIVE_INFINITY;
-        	for(var i=0, len=this.componentsLength; i<len; ++i) {
-            	result = this.componentByIndex(i).distanceTo(geometry, options);
-            	distance = details ? result.distance : result;
-            	if(distance < min) {
-                	min = distance;
+     	 override public function distanceTo(geometry:Geometry, options:Object=null):Number{
+        	var edge:Boolean = !(options && options.edge === false);
+        	var details:Boolean = edge && options && options.details;
+        	var result:Number, best:Number;
+			var distance:Number;
+        	var min:Number = Number.POSITIVE_INFINITY;
+        	for(var i:int=0, len:int=this.componentsLength; i<len; ++i) {
+            	result = this._components[i].distanceTo(geometry, options);
+            	if(result < min) {
+                	min = result;
                 	best = result;
                 	if(min == 0) {
                     	break;
@@ -457,7 +449,7 @@ package org.openscales.core.geometry
             	}
         	}
         	return best;
-    	} */	
+    	  }	
 		
 	}
 }

@@ -1,5 +1,6 @@
 package org.openscales.core.basetypes
 {
+	import org.openscales.core.geometry.Geometry;
 	import org.openscales.core.geometry.LinearRing;
 	import org.openscales.core.geometry.Point;
 	import org.openscales.core.geometry.Polygon;
@@ -382,7 +383,7 @@ package org.openscales.core.basetypes
 		public static function getBBOXStringFromBounds(bounds:Bounds):String {
 			return bounds.left + "," + bounds.bottom + " " + bounds.right + "," + bounds.top;
 		}
-
+		
 		/**
 		 * Method to convert the bounds from a projection system to an other.
 		 *
@@ -397,15 +398,15 @@ package org.openscales.core.basetypes
 			this._left = pLB.x; this._bottom = pLB.y;
 			this._right = pRT.x; this._top = pRT.y;
 		}
-		
+
 		/**
      	 * Create a new polygon geometry based on this bounds.
      	 *
      	 * @return A new polygon with the coordinates of this bounds.
      	 */
     	 public function toGeometry():Polygon {
-        	 return new Polygon([
-            	 new LinearRing([
+        	 return new Polygon(new <Geometry>[
+            	 new LinearRing(new <Geometry>[
                 	 new Point(this.left, this.bottom),
                 	 new Point(this.right, this.bottom),
                 	 new Point(this.right, this.top),

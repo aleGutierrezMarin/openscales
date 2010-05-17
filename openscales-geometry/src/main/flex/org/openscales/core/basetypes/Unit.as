@@ -1,7 +1,7 @@
 package org.openscales.core.basetypes
 {
-	import org.openscales.core.Util;
-
+	import org.openscales.core.UtilGeometry;
+	
 	/**
 	 * The map unit
 	 *
@@ -49,7 +49,7 @@ package org.openscales.core.basetypes
 				units = Unit.DEGREE;
 			}
 
-			var normScale:Number = Util.normalizeScale(scale);
+			var normScale:Number = UtilGeometry.normalizeScale(scale);
 
 			var resolution:Number = 1 / (normScale * Unit.getInchesPerUnit(units)
 				* Unit.DOTS_PER_INCH);

@@ -1,9 +1,7 @@
 package org.openscales.core.geometry
 {
+	import flash.trace.Trace;
 	import flash.utils.getQualifiedClassName;
-	
-	import org.openscales.core.Trace;
-	
 	/**
 	 * A Polygon is a collection of Geometry LinearRings defining a Mathematical
 	 * Polygon (the first LinearRing) with holes (the potential others LinearRings).
@@ -17,13 +15,12 @@ package org.openscales.core.geometry
      	 *
      	 * @param rings the polygon and its holes
      	*/
-    	public function Polygon(rings:Array) {
+    	public function Polygon(rings:Vector.<Geometry>) {
 			// Check if all the components to add are LinearRing
 			var validRings:Boolean = true;
 			if (rings) {
 				for(var i:int=0; i<rings.length; i++) {
 					if ((rings[i]==undefined) || (! (rings[i] is LinearRing))) {
-						Trace.error("Polygon constructor ERROR : invalid parameter rings[" + i + "] => " + rings[i]);
 						validRings = false;
 						rings = null;
 						break;
@@ -34,12 +31,11 @@ package org.openscales.core.geometry
 			// If one (or more) ring is invalid, this condition is not tested
 			if (validRings) {
 				if (rings && (rings.length < 1)) {
-					Trace.warning("Polygon constructor WARNING : too few rings (" + rings.length + ")");
 				}
 			}
 			// Initialize the object
 			super(rings);
-    		this.componentTypes = ["org.openscales.core.geometry::LinearRing"];
+    		this.componentTypes = new <String>["org.openscales.core.geometry::LinearRing"];
 		}
 		
 		/**
@@ -56,7 +52,7 @@ package org.openscales.core.geometry
 		override public function toShortString():String {
 			var s:String = "(";
 			for(var i:int=0; i<this.componentsLength; i++) {
-				s = s + this.componentByIndex(i).toShortString();
+				s = s + this._components[i].toShortString();
 			}
 			return s + ")";
 		}
@@ -77,13 +73,12 @@ package org.openscales.core.geometry
         	if (this.componentsLength < 1) {
         		return 0.0;
         	}
-			var _area:Number = (this.componentByIndex(0) as LinearRing).area;
+			var _area:Number = (this._components[0] as LinearRing).area;
         	for (var i:int=1; i<this.componentsLength; i++) {
-            	_area -= (this.componentByIndex(i) as LinearRing).area;
+            	_area -= (this._components[i] as LinearRing).area;
         	}
         	if (_area < 0) {
-        		Trace.warning("Polygon.area ERROR : almost one hole is partially outside the outer ring");
-        	}
+         	}
        		return Math.max(_area, 0.0);
     	}
 		
@@ -111,12 +106,11 @@ package org.openscales.core.geometry
 		public function isPointInPolygon(point:Point, manageHoles:Boolean=true):Boolean {
 			// Stop if the polygon is void
 			if (this.componentsLength < 1) {
-				Trace.warning("Polygon.isPointInPolygon called for a void Polygon");
-				return false;
+					return false;
 			}
 			
 			// Test if the point is inside the outer ring
-			if (! (this.componentByIndex(0) as LinearRing).containsPoint(point)) {
+			if (! (this._components[0] as LinearRing).containsPoint(point)) {
 				return false;
 			}
 			
@@ -129,7 +123,7 @@ package org.openscales.core.geometry
 			// If the point is inside one of the holes, it is outside the
 			// polygon.
 			for(var i:int=1; i<this.componentsLength; ++i) {
-				if ((this.componentByIndex(i) as LinearRing).containsPoint(point)) {
+				if ((this._components[i] as LinearRing).containsPoint(point)) {
 					return false;
 				}
 			}
@@ -149,7 +143,6 @@ package org.openscales.core.geometry
     	override public function intersects(geom:Geometry):Boolean{
 			// Stop if the polygon is void
 			if (this.componentsLength < 1) {
-				Trace.warning("Polygon.intersects called for a void Polygon");
 				return false;
 			}
 			
@@ -163,7 +156,7 @@ package org.openscales.core.geometry
 				// Test for the intersection of each LinearRing of tis Polygon
 				//   with the geometry (LineString or LinearRing)
 				for(i=0; i<this.componentsLength; i++) {
-					if ((geom as LineString).intersects(this.componentByIndex(i))) {
+					if ((geom as LineString).intersects(this._components[i])) {
 						return true;
 					}
 				}
@@ -177,7 +170,7 @@ package org.openscales.core.geometry
 				//  Test only one vertex is sufficient in the two cases since
 				//  there is no intersection.
 				return this.containsPoint((geom as LineString).componentByIndex(0) as Point)
-					|| ((geom is LinearRing) && (geom as LinearRing).containsPoint((this.componentByIndex(0) as LinearRing).componentByIndex(0) as Point));
+					|| ((geom is LinearRing) && (geom as LinearRing).containsPoint((this._components[0] as LinearRing).componentByIndex(0) as Point));
 			}
 			else if (getQualifiedClassName(geom) == "org.openscales.core.geometry::Polygon") {
 				// Two holed polygons intersect if and only if one of them
@@ -189,7 +182,7 @@ package org.openscales.core.geometry
 					// An intersection seems to exist but we have to check if
 					// the outer LinearRing of this polygon is not fully
 					// included in one of the holes of the input polygon.
-					var outerLR:LinearRing = this.componentByIndex(0) as LinearRing;
+					var outerLR:LinearRing = this._components[0] as LinearRing;
 					var geomHole:LinearRing;
 					for(i=1; i<(geom as Polygon).componentsLength; i++) {
 						geomHole = (geom as Polygon).componentByIndex(i) as LinearRing;
@@ -261,22 +254,22 @@ package org.openscales.core.geometry
         		angle += (rotation / 180) * Math.PI;
     		}
     		var rotatedAngle:Number, x:Number, y:Number;
-    		var points:Array = [];
+    		var points:Vector.<Geometry> = new Vector.<Geometry>(sides);
     		for(var i:Number=0; i<sides; ++i) {
         		rotatedAngle = angle + (i * 2 * Math.PI / sides);
         		x = origin.x + (radius * Math.cos(rotatedAngle));
         		y = origin.y + (radius * Math.sin(rotatedAngle));
-        		points.push(new Point(x, y));
+        		points[i]=new Point(x, y);
     		}
     		var ring:LinearRing = new LinearRing(points);
-    		return new Polygon([ring]);
+    		return new Polygon(new <Geometry>[ring]);
 		} 
 		/**
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
 			var PolygonClone:Polygon=new Polygon(null);
-			var component:Array=this.getcomponentsClone();
+			var component:Vector.<Geometry>=this.getcomponentsClone();
 			PolygonClone.addComponents(component);
 			return PolygonClone;
 		}

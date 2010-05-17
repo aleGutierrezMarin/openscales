@@ -8,9 +8,9 @@ package org.openscales.core.geometry
 	public class MultiPolygon extends Collection
 	{
 
-		public function MultiPolygon(components:Array = null) {
+		public function MultiPolygon(components:Vector.<Geometry> = null) {
 			super(components);
-			this.componentTypes = ["org.openscales.core.geometry::Polygon"];
+			this.componentTypes = new <String>["org.openscales.core.geometry::Polygon"];
 		}
 		
 		/**
@@ -32,11 +32,10 @@ package org.openscales.core.geometry
 		override public function toShortString():String {
 			var s:String = "(";
 			for (var i:int=0; i<this.componentsLength; i++) {
-				s = s + this.componentByIndex(i).toShortString();
+				s = s + this._components[i].toShortString();
 			}
 			return s + ")";
 		}
-
 		/**
 		 * Method to convert the multipolygon (x/y) from a projection system to an other.
 		 *
@@ -45,15 +44,16 @@ package org.openscales.core.geometry
 		 */
 		override public function transform(source:ProjProjection, dest:ProjProjection):void {
 			for (var i:int=0; i<this.componentsLength; i++) {
-				this.componentByIndex(i).transform(source, dest);
+				this._components[i].transform(source, dest);
 			}
 		}
+
 		/**
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
 			var MultiPolygonClone:MultiPolygon=new MultiPolygon();
-			var component:Array=this.getcomponentsClone();
+			var component:Vector.<Geometry>=this.getcomponentsClone();
 			MultiPolygonClone.addComponents(component);
 			return MultiPolygonClone;
 		}

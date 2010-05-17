@@ -4,7 +4,7 @@ package org.openscales.core.geometry
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjProjection;
-
+	
 	/**
 	 * Class to represent a point geometry.
 	 */
@@ -32,15 +32,15 @@ package org.openscales.core.geometry
 		/**
 		 * Return an array of all the vertices (Point) of this geometry
 		 */
-		override public function toVertices():Array {
-			return [ this.clone() ];
+		override public function toVertices():Vector.<Geometry> {
+			return new Vector.<Geometry>[ this.clone() ];
 		}
 		
 		override public function calculateBounds():void {
 			this.bounds = new Bounds(this.x, this.y, this.x, this.y);
 		}
 
-		override public function distanceTo(point:Geometry):Number {
+		override public function distanceTo(point:Geometry, options:Object=null):Number{
 			var distance:Number = 0.0;
 			if ( (!isNaN(this.x)) && (!isNaN(this.y)) && 
 				((point as Point) != null) && (!isNaN((point as Point).x)) && (!isNaN((point as Point).y)) ) {

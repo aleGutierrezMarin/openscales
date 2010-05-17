@@ -1,8 +1,7 @@
 package org.openscales.core.geometry
 {
-	import org.openscales.core.Trace;
 	import org.openscales.proj4as.ProjProjection;
-		
+
 	/**
 	 * A LineString is a is a MultiPoint (2 vertices min), whose points are
 	 * assumed to be connected.
@@ -14,13 +13,12 @@ package org.openscales.core.geometry
 		 * 
 		 * @param vertices Array of two or more points
 		 */
-		public function LineString(vertices:Array) {
+		public function LineString(vertices:Vector.<Geometry>) {
 			// Check if all the components to add are Points
 			var validVertices:Boolean = true;
 			if (vertices) {
 				for(var i:int=0; i<vertices.length; i++) {
 					if ((vertices[i]==undefined) || (! (vertices[i] is Point))) {
-						Trace.error("LineString constructor ERROR : invalid parameter vertices[" + i + "] => " + vertices[i]);
 						validVertices = false;
 						vertices = null;
 						break;
@@ -31,7 +29,7 @@ package org.openscales.core.geometry
 			// If one (or more) vertex is invalid, this condition is not tested
 			if (validVertices) {
 				if (vertices && (vertices.length < 2)) {
-					Trace.warning("LineString constructor WARNING : too few vertices (" + vertices.length + ")");
+					trace("LineString constructor WARNING : too few vertices (" + vertices.length + ")");
 				}
 			}
 			// Initialize the object
@@ -43,11 +41,11 @@ package org.openscales.core.geometry
 		 * 
 		 * @param vertices the array of vertices to add
 		 */
-		override public function addComponents(vertices:Array):void {
+		override public function addComponents(vertices:Vector.<Geometry>):void {
 			// Check if all the components to add are Points
 			for(var i:int=0; i<vertices.length; i++) {
 				if (! (vertices[i] is Point)) {
-					Trace.error("LineString.addComponents ERROR : invalid parameter " + i);
+					//Trace.error("LineString.addComponents ERROR : invalid parameter " + i);
 					return;
 				}
 			}
@@ -63,7 +61,7 @@ package org.openscales.core.geometry
 		override public function removeComponent(vertex:Geometry):void {
 			// Check if the geometry to remove is a Point
 			if (! (vertex is Point)) {
-				Trace.error("LineString.removeComponent ERROR : invalid parameter");
+				//Trace.error("LineString.removeComponent ERROR : invalid parameter");
 				return; 
 			}
 			// Check if this object will stay a LineString after the removing
@@ -71,7 +69,7 @@ package org.openscales.core.geometry
 			if (this.componentsLength > 2) {
 				super.removeComponent(vertex);
 			} else {
-				Trace.error("LineString.removeComponent ERROR : too few components (" + this.componentsLength + ")"); 
+				//Trace.error("LineString.removeComponent ERROR : too few components (" + this.componentsLength + ")"); 
 			}
 		}
 		
@@ -84,7 +82,7 @@ package org.openscales.core.geometry
 			if ((index<0) || (index>=this.componentsLength)) {
 				return null;
 			}
-			return (this.componentByIndex(index) as Point);
+			return (this._components[index] as Point);
 		}
 		
 		/**
@@ -102,12 +100,11 @@ package org.openscales.core.geometry
 			var length:Number = 0.0;
 			if (this.componentsLength > 1) {
 				for(var i:int=1; i<this.componentsLength; i++) {
-					length += this.componentByIndex(i-1).distanceTo(this.componentByIndex(i));
+					length += this._components[i-1].distanceTo(this._components[i]);
 				}
 			}
 			return length;
 		}
-		
 		
 		/**
 		 * Method to convert the multipoint (x/y) from a projection system to an other.
@@ -117,8 +114,8 @@ package org.openscales.core.geometry
 		 */
 		public function transformLineString(source:ProjProjection, dest:ProjProjection):void {
 			if (this.componentsLength > 0) {
-				 for(var i:int=0; i<this.componentsLength; i++){
-					this.componentByIndex(i).transform(source, dest);
+				for(var i:int=0; i<this.componentsLength; i++){
+					this._components[i].transform(source, dest);
 				} 
 			}	
 		}
@@ -155,11 +152,12 @@ package org.openscales.core.geometry
 			//   line string and the geometry in segments. The segments are
 			//   oriented so that x1 <= x2 (but we does not known if y1 <= y2
 			//   or not).
-			var segs1:Array = this.getXsortedSegments();
-			var segs2:Array = (geom is Point) ? [[(geom as Point),(geom as Point)]] : (geom as LineString).getXsortedSegments();
+			var segs1:Vector.<Vector.<Point>> = this.getXsortedSegments();
+				
+			var segs2:Vector.<Vector.<Point>> = (geom is Point) ? new Vector.<Point>[new <Point>[(geom as Point),(geom as Point)]] : (geom as LineString).getXsortedSegments();
 			
-			var seg1:Array, seg1y0:Number, seg1y1:Number, seg1yMin:Number, seg1yMax:Number;
-			var seg2:Array, seg2y0:Number, seg2y1:Number, seg2yMin:Number, seg2yMax:Number;
+			var seg1:Vector.<Point>, seg1y0:Number, seg1y1:Number, seg1yMin:Number, seg1yMax:Number;
+			var seg2:Vector.<Point>, seg2y0:Number, seg2y1:Number, seg2yMin:Number, seg2yMax:Number;
 			// Loop over each segment of this LineString
     		for(var i:int=0; i<segs1.length; ++i) {
 				seg1 = segs1[i];
@@ -223,14 +221,14 @@ package org.openscales.core.geometry
 		 * 
 		 * @return Array of X-sorted segments
 		 */
-		private function getXsortedSegments():Array {
+		private function getXsortedSegments():Vector.<Vector.<Point>> {
 			var point1:Point, point2:Point;
 			var numSegs:int = this.componentsLength-1;
-			var segments:Array = new Array(numSegs);
+			var segments:Vector.<Vector.<Point>> = new Vector.<Vector.<Point>>(numSegs);
 			for(var i:int=0; i<numSegs; ++i) {
-				point1 = (this.componentByIndex(i) as Point);
-				point2 = (this.componentByIndex(i+1) as Point);
-				segments[i] = (point2.x < point1.x) ? [point2,point1] : [point1,point2];
+				point1 = (this._components[i] as Point);
+				point2 = (this._components[i+1] as Point);
+				segments[i] = (point2.x < point1.x) ? new <Point>[point2,point1] :  new <Point>[point1,point2];
 			}
 			return segments;
 		}
@@ -239,7 +237,7 @@ package org.openscales.core.geometry
 		 * */
 		override public function clone():Geometry{
 			var lineStringClone:LineString=new LineString(null);
-			var component:Array=this.getcomponentsClone();
+			var component:Vector.<Geometry>=this.getcomponentsClone();
 			lineStringClone.addComponents(component);
 			return lineStringClone;
 		}
