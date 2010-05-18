@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns="*"
+		 xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:os="http://openscales.org"
+		 creationComplete="initMap();">
+
+	<os:Map id="fxmap"
+			height="100%"
+			width="100%"
+		>
+
+
+<os:WMSC name="Nasa"
+				 url="http://openscales.org/geoserver/gwc/service/wms"
+				 layers="bluemarble"
+				 format="image/jpeg"
+				 maxExtent="-180,-90,180,90"
+				 isBaseLayer="true" 	proxy="http://openscales.org/proxy.php?url="/>
+				 
+		<os:WMSC name="communes"
+				url="http://visu.sig.aw.atosorigin.com/admin/wms"
+				layers="AESN:aesn_commune_merge"
+				format="image/jpeg"
+				isBaseLayer="false" visible="true"/>
+
+		<os:Spinner id="spinner"
+					x="{width / 2}"
+					y="{height / 2}"/>
+		<os:MousePosition x="10"
+						  y="{height-20}"
+						  displayProjection="EPSG:4326"/>
+
+
+		<os:DragHandler/>
+		<os:WheelHandler/>
+
+
+
+
+	</os:Map>
+	<os:ControlPanel x="10"
+					 y="10"
+					 width="140"
+					 title="Navigation">
+		<os:PanComponent map="{map}"/>
+		<mx:HBox width="100%" paddingLeft="5" paddingRight="5">
+			<os:ZoomComponent map="{map}"/>
+			<mx:Spacer width="100%" />
+			<os:ZoomBoxComponent map="{map}"
+									 width="32"
+									 height="32"/>
+		</mx:HBox>
+	</os:ControlPanel>
+	
+	<os:LayerSwitcher/>
+	
+	<mx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			
+			[Bindable] private var map:Map = null;
+			[Bindable] public var displayTrace:Boolean = false;	
+			[Bindable] public var displayFirebugTrace:Boolean = false;
+
+			private function initMap():void {
+				Trace.useFireBugConsole = displayFirebugTrace;
+				map = fxmap.map;
+			}
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>
