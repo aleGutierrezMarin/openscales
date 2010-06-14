@@ -1,0 +1,640 @@
+package org.openscales.core.layer
+{
+	import flash.display.Bitmap;
+	
+	import org.openscales.core.basetypes.Bounds;
+	import org.openscales.core.basetypes.LonLat;
+	import org.openscales.core.basetypes.Pixel;
+	import org.openscales.core.basetypes.Size;
+	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.events.TileEvent;
+	import org.openscales.core.layer.params.IHttpParams;
+	import org.openscales.core.tile.ImageTile;
+	import org.openscales.core.tile.Tile;
+
+	/**
+	 * Base class for layers that use a lattice of tiles.
+	 *
+	 * @author Bouiaw
+	 */
+	public class Grid extends HTTPRequest
+	{
+		private const DEFAULT_TILE_WIDTH:Number = 256;
+		
+		private const DEFAULT_TILE_HEIGHT:Number = 256;
+
+		/** The grid array contains tiles **/		
+		private var _grid:Array = null;
+
+		private var _singleTile:Boolean = false;
+
+		private var _numLoadingTiles:int = 0;
+
+		private var _origin:Pixel = null;
+
+		private var _buffer:Number;
+
+		protected var CACHE_SIZE:int = 64;
+
+		private var cachedTiles:HashMap = null;
+		private var cachedTilesUrl:Array = null;
+		private var cptCached:int = 0;
+		
+		private var _tileWidth:Number = DEFAULT_TILE_WIDTH;
+		
+		private var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
+
+
+		/**
+		 * Create a new grid layer
+		 *
+		 * @param name
+		 * @param url
+		 * @param params
+		 * @param isBaseLayer
+		 * @param visible
+		 * @param projection
+		 * @param proxy
+		 */
+		public function Grid(name:String, url:String, params:IHttpParams = null, isBaseLayer:Boolean = false, 
+			visible:Boolean = true, projection:String = null, proxy:String = null) {
+
+			//TOdo delete url and params after osmparams work
+			super(name, url, params, isBaseLayer, visible, projection, proxy);
+
+			this.grid = new Array();
+
+			this.buffer = 1;
+
+			cachedTiles = new HashMap();
+			cachedTilesUrl = new Array(CACHE_SIZE);
+			
+			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
+			this.addEventListener(TileEvent.TILE_LOAD_START,tileLoadHandler);
+		}
+		
+		override public function onMapZoom(e:MapEvent):void {
+			// Clear pending requests after zooming in order to avoid to add
+			// too many tile requests  when the user is zooming step by step
+			for each(var array:Array in grid)	{
+				for (var i:Number = 0;i<array.length;i++)	{
+					var tile:Tile = array[i];
+					if (tile != null && !tile.loadComplete) {
+						tile.clear();
+					}
+				}
+			}
+			
+			super.onMapZoom(e);
+		}
+
+		override public function destroy(newBaseLayer:Boolean = true):void {
+			this.clear();
+			this.grid = null;
+			super.destroy(); 
+		}
+
+		/**
+		 * Go through and remove all tiles from the grid, calling
+		 *    destroy() on each of them to kill circular references
+		 */
+		override public function clear():void {
+			if (this.grid) {
+				for(var iRow:int=0; iRow < this.grid.length; iRow++) {
+					var row:Array = this.grid[iRow];
+					for(var iCol:int=0; iCol < row.length; iCol++) {
+						var tile:Tile = row[iCol];
+						this.removeTileMonitoringHooks(tile);
+						tile.destroy();						
+					}
+				}
+				while (this.numChildren > 0)
+				 this.removeChildAt(0);
+				this.grid = [];
+			}
+		}
+
+		/**
+		 * Methodd to cache a tile
+		 */
+		public function addTileCache(url:String,bitmap:Bitmap):void {
+			//We check if there's space in the cache
+			if(cachedTiles.size() < CACHE_SIZE) {
+				cachedTiles.put(url,bitmap);
+				cachedTilesUrl[cptCached] = url;
+			}
+			//Otherwise, we remove from the cache the older cached tile
+			else {
+				var oldUrl:String = cachedTilesUrl[cptCached];
+				cachedTiles.remove(oldUrl);
+				cachedTilesUrl[cptCached] = url;
+				cachedTiles.put(url,bitmap);
+			}
+			cptCached++; if(cptCached == CACHE_SIZE) cptCached = 0;
+		}
+
+		/**
+		 * Method to get a cached tile by its url
+		 */
+		public function getTileCache(url:String):Bitmap {
+			return cachedTiles.getValue(url) as Bitmap;
+		}
+
+		override public function redraw(fullRedraw:Boolean = true):void {
+						
+			if (!displayed) {
+				this.clear();
+				return;
+			}
+			
+			var bounds:Bounds = this.map.extent.clone();
+			
+			var forceReTile:Boolean = !this.grid.length || fullRedraw;
+
+			var tilesBounds:Bounds = this.getTilesBounds();            
+
+			if (this.singleTile) {
+				
+				if(fullRedraw)
+					this.clear();
+				
+				if ( forceReTile || !tilesBounds.containsBounds(bounds)) {
+					this.initSingleTile(bounds);
+				}
+			} else {
+				if (forceReTile || !tilesBounds.containsBounds(bounds, true)) {
+					this.initGriddedTiles(bounds);
+				} else {
+					this.moveGriddedTiles(bounds);
+				}
+			}
+
+		}
+		
+		public function set tileWidth(value:Number):void {
+			this._tileWidth = value;	
+		}
+
+		public function get tileWidth():Number {
+			if (this.singleTile) {
+				return map.size.w;
+			} 			
+			return this._tileWidth;
+		}
+		
+		public function set tileHeight(value:Number):void {
+			this._tileHeight= value;	
+		}
+
+		public function get tileHeight():Number {
+			if (this.singleTile) {
+				return map.size.h;
+			}
+			return this._tileHeight;
+		}	
+
+
+		/**
+		 * Return the bounds of the tile grid.
+		 *
+		 * @return A Bounds object representing the bounds of all the currently loaded tiles
+		 */
+		public function getTilesBounds():Bounds {
+			var bounds:Bounds = null; 
+
+			if (this.grid.length) {
+				var bottom:int = this.grid.length - 1;
+				var bottomLeftTile:Tile = this.grid[bottom][0];
+
+				var right:int = this.grid[0].length - 1; 
+				var topRightTile:Tile = this.grid[0][right];
+
+				bounds = new Bounds(bottomLeftTile.bounds.left, 
+					bottomLeftTile.bounds.bottom,
+					topRightTile.bounds.right, 
+					topRightTile.bounds.top);
+
+			}   
+			return bounds;
+		}
+
+		/**
+		 * Initialization singleTile
+		 *
+		 * @param bounds
+		 */
+		public function initSingleTile(bounds:Bounds):void {
+			var center:LonLat = bounds.centerLonLat;
+			var tileWidth:Number = bounds.width;
+			var tileHeight:Number = bounds.height;
+
+			var tileBounds:Bounds = 
+				new Bounds(center.lon - (tileWidth/2),
+				center.lat - (tileHeight/2),
+				center.lon + (tileWidth/2),
+				center.lat + (tileHeight/2));
+
+			var ul:LonLat = new LonLat(tileBounds.left, tileBounds.top);
+			var px:Pixel = this.map.getLayerPxFromLonLat(ul);
+
+			if (!this.grid.length) {
+				this.grid[0] = [];
+			}
+
+			var tile:Tile = this.grid[0][0];
+			if (!tile) {
+				tile = this.addTile(tileBounds, px);
+				tile.draw();
+
+				this.grid[0][0] = tile;
+			} else {
+				tile.moveTo(tileBounds, px);
+			}           
+
+			this.removeExcessTiles(1,1);
+		}
+
+		public function initGriddedTiles(bounds:Bounds):void {
+
+			var viewSize:Size = this.map.size;
+			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
+				Math.max(1, 2 * this.buffer);
+			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
+				Math.max(1, 2 * this.buffer);
+
+			var extent:Bounds = this.maxExtent;
+			var resolution:Number = this.map.resolution;
+			var tilelon:Number = resolution * this.tileWidth;
+			var tilelat:Number = resolution * this.tileHeight;
+
+			var offsetlon:Number = bounds.left - extent.left;
+			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
+			var tilecolremain:Number = offsetlon/tilelon - tilecol;
+			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
+			var tileoffsetlon:Number = extent.left + tilecol * tilelon;
+
+			var offsetlat:Number = bounds.top - (extent.bottom + tilelat);  
+			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
+			var tilerowremain:Number = tilerow - offsetlat/tilelat;
+			var tileoffsety:Number = -tilerowremain * this.tileHeight;
+			var tileoffsetlat:Number = extent.bottom + tilerow * tilelat;
+
+			tileoffsetx = Math.round(tileoffsetx); // heaven help us
+			tileoffsety = Math.round(tileoffsety);
+
+			this._origin = new Pixel(tileoffsetx, tileoffsety);
+
+			var startX:Number = tileoffsetx; 
+			var startLon:Number = tileoffsetlon;
+
+			var rowidx:int = 0;
+
+			do {
+				var row:Array = this.grid[rowidx++];
+				if (!row) {
+					row = [];
+					this.grid.push(row);
+				}
+
+				tileoffsetlon = startLon;
+				tileoffsetx = startX;
+				var colidx:int = 0;
+
+				do {
+					var tileBounds:Bounds = 
+						new Bounds(tileoffsetlon, 
+						tileoffsetlat, 
+						tileoffsetlon + tilelon,
+						tileoffsetlat + tilelat);
+
+					var x:Number = tileoffsetx;
+					x -= int(this.map.layerContainer.x);
+
+					var y:Number = tileoffsety;
+					y -= int(this.map.layerContainer.y);
+
+					var px:Pixel = new Pixel(x, y);
+					var tile:Tile = row[colidx++];
+					if (!tile) {
+						tile = this.addTile(tileBounds, px);
+						row.push(tile);
+					} else {
+						tile.clearAndMoveTo(tileBounds, px, false);
+					}
+
+					tileoffsetlon += tilelon;       
+					tileoffsetx += this.tileWidth;
+				} while ((tileoffsetlon <= bounds.right + tilelon * this.buffer) || colidx < minCols)  
+
+				tileoffsetlat -= tilelat;
+				tileoffsety += this.tileHeight;
+			} while((tileoffsetlat >= bounds.bottom - tilelat * this.buffer) || rowidx < minRows)
+
+			//shave off exceess rows and colums
+			this.removeExcessTiles(rowidx, colidx);
+
+			//now actually draw the tiles
+			this.spiralTileLoad();
+		}
+
+		/**
+		 *   Starts at the top right corner of the grid and proceeds in a spiral
+		 *    towards the center, adding tiles one at a time to the beginning of a
+		 *    queue.
+		 *
+		 *   Once all the grid's tiles have been added to the queue, we go back
+		 *    and iterate through the queue (thus reversing the spiral order from
+		 *    outside-in to inside-out), calling draw() on each tile.
+		 */
+		protected function spiralTileLoad():void {
+			var tileQueue:Array = new Array();
+
+			var directions:Array = ["right", "down", "left", "up"];
+
+			var iRow:int = 0;
+			var iCell:int = -1;
+			var direction:int = 0;
+			var directionsTried:int = 0;
+
+			while( directionsTried < directions.length) {
+
+				var testRow:int = iRow;
+				var testCell:int = iCell;
+
+				switch (directions[direction]) {
+					case "right":
+						testCell++;
+						break;
+					case "down":
+						testRow++;
+						break;
+					case "left":
+						testCell--;
+						break;
+					case "up":
+						testRow--;
+						break;
+				} 
+
+				// if the test grid coordinates are within the bounds of the 
+				//  grid, get a reference to the tile.
+				var tile:ImageTile = null;
+				if ((testRow < this.grid.length) && (testRow >= 0) &&
+					(testCell < this.grid[0].length) && (testCell >= 0)) {
+					tile = this.grid[testRow][testCell];
+				}
+
+				if ((tile != null) && (!tile.queued)) {
+					//add tile to beginning of queue, mark it as queued.
+					tileQueue.push(tile);
+					tile.queued = true;
+
+					//restart the directions counter and take on the new coords
+					directionsTried = 0;
+					iRow = testRow;
+					iCell = testCell;
+				} else {
+					//need to try to load a tile in a different direction
+					direction = (direction + 1) % 4;
+					directionsTried++;
+				}
+			} 
+
+			// now we go through and draw the tiles in forward order
+			for(var i:int=tileQueue.length-1; i >= 0; i--) {
+				tile = tileQueue[i];
+				tile.draw();
+				//mark tile as unqueued for the next time (since tiles are reused)
+				tile.queued = false;       
+			}
+		}
+
+		public function addTile(bounds:Bounds, position:Pixel):Tile {
+			return null;
+		}
+
+
+		public function removeTileMonitoringHooks(tile:Tile):void {
+		
+		}
+
+		public function moveGriddedTiles(bounds:Bounds):void {
+
+			var buffer:Number = this.buffer || 1;
+			while (true) {
+				var tlLayer:Pixel = this.grid[0][0].position;
+				var tlViewPort:Pixel = 
+					this.map.getMapPxFromLayerPx(tlLayer);
+				if (tlViewPort.x > -this.tileWidth * (buffer - 1)) {
+					this.shiftColumn(true);
+				} else if (tlViewPort.x < -this.tileWidth * buffer) {
+					this.shiftColumn(false);
+				} else if (tlViewPort.y > -this.tileHeight * (buffer - 1)) {
+					this.shiftRow(true);
+				} else if (tlViewPort.y < -this.tileHeight * buffer) {
+					this.shiftRow(false);
+				} else {
+					break;
+				}
+			};
+			if (this.buffer == 0) {
+				for (var r:int=0, rl:int=this.grid.length; r<rl; r++) {
+					var row:Array = this.grid[r];
+					for (var c:int=0, cl:int=row.length; c<cl; c++) {
+						var tile:Tile = row[c];
+						if (!tile.drawn && 
+							tile.bounds.intersectsBounds(bounds, false)) {
+							tile.draw();
+						}
+					}
+				}
+			}
+		}
+
+
+		/**
+		 * Shifty grid work
+		 *
+		 * @param prepend if true, prepend to beginning.
+		 *                          if false, then append to end
+		 */
+		private function shiftRow(prepend:Boolean):void {
+			var modelRowIndex:int = (prepend) ? 0 : (this.grid.length - 1);
+			var modelRow:Array = this.grid[modelRowIndex];
+
+			var resolution:Number = this.map.resolution;
+			var deltaY:Number = (prepend) ? -this.tileHeight : this.tileHeight;
+			var deltaLat:Number = resolution * -deltaY;
+
+			var row:Array = (prepend) ? this.grid.pop() : this.grid.shift();
+
+			for (var i:int=0; i < modelRow.length; i++) {
+				var modelTile:Tile = modelRow[i];
+				var bounds:Bounds = modelTile.bounds.clone();
+				var position:Pixel = modelTile.position.clone();
+				bounds.bottom = bounds.bottom + deltaLat;
+				bounds.top = bounds.top + deltaLat;
+				position.y = position.y + deltaY;
+				row[i].clearAndMoveTo(bounds, position);
+			}
+
+			if (prepend) {
+				this.grid.unshift(row);
+			} else {
+				this.grid.push(row);
+			}
+		}
+
+		/**
+		 * Shift grid work in the other dimension
+		 *
+		 * @param prepend if true, prepend to beginning.
+		 *                          if false, then append to end
+		 */
+		private function shiftColumn(prepend:Boolean):void {
+			var deltaX:Number = (prepend) ? -this.tileWidth : this.tileWidth;
+			var resolution:Number = this.map.resolution;
+			var deltaLon:Number = resolution * deltaX;
+
+			for (var i:int=0; i<this.grid.length; i++) {
+				var row:Array = this.grid[i];
+				var modelTileIndex:int = (prepend) ? 0 : (row.length - 1);
+				var modelTile:Tile = row[modelTileIndex];
+
+				var bounds:Bounds = modelTile.bounds.clone();
+				var position:Pixel = modelTile.position.clone();
+				bounds.left = bounds.left + deltaLon;
+				bounds.right = bounds.right + deltaLon;
+				position.x = position.x + deltaX;
+
+				var tile:Tile = prepend ? this.grid[i].pop() : this.grid[i].shift()
+				tile.clearAndMoveTo(bounds, position);
+				if (prepend) {
+					this.grid[i].unshift(tile);
+				} else {
+					this.grid[i].push(tile);
+				}
+			}
+		}
+
+		/**
+		 * When the size of the map or the buffer changes, we may need to
+		 *     remove some excess rows and columns.
+		 *
+		 * @param rows Maximum number of rows we want our grid to have.
+		 * @param colums Maximum number of columns we want our grid to have.
+		 */
+		public function removeExcessTiles(rows:int, columns:int):void {
+			while (this.grid.length > rows) {
+				var row:Array = this.grid.pop();
+				for (var i:int=0, l:int=row.length; i<l; i++) {
+					var tile:Tile = row[i];
+					this.removeTileMonitoringHooks(tile)
+					tile.destroy();
+				}
+			}
+
+			while (this.grid[0].length > columns) {
+				for (i=0, l=this.grid.length; i<l; i++) {
+					row = this.grid[i];
+					tile = row.pop();
+					this.removeTileMonitoringHooks(tile);
+					tile.destroy();
+				}
+			}
+		}
+
+		/**
+		 * Returns The tile bounds for a layer given a pixel location.
+		 *
+		 * @param viewPortPx The location in the viewport.
+		 *
+		 * @return Bounds of the tile at the given pixel location.
+		 */
+		public function getTileBounds(viewPortPx:Pixel):Bounds {
+			var maxExtent:Bounds = this.maxExtent;
+			var resolution:Number = this.map.resolution;
+			var tileMapWidth:Number = resolution * this.tileWidth;
+			var tileMapHeight:Number = resolution * this.tileHeight;
+			var mapPoint:LonLat = this.getLonLatFromMapPx(viewPortPx);
+			var tileLeft:Number = maxExtent.left + (tileMapWidth *
+				Math.floor((mapPoint.lon -
+				maxExtent.left) /
+				tileMapWidth));
+			var tileBottom:Number = maxExtent.bottom + (tileMapHeight *
+				Math.floor((mapPoint.lat -
+				maxExtent.bottom) /
+				tileMapHeight));
+			return new Bounds(tileLeft, tileBottom,
+				tileLeft + tileMapWidth,
+				tileBottom + tileMapHeight);
+		}
+		
+		private function tileLoadHandler(event:TileEvent):void	{
+			switch(event.type)	{
+				case TileEvent.TILE_LOAD_START:	{
+					// set layer loading to true
+					this.loading = true;
+					break;
+				}
+				case TileEvent.TILE_LOAD_END:	{
+					// check if there are still tiles loading
+					for each(var array:Array in grid)	{
+						for (var i:Number = 0;i<array.length;i++)	{
+							var tile:Tile = array[i];
+							if (tile != null && !tile.loadComplete)
+							  return;	
+						}
+					}
+					this.loading = false;
+					break;
+				}
+			}			
+		}
+
+		//Getters and Setters
+		override public function get imageSize():Size {
+			return (this._imageSize || new Size(this.tileWidth, this.tileHeight)); 
+		}
+
+		public function get grid():Array {
+			return this._grid;
+		}
+
+		public function set grid(value:Array):void {
+			this._grid = value;
+		}
+
+		public function get singleTile():Boolean {
+			return this._singleTile;
+		}
+
+		public function set singleTile(value:Boolean):void {
+			this._singleTile = value;
+		}
+
+		public function get numLoadingTiles():int {
+			return this._numLoadingTiles;
+		}
+
+		public function set numLoadingTiles(value:int):void {
+			this._numLoadingTiles = value;
+		}
+
+		/**
+		 * Used only when in gridded mode, this specifies the number of
+		 * extra rows and colums of tiles on each side which will
+		 * surround the minimum grid tiles to cover the map.
+		 */
+		public function get buffer():Number {
+			return this._buffer; 
+		}
+
+		public function set buffer(value:Number):void {
+			this._buffer = value; 
+		}
+
+	}
+}
+
