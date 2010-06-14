@@ -14,7 +14,7 @@
 	<body>
 		<menu name="Documentation">
 			<item name="Introduction" href="/index.html"/>
-			<item name="Download" href="http://openscales.org/index.php/p/openscales/downloads/"/>
+			<item name="Download" href="http://openscales.org/latest"/>
 			<item name="How to develop ?" href="/dev.html"/>
 			<item name="XML configuration" href="/configuration.html"/>
 		</menu>
@@ -35,7 +35,7 @@
 		<menu name="Useful links">
 			<item name="OpenScales homepage" href="http://openscales.org/"/>
 			<item name="Discussion group" href="http://groups.google.com/group/openscales-dev"/>
-			<item name="Bugtracker" href="http://openscales.org/index.php/p/openscales/issues/"/>
+			<item name="Bugtracker" href="http://openscales.org/bugtracker"/>
 		</menu>
 				
 		<menu ref="reports" />

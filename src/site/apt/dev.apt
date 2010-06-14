@@ -23,13 +23,13 @@ Quick start with Flex Builder 3
 		
 		* Create a libs directory where you put following libraries that are distributed in OpenScales 1.1 package :
 		
-			* gtween2.swc
+			* gtween-2.0.swc
 			
-			* openscales-core-1.1.swc
+			* openscales-core-1.1.8.swc
 			
-			* openscales-fx-1.1.swc
+			* openscales-fx-1.1.8.swc
 			
-			* openscales-proj4as-1.1.swc
+			* openscales-proj4as-1.1.8.swc
 			
 		* Right click on your project -> Properties -> Flex build path -> Library path -> Add SWC folder -> libs -> OK -> OK
 		

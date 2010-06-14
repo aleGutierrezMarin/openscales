@@ -1,8 +1,14 @@
 OpenScales
 
-	{{{http://openscales.org/}OpenScales}} is a Open Source (LGPL) mapping framework based on ActionScript 3 and Flex. It has been designed for building Rich Internet Mapping Applications (RIMA) easily. Last stable release is <<OpenScales 1.1>>.
+	{{{http://openscales.org/}OpenScales}} is an open source ({{{http://openscales.org/license.html}LGPL}}) mapping framework written in ActionScript 3 and Flex that allows developers to building Rich Internet Mapping Applications. Designed for interoperability, it supports data from any major spatial open standards protocols such as OGC protocols and formats.
 
-	This documentation is the <<OpenScales 1.1 user guide>>. It has been created to help you to build OpenScales based applications.
+	Being a community-driven project, OpenScales is developed, tested, and supported by a diverse group of individuals from around the world.
+
+	Openscales is already used in {{{http://bitbucket.org/gis/openscales/wiki/They_use_OpenScales}various projects}}.
+	
+	Last stable release is <<OpenScales 1.1.8>>.
+
+	This documentation is the <<OpenScales 1.1.8 user guide>>. It has been created to help you to build OpenScales based applications.
 
 	Feel free to join OpenScales community, submit issues, patches, discuss with us ...
 	
