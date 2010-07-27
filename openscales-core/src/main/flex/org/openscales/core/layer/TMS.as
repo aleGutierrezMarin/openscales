@@ -21,6 +21,7 @@ package org.openscales.core.layer
 		private var _serviceVersion:String = "1.0.0";
 
 		private var _tileOrigin:LonLat = null;
+		private var _format:String = "png";
 
 		/**
 		 * A list of all resolutions available on the server.
@@ -35,22 +36,23 @@ package org.openscales.core.layer
 
 		}
 
-		override public function getURL(bounds:Bounds):String
-		{
+		override public function getURL(bounds:Bounds):String {
 			var res:Number = this.map.resolution;
+			if(this._tileOrigin==null) {
+				this._tileOrigin = new LonLat(this.maxExtent.left,this.maxExtent.bottom);
+			}
+			
 			var x:Number = Math.round((bounds.left - this._tileOrigin.lon) / (res * this.tileWidth));
-			var y:Number = Math.round((bounds.bottom - this._tileOrigin.lat) / (res * this.tileHeight));
-			var z:Number = this._serverResolutions != null ? this._serverResolutions.indexOf(res) : this.map.zoom;
-			// Overrided so commented
-			// Use name instead of layername, cf. http://trac.openlayers.org/ticket/737
-			var path:String = ""/*this.serviceVersion + "/" + this.name + "/" + z + "/" + x + "/" + y + "." + this.type*/;
-			var url:String = this.url;
-			return url + path;
+			var y:Number = Math.round((bounds.bottom - this._tileOrigin.lat) / ( res* this.tileHeight));
+			var z:Number = (this._serverResolutions!=null) ? this._serverResolutions.indexOf(res) : this.map.zoom;
+			y+=Math.floor(Math.pow(2,z-1));
+
+			var url:String = this.url+ "/" + z + "/" + x + "/" + y+"."+this._format;
+			return url ;
 		}
 
-		override public function addTile(bounds:Bounds, position:Pixel):Tile
-		{
-			return new ImageTile(this, position, bounds, null, new Size(this.tileWidth, this.tileHeight));
+		override public function addTile(bounds:Bounds, position:Pixel):ImageTile {
+			return new ImageTile(this, position, bounds, this.getURL(bounds), new Size(this.tileWidth, this.tileHeight));
 		}
 
 		override public function set map(map:Map):void {
@@ -58,7 +60,28 @@ package org.openscales.core.layer
 			if (!this._tileOrigin) {
 				this._tileOrigin = new LonLat(this.map.maxExtent.left, this.map.maxExtent.bottom);
 			}
-		} 
+		}
+				/**
+		 * setter for tile image format
+		 * 
+		 * @param value:String the tile image extention
+		 */
+		public function set format(value:String):void {
+			if(value.length==0)
+				return;
+			else if(value.charAt(0)=='.')
+				this._format = value.substr(1,value.length-1);
+			else
+				this._format = value;
+		}
+		/**
+		 * getter for tile image format
+		 * 
+		 * @return String the tile image format
+		 */
+		public function get format():String {
+			return this._format;
+		}
 	}
 }
 
