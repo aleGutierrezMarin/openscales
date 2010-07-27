@@ -17,36 +17,12 @@ package org.openscales.core.layer
 		public static const DEFAULT_ZOOM_MAX:uint = 16;
 
 		private var _zoom_max:uint;
-		
-		private var _format:String = "png";
 
 		/**
 		 * setter for the max zoom level
 		 */
 		public function set zoom_max(value:uint):void{
 			this._zoom_max = value;
-		}
-
-		/**
-		 * setter for tile image format
-		 * 
-		 * @param value:String the tile image extention
-		 */
-		public function set format(value:String):void {
-			if(value.length==0)
-				return;
-			else if(value.charAt(0)=='.')
-				this._format = value.substr(1,value.length-1);
-			else
-				this._format = value;
-		}
-		/**
-		 * getter for tile image format
-		 * 
-		 * @return String the tile image format
-		 */
-		public function get format():String {
-			return this._format;
 		}
 
 		/**
