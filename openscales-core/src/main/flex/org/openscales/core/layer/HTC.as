@@ -78,7 +78,7 @@ package org.openscales.core.layer
 
 			var srcfinal:String = this.url+this.name;
 
-			srcfinal+= "_" +  this._format + "_" + String(this.tileWidth) + "_" + String(this.tileHeight) + "_" + zoomString + "/";
+			srcfinal+= "_" +  this.format + "_" + String(this.tileWidth) + "_" + String(this.tileHeight) + "_" + zoomString + "/";
 
 			var minusX:String = "";
 			if(numX <0){
@@ -102,7 +102,7 @@ package org.openscales.core.layer
 
 			srcfinal+="x" + minusX +  numXString.substr(0,4) + "/" + numXString.substr(4,3) + "/y" + minusY +  numYString.substr(0,4)+"/"  + numYString.substr(4,3);
 
-			return srcfinal + "." + this._format;
+			return srcfinal + "." + this.format;
 		}
 	}
 }
