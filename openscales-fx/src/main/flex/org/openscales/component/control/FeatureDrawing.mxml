@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <control:Control xmlns:control="org.openscales.component.control.*"
-				 xmlns:mx="http://www.adobe.com/2006/mxml">
+				 xmlns:mx="http://www.adobe.com/2006/mxml"
+				 xmlns:s="library://ns.adobe.com/flex/spark"
+				 >
 
 	<!-- TODO : drawing handlers are too much tighly coupled with controls, this should be refactor to make drawing
 		 integration much simpler -->
@@ -107,9 +109,9 @@
 		]]>
 	</mx:Script>
 
-	<mx:VBox horizontalAlign="center">
+	<s:VGroup horizontalAlign="center">
 
-		<mx:ToggleButtonBar id="tgBar"
+		<s:ButtonBar id="tgBar"
 							buttonHeight="40"
 							buttonWidth="40"
 							horizontalGap="6"
@@ -143,22 +145,23 @@
 						   icon="@Embed('/assets/images/icons/Icons-08.png')"
 						   width="32"/>
 			</mx:Array>
-		</mx:ToggleButtonBar>
+		</s:ButtonBar>
 
-		<mx:HBox horizontalGap="6">
-			<mx:Button id="btnDeleteLast"
+		<s:HGroup horizontalGap="6">
+			
+			<s:Button id="btnDeleteLast"
 					   width="38"
 					   height="38"
 					   toolTip="Delete the last drawing vertex"
 					   icon="@Embed('/assets/images/icons/Icons-07.png')"
 					   click="this._drawHandler.onDeleteLastClick(event)"/>
-			<mx:Button id="btnDeleteAll"
+			<s:Button id="btnDeleteAll"
 					   width="38"
 					   height="38"
 					   toolTip="Delete all the drawn features"
 					   icon="@Embed('/assets/images/icons/Icons-09.png')"
 					   click="onDeleteAllClick(event)"/>
-		</mx:HBox>
+		</s:HGroup>
 
-	</mx:VBox>
+	</s:VGroup>
 </control:Control>

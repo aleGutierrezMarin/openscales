@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <control:Control xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:control="org.openscales.component.control.*"
+	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:os="http://openscales.org"
 	width="100" height="100"
 	initialize="{currentState='defaultState';}"
