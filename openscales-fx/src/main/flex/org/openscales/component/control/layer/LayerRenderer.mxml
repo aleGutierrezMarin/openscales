@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="45" horizontalScrollPolicy="off" verticalScrollPolicy="off" paddingRight="17">
+	<mx:Script>
+    	<![CDATA[
+    		import mx.controls.Label;
+		    import mx.controls.List;
+			import mx.controls.Text;
+		    import org.openscales.core.events.LayerEvent;
+		    import mx.accessibility.ButtonAccImpl;
+		    import mx.core.ButtonAsset;
+		    import mx.skins.halo.ButtonSkin;
+		    import mx.events.DragEvent;
+		    import mx.binding.utils.BindingUtils;
+		    import org.openscales.core.Map;
+		    import org.openscales.core.layer.ogc.WFS;
+		    import mx.controls.Button;
+		    import org.openscales.basetypes.Bounds;
+		    import mx.controls.CheckBox;
+		    import mx.controls.RadioButtonGroup;
+		    import mx.controls.RadioButton;
+		    import org.openscales.core.layer.Layer;
+		    import mx.events.PropertyChangeEvent;
+		    import mx.binding.utils.ChangeWatcher;
+
+	      	[Bindable]
+	      	private var hasCapabilities:Boolean = false;
+      
+      		private var labelLayer:Label;
+
+	      	/**
+	       	 * Get the layer that the List into the LayerSwitcher.mxml send to display it
+	         *
+	         * @return return the layer
+	         */
+      		private function get layer():Layer {
+        		return (this.data) as Layer;
+      		}
+
+	       /**
+	        * Change the layer visibility
+	        *
+	        * @param event Change event
+	        */
+	        public function layerVisible(event:MouseEvent):void{
+	        	layer.visible = !layer.visible;
+	
+	        	// If the layer was uncheck from the beggining, he hadn't load yet so we need
+	        	// to redraw it to load it.
+	        	if(layer.visible){
+	          	layer.redraw();
+	        	}
+	      	} 
+
+      /**
+       * Change the opacity of the layer
+       *
+       * @param event event send by a slide
+       */
+      public function layerOpacity(event:Event):void
+      {
+        layer.alpha = (event.target as HSlider).value/100;
+        if(layer.alpha == 0)
+        {
+        	labelLayer.setStyle("color",0xA8A8A8);
+        }
+        else
+        {
+        	labelLayer.setStyle("color",0x000000);
+        }
+      }
+
+      /**
+       * Delete the layer on the map
+       *
+       * @param event Click event
+       */
+      public function deleteLayer(event:MouseEvent):void {
+         (data as Layer).map.removeLayer(data as Layer);
+      }
+	
+	
+	public function inOutRange(event:LayerEvent):void {
+		
+		if(event.layer.isBaseLayer == false)
+		{
+			var checkBox:Array = displayControl.getChildren();
+			if(checkBox[0] is CheckBox)
+			{
+				if(event.type == LayerEvent.LAYER_OUT_RANGE)
+		        {	
+		             	(checkBox[0] as CheckBox).enabled = false;
+		        }
+		        else
+		        {
+		          	 (checkBox[0] as CheckBox).enabled = true;
+		          	event.layer.visible = (checkBox[0] as CheckBox).selected; 
+		        }
+			}
+			
+		}  
+	}
+	
+      /**
+       * Set the data
+       *
+       * @param value
+       */
+       override public function set data(value:Object):void {
+			super.data = value;
+				
+        if((this.layer != null) && (displayControl != null))
+        {
+        	(data as Layer).map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
+        	(data as Layer).map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+        	
+          	displayControl.removeAllChildren();
+          	opacityControl.value = this.layer.alpha*100;
+
+          if(this.layer.isBaseLayer == true)//if the layer is a base layer
+          {
+       		ArrowUp.visible = false;
+       		ArrowUp.enabled = false;
+       		ArrowDown.visible = false;
+       		ArrowDown.enabled = false;
+            var radioButton:RadioButton = new RadioButton();
+            radioButton.id = this.layer.name;
+            radioButton.percentHeight = 100;
+            radioButton.percentWidth = 100;
+            radioButton.label = this.layer.name;
+            radioButton.selected = this.layer.visible;
+            displayControl.addChild(radioButton);
+
+          }
+          else
+          {
+            labelLayer = new Label();
+            labelLayer.text = this.layer.name;
+            labelLayer.percentWidth = 100;
+            displayControl.addChild(labelLayer);
+            
+            if(((this.parent.parent.parent.parent as LayerSwitcher).overlayArray.length)<=1)
+            {
+       			ArrowUp.enabled = false;
+				ArrowUp.alpha = 0.3;
+       			ArrowDown.enabled = false;
+       			ArrowDown.alpha = 0.3;
+       			ArrowUp.removeEventListener(MouseEvent.CLICK,changeLayerOrder);
+       			ArrowDown.removeEventListener(MouseEvent.CLICK,changeLayerOrder);
+            }
+            else
+            {
+            	ArrowUp.enabled = true;
+            	ArrowUp.alpha = 1;
+       			ArrowDown.enabled = true;
+       			ArrowDown.alpha = 1;
+       			ArrowUp.addEventListener(MouseEvent.CLICK,changeLayerOrder);
+       			ArrowDown.addEventListener(MouseEvent.CLICK,changeLayerOrder);
+            }
+
+          }
+
+         }
+
+      }
+
+      /**
+       * Center the map on the layer
+       *
+       * @param event Click event
+       */
+      private function setLayerExtent(event:MouseEvent):void
+      {
+        var bounds:Bounds = (data as Layer).maxExtent;
+        if (bounds != null) {
+          (data as Layer).map.zoomToExtent(bounds);
+        }
+      }
+
+      private function onDrag(event:Event):void {
+        event.stopPropagation();
+      }
+      
+      public function changeLayerOrder(event:MouseEvent):void {
+      		var numBaseLayer:int = (this.parent.parent.parent.parent as LayerSwitcher).baseLayerArray.length;
+      		var numOverlays:int = (this.parent.parent.parent.parent as LayerSwitcher).overlayArray.length;
+      		
+	      if((event.currentTarget as Image).name == "ArrowUp") //if we drag and drop the layer down
+	      {
+	      	if(this.layer.zindex+1 <= numBaseLayer+numOverlays-1)
+	      	{
+	      		this.layer.zindex = this.layer.zindex + 1;
+	      	}  
+	      }
+	      if((event.currentTarget as Image).name == "ArrowDown")	//if we drag and drop the layer up
+	      {
+	      	if(this.layer.zindex-1 > numBaseLayer-1)
+	      	{
+	      		this.layer.zindex = this.layer.zindex - 1;
+	      	}
+	        
+	      } 
+	      this.layer.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED,this.layer));
+      }
+
+
+    ]]>
+  </mx:Script>
+
+  <mx:HBox width="100%">
+    <mx:Canvas id="displayControl" width="128"/>
+    	<!--<mx:Button id="zoomButton" width="30" height="20" toolTip="Center Map" icon="@Embed('/assets/images/zoomin.swf')" click="this.setLayerExtent(event)"/>-->
+    	<mx:Image id="ArrowUp" name="ArrowUp" source="@Embed('/assets/images/ArrowUp.swf')" click="changeLayerOrder(event)"/>
+   	 	<mx:Image id="ArrowDown" name="ArrowDown" source="@Embed('/assets/images/ArrowDown.swf')" click="changeLayerOrder(event)"/>
+    	<mx:Button id="deleteButton" width="20" height="10" toolTip="Delete" icon="@Embed('/assets/images/cross.swf')" click="deleteLayer(event)"/>
+  </mx:HBox>
+  
+  <mx:HBox id="Hbox2" width="100%">
+        <mx:Label text="0%"/>
+    	<mx:HSlider width="100" height="5" id="opacityControl" minimum="0" maximum="100"
+      		change="layerOpacity(event)" liveDragging="true" mouseDown="onDrag(event)"/>
+      	<mx:Label text="100%"/>
+  </mx:HBox>
+
+</mx:VBox>
