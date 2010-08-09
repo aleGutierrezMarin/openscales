@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:s="library://ns.adobe.com/flex/spark">
 	
 	<mx:Script>
 		<![CDATA[
@@ -20,7 +21,7 @@
 		]]>
 	</mx:Script>
 
-	<mx:Label text="Trait"/>
+	<s:Label text="Trait"/>
 	<!--<mx:Box borderColor="0xeeeeee" borderThickness="2" borderStyle="inset" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" width="100%">
 		<mx:HBox width="100%">
 			<mx:Label text="Couleur :" fontWeight="bold"/><mx:ColorPicker id="strokeColorPicker" selectedColor="{this._editedStyle.strokeColor}"/>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:control="org.openscales.component.control.*" width="282" height="168">	
+<control:Control xmlns:mx="http://www.adobe.com/2006/mxml"
+				 xmlns:s="library://ns.adobe.com/flex/spark"
+				 xmlns:control="org.openscales.component.control.*" width="282" height="168">	
 	<mx:Script>
 		<![CDATA[
 			import flash.utils.getQualifiedClassName;
