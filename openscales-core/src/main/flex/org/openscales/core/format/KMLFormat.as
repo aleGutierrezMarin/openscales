@@ -297,7 +297,7 @@ package org.openscales.core.format
 						_id = placemark.styleUrl.text();
 						if(pointStyles[_id] != undefined) { // style
 							if(pointStyles[_id]["icon"]!=null) { // icon
-								var _icon:String = pointStyles[_id]["icon"];
+								var _icon:String = this._proxy+pointStyles[_id]["icon"];
 								var customMarker:CustomMarker;
 								customMarker = CustomMarker.createUrlBasedMarker(_icon,point,attributes);
 								iconsfeatures.push(customMarker);
