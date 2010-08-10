@@ -5,9 +5,9 @@ package org.openscales.core.layer
 	import flash.display.Sprite;
 	import flash.utils.getQualifiedClassName;
 	
+	import org.openscales.basetypes.Bounds;
 	import org.openscales.core.Map;
 	import org.openscales.core.Util;
-	import org.openscales.basetypes.Bounds;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
@@ -41,7 +41,6 @@ package org.openscales.core.layer
 		{
 			super(name);
 			this._displayProjection = this.projection.clone();
-			this.featuresBbox = new Bounds();
 			this.style = new Style();
 			this.geometryType = null;
 			this.selectedFeatures = new Vector.<String>();
@@ -176,6 +175,7 @@ package org.openscales.core.layer
 				fevt = new FeatureEvent(FeatureEvent.FEATURE_INSERT, feature);
 				this.map.dispatchEvent(fevt);
 			}
+			this._featuresBbox=null;
 		}
 
 		override public function reset():void {
@@ -193,6 +193,7 @@ package org.openscales.core.layer
 				fevt.features = features;
 				this.map.dispatchEvent(fevt);
 			}
+			this._featuresBbox=null;
 		}
 
 		override protected function draw():void {
@@ -243,6 +244,7 @@ package org.openscales.core.layer
 				var fevt:FeatureEvent = new FeatureEvent(FeatureEvent.FEATURE_DELETING, feature);
 				this.map.dispatchEvent(fevt);
 			}
+			this._featuresBbox=null;
 		}
 
 		public function get feauturesID():Vector.<String> {
@@ -270,7 +272,21 @@ package org.openscales.core.layer
 			return _features;
 		}
 
+		private function computeFeaturesBbox():void {
+			var features:Vector.<Feature> = this.features;
+			var i:uint = features.length;
+			if(i==0) {
+				this._featuresBbox=null;
+				return;
+			}
+			this._featuresBbox = features[0].geometry.bounds;
+			for(var j:uint=1; j<i; ++j)
+				this._featuresBbox.extendFromBounds(features[j].geometry.bounds);
+		}
+		
 		public function get featuresBbox():Bounds {
+			if(this._featuresBbox==null)
+				this.computeFeaturesBbox();
 			return this._featuresBbox;
 		}
 
