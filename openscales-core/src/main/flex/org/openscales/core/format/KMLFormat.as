@@ -195,10 +195,6 @@ package org.openscales.core.format
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
 			}
-import mx.messaging.management.Attribute;
-
-import org.openscales.core.feature.CustomMarker;
-import org.openscales.core.feature.CustomMarkerFeature;
 
 			return new LinearRing(Ppoints);
 		}
