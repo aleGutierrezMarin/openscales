@@ -41,7 +41,6 @@
     <classEntry path="org.openscales.core.events.TileEvent"/>
     <classEntry path="org.openscales.core.events.TraceEvent"/>
     <classEntry path="org.openscales.core.events.ZoomBoxEvent"/>
-    <classEntry path="org.openscales.core.feature.CustomMarkerFeature"/>
     <classEntry path="org.openscales.core.feature.Feature"/>
     <classEntry path="org.openscales.core.feature.LineStringFeature"/>
     <classEntry path="org.openscales.core.feature.Marker"/>
@@ -155,6 +154,10 @@
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
+    <classEntry path="org.openscales.core.control.LayerManager"/>
+    <classEntry path="org.openscales.core.control.ui.Radio"/>
+    <classEntry path="org.openscales.core.control.ui.CheckBox2"/>
+    <classEntry path="org.openscales.core.feature.CustomMarker"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
