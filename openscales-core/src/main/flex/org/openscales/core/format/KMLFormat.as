@@ -6,16 +6,11 @@ package org.openscales.core.format
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
-	import org.openscales.core.feature.CustomMarkerFeature;
+	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LineString;
-	import org.openscales.geometry.LinearRing;
-	import org.openscales.geometry.Point;
-	import org.openscales.geometry.Polygon;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -25,6 +20,11 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.ProjProjection;
 	
 
@@ -39,7 +39,6 @@ package org.openscales.core.format
 		private namespace google="http://earth.google.com/kml/2.0";
 		private var _proxy:String;
 		private var _externalImages:Object = {};
-		private var _images:Object = {};
 		[Embed(source="/assets/images/marker-blue.png")]
 		private var _defaultImage:Class;
 
@@ -76,34 +75,6 @@ package org.openscales.core.format
 			return parseInt(data.substr(0,2),16)/255;
 		}
 
-		private function updateImages(e:Event):void {
-			var _url:String = e.target.loader.name;
-			var _imgs:Array = _images[_url];
-			_images[_url] = null;
-			var _bm:Bitmap = Bitmap(_externalImages[_url].loader.content); 
-			var _bmd:BitmapData = _bm.bitmapData;
-			for each(var _img:Sprite in _imgs) {
-				var _image:Bitmap = new Bitmap(_bmd.clone());
-				_image.x = -_image.width/2;
-				_image.y = -_image.height;
-				_img.addChild(_image);
-			}
-		}
-		
-		private function updateImagesError(e:Event):void {
-			var _url:String = e.target.loader.name;
-			var _imgs:Array = _images[_url];
-			_images[_url] = null;
-			_externalImages[_url] = null;
-			
-			for each(var _img:Sprite in _imgs) {
-				var _marker:Bitmap = new _defaultImage();
-				_marker.y = -_marker.height;
-				_marker.x = -_marker.width/2;
-				_img.addChild(_marker);
-			}
-		}
-
 		/**
 		 * load styles
 		 */
@@ -131,14 +102,7 @@ package org.openscales.core.format
 					if(style.IconStyle.Icon != undefined && style.IconStyle.Icon.href != undefined) {
 						try {
 							var _url:String = style.IconStyle.Icon.href.text();
-							var _req:DataRequest
-							_req = new DataRequest(_url, updateImages, updateImagesError);
-							_req.proxy = this._proxy;
-							//_req.security = this._security; // FixMe: should the security be managed here ?
-							_req.send();
-							_externalImages[_url] = _req;
 							pointStyles[id]["icon"] = _url;
-							_images[_url] = new Array();
 						} catch(e:Error) {
 							pointStyles[id]["icon"] = null;
 						}
@@ -231,6 +195,11 @@ package org.openscales.core.format
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
 			}
+import mx.messaging.management.Attribute;
+
+import org.openscales.core.feature.CustomMarker;
+import org.openscales.core.feature.CustomMarkerFeature;
+
 			return new LinearRing(Ppoints);
 		}
 		/**
@@ -333,24 +302,8 @@ package org.openscales.core.format
 						if(pointStyles[_id] != undefined) { // style
 							if(pointStyles[_id]["icon"]!=null) { // icon
 								var _icon:String = pointStyles[_id]["icon"];
-								var customMarker:CustomMarkerFeature;
-								if(_images[_icon]!=null) { // image not loaded so we will wait for it
-									var _img:Sprite = new Sprite();
-									_images[_icon].push(_img);
-									customMarker = new CustomMarkerFeature(_img,point,attributes,null,0,0);
-								}
-								else if(_externalImages[_icon]!=null) { // image allready loaded, we copy the loader content
-									var Image:Bitmap = new Bitmap(new Bitmap(_externalImages[_icon].loader.content).bitmapData.clone());
-									Image.y = -Image.height;
-									Image.x = -Image.width/2;
-									customMarker = new CustomMarkerFeature(Image,point,attributes,null,0,0);
-								}
-								else { // image failed to load
-									var _marker:Bitmap = new _defaultImage();
-									_marker.y = -_marker.height;
-									_marker.x = -_marker.width/2;
-									customMarker = new CustomMarkerFeature(_marker,point,attributes,null,0,0);
-								}
+								var customMarker:CustomMarker;
+								customMarker = CustomMarker.createUrlBasedMarker(_icon,point,attributes);
 								iconsfeatures.push(customMarker);
 							}
 							else { // style without icon
