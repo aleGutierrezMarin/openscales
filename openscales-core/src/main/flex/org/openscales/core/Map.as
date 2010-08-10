@@ -10,11 +10,11 @@ package org.openscales.core
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.core.basetypes.DraggableSprite;
 	import org.openscales.basetypes.LonLat;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.basetypes.Unit;
+	import org.openscales.core.basetypes.DraggableSprite;
 	import org.openscales.core.configuration.Configuration;
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
@@ -130,7 +130,9 @@ package org.openscales.core
 		 * @return true if the layer have been added, false if it has not.
 		 */
 		public function addLayer(layer:Layer):Boolean {
-			for(var i:int=0; i < this.layers.length; i++) {
+			var i:uint = 0;
+			var j:uint = this.layers.length;
+			for(; i < j; ++i) {
 				if (this.layers[i] == layer) {
 					return false;
 				}
@@ -246,7 +248,9 @@ package org.openscales.core
 		 */
 		public function getLayerByName(name:String):Layer {
 			var foundLayer:Layer = null;
-			for (var i:int = 0; i < this.layers.length; i++) {
+			var i:uint = 0;
+			var j:uint = this.layers.length;
+			for (; i < j; ++i) {
 				var layer:Layer = this.layers[i];
 				if (layer.name == name) {
 					foundLayer = layer;
@@ -277,6 +281,7 @@ package org.openscales.core
 			if (setNewBaseLayer && (this.baseLayer == layer)) {
 				this._baseLayer = null;
 				i = l.length;
+				
 				for(var j:int=0; j < i; ++j) {
 					var iLayer:Layer = l[j];
 					if (iLayer.isBaseLayer) {
@@ -315,8 +320,9 @@ package org.openscales.core
 			}*/
 			// Is the input control already rgistered ?
 			// Or an other control of the same type ?
-			var i:int;
-			for (i=0; i<this._controls.length; i++) {
+			var i:uint = 0;
+			var j:uint = this._controls.length;
+			for (; i<j; ++i) {
 				if (control == this._controls[i]) {
 					Trace.warning("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
 					return;
@@ -327,7 +333,7 @@ package org.openscales.core
 				}
 			}
 			// If the control is a new control, register it
-			if (i == this.controls.length) {
+			if (i == j) {
 				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
 				this._controls.push(control);
 				control.map = this;
@@ -364,8 +370,9 @@ package org.openscales.core
 			
 			// Is the input handler already registered ?
 			// Or an other handler of the same type ?
-			var i:int;
-			for (i=0; i<this.handlers.length; i++) {
+			var i:uint = 0;
+			var j:uint = this.handlers.length;
+			for (; i<j; ++i) {
 				if (handler == this.handlers[i]) {
 					Trace.warning("Map.addHandler: this handler is already registered ("+getQualifiedClassName(handler)+")");
 					return;
@@ -376,7 +383,7 @@ package org.openscales.core
 				}
 			}
 			// If the handler is a new handler, register it
-			if (i == this.handlers.length) {
+			if (i == j) {
 				Trace.log("Map.addHandler: add a new handler "+getQualifiedClassName(handler));
 				this._handlers.push(handler);
 				//handler.map = this; // this is done by the Handler.map setter
@@ -783,7 +790,7 @@ package org.openscales.core
 				return false;
 			}
 			var i:int = this._securities.length - 1;
-			for(i;i>-1;--i){
+			for(;i>-1;--i){
 				if(getQualifiedClassName(security)==getQualifiedClassName(this._securities[i])){
 					return false;
 				}
@@ -918,7 +925,7 @@ package org.openscales.core
 					// check all layers 
 					var l:Vector.<Layer> = this.layers;
 					var i:int = l.length -1;
-					for (i;i>-1;--i)	{
+					for (;i>-1;--i)	{
 						var layer:Layer = l[i];
 						if (layer != null && !layer.loadComplete)
 							return;	
