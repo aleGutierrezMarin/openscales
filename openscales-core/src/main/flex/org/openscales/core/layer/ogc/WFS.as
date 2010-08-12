@@ -126,13 +126,16 @@ package org.openscales.core.layer.ogc
 			if (projectedBounds.containsBounds(this.maxExtent)) {
 				projectedBounds = this.maxExtent.clone();
 			}
-			var previousFeatureBbox:Bounds = this.featuresBbox.clone(); 
+
+			var previousFeatureBbox:Bounds = this.featuresBbox; 
+			if(previousFeatureBbox!=null)
+				previousFeatureBbox = previousFeatureBbox.clone();
 
 			this.params.bbox = projectedBounds.boundsToString();
 
 			if (this._firstRendering) {
-				this.featuresBbox = projectedBounds;
 				this.loadFeatures(this.getFullRequestString());
+				this.featuresBbox = projectedBounds;
 				this._firstRendering = false;
 			} else {
 				// Use GetCapabilities to know if all features have already been retreived.
@@ -140,12 +143,12 @@ package org.openscales.core.layer.ogc
 				if (!previousFeatureBbox.containsBounds(projectedBounds)
 					&& ((this.capabilities == null) || (this.capabilities != null && !this.featuresBbox.containsBounds(this.capabilities.getValue("Extent"))))){
 					var _features:Array = new Array();
-					this.featuresBbox = projectedBounds;
 					this.loadFeatures(this.getFullRequestString());
 					if(fullRedraw && _features.length>0) {
 						this._fullRedraw = true;
 					}
 					this.loadFeatures(this.getFullRequestString());
+					this.featuresBbox = projectedBounds;
 
 					this.draw();
 				}else {
