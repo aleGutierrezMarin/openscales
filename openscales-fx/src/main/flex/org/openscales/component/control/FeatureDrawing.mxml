@@ -110,8 +110,8 @@
 	</mx:Script>
 
 	<s:VGroup horizontalAlign="center">
-
-		<s:ButtonBar id="tgBar"
+		
+		<mx:ToggleButtonBar id="tgBar"
 							buttonHeight="40"
 							buttonWidth="40"
 							horizontalGap="6"
@@ -119,8 +119,8 @@
 							selectedIndex="0"
 							itemClick="clickHandler(event);">
 			<mx:Array>
-			
-			<mx:Object id="btnPan"
+				
+				<mx:Object id="btnPan"
 						   toolTip="Pan Map"
 						   icon="@Embed('/assets/images/icons/Icons-10.png')"
 						   width="32"/>
@@ -145,23 +145,23 @@
 						   icon="@Embed('/assets/images/icons/Icons-08.png')"
 						   width="32"/>
 			</mx:Array>
-		</s:ButtonBar>
-
-		<s:HGroup horizontalGap="6">
-			
-			<s:Button id="btnDeleteLast"
+		</mx:ToggleButtonBar>
+		
+		<s:HGroup gap="6">
+			<mx:Button id="btnDeleteLast"
 					   width="38"
 					   height="38"
 					   toolTip="Delete the last drawing vertex"
 					   icon="@Embed('/assets/images/icons/Icons-07.png')"
 					   click="this._drawHandler.onDeleteLastClick(event)"/>
-			<s:Button id="btnDeleteAll"
+			<mx:Button id="btnDeleteAll"
 					   width="38"
 					   height="38"
 					   toolTip="Delete all the drawn features"
 					   icon="@Embed('/assets/images/icons/Icons-09.png')"
 					   click="onDeleteAllClick(event)"/>
 		</s:HGroup>
-
+		
 	</s:VGroup>
+
 </control:Control>

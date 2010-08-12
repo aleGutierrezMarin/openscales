@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	title="Edition du style" layout="horizontal" 
+	title="Edition du style" 
 	xmlns:style="org.openscales.component.control.style.*"
 	chromeColor="#939393" 
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	
 	>
+
 	
 	<mx:Script>
 		<![CDATA[
