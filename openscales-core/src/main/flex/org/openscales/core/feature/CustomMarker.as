@@ -31,8 +31,7 @@ package org.openscales.core.feature
 														 xOffset:Number=0,
 														 yOffset:Number=0):CustomMarker {
 			var ret:CustomMarker = new CustomMarker();
-			var p:Point = new Point(point.x,point.y);
-			ret.geometry = p;
+			ret.geometry = new Point(point.x,point.y);
 			ret.data = data;
 			ret.xOffset = xOffset;
 			ret.yOffset = yOffset;
@@ -41,12 +40,12 @@ package org.openscales.core.feature
 		}
 		
 		public static function createUrlBasedMarker(iconURL:String,
-													point:Point,
+													point:Location,
 													data:Object=null,
 													xOffset:Number=0,
 													yOffset:Number=0):CustomMarker {
 			var ret:CustomMarker = new CustomMarker();
-			ret.geometry = point;
+			ret.geometry = new Point(point.x,point.y);
 			ret.data = data;
 			ret.xOffset = xOffset;
 			ret.yOffset = yOffset;
