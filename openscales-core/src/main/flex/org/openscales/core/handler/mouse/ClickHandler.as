@@ -3,14 +3,16 @@ package org.openscales.core.handler.mouse
 	
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
-	import flash.utils.Timer;
 	import flash.geom.Rectangle;
+	import flash.utils.Timer;
 	
-	import org.openscales.core.Map;
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
+	import org.openscales.core.Map;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.layer.Layer;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * ClickHandler detects a click-actions on the map: simple click, double
@@ -178,7 +180,10 @@ package org.openscales.core.handler.mouse
 			}
 			var bottomLeft:Location = this.map.getLonLatFromMapPx(new Pixel(rect.left, rect.bottom));
 			var topRight:Location = this.map.getLonLatFromMapPx(new Pixel(rect.right, rect.top));
-			return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat);
+			if(this.map.baseLayer)
+				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, map.baseLayer.projection);
+			else
+				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat,Layer.DEFAULT_PROJECTION);
 		}
 		
 		/**

@@ -508,12 +508,16 @@ package org.openscales.core
 			// as the current center
 			if (!this.center && !this.isValidLonLat(lonlat)) {
 				lonlat = this.maxExtent.centerLonLat;
+			} else if(this.center && !lonlat) {
+				lonlat = this.center;
 			}
 			var validLonLat:Boolean = this.isValidLonLat(lonlat);
 			var centerChanged:Boolean = validLonLat && (! lonlat.equals(this.center));
 			
 			if (zoomChanged || centerChanged || !dragging) {
-				
+				if(this._baseLayer!=null && this._baseLayer.projection!=null) {
+					lonlat = lonlat.reprojectTo(this._baseLayer.projection);
+				}
 				if (!dragging) {
 					this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
 				}
