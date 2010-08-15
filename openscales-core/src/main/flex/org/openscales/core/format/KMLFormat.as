@@ -6,11 +6,17 @@ package org.openscales.core.format
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
+	import org.openscales.basetypes.Location;
 	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.Polygon;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -20,14 +26,9 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LineString;
-	import org.openscales.geometry.LinearRing;
-	import org.openscales.geometry.Point;
-	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.ProjProjection;
 	
-
+	
 	/**
 	 * Read KML xml files
 	 * 
@@ -39,9 +40,10 @@ package org.openscales.core.format
 		private namespace google="http://earth.google.com/kml/2.0";
 		private var _proxy:String;
 		private var _externalImages:Object = {};
+		private var _images:Object = {};
 		[Embed(source="/assets/images/marker-blue.png")]
 		private var _defaultImage:Class;
-
+		
 		// features
 		private var iconsfeatures:Vector.<Feature> = new Vector.<Feature>();
 		private var linesfeatures:Vector.<Feature> = new Vector.<Feature>();
@@ -53,7 +55,7 @@ package org.openscales.core.format
 		
 		public function KMLFormat() {
 		}
-
+		
 		public function set proxy(value:String):void {
 			this._proxy = value;
 		}
@@ -67,19 +69,47 @@ package org.openscales.core.format
 			color = color+data.substr(2,2);
 			return parseInt(color,16);
 		}
-
+		
 		/**
 		 * Return the alpha part of a kml:color
 		 */
 		private function KMLColorsToAlpha(data:String):Number {
 			return parseInt(data.substr(0,2),16)/255;
 		}
-
+		
+		private function updateImages(e:Event):void {
+			var _url:String = e.target.loader.name;
+			var _imgs:Array = _images[_url];
+			_images[_url] = null;
+			var _bm:Bitmap = Bitmap(_externalImages[_url].loader.content); 
+			var _bmd:BitmapData = _bm.bitmapData;
+			for each(var _img:Sprite in _imgs) {
+				var _image:Bitmap = new Bitmap(_bmd.clone());
+				_image.x = -_image.width/2;
+				_image.y = -_image.height;
+				_img.addChild(_image);
+			}
+		}
+		
+		private function updateImagesError(e:Event):void {
+			var _url:String = e.target.loader.name;
+			var _imgs:Array = _images[_url];
+			_images[_url] = null;
+			_externalImages[_url] = null;
+			
+			for each(var _img:Sprite in _imgs) {
+				var _marker:Bitmap = new _defaultImage();
+				_marker.y = -_marker.height;
+				_marker.x = -_marker.width/2;
+				_img.addChild(_marker);
+			}
+		}
+		
 		/**
 		 * load styles
 		 */
 		private function loadStyles(styles:XMLList):void {
-
+			
 			use namespace google;
 			use namespace opengis;
 			
@@ -88,21 +118,28 @@ package org.openscales.core.format
 				if(style.@id=="")
 					continue;
 				id = "#"+style.@id.toString();
-
+				
 				var color:Number;
 				var alpha:Number=1;
 				if(style.color != undefined) {
 					color = KMLColorsToRGB(style.color.text());
 					alpha = KMLColorsToAlpha(style.color.text())
 				}
-
+				
 				if(style.IconStyle != undefined) {
 					pointStyles[id] = new Object();
 					pointStyles[id]["icon"] = null
 					if(style.IconStyle.Icon != undefined && style.IconStyle.Icon.href != undefined) {
 						try {
 							var _url:String = style.IconStyle.Icon.href.text();
+							var _req:DataRequest
+							_req = new DataRequest(_url, updateImages, updateImagesError);
+							_req.proxy = this._proxy;
+							//_req.security = this._security; // FixMe: should the security be managed here ?
+							_req.send();
+							_externalImages[_url] = _req;
 							pointStyles[id]["icon"] = _url;
+							_images[_url] = new Array();
 						} catch(e:Error) {
 							pointStyles[id]["icon"] = null;
 						}
@@ -174,7 +211,7 @@ package org.openscales.core.format
 				}
 			}
 		}
-
+		
 		private function _loadPolygon(_Pdata:String):LinearRing {
 			_Pdata = _Pdata.replace("\n"," ");
 			_Pdata = _Pdata.replace(/^\s*(.*?)\s*$/g, "$1");
@@ -202,10 +239,10 @@ package org.openscales.core.format
 		 * load placemarks
 		 */
 		private function loadPlacemarks(placemarks:XMLList):void {
-
+			
 			use namespace google;
 			use namespace opengis;
-
+			
 			for each(var placemark:XML in placemarks) {
 				var coordinates:Array;
 				var point:Point;
@@ -230,7 +267,7 @@ package org.openscales.core.format
 				attributes["popupContentHTML"] = htmlContent;
 				
 				var _id:String;
-
+				
 				// LineStrings
 				if(placemark.LineString != undefined)
 				{
@@ -274,7 +311,7 @@ package org.openscales.core.format
 					}
 					var lines:Vector.<Geometry> = new Vector.<Geometry>(1);
 					lines[0] = this._loadPolygon(placemark.Polygon.outerBoundaryIs.LinearRing.coordinates.text());
-
+					
 					if(placemark.Polygon.innerBoundaryIs != undefined) {
 						try {
 							lines.push(this._loadPolygon(placemark.Polygon.innerBoundaryIs.LinearRing.coordinates.text()));
@@ -293,13 +330,31 @@ package org.openscales.core.format
 					if (this._internalProj != null, this._externalProj != null) {
 						point.transform(this.externalProj, this.internalProj);
 					}
+					var loc:Location;
 					if(placemark.styleUrl != undefined) {
 						_id = placemark.styleUrl.text();
 						if(pointStyles[_id] != undefined) { // style
 							if(pointStyles[_id]["icon"]!=null) { // icon
-								var _icon:String = this._proxy+pointStyles[_id]["icon"];
+								var _icon:String = pointStyles[_id]["icon"];
 								var customMarker:CustomMarker;
-								customMarker = CustomMarker.createUrlBasedMarker(_icon,point,attributes);
+								if(_images[_icon]!=null) { // image not loaded so we will wait for it
+									var _img:Sprite = new Sprite();
+									_images[_icon].push(_img);
+									loc = new Location(point.x,point.y);
+									customMarker = CustomMarker.createDisplayObjectMarker(_img,loc,attributes,0,0);
+								}
+								else if(_externalImages[_icon]!=null) { // image allready loaded, we copy the loader content
+									var Image:Bitmap = new Bitmap(new Bitmap(_externalImages[_icon].loader.content).bitmapData.clone());
+									Image.y = -Image.height;
+									Image.x = -Image.width/2;
+									customMarker = CustomMarker.createDisplayObjectMarker(Image,new Location(point.x,point.y),attributes,0,0);
+								}
+								else { // image failed to load
+									var _marker:Bitmap = new _defaultImage();
+									_marker.y = -_marker.height;
+									_marker.x = -_marker.width/2;
+									customMarker = CustomMarker.createDisplayObjectMarker(_marker,new Location(point.x,point.y),attributes,0,0);
+								}
 								iconsfeatures.push(customMarker);
 							}
 							else { // style without icon
@@ -339,36 +394,36 @@ package org.openscales.core.format
 		 */
 		override public function read(data:Object):Object {
 			var dataXML:XML = data as XML;
-
+			
 			use namespace google;
 			use namespace opengis;
-
+			
 			var styles:XMLList = dataXML..Style;
 			loadStyles(styles.copy());
 			var placemarks:XMLList = dataXML..Placemark;
 			loadPlacemarks(placemarks.copy());
 			
 			var _features:Vector.<Feature> = polygonsfeatures.concat(linesfeatures, iconsfeatures);
-
+			
 			return _features;
 		}
 		
 		public function get internalProj():ProjProjection {
 			return this._internalProj;
 		}
-
+		
 		public function set internalProj(value:ProjProjection):void {
 			this._internalProj = value;
 		}
-
+		
 		public function get externalProj():ProjProjection {
 			return this._externalProj;
 		}
-
+		
 		public function set externalProj(value:ProjProjection):void {
 			this._externalProj = value;
 		}
-
+		
 	}
 }
 
