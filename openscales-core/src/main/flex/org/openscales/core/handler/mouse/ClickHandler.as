@@ -8,7 +8,7 @@ package org.openscales.core.handler.mouse
 	
 	import org.openscales.core.Map;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.handler.Handler;
 	
@@ -136,7 +136,7 @@ package org.openscales.core.handler.mouse
 		 * Map coordinates (in its baselayer's SRS) of the point clicked (at the
 		 * beginning of the drag)
 		 */
-		protected function startCoordinates():LonLat {
+		protected function startCoordinates():Location {
 			return (this.map && this._downPixel) ? this.map.getLonLatFromMapPx(this._downPixel) : null;
 		}
 		
@@ -176,8 +176,8 @@ package org.openscales.core.handler.mouse
 			if ((! rect) || (! this.map)) {
 				return null;
 			}
-			var bottomLeft:LonLat = this.map.getLonLatFromMapPx(new Pixel(rect.left, rect.bottom));
-			var topRight:LonLat = this.map.getLonLatFromMapPx(new Pixel(rect.right, rect.top));
+			var bottomLeft:Location = this.map.getLonLatFromMapPx(new Pixel(rect.left, rect.bottom));
+			var topRight:Location = this.map.getLonLatFromMapPx(new Pixel(rect.right, rect.top));
 			return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat);
 		}
 		

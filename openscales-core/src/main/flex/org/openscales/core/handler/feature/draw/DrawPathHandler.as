@@ -4,7 +4,7 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.LineStringFeature;
@@ -119,7 +119,7 @@ package org.openscales.core.handler.feature.draw
 			
 			//we determine the point where the user clicked
 			var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
-			var lonlat:LonLat = this.map.getLonLatFromLayerPx(pixel);
+			var lonlat:Location = this.map.getLonLatFromLayerPx(pixel);
 			//manage the case where the layer projection is different from the map projection
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line
@@ -169,7 +169,7 @@ package org.openscales.core.handler.feature.draw
 			_drawContainer.graphics.clear();
 			//we update the pixel of the last point which has changed
 			var tempPoint:Point = _lineString.getLastPoint();
-			_startPoint = this.map.getMapPxFromLonLat(new LonLat(tempPoint.x, tempPoint.y));
+			_startPoint = this.map.getMapPxFromLonLat(new Location(tempPoint.x, tempPoint.y));
 		}
 
 		//Getters and Setters		

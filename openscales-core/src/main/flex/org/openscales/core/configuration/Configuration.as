@@ -5,7 +5,7 @@ package org.openscales.core.configuration
       import org.openscales.core.Map;
       import org.openscales.core.Trace;
       import org.openscales.basetypes.Bounds;
-      import org.openscales.basetypes.LonLat;
+      import org.openscales.basetypes.Location;
       import org.openscales.core.basetypes.maps.HashMap;
       import org.openscales.core.control.Control;
       import org.openscales.core.control.LayerSwitcher;
@@ -124,7 +124,7 @@ package org.openscales.core.configuration
                         map.zoom = Number(config.@zoom);
                   }
                   if((config.@lon != "") && (config.@lat != "")){
-                        map.center = new LonLat(Number(config.@lon), Number(config.@lat));
+                        map.center = new Location(Number(config.@lon), Number(config.@lat));
                   }
             }
                         

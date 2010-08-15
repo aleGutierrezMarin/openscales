@@ -6,7 +6,7 @@ package org.openscales.core.handler.feature.draw
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
@@ -133,7 +133,7 @@ package org.openscales.core.handler.feature.draw
 					this._layerToEdit.removeFeature(vectorfeature);
 					this._featureClickHandler.removeControledFeature(vectorfeature);
 		 			if(parentGeometry!=null){
-		 				var lonlat:LonLat=this.map.getLonLatFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
+		 				var lonlat:Location=this.map.getLonLatFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
 		 				var newVertice:Point=new Point(lonlat.lon,lonlat.lat);
 		 				//if it's a real vertice of the feature
 		 				if(vectorfeature!=AbstractEditCollectionHandler._pointUnderTheMouse)
@@ -249,7 +249,7 @@ package org.openscales.core.handler.feature.draw
 					for(var i:int=0;i<_editionFeatureArray.length;i++){
 						var feature:Feature=_editionFeatureArray[i][0] as Feature;
 						if(feature!=null && feature!=AbstractEditCollectionHandler._pointUnderTheMouse &&  vectorfeature==_editionFeatureArray[i][1]){
-							var tmpPx:Pixel=this.map.getLayerPxFromLonLat(new LonLat((feature.geometry as Point).x,(feature.geometry as Point).y));
+							var tmpPx:Pixel=this.map.getLayerPxFromLonLat(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
 							if(Math.abs(tmpPx.x-px.x)<this._ToleranceVirtualReal && Math.abs(tmpPx.y-px.y)<this._ToleranceVirtualReal)
 							{
 								drawing=false;
@@ -259,7 +259,7 @@ package org.openscales.core.handler.feature.draw
 					}
 					if(drawing){
 						layerToEdit.map.buttonMode=true;
-						var lonlat:LonLat=this.map.getLonLatFromLayerPx(px);
+						var lonlat:Location=this.map.getLonLatFromLayerPx(px);
 						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);	
 						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
 							AbstractEditCollectionHandler._pointUnderTheMouse.geometry=PointGeomUnderTheMouse;

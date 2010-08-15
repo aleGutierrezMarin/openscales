@@ -7,7 +7,7 @@
     <classEntry path="org.openscales.basetypes.Size"/>
     <classEntry path="org.openscales.basetypes.Bounds"/>
     <classEntry path="org.openscales.basetypes.Unit"/>
-    <classEntry path="org.openscales.basetypes.LonLat"/>
+    <classEntry path="org.openscales.basetypes.Location"/>
     <classEntry path="org.openscales.geometry.LineString"/>
     <classEntry path="org.openscales.geometry.LinearRing"/>
     <classEntry path="org.openscales.geometry.IGeometry"/>
@@ -23,7 +23,6 @@
     <classEntry path="org.openscales.geometry.ContainsPointTest"/>
     <classEntry path="org.openscales.geometry.OperationGeometryTest"/>
     <classEntry path="org.openscales.IProjectable"/>
-    <classEntry path="org.openscales.basetypes.Location"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

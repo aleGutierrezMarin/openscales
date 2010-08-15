@@ -3,7 +3,7 @@ package org.openscales.basetypes
 	import org.openscales.IProjectable;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
-
+	
 	/**
 	 * This class represents a location defined by:
 	 * a x coordinate
@@ -48,7 +48,7 @@ package org.openscales.basetypes
 		 * 
 		 * @return IProjectable a clone of the current location
 		 */
-		public function clone():IProjectable {
+		public function clone():Location {
 			return new Location(this._x,this._y,this._projection);
 		}
 		
@@ -71,13 +71,31 @@ package org.openscales.basetypes
 		}
 		
 		/**
+		 * getter for lon coordinate of the Location
+		 * 
+		 * @return Number the lon coordinate
+		 */
+		public function get lon():Number {
+			return this._x;
+		}
+		
+		/**
+		 * getter for lat coordinate of the Location
+		 * 
+		 * @return Number the lat coordinate
+		 */
+		public function get lat():Number {
+			return this._y;
+		}
+		
+		/**
 		 * Reproject the current location in another ProjProjection
 		 * 
 		 * @param newProj:ProjProjection the target projection
 		 * 
 		 * @return Location the equivalent Location of this location in the new ProjProjection
 		 */
-		public function reprojectTo(newProj:ProjProjection):IProjectable {
+		public function reprojectTo(newProj:ProjProjection):Location {
 			if(newProj.srsCode == this._projection.srsCode)
 				return this;
 			

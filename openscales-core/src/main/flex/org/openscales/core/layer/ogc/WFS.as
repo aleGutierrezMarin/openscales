@@ -6,7 +6,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
@@ -121,7 +121,7 @@ package org.openscales.core.layer.ogc
 			if(this.projection.srsCode != this.map.baseLayer.projection.srsCode) {
 					projectedBounds.transform(this.map.baseLayer.projection, this.projection);
 			}
-			var center:LonLat = projectedBounds.centerLonLat;
+			var center:Location = projectedBounds.centerLonLat;
 
 			if (projectedBounds.containsBounds(this.maxExtent)) {
 				projectedBounds = this.maxExtent.clone();

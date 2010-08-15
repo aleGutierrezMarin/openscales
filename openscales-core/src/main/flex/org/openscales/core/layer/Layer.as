@@ -1,12 +1,12 @@
 package org.openscales.core.layer {
 	import flash.display.Sprite;
 	
-	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
+	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.security.ISecurity;
@@ -183,18 +183,18 @@ package org.openscales.core.layer {
 		 * Return a LonLat which is the passed-in map Pixel, translated into
 		 * lon/lat by the layer.
 		 */
-		public function getLonLatFromMapPx(viewPortPx:Pixel):LonLat {
-			var lonlat:LonLat = null;
+		public function getLonLatFromMapPx(viewPortPx:Pixel):Location {
+			var lonlat:Location = null;
 			if (viewPortPx != null) {
 				var size:Size = this.map.size;
-				var center:LonLat = this.map.center;
+				var center:Location = this.map.center;
 				if (center) {
 					var res:Number = this.map.resolution;
 
 					var delta_x:Number = viewPortPx.x - (size.w / 2);
 					var delta_y:Number = viewPortPx.y - (size.h / 2);
 
-					lonlat = new LonLat(center.lon + delta_x * res, center.lat - delta_y * res);
+					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res);
 				}
 			}
 			return lonlat;
@@ -203,7 +203,7 @@ package org.openscales.core.layer {
 		/**
 		 * Return a Pixel which is the passed-in LonLat,translated into map pixels.
 		 */
-		public function getMapPxFromLonLat(lonlat:LonLat):Pixel {
+		public function getMapPxFromLonLat(lonlat:Location):Pixel {
 			var px:Pixel = null;
 			if (lonlat != null) {
 				var resolution:Number = this.map.resolution;

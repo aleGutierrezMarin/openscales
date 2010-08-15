@@ -18,13 +18,13 @@
 	<mx:Script>
 		<![CDATA[
 			import org.openscales.basetypes.Bounds;
-			import org.openscales.basetypes.LonLat;
+			import org.openscales.basetypes.Location;
 			import org.openscales.basetypes.Pixel;
 			import org.openscales.basetypes.Size;
-			import org.openscales.core.events.LayerEvent;
-			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
 			import org.openscales.fx.layer.FxLayer;
 
 			private var _children:Array = [];
@@ -163,11 +163,11 @@
 			 * 
 			 * @param p the pixel on the overview component
 			 */
-			private function pixelToCoordinate(p:Pixel):LonLat {
+			private function pixelToCoordinate(p:Pixel):Location {
 		        var c2p_x:Number = p.x - overview.map.size.w / 2.0;
 		        var c2p_y:Number = p.y - overview.map.size.h / 2.0;
-		        var center:LonLat = overview.map.extent.centerLonLat;
-		        return new LonLat(	center.lon + c2p_x * overview.map.resolution,
+		        var center:Location = overview.map.extent.centerLonLat;
+		        return new Location(center.lon + c2p_x * overview.map.resolution,
 		        					center.lat - c2p_y * overview.map.resolution );
     		}
     		
@@ -230,8 +230,8 @@
 					return;
 				}
 				// Convert the current pixels'boundary in a map extent in the projection of the overview map
-		        var leftBottomCoord:LonLat = pixelToCoordinate(new Pixel(rectRealPxBounds.left, rectRealPxBounds.bottom));
-		        var rightTopCoord:LonLat = pixelToCoordinate(new Pixel(rectRealPxBounds.right, rectRealPxBounds.top));
+		        var leftBottomCoord:Location = pixelToCoordinate(new Pixel(rectRealPxBounds.left, rectRealPxBounds.bottom));
+		        var rightTopCoord:Location = pixelToCoordinate(new Pixel(rectRealPxBounds.right, rectRealPxBounds.top));
 				var mapBounds:Bounds = new Bounds(leftBottomCoord.lon, leftBottomCoord.lat, rightTopCoord.lon, rightTopCoord.lat);
 				// If necessary, convert mapBounds in the projection of the main map	
 				if (map.baseLayer.projection != overview.map.baseLayer.projection) {
@@ -421,10 +421,10 @@
 				} else {
 					Trace.log("Overview - setCenterFromOverview : " + newCenter.toString());
 					// Convert the new pixel center in a location on the overview map in its projection
-			        var newCenterCoord:LonLat = pixelToCoordinate(newCenter);
+			        var newCenterCoord:Location = pixelToCoordinate(newCenter);
 					// If necessary, convert the point in the projection of the main map	
 					if (map.baseLayer.projection != overview.map.baseLayer.projection) {
-						newCenterCoord.transform(overview.map.baseLayer.projection,map.baseLayer.projection);
+						newCenterCoord = newCenterCoord.reprojectTo(map.baseLayer.projection);
 					}
 					// Change the center of the main map, and so, indirectly update the overview.
 	        		map.center = newCenterCoord;

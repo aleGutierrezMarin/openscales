@@ -3,7 +3,7 @@ package org.openscales.core.popup
 	import flash.display.Sprite;
 	
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.feature.Feature;
@@ -26,7 +26,7 @@ package org.openscales.core.popup
 
 		private var _anchor:Sprite = null;
 
-		public function Anchored(lonlat:LonLat = null, background:uint = 0, border:Number = NaN, size:Size = null, contentHTML:String = "", anchor:Sprite = null, closeBox:Boolean = true) {
+		public function Anchored(lonlat:Location = null, background:uint = 0, border:Number = NaN, size:Size = null, contentHTML:String = "", anchor:Sprite = null, closeBox:Boolean = true) {
 			super(lonlat, background, border, size, contentHTML, closeBox);
 
 			this._anchor = anchor;
@@ -44,7 +44,7 @@ package org.openscales.core.popup
 		}
 
 		public function calculateRelativePosition(px:Pixel):String {
-			var lonlat:LonLat = this.map.getLonLatFromLayerPx(px);
+			var lonlat:Location = this.map.getLonLatFromLayerPx(px);
 
 			var extent:Bounds = this.map.extent;
 			var quadrant:String = extent.determineQuadrant(lonlat);

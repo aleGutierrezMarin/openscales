@@ -11,7 +11,7 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import org.openscales.basetypes.LonLat;
+			import org.openscales.basetypes.Location;
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.proj4as.ProjProjection;
@@ -49,10 +49,10 @@
 					var latitude:Number = parseFloat(event.result.ResultSet.Result.Latitude);
 					var longitude:Number = parseFloat(event.result.ResultSet.Result.Longitude);
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
-						var pos:LonLat = new LonLat(longitude,latitude);
+						var pos:Location = new Location(longitude,latitude);
 						Trace.log("YahooSearch center at "+pos.toShortString());
 						if (map.baseLayer.projection.srsCode != "") {
-							pos.transform(new ProjProjection("EPSG:4326"), map.baseLayer.projection);
+							pos = pos.reprojectTo(map.baseLayer.projection);
 						}
 						this.map.center = pos;
 					} 
@@ -69,10 +69,10 @@
 					var latitude:Number = parseFloat(event.target.data.Latitude);
 					var longitude:Number = parseFloat(event.target.data.Longitude);
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
-						var pos:LonLat = new LonLat(longitude,latitude);
+						var pos:Location = new Location(longitude,latitude);
 						Trace.log("YahooSearch center at "+pos.toShortString());
 						if (map.baseLayer.projection.srsCode != "") {
-							pos.transform(new ProjProjection("EPSG:4326"), map.baseLayer.projection);
+							pos = pos.reprojectTo(map.baseLayer.projection);
 						}
 						this.map.center = pos;
 					}

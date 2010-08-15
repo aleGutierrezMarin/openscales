@@ -1,7 +1,7 @@
 package org.openscales.geometry
 {
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
 
 
@@ -107,7 +107,7 @@ package org.openscales.geometry
 		 * @param toleranceLon The longitude tolerance
 		 * @param toleranceLat The latitude tolerance
 		 */
-		public function atPoint(lonlat:LonLat, toleranceLon:Number, toleranceLat:Number):Boolean {
+		public function atPoint(lonlat:Location, toleranceLon:Number, toleranceLat:Number):Boolean {
 			var atPoint:Boolean = false;
 			var bounds:Bounds = this.bounds;
 			if ((bounds != null) && (lonlat != null)) {

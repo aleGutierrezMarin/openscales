@@ -4,7 +4,7 @@ package org.openscales.core.control
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.Map;
@@ -78,7 +78,7 @@ package org.openscales.core.control
 		 * @param evt
 		 */
 		public function redraw(evt:MouseEvent = null):void {
-			var lonLat:LonLat;
+			var lonLat:Location;
 
 			if (evt != null) {
 				if (this.lastXy == null ||
@@ -93,11 +93,11 @@ package org.openscales.core.control
 			}
 
 			if (lonLat == null) {
-				lonLat = new LonLat(0, 0);
+				lonLat = new Location(0, 0);
 			}
 
 			if (this._displayProjection && this.map.baseLayer) {
-				lonLat.transform(this.map.baseLayer.projection, this._displayProjection);
+				lonLat = lonLat.reprojectTo(this._displayProjection);
 			}    
 
 			var digits:int = int(this.numdigits);

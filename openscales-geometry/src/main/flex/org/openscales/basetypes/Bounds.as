@@ -141,8 +141,9 @@ package org.openscales.basetypes
 			return new Pixel((this.left + this.right) / 2, (this.bottom + this.top) / 2);
 		}
 
-		public function get centerLonLat():LonLat {
-			return new LonLat((this.left + this.right) / 2, (this.bottom + this.top) / 2);
+		
+		public function get centerLonLat():Location {
+			return new Location((this.left + this.right) / 2, (this.bottom + this.top) / 2);
 		}
 
 		public function add(x:Number, y:Number):Bounds {
@@ -154,7 +155,7 @@ package org.openscales.basetypes
 		 *
 		 * @param lonlat The LonLat which will extend the bounds.
 		 */
-		public function extendFromLonLat(lonlat:LonLat):void {
+		public function extendFromLonLat(lonlat:Location):void {
 			this.extendFromBounds(new Bounds(lonlat.lon, lonlat.lat, lonlat.lon, lonlat.lat));
 		}
 
@@ -177,7 +178,7 @@ package org.openscales.basetypes
 		 * @param inclusive It will include the border's bounds ?
 		 * @return Lonlat is contained or not by the bounds
 		 */
-		public function containsLonLat(ll:LonLat, inclusive:Boolean = true):Boolean {
+		public function containsLonLat(ll:Location, inclusive:Boolean = true):Boolean {
 			return this.contains(ll.lon, ll.lat, inclusive);
 		}
 
@@ -279,9 +280,9 @@ package org.openscales.basetypes
 		 *
 		 * @return A string describing the quadrant (e.g. "bl" for Bottom-Left, "tr" for Top-Right etc.)
 		 */
-		public function determineQuadrant(lonlat:LonLat):String {
+		public function determineQuadrant(lonlat:Location):String {
 			var quadrant:String = "";
-			var center:LonLat = this.centerLonLat;
+			var center:Location = this.centerLonLat;
 
 			/* quadrant += (lonlat.lat < center.lat) ? "b" : "t";
 			 quadrant += (lonlat.lon < center.lon) ? "l" : "r"; */
