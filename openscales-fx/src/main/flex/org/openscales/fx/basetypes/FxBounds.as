@@ -3,6 +3,7 @@ package org.openscales.fx.basetypes
 	import mx.core.UIComponent;
 	
 	import org.openscales.basetypes.Bounds;
+	import org.openscales.proj4as.ProjProjection;
 
 	public class FxBounds extends UIComponent
 	{
@@ -32,6 +33,10 @@ package org.openscales.fx.basetypes
 		public function set north(value:Number):void {
 			if(this.bounds != null)
 				this.bounds.top = value;
+		}
+		
+		public function set projection(proj:String):void {
+			this._bounds.projection = ProjProjection.getProjProjection(proj);
 		}
 
 		public function get bounds():Bounds {
