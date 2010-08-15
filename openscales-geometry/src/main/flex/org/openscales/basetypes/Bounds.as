@@ -52,7 +52,7 @@ package org.openscales.basetypes
 		}
 
 		public function clone():Bounds {
-			return new Bounds(this.left, this.bottom, this.right, this.top);
+			return new Bounds(this._left, this._bottom, this._right, this._top, this._proj);
 		}
 
 		/**
