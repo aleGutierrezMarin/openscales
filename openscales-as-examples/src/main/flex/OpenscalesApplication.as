@@ -1,10 +1,10 @@
 package {
 	import flash.display.Sprite;
 	
-	import org.openscales.core.Map;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Size;
+	import org.openscales.core.Map;
 	import org.openscales.core.control.LayerSwitcher;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoomBar;
@@ -29,7 +29,7 @@ package {
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.proxy = "http://openscales.org/proxy.php?url=";
 			mapnik.isBaseLayer = true;
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);		
+			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);		
 			_map.addLayer(mapnik);
 
 			var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
@@ -61,7 +61,7 @@ package {
 			_map.addHandler(new DragHandler());
 
 			// Set the map center
-			_map.center=new LonLat(538850.47459,5740916.1243);
+			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);
 			_map.zoom=5;
 						
 			this.addChild(_map);
