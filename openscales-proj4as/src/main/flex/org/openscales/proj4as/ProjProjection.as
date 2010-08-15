@@ -67,8 +67,25 @@ package org.openscales.proj4as {
 				'CRS:84': "+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 			}
 			
+			static private const projProjections:Object={}
 			
 			protected var proj:IProjection;
+			
+			/**
+			 * return the ProjProjection for a specific srsCode
+			 * 
+			 * @param srsCode:String the srsCode
+			 * 
+			 * @return ProjProjection the ProjProjection
+			 */
+			public static function getProjProjection(srsCode:String):ProjProjection {
+				if(ProjProjection.projProjections[srsCode])
+					return ProjProjection.projProjections[srsCode];
+				
+				ProjProjection.projProjections[srsCode] = new ProjProjection(srsCode);
+				
+				return ProjProjection.projProjections[srsCode];
+			}
 			
 			public function get srsCode():String {
 				return projParams.srsCode;
