@@ -40,6 +40,21 @@ package org.openscales.core.feature
 			return ret;
 		}
 		
+		public static function createUrlBasedMarker(iconURL:String,
+													point:Point,
+													data:Object=null,
+													xOffset:Number=0,
+													yOffset:Number=0):CustomMarker {
+			var ret:CustomMarker = new CustomMarker();
+			ret.geometry = point;
+			ret.data = data;
+			ret.xOffset = xOffset;
+			ret.yOffset = yOffset;
+			ret.loadUrl(iconURL);
+			return ret;
+		}
+		
+		
 		/**
 		 * To obtain feature clone
 		 * */
@@ -53,20 +68,6 @@ package org.openscales.core.feature
 			bitmap.bitmapData = new BitmapData(this._clip.width, this._clip.height, false, 0x000000);
 			bitmap.bitmapData.draw(this._clip, null, null, null, null);
 			ret.loadDisplayObject(bitmap);
-			return ret;
-		}
-		
-		public static function createUrlBasedMarker(iconURL:String,
-													point:Point,
-													data:Object=null,
-													xOffset:Number=0,
-													yOffset:Number=0):CustomMarker {
-			var ret:CustomMarker = new CustomMarker();
-			ret.geometry = point;
-			ret.data = data;
-			ret.xOffset = xOffset;
-			ret.yOffset = yOffset;
-			ret.loadUrl(iconURL);
 			return ret;
 		}
 		

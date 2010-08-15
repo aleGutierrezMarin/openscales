@@ -28,6 +28,10 @@ package org.openscales.core.feature {
 			super(geom, data, style, false);
 		}
 
+		public static function createPointFeature(loc:Location, data:Object=null, style:Style=null ):PointFeature {
+			return new PointFeature(new Point(loc.lon,loc.lat), data, style);
+		}
+		
 		override public function get lonlat():Location {
 			var value:Location = null;
 			if (this.point != null) {
