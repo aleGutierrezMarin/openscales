@@ -1,7 +1,9 @@
 package org.openscales.basetypes
 {
 	import org.openscales.IProjectable;
+	import org.openscales.geometry.Point;
 	import org.openscales.proj4as.Proj4as;
+	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -98,11 +100,10 @@ package org.openscales.basetypes
 		public function reprojectTo(newProj:ProjProjection):Location {
 			if(newProj.srsCode == this._projection.srsCode)
 				return this;
+			var p:ProjPoint = new ProjPoint(this._x, this._y);
+			Proj4as.transform(this._projection, newProj, p);
 			
-			var x:Number = Proj4as.unit_transform(this._projection,newProj, this._x);
-			var y:Number = Proj4as.unit_transform(this._projection,newProj, this._y);
-			
-			return new Location(x,y,newProj);
+			return new Location(p.x,p.y,newProj);
 		}
 		
 		/**

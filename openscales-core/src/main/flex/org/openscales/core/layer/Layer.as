@@ -24,7 +24,7 @@ package org.openscales.core.layer {
 		public static const DEFAULT_SRS_CODE:String = "EPSG:4326";
 
 		public static function get DEFAULT_PROJECTION():ProjProjection {
-			return new ProjProjection(DEFAULT_SRS_CODE);
+			return ProjProjection.getProjProjection(DEFAULT_SRS_CODE);
 		}
 
 		public static function get DEFAULT_MAXEXTENT():Bounds {
@@ -194,7 +194,7 @@ package org.openscales.core.layer {
 					var delta_x:Number = viewPortPx.x - (size.w / 2);
 					var delta_y:Number = viewPortPx.y - (size.h / 2);
 
-					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res);
+					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res, this._projection);
 				}
 			}
 			return lonlat;

@@ -572,7 +572,8 @@ package org.openscales.core.layer
 			return new Bounds(tileLeft,
 							  tileBottom,
 							  tileLeft + tileMapWidth,
-							  tileBottom + tileMapHeight);
+							  tileBottom + tileMapHeight,
+							  this.projection);
 		}
 		
 		private function tileLoadHandler(event:TileEvent):void	{

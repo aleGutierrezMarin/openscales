@@ -257,7 +257,7 @@ package org.openscales.fx
 				Trace.error("Map.centerLonLat: invalid number of components");
 				return ;
 			}
-			_centerLonLat = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]));
+			_centerLonLat = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]),Layer.DEFAULT_PROJECTION);
 		}
 		
 		override public function set width(value:Number):void {
@@ -281,7 +281,7 @@ package org.openscales.fx
 		}
 		
 		public function set maxExtent(value:String):void {
-			this._maxExtent = Bounds.getBoundsFromString(value);
+			this._maxExtent = Bounds.getBoundsFromString(value,Layer.DEFAULT_PROJECTION);
 		}
 		
 	}
