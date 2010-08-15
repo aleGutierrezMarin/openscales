@@ -5,23 +5,24 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import org.openscales.proj4as.ProjProjection;
-			import org.openscales.core.style.marker.WellKnownMarker;
-			import org.openscales.core.style.fill.SolidFill;
-			import org.openscales.core.style.symbolizer.PointSymbolizer;
-			import org.openscales.core.style.stroke.Stroke;
-			import org.openscales.core.style.fill.SolidFill;
-			import org.openscales.core.style.Style;
-			import org.openscales.core.layer.params.ogc.WFSParams;
-			import org.openscales.core.events.LayerEvent;
-			import org.openscales.core.layer.ogc.WFS;
-			import mx.controls.Text;
+			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
-			import org.openscales.core.basetypes.maps.HashMap;
-			import org.openscales.core.layer.Layer;
-			import org.openscales.core.layer.capabilities.GetCapabilities;
+			import mx.controls.Text;
+			
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.layer.Layer;
+			import org.openscales.core.layer.capabilities.GetCapabilities;
+			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.core.layer.params.ogc.WFSParams;
+			import org.openscales.core.style.Style;
+			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.marker.WellKnownMarker;
+			import org.openscales.core.style.stroke.Stroke;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
+			import org.openscales.proj4as.ProjProjection;
 			
 			/**
 			 * Array used as data provider for the list.
@@ -119,7 +120,8 @@
 			public function capabilitiesGetter(getCap:GetCapabilities):void {
 				this.capabilities = getCap.getAllCapabilities();
 				lblFeatures.text = capabilities.size() + " layers available";
-				this.list.dataProvider = capabilities.getKeys().sort();	
+				
+				this.list.dataProvider = new ArrayCollection(capabilities.getKeys().sort());	
 			}
 			
 			override public function set map(value:Map):void{
