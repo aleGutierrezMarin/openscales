@@ -390,7 +390,7 @@ package org.openscales.core.layer
 				//  grid, get a reference to the tile.
 				var tile:ImageTile = null;
 				if ((testRow < this._grid.length) && (testRow >= 0) &&
-					(testCell < this._grid[0].length) && (testCell >= 0)) {
+					(testCell < this._grid[testRow].length) && (testCell >= 0)) {
 					tile = this._grid[testRow][testCell];
 				}
 
