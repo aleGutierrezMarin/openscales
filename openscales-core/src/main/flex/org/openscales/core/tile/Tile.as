@@ -1,9 +1,9 @@
 package org.openscales.core.tile
 {
 	import flash.display.Sprite;
-
+	
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.events.TileEvent;
@@ -109,16 +109,16 @@ package org.openscales.core.tile
 		 * @return bounds
 		 */
 		public function getBoundsFromBaseLayer(position:Pixel):Bounds {
-			var topLeft:LonLat = this.layer.map.getLonLatFromLayerPx(position); 
+			var topLeft:Location = this.layer.map.getLonLatFromLayerPx(position); 
 			var bottomRightPx:Pixel = position.clone();
 			bottomRightPx.x += this.size.w;
 			bottomRightPx.y += this.size.h;
-			var bottomRight:LonLat = this.layer.map.getLonLatFromLayerPx(bottomRightPx); 
+			var bottomRight:Location = this.layer.map.getLonLatFromLayerPx(bottomRightPx); 
 			if (topLeft.lon > bottomRight.lon) {
 				if (topLeft.lon < 0) {
-					topLeft.lon = -180 - (topLeft.lon+180);
+					topLeft = new Location(-180 - (topLeft.lon+180), topLeft.x,topLeft.projection);
 				} else {
-					bottomRight.lon = 180+bottomRight.lon+180;
+					bottomRight = new Location(180+bottomRight.lon+180, bottomRight.y, bottomRight.projection);
 				}        
 			}
 			bounds = new Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);  

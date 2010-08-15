@@ -5,9 +5,5 @@ package org.openscales
 	public interface IProjectable
 	{
 		function get projection():ProjProjection;
-		
-		function reprojectTo(newproj:ProjProjection):IProjectable;
-		
-		function clone():IProjectable;
 	}
 }

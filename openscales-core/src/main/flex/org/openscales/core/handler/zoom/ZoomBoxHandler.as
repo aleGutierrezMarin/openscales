@@ -5,7 +5,7 @@ package org.openscales.core.handler.zoom
 	
 	import org.openscales.core.Map;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.events.ZoomBoxEvent;
 	import org.openscales.core.handler.Handler;
@@ -17,7 +17,7 @@ package org.openscales.core.handler.zoom
 		/**
          * Coordinates of the top left corner (of the drawing rectangle)
          */
-         private var _startCoordinates:LonLat = null;
+         private var _startCoordinates:Location = null;
 	            
 	    /**
 	     * Color of the rectangle
@@ -63,7 +63,7 @@ package org.openscales.core.handler.zoom
       		this.map.removeEventListener(MouseEvent.MOUSE_DOWN,startBox);
             this.map.removeEventListener(MouseEvent.MOUSE_UP,endBox);
       		_drawContainer.graphics.clear();
-      		var endCoordinates:LonLat = this.map.getLonLatFromMapPx(new Pixel(map.mouseX, map.mouseY));
+      		var endCoordinates:Location = this.map.getLonLatFromMapPx(new Pixel(map.mouseX, map.mouseY));
            	if(_startCoordinates != null) 
            	if(_startCoordinates.equals(endCoordinates)){
            		this.map.setCenter(endCoordinates);

@@ -6,7 +6,7 @@ package org.openscales.geometry
 	
 	import org.flexunit.Assert;
 	import org.openscales.core.Trace;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.geometry.Point;
 	
@@ -49,9 +49,9 @@ package org.openscales.geometry
 		  Trace.debug("creation of 1000000 Pixel  " + (endTime.getTime() - startTime.getTime()).toString() + " millisecondsand size : " + getSize(arraypointpixel));
 		  arraypointpixel = null;
 		  startTime = new Date();
-		  var arraypointlonlat:Vector.<LonLat> = new Vector.<LonLat>(nbVector3d);
+		  var arraypointlonlat:Vector.<Location> = new Vector.<Location>(nbVector3d);
 		  for(i=0;i <nbVector3d;i++){
-			  arraypointlonlat[i]= new LonLat(18899898,89894598);
+			  arraypointlonlat[i]= new Location(18899898,89894598);
 		  }
 		  endTime = new Date()
 		  Trace.debug("creation of 1000000 lonlat  " + (endTime.getTime() - startTime.getTime()).toString() + " milliseconds and size : " + getSize(arraypointlonlat));
@@ -118,7 +118,7 @@ package org.openscales.geometry
 			
 			//size of object
 			Trace.debug("---------------------------size of object---------------------------");
-			var lonlat:LonLat = new LonLat( Number.MAX_VALUE, Number.MAX_VALUE); 
+			var lonlat:Location = new Location( Number.MAX_VALUE, Number.MAX_VALUE); 
 			Trace.debug(" lonlat size : " + getSize(lonlat)); 
 			var pixel:Pixel = new Pixel( Number.MAX_VALUE, Number.MAX_VALUE); 
 			Trace.debug(" Pixel size : " + getSize(pixel)); 

@@ -1,7 +1,7 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
 	
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.marker.WellKnownMarker;
@@ -28,10 +28,10 @@ package org.openscales.core.feature {
 			super(geom, data, style, false);
 		}
 
-		override public function get lonlat():LonLat {
-			var value:LonLat = null;
+		override public function get lonlat():Location {
+			var value:Location = null;
 			if (this.point != null) {
-				value = new LonLat(this.point.x, this.point.y);
+				value = new Location(this.point.x, this.point.y);
 			}
 			return value;
 		}
@@ -144,11 +144,11 @@ package org.openscales.core.feature {
 				var pointA:Point = (arrayResult[i][0] as LineString).componentByIndex(0) as Point;
 				var pointB:Point = (arrayResult[i][0] as LineString).componentByIndex(1) as Point;
 
-				var pointPx:Pixel = this.layer.map.getLayerPxFromLonLat(new LonLat(point.x, point.y));
+				var pointPx:Pixel = this.layer.map.getLayerPxFromLonLat(new Location(point.x, point.y));
 
-				var pointPxA:Pixel = this.layer.map.getLayerPxFromLonLat(new LonLat(pointA.x, pointA.y));
+				var pointPxA:Pixel = this.layer.map.getLayerPxFromLonLat(new Location(pointA.x, pointA.y));
 
-				var pointPxB:Pixel = this.layer.map.getLayerPxFromLonLat(new LonLat(pointB.x, pointB.y));
+				var pointPxB:Pixel = this.layer.map.getLayerPxFromLonLat(new Location(pointB.x, pointB.y));
 
 				pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
 				pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
