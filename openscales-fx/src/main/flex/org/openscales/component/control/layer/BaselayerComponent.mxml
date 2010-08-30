@@ -7,7 +7,6 @@
 		import mx.events.SliderEvent;
 		
 		import org.openscales.core.Map;
-		import org.openscales.core.basetypes.DraggableSprite;
 		import org.openscales.core.events.LayerEvent;
 		import org.openscales.core.layer.Layer;
 		
