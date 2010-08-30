@@ -247,7 +247,7 @@ package {
 								4.89399,
 								45.76610);
 			arrayVertices.push(new LinearRing(arrayComponents));
-			arrayComponents = new Vector.<Number>(,
+			arrayComponents = new Vector.<Number>();
 			arrayComponents.push(4.830276489177206,
 								45.74451732248572,
 								4.823410034100311,
