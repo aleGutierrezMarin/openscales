@@ -9,7 +9,7 @@ package org.openscales.core.layer
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.request.DataRequest;
@@ -72,7 +72,7 @@ package org.openscales.core.layer
 				var image:DisplayObject = this.getChildAt(0);
 				image.width = this.maxExtent.width/this.map.resolution;
 				image.height = this.maxExtent.height/this.map.resolution;
-				var ul:LonLat = new LonLat(this.maxExtent.left, this.maxExtent.top);
+				var ul:Location = new Location(this.maxExtent.left, this.maxExtent.top);
 				var ulPx:Pixel = this.map.getLayerPxFromLonLat(ul);
 				image.x = ulPx.x;
 				image.y = ulPx.y;

@@ -1,10 +1,10 @@
 package org.openscales.core.layer
 {
-	import org.openscales.core.Map;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
+	import org.openscales.core.Map;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.core.tile.Tile;
 
@@ -19,7 +19,7 @@ package org.openscales.core.layer
 	{
 		private var _serviceVersion:String = "1.0.0";
 
-		private var _tileOrigin:LonLat = null;
+		private var _tileOrigin:Location = null;
 		private var _format:String = "png";
 		
 		/**
@@ -37,7 +37,7 @@ package org.openscales.core.layer
 		override public function getURL(bounds:Bounds):String {
 			var res:Number = this.map.resolution;
 			if(this._tileOrigin==null) {
-				this._tileOrigin = new LonLat(this.maxExtent.left,this.maxExtent.bottom);
+				this._tileOrigin = new Location(this.maxExtent.left,this.maxExtent.bottom);
 			}
 			
 			var x:Number = Math.round((bounds.left - this._tileOrigin.lon) / (res * this.tileWidth));
@@ -56,7 +56,7 @@ package org.openscales.core.layer
 		override public function set map(map:Map):void {
 			super.map = map;
 			if (! this._tileOrigin) {
-				this._tileOrigin = new LonLat(this.map.maxExtent.left, this.map.maxExtent.bottom);
+				this._tileOrigin = new Location(this.map.maxExtent.left, this.map.maxExtent.bottom);
 			}
 		}
 
@@ -85,10 +85,10 @@ package org.openscales.core.layer
 		/**
 		 * setter and getter of the TMS grid origin
 		 */
-		public function set origin(value:LonLat):void {
+		public function set origin(value:Location):void {
 			this._tileOrigin = value;
 		}
-		public function get origin():LonLat {
+		public function get origin():Location {
 			return this._tileOrigin.clone();
 		}
 	}

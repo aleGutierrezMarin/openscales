@@ -154,10 +154,6 @@
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
-    <classEntry path="org.openscales.core.control.LayerManager"/>
-    <classEntry path="org.openscales.core.control.ui.Radio"/>
-    <classEntry path="org.openscales.core.control.ui.CheckBox2"/>
-    <classEntry path="org.openscales.core.feature.CustomMarker"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

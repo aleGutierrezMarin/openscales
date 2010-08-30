@@ -7,10 +7,10 @@ package org.openscales.core.popup
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	
-	import org.openscales.core.Map;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
+	import org.openscales.core.Map;
 	import org.openscales.core.control.ui.Button;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
@@ -27,7 +27,7 @@ package org.openscales.core.popup
 		public static var BACKGROUND:uint = 0xFFFFFF;
 		public static var BORDER:Number = 2;
 
-		private var _lonlat:LonLat = null;
+		private var _lonlat:Location = null;
 		private var _size:Size = null;
 		private var _background:uint;
 		private var _border:Number;
@@ -40,7 +40,7 @@ package org.openscales.core.popup
 		[Embed(source="/assets/images/close.gif")]
 		private var _closeImg:Class;
 
-		public function Popup(lonlat:LonLat = null, background:uint = 0, border:Number = NaN, size:Size = null, htmlText:String = "", closeBox:Boolean = true) {
+		public function Popup(lonlat:Location = null, background:uint = 0, border:Number = NaN, size:Size = null, htmlText:String = "", closeBox:Boolean = true) {
 
 			this.lonlat = lonlat;
 			this.htmlText = htmlText;
@@ -206,10 +206,10 @@ package org.openscales.core.popup
 			this.draw();
 		}
 
-		public function get lonlat():LonLat {
+		public function get lonlat():Location {
 			return this._lonlat;
 		}
-		public function set lonlat(value:LonLat):void {
+		public function set lonlat(value:Location):void {
 			this._lonlat = value;
 		}
 

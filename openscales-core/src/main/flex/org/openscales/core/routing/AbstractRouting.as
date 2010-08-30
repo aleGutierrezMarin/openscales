@@ -1,7 +1,7 @@
 package org.openscales.core.routing
 {
 	import org.openscales.core.Map;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Marker;
@@ -164,7 +164,7 @@ package org.openscales.core.routing
 		private function addPoint(px:Pixel):void{
 			//we determine the point where the user clicked
 			if(_resultsLayer!=null){
-				var lonlat:LonLat = this.map.getLonLatFromLayerPx(px);
+				var lonlat:Location = this.map.getLonLatFromLayerPx(px);
 				var featureAdded:Marker=new Marker(new Point(lonlat.lon,lonlat.lat));
 				featureAdded.isEditable=true;
 				if(!_startPoint || _forceStartPointDrawing)
@@ -186,7 +186,7 @@ package org.openscales.core.routing
 		 * @param px: The points coordinates
 		 * */
 		private function addfinalPoint(px:Pixel):void{
-			var lonlat:LonLat = this.map.getLonLatFromLayerPx(px);
+			var lonlat:Location = this.map.getLonLatFromLayerPx(px);
 			if(!_endPoint)
 			{
 				_endPoint=new Marker(new Point(lonlat.lon,lonlat.lat));

@@ -4,7 +4,7 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.events.DrawingEvent;
 	import org.openscales.core.feature.Feature;
@@ -284,7 +284,7 @@ package org.openscales.core.handler.feature.draw
 							pathHandler.lastPoint = (drawLayer.features[last] as LineStringFeature).lineString.getLastPoint();
 
 							//update the starting point of the temporary line
-							var pix:Pixel = pathHandler.map.getMapPxFromLonLat(new LonLat(pathHandler.lastPoint.x, pathHandler.lastPoint.y));
+							var pix:Pixel = pathHandler.map.getMapPxFromLonLat(new Location(pathHandler.lastPoint.x, pathHandler.lastPoint.y));
 							pathHandler.startPoint = pix;
 						} else {
 							drawLayer.removeFeature(drawLayer.features[last]);

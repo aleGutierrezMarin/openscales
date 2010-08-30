@@ -9,7 +9,7 @@ package org.openscales.core.cursor
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.core.control.MousePosition;
 	
 	/**
@@ -66,7 +66,7 @@ package org.openscales.core.cursor
 			map = null; // FixMe: the display of the coordinates is limited to 3 digits currently :-(
 			if (map) {
 				// Display the position in the map's coordinate system
-				var lonLat:LonLat = map.center;
+				var lonLat:Location = map.center;
 				var mousePosition:MousePosition = null;
 				j = map.controls.length;
 				for(i=0; i<j; i++) {
@@ -78,7 +78,7 @@ package org.openscales.core.cursor
 				if (mousePosition) {
 					mapCoordinatesNumDigits = mousePosition.numdigits;
 					if (mousePosition.displayProjection.srsCode != map.baseLayer.projection.srsCode) {
-						lonLat.transform(map.baseLayer.projection, mousePosition.displayProjection);
+						lonLat = lonLat.reprojectTo(mousePosition.displayProjection);
 					}
 				}
 				xValue.text = lonLat.lon.toFixed(mapCoordinatesNumDigits);

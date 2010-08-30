@@ -2,14 +2,14 @@ package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
 	
-	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Bounds;
+	import org.openscales.basetypes.Location;
+	import org.openscales.basetypes.Pixel;
+	import org.openscales.basetypes.Size;
+	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.LinkedList.ILinkedListNode;
 	import org.openscales.core.basetypes.LinkedList.LinkedList;
 	import org.openscales.core.basetypes.LinkedList.LinkedListBitmapNode;
-	import org.openscales.basetypes.LonLat;
-	import org.openscales.basetypes.Pixel;
-	import org.openscales.basetypes.Size;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.TileEvent;
@@ -228,14 +228,14 @@ package org.openscales.core.layer
 		 * @param bounds
 		 */
 		public function initSingleTile(bounds:Bounds):void {
-			var center:LonLat = bounds.centerLonLat;
+			var center:Location = bounds.centerLonLat;
 			var tileWidth:Number = bounds.width;
 			var tileHeight:Number = bounds.height;
 			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
 												center.lat - (tileHeight/2),
 												center.lon + (tileWidth/2),
 												center.lat + (tileHeight/2));
-			var ul:LonLat = new LonLat(tileBounds.left, tileBounds.top);
+			var ul:Location = new Location(tileBounds.left, tileBounds.top);
 			var px:Pixel = this.map.getLayerPxFromLonLat(ul);
 
 			if(this._grid==null) {
@@ -390,7 +390,7 @@ package org.openscales.core.layer
 				//  grid, get a reference to the tile.
 				var tile:ImageTile = null;
 				if ((testRow < this._grid.length) && (testRow >= 0) &&
-					(testCell < this._grid[0].length) && (testCell >= 0)) {
+					(testCell < this._grid[testRow].length) && (testCell >= 0)) {
 					tile = this._grid[testRow][testCell];
 				}
 
@@ -566,13 +566,14 @@ package org.openscales.core.layer
 			var resolution:Number = this.map.resolution;
 			var tileMapWidth:Number = resolution * this.tileWidth;
 			var tileMapHeight:Number = resolution * this.tileHeight;
-			var mapPoint:LonLat = this.getLonLatFromMapPx(viewPortPx);
+			var mapPoint:Location = this.getLonLatFromMapPx(viewPortPx);
 			var tileLeft:Number = maxExtent.left + (tileMapWidth * Math.floor((mapPoint.lon - maxExtent.left) / tileMapWidth));
 			var tileBottom:Number = maxExtent.bottom + (tileMapHeight * Math.floor((mapPoint.lat - maxExtent.bottom) / tileMapHeight));
 			return new Bounds(tileLeft,
 							  tileBottom,
 							  tileLeft + tileMapWidth,
-							  tileBottom + tileMapHeight);
+							  tileBottom + tileMapHeight,
+							  this.projection);
 		}
 		
 		private function tileLoadHandler(event:TileEvent):void	{

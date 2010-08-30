@@ -2,7 +2,7 @@ package org.openscales.core
 {
 	import org.flexunit.Assert;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Size;
 	
 	public class MapTest
@@ -55,7 +55,7 @@ package org.openscales.core
 		[Test]
 		public function testCenter( ) : void {
 			var map:Map = new Map();
-			map.center = new LonLat(1,2);
+			map.center = new Location(1,2);
 			Assert.assertEquals(1, map.center.lon);
 			Assert.assertEquals(2, map.center.lat);
 		}

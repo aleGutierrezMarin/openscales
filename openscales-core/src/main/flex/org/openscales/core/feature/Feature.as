@@ -6,7 +6,7 @@ package org.openscales.core.feature {
 	import org.openscales.core.Trace;
 	import org.openscales.core.Util;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.geometry.Geometry;
@@ -62,7 +62,7 @@ package org.openscales.core.feature {
 		 * may be override in inherited classes to use other attributes to determine
 		 * the position (for exemple the geometry)
 		 */
-		private var _lonlat:LonLat = null;
+		private var _lonlat:Location = null;
 
 		/**
 		 * Is this feature selected ?
@@ -228,8 +228,8 @@ package org.openscales.core.feature {
 			}
 		}
 
-		public function get lonlat():LonLat {
-			var value:LonLat = null;
+		public function get lonlat():Location {
+			var value:Location = null;
 			if (this._geometry != null) {
 				value = this._geometry.bounds.centerLonLat;   
 			}
@@ -293,7 +293,7 @@ package org.openscales.core.feature {
 		 * @param toleranceLon The longitude tolerance
 		 * @param toleranceLat The latitude tolerance
 		 */
-		public function atPoint(lonlat:LonLat, toleranceLon:Number, toleranceLat:Number):Boolean {
+		public function atPoint(lonlat:Location, toleranceLon:Number, toleranceLat:Number):Boolean {
 			var atPoint:Boolean = false;
 			if (this.geometry) {
 				atPoint = this._geometry.atPoint(lonlat, toleranceLon, toleranceLat);

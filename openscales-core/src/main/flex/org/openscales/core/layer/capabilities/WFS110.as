@@ -1,6 +1,7 @@
 package org.openscales.core.layer.capabilities
 {
 	import org.openscales.basetypes.Bounds;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * WFS 1.1.0 capabilities parser
@@ -43,6 +44,7 @@ package org.openscales.core.layer.capabilities
 			var featureCapabilities:HashMap = new HashMap();
 			var value:String = null;
 			var name:String = null;
+			var srsCode:String = null;
 			var latLon:Bounds = null;
 			var lowerCorner:String; var upperCorner:String; var bounds:String;
 
@@ -57,8 +59,8 @@ package org.openscales.core.layer.capabilities
 				value = feature.Title;
 				featureCapabilities.put("Title", value);
 
-				value = feature.DefaultSRS;
-				value = value.substr(value.indexOf("EPSG"));
+				srsCode = feature.DefaultSRS;
+				value = srsCode.substr(srsCode.indexOf("EPSG"));
 				featureCapabilities.put("SRS", value);
 
 				value = feature.Abstract;
@@ -71,7 +73,7 @@ package org.openscales.core.layer.capabilities
 				bounds = lowerCorner.replace(" ",",");
 				bounds += ",";
 				bounds += upperCorner.replace(" ",",");
-				latLon = Bounds.getBoundsFromString(bounds);
+				latLon = Bounds.getBoundsFromString(bounds,ProjProjection.getProjProjection(srsCode));
 				featureCapabilities.put("Extent", latLon);
 
 				this._capabilities.put(name, featureCapabilities);

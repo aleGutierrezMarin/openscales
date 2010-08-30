@@ -1,9 +1,11 @@
 package org.openscales.core.feature
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	
+	import org.openscales.basetypes.Location;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Point;
@@ -24,12 +26,12 @@ package org.openscales.core.feature
 		}
 		
 		public static function createDisplayObjectMarker(dispObj:DisplayObject,
-														 point:Point,
+														 point:Location,
 														 data:Object=null,
 														 xOffset:Number=0,
 														 yOffset:Number=0):CustomMarker {
 			var ret:CustomMarker = new CustomMarker();
-			ret.geometry = point;
+			ret.geometry = new Point(point.x,point.y);
 			ret.data = data;
 			ret.xOffset = xOffset;
 			ret.yOffset = yOffset;
@@ -38,16 +40,33 @@ package org.openscales.core.feature
 		}
 		
 		public static function createUrlBasedMarker(iconURL:String,
-													point:Point,
+													point:Location,
 													data:Object=null,
 													xOffset:Number=0,
 													yOffset:Number=0):CustomMarker {
 			var ret:CustomMarker = new CustomMarker();
-			ret.geometry = point;
+			ret.geometry = new Point(point.x,point.y);
 			ret.data = data;
 			ret.xOffset = xOffset;
 			ret.yOffset = yOffset;
 			ret.loadUrl(iconURL);
+			return ret;
+		}
+		
+		
+		/**
+		 * To obtain feature clone
+		 * */
+		override public function clone():Feature {
+			var ret:CustomMarker = new CustomMarker();
+			ret.geometry = this.point.clone();
+			ret.data = this.data;
+			ret.xOffset = this._xOffset;
+			ret.yOffset = this._yOffset;
+			var bitmap:Bitmap = new Bitmap();
+			bitmap.bitmapData = new BitmapData(this._clip.width, this._clip.height, false, 0x000000);
+			bitmap.bitmapData.draw(this._clip, null, null, null, null);
+			ret.loadDisplayObject(bitmap);
 			return ret;
 		}
 		

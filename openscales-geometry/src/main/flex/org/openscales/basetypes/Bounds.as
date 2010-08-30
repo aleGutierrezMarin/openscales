@@ -20,6 +20,7 @@ package org.openscales.basetypes
 		private var _bottom:Number = 0.0;
 		private var _right:Number = 0.0;
 		private var _top:Number = 0.0;
+		private var _proj:ProjProjection;
 
 		/**
 		 * Class constructor
@@ -29,7 +30,7 @@ package org.openscales.basetypes
 		 * @param right Right bound of Bounds instance
 		 * @param top Top bound of Bounds instance
 		 */
-		public function Bounds(left:Number = NaN, bottom:Number = NaN, right:Number = NaN, top:Number = NaN)
+		public function Bounds(left:Number = NaN, bottom:Number = NaN, right:Number = NaN, top:Number = NaN, proj:ProjProjection = null)
 		{
 			if (!isNaN(left)) {
 				this.left = left;
@@ -43,10 +44,15 @@ package org.openscales.basetypes
 			if (!isNaN(top)) {
 				this.top = top;
 			}
+			if(proj) {
+				this._proj = proj;
+			} else {
+				this._proj = ProjProjection.getProjProjection("EPSG:4326");
+			}
 		}
 
 		public function clone():Bounds {
-			return new Bounds(this.left, this.bottom, this.right, this.top);
+			return new Bounds(this._left, this._bottom, this._right, this._top, this._proj);
 		}
 
 		/**
@@ -91,6 +97,12 @@ package org.openscales.basetypes
 
 		// Getters & setters for _left, _bottom, _right and _top
 
+		public function get projection():ProjProjection {
+			return this._proj;
+		}
+		public function set projection(proj:ProjProjection):void {
+			this._proj = proj;
+		}
 		public function get left():Number {
 			return _left;
 		}
@@ -141,12 +153,13 @@ package org.openscales.basetypes
 			return new Pixel((this.left + this.right) / 2, (this.bottom + this.top) / 2);
 		}
 
-		public function get centerLonLat():LonLat {
-			return new LonLat((this.left + this.right) / 2, (this.bottom + this.top) / 2);
+		
+		public function get centerLonLat():Location {
+			return new Location((this.left + this.right) / 2, (this.bottom + this.top) / 2, this._proj);
 		}
 
 		public function add(x:Number, y:Number):Bounds {
-			return new Bounds(this.left + x, this.bottom + y, this.right + x, this.top + y);
+			return new Bounds(this.left + x, this.bottom + y, this.right + x, this.top + y, this._proj);
 		}
 
 		/**
@@ -154,8 +167,8 @@ package org.openscales.basetypes
 		 *
 		 * @param lonlat The LonLat which will extend the bounds.
 		 */
-		public function extendFromLonLat(lonlat:LonLat):void {
-			this.extendFromBounds(new Bounds(lonlat.lon, lonlat.lat, lonlat.lon, lonlat.lat));
+		public function extendFromLonLat(lonlat:Location):void {
+			this.extendFromBounds(new Bounds(lonlat.lon, lonlat.lat, lonlat.lon, lonlat.lat, this._proj));
 		}
 
 		/**
@@ -177,7 +190,7 @@ package org.openscales.basetypes
 		 * @param inclusive It will include the border's bounds ?
 		 * @return Lonlat is contained or not by the bounds
 		 */
-		public function containsLonLat(ll:LonLat, inclusive:Boolean = true):Boolean {
+		public function containsLonLat(ll:Location, inclusive:Boolean = true):Boolean {
 			return this.contains(ll.lon, ll.lat, inclusive);
 		}
 
@@ -279,9 +292,9 @@ package org.openscales.basetypes
 		 *
 		 * @return A string describing the quadrant (e.g. "bl" for Bottom-Left, "tr" for Top-Right etc.)
 		 */
-		public function determineQuadrant(lonlat:LonLat):String {
+		public function determineQuadrant(lonlat:Location):String {
 			var quadrant:String = "";
-			var center:LonLat = this.centerLonLat;
+			var center:Location = this.centerLonLat;
 
 			/* quadrant += (lonlat.lat < center.lat) ? "b" : "t";
 			 quadrant += (lonlat.lon < center.lon) ? "l" : "r"; */
@@ -307,23 +320,25 @@ package org.openscales.basetypes
 		 * Returns a bounds instance from a string following this format: "left,bottom,right,top".
 		 *
 		 * @param str The string from which we want create a bounds instance.
-		 *
+		 * @param projection
+		 * 
 		 * @return An instance of bounds.
 		 */
-		public static function getBoundsFromString(str:String):Bounds {
+		public static function getBoundsFromString(str:String,proj:ProjProjection):Bounds {
 			var bounds:Array = str.split(",");
-			return Bounds.getBoundsFromArray(bounds);
+			return Bounds.getBoundsFromArray(bounds,proj);
 		}
 
 		/**
 		 * Returns a bounds instance from an array following this format: [left,bottom,right,top].
 		 *
 		 * @param bbox The array from which we want create a bounds instance.
+		 * @param projection
 		 *
 		 * @return An instance of bounds.
 		 */
-		public static function getBoundsFromArray(bbox:Array):Bounds {
-			return new Bounds(Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]));
+		public static function getBoundsFromArray(bbox:Array,proj:ProjProjection):Bounds {
+			return new Bounds(Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]),proj);
 		}
 
 		/**
