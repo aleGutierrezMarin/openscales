@@ -3,7 +3,7 @@ package org.openscales.core.handler.mouse
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
@@ -19,7 +19,7 @@ package org.openscales.core.handler.mouse
 	 */
 	public class DragHandler extends Handler
 	{
-		private var _startCenter:LonLat = null;
+		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
 
 		private var _firstDrag:Boolean = true;
@@ -142,10 +142,12 @@ package org.openscales.core.handler.mouse
 		}
 		private function panMap(xy:Pixel):void {
 			this._dragging = true;
-			var oldCenter:LonLat = this.map.center;
+			var oldCenter:Location = this.map.center;
 			var deltaX:Number = this._start.x - xy.x;
 			var deltaY:Number = this._start.y - xy.y;
-			var newPosition:LonLat = new LonLat(this._startCenter.lon + deltaX * this.map.resolution , this._startCenter.lat - deltaY * this.map.resolution);
+			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
+													this._startCenter.lat - deltaY * this.map.resolution,
+													this._startCenter.projection);
 			// If the new position equals the old center, stop here
 			if (newPosition.equals(oldCenter)) {
 				Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");

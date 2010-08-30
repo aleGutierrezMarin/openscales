@@ -1,6 +1,6 @@
 package org.openscales.fx.layer
 {
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.core.layer.TMS;
 	
 	public class FxTMS extends FxGrid
@@ -17,7 +17,7 @@ package org.openscales.fx.layer
 		}
 		public function set origin(value:String):void {
 			if(this.layer != null) {
-				(this.layer as TMS).origin = LonLat.getLonLatFromString(value);
+				(this.layer as TMS).origin = Location.getLocationFromString(value);
 			}
 		}
 	}

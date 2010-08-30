@@ -10,7 +10,7 @@ package org.openscales.fx
 	import mx.events.ResizeEvent;
 	
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Size;
 	import org.openscales.component.control.Control;
 	import org.openscales.component.control.TraceInfo;
@@ -39,7 +39,7 @@ package org.openscales.fx
 	{
 		private var _map:Map;
 		private var _zoom:Number = NaN;
-		private var _centerLonLat:LonLat = null;
+		private var _centerLonLat:Location = null;
 		private var _creationHeight:Number = NaN;
 		private var _creationWidth:Number = NaN;
 		private var _proxy:String = "";
@@ -207,9 +207,9 @@ package org.openscales.fx
 			}
 						
 			// Set both center and zoom to avoid invalid request set when we define both separately
-			var mapCenter:LonLat = this._centerLonLat;
+			var mapCenter:Location = this._centerLonLat;
 			if (mapCenter && this._map.baseLayer) {
-				mapCenter.transform(new ProjProjection("EPSG:4326"), this._map.baseLayer.projection);
+				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projection);
 			}
 			if (mapCenter || (! isNaN(this._zoom))) {
 				this._map.setCenter(mapCenter, this._zoom);
@@ -257,7 +257,7 @@ package org.openscales.fx
 				Trace.error("Map.centerLonLat: invalid number of components");
 				return ;
 			}
-			_centerLonLat = new LonLat(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]));
+			_centerLonLat = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]),Layer.DEFAULT_PROJECTION);
 		}
 		
 		override public function set width(value:Number):void {
@@ -281,7 +281,7 @@ package org.openscales.fx
 		}
 		
 		public function set maxExtent(value:String):void {
-			this._maxExtent = Bounds.getBoundsFromString(value);
+			this._maxExtent = Bounds.getBoundsFromString(value,Layer.DEFAULT_PROJECTION);
 		}
 		
 	}

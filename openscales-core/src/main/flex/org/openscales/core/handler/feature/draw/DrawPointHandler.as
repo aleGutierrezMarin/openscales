@@ -4,7 +4,7 @@ package org.openscales.core.handler.feature.draw
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.geometry.Point;
@@ -54,7 +54,7 @@ package org.openscales.core.handler.feature.draw
 				var style:Style = Style.getDefaultPointStyle();
 			
 				var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
-				var lonlat:LonLat = this.map.getLonLatFromLayerPx(pixel);
+				var lonlat:Location = this.map.getLonLatFromLayerPx(pixel);
 				
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
 

@@ -5,7 +5,8 @@
 	<mx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
-			import org.openscales.basetypes.LonLat;
+			
+			import org.openscales.basetypes.Location;
 			
 			[Bindable] private var _toolTipNorth:String = "Move the map to the North direction";
 			[Bindable] private var _toolTipSouth:String = "Move the map to the South direction";
@@ -16,7 +17,7 @@
 						
 			public function onButtonClick(event:MouseEvent):void {
 				
-			var oldCenter:LonLat = this.map.center;
+			var oldCenter:Location = this.map.center;
 			var deltaX:Number = 0;
 			var deltaY:Number = 0;
 

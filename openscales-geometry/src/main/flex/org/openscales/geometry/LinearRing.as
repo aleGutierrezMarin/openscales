@@ -2,7 +2,7 @@ package org.openscales.geometry
 {
 
 	import org.openscales.UtilGeometry;
-	import org.openscales.basetypes.LonLat;
+	import org.openscales.basetypes.Location;
 		
 	/**
 	 * A Linear Ring is a special LineString which is closed. 
@@ -43,7 +43,7 @@ package org.openscales.geometry
 		override public function containsPoint(p:Point):Boolean {
 			// If the point is not inside the bounding box of the LinearRing, it
 			// can not be in the LinearRing.
-			if (! this.bounds.containsLonLat(new LonLat(p.x, p.y))) {
+			if (! this.bounds.containsLonLat(new Location(p.x, p.y))) {
 				return false;
 			}
 			

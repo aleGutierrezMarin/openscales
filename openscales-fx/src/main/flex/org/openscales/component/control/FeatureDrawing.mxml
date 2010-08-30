@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <control:Control xmlns:control="org.openscales.component.control.*"
-				 xmlns:mx="http://www.adobe.com/2006/mxml">
+				 xmlns:mx="http://www.adobe.com/2006/mxml"
+				 xmlns:s="library://ns.adobe.com/flex/spark"
+				 >
 
 	<!-- TODO : drawing handlers are too much tighly coupled with controls, this should be refactor to make drawing
 		 integration much simpler -->
@@ -107,8 +109,8 @@
 		]]>
 	</mx:Script>
 
-	<mx:VBox horizontalAlign="center">
-
+	<s:VGroup horizontalAlign="center">
+		
 		<mx:ToggleButtonBar id="tgBar"
 							buttonHeight="40"
 							buttonWidth="40"
@@ -117,8 +119,8 @@
 							selectedIndex="0"
 							itemClick="clickHandler(event);">
 			<mx:Array>
-			
-			<mx:Object id="btnPan"
+				
+				<mx:Object id="btnPan"
 						   toolTip="Pan Map"
 						   icon="@Embed('/assets/images/icons/Icons-10.png')"
 						   width="32"/>
@@ -144,8 +146,8 @@
 						   width="32"/>
 			</mx:Array>
 		</mx:ToggleButtonBar>
-
-		<mx:HBox horizontalGap="6">
+		
+		<s:HGroup gap="6">
 			<mx:Button id="btnDeleteLast"
 					   width="38"
 					   height="38"
@@ -158,7 +160,8 @@
 					   toolTip="Delete all the drawn features"
 					   icon="@Embed('/assets/images/icons/Icons-09.png')"
 					   click="onDeleteAllClick(event)"/>
-		</mx:HBox>
+		</s:HGroup>
+		
+	</s:VGroup>
 
-	</mx:VBox>
 </control:Control>

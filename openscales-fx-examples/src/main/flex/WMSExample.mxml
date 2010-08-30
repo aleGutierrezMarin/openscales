@@ -10,10 +10,11 @@
 			proxy="http://openscales.org/proxy.php?url=">
 		
 		
-		<os:MaxExtent left="5.60075"
-					  bottom="47.2441"
-					  right="15.425"
-					  top="55.0317"/>
+		<os:MaxExtent west="5.60075"
+					  south="47.2441"
+					  east="15.425"
+					  north="55.0317"
+					  projection="EPSG:4326" />
 		
 		<os:WMS name="Germany"
 				url="http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map"
@@ -32,10 +33,11 @@
 		<os:DragHandler/>
 		<os:WheelHandler/>
 		
-		<os:Extent left="5.60075"
-				   bottom="47.2441"
-				   right="15.425"
-				   top="55.0317"/>
+		<os:Extent west="5.60075"
+				   south="47.2441"
+				   east="15.425"
+				   north="55.0317"
+				   projection="EPSG:4326" />
 		
 		
 	</os:Map>
