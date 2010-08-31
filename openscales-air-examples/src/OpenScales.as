@@ -52,9 +52,8 @@ package {
 			var markers:FeatureLayer = new FeatureLayer("markers");
 			markers.projection = new ProjProjection("EPSG:4326");
 			markers.style = Style.getDefaultPointStyle();
-			_map.addLayer(markers);
 			
-			markers.addFeature(PointFeature.createPointFeature(new Location(event.longitude, event.latitude)));
+			_map.addLayer(markers);
 			
 			// Add Controls to map
 			_map.addControl(new MousePosition());
