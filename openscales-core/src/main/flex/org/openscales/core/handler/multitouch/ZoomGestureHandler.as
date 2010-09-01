@@ -1,6 +1,7 @@
 package org.openscales.core.handler.multitouch {
 	
 	
+	import flash.events.GestureEvent;
 	import flash.events.GesturePhase;
 	import flash.events.TransformGestureEvent;
 	import flash.ui.Multitouch;
@@ -27,12 +28,14 @@ package org.openscales.core.handler.multitouch {
 				if(Multitouch.inputMode != MultitouchInputMode.GESTURE)
 					Multitouch.inputMode = MultitouchInputMode.GESTURE;
 				this.map.addEventListener(TransformGestureEvent.GESTURE_ZOOM,this.onGestureZoom);
+				this.map.addEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
 			}
 		}
 		
 		override protected function unregisterListeners():void {
 			if (this.map) {
 				this.map.removeEventListener(TransformGestureEvent.GESTURE_ZOOM,this.onGestureZoom);
+				this.map.removeEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
 			}
 		}
 		
@@ -51,6 +54,10 @@ package org.openscales.core.handler.multitouch {
 				else
 					this.map.zoom = this.map.zoom - 1;
 			}
+		}
+		
+		private function onTwoFingerTap(event:GestureEvent):void {
+			this.map.zoom = this.map.zoom + 1;
 		}
 		
 	}
