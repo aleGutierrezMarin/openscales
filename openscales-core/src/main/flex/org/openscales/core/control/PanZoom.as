@@ -123,16 +123,16 @@ package org.openscales.core.control
 
 			switch (btn.name) {
 				case "panup": 
-					this.map.pan(0, -100, this._tween);
+					this.map.pan(0, -100);
 					break;
 				case "pandown": 
-					this.map.pan(0, 100, this._tween);
+					this.map.pan(0, 100);
 					break;
 				case "panleft": 
-					this.map.pan(-100, 0, this._tween);
+					this.map.pan(-100, 0);
 					break;
 				case "panright": 
-					this.map.pan(100, 0, this._tween);
+					this.map.pan(100, 0);
 					break;
 				case "zoomin": 
 					this.map.zoom++; 

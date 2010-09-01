@@ -57,10 +57,6 @@ package org.openscales.core
 		private var _center:Location = null;
 		private var _maxExtent:Bounds = null;
 		private var _destroying:Boolean = false;
-		/**
-		 * Enable tween effect when zooming
-		 */
-		private var _tweenZoomEnabled:Boolean = true;
 		
 		private var _proxy:String = null;
 		private var _configuration:IConfiguration;
@@ -208,17 +204,15 @@ package org.openscales.core
 					var center:Location = this.center;
 					if (center != null) {
 						if (oldExtent == null) {
-							this.setCenter(center, this.zoom, false, true);
+							this.setCenter(center, this.zoom, true);
 						} else {
 							this.setCenter(oldExtent.centerLonLat,
-								this.getZoomForExtent(oldExtent),
-								false, true);
+								this.getZoomForExtent(oldExtent), true);
 						}
 					} else {
 						// The map must be fully defined as soon as its baseLayer is defined
 						this.setCenter(this._baseLayer.maxExtent.centerLonLat,
-							this.getZoomForExtent(this._baseLayer.maxExtent),
-							false, true);
+							this.getZoomForExtent(this._baseLayer.maxExtent), true);
 					}
 					
 					this.dispatchEvent(new LayerEvent(LayerEvent.BASE_LAYER_CHANGED, newBaseLayer));
@@ -437,24 +431,7 @@ package org.openscales.core
 			if(this._layerContainer.contains(popup))
 				this._layerContainer.removeChild(popup);
 		}
-		
-		/**
-		 * Update map content after a resize
-		 */
-		private function updateSize():void {
-			this.graphics.clear();
-			this.graphics.beginFill(0xFFFFFF);
-			this.graphics.drawRect(0,0,this.size.w,this.size.h);
-			this.graphics.endFill();
-			this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
 			
-			this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
-			
-			if (this.baseLayer != null) {
-				this.setCenter(null,this.zoom,false,true,false,true);
-			}
-		}
-		
 		/**
 		 * Allows user to pan by a value of screen pixels.
 		 *
@@ -462,7 +439,7 @@ package org.openscales.core
 		 * @param dy verticial pixel offset
 		 * @param tween use tween effect
 		 */
-		public function pan(dx:int, dy:int, tween:Boolean=false):void {
+		public function pan(dx:int, dy:int):void {
 			// Is there a real offset ?
 			if ((dx==0) && (dy==0)) {
 				return;
@@ -470,7 +447,7 @@ package org.openscales.core
 			if(this.center) {
 				var newCenterPx:Pixel = this.getMapPxFromLonLat(this.center).add(dx, dy);
 				var newCenterLonLat:Location = this.getLonLatFromMapPx(newCenterPx);
-				this.setCenter(newCenterLonLat, NaN, false, false, tween);
+				this.setCenter(newCenterLonLat);
 			}
 		}
 		
@@ -481,18 +458,13 @@ package org.openscales.core
 		 *
 		 * @param lonlat the new center location.
 		 * @param zoom optional zoom level
-		 * @param dragging Specifies whether or not to trigger movestart/end events
-		 * @param forceZoomChange Specifies whether or not to trigger zoom change events (needed on baseLayer change)
-		 * @param dragTween
+		 * @param forceMove Specifies whether or not to trigger zoom change events (needed on baseLayer change)
 		 *
 		 */
 		public function setCenter(lonlat:Location,
 								  zoom:Number = NaN,
-								  dragging:Boolean = false,
-								  forceZoomChange:Boolean = false,
-								  dragTween:Boolean = false,
-								  resizing:Boolean = false):void {
-			var zoomChanged:Boolean = forceZoomChange || (this.isValidZoomLevel(zoom) && (zoom!=this._zoom));
+								  forceMove:Boolean = false):void {
+			var zoomChanged:Boolean = forceMove || (this.isValidZoomLevel(zoom) && (zoom!=this._zoom));
 			
 			if (lonlat && !this.isValidLonLat(lonlat)) {
 				Trace.log("Not a valid center, so do nothing");
@@ -509,17 +481,21 @@ package org.openscales.core
 			var validLonLat:Boolean = this.isValidLonLat(lonlat);
 			var centerChanged:Boolean = validLonLat && (! lonlat.equals(this.center));
 			
-			if (zoomChanged || centerChanged || !dragging) {
+			if (zoomChanged || centerChanged) {
 				if(this._baseLayer!=null && this._baseLayer.projection!=null) {
 					lonlat = lonlat.reprojectTo(this._baseLayer.projection);
 				}
-				if (!dragging) {
-					this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
-				}
 				
 				if (centerChanged) {
+					this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
 					if ((!zoomChanged) && (this.center)) {
-						this.centerLayerContainer(lonlat, dragTween);
+						var originPx:Pixel = this.getMapPxFromLonLat(this._layerContainerOrigin);
+						var newPx:Pixel = this.getMapPxFromLonLat(lonlat);
+						
+						if (originPx == null || newPx == null)
+							return;
+						this._layerContainer.x = originPx.x - newPx.x;
+						this._layerContainer.y = originPx.y - newPx.y;
 					}
 					this._center = lonlat.clone();
 				}
@@ -539,41 +515,11 @@ package org.openscales.core
 				}
 			}
 			
-			if (centerChanged && !dragging && !dragTween) {
+			if (centerChanged) {
 				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
 			}
 		}
-		
-		/**
-		 * Reset the bitmap center depending on the current map center
-		 * 
-		 * @param tween use tween effect if set to true (default)
-		 */
-		public function resetCenterLayerContainer(tween:Boolean = true):void {
-			this.centerLayerContainer(this.center, tween);
-		}
-		
-		/**
-		 * This function takes care to recenter the layerContainer and bitmapTransition.
-		 *
-		 * @param lonlat the new layer container center
-		 * @param tween use tween effect if set to true
-		 */
-		private function centerLayerContainer(lonlat:Location, tween:Boolean = false):void {
-			var originPx:Pixel = this.getMapPxFromLonLat(this._layerContainerOrigin);
-			var newPx:Pixel = this.getMapPxFromLonLat(lonlat);
-			
-			if (originPx == null || newPx == null)
-				return;
-			this._layerContainer.x = originPx.x - newPx.x;
-			this._layerContainer.y = originPx.y - newPx.y;
-			
-		}
-		
-		private function onDragTweenComplete(tween:GTween):void {
-			this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
-		}
-		
+				
 		/**
 		 * Check if a zoom level is valid on this map.
 		 *
@@ -800,17 +746,7 @@ package org.openscales.core
 		}
 		public function set zoom(newZoom:Number):void 
 		{
-			this.setZoom(newZoom, this.center);
-		}
-		public function setZoom(newZoom:Number, newCenter:Location):void {
-			if (this.isValidZoomLevel(newZoom)) {
-				//Dispatch a MapEvent with the old and new zoom
-				var mapEvent:MapEvent = new MapEvent(MapEvent.ZOOM_START,this);
-				mapEvent.oldZoom = this.zoom;
-				mapEvent.newZoom = newZoom;
-				this.dispatchEvent(mapEvent);
-				this.setCenter(newCenter, newZoom);
-			} 
+			this.setCenter(this.center, newZoom);
 		}
 		
 		/**	
@@ -849,7 +785,18 @@ package org.openscales.core
 		public function set size(value:Size):void {
 			if (value) {
 				_size = value;
-				this.updateSize();
+				
+				this.graphics.clear();
+				this.graphics.beginFill(0xFFFFFF);
+				this.graphics.drawRect(0,0,this.size.w,this.size.h);
+				this.graphics.endFill();
+				this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
+				
+				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
+				
+				if (this.baseLayer != null) {
+					this.setCenter(null, this.zoom, true);
+				}
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
 			}
@@ -860,8 +807,7 @@ package org.openscales.core
 		 */
 		override public function set width(value:Number):void {
 			if (! isNaN(value)) {
-				this._size.w = value;
-				this.updateSize();
+				this.size = new Size(value, this.size.h);
 			} else {
 				Trace.error("Map - width not changed since the value is not valid");
 			}
@@ -872,8 +818,7 @@ package org.openscales.core
 		 */
 		override public function set height(value:Number):void {
 			if (! isNaN(value)) {
-				this._size.h = value;
-				this.updateSize();
+				this.size = new Size(this.size.w, value);
 			} else {
 				Trace.error("Map - height not changed since the value is not valid");
 			}
@@ -1012,14 +957,6 @@ package org.openscales.core
 		
 		public function get configuration():IConfiguration{
 			return _configuration;
-		}
-		
-		public function set tweenZoomEnabled(value:Boolean):void{
-			_tweenZoomEnabled = value;
-		} 
-		
-		public function get tweenZoomEnabled():Boolean{
-			return _tweenZoomEnabled;
 		}
 		
 		/**
