@@ -30,7 +30,6 @@ package org.openscales.core.tile
 
 		public function ImageTile(layer:Layer, position:Pixel, bounds:Bounds, url:String, size:Size) {
 			super(layer, position, bounds, url, size);
-
 			// otherwise you'll get seams between tiles :(
 			this.cacheAsBitmap = false;
 

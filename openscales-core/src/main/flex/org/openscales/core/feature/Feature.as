@@ -36,7 +36,6 @@ package org.openscales.core.feature {
 		 **/
 		private var _isEditable:Boolean = false;
 
-
 		/**
 		 * Attributes usually generated from data parsing or user input
 		 */
@@ -98,6 +97,7 @@ package org.openscales.core.feature {
 			this._style = style ? style : null;
 
 			this._isEditable = isEditable;
+			this.cacheAsBitmap = true;
 		}
 
 		/**

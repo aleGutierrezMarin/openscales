@@ -67,7 +67,7 @@ package org.openscales.core.handler.mouse
 				_firstDrag = false;
 			}
 
-			this.map.layerContainer.startDrag();
+			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 
 			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
 			this._startCenter = this.map.center;
@@ -77,12 +77,20 @@ package org.openscales.core.handler.mouse
 			if(this.onstart!=null)
 				this.onstart(event as MouseEvent);
 		}
+		
+		protected function onMouseMove(event:MouseEvent):void  {
+			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._start.x;
+			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._start.y;
+			
+			// Force update regardless of the framerate for smooth drag
+			event.updateAfterEvent();
+		}
 
 		/**
 		 *The MouseUp Listener
 		 */
 		protected function onMouseUp(event:Event):void {
-			this.map.layerContainer.stopDrag();
+			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 
 			this.map.buttonMode=false;
 			this.done(new Pixel(this.map.mouseX, this.map.mouseY));

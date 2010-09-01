@@ -205,7 +205,6 @@ package org.openscales.core.layer
 		}
 
 		override protected function draw():void {
-			this.cacheAsBitmap = false;
 			var j:int = this.numChildren - 1;
 			var o:DisplayObject;
 			for(j ; j>-1 ; --j) {
@@ -213,7 +212,6 @@ package org.openscales.core.layer
 				if(o is Feature)
 					(o as Feature).draw();
 			}
-			this.cacheAsBitmap = true;
 		}
 
 		public function removeFeatures(features:Vector.<Feature>):void {
