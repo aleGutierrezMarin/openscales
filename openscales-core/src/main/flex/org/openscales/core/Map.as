@@ -1,7 +1,5 @@
 package org.openscales.core
-{
-	import com.gskinner.motion.GTween;
-	
+{	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
@@ -42,7 +40,7 @@ package org.openscales.core
 		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
 		
 		/**
-		 * The lonlat at which the layer container was re-initialized (on-zoom)
+		 * The location at which the layer container was re-initialized (on-zoom)
 		 */
 		private var _layerContainerOrigin:Location = null;
 		
@@ -204,14 +202,14 @@ package org.openscales.core
 					var center:Location = this.center;
 					if (center != null) {
 						if (oldExtent == null) {
-							this.setCenter(center, this.zoom, true);
+							this.moveTo(center, this.zoom, true);
 						} else {
-							this.setCenter(oldExtent.centerLonLat,
+							this.moveTo(oldExtent.center,
 								this.getZoomForExtent(oldExtent), true);
 						}
 					} else {
 						// The map must be fully defined as soon as its baseLayer is defined
-						this.setCenter(this._baseLayer.maxExtent.centerLonLat,
+						this.moveTo(this._baseLayer.maxExtent.center,
 							this.getZoomForExtent(this._baseLayer.maxExtent), true);
 					}
 					
@@ -447,7 +445,7 @@ package org.openscales.core
 			if(this.center) {
 				var newCenterPx:Pixel = this.getMapPxFromLonLat(this.center).add(dx, dy);
 				var newCenterLonLat:Location = this.getLonLatFromMapPx(newCenterPx);
-				this.setCenter(newCenterLonLat);
+				this.moveTo(newCenterLonLat);
 			}
 		}
 		
@@ -461,24 +459,24 @@ package org.openscales.core
 		 * @param forceMove Specifies whether or not to trigger zoom change events (needed on baseLayer change)
 		 *
 		 */
-		public function setCenter(lonlat:Location,
+		public function moveTo(lonlat:Location,
 								  zoom:Number = NaN,
 								  forceMove:Boolean = false):void {
 			var zoomChanged:Boolean = forceMove || (this.isValidZoomLevel(zoom) && (zoom!=this._zoom));
 			
-			if (lonlat && !this.isValidLonLat(lonlat)) {
+			if (lonlat && !this.isValidLocation(lonlat)) {
 				Trace.log("Not a valid center, so do nothing");
 				return;
 			}
 			
 			// If the map is not initialized, the center of the extent is used
 			// as the current center
-			if (!this.center && !this.isValidLonLat(lonlat)) {
-				lonlat = this.maxExtent.centerLonLat;
+			if (!this.center && !this.isValidLocation(lonlat)) {
+				lonlat = this.maxExtent.center;
 			} else if(this.center && !lonlat) {
 				lonlat = this.center;
 			}
-			var validLonLat:Boolean = this.isValidLonLat(lonlat);
+			var validLonLat:Boolean = this.isValidLocation(lonlat);
 			var centerChanged:Boolean = validLonLat && (! lonlat.equals(this.center));
 			
 			if (zoomChanged || centerChanged) {
@@ -537,8 +535,8 @@ package org.openscales.core
 		 * @param lonlat the coordinate to test
 		 * @return Whether or not the lonlat passed in is non-null and within the maxExtent bounds
 		 */
-		private function isValidLonLat(lonlat:Location):Boolean {
-			return (lonlat!=null) && this.maxExtent.containsLonLat(lonlat);
+		private function isValidLocation(lonlat:Location):Boolean {
+			return (lonlat!=null) && this.maxExtent.containsLocation(lonlat);
 		}
 		
 		/**
@@ -578,7 +576,7 @@ package org.openscales.core
 		 * @param bounds
 		 */
 		public function zoomToExtent(bounds:Bounds):void {
-			this.setCenter(bounds.centerLonLat, this.getZoomForExtent(bounds));
+			this.moveTo(bounds.center, this.getZoomForExtent(bounds));
 		}
 		
 		/**
@@ -642,7 +640,7 @@ package org.openscales.core
 		/**
 		 * Return a LonLat computed from a layer Pixel.
 		 */
-		public function getLonLatFromLayerPx(px:Pixel):Location {
+		public function getLocationFromLayerPx(px:Pixel):Location {
 			px = this.getMapPxFromLayerPx(px);
 			return this.getLonLatFromMapPx(px);
 		}
@@ -650,7 +648,7 @@ package org.openscales.core
 		/**
 		 * Return a layer Pixel computed from a LonLat.
 		 */
-		public function getLayerPxFromLonLat(lonlat:Location):Pixel {
+		public function getLayerPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = this.getMapPxFromLonLat(lonlat);
 			return this.getLayerPxFromMapPx(px);
 		}
@@ -734,7 +732,7 @@ package org.openscales.core
 		}
 		public function set center(newCenter:Location):void
 		{
-			this.setCenter(newCenter);
+			this.moveTo(newCenter);
 		}
 		
 		/**
@@ -746,7 +744,7 @@ package org.openscales.core
 		}
 		public function set zoom(newZoom:Number):void 
 		{
-			this.setCenter(this.center, newZoom);
+			this.moveTo(this.center, newZoom);
 		}
 		
 		/**	
@@ -795,7 +793,7 @@ package org.openscales.core
 				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
 				
 				if (this.baseLayer != null) {
-					this.setCenter(null, this.zoom, true);
+					this.moveTo(null, this.zoom, true);
 				}
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");

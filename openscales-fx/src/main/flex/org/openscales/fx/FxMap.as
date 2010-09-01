@@ -212,7 +212,7 @@ package org.openscales.fx
 				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projection);
 			}
 			if (mapCenter || (! isNaN(this._zoom))) {
-				this._map.setCenter(mapCenter, this._zoom);
+				this._map.moveTo(mapCenter, this._zoom);
 			}
 			
 			var extentDefined:Boolean = false;

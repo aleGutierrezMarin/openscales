@@ -73,7 +73,7 @@ package org.openscales.core.layer
 				image.width = this.maxExtent.width/this.map.resolution;
 				image.height = this.maxExtent.height/this.map.resolution;
 				var ul:Location = new Location(this.maxExtent.left, this.maxExtent.top);
-				var ulPx:Pixel = this.map.getLayerPxFromLonLat(ul);
+				var ulPx:Pixel = this.map.getLayerPxFromLocation(ul);
 				image.x = ulPx.x;
 				image.y = ulPx.y;
 			}

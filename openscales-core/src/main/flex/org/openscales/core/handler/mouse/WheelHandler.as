@@ -41,7 +41,7 @@ package org.openscales.core.handler.mouse {
 					newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
 					zoom--;
 				}
-				this.map.setCenter(this.map.getLonLatFromMapPx(newCenterPx), zoom);
+				this.map.moveTo(this.map.getLonLatFromMapPx(newCenterPx), zoom);
 			}
 		}
 		

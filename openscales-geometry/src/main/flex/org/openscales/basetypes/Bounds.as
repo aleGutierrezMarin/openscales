@@ -145,16 +145,7 @@ package org.openscales.basetypes
 			return new Size(this.width, this.height);
 		}
 
-		/*public function get center():Abstract2D {
-			return new Abstract2D((this.left + this.right) / 2, (this.bottom + this.top) / 2);
-		}*/
-
-		public function get centerPixel():Pixel {
-			return new Pixel((this.left + this.right) / 2, (this.bottom + this.top) / 2);
-		}
-
-		
-		public function get centerLonLat():Location {
+		public function get center():Location {
 			return new Location((this.left + this.right) / 2, (this.bottom + this.top) / 2, this._proj);
 		}
 
@@ -163,7 +154,7 @@ package org.openscales.basetypes
 		}
 
 		/**
-		 * Extends the current instance of Bounds from a LonLat.
+		 * Extends the current instance of Bounds from a location.
 		 *
 		 * @param lonlat The LonLat which will extend the bounds.
 		 */
@@ -186,43 +177,18 @@ package org.openscales.basetypes
 		/**
 		 * Returns if the current bounds contains the LonLat passed as param
 		 *
-		 * @param ll The Lonlat to check
+		 * @param loc The location to check
 		 * @param inclusive It will include the border's bounds ?
 		 * @return Lonlat is contained or not by the bounds
 		 */
-		public function containsLonLat(ll:Location, inclusive:Boolean = true):Boolean {
-			return this.contains(ll.lon, ll.lat, inclusive);
-		}
-
-		/**
-		 * Returns if the current bounds contains the Pixel passed as param
-		 *
-		 * @param px The Pixel to check
-		 * @param inclusive It will include the border's bounds ?
-		 *
-		 * @return Lonlat is contained or not by the bounds
-		 */
-		public function containsPixel(px:Pixel, inclusive:Boolean = true):Boolean {
-			return this.contains(px.x, px.y, inclusive);
-		}
-
-		/**
-		 * Returns if the current bounds contains the coordinates passed ad param
-		 * 
-		 * @param x the x coordinate
-		 * @param y the y coordinate
-		 * @param inclusive It will include the border's bounds ?
-		 * 
-		 * @return true if coordinates are in the bounds, else false
-		 */
-		public function contains(x:Number, y:Number, inclusive:Boolean = true):Boolean {
+		public function containsLocation(loc:Location, inclusive:Boolean = true):Boolean {
 			var contains:Boolean = false;
 			if (inclusive) {
-				contains = ((x >= this.left) && (x <= this.right) &&
-					(y >= this.bottom) && (y <= this.top));
+				contains = ((loc.lon >= this.left) && (loc.lon <= this.right) &&
+					(loc.lat >= this.bottom) && (loc.lat <= this.top));
 			} else {
-				contains = ((x > this.left) && (x < this.right) &&
-					(y > this.bottom) && (y < this.top));
+				contains = ((loc.lon > this.left) && (loc.lon < this.right) &&
+					(loc.lat > this.bottom) && (loc.lat < this.top));
 			}
 			return contains;
 		}
@@ -294,7 +260,7 @@ package org.openscales.basetypes
 		 */
 		public function determineQuadrant(lonlat:Location):String {
 			var quadrant:String = "";
-			var center:Location = this.centerLonLat;
+			var center:Location = this.center;
 
 			/* quadrant += (lonlat.lat < center.lat) ? "b" : "t";
 			 quadrant += (lonlat.lon < center.lon) ? "l" : "r"; */

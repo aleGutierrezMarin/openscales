@@ -166,7 +166,7 @@
 			private function pixelToCoordinate(p:Pixel):Location {
 		        var c2p_x:Number = p.x - overview.map.size.w / 2.0;
 		        var c2p_y:Number = p.y - overview.map.size.h / 2.0;
-		        var center:Location = overview.map.extent.centerLonLat;
+		        var center:Location = overview.map.extent.center;
 		        return new Location(center.lon + c2p_x * overview.map.resolution,
 		        					center.lat - c2p_y * overview.map.resolution );
     		}
@@ -377,7 +377,8 @@
 				sprite.graphics.endFill();
 			}
 			
-            private function stopChangingMapExtent(event:MouseEvent) : void {
+            // TODO : check location/picel confusion
+			private function stopChangingMapExtent(event:MouseEvent) : void {
 				// Remove the event listeners needed to finalize the modification of the extent
 				overview.map.removeEventListener(MouseEvent.MOUSE_MOVE, drawNewExtent);
 				overview.map.removeEventListener(MouseEvent.MOUSE_UP, stopChangingMapExtent);
@@ -402,6 +403,7 @@
 			
     	    /**
     	    * Set the center of the main map to the position defined by a pixel on the overview map
+			* TODO : check location/picel confusion
     	    * 
     	    * @param newCenter the pixel representing the new center of the extent
     	    */
@@ -409,7 +411,7 @@
 				// Update the overview (and the main map if not null)
 				if (map == null) {
 					Trace.warning("Overview - setCenterFromOverview : map is null ; " + newCenter.toString());
-	    			var oldCenter:Pixel = rectRealPxBounds.centerPixel;
+	    			var oldCenter:Location = rectRealPxBounds.center;
 	    			// Compute the displacement then move the real boundary
 	    			var delta:Pixel = new Pixel(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
 	    			rectRealPxBounds.left += delta.x;

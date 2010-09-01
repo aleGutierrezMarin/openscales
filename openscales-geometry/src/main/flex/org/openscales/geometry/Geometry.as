@@ -121,7 +121,7 @@ package org.openscales.geometry
 					this.bounds.right + dX,
 					this.bounds.top + dY);
 
-				atPoint = toleranceBounds.containsLonLat(lonlat);
+				atPoint = toleranceBounds.containsLocation(lonlat);
 			}
 			return atPoint;
 		}

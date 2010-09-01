@@ -231,7 +231,7 @@ package org.openscales.core.feature {
 		public function get lonlat():Location {
 			var value:Location = null;
 			if (this._geometry != null) {
-				value = this._geometry.bounds.centerLonLat;   
+				value = this._geometry.bounds.center;   
 			}
 			return value;
 		}
@@ -259,7 +259,7 @@ package org.openscales.core.feature {
 			var onScreen:Boolean = false;
 			if ((this._layer != null) && (this._layer.map != null)) {
 				var screenBounds:Bounds = this._layer.map.extent;
-				onScreen = screenBounds.containsLonLat(this.lonlat);
+				onScreen = screenBounds.containsLocation(this.lonlat);
 			}
 			return onScreen;
 		}

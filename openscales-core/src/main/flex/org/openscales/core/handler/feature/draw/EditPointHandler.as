@@ -57,7 +57,7 @@ package org.openscales.core.handler.feature.draw
 			//update geometry
 			//We create a new point because of a bug on OpenScales
 			var px:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
-			var lonlat:Location=this.map.getLonLatFromLayerPx(px);
+			var lonlat:Location=this.map.getLocationFromLayerPx(px);
 			var newGeom:Point=new Point(lonlat.lon,lonlat.lat);
 			vectorfeature.geometry=newGeom;
 			vectorfeature.x=0;
