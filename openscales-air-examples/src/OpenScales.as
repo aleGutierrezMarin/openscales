@@ -1,12 +1,15 @@
 package {
+	import flash.desktop.NativeApplication;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageOrientation;
 	import flash.display.StageScaleMode;
 	import flash.events.GeolocationEvent;
+	import flash.events.GestureEvent;
 	import flash.events.MouseEvent;
 	import flash.events.StageOrientationEvent;
+	import flash.events.TransformGestureEvent;
 	import flash.sensors.Geolocation;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -20,6 +23,7 @@ package {
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoomBar;
 	import org.openscales.core.events.TraceEvent;
+	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.multitouch.PanGestureHandler;
@@ -29,6 +33,7 @@ package {
 	import org.openscales.core.layer.osm.CycleMap;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Style;
+	import org.openscales.geometry.Point;
 	import org.openscales.proj4as.ProjProjection;
 	
 	[SWF(width='480',height='800')]
@@ -52,14 +57,18 @@ package {
 			var markers:FeatureLayer = new FeatureLayer("markers");
 			markers.projection = new ProjProjection("EPSG:4326");
 			markers.style = Style.getDefaultPointStyle();
-			
+					
 			_map.addLayer(markers);
 			
 			// Add Controls to map
-			_map.addControl(new MousePosition());			
+			var mousePosition:MousePosition = new MousePosition();
+			mousePosition.displayProjection = new ProjProjection("EPSG:4326");
+			_map.addControl(mousePosition);			
 			
 			_map.addHandler(new ZoomGestureHandler());
 			_map.addHandler(new PanGestureHandler());
+			
+			this.stage.addEventListener(TransformGestureEvent.GESTURE_SWIPE,this.onGestureSwipe);
 			
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);
@@ -93,6 +102,11 @@ package {
 			stage.align = StageAlign.TOP_LEFT; 
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, onOrientationChange); 
+			
+		}
+		
+		private function onGestureSwipe(event:GestureEvent):void {
+			NativeApplication.nativeApplication.exit();
 		}
 
 		private function geolocationUpdateHandler(event:GeolocationEvent):void

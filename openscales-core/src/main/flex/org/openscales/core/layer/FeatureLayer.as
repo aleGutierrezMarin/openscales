@@ -129,7 +129,7 @@ package org.openscales.core.layer
 			var i:int;
 			var j:int = features.length
 			for (i = 0; i < j; i++) {
-				this.addFeature(features[i], false);
+				this.addFeature(features[i], false, false);
 			}
 
 			// Dispatch an event with all the features added
@@ -145,7 +145,7 @@ package org.openscales.core.layer
 		 *
 		 * @param feature The feature to add
 		 */
-		public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true):void {
+		public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
 
 			if(this._featuresID.indexOf(feature.name)!=-1)
 				return;
@@ -168,8 +168,8 @@ package org.openscales.core.layer
 			}
 			
 			// Reprojection if needed
-			if ((this.map) && (this.map.baseLayer) && (this._displayProjection.srsCode != this.map.baseLayer.projection.srsCode)) {
-				feature.geometry.transform(this.projection, this.map.baseLayer.projection);
+			if (reproject && (this.map) && (this.map.baseLayer) && (this.projection.srsCode != this._displayProjection.srsCode)) {
+				feature.geometry.transform(this.projection, this._displayProjection);
 			}
 			
 			// Add the feature to the layer

@@ -3,10 +3,10 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
-	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
+	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
@@ -295,8 +295,8 @@ package org.openscales.core.layer.ogc
 			return this._featuresids;
 		}
 
-		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true):void {
-			super.addFeature(feature,dispatchFeatureEvent);
+		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
+			super.addFeature(feature,dispatchFeatureEvent, reproject);
 			if(feature.layer==null)
 				return;
 			feature.draw();
