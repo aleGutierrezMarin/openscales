@@ -6,7 +6,6 @@
     <classEntry path="org.openscales.core.Trace"/>
     <classEntry path="org.openscales.core.UID"/>
     <classEntry path="org.openscales.core.Util"/>
-    <classEntry path="org.openscales.core.basetypes.DraggableSprite"/>
     <classEntry path="org.openscales.core.basetypes.LinkedList.AbstractLinkedListNode"/>
     <classEntry path="org.openscales.core.basetypes.LinkedList.ILinkedList"/>
     <classEntry path="org.openscales.core.basetypes.LinkedList.ILinkedListNode"/>

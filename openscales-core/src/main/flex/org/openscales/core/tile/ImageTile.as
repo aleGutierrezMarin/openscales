@@ -123,13 +123,12 @@ package org.openscales.core.tile
 				for(i;i>0;i--)
 					this.removeChildAt(i);
 				
-				// Tween tile effect 
 				if (! this.layer.contains(this)) {
 					this.layer.addChild(this);
 				}
-				var tw:GTween = new GTween(this, 0.3, {alpha:1});
-				tw.onComplete = this.onTweenComplete;
+
 				this.drawn = true;
+				this.loading = false;
 
 				// We put the loader into the cache if it's a recently loaded
 				if ((this.layer is Grid) && (! cached)) {
@@ -137,10 +136,6 @@ package org.openscales.core.tile
 					(this.layer as Grid).addTileCache(node);
 				}
 			}
-		}
-
-		public function onTweenComplete(tween:GTween):void{
-			this.loading = false;
 		}
 		
 		public function onTileLoadError(event:IOErrorEvent):void {
@@ -160,7 +155,6 @@ package org.openscales.core.tile
 		 */
 		override public function clear():void {
 			super.clear();
-			this.alpha = 0;
 
 			if(this._request) {
 				_request.destroy();
