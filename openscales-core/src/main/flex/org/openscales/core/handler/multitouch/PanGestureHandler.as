@@ -64,6 +64,7 @@ package org.openscales.core.handler.multitouch {
 				if (event.phase==GesturePhase.UPDATE) {
 					this.map.layerContainer.x += event.offsetX;
 					this.map.layerContainer.y += event.offsetY;
+					event.updateAfterEvent();
 				}
 				if (event.phase==GesturePhase.END) {
 				
