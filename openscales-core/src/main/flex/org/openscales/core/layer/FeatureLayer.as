@@ -166,10 +166,16 @@ package org.openscales.core.layer
 				fevt = new FeatureEvent(FeatureEvent.FEATURE_PRE_INSERT, feature);
 				this.map.dispatchEvent(fevt);
 			}
-
+			
+			// Reprojection if needed
+			if ((this.map) && (this.map.baseLayer) && (this.projection.srsCode != this.map.baseLayer.projection.srsCode)) {
+				feature.geometry.transform(this.projection, this.map.baseLayer.projection);
+			}
+			
 			// Add the feature to the layer
 			feature.layer = this;
 			this.addChild(feature);
+			
 			// If needed, dispatch an event with the feature added
 			if (dispatchFeatureEvent && this.map) {
 				fevt = new FeatureEvent(FeatureEvent.FEATURE_INSERT, feature);
@@ -247,7 +253,7 @@ package org.openscales.core.layer
 			this._featuresBbox=null;
 		}
 
-		public function get feauturesID():Vector.<String> {
+		public function get featuresID():Vector.<String> {
 			var _features:Vector.<String> = new Vector.<String>(this._featuresID.length);
 			var i:uint = 0;
 			var s:String;

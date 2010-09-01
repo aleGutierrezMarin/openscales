@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" version="1">
+<flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
     <classEntry path="org.openscales.core.Map"/>
     <classEntry path="org.openscales.core.StringUtils"/>
     <classEntry path="org.openscales.core.Trace"/>
     <classEntry path="org.openscales.core.UID"/>
     <classEntry path="org.openscales.core.Util"/>
+    <classEntry path="org.openscales.core.basetypes.DraggableSprite"/>
     <classEntry path="org.openscales.core.basetypes.LinkedList.AbstractLinkedListNode"/>
     <classEntry path="org.openscales.core.basetypes.LinkedList.ILinkedList"/>
     <classEntry path="org.openscales.core.basetypes.LinkedList.ILinkedListNode"/>
@@ -40,6 +41,7 @@
     <classEntry path="org.openscales.core.events.TileEvent"/>
     <classEntry path="org.openscales.core.events.TraceEvent"/>
     <classEntry path="org.openscales.core.events.ZoomBoxEvent"/>
+    <classEntry path="org.openscales.core.feature.CustomMarker"/>
     <classEntry path="org.openscales.core.feature.Feature"/>
     <classEntry path="org.openscales.core.feature.LineStringFeature"/>
     <classEntry path="org.openscales.core.feature.Marker"/>
@@ -82,6 +84,8 @@
     <classEntry path="org.openscales.core.handler.mouse.DragHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
+    <classEntry path="org.openscales.core.handler.multitouch.PanGestureHandler"/>
+    <classEntry path="org.openscales.core.handler.multitouch.ZoomGestureHandler"/>
     <classEntry path="org.openscales.core.handler.zoom.ZoomBoxHandler"/>
     <classEntry path="org.openscales.core.layer.FeatureLayer"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
@@ -153,6 +157,7 @@
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
+    <classEntry path="org.openscales.geometry.GeometryTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
