@@ -9,7 +9,7 @@ package org.openscales.core.tile
 
 	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.core.basetypes.LinkedList.LinkedListBitmapNode;
+	import org.openscales.core.basetypes.linkedList.LinkedListBitmapNode;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.layer.Grid;
