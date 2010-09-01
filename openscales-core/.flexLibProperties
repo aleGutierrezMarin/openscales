@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="false" version="1">
+<flexLibProperties includeAllClasses="true" version="1">
   <includeClasses>
     <classEntry path="org.openscales.core.Map"/>
     <classEntry path="org.openscales.core.StringUtils"/>
@@ -7,11 +7,11 @@
     <classEntry path="org.openscales.core.UID"/>
     <classEntry path="org.openscales.core.Util"/>
     <classEntry path="org.openscales.core.basetypes.DraggableSprite"/>
-    <classEntry path="org.openscales.core.basetypes.LinkedList.AbstractLinkedListNode"/>
-    <classEntry path="org.openscales.core.basetypes.LinkedList.ILinkedList"/>
-    <classEntry path="org.openscales.core.basetypes.LinkedList.ILinkedListNode"/>
-    <classEntry path="org.openscales.core.basetypes.LinkedList.LinkedList"/>
-    <classEntry path="org.openscales.core.basetypes.LinkedList.LinkedListBitmapNode"/>
+    <classEntry path="org.openscales.core.basetypes.linkedlist.AbstractLinkedListNode"/>
+    <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedList"/>
+    <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedListNode"/>
+    <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedList"/>
+    <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMap"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMapEntry"/>
     <classEntry path="org.openscales.core.basetypes.maps.IHashMapEntry"/>
