@@ -175,6 +175,7 @@ package org.openscales.core.layer
 			// Add the feature to the layer
 			feature.layer = this;
 			this.addChild(feature);
+			feature.draw();
 			
 			// If needed, dispatch an event with the feature added
 			if (dispatchFeatureEvent && this.map) {
