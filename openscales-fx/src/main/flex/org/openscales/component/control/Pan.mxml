@@ -22,17 +22,17 @@
 			var deltaY:Number = 0;
 
 				if(event.currentTarget==this.upButton) {
-					this.map.pan(0, -this.DELTA_PX, true);
+					this.map.pan(0, -this.DELTA_PX);
 			
 				}
 				else if(event.currentTarget==this.rightButton) {
-					this.map.pan(this.DELTA_PX, 0, true);
+					this.map.pan(this.DELTA_PX, 0);
 				}
 				else if(event.currentTarget==this.downButton) {
-					this.map.pan(0, this.DELTA_PX, true);				
+					this.map.pan(0, this.DELTA_PX);				
 				}
 				else if(event.currentTarget==this.leftButton) {
-					this.map.pan(-this.DELTA_PX, 0, true);	
+					this.map.pan(-this.DELTA_PX, 0);	
 				}
 			}
 			

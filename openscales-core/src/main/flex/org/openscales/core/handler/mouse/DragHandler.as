@@ -157,7 +157,7 @@ package org.openscales.core.handler.mouse
 			// We have to reset the bitmap position to the right center.
 			if (this.map.center.equals(oldCenter)) {
 				Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
-				this.map.resetCenterLayerContainer();
+				this.map.setCenter(this.map.center);
 			}
 		}
 	}
