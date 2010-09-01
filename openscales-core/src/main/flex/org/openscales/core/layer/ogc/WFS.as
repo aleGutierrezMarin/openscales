@@ -121,7 +121,7 @@ package org.openscales.core.layer.ogc
 			if(this.projection.srsCode != this.map.baseLayer.projection.srsCode) {
 					projectedBounds.transform(this.map.baseLayer.projection, this.projection);
 			}
-			var center:Location = projectedBounds.centerLonLat;
+			var center:Location = projectedBounds.center;
 
 			if (projectedBounds.containsBounds(this.maxExtent)) {
 				projectedBounds = this.maxExtent.clone();

@@ -88,8 +88,8 @@ package org.openscales.core.layer
 			var zoomString:String = String(zoom);
 
 			// compute the number of the tile
-			var numX:Number = Math.floor(bounds.centerPixel.x / (this.tileWidth * resolution));
-			var numY:Number = Math.floor(bounds.centerPixel.y / (this.tileHeight * resolution));
+			var numX:Number = Math.floor(bounds.center.x / (this.tileWidth * resolution));
+			var numY:Number = Math.floor(bounds.center.y / (this.tileHeight * resolution));
 
 			var srcfinal:String = this.url+this.directoryPrefix;
 

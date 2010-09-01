@@ -56,10 +56,7 @@ package {
 			_map.addLayer(markers);
 			
 			// Add Controls to map
-			_map.addControl(new MousePosition());
-			_map.addControl(new LayerSwitcher());
-			_map.addControl(new PanZoomBar());
-			
+			_map.addControl(new MousePosition());			
 			
 			_map.addHandler(new ZoomGestureHandler());
 			_map.addHandler(new PanGestureHandler());
