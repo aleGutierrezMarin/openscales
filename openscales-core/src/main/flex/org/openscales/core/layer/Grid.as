@@ -7,9 +7,9 @@ package org.openscales.core.layer
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.Trace;
-	import org.openscales.core.basetypes.linkedList.ILinkedListNode;
-	import org.openscales.core.basetypes.linkedList.LinkedList;
-	import org.openscales.core.basetypes.linkedList.LinkedListBitmapNode;
+	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
+	import org.openscales.core.basetypes.linkedlist.LinkedList;
+	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.TileEvent;
