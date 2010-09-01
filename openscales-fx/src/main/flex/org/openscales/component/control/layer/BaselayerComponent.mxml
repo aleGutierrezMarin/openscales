@@ -31,15 +31,6 @@
 	       layer.alpha = (event.target as HSlider).value/100;
 	    }
 	    
-	    private function manageOpacity(event:TrackBaseEvent):void{
-	    		if(layer.map!=null && layer.map.bitmapTransition!=null && layer.map.getChildIndex(layer.map.bitmapTransition)!=-1){
-	    		layer.map.removeChild(layer.map.bitmapTransition);
-	    		layer.map.bitmapTransition=null;
-	    		}
-	    }
-	    
-	 	   
-	         
       private function onDrag(event:Event):void {
         event.stopPropagation();
       }
@@ -108,7 +99,7 @@
 	 <s:HGroup id="Hbox2" width="100%">
         <s:Label text="0%"/>
     <s:HSlider id="opacityControl" width="100" height="5" value="{this._baseLayerVisibility}" minimum="0" maximum="100"
-      change="layerOpacity(event)" thumbPress="manageOpacity(event)" liveDragging="true" mouseDown="onDrag(event)"/>
+      change="layerOpacity(event)" liveDragging="true" mouseDown="onDrag(event)"/>
       <s:Label text="100%"/>
   	</s:HGroup>	
 </s:VGroup>

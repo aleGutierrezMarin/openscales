@@ -68,8 +68,6 @@ package org.openscales.core.handler.mouse
 			}
 
 			this.map.layerContainer.startDrag();
-			if (this.map.bitmapTransition)
-				this.map.bitmapTransition.startDrag();
 
 			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
 			this._startCenter = this.map.center;
@@ -85,8 +83,6 @@ package org.openscales.core.handler.mouse
 		 */
 		protected function onMouseUp(event:Event):void {
 			this.map.layerContainer.stopDrag();
-			if (this.map.bitmapTransition)
-				this.map.bitmapTransition.stopDrag();
 
 			this.map.buttonMode=false;
 			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
