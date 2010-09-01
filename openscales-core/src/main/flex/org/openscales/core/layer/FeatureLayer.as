@@ -168,14 +168,15 @@ package org.openscales.core.layer
 			}
 			
 			// Reprojection if needed
-			if ((this.map) && (this.map.baseLayer) && (this.projection.srsCode != this.map.baseLayer.projection.srsCode)) {
+			if ((this.map) && (this.map.baseLayer) && (this._displayProjection.srsCode != this.map.baseLayer.projection.srsCode)) {
 				feature.geometry.transform(this.projection, this.map.baseLayer.projection);
 			}
 			
 			// Add the feature to the layer
 			feature.layer = this;
 			this.addChild(feature);
-			feature.draw();
+			if(this.map)
+				feature.draw();
 			
 			// If needed, dispatch an event with the feature added
 			if (dispatchFeatureEvent && this.map) {
