@@ -139,7 +139,7 @@ package org.openscales.core.handler.mouse
 		 * beginning of the drag)
 		 */
 		protected function startCoordinates():Location {
-			return (this.map && this._downPixel) ? this.map.getLonLatFromMapPx(this._downPixel) : null;
+			return (this.map && this._downPixel) ? this.map.getLocationFromMapPx(this._downPixel) : null;
 		}
 		
 		/**
@@ -178,8 +178,8 @@ package org.openscales.core.handler.mouse
 			if ((! rect) || (! this.map)) {
 				return null;
 			}
-			var bottomLeft:Location = this.map.getLonLatFromMapPx(new Pixel(rect.left, rect.bottom));
-			var topRight:Location = this.map.getLonLatFromMapPx(new Pixel(rect.right, rect.top));
+			var bottomLeft:Location = this.map.getLocationFromMapPx(new Pixel(rect.left, rect.bottom));
+			var topRight:Location = this.map.getLocationFromMapPx(new Pixel(rect.right, rect.top));
 			if(this.map.baseLayer)
 				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, map.baseLayer.projection);
 			else
