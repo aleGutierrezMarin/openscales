@@ -123,7 +123,7 @@ package org.openscales.core.handler.feature.draw
 			//manage the case where the layer projection is different from the map projection
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line
-			_startPoint = this.map.getMapPxFromLonLat(lonlat);
+			_startPoint = this.map.getMapPxFromLocation(lonlat);
 			
 			//The user click for the first time
 			if(newFeature){
@@ -169,7 +169,7 @@ package org.openscales.core.handler.feature.draw
 			_drawContainer.graphics.clear();
 			//we update the pixel of the last point which has changed
 			var tempPoint:Point = _lineString.getLastPoint();
-			_startPoint = this.map.getMapPxFromLonLat(new Location(tempPoint.x, tempPoint.y));
+			_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));
 		}
 
 		//Getters and Setters		

@@ -103,7 +103,7 @@ package org.openscales.core.handler.feature.draw
 				//we determine the point where the user clicked
 				var pixel:Pixel = new Pixel(map.mouseX ,map.mouseY);
 				this._lastPointPixel= new Pixel(map.mouseX ,map.mouseY);
-				var lonlat:Location = this.map.getLonLatFromMapPx(pixel);
+				var lonlat:Location = this.map.getLocationFromMapPx(pixel);
                 var point:Point = new Point(lonlat.lon,lonlat.lat);
 				var lring:LinearRing=null;
 				var polygon:Polygon=null;
