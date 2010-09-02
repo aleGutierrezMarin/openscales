@@ -3,6 +3,7 @@ package org.openscales.core.style.stroke
 	import flash.display.CapsStyle;
 	import flash.display.Graphics;
 	import flash.display.JointStyle;
+	import flash.display.LineScaleMode;
 	
 	/**
 	 * Class defining how a stroke is rendered
@@ -127,7 +128,7 @@ package org.openscales.core.style.stroke
 						linejoin = JointStyle.MITER;
 				}
 
-				graphics.lineStyle(this.width, this.color, this.opacity, false, "normal", linecap, linejoin);
+				graphics.lineStyle(this.width, this.color, this.opacity, false, LineScaleMode.NONE, linecap, linejoin);
 			
 		}
 	}

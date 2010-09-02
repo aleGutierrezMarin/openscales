@@ -1,3 +1,15 @@
 bin
 target
 .DS_Store
+
+syntax: regexp
+^openscales-core/src/main/flex/FlexUnitApplication\.mxml$
+syntax: regexp
+^openscales-geometry/src/main/flex/FlexUnitApplication\.mxml$
+syntax: regexp
+^openscales-proj4as/src/main/flex/FlexUnitApplication\.mxml$
+syntax: regexp
+^openscales-fx/src/main/flex/FlexUnitApplication\.mxml$
+glob:openscales-proj4as/.FlexUnitSettings/FlexUnitApplicationLastRun.xml
+glob:openscales-core/.FlexUnitSettings/FlexUnitApplicationLastRun.xml
+glob:openscales-fx/.FlexUnitSettings/FlexUnitApplicationLastRun.xml
