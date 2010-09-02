@@ -10,7 +10,6 @@ package org.openscales.core.configuration
 	import org.openscales.core.control.Control;
 	import org.openscales.core.control.LayerSwitcher;
 	import org.openscales.core.control.MousePosition;
-	import org.openscales.core.control.PanZoom;
 	import org.openscales.core.control.ScaleLine;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.DragFeatureHandler;
@@ -120,8 +119,8 @@ package org.openscales.core.configuration
 		}
 		
 		public function endConfigureMap(map:Map):void {
-			if(config.@zoom != ""){
-				map.zoom = Number(config.@zoom);
+			if(config.@resolution != ""){
+				map.resolution = Number(config.@resolution);
 			}
 			if((config.@lon != "") && (config.@lat != "")){
 				if(config.@projection && config.@projection != "") {
@@ -330,11 +329,11 @@ package org.openscales.core.configuration
 						wfsLayer.style = this.parseStyle(xmlStyle[0]);
 				}
 				
-				if (String(xmlNode.@minZoomLevel) != "" ) {
-					wfsLayer.minZoomLevel = Number(xmlNode.@minZoomLevel);
+				if (String(xmlNode.@minResolution) != "" ) {
+					wfsLayer.minResolution = Number(xmlNode.@minResolution);
 				}
-				if (String(xmlNode.@minZoomLevel) != "") {
-					wfsLayer.maxZoomLevel = Number(xmlNode.@maxZoomLevel);
+				if (String(xmlNode.@maxResolution) != "") {
+					wfsLayer.maxResolution = Number(xmlNode.@maxResolution);
 				}
 				wfsLayer.capabilitiesVersion = capabilitiesVersion;
 				layer=wfsLayer;
@@ -531,14 +530,7 @@ package org.openscales.core.configuration
 				layerSwitcher.name = xmlNode.@id;
 				layerSwitcher.x = xmlNode.@x;
 				layerSwitcher.y = xmlNode.@y;
-				control = layerSwitcher;
-			}
-			else if(xmlNode.name() == "PanZoom"){
-				var pan:PanZoom = new PanZoom();
-				pan.name = xmlNode.@id;
-				pan.x = xmlNode.@x;
-				pan.y = xmlNode.@y;
-				control = pan;
+				control = layerSwitcher;		
 			} 
 			else if(xmlNode.name() == "ScaleLine"){
 				var scaleLine:ScaleLine = new ScaleLine();

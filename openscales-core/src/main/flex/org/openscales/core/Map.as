@@ -49,7 +49,7 @@ package org.openscales.core
 		private var _controls:Vector.<IControl> = new Vector.<IControl>();
 		private var _handlers:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _size:Size = null;
-		private var _zoom:Number = 0;
+		private var _resolution:Number = NaN;
 		private var _zooming:Boolean = false;
 		private var _loading:Boolean;
 		private var _center:Location = null;
@@ -202,15 +202,15 @@ package org.openscales.core
 					var center:Location = this.center;
 					if (center != null) {
 						if (oldExtent == null) {
-							this.moveTo(center, this.zoom, true);
+							this.moveTo(center, this.resolution, true);
 						} else {
 							this.moveTo(oldExtent.center,
-								this.getZoomForExtent(oldExtent), true);
+								this.getResolutionForExtent(oldExtent), true);
 						}
 					} else {
 						// The map must be fully defined as soon as its baseLayer is defined
 						this.moveTo(this._baseLayer.maxExtent.center,
-							this.getZoomForExtent(this._baseLayer.maxExtent), true);
+							this.getResolutionForExtent(this._baseLayer.maxExtent), true);
 					}
 					
 					this.dispatchEvent(new LayerEvent(LayerEvent.BASE_LAYER_CHANGED, newBaseLayer));
@@ -285,6 +285,10 @@ package org.openscales.core
 			for(var i:int=this.layers.length-1; i>=0; i--) {
 				removeLayer(this.layers[i],false);
 			}
+		}
+		
+		public function get zoom():Number {
+			return this.getZoomForResolution(this.resolution);
 		}
 		
 		/**
@@ -459,10 +463,8 @@ package org.openscales.core
 		 * @param forceMove Specifies whether or not to trigger zoom change events (needed on baseLayer change)
 		 *
 		 */
-		public function moveTo(lonlat:Location,
-								  zoom:Number = NaN,
-								  forceMove:Boolean = false):void {
-			var zoomChanged:Boolean = forceMove || (this.isValidZoomLevel(zoom) && (zoom!=this._zoom));
+		public function moveTo(lonlat:Location, resolution:Number = NaN, forceMove:Boolean = false):void {
+			var zoomChanged:Boolean = forceMove || (this.isValidResolutionLevel(resolution) && (resolution!=this._resolution));
 			
 			if (lonlat && !this.isValidLocation(lonlat)) {
 				Trace.log("Not a valid center, so do nothing");
@@ -505,7 +507,7 @@ package org.openscales.core
 				}
 				
 				if (zoomChanged) {
-					this._zoom = zoom;
+					this._resolution = resolution;
 				}
 				
 				if (zoomChanged) {
@@ -525,8 +527,8 @@ package org.openscales.core
 		 * @return Whether or not the zoom level passed in is non-null and within the min/max
 		 * range of zoom levels.
 		 */
-		private function isValidZoomLevel(zoomLevel:Number):Boolean {
-			return (this.baseLayer && !isNaN(zoomLevel) && (zoomLevel >= this.baseLayer.minZoomLevel) && (zoomLevel <= this.baseLayer.maxZoomLevel));
+		private function isValidResolutionLevel(resolution:Number):Boolean {
+			return (this.baseLayer && !isNaN(resolution) && (resolution >= this.baseLayer.minResolution) && (resolution <= this.baseLayer.maxResolution));
 		}
 		
 		/**
@@ -547,12 +549,12 @@ package org.openscales.core
 		 * @return the matching zoom level
 		 *
 		 */
-		private function getZoomForExtent(bounds:Bounds):Number {
-			var zoom:int = -1;
+		private function getResolutionForExtent(bounds:Bounds):Number {
+			var resolution:Number = NaN;
 			if (this.baseLayer != null) {
-				zoom = this.baseLayer.getZoomForExtent(bounds);
+				resolution = this.baseLayer.getResolutionForExtent(bounds);
 			}
-			return zoom;
+			return resolution;
 		}
 		
 		/**
@@ -576,7 +578,7 @@ package org.openscales.core
 		 * @param bounds
 		 */
 		public function zoomToExtent(bounds:Bounds):void {
-			this.moveTo(bounds.center, this.getZoomForExtent(bounds));
+			this.moveTo(bounds.center, this.getResolutionForExtent(bounds));
 		}
 		
 		/**
@@ -738,13 +740,13 @@ package org.openscales.core
 		/**
 		 * Current map zoom level.
 		 */
-		public function get zoom():Number
+		public function get resolution():Number
 		{
-			return _zoom;
+			return _resolution;
 		}
-		public function set zoom(newZoom:Number):void 
+		public function set resolution(newResolution:Number):void 
 		{
-			this.moveTo(this.center, newZoom);
+			this.moveTo(this.center, newResolution);
 		}
 		
 		/**	
@@ -793,7 +795,7 @@ package org.openscales.core
 				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
 				
 				if (this.baseLayer != null) {
-					this.moveTo(null, this.zoom, true);
+					this.moveTo(null, this.resolution, true);
 				}
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
@@ -890,10 +892,7 @@ package org.openscales.core
 		}
 		public function set extent(bounds:Bounds):void {
 			_extent = bounds;
-		}
-		public function get resolution():Number {
-			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : NaN;
-		}
+		}		
 		
 		public function get scale():Number {
 			var scale:Number = NaN;

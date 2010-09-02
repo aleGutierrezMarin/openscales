@@ -34,11 +34,11 @@
 			}
 			
 			private function onZoomOutClick(event:MouseEvent):void{
-				this.map.zoom--;
+				this.map.resolution*=2;
 			}
 			
 			private function onZoomInClick(event:MouseEvent):void{
-				this.map.zoom++;
+				this.map.resolution/=2;
 			}
 			
 			public function onZoomSliderThumbPress():void {
@@ -47,7 +47,7 @@
 			}
 			
 			public function onZoomSliderThumbRelease():void {
-				map.zoom = zoomSlider.value;
+				map.resolution = zoomSlider.value;
 				
 				if(map.zoom!=zoomSlider.value)  zoomSlider.value=map.zoom;
 				
@@ -55,7 +55,7 @@
 			}
 			
 			public function zoomSliderChange(event:Event):void {
-				map.zoom = zoomSlider.value;
+				map.resolution = zoomSlider.value;
 			}
 			
 			private function initializeZoomLevels(event:Event = null):void {
