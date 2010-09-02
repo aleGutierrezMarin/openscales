@@ -443,8 +443,8 @@ package org.openscales.core
 				return;
 			}		
 			if(this.center) {
-				var newCenterPx:Pixel = this.getMapPxFromLonLat(this.center).add(dx, dy);
-				var newCenterLonLat:Location = this.getLonLatFromMapPx(newCenterPx);
+				var newCenterPx:Pixel = this.getMapPxFromLocation(this.center).add(dx, dy);
+				var newCenterLonLat:Location = this.getLocationFromMapPx(newCenterPx);
 				this.moveTo(newCenterLonLat);
 			}
 		}
@@ -487,8 +487,8 @@ package org.openscales.core
 				if (centerChanged) {
 					this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
 					if ((!zoomChanged) && (this.center)) {
-						var originPx:Pixel = this.getMapPxFromLonLat(this._layerContainerOrigin);
-						var newPx:Pixel = this.getMapPxFromLonLat(lonlat);
+						var originPx:Pixel = this.getMapPxFromLocation(this._layerContainerOrigin);
+						var newPx:Pixel = this.getMapPxFromLocation(lonlat);
 						
 						if (originPx == null || newPx == null)
 							return;
@@ -591,7 +591,7 @@ package org.openscales.core
 		 * Return a LonLat which is the passed-in view port Pixel, translated into lon/lat
 		 *	by the current base layer
 		 */
-		public function getLonLatFromMapPx(px:Pixel):Location {
+		public function getLocationFromMapPx(px:Pixel):Location {
 			var lonlat:Location = null;
 			if (this.baseLayer != null) {
 				lonlat = this.baseLayer.getLonLatFromMapPx(px);
@@ -603,10 +603,10 @@ package org.openscales.core
 		 * Return a Pixel which is the passed-in LonLat, translated into map
 		 * pixels by the current base layer
 		 */
-		public function getMapPxFromLonLat(lonlat:Location):Pixel {
+		public function getMapPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = null;
 			if (this.baseLayer != null) {
-				px = this.baseLayer.getMapPxFromLonLat(lonlat);
+				px = this.baseLayer.getMapPxFromLocation(lonlat);
 			}
 			return px;
 		}
@@ -642,14 +642,14 @@ package org.openscales.core
 		 */
 		public function getLocationFromLayerPx(px:Pixel):Location {
 			px = this.getMapPxFromLayerPx(px);
-			return this.getLonLatFromMapPx(px);
+			return this.getLocationFromMapPx(px);
 		}
 		
 		/**
 		 * Return a layer Pixel computed from a LonLat.
 		 */
 		public function getLayerPxFromLocation(lonlat:Location):Pixel {
-			var px:Pixel = this.getMapPxFromLonLat(lonlat);
+			var px:Pixel = this.getMapPxFromLocation(lonlat);
 			return this.getLayerPxFromMapPx(px);
 		}
 		

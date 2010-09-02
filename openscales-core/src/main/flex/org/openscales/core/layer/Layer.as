@@ -203,7 +203,7 @@ package org.openscales.core.layer {
 		/**
 		 * Return a Pixel which is the passed-in LonLat,translated into map pixels.
 		 */
-		public function getMapPxFromLonLat(lonlat:Location):Pixel {
+		public function getMapPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = null;
 			if (lonlat != null) {
 				var resolution:Number = this.map.resolution;

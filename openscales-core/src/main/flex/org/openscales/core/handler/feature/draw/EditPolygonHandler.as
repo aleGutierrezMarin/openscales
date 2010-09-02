@@ -151,8 +151,8 @@ package org.openscales.core.handler.feature.draw
 			}
 			//We draw the temporaries lines of the polygon
 			if(point1!=null && point2!=null){
-				point1Px=this.map.getMapPxFromLonLat(new Location(point1.x,point1.y));
-				point2Px=this.map.getMapPxFromLonLat(new Location(point2.x,point2.y));
+				point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y));
+				point2Px=this.map.getMapPxFromLocation(new Location(point2.x,point2.y));
 				
 		 		_drawContainer.graphics.clear();
 		 		_drawContainer.graphics.lineStyle(1, 0xFF00BB);	 

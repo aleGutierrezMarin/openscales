@@ -54,7 +54,7 @@ package org.openscales.core.handler.zoom
 			_drawContainer.graphics.beginFill(_fillColor,0.5);
 			_drawContainer.graphics.drawRect(map.mouseX,map.mouseY,1,1);
 			_drawContainer.graphics.endFill();
-			this._startCoordinates = this.map.getLonLatFromMapPx(new Pixel(map.mouseX, map.mouseY));
+			this._startCoordinates = this.map.getLocationFromMapPx(new Pixel(map.mouseX, map.mouseY));
 			
 		}
 		
@@ -63,7 +63,7 @@ package org.openscales.core.handler.zoom
 			this.map.removeEventListener(MouseEvent.MOUSE_DOWN,startBox);
 			this.map.removeEventListener(MouseEvent.MOUSE_UP,endBox);
 			_drawContainer.graphics.clear();
-			var endCoordinates:Location = this.map.getLonLatFromMapPx(new Pixel(map.mouseX, map.mouseY));
+			var endCoordinates:Location = this.map.getLocationFromMapPx(new Pixel(map.mouseX, map.mouseY));
 			if(_startCoordinates != null) {
 				if(_startCoordinates.equals(endCoordinates)){
 					this.map.moveTo(endCoordinates);
@@ -82,7 +82,7 @@ package org.openscales.core.handler.zoom
 		}
 		
 		private function expandArea(e:MouseEvent) : void {
-			var ll:Pixel = map.getMapPxFromLonLat(_startCoordinates);
+			var ll:Pixel = map.getMapPxFromLocation(_startCoordinates);
 			_drawContainer.graphics.clear();
 			_drawContainer.graphics.lineStyle(1,_fillColor);
 			_drawContainer.graphics.beginFill(_fillColor,0.25);
