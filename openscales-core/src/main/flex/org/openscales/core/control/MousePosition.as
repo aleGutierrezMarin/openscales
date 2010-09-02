@@ -89,7 +89,7 @@ package org.openscales.core.control
 					return;
 				}
 				this.lastXy = new Pixel(map.mouseX, map.mouseY);
-				lonLat = this.map.getLonLatFromMapPx(this.lastXy);
+				lonLat = this.map.getLocationFromMapPx(this.lastXy);
 			}
 
 			if (lonLat == null) {
