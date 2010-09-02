@@ -85,8 +85,8 @@ package org.openscales.core.feature {
 			var resolution:Number = this.layer.map.resolution
 			var dX:int = -int(this.layer.map.layerContainer.x) + this.left;
 			var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
-			x = dX + this.geometry.bounds.centerPixel.x / resolution;
-			y = dY - this.geometry.bounds.centerPixel.y / resolution;
+			x = dX + this.geometry.bounds.center.x / resolution;
+			y = dY - this.geometry.bounds.center.y / resolution;
 
 			if (symbolizer.graphic) {
 

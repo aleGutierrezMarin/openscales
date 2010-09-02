@@ -21,6 +21,7 @@ package org.openscales.core.handler.mouse
 	{
 		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
+		private var _offset:Pixel = null;
 
 		private var _firstDrag:Boolean = true;
 
@@ -67,11 +68,10 @@ package org.openscales.core.handler.mouse
 				_firstDrag = false;
 			}
 
-			this.map.layerContainer.startDrag();
-			if (this.map.bitmapTransition)
-				this.map.bitmapTransition.startDrag();
+			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 
 			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
+			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
 			this._startCenter = this.map.center;
 			this.map.buttonMode=true;
 			this._dragging=true;
@@ -79,14 +79,20 @@ package org.openscales.core.handler.mouse
 			if(this.onstart!=null)
 				this.onstart(event as MouseEvent);
 		}
+		
+		protected function onMouseMove(event:MouseEvent):void  {
+			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
+			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
+			
+			// Force update regardless of the framerate for smooth drag
+			event.updateAfterEvent();
+		}
 
 		/**
 		 *The MouseUp Listener
 		 */
 		protected function onMouseUp(event:Event):void {
-			this.map.layerContainer.stopDrag();
-			if (this.map.bitmapTransition)
-				this.map.bitmapTransition.stopDrag();
+			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 
 			this.map.buttonMode=false;
 			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
@@ -161,7 +167,7 @@ package org.openscales.core.handler.mouse
 			// We have to reset the bitmap position to the right center.
 			if (this.map.center.equals(oldCenter)) {
 				Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
-				this.map.resetCenterLayerContainer();
+				this.map.moveTo(this.map.center);
 			}
 		}
 	}

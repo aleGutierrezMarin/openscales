@@ -66,7 +66,7 @@ package org.openscales.core.handler.zoom
 			var endCoordinates:Location = this.map.getLonLatFromMapPx(new Pixel(map.mouseX, map.mouseY));
 			if(_startCoordinates != null) {
 				if(_startCoordinates.equals(endCoordinates)){
-					this.map.setCenter(endCoordinates);
+					this.map.moveTo(endCoordinates);
 				}else{
 					this.map.zoomToExtent(new Bounds(Math.min(_startCoordinates.lon,endCoordinates.lon),
 						Math.min(endCoordinates.lat,_startCoordinates.lat),

@@ -6,12 +6,7 @@
     <classEntry path="org.openscales.core.Trace"/>
     <classEntry path="org.openscales.core.UID"/>
     <classEntry path="org.openscales.core.Util"/>
-    <classEntry path="org.openscales.core.basetypes.DraggableSprite"/>
-    <classEntry path="org.openscales.core.basetypes.linkedlist.AbstractLinkedListNode"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedList"/>
-    <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedListNode"/>
-    <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedList"/>
-    <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMap"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMapEntry"/>
     <classEntry path="org.openscales.core.basetypes.maps.IHashMapEntry"/>
