@@ -46,6 +46,8 @@ package org.openscales.core.layer
 		private var _tileWidth:Number = DEFAULT_TILE_WIDTH;
 		
 		private var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
+		
+		private var _tileTweenEnabled:Boolean = false;
 
 
 		/**
@@ -228,7 +230,7 @@ package org.openscales.core.layer
 		 * @param bounds
 		 */
 		public function initSingleTile(bounds:Bounds):void {
-			var center:Location = bounds.centerLonLat;
+			var center:Location = bounds.center;
 			var tileWidth:Number = bounds.width;
 			var tileHeight:Number = bounds.height;
 			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
@@ -236,7 +238,7 @@ package org.openscales.core.layer
 												center.lon + (tileWidth/2),
 												center.lat + (tileHeight/2));
 			var ul:Location = new Location(tileBounds.left, tileBounds.top);
-			var px:Pixel = this.map.getLayerPxFromLonLat(ul);
+			var px:Pixel = this.map.getLayerPxFromLocation(ul);
 
 			if(this._grid==null) {
 				this._grid = new Vector.<Vector.<ImageTile>>(1);

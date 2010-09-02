@@ -3,10 +3,10 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
-	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
+	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
@@ -121,7 +121,7 @@ package org.openscales.core.layer.ogc
 			if(this.projection.srsCode != this.map.baseLayer.projection.srsCode) {
 					projectedBounds.transform(this.map.baseLayer.projection, this.projection);
 			}
-			var center:Location = projectedBounds.centerLonLat;
+			var center:Location = projectedBounds.center;
 
 			if (projectedBounds.containsBounds(this.maxExtent)) {
 				projectedBounds = this.maxExtent.clone();
@@ -295,8 +295,8 @@ package org.openscales.core.layer.ogc
 			return this._featuresids;
 		}
 
-		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true):void {
-			super.addFeature(feature,dispatchFeatureEvent);
+		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
+			super.addFeature(feature,dispatchFeatureEvent, reproject);
 			if(feature.layer==null)
 				return;
 			feature.draw();
