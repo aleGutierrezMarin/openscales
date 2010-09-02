@@ -60,6 +60,8 @@
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
     <classEntry path="org.openscales.fx.layer.FxTMS"/>
+    <classEntry path="org.openscales.skin.IconButtonSkin"/>
+    <classEntry path="org.openscales.component.control.IconButton"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
