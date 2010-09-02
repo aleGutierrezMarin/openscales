@@ -50,14 +50,14 @@ package org.openscales.core.handler.multitouch {
 			} if (event.phase==GesturePhase.END) {
 				
 				if(cummulativeScaleX*cummulativeScaleY > 1)
-					this.map.zoom = this.map.zoom + 1;
+					this.map.resolution = this.map.resolution / 2;
 				else
-					this.map.zoom = this.map.zoom - 1;
+					this.map.resolution = this.map.resolution * 2;
 			}
 		}
 		
 		private function onTwoFingerTap(event:GestureEvent):void {
-			this.map.zoom = this.map.zoom + 1;
+			this.map.resolution = this.map.resolution / 2;
 		}
 		
 	}

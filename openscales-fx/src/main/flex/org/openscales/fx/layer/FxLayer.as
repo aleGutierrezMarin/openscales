@@ -12,12 +12,10 @@ package org.openscales.fx.layer
 	{
 		protected var _layer:Layer;
 		
-		protected var _minZoomLevel:Number = NaN;
-		
-		protected var _maxZoomLevel:Number = NaN;
+		protected var _minResolution:Number = NaN;
 		
 		protected var _maxResolution:Number = NaN;
-		
+				
 		protected var _numZoomLevels:Number = NaN;
 		
 		protected var _maxExtent:Bounds = null;
@@ -46,10 +44,10 @@ package org.openscales.fx.layer
 			}
 			if(this._resolutions)
 				this.layer.resolutions = this._resolutions;
-			if(!isNaN(this.minZoomLevel))
-				this.layer.minZoomLevel = this.minZoomLevel;
-			if(!isNaN(this.maxZoomLevel))
-				this.layer.maxZoomLevel = this.maxZoomLevel;
+			if(!isNaN(this.minResolution))
+				this.layer.minResolution = this.minResolution;
+			if(!isNaN(this.maxResolution))
+				this.layer.maxResolution = this.maxResolution;
 			if(this._maxExtent)
 				this.layer.maxExtent = this._maxExtent;
 			
@@ -119,21 +117,14 @@ package org.openscales.fx.layer
 			return this._maxResolution;
 		}
 		
-		public function set minZoomLevel(value:Number):void {
-			this._minZoomLevel = value;
+		public function set minResolution(value:Number):void {
+			this._minResolution = value;
 		}
 		
-		public function get minZoomLevel():Number {
-			return this._minZoomLevel;
+		public function get minResolution():Number {
+			return this._minResolution;
 		}
 		
-		public function set maxZoomLevel(value:Number):void {
-			this._maxZoomLevel = value;
-		}
-		
-		public function get maxZoomLevel():Number {
-			return this._maxZoomLevel;
-		}
 		
 		public function set numZoomLevels(value:Number):void {
 			this._numZoomLevels = value;

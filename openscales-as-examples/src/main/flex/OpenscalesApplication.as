@@ -7,7 +7,6 @@ package {
 	import org.openscales.core.Map;
 	import org.openscales.core.control.LayerSwitcher;
 	import org.openscales.core.control.MousePosition;
-	import org.openscales.core.control.PanZoomBar;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
@@ -47,7 +46,6 @@ package {
 			// Add Controls to map
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerSwitcher());
-			_map.addControl(new PanZoomBar());
 			
 
 			var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
@@ -62,7 +60,6 @@ package {
 
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);
-			_map.zoom=5;
 						
 			this.addChild(_map);
 		}

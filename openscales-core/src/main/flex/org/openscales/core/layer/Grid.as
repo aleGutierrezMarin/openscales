@@ -68,7 +68,7 @@ package org.openscales.core.layer
 			//TOdo delete url and params after osmparams work
 			super(name, url, params);
 
-			//this.grid = new Vector.<Vector.<Tile>>();
+			this.generateResolutions();
 
 			this.buffer = 1;
 			
