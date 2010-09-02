@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<control:Control xmlns:control="org.openscales.component.control.*"
+				 xmlns:mx="http://www.adobe.com/2006/mxml"
+				 xmlns:s="library://ns.adobe.com/flex/spark"
+				 >
+
+	<!-- TODO : drawing handlers are too much tighly coupled with controls, this should be refactor to make drawing
+		 integration much simpler -->
+
+	<mx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.handler.feature.draw.DrawHandler;
+			import org.openscales.core.layer.FeatureLayer;
+			
+
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.ItemClickEvent;
+			
+			/**
+			 * Index of the tab Drawing, default : -1
+			 */
+			private var _indexTabDrawing:Number = -1;
+			
+			public var drawLayer:FeatureLayer = new FeatureLayer("Drawings");
+			
+			private var _drawHandler:DrawHandler = new DrawHandler(null, true, drawLayer);;
+			
+			/**
+			 * Allow you to merge different selected feature in one.
+			 * You can't merge a polygon and a point (for example), All features must be the same geometry
+			 */
+			private function onMergeClick(event:MouseEvent):void {
+				if (this._drawHandler.multiFeaturesHandler.multiPolygonForbidden) {
+					Alert.show("For the moment, you can't merge MultiPolygon", "Information", Alert.OK | Alert.NONMODAL);
+				}
+			}
+
+			/**
+			 * Show a warning message when you delete selected feature. User can cancel if it's a mistake
+			 */
+			public function onDeleteSelectedClick(event:Event):void {
+				Alert.show("You want to delete selected feature(s). \nAre you sure ?", "Warning", Alert.YES | Alert.NO, null, alertClickHandler);
+			}
+
+			/**
+			 * Check the user's answer
+			 * (Called by onDeleteSelectedClick method)
+			 */
+			private function alertClickHandler(event:CloseEvent):void {
+				// User click on "YES", he wants to apply changes
+				if (event.detail == Alert.YES) {
+					this._drawHandler.deleteSelectedFeatures();
+				}
+			}
+
+			
+
+			/**
+			 * User clicks on delete all button
+			 */
+			private function onDeleteAllClick(event:Event):void {
+				Alert.show("You want to delete all features. \nAre you sure ?", "Warning", Alert.YES | Alert.NO, null, alertDeleteHandler);
+			}
+
+			private function alertDeleteHandler(event:CloseEvent):void {
+				// User click on "YES", he wants to delete all
+				if (event.detail == Alert.YES) {
+					drawLayer.reset();
+				}
+			}
+			
+			override public function set map(value:Map):void {
+				super.map = value;
+				if (this.map != null) {
+					this._drawHandler.map = this.map;
+				}
+			}
+
+
+			/**
+			 * Click on the togglebarbutton. Index button starts from 0.
+			 */
+			private function clickHandler(event:ItemClickEvent):void {
+				var handler:Number = event.index; // handler is a number because of toggleButtonBar
+				switch (handler) {
+					case 0:
+						this._drawHandler.mode = DrawHandler.DRAG_MODE;
+						break;
+					case 1:
+						this._drawHandler.mode = DrawHandler.SELECT_MODE;
+						break;
+					case 2:
+						this._drawHandler.mode = DrawHandler.DRAW_POINT_MODE;
+						break;
+					case 3:
+						this._drawHandler.mode = DrawHandler.DRAW_PATH_MODE;
+						break;
+					case 4:
+						this._drawHandler.mode = DrawHandler.DRAW_POLYGON_MODE;
+						break;
+					case 5:
+						this._drawHandler.mode = DrawHandler.EDIT_MODE;
+						break;
+				}
+			}
+			
+		]]>
+	</mx:Script>
+
+	<s:VGroup horizontalAlign="center">
+		
+		<mx:ToggleButtonBar id="tgBar"
+							buttonHeight="40"
+							buttonWidth="40"
+							horizontalGap="6"
+							horizontalAlign="center"
+							selectedIndex="0"
+							itemClick="clickHandler(event);">
+			<mx:Array>
+				
+				<mx:Object id="btnPan"
+						   toolTip="Pan Map"
+						   icon="@Embed('/assets/images/icons/Icons-10.png')"
+						   width="32"/>
+				<mx:Object id="btnMouvement"
+						   toolTip="Select Features"
+						   icon="@Embed('/assets/images/icons/Icons-06.png')"
+						   width="32"/>
+				<mx:Object id="btnPoint"
+						   toolTip="Draw a point"
+						   icon="@Embed('/assets/images/icons/Icons-03.png')"
+						   width="32"/>
+				<mx:Object id="btnPath"
+						   toolTip="Draw a path"
+						   icon="@Embed('/assets/images/icons/Icons-04.png')"
+						   width="32"/>
+				<mx:Object id="btnPolygon"
+						   toolTip="Draw a polygon"
+						   icon="@Embed('/assets/images/icons/Icons-02.png')"
+						   width="32"/>
+				<mx:Object id="editFeature"
+						   toolTip="Edit Feature on draw Layer"
+						   icon="@Embed('/assets/images/icons/Icons-08.png')"
+						   width="32"/>
+			</mx:Array>
+		</mx:ToggleButtonBar>
+		
+		<s:HGroup gap="6">
+			<mx:Button id="btnDeleteLast"
+					   width="38"
+					   height="38"
+					   toolTip="Delete the last drawing vertex"
+					   icon="@Embed('/assets/images/icons/Icons-07.png')"
+					   click="this._drawHandler.onDeleteLastClick(event)"/>
+			<mx:Button id="btnDeleteAll"
+					   width="38"
+					   height="38"
+					   toolTip="Delete all the drawn features"
+					   icon="@Embed('/assets/images/icons/Icons-09.png')"
+					   click="onDeleteAllClick(event)"/>
+		</s:HGroup>
+		
+	</s:VGroup>
+
+</control:Control>

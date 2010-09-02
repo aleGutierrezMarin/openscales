@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<control:Control xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:control="org.openscales.component.control.*"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	>
+    
+	<mx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			
+			/**
+			 * Control of mousePosition
+			 */
+			 private var mousePosition:MousePosition = new MousePosition();
+			  
+			/**
+			 * Set the map. Affect a default position if this position is null
+			 */
+			override public function set map(value:Map):void {
+				super.map = value;
+				if (this.map != null) {
+					mousePosition.map = map;
+				}
+			}
+		]]>
+	</mx:Script>
+	
+</control:Control>
