@@ -213,8 +213,8 @@ package org.openscales.core.utils
 			trace("StringUtilsTest - test 3.8 :");
 			Assert.assertStrictlyEquals("0", StringUtils.sprintf("%s", 0));
 			//oroginal test didn't pass whilst the result is correct :
-			//Assert.assertStrictlyEquals("\u0000", StringUtils.sprintf("%c", 0));
-			Assert.assertStrictlyEquals("", StringUtils.sprintf("%c", 0));
+			Assert.assertStrictlyEquals("\u0000", StringUtils.sprintf("%c", 0));
+			//Assert.assertStrictlyEquals("", StringUtils.sprintf("%c", 0));
 			Assert.assertStrictlyEquals("0", StringUtils.sprintf("%d", 0));
 			Assert.assertStrictlyEquals("0", StringUtils.sprintf("%b", 0));
 			Assert.assertStrictlyEquals("0", StringUtils.sprintf("%o", 0));

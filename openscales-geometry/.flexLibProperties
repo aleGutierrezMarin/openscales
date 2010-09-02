@@ -19,7 +19,6 @@
     <classEntry path="org.openscales.geometry.MultiLineString"/>
     <classEntry path="org.openscales.geometry.Point"/>
     <classEntry path="org.openscales.geometry.Polygon"/>
-    <classEntry path="org.openscales.GeometryTestSuite"/>
     <classEntry path="org.openscales.geometry.ContainsPointTest"/>
     <classEntry path="org.openscales.geometry.OperationGeometryTest"/>
     <classEntry path="org.openscales.IProjectable"/>
