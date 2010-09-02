@@ -9,7 +9,7 @@ package org.openscales.core.handler.mouse
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-
+	
 	/**
 	 * DragHandler allows to drag (pan) the map
 	 *
@@ -21,9 +21,10 @@ package org.openscales.core.handler.mouse
 	{
 		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
-
+		private var _offset:Pixel = null;
+		
 		private var _firstDrag:Boolean = true;
-
+		
 		private var _dragging:Boolean = false;
 		
 		/**
@@ -31,7 +32,7 @@ package org.openscales.core.handler.mouse
 		 */
 		private var _onStart:Function=null;
 		private var _oncomplete:Function=null;
-
+		
 		/**
 		 * DragHandler constructor
 		 *
@@ -49,7 +50,7 @@ package org.openscales.core.handler.mouse
 				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 			}
 		}
-
+		
 		override protected function unregisterListeners():void{
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
@@ -66,10 +67,11 @@ package org.openscales.core.handler.mouse
 				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
 				_firstDrag = false;
 			}
-
+			
 			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
-
+			
 			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
+			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
 			this._startCenter = this.map.center;
 			this.map.buttonMode=true;
 			this._dragging=true;
@@ -79,19 +81,19 @@ package org.openscales.core.handler.mouse
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
-			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._start.x;
-			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._start.y;
+			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
+			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
 			
 			// Force update regardless of the framerate for smooth drag
 			event.updateAfterEvent();
 		}
-
+		
 		/**
 		 *The MouseUp Listener
 		 */
 		protected function onMouseUp(event:Event):void {
 			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
-
+			
 			this.map.buttonMode=false;
 			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
 			// A MapEvent.MOVE_END is emitted by the "set center" called in this.done
@@ -99,7 +101,7 @@ package org.openscales.core.handler.mouse
 			if (this.oncomplete!=null)
 				this.oncomplete(event as MouseEvent);
 		}
-
+		
 		// Getters & setters as3
 		/**
 		 * To know if the map is dragging
@@ -134,7 +136,7 @@ package org.openscales.core.handler.mouse
 		{
 			return this._oncomplete;
 		}
-
+		
 		/**
 		 * This function is used to recenter map after dragging
 		 */
@@ -150,8 +152,8 @@ package org.openscales.core.handler.mouse
 			var deltaX:Number = this._start.x - xy.x;
 			var deltaY:Number = this._start.y - xy.y;
 			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
-													this._startCenter.lat - deltaY * this.map.resolution,
-													this._startCenter.projection);
+				this._startCenter.lat - deltaY * this.map.resolution,
+				this._startCenter.projection);
 			// If the new position equals the old center, stop here
 			if (newPosition.equals(oldCenter)) {
 				Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");

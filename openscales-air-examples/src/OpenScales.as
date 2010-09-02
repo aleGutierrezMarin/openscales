@@ -21,7 +21,6 @@ package {
 	import org.openscales.core.Trace;
 	import org.openscales.core.control.LayerSwitcher;
 	import org.openscales.core.control.MousePosition;
-	import org.openscales.core.control.PanZoomBar;
 	import org.openscales.core.events.TraceEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PointFeature;
@@ -72,7 +71,6 @@ package {
 			
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);
-			_map.zoom=5;
 			
 			this.addChild(_map);
 			
