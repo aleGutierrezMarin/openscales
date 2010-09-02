@@ -6,7 +6,6 @@
     <classEntry path="org.openscales.core.Trace"/>
     <classEntry path="org.openscales.core.UID"/>
     <classEntry path="org.openscales.core.Util"/>
-    <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedList"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMap"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMapEntry"/>
     <classEntry path="org.openscales.core.basetypes.maps.IHashMapEntry"/>
@@ -36,7 +35,6 @@
     <classEntry path="org.openscales.core.events.TileEvent"/>
     <classEntry path="org.openscales.core.events.TraceEvent"/>
     <classEntry path="org.openscales.core.events.ZoomBoxEvent"/>
-    <classEntry path="org.openscales.core.feature.CustomMarker"/>
     <classEntry path="org.openscales.core.feature.Feature"/>
     <classEntry path="org.openscales.core.feature.LineStringFeature"/>
     <classEntry path="org.openscales.core.feature.Marker"/>
@@ -79,8 +77,6 @@
     <classEntry path="org.openscales.core.handler.mouse.DragHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
-    <classEntry path="org.openscales.core.handler.multitouch.PanGestureHandler"/>
-    <classEntry path="org.openscales.core.handler.multitouch.ZoomGestureHandler"/>
     <classEntry path="org.openscales.core.handler.zoom.ZoomBoxHandler"/>
     <classEntry path="org.openscales.core.layer.FeatureLayer"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
@@ -143,15 +139,6 @@
     <classEntry path="org.openscales.core.style.symbolizer.Symbolizer"/>
     <classEntry path="org.openscales.core.tile.ImageTile"/>
     <classEntry path="org.openscales.core.tile.Tile"/>
-    <classEntry path="org.openscales.core.MapTest"/>
-    <classEntry path="org.openscales.core.configuration.ConfigurationTest"/>
-    <classEntry path="org.openscales.core.format.KMLFormatTest"/>
-    <classEntry path="org.openscales.core.format.WKTFormatTest"/>
-    <classEntry path="org.openscales.core.layer.LayerTest"/>
-    <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
-    <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
-    <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
-    <classEntry path="org.openscales.geometry.GeometryTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
