@@ -152,7 +152,7 @@ package org.openscales.core.format
 
 				feature = this.parseFeature(xmlNode);
 				if (feature) {
-					this._onFeature(feature);
+					this._onFeature(feature, false, false);
 				}
 			}
 
