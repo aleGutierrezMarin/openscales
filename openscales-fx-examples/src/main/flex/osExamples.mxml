@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:os="*"
+			   frameRate="12"
+			   width="100%"
+			   height="100%"
+			   creationComplete="init();">
+	
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	<fx:Script>
+		private function init():void {
+
+		}
+	</fx:Script>
+	<s:HGroup id="app"
+			  width="100%"
+			  height="100%">
+		<mx:Accordion width="30%" height="100%">
+			<s:NavigatorContent label="Global examples" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button label="About OpenScales" width="100%"/>
+				<s:Button label="Basic example" width="100%"/>
+				<s:Button label="OpenStreetMap" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Map configuration" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button label="Manage the layers" width="100%"/>
+				<s:Button label="Add layers dynamically" width="100%"/>
+				<s:Button label="Style vector layers" width="100%"/>
+				<s:Button label="Configure with external XML" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Localize" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button label="using overview map" width="100%"/>
+				<s:Button label="with Yahoo geocoder" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Features handling" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button label="Draw and edit features" width="100%"/>
+				<s:Button label="Select and test features" width="100%"/>
+				<s:Button label="WFS GetFeatureInfo" width="100%"/>
+				<s:Button label="Reproject and query" width="100%"/>
+				<s:Button label="Display statistics" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Protocols" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button label="WFS as a base layer" width="100%"/>
+				<s:Button label="NASA WMS-C" width="100%"/>
+				<s:Button label="German WMS" width="100%"/>
+				<s:Button label="Image Layer" width="100%"/>
+				<s:Button label="Simple KML layer" width="100%"/>
+				<s:Button label="Advanced KML layer" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Security" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button label="IGN's GeoRM support" width="100%"/>
+			</s:NavigatorContent>
+		</mx:Accordion>
+		<!--<s:Panel id="demoSpace"
+				 width="70%"
+				 height="100%">
+		</s:Panel>-->
+			<os:OpenStreetMap id="coin" width="70%" height="100%"/>
+
+	</s:HGroup>
+	
+</s:Application>
