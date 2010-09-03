@@ -6,8 +6,6 @@
 	
 	<os:Map id="fxmap" width="100%" height="100%" zoom="2" centerLonLat="4.833,45.767">
 		
-		<os:TraceInfo x="{width-200}" y="0" visible="{displayTrace}" />
-		
 		<!-- OpenStreetMap EPSG:900913 -->
 		<os:Mapnik name="Mapnik" isBaseLayer="true"
 				   proxy="http://openscales.org/proxy.php?url=" />
@@ -23,6 +21,10 @@
 		
 	</os:Map>
 	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<!-- Specific tools of this example -->
 	
 	<os:ControlPanel title="Drawing Tools" x="10" y="10">

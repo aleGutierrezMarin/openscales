@@ -13,13 +13,14 @@
 			import org.openscales.core.events.TraceEvent;
 			
 			import spark.skins.spark.ButtonSkin;
+			import spark.utils.TextFlowUtil;
 			
-			[Bindable] private var temp:String;
-			
+			private var text:String = '<b>Output Console :</b';
 			[Bindable] public var _clearButton:Boolean = true;
 			public function get clearButton():Boolean {
 				return _clearButton;
 			}
+			
 			public function set clearButton(value:Boolean):void {
 				_clearButton = value;
 				if (clearLogsButton) {
@@ -44,7 +45,8 @@
 			}
 			
 			private function clearTrace():void {
-				temp = "<b>Output Console :</b>";
+				text = '<b>Output Console :</b';
+				textArea.textFlow = TextFlowUtil.importFromString(text);
 			}
 			
 			private function displayLog(event:TraceEvent):void {
@@ -56,23 +58,28 @@
 				} else if (event.type == TraceEvent.DEBUG) {
 					textColor = "#0066FF";
 				}
-				temp += "<br/><font color='"+textColor+"' size='9'>"+event.text+"</font><br/>----------";
+				text += "<br/><font color='"
+					+textColor
+					+"' size='9'>"
+					+event.text
+					+"</font><br/>----------";
+				textArea.textFlow = TextFlowUtil.importFromString(text);
 			}
 		]]>
 	</fx:Script>
 	
-	<s:VGroup width="100%" height="100%" horizontalAlign="center">
-		<s:TextArea id="textarea"
+	<s:VGroup width="100%"
+			  height="100%"
+			  horizontalAlign="center">
+		<s:TextArea id="textArea"
+					verticalScrollPolicy="on"
+					horizontalCenter="0"
+					verticalCenter="0"
 					width="100%"
-					height="100%"
-					verticalScrollPolicy="auto" 
-					valueCommit="textarea.verticalCenter=textarea.verticalCenter"
-					text="{temp}"/>
+					height="100%"/>
 		<s:Button id="clearLogsButton"
 				  label="Clear logs"
-				  click="{clearTrace();}" 
-				  skinClass="spark.skins.spark.ButtonSkin"
-				  chromeColor="#383737"/>
+				  click="clearTrace()"/>
 	</s:VGroup>
 </Control>
 

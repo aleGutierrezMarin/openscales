@@ -11,15 +11,9 @@
 			zoom="11"
 			centerLonLat="2.338345,48.871692">
 		
-		<os:TraceInfo id="traceInfo"
-					  x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
-		
 		<os:Mapnik name="Mapnik"
 				   isBaseLayer="true"
 				   proxy="http://openscales.org/proxy.php?url="/>
-		
 		
 		<os:KML url="http://www.parisavelo.net/velib.kml"
 				proxy="http://openscales.org/proxy.php?url="
@@ -37,7 +31,10 @@
 						  displayProjection="EPSG:4326"/>
 		
 	</os:Map>
-	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<os:ControlPanel x="10"
 					 y="10"
 					 width="140"

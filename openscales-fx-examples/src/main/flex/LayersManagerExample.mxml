@@ -10,9 +10,7 @@
 			height="100%"
 			zoom="4"
 			centerLonLat="-74.011,40.710"
-			proxy="http://openscales.org/proxy.php?url=">
-		
-		<os:TraceInfo x="{width-200}" y="0" visible="{displayTrace}" />		
+			proxy="http://openscales.org/proxy.php?url=">	
 		
 		<os:DragHandler />
 		<os:WheelHandler />
@@ -44,6 +42,10 @@
 		
 	</os:Map>
 	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<!-- Specific tools of this example -->
 	
 	<os:ControlPanel title="Layers Manager"

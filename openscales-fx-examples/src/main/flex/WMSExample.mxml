@@ -41,6 +41,10 @@
 		
 		
 	</os:Map>
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<os:ControlPanel x="10"
 					 y="10"
 					 width="140"

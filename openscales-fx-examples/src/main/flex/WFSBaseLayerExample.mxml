@@ -9,12 +9,6 @@
 			height="100%"
 			zoom="5"
 			centerLonLat="-74.011,40.710">
-
-		<os:TraceInfo id="traceInfo"
-					  x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
-
 		
 
 		<os:DragHandler/>
@@ -39,7 +33,10 @@
 		</os:WFS>
 
 	</os:Map>
-
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<mx:Script>
 		<![CDATA[
 			import org.openscales.core.events.MapEvent;

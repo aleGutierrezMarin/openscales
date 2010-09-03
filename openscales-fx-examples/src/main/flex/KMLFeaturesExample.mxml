@@ -11,11 +11,6 @@
 			zoom="7"
 			centerLonLat="-116.953,37.267">
 		
-		<os:TraceInfo id="traceInfo"
-					  x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
-		
 		<os:Mapnik name="Mapnik"
 				   isBaseLayer="true"
 				   proxy="http://openscales.org/proxy.php?url="/>
@@ -37,7 +32,10 @@
 						  displayProjection="EPSG:4326"/>
 		
 	</os:Map>
-	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<os:ControlPanel x="10"
 					 y="10"
 					 width="140"
