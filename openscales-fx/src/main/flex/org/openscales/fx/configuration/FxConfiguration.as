@@ -2,6 +2,7 @@ package org.openscales.fx.configuration
 {
 	import mx.containers.Canvas;
 	import mx.containers.Panel;
+	import mx.core.IVisualElementContainer;
 	
 	import org.openscales.component.control.Control;
 	import org.openscales.component.control.OverviewMap;
@@ -34,8 +35,8 @@ package org.openscales.fx.configuration
                         var control:Control = parseFxControl(xmlControl);
                         if(control != null){
                           control.map = map;
-                          if(map.parent != null) {
-                              map.parent.addChild(control);
+                          if(map.parent.parent && map.parent.parent as IVisualElementContainer) {
+                              (map.parent.parent as IVisualElementContainer).addElement(control);
                           } else {
                               Trace.log("map.parent is null so does not add the control");
                           } 
