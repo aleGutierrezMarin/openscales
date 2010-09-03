@@ -5,6 +5,7 @@ package org.openscales.fx
 	import flash.events.Event;
 	
 	import mx.core.Container;
+	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;

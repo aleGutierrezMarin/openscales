@@ -32,7 +32,7 @@ package org.openscales.fx.configuration
            
                   //add controls
                   for each (var xmlControl:XML in controls){
-                        var control:Control = parseFxControl(xmlControl);
+                        var control:Control = parseFxControl(xmlControl, map);
                         if(control != null){
                           control.map = map;
                           if(map.parent.parent && map.parent.parent as IVisualElementContainer) {
@@ -44,7 +44,7 @@ package org.openscales.fx.configuration
                   }                      
             }
 		
-		protected function parseFxControl(xmlNode:XML):Control {
+		protected function parseFxControl(xmlNode:XML, map:Map):Control {
 		 	var control:Control = null;
 		 					 					
 	 		if(xmlNode.name() == "PanComponent"){
