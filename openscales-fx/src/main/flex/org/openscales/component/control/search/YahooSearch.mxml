@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:control="org.openscales.component.control.*"
-	xmlns:s="library://ns.adobe.com/flex/spark"
-	minWidth="300" minHeight="100"
-	creationComplete="queryInput.setFocus()">
-	
-	<mx:Script>
+<control:Control xmlns:s="library://ns.adobe.com/flex/spark"
+				 xmlns:fx="http://ns.adobe.com/mxml/2009"
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
+				 xmlns:control="org.openscales.component.control.*"
+				 minWidth="300"
+				 minHeight="100"
+				 creationComplete="queryInput.setFocus()">
+	<fx:Declarations> 
+		<s:HTTPService id="service" url="{SERVICE_URL}"
+					   result="onServiceResult(event)"
+					   fault="onServiceFault(event)" />
+	</fx:Declarations> 
+	<fx:Script>
 		<![CDATA[
 			import mx.controls.dataGridClasses.DataGridItemRenderer;
 			import mx.rpc.events.FaultEvent;
@@ -19,7 +25,7 @@
 			private static const YAHOO_MAPS_NAMESPACE:Namespace=new Namespace('','urn:yahoo:maps');
 			
 			private static const SERVICE_URL:String='http://local.yahooapis.com/MapsService/V1/geocode';
-						
+			
 			private var request:Object={location:'',appid:'',output:'xml'};
 			
 			/**
@@ -81,11 +87,7 @@
 				}
 			}			
 		]]>
-	</mx:Script>
-	
-	<s:HTTPService id="service" url="{SERVICE_URL}"
-			result="onServiceResult(event)"
-			fault="onServiceFault(event)" />
+	</fx:Script>
 	
 	<s:VGroup width="100%" height="100%">
 		<mx:Form width="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
@@ -97,13 +99,13 @@
 			</s:HGroup>
 		</mx:Form>
 		<mx:DataGrid id="searchResult" width="100%"
-			doubleClickEnabled="true" doubleClick="onSearchResultsDoubleClick(event)" height="100%"
-			toolTip="Double click to visit...">
-       		<mx:columns >  
-          		<mx:DataGridColumn dataField="City" headerText="City"/>  
+					 doubleClickEnabled="true" doubleClick="onSearchResultsDoubleClick(event)" height="100%"
+					 toolTip="Double click to visit...">
+			<mx:columns >  
+				<mx:DataGridColumn dataField="City" headerText="City"/>  
 				<mx:DataGridColumn dataField="Country" headerText="Country"/> 
 			</mx:columns>
 		</mx:DataGrid> 
 	</s:VGroup>
-
+	
 </control:Control>

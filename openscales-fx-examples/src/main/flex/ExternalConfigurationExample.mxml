@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml"
-		   xmlns:os="http://openscales.org" creationComplete="initMap();">
+<s:Group xmlns="*"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:os="http://openscales.org"
+		 creationComplete="initMap();">
 	
 	
-	<mx:Canvas id="mapContainer" name="mapContainer"
-			   width="100%" height="100%"
-			   visible="true"/>
+	<s:Group id="mapContainer"
+			 name="mapContainer"
+			 width="100%"
+			 height="100%"
+			 visible="true"/>
 	
-	<mx:Script>
-       <![CDATA[
-		   import mx.events.DragEvent;
-		   
-		   import org.openscales.core.Map;
-		   import org.openscales.core.Trace;
-		   import org.openscales.basetypes.Size;
-		   import org.openscales.core.configuration.Configuration;
-		   import org.openscales.core.configuration.IConfiguration;
-		   import org.openscales.core.events.MapEvent;
-		   import org.openscales.core.style.Style;
+	<fx:Script>
+		<![CDATA[
+			import mx.events.DragEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			import org.openscales.basetypes.Size;
+			import org.openscales.core.configuration.Configuration;
+			import org.openscales.core.configuration.IConfiguration;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.style.Style;
 			
 			[Bindable] private var map:Map = null;
 			[Bindable] public var displayTrace:Boolean = false;	
@@ -36,11 +41,11 @@
 				var map:Map = new Map(600,400);
 				map.configuration.config = sampleMapConfOk;
 				map.configuration.configureMap(map);
-				mapContainer.rawChildren.addChildAt(map, 0);
+				mapContainer.addChildAt(map, 0);
 				map.size = new Size(mapContainer.width, mapContainer.height);
 			}
-		   
+			
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
-</mx:Canvas>
+</s:Group>

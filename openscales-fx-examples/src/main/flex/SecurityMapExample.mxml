@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*"
-		 xmlns:mx="http://www.adobe.com/2006/mxml"
+<s:Group xmlns="*"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:os="http://openscales.org"
 		 creationComplete="initMap();">
-
+	
 	<!-- Keep proxy since there is a blocking bug in Firefox at referer level
-		 https://bugzilla.mozilla.org/show_bug.cgi?id=410904 -->
+	https://bugzilla.mozilla.org/show_bug.cgi?id=410904 -->
 	<os:Map id="fxmap"
 			width="100%"
 			height="100%"
 			zoom="6"
 			centerLonLat="4.833,45.767"
 			proxy="http://openscales.org/proxy.php?url=">
-
+		
 		<os:TraceInfo x="{width-200}"
 					  y="0"
 					  visible="{displayTrace}"/>
 		<os:IGNGeoRMSecurity key="1202474798937064747"
 							 layers="ORTHOPHOTOS"
 							 proxy="http://openscales.org/proxy.php?url="/>
-
+		
 		<os:WMSC id="ortho"
 				 name="ORTHOPHOTOS"
 				 url="http://wxs.ign.fr/geoportail/wmsc"
@@ -32,7 +33,7 @@
 				 maxZoomLevel="17"
 				 maxExtent="-1048576,3670016,2097152,6815744"
 				 exceptions="text/xml"/>
-
+		
 		<os:DragHandler/>
 		<os:WheelHandler/>
 		<os:Spinner id="spinner"
@@ -41,43 +42,43 @@
 		<os:MousePosition x="10"
 						  y="{height-20}"
 						  displayProjection="IGNF:GEOPORTALFXX"/>
-
-
+		
+		
 		<os:ControlPanel x="10"
 						 y="10"
 						 width="140"
 						 title="Navigation">
 			<os:PanComponent map="{map}"/>
-			<mx:HBox width="100%" paddingLeft="5" paddingRight="5">
+			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
 				<os:ZoomComponent map="{map}"/>
-				<mx:Spacer width="100%" />
+				<s:Rect width="100%" />
 				<os:ZoomBoxComponent map="{map}"
-										 width="32"
-										 height="32"/>
-			</mx:HBox>
+									 width="32"
+									 height="32"/>
+			</s:HGroup>
 		</os:ControlPanel>
-
+		
 	</os:Map>
 	
-	<mx:Script>
+	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.layer.ogc.WMS;
 			import org.openscales.core.layer.params.ogc.WMSParams;
 			import org.openscales.core.security.ign.IGNGeoRMSecurity;
-
+			
 			private var security:IGNGeoRMSecurity;
 			
 			[Bindable] private var map:Map = null;
 			[Bindable] public var displayTrace:Boolean = false;	
 			[Bindable] public var displayFirebugTrace:Boolean = false;
-
+			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
 				map = fxmap.map;
 			}
 		]]>
-	</mx:Script>
-
-</mx:Canvas>
+	</fx:Script>
+	
+</s:Group>
