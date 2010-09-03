@@ -15,10 +15,6 @@
 					   url="http://openscales.org/4_m_citylights_lg.gif"
 					   bounds="-180,-88.759,180,88.759"/>
 		
-		<os:TraceInfo x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
-		
 		<os:DragHandler/>
 		<os:WheelHandler/>
 		
@@ -27,6 +23,11 @@
 						  displayProjection="EPSG:4326"/>
 		
 	</os:Map>
+	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	
 	<!-- Specific tools of this example -->
 	

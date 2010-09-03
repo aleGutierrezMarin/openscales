@@ -14,9 +14,6 @@
 			centerLonLat="4.833,45.767"
 			proxy="http://openscales.org/proxy.php?url=">
 		
-		<os:TraceInfo x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
 		<os:IGNGeoRMSecurity key="1202474798937064747"
 							 layers="ORTHOPHOTOS"
 							 proxy="http://openscales.org/proxy.php?url="/>
@@ -59,7 +56,10 @@
 		</os:ControlPanel>
 		
 	</os:Map>
-	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;

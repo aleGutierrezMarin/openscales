@@ -10,10 +10,6 @@
 			zoom="5"
 			centerLonLat="4.833,45.767">
 
-		<os:TraceInfo x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
-
 		<os:WMSC name="Nasa"
 				 url="http://openscales.org/geoserver/gwc/service/wms"
 				 layers="bluemarble"
@@ -37,7 +33,10 @@
 		<os:ClickHandler/>
 		<os:WheelHandler/>
 	</os:Map>
-
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<mx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;

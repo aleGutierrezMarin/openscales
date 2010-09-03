@@ -11,10 +11,6 @@
 			zoom="3"
 			centerLonLat="4.833,45.767">
 		
-		<os:TraceInfo x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
-		
 		<!-- A EPSG:900913 baselayer (OSM) -->
 		<os:Mapnik name="Mapnik"
 				   isBaseLayer="true"
@@ -33,7 +29,10 @@
 		<os:ClickHandler/>
 		<os:WheelHandler/>
 	</os:Map>
-	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<os:ControlPanel x="10"
 					 y="10"
 					 width="140"

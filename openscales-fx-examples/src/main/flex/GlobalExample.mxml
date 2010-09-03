@@ -11,11 +11,6 @@
 			zoom="4"
 			centerLonLat="-74.011,40.710">
 		
-		<os:TraceInfo id="traceInfo"
-					  x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
-		
 		<os:WMSC name="Nasa"
 				 url="http://openscales.org/geoserver/gwc/service/wms"
 				 layers="bluemarble"
@@ -57,6 +52,10 @@
 	</os:Map>
 	
 	<!-- Specific tools of this example -->
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	
 	<os:ControlPanel x="10" y="10" title="Navigation" >
 		<os:PanComponent map="{map}"/>
