@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:mx="http://www.adobe.com/2006/mxml"
+<control:Control xmlns:fx="http://ns.adobe.com/mxml/2009"
+				 xmlns:mx="library://ns.adobe.com/flex/mx"
 				 xmlns:s="library://ns.adobe.com/flex/spark"
-				 xmlns:control="org.openscales.component.control.*" width="282" height="168">	
-	<mx:Script>
+				 xmlns:control="org.openscales.component.control.*"
+				 width="282"
+				 height="168">	
+	<fx:Script>
 		<![CDATA[
 			import flash.utils.getQualifiedClassName;
 			
@@ -153,7 +156,7 @@
 			}
 			
 		]]>
-	</mx:Script>
+	</fx:Script>
 	<mx:DataGrid x="10" y="10" width="262" height="148" id="dgFeatureInfo" editable="false">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Property" dataField="Name" sortDescending="true" width="90"/>

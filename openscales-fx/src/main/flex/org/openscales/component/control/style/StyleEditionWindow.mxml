@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Panel
-	xmlns:mx="http://www.adobe.com/2006/mxml"
-	title="Edition du style" 
-	xmlns:style="org.openscales.component.control.style.*"
-	chromeColor="#939393" 
-	xmlns:s="library://ns.adobe.com/flex/spark"
-	
-	>
-
-	
-	<mx:Script>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 title="Edition du style" 
+		 xmlns:style="org.openscales.component.control.style.*"
+		 chromeColor="#939393" 
+		 xmlns:s="library://ns.adobe.com/flex/spark">
+	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.core.style.Style;
@@ -17,7 +12,7 @@
 			public static const OK_BUTTON_CLICKED:String="okClicked";
 			
 			public static const CANCEL_BUTTON_CLICKED:String="cancelClicked";
-		
+			
 			[Bindable]
 			private var _editedStyle:Style;
 			
@@ -38,7 +33,7 @@
 			}
 			
 			public function set editedLayer(value:FeatureLayer):void{
-				this._editedLayer = value;	
+				this._editedLayer = value;   
 			}
 			
 			private function onOkButtonClicked(event:MouseEvent):void{
@@ -46,18 +41,22 @@
 			}
 			
 			private function onCancelButtonClicked(event:MouseEvent):void{
-			
-				this.dispatchEvent(new Event(CANCEL_BUTTON_CLICKED));	
+				
+				this.dispatchEvent(new Event(CANCEL_BUTTON_CLICKED));      
 			}
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
 	<style:StyleEditor editedStyle="{this._editedStyle}"/>
 	
 	<s:Line/>
 	<s:Panel controlBarVisible="true">
-		<s:Button id="okButton" label="Ok" click="this.onOkButtonClicked(event)" />
-		<s:Button id="cancelButton" label="Cancel" click="this.onCancelButtonClicked(event)" />
+		<s:Button id="okButton"
+				  label="Ok"
+				  click="this.onOkButtonClicked(event)" />
+		<s:Button id="cancelButton"
+				  label="Cancel"
+				  click="this.onCancelButtonClicked(event)" />
 	</s:Panel>
 	
 </s:Panel>

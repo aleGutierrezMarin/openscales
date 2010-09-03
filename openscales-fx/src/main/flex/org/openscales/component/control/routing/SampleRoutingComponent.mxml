@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Control xmlns="org.openscales.component.control.*" 
 		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:os="http://openscales.org" xmlns:mx="http://www.adobe.com/2006/mxml" width="210" height="238" backgroundColor="#FFFFFF" xmlns:osm="org.openscales.core.layer.osm.*">
-<mx:Script>
+		 xmlns:os="http://openscales.org"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:osm="org.openscales.core.layer.osm.*"
+		 width="210"
+		 height="238"
+		 contentBackgroundColor="#ffffff">
+<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
 			import org.openscales.core.layer.FeatureLayer;
@@ -21,7 +26,7 @@
 				fxSampleRouting.active=Active.selected;
 			}
 		]]>
-</mx:Script>
+</fx:Script>
 	<os:FxSampleRouting id="fxSampleRouting" map="{map}" resultsLayer="{resultsLayer}" startPointClass="{_startPointclass}" endPointClass="{_endPointClass}" intermedPointClass="{_intermedPointClass}"/>
 	<s:VGroup x="10" y="10" height="206" width="186">
 		<s:Label text="Routing component" width="184" fontFamily="Verdana" fontSize="12" fontWeight="bold" textAlign="center" textDecoration="underline"/>

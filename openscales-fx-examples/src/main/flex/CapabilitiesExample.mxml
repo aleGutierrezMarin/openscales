@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml"
+<s:Group xmlns="*" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:os="http://openscales.org" creationComplete="initMap();">
 	
 	<os:Map id="fxmap" width="100%" height="100%" zoom="5" centerLonLat="4.833,45.767">
@@ -16,7 +17,7 @@
 		
 		<os:MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		<os:ScaleLine x="{width-100-10}" y="{height-80}" />
-
+		
 		<!-- Specific layers and handlers of this example -->
 		<!-- none -->
 		
@@ -32,7 +33,7 @@
 		<os:CapabilitiesComponent width="320" map="{map}"/>
 	</os:ControlPanel>
 	
-	<mx:Script>
+	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.style.marker.WellKnownMarker;
 			import org.openscales.core.style.fill.SolidFill;
@@ -51,7 +52,7 @@
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
-		
+			
 			private var _styleEditorPanel:StyleEditionWindow;
 			
 			[Bindable] private var map:Map = null;
@@ -82,7 +83,7 @@
 					(event.layer as WFS).style=s;
 					
 					event.layer.redraw();
-
+					
 				}
 			}
 			
@@ -97,6 +98,6 @@
 				PopUpManager.removePopUp(this._styleEditorPanel);
 			}
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
-</mx:Canvas>
+</s:Group>
