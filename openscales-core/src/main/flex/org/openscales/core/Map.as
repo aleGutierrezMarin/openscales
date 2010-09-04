@@ -857,7 +857,7 @@ package org.openscales.core
 					
 					for each(var layer:Layer in this.layers) {
 						if(layer.tweenOnZoom) {
-							bitmapData.draw(layer);
+							bitmapData.draw(layer, this.layerContainer.transform.matrix);
 						}
 					}
 					
