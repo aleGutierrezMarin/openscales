@@ -7,7 +7,6 @@
 				paddingRight="5"
 				paddingTop="5"
 				creationComplete="init();"
-				viewSourceURL="srcview/index.html"
 				frameRate="12"
 				>
 

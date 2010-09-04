@@ -183,7 +183,7 @@ package org.openscales.core.layer {
 		 * Return a LonLat which is the passed-in map Pixel, translated into
 		 * lon/lat by the layer.
 		 */
-		public function getLonLatFromMapPx(viewPortPx:Pixel):Location {
+		public function getLocationFromMapPx(viewPortPx:Pixel):Location {
 			var lonlat:Location = null;
 			if (viewPortPx != null) {
 				var size:Size = this.map.size;

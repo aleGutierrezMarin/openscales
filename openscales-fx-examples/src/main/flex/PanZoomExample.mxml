@@ -41,7 +41,7 @@
 	<os:ControlPanel x="10"
 					 y="10"
 					 width="140"
-					 title="Navigation">
+					 title="Navigation" visible="false">
 		<os:PanComponent map="{map}"/>
 		<mx:HBox width="100%">
 			<os:ZoomComponent map="{map}"/>
