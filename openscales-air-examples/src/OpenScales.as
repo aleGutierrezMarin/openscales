@@ -13,6 +13,7 @@ package {
 	import flash.sensors.Geolocation;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.ui.Multitouch;
 	
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
@@ -68,10 +69,14 @@ package {
 			_map.addControl(mousePosition);			
 			
 			
-			_map.addHandler(new DragHandler());
-			_map.addHandler(new WheelHandler());
-			_map.addHandler(new ZoomGestureHandler());
-			_map.addHandler(new PanGestureHandler());
+			if(Multitouch.supportsGestureEvents) {
+				_map.addHandler(new ZoomGestureHandler());
+				_map.addHandler(new PanGestureHandler());
+			} else {
+				_map.addHandler(new DragHandler());
+				_map.addHandler(new WheelHandler());
+			}
+			
 			
 			this.stage.addEventListener(TransformGestureEvent.GESTURE_SWIPE,this.onGestureSwipe);
 			
