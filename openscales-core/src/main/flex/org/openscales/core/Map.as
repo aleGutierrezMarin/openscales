@@ -566,10 +566,10 @@ package org.openscales.core
 			}
 			
 			if(tween) {
-				var layerContainerTween:GTween = new GTween(this._layerContainer, 0.5, {x: lx, y: ly});
+				var layerContainerTween:GTween = new GTween(this._layerContainer, 0.5, {x: lx, y: ly}, {ease: Cubic.easeOut});
 				layerContainerTween.onComplete = onDragTweenComplete;
 				if(bitmapTransition != null) {
-					new GTween(bitmapTransition, 0.5, {x: bx, y: by});
+					new GTween(bitmapTransition, 0.5, {x: bx, y: by}, {ease: Cubic.easeOut});
 				} 
 			} else {
 				this._layerContainer.x = lx;
@@ -823,8 +823,8 @@ package org.openscales.core
 				this.dispatchEvent(mapEvent);
 				if (this.tweenZoomEnabled)
 					this.zoomTransition(newZoom, newCenter);
-				else
-					this.moveTo(newCenter, newZoom);
+				this.moveTo(newCenter, newZoom);
+					
 			} 
 		}
 		
@@ -832,7 +832,7 @@ package org.openscales.core
 		 * Copy the layerContainer in a bitmap and display this (this function is use for zoom)
 		 */
 		private function zoomTransition(newZoom:Number, newCenter:Location):void {
-			if (!_zooming && newZoom >= 0) {
+			if (newZoom >= 0) {
 				
 				// Disable more zooming until this zooming is complete 
 				this._zooming = true;
@@ -841,10 +841,10 @@ package org.openscales.core
 				const resMult:Number = this.resolution / this.baseLayer.resolutions[newZoom];
 				// We intsanciate a bitmapdata with map's size
 				var bitmapData:BitmapData = new BitmapData(this.width,this.height);
-
+				
 				// We draw the old transition before drawing the better-fitting tiles on top and removing the old transition. 
 				if(this.bitmapTransition != null) {
-					bitmapData.draw(this.bitmapTransition, this.bitmapTransition.transform.matrix);				
+					bitmapData.draw(this.bitmapTransition);				
 					this.removeChild(this.bitmapTransition);
 					var bmp:Bitmap = bitmapTransition.removeChildAt(0) as Bitmap;
 					bmp.bitmapData.dispose();
@@ -857,7 +857,7 @@ package org.openscales.core
 					
 					for each(var layer:Layer in this.layers) {
 						if(layer.tweenOnZoom) {
-							bitmapData.draw(layer, layer.transform.matrix);
+							bitmapData.draw(layer);
 						}
 					}
 					
@@ -895,7 +895,6 @@ package org.openscales.core
 
 					}, {ease: Cubic.easeOut});
 				tween.onComplete = clbZoomTween;
-				moveTo(newCenter, newZoom);
 			}
 			
 			// The zoom tween callback method defined here to avoid a class attribute for newZoom

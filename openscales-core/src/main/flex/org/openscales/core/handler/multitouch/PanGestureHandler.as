@@ -64,6 +64,10 @@ package org.openscales.core.handler.multitouch {
 				if (event.phase==GesturePhase.UPDATE) {
 					this.map.layerContainer.x += event.offsetX;
 					this.map.layerContainer.y += event.offsetY;
+					if(this.map.bitmapTransition) {
+						this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - event.offsetX;
+						this.map.bitmapTransition.y = this.map.bitmapTransition.parent.mouseY - event.offsetY;
+					}
 					event.updateAfterEvent();
 				}
 				if (event.phase==GesturePhase.END) {
