@@ -854,7 +854,13 @@ package org.openscales.core
 				// We draw the loaded tiles onto the background transition.
 				try {
 					// Can sometimes throw a security exception.
-					bitmapData.draw(this.layerContainer, this.layerContainer.transform.matrix);
+					
+					for each(var layer:Layer in this.layers) {
+						if(layer.tweenOnZoom) {
+							bitmapData.draw(layer, layer.transform.matrix);
+						}
+					}
+					
 				} catch (e:Error) {
 					Trace.error("Error zooming image: " + e);
 				}
