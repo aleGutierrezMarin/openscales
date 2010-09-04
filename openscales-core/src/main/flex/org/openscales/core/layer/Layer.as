@@ -48,6 +48,7 @@ package org.openscales.core.layer {
 		private var _loading:Boolean = false;
 		private var _autoResolution:Boolean = true;
 		protected var _imageSize:Size = null;
+		private var _tweenOnZoom:Boolean = true;
 
 		/**
 		 * Layer constructor
@@ -511,6 +512,17 @@ package org.openscales.core.layer {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this));
 			}
 		}
+
+		public function get tweenOnZoom():Boolean
+		{
+			return _tweenOnZoom;
+		}
+
+		public function set tweenOnZoom(value:Boolean):void
+		{
+			_tweenOnZoom = value;
+		}
+
 	}
 }
 
