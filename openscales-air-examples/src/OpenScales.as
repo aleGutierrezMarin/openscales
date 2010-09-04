@@ -26,6 +26,8 @@ package {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.handler.mouse.DragHandler;
+	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.handler.multitouch.PanGestureHandler;
 	import org.openscales.core.handler.multitouch.ZoomGestureHandler;
 	import org.openscales.core.layer.FeatureLayer;
@@ -65,6 +67,9 @@ package {
 			mousePosition.displayProjection = new ProjProjection("EPSG:4326");
 			_map.addControl(mousePosition);			
 			
+			
+			_map.addHandler(new DragHandler());
+			_map.addHandler(new WheelHandler());
 			_map.addHandler(new ZoomGestureHandler());
 			_map.addHandler(new PanGestureHandler());
 			
