@@ -51,6 +51,7 @@
 	</profiles>
 	<modules>
 		<module>openscales-core</module>
+		<module>openscales-core-flash-10.1</module>
 		<module>openscales-as-examples</module>
 		<module>openscales-fx-examples</module>
 		<module>openscales-fx</module>
