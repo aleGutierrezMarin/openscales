@@ -14,19 +14,8 @@
 		<version>1.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	
-	<properties>
-		<flex.player.version.minor>1</flex.player.version.minor>
-	</properties>
-	
+		
 	<dependencies>
-		<dependency> 
-			<groupId>com.adobe.flex.framework</groupId> 
-			<artifactId>playerglobal</artifactId> 
-			<version>${flex.sdk.version}</version>
-			<classifier>${flex.player.version.major}.${flex.player.version.minor}</classifier>
-			<type>swc</type> 
-		</dependency>
 	  	<dependency>
 			<groupId>org.openscales</groupId>
 			<artifactId>openscales-geometry</artifactId>
