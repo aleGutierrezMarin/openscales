@@ -56,7 +56,7 @@ package org.openscales.fx.configuration
 	 				fxPan.x = Number(xmlNode.@x);
 	 			}
 	 			if(String(xmlNode.@y) != ""){
-	 				fxPanZoom.y = Number(xmlNode.@y);
+	 				fxPan.y = Number(xmlNode.@y);
 	 			}
 	 			if(String(xmlNode.@width) != ""){
 	 				fxPan.width = Number(xmlNode.@width);
