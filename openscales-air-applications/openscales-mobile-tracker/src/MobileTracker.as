@@ -42,14 +42,14 @@ package {
 	import org.openscales.geometry.Point;
 	import org.openscales.proj4as.ProjProjection;
 	
-	public class OpenScales extends Sprite {
+	public class MobileTracker extends Sprite {
 		
 		protected var _map:Map;
 		protected var t:TextField;
 		protected var geo:Geolocation;
 		protected var firstPass:Boolean = true;
 		
-		public function OpenScales() {
+		public function MobileTracker() {
 			_map=new Map();
 			_map.size=new Size(stage.stageWidth, stage.stageHeight);
 			
