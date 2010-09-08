@@ -83,8 +83,6 @@
     <classEntry path="org.openscales.core.handler.mouse.DragHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
-    <classEntry path="org.openscales.core.handler.multitouch.PanGestureHandler"/>
-    <classEntry path="org.openscales.core.handler.multitouch.ZoomGestureHandler"/>
     <classEntry path="org.openscales.core.handler.zoom.ZoomBoxHandler"/>
     <classEntry path="org.openscales.core.layer.FeatureLayer"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
