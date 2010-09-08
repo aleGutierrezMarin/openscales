@@ -47,106 +47,106 @@ package org.openscales.fx.configuration
 		protected function parseFxControl(xmlNode:XML, map:Map):Control {
 		 	var control:Control = null;
 		 					 					
-	 		if(xmlNode.name() == "PanComponent"){
-	 			var panZoom:Pan = new Pan();
+	 		if(xmlNode.name() == "FxPan"){
+	 			var fxPan:Pan = new Pan();
 	 			if(String(xmlNode.@id) != ""){
-	 				panZoom.id = String(xmlNode.@id);
+	 				fxPan.id = String(xmlNode.@id);
 	 			}	 			
 	 			if(String(xmlNode.@x) != ""){
-	 				panZoom.x = Number(xmlNode.@x);
+	 				fxPan.x = Number(xmlNode.@x);
 	 			}
 	 			if(String(xmlNode.@y) != ""){
-	 				panZoom.y = Number(xmlNode.@y);
+	 				fxPan.y = Number(xmlNode.@y);
 	 			}
 	 			if(String(xmlNode.@width) != ""){
-	 				panZoom.width = Number(xmlNode.@width);
+	 				fxPan.width = Number(xmlNode.@width);
 	 			}
 	 			if(String(xmlNode.@height) != ""){
-	 				panZoom.height = Number(xmlNode.@height);
+	 				fxPan.height = Number(xmlNode.@height);
 	 			}
-	 			control = panZoom;  
+	 			control = fxPan;  
 	 		}
 	 			 		
-	 		else if(xmlNode.name() == "ZoomComponent"){
-	 			var zoom:Zoom = new Zoom();
+	 		else if(xmlNode.name() == "FxZoom"){
+	 			var fxZoom:Zoom = new Zoom();
 	 			if(String(xmlNode.@id) != ""){
-	 				zoom.id = String(xmlNode.@id);
+	 				fxZoom.id = String(xmlNode.@id);
 	 			}
 	 			if(String(xmlNode.@x) != ""){
-	 				zoom.x = Number(xmlNode.@x);
+	 				fxZoom.x = Number(xmlNode.@x);
 	 			}
 	 			if(String(xmlNode.@y) != ""){
-	 				zoom.y = Number(xmlNode.@y);
+	 				fxZoom.y = Number(xmlNode.@y);
 	 			}
 	 			if(String(xmlNode.@width) != ""){
-	 				zoom.width = Number(xmlNode.@width);
+	 				fxZoom.width = Number(xmlNode.@width);
 	 			}
 	 			if(String(xmlNode.@height) != ""){
-	 				zoom.height = Number(xmlNode.@height);
+	 				fxZoom.height = Number(xmlNode.@height);
 	 			}
-	 			control = zoom;
+	 			control = fxZoom;
 	 		}
 	 		
-	 		else if(xmlNode.name() == "ZoomBox"){
-	 			var zoomBox:ZoomBox = new ZoomBox();
+	 		else if(xmlNode.name() == "FxZoomBox"){
+	 			var fxZoomBox:ZoomBox = new ZoomBox();
 	 			if(String(xmlNode.@id) != ""){
-	 				zoomBox.id = String(xmlNode.@id);
+					fxZoomBox.id = String(xmlNode.@id);
 	 			}
 	 			if(String(xmlNode.@x) != ""){
-	 				zoomBox.x = Number(xmlNode.@x);
+					fxZoomBox.x = Number(xmlNode.@x);
 	 			}
 	 			if(String(xmlNode.@y) != ""){
-	 				zoomBox.y = Number(xmlNode.@y);
+					fxZoomBox.y = Number(xmlNode.@y);
 	 			}
 	 			if(String(xmlNode.@width) != ""){
-	 				zoomBox.width = Number(xmlNode.@width);
+					fxZoomBox.width = Number(xmlNode.@width);
 	 			}
 	 			if(String(xmlNode.@height) != ""){
-	 				zoomBox.height = Number(xmlNode.@height);
+					fxZoomBox.height = Number(xmlNode.@height);
 	 			}
-	 			control = zoomBox; 
+	 			control = fxZoomBox; 
 	 		}
 	 		
 			//FIX ME : because asynchrone, we need to wait the creation complete on FXMap before setting the map		 					
-	 		else if(xmlNode.name() == "OverViewComponent"){
-	 			var overView:OverviewMap = new OverviewMap();
+	 		else if(xmlNode.name() == "FxOveriew"){
+	 			var fxOverview:OverviewMap = new OverviewMap();
 	 			if(String(xmlNode.@id) != ""){
-	 				overView.id = String(xmlNode.@id);
+					fxOverview.id = String(xmlNode.@id);
 	 			}
 	 			if(String(xmlNode.@x) != ""){
-	 				overView.x = Number(xmlNode.@x);
+					fxOverview.x = Number(xmlNode.@x);
 	 			}
 	 			if(String(xmlNode.@y) != ""){
-	 				overView.y = Number(xmlNode.@y);
+					fxOverview.y = Number(xmlNode.@y);
 	 			}
 	 			if(String(xmlNode.@width) != ""){
-	 				overView.width = Number(xmlNode.@width);
+					fxOverview.width = Number(xmlNode.@width);
 	 			}
 	 			if(String(xmlNode.@height) != ""){
-	 				overView.height = Number(xmlNode.@height);
+					fxOverview.height = Number(xmlNode.@height);
 	 			}
-	 			control = overView; 
+	 			control = fxOverview; 
 	 		}  
 	 		
 			//FIX ME : because asynchrone, we need to wait the creation complete of the others flex component before setting the map		 					
-	 		else if(xmlNode.name() == "LayerSwitcherComponent"){
-	 			var layerSwitcher:LayerSwitcher = new LayerSwitcher();
+	 		else if(xmlNode.name() == "FxLayerSwitcher"){
+	 			var fxLayerSwitcher:LayerSwitcher = new LayerSwitcher();
 	 			if(String(xmlNode.@id) != ""){
-	 				layerSwitcher.id = String(xmlNode.@id);
+					fxLayerSwitcher.id = String(xmlNode.@id);
 	 			}
 	 			if(String(xmlNode.@x) != ""){
-	 				layerSwitcher.x = Number(xmlNode.@x);
+					fxLayerSwitcher.x = Number(xmlNode.@x);
 	 			}
 	 			if(String(xmlNode.@y) != ""){
-	 				layerSwitcher.y = Number(xmlNode.@y);
+					fxLayerSwitcher.y = Number(xmlNode.@y);
 	 			}
 	 			if(String(xmlNode.@width) != ""){
-	 				layerSwitcher.width = Number(xmlNode.@width);
+					fxLayerSwitcher.width = Number(xmlNode.@width);
 	 			}
 	 			if(String(xmlNode.@height) != ""){
-	 				layerSwitcher.height = Number(xmlNode.@height);
+					fxLayerSwitcher.height = Number(xmlNode.@height);
 	 			}
-	 			control = layerSwitcher;
+	 			control = fxLayerSwitcher;
 				
 	 		}  
 		return control;
