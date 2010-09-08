@@ -17,17 +17,17 @@ package {
 	import org.openscales.core.style.Style;
 	import org.openscales.proj4as.ProjProjection;
 
-	[SWF(width='600',height='400')]
+	[SWF(width='1200',height='700')]
 	public class OpenscalesApplication extends Sprite {
 		protected var _map:Map;
 
 		public function OpenscalesApplication() {
 			_map=new Map();
-			_map.size=new Size(600, 400);
+			_map.size=new Size(1200, 700);
 
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
-			mapnik.proxy = "http://openscales.org/proxy.php?url=";
+			//mapnik.proxy = "http://openscales.org/proxy.php?url=";
 			mapnik.isBaseLayer = true;
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);		
 			_map.addLayer(mapnik);

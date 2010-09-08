@@ -2,10 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openscales</groupId>
-	<artifactId>openscales-geometry</artifactId>
+	<artifactId>openscales-core-flash-10.1</artifactId>
 	<version>1.2-SNAPSHOT</version>
 	<packaging>swc</packaging>
-	<name>Simple geometry implementation</name>
+	<name>Core for flashplayer 10.1</name>
+	<description>Core module that contains OpenScales classes that depends on flash player 10.1 API</description>
 	
 	<parent>
 		<groupId>org.openscales</groupId>
@@ -14,12 +15,29 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
+	<properties>
+		<flex.player.version.minor>1</flex.player.version.minor>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.openscales</groupId>
-			<artifactId>openscales-proj4as</artifactId>
+			<artifactId>openscales-core</artifactId>
 			<version>1.2-SNAPSHOT</version>
 			<type>swc</type>
+			<exclusions> 
+				<exclusion> 
+					<groupId>com.adobe.flex.framework</groupId> 
+					<artifactId>playerglobal</artifactId> 
+				</exclusion> 
+			</exclusions>
+		</dependency>
+		<dependency> 
+			<groupId>com.adobe.flex.framework</groupId> 
+			<artifactId>playerglobal</artifactId> 
+			<version>${flex.sdk.version}</version>
+			<classifier>${flex.player.version.major}.${flex.player.version.minor}</classifier>
+			<type>swc</type> 
 		</dependency>
 	</dependencies>
 	
@@ -46,7 +64,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<packageDescriptions>
-						<org.openscales.core.geometry>Geometries are descriptions of a geographic object</org.openscales.core.geometry>
+						
 					</packageDescriptions>
 				</configuration>
 			</plugin>
