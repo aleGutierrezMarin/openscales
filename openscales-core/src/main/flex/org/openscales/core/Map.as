@@ -884,7 +884,7 @@ package org.openscales.core
 				var x:Number = bt.x-((resMult-1)*(bt.width))/2+alpha*centerOffset.x;
 				var y:Number = bt.y-((resMult-1)*(bt.height))/2+alpha*centerOffset.y;
 				//The tween effect to scale and re-position the bitmapTransition
-				const tween:GTween = new GTween(this.bitmapTransition,0.8,
+				const tween:GTween = new GTween(this.bitmapTransition,0.7,
 					{
 						scaleX: resMult,
 						scaleY: resMult,
