@@ -568,7 +568,7 @@ package org.openscales.core.layer
 			var resolution:Number = this.map.resolution;
 			var tileMapWidth:Number = resolution * this.tileWidth;
 			var tileMapHeight:Number = resolution * this.tileHeight;
-			var mapPoint:Location = this.getLonLatFromMapPx(viewPortPx);
+			var mapPoint:Location = this.getLocationFromMapPx(viewPortPx);
 			var tileLeft:Number = maxExtent.left + (tileMapWidth * Math.floor((mapPoint.lon - maxExtent.left) / tileMapWidth));
 			var tileBottom:Number = maxExtent.bottom + (tileMapHeight * Math.floor((mapPoint.lat - maxExtent.bottom) / tileMapHeight));
 			return new Bounds(tileLeft,

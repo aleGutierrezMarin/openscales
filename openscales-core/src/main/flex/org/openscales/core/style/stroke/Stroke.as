@@ -128,7 +128,7 @@ package org.openscales.core.style.stroke
 						linejoin = JointStyle.MITER;
 				}
 
-				graphics.lineStyle(this.width, this.color, this.opacity, false, LineScaleMode.NONE, linecap, linejoin);
+				graphics.lineStyle(this.width, this.color, this.opacity, false, LineScaleMode.NORMAL, linecap, linejoin);
 			
 		}
 	}
