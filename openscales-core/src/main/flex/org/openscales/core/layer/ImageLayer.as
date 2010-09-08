@@ -6,12 +6,13 @@ package org.openscales.core.layer
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	
-	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
+	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.request.DataRequest;
 	
 
@@ -59,12 +60,18 @@ package org.openscales.core.layer
 				this._request = new DataRequest(this._url, onTileLoadEnd, onTileLoadError);
 				this._request.proxy = this.proxy;
 				this._request.security = this.security;
+				this.loading = true;
 				this._request.send();
 			} else {
 				this.clear();
 				this.draw();
+				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this));
 			}
 			
+		}
+		
+		override public function clear():void  {
+			//this.graphics.clear();			
 		}
 		
 		override protected function draw():void  {
@@ -83,11 +90,11 @@ package org.openscales.core.layer
 		{
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
-			
 			// Store image size
 			this._size = new Size(loader.width, loader.height);
 			this.addChild(loader);
 			this.draw();
+			this.loading = false;
 		} 
 		
 		public function onTileLoadError(event:IOErrorEvent):void
