@@ -840,7 +840,7 @@ package org.openscales.core
 				
 				// We draw the old transition before drawing the better-fitting tiles on top and removing the old transition. 
 				if(this.bitmapTransition != null) {
-					//bitmapData.draw(this.bitmapTransition);				
+					bitmapData.draw(this.bitmapTransition, this.bitmapTransition.transform.matrix);
 					var bmp:Bitmap = this.removeChild(this.bitmapTransition) as Bitmap;
 					bmp.bitmapData.dispose();
 					bmp.bitmapData = null;
@@ -884,7 +884,7 @@ package org.openscales.core
 				var x:Number = bt.x-((resMult-1)*(bt.width))/2+alpha*centerOffset.x;
 				var y:Number = bt.y-((resMult-1)*(bt.height))/2+alpha*centerOffset.y;
 				//The tween effect to scale and re-position the bitmapTransition
-				const tween:GTween = new GTween(this.bitmapTransition,0.5,
+				const tween:GTween = new GTween(this.bitmapTransition,0.8,
 					{
 						scaleX: resMult,
 						scaleY: resMult,
