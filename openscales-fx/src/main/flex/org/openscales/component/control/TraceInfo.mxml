@@ -15,7 +15,7 @@
 			import spark.skins.spark.ButtonSkin;
 			import spark.utils.TextFlowUtil;
 			
-			private var text:String = '<b>Output Console :</b';
+			private var text:String = "<b>Output Console :</b>";
 			[Bindable] public var _clearButton:Boolean = true;
 			public function get clearButton():Boolean {
 				return _clearButton;
@@ -45,12 +45,12 @@
 			}
 			
 			private function clearTrace():void {
-				text = '<b>Output Console :</b';
+				text = "<span fontWeight='bold'>Output Console :</span>";
 				textArea.textFlow = TextFlowUtil.importFromString(text);
 			}
 			
 			private function displayLog(event:TraceEvent):void {
-				var textColor:String = "#000066"; // used if event.type is TraceEvent.LOG or TraceEvent.INFO
+				/*var textColor:String = "#000066"; // used if event.type is TraceEvent.LOG or TraceEvent.INFO
 				if (event.type == TraceEvent.WARNING) {
 					textColor = "#FFCC00";
 				} else if (event.type == TraceEvent.ERROR) {
@@ -62,7 +62,7 @@
 					+textColor
 					+"' size='9'>"
 					+event.text
-					+"</font><br/>----------";
+					+"</font><br/>----------";*/
 				textArea.textFlow = TextFlowUtil.importFromString(text);
 			}
 		]]>
