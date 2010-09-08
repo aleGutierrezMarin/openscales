@@ -836,7 +836,7 @@ package org.openscales.core
 				// We calculate the scale multiplicator according to the actual and new resolution
 				const resMult:Number = this.resolution / this.baseLayer.resolutions[newZoom];
 				// We intsanciate a bitmapdata with map's size
-				var bitmapData:BitmapData = new BitmapData(this.width,this.height, true, 4294967295);
+				var bitmapData:BitmapData = new BitmapData(this.width,this.height);
 				
 				// We draw the old transition before drawing the better-fitting tiles on top and removing the old transition. 
 				if(this.bitmapTransition != null) {
@@ -849,30 +849,29 @@ package org.openscales.core
 				this.bitmapTransition = new Bitmap(bitmapData);
 				this.bitmapTransition.smoothing = true;
 				
-				
-				var background:Sprite = new Sprite();
-				background.graphics.beginFill(0xFFFFFF);
-				background.graphics.drawRect(0, 0, this.layerContainer.width, this.layerContainer.height);
-				this.bitmapTransition.opaqueBackground = background;
+				var hiddenLayers:Vector.<Layer> = new Vector.<Layer>();
+				for each(var layer:Layer in this.layers) {
+					if(!layer.tweenOnZoom) {				
+						hiddenLayers.push(layer);
+						layer.visible = false;
+					}
+				}
 				// We draw the loaded tiles onto the background transition.
 				try {
 					// Can sometimes throw a security exception.
-					for each(var layer:Layer in this.layers) {
-						if(layer.tweenOnZoom) {					
-							bitmapData.draw(layer, this.layerContainer.transform.matrix);
-						}
-					}
-					
+					bitmapData.draw(this.layerContainer, this.layerContainer.transform.matrix);
 				} catch (e:Error) {
 					Trace.error("Error zooming image: " + e);
 				}
 				
 				// We create the background layer from the bitmap data
 								
-				this.addChild(this.bitmapTransition);
+				this.addChildAt(this.bitmapTransition, 0);
 				this.bitmapTransition.visible=true;
 				
-				this.addChild(bitmapTransition);
+				for each(var hiddenLayer:Layer in hiddenLayers) {
+					layer.visible = true;
+				}
 				
 				// We hide the layerContainer (to avoid zooming out issues)
 				this.layerContainer.visible = false;
