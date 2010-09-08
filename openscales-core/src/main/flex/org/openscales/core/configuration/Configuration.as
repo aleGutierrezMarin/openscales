@@ -51,15 +51,31 @@ package org.openscales.core.configuration
 	public class Configuration implements IConfiguration
 	{
 		protected var _config:XML;
+		protected var _styles:Object = {};
 		
 		public function Configuration(config:XML = null) {
 			this.config = config;
 		}
 		
 		public function configureMap(map:Map):void {
+			this.loadStyles();
 			this.beginConfigureMap(map);
 			this.middleConfigureMap(map);
 			this.endConfigureMap(map);
+		}
+		
+		/* load Styles */
+		private function loadStyles():void {
+			var styles:XMLList=config.Styles.*;
+			var style:Style;
+			var xmlNode:XML
+			for each(xmlNode in styles){
+				if(xmlNode.@id=="")
+					continue;
+				this._styles[xmlNode.@id.toString()] = this.parseStyle(xmlNode);
+				Trace.log("Find new style");
+			}
+			
 		}
 		
 		public function beginConfigureMap(map:Map):void {
@@ -323,11 +339,10 @@ package org.openscales.core.configuration
 				
 				if(String(xmlNode.@style) !="")
 				{
-					wfsLayer.style = this.getDefaultStyle(String(xmlNode.@style));
-				}else{
-					var xmlStyle:XMLList = xmlNode.*::Style;
-					if(xmlStyle.length()!=0)
-						wfsLayer.style = this.parseStyle(xmlStyle[0]);
+					if(this._styles[xmlNode.@style.toString()])
+						wfsLayer.style = this._styles[xmlNode.@style.toString()];
+					else
+						wfsLayer.style = this.getDefaultStyle(String(xmlNode.@style));
 				}
 				
 				if (String(xmlNode.@minZoomLevel) != "" ) {
@@ -563,6 +578,7 @@ package org.openscales.core.configuration
 		protected function parseSecurity(xmlNode:XML,map:Map):AbstractSecurity{
 			var security:AbstractSecurity=null;
 			if(xmlNode.name()=="IGNGeoRMSecurity"){
+				Trace.log("bleh1");
 				if(map!=null && xmlNode.@key!=null)
 					security=new IGNGeoRMSecurity(map,xmlNode.@key,xmlNode.@proxy);
 			}

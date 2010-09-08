@@ -1,9 +1,21 @@
 <Map name="fxmapy" width="600" height="400" maxExtent="-180,-90,180,90"
 	zoom="4" lon="-74.011" lat="40.710" projection="EPSG:4326">
+	<Styles>
+		<Style id="example1">
+			<rules>
+				<rule>
+ 					<PolygonSymbolizer>
+						<stroke color="0x454545"  width="1"  opacity="1" linecap="LINECAP_ROUND" linejoin="LINEJOIN_ROUND" />
+						<fill>
+							<SolidFill color="0x545454" opacity="1"/>
+						</fill>
+					</PolygonSymbolizer>
+				</rule>
+			</rules>
+		</Style>
+	</Styles>
 
-	<Layers>
-	
-				
+	<Layers>	
 			<WMSC name="Nasa"
 				 url="http://openscales.org/geoserver/gwc/service/wms"
 				 layers="bluemarble"
@@ -20,19 +32,10 @@
 				projection="EPSG:4326"
 				version="1.0.0"
 				isBaseLayer="false"
-				maxExtent="-180,-90,180,90" maxResolution="1.40625" numZoomLevels="16" >	
-				<Style>
-                  <rules>
-                    <rule>
-                     <PolygonSymbolizer>
-                       <stroke color="0x454545"  width="1"  opacity="1" linecap="LINECAP_ROUND" linejoin="LINEJOIN_ROUND" />
-                     <fill>
-                        <SolidFill color="0x545454" opacity="1"/>
-                     </fill>
-                  </PolygonSymbolizer>
-                 </rule>
-                </rules>
-               </Style>
+				maxExtent="-180,-90,180,90"
+				maxResolution="1.40625"
+				numZoomLevels="16"
+				style="example1">	
              </WFS>
              
              <WFS name="Topp States (WFS)"
@@ -41,7 +44,10 @@
 				projection="EPSG:4326"
 				version="1.0.0"
 				isBaseLayer="false"
-				style="DefaultCircleStyle" maxExtent="-180,-90,180,90" maxResolution="1.40625" numZoomLevels="16" />
+				style="DefaultCircleStyle"
+				maxExtent="-180,-90,180,90"
+				maxResolution="1.40625"
+				numZoomLevels="16" />
 	
 	</Layers>
 
