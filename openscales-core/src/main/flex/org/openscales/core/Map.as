@@ -216,17 +216,13 @@ package org.openscales.core
 					var center:Location = this.center;
 					if (center != null) {
 						if (oldExtent == null) {
-							this.moveTo(center, this.zoom, false, true);
+							this.moveTo(center, this.zoom);
 						} else {
-							this.moveTo(oldExtent.center,
-								this.getZoomForExtent(oldExtent),
-								false, true);
+							this.moveTo(oldExtent.center, this.getZoomForExtent(oldExtent));
 						}
 					} else {
 						// The map must be fully defined as soon as its baseLayer is defined
-						this.moveTo(this._baseLayer.maxExtent.center,
-							this.getZoomForExtent(this._baseLayer.maxExtent),
-							false, true);
+						this.moveTo(this._baseLayer.maxExtent.center, this.getZoomForExtent(this._baseLayer.maxExtent));
 					}
 					
 					this.dispatchEvent(new LayerEvent(LayerEvent.BASE_LAYER_CHANGED, newBaseLayer));
@@ -461,7 +457,7 @@ package org.openscales.core
 			if(this.center) {
 				var newCenterPx:Pixel = this.getMapPxFromLocation(this.center).add(dx, dy);
 				var newCenterLocation:Location = this.getLocationFromMapPx(newCenterPx);
-				this.moveTo(newCenterLocation, NaN, false, false, tween);
+				this.moveTo(newCenterLocation, NaN, tween);
 			}
 		}
 		
@@ -474,45 +470,55 @@ package org.openscales.core
 		 * @param zoom optional zoom level
 		 * @param dragging Specifies whether or not to trigger movestart/end events
 		 * @param forceZoomChange Specifies whether or not to trigger zoom change events (needed on baseLayer change)
-		 * @param dragTween
+		 * @param dragTween Tween effect when panning
+		 * @param zoomTween Tween effect when zooming
 		 *
 		 */
-		public function moveTo(lonlat:Location,
-								  zoom:Number = NaN,
-								  dragging:Boolean = false,
-								  forceZoomChange:Boolean = false,
+		public function moveTo(newCenter:Location,
+								  newZoom:Number = NaN,
 								  dragTween:Boolean = false,
-								  resizing:Boolean = false):void {
-			var zoomChanged:Boolean = forceZoomChange || (this.isValidZoomLevel(zoom) && (zoom!=this._zoom));
+								  zoomTween:Boolean = false):void {
+			var zoomChanged:Boolean = (this.isValidZoomLevel(newZoom) && (newZoom!=this._zoom));
 			
-			if (lonlat && !this.isValidLocation(lonlat)) {
+			if (newCenter && !this.isValidLocation(newCenter)) {
 				Trace.log("Not a valid center, so do nothing");
 				return;
 			}
 			
 			// If the map is not initialized, the center of the extent is used
 			// as the current center
-			if (!this.center && !this.isValidLocation(lonlat)) {
-				lonlat = this.maxExtent.center;
-			} else if(this.center && !lonlat) {
-				lonlat = this.center;
+			if (!this.center && !this.isValidLocation(newCenter)) {
+				newCenter = this.maxExtent.center;
+			} else if(this.center && !newCenter) {
+				newCenter = this.center;
 			}
-			var validLocation:Boolean = this.isValidLocation(lonlat);
-			var centerChanged:Boolean = validLocation && (! lonlat.equals(this.center));
+			var validLocation:Boolean = this.isValidLocation(newCenter);
+			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
 			
-			if (zoomChanged || centerChanged || !dragging) {
+			
+			
+			if (zoomChanged || centerChanged) {
 				if(this._baseLayer!=null && this._baseLayer.projection!=null) {
-					lonlat = lonlat.reprojectTo(this._baseLayer.projection);
+					newCenter = newCenter.reprojectTo(this._baseLayer.projection);
 				}
-				if (!dragging) {
-					this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
+				
+				if (zoomChanged) {
+					//Dispatch a MapEvent with the old and new zoom
+					var mapEvent:MapEvent = new MapEvent(MapEvent.ZOOM_START,this);
+					mapEvent.oldZoom = this.zoom;
+					mapEvent.newZoom = newZoom;
+					this.dispatchEvent(mapEvent);
+					if (zoomTween)
+						this.zoomTransition(newZoom, newCenter);
 				}
+				
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
 				
 				if (centerChanged) {
 					if ((!zoomChanged) && (this.center)) {
-						this.centerLayerContainer(lonlat, dragTween);
+						this.centerLayerContainer(newCenter, dragTween);
 					}
-					this._center = lonlat.clone();
+					this._center = newCenter.clone();
 				}
 				
 				if ((zoomChanged) || (this._layerContainerOrigin == null)) {
@@ -522,15 +528,13 @@ package org.openscales.core
 				}
 				
 				if (zoomChanged) {
-					this._zoom = zoom;
-				}
-				
-				if (zoomChanged) {
+					this._zoom = newZoom;
 					this.dispatchEvent(new MapEvent(MapEvent.ZOOM_END, this));
 				}
+				
 			}
 			
-			if (centerChanged && !dragging && !dragTween) {
+			if (centerChanged && !dragTween) {
 				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
 			}
 		}
@@ -811,22 +815,9 @@ package org.openscales.core
 		}
 		public function set zoom(newZoom:Number):void 
 		{
-			this.setZoom(newZoom, this.center);
+			this.moveTo(this.center, newZoom);
 		}
 		
-		public function setZoom(newZoom:Number, newCenter:Location):void {
-			if (this.isValidZoomLevel(newZoom)) {
-				//Dispatch a MapEvent with the old and new zoom
-				var mapEvent:MapEvent = new MapEvent(MapEvent.ZOOM_START,this);
-				mapEvent.oldZoom = this.zoom;
-				mapEvent.newZoom = newZoom;
-				this.dispatchEvent(mapEvent);
-				if (this.tweenZoomEnabled)
-					this.zoomTransition(newZoom, newCenter);
-				this.moveTo(newCenter, newZoom);
-					
-			} 
-		}
 		
 		/**
 		 * Copy the layerContainer in a bitmap and display this (this function is use for zoom)
@@ -952,7 +943,7 @@ package org.openscales.core
 				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
 				
 				if (this.baseLayer != null) {
-					this.moveTo(null,this.zoom,false,true,false,true);
+					this.moveTo(null,this.zoom);
 				}
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
