@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <application xmlns="http://ns.adobe.com/air/application/2.5" minimumPatchLevel="0">
 
-	<id>org.openscales.OpenScales</id>
-	<filename>OpenScales</filename>
+	<id>org.openscales.MobileTracker</id>
+	<filename>MobileTracker</filename>
 	<versionNumber>1.0.0</versionNumber>
 	<initialWindow>
-		<content>OpenScales.swf</content>
-		<title>OpenScales</title>
+		<content>MobileTracker.swf</content>
+		<title>MobileTracker</title>
 		<visible>true</visible>
-		<minSize>300 300</minSize>
 		<autoOrients>true</autoOrients>
+		<fullScreen>true</fullScreen>
 	</initialWindow>
 	
 	<supportedProfiles>desktop extendedDesktop mobileDevice</supportedProfiles>

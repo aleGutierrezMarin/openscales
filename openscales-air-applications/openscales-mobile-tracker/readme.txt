@@ -3,5 +3,5 @@ You will have to register on http://labs.adobe.com/technologies/air2/android/ an
 
 To make android packages, run the following command and use "os" as password when asked
 cd bin-debug
-adt -package -target apk -storetype pkcs12 -keystore ../openscales.p12 OpenScales.apk OpenScales-app.xml OpenScales.swf
-adb install -r OpenScales.apk
+adt -package -target apk -storetype pkcs12 -keystore ../../openscales.p12 MobileTracker.apk MobileTracker-app.xml MobileTracker.swf
+adb install -r MobileTracker.apk

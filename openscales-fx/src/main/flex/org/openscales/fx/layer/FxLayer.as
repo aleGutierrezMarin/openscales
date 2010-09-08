@@ -26,6 +26,8 @@ package org.openscales.fx.layer
 		
 		protected var _projection:String = null;
 		
+		protected var _tweenOnZoom:Boolean = true;
+		
 		protected var _fxmap:FxMap;
 		
 		public function FxLayer() {
@@ -52,6 +54,7 @@ package org.openscales.fx.layer
 				this.layer.maxZoomLevel = this.maxZoomLevel;
 			if(this._maxExtent)
 				this.layer.maxExtent = this._maxExtent;
+			this.layer.tweenOnZoom = this._tweenOnZoom;
 			
 			return this.layer;
 		}
@@ -168,6 +171,14 @@ package org.openscales.fx.layer
 			if(layer)
 				value = this.layer.alpha;
 			return value;
+		}
+		
+		public function set tweenOnZoom(value:Boolean):void {
+			this._tweenOnZoom = value;
+		}
+		
+		public function get tweenOnZoom():Boolean {
+			return this._tweenOnZoom;
 		}
 		
 	}

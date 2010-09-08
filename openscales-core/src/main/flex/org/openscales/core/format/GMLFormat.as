@@ -73,7 +73,7 @@ package org.openscales.core.format
 		private var step:int       = 200;
 		private var lastInd:int    = 0;
 		//fps
-		private var allowedTime:Number = 1000/40 ;
+		private var allowedTime:Number = 10;
 		private var startTime:Number = 0;
 		private var savedIndex:Number = 0;
 		private var sprite:Sprite = new Sprite();

@@ -401,7 +401,7 @@ package org.openscales.core.format
 			var styles:XMLList = dataXML..Style;
 			loadStyles(styles.copy());
 			var placemarks:XMLList = dataXML..Placemark;
-			loadPlacemarks(placemarks.copy());
+			loadPlacemarks(placemarks);
 			
 			var _features:Vector.<Feature> = polygonsfeatures.concat(linesfeatures, iconsfeatures);
 			
