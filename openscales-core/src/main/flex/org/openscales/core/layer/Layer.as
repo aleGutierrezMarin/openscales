@@ -1,4 +1,5 @@
 package org.openscales.core.layer {
+	import flash.display.BlendMode;
 	import flash.display.Sprite;
 	
 	import org.openscales.basetypes.Bounds;
@@ -60,6 +61,9 @@ package org.openscales.core.layer {
 			this.doubleClickEnabled = true;
 			this._projection = new ProjProjection(Layer.DEFAULT_SRS_CODE);
 			this.generateResolutions();
+			
+			// http://www.zedia.net/2008/blendmodelayer-a-must-when-changing-alpha-of-a-displayobject-containing-other-displayobject/
+			this.blendMode = BlendMode.LAYER;
 		}
 
 		public function generateResolutions(numZoomLevels:uint=Layer.DEFAULT_NUM_ZOOM_LEVELS, nominalResolution:Number=NaN):void {

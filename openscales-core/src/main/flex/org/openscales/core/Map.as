@@ -9,10 +9,15 @@ package org.openscales.core
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.BlendMode;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
+	
+	import mx.controls.Alert;
 	
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
@@ -68,7 +73,7 @@ package org.openscales.core
 		private var _tweenZoomEnabled:Boolean = true;
 		
 		private var _proxy:String = null;
-		private var _bitmapTransition:Sprite;
+		private var _bitmapTransition:Bitmap;
 		private var _configuration:IConfiguration;
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
@@ -831,23 +836,29 @@ package org.openscales.core
 				// We calculate the scale multiplicator according to the actual and new resolution
 				const resMult:Number = this.resolution / this.baseLayer.resolutions[newZoom];
 				// We intsanciate a bitmapdata with map's size
-				var bitmapData:BitmapData = new BitmapData(this.width,this.height);
+				var bitmapData:BitmapData = new BitmapData(this.width,this.height, true, 4294967295);
 				
 				// We draw the old transition before drawing the better-fitting tiles on top and removing the old transition. 
 				if(this.bitmapTransition != null) {
-					bitmapData.draw(this.bitmapTransition);				
-					this.removeChild(this.bitmapTransition);
-					var bmp:Bitmap = bitmapTransition.removeChildAt(0) as Bitmap;
+					//bitmapData.draw(this.bitmapTransition);				
+					var bmp:Bitmap = this.removeChild(this.bitmapTransition) as Bitmap;
 					bmp.bitmapData.dispose();
 					bmp.bitmapData = null;
 				}
 				
+				this.bitmapTransition = new Bitmap(bitmapData);
+				this.bitmapTransition.smoothing = true;
+				
+				
+				var background:Sprite = new Sprite();
+				background.graphics.beginFill(0xFFFFFF);
+				background.graphics.drawRect(0, 0, this.layerContainer.width, this.layerContainer.height);
+				this.bitmapTransition.opaqueBackground = background;
 				// We draw the loaded tiles onto the background transition.
 				try {
 					// Can sometimes throw a security exception.
-					
 					for each(var layer:Layer in this.layers) {
-						if(layer.tweenOnZoom) {
+						if(layer.tweenOnZoom) {					
 							bitmapData.draw(layer, this.layerContainer.transform.matrix);
 						}
 					}
@@ -857,27 +868,24 @@ package org.openscales.core
 				}
 				
 				// We create the background layer from the bitmap data
-				this.bitmapTransition = new Sprite();
-				
-				var b:Bitmap = new Bitmap(bitmapData);
-				b.smoothing = true;
-				this.bitmapTransition.addChild(b);
+								
+				this.addChild(this.bitmapTransition);
 				this.bitmapTransition.visible=true;
 				
-				this.addChildAt(bitmapTransition, 0);
+				this.addChild(bitmapTransition);
 				
 				// We hide the layerContainer (to avoid zooming out issues)
 				this.layerContainer.visible = false;
 				//We calculate the bitmapTransition position
 				var pix:Pixel = this.getMapPxFromLocation(newCenter);
-				var bt:Sprite = this.bitmapTransition;
+				var bt:Bitmap = this.bitmapTransition;
 				var oldCenterPix:Pixel = new Pixel(bt.x+bt.width/2, bt.y+bt.height/2);
 				var centerOffset:Pixel = new Pixel(oldCenterPix.x-pix.x, oldCenterPix.y-pix.y);
 				var alpha:Number = Math.pow(2, newZoom-this.zoom);
 				var x:Number = bt.x-((resMult-1)*(bt.width))/2+alpha*centerOffset.x;
 				var y:Number = bt.y-((resMult-1)*(bt.height))/2+alpha*centerOffset.y;
 				//The tween effect to scale and re-position the bitmapTransition
-				const tween:GTween = new GTween(b,0.5,
+				const tween:GTween = new GTween(this.bitmapTransition,0.5,
 					{
 						scaleX: resMult,
 						scaleY: resMult,
@@ -993,11 +1001,11 @@ package org.openscales.core
 			return this._layerContainer;
 		}
 		
-		public function get bitmapTransition():Sprite {
+		public function get bitmapTransition():Bitmap {
 			return this._bitmapTransition;
 		}
 		
-		public function set bitmapTransition(value:Sprite):void {
+		public function set bitmapTransition(value:Bitmap):void {
 			this._bitmapTransition = value;
 		}
 		
