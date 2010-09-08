@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+<control:Control xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:control="org.openscales.component.control.*"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:os="http://openscales.org"
+	width="100" height="100"
+	initialize="{currentState='defaultState';}"
+	toolTip="Click to change the center of the main map.&#13;Draw a rectangle to define a new extent for the main map.">
+	
+
+	<!-- Inspired from http://www.munkiihouse.com/flexapps/CustomFormItem/Main.html view source -->
+
+    <!-- Set "children" to be the default property so we can easily set it from mxml -->
+    <mx:Metadata>
+        [DefaultProperty("children")]
+    </mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			import org.openscales.basetypes.Bounds;
+			import org.openscales.basetypes.Location;
+			import org.openscales.basetypes.Pixel;
+			import org.openscales.basetypes.Size;
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.fx.layer.FxLayer;
+
+			private var _children:Array = [];
+			private var _childrenChanged:Boolean = false;
+			
+			/**
+			 * Set the 'content' of this component, and then call invalidateProperties
+			 * 
+			 * Note that if only one child is defined in mxml, then that child
+			 * itself is passed in.
+			 * If more than one child is defined, then an Array is passed in.
+			 */
+			public function set children(value:*):void {
+				if (value is DisplayObject) {
+					_children = [ value ];
+				} else {
+					_children = value;
+				}
+				_childrenChanged = true;
+				invalidateProperties(); // so flex calls the commitProperties()
+            }
+            public function get children():Array {
+				return _children;
+			}
+			
+			/**
+			 * The commit properties phase is the best time to add the children
+			 * to their intended target
+			 */
+			protected override function commitProperties():void {
+				// commit the properties of the super class
+				super.commitProperties();
+				// Is it anything to do ? 
+				if ((! _childrenChanged) || (! overview) || (! overview.map)) {
+					return;
+				}
+				// Remove all the layers of the current overview map
+				overview.map.removeAllLayers();
+				// Add the children to the overview
+				for each(var child:DisplayObject in _children) {
+					if (child) {
+						overview.addChild(child);
+					}
+				}
+      			// Zoom out the overview to display the maximum extent of its map
+				overview.map.zoomToMaxExtent();
+				// Update the rectangle of the overview that represents the visible extent of the main map (even if null)
+				updateRectFromMainMap();
+				// All the children are treated
+				_childrenChanged = false;
+			}
+			
+ 			private var rectDrawnPxBounds:Bounds = new Bounds(0, 0+height, 0+width, 0); // the rectangle that represents the visible extent of the main map over the overview map 
+			private var rectRealPxBounds:Bounds = new Bounds(0, 0+height, 0+width, 0); // the real extent in pixels associated to the visible extent of the main map
+			private var sprite:Sprite; // the sprite used to display the "rect"
+	    	private var drawingExtentFirstCorner:Pixel; // the first corner defined for a definition of a new extent by drawing on the overview map
+			
+			[Bindable] private var _minRectPxSize:Number = 5; // the display of the rect is limited to a minimum width and height of minRectPxSize pixels
+			public function get minRectPxSize():Number {
+				return _minRectPxSize;
+			}
+			public function set minRectPxSize(value:Number):void {
+				if (value > 0) {
+					_minRectPxSize = value;
+				}
+			}
+			
+			[Bindable] private var _rectColor:uint = 0xFF0000; // the color of the rect that represents the visible extent of the main map
+			public function get rectColor():uint {
+				return _rectColor;
+			}
+			public function set rectColor(value:uint):void {
+				_rectColor = value;
+			}
+			
+			[Bindable] private var _newExtentColor:uint = 0x0000FF; // the color of the extent defined with a drawing on the overview map
+			public function get newExtentColor():uint {
+				return _newExtentColor;
+			}
+			public function set newExtentColor(value:uint):void {
+				_newExtentColor = value;
+			}
+			
+			/**
+			 * Init the overview once the creation is completed
+			 */
+			private function finalizeOverview():void {
+				// Manage the layers added dynamically if needed
+				if (_childrenChanged) {
+					invalidateProperties();
+				}
+				
+				// Create the sprite that will display the rect and add to the overview
+				sprite = new Sprite();
+				overview.map.addChild(sprite);
+			
+				// Change the center (and the scale) of the main map depending on the action on the overview map.
+				// Is the user starting to draw a new extent or simply clicking to change the center ?
+				overview.map.addEventListener(MouseEvent.MOUSE_DOWN, startChangingMapExtent);
+				
+				// Forward the MouseWheel event to the map
+				overview.map.addEventListener(MouseEvent.MOUSE_WHEEL, forwardMouseWheelToMap);
+			}
+			
+			/**
+			 * Resize the overview to fit to the maximum size avaible for this component
+			 */
+			private function resizeOverview():void {
+				if (! overview.map) {
+					return;
+				}
+			    overview.map.zoomToMaxExtent();
+				/*var tmp:Number = Math.min(overview.map.width,overview.map.height);
+				var tmp2:Array = [ overview.map.extent.width/tmp, overview.map.extent.height/tmp ];
+				Trace.debug("overview extent ideal resolutions = "+tmp2[0]+" ; "+tmp2[1]);
+				var targetResolution:Number = Math.max(tmp2[0], tmp2[1]);
+				var maxRes:Number = (overview.map.baseLayer) ? overview.map.baseLayer.maxResolution : -1;
+				Trace.debug("maxResolution vs targetResolution : "+maxRes+" vs "+targetResolution);*/
+			}
+
+			/**
+			 * Convert a coordinate on the overview map in a Pixel on the overview component
+			 * 
+			 * @param cx the X-coordinate of a point of the overview map
+			 * @param cy the Y-coordinate of a point of the overview map
+			 */
+			private function coordinateToPixel(cx:Number, cy:Number):Pixel {
+		        var invRes:Number = 1.0 / overview.map.resolution;
+            	return new Pixel(
+                    Math.round(invRes * (cx - overview.map.extent.left)),
+                    Math.round(invRes * (overview.map.extent.top - cy)));
+    		}
+    		
+			/**
+			 * Convert a Pixel on the overview component in a coordinate on the overview map 
+			 * 
+			 * @param p the pixel on the overview component
+			 */
+			private function pixelToCoordinate(p:Pixel):Location {
+		        var c2p_x:Number = p.x - overview.map.size.w / 2.0;
+		        var c2p_y:Number = p.y - overview.map.size.h / 2.0;
+		        var center:Location = overview.map.extent.center;
+		        return new Location(center.lon + c2p_x * overview.map.resolution,
+		        					center.lat - c2p_y * overview.map.resolution );
+    		}
+    		
+			/**
+			 * Change the main map associated to the overview, define the event
+			 * listeners attached to the map and redraw the rectangle that represents
+			 * the visible extent of the main map.
+			 * If the new map is null, the listeners attached to the previous
+			 * main map are removed and the rectangle is drawn using the
+			 * maximum size.
+			 */		
+			override public function set map(value:Map):void {
+				// Is the input map the current map associated to the control ?
+				if (value == map) {
+					return;
+				}
+				// Remove the event listeners defined on the previous main map
+	      		if (map != null) {
+					// Remove the listeners on when the main map is moved or zoomed	
+	     			map.removeEventListener(MapEvent.MOVE_END, updateRectFromMainMap); 
+	     			map.removeEventListener(MapEvent.ZOOM_END, updateRectFromMainMap);
+					// Remove the listeners on when the base layer of the main map is changed	
+					map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, updateRectFromMainMap);
+	      		}
+	      		
+	      		// Change the main map associated to the overview map
+	      		super.map = value;
+	      		if (this.map) {
+					//this.map.addControl(this, false);
+	      		}
+				if (overview && overview.map && overview.map.baseLayer) {
+	      			// Zoom out the overview to display the maximum extent of its map
+					overview.map.zoomToMaxExtent();
+					// Update the rectangle of the overview that represents the visible extent of the main map (even if null)
+					updateRectFromMainMap();
+				}
+				
+	      		// Add the event listeners to the new main map
+	      		if (map != null) {
+					// Update the overview when the main map is moved or zoomed	
+					map.addEventListener(MapEvent.MOVE_END, updateRectFromMainMap);
+					map.addEventListener(MapEvent.ZOOM_END, updateRectFromMainMap);
+					// Change the overview map if the base layer of the main map is changed
+					map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, updateRectFromMainMap);
+	      		}
+			}
+			
+			/**
+			 * Update the main map from the current position and size of the rectangle of the overview
+			 */
+			private function updateMainMapFromRect():void {
+				// Check if the overview map is fully defined
+				if (! overview.map.baseLayer) {
+					Trace.warning("Overview - updateMainMapFromRect : stop, overview map have not a baseLayer");
+					return;
+				}
+				Trace.log("Overview - updateMainMapFromRect");
+				if ((! map) || (! map.baseLayer)) {
+					// Main map is not defined, nothing has to be done	
+					return;
+				}
+				// Convert the current pixels'boundary in a map extent in the projection of the overview map
+		        var leftBottomCoord:Location = pixelToCoordinate(new Pixel(rectRealPxBounds.left, rectRealPxBounds.bottom));
+		        var rightTopCoord:Location = pixelToCoordinate(new Pixel(rectRealPxBounds.right, rectRealPxBounds.top));
+				var mapBounds:Bounds = new Bounds(leftBottomCoord.lon, leftBottomCoord.lat, rightTopCoord.lon, rightTopCoord.lat);
+				// If necessary, convert mapBounds in the projection of the main map	
+				if (map.baseLayer.projection != overview.map.baseLayer.projection) {
+					mapBounds.transform(overview.map.baseLayer.projection,map.baseLayer.projection);
+				}
+				// Update the visible extent of the main map
+        		map.zoomToExtent(mapBounds);
+				// The update of the main map will call an update of the overview.
+				// It is normal since the extent drawn on the overview map is not
+				// constrained by the aspect ratio of the main map nor by its eventual
+				// predefined scales.
+			}
+    
+			/**
+			 * Update the overview when the main map is moved or zoomed
+			 * 
+			 * @param event the event is not used to perform the update, the main map is sufficient
+			 */
+			private function updateRectFromMainMap(event:Event=null):void {
+				// Check if the overview map is fully defined
+				if (! overview.map.baseLayer) {
+					Trace.warning("Overview - updateRectFromMainMap("+((event==null)?"null":event.type)+") : stop, overview map have not a baseLayer");
+					return;
+				}
+				var mapBounds:Bounds;
+				if ((! map) || (! map.baseLayer)) {
+					Trace.warning("Overview - updateRectFromMainMap("+((event==null)?"null":event.type)+") : stop, map is null");
+					// Main map is not defined, the extent of the overview map is used instead	
+					mapBounds = overview.map.extent;
+				} else {
+					Trace.log("Overview - updateRectFromMainMap("+((event==null)?"null":event.type)+") : resolution=" + map.resolution + " ; " + map.center.toString());
+					// Get the current main map's extent	
+					mapBounds = map.extent;
+					// Intersect the map extent with its maxExtent
+					// TODO: is this part really necessary ? Test with a overview having a small maxExtent
+					var mapMaxExtent:Bounds = map.maxExtent;
+					mapBounds.left = Math.max(mapBounds.left, mapMaxExtent.left);
+					mapBounds.bottom = Math.max(mapBounds.bottom, mapMaxExtent.bottom);
+					mapBounds.right = Math.min(mapBounds.right, mapMaxExtent.right);
+					mapBounds.top = Math.min(mapBounds.top, mapMaxExtent.top);
+					// Reproject the extent in the projection of the overview map
+					if (overview.map.baseLayer.projection != map.baseLayer.projection) {
+						mapBounds.transform(map.baseLayer.projection,overview.map.baseLayer.projection);
+					}
+					// Intersect the (reprojected) map extent with the overview map maxExtent
+					var overviewMapMaxExtent:Bounds = overview.map.maxExtent;
+					mapBounds.left = Math.max(mapBounds.left, overviewMapMaxExtent.left);
+					mapBounds.bottom = Math.max(mapBounds.bottom, overviewMapMaxExtent.bottom);
+					mapBounds.right = Math.min(mapBounds.right, overviewMapMaxExtent.right);
+					mapBounds.top = Math.min(mapBounds.top, overviewMapMaxExtent.top);
+				}
+				// Convert the extent in pixels
+		        var leftBottomPx:Pixel = coordinateToPixel(mapBounds.left, mapBounds.bottom);
+		        var rightTopPx:Pixel = coordinateToPixel(mapBounds.right, mapBounds.top);
+				// Update the rectangle that represents the visible extent
+				setPxBoundsAndDraw(new Bounds(leftBottomPx.x, leftBottomPx.y, rightTopPx.x, rightTopPx.y));
+			}
+			
+    		/**
+    		 * Draw the map extent over the overview map (manage the visible part of the overview map for display)
+    		 * 
+    		 * @param pxBounds the extent of the main map in pixels over the overview map 
+    		 */
+			private function setPxBoundsAndDraw(pxBounds:Bounds):void {
+				// Save the real boundary in pixel coordinates
+		        rectRealPxBounds = pxBounds;
+
+				// For the display, the pixels bounds are not allowed to de defined outside of the visible part of the overview map
+				var rectLeft:Number = Math.max(pxBounds.left, 0);
+				var rectTop:Number = Math.max(pxBounds.top, 0);
+				var rectRight:Number = Math.min(pxBounds.left + pxBounds.width, overview.map.size.w);
+				var rectBottom:Number = Math.min(pxBounds.top + pxBounds.height, overview.map.size.h);
+				// Compute the width and the height of the visible boundary
+				var rectWidth:Number = rectRight - rectLeft;
+				var rectHeight:Number = rectBottom - rectTop;
+
+				// If the visible width is lower than the minimum size for the display, change for this minimum size
+	       	    if (rectWidth < minRectPxSize) {
+		            rectLeft += Math.round((rectWidth-minRectPxSize) / 2);
+		            rectWidth = minRectPxSize;
+				}
+				// If the real height is lower than the minimum size for the display, change for this minimum size
+	       	    if (rectHeight < minRectPxSize) {
+		            rectTop += Math.round((rectHeight-minRectPxSize) / 2);
+		            rectHeight = minRectPxSize;
+				}
+       	    	
+       	    	// Save the boundary to display (with the corrected values)
+       	    	rectDrawnPxBounds = new Bounds(rectLeft, rectBottom, rectRight, rectTop);
+       	    	
+				// Draw the visible part of the bounding box of the extent of the main map
+				sprite.graphics.clear();
+				sprite.graphics.lineStyle(1,rectColor);
+				sprite.graphics.drawRect(rectDrawnPxBounds.left,rectDrawnPxBounds.top,rectDrawnPxBounds.width,rectDrawnPxBounds.height);
+    		}
+			
+			
+    	    /**
+    	    * Simply save the pixel pointed during the MOUSE_DOWN event
+    	    * 
+    	    * @param event the event that contains the position clicked on the overview component
+    	    */
+    		private function startChangingMapExtent(event:MouseEvent):void {
+				// Save the clicked Pixel as the first corner of the new extent
+				drawingExtentFirstCorner = new Pixel(event.currentTarget.mouseX, event.currentTarget.mouseY);
+				
+				// Draw the current extent
+				sprite.graphics.clear();
+				sprite.graphics.lineStyle(1,rectColor);
+				sprite.graphics.drawRect(rectDrawnPxBounds.left,rectDrawnPxBounds.top,rectDrawnPxBounds.width,rectDrawnPxBounds.height);
+				// Draw the possible new extent if the goal is just to change the center
+				sprite.graphics.lineStyle(1,newExtentColor);
+				sprite.graphics.beginFill(newExtentColor,0.25);
+				sprite.graphics.drawRect(drawingExtentFirstCorner.x-Math.round(rectDrawnPxBounds.width/2), drawingExtentFirstCorner.y-Math.round(rectDrawnPxBounds.height/2), rectDrawnPxBounds.width, rectDrawnPxBounds.height);
+				sprite.graphics.endFill();
+
+				// Add the event listeners needed to finalize the modification of the extent
+				overview.map.addEventListener(MouseEvent.MOUSE_MOVE, drawNewExtent);
+				overview.map.addEventListener(MouseEvent.MOUSE_UP, stopChangingMapExtent);
+    		}
+			
+			/**
+			 * Just draw the new extent that is being drawn waiting for a MOUSE_UP event.
+			 * 
+			 * @param event the event that defines the position of the (temporary) second corner of the new extent
+			 */
+            private function drawNewExtent(event:MouseEvent) : void {
+				// Get the current second corner of the new extent
+				var click:Pixel = new Pixel(event.currentTarget.mouseX, event.currentTarget.mouseY);
+
+				// Compute the rectangle defined by the two corners
+				var topLeftPixel:Pixel = new Pixel(Math.min(drawingExtentFirstCorner.x,click.x), Math.min(drawingExtentFirstCorner.y,click.y)); 
+				var size:Size = new Size(Math.abs(click.x-drawingExtentFirstCorner.x), Math.abs(click.y-drawingExtentFirstCorner.y));
+				
+				// Draw the current extent
+				sprite.graphics.clear();
+				sprite.graphics.lineStyle(1,rectColor);
+				sprite.graphics.drawRect(rectDrawnPxBounds.left,rectDrawnPxBounds.top,rectDrawnPxBounds.width,rectDrawnPxBounds.height);
+				// Draw the possible new extent
+				sprite.graphics.lineStyle(1,newExtentColor);
+				sprite.graphics.beginFill(newExtentColor,0.25);
+				sprite.graphics.drawRect(topLeftPixel.x, topLeftPixel.y, size.w, size.h);
+				sprite.graphics.endFill();
+			}
+			
+            // TODO : check location/picel confusion
+			private function stopChangingMapExtent(event:MouseEvent) : void {
+				// Remove the event listeners needed to finalize the modification of the extent
+				overview.map.removeEventListener(MouseEvent.MOUSE_MOVE, drawNewExtent);
+				overview.map.removeEventListener(MouseEvent.MOUSE_UP, stopChangingMapExtent);
+
+				// Get the current second corner of the new extent
+				var click:Pixel = new Pixel(event.currentTarget.mouseX, event.currentTarget.mouseY);
+
+				// Compute the rectangle defined by the two corners
+				var topLeftPixel:Pixel = new Pixel(Math.min(drawingExtentFirstCorner.x,click.x), Math.min(drawingExtentFirstCorner.y,click.y)); 
+				var size:Size = new Size(Math.abs(click.x-drawingExtentFirstCorner.x), Math.abs(click.y-drawingExtentFirstCorner.y));
+
+				if ((size.w > minRectPxSize) || (size.h > minRectPxSize)) {
+					Trace.log("Overview - stopChangingMapExtent : new extent");
+					setPxBoundsAndDraw(new Bounds(topLeftPixel.x, topLeftPixel.y+size.h, topLeftPixel.x+size.w, topLeftPixel.y));
+					updateMainMapFromRect();
+				} else {
+					// Trace.log is managed by setCenterFromOverview
+					var centerPixel:Pixel = new Pixel(topLeftPixel.x+Math.round(size.w/2), topLeftPixel.y+Math.round(size.h/2));
+					setCenterFromOverview(centerPixel);
+				}
+			}
+			
+    	    /**
+    	    * Set the center of the main map to the position defined by a pixel on the overview map
+			* TODO : check location/picel confusion
+    	    * 
+    	    * @param newCenter the pixel representing the new center of the extent
+    	    */
+    		private function setCenterFromOverview(newCenter:Pixel):void {
+				// Update the overview (and the main map if not null)
+				if (map == null) {
+					Trace.warning("Overview - setCenterFromOverview : map is null ; " + newCenter.toString());
+	    			var oldCenter:Location = rectRealPxBounds.center;
+	    			// Compute the displacement then move the real boundary
+	    			var delta:Pixel = new Pixel(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);
+	    			rectRealPxBounds.left += delta.x;
+	    			rectRealPxBounds.right += delta.x;
+	    			rectRealPxBounds.top += delta.y;
+	    			rectRealPxBounds.bottom += delta.y;
+	    			// Update the display of the visible boundary (needed if the center is changed to a position near a side of the overview map)
+	    			setPxBoundsAndDraw(rectRealPxBounds);
+				} else {
+					Trace.log("Overview - setCenterFromOverview : " + newCenter.toString());
+					// Convert the new pixel center in a location on the overview map in its projection
+			        var newCenterCoord:Location = pixelToCoordinate(newCenter);
+					// If necessary, convert the point in the projection of the main map	
+					if (map.baseLayer.projection != overview.map.baseLayer.projection) {
+						newCenterCoord = newCenterCoord.reprojectTo(map.baseLayer.projection);
+					}
+					// Change the center of the main map, and so, indirectly update the overview.
+	        		map.center = newCenterCoord;
+				}
+			}
+    
+			/**
+			 * Forward the MouseWheel event to the map
+			 * 
+			 * @param event the event to forward to the map
+			 */
+			private function forwardMouseWheelToMap(event:MouseEvent):void {
+				Trace.log("Overview - forwardMouseWheelToMap");
+				map.dispatchEvent(event);
+			}
+			
+			/**
+			 * Change the base layer of the overview map to the layer defined by the name of the event.
+			 * Be careful, there is no link with the base layer used by the main map!
+			 * 
+			 * @param event the event that defines the name of the new base layer to use for the overview map
+			 */
+			// TODO or not ?
+			/*private function changeBaseLayer(event:LayerEvent):void  {
+				// Do nothing if the name of the event is the name of the current base layer of the overview map
+				if (event.layer.name == overview.map.baseLayer.name) {
+					return;
+				}
+				// Get the layer defined by the name of the event
+			 	var newBaseLayer:Layer = overview.map.getLayerByName(event.layer.name) as Layer;
+			 	// If the layer defined by the name of the event exists, the base layer of the overview map is changed
+			 	if (newBaseLayer) {
+				 	overview.map.baseLayer.visible = false;
+				 	overview.map.baseLayer = newBaseLayer;
+				 	overview.map.baseLayer.visible = true;
+				}
+			}*/
+		]]>
+	</mx:Script>
+	
+	<control:states>
+		<mx:State name="defaultState">
+			<mx:AddChild relativeTo="{this}" position="firstChild">
+				<os:Map id="overview" width="100%" height="100%"
+					proxy="{this.map.baseLayer.proxy}"
+					creationComplete="finalizeOverview();"
+					resize="resizeOverview();" minHeight="20" minWidth="20">
+					<!-- The children of the component are inserted here -->
+				</os:Map>
+			</mx:AddChild>
+		</mx:State>
+	</control:states>
+
+</control:Control>
