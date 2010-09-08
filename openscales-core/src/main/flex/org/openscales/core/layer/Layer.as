@@ -164,14 +164,14 @@ package org.openscales.core.layer {
 		 * value and the 'closest' specification.
 		 */
 		public function getZoomForResolution(resolution:Number):Number {
-			if(resolution > this.resolutions[this.minZoomLevel]) {
-				return this.minZoomLevel;
+			if(resolution > this.resolutions[0]) {
+				return 0;
 			}
-			if(resolution < this.resolutions[this.maxZoomLevel]) {
-				return this.maxZoomLevel;
+			if(resolution < this.resolutions[this.resolutions.length - 1]) {
+				return this.resolutions.length - 1;
 			}
-			var i:int = this.minZoomLevel + 1;
-			var j:int = this.maxZoomLevel
+			var i:int = 1;
+			var j:int = this.resolutions.length - 1;
 			for (i; i < j; ++i) {
 				if ((this.resolutions[i] < resolution) && (Math.abs(this.resolutions[i] - resolution) > RESOLUTION_TOLERANCE)) {
 					break;
@@ -218,6 +218,7 @@ package org.openscales.core.layer {
 		 * Clear the layer graphics
 		 */
 		public function clear():void {
+			
 		}
 
 		/**
