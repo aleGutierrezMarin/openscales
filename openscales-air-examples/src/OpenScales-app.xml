@@ -10,6 +10,7 @@
 		<visible>true</visible>
 		<minSize>300 300</minSize>
 		<autoOrients>true</autoOrients>
+		<fullScreen>true</fullScreen>
 	</initialWindow>
 	
 	<supportedProfiles>desktop extendedDesktop mobileDevice</supportedProfiles>

@@ -44,6 +44,10 @@ package org.openscales.core.layer
 			this.style = new Style();
 			this.geometryType = null;
 			this.selectedFeatures = new Vector.<String>();
+			
+			// By default no range defined for feature layers
+			this.minResolution = 0;
+			this.maxResolution = Number.MAX_VALUE;
 		}
 
 		override public function destroy():void {

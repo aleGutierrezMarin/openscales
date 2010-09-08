@@ -32,7 +32,7 @@ package org.openscales.core.layer {
 		}
 		public static const DEFAULT_NOMINAL_RESOLUTION:Number = 1.40625;
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
-		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 16;
+		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
 
 
 		private var _isBaseLayer:Boolean = false;
@@ -40,8 +40,8 @@ package org.openscales.core.layer {
 		private var _projection:ProjProjection = null;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
-		private var _minZoomLevel:Number = NaN;
-		private var _maxZoomLevel:Number = NaN;
+		private var _minResolution:Number = NaN;
+		private var _maxResolution:Number = NaN;
 		private var _proxy:String = null;
 		private var _map:Map = null;
 		private var _security:ISecurity = null;
@@ -285,6 +285,31 @@ package org.openscales.core.layer {
 		public function set zindex(value:int):void {
 			this.parent.setChildIndex(this, value);
 		}
+		
+		public function get minResolution():Number {
+			var minRes:Number = this._minResolution;;
+			if (isNaN(minRes) && this.resolutions && (this.resolutions.length > 0)) {
+				minRes = this.resolutions[this.resolutions.length - 1];
+			}
+			return minRes;
+		}
+		
+		public function set minResolution(value:Number):void {
+			this._minResolution = value;
+		}
+		
+		public function get maxResolution():Number {
+			var maxRes:Number = this._maxResolution;
+			
+			if (isNaN(maxRes) &&  this.resolutions && (this.resolutions.length > 0)) {
+				maxRes = this.resolutions[0];
+			}
+			return maxRes;
+		}
+		
+		public function set maxResolution(value:Number):void {
+			this._maxResolution = value;
+		}
 
 		/**
 		 * @return Return the minimum zoom level allowed to display the layer.
@@ -292,15 +317,12 @@ package org.openscales.core.layer {
 		 * information, see inRange for that. 
 		 */
 		public function get minZoomLevel():Number {
-			var level:Number = this._minZoomLevel;
-			// If the level is not defined explicitely, use the default one
-			if (isNaN(level)) {
-				// By default the minimum zoom level is the first level
-				level = 0;
-			}			
-			return level;
+			if(isNaN(this._maxResolution))
+				return 0;
+			else
+				return getZoomForResolution(this._maxResolution);
 		}
-
+		
 		/**
 		 * Set the minimum zoom level of the layer. There is no link with the
 		 * allowed levels of the map depending on its baselayer(s).
@@ -309,9 +331,9 @@ package org.openscales.core.layer {
 		 */
 		public function set minZoomLevel(value:Number):void {
 			if ((value >= 0) && (value < this.resolutions.length)) {
-				this._minZoomLevel = value;
+				this._maxResolution = this.resolutions[value];
 			} else {
-				Trace.error("Layer: invalid minZoomLevel for the layer " + this.name + ": " + value + " is not in [0;" + (this.resolutions.length - 1) + "]");
+				Trace.error("Layer: invalid maxZoomLevel for the layer " + this.name + ": " + value + " is not in [0;" + (this.resolutions.length - 1) + "]");
 			}
 		}
 
@@ -321,17 +343,10 @@ package org.openscales.core.layer {
 		 * information, see inRange for that. 
 		 */
 		public function get maxZoomLevel():Number {
-			var level:Number = this._maxZoomLevel;
-			// If the level is not defined explicitely, use the default one
-			if (isNaN(level)) {
-				// By default the maximum zoom level is the last level
-				if (this.resolutions) {
-					level = this.resolutions.length - 1;
-				} else {
-					level = 0;
-				}
-			}
-			return level;
+			if(isNaN(this._minResolution))
+				return this.resolutions.length - 1;
+			else
+				return getZoomForResolution(this._minResolution);
 		}
 
 		/**
@@ -342,7 +357,7 @@ package org.openscales.core.layer {
 		 */
 		public function set maxZoomLevel(value:Number):void {
 			if ((value >= 0) && (value < this.resolutions.length)) {
-				this._maxZoomLevel = value;
+				this._minResolution = this.resolutions[value];
 			} else {
 				Trace.error("Layer: invalid maxZoomLevel for the layer " + this.name + ": " + value + " is not in [0;" + (this.resolutions.length - 1) + "]");
 			}
@@ -353,32 +368,6 @@ package org.openscales.core.layer {
 		 */
 		public function get numZoomLevels():Number {
 			return this.resolutions.length;
-		}
-
-		public function get maxResolution():Number {
-			var maxRes:Number = NaN;
-			if (this.resolutions && (this.resolutions.length > 0)) {
-				// By default, the max resolution is used
-				maxRes = this.resolutions[0];
-				
-				if (!isNaN(this._minZoomLevel)) {
-					maxRes = this.resolutions[this._minZoomLevel];
-				}
-			}
-			return maxRes;
-		}
-
-		public function get minResolution():Number {
-			var minRes:Number = NaN;
-			if (this.resolutions && (this.resolutions.length > 0)) {
-				// By default, the min resolution is used
-				minRes = this.resolutions[this.resolutions.length - 1];
-				
-				if (!isNaN(this._maxZoomLevel)) {
-					minRes = this.resolutions[this._maxZoomLevel];
-				}
-			}
-			return minRes;
 		}
 
 		/**
