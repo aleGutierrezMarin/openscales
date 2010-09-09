@@ -828,7 +828,7 @@ package org.openscales.core
 		 * Copy the layerContainer in a bitmap and display this (this function is use for zoom)
 		 */
 		private function zoomTransition(newZoom:Number, newCenter:Location):void {
-			if (newZoom >= 0) {
+			if (!_zooming && newZoom >= 0) {
 				
 				// Disable more zooming until this zooming is complete 
 				this._zooming = true;
@@ -884,7 +884,7 @@ package org.openscales.core
 				var x:Number = bt.x-((resMult-1)*(bt.width))/2+alpha*centerOffset.x;
 				var y:Number = bt.y-((resMult-1)*(bt.height))/2+alpha*centerOffset.y;
 				//The tween effect to scale and re-position the bitmapTransition
-				const tween:GTween = new GTween(this.bitmapTransition,0.7,
+				const tween:GTween = new GTween(this.bitmapTransition,0.5,
 					{
 						scaleX: resMult,
 						scaleY: resMult,
