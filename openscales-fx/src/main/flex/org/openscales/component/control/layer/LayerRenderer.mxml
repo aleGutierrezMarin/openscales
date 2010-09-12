@@ -12,6 +12,7 @@
 			import mx.binding.utils.BindingUtils;
 			import mx.binding.utils.ChangeWatcher;
 			import mx.core.ButtonAsset;
+			import mx.core.IVisualElement;
 			import mx.events.DragEvent;
 			import mx.events.PropertyChangeEvent;
 			import mx.skins.halo.ButtonSkin;
@@ -92,24 +93,23 @@
 			
 			
 			public function inOutRange(event:LayerEvent):void {
-				/*
 				if(event.layer.isBaseLayer == false)
 				{
-				var checkBox:Array = displayControl.getChildren();
-				if(checkBox[0] is CheckBox)
-				{
-				if(event.type == LayerEvent.LAYER_OUT_RANGE)
-				{     
-				(checkBox[0] as CheckBox).enabled = false;
+					var component:IVisualElement = displayControl.getElementAt(0);
+					if(component is CheckBox)
+					{
+						if(event.type == LayerEvent.LAYER_OUT_RANGE)
+						{     
+							(component as CheckBox).enabled = false;
+						}
+						else
+						{
+							(component as CheckBox).enabled = true;
+							event.layer.visible = (component as CheckBox).selected; 
+						}
+					}
+					
 				}
-				else
-				{
-				(checkBox[0] as CheckBox).enabled = true;
-				event.layer.visible = (checkBox[0] as CheckBox).selected; 
-				}
-				}
-				
-				}  */
 			}
 			
 			/**
@@ -140,7 +140,7 @@
 						radioButton.percentWidth = 100;
 						radioButton.label = this.layer.name;
 						radioButton.selected = this.layer.visible;
-						displayControl.addChild(radioButton);
+						displayControl.addElement(radioButton);
 						
 					}
 					else
@@ -148,7 +148,7 @@
 						labelLayer = new Label();
 						labelLayer.text = this.layer.name;
 						labelLayer.percentWidth = 100;
-						displayControl.addChild(labelLayer);
+						displayControl.addElement(labelLayer);
 						
 						if(((this.parent.parent.parent.parent as LayerSwitcher).overlayArray.length)<=1)
 						{
@@ -221,7 +221,6 @@
 	<s:HGroup width="100%">
 		<s:Group id="displayControl"
 				 width="128"/>
-		<!--<mx:Button id="zoomButton" width="30" height="20" toolTip="Center Map" icon="@Embed('/assets/images/zoomin.swf')" click="this.setLayerExtent(event)"/>-->
 		<mx:Image id="ArrowUp"
 				  name="ArrowUp"
 				  source="@Embed('/assets/images/ArrowUp.swf')"

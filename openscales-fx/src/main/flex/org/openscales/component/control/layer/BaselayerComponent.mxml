@@ -4,6 +4,7 @@
 		  width="100%">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
 			import mx.events.SliderEvent;
 			
@@ -14,7 +15,7 @@
 			import spark.events.TrackBaseEvent;
 			
 			[Bindable]
-			private var _baselayerArray:Array;
+			private var _baselayerArray:Vector.<Layer>;
 			
 			[Bindable]
 			private var _baseLayerPrompt:String = "----";
@@ -41,11 +42,8 @@
 			 * 
 			 * @param item it's a layer
 			 */
-			private function baselayerCombobox_labelFunc(item:Layer):String {
-				
-				var label:String;
-				label = item.name;
-				return label;
+			private function baselayerCombobox_labelFunc(item:String):String {
+				return item;
 			}
 			/**
 			 * Change the base layer
@@ -55,10 +53,10 @@
 			private function closeHandler(event:Event):void {
 				if((event.target as ComboBox).selectedItem != null)
 				{
-					if(this.layer.map.baseLayer.name != (event.target as ComboBox).selectedItem.name)
+					if(this.layer.map.baseLayer.name != (event.target as ComboBox).selectedItem as String)
 					{
 						layer.map.baseLayer.visible = false;
-						layer.map.baseLayer = (event.currentTarget as ComboBox).selectedItem as Layer;
+						layer.map.baseLayer = layer.map.getLayerByName((event.currentTarget as ComboBox).selectedItem as String);
 						layer.map.baseLayer.visible = true;
 						layer.map.baseLayer.redraw();
 						opacityControl.value = layer.map.baseLayer.alpha*100;
@@ -68,19 +66,24 @@
 			//Getters and setters
 			public function set baseLayerPrompt(value:String):void {
 				this._baseLayerPrompt = value;
+				this.BaselayerCombo.selectedItem = value;
 			}
 			
 			public function set baseLayerVisibility(value:Number):void {
 				this._baseLayerVisibility = value*100;
 			}
 			
-			public function get baseLayerArray():Array {
+			public function get baseLayerArray():Vector.<Layer> {
 				return this._baselayerArray;
 			}
 			
-			public function set baseLayerArray(value:Array):void {
+			public function set baseLayerArray(value:Vector.<Layer>):void {
 				this._baselayerArray = value;
-				BaselayerCombo.dataProvider = value as ArrayList;
+				var i:uint = value.length;
+				var ac:ArrayList = new ArrayList();
+				for(var j:uint=0;j<i;++j)
+					ac.addItem(value[j].name);
+				BaselayerCombo.dataProvider = ac;
 				
 				
 			}
@@ -90,7 +93,7 @@
 			 * @return return the layer
 			 */
 			private function get layer():Layer {
-				return ((this.parent.parent as LayerSwitcher).map.getLayerByName((this.BaselayerCombo.textInput as String)) as Layer)
+				return ((this.parent.parent as LayerSwitcher).map.getLayerByName((this.BaselayerCombo.selectedItem as String)) as Layer)
 			}
 			
 		]]>
