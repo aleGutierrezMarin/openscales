@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:mx="http://www.adobe.com/2006/mxml" 
-	xmlns:control="org.openscales.component.control.*" 
-	xmlns:s="library://ns.adobe.com/flex/spark">
+<control:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:control="org.openscales.component.control.*" 
+				 xmlns:s="library://ns.adobe.com/flex/spark">
 	
-	<mx:Script>
+	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
-			import mx.controls.Text;
-			
+			import spark.components.Label;
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.basetypes.maps.HashMap;
@@ -49,7 +47,7 @@
 			 * The WFS server url on which we will retrieve the capabilities.
 			 */
 			private var url:String = null;
-						
+			
 			/**
 			 * Called when a LAYER_REMOVED event is dispatched.
 			 * It will remove the layer from the added layers.
@@ -59,7 +57,7 @@
 				event.layer.destroy();
 				addedLayers.remove(event.layer.name);
 			}
-					
+			
 			public function onButtonClick(event:MouseEvent):void{
 				var getCap:GetCapabilities = new GetCapabilities("wfs", this.txtUrl.text,this.capabilitiesGetter, "1.1.0", map.proxy);
 				url = this.txtUrl.text;
@@ -105,9 +103,7 @@
 					this.map.addLayer(newLayer);
 					addedLayers.put(this.list.selectedItem,null);
 				}
-				else {
-					Alert.show("This layer is already added", "Message");
-				}			
+				
 			}
 			
 			/**
@@ -121,32 +117,51 @@
 				this.capabilities = getCap.getAllCapabilities();
 				lblFeatures.text = capabilities.size() + " layers available";
 				
-				this.list.dataProvider = new ArrayCollection(capabilities.getKeys().sort());	
+				this.list.dataProvider = new ArrayCollection(capabilities.getKeys().sort());      
 			}
 			
 			override public function set map(value:Map):void{
 				super.map = value;
 				if(this.map!=null){
 					this.map.addEventListener(LayerEvent.LAYER_REMOVED,deleteLayer);
-				}			
+				}                 
 			}
 			
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
 	<s:VGroup width="100%">
 		<s:HGroup width="100%">
-			<s:Label text="WFS server URL:" />
-			<s:Label id="lblFeatures" enabled="false" />
+			<s:Label text="WFS server URL:"/>
+			<s:Label id="lblFeatures"
+					 enabled="false"/>
 		</s:HGroup>
 		
 		<s:HGroup width="100%">
-			<s:TextInput width="100%" id="txtUrl" text="http://openscales.org/geoserver/wfs" displayAsPassword="false" editable="true" enabled="true" />
-			<s:Button label="Go!" id="butGo" enabled="true" click="this.onButtonClick(event)" />	
+			<s:TextInput width="100%"
+						 id="txtUrl"
+						 text="http://openscales.org/geoserver/wfs"
+						 displayAsPassword="false"
+						 editable="true"
+						 enabled="true"/>
+			<s:Button label="Go!"
+					  id="butGo"
+					  enabled="true"
+					  click="this.onButtonClick(event)"/>    
 		</s:HGroup>
 		
-		<s:List width="100%" height="114" allowMultipleSelection="false" id="list" doubleClickEnabled="true" doubleClick="this.onDblClickListElement(event)" change="this.onChangeListElement(event)" />
-		<mx:Text width="100%" height="108" id="txtInfo" visible="true" text="Information about the selected layer:" />
+		<s:List width="100%"
+				height="114"
+				allowMultipleSelection="false"
+				id="list"
+				doubleClickEnabled="true"
+				doubleClick="this.onDblClickListElement(event)"
+				change="this.onChangeListElement(event)"/>
+		<s:Label width="100%"
+				 height="108"
+				 id="txtInfo"
+				 visible="true"
+				 text="Information about the selected layer:"/>
 	</s:VGroup>
 	
 </control:Control>

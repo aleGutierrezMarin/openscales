@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*"
-		   xmlns:mx="http://www.adobe.com/2006/mxml"
-		   xmlns:os="http://openscales.org"
-		   creationComplete="initMap();">
-
+<s:Group xmlns="*"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:os="http://openscales.org"
+		 width="100%"
+		 height="100%"
+		 creationComplete="initMap();">
+	
 	<os:Map id="fxmap"
 			width="100%"
 			height="100%"
 			zoom="5"
 			centerLonLat="4.84479575848897,45.7531798723947">
-
-		<os:TraceInfo id="traceInfo"
-					  x="{width-200}"
-					  y="0"
-					  visible="{displayTrace}"/>
-
+		
 		<os:Mapnik name="Mapnik"
 				   isBaseLayer="true"
 				   proxy="http://openscales.org/proxy.php?url="/>
-
+		
 		<!--<os:DragHandler/>-->
 		<os:WheelHandler/>
-
+		
 		<os:Spinner id="spinner"
 					x="{width / 2}"
 					y="{height / 2}"/>
 		<os:MousePosition x="10"
 						  y="{height-20}"
 						  displayProjection="EPSG:4326"/>
-
+		
 		<!-- Specific layers and handlers of this example -->
 		<os:WFS id="ignGeoplaRegion"
 				name="IGN - Geopla (Départements)"
@@ -37,38 +35,42 @@
 				projection="EPSG:2154"
 				version="1.0.0"
 				style="{this.createStyleLatitude()}"/>
-
+		
 		<os:SelectFeaturesHandler id="selectFeatureHandler"
 								  active="true"/>
 	</os:Map>
-
+	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<!-- Specific tools of this example -->
-
+	
 	<os:ControlPanel x="10"
 					 y="10"
 					 width="140"
 					 title="Navigation">
-
+		
 		<os:PanComponent map="{map}"/>
-		<mx:HBox width="100%"
-				 paddingLeft="5"
-				 paddingRight="5">
+		<s:HGroup width="100%"
+				  paddingLeft="5"
+				  paddingRight="5">
 			<os:ZoomComponent map="{map}"/>
-			<mx:Spacer width="100%"/>
+			<s:Rect width="100%"/>
 			<os:ZoomBoxComponent map="{map}"
 								 width="32"
 								 height="32"/>
-		</mx:HBox>
+		</s:HGroup>
 	</os:ControlPanel>
-
-	<mx:Panel title="featureInfos"
-			  bottom="0"
-			  right="0">
+	
+	<s:Panel title="featureInfos"
+			 bottom="0"
+			 right="0">
 		<os:FeatureInfoComponent id="featureInfoComponent"
 								 creationComplete="(selectFeatureHandler.handler as SelectFeaturesHandler).onSelectedFeature = featureInfoComponent.showInfo"/>
-	</mx:Panel>
-
-	<mx:Script>
+	</s:Panel>
+	
+	<fx:Script>
 		<![CDATA[
 			import statisticsexample.CircleSizeExpression;
 			import org.openscales.core.filter.expression.IExpression;
@@ -94,30 +96,30 @@
 			import org.openscales.core.Trace;
 			import org.openscales.core.style.Style;
 			import org.openscales.basetypes.Bounds;
-
+			
 			[Bindable]
 			private var map:Map = null;
 			[Bindable]
 			public var displayTrace:Boolean = false;
 			[Bindable]
 			public var displayFirebugTrace:Boolean = false;
-
+			
 			[Bindable]
 			private var styles:Array = [];
-
+			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
 				map = fxmap.map;
-
+				
 				// Specific initialize for this example
 				this.createStyleLatitude();
 			}
-
+			
 			private function createStyleLatitude():void {
 				var style:Style = new Style();
 				style.name = "Latitude related coloration";
 				var fill:SolidFill, stroke:Stroke, symbolizer:Symbolizer, rule:Rule;
-
+				
 				rule = new Rule();
 				rule.name = "Centroid Y-coordinate in [70000;75000]";
 				fill = new SolidFill(0x176273, .8);
@@ -125,8 +127,8 @@
 				symbolizer = new PolygonSymbolizer(fill, stroke);
 				rule.symbolizers.push(symbolizer);
 				style.rules.push(rule);
-
-
+				
+				
 				rule = new Rule();
 				rule.name = "Population sized circles";
 				var exp:IExpression = new CircleSizeExpression(5, 20, 74000, 2560000);
@@ -134,13 +136,13 @@
 				symbolizer = new PointSymbolizer(marker);
 				rule.symbolizers.push(symbolizer);
 				style.rules.push(rule);
-
+				
 				this.styles.push(style);
 				this.ignGeoplaRegion.style = style;
 				this.ignGeoplaRegion.layer.redraw();
 			}
 		]]>
-	</mx:Script>
-
-</mx:Canvas>
+	</fx:Script>
+	
+</s:Group>
 
