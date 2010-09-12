@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml"
-		 xmlns:os="http://openscales.org" creationComplete="initMap();">
+<s:Group xmlns="*"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:os="http://openscales.org"
+		 width="100%"
+		 height="100%"
+		 creationComplete="initMap();">
 	
-	<os:Map id="fxmap" width="100%" height="100%"
-		zoom="4" centerLonLat="-74.011,40.710"
-		proxy="http://openscales.org/proxy.php?url=">
-		
-		<os:TraceInfo x="{width-200}" y="0" visible="{displayTrace}" />		
+	<os:Map id="fxmap"
+			width="100%"
+			height="100%"
+			zoom="4"
+			centerLonLat="-74.011,40.710"
+			proxy="http://openscales.org/proxy.php?url=">	
 		
 		<os:DragHandler />
 		<os:WheelHandler />
-		<os:Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
-		<os:MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
-		<os:ScaleLine x="{width-100-10}" y="{height-80}" />
+		<os:Spinner id="spinner"
+					x="{width / 2}"
+					y="{height / 2}"/>	
+		<os:MousePosition x="10"
+						  y="{height-20}"
+						  displayProjection="EPSG:4326"/>
+		<os:ScaleLine x="{width-100-10}"
+					  y="{height-80}" />
 		
 		<!-- Specific layers and handlers of this example -->
-				 
-		<!-- OpenStreetMap EPSG:900913 -->
-		<os:Mapnik name="Mapnik" isBaseLayer="true" />
 		
-		<os:CycleMap name="CycleMap" alpha="0.5" />
+		<!-- OpenStreetMap EPSG:900913 -->
+		<os:Mapnik name="Mapnik"
+				   isBaseLayer="true" />
+		
+		<os:CycleMap name="CycleMap"
+					 alpha="0.5" />
 		
 		<os:WFS name="Topp States (WFS)"
 				url="http://openscales.org/geoserver/wfs"
@@ -31,13 +44,20 @@
 		
 	</os:Map>
 	
+	<os:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
 	<!-- Specific tools of this example -->
 	
-	<os:ControlPanel title="Layers Manager" x="10" y="10" width="230">
+	<os:ControlPanel title="Layers Manager"
+					 x="10"
+					 y="10"
+					 width="230">
 		<os:LayerSwitcherComponent map="{map}" />
 	</os:ControlPanel>
 	
-	<mx:Script>
+	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.osm.Mapnik;
@@ -48,13 +68,13 @@
 			
 			[Bindable] private var map:Map = null;
 			[Bindable] public var displayTrace:Boolean = false;	
-			[Bindable] public var displayFirebugTrace:Boolean = false;
+			[Bindable] public var displayFirebugTrace:Boolean = true;
 			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
 				map=fxmap.map;
 			}
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
-</mx:Canvas>
+</s:Group>

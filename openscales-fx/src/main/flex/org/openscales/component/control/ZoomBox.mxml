@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:mx="http://www.adobe.com/2006/mxml"
+<control:Control xmlns:fx="http://ns.adobe.com/mxml/2009"
 				 xmlns:control="org.openscales.component.control.*" 
-			
-				 xmlns:style="org.openscales.core.style.*"
-				 >
-	<mx:Script>
+				 xmlns:style="org.openscales.core.style.*">
+	<fx:Script>
 		<![CDATA[
 			import mx.managers.CursorManager;
 			
@@ -19,24 +17,29 @@
 			import org.openscales.core.handler.zoom.ZoomBoxHandler;
 			
 			import spark.skins.spark.ButtonSkin;
-
+			
+			private var _selected:Boolean = false;
+			
 			[Bindable]
 			private var _style:Object = "default";
+			
 			[Bindable]
-			private var _icon:Object = null;
+			[Embed(source="/assets/images/icons/Icons-05.swf")]
+			private var _icon:Class;
+			
 			[Bindable]
 			private var _toolTip:String = "Draw the desired area to zoom in";
-
+			
 			/**
 			 * Handler of ZoomBox
 			 */
 			private var _zoomBoxHandler:ZoomBoxHandler = new ZoomBoxHandler();
-
+			
 			/**
 			 * ID of the cursor used during the drawing of the zoom-box.
 			 */
 			private var zoomBoxCursorID:int = CursorManager.NO_CURSOR;
-
+			
 			override public function set map(value:Map):void {
 				super.map = value;
 				if (map != null) {
@@ -44,13 +47,13 @@
 					map.addEventListener(ZoomBoxEvent.END, disabled);
 				}
 			}
-
+			
 			/**
 			 * When the user click on the button ZoomBox
 			 */
 			private function onSelectZoomBox(event:Event):void {
-				if (zoombox.selected == false) {
-					zoombox.selected = true;
+				if (_selected == false) {
+					_selected = true;
 					_zoomBoxHandler.deactiveDrag();
 					_zoomBoxHandler.active = true;
 					// Change to the specific cursor
@@ -58,51 +61,47 @@
 				} else {
 					_zoomBoxHandler.activeDrag();
 					_zoomBoxHandler.active = false;
-					zoombox.selected = false;
+					_selected = false;
 					// Remove the specific cursor
 					CursorManager.removeCursor((zoomBoxCursorID > 0) ? zoomBoxCursorID : CursorManager.currentCursorID);
 					zoomBoxCursorID = CursorManager.NO_CURSOR;
 				}
 			}
-
+			
 			private function disabled(event:ZoomBoxEvent):void {
 				_zoomBoxHandler.activeDrag();
 				_zoomBoxHandler.active = false;
-				zoombox.selected = false;
+				_selected = false;
 				// Remove the specific cursor
 				CursorManager.removeCursor((zoomBoxCursorID > 0) ? zoomBoxCursorID : CursorManager.currentCursorID);
 				zoomBoxCursorID = CursorManager.NO_CURSOR;
 			}
-
+			
 			override public function set styleName(value:Object):void {
 				super.styleName = value;
 				this._style = value;
 			}
-
-			override public function set icon(value:Class):void {
-				super.icon = value;
+			
+			public function set icon(value:Class):void {
 				this._icon = value;
 			}
-
-			override public function set toolTip(value:String):void {
-				super.toolTip = value;
+			
+			public override function set toolTip(value:String):void {
 				this._toolTip = value;
 			}
 		]]>
-	</mx:Script>
-
+	</fx:Script>
 	
+	<control:IconButton id="zoombox"
+						width="{this.width}"
+						height="{this.height}"
+						toolTip="{this._toolTip}"
+						icon="{_icon}"
+						iconWidth="{this.width}"
+						iconHeight="{this.height}"
+						useHandCursor="true"
+						buttonMode="true"
+						click="onSelectZoomBox(event)"
+						skinClass="org.openscales.skin.IconButtonSkin" />
 	
-	<mx:Button  id="zoombox"
-			  
-			   width="{this.width}"
-			   height="{this.height}"
-			   toolTip="{this._toolTip}"
-			   useHandCursor="true"
-			   buttonMode="true"
-			   selected="false"
-			   click="onSelectZoomBox(event)"
-			   styleName="{this._style}"
-			   icon="@Embed('/assets/images/icons/Icons-05.swf')"  />
-
 </control:Control>
