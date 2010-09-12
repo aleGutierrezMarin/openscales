@@ -17,7 +17,7 @@
 			import spark.skins.spark.ButtonSkin;
 			import spark.utils.TextFlowUtil;
 			
-			private var text:String = '<b>Output Console :</b>';
+			private var text:String = "<b>Output Console :</b>";
 			[Bindable] public var _clearButton:Boolean = true;
 			public function get clearButton():Boolean {
 				return _clearButton;

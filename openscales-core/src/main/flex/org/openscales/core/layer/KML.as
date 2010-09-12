@@ -19,7 +19,7 @@ package org.openscales.core.layer
 
 	    public function KML(name:String,
 	    					url:String,
-	    					bounds:Bounds) {
+	    					bounds:Bounds = null) {
 	        this._url = url;
 	        this.maxExtent = bounds;
 
