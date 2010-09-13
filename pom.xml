@@ -195,6 +195,20 @@
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
+		<developer>
+			<id>jsebak</id>
+			<name>Jean-Sebastien Baklouti</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>mjourdain</id>
+			<name>Marine Jourdain</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
 	</developers>
 	<scm>
 		<connection>scm:hg:https://bitbucket.org/gis/openscales</connection>
