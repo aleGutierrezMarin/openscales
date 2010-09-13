@@ -14,6 +14,20 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flexmojos.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<sourceFile>osExamples.mxml</sourceFile>
+				</configuration> 
+			</plugin>
+		</plugins>
+	</build>
+	
 	<dependencies>
 	  	<dependency>
 			<groupId>org.openscales</groupId>

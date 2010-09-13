@@ -73,7 +73,7 @@ package org.openscales.core
 		private var _tweenZoomEnabled:Boolean = true;
 		
 		private var _proxy:String = null;
-		private var _bitmapTransition:Bitmap;
+		private var _bitmapTransition:Sprite;
 		private var _configuration:IConfiguration;
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
@@ -483,6 +483,12 @@ package org.openscales.core
 								  newZoom:Number = NaN,
 								  dragTween:Boolean = false,
 								  zoomTween:Boolean = false):void {
+			
+			if (zoomTween) {
+				this.zoomTransition(newZoom, newCenter);
+				return;
+			}
+			
 			var zoomChanged:Boolean = (this.isValidZoomLevel(newZoom) && (newZoom!=this._zoom));
 			
 			if (newCenter && !this.isValidLocation(newCenter)) {
@@ -513,8 +519,7 @@ package org.openscales.core
 					mapEvent.oldZoom = this.zoom;
 					mapEvent.newZoom = newZoom;
 					this.dispatchEvent(mapEvent);
-					if (zoomTween)
-						this.zoomTransition(newZoom, newCenter);
+					
 				}
 				
 				this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
@@ -828,27 +833,29 @@ package org.openscales.core
 		 * Copy the layerContainer in a bitmap and display this (this function is use for zoom)
 		 */
 		private function zoomTransition(newZoom:Number, newCenter:Location):void {
-			if (newZoom >= 0) {
+			if (!_zooming && newZoom >= 0) {
 				
 				// Disable more zooming until this zooming is complete 
 				this._zooming = true;
-
-				// We calculate the scale multiplicator according to the actual and new resolution
-				const resMult:Number = this.resolution / this.baseLayer.resolutions[newZoom];
+				
+				// We calculate de scale multiplicator according to the actual and new resolution
+				var resMult:Number = this.resolution / this.baseLayer.resolutions[newZoom];
 				// We intsanciate a bitmapdata with map's size
 				var bitmapData:BitmapData = new BitmapData(this.width,this.height);
 				
+				
 				// We draw the old transition before drawing the better-fitting tiles on top and removing the old transition. 
 				if(this.bitmapTransition != null) {
-					bitmapData.draw(this.bitmapTransition, this.bitmapTransition.transform.matrix);
-					var bmp:Bitmap = this.removeChild(this.bitmapTransition) as Bitmap;
+					if(this._loading) {
+						bitmapData.draw(this.bitmapTransition, bitmapTransition.transform.matrix);
+					}
+					this.removeChild(this.bitmapTransition);
+					var bmp:Bitmap = bitmapTransition.removeChildAt(0) as Bitmap;
 					bmp.bitmapData.dispose();
 					bmp.bitmapData = null;
+					
 				}
-				
-				this.bitmapTransition = new Bitmap(bitmapData);
-				this.bitmapTransition.smoothing = true;
-				
+
 				var hiddenLayers:Vector.<Layer> = new Vector.<Layer>();
 				for each(var layer:Layer in this.layers) {
 					if(!layer.tweenOnZoom) {				
@@ -856,6 +863,7 @@ package org.openscales.core
 						layer.visible = false;
 					}
 				}
+				
 				// We draw the loaded tiles onto the background transition.
 				try {
 					// Can sometimes throw a security exception.
@@ -865,32 +873,37 @@ package org.openscales.core
 				}
 				
 				// We create the background layer from the bitmap data
-								
-				this.addChildAt(this.bitmapTransition, 0);
-				this.bitmapTransition.visible=true;
+				this.bitmapTransition = new Sprite();
+				var bitmap:Bitmap = new Bitmap(bitmapData);
+				bitmap.smoothing = true;
+				this.bitmapTransition.addChild(bitmap);		
 				
 				for each(var hiddenLayer:Layer in hiddenLayers) {
 					layer.visible = true;
 				}
 				
+				this.addChildAt(bitmapTransition, 0);
+				
+				
 				// We hide the layerContainer (to avoid zooming out issues)
 				this.layerContainer.visible = false;
+				
 				//We calculate the bitmapTransition position
 				var pix:Pixel = this.getMapPxFromLocation(newCenter);
-				var bt:Bitmap = this.bitmapTransition;
+				var bt:Sprite = this.bitmapTransition;
 				var oldCenterPix:Pixel = new Pixel(bt.x+bt.width/2, bt.y+bt.height/2);
 				var centerOffset:Pixel = new Pixel(oldCenterPix.x-pix.x, oldCenterPix.y-pix.y);
 				var alpha:Number = Math.pow(2, newZoom-this.zoom);
 				var x:Number = bt.x-((resMult-1)*(bt.width))/2+alpha*centerOffset.x;
 				var y:Number = bt.y-((resMult-1)*(bt.height))/2+alpha*centerOffset.y;
+				
 				//The tween effect to scale and re-position the bitmapTransition
-				const tween:GTween = new GTween(this.bitmapTransition,0.7,
+				var tween:GTween = new GTween(this.bitmapTransition,0.5,
 					{
 						scaleX: resMult,
 						scaleY: resMult,
 						x: x,
 						y: y
-
 					}, {ease: Cubic.easeOut});
 				tween.onComplete = clbZoomTween;
 			}
@@ -898,8 +911,11 @@ package org.openscales.core
 			// The zoom tween callback method defined here to avoid a class attribute for newZoom
 			function clbZoomTween(tween:GTween):void {
 				_zooming = false;
+				moveTo(newCenter, newZoom);
 				layerContainer.visible = true;
+				
 			} 
+
 		}
 		
 		/**	
@@ -1000,11 +1016,11 @@ package org.openscales.core
 			return this._layerContainer;
 		}
 		
-		public function get bitmapTransition():Bitmap {
+		public function get bitmapTransition():Sprite {
 			return this._bitmapTransition;
 		}
 		
-		public function set bitmapTransition(value:Bitmap):void {
+		public function set bitmapTransition(value:Sprite):void {
 			this._bitmapTransition = value;
 		}
 		
