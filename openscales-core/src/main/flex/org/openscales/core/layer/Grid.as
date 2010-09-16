@@ -76,20 +76,22 @@ package org.openscales.core.layer
 			this.addEventListener(TileEvent.TILE_LOAD_START,tileLoadHandler);
 		}
 		
-		override public function onMapZoom(e:MapEvent):void {
+		override public function onMapMove(e:MapEvent):void {
 			// Clear pending requests after zooming in order to avoid to add
 			// too many tile requests  when the user is zooming step by step
-			var j:uint;
-			for each(var array:Vector.<ImageTile> in this._grid)	{
-				j = array.length;
-				for (var i:Number = 0;i<j;i++)	{
-					var tile:ImageTile = array[i];
-					if (tile != null && !tile.loadComplete) {
-						tile.clear();
+			if(e.zoomChanged) {
+				var j:uint;
+				for each(var array:Vector.<ImageTile> in this._grid)	{
+					j = array.length;
+					for (var i:Number = 0;i<j;i++)	{
+						var tile:ImageTile = array[i];
+						if (tile != null && !tile.loadComplete) {
+							tile.clear();
+						}
 					}
 				}
 			}
-			super.onMapZoom(e);
+			super.onMapMove(e);
 		}
 
 		override public function destroy():void {

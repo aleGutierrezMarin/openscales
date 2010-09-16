@@ -96,6 +96,9 @@ package org.openscales.core.handler.mouse
 		 *The MouseUp Listener
 		 */
 		protected function onMouseUp(event:Event):void {
+			if(!this.map)
+				return;
+			
 			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 
 			this.map.buttonMode=false;
