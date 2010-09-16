@@ -97,7 +97,6 @@ package org.openscales.core.layer {
 			if (this.map != null) {
 				map.removeEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
 				map.removeEventListener(MapEvent.MOVE_END, onMapMove);
-				map.removeEventListener(MapEvent.ZOOM_END, onMapZoom);
 				map.removeEventListener(MapEvent.RESIZE, onMapResize);
 			}
 		}
@@ -122,7 +121,6 @@ package org.openscales.core.layer {
 			if (this.map) {
 				this.map.addEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
 				this.map.addEventListener(MapEvent.MOVE_END, onMapMove);
-				this.map.addEventListener(MapEvent.ZOOM_END, onMapZoom);
 				this.map.addEventListener(MapEvent.RESIZE, onMapResize);
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;
@@ -135,11 +133,7 @@ package org.openscales.core.layer {
 		}
 
 		public function onMapMove(e:MapEvent):void {
-			this.redraw(false);
-		}
-
-		public function onMapZoom(e:MapEvent):void {
-			this.redraw();
+			this.redraw(e.zoomChanged);
 		}
 
 		public function get map():Map {

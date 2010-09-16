@@ -82,8 +82,8 @@ package org.openscales.core.popup
 			this.feature = null;
 
 			if (this.map != null) {
-				this.map.removeEventListener(MapEvent.ZOOM_START, onZoomStart);
-				this.map.removeEventListener(MapEvent.ZOOM_END, onZoomEnd);
+				this.map.removeEventListener(MapEvent.MOVE_START, onZoomStart);
+				this.map.removeEventListener(MapEvent.MOVE_END, onZoomEnd);
 				this.map.removePopup(this);
 			}
 		}
@@ -190,18 +190,21 @@ package org.openscales.core.popup
 			this._map = value;
 			
 			if(this.map) {
-				this.map.addEventListener(MapEvent.ZOOM_START, onZoomStart);
-				this.map.addEventListener(MapEvent.ZOOM_END, onZoomEnd);
+				this.map.addEventListener(MapEvent.MOVE_START, onZoomStart);
+				this.map.addEventListener(MapEvent.MOVE_END, onZoomEnd);
 			}
 		}
 		
 		public function onZoomStart(e:MapEvent):void {
-			this.visible = false;
+			if(e.zoomChanged)
+				this.visible = false;
 		}
 		
 		public function onZoomEnd(e:MapEvent):void {
-			this.visible = true;
-			this.draw();
+			if(e.zoomChanged) {
+				this.visible = true;
+				this.draw();
+			}
 		}
 
 		public function get lonlat():Location {

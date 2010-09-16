@@ -4,10 +4,10 @@ package org.openscales.core.control
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
-	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Unit;
+	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 
@@ -78,7 +78,7 @@ package org.openscales.core.control
 		override public function set map(value:Map):void {
 			if(value != null) {
 				this._map=value;	      	
-				this.map.addEventListener(MapEvent.ZOOM_END,updateScaleLine);
+				this.map.addEventListener(MapEvent.MOVE_END,updateScaleLine);
 				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLine);
 			}
 		}
@@ -91,10 +91,11 @@ package org.openscales.core.control
 		/**
 		 * Redraw the scaleline with new parameters.
 		 * 
-		 * @param event the event can be a MapEvent.ZOOM_END or LayerEvent.BASE_LAYER_CHANGED.
+		 * @param event the event can be a MapEvent.MOVE_END or LayerEvent.BASE_LAYER_CHANGED.
 		 */
-		public function updateScaleLine(event:Event):void {
-			this.draw()
+		public function updateScaleLine(e:MapEvent):void {
+			if(e.zoomChanged)
+				this.draw()
 		}
 
 		/**

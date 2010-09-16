@@ -483,46 +483,45 @@ package org.openscales.core
 								  newZoom:Number = NaN,
 								  dragTween:Boolean = false,
 								  zoomTween:Boolean = false):void {
-			
-			if (zoomTween) {
-				this.zoomTransition(newZoom, newCenter);
-				return;
-			}
-			
+					
 			var zoomChanged:Boolean = (this.isValidZoomLevel(newZoom) && (newZoom!=this._zoom));
+			var validLocation:Boolean = this.isValidLocation(newCenter);
+			var mapEvent:MapEvent = null;
 			
-			if (newCenter && !this.isValidLocation(newCenter)) {
+			if (newCenter && !validLocation) {
 				Trace.log("Not a valid center, so do nothing");
 				return;
-			}
+			}		
 			
 			// If the map is not initialized, the center of the extent is used
 			// as the current center
-			if (!this.center && !this.isValidLocation(newCenter)) {
+			if (!this.center && !validLocation) {
 				newCenter = this.maxExtent.center;
 			} else if(this.center && !newCenter) {
 				newCenter = this.center;
+			}			
+			if(this._baseLayer!=null && (this._baseLayer.projection!=null) && newCenter.projection && (newCenter.projection.srsCode!=this._baseLayer.projection.srsCode)) {
+				newCenter = newCenter.reprojectTo(this._baseLayer.projection);
 			}
-			var validLocation:Boolean = this.isValidLocation(newCenter);
+			
 			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
-			
-			
+			validLocation = this.isValidLocation(newCenter);
+			var oldZoom:Number = this._zoom;
+			var oldCenter:Location = this._center;
 			
 			if (zoomChanged || centerChanged) {
-				if(this._baseLayer!=null && this._baseLayer.projection!=null) {
-					newCenter = newCenter.reprojectTo(this._baseLayer.projection);
-				}
 				
-				if (zoomChanged) {
-					//Dispatch a MapEvent with the old and new zoom
-					var mapEvent:MapEvent = new MapEvent(MapEvent.ZOOM_START,this);
-					mapEvent.oldZoom = this.zoom;
-					mapEvent.newZoom = newZoom;
-					this.dispatchEvent(mapEvent);
-					
+				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
+				mapEvent.oldZoom = oldZoom;
+				mapEvent.newZoom = newZoom;
+				mapEvent.oldCenter = oldCenter;
+				mapEvent.newCenter = newCenter;
+				this.dispatchEvent(mapEvent);
+
+				if (zoomChanged && zoomTween) {
+					this.zoomTransition(newZoom, newCenter);
+					return;
 				}
-				
-				this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
 				
 				if (centerChanged) {
 					if ((!zoomChanged) && (this.center)) {
@@ -539,14 +538,18 @@ package org.openscales.core
 				
 				if (zoomChanged) {
 					this._zoom = newZoom;
-					this.dispatchEvent(new MapEvent(MapEvent.ZOOM_END, this));
 				}
 				
+				if (!dragTween) {
+					mapEvent = new MapEvent(MapEvent.MOVE_END, this);
+					mapEvent.oldZoom = oldZoom;
+					mapEvent.newZoom = newZoom;
+					mapEvent.oldCenter = oldCenter;
+					mapEvent.newCenter = newCenter;
+					this.dispatchEvent(mapEvent);
+				}
 			}
 			
-			if (centerChanged && !dragTween) {
-				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
-			}
 		}
 		
 		/**
@@ -913,6 +916,7 @@ package org.openscales.core
 				_zooming = false;
 				moveTo(newCenter, newZoom);
 				layerContainer.visible = true;
+				
 				
 			} 
 

@@ -4,10 +4,10 @@ package org.openscales.core.control
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import org.openscales.core.Map;
-	import org.openscales.core.Util;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
+	import org.openscales.core.Map;
+	import org.openscales.core.Util;
 	import org.openscales.core.control.ui.Button;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -44,7 +44,7 @@ package org.openscales.core.control
 			this.removeChild(this.zoomBar);
 			this.zoomBar = null;
 
-			this.map.removeEventListener(MapEvent.ZOOM_END,this.moveZoomBar);
+			this.map.removeEventListener(MapEvent.MOVE_END,this.moveZoomBar);
 			this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.redraw);
 
 			super.destroy();
@@ -132,7 +132,7 @@ package org.openscales.core.control
 			this.startTop = int(this.zoomBar.y);
 			this.addChild(slider);
 
-			this.map.addEventListener(MapEvent.ZOOM_END,this.moveZoomBar);
+			this.map.addEventListener(MapEvent.MOVE_END,this.moveZoomBar);
 
 			centered = centered.add(0, 
 				this.zoomStopHeight * this.map.baseLayer.numZoomLevels);
@@ -189,11 +189,13 @@ package org.openscales.core.control
 			}
 		}
 
-		public function moveZoomBar(evt:Event = null):void {
-			var newTop:Number = 
-				((this.map.baseLayer.numZoomLevels-1) - this.map.zoom) * 
-				this.zoomStopHeight + this.startTop + 1;
-			this.slider.y = newTop;
+		public function moveZoomBar(e:MapEvent = null):void {
+			if(e.zoomChanged) {
+				var newTop:Number = 
+					((this.map.baseLayer.numZoomLevels-1) - this.map.zoom) * 
+					this.zoomStopHeight + this.startTop + 1;
+				this.slider.y = newTop;
+			}
 		}
 
 		//Getters and setters

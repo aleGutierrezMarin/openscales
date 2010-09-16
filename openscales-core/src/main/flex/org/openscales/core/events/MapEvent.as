@@ -1,5 +1,6 @@
 package org.openscales.core.events{
 
+	import org.openscales.basetypes.Location;
 	import org.openscales.core.Map;
 
 	/**
@@ -18,30 +19,30 @@ package org.openscales.core.events{
 		 private var _oldZoom:Number = 0;
 		 
 		 /**
-		 * old zoom of the map
-		 */
+		  * old zoom of the map
+		  */
 		 private var _newZoom:Number = 0;
 		 
+		 /**
+		  * old center of the map
+		  */
+		 private var _oldCenter:Location = null;
+
+		 /**
+		  * old center of the map
+		  */
+		 private var _newCenter:Location = null;
+		 
 		/**
-		 * Event type dispatched before map move.
+		 * Event type dispatched before map move (drag or zoom).
 		 */
 		public static const MOVE_START:String="openscales.mapmovestart";
 
 		/**
-		 * Event type dispatched after map move if the center has changed.
+		 * Event type dispatched after map move if the center and/or zoom has changed.
 		 * There is no DRAG_END since a MOVE_END event is emitted if the center has finally changed
 		 */
 		public static const MOVE_END:String="openscales.mapmoveend";
-		
-		/**
- 		 * Event type dispatched before map zoom.
-		 */
-		public static const ZOOM_START:String="openscales.mapzoomstart";
-		
-		/**
-		 * Event type dispatched after map zoom.
-		 */
-		public static const ZOOM_END:String="openscales.mapzoomend";
 
 		/**
 		 * Event type dispatched just before dragging the map.
@@ -96,6 +97,38 @@ package org.openscales.core.events{
 
 		public function set newZoom(value:Number):void {
 			this._newZoom = value;	
+		}
+		
+		public function get newCenter():Location
+		{
+			return _newCenter;
+		}
+		
+		public function set newCenter(value:Location):void
+		{
+			_newCenter = value;
+		}
+		
+		public function get oldCenter():Location
+		{
+			return _oldCenter;
+		}
+		
+		public function set oldCenter(value:Location):void
+		{
+			_oldCenter = value;
+		}
+		
+		public function get zoomChanged():Boolean {
+			if(this._newZoom != this._oldZoom)
+				return true;
+			return false;
+		}
+		
+		public function get centerChanged():Boolean {
+			if(this._newCenter != this._oldCenter)
+				return true;
+			return false;
 		}
 	}
 }

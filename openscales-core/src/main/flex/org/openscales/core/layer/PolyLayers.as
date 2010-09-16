@@ -67,9 +67,11 @@ package org.openscales.core.layer
 			super.destroy();
 		}
 		
-		override public function onMapZoom(e:MapEvent):void {
-			changeLayer();
-			this.redraw();
+		override public function onMapMove(e:MapEvent):void {
+			if(e.zoomChanged) {
+				changeLayer();
+			}
+			super.onMapMove(e);
 		}
 		
 		

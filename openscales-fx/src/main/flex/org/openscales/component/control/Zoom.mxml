@@ -65,17 +65,18 @@
 			override public function set active(value:Boolean):void {
 				if(value) {					
 					map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
-					map.addEventListener(MapEvent.ZOOM_END, this.updateZoomLevels);
+					map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					initializeZoomLevels();								
 				} else {
 					map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
-					map.removeEventListener(MapEvent.ZOOM_END, this.updateZoomLevels);
+					map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 				}
 				super.active = value;
 			}
 			
-			private function updateZoomLevels(event:Event = null):void {
-				zoomSlider.value = map.zoom;
+			private function updateZoomLevels(e:MapEvent = null):void {
+				if(e.zoomChanged)
+					zoomSlider.value = map.zoom;
 			}
 			
 			public function set toolTipZoomIn(value:String):void{ 

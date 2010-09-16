@@ -78,7 +78,7 @@ package org.openscales.core.handler.feature.draw
 			this._dblClickHandler.doubleClick = this.mouseDblClick;
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.CLICK, this.drawLine);
-				this.map.addEventListener(MapEvent.ZOOM_END, this.updateZoom);
+				this.map.addEventListener(MapEvent.MOVE_END, this.updateZoom);
 			} 
 		}
 
@@ -86,7 +86,7 @@ package org.openscales.core.handler.feature.draw
 			this._dblClickHandler.active = false;
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.CLICK, this.drawLine);
-				this.map.removeEventListener(MapEvent.ZOOM_END, this.updateZoom);
+				this.map.removeEventListener(MapEvent.MOVE_END, this.updateZoom);
 			}
 		}
 		/**
@@ -166,10 +166,13 @@ package org.openscales.core.handler.feature.draw
 		}
 		
 		private function updateZoom(evt:MapEvent):void{
-			_drawContainer.graphics.clear();
-			//we update the pixel of the last point which has changed
-			var tempPoint:Point = _lineString.getLastPoint();
-			_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));
+			
+			if(evt.zoomChanged) {
+				_drawContainer.graphics.clear();
+				//we update the pixel of the last point which has changed
+				var tempPoint:Point = _lineString.getLastPoint();
+				_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));
+			}
 		}
 
 		//Getters and Setters		

@@ -87,12 +87,10 @@ package org.openscales.core.handler.feature.draw
 		 	if(_isUsedAlone){
 		 		if(value  && map!=null && !active){
 		 			this.map.addEventListener(MapEvent.MOVE_END,refreshEditedfeatures);
-				 	this.map.addEventListener(MapEvent.ZOOM_END,refreshEditedfeatures);
 		 			this.editionModeStart();
 		 		} 
 		 		if(!value && map!=null && active ){
 		 			this.map.removeEventListener(MapEvent.MOVE_END,refreshEditedfeatures);
-					this.map.removeEventListener(MapEvent.ZOOM_END,refreshEditedfeatures);
 		 			this.editionModeStop();
 		 		} 
 		 		this._featureClickHandler.active=value; 		
