@@ -25,11 +25,11 @@ package org.openscales.core.layer.params.ogc
 
 		override public function toGETString():String {
 			var str:String = super.toGETString();
-			if (this.bbox != null)
-				(this.srs!=null)?
+			if (this.bbox != null) {
+				(this.srs!=null && this.version!="1.0.0")?
 					str += "BBOX=" + this.bbox + ","+this.srs+"&SRSNAME="+this.srs+"&":
 					str += "BBOX=" + this.bbox + "&";
-
+			}
 			if (this._typename != null)
 				str += "TYPENAME=" + this._typename + "&";
 
