@@ -78,8 +78,8 @@ package org.openscales.core.control
 		override public function set map(value:Map):void {
 			if(value != null) {
 				this._map=value;	      	
-				this.map.addEventListener(MapEvent.MOVE_END,updateScaleLine);
-				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLine);
+				this.map.addEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
+				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
 			}
 		}
 
@@ -91,12 +91,18 @@ package org.openscales.core.control
 		/**
 		 * Redraw the scaleline with new parameters.
 		 * 
-		 * @param event the event can be a MapEvent.MOVE_END or LayerEvent.BASE_LAYER_CHANGED.
+		 * @param event the event can be a MapEvent.MOVE_END.
 		 */
-		public function updateScaleLine(e:MapEvent):void {
+		public function updateScaleLineOnMove(e:MapEvent):void {
 			if(e.zoomChanged)
 				this.draw()
 		}
+		
+		public function updateScaleLineOnBaseLayerChanged(e:LayerEvent):void {
+				this.draw()
+		}
+		
+		
 
 		/**
 		 * Given a number, round it down to the nearest 1,2,5 times a power of 10.
