@@ -5,6 +5,7 @@ package {
 	import flash.display.StageAlign;
 	import flash.display.StageOrientation;
 	import flash.display.StageScaleMode;
+	import flash.events.Event;
 	import flash.events.GeolocationEvent;
 	import flash.events.GestureEvent;
 	import flash.events.MouseEvent;
@@ -13,6 +14,9 @@ package {
 	import flash.sensors.Geolocation;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.ui.Multitouch;
+	
+	import mx.core.Application;
 	
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
@@ -26,6 +30,8 @@ package {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.handler.mouse.DragHandler;
+	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.handler.multitouch.PanGestureHandler;
 	import org.openscales.core.handler.multitouch.ZoomGestureHandler;
 	import org.openscales.core.layer.FeatureLayer;
@@ -36,16 +42,16 @@ package {
 	import org.openscales.geometry.Point;
 	import org.openscales.proj4as.ProjProjection;
 	
-	[SWF(width='480',height='800')]
-	public class OpenScales extends Sprite {
+	public class MobileTracker extends Sprite {
 		
 		protected var _map:Map;
 		protected var t:TextField;
 		protected var geo:Geolocation;
+		protected var firstPass:Boolean = true;
 		
-		public function OpenScales() {
+		public function MobileTracker() {
 			_map=new Map();
-			_map.size=new Size(480, 800);
+			_map.size=new Size(stage.stageWidth, stage.stageHeight);
 			
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
@@ -57,6 +63,7 @@ package {
 			var markers:FeatureLayer = new FeatureLayer("markers");
 			markers.projection = new ProjProjection("EPSG:4326");
 			markers.style = Style.getDefaultPointStyle();
+			markers.tweenOnZoom = false;
 					
 			_map.addLayer(markers);
 			
@@ -65,10 +72,17 @@ package {
 			mousePosition.displayProjection = new ProjProjection("EPSG:4326");
 			_map.addControl(mousePosition);			
 			
-			_map.addHandler(new ZoomGestureHandler());
-			_map.addHandler(new PanGestureHandler());
 			
-			this.stage.addEventListener(TransformGestureEvent.GESTURE_SWIPE,this.onGestureSwipe);
+			if(Multitouch.supportsGestureEvents) {
+				_map.addHandler(new ZoomGestureHandler());
+				_map.addHandler(new PanGestureHandler());
+			} else {
+				_map.addHandler(new DragHandler());
+				_map.addHandler(new WheelHandler());
+			}
+			
+			
+			this.stage.addEventListener(Event.DEACTIVATE,this.onDeactivate);
 			
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);
@@ -101,11 +115,19 @@ package {
 			
 			stage.align = StageAlign.TOP_LEFT; 
 			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, onOrientationChange); 
+			stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, onOrientationChange);
+			
+			// Stile beta some comment this for now
+			//stage.addEventListener(TransformGestureEvent.GESTURE_ROTATE, onRotate);
 			
 		}
 		
-		private function onGestureSwipe(event:GestureEvent):void {
+		private function onRotate(event:TransformGestureEvent):void {
+			_map.layerContainer.rotationZ -= event.rotation;
+			_map.bitmapTransition.rotationZ -= event.rotation;
+		}
+		
+		private function onDeactivate(event:Event):void {
 			NativeApplication.nativeApplication.exit();
 		}
 
@@ -113,24 +135,15 @@ package {
 		{
 			t.text = "Latitude " + event.latitude + ", longitude " + event.longitude;
 			(_map.getLayerByName("markers") as FeatureLayer).addFeature(PointFeature.createPointFeature(new Location(event.longitude, event.latitude)));
+			if(firstPass) {
+				firstPass = false;
+				this._map.moveTo(new Location(event.longitude, event.latitude), 16, false, true);
+			}
 		}
 		
 		private function onOrientationChange(event:StageOrientationEvent):void 
 		{ 
-			switch (event.afterOrientation) { 
-				case StageOrientation.DEFAULT: 
-					_map.size = new Size(480, 800);
-					break; 
-				case StageOrientation.ROTATED_RIGHT: 
-					_map.size = new Size(800, 480);
-					break; 
-				case StageOrientation.ROTATED_LEFT: 
-					_map.size = new Size(800, 480);
-					break; 
-				case StageOrientation.UPSIDE_DOWN: 
-					_map.size = new Size(480, 800);
-					break; 
-			}
+			_map.size = new Size(stage.stageWidth, stage.stageHeight);
 		}
 		
 	}

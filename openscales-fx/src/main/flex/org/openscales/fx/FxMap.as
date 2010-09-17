@@ -5,6 +5,8 @@ package org.openscales.fx
 	import flash.events.Event;
 	
 	import mx.core.Container;
+	import mx.core.IVisualElement;
+	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
@@ -159,14 +161,14 @@ package org.openscales.fx
 					this._map.addControl(child as IControl, false);
 				// Add Control, wih exception of TraceInfo that has been added at the beginning
 				} else if ((child is Control) && !(child is TraceInfo)){
-					this.parent.addChild(child);
+					(this.parent as IVisualElementContainer).addElement((child as UIComponent));
 					// Tweak in order to compense the addChild that remove the child from this to addd it to the parent
 					// Quote from DisplayerObectContainer asDoc : if you add a child object that already has a different display object container as a parent, the object is removed from the child list of the other display object container.
 					i--;
 				} else if (child is FxHandler) {
 					(child as FxHandler).handler.map = this._map;
 				} else if ((child is UIComponent) && !(child is Map) && !(child is FxMaxExtent) && !(child is FxExtent) && !(child is FxAbstractSecurity) ){
-					this.parent.addChild(child);
+					(this.parent as IVisualElementContainer).addElement((child as UIComponent));
 					// Tweak in order to compense the addChild that remove the child from this to addd it to the parent
 					// Quote from DisplayerObectContainer asDoc : if you add a child object that already has a different display object container as a parent, the object is removed from the child list of the other display object container.
 					i--;
