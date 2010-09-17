@@ -9,6 +9,8 @@
 	<!--horizontalScrollPolicy="off"-->
 	<fx:Script>
 		<![CDATA[
+			import flash.utils.getQualifiedClassName;
+			
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
 			import mx.controls.RadioButton;
@@ -18,6 +20,7 @@
 			import mx.events.IndexChangedEvent;
 			
 			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.events.OpenScalesEvent;
@@ -25,10 +28,10 @@
 			import org.openscales.core.layer.Layer;
 			
 			// Array wich contains all baseLayer
-			private var _baseLayerArray:Array = new Array();;
+			private var _baseLayerArray:Vector.<Layer> = new Vector.<Layer>();
 			
 			// Array wich contains all overlayer
-			private var _overlayArray:Array = new Array();;
+			private var _overlayArray:Vector.<Layer> = new Vector.<Layer>();
 			
 			/**
 			 * Set the map
@@ -57,11 +60,14 @@
 						}
 					}
 					overlayList.height = _overlayArray.length *60;
-					/*  baseLayerList.height = _baseLayerArray.length * 60; 
-					baseLayerList.dataProvider = _baseLayerArray; */
-					overlayList.dataProvider = new ArrayCollection(_overlayArray.reverse());
 					
-					baselayerComponent.baseLayerArray = this.baseLayerArray;
+					var ac:ArrayCollection = new ArrayCollection();
+					i = _overlayArray.length;
+					for(i;i>0;--i)
+						ac.addItem(_overlayArray[i-1]);
+					overlayList.dataProvider = ac;
+					
+					baselayerComponent.baseLayerArray = _baseLayerArray;
 					baselayerComponent.baseLayerPrompt = this.map.baseLayer.name;
 					baselayerComponent.baseLayerVisibility = this.map.baseLayer.alpha;
 				}
@@ -76,9 +82,7 @@
 				//Test the triggered event
 				if(event.type == "openscales.addlayer"){
 					if(event.layer.isBaseLayer == true){
-						_baseLayerArray.push(event.layer); //add a new layer in the array
-						/*  baseLayerList.height = _baseLayerArray.length * 60;
-						baseLayerList.invalidateList(); //update the list */
+						_baseLayerArray.push(event.layer);
 						baselayerComponent.baseLayerArray = this.baseLayerArray;
 					}
 					else{
@@ -92,9 +96,7 @@
 				
 				if(event.type == "openscales.removelayer"){
 					if(event.layer.isBaseLayer == true){
-						_baseLayerArray.splice(_baseLayerArray.indexOf(event.layer),1);//delete the layer remove in the array
-						/*  baseLayerList.height = _baseLayerArray.length * 80;
-						baseLayerList.invalidateList(); */
+						_baseLayerArray.splice(_baseLayerArray.indexOf(event.layer),1);
 						baselayerComponent.baseLayerArray = this.baseLayerArray;
 					}
 					else{		
@@ -105,15 +107,21 @@
 				}
 				
 				if(event.type == LayerEvent.LAYER_CHANGED){
-					_overlayArray = null;
-					_overlayArray = new Array();
-					for(var i:int=0;i<this.map.layers.length;i++){
+					var i:uint = _overlayArray.length;
+					for(i;i>0;--i)
+						_overlayArray.pop();
+					_overlayArray = new Vector.<Layer>();
+					for(i=0;i<this.map.layers.length;++i){
 						var layer:Layer = this.map.layers[i] as Layer;
 						if(layer.isBaseLayer == false){
 							_overlayArray.push(layer);
 						}
 					}
-					overlayList.dataProvider = new ArrayCollection(_overlayArray.reverse());
+					var ac:ArrayCollection = new ArrayCollection();
+					i = _overlayArray.length;
+					for(i;i>0;--i)
+						ac.addItem(_overlayArray[i-1]);
+					overlayList.dataProvider = ac;
 					
 				}
 				
@@ -127,68 +135,80 @@
 			 *
 			 * @param event Drag event
 			 */
-			public function changeLayerOrder(event:DragEvent):void{/*
-				var ecart:int = overlayList.calculateDropIndex() - overlayList.selectedIndex;
-				//if we drag and drop the layer down
-				if(ecart > 0){  	
-				(overlayList.selectedItem as Layer).zindex = (overlayList.selectedItem as Layer).zindex - (ecart-1);
+			/*public function changeLayerOrder(event:DragEvent):void{
+				var layer:Layer = overlayList.selectedItem as Layer;
+				var step:int = overlayArray.indexOf(layer) - overlayList.selectedIndex;
+				Trace.log("overlayarray: "+overlayArray.indexOf(layer));
+				Trace.log("list position: "+overlayList.selectedIndex);
+				if(step>0) {
+					layer.zindex -= (step-1);
+				} else {
+					layer.zindex += step;
 				}
-				//if we drag and drop the layer up
-				if(ecart < 0){
-				(overlayList.selectedItem as Layer).zindex = (overlayList.selectedItem as Layer).zindex - ecart;
-				}*/
-			}
+				var layers:Vector.<Layer> = this.map.layers;
+				var i:uint = _overlayArray.length;
+				var j:uint = layers.length;
+				for(i;i>0;--i){
+					_overlayArray.pop();
+				}
+				for(i=0;i<j;++i)
+				{
+					layer = layers[i];
+					if(!layer.isBaseLayer == true){
+						_overlayArray.push(layer);
+					}
+				}
+			}*/
 			
 			/**
 			 * Switch the display base layer
 			 *
 			 * @param event Click event
 			 */
-			/*  public function changeVisibility (event:MouseEvent):void
+			public function changeVisibility (event:MouseEvent):void
 			{
-			var layer:Layer = event.currentTarget.selectedItem;
-			for(var i:int=0;i<_baseLayerArray.length;i++)
-			{
-			//if the layer in the Array isn't the layer selected
-			if((_baseLayerArray[i] as Layer) != layer)
-			{
-			(_baseLayerArray[i] as Layer).visible = false;//we hide the layer
+				var layer:Layer = event.currentTarget.selectedItem;
+				for(var i:int=0;i<_baseLayerArray.length;i++)
+				{
+					//if the layer in the Array isn't the layer selected
+					if((_baseLayerArray[i] as Layer) != layer)
+					{
+						(_baseLayerArray[i] as Layer).visible = false;//we hide the layer
+					}
+					else
+					{
+						(_baseLayerArray[i] as Layer).visible = true;
+						//(_baseLayerArray[i] as Layer).redraw();//we display the layer
+						map.baseLayer = (_baseLayerArray[i] as Layer);
+					}
+				}
+				//baseLayerList.invalidateList();
+				
 			}
-			else
-			{
-			(_baseLayerArray[i] as Layer).visible = true;
-			//(_baseLayerArray[i] as Layer).redraw();//we display the layer
-			map.baseLayer = (_baseLayerArray[i] as Layer);
-			}
-			}
-			baseLayerList.invalidateList();
 			
-			} */
-			
-			public function get overlayArray():Array {
+			public function get overlayArray():Vector.<Layer> {
 				return this._overlayArray;
 			}
 			
-			public function get baseLayerArray():Array {
+			public function get baseLayerArray():Vector.<Layer> {
 				return this._baseLayerArray;
 			}
 		]]>
 	</fx:Script>
 	
 	<s:VGroup width="100%">
-		<!--<mx:Text text="Base Layer" width="100%"/>-->
-		<!--<mx:List id="baseLayerList" itemRenderer="org.openscales.component.control.layer.LayerRenderer" labelField="BaseLayer"
-		width="100%" click="{changeVisibility(event)}"/>-->
-		
-		<!--<mx:Text text="Overlays" width="100%"/>-->
 		<s:List id="overlayList"
-				itemRenderer="org.openscales.component.control.layer.LayerRenderer"
+				itemRenderer="org.openscales.component.control.layer.SingleLayerRenderer"
+				labelField="Overlays"
+				width="100%" />
+		<!--<s:List id="overlayList"
+				itemRenderer="org.openscales.component.control.layer.SingleLayerRenderer"
 				labelField="Overlays"
 				dropEnabled="true"
 				dragEnabled="true"
 				dragMoveEnabled="true"
-				dragDrop="changeLayerOrder(event)"
-				width="100%" />
+				dragComplete="changeLayerOrder(event)"
+				width="100%" />-->
 		<layer:BaselayerComponent id="baselayerComponent"/>
 	</s:VGroup>
 	

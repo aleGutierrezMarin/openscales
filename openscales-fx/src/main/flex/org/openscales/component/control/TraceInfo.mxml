@@ -8,6 +8,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.TraceEvent;
@@ -15,7 +17,7 @@
 			import spark.skins.spark.ButtonSkin;
 			import spark.utils.TextFlowUtil;
 			
-			private var text:String = '<b>Output Console :</b';
+			private var text:String = "<b>Output Console :</b>";
 			[Bindable] public var _clearButton:Boolean = true;
 			public function get clearButton():Boolean {
 				return _clearButton;
@@ -45,8 +47,8 @@
 			}
 			
 			private function clearTrace():void {
-				text = '<b>Output Console :</b';
-				textArea.textFlow = TextFlowUtil.importFromString(text);
+				text = '<b>Output Console :</b>';
+				textArea.textFlow = TextConverter.importToFlow(text, TextConverter.TEXT_FIELD_HTML_FORMAT);
 			}
 			
 			private function displayLog(event:TraceEvent):void {
@@ -63,7 +65,8 @@
 					+"' size='9'>"
 					+event.text
 					+"</font><br/>----------";
-				textArea.textFlow = TextFlowUtil.importFromString(text);
+				
+				textArea.textFlow = TextConverter.importToFlow(text, TextConverter.TEXT_FIELD_HTML_FORMAT);
 			}
 		]]>
 	</fx:Script>
