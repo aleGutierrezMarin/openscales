@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/2.5" minimumPatchLevel="0">
+
+	<id>org.openscales.OpenScales</id>
+	<filename>OpenScales</filename>
+	<versionNumber>1.0.0</versionNumber>
+	<initialWindow>
+		<content>OpenScales.swf</content>
+		<title>OpenScales</title>
+		<visible>true</visible>
+		<minSize>300 300</minSize>
+		<autoOrients>true</autoOrients>
+	</initialWindow>
+	
+	<supportedProfiles>desktop extendedDesktop mobileDevice</supportedProfiles>
+	<android><manifestAdditions><manifest><data><![CDATA[<uses-permission android:name="android.permission.INTERNET"/><uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />]]></data></manifest></manifestAdditions></android>
+</application>
