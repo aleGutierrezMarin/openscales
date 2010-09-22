@@ -20,7 +20,10 @@ package org.openscales.core.layer
 		private var _serviceVersion:String = "1.0.0";
 
 		private var _tileOrigin:Location = null;
+		
 		private var _format:String = "png";
+		
+		private var _layerName:String;
 		
 		/**
 		 * A list of all resolutions available on the server.
@@ -29,8 +32,9 @@ package org.openscales.core.layer
 		private var _serverResolutions:Array = null;
 		
 		public function TMS(name:String,
-							url:String) {
+							url:String, layerName:String="") {
 			super(name, url);
+			this._layerName = layerName;
 			
 		}
 		
@@ -43,9 +47,8 @@ package org.openscales.core.layer
 			var x:Number = Math.round((bounds.left - this._tileOrigin.lon) / (res * this.tileWidth));
 			var y:Number = Math.round((bounds.bottom - this._tileOrigin.lat) / ( res* this.tileHeight));
 			var z:Number = (this._serverResolutions!=null) ? this._serverResolutions.indexOf(res) : this.map.zoom;
-			y+=Math.floor(Math.pow(2,z-1));
 
-			var url:String = this.url+ "/" + z + "/" + x + "/" + y+"."+this._format;
+			var url:String = this.url + this._serviceVersion +"/" + this.layerName + "/" + z + "/" + x + "/" + y+"."+this._format;
 			return url ;
 		}
 
@@ -90,6 +93,15 @@ package org.openscales.core.layer
 		}
 		public function get origin():Location {
 			return this._tileOrigin.clone();
+		}
+		/**
+		 * setter and getter of the TMS layer name
+		 */
+		public function set layerName(value:String):void {
+			this._layerName = value;
+		}
+		public function get layerName():String {
+			return this._layerName;
 		}
 	}
 }
