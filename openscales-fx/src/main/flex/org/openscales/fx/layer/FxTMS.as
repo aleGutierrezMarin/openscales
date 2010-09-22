@@ -20,5 +20,11 @@ package org.openscales.fx.layer
 				(this.layer as TMS).origin = Location.getLocationFromString(value);
 			}
 		}
+		
+		public function set layerName(value:String):void {
+			if(this.layer != null) {
+				(this.layer as TMS).layerName = value;
+			}
+		}
 	}
 }

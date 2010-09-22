@@ -82,6 +82,9 @@
 					case "fullkml":
 						state = new KMLFeaturesExample();
 						break;
+					case "tms":
+						state = new TmsExample();
+						break;
 					case "ign":
 						state = new SecurityMapExample();
 						break;
@@ -148,6 +151,7 @@
 				<s:Button id="imagelayer" label="Image Layer" click="changeState(event)" width="100%"/>
 				<s:Button id="simplekml" label="Simple KML layer" click="changeState(event)" width="100%"/>
 				<s:Button id="fullkml" label="Advanced KML layer" click="changeState(event)" width="100%"/>
+				<s:Button id="tms" label="tms example" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Security" width="100%" height="100%">
 				<s:layout>
