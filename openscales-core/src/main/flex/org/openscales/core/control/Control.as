@@ -39,9 +39,11 @@ package org.openscales.core.control
 		}
 
 		public function set map(value:Map):void {
+			if(this._map != null)
+				this._map.removeEventListener(MapEvent.RESIZE, this.resize);
 			this._map = value;
 
-			this.map.addEventListener(MapEvent.RESIZE, this.resize);
+			this._map.addEventListener(MapEvent.RESIZE, this.resize);
 		}
 
 		public function resize(event:MapEvent):void {

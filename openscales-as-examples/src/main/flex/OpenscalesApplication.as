@@ -3,10 +3,13 @@ package {
 	
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
+	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.control.LayerSwitcher;
 	import org.openscales.core.control.MousePosition;
+	import org.openscales.core.control.OverviewMap;
 	import org.openscales.core.control.PanZoomBar;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
@@ -22,6 +25,7 @@ package {
 		protected var _map:Map;
 
 		public function OpenscalesApplication() {
+			Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 
@@ -65,6 +69,12 @@ package {
 			_map.zoom=5;
 						
 			this.addChild(_map);
+			Trace.log("coin");
+			var overview:OverviewMap = new OverviewMap(new Pixel(0,0));
+			overview.width=100;
+			overview.height=100;
+			overview.map = _map;
+			this.addChild(overview);
 		}
 	}
 }

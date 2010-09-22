@@ -145,6 +145,7 @@
     <classEntry path="org.openscales.core.style.symbolizer.Symbolizer"/>
     <classEntry path="org.openscales.core.tile.ImageTile"/>
     <classEntry path="org.openscales.core.tile.Tile"/>
+    <classEntry path="org.openscales.core.control.OverviewMap"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
