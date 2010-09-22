@@ -45,6 +45,10 @@ package org.openscales.fx.layer
 				this.layer.projection = new ProjProjection(this._projection);
 			if(!isNaN(this.numZoomLevels)) {
 				this.layer.generateResolutions(this.numZoomLevels, this.maxResolution);
+			}else{
+			  if(!isNaN(this.maxResolution)) {
+				this.layer.generateResolutions(Layer.DEFAULT_NUM_ZOOM_LEVELS, this.maxResolution);
+			 }
 			}
 			if(this._resolutions)
 				this.layer.resolutions = this._resolutions;
