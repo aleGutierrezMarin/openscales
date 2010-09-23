@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" version="1">
+<flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
     <classEntry path="org.openscales.component.ControlPanel"/>
     <classEntry path="org.openscales.component.control.Capabilities"/>
@@ -13,7 +13,7 @@
     <classEntry path="org.openscales.component.control.TraceInfo"/>
     <classEntry path="org.openscales.component.control.Zoom"/>
     <classEntry path="org.openscales.component.control.ZoomBox"/>
-    <classEntry path="org.openscales.component.control.layer.LayerSwitcher"/>
+    <classEntry path="org.openscales.component.control.layer.LayerManager"/>
     <classEntry path="org.openscales.component.control.routing.SampleRoutingComponent"/>
     <classEntry path="org.openscales.component.control.search.YahooSearch"/>
     <classEntry path="org.openscales.component.control.spinner.Spinner"/>
@@ -25,7 +25,6 @@
     <classEntry path="org.openscales.fx.basetypes.FxBounds"/>
     <classEntry path="org.openscales.fx.configuration.FxConfiguration"/>
     <classEntry path="org.openscales.fx.control.FxControl"/>
-    <classEntry path="org.openscales.fx.control.FxLayerSwitcher"/>
     <classEntry path="org.openscales.fx.control.FxMousePosition"/>
     <classEntry path="org.openscales.fx.control.FxPanZoom"/>
     <classEntry path="org.openscales.fx.control.FxPanZoomBar"/>

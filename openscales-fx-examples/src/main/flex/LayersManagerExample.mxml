@@ -52,7 +52,7 @@
 					 x="10"
 					 y="10"
 					 width="230">
-		<os:LayerSwitcherComponent map="{map}" />
+		<os:LayerManager map="{map}" />
 	</os:ControlPanel>
 	
 	<fx:Script>
