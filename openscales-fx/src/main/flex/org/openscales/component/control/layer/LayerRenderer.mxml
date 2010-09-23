@@ -36,6 +36,10 @@
 			[Bindable]
 			private var _opacity:String;
 			
+			[Bindable]
+			[Embed(source="/assets/images/close.gif")]
+			public var remove:Class;
+			
 			/**
 			 * Get the layer that the List into the LayerSwitcher.mxml send to display it
 			 *
@@ -67,7 +71,7 @@
 			public function layerOpacity(event:Event):void
 			{
 				layer.alpha = (event.target as HSlider).value/100;
-				_opacity = (event.target as HSlider).value + "%";
+				_opacity = Math.floor((event.target as HSlider).value) + "%";
 				if(layer.alpha == 0)
 				{
 					labelLayer.setStyle("color",0xA8A8A8);
@@ -120,7 +124,7 @@
 					  _layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
 					}
 					displayControl.removeAllElements();
-					_opacity = this.layer.alpha*100 + "%";
+					_opacity = Math.floor(this.layer.alpha*100) + "%";
 					opacityControl.value = this.layer.alpha*100;
 					labelLayer = new Label();
 					labelLayer.text = this.layer.name;
@@ -149,7 +153,7 @@
 			
 			private function changeBaseLayer(event:MouseEvent):void {
 				layer.map.baseLayer = this._layer;
-				layer.map.baseLayer.redraw();
+				layer.map.moveTo(layer.map.center);
 			}
 			
 			private function baseLayerChanged(event:LayerEvent):void {
@@ -159,39 +163,31 @@
 			
 		 ]]>
 	</fx:Script>
+	
+
 	<s:states> 
 		<s:State name="normal"/> 
 		<s:State name="hovered"/> 
 	</s:states> 
-	
-	<s:Rect id="myRect" 
-			left="0" right="0" top="0" bottom="0" 
-			alpha="1.0"> 
-		<s:stroke> 
-			<s:SolidColorStroke 
-				color="0xA8C6EE" 
-				weight="1"/> 
-		</s:stroke> 
-	</s:Rect>   
-	
-
 
 	
-<s:VGroup>
+<s:VGroup paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
   <s:HGroup width="100%">
 	    <s:RadioButton id="isBaseLayer" click="changeBaseLayer(event)"/>
 		<s:Group id="displayControl"
 				 width="128"/>
-	  <control:IconButton id="deleteButton" width="20" height="20" 
+	  <control:IconButton id="deleteButton" width="16" height="16" 
 						  skinClass="org.openscales.skin.IconButtonSkin" 
 						  toolTip="Supprimer la couche de la sélection des couches visibles" 
-						  click="deleteLayer(event)" />
+						  click="deleteLayer(event)"
+						  icon="{remove}"
+						  />
 	  
 	</s:HGroup>
 	
 	<s:HGroup id="Hbox2" width="100%" >
 		
-		<s:HSlider width="50"
+		<s:HSlider width="100%"
 				  
 				   id="opacityControl"
 				   minimum="0"

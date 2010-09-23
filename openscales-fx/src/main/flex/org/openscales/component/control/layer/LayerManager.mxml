@@ -103,7 +103,6 @@
 				dragEnabled="true"
 				dragMoveEnabled="true"
 				width="100%" 
-				dragEnter=""
 				dragComplete="changeLayerOrder(event)"
 				
 				/>

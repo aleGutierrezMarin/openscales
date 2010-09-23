@@ -132,7 +132,7 @@ package org.openscales.core.handler.feature.draw
 				this.selectFeaturesHandler.onSelectionUpdated = this.onSelectionUpdated;
 				this.map.addLayer(drawLayer);
 				
-				this.selectFeaturesHandler.layers = new Vector.<Layer>();
+				this.selectFeaturesHandler.layers = new Vector.<FeatureLayer>();
 				this.selectFeaturesHandler.layers.push(drawLayer);
 				
 				//Properties of MultiHandler
