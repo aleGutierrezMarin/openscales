@@ -10,9 +10,7 @@
 	<os:Map id="fxmap" width="100%" height="100%" zoom="13" centerLonLat="-74.011,40.710">
 		
 		<!-- OpenStreetMap EPSG:900913 -->
-		<os:Mapnik name="Mapnik"
-				   isBaseLayer="true"
-				   proxy="http://openscales.org/proxy.php?url=" />
+		<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
 		
 		<os:DragHandler active="false" />
 		<os:WheelHandler />

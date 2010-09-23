@@ -137,7 +137,7 @@ package org.openscales.core
 		 * @param layer The layer to add.
 		 * @return true if the layer have been added, false if it has not.
 		 */
-		public function addLayer(layer:Layer):Boolean {
+		public function addLayer(layer:Layer, isBaseLayer:Boolean = false, redraw:Boolean = false):Boolean {
 			var i:uint = 0;
 			var j:uint = this.layers.length;
 			for(; i < j; ++i) {
@@ -150,16 +150,11 @@ package org.openscales.core
 			
 			layer.map = this;
 			
-			if (layer.isBaseLayer) {
-				if (this.baseLayer == null) {
-					this.baseLayer = layer;
-				} else {
-					layer.visible = false;
-					layer.zindex = 0; 
-				}
+			if (isBaseLayer || (this.baseLayer == null)) {
+				this.baseLayer = layer;
 			}
-			//commit temporaly to correct the fact if you  add layer dynamicaly (wms/wmcs) , that not draw the layer
-			if(layer.visible){
+			
+			if(redraw){
 				layer.redraw();	
 			}
 			
@@ -1066,7 +1061,7 @@ package org.openscales.core
 					extent = new Bounds(this.center.lon - w_deg / 2,
 						this.center.lat - h_deg / 2,
 						this.center.lon + w_deg / 2,
-						this.center.lat + h_deg / 2);
+						this.center.lat + h_deg / 2, this.baseLayer.projection);
 				} 
 				
 				return extent;
@@ -1104,9 +1099,32 @@ package org.openscales.core
 			}
 			return layerArray.reverse();
 		}
+		/**
+		 * @layer is layer that must be changed
+		 * newIndex is new index 
+		 * */
+		public function changeOrderLayer(layer:Layer,newIndex:int):void{
+			var length:int = this.layerContainer.numChildren;// -1 for baselayers
+			var newIndexTemp:int = length - newIndex - 1;
+			if(newIndex >= 0 && newIndex < length )
+			  this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
+		}
+		/**
+		 * @layer is layer that must be changed
+		 * step  
+		 * */
+		public function changeOrderLayerByStep(layer:Layer,step:int):void{
+			var indexLayer:int = this.layerContainer.getChildIndex(layer);
+			var length:int = this.layerContainer.numChildren ;
+			var newIndex:int = indexLayer - step;
+			if(newIndex >= 0 && newIndex < length)
+			  this.layerContainer.setChildIndex(layer,newIndex);
+			//- cause the ordre is not the same that the dysplay order
+		}
 		
-		public function get featureLayers():Vector.<Layer> {
-			var layerArray:Vector.<Layer> = new Vector.<Layer>();
+		
+		public function get featureLayers():Vector.<FeatureLayer> {
+			var layerArray:Vector.<FeatureLayer> = new Vector.<FeatureLayer>();
 			if (this.layerContainer == null) {
 				return layerArray;
 			}

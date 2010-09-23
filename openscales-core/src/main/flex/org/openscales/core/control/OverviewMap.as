@@ -102,7 +102,6 @@ package org.openscales.core.control
 		public function set baselayer(layer:Layer):void {
 			if(this._overviewMap.baseLayer != layer) {
 				this._overviewMap.removeLayer(this._overviewMap.baseLayer);
-				layer.isBaseLayer = true;
 				this._overviewMap.addLayer(layer);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 			}
@@ -124,7 +123,6 @@ package org.openscales.core.control
 			// by default it uses a mapnik baselayer 
 			if(this._overviewMap.baseLayer == null) {
 				var layer:Layer = new Mapnik("defaultbaselayer");
-				layer.isBaseLayer = true;
 				this._overviewMap.addLayer(layer);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 			}

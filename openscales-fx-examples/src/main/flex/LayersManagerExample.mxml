@@ -28,12 +28,10 @@
 		<!-- Specific layers and handlers of this example -->
 		
 		<!-- OpenStreetMap EPSG:900913 -->
-		<os:Mapnik name="Mapnik"
-				   isBaseLayer="true" />
+		<os:Mapnik name="Mapnik" />
 		
-		<os:CycleMap name="CycleMap"
-					 alpha="0.5" />
-		
+		<os:CycleMap name="CycleMap" alpha="0.5" />
+
 		<os:WFS name="Topp States (WFS)"
 				url="http://openscales.org/geoserver/wfs"
 				typename="topp:states"
@@ -54,7 +52,7 @@
 					 x="10"
 					 y="10"
 					 width="230">
-		<os:LayerSwitcherComponent map="{map}" />
+		<os:LayerManager map="{map}" />
 	</os:ControlPanel>
 	
 	<fx:Script>

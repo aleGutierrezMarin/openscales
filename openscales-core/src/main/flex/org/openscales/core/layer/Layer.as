@@ -35,8 +35,6 @@ package org.openscales.core.layer {
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
 
-
-		private var _isBaseLayer:Boolean = false;
 		private var _isFixed:Boolean = false;
 		private var _projection:ProjProjection = null;
 		private var _resolutions:Array = null;
@@ -57,7 +55,6 @@ package org.openscales.core.layer {
 		public function Layer(name:String) {
 			this.name = name;
 			this.visible = true;
-			this.isBaseLayer = false;
 			this.doubleClickEnabled = true;
 			this._projection = new ProjProjection(Layer.DEFAULT_SRS_CODE);
 			this.generateResolutions();
@@ -418,16 +415,15 @@ package org.openscales.core.layer {
 		}
 
 		/**
-		 * Whether or not the layer is a base layer. This should be set
-		 * individually by all subclasses. Default is false
+		 * Whether or not the layer is a base layer.
 		 */
 		public function get isBaseLayer():Boolean {
-			return this._isBaseLayer;
+			if((!this._map) || (!this._map.baseLayer))
+				return false;
+						
+			return (this.map.baseLayer == this);
 		}
 
-		public function set isBaseLayer(value:Boolean):void {
-			this._isBaseLayer = value;
-		}
 
 		/**
 		 * Whether or not the layer is a fixed layer.

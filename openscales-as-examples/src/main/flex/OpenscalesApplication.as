@@ -32,12 +32,10 @@ package {
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			//mapnik.proxy = "http://openscales.org/proxy.php?url=";
-			mapnik.isBaseLayer = true;
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);		
 			_map.addLayer(mapnik);
 
 			var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
-			cycle.isBaseLayer = true;
 			cycle.proxy = "http://openscales.org/proxy.php?url=";
 			_map.addLayer(cycle); 
 			

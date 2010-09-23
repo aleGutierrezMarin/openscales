@@ -15,7 +15,6 @@
 		
 		<!-- A EPSG:900913 baselayer (OSM) -->
 		<os:Mapnik name="Mapnik"
-				   isBaseLayer="true"
 				   proxy="http://openscales.org/proxy.php?url="/>
 		
 		<!-- We choose EPSG:4326 as displayed projection in this control-->
@@ -25,7 +24,6 @@
 		<os:Spinner id="spinner"
 					x="{width / 2}"
 					y="{height / 2}"/>
-		<os:LayerSwitcher/>
 		
 		<os:DragHandler/>
 		<os:ClickHandler/>
