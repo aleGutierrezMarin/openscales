@@ -40,7 +40,6 @@ package {
 		 */
 		static public function baseLayerOSM():Mapnik {
 			var layer:Mapnik = new Mapnik("Mapnik");
-			layer.isBaseLayer = true;
 			return layer;
 		}
 		

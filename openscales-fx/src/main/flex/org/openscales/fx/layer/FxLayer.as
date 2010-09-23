@@ -91,11 +91,6 @@ package org.openscales.fx.layer
 				this.layer.name = value;
 		}
 		
-		public function set isBaseLayer(value:Boolean):void {
-			if(this.layer != null)
-				this.layer.isBaseLayer = value;
-		}
-		
 		public function set isFixed(value:Boolean):void {
 			if(this.layer != null)
 				this.layer.isFixed = value;

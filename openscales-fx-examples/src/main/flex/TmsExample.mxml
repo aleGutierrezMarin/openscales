@@ -16,20 +16,13 @@
 			>
 		
 		<os:TMS name="Tms"
-				   isBaseLayer="true"
 				   url="http://tilecache.osgeo.org/wms-c/Basic.py/"
 				   layerName="basic"
 				   maxResolution="0.703125"
-				   numZoomLevels="10"
+				  
 				   />
 		
-		<os:WFS name="Topp States (WFS)"
-				url="http://openscales.org/geoserver/wfs"
-				typename="topp:states"
-				projection="EPSG:4326"
-				version="1.0.0"
-				style="{Style.getDefaultSurfaceStyle()}">
-		</os:WFS>
+		
 		
 		<os:DragHandler/>
 		<os:WheelHandler/>

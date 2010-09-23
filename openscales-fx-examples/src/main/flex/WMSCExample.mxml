@@ -16,8 +16,7 @@
 				 url="http://openscales.org/geoserver/gwc/service/wms"
 				 layers="bluemarble"
 				 format="image/jpeg"
-				 maxExtent="-180,-90,180,90"
-				 isBaseLayer="true"/>
+				 maxExtent="-180,-90,180,90" />
 
 		<os:MaxExtent left="-180"
 					  bottom="-90"
