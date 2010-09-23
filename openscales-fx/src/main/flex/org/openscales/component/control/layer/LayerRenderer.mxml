@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:VGroup xmlns:mx="library://ns.adobe.com/flex/mx"
+<s:ItemRenderer xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns:s="library://ns.adobe.com/flex/spark"
 		  xmlns:fx="http://ns.adobe.com/mxml/2009"
 		  xmlns:control="org.openscales.component.control.*"
 		  width="100%"
 		  height="45"
-		  paddingRight="17">
+		  >
 	<fx:Script>
 		<![CDATA[
 			import mx.accessibility.ButtonAccImpl;
@@ -29,16 +29,12 @@
 			import spark.components.List;
 			import spark.components.RadioButton;
 			import spark.components.RadioButtonGroup;
-			
-			[Bindable]
-			private var hasCapabilities:Boolean = false;
-			
-			[Bindable]
-			[Embed(source="/assets/images/cross.swf")]
-			private var _btnMouvement:Class;
-			
+
 			private var labelLayer:Label;
 			private var _layer:Layer;
+			
+			[Bindable]
+			private var _opacity:String;
 			
 			/**
 			 * Get the layer that the List into the LayerSwitcher.mxml send to display it
@@ -56,7 +52,6 @@
 			 */
 			public function layerVisible(event:MouseEvent):void{
 				layer.visible = !layer.visible;
-				
 				// If the layer was uncheck from the beggining, he hadn't load yet so we need
 				// to redraw it to load it.
 				if(layer.visible){
@@ -72,6 +67,7 @@
 			public function layerOpacity(event:Event):void
 			{
 				layer.alpha = (event.target as HSlider).value/100;
+				_opacity = (event.target as HSlider).value + "%";
 				if(layer.alpha == 0)
 				{
 					labelLayer.setStyle("color",0xA8A8A8);
@@ -93,8 +89,6 @@
 			
 			
 			public function inOutRange(event:LayerEvent):void {
-				if(event.layer.isBaseLayer == false)
-				{
 					var component:IVisualElement = displayControl.getElementAt(0);
 					if(component is CheckBox)
 					{
@@ -108,73 +102,33 @@
 							event.layer.visible = (component as CheckBox).selected; 
 						}
 					}
-					
-				}
 			}
-			
 			/**
 			 * Set the data
 			 *
 			 * @param value
 			 */
-			public function set data(value:Layer):void {
-				_layer = value;
+			override public function set data(value:Object):void {
+				
+				_layer = value as Layer;
 				
 				if((this.layer != null) && (displayControl != null))
 				{
-					_layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
-					_layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
-					
+					if(_layer.map!=null){
+					  _layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
+					  _layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+					}
 					displayControl.removeAllElements();
+					_opacity = this.layer.alpha*100 + "%";
 					opacityControl.value = this.layer.alpha*100;
-					
-					if(this.layer.isBaseLayer == true)//if the layer is a base layer
-					{
-						ArrowUp.visible = false;
-						ArrowUp.enabled = false;
-						ArrowDown.visible = false;
-						ArrowDown.enabled = false;
-						var radioButton:RadioButton = new RadioButton();
-						radioButton.id = this.layer.name;
-						radioButton.percentHeight = 100;
-						radioButton.percentWidth = 100;
-						radioButton.label = this.layer.name;
-						radioButton.selected = this.layer.visible;
-						displayControl.addElement(radioButton);
-						
-					}
-					else
-					{
-						labelLayer = new Label();
-						labelLayer.text = this.layer.name;
-						labelLayer.percentWidth = 100;
-						displayControl.addElement(labelLayer);
-						
-						if(((this.parent.parent.parent.parent as LayerSwitcher).overlayArray.length)<=1)
-						{
-							ArrowUp.enabled = false;
-							ArrowUp.alpha = 0.3;
-							ArrowDown.enabled = false;
-							ArrowDown.alpha = 0.3;
-							ArrowUp.removeEventListener(MouseEvent.CLICK,changeLayerOrder);
-							ArrowDown.removeEventListener(MouseEvent.CLICK,changeLayerOrder);
-						}
-						else
-						{
-							ArrowUp.enabled = true;
-							ArrowUp.alpha = 1;
-							ArrowDown.enabled = true;
-							ArrowDown.alpha = 1;
-							ArrowUp.addEventListener(MouseEvent.CLICK,changeLayerOrder);
-							ArrowDown.addEventListener(MouseEvent.CLICK,changeLayerOrder);
-						}
-						
-					}
-					
+					labelLayer = new Label();
+					labelLayer.text = this.layer.name;
+					labelLayer.percentWidth = 100;
+					displayControl.addElement(labelLayer);		
+					isBaseLayer.selected = _layer.isBaseLayer;
 				}
 				
 			}
-			
 			/**
 			 * Center the map on the layer
 			 *
@@ -191,63 +145,57 @@
 			private function onDrag(event:Event):void {
 				event.stopPropagation();
 			}
-			
-			public function changeLayerOrder(event:MouseEvent):void {
-				var numBaseLayer:int = (this.parent.parent.parent.parent as LayerSwitcher).baseLayerArray.length;
-				var numOverlays:int = (this.parent.parent.parent.parent as LayerSwitcher).overlayArray.length;
-				
-				if((event.currentTarget as Image).name == "ArrowUp") //if we drag and drop the layer down
-				{
-					if(this.layer.zindex+1 <= numBaseLayer+numOverlays-1)
-					{
-						this.layer.zindex = this.layer.zindex + 1;
-					}  
-				}
-				if((event.currentTarget as Image).name == "ArrowDown")     //if we drag and drop the layer up
-				{
-					if(this.layer.zindex-1 > numBaseLayer-1)
-					{
-						this.layer.zindex = this.layer.zindex - 1;
-					}
-					
-				} 
-				this.layer.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED,this.layer));
+			private function changeBaseLayer(event:Event){
+				layer.map.baseLayer.visible = false;
+				layer.map.baseLayer = this._layer;
+				layer.map.baseLayer.visible = true;
+				layer.map.baseLayer.redraw();
 			}
 			
-			
-		]]>
+		 ]]>
 	</fx:Script>
+	<s:states> 
+		<s:State name="normal"/> 
+		<s:State name="hovered"/> 
+	</s:states> 
 	
-	<s:HGroup width="100%">
+	<s:Rect id="myRect" 
+			left="0" right="0" top="0" bottom="0" 
+			alpha="1.0"> 
+		<s:stroke> 
+			<s:SolidColorStroke 
+				color="0xA8C6EE" 
+				weight="1"/> 
+		</s:stroke> 
+	</s:Rect>   
+	
+
+
+	
+<s:VGroup>
+  <s:HGroup width="100%">
+	    <s:RadioButton id="isBaseLayer" click="changeBaseLayer(event)"/>
 		<s:Group id="displayControl"
 				 width="128"/>
-		<mx:Image id="ArrowUp"
-				  name="ArrowUp"
-				  source="@Embed('/assets/images/ArrowUp.swf')"
-				  click="changeLayerOrder(event)"/>
-		<mx:Image id="ArrowDown"
-				  name="ArrowDown"
-				  source="@Embed('/assets/images/ArrowDown.swf')"
-				  click="changeLayerOrder(event)"/>
-		<control:IconButton id="deleteButton"
-							width="20"
-							height="10"
-							toolTip="Delete"
-							icon="{_btnMouvement}"
-							click="deleteLayer(event)"/>
+	  <control:IconButton id="deleteButton" width="20" height="20" 
+						  skinClass="org.openscales.skin.IconButtonSkin" 
+						  toolTip="Supprimer la couche de la sélection des couches visibles" 
+						  click="deleteLayer(event)" />
+	  
 	</s:HGroup>
 	
-	<s:HGroup id="Hbox2" width="100%">
-		<s:Label text="0%"/>
-		<s:HSlider width="100"
-				   height="5"
+	<s:HGroup id="Hbox2" width="100%" >
+		
+		<s:HSlider width="50"
+				  
 				   id="opacityControl"
 				   minimum="0"
 				   maximum="100"
 				   change="layerOpacity(event)"
 				   liveDragging="true"
 				   mouseDown="onDrag(event)"/>
-		<s:Label text="100%"/>
+		<s:Label text="{_opacity}"/>
 	</s:HGroup>
-	
 </s:VGroup>
+
+</s:ItemRenderer>
