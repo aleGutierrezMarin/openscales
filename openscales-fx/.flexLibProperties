@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="false" version="1">
+<flexLibProperties includeAllClasses="true" version="1">
   <includeClasses>
     <classEntry path="org.openscales.component.ControlPanel"/>
     <classEntry path="org.openscales.component.control.Capabilities"/>
     <classEntry path="org.openscales.component.control.Control"/>
     <classEntry path="org.openscales.component.control.FeatureDrawing"/>
     <classEntry path="org.openscales.component.control.FeatureInfo"/>
+    <classEntry path="org.openscales.component.control.IconButton"/>
     <classEntry path="org.openscales.component.control.MousePosition"/>
     <classEntry path="org.openscales.component.control.OverviewMap"/>
     <classEntry path="org.openscales.component.control.Pan"/>
     <classEntry path="org.openscales.component.control.TraceInfo"/>
     <classEntry path="org.openscales.component.control.Zoom"/>
     <classEntry path="org.openscales.component.control.ZoomBox"/>
-    <classEntry path="org.openscales.component.control.layer.BaselayerComponent"/>
     <classEntry path="org.openscales.component.control.layer.LayerSwitcher"/>
     <classEntry path="org.openscales.component.control.routing.SampleRoutingComponent"/>
     <classEntry path="org.openscales.component.control.search.YahooSearch"/>
@@ -47,6 +47,7 @@
     <classEntry path="org.openscales.fx.layer.FxImageLayer"/>
     <classEntry path="org.openscales.fx.layer.FxKML"/>
     <classEntry path="org.openscales.fx.layer.FxLayer"/>
+    <classEntry path="org.openscales.fx.layer.FxTMS"/>
     <classEntry path="org.openscales.fx.layer.FxWFS"/>
     <classEntry path="org.openscales.fx.layer.FxWMS"/>
     <classEntry path="org.openscales.fx.layer.FxWMSC"/>
@@ -58,10 +59,7 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
-    <classEntry path="org.openscales.fx.layer.FxTMS"/>
     <classEntry path="org.openscales.skin.IconButtonSkin"/>
-    <classEntry path="org.openscales.component.control.IconButton"/>
-    <classEntry path="org.openscales.component.control.layer.SingleLayerRenderer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

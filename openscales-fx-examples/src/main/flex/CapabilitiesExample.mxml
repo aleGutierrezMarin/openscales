@@ -11,8 +11,7 @@
 		
 		
 		<!-- OpenStreetMap EPSG:900913 -->
-		<os:Mapnik name="Mapnik" isBaseLayer="true"
-				   proxy="http://openscales.org/proxy.php?url="/>
+		<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
 		
 		<os:Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
 		<os:DragHandler />

@@ -21,8 +21,7 @@
 		<os:WMS name="Germany"
 				url="http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map"
 				layers="Germany"
-				format="image/jpeg"
-				isBaseLayer="true"/>
+				format="image/jpeg" />
 		
 		<os:Spinner id="spinner"
 					x="{width / 2}"

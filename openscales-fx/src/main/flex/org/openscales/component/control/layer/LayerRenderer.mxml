@@ -117,6 +117,7 @@
 					if(_layer.map!=null){
 					  _layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
 					  _layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+					  _layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
 					}
 					displayControl.removeAllElements();
 					_opacity = this.layer.alpha*100 + "%";
@@ -145,12 +146,16 @@
 			private function onDrag(event:Event):void {
 				event.stopPropagation();
 			}
-			private function changeBaseLayer(event:Event){
-				layer.map.baseLayer.visible = false;
+			
+			private function changeBaseLayer(event:MouseEvent):void {
 				layer.map.baseLayer = this._layer;
-				layer.map.baseLayer.visible = true;
 				layer.map.baseLayer.redraw();
 			}
+			
+			private function baseLayerChanged(event:LayerEvent):void {
+				isBaseLayer.selected = (event.layer == this.layer);
+			}
+			
 			
 		 ]]>
 	</fx:Script>
