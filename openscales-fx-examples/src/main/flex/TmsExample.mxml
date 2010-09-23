@@ -16,7 +16,6 @@
 			>
 		
 		<os:TMS name="Tms"
-				   isBaseLayer="true"
 				   url="http://tilecache.osgeo.org/wms-c/Basic.py/"
 				   layerName="basic"
 				   maxResolution="0.703125"

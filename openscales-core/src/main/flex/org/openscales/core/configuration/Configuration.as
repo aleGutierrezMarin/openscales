@@ -282,7 +282,6 @@ package org.openscales.core.configuration
 						Trace.log("Configuration - Find WMSC Layer : " + xmlNode.name());                                
 						// We create the WMSC Layer with all params
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
-						wmscLayer.isBaseLayer=isBaseLayer;
 						wmscLayer.visible=visible;
 						wmscLayer.projection = new ProjProjection(projection);
 						wmscLayer.proxy = proxy;                  	   
@@ -296,7 +295,6 @@ package org.openscales.core.configuration
 						Trace.log("Configuration - Find WMS Layer : " + xmlNode.name());
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
-						wmslayer.isBaseLayer = isBaseLayer;
 						wmslayer.visible = visible;
 						wmslayer.proxy = proxy;
 						wmslayer.projection = new ProjProjection(projection);                       
@@ -330,7 +328,6 @@ package org.openscales.core.configuration
 				
 				// We create the WFS Layer with all params
 				var wfsLayer:WFS = new WFS(name,urlWfs,xmlNode.@typename);
-				wfsLayer.isBaseLayer = isBaseLayer;
 				wfsLayer.visible = visible;
 				wfsLayer.proxy = proxy;
 				wfsLayer.useCapabilities = useCapabilities;
@@ -359,7 +356,6 @@ package org.openscales.core.configuration
 				Trace.log("Configuration - Find Mapnik Layer : " + xmlNode.name());
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
-				mapnik.isBaseLayer = isBaseLayer;
 				mapnik.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,mapnik.projection);
 				layer=mapnik;
 			}

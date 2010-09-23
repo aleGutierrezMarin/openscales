@@ -378,7 +378,7 @@ package org.openscales.core.handler.feature {
 			// Reset the selection and the array of the layers to treat
 			if (this.map != value) {
 				clearSelection();
-				this.layers = new Vector.<Layer>();
+				this.layers = new Vector.<FeatureLayer>();
 			}
 			// Update the map associated to the handler
 			if (this.map) {

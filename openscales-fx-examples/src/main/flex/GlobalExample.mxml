@@ -17,8 +17,7 @@
 				 url="http://openscales.org/geoserver/gwc/service/wms"
 				 layers="bluemarble"
 				 format="image/jpeg"
-				 maxExtent="-180,-90,180,90"
-				 isBaseLayer="true"/>
+				 maxExtent="-180,-90,180,90"/>
 		
 		<os:DragHandler/>
 		<os:WheelHandler/>
@@ -69,9 +68,7 @@
 								 height="32"/>
 		</s:HGroup>
 		<os:OverviewMapComponent map="{map}" width="140">
-			<os:Mapnik name="Mapnik"
-					   isBaseLayer="true"
-					   proxy="http://openscales.org/proxy.php?url="/>
+			<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
 		</os:OverviewMapComponent>
 	</os:ControlPanel>
 	

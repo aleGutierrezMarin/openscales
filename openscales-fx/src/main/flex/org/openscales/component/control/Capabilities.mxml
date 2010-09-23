@@ -95,7 +95,6 @@
 					newLayer.projection = new ProjProjection(srs);
 					newLayer.useCapabilities = true;
 					newLayer.capabilities = capabilities.getValue(this.list.selectedItem as String);
-					newLayer.isBaseLayer = false;
 					
 					var s:Style = Style.getDefaultSurfaceStyle();
 					s.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_CIRCLE,new SolidFill(0xFFFF00,0.5),new Stroke(0xFFFF00))));

@@ -28,26 +28,10 @@
 		<!-- Specific layers and handlers of this example -->
 		
 		<!-- OpenStreetMap EPSG:900913 -->
-		<os:Mapnik name="Mapnik"
-				   isBaseLayer="true" />
+		<os:Mapnik name="Mapnik" />
 		
-		<os:CycleMap name="CycleMap"
-					 alpha="0.5" isBaseLayer="true"/>
-		
-		<os:WFS name="Topp States (WFS)2"
-				url="http://openscales.org/geoserver/wfs"
-				typename="topp:states"
-				projection="EPSG:4326"
-				version="1.0.0"
-				style="{Style.getDefaultSurfaceStyle()}">
-		</os:WFS>
-		<os:TMS name="Tms"
-				isBaseLayer="true"
-				url="http://tilecache.osgeo.org/wms-c/Basic.py/"
-				layerName="basic"
-				maxResolution="0.703125"
-				
-				/>
+		<os:CycleMap name="CycleMap" alpha="0.5" />
+
 		<os:WFS name="Topp States (WFS)"
 				url="http://openscales.org/geoserver/wfs"
 				typename="topp:states"

@@ -30,7 +30,6 @@ package org.openscales.core.layer
 	        this.maxExtent = bounds;
 						
 	        super(name);
-	        this.isBaseLayer = true;
 			
 	    }
 	

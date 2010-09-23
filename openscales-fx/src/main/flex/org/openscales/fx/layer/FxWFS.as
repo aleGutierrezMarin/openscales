@@ -15,8 +15,6 @@ package org.openscales.fx.layer
     
     private var _version:String;
 
-    private var _isBaseLayer:Boolean;
-
     private var _useCapabilities:Boolean = false;
     
     private var _capabilitiesVersion:String = "1.1.0";
@@ -27,9 +25,7 @@ package org.openscales.fx.layer
     }
 
     override public function init():void {
-		this._isBaseLayer = false;
         this._layer = new WFS("", "", "");
-        this._layer.isBaseLayer=this._isBaseLayer;
         this._layer.visible=true
         if(this._projection != null)
         	this._layer.projection = new ProjProjection(this._projection);

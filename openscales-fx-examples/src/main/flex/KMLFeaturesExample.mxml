@@ -14,7 +14,6 @@
 			centerLonLat="-116.953,37.267">
 		
 		<os:Mapnik name="Mapnik"
-				   isBaseLayer="true"
 				   proxy="http://openscales.org/proxy.php?url="/>
 		
 		

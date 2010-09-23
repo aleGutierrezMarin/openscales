@@ -137,7 +137,7 @@ package org.openscales.core
 		 * @param layer The layer to add.
 		 * @return true if the layer have been added, false if it has not.
 		 */
-		public function addLayer(layer:Layer):Boolean {
+		public function addLayer(layer:Layer, isBaseLayer:Boolean = false, redraw:Boolean = false):Boolean {
 			var i:uint = 0;
 			var j:uint = this.layers.length;
 			for(; i < j; ++i) {
@@ -150,16 +150,11 @@ package org.openscales.core
 			
 			layer.map = this;
 			
-			if (layer.isBaseLayer) {
-				if (this.baseLayer == null) {
-					this.baseLayer = layer;
-				} else {
-					layer.visible = false;
-					layer.zindex = 0; 
-				}
+			if (isBaseLayer || (this.baseLayer == null)) {
+				this.baseLayer = layer;
 			}
-			//commit temporaly to correct the fact if you  add layer dynamicaly (wms/wmcs) , that not draw the layer
-			if(layer.visible){
+			
+			if(redraw){
 				layer.redraw();	
 			}
 			
@@ -1066,7 +1061,7 @@ package org.openscales.core
 					extent = new Bounds(this.center.lon - w_deg / 2,
 						this.center.lat - h_deg / 2,
 						this.center.lon + w_deg / 2,
-						this.center.lat + h_deg / 2);
+						this.center.lat + h_deg / 2, this.baseLayer.projection);
 				} 
 				
 				return extent;
