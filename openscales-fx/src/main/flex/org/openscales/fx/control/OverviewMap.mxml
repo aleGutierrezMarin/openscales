@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <control:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				 xmlns:control="org.openscales.component.control.*"
 				 xmlns:s="library://ns.adobe.com/flex/spark"
 				 xmlns:os="http://openscales.org"
+				 xmlns:control="org.openscales.fx.control.*"
 				 width="100" height="100"
-				 initialize="{currentState='defaultState';}"
-				 toolTip="Click to change the center of the main map.&#13;Draw a rectangle to define a new extent for the main map.">
+				 toolTip="Click to change the center of the main map.&#13;Draw a rectangle to define a new extent for the main map." >
 	
 	
 	<!-- Inspired from http://www.munkiihouse.com/flexapps/CustomFormItem/Main.html view source -->
@@ -466,12 +465,9 @@
 		]]>
 	</fx:Script>
 	
-	<control:states>
-		<s:State name="defaultState"/>
-	</control:states>
+
 	<s:Group width="100%"
-			 height="100%"
-			 includeIn="defaultState">
+			 height="100%">
 		<os:Map id="overview"
 				width="100%"
 				height="100%"

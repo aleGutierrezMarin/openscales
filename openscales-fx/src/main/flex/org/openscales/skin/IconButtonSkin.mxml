@@ -3,12 +3,12 @@
 	xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:mx="library://ns.adobe.com/flex/mx"
-	xmlns:control="org.openscales.component.control.*"
+	xmlns:control="org.openscales.fx.control.*"
 	currentStateChanging="onCurrentStateChanging(event)"
 	>
 	
 	<fx:Metadata>
-		[HostComponent("org.openscales.component.control.IconButton")]
+		[HostComponent("org.openscales.fx.control.IconButton")]
 	</fx:Metadata>
 	<fx:Script fb:purpose="styling">
 		<![CDATA[

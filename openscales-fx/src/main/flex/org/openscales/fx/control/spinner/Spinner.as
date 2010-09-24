@@ -1,4 +1,4 @@
-package org.openscales.component.control.spinner {
+package org.openscales.fx.control.spinner {
 	
 	import flash.display.Shape;
 	import flash.events.Event;

@@ -4,7 +4,7 @@
 		 xmlns:os="http://openscales.org"
 		 width="100%"
 		 height="100%"
-		 creationComplete="initMap();">
+		 creationComplete="initMap();" xmlns:control="org.openscales.fx.control.*">
 
 	<os:Map id="fxmap"
 			width="100%"
@@ -34,7 +34,7 @@
 		</os:WFS>
 
 	</os:Map>
-	<os:TraceInfo id="traceInfo"
+	<control:TraceInfo id="traceInfo"
 				  x="{width-200}"
 				  y="0"
 				  visible="{displayTrace}"/>

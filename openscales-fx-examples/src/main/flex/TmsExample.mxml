@@ -5,7 +5,7 @@
 		 xmlns:os="http://openscales.org"
 		 width="100%"
 		 height="100%"
-		 creationComplete="initMap();">
+		 creationComplete="initMap();" xmlns:fx1="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
 	
 	<os:Map id="fxmap"
 			width="100%"
@@ -35,7 +35,7 @@
 						  displayProjection="EPSG:4326"/>
 		
 	</os:Map>
-	<os:TraceInfo id="traceInfo"
+	<control:TraceInfo id="traceInfo"
 				  x="{width-200}"
 				  y="0"
 				  visible="{displayTrace}"/>
@@ -43,13 +43,13 @@
 					 y="10"
 					 width="140"
 					 title="Navigation">
-		<os:PanComponent map="{map}"/>
+		<os:Pan map="{map}"/>
 		<s:HGroup width="100%">
-			<os:ZoomComponent map="{map}"/>
+			<os:Zoom map="{map}"/>
 			<s:VGroup width="100%"
 					  horizontalAlign="right"
 					  verticalAlign="top">
-				<os:ZoomBoxComponent map="{map}"
+				<os:ZoomBox map="{map}"
 									 width="32"
 									 height="32"/>
 			</s:VGroup>

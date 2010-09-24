@@ -2,9 +2,9 @@
 <control:Control xmlns:fx="http://ns.adobe.com/mxml/2009"
 				 xmlns:mx="library://ns.adobe.com/flex/mx"
 				 xmlns:s="library://ns.adobe.com/flex/spark"
-				 xmlns:control="org.openscales.component.control.*"
+				 xmlns:control="org.openscales.fx.control.*"
 				 width="282"
-				 height="168">	
+				 height="168" >	
 	<fx:Script>
 		<![CDATA[
 			import flash.utils.getQualifiedClassName;

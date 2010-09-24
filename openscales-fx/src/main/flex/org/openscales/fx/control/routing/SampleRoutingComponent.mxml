@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Control xmlns="org.openscales.component.control.*" 
+<control:Control xmlns="org.openscales.component.control.*" 
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:os="http://openscales.org"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:osm="org.openscales.core.layer.osm.*"
 		 width="210"
 		 height="238"
-		 contentBackgroundColor="#ffffff">
+		 contentBackgroundColor="#ffffff" xmlns:control="org.openscales.fx.control.*">
 <fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
@@ -27,7 +27,7 @@
 			}
 		]]>
 </fx:Script>
-	<os:FxSampleRouting id="fxSampleRouting" map="{map}" resultsLayer="{resultsLayer}" startPointClass="{_startPointclass}" endPointClass="{_endPointClass}" intermedPointClass="{_intermedPointClass}"/>
+	<os:SampleRouting id="fxSampleRouting" map="{map}" resultsLayer="{resultsLayer}" startPointClass="{_startPointclass}" endPointClass="{_endPointClass}" intermedPointClass="{_intermedPointClass}"/>
 	<s:VGroup x="10" y="10" height="206" width="186">
 		<s:Label text="Routing component" width="184" fontFamily="Verdana" fontSize="12" fontWeight="bold" textAlign="center" textDecoration="underline"/>
 		<!--<mx:RadioButton label="Add or Modify start point" width="184"  click="Alert.show('boo')"/>-->
@@ -48,4 +48,4 @@
 		</s:HGroup>
 	</s:VGroup>
 	
-</Control>
+</control:Control>

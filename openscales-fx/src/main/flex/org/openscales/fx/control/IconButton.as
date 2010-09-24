@@ -1,4 +1,4 @@
-package org.openscales.component.control
+package org.openscales.fx.control
 {
 	import spark.components.Button;
 	
