@@ -5,7 +5,7 @@
 		 xmlns:os="http://openscales.org"
 		 width="100%"
 		 height="100%"
-		 creationComplete="initMap();">
+		 creationComplete="initMap();" xmlns:fx1="org.openscales.fx.*" xmlns:layer="org.openscales.fx.control.layer.*" xmlns:control="org.openscales.fx.control.*">
 	
 	<os:Map id="fxmap"
 			width="100%"
@@ -42,7 +42,7 @@
 		
 	</os:Map>
 	
-	<os:TraceInfo id="traceInfo"
+	<control:TraceInfo id="traceInfo"
 				  x="{width-200}"
 				  y="0"
 				  visible="{displayTrace}"/>
@@ -52,7 +52,7 @@
 					 x="10"
 					 y="10"
 					 width="230">
-		<os:LayerManager map="{map}" />
+		<layer:LayerManager map="{map}" />
 	</os:ControlPanel>
 	
 	<fx:Script>

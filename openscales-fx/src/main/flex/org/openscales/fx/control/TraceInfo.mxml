@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Control xmlns="org.openscales.component.control.*"
+<control:Control xmlns="org.openscales.component.control.*"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 width="200"
 		 height="300"
-		 creationComplete="finalizeTraceInfo();">
+		 creationComplete="finalizeTraceInfo();" xmlns:control="org.openscales.fx.control.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -84,5 +84,5 @@
 				  label="Clear logs"
 				  click="clearTrace()"/>
 	</s:VGroup>
-</Control>
+</control:Control>
 

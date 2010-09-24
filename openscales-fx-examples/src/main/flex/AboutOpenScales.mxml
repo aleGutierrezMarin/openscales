@@ -13,13 +13,11 @@
 		<![CDATA[
 			private function init():void {
 				var text:String;
-				text = "\n<b>OpenScales.org 1.2-beta3</b>";
+				text = "\n<b>OpenScales.org 1.2-SNAPSHOT</b>";
 				text += "\n\n\n";
 				text += "OpenScales.org is a user-friendly and fast interface designed to manipulate spatial data: geographic raster viewing, data-vector editing, management of smooth transitions between scales and positions, ...";
 				text += "\n\n";
 				text += "As a free open source (LGPL license) and extensible tool written in ActionScript, OpenScales is designed to be easily plugged in your Flex or Air application. OpenScales is a small but powerful core of GIS, so try it and let us know.";
-				text += "\n\n";
-				text += "OpenScales.org was initially an ActionScript3 port of Openlayers, since it has started from FlexLayers source code that we actively improve to take advantage of new capabilities offered by ActionScript3 and Flex technologies.";
 				text += "\n\n";
 				text += "Visit our <b><a href=\"http://openscales.org\" target=\"_new\">website</a></b>, join the community and come discuss with us on <b><a href=\"http://groups.google.com/group/openscales-dev\" target=\"_new\">OpenScales Discussion Group</a></b>.";
 				OSdescription.htmlText = text;

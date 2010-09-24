@@ -4,12 +4,12 @@ package org.openscales.fx.configuration
 	import mx.containers.Panel;
 	import mx.core.IVisualElementContainer;
 	
-	import org.openscales.component.control.Control;
-	import org.openscales.component.control.OverviewMap;
-	import org.openscales.component.control.Pan;
-	import org.openscales.component.control.Zoom;
-	import org.openscales.component.control.ZoomBox;
-	import org.openscales.component.control.layer.LayerManager;
+	import org.openscales.fx.control.Control;
+	import org.openscales.fx.control.OverviewMap;
+	import org.openscales.fx.control.Pan;
+	import org.openscales.fx.control.Zoom;
+	import org.openscales.fx.control.ZoomBox;
+	import org.openscales.fx.control.layer.LayerManager;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.configuration.Configuration;

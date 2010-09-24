@@ -20,7 +20,6 @@
 	<component id="Maplint" class="org.openscales.fx.layer.osm.FxMaplint" />
 	<component id="Osmarender" class="org.openscales.fx.layer.osm.FxOsmarender" />
 	
-	<component id="MousePosition" class="org.openscales.fx.control.FxMousePosition" />
 	<component id="PanZoom" class="org.openscales.fx.control.FxPanZoom" />
 	<component id="PanZoomBar" class="org.openscales.fx.control.FxPanZoomBar" />
 	
@@ -33,29 +32,29 @@
 	<component id="DragFeatureHandler" class="org.openscales.fx.handler.feature.FxDragFeatureHandler" />
 	<component id="SelectFeaturesHandler" class="org.openscales.fx.handler.feature.FxSelectFeaturesHandler" />
 	
-	<component id="LayerManager" class="org.openscales.component.control.layer.LayerManager" />
-  	<component id="MousePositionComponent" class="org.openscales.component.control.MousePosition" />
-	<component id="PanComponent" class="org.openscales.component.control.Pan" />
-	<component id="ZoomComponent" class="org.openscales.component.control.Zoom" />
-	<component id="ZoomBoxComponent" class="org.openscales.component.control.ZoomBox" />
+	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
+  	<component id="MousePosition" class="org.openscales.fx.control.FxMousePosition" />
+	<component id="Pan" class="org.openscales.fx.control.Pan" />
+	<component id="Zoom" class="org.openscales.fx.control.Zoom" />
+	<component id="ZoomBox" class="org.openscales.fx.control.ZoomBox" />
 	
-	<component id="OverviewMapComponent" class="org.openscales.component.control.OverviewMap" />
-	<component id="CapabilitiesComponent" class="org.openscales.component.control.Capabilities" />
-	<component id="FeatureDrawingComponent" class="org.openscales.component.control.FeatureDrawing"/>
-	<component id="FeatureInfoComponent" class="org.openscales.component.control.FeatureInfo" />
-	<component id="YahooSearchComponent" class="org.openscales.component.control.search.YahooSearch" />
-	<component id="TraceInfo" class="org.openscales.component.control.TraceInfo" />
+	<component id="OverviewMap" class="org.openscales.fx.control.OverviewMap" />
+	<component id="Capabilities" class="org.openscales.fx.control.Capabilities" />
+	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
+	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
+	<component id="YahooSearch" class="org.openscales.fx.control.search.YahooSearch" />
+	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
 	<component id="ScaleLine" class="org.openscales.fx.control.FxScaleLine" />
 	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
 	
-	<component id="FxSampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
-	<component id="SampleRoutingComponent" class="org.openscales.component.control.routing.SampleRoutingComponent"/>
+	<component id="SampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
+	<component id="SampleRoutingComponent" class="org.openscales.fx.control.routing.SampleRoutingComponent"/>
 	
-	<component id="ControlPanel" class="org.openscales.component.ControlPanel"/>
+	<component id="ControlPanel" class="org.openscales.fx.ControlPanel"/>
 	
 	<component id="IGNGeoRMSecurity" class="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
 	
-	<component id="StyleEditor" class="org.openscales.component.control.style.StyleEditor"/>
-	<component id="StyleEditionWindow" class="org.openscales.component.control.style.StyleEditionWindow"/>	
+	<component id="StyleEditor" class="org.openscales.fx.control.style.StyleEditor"/>
+	<component id="StyleEditionWindow" class="org.openscales.fx.control.style.StyleEditionWindow"/>	
 	
 </componentPackage>

@@ -2,9 +2,9 @@
 <control:Control
 	xmlns:fx="http://ns.adobe.com/mxml/2009"
 	xmlns:s="library://ns.adobe.com/flex/spark"
-	xmlns:control="org.openscales.component.control.*" 
-	xmlns:layer="org.openscales.component.control.layer.*"
-	width="100%">
+	xmlns:control="org.openscales.fx.control.*" 
+	xmlns:layer="org.openscales.fx.control.layer.*"
+	width="100%" >
 	<!--TODO-->
 	<!--horizontalScrollPolicy="off"-->
 	<fx:Script>
@@ -88,7 +88,7 @@
 			 */
 			public function changeLayerOrder(event:DragEvent):void{
 				var layer:Layer = overlayList.selectedItem as Layer;
-				this.map.changeOrderLayer(layer,overlayList.selectedIndex);
+				this.map.changeLayerIndex(layer,overlayList.selectedIndex);
 			}
 		]]>
 	</fx:Script>
@@ -97,7 +97,7 @@
 	
 	<s:VGroup width="100%">
 		<s:List id="overlayList"
-				itemRenderer="org.openscales.component.control.layer.LayerRenderer"
+				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
 				labelField="Overlays"
 				dropEnabled="true"
 				dragEnabled="true"
