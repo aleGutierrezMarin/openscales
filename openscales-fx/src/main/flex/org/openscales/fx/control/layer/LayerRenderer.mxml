@@ -26,9 +26,7 @@
 			import spark.components.Button;
 			import spark.components.CheckBox;
 			import spark.components.Label;
-			import spark.components.List;
 			import spark.components.RadioButton;
-			import spark.components.RadioButtonGroup;
 
 			private var labelLayer:Label;
 			private var _layer:Layer;
@@ -170,6 +168,8 @@
 		<s:State name="hovered"/> 
 	</s:states> 
 
+	<fx:Style source="/assets/css/default.css"/>
+	
 	
 <s:VGroup paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
   <s:HGroup width="100%">
@@ -195,7 +195,7 @@
 				   change="layerOpacity(event)"
 				   liveDragging="true"
 				   mouseDown="onDrag(event)"/>
-		<s:Label text="{_opacity}"/>
+		<s:Label id="opacityLabel" text="{_opacity}" />
 	</s:HGroup>
 </s:VGroup>
 
