@@ -64,9 +64,6 @@
 					case "statistics":
 						state = new StatisticsExample();
 						break;
-					case "wfst":
-						state = new WFSTExample();
-						break;
 					case "nasa":
 						state = new WMSCExample();
 						break;
@@ -146,8 +143,6 @@
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
 				<s:Button id="wfsbaselayer" label="WFS as a base layer" click="changeState(event)" width="100%"/>
-				<s:Button id="wfst" label="WFS-transactional" click="changeState(event)" width="100%"/>
-				
 				<s:Button id="nasa" label="NASA WMS-C" click="changeState(event)" width="100%"/>
 				<s:Button id="germany" label="German WMS" click="changeState(event)" width="100%"/>
 				<s:Button id="imagelayer" label="Image Layer" click="changeState(event)" width="100%"/>
