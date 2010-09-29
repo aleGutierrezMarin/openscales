@@ -1,5 +1,5 @@
 <Map name="fxmapy" width="600" height="400" maxExtent="-180,-90,180,90"
-	zoom="6" lon="1.58313" lat="49.77813" proxy="http://openscales.org/proxy.php?url=">
+	zoom="6" proxy="http://openscales.org/proxy.php?url=">
 
 	<Layers>
 		<Mapnik active="false" label="Mapnik" name="Mapnik"
