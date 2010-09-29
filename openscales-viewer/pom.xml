@@ -28,4 +28,13 @@
                         </plugin>
                 </plugins>
         </build>
+        
+        <dependencies>
+		  	<dependency>
+				<groupId>org.openscales</groupId>
+				<artifactId>openscales-fx</artifactId>
+				<version>1.2-SNAPSHOT</version>
+				<type>swc</type>
+			</dependency>
+		</dependencies>
 </project>
