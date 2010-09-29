@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="Map">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Layers" />
+        <xs:element ref="Handlers" />
+        <xs:element ref="Controls" />
+        <xs:element ref="Styles" />
+        <xs:element ref="Custom" />
+      </xs:sequence>
+      
+      <xs:attribute name="name" type="xs:string" />
+      <xs:attribute name="center" type="xs:string" />
+      <xs:attribute name="zoom" type="xs:integer" />
+      <xs:attribute name="maxExtent" type="xs:string" />
+      <xs:attribute name="width" type="xs:integer" />
+      <xs:attribute name="height" type="xs:integer" />
+      
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Handlers">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="DragHandler" />
+        <xs:element ref="WheelHandler" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="Handler" abstract="true">
+	<xs:sequence>
+	  <xs:attribute name="active" type="xs:boolean" />
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:element name="DragHandler">
+    <xs:complexType>
+      <xs:complexContent>
+		<xs:extension base="Handler" />
+	  </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="WheelHandler">
+    <xs:complexType>
+      <xs:complexContent>
+		<xs:extension base="Handler" />
+	  </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Controls">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="PanZoom" />
+        <xs:element ref="LayerSwitcher" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="Control" abstract="true">
+	<xs:sequence>
+	  
+	</xs:sequence>
+  </xs:complexType>
+  
+  <xs:element name="LayerSwitcher">
+  	<xs:complexType>
+      <xs:complexContent>
+		<xs:extension base="Control" />
+	  </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+    
+
+  <xs:element name="PanZoom">
+    <xs:complexType>
+      <xs:complexContent>
+		<xs:extension base="Control">
+		  <xs:attribute name="x" type="xs:integer" />
+          <xs:attribute name="y" type="xs:integer" />
+          <xs:attribute name="id" type="xs:String" />
+         </xs:extension>
+	  </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Layers">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="WMS" />
+        <xs:element ref="WMSC" />
+        <xs:element ref="WFS" />
+        <xs:element ref="FeatureLayer" />
+        <xs:element ref="Mapnik" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="Layer" abstract="true">
+	<xs:sequence>
+	  <xs:attribute name="name" type="xs:string" />
+	  <xs:attribute name="maxExtent" type="xs:string" />
+	  <xs:attribute name="numZoomLevels" type="xs:String" />
+      <xs:attribute name="projection" type="xs:String" />
+      <xs:attribute name="maxResolution" type="xs:String" />
+	</xs:sequence>
+</xs:complexType>
+
+   <xs:element name="WFS">
+     <xs:complexType>
+       <xs:complexContent>
+		 <xs:extension base="Layer">
+			<xs:attribute name="style" type="xs:String" />
+      		<xs:attribute name="url" type="xs:string" />
+      		<xs:attribute name="typename" type="xs:String" />
+      		<xs:attribute name="version" type="xs:String" />
+		</xs:extension>
+	  </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+ <xs:element name="WMSC">
+     <xs:complexType>
+       <xs:complexContent>
+		 <xs:extension base="Layer">
+  		   <xs:attribute name="url" type="xs:string" />
+           <xs:attribute name="layers" type="xs:String" />
+           <xs:attribute name="format" type="xs:string" />
+		</xs:extension>
+	  </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Styles">
+  </xs:element>
+  
+  <xs:element name="Custom">
+  </xs:element>
+
+</xs:schema>

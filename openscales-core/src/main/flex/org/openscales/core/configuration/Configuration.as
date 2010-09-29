@@ -52,17 +52,18 @@ package org.openscales.core.configuration
 	public class Configuration implements IConfiguration
 	{
 		protected var _config:XML;
+		private var _map:Map;
 		protected var _styles:Object = {};
 		
 		public function Configuration(config:XML = null) {
 			this.config = config;
 		}
 		
-		public function configureMap(map:Map):void {
+		public function configure():void {
 			this.loadStyles();
-			this.beginConfigureMap(map);
-			this.middleConfigureMap(map);
-			this.endConfigureMap(map);
+			this.beginConfigureMap();
+			this.middleConfigureMap();
+			this.endConfigureMap();
 		}
 		
 		/* load Styles */
@@ -79,7 +80,7 @@ package org.openscales.core.configuration
 			
 		}
 		
-		public function beginConfigureMap(map:Map):void {
+		public function beginConfigureMap():void {
 			
 			// Parse the XML (children of Layers, Handlers, Controls ...)    
 			if(config.@id != ""){
@@ -104,7 +105,7 @@ package org.openscales.core.configuration
 			
 		}
 		
-		public function middleConfigureMap(map:Map):void {
+		public function middleConfigureMap():void {
 			//add layers
 			map.addLayers(layersFromMap);
 			
@@ -125,7 +126,7 @@ package org.openscales.core.configuration
 			}
 			//add  securities egg:IGNGeoRMSecurity
 			for each(var xmlSecurity:XML in securities){
-				var security:AbstractSecurity=this.parseSecurity(xmlSecurity,map);
+				var security:AbstractSecurity=this.parseSecurity(xmlSecurity);
 				if(xmlSecurity.@layers!=null && map!=null){
 					var layers:Array = xmlSecurity.@layers.split(",");
 					for each (var name:String in layers) {
@@ -136,18 +137,13 @@ package org.openscales.core.configuration
 			}
 		}
 		
-		public function endConfigureMap(map:Map):void {
+		public function endConfigureMap():void {
 			if(config.@zoom != ""){
 				map.zoom = Number(config.@zoom);
 			}
-			if((config.@lon != "") && (config.@lat != "")){
-				if(config.@projection && config.@projection != "") {
-					map.center = new Location(Number(config.@lon), Number(config.@lat),ProjProjection.getProjProjection(config.@projection));
-				} else if(map.baseLayer) {
-					map.center = new Location(Number(config.@lon), Number(config.@lat),map.baseLayer.projection);
-				} else {
-					map.center = new Location(Number(config.@lon), Number(config.@lat),Layer.DEFAULT_PROJECTION);
-				}
+			if(config.@center != ""){
+				var location:Array = config.@center.split(",");
+				map.center = new Location(Number(location[0]), Number(location[1]),map.baseLayer.projection);
 			}
 		}
 		
@@ -226,11 +222,8 @@ package org.openscales.core.configuration
 			var layer:Layer=null;
 			
 			//Loading params
-			var isBaseLayer:Boolean;
 			var visible:Boolean;         
 			// parse params in boolean
-			if(xmlNode.@isBaseLayer == "true"){isBaseLayer=true;}
-			else{isBaseLayer=false;}
 			if(xmlNode.@visible == "false"){visible=false;}
 			else{visible = true;}
 			
@@ -357,7 +350,8 @@ package org.openscales.core.configuration
 				Trace.log("Configuration - Find Mapnik Layer : " + xmlNode.name());
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
-				mapnik.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,mapnik.projection);
+				if (String(xmlNode.@maxExtent) != "")
+					mapnik.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,mapnik.projection);
 				layer=mapnik;
 			}
 			else if(xmlNode.name() == "FeatureLayer"){
@@ -509,40 +503,32 @@ package org.openscales.core.configuration
 		}
 		
 		protected function parseHandler(xmlNode:XML):Handler {
-			var handler:Handler;
+			var handler:Handler = null;
 			if(xmlNode.name() == "DragHandler"){
 				handler = new DragHandler();
-				if(String(xmlNode.@active) == "true"){handler.active = true;}
-				else {handler.active = false};
 			}
 			else if (xmlNode.name() == "WheelHandler"){
 				handler = new WheelHandler();
-				if(String(xmlNode.@active) == "true"){handler.active = true;}
-				else {handler.active = false};
 			}
 			else if (xmlNode.name() == "ClickHandler"){
 				handler = new ClickHandler();
-				if(String(xmlNode.@active) == "true"){handler.active = true;}
-				else {handler.active = false};
 			}
 			else if (xmlNode.name() == "BorderPanHandler"){
 				handler = new BorderPanHandler();
-				if(String(xmlNode.@active) == "true"){handler.active = true;}
-				else {handler.active = false};
 			}
 			else if (xmlNode.name() == "DragFeatureHandler"){
 				handler = new DragFeatureHandler();
-				if(String(xmlNode.@active) == "true"){handler.active = true;}
-				else {handler.active = false};
 			}
 			else if (xmlNode.name() == "SelectFeaturesHandler"){
 				handler = new SelectFeaturesHandler();
-				if(String(xmlNode.@active) == "true"){handler.active = true;}
-				else {handler.active = false};
 			}
 			else {
 				Trace.error("Handler unknown !");
 			}   
+			if(handler) {
+				if(String(xmlNode.@active) == "true"){handler.active = true;}
+				if(String(xmlNode.@active) == "false"){handler.active = false;}
+			}
 			return handler;
 		}
 		
@@ -577,7 +563,7 @@ package org.openscales.core.configuration
 			}
 			return control;         
 		}
-		protected function parseSecurity(xmlNode:XML,map:Map):AbstractSecurity{
+		protected function parseSecurity(xmlNode:XML):AbstractSecurity{
 			var security:AbstractSecurity=null;
 			if(xmlNode.name()=="IGNGeoRMSecurity"){
 				Trace.log("bleh1");
@@ -586,6 +572,17 @@ package org.openscales.core.configuration
 			}
 			return security;
 		}
+
+		public function get map():Map
+		{
+			return _map;
+		}
+
+		public function set map(value:Map):void
+		{
+			_map = value;
+		}
+
 		
 	}
 }

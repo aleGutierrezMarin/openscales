@@ -9,9 +9,18 @@ package org.openscales.core.configuration
 		/**
 		 * 
 		 * @param config The XML config file
-		 * @param map The map to configure, will be updated in configureMap regarding to the config file.
 		 */		
-		function configureMap(map:Map):void;
+		function configure():void;
+		
+		/**
+		 * Set the map to configure
+		 */
+		function set map(value:Map):void;
+		
+		/**
+		 * Get the map to configure 
+		 */
+		function get map():Map;
 		
 		/**
 		 * Set and store the configuration file that will be used further
