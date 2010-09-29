@@ -57,6 +57,7 @@
 		<module>openscales-fx</module>
 		<module>openscales-proj4as</module>
 		<module>openscales-geometry</module>
+		<module>openscales-viewer</module>
 	</modules>
 	<issueManagement>
 		<system>Bitbucket Issue management</system>
