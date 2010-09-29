@@ -24,23 +24,20 @@
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.FxMap;
+			import org.openscales.fx.configuration.FxConfiguration;
 			
 			[Bindable] private var map:Map = null;
 			[Bindable] public var displayFirebugTrace:Boolean = true;
 			[Embed(source="/assets/configuration/sampleMapConfOk.xml", mimeType="application/octet-stream")]
 			protected const SampleMapConfOk:Class;
 			
-			protected function sampleMapConfOkXML():XML {
-				var ba : ByteArray = (new SampleMapConfOk()) as ByteArray;
-				return new XML(ba.readUTFBytes( ba.length ));
-			}
 			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
-				var sampleMapConfOk:XML = this.sampleMapConfOkXML();
 				var map:Map = fxmap.map;
-				map.configuration.config = sampleMapConfOk;
-				map.configuration.configureMap(map);
+				map.configuration = new FxConfiguration();
+				map.configuration.config = XML(new SampleMapConfOk());
+				map.configuration.configure();
 				map.width = fxmap.width;
 				map.height = fxmap.height;
 			}

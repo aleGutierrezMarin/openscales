@@ -1,11 +1,8 @@
 package org.openscales.core
 {
+	
 	import com.gskinner.motion.GTween;
 	import com.gskinner.motion.easing.Cubic;
-	import com.gskinner.motion.easing.Exponential;
-	import com.gskinner.motion.easing.Quartic;
-	import com.gskinner.motion.easing.Quintic;
-	import com.gskinner.motion.plugins.SmartRotationPlugin;
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -17,14 +14,11 @@ package org.openscales.core
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	
-	import mx.controls.Alert;
-	
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.basetypes.Unit;
-	import org.openscales.core.configuration.Configuration;
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.LayerEvent;
@@ -104,7 +98,6 @@ package org.openscales.core
 			
 			Trace.map = this;
 			
-			this._configuration = new Configuration();
 		}
 		
 		private function destroy():Boolean {
@@ -1154,6 +1147,7 @@ package org.openscales.core
 		
 		public function set configuration(value:IConfiguration):void{
 			_configuration = value;
+			_configuration.map = this;
 		} 
 		
 		public function get configuration():IConfiguration{

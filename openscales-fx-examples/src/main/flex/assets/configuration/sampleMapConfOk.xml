@@ -1,5 +1,5 @@
 <Map name="fxmapy" width="600" height="400" maxExtent="-180,-90,180,90"
-	zoom="4" lon="-74.011" lat="40.710" projection="EPSG:4326">
+	zoom="4" center="-74.011,40.710">
 	<Styles>
 		<Style id="example1">
 			<rules>
@@ -21,7 +21,6 @@
 				 layers="bluemarble"
 				 format="image/jpeg"
 				 maxExtent="-180,-90,180,90"
-				 isBaseLayer="true"
 				 maxResolution="1.40625" numZoomLevels="16"
 				 projection="EPSG:4326"
 				 
@@ -31,7 +30,6 @@
 				typename="topp:states"
 				projection="EPSG:4326"
 				version="1.0.0"
-				isBaseLayer="false"
 				maxExtent="-180,-90,180,90"
 				maxResolution="1.40625"
 				numZoomLevels="16"
@@ -43,7 +41,6 @@
 				typename="topp:states"
 				projection="EPSG:4326"
 				version="1.0.0"
-				isBaseLayer="false"
 				style="DefaultCircleStyle"
 				maxExtent="-180,-90,180,90"
 				maxResolution="1.40625"

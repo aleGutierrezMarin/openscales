@@ -22,17 +22,17 @@ package org.openscales.fx.configuration
 			super(config);
 		}
 		
-		override public function configureMap(map:Map):void {
-                  super.configureMap(map);
-                  this.middleFxConfigureMap(map);
+		override public function configure():void {
+                  super.configure();
+                  this.middleFxConfigure();
                   
         }
             
-          public function middleFxConfigureMap(map:Map):void {
+          public function middleFxConfigure():void {
            
                   //add controls
                   for each (var xmlControl:XML in controls){
-                        var control:Control = parseFxControl(xmlControl, map);
+                        var control:Control = parseFxControl(xmlControl);
                         if(control != null){
                           control.map = map;
                           if(map.parent.parent && map.parent.parent as IVisualElementContainer) {
@@ -44,7 +44,7 @@ package org.openscales.fx.configuration
                   }                      
             }
 		
-		protected function parseFxControl(xmlNode:XML, map:Map):Control {
+		protected function parseFxControl(xmlNode:XML):Control {
 		 	var control:Control = null;
 		 					 					
 	 		if(xmlNode.name() == "FxPan"){

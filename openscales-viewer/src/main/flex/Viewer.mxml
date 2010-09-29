@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+			   xmlns:os="http://openscales.org"
+			   creationComplete="initMap();">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.configuration.Configuration;
+			import org.openscales.fx.configuration.FxConfiguration;
+			
+			[Embed(source="/assets/configuration/default.xml", mimeType="application/octet-stream")]
+			protected const DefaultConfiguration:Class;
+			
+			private function initMap():void {
+				var map:Map = fxMap.map;
+				map.configuration = new FxConfiguration();
+				map.configuration.config = XML(new DefaultConfiguration());
+				map.configuration.configure();
+				
+			}
+		]]>
+	</fx:Script>
+	<os:Map id="fxMap" width="100%"	height="100%">
+	</os:Map>
+	
+</s:Application>
