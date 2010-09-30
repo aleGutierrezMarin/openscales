@@ -11,6 +11,7 @@ package org.openscales.core.layer
 		public var URL_HASH_FACTOR:Number = (Math.sqrt(5) - 1) / 2;
 
 		private var _url:String = null;
+		private var _method:String  = null;
 
 		/**
 		 * Alternative urls
@@ -21,8 +22,9 @@ package org.openscales.core.layer
 
 		public function HTTPRequest(name:String,
 									url:String,
-									params:IHttpParams = null) {
+									params:IHttpParams = null ) {
 			super(name);
+			this._method = method;
 			this._url = url;
 			this.params = params;
 		}
@@ -90,6 +92,12 @@ package org.openscales.core.layer
 			this._params = value;
 		}
 
+		public function get method():String {
+			return this._method;
+		}
+		public function set method(value:String):void {
+			this._method = value;
+		}
 	}
 }
 
