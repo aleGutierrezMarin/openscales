@@ -63,9 +63,7 @@
 		<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
 			<os:Zoom map="{map}"/>
 			<s:Rect width="100%" />
-			<os:ZoomBox map="{map}"
-								 width="32"
-								 height="32"/>
+			<os:ZoomBox map="{map}" />
 		</s:HGroup>
 		<os:OverviewMap map="{map}" width="140">
 			<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>

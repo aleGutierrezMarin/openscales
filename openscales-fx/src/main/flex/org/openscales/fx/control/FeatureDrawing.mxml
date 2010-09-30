@@ -136,7 +136,7 @@
 								useHandCursor="true"
 								buttonMode="true"
 								click="this.clickHandler(event)"
-								skinClass="org.openscales.skin.IconButtonSkin"/>
+								skinClass="org.openscales.fx.skin.IconButtonSkin"/>
 			<s:Rect width="6" />
 			<control:IconButton id="btnMouvement"
 								width="40"
@@ -146,7 +146,7 @@
 								useHandCursor="true"
 								buttonMode="true"
 								click="this.clickHandler(event)"
-								skinClass="org.openscales.skin.IconButtonSkin"/>
+								skinClass="org.openscales.fx.skin.IconButtonSkin"/>
 			<s:Rect width="6" />
 			<control:IconButton id="btnPoint"
 								width="40"
@@ -156,7 +156,7 @@
 								useHandCursor="true"
 								buttonMode="true"
 								click="this.clickHandler(event)"
-								skinClass="org.openscales.skin.IconButtonSkin"/>
+								skinClass="org.openscales.fx.skin.IconButtonSkin"/>
 			<s:Rect width="6" />
 			<control:IconButton id="btnPath"
 								width="40"
@@ -166,7 +166,7 @@
 								useHandCursor="true"
 								buttonMode="true"
 								click="this.clickHandler(event)"
-								skinClass="org.openscales.skin.IconButtonSkin"/>
+								skinClass="org.openscales.fx.skin.IconButtonSkin"/>
 			<s:Rect width="6" />
 			<control:IconButton id="btnPolygon"
 								width="40"
@@ -176,7 +176,7 @@
 								useHandCursor="true"
 								buttonMode="true"
 								click="this.clickHandler(event)"
-								skinClass="org.openscales.skin.IconButtonSkin"/>
+								skinClass="org.openscales.fx.skin.IconButtonSkin"/>
 			<s:Rect width="6" />
 			<control:IconButton id="editFeature"
 								width="40"
@@ -186,7 +186,7 @@
 								useHandCursor="true"
 								buttonMode="true"
 								click="this.clickHandler(event)"
-								skinClass="org.openscales.skin.IconButtonSkin"/>
+								skinClass="org.openscales.fx.skin.IconButtonSkin"/>
 		</s:HGroup>
 		
 		<s:HGroup gap="6">
@@ -198,7 +198,7 @@
 								useHandCursor="true"
 								buttonMode="true"
 								click="this._drawHandler.onDeleteLastClick(event)"
-								skinClass="org.openscales.skin.IconButtonSkin"/>
+								skinClass="org.openscales.fx.skin.IconButtonSkin"/>
 			<s:Rect width="6" />
 			<control:IconButton id="btnDeleteAll"
 								width="40"
@@ -208,7 +208,7 @@
 								useHandCursor="true"
 								buttonMode="true"
 								click="onDeleteAllClick(event)"
-								skinClass="org.openscales.skin.IconButtonSkin"/>
+								skinClass="org.openscales.fx.skin.IconButtonSkin"/>
 		</s:HGroup>
 		
 	</s:VGroup>

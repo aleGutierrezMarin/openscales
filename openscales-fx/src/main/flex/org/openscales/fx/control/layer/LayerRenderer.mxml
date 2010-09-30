@@ -37,7 +37,7 @@
 			private var _opacity:String;
 			
 			[Bindable]
-			[Embed(source="/assets/images/close.gif")]
+			[Embed(source="/assets/images/layerRemove-upskin.png")]
 			public var remove:Class;
 			
 			/**
@@ -177,7 +177,7 @@
 		<s:Group id="displayControl"
 				 width="128"/>
 	  <control:IconButton id="deleteButton" width="16" height="16" 
-						  skinClass="org.openscales.skin.IconButtonSkin" 
+						  skinClass="org.openscales.fx.skin.IconButtonSkin" 
 						  toolTip="Supprimer la couche de la sélection des couches visibles" 
 						  click="deleteLayer(event)"
 						  icon="{remove}"
