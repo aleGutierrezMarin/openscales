@@ -502,6 +502,9 @@ package org.openscales.core
 			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
 			validLocation = this.isValidLocation(newCenter);
 			var oldZoom:Number = this._zoom;
+			if(!zoomChanged){
+			  newZoom = oldZoom; 
+			}
 			var oldCenter:Location = this._center;
 			
 			if (zoomChanged || centerChanged) {
@@ -534,6 +537,7 @@ package org.openscales.core
 				if (zoomChanged) {
 					this._zoom = newZoom;
 				}
+				
 				
 				if (!dragTween) {
 					mapEvent = new MapEvent(MapEvent.MOVE_END, this);
