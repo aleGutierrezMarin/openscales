@@ -4,7 +4,6 @@
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:mx="library://ns.adobe.com/flex/mx"
 	xmlns:control="org.openscales.fx.control.*"
-	currentStateChanging="onCurrentStateChanging(event)"
 	>
 	
 	<fx:Metadata>
@@ -14,9 +13,6 @@
 		<![CDATA[
 			import mx.events.StateChangeEvent;
 			
-			private function onCurrentStateChanging(event:StateChangeEvent):void{
-				setIcon("icon");
-			}
 			private function setIcon(type:String):void{
 				if(hostComponent.getStyle(type) != null){
 					icon.source = hostComponent.getStyle(type);
@@ -38,6 +34,7 @@
 			{
 				useChromeColor = true;
 				super.initializationComplete();
+				
 			}  
 			
 			/**
@@ -46,6 +43,7 @@
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
 			{
 				var cr:Number = getStyle("cornerRadius");
+				setIcon("icon");
 				
 				if (cornerRadius != cr)
 				{
