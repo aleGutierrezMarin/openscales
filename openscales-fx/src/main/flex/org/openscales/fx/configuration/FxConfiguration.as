@@ -108,7 +108,7 @@ package org.openscales.fx.configuration
 	 		}
 	 		
 			//FIX ME : because asynchrone, we need to wait the creation complete on FXMap before setting the map		 					
-	 		else if(xmlNode.name() == "FxOveriew"){
+	 		else if(xmlNode.name() == "FxOverview"){
 	 			var fxOverview:OverviewMap = new OverviewMap();
 	 			if(String(xmlNode.@id) != ""){
 					fxOverview.id = String(xmlNode.@id);
