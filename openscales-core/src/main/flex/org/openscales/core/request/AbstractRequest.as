@@ -40,6 +40,7 @@ package org.openscales.core.request
 
 		private var _url:String;
 		private var _method:String = null;
+		private var  _isPOSTRequest:Boolean = false;
 		private var _postContent:Object = null;
 		private var _postContentType:String = null;
 		// getter of postRequestData:Object
@@ -78,7 +79,7 @@ package org.openscales.core.request
 			this.url = url;
 			this._onComplete = onComplete;
 			this._onFailure = onFailure;
-			
+			this._isPOSTRequest = 
 			this._addListeners();
 		}
 

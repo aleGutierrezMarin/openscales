@@ -495,6 +495,9 @@ package org.openscales.core
 			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
 			validLocation = this.isValidLocation(newCenter);
 			var oldZoom:Number = this._zoom;
+			if(!zoomChanged){
+			  newZoom = oldZoom; 
+			}
 			var oldCenter:Location = this._center;
 			
 			if (zoomChanged || centerChanged) {
@@ -527,6 +530,7 @@ package org.openscales.core
 				if (zoomChanged) {
 					this._zoom = newZoom;
 				}
+				
 				
 				if (!dragTween) {
 					mapEvent = new MapEvent(MapEvent.MOVE_END, this);
@@ -904,8 +908,6 @@ package org.openscales.core
 				_zooming = false;
 				moveTo(newCenter, newZoom);
 				layerContainer.visible = true;
-				
-				
 			} 
 
 		}
@@ -922,7 +924,9 @@ package org.openscales.core
 				}	
 				case LayerEvent.LAYER_LOAD_END: {
 					if(this._bitmapTransition != null && this._baseLayer != null && this._baseLayer.loadComplete){
-						this._bitmapTransition.visible=false;
+						if(this._layerContainer.visible == true){
+						  this._bitmapTransition.visible=false;
+						}
 					}
 					// check all layers 
 					var l:Vector.<Layer> = this.layers;

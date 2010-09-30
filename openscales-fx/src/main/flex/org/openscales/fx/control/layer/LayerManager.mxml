@@ -40,7 +40,6 @@
 			
 					//stock layer by type : baselayer and overlays
 					var overlayArray:Vector.<Layer>  = this.map.layers;
-					overlayList.height = overlayArray.length *60;
 					var ac:ArrayCollection = new ArrayCollection();
 					var i:int = overlayArray.length;
 					for(i;i>0;--i)
@@ -58,14 +57,11 @@
 			public function refresh(event:LayerEvent):void {	
 				//Test the triggered event
 				if(event.type == LayerEvent.LAYER_ADDED){
-                        overlayList.height+=60;
 						overlayList.dataProvider.addItem(event.layer);
 						overlayList.invalidateDisplayList();
 				}
 				
-				if(event.type == LayerEvent.LAYER_REMOVED){
-						overlayList.height-=60;
-						var index:int = overlayList.dataProvider.getItemIndex(event.layer);
+				if(event.type == LayerEvent.LAYER_REMOVED){						var index:int = overlayList.dataProvider.getItemIndex(event.layer);
 						overlayList.dataProvider.removeItemAt(index);
 						overlayList.invalidateDisplayList();
 				}
@@ -95,8 +91,10 @@
 	
 		
 	
-	<s:VGroup width="100%">
-		<s:List id="overlayList"
+	<s:VGroup width="100%"> 
+		
+
+		<s:List id="overlayList" 
 				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
 				labelField="Overlays"
 				dropEnabled="true"
@@ -104,8 +102,16 @@
 				dragMoveEnabled="true"
 				width="100%" 
 				dragComplete="changeLayerOrder(event)"
-				
-				/>
+			>
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="justify" 
+							  requestedRowCount="3"
+						 />
+		</s:layout>
+ </s:List>
+
+	
+
 	</s:VGroup>
 	
 </control:Control>
