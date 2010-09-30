@@ -20,6 +20,14 @@
 			[Bindable] private var _toolTipZoomSlider:String = "Set the scale of the map";
 			[Bindable] private var _showDataTip:Boolean = true;
 			
+			[Bindable]
+			[Embed(source="/assets/images/mapZoomIn-upskin.swf")]
+			private var _mapZoomInIcon:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/mapZoomOut-upskin.swf")]
+			private var _mapZoomOutIcon:Class;
+			
 			public function set showDataTip(value:String):void
 			{
 				if(value == true)
@@ -97,21 +105,19 @@
 		
 		<s:VGroup height="100%">
 			
-			<s:Button id="zoomIn"
-					  label="+"
+			<control:IconButton id="zoomIn"
 					  toolTip="{this._toolTipZoomIn}"
-					  useHandCursor="true"
-					  buttonMode="true"
 					  click="this.onZoomInClick(event);"
-					  width="30"/>
+					  width="24"
+					  height="24"
+					  icon="{_mapZoomInIcon}" />
 			<s:Rect height="100%" />
-			<s:Button id="zoomOut"
-					  label="-"
+			<control:IconButton id="zoomOut"
 					  toolTip="{this._toolTipZoomOut}"
-					  useHandCursor="true"
-					  buttonMode="true"
 					  click="this.onZoomOutClick(event);"
-					  width="30"/>
+					  width="24"
+					  height="24"
+					  icon="{_mapZoomOutIcon}" />
 		</s:VGroup>
 		
 		<s:VSlider id="zoomSlider"
