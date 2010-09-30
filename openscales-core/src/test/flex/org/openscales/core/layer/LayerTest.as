@@ -1,6 +1,6 @@
 package org.openscales.core.layer
 {
-	import flexunit.framework.Assert;
+	import org.flexunit.Assert;
 	
 
 	public class LayerTest
