@@ -117,11 +117,12 @@ package org.openscales.core.security.ign
 		 * Resquest the IGN token
 		 */
 		private function requestToken(url:String,params:String,post:Boolean, authenticate:Function):void{		 					
+			var xr:XMLRequest = null;
 			if(post){
-				var xr:XMLRequest = new XMLRequest(url, authenticate);
+				xr = new XMLRequest(url, authenticate);
 				xr.postContent = new URLVariables(params);
 			}	else{
-				var xr:XMLRequest= new XMLRequest(url+ params, authenticate);	
+				xr = new XMLRequest(url+ params, authenticate);	
 			}
 			xr.proxy = this.proxy;
 			xr.send();
