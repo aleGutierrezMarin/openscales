@@ -1,6 +1,8 @@
 
 package org.openscales.core.layer.ogc
 {
+	import flash.net.URLRequestMethod;
+	
 	import org.openscales.core.layer.params.ogc.WMSParams;
 
 	/**
@@ -16,7 +18,7 @@ package org.openscales.core.layer.ogc
 							 layers:String = "")
 		{
 			super(name, url, layers);
-
+			this.method = URLRequestMethod.POST;
 			this.singleTile = false;
 
 			(this.params as WMSParams).tiled= true;				
