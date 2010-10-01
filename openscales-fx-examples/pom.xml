@@ -22,7 +22,7 @@
 				<version>${flexmojos.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<sourceFile>osExamples.mxml</sourceFile>
+					<sourceFile>FxExamples.mxml</sourceFile>
 				</configuration> 
 			</plugin>
 		</plugins>
