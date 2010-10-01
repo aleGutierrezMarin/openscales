@@ -4,6 +4,7 @@ package org.openscales.core.configuration
 	
 	import org.flexunit.Assert;
 	import org.openscales.core.Map;
+	import org.openscales.core.layer.Layer;
 
 	/**
 	 * Used some tips detailed on http://dispatchevent.org/roger/embed-almost-anything-in-your-swf/ to load XML
@@ -26,11 +27,6 @@ package org.openscales.core.configuration
 			Assert.assertEquals(2, conf.layersFromMap.length);
 		}
 		
-		[Test]
-		public function testLayersFromCatalogCount( ) : void {
-			var conf:IConfiguration = new Configuration(XML(new SampleMapConfOk()));
-			Assert.assertEquals(5, conf.layersFromCatalog.length);
-		}
 		
 		[Test]
 		public function testHandlersCount( ) : void {
@@ -59,23 +55,11 @@ package org.openscales.core.configuration
 			map.configuration=conf;
 			conf.configure();
 			
-			Assert.assertEquals("16", map.getLayerByName("Metacarta").resolutions.length);
-			Assert.assertEquals("1.40625", map.getLayerByName("Metacarta").resolutions[0]);			
+			Assert.assertEquals(String(Layer.DEFAULT_NUM_ZOOM_LEVELS), map.getLayerByName("Metacarta").resolutions.length);
+			Assert.assertEquals(String(Layer.DEFAULT_NOMINAL_RESOLUTION), map.getLayerByName("Metacarta").resolutions[0]);			
 		}
 		
-		[Test]
-		public function testGenerateResolutions( ) : void {
-			var conf:IConfiguration = new Configuration(XML(new SampleMapConfOk()));
-			var map:Map = new Map();
-			map.configuration=conf;
-			conf.configure();
-			
-			Assert.assertEquals("20", map.baseLayer.resolutions.length);
-			Assert.assertEquals("156543.0339", map.baseLayer.resolutions[0]);
-			Assert.assertEquals("0.29858214168548586", map.baseLayer.resolutions[19]);
-			
-		}
-
+		
 	}
 
 }
