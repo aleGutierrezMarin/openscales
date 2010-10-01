@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns="*" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:os="http://openscales.org"
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()">
 	
-	<os:Map id="fxMap" width="100%" height="100%" zoom="4" center="-74.011,40.710">
+	<Map id="fxMap" width="100%" height="100%" zoom="4" center="-74.011,40.710">
 		
-		<os:WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms"
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms"
 				 layers="bluemarble" format="image/jpeg" maxExtent="-180,-90,180,90"/>
 		
-		<os:DragHandler id="dragHandler" />
-		<os:WheelHandler id="wheelHandler" />
-		<os:SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
+		<DragHandler id="dragHandler" />
+		<WheelHandler id="wheelHandler" />
+		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
 		
-		<os:Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
-		<os:MousePosition id="mousePosition" x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
+		<MousePosition id="mousePosition" x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		
-		<os:WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
 				typename="topp:states" projection="EPSG:4326" version="1.0.0"
 				style="{Style.getDefaultSurfaceStyle()}" />
 		
-		<os:WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
+		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
 				projection="EPSG:4326" version="1.0.0" useCapabilities="true" capabilitiesVersion="1.0.0"
 				style="{Style.getDefaultPointStyle()}" />
 		
-		<os:ControlPanel id="controlPanel" x="10" y="10" title="Navigation" >
-			<os:Pan id="pan" />
+		<ControlPanel id="controlPanel" x="10" y="10" title="Navigation" >
+			<Pan id="pan" />
 			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
-				<os:Zoom id="zoom" />
+				<Zoom id="zoom" />
 				<s:Rect width="100%" />
-				<os:ZoomBox id="zoomBox" />
+				<ZoomBox id="zoomBox" />
 			</s:HGroup>
-			<os:OverviewMap width="140">
-				<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
-			</os:OverviewMap>
-		</os:ControlPanel>
+			<OverviewMap width="140">
+				<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
+			</OverviewMap>
+		</ControlPanel>
 		
-		<os:TraceInfo id="traceInfo" x="{width-200}" y="0" />
+		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
 		
-	</os:Map>
+	</Map>
 	
 	<fx:Script>
 		<![CDATA[

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns="*" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:os="http://openscales.org" creationComplete="initMap();" width="100%" height="100%">
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		 creationComplete="initMap()" width="100%" height="100%">
 	
-	<os:Map id="fxMap" width="100%" height="100%" zoom="5" center="4.833,45.767">
+	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.833,45.767">
 		
-		<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
+		<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
 		
-		<os:Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
-		<os:DragHandler />
-		<os:WheelHandler />
+		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
+		<DragHandler />
+		<WheelHandler />
 		
-		<os:MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
-		<os:ScaleLine x="{width-100-10}" y="{height-80}" />
+		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
-	</os:Map>
+	</Map>
 	
-	<os:ControlPanel title="Layers Manager"  x="10" y="10" width="230">
-		<os:LayerManager map="{fxMap.map}" />
-	</os:ControlPanel>
+	<ControlPanel title="Layers Manager"  x="10" y="10" width="230">
+		<LayerManager map="{fxMap.map}" />
+	</ControlPanel>
 	
-	<os:ControlPanel id="capabilitiesPanel" title="Add layers from capabilities"  x="{10}" y="{height-capabilitiesPanel.height-10}">
-		<os:Capabilities width="320" map="{fxMap.map}"/>
-	</os:ControlPanel>
+	<ControlPanel id="capabilitiesPanel" title="Add layers from capabilities"  x="{10}" y="{height-capabilitiesPanel.height-10}">
+		<Capabilities width="320" map="{fxMap.map}"/>
+	</ControlPanel>
 	
 	<fx:Script>
 		<![CDATA[

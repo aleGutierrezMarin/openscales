@@ -1,54 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*"
-		   xmlns:fx="http://ns.adobe.com/mxml/2009"
-		   xmlns:mx="library://ns.adobe.com/flex/mx"
-		   xmlns:os="http://openscales.org"
-		   width="100%"
-		   height="100%"
-		   creationComplete="initMap();">
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="100%" height="100%">
 	
-	<os:Map id="fxMap" width="100%" height="100%" zoom="7" center="4.833,45.767">
+	<Map id="fxMap" width="100%" height="100%" zoom="7" center="4.833,45.767">
 		
-		<!-- OpenStreetMap EPSG:900913 -->
-		<os:Mapnik name="Mapnik"
-				   proxy="http://openscales.org/proxy.php?url=" />
+		<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
 		
-		<os:DragHandler />
-		<os:WheelHandler />
-		<os:Spinner id="spinner" x = "{width / 2}" y = "{height / 2}"/>	
-		<os:MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
-		<os:ScaleLine x="{width-100-10}" y="{height-80}" />
+		<DragHandler />
+		<WheelHandler />
+		<Spinner x="{width / 2}" y="{height / 2}"/>	
+		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
-		<!-- Specific layers and handlers of this example -->
-		<!-- none -->
+		<TraceInfo x="{width-200}" y="0" />
 		
-	</os:Map>
-	<os:TraceInfo id="traceInfo"
-				  x="{width-200}"
-				  y="0"
-				  visible="{displayTrace}"/>
-	<!-- Specific tools of this example -->
-	
-	<os:ControlPanel title="Geolocate with Yahoo Search" x="10" y="10">
-		<!--label="Search"-->
-		<os:YahooSearch map="{map}"
-								 appId="pnxy.VPV34Eul8cEKLANb9jQzwMY62S7QNgBnJIKwqG._SWEF6WVOsnJ2NbNxtSJ1eBlOBM-é" />
-	</os:ControlPanel>
-	
-	<fx:Script>
-		<![CDATA[
-			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
-			
-			[Bindable] private var map:Map = null;
-			[Bindable] public var displayTrace:Boolean = false;	
-			[Bindable] public var displayFirebugTrace:Boolean = false;
-			
-			private function initMap():void {
-				Trace.useFireBugConsole = displayFirebugTrace;
-				map=fxMap.map;
-			}
-		]]>
-	</fx:Script>
-	
-</mx:Canvas>
+		<ControlPanel title="Geolocate with Yahoo Search" x="10" y="10">
+			<YahooSearch appId="pnxy.VPV34Eul8cEKLANb9jQzwMY62S7QNgBnJIKwqG._SWEF6WVOsnJ2NbNxtSJ1eBlOBM-é" />
+		</ControlPanel>
+		
+	</Map>
+
+</s:Group>

@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:os="http://openscales.org"
-		 width="100%" height="100%" creationComplete="initMap();">
+<s:Group xmlns="http://openscales.org" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 width="100%" height="100%" creationComplete="initMap();" xmlns:mx="library://ns.adobe.com/flex/mx">
 	
-	<os:Map id="fxMap" width="100%" height="100%" zoom="11" center="4.833,45.767">
+	<Map id="fxMap" width="100%" height="100%" zoom="11" center="4.833,45.767">
 		
-		<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
+		<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
 		
-		<os:DragHandler id="dragHandler" />
-		<os:WheelHandler />
-		<os:Spinner id="spinner" x = "{width / 2}" y = "{height / 2}"/>	
-		<os:MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<DragHandler id="dragHandler" />
+		<WheelHandler />
+		<Spinner id="spinner" x = "{width / 2}" y = "{height / 2}"/>	
+		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		
-		<os:SelectFeaturesHandler id="selectFeaturesHandler" creationComplete="{selectFeaturesHandler.handler.active=false;}"/>
+		<SelectFeaturesHandler id="selectFeaturesHandler" creationComplete="{selectFeaturesHandler.handler.active=false;}"/>
 		
-	</os:Map>
+	</Map>
 	
-	<os:TraceInfo id="traceInfo"  x="{width-200}" y="0"/>
+	<TraceInfo id="traceInfo"  x="{width-200}" y="0"/>
 	
-	<mx:VBox horizontalAlign="center" x="10" y="10">
+	<s:VGroup horizontalAlign="center" x="10" y="10">
 		<mx:ToggleButtonBar id="buttons" selectedIndex="0">
 			<mx:dataProvider>
-				<mx:Array>
-					<mx:String>Pan</mx:String>
-					<mx:String>Select</mx:String>
-					<mx:String>Clear</mx:String>
-				</mx:Array>
+				<fx:Array>
+					<fx:String>Pan</fx:String>
+					<fx:String>Select</fx:String>
+					<fx:String>Clear</fx:String>
+				</fx:Array>
 			</mx:dataProvider>
 			<mx:itemClick>
 				<![CDATA[
@@ -58,9 +58,9 @@
 			</mx:itemClick>
 		</mx:ToggleButtonBar>
 		
-	</mx:VBox>
+	</s:VGroup>
 	
-	<mx:Script>
+	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Trace;
 			import org.openscales.core.feature.Feature;
@@ -187,6 +187,6 @@
 				if (testResult==testExpectedResult) Trace.info(textResult) else Trace.error(textResult);
 			}
 		]]>
-	</mx:Script>
+	</fx:Script>
 	
-</mx:Canvas>
+</s:Group>

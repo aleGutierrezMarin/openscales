@@ -5,14 +5,6 @@ package {
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LineString;
-	import org.openscales.geometry.LinearRing;
-	import org.openscales.geometry.MultiLineString;
-	import org.openscales.geometry.MultiPoint;
-	import org.openscales.geometry.MultiPolygon;
-	import org.openscales.geometry.Point;
-	import org.openscales.geometry.Polygon;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Rule;
@@ -23,6 +15,13 @@ package {
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.MultiLineString;
+	import org.openscales.geometry.MultiPoint;
+	import org.openscales.geometry.MultiPolygon;
+	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.ProjProjection;
 
 	public class SampleLayers

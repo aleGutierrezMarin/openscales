@@ -1,103 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns="*"
-		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:os="http://openscales.org"
-		 creationComplete="initMap();"
-		 width="100%"
-		 height="100%"
-		 resize="resizeMap();" xmlns:fx1="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="resizeMap()"
+		 width="100%" height="100%" resize="resizeMap()">
 	
-	<os:Map id="fxMap"
-			width="100%"
-			height="100%"
-			zoom="5"
-			center="4.833,45.767">
+	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.833,45.767">
 		
-		<os:WMSC name="Nasa"
-				 url="http://openscales.org/geoserver/gwc/service/wms"
-				 layers="bluemarble"
-				 format="image/jpeg"
-				 maxExtent="-180,-90,180,90"/>
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms" layers="bluemarble"
+				 format="image/jpeg" maxExtent="-180,-90,180,90"/>
 		
-		<os:DragHandler/>
-		<os:WheelHandler/>
-		<os:Spinner id="spinner"
-					x="{width / 2}"
-					y="{height / 2}"/>
-		<os:MousePosition x="10"
-						  y="{height-20}"
-						  displayProjection="EPSG:4326"/>
+		<DragHandler/>
+		<WheelHandler/>
+		<Spinner x="{width / 2}" y="{height / 2}"/>
+		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		
-		<!-- Specific layers and handlers of this example -->
-		<!-- none -->
+		<TraceInfo x="{width-200}" y="0" />
 		
-	</os:Map>
-	<control:TraceInfo id="traceInfo"
-				  x="{width-200}"
-				  y="0"
-				  visible="{displayTrace}"/>
-	<!-- Specific tools of this example -->
-	
-	<s:Panel id="miniMapPanel"
-			 title="Overview map"
-			 x="{width-miniMapPanel.width-10}"
-			 y="{height-miniMapPanel.height-10}">
-		<s:layout>
-			<s:HorizontalLayout/>
-		</s:layout>
-		<os:OverviewMap id="miniMap"
-								 map="{map}"
-								 width="100%"
-								 height="100%"
-								 minRectPxSize="3"
-								 rectColor="0xFF3300"
-								 newExtentColor="0x00FF33">
+		<s:Panel id="miniMapPanel" title="Overview map" x="{width-miniMapPanel.width-10}" y="{height-miniMapPanel.height-10}">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<OverviewMap id="miniMap" width="100%" height="100%" minRectPxSize="3" rectColor="0xFF3300" newExtentColor="0x00FF33">
+				<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
+			</OverviewMap>		
+		</s:Panel>
+		
+		<ControlPanel x="10" y="10" width="150" height="240" title="Navigation">
 			
-			<!-- OpenStreetMap EPSG:900913 -->
-			<os:Mapnik name="Mapnik"
-					   proxy="http://openscales.org/proxy.php?url="/>
-			
-		</os:OverviewMap>
+			<Pan />
+			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
+				<Zoom />
+				<s:Rect width="100%" />
+				<ZoomBox />
+			</s:HGroup>
+			<s:Button id="overviewToggler" label="Hide overview" click="toggleOverview();"/>
+		</ControlPanel>
 		
-	</s:Panel>
-	
-	<os:ControlPanel x="10"
-					 y="10"
-					 width="150"
-					 height="240"
-					 title="Navigation">
-		
-		<os:Pan map="{map}"/>
-		<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
-			<os:Zoom map="{map}"/>
-			<s:Rect width="100%" />
-			<os:ZoomBox map="{map}"
-								 width="32"
-								 height="32"/>
-		</s:HGroup>
-		<s:Button id="overviewToggler"
-				  label="Hide overview"
-				  click="toggleOverview();"/>
-	</os:ControlPanel>
+	</Map>	
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
-			
-			[Bindable] private var map:Map = null;
-			[Bindable] public var displayTrace:Boolean = false;	
-			[Bindable] public var displayFirebugTrace:Boolean = false;
-			
-			private function initMap():void {
-				Trace.useFireBugConsole = displayFirebugTrace;
-				map = fxMap.map;
-				
-				// Specific initialize for this example
-				resizeMap();
-			}
-			
+						
 			private function resizeMap():void {
 				miniMap.height = 0.2 * this.height;
 				miniMap.width = this.width * miniMap.height / this.height;

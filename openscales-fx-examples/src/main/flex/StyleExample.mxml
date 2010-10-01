@@ -1,148 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*"
-		 xmlns:mx="http://www.adobe.com/2006/mxml"
-		 xmlns:os="http://openscales.org"
-		 width="100%"
-		 height="100%"
-		 creationComplete="initMap();" xmlns:fx="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()">
+	
+	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.84479575848897,45.7531798723947">
 
-	<os:Map id="fxMap"
-			width="100%"
-			height="100%"
-			zoom="5"
-			center="4.84479575848897,45.7531798723947">
+		<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
 
-		<os:Mapnik name="Mapnik"
-				   proxy="http://openscales.org/proxy.php?url="/>
+		<WheelHandler/>
 
-		<!--<os:DragHandler/>-->
-		<os:WheelHandler/>
+		<Spinner x="{width / 2}" y="{height / 2}"/>
+		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 
-		<os:Spinner id="spinner"
-					x="{width / 2}"
-					y="{height / 2}"/>
-		<os:MousePosition x="10"
-						  y="{height-20}"
-						  displayProjection="EPSG:4326"/>
+		<WFS id="ignGeoplaFrance" name="IGN - Geopla (France)" url="http://openscales.org/geoserver/wfs"
+				typename="pg:simplif_france" projection="EPSG:2154"
+				version="1.0.0" style="{this.createBitmapStyle()}"/>
 
-		<os:WFS id="ignGeoplaFrance"
-				name="IGN - Geopla (France)"
-				url="http://openscales.org/geoserver/wfs"
-				typename="pg:simplif_france"
-				projection="EPSG:2154"
-				version="1.0.0"
-				style="{this.createBitmapStyle()}"/>
+		<WFS id="ignGeoplaRegion" name="IGN - Geopla (Region)"
+				url="http://openscales.org/geoserver/wfs" typename="pg:simplif_dept"
+				projection="EPSG:2154" version="1.0.0" style="{this.createBitmapStyle()}"/>
 
-		<!-- Specific layers and handlers of this example -->
-		<os:WFS id="ignGeoplaRegion"
-				name="IGN - Geopla (Region)"
-				url="http://openscales.org/geoserver/wfs"
-				typename="pg:simplif_dept"
-				projection="EPSG:2154"
-				version="1.0.0"
-				style="{this.createBitmapStyle()}"/>
+		<SelectFeaturesHandler id="selectFeatureHandler" active="true"/>
+		
+		<TraceInfo x="{width-200}" y="0" />
+		
+		<ControlPanel x="10" y="10" width="140" title="Navigation">
+			
+			<Pan />
+			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
+				<Zoom />
+				<s:Rect width="100%"/>
+				<ZoomBox />
+			</s:HGroup>
+		</ControlPanel>
+		
+		<s:Panel title="Legend" id="legends" bottom="0">
+		</s:Panel>
+		
+		<s:Panel title="featureInfos" bottom="0" right="0">
+			<FeatureInfo id="featureInfoComponent"
+							creationComplete="(selectFeatureHandler.handler as SelectFeaturesHandler).onSelectedFeature = featureInfoComponent.showInfo"/>
+		</s:Panel>
 
+	</Map>
 
-		<!--				mouseOver="mouseOverDepartement(event);"
-		-->
-		<os:SelectFeaturesHandler id="selectFeatureHandler"
-								  active="true"/>
-	</os:Map>
-	<control:TraceInfo id="traceInfo"
-				  x="{width-200}"
-				  y="0"
-				  visible="{displayTrace}"/>
-	<!-- Specific tools of this example -->
-
-	<fx:ControlPanel x="10"
-					 y="10"
-					 width="140"
-					 title="Navigation">
-
-		<os:Pan map="{map}"/>
-		<mx:HBox width="100%" paddingLeft="5" paddingRight="5">
-			<os:Zoom map="{map}"/>
-			<mx:Spacer width="100%" />
-			<os:ZoomBox map="{map}"
-									 width="32"
-									 height="32"/>
-		</mx:HBox>
-	</fx:ControlPanel>
-
-	<mx:Panel title="Legend"
-			  id="legends"
-			  layout="vertical"
-			  bottom="0">
-	</mx:Panel>
-
-	<mx:Panel title="featureInfos"
-			  bottom="0"
-			  right="0">
-		<os:FeatureInfo id="featureInfoComponent"
-								 creationComplete="(selectFeatureHandler.handler as SelectFeaturesHandler).onSelectedFeature = featureInfoComponent.showInfo"/>
-	</mx:Panel>
-
-	<mx:Button id="switchStyleButton"
-			   label="Switch style"
-			   x="{width-switchStyleButton.width-10}"
-			   y="10"
-			   click="switchStyle();"/>
-			   
-	<mx:Script>
+	<s:Button id="switchStyleButton" label="Switch style" x="{width-switchStyleButton.width-10}"
+			   y="10" click="switchStyle();"/>
+	
+	<fx:Script>
 		<![CDATA[
-			import mx.containers.VBox;
+			import org.openscales.basetypes.Bounds;
+			import org.openscales.core.Trace;
 			import org.openscales.core.filter.ContainsFilter;
 			import org.openscales.core.filter.ElseFilter;
-			import org.openscales.core.filter.IntersectsFilter;
-			import styleexample.CentroidYFilter;
-			import org.openscales.core.style.stroke.Stroke;
-			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.handler.feature.SelectFeaturesHandler;
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.Style;
 			import org.openscales.core.style.fill.BitmapFill;
+			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
-			import org.openscales.core.handler.feature.SelectFeaturesHandler;
-			import mx.core.UIComponent;
-			import org.openscales.core.style.Rule;
-			import mx.controls.Label;
-			import mx.containers.HBox;
-			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
-			import org.openscales.core.style.Style;
-			import org.openscales.basetypes.Bounds;
-
-			[Bindable] private var map:Map = null;
-			[Bindable] public var displayTrace:Boolean = false;	
-			[Bindable] public var displayFirebugTrace:Boolean = false;
-
+			
+			import spark.components.Label;
+			import spark.components.VGroup;
+			import spark.core.SpriteVisualElement;
+			
+			import styleexample.CentroidYFilter;
+			
 			[Bindable]
 			private var styles:Array = [];
-
+			
 			[Bindable]
 			[Embed(source='/assets/images/pattern.png')]
 			private var Pattern:Class;
-
+			
 			private function initMap():void {
-				Trace.useFireBugConsole = displayFirebugTrace;
-				map = fxMap.map;
-
-				// Specific initialize for this example
 				this.createStyleLatitude();
 				this.generateLegend();
-
+				
 			}
-
+			
 			private function generateLegend():void {
-				this.legends.removeAllChildren();
-
+				this.legends.removeAllElements();
+				
 				for each (var style:Style in this.styles) {
-					var vb:VBox = new VBox();
-
+					var vb:VGroup = new VGroup();
+					
 					var label:Label = new Label();
 					label.text = style.name;
 					label.setStyle("fontWeight", "bold");
-
-					vb.addChild(label);
-
+					
+					vb.addElement(label);
+					
 					var legendType:String;
 					switch (style.name) {
 						case "Default circle style":
@@ -159,27 +108,27 @@
 							legendType = Rule.LEGENT_POLYGON;
 						}
 					}
-
+					
 					for each (var rule:Rule in style.rules) {
-						var hb:HBox = new HBox();
+						var hb:HGroup = new HGroup();
 						hb.setStyle("verticalAlign", "middle");
-
-						var leg:UIComponent = new UIComponent();
+						
+						var leg:SpriteVisualElement = new SpriteVisualElement();
 						leg.height = 30;
 						leg.width = 30;
 						leg.addChild(rule.getLegendGraphic(legendType));
-						hb.addChild(leg);
-
+						hb.addElement(leg);
+						
 						var ruleLabel:Label = new Label();
 						ruleLabel.text = rule.name;
-						hb.addChild(ruleLabel);
-						vb.addChild(hb);
+						hb.addElement(ruleLabel);
+						vb.addElement(hb);
 					}
-
-					this.legends.addChild(vb);
+					
+					this.legends.addElement(vb);
 				}
 			}
-
+			
 			private function switchStyle():void {
 				var currentStyleName:String = "";
 				if (this.styles.length > 1) {
@@ -201,12 +150,12 @@
 				}
 				this.generateLegend();
 			}
-
+			
 			private function createStyleLatitude():void {
 				var style:Style = new Style();
 				style.name = "Latitude related coloration";
 				var fill:SolidFill, stroke:Stroke, symbolizer:Symbolizer, rule:Rule;
-
+				
 				rule = new Rule();
 				rule.name = "Centroid Y-coordinate in [70000;75000]";
 				fill = new SolidFill(0x176273, .8);
@@ -215,7 +164,7 @@
 				rule.symbolizers.push(symbolizer);
 				rule.filter = new CentroidYFilter(70000, 75000);
 				style.rules.push(rule);
-
+				
 				rule = new Rule();
 				rule.name = "Centroid Y-coordinate in [65000;70000]";
 				fill = new SolidFill(0xD8F20F, .8);
@@ -224,7 +173,7 @@
 				rule.symbolizers.push(symbolizer);
 				rule.filter = new CentroidYFilter(65000, 70000);
 				style.rules.push(rule);
-
+				
 				rule = new Rule();
 				rule.name = "Centroid Y-coordinate out of previous ranges";
 				fill = new SolidFill(0x84BF7A, .8);
@@ -233,18 +182,18 @@
 				rule.symbolizers.push(symbolizer);
 				rule.filter = new ElseFilter();
 				style.rules.push(rule);
-
+				
 				this.styles.push(style);
 				this.ignGeoplaRegion.style = style;
 				this.ignGeoplaRegion.layer.redraw();
 			}
-
+			
 			private function createStyleGeographical():void {
 				var style:Style = new Style();
 				style.name = "Geographical coloration";
 				var fill:SolidFill, stroke:Stroke, symbolizer:Symbolizer, rule:Rule;
 				var bounds:Bounds;
-
+				
 				rule = new Rule();
 				rule.name = "Departements of Bourgogne";
 				fill = new SolidFill(0x176273, .8);
@@ -254,7 +203,7 @@
 				bounds = new Bounds(682105, 6558859, 892780, 6816381);
 				rule.filter = new ContainsFilter(bounds.toGeometry(), "EPSG:2154");
 				style.rules.push(rule);
-
+				
 				rule = new Rule();
 				rule.name = "Other departements of France";
 				fill = new SolidFill(0x84BF7A, .8);
@@ -263,19 +212,19 @@
 				rule.symbolizers.push(symbolizer);
 				rule.filter = new ElseFilter();
 				style.rules.push(rule);
-
+				
 				this.styles.push(style);
 				this.ignGeoplaRegion.style = style;
 				this.ignGeoplaRegion.layer.redraw();
 			}
-
+			
 			private function createBitmapStyle():Style {
-
+				
 				var style:Style = new Style();
 				style.name = "France";
 				var fill:BitmapFill, stroke:Stroke, symbolizer:Symbolizer, rule:Rule;
 				var bounds:Bounds;
-
+				
 				rule = new Rule();
 				rule.name = "France";
 				fill = new BitmapFill((new Pattern().bitmapData as BitmapData));
@@ -283,15 +232,13 @@
 				symbolizer = new PolygonSymbolizer(fill, stroke);
 				rule.symbolizers.push(symbolizer);
 				style.rules.push(rule);
-
+				
 				this.styles[0] = style;
 				return style;
 			}
-
-			private function mouseOverDepartement(evt:MouseEvent):void {
-				//this.ignGeoplaRegion.toolTip = "coucou" + evt.localX;
-			}
+		
 		]]>
-	</mx:Script>
+	</fx:Script>
+	
 
-</mx:Canvas>
+</s:Group>

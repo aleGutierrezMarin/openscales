@@ -1,66 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns="*"
-		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:os="http://openscales.org"
-		 width="100%"
-		 height="100%"
-		 creationComplete="initMap();" xmlns:fx1="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%" height="100%">
 	
-	<os:Map id="fxMap"
-			width="100%"
-			height="100%"
-			zoom="2"
-			center="4.833,45.767">
+	<Map id="fxMap" width="100%" height="100%" zoom="2" center="4.833,45.767">
 		
-		<os:ImageLayer name="City Lights"
-					   url="http://openscales.org/4_m_citylights_lg.gif"
+		<ImageLayer name="City Lights" url="http://openscales.org/4_m_citylights_lg.gif"
 					   bounds="-180,-88.759,180,88.759"/>
 		
-		<os:DragHandler/>
-		<os:WheelHandler/>
+		<DragHandler/>
+		<WheelHandler/>
 		
-		<os:MousePosition x="10"
-						  y="{height-20}"
-						  displayProjection="EPSG:4326"/>
+		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326" />
 		
-	</os:Map>
-	
-	<control:TraceInfo id="traceInfo"
-				  x="{width-200}"
-				  y="0"
-				  visible="{displayTrace}"/>
-	
-	<!-- Specific tools of this example -->
-	
-	<os:ControlPanel x="10"
-					 y="10"
-					 width="140"
-					 title="Navigation">
-		<os:Pan map="{map}"/>
-		<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
-			<os:Zoom map="{map}"/>
-			<s:Rect width="100%" />
-			<os:ZoomBox map="{map}"
-								 width="32"
-								 height="32"/>
-		</s:HGroup>
-	</os:ControlPanel>
-	
-	<fx:Script>
-		<![CDATA[
-			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
-			
-			[Bindable] private var map:Map = null;
-			[Bindable] public var displayTrace:Boolean = false;	
-			[Bindable] public var displayFirebugTrace:Boolean = false;
-			
-			private function initMap():void {
-				Trace.useFireBugConsole = displayFirebugTrace;
-				map = fxMap.map;
-			}
-		]]>
-	</fx:Script>
-	
+		<TraceInfo x="{width-200}" y="0" />
+		
+		<ControlPanel x="10" y="10" width="140" title="Navigation">
+			<Pan />
+			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
+				<Zoom />
+				<s:Rect width="100%" />
+				<ZoomBox width="32" height="32"/>
+			</s:HGroup>
+		</ControlPanel>
+		
+	</Map>
+		
 </s:Group>
