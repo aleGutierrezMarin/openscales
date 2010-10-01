@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<control:Control
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:control="org.openscales.fx.control.*" 
+	xmlns:layer="org.openscales.fx.control.layer.*"
+	width="100%" >
+	<!--TODO-->
+	<!--horizontalScrollPolicy="off"-->
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
+			import mx.controls.RadioButton;
+			import mx.core.Application;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.events.OpenScalesEvent;
+			import org.openscales.core.handler.mouse.ClickHandler;
+			import org.openscales.core.layer.Layer;
+			/**
+			 * Set the map
+			 *
+			 * @param value
+			 */	 
+			override public function set map(value:Map):void {
+				super.map = value;
+				
+				if(map != null) {
+					//Listening of layer event
+					this.map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
+					this.map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+					this.map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
+			
+					//stock layer by type : baselayer and overlays
+					var overlayArray:Vector.<Layer>  = this.map.layers;
+					var ac:ArrayCollection = new ArrayCollection();
+					var i:int = overlayArray.length;
+					for(i;i>0;--i)
+						ac.addItem(overlayArray[i-1]);
+					overlayList.dataProvider = ac;
+
+				}
+			}
+			
+			/**
+			 * Refresh the LayerSwitcher when a layer is add, delete or update
+			 *
+			 * @param event Layer event
+			 */
+			public function refresh(event:LayerEvent):void {	
+				//Test the triggered event
+				if(event.type == LayerEvent.LAYER_ADDED){
+						overlayList.dataProvider.addItem(event.layer);
+						overlayList.invalidateDisplayList();
+				}
+				
+				if(event.type == LayerEvent.LAYER_REMOVED){						var index:int = overlayList.dataProvider.getItemIndex(event.layer);
+						overlayList.dataProvider.removeItemAt(index);
+						overlayList.invalidateDisplayList();
+				}
+				
+				if(event.type == LayerEvent.LAYER_CHANGED){
+					var overlayArray:Vector.<Layer> = this.map.layers;
+					var i:uint = overlayArray.length;
+					var ac:ArrayCollection = new ArrayCollection();
+					for(i;i>0;--i)
+						ac.addItem(overlayArray[i-1]);
+					overlayList.dataProvider = ac;
+					
+				}
+			}
+			
+			/**
+			 * Update layers order when a user change it
+			 *
+			 * @param event Drag event
+			 */
+			public function changeLayerOrder(event:DragEvent):void{
+				var layer:Layer = overlayList.selectedItem as Layer;
+				this.map.changeLayerIndex(layer,overlayList.selectedIndex);
+			}
+		]]>
+	</fx:Script>
+	
+		
+	
+	<s:VGroup width="100%"> 
+		
+
+		<s:List id="overlayList" 
+				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
+				labelField="Overlays"
+				dropEnabled="true"
+				dragEnabled="true"
+				dragMoveEnabled="true"
+				width="100%" 
+				dragComplete="changeLayerOrder(event)"
+			>
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="justify" 
+							  requestedRowCount="3"
+						 />
+		</s:layout>
+ </s:List>
+
+	
+
+	</s:VGroup>
+	
+</control:Control>
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns="*" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:os="http://openscales.org" width="100%" height="100%">
+	
+	<os:Map id="fxMap" width="100%" height="100%" zoom="2" center="4.833,45.767">
+		
+		<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
+		
+		<os:WheelHandler />
+		<os:Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
+		<os:MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<os:ScaleLine x="{width-100-10}" y="{height-80}" />
+		
+		<os:ControlPanel title="Drawing Tools" x="10" y="10">
+			<os:FeatureDrawing />
+		</os:ControlPanel>
+		
+	</os:Map>
+
+</s:Group>

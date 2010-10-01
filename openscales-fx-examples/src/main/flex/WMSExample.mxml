@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns="*"
+		   xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:os="http://openscales.org"
+		   width="100%"
+		   height="100%"
+		   creationComplete="initMap();" xmlns:fx="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
+	
+	<os:Map id="fxMap"
+			height="100%"
+			width="100%"
+			proxy="http://openscales.org/proxy.php?url=">
+		
+		
+		<os:MaxExtent west="5.60075"
+					  south="47.2441"
+					  east="15.425"
+					  north="55.0317"
+					  projection="EPSG:4326" />
+		
+		<os:WMS name="Germany"
+				url="http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map"
+				layers="Germany"
+				format="image/jpeg" />
+		
+		<os:Spinner id="spinner"
+					x="{width / 2}"
+					y="{height / 2}"/>
+		<os:MousePosition x="10"
+						  y="{height-20}"
+						  displayProjection="EPSG:4326"/>
+		
+		
+		<os:DragHandler/>
+		<os:WheelHandler/>
+		
+		<os:Extent west="5.60075"
+				   south="47.2441"
+				   east="15.425"
+				   north="55.0317"
+				   projection="EPSG:4326" />
+		
+		
+	</os:Map>
+	<control:TraceInfo id="traceInfo"
+				  x="{width-200}"
+				  y="0"
+				  visible="{displayTrace}"/>
+	<fx:ControlPanel x="10"
+					 y="10"
+					 width="140"
+					 title="Navigation">
+		<os:Pan map="{map}"/>
+		<mx:HBox width="100%" paddingLeft="5" paddingRight="5">
+			<os:Zoom map="{map}"/>
+			<mx:Spacer width="100%" />
+			<os:ZoomBox map="{map}"
+								 width="32"
+								 height="32"/>
+		</mx:HBox>
+	</fx:ControlPanel>
+	
+	<mx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			
+			[Bindable] private var map:Map = null;
+			[Bindable] public var displayTrace:Boolean = false;	
+			[Bindable] public var displayFirebugTrace:Boolean = false;
+			
+			private function initMap():void {
+				Trace.useFireBugConsole = displayFirebugTrace;
+				map = fxMap.map;
+			}
+		]]>
+	</mx:Script>
+	
+</mx:Canvas>
