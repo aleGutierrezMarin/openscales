@@ -22,16 +22,12 @@
 				projection="EPSG:4326" version="1.0.0" useCapabilities="true" capabilitiesVersion="1.0.0"
 				style="{Style.getDefaultPointStyle()}" />
 		
-		<ControlPanel id="controlPanel" x="10" y="10" title="Navigation" >
-			<Pan id="pan" />
-			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
+		<ControlPanel id="controlPanel" x="10" y="10" title="Navigation" width="110">
+			<s:VGroup>
+				<Pan id="pan" />
 				<Zoom id="zoom" />
-				<s:Rect width="100%" />
 				<ZoomBox id="zoomBox" />
-			</s:HGroup>
-			<OverviewMap width="140">
-				<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
-			</OverviewMap>
+			</s:VGroup>
 		</ControlPanel>
 		
 		<TraceInfo id="traceInfo" x="{width-200}" y="0" />

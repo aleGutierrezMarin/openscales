@@ -13,15 +13,15 @@
 		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
+		<ControlPanel title="Layers Manager"  x="10" y="10" width="230">
+			<LayerManager />
+		</ControlPanel>
+		
+		<ControlPanel id="capabilitiesPanel" title="Add layers from capabilities"  x="{10}" y="{height-capabilitiesPanel.height-10}">
+			<Capabilities width="320" />
+		</ControlPanel>
+		
 	</Map>
-	
-	<ControlPanel title="Layers Manager"  x="10" y="10" width="230">
-		<LayerManager map="{fxMap.map}" />
-	</ControlPanel>
-	
-	<ControlPanel id="capabilitiesPanel" title="Add layers from capabilities"  x="{10}" y="{height-capabilitiesPanel.height-10}">
-		<Capabilities width="320" map="{fxMap.map}"/>
-	</ControlPanel>
 	
 	<fx:Script>
 		<![CDATA[
