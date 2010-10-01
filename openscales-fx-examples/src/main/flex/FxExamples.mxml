@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:s="library://ns.adobe.com/flex/spark"
-			   xmlns:fx="http://ns.adobe.com/mxml/2009"
-			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   xmlns:os="*"
-			   width="100%"
-			   height="100%"
-			   creationComplete="init();">
+<s:Application xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" creationComplete="init();">
 	
-	<fx:Declarations>
-		
-	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
 			import mx.core.IVisualElement;
@@ -102,9 +94,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:HGroup id="app"
-			  width="100%"
-			  height="100%">
+	<s:HGroup id="app" width="100%" height="100%">
 		<mx:Accordion width="200" height="100%">
 			<s:NavigatorContent label="Global examples" width="100%" height="100%">
 				<s:layout>
@@ -160,9 +150,7 @@
 			</s:NavigatorContent>
 		</mx:Accordion>
 		
-		<s:Group id="example"
-				 width="100%"
-				 height="100%">
+		<s:Group id="example" width="100%" height="100%">
 			
 		</s:Group>
 	</s:HGroup>

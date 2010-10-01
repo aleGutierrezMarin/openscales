@@ -13,7 +13,7 @@
 		<![CDATA[
 			private function init():void {
 				var text:String;
-				text = "\n<b>OpenScales.org 1.2-SNAPSHOT</b>";
+				text = "\n<b>OpenScales.org 1.2</b>";
 				text += "\n\n\n";
 				text += "OpenScales.org is a user-friendly and fast interface designed to manipulate spatial data: geographic raster viewing, data-vector editing, management of smooth transitions between scales and positions, ...";
 				text += "\n\n";
