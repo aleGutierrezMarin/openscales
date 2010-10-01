@@ -138,11 +138,11 @@ package org.openscales.core.configuration
 		}
 		
 		public function endConfigureMap():void {
-			if(config.@zoom != ""){
+			if(String(config.@zoom) != ""){
 				map.zoom = Number(config.@zoom);
 			}
-			if(config.@center != ""){
-				var location:Array = config.@center.split(",");
+			if(String(config.@center) != ""){
+				var location:Array = String(config.@center).split(",");
 				map.center = new Location(Number(location[0]), Number(location[1]),map.baseLayer.projection);
 			}
 		}

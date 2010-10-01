@@ -15,6 +15,7 @@
 			<xs:attribute name="maxExtent" type="xs:string" />
 			<xs:attribute name="width" type="xs:integer" />
 			<xs:attribute name="height" type="xs:integer" />
+			<xs:attribute name="proxy" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 
@@ -142,6 +143,8 @@
 		<xs:attribute name="maxExtent" type="xs:string" />
 		<xs:attribute name="numZoomLevels" type="xs:integer" />
 		<xs:attribute name="projection" type="xs:string" />
+		
+		<xs:attribute name="maxResolution" type="xs:decimal" />
 		<xs:attribute name="maxResolution" type="xs:decimal" />
 	</xs:complexType>
 
