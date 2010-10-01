@@ -14,20 +14,23 @@ package org.openscales.fx
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Size;
-	import org.openscales.fx.control.Control;
-	import org.openscales.fx.control.TraceInfo;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.fx.configuration.FxConfiguration;
+	import org.openscales.fx.control.Control;
 	import org.openscales.fx.control.FxControl;
+	import org.openscales.fx.control.TraceInfo;
 	import org.openscales.fx.handler.FxHandler;
 	import org.openscales.fx.layer.FxLayer;
 	import org.openscales.fx.security.FxAbstractSecurity;
-	import org.openscales.proj4as.ProjProjection;
+	
+	import spark.components.Group;
+	import spark.core.SpriteVisualElement;
 	
 	/**
 	 * Flex wrapper in order to create OpenScales MXML based applications.
@@ -37,11 +40,11 @@ package org.openscales.fx
 	 [Event(name="openscalesmaploadstart", type="org.openscales.core.events.MapEvent")]
 	 [Event(name="openscalesmaploadcomplete", type="org.openscales.core.events.MapEvent")]
 
-	public class FxMap extends Container
+	public class FxMap extends Group
 	{
 		private var _map:Map;
 		private var _zoom:Number = NaN;
-		private var _centerLonLat:Location = null;
+		private var _center:Location = null;
 		private var _creationHeight:Number = NaN;
 		private var _creationWidth:Number = NaN;
 		private var _proxy:String = "";
@@ -52,8 +55,7 @@ package org.openscales.fx
 		 */
 		public function FxMap() {
 			super();
-			// Fix for issue 114: Error at startup when window is too small
-			this.clipContent = false;
+			
 			// Useful for a Map only defined with width="100%" or "height="100%"
 			this.minWidth = 100;
 			this.minHeight = 100;
@@ -61,34 +63,6 @@ package org.openscales.fx
 			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
 		}
 
-		/**
-		 * After CreationComplete, addChild is restricted to the insertion of a
-		 * new FxLayer
-		 */		
-		override public function addChild(child:DisplayObject):DisplayObject {
-			if (! this._map) {
-				return super.addChild(child);
-			}
-			
-			// Only layers lay be added
-			if (! (child is FxLayer)) {
-				Trace.warning("Invalid child to add : only FxLayer may be added to FxMap");
-				return child;
-			}
-			// Add the layer/baselayer
-			//super.addChild(child);
-			addFxLayer(child as FxLayer);
-			return child;
-		}
-		
-		/**
-		 * After CreationComplete, the insertion order is not managed and
-		 * addChild is called
-		 */
-		override public function addChildAt(child:DisplayObject, index:int):DisplayObject {
-			return (this._map) ? addChild(child) : super.addChildAt(child,index);
-		}
-		
 		/**
 		 * Add a layer to the map
 		 */
@@ -108,20 +82,14 @@ package org.openscales.fx
 			_map.addEventListener(MapEvent.LOAD_END, loadEventHandler);
 			
 			var i:int = 0;
-			var child:DisplayObject = null;
+			var element:IVisualElement = null;
 			
-			// Add traceInfo at the begining in order to trace loading logs
-			for(i=0; i<this.rawChildren.numChildren; i++) {
-				child = this.rawChildren.getChildAt(i);
-				if (child is TraceInfo) {
-					(child as TraceInfo).map = this._map;
-					this.parent.addChild(child);
-				}
-			}
 			// override configuration with a Flex aware configuration
 			this._map.configuration = new FxConfiguration();
 			
-			this.rawChildren.addChild(this._map);
+			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
+			this.addElementAt(mapContainer, 0);
+			mapContainer.addChild(this._map);
 						
 			if (this._proxy != "")
 				this._map.proxy = this._proxy;
@@ -132,10 +100,10 @@ package org.openscales.fx
 				this._map.maxExtent = this._maxExtent;
 			else {
 				var maxExtentDefined:Boolean = false;
-				for(i=0; (!maxExtentDefined) && (i<this.rawChildren.numChildren); i++) {
-					child = this.rawChildren.getChildAt(i);
-					if (child is FxMaxExtent) {
-						this._map.maxExtent = (child as FxMaxExtent).bounds;
+				for(i=0; (!maxExtentDefined) && (i<this.numElements); i++) {
+					element = this.getElementAt(i);
+					if (element is FxMaxExtent) {
+						this._map.maxExtent = (element as FxMaxExtent).bounds;
 						maxExtentDefined = true;
 					}
 				}
@@ -148,52 +116,22 @@ package org.openscales.fx
 			// because it will modify numChildren
 			var componentToAdd:Array = new Array();
 			
-			for(i=0; i<this.rawChildren.numChildren; i++) {
-				child = this.rawChildren.getChildAt(i);
-				if (child is FxLayer) {
-					// Overlays must be added after all the baseLayers
-					if ((child as FxLayer).layer.isBaseLayer) {
-						this.addFxLayer(child as FxLayer);
-					}
-				} else if (child is FxControl) {
-					this._map.addControl((child as FxControl).control);
-				} else if (child is IControl) {
-					this._map.addControl(child as IControl, false);
-				// Add Control, wih exception of TraceInfo that has been added at the beginning
-				} else if ((child is Control) && !(child is TraceInfo)){
-					(this.parent as IVisualElementContainer).addElement((child as UIComponent));
-					// Tweak in order to compense the addChild that remove the child from this to addd it to the parent
-					// Quote from DisplayerObectContainer asDoc : if you add a child object that already has a different display object container as a parent, the object is removed from the child list of the other display object container.
-					i--;
-				} else if (child is FxHandler) {
-					(child as FxHandler).handler.map = this._map;
-				} else if ((child is UIComponent) && !(child is Map) && !(child is FxMaxExtent) && !(child is FxExtent) && !(child is FxAbstractSecurity) ){
-					(this.parent as IVisualElementContainer).addElement((child as UIComponent));
-					// Tweak in order to compense the addChild that remove the child from this to addd it to the parent
-					// Quote from DisplayerObectContainer asDoc : if you add a child object that already has a different display object container as a parent, the object is removed from the child list of the other display object container.
-					i--;
+			for(i=0; i<this.numElements; i++) {
+				element = this.getElementAt(i);
+				if (element is FxLayer) {
+					this.addFxLayer(element as FxLayer);
+				} else if (element is FxControl) {
+					this._map.addControl((element as FxControl).control);
+				} else if (element is IControl) {
+					this._map.addControl(element as IControl, false);
 				}
 			}
 			
-			// Some operations must be done at the end, in order to not depend
-			// on the declaration order
-			for(i=0; i<this.rawChildren.numChildren; i++) {
-				child = this.rawChildren.getChildAt(i);
-				if (child is FxLayer) {
-					var l:FxLayer = child as FxLayer;
-					
-					// BaseLayers have been added at the begining
-					if (! l.layer.isBaseLayer) {
-						this.addFxLayer(child as FxLayer);
-					}
-				}
-			}
+			for(i=0; i<this.numElements; i++) {
+				element = this.getElementAt(i);
 			
-			for(i=0; i<this.rawChildren.numChildren; i++) {
-				child = this.rawChildren.getChildAt(i);
-			
-			 	if (child is FxAbstractSecurity){
-					var fxSecurity:FxAbstractSecurity = (child as FxAbstractSecurity);
+			 	if (element is FxAbstractSecurity){
+					var fxSecurity:FxAbstractSecurity = (element as FxAbstractSecurity);
 					fxSecurity.map = this._map;
 					var security:ISecurity = fxSecurity.security;
 					var layers:Array = fxSecurity.layers.split(",");
@@ -201,7 +139,7 @@ package org.openscales.fx
 					 for each (var name:String in layers) {
 						layer = map.getLayerByName(name);
 						if(layer) {
-							(child as FxAbstractSecurity).map = this._map;
+							(element as FxAbstractSecurity).map = this._map;
 							layer.security = security;
 						}
 					 }
@@ -209,7 +147,7 @@ package org.openscales.fx
 			}
 						
 			// Set both center and zoom to avoid invalid request set when we define both separately
-			var mapCenter:Location = this._centerLonLat;
+			var mapCenter:Location = this._center;
 			if (mapCenter && this._map.baseLayer) {
 				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projection);
 			}
@@ -218,15 +156,39 @@ package org.openscales.fx
 			}
 			
 			var extentDefined:Boolean = false;
-			for(i=0; (!extentDefined) && (i<this.rawChildren.numChildren); i++) {
-				child = this.rawChildren.getChildAt(i);
-				if (child is FxExtent) {
-					this._map.zoomToExtent((child as FxExtent).bounds);
+			for(i=0; (!extentDefined) && (i<this.numElements); i++) {
+				element = this.getElementAt(i);
+				if (element is FxExtent) {
+					this._map.zoomToExtent((element as FxExtent).bounds);
 					extentDefined = true;
 				}
 			}
 			
+			setMapRecursively(this);
+			
 			this.addEventListener(ResizeEvent.RESIZE, this.onResize);
+		}
+		
+		private function setMapRecursively(component:UIComponent):void {
+			var i:int = 0;
+			var element:IVisualElement = null;
+			
+			if(component is IVisualElementContainer) {
+				for(i=0; i<(component as IVisualElementContainer).numElements; i++) {
+					element = (component as IVisualElementContainer).getElementAt(i);
+					if (element is FxControl ) {
+						(element as FxControl).control.map = this._map;
+					} else if (element is IControl) {
+						(element as IControl).map = this._map;
+					} else if (element is FxHandler) {
+						(element as FxHandler).handler.map = this._map;
+					} else if (element is IHandler) {
+							(element as IHandler).map = this._map;
+					} else if (element is UIComponent){
+						setMapRecursively(element as UIComponent);
+					}
+				}
+			}
 		}
 		
 		private function onResize(event:ResizeEvent):void {
@@ -253,13 +215,13 @@ package org.openscales.fx
 		 * @param value a string of two coordinates separated by a coma, in
 		 * WGS84 = EPSG:4326 only (not in the SRS of the base layer) !
 		 */
-		public function set centerLonLat(value:String):void {
+		public function set center(value:String):void {
 			var strCenterLonLat:Array = value.split(",");
 			if (strCenterLonLat.length != 2) {
 				Trace.error("Map.centerLonLat: invalid number of components");
 				return ;
 			}
-			_centerLonLat = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]),Layer.DEFAULT_PROJECTION);
+			_center = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]),Layer.DEFAULT_PROJECTION);
 		}
 		
 		override public function set width(value:Number):void {

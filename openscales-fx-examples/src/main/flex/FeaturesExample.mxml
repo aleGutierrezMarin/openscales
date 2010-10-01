@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml"
-		 xmlns:os="http://openscales.org"
-		 width="100%"
-		 height="100%"
-		 creationComplete="initMap();" xmlns:control="org.openscales.fx.control.*">
+<mx:Canvas xmlns="*" xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:os="http://openscales.org"
+		 width="100%" height="100%" creationComplete="initMap();">
 	
-	<os:Map id="fxmap" width="100%" height="100%" zoom="11" centerLonLat="4.833,45.767">
+	<os:Map id="fxMap" width="100%" height="100%" zoom="11" center="4.833,45.767">
 		
-		<!-- OpenStreetMap EPSG:900913 -->
 		<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
 		
 		<os:DragHandler id="dragHandler" />
@@ -15,18 +11,11 @@
 		<os:Spinner id="spinner" x = "{width / 2}" y = "{height / 2}"/>	
 		<os:MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		
-		<!-- Specific layers and handlers of this example -->
-
 		<os:SelectFeaturesHandler id="selectFeaturesHandler" creationComplete="{selectFeaturesHandler.handler.active=false;}"/>
 		
 	</os:Map>
 	
-	<control:TraceInfo id="traceInfo"
-				  x="{width-200}"
-				  y="0"
-				  visible="{displayTrace}"/>
-	
-	<!-- Specific tools of this example -->
+	<os:TraceInfo id="traceInfo"  x="{width-200}" y="0"/>
 	
 	<mx:VBox horizontalAlign="center" x="10" y="10">
 		<mx:ToggleButtonBar id="buttons" selectedIndex="0">
@@ -73,48 +62,27 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.feature.Feature;
-			import org.openscales.core.feature.LineStringFeature;
-			import org.openscales.core.feature.MultiLineStringFeature;
-			import org.openscales.core.feature.MultiPointFeature;
 			import org.openscales.core.feature.MultiPolygonFeature;
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.feature.PolygonFeature;
-			import org.openscales.geometry.Collection;
-			import org.openscales.geometry.Geometry;
-			import org.openscales.geometry.LineString;
-			import org.openscales.geometry.LinearRing;
-			import org.openscales.geometry.MultiLineString;
-			import org.openscales.geometry.MultiPoint;
-			import org.openscales.geometry.MultiPolygon;
-			import org.openscales.geometry.Point;
-			import org.openscales.geometry.Polygon;
-			import org.openscales.core.handler.Handler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.layer.FeatureLayer;
-			import org.openscales.core.style.Rule;
-			import org.openscales.core.style.Style;
-			import org.openscales.core.style.fill.SolidFill;
-			import org.openscales.core.style.stroke.Stroke;
-			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-			
-			[Bindable] private var map:Map = null;
-			[Bindable] public var displayTrace:Boolean = false;	
-			[Bindable] public var displayFirebugTrace:Boolean = false;
+			import org.openscales.geometry.Collection;
+			import org.openscales.geometry.Geometry;
+			import org.openscales.geometry.LinearRing;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.Polygon;
 			
 			private function initMap():void {
-				Trace.useFireBugConsole = displayFirebugTrace;
-				map=fxmap.map;
-
 				// Specific initialize for this example
 				var layer:FeatureLayer = SampleLayers.features();
 				// Usefull to test selection when a layer is not displayed
 				layer.minZoomLevel = 10;
 				
 				(selectFeaturesHandler.handler as SelectFeaturesHandler).unselectableFeatures = new <Feature>[ layer.getChildAt(4) as PolygonFeature ];
-				map.addLayer(layer);
+				fxMap.map.addLayer(layer);
 				testContainsPoint(layer);
 				testIntersects(layer);
 			}

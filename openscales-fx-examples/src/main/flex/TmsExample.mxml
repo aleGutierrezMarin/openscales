@@ -7,22 +7,17 @@
 		 height="100%"
 		 creationComplete="initMap();" xmlns:fx1="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
 	
-	<os:Map id="fxmap"
+	<os:Map id="fxMap"
 			width="100%"
 			height="100%"
 			zoom="5"
-			centerLonLat="5,40"
-		    
-			>
+			center="5,40" >
 		
 		<os:TMS name="Tms"
 				   url="http://tilecache.osgeo.org/wms-c/Basic.py/"
 				   layerName="basic"
 				   maxResolution="0.703125"
-				  
-				   />
-		
-		
+				    />
 		
 		<os:DragHandler/>
 		<os:WheelHandler/>
@@ -67,7 +62,7 @@
 			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
-				map = fxmap.map;
+				map = fxMap.map;
 			}
 
 		]]>

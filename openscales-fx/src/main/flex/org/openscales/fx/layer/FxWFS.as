@@ -2,6 +2,8 @@ package org.openscales.fx.layer
 {
   import flash.display.DisplayObject;
   
+  import mx.core.IVisualElement;
+  
   import org.openscales.core.layer.Layer;
   import org.openscales.core.layer.ogc.WFS;
   import org.openscales.fx.feature.FxStyle;
@@ -34,8 +36,8 @@ package org.openscales.fx.layer
 
     override protected function createChildren():void {
 		super.createChildren();
-		for(var i:int=0; i < this.rawChildren.numChildren ; i++) {
-			var child:DisplayObject = this.rawChildren.getChildAt(i);
+		for(var i:int=0; i < this.numElements ; i++) {
+			var child:IVisualElement = this.getElementAt(i);
 			if(child is FxStyle) {
 				this.style = (child as FxStyle).style;
 			}

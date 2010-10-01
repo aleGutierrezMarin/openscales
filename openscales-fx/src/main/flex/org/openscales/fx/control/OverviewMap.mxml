@@ -16,6 +16,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.core.IVisualElement;
+			
 			import org.openscales.basetypes.Bounds;
 			import org.openscales.basetypes.Location;
 			import org.openscales.basetypes.Pixel;
@@ -25,6 +27,8 @@
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.fx.layer.FxLayer;
+			
+			import spark.core.SpriteVisualElement;
 			
 			private var _children:Array = [];
 			private var _childrenChanged:Boolean = false;
@@ -63,9 +67,9 @@
 				// Remove all the layers of the current overview map
 				overview.map.removeAllLayers();
 				// Add the children to the overview
-				for each(var child:DisplayObject in _children) {
+				for each(var child:IVisualElement in _children) {
 					if (child) {
-						overview.addChild(child);
+						overview.addElement(child);
 					}
 				}
 				// Zoom out the overview to display the maximum extent of its map
@@ -118,7 +122,9 @@
 				
 				// Create the sprite that will display the rect and add to the overview
 				sprite = new Sprite();
-				overview.map.addChild(sprite);
+				var spriteContainer:SpriteVisualElement = new SpriteVisualElement();
+				spriteContainer.addChild(sprite);
+				overview.addElement(spriteContainer);
 				
 				// Change the center (and the scale) of the main map depending on the action on the overview map.
 				// Is the user starting to draw a new extent or simply clicking to change the center ?

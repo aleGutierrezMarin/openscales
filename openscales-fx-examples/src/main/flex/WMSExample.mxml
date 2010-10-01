@@ -6,7 +6,7 @@
 		   height="100%"
 		   creationComplete="initMap();" xmlns:fx="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
 	
-	<os:Map id="fxmap"
+	<os:Map id="fxMap"
 			height="100%"
 			width="100%"
 			proxy="http://openscales.org/proxy.php?url=">
@@ -71,7 +71,7 @@
 			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
-				map = fxmap.map;
+				map = fxMap.map;
 			}
 		]]>
 	</mx:Script>

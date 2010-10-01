@@ -5,9 +5,9 @@
 		   xmlns:os="http://openscales.org"
 		   width="100%"
 		   height="100%"
-		   creationComplete="initMap();" xmlns:fx1="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
+		   creationComplete="initMap();">
 	
-	<os:Map id="fxmap" width="100%" height="100%" zoom="7" centerLonLat="4.833,45.767">
+	<os:Map id="fxMap" width="100%" height="100%" zoom="7" center="4.833,45.767">
 		
 		<!-- OpenStreetMap EPSG:900913 -->
 		<os:Mapnik name="Mapnik"
@@ -23,7 +23,7 @@
 		<!-- none -->
 		
 	</os:Map>
-	<control:TraceInfo id="traceInfo"
+	<os:TraceInfo id="traceInfo"
 				  x="{width-200}"
 				  y="0"
 				  visible="{displayTrace}"/>
@@ -46,7 +46,7 @@
 			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
-				map=fxmap.map;
+				map=fxMap.map;
 			}
 		]]>
 	</fx:Script>

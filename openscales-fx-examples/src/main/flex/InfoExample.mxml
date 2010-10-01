@@ -7,7 +7,7 @@
 		 height="100%"
 		 creationComplete="initMap();" xmlns:fx1="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
 	
-	<os:Map id="fxmap" width="100%" height="100%" zoom="13" centerLonLat="-74.011,40.710">
+	<os:Map id="fxMap" width="100%" height="100%" zoom="13" center="-74.011,40.710">
 		
 		<!-- OpenStreetMap EPSG:900913 -->
 		<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
@@ -65,7 +65,7 @@
 			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
-				map=fxmap.map;
+				map=fxMap.map;
 				// Specific initialize for this example
 				map.addEventListener(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, onFeatureInfoData);
 			}

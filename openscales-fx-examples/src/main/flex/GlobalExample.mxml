@@ -1,95 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns="*"
-		 xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 xmlns:os="http://openscales.org"
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 width="100%"
-		 height="100%"
-		 creationComplete="initMap();" xmlns:fx1="org.openscales.fx.*" xmlns:control="org.openscales.fx.control.*">
+<s:Group xmlns="*" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:os="http://openscales.org"
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()">
 	
-	<os:Map id="fxmap"
-			width="100%"
-			height="100%"
-			zoom="4"
-			centerLonLat="-74.011,40.710">
+	<os:Map id="fxMap" width="100%" height="100%" zoom="4" center="-74.011,40.710">
 		
-		<os:WMSC name="Nasa"
-				 url="http://openscales.org/geoserver/gwc/service/wms"
-				 layers="bluemarble"
-				 format="image/jpeg"
-				 maxExtent="-180,-90,180,90"/>
+		<os:WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms"
+				 layers="bluemarble" format="image/jpeg" maxExtent="-180,-90,180,90"/>
 		
-		<os:DragHandler/>
-		<os:WheelHandler/>
-		<os:SelectFeaturesHandler active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
+		<os:DragHandler id="dragHandler" />
+		<os:WheelHandler id="wheelHandler" />
+		<os:SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
 		
-		<os:Spinner id="spinner"
-					x="{width / 2}"
-					y="{height / 2}"/>
-		<os:MousePosition x="10"
-						  y="{height-20}"
-						  displayProjection="EPSG:4326"/>
+		<os:Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
+		<os:MousePosition id="mousePosition" x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		
-		<!-- Specific layers and handlers of this example -->
+		<os:WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+				typename="topp:states" projection="EPSG:4326" version="1.0.0"
+				style="{Style.getDefaultSurfaceStyle()}" />
 		
-		<os:WFS name="Topp States (WFS)"
-				url="http://openscales.org/geoserver/wfs"
-				typename="topp:states"
-				projection="EPSG:4326"
-				version="1.0.0"
-				style="{Style.getDefaultSurfaceStyle()}">
-		</os:WFS>
+		<os:WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
+				projection="EPSG:4326" version="1.0.0" useCapabilities="true" capabilitiesVersion="1.0.0"
+				style="{Style.getDefaultPointStyle()}" />
 		
-		<os:WFS name="Tiger poi (WFS)"
-				url="http://openscales.org/geoserver/wfs"
-				typename="tiger:poi"
-				projection="EPSG:4326"
-				version="1.0.0"
-				useCapabilities="true"
-				capabilitiesVersion="1.0.0"
-				style="{Style.getDefaultPointStyle()}">
-		</os:WFS>
+		<os:ControlPanel id="controlPanel" x="10" y="10" title="Navigation" >
+			<os:Pan id="pan" />
+			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
+				<os:Zoom id="zoom" />
+				<s:Rect width="100%" />
+				<os:ZoomBox id="zoomBox" />
+			</s:HGroup>
+			<os:OverviewMap width="140">
+				<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
+			</os:OverviewMap>
+		</os:ControlPanel>
+		
+		<os:TraceInfo id="traceInfo" x="{width-200}" y="0" />
 		
 	</os:Map>
 	
-	<!-- Specific tools of this example -->
-	<control:TraceInfo id="traceInfo"
-				  x="{width-200}"
-				  y="0"
-				  visible="{displayTrace}"/>
-	
-	<os:ControlPanel x="10" y="10" title="Navigation" >
-		<os:Pan map="{map}"/>
-		<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
-			<os:Zoom map="{map}"/>
-			<s:Rect width="100%" />
-			<os:ZoomBox map="{map}" />
-		</s:HGroup>
-		<os:OverviewMap map="{map}" width="140">
-			<os:Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
-		</os:OverviewMap>
-	</os:ControlPanel>
-	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.events.FeatureEvent;
-			import org.openscales.core.events.MapEvent;
-			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
+			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
 			
 			private var popup:Anchored
 			
-			[Bindable] private var map:Map = null;
-			[Bindable] public var displayTrace:Boolean = false;	
-			[Bindable] public var displayFirebugTrace:Boolean = false;
-			
-			private function initMap():void {
-				Trace.useFireBugConsole = displayFirebugTrace;
-				map = fxmap.map;
-				
-				map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+			private function initMap():void {			
+				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {
@@ -107,9 +65,8 @@
 						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
 				}
 				popup.htmlText = content;
-				map.addPopup(popup, true);
+				fxMap.map.addPopup(popup, true);
 			}
-			
 			
 		]]>
 	</fx:Script>

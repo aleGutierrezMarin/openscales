@@ -1,14 +1,14 @@
 package org.openscales.fx.layer
-{
-	import mx.core.Container;
-	
+{	
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.core.Map;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.FxMap;
 	import org.openscales.proj4as.ProjProjection;
 	
-	public class FxLayer extends Container
+	import spark.components.Group;
+	
+	public class FxLayer extends Group
 	{
 		protected var _layer:Layer;
 		
