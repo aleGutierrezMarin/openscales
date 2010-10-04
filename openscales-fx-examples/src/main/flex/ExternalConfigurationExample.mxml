@@ -6,11 +6,24 @@
 		 width="100%"
 		 height="100%"
 		 creationComplete="initMap();">
-	
-	<os:Map id="fxmap"
+	<s:VGroup width="100%" height="100%">
+	  <s:Group width="100%" height="65%">
+	   <os:Map id="fxmap"
 			 width="100%"
 			 height="100%"
 			 visible="true"/>
+	  </s:Group>
+	<s:Group width="100%" height="5%">
+		<s:HGroup width="100%" >
+		  <s:Label text="Here you can load dynamicaly your xml configuration" />
+		  <s:Button id="update" label="update" click="this.updateMapConfiguration(event)" />
+		</s:HGroup>
+	</s:Group>
+	<s:Group width="100%" height="30%">	
+		<s:TextArea id="xml" width="100%" height="100%">
+		</s:TextArea>
+	</s:Group>
+  </s:VGroup>
 	
 	<fx:Script>
 		<![CDATA[
@@ -34,12 +47,24 @@
 			
 			private function initMap():void {
 				Trace.useFireBugConsole = displayFirebugTrace;
-				var map:Map = fxmap.map;
+				map = fxmap.map;
 				map.configuration = new FxConfiguration();
 				map.configuration.config = XML(new SampleMapConfOk());
 				map.configuration.configure();
 				map.width = fxmap.width;
 				map.height = fxmap.height;
+				xml.text = new SampleMapConfOk();
+			}
+			
+			private function updateMapConfiguration(event:Event):void{
+				
+				var config:String = xml.text;
+				var xmlConfig:XML = new XML(config);
+				map.configuration.config = xmlConfig;
+				map.configuration.configure();
+				map.width = fxmap.width;
+				map.height = fxmap.height;
+				
 			}
 			
 		]]>
