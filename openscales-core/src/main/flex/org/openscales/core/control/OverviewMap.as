@@ -25,19 +25,24 @@ package org.openscales.core.control
 			super(position);
 			this.width
 			this._overviewMap = new Map();
-			this._overviewMap.size = new Size(100,100);;
+			this._overviewMap.size = new Size(100,100);
 			this.addChild(this._overviewMap);
-			this.draw();
+			this.addEventListener(Event.ADDED,this.draw);
+			//this.draw();
+		}
+		
+		public function set size(value:Size):void {
+			if(!value)
+				return;
+			this._overviewMap.size = value;
 		}
 		
 		override public function set width(value:Number):void {
-			super.width = value;
-			this._overviewMap.size.w=value;
+			
 		}
 		
 		override public function set height(value:Number):void {
-			super.height = value;
-			this._overviewMap.size.h=value;
+			
 		}
 		
 		override public function set map(value:Map):void {
@@ -101,8 +106,9 @@ package org.openscales.core.control
 		 */
 		public function set baselayer(layer:Layer):void {
 			if(this._overviewMap.baseLayer != layer) {
+				Trace.log("set new baselayer");
 				this._overviewMap.removeLayer(this._overviewMap.baseLayer);
-				this._overviewMap.addLayer(layer);
+				this._overviewMap.addLayer(layer,true);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 			}
 		}
@@ -123,7 +129,7 @@ package org.openscales.core.control
 			// by default it uses a mapnik baselayer 
 			if(this._overviewMap.baseLayer == null) {
 				var layer:Layer = new Mapnik("defaultbaselayer");
-				this._overviewMap.addLayer(layer);
+				this._overviewMap.addLayer(layer,true);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 			}
 			//this.addChild(this._overviewMap);
