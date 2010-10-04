@@ -8,7 +8,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.control.Control;
-	import org.openscales.core.control.LayerSwitcher;
+	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoom;
 	import org.openscales.core.control.ScaleLine;
@@ -534,14 +534,14 @@ package org.openscales.core.configuration
 		
 		protected function parseControl(xmlNode:XML):Control {
 			var control:Control = null;
-			if(xmlNode.name() == "LayerSwitcher"){
-				var layerSwitcher:LayerSwitcher = new LayerSwitcher();
+			if(xmlNode.name() == "CoreLayerSwitcher"){
+				var layerSwitcher:LayerManager = new LayerManager();
 				layerSwitcher.name = xmlNode.@id;
 				layerSwitcher.x = xmlNode.@x;
 				layerSwitcher.y = xmlNode.@y;
 				control = layerSwitcher;
 			}
-			else if(xmlNode.name() == "PanZoom"){
+			else if(xmlNode.name() == "CorePanZoom"){
 				var pan:PanZoom = new PanZoom();
 				pan.name = xmlNode.@id;
 				pan.x = xmlNode.@x;

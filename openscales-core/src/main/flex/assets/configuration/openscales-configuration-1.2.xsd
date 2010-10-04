@@ -51,13 +51,15 @@
 	<xs:element name="Controls">
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="CoreLayerManager" />
+				<xs:element ref="CorePanZoom" />
+				<xs:element ref="LayerManager" />
 				<xs:element ref="PanZoom" />
-				<xs:element ref="LayerSwitcher" />
-				<xs:element ref="FxPan" />
-				<xs:element ref="FxZoom" />
-				<xs:element ref="FxZoomBox" />
-				<xs:element ref="FxOverview" />
-				<xs:element ref="FxLayerSwitcher" />
+				<xs:element ref="Pan" />
+				<xs:element ref="Zoom" />
+				<xs:element ref="ZoomBox" />
+				<xs:element ref="Overview" />
+				
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
@@ -69,15 +71,31 @@
 		<xs:attribute name="width" type="xs:integer" />
 		<xs:attribute name="height" type="xs:integer" />
 	</xs:complexType>
-
-	<xs:element name="LayerSwitcher">
+	
+	<xs:element name="CoreLayerManager">
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="Control" />
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
-
+	
+	<xs:element name="CorePanZoom">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Control" />
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="LayerManager">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Control" />
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	
 	<xs:element name="PanZoom">
 		<xs:complexType>
 			<xs:complexContent>
@@ -86,7 +104,7 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="FxPan">
+	<xs:element name="Pan">
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="Control" />
@@ -94,7 +112,7 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="FxZoom">
+	<xs:element name="Zoom">
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="Control" />
@@ -102,7 +120,7 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="FxZoomBox">
+	<xs:element name="ZoomBox">
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="Control" />
@@ -110,15 +128,7 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="FxOverview">
-		<xs:complexType>
-			<xs:complexContent>
-				<xs:extension base="Control" />
-			</xs:complexContent>
-		</xs:complexType>
-	</xs:element>
-	
-	<xs:element name="FxLayerSwitcher">
+	<xs:element name="Overview">
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:extension base="Control" />
@@ -143,8 +153,6 @@
 		<xs:attribute name="maxExtent" type="xs:string" />
 		<xs:attribute name="numZoomLevels" type="xs:integer" />
 		<xs:attribute name="projection" type="xs:string" />
-		
-		<xs:attribute name="maxResolution" type="xs:decimal" />
 		<xs:attribute name="maxResolution" type="xs:decimal" />
 	</xs:complexType>
 

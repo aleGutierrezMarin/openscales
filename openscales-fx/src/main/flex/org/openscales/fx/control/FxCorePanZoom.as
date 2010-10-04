@@ -2,9 +2,9 @@ package org.openscales.fx.control
 {
 	import org.openscales.core.control.PanZoom;
 
-	public class FxPanZoom extends FxControl
+	public class FxCorePanZoom extends FxControl
 	{
-		public function FxPanZoom()
+		public function FxCorePanZoom()
 		{
 			this.control = new PanZoom();
 			super();

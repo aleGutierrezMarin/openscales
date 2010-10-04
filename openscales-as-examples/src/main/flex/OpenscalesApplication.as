@@ -7,7 +7,7 @@ package {
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-	import org.openscales.core.control.LayerSwitcher;
+	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.core.control.PanZoomBar;
@@ -48,7 +48,7 @@ package {
 
 			// Add Controls to map
 			_map.addControl(new MousePosition());
-			_map.addControl(new LayerSwitcher());
+			_map.addControl(new LayerManager());
 			_map.addControl(new PanZoomBar());
 			
 

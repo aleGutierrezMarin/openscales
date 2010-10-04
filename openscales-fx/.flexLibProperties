@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" version="1">
+<flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
     <classEntry path="org.openscales.fx.FxExtent"/>
     <classEntry path="org.openscales.fx.FxMap"/>
@@ -8,8 +8,8 @@
     <classEntry path="org.openscales.fx.configuration.FxConfiguration"/>
     <classEntry path="org.openscales.fx.control.FxControl"/>
     <classEntry path="org.openscales.fx.control.FxMousePosition"/>
-    <classEntry path="org.openscales.fx.control.FxPanZoom"/>
-    <classEntry path="org.openscales.fx.control.FxPanZoomBar"/>
+    <classEntry path="org.openscales.fx.control.FxCorePanZoom"/>
+    <classEntry path="org.openscales.fx.control.FxCorePanZoomBar"/>
     <classEntry path="org.openscales.fx.control.FxScaleLine"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.feature.FxStyle"/>

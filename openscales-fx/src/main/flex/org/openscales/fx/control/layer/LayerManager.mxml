@@ -4,7 +4,7 @@
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:control="org.openscales.fx.control.*" 
 	xmlns:layer="org.openscales.fx.control.layer.*"
-	width="100%" >
+	width="230" >
 	<!--TODO-->
 	<!--horizontalScrollPolicy="off"-->
 	<fx:Script>
