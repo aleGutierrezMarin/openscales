@@ -566,7 +566,6 @@ package org.openscales.core.configuration
 		protected function parseSecurity(xmlNode:XML):AbstractSecurity{
 			var security:AbstractSecurity=null;
 			if(xmlNode.name()=="IGNGeoRMSecurity"){
-				Trace.log("bleh1");
 				if(map!=null && xmlNode.@key!=null)
 					security=new IGNGeoRMSecurity(map,xmlNode.@key,xmlNode.@proxy);
 			}

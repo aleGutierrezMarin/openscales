@@ -67,7 +67,6 @@ package {
 			_map.zoom=5;
 						
 			this.addChild(_map);
-			Trace.log("coin");
 			var overview:OverviewMap = new OverviewMap(new Pixel(0,0));
 			overview.width=100;
 			overview.height=100;
