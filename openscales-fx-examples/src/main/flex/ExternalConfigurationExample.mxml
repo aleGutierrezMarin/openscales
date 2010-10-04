@@ -1,43 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns="*"
-		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:os="http://openscales.org"
-		 width="100%"
-		 height="100%"
-		 creationComplete="initMap();">
-	<s:VGroup width="100%" height="100%">
-	  <s:Group width="100%" height="65%">
-	   <os:Map id="fxmap"
-			 width="100%"
-			 height="100%"
-			 visible="true"/>
-	  </s:Group>
-	<s:Group width="100%" height="5%">
-		<s:HGroup width="100%" >
-		  <s:Label text="Here you can load dynamicaly your xml configuration" />
-		  <s:Button id="update" label="update" click="this.updateMapConfiguration(event)" />
-		</s:HGroup>
-	</s:Group>
-	<s:Group width="100%" height="30%">	
-		<s:TextArea id="xml" width="100%" height="100%">
-		</s:TextArea>
-	</s:Group>
-  </s:VGroup>
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%" height="100%" creationComplete="initMap()">
+	
+	<Map id="fxMap" width="100%" height="100%" />
 	
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
 			import org.openscales.fx.configuration.FxConfiguration;
-
+			
 			[Embed(source="/assets/configuration/sampleFxConf.xml", mimeType="application/octet-stream")]
-			protected const SampleFxConf:Class;
+			protected const SampleMapConfOk:Class;
 			
 			private function initMap():void {
 				
 				// TODO : Flex based configuration
 				fxMap.map.configuration = new FxConfiguration();
-				fxMap.map.configuration.config = XML(new SampleFxConf());
+				fxMap.map.configuration.config = XML(new SampleMapConfOk());
 				fxMap.map.configuration.configure();
 				
 				// TODO : should be done automatically
