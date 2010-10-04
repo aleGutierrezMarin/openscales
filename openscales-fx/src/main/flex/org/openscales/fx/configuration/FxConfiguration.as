@@ -47,7 +47,7 @@ package org.openscales.fx.configuration
 		protected function parseFxControl(xmlNode:XML):Control {
 		 	var control:Control = null;
 		 					 					
-	 		if(xmlNode.name() == "FxPan"){
+	 		if(xmlNode.name() == "Pan"){
 	 			var fxPan:Pan = new Pan();
 	 			if(String(xmlNode.@id) != ""){
 	 				fxPan.id = String(xmlNode.@id);
@@ -67,7 +67,7 @@ package org.openscales.fx.configuration
 	 			control = fxPan;  
 	 		}
 	 			 		
-	 		else if(xmlNode.name() == "FxZoom"){
+	 		else if(xmlNode.name() == "Zoom"){
 	 			var fxZoom:Zoom = new Zoom();
 	 			if(String(xmlNode.@id) != ""){
 	 				fxZoom.id = String(xmlNode.@id);
@@ -87,7 +87,7 @@ package org.openscales.fx.configuration
 	 			control = fxZoom;
 	 		}
 	 		
-	 		else if(xmlNode.name() == "FxZoomBox"){
+	 		else if(xmlNode.name() == "ZoomBox"){
 	 			var fxZoomBox:ZoomBox = new ZoomBox();
 	 			if(String(xmlNode.@id) != ""){
 					fxZoomBox.id = String(xmlNode.@id);
@@ -108,7 +108,7 @@ package org.openscales.fx.configuration
 	 		}
 	 		
 			//FIX ME : because asynchrone, we need to wait the creation complete on FXMap before setting the map		 					
-	 		else if(xmlNode.name() == "FxOverview"){
+	 		else if(xmlNode.name() == "Overview"){
 	 			var fxOverview:OverviewMap = new OverviewMap();
 	 			if(String(xmlNode.@id) != ""){
 					fxOverview.id = String(xmlNode.@id);
@@ -129,7 +129,7 @@ package org.openscales.fx.configuration
 	 		}  
 	 		
 			//FIX ME : because asynchrone, we need to wait the creation complete of the others flex component before setting the map		 					
-	 		else if(xmlNode.name() == "FxLayerSwitcher"){
+	 		else if(xmlNode.name() == "LayerManager"){
 	 			var fxLayerSwitcher:LayerManager = new LayerManager();
 	 			if(String(xmlNode.@id) != ""){
 					fxLayerSwitcher.id = String(xmlNode.@id);
@@ -148,7 +148,7 @@ package org.openscales.fx.configuration
 	 			}
 	 			control = fxLayerSwitcher;
 				
-	 		}  
+	 		}
 		return control;
 	 }
 		

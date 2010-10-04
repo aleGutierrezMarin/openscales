@@ -15,7 +15,7 @@
 	</Handlers>
 
 	<Controls>
-		<PanZoom id="pan"/>
+		<CorePanZoom id="pan"/>
 	</Controls>
 
 	<Custom>

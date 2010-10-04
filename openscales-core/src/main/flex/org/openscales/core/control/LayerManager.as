@@ -21,7 +21,7 @@ package org.openscales.core.control
 	/**
 	 * Create a layerSwitcher that display all the layer load on the map
 	 */
-	public class LayerSwitcher extends Control
+	public class LayerManager extends Control
 	{
 
 		private var _activeColor:uint = 0x00008B;
@@ -57,7 +57,7 @@ package org.openscales.core.control
 		 *
 		 * @param position
 		 */
-		public function LayerSwitcher(position:Pixel = null) {
+		public function LayerManager(position:Pixel = null) {
 			super(position);
 
 			this._minimizeButton = new Button("minimize", new _layerSwitcherMinimizeImg(), this.position.add(-18,0));

@@ -9,14 +9,14 @@
 			import org.openscales.core.Map;
 			import org.openscales.fx.configuration.FxConfiguration;
 
-			[Embed(source="/assets/configuration/sampleMapConfOk.xml", mimeType="application/octet-stream")]
-			protected const SampleMapConfOk:Class;
+			[Embed(source="/assets/configuration/sampleFxConf.xml", mimeType="application/octet-stream")]
+			protected const SampleFxConf:Class;
 			
 			private function initMap():void {
 				
 				// TODO : Flex based configuration
 				fxMap.map.configuration = new FxConfiguration();
-				fxMap.map.configuration.config = XML(new SampleMapConfOk());
+				fxMap.map.configuration.config = XML(new SampleFxConf());
 				fxMap.map.configuration.configure();
 				
 				// TODO : should be done automatically
