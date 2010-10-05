@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:control="org.openscales.fx.control.*"
+		  width="100%"
+		  height="42" 
+		  >
+	<fx:Script>
+		<![CDATA[
+			import mx.accessibility.ButtonAccImpl;
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.core.ButtonAsset;
+			import mx.core.IVisualElement;
+			import mx.events.DragEvent;
+			import mx.events.PropertyChangeEvent;
+			import mx.skins.halo.ButtonSkin;
+			
+			import org.openscales.basetypes.Bounds;
+			import org.openscales.core.Map;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.layer.Layer;
+			import org.openscales.core.layer.ogc.WFS;
+			
+			import spark.components.Button;
+			import spark.components.CheckBox;
+			import spark.components.Label;
+			import spark.components.List;
+			import spark.components.RadioButton;
+			import spark.components.RadioButtonGroup;
+
+			private var labelLayer:Label;
+			private var _layer:Layer;
+			
+			[Bindable]
+			private var _opacity:String;
+			
+			[Bindable]
+			[Embed(source="/assets/images/layerRemove-upskin.png")]
+			public var remove:Class;
+			
+			/**
+			 * Get the layer that the List into the LayerSwitcher.mxml send to display it
+			 *
+			 * @return return the layer
+			 */
+			private function get layer():Layer {
+				return this._layer;
+			}
+			
+			/**
+			 * Change the layer visibility
+			 *
+			 * @param event Change event
+			 */
+			public function layerVisible(event:MouseEvent):void{
+				layer.visible = !layer.visible;
+				// If the layer was uncheck from the beggining, he hadn't load yet so we need
+				// to redraw it to load it.
+				if(layer.visible){
+					layer.redraw();
+				}
+			} 
+			
+			/**
+			 * Change the opacity of the layer
+			 *
+			 * @param event event send by a slide
+			 */
+			public function layerOpacity(event:Event):void
+			{
+				layer.alpha = (event.target as HSlider).value/100;
+				_opacity = Math.floor((event.target as HSlider).value) + "%";
+				if(layer.alpha == 0)
+				{
+					labelLayer.setStyle("color",0xA8A8A8);
+				}
+				else
+				{
+					labelLayer.setStyle("color",0x000000);
+				}
+			}
+			
+			/**
+			 * Delete the layer on the map
+			 *
+			 * @param event Click event
+			 */
+			public function deleteLayer(event:MouseEvent):void {
+				_layer.map.removeLayer(_layer);
+			}
+			
+			
+			public function inOutRange(event:LayerEvent):void {
+					var component:IVisualElement = displayControl.getElementAt(0);
+					if(component is CheckBox)
+					{
+						if(event.type == LayerEvent.LAYER_OUT_RANGE)
+						{     
+							(component as CheckBox).enabled = false;
+						}
+						else
+						{
+							(component as CheckBox).enabled = true;
+							event.layer.visible = (component as CheckBox).selected; 
+						}
+					}
+			}
+			/**
+			 * Set the data
+			 *
+			 * @param value
+			 */
+			override public function set data(value:Object):void {
+				
+				_layer = value as Layer;
+				
+				if((this.layer != null) && (displayControl != null))
+				{
+					if(_layer.map!=null){
+					  _layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
+					  _layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+					  _layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
+					}
+					displayControl.removeAllElements();
+					_opacity = Math.floor(this.layer.alpha*100) + "%";
+					opacityControl.value = this.layer.alpha*100;
+					labelLayer = new Label();
+					labelLayer.text = this.layer.name;
+					labelLayer.percentWidth = 100;
+					displayControl.addElement(labelLayer);		
+					isBaseLayer.selected = _layer.isBaseLayer;
+				}
+				
+			}
+			/**
+			 * Center the map on the layer
+			 *
+			 * @param event Click event
+			 */
+			private function setLayerExtent(event:MouseEvent):void
+			{
+				var bounds:Bounds = _layer.maxExtent;
+				if (bounds != null) {
+					_layer.map.zoomToExtent(bounds);
+				}
+			}
+			
+			private function onDrag(event:Event):void {
+				event.stopPropagation();
+			}
+			
+			private function changeBaseLayer(event:MouseEvent):void {
+				layer.map.baseLayer = this._layer;
+				layer.map.moveTo(layer.map.center);
+			}
+			
+			private function baseLayerChanged(event:LayerEvent):void {
+				isBaseLayer.selected = (event.layer == this.layer);
+			}
+			
+			
+		 ]]>
+	</fx:Script>
+	
+
+	<s:states> 
+		<s:State name="normal"/> 
+		<s:State name="hovered"/> 
+	</s:states> 
+
+	
+<s:VGroup paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
+  <s:HGroup width="100%">
+	    <!-- TODO : radio button not editable for now because there is some issue when you change baseLayer -->
+	    <s:RadioButton id="isBaseLayer" click="changeBaseLayer(event)" enabled="false" />
+		<s:Group id="displayControl"
+				 width="128"/>
+	  <control:IconButton id="deleteButton" width="16" height="16" 
+						  skinClass="org.openscales.fx.skin.IconButtonSkin" 
+						  toolTip="Supprimer la couche de la sélection des couches visibles" 
+						  click="deleteLayer(event)"
+						  icon="{remove}"
+						  />
+	  
+	</s:HGroup>
+	
+	<s:HGroup id="Hbox2" width="100%" >
+		
+		<s:HSlider width="100%"
+				  
+				   id="opacityControl"
+				   minimum="0"
+				   maximum="100"
+				   change="layerOpacity(event)"
+				   liveDragging="true"
+				   mouseDown="onDrag(event)"/>
+		<s:Label text="{_opacity}"/>
+	</s:HGroup>
+</s:VGroup>
+
+</s:ItemRenderer>
