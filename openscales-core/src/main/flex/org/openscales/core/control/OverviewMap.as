@@ -4,6 +4,7 @@ package org.openscales.core.control
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.Map;
@@ -26,9 +27,7 @@ package org.openscales.core.control
 			this.width
 			this._overviewMap = new Map();
 			this._overviewMap.size = new Size(100,100);
-			this.addChild(this._overviewMap);
-			this.addEventListener(Event.ADDED,this.draw);
-			//this.draw();
+			addEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
 		}
 		
 		public function set size(value:Size):void {
@@ -67,9 +66,22 @@ package org.openscales.core.control
 		 * @param event the event to forward to the map
 		 */
 		private function forwardMouseWheelToMap(event:MouseEvent):void {
-			Trace.log("Overview - forwardMouseWheelToMap");
-			this.map.dispatchEvent(event);
+			var px:Pixel = new Pixel(this._overviewMap.mouseX,
+									 this._overviewMap.mouseY);
+			var loc:Location = this._overviewMap.getLocationFromMapPx(px);
+			var zoom:Number = this.map.zoom;
+			if(event.delta > 0) {
+				zoom++;
+			} else {
+				zoom--;
+			}
+			this.map.moveTo(loc,zoom,false,false);
 		}
+		
+		private function clic(event:MouseEvent):void {
+			
+		}
+		
 		private function updateRectFromMainMap(event:Event=null):void {
 		}
 		
@@ -106,8 +118,8 @@ package org.openscales.core.control
 		 */
 		public function set baselayer(layer:Layer):void {
 			if(this._overviewMap.baseLayer != layer) {
-				Trace.log("set new baselayer");
-				this._overviewMap.removeLayer(this._overviewMap.baseLayer);
+				if(this._overviewMap.baseLayer!=null)
+					this._overviewMap.removeLayer(this._overviewMap.baseLayer);
 				this._overviewMap.addLayer(layer,true);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 			}
@@ -123,16 +135,19 @@ package org.openscales.core.control
 			this._overviewMap.addLayer(layer);
 		}
 		
+		private function onAddedToStage(event:Event):void {
+			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
+			this.draw();
+		}
+		
 		override public function draw():void {
-			//super.draw();
-			Trace.log("draw overview");
+			this.addChild(this._overviewMap);
 			// by default it uses a mapnik baselayer 
 			if(this._overviewMap.baseLayer == null) {
 				var layer:Layer = new Mapnik("defaultbaselayer");
 				this._overviewMap.addLayer(layer,true);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 			}
-			//this.addChild(this._overviewMap);
 		}
 	}
 }
