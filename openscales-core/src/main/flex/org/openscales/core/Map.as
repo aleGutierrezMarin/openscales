@@ -100,25 +100,22 @@ package org.openscales.core
 			
 		}
 		
-		private function destroy():Boolean {
-			var l:Vector.<Layer> = this.layers;
-			var i:int;
-			if (l != null) {
-				i = l.length - 1;
-				for(i;i>-1;--i){
-					l[i].destroy();
+		public function reset():void {
+			this.removeAllLayers();
+			this.baseLayer = null;
+			
+			if (this._handlers != null) {
+				for each(var handler:IHandler in this._handlers) {
+					this.removeHandler(handler);
 				}
-				this.removeAllLayers();
 			}
-			//TODO
+			
 			if (this._controls != null) {
-				i = this._controls.length - 1;
-				for(i;i>-1;--i){
-					this._controls[i].destroy();
+				for each(var control:IControl in this._controls) {
+					this.removeControl(control);
 				}
-				this._controls = null;
 			}
-			return true;
+			
 		}
 		
 		// Layer management
@@ -176,6 +173,7 @@ package org.openscales.core
 		 */
 		public function set baseLayer(newBaseLayer:Layer):void {
 			if (! newBaseLayer) {
+				this._baseLayer = null;
 				return;
 			}
 			
@@ -264,7 +262,7 @@ package org.openscales.core
 		 */
 		public function removeLayer(layer:Layer, setNewBaseLayer:Boolean=true):void {
 			this._layerContainer.removeChild(layer);
-			layer.map = null;
+			layer.destroy();
 			var l:Vector.<Layer> = this.layers;
 			var i:int = l.indexOf(layer);
 			if(i>-1)
@@ -284,6 +282,7 @@ package org.openscales.core
 			}
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
+			layer = null;
 		}
 		
 		public function removeAllLayers():void {
@@ -306,21 +305,11 @@ package org.openscales.core
 				Trace.warning("Map.addControl: null control not added");
 				return;
 			}
-			/*if (control.map != this) {
-			Trace.error("Map.addControl: control not added because it is associated to an other map");
-			return;
-			}*/
-			// Is the input control already rgistered ?
-			// Or an other control of the same type ?
 			var i:uint = 0;
 			var j:uint = this._controls.length;
 			for (; i<j; ++i) {
 				if (control == this._controls[i]) {
 					Trace.warning("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
-					return;
-				}
-				if (getQualifiedClassName(control) == getQualifiedClassName(this.controls[i])) {
-					Trace.warning("Map.addControl: an other control is already registered for "+getQualifiedClassName(control));
 					return;
 				}
 			}
@@ -334,6 +323,20 @@ package org.openscales.core
 					this.addChild(control as Sprite);
 				}
 			}
+		}
+		
+		public function removeControl(control:IControl):void {
+			var newControls:Vector.<IControl> = new Vector.<IControl>();
+			for each (var mapControl:IControl in this._controls) {
+				if (mapControl == control) {
+					control.active = false;
+					this.removeChild(control as Sprite);
+					control = null;
+				} else {
+					newControls.push(mapControl);
+				}
+			}
+			this._controls = newControls;
 		}
 		
 		/**
@@ -396,7 +399,7 @@ package org.openscales.core
 			for each (var mapHandler:IHandler in this._handlers) {
 				if (mapHandler == handler) {
 					handler.active = false;
-					handler.map = null;
+					handler = null;
 				} else {
 					newHandlers.push(mapHandler);
 				}

@@ -273,7 +273,7 @@ package org.openscales.core.basetypes.linkedlist
 			this._head = null;
 			while(node!=null){
 				node=node.nextNode
-				if(node.previousNode!=null)
+				if(node && node.previousNode)
 					node.previousNode.clear();
 			}
 			this._tail.clear();
