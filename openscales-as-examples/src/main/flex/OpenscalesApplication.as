@@ -73,8 +73,7 @@ package {
 			var cycle2:CycleMap=new CycleMap("Cycle2");
 			cycle2.proxy = "http://openscales.org/proxy.php?url=";
 			overview.baselayer = cycle2;
-			this.addChild(overview);
-			//overview.draw();
+			addChild(overview);
 		}
 	}
 }
