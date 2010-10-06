@@ -39,7 +39,6 @@ package org.openscales.core.handler
 			this.map = map;
 			this.active = active;
 			this.behaviour = behaviour;
-			this.map.addEventListener(HandlerEvent.HANDLER_ACTIVATION, onOtherHandlerActivation);
 		}
 
 		/**
@@ -90,6 +89,11 @@ package org.openscales.core.handler
 			// Update the property if needed
 			if (this._active != value) {
 				this._active = value;
+				if(value){
+					this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_ACTIVATION, false, false, this.behaviour));
+				} else {
+					this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_DESACTIVATION, false, false, this.behaviour));
+				}
 				if (this.toggleHandlerActivity != null) {
 					this.toggleHandlerActivity(this._active);
 				}
@@ -105,13 +109,6 @@ package org.openscales.core.handler
 		}
 		public function set toggleHandlerActivity(value:Function):void {
 			this._toggleHandlerActivity = value;
-			
-			//TODO pas au bon endroit
-			if(value){
-				this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_ACTIVATION, false, false, this.behaviour));
-			} else {
-				this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_DESACTIVATION, false, false, this.behaviour));
-			}
 		}
 		
 		/**
@@ -128,24 +125,55 @@ package org.openscales.core.handler
 		 * Add the listeners to the associated map
 		 */
 		protected function registerListeners():void {
+			this.map.addEventListener(HandlerEvent.HANDLER_ACTIVATION, onOtherHandlerActivation);
 		}
 		
 		/**
 		 * Remove the listeners to the associated map
 		 */
 		protected function unregisterListeners():void {
+			//TODO : Voir si le listener doit être supprimé lorsque le handler courant est désactivé, pas certain car sinon
+			// on ne pourra pas gérer le cas où il est nécessaire d'activer un handler à l'activation d'un autre
+			this.map.removeEventListener(HandlerEvent.HANDLER_ACTIVATION, onOtherHandlerActivation);
 		}
 		
 		/**
 		 * Callback use when another handler is activated
 		 */
 		protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
-			if(handlerEvent.behaviour == HandlerBehaviour.MOVE){
+			if(handlerEvent.behaviour == HandlerBehaviour.MOVE) {
 				// A move handler has been activated
+				if(this.behaviour == HandlerBehaviour.MOVE) {
+					// This handler has the same behaviour than the one which has been activated : MOVE
+				} else if(this.behaviour == HandlerBehaviour.SELECT) {
+					// Current handler : SELECT vs Activated handler : MOVE
+				} else if(this.behaviour == HandlerBehaviour.DRAW) {
+					// Current handler : DRAW vs Activated handler : MOVE
+				} else {
+					// Do nothing
+				}
 			} else if (handlerEvent.behaviour == HandlerBehaviour.SELECT) {
 				// A select handler has been activated
+				if(this.behaviour == HandlerBehaviour.MOVE) {
+					// Current handler : MOVE vs Activated handler : SELECT
+				} else if(this.behaviour == HandlerBehaviour.SELECT) {
+					// This handler has the same behaviour than the one which has been activated : SELECT
+				} else if(this.behaviour == HandlerBehaviour.DRAW) {
+					// Current handler : DRAW vs Activated handler : SELECT
+				} else {
+					// Do nothing
+				}
 			} else if (handlerEvent.behaviour == HandlerBehaviour.DRAW) {
 				// A draw handler has been activated
+				if(this.behaviour == HandlerBehaviour.MOVE) {
+					// Current handler : MOVE vs Activated handler : DRAW
+				} else if(this.behaviour == HandlerBehaviour.SELECT) {
+					// Current handler : SELECT vs Activated handler : DRAW
+				} else if(this.behaviour == HandlerBehaviour.DRAW) {
+					//This handler has the same behaviour than the one which has been activated : DRAW
+				} else {
+					// Do nothing
+				}
 			} else {
 				// Do nothing
 			}
