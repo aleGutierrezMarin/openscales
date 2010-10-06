@@ -4,6 +4,7 @@ package org.openscales.core.handler
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.events.HandlerEvent;
 
 	/**
 	 * Handler base class
@@ -14,11 +15,15 @@ package org.openscales.core.handler
 		 * Map associated to the handler
 		 */
 		private var _map:Map;
-		
 		/**
 		 * Boolean defining if the handler is active or not
 		 */
 		private var _active:Boolean;
+		
+		/**
+		 * String defining the behaviour of the handler
+		 */
+		private var _behaviour:String=null;
 		
 		/**
 		 * Callback function toggleHandlerActivity(active:Boolean):void
@@ -30,9 +35,11 @@ package org.openscales.core.handler
 		 * @param map the map associated to the handler
 		 * @param active boolean defining if the handler is active or not (default=false)
 		 */
-		public function Handler(map:Map = null, active:Boolean = false) {
+		public function Handler(map:Map = null, active:Boolean = false, behaviour:String = null) {
 			this.map = map;
 			this.active = active;
+			this.behaviour = behaviour;
+			this.map.addEventListener(HandlerEvent.HANDLER_ACTIVATION, onOtherHandlerActivation);
 		}
 
 		/**
@@ -98,6 +105,23 @@ package org.openscales.core.handler
 		}
 		public function set toggleHandlerActivity(value:Function):void {
 			this._toggleHandlerActivity = value;
+			
+			//TODO pas au bon endroit
+			if(value){
+				this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_ACTIVATION, false, false, this.behaviour));
+			} else {
+				this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_DESACTIVATION, false, false, this.behaviour));
+			}
+		}
+		
+		/**
+		 * Getter and setter of the String defining the behaviour of the handler
+		 */
+		public function get behaviour():String{
+			return this._behaviour;
+		}
+		public function set behaviour(value:String):void {
+			this.behaviour = value;
 		}
 		
 		/**
@@ -110,6 +134,21 @@ package org.openscales.core.handler
 		 * Remove the listeners to the associated map
 		 */
 		protected function unregisterListeners():void {
+		}
+		
+		/**
+		 * Callback use when another handler is activated
+		 */
+		protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
+			if(handlerEvent.behaviour == HandlerBehaviour.MOVE){
+				// A move handler has been activated
+			} else if (handlerEvent.behaviour == HandlerBehaviour.SELECT) {
+				// A select handler has been activated
+			} else if (handlerEvent.behaviour == HandlerBehaviour.DRAW) {
+				// A draw handler has been activated
+			} else {
+				// Do nothing
+			}
 		}
 		
 	}
