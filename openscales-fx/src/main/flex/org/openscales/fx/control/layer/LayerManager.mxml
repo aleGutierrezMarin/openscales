@@ -107,7 +107,9 @@
 			<s:VerticalLayout horizontalAlign="justify" 
 							  requestedRowCount="3"
 						 />
+			
 		</s:layout>
+			
  </s:List>
 
 	
