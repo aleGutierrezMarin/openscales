@@ -66,7 +66,8 @@
 				  visible="{displayTrace}"/>
 	
 	<os:ControlPanel x="10" y="10" title="Navigation" >
-		<control:pan2 map="{map}" width="50" height="50"/>
+		<os:Pan map="{map}" x="75" y="75" width="50" height="50"/>
+		<control:pan3 map="{map}" />
 	</os:ControlPanel>
 	
 	<fx:Script>

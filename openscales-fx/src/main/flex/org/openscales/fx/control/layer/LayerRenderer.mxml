@@ -3,8 +3,11 @@
 		  xmlns:s="library://ns.adobe.com/flex/spark"
 		  xmlns:fx="http://ns.adobe.com/mxml/2009"
 		  xmlns:control="org.openscales.fx.control.*"
+		  xmlns:d="http://ns.adobe.com/fxg/2008/dt" 
+		  xmlns:fxg="assets.images.fxg.*"
 		  width="100%"
 		  height="45" 
+		  
 		  >
 	<fx:Script>
 		<![CDATA[
@@ -170,8 +173,25 @@
 		<s:State name="hovered"/> 
 	</s:states> 
 
+	<s:Rect left="2" right="2" top="2" bottom="2" radiusX="3" radiusY="3" includeIn="normal">
+                	<s:fill>
+						<s:SolidColor color="#FFFFFF"/>
+					</s:fill>
+					<s:stroke>
+						<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#6F7784"/>
+					</s:stroke>
+	</s:Rect>
 	
-<s:VGroup paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
+	<s:Rect left="2" right="2" top="2" bottom="2" radiusX="3" radiusY="3" includeIn="hovered">
+					<s:fill>
+						<s:SolidColor color="#E7F4FD"/>
+					</s:fill>
+					<s:stroke>
+						<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#6F7784"/>
+					</s:stroke>
+	</s:Rect>
+	
+<s:VGroup paddingBottom="3" paddingLeft="3" paddingRight="3" paddingTop="4">
   <s:HGroup width="100%">
 	    <s:RadioButton id="isBaseLayer" click="changeBaseLayer(event)"/>
 		<s:Group id="displayControl"
@@ -198,5 +218,6 @@
 		<s:Label text="{_opacity}"/>
 	</s:HGroup>
 </s:VGroup>
-
+	
+	
 </s:ItemRenderer>
