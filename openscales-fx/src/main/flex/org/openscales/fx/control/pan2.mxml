@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<control:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:control="org.openscales.fx.control.*" width="400" height="300"
+				 initialize="configure()"
+				 >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.StateChangeEvent;
+			
+			public var DELTA_PX:Number = 100;
+			public function  configure():void{ 
+				
+				this.panSkin.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.moveMap);
+			}
+			
+			public function moveMap(event:StateChangeEvent):void
+			{
+				
+				switch(event.newState)
+				{
+					case "sud" :
+						this.map.pan(0, this.DELTA_PX, true);
+						break;
+					case "est" :
+						this.map.pan(this.DELTA_PX, 0, true);
+						break;
+					case "nord" :
+						this.map.pan(0, -this.DELTA_PX, true);		
+						break;
+					case "ouest":
+						this.map.pan(-this.DELTA_PX, 0, true);
+						break;
+					case "sud_est" :
+						this.map.pan(this.DELTA_PX, this.DELTA_PX, true);
+						break;
+					case "sud_ouest" :
+						this.map.pan(-this.DELTA_PX, this.DELTA_PX, true);
+						break;
+					case "nord_est" :
+						this.map.pan(this.DELTA_PX,-this.DELTA_PX, true);		
+						break;
+					case "nord_ouest":
+						this.map.pan(-this.DELTA_PX, -this.DELTA_PX, true);
+						break;
+					default : 
+						
+				}
+					
+			}
+				
+		
+			
+		]]>
+	</fx:Script>
+	
+
+	<s:SkinnableContainer id="panSkin"
+		skinClass="org.openscales.fx.skin.panSkin" width="50" height="50">
+		
+
+	</s:SkinnableContainer>
+ 	
+</control:Control>
