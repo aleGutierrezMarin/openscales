@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <control:Control xmlns:s="library://ns.adobe.com/flex/spark"
 				 xmlns:fx="http://ns.adobe.com/mxml/2009"
-				 xmlns:control="org.openscales.fx.control.*" > 
+				 xmlns:control="org.openscales.fx.control.*" 
+				 xmlns:fxg="assets.images.fxg.*"
+				 > 
 	
 	<fx:Script>
 		<![CDATA[
@@ -71,8 +73,7 @@
 			
 		]]>
 	</fx:Script>
-	
-	<s:TileGroup horizontalGap="0" verticalGap="0">
+	<s:TileGroup horizontalGap="0" verticalGap="0" >
 
 			<s:Rect width="20" />
 			<control:IconButton id="upButton"
@@ -80,7 +81,8 @@
 								height="20"
 								toolTip="{this._toolTipNorth}"
 								icon="{arrowUp}"
-								click="this.onButtonClick(event)" />
+								click="this.onButtonClick(event)" 
+								/>
 			<s:Rect width="20" />
 			<control:IconButton id="leftButton"
 								width="20"
@@ -103,5 +105,7 @@
 								icon="{arrowDown}"
 								click="this.onButtonClick(event)" />
 	</s:TileGroup>
-	
+	<s:Button>
+		
+	</s:Button>
 </control:Control>

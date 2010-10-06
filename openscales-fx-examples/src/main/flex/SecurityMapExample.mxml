@@ -14,11 +14,11 @@
 			height="100%"
 			zoom="6"
 			centerLonLat="4.833,45.767"
-			proxy="http://openscales.org/proxy.php?url=">
+			>
 		
 		<os:IGNGeoRMSecurity key="1202474798937064747"
 							 layers="ORTHOPHOTOS"
-							 proxy="http://openscales.org/proxy.php?url="/>
+							 />
 		
 		<os:WMSC id="ortho"
 				 name="ORTHOPHOTOS"

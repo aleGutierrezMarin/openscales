@@ -6,12 +6,13 @@ package org.openscales.core.tile
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
-
-	import org.openscales.core.Trace;
+	import flash.net.URLRequestMethod;
+	
 	import org.openscales.basetypes.Bounds;
-	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
+	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.DataRequest;
@@ -80,6 +81,9 @@ package org.openscales.core.tile
 				}
 				this.loading = true;		     
 				_request = new DataRequest(this.url, onTileLoadEnd, onTileLoadError);
+				_request.method = URLRequestMethod.POST;
+				_request.postContent = "e";
+				_request.postContentType = "application/x-www-form-urlencoded";
 				_request.security = this.layer.security;
 				_request.proxy = this.layer.proxy;
 				if(this.layer.security==null) {
