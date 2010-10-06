@@ -66,7 +66,7 @@ package org.openscales.core.security.ign
 
 
 		public function IGNGeoRMSecurity(map:Map, key:String, proxy:String = null
-										 , host:String = null, isPost:Boolean = false) {
+										 , host:String = null, isPost:Boolean = true) {
 			if (host) {
 				this.host = host;
 			}
@@ -74,7 +74,7 @@ package org.openscales.core.security.ign
 				this.proxy = proxy;
 			}
 			if(isPost){
-				this.isPost = isPost;
+				this.isPost = true;
 			}
 			this.key = key;
 			this._timer = new Timer(this.ttl, 1);
@@ -119,7 +119,7 @@ package org.openscales.core.security.ign
 		private function requestToken(url:String,params:String,post:Boolean, authenticate:Function):void{		 					
 			var xr:XMLRequest = null;
 			if(post){
-				xr = new XMLRequest(url, authenticate);
+				xr = new XMLRequest(url+ params, authenticate);
 				xr.postContent = new URLVariables(params);
 			}	else{
 				xr = new XMLRequest(url+ params, authenticate);	
