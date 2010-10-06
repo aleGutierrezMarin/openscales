@@ -1108,6 +1108,7 @@ package org.openscales.core
 			var newIndexTemp:int = length - newIndex - 1;
 			if(newIndex >= 0 && newIndex < length )
 			  this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
+			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		/**
 		 * @layer is layer that must be changed
@@ -1120,6 +1121,7 @@ package org.openscales.core
 			if(newIndex >= 0 && newIndex < length)
 			  this.layerContainer.setChildIndex(layer,newIndex);
 			//- cause the ordre is not the same that the dysplay order
+			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		
 		

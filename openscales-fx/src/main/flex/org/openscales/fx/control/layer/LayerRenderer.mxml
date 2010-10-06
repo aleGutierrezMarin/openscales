@@ -4,10 +4,19 @@
 		  xmlns:fx="http://ns.adobe.com/mxml/2009"
 		  xmlns:control="org.openscales.fx.control.*"
 		  width="100%"
-		  height="42" 
+		  height="42" xmlns:fxg="fxg.*" 
 		  >
 	<fx:Script>
 		<![CDATA[
+			import fxg.ButtonCloseOver;
+			import fxg.ButtonCloseUp;
+			import fxg.DownArrowDown;
+			import fxg.DownArrowOver;
+			import fxg.DownArrowUp;
+			import fxg.UpArrowDown;
+			import fxg.UpArrowOver;
+			import fxg.UpArrowUp;
+			
 			import mx.accessibility.ButtonAccImpl;
 			import mx.binding.utils.BindingUtils;
 			import mx.binding.utils.ChangeWatcher;
@@ -19,6 +28,7 @@
 			
 			import org.openscales.basetypes.Bounds;
 			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.ogc.WFS;
@@ -29,16 +39,13 @@
 			import spark.components.List;
 			import spark.components.RadioButton;
 			import spark.components.RadioButtonGroup;
+			import spark.core.SpriteVisualElement;
 
 			private var labelLayer:Label;
 			private var _layer:Layer;
 			
 			[Bindable]
 			private var _opacity:String;
-			
-			[Bindable]
-			[Embed(source="/assets/images/layerRemove-upskin.png")]
-			public var remove:Class;
 			
 			/**
 			 * Get the layer that the List into the LayerSwitcher.mxml send to display it
@@ -131,6 +138,9 @@
 					labelLayer.percentWidth = 100;
 					displayControl.addElement(labelLayer);		
 					isBaseLayer.selected = _layer.isBaseLayer;
+					
+					
+					
 				}
 				
 			}
@@ -160,6 +170,12 @@
 				isBaseLayer.selected = (event.layer == this.layer);
 			}
 			
+			public function upLayer(event:MouseEvent):void {
+				_layer.map.changeLayerIndexByStep(_layer,+1);
+			}
+			public function downLayer(event:MouseEvent):void {
+				_layer.map.changeLayerIndexByStep(_layer,-1);
+			}
 			
 		 ]]>
 	</fx:Script>
@@ -167,35 +183,70 @@
 
 	<s:states> 
 		<s:State name="normal"/> 
-		<s:State name="hovered"/> 
+		<s:State name="hovered"/>
+		<s:State name="down"/>
 	</s:states> 
 
 	
 <s:VGroup paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2">
-  <s:HGroup width="100%">
+	<s:HGroup width="100%">
 	    <!-- TODO : radio button not editable for now because there is some issue when you change baseLayer -->
-	    <s:RadioButton id="isBaseLayer" click="changeBaseLayer(event)" enabled="false" />
+	    <s:RadioButton id="isBaseLayer" click="changeBaseLayer(event)" enabled="false"/>
+		<s:VGroup>
+			<control:IconButton id="ArrowUpUpState"
+								includeIn="normal"
+								toolTip="Remonter la couche"
+								click="upLayer(event)"
+								icon="{new UpArrowUp()}"/>
+			<control:IconButton id="ArrowUpOverState"
+								includeIn="hovered"
+								toolTip="Remonter la couche"
+								click="upLayer(event)"
+								icon="{new UpArrowOver()}"/>
+			<control:IconButton id="ArrowUpDownState"
+								includeIn="down"
+								toolTip="Remonter la couche"
+								click="upLayer(event)"
+								icon="{new UpArrowDown()}"/>
+			<control:IconButton id="ArrowDownUpState"
+								includeIn="normal"
+								toolTip="Descendre la couche"
+								click="downLayer(event)"
+								icon="{new DownArrowUp()}"/>
+			<control:IconButton id="ArrowDownOverState"
+								includeIn="hovered"
+								toolTip="Descendre la couche"
+								click="downLayer(event)"
+								icon="{new DownArrowOver()}"/>
+			<control:IconButton id="ArrowDownDownState"
+								includeIn="down"
+								toolTip="Descendre la couche"
+								click="downLayer(event)"
+								icon="{new DownArrowDown()}"/>
+		</s:VGroup>
 		<s:Group id="displayControl"
 				 width="128"/>
-	  <control:IconButton id="deleteButton" width="16" height="16" 
-						  skinClass="org.openscales.fx.skin.IconButtonSkin" 
-						  toolTip="Supprimer la couche de la sélection des couches visibles" 
-						  click="deleteLayer(event)"
-						  icon="{remove}"
-						  />
-	  
+		<control:IconButton id="deleteButton"
+							includeIn="normal"
+							toolTip="Supprimer la couche de la sélection des couches visibles"
+							click="deleteLayer(event)"
+							icon="{new ButtonCloseUp()}"/>
+		<control:IconButton id="deleteButtonOver"
+							includeIn="hovered"
+							toolTip="Supprimer la couche de la sélection des couches visibles"
+							click="deleteLayer(event)"
+							icon="{new ButtonCloseOver()}"/>
+
 	</s:HGroup>
 	
 	<s:HGroup id="Hbox2" width="100%" >
-		
-		<s:HSlider width="100%"
-				  
-				   id="opacityControl"
-				   minimum="0"
-				   maximum="100"
-				   change="layerOpacity(event)"
-				   liveDragging="true"
-				   mouseDown="onDrag(event)"/>
+			<s:HSlider width="100%"
+					   id="opacityControl"
+					   minimum="0"
+					   maximum="100"
+					   change="layerOpacity(event)"
+					   liveDragging="true"
+					   mouseDown="onDrag(event)"/>
 		<s:Label text="{_opacity}"/>
 	</s:HGroup>
 </s:VGroup>
