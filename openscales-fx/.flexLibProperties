@@ -28,6 +28,7 @@
     <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
     <classEntry path="org.openscales.fx.control.layer.LayerRenderer"/>
     <classEntry path="org.openscales.fx.control.pan2"/>
+    <classEntry path="org.openscales.fx.control.pan3"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingComponent"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.spinner.Spinner"/>
@@ -63,6 +64,7 @@
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
     <classEntry path="org.openscales.fx.skin.IconButtonSkin"/>
     <classEntry path="org.openscales.fx.skin.panSkin"/>
+    <classEntry path="org.openscales.fx.skin.panSkin2"/>
     <classEntry path="org.openscales.fx.skin.test"/>
   </includeClasses>
   <includeResources/>
