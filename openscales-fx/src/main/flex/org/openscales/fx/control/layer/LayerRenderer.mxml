@@ -223,6 +223,7 @@
 					this._vSlider.value = this._layer.alpha*100;
 					this._vSlider.snapInterval = 1;
 					this._vSlider.dataTipFormatFunction = percentDataTip;
+					this._vSlider.addEventListener(MouseEvent.MOUSE_DOWN,onDrag); 
 					//this._vSlider.liveDragging = true;
 					//this._vSlider.sliderThumbClass = net.awl.openscales.fx.control.FlexibleSliderThumb;
 					this._vSlider.addEventListener(SliderEvent.CHANGE,layerOpacity);
@@ -302,7 +303,7 @@
 		<s:State name="hovered"/>
 	</s:states>
 	
-	<s:Graphic includeIn="normal" width="225" height="25">
+	<s:Graphic includeIn="normal" width="225" height="25" >
 		<s:Group>
 			<s:Group d:type="layer" d:userLabel="Content">
 				<s:Group>
