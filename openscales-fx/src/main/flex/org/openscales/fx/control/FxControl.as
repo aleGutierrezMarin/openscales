@@ -3,8 +3,10 @@ package org.openscales.fx.control
 	import mx.core.UIComponent;
 	
 	import org.openscales.core.control.IControl;
+	
+	import spark.components.Group;
 
-	public class FxControl extends UIComponent
+	public class FxControl extends Group
 	{
 		private var _control:IControl;
 		

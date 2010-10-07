@@ -249,16 +249,8 @@ package org.openscales.core.control
 			}
 		}
 		
-		/**
-		 * add overlayer to the overviewmap
-		 * @param layer:Layer the layer to add
-		 */
-		public function addLayer(layer:Layer):void {
-			if(layer.isBaseLayer != false)
-				return;
-			this._overviewMap.removeLayer(this._extentLayer);
-			this._overviewMap.addLayer(layer);
-			this._overviewMap.addLayer(this._extentLayer);
+		public function get baselayer():Layer {
+			return this._overviewMap.baseLayer;
 		}
 		
 		private function onAddedToStage(event:Event):void {

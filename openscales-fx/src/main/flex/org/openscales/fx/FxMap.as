@@ -24,6 +24,7 @@ package org.openscales.fx
 	import org.openscales.fx.configuration.FxConfiguration;
 	import org.openscales.fx.control.Control;
 	import org.openscales.fx.control.FxControl;
+	import org.openscales.fx.control.FxOverviewMap;
 	import org.openscales.fx.control.TraceInfo;
 	import org.openscales.fx.handler.FxHandler;
 	import org.openscales.fx.layer.FxLayer;
@@ -184,6 +185,8 @@ package org.openscales.fx
 						(element as FxHandler).handler.map = this._map;
 					} else if (element is IHandler) {
 							(element as IHandler).map = this._map;
+					} else if(element is FxOverviewMap) {
+						(element as FxOverviewMap).map = this._map;
 					} else if (element is UIComponent){
 						setMapRecursively(element as UIComponent);
 					}

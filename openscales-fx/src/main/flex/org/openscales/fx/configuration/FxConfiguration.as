@@ -4,15 +4,16 @@ package org.openscales.fx.configuration
 	import mx.containers.Panel;
 	import mx.core.IVisualElementContainer;
 	
+	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
+	import org.openscales.core.configuration.Configuration;
 	import org.openscales.fx.control.Control;
-	import org.openscales.fx.control.OverviewMap;
+	import org.openscales.fx.control.FxControl;
+	import org.openscales.fx.control.FxOverviewMap;
 	import org.openscales.fx.control.Pan;
 	import org.openscales.fx.control.Zoom;
 	import org.openscales.fx.control.ZoomBox;
 	import org.openscales.fx.control.layer.LayerManager;
-	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
-	import org.openscales.core.configuration.Configuration;
 
 	public class FxConfiguration extends Configuration
 	{
@@ -109,7 +110,7 @@ package org.openscales.fx.configuration
 	 		
 			//FIX ME : because asynchrone, we need to wait the creation complete on FXMap before setting the map		 					
 	 		else if(xmlNode.name() == "Overview"){
-	 			var fxOverview:OverviewMap = new OverviewMap();
+	 			var fxOverview:FxOverviewMap = new FxOverviewMap();
 	 			if(String(xmlNode.@id) != ""){
 					fxOverview.id = String(xmlNode.@id);
 	 			}
@@ -125,7 +126,7 @@ package org.openscales.fx.configuration
 	 			if(String(xmlNode.@height) != ""){
 					fxOverview.height = Number(xmlNode.@height);
 	 			}
-	 			control = fxOverview; 
+	 			control = fxOverview as Control;
 	 		}  
 	 		
 			//FIX ME : because asynchrone, we need to wait the creation complete of the others flex component before setting the map		 					

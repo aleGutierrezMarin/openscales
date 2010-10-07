@@ -41,6 +41,7 @@
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
     <classEntry path="org.openscales.fx.skin.IconButtonSkin"/>
+    <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
