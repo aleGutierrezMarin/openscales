@@ -1,5 +1,6 @@
 package org.openscales.core
 {
+	import flash.display.Stage;
 	import flash.external.ExternalInterface;
 	
 	import org.openscales.core.events.TraceEvent;
@@ -25,8 +26,19 @@ package org.openscales.core
 	 */
 	public class Trace
 	{
-		public static var map:Map = null; // FixMe: it's strange to use a global variable in a static class
+
 		public static var useFireBugConsole:Boolean = false;
+		
+		private static var _stage:Stage = null; 
+
+		public static function get stage():Stage {
+			return _stage;
+		}
+
+		public static function set stage(value:Stage):void	{
+			_stage = value;
+		}
+
 		
 		/**
 		 * Constructor
@@ -39,8 +51,8 @@ package org.openscales.core
 		 * Display a log
 		 */
 		public static function log(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.LOG,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.LOG,text));					
 			}
 			fbConsoleLog(FB_LOG, text);
 			trace(text);
@@ -50,8 +62,8 @@ package org.openscales.core
 		 * Display an information
 		 */
 		public static function info(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.INFO,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.INFO,text));					
 			}
 			fbConsoleLog(FB_INFO, text);
 			trace(text);
@@ -61,8 +73,8 @@ package org.openscales.core
 		 * Display an warning
 		 */
 		public static function warn(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.WARNING,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.WARNING,text));					
 			}
 			fbConsoleLog(FB_WARN, text);
 			trace(text);
@@ -72,8 +84,8 @@ package org.openscales.core
 		 * Display an error
 		 */
 		public static function error(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.ERROR,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.ERROR,text));					
 			}
 			fbConsoleLog(FB_ERROR, text);
 			trace(text);
@@ -83,8 +95,8 @@ package org.openscales.core
 		 * Display a debug information
 		 */
 		public static function debug(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.DEBUG,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.DEBUG,text));					
 			}
 			fbConsoleLog(FB_DEBUG, text);
 			trace(text);

@@ -96,7 +96,7 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
 			
-			Trace.map = this;
+			Trace.stage = this.stage;
 			
 		}
 		
