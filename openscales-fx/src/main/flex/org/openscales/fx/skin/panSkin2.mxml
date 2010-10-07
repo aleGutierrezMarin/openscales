@@ -1,29 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--
-
-    ADOBE SYSTEMS INCORPORATED
-    Copyright 2008 Adobe Systems Incorporated
-    All Rights Reserved.
-
-    NOTICE: Adobe permits you to use, modify, and distribute this file
-    in accordance with the terms of the license agreement accompanying it.
-
--->
-
-<!--- The default skin class for a Spark SkinnableContainer container.  
-
-     @see spark.components.SkinnableContainer
-        
-      @langversion 3.0
-      @playerversion Flash 10
-      @playerversion AIR 1.5
-      @productversion Flex 4
--->
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
     xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled="0.5"
-	xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:fxg="assets.images.fxg.*"
-	>
+	xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:fxg="assets.images.fxg.*">
 
     <fx:Metadata>
     <![CDATA[ 
@@ -41,8 +19,6 @@
              */
             override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
             {
-               
-                
                 super.updateDisplayList(unscaledWidth, unscaledHeight);
             }
         ]]>        
@@ -56,418 +32,102 @@
 		<s:State name="west" />
 		<s:State name="east" />
     </s:states>
-	
-	<s:Group id="all" mouseUp="currentState = 'normal'">
-	<!--Definition name="joystick_E"-->
-		<s:Group includeIn="east">
-			<s:Group d:type="layer" d:userLabel="Calque 1"/>
-			<s:Group d:type="layer" d:userLabel="Calque 3">
-				<s:Group>
-					<s:Path data="M29.4 13.8 23.85 4.3 17.75 13.5 23.6 12.1 29.4 13.8M23.55 19.1Q19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3 27.5 19.1 23.55 19.1">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M29.4 13.8 23.6 12.1 17.75 13.5 23.85 4.3 29.4 13.8">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M23.55 19.1Q19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3 27.5 19.1 23.55 19.1">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M16.8 46.3Q14 43.5 14 39.55 14 35.6 16.8 32.8 19.6 30 23.55 30 27.5 30 30.3 32.8 33.1 35.6 33.1 39.55 33.1 43.5 30.3 46.3 27.5 49.1 23.55 49.1 19.6 49.1 16.8 46.3M29.4 35.3 23.6 37 17.75 35.6 23.85 44.8 29.4 35.3">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M29.4 35.3 23.85 44.8 17.75 35.6 23.6 37 29.4 35.3">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M16.8 46.3Q19.6 49.1 23.55 49.1 27.5 49.1 30.3 46.3 33.1 43.5 33.1 39.55 33.1 35.6 30.3 32.8 27.5 30 23.55 30 19.6 30 16.8 32.8 14 35.6 14 39.55 14 43.5 16.8 46.3">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55M35 24.6 33.3 30.4 42.8 24.85 33.6 18.75 35 24.6">
-						<s:fill>
-							<s:SolidColor color="#CCCCCC"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-					<s:Group>
-						<s:Path data="M35 24.6 33.6 18.75 42.8 24.85 33.3 30.4 35 24.6">
-							<s:fill>
-								<s:SolidColor color="#FFFFFF"/>
-							</s:fill>
-						</s:Path>
-						<s:Path data="M35 24.6 33.6 18.75 42.8 24.85 33.3 30.4 35 24.6">
-							<s:stroke>
-								<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#D38201"/>
-							</s:stroke>
-						</s:Path>
-					</s:Group>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M13.5 18.75 12.1 24.6 13.8 30.4 4.3 24.85 13.5 18.75">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75M16.3 17.8Q19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15 13.5 15 16.3 17.8">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M16.3 17.8Q13.5 15 9.55 15 5.6 15 2.8 17.8 0 20.6 0 24.55 0 28.5 2.8 31.3 5.6 34.1 9.55 34.1 13.5 34.1 16.3 31.3 19.1 28.5 19.1 24.55 19.1 20.6 16.3 17.8">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-			</s:Group>
-			<s:Group d:type="layer" d:userLabel="Calque 2"/>
-		</s:Group>
-	
-	<!--Definition name="joystick_N"-->
-		<s:Group includeIn="north">
-			<s:Group d:type="layer" d:userLabel="Calque 1"/>
-			<s:Group d:type="layer" d:userLabel="Calque 3">
-				<s:Group>
-					<s:Path data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55M35 24.6 33.3 30.4 42.8 24.85 33.6 18.75 35 24.6">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M35 24.6 33.6 18.75 42.8 24.85 33.3 30.4 35 24.6">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M14 39.55Q14 35.6 16.8 32.8 19.6 30 23.55 30 27.5 30 30.3 32.8 33.1 35.6 33.1 39.55 33.1 43.5 30.3 46.3 27.5 49.1 23.55 49.1 19.6 49.1 16.8 46.3 14 43.5 14 39.55M29.4 35.3 23.6 37 17.75 35.6 23.85 44.8 29.4 35.3">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M29.4 35.3 23.85 44.8 17.75 35.6 23.6 37 29.4 35.3">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M14 39.55Q14 43.5 16.8 46.3 19.6 49.1 23.55 49.1 27.5 49.1 30.3 46.3 33.1 43.5 33.1 39.55 33.1 35.6 30.3 32.8 27.5 30 23.55 30 19.6 30 16.8 32.8 14 35.6 14 39.55">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M29.4 13.8 23.85 4.3 17.75 13.5 23.6 12.1 29.4 13.8M33.1 9.55Q33.1 13.5 30.3 16.3 27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55">
-						<s:fill>
-							<s:SolidColor color="#CCCCCC"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M33.1 9.55Q33.1 13.5 30.3 16.3 27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-					<s:Group>
-						<s:Path data="M23.85 4.3 29.4 13.8 23.6 12.1 17.75 13.5 23.85 4.3">
-							<s:fill>
-								<s:SolidColor color="#FFFFFF"/>
-							</s:fill>
-						</s:Path>
-						<s:Path data="M23.85 4.3 29.4 13.8 23.6 12.1 17.75 13.5 23.85 4.3">
-							<s:stroke>
-								<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#D38201"/>
-							</s:stroke>
-						</s:Path>
-					</s:Group>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M16.3 17.8Q19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15 13.5 15 16.3 17.8M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M13.5 18.75 12.1 24.6 13.8 30.4 4.3 24.85 13.5 18.75">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M16.3 17.8Q13.5 15 9.55 15 5.6 15 2.8 17.8 0 20.6 0 24.55 0 28.5 2.8 31.3 5.6 34.1 9.55 34.1 13.5 34.1 16.3 31.3 19.1 28.5 19.1 24.55 19.1 20.6 16.3 17.8">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-			</s:Group>
-			<s:Group d:type="layer" d:userLabel="Calque 2"/>
-		</s:Group>
-	
-	<!--Definition name="joystick_O" -->
-		<s:Group includeIn="west">
-			<s:Group d:type="layer" d:userLabel="Calque 1"/>
-			<s:Group d:type="layer" d:userLabel="Calque 3">
-				<s:Group>
-					<s:Path data="M23.55 19.1Q19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3 27.5 19.1 23.55 19.1M23.6 12.1 29.4 13.8 23.85 4.3 17.75 13.5 23.6 12.1">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M23.6 12.1 17.75 13.5 23.85 4.3 29.4 13.8 23.6 12.1">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M23.55 19.1Q19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3 27.5 19.1 23.55 19.1">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M14 39.55Q14 35.6 16.8 32.8 19.6 30 23.55 30 27.5 30 30.3 32.8 33.1 35.6 33.1 39.55 33.1 43.5 30.3 46.3 27.5 49.1 23.55 49.1 19.6 49.1 16.8 46.3 14 43.5 14 39.55M29.4 35.3 23.6 37 17.75 35.6 23.85 44.8 29.4 35.3">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M29.4 35.3 23.85 44.8 17.75 35.6 23.6 37 29.4 35.3">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M14 39.55Q14 43.5 16.8 46.3 19.6 49.1 23.55 49.1 27.5 49.1 30.3 46.3 33.1 43.5 33.1 39.55 33.1 35.6 30.3 32.8 27.5 30 23.55 30 19.6 30 16.8 32.8 14 35.6 14 39.55">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75M16.3 17.8Q19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15 13.5 15 16.3 17.8">
-						<s:fill>
-							<s:SolidColor color="#CCCCCC"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M16.3 17.8Q13.5 15 9.55 15 5.6 15 2.8 17.8 0 20.6 0 24.55 0 28.5 2.8 31.3 5.6 34.1 9.55 34.1 13.5 34.1 16.3 31.3 19.1 28.5 19.1 24.55 19.1 20.6 16.3 17.8">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-					<s:Group>
-						<s:Path data="M4.3 24.85 13.5 18.75 12.1 24.6 13.8 30.4 4.3 24.85">
-							<s:fill>
-								<s:SolidColor color="#FFFFFF"/>
-							</s:fill>
-						</s:Path>
-						<s:Path data="M4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75 4.3 24.85">
-							<s:stroke>
-								<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#D38201"/>
-							</s:stroke>
-						</s:Path>
-					</s:Group>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M44.3 31.3Q41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55 47.1 28.5 44.3 31.3M35 24.6 33.3 30.4 42.8 24.85 33.6 18.75 35 24.6">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M35 24.6 33.6 18.75 42.8 24.85 33.3 30.4 35 24.6">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M44.3 31.3Q41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55 47.1 28.5 44.3 31.3">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-			</s:Group>
-			<s:Group d:type="layer" d:userLabel="Calque 2"/>
-		</s:Group>
-	
-	<!--Definition name="joystick_S" -->
-		<s:Group includeIn="south">
-			<s:Group d:type="layer" d:userLabel="Calque 1"/>
-			<s:Group d:type="layer" d:userLabel="Calque 3">
-				<s:Group>
-					<s:Path data="M44.3 31.3Q41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55 47.1 28.5 44.3 31.3M33.6 18.75 35 24.6 33.3 30.4 42.8 24.85 33.6 18.75">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M33.6 18.75 42.8 24.85 33.3 30.4 35 24.6 33.6 18.75">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M44.3 31.3Q41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55 47.1 28.5 44.3 31.3">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M30.3 2.8Q33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3 27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8M23.6 12.1 29.4 13.8 23.85 4.3 17.75 13.5 23.6 12.1">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M23.6 12.1 17.75 13.5 23.85 4.3 29.4 13.8 23.6 12.1">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M30.3 2.8Q33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3 27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M14 39.55Q14 35.6 16.8 32.8 19.6 30 23.55 30 27.5 30 30.3 32.8 33.1 35.6 33.1 39.55 33.1 43.5 30.3 46.3 27.5 49.1 23.55 49.1 19.6 49.1 16.8 46.3 14 43.5 14 39.55M23.6 37 17.75 35.6 23.85 44.8 29.4 35.3 23.6 37">
-						<s:fill>
-							<s:SolidColor color="#CCCCCC"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M14 39.55Q14 43.5 16.8 46.3 19.6 49.1 23.55 49.1 27.5 49.1 30.3 46.3 33.1 43.5 33.1 39.55 33.1 35.6 30.3 32.8 27.5 30 23.55 30 19.6 30 16.8 32.8 14 35.6 14 39.55">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-					<s:Group>
-						<s:Path data="M29.4 35.3 23.85 44.8 17.75 35.6 23.6 37 29.4 35.3">
-							<s:fill>
-								<s:SolidColor color="#FFFFFF"/>
-							</s:fill>
-						</s:Path>
-						<s:Path data="M29.4 35.3 23.6 37 17.75 35.6 23.85 44.8 29.4 35.3">
-							<s:stroke>
-								<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#D38201"/>
-							</s:stroke>
-						</s:Path>
-					</s:Group>
-				</s:Group>
-				<s:Group>
-					<s:Path data="M13.5 18.75 12.1 24.6 13.8 30.4 4.3 24.85 13.5 18.75">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75M9.55 15Q13.5 15 16.3 17.8 19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M9.55 15Q5.6 15 2.8 17.8 0 20.6 0 24.55 0 28.5 2.8 31.3 5.6 34.1 9.55 34.1 13.5 34.1 16.3 31.3 19.1 28.5 19.1 24.55 19.1 20.6 16.3 17.8 13.5 15 9.55 15">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-			</s:Group>
-			<s:Group d:type="layer" d:userLabel="Calque 2"/>
-		</s:Group>
 
-	
-	<!--Definition name="joystick_stop" -->
-		<s:Group includeIn="normal">
-			<s:Group d:type="layer" d:userLabel="Calque 1"/>
-			<s:Group d:type="layer" d:userLabel="Calque 3">
-				<s:Group mouseDown="currentState = 'north'" >
-					<s:Path data="M29.4 13.8 23.85 4.3 17.75 13.5 23.6 12.1 29.4 13.8M30.3 16.3Q27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M29.4 13.8 23.6 12.1 17.75 13.5 23.85 4.3 29.4 13.8">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M30.3 16.3Q27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-				<s:Group mouseDown="currentState = 'south'" >
-					<s:Path data="M14 39.55Q14 35.6 16.8 32.8 19.6 30 23.55 30 27.5 30 30.3 32.8 33.1 35.6 33.1 39.55 33.1 43.5 30.3 46.3 27.5 49.1 23.55 49.1 19.6 49.1 16.8 46.3 14 43.5 14 39.55M23.6 37 17.75 35.6 23.85 44.8 29.4 35.3 23.6 37">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M23.6 37 29.4 35.3 23.85 44.8 17.75 35.6 23.6 37">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M14 39.55Q14 43.5 16.8 46.3 19.6 49.1 23.55 49.1 27.5 49.1 30.3 46.3 33.1 43.5 33.1 39.55 33.1 35.6 30.3 32.8 27.5 30 23.55 30 19.6 30 16.8 32.8 14 35.6 14 39.55">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-					
-				</s:Group>
-				<s:Group mouseDown="currentState = 'east'" >
-					<s:Path data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55M33.6 18.75 35 24.6 33.3 30.4 42.8 24.85 33.6 18.75">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M33.6 18.75 42.8 24.85 33.3 30.4 35 24.6 33.6 18.75">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-					
-				</s:Group>
-				<s:Group mouseDown="currentState = 'west'"  >
-					<s:Path data="M13.5 18.75 12.1 24.6 13.8 30.4 4.3 24.85 13.5 18.75">
-						<s:fill>
-							<s:SolidColor color="#D38201"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75M16.3 17.8Q19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15 13.5 15 16.3 17.8">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M16.3 17.8Q13.5 15 9.55 15 5.6 15 2.8 17.8 0 20.6 0 24.55 0 28.5 2.8 31.3 5.6 34.1 9.55 34.1 13.5 34.1 16.3 31.3 19.1 28.5 19.1 24.55 19.1 20.6 16.3 17.8">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
+			<s:Group x="14" mouseDown="currentState = 'north'" mouseUp="currentState = 'normal'">
+				<s:Path data="M29.4 13.8 23.85 4.3 17.75 13.5 23.6 12.1 29.4 13.8M30.3 16.3Q27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3" x="-14" y="0">
+					<s:fill>
+						<s:SolidColor color="#FFFFFF"/>
+					</s:fill>
+				</s:Path>
+				<s:Path includeIn="north" data="M29.4 13.8 23.85 4.3 17.75 13.5 23.6 12.1 29.4 13.8M30.3 16.3Q27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3" x="-14" y="0">
+					<s:fill>
+						<s:SolidColor color="#CCCCCC"/>
+					</s:fill>
+				</s:Path>
+				
+				<s:Path data="M29.4 13.8 23.6 12.1 17.75 13.5 23.85 4.3 29.4 13.8" x="-14" y="0">
+					<s:fill>
+						<s:SolidColor color="#D38201"/>
+					</s:fill>
+				</s:Path>
+				<s:Path data="M30.3 16.3Q27.5 19.1 23.55 19.1 19.6 19.1 16.8 16.3 14 13.5 14 9.55 14 5.6 16.8 2.8 19.6 0 23.55 0 27.5 0 30.3 2.8 33.1 5.6 33.1 9.55 33.1 13.5 30.3 16.3" x="-14" y="0">
+					<s:stroke>
+						<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
+					</s:stroke>
+				</s:Path>
+			</s:Group>
+			<s:Group x="14" y="28" mouseDown="currentState = 'south'" mouseUp="currentState = 'normal'">
+				<s:Path data="M14 39.55Q14 35.6 16.8 32.8 19.6 30 23.55 30 27.5 30 30.3 32.8 33.1 35.6 33.1 39.55 33.1 43.5 30.3 46.3 27.5 49.1 23.55 49.1 19.6 49.1 16.8 46.3 14 43.5 14 39.55M23.6 37 17.75 35.6 23.85 44.8 29.4 35.3 23.6 37" x="-14" y="-28">
+					<s:fill>
+						<s:SolidColor color="#FFFFFF"/>
+					</s:fill>
+				</s:Path>
+				<s:Path includeIn="south" data="M14 39.55Q14 35.6 16.8 32.8 19.6 30 23.55 30 27.5 30 30.3 32.8 33.1 35.6 33.1 39.55 33.1 43.5 30.3 46.3 27.5 49.1 23.55 49.1 19.6 49.1 16.8 46.3 14 43.5 14 39.55M23.6 37 17.75 35.6 23.85 44.8 29.4 35.3 23.6 37" x="-14" y="-28">
+					<s:fill>
+						<s:SolidColor color="#CCCCCC"/>
+					</s:fill>
+				</s:Path>
+
+				<s:Path data="M23.6 37 29.4 35.3 23.85 44.8 17.75 35.6 23.6 37" x="-14" y="-28">
+					<s:fill>
+						<s:SolidColor color="#D38201"/>
+					</s:fill>
+				</s:Path>
+				<s:Path data="M14 39.55Q14 43.5 16.8 46.3 19.6 49.1 23.55 49.1 27.5 49.1 30.3 46.3 33.1 43.5 33.1 39.55 33.1 35.6 30.3 32.8 27.5 30 23.55 30 19.6 30 16.8 32.8 14 35.6 14 39.55" x="-14" y="-28">
+					<s:stroke>
+						<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
+					</s:stroke>
+				</s:Path>
 				
 			</s:Group>
-			<s:Group d:type="layer" d:userLabel="Calque 2"/>
-		</s:Group>
-	</s:Group>
+			<s:Group x="28" y="14" mouseDown="currentState = 'east'" mouseUp="currentState = 'normal'">
+				<s:Path data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55M33.6 18.75 35 24.6 33.3 30.4 42.8 24.85 33.6 18.75" x="-28" y="-14">
+					<s:fill>
+						<s:SolidColor color="#FFFFFF"/>
+					</s:fill>
+				</s:Path>
+				<s:Path includeIn="east" data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55M33.6 18.75 35 24.6 33.3 30.4 42.8 24.85 33.6 18.75" x="-28" y="-14">
+					<s:fill>
+						<s:SolidColor color="#CCCCCC"/>
+					</s:fill>
+				</s:Path>
+				
+				<s:Path data="M33.6 18.75 42.8 24.85 33.3 30.4 35 24.6 33.6 18.75" x="-28" y="-14">
+					<s:fill>
+						<s:SolidColor color="#D38201"/>
+					</s:fill>
+				</s:Path>
+				<s:Path data="M47.1 24.55Q47.1 28.5 44.3 31.3 41.5 34.1 37.55 34.1 33.6 34.1 30.8 31.3 28 28.5 28 24.55 28 20.6 30.8 17.8 33.6 15 37.55 15 41.5 15 44.3 17.8 47.1 20.6 47.1 24.55" x="-28" y="-14">
+					<s:stroke>
+						<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
+					</s:stroke>
+				</s:Path>
+				
+			</s:Group>
+			<s:Group y="14" mouseDown="currentState = 'west'" mouseUp="currentState = 'normal'">
+				<s:Path data="M13.5 18.75 12.1 24.6 13.8 30.4 4.3 24.85 13.5 18.75" x="0" y="-14">
+					<s:fill>
+						<s:SolidColor color="#D38201"/>
+					</s:fill>
+				</s:Path>
+				<s:Path data="M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75M16.3 17.8Q19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15 13.5 15 16.3 17.8" x="0" y="-14">
+					<s:fill>
+						<s:SolidColor color="#FFFFFF"/>
+					</s:fill>
+				</s:Path>
+				<s:Path includeIn="west" data="M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75M16.3 17.8Q19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15 13.5 15 16.3 17.8" x="0" y="-14">
+					<s:fill>
+						<s:SolidColor color="#CCCCCC"/>
+					</s:fill>
+				</s:Path>
+
+				<s:Path data="M16.3 17.8Q13.5 15 9.55 15 5.6 15 2.8 17.8 0 20.6 0 24.55 0 28.5 2.8 31.3 5.6 34.1 9.55 34.1 13.5 34.1 16.3 31.3 19.1 28.5 19.1 24.55 19.1 20.6 16.3 17.8" x="0" y="-14">
+					<s:stroke>
+						<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
+					</s:stroke>
+				</s:Path>
+			</s:Group>
+
+
+	
 </s:Skin>
