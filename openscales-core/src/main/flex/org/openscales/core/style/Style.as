@@ -17,7 +17,7 @@ package org.openscales.core.style {
 		/**
 		 * The list of rules of the style
 		 */
-		private var _rules:Array = [];
+		private var _rules:Vector.<Rule> = new Vector.<Rule>();
 
 		private var _fillColor:uint;
 		private var _fillOpacity:Number;
@@ -210,13 +210,12 @@ package org.openscales.core.style {
 		/**
 		 * The list of the rules defining the style
 		 */
-		public function get rules():Array {
+		public function get rules():Vector.<Rule> {
 
 			return this._rules;
 		}
 
-		public function set rules(value:Array):void {
-
+		public function set rules(value:Vector.<Rule>):void {
 			this._rules = value;
 		}
 
