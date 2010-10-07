@@ -139,21 +139,23 @@ package org.openscales.core.control
 				right,
 				top,
 				this._overviewMap.baseLayer.projection);
-			if(this.map.baseLayer.projection.srsCode != this._overviewMap.baseLayer.projection.srsCode)
-				bounds.transform(this._overviewMap.baseLayer.projection,
-					this.map.baseLayer.projection);
 			return bounds;
 		}
 		
 		private function onMouseUp(event:MouseEvent):void {
 			this.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
 			var px:Pixel = new Pixel(this._overviewMap.mouseX,
-				this._overviewMap.mouseY);
+									 this._overviewMap.mouseY);
 			
 			if(px.equals(this._startDrag)) {
-				this.map.moveTo(this._overviewMap.getLocationFromMapPx(px));
+				var loc:Location = this._overviewMap.getLocationFromMapPx(px);
+				this.map.moveTo(loc.reprojectTo(this.map.baseLayer.projection));
 			} else {
-				this.map.zoomToExtent(pxToBound(px,this._startDrag));
+				var bounds:Bounds = pxToBound(px,this._startDrag);
+				if(this.map.baseLayer.projection != this._overviewMap.baseLayer.projection)
+					bounds.transform(this._overviewMap.baseLayer.projection,
+									 this.map.baseLayer.projection);
+				this.map.zoomToExtent(bounds);
 			}
 			
 			this.cleanNewExtentFeature();
@@ -279,9 +281,9 @@ package org.openscales.core.control
 		private function _drawExtent(event:Event=null):void {
 			var _extent:Bounds = this.map.extent;
 			
-			if(this.map.baseLayer.projection.srsCode != this._overviewMap.baseLayer.projection.srsCode)
+			if(this.map.baseLayer.projection != this._overviewMap.baseLayer.projection)
 				_extent.transform(this.map.baseLayer.projection,
-					this._overviewMap.baseLayer.projection);
+								  this._overviewMap.baseLayer.projection);
 			
 			this._extentLayer.projection = this._overviewMap.baseLayer.projection;
 			if(this._extentFeature == null) {
