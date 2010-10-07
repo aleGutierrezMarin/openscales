@@ -5,6 +5,8 @@ package org.openscales.fx.control
 	import spark.components.Button;
 	
 	[Style(name="icon",type="*")]
+	[Style(name="iconOver",type="*")]
+	[Style(name="iconDown",type="*")]
 	
 	public class IconButton extends Button
 	{

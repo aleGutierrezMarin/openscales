@@ -33,6 +33,23 @@
 		height="{this.height}"
 		source="{hostComponent.getStyle('icon')}"
 		verticalCenter="0"
+		includeIn="up"
+		/>
+	<mx:Image
+		id="iconOver"
+		width="{this.width}"
+		height="{this.height}"
+		source="{hostComponent.getStyle('iconOver')}"
+		verticalCenter="0"
+		includeIn="over"
+		/>
+	<mx:Image
+		id="iconDown"
+		width="{this.width}"
+		height="{this.height}"
+		source="{hostComponent.getStyle('iconDown')}"
+		verticalCenter="0"
+		includeIn="down"
 		/>
 	
 </s:SparkSkin>
