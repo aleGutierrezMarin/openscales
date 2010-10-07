@@ -273,7 +273,7 @@ package org.openscales.core.format
 				} else if (geom is Point) {
 					feature = new PointFeature(geom as Point);
 				} else {
-					Trace.warning("GMLFormat.parseFeature: unrecognized geometry);"); 
+					Trace.warn("GMLFormat.parseFeature: unrecognized geometry);"); 
 					return null; 
 				}
 				
