@@ -18,12 +18,12 @@ package org.openscales.core.format
 		}
 
 		public function read(data:Object):Object {
-			Trace.warning("Read not implemented.");
+			Trace.warn("Read not implemented.");
 			return null;
 		}
 
 		public function write(features:Object):Object {
-			Trace.warning("Write not implemented.");
+			Trace.warn("Write not implemented.");
 			return null;
 		}
 

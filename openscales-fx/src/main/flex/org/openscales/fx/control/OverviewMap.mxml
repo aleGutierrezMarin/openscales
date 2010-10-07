@@ -225,7 +225,7 @@
 			private function updateMainMapFromRect():void {
 				// Check if the overview map is fully defined
 				if (! overview.map.baseLayer) {
-					Trace.warning("Overview - updateMainMapFromRect : stop, overview map have not a baseLayer");
+					Trace.warn("Overview - updateMainMapFromRect : stop, overview map have not a baseLayer");
 					return;
 				}
 				Trace.log("Overview - updateMainMapFromRect");
@@ -257,12 +257,12 @@
 			private function updateRectFromMainMap(event:Event=null):void {
 				// Check if the overview map is fully defined
 				if (! overview.map.baseLayer) {
-					Trace.warning("Overview - updateRectFromMainMap("+((event==null)?"null":event.type)+") : stop, overview map have not a baseLayer");
+					Trace.warn("Overview - updateRectFromMainMap("+((event==null)?"null":event.type)+") : stop, overview map have not a baseLayer");
 					return;
 				}
 				var mapBounds:Bounds;
 				if ((! map) || (! map.baseLayer)) {
-					Trace.warning("Overview - updateRectFromMainMap("+((event==null)?"null":event.type)+") : stop, map is null");
+					Trace.warn("Overview - updateRectFromMainMap("+((event==null)?"null":event.type)+") : stop, map is null");
 					// Main map is not defined, the extent of the overview map is used instead	
 					mapBounds = overview.map.extent;
 				} else {
@@ -414,7 +414,7 @@
 			private function setCenterFromOverview(newCenter:Pixel):void {
 				// Update the overview (and the main map if not null)
 				if (map == null) {
-					Trace.warning("Overview - setCenterFromOverview : map is null ; " + newCenter.toString());
+					Trace.warn("Overview - setCenterFromOverview : map is null ; " + newCenter.toString());
 					var oldCenter:Location = rectRealPxBounds.center;
 					// Compute the displacement then move the real boundary
 					var delta:Pixel = new Pixel(newCenter.x - oldCenter.x, newCenter.y - oldCenter.y);

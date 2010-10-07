@@ -96,7 +96,7 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
 			
-			Trace.map = this;
+			Trace.stage = this.stage;
 			
 		}
 		
@@ -302,14 +302,14 @@ package org.openscales.core
 		public function addControl(control:IControl, attach:Boolean=true):void {
 			// Is the input control valid ?
 			if (! control) {
-				Trace.warning("Map.addControl: null control not added");
+				Trace.warn("Map.addControl: null control not added");
 				return;
 			}
 			var i:uint = 0;
 			var j:uint = this._controls.length;
 			for (; i<j; ++i) {
 				if (control == this._controls[i]) {
-					Trace.warning("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
+					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
 					return;
 				}
 			}
@@ -351,7 +351,7 @@ package org.openscales.core
 		public function addHandler(handler:IHandler):void {
 			// Is the input handler valid ?
 			if (! handler) {
-				Trace.warning("Map.addHandler: null handler not added");
+				Trace.warn("Map.addHandler: null handler not added");
 				return;
 			}
 			
@@ -369,11 +369,11 @@ package org.openscales.core
 			var j:uint = this.handlers.length;
 			for (; i<j; ++i) {
 				if (handler == this.handlers[i]) {
-					Trace.warning("Map.addHandler: this handler is already registered ("+getQualifiedClassName(handler)+")");
+					Trace.warn("Map.addHandler: this handler is already registered ("+getQualifiedClassName(handler)+")");
 					return;
 				}
 				if (getQualifiedClassName(handler) == getQualifiedClassName(this.handlers[i])) {
-					Trace.warning("Map.addHandler: an other handler is already registered for "+getQualifiedClassName(handler));
+					Trace.warn("Map.addHandler: an other handler is already registered for "+getQualifiedClassName(handler));
 					return;
 				}
 			}
@@ -419,7 +419,7 @@ package org.openscales.core
 					child = this._layerContainer.getChildAt(i);
 					if(child is Popup){
 						if(child != popup) {
-							Trace.warning("Map.addPopup: popup already displayed so escape");
+							Trace.warn("Map.addPopup: popup already displayed so escape");
 							return;
 						}
 						this.removePopup(child as Popup);

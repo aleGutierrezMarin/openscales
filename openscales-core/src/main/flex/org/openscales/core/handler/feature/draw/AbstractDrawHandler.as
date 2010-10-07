@@ -23,8 +23,8 @@ package org.openscales.core.handler.feature.draw
 		 * */
 		public function AbstractDrawHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.FeatureLayer=null)
 		{
-			super(map, active);
 			this.drawLayer = drawLayer;
+			super(map, active);
 		}
 		
 		override public function set map(value:Map):void{

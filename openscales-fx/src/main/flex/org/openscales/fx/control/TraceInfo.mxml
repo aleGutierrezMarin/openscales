@@ -8,7 +8,15 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flash.text.engine.FontWeight;
+			
 			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.BreakElement;
+			import flashx.textLayout.elements.ParagraphElement;
+			import flashx.textLayout.elements.SpanElement;
+			import flashx.textLayout.elements.TextFlow;
+			
+			import mx.events.FlexEvent;
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
@@ -17,8 +25,8 @@
 			import spark.skins.spark.ButtonSkin;
 			import spark.utils.TextFlowUtil;
 			
-			private var text:String = "<b>Output Console :</b>";
 			[Bindable] public var _clearButton:Boolean = true;
+			
 			public function get clearButton():Boolean {
 				return _clearButton;
 			}
@@ -33,11 +41,12 @@
 			override public function set map(value:Map):void {
 				if(value) {
 					super.map = value;
-					this.map.addEventListener(TraceEvent.LOG, displayLog);
-					this.map.addEventListener(TraceEvent.INFO, displayLog);
-					this.map.addEventListener(TraceEvent.WARNING, displayLog);
-					this.map.addEventListener(TraceEvent.ERROR, displayLog);
-					this.map.addEventListener(TraceEvent.DEBUG, displayLog);
+					Trace.stage = this.map.stage;
+					this.map.stage.addEventListener(TraceEvent.LOG, displayLog);
+					this.map.stage.addEventListener(TraceEvent.INFO, displayLog);
+					this.map.stage.addEventListener(TraceEvent.WARNING, displayLog);
+					this.map.stage.addEventListener(TraceEvent.ERROR, displayLog);
+					this.map.stage.addEventListener(TraceEvent.DEBUG, displayLog);
 				}
 			}
 			
@@ -47,39 +56,51 @@
 			}
 			
 			private function clearTrace():void {
-				text = '<b>Output Console :</b>';
-				textArea.textFlow = TextConverter.importToFlow(text, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				for (var i:int=textArea.textFlow.numChildren-1; i>=0; i--) {
+					textArea.textFlow.removeChildAt(i);
+				}
+				var pe:ParagraphElement = new ParagraphElement();
+				textArea.textFlow.addChild(pe);
+				
+				var se:SpanElement = new SpanElement();
+				se.text = "Output Console";
+				se.fontWeight = FontWeight.BOLD;
+				pe.addChild(se);
+				pe.addChild(new BreakElement());
 			}
 			
 			private function displayLog(event:TraceEvent):void {
-				var textColor:String = "#000066"; // used if event.type is TraceEvent.LOG or TraceEvent.INFO
+				var pe:ParagraphElement = new ParagraphElement();
+				var se:SpanElement = new SpanElement();
+				var separator:SpanElement = new SpanElement();
+
+				se.text = event.text;
+				se.lineBreak = "toFit";
+				se.setStyle("color", 0x000066);
 				if (event.type == TraceEvent.WARNING) {
-					textColor = "#FFCC00";
+					se.setStyle("color", 0xFFCC00);
 				} else if (event.type == TraceEvent.ERROR) {
-					textColor = "#FF0000";
+					se.setStyle("color", 0xFF0000);
 				} else if (event.type == TraceEvent.DEBUG) {
-					textColor = "#0066FF";
+					se.setStyle("color", 0xFFCC00);
 				}
-				text += "<br/><font color='"
-					+textColor
-					+"' size='9'>"
-					+event.text
-					+"</font><br/>----------";
+				pe.addChild(se);
+				pe.addChild(new BreakElement());
+				separator.text="--------------------";
+				pe.addChild(separator);
+				textArea.textFlow.addChild(pe);
 				
-				textArea.textFlow = TextConverter.importToFlow(text, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				textArea.validateNow();	
+				textArea.scroller.verticalScrollBar.value = textArea.scroller.verticalScrollBar.maximum;
 			}
+
 		]]>
 	</fx:Script>
 	
-	<s:VGroup width="100%"
-			  height="100%"
-			  horizontalAlign="center">
+	<s:VGroup width="100%" height="100%" horizontalAlign="center">
 		<s:TextArea id="textArea"
-					verticalScrollPolicy="on"
-					horizontalCenter="0"
-					verticalCenter="0"
 					width="100%"
-					height="100%"/>
+					height="100%" />
 		<s:Button id="clearLogsButton"
 				  label="Clear logs"
 				  click="clearTrace()"/>
