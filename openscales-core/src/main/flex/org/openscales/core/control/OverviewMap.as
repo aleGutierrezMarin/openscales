@@ -4,6 +4,7 @@ package org.openscales.core.control
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
@@ -11,15 +12,29 @@ package org.openscales.core.control
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.osm.Mapnik;
+	import org.openscales.core.style.Rule;
+	import org.openscales.core.style.Style;
+	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.geometry.MultiPoint;
 	
 	public class OverviewMap extends Control
 	{
 		private var _overviewMap:Map = null;
 		private var _rectColor:uint = 0xFF0000;
 		private var _newExtentColor:uint = 0x0000FF;
-		private var _overview:Sprite = null;
+		
+		private var _startDrag:Pixel = null;
+		private var _extentLayer:FeatureLayer;
+		private var _extentFeature:PolygonFeature = null;
+		private var _newExtentFeature:PolygonFeature = null;
+		private var _extentStyle:Style;
+		private var _newExtentStyle:Style;
 		
 		public function OverviewMap(position:Pixel=null)
 		{
@@ -27,6 +42,7 @@ package org.openscales.core.control
 			this.width
 			this._overviewMap = new Map();
 			this._overviewMap.size = new Size(100,100);
+			this._extentLayer = new FeatureLayer("extentLayer");
 			addEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
 		}
 		
@@ -47,16 +63,25 @@ package org.openscales.core.control
 		override public function set map(value:Map):void {
 			if (this.map != null) {
 				this.map.removeEventListener(MapEvent.MOVE_END,
-					updateRectFromMainMap);
+					_drawExtent);
 				this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,
-					updateRectFromMainMap);
+					_drawExtent);
 				this.removeEventListener(MouseEvent.MOUSE_WHEEL, forwardMouseWheelToMap);
+				this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				this.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			}
 			super.map = value;
 			if(value!=null) {
-				this.map.addEventListener(MapEvent.MOVE_END, updateRectFromMainMap);
-				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, updateRectFromMainMap);
-				this._overviewMap.addEventListener(MouseEvent.MOUSE_WHEEL, forwardMouseWheelToMap);
+				this.map.addEventListener(MapEvent.MOVE_END,
+					_drawExtent);
+				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,
+					_drawExtent);
+				this._overviewMap.addEventListener(MouseEvent.MOUSE_WHEEL,
+					forwardMouseWheelToMap);
+				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN,
+					onMouseDown);
+				this._overviewMap.addEventListener(MouseEvent.MOUSE_UP,
+					onMouseUp);
 			}
 		}
 		
@@ -66,23 +91,103 @@ package org.openscales.core.control
 		 * @param event the event to forward to the map
 		 */
 		private function forwardMouseWheelToMap(event:MouseEvent):void {
-			var px:Pixel = new Pixel(this._overviewMap.mouseX,
-									 this._overviewMap.mouseY);
-			var loc:Location = this._overviewMap.getLocationFromMapPx(px);
 			var zoom:Number = this.map.zoom;
 			if(event.delta > 0) {
 				zoom++;
+				if(zoom > this.map.baseLayer.maxZoomLevel)
+					return;
 			} else {
 				zoom--;
+				if(zoom < this.map.baseLayer.minZoomLevel)
+					return;
 			}
-			this.map.moveTo(loc,zoom,false,false);
+			this.map.moveTo(this.map.center,zoom,false,false);
 		}
 		
-		private function clic(event:MouseEvent):void {
+		private function onMouseDown(event:MouseEvent):void {
+			this._startDrag = new Pixel(this._overviewMap.mouseX,
+				this._overviewMap.mouseY);
+			this.addEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
 			
 		}
 		
-		private function updateRectFromMainMap(event:Event=null):void {
+		private function pxToBound(px1:Pixel,px2:Pixel):Bounds {
+			var left:Number;
+			var right:Number;
+			var top:Number;
+			var bottom:Number;
+			
+			var loc1:Location = this._overviewMap.getLocationFromMapPx(px1);
+			var loc2:Location = this._overviewMap.getLocationFromMapPx(px2);
+			
+			if(loc1.x>loc2.x) {
+				left = loc2.x;
+				right = loc1.x;
+			} else {
+				left = loc1.x;
+				right = loc2.x;
+			}
+			if(loc1.y>loc2.y) {
+				bottom = loc2.y;
+				top = loc1.y;
+			} else {
+				top = loc1.y;
+				bottom = loc2.y;
+			}
+			var bounds:Bounds = new Bounds(left,
+				bottom,
+				right,
+				top,
+				this._overviewMap.baseLayer.projection);
+			if(this.map.baseLayer.projection.srsCode != this._overviewMap.baseLayer.projection.srsCode)
+				bounds.transform(this._overviewMap.baseLayer.projection,
+					this.map.baseLayer.projection);
+			return bounds;
+		}
+		
+		private function onMouseUp(event:MouseEvent):void {
+			this.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
+			var px:Pixel = new Pixel(this._overviewMap.mouseX,
+				this._overviewMap.mouseY);
+			
+			if(px.equals(this._startDrag)) {
+				this.map.moveTo(this._overviewMap.getLocationFromMapPx(px));
+			} else {
+				this.map.zoomToExtent(pxToBound(px,this._startDrag));
+			}
+			
+			this.cleanNewExtentFeature();
+			this._startDrag = null;
+		}
+		
+		private function cleanNewExtentFeature():void {
+			if(this._newExtentFeature != null) {
+				this._extentLayer.removeFeature(this._newExtentFeature);
+				this._newExtentFeature.destroy();
+				this._newExtentFeature = null;
+			}
+		}
+		
+		private function onMouseMove(event:MouseEvent):void {
+			var px:Pixel = new Pixel(this._overviewMap.mouseX,
+				this._overviewMap.mouseY);
+			var bounds:Bounds = pxToBound(px,this._startDrag);
+			if(this._newExtentFeature == null) {
+				if(this._newExtentStyle == null) {
+					this._newExtentStyle = new Style();
+					this._newExtentStyle.rules[0] = new Rule();
+					this._newExtentStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(_newExtentColor,0.5),
+						new Stroke(_newExtentColor,2)));
+				}
+				this._newExtentFeature = new PolygonFeature(bounds.toGeometry(),
+					null,
+					this._newExtentStyle);
+				this._newExtentFeature.unregisterListeners();
+				this._extentLayer.addFeature(this._newExtentFeature);
+			} else {
+				this._newExtentFeature.geometry = bounds.toGeometry();
+				this._newExtentFeature.draw();
+			}
 		}
 		
 		/**
@@ -90,8 +195,16 @@ package org.openscales.core.control
 		 * 
 		 * @param color:uint the color
 		 */
-		public function set rectColor(value:uint):void {
-			this._rectColor = value;
+		public function set extentColor(value:uint):void {
+			if(this._extentStyle == null) {
+				this._extentStyle = new Style();
+				this._extentStyle.rules[0] = new Rule();
+				this._extentStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(value,0.5),
+					new Stroke(value,2)));
+			} else {
+				((this._extentStyle.rules[0].symbolizers[0] as PolygonSymbolizer).fill as SolidFill).color = value;
+				((this._extentStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke as Stroke).color = value;
+			}
 		}
 		
 		/**
@@ -100,7 +213,15 @@ package org.openscales.core.control
 		 * @param color:uint the color
 		 */
 		public function set newExtentColor(value:uint):void {
-			_newExtentColor = value;
+			if(this._newExtentStyle == null) {
+				this._newExtentStyle = new Style();
+				this._newExtentStyle.rules[0] = new Rule();
+				this._newExtentStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(value,0.5),
+					new Stroke(value,2)));
+			} else {
+				((this._newExtentStyle.rules[0].symbolizers[0] as PolygonSymbolizer).fill as SolidFill).color = value;
+				((this._newExtentStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke as Stroke).color = value;
+			}
 		}
 		
 		/**
@@ -118,10 +239,13 @@ package org.openscales.core.control
 		 */
 		public function set baselayer(layer:Layer):void {
 			if(this._overviewMap.baseLayer != layer) {
-				if(this._overviewMap.baseLayer!=null)
+				if(this._overviewMap.baseLayer!=null) {
+					this._overviewMap.removeLayer(this._extentLayer);
 					this._overviewMap.removeLayer(this._overviewMap.baseLayer);
+				}
 				this._overviewMap.addLayer(layer,true);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
+				this._overviewMap.addLayer(this._extentLayer);
 			}
 		}
 		
@@ -132,7 +256,9 @@ package org.openscales.core.control
 		public function addLayer(layer:Layer):void {
 			if(layer.isBaseLayer != false)
 				return;
+			this._overviewMap.removeLayer(this._extentLayer);
 			this._overviewMap.addLayer(layer);
+			this._overviewMap.addLayer(this._extentLayer);
 		}
 		
 		private function onAddedToStage(event:Event):void {
@@ -147,6 +273,35 @@ package org.openscales.core.control
 				var layer:Layer = new Mapnik("defaultbaselayer");
 				this._overviewMap.addLayer(layer,true);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
+				this._overviewMap.addLayer(this._extentLayer);
+			}
+			if(this._extentStyle == null) {
+				this._extentStyle = new Style();
+				this._extentStyle.rules[0] = new Rule();
+				this._extentStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(_rectColor,0.5),
+					new Stroke(_rectColor,2)));
+			}
+			this._drawExtent();
+		}
+		
+		private function _drawExtent(event:Event=null):void {
+			var _extent:Bounds = this.map.extent;
+			
+			if(this.map.baseLayer.projection.srsCode != this._overviewMap.baseLayer.projection.srsCode)
+				_extent.transform(this.map.baseLayer.projection,
+					this._overviewMap.baseLayer.projection);
+			
+			this._extentLayer.projection = this._overviewMap.baseLayer.projection;
+			if(this._extentFeature == null) {
+				this._extentFeature = new PolygonFeature(_extent.toGeometry(),
+					null,
+					this._extentStyle);
+				this._extentLayer.addFeature(this._extentFeature);
+				this._extentFeature.unregisterListeners();
+			}
+			else {
+				this._extentFeature.geometry = _extent.toGeometry();
+				this._extentFeature.draw();
 			}
 		}
 	}
