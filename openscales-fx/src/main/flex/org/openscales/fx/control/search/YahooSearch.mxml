@@ -67,7 +67,7 @@
 			
 			private function onSearchResultsDoubleClick(event:Event):void {
 				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
-					Trace.warning("YahooSearch WARNING: selection of a void item");
+					Trace.warn("YahooSearch WARNING: selection of a void item");
 					return;
 				}
 				

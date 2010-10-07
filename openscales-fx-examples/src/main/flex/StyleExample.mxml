@@ -145,7 +145,7 @@
 						this.createStyleLatitude();
 						break;
 					default:
-						Trace.warning("Error in the style's names used => use the 'Latitude related coloration' style");
+						Trace.warn("Error in the style's names used => use the 'Latitude related coloration' style");
 						this.createStyleLatitude();
 				}
 				this.generateLegend();

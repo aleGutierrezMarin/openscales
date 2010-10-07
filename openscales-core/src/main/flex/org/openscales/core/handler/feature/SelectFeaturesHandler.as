@@ -722,7 +722,7 @@ package org.openscales.core.handler.feature {
 					}
 				}
 				if (!found) {
-					Trace.warning("unselect warning: unselected feature, nothing to do");
+					Trace.warn("unselect warning: unselected feature, nothing to do");
 				}
 			}
 			// Dispatch a FEATURE_UNSELECTED event for all the unselected features

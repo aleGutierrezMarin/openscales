@@ -239,7 +239,7 @@ package org.openscales.core.layer.ogc
 			if (map) {
                 this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_START, this ));
 			} else {
-                Trace.warning("Warning : no LAYER_LOAD_START dispatched because map event dispatcher is not defined");
+                Trace.warn("Warning : no LAYER_LOAD_START dispatched because map event dispatcher is not defined");
 			}
 
 			if(_request)
@@ -287,7 +287,7 @@ package org.openscales.core.layer.ogc
 			if (map) {
                 this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this ));
 			} else {
-                Trace.warning("Warning : no LAYER_LOAD_END dispatched because map event dispatcher is not defined"); 	
+                Trace.warn("Warning : no LAYER_LOAD_END dispatched because map event dispatcher is not defined"); 	
 			}
 		}
 
