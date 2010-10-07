@@ -6,7 +6,6 @@ package {
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
@@ -25,7 +24,6 @@ package {
 		protected var _map:Map;
 
 		public function OpenscalesApplication() {
-			Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 
