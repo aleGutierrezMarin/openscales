@@ -1,6 +1,7 @@
 package org.openscales.core.events
 {
 	import org.openscales.core.events.OpenScalesEvent;
+	import org.openscales.core.handler.Handler;
 	
 	public class HandlerEvent extends OpenScalesEvent
 	{
@@ -17,21 +18,22 @@ package org.openscales.core.events
 		/**
 		 * behaviour of the handler which has dispatched the event
 		 */
-		private var _behaviour:String = null;
+		private var _handler:Handler = null;
 		
-		public function HandlerEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, behaviour:String=null)
+		public function HandlerEvent(type:String, handler:Handler=null, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
+			this._handler = handler;
 		}
 
-		public function get behaviour():String
+		public function get handler():Handler
 		{
-			return _behaviour;
+			return _handler;
 		}
 
-		public function set behaviour(value:String):void
+		public function set handler(value:Handler):void
 		{
-			_behaviour = value;
+			_handler = value;
 		}
 
 	}
