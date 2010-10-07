@@ -244,7 +244,7 @@ package org.openscales.core.request
 					this._method = value;
 					break;
 				default:
-					Trace.warning("AbstractRequest - set method: invalid value, null will be used");
+					Trace.warn("AbstractRequest - set method: invalid value, null will be used");
 					this._method = null;
 					break;
 			}
@@ -355,7 +355,7 @@ package org.openscales.core.request
 		 */
 		public function send():void {
 			if (this.isSent) {
-				Trace.warning("AbstractRequest - send: the request has already been sent");
+				Trace.warn("AbstractRequest - send: the request has already been sent");
 				return;
 			}
 			this._isSent = true;

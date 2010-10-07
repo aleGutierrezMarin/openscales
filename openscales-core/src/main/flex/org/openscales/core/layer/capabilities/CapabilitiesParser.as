@@ -28,7 +28,7 @@ package org.openscales.core.layer.capabilities
 		}
 
 		public function read(doc:XML):HashMap {
-			Trace.warning("Not implemented method.");
+			Trace.warn("Not implemented method.");
 			return this._capabilities;
 		}
 

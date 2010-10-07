@@ -84,7 +84,7 @@
 			 */
 			public function onDblClickListElement(event:MouseEvent):void {
 				if (! this.list.selectedItem) {
-					Trace.warning("Capabilities.onDblClickListElement WARNING: no item selected");
+					Trace.warn("Capabilities.onDblClickListElement WARNING: no item selected");
 					return;
 				}
 				//We add the layer to the map

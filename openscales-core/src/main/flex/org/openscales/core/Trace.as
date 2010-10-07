@@ -1,5 +1,6 @@
 package org.openscales.core
 {
+	import flash.display.Stage;
 	import flash.external.ExternalInterface;
 	
 	import org.openscales.core.events.TraceEvent;
@@ -14,7 +15,7 @@ package org.openscales.core
 	 * through the map in order to be able to catch it elsewhere, and display in
 	 * the firebug console if exists.
 	 *
-	 * According to the trace level (log, info, warning, error or debug), the
+	 * According to the trace level (info, warning, error or debug), the
 	 * flex component will show it in a diffrent color.
 	 * 
 	 * More functionnalities are provided for the firebug console :
@@ -25,8 +26,19 @@ package org.openscales.core
 	 */
 	public class Trace
 	{
-		public static var map:Map = null; // FixMe: it's strange to use a global variable in a static class
+
 		public static var useFireBugConsole:Boolean = false;
+		
+		private static var _stage:Stage = null; 
+
+		public static function get stage():Stage {
+			return _stage;
+		}
+
+		public static function set stage(value:Stage):void	{
+			_stage = value;
+		}
+
 		
 		/**
 		 * Constructor
@@ -39,10 +51,10 @@ package org.openscales.core
 		 * Display a log
 		 */
 		public static function log(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.LOG,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.LOG,text));					
 			}
-			fbConsole_log(FB_LOG, text);
+			fbConsoleLog(FB_LOG, text);
 			trace(text);
 		}
 		
@@ -50,21 +62,21 @@ package org.openscales.core
 		 * Display an information
 		 */
 		public static function info(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.INFO,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.INFO,text));					
 			}
-			fbConsole_log(FB_INFO, text);
+			fbConsoleLog(FB_INFO, text);
 			trace(text);
 		}
 		
 		/**
 		 * Display an warning
 		 */
-		public static function warning(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.WARNING,text));					
+		public static function warn(text:String):void {
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.WARNING,text));					
 			}
-			fbConsole_log(FB_WARN, text);
+			fbConsoleLog(FB_WARN, text);
 			trace(text);
 		}
 		
@@ -72,10 +84,10 @@ package org.openscales.core
 		 * Display an error
 		 */
 		public static function error(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.ERROR,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.ERROR,text));					
 			}
-			fbConsole_log(FB_ERROR, text);
+			fbConsoleLog(FB_ERROR, text);
 			trace(text);
 		}
 		
@@ -83,10 +95,10 @@ package org.openscales.core
 		 * Display a debug information
 		 */
 		public static function debug(text:String):void {
-			if (map != null) {
-				map.dispatchEvent(new TraceEvent(TraceEvent.DEBUG,text));					
+			if (_stage != null) {
+				_stage.dispatchEvent(new TraceEvent(TraceEvent.DEBUG,text));					
 			}
-			fbConsole_log(FB_DEBUG, text);
+			fbConsoleLog(FB_DEBUG, text);
 			trace(text);
 		}
 		
@@ -104,7 +116,7 @@ package org.openscales.core
 		/**
 		 * Send a log to the Firebug console using the selected mode
 		 */
-		private static function fbConsole_log(jsFunction:String, text:String) :void {
+		private static function fbConsoleLog(jsFunction:String, text:String) :void {
 			if (useFireBugConsole && ExternalInterface.available) {
 				ExternalInterface.call(jsFunction, text);
 			}
@@ -113,7 +125,7 @@ package org.openscales.core
 		/**
 		 * Start a group in a firebug console
 		 */
-		public static function fbConsole_startGroup(text:String):void {
+		public static function fbConsoleStartGroup(text:String):void {
 			if (useFireBugConsole && ExternalInterface.available) {
 				ExternalInterface.call("console.group", text);
 			}
@@ -122,7 +134,7 @@ package org.openscales.core
 		/**
 		 * End a group in a firebug console
 		 */
-		public static function fbConsole_endGroup():void {
+		public static function fbConsoleEndGroup():void {
 			if (useFireBugConsole && ExternalInterface.available) {
 				ExternalInterface.call("console.groupEnd");
 			}
@@ -131,7 +143,7 @@ package org.openscales.core
 		/**
 		 * Start a timer in a firebug console
 		 */
-		public static function fbConsole_startTiming(text:String):void {
+		public static function fbConsoleStartTiming(text:String):void {
 			if (useFireBugConsole && ExternalInterface.available) {
 				ExternalInterface.call("console.time", text);
 			}
@@ -140,7 +152,7 @@ package org.openscales.core
 		/**
 		 * Stop and display the timer in a firebug console
 		 */
-		public static function fbConsole_endTiming(text:String):void {
+		public static function fbConsoleEndTiming(text:String):void {
 			if (useFireBugConsole && ExternalInterface.available) {
 				ExternalInterface.call("console.timeEnd", text);
 			}
