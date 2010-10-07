@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<control:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:control="org.openscales.fx.control.*" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.SliderEvent;
+			
+			import org.openscales.basetypes.Pixel;
+			import org.openscales.core.Map;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			
+			import spark.events.TrackBaseEvent;
+			
+			[Bindable] private var _toolTipZoomIn:String = "Zoom In";
+			[Bindable] private var _toolTipZoomOut:String = "Zoom Out";
+			[Bindable] private var _toolTipZoomSlider:String = "Set the scale of the map";
+			[Bindable] private var _showDataTip:Boolean = true;
+			
+			[Bindable]
+			[Embed(source="/assets/images/mapZoomIn-upskin.swf")]
+			private var _mapZoomInIcon:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/mapZoomOut-upskin.swf")]
+			private var _mapZoomOutIcon:Class;
+			
+			public function set showDataTip(value:String):void
+			{
+				if(value == true)
+				{
+					this._showDataTip = true;
+				}
+				else
+				{
+					this._showDataTip = false;
+				}
+			}
+			
+			private function onZoomOutClick(event:MouseEvent):void{
+				this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+			}
+			
+			private function onZoomInClick(event:MouseEvent):void{
+				this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+			}
+			
+			public function onZoomSliderThumbPress():void {
+				zoomSlider.removeEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
+				zoomSlider.addEventListener(SliderEvent.THUMB_RELEASE,this.onZoomSliderThumbRelease);
+			}
+			
+			public function onZoomSliderThumbRelease():void {
+				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+						
+				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
+			}
+			
+			public function zoomSliderChange(event:Event):void {
+				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+			}
+			
+			private function initializeZoomLevels(event:Event = null):void {
+				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
+				zoomSlider.minimum = map.baseLayer.minZoomLevel;
+				zoomSlider.value = map.zoom;
+				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
+			}
+			
+			override public function set active(value:Boolean):void {
+				if(value) {					
+					map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
+					initializeZoomLevels();								
+				} else {
+					map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
+				}
+				super.active = value;
+			}
+			
+			private function updateZoomLevels(e:MapEvent = null):void {
+				if(e.zoomChanged)
+					zoomSlider.value = map.zoom;
+			}
+			
+			public function set toolTipZoomIn(value:String):void{ 
+				this._toolTipZoomIn = value;
+			}
+			
+			public function set toolTipZoomOut(value:String):void{ 
+				this._toolTipZoomOut = value;
+			}
+			
+			public function set toolTipZoomSlider(value:String):void{ 
+				this._toolTipZoomSlider = value;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:HGroup verticalAlign="middle">
+		
+		<s:VGroup height="100%">
+			
+			<control:IconButton id="zoomIn"
+					  toolTip="{this._toolTipZoomIn}"
+					  click="this.onZoomInClick(event);"
+					  width="24"
+					  height="24"
+					  icon="{_mapZoomInIcon}" />
+			<s:Rect height="100%" />
+			<control:IconButton id="zoomOut"
+					  toolTip="{this._toolTipZoomOut}"
+					  click="this.onZoomOutClick(event);"
+					  width="24"
+					  height="24"
+					  icon="{_mapZoomOutIcon}" />
+		</s:VGroup>
+		
+		<s:VSlider id="zoomSlider"
+				   toolTip="{this._toolTipZoomSlider}"
+				   height="100"
+				   liveDragging="true"
+				   snapInterval="1"
+				   thumbRelease="this.onZoomSliderThumbRelease();"
+				   useHandCursor="true"
+				   buttonMode="true"
+				   showDataTip="{this._showDataTip}"
+				   
+				   />
+		
+	</s:HGroup>
+	
+</control:Control>
