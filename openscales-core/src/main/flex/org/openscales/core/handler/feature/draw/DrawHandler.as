@@ -3,14 +3,16 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import org.openscales.core.Map;
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
+	import org.openscales.core.Map;
 	import org.openscales.core.events.DrawingEvent;
+	import org.openscales.core.events.HandlerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.handler.HandlerBehaviour;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.layer.FeatureLayer;
@@ -80,7 +82,9 @@ package org.openscales.core.handler.feature.draw
 				
 		public function DrawHandler(map:Map=null, active:Boolean=false, drawLayer:FeatureLayer=null)
 		{
-			super(map, active);
+			// DrawHandler is a draw handler
+			this.behaviour = HandlerBehaviour.DRAW;
+			super(map, active, this.behaviour);
 			
 			if(drawLayer) {
 				this.drawLayer = drawLayer;
@@ -326,6 +330,29 @@ package org.openscales.core.handler.feature.draw
 			
 			public function get drawLayer():FeatureLayer {
 				return this._drawLayer;
+			}
+			
+			/**
+			 * Callback use when another handler is activated
+			 */
+			override protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
+				// Check if it's not the current handler which has just been activated
+				if(handlerEvent != null) {
+					if(handlerEvent.handler != this) {
+						if(handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.MOVE) {
+							// A move handler has been activated
+							this.active = false;
+						} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.SELECT) {
+							// A select handler has been activated
+							this.active = false;
+						} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.DRAW) {
+							// A draw handler has been activated
+							this.active = false;
+						} else {
+							// Do nothing
+						}
+					}
+				}
 			}
 	}
 	

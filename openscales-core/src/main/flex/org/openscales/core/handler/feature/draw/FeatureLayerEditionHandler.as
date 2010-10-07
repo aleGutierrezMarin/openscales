@@ -2,10 +2,11 @@ package org.openscales.core.handler.feature.draw
 {
 	import flash.display.Sprite;
 	
-	import org.openscales.core.Map;
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
+	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.events.HandlerEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
@@ -14,10 +15,11 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.geometry.Point;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.handler.HandlerBehaviour;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.geometry.Point;
 	
 	/**
 	 * This handler is used to have an edition Mode 
@@ -75,7 +77,10 @@ package org.openscales.core.handler.feature.draw
 			
 			this.layerToEdit=layer;
 			
-			super(map,active);
+			// FeatureLayerEditionHandler is a draw handler
+			this.behaviour = HandlerBehaviour.DRAW;
+			
+			super(map,active, this.behaviour);
 		}
 		/**
 		 * drag vertice start function
@@ -421,6 +426,28 @@ package org.openscales.core.handler.feature.draw
 				this._displayedvirtualvertice=value;
 				if(iEditPath!=null)	(iEditPath as AbstractEditCollectionHandler).displayedVirtualVertices=value;
 				if(iEditPolygon!=null)(iEditPolygon as AbstractEditCollectionHandler).displayedVirtualVertices=value;
+			}
+		}
+		/**
+		 * Callback use when another handler is activated
+		 */
+		override protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
+			// Check if it's not the current handler which has just been activated
+			if(handlerEvent != null) {
+				if(handlerEvent.handler != this) {
+					if(handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.MOVE) {
+						// A move handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.SELECT) {
+						// A select handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.DRAW) {
+						// A draw handler has been activated
+						this.active = false;
+					} else {
+						// Do nothing
+					}
+				}
 			}
 		}
 	}

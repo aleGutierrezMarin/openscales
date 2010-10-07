@@ -3,12 +3,14 @@ package org.openscales.core.handler.zoom
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
-	import org.openscales.core.Map;
 	import org.openscales.basetypes.Bounds;
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
+	import org.openscales.core.Map;
+	import org.openscales.core.events.HandlerEvent;
 	import org.openscales.core.events.ZoomBoxEvent;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.handler.HandlerBehaviour;
 	import org.openscales.core.handler.mouse.DragHandler;
 	
 	public class ZoomBoxHandler extends Handler
@@ -26,7 +28,9 @@ package org.openscales.core.handler.zoom
 		private var _drawContainer:Sprite = new Sprite();     
 		
 		public function ZoomBoxHandler(map:Map=null, active:Boolean=false):void{
-			super(map, active);
+			// ZoomBoxHandler is a draw handler
+			this.behaviour = HandlerBehaviour.MOVE;
+			super(map, active, this.behaviour);
 		}
 		
 		override protected function registerListeners():void{
@@ -112,6 +116,29 @@ package org.openscales.core.handler.zoom
 			for each(handler in this.map.handlers) {
 				if (handler is DragHandler) {
 					handler.active = false;
+				}
+			}
+		}
+		
+		/**
+		 * Callback use when another handler is activated
+		 */
+		override protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
+			// Check if it's not the current handler which has just been activated
+			if(handlerEvent != null) {
+				if(handlerEvent.handler != this) {
+					if(handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.MOVE) {
+						// A move handler has been activated
+						// Do nothing, we leave the handler in its state
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.SELECT) {
+						// A select handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.DRAW) {
+						// A draw handler has been activated
+						this.active = false;
+					} else {
+						// Do nothing
+					}
 				}
 			}
 		}

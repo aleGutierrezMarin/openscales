@@ -4,7 +4,9 @@ package org.openscales.core.handler.mouse {
 	
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.Map;
+	import org.openscales.core.events.HandlerEvent;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.handler.HandlerBehaviour;
 	
 	/**
 	 * Handler use to zoom in and zoom out the map thanks to the mouse wheel.
@@ -13,7 +15,9 @@ package org.openscales.core.handler.mouse {
 		
 		
 		public function WheelHandler(target:Map = null, active:Boolean = true) {
-			super(target,active);
+			// WheelHandler is a move handler
+			this.behaviour = HandlerBehaviour.MOVE;
+			super(target,active, this.behaviour);
 		}
 		
 		override protected function registerListeners():void {
@@ -48,6 +52,29 @@ package org.openscales.core.handler.mouse {
 				}
 				this.map.moveTo(this.map.getLocationFromMapPx(newCenterPx), zoom, false, true);
 
+			}
+		}
+		
+		/**
+		 * Callback use when another handler is activated
+		 */
+		override protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
+			// Check if it's not the current handler which has just been activated
+			if(handlerEvent != null) {
+				if(handlerEvent.handler != this) {
+					if(handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.MOVE) {
+						// A move handler has been activated
+						// Do nothing, we leave the handler in its state
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.SELECT) {
+						// A select handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.DRAW) {
+						// A draw handler has been activated
+						this.active = false;
+					} else {
+						// Do nothing
+					}
+				}
 			}
 		}
 		

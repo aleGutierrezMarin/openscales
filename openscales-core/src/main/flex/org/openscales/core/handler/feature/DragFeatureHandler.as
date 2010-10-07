@@ -5,7 +5,9 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.Map;
 	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.events.HandlerEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.handler.HandlerBehaviour;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
@@ -39,7 +41,9 @@ package org.openscales.core.handler.feature
 	 	 * */
 		public function DragFeatureHandler(map:Map=null, active:Boolean=false)
 		{
-			super(map, active);
+			// DragFeatureHandler is a draw handler
+			this.behaviour = HandlerBehaviour.DRAW;
+			super(map, active, this.behaviour);
 		}
 		/**
 		 * This function is launched when the Mouse is down
@@ -113,6 +117,29 @@ package org.openscales.core.handler.feature
 		public function addDraggableLayer(layer:FeatureLayer):void{
 			if(layer!=null && _draggableLayers.indexOf(layer)==-1){
 				_draggableLayers.push(layer);
+			}
+		}
+		
+		/**
+		 * Callback use when another handler is activated
+		 */
+		override protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
+			// Check if it's not the current handler which has just been activated
+			if(handlerEvent != null) {
+				if(handlerEvent.handler != this) {
+					if(handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.MOVE) {
+						// A move handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.SELECT) {
+						// A select handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.DRAW) {
+						// A draw handler has been activated
+						this.active = false;
+					} else {
+						// Do nothing
+					}
+				}
 			}
 		}
 	}
