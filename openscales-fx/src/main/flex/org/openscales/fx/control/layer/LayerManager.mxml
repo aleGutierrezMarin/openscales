@@ -93,7 +93,6 @@
 		
 	
 	<s:VGroup width="100%"> 
-		
 
 		<s:List id="overlayList" 
 				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
@@ -102,16 +101,13 @@
 				dragEnabled="true"
 				dragMoveEnabled="true"
 				width="100%" 
-				dragComplete="changeLayerOrder(event)"
-			>
-		<s:layout>
-			<s:VerticalLayout horizontalAlign="justify" 
-							  requestedRowCount="3"
-						 />
-		</s:layout>
- </s:List>
-
-	
+				dragComplete="changeLayerOrder(event)">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="justify"
+								  requestedRowCount="4"/>
+					
+			</s:layout>
+ 		</s:List>
 
 	</s:VGroup>
 	
