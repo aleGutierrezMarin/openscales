@@ -69,6 +69,11 @@ package org.openscales.core.handler
 			if (this._active) {
 				this.registerListeners();
 			}
+			
+			if(!this._map) {
+				this.map.removeEventListener(HandlerEvent.HANDLER_ACTIVATION, onOtherHandlerActivation);
+			}
+					
 		}
 
 		/**
@@ -90,25 +95,11 @@ package org.openscales.core.handler
 			if (this._active != value) {
 				this._active = value;
 				if(value){
-					this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_ACTIVATION, false, false, this.behaviour));
+					this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_ACTIVATION, this));
 				} else {
-					this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_DESACTIVATION, false, false, this.behaviour));
-				}
-				if (this.toggleHandlerActivity != null) {
-					this.toggleHandlerActivity(this._active);
+					this.map.dispatchEvent(new HandlerEvent(HandlerEvent.HANDLER_DESACTIVATION, this));
 				}
 			}
-		}
-		
-		/**
-		 * Getter and setter of the callback function used when the handler's
-		 * activity changes
-		 */
-		public function get toggleHandlerActivity():Function {
-			return this._toggleHandlerActivity;
-		}
-		public function set toggleHandlerActivity(value:Function):void {
-			this._toggleHandlerActivity = value;
 		}
 		
 		/**
@@ -132,16 +123,14 @@ package org.openscales.core.handler
 		 * Remove the listeners to the associated map
 		 */
 		protected function unregisterListeners():void {
-			//TODO : Voir si le listener doit être supprimé lorsque le handler courant est désactivé, pas certain car sinon
-			// on ne pourra pas gérer le cas où il est nécessaire d'activer un handler à l'activation d'un autre
-			this.map.removeEventListener(HandlerEvent.HANDLER_ACTIVATION, onOtherHandlerActivation);
+			
 		}
 		
 		/**
 		 * Callback use when another handler is activated
 		 */
 		protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
-			if(handlerEvent.behaviour == HandlerBehaviour.MOVE) {
+			/*if(handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.MOVE) {
 				// A move handler has been activated
 				if(this.behaviour == HandlerBehaviour.MOVE) {
 					// This handler has the same behaviour than the one which has been activated : MOVE
@@ -152,7 +141,7 @@ package org.openscales.core.handler
 				} else {
 					// Do nothing
 				}
-			} else if (handlerEvent.behaviour == HandlerBehaviour.SELECT) {
+			} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.SELECT) {
 				// A select handler has been activated
 				if(this.behaviour == HandlerBehaviour.MOVE) {
 					// Current handler : MOVE vs Activated handler : SELECT
@@ -163,7 +152,7 @@ package org.openscales.core.handler
 				} else {
 					// Do nothing
 				}
-			} else if (handlerEvent.behaviour == HandlerBehaviour.DRAW) {
+			} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.DRAW) {
 				// A draw handler has been activated
 				if(this.behaviour == HandlerBehaviour.MOVE) {
 					// Current handler : MOVE vs Activated handler : DRAW
@@ -176,7 +165,7 @@ package org.openscales.core.handler
 				}
 			} else {
 				// Do nothing
-			}
+			}*/
 		}
 		
 	}
