@@ -39,7 +39,6 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
-			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.ogc.WFS;
 			
@@ -130,7 +129,6 @@
 					  _layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
 					  _layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
 					  _layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
-					  _layer.map.addEventListener(LayerManagerEvent.COMPONENT_OPACITY,manageOpacityLayer);
 					}
 					displayControl.removeAllElements();
 					_opacity = Math.floor(this.layer.alpha*100) + "%";
@@ -179,43 +177,40 @@
 			}
 
 			public function manageOpacity(event:Event):void {
-				var layerManagerEvent:LayerManagerEvent = new LayerManagerEvent(LayerManagerEvent.COMPONENT_OPACITY);
-				layerManagerEvent.layer = _layer;
-				layerManagerEvent.x = (event.target as IconButton).x + (event.target as IconButton).width/2;
-				layerManagerEvent.y = this.y + 10;
-				if(layer&&layer.map)
-					layer.map.dispatchEvent(layerManagerEvent);
+
+				manageOpacityLayer(_layer,(event.target as IconButton).x + (event.target as IconButton).width/2,this.y)
 			}
 			
-			public function manageOpacityLayer(event:LayerManagerEvent):void
+			public function manageOpacityLayer(layer:Layer,x:Number,y:Number):void
 			{
 				// remove timer before manage opacity
 				removeTimerOpacity(new MouseEvent(MouseEvent.MOUSE_OVER));
 				
-				this._layerOldZindex = event.layer.zindex;
+				this._layerOldZindex = _layer.zindex;
 				if(this._group != null)
 				{
 					this.removeElement(this._group);
 					this._group = null;
-					if(this._layer == event.layer)
+					/*if(this._layer == event.layer)
 					{
 						return;
-					}
+					}*/
 				}
-				if(this._layer != event.layer || this._group == null)
+				if(this._layer != layer || this._group == null)
 				{
-					this._layer = event.layer;
+					this._layer = layer;
 					//Create group that contain VSlider to manage opacity
 					this._group = new Group();
-					this._group.x = event.x;
-					this._group.y = event.y;
+					this._group.x = x;
+					this._group.y = y;
 					this._group.height = 45;
 					this._group.width = 18;
 					this._group.alpha = 0.7;
+					this._group.depth = 50;
 					
 					//Create VSlider
 					this._vSlider = new VSlider();
-					this._vSlider.x = 10;
+					this._vSlider.x = 6;
 					this._vSlider.height = this._group.height;
 					this._vSlider.width = 11;
 					this._vSlider.minimum = 0;
