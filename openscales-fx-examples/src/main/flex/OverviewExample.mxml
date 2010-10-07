@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="resizeMap()"
+		 width="100%" height="100%" resize="resizeMap()">
+	
+	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.833,45.767">
+		
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms" layers="bluemarble"
+				 format="image/jpeg" maxExtent="-180,-90,180,90"/>
+		
+		<DragHandler/>
+		<WheelHandler/>
+		<Spinner x="{width / 2}" y="{height / 2}"/>
+		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		
+		<TraceInfo x="{width-200}" y="0" />
+		
+		<s:Panel id="miniMapPanel" title="Overview map" x="{width-miniMapPanel.width-10}" y="{height-miniMapPanel.height-10}">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<OverviewMap id="miniMap" width="100%" height="100%" extentColor="0xFF3300" newExtentColor="0x00FF33">
+				<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
+			</OverviewMap>		
+		</s:Panel>
+		
+		<ControlPanel x="10" y="10" width="150" height="240" title="Navigation">
+			
+			<Pan />
+			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
+				<Zoom />
+				<s:Rect width="100%" />
+				<ZoomBox />
+			</s:HGroup>
+			<s:Button id="overviewToggler" label="Hide overview" click="toggleOverview();"/>
+		</ControlPanel>
+		
+	</Map>	
+	
+	<fx:Script>
+		<![CDATA[
+						
+			private function resizeMap():void {
+				miniMap.height = 0.2 * this.height;
+				miniMap.width = this.width * miniMap.height / this.height;
+			}
+			
+			private function toggleOverview():void {
+				miniMapPanel.visible = !miniMapPanel.visible;
+				overviewToggler.label = ((miniMapPanel.visible) ? "Hide" : "Show") + " overview";
+			}
+		]]>
+	</fx:Script>
+	
+</s:Group>
