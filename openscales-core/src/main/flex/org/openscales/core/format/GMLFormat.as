@@ -61,8 +61,8 @@ package org.openscales.core.format
 		private var _dim:Number;
 		
 		private var _onFeature:Function;
-
-        private var _featuresids:HashMap;
+		
+		private var _featuresids:HashMap;
 		
 		
 		private var xmlString:String;
@@ -89,7 +89,7 @@ package org.openscales.core.format
 								  extractAttributes:Boolean = true) {
 			this.extractAttributes = extractAttributes;
 			this._onFeature=onFeature;
-            this._featuresids = featuresids;
+			this._featuresids = featuresids;
 		}
 		
 		/**
@@ -105,21 +105,10 @@ package org.openscales.core.format
 			this.xmlString = data as String;
 			data = null;
 			if(this.xmlString.indexOf(this.sFXML)!=-1){
-              	var end:int = this.xmlString.indexOf(">",this.xmlString.indexOf(">")+1)+1;
+				var end:int = this.xmlString.indexOf(">",this.xmlString.indexOf(">")+1)+1;
 				this.sXML = this.xmlString.slice(0,end);
-                /*
-				var dim:int;
-				var coordNodes:XMLList = featureNodes[0].*::posList;
-				if (coordNodes.length() == 0) {
-					coordNodes = featureNodes[0].*::pos;
-				}
-				if (coordNodes.length() > 0) {
-					dim = coordNodes[0].@*::srsDimension;
-				}    
-				this.dim = (dim == 3) ? 3 : 2;
-			    */
-			  this.dim = 2;
-              this.sprite.addEventListener(Event.ENTER_FRAME, this.readTimer);
+				this.dim = 2;
+				this.sprite.addEventListener(Event.ENTER_FRAME, this.readTimer);
 			} else {
 				this.xmlString = null;
 			}
@@ -129,9 +118,15 @@ package org.openscales.core.format
 		
 		private function readTimer(event:Event):void {
 			startTime = getTimer();
-			this.lastInd = this.xmlString.indexOf(this.sFXML,this.lastInd);
-			if(this.lastInd==-1)
+			if(this.xmlString==null) {
+				this.sprite.removeEventListener(Event.ENTER_FRAME,this.readTimer);
 				return;
+			}
+			this.lastInd = this.xmlString.indexOf(this.sFXML,this.lastInd);
+			if(this.lastInd==-1) {
+				this.sprite.removeEventListener(Event.ENTER_FRAME,this.readTimer);
+				return;
+			}
 			var xmlNode:XML;
 			var feature:Feature;
 			var end:int;		
@@ -149,17 +144,17 @@ package org.openscales.core.format
 				this.lastInd = this.xmlString.indexOf(this.sFXML,this.lastInd+1);
 				if(this._featuresids.containsKey((xmlNode..@fid) as String))
 					continue;
-
+				
 				feature = this.parseFeature(xmlNode);
 				if (feature) {
 					this._onFeature(feature, false, false);
 				}
 			}
-
-           if(this.lastInd==-1) {
-				this.sprite.removeEventListener(Event.ENTER_FRAME,this.readTimer)
+			
+			if(this.lastInd==-1) {
+				this.sprite.removeEventListener(Event.ENTER_FRAME,this.readTimer);
 				this.xmlString = null;
-                this.sXML = null;
+				this.sXML = null;
 				return;
 			}
 			
@@ -169,8 +164,8 @@ package org.openscales.core.format
 		
 		
 		public function reset():void {
-				this.xmlString = null;
-				this.sXML = null;
+			this.xmlString = null;
+			this.sXML = null;
 		}
 		
 		public function destroy():void {
@@ -194,7 +189,7 @@ package org.openscales.core.format
 			var geom:ICollection = null;
 			var p:Vector.<Number> = new Vector.<Number>();
 			var p2:Vector.<Geometry> = new Vector.<Geometry>();
-
+			
 			
 			var feature:Feature = null;
 			
@@ -235,7 +230,7 @@ package org.openscales.core.format
 				j = points.length();
 				p = this.parseCoords(points[i]);
 				if (p)
-				  geom.addPoints(p);
+					geom.addPoints(p);
 				
 			} else if (xmlNode..*::Polygon.length() > 0) {
 				var polygon2:XML = xmlNode..*::Polygon[0];
