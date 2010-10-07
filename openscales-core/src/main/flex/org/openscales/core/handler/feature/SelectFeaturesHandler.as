@@ -8,12 +8,14 @@ package org.openscales.core.handler.feature {
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.events.HandlerEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.handler.HandlerBehaviour;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
@@ -128,7 +130,9 @@ package org.openscales.core.handler.feature {
 		 * @param active boolean defining if the handler is active or not
 		 */
 		public function SelectFeaturesHandler(map:Map=null, active:Boolean=false, enableClickSelection:Boolean=true, enableBoxSelection:Boolean=true, enableOverSelection:Boolean=false) {
-			super(map, active);
+			// SelectFeaturesHandler is a selection handler
+			this.behaviour = HandlerBehaviour.SELECT;
+			super(map, active, this.behaviour);
 			if (this.map) {
 				this.map.addChild(_drawContainer);
 			}
@@ -860,6 +864,29 @@ package org.openscales.core.handler.feature {
 			selectedStyle.rules[0].symbolizers.push(symbolizer);
 			return selectedStyle;
 		}
-
+		
+		/**
+		 * Callback use when another handler is activated
+		 */
+		override protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
+			// Check if it's not the current handler which has just been activated
+			if(handlerEvent != null) {
+				if(handlerEvent.handler != this) {
+					if(handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.MOVE) {
+						// A move handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.SELECT) {
+						// A select handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.DRAW) {
+						// A draw handler has been activated
+						this.active = false;
+					} else {
+						// Do nothing
+					}
+				}
+			}
+		}
+		
 	}
 }

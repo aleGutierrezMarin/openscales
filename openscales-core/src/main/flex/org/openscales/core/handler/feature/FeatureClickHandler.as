@@ -4,11 +4,13 @@ package org.openscales.core.handler.feature
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	import org.openscales.core.Map;
 	import org.openscales.basetypes.Pixel;
+	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.events.HandlerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.handler.HandlerBehaviour;
 	
 	/**
 	 * Depracated, should be removed in favor of SelectFeaturesHandler
@@ -61,7 +63,9 @@ package org.openscales.core.handler.feature
 		 * */
 		public function FeatureClickHandler(map:Map=null, active:Boolean=false)
 		{
-			super(map, active);	
+			// FeatureClickHandler is a draw handler
+			this.behaviour = HandlerBehaviour.DRAW;
+			super(map, active, this.behaviour);	
 		}
 		
 		 override protected function registerListeners():void{
@@ -280,6 +284,29 @@ package org.openscales.core.handler.feature
 		 * */
 		public function set stopDrag(value:Function):void{
 			this._stopDrag=value;
+		}
+		
+		/**
+		 * Callback use when another handler is activated
+		 */
+		override protected function onOtherHandlerActivation(handlerEvent:HandlerEvent):void{
+			// Check if it's not the current handler which has just been activated
+			if(handlerEvent != null) {
+				if(handlerEvent.handler != this) {
+					if(handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.MOVE) {
+						// A move handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.SELECT) {
+						// A select handler has been activated
+						this.active = false;
+					} else if (handlerEvent.handler && handlerEvent.handler.behaviour == HandlerBehaviour.DRAW) {
+						// A draw handler has been activated
+						this.active = false;
+					} else {
+						// Do nothing
+					}
+				}
+			}
 		}
 		
 		

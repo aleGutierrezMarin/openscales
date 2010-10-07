@@ -89,9 +89,11 @@ package org.openscales.core.handler.mouse
 		 * Constructor of the handler.
 		 * @param map the map associated to the handler
 		 * @param active boolean defining if the handler is active or not
+		 * @param behaviour String defining the behaviour of the handler
 		 */
-		public function ClickHandler(map:Map=null, active:Boolean=false) {
-			super(map, active);
+		public function ClickHandler(map:Map=null, active:Boolean=false, behaviour:String=null) {
+			this.behaviour = behaviour;
+			super(map, active, this.behaviour);
 		}
 		
 		/**
