@@ -6,11 +6,13 @@ package {
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.core.control.PanZoomBar;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
+	import org.openscales.core.handler.mouse.DoubleClickHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.ogc.WFS;
@@ -24,6 +26,7 @@ package {
 		protected var _map:Map;
 
 		public function OpenscalesApplication() {
+			Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 
@@ -58,7 +61,9 @@ package {
 			
 			_map.addHandler(selectHandler);
 			_map.addHandler(new WheelHandler());
-			_map.addHandler(new DragHandler());
+			//_map.addHandler(new DragHandler());
+			_map.addHandler(new DoubleClickHandler());
+			
 
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);

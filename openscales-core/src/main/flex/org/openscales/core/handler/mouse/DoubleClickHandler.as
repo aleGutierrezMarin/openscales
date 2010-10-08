@@ -1,41 +1,25 @@
 package org.openscales.core.handler.mouse
 {
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.basetypes.Location;
 	import org.openscales.basetypes.Pixel;
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.handler.Handler;
 	
-	public class DoubleClickHandler extends Handler
+	public class DoubleClickHandler extends ClickHandler
 	{
-		public function DoubleClickHandler(map:Map=null, active:Boolean=false)
+		public function DoubleClickHandler(map:Map=null, active:Boolean=true)
 		{
 			super(map, active);
+			this.doubleClick = this.doubleclickhandler;
 		}
 		
-		override protected function registerListeners():void {
-			// Listeners of the super class
-			super.registerListeners();
-			// Listeners of the internal timer
-			if (this.map) {
-				this.map.addEventListener(MouseEvent.DOUBLE_CLICK,this.doubleclick);
-			}
-		}
-		
-		override protected function unregisterListeners():void {
-			// Listeners of the associated map
-			if (this.map) {
-				this.map.removeEventListener(MouseEvent.DOUBLE_CLICK,this.doubleclick);
-			}
-			// Listeners of the super class
-			super.unregisterListeners();
-		}
-		
-		private function doubleclick(e:MouseEvent):void {
+		private function doubleclickhandler(px:Pixel):void {
 			if(this.map.zoom > this.map.baseLayer.maxZoomLevel) {
-				var px:Pixel = new Pixel(this.map.mouseX,
-										 this.map.mouseY);
+				Trace.log("double click");
 				var loc:Location = this.map.getLocationFromMapPx(px);
 				this.map.moveTo(loc,this.map.zoom++);
 			}
