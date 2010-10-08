@@ -80,11 +80,16 @@
 					zoomSlider.value = map.zoom;
 			}
 			
+			public function onZoomSliderThumbPress():void {
+				zoomSlider.removeEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
+				zoomSlider.addEventListener(SliderEvent.THUMB_RELEASE,this.onZoomSliderThumbRelease);
+			}
+			
 			public function zoomSliderChange(event:Event):void {
 				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
 			}
 			
-			public function onZoomSliderThumbRelease():void {
+			public function onZoomSliderThumbRelease(e:Event):void {
 				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
 				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
 			}
@@ -99,11 +104,10 @@
 	</s:SkinnableContainer>
 	
 	<s:VSlider id="zoomSlider" x="54" y="10"
-			   liveDragging="true"
 			   snapInterval="1"
-			   thumbRelease="this.onZoomSliderThumbRelease();"
 			   useHandCursor="true"
 			   buttonMode="true"
+			   thumbPress="onZoomSliderThumbPress()"
 			   skinClass="org.openscales.fx.skin.ZoomSkin" />
  	
 </control:Control>
