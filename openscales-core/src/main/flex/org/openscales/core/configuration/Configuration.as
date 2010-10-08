@@ -266,8 +266,10 @@ package org.openscales.core.configuration
 				
 				var styles:String=xmlNode.@styles; 
 				var bgcolor:String=xmlNode.@bgcolor;
-				
-				
+				//Params for WMSC request method
+				var method:String = null;
+				if(xmlNode.@method && xmlNode.@method != "")
+					method = xmlNode.@method;
 				
 				paramsWms = new WMSParams(layers,format,transparent,tiled,styles,bgcolor);
 				paramsWms.exceptions=xmlNode.@exceptions;
@@ -283,6 +285,8 @@ package org.openscales.core.configuration
 						wmscLayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmscLayer.projection);
 						wmscLayer.params = paramsWms;
 						layer=wmscLayer;
+						if(method!=null)
+							wmscLayer.method =method;
 						break;
 					}
 						
@@ -566,9 +570,14 @@ package org.openscales.core.configuration
 		}
 		protected function parseSecurity(xmlNode:XML):AbstractSecurity{
 			var security:AbstractSecurity=null;
+			var method:String = null;
+			if(xmlNode.@method!=null && xmlNode.@method!="")
+				method = xmlNode.@method;
 			if(xmlNode.name()=="IGNGeoRMSecurity"){
-				if(map!=null && xmlNode.@key!=null)
-					security=new IGNGeoRMSecurity(map,xmlNode.@key,xmlNode.@proxy);
+				if(map!=null && xmlNode.@key!=null){					
+					security=new IGNGeoRMSecurity(map,xmlNode.@key,xmlNode.@proxy, null, method);
+				}
+				
 			}
 			return security;
 		}
