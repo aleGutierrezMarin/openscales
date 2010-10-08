@@ -77,6 +77,7 @@ package org.openscales.core.handler.feature.draw
 			this._dblClickHandler.active = true;
 			this._dblClickHandler.doubleClick = this.mouseDblClick;
 			if (this.map) {
+				super.registerListeners();
 				this.map.addEventListener(MouseEvent.CLICK, this.drawLine);
 				this.map.addEventListener(MapEvent.MOVE_END, this.updateZoom);
 			} 
@@ -87,6 +88,7 @@ package org.openscales.core.handler.feature.draw
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.CLICK, this.drawLine);
 				this.map.removeEventListener(MapEvent.MOVE_END, this.updateZoom);
+				super.unregisterListeners();
 			}
 		}
 		/**

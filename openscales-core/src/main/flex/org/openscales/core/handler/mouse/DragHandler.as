@@ -55,6 +55,7 @@ package org.openscales.core.handler.mouse
 		
 		override protected function registerListeners():void{
 			if (this.map) {
+				super.registerListeners();
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 			}
@@ -64,6 +65,7 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				super.unregisterListeners();
 			}
 		}
 		

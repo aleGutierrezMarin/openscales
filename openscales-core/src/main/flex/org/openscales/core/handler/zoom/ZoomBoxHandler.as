@@ -35,6 +35,7 @@ package org.openscales.core.handler.zoom
 		
 		override protected function registerListeners():void{
 			if (this.map) {
+				super.registerListeners();
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN,startBox);
 				this.map.addEventListener(MouseEvent.MOUSE_UP,endBox);     
 			}
@@ -45,6 +46,7 @@ package org.openscales.core.handler.zoom
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN,startBox);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP,endBox);
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+				super.unregisterListeners();
 			}
 		}
 		

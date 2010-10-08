@@ -70,6 +70,7 @@ package org.openscales.core.handler.feature
 		
 		 override protected function registerListeners():void{
 			if (this.map) {
+				super.registerListeners();
 				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEUP,this.mouseUp);
 				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEDOWN,this.mouseDown);
 			}
@@ -81,6 +82,7 @@ package org.openscales.core.handler.feature
 			if (this.map) {
 				this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEUP,this.mouseUp);
 				this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEDOWN,this.mouseDown);
+				super.unregisterListeners();
 			}
 		}
 		//This function is used to detect a click

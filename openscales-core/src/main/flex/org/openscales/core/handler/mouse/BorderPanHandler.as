@@ -36,6 +36,7 @@ package org.openscales.core.handler.mouse {
 
 		override protected function registerListeners():void {
 			if (this.map) {
+				super.registerListeners();
 				this.map.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 				this.map.addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
 				this.map.addEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut);
@@ -48,6 +49,7 @@ package org.openscales.core.handler.mouse {
 				this.map.removeEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
 				this.map.removeEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut);
 				this.map.removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
+				super.unregisterListeners();
 			}
 		}
 
