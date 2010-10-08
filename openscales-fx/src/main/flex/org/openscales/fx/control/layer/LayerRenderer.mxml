@@ -4,7 +4,7 @@
 		  xmlns:fx="http://ns.adobe.com/mxml/2009"
 		  xmlns:control="org.openscales.fx.control.*"
 		  width="100%"
-		  height="25" xmlns:fxg="assets.fxg.*"
+		  height="22" xmlns:fxg="assets.fxg.*"
 		  autoDrawBackground="false"
 		  xmlns:d="http://ns.adobe.com/fxg/2008/dt"
 		  >
@@ -39,6 +39,7 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.ogc.WFS;
 			
@@ -54,19 +55,14 @@
 			private var labelLayer:Label;
 			private var _layer:Layer;
 			
-			//Group that manage the opacity
-			private var _group:Group = null;
 			
-			//Slider that manage opacity
-			private var _vSlider:VSlider = null;
 			
-			private var _layerOldZindex:int=0;
 			
 			[Bindable]
 			private var _opacity:String;
 			
 			/**
-			 * Get the layer that the List into the LayerSwitcher.mxml send to display it
+			 * Get the layer that the List into the LayerManager.mxml send to display it
 			 *
 			 * @return return the layer
 			 */
@@ -128,7 +124,7 @@
 					if(_layer.map!=null){
 					  _layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
 					  _layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
-					  _layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
+					  /* _layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged); */
 					}
 					displayControl.removeAllElements();
 					_opacity = Math.floor(this.layer.alpha*100) + "%";
@@ -136,8 +132,38 @@
 					labelLayer.text = this.layer.name;
 					labelLayer.percentWidth = 100;
 					displayControl.addElement(labelLayer);		
-					isBaseLayer.selected = _layer.isBaseLayer;
+ 					/*isBaseLayer.selected = _layer.isBaseLayer; */
 					
+					if(this.parent != null){
+						var overlayArray:Array=(LayerManager.layerManager).overlayList.dataProvider.toArray();
+						
+						if(overlayArray.length<=1)
+							
+						{
+							ArrowUp.enabled = false;
+							ArrowDown.enabled = false;
+							
+						}
+						else
+						{
+							// the layer is on the bottom of the list, we hide the arrowDown
+							
+							if(overlayArray.indexOf(this.layer) == 0){
+								ArrowUp.enabled = false;
+								ArrowDown.enabled = true;
+							}
+								// the layer is on the to of the list, we hide the arrowUp
+							else if(overlayArray.indexOf(this.layer)==overlayArray.length-1){
+								ArrowUp.enabled = true;
+								ArrowDown.enabled = false;
+							}
+								// the layer is in the middle, you can up or down it
+							else{
+								ArrowUp.enabled = true;
+								ArrowDown.enabled = true;
+							}           	
+						}
+					}
 					
 				}
 				
@@ -156,18 +182,14 @@
 				}
 			}
 			
-			private function onDrag(event:Event):void {
-				event.stopPropagation();
-			}
-			
 			private function changeBaseLayer(event:MouseEvent):void {
 				layer.map.baseLayer = this._layer;
 				layer.map.moveTo(layer.map.center);
 			}
 			
-			private function baseLayerChanged(event:LayerEvent):void {
+			/* private function baseLayerChanged(event:LayerEvent):void {
 				isBaseLayer.selected = (event.layer == this.layer);
-			}
+			} */
 			
 			public function upLayer(event:MouseEvent):void {
 				_layer.map.changeLayerIndexByStep(_layer,+1);
@@ -177,117 +199,15 @@
 			}
 
 			public function manageOpacity(event:Event):void {
-
-				manageOpacityLayer(_layer,(event.target as IconButton).x + (event.target as IconButton).width/2,this.y)
+				var layerManagerEvent:LayerManagerEvent = new LayerManagerEvent(LayerManagerEvent.COMPONENT_OPACITY);
+				layerManagerEvent.layer = _layer;
+				layerManagerEvent.x = (event.target as IconButton).x + (event.target as IconButton).width/2;
+				layerManagerEvent.y = this.y + 10;
+				if(layer&&layer.map)
+					layer.map.dispatchEvent(layerManagerEvent);
 			}
 			
-			public function manageOpacityLayer(layer:Layer,x:Number,y:Number):void
-			{
-				// remove timer before manage opacity
-				removeTimerOpacity(new MouseEvent(MouseEvent.MOUSE_OVER));
-				
-				this._layerOldZindex = _layer.zindex;
-				if(this._group != null)
-				{
-					this.removeElement(this._group);
-					this._group = null;
-					/*if(this._layer == event.layer)
-					{
-						return;
-					}*/
-				}
-				if(this._layer != layer || this._group == null)
-				{
-					this._layer = layer;
-					//Create group that contain VSlider to manage opacity
-					this._group = new Group();
-					this._group.x = x;
-					this._group.y = y;
-					this._group.height = 45;
-					this._group.width = 18;
-					this._group.alpha = 0.7;
-					this._group.depth = 50;
-					
-					//Create VSlider
-					this._vSlider = new VSlider();
-					this._vSlider.x = 6;
-					this._vSlider.height = this._group.height;
-					this._vSlider.width = 11;
-					this._vSlider.minimum = 0;
-					this._vSlider.maximum = 100;
-					this._vSlider.value = this._layer.alpha*100;
-					this._vSlider.snapInterval = 1;
-					this._vSlider.dataTipFormatFunction = percentDataTip;
-					this._vSlider.addEventListener(MouseEvent.MOUSE_DOWN,onDrag); 
-					//this._vSlider.liveDragging = true;
-					//this._vSlider.sliderThumbClass = net.awl.openscales.fx.control.FlexibleSliderThumb;
-					this._vSlider.addEventListener(SliderEvent.CHANGE,layerOpacity);
-					this._group.addElement(this._vSlider);
-					//Add the group to the LayerSwitcher
-					this.addElement(this._group);
-					this._group.setVisible(true);
-					// add listener for group
-					this._group.addEventListener(MouseEvent.ROLL_OUT,addTimerOpacity);
-					
-				}
-			}
 			
-			private var myTimer:Timer = null;
-			public function addTimerOpacity(event:MouseEvent):void{
-				if(myTimer != null){
-					myTimer.reset();
-				}else{
-					myTimer = new Timer(2000, 1);
-				}
-				this._group.addEventListener(MouseEvent.MOUSE_OVER,removeTimerOpacity);
-				myTimer.addEventListener(TimerEvent.TIMER, timerOpacityHandler);
-				myTimer.start();
-			}
-			public function removeTimerOpacity(event:MouseEvent):void{
-				if(myTimer != null){
-					myTimer.stop();
-					myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
-					myTimer = null;
-				}	
-			}
-			public function timerOpacityHandler(event:TimerEvent):void {
-				if(this._group != null)
-				{
-					myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
-					myTimer = null;
-					this.removeElement(this._group);
-					this._group = null;
-					
-				}
-			}
-			
-			public function closeOpacity(event:ScrollEvent):void
-			{
-				if(_layer != null)
-				{
-					this._layerOldZindex = _layer.zindex;
-				}
-				if(this._group != null)
-				{
-					this.removeElement(this._group);
-					this._group = null;
-				}
-			}
-			
-			public function percentDataTip(value:Number):String
-			{
-				return value+"%";
-			}
-			
-			/**
-			 * Change the opacity of the layer
-			 *
-			 * @param event event send by a slide
-			 */
-			public function layerOpacity(event:Event):void
-			{	
-				this._layer.alpha = (event.target as VSlider).value/100;
-			}
 			
 		 ]]>
 	</fx:Script>
@@ -298,7 +218,7 @@
 		<s:State name="hovered"/>
 	</s:states>
 	
-	<s:Graphic includeIn="normal" width="225" height="25" >
+	<s:Graphic includeIn="normal" width="210" height="22" >
 		<s:Group>
 			<s:Group d:type="layer" d:userLabel="Content">
 				<s:Group>
@@ -314,15 +234,15 @@
 					</s:Path>
 				</s:Group>
 			</s:Group>
-		</s:Group>	
+		</s:Group>
 	</s:Graphic>
-	<s:Graphic includeIn="hovered" width="225" height="25">
+	<s:Graphic includeIn="hovered" width="210" height="22">
 		<s:Group>
 			<s:Group d:type="layer" d:userLabel="Content">
 				<s:Group>
 					<s:Path data="M610 4.05 610 18.95Q610 23 606 23L4 23Q0 23 0 18.95L0 4.05Q0 0 4 0L606 0Q610 0 610 4.05">
 						<s:fill>
-							<s:SolidColor color="#E7F4FD"/>
+							<s:SolidColor color="#EDE1AB"/>
 						</s:fill>
 					</s:Path>
 					<s:Path data="M610 4.05Q610 0 606 0L4 0Q0 0 0 4.05L0 18.95Q0 23 4 23L606 23Q610 23 610 18.95L610 4.05">
@@ -344,10 +264,11 @@
 			  verticalAlign="middle">
 
 	    <!-- TODO : radio button not editable for now because there is some issue when you change baseLayer -->
-	    <s:RadioButton id="isBaseLayer"
+	   <!-- <s:RadioButton id="isBaseLayer"
 					   click="changeBaseLayer(event)"
-					   enabled="false"/>
-		<s:VGroup verticalAlign="middle">
+					   enabled="false"/>-->
+		
+		<s:VGroup verticalAlign="middle" gap="0">
 			<control:IconButton id="ArrowUp"
 								toolTip="Remonter la couche"
 								click="upLayer(event)"
@@ -368,14 +289,14 @@
 								height="10"/>
 
 		</s:VGroup>
-		<control:IconButton id="opacityButton"
-							width="15"
-							height="15"
-							toolTip="Régler l'opacité de la couche"
-							click="manageOpacity(event)"
-							icon="{new ButtonOpacity()}"
-							iconOver="{new ButtonOpacity()}"
-							iconDown="{new ButtonOpacity()}"/>
+			<control:IconButton id="opacityButton"
+								width="15"
+								height="15"
+								toolTip="Régler l'opacité de la couche"
+								click="manageOpacity(event)"
+								icon="{new ButtonOpacity()}"
+								iconOver="{new ButtonOpacity()}"
+								iconDown="{new ButtonOpacity()}"/>
 
 		<s:Group id="displayControl"
 				 width="128"/>
