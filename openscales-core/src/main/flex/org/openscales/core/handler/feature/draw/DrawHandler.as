@@ -84,13 +84,13 @@ package org.openscales.core.handler.feature.draw
 		{
 			// DrawHandler is a draw handler
 			this.behaviour = HandlerBehaviour.DRAW;
-			super(map, active, this.behaviour);
 			
 			if(drawLayer) {
 				this.drawLayer = drawLayer;
 			} else {
 				this.drawLayer = new FeatureLayer("Drawings");
 			}
+			super(map, active, this.behaviour);
 		}
 				
 		private function onSelectionUpdated(selectedFeatures:Array):void {
@@ -158,7 +158,7 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function finishPolygon():void {
 			polygonHandler.drawFinalPoly();
-			polygonHandler.active = false;
+			//polygonHandler.active = false;
 		}
 
 		/**
@@ -167,14 +167,14 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function finishPath():void {
 			pathHandler.drawFinalPath();
-			pathHandler.active = false;
+			//pathHandler.active = false;
 		}
 			
 		public function set mode(mode:int):void {
 				switch (mode) {
 					case 0:
 						selectFeaturesHandler.active = false;
-						pointHandler.active = false;
+						//pointHandler.active = false;
 						dragHandler.active = true;
 						if (pathHandler.active) {
 							this.finishPath();
@@ -182,21 +182,21 @@ package org.openscales.core.handler.feature.draw
 							this.finishPolygon();
 						}
 						drawType = "";
-						editionHandler.active = false;
-						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.DISABLED));
+						//editionHandler.active = false;
+						//this.map.dispatchEvent(new DrawingEvent(DrawingEvent.DISABLED));
 						break;
 					case 1:
 						selectFeaturesHandler.active = true;
-						pointHandler.active = false;
+						//pointHandler.active = false;
 						if (pathHandler.active) {
 							this.finishPath();
 						} else if (polygonHandler.active) {
 							this.finishPolygon();
 						}
 						drawType = "";
-						dragHandler.active = false;
-						editionHandler.active = false;
-						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.DISABLED));
+						//dragHandler.active = false;
+						//editionHandler.active = false;
+						//this.map.dispatchEvent(new DrawingEvent(DrawingEvent.DISABLED));
 						break;
 
 					case 2: //click on button point
@@ -209,10 +209,10 @@ package org.openscales.core.handler.feature.draw
 							pointHandler.active = true;
 							drawType = "point";
 						}
-						dragHandler.active = false;
-						selectFeaturesHandler.active = false;
-						editionHandler.active = false;
-						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
+						//dragHandler.active = false;
+						//selectFeaturesHandler.active = false;
+						//editionHandler.active = false;
+						//this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
 						break;
 
 					case 3: //click on button path
@@ -220,15 +220,15 @@ package org.openscales.core.handler.feature.draw
 							if (polygonHandler.active) {
 								this.finishPolygon();
 							}
-							pointHandler.active = false;
+							//pointHandler.active = false;
 							pathHandler.active = true;
-							editionHandler.active = false;
+							//editionHandler.active = false;
 							drawType = "path";
 						}
-						dragHandler.active = false;
-						selectFeaturesHandler.active = false;
-						editionHandler.active = false;
-						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
+						//dragHandler.active = false;
+						//selectFeaturesHandler.active = false;
+						//editionHandler.active = false;
+						//this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
 						break;
 
 					case 4: //click on button polygon
@@ -236,14 +236,14 @@ package org.openscales.core.handler.feature.draw
 							if (pathHandler.active) {
 								this.finishPath();
 							}
-							pointHandler.active = false;
+							//pointHandler.active = false;
 							polygonHandler.active = true;
-							editionHandler.active = false;
+							//editionHandler.active = false;
 							drawType = "polygon";
 						}
-						dragHandler.active = false;
-						selectFeaturesHandler.active = false;
-						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
+						//dragHandler.active = false;
+						//selectFeaturesHandler.active = false;
+						//this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
 						break;
 					case 5:
 						if (drawType != "") {
@@ -253,13 +253,13 @@ package org.openscales.core.handler.feature.draw
 								this.finishPolygon();
 						}
 						editionHandler.active = true;
-						dragHandler.active = false;
-						selectFeaturesHandler.active = false;
-						polygonHandler.active = false;
-						pointHandler.active = false;
-						pathHandler.active = false;
+						//dragHandler.active = false;
+						//selectFeaturesHandler.active = false;
+						//polygonHandler.active = false;
+						//pointHandler.active = false;
+						//pathHandler.active = false;
 						drawType = "";
-						dragHandler.active = false;
+						//dragHandler.active = false;
 						break;
 				}
 			}

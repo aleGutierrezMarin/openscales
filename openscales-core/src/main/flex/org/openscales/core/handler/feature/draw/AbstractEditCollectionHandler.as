@@ -60,8 +60,8 @@ package org.openscales.core.handler.feature.draw
 	 	* */
 		public function AbstractEditCollectionHandler(map:Map=null, active:Boolean=false, layerToEdit:FeatureLayer=null, featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
 		{
-			super(map, active, layerToEdit, featureClickHandler,drawContainer,isUsedAlone);
 			this.featureClickHandler=featureClickHandler;
+			super(map, active, layerToEdit, featureClickHandler,drawContainer,isUsedAlone);
 			this._timer.addEventListener(TimerEvent.TIMER, deletepointUnderTheMouse);
 		}
 		/**

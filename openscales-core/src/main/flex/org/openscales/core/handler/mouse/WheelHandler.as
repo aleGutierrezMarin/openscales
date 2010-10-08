@@ -16,7 +16,7 @@ package org.openscales.core.handler.mouse {
 		
 		public function WheelHandler(target:Map = null, active:Boolean = true) {
 			// WheelHandler is a move handler
-			this.behaviour = HandlerBehaviour.MOVE;
+			//this.behaviour = HandlerBehaviour.MOVE;
 			super(target,active, this.behaviour);
 		}
 		
