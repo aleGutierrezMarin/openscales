@@ -7,9 +7,9 @@
     <classEntry path="org.openscales.fx.basetypes.FxBounds"/>
     <classEntry path="org.openscales.fx.configuration.FxConfiguration"/>
     <classEntry path="org.openscales.fx.control.FxControl"/>
+    <classEntry path="org.openscales.fx.control.FxMousePosition"/>
     <classEntry path="org.openscales.fx.control.FxCorePanZoom"/>
     <classEntry path="org.openscales.fx.control.FxCorePanZoomBar"/>
-    <classEntry path="org.openscales.fx.control.FxMousePosition"/>
     <classEntry path="org.openscales.fx.control.FxScaleLine"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.feature.FxStyle"/>
@@ -40,8 +40,6 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
-    <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
-    <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
