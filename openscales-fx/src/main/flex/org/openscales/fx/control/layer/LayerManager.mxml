@@ -36,8 +36,8 @@
 			
 			private var _layer:Layer;
 			
-			// Array wich contains all overlayer
-			[Bindable]private var _overlayArray:ArrayCollection = new ArrayCollection();
+			// Array wich contains all layers
+			[Bindable]private var _layerArray:ArrayCollection = new ArrayCollection();
 			
 			private var _group:Group = null;
 			
@@ -69,7 +69,7 @@
 					var i:int = overlayArray.length;
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
-					overlayList.dataProvider = ac;
+					layerList.dataProvider = ac;
 
 				}
 			}
@@ -82,14 +82,14 @@
 			public function refresh(event:LayerEvent):void {	
 				//Test the triggered event
 				if(event.type == LayerEvent.LAYER_ADDED){
-						overlayList.dataProvider.addItem(event.layer);
-						overlayList.invalidateDisplayList();
+						layerList.dataProvider.addItem(event.layer);
+						layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_REMOVED){
-						var index:int = overlayList.dataProvider.getItemIndex(event.layer);
-						overlayList.dataProvider.removeItemAt(index);
-						overlayList.invalidateDisplayList();
+						var index:int = layerList.dataProvider.getItemIndex(event.layer);
+						layerList.dataProvider.removeItemAt(index);
+						layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
@@ -98,7 +98,7 @@
 					var ac:ArrayCollection = new ArrayCollection();
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
-					overlayList.dataProvider = ac;
+					layerList.dataProvider = ac;
 					
 				}
 			}
@@ -109,8 +109,8 @@
 			 * @param event Drag event
 			 */
 			public function changeLayerOrder(event:DragEvent):void{
-				var layer:Layer = overlayList.selectedItem as Layer;
-				this.map.changeLayerIndex(layer,overlayList.selectedIndex);
+				var layer:Layer = layerList.selectedItem as Layer;
+				this.map.changeLayerIndex(layer,layerList.selectedIndex);
 			}
 			
 			
@@ -139,12 +139,11 @@
 					this._layer = event.layer;
 					//Create group that contain VSlider to manage opacity
 					this._group = new Group();
-					this._group.x = event.x;
-					this._group.y = event.y-10;
+					this._group.x = event.x+3;
+					this._group.y = event.y+5;
 					this._group.height = 45;
 					this._group.width = 18;
 					this._group.alpha = 0.7;
-					this._group.setStyle("color","Red");
 					
 					//Create VSlider
 					this._vSlider = new VSlider();
@@ -233,7 +232,7 @@
 			}
 			
 			public function get overlayArray():ArrayCollection {
-				return this._overlayArray;
+				return this._layerArray;
 			}
 			
 		]]>
@@ -241,19 +240,18 @@
 	
 		
 	
-	<s:VGroup width="100%" paddingLeft="2"> 
+	<s:VGroup width="100%" paddingLeft="2" paddingRight="2" paddingBottom="2" paddingTop="2"> 
 
-		<s:List id="overlayList" 
+		<s:List id="layerList" 
 				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
-				labelField="Overlays"
 				dropEnabled="true"
 				dragEnabled="true"
 				dragMoveEnabled="true"
 				width="100%" 
-				dragComplete="changeLayerOrder(event)">
+				dragComplete="changeLayerOrder(event)" borderVisible="false">
 			<s:layout>
 				<s:VerticalLayout horizontalAlign="justify"
-								  requestedRowCount="3"/>
+								  requestedRowCount="4"/>
 					
 			</s:layout>
  		</s:List>

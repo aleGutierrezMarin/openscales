@@ -4,10 +4,9 @@
 		  xmlns:fx="http://ns.adobe.com/mxml/2009"
 		  xmlns:control="org.openscales.fx.control.*"
 		  width="100%"
-		  height="22" xmlns:fxg="assets.fxg.*"
+		  height="25" xmlns:fxg="assets.fxg.*"
 		  autoDrawBackground="false"
-		  xmlns:d="http://ns.adobe.com/fxg/2008/dt"
-		  >
+		  xmlns:d="http://ns.adobe.com/fxg/2008/dt">
 	
 	<fx:Script>
 		<![CDATA[
@@ -135,17 +134,14 @@
  					/*isBaseLayer.selected = _layer.isBaseLayer; */
 					
 					if(this.parent != null){
-						var overlayArray:Array=(LayerManager.layerManager).overlayList.dataProvider.toArray();
+						var overlayArray:Array=(LayerManager.layerManager).layerList.dataProvider.toArray();
 						
-						if(overlayArray.length<=1)
-							
-						{
+						if(overlayArray.length<=1) {
 							ArrowUp.enabled = false;
 							ArrowDown.enabled = false;
 							
 						}
-						else
-						{
+						else {
 							// the layer is on the bottom of the list, we hide the arrowDown
 							
 							if(overlayArray.indexOf(this.layer) == 0){
@@ -218,7 +214,7 @@
 		<s:State name="hovered"/>
 	</s:states>
 	
-	<s:Graphic includeIn="normal" width="210" height="22" >
+	<!--<s:Graphic includeIn="normal" width="210" height="22" >
 		<s:Group>
 			<s:Group d:type="layer" d:userLabel="Content">
 				<s:Group>
@@ -235,7 +231,7 @@
 				</s:Group>
 			</s:Group>
 		</s:Group>
-	</s:Graphic>
+	</s:Graphic>-->
 	<s:Graphic includeIn="hovered" width="210" height="22">
 		<s:Group>
 			<s:Group d:type="layer" d:userLabel="Content">
@@ -245,11 +241,7 @@
 							<s:SolidColor color="#EDE1AB"/>
 						</s:fill>
 					</s:Path>
-					<s:Path data="M610 4.05Q610 0 606 0L4 0Q0 0 0 4.05L0 18.95Q0 23 4 23L606 23Q610 23 610 18.95L610 4.05">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#6F7784"/>
-						</s:stroke>
-					</s:Path>
+					
 				</s:Group>
 			</s:Group>
 		</s:Group>
@@ -270,7 +262,7 @@
 		
 		<s:VGroup verticalAlign="middle" gap="0">
 			<control:IconButton id="ArrowUp"
-								toolTip="Remonter la couche"
+								toolTip="Put this layer at the top"
 								click="upLayer(event)"
 								icon="{new UpArrowUp()}"
 								iconOver="{new UpArrowOver()}"
@@ -278,9 +270,10 @@
 								width="10"
 								height="10"
 								/>
+			
 
 			<control:IconButton id="ArrowDown"
-								toolTip="Descendre la couche"
+								toolTip="Put this layer at the bottom"
 								click="downLayer(event)"
 								icon="{new DownArrowUp()}"
 								iconOver="{new DownArrowOver()}"
@@ -290,24 +283,24 @@
 
 		</s:VGroup>
 			<control:IconButton id="opacityButton"
-								width="15"
-								height="15"
-								toolTip="Régler l'opacité de la couche"
+								width="16"
+								height="16"
+								toolTip="Manage layer opacity"
 								click="manageOpacity(event)"
 								icon="{new ButtonOpacity()}"
 								iconOver="{new ButtonOpacity()}"
 								iconDown="{new ButtonOpacity()}"/>
 
 		<s:Group id="displayControl"
-				 width="128"/>
+				 width="100%"/>
 		<control:IconButton id="deleteButton"
-							toolTip="Supprimer la couche de la sélection des couches visibles"
+							toolTip="Delete the layer"
 							click="deleteLayer(event)"
 							icon="{new ButtonCloseUp()}"
 							iconOver="{new ButtonCloseOver()}"
 							iconDown="{new ButtonCloseOver()}"
-							width="12"
-							height="12"/>
+							width="14"
+							height="14"/>
 		
 
 	</s:HGroup>

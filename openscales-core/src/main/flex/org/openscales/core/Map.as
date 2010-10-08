@@ -1115,7 +1115,7 @@ package org.openscales.core
 		public function changeLayerIndexByStep(layer:Layer,step:int):void{
 			var indexLayer:int = this.layerContainer.getChildIndex(layer);
 			var length:int = this.layerContainer.numChildren ;
-			var newIndex:int = indexLayer - step;
+			var newIndex:int = indexLayer + step;
 			if(newIndex >= 0 && newIndex < length)
 			  this.layerContainer.setChildIndex(layer,newIndex);
 			//- cause the ordre is not the same that the dysplay order
