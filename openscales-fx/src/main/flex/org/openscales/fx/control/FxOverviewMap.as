@@ -2,11 +2,13 @@ package org.openscales.fx.control
 {
 	import flash.events.Event;
 	
+	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	
 	import org.openscales.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.OverviewMap;
+	import org.openscales.fx.layer.FxLayer;
 	
 	import spark.components.Group;
 	import spark.core.SpriteVisualElement;
@@ -18,6 +20,7 @@ package org.openscales.fx.control
 		{
 			super();
 			overviewmap = new OverviewMap();
+			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
 		}
 		
 		public function set map(value:Map):void {
@@ -38,6 +41,23 @@ package org.openscales.fx.control
 			this.addElementAt(mapContainer, 0);
 			mapContainer.addChild(this.overviewmap);
 			this.overviewmap.size = new Size(this.width,this.height);
+		}
+		private function onCreationComplete(event:Event):void {
+			var i:uint;
+			var element:IVisualElement;
+			for(i=0; i<this.numElements; i++) {
+				element = this.getElementAt(i);
+				if (element is FxLayer) {
+					this.addFxLayer(element as FxLayer);
+				}
+			}
+		}
+		private function addFxLayer(l:FxLayer):void {
+			l.configureLayer();
+			if(overviewmap.baselayer == null) {
+				overviewmap.baselayer = l.layer;
+			} else {
+			}
 		}
 	}
 }
