@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version="2.0" viewHeight="1000" viewWidth="1024" ATE:version="1.0.0" flm:version="1.0.0" d:using="" xmlns="http://ns.adobe.com/fxg/2008" xmlns:ATE="http://ns.adobe.com/ate/2009" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:flm="http://ns.adobe.com/flame/2008">
+	<Group>
+        <Group d:type="layer" d:userLabel="Calque 1">
+        	<Path scaleY="1.006897" x="-8" y="-15.35" data="M11.9 22.5 8 18.4 10.65 18.4 10.65 15.25 13.5 15.25 13.5 18.4 16.1 18.4 11.9 22.5">
+            	<fill>
+              		<SolidColor color="#9FADB8"/>
+            	</fill>
+          	</Path>
+        </Group>
+	</Group>
+</Graphic>
