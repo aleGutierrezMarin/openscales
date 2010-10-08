@@ -1,6 +1,6 @@
 package org.openscales.fx.control
 {
-	import org.openscales.fx.skin.IconButtonSkin;
+	import org.openscales.fx.control.skin.IconButtonSkin;
 	
 	import spark.components.Button;
 	
