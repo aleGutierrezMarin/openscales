@@ -20,15 +20,7 @@
 		
 		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
 		
-		<ControlPanel x="10" y="10" width="140" title="Navigation">
-			<Pan />
-			<s:HGroup width="100%">
-				<Zoom />
-				<s:VGroup width="100%" horizontalAlign="right" verticalAlign="top">
-					<ZoomBox width="32" height="32"/>
-				</s:VGroup>
-			</s:HGroup>
-		</ControlPanel>
+		<PanZoom id="panZoom" x="10" y="10" />
 		
 	</Map>
 	

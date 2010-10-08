@@ -62,20 +62,25 @@ package org.openscales.core.security.ign
 		/**
 		 * Request method type
 		 */
-		private var _isPost:Boolean = false;
+		private var _method:String = null;
+		
 
 
-		public function IGNGeoRMSecurity(map:Map, key:String, proxy:String = null
-										 , host:String = null, isPost:Boolean = false) {
+		public function IGNGeoRMSecurity(map:Map,
+										 key:String,
+										 proxy:String = null,
+										 host:String = null,
+										 method:String =null) {
 			if (host) {
 				this.host = host;
 			}
 			if (proxy) {
 				this.proxy = proxy;
 			}
-			if(isPost){
-				this.isPost = isPost;
+			if(method!=null && method!=""){
+				this.method = method;
 			}
+
 			this.key = key;
 			this._timer = new Timer(this.ttl, 1);
 			this._timer.addEventListener(TimerEvent.TIMER, tokenExpiredHandler);
@@ -102,33 +107,18 @@ package org.openscales.core.security.ign
 				return;
 			Trace.log("Request a new token");
 			this._requestPending = true;
-			requestToken(this.authUrl,this.authParams,this.isPost, authenticationResponse);
-			
-			// GET:
-			//var xr:XMLRequest= new XMLRequest(this.authUrl+this.authParams, authenticationResponse);
-			// POST:
-			//var xr:XMLRequest = new XMLRequest(this.authUrl, authenticationResponse);
-			//xr.postContent = new URLVariables(this.authParams);
-			// GET and POST:
-			//xr.proxy = this.proxy;
-			//xr.send();
+			requestToken(this.authUrl,this.authParams, authenticationResponse);
 		}
 		/**
 		 * Resquest the IGN token
 		 */
-		private function requestToken(url:String,params:String,post:Boolean, authenticate:Function):void{		 					
-			var xr:XMLRequest = null;
-			if(post){
-				xr = new XMLRequest(url, authenticate);
-				xr.postContent = new URLVariables(params);
-			}	else{
-				xr = new XMLRequest(url+ params, authenticate);	
-			}
+		private function requestToken(url:String,params:String,authenticate:Function):void{		 					
+			var xr:XMLRequest = new XMLRequest(url+ params, authenticate, null, method);
+			if(method == URLRequestMethod.POST){
+				xr.postContent = new URLVariables(params);			
+			}	
 			xr.proxy = this.proxy;
 			xr.send();
-						
-					
-			
 		}
 
 		/**
@@ -221,7 +211,7 @@ package org.openscales.core.security.ign
 		override public function update():void {
 			Trace.log("Update token");
 			this._requestPending = true;
-			requestToken(this.updateUrl,this.updateParams,this.isPost, authenticationUpdateResponse);
+			requestToken(this.updateUrl,this.updateParams, authenticationUpdateResponse);
 			
 			// GET:
 			//var xr:XMLRequest= new XMLRequest(this.updateUrl+this.updateParams, authenticationUpdateResponse);
@@ -257,7 +247,7 @@ package org.openscales.core.security.ign
 			/*var xr:XMLRequest = new XMLRequest(this.releaseUrl+this.releaseParams, authenticationLogoutResponse);
 			xr.proxy = this.proxy;
 			xr.send();*/
-			requestToken(this.releaseUrl,this.releaseParams,this.isPost, authenticationLogoutResponse);
+			requestToken(this.releaseUrl,this.releaseParams, authenticationLogoutResponse);
 		}
 
 		/**
@@ -322,12 +312,12 @@ package org.openscales.core.security.ign
 			this._timer.delay = value;
 		}
 		
-		public function get isPost():Boolean {
-			return this._isPost;
+		public function get method():String {
+			return this._method;
 		}
 		
-		public function set isPost(value:Boolean):void {
-			this._isPost = value;
+		public function set method(value:String):void {
+			this._method = value;
 			
 		}
 

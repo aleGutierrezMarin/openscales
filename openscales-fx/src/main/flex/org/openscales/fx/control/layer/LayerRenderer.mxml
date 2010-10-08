@@ -178,7 +178,7 @@
 		<s:Group id="displayControl"
 				 width="128"/>
 	  <control:IconButton id="deleteButton" width="16" height="16" 
-						  skinClass="org.openscales.fx.skin.IconButtonSkin" 
+						  skinClass="org.openscales.fx.control.skin.IconButtonSkin" 
 						  toolTip="Supprimer la couche de la sélection des couches visibles" 
 						  click="deleteLayer(event)"
 						  icon="{remove}"

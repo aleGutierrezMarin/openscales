@@ -11,26 +11,27 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.events.SliderEvent;
+			import mx.events.SliderEventClickTarget;
 			import mx.events.StateChangeEvent;
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
-			import org.openscales.fx.skin.PanZoomSkin;
-			import org.openscales.fx.skin.ZoomSkin;
+			import org.openscales.fx.control.skin.PanSkin;
+			import org.openscales.fx.control.skin.ZoomSkin;
 			
 			public var DELTA_PX:Number = 100;
 			
 			override public function set map(value:Map):void {
 				super.map = value;
-				//zoom.map = value;
 			}
 			public function  configure():void{ 
 				
-				this.panZoomSkin.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.moveMap);
+				this.panSkin.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onPan);
+				this.zoomSlider.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onZoom);
 			}
 			
-			public function moveMap(event:StateChangeEvent):void
+			public function onPan(event:StateChangeEvent):void
 			{
 			  switch(event.newState)
 			  {
@@ -46,14 +47,24 @@
 				case "west":
 					this.map.pan(-this.DELTA_PX, 0, true);
 					break;
-				case "zoomin":
-					this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
-				case "zoomout":
-					this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
-					break;
 				default : 
 			  }
 					
+			}
+			
+			public function onZoom(event:StateChangeEvent):void
+			{
+				switch(event.newState)
+				{
+					case "zoomin":
+						this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+						break;
+					case "zoomout":
+						this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+						break;
+					default : 
+				}
+				
 			}
 			
 			private function initializeZoomLevels(event:Event = null):void {
@@ -80,34 +91,29 @@
 					zoomSlider.value = map.zoom;
 			}
 			
-			public function onZoomSliderThumbPress():void {
-				zoomSlider.removeEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
-				zoomSlider.addEventListener(SliderEvent.THUMB_RELEASE,this.onZoomSliderThumbRelease);
-			}
-			
+
 			public function zoomSliderChange(event:Event):void {
 				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
 			}
-			
-			public function onZoomSliderThumbRelease(e:Event):void {
-				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
-				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
-			}
+
 		
 			
 		]]>
 	</fx:Script>
 	
 
-	<s:SkinnableContainer id="panZoomSkin"
-		skinClass="org.openscales.fx.skin.PanZoomSkin">
-	</s:SkinnableContainer>
-	
 	<s:VSlider id="zoomSlider" x="54" y="10"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
-			   thumbPress="onZoomSliderThumbPress()"
-			   skinClass="org.openscales.fx.skin.ZoomSkin" />
+			   liveDragging="false"
+			   skinClass="org.openscales.fx.control.skin.ZoomSkin"
+			   focusEnabled="false" />
+	
+	<s:SkinnableContainer id="panSkin"
+						  skinClass="org.openscales.fx.control.skin.PanSkin"
+						  useHandCursor="true"
+						  buttonMode="true">
+	</s:SkinnableContainer>
  	
 </control:Control>
