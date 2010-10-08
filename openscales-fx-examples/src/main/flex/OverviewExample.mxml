@@ -20,7 +20,7 @@
 				<s:HorizontalLayout/>
 			</s:layout>
 			<OverviewMap id="miniMap" width="100%" height="100%" extentColor="0xFF3300" newExtentColor="0x00FF33">
-				<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
+				<CycleMap name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
 			</OverviewMap>		
 		</s:Panel>
 		
