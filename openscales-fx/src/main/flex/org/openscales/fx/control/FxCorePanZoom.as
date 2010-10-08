@@ -6,7 +6,7 @@ package org.openscales.fx.control
 	{
 		public function FxCorePanZoom()
 		{
-			this.control = new PanZoom();
+			this.control = new org.openscales.core.control.PanZoom();
 			super();
 		}
 		

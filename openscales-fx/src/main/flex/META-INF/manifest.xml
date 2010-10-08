@@ -35,6 +35,7 @@
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
   	<component id="MousePosition" class="org.openscales.fx.control.FxMousePosition" />
 	<component id="Pan" class="org.openscales.fx.control.Pan" />
+	<component id="PanZoom" class="org.openscales.fx.control.PanZoom" />
 	<component id="Zoom" class="org.openscales.fx.control.Zoom" />
 	<component id="ZoomBox" class="org.openscales.fx.control.ZoomBox" />
 	
