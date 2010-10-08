@@ -4,11 +4,13 @@
 	xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:control="org.openscales.fx.control.*" 
 	xmlns:layer="org.openscales.fx.control.layer.*"
-	width="230" >
+	width="215" >
 	<!--TODO-->
 	<!--horizontalScrollPolicy="off"-->
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.formats.BackgroundColor;
+			
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
 			import mx.controls.RadioButton;
@@ -16,14 +18,35 @@
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
 			import mx.events.IndexChangedEvent;
+			import mx.events.ScrollEvent;
+			import mx.events.SliderEvent;
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
+			import org.openscales.core.control.LayerManager;
 			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.events.OpenScalesEvent;
 			import org.openscales.core.handler.mouse.ClickHandler;
 			import org.openscales.core.layer.Layer;
+			
+			import spark.components.Group;
+			import spark.components.VSlider;
+			
+			private var _layer:Layer;
+			
+			// Array wich contains all overlayer
+			[Bindable]private var _overlayArray:ArrayCollection = new ArrayCollection();
+			
+			private var _group:Group = null;
+			
+			private var _vSlider:VSlider = null;
+			
+			private var _layerOldZindex:int=0;
+			
+			// static reference to itself : makes LayerRenderer code cleaner
+			static public var layerManager:LayerManager;
 			/**
 			 * Set the map
 			 *
@@ -31,13 +54,14 @@
 			 */	 
 			override public function set map(value:Map):void {
 				super.map = value;
-				
+				layerManager = this;
 				if(map != null) {
 					//Listening of layer event
 					this.map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
 					this.map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this.map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
 					this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+					this.map.addEventListener(LayerManagerEvent.COMPONENT_OPACITY,manageOpacity);
 			
 					//stock layer by type : baselayer and overlays
 					var overlayArray:Vector.<Layer>  = this.map.layers;
@@ -62,7 +86,8 @@
 						overlayList.invalidateDisplayList();
 				}
 				
-				if(event.type == LayerEvent.LAYER_REMOVED){						var index:int = overlayList.dataProvider.getItemIndex(event.layer);
+				if(event.type == LayerEvent.LAYER_REMOVED){
+						var index:int = overlayList.dataProvider.getItemIndex(event.layer);
 						overlayList.dataProvider.removeItemAt(index);
 						overlayList.invalidateDisplayList();
 				}
@@ -87,12 +112,136 @@
 				var layer:Layer = overlayList.selectedItem as Layer;
 				this.map.changeLayerIndex(layer,overlayList.selectedIndex);
 			}
+			
+			
+			/**
+			 * Update layers order when a user change it
+			 *
+			 * @param event Drag event
+			 */
+			public function manageOpacity(event:LayerManagerEvent):void
+			{
+				// remove timer before manage opacity
+				removeTimerOpacity(new MouseEvent(MouseEvent.MOUSE_OVER));
+				
+				this._layerOldZindex = event.layer.zindex;
+				if(this._group != null)
+				{
+					this.removeElement(this._group);
+					this._group = null;
+					if(this._layer == event.layer)
+					{
+					return;
+					}
+				}
+				if(this._layer != event.layer || this._group == null)
+				{
+					this._layer = event.layer;
+					//Create group that contain VSlider to manage opacity
+					this._group = new Group();
+					this._group.x = event.x;
+					this._group.y = event.y-10;
+					this._group.height = 45;
+					this._group.width = 18;
+					this._group.alpha = 0.7;
+					this._group.setStyle("color","Red");
+					
+					//Create VSlider
+					this._vSlider = new VSlider();
+					this._vSlider.x=6;
+					this._vSlider.height = this._group.height;
+					this._vSlider.width = 11;
+					this._vSlider.minimum = 0;
+					this._vSlider.maximum = 100;
+					this._vSlider.value = this._layer.alpha*100;
+					this._vSlider.snapInterval = 1;
+					this._vSlider.dataTipFormatFunction = percentDataTip;
+					this._vSlider.addEventListener(MouseEvent.MOUSE_DOWN,onDrag); 
+					this._vSlider.addEventListener(SliderEvent.CHANGE,layerOpacity);
+					this._group.addElement(this._vSlider);
+					
+					//Add the group to the LayerManager
+					this.addElement(this._group);
+					this._group.setVisible(true);
+					// add listener for group
+					this._group.addEventListener(MouseEvent.ROLL_OUT,addTimerOpacity);
+				}
+			}
+			
+			private var myTimer:Timer = null;
+			
+			public function addTimerOpacity(event:MouseEvent):void{
+				if(myTimer != null){
+					myTimer.reset();
+				}else{
+					myTimer = new Timer(2000, 1);
+				}
+				this._group.addEventListener(MouseEvent.MOUSE_OVER,removeTimerOpacity);
+				myTimer.addEventListener(TimerEvent.TIMER, timerOpacityHandler);
+				myTimer.start();
+			}
+			
+			public function removeTimerOpacity(event:MouseEvent):void{
+				if(myTimer != null){
+					myTimer.stop();
+					myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
+					myTimer = null;
+				}	
+			}
+			
+			public function timerOpacityHandler(event:TimerEvent):void {
+				if(this._group != null)
+				{
+					myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
+					myTimer = null;
+					this.removeElement(this._group);
+					this._group = null;
+					
+				}
+			}
+			
+			public function closeOpacity(event:ScrollEvent):void
+			{
+				if(_layer != null)
+				{
+					this._layerOldZindex = _layer.zindex;
+				}
+				if(this._group != null)
+				{
+					this.removeElement(this._group);
+					this._group = null;
+				}
+			}
+			
+			/**
+			 * Change the opacity of the layer
+			 *
+			 * @param event event send by a slide
+			 */
+			public function layerOpacity(event:Event):void
+			{	
+				this._layer.alpha = (event.target as VSlider).value/100;
+			}
+			
+			public function percentDataTip(value:Number):String
+			{
+				return value+"%";
+			}
+			
+			private function onDrag(event:Event):void {
+				event.stopPropagation();
+			}
+			
+			public function get overlayArray():ArrayCollection {
+				return this._overlayArray;
+			}
+			
 		]]>
 	</fx:Script>
 	
 		
 	
-	<s:VGroup width="100%"> 
+	<s:VGroup width="100%" paddingLeft="2"> 
 
 		<s:List id="overlayList" 
 				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
@@ -104,7 +253,7 @@
 				dragComplete="changeLayerOrder(event)">
 			<s:layout>
 				<s:VerticalLayout horizontalAlign="justify"
-								  requestedRowCount="4"/>
+								  requestedRowCount="3"/>
 					
 			</s:layout>
  		</s:List>
