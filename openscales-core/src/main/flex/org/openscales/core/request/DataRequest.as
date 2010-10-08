@@ -13,9 +13,13 @@ package org.openscales.core.request
 		/**
 		 * @constructor
 		 */
-		public function DataRequest(url:String, onComplete:Function, onFailure:Function=null, method: String = null) {
+		public function DataRequest(url:String,
+									onComplete:Function,
+									onFailure:Function=null,
+									method: String = null) {
 			super(true, url, onComplete, onFailure);
-			this.method = method;
+			if(method!=null && method!="")
+				this.method = method;
 		}
 		
 	}
