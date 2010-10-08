@@ -11,6 +11,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.events.SliderEvent;
+			import mx.events.SliderEventClickTarget;
 			import mx.events.StateChangeEvent;
 			
 			import org.openscales.core.Map;
@@ -90,19 +91,11 @@
 					zoomSlider.value = map.zoom;
 			}
 			
-			public function onZoomSliderThumbPress():void {
-				zoomSlider.removeEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
-				zoomSlider.addEventListener(SliderEvent.THUMB_RELEASE,this.onZoomSliderThumbRelease);
-			}
-			
+
 			public function zoomSliderChange(event:Event):void {
 				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
 			}
-			
-			public function onZoomSliderThumbRelease(e:Event):void {
-				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
-				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
-			}
+
 		
 			
 		]]>
@@ -113,8 +106,9 @@
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
-			   thumbPress="onZoomSliderThumbPress()"
-			   skinClass="org.openscales.fx.control.skin.ZoomSkin" />
+			   liveDragging="false"
+			   skinClass="org.openscales.fx.control.skin.ZoomSkin"
+			   focusEnabled="false" />
 	
 	<s:SkinnableContainer id="panSkin"
 						  skinClass="org.openscales.fx.control.skin.PanSkin"
