@@ -12,9 +12,10 @@
 		<Spinner x="{width / 2}" y="{height / 2}"/>
 		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		<BorderPanHandler/>
-		<Pan/>
 		<ClickHandler/>
 		<WheelHandler/>
+		
+		<PanZoom id="panZoom" x="10" y="10" />
 		
 		<TraceInfo x="{width-200}" y="0" />
 		
