@@ -1,5 +1,7 @@
 package org.openscales.core.request
 {
+	import flash.net.URLRequestMethod;
+
 	//import org.openscales.core.Trace;
 	
 	/**
@@ -11,8 +13,13 @@ package org.openscales.core.request
 		/**
 		 * @constructor
 		 */
-		public function DataRequest(url:String, onComplete:Function, onFailure:Function=null) {
+		public function DataRequest(url:String,
+									onComplete:Function,
+									onFailure:Function=null,
+									method: String = null) {
 			super(true, url, onComplete, onFailure);
+			if(method!=null && method!="")
+				this.method = method;
 		}
 		
 	}
