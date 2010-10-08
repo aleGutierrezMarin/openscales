@@ -74,7 +74,8 @@ package org.openscales.core.layer.ogc
 			var url:String = this.getURL(bounds);
 			var img:ImageTile = new ImageTile(this, position, bounds, 
 				url, new Size(this.tileWidth, this.tileHeight));
-			img.method = this.method;
+			if(this.method != null)
+				img.method = this.method;
 			return img;
 		}
 

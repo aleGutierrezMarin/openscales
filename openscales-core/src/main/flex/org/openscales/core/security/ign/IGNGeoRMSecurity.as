@@ -66,16 +66,19 @@ package org.openscales.core.security.ign
 		
 
 
-		public function IGNGeoRMSecurity(map:Map, key:String, proxy:String = null
-										 , method:String =null, host:String = null ) {
+		public function IGNGeoRMSecurity(map:Map,
+										 key:String,
+										 proxy:String = null,
+										 host:String = null,
+										 method:String =null) {
 			if (host) {
 				this.host = host;
 			}
-			if(method){
-				this.method = method;
-			}
 			if (proxy) {
 				this.proxy = proxy;
+			}
+			if(method!=null && method!=""){
+				this.method = method;
 			}
 
 			this.key = key;
@@ -105,30 +108,17 @@ package org.openscales.core.security.ign
 			Trace.log("Request a new token");
 			this._requestPending = true;
 			requestToken(this.authUrl,this.authParams, authenticationResponse);
-			
-			// GET:
-			//var xr:XMLRequest= new XMLRequest(this.authUrl+this.authParams, authenticationResponse);
-			// POST:
-			//var xr:XMLRequest = new XMLRequest(this.authUrl, authenticationResponse);
-			//xr.postContent = new URLVariables(this.authParams);
-			// GET and POST:
-			//xr.proxy = this.proxy;
-			//xr.send();
 		}
 		/**
 		 * Resquest the IGN token
 		 */
 		private function requestToken(url:String,params:String,authenticate:Function):void{		 					
 			var xr:XMLRequest = new XMLRequest(url+ params, authenticate, null, method);
-		//	xr.method = method;
 			if(method == URLRequestMethod.POST){
 				xr.postContent = new URLVariables(params);			
 			}	
 			xr.proxy = this.proxy;
 			xr.send();
-						
-					
-			
 		}
 
 		/**
