@@ -117,7 +117,7 @@
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
-				<s:Button id="overview" label="using overview map" click="changeState(event)" width="100%"/>
+				<s:Button id="overview" label="Overview map" click="changeState(event)" width="100%"/>
 				<s:Button id="yahoo" label="with Yahoo geocoder" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Features handling" width="100%" height="100%">
