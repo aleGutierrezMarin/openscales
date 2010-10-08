@@ -268,17 +268,8 @@ package org.openscales.core
 			if(i>-1)
 				l.splice(i,1);
 			
-			if (setNewBaseLayer && (this.baseLayer == layer)) {
-				this._baseLayer = null;
-				i = l.length;
-				
-				for(var j:int=0; j < i; ++j) {
-					var iLayer:Layer = l[j];
-					if (iLayer.isBaseLayer) {
-						this.baseLayer = iLayer;
-						break;
-					}
-				}
+			if (setNewBaseLayer && (this.baseLayer == layer) && (l.length>0)) {
+				this.baseLayer = l[0];
 			}
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
