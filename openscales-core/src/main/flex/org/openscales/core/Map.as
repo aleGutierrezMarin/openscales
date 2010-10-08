@@ -57,6 +57,7 @@ package org.openscales.core
 		private var _size:Size = null;
 		private var _zoom:Number = 0;
 		private var _zooming:Boolean = false;
+		private var _remainingZoom:int = 0;
 		private var _loading:Boolean;
 		private var _center:Location = null;
 		private var _maxExtent:Bounds = null;
@@ -830,7 +831,11 @@ package org.openscales.core
 		/**
 		 * Copy the layerContainer in a bitmap and display this (this function is use for zoom)
 		 */
-		private function zoomTransition(newZoom:Number, newCenter:Location):void {
+		private function zoomTransition(newZoom:Number, newCenter:Location, oldZoom:Number = NaN):void {
+			if(_zooming) {
+				this._remainingZoom += (newZoom - this.zoom);
+			}
+					
 			if (!_zooming && newZoom >= 0) {
 				
 				// Disable more zooming until this zooming is complete 
@@ -842,9 +847,10 @@ package org.openscales.core
 				var bitmapData:BitmapData = new BitmapData(this.width,this.height);
 				
 				
+				
 				// We draw the old transition before drawing the better-fitting tiles on top and removing the old transition. 
 				if(this.bitmapTransition != null) {
-					if(this._loading) {
+					if(this._loading || !isNaN(oldZoom)) {
 						bitmapData.draw(this.bitmapTransition, bitmapTransition.transform.matrix);
 					}
 					this.removeChild(this.bitmapTransition);
@@ -853,21 +859,23 @@ package org.openscales.core
 					bmp.bitmapData = null;
 					
 				}
-
-				var hiddenLayers:Vector.<Layer> = new Vector.<Layer>();
-				for each(var layer:Layer in this.layers) {
-					if(!layer.tweenOnZoom) {				
-						hiddenLayers.push(layer);
-						layer.visible = false;
-					}
-				}
 				
-				// We draw the loaded tiles onto the background transition.
-				try {
-					// Can sometimes throw a security exception.
-					bitmapData.draw(this.layerContainer, this.layerContainer.transform.matrix);
-				} catch (e:Error) {
-					Trace.error("Error zooming image: " + e);
+				if(isNaN(oldZoom)) {
+					var hiddenLayers:Vector.<Layer> = new Vector.<Layer>();
+					for each(var layer:Layer in this.layers) {
+						if(!layer.tweenOnZoom) {				
+							hiddenLayers.push(layer);
+							layer.visible = false;
+						}
+					}
+					
+					// We draw the loaded tiles onto the background transition.
+					try {
+						// Can sometimes throw a security exception.
+						bitmapData.draw(this.layerContainer, this.layerContainer.transform.matrix);
+					} catch (e:Error) {
+						Trace.error("Error zooming image: " + e);
+					}
 				}
 				
 				// We create the background layer from the bitmap data
@@ -891,7 +899,9 @@ package org.openscales.core
 				var bt:Sprite = this.bitmapTransition;
 				var oldCenterPix:Pixel = new Pixel(bt.x+bt.width/2, bt.y+bt.height/2);
 				var centerOffset:Pixel = new Pixel(oldCenterPix.x-pix.x, oldCenterPix.y-pix.y);
-				var alpha:Number = Math.pow(2, newZoom-this.zoom);
+				if(isNaN(oldZoom))
+					oldZoom = this.zoom;
+				var alpha:Number = Math.pow(2, newZoom-oldZoom);
 				var x:Number = bt.x-((resMult-1)*(bt.width))/2+alpha*centerOffset.x;
 				var y:Number = bt.y-((resMult-1)*(bt.height))/2+alpha*centerOffset.y;
 				
@@ -902,13 +912,19 @@ package org.openscales.core
 						scaleY: resMult,
 						x: x,
 						y: y
-					}, {ease: Cubic.easeOut});
+					});
 				tween.onComplete = clbZoomTween;
 			}
 			
 			// The zoom tween callback method defined here to avoid a class attribute for newZoom
 			function clbZoomTween(tween:GTween):void {
 				_zooming = false;
+				if(_remainingZoom != 0) {
+					zoomTransition(newZoom + _remainingZoom, newCenter, newZoom);
+					_remainingZoom = 0;
+					return;
+				}				
+				
 				moveTo(newCenter, newZoom);
 				layerContainer.visible = true;
 			} 
