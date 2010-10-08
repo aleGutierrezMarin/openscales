@@ -72,6 +72,10 @@ package org.openscales.core.events
 		 * */
 		public static const LAYER_EDITION_MODE_END:String="openscales.layerEditionModeEnd";
 		
+		/**
+		 * Event type dispatched when the order of the layers is changed
+		 * */
+		public static const LAYER_CHANGED_ORDER:String="openscales.layerChangeOrder";
 
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{
