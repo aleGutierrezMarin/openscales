@@ -24,16 +24,7 @@
 			</OverviewMap>		
 		</s:Panel>
 		
-		<ControlPanel x="10" y="10" width="150" height="240" title="Navigation">
-			
-			<Pan />
-			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
-				<Zoom />
-				<s:Rect width="100%" />
-				<ZoomBox />
-			</s:HGroup>
-			<s:Button id="overviewToggler" label="Hide overview" click="toggleOverview();"/>
-		</ControlPanel>
+		<PanZoom id="panZoom" x="10" y="10" />
 		
 	</Map>	
 	
@@ -45,10 +36,6 @@
 				miniMap.width = this.width * miniMap.height / this.height;
 			}
 			
-			private function toggleOverview():void {
-				miniMapPanel.visible = !miniMapPanel.visible;
-				overviewToggler.label = ((miniMapPanel.visible) ? "Hide" : "Show") + " overview";
-			}
 		]]>
 	</fx:Script>
 	

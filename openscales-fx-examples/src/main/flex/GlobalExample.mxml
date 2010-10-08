@@ -11,7 +11,6 @@
 		<WheelHandler id="wheelHandler" />
 		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
 		
-		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
 		<MousePosition id="mousePosition" x="10" y="{height-20}" displayProjection="EPSG:4326"/>
 		
 		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
