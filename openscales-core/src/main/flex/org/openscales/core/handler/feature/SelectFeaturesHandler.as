@@ -131,7 +131,9 @@ package org.openscales.core.handler.feature {
 		 */
 		public function SelectFeaturesHandler(map:Map=null, active:Boolean=false, enableClickSelection:Boolean=true, enableBoxSelection:Boolean=true, enableOverSelection:Boolean=false) {
 			// SelectFeaturesHandler is a selection handler
-			this.behaviour = HandlerBehaviour.SELECT;
+			if(this.behaviour == null){
+				this.behaviour = HandlerBehaviour.SELECT;
+			} 
 			super(map, active, this.behaviour);
 			if (this.map) {
 				this.map.addChild(_drawContainer);
@@ -398,10 +400,10 @@ package org.openscales.core.handler.feature {
 		 * Add the listeners to the associated map
 		 */
 		override protected function registerListeners():void {
-			// Listeners of the super class
-			super.registerListeners();
 			// Listeners of the associated map
 			if (this.map) {
+				// Listeners of the super class
+				super.registerListeners();
 				this.map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerRemoved);
 				this.map.addEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
 				this.map.addEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
@@ -421,9 +423,9 @@ package org.openscales.core.handler.feature {
 				this.map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
 				this.map.removeEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
+				// Listeners of the super class
+				super.unregisterListeners();
 			}
-			// Listeners of the super class
-			super.unregisterListeners();
 		}
 
 		/**

@@ -343,7 +343,8 @@ package org.openscales.core.handler.feature.draw
 		 * @inherited
 		 **/
 		override protected function registerListeners():void {
-		if(this.map){		
+		if(this.map){
+			super.registerListeners();
 			this.map.addEventListener(MapEvent.MOVE_END,refreshEditedfeatures);
 			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
@@ -357,6 +358,7 @@ package org.openscales.core.handler.feature.draw
 				this.map.removeEventListener(MapEvent.MOVE_END,refreshEditedfeatures);
 				this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+				super.unregisterListeners();
 			}	
 		}
 		//getters && setters

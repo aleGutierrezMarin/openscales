@@ -192,12 +192,12 @@ package org.openscales.core.handler.mouse
 		 * Add the listeners to the associated map
 		 */
 		override protected function registerListeners():void {
-			// Listeners of the super class
-			super.registerListeners();
 			// Listeners of the internal timer
 			this._timer.addEventListener(TimerEvent.TIMER, useRightCallback);
 			// Listeners of the associated map
 			if (this.map) {
+				// Listeners of the super class
+				super.registerListeners();
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN,this.mouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP,this.mouseUp);
 			}
@@ -212,6 +212,8 @@ package org.openscales.core.handler.mouse
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN,this.mouseDown);
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP,this.mouseUp);
+				// Listeners of the super class
+				super.unregisterListeners();
 			}
 			this._downPixel = null;
 			this._upPixel = null;
@@ -222,8 +224,6 @@ package org.openscales.core.handler.mouse
 			this._timer.removeEventListener(TimerEvent.TIMER, useRightCallback);
 			this._timer.stop();
 			this._clickNum = 0;
-			// Listeners of the super class
-			super.unregisterListeners();
 		}
 		
 		/**

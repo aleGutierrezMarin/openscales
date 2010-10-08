@@ -34,6 +34,7 @@ package org.openscales.core.handler.feature.draw
 
 		override protected function registerListeners():void{
 			if (this.map) {
+				super.registerListeners();
 				this.map.addEventListener(MouseEvent.CLICK, this.drawPoint);
 			}
 		}
@@ -41,6 +42,7 @@ package org.openscales.core.handler.feature.draw
 		override protected function unregisterListeners():void{
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.CLICK, this.drawPoint);
+				super.unregisterListeners();
 			}
 		}
 
