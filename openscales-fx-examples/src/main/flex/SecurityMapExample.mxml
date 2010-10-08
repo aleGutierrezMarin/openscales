@@ -21,14 +21,7 @@
 		<Spinner x="{width / 2}" y="{height / 2}"/>
 		<MousePosition x="10" y="{height-20}" displayProjection="IGNF:GEOPORTALFXX"/>
 		
-		<ControlPanel x="10" y="10" width="140" title="Navigation">
-			<Pan />
-			<s:HGroup width="100%" paddingLeft="5" paddingRight="5">
-				<Zoom />
-				<s:Rect width="100%" />
-				<ZoomBox />
-			</s:HGroup>
-		</ControlPanel>
+		<PanZoom id="panZoom" x="10" y="10" />
 		
 		<TraceInfo x="{width-200}" y="0" />
 		
