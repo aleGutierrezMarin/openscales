@@ -72,8 +72,11 @@ package org.openscales.core.layer.ogc
 
 		override public function addTile(bounds:Bounds, position:Pixel):ImageTile {
 			var url:String = this.getURL(bounds);
-			return new ImageTile(this, position, bounds, 
+			var img:ImageTile = new ImageTile(this, position, bounds, 
 				url, new Size(this.tileWidth, this.tileHeight));
+			if(this.method != null)
+				img.method = this.method;
+			return img;
 		}
 
 		public function get reproject():Boolean {
