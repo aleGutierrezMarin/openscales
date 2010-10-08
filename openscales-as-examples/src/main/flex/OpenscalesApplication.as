@@ -65,13 +65,6 @@ package {
 			_map.zoom=5;
 						
 			this.addChild(_map);
-			var overview:OverviewMap = new OverviewMap(new Pixel(100,100));
-			overview.size = new Size(250,200);
-			overview.map = _map;
-			var cycle2:CycleMap=new CycleMap("Cycle2");
-			cycle2.proxy = "http://openscales.org/proxy.php?url=";
-			overview.baselayer = cycle2;
-			addChild(overview);
 		}
 	}
 }
