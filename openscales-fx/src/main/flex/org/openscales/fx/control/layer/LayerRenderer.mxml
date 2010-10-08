@@ -123,15 +123,15 @@
 					if(_layer.map!=null){
 					  _layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
 					  _layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
-					  /* _layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged); */
+					  _layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
 					}
 					displayControl.removeAllElements();
 					_opacity = Math.floor(this.layer.alpha*100) + "%";
 					labelLayer = new Label();
 					labelLayer.text = this.layer.name;
 					labelLayer.percentWidth = 100;
+					this.baseLayerChanged();
 					displayControl.addElement(labelLayer);		
- 					/*isBaseLayer.selected = _layer.isBaseLayer; */
 					
 					if(this.parent != null){
 						var overlayArray:Array=(LayerManager.layerManager).layerList.dataProvider.toArray();
@@ -183,9 +183,15 @@
 				layer.map.moveTo(layer.map.center);
 			}
 			
-			/* private function baseLayerChanged(event:LayerEvent):void {
-				isBaseLayer.selected = (event.layer == this.layer);
-			} */
+			private function baseLayerChanged(event:LayerEvent=null):void {
+				if(_layer.isBaseLayer) {
+					labelLayer.setStyle("fontWeight", "bold");
+					deleteButton.visible = false;
+				} else {
+					labelLayer.setStyle("fontWeight", "normal");
+					deleteButton.visible = true;
+				}
+			}
 			
 			public function upLayer(event:MouseEvent):void {
 				_layer.map.changeLayerIndexByStep(_layer,+1);
