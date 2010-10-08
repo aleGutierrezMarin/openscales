@@ -22,13 +22,7 @@
 				projection="EPSG:4326" version="1.0.0" useCapabilities="true" capabilitiesVersion="1.0.0"
 				style="{Style.getDefaultPointStyle()}" />
 		
-		<ControlPanel id="controlPanel" x="10" y="10" title="Navigation" width="110">
-			<s:VGroup>
-				<Pan id="pan" />
-				<Zoom id="zoom" />
-				<ZoomBox id="zoomBox" />
-			</s:VGroup>
-		</ControlPanel>
+		<PanZoom id="panZoom" x="10" y="10" />
 		
 		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
 		
