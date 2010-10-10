@@ -15,7 +15,6 @@ package org.openscales.fx.control
 			super();
 			this.buttonMode = true;
 			setStyle("skinClass", IconButtonSkin);
-
 		}
 	}
 }
