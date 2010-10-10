@@ -144,11 +144,14 @@
 				<xs:element ref="WFS" />
 				<xs:element ref="FeatureLayer" />
 				<xs:element ref="Mapnik" />
+				<xs:element ref="CycleMap" />
+				<xs:element ref="Maplint" />
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 
 	<xs:complexType name="Layer" abstract="true">
+		<xs:attribute name="alpha" type="xs:decimal" />
 		<xs:attribute name="name" type="xs:string" />
 		<xs:attribute name="maxExtent" type="xs:string" />
 		<xs:attribute name="numZoomLevels" type="xs:integer" />
@@ -213,6 +216,26 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
+	
+	<xs:element name="CycleMap">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Layer">
+          <xs:attribute name="url" type="xs:string" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Maplint">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="Layer">
+          <xs:attribute name="url" type="xs:string" />
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
 
 	<xs:element name="Styles" />
 

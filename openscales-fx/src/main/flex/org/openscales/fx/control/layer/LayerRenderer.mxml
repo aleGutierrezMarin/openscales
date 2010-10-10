@@ -184,6 +184,9 @@
 			}
 			
 			private function baseLayerChanged(event:LayerEvent=null):void {
+				if(!_layer)
+					return;
+				
 				if(_layer.isBaseLayer) {
 					labelLayer.setStyle("fontWeight", "bold");
 					deleteButton.visible = false;

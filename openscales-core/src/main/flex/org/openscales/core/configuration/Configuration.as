@@ -24,6 +24,8 @@ package org.openscales.core.configuration
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.ogc.WMSC;
+	import org.openscales.core.layer.osm.CycleMap;
+	import org.openscales.core.layer.osm.Maplint;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.core.security.AbstractSecurity;
@@ -350,14 +352,29 @@ package org.openscales.core.configuration
 				wfsLayer.capabilitiesVersion = capabilitiesVersion;
 				layer=wfsLayer;
 			}
-				// Case when the layer is Mapnik
 			else if(xmlNode.name() == "Mapnik"){
 				Trace.log("Configuration - Find Mapnik Layer : " + xmlNode.name());
 				// We create the Mapnik Layer with all params
-				var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
+				var mapnik:Mapnik=new Mapnik(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
 					mapnik.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,mapnik.projection);
 				layer=mapnik;
+			}
+			else if(xmlNode.name() == "CycleMap"){
+				Trace.log("Configuration - Find CycleMap Layer : " + xmlNode.name());
+				// We create the CycleMap Layer with all params
+				var cycleMap:CycleMap=new CycleMap(xmlNode.name());
+				if (String(xmlNode.@maxExtent) != "")
+					cycleMap.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,cycleMap.projection);
+				layer=cycleMap;
+			}
+			else if(xmlNode.name() == "Maplint"){
+				Trace.log("Configuration - Find Maplint Layer : " + xmlNode.name());
+				// We create the CycleMap Layer with all params
+				var maplint:Maplint=new Maplint(xmlNode.name());
+				if (String(xmlNode.@maxExtent) != "")
+					maplint.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,maplint.projection);
+				layer=maplint;
 			}
 			else if(xmlNode.name() == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
