@@ -10,6 +10,9 @@ package org.openscales.core.layer
 	import org.openscales.core.format.KMLFormat;
 	import org.openscales.core.request.XMLRequest;
 
+	/**
+	 * KML layer, most useful feature of KML 2.2 specifications are supported
+	 */
 	public class KML extends FeatureLayer
 	{
 	    private var _url:String = "";

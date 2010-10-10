@@ -6,11 +6,8 @@ package org.openscales.core
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.BlendMode;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
-	import flash.geom.ColorTransform;
-	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	
@@ -43,12 +40,11 @@ package org.openscales.core
 	 */
 	public class Map extends Sprite
 	{
-		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
 		
 		/**
-		 * The lonlat at which the layer container was re-initialized (on-zoom)
+		 * Number of attempt for downloading an image tile
 		 */
-		private var _layerContainerOrigin:Location = null;
+		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
 		
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
@@ -61,9 +57,6 @@ package org.openscales.core
 		private var _center:Location = null;
 		private var _maxExtent:Bounds = null;
 		private var _destroying:Boolean = false;
-		/**
-		 * Enable tween effect when zooming
-		 */
 		private var _tweenZoomEnabled:Boolean = true;
 		
 		private var _proxy:String = null;
@@ -71,7 +64,12 @@ package org.openscales.core
 		private var _configuration:IConfiguration;
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
-		private var _extent:Bounds;
+		
+		/**
+		 * The location where the layer container was re-initialized (on-zoom)
+		 */
+		private var _layerContainerOrigin:Location = null;
+
 		/**
 		 * Map constructor
 		 *
@@ -100,6 +98,9 @@ package org.openscales.core
 			
 		}
 		
+		/**
+		 * Reset all layers, handlers and controls
+		 */
 		public function reset():void {
 			this.removeAllLayers();
 			this.baseLayer = null;
@@ -166,10 +167,12 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Allows user to specify one of the currently-loaded layers as the Map's
-		 * new base layer.
+		 * The current baseLayer.
+		 * 
+		 * The baseLayer is used to identify what layer is used to define map display projection,
+		 * resolutions, min resolution and max resolution.
 		 *
-		 * @param newBaseLayer the new base layer.
+		 * @param newBaseLayer the new base layer, must be one of the map layers
 		 */
 		public function set baseLayer(newBaseLayer:Layer):void {
 			if (! newBaseLayer) {
@@ -220,12 +223,7 @@ package org.openscales.core
 				}
 			}
 		}
-		
-		/**
-		 * The currently selected base layer.
-		 * A BaseLayer is a special kind of Layer that determines the projection,
-		 * min/max zoom level, etc...
-		 */
+
 		public function get baseLayer():Layer {
 			return this._baseLayer;
 		}
@@ -276,6 +274,10 @@ package org.openscales.core
 			layer = null;
 		}
 		
+		
+		/**
+		 * Remove all layers of the map
+		 */
 		public function removeAllLayers():void {
 			for(var i:int=this.layers.length-1; i>=0; i--) {
 				removeLayer(this.layers[i],false);
@@ -316,6 +318,9 @@ package org.openscales.core
 			}
 		}
 		
+		/**
+		 * Remove the control passed as parameter
+		 */
 		public function removeControl(control:IControl):void {
 			var newControls:Vector.<IControl> = new Vector.<IControl>();
 			for each (var mapControl:IControl in this._controls) {
@@ -794,7 +799,7 @@ package org.openscales.core
 		// Getters & setters as3
 		
 		/**
-		 * Map center coordinates.
+		 * Map center coordinates
 		 */
 		public function get center():Location
 		{
@@ -806,7 +811,7 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Current map zoom level.
+		 * Current map zoom level
 		 */
 		public function get zoom():Number
 		{
@@ -1004,6 +1009,9 @@ package org.openscales.core
 			return this._layerContainer;
 		}
 		
+		/**
+		 * Bitmap representation of the map display used for tween effects
+		 */
 		public function get bitmapTransition():Sprite {
 			return this._bitmapTransition;
 		}
@@ -1038,32 +1046,38 @@ package org.openscales.core
 			return maxExtent;
 		}
 		
+		/**
+		 * Extent currently displayed in the map.
+		 */
 		public function get extent():Bounds {
-			if(_extent == null){
-				var extent:Bounds = null;
+			var extent:Bounds = null;
+			
+			if ((this.center != null) && (this.resolution != -1)) {
 				
-				if ((this.center != null) && (this.resolution != -1)) {
-					
-					var w_deg:Number = this.size.w * this.resolution;
-					var h_deg:Number = this.size.h * this.resolution;
-					
-					extent = new Bounds(this.center.lon - w_deg / 2,
-						this.center.lat - h_deg / 2,
-						this.center.lon + w_deg / 2,
-						this.center.lat + h_deg / 2, this.baseLayer.projection);
-				} 
+				var w_deg:Number = this.size.w * this.resolution;
+				var h_deg:Number = this.size.h * this.resolution;
 				
-				return extent;
-			}
-			else return _extent;
+				extent = new Bounds(this.center.lon - w_deg / 2,
+					this.center.lat - h_deg / 2,
+					this.center.lon + w_deg / 2,
+					this.center.lat + h_deg / 2, this.baseLayer.projection);
+			} 
+			
+			return extent;
+
 		}
-		public function set extent(bounds:Bounds):void {
-			_extent = bounds;
-		}
+		
+		
+		/**
+		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
+		 */
 		public function get resolution():Number {
 			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : NaN;
 		}
 		
+		/**
+		 * Current scale denominator of the map. 
+		 */
 		public function get scale():Number {
 			var scale:Number = NaN;
 			if (this.baseLayer) {
@@ -1073,6 +1087,9 @@ package org.openscales.core
 			return scale;
 		}
 		
+		/**
+		 * List all layers of this map
+		 */
 		public function get layers():Vector.<Layer> {
 			var layerArray:Vector.<Layer> = new Vector.<Layer>();
 			if (this.layerContainer == null) {
@@ -1089,19 +1106,21 @@ package org.openscales.core
 			return layerArray.reverse();
 		}
 		/**
-		 * @layer is layer that must be changed
-		 * newIndex is new index 
+		 * Change the layer index (position in the display list)
+		 * @param layer layer that will be updated
+		 * @param newIndex its new index (0 based) 
 		 * */
 		public function changeLayerIndex(layer:Layer,newIndex:int):void{
-			var length:int = this.layerContainer.numChildren;// -1 for baselayers
+			var length:int = this.layerContainer.numChildren;
 			var newIndexTemp:int = length - newIndex - 1;
 			if(newIndex >= 0 && newIndex < length )
 			  this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		/**
-		 * @layer is layer that must be changed
-		 * step  
+		 * Change the layer index (position in the display list) by a delta relative to its current index
+		 * @param layer layer that will be updated
+		 * @param step value that will be added to the current index (could be negative) 
 		 * */
 		public function changeLayerIndexByStep(layer:Layer,step:int):void{
 			var indexLayer:int = this.layerContainer.getChildIndex(layer);
@@ -1113,7 +1132,9 @@ package org.openscales.core
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		
-		
+		/**
+		 * List all feature layers (including layers that inherit FeatureLayer like WFS) of the map
+		 **/
 		public function get featureLayers():Vector.<FeatureLayer> {
 			var layerArray:Vector.<FeatureLayer> = new Vector.<FeatureLayer>();
 			if (this.layerContainer == null) {
@@ -1143,6 +1164,10 @@ package org.openscales.core
 			this._proxy = value;
 		}
 		
+		/**
+		 * Set the configuration implementation, for example Configuration or FxConfiguration,
+		 * used to parse xml configuration files.
+		 */
 		public function set configuration(value:IConfiguration):void{
 			_configuration = value;
 			_configuration.map = this;
@@ -1152,6 +1177,9 @@ package org.openscales.core
 			return _configuration;
 		}
 		
+		/**
+		 * Enable or disable tween effect when zooming
+		 */
 		public function set tweenZoomEnabled(value:Boolean):void{
 			_tweenZoomEnabled = value;
 		} 

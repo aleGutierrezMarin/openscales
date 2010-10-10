@@ -67,10 +67,6 @@ package org.openscales.core.configuration
 		 */
 		 function get securities():XMLList;
 		 
-		 /**
-		 * parse layers
-		 */
-		 function parseLayer(xmlNode:XML):Layer;
 		
 	}
 }

@@ -4,7 +4,9 @@ package org.openscales.core
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
-
+	/**
+	 * Util classes inherited for OpenLayers, less and less used.
+	 */
 	public class Util
 	{
 

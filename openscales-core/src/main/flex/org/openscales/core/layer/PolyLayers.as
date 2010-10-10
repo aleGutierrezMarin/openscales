@@ -67,7 +67,7 @@ package org.openscales.core.layer
 			super.destroy();
 		}
 		
-		override public function onMapMove(e:MapEvent):void {
+		override protected function onMapMove(e:MapEvent):void {
 			if(e.zoomChanged) {
 				changeLayer();
 			}
@@ -128,7 +128,8 @@ package org.openscales.core.layer
             this._zoomToSwitch = zoomToSwitch;		
 			super(name);
 		}
-		override public function onMapResize(e:MapEvent):void {
+		
+		override protected function onMapResize(e:MapEvent):void {
 			
 			if(this.visible)
 			{
