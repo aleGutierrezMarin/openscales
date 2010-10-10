@@ -10,6 +10,20 @@
 		[HostComponent("org.openscales.fx.control.IconButton")]
 	</fx:Metadata>
 	
+	<fx:Script>
+		<![CDATA[
+			override protected function updateDisplayList(unscaledWidth:Number,
+														  unscaledHeight:Number):void {
+				if(hostComponent.getStyle('iconOver') == undefined)
+					hostComponent.setStyle("iconOver", hostComponent.getStyle('icon'));
+				if(hostComponent.getStyle('iconDown') ==  undefined)
+					hostComponent.setStyle("iconDown", hostComponent.getStyle('icon'));
+
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+		]]>
+	</fx:Script>
+	
 	<s:states>
 		<s:State name="up"/>
 		<s:State name="over"/>
