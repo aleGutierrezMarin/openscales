@@ -25,7 +25,11 @@
 		
 		<PanZoom id="panZoom" x="10" y="10" />
 		
-		<s:Panel title="Legend" id="legends" bottom="0">
+		<s:Panel title="Legend" id="legends" bottom="0" >
+			<s:layout>
+				<s:VerticalLayout paddingLeft="5" paddingRight="5"
+								  paddingTop="5" paddingBottom="5"/>
+			</s:layout>
 		</s:Panel>
 		
 		<s:Panel title="featureInfos" bottom="0" right="0">
@@ -104,7 +108,10 @@
 					
 					for each (var rule:Rule in style.rules) {
 						var hb:HGroup = new HGroup();
+						hb.height=30;
 						hb.setStyle("verticalAlign", "middle");
+						hb.verticalCenter=0;
+						hb.horizontalCenter=0;
 						
 						var leg:SpriteVisualElement = new SpriteVisualElement();
 						leg.height = 30;
@@ -115,6 +122,8 @@
 						var ruleLabel:Label = new Label();
 						ruleLabel.text = rule.name;
 						hb.addElement(ruleLabel);
+						ruleLabel.height = 30;
+						ruleLabel.setStyle("verticalAlign", "middle");
 						vb.addElement(hb);
 					}
 					
