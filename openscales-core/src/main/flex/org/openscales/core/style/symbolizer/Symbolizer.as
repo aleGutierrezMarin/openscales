@@ -3,7 +3,11 @@ package org.openscales.core.style.symbolizer {
 
 	import org.openscales.core.feature.Feature;
 
+	/**
+	 * Make an abstraction layer for feature rendering
+	 */
 	public class Symbolizer {
+		
 		private var _geometry:String;
 
 		public function Symbolizer() {

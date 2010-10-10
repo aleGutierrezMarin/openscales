@@ -17,8 +17,11 @@ package org.openscales.core.request
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.security.ISecurity;
 
-	// See http://github.com/yahoo/yos-social-as3/blob/2e12ae0d3cfd01cd950b63db8c601495bdaf318d/Source/com/yahoo/net/Connection.as
-	// for improvements ?
+	/**
+	 * Request wapper in order to make data or XML request easier to use (proxy, timeout, etc.)
+	 * 
+	 * TODO See http://github.com/yahoo/yos-social-as3/blob/2e12ae0d3cfd01cd950b63db8c601495bdaf318d/Source/com/yahoo/net/Connection.as for improvements ?
+	 */
 	public class AbstractRequest implements IRequest
 	{
 		/**
@@ -42,7 +45,6 @@ package org.openscales.core.request
 		private var _method:String = null;
 		private var _postContent:Object = null;
 		private var _postContentType:String = null;
-		// getter of postRequestData:Object
 		private var _proxy:String = null;
         private var _security:ISecurity = null;
 
@@ -54,8 +56,6 @@ package org.openscales.core.request
 		
 		private var _uid:String;
 
-		// getter of loaderInfo:Object
-		// getter of finalUrl:String
 		
 		/**
 		 * @constructor

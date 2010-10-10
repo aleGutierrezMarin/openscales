@@ -30,9 +30,7 @@ package org.openscales.core.format
 	
 	
 	/**
-	 * Read KML xml files
-	 * 
-	 * alpha support
+	 * Read KML 2.0 and 2.2 file format.
 	 */
 	public class KMLFormat extends Format
 	{

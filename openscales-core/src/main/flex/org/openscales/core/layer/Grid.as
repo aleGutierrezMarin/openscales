@@ -76,7 +76,7 @@ package org.openscales.core.layer
 			this.addEventListener(TileEvent.TILE_LOAD_START,tileLoadHandler);
 		}
 		
-		override public function onMapMove(e:MapEvent):void {
+		override protected function onMapMove(e:MapEvent):void {
 			// Clear pending requests after zooming in order to avoid to add
 			// too many tile requests  when the user is zooming step by step
 			if(e.zoomChanged) {

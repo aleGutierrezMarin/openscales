@@ -42,14 +42,11 @@ package org.openscales.core.configuration
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
-	 * Sample XML OpenScales configuration format.
-	 * Have a look to openscales-core/src/test/resources/configuration/sampleMapConfOk.xml for a sample valid XML file
+	 * OpenScales XML configuration format parser.
+	 * XML configuration syntax is defined by the XML Schema openscales-configuration.xsd
 	 * 
-	 * TODO : create an XML schema
+	 * Sample XML configuration file is available at src/test/flex/assets/configuration/sampleMapConfOk.xml
 	 * 
-	 * Don't forget : the map is create in actionScript, so values in the XML for the size are in pixel.
-	 * If you want to use the map in your flex application (and thus use widht and height in percent), you'll 
-	 * have to redefine the size in you mxml.
 	 */
 	public class Configuration implements IConfiguration
 	{
@@ -61,6 +58,10 @@ package org.openscales.core.configuration
 			this.config = config;
 		}
 		
+		/**
+		 * One this configuration manager has been added to a map, call this function to parse
+		 * XML file previously defined (config setter) and configure the map.
+		 */
 		public function configure():void {
 			this.map.reset();
 			this.loadStyles();
@@ -69,7 +70,6 @@ package org.openscales.core.configuration
 			this.endConfigureMap();
 		}
 		
-		/* load Styles */
 		private function loadStyles():void {
 			var styles:XMLList=config.Styles.*;
 			var style:Style;
@@ -83,8 +83,7 @@ package org.openscales.core.configuration
 			
 		}
 		
-		public function beginConfigureMap():void {
-			
+		protected function beginConfigureMap():void {
 			// Parse the XML (children of Layers, Handlers, Controls ...)    
 			if(config.@id != ""){
 				map.name = config.@id;
@@ -108,7 +107,7 @@ package org.openscales.core.configuration
 			
 		}
 		
-		public function middleConfigureMap():void {
+		protected function middleConfigureMap():void {
 			//add layers
 			map.addLayers(layersFromMap);
 			
@@ -140,7 +139,7 @@ package org.openscales.core.configuration
 			}
 		}
 		
-		public function endConfigureMap():void {
+		protected function endConfigureMap():void {
 			if(String(config.@zoom) != ""){
 				map.zoom = Number(config.@zoom);
 			}
@@ -150,6 +149,10 @@ package org.openscales.core.configuration
 			}
 		}
 		
+		/**
+		 * Set the xml file used to configure the map.
+		 * You haver to call explicitely the configure method in order to apply this configuration to the map
+		 */
 		public function set config(value:XML):void {
 			this._config = value;
 		}
@@ -220,7 +223,8 @@ package org.openscales.core.configuration
 			var securitiesNode:XMLList=config.Securities.*;
 			return securitiesNode;
 		}
-		public function parseLayer(xmlNode:XML):Layer {
+		
+		protected function parseLayer(xmlNode:XML):Layer {
 			// The layer which will return
 			var layer:Layer=null;
 			
@@ -492,10 +496,6 @@ package org.openscales.core.configuration
 			
 			return lineSymbolizer;
 		}
-		
-		
-		
-		
 		
 		protected function getDefaultStyle(defaultStyle:String):Style {
 			if(defaultStyle == "DefaultCircleStyle"){

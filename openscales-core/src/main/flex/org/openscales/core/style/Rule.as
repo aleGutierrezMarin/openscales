@@ -7,6 +7,9 @@ package org.openscales.core.style {
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 
+	/**
+	 * Rule based style, in order to use different styles based on parameters like current scale
+	 */
 	public class Rule {
 
 		public static const LEGEND_LINE:String = "Line";

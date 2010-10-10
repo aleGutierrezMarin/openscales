@@ -23,6 +23,9 @@ package org.openscales.core.control
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.geometry.MultiPoint;
 	
+	/**
+	 * Display an overview of the current map and position.
+	 */	
 	public class OverviewMap extends Control
 	{
 		private var _overviewMap:Map = null;

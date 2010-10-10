@@ -5,6 +5,9 @@ package org.openscales.core.style.fill {
 
 	import org.openscales.core.feature.Feature;
 
+	/**
+	 * Fill using a bitmap texture
+	 */
 	public class BitmapFill extends Fill {
 		private var _bitmap:BitmapData;
 		private var _matrix:Matrix;
