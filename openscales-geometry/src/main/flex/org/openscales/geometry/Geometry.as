@@ -22,6 +22,11 @@ package org.openscales.geometry
 		 * projection of the geometry 
 		 */
 		protected var _projection:String = "EPSG:4326";
+		
+		public function Geometry() {
+			super();
+		}
+		
 		/**
 		 * Destroys the geometry
 		 */

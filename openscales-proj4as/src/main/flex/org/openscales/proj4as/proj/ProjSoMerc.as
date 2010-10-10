@@ -1,3 +1,5 @@
+package org.openscales.proj4as.proj {
+
 /*******************************************************************************
    NAME                       SWISS OBLIQUE MERCATOR
 
@@ -12,9 +14,7 @@
    http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/topics/survey/sys/refsys/switzerland.parsysrelated1.31216.downloadList.77004.DownloadFile.tmp/swissprojectionfr.pdf
 
  *******************************************************************************/
-
-
-package org.openscales.proj4as.proj {
+ 
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;

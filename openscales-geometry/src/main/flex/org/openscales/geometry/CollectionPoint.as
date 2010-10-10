@@ -24,13 +24,13 @@ package org.openscales.geometry
 		
 		/**
 		 * Creates a Geometry Collection
-		 * the geometry is a vector of point which are stocked in vector.<Number>
+		 * the geometry is a vector of point which are stocked in vector.&lt;Number&gt;
 		 * "even index" are x and "uneven index" are y
 		 * exemple : 
-		 * this._components[0] => first x
-		 * this._components[1] => first y 
-		 * this._components[2] => second x
-		 * this._components[3] => second y
+		 * this._components[0] =&gt; first x
+		 * this._components[1] =&gt; first y 
+		 * this._components[2] =&gt; second x
+		 * this._components[3] =&gt; second y
 		 * .
 		 * . 
 		 * 
@@ -484,7 +484,7 @@ package org.openscales.geometry
 		 * Calculate the closest distance between two geometries (on the x-y plane).
 		 *
 		 * Parameters:
-		 * geometry - {<OpenLayers.Geometry>} The target geometry.
+		 * geometry - {Geometry} The target geometry.
 		 * options - {Object} Optional properties for configuring the distance
 		 *     calculation.
 		 *

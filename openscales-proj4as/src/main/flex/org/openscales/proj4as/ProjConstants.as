@@ -1,10 +1,3 @@
-/* Proj4as3
- *  German Osin (Gradoservice ltd.)
- *  LGPL Licencse
- *
- */
-
-
 package org.openscales.proj4as {
 
 	public class ProjConstants {
