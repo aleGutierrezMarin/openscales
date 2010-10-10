@@ -413,7 +413,7 @@ package org.openscales.geometry
      	 * Calculate the closest distance between two geometries (on the x-y plane).
      	 *
      	 * Parameters:
-     	 * geometry - {<OpenLayers.Geometry>} The target geometry.
+     	 * geometry - {Geometry} The target geometry.
      	 * options - {Object} Optional properties for configuring the distance
       	 *     calculation.
      	 *

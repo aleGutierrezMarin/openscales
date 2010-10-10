@@ -1,3 +1,5 @@
+package org.openscales.proj4as.proj {
+
 /*******************************************************************************
    NAME                            MOLLWEIDE
 
@@ -22,9 +24,7 @@
    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
    State Government Printing Office, Washington D.C., 1987.
  *******************************************************************************/
-
-
-package org.openscales.proj4as.proj {
+ 
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;

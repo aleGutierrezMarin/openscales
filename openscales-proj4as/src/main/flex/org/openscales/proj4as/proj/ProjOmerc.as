@@ -1,3 +1,5 @@
+package org.openscales.proj4as.proj {
+
 /*******************************************************************************
    NAME                       OBLIQUE MERCATOR (HOTINE)
 
@@ -20,8 +22,7 @@
    U.S. Geological Survey Professional Paper 1453 , United State Government
    Printing Office, Washington D.C., 1989.
  *******************************************************************************/
-
-package org.openscales.proj4as.proj {
+ 
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;

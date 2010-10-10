@@ -1,4 +1,5 @@
 package org.openscales.proj4as.proj {
+
 	import org.openscales.proj4as.ProjPoint;
 
 	public class AbstractProjProjection extends ProjParams implements IProjection {

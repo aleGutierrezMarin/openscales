@@ -15,8 +15,8 @@ package org.openscales.core.handler.mouse
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
-	 * ClickHandler detects a click-actions on the map: simple click, double
-	 * click and drag&drop are managed.
+	 * ClickHandler detects a click-actions on the map simple click, double
+	 * click and drag and drop are managed.
 	 *
 	 * To use this handler, it's  necessary to add it to the map.
 	 * It is a pure ActionScript class. Flex wrapper and components can be found

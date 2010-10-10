@@ -320,7 +320,7 @@ package org.openscales
 		 * Since x and y are number, result is also a number too
 		 * @param p the point to test
 		 * @param p0,p1 two points that define an infinite line
-		 * @return 0 if p is on the line (p0,p1), >0 if p is on its left, <0 if
+		 * @return 0 if p is on the line (p0,p1), &gt;0 if p is on its left, &lt;0 if
 		 * p is on its right
 		 */
 		static public function isLeftOrRight(p:Point, p0:Point, p1:Point):Number {
@@ -329,13 +329,13 @@ package org.openscales
 		
 		/**
 		 * Determine whether two line segments intersect or not.
-		 * This function is optimized for oriented segments so that x1 <= x2.
+		 * This function is optimized for oriented segments so that x1 &lt;= x2.
 		 *
 		 * @param seg1 Array representing a segment of two points ordered so
-		 *   that seg1.point1.x <= seg1.point2.x
+		 *   that seg1.point1.x &lt;= seg1.point2.x
 		 * @param seg2 Array representing a segment of two points ordered so
-		 *   that seg2.point1.x <= seg2.point2.x
-		 * @param tolerance if >0, two segments with a respective distance lower
+		 *   that seg2.point1.x &lt;= seg2.point2.x
+		 * @param tolerance if &gt;0, two segments with a respective distance lower
 		 *   than this tolerance are considered intersecting
 		 * @return Boolean caracterizing if the two input segments intersect
 		 */

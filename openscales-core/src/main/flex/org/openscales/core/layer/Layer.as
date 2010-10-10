@@ -366,7 +366,7 @@ package org.openscales.core.layer {
 		/**
 		 * The center of these bounds will not stray outside
 		 * of the viewport extent during panning.  In addition, if
-		 * <displayOutsideMaxExtent> is set to false, data will not be
+		 * displayOutsideMaxExtent is set to false, data will not be
 		 * requested that falls completely outside of these bounds.
 		 */
 		public function get maxExtent():Bounds {

@@ -144,7 +144,7 @@ package org.openscales.core.control
 		}
 
 		/**
-		 * Getters & setters
+		 * Getters &amp; setters
 		 */
 		public function get prefix():String {
 			return _prefix;

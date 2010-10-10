@@ -8,7 +8,7 @@ package org.openscales.core.layer.params
 
 		/**
 		 * This method is supposed to return a params string for HTTP GET requests like :
-		 * key1=value1&key2=value2&key3=value3
+		 * key1=value1&amp;key2=value2&amp;key3=value3
 		 *
 		 * @return String
 		 */
@@ -23,7 +23,7 @@ package org.openscales.core.layer.params
 		function setAdditionalParam(key:String, value:String):void;
 
 		/**
-		 *requesting bbox
+		 * Requesting bbox
 		 **/
 		function get bbox():String;
 		function set bbox(bbox:String):void;

@@ -1,3 +1,5 @@
+package org.openscales.proj4as.proj {
+
 /*******************************************************************************
    NAME                            NEW ZEALAND MAP GRID
 
@@ -107,8 +109,7 @@
    Released under terms of the LGPL as per: http://www.gnu.org/copyleft/lesser.html
 
  *******************************************************************************/
-
-package org.openscales.proj4as.proj {
+ 
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;

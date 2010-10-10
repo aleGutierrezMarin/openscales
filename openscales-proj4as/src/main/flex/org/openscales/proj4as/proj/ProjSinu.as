@@ -1,3 +1,5 @@
+package org.openscales.proj4as.proj {
+
 /*******************************************************************************
    NAME                  		SINUSOIDAL
 
@@ -23,8 +25,7 @@
    2.  "Software Documentation for GCTP General Cartographic Transformation
    Package", U.S. Geological Survey National Mapping Division, May 1982.
  *******************************************************************************/
-
-package org.openscales.proj4as.proj {
+ 
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
