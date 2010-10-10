@@ -1,12 +1,10 @@
-<Map name="fxmapy" width="600" height="400" maxExtent="-180,-90,180,90"
-	zoom="6" proxy="http://openscales.org/proxy.php?url=">
+<?xml version="1.0" encoding="UTF-8"?>
+<Map xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://openscales.org/schema/openscales-configuration-1.2.xsd"
+ 	   name="xmlMap" width="600" height="400" maxExtent="-180,-90,180,90" zoom="4" proxy="http://openscales.org/proxy.php?url=">
 
 	<Layers>
-		<Mapnik name="Mapnik"
-				maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" />
-		<WMSC name="Metacarta"
-			url="http://labs.metacarta.com/wms-c/Basic.py" layers="satellite"
-			format="image/jpeg" />
+		<Mapnik name="mapnik" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" />
+		<CycleMap name="cycle" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" alpha="0.5" />
 	</Layers>
 
 	<Handlers>
@@ -19,9 +17,6 @@
 	</Controls>
 
 	<Custom>
-		<Projections>
-			<Projection label="WGS84G">EPSG:4326</Projection>
-			<Projection label="Mapnik">EPSG:900913</Projection>
-		</Projections>
+		<MyCustomElement />
 	</Custom>
 </Map>
