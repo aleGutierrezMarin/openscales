@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:ItemRenderer xmlns:mx="library://ns.adobe.com/flex/mx"
-		  xmlns:s="library://ns.adobe.com/flex/spark"
-		  xmlns:fx="http://ns.adobe.com/mxml/2009"
-		  xmlns:control="org.openscales.fx.control.*"
-		  width="100%"
-		  height="25" xmlns:fxg="assets.fxg.*"
-		  autoDrawBackground="false"
-		  xmlns:d="http://ns.adobe.com/fxg/2008/dt">
+<!--- LayerManager item renderer, design to render a layer in the LayerManager list -->
+<s:ItemRenderer xmlns="http://openscales.org" xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:d="http://ns.adobe.com/fxg/2008/dt"  width="100%"  height="25" xmlns:fxg="assets.fxg.*"
+		  autoDrawBackground="false">
 	
 	<fx:Script>
 		<![CDATA[
@@ -270,7 +267,7 @@
 					   enabled="false"/>-->
 		
 		<s:VGroup verticalAlign="middle" gap="0">
-			<control:IconButton id="ArrowUp"
+			<IconButton id="ArrowUp"
 								toolTip="Put this layer at the top"
 								click="upLayer(event)"
 								icon="{new UpArrowUp()}"
@@ -281,7 +278,7 @@
 								/>
 			
 
-			<control:IconButton id="ArrowDown"
+			<IconButton id="ArrowDown"
 								toolTip="Put this layer at the bottom"
 								click="downLayer(event)"
 								icon="{new DownArrowUp()}"
@@ -291,7 +288,7 @@
 								height="10"/>
 
 		</s:VGroup>
-			<control:IconButton id="opacityButton"
+			<IconButton id="opacityButton"
 								width="16"
 								height="16"
 								toolTip="Manage layer opacity"
@@ -300,9 +297,8 @@
 								iconOver="{new ButtonOpacity()}"
 								iconDown="{new ButtonOpacity()}"/>
 
-		<s:Group id="displayControl"
-				 width="100%"/>
-		<control:IconButton id="deleteButton"
+		<s:Group id="displayControl" width="100%"/>
+		<IconButton id="deleteButton"
 							toolTip="Delete the layer"
 							click="deleteLayer(event)"
 							icon="{new ButtonCloseUp()}"

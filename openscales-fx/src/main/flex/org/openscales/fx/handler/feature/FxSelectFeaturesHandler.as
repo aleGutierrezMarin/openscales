@@ -3,7 +3,10 @@ package org.openscales.fx.handler.feature
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.fx.handler.FxHandler;
 
-
+	/**
+	 * <p>SelectFeaturesHandler Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;SelectFeaturesHandler /&gt; MXML component using xmlns="http://openscales.org"</p>
+	 */
 	public class FxSelectFeaturesHandler extends FxHandler
 	{
 		/**

@@ -2,6 +2,10 @@ package org.openscales.fx.layer
 {
 	import org.openscales.core.layer.ImageLayer;
 
+	/**
+	 * <p>ImageLayer Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;ImageLayer /&gt; MXML component using xmlns="http://openscales.org"</p>
+	 */
 	public class FxImageLayer extends FxLayer
 	{
 		public function FxImageLayer()

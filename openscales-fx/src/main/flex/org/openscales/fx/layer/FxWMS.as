@@ -4,6 +4,10 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.proj4as.ProjProjection;
 
+	/**
+	 * <p>WMS Flex wrapper</p>
+	 * <p>To use it, declare a &lt;WMS /&gt; MXML component using xmlns="http://openscales.org"</p>
+	 */
 	public class FxWMS extends FxGrid
 	{
 		public function FxWMS() {

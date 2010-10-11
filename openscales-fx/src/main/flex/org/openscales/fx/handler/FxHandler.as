@@ -8,6 +8,9 @@ package org.openscales.fx.handler
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.handler.IHandler;
 
+	/**
+	 * Abstract Handler Flex wrapper, use inherited classes
+	 */
 	public class FxHandler extends UIComponent
 	{
 		private var _handler:IHandler;

@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				 xmlns:s="library://ns.adobe.com/flex/spark" 
-				 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:control="org.openscales.fx.control.*" width="400" height="300"
-				 initialize="configure()"
-				 >
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
+<!--- Old PanZoom control, you should use brand new PanZoom Flex control instead -->
+<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx"
+				 width="400" height="300" initialize="configure()">
 	
 	<fx:Script>
 		<![CDATA[
@@ -101,7 +97,6 @@
 		]]>
 	</fx:Script>
 	
-
 	<s:VSlider id="zoomSlider" x="54" y="10"
 			   snapInterval="1"
 			   useHandCursor="true"
@@ -116,4 +111,4 @@
 						  buttonMode="true">
 	</s:SkinnableContainer>
  	
-</control:Control>
+</Control>

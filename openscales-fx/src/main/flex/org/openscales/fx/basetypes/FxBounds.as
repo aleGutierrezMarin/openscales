@@ -5,6 +5,9 @@ package org.openscales.fx.basetypes
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.ProjProjection;
 
+	/**
+	 * Abstract Bounds Flex wrapper
+	 */
 	public class FxBounds extends UIComponent
 	{
 		private var _bounds:Bounds;	

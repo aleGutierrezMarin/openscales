@@ -3,6 +3,10 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.KML;
 	import org.openscales.proj4as.ProjProjection;
 
+	/**
+	 * <p>KML Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;KML /&gt; MXML component using xmlns="http://openscales.org"</p>
+	 */
 	public class FxKML extends FxFeatureLayer
 	{
 		public function FxKML()

@@ -3,6 +3,9 @@ package org.openscales.fx.layer
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.layer.TMS;
 	
+	/**
+	 * Abstract TMS Flex wrapper
+	 */
 	public class FxTMS extends FxGrid
 	{
 		public function FxTMS()

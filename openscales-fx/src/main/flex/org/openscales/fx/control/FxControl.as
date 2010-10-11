@@ -6,6 +6,9 @@ package org.openscales.fx.control
 	
 	import spark.components.Group;
 
+	/**
+	 * Abstract Control Flex wrapper
+	 */
 	public class FxControl extends Group
 	{
 		private var _control:IControl;

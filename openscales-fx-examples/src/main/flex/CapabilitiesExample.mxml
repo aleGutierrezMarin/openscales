@@ -35,15 +35,9 @@
 			import org.openscales.core.style.marker.WellKnownMarker;
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
-			import org.openscales.fx.control.style.StyleEditionWindow;
-			
-			private var _styleEditorPanel:StyleEditionWindow;
-					
+								
 			private function initMap():void {
 				fxMap.map.addEventListener(LayerEvent.LAYER_ADDED, this.onLayerAdded);			
-				this._styleEditorPanel = new StyleEditionWindow();
-				this._styleEditorPanel.addEventListener(StyleEditionWindow.OK_BUTTON_CLICKED, this.onOkButtonClick);
-				this._styleEditorPanel.addEventListener(StyleEditionWindow.CANCEL_BUTTON_CLICKED, this.onCancelButtonClick);
 			}
 			
 			private function onLayerAdded(event:LayerEvent):void
@@ -57,16 +51,6 @@
 				}
 			}
 			
-			private function onOkButtonClick(event:Event):void{
-				PopUpManager.removePopUp(this._styleEditorPanel);
-				this._styleEditorPanel.editedLayer.style = this._styleEditorPanel.editedStyle;
-				this._styleEditorPanel.editedLayer.redraw();
-			}
-			
-			private function onCancelButtonClick(event:Event):void{
-				
-				PopUpManager.removePopUp(this._styleEditorPanel);
-			}
 		]]>
 	</fx:Script>
 	

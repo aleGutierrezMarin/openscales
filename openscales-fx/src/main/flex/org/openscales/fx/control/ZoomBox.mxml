@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:fx="http://ns.adobe.com/mxml/2009"
-				 xmlns:control="org.openscales.fx.control.*" 
-				 xmlns:style="org.openscales.core.style.*"
-				 width="24"
-				 height="24">
+<!--- ZoomBox control, allow the user to draw a zoom extent --> 
+<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" width="24" height="24">
 	<fx:Script>
 		<![CDATA[
 			import mx.managers.CursorManager;
@@ -94,7 +91,7 @@
 		]]>
 	</fx:Script>
 	
-	<control:IconButton id="zoombox"
+	<IconButton id="zoombox"
 						width="{this.width}"
 						height="{this.height}"
 						toolTip="{this._toolTip}"
@@ -103,4 +100,4 @@
 						buttonMode="true"
 						click="onSelectZoomBox(event)" />
 	
-</control:Control>
+</Control>

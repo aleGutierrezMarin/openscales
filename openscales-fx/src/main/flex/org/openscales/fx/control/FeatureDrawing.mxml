@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:control="org.openscales.fx.control.*"
-				 xmlns:fx="http://ns.adobe.com/mxml/2009"
-				 xmlns:s="library://ns.adobe.com/flex/spark" 
-				 >
-
-	<!-- TODO : drawing handlers are too much tighly coupled with controls, this should be refactor to make drawing
-		 integration much simpler -->
+<!--- Drawing controls. Currently, drawing handlers are too much tighly coupled with controls, this should be refactor
+     to make drawing integration much simpler. A skin should be used instead of inline icons, in order
+	 to allow better Flex 4 integration -->
+<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark">
 
 	<fx:Script>
 		<![CDATA[
@@ -128,42 +126,42 @@
 		
 		<s:HGroup id="tgBar"
 				 width="100%">
-			<control:IconButton id="btnPan"
+			<IconButton id="btnPan"
 								width="25"
 								height="25"
 								toolTip="Pan Map"
 								icon="{_btnPan}"
 								click="this.clickHandler(event)" />
 			<s:Rect width="6" />
-			<control:IconButton id="btnMouvement"
+			<IconButton id="btnMouvement"
 								width="25"
 								height="25"
 								toolTip="Select Features"
 								icon="{_btnMouvement}"
 								click="this.clickHandler(event)" />
 			<s:Rect width="6" />
-			<control:IconButton id="btnPoint"
+			<IconButton id="btnPoint"
 								width="25"
 								height="25"
 								toolTip="Draw a point"
 								icon="{_btnPoint}"
 								click="this.clickHandler(event)" />
 			<s:Rect width="6" />
-			<control:IconButton id="btnPath"
+			<IconButton id="btnPath"
 								width="25"
 								height="25"
 								toolTip="Draw a path"
 								icon="{_btnPath}"
 								click="this.clickHandler(event)" />
 			<s:Rect width="6" />
-			<control:IconButton id="btnPolygon"
+			<IconButton id="btnPolygon"
 								width="25"
 								height="25"
 								toolTip="Draw a polygon"
 								icon="{_btnPolygon}"
 								click="this.clickHandler(event)" />
 			<s:Rect width="6" />
-			<control:IconButton id="editFeature"
+			<IconButton id="editFeature"
 								width="25"
 								height="25"
 								toolTip="Edit Feature on draw Layer"
@@ -172,14 +170,14 @@
 		</s:HGroup>
 		
 		<s:HGroup gap="6">
-			<control:IconButton id="btnDeleteLast"
+			<IconButton id="btnDeleteLast"
 								width="25"
 								height="25"
 								toolTip="Delete the last drawing vertex"
 								icon="{_btnDeleteLast}"
 								click="this._drawHandler.onDeleteLastClick(event)" />
 			<s:Rect width="6" />
-			<control:IconButton id="btnDeleteAll"
+			<IconButton id="btnDeleteAll"
 								width="25"
 								height="25"
 								toolTip="Delete all the drawn features"
@@ -189,4 +187,4 @@
 		
 	</s:VGroup>
 
-</control:Control>
+</Control>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:s="library://ns.adobe.com/flex/spark"
-				 xmlns:fx="http://ns.adobe.com/mxml/2009"
-				 xmlns:control="org.openscales.fx.control.*" > 
+<!--- Old Pan control, you should use brand new PanZoom Flex control instead --> 
+<Control xmlns="http://openscales.org" xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"> 
 	
 	<fx:Script>
 		<![CDATA[
@@ -75,28 +75,28 @@
 	<s:TileGroup horizontalGap="0" verticalGap="0">
 
 			<s:Rect width="20" />
-			<control:IconButton id="upButton"
+			<IconButton id="upButton"
 								width="20"
 								height="20"
 								toolTip="{this._toolTipNorth}"
 								icon="{arrowUp}"
 								click="this.onButtonClick(event)" />
 			<s:Rect width="20" />
-			<control:IconButton id="leftButton"
+			<IconButton id="leftButton"
 								width="20"
 								height="20"
 								toolTip="{this._toolTipWest}"
 								icon="{arrowLeft}"
 								click="this.onButtonClick(event)" />
 			<s:Rect width="20" />
-			<control:IconButton id="rightButton"
+			<IconButton id="rightButton"
 								width="20"
 								height="20"
 								toolTip="{this._toolTipEast}"
 								icon="{arrowRight}"
 								click="this.onButtonClick(event)" />
 			<s:Rect width="20" />
-			<control:IconButton id="downButton"
+			<IconButton id="downButton"
 								width="20"
 								height="20"
 								toolTip="{this._toolTipSouth}"
@@ -104,4 +104,4 @@
 								click="this.onButtonClick(event)" />
 	</s:TileGroup>
 	
-</control:Control>
+</Control>

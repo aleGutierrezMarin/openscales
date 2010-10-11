@@ -1,4 +1,4 @@
-package org.openscales.fx.control.spinner {
+package org.openscales.core.control {
 	
 	import flash.display.Shape;
 	import flash.events.Event;
@@ -7,7 +7,6 @@ package org.openscales.fx.control.spinner {
 	
 	import org.openscales.core.Map;
 	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.core.control.Control;
 	import org.openscales.core.events.MapEvent;
 	
 	public class Spinner extends Control {		
