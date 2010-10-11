@@ -1,4 +1,4 @@
-package org.openscales.basetypes
+package org.openscales.geometry.basetypes
 {
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;

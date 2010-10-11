@@ -1,7 +1,7 @@
 package org.openscales.geometry
 {
-	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.Location;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
 
 

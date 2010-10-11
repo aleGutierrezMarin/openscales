@@ -1,7 +1,7 @@
 package org.openscales.core.layer.capabilities
 {
 	import org.flexunit.Assert;
-	import org.openscales.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.core.basetypes.maps.HashMap;
 
 	public class ParsingTest

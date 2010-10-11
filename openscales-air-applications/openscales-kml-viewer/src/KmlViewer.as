@@ -5,8 +5,8 @@ package
 	import flash.filesystem.File;
 	import flash.net.FileFilter;
 	
-	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.Location;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.handler.mouse.DragHandler;

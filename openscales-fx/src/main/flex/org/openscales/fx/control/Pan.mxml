@@ -6,7 +6,7 @@
 	<fx:Script>
 		<![CDATA[
 			
-			import org.openscales.basetypes.Location;
+			import org.openscales.geometry.basetypes.Location;
 			
 			[Bindable] private var _toolTipNorth:String = "Move the map to the North direction";
 			[Bindable] private var _toolTipSouth:String = "Move the map to the South direction";

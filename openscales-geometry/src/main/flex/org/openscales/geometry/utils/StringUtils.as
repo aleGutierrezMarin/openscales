@@ -1,4 +1,4 @@
-package org.openscales {
+package org.openscales.geometry.utils {
 	import flash.system.Capabilities;
 
 	/**

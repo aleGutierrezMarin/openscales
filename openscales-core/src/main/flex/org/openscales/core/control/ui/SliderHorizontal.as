@@ -1,6 +1,6 @@
 package org.openscales.core.control.ui
 {
-	import org.openscales.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * SliderHorizontal class allows to create horizontal slider intsances in pure AS3.

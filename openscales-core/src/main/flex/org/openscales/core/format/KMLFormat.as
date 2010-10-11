@@ -6,7 +6,7 @@ package org.openscales.core.format
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
-	import org.openscales.basetypes.Location;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;

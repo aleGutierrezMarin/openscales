@@ -1,6 +1,6 @@
 package org.openscales.fx.layer
 {	
-	import org.openscales.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.core.Map;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.FxMap;

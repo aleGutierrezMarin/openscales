@@ -1,9 +1,9 @@
 package org.openscales.core
 {
 	import org.flexunit.Assert;
-	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.Location;
-	import org.openscales.basetypes.Size;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Size;
 	
 	public class MapTest
 	{

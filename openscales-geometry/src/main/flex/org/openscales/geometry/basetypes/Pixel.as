@@ -1,4 +1,4 @@
-package org.openscales.basetypes
+package org.openscales.geometry.basetypes
 {
 	/**
 	 * This class represents a screen coordinate, in x and y coordinates.

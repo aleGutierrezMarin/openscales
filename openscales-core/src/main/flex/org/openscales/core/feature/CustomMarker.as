@@ -5,7 +5,7 @@ package org.openscales.core.feature
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	
-	import org.openscales.basetypes.Location;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Point;

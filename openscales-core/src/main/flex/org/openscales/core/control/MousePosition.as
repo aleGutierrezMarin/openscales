@@ -4,8 +4,8 @@ package org.openscales.core.control
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
-	import org.openscales.basetypes.Location;
-	import org.openscales.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.Map;
 	import org.openscales.proj4as.ProjProjection;

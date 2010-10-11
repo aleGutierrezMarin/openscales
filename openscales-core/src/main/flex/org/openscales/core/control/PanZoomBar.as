@@ -4,8 +4,8 @@ package org.openscales.core.control
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import org.openscales.basetypes.Pixel;
-	import org.openscales.basetypes.Size;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.Util;
 	import org.openscales.core.control.ui.Button;

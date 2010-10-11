@@ -3,7 +3,7 @@ package org.openscales.geometry
 	import flash.trace.Trace;
 	import flash.utils.getQualifiedClassName;
 	
-	import org.openscales.UtilGeometry;
+	import org.openscales.geometry.utils.UtilGeometry;
 	import org.openscales.proj4as.ProjProjection;
 
 

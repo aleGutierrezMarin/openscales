@@ -11,11 +11,11 @@ package org.openscales.core
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	
-	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.Location;
-	import org.openscales.basetypes.Pixel;
-	import org.openscales.basetypes.Size;
-	import org.openscales.basetypes.Unit;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.LayerEvent;

@@ -44,7 +44,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.core.Trace;
 			import org.openscales.core.filter.ContainsFilter;
 			import org.openscales.core.filter.ElseFilter;

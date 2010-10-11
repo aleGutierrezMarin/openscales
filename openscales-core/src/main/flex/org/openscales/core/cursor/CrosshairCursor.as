@@ -9,7 +9,7 @@ package org.openscales.core.cursor
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-	import org.openscales.basetypes.Location;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.control.MousePosition;
 	
 	/**

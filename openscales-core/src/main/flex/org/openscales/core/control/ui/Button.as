@@ -3,8 +3,8 @@ package org.openscales.core.control.ui
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 
-	import org.openscales.basetypes.Pixel;
-	import org.openscales.basetypes.Size;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 
 	/**
 	 * Class extending Sprite.

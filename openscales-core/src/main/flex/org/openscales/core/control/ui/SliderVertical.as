@@ -1,6 +1,6 @@
 package org.openscales.core.control.ui
 {
-	import org.openscales.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * SliderVertical class allows to create vertical slider intsances in pure AS3.

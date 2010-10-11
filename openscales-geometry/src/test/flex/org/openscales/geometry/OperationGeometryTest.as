@@ -1,7 +1,7 @@
 package org.openscales.geometry
 {
 	import org.flexunit.Assert;
-	import org.openscales.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Bounds;
 
 	public class OperationGeometryTest
 	{

@@ -1,9 +1,9 @@
 package org.openscales.core.layer.ogc
 {
 
-	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.Pixel;
-	import org.openscales.basetypes.Size;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.core.tile.ImageTile;
