@@ -1,37 +1,33 @@
-/*******************************************************************************
-   NAME                  LAMBERT AZIMUTHAL EQUAL-AREA
-
-   PURPOSE:	Transforms input longitude and latitude to Easting and
-   Northing for the Lambert Azimuthal Equal-Area projection.  The
-   longitude and latitude must be in radians.  The Easting
-   and Northing values will be returned in meters.
-
-   PROGRAMMER              DATE
-   ----------              ----
-   D. Steinwand, EROS      March, 1991
-
-   This function was adapted from the Lambert Azimuthal Equal Area projection
-   code (FORTRAN) in the General Cartographic Transformation Package software
-   which is available from the U.S. Geological Survey National Mapping Division.
-
-   ALGORITHM REFERENCES
-
-   1.  "New Equal-Area Map Projections for Noncircular Regions", John P. Snyder,
-   The American Cartographer, Vol 15, No. 4, October 1988, pp. 341-355.
-
-   2.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
-   Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
-   State Government Printing Office, Washington D.C., 1987.
-
-   3.  "Software Documentation for GCTP General Cartographic Transformation
-   Package", U.S. Geological Survey National Mapping Division, May 1982.
- *******************************************************************************/
-
 package org.openscales.proj4as.proj {
+	
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
 
+	/**
+	 <p>LAMBERT AZIMUTHAL EQUAL-AREA projection</p>
+	 
+	 <p>PURPOSE:	Transforms input longitude and latitude to Easting and
+	 Northing for the Lambert Azimuthal Equal-Area projection.  The
+	 longitude and latitude must be in radians.  The Easting
+	 and Northing values will be returned in meters.</p>
+	 
+	 <p>This function was adapted from the Lambert Azimuthal Equal Area projection
+	 code (FORTRAN) in the General Cartographic Transformation Package software
+	 which is available from the U.S. Geological Survey National Mapping Division.</p>
+	 
+	 <p>ALGORITHM REFERENCES</p>
+	 
+	 <p>1.  "New Equal-Area Map Projections for Noncircular Regions", John P. Snyder,
+	 The American Cartographer, Vol 15, No. 4, October 1988, pp. 341-355.</p>
+	 
+	 <p>2.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+	 Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+	 State Government Printing Office, Washington D.C., 1987.</p>
+	 
+	 <p>3.  "Software Documentation for GCTP General Cartographic Transformation
+	 Package", U.S. Geological Survey National Mapping Division, May 1982.</p>
+	 **/
 	public class ProjLaea extends AbstractProjProjection {
 		private var sin_lat_o:Number;
 		private var cos_lat_o:Number;

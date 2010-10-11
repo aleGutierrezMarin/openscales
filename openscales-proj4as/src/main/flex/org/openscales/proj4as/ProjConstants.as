@@ -1,5 +1,8 @@
 package org.openscales.proj4as {
 
+	/**
+	 * Various constants used in Proj4as
+	 */
 	public class ProjConstants {
 
 		static public const PI:Number=3.141592653589793238; //Math.PI,
@@ -11,6 +14,7 @@ package org.openscales.proj4as {
 		static public const SEC_TO_RAD:Number=4.84813681109535993589914102357e-6; /* SEC_TO_RAD = Pi/180/3600 */
 		static public const EPSLN:Number=1.0e-10;
 		static public const MAX_ITER:Number=20;
+		
 		// following constants from geocent.c
 		static public const COS_67P5:Number=0.38268343236508977; /* cosine of 67.5 degrees */
 		static public const AD_C:Number=1.0026000; /* Toms region 1 constant */
@@ -58,18 +62,18 @@ package org.openscales.proj4as {
 		}
 
 
-		// Function to compute the constant small m which is the radius of
-		//   a parallel of latitude, phi, divided by the semimajor axis.
-		// -----------------------------------------------------------------
+		/** Function to compute the constant small m which is the radius of
+		 *   a parallel of latitude, phi, divided by the semimajor axis.
+		 */
 		static public function msfnz(eccent:Number, sinphi:Number, cosphi:Number):Number {
 			var con:Number=eccent * sinphi;
 			return cosphi / (Math.sqrt(1.0 - con * con));
 		}
 
-		// Function to compute the constant small t for use in the forward
-		//   computations in the Lambert Conformal Conic and the Polar
-		//   Stereographic projections.
-		// -----------------------------------------------------------------
+		/** Function to compute the constant small t for use in the forward
+		 *   computations in the Lambert Conformal Conic and the Polar
+		 *   Stereographic projections.
+		 */
 		static public function tsfnz(eccent:Number, phi:Number, sinphi:Number):Number {
 			var con:Number=eccent * sinphi;
 			var com:Number=0.5 * eccent;
@@ -77,9 +81,9 @@ package org.openscales.proj4as {
 			return (Math.tan(0.5 * (ProjConstants.HALF_PI - phi)) / con);
 		}
 
-		// Function to compute the latitude angle, phi2, for the inverse of the
-		//   Lambert Conformal Conic and Polar Stereographic projections.
-		// ----------------------------------------------------------------
+		/** Function to compute the latitude angle, phi2, for the inverse of the
+		 *   Lambert Conformal Conic and Polar Stereographic projections.
+		 */
 		static public function phi2z(eccent:Number, ts:Number):Number {
 			var eccnth:Number=.5 * eccent;
 			var con:Number=0;
@@ -96,9 +100,9 @@ package org.openscales.proj4as {
 			return -9999;
 		}
 
-		/* Function to compute constant small q which is the radius of a
-		   parallel of latitude, phi, divided by the semimajor axis.
-		 ------------------------------------------------------------*/
+		/** Function to compute constant small q which is the radius of a
+		  * parallel of latitude, phi, divided by the semimajor axis.
+		  */
 		static public function qsfnz(eccent:Number, sinphi:Number, cosphi:Number):Number {
 			var con:Number=0;
 			if (eccent > 1.0e-7) {
@@ -109,8 +113,8 @@ package org.openscales.proj4as {
 			}
 		}
 
-		/* Function to eliminate roundoff errors in asin
-		 ----------------------------------------------*/
+		/** Function to eliminate roundoff errors in asin
+		 */
 		static public function asinz(x:Number):Number {
 			if (Math.abs(x) > 1.0) {
 				x=(x > 1.0) ? 1.0 : -1.0;
@@ -118,7 +122,8 @@ package org.openscales.proj4as {
 			return Math.asin(x);
 		}
 
-		// following functions from gctpc cproj.c for transverse mercator projections
+		/** following functions from gctpc cproj.c for transverse mercator projections
+		 */
 		static public function e0fn(x:Number):Number {
 			return (1.0 - 0.25 * x * (1.0 + x / 16.0 * (3.0 + 1.25 * x)));
 		}
@@ -143,7 +148,8 @@ package org.openscales.proj4as {
 			return (Math.pow((1.0 - esinp) / (1.0 + esinp), exp));
 		}
 
-// Function to return the sign of an argument
+		/** Function to return the sign of an argument
+		 */
 		static public function sign(x:Number):Number {
 			if (x < 0.0)
 				return (-1);
@@ -151,21 +157,24 @@ package org.openscales.proj4as {
 				return (1);
 		}
 
-// Function to adjust longitude to -180 to 180; input in radians
+		/** Function to adjust longitude to -180 to 180; input in radians
+		 */
 		static public function adjust_lon(x:Number):Number {
 			x=(Math.abs(x) < ProjConstants.PI) ? x : (x - (ProjConstants.sign(x) * ProjConstants.TWO_PI));
 			return x;
 		}
 
-// IGNF - DGR : algorithms used by IGN France
+		// IGNF - DGR : algorithms used by IGN France
 
-// Function to adjust latitude to -90 to 90; input in radians
+		/** Function to adjust latitude to -90 to 90; input in radians
+		 */
 		static public function adjust_lat(x:Number):Number {
 			x=(Math.abs(x) < ProjConstants.HALF_PI) ? x : (x - (ProjConstants.sign(x) * ProjConstants.PI));
 			return x;
 		}
 
-// Latitude Isometrique - close to tsfnz ...
+		/** Latitude Isometrique - close to tsfnz ...
+		 */
 		static public function latiso(eccent:Number, phi:Number, sinphi:Number):Number {
 			if (Math.abs(phi) > ProjConstants.HALF_PI)
 				return +Number.NaN;
@@ -182,7 +191,8 @@ package org.openscales.proj4as {
 			return 2.0 * Math.atan(x * Math.exp(L)) - ProjConstants.HALF_PI;
 		}
 
-// Inverse Latitude Isometrique - close to ph2z
+		/** Inverse Latitude Isometrique - close to ph2z
+		 */
 		static public function invlatiso(eccent:Number, ts:Number):Number {
 			var phi:Number=ProjConstants.fL(1.0, ts);
 			var Iphi:Number=0.0;
@@ -195,9 +205,10 @@ package org.openscales.proj4as {
 			return phi;
 		}
 
-// Needed for Gauss Laborde
-// Original:  Denis Makarov (info@binarythings.com)
-// Web Site:  http://www.binarythings.com
+		/** Needed for Gauss Laborde
+		 * Original:  Denis Makarov
+		 * Web Site:  http://www.binarythings.com
+		 */
 		static public function sinh(x:Number):Number {
 			var r:Number=Math.exp(x);
 			r=(r - 1.0 / r) / 2.0;
@@ -229,7 +240,9 @@ package org.openscales.proj4as {
 			return Math.log((x - 1.0) / (x + 1.0)) / 2.0;
 		}
 
-// Grande Normale
+		/**
+		 * Grande Normale
+		 */
 		static public function gN(a:Number, e:Number, sinphi:Number):Number {
 			var temp:Number=e * sinphi;
 			return a / Math.sqrt(1.0 - temp * temp);

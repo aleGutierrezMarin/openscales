@@ -1,119 +1,104 @@
 package org.openscales.proj4as.proj {
 
-/*******************************************************************************
-   NAME                            NEW ZEALAND MAP GRID
-
-   PURPOSE:	Transforms input longitude and latitude to Easting and
-   Northing for the New Zealand Map Grid projection.  The
-   longitude and latitude must be in radians.  The Easting
-   and Northing values will be returned in meters.
-
-
-   ALGORITHM REFERENCES
-
-   1.  Department of Land and Survey Technical Circular 1973/32
-   http://www.linz.govt.nz/docs/miscellaneous/nz-map-definition.pdf
-
-   2.  OSG Technical Report 4.1
-   http://www.linz.govt.nz/docs/miscellaneous/nzmg.pdf
-
-
-   IMPLEMENTATION NOTES
-
-   The two references use different symbols for the calculated values. This
-   implementation uses the variable names similar to the symbols in reference [1].
-
-   The alogrithm uses different units for delta latitude and delta longitude.
-   The delta latitude is assumed to be in units of seconds of arc x 10^-5.
-   The delta longitude is the usual radians. Look out for these conversions.
-
-   The algorithm is described using complex arithmetic. There were three
-   options:
- * find and use a Javascript library for complex arithmetic
- * write my own complex library
- * expand the complex arithmetic by hand to simple arithmetic
-
-   This implementation has expanded the complex multiplication operations
-   into parallel simple arithmetic operations for the real and imaginary parts.
-   The imaginary part is way over to the right of the display; this probably
-   violates every coding standard in the world, but, to me, it makes it much
-   more obvious what is going on.
-
-   The following complex operations are used:
-   - addition
-   - multiplication
-   - division
-   - complex number raised to integer power
-   - summation
-
-   A summary of complex arithmetic operations:
-   (from http://en.wikipedia.org/wiki/Complex_arithmetic)
-   addition:       (a + bi) + (c + di) = (a + c) + (b + d)i
-   subtraction:    (a + bi) - (c + di) = (a - c) + (b - d)i
-   multiplication: (a + bi) x (c + di) = (ac - bd) + (bc + ad)i
-   division:       (a + bi) / (c + di) = [(ac + bd)/(cc + dd)] + [(bc - ad)/(cc + dd)]i
-
-   The algorithm needs to calculate summations of simple and complex numbers. This is
-   implemented using a for-loop, pre-loading the summed value to zero.
-
-   The algorithm needs to calculate theta^2, theta^3, etc while doing a summation.
-   There are three possible implementations:
-   - use Math.pow in the summation loop - except for complex numbers
-   - precalculate the values before running the loop
-   - calculate theta^n = theta^(n-1) * theta during the loop
-   This implementation uses the third option for both real and complex arithmetic.
-
-   For example
-   psi_n = 1;
-   sum = 0;
-   for (n = 1; n <=6; n++) {
-   psi_n1 = psi_n * psi;       // calculate psi^(n+1)
-   psi_n = psi_n1;
-   sum = sum + A[n] * psi_n;
-   }
-
-
-   TEST VECTORS
-
-   NZMG E, N:         2487100.638      6751049.719     metres
-   NZGD49 long, lat:      172.739194       -34.444066  degrees
-
-   NZMG E, N:         2486533.395      6077263.661     metres
-   NZGD49 long, lat:      172.723106       -40.512409  degrees
-
-   NZMG E, N:         2216746.425      5388508.765     metres
-   NZGD49 long, lat:      169.172062       -46.651295  degrees
-
-   Note that these test vectors convert from NZMG metres to lat/long referenced
-   to NZGD49, not the more usual WGS84. The difference is about 70m N/S and about
-   10m E/W.
-
-   These test vectors are provided in reference [1]. Many more test
-   vectors are available in
-   http://www.linz.govt.nz/docs/topography/topographicdata/placenamesdatabase/nznamesmar08.zip
-   which is a catalog of names on the 260-series maps.
-
-
-   EPSG CODES
-
-   NZMG     EPSG:27200
-   NZGD49   EPSG:4272
-
-   http://spatialreference.org/ defines these as
-   Proj4js.defs["EPSG:4272"] = "+proj=longlat +ellps=intl +datum=nzgd49 +no_defs ";
-   Proj4js.defs["EPSG:27200"] = "+proj=nzmg +lat_0=-41 +lon_0=173 +x_0=2510000 +y_0=6023150 +ellps=intl +datum=nzgd49 +units=m +no_defs ";
-
-
-   LICENSE
-   Copyright: Stephen Irons 2008
-   Released under terms of the LGPL as per: http://www.gnu.org/copyleft/lesser.html
-
- *******************************************************************************/
- 
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
 
+	/**
+	 <p>NEW ZEALAND MAP GRID projection</p>
+	 
+	 <p>PURPOSE:	Transforms input longitude and latitude to Easting and
+	 Northing for the New Zealand Map Grid projection.  The
+	 longitude and latitude must be in radians.  The Easting
+	 and Northing values will be returned in meters.</p>
+	 
+	 <p>ALGORITHM REFERENCES</p>
+	 
+	 <p>1.  Department of Land and Survey Technical Circular 1973/32
+	 http://www.linz.govt.nz/docs/miscellaneous/nz-map-definition.pdf</p>
+	 
+	 <p>2.  OSG Technical Report 4.1
+	 http://www.linz.govt.nz/docs/miscellaneous/nzmg.pdf</p>
+	 
+	 <p>IMPLEMENTATION NOTES</p>
+	 
+	 <p>The two references use different symbols for the calculated values. This
+	 implementation uses the variable names similar to the symbols in reference [1].</p>
+	 
+	 <p>The alogrithm uses different units for delta latitude and delta longitude.
+	 The delta latitude is assumed to be in units of seconds of arc x 10^-5.
+	 The delta longitude is the usual radians. Look out for these conversions.</p>
+	 
+	 <p>The algorithm is described using complex arithmetic. There were three
+	 options:<br />
+	 * find and use a Javascript library for complex arithmetic<br />
+	 * write my own complex library<br />
+	 * expand the complex arithmetic by hand to simple arithmetic</p>
+	 
+	 <p>This implementation has expanded the complex multiplication operations
+	 into parallel simple arithmetic operations for the real and imaginary parts.
+	 The imaginary part is way over to the right of the display; this probably
+	 violates every coding standard in the world, but, to me, it makes it much
+	 more obvious what is going on.</p>
+	 
+	 <p>The following complex operations are used:<br />
+	 - addition<br />
+	 - multiplication<br />
+	 - division<br />
+	 - complex number raised to integer power<br />
+	 - summation</p>
+	 
+	 <p>A summary of complex arithmetic operations:<br />
+	 (from http://en.wikipedia.org/wiki/Complex_arithmetic)<br />
+	 addition:       (a + bi) + (c + di) = (a + c) + (b + d)i<br />
+	 subtraction:    (a + bi) - (c + di) = (a - c) + (b - d)i<br />
+	 multiplication: (a + bi) x (c + di) = (ac - bd) + (bc + ad)i<br />
+	 division:       (a + bi) / (c + di) = [(ac + bd)/(cc + dd)] + [(bc - ad)/(cc + dd)]i</p>
+	 
+	 <p>The algorithm needs to calculate summations of simple and complex numbers. This is
+	 implemented using a for-loop, pre-loading the summed value to zero.</p>
+	 
+	 <p>The algorithm needs to calculate theta^2, theta^3, etc while doing a summation.
+	 There are three possible implementations:
+	 - use Math.pow in the summation loop - except for complex numbers
+	 - precalculate the values before running the loop
+	 - calculate theta^n = theta^(n-1) * theta during the loop
+	 This implementation uses the third option for both real and complex arithmetic.</p>
+	 
+	 <p>TEST VECTORS</p>
+	 
+	 <p>NZMG E, N:         2487100.638      6751049.719     metres<br />
+	 NZGD49 long, lat:      172.739194       -34.444066  degrees<br />
+	 <br />
+	 NZMG E, N:         2486533.395      6077263.661     metres<br />
+	 NZGD49 long, lat:      172.723106       -40.512409  degrees<br />
+	 <br />
+	 NZMG E, N:         2216746.425      5388508.765     metres<br />
+	 NZGD49 long, lat:      169.172062       -46.651295  degrees</p>
+	 
+	 <p>Note that these test vectors convert from NZMG metres to lat/long referenced
+	 to NZGD49, not the more usual WGS84. The difference is about 70m N/S and about
+	 10m E/W.</p>
+	 
+	 <p>These test vectors are provided in reference [1]. Many more test
+	 vectors are available in
+	 http://www.linz.govt.nz/docs/topography/topographicdata/placenamesdatabase/nznamesmar08.zip
+	 which is a catalog of names on the 260-series maps.</p>
+	 
+	 <p>EPSG CODES</p>
+	 <br />
+	 NZMG     EPSG:27200<br />
+	 NZGD49   EPSG:4272<br />
+	 <br />
+	 http://spatialreference.org/ defines these as<br />
+	 Proj4js.defs["EPSG:4272"] = "+proj=longlat +ellps=intl +datum=nzgd49 +no_defs ";<br />
+	 Proj4js.defs["EPSG:27200"] = "+proj=nzmg +lat_0=-41 +lon_0=173 +x_0=2510000 +y_0=6023150 +ellps=intl +datum=nzgd49 +units=m +no_defs ";
+	 
+	 <p>LICENSE<br />
+	 Copyright: Stephen Irons 2008
+	 Released under terms of the LGPL as per: http://www.gnu.org/copyleft/lesser.html</p>
+	 
+	 **/
 	public class ProjNzmg extends AbstractProjProjection {
 		private var A:Array=[];
 		private var B_re:Array=[];

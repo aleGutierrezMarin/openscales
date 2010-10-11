@@ -1,34 +1,27 @@
 package org.openscales.proj4as.proj {
 
-/*******************************************************************************
-   NAME                            MOLLWEIDE
-
-   PURPOSE:	Transforms input longitude and latitude to Easting and
-   Northing for the MOllweide projection.  The
-   longitude and latitude must be in radians.  The Easting
-   and Northing values will be returned in meters.
-
-   PROGRAMMER              DATE
-   ----------              ----
-   D. Steinwand, EROS      May, 1991;  Updated Sept, 1992; Updated Feb, 1993
-   S. Nelson, EDC		Jun, 2993;	Made corrections in precision and
-   number of iterations.
-
-   ALGORITHM REFERENCES
-
-   1.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
-   U.S. Geological Survey Professional Paper 1453 , United State Government
-   Printing Office, Washington D.C., 1989.
-
-   2.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
-   Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
-   State Government Printing Office, Washington D.C., 1987.
- *******************************************************************************/
- 
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
 
+	/**
+	 <p>MOLLWEIDE projection</p>
+	 
+	 <p>PURPOSE:	Transforms input longitude and latitude to Easting and
+	 Northing for the MOllweide projection.  The
+	 longitude and latitude must be in radians.  The Easting
+	 and Northing values will be returned in meters.</p>
+	  
+	 <p>ALGORITHM REFERENCES</p>
+	 
+	 <p>1.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+	 U.S. Geological Survey Professional Paper 1453 , United State Government
+	 Printing Office, Washington D.C., 1989.</p>
+	 
+	 <p>2.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+	 Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+	 State Government Printing Office, Washington D.C., 1987.</p>
+	 **/
 	public class ProjMoll extends AbstractProjProjection {
 		public function ProjMoll(data:ProjParams) {
 			super(data);

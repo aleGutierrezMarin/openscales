@@ -1,6 +1,11 @@
 package org.openscales.proj4as {
 	
-
+	/**
+	 * A datum is a set of reference points on the Earth's surface against which position measurements 
+	 * are made, and (often) an associated model of the shape of the earth (reference ellipsoid) to 
+	 * define a geographic coordinate system.
+	 * 
+	 */
 	public class Datum {
 		public var datum_type:int;
 		public var a:Number;

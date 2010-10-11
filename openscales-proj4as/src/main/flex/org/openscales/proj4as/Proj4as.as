@@ -1,6 +1,9 @@
 package org.openscales.proj4as {
 	
-
+	/**
+	 * Proj4as main class, provide static methods to reproject points according to a specified 
+	 * projection.
+	 */
 	public class Proj4as {
 
 		static public const defaultDatum:String = 'WGS84';
@@ -10,6 +13,16 @@ package org.openscales.proj4as {
 		public function Proj4as() {
 		}
 
+		/**
+		 * Reproject a point according to specified source and destination projections
+		 * TODO : modify Proj4as in order to use return value OR inplace output parameter for reprojected point value 
+		 * 
+		 * @param source projection of the point passed as parameter
+		 * @param dest destination projection to use for the transformation
+		 * @param point point to reproject. Please notice that in current implementation, reprojected point is both
+		 *        modified directly in the point parameter and provided as returned value
+		 * @return the reprojected point
+		 */
 		public static function transform(source:ProjProjection, dest:ProjProjection, point:ProjPoint):ProjPoint {
 			if (source == null || dest == null || point == null) {
 				trace("Parameters not created!");
@@ -26,8 +39,7 @@ package org.openscales.proj4as {
              * source.datum==dest.datum !! no transfo
              * if (source.datum == dest.datum)
 			 *  return point; // no need to transform
-             */
-			 
+             */			 
 			 
 			// Workaround for Spherical Mercator
 			if ((source.srsProjNumber == "900913" && dest.datumCode != "WGS84") || (dest.srsProjNumber == "900913" && source.datumCode != "WGS84")) {
@@ -141,6 +153,11 @@ package org.openscales.proj4as {
 			return point;
 		}
 
+		/**
+		 * Unit transformation according to source and destination projection. Implementation has been
+		 * done pragmatically, so it basicaly works in OpenScales core use cases, but there may be some
+		 * remaining issues. 
+		 */
 		public static function unit_transform(source:ProjProjection, dest:ProjProjection, value:Number):Number {
 			if (source == null || dest == null || isNaN(value)) {
 				trace("Parameters not created!");
