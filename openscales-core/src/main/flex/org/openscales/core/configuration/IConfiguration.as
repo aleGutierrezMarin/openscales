@@ -43,6 +43,11 @@ package org.openscales.core.configuration
 		function get layersFromCatalog():Vector.<Layer>;
 		
 		/**
+		 * Return layers configured in the node passed in parameter
+		 */	
+		function parseLayer(value:XML):Layer;
+		
+		/**
 		 * @return The child items of <Catalog> </Catalog> elements 
 		 */	
 		function get catalog():XMLList;
