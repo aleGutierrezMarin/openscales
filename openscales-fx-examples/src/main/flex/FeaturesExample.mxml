@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--- <p>This is an example of each type of geometry: point (red), multipoint (orange), line (green), multiline (red), polygon (blue), multipolygon (violet).</p>
+<p>The additional black geometries are used to test the 'containsPoint' and 'intersects' functions of each geometry.</p>
+<p>In 'select mode', select one geometry by a click or several geometries by drawing a selectBox (keep the mouse button down).
+Use CTRL+click and CTRL+selectBox to add features to the selection.
+Use SHIFT+click and SHIFT+selectBox to remove features from the selection.
+The big black rectangle is registered as an unselectable feature.</p>-->
 <s:Group xmlns="http://openscales.org" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 width="100%" height="100%" creationComplete="initMap();" xmlns:mx="library://ns.adobe.com/flex/mx">
 	

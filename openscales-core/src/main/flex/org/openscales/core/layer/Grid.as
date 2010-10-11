@@ -46,9 +46,6 @@ package org.openscales.core.layer
 		private var _tileWidth:Number = DEFAULT_TILE_WIDTH;
 		
 		private var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
-		
-		private var _tileTweenEnabled:Boolean = false;
-
 
 		/**
 		 * Create a new grid layer

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--- <p>Specify a WFS a server, then click on the 'Go!' button to display all the WFS layers available.
+Select a layer name to have its description.</p>
+<p>Double-click to add the layer to the map ; for instance topp:states draws the United States (be patient, this will take few seconds).
+You can modify the style of the layer you add.
+The layers manager is automatically updated.</p> -->
 <s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
 		 creationComplete="initMap()" width="100%" height="100%">
 	
