@@ -8,6 +8,9 @@ package org.openscales.fx.layer
 	
 	import spark.components.Group;
 	
+	/**
+	 * Abstract Layer Flex wrapper
+	 */
 	public class FxLayer extends Group
 	{
 		protected var _layer:Layer;

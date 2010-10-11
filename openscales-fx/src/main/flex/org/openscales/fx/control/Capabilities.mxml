@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				 xmlns:control="org.openscales.fx.control.*" 
-				 xmlns:s="library://ns.adobe.com/flex/spark" >
+<!--- Perform and display a GetCapabilities request to an OGC server, and allow to add
+     returned layer to the map -->
+<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" >
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import spark.components.Label;
+			
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.LayerEvent;
-			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.capabilities.GetCapabilities;
 			import org.openscales.core.layer.ogc.WFS;
-			import org.openscales.core.layer.params.ogc.WFSParams;
 			import org.openscales.core.style.Style;
 			import org.openscales.core.style.fill.SolidFill;
 			import org.openscales.core.style.marker.WellKnownMarker;
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
 			import org.openscales.proj4as.ProjProjection;
+			
+			import spark.components.Label;
 			
 			/**
 			 * Array used as data provider for the list.
@@ -163,4 +164,4 @@
 				 text="Information about the selected layer:"/>
 	</s:VGroup>
 	
-</control:Control>
+</Control>

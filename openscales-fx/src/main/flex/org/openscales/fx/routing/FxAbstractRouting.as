@@ -7,6 +7,9 @@ package org.openscales.fx.routing
 	import org.openscales.core.routing.AbstractRouting;
 	import org.openscales.core.routing.IRouting;
 	
+	/**
+	 * Abstract routing Flex wrapper
+	 */
 	public class FxAbstractRouting extends UIComponent
 	{
 		protected var _routingHandler:IRouting;

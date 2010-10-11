@@ -3,6 +3,10 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
 	
+	/**
+	 * FeatureLayer Flex wrapper
+	 * To use it, declare a &lt;FeatureLayer /&gt; MXML component using xmlns="http://openscales.org"
+	 */
 	public class FxFeatureLayer extends FxLayer
 	{
 		public function FxFeatureLayer() {

@@ -4,6 +4,10 @@ package org.openscales.fx.control
 	
 	import org.openscales.core.control.MousePosition;
 
+	/**
+	 * <p>MousePosition Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;MousePosition /&gt; MXML component using xmlns="http://openscales.org"</p>
+	 */
 	public class FxMousePosition extends FxControl
 	{
 		public function FxMousePosition()

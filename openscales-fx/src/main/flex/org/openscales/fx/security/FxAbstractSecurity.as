@@ -4,8 +4,9 @@ package org.openscales.fx.security
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.security.ISecurity;
+	
 	/**
-	 * Flex Base abstract class for all securities
+	 * Abstract Security Flex wrapper
 	 */
 	public class FxAbstractSecurity extends UIComponent
 	{

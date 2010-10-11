@@ -13,6 +13,10 @@ package org.openscales.fx.control
 	import spark.components.Group;
 	import spark.core.SpriteVisualElement;
 	
+	/**
+	 * OverviewMap Flex wrapper
+	 * To use it, declare a &lt;OverviewMap /&gt; MXML component using xmlns="http://openscales.org"
+	 */
 	public class FxOverviewMap extends Group
 	{
 		private var overviewmap:OverviewMap;

@@ -4,9 +4,12 @@ package org.openscales.fx.control
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.control.ScaleLine;
 	
+	/**
+	 * ScaleLine Flex wrapper
+	 * To use it, declare a &lt;ScaleLine /&gt; MXML component using xmlns="http://openscales.org"
+	 */
 	public class FxScaleLine extends FxControl
 	{
-		
 		public function FxScaleLine()
 		{
 			super();

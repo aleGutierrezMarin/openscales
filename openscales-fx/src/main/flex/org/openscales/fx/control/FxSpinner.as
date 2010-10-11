@@ -1,10 +1,14 @@
 package org.openscales.fx.control
 {
-	import org.openscales.fx.control.spinner.Spinner;
+	import org.openscales.core.control.Spinner;
 	import org.openscales.core.Map;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.MapEvent;
 	
+	/**
+	 * Spinner Flex wrapper
+	 * To use it, declare a &lt;Spinner /&gt; MXML component using xmlns="http://openscales.org"
+	 */
 	public class FxSpinner extends FxControl
 	{
 		private var slices:int = 12;

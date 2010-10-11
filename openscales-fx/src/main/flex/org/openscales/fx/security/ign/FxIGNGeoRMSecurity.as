@@ -5,8 +5,9 @@ package org.openscales.fx.security.ign
 	import org.openscales.fx.security.FxAbstractSecurity;
 	
 	/**
-	 * This class is a Flex wrapper for IGN GeoRM Security
-	 * */
+	 * <p>IGNGeoRMSecurity Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;IGNGeoRMSecurity /&gt; MXML component using xmlns="http://openscales.org"</p>
+	 */
 	public class FxIGNGeoRMSecurity extends FxAbstractSecurity
 	{
 		private var _key:String;

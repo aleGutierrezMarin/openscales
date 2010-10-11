@@ -3,7 +3,10 @@ package org.openscales.fx.handler.mouse
 	import org.openscales.core.handler.mouse.WMSGetFeatureInfo;
 	import org.openscales.fx.handler.FxHandler;
 	
-
+	/**
+	 * <p>WMSGetFeatureInfo Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;WMSGetFeatureInfo /&gt; MXML component using xmlns="http://openscales.org"</p>
+	 */
 	public class FxWMSGetFeatureInfo extends FxHandler
 	{
 	

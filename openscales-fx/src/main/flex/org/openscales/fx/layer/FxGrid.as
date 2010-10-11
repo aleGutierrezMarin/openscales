@@ -2,6 +2,9 @@ package org.openscales.fx.layer
 {
 	import org.openscales.core.layer.Grid;
 
+	/**
+	 * Abstract Grid Flex wrapper
+	 */
 	public class FxGrid extends FxHTTPRequest
 	{
 		public function FxGrid()

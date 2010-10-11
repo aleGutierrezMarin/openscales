@@ -5,7 +5,11 @@ package org.openscales.fx.handler.feature
 	import org.openscales.core.Map;
 	import org.openscales.core.handler.feature.DragFeatureHandler;
 	import org.openscales.fx.handler.FxHandler;
-
+	
+	/**
+	 * <p>DragFeatureHandler Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;DragFeatureHandler /&gt; MXML component using xmlns="http://openscales.org"</p>
+	 */
 	public class FxDragFeatureHandler extends FxHandler
 	{
 		

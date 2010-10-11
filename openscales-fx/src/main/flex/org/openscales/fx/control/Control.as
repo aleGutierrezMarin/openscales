@@ -10,10 +10,14 @@ package org.openscales.fx.control
 	import org.openscales.core.control.IControl;
 	import org.openscales.fx.FxMap;
 	
+	/**
+	 * Base class for all Flex based OpenScales control
+	 * Provide a Flex compatible implementation of IControl interface
+	 */
 	public class Control extends Group implements IControl
 	{
 		protected var _map:Map = null;
-		protected var _fxmap:FxMap = null;
+		protected var _fxMap:FxMap = null;
 		protected var _active:Boolean = false;
 		
 		/**
@@ -24,9 +28,7 @@ package org.openscales.fx.control
 		public function Control()
 		{
 			super();
-			/* this.addEventListener(Event.COMPLETE, onCreationComplete); */
 			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete); 
-			
 		}
 		
 		/**
@@ -40,22 +42,22 @@ package org.openscales.fx.control
 			}
 		}    
 		
-		public function get fxmap():FxMap
+		public function get fxMap():FxMap
 		{
-			return this._fxmap;
+			return this._fxMap;
 		}
 		
-		public function set fxmap(value:FxMap):void
+		public function set fxMap(value:FxMap):void
 		{
-			this._fxmap = value;
-			this.fxmap.addEventListener(FlexEvent.CREATION_COMPLETE, onFxMapCreationComplete);
+			this._fxMap = value;
+			this.fxMap.addEventListener(FlexEvent.CREATION_COMPLETE, onFxMapCreationComplete);
 		}
 		
 		/**
 		 * Flex Map wrapper initialization
 		 */
 		protected function onFxMapCreationComplete(event:Event):void {
-			this.map = this._fxmap.map;
+			this.map = this._fxMap.map;
 		}
 		
 		[Bindable(event="propertyChange")]
@@ -86,7 +88,7 @@ package org.openscales.fx.control
 		
 		public function destroy():void {
 			this._map = null;
-			this._fxmap = null;
+			this._fxMap = null;
 		}
 		public function set position(px:Pixel):void
 		{

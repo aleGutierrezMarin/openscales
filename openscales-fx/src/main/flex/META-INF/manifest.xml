@@ -49,13 +49,13 @@
 	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
 	
 	<component id="SampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
-	<component id="SampleRoutingComponent" class="org.openscales.fx.control.routing.SampleRoutingComponent"/>
+	<component id="SampleRoutingControl" class="org.openscales.fx.control.routing.SampleRoutingControl"/>
 	
 	<component id="ControlPanel" class="org.openscales.fx.ControlPanel"/>
 	
 	<component id="IGNGeoRMSecurity" class="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
-	
-	<component id="StyleEditor" class="org.openscales.fx.control.style.StyleEditor"/>
-	<component id="StyleEditionWindow" class="org.openscales.fx.control.style.StyleEditionWindow"/>	
+		
+	<component id="Control" class="org.openscales.fx.control.Control" />
+	<component id="IconButton" class="org.openscales.fx.control.IconButton" />
 	
 </componentPackage>

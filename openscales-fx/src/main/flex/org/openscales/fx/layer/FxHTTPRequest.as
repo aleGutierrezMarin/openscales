@@ -3,6 +3,9 @@ package org.openscales.fx.layer
 	import org.openscales.core.Util;
 	import org.openscales.core.layer.HTTPRequest;
 
+	/**
+	 * Abstract HTTPRequest Flex wrapper
+	 */
 	public class FxHTTPRequest extends FxLayer
 	{
 		public function FxHTTPRequest()

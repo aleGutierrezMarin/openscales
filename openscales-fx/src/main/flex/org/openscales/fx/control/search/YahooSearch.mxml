@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<control:Control xmlns:s="library://ns.adobe.com/flex/spark"
-				 xmlns:fx="http://ns.adobe.com/mxml/2009"
-				 xmlns:mx="library://ns.adobe.com/flex/mx"
-				 xmlns:control="org.openscales.fx.control.*"
-				 minWidth="300"
-				 minHeight="100"
-				 creationComplete="queryInput.setFocus()" >
+<!--- Control used to request Yahoo search web API -->
+<Control xmlns="http://openscales.org"  xmlns:s="library://ns.adobe.com/flex/spark"
+				 xmlns:fx="http://ns.adobe.com/mxml/2009"  xmlns:mx="library://ns.adobe.com/flex/mx"
+				 minWidth="300" minHeight="100" creationComplete="queryInput.setFocus()" >
 	<fx:Declarations> 
 		<s:HTTPService id="service" url="{SERVICE_URL}"
 					   result="onServiceResult(event)"
@@ -108,4 +105,4 @@
 		</mx:DataGrid> 
 	</s:VGroup>
 	
-</control:Control>
+</Control>
