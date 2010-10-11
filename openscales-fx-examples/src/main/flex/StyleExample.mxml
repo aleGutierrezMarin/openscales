@@ -24,9 +24,7 @@ Use the top-right button to switch the style of the rendering. -->
 				projection="EPSG:2154" version="1.0.0" style="{this.createBitmapStyle()}"/>
 
 		<SelectFeaturesHandler id="selectFeatureHandler" active="true"/>
-		
-		<TraceInfo x="{width-200}" y="0" />
-		
+				
 		<PanZoom id="panZoom" x="10" y="10" />
 		
 		<s:Panel title="Legend" id="legends" bottom="0" >
