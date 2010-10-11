@@ -31,9 +31,13 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import assets.images.Popup;
+			
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
+			
+			import spark.core.SpriteVisualElement;
 			
 			private var popup:Anchored
 			
@@ -56,7 +60,11 @@
 						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
 				}
 				popup.htmlText = content;
+				var popupContainer:SpriteVisualElement = new SpriteVisualElement();
+				popupContainer.addChild(popup);
+				popup.addChild(new Popup());
 				fxMap.map.addPopup(popup, true);
+
 			}
 			
 		]]>
