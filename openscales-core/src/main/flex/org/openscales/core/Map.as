@@ -1,6 +1,8 @@
 package org.openscales.core
 {
 	
+	import assets.fxg.Popup;
+	
 	import com.gskinner.motion.GTween;
 	import com.gskinner.motion.easing.Cubic;
 	
@@ -25,6 +27,8 @@ package org.openscales.core
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.security.ISecurity;
+	
+	import spark.core.SpriteVisualElement;
 	
 	/**
 	 * Instances of Map are interactive maps that can be embedded in a web pages or in
@@ -407,18 +411,18 @@ package org.openscales.core
 		 * @param {OpenLayers.Popup} popup
 		 * @param {Boolean} exclusive If true, closes all other popups first
 		 **/
-		public function addPopup(popup:Popup, exclusive:Boolean = true):void {
+		public function addPopup(popup:org.openscales.core.popup.Popup, exclusive:Boolean = true):void {
 			var i:Number;
 			if(exclusive){
 				var child:DisplayObject;
 				for(i=this._layerContainer.numChildren-1;i>=0;i--){
 					child = this._layerContainer.getChildAt(i);
-					if(child is Popup){
+					if(child is org.openscales.core.popup.Popup){
 						if(child != popup) {
 							Trace.warn("Map.addPopup: popup already displayed so escape");
 							return;
 						}
-						this.removePopup(child as Popup);
+						this.removePopup(child as org.openscales.core.popup.Popup);
 					}
 				}
 			}
@@ -426,10 +430,13 @@ package org.openscales.core
 				popup.map = this;
 				popup.draw();
 				this._layerContainer.addChild(popup);
+				var popupContainer:SpriteVisualElement = new SpriteVisualElement();
+				popupContainer.addChild(popup);
+				popup.addChild(new assets.fxg.Popup());
 			}
 		}
 		
-		public function removePopup(popup:Popup):void {
+		public function removePopup(popup:org.openscales.core.popup.Popup):void {
 			if(this._layerContainer.contains(popup))
 				this._layerContainer.removeChild(popup);
 		}

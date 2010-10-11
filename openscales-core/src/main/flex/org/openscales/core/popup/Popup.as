@@ -1,5 +1,7 @@
 package org.openscales.core.popup
 {	
+	import assets.fxg.Popup;
+	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -12,12 +14,14 @@ package org.openscales.core.popup
 	import org.openscales.core.control.ui.Button;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
+	
+	import spark.core.SpriteVisualElement;
 
 	/**
 	 * Class to create a Popup.
 	 * Extends Sprite.
 	 */
-	public class Popup extends Sprite
+	public class Popup extends SpriteVisualElement
 	{
 
 		public static var WIDTH:Number = 300;
@@ -39,7 +43,8 @@ package org.openscales.core.popup
 		private var _closeImg:Class;
 
 		public function Popup(lonlat:Location = null, background:uint = 0, border:Number = NaN, size:Size = null, htmlText:String = "", closeBox:Boolean = true) {
-
+			
+			
 			this.lonlat = lonlat;
 			this.htmlText = htmlText;
 			this.closeBox = closeBox;
@@ -96,19 +101,25 @@ package org.openscales.core.popup
 			}
 
 			this.position = px;
-
+/*
 			this.graphics.clear();
 			while (this.numChildren>0) {
 				this.removeChildAt(0);
-			}
+			}*/
+/*
 			this.graphics.beginFill(this.background);
 			this.graphics.lineStyle(this.border, 0x707070, 1, true);
 			this.graphics.drawRoundRect(0,0,this.size.w, this.size.h, 20, 20);
 			this.width = this.size.w;
 			this.height = this.size.h;
 			this.graphics.endFill();
+*/
+			
+			var popupContainer:SpriteVisualElement = new SpriteVisualElement();
+			popupContainer.addChild(this);
+			this.addChild(new Popup());
 			this.createPopupContent();
-
+			
 			if (this.closeBox == true) {
 
 				var img:Bitmap = new this._closeImg();
