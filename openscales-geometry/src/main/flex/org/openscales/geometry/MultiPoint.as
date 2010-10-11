@@ -7,6 +7,9 @@ package org.openscales.geometry
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjProjection;
 	
+	/**
+	 * A MultiPoint is a geometry with multiple Point components
+	 */
 	public class MultiPoint extends Geometry implements ICollection
 	{
 		/**
