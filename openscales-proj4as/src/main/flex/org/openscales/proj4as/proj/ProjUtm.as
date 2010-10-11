@@ -1,27 +1,26 @@
 package org.openscales.proj4as.proj {
 
-/*******************************************************************************
-   NAME                            TRANSVERSE MERCATOR
-
-   PURPOSE:	Transforms input longitude and latitude to Easting and
-   Northing for the Transverse Mercator projection.  The
-   longitude and latitude must be in radians.  The Easting
-   and Northing values will be returned in meters.
-
-   ALGORITHM REFERENCES
-
-   1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
-   Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
-   State Government Printing Office, Washington D.C., 1987.
-
-   2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
-   U.S. Geological Survey Professional Paper 1453 , United State Government
-   Printing Office, Washington D.C., 1989.
- *******************************************************************************/
- 
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
 
+	/**
+	 <p>TRANSVERSE MERCATOR projection</p>
+	 
+	 <p>PURPOSE:	Transforms input longitude and latitude to Easting and
+	 Northing for the Transverse Mercator projection.  The
+	 longitude and latitude must be in radians.  The Easting
+	 and Northing values will be returned in meters.</p>
+	 
+	 <p>ALGORITHM REFERENCES</p>
+	 
+	 <p>1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+	 Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+	 State Government Printing Office, Washington D.C., 1987.</p>
+	 
+	 <p>2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+	 U.S. Geological Survey Professional Paper 1453 , United State Government
+	 Printing Office, Washington D.C., 1989.</p>
+	 **/
 	public class ProjUtm extends ProjTmerc {
 		public function ProjUtm(data:ProjParams) {
 			super(data);

@@ -1,24 +1,23 @@
 package org.openscales.proj4as.proj {
 
-/*******************************************************************************
-   NAME                       SWISS OBLIQUE MERCATOR
-
-   PURPOSE:	Swiss projection.
-   WARNING:  X and Y are inverted (weird) in the swiss coordinate system. Not
-   here, since we want X to be horizontal and Y vertical.
-
-   ALGORITHM REFERENCES
-   1. "Formules et constantes pour le Calcul pour la
-   projection cylindrique conforme Г  axe oblique et pour la transformation entre
-   des systГЁmes de rГ©fГ©rence".
-   http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/topics/survey/sys/refsys/switzerland.parsysrelated1.31216.downloadList.77004.DownloadFile.tmp/swissprojectionfr.pdf
-
- *******************************************************************************/
- 
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
 
+	/**
+	 <p>SWISS OBLIQUE MERCATOR projection</p>
+	 
+	 <p>PURPOSE:	Swiss projection.
+	 WARNING:  X and Y are inverted (weird) in the swiss coordinate system. Not
+	 here, since we want X to be horizontal and Y vertical.</p>
+	 
+	 <p>ALGORITHM REFERENCES</p>
+	 
+	 <p>1. "Formules et constantes pour le Calcul pour la
+	 projection cylindrique conforme a axe oblique et pour la transformation entre
+	 des systemes de reference".
+	 http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/topics/survey/sys/refsys/switzerland.parsysrelated1.31216.downloadList.77004.DownloadFile.tmp/swissprojectionfr.pdf</p>
+	 **/
 	public class ProjSoMerc extends AbstractProjProjection {
 		private var lambda0:Number;
 		private var R:Number;

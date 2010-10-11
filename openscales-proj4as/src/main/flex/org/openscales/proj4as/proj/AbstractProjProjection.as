@@ -2,6 +2,9 @@ package org.openscales.proj4as.proj {
 
 	import org.openscales.proj4as.ProjPoint;
 
+	/**
+	 * Abtract projection that define most of variables used by projection implementations
+	 */
 	public class AbstractProjProjection extends ProjParams implements IProjection {
 		protected var sinphi:Number;
 		protected var cosphi:Number;

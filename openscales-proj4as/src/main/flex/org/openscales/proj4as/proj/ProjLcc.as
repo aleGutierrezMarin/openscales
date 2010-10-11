@@ -1,30 +1,26 @@
-/*******************************************************************************
-   NAME                            LAMBERT CONFORMAL CONIC
-
-   PURPOSE:	Transforms input longitude and latitude to Easting and
-   Northing for the Lambert Conformal Conic projection.  The
-   longitude and latitude must be in radians.  The Easting
-   and Northing values will be returned in meters.
-
-
-   ALGORITHM REFERENCES
-
-   1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
-   Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
-   State Government Printing Office, Washington D.C., 1987.
-
-   2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
-   U.S. Geological Survey Professional Paper 1453 , United State Government
- *******************************************************************************/
-
-
-//<2104> +proj=lcc +lat_1=10.16666666666667 +lat_0=10.16666666666667 +lon_0=-71.60561777777777 +k_0=1 +x0=-17044 +x0=-23139.97 +ellps=intl +units=m +no_defs  no_defs
-
 package org.openscales.proj4as.proj {
+	
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
 
+	/**
+	 <p>LAMBERT CONFORMAL CONIC projection</p>
+	 
+	 <p>PURPOSE:	Transforms input longitude and latitude to Easting and
+	 Northing for the Lambert Conformal Conic projection.  The
+	 longitude and latitude must be in radians.  The Easting
+	 and Northing values will be returned in meters.</p>
+	 
+	 <p>ALGORITHM REFERENCES</p>
+	 
+	 <p>1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+	 Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+	 State Government Printing Office, Washington D.C., 1987.</p>
+	 
+	 <p>2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+	 U.S. Geological Survey Professional Paper 1453 , United State Government</p>
+	 **/
 	public class ProjLcc extends AbstractProjProjection {
 		private var f0:Number;
 

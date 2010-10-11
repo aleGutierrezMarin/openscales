@@ -13,6 +13,7 @@ package org.openscales.proj4as.proj {
 		 * counterparts.
 		 */
 		public var projName:String;
+		
 		/**
 		 * Property: units
 		 * The units of the projection.  Values include 'm' and 'degrees'
@@ -20,12 +21,15 @@ package org.openscales.proj4as.proj {
 		 * Property: units
 		 * The units of the projection.  Values include 'm' and 'degrees'
 		 */
+		
 		public var units:String;
+		
 		/**
 		 * Property: datum
 		 * The datum specified for the projection
 		 */
 		public var datum:Datum;
+		
 		public var datumCode:String;
 		public var datumName:String;
 		public var nagrids:String;
