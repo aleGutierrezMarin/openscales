@@ -1,5 +1,7 @@
 package org.openscales.core.tile
 {
+	import com.gskinner.motion.GTween;
+	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
@@ -9,14 +11,14 @@ package org.openscales.core.tile
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.DataRequest;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 
 	/**
 	 * Image tile are used for example in WMS-C layers to display an image
@@ -56,7 +58,6 @@ package org.openscales.core.tile
 		 * @return Always returns true.
 		 */
 		override public function draw():Boolean {
-			//this.clear();
 
 			if (this.layer != this.layer.map.baseLayer) {
 				if(_drawPosition != null) {
@@ -65,9 +66,7 @@ package org.openscales.core.tile
 					this.bounds = this.getBoundsFromBaseLayer(position);
 				}
 			}
-			//if (! super.draw()) {
-			//	return false;    
-			//}
+
 			if(! withinMapBounds()) {
 				return false;    
 			}
@@ -131,6 +130,8 @@ package org.openscales.core.tile
 				if (! this.layer.contains(this)) {
 					this.layer.addChild(this);
 				}
+				if(this.layer.tweenOnLoad)
+					var tw:GTween = new GTween(this, 0.3, {alpha:1});
 
 				this.drawn = true;
 				this.loading = false;
@@ -160,6 +161,9 @@ package org.openscales.core.tile
 		 */
 		override public function clear():void {
 			super.clear();
+			
+			if(this.layer.tweenOnLoad)
+				this.alpha = 0;
 
 			if(this._request) {
 				_request.destroy();

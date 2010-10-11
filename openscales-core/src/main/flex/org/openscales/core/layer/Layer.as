@@ -49,6 +49,7 @@ package org.openscales.core.layer {
 		private var _autoResolution:Boolean = true;
 		protected var _imageSize:Size = null;
 		private var _tweenOnZoom:Boolean = true;
+		private var _tweenOnLoad:Boolean = true;
 
 		/**
 		 * Layer constructor
@@ -530,6 +531,21 @@ package org.openscales.core.layer {
 		{
 			_tweenOnZoom = value;
 		}
+
+		/**
+		 * Define if a tween effect should be used when loading a new data.
+		 * Currently, only implemented for image tile, but may be used widely in the future
+		 */
+		public function get tweenOnLoad():Boolean
+		{
+			return _tweenOnLoad;
+		}
+
+		public function set tweenOnLoad(value:Boolean):void
+		{
+			_tweenOnLoad = value;
+		}
+
 
 	}
 }

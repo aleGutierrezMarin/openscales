@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--- <p>The map displayed is OpenStreetMap Mapnik (EPSG:900913) and the center is defined in geographic coordinates (WGS84=EPSG:4326).</p>
+<p>Move the map using drag&amp;drop or with the N/S/E/W buttons.
+Zoom in/out using the mouse wheel, the scale slider, the +/- buttons above and below the slider or the zoom-box button (the coordinates displayed by the cursor are in pixels).
+The coordinates of the mouse cursor are displayed in geographic coordinates at the bottom-left corner.</p> -->
 <s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
 		 creationComplete="initMap()" width="100%" height="100%">
 	

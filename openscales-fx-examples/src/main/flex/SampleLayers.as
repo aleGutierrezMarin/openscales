@@ -24,6 +24,10 @@ package {
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.ProjProjection;
 	
+	/**
+	 * Create sample layers. Externalized in a class in order to be reused in unit tests for
+	 * example.
+	 */
 	public class SampleLayers
 	{
 		/**
