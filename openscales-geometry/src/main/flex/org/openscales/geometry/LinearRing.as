@@ -1,8 +1,8 @@
 package org.openscales.geometry
 {
 
-	import org.openscales.UtilGeometry;
-	import org.openscales.basetypes.Location;
+	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.geometry.basetypes.Location;
 		
 	/**
 	 * A Linear Ring is a special LineString which is closed. 

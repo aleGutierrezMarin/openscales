@@ -17,7 +17,7 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import org.openscales.basetypes.Location;
+			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.proj4as.ProjProjection;

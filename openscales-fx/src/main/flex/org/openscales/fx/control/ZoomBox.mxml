@@ -8,8 +8,8 @@
 		<![CDATA[
 			import mx.managers.CursorManager;
 			
-			import org.openscales.basetypes.Bounds;
-			import org.openscales.basetypes.Pixel;
+			import org.openscales.geometry.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.core.Map;
 			import org.openscales.core.cursor.CrosshairCursor;
 			import org.openscales.core.events.DrawingEvent;

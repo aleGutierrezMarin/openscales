@@ -2,7 +2,7 @@ package org.openscales.fx.basetypes
 {
 	import mx.core.UIComponent;
 	
-	import org.openscales.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.ProjProjection;
 
 	public class FxBounds extends UIComponent

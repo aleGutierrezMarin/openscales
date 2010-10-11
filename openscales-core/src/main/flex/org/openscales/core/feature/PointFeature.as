@@ -1,8 +1,8 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
 	
-	import org.openscales.basetypes.Location;
-	import org.openscales.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;

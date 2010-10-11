@@ -1,6 +1,6 @@
-package org.openscales.basetypes
+package org.openscales.geometry.basetypes
 {
-	import org.openscales.UtilGeometry;
+	import org.openscales.geometry.utils.UtilGeometry;
 	
 	/**
 	 * The map unit

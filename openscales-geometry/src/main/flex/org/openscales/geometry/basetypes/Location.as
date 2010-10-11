@@ -1,6 +1,5 @@
-package org.openscales.basetypes
+package org.openscales.geometry.basetypes
 {
-	import org.openscales.IProjectable;
 	import org.openscales.geometry.Point;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
@@ -14,7 +13,7 @@ package org.openscales.basetypes
 	 * 
 	 * @author slopez
 	 */
-	public class Location implements IProjectable
+	public class Location
 	{
 		private var _projection:ProjProjection = null;
 		private var _x:Number;

@@ -1,8 +1,8 @@
 package org.openscales.core.routing
 {
 	import org.openscales.core.Map;
-	import org.openscales.basetypes.Location;
-	import org.openscales.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Marker;
 	import org.openscales.core.feature.MultiLineStringFeature;

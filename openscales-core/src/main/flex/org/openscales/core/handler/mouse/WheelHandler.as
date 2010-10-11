@@ -2,7 +2,7 @@ package org.openscales.core.handler.mouse {
 	
 	import flash.events.MouseEvent;
 	
-	import org.openscales.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.Map;
 	import org.openscales.core.handler.Handler;
 	

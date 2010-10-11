@@ -5,7 +5,7 @@ package org.openscales.fx.control
 	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	
-	import org.openscales.basetypes.Size;
+	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.fx.layer.FxLayer;

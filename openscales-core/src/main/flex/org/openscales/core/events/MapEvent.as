@@ -1,6 +1,6 @@
 package org.openscales.core.events{
 
-	import org.openscales.basetypes.Location;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.Map;
 
 	/**

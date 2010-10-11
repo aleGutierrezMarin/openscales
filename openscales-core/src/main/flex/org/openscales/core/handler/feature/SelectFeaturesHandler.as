@@ -3,8 +3,8 @@ package org.openscales.core.handler.feature {
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
-	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.FeatureEvent;

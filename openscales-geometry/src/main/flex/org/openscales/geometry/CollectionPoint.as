@@ -2,7 +2,7 @@ package org.openscales.geometry
 {
 	import flash.utils.getQualifiedClassName;
 	
-	import org.openscales.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjProjection;

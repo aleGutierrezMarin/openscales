@@ -11,9 +11,9 @@ package {
 	import flash.text.TextField;
 	import flash.ui.Multitouch;
 	
-	import org.openscales.basetypes.Bounds;
-	import org.openscales.basetypes.Location;
-	import org.openscales.basetypes.Size;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.feature.PointFeature;
