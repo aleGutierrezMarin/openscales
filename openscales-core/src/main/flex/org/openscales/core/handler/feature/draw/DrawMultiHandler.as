@@ -11,7 +11,6 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-	import org.openscales.geometry.CollectionPoint;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
@@ -112,7 +111,7 @@ package org.openscales.core.handler.feature.draw
 					else if(f.geometry is MultiPoint)
 					{
 						j = (f.geometry as MultiPoint).componentsLength;
-						multiPoint.addPoints((f.geometry as CollectionPoint).getcomponentsClone()); 
+						multiPoint.addPoints((f.geometry as MultiPoint).getcomponentsClone()); 
 						drawType = "MultiPoint";
 						
 						_multiPolygonForbidden = false;

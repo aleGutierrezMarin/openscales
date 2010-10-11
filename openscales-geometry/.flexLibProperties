@@ -4,7 +4,6 @@
     <classEntry path="org.openscales.geometry.utils.StringUtils"/>
     <classEntry path="org.openscales.geometry.utils.UtilGeometry"/>
     <classEntry path="org.openscales.geometry.Collection"/>
-    <classEntry path="org.openscales.geometry.CollectionPoint"/>
     <classEntry path="org.openscales.geometry.ICollection"/>
     <classEntry path="org.openscales.geometry.IGeometry"/>
     <classEntry path="org.openscales.geometry.LineString"/>
