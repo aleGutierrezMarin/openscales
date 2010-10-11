@@ -11,8 +11,8 @@ package org.openscales.fx.control
 	import org.openscales.fx.FxMap;
 	
 	/**
-	 * Base class for all Flex based OpenScales control
-	 * Provide a Flex compatible implementation of IControl interface
+	 * <p>Base class for all Flex based OpenScales control.</p>
+	 * <p>Provide a Flex compatible implementation of IControl interface.</p>
 	 */
 	public class Control extends Group implements IControl
 	{

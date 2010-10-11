@@ -3,8 +3,8 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.HTC;
 	
 	/**
-	 * HTC Flex wrapper
-	 * To use it, declare a &lt;HTC /&gt; MXML component using xmlns="http://openscales.org"
+	 * <p>HTC Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;HTC /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
 	public class FxHTC extends FxTMS
 	{

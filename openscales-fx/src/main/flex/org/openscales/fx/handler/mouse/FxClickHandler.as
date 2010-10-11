@@ -4,8 +4,8 @@ package org.openscales.fx.handler.mouse
 	import org.openscales.fx.handler.FxHandler;
 
 	/**
-	 * ClickHandler Flex wrapper
-	 * To use it, declare a &lt;ClickHandler /&gt; MXML component using xmlns="http://openscales.org"
+	 * <p>ClickHandler Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;ClickHandler /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
 	public class FxClickHandler extends FxHandler
 	{

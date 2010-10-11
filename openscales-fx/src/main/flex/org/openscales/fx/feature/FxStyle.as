@@ -5,8 +5,8 @@ package org.openscales.fx.feature
 	import org.openscales.core.style.Style;
 	
 	/**
-	 * Style Flex wrapper
-	 * To use it, declare a &lt;Style /&gt; MXML component using xmlns="http://openscales.org"
+	 * <p>Style Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;Style /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
 	public class FxStyle extends UIComponent
 	{

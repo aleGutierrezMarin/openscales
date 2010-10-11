@@ -3,8 +3,8 @@ package org.openscales.fx.layer.osm {
 	import org.openscales.fx.layer.FxTMS;
 
 	/**
-	 * Maplint Flex wrapper
-	 * To use it, declare a &lt;Maplint /&gt; MXML component using xmlns="http://openscales.org"
+	 * <p>Maplint Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;Maplint /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
 	public class FxMaplint extends FxTMS {
 		public function FxMaplint() {

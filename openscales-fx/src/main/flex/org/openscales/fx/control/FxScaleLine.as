@@ -5,8 +5,8 @@ package org.openscales.fx.control
 	import org.openscales.core.control.ScaleLine;
 	
 	/**
-	 * ScaleLine Flex wrapper
-	 * To use it, declare a &lt;ScaleLine /&gt; MXML component using xmlns="http://openscales.org"
+	 * <p>ScaleLine Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;ScaleLine /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
 	public class FxScaleLine extends FxControl
 	{
