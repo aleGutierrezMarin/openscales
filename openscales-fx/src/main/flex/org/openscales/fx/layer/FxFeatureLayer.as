@@ -4,8 +4,8 @@ package org.openscales.fx.layer
 	import org.openscales.core.style.Style;
 	
 	/**
-	 * FeatureLayer Flex wrapper
-	 * To use it, declare a &lt;FeatureLayer /&gt; MXML component using xmlns="http://openscales.org"
+	 * <p>FeatureLayer Flex wrapper.</p>
+	 * <p>To use it, declare a &lt;FeatureLayer /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
 	public class FxFeatureLayer extends FxLayer
 	{

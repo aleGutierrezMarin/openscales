@@ -6,8 +6,8 @@ package org.openscales.fx.control
 	import org.openscales.core.events.MapEvent;
 	
 	/**
-	 * Spinner Flex wrapper
-	 * To use it, declare a &lt;Spinner /&gt; MXML component using xmlns="http://openscales.org"
+	 * <p>Spinner Flex wrapper</p>
+	 * <p>To use it, declare a &lt;Spinner /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
 	public class FxSpinner extends FxControl
 	{
