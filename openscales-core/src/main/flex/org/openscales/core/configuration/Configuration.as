@@ -224,7 +224,7 @@ package org.openscales.core.configuration
 			return securitiesNode;
 		}
 		
-		protected function parseLayer(xmlNode:XML):Layer {
+		public function parseLayer(xmlNode:XML):Layer {
 			// The layer which will return
 			var layer:Layer=null;
 			
