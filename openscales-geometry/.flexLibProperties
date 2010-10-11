@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" version="1">
+<flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
     <classEntry path="org.openscales.geometry.utils.StringUtils"/>
     <classEntry path="org.openscales.geometry.utils.UtilGeometry"/>
     <classEntry path="org.openscales.geometry.Collection"/>
     <classEntry path="org.openscales.geometry.ICollection"/>
-    <classEntry path="org.openscales.geometry.IGeometry"/>
     <classEntry path="org.openscales.geometry.LineString"/>
     <classEntry path="org.openscales.geometry.LinearRing"/>
     <classEntry path="org.openscales.geometry.MultiLineString"/>
