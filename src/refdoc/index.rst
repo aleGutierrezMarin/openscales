@@ -12,6 +12,7 @@ Reference documentation
 	:maxdepth: 2
 
 	introduction
+	modules
 	dev
 	configuration
 	design
