@@ -1,8 +1,5 @@
-
-Tutorial 1
-==========
-Configure your first project using OpenScales 1.2
-=================================================
+Tutorial 1 : Configure your first project
+=========================================
 
 Prerequisites
 -------------
