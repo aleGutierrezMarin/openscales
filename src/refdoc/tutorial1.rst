@@ -14,7 +14,7 @@ Configure your environment
 Run your FlashBuilder environment.
 Create a new Flex project.
 
-.. image:: _static/newFlexProject.png
+.. image:: _static/tuto1-newFlexProject.png
 
 Configure the project
 ---------------------
@@ -27,21 +27,19 @@ Select the SDK version (at least Flex 4.0).
 
 Note the path where your project will be stored.
 
-.. image:: _static/nameOfTheProject.png
+.. image:: _static/tuto1-nameOfTheProject.png
 
 Click on the next button.
 
 Change the name of the output folder if needed.
 
-.. image:: _static/newFlexProject2.png
+.. image:: _static/tuto1-newFlexProject2.png
 
 Click on the next button.
 
-.. image:: _static/newFlexProject2.png
-
 Then finish the procedure.
 
-.. image:: _static/finishProcedure.png
+.. image:: _static/tuto1-finishProcedure.png
 
 Get OpenScales librairies
 -------------------------
@@ -54,9 +52,9 @@ Extract files
 Extract only the four files contained in the libs folder, with the .swc extension and put it into the libs folder present in your workspace.
 In your FlashBuilder environment, refresh your project (F5).
 
-.. image:: _static/extractionFile.png
+.. image:: _static/tuto1-extractionFile.png
 
-.. image:: _static/libs_folder.png
+.. image:: _static/tuto1-libs_folder.png
 
 Here you are
 ------------
