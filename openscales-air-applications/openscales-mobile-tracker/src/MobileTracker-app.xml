@@ -13,5 +13,14 @@
 	</initialWindow>
 	
 	<supportedProfiles>desktop extendedDesktop mobileDevice</supportedProfiles>
-	<android><manifestAdditions><manifest><data><![CDATA[<uses-permission android:name="android.permission.INTERNET"/><uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />]]></data></manifest></manifestAdditions></android>
+	<android>
+		<manifestAdditions>
+			<![CDATA[
+				<manifest>
+					<uses-permission android:name="android.permission.INTERNET"/>
+					<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+				</manifest>
+			]]>
+		</manifestAdditions>
+	</android>
 </application>
