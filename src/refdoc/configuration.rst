@@ -3,6 +3,79 @@ Configuration
 
 There is different ways to configure OpenScales for your need ...
 
+OpenScales Viewer
+-----------------
+
+OpenScales Viewer is a simple Flex SWF file provided in order to allow you to configure OpenScales without any need to develop and compile ActionScript or Flex source code. In order to use it, simply use the openscales-viewer.swf and use the configurationUrl flashvar in order to pass as parameter the xml configuration file URL.
+
+We advise you to :
+
+* Use `Swfobject <http://code.google.com/p/swfobject/>`_ library in order to integrate it in your web pages
+* Validate on serverside each generated configuration thanks to http://openscales.org/schema/openscales-configuration-1.2.xsd (there is no Flex based XML schema validator, so it won't be checked on client side.)
+
+Here is a sample HTML integration of Openscale Viewer. We host openscales-viewer-1.2.swf on our server so you can use it directly in you website, and provide only the URL of the configuration file.
+
+.. code-block:: html
+
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	  <head>
+			<title>SWFObject dynamic embed - step 3</title>
+			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+			<script type="text/javascript" src="http://openscales.org/api/1.2/swfobject.js"></script>
+
+			<script type="text/javascript">
+					swfobject.embedSWF("http://openscales.org/api/1.2/openscales-viewer.swf",
+					"mapDiv","600","400", "10.0.0",false,
+					{configurationUrl:"http://openscales.org/api/1.2/sampleConfiguration.xml"});
+			</script>
+
+	  </head>
+	  <body>
+			<div id="mapDiv">
+			  <p>Alternative content</p>
+			</div>
+	  </body>
+	</html>
+	
+`Click here to try this example <./_static/openscales-viewer.html>`_.
+	
+To generate the xml file passed as configurationUrl flash variable, you can :
+
+* Write it manually like any xml file, a sample xml file is provided bellow
+* Generated dynamically thanks to server side technology like PHP, Ruby or JSP.
+
+You can check the following sample xml configuration file to build your own.
+
+.. code-block:: xml
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<Map xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:noNamespaceSchemaLocation="http://openscales.org/schema/openscales-configuration-1.2.xsd"
+		 name="xmlMap" width="600" height="400" maxExtent="-180,-90,180,90" zoom="4"
+		 proxy="http://openscales.org/proxy.php?url=">
+
+		<Layers>
+			<Mapnik name="mapnik" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" />
+			<CycleMap name="cycle" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" alpha="0.5" />
+		</Layers>
+
+		<Handlers>
+			<DragHandler />
+			<WheelHandler />
+		</Handlers>
+
+		<Controls>
+			<LayerManager />
+		</Controls>
+
+		<Custom>
+			<MyCustomElement />
+		</Custom>
+	</Map>
+
+You can use the following XML schema in order to validate in your developement environment or with your prefered server technology (Java, PHP, Python) your xml configuration files : http://openscales.org/schema/openscales-configuration-1.2.xsd
+
 ActionScript API
 ----------------
 
@@ -113,51 +186,3 @@ Don't make confusion between :
 		</Map>
 		
 	</s:Group>
-
-
-XML configuration
------------------
-
-A usual question, especially from Javascript developpers, is how do I customize OpenScales on runtime ? Indeed, unlike Javascript, ActionScript produce compile (SWF) application.
-
-To customize OpenScales at runtime, you can use XML configuration to configure your application. When OpenScales is integrated in a professional application, the XML configuration file is usually generated dynamically thanks to server side technology like PHP, Ruby or JSP.
-
-You can check the following sample xml configuration file to build your own. A XML schema will be provided in 1.2 release. To use this functionality, check Map and Configuraton classes AsDocs.
-
-.. code-block:: xml
-
-	<?xml version="1.0" encoding="UTF-8"?>
-	<Map xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:noNamespaceSchemaLocation="http://openscales.org/schema/openscales-configuration-1.2.xsd"
-		 name="xmlMap" width="600" height="400" maxExtent="-180,-90,180,90" zoom="4"
-		 proxy="http://openscales.org/proxy.php?url=">
-
-		<Layers>
-			<Mapnik name="mapnik" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" />
-			<CycleMap name="cycle" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" alpha="0.5" />
-		</Layers>
-
-		<Handlers>
-			<DragHandler />
-			<WheelHandler />
-		</Handlers>
-
-		<Controls>
-			<LayerManager />
-		</Controls>
-
-		<Custom>
-			<MyCustomElement />
-		</Custom>
-	</Map>
-
-You can use the following XML schema in order to validate in your developement environment or with your prefered server technology (Java, PHP, Python) your xml configuration files : http://openscales.org/schema/openscales-configuration-1.2.xsd
-
-OpenScales Viewer
------------------
-
-OpenScales Viewer is a simple FLex SWF file provided in order to allow you to configure OpenScales without any ActionScript or Flex source file. In order to use it, simply use the openscales-viewer.swf and use the configurationUrl flashvar in order to pass as parameter the xml configuration file URL.
-
-We advise you :
-* To use `Swfobject <http://code.google.com/p/swfobject/>`_ library in order to integrate it in your web pages
-* To validate on serverside each generated configuration thanks to http://openscales.org/schema/openscales-configuration-1.2.xsd (there is no Flex based XML schema validator, so it won't be checked on client side.)

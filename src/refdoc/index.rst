@@ -12,16 +12,16 @@ Reference documentation
 	:maxdepth: 2
 
 	introduction
+	changelog
+	configuration
 	modules
 	dev
-	configuration
-	design
 	tutorials
 	
 API documentation
 =================
 
-In addition to API documentation, don't forget to check `OpenScales Flex examples <../examples/flex/FxExamples.html>`_ with source code included (right click -> View source).
+In addition to API documentation, don't forget to check `OpenScales Flex examples <../demo/index.html>`_ with source code included (right click -> View source).
 
 * `OpenScales Core API <../api/core/index.html>`_
 * `OpenScales Core flash 10.1 support API <../api/core-flash-10.1/index.html>`_
