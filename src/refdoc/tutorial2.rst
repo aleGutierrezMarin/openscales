@@ -121,6 +121,8 @@ The following source code adds a map to your application.
 * x and y determine the position of the map in the application.
 
 .. image:: _static/tuto2-sizesExplanation.png
+	:height: 650 px 
+	:width: 900 px 
 
 Add an Open Street Map (OSM) layer
 ----------------------------------
