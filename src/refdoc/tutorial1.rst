@@ -44,7 +44,7 @@ Then finish the procedure.
 Get OpenScales librairies
 -------------------------
 
-Go to http://openscales.org/downloads/openscales-1.2.zip to download the latest version of OpenScales.
+Go to http://bitbucket.org/gis/openscales/downloads/openscales-1.2.zip to download the latest version of OpenScales.
 
 Extract files
 -------------
@@ -60,5 +60,3 @@ Here you are
 ------------
 
 Right now, you’re able to start developing your OpenScales based application.
-
-Download sources: http://www.openscales.org/tutorials/

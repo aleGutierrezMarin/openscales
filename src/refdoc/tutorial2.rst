@@ -331,4 +331,3 @@ Here you are
 ------------
 
 Right now, you're able to start building your OpenScales maps.
-Find sources on:  http://www.openscales.org/tutorials/
