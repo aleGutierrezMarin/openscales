@@ -5,15 +5,13 @@ package {
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.GeolocationEvent;
+	import flash.events.NativeWindowBoundsEvent;
 	import flash.events.StageOrientationEvent;
 	import flash.events.TransformGestureEvent;
 	import flash.sensors.Geolocation;
 	import flash.text.TextField;
 	import flash.ui.Multitouch;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.feature.PointFeature;
@@ -24,6 +22,9 @@ package {
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Style;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.proj4as.ProjProjection;
 	
 	public class MobileTracker extends Sprite {
@@ -35,7 +36,6 @@ package {
 		
 		public function MobileTracker() {
 			_map=new Map();
-			_map.size=new Size(stage.stageWidth, stage.stageHeight);
 			
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
@@ -66,7 +66,8 @@ package {
 			
 			
 			this.stage.addEventListener(Event.DEACTIVATE,this.onDeactivate);
-			
+			this.stage.addEventListener(Event.ACTIVATE,this.onActivate);
+						
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);
 			_map.zoom=5;
@@ -113,6 +114,16 @@ package {
 		private function onDeactivate(event:Event):void {
 			NativeApplication.nativeApplication.exit();
 		}
+		
+		private function onActivate(event:Event):void {
+			_map.size = new Size(stage.stageWidth, stage.stageHeight);
+			NativeApplication.nativeApplication.activeWindow.addEventListener(NativeWindowBoundsEvent.RESIZE, onWindowResize);
+		}
+		
+		private function onWindowResize(event:Event):void {
+			_map.size = new Size(stage.stageWidth, stage.stageHeight);
+		}
+				
 
 		private function geolocationUpdateHandler(event:GeolocationEvent):void
 		{
