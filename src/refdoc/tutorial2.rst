@@ -4,7 +4,7 @@ Tutorial 2 : Create your first map
 Prerequisites
 -------------
 
-This tutorial begins where :doc:`tutorial1` left off.
+This tutorial begins where :doc:`tutorial1` left off.
 
 What do you obtain with this tutorial?
 --------------------------------------
@@ -157,7 +157,7 @@ Others OSM layers exists : Cycle Map, Osmarender which are maps based on OSM dat
 Example with an OGC layer: Web Feature Service (WFS)
 ----------------------------------------------------
 
-The Open Geospatial Consortium defines several protocols like WFS, WMS…
+The Open Geospatial Consortium defines several protocols like WFS, WMS ...
 
 You can find many examples with OGC layer in OpenScales-fx-example sources. Here is an example that provides a Web Feature Service layer as a base layer. Replace the previous 2 code lines by these:
 
@@ -203,7 +203,7 @@ Security
 --------
 
 OpenScales allows you to use security manager to access one or more layers.
-Here is an example with a layer from the French National Geographic Institute (IGN) portal (http://geoportail.fr). It uses an OGC protocol: Wep Map Service – Cached layer.
+Here is an example with a layer from the French National Geographic Institute (IGN) portal (http://geoportail.fr). It uses an OGC protocol: Wep Map Service - Cached layer.
 
 .. code-block:: mxml
 
@@ -330,5 +330,5 @@ In the Run as window, choose Web application or Desktop Application, depending o
 Here you are
 ------------
 
-Right now, you’re able to start building your OpenScales maps.
+Right now, you're able to start building your OpenScales maps.
 Find sources on:  http://www.openscales.org/tutorials/
