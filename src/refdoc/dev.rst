@@ -9,9 +9,10 @@ Developing an application based on OpenScales is possible with :
 * `Flash Builder 4 <http://www.adobe.com/products/flashbuilder/>`_ (reference development environment)
 * `Flash Develop <http://www.flashdevelop.org/>`_
 * Any editor of your choice, with following requirements installed :
-	* `Oracle Java SDK <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_
+	* `Oracle Java 6 SDK <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_
 	* `Flex SDK 4.1 <http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+4>`_
 	* `Flash player debugger 10.1 <http://www.adobe.com/support/flashplayer/downloads.html>`_
+	* `Maven 3 <http://maven.apache.org>`_
 
 Quick start with Flash Builder 4
 --------------------------------
