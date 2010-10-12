@@ -4,7 +4,7 @@ Tutorial 3 : Add markers
 Prerequisites
 -------------
 
-This tutorial begins where :doc:`tutorial2` left off.
+This tutorial begins where :doc:`tutorial2` left off.
 
 What do you obtain with this tutorial?
 --------------------------------------
@@ -131,4 +131,3 @@ Here you are
 
 Right now, you’re able to add markers to your OpenScales maps.
 
-Find sources: http://www.openscales.org/tutorials/
