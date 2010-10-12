@@ -1,13 +1,10 @@
-
-Tutorial 2
-==========
-Create your first map using openscales 1.2
-==========================================
+Tutorial 2 : create your first map
+==================================
 
 Prerequisites
 -------------
 
-This tutorial begins where ”Configure your first project using OpenScales” (tutorial 1) left off.
+This tutorial begins where :doc:`tutorial1` left off.
 
 What do you obtain with this tutorial?
 --------------------------------------

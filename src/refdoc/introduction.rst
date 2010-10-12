@@ -4,7 +4,9 @@ Introduction
 
 This is the documentation for OpenScales. It has been created to help you to build OpenScales based applications.
 
-`OpenScales <http://openscales.org>`_ is a Open Source (LGPL) mapping framework based on ActionScript 3 and Flex. It has been designed for building Rich Internet Mapping Applications (RIMA) easily.
+`OpenScales <http://openscales.org>`_ is a Open Source (LGPL) mapping framework based on ActionScript 3 and Flex. It has been designed for building Rich Internet Mapping Applications easily.
+
+.. image:: _static/screenshot-global.png
 
 History
 -------
@@ -19,7 +21,7 @@ Here is a list of main OpenScales features :
 * Support different kinds of layers
 * OGC protocols : WMS/WMS-C 1.1.1, WFS 1.0, GetCapabilities support
 * Optimized pure ActionScript 3 core (100 Kbytes)
-* Flex support built on top of the AS3 core
+* Flex 4 support built on top of the AS3 core
 * Drawing
 * Fast vector rendering
 * Powerful Style API
@@ -33,7 +35,7 @@ Platforms
 
 OpenScales have been designed to to run on all kind of devices :
 
-* Mobile (ActionScript 3) : tested on a Flash 10.1 player unreleased version running on Palm Pre. First OpenScales ready devices are expected for 2010 Q1.
-* Web (Flex) : OpenScales 1.2-SNAPSHOT run on Flash 10 players, targeting 98% of current web browsers under Windows, Mac and Linux
+* Mobile (ActionScript 3) : tested on Android Flash 10.1 player. It runs on HTC Desire at the same speed than on desktop.
+* Web (Flex) : OpenScales 1.2 run on Flash 10 players, targeting 98% of current web browsers under Windows, Mac and Linux
 * Desktop (AIR) : desktop mapping application based on OpenScales and AIR could be useful to manage offline mode, open local files like shapefiles, etc.
 
