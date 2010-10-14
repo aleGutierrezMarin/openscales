@@ -5,26 +5,26 @@ package org.openscales.core.popup
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.ui.Button;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
-
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
+	
 	/**
 	 * Class to create a Popup.
 	 * Extends Sprite.
 	 */
 	public class Popup extends Sprite
 	{
-
+		
 		public static var WIDTH:Number = 300;
 		public static var HEIGHT:Number = 300;
 		public static var BACKGROUND:uint = 0xFFFFFF;
 		public static var BORDER:Number = 2;
-
+		
 		private var _lonlat:Location = null;
 		private var _size:Size = null;
 		private var _background:uint;
@@ -34,12 +34,12 @@ package org.openscales.core.popup
 		private var _feature:Feature = null;
 		private var _htmlText:String = null;
 		private var _closeBox:Boolean;
-
+		
 		[Embed(source="/assets/images/close.gif")]
 		private var _closeImg:Class;
-
+		
 		public function Popup(lonlat:Location = null, background:uint = 0, border:Number = NaN, size:Size = null, htmlText:String = "", closeBox:Boolean = true) {
-
+			
 			this.lonlat = lonlat;
 			this.htmlText = htmlText;
 			this.closeBox = closeBox;
@@ -50,14 +50,14 @@ package org.openscales.core.popup
 			else{
 				this.background = Popup.BACKGROUND;
 			}
-
+			
 			if (!isNaN(border)){
 				this._border = border;
 			}
 			else{
 				this.border = Popup.BORDER;
 			}
-
+			
 			if (size != null){
 				this._size = size;
 			}
@@ -65,38 +65,39 @@ package org.openscales.core.popup
 				this.size = new Size(Popup.WIDTH,Popup.HEIGHT);
 			}
 		}
-
+		
 		public function closePopup(evt:MouseEvent):void {
 			var target:Sprite = (evt.target as Sprite);
 			target.removeEventListener(evt.type, closePopup);
 			destroy();
 			evt.stopPropagation();
 		}
-
+		
 		public function destroy():void {
 			graphics.clear();
-			while (this.numChildren>0) {
+			var i:uint = this.numChildren;
+			for (;i>0;--i) {
 				this.removeChildAt(0);
 			}
 			this.textfield = null;
 			this.feature = null;
-
+			
 			if (this.map != null) {
 				this.map.removeEventListener(MapEvent.MOVE_START, onZoomStart);
 				this.map.removeEventListener(MapEvent.MOVE_END, onZoomEnd);
 				this.map.removePopup(this);
 			}
 		}
-
+		
 		public function draw(px:Pixel = null):void {
 			if (px == null) {
 				if ((this.lonlat != null) && (this.map != null)) {
 					px = this.map.getLayerPxFromLocation(this.lonlat);
 				}
 			}
-
+			
 			this.position = px;
-
+			
 			this.graphics.clear();
 			while (this.numChildren>0) {
 				this.removeChildAt(0);
@@ -108,32 +109,32 @@ package org.openscales.core.popup
 			this.height = this.size.h;
 			this.graphics.endFill();
 			this.createPopupContent();
-
+			
 			if (this.closeBox == true) {
-
+				
 				var img:Bitmap = new this._closeImg();
 				
 				var closeImg:Button = new Button("close", img, new Pixel(this.size.w - 22 - this.border, this.border + 2));
 				
 				this.addChild(closeImg);
-
+				
 				closeImg.addEventListener(MouseEvent.CLICK, closePopup);
 			}
-
+			
 			
 		}
 		
-		 protected function createPopupContent():void{
-            this.textfield = new TextField();
-            this.textfield.multiline = true;
-            this.textfield.htmlText = htmlText;
-            this.textfield.x = 5;
-            this.textfield.y = 5;
-            this.textfield.width = this.size.w-10;
-            this.textfield.height = this.size.h-10;
-            this.addChild(textfield);
-        }
-
+		protected function createPopupContent():void{
+			this.textfield = new TextField();
+			this.textfield.multiline = true;
+			this.textfield.htmlText = htmlText;
+			this.textfield.x = 5;
+			this.textfield.y = 5;
+			this.textfield.width = this.size.w-10;
+			this.textfield.height = this.size.h-10;
+			this.addChild(textfield);
+		}
+		
 		//Getters and Setters
 		public function set position(px:Pixel):void {
 			if (px != null) {
@@ -141,14 +142,14 @@ package org.openscales.core.popup
 				this.y = px.y;
 			}
 		}
-
+		
 		public function get position():Pixel {
 			return new Pixel(this.x, this.y);
 		}
-
+		
 		public function get size():Size {
 			return this._size;
-
+			
 		}
 		public function set size(size:Size):void {
 			if (size != null) {
@@ -157,34 +158,34 @@ package org.openscales.core.popup
 				this.height = this.size.h;
 			}
 		}
-
+		
 		public function get background():uint {
 			return this._background;
-
+			
 		}
 		public function set background(value:uint):void {
 			this._background = value;
 		}
-
+		
 		public function get border():Number {
 			return this._border;
-
+			
 		}
 		public function set border(value:Number):void {
 			this._border = value;
 		}
-
+		
 		public function get textfield():TextField {
 			return this._textfield;
-
+			
 		}
 		public function set textfield(value:TextField):void {
 			this._textfield = value;
 		}
-
+		
 		public function get map():Map {
 			return this._map;
-
+			
 		}
 		public function set map(value:Map):void {
 			this._map = value;
@@ -206,14 +207,14 @@ package org.openscales.core.popup
 				this.draw();
 			}
 		}
-
+		
 		public function get lonlat():Location {
 			return this._lonlat;
 		}
 		public function set lonlat(value:Location):void {
 			this._lonlat = value;
 		}
-
+		
 		public function get feature():Feature {
 			return this._feature;
 		}
@@ -232,12 +233,12 @@ package org.openscales.core.popup
 				this.size = this.feature.data.popupSize;
 			if(this.feature.data.popupContentHTML)	
 				this.htmlText = this.feature.data.popupContentHTML;
-
+			
 			if(this.feature && this.feature.layer && this.feature.layer.map) {
 				this.map = this.feature.layer.map;
 			} 
 		}
-
+		
 		public function get htmlText():String{
 			return this._htmlText;
 		}
@@ -247,7 +248,7 @@ package org.openscales.core.popup
 				this._textfield.htmlText = value;
 			}
 		}
-
+		
 		public function get closeBox():Boolean{
 			return this._closeBox;
 		}
