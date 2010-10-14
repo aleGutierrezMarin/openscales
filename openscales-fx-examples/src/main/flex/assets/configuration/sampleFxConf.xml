@@ -9,7 +9,10 @@
 
 	<Layers>
 		<Mapnik name="mapnik" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" />
-		<CycleMap name="cycle" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34" alpha="0.5" />
+		<CycleMap name="cycle"
+		          maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34"
+		          alpha="0.5"
+		          proxy="http://openscales.org/proxy.php?url=" />
 	</Layers>
 
 	<Handlers>
