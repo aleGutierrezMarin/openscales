@@ -10,7 +10,7 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 	
 	<Map id="fxMap" width="100%" height="100%" zoom="11" center="4.833,45.767">
 		
-		<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
+		<Mapnik name="Mapnik" />
 		
 		<DragHandler id="dragHandler" />
 		<WheelHandler />

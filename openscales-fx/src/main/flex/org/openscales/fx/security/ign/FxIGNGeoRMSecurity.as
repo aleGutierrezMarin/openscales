@@ -45,7 +45,7 @@ package org.openscales.fx.security.ign
 			this._method=value;
 		}
 		override public function get security():ISecurity {
-			return new IGNGeoRMSecurity(this.map,this._key,this._proxy, this._host);
+			return new IGNGeoRMSecurity(this.map,this._key,this._proxy, this._host,this._method);
 		}
 	}
 }

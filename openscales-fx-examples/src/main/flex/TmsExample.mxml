@@ -6,7 +6,8 @@
 	<Map id="fxMap" width="100%" height="100%" zoom="5" center="5,40" >
 		
 		<TMS name="Tms" url="http://tilecache.osgeo.org/wms-c/Basic.py/"
-				   layerName="basic" maxResolution="0.703125" />
+				   layerName="basic" maxResolution="0.703125"
+				   proxy="http://openscales.org/proxy.php?url=" />
 		
 		<DragHandler/>
 		<WheelHandler/>
