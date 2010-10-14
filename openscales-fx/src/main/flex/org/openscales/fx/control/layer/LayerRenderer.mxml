@@ -209,50 +209,10 @@
 					layer.map.dispatchEvent(layerManagerEvent);
 			}
 			
-			
-			
 		 ]]>
 	</fx:Script>
 	
 
-	<s:states> 
-		<s:State name="normal"/> 
-		<s:State name="hovered"/>
-	</s:states>
-	
-	<!--<s:Graphic includeIn="normal" width="210" height="22" >
-		<s:Group>
-			<s:Group d:type="layer" d:userLabel="Content">
-				<s:Group>
-					<s:Path data="M610 4.05 610 18.95Q610 23 606 23L4 23Q0 23 0 18.95L0 4.05Q0 0 4 0L606 0Q610 0 610 4.05">
-						<s:fill>
-							<s:SolidColor color="#FFFFFF"/>
-						</s:fill>
-					</s:Path>
-					<s:Path data="M610 4.05Q610 0 606 0L4 0Q0 0 0 4.05L0 18.95Q0 23 4 23L606 23Q610 23 610 18.95L610 4.05">
-						<s:stroke>
-							<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#6F7784"/>
-						</s:stroke>
-					</s:Path>
-				</s:Group>
-			</s:Group>
-		</s:Group>
-	</s:Graphic>-->
-	<s:Graphic includeIn="hovered" width="210" height="22">
-		<s:Group>
-			<s:Group d:type="layer" d:userLabel="Content">
-				<s:Group>
-					<s:Path data="M610 4.05 610 18.95Q610 23 606 23L4 23Q0 23 0 18.95L0 4.05Q0 0 4 0L606 0Q610 0 610 4.05">
-						<s:fill>
-							<s:SolidColor color="#EDE1AB"/>
-						</s:fill>
-					</s:Path>
-					
-				</s:Group>
-			</s:Group>
-		</s:Group>
-	</s:Graphic>	
-	
 	<s:HGroup width="100%"
 			  id="hgroup"
 			  paddingLeft="2"
