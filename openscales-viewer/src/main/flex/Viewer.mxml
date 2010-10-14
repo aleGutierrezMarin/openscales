@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+			   xmlns:os="http://openscales.org"
+			   creationComplete="initMap();">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.configuration.Configuration;
+			import org.openscales.core.request.XMLRequest;
+			import org.openscales.fx.configuration.FxConfiguration;
+						
+			protected var xmlRequest:XMLRequest = null;
+
+			public function get configurationUrl():String
+			{
+				return this.parameters.configurationUrl;
+			}
+
+			private function initMap():void {
+				
+				fxMap.map.configuration = new FxConfiguration();
+				
+				if((configurationUrl != null) && (configurationUrl != "")) {
+					xmlRequest = new XMLRequest(configurationUrl, onLoadComplete, onLoadError);
+					xmlRequest.send();
+				} else {
+					Alert.show("Error : no configuration specified. Please define a flashvars variable named configurationUrl with the right URL.");
+				}
+								
+			}
+			
+			private function onLoadComplete(event:Event):void {
+				if (event.target) {
+					var loader:URLLoader = event.target as URLLoader;
+					fxMap.map.configuration.config = new XML(loader.data);
+					fxMap.map.configuration.configure();
+				}
+			}
+			
+			private function onLoadError(event:Event):void {
+				Alert.show("Error during configuration loading. " + event.toString());
+			}
+			
+		]]>
+	</fx:Script>
+	<os:Map id="fxMap" width="100%"	height="100%">
+	</os:Map>
+	
+</s:Application>
