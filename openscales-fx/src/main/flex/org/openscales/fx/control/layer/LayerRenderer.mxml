@@ -8,8 +8,7 @@
 				width="100%"
 				height="25"
 				xmlns:fxg="assets.fxg.*"
-				autoDrawBackground="false"
-				creationComplete="init(event)">
+				autoDrawBackground="false">
 	
 	<fx:Script>
 		<![CDATA[
@@ -213,21 +212,6 @@
 				layerManagerEvent.y = this.y + 10;
 				if(layer&&layer.map)
 					layer.map.dispatchEvent(layerManagerEvent);
-			}
-			
-			private function init(e:Event):void {
-				/*var newHitArea:Sprite = new Sprite();
-				newHitArea.visible = false;
-				newHitArea.mouseEnabled=false;
-				newHitArea.graphics.clear();
-				newHitArea.graphics.beginFill(0x000000, 1.0);
-				newHitArea.graphics.drawRect(0,
-				0,
-				10,
-				10);
-				newHitArea.graphics.endFill();
-				ArrowDown.hitArea = newHitArea;
-				ArrowDown.validateDisplayList();*/
 			}
 			
 		]]>
