@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="60"
+		 height="60"
+		 xmlns:openscales="http://openscales.org"
+		 creationComplete="create()">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.feature.Feature;
+			import org.openscales.fx.FxMap;
+			import org.openscales.geometry.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			import spark.utils.TextFlowUtil;
+			
+			private var _feature:Feature = null;
+			private var _loc:Location = null;
+			private var _fxmap:FxMap;
+			private var _content:String="";
+			
+			private var _relativePosition:String = "";
+			
+			static public var BR:String = "br";
+			static public var TR:String = "tr";
+			static public var TL:String = "tl";
+			static public var BL:String = "bl";
+			
+			private var _anchor:Sprite = null;
+			
+			public function create():void{
+				//this.addEventListener(Event.ADDED_TO_STAGE,draw);
+				
+				if ((this.loc != null) && (this.fxmap.map != null)) {
+					var px:Pixel = this.fxmap.map.getMapPxFromLocation(this.feature.lonlat);
+					this.relativePosition = this.calculateRelativePosition(px);
+				}
+				this.position = px;
+				
+				this.fxmap.addFxPopup(this,true);
+				
+			}
+			
+			public function remove():void {
+				this.visible=false;
+				var i:uint = this.numElements;
+				for (;i>0;--i) {
+					this.removeElementAt(0);
+				}
+				this.feature = null;
+				this.loc = null;
+				if (this.fxmap != null) {
+					this.fxmap.removeFxPopup(this);
+				}
+			}
+			
+			public function calculateRelativePosition(px:Pixel):String {
+				var lonlat:Location = this.fxmap.map.getLocationFromMapPx(px);
+				
+				var extent:Bounds = this.fxmap.map.extent;
+				var quadrant:String = extent.determineQuadrant(lonlat);
+				
+				return Bounds.oppositeQuadrant(quadrant);
+			}
+			
+			public function get relativePosition():String {
+				return this._relativePosition;
+			}
+			
+			public function set relativePosition(value:String):void {
+				this._relativePosition = value;
+			}
+			
+			public function get loc():Location {
+				return this._loc;
+			}
+			
+			public function set loc(value:Location):void {
+				this._loc = value;
+			}
+			
+			public function get feature():Feature {
+				return this._feature;
+			}
+			
+			public function set feature(value:Feature):void {
+				this._feature = value;
+				
+				if(!this.feature)
+					return;
+				
+				this.loc = this.feature.lonlat;
+				
+				
+				/*if(this.feature && this.feature.layer && this.feature.layer.map) {
+					this.fxmap.map = this.feature.layer.map;
+				} */
+				//this._anchor = value;
+			}
+			
+			public function calculateNewPx(px:Pixel):Pixel {
+				var newPx:Pixel = px;
+				
+				var top:Boolean = (this.relativePosition == TR || this.relativePosition == TL);
+				
+				if(top){
+					//newPx.y += -this._anchor.height/2 - this.height;
+					newPx.y -= (this.height + this.height/2);
+				}
+				/*else{
+					newPx.y += this._anchor.height/2;
+				}*/
+				
+				var left:Boolean = (this.relativePosition == BL || this.relativePosition == TL);
+				
+				if(left){
+					//newPx.x += -this._anchor.width/2 - this.width;
+					newPx.x -= this.width;
+				}
+				/*else{
+					newPx.x += this._anchor.width/2;
+				}*/
+				
+				return newPx;
+			}
+			
+			public function set position(px:Pixel):void {
+				var newPx:Pixel = this.calculateNewPx(px);
+				if (newPx != null) {
+					this.x = newPx.x;
+					this.y = newPx.y;
+				}
+			}
+			
+			public function get position():Pixel {
+				return new Pixel(this.x, this.y);
+			}
+			
+			public function get content():String{
+				return this._content;
+			}
+			
+			public function set content(value:String):void {
+				this._content = value;
+				//textArea.textFlow = spark.utils.TextFlowUtil.importFromString(_content);
+			}
+			
+			public function get fxmap():FxMap {
+				return this._fxmap;
+				
+			}
+			
+			public function set fxmap(value:FxMap):void {
+				this._fxmap = value;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Panel id="panel" title="PopupTitle" width="60" height="60" >
+		<s:TextArea width="60" height="60" id="textArea" editable="false"/>
+<!--		<openscales:IconButton id="close" x="{panel.width - 10}" label="close" />
+-->		
+	</s:Panel>
+</s:Group>
