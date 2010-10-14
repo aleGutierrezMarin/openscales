@@ -372,6 +372,9 @@ package org.openscales.geometry.basetypes
 		 * @param dest The destination projection
 		 */
 		public function transform(source:ProjProjection, dest:ProjProjection):void {
+			this.projection = dest;
+			if(source.srsCode == dest.srsCode)
+				return;
 			var pLB:ProjPoint = new ProjPoint(this._left, this._bottom);
 			var pRT:ProjPoint = new ProjPoint(this._right, this._top);
 			Proj4as.transform(source, dest, pLB);
