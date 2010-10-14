@@ -82,7 +82,7 @@ package org.openscales.fx
 			_flexOverlay.visible = false;
 
 			var j:uint = _flexOverlay.numElements;
-			for(var i:uint=0;i>j;++i){
+			for(var i:uint=0;i<j;++i){
 				Trace.log("onMoveStart");
 				(_flexOverlay.getElementAt(i) as FxPopup).visible = false;
 				(_flexOverlay.getElementAt(i) as FxPopup).position = this.map.getMapPxFromLocation((_flexOverlay.getElementAt(i) as FxPopup).loc);
@@ -118,7 +118,7 @@ package org.openscales.fx
 			}
 			if (fxPopup != null){
 				fxPopup.fxmap = this;
-				
+				fxPopup.position = this.map.getMapPxFromLocation(fxPopup.feature.lonlat);
 				this._flexOverlay.addElement(fxPopup);
 			}
 		}
