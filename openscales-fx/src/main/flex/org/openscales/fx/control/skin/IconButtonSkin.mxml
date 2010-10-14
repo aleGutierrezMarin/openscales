@@ -15,10 +15,12 @@
 		<![CDATA[
 			override protected function updateDisplayList(unscaledWidth:Number,
 														  unscaledHeight:Number):void {
-				if(hostComponent.getStyle('iconOver') == undefined)
+				if(hostComponent.getStyle("iconOver") == undefined)
 					hostComponent.setStyle("iconOver", hostComponent.getStyle('icon'));
-				if(hostComponent.getStyle('iconDown') ==  undefined)
+				if(hostComponent.getStyle("iconDown") ==  undefined)
 					hostComponent.setStyle("iconDown", hostComponent.getStyle('icon'));
+				if(hostComponent.getStyle("labelVisible") ==  undefined)
+					hostComponent.setStyle("labelVisible", false);
 
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 			}
@@ -65,7 +67,8 @@
 			 verticalAlign="middle"
 			 maxDisplayedLines="1"
 			 horizontalCenter="0" verticalCenter="-10"
-			 left="0" right="0" top="0" bottom="0">
+			 left="0" right="0" top="0" bottom="0"
+			 visible="{hostComponent.getStyle('labelVisible')}">
 	</s:Label>
 	
 </s:SparkSkin>
