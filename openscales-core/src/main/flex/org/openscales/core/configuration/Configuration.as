@@ -235,11 +235,7 @@ package org.openscales.core.configuration
 			else{visible = true;}
 			
 			var name:String=xmlNode.@name;
-			var proxy:String = null;
-			if(String(xmlNode.@proxy) != "")
-			{
-				proxy=xmlNode.@proxy;
-			}
+			
 			
 			var projection:String=xmlNode.@projection;
 			var resolution:Array=null;
@@ -287,7 +283,6 @@ package org.openscales.core.configuration
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
 						wmscLayer.visible=visible;
 						wmscLayer.projection = new ProjProjection(projection);
-						wmscLayer.proxy = proxy;                  	   
 						wmscLayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmscLayer.projection);
 						wmscLayer.params = paramsWms;
 						layer=wmscLayer;
@@ -301,7 +296,6 @@ package org.openscales.core.configuration
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
 						wmslayer.visible = visible;
-						wmslayer.proxy = proxy;
 						wmslayer.projection = new ProjProjection(projection);                       
 						wmslayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmslayer.projection);
 						wmslayer.params = paramsWms;
@@ -334,7 +328,6 @@ package org.openscales.core.configuration
 				// We create the WFS Layer with all params
 				var wfsLayer:WFS = new WFS(name,urlWfs,xmlNode.@typename);
 				wfsLayer.visible = visible;
-				wfsLayer.proxy = proxy;
 				wfsLayer.useCapabilities = useCapabilities;
 				wfsLayer.capabilities = capabilities;
 				wfsLayer.projection = new ProjProjection(projection);
@@ -391,17 +384,22 @@ package org.openscales.core.configuration
 			}
 			
 			if(layer != null){
+				
 				if((String(xmlNode.@numZoomLevels) != "") && (String(xmlNode.@maxResolution) != "")){
 					layer.generateResolutions(Number(xmlNode.@numZoomLevels), Number(xmlNode.@maxResolution));
 				}
 				if(String(xmlNode.@resolutions) != ""){
 					layer.resolutions = String(xmlNode.@resolutions).split(",");
 				}
-			}
-			//opacity
-			if(String(xmlNode.@alpha))
-			{
-				layer.alpha = Number(xmlNode.@alpha);
+				if(String(xmlNode.@proxy) != "")
+				{
+					layer.proxy=String(xmlNode.@proxy);
+				}
+				//opacity
+				if(String(xmlNode.@alpha))
+				{
+					layer.alpha = Number(xmlNode.@alpha);
+				}
 			}
 			
 			//Init layer parameters
@@ -598,17 +596,17 @@ package org.openscales.core.configuration
 			}
 			return security;
 		}
-
+		
 		public function get map():Map
 		{
 			return _map;
 		}
-
+		
 		public function set map(value:Map):void
 		{
 			_map = value;
 		}
-
+		
 		
 	}
 }
