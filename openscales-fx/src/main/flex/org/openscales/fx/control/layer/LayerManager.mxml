@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- LayerManager Flex control, used to change layer order or visbility -->
 <Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
-	xmlns:s="library://ns.adobe.com/flex/spark" width="215">
-
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="215">
+	
 	<fx:Script>
 		<![CDATA[
 			import flashx.textLayout.formats.BackgroundColor;
@@ -28,6 +28,7 @@
 			import org.openscales.core.layer.Layer;
 			
 			import spark.components.Group;
+			import spark.components.HSlider;
 			import spark.components.VSlider;
 			
 			private var _layer:Layer;
@@ -38,6 +39,7 @@
 			private var _group:Group = null;
 			
 			private var _vSlider:VSlider = null;
+			private var _hSlider:HSlider = null;
 			
 			private var _layerOldZindex:int=0;
 			
@@ -58,7 +60,7 @@
 					this.map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
 					this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
 					this.map.addEventListener(LayerManagerEvent.COMPONENT_OPACITY,manageOpacity);
-			
+					
 					//stock layer by type : baselayer and overlays
 					var overlayArray:Vector.<Layer>  = this.map.layers;
 					var ac:ArrayCollection = new ArrayCollection();
@@ -66,7 +68,7 @@
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
 					layerList.dataProvider = ac;
-
+					
 				}
 			}
 			
@@ -78,14 +80,14 @@
 			public function refresh(event:LayerEvent):void {	
 				//Test the triggered event
 				if(event.type == LayerEvent.LAYER_ADDED){
-						layerList.dataProvider.addItem(event.layer);
-						layerList.invalidateDisplayList();
+					layerList.dataProvider.addItem(event.layer);
+					layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_REMOVED){
-						var index:int = layerList.dataProvider.getItemIndex(event.layer);
-						layerList.dataProvider.removeItemAt(index);
-						layerList.invalidateDisplayList();
+					var index:int = layerList.dataProvider.getItemIndex(event.layer);
+					layerList.dataProvider.removeItemAt(index);
+					layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
@@ -96,6 +98,15 @@
 						ac.addItem(overlayArray[i-1]);
 					layerList.dataProvider = ac;
 					
+				}
+				if(myTimer != null){
+					myTimer.stop();
+					myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
+					myTimer = null;
+				}
+				if(this._group != null) {
+					this.removeElement(this._group);
+					this._group = null;
 				}
 			}
 			
@@ -127,7 +138,7 @@
 					this._group = null;
 					if(this._layer == event.layer)
 					{
-					return;
+						return;
 					}
 				}
 				if(this._layer != event.layer || this._group == null)
@@ -141,7 +152,23 @@
 					this._group.width = 18;
 					this._group.alpha = 0.7;
 					
+					
 					//Create VSlider
+					this._hSlider = new HSlider();
+					this._hSlider.x=10;
+					this._hSlider.y=5;
+					this._hSlider.height=11;
+					this._hSlider.width = 100;
+					this._hSlider.minimum = 0;
+					this._hSlider.maximum = 100;
+					this._hSlider.value = this._layer.alpha*100;
+					this._hSlider.snapInterval = 1;
+					this._hSlider.dataTipFormatFunction = percentDataTip;
+					this._hSlider.addEventListener(MouseEvent.MOUSE_DOWN,onDrag);
+					this._hSlider.addEventListener(SliderEvent.CHANGE,layerOpacity);
+					this._group.addElement(this._hSlider);
+					
+					/*
 					this._vSlider = new VSlider();
 					this._vSlider.x=6;
 					this._vSlider.height = this._group.height;
@@ -154,6 +181,7 @@
 					this._vSlider.addEventListener(MouseEvent.MOUSE_DOWN,onDrag); 
 					this._vSlider.addEventListener(SliderEvent.CHANGE,layerOpacity);
 					this._group.addElement(this._vSlider);
+					*/
 					
 					//Add the group to the LayerManager
 					this.addElement(this._group);
@@ -215,7 +243,7 @@
 			 */
 			public function layerOpacity(event:Event):void
 			{	
-				this._layer.alpha = (event.target as VSlider).value/100;
+				this._layer.alpha = (event.target as HSlider).value/100;
 			}
 			
 			public function percentDataTip(value:Number):String
@@ -234,10 +262,10 @@
 		]]>
 	</fx:Script>
 	
-		
+	
 	
 	<s:VGroup width="100%" paddingLeft="2" paddingRight="2" paddingBottom="2" paddingTop="2"> 
-
+		
 		<s:List id="layerList" 
 				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
 				dropEnabled="true"
@@ -248,10 +276,10 @@
 			<s:layout>
 				<s:VerticalLayout horizontalAlign="justify"
 								  requestedRowCount="4"/>
-					
+				
 			</s:layout>
- 		</s:List>
-
+		</s:List>
+		
 	</s:VGroup>
 	
 </Control>
