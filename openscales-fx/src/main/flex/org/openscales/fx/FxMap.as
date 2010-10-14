@@ -22,9 +22,11 @@ package org.openscales.fx
 	import org.openscales.fx.control.FxOverviewMap;
 	import org.openscales.fx.handler.FxHandler;
 	import org.openscales.fx.layer.FxLayer;
+	import org.openscales.fx.popup.FxPopup;
 	import org.openscales.fx.security.FxAbstractSecurity;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	
 	import spark.components.Group;
@@ -51,6 +53,7 @@ package org.openscales.fx
 		private var _creationWidth:Number = NaN;
 		private var _proxy:String = "";
 		private var _maxExtent:Bounds = null;
+		private var _flexOverlay:Group = null;
 		
 		/**
 		 * FxMap constructor
@@ -75,6 +78,57 @@ package org.openscales.fx
 			this._map.addLayer(l.layer);
 		}
 		
+		private function onMoveStart(event:MapEvent):void{
+			_flexOverlay.visible = false;
+
+			var j:uint = _flexOverlay.numElements;
+			for(var i:uint=0;i>j;++i){
+				Trace.log("onMoveStart");
+				(_flexOverlay.getElementAt(i) as FxPopup).visible = false;
+				(_flexOverlay.getElementAt(i) as FxPopup).position = this.map.getMapPxFromLocation((_flexOverlay.getElementAt(i) as FxPopup).loc);
+			}
+		}
+		
+		private function onMoveEnd(event:MapEvent):void{
+			_flexOverlay.visible = true;
+			var j:uint = _flexOverlay.numElements;
+			for(var i:uint=0;i<j;++i){
+				Trace.log("onMoveEnd");
+				(_flexOverlay.getElementAt(i) as FxPopup).position = this.map.getMapPxFromLocation((_flexOverlay.getElementAt(i) as FxPopup).loc);
+				(_flexOverlay.getElementAt(i) as FxPopup).visible=true;
+			}
+		}
+		
+		public function addFxPopup(fxPopup:FxPopup, exclusive:Boolean = true):void{
+			_flexOverlay.addEventListener(MapEvent.MOVE_START,onMoveStart);
+			_flexOverlay.addEventListener(MapEvent.MOVE_END,onMoveEnd);
+			var i:Number;
+			if(exclusive){
+				var child:DisplayObject;
+				for(i=this._flexOverlay.numChildren-1;i>=0;i--){
+					child = this._flexOverlay.getChildAt(i);
+					if(child is FxPopup){
+						if(child != fxPopup) {
+							Trace.warn("Map.addPopup: popup already displayed so escape");
+							return;
+						}
+						this.removeFxPopup(child as FxPopup);
+					}
+				}
+			}
+			if (fxPopup != null){
+				fxPopup.fxmap = this;
+				
+				this._flexOverlay.addElement(fxPopup);
+			}
+		}
+		
+		public function removeFxPopup(fxPopup:FxPopup):void{
+			
+			if(this._flexOverlay.contains(fxPopup))
+				this._flexOverlay.removeElement(fxPopup);
+		}
+		
 		/**
 		 * FxMap creation complete callback, initialize the map at the right Flex lifecycle time 
 		 */
@@ -90,6 +144,12 @@ package org.openscales.fx
 			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
 			this.addElementAt(mapContainer, 0);
 			mapContainer.addChild(this._map);
+			
+			this._flexOverlay = new Group();
+			this.addElementAt(_flexOverlay,1);
+			this.map.addEventListener(MapEvent.MOVE_START,onMoveStart);
+			this.map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
+			
 			
 			if (this._proxy != "")
 				this._map.proxy = this._proxy;
