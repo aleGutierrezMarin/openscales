@@ -18,49 +18,49 @@ you to by pass cross domain issue. This may be acomplished using a simple php sc
 a webserver like Apache:
 
 .. code-block:: php
-<?php
-  $url = (isset($_POST['url'])) ? $_POST['url'] : $_GET['url'];
-  // Open the Curl session
-  $session = curl_init($url);
-
-  // If it's a POST, put the POST data in the body
-  if (isset($_POST['url'])) {
-    $postvars = '';
-    while ($element = current($_POST)) {
-      $postvars .= key($_POST).'='.$element.'&';
-      next($_POST);
-    }
-    curl_setopt ($session, CURLOPT_POST, true);
-    curl_setopt ($session, CURLOPT_POSTFIELDS, $postvars);
-  }
-
-  // Don't return HTTP headers. Do return the contents of the call
-  curl_setopt($session, CURLOPT_HEADER, false);
-  curl_setopt($session, CURLOPT_CONNECTTIMEOUT, 10);
-  curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($session, CURLOPT_PROXY, 'proxy-middle:3128');
-
-  // Make the call
-  $response = curl_exec($session);
-
-  // if error, print and exit
-  if (curl_errno($session)) {
-    echo curl_error($session);
-    exit();
-  }
-
-  // get mime type of the reponse, or, if none, get "default" one
-  $mimeType = curl_getinfo($session,CURLINFO_CONTENT_TYPE);
-  if($mimeType=='') {
-    $mimeType =(isset($_GET['FORMAT'])) ? $_GET['FORMAT'] : 'text/xml';
-  }
-
-  // Set the Content-Type appropriately
-  header('Content-Type: '.$mimeType);
-
-  echo $response;
-  curl_close($session);
-?>
+	<?php
+	$url = (isset($_POST['url'])) ? $_POST['url'] : $_GET['url'];
+	// Open the Curl session
+	$session = curl_init($url);
+	
+	// If it's a POST, put the POST data in the body
+	if (isset($_POST['url'])) {
+		$postvars = '';
+		while ($element = current($_POST)) {
+			$postvars .= key($_POST).'='.$element.'&';
+			next($_POST);
+		}
+		curl_setopt ($session, CURLOPT_POST, true);
+		curl_setopt ($session, CURLOPT_POSTFIELDS, $postvars);
+	}
+	
+	// Don't return HTTP headers. Do return the contents of the call
+	curl_setopt($session, CURLOPT_HEADER, false);
+	curl_setopt($session, CURLOPT_CONNECTTIMEOUT, 10);
+	curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($session, CURLOPT_PROXY, 'proxy-middle:3128');
+	
+	// Make the call
+	$response = curl_exec($session);
+	
+	// if error, print and exit
+	if (curl_errno($session)) {
+		echo curl_error($session);
+		exit();
+	}
+	
+	// get mime type of the reponse, or, if none, get "default" one
+	$mimeType = curl_getinfo($session,CURLINFO_CONTENT_TYPE);
+	if($mimeType=='') {
+		$mimeType =(isset($_GET['FORMAT'])) ? $_GET['FORMAT'] : 'text/xml';
+	}
+	
+	// Set the Content-Type appropriately
+	header('Content-Type: '.$mimeType);
+	
+	echo $response;
+	curl_close($session);
+	?>
 
 Now when you want to access http://foo.com/data.ext you access http://yourserver.com/proxy.php?url=http://foo.com/data.ext
 
