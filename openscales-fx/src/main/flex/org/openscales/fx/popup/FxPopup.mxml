@@ -2,9 +2,8 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="60"
-		 height="60"
 		 xmlns:openscales="http://openscales.org"
+		 xmlns:d="http://ns.adobe.com/fxg/2008/dt"
 		 creationComplete="create()">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
@@ -12,11 +11,16 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import assets.fxg.Popup;
+			import assets.fxg.ButtonCloseOver;
+			import assets.fxg.ButtonCloseUp;
+			
 			import org.openscales.core.feature.Feature;
 			import org.openscales.fx.FxMap;
 			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.geometry.basetypes.Size;
 			
 			import spark.utils.TextFlowUtil;
 			
@@ -24,15 +28,18 @@
 			private var _loc:Location = null;
 			private var _fxmap:FxMap;
 			private var _content:String="";
-			
+			private var _size:Size = null;
 			private var _relativePosition:String = "";
 			
+			public var WIDTH:Number = 200;
+			public var HEIGHT:Number = 200;
 			static public var BR:String = "br";
 			static public var TR:String = "tr";
 			static public var TL:String = "tl";
 			static public var BL:String = "bl";
 			
 			private var _anchor:Sprite = null;
+			
 			
 			public function create():void{
 				//this.addEventListener(Event.ADDED_TO_STAGE,draw);
@@ -42,10 +49,17 @@
 					this.relativePosition = this.calculateRelativePosition(px);
 				}
 				this.position = px;
-				
+				this.setCurrentState(relativePosition,false);
+				if (size != null){
+					this._size = size;
+				}
+				else{
+					this.size = new Size(WIDTH,HEIGHT);
+				}
 				this.fxmap.addFxPopup(this,true);
 				
 			}
+			
 			
 			public function remove():void {
 				this.visible=false;
@@ -75,6 +89,7 @@
 			
 			public function set relativePosition(value:String):void {
 				this._relativePosition = value;
+				this.setCurrentState(_relativePosition,false);
 			}
 			
 			public function get loc():Location {
@@ -97,34 +112,36 @@
 				
 				this.loc = this.feature.lonlat;
 				
-				
-				/*if(this.feature && this.feature.layer && this.feature.layer.map) {
-					this.fxmap.map = this.feature.layer.map;
-				} */
-				//this._anchor = value;
 			}
 			
 			public function calculateNewPx(px:Pixel):Pixel {
 				var newPx:Pixel = px;
 				
-				var top:Boolean = (this.relativePosition == TR || this.relativePosition == TL);
+				if(this.relativePosition == BR){
+					newPx.x = newPx.x;
+					newPx.y = newPx.y;
+				}
+				else if (this.relativePosition == BL){
+					newPx.x = newPx.x - this.width;
+					newPx.y = newPx.y;
+				}
+				else if (this.relativePosition == TR){
+					newPx.x = newPx.x - 45; 
+					newPx.y = newPx.y - this.height - 48;
+				}
+				else if (this.relativePosition == TL){
+					newPx.x = newPx.x - this.width;
+					newPx.y = newPx.y - this.height;
+				}
 				
+				/*
+				var top:Boolean = (this.relativePosition == TR || this.relativePosition == TL);
 				if(top){
-					//newPx.y += -this._anchor.height/2 - this.height;
 					newPx.y -= (this.height + this.height/2);
 				}
-				/*else{
-					newPx.y += this._anchor.height/2;
-				}*/
-				
 				var left:Boolean = (this.relativePosition == BL || this.relativePosition == TL);
-				
 				if(left){
-					//newPx.x += -this._anchor.width/2 - this.width;
 					newPx.x -= this.width;
-				}
-				/*else{
-					newPx.x += this._anchor.width/2;
 				}*/
 				
 				return newPx;
@@ -160,12 +177,76 @@
 				this._fxmap = value;
 			}
 			
+			public function get size():Size {
+				return this._size;
+				
+			}
+			
+			public function set size(size:Size):void {
+				if (size != null) {
+					this._size = size;
+					this.width = this.size.w;
+					this.height = this.size.h;
+				}
+			}
+			
+			public function closePopup(event:MouseEvent):void {
+				var target:Sprite = (event.target as Sprite);
+				target.removeEventListener(event.type, closePopup);
+				remove();
+				event.stopPropagation();
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:Panel id="panel" title="PopupTitle" width="60" height="60" >
-		<s:TextArea width="60" height="60" id="textArea" editable="false"/>
-<!--		<openscales:IconButton id="close" x="{panel.width - 10}" label="close" />
--->		
-	</s:Panel>
+	<s:states>
+		<s:State name="tr"/>
+		<s:State name="tl"/>
+		<s:State name="br"/>
+		<s:State name="bl"/>
+	</s:states>
+	
+	<s:TextArea includeIn="tr"
+				horizontalScrollPolicy="auto"
+				verticalScrollPolicy="auto"
+				text="{this._content}"
+				width="{WIDTH}"
+				height="{HEIGHT}"
+				skinClass="org.openscales.fx.popup.PopupSkinTR"
+				editable="false"/>
+	<!--<s:TextArea includeIn="tl"
+				horizontalScrollPolicy="auto"
+				verticalScrollPolicy="auto"
+				text="{this._content}"
+				width="{WIDTH}"
+				height="{HEIGHT}"
+				skinClass="org.openscales.fx.popup.PopupSkinTL"
+				editable="true"/>
+	<s:TextArea includeIn="br"
+				horizontalScrollPolicy="auto"
+				verticalScrollPolicy="auto"
+				text="{this._content}"
+				width="{WIDTH}"
+				height="{HEIGHT}"
+				skinClass="org.openscales.fx.popup.PopupSkinBR"
+				editable="true"/>
+	<s:TextArea includeIn="bl"
+				horizontalScrollPolicy="auto"
+				verticalScrollPolicy="auto"
+				text="{this._content}"
+				width="{WIDTH}"
+				height="{HEIGHT}"
+				skinClass="org.openscales.fx.popup.PopupSkinBL"
+				editable="true"/>-->
+	<openscales:IconButton id="close"
+						   x="{WIDTH-17}"
+						   y="0"
+						   icon="{new ButtonCloseUp()}"
+						   iconOver="{new ButtonCloseOver()}"
+						   iconDown="{new ButtonCloseOver()}"
+						   alpha="1"
+						   click="closePopup(event)"/>
+		
+	
 </s:Group>

@@ -80,10 +80,8 @@ package org.openscales.fx
 		
 		private function onMoveStart(event:MapEvent):void{
 			_flexOverlay.visible = false;
-
 			var j:uint = _flexOverlay.numElements;
 			for(var i:uint=0;i<j;++i){
-				Trace.log("onMoveStart");
 				(_flexOverlay.getElementAt(i) as FxPopup).visible = false;
 				(_flexOverlay.getElementAt(i) as FxPopup).position = this.map.getMapPxFromLocation((_flexOverlay.getElementAt(i) as FxPopup).loc);
 			}
@@ -93,7 +91,6 @@ package org.openscales.fx
 			_flexOverlay.visible = true;
 			var j:uint = _flexOverlay.numElements;
 			for(var i:uint=0;i<j;++i){
-				Trace.log("onMoveEnd");
 				(_flexOverlay.getElementAt(i) as FxPopup).position = this.map.getMapPxFromLocation((_flexOverlay.getElementAt(i) as FxPopup).loc);
 				(_flexOverlay.getElementAt(i) as FxPopup).visible=true;
 			}
