@@ -2,8 +2,6 @@ package org.openscales.core.configuration
 {
 	import flash.geom.Point;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
@@ -39,6 +37,8 @@ package org.openscales.core.configuration
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -546,6 +546,14 @@ package org.openscales.core.configuration
 				Trace.error("Handler unknown !");
 			}   
 			if(handler) {
+				if(handler is SelectFeaturesHandler){
+					if(String(xmlNode.@enableClickSelection) == "true"){(handler as SelectFeaturesHandler).enableClickSelection = true;}
+					if(String(xmlNode.@enableClickSelection) == "false"){(handler as SelectFeaturesHandler).enableClickSelection = false;}
+					if(String(xmlNode.@enableBoxSelection) == "true"){(handler as SelectFeaturesHandler).enableBoxSelection = true;}
+					if(String(xmlNode.@enableBoxSelection) == "false"){(handler as SelectFeaturesHandler).enableBoxSelection = false;}
+					if(String(xmlNode.@enableOverSelection) == "true"){(handler as SelectFeaturesHandler).enableOverSelection = true;}
+					if(String(xmlNode.@enableOverSelection) == "false"){(handler as SelectFeaturesHandler).enableOverSelection = false;}
+				}
 				if(String(xmlNode.@active) == "true"){handler.active = true;}
 				if(String(xmlNode.@active) == "false"){handler.active = false;}
 			}
