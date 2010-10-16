@@ -80,7 +80,7 @@
 			public function refresh(event:LayerEvent):void {	
 				//Test the triggered event
 				if(event.type == LayerEvent.LAYER_ADDED){
-					layerList.dataProvider.addItem(event.layer);
+					layerList.dataProvider.addItemAt(event.layer,0);
 					layerList.invalidateDisplayList();
 				}
 				
