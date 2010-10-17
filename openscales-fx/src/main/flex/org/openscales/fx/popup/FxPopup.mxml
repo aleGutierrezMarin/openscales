@@ -11,9 +11,15 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import assets.fxg.Popup;
 			import assets.fxg.ButtonCloseOver;
 			import assets.fxg.ButtonCloseUp;
+			import assets.fxg.Popup;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.SpanElement;
+			import flashx.textLayout.elements.TextFlow;
+			
+			import mx.effects.effectClasses.AddChildActionInstance;
 			
 			import org.openscales.core.feature.Feature;
 			import org.openscales.fx.FxMap;
@@ -118,20 +124,20 @@
 				var newPx:Pixel = px;
 				
 				if(this.relativePosition == BR){
-					newPx.x = newPx.x;
-					newPx.y = newPx.y;
+					newPx.x = newPx.x - 45;
+					newPx.y = newPx.y + 48;
 				}
 				else if (this.relativePosition == BL){
-					newPx.x = newPx.x - this.width;
-					newPx.y = newPx.y;
+					newPx.x = newPx.x - this.width + 45;
+					newPx.y = newPx.y + 48;
 				}
 				else if (this.relativePosition == TR){
 					newPx.x = newPx.x - 45; 
 					newPx.y = newPx.y - this.height - 48;
 				}
 				else if (this.relativePosition == TL){
-					newPx.x = newPx.x - this.width;
-					newPx.y = newPx.y - this.height;
+					newPx.x = newPx.x - this.width + 45;
+					newPx.y = newPx.y - this.height - 48;
 				}
 				
 				/*
@@ -165,7 +171,6 @@
 			
 			public function set content(value:String):void {
 				this._content = value;
-				//textArea.textFlow = spark.utils.TextFlowUtil.importFromString(_content);
 			}
 			
 			public function get fxmap():FxMap {
@@ -207,41 +212,45 @@
 		<s:State name="bl"/>
 	</s:states>
 	
-	<s:TextArea includeIn="tr"
+	<s:TextArea id="textAreaTR"
+				includeIn="tr"
 				horizontalScrollPolicy="auto"
 				verticalScrollPolicy="auto"
-				text="{this._content}"
+				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
 				width="{WIDTH}"
 				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.PopupSkinTR"
 				editable="false"/>
-	<!--<s:TextArea includeIn="tl"
+	<s:TextArea id="textAreaTL"
+				includeIn="tl"
 				horizontalScrollPolicy="auto"
 				verticalScrollPolicy="auto"
-				text="{this._content}"
+				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
 				width="{WIDTH}"
 				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.PopupSkinTL"
-				editable="true"/>
-	<s:TextArea includeIn="br"
+				editable="false"/>
+	<s:TextArea id="textAreaBR"
+				includeIn="br"
 				horizontalScrollPolicy="auto"
 				verticalScrollPolicy="auto"
-				text="{this._content}"
+				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
 				width="{WIDTH}"
 				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.PopupSkinBR"
 				editable="true"/>
-	<s:TextArea includeIn="bl"
+	<s:TextArea id="textAreaBL"
+				includeIn="bl"
 				horizontalScrollPolicy="auto"
 				verticalScrollPolicy="auto"
-				text="{this._content}"
+				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
 				width="{WIDTH}"
 				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.PopupSkinBL"
-				editable="true"/>-->
+				editable="true"/>
 	<openscales:IconButton id="close"
 						   x="{WIDTH-17}"
-						   y="0"
+						   y="3"
 						   icon="{new ButtonCloseUp()}"
 						   iconOver="{new ButtonCloseOver()}"
 						   iconDown="{new ButtonCloseOver()}"

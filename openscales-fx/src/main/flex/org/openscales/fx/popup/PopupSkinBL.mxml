@@ -16,8 +16,8 @@
 		private var lineBreakChanged:Boolean;
 		private var paddingChanged:Boolean;
 		private var verticalAlignChanged:Boolean;
-		private var WIDTH:Number = 250;
-		private var HEIGHT:Number = 240;
+		private var WIDTH:Number = 200;
+		private var HEIGHT:Number = 250;
 		/* Define the skin elements that should not be colorized. 
 		For text area, the skin itself is colorized but the individual parts are not. */
 		static private const exclusions:Array = ["background", "scroller"];
@@ -187,7 +187,7 @@
 		<s:State name="disabled"/>
 	</s:states>
 	
-	<s:Group rotationX="180" width="{WIDTH}" height="{HEIGHT}">
+	<s:Group rotationX="180" rotationY="180" x="200" y="208" width="{WIDTH}" height="{HEIGHT}">
 		<s:Group width="{WIDTH}" height="{HEIGHT}" d:type="layer" d:userLabel="Shadow2">
 			<s:Group width="{WIDTH}" height="{HEIGHT}">
 				<s:Path width="{WIDTH}" height="{HEIGHT}" data="M610 0.2Q614 0.2 614 5.85L614 126Q614 131.6 610 131.6L109.9 131.6 137.1 159.35 35.4 131.6 0.1 131.6Q-4 131.6 -4 126L-4 5.85Q-4 0.2 0.1 0.2L610 0.2">
@@ -210,7 +210,7 @@
 			<s:Group width="{WIDTH}" height="{HEIGHT}">
 				<s:Path width="{WIDTH}" height="{HEIGHT}" data="M606 4.2Q610 4.2 610 8.25L610 123.15Q610 127.2 606 127.2L98.3 127.2 136.3 157.8 43.15 127.2 4 127.2Q0 127.2 0 123.15L0 8.25Q0 4.2 4 4.2L606 4.2">
 					<s:fill>
-						<s:SolidColor  id="bgFill" color="#FFFFFF" alpha="0.89803922"/>
+						<s:SolidColor id="bgFill" color="#FFFFFF" alpha="0.89803922"/>
 					</s:fill>
 				</s:Path>
 				<s:Path width="{WIDTH}" height="{HEIGHT}" data="M606 4.2 4 4.2Q0 4.2 0 8.25L0 123.15Q0 127.2 4 127.2L43.15 127.2 136.3 157.8 98.3 127.2 606 127.2Q610 127.2 610 123.15L610 8.25Q610 4.2 606 4.2">
@@ -223,7 +223,7 @@
 	</s:Group>
 	
 	<!--- Defines the scroller that is used to scroll the TextArea control. -->
-	<s:Scroller id="scroller" left="0" top="0" right="0" bottom="0" minViewportInset="1" measuredSizeIncludesScrollBars="false" hasFocusableChildren="false">
+	<s:Scroller id="scroller" top="0" left="0" right="0" bottom="0" minViewportInset="1" measuredSizeIncludesScrollBars="false" hasFocusableChildren="false">
 		<!--- @copy spark.components.supportClasses.SkinnableTextBase#textDisplay -->
 		<s:RichEditableText id="textDisplay"
 							heightInLines="10"
@@ -231,3 +231,4 @@
 	</s:Scroller>
 	
 </s:SparkSkin>
+
