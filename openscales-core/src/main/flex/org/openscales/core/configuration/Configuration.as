@@ -235,9 +235,12 @@ package org.openscales.core.configuration
 			else{visible = true;}
 			
 			var name:String=xmlNode.@name;
+			var projection:String;
+			if(String(xmlNode.@projection) != "")
+				projection = Layer.DEFAULT_SRS_CODE;
+			else
+				projection = String(xmlNode.@projection);
 			
-			
-			var projection:String=xmlNode.@projection;
 			var resolution:Array=null;
 			if(xmlNode.@resolutions!=null && xmlNode.@resolutions=="") 
 			{
