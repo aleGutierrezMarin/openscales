@@ -1,8 +1,6 @@
 package org.openscales.core
 {
 	
-	import assets.fxg.Popup;
-	
 	import com.gskinner.motion.GTween;
 	import com.gskinner.motion.easing.Cubic;
 	

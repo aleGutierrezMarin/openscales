@@ -1,7 +1,5 @@
 package org.openscales.core.popup
 {	
-	import assets.fxg.Popup;
-	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
