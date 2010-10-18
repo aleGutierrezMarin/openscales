@@ -83,6 +83,7 @@
 				
 				fxMap.addFxPopup(fxPopup,true);
 				fxPopup.content = content;
+				fxPopup.visible = true;
 				
 			}
 			
