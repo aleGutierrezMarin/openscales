@@ -7,6 +7,7 @@ package org.openscales.fx
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
+	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
 	
@@ -81,35 +82,45 @@ package org.openscales.fx
 		private function onMoveStart(event:MapEvent):void{
 			_flexOverlay.visible = false;
 			var j:uint = _flexOverlay.numElements;
+			var element:IVisualElement;
 			for(var i:uint=0;i<j;++i){
-				(_flexOverlay.getElementAt(i) as FxPopup).visible = false;
-				(_flexOverlay.getElementAt(i) as FxPopup).position = this.map.getMapPxFromLocation((_flexOverlay.getElementAt(i) as FxPopup).loc);
+				element = _flexOverlay.getElementAt(i);
+				if(element is FxPopup)
+					(element as FxPopup).position = this.map.getMapPxFromLocation((element as FxPopup).loc);
 			}
+			
 		}
 		
 		private function onMoveEnd(event:MapEvent):void{
 			_flexOverlay.visible = true;
 			var j:uint = _flexOverlay.numElements;
+			var element:IVisualElement;
 			for(var i:uint=0;i<j;++i){
-				(_flexOverlay.getElementAt(i) as FxPopup).position = this.map.getMapPxFromLocation((_flexOverlay.getElementAt(i) as FxPopup).loc);
-				(_flexOverlay.getElementAt(i) as FxPopup).visible=true;
+				element = _flexOverlay.getElementAt(i);
+				if(element is FxPopup)
+					(element as FxPopup).position = this.map.getMapPxFromLocation((element as FxPopup).loc);
 			}
 		}
 		
+		
 		public function addFxPopup(fxPopup:FxPopup, exclusive:Boolean = true):void{
-			_flexOverlay.addEventListener(MapEvent.MOVE_START,onMoveStart);
-			_flexOverlay.addEventListener(MapEvent.MOVE_END,onMoveEnd);
+			_flexOverlay.visible = true;
+			map.addEventListener(MapEvent.DRAG_START,onMoveStart);
+			map.addEventListener(MapEvent.LOAD_START,onMoveStart);
+			map.addEventListener(MapEvent.LOAD_END,onMoveEnd);
+			map.addEventListener(MapEvent.MOVE_START,onMoveStart);
+			map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
 			var i:Number;
 			if(exclusive){
-				var child:DisplayObject;
-				for(i=this._flexOverlay.numChildren-1;i>=0;i--){
-					child = this._flexOverlay.getChildAt(i);
-					if(child is FxPopup){
-						if(child != fxPopup) {
-							Trace.warn("Map.addPopup: popup already displayed so escape");
+				var element:IVisualElement;
+				for(i=this._flexOverlay.numElements-1;i>=0;i--){
+					element = this._flexOverlay.getElementAt(i);
+					if(element is FxPopup){
+						if(element != fxPopup) {
+							Trace.warn("Map.addFxPopup: fxPopup already displayed so escape");
 							return;
 						}
-						this.removeFxPopup(child as FxPopup);
+						this.removeFxPopup(element as FxPopup);
 					}
 				}
 			}
