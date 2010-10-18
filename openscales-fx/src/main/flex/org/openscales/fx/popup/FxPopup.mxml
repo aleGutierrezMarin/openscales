@@ -219,7 +219,7 @@
 				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
 				width="{WIDTH}"
 				height="{HEIGHT}"
-				skinClass="org.openscales.fx.popup.PopupSkinTR"
+				skinClass="org.openscales.fx.popup.skin.PopupSkinTR"
 				editable="false"/>
 	<s:TextArea id="textAreaTL"
 				includeIn="tl"
@@ -228,7 +228,7 @@
 				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
 				width="{WIDTH}"
 				height="{HEIGHT}"
-				skinClass="org.openscales.fx.popup.PopupSkinTL"
+				skinClass="org.openscales.fx.popup.skin.PopupSkinTL"
 				editable="false"/>
 	<s:TextArea id="textAreaBR"
 				includeIn="br"
@@ -237,7 +237,7 @@
 				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
 				width="{WIDTH}"
 				height="{HEIGHT}"
-				skinClass="org.openscales.fx.popup.PopupSkinBR"
+				skinClass="org.openscales.fx.popup.skin.PopupSkinBR"
 				editable="true"/>
 	<s:TextArea id="textAreaBL"
 				includeIn="bl"
@@ -246,7 +246,7 @@
 				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
 				width="{WIDTH}"
 				height="{HEIGHT}"
-				skinClass="org.openscales.fx.popup.PopupSkinBL"
+				skinClass="org.openscales.fx.popup.skin.PopupSkinBL"
 				editable="true"/>
 	<openscales:IconButton id="close"
 						   x="{WIDTH-17}"
