@@ -8,7 +8,7 @@
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
-	
+
 	<fx:Script>
 		<![CDATA[
 			import assets.fxg.ButtonCloseOver;
@@ -49,6 +49,25 @@
 			
 			public function create():void{
 				//this.addEventListener(Event.ADDED_TO_STAGE,draw);
+				
+				textAreaTR.width = WIDTH;
+				textAreaTR.height = HEIGHT;
+				textAreaTR.textFlow = TextConverter.importToFlow(_content,TextConverter.TEXT_FIELD_HTML_FORMAT);
+				
+				textAreaTL.width = WIDTH;
+				textAreaTL.height = HEIGHT;
+				textAreaTL.textFlow = TextConverter.importToFlow(_content,TextConverter.TEXT_FIELD_HTML_FORMAT);
+				
+				textAreaBR.width = WIDTH;
+				textAreaBR.height = HEIGHT;
+				textAreaBR.textFlow = TextConverter.importToFlow(_content,TextConverter.TEXT_FIELD_HTML_FORMAT);
+				
+				textAreaTL.width = WIDTH;
+				textAreaTL.height = HEIGHT;
+				textAreaTL.textFlow = TextConverter.importToFlow(_content,TextConverter.TEXT_FIELD_HTML_FORMAT);
+				
+				close.x = WIDTH - 17;
+				close.y = 3;
 				
 				if ((this.loc != null) && (this.fxmap.map != null)) {
 					var px:Pixel = this.fxmap.map.getMapPxFromLocation(this.feature.lonlat);
@@ -216,41 +235,27 @@
 				includeIn="tr"
 				horizontalScrollPolicy="auto"
 				verticalScrollPolicy="auto"
-				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
-				width="{WIDTH}"
-				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.skin.PopupSkinTR"
 				editable="false"/>
 	<s:TextArea id="textAreaTL"
 				includeIn="tl"
 				horizontalScrollPolicy="auto"
 				verticalScrollPolicy="auto"
-				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
-				width="{WIDTH}"
-				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.skin.PopupSkinTL"
 				editable="false"/>
 	<s:TextArea id="textAreaBR"
 				includeIn="br"
 				horizontalScrollPolicy="auto"
 				verticalScrollPolicy="auto"
-				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
-				width="{WIDTH}"
-				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.skin.PopupSkinBR"
 				editable="true"/>
 	<s:TextArea id="textAreaBL"
 				includeIn="bl"
 				horizontalScrollPolicy="auto"
 				verticalScrollPolicy="auto"
-				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
-				width="{WIDTH}"
-				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.skin.PopupSkinBL"
 				editable="true"/>
 	<openscales:IconButton id="close"
-						   x="{WIDTH-17}"
-						   y="3"
 						   icon="{new ButtonCloseUp()}"
 						   iconOver="{new ButtonCloseOver()}"
 						   iconDown="{new ButtonCloseOver()}"

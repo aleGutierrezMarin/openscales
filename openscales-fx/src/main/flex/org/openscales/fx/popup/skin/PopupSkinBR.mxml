@@ -16,8 +16,6 @@
 		private var lineBreakChanged:Boolean;
 		private var paddingChanged:Boolean;
 		private var verticalAlignChanged:Boolean;
-		private var WIDTH:Number = 200;
-		private var HEIGHT:Number = 250;
 		/* Define the skin elements that should not be colorized. 
 		For text area, the skin itself is colorized but the individual parts are not. */
 		static private const exclusions:Array = ["background", "scroller"];
@@ -187,33 +185,33 @@
 		<s:State name="disabled"/>
 	</s:states>
 	
-	<s:Group rotationX="180" y="208" width="{WIDTH}" height="{HEIGHT}">
-		<s:Group width="{WIDTH}" height="{HEIGHT}" d:type="layer" d:userLabel="Shadow2">
-			<s:Group width="{WIDTH}" height="{HEIGHT}">
-				<s:Path width="{WIDTH}" height="{HEIGHT}" data="M610 0.2Q614 0.2 614 5.85L614 126Q614 131.6 610 131.6L109.9 131.6 137.1 159.35 35.4 131.6 0.1 131.6Q-4 131.6 -4 126L-4 5.85Q-4 0.2 0.1 0.2L610 0.2">
+	<s:Group rotationX="180" y="208" width="{hostComponent.width}" height="{hostComponent.height + 50}">
+		<s:Group width="{hostComponent.width}" height="{hostComponent.height + 50}" d:type="layer" d:userLabel="Shadow2">
+			<s:Group width="{hostComponent.width}" height="{hostComponent.height + 50}">
+				<s:Path width="{hostComponent.width}" height="{hostComponent.height + 50}" data="M610 0.2Q614 0.2 614 5.85L614 126Q614 131.6 610 131.6L109.9 131.6 137.1 159.35 35.4 131.6 0.1 131.6Q-4 131.6 -4 126L-4 5.85Q-4 0.2 0.1 0.2L610 0.2">
 					<s:fill>
 						<s:SolidColor color="#6F7784" alpha="0.2"/>
 					</s:fill>
 				</s:Path>
 			</s:Group>
 		</s:Group>
-		<s:Group width="{WIDTH}" height="{HEIGHT}" d:type="layer" d:userLabel="Shadow1">
-			<s:Group width="{WIDTH}" height="{HEIGHT}">
-				<s:Path width="{WIDTH}" height="{HEIGHT}" data="M608 2.2Q612 2.2 612 7.15L612 124.7Q612 129.6 608 129.6L103.65 129.6 136.7 158.15 39.15 129.6 2.05 129.6Q-2 129.6 -2 124.7L-2 7.15Q-2 2.2 2.05 2.2L608 2.2">
+		<s:Group width="{hostComponent.width}" height="{hostComponent.height + 50}" d:type="layer" d:userLabel="Shadow1">
+			<s:Group width="{hostComponent.width}" height="{hostComponent.height + 50}">
+				<s:Path width="{hostComponent.width}" height="{hostComponent.height + 50}" data="M608 2.2Q612 2.2 612 7.15L612 124.7Q612 129.6 608 129.6L103.65 129.6 136.7 158.15 39.15 129.6 2.05 129.6Q-2 129.6 -2 124.7L-2 7.15Q-2 2.2 2.05 2.2L608 2.2">
 					<s:fill>
 						<s:SolidColor color="#666666" alpha="0.33333334"/>
 					</s:fill>
 				</s:Path>
 			</s:Group>
 		</s:Group>
-		<s:Group width="{WIDTH}" height="{HEIGHT}" d:type="layer" d:userLabel="Content">
-			<s:Group width="{WIDTH}" height="{HEIGHT}">
-				<s:Path width="{WIDTH}" height="{HEIGHT}" data="M606 4.2Q610 4.2 610 8.25L610 123.15Q610 127.2 606 127.2L98.3 127.2 136.3 157.8 43.15 127.2 4 127.2Q0 127.2 0 123.15L0 8.25Q0 4.2 4 4.2L606 4.2">
+		<s:Group width="{hostComponent.width}" height="{hostComponent.height + 50}" d:type="layer" d:userLabel="Content">
+			<s:Group width="{hostComponent.width}" height="{hostComponent.height + 50}">
+				<s:Path width="{hostComponent.width}" height="{hostComponent.height + 50}" data="M606 4.2Q610 4.2 610 8.25L610 123.15Q610 127.2 606 127.2L98.3 127.2 136.3 157.8 43.15 127.2 4 127.2Q0 127.2 0 123.15L0 8.25Q0 4.2 4 4.2L606 4.2">
 					<s:fill>
 						<s:SolidColor id="bgFill" color="#FFFFFF" alpha="0.89803922"/>
 					</s:fill>
 				</s:Path>
-				<s:Path width="{WIDTH}" height="{HEIGHT}" data="M606 4.2 4 4.2Q0 4.2 0 8.25L0 123.15Q0 127.2 4 127.2L43.15 127.2 136.3 157.8 98.3 127.2 606 127.2Q610 127.2 610 123.15L610 8.25Q610 4.2 606 4.2">
+				<s:Path width="{hostComponent.width}" height="{hostComponent.height + 50}" data="M606 4.2 4 4.2Q0 4.2 0 8.25L0 123.15Q0 127.2 4 127.2L43.15 127.2 136.3 157.8 98.3 127.2 606 127.2Q610 127.2 610 123.15L610 8.25Q610 4.2 606 4.2">
 					<s:stroke>
 						<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" pixelHinting="true" color="#6F7784"/>
 					</s:stroke>
