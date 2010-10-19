@@ -397,7 +397,7 @@ package org.openscales.core.configuration
 					layer.proxy=String(xmlNode.@proxy);
 				}
 				//opacity
-				if(String(xmlNode.@alpha))
+				if(String(xmlNode.@alpha) != "")
 				{
 					layer.alpha = Number(xmlNode.@alpha);
 				}
