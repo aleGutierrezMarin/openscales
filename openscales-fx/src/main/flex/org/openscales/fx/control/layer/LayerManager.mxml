@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- LayerManager Flex control, used to change layer order or visbility -->
+<Control xmlns="http://openscales.org"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="215">
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.fxg.ButtonCloseOver;
+			import assets.fxg.ButtonCloseUp;
+			
+			import flashx.textLayout.formats.BackgroundColor;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
+			import mx.controls.RadioButton;
+			import mx.core.Application;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ScrollEvent;
+			import mx.events.SliderEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			import org.openscales.core.control.LayerManager;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.LayerManagerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.events.OpenScalesEvent;
+			import org.openscales.core.handler.mouse.ClickHandler;
+			import org.openscales.core.layer.Layer;
+			import org.openscales.fx.control.IconButton;
+			
+			import spark.components.Group;
+			import spark.components.HSlider;
+			import spark.components.Label;
+			import spark.components.VSlider;
+			import spark.primitives.Rect;
+			
+			private var _layer:Layer;
+			
+			// Array wich contains all layers
+			[Bindable]private var _layerArray:ArrayCollection = new ArrayCollection();
+			
+			private var _hSlider:HSlider = null;
+			private var _closeButton:IconButton = null;
+			private var _label:Label = null;
+			
+			private var _layerOldZindex:int=0;
+			
+			private var myTimer:Timer = null;
+			
+			// static reference to itself : makes LayerRenderer code cleaner
+			static public var layerManager:LayerManager;
+			/**
+			 * Set the map
+			 *
+			 * @param value
+			 */	 
+			override public function set map(value:Map):void {
+				super.map = value;
+				layerManager = this;
+				if(map != null) {
+					//Listening of layer event
+					this.map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
+					this.map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+					this.map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
+					this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+					this.map.addEventListener(LayerManagerEvent.COMPONENT_OPACITY,manageOpacity);
+					
+					//stock layer by type : baselayer and overlays
+					var overlayArray:Vector.<Layer>  = this.map.layers;
+					var ac:ArrayCollection = new ArrayCollection();
+					var i:int = overlayArray.length;
+					for(i;i>0;--i)
+						ac.addItem(overlayArray[i-1]);
+					layerList.dataProvider = ac;
+					
+				}
+			}
+			
+			/**
+			 * Refresh the LayerSwitcher when a layer is add, delete or update
+			 *
+			 * @param event Layer event
+			 */
+			public function refresh(event:LayerEvent):void {	
+				//Test the triggered event
+				if(event.type == LayerEvent.LAYER_ADDED){
+					layerList.dataProvider.addItemAt(event.layer,0);
+					layerList.invalidateDisplayList();
+				}
+				
+				if(event.type == LayerEvent.LAYER_REMOVED){
+					var index:int = layerList.dataProvider.getItemIndex(event.layer);
+					layerList.dataProvider.removeItemAt(index);
+					layerList.invalidateDisplayList();
+				}
+				
+				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
+					var overlayArray:Vector.<Layer> = this.map.layers;
+					var i:uint = overlayArray.length;
+					var ac:ArrayCollection = new ArrayCollection();
+					for(i;i>0;--i)
+						ac.addItem(overlayArray[i-1]);
+					layerList.dataProvider = ac;
+					
+				}
+				if(myTimer != null){
+					myTimer.stop();
+					myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
+					myTimer = null;
+				}
+				this.overRect.visible = false;
+				this.layerList.visible = true;
+				if(this._hSlider != null) {
+					this.removeElement(this._hSlider);
+					this._hSlider = null;
+				}
+				if(this._closeButton != null) {
+					this.removeElement(this._closeButton);
+					this._closeButton = null;
+				}
+				if(this._label != null) {
+					this.removeElement(this._label);
+					this._label = null;
+				}
+			}
+			
+			/**
+			 * Update layers order when a user change it
+			 *
+			 * @param event Drag event
+			 */
+			public function changeLayerOrder(event:DragEvent):void{
+				var layer:Layer = layerList.selectedItem as Layer;
+				this.map.changeLayerIndex(layer,layerList.selectedIndex);
+			}
+			
+			
+			/**
+			 * Update layers order when a user change it
+			 *
+			 * @param event Drag event
+			 */
+			public function manageOpacity(event:LayerManagerEvent):void
+			{
+				// remove timer before manage opacity
+				removeTimerOpacity(new MouseEvent(MouseEvent.MOUSE_OVER));
+				
+				this._layerOldZindex = event.layer.zindex;
+				
+				this.overRect.visible = false;
+				this.layerList.visible = true;
+				if(this._hSlider != null) {
+					this.removeElement(this._hSlider);
+					this._hSlider = null;
+				}
+				if(this._label != null) {
+					this.removeElement(this._label);
+					this._label = null;
+				}
+				if(this._closeButton != null) {
+					this.removeElement(this._closeButton);
+					this._closeButton = null;
+				}
+				if(this._layer == event.layer)
+				{
+					return;
+				}
+				
+				if(this._layer != event.layer || !this.overRect.visible)
+				{
+					this._layer = event.layer;
+					
+					this._closeButton = new IconButton();
+					this._closeButton.setStyle("icon",new ButtonCloseUp());
+					this._closeButton.setStyle("iconOver",new ButtonCloseOver());
+					this._closeButton.setStyle("iconDown",new ButtonCloseOver());
+					this._closeButton.x = this.width - 30;
+					this._closeButton.y = 10;
+					this._closeButton.addEventListener(MouseEvent.MOUSE_UP,closeOpacity);
+					this.addElement(_closeButton);
+					
+					this._hSlider = new HSlider();
+					this._hSlider.height = 11;
+					this._hSlider.width = 100;
+					this._hSlider.x=this.width/2 - this._hSlider.width/2;
+					this._hSlider.y=this.height/2 - this._hSlider.height/2;
+					this._hSlider.minimum = 0;
+					this._hSlider.maximum = 100;
+					this._hSlider.value = this._layer.alpha*100;
+					this._hSlider.snapInterval = 1;
+					this._hSlider.dataTipFormatFunction = percentDataTip;
+					this._hSlider.addEventListener(MouseEvent.MOUSE_DOWN,onDrag);
+					this._hSlider.addEventListener(SliderEvent.CHANGE,layerOpacity);
+					this.addElement(this._hSlider);
+					
+					this._label = new Label();
+					this._label.text = this._layer.name;
+					this._label.x = 15;
+					this._label.y = this.height/2 - this._hSlider.height*2;
+					this.addElement(this._label);
+					
+					this.overRect.visible = true;
+					this.overRect.width = this.width-10;
+					this.overRect.height = this.height;
+					this.overRect.x = 5;
+					this.overRect.y = 0;
+					
+					this.addEventListener(MouseEvent.ROLL_OUT,addTimerOpacity);
+					this.layerList.visible = false;
+				}
+			}
+			
+			
+			public function addTimerOpacity(event:MouseEvent):void{
+				if(myTimer != null){
+					myTimer.reset();
+				}else{
+					myTimer = new Timer(2000, 1);
+				}
+				this.addEventListener(MouseEvent.MOUSE_OVER,removeTimerOpacity);
+				myTimer.addEventListener(TimerEvent.TIMER, timerOpacityHandler);
+				myTimer.start();
+			}
+			
+			public function removeTimerOpacity(event:MouseEvent):void{
+				if(myTimer != null){
+					myTimer.stop();
+					myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
+					myTimer = null;
+				}	
+			}
+			
+			public function timerOpacityHandler(event:TimerEvent):void {
+				this.overRect.visible = false;
+				this.layerList.visible = true;
+				if(this._hSlider != null) {
+					this.removeElement(this._hSlider);
+					this._hSlider = null;
+				}
+				if(this._closeButton != null) {
+					this.removeElement(this._closeButton);
+					this._closeButton = null;
+				}
+				if(this._label != null) {
+					this.removeElement(this._label);
+					this._label = null;
+				}
+				this.removeEventListener(MouseEvent.MOUSE_OVER,removeTimerOpacity);
+				myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
+				myTimer = null;
+				this._layer = null;
+			}
+			
+			public function closeOpacity(event:Event):void
+			{
+				this.overRect.visible = false;
+				this.layerList.visible = true;
+				if(this._hSlider != null) {
+					this.removeElement(this._hSlider);
+					this._hSlider = null;
+				}
+				if(this._closeButton != null) {
+					this.removeElement(this._closeButton);
+					this._closeButton = null;
+				}
+				if(this._label != null) {
+					this.removeElement(this._label);
+					this._label = null;
+				}
+				if(myTimer != null){
+					myTimer.stop();
+					myTimer.removeEventListener(TimerEvent.TIMER, timerOpacityHandler);
+					myTimer = null;
+				}
+				this._layer = null;
+			}
+			
+			/**
+			 * Change the opacity of the layer
+			 *
+			 * @param event event send by a slide
+			 */
+			public function layerOpacity(event:Event):void
+			{	
+				this._layer.alpha = (event.target as HSlider).value/100;
+			}
+			
+			public function percentDataTip(value:Number):String
+			{
+				return value+"%";
+			}
+			
+			private function onDrag(event:Event):void {
+				event.stopPropagation();
+			}
+			
+			public function get overlayArray():ArrayCollection {
+				return this._layerArray;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%"
+			  paddingLeft="2" paddingRight="2" paddingBottom="2" paddingTop="2"> 
+		<s:List id="layerList" 
+				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
+				dropEnabled="true"
+				dragEnabled="true"
+				dragMoveEnabled="true"
+				width="100%"
+				x="0"
+				y="0"
+				dragComplete="changeLayerOrder(event)" borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="justify"
+								  requestedRowCount="4"/>
+			</s:layout>
+		</s:List>
+	</s:VGroup>
+	<s:Rect id="overRect"
+			x="0" y="0"
+			width="0" height="0"
+			visible="false">
+		<s:fill>
+			<s:SolidColor color="white" alpha="1" />
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="black" weight="1" alpha="1" />
+		</s:stroke>
+	</s:Rect>
+</Control>
+
