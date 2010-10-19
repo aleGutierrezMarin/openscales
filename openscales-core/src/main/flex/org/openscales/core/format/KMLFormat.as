@@ -130,7 +130,7 @@ package org.openscales.core.format
 					if(style.IconStyle.Icon != undefined && style.IconStyle.Icon.href != undefined) {
 						try {
 							var _url:String = style.IconStyle.Icon.href.text();
-							var _req:DataRequest
+							var _req:DataRequest;
 							_req = new DataRequest(_url, updateImages, updateImagesError);
 							_req.proxy = this._proxy;
 							//_req.security = this._security; // FixMe: should the security be managed here ?
