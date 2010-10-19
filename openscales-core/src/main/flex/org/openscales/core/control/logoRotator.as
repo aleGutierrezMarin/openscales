@@ -86,7 +86,7 @@ package org.openscales.core.control
 				} else {
 					if(this._ll.size>1) {
 						this.removeChild(this._dn.bitmap());
-						this._dn = this._dn.nextNode;
+						this._dn = this._dn.nextNode as LinkedListBitmapNode;
 						this.addChild(this._dn.bitmap());
 					}
 				}
