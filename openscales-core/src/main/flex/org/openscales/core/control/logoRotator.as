@@ -42,7 +42,7 @@ package org.openscales.core.control
 		 * setter of the ttl between to logo
 		 * @param v:Number the ttl
 		 */
-		public function set ttl(v:Number):Number {
+		public function set ttl(v:Number):void {
 			this._dr = v;
 			if(this._tm!=null) {
 				this._tm.stop();
