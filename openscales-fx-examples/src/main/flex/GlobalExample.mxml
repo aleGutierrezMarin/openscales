@@ -32,17 +32,23 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.Trace;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
+			import org.openscales.fx.popup.FxPopup;
 			
-			private var popup:Anchored
+			//private var popup:Anchored
+			private var fxPopup:FxPopup;
+			
+			Trace.useFireBugConsole = true;
 			
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {
+				/*
 				if(popup) {
 					popup.destroy();
 				}
@@ -58,6 +64,27 @@
 				}
 				popup.htmlText = content;
 				fxMap.map.addPopup(popup, true);
+				*/
+				
+				if(fxPopup){
+					fxPopup.remove()
+				}
+				fxPopup = null;
+				fxPopup = new FxPopup();
+				fxPopup.feature = event.feature;
+				fxPopup.position = fxMap.map.getMapPxFromLocation(event.feature.lonlat);
+				var content:String="";
+				if(event.feature.attributes["STATE_NAME"] != undefined)
+					content = content + "<b><font size='20'>" + event.feature.attributes["STATE_NAME"] + " (" + event.feature.attributes["STATE_ABBR"] + ")</font></b><br />";
+				for(var attribute:String in event.feature.attributes) {
+					if((attribute != "STATE_NAME") && (attribute != "STATE_ABBR") && (attribute != "coordinates")) 
+						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
+				}
+				
+				fxMap.addFxPopup(fxPopup,true);
+				fxPopup.content = content;
+				fxPopup.visible = true;
+				
 			}
 			
 		]]>

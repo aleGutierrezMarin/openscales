@@ -7,6 +7,7 @@ package org.openscales.fx
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
+	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
 	
@@ -22,9 +23,11 @@ package org.openscales.fx
 	import org.openscales.fx.control.FxOverviewMap;
 	import org.openscales.fx.handler.FxHandler;
 	import org.openscales.fx.layer.FxLayer;
+	import org.openscales.fx.popup.FxPopup;
 	import org.openscales.fx.security.FxAbstractSecurity;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	
 	import spark.components.Group;
@@ -51,6 +54,7 @@ package org.openscales.fx
 		private var _creationWidth:Number = NaN;
 		private var _proxy:String = "";
 		private var _maxExtent:Bounds = null;
+		private var _flexOverlay:Group = null;
 		
 		/**
 		 * FxMap constructor
@@ -75,6 +79,64 @@ package org.openscales.fx
 			this._map.addLayer(l.layer);
 		}
 		
+		private function onMoveStart(event:MapEvent):void{
+			_flexOverlay.visible = false;
+			var j:uint = _flexOverlay.numElements;
+			var element:IVisualElement;
+			for(var i:uint=0;i<j;++i){
+				element = _flexOverlay.getElementAt(i);
+				if(element is FxPopup)
+					(element as FxPopup).position = this.map.getMapPxFromLocation((element as FxPopup).loc);
+			}
+			
+		}
+		
+		private function onMoveEnd(event:MapEvent):void{
+			_flexOverlay.visible = true;
+			var j:uint = _flexOverlay.numElements;
+			var element:IVisualElement;
+			for(var i:uint=0;i<j;++i){
+				element = _flexOverlay.getElementAt(i);
+				if(element is FxPopup)
+					(element as FxPopup).position = this.map.getMapPxFromLocation((element as FxPopup).loc);
+			}
+		}
+		
+		
+		public function addFxPopup(fxPopup:FxPopup, exclusive:Boolean = true):void{
+			_flexOverlay.visible = true;
+			map.addEventListener(MapEvent.DRAG_START,onMoveStart);
+			map.addEventListener(MapEvent.LOAD_START,onMoveStart);
+			map.addEventListener(MapEvent.LOAD_END,onMoveEnd);
+			map.addEventListener(MapEvent.MOVE_START,onMoveStart);
+			map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
+			var i:Number;
+			if(exclusive){
+				var element:IVisualElement;
+				for(i=this._flexOverlay.numElements-1;i>=0;i--){
+					element = this._flexOverlay.getElementAt(i);
+					if(element is FxPopup){
+						if(element != fxPopup) {
+							Trace.warn("Map.addFxPopup: fxPopup already displayed so escape");
+							return;
+						}
+						this.removeFxPopup(element as FxPopup);
+					}
+				}
+			}
+			if (fxPopup != null){
+				fxPopup.fxmap = this;
+				fxPopup.position = this.map.getMapPxFromLocation(fxPopup.feature.lonlat);
+				this._flexOverlay.addElement(fxPopup);
+			}
+		}
+		
+		public function removeFxPopup(fxPopup:FxPopup):void{
+			
+			if(this._flexOverlay.contains(fxPopup))
+				this._flexOverlay.removeElement(fxPopup);
+		}
+		
 		/**
 		 * FxMap creation complete callback, initialize the map at the right Flex lifecycle time 
 		 */
@@ -90,6 +152,12 @@ package org.openscales.fx
 			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
 			this.addElementAt(mapContainer, 0);
 			mapContainer.addChild(this._map);
+			
+			this._flexOverlay = new Group();
+			this.addElementAt(_flexOverlay,1);
+			this.map.addEventListener(MapEvent.MOVE_START,onMoveStart);
+			this.map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
+			
 			
 			if (this._proxy != "")
 				this._map.proxy = this._proxy;
