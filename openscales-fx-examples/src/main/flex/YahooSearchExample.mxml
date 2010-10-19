@@ -7,7 +7,7 @@ Otherwise, double-click on one of the results to center the map. -->
 	
 	<Map id="fxMap" width="100%" height="100%" zoom="7" center="4.833,45.767">
 		
-		<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url=" />
+		<Mapnik name="Mapnik" />
 		
 		<DragHandler />
 		<WheelHandler />

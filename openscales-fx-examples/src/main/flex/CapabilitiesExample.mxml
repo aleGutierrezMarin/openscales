@@ -9,7 +9,7 @@ The layers manager is automatically updated.</p> -->
 	
 	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.833,45.767">
 		
-		<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
+		<Mapnik name="Mapnik" />
 		
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
 		<DragHandler />

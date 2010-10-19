@@ -27,5 +27,10 @@ package org.openscales.fx.layer
 	    	if(this.layer != null)
 	    		Util.extend((this.layer as HTTPRequest).params, value);
 	    }
+		
+		public function set method(value:String):void {
+			if(this.layer != null)
+				(this.layer as HTTPRequest).method = value;
+		}
 	}
 }

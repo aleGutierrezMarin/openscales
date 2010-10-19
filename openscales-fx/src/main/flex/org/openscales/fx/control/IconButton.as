@@ -7,7 +7,9 @@ package org.openscales.fx.control
 	[Style(name="icon",type="*")]
 	[Style(name="iconOver",type="*")]
 	[Style(name="iconDown",type="*")]
+	[Style(name="labelVisible",type="Boolean")]
 	
+		
 	/**
 	 * Since Flex 4 does not provide builtin button capable to display an Icon,
 	 * we provide it in OpenScales

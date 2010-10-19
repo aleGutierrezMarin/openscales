@@ -5,10 +5,10 @@ package org.openscales.fx.control
 	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.fx.layer.FxLayer;
+	import org.openscales.geometry.basetypes.Size;
 	
 	import spark.components.Group;
 	import spark.core.SpriteVisualElement;
@@ -17,36 +17,43 @@ package org.openscales.fx.control
 	 * <p>OverviewMap Flex wrapper.</p>
 	 * <p>To use it, declare a &lt;OverviewMap /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
-	public class FxOverviewMap extends Group
+	public class FxOverviewMap extends Control
 	{
-		private var overviewmap:OverviewMap;
+		private var _overviewmap:OverviewMap;
 		public function FxOverviewMap()
 		{
 			super();
-			overviewmap = new OverviewMap();
-			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
+			this.width=100;
+			this.height=100;
+			_overviewmap = new OverviewMap();
+			this.addEventListener(FlexEvent.CREATION_COMPLETE, this.onCreationComplete);
 		}
 		
-		public function set map(value:Map):void {
-			overviewmap.map = value;
+		override public function set map(value:Map):void {
+			_overviewmap.map = value;
 			this.draw();
+		}
+		override public function get map():Map {
+			return _overviewmap.map;
 		}
 		
 		public function set extentColor(value:uint):void {
-			overviewmap.extentColor = value;
+			_overviewmap.extentColor = value;
 		}
 		
 		public function set newExtentColor(value:uint):void {
-			overviewmap.newExtentColor = value;
+			_overviewmap.newExtentColor = value;
 		}
 		
-		private function draw():void {
+		override public function draw():void {
 			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
 			this.addElementAt(mapContainer, 0);
-			mapContainer.addChild(this.overviewmap);
-			this.overviewmap.size = new Size(this.width,this.height);
+			mapContainer.addChild(this._overviewmap);
+			if(this.width && this.height)
+				this._overviewmap.size = new Size(this.width,this.height);
 		}
-		private function onCreationComplete(event:Event):void {
+		
+		override protected function onCreationComplete(event:Event):void {
 			var i:uint;
 			var element:IVisualElement;
 			for(i=0; i<this.numElements; i++) {
@@ -58,10 +65,13 @@ package org.openscales.fx.control
 		}
 		private function addFxLayer(l:FxLayer):void {
 			l.configureLayer();
-			if(overviewmap.baselayer == null) {
-				overviewmap.baselayer = l.layer;
+			if(_overviewmap.baselayer == null) {
+				_overviewmap.baselayer = l.layer;
 			} else {
 			}
+		}
+		public function get overviewMap():OverviewMap {
+			return this._overviewmap;
 		}
 	}
 }
