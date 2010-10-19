@@ -8,7 +8,7 @@ Use the top-right button to switch the style of the rendering. -->
 	
 	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.84479575848897,45.7531798723947">
 
-		<Mapnik name="Mapnik" proxy="http://openscales.org/proxy.php?url="/>
+		<Mapnik name="Mapnik" />
 
 		<WheelHandler/>
 

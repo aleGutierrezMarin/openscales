@@ -237,7 +237,7 @@
 				width="{WIDTH}"
 				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.skin.PopupSkinBR"
-				editable="true"/>
+				editable="false"/>
 	<s:TextArea id="textAreaBL"
 				includeIn="bl"
 				horizontalScrollPolicy="auto"
@@ -246,7 +246,7 @@
 				width="{WIDTH}"
 				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.skin.PopupSkinBL"
-				editable="true"/>
+				editable="false"/>
 	<openscales:IconButton id="close"
 						   x="{WIDTH-17}"
 						   y="3"

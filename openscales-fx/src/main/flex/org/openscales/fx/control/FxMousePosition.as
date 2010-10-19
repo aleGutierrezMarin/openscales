@@ -21,5 +21,10 @@ package org.openscales.fx.control
 				(this.control as MousePosition).displayProjection = new ProjProjection(value);
 		}
 		
+		public function set numdigits(value:Number):void {
+			if (this.control != null)
+				(this.control as MousePosition).numdigits = value;
+		}
+		
 	}
 }
