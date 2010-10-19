@@ -7,6 +7,7 @@ package org.openscales.fx.configuration
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.configuration.Configuration;
+	import org.openscales.fx.FxMap;
 	import org.openscales.fx.control.Control;
 	import org.openscales.fx.control.FxControl;
 	import org.openscales.fx.control.FxOverviewMap;
@@ -21,10 +22,12 @@ package org.openscales.fx.configuration
 	 */
 	public class FxConfiguration extends Configuration
 	{
+		protected var _fxMap:FxMap;
 		
-		public function FxConfiguration(config:XML=null)
+		public function FxConfiguration(config:XML=null,fxMap:FxMap = null)
 		{
 			super(config);
+			_fxMap = fxMap;
 		}
 		
 		/**
