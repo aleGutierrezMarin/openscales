@@ -8,7 +8,7 @@
 				width="100%"
 				height="25"
 				xmlns:fxg="assets.fxg.*"
-				autoDrawBackground="false">
+		  		autoDrawBackground="false">
 	
 	<fx:Script>
 		<![CDATA[
