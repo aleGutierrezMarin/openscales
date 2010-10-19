@@ -147,7 +147,7 @@ package org.openscales.fx
 			var element:IVisualElement = null;
 			
 			// override configuration with a Flex aware configuration
-			this._map.configuration = new FxConfiguration();
+			this._map.configuration = new FxConfiguration(null,this);
 			
 			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
 			this.addElementAt(mapContainer, 0);
