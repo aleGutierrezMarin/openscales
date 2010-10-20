@@ -1,6 +1,6 @@
 package org.openscales.core.style.marker {
 	import flash.display.DisplayObject;
-
+	
 	import org.openscales.core.feature.Feature;
 
 	/**
@@ -64,6 +64,11 @@ package org.openscales.core.style.marker {
 
 		public function set image(value:Class):void {
 			this._c = value;
+		}
+		
+		override public function clone():Marker{
+			return new DisplayObjectMarker(_c,_xOffset,this._yOffset,this._size as Number,this._opacity,this._rotation);
+			
 		}
 
 	}

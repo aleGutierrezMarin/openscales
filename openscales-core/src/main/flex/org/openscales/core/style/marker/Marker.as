@@ -1,16 +1,16 @@
 package org.openscales.core.style.marker {
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
-
+	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.filter.expression.IExpression;
 
 	public class Marker {
-		private var _opacity:Number = 1;
+		protected var _opacity:Number = 1;
 
-		private var _rotation:Number = 0;
+		protected var _rotation:Number = 0;
 
-		private var _size:Object = 6;
+		protected var _size:Object = 6;
 
 		public function Marker(size:Object=6, opacity:Number=1, rotation:Number=0) {
 			this.opacity = opacity;
@@ -87,6 +87,10 @@ package org.openscales.core.style.marker {
 			}
 
 			return 6;
+		}
+		
+		public function clone():Marker{
+			return new Marker(this._size,this._opacity,this._rotation);
 		}
 	}
 }

@@ -748,6 +748,7 @@ package org.openscales.core
 		public function findSecurityByClass(securityClass:String):ISecurity{
 			var i:int = this._securities.length - 1;
 			for(i;i>-1;--i){
+				var test:String = getQualifiedClassName(this._securities[i]);
 				if(securityClass==getQualifiedClassName(this._securities[i])){
 					return this._securities[i];
 				}

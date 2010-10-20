@@ -9,5 +9,10 @@ package org.openscales.core.filter {
 		public function matches(feature:Feature):Boolean {
 			return true;
 		}
+		
+		public function clone():IFilter{
+			var elseFilter:ElseFilter = new ElseFilter();
+			return elseFilter;
+		}
 	}
 }

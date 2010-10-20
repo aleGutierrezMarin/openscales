@@ -125,6 +125,28 @@ package org.openscales.core.style {
 
 			this._symbolizers = value;
 		}
+		
+		public function clone():Rule{
+			
+			var rule:Rule = new Rule();
+			rule._abstract = this._abstract;
+			if(this.filter != null){
+			  rule._filter = this._filter.clone();
+			}
+			rule._maxScaleDenominator = this._maxScaleDenominator;
+			rule._minScaleDenominator = this._minScaleDenominator;
+			rule._name = this._name;
+			if(this._symbolizers != null){
+			  var length:uint = this._symbolizers.length;
+			  var symbolizersClone:Vector.<Symbolizer> = new Vector.<Symbolizer>();
+			  for(var i:uint=0; i<length;i++){
+				symbolizersClone[i] = this._symbolizers[i].clone();
+			  }
+			  rule._symbolizers = symbolizersClone;
+		    }
+			rule._title = this._title;
+			return rule;
+		}
 
 		// TODO: Externalise all the legend rendering stuff to a renderer class
 		/**

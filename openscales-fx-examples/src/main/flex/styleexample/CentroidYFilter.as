@@ -17,5 +17,10 @@ package styleexample {
 			return (centroidY > min && centroidY <= max);
 		}
 		
+		public function clone():IFilter{
+			var centroidYFilter:CentroidYFilter = new CentroidYFilter(this.min,this.max);
+			return centroidYFilter;
+		}
+		
 	}
 }

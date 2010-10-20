@@ -29,5 +29,11 @@ package org.openscales.core.style.symbolizer {
 				graphics.lineStyle();
 			}
 		}
+		
+		override public function clone():Symbolizer{
+			var lineSymbolizer:LineSymbolizer = new LineSymbolizer(this._stroke);
+			lineSymbolizer.geometry = this.geometry;
+			return lineSymbolizer;
+		}
 	}
 }

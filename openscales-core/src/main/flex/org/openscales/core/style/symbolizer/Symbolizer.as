@@ -1,6 +1,6 @@
 package org.openscales.core.style.symbolizer {
 	import flash.display.Graphics;
-
+	
 	import org.openscales.core.feature.Feature;
 
 	/**
@@ -31,6 +31,12 @@ package org.openscales.core.style.symbolizer {
 		 * accordind to the symbolizer's definition
 		 */
 		public function configureGraphics(graphics:Graphics, feature:Feature):void {
+		}
+		
+		public function clone():Symbolizer{
+			var symbolizer:Symbolizer = new Symbolizer();
+			symbolizer.geometry = this._geometry;
+			return symbolizer;
 		}
 
 	}
