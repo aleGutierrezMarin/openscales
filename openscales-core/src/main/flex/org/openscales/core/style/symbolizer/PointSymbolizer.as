@@ -20,6 +20,12 @@ package org.openscales.core.style.symbolizer
 			
 			this._graphic = value;
 		}
+		
+		override public function clone():Symbolizer{
+			var pointSymbolizer:PointSymbolizer = new PointSymbolizer(this._graphic.clone());
+			pointSymbolizer.geometry = this.geometry;
+			return pointSymbolizer;
+		}
 
 	}
 }

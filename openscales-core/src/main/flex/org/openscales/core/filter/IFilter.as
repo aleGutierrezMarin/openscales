@@ -7,5 +7,7 @@ package org.openscales.core.filter {
 	public interface IFilter {
 
 		function matches(feature:Feature):Boolean;
+		
+		function clone():IFilter;
 	}
 }

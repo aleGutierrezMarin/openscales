@@ -442,7 +442,9 @@ package org.openscales.core.configuration
 		}
 		
 		protected function parsePointSymbolizer(xmlSymbolizer:XML):PointSymbolizer{
-			var xmlMakers:XML = xmlSymbolizer.child(0);
+		
+			
+			var xmlMakers:XMLList = xmlSymbolizer.*;
 			var poinSymbolizer:PointSymbolizer;
 			var marker:Marker;
 			
@@ -456,11 +458,12 @@ package org.openscales.core.configuration
 						stroke = new Stroke(fillAndStroke.@color,fillAndStroke.@width,fillAndStroke.@opacity,fillAndStroke.@linecap,fillAndStroke.@linejoin);
 					}
 				}
-				marker = new WellKnownMarker(xmlMakers.@wellKnowName,null,null,xmlMakers.@size,xmlMakers.@opacity,xmlMakers.@rotation);
+				marker = new WellKnownMarker(xmlMakers.@wellKnowName,null,null,Number(xmlMakers.@size),xmlMakers.@opacity,xmlMakers.@rotation);
 				poinSymbolizer = new PointSymbolizer(marker);
 				
 			}else if(xmlMakers.name() =="Marker"){
-				marker = new Marker(xmlMakers.@size,xmlMakers.@opacity,xmlMakers.@rotation);
+				marker = new Marker(Number(xmlMakers.@size),xmlMakers.@opacity,xmlMakers.@rotation);
+				poinSymbolizer = new PointSymbolizer(marker);
 			}
 			return poinSymbolizer;
 		}

@@ -45,5 +45,10 @@ package org.openscales.core.filter {
 			this._projection = value;
 		}
 		
+		public function clone():IFilter{
+			var intersectsFilter:IntersectsFilter = new IntersectsFilter(this._geom,this._projection.srsCode);
+			return intersectsFilter;
+		}
+		
 	}
 }

@@ -58,8 +58,12 @@ package org.openscales.core.style.symbolizer {
 
 				graphics.lineStyle();
 			}
-
-
+         }
+		
+		override public function clone():Symbolizer{
+			var polygonSymbolizer:PolygonSymbolizer = new PolygonSymbolizer(this._fill,this._stroke);
+			polygonSymbolizer.geometry = this.geometry;
+			return polygonSymbolizer;
 		}
 	}
 }

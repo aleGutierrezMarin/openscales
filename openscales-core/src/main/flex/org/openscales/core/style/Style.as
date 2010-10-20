@@ -191,6 +191,17 @@ package org.openscales.core.style {
 			clonedStyle._hoverPointRadius = this._hoverPointRadius;
 			clonedStyle._isFilled = this._isFilled;
 			clonedStyle._isStroked = this._isStroked;
+			
+			if(this._rules != null){
+			  var lenghtRules:uint = this._rules.length;
+			  var rulesClone:Vector.<Rule> = new Vector.<Rule>();
+			  for(var i:uint=0; i < lenghtRules; i++){
+				rulesClone[i] = this._rules[i].clone();
+			  }
+			  clonedStyle.rules = rulesClone;
+			}
+			clonedStyle._name = this._name;
+			
 			return clonedStyle;
 		}
 
