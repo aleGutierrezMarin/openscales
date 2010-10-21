@@ -343,5 +343,18 @@ package org.openscales.core.layer
 			super.projection = value;
 			this._displayProjection = this.projection.clone();
 		}
+		
+		public function get displayProjection():ProjProjection
+		{
+			return _displayProjection;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set displayProjection(value:ProjProjection):void
+		{
+			_displayProjection = value;
+		}
 	}
 }
