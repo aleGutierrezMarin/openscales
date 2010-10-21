@@ -81,13 +81,13 @@ package org.openscales.fx
 		
 		private function onMoveStart(event:MapEvent):void{
 			_flexOverlay.visible = false;
-			var j:uint = _flexOverlay.numElements;
+			/*var j:uint = _flexOverlay.numElements;
 			var element:IVisualElement;
 			for(var i:uint=0;i<j;++i){
 				element = _flexOverlay.getElementAt(i);
 				if(element is FxPopup)
 					(element as FxPopup).position = (element as FxPopup).fxmap.map.getMapPxFromLocation((element as FxPopup).loc);
-			}
+			}*/
 			
 		}
 		
@@ -156,8 +156,6 @@ package org.openscales.fx
 			
 			this._flexOverlay = new Group();
 			this.addElementAt(_flexOverlay,1);
-			this.map.addEventListener(MapEvent.MOVE_START,onMoveStart);
-			this.map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
 			
 			
 			if (this._proxy != "")
