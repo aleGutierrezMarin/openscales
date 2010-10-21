@@ -110,6 +110,7 @@ package org.openscales.fx
 			map.addEventListener(MapEvent.LOAD_END,onMoveEnd);
 			map.addEventListener(MapEvent.MOVE_START,onMoveStart);
 			map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
+			map.addEventListener(MapEvent.MOVE_NO_MOVE,onMoveEnd);
 			var i:Number;
 			if(exclusive){
 				var element:IVisualElement;
@@ -156,8 +157,7 @@ package org.openscales.fx
 			
 			this._flexOverlay = new Group();
 			this.addElementAt(_flexOverlay,1);
-			
-			
+
 			if (this._proxy != "")
 				this._map.proxy = this._proxy;
 			
