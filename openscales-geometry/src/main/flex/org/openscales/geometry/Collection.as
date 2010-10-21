@@ -152,7 +152,9 @@ package org.openscales.geometry
 			this._bounds = null;
 			if (this.componentsLength > 0) {
 				this._bounds = this._components[0].bounds;
-				for (var i:int=1; i<this.componentsLength; ++i) {
+				var i:uint = 1;
+				var j:uint = this.componentsLength;
+				for (i; i<j; ++i) {
 					this.extendBounds(this._components[i].bounds);
 				}
 			}
