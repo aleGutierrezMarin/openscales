@@ -292,9 +292,9 @@ package org.openscales.core.layer
 				this._featuresBbox=null;
 				return;
 			}
-			this._featuresBbox = features[0].geometry.bounds;
+			this._featuresBbox = features[0].geometry.bounds.clone();
 			for(var j:uint=1; j<i; ++j)
-				this._featuresBbox.extendFromBounds(features[j].geometry.bounds);
+				this._featuresBbox.extendFromBounds(features[j].geometry.bounds.clone());
 		}
 		
 		public function get featuresBbox():Bounds {
@@ -342,6 +342,19 @@ package org.openscales.core.layer
 		override public function set projection(value:ProjProjection):void {
 			super.projection = value;
 			this._displayProjection = this.projection.clone();
+		}
+		
+		public function get displayProjection():ProjProjection
+		{
+			return _displayProjection;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set displayProjection(value:ProjProjection):void
+		{
+			_displayProjection = value;
 		}
 	}
 }
