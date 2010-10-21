@@ -81,13 +81,13 @@ package org.openscales.fx
 		
 		private function onMoveStart(event:MapEvent):void{
 			_flexOverlay.visible = false;
-			var j:uint = _flexOverlay.numElements;
+			/*var j:uint = _flexOverlay.numElements;
 			var element:IVisualElement;
 			for(var i:uint=0;i<j;++i){
 				element = _flexOverlay.getElementAt(i);
 				if(element is FxPopup)
-					(element as FxPopup).position = this.map.getMapPxFromLocation((element as FxPopup).loc);
-			}
+					(element as FxPopup).position = (element as FxPopup).fxmap.map.getMapPxFromLocation((element as FxPopup).loc);
+			}*/
 			
 		}
 		
@@ -98,7 +98,7 @@ package org.openscales.fx
 			for(var i:uint=0;i<j;++i){
 				element = _flexOverlay.getElementAt(i);
 				if(element is FxPopup)
-					(element as FxPopup).position = this.map.getMapPxFromLocation((element as FxPopup).loc);
+					(element as FxPopup).position = (element as FxPopup).fxmap.map.getMapPxFromLocation((element as FxPopup).loc);
 			}
 		}
 		
@@ -124,9 +124,10 @@ package org.openscales.fx
 					}
 				}
 			}
+			
 			if (fxPopup != null){
 				fxPopup.fxmap = this;
-				fxPopup.position = this.map.getMapPxFromLocation(fxPopup.feature.lonlat);
+				fxPopup.position = fxPopup.fxmap.map.getMapPxFromLocation(fxPopup.feature.lonlat);
 				this._flexOverlay.addElement(fxPopup);
 			}
 		}
@@ -155,8 +156,6 @@ package org.openscales.fx
 			
 			this._flexOverlay = new Group();
 			this.addElementAt(_flexOverlay,1);
-			this.map.addEventListener(MapEvent.MOVE_START,onMoveStart);
-			this.map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
 			
 			
 			if (this._proxy != "")
@@ -337,6 +336,10 @@ package org.openscales.fx
 		 */
 		public function set maxExtent(value:String):void {
 			this._maxExtent = Bounds.getBoundsFromString(value,Layer.DEFAULT_PROJECTION);
+		}
+		
+		public function get flexOverlay():Group{
+			return this._flexOverlay;
 		}
 		
 	}
