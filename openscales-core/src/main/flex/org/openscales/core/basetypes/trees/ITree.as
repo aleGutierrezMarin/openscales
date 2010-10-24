@@ -15,7 +15,9 @@ package org.openscales.core.basetypes.trees
 		/*static*/ function get nodeWidth():uint;
 		
 		/**
-		 * Root of the tree
+		 * Root of the tree.
+		 * Changing the root of the tree will destroy the nodes of the old tree.
+		 * Use the "clear" function before if you do not want to destroy the "old" nodes.
 		 */
 		function get root():ITreeNode;
 		function set root(value:ITreeNode):void;
@@ -26,9 +28,14 @@ package org.openscales.core.basetypes.trees
 		function get depth():uint;
 		
 		/**
-		 * Cleanup the tree
+		 * Clear the tree: the nodes are NOT affected
 		 */
 		function clear():void;
+		
+		/**
+		 * Destroy the tree and all these nodes
+		 */
+		function destroy():void;
 		
 		/**
 		 * Test the equality of this tree with a given tree

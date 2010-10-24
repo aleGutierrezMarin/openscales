@@ -131,6 +131,7 @@ package org.openscales.core.basetypes.trees
 			// If this node is the root of the common container, update the root of
 			// the container with the ancestor of the input value
 			if (this.container.root == this) {
+				this.container.clear();
 				this.container.root = value.ancestor;
 			}
 			// Update with the input value

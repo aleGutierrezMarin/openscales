@@ -29,7 +29,7 @@ package org.openscales.core.basetypes.trees
 		}
 		public function set root(value:ITreeNode):void {
 			if (this.root) {
-				this.clear();
+				this.destroy();
 			}
 			this._root = value;
 		}
@@ -39,9 +39,13 @@ package org.openscales.core.basetypes.trees
 		}
 		
 		public function clear():void {
+			this.root = null;
+		}
+		
+		public function destroy():void {
 			if (this.root) {
-				this.root.clear();
-				this.root = null;
+				this.root.destroy();
+				this.clear();
 			}
 		}
 		
