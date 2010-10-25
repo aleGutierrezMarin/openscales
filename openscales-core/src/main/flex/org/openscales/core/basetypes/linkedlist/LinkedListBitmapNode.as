@@ -12,16 +12,14 @@ package org.openscales.core.basetypes.linkedlist
 	 */
 	public class LinkedListBitmapNode extends AbstractLinkedListNode
 	{
-		private var _uid:String=null;
 		private var _data:Bitmap
 
-		public function LinkedListBitmapNode(data:Bitmap, uid:String=null)
-		{
-			if(uid != null && uid.length>0) {
+		public function LinkedListBitmapNode(data:Bitmap, uid:String=null) {
+			if (uid!=null && uid.length>0) {
 				this.uid = uid;
 			} else {
-				var uID:UID=new UID();
-				this.uid = uID.gen_uid();
+				var _uID:UID = new UID();
+				this.uid = _uID.gen_uid();
 			}
 			this._data = data;
 		}
@@ -30,14 +28,11 @@ package org.openscales.core.basetypes.linkedlist
 			return this._data;
 		}
 
-		override public function equals(o:Object):Boolean
-		{
-			if( o is Bitmap && o == this._data)
-				return true;
-			return false;
+		override public function equals(o:Object):Boolean {
+			return (o is Bitmap && o == this._data);
 		}
 		
-		override public function clear():void{
+		override public function clear():void {
 			this._data = null;
 			super.clear();
 		}
