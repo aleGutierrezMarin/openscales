@@ -13,13 +13,19 @@
 		<![CDATA[
 			import assets.fxg.ButtonCloseOver;
 			import assets.fxg.ButtonCloseUp;
+			import assets.fxg.ButtonOpacity;
 			import assets.fxg.Popup;
 			
 			import flashx.textLayout.conversion.TextConverter;
 			import flashx.textLayout.elements.SpanElement;
 			import flashx.textLayout.elements.TextFlow;
 			
+			import mx.containers.HBox;
+			import mx.containers.VBox;
+			import mx.controls.Alert;
+			import mx.controls.Text;
 			import mx.effects.effectClasses.AddChildActionInstance;
+			import mx.skins.halo.HaloBorder;
 			
 			import org.openscales.core.feature.Feature;
 			import org.openscales.fx.FxMap;
@@ -28,6 +34,9 @@
 			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.geometry.basetypes.Size;
 			
+			import spark.components.Label;
+			import spark.components.TextArea;
+			import spark.components.TextInput;
 			import spark.utils.TextFlowUtil;
 			
 			private var _feature:Feature = null;
@@ -45,7 +54,7 @@
 			static public var BL:String = "bl";
 			
 			private var _anchor:Sprite = null;
-			
+			private var _title:String = "";
 			
 			private function create():void{
 				
@@ -60,8 +69,13 @@
 				}
 				else{
 					this.size = new Size(WIDTH,HEIGHT);
+					//GAB
+					this.edit.y = (this.size.h-20);
+					this.save.y = (this.size.h-20);
+					this.show.y = (this.size.h-20);
 				}
 				this.fxmap.addFxPopup(this,true);
+				this.setViewMode();
 				
 			}
 			
@@ -170,6 +184,10 @@
 			
 			public function set content(value:String):void {
 				this._content = value;
+				//GAB
+				//this.setViewMode();
+				//this.setEditMode();
+				//End GAB
 			}
 			
 			public function get fxmap():FxMap {
@@ -194,12 +212,197 @@
 				}
 			}
 			
+			public function set title(_value:String):void{
+				this._title = _value;
+			}
+			
+			public function get title():String{
+				return this._title;
+			}
+			
 			public function closePopup(event:MouseEvent):void {
 				var target:Sprite = (event.target as Sprite);
 				target.removeEventListener(event.type, closePopup);
 				remove();
 				event.stopPropagation();
 			}
+			//Test GAB
+			private function editPopup(event:MouseEvent):void{
+				this.setEditMode();
+			}
+			
+			private function setViewMode():void{
+				/**
+				 * The aim is to have a single TextArea within the FxPop.
+				 * In this TextArea, we shall display the content (HTML format).
+				 * 
+				 * This must be done for each one of the 4 quadrant.
+				 * */
+				
+				this.setViewModeQuadrant("TR");
+				this.setViewModeQuadrant("TL");
+				this.setViewModeQuadrant("BR");
+				this.setViewModeQuadrant("BL");
+				
+			}
+			
+			private function setViewModeQuadrant(_quadrant:String):void{
+				/**
+				 * Given a quadrant, insert a TextArea to the quadrant's panel.
+				 * Fill the TextArea's textFlow with the content of FxPopup.
+				 * The TextArea must not be editable by the user. 
+				 * */
+				var _panel:Panel;
+				var _tAreaID:String;
+				if (_quadrant == "TR"){
+					_panel = this.panelTR;
+					_tAreaID = "textAreaTR";
+				}
+				else if (_quadrant == "TL"){
+					_panel = this.panelTL;
+					_tAreaID = "textAreaTL";
+				}
+				else if (_quadrant == "BR"){
+					_panel = this.panelBR;
+					_tAreaID = "textAreaBR";
+				}
+				else if (_quadrant == "BL"){
+					_panel = this.panelBL;
+					_tAreaID = "textAreaBL";
+				}
+				if (_panel == null)
+					_panel = new Panel();
+				
+				_panel.title = this._title;
+				//Before inserting the unique TextArea, empty the Panel.
+				_panel.removeAllElements();
+				
+				var _tArea:TextArea = new TextArea();
+				_tArea.id = _tAreaID;
+				_tArea.textFlow=TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT);
+				_tArea.percentWidth=100;
+				_tArea.percentHeight = 100;
+				_tArea.editable=false;
+				if (_panel == null)
+					_panel = new Panel();
+				_panel.addElement(_tArea);
+				_panel.height = HEIGHT;
+				_panel.width = WIDTH;
+			}
+			
+			private function setEditMode():void{
+				/**
+				 * Place the content of the FwPop. 
+				 * Unlick the view mode, in the edit mode we must insert fields and not one single
+				 * TextArea.
+				 * */
+				this.setEditModeQuadrant("TR");
+				this.setEditModeQuadrant("TL");
+				this.setEditModeQuadrant("BR");
+				this.setEditModeQuadrant("BL");
+				
+			}
+			
+			private function setEditModeQuadrant(_quadrant:String):void{
+				var _panel:Panel;
+				if (_quadrant == "TR"){
+					_panel = this.panelTR;
+				}
+				else if (_quadrant == "TL"){
+					_panel = this.panelTL;
+				}
+				else if (_quadrant == "BR"){
+					_panel = this.panelBR;
+				}
+				else if (_quadrant == "BL"){
+					_panel = this.panelBL;
+				}
+				if (_panel == null)
+					_panel = new Panel();
+				
+				_panel.title = this._title;
+				//The first thing to do it to empty the panel
+				_panel.removeAllElements();
+				var _array:Array = this._content.split("<br />");
+				var _vBox:VBox = new VBox();
+				for (var i:int=0; i<_array.length; i++){
+					var _subArray:Array = (_array[i] as String).split(":");
+					if (_subArray.length == 2){
+						var _fieldName:String = _subArray[0];
+						var _fieldValue:String = _subArray[1];
+						
+						_fieldName = _fieldName.replace("<b>","");
+						_fieldName = _fieldName.replace("</b>","");
+						
+						var _hBox:HBox = this.getEditionItem(_fieldName, _fieldValue);
+						_vBox.addElement(_hBox);	
+					}
+				}
+				_panel.addElement(_vBox);
+				
+			}
+			
+			private function getEditionItem(_label:String, _value:String=null):HBox{
+				var _hBox:HBox = new HBox();
+				var _textInput:TextInput = new TextInput();
+				var _text:Text = new Text();
+				
+				_text.text = _label;
+				_textInput.percentWidth = 100;
+				_hBox.percentWidth = 95;
+				if (_value)
+					_textInput.text = _value;
+				
+				_hBox.addChild(_text);
+				_hBox.addChild(_textInput);
+				
+				return _hBox;
+			}
+			
+			private function displayPopup(event:MouseEvent):void{
+				this.setViewMode();
+			}
+			private function savePopup(event:MouseEvent):void{
+				var _panel:Panel;
+				if(this.relativePosition == BR){
+					_panel = this.panelBR;
+				}
+				else if (this.relativePosition == BL){
+					_panel = this.panelBL;
+				}
+				else if (this.relativePosition == TR){
+					_panel = this.panelTR;
+				}
+				else if (this.relativePosition == TL){
+					_panel = this.panelTL;
+				}
+				if (_panel.numElements == 1){
+					//This only element of a Panel is a VBox
+					var obj:Object = _panel.getElementAt(0);
+					var _vBox:VBox = (_panel.getElementAt(0) as VBox);
+					//A VBox can have 0-many elements, each element is a HBox object.
+					
+					for (var i:int=0; i<_vBox.numElements; i++){
+						var _hBox:HBox = (_vBox.getElementAt(i) as HBox);
+						
+						//A HBox is composed of one Text (index=0) and one TextInput (index=1)
+						if (_hBox.numElements == 2){
+							var _text:Text = (_hBox.getElementAt(0) as Text);
+							var _textInput:TextInput = (_hBox.getElementAt(1) as TextInput);
+							
+							var _fieldName:String = _text.text;
+							var _value:String = _textInput.text;
+							
+							Alert.show("New value of " + _fieldName + " is " + _value);
+						}
+					}
+					
+					
+				}
+
+				 
+			}
+			//Fin Test GAB
 			
 		]]>
 	</fx:Script>
@@ -211,6 +414,7 @@
 		<s:State name="bl"/>
 	</s:states>
 	
+	<!--
 	<s:TextArea id="textAreaTR"
 				includeIn="tr"
 				horizontalScrollPolicy="auto"
@@ -247,6 +451,7 @@
 				height="{HEIGHT}"
 				skinClass="org.openscales.fx.popup.skin.PopupSkinBL"
 				editable="false"/>
+	-->
 	<openscales:IconButton id="close"
 						   x="{WIDTH-17}"
 						   y="3"
@@ -255,6 +460,58 @@
 						   iconDown="{new ButtonCloseOver()}"
 						   alpha="1"
 						   click="closePopup(event)"/>
+	<!-- Test GAB -->
+	
+	<s:Panel id="panelTR"
+			 includeIn="tr"
+			 width="{WIDTH}"
+			 height="{HEIGHT}" 
+			/>
+	
+	<s:Panel id="panelTL"
+			 includeIn="tl"
+			 width="{WIDTH}"
+			 height="{HEIGHT}"
+			 skinClass="org.openscales.fx.popup.skin.PopupSkinTL"
+	         />
+	<s:Panel id="panelBR"
+			 includeIn="br"
+			 width="{WIDTH}"
+			 height="{HEIGHT}"
+			 />
+	<s:Panel id="panelBL"
+			 includeIn="bl"
+			 width="{WIDTH}"
+			 height="{HEIGHT}"
+			 />
+	<openscales:IconButton id="show"
+						   x="{WIDTH-27}"
+						   y="{0}"
+						   icon="{new ButtonOpacity()}"
+						   iconOver="{new ButtonCloseOver()}"
+						   iconDown="{new ButtonCloseOver()}"
+						   toolTip="Display"
+						   click="displayPopup(event)"
+						   />
+	<openscales:IconButton id="edit"
+						   x="{WIDTH-57}"
+						   y="{0}"
+						   icon="{new ButtonOpacity()}"
+						   iconOver="{new ButtonCloseOver()}"
+						   iconDown="{new ButtonCloseOver()}"
+						   toolTip="Edit"
+						   click="editPopup(event)"
+						   />
+	<openscales:IconButton id="save"
+						   x="{WIDTH-77}"
+						   y="{0}"
+						   icon="{new ButtonOpacity()}"
+						   iconOver="{new ButtonCloseOver()}"
+						   iconDown="{new ButtonCloseOver()}"
+						   toolTip="Save"
+						   click="savePopup(event)"
+						   />
+	<!-- Fin test GAB -->
 	
 	
 </s:Group>
