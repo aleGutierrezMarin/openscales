@@ -2,13 +2,14 @@ package org.openscales.fx.control
 {
 	import flash.events.Event;
 	
-	import spark.components.Group;
 	import mx.events.FlexEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.control.IControl;
 	import org.openscales.fx.FxMap;
+	import org.openscales.geometry.basetypes.Pixel;
+	
+	import spark.components.Group;
 	
 	/**
 	 * <p>Base class for all Flex based OpenScales control.</p>
@@ -24,6 +25,11 @@ package org.openscales.fx.control
 		 * Store if this control have been initialized (Event.COMPLETE has been thrown)  
 		 */
 		protected var _isInitialized:Boolean = false;
+		
+		/**
+		 * Store if the control has been added to the fxMap control list
+		 */
+		private var _isAddedToFxMapControlList:Boolean = false;
 		
 		public function Control()
 		{
@@ -50,6 +56,14 @@ package org.openscales.fx.control
 		public function set fxMap(value:FxMap):void
 		{
 			this._fxMap = value;
+			
+			if(!this._isAddedToFxMapControlList){
+				if(value){
+					this._fxMap.addControlToFxMapControlsList(this);
+					this._isAddedToFxMapControlList = true;
+				}
+			}
+			
 			this.fxMap.addEventListener(FlexEvent.CREATION_COMPLETE, onFxMapCreationComplete);
 		}
 		
@@ -70,6 +84,14 @@ package org.openscales.fx.control
 			if(this._isInitialized) {
 				this.active = true;
 			}
+			
+			if(!this._isAddedToFxMapControlList){
+				if(this.fxMap){
+					this.fxMap.addControlToFxMapControlsList(this);
+					this._isAddedToFxMapControlList = true;
+				}
+			}
+			
 			// Dispatch an event to allow binding for the map of this Control
 			dispatchEvent(new Event("propertyChange"));
 		}
