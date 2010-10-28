@@ -71,6 +71,22 @@ package org.openscales.fx
 			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
 		}
 		
+		public function reset():void {
+			var i:int = this.numElements;
+			var elt:IVisualElement;
+			for(i;i>0;--i) {
+				elt = this.removeElementAt(0);
+				if(elt is IControl)
+					(elt as IControl).destroy();
+			}
+			i = this._controls.length;
+			for(i;i>0;--i)
+				this._controls.pop();
+			this.map.reset();
+			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
+			this.addElementAt(mapContainer, 0);
+			mapContainer.addChild(this._map);
+		}
 		/**
 		 * Add a Flex wrapper layer to the map
 		 */

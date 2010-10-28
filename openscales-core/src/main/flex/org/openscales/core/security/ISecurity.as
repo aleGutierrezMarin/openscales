@@ -38,6 +38,11 @@ package org.openscales.core.security
 		 */
 		function addWaitingRequest(request:AbstractRequest):void;
 		function removeWaitingRequest(request:AbstractRequest):void;
+		
+		/**
+		 * destroy the security
+		 */
+		function destroy():void;
 	}
 }
 

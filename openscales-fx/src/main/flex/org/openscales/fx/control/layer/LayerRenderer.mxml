@@ -117,6 +117,8 @@
 			 * @param value
 			 */
 			override public function set data(value:Object):void {
+				if(LayerManager.layerManager == null)
+					return;
 				
 				_layer = value as Layer;
 				
