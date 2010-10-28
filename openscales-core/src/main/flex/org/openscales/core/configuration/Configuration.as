@@ -98,12 +98,11 @@ package org.openscales.core.configuration
 			if(String(config.@height) != ""){
 				map.height = Number(config.@height);
 			}
-			var i:Number = Number(config.@x);
-			if(i != NaN)
-				map.x = i;
-			i = Number(config.@y);
-			if(i != NaN)
-				map.y = i;
+			if(String(config.@x) != "")
+				map.x = Number(config.@x);
+
+			if(String(config.@y) != "")
+				map.y = Number(config.@y);
 			
 			if(String(config.@maxExtent) != ""){
 				map.maxExtent = Bounds.getBoundsFromString(config.@maxExtent,Layer.DEFAULT_PROJECTION);
