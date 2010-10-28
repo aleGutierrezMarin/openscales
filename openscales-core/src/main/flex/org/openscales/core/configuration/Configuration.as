@@ -98,8 +98,12 @@ package org.openscales.core.configuration
 			if(String(config.@height) != ""){
 				map.height = Number(config.@height);
 			}
-			map.x = Number(config.@x);
-			map.y = Number(config.@y);
+			var i:Number = Number(config.@x);
+			if(i != NaN)
+				map.x = i;
+			i = Number(config.@y);
+			if(i != NaN)
+				map.y = i;
 			
 			if(String(config.@maxExtent) != ""){
 				map.maxExtent = Bounds.getBoundsFromString(config.@maxExtent,Layer.DEFAULT_PROJECTION);
@@ -442,7 +446,7 @@ package org.openscales.core.configuration
 		}
 		
 		protected function parsePointSymbolizer(xmlSymbolizer:XML):PointSymbolizer{
-		
+			
 			
 			var xmlMakers:XMLList = xmlSymbolizer.*;
 			var poinSymbolizer:PointSymbolizer;

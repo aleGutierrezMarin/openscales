@@ -117,6 +117,9 @@ package org.openscales.core
 				}
 			}
 			
+			var i:int = this._securities.length;
+			for(i;i>0;--i)
+				this._securities.pop().destroy();
 		}
 		
 		// Layer management
@@ -322,17 +325,12 @@ package org.openscales.core
 		 * Remove the control passed as parameter
 		 */
 		public function removeControl(control:IControl):void {
-			var newControls:Vector.<IControl> = new Vector.<IControl>();
-			for each (var mapControl:IControl in this._controls) {
-				if (mapControl == control) {
-					control.active = false;
-					this.removeChild(control as Sprite);
-					control = null;
-				} else {
-					newControls.push(mapControl);
-				}
+			var i:int = this._controls.indexOf(control);
+			if(i!=-1) {
+				this._controls = this._controls.slice(i,1);
+				this.removeChild(control as Sprite);
+				control.destroy();
 			}
-			this._controls = newControls;
 		}
 		
 		/**
@@ -972,7 +970,7 @@ package org.openscales.core
 		 */
 		override public function set width(value:Number):void {
 			if (! isNaN(value)) {
-				this.size = new Size(value, this.height);
+				this.size = new Size(value, this.size.h);
 			} else {
 				Trace.error("Map - width not changed since the value is not valid");
 			}
@@ -983,7 +981,7 @@ package org.openscales.core
 		 */
 		override public function set height(value:Number):void {
 			if (! isNaN(value)) {
-				this.size = new Size(this.width, value);
+				this.size = new Size(this.size.w, value);
 			} else {
 				Trace.error("Map - height not changed since the value is not valid");
 			}
