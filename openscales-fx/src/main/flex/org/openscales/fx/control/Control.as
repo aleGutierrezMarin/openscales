@@ -2,6 +2,7 @@ package org.openscales.fx.control
 {
 	import flash.events.Event;
 	
+	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	
 	import org.openscales.core.Map;
@@ -111,6 +112,13 @@ package org.openscales.fx.control
 		public function destroy():void {
 			this._map = null;
 			this._fxMap = null;
+			var i:int = this.numElements;
+			var elt:IVisualElement;
+			for(i;i>0;--i) {
+				elt = this.removeElementAt(0);
+				if(elt is IControl)
+					(elt as IControl).destroy();
+			}
 		}
 		public function set position(px:Pixel):void
 		{

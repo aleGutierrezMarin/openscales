@@ -98,9 +98,9 @@ package org.openscales.core.configuration
 			if(String(config.@height) != ""){
 				map.height = Number(config.@height);
 			}
+			
 			if(String(config.@x) != "")
 				map.x = Number(config.@x);
-
 			if(String(config.@y) != "")
 				map.y = Number(config.@y);
 			
