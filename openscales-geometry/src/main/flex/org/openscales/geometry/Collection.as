@@ -3,6 +3,7 @@ package org.openscales.geometry
 	import flash.trace.Trace;
 	import flash.utils.getQualifiedClassName;
 	
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.utils.UtilGeometry;
 
 
@@ -158,7 +159,23 @@ package org.openscales.geometry
 				}
 			}
 		}
-	
+		
+		/**
+		 * Extends geometry's bounds
+		 *
+		 * If bounds are not defined yet, it initializes the bounds. If bounds are already defined,
+		 * it extends them.
+		 *
+		 * @param newBounds Bounds to extend gemetry's bounds
+		 */
+		protected function extendBounds(newBounds:Bounds):void {
+			if (this._bounds == null) {
+				this._bounds = newBounds;
+			} else {
+				this._bounds.extendFromBounds(newBounds);
+			}
+		}
+		
 		/**
      	 * Add components to this geometry.
      	 *
@@ -275,6 +292,9 @@ package org.openscales.geometry
 		 * @param destSrs SRS of the destination projection
 		 */
 		override public function transform(sourceSrs:String, destSrs:String):void {
+			// Update the pojection associated to the geometry
+			this.projSrsCode = destSrs;
+			// Update the geometry
 			for(var i:int=0; i<this.componentsLength; ++i) {
 				this._components[i].transform(sourceSrs, destSrs);
 			}

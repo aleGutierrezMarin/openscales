@@ -29,7 +29,7 @@ package org.openscales.geometry.basetypes
 		 * @param right Right bound of Bounds instance
 		 * @param top Top bound of Bounds instance
 		 */
-		public function Bounds(left:Number = NaN, bottom:Number = NaN, right:Number = NaN, top:Number = NaN, srsCode:String = null)
+		public function Bounds(left:Number, bottom:Number, right:Number, top:Number, srsCode:String)
 		{
 			if (!isNaN(left)) {
 				this.left = left;
@@ -318,7 +318,7 @@ package org.openscales.geometry.basetypes
 		 * @return An instance of bounds.
 		 */
 		public static function getBoundsFromSize(size:Size):Bounds {
-			return new Bounds(0, size.h, size.w, 0);
+			return new Bounds(0, size.h, size.w, 0, null);
 		}
 
 		/**
@@ -393,13 +393,15 @@ package org.openscales.geometry.basetypes
      	 * @return A new polygon with the coordinates of this bounds.
      	 */
     	 public function toGeometry():Polygon {
-        	 return new Polygon(new <Geometry>[
+			var geom:Polygon = new Polygon(new <Geometry>[
             	 new LinearRing(new <Number>[
                 	 this.left, this.bottom,
                 	 this.right, this.bottom,
                 	 this.right, this.top,
                 	 this.left, this.top])
          	]);
+			geom.projSrsCode = this.projSrsCode;
+			return geom;
     	 }
 	}
 }

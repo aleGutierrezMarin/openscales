@@ -204,7 +204,7 @@ Use the top-right button to switch the style of the rendering. -->
 				stroke = new Stroke(0x0A2C33, 2);
 				symbolizer = new PolygonSymbolizer(fill, stroke);
 				rule.symbolizers.push(symbolizer);
-				bounds = new Bounds(682105, 6558859, 892780, 6816381);
+				bounds = new Bounds(682105, 6558859, 892780, 6816381, "EPSG:2154");
 				rule.filter = new ContainsFilter(bounds.toGeometry(), "EPSG:2154");
 				style.rules.push(rule);
 				

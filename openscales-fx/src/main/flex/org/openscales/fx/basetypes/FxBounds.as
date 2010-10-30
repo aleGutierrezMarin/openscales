@@ -13,7 +13,7 @@ package org.openscales.fx.basetypes
 		
 		public function FxBounds()
 		{
-			this._bounds = new Bounds();
+			this._bounds = new Bounds(NaN,NaN,NaN,NaN,null);
 			super();
 		}
 

@@ -46,6 +46,9 @@ package org.openscales.geometry
 		 * @param destSrs SRS of the destination projection
 		 */
 		override public function transform(sourceSrs:String, destSrs:String):void {
+			// Update the pojection associated to the geometry
+			this.projSrsCode = destSrs;
+			// Update the geometry
 			if(this.componentsLength > 0){
 				for(var i:int=0; i<this.componentsLength; ++i) {
 					(this._components[i] as LineString).transform(sourceSrs, destSrs);
