@@ -25,6 +25,7 @@ package org.openscales.fx
 	import org.openscales.fx.layer.FxLayer;
 	import org.openscales.fx.popup.FxPopup;
 	import org.openscales.fx.security.FxAbstractSecurity;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -216,7 +217,7 @@ package org.openscales.fx
 			// Set both center and zoom to avoid invalid request set when we define both separately
 			var mapCenter:Location = this._center;
 			if (mapCenter && this._map.baseLayer) {
-				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projection);
+				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projSrsCode);
 			}
 			if (mapCenter || (! isNaN(this._zoom))) {
 				this._map.moveTo(mapCenter, this._zoom);
@@ -299,7 +300,7 @@ package org.openscales.fx
 				Trace.error("Map.centerLonLat: invalid number of components");
 				return ;
 			}
-			_center = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]),Layer.DEFAULT_PROJECTION);
+			_center = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]), Geometry.DEFAULT_SRS_CODE);
 		}
 		
 		/**
@@ -335,7 +336,7 @@ package org.openscales.fx
 		 * MaxExtent MXML setter
 		 */
 		public function set maxExtent(value:String):void {
-			this._maxExtent = Bounds.getBoundsFromString(value,Layer.DEFAULT_PROJECTION);
+			this._maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
 		}
 		
 		public function get flexOverlay():Group{

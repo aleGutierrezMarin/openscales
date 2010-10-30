@@ -1,7 +1,6 @@
 package org.openscales.core.layer.capabilities
 {
 	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * WFS 1.1.0 capabilities parser
@@ -73,7 +72,7 @@ package org.openscales.core.layer.capabilities
 				bounds = lowerCorner.replace(" ",",");
 				bounds += ",";
 				bounds += upperCorner.replace(" ",",");
-				latLon = Bounds.getBoundsFromString(bounds,ProjProjection.getProjProjection(srsCode));
+				latLon = Bounds.getBoundsFromString(bounds,srsCode);
 				featureCapabilities.put("Extent", latLon);
 
 				this._capabilities.put(name, featureCapabilities);
