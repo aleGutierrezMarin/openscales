@@ -73,15 +73,15 @@ package org.openscales.core.layer
 			var i:int;
 			var j:int;
 			var numChild2:int;
-			for(i=0; i<numChild;++i) {
+			for(i=0; i<numChild; ++i) {
 				child = this.getChildAt(i) as Sprite;
-				if(child) {
+				if (child) {
 					child.graphics.clear();
-					//Cleanup child subchilds (ex childs of pointfeatures)
-					numChild2 =  child.numChildren;
-					for(j=0; j<numChild2;++j){
+					//Cleanup child subchildren (ex children of pointfeatures)
+					numChild2 = child.numChildren;
+					for(j=0; j<numChild2; ++j){
 						child2 = child.getChildAt(j) as Shape;
-						if(child2) {
+						if (child2) {
 							child2.graphics.clear();
 						}
 					}
@@ -124,11 +124,10 @@ package org.openscales.core.layer
 		 *
 		 * @param features array
 		 */
-		public function addFeatures(features:Vector.<Feature>):void {
-			var fevt:FeatureEvent = null;
-
+		public function addFeatures(features:Vector.<Feature>, reproject:Boolean=true):void {
 			// Dispatch an event before the features are added
-			if(this.map){
+			var fevt:FeatureEvent = null;
+			if (this.map) {
 				fevt = new FeatureEvent(FeatureEvent.FEATURE_PRE_INSERT, null);
 				fevt.features = features;
 				this.map.dispatchEvent(fevt);
@@ -136,8 +135,8 @@ package org.openscales.core.layer
 
 			var i:int;
 			var j:int = features.length
-			for (i = 0; i < j; i++) {
-				this.addFeature(features[i], false, false);
+			for (i=0; i<j; i++) {
+				this.addFeature(features[i], false, reproject);
 			}
 
 			// Dispatch an event with all the features added
@@ -154,11 +153,11 @@ package org.openscales.core.layer
 		 * @param feature The feature to add
 		 */
 		public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
-			if(this._featuresID.indexOf(feature.name)!=-1)
+			if (this._featuresID.indexOf(feature.name)!=-1) {
 				return;
+			}
 			this._featuresID.push(feature.name);
 
-			var fevt:FeatureEvent = null;
 			// Check if the feature may be added to this layer
 			var vectorfeature:Feature = feature;
 			if (this.geometryType &&
@@ -169,6 +168,7 @@ package org.openscales.core.layer
 			}
 
 			// If needed dispatch a PRE_INSERT event before the feature is added
+			var fevt:FeatureEvent = null;
 			if (dispatchFeatureEvent && this.map) {
 				fevt = new FeatureEvent(FeatureEvent.FEATURE_PRE_INSERT, feature);
 				this.map.dispatchEvent(fevt);
@@ -187,7 +187,7 @@ package org.openscales.core.layer
 			
 			// Render the feature
 			if (this.map) {
-					feature.draw();
+				feature.draw();
 			}
 			
 			// If needed, dispatch an event with the feature added

@@ -218,7 +218,8 @@ package org.openscales.core.layer
 				return new Bounds(bottomLeftTile.bounds.left, 
 									bottomLeftTile.bounds.bottom,
 									topRightTile.bounds.right, 
-									topRightTile.bounds.top);
+									topRightTile.bounds.top,
+									this.projSrsCode);
 			}
 			return null;
 		}
@@ -235,7 +236,8 @@ package org.openscales.core.layer
 			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
 												center.lat - (tileHeight/2),
 												center.lon + (tileWidth/2),
-												center.lat + (tileHeight/2));
+												center.lat + (tileHeight/2),
+												this.projSrsCode);
 			var ul:Location = new Location(tileBounds.left, tileBounds.top);
 			var px:Pixel = this.map.getLayerPxFromLocation(ul);
 
@@ -316,7 +318,8 @@ package org.openscales.core.layer
 					var tileBounds:Bounds = new Bounds(tileoffsetlon, 
 														tileoffsetlat, 
 														tileoffsetlon + tilelon,
-														tileoffsetlat + tilelat);
+														tileoffsetlat + tilelat,
+														this.projSrsCode);
 					var x:Number = tileoffsetx;
 					x -= int(this.map.layerContainer.x);
 

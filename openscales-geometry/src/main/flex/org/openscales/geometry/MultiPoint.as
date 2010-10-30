@@ -178,7 +178,7 @@ package org.openscales.geometry
 					bottom = (bottom < tempNumber) ? bottom : tempNumber;
 					top = (top > tempNumber) ?top : tempNumber;
 				}
-				this._bounds = new Bounds(left,bottom,right,top);
+				this._bounds = new Bounds(left,bottom,right,top,this.projSrsCode);
 			}
 		}
 		
@@ -345,6 +345,9 @@ package org.openscales.geometry
 		 * @param destSrs SRS of the destination projection
 		 */
 		override public function transform(sourceSrs:String, destSrs:String):void {
+			// Update the pojection associated to the geometry
+			this.projSrsCode = destSrs;
+			// Update the geometry
 			var p:ProjPoint;
 			for(var i:int=0; i<this._components.length; i+=2) {
 				p = new ProjPoint(this._components[i], this._components[i+1]);
@@ -353,6 +356,7 @@ package org.openscales.geometry
 				this._components[i+1] = p.y;
 			}
 		}
+		
 		/**
 		 * Calculate the approximate area of this geometry (the projection and
 		 * the geodesic are not managed).
