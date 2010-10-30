@@ -1,7 +1,6 @@
 package org.openscales.geometry
 {
 	import org.openscales.geometry.utils.UtilGeometry;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * A LineString is a is a MultiPoint (2 vertices min), whose points are

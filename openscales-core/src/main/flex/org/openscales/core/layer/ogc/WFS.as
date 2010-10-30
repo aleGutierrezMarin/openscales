@@ -3,8 +3,6 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
@@ -17,7 +15,8 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.params.ogc.WFSParams;
 	import org.openscales.core.request.XMLRequest;
-	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 
 	/**
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
@@ -118,8 +117,8 @@ package org.openscales.core.layer.ogc
 
 			var projectedBounds:Bounds = this.map.extent.clone();
 
-			if(this.projection.srsCode != this.map.baseLayer.projection.srsCode) {
-					projectedBounds.transform(this.map.baseLayer.projection, this.projection);
+			if (this.projSrsCode != this.map.baseLayer.projSrsCode) {
+				projectedBounds.transform(this.map.baseLayer.projSrsCode, this.projSrsCode);
 			}
 			var center:Location = projectedBounds.center;
 
@@ -175,9 +174,9 @@ package org.openscales.core.layer.ogc
 
 			var requestString:String = url;
 
-			var projection:ProjProjection = this.projection;
-			if (projection != null || this.map.baseLayer.projection != null)
-				this.params.srs = (projection == null) ? this.map.baseLayer.projection.srsCode : projection.srsCode;
+			if (this.projSrsCode != null || this.map.baseLayer.projSrsCode != null) {
+				this.params.srs = (this.projSrsCode == null) ? this.map.baseLayer.projSrsCode : this.projSrsCode;
+			}
 
 			var lastServerChar:String = url.charAt(url.length - 1);
 			if ((lastServerChar == "&") || (lastServerChar == "?")) {
@@ -222,8 +221,8 @@ package org.openscales.core.layer.ogc
 			if (this.params != null) {
 				this._capabilities = caller.getLayerCapabilities(this.params.typename);
 			}
-			if ((this._capabilities != null) && (this.projection == null)) {
-				this.projection = new ProjProjection(this._capabilities.getValue("SRS"));
+			if ((this._capabilities != null) && (this.projSrsCode == null)) {
+				this.projSrsCode = this._capabilities.getValue("SRS");
 			}
 		}
 
@@ -267,9 +266,9 @@ package org.openscales.core.layer.ogc
 			else
 				this._gml = new GMLFormat(this.addFeature,this._featuresids,this.extractAttributes);
 
-			if (this.map.baseLayer.projection != null && this.projection != null && this.projection.srsCode != this.map.baseLayer.projection.srsCode) {
-				this._gml.externalProj = this.projection;
-				this._gml.internalProj = this.map.baseLayer.projection;
+			if (this.map.baseLayer.projSrsCode != null && this.projSrsCode != null && this.projSrsCode != this.map.baseLayer.projSrsCode) {
+				this._gml.externalProjSrsCode = this.projSrsCode;
+				this._gml.internalProjSrsCode = this.map.baseLayer.projSrsCode;
 			}
 
 			this._gml.read(loader.data as String);

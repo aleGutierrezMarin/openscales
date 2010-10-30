@@ -345,7 +345,7 @@ package org.openscales.core.handler.feature.draw
 		 /**
 		 * This function find a parent Geometry of an edition feature
 		 * @param point
-		 * todo:realy needs to be rewrited
+		 * TODO: really needs to be rewrited
 		 * */
 		 public function editionFeatureParentGeometry(point:PointFeature,parentGeometry:ICollection):ICollection{
 			if(point && parentGeometry){

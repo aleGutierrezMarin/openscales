@@ -6,17 +6,11 @@ package org.openscales.core.format
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LineString;
-	import org.openscales.geometry.LinearRing;
-	import org.openscales.geometry.Point;
-	import org.openscales.geometry.Polygon;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -26,7 +20,12 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.Polygon;
+	import org.openscales.geometry.basetypes.Location;
 	
 	
 	/**
@@ -224,8 +223,8 @@ package org.openscales.core.format
 					continue;
 				point = new Point(_Pcoords[0].toString(),
 					_Pcoords[1].toString());
-				if (this._internalProj != null, this._externalProj != null) {
-					point.transform(this.externalProj, this.internalProj);
+				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+					point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
 				}
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
@@ -288,8 +287,8 @@ package org.openscales.core.format
 							continue;
 						point = new Point(_coords[0].toString(),
 							_coords[1].toString());
-						if (this._internalProj != null, this._externalProj != null) {
-							point.transform(this.externalProj, this.internalProj);
+						if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+							point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
 						}
 						points.push(point.x);
 						points.push(point.y);
@@ -325,8 +324,8 @@ package org.openscales.core.format
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
 					point = new Point(coordinates[0], coordinates[1]);
-					if (this._internalProj != null, this._externalProj != null) {
-						point.transform(this.externalProj, this.internalProj);
+					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+						point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
 					}
 					var loc:Location;
 					if(placemark.styleUrl != undefined) {
@@ -404,22 +403,6 @@ package org.openscales.core.format
 			var _features:Vector.<Feature> = polygonsfeatures.concat(linesfeatures, iconsfeatures);
 			
 			return _features;
-		}
-		
-		public function get internalProj():ProjProjection {
-			return this._internalProj;
-		}
-		
-		public function set internalProj(value:ProjProjection):void {
-			this._internalProj = value;
-		}
-		
-		public function get externalProj():ProjProjection {
-			return this._externalProj;
-		}
-		
-		public function set externalProj(value:ProjProjection):void {
-			this._externalProj = value;
 		}
 		
 	}

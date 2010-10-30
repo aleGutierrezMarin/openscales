@@ -37,9 +37,9 @@ package org.openscales.core.configuration
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * OpenScales XML configuration format parser.
@@ -104,8 +104,8 @@ package org.openscales.core.configuration
 			if(String(config.@y) != "")
 				map.y = Number(config.@y);
 			
-			if(String(config.@maxExtent) != ""){
-				map.maxExtent = Bounds.getBoundsFromString(config.@maxExtent,Layer.DEFAULT_PROJECTION);
+			if (String(config.@maxExtent) != "") {
+				map.maxExtent = Bounds.getBoundsFromString(config.@maxExtent, Geometry.DEFAULT_SRS_CODE);
 			}
 			
 		}
@@ -148,7 +148,7 @@ package org.openscales.core.configuration
 			}
 			if(String(config.@center) != ""){
 				var location:Array = String(config.@center).split(",");
-				map.center = new Location(Number(location[0]), Number(location[1]),map.baseLayer.projection);
+				map.center = new Location(Number(location[0]), Number(location[1]), this.map.baseLayer.projSrsCode);
 			}
 		}
 		
@@ -238,9 +238,10 @@ package org.openscales.core.configuration
 			else{visible = true;}
 			
 			var name:String=xmlNode.@name;
-			var projection:String = Layer.DEFAULT_SRS_CODE;
-			if(String(xmlNode.@projection) != "")
-				projection = String(xmlNode.@projection);
+			var projSrsCode:String = Geometry.DEFAULT_SRS_CODE;
+			if (String(xmlNode.@projection) != "") {
+				projSrsCode = String(xmlNode.@projection);
+			}
 			
 			var resolution:Array=null;
 			if(xmlNode.@resolutions!=null && xmlNode.@resolutions=="") 
@@ -286,12 +287,13 @@ package org.openscales.core.configuration
 						// We create the WMSC Layer with all params
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
 						wmscLayer.visible=visible;
-						wmscLayer.projection = new ProjProjection(projection);
-						wmscLayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmscLayer.projection);
+						wmscLayer.projSrsCode = projSrsCode;
+						wmscLayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmscLayer.projSrsCode);
 						wmscLayer.params = paramsWms;
-						layer=wmscLayer;
-						if(method!=null)
-							wmscLayer.method =method;
+						layer = wmscLayer;
+						if (method!=null) {
+							wmscLayer.method = method;
+						}
 						break;
 					}
 						
@@ -300,14 +302,16 @@ package org.openscales.core.configuration
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
 						wmslayer.visible = visible;
-						wmslayer.projection = new ProjProjection(projection);                       
-						wmslayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmslayer.projection);
+						wmslayer.projSrsCode = projSrsCode;                       
+						wmslayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmslayer.projSrsCode);
 						wmslayer.params = paramsWms;
 						layer=wmslayer;
 						break;
 					}                                  
 				}
-				if(resolution!=null) layer.resolutions=resolution;                 
+				if (resolution!=null) {
+					layer.resolutions = resolution;
+				}                 
 			}
 				// Case when the layer is WFS 
 			else if(xmlNode.name() == "WFS"){
@@ -334,7 +338,7 @@ package org.openscales.core.configuration
 				wfsLayer.visible = visible;
 				wfsLayer.useCapabilities = useCapabilities;
 				wfsLayer.capabilities = capabilities;
-				wfsLayer.projection = new ProjProjection(projection);
+				wfsLayer.projSrsCode = projSrsCode;
 				
 				if(String(xmlNode.@style) !="")
 				{
@@ -358,7 +362,7 @@ package org.openscales.core.configuration
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					mapnik.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,mapnik.projection);
+					mapnik.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,mapnik.projSrsCode);
 				layer=mapnik;
 			}
 			else if(xmlNode.name() == "CycleMap"){
@@ -366,7 +370,7 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var cycleMap:CycleMap=new CycleMap(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					cycleMap.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,cycleMap.projection);
+					cycleMap.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,cycleMap.projSrsCode);
 				layer=cycleMap;
 			}
 			else if(xmlNode.name() == "Maplint"){
@@ -374,13 +378,13 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var maplint:Maplint=new Maplint(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					maplint.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,maplint.projection);
+					maplint.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,maplint.projSrsCode);
 				layer=maplint;
 			}
 			else if(xmlNode.name() == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
 				var featurelayer:FeatureLayer = new FeatureLayer(name);
-				featurelayer.projection = new ProjProjection(projection);
+				featurelayer.projSrsCode = projSrsCode;
 				layer = featurelayer;
 			} else {
 				// Case when the layer is unknown
@@ -593,7 +597,7 @@ package org.openscales.core.configuration
 			else if(xmlNode.name() == "MousePosition"){
 				var mousePosition:MousePosition = new MousePosition();
 				mousePosition.name = xmlNode.@id;
-				mousePosition.displayProjection = new ProjProjection(String(xmlNode.@displayProjection));
+				mousePosition.displayProjSrsCode = String(xmlNode.@displayProjection);
 				control = mousePosition;
 			}
 			return control;         

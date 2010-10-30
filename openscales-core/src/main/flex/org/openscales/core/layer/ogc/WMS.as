@@ -1,14 +1,13 @@
 package org.openscales.core.layer.ogc
 {
 
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.core.tile.Tile;
-	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 
 	/**
 	 * Instances of WMS are used to display data from OGC Web Mapping Services.
@@ -32,42 +31,36 @@ package org.openscales.core.layer.ogc
 
 		}
 	    override public function get maxExtent():Bounds {
-			if(!super.maxExtent)
+			if (! super.maxExtent) {
 				return null;
-			
-			var maxExtent:Bounds =  super.maxExtent.clone();
-			if(this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projection.srsCode != this.map.baseLayer.projection.srsCode)
-			{
-				 maxExtent.transform(this.projection,this.map.baseLayer.projection);
 			}
 			
+			var maxExtent:Bounds =  super.maxExtent.clone();
+			if (this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
+				 maxExtent.transform(this.projSrsCode,this.map.baseLayer.projSrsCode);
+			}
 			return maxExtent;
 		}
 		
 		override public function getURL(bounds:Bounds):String {
-			var projection:ProjProjection = this.projection;
 			var projectedBounds:Bounds = bounds.clone();
 			
-			if( this.isBaseLayer != true  && this._reproject == true && projection.srsCode != this.map.baseLayer.projection.srsCode)
-			{
-			  	projectedBounds.transform(this.map.baseLayer.projection.clone(),projection.clone());
+			if (this.isBaseLayer != true  && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
+			  	projectedBounds.transform(this.projSrsCode,this.map.baseLayer.projSrsCode);
 			}
 
 			this.params.bbox = projectedBounds.boundsToString();
 			(this.params as WMSParams).width = this.imageSize.w;
 			(this.params as WMSParams).height = this.imageSize.h;
-            if( this._reproject == false){
-			  if (projection != null || this.map.baseLayer.projection != null)
-				  (this.params as WMSParams).srs = (projection == null) ? this.map.baseLayer.projection.srsCode : projection.srsCode;
-            }
-            else{
-            	(this.params as WMSParams).srs = projection.srsCode;
-            }
-			var requestString:String;
-			if(this.url.indexOf("?")==-1) requestString = this.url+"?"+this.params.toGETString();
-			else requestString=this.url+"&"+this.params.toGETString();
-
-			return requestString;
+			if (this.reproject == false) {
+				if (this.projSrsCode != null || this.map.baseLayer.projSrsCode != null) {
+					(this.params as WMSParams).srs = (this.projSrsCode == null) ? this.map.baseLayer.projSrsCode : projSrsCode;
+				}
+			} else {
+				(this.params as WMSParams).srs = this.projSrsCode;
+			}
+			
+			return this.url + ((this.url.indexOf("?")==-1) ? "?" : "&") + this.params.toGETString();
 		}
 
 		override public function addTile(bounds:Bounds, position:Pixel):ImageTile {
