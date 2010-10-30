@@ -62,7 +62,7 @@ package org.openscales.core.layer
 							 url:String,
 							 params:IHttpParams = null) {
 
-			//TOdo delete url and params after osmparams work
+			//TODO delete url and params after osmparams work
 			super(name, url, params);
 
 			//this.grid = new Vector.<Vector.<Tile>>();
@@ -574,7 +574,7 @@ package org.openscales.core.layer
 							  tileBottom,
 							  tileLeft + tileMapWidth,
 							  tileBottom + tileMapHeight,
-							  this.projection);
+							  this.projSrsCode);
 		}
 		
 		private function tileLoadHandler(event:TileEvent):void	{

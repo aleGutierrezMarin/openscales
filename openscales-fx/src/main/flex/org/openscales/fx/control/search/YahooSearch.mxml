@@ -14,10 +14,9 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
-			import org.openscales.proj4as.ProjProjection;
+			import org.openscales.geometry.basetypes.Location;
 			
 			private static const YAHOO_MAPS_NAMESPACE:Namespace=new Namespace('','urn:yahoo:maps');
 			
@@ -54,8 +53,8 @@
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
 						var pos:Location = new Location(longitude,latitude);
 						Trace.log("YahooSearch center at "+pos.toShortString());
-						if (map.baseLayer.projection.srsCode != "") {
-							pos = pos.reprojectTo(map.baseLayer.projection);
+						if (map.baseLayer.projSrsCode != "") {
+							pos = pos.reprojectTo(map.baseLayer.projSrsCode);
 						}
 						this.map.center = pos;
 					} 
@@ -74,8 +73,8 @@
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
 						var pos:Location = new Location(longitude,latitude);
 						Trace.log("YahooSearch center at "+pos.toShortString());
-						if (map.baseLayer.projection.srsCode != "") {
-							pos = pos.reprojectTo(map.baseLayer.projection);
+						if (map.baseLayer.projSrsCode != "") {
+							pos = pos.reprojectTo(map.baseLayer.projSrsCode);
 						}
 						this.map.center = pos;
 					}

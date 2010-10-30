@@ -160,7 +160,7 @@ package org.openscales.core.handler.mouse
 			var deltaY:Number = this._start.y - xy.y;
 			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
 				this._startCenter.lat - deltaY * this.map.resolution,
-				this._startCenter.projection);
+				this._startCenter.projSrsCode);
 			// If the new position equals the old center, stop here
 			if (newPosition.equals(oldCenter)) {
 				var event:MapEvent = new MapEvent(MapEvent.MOVE_NO_MOVE, this.map);

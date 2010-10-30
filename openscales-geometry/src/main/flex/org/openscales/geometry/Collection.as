@@ -4,7 +4,6 @@ package org.openscales.geometry
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.geometry.utils.UtilGeometry;
-	import org.openscales.proj4as.ProjProjection;
 
 
 	/**
@@ -272,12 +271,12 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the collection from a projection system to an other.
 		 *
-		 * @param source The source projection
-		 * @param dest The destination projection
+		 * @param sourceSrs SRS of the source projection
+		 * @param destSrs SRS of the destination projection
 		 */
-		override public function transform(source:ProjProjection, dest:ProjProjection):void {
+		override public function transform(sourceSrs:String, destSrs:String):void {
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				this._components[i].transform(source, dest);
+				this._components[i].transform(sourceSrs, destSrs);
 			}
 		}
 		/**

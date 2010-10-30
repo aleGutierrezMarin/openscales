@@ -65,9 +65,9 @@ package org.openscales.core.layer
 			// To avoid errors if the server is dead
 			try {
 				this._xml = new XML(loader.data);
-				if (this.map.baseLayer.projection != null && this.projection != null && this.projection.srsCode != this.map.baseLayer.projection.srsCode) {
-					this._kmlFormat.externalProj = this.projection;
-					this._kmlFormat.internalProj = this.map.baseLayer.projection;
+				if (this.map.baseLayer.projSrsCode != null && this.projSrsCode != null && this.projSrsCode != this.map.baseLayer.projSrsCode) {
+					this._kmlFormat.externalProjSrsCode = this.projSrsCode;
+					this._kmlFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
 				}
 				this._kmlFormat.proxy = this.proxy;
 				var features:Vector.<Feature> = this._kmlFormat.read(this._xml) as Vector.<Feature>;

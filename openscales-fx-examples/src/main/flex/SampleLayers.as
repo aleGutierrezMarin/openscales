@@ -22,7 +22,6 @@ package {
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Polygon;
-	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Create sample layers. Externalized in a class in order to be reused in unit tests for
@@ -52,7 +51,7 @@ package {
 		static public function features():FeatureLayer {
 			// Create the drawings layer and some useful variables
 			var layer:FeatureLayer = new FeatureLayer("Drawing samples");
-			layer.projection = new ProjProjection("EPSG:4326");
+			layer.projSrsCode = "EPSG:4326";
 			var style:Style;
 			var rule:Rule;
 			var arrayComponents:Vector.<Number>;
@@ -406,20 +405,6 @@ package {
 			// return the vector layer
 			return layer;
 		}
-		
-		/**
-		 * Returns a sample layer using the WFS 1.0.0 protocol
-		 */
-		/*static public function wfs100():WFS100 {
-		// TODO
-		}*/
-		
-		/**
-		 * Returns a sample layer using the WFS 1.1.0 protocol
-		 */
-		/*static public function wfs110():WFS110 {
-		// TODO
-		}*/
 		
 	}
 }

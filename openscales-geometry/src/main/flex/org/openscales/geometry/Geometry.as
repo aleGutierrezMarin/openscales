@@ -2,7 +2,6 @@ package org.openscales.geometry
 {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.proj4as.ProjProjection;
 
 
 	/**
@@ -12,6 +11,8 @@ package org.openscales.geometry
 	 */
 	public class Geometry 
 	{
+		public static const DEFAULT_SRS_CODE:String = "EPSG:4326";
+		
 		/**
      	 * The bounds of this geometry
 		 * 
@@ -21,7 +22,7 @@ package org.openscales.geometry
 		/**
 		 * projection of the geometry 
 		 */
-		protected var _projection:String = "EPSG:4326";
+		protected var _projection:String = DEFAULT_SRS_CODE;
 		
 		public function Geometry() {
 			super();
@@ -47,10 +48,10 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the lon/lat (x/y) value of the geometry from a projection system to an other.
 		 *
-		 * @param source The source projection
-		 * @param dest The destination projection
+		 * @param sourceSrs SRS of the source projection
+		 * @param destSrs SRS of the destination projection
 		 */
-		public function transform(source:ProjProjection, dest:ProjProjection):void {
+		public function transform(sourceSrs:String, destSrs:String):void {
 		}
 
 		/**
@@ -148,7 +149,6 @@ package org.openscales.geometry
     		var distance:Number;
     		// TODO
     		return distance;
-			
     	}
 		
 		/**

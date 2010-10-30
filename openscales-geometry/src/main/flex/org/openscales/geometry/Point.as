@@ -4,7 +4,6 @@ package org.openscales.geometry
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Class to represent a point geometry.
@@ -84,12 +83,12 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the point (x/y) from a projection sysrtem to an other.
 		 *
-		 * @param source The source projection
-		 * @param dest The destination projection
+		 * @param sourceSrs SRS of the source projection
+		 * @param destSrs SRS of the destination projection
 		 */
-		override public function transform(source:ProjProjection, dest:ProjProjection):void {
+		override public function transform(sourceSrs:String, destSrs:String):void {
 			var p:ProjPoint = new ProjPoint(this._x, this._y);
-			Proj4as.transform(source, dest, p);
+			Proj4as.transform(sourceSrs, destSrs, p);
 			this._x = p.x;
 			this._y = p.y;
 		}

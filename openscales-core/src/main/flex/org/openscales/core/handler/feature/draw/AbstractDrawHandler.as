@@ -3,7 +3,6 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.Map;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.layer.FeatureLayer;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * Handler base class for Drawing Handler
@@ -29,10 +28,10 @@ package org.openscales.core.handler.feature.draw
 		
 		override public function set map(value:Map):void{
 			if(value!=null){
-				super.map=value;
-				 if(map.baseLayer!=null && this.drawLayer.projection!=null){
-					this.drawLayer.projection=new ProjProjection(this.map.baseLayer.projection.srsCode);
-					this.drawLayer.resolutions=this.map.baseLayer.resolutions;
+				super.map = value;
+				if (map.baseLayer!=null && this.drawLayer.projSrsCode!=null) {
+					this.drawLayer.projSrsCode = this.map.baseLayer.projSrsCode;
+					this.drawLayer.resolutions = this.map.baseLayer.resolutions;
 				} 
 			}
 		}

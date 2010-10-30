@@ -4,11 +4,10 @@ package org.openscales.core.control
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
+	import org.openscales.core.Map;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.core.events.MapEvent;
-	import org.openscales.core.Map;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * Control displaying the coordinates (Lon, Lat) of the current mouse position.
@@ -46,7 +45,7 @@ package org.openscales.core.control
 		 * The projection display in the label
 		 */
 		[Bindable]
-		private var _displayProjection:ProjProjection = null;
+		private var _displayProjSrsCode:String = null;
 		
 		/**
 		 * MousePosition Constructor
@@ -96,8 +95,8 @@ package org.openscales.core.control
 				lonLat = new Location(0, 0);
 			}
 
-			if (this._displayProjection && this.map.baseLayer) {
-				lonLat = lonLat.reprojectTo(this._displayProjection);
+			if (this._displayProjSrsCode && this.map.baseLayer) {
+				lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
 			}    
 
 			var digits:int = int(this.numdigits);
@@ -188,11 +187,11 @@ package org.openscales.core.control
 			_lastXy = value;
 		}
 
-		public function get displayProjection():ProjProjection {
-			return _displayProjection;
+		public function get displayProjSrsCode():String {
+			return this._displayProjSrsCode;
 		}
-		public function set displayProjection(value:ProjProjection):void {
-			_displayProjection = value;
+		public function set displayProjSrsCode(value:String):void {
+			this._displayProjSrsCode = value;
 		}
 
 		public function get label():TextField {

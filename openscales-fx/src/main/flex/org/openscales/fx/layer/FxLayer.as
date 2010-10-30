@@ -1,10 +1,10 @@
 package org.openscales.fx.layer
 {	
-	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.core.Map;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.FxMap;
-	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.basetypes.Bounds;
 	
 	import spark.components.Group;
 	
@@ -45,7 +45,7 @@ package org.openscales.fx.layer
 		public function configureLayer():Layer {
 			
 			if(this._projection)
-				this.layer.projection = new ProjProjection(this._projection);
+				this.layer.projSrsCode = this._projection;
 			if(!isNaN(this.numZoomLevels)) {
 				this.layer.generateResolutions(this.numZoomLevels, this.maxResolution);
 			}else{
@@ -101,9 +101,9 @@ package org.openscales.fx.layer
 		
 		public function set maxExtent(value:String):void {
 			if(this._projection)
-				this._maxExtent = Bounds.getBoundsFromString(value,ProjProjection.getProjProjection(this._projection));
+				this._maxExtent = Bounds.getBoundsFromString(value,this._projection);
 			else
-				this._maxExtent = Bounds.getBoundsFromString(value,Layer.DEFAULT_PROJECTION);
+				this._maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
 		}
 		
 		public function set proxy(value:String):void {
@@ -160,7 +160,7 @@ package org.openscales.fx.layer
 		public function set projection(value:String):void {
 			this._projection = value;
 			if(this._maxExtent)
-				this._maxExtent.projection = ProjProjection.getProjProjection(this._projection);
+				this._maxExtent.projSrsCode = this._projection;
 		}
 		
 		override public function set alpha(value:Number):void {

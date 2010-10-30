@@ -3,7 +3,6 @@ package org.openscales.core.layer
 	import org.openscales.core.Map;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.core.events.MapEvent;
-	import org.openscales.proj4as.ProjProjection;
     /**
      *this class allow to have a layer with two layer inside , one layer is displayed according to scale 
      */
@@ -75,39 +74,30 @@ package org.openscales.core.layer
 		}
 		
 		
-		override public function get projection():ProjProjection {
-			
-			if(this.map == null){
-				  return this._firstLayer.projection;
+		override public function get projSrsCode():String {
+			if (this.map == null) {
+				  return this._firstLayer.projSrsCode;
 			}
-			
-			if(this.map.zoom > this._zoomToSwitch )
-			{
-			  return this._firstLayer.projection;
-			}
-			else{
-			  return this._lastLayer.projection;
+			if(this.map.zoom > this._zoomToSwitch ) {
+			  return this._firstLayer.projSrsCode;
+			} else {
+			  return this._lastLayer.projSrsCode;
 			}
 		}
 		
 		override public function get minResolution():Number {
-			
-			if(this.map.zoom > this._zoomToSwitch )
-			{
+			if (this.map.zoom > this._zoomToSwitch ) {
 			  return this._firstLayer.minResolution;
-			}
-			else{
+			} else {
 			  return this._lastLayer.minResolution;
 			}
 			
 		}
 		
 		override public function get maxResolution():Number {
-			if(this.map.zoom > this._zoomToSwitch )
-			{
+			if (this.map.zoom > this._zoomToSwitch ) {
 			  return this._firstLayer.maxResolution;
-			}
-			else{
+			} else {
 			  return this._lastLayer.maxResolution;
 			}
 		}
