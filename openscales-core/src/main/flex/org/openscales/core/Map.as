@@ -20,11 +20,13 @@ package org.openscales.core
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.security.ISecurity;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Instances of Map are interactive maps that can be embedded in a web pages or in
@@ -193,14 +195,14 @@ package org.openscales.core
 					// if we set a baselayer with a different projection, we
 					// change the map's projected datas
 					if (this.baseLayer) {
-						if ((this.baseLayer.projection.srsCode != newBaseLayer.projection.srsCode)
+						if ((this.baseLayer.projSrsCode != newBaseLayer.projSrsCode)
 							||(newBaseLayer.resolutions==null)) {
 							// FixMe : why testing (newBaseLayer.resolutions==null) ?
 							if (this.center != null)
-								this.center = this.center.reprojectTo(newBaseLayer.projection);
+								this.center = this.center.reprojectTo(newBaseLayer.projSrsCode);
 							
 							if (this._layerContainerOrigin != null)
-								this._layerContainerOrigin = this._layerContainerOrigin.reprojectTo( newBaseLayer.projection);
+								this._layerContainerOrigin = this._layerContainerOrigin.reprojectTo(newBaseLayer.projSrsCode);
 							
 							oldExtent = null;
 							this.maxExtent = newBaseLayer.maxExtent;
@@ -485,8 +487,8 @@ package org.openscales.core
 			} else if(this.center && !newCenter) {
 				newCenter = this.center;
 			}			
-			if(this._baseLayer!=null && (this._baseLayer.projection!=null) && newCenter.projection && (newCenter.projection.srsCode!=this._baseLayer.projection.srsCode)) {
-				newCenter = newCenter.reprojectTo(this._baseLayer.projection);
+			if (this._baseLayer!=null && (this._baseLayer.projSrsCode!=null) && newCenter.projSrsCode && (newCenter.projSrsCode!=this._baseLayer.projSrsCode)) {
+				newCenter = newCenter.reprojectTo(this._baseLayer.projSrsCode);
 			}
 			
 			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
@@ -1038,8 +1040,8 @@ package org.openscales.core
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
 			if(maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
-				if (this.baseLayer && (this.baseLayer.projection.srsCode != Layer.DEFAULT_SRS_CODE)) {
-					maxExtent.transform(Layer.DEFAULT_PROJECTION, this.baseLayer.projection)
+				if (this.baseLayer && (this.baseLayer.projSrsCode != Geometry.DEFAULT_SRS_CODE)) {
+					maxExtent.transform(Geometry.DEFAULT_SRS_CODE, this.baseLayer.projSrsCode);
 				}
 			}
 			return maxExtent;
@@ -1059,7 +1061,8 @@ package org.openscales.core
 				extent = new Bounds(this.center.lon - w_deg / 2,
 					this.center.lat - h_deg / 2,
 					this.center.lon + w_deg / 2,
-					this.center.lat + h_deg / 2, this.baseLayer.projection);
+					this.center.lat + h_deg / 2,
+					this.baseLayer.projSrsCode);
 			} 
 			
 			return extent;
@@ -1080,7 +1083,7 @@ package org.openscales.core
 		public function get scale():Number {
 			var scale:Number = NaN;
 			if (this.baseLayer) {
-				var units:String = this.baseLayer.projection.projParams.units;
+				var units:String = ProjProjection.getProjProjection(this.baseLayer.projSrsCode).projParams.units;
 				scale = Unit.getScaleFromResolution(this.resolution, units);
 			}
 			return scale;

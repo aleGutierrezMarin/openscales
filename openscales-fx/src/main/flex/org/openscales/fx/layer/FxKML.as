@@ -1,7 +1,6 @@
 package org.openscales.fx.layer
 {
 	import org.openscales.core.layer.KML;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * <p>KML Flex wrapper.</p>
@@ -25,7 +24,7 @@ package org.openscales.fx.layer
 
 		public function set srs(value:String):void {
 			if (this.layer != null) {
-				this.layer.projection = new ProjProjection(value);
+				this.layer.projSrsCode = value;
 			}
 		}
 		

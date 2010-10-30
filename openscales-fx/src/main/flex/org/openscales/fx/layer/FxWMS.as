@@ -2,7 +2,6 @@ package org.openscales.fx.layer
 {
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.params.ogc.WMSParams;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * <p>WMS Flex wrapper</p>

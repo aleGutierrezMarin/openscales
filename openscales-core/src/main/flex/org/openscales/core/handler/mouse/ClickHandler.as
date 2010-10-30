@@ -6,13 +6,13 @@ package org.openscales.core.handler.mouse
 	import flash.geom.Rectangle;
 	import flash.utils.Timer;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.Map;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	/**
 	 * ClickHandler detects a click-actions on the map simple click, double
@@ -180,10 +180,11 @@ package org.openscales.core.handler.mouse
 			}
 			var bottomLeft:Location = this.map.getLocationFromMapPx(new Pixel(rect.left, rect.bottom));
 			var topRight:Location = this.map.getLocationFromMapPx(new Pixel(rect.right, rect.top));
-			if(this.map.baseLayer)
-				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, map.baseLayer.projection);
-			else
-				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat,Layer.DEFAULT_PROJECTION);
+			if (this.map.baseLayer) {
+				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, this.map.baseLayer.projSrsCode);
+			} else {
+				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, Geometry.DEFAULT_SRS_CODE);
+			}
 		}
 		
 		/**

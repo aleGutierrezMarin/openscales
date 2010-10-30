@@ -9,8 +9,8 @@ package org.openscales.core.cursor
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.control.MousePosition;
+	import org.openscales.geometry.basetypes.Location;
 	
 	/**
 	 * Crosshair cursor that displays the coordinates of the location pointed.
@@ -77,8 +77,8 @@ package org.openscales.core.cursor
 				}
 				if (mousePosition) {
 					mapCoordinatesNumDigits = mousePosition.numdigits;
-					if (mousePosition.displayProjection.srsCode != map.baseLayer.projection.srsCode) {
-						lonLat = lonLat.reprojectTo(mousePosition.displayProjection);
+					if (mousePosition.displayProjSrsCode != map.baseLayer.projSrsCode) {
+						lonLat = lonLat.reprojectTo(mousePosition.displayProjSrsCode);
 					}
 				}
 				xValue.text = lonLat.lon.toFixed(mapCoordinatesNumDigits);
