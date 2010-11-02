@@ -8,6 +8,7 @@ package org.openscales.core
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	
@@ -150,7 +151,7 @@ package org.openscales.core
 				this.baseLayer = layer;
 			}
 			
-			if(redraw){
+			if (redraw){
 				layer.redraw();	
 			}
 			
@@ -164,9 +165,8 @@ package org.openscales.core
 		 * @param layers to add.
 		 */
 		public function addLayers(layers:Vector.<Layer>):void {
-			var j:uint = layers.length;
-			var i:uint = 0;
-			for (i; i <  j; ++i) {
+			var layersNb:uint = layers.length;
+			for (var i:uint=0; i<layersNb; ++i) {
 				this.addLayer(layers[i]);
 			}
 		}
@@ -453,6 +453,40 @@ package org.openscales.core
 			}
 		}
 		
+		public function zoomOnDoubleClick(evt:MouseEvent):void {
+			this.zoomToMousePosition(true);
+		}
+		
+		/**
+		 * Allows user to zoom in or zoom out with conserving the current mouse position
+		 *
+		 * @param zoomIn Boolean defining if a zoom (true) or a zoom out (false) must be realized.
+		 */
+		public function zoomToMousePosition(zoomIn:Boolean):void {
+			if (! this.baseLayer) {
+				return;
+			}
+			// Compute the center of the zoom and the new level
+			const px:Pixel = new Pixel(this.mouseX, this.mouseY);
+			const centerPx:Pixel = new Pixel(this.width/2, this.height/2);
+			var newCenterPx:Pixel;
+			var z:Number = this.zoom;
+			if (zoomIn) {
+				z++;
+				if (z > this.baseLayer.maxZoomLevel) {
+					return;
+				}
+				newCenterPx = new Pixel((px.x+centerPx.x)/2, (px.y+centerPx.y)/2);
+			} else {
+				z--;
+				if (z < this.baseLayer.minZoomLevel) {
+					return;
+				}
+				newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
+			}
+			this.moveTo(this.getLocationFromMapPx(newCenterPx), z, false, true);
+		}
+		
 		/**
 		 * Set the map center (and optionally, the zoom level).
 		 *
@@ -467,9 +501,9 @@ package org.openscales.core
 		 *
 		 */
 		public function moveTo(newCenter:Location,
-								  newZoom:Number = NaN,
-								  dragTween:Boolean = false,
-								  zoomTween:Boolean = false):void {
+								newZoom:Number = NaN,
+								dragTween:Boolean = false,
+								zoomTween:Boolean = false):void {
 					
 			var zoomChanged:Boolean = (this.isValidZoomLevel(newZoom) && (newZoom!=this._zoom));
 			var validLocation:Boolean = this.isValidLocation(newCenter);
@@ -540,7 +574,6 @@ package org.openscales.core
 					this.dispatchEvent(mapEvent);
 				}
 			}
-			
 		}
 		
 		/**
