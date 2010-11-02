@@ -11,7 +11,6 @@ package org.openscales.core.handler.mouse {
 	 */
 	public class WheelHandler extends Handler {
 		
-		
 		public function WheelHandler(target:Map = null, active:Boolean = true) {
 			super(target,active);
 		}
@@ -29,25 +28,8 @@ package org.openscales.core.handler.mouse {
 		}
 		
 		private function onMouseWheel(event:MouseEvent):void {
-			if (this.map && this.map.baseLayer) {
-				const px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
-				const centerPx:Pixel = new Pixel(this.map.width/2, this.map.height/2);
-				var newCenterPx:Pixel;
-				var zoom:Number = this.map.zoom;
-				if(event.delta > 0) {
-					zoom++;
-					if(zoom > this.map.baseLayer.maxZoomLevel)
-						return;
-					newCenterPx = new Pixel((px.x+centerPx.x)/2, (px.y+centerPx.y)/2);
-					
-				} else {
-					zoom--;
-					if(zoom < this.map.baseLayer.minZoomLevel)
-						return;
-					newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
-				}
-				this.map.moveTo(this.map.getLocationFromMapPx(newCenterPx), zoom, false, true);
-
+			if (this.map) {
+				this.map.zoomToMousePosition((event.delta > 0));
 			}
 		}
 		
