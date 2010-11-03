@@ -99,4 +99,3 @@ package org.openscales.core.layer
 		}
 	}
 }
-
