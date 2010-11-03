@@ -5,17 +5,18 @@ package org.openscales.core.feature {
 	
 	import org.openscales.core.Trace;
 	import org.openscales.core.Util;
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.events.wfstEvent;
 	import org.openscales.core.filter.ElseFilter;
-	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.Point;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 
 
 	/**
@@ -310,12 +311,15 @@ package org.openscales.core.feature {
 		}
 
 		public function get state():String {
+			if(this._state ==  null){
+			  return State.UNKNOWN
+			}
 			return this._state;
 		}
 
 		public function set state(value:String):void {
 			if (value == State.UPDATE) {
-				switch (this._state) {
+				switch (this.state) {
 					case State.UNKNOWN:
 					case State.DELETE:
 						this._state = value;
@@ -324,14 +328,25 @@ package org.openscales.core.feature {
 					case State.INSERT:
 						break;
 				}
+				
+				if(this._layer != null && this._layer.map != null){
+					this._layer.map.dispatchEvent(new wfstEvent(wfstEvent.UPDATE,this));
+				}
+				
 			} else if (value == State.INSERT) {
-				switch (this._state) {
+				switch (this.state) {
 					case State.UNKNOWN:
-						break;
+						//break;
 					default:
 						this._state = value;
 						break;
 				}
+				
+				if(this._layer != null && this._layer.map != null){
+					this._layer.map.dispatchEvent(new wfstEvent(wfstEvent.INSERT,this));
+				}
+				
+				
 			} else if (value == State.DELETE) {
 				switch (this.state) {
 					case State.INSERT:
@@ -343,9 +358,16 @@ package org.openscales.core.feature {
 						this._state = value;
 						break;
 				}
+				
+				if(this._layer != null && this._layer.map != null){
+					this._layer.map.dispatchEvent(new wfstEvent(wfstEvent.DELETE,this));
+				}
+				
 			} else if (value == State.UNKNOWN) {
 				this._state = value;
 			}
+			
+			
 		}
 
 		public function get style():Style {

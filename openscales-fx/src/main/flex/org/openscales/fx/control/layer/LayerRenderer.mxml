@@ -233,7 +233,7 @@
 		
 		<s:VGroup verticalAlign="middle" gap="0">
 			<IconButton id="ArrowUp"
-						toolTip="Put this layer at the top"
+						toolTip="Déplacer vers l'avant plan"
 						click="upLayer(event)"
 						icon="{new UpArrowUp()}"
 						iconOver="{new UpArrowOver()}"
@@ -243,7 +243,7 @@
 						/>
 
 			<IconButton id="ArrowDown"
-						toolTip="Put this layer at the bottom"
+						toolTip="Déplacer vers l'arrière plan"
 						click="downLayer(event)"
 						icon="{new DownArrowUp()}"
 						iconOver="{new DownArrowOver()}"
@@ -255,7 +255,7 @@
 		<IconButton id="opacityButton"
 					width="16"
 					height="16"
-					toolTip="Manage layer opacity"
+					toolTip="Régler l'opacité"
 					click="manageOpacity(event)"
 					icon="{new ButtonOpacity()}"
 					iconOver="{new ButtonOpacity()}"
@@ -263,7 +263,7 @@
 		
 		<s:Group id="displayControl" width="100%"/>
 		<IconButton id="deleteButton"
-					toolTip="Delete the layer"
+					toolTip="Supprimer la couche"
 					click="deleteLayer(event)"
 					icon="{new ButtonCloseUp()}"
 					iconOver="{new ButtonCloseOver()}"
