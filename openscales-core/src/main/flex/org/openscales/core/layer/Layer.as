@@ -46,6 +46,8 @@ package org.openscales.core.layer {
 		protected var _imageSize:Size = null;
 		private var _tweenOnZoom:Boolean = true;
 		private var _tweenOnLoad:Boolean = true;
+		//GAB
+		private var _editable:Boolean = false;
 
 		/**
 		 * Layer constructor
@@ -533,6 +535,15 @@ package org.openscales.core.layer {
 		
 		public function set tweenOnLoad(value:Boolean):void {
 			_tweenOnLoad = value;
+		}
+		
+		//GAB
+		public function get editable():Boolean{
+			return _editable;
+		}
+		
+		public function set editable(value:Boolean):void{
+			_editable = value;
 		}
 		
 	}
