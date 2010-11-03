@@ -515,23 +515,19 @@ package org.openscales.core.handler.feature {
 		 * the features
 		 */
 		private function onSomething(evt:FeatureEvent, updateStyleFeature:Function, onSomethingFeature:Function):void {
-			var i:int, layer:FeatureLayer, layersTmp:Array = new Array();
-
-			if (this._dragging)
+			if (this._dragging) {
 				return;
+			}
 
 			for each (var feature:Feature in evt.features) {
 				if (updateStyleFeature != null) {
 					updateStyleFeature(feature);
 				}
-
 				if (onSomethingFeature != null) {
 					onSomethingFeature(feature);
 				}
-
 				feature.draw();
 			}
-
 		}
 
 		/**
@@ -636,7 +632,7 @@ package org.openscales.core.handler.feature {
 			if (this.selectedFeatures.length > 0) {
 				var sf:Vector.<Feature> = new Vector.<Feature>(); // the features to keep selected
 				var i:int, found:Boolean;
-				if (!additiveMode) {
+				if (! additiveMode) {
 					// If additive mode is not selected, remove all the current
 					// selected features that are not in the input array.
 					for each (feature in this.selectedFeatures) {
@@ -721,7 +717,7 @@ package org.openscales.core.handler.feature {
 						selectionUpdated = true;
 					}
 				}
-				if (!found) {
+				if (! found) {
 					Trace.warn("unselect warning: unselected feature, nothing to do");
 				}
 			}

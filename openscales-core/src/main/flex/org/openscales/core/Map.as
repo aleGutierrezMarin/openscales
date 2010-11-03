@@ -240,16 +240,15 @@ package org.openscales.core
 		 *
 		 */
 		public function getLayerByName(name:String):Layer {
-			var foundLayer:Layer = null;
-			var i:uint = 0;
-			var j:uint = this.layers.length;
-			for (; i < j; ++i) {
-				var layer:Layer = this.layers[i];
+			var nbLayers:uint = this.layers.length;
+			var layer:Layer;
+			for (var i:uint=0; i<nbLayers; ++i) {
+				layer = this.layers[i];
 				if (layer.name == name) {
-					foundLayer = layer;
+					return layer;
 				}
 			}
-			return foundLayer;
+			return null;
 		}
 		
 		/**
