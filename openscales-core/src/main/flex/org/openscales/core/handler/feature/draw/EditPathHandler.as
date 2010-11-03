@@ -89,7 +89,7 @@ package org.openscales.core.handler.feature.draw
 		 /**
 		 * @inheritDoc 
 		 * */
-		 override protected function drawTemporaryFeature(event:MouseEvent):void{
+		 override protected function drawTemporaryFeature(event:MouseEvent):void {
 		 	var pointUnderTheMouse:Boolean=false;
 		 	var parentgeom:ICollection=null;
 		 	var parentFeature:Feature;
@@ -99,7 +99,7 @@ package org.openscales.core.handler.feature.draw
 		 		parentgeom=editionFeatureParentGeometry(this._featureCurrentlyDrag as PointFeature,parentFeature.geometry as ICollection);
 		 	}
 		 	//the feature currently dragged is a point under the mouse 	
-		 	else{
+		 	else {
 		 		// parentgeom=AbstractEditCollectionHandler._pointUnderTheMouse.editionFeatureParentGeometry;
 		 		parentFeature=findVirtualVerticeParent(AbstractEditCollectionHandler._pointUnderTheMouse)
 		 		parentgeom=editionFeatureParentGeometry(AbstractEditCollectionHandler._pointUnderTheMouse,parentFeature.geometry as ICollection);
@@ -107,60 +107,64 @@ package org.openscales.core.handler.feature.draw
 		 	}
 		 	
 		 	//The  Mouse button is down
-		 	if(event.buttonDown){
-		 	var point1:Point=null;
-		 	var point2:Point=null;
-			var point1Px:Pixel=null;
-			var point2Px:Pixel=null;
-			//We take 2 points in the collection depends on the index of the feature currently dragged
-		 	if(indexOfFeatureCurrentlyDrag==0){
-		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(0) as Point;
-		 			point2=parentgeom.componentByIndex(1) as Point;
-		 		}
-		 		else point1=parentgeom.componentByIndex(1) as Point;
-		 	}
-
-		 	else if(indexOfFeatureCurrentlyDrag==parentgeom.componentsLength-1){
-		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 			point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag) as Point;
-		 		}
-		 		else point1=parentgeom.componentByIndex(parentgeom.componentsLength-2) as Point;	 	
-		 	}	 	
-		 	else{
-		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 			point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag) as Point;
-		 		}
-		 		else{ point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag+1) as Point;
-		 		 point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 		}
-		 	}
-		 	if(point1!=null)point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y));
-		 	
-		 	//We draw the temporaries lines
-		 	if(point2==null && point1!=null){
-		 		_drawContainer.graphics.clear();
-		 		_drawContainer.graphics.lineStyle(1, 0xFF00BB);	 		
-		 		_drawContainer.graphics.moveTo(point1Px.x,point1Px.y);
-		 		_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
-		 		_drawContainer.graphics.endFill();
-		 	}
-		 	else if (point2!=null && point1!=null){
-		 		point2Px=this.map.getMapPxFromLocation(new Location(point2.x,point2.y));
-		 		_drawContainer.graphics.clear();
-		 		_drawContainer.graphics.lineStyle(1, 0xFF00BB);	 
-		 		_drawContainer.graphics.moveTo(point1Px.x,point1Px.y);
-		 		_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
-		 		_drawContainer.graphics.moveTo(point2Px.x,point2Px.y);
-		 		_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
-		 		_drawContainer.graphics.endFill();
-		 	}	
-		 }
-		 else{
-		 	_drawContainer.graphics.clear();
-		 }
-	}
+		 	if (event.buttonDown) {
+			 	var point1:Point = null;
+			 	var point2:Point = null;
+				var point1Px:Pixel = null;
+				var point2Px:Pixel = null;
+				//We take 2 points in the collection depends on the index of the feature currently dragged
+			 	if (indexOfFeatureCurrentlyDrag==0) {
+			 		if (pointUnderTheMouse) {
+			 			point1 = parentgeom.componentByIndex(0) as Point;
+			 			point2 = parentgeom.componentByIndex(1) as Point;
+			 		} else {
+						point1 = parentgeom.componentByIndex(1) as Point;
+					}
+			 	}
+			 	else if (indexOfFeatureCurrentlyDrag==parentgeom.componentsLength-1) {
+			 		if (pointUnderTheMouse) {
+			 			point1 = parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
+			 			point2 = parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag) as Point;
+			 		} else {
+						point1 = parentgeom.componentByIndex(parentgeom.componentsLength-2) as Point;
+					}
+			 	}	 	
+			 	else {
+			 		if (pointUnderTheMouse) {
+			 			point1 = parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
+			 			point2 = parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag) as Point;
+			 		} else {
+						point1 = parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag+1) as Point;
+			 			point2 = parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
+			 		}
+			 	}
+			 	if (point1 != null) {
+					point1Px = this.map.getMapPxFromLocation(new Location(point1.projSrsCode,point1.x,point1.y));
+				}
+			 	
+			 	//We draw the temporaries lines
+			 	if ((point2==null) && (point1!=null)) {
+			 		_drawContainer.graphics.clear();
+			 		_drawContainer.graphics.lineStyle(1, 0xFF00BB);	 		
+			 		_drawContainer.graphics.moveTo(point1Px.x,point1Px.y);
+			 		_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
+			 		_drawContainer.graphics.endFill();
+			 	}
+			 	else if ((point2!=null) && (point1!=null)) {
+			 		point2Px = this.map.getMapPxFromLocation(new Location(point2.projSrsCode,point2.x,point2.y));
+			 		_drawContainer.graphics.clear();
+			 		_drawContainer.graphics.lineStyle(1, 0xFF00BB);	 
+			 		_drawContainer.graphics.moveTo(point1Px.x,point1Px.y);
+			 		_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
+			 		_drawContainer.graphics.moveTo(point2Px.x,point2Px.y);
+			 		_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
+			 		_drawContainer.graphics.endFill();
+			 	}	
+			}
+			else {
+				_drawContainer.graphics.clear();
+			}
+		}
+		 
 	}
 }

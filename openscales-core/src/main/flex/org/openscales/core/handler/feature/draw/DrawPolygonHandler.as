@@ -102,26 +102,25 @@ package org.openscales.core.handler.feature.draw
 				_drawContainer.graphics.clear();
 				//we determine the point where the user clicked
 				var pixel:Pixel = new Pixel(map.mouseX ,map.mouseY);
-				this._lastPointPixel= new Pixel(map.mouseX ,map.mouseY);
+				this._lastPointPixel = new Pixel(map.mouseX ,map.mouseY);
 				var lonlat:Location = this.map.getLocationFromMapPx(pixel);
-                var point:Point = new Point(lonlat.lon,lonlat.lat);
-				var lring:LinearRing=null;
-				var polygon:Polygon=null;
+                var point:Point = new Point(lonlat.projSrsCode, lonlat.lon, lonlat.lat);
+				var lring:LinearRing = null;
+				var polygon:Polygon = null;
 				//2 cases, and very different. If the user starts the polygon or if the user is drawing the polygon
-				if(newFeature) {					
-					 lring = new LinearRing(new <Number>[point.x,point.y]);
-					 polygon = new Polygon(new <Geometry>[lring]);
-					this._firstPointPixel= new Pixel(map.mouseX ,map.mouseY);
-				
+				if (newFeature) {
+					 lring = new LinearRing(point.projSrsCode, new <Number>[point.x,point.y]);
+					 polygon = new Polygon(lring.projSrsCode, new <Geometry>[lring]);
+					this._firstPointPixel = new Pixel(map.mouseX ,map.mouseY);
 					
-					this._polygonFeature=new PolygonFeature(polygon,null,null,true);
+					this._polygonFeature = new PolygonFeature(polygon,null,null,true);
 					this._polygonFeature.name = name;
 					
 					//this._polygonFeature=new PolygonFeature(				
 					this._polygonFeature.style = Style.getDrawSurfaceStyle();
 
 					// We create a point the first time to see were the user clicked
-					this._firstPointFeature=  new PointFeature(point,null,Style.getDefaultPointStyle());
+					this._firstPointFeature = new PointFeature(point,null,Style.getDefaultPointStyle());
 					
 					//add the point feature to the drawLayer, and the polygon (which contains only one point for the moment)
 					drawLayer.addFeature(this._firstPointFeature);

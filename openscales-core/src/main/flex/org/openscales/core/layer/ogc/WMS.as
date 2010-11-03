@@ -34,19 +34,17 @@ package org.openscales.core.layer.ogc
 			if (! super.maxExtent) {
 				return null;
 			}
-			
-			var maxExtent:Bounds =  super.maxExtent.clone();
-			if (this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-				 maxExtent.transform(this.projSrsCode,this.map.baseLayer.projSrsCode);
+			var maxExtent:Bounds = super.maxExtent.clone();
+			if ((this.isBaseLayer != true) && (this.reproject == true) && this.map.baseLayer && (this.projSrsCode != this.map.baseLayer.projSrsCode)) {
+				 maxExtent.projSrsCode = this.map.baseLayer.projSrsCode;
 			}
 			return maxExtent;
 		}
 		
 		override public function getURL(bounds:Bounds):String {
 			var projectedBounds:Bounds = bounds.clone();
-			
-			if (this.isBaseLayer != true  && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-			  	projectedBounds.transform(this.projSrsCode,this.map.baseLayer.projSrsCode);
+			if ((this.isBaseLayer != true) && (this.reproject == true) && this.map.baseLayer && (this.projSrsCode != this.map.baseLayer.projSrsCode)) {
+				projectedBounds.projSrsCode = this.map.baseLayer.projSrsCode;
 			}
 
 			this.params.bbox = projectedBounds.boundsToString();

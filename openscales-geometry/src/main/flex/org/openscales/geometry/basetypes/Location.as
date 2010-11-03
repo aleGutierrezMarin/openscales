@@ -4,6 +4,7 @@ package org.openscales.geometry.basetypes
 	import org.openscales.geometry.Point;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * This class represents a location defined by:
@@ -15,7 +16,7 @@ package org.openscales.geometry.basetypes
 	 */
 	public class Location
 	{
-		private var _projSrsCode:String = null;
+		private var _projection:ProjProjection = null;
 		private var _x:Number;
 		private var _y:Number;
 		
@@ -23,13 +24,13 @@ package org.openscales.geometry.basetypes
 		 * Constructor
 		 * @param x:Number the X coordinate of the location
 		 * @param y:Number the Y coordinate of the location
-		 * @param srsCode:String the SRS code defining the projection of the coordinates, default is Geometry.DEFAULT_SRS_CODE
+		 * @param srsCode:String the SRS code defining the projection of the coordinates, initialized to Geometry.DEFAULT_SRS_CODE if null
 		 */
-		public function Location(x:Number,y:Number,srsCode:String=null)
+		public function Location(srsCode:String, x:Number, y:Number)
 		{
+			this._projection = ProjProjection.getProjProjection((srsCode==null) ? Geometry.DEFAULT_SRS_CODE : srsCode);
 			this._x = x;
 			this._y = y;
-			this._projSrsCode = (srsCode==null) ? Geometry.DEFAULT_SRS_CODE : srsCode;
 		}
 		
 		/**
@@ -38,7 +39,7 @@ package org.openscales.geometry.basetypes
 		 * @return IProjectable a clone of the current location
 		 */
 		public function clone():Location {
-			return new Location(this._x,this._y,this._projSrsCode);
+			return new Location(this.projSrsCode, this.x, this.y);
 		}
 		
 		/**
@@ -65,7 +66,7 @@ package org.openscales.geometry.basetypes
 		 * @return String the SRS code defining projection of the Location
 		 */
 		public function get projSrsCode():String {
-			return this._projSrsCode;
+			return (this._projection==null) ? null : this._projection.srsCode;
 		}
 		
 		/**
@@ -92,12 +93,12 @@ package org.openscales.geometry.basetypes
 		 * @return Location the equivalent Location of this location in the new projection
 		 */
 		public function reprojectTo(newSrsCode:String):Location {
-			if (newSrsCode == this._projSrsCode) {
+			if (newSrsCode == this.projSrsCode) {
 				return this;
 			}
-			var p:ProjPoint = new ProjPoint(this._x, this._y);
-			Proj4as.transform(this._projSrsCode, newSrsCode, p);
-			return new Location(p.x,p.y,newSrsCode);
+			var p:ProjPoint = new ProjPoint(this.x, this.y);
+			Proj4as.transform(this.projSrsCode, newSrsCode, p);
+			return new Location(newSrsCode, p.x, p.y);
 		}
 		
 		/**
@@ -127,7 +128,7 @@ package org.openscales.geometry.basetypes
 		 * @return Location the new Location
 		 */
 		public function add(x:Number, y:Number):Location {
-			return new Location(this._x + x, this._y + y, this._projSrsCode);
+			return new Location(this.projSrsCode, this.x + x, this.y + y);
 		}
 		
 		/**
@@ -140,9 +141,9 @@ package org.openscales.geometry.basetypes
 		public function equals(loc:Location):Boolean {
 			var equals:Boolean = false;
 			if (loc != null) {
-				equals = this._x == loc.x
-						&& this._y == loc.y
-						&& this._projSrsCode == loc.projSrsCode;
+				equals = this.x == loc.x
+						&& this.y == loc.y
+						&& this.projSrsCode == loc.projSrsCode;
 			}
 			return equals;
 		}
@@ -156,7 +157,7 @@ package org.openscales.geometry.basetypes
 		 */
 		public static function getLocationFromString(str:String,srsCode:String=null):Location {
 			var pair:Array = str.split(",");
-			return new Location(Number(pair[0]), Number(pair[1]), srsCode);
+			return new Location(srsCode, Number(pair[0]), Number(pair[1]));
 		}
 		
 	}

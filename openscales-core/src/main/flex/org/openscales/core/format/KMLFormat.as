@@ -221,16 +221,18 @@ package org.openscales.core.format
 				_Pcoords = Pcoords.split(",");
 				if(_Pcoords.length<2)
 					continue;
-				point = new Point(_Pcoords[0].toString(),
+				point = new Point(
+					this.externalProjSrsCode,
+					_Pcoords[0].toString(),
 					_Pcoords[1].toString());
-				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
-					point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+				if ((this.internalProjSrsCode != null) && (this.externalProjSrsCode != null)) {
+					point.projSrsCode = this.internalProjSrsCode;
 				}
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
 			}
 
-			return new LinearRing(Ppoints);
+			return new LinearRing(this.internalProjSrsCode, Ppoints);
 		}
 		/**
 		 * load placemarks
@@ -266,11 +268,9 @@ package org.openscales.core.format
 				var _id:String;
 				
 				// LineStrings
-				if(placemark.LineString != undefined)
-				{
+				if (placemark.LineString != undefined) {
 					var _Lstyle:Style = Style.getDefaultLineStyle();
-					if(placemark.styleUrl != undefined)
-					{
+					if(placemark.styleUrl != undefined) {
 						_id = placemark.styleUrl.text();
 						if(lineStyles[_id] != undefined)
 							_Lstyle = lineStyles[_id];
@@ -283,49 +283,58 @@ package org.openscales.core.format
 					var coords:String;
 					for each(coords in coordinates) {
 						var _coords:Array = coords.split(",");
-						if(_coords.length<2)
+						if (_coords.length<2) {
 							continue;
-						point = new Point(_coords[0].toString(),
+						}
+						point = new Point(this.externalProjSrsCode,
+							_coords[0].toString(),
 							_coords[1].toString());
-						if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
-							point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+						if ((this.internalProjSrsCode != null) && (this.externalProjSrsCode != null)) {
+							point.projSrsCode = this.internalProjSrsCode;
 						}
 						points.push(point.x);
 						points.push(point.y);
 					}
-					var line:LineString = new LineString(points);
+					var line:LineString = new LineString(this.internalProjSrsCode, points);
 					linesfeatures.push(new LineStringFeature(line,attributes,_Lstyle));
 				}
 				
 				// Polygons
-				if(placemark.Polygon != undefined) {
+				if (placemark.Polygon != undefined) {
 					var _Pstyle:Style = Style.getDefaultSurfaceStyle();
-					if(placemark.styleUrl != undefined)
-					{
+					if (placemark.styleUrl != undefined) {
 						_id = placemark.styleUrl.text();
-						if(polygonStyles[_id] != undefined)
+						if (polygonStyles[_id] != undefined) {
 							_Pstyle = polygonStyles[_id];
+						}
 					}
 					var lines:Vector.<Geometry> = new Vector.<Geometry>(1);
 					lines[0] = this._loadPolygon(placemark.Polygon.outerBoundaryIs.LinearRing.coordinates.text());
+					if ((this.internalProjSrsCode != null) && (this.externalProjSrsCode != null)) {
+						(lines[0] as LinearRing).projSrsCode = this.internalProjSrsCode;
+					}
 					
-					if(placemark.Polygon.innerBoundaryIs != undefined) {
+					if (placemark.Polygon.innerBoundaryIs != undefined) {
 						try {
 							lines.push(this._loadPolygon(placemark.Polygon.innerBoundaryIs.LinearRing.coordinates.text()));
+							if ((this.internalProjSrsCode != null) && (this.externalProjSrsCode != null)) {
+								(lines[lines.length-1] as LinearRing).projSrsCode = this.internalProjSrsCode;
+							}
 						} catch(e:Error) {
+							// nothing to do
 						}
 					}
-					polygonsfeatures.push(new PolygonFeature(new Polygon(lines),attributes,_Pstyle));
+					var polygon:Polygon = new Polygon(this.internalProjSrsCode, lines);
+					polygonsfeatures.push(new PolygonFeature(polygon,attributes,_Pstyle));
 				}
 				
-				//Points
+				// Points
 				// rotation is not supported yet
-				if(placemark.Point != undefined)
-				{
+				if (placemark.Point != undefined) {
 					coordinates = placemark.Point.coordinates.text().split(",");
-					point = new Point(coordinates[0], coordinates[1]);
+					point = new Point(this.externalProjSrsCode, coordinates[0], coordinates[1]);
 					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
-						point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+						point.projSrsCode = this.internalProjSrsCode;
 					}
 					var loc:Location;
 					if(placemark.styleUrl != undefined) {
@@ -337,20 +346,20 @@ package org.openscales.core.format
 								if(_images[_icon]!=null) { // image not loaded so we will wait for it
 									var _img:Sprite = new Sprite();
 									_images[_icon].push(_img);
-									loc = new Location(point.x,point.y);
+									loc = new Location(point.projSrsCode, point.x, point.y);
 									customMarker = CustomMarker.createDisplayObjectMarker(_img,loc,attributes,0,0);
 								}
 								else if(_externalImages[_icon]!=null) { // image allready loaded, we copy the loader content
 									var Image:Bitmap = new Bitmap(new Bitmap(_externalImages[_icon].loader.content).bitmapData.clone());
 									Image.y = -Image.height;
 									Image.x = -Image.width/2;
-									customMarker = CustomMarker.createDisplayObjectMarker(Image,new Location(point.x,point.y),attributes,0,0);
+									customMarker = CustomMarker.createDisplayObjectMarker(Image, new Location(point.projSrsCode,point.x,point.y),attributes,0,0);
 								}
 								else { // image failed to load
 									var _marker:Bitmap = new _defaultImage();
 									_marker.y = -_marker.height;
 									_marker.x = -_marker.width/2;
-									customMarker = CustomMarker.createDisplayObjectMarker(_marker,new Location(point.x,point.y),attributes,0,0);
+									customMarker = CustomMarker.createDisplayObjectMarker(_marker, new Location(point.projSrsCode,point.x,point.y),attributes,0,0);
 								}
 								iconsfeatures.push(customMarker);
 							}

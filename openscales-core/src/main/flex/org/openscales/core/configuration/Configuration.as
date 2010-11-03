@@ -148,7 +148,7 @@ package org.openscales.core.configuration
 			}
 			if(String(config.@center) != ""){
 				var location:Array = String(config.@center).split(",");
-				map.center = new Location(Number(location[0]), Number(location[1]), this.map.baseLayer.projSrsCode);
+				map.center = new Location(this.map.baseLayer.projSrsCode, Number(location[0]), Number(location[1]));
 			}
 		}
 		

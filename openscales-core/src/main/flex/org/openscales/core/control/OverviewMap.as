@@ -114,7 +114,7 @@ package org.openscales.core.control
 			
 		}
 		
-		private function pxToBound(px1:Pixel,px2:Pixel):Bounds {
+		private function pxToBound(px1:Pixel, px2:Pixel):Bounds {
 			var left:Number;
 			var right:Number;
 			var top:Number;
@@ -123,25 +123,25 @@ package org.openscales.core.control
 			var loc1:Location = this._overviewMap.getLocationFromMapPx(px1);
 			var loc2:Location = this._overviewMap.getLocationFromMapPx(px2);
 			
-			if(loc1.x>loc2.x) {
+			if (loc1.x>loc2.x) {
 				left = loc2.x;
 				right = loc1.x;
 			} else {
 				left = loc1.x;
 				right = loc2.x;
 			}
-			if(loc1.y>loc2.y) {
+			if (loc1.y>loc2.y) {
 				bottom = loc2.y;
 				top = loc1.y;
 			} else {
 				top = loc1.y;
 				bottom = loc2.y;
 			}
-			var bounds:Bounds = new Bounds(left,
-				bottom,
-				right,
-				top,
-				this._overviewMap.baseLayer.projSrsCode);
+			var bounds:Bounds = new Bounds(this._overviewMap.baseLayer.projSrsCode,
+											left,
+											bottom,
+											right,
+											top);
 			return bounds;
 		}
 		
@@ -150,13 +150,13 @@ package org.openscales.core.control
 			var px:Pixel = new Pixel(this._overviewMap.mouseX,
 									 this._overviewMap.mouseY);
 			
-			if(px.equals(this._startDrag)) {
+			if (px.equals(this._startDrag)) {
 				var loc:Location = this._overviewMap.getLocationFromMapPx(px);
 				this.map.moveTo(loc.reprojectTo(this.map.baseLayer.projSrsCode));
 			} else {
-				var bounds:Bounds = pxToBound(px,this._startDrag);
+				var bounds:Bounds = pxToBound(px, this._startDrag);
 				if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
-					bounds.transform(this._overviewMap.baseLayer.projSrsCode,this.map.baseLayer.projSrsCode);
+					bounds.projSrsCode = this.map.baseLayer.projSrsCode;
 				}
 				this.map.zoomToExtent(bounds);
 			}
@@ -285,7 +285,7 @@ package org.openscales.core.control
 			var _extent:Bounds = this.map.extent;
 			
 			if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
-				_extent.transform(this.map.baseLayer.projSrsCode,this._overviewMap.baseLayer.projSrsCode);
+				_extent.projSrsCode = this._overviewMap.baseLayer.projSrsCode;
 			}
 			
 			this._extentLayer.projSrsCode = this._overviewMap.baseLayer.projSrsCode;

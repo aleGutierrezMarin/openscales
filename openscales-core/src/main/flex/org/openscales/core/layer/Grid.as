@@ -215,11 +215,11 @@ package org.openscales.core.layer
 				var bottomLeftTile:ImageTile = this._grid[bottom][0];
 				var right:int = this._grid[0].length - 1; 
 				var topRightTile:ImageTile = this._grid[0][right];
-				return new Bounds(bottomLeftTile.bounds.left, 
+				return new Bounds(this.projSrsCode,
+									bottomLeftTile.bounds.left, 
 									bottomLeftTile.bounds.bottom,
 									topRightTile.bounds.right, 
-									topRightTile.bounds.top,
-									this.projSrsCode);
+									topRightTile.bounds.top);
 			}
 			return null;
 		}
@@ -233,12 +233,12 @@ package org.openscales.core.layer
 			var center:Location = bounds.center;
 			var tileWidth:Number = bounds.width;
 			var tileHeight:Number = bounds.height;
-			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
+			var tileBounds:Bounds = new Bounds(this.projSrsCode,
+												center.lon - (tileWidth/2),
 												center.lat - (tileHeight/2),
 												center.lon + (tileWidth/2),
-												center.lat + (tileHeight/2),
-												this.projSrsCode);
-			var ul:Location = new Location(tileBounds.left, tileBounds.top);
+												center.lat + (tileHeight/2));
+			var ul:Location = new Location(tileBounds.projSrsCode, tileBounds.left, tileBounds.top);
 			var px:Pixel = this.map.getLayerPxFromLocation(ul);
 
 			if(this._grid==null) {
@@ -315,11 +315,11 @@ package org.openscales.core.layer
 				tileoffsetx = startX;
 				var colidx:int = 0;
 				do {
-					var tileBounds:Bounds = new Bounds(tileoffsetlon, 
-														tileoffsetlat, 
+					var tileBounds:Bounds = new Bounds(this.projSrsCode,
+														tileoffsetlon,
+														tileoffsetlat,
 														tileoffsetlon + tilelon,
-														tileoffsetlat + tilelat,
-														this.projSrsCode);
+														tileoffsetlat + tilelat);
 					var x:Number = tileoffsetx;
 					x -= int(this.map.layerContainer.x);
 
@@ -573,11 +573,11 @@ package org.openscales.core.layer
 			var mapPoint:Location = this.getLocationFromMapPx(viewPortPx);
 			var tileLeft:Number = maxExtent.left + (tileMapWidth * Math.floor((mapPoint.lon - maxExtent.left) / tileMapWidth));
 			var tileBottom:Number = maxExtent.bottom + (tileMapHeight * Math.floor((mapPoint.lat - maxExtent.bottom) / tileMapHeight));
-			return new Bounds(tileLeft,
-							  tileBottom,
-							  tileLeft + tileMapWidth,
-							  tileBottom + tileMapHeight,
-							  this.projSrsCode);
+			return new Bounds(this.projSrsCode,
+								tileLeft,
+								tileBottom,
+								tileLeft + tileMapWidth,
+								tileBottom + tileMapHeight);
 		}
 		
 		private function tileLoadHandler(event:TileEvent):void	{

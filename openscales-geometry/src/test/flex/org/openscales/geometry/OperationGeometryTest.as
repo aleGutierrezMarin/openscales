@@ -6,7 +6,7 @@ package org.openscales.geometry
 	public class OperationGeometryTest
 	{
 		/**
-		 * Test to transform gemetry in vector of point
+		 * Test to transform geometry in vector of points
 		 */
 		[Test] public function testGeometryToVertices():void {
 			// Create a LinearRing.
@@ -19,9 +19,9 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			var linearRing:LinearRing = new LinearRing(arrayVertices);
+			var linearRing:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices);
 			// Create a point into the LinearRing and test the inclusion
-			var pointIn:Point = new Point(4.78, 45.7);
+			var pointIn:Point = new Point(Geometry.DEFAULT_SRS_CODE, 4.78, 45.7);
 			Assert.assertTrue(linearRing.containsPoint(pointIn));
 			
 			var testVectorPoint:Vector.<Point> = linearRing.toVertices();
@@ -35,7 +35,6 @@ package org.openscales.geometry
 			Assert.assertEquals(  Number(45.659157810588724),testVectorPoint[3].y);
 
 			Assert.assertEquals(testVectorPoint.length,4);
-			
 		}
 		
 		/**
@@ -52,8 +51,8 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			var linearRing:LinearRing = new LinearRing(arrayVertices);
-			var point:Point = new Point(8.4527844237936415,80.45454545454);
+			var linearRing:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices);
+			var point:Point = new Point(Geometry.DEFAULT_SRS_CODE, 8.4527844237936415, 80.45454545454);
 			linearRing.addComponent(point,2);
 			var pointTest:Point = linearRing.getPointAt(2);
 			Assert.assertEquals(point.x,pointTest.x);
@@ -74,12 +73,11 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			var linearRing:LinearRing = new LinearRing(arrayVertices);
+			var linearRing:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices);
 			linearRing.addPoint(8.4527844237936415,80.45454545454,2);
 			var pointTest:Point = linearRing.getPointAt(2);
 			Assert.assertEquals(8.4527844237936415,pointTest.x);
 			Assert.assertEquals(80.45454545454,pointTest.y);
-			
 		}
 		
 		/**
@@ -96,15 +94,13 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			var linearRing:LinearRing = new LinearRing(arrayVertices);
+			var linearRing:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices);
 			
-			var point:Point = new Point(8.4527844237936415,80.45454545454);
+			var point:Point = new Point(Geometry.DEFAULT_SRS_CODE, 8.4527844237936415, 80.45454545454);
 			linearRing.replaceComponent(2,point);
 			var pointTest:Point = linearRing.getPointAt(2);
 			Assert.assertEquals(pointTest.x,point.x);
 			Assert.assertEquals(pointTest.y,point.y);
-
-			
 		}
 		
 		/**
@@ -121,7 +117,7 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			var linearRing:LinearRing = new LinearRing(arrayVertices);
+			var linearRing:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices);
 			var bounds:Bounds = linearRing.bounds;
 			Assert.assertEquals(bounds.left,4.5727844237936415);
 			Assert.assertEquals(bounds.right,5.0300903319148516);
@@ -134,8 +130,6 @@ package org.openscales.geometry
 			Assert.assertEquals(bounds.right,80);
 			Assert.assertEquals(bounds.top,50);
 			Assert.assertEquals(bounds.bottom,45.659157810588724);
-			
-			
 		}
 		
 		/**
@@ -152,12 +146,12 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			var linearRing:LinearRing = new LinearRing(arrayVertices);
-			var containsGeometry:Boolean = linearRing.contains(new Point(5,45.68));
+			var linearRing:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices);
+			var containsGeometry:Boolean = linearRing.contains(new Point(Geometry.DEFAULT_SRS_CODE, 5, 45.68));
 			Assert.assertTrue(containsGeometry);
-			containsGeometry = linearRing.contains(new Point(80,90));
+			containsGeometry = linearRing.contains(new Point(Geometry.DEFAULT_SRS_CODE, 80, 90));
 			Assert.assertFalse(containsGeometry);
-			
 		}
+		
 	}
 }

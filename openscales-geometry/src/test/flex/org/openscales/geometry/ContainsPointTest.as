@@ -19,11 +19,10 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			var linearRing:LinearRing = new LinearRing(arrayVertices);
+			var linearRing:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices);
 			// Create a point into the LinearRing and test the inclusion
-			var pointIn:Point = new Point(4.78, 45.7);
+			var pointIn:Point = new Point(Geometry.DEFAULT_SRS_CODE, 4.78, 45.7);
 			Assert.assertTrue(linearRing.containsPoint(pointIn));
-
 		}
 		
 		[Test] public function testLinearRingNotContainsPoint():void {
@@ -37,10 +36,9 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			var linearRing:LinearRing = new LinearRing(arrayVertices);
+			var linearRing:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices);
 			// Create a point into the LinearRing and test the inclusion
-
-			var pointIn2:Point = new Point(80, 90);
+			var pointIn2:Point = new Point(Geometry.DEFAULT_SRS_CODE, 80, 90);
 			Assert.assertFalse(linearRing.containsPoint(pointIn2));
 		}
 		
@@ -59,14 +57,13 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			rings.push(new LinearRing(arrayVertices));
-			var polygon:Polygon = new Polygon(rings);
+			rings.push(new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices));
+			var polygon:Polygon = new Polygon(Geometry.DEFAULT_SRS_CODE, rings);
 			// Create a point out the Polygon and test the inclusion
-			var pointIn:Point = new Point(4.78, 45.7);
+			var pointIn:Point = new Point(Geometry.DEFAULT_SRS_CODE, 4.78, 45.7);
 			Assert.assertTrue(polygon.containsPoint(pointIn));
-			var pointIn2:Point = new Point(80, 90);
+			var pointIn2:Point = new Point(Geometry.DEFAULT_SRS_CODE, 80, 90);
 			Assert.assertFalse(polygon.containsPoint(pointIn2));
-
 		}
 		
 		/**
@@ -84,12 +81,11 @@ package org.openscales.geometry
 			arrayVertices.push(45.659157810588724);
 			arrayVertices.push(4.5727844237936415);
 			arrayVertices.push(45.659157810588724);
-			rings.push(new LinearRing(arrayVertices));
-			var polygon:Polygon = new Polygon(rings);
+			rings.push(new LinearRing(Geometry.DEFAULT_SRS_CODE, arrayVertices));
+			var polygon:Polygon = new Polygon(Geometry.DEFAULT_SRS_CODE, rings);
 			// Create a point out the Polygon and test the inclusion
-			var pointIn2:Point = new Point(80, 90);
+			var pointIn2:Point = new Point(Geometry.DEFAULT_SRS_CODE, 80, 90);
 			Assert.assertFalse(polygon.containsPoint(pointIn2));
-
 		}
 		
 	}

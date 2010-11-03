@@ -15,9 +15,9 @@ package org.openscales.proj4as {
 		 * Property: title
 		 * The title to describe the projection
 		 */
-		public var projParams:ProjParams=new ProjParams();
+		public var projParams:ProjParams = new ProjParams();
 		
-		static public const defs:Object={
+		static public const defs:Object = {
 			'EPSG:900913': "+title=Google Mercator EPSG:900913 +proj=merc +ellps=WGS84 +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs",
 			'WGS84': "+title=long/lat:WGS84 +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees",
 			'EPSG:4326': "+title=long/lat:WGS84 +proj=longlat +a=6378137.0 +b=6356752.31424518 +ellps=WGS84 +datum=WGS84 +units=degrees",
@@ -70,7 +70,7 @@ package org.openscales.proj4as {
 			'CRS:84': "+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
 		}
 		
-		static private const projProjections:Object={}
+		static private const projProjections:Object = {}
 		
 		protected var proj:IProjection;
 		
@@ -80,6 +80,9 @@ package org.openscales.proj4as {
 		 * @return ProjProjection the ProjProjection
 		 */
 		public static function getProjProjection(srsCode:String):ProjProjection {
+			if ((srsCode == null) || (srsCode == "")) {
+				return null;
+			}
 			if (ProjProjection.projProjections[srsCode]) {
 				return ProjProjection.projProjections[srsCode];
 			}
@@ -136,7 +139,7 @@ package org.openscales.proj4as {
 		}
 		
 		public function ProjProjection(srsCode:String) {
-			this.projParams.srsCode=srsCode.toUpperCase();
+			this.projParams.srsCode = srsCode.toUpperCase();
 			if (this.projParams.srsCode.indexOf("EPSG") == 0) {
 				this.projParams.srsAuth='epsg';
 				this.projParams.srsProjNumber=this.projParams.srsCode.substring(5);

@@ -318,7 +318,7 @@ package org.openscales.fx
 				Trace.error("Map.centerLonLat: invalid number of components");
 				return ;
 			}
-			_center = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]), Geometry.DEFAULT_SRS_CODE);
+			_center = new Location(Geometry.DEFAULT_SRS_CODE, Number(strCenterLonLat[0]), Number(strCenterLonLat[1]));
 		}
 		
 		/**

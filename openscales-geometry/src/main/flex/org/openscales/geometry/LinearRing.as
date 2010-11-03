@@ -1,8 +1,8 @@
 package org.openscales.geometry
 {
 
-	import org.openscales.geometry.utils.UtilGeometry;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.utils.UtilGeometry;
 		
 	/**
 	 * A Linear Ring is a special LineString which is closed. 
@@ -13,13 +13,13 @@ package org.openscales.geometry
 	 */
 	public class LinearRing extends LineString
 	{
-		public function LinearRing(points:Vector.<Number> = null) {
-			super(points);
+		public function LinearRing(srsCode:String, points:Vector.<Number>) {
+			super(srsCode, points);
 		}
 
 		override public function addComponent(point:Geometry, index:Number=NaN):Boolean {
 			var added:Boolean = false;
-			if(0<this.componentsLength){
+			if (0 < this.componentsLength) {
 			  var lastPoint:Point = this.getPointAt(this.componentsLength-1);
 			}
 			if (!isNaN(index) || !(point as Point).equals(lastPoint)) {
@@ -43,7 +43,7 @@ package org.openscales.geometry
 		override public function containsPoint(p:Point):Boolean {
 			// If the point is not inside the bounding box of the LinearRing, it
 			// can not be in the LinearRing.
-			if (! this.bounds.containsLocation(new Location(p.x, p.y))) {
+			if (! this.bounds.containsLocation(new Location(p.projSrsCode, p.x, p.y))) {
 				return false;
 			}
 			
@@ -54,13 +54,11 @@ package org.openscales.geometry
 			var length:int = this.componentsLength;
 			for(var i:int=0; i<length; ++i) {
 				realIndex = i*2;
-				p0= new Point(this._components[realIndex],this._components[realIndex + 1]);
-				
-				if(i==length-1) {
-					p1 = new Point(this._components[0],this._components[1]);
-					
+				p0 = new Point(this.projSrsCode, this._components[realIndex], this._components[realIndex + 1]);
+				if (i==length-1) {
+					p1 = new Point(this.projSrsCode, this._components[0], this._components[1]);
 				} else {
-					p1 = new Point(this._components[realIndex + 2],this._components[realIndex + 3]);
+					p1 = new Point(this.projSrsCode, this._components[realIndex + 2], this._components[realIndex + 3]);
 				}
 				if (p0.y <= p.y) {
 					if (p1.y > p.y) {
@@ -138,8 +136,8 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			var LinearRingClone:LinearRing=new LinearRing();
-			var component:Vector.<Number>=this.getcomponentsClone();
+			var LinearRingClone:LinearRing = new LinearRing(this.projSrsCode, null);
+			var component:Vector.<Number> = this.getcomponentsClone();
 			LinearRingClone.addPoints(component);
 			return LinearRingClone;
 		}

@@ -14,7 +14,7 @@ package org.openscales.geometry
      	 *
      	 * @param rings the polygon and its holes
      	*/
-    	public function Polygon(rings:Vector.<Geometry>) {
+    	public function Polygon(srsCode:String, rings:Vector.<Geometry>) {
 			// Check if all the components to add are LinearRing
 			var validRings:Boolean = true;
 			if (rings) {
@@ -33,7 +33,7 @@ package org.openscales.geometry
 				}
 			}
 			// Initialize the object
-			super(rings);
+			super(srsCode, rings);
     		this.componentTypes = new <String>["org.openscales.geometry::LinearRing"];
 		}
 		
@@ -245,8 +245,8 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			var PolygonClone:Polygon=new Polygon(null);
-			var component:Vector.<Geometry>=this.getcomponentsClone();
+			var PolygonClone:Polygon = new Polygon(this.projSrsCode, null);
+			var component:Vector.<Geometry> = this.getcomponentsClone();
 			PolygonClone.addComponents(component);
 			return PolygonClone;
 		}

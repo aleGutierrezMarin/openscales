@@ -56,11 +56,11 @@ package org.openscales.core.handler.feature.draw
 				var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
 				var lonlat:Location = this.map.getLocationFromLayerPx(pixel);
 				
-				var point:Point = new Point(lonlat.lon,lonlat.lat);
+				var point:Point = new Point(lonlat.projSrsCode, lonlat.lon, lonlat.lat);
 
 				var pointFeature:PointFeature = new PointFeature(point, null, style);
 				pointFeature.name = id.toString(); id++;
-				pointFeature.geometry = new Point(lonlat.lon, lonlat.lat); 			
+				pointFeature.geometry = new Point(lonlat.projSrsCode, lonlat.lon, lonlat.lat); 			
 				drawLayer.addFeature(pointFeature);
 				pointFeature.draw();
 			}

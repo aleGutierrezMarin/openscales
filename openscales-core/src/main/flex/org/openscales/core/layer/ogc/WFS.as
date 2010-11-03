@@ -82,7 +82,7 @@ package org.openscales.core.layer.ogc
 
 			super(name);
 
-			if (!(this.geometryColumn)) {
+			if (! (this.geometryColumn)) {
 				this.geometryColumn = "the_geom";
 			}    
 
@@ -91,14 +91,17 @@ package org.openscales.core.layer.ogc
 		}
 
 		override public function destroy():void {
-			if(this._request)
+			if (this._request) {
 				this._request.destroy();
+			}
 			this._request = null;
-			if(this._gml != null)
+			if (this._gml != null) {
 				this._gml.destroy();
+			}
 			this._gml = null;
 			super.destroy();
 		}
+		
 		override public function set map(map:Map):void {
 			super.map = map;
 
@@ -115,10 +118,9 @@ package org.openscales.core.layer.ogc
 				return;
 			}
 
-			var projectedBounds:Bounds = this.map.extent.clone();
-
-			if (this.projSrsCode != this.map.baseLayer.projSrsCode) {
-				projectedBounds.transform(this.map.baseLayer.projSrsCode, this.projSrsCode);
+			var projectedBounds:Bounds = this.map.extent;
+			if (projectedBounds.projSrsCode != this.projSrsCode) {
+				projectedBounds.projSrsCode = this.projSrsCode;
 			}
 			var center:Location = projectedBounds.center;
 
@@ -127,8 +129,9 @@ package org.openscales.core.layer.ogc
 			}
 
 			var previousFeatureBbox:Bounds = this.featuresBbox; 
-			if(previousFeatureBbox!=null)
+			if (previousFeatureBbox != null) {
 				previousFeatureBbox = previousFeatureBbox.clone();
+			}
 
 			this.params.bbox = projectedBounds.boundsToString();
 

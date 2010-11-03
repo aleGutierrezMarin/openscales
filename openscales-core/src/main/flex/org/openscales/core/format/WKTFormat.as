@@ -4,7 +4,6 @@ package org.openscales.core.format
 	
 	import mx.core.ComponentDescriptor;
 	
-	import org.openscales.geometry.utils.StringUtils;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
@@ -20,6 +19,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
+	import org.openscales.geometry.utils.StringUtils;
 
 	/**
 	 * Read/Write WKT.
@@ -177,10 +177,12 @@ package org.openscales.core.format
 			var point:Point;
 			var realIndice:uint;
 			
+			var srsCode:String = null; // TODO: define the right projection
+			
 			if (type == "point")
 			{
 				coords = StringUtils.trim(args).split(this._regExes.spaces);
-				return new PointFeature(new Point(coords[0], coords[1]));
+				return new PointFeature(new Point(srsCode, coords[0], coords[1]));
 			}
 			else if (type == "multipoint")
 			{
@@ -194,7 +196,7 @@ package org.openscales.core.format
 					componentsNumber[realIndice] = point.x;
 					componentsNumber[realIndice + 1] = point.y; 
 				}
-				return new MultiPointFeature(new MultiPoint(componentsNumber));
+				return new MultiPointFeature(new MultiPoint(srsCode, componentsNumber));
 			}
 			else if (type == "linestring")
 			{
@@ -208,7 +210,7 @@ package org.openscales.core.format
 					componentsNumber[realIndice] = point.x;
 					componentsNumber[realIndice + 1] = point.y; 
 				}
-				return new LineStringFeature(new LineString(componentsNumber));
+				return new LineStringFeature(new LineString(srsCode, componentsNumber));
 			}
 			else if (type == "multilinestring")
 			{
@@ -221,7 +223,7 @@ package org.openscales.core.format
 					line = lines[i].replace(this._regExes.trimParens, '$1');
 					components[i]=parse(line, "linestring").geometry;
 				}
-				return new MultiLineStringFeature( new MultiLineString(components) );
+				return new MultiLineStringFeature(new MultiLineString(srsCode, components));
 			}
 			else if (type == "polygon")
 			{
@@ -240,24 +242,24 @@ package org.openscales.core.format
 					ringComponents[l-2] = point.x;
 					ringComponents[l-1] = point.y;
 					
-					linearRing = new LinearRing(ringComponents);
+					linearRing = new LinearRing(srsCode, ringComponents);
 					
 					components[i] = linearRing;
 				}
-				return new PolygonFeature( new Polygon(components) );
+				return new PolygonFeature(new Polygon(srsCode, components));
 			}
 			else if (type == "multipolygon")
 			{
 				var polygon:String;
 				var polygons:Array = StringUtils.trim(args).split(this._regExes.doubleParenComma);
-				components =new Vector.<Geometry>(polygons.length);
+				components = new Vector.<Geometry>(polygons.length);
 				j = polygons.length;
 				for(i = 0; i < j; ++i)
 				{
 					polygon = polygons[i].replace(this._regExes.trimParens, '$1');
 					components[i] = parse(polygon, "polygon").geometry;
 				}
-				return new MultiPolygonFeature( new MultiPolygon(components) );
+				return new MultiPolygonFeature(new MultiPolygon(srsCode, components));
 			}
 			else if (type == "geometrycollection")
 			{

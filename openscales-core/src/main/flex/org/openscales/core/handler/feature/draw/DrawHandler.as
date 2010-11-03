@@ -284,7 +284,7 @@ package org.openscales.core.handler.feature.draw
 							pathHandler.lastPoint = (drawLayer.features[last] as LineStringFeature).lineString.getLastPoint();
 
 							//update the starting point of the temporary line
-							var pix:Pixel = pathHandler.map.getMapPxFromLocation(new Location(pathHandler.lastPoint.x, pathHandler.lastPoint.y));
+							var pix:Pixel = pathHandler.map.getMapPxFromLocation(new Location(pathHandler.lastPoint.projSrsCode, pathHandler.lastPoint.x, pathHandler.lastPoint.y));
 							pathHandler.startPoint = pix;
 						} else {
 							drawLayer.removeFeature(drawLayer.features[last]);

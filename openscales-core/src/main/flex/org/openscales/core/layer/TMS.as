@@ -40,8 +40,8 @@ package org.openscales.core.layer
 		
 		override public function getURL(bounds:Bounds):String {
 			var res:Number = this.map.resolution;
-			if(this._tileOrigin==null) {
-				this._tileOrigin = new Location(this.maxExtent.left,this.maxExtent.bottom);
+			if (this._tileOrigin == null) {
+				this._tileOrigin = new Location(this.maxExtent.projSrsCode, this.maxExtent.left, this.maxExtent.bottom);
 			}
 			
 			var x:Number = Math.round((bounds.left - this._tileOrigin.lon) / (res * this.tileWidth));
@@ -59,7 +59,7 @@ package org.openscales.core.layer
 		override public function set map(map:Map):void {
 			super.map = map;
 			if (! this._tileOrigin) {
-				this._tileOrigin = new Location(this.map.maxExtent.left, this.map.maxExtent.bottom);
+				this._tileOrigin = new Location(this.map.maxExtent.projSrsCode, this.map.maxExtent.left, this.map.maxExtent.bottom);
 			}
 		}
 

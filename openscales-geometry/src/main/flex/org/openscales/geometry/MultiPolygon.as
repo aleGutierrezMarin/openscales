@@ -7,8 +7,8 @@ package org.openscales.geometry
 	public class MultiPolygon extends Collection
 	{
 
-		public function MultiPolygon(components:Vector.<Geometry> = null) {
-			super(components);
+		public function MultiPolygon(srsCode:String, components:Vector.<Geometry>) {
+			super(srsCode, components);
 			this.componentTypes = new <String>["org.openscales.geometry::Polygon"];
 		}
 		
@@ -41,12 +41,9 @@ package org.openscales.geometry
 		 * @param sourceSrs SRS of the source projection
 		 * @param destSrs SRS of the destination projection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
-			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
-			// Update the geometry
+		override protected function reprojectGeometry(sourceSrs:String, destSrs:String):void {
 			for (var i:int=0; i<this.componentsLength; ++i) {
-				this._components[i].transform(sourceSrs, destSrs);
+				(this._components[i] as Polygon).projSrsCode = destSrs;
 			}
 		}
 
@@ -54,8 +51,8 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			var MultiPolygonClone:MultiPolygon=new MultiPolygon();
-			var component:Vector.<Geometry>=this.getcomponentsClone();
+			var MultiPolygonClone:MultiPolygon = new MultiPolygon(this.projSrsCode, null);
+			var component:Vector.<Geometry> = this.getcomponentsClone();
 			MultiPolygonClone.addComponents(component);
 			return MultiPolygonClone;
 		}

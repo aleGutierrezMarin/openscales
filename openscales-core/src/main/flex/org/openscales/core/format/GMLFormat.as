@@ -189,16 +189,16 @@ package org.openscales.core.format
 			var p:Vector.<Number> = new Vector.<Number>();
 			var p2:Vector.<Geometry> = new Vector.<Geometry>();
 			
-			
 			var feature:Feature = null;
-			
 			var i:int;
 			var j:int;
+			
+			var srsCode:String = null; // TODO: read the real projection
 			
 			if (xmlNode..*::MultiPolygon.length() > 0) {
 				var multipolygon:XML = xmlNode..*::MultiPolygon[0];
 				
-				geom = new MultiPolygon();
+				geom = new MultiPolygon(srsCode, null);
 				var polygons:XMLList = multipolygon..*::Polygon;
 				j = polygons.length();
 				for (i = 0; i < j; i++) {
@@ -210,28 +210,28 @@ package org.openscales.core.format
 			else if (xmlNode..*::MultiLineString.length() > 0) {
 				var multilinestring:XML = xmlNode..*::MultiLineString[0];
 				
-				geom = new MultiLineString();
+				geom = new MultiLineString(srsCode, null);
 				var lineStrings:XMLList = multilinestring..*::LineString;
 				j = lineStrings.length();
 				
 				for (i = 0; i < j; ++i) {
 					p = this.parseCoords(lineStrings[i]);
-					if(p){
-						var lineString:LineString = new LineString(p);
+					if (p) {
+						var lineString:LineString = new LineString(srsCode, p);
 						geom.addComponent(lineString);
 					}
 				}
 			} else if (xmlNode..*::MultiPoint.length() > 0) {
 				var multiPoint:XML = xmlNode..*::MultiPoint[0];
 				
-				geom = new MultiPoint();
+				geom = new MultiPoint(srsCode, null);
 				
 				var points:XMLList = multiPoint..*::Point;
 				j = points.length();
 				p = this.parseCoords(points[i]);
-				if (p)
+				if (p) {
 					geom.addPoints(p);
-				
+				}
 			} else if (xmlNode..*::Polygon.length() > 0) {
 				var polygon2:XML = xmlNode..*::Polygon[0];
 				
@@ -241,12 +241,12 @@ package org.openscales.core.format
 				
 				p = this.parseCoords(lineString2);
 				if (p) {
-					geom = new LineString(p);
+					geom = new LineString(srsCode, p);
 				}
 			} else if (xmlNode..*::Point.length() > 0) {
 				var point:XML = xmlNode..*::Point[0];
 				
-				geom = new MultiPoint();
+				geom = new MultiPoint(srsCode, null);
 				p = this.parseCoords(point);
 				if (p) {
 					geom.addPoints(p);
@@ -323,14 +323,15 @@ package org.openscales.core.format
 		 */
 		public function parsePolygonNode(polygonNode:Object):Polygon {
 			var linearRings:XMLList = polygonNode..*::LinearRing;
+			var srsCode:String = null; // TODO: read the real projection
 			// Optimize by specifying the array size
 			var j:int = linearRings.length();
 			var rings:Vector.<Geometry> = new Vector.<Geometry>();
 			var i:int;
 			for (i = 0; i < j; i++) {
-				rings[i] = new LinearRing(this.parseCoords(linearRings[i]));
+				rings[i] = new LinearRing(srsCode, this.parseCoords(linearRings[i]));
 			}
-			return new Polygon(rings);
+			return new Polygon(srsCode, rings);
 		}
 		
 		/**
@@ -369,9 +370,9 @@ package org.openscales.core.format
 				for(i = 0; i < j; i = i + this.dim) {
 					x = Number(nums[i]);
 					y = Number(nums[i+1]);
-					var p:Point = new Point(x, y);
+					var p:Point = new Point(this.externalProjSrsCode, x, y);
 					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
-						p.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+						p.projSrsCode = this.internalProjSrsCode;
 					}
 					points.push(p.x);
 					points.push(p.y);
@@ -504,7 +505,7 @@ package org.openscales.core.format
 			var points:Array = null;
 			if (geometry.components) {
 				if (geometry.components.length > 0) {
-					points = geometry.components;
+					points = geometry.components; // TODO: a clone should be used, isn't it ?
 				}
 			}
 			
@@ -513,8 +514,12 @@ package org.openscales.core.format
 				var j:int = points.length;
 				var i:int;
 				for (i = 0; i < j; ++i) {
-					if (this.internalProjSrsCode != null && this.externalProjSrsCode != null)
-						(points[i] as Point).transform(this.internalProjSrsCode, this.externalProjSrsCode);
+					if (this.internalProjSrsCode != null && this.externalProjSrsCode != null) {
+						if ((points[i] as Point).projSrsCode == null) {
+							(points[i] as Point).projSrsCode = this.internalProjSrsCode;
+						}
+						(points[i] as Point).projSrsCode = this.externalProjSrsCode;
+					}
 					path += points[i].x + "," + points[i].y + " ";
 				}
 			} else {
