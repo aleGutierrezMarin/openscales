@@ -8,9 +8,15 @@ package org.openscales.core
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.display.StageDisplayState;
+	import flash.events.ContextMenuEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.ui.ContextMenu;
+	import flash.ui.ContextMenuItem;
 	import flash.utils.getQualifiedClassName;
+	
+	import mx.controls.Alert;
 	
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
@@ -61,6 +67,7 @@ package org.openscales.core
 		private var _maxExtent:Bounds = null;
 		private var _destroying:Boolean = false;
 		private var _tweenZoomEnabled:Boolean = true;
+		private var _allowFullScreen:Boolean = true;
 		
 		private var _proxy:String = null;
 		private var _bitmapTransition:Sprite;
@@ -94,11 +101,12 @@ package org.openscales.core
 			// The sprite is now fully defined.
 			this.addChild(this._layerContainer);
 			
-			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
-			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
+			this.addEventListener(LayerEvent.LAYER_LOAD_START, layerLoadHandler);
+			this.addEventListener(LayerEvent.LAYER_LOAD_END, layerLoadHandler);						
 			
 			Trace.stage = this.stage;
 			
+			this.initContextMenu();
 		}
 		
 		/**
@@ -120,9 +128,75 @@ package org.openscales.core
 				}
 			}
 			
-			var i:int = this._securities.length;
-			for(i;i>0;--i)
+			for(var i:int = this._securities.length; i>0; --i) {
 				this._securities.pop().destroy();
+			}
+		}
+		
+		// Context menu management
+		
+		private function initContextMenu():void {
+			var cm:ContextMenu = new ContextMenu();
+			var cmi:ContextMenuItem;
+			
+			// Hide the built-in items of the context menu
+			cm.hideBuiltInItems();
+			
+			// Add items to enter/exit full screen (the items are enabled if and only if this.allowFullScreen is true)
+			cmi = new ContextMenuItem("Enter full screen");
+			cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this.enterFullScreen);
+			cm.customItems.push(cmi);
+			cmi = new ContextMenuItem("Exit full screen");
+			cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this.exitFullScreen);
+			cm.customItems.push(cmi);
+			
+			// Add an item to show the "Based on OpenScales" message
+			cmi = new ContextMenuItem("Based on OpenScales 1.2 - About");
+			cmi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, this.basedOnOpenScales);
+			cm.customItems.push(cmi);
+			
+			// Define the handler that will define the enabled/disabled items
+			cm.addEventListener(ContextMenuEvent.MENU_SELECT, this.contextMenuHandler);
+			// Attach the context menu to the map
+			this.contextMenu = cm; 
+		}
+		
+		/**
+		 * Define the enabled/disabled items of the context menu
+		 */
+		public function contextMenuHandler(event:ContextMenuEvent):void {
+			// Enter full screen
+			event.target.customItems[0].enabled = this.allowFullScreen && (this.stage.displayState==StageDisplayState.NORMAL);
+			// Exit full screen
+			event.target.customItems[1].enabled = this.allowFullScreen && (this.stage.displayState==StageDisplayState.FULL_SCREEN);
+			// Based on OpenScales
+			event.target.customItems[2].enabled = true;
+		}
+		
+		/**
+		 * Enter full screen mode.
+		 * To allow full screen mode, HTML code must have
+		 * <param name="allowFullScreen" value="true" /> in the <object> tag and
+		 * allowFullScreen="true" as an attribute of the <embed> tag 
+		 */
+		public function enterFullScreen(event:ContextMenuEvent = null):void {
+			this.stage.displayState = StageDisplayState.FULL_SCREEN;
+		}
+		
+		/**
+		 * Exit full screen mode
+		 */
+		public function exitFullScreen(event:ContextMenuEvent = null):void {
+			this.stage.displayState = StageDisplayState.NORMAL;
+		}
+		
+		/**
+		 * Display a "Based on OpenScales" message
+		 */
+		private function basedOnOpenScales(event:ContextMenuEvent = null):void {
+			var msg:String = 'This application is based on OpenScales, an open source (LGPL license) rich mapping API.\n'
+				+ 'See http://openscales.org for more details...';
+			Alert.show(msg, "About OpenScales");
 		}
 		
 		// Layer management
@@ -408,12 +482,12 @@ package org.openscales.core
 		 **/
 		public function addPopup(popup:Popup, exclusive:Boolean = true):void {
 			var i:Number;
-			if(exclusive){
+			if (exclusive) {
 				var child:DisplayObject;
-				for(i=this._layerContainer.numChildren-1;i>=0;i--){
+				for(i=this._layerContainer.numChildren-1;i>=0;i--) {
 					child = this._layerContainer.getChildAt(i);
-					if(child is Popup){
-						if(child != popup) {
+					if (child is Popup) {
+						if (child != popup) {
 							Trace.warn("Map.addPopup: popup already displayed so escape");
 							return;
 						}
@@ -1213,6 +1287,17 @@ package org.openscales.core
 		
 		public function get tweenZoomEnabled():Boolean{
 			return _tweenZoomEnabled;
+		}
+		
+		/**
+		 * Enable or disable the full screen mode
+		 */
+		public function set allowFullScreen(value:Boolean):void{
+			_allowFullScreen = value;
+		} 
+		
+		public function get allowFullScreen():Boolean{
+			return _allowFullScreen;
 		}
 		
 		/**
