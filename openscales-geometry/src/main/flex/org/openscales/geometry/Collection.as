@@ -30,8 +30,8 @@ package org.openscales.geometry
 		private var _componentTypes:Vector.<String> = null;
 		
 		
-		public function addPoints(components:Vector.<Number>):void{
-			
+		public function addPoints(components:Vector.<Number>):void {
+			// TODO: nothing to do ?
 		}
 		
 		/**
@@ -39,8 +39,8 @@ package org.openscales.geometry
      	 *
      	 * @param components
      	 */
-		public function Collection(components:Vector.<Geometry>) {
-			super();
+		public function Collection(srsCode:String, components:Vector.<Geometry>) {
+			super(srsCode);
 			this._components = new Vector.<Geometry>();
             if (components != null) {
 				this.addComponents(components);
@@ -104,9 +104,8 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{		
-			//All collection
-			var Collectionclone:Collection=new Collection(null);
-			var component:Vector.<Geometry>=this.getcomponentsClone();
+			var Collectionclone:Collection = new Collection(this.projSrsCode, null);
+			var component:Vector.<Geometry> = this.getcomponentsClone();
 			Collectionclone.addComponents(component);
 			return Collectionclone;		
 		}
@@ -285,20 +284,19 @@ package org.openscales.geometry
 			}
 			return length;
 		}*/
+		
 		/**
 		 * Method to convert the collection from a projection system to an other.
 		 *
 		 * @param sourceSrs SRS of the source projection
 		 * @param destSrs SRS of the destination projection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
-			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
-			// Update the geometry
+		override protected function reprojectGeometry(sourceSrs:String, destSrs:String):void {
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				this._components[i].transform(sourceSrs, destSrs);
+				this._components[i].projSrsCode = destSrs;
 			}
 		}
+		
 		/**
 		 * Calculate the approximate area of this geometry (the projection and
 		 * the geodesic are not managed).

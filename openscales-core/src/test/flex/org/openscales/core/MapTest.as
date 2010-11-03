@@ -1,6 +1,7 @@
 package org.openscales.core
 {
 	import org.flexunit.Assert;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
@@ -8,13 +9,13 @@ package org.openscales.core
 	public class MapTest
 	{
 		[Test]
-		public function testEmptyNewMap( ) : void {
+		public function testEmptyNewMap():void {
 			var map:Map = new Map();
 			Assert.assertNotNull(map);
 		}
 		
 		[Test]
-		public function testSize( ) : void {
+		public function testSize():void {
 			var map:Map = new Map();
 			var size:Size = new Size(100, 200);
 			map.size = size;	
@@ -23,7 +24,7 @@ package org.openscales.core
 		}
 		
 		[Test]
-		public function testDefaultMaxExtent( ) : void {
+		public function testDefaultMaxExtent():void {
 			var map:Map = new Map();
 			var defaultMaxExtent:Bounds = map.maxExtent;
 			
@@ -35,9 +36,9 @@ package org.openscales.core
 		}
 		
 		[Test]
-		public function testMaxExtent( ) : void {
+		public function testMaxExtent():void {
 			var map:Map = new Map();
-			map.maxExtent = new Bounds(1, 2, 3, 4, "EPSG:4326");
+			map.maxExtent = new Bounds(Geometry.DEFAULT_SRS_CODE, 1, 2, 3, 4);
 			var defaultMaxExtent:Bounds = map.maxExtent;
 			
 			Assert.assertEquals(1, defaultMaxExtent.left);
@@ -47,15 +48,15 @@ package org.openscales.core
 		}
 		
 		[Test]
-		public function testDefaultCenter( ) : void {
+		public function testDefaultCenter():void {
 			var map:Map = new Map();
 			Assert.assertNull(map.center);			
 		}
 		
 		[Test]
-		public function testCenter( ) : void {
+		public function testCenter():void {
 			var map:Map = new Map();
-			map.center = new Location(1,2);
+			map.center = new Location(Geometry.DEFAULT_SRS_CODE, 1, 2);
 			Assert.assertEquals(1, map.center.lon);
 			Assert.assertEquals(2, map.center.lat);
 		}

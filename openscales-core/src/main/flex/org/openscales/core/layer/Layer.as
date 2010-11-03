@@ -14,6 +14,7 @@ package org.openscales.core.layer {
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.proj4as.Proj4as;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * A Layer displays raster (image) of vector datas on the map, usually loaded from a remote datasource.
@@ -29,11 +30,11 @@ package org.openscales.core.layer {
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
 
 		public static function get DEFAULT_MAXEXTENT():Bounds {
-			return new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			return new Bounds("EPSG:4326", -180, -90, 180, 90);
 		}
 
 		private var _map:Map = null;
-		private var _projSrsCode:String = null;
+		private var _projection:ProjProjection = null;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
 		private var _minResolution:Number = NaN;
@@ -54,7 +55,7 @@ package org.openscales.core.layer {
 			this.name = name;
 			this.visible = true;
 			this.doubleClickEnabled = true;
-			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
+			this.projSrsCode = Geometry.DEFAULT_SRS_CODE;
 			this.generateResolutions();
 		}
 
@@ -197,11 +198,9 @@ package org.openscales.core.layer {
 				var center:Location = this.map.center;
 				if (center) {
 					var res:Number = this.map.resolution;
-
 					var delta_x:Number = viewPortPx.x - (size.w / 2);
 					var delta_y:Number = viewPortPx.y - (size.h / 2);
-
-					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res, this.projSrsCode);
+					lonlat = new Location(this.projSrsCode, center.lon + delta_x * res, center.lat - delta_y * res);
 				}
 			}
 			return lonlat;
@@ -415,11 +414,11 @@ package org.openscales.core.layer {
 		 * When this layer is not the baselayer, it is used to perform the right repojection algorithm.
 		 */
 		public function get projSrsCode():String {
-			return this._projSrsCode;
+			return (this._projection==null) ? null : this._projection.srsCode;
 		}
 		
 		public function set projSrsCode(value:String):void {
-			this._projSrsCode = value;
+			this._projection = ProjProjection.getProjProjection(value);
 			if (this._autoResolution) {
 				this.generateResolutions();
 			}

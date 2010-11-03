@@ -83,7 +83,7 @@ package org.openscales.core.format
 		[Test]
 		public function testWritePoint():void
 		{
-			var point:Point = new Point(1, 2);
+			var point:Point = new Point(Geometry.DEFAULT_SRS_CODE, 1, 2);
 			var pointFeature:PointFeature = new PointFeature(point);
 			trace(format.write(pointFeature));
 			Assert.assertNotNull(format.write(pointFeature));
@@ -92,7 +92,7 @@ package org.openscales.core.format
 		[Test]
 		public function testWriteMultiPoint():void
 		{
-			var multiPoint:MultiPoint = new MultiPoint(new <Number>[11, 12,21, 22]);
+			var multiPoint:MultiPoint = new MultiPoint(Geometry.DEFAULT_SRS_CODE, new <Number>[11, 12,21, 22]);
 			var multiPointFeature:MultiPointFeature = new MultiPointFeature(multiPoint);
 			trace(format.write(multiPointFeature));
 			Assert.assertNotNull(format.write(multiPointFeature));
@@ -101,7 +101,7 @@ package org.openscales.core.format
 		[Test]
 		public function testWriteLineString():void
 		{
-			var line:LineString = new LineString(new <Number>[11, 12,21, 22, 31, 32]);
+			var line:LineString = new LineString(Geometry.DEFAULT_SRS_CODE, new <Number>[11, 12,21, 22, 31, 32]);
 			var lineFeature:LineStringFeature = new LineStringFeature(line);
 			trace(format.write(lineFeature));
 			Assert.assertNotNull(format.write(lineFeature));
@@ -110,9 +110,9 @@ package org.openscales.core.format
 		[Test]
 		public function testWriteMultiLineString():void
 		{
-			var line1:LineString = new LineString(new <Number>[111, 112,121, 122,131, 132]);
-			var line2:LineString = new LineString(new <Number>[211, 212221, 222,231, 232]);
-			var multiline:MultiLineString = new MultiLineString(new <Geometry>[line1, line2]);
+			var line1:LineString = new LineString(Geometry.DEFAULT_SRS_CODE, new <Number>[111, 112,121, 122,131, 132]);
+			var line2:LineString = new LineString(Geometry.DEFAULT_SRS_CODE, new <Number>[211, 212221, 222,231, 232]);
+			var multiline:MultiLineString = new MultiLineString(Geometry.DEFAULT_SRS_CODE, new <Geometry>[line1, line2]);
 			var multilineFeature:MultiLineStringFeature = new MultiLineStringFeature(multiline);
 			trace(format.write(multilineFeature));
 			Assert.assertNotNull(format.write(multilineFeature));
@@ -121,9 +121,9 @@ package org.openscales.core.format
 		[Test]
 		public function testWritePolygon():void
 		{
-			var ring1:LinearRing = new LinearRing(new <Number>[0, 0,0, 3,3, 3,3, 0]);
-			var ring2:LinearRing = new LinearRing(new <Number>[1, 1, 1, 2,2, 2,2, 1]);
-			var polygon:Polygon = new Polygon(new <Geometry>[ring1, ring2]);
+			var ring1:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, new <Number>[0, 0,0, 3,3, 3,3, 0]);
+			var ring2:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, new <Number>[1, 1, 1, 2,2, 2,2, 1]);
+			var polygon:Polygon = new Polygon(Geometry.DEFAULT_SRS_CODE, new <Geometry>[ring1, ring2]);
 			var polygonFeature:PolygonFeature = new PolygonFeature(polygon);
 			trace(format.write(polygonFeature));
 			Assert.assertNotNull(format.write(polygonFeature));
@@ -132,10 +132,15 @@ package org.openscales.core.format
 		[Test]
 		public function testWriteMultiPolygon():void
 		{
-			var ring1:LinearRing = new LinearRing(new <Number>[0, 0, 0, 3, 3, 3,3, 0]);
-			var ring2:LinearRing = new LinearRing(new <Number>[1, 1, 1, 2,2, 2, 2, 1]);
-			var ring3:LinearRing = new LinearRing(new <Number>[0, 0, 0, -1, -1, -1, -1, 0]);
-			var multipolygon:MultiPolygon = new MultiPolygon(new <Geometry>[new Polygon(new <Geometry>[ring1, ring2]), new Polygon(new <Geometry>[ring3])]);
+			var ring1:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, new <Number>[0, 0, 0, 3, 3, 3,3, 0]);
+			var ring2:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, new <Number>[1, 1, 1, 2,2, 2, 2, 1]);
+			var ring3:LinearRing = new LinearRing(Geometry.DEFAULT_SRS_CODE, new <Number>[0, 0, 0, -1, -1, -1, -1, 0]);
+			var multipolygon:MultiPolygon = new MultiPolygon(Geometry.DEFAULT_SRS_CODE,
+														new <Geometry>[
+															new Polygon(Geometry.DEFAULT_SRS_CODE,
+																new <Geometry>[ring1, ring2]),
+															new Polygon(Geometry.DEFAULT_SRS_CODE,
+																new <Geometry>[ring3])]);
 			var multiPolygonFeature:MultiPolygonFeature = new MultiPolygonFeature(multipolygon);
 			trace(format.write(multiPolygonFeature));
 			Assert.assertNotNull(format.write(multiPolygonFeature));

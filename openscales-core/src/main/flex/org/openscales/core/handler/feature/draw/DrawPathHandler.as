@@ -115,19 +115,18 @@ package org.openscales.core.handler.feature.draw
 			}	
 		}
 		
-		protected function drawLine(event:MouseEvent=null):void{
-			
+		protected function drawLine(event:MouseEvent=null):void {
 			//we determine the point where the user clicked
 			var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
 			var lonlat:Location = this.map.getLocationFromLayerPx(pixel);
 			//manage the case where the layer projection is different from the map projection
-			var point:Point = new Point(lonlat.lon,lonlat.lat);
+			var point:Point = new Point(lonlat.projSrsCode, lonlat.lon, lonlat.lat);
 			//initialize the temporary line
 			_startPoint = this.map.getMapPxFromLocation(lonlat);
 			
 			//The user click for the first time
-			if(newFeature){
-				_lineString = new LineString(new <Number>[point.x,point.y]);
+			if (newFeature) {
+				_lineString = new LineString(point.projSrsCode, new <Number>[point.x,point.y]);
 				lastPoint = point;
 				//the current drawn linestringfeature
 				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDrawLineStyle(),true);
@@ -165,13 +164,12 @@ package org.openscales.core.handler.feature.draw
 			if(map!=null){map.addChild(_drawContainer);}
 		}
 		
-		private function updateZoom(evt:MapEvent):void{
-			
-			if(evt.zoomChanged) {
+		private function updateZoom(evt:MapEvent):void {
+			if (evt.zoomChanged) {
 				_drawContainer.graphics.clear();
 				//we update the pixel of the last point which has changed
 				var tempPoint:Point = _lineString.getLastPoint();
-				_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));
+				_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.projSrsCode, tempPoint.x, tempPoint.y));
 			}
 		}
 

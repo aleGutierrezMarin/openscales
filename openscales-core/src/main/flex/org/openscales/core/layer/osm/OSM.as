@@ -21,7 +21,7 @@ package org.openscales.core.layer.osm
 			this.projSrsCode = "EPSG:900913";
 			// Use the projection to access to the unit
 			/* this.units = Unit.METER; */
-			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projSrsCode);
+			this.maxExtent = new Bounds(this.projSrsCode,-20037508.34,-20037508.34,20037508.34,20037508.34);
 		}
 
 		override public function getURL(bounds:Bounds):String

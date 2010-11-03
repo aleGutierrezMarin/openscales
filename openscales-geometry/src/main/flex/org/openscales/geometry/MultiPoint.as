@@ -38,12 +38,11 @@ package org.openscales.geometry
 		 * 
 		 * @param components
 		 */
-		public function MultiPoint(points:Vector.<Number> = null) {
-			super();
+		public function MultiPoint(srsCode:String, points:Vector.<Number>) {
+			super(srsCode);
 			if (points != null) {
 				this._components = points;
-			}
-			else{
+			} else {
 				this._components = new Vector.<Number>();
 			}
 			this.clearBounds();
@@ -60,7 +59,7 @@ package org.openscales.geometry
 		
 		public function componentByIndex(i:int):Geometry {
 			var j:uint = i * 2;
-			return ((j<0)||(j>=this._components.length)) ? null : new Point(this._components[j],this._components[j+1]);
+			return ((j<0)||(j>=this._components.length)) ? null : new Point(this.projSrsCode,this._components[j],this._components[j+1]);
 		}
 		
 		/**
@@ -112,8 +111,8 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{		
-			var clone:MultiPoint=new MultiPoint(null);
-			var component:Vector.<Number>=this.getcomponentsClone();
+			var clone:MultiPoint = new MultiPoint(this.projSrsCode, null);
+			var component:Vector.<Number> = this.getcomponentsClone();
 			clone.addPoints(component);
 			return clone;		
 		}
@@ -124,12 +123,10 @@ package org.openscales.geometry
 		 * @return A string representation of the components of this collection
 		 */
 		public function get componentsString():String {
-			var strings:Vector.<String> = new Vector.<String>(this.componentsLength);
 			var length:uint = this.componentsLength;
-			var realIndex:uint;
-			for(var i:int = 0; i < this.length; ++i) {
-				realIndex= i*2;
-				strings[i]= this._components[realIndex] + ", " + this._components[realIndex+1];
+			var strings:Vector.<String> = new Vector.<String>(length);
+			for(var i:uint=0, j:uint=0; i<length; i++, j+=2) {
+				strings[i] = this._components[j] + ", " + this._components[j+1];
 			}
 			return strings.join(",");
 		}
@@ -138,21 +135,17 @@ package org.openscales.geometry
 		 * Component of the specified index, casted to the Point type
 		 */
 		override public function toShortString():String {
-			var s:String = "(";
-			s+=this.componentsString
-			return s + ")";
+			return "(" + this.componentsString + ")";
 		}
 		
 		/**
 		 * Return an array of all the vertices (Point) of this geometry
 		 */
 		override public function toVertices():Vector.<Point> {
-			var vertices:Vector.<Point> = new Vector.<Point>(this.componentsLength);
-			var j:uint=0;
-			var length:uint= this._components.length - 1;
-			for(var i:int=0; i<length; i+=2) {
-				vertices[j] = new Point(this._components[i],this._components[i+1]);
-				j++
+			var length:uint = this.componentsLength;
+			var vertices:Vector.<Point> = new Vector.<Point>(length);
+			for(var i:uint=0, j:uint=0; i<length; i++, j+=2) {
+				vertices[i] = new Point(this.projSrsCode, this._components[j], this._components[j+1]);
 			}
 			return vertices;
 		}
@@ -178,7 +171,7 @@ package org.openscales.geometry
 					bottom = (bottom < tempNumber) ? bottom : tempNumber;
 					top = (top > tempNumber) ?top : tempNumber;
 				}
-				this._bounds = new Bounds(left,bottom,right,top,this.projSrsCode);
+				this._bounds = new Bounds(this.projSrsCode, left, bottom, right, top);
 			}
 		}
 		
@@ -338,16 +331,14 @@ package org.openscales.geometry
 		}
 		return length;
 		}*/
+		
 		/**
 		 * Method to convert the collection from a projection system to an other.
 		 *
 		 * @param sourceSrs SRS of the source projection
 		 * @param destSrs SRS of the destination projection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
-			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
-			// Update the geometry
+		override protected function reprojectGeometry(sourceSrs:String, destSrs:String):void {
 			var p:ProjPoint;
 			for(var i:int=0; i<this._components.length; i+=2) {
 				p = new ProjPoint(this._components[i], this._components[i+1]);
@@ -463,7 +454,7 @@ package org.openscales.geometry
 		override public function intersects(geom:Geometry):Boolean {
 			var length:uint = this._components.length;
 			for(var i:int=0; i<length; i+=2) {
-				if (geom.intersects(new Point(this._components[i],this._components[i+1]))) {
+				if (geom.intersects(new Point(this.projSrsCode,this._components[i],this._components[i+1]))) {
 					return true;
 				}
 			}
@@ -520,11 +511,11 @@ package org.openscales.geometry
 			var result:Number, best:Number;
 			var distance:Number;
 			var min:Number = Number.POSITIVE_INFINITY;
-			var point:Point = new Point(0,0);
+			var point:Point = new Point(this.projSrsCode, 0, 0);
 			var realIndex:int = 0;
 			for(var i:int=0, len:int=this.componentsLength; i<len; ++i) {
 				realIndex= i*2;
-				result = new Point(this._components[realIndex],this._components[realIndex + 1]).distanceTo(geometry, options);
+				result = new Point(this.projSrsCode,this._components[realIndex],this._components[realIndex + 1]).distanceTo(geometry, options);
 				if(result < min) {
 					min = result;
 					best = result;

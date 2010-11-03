@@ -60,9 +60,9 @@ package org.openscales.core.handler.feature.draw
 		private function draw(selectedFeatures:Vector.<Feature>):Feature {
 			var f:Feature;
 			var array:Array = new Array();
-			var multiPoint:MultiPoint = new MultiPoint();
-			var multiLineString:MultiLineString = new MultiLineString();
-			var multiPolygon:MultiPolygon = new MultiPolygon();
+			var multiPoint:MultiPoint = new MultiPoint(this.drawLayer.projSrsCode, null);
+			var multiLineString:MultiLineString = new MultiLineString(this.drawLayer.projSrsCode, null);
+			var multiPolygon:MultiPolygon = new MultiPolygon(this.drawLayer.projSrsCode, null);
 			var drawType:String = "";
 			var multiPointFeature:MultiPointFeature;
 			var multiLineStringFeature:MultiLineStringFeature;
@@ -77,60 +77,48 @@ package org.openscales.core.handler.feature.draw
 			style.rules[0] = new Rule();
 			(style.rules[0] as Rule).symbolizers.push(new PolygonSymbolizer(new SolidFill(0x60FFE9,0.5),new Stroke(0x60FFE9)));
 			
-			// FixMe: if the selected features have differents typesn only the
+			// FixMe: if the selected features have differents types, only the
 			// features of the type of the last one in selectedFeatures are
 			// managed
 			for each(f in selectedFeatures){
-				if(f != null) {
+				if (f != null) {
 					//Add all selected feature in a multigeometry
-					if(f.geometry is Point) {
+					if (f.geometry is Point) {
 						var point:Point = f.geometry as Point ;
 						multiPoint.addPoint(point.x,point.y);
 						drawType = "MultiPoint";
-						
 						_multiPolygonForbidden = false;
 						drawLayer.removeFeature(f);
 					}
-					else if(f.geometry is LineString)
-					{
+					else if (f.geometry is LineString) {
 						multiLineString.addLineString(f.geometry as LineString);
 						drawType = "MultiLineString";
-						
 						_multiPolygonForbidden = false;
 						drawLayer.removeFeature(f);
 					}
-					else if(f.geometry is Polygon)
-					{
+					else if (f.geometry is Polygon) {
 						multiPolygon.addPolygon(f.geometry as Polygon);
 						drawType = "MultiPolygon";
-						
 						_multiPolygonForbidden = false;
 						drawLayer.removeFeature(f);
 					}
-
-					else if(f.geometry is MultiPoint)
-					{
+					else if (f.geometry is MultiPoint) {
 						j = (f.geometry as MultiPoint).componentsLength;
 						multiPoint.addPoints((f.geometry as MultiPoint).getcomponentsClone()); 
 						drawType = "MultiPoint";
-						
 						_multiPolygonForbidden = false;
 						drawLayer.removeFeature(f);
 					}
-					else if(f.geometry is MultiLineString)
-					{
+					else if (f.geometry is MultiLineString) {
 						j = (f.geometry as MultiLineString).componentsLength;
 						for(i = 0;i<j;++i) {
 							multiLineString.addLineString((f.geometry as MultiLineString).componentByIndex(i) as LineString);
 						}
 						drawType = "MultiLineString";
-						
 						_multiPolygonForbidden = false;
 						drawLayer.removeFeature(f);
 					}
-					else if(f.geometry is MultiPolygon)
-					{
-						
+					else if (f.geometry is MultiPolygon) {
 						/* for(var l:int = 0;l<(f.geometry as MultiPolygon).components.length;l++)
 						{
 							multiPolygon.addPolygon((f.geometry as MultiPolygon).components[l] as Polygon);

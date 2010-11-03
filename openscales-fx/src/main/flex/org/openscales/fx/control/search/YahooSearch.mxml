@@ -51,7 +51,7 @@
 					var latitude:Number = parseFloat(event.result.ResultSet.Result.Latitude);
 					var longitude:Number = parseFloat(event.result.ResultSet.Result.Longitude);
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
-						var pos:Location = new Location(longitude,latitude);
+						var pos:Location = new Location("EPSG:4326",longitude,latitude);
 						Trace.log("YahooSearch center at "+pos.toShortString());
 						if (map.baseLayer.projSrsCode != "") {
 							pos = pos.reprojectTo(map.baseLayer.projSrsCode);
@@ -71,7 +71,7 @@
 					var latitude:Number = parseFloat(event.target.data.Latitude);
 					var longitude:Number = parseFloat(event.target.data.Longitude);
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
-						var pos:Location = new Location(longitude,latitude);
+						var pos:Location = new Location("EPSG:4326",longitude,latitude);
 						Trace.log("YahooSearch center at "+pos.toShortString());
 						if (map.baseLayer.projSrsCode != "") {
 							pos = pos.reprojectTo(map.baseLayer.projSrsCode);

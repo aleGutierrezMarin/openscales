@@ -2,6 +2,7 @@ package org.openscales.geometry
 {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.proj4as.ProjProjection;
 
 
 	/**
@@ -22,10 +23,10 @@ package org.openscales.geometry
 		/**
 		 * projection of the geometry 
 		 */
-		protected var _projSrsCode:String = DEFAULT_SRS_CODE;
+		protected var _projection:ProjProjection = null;
 		
-		public function Geometry() {
-			super();
+		public function Geometry(srsCode:String) {
+			this.projSrsCode = srsCode;
 		}
 		
 		/**
@@ -44,17 +45,6 @@ package org.openscales.geometry
 
 		public function toShortString():String {
 			return "";
-		}
-		/**
-		 * Method to convert the coordinates of the geometry from a projection system to an other one.
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
-		 */
-		public function transform(sourceSrs:String, destSrs:String):void {
-			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
-			// Update the geometry
-			// Noting to do for this generic class
 		}
 
 		/**
@@ -102,11 +92,11 @@ package org.openscales.geometry
 				var dY:Number = (!isNaN(toleranceLat)) ? toleranceLat : 0;
 
 				var toleranceBounds:Bounds = 
-					new Bounds(this.bounds.left - dX,
-					this.bounds.bottom - dY,
-					this.bounds.right + dX,
-					this.bounds.top + dY,
-					this.projSrsCode);
+					new Bounds(this.projSrsCode,
+						this.bounds.left - dX,
+						this.bounds.bottom - dY,
+						this.bounds.right + dX,
+						this.bounds.top + dY);
 
 				atPoint = toleranceBounds.containsLocation(lonlat);
 			}
@@ -181,18 +171,35 @@ package org.openscales.geometry
 		}
 		
 		public function get projSrsCode():String {
-			return this._projSrsCode;
+			return (this._projection==null) ? null : this._projection.srsCode;
 		}
 		
 		public function set projSrsCode(value:String):void {
-			this._projSrsCode = value;
+			// Update the projection associated to the geometry
+			var oldSrsCode:String = this.projSrsCode;
+			this._projection = ProjProjection.getProjProjection(value);
+			// Update the geometry itself
+			if (oldSrsCode && value) {
+				this.reprojectGeometry(oldSrsCode, value);
+			}
+			// Update the boundary of the geometry
 			if (value == null) {
 				this.clearBounds();
 			} else {
 				if (this._bounds != null) { // the private variable is tested to avoid to create the bounds if it doesn't exist
-					this._bounds.transform(this._bounds.projSrsCode, value);
+					this._bounds.projSrsCode = value;
 				}
 			}
+		}
+		
+		/**
+		 * Method to convert the coordinates of the geometry from a projection system to an other one.
+		 * @param sourceSrs SRS of the source projection
+		 * @param destSrs SRS of the destination projection
+		 */
+		protected function reprojectGeometry(sourceSrs:String, destSrs:String):void {
+			// Noting to do for this generic class
+			// This function must be overrided for each specific Geometry
 		}
 		
 		/**

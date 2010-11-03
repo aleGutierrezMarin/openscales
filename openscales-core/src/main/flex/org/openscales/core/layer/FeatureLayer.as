@@ -92,9 +92,10 @@ package org.openscales.core.layer
 
 		private function updateCurrentProjection(evt:LayerEvent = null):void {
 			if ((this.map) && (this.map.baseLayer) && (this._displayProjSrsCode != this.map.baseLayer.projSrsCode)) {
-				if (this.features.length > 0) {	
-					for each (var f:Feature in this.features) {
-						f.geometry.transform(this._displayProjSrsCode, this.map.baseLayer.projSrsCode);
+				if (this.features.length > 0) {
+					var f:Feature;
+					for each (f in this.features) {
+						f.geometry.projSrsCode = this.map.baseLayer.projSrsCode;
 					}
 					this._displayProjSrsCode = this.map.baseLayer.projSrsCode;
 					this.redraw();
@@ -174,9 +175,15 @@ package org.openscales.core.layer
 				this.map.dispatchEvent(fevt);
 			}
 			
-			// Reprojection if needed
-			if (reproject && (this.map) && (this.map.baseLayer) && (this.projSrsCode != this._displayProjSrsCode)) {
-				feature.geometry.transform(this.projSrsCode, this._displayProjSrsCode);
+			// If not initialized, set the projection of the geometry of the feature to the projection of the layer
+			// This initialization MUST be done before the reprojection that is map dependant and not data dependant
+			if (feature.geometry.projSrsCode == null) {
+				feature.geometry.projSrsCode = this.projSrsCode;
+			}
+			
+			// Reproject the geometry of the feature to the display projection if needed
+			if (reproject && (this.map) && (this.map.baseLayer) && (feature.geometry.projSrsCode != this._displayProjSrsCode)) {
+				feature.geometry.projSrsCode = this._displayProjSrsCode;
 			}
 			
 			// Add the feature to the layer

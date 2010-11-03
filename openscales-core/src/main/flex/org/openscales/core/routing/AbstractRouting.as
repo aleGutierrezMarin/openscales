@@ -46,7 +46,7 @@ package org.openscales.core.routing
 		 /**
 		 * @private 
 		 **/
-		 protected var _itinerary:MultiLineStringFeature=new MultiLineStringFeature(new MultiLineString(),null,Style.getDefaultLineStyle());
+		 protected var _itinerary:MultiLineStringFeature = new MultiLineStringFeature(new MultiLineString(null,null),null,Style.getDefaultLineStyle());
 		 /**
 		 * @private
 		 * */
@@ -86,56 +86,62 @@ package org.openscales.core.routing
 		 * @param:results itinerary points array
 		 **/
 		protected function displayResult(results:Vector.<Point>):void{
-			if(results!=null){	
-				var itineraryGeometry:MultiLineString=new MultiLineString();
+			if (results!=null) {	
+				var itineraryGeometry:MultiLineString = new MultiLineString(null, null);
 				//This variable is used to know how much intermedPoints have been treat
 				//in order to don't scan intermediary point table again and again
-				var intermedPointTreat:Number=0;
+				var intermedPointTreat:Number = 0;
 				var linestring:LineString;
 				var j:int = results.length;
 				var i:uint;
-				for(i=0;i<j;++i){				
-
-					if(i==0)
-					{
-						if(_startPoint){
+				for(i=0;i<j;++i) {
+					if (i==0) {
+						if (_startPoint) {
 							//We work on the starting point 
-							if(_resultsLayer.features.indexOf(_startPoint)==-1)resultsLayer.addFeature(_startPoint);
-							if(!linestring){
+							if (_resultsLayer.features.indexOf(_startPoint)==-1) {
+								resultsLayer.addFeature(_startPoint);
+							}
+							if (!linestring) {
 								var point:Point = _startPoint.geometry as Point;
-								linestring=new LineString(new <Number>[point.x,point.y]);
+								linestring = new LineString(point.projSrsCode, new <Number>[point.x,point.y]);
 							}
 							//if the first point is not the starting point
-							if(!((_startPoint.geometry as Point).equals(results[0]))){	
+							if (!((_startPoint.geometry as Point).equals(results[0]))) {	
 								linestring.addComponent(results[i]);				
 							}
 						}
 					}
-					else{
-						if(i!=results.length-1){
+					else {
+						if (i != results.length-1) {
 							linestring.addComponent(results[i]);
 						}
-						else{
-							if(_endPoint){
+						else {
+							if (_endPoint) {
 								//like in the starting point treatment
-								if(resultsLayer.features.indexOf(_endPoint)==-1)resultsLayer.addFeature(_endPoint);								
-								if(!((_endPoint.geometry as Point).equals(results[i]))){
+								if (resultsLayer.features.indexOf(_endPoint)==-1) {
+									resultsLayer.addFeature(_endPoint);
+								}
+								if (!((_endPoint.geometry as Point).equals(results[i]))) {
+									linestring.addComponent(results[i]);
+								}
+								linestring.addComponent(_endPoint.geometry as Point);
+							}
+							else {
 								linestring.addComponent(results[i]);
 							}
-							linestring.addComponent(_endPoint.geometry as Point);
 						}
-						else linestring.addComponent(results[i]);		
-					}
 					}
 					//intermediary marker treatment
-					if(intermedPointTreat!=_intermedPoints.length){
+					if (intermedPointTreat != _intermedPoints.length) {
 						j = _intermedPoints.length;
 						var k:uint;
 						for(k=0;k<j;++j) {
 							var intermedPoint:PointFeature=_intermedPoints[k] as PointFeature;
-							if(intermedPoint!=null && (intermedPoint.geometry as Point).equals(results[i])){
+							if (intermedPoint!=null && (intermedPoint.geometry as Point).equals(results[i])) {
 								intermedPointTreat++;
-								if(this._resultsLayer.features.indexOf(intermedPoint))this._resultsLayer.addFeature(intermedPoint);
+								if (this._resultsLayer.features.indexOf(intermedPoint)) {
+									this._resultsLayer.addFeature(intermedPoint);
+								}
 							}
 						}
 					}	
@@ -148,8 +154,8 @@ package org.openscales.core.routing
 				resultsLayer.redraw();
 				_featureLayerEdition.refreshEditedfeatures();
 			}	
-			
 		}
+		
 		/**
 		 * for refreshing the itinerary
 		 * */
@@ -163,19 +169,20 @@ package org.openscales.core.routing
 		 * */
 		private function addPoint(px:Pixel):void{
 			//we determine the point where the user clicked
-			if(_resultsLayer!=null){
+			if (_resultsLayer != null) {
 				var lonlat:Location = this.map.getLocationFromLayerPx(px);
-				var featureAdded:Marker=new Marker(new Point(lonlat.lon,lonlat.lat));
-				featureAdded.isEditable=true;
-				if(!_startPoint || _forceStartPointDrawing)
-				{	
-					if(_startPoint) resultsLayer.removeFeature(_startPoint);	
-					_startPoint=featureAdded;
-					_startPoint.image=_startPointclass;
+				var featureAdded:Marker = new Marker(new Point(lonlat.projSrsCode, lonlat.lon, lonlat.lat));
+				featureAdded.isEditable = true;
+				if (!_startPoint || _forceStartPointDrawing) {
+					if (_startPoint) {
+						resultsLayer.removeFeature(_startPoint);
+					}
+					_startPoint = featureAdded;
+					_startPoint.image = _startPointclass;
 				}
 				else {
 					_intermedPoints.push(featureAdded);
-					featureAdded.image=_intermedPointClass;
+					featureAdded.image = _intermedPointClass;
 				}
 			}
 			refreshRouting();
@@ -187,13 +194,13 @@ package org.openscales.core.routing
 		 * */
 		private function addfinalPoint(px:Pixel):void{
 			var lonlat:Location = this.map.getLocationFromLayerPx(px);
-			if(!_endPoint)
-			{
-				_endPoint=new Marker(new Point(lonlat.lon,lonlat.lat));
-				_endPoint.image=_endPointClass;
-				_endPoint.isEditable=true;
+			if (!_endPoint) {
+				_endPoint = new Marker(new Point(lonlat.projSrsCode, lonlat.lon, lonlat.lat));
+				_endPoint.image = _endPointClass;
+				_endPoint.isEditable = true;
+			} else {
+				_endPoint.geometry = new Point(lonlat.projSrsCode, lonlat.lon, lonlat.lat);
 			}
-			else _endPoint.geometry=new Point(lonlat.lon,lonlat.lat);
 			refreshRouting();
 		}
 		/**

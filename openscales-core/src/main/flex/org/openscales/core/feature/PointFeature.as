@@ -29,13 +29,13 @@ package org.openscales.core.feature {
 		}
 
 		public static function createPointFeature(loc:Location, data:Object=null, style:Style=null ):PointFeature {
-			return new PointFeature(new Point(loc.lon,loc.lat), data, style);
+			return new PointFeature(new Point(loc.projSrsCode,loc.lon,loc.lat), data, style);
 		}
 		
 		override public function get lonlat():Location {
 			var value:Location = null;
 			if (this.point != null) {
-				value = new Location(this.point.x, this.point.y);
+				value = new Location(this.point.projSrsCode, this.point.x, this.point.y);
 			}
 			return value;
 		}
@@ -117,9 +117,9 @@ package org.openscales.core.feature {
 						if (point.y <= top && point.y >= bottom && point.x >= left && point.x <= right) {
 							intersect = true;
 						}
-						if (intersect)
-							arrayResult.push(new Array(new LineString(new <Number>[point1.x,point1.y, point2.x,point2.y]), i + 1));
-
+						if (intersect) {
+							arrayResult.push(new Array(new LineString(point1.projSrsCode, new <Number>[point1.x,point1.y, point2.x,point2.y]), i + 1));
+						}
 					}
 					intersect = false;
 				}
@@ -136,9 +136,9 @@ package org.openscales.core.feature {
 					if (point.y <= top && point.y >= bottom && point.x >= left && point.x <= right) {
 						intersect = true;
 					}
-					if (intersect)
-						arrayResult.push(new Array(new LineString(new <Number>[point1.x,point1.y, point2.x,point2.y]), collection.componentsLength));
-
+					if (intersect) {
+						arrayResult.push(new Array(new LineString(point1.projSrsCode, new <Number>[point1.x,point1.y, point2.x,point2.y]), collection.componentsLength));
+					}
 				}
 			}
 			distanceArray = new Array();
@@ -148,17 +148,15 @@ package org.openscales.core.feature {
 				var pointA:Point = (arrayResult[i][0] as LineString).componentByIndex(0) as Point;
 				var pointB:Point = (arrayResult[i][0] as LineString).componentByIndex(1) as Point;
 
-				var pointPx:Pixel = this.layer.map.getLayerPxFromLocation(new Location(point.x, point.y));
+				var pointPx:Pixel = this.layer.map.getLayerPxFromLocation(new Location(point.projSrsCode, point.x, point.y));
 
-				var pointPxA:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointA.x, pointA.y));
+				var pointPxA:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointA.projSrsCode, pointA.x, pointA.y));
 
-				var pointPxB:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointB.x, pointB.y));
+				var pointPxB:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointB.projSrsCode, pointB.x, pointB.y));
 
 				pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
 				pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
 				pointPxB = this.layer.map.getMapPxFromLayerPx(pointPxB);
-
-
 
 				var scalarPointAPointBPower:Number = Math.pow((pointPxA.x - pointPxB.x), 2) + Math.pow((pointPxA.y - pointPxB.y), 2);
 

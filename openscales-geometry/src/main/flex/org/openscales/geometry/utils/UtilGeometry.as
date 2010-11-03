@@ -156,7 +156,7 @@ package org.openscales.geometry.utils
 		public static function pagePosition(forElement:Object):Array {
 
 			var element:Object = forElement;
-			var globalPoint:Point = element.localToGlobal(new Point(0, 0));
+			var globalPoint:Point = element.localToGlobal(new Point(null, 0, 0));
 
 			return [globalPoint.x, globalPoint.y];
 		}
@@ -435,7 +435,7 @@ package org.openscales.geometry.utils
 		 */
 		public function createRegularPolygon(origin:Point, radius:Number, sides:Number, rotation:Number):Polygon {  
 			var angle:Number = Math.PI * ((1/sides) - (1/2));
-			if(rotation) {
+			if (rotation) {
 				angle += (rotation / 180) * Math.PI;
 			}
 			var rotatedAngle:Number, x:Number, y:Number;
@@ -446,11 +446,11 @@ package org.openscales.geometry.utils
 				rotatedAngle = angle + (i * 2 * Math.PI / sides);
 				x = origin.x + (radius * Math.cos(rotatedAngle));
 				y = origin.y + (radius * Math.sin(rotatedAngle));
-				points[i]=x
-				points[++i]=y;
+				points[i] = x
+				points[++i] = y;
 			}
-			var ring:LinearRing = new LinearRing(points);
-			return new Polygon(new <Geometry>[ring]);
+			var ring:LinearRing = new LinearRing(origin.projSrsCode, points);
+			return new Polygon(origin.projSrsCode, new <Geometry>[ring]);
 		} 
 
 	}

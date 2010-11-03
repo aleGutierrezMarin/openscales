@@ -64,16 +64,16 @@ package {
 			style.rules.push(new Rule());
 			style.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0x000000,2),12)));
 			// A point inside of the MultiPolygon (its first polygon).
-			point = new org.openscales.geometry.Point(4.649002075147177, 45.78235984585472);
+			point = new org.openscales.geometry.Point(layer.projSrsCode, 4.649002075147177, 45.78235984585472);
 			layer.addFeature(new PointFeature(point,null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPoint1";
 			// A point outside of the MultiPolygon but inside an excessive hole
 			// of its third polygon.
-			point = new org.openscales.geometry.Point(4.63114929194725, 45.692262077956364);
+			point = new org.openscales.geometry.Point(layer.projSrsCode, 4.63114929194725, 45.692262077956364);
 			layer.addFeature(new PointFeature(point,null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPoint2";
 			// A point outside of the blue Polygon but inside its BBOX.
-			point = new org.openscales.geometry.Point(4.910228209414947, 45.73119410607873);
+			point = new org.openscales.geometry.Point(layer.projSrsCode, 4.910228209414947, 45.73119410607873);
 			layer.addFeature(new PointFeature(point,null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPoint2";
 			// A LineString intersecting all the other objects.
@@ -85,7 +85,7 @@ package {
 			arrayComponents[1]=45.76368130194846;
 			arrayComponents[2]=5.117294311391419;
 			arrayComponents[3]=45.69513978441103;
-			layer.addFeature(new LineStringFeature(new LineString(arrayComponents),null,style));
+			layer.addFeature(new LineStringFeature(new LineString(layer.projSrsCode,arrayComponents),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "blackLineString";
 			// A Polygon intersecting all the other objects.
 			arrayComponents = new Vector.<Number>(8);
@@ -98,8 +98,8 @@ package {
 			arrayComponents[5]= 45.659157810588724;
 			arrayComponents[6]=4.5727844237936415;
 			arrayComponents[7]= 45.659157810588724;
-			arrayVertices[0]=new LinearRing(arrayComponents);
-			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),null,style));
+			arrayVertices[0] = new LinearRing(layer.projSrsCode, arrayComponents);
+			layer.addFeature(new PolygonFeature(new Polygon(layer.projSrsCode,arrayVertices),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPolygon";
 			
 			// Add a Point.
@@ -108,7 +108,7 @@ package {
 			style = new Style();
 			style.rules.push(new Rule());
 			(style.rules[0] as Rule).symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_CIRCLE,new SolidFill(0xFF0000,0.5),new Stroke(0xFF0000,2),10)));
-			point = new org.openscales.geometry.Point(4.830228209414947, 45.73119410607873);
+			point = new org.openscales.geometry.Point(layer.projSrsCode, 4.830228209414947, 45.73119410607873);
 			layer.addFeature(new PointFeature(point,null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "Point";
 			
@@ -139,7 +139,7 @@ package {
 				45.78235984585472,
 				4.863922119053991,
 				45.776613267874524);
-			layer.addFeature(new MultiPointFeature(new MultiPoint(arrayComponents),null,style));
+			layer.addFeature(new MultiPointFeature(new MultiPoint(layer.projSrsCode,arrayComponents),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "MultiPoint";
 			
 			// Add a LineString.
@@ -168,7 +168,7 @@ package {
 				45.77182400046717,
 				4.9483795164998,
 				45.790499817491956);
-			layer.addFeature(new LineStringFeature(new LineString(arrayComponents),null,style));
+			layer.addFeature(new LineStringFeature(new LineString(layer.projSrsCode,arrayComponents),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "LineString";
 			
 			// Add a MultiLineString.
@@ -187,7 +187,7 @@ package {
 				45.69466017695171,
 				5.10012817369918,
 				45.704251544623304);
-			arrayVertices.push(new LineString(arrayComponents));
+			arrayVertices.push(new LineString(layer.projSrsCode,arrayComponents));
 			arrayComponents = new Vector.<Number>();
 			arrayComponents.push(4.970352172745865,
 				45.700894753090175,
@@ -195,7 +195,7 @@ package {
 				45.68458747014324,
 				5.047943115114779,
 				45.670194742323545);
-			arrayVertices.push(new LineString(arrayComponents));
+			arrayVertices.push(new LineString(layer.projSrsCode,arrayComponents));
 			arrayComponents = new Vector.<Number>();
 			arrayComponents.push(4.965545654192038,
 				45.70569010786783,
@@ -205,8 +205,8 @@ package {
 				45.66683590649083,
 				4.915420532130705,
 				45.645718608921435);
-			arrayVertices.push(new LineString(arrayComponents));
-			layer.addFeature(new MultiLineStringFeature(new MultiLineString(arrayVertices),null,style));
+			arrayVertices.push(new LineString(layer.projSrsCode,arrayComponents));
+			layer.addFeature(new MultiLineStringFeature(new MultiLineString(layer.projSrsCode,arrayVertices),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "MultiLineString";
 			
 			// Add a Polygon.
@@ -237,7 +237,7 @@ package {
 				45.78235984585472,
 				4.863922119053991,
 				45.776613267874524);
-			arrayVertices.push(new LinearRing(arrayComponents));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
 			arrayComponents = new Vector.<Number>();
 			arrayComponents.push(4.85399,
 				45.76610,
@@ -247,7 +247,7 @@ package {
 				45.74071,
 				4.89399,
 				45.76610);
-			arrayVertices.push(new LinearRing(arrayComponents));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
 			arrayComponents = new Vector.<Number>();
 			arrayComponents.push(4.830276489177206,
 				45.74451732248572,
@@ -261,8 +261,8 @@ package {
 				45.73637063843944,
 				4.844696044838685,
 				45.74403813868174);
-			arrayVertices.push(new LinearRing(arrayComponents));
-			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),null,style));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
+			layer.addFeature(new PolygonFeature(new Polygon(layer.projSrsCode,arrayVertices),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "Polygon";
 			
 			// Add a MultiPolygon.
@@ -299,7 +299,7 @@ package {
 				45.79815988146484,
 				4.624969482378044,
 				45.790499817491956);
-			arrayVertices.push(new LinearRing(arrayComponents));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
 			arrayComponents = new Vector.<Number>();
 			
 			arrayComponents.push(4.600936889608912,
@@ -310,8 +310,8 @@ package {
 				45.75170458597825,
 				4.6153564452703915,
 				45.76032808059674);
-			arrayVertices.push(new LinearRing(arrayComponents));
-			polygonArray.push(new Polygon(arrayVertices));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
+			polygonArray.push(new Polygon(layer.projSrsCode,arrayVertices));
 			// 2nd polygon
 			arrayVertices = new Vector.<Geometry>();
 			arrayComponents = new Vector.<Number>();
@@ -321,8 +321,8 @@ package {
 				45.817305435010816,
 				4.622909545854975,
 				45.81778398953689);
-			arrayVertices.push(new LinearRing(arrayComponents));
-			polygonArray.push(new Polygon(arrayVertices));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
+			polygonArray.push(new Polygon(layer.projSrsCode,arrayVertices));
 			
 			// 3rd polygon
 			arrayComponents = new Vector.<Number>();
@@ -353,7 +353,7 @@ package {
 				45.700894753090175,
 				4.6146697997627015,
 				45.70473106981803);
-			arrayVertices.push(new LinearRing(arrayComponents));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
 			arrayComponents = new Vector.<Number>();
 			arrayComponents.push(4.6208496093319065,
 				45.69609898698994,
@@ -363,10 +363,10 @@ package {
 				45.68266865365893,
 				4.635269164993386,
 				45.69513978441103);
-			arrayVertices.push(new LinearRing(arrayComponents));
-			polygonArray.push(new Polygon(arrayVertices));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
+			polygonArray.push(new Polygon(layer.projSrsCode,arrayVertices));
 			// feature
-			layer.addFeature(new MultiPolygonFeature(new MultiPolygon(polygonArray),null,style));
+			layer.addFeature(new MultiPolygonFeature(new MultiPolygon(layer.projSrsCode,polygonArray),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "MultiPolygon";
 			
 			// Add some (black) objects for more tests of intersection.
@@ -384,8 +384,8 @@ package {
 				45.76571,
 				4.83399,
 				45.77610);
-			arrayVertices.push(new LinearRing(arrayComponents));
-			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),null,style));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
+			layer.addFeature(new PolygonFeature(new Polygon(layer.projSrsCode,arrayVertices),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPolygon1";
 			//
 			arrayComponents = new Vector.<Number>();
@@ -398,8 +398,8 @@ package {
 				45.74547567775447,
 				4.886581420807746,
 				45.75218370397337);
-			arrayVertices.push(new LinearRing(arrayComponents));
-			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),null,style));
+			arrayVertices.push(new LinearRing(layer.projSrsCode,arrayComponents));
+			layer.addFeature(new PolygonFeature(new Polygon(layer.projSrsCode,arrayVertices),null,style));
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPolygon1";
 			
 			// return the vector layer

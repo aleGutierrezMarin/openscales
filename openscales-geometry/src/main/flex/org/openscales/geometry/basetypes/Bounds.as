@@ -6,6 +6,7 @@ package org.openscales.geometry.basetypes
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * Instances of this class represent bounding boxes.
@@ -15,11 +16,11 @@ package org.openscales.geometry.basetypes
 	 */
 	public class Bounds
 	{
+		private var _projection:ProjProjection = null;
 		private var _left:Number = 0.0;
 		private var _bottom:Number = 0.0;
 		private var _right:Number = 0.0;
 		private var _top:Number = 0.0;
-		private var _projSrsCode:String;
 
 		/**
 		 * Class constructor
@@ -29,8 +30,9 @@ package org.openscales.geometry.basetypes
 		 * @param right Right bound of Bounds instance
 		 * @param top Top bound of Bounds instance
 		 */
-		public function Bounds(left:Number, bottom:Number, right:Number, top:Number, srsCode:String)
+		public function Bounds(srsCode:String, left:Number, bottom:Number, right:Number, top:Number)
 		{
+			this.projSrsCode = (srsCode==null) ? Geometry.DEFAULT_SRS_CODE : srsCode;
 			if (!isNaN(left)) {
 				this.left = left;
 			}
@@ -43,15 +45,10 @@ package org.openscales.geometry.basetypes
 			if (!isNaN(top)) {
 				this.top = top;
 			}
-			if (srsCode) {
-				this._projSrsCode = srsCode;
-			} else {
-				this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
-			}
 		}
 
 		public function clone():Bounds {
-			return new Bounds(this._left, this._bottom, this._right, this._top, this.projSrsCode);
+			return new Bounds(this.projSrsCode, this._left, this._bottom, this._right, this._top);
 		}
 
 		/**
@@ -71,10 +68,14 @@ package org.openscales.geometry.basetypes
 			}
 			return equals;
 		}
-
+		
 		public function toString():String {
 			return "left-bottom=(" + this.left + "," + this.bottom + ")"
 				+ " right-top=(" + this.right + "," + this.top + ")";
+		}
+		
+		public function toShortString():String {
+			return "(" + this.left + "," + this.bottom + "," + this.right + "," + this.top + ")";
 		}
 
 		/**
@@ -94,15 +95,31 @@ package org.openscales.geometry.basetypes
 				Math.round(this.top * mult) / mult;
 			return bbox;
 		}
-
+		
 		// Getters & setters for _left, _bottom, _right and _top
-
+		
 		public function get projSrsCode():String {
-			return this._projSrsCode;
+			return (this._projection==null) ? null : this._projection.srsCode;
 		}
+		
 		public function set projSrsCode(value:String):void {
-			this._projSrsCode = value;
+			var oldSrsCode:String = this.projSrsCode;
+			this._projection = ProjProjection.getProjProjection(value);
+			
+			// Reproject the bounds
+			if ((value != null) && (value != oldSrsCode)) {
+				var pLB:ProjPoint = new ProjPoint(this.left, this.bottom);
+				Proj4as.transform(oldSrsCode, value, pLB);
+				this.left = pLB.x;
+				this.bottom = pLB.y;
+				
+				var pRT:ProjPoint = new ProjPoint(this.right, this.top);
+				Proj4as.transform(oldSrsCode, value, pRT);
+				this.right = pRT.x;
+				this.top = pRT.y;
+			}
 		}
+		
 		public function get left():Number {
 			return _left;
 		}
@@ -146,11 +163,11 @@ package org.openscales.geometry.basetypes
 		}
 
 		public function get center():Location {
-			return new Location((this.left + this.right) / 2, (this.bottom + this.top) / 2, this.projSrsCode);
+			return new Location(this.projSrsCode, (this.left + this.right) / 2, (this.bottom + this.top) / 2);
 		}
 
 		public function add(x:Number, y:Number):Bounds {
-			return new Bounds(this.left + x, this.bottom + y, this.right + x, this.top + y, this.projSrsCode);
+			return new Bounds(this.projSrsCode, this.left + x, this.bottom + y, this.right + x, this.top + y);
 		}
 
 		/**
@@ -159,7 +176,7 @@ package org.openscales.geometry.basetypes
 		 * @param lonlat The LonLat which will extend the bounds.
 		 */
 		public function extendFromLonLat(lonlat:Location):void {
-			this.extendFromBounds(new Bounds(lonlat.lon, lonlat.lat, lonlat.lon, lonlat.lat, this.projSrsCode));
+			this.extendFromBounds(new Bounds(this.projSrsCode, lonlat.lon, lonlat.lat, lonlat.lon, lonlat.lat));
 		}
 
 		/**
@@ -307,7 +324,7 @@ package org.openscales.geometry.basetypes
 		 * @return An instance of bounds.
 		 */
 		public static function getBoundsFromArray(bbox:Array,srsCode:String):Bounds {
-			return new Bounds(Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]), srsCode);
+			return new Bounds(srsCode, Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]));
 		}
 
 		/**
@@ -318,7 +335,7 @@ package org.openscales.geometry.basetypes
 		 * @return An instance of bounds.
 		 */
 		public static function getBoundsFromSize(size:Size):Bounds {
-			return new Bounds(0, size.h, size.w, 0, null);
+			return new Bounds(null, 0, size.h, size.w, 0);
 		}
 
 		/**
@@ -369,39 +386,23 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Method to convert the bounds from a projection system to an other.
-		 *
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
-		 */
-		public function transform(sourceSrs:String, destSrs:String):void {
-			this.projSrsCode = destSrs;
-			if (sourceSrs == destSrs) {
-				return;
-			}
-			var pLB:ProjPoint = new ProjPoint(this._left, this._bottom);
-			var pRT:ProjPoint = new ProjPoint(this._right, this._top);
-			Proj4as.transform(sourceSrs, destSrs, pLB);
-			Proj4as.transform(sourceSrs, destSrs, pRT);
-			this._left = pLB.x; this._bottom = pLB.y;
-			this._right = pRT.x; this._top = pRT.y;
-		}
-
-		/**
      	 * Create a new polygon geometry based on this bounds.
      	 *
      	 * @return A new polygon with the coordinates of this bounds.
      	 */
     	 public function toGeometry():Polygon {
-			var geom:Polygon = new Polygon(new <Geometry>[
-            	 new LinearRing(new <Number>[
-                	 this.left, this.bottom,
-                	 this.right, this.bottom,
-                	 this.right, this.top,
-                	 this.left, this.top])
-         	]);
-			geom.projSrsCode = this.projSrsCode;
+			var geom:Polygon = new Polygon(this.projSrsCode,
+				new <Geometry>[
+					new LinearRing(this.projSrsCode,
+						new <Number>[
+							this.left, this.bottom,
+							this.right, this.bottom,
+							this.right, this.top,
+							this.left, this.top]
+					)
+				]);
 			return geom;
     	 }
+		 
 	}
 }

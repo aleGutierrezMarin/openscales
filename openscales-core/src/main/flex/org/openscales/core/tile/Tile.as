@@ -116,12 +116,12 @@ package org.openscales.core.tile
 			var bottomRight:Location = this.layer.map.getLocationFromLayerPx(bottomRightPx); 
 			if (topLeft.lon > bottomRight.lon) {
 				if (topLeft.lon < 0) {
-					topLeft = new Location(-180 - (topLeft.lon+180), topLeft.x, topLeft.projSrsCode);
+					topLeft = new Location(topLeft.projSrsCode, -180 - (topLeft.lon+180), topLeft.x);
 				} else {
-					bottomRight = new Location(180+bottomRight.lon+180, bottomRight.y, bottomRight.projSrsCode);
+					bottomRight = new Location(bottomRight.projSrsCode, 180+bottomRight.lon+180, bottomRight.y);
 				}        
 			}
-			bounds = new Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat, null);  
+			bounds = new Bounds(topLeft.projSrsCode, topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat);  
 			return bounds;
 		}
 

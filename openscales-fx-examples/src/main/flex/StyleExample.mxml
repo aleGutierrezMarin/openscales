@@ -9,7 +9,7 @@ Use the top-right button to switch the style of the rendering. -->
 	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.84479575848897,45.7531798723947">
 
 		<Mapnik name="Mapnik" />
-
+		
 		<WheelHandler/>
 
 		<Spinner x="{width / 2}" y="{height / 2}"/>
@@ -204,8 +204,8 @@ Use the top-right button to switch the style of the rendering. -->
 				stroke = new Stroke(0x0A2C33, 2);
 				symbolizer = new PolygonSymbolizer(fill, stroke);
 				rule.symbolizers.push(symbolizer);
-				bounds = new Bounds(682105, 6558859, 892780, 6816381, "EPSG:2154");
-				rule.filter = new ContainsFilter(bounds.toGeometry(), "EPSG:2154");
+				bounds = new Bounds("EPSG:2154", 682105, 6558859, 892780, 6816381);
+				rule.filter = new ContainsFilter(bounds.toGeometry());
 				style.rules.push(rule);
 				
 				rule = new Rule();

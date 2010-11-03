@@ -7,8 +7,8 @@ package org.openscales.geometry
 	public class MultiLineString extends Collection
 	{
 
-		public function MultiLineString(components:Vector.<Geometry> = null) {
-			super(components);
+		public function MultiLineString(srsCode:String, components:Vector.<Geometry>) {
+			super(srsCode, components);
 			this.componentTypes = new <String>["org.openscales.geometry::LineString"];
 		}
 		
@@ -39,28 +39,25 @@ package org.openscales.geometry
 			}
 			return s + ")";
 		}
+		
 		/**
 		 * Method to convert the multilinestring (x/y) from a projection system to an other.
 		 *
 		 * @param sourceSrs SRS of the source projection
 		 * @param destSrs SRS of the destination projection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
-			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
-			// Update the geometry
-			if(this.componentsLength > 0){
-				for(var i:int=0; i<this.componentsLength; ++i) {
-					(this._components[i] as LineString).transform(sourceSrs, destSrs);
-				}
+		override protected function reprojectGeometry(sourceSrs:String, destSrs:String):void {
+			for(var i:int=0; i<this.componentsLength; ++i) {
+				(this._components[i] as LineString).projSrsCode = destSrs;
 			}
 		}
+		
 		/**
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			var MultiLineStringClone:MultiLineString=new MultiLineString();
-			var component:Vector.<Geometry>=this.getcomponentsClone();
+			var MultiLineStringClone:MultiLineString = new MultiLineString(this.projSrsCode, null);
+			var component:Vector.<Geometry> = this.getcomponentsClone();
 			MultiLineStringClone.addComponents(component);
 			return MultiLineStringClone;
 		}

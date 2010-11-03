@@ -13,8 +13,8 @@ package org.openscales.geometry
 		 * 
 		 * @param vertices Array of two or more points
 		 */
-		public function LineString(vertices:Vector.<Number>) {
-			super(vertices);
+		public function LineString(srsCode:String, vertices:Vector.<Number>) {
+			super(srsCode, vertices);
 		}
 		
 		
@@ -29,7 +29,7 @@ package org.openscales.geometry
 			if ((realIndex<0) || (realIndex>=this._components.length)) {
 				return null;
 			}
-			return new Point(this._components[realIndex],this._components[realIndex + 1]);
+			return new Point(this.projSrsCode, this._components[realIndex],this._components[realIndex + 1]);
 		}
 		
 		/**
@@ -163,8 +163,8 @@ package org.openscales.geometry
 			var numSegs:int = this._components.length-3;
 			var segments:Vector.<Vector.<Point>> = new Vector.<Vector.<Point>>(numSegs);
 			for(var i:int=0; i<numSegs; ++i) {
-				point1 = new Point(this._components[i],this._components[i+1])
-				point2 = new Point(this._components[i + 2],this._components[i + 3])
+				point1 = new Point(this.projSrsCode, this._components[i], this._components[i+1]);
+				point2 = new Point(this.projSrsCode, this._components[i + 2], this._components[i + 3]);
 				segments[i] = (this._components[i+2] < this._components[i]) ? new <Point>[point2,point1] :  new <Point>[point1,point2];
 			}
 			return segments;
@@ -173,8 +173,8 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			var lineStringClone:LineString=new LineString(null);
-			var component:Vector.<Number>=this.getcomponentsClone();
+			var lineStringClone:LineString = new LineString(this.projSrsCode, null);
+			var component:Vector.<Number> = this.getcomponentsClone();
 			lineStringClone.addPoints(component);
 			return lineStringClone;
 		}

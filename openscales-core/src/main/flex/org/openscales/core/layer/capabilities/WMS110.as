@@ -71,18 +71,19 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.LatLonBoundingBox.@maxx.toXMLString());
 				top = new Number(layer.LatLonBoundingBox.@maxy.toXMLString());;
 
-				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top,srsCode));
+				layerCapabilities.put("LatLonBoundingBox", new Bounds(srsCode,left,bottom,right,top));
 
 				left = new Number(layer.BoundingBox.@minx.toXMLString());
 				bottom = new Number(layer.BoundingBox.@miny.toXMLString());
 				right = new Number(layer.BoundingBox.@maxx.toXMLString());
 				top = new Number(layer.BoundingBox.@maxy.toXMLString());;
 						
-				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,srsCode));
+				layerCapabilities.put("BoundingBox", new Bounds(srsCode,left,bottom,right,top));
 				
 				
-                if (name != "")
+                if (name != "") {
 					this._capabilities.put(name, layerCapabilities);
+				}
 
 				//We cannot use clear() or reset() or we'll loose the datas
 				layerCapabilities = new HashMap();

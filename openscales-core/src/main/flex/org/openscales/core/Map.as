@@ -1062,21 +1062,17 @@ package org.openscales.core
 		 * The maximum extent for the map.
 		 */
 		public function get maxExtent():Bounds {
-			// use map maxExtent
-			var maxExtent:Bounds = this._maxExtent;
-			
-			// If baselayer is defined, override with baselayer maxExtent
-			if (this.baseLayer) {
-				maxExtent = this.baseLayer.maxExtent;
-			}
+			// If baselayer is defined, use its maxExtent, otherwise use the map's maxExtent
+			var maxExtent:Bounds = (this.baseLayer) ? this.baseLayer.maxExtent : this._maxExtent;
 			
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
-			if(maxExtent == null) {
+			if (maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
-				if (this.baseLayer && (this.baseLayer.projSrsCode != Geometry.DEFAULT_SRS_CODE)) {
-					maxExtent.transform(Geometry.DEFAULT_SRS_CODE, this.baseLayer.projSrsCode);
+				if (this.baseLayer && (this.baseLayer.projSrsCode != maxExtent.projSrsCode)) {
+					maxExtent.projSrsCode = this.baseLayer.projSrsCode;
 				}
 			}
+			
 			return maxExtent;
 		}
 		
@@ -1087,19 +1083,16 @@ package org.openscales.core
 			var extent:Bounds = null;
 			
 			if ((this.center != null) && (this.resolution != -1)) {
-				
 				var w_deg:Number = this.size.w * this.resolution;
 				var h_deg:Number = this.size.h * this.resolution;
-				
-				extent = new Bounds(this.center.lon - w_deg / 2,
-					this.center.lat - h_deg / 2,
-					this.center.lon + w_deg / 2,
-					this.center.lat + h_deg / 2,
-					this.baseLayer.projSrsCode);
+				extent = new Bounds(this.baseLayer.projSrsCode,
+									this.center.lon - w_deg / 2,
+									this.center.lat - h_deg / 2,
+									this.center.lon + w_deg / 2,
+									this.center.lat + h_deg / 2);
 			} 
 			
 			return extent;
-
 		}
 		
 		

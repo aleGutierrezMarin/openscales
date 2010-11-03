@@ -6,21 +6,21 @@ package org.openscales.core.filter {
 	public class IntersectsFilter implements IFilter
 	{
 		private var _geom:Geometry;
-		private var _projSrsCode:String;
 		
-		public function IntersectsFilter(geom:Geometry, srsCode:String/*=Geometry.DEFAULT_SRS_CODE*/) {
+		public function IntersectsFilter(geom:Geometry) {
 			this._geom = geom;
-			this._projSrsCode = srsCode;
 		}
 		
 		public function matches(feature:Feature):Boolean {
-			if ((this.geometry==null) || (this.projSrsCode==null) || (feature==null)) {
+			if ((this.geometry==null) || (feature==null)) {
 				return false;
 			}
-			if (this.projSrsCode != feature.layer.map.baseLayer.projSrsCode) {
-				this.geometry.transform(this.projSrsCode, feature.layer.map.baseLayer.projSrsCode);
-				this.projSrsCode = feature.layer.map.baseLayer.projSrsCode;
+			// If needed, reproject the geometry of the filter in the projection of the input feature
+			// FixMe: this reprojection should be done with temporary geometries directly inside the intersect function of the Geometries
+			if (this.geometry.projSrsCode != feature.geometry.projSrsCode) {
+				this.geometry.projSrsCode = feature.geometry.projSrsCode;
 			}
+			// Do the test
 			return this.geometry.intersects(feature.geometry);
 		}
 		
@@ -34,18 +34,8 @@ package org.openscales.core.filter {
 			this._geom = value;
 		}
 		
-		/**
-		 * Getter and setter of the projection
-		 */
-		public function get projSrsCode():String {
-			return this._projSrsCode;
-		}
-		public function set projSrsCode(value:String):void {
-			this._projSrsCode = value;
-		}
-		
 		public function clone():IFilter{
-			return new IntersectsFilter(this.geometry,this.projSrsCode);
+			return new IntersectsFilter(this.geometry);
 		}
 		
 	}

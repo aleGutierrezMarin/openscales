@@ -5,7 +5,9 @@ package org.openscales.core.control
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.Util;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 
@@ -41,11 +43,14 @@ package org.openscales.core.control
 
 		private var _lastXy:Pixel = null;
 		
+		private var _useDMS:Boolean = true;
+		private var _localNSEW:String = "NSEW";
+		
 		/**
 		 * The projection display in the label
 		 */
 		[Bindable]
-		private var _displayProjSrsCode:String = null;
+		private var _displayProjSrsCode:String = "EPSG:4326";
 		
 		/**
 		 * MousePosition Constructor
@@ -68,7 +73,6 @@ package org.openscales.core.control
 			super.draw();
 			this.addChild(label);
 			this.redraw();
-
 		}
 
 		/**
@@ -92,20 +96,28 @@ package org.openscales.core.control
 			}
 
 			if (lonLat == null) {
-				lonLat = new Location(0, 0);
+				lonLat = new Location((this.map.baseLayer)?this.map.baseLayer.projSrsCode:Geometry.DEFAULT_SRS_CODE, 0, 0);
 			}
-
-			if (this._displayProjSrsCode && this.map.baseLayer) {
+			
+			if (this._displayProjSrsCode) {
 				lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
-			}    
-
-			var digits:int = int(this.numdigits);
-			this.label.text =
-				this.prefix +
-				lonLat.lon.toFixed(digits) +
-				this.separator + 
-				lonLat.lat.toFixed(digits) +
-				this.suffix;
+			}
+			
+			var coord1:String, coord2:String;
+			if (this.useDMS && (lonLat.projSrsCode == "EPSG:4326")) {
+				coord1 = (lonLat.lon < 0) ? (Util.degToDMS(-lonLat.lon)+" "+this.localNSEW.charAt(3)) : (Util.degToDMS(lonLat.lon)+" "+this.localNSEW.charAt(2));
+				coord2 = (lonLat.lat < 0) ? (Util.degToDMS(-lonLat.lat)+" "+this.localNSEW.charAt(1)) : (Util.degToDMS(lonLat.lat)+" "+this.localNSEW.charAt(0));
+			} else {
+				var digits:int = int(this.numdigits);
+				coord1 = lonLat.lon.toFixed(digits);
+				coord2 = lonLat.lat.toFixed(digits);
+			}
+			
+			this.label.text = this.prefix
+				+ coord1
+				+ this.separator
+				+ coord2
+				+ this.suffix;
 		}
 
 		override public function set map(map:Map):void {
@@ -186,7 +198,33 @@ package org.openscales.core.control
 		public function set lastXy(value:Pixel):void {
 			_lastXy = value;
 		}
-
+		
+		public function get useDMS():Boolean {
+			return this._useDMS;
+		}
+		public function set useDMS(value:Boolean):void {
+			this._useDMS = value;
+		}
+		
+		/**
+		 * By default localNSEW == "NSEW", which means that the
+		 * north id represented by N, the south by S, the east by E
+		 * and the west by W.
+		 * Use localNSEW = "NSEO" in french for instance.
+		 */
+		public function get localNSEW():String {
+			return this._localNSEW;
+		}
+		public function set localNSEW(value:String):void {
+			if (value.length == 4) {
+				this._localNSEW = value;
+			}
+		}
+		
+		/**
+		 * If null, the display projection used is the projection of the base layer.
+		 * By default, the display projection is "EPSG:4326" 
+		 */
 		public function get displayProjSrsCode():String {
 			return this._displayProjSrsCode;
 		}
@@ -200,5 +238,6 @@ package org.openscales.core.control
 		public function set label(value:TextField):void {
 			this._label = value;
 		}
+		
 	}
 }
