@@ -408,6 +408,10 @@ package org.openscales.core.configuration
 				{
 					layer.alpha = Number(xmlNode.@alpha);
 				}
+				//editable?
+				if (String(xmlNode.@editable) == "true"){
+					layer.editable = Boolean(xmlNode.@editable);
+				}
 			}
 			
 			//Init layer parameters
