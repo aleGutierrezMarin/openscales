@@ -28,29 +28,39 @@ package org.openscales.core.basetypes.trees
 			return this._root;
 		}
 		public function set root(value:ITreeNode):void {
-			if (this.root) {
+			if (value == this.root) {
+				return;
+			}
+			// Check the validity of the container of the node
+			if ((value != null) && (value.container != this)) {
+				throw new ArgumentError("ArgumentError: the node must have this tree as its container");
+				return;
+			}
+			// If needed, destroy the previous tree
+			if (this.root != null) {
 				this.destroy();
 			}
+			// Update the root of the tree
 			this._root = value;
 		}
 		
 		public function get depth():uint {
-			return (this.root) ? this.root.depth : 0;
+			return (this.root==null) ? 0 : this.root.depth;
 		}
 		
 		public function clear():void {
-			this.root = null;
+			this._root = null; // Do not use the setter of root, the tree must NOT be destroyed in this case
 		}
 		
 		public function destroy():void {
-			if (this.root) {
+			if (this.root != null) {
 				this.root.destroy();
-				this.clear();
 			}
+			this.clear();
 		}
 		
 		public function equals(tree:ITree):Boolean {
-			if (this.root) {
+			if (this.root != null) {
 				return this.root.equals(tree.root);
 			} else {
 				return (tree.root == null);

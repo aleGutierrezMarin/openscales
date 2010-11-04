@@ -100,39 +100,61 @@ package org.openscales.core.basetypes.trees
 		public function get container():ITree {
 			return this._container;
 		}
+		/**
+		 * The input value can not be null, use "destroy" instead.
+		 * All the children are updated too.
+		 */
 		/*private*/public function set container(value:ITree):void {
 			// Check the validity of the input value
 			if (value == null) {
 				throw new ArgumentError("ArgumentError: invalid value, a container can not be null");
 				return;
 			}
-			// Update with the input value
+			// Check that no father is defined (a father and these children must have the same container)
+			if (this.father != null) {
+				throw new Error("Error: updating a container is only available for orphan nodes");
+				return;
+			}
+			// Clear the root of the old container of this node if needed
+			if ((this.container != null) && (this.container.root == this)) {
+				this.container.clear();
+			}
+			// Update for this node and all these children with the input value
 			this._container = value;
+			if (this._children != null) {
+				for (var i:int=this._children.length-1; i>-1; --i) {
+					if (this._children[i]) {
+						(this._children[i] as TreeNode).container = value;
+					}
+				}
+			}
 		}
 		
 		public function get father():ITreeNode {
 			return this._father;
 		}
 		/*private*/public function set father(value:ITreeNode):void {
-			// Check the validity of the container (and so of the nodeWidth)
-			if (value.container != this.container) {
-				throw new ArgumentError("ArgumentError: the new father and the node must have the same container");
-				return;
-			}
-			// Check that the node is already defined as a child of the input value
-			if (! value.hasChild(this)) {
-				throw new ArgumentError("ArgumentError: the new father must have defined this node as a child before to update the node's father");
-				return;
-			}
-			// Unreference this node as a child of its previous father
-			if (this.father) {
-				this.unReferenceMeFromFather();
-			}
-			// If this node is the root of the common container, update the root of
-			// the container with the ancestor of the input value
-			if (this.container.root == this) {
-				this.container.clear();
-				this.container.root = value.ancestor;
+			if (value != null) {
+				// Check the validity of the container (and so of the nodeWidth)
+				if (value.container != this.container) {
+					throw new ArgumentError("ArgumentError: the new father and the node must have the same container");
+					return;
+				}
+				// Check that the node is already defined as a child of the input value
+				if (! value.hasChild(this)) {
+					throw new ArgumentError("ArgumentError: the new father must have defined this node as a child before to update the node's father");
+					return;
+				}
+				// Unreference this node as a child of its previous father
+				if (this.father) {
+					this.unReferenceMeFromFather();
+				}
+				// If this node is the root of the common container, update the root of
+				// the container with the ancestor of the input value
+				if (this.container.root == this) {
+					this.container.clear();
+					this.container.root = value.ancestor;
+				}
 			}
 			// Update with the input value
 			this._father = value;
@@ -230,7 +252,7 @@ package org.openscales.core.basetypes.trees
 		public function clear():void {
 			// the nodeValue and the container are NOT changed
 			this.father = null;
-			for (var i:int=this._children.length; i>-1; --i) {
+			for (var i:int=this._children.length-1; i>-1; --i) {
 				if (this._children[i]) {
 					this._children[i] = null;
 				}
@@ -238,7 +260,7 @@ package org.openscales.core.basetypes.trees
 		}
 		
 		public function destroyChildren():void {
-			for (var i:int=this._children.length; i>-1; --i) {
+			for (var i:int=this._children.length-1; i>-1; --i) {
 				if (this._children[i]) {
 					this._children[i].destroy();
 					this._children[i] = null; // redundant with the indirect "this._children[i].father = null;" but more safe ;-)
@@ -251,9 +273,9 @@ package org.openscales.core.basetypes.trees
 			this.destroyChildren();
 			// Clear the node
 			this.clear();
-			// Destroy the node
-			this.nodeValue = null;
-			this.container = null;
+			// Destroy the node (do NOT use the setters)
+			this._nodeValue = null;
+			this._container = null;
 			//delete this._children;
 			this._children = null;
 		}

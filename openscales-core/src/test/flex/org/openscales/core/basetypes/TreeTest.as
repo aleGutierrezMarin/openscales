@@ -33,6 +33,8 @@ package org.openscales.core.basetypes
 			Assert.assertNull(tree.root);
 			Assert.assertEquals(tree.depth, 0);
 			tree.root = node1;
+			Assert.assertEquals(tree.root, node1);
+			Assert.assertEquals(tree.depth, 1);
 			tree.root = node2; // previous tree.root will be destroyed
 			Assert.assertEquals(tree.root, node2);
 			Assert.assertEquals(tree.depth, 1);
@@ -49,29 +51,44 @@ package org.openscales.core.basetypes
 			var tree2:ITree = new BinaryTree();
 			var node3:TreeNode = new TreeNode(tree2, -3);
 			Assert.assertEquals(node3.container, tree2);
-			tree.root = node3;
+			var argError:Boolean = false;
+			try {
+				tree.root = node3;
+			} catch (e:ArgumentError) {
+				argError = true;
+			}
+			Assert.assertTrue(argError);
 			Assert.assertNull(tree.root);
 			Assert.assertEquals(node3.container, tree2);
-			
-			// Move a node from a tree to an other tree
-			tree2.root = node3;
-			Assert.assertEquals(tree2.root, node3);
-			node3.container = tree;
-			Assert.assertNull(tree2.root);
-			Assert.assertEquals(node3.container, tree);
-			tree.root = node3;
-			Assert.assertEquals(tree.root, node3);
 		}
 		
 		[Test]
 		public function testTreeNode() : void {
-			// TODO
+			var tree:ITree = new BinaryTree();
+			var tree2:ITree = new BinaryTree();
+			var node:TreeNode = new TreeNode(tree2, -3);
+			
+			// Move a node from a tree to an other tree
+			tree2.root = node;
+			Assert.assertEquals(tree2.root, node);
+			var error:Boolean = false;
+			try {
+				node.container = tree;
+			} catch (e:Error) {
+				error = true;
+			}
+			Assert.assertFalse(error);
+			Assert.assertEquals(node.container, tree);
+			Assert.assertNull(tree2.root);
+			Assert.assertNull(tree.root);
+			tree.root = node;
+			Assert.assertEquals(tree.root, node);
 		}
 		
-		[Test]
+		/*[Test]
 		public function testQuadTree() : void {
 			// TODO
-		}
+		}*/
 		
 	}
 }
