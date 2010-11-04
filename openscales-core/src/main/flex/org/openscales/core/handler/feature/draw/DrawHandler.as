@@ -80,13 +80,13 @@ package org.openscales.core.handler.feature.draw
 				
 		public function DrawHandler(map:Map=null, active:Boolean=false, drawLayer:FeatureLayer=null)
 		{
-			super(map, active);
 			
 			if(drawLayer) {
 				this.drawLayer = drawLayer;
 			} else {
 				this.drawLayer = new FeatureLayer("Drawings");
 			}
+			super(map, active);
 		}
 				
 		private function onSelectionUpdated(selectedFeatures:Array):void {
