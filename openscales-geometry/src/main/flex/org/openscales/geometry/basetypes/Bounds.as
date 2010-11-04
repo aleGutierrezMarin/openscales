@@ -60,11 +60,11 @@ package org.openscales.geometry.basetypes
 		public function equals(bounds:Bounds):Boolean {
 			var equals:Boolean = false;
 			if (bounds != null) {
-				equals = this.left == bounds.left &&
-					this.right == bounds.right &&
-					this.top == bounds.top &&
-					this.bottom == bounds.bottom &&
-					this.projSrsCode == bounds.projSrsCode;
+				equals = this.projSrsCode == bounds.projSrsCode
+						&& this.left == bounds.left
+						&& this.right == bounds.right
+						&& this.top == bounds.top
+						&& this.bottom == bounds.bottom;
 			}
 			return equals;
 		}
