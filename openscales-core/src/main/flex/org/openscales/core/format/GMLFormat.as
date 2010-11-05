@@ -36,25 +36,11 @@ package org.openscales.core.format
 	 */
 	public class GMLFormat extends Format
 	{
-		protected var _featureNS:String = "http://www.openplans.org/topp";
 		
-		protected var _featureName:String = "featureMember";
-		
-		protected var _featurePrefix:String = "topp"; 
-		
-		protected var _layerName:String = "features";
-		
-		protected var _geometryName:String = "geometry";
-		
-		protected var _collectionName:String = "FeatureCollection";
 		
 		protected var _gmlns:String = "http://www.opengis.net/gml";
 		
 		protected var _gmlprefix:String = "gml";
-		
-		protected var _wfsns:String = "http://www.opengis.net/wfs";
-		
-		protected var _wfsprefix:String = "wfs";
 		
 		private var _extractAttributes:Boolean = true;
 		
@@ -67,7 +53,7 @@ package org.openscales.core.format
 		
 		private var xmlString:String;
 		private var sXML:String;
-		private var eXML:String    = "</gml:featureMember></wfs:FeatureCollection>";
+		private var eXML:String    = "</gml:featureMember></wfs:FeatureCollection>";// it must not have reference at wfs in sthis class
 		private var eFXML:String   = "</gml:featureMember>";
 		private var sFXML:String   = "<gml:featureMember>";
 		private var step:int       = 200;
@@ -389,42 +375,17 @@ package org.openscales.core.format
 		 * @return An object representing the GML document.
 		 */
 		override public function write(features:Object):Object {
-			var featureCollection:XML = new XML("<" + this._wfsprefix + ":" + this._collectionName + " xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\"></" + this._wfsprefix + ":" + this._collectionName + ">");
+			var featureCollection:XML = new XML(""/*<" + this._wfsprefix + ":" + this._collectionName + " xmlns:" 
+				+ this._wfsprefix + "=\"" + this._wfsns + "\"></" + this._wfsprefix + ":" + this._collectionName + ">"*/);
+			/*
 			var j:int = features.length;
 			var i:int;
 			for (i = 0; i < j; i++) {
 				featureCollection.appendChild(this.createFeatureXML(features[i]));
-			}
+			}*/
 			return featureCollection;
 		}
 		
-		/**
-		 * Accept a Vector feature, and build a GML node for it.
-		 *
-		 * @param feature The feature to be built as GML.
-		 *
-		 * @return A node reprensting the feature in GML.
-		 */
-		public function createFeatureXML(feature:Feature):XML {
-			var geometryNode:XML = this.buildGeometryNode(feature.geometry);
-			var geomContainer:XML = new XML("<" + this._gmlprefix + ":" + this._geometryName + " xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":" + this._geometryName + ">");
-			geomContainer.appendChild(geometryNode);
-			var featureNode:XML = new XML("<" + this._gmlprefix + ":" + this._featureName + " xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":" + this._featureName + ">");
-			var featureContainer:XML = new XML("<OpenScales:" + this._featureName + " xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\"></" + this._featurePrefix + ":" + this._layerName + ">");
-			featureContainer.appendChild(geomContainer);
-			for(var attr:String in feature.attributes) {
-				var attrText:XMLNode = new XMLNode(2, feature.attributes[attr]); 
-				var nodename:String = attr;
-				if (attr.search(":") != -1) {
-					nodename = attr.split(":")[1];
-				}    
-				var attrContainer:XML = new XML("<" + this._featurePrefix + ":" + nodename + " xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\"></" + this._featurePrefix + ":" + nodename + ">");
-				attrContainer.appendChild(attrText);
-				featureContainer.appendChild(attrContainer);
-			}    
-			featureNode.appendChild(featureContainer);
-			return featureNode;
-		}
 		
 		/**
 		 * create a GML Object
@@ -438,9 +399,12 @@ package org.openscales.core.format
 			var projectionxml:String = "srsName=\"http://www.opengis.net/gml/srs/epsg.xml#4326\"";
 			if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiPolygon"
 				) {
-				gml = new XML("<" + this._gmlprefix + ":MultiPolygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " ></" + this._gmlprefix + ":MultiPolygon>");
+				gml = new XML("<" + this._gmlprefix + ":MultiPolygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " 
+					           + projectionxml + " >"
+							  +"</" + this._gmlprefix + ":MultiPolygon>");
 				
-				var polygonMember:XML = new XML("<" + this._gmlprefix + ":polygonMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":polygonMember>");
+				var polygonMember:XML = new XML("<" + this._gmlprefix + ":polygonMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">"
+					                            + "</" + this._gmlprefix + ":polygonMember>");
 				
 				var polygon:XML = new XML("<" + this._gmlprefix + ":Polygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":Polygon>");
 				var outerRing:XML = new XML("<" + this._gmlprefix + ":outerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":outerBoundaryIs>");
@@ -475,11 +439,14 @@ package org.openscales.core.format
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiLineString") 
 			{
-				gml = new XML("<" + this._gmlprefix + ":MultiLineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " ></" + this._gmlprefix + ":MultiLineString>");
+				gml = new XML("<" + this._gmlprefix + ":MultiLineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " >" +
+					"</" + this._gmlprefix + ":MultiLineString>");
 				
-				var lineStringMember:XML = new XML("<" + this._gmlprefix + ":lineStringMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":lineStringMember>");
+				var lineStringMember:XML = new XML("<" + this._gmlprefix + ":lineStringMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+					"</" + this._gmlprefix + ":lineStringMember>");
 				
-				var lineString:XML = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LineString>");
+				var lineString:XML = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+					"</" + this._gmlprefix + ":LineString>");
 				
 				var length:uint = (geometry as MultiLineString).componentsLength;
 				for(var index:uint=0;i <length;i++ ){
@@ -491,11 +458,14 @@ package org.openscales.core.format
 				gml.appendChild(lineStringMember);
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::LineString") {
-				gml = new XML("<" + this._gmlprefix + ":MultiLineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " ></" + this._gmlprefix + ":MultiLineString>");
+				gml = new XML("<" + this._gmlprefix + ":MultiLineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " >" +
+					"</" + this._gmlprefix + ":MultiLineString>");
 				
-				var lineStringMember:XML = new XML("<" + this._gmlprefix + ":lineStringMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":lineStringMember>");
+				var lineStringMember:XML = new XML("<" + this._gmlprefix + ":lineStringMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+					"</" + this._gmlprefix + ":lineStringMember>");
 				
-				var lineString:XML = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LineString>");
+				var lineString:XML = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+					"</" + this._gmlprefix + ":LineString>");
 				
 				lineString.appendChild(this.buildCoordinatesNode(geometry));
 				lineStringMember.appendChild(lineString);
@@ -504,15 +474,18 @@ package org.openscales.core.format
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiPoint") {
 				
-				gml = new XML("<" + this._gmlprefix + ":MultiPoint xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " ></" + this._gmlprefix + ":MultiPoint>");
+				gml = new XML("<" + this._gmlprefix + ":MultiPoint xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " >" +
+					          "</" + this._gmlprefix + ":MultiPoint>");
 				var parts:Object = "";
 				parts = geometry.components;   
 				
 				var j:int = parts.length;
 				var i:int;
 				for (i = 0; i < j; ++i) { 
-					var pointMember:XML = new XML("<" + this._gmlprefix + ":pointMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":pointMember>");
-					var point:XML = new XML("<" + this._gmlprefix + ":Point xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":Point>");
+					var pointMember:XML = new XML("<" + this._gmlprefix + ":pointMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+						"</" + this._gmlprefix + ":pointMember>");
+					var point:XML = new XML("<" + this._gmlprefix + ":Point xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+						"</" + this._gmlprefix + ":Point>");
 					var length:uint = (geometry as MultiPoint).componentsLength;
 					for(var index:uint=0;i <length;i++ ){
 						point.appendChild(this.buildCoordinatesNode((geometry as MultiPoint).componentByIndex(index)));
@@ -522,7 +495,8 @@ package org.openscales.core.format
 				}     
 			} else if (getQualifiedClassName(geometry) == "org.openscales.geometry::Point") {
 				parts = geometry;
-				gml = new XML("<" + this._gmlprefix + ":Point xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " ></" + this._gmlprefix + ":Point>");
+				gml = new XML("<" + this._gmlprefix + ":Point xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " >" +
+					"</" + this._gmlprefix + ":Point>");
 				gml.appendChild(this.buildCoordinatesNode(parts));
 			}
 			return gml; 
@@ -536,7 +510,8 @@ package org.openscales.core.format
 		 * @return created xmlNode
 		 */
 		public function buildCoordinatesNode(geometry:Object):XML {
-			var coordinatesNode:XML = new XML("<" + this._gmlprefix + ":coordinates xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":coordinates>");
+			var coordinatesNode:XML = new XML("<" + this._gmlprefix + ":coordinates xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+				"</" + this._gmlprefix + ":coordinates>");
 			coordinatesNode.@decimal = ".";
 			coordinatesNode.@cs = ",";
 			coordinatesNode.@ts = " ";

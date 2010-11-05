@@ -9,7 +9,10 @@ package org.openscales.core.format
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.layer.ogc.WFS;
-
+	import org.openscales.core.UID;
+	import org.openscales.core.layer.ogc.WFST.Transaction;
+	import org.openscales.core.basetypes.maps.HashMap;
+	
 	/**
 	 * WFS writer extending GML format.
 	 * Useful to WFS-T functionality.
@@ -18,6 +21,28 @@ package org.openscales.core.format
 	{
 
 		private var _layer:WFS = null;
+		
+		protected var _wfsns:String = "http://www.opengis.net/wfs";
+		
+		protected var _wfsprefix:String = "wfs";
+		
+		protected var _ogcns:String = "http://www.opengis.net/ogc";
+		
+		protected var _ogcprefix:String = "ogc";
+		
+		protected var _featureNS:String = "http://www.openplans.org/topp";
+		
+		protected var _featurePrefix:String = "topp"; 
+		
+		protected var _featureName:String = "featureMember";
+		
+		protected var _layerName:String = "features";
+		
+		protected var _geometryName:String = "geometry";
+		
+		protected var _collectionName:String = "FeatureCollection";
+		
+		protected var _version:String = "1.0.0";
 
 		/**
 		 * WFSFormat constructor
@@ -46,12 +71,12 @@ package org.openscales.core.format
 		 */
 		override public function write(features:Object):Object {
 			var transaction:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
-				"<" + this._wfsprefix + ":Transaction service=\"WFS\" version=\"1.0.0\"  " +
+				"<" + this._wfsprefix + ":Transaction service=\"WFS\" version=\"" + this._version + "\"  " +
 				" xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" "                  +
 				" xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\""                   +
 				" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""                 +
 				" xsi:schemaLocation=\"http://www.opengis.net/wfs "                        +
-				" http://www.openplans.org/topp"                                           +
+				  this._featureNS                                                          +
 				" http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\  "             +
 				  describeFeatureType + "\" " +
 				" xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\" >" +
@@ -78,7 +103,7 @@ package org.openscales.core.format
 		 *
 		 * @param feature A vectorfeature
 		 */
-		override public function createFeatureXML(feature:Feature):XML {
+		public function createFeatureXML(feature:Feature):XML {
 			var geometryNode:XML = this.buildGeometryNode(feature.geometry);
 			var geomContainer:XML = new XML("<" + this._featurePrefix + ":" + this._geometryName +
 				" xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\">" +
@@ -91,6 +116,7 @@ package org.openscales.core.format
 			featureContainer.appendChild(geomContainer);
 			var attr:String;
 			for(attr in feature.attributes) {
+				//todo change this oldway xmlnodes
 				var attrText:XMLNode = new XMLNode(2, feature.attributes[attr]); 
 				var nodename:String = attr;
 				if (attr.search(":") != -1) {
@@ -114,6 +140,7 @@ package org.openscales.core.format
 			var insertNode:XML = new XML("<" + this._wfsprefix + ":Insert" +
 				" xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\">"  +
 				"</" + this._wfsprefix + ":Insert>");
+			insertNode.@handle = feature.name;
 			insertNode.appendChild(this.createFeatureXML(feature));
 			return insertNode;
 		}
@@ -128,6 +155,7 @@ package org.openscales.core.format
 		
 			var updateNode:XML = new XML("<wfs:Update xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" ></wfs:Update>");
 			updateNode.@typeName = this._layer.typename;
+			updateNode.@handle = feature.name;
 			
 			var propertyNode:XML = new XML("<wfs:Property xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" ></wfs:Property>");
 			var nameNode:XML = new XML("<wfs:Name xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" >"
@@ -158,18 +186,19 @@ package org.openscales.core.format
 		 *
 		 * @param feature
 		 */
-		public function remove(feature:Feature):XMLNode {
-			//todo change  xmlNode(oldway) to xml
+		public function remove(feature:Feature):XML {
+			//todo must be tested
 			if (!feature.attributes.fid) { 
 				Trace.error("Can't update a feature for which there is no FID."); 
 				return null; 
 			}
-			var deleteNode:XMLNode = new XMLNode(1, "wfs:Delete");
-			deleteNode.attributes.typeName = this._layerName;
+			var deleteNode:XML = new XML("<wfs:Delete></wfs:Delete>");
+			deleteNode.@handle = feature.name;
+			deleteNode.@typeName = this._layerName;
 
-			var filterNode:XMLNode = new XMLNode(1, "ogc:Filter");
-			var filterIdNode:XMLNode = new XMLNode(1, "ogc:FeatureId");
-			filterIdNode.attributes.fid = feature.attributes.fid;
+			var filterNode:XML = new XML("<ogc:Filter></ogc:Filter>");
+			var filterIdNode:XML = new XML("<ogc:FeatureId></ogc:FeatureId>");
+			filterIdNode.@fid = feature.attributes.fid;
 			filterNode.appendChild(filterIdNode);
 			deleteNode.appendChild(filterNode);
 
@@ -193,6 +222,7 @@ package org.openscales.core.format
 				
 				for(var i:uint;i<length;i++ ){
 					name = elements[i].@name;
+					if(name == "__gid" ) continue;
 					if(name != this._geometryName){
 						attributes[name] = elements[i].@type;
 					}else{
@@ -201,10 +231,63 @@ package org.openscales.core.format
 				
 				}
 				describeFeature = new DescribeFeature(geometryType,attributes);	
+				describeFeature.setGeometryTypeFromGMLFormat(geometryType);
 			
 			}
-				
+
+
+
+
 			return describeFeature;
+		}
+		/**
+		 * 
+		 * @param xml
+		 * @param transactions
+		 * TODO improve to manage exception
+		 */		
+		public function readTransactionResponse(xml:XML,transactions:Vector.<Transaction>):void{
+		
+		if(xml.localName() != "WFS_TransactionResponse" ) return;
+		/**
+		 * in the specifiaction there are writed, the same order
+		 * */
+		var featureId:XMLList = xml..*::FeatureId;
+		var length:uint = featureId.length();
+		for(var i:uint = 0; i < length; ++i){
+			if(featureId[i].@fid != "none" )
+				transactions[i].feature.name = featureId[i].@fid;
+		} 
+		
+		  
+		/* great with hasmap
+		   var response:XMLList = xml.children();
+		   var length:uint = response.length();
+		   if(length <= 0) return;
+		   var transactionTemp:Transaction;
+		   var newId:String;
+		   var status:String;
+		   
+		   if ( xml..*::SUCCESS.length() > 0) {
+			   status = Transaction.SUCCESS
+		   }
+		   
+		   /* great with hasmap
+		   for(var i:uint = 0; i < length; ++i) {
+			   
+			   if(response[i].localName() == "InsertResult"){
+				   transactionTemp = transactions[response[i].@handle] as Transaction;
+				   newId = response[i].FeatureId.@fid
+					   if(newId != "none")
+						   transactionTemp.feature.name = newId;
+				   if (status!=null){
+					   transactionTemp.state = status;
+				   }
+				  
+			   }
+		  }*/
+		
+		
 		}
 
 		override public function destroy():void {
@@ -221,6 +304,7 @@ package org.openscales.core.format
 			this._layer = value;
 		}
 		/**
+		 * example
 		 *http://localhost:8080/geoserver/wfs/DescribeFeatureType?typename=topp:ebo_couchelocale3l\" 
 		 **/
 		public function get describeFeatureType():String{
