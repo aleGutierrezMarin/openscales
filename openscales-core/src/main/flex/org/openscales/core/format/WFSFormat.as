@@ -255,8 +255,11 @@ package org.openscales.core.format
 		var featureId:XMLList = xml..*::FeatureId;
 		var length:uint = featureId.length();
 		for(var i:uint = 0; i < length; ++i){
-			if(featureId[i].@fid != "none" )
+			if(featureId[i].@fid != "none" ){
 				transactions[i].feature.name = featureId[i].@fid;
+				transactions[i].id = featureId[i].@fid;
+			}
+			transactions[i].state = Transaction.SUCCESS;
 		} 
 		
 		  

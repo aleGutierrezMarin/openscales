@@ -28,6 +28,7 @@ package org.openscales.core.layer.ogc.WFST
 		{
 			_type = type;
 			_id = feature.name;
+			_feature = feature;
 			
 			/*if(id == null){
 				_id =  generateIDTemp(type);

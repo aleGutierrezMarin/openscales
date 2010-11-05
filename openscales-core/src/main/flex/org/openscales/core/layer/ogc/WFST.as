@@ -6,7 +6,8 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.FeatureEvent;
-	import org.openscales.core.events.wfstEvent;
+	import org.openscales.core.events.WFSTFeatureEvent;
+	import org.openscales.core.events.WFSTLayerEvent;
 	import org.openscales.core.feature.DescribeFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.State;
@@ -18,7 +19,9 @@ package org.openscales.core.layer.ogc
 		
 		private var _describeFeature:DescribeFeature = null;
 		
-		private var callbackDescribeFeatureInfo:Function = null;
+		private var _callbackDescribeFeatureInfo:Function = null;
+		
+		private var _callbackTransaction:Function = null;
 		
 		[Bindable]
 		public var transactionArray:Vector.<Transaction> = new Vector.<Transaction>;
@@ -32,23 +35,26 @@ package org.openscales.core.layer.ogc
 		{
 			//TODO: implement function
 			super(name, url, typename);
+			getDescribeFeatureInfo();
 			
 		}
 		
 		override public function set map(map:Map):void {
 			super.map = map;
 			if(map){
-				this.map.addEventListener(wfstEvent.INSERT,this.addTransaction);
-				this.map.addEventListener(wfstEvent.UPDATE,this.addTransaction);
-				this.map.addEventListener(wfstEvent.DELETE,this.addTransaction);
+				this.map.addEventListener(WFSTFeatureEvent.INSERT,this.addTransaction);
+				this.map.addEventListener(WFSTFeatureEvent.UPDATE,this.addTransaction);
+				this.map.addEventListener(WFSTFeatureEvent.DELETE,this.addTransaction);
+				this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_ADDED,this));
 			}
 		}
 		
 		override public function destroy():void {
+			this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_REMOVED,this));
 			//todo desactivate event
 		}
 		
-		public function addTransaction(event:wfstEvent):void{
+		public function addTransaction(event:WFSTFeatureEvent):void{
 			
 			var tempFeature:Vector.<Feature> = event.features;
 			for(var i:uint=0;i<tempFeature.length;i++ ){
@@ -76,13 +82,14 @@ package org.openscales.core.layer.ogc
 		 * wfs-t
 		 * */
 		
-		public function saveTransaction():void{
+		public function saveTransaction(callBackTransaction:Function = null):void{
 			//todo
 			
 			var xmlRequestTransaction:XMLRequest = 	new XMLRequest(this.url+"?TYPENAME=" 
 				         + this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
 			xmlRequestTransaction.postContent = this._wfsFormat.write(featureArray);//this._writer.write(features);
-			xmlRequestTransaction.postContentType = "application/xml"; 
+			xmlRequestTransaction.postContentType = "application/xml";
+			_callbackTransaction = callBackTransaction
 			xmlRequestTransaction.send();
 			
 			
@@ -107,6 +114,8 @@ package org.openscales.core.layer.ogc
 			var loader:URLLoader = event.target as URLLoader;
 			var xmlReponse:XML =   new XML(loader.data);
 			this._wfsFormat.readTransactionResponse(xmlReponse,this.transactionArray);
+			if(this._callbackTransaction != null)
+				this._callbackTransaction.call();
 			//xmlReponse.*Status
 			
 			
@@ -125,7 +134,7 @@ package org.openscales.core.layer.ogc
 			
 			var xmlRequestDescribeFeatureInfo:XMLRequest = 
 				new XMLRequest(this._wfsFormat.describeFeatureType, onSuccessDescribeFeature, onFailureDescribeFeature);
-			this.callbackDescribeFeatureInfo = callback;
+			this._callbackDescribeFeatureInfo = callback;
 			xmlRequestDescribeFeatureInfo.send();
 			
 		}
@@ -138,8 +147,8 @@ package org.openscales.core.layer.ogc
 			var xmlReponse:XML =   new XML(loader.data);
 			this.describeFeature = this._wfsFormat.describeFeatureRead(xmlReponse);
 			this.geometryType = this.describeFeature.geometryType;
-			if(this.callbackDescribeFeatureInfo != null)
-			  this.callbackDescribeFeatureInfo.call();
+			if(this._callbackDescribeFeatureInfo != null)
+			  this._callbackDescribeFeatureInfo.call();
 		}
 		
 		protected function onFailureDescribeFeature(event:Event):void {
