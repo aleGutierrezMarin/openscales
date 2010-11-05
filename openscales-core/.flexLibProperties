@@ -157,6 +157,9 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
+    <classEntry path="org.openscales.core.feature.DescribeFeature"/>
+    <classEntry path="org.openscales.core.layer.ogc.WFST"/>
+    <classEntry path="org.openscales.core.layer.ogc.WFST.Transaction"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
