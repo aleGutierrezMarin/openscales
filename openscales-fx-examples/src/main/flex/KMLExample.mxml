@@ -7,7 +7,7 @@
 		
 		<Mapnik name="Mapnik" />
 		
-		<KML url="http://www.parisavelo.net/velib.kml" proxy="http://openscales.org/proxy.php?url="
+		<KML id="kmlLayer" url="http://www.parisavelo.net/velib.kml" proxy="http://openscales.org/proxy.php?url="
 				numZoomLevels="20" style="{Style.getDefaultCircleStyle()}" tweenOnZoom="false" />
 		
 		<DragHandler/>
@@ -25,6 +25,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.popup.FxPopup;
@@ -34,6 +35,8 @@
 						
 			private function initMap():void {
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				// Optional: use clustering of POI (here the vector of geometries is automatically computed)
+				//(kmlLayer.layer as FeatureLayer).autoClustering = true;
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {

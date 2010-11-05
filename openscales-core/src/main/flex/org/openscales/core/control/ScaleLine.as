@@ -4,12 +4,13 @@ package org.openscales.core.control
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * The scaleLine
@@ -148,7 +149,7 @@ package org.openscales.core.control
 
 			// get the current units of the map
 			/* var currentBaseLayerUnits:String = this.map.units; */
-			var currentBaseLayerUnits:String = this.map.baseLayer.projection.projParams.units;
+			var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.baseLayer.projSrsCode).projParams.units;
 
 			// convert the scaleMaxWidth to map units
 			// The result is the max distance IN MAP UNIT, represent in the scaleline

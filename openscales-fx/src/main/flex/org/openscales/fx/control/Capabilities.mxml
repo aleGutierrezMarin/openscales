@@ -19,7 +19,6 @@
 			import org.openscales.core.style.marker.WellKnownMarker;
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
-			import org.openscales.proj4as.ProjProjection;
 			
 			import spark.components.Label;
 			
@@ -93,7 +92,7 @@
 					var typename:String= this.list.selectedItem as String;
 					var srs:String = capabilities.getValue(this.list.selectedItem).getValue("SRS");
 					var newLayer:WFS = new WFS(typename,this.url,typename);
-					newLayer.projection = new ProjProjection(srs);
+					newLayer.projSrsCode = srs;
 					newLayer.useCapabilities = true;
 					newLayer.capabilities = capabilities.getValue(this.list.selectedItem as String);
 					

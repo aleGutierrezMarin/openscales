@@ -7,7 +7,6 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.fx.feature.FxStyle;
-	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * <p>WFS Flex wrapper.</p>
@@ -34,7 +33,7 @@ package org.openscales.fx.layer
 			this._layer = new WFS("", "", "");
 			this._layer.visible=true
 			if(this._projection != null)
-				this._layer.projection = new ProjProjection(this._projection);
+				this._layer.projSrsCode = this._projection;
 			(this._layer as WFS).useCapabilities=_useCapabilities;
 		}
 		

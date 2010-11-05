@@ -1,7 +1,7 @@
 package org.openscales.core.events{
 
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.Map;
+	import org.openscales.geometry.basetypes.Location;
 
 	/**
 	 * Event related to a map.
@@ -44,6 +44,11 @@ package org.openscales.core.events{
 		 */
 		public static const MOVE_END:String="openscales.mapmoveend";
 
+		/**
+		 * Event type dispatched when the map didn't move after a move_start or a drag_start
+		 */
+		public static const MOVE_NO_MOVE:String="openscales.mapnomove";
+		
 		/**
 		 * Event type dispatched just before dragging the map.
 		 */

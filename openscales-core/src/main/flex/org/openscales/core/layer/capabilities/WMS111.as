@@ -76,14 +76,14 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.LatLonBoundingBox.@maxx.toXMLString());
 				top = new Number(layer.LatLonBoundingBox.@maxy.toXMLString());;
 
-				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top));
+				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top,csSrsList));
 
 				left = new Number(layer.BoundingBox.@minx.toXMLString());
 				bottom = new Number(layer.BoundingBox.@miny.toXMLString());
 				right = new Number(layer.BoundingBox.@maxx.toXMLString());
 				top = new Number(layer.BoundingBox.@maxy.toXMLString());
     						
-				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top));
+				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,csSrsList));
 				
 				if (name != "")
 					this._capabilities.put(name, layerCapabilities);
