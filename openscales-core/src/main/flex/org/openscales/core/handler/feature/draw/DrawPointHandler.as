@@ -4,7 +4,6 @@ package org.openscales.core.handler.feature.draw
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-	import org.openscales.core.events.wfstEvent;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.State;

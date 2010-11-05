@@ -520,9 +520,9 @@ package org.openscales.core.format
 			
 			if(geometry is Point){
 				
-				if (this.internalProj != null && this.externalProj != null) {
+				if (this._internalProjSrsCode != null && this._externalProjSrsCode != null) {
 					var p:ProjPoint = new ProjPoint(geometry.x, geometry.y);
-					Proj4as.transform(internalProj, externalProj, p);
+					Proj4as.transform(_internalProjSrsCode, _externalProjSrsCode, p);
 					geometry.x = p.x;
 					geometry.y = p.y;
 				}
@@ -541,9 +541,9 @@ package org.openscales.core.format
 				var i:int;
 				var pointTemp:Point;
 				for (i = 0; i < j; i=i+2) {
-					if (this.internalProj != null && this.externalProj != null){
+					if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
 						pointTemp = new Point(points[i],points[i+1]);
-					    pointTemp.transform(this.internalProj, this.externalProj);
+					    pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
 						path += pointTemp.x + "," + pointTemp.y + " ";
 					}else{
 						path += points[i] + "," + points[i+1] + " ";

@@ -6,7 +6,7 @@ package org.openscales.core.feature {
 	import org.openscales.core.Trace;
 	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
-	import org.openscales.core.events.wfstEvent;
+	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
@@ -330,7 +330,7 @@ package org.openscales.core.feature {
 				}
 				
 				if(this._layer != null && this._layer.map != null){
-					this._layer.map.dispatchEvent(new wfstEvent(wfstEvent.UPDATE,this));
+					this._layer.map.dispatchEvent(new WFSTFeatureEvent(WFSTFeatureEvent.UPDATE,this));
 				}
 				
 			} else if (value == State.INSERT) {
@@ -343,7 +343,7 @@ package org.openscales.core.feature {
 				}
 				
 				if(this._layer != null && this._layer.map != null){
-					this._layer.map.dispatchEvent(new wfstEvent(wfstEvent.INSERT,this));
+					this._layer.map.dispatchEvent(new WFSTFeatureEvent(WFSTFeatureEvent.INSERT,this));
 				}
 				
 				
@@ -360,7 +360,7 @@ package org.openscales.core.feature {
 				}
 				
 				if(this._layer != null && this._layer.map != null){
-					this._layer.map.dispatchEvent(new wfstEvent(wfstEvent.DELETE,this));
+					this._layer.map.dispatchEvent(new WFSTFeatureEvent(WFSTFeatureEvent.DELETE,this));
 				}
 				
 			} else if (value == State.UNKNOWN) {
