@@ -161,12 +161,12 @@ package org.openscales.core.layer
 			var fevt:FeatureEvent = null;
 			// Check if the feature may be added to this layer
 			var vectorfeature:Feature = feature;
-			/*
+			
 			if (this.geometryType &&
 				(getQualifiedClassName(vectorfeature.geometry) != this.geometryType)) {
-				var throwStr:String = "addFeatures : component should be an " + this.geometryType;
+				var throwStr:String = "addFeatures : component should be an " + this.geometryType +"and it is : " + getQualifiedClassName(vectorfeature.geometry);
 				throw throwStr;
-			}*/
+			}
 
 			// If needed dispatch a PRE_INSERT event before the feature is added
 			if (dispatchFeatureEvent && this.map) {

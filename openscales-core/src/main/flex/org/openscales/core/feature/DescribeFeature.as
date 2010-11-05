@@ -20,7 +20,17 @@ package org.openscales.core.feature
 			_geometryType = geometryType;
 			_attributes = attributes;
 		}
+		/**
+		 * maybe change this name
+		 * convert for example gml:MultiPointPropertyType in org.openscales.geometry::MultiPoint
+		 * */
+		private function changeNameOfGeometry(geometryType:String):String{
+			return "org.openscales.geometry::" + geometryType.substring(4,geometryType.length - 12);;
+		}
 		
+		public function setGeometryTypeFromGMLFormat(geometryType:String):void{
+			_geometryType = changeNameOfGeometry(geometryType);
+		}
 		
 		public function get geometryType():String
 		{

@@ -63,7 +63,7 @@ package org.openscales.core.handler.feature.draw
 				
 				
 				//todo change this shit
-               if(drawLayer.geometryType == "gml:MultiPointPropertyType"){
+               if(drawLayer.geometryType == "org.openscales.geometry::MultiPoint"){
 				   var multiPoint:MultiPoint = new MultiPoint();
 				   multiPoint.addPoint(lonlat.lon,lonlat.lat);
 				   var multiPointFeature:MultiPointFeature = new MultiPointFeature(multiPoint, null, style);
