@@ -3,8 +3,8 @@ package org.openscales.geometry
 	import flash.trace.Trace;
 	import flash.utils.getQualifiedClassName;
 	
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.utils.UtilGeometry;
-	import org.openscales.proj4as.ProjProjection;
 
 
 	/**
@@ -152,12 +152,30 @@ package org.openscales.geometry
 			this._bounds = null;
 			if (this.componentsLength > 0) {
 				this._bounds = this._components[0].bounds;
-				for (var i:int=1; i<this.componentsLength; ++i) {
+				var i:uint = 1;
+				var j:uint = this.componentsLength;
+				for (i; i<j; ++i) {
 					this.extendBounds(this._components[i].bounds);
 				}
 			}
 		}
-	
+		
+		/**
+		 * Extends geometry's bounds
+		 *
+		 * If bounds are not defined yet, it initializes the bounds. If bounds are already defined,
+		 * it extends them.
+		 *
+		 * @param newBounds Bounds to extend gemetry's bounds
+		 */
+		protected function extendBounds(newBounds:Bounds):void {
+			if (this._bounds == null) {
+				this._bounds = newBounds;
+			} else {
+				this._bounds.extendFromBounds(newBounds);
+			}
+		}
+		
 		/**
      	 * Add components to this geometry.
      	 *
@@ -270,12 +288,15 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the collection from a projection system to an other.
 		 *
-		 * @param source The source projection
-		 * @param dest The destination projection
+		 * @param sourceSrs SRS of the source projection
+		 * @param destSrs SRS of the destination projection
 		 */
-		override public function transform(source:ProjProjection, dest:ProjProjection):void {
+		override public function transform(sourceSrs:String, destSrs:String):void {
+			// Update the pojection associated to the geometry
+			this.projSrsCode = destSrs;
+			// Update the geometry
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				this._components[i].transform(source, dest);
+				this._components[i].transform(sourceSrs, destSrs);
 			}
 		}
 		/**

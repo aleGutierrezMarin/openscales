@@ -48,6 +48,7 @@ package org.openscales.core.layer.capabilities
 						
 			this.removeNamespaces(doc);
 
+			var srsCode:String = null;
 			for each (var layer:XML in layerNodes){
 				name = layer.Name;
 				layerCapabilities.put("Name", name);
@@ -55,14 +56,12 @@ package org.openscales.core.layer.capabilities
 				value = layer.Title;
 				layerCapabilities.put("Title", value);
 
-		        value = layer.SRS.toString();  
-                
-		        while (value.search(" ") > 0)
-				{  
-		     	     value = value.replace(" ",",");
-	    		}
-                
+				value = layer.SRS.toString();
+				while (value.search(" ") > 0) {
+					value = value.replace(" ",",");
+				}
 				layerCapabilities.put("SRS", value);
+				srsCode = value;
 
 				value = layer.Abstract;
 				layerCapabilities.put("Abstract", value);
@@ -72,14 +71,14 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.LatLonBoundingBox.@maxx.toXMLString());
 				top = new Number(layer.LatLonBoundingBox.@maxy.toXMLString());;
 
-				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top));
+				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top,srsCode));
 
 				left = new Number(layer.BoundingBox.@minx.toXMLString());
 				bottom = new Number(layer.BoundingBox.@miny.toXMLString());
 				right = new Number(layer.BoundingBox.@maxx.toXMLString());
 				top = new Number(layer.BoundingBox.@maxy.toXMLString());;
 						
-				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top));
+				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,srsCode));
 			
                 if (name != "")
                 {

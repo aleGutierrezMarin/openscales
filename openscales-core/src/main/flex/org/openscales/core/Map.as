@@ -8,6 +8,7 @@ package org.openscales.core
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	
@@ -20,11 +21,13 @@ package org.openscales.core
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.security.ISecurity;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Instances of Map are interactive maps that can be embedded in a web pages or in
@@ -117,6 +120,9 @@ package org.openscales.core
 				}
 			}
 			
+			var i:int = this._securities.length;
+			for(i;i>0;--i)
+				this._securities.pop().destroy();
 		}
 		
 		// Layer management
@@ -145,7 +151,7 @@ package org.openscales.core
 				this.baseLayer = layer;
 			}
 			
-			if(redraw){
+			if (redraw){
 				layer.redraw();	
 			}
 			
@@ -159,9 +165,8 @@ package org.openscales.core
 		 * @param layers to add.
 		 */
 		public function addLayers(layers:Vector.<Layer>):void {
-			var j:uint = layers.length;
-			var i:uint = 0;
-			for (i; i <  j; ++i) {
+			var layersNb:uint = layers.length;
+			for (var i:uint=0; i<layersNb; ++i) {
 				this.addLayer(layers[i]);
 			}
 		}
@@ -190,14 +195,14 @@ package org.openscales.core
 					// if we set a baselayer with a different projection, we
 					// change the map's projected datas
 					if (this.baseLayer) {
-						if ((this.baseLayer.projection.srsCode != newBaseLayer.projection.srsCode)
+						if ((this.baseLayer.projSrsCode != newBaseLayer.projSrsCode)
 							||(newBaseLayer.resolutions==null)) {
 							// FixMe : why testing (newBaseLayer.resolutions==null) ?
 							if (this.center != null)
-								this.center = this.center.reprojectTo(newBaseLayer.projection);
+								this.center = this.center.reprojectTo(newBaseLayer.projSrsCode);
 							
 							if (this._layerContainerOrigin != null)
-								this._layerContainerOrigin = this._layerContainerOrigin.reprojectTo( newBaseLayer.projection);
+								this._layerContainerOrigin = this._layerContainerOrigin.reprojectTo(newBaseLayer.projSrsCode);
 							
 							oldExtent = null;
 							this.maxExtent = newBaseLayer.maxExtent;
@@ -322,17 +327,12 @@ package org.openscales.core
 		 * Remove the control passed as parameter
 		 */
 		public function removeControl(control:IControl):void {
-			var newControls:Vector.<IControl> = new Vector.<IControl>();
-			for each (var mapControl:IControl in this._controls) {
-				if (mapControl == control) {
-					control.active = false;
-					this.removeChild(control as Sprite);
-					control = null;
-				} else {
-					newControls.push(mapControl);
-				}
+			var i:int = this._controls.indexOf(control);
+			if(i!=-1) {
+				this._controls = this._controls.slice(i,1);
+				this.removeChild(control as Sprite);
+				control.destroy();
 			}
-			this._controls = newControls;
 		}
 		
 		/**
@@ -453,6 +453,40 @@ package org.openscales.core
 			}
 		}
 		
+		public function zoomOnDoubleClick(evt:MouseEvent):void {
+			this.zoomToMousePosition(true);
+		}
+		
+		/**
+		 * Allows user to zoom in or zoom out with conserving the current mouse position
+		 *
+		 * @param zoomIn Boolean defining if a zoom (true) or a zoom out (false) must be realized.
+		 */
+		public function zoomToMousePosition(zoomIn:Boolean):void {
+			if (! this.baseLayer) {
+				return;
+			}
+			// Compute the center of the zoom and the new level
+			const px:Pixel = new Pixel(this.mouseX, this.mouseY);
+			const centerPx:Pixel = new Pixel(this.width/2, this.height/2);
+			var newCenterPx:Pixel;
+			var z:Number = this.zoom;
+			if (zoomIn) {
+				z++;
+				if (z > this.baseLayer.maxZoomLevel) {
+					return;
+				}
+				newCenterPx = new Pixel((px.x+centerPx.x)/2, (px.y+centerPx.y)/2);
+			} else {
+				z--;
+				if (z < this.baseLayer.minZoomLevel) {
+					return;
+				}
+				newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
+			}
+			this.moveTo(this.getLocationFromMapPx(newCenterPx), z, false, true);
+		}
+		
 		/**
 		 * Set the map center (and optionally, the zoom level).
 		 *
@@ -467,9 +501,9 @@ package org.openscales.core
 		 *
 		 */
 		public function moveTo(newCenter:Location,
-								  newZoom:Number = NaN,
-								  dragTween:Boolean = false,
-								  zoomTween:Boolean = false):void {
+								newZoom:Number = NaN,
+								dragTween:Boolean = false,
+								zoomTween:Boolean = false):void {
 					
 			var zoomChanged:Boolean = (this.isValidZoomLevel(newZoom) && (newZoom!=this._zoom));
 			var validLocation:Boolean = this.isValidLocation(newCenter);
@@ -487,8 +521,8 @@ package org.openscales.core
 			} else if(this.center && !newCenter) {
 				newCenter = this.center;
 			}			
-			if(this._baseLayer!=null && (this._baseLayer.projection!=null) && newCenter.projection && (newCenter.projection.srsCode!=this._baseLayer.projection.srsCode)) {
-				newCenter = newCenter.reprojectTo(this._baseLayer.projection);
+			if (this._baseLayer!=null && (this._baseLayer.projSrsCode!=null) && newCenter.projSrsCode && (newCenter.projSrsCode!=this._baseLayer.projSrsCode)) {
+				newCenter = newCenter.reprojectTo(this._baseLayer.projSrsCode);
 			}
 			
 			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
@@ -540,7 +574,6 @@ package org.openscales.core
 					this.dispatchEvent(mapEvent);
 				}
 			}
-			
 		}
 		
 		/**
@@ -972,7 +1005,7 @@ package org.openscales.core
 		 */
 		override public function set width(value:Number):void {
 			if (! isNaN(value)) {
-				this.size = new Size(value, this.height);
+				this.size = new Size(value, this.size.h);
 			} else {
 				Trace.error("Map - width not changed since the value is not valid");
 			}
@@ -983,7 +1016,7 @@ package org.openscales.core
 		 */
 		override public function set height(value:Number):void {
 			if (! isNaN(value)) {
-				this.size = new Size(this.width, value);
+				this.size = new Size(this.size.w, value);
 			} else {
 				Trace.error("Map - height not changed since the value is not valid");
 			}
@@ -1040,8 +1073,8 @@ package org.openscales.core
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
 			if(maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
-				if (this.baseLayer && (this.baseLayer.projection.srsCode != Layer.DEFAULT_SRS_CODE)) {
-					maxExtent.transform(Layer.DEFAULT_PROJECTION, this.baseLayer.projection)
+				if (this.baseLayer && (this.baseLayer.projSrsCode != Geometry.DEFAULT_SRS_CODE)) {
+					maxExtent.transform(Geometry.DEFAULT_SRS_CODE, this.baseLayer.projSrsCode);
 				}
 			}
 			return maxExtent;
@@ -1061,7 +1094,8 @@ package org.openscales.core
 				extent = new Bounds(this.center.lon - w_deg / 2,
 					this.center.lat - h_deg / 2,
 					this.center.lon + w_deg / 2,
-					this.center.lat + h_deg / 2, this.baseLayer.projection);
+					this.center.lat + h_deg / 2,
+					this.baseLayer.projSrsCode);
 			} 
 			
 			return extent;
@@ -1082,7 +1116,7 @@ package org.openscales.core
 		public function get scale():Number {
 			var scale:Number = NaN;
 			if (this.baseLayer) {
-				var units:String = this.baseLayer.projection.projParams.units;
+				var units:String = ProjProjection.getProjProjection(this.baseLayer.projSrsCode).projParams.units;
 				scale = Unit.getScaleFromResolution(this.resolution, units);
 			}
 			return scale;

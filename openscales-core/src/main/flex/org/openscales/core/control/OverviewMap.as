@@ -4,10 +4,6 @@ package org.openscales.core.control
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
@@ -22,6 +18,10 @@ package org.openscales.core.control
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.geometry.MultiPoint;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 	
 	/**
 	 * Display an overview of the current map and position.
@@ -141,7 +141,7 @@ package org.openscales.core.control
 				bottom,
 				right,
 				top,
-				this._overviewMap.baseLayer.projection);
+				this._overviewMap.baseLayer.projSrsCode);
 			return bounds;
 		}
 		
@@ -152,12 +152,12 @@ package org.openscales.core.control
 			
 			if(px.equals(this._startDrag)) {
 				var loc:Location = this._overviewMap.getLocationFromMapPx(px);
-				this.map.moveTo(loc.reprojectTo(this.map.baseLayer.projection));
+				this.map.moveTo(loc.reprojectTo(this.map.baseLayer.projSrsCode));
 			} else {
 				var bounds:Bounds = pxToBound(px,this._startDrag);
-				if(this.map.baseLayer.projection != this._overviewMap.baseLayer.projection)
-					bounds.transform(this._overviewMap.baseLayer.projection,
-									 this.map.baseLayer.projection);
+				if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
+					bounds.transform(this._overviewMap.baseLayer.projSrsCode,this.map.baseLayer.projSrsCode);
+				}
 				this.map.zoomToExtent(bounds);
 			}
 			
@@ -284,12 +284,12 @@ package org.openscales.core.control
 		private function _drawExtent(event:Event=null):void {
 			var _extent:Bounds = this.map.extent;
 			
-			if(this.map.baseLayer.projection != this._overviewMap.baseLayer.projection)
-				_extent.transform(this.map.baseLayer.projection,
-								  this._overviewMap.baseLayer.projection);
+			if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
+				_extent.transform(this.map.baseLayer.projSrsCode,this._overviewMap.baseLayer.projSrsCode);
+			}
 			
-			this._extentLayer.projection = this._overviewMap.baseLayer.projection;
-			if(this._extentFeature == null) {
+			this._extentLayer.projSrsCode = this._overviewMap.baseLayer.projSrsCode;
+			if (this._extentFeature == null) {
 				this._extentFeature = new PolygonFeature(_extent.toGeometry(),
 					null,
 					this._extentStyle);

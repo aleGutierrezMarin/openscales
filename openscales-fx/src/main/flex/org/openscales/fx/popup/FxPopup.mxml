@@ -33,12 +33,12 @@
 			private var _feature:Feature = null;
 			private var _loc:Location = null;
 			private var _fxmap:FxMap;
-			private var _content:String="";
+			[Bindable] private var _content:String="";
 			private var _size:Size = null;
 			private var _relativePosition:String = "";
 			
-			public var WIDTH:Number = 200;
-			public var HEIGHT:Number = 200;
+			[Bindable] public var WIDTH:Number = 200;
+			[Bindable] public var HEIGHT:Number = 200;
 			static public var BR:String = "br";
 			static public var TR:String = "tr";
 			static public var TL:String = "tl";

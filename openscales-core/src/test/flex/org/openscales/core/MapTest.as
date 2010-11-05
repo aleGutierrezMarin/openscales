@@ -37,7 +37,7 @@ package org.openscales.core
 		[Test]
 		public function testMaxExtent( ) : void {
 			var map:Map = new Map();
-			map.maxExtent = new Bounds(1, 2, 3, 4);
+			map.maxExtent = new Bounds(1, 2, 3, 4, "EPSG:4326");
 			var defaultMaxExtent:Bounds = map.maxExtent;
 			
 			Assert.assertEquals(1, defaultMaxExtent.left);

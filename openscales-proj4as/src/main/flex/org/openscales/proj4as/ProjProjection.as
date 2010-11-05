@@ -75,18 +75,15 @@ package org.openscales.proj4as {
 		protected var proj:IProjection;
 		
 		/**
-		 * return the ProjProjection for a specific srsCode
-		 * 
+		 * Return the ProjProjection for a specific srsCode
 		 * @param srsCode:String the srsCode
-		 * 
 		 * @return ProjProjection the ProjProjection
 		 */
 		public static function getProjProjection(srsCode:String):ProjProjection {
-			if(ProjProjection.projProjections[srsCode])
+			if (ProjProjection.projProjections[srsCode]) {
 				return ProjProjection.projProjections[srsCode];
-			
+			}
 			ProjProjection.projProjections[srsCode] = new ProjProjection(srsCode);
-			
 			return ProjProjection.projProjections[srsCode];
 		}
 		
@@ -156,10 +153,6 @@ package org.openscales.proj4as {
 				this.projParams.srsProjNumber=this.projParams.srsCode;
 			}
 			this.loadProjDefinition();
-		}
-		
-		public function clone():ProjProjection {
-			return new ProjProjection(this.srsCode);
 		}
 		
 		private function loadProjDefinition():void {

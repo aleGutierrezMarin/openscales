@@ -50,12 +50,10 @@ package org.openscales.fx.configuration
 				var control:Control = parseFxControl(xmlControl);
 				if(control != null){
 					control.map = map;
-					// parent = SpriteVisualElement instance
-					// parent.parent = FxMap instance
-					if(map.parent.parent && map.parent.parent as IVisualElementContainer) {
-						(map.parent.parent as IVisualElementContainer).addElement(control);
+					if(_fxMap) {
+						_fxMap.addElement(control);
 					} else {
-						Trace.log("map.parent is null so does not add the control");
+						Trace.log("fxmap is null so does not add the control");
 					} 
 				}
 			}                      

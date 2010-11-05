@@ -2,7 +2,6 @@ package org.openscales.proj4as.projections
 {
 	import org.flexunit.Assert;
 	
-	import org.openscales.proj4as.ProjProjection;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
 
@@ -42,8 +41,8 @@ package org.openscales.proj4as.projections
 		[Test]
 		public function testGEOPORTALFXX_RGF93G():void {
             trace("Proj4as - test IGNF:GEOPORTALFXX <-> IGNF:RGF93G :");
-            var rgf93g:ProjProjection= new ProjProjection("IGNF:RGF93G");
-            var geoportalfxx:ProjProjection= new ProjProjection("IGNF:GEOPORTALFXX");
+            var rgf93g:String = "IGNF:RGF93G";
+            var geoportalfxx:String = "IGNF:GEOPORTALFXX";
 			var ll:ProjPoint = new ProjPoint(2.336507, 50.399937);
             var xy:ProjPoint = new ProjPoint(179040.15, 5610495.28);
 			var ll2xy:ProjPoint = ll.clone();
@@ -62,8 +61,8 @@ package org.openscales.proj4as.projections
 		[Test]
 		public function testGEOPORTALKER_WGS84G():void {
             trace("Proj4as - test EPSG:4326 <-> IGNF:GEOPORTALKER :");
-            var wgs84g:ProjProjection= new ProjProjection("EPSG:4326");
-            var geoportalker:ProjProjection= new ProjProjection("IGNF:GEOPORTALKER");
+            var wgs84g:String = "EPSG:4326";
+            var geoportalker:String = "IGNF:GEOPORTALKER";
             var ll:ProjPoint = new ProjPoint(70.215278, -49.354167);
             var xy:ProjPoint = new ProjPoint(5076299.6095, -5494080.7389);
 			var ll2xy:ProjPoint = ll.clone();
@@ -82,8 +81,8 @@ package org.openscales.proj4as.projections
         [Test]
         public function test4326_GEOPORTALFXX_4326():void {
             trace("Proj4as - test EPSG:4326 -> IGNF:GEOPORTALFXX -> EPSG:4326");
-            var wgs84g:ProjProjection= new ProjProjection("EPSG:4326");
-            var geoportalfxx:ProjProjection= new ProjProjection("IGNF:GEOPORTALFXX");
+            var wgs84g:String = "EPSG:4326";
+            var geoportalfxx:String = "IGNF:GEOPORTALFXX";
 			var ll:ProjPoint = new ProjPoint(2.336507, 50.399937);
 			var ll2xy:ProjPoint = ll.clone();
             ll2xy= Proj4as.transform(wgs84g,geoportalfxx,ll2xy);

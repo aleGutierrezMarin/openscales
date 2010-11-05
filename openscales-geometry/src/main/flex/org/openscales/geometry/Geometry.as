@@ -2,7 +2,6 @@ package org.openscales.geometry
 {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.proj4as.ProjProjection;
 
 
 	/**
@@ -12,6 +11,8 @@ package org.openscales.geometry
 	 */
 	public class Geometry 
 	{
+		public static const DEFAULT_SRS_CODE:String = "EPSG:4326";
+		
 		/**
      	 * The bounds of this geometry
 		 * 
@@ -21,14 +22,14 @@ package org.openscales.geometry
 		/**
 		 * projection of the geometry 
 		 */
-		protected var _projection:String = "EPSG:4326";
+		protected var _projSrsCode:String = DEFAULT_SRS_CODE;
 		
 		public function Geometry() {
 			super();
 		}
 		
 		/**
-		 * Destroys the geometry
+		 * Destroy the geometry
 		 */
 		public function destroy():void {
 			this._bounds = null;
@@ -36,8 +37,8 @@ package org.openscales.geometry
 		
 		/**
 		 * To get this geometry clone
-		 * */
-		public function clone():Geometry{
+		 */
+		public function clone():Geometry {
 			return null;
 		}
 
@@ -45,12 +46,15 @@ package org.openscales.geometry
 			return "";
 		}
 		/**
-		 * Method to convert the lon/lat (x/y) value of the geometry from a projection system to an other.
-		 *
-		 * @param source The source projection
-		 * @param dest The destination projection
+		 * Method to convert the coordinates of the geometry from a projection system to an other one.
+		 * @param sourceSrs SRS of the source projection
+		 * @param destSrs SRS of the destination projection
 		 */
-		public function transform(source:ProjProjection, dest:ProjProjection):void {
+		public function transform(sourceSrs:String, destSrs:String):void {
+			// Update the pojection associated to the geometry
+			this.projSrsCode = destSrs;
+			// Update the geometry
+			// Noting to do for this generic class
 		}
 
 		/**
@@ -60,34 +64,11 @@ package org.openscales.geometry
 			this._bounds = null;
 		}
 
-		/**
-		 * Extends geometry's bounds
-		 *
-		 * If bounds are not defined yet, it initializes the bounds. If bounds are already defined,
-		 * it extends them.
-		 *
-		 * @param newBounds Bounds to extend gemetry's bounds
-		 */
-		public function extendBounds(newBounds:Bounds):void {
-			if (this._bounds == null) {
-				this._bounds = newBounds;
-			} else {
-				this._bounds.extendFromBounds(newBounds);
-			}
-		}
-
 		public function get bounds():Bounds {
 			if (this._bounds == null) {
 				this.calculateBounds();
 			}
 			return this._bounds;
-		}
-
-
-		public function set bounds(value:Bounds):void {
-			if (value) {
-				this._bounds = value.clone();
-			}
 		}
 
 		/**
@@ -102,7 +83,7 @@ package org.openscales.geometry
 		 * Return an array of all the vertices (Point) of this geometry
 		 */
 		public function toVertices():Vector.<Point> {
-			return new Vector.<Geometry>;
+			return new Vector.<Geometry>();
 		}
 
 		/**
@@ -124,7 +105,8 @@ package org.openscales.geometry
 					new Bounds(this.bounds.left - dX,
 					this.bounds.bottom - dY,
 					this.bounds.right + dX,
-					this.bounds.top + dY);
+					this.bounds.top + dY,
+					this.projSrsCode);
 
 				atPoint = toleranceBounds.containsLocation(lonlat);
 			}
@@ -148,7 +130,6 @@ package org.openscales.geometry
     		var distance:Number;
     		// TODO
     		return distance;
-			
     	}
 		
 		/**
@@ -199,12 +180,21 @@ package org.openscales.geometry
 			return false;
 		}
 		
-		/**
-		 * Returns the geometry's length. Overrided by subclasses.
-		 */
-		public function get projection():String {
-			return this._projection;
+		public function get projSrsCode():String {
+			return this._projSrsCode;
 		}
+		
+		public function set projSrsCode(value:String):void {
+			this._projSrsCode = value;
+			if (value == null) {
+				this.clearBounds();
+			} else {
+				if (this._bounds != null) { // the private variable is tested to avoid to create the bounds if it doesn't exist
+					this._bounds.transform(this._bounds.projSrsCode, value);
+				}
+			}
+		}
+		
 		/**
 		 * Returns the geometry's length. Overrided by subclasses.
 		 */
@@ -216,10 +206,6 @@ package org.openscales.geometry
 		 */
 		public function get area():Number {
 			return 0.0;
-		}
-
-		public function set projection(value:String):void {
-			this._projection = value;
 		}
 		
 	}
