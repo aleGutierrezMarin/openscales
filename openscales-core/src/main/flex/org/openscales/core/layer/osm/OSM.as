@@ -2,7 +2,6 @@ package org.openscales.core.layer.osm
 {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.core.layer.TMS;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * Base class for Open Street Map layers
@@ -19,10 +18,10 @@ package org.openscales.core.layer.osm
 							url:String) {
 
 			super(name, url);
-			this.projection = new ProjProjection("EPSG:900913");
+			this.projSrsCode = "EPSG:900913";
 			// Use the projection to access to the unit
 			/* this.units = Unit.METER; */
-			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34);
+			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projSrsCode);
 		}
 
 		override public function getURL(bounds:Bounds):String

@@ -3,6 +3,7 @@ package org.openscales.fx
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
+	import flash.utils.getQualifiedClassName;
 	
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
@@ -25,6 +26,7 @@ package org.openscales.fx
 	import org.openscales.fx.layer.FxLayer;
 	import org.openscales.fx.popup.FxPopup;
 	import org.openscales.fx.security.FxAbstractSecurity;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -48,6 +50,7 @@ package org.openscales.fx
 	public class FxMap extends Group
 	{
 		private var _map:Map;
+		private var _controls:Vector.<IControl> = new Vector.<IControl>();
 		private var _zoom:Number = NaN;
 		private var _center:Location = null;
 		private var _creationHeight:Number = NaN;
@@ -69,6 +72,22 @@ package org.openscales.fx
 			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
 		}
 		
+		public function reset():void {
+			var i:int = this.numElements;
+			var elt:IVisualElement;
+			for(i;i>0;--i) {
+				elt = this.removeElementAt(0);
+				if(elt is IControl)
+					(elt as IControl).destroy();
+			}
+			i = this._controls.length;
+			for(i;i>0;--i)
+				this._controls.pop();
+			this.map.reset();
+			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
+			this.addElementAt(mapContainer, 0);
+			mapContainer.addChild(this._map);
+		}
 		/**
 		 * Add a Flex wrapper layer to the map
 		 */
@@ -81,13 +100,13 @@ package org.openscales.fx
 		
 		private function onMoveStart(event:MapEvent):void{
 			_flexOverlay.visible = false;
-			var j:uint = _flexOverlay.numElements;
+			/*var j:uint = _flexOverlay.numElements;
 			var element:IVisualElement;
 			for(var i:uint=0;i<j;++i){
 				element = _flexOverlay.getElementAt(i);
 				if(element is FxPopup)
 					(element as FxPopup).position = (element as FxPopup).fxmap.map.getMapPxFromLocation((element as FxPopup).loc);
-			}
+			}*/
 			
 		}
 		
@@ -110,6 +129,7 @@ package org.openscales.fx
 			map.addEventListener(MapEvent.LOAD_END,onMoveEnd);
 			map.addEventListener(MapEvent.MOVE_START,onMoveStart);
 			map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
+			map.addEventListener(MapEvent.MOVE_NO_MOVE,onMoveEnd);
 			var i:Number;
 			if(exclusive){
 				var element:IVisualElement;
@@ -156,10 +176,7 @@ package org.openscales.fx
 			
 			this._flexOverlay = new Group();
 			this.addElementAt(_flexOverlay,1);
-			this.map.addEventListener(MapEvent.MOVE_START,onMoveStart);
-			this.map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
-			
-			
+
 			if (this._proxy != "")
 				this._map.proxy = this._proxy;
 			
@@ -218,7 +235,7 @@ package org.openscales.fx
 			// Set both center and zoom to avoid invalid request set when we define both separately
 			var mapCenter:Location = this._center;
 			if (mapCenter && this._map.baseLayer) {
-				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projection);
+				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projSrsCode);
 			}
 			if (mapCenter || (! isNaN(this._zoom))) {
 				this._map.moveTo(mapCenter, this._zoom);
@@ -301,7 +318,7 @@ package org.openscales.fx
 				Trace.error("Map.centerLonLat: invalid number of components");
 				return ;
 			}
-			_center = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]),Layer.DEFAULT_PROJECTION);
+			_center = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]), Geometry.DEFAULT_SRS_CODE);
 		}
 		
 		/**
@@ -337,12 +354,52 @@ package org.openscales.fx
 		 * MaxExtent MXML setter
 		 */
 		public function set maxExtent(value:String):void {
-			this._maxExtent = Bounds.getBoundsFromString(value,Layer.DEFAULT_PROJECTION);
+			this._maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
 		}
 		
 		public function get flexOverlay():Group{
 			return this._flexOverlay;
 		}
+
+		public function get controls():Vector.<IControl>
+		{
+			return _controls;
+		}
+
+		public function set controls(value:Vector.<IControl>):void
+		{
+			_controls = value;
+		}
+		
+		/**
+		 * Add a new control to the map.
+		 *
+		 * @param control the control to add.
+		 * @param attach if true, the control will be added as child component of the map. This
+		 *  parameter may be for example set to false when adding a Flex component displayed
+		 *  outside the map.
+		 */
+		public function addControlToFxMapControlsList(control:IControl):void {
+			// Is the input control valid ?
+			if (! control) {
+				Trace.warn("FxMap.addControlToFxMapControlsList: null control not added");
+				return;
+			}
+			var i:uint = 0;
+			var j:uint = this._controls.length;
+			for (; i<j; ++i) {
+				if (control == this._controls[i]) {
+					Trace.warn("FxMap.addControlToFxMapControlsList: this control is already registered ("+getQualifiedClassName(control)+")");
+					return;
+				}
+			}
+			// If the control is a new control, register it
+			if (i == j) {
+				Trace.log("FxMap.addControlToFxMapControlsList: add a new control "+getQualifiedClassName(control));
+				this._controls.push(control);
+			}
+		}
+
 		
 	}
 }

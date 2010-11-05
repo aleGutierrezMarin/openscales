@@ -47,6 +47,7 @@ package org.openscales.core.layer.capabilities
 			var featureNodes:XMLList = doc..*::FeatureType;
 			this.removeNamespaces(doc);
 
+			var srsCode:String = null;
 			for each (var feature:XML in featureNodes){
 
 				name = feature.Name;
@@ -57,6 +58,7 @@ package org.openscales.core.layer.capabilities
 
 				value = feature.SRS;
 				featureCapabilities.put("SRS", value);
+				srsCode = value;
 
 				value = feature.Abstract;
 				featureCapabilities.put("Abstract", value);
@@ -65,7 +67,7 @@ package org.openscales.core.layer.capabilities
 				miny = feature.LatLongBoundingBox.@miny;
 				maxx = feature.LatLongBoundingBox.@maxx;
 				maxy = feature.LatLongBoundingBox.@maxy;
-				latLon = new Bounds(minx, miny, maxx, maxy);
+				latLon = new Bounds(minx, miny, maxx, maxy, srsCode);
 				featureCapabilities.put("Extent", latLon);
 
 				this._capabilities.put(name, featureCapabilities);

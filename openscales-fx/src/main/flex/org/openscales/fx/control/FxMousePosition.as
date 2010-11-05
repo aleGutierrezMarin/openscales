@@ -1,7 +1,5 @@
 package org.openscales.fx.control
 {
-	import org.openscales.proj4as.ProjProjection;
-	
 	import org.openscales.core.control.MousePosition;
 
 	/**
@@ -18,7 +16,7 @@ package org.openscales.fx.control
 		
 		public function set displayProjection(value:String):void {
 			if (this.control != null && value != null)
-				(this.control as MousePosition).displayProjection = new ProjProjection(value);
+				(this.control as MousePosition).displayProjSrsCode = value;
 		}
 		
 		public function set numdigits(value:Number):void {

@@ -72,7 +72,7 @@ package org.openscales.core.handler.zoom
 						Math.min(endCoordinates.lat,_startCoordinates.lat),
 						Math.max(_startCoordinates.lon,endCoordinates.lon),
 						Math.max(endCoordinates.lat,_startCoordinates.lat),
-						endCoordinates.projection));
+						endCoordinates.projSrsCode));
 				}
 			}
 			this._startCoordinates = null;

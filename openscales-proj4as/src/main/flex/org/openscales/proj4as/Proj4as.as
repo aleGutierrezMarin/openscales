@@ -17,18 +17,20 @@ package org.openscales.proj4as {
 		 * Reproject a point according to specified source and destination projections
 		 * TODO : modify Proj4as in order to use return value OR inplace output parameter for reprojected point value 
 		 * 
-		 * @param source projection of the point passed as parameter
-		 * @param dest destination projection to use for the transformation
+		 * @param source SRS code of the projection of the point passed as parameter
+		 * @param dest SRS code of the destination projection to use for the transformation
 		 * @param point point to reproject. Please notice that in current implementation, reprojected point is both
 		 *        modified directly in the point parameter and provided as returned value
 		 * @return the reprojected point
 		 */
-		public static function transform(source:ProjProjection, dest:ProjProjection, point:ProjPoint):ProjPoint {
-			if (source == null || dest == null || point == null) {
+		public static function transform(sourceSrs:String, destSrs:String, point:ProjPoint):ProjPoint {
+			if (sourceSrs == null || destSrs == null || point == null) {
 				trace("Parameters not created!");
 				return null;
 			}
-
+			
+			var source:ProjProjection = ProjProjection.getProjProjection(sourceSrs);
+			var dest:ProjProjection = ProjProjection.getProjProjection(destSrs);
 			if (!source.readyToUse || !dest.readyToUse) {
 				trace("Proj4as initialization for " + source.srsCode + " or " + dest.srsCode + " not yet complete");
 				return point;
@@ -44,7 +46,7 @@ package org.openscales.proj4as {
 			// Workaround for Spherical Mercator
 			if ((source.srsProjNumber == "900913" && dest.datumCode != "WGS84") || (dest.srsProjNumber == "900913" && source.datumCode != "WGS84")) {
 				var wgs84:ProjProjection = WGS84;
-				transform(source, wgs84, point);
+				transform(source.srsCode, wgs84.srsCode, point);
 				source = wgs84;
 			}
 
@@ -158,12 +160,14 @@ package org.openscales.proj4as {
 		 * done pragmatically, so it basicaly works in OpenScales core use cases, but there may be some
 		 * remaining issues. 
 		 */
-		public static function unit_transform(source:ProjProjection, dest:ProjProjection, value:Number):Number {
-			if (source == null || dest == null || isNaN(value)) {
+		public static function unit_transform(sourceSrs:String, destSrs:String, value:Number):Number {
+			if (sourceSrs == null || destSrs == null || isNaN(value)) {
 				trace("Parameters not created!");
 				return NaN;
 			}
 
+			var source:ProjProjection = ProjProjection.getProjProjection(sourceSrs);
+			var dest:ProjProjection = ProjProjection.getProjProjection(destSrs);
 			if (!source.readyToUse || !dest.readyToUse) {
 				trace("Proj4as initialization for " + source.srsCode + " or " + dest.srsCode + " not yet complete");
 				return value;
@@ -175,8 +179,8 @@ package org.openscales.proj4as {
 			// FixMe: how to transform the unit ? how to manage the difference of the two dimensions ?
 			var resProj:ProjPoint = new ProjPoint(value, value);
 			var origProj:ProjPoint = new ProjPoint(0, 0);
-			resProj = Proj4as.transform(source, dest, resProj);
-			origProj = Proj4as.transform(source, dest, origProj);
+			resProj = Proj4as.transform(source.srsCode, dest.srsCode, resProj);
+			origProj = Proj4as.transform(source.srsCode, dest.srsCode, origProj);
 			var x2:Number = Math.pow(resProj.x - origProj.x, 2);
 			var y2:Number = Math.pow(resProj.y - origProj.y, 2);
 			var temp:Number = Math.sqrt((x2 + y2) / 2);
