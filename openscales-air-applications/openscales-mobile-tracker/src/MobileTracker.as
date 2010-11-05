@@ -25,7 +25,6 @@ package {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
-	import org.openscales.proj4as.ProjProjection;
 	
 	public class MobileTracker extends Sprite {
 		
@@ -40,11 +39,11 @@ package {
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.proxy = "http://openscales.org/proxy.php?url=";
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);		
+			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 			
 			var markers:FeatureLayer = new FeatureLayer("markers");
-			markers.projection = new ProjProjection("EPSG:4326");
+			markers.projSrsCode = "EPSG:4326";
 			markers.style = Style.getDefaultPointStyle();
 			markers.tweenOnZoom = false;
 					
@@ -52,7 +51,7 @@ package {
 			
 			// Add Controls to map
 			var mousePosition:MousePosition = new MousePosition();
-			mousePosition.displayProjection = new ProjProjection("EPSG:4326");
+			mousePosition.displayProjSrsCode = "EPSG:4326";
 			_map.addControl(mousePosition);			
 			
 			
@@ -69,7 +68,7 @@ package {
 			this.stage.addEventListener(Event.ACTIVATE,this.onActivate);
 						
 			// Set the map center
-			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);
+			_map.center = new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
 			_map.zoom=5;
 			
 			this.addChild(_map);

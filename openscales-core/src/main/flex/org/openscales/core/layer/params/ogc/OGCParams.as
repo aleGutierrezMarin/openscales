@@ -4,6 +4,7 @@ package org.openscales.core.layer.params.ogc
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.params.AbstractParams;
 	import org.openscales.core.layer.params.IHttpParams;
+	import org.openscales.geometry.Geometry;
 
 	/**
 	 * Implementation of IHttpParams interface.
@@ -26,7 +27,7 @@ package org.openscales.core.layer.params.ogc
 
 			_additionalParams = new HashMap();
 
-			_srs = Layer.DEFAULT_SRS_CODE;
+			_srs = Geometry.DEFAULT_SRS_CODE;
 		}
 
 

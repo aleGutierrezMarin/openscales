@@ -2,22 +2,23 @@ package org.openscales.core.layer {
 	
 	import flash.display.Sprite;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.security.events.SecurityEvent;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.proj4as.Proj4as;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
-	 * A Layer display image of vector datas on the map, usually loaded from a remote datasource.
-	 * Unit of the baseLayer is managed by the projection. To access : layer.projection.projParams.units
+	 * A Layer displays raster (image) of vector datas on the map, usually loaded from a remote datasource.
+	 * Unit of the baseLayer is managed by the projection.
+	 * To access : ProjProjection.getProjProjection(layer.projSrsCode).projParams.units
 	 *
 	 * @author Bouiaw
 	 */
@@ -27,17 +28,12 @@ package org.openscales.core.layer {
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
 
-		public static const DEFAULT_SRS_CODE:String = "EPSG:4326";
-		public static function get DEFAULT_PROJECTION():ProjProjection {
-			return ProjProjection.getProjProjection(DEFAULT_SRS_CODE);
-		}
-
 		public static function get DEFAULT_MAXEXTENT():Bounds {
-			return new Bounds(-180, -90, 180, 90);
+			return new Bounds(-180, -90, 180, 90, "EPSG:4326");
 		}
 
 		private var _map:Map = null;
-		private var _projection:ProjProjection = null;
+		private var _projSrsCode:String = null;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
 		private var _minResolution:Number = NaN;
@@ -50,6 +46,8 @@ package org.openscales.core.layer {
 		protected var _imageSize:Size = null;
 		private var _tweenOnZoom:Boolean = true;
 		private var _tweenOnLoad:Boolean = true;
+		//GAB
+		private var _editable:Boolean = false;
 
 		/**
 		 * Layer constructor
@@ -58,7 +56,7 @@ package org.openscales.core.layer {
 			this.name = name;
 			this.visible = true;
 			this.doubleClickEnabled = true;
-			this._projection = new ProjProjection(Layer.DEFAULT_SRS_CODE);
+			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
 			this.generateResolutions();
 		}
 
@@ -69,10 +67,10 @@ package org.openscales.core.layer {
 		public function generateResolutions(numZoomLevels:uint=Layer.DEFAULT_NUM_ZOOM_LEVELS, nominalResolution:Number=NaN):void {
 
 			if (isNaN(nominalResolution)) {
-				if (this.projection.srsCode == Layer.DEFAULT_SRS_CODE) {
+				if (this.projSrsCode == Geometry.DEFAULT_SRS_CODE) {
 					nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION;
 				} else {
-					nominalResolution = Proj4as.unit_transform(new ProjProjection(Layer.DEFAULT_SRS_CODE), this.projection, Layer.DEFAULT_NOMINAL_RESOLUTION);
+					nominalResolution = Proj4as.unit_transform(Geometry.DEFAULT_SRS_CODE, this.projSrsCode, Layer.DEFAULT_NOMINAL_RESOLUTION);
 				}
 			}
 			// numZoomLevels must be strictly greater than zero
@@ -205,7 +203,7 @@ package org.openscales.core.layer {
 					var delta_x:Number = viewPortPx.x - (size.w / 2);
 					var delta_y:Number = viewPortPx.y - (size.h / 2);
 
-					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res, this._projection);
+					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res, this.projSrsCode);
 				}
 			}
 			return lonlat;
@@ -241,7 +239,7 @@ package org.openscales.core.layer {
 		 * Reset layer data
 		 */
 		protected function draw():void {
-			Trace.debug("Draw layer");
+			// nothing to do for a generic layer
 		}
 
 		/**
@@ -268,12 +266,11 @@ package org.openscales.core.layer {
 		 */
 		public  function get inRange():Boolean {
 	    	var inRange:Boolean = false;
-			if(this.map) {
+			if (this.map) {
 		    	var resolutionProjected:Number = this.map.resolution;
-			    if(this.isBaseLayer != true && this.projection.srsCode != this.map.baseLayer.projection.srsCode)
-	    		{
-			    	resolutionProjected = Proj4as.unit_transform(this.map.baseLayer.projection,this.projection,this.map.resolution);
-					}
+			    if (this.isBaseLayer != true && this.projSrsCode != this.map.baseLayer.projSrsCode) {
+					resolutionProjected = Proj4as.unit_transform(this.map.baseLayer.projSrsCode,this.projSrsCode,this.map.resolution);
+				}
 	    		inRange = ((resolutionProjected >= this.minResolution) && (resolutionProjected <= this.maxResolution));
 			}
 	    	return inRange;
@@ -357,17 +354,18 @@ package org.openscales.core.layer {
 				Trace.error("Layer: invalid maxZoomLevel for the layer " + this.name + ": " + value + " is not in [0;" + (this.resolutions.length - 1) + "]");
 			}
 		}
-
+		
 		/**
 		 * Return the mamximum zoom level allowed, based on map min resolution
 		 */
 		public function get maxZoomLevel():Number {
-			if(isNaN(this._minResolution))
+			if (isNaN(this._minResolution)) {
 				return this.resolutions.length - 1;
-			else
+			} else {
 				return getZoomForResolution(this._minResolution);
+			}
 		}
-
+		
 		public function set maxZoomLevel(value:Number):void {
 			if ((value >= 0) && (value < this.resolutions.length)) {
 				this._minResolution = this.resolutions[value];
@@ -375,25 +373,25 @@ package org.openscales.core.layer {
 				Trace.error("Layer: invalid maxZoomLevel for the layer " + this.name + ": " + value + " is not in [0;" + (this.resolutions.length - 1) + "]");
 			}
 		}
-
+		
 		/**
 		 * Number of zoom levels (resolutions array length)
 		 */
 		public function get numZoomLevels():Number {
 			return this.resolutions.length;
 		}
-
+		
 		/**
 		 * Maximum extent for this layer. No data outside the extent will be displayed
 		 */
 		public function get maxExtent():Bounds {
 			return this._maxExtent;
 		}
-
+		
 		public function set maxExtent(value:Bounds):void {
 			this._maxExtent = value;
 		}
-
+		
 		/**
 		 * A list of map resolutions (map units per pixel) in descending
 		 * order. If this is not set in the layer constructor, it will be set
@@ -402,47 +400,43 @@ package org.openscales.core.layer {
 		public function get resolutions():Array {
 			return this._resolutions;
 		}
-
+		
 		public function set resolutions(value:Array):void {
 			this._resolutions = value;
 			if (this._resolutions == null || this._resolutions.length == 0) {
-
 				this.generateResolutions();
 			} else {
-
 				this._autoResolution = false;
 			}
 			this._resolutions.sort(Array.NUMERIC | Array.DESCENDING);
 		}
-
+		
 		/**
-		 * Define the layer projection. When this layer is the baselayer, this projection is used
-		 * as the map display projection. When this layer is not the baselayer, it is used to
-		 * use the right repojection algorythm.
+		 * Define the layer projection by its SRS code.
+		 * When this layer is the baselayer, the associated projection is used as the map display projection.
+		 * When this layer is not the baselayer, it is used to perform the right repojection algorithm.
 		 */
-		public function get projection():ProjProjection {
-			return this._projection;
+		public function get projSrsCode():String {
+			return this._projSrsCode;
 		}
-
-		public function set projection(value:ProjProjection):void {
-			this._projection = value;
-
+		
+		public function set projSrsCode(value:String):void {
+			this._projSrsCode = value;
 			if (this._autoResolution) {
 				this.generateResolutions();
 			}
 		}
-
+		
 		/**
 		 * Whether or not this layer is a baselayer.
 		 */
 		public function get isBaseLayer():Boolean {
-			if((!this._map) || (!this._map.baseLayer))
+			if ((! this._map) || (! this._map.baseLayer)) {
 				return false;
-						
+			}
 			return (this.map.baseLayer == this);
 		}
-
-
+		
 		/**
 		 * Whether or not the layer is a fixed layer.
 		 * Fixed layers cannot be controlled by users
@@ -450,11 +444,11 @@ package org.openscales.core.layer {
 		public function get isFixed():Boolean {
 			return this._isFixed;
 		}
-
+		
 		public function set isFixed(value:Boolean):void {
 			this._isFixed = value;
 		}
-
+		
 		/**
 		 * Proxy (usually a PHP, Python, or Java script) used to request remote servers like
 		 * WFS servers in order to allow crossdomain requests. Remote servers can be used without
@@ -466,26 +460,27 @@ package org.openscales.core.layer {
   		 *  - proxy is null => use the proxy of the map
 		 */
 		public function get proxy():String {
-			if(this._proxy == null && map && map.proxy)
+			if (this._proxy == null && map && map.proxy) {
 				return map.proxy;
+			}
 			return this._proxy;
 		}
-
+		
 		public function set proxy(value:String):void {
 			this._proxy = value;
 		}
-
+		
 		/**
 		 * Security manager associated to this layer
 		 */
 		public function get security():ISecurity {
 			return this._security;
 		}
-
+		
 		public function set security(value:ISecurity):void {
 			this._security = value;
 		}
-
+		
 		/**
 		 * Define if this layer is visible (displayed) or not
 		 */
@@ -495,14 +490,14 @@ package org.openscales.core.layer {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_VISIBLE_CHANGED, this));
 			}
 		}
-
+		
 		/**
 		 * Whether or not the layer is loading data
 		 */
 		public function get loadComplete():Boolean {
-			return !this._loading;
+			return (! this._loading);
 		}
-
+		
 		/**
 		 * Used to set loading status of layer
 		 */
@@ -517,36 +512,40 @@ package org.openscales.core.layer {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this));
 			}
 		}
-
+		
 		/**
 		 * Define if the layer is displayed during tween zoom effect. This can be used to hide Point
 		 * layers if order to avoid bad looking effects when zooming a layer with a lot of points.
 		 */
-		public function get tweenOnZoom():Boolean
-		{
+		public function get tweenOnZoom():Boolean {
 			return _tweenOnZoom;
 		}
-
-		public function set tweenOnZoom(value:Boolean):void
-		{
+		
+		public function set tweenOnZoom(value:Boolean):void {
 			_tweenOnZoom = value;
 		}
-
+		
 		/**
 		 * Define if a tween effect should be used when loading a new data.
 		 * Currently, only implemented for image tile, but may be used widely in the future
 		 */
-		public function get tweenOnLoad():Boolean
-		{
+		public function get tweenOnLoad():Boolean {
 			return _tweenOnLoad;
 		}
-
-		public function set tweenOnLoad(value:Boolean):void
-		{
+		
+		public function set tweenOnLoad(value:Boolean):void {
 			_tweenOnLoad = value;
 		}
-
-
+		
+		//GAB
+		public function get editable():Boolean{
+			return _editable;
+		}
+		
+		public function set editable(value:Boolean):void{
+			_editable = value;
+		}
+		
 	}
 }
 

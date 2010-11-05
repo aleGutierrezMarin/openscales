@@ -31,6 +31,14 @@ package org.openscales.core.security
 			this.initialize();
 		}
 
+		public function destroy():void {
+			if(this._waitingRequests!=null) {
+				var i:int = this._waitingRequests.length;
+				for(i;i>0;--i)
+					this._waitingRequests.pop().destroy();
+			}
+			this._map = null;
+		}
 		public function initialize():void {
 			this._initialized = true;
 			map.dispatchEvent(new SecurityEvent(SecurityEvent.SECURITY_INITIALIZED, this));

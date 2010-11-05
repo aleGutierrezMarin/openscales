@@ -30,7 +30,7 @@ package org.openscales.core.layer.capabilities
 			var b:Bounds = null;
 			b = featureCap.getValue("Extent");
 			Assert.assertTrue( b != null);
-			Assert.assertTrue(b.equals(new Bounds(-124.731422,24.955967,-66.969849,49.371735)));
+			Assert.assertTrue(b.equals(new Bounds(-124.731422,24.955967,-66.969849,49.371735,"EPSG:4326")));
 			Assert.assertEquals("Tiger 2005fe water shorelines", featureCap.getValue("Title"));
 			Assert.assertEquals("This layer contains the shorelines for all water bodies in the United States.  It is derived from the TIGER dataset.", featureCap.getValue("Abstract"));
 			featureCap = null;
@@ -56,7 +56,7 @@ package org.openscales.core.layer.capabilities
 			var b:Bounds = null;
 			b = featureCap.getValue("Extent");
 			Assert.assertTrue( b != null);
-			Assert.assertTrue(b.equals(new Bounds(-124.731422,24.955967,-66.969849,49.371735)));
+			Assert.assertTrue(b.equals(new Bounds(-124.731422,24.955967,-66.969849,49.371735,"EPSG:4326")));
 			Assert.assertEquals("Tiger 2005fe water shorelines", featureCap.getValue("Title"));
 			Assert.assertEquals("This layer contains the shorelines for all water bodies in the United States.  It is derived from the TIGER dataset.", featureCap.getValue("Abstract"));
 			featureCap = null;

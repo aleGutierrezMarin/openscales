@@ -3,7 +3,6 @@ package org.openscales.fx.basetypes
 	import mx.core.UIComponent;
 	
 	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * Abstract Bounds Flex wrapper
@@ -14,7 +13,7 @@ package org.openscales.fx.basetypes
 		
 		public function FxBounds()
 		{
-			this._bounds = new Bounds();
+			this._bounds = new Bounds(NaN,NaN,NaN,NaN,null);
 			super();
 		}
 
@@ -38,8 +37,8 @@ package org.openscales.fx.basetypes
 				this.bounds.top = value;
 		}
 		
-		public function set projection(proj:String):void {
-			this._bounds.projection = ProjProjection.getProjProjection(proj);
+		public function set projection(value:String):void {
+			this._bounds.projSrsCode = value;
 		}
 
 		public function get bounds():Bounds {

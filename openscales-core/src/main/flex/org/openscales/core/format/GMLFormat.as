@@ -29,7 +29,6 @@ package org.openscales.core.format
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Read/Write GML. Supports the GML simple features profile.
@@ -193,6 +192,7 @@ package org.openscales.core.format
 					geom.addComponent(polygon);
 				}
 			}
+
             else if (xmlNode..*::MultiLineString.length() > 0) {
 				var multilinestring:XML = xmlNode..*::MultiLineString[0];
 				
@@ -357,8 +357,9 @@ package org.openscales.core.format
 					x = Number(nums[i]);
 					y = Number(nums[i+1]);
 					var p:Point = new Point(x, y);
-					if (this._internalProj != null, this._externalProj != null)
-						p.transform(this.externalProj, this.internalProj);
+					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+						p.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+					}
 					points.push(p.x);
 					points.push(p.y);
 				}
@@ -574,22 +575,6 @@ package org.openscales.core.format
 		
 		public function set dim(value:Number):void {
 			this._dim = value;
-		}
-		
-		public function get internalProj():ProjProjection {
-			return this._internalProj;
-		}
-		
-		public function set internalProj(value:ProjProjection):void {
-			this._internalProj = value;
-		}
-		
-		public function get externalProj():ProjProjection {
-			return this._externalProj;
-		}
-		
-		public function set externalProj(value:ProjProjection):void {
-			this._externalProj = value;
 		}
 		
 	}

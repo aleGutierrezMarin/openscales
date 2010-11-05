@@ -88,6 +88,13 @@ package org.openscales.core.security.ign
 			super(map);
 		}
 
+		override public function destroy():void {
+			map.removeEventListener(LayerEvent.LAYER_LOAD_START, userActivityHandler);
+			this._timer.removeEventListener(TimerEvent.TIMER, tokenExpiredHandler);
+			this._timer = null;
+			super.destroy();
+		}
+		
 		public function userActivityHandler(e:LayerEvent):void {
 			if (!this._requestPending) {
 				if (!this._initialized) {

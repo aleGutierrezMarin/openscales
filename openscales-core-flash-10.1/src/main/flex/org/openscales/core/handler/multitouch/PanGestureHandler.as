@@ -133,7 +133,7 @@ package org.openscales.core.handler.multitouch {
 			var deltaY:Number = this._start.y - xy.y;
 			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
 				this._startCenter.lat - deltaY * this.map.resolution,
-				this._startCenter.projection);
+				this._startCenter.projSrsCode);
 			// If the new position equals the old center, stop here
 			if (newPosition.equals(oldCenter)) {
 				Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");

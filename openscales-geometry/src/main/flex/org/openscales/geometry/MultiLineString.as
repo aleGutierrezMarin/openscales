@@ -1,6 +1,5 @@
 package org.openscales.geometry
 {
-	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * A MultiLineString is a geometry with multiple LineString components.
@@ -43,13 +42,16 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the multilinestring (x/y) from a projection system to an other.
 		 *
-		 * @param source The source projection
-		 * @param dest The destination projection
+		 * @param sourceSrs SRS of the source projection
+		 * @param destSrs SRS of the destination projection
 		 */
-		override public function transform(source:ProjProjection, dest:ProjProjection):void {
+		override public function transform(sourceSrs:String, destSrs:String):void {
+			// Update the pojection associated to the geometry
+			this.projSrsCode = destSrs;
+			// Update the geometry
 			if(this.componentsLength > 0){
 				for(var i:int=0; i<this.componentsLength; ++i) {
-					(this._components[i] as LineString).transform(source, dest);
+					(this._components[i] as LineString).transform(sourceSrs, destSrs);
 				}
 			}
 		}

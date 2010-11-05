@@ -1,7 +1,6 @@
 package org.openscales.core.layer
 {
 	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * High Traffic Client (HTC) layers
@@ -69,7 +68,7 @@ package org.openscales.core.layer
 			if(url.length>0 && url.substr(-1,1)!="/")
 				url+="/";
 			super(name,url);
-			this.projection = new ProjProjection("EPSG:900913");
+			this.projSrsCode = "EPSG:900913";
 			this._zoom_max = zoom_max;
 			this.generateResolutions(numZoomLevel, maxResolution);
 		}
