@@ -19,7 +19,6 @@ package org.openscales.core.layer.ogc
 		{
 			super(name, url, layers);
 			this.singleTile = false;
-			this.method = method;
 
 			(this.params as WMSParams).tiled= true;				
 		}
