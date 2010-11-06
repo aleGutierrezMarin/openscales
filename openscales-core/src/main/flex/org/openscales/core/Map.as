@@ -1,6 +1,5 @@
 package org.openscales.core
 {
-	
 	import com.gskinner.motion.GTween;
 	import com.gskinner.motion.easing.Cubic;
 	
@@ -40,7 +39,6 @@ package org.openscales.core
 	 */
 	public class Map extends Sprite
 	{
-		
 		/**
 		 * Number of attempt for downloading an image tile
 		 */
@@ -69,7 +67,7 @@ package org.openscales.core
 		 * The location where the layer container was re-initialized (on-zoom)
 		 */
 		private var _layerContainerOrigin:Location = null;
-
+		
 		/**
 		 * Map constructor
 		 *
@@ -223,7 +221,7 @@ package org.openscales.core
 				}
 			}
 		}
-
+		
 		public function get baseLayer():Layer {
 			return this._baseLayer;
 		}
@@ -467,10 +465,10 @@ package org.openscales.core
 		 *
 		 */
 		public function moveTo(newCenter:Location,
-								  newZoom:Number = NaN,
-								  dragTween:Boolean = false,
-								  zoomTween:Boolean = false):void {
-					
+							   newZoom:Number = NaN,
+							   dragTween:Boolean = false,
+							   zoomTween:Boolean = false):void {
+			
 			var zoomChanged:Boolean = (this.isValidZoomLevel(newZoom) && (newZoom!=this._zoom));
 			var validLocation:Boolean = this.isValidLocation(newCenter);
 			var mapEvent:MapEvent = null;
@@ -495,7 +493,7 @@ package org.openscales.core
 			validLocation = this.isValidLocation(newCenter);
 			var oldZoom:Number = this._zoom;
 			if(!zoomChanged){
-			  newZoom = oldZoom; 
+				newZoom = oldZoom; 
 			}
 			var oldCenter:Location = this._center;
 			
@@ -507,7 +505,7 @@ package org.openscales.core
 				mapEvent.oldCenter = oldCenter;
 				mapEvent.newCenter = newCenter;
 				this.dispatchEvent(mapEvent);
-
+				
 				if (zoomChanged && zoomTween) {
 					this.zoomTransition(newZoom, newCenter);
 					return;
@@ -848,7 +846,7 @@ package org.openscales.core
 					bmp.bitmapData = null;
 					
 				}				
-
+				
 				var hiddenLayers:Vector.<Layer> = new Vector.<Layer>();
 				for each(var layer:Layer in this.layers) {
 					if(!layer.tweenOnZoom) {				
@@ -906,7 +904,7 @@ package org.openscales.core
 				moveTo(newCenter, newZoom);
 				layerContainer.visible = true;
 			} 
-
+			
 		}
 		
 		/**	
@@ -922,7 +920,7 @@ package org.openscales.core
 				case LayerEvent.LAYER_LOAD_END: {
 					if(this._bitmapTransition != null && this._baseLayer != null && this._baseLayer.loadComplete){
 						if(this._layerContainer.visible == true){
-						  this._bitmapTransition.visible=false;
+							this._bitmapTransition.visible=false;
 						}
 					}
 					// check all layers 
@@ -1064,7 +1062,7 @@ package org.openscales.core
 			} 
 			
 			return extent;
-
+			
 		}
 		
 		
@@ -1114,7 +1112,7 @@ package org.openscales.core
 			var length:int = this.layerContainer.numChildren;
 			var newIndexTemp:int = length - newIndex - 1;
 			if(newIndex >= 0 && newIndex < length )
-			  this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
+				this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		/**
@@ -1127,7 +1125,7 @@ package org.openscales.core
 			var length:int = this.layerContainer.numChildren ;
 			var newIndex:int = indexLayer + step;
 			if(newIndex >= 0 && newIndex < length)
-			  this.layerContainer.setChildIndex(layer,newIndex);
+				this.layerContainer.setChildIndex(layer,newIndex);
 			//- cause the ordre is not the same that the dysplay order
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
