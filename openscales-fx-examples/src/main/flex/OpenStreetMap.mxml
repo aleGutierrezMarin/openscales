@@ -29,7 +29,6 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
-			import org.openscales.fx.popup.FxPopup;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.proj4as.ProjProjection;
@@ -61,16 +60,9 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 			}
 			
 			private function showPopup(e:MouseEvent):void {
-				/*
 				var popup:Anchored = new Anchored();
 				popup.feature = markLyon;
 				fxMap.map.addPopup(popup, true);
-				*/
-				
-				var fxPopup:FxPopup = new FxPopup();
-				fxPopup.feature = markLyon;
-				fxPopup.content = markLyon.data.popupContentHTML;
-				fxMap.addFxPopup(fxPopup,true);
 			}
 		]]>
 	</fx:Script>
