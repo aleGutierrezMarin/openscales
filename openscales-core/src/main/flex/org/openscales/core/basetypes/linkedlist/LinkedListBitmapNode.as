@@ -18,8 +18,7 @@ package org.openscales.core.basetypes.linkedlist
 			if (uid!=null && uid.length>0) {
 				this.uid = uid;
 			} else {
-				var _uID:UID = new UID();
-				this.uid = _uID.gen_uid();
+				this.uid = UID.gen_uid();
 			}
 			this._data = data;
 		}

@@ -70,8 +70,7 @@ package org.openscales.core.request
 										url:String,
 										onComplete:Function,
 										onFailure:Function=null) {
-			var uID:UID = new UID();
-			this._uid = uID.gen_uid();
+			this._uid = UID.gen_uid();
 			// Create a loader for a SWF or an image (Loader), or for an URL (URLLoader)
 			this._loader = (SWForImage) ? new Loader() : new URLLoader();
 
