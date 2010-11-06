@@ -18,7 +18,6 @@ package org.openscales.fx.security.ign
 		public function FxIGNGeoRMSecurity()
 		{			
 			super();
-			this.method = method;
 		}
 		
 		public function set key(value:String):void{
