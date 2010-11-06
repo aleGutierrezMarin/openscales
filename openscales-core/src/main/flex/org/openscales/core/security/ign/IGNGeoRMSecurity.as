@@ -79,6 +79,8 @@ package org.openscales.core.security.ign
 			}
 			if(method!=null && method!=""){
 				this.method = method;
+			} else {
+				this.method = URLRequestMethod.POST;
 			}
 
 			this.key = key;
