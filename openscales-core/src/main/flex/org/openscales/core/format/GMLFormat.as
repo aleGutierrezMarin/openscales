@@ -30,6 +30,7 @@ package org.openscales.core.format
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
 	
+	
 	/**
 	 * Read/Write GML. Supports the GML simple features profile.
 	 */
@@ -173,8 +174,6 @@ package org.openscales.core.format
 		public function parseFeature(xmlNode:XML):Feature {
 			var geom:ICollection = null;
 			var p:Vector.<Number> = new Vector.<Number>();
-			var p2:Vector.<Geometry> = new Vector.<Geometry>();
-			
 			
 			var feature:Feature = null;
 			
@@ -191,8 +190,8 @@ package org.openscales.core.format
 					var polygon:Polygon = this.parsePolygonNode(polygons[i]);
 					geom.addComponent(polygon);
 				}
+				feature = new MultiPolygonFeature(geom as MultiPolygon);
 			}
-
             else if (xmlNode..*::MultiLineString.length() > 0) {
 				var multilinestring:XML = xmlNode..*::MultiLineString[0];
 				
@@ -207,6 +206,7 @@ package org.openscales.core.format
 						geom.addComponent(lineString);
 					}
 				}
+				feature = new MultiLineStringFeature(geom as MultiLineString);
 			} else if (xmlNode..*::MultiPoint.length() > 0) {
 				var multiPoint:XML = xmlNode..*::MultiPoint[0];
 				
@@ -217,11 +217,11 @@ package org.openscales.core.format
 				p = this.parseCoords(points[i]);
 				if (p)
 					geom.addPoints(p);
+				feature = new MultiPointFeature(geom as MultiPoint);
 				
 			} else if (xmlNode..*::Polygon.length() > 0) {
 				var polygon2:XML = xmlNode..*::Polygon[0];
-				
-				geom = this.parsePolygonNode(polygon2);
+				feature = new PolygonFeature(this.parsePolygonNode(polygon2));
 			} else if (xmlNode..*::LineString.length() > 0) {
 				var lineString2:XML = xmlNode..*::LineString[0];
 				
@@ -229,35 +229,20 @@ package org.openscales.core.format
 				if (p) {
 					geom = new LineString(p);
 				}
+				feature = new LineStringFeature(geom as LineString);
 			} else if (xmlNode..*::Point.length() > 0) {
 				var point:XML = xmlNode..*::Point[0];
-				
-				geom = new MultiPoint();
+				var pointObject:Point; 
 				p = this.parseCoords(point);
 				if (p) {
-					geom.addPoints(p);
+					pointObject = new Point(p[0],p[1]);
+					feature = new PointFeature(pointObject);
 				}
+			}else{
+				Trace.warn("GMLFormat.parseFeature: unrecognized geometry);"); 
+				return null; 
 			}
-			
-			if (geom) {
-				// Test more specific geom before because for is operator, a lineString is a multipoint for example (inheritance) 
-				if (geom is MultiPolygon) {
-					feature = new MultiPolygonFeature(geom as MultiPolygon);
-				} else if (geom is Polygon) {
-					feature = new PolygonFeature(geom as Polygon);
-				} else if (geom is MultiLineString) {
-					feature = new MultiLineStringFeature(geom as MultiLineString);
-				} else if (geom is LineString) {
-					feature = new LineStringFeature(geom as LineString);
-				} else if (geom is MultiPoint) {
-					feature = new MultiPointFeature(geom as MultiPoint);
-				} else if (geom is Point) {
-					feature = new PointFeature(geom as Point);
-				} else {
-					Trace.warn("GMLFormat.parseFeature: unrecognized geometry);"); 
-					return null; 
-				}
-				
+			if (feature) {
 				feature.name = xmlNode..@fid;
 				
 				if (this.extractAttributes) {
