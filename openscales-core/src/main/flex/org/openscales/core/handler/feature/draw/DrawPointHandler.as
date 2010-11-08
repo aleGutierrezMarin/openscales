@@ -49,8 +49,8 @@ package org.openscales.core.handler.feature.draw
 		 */		
 		protected function drawPoint(event:MouseEvent):void {
 			//We draw the point
-			if (drawLayer != null)
-				Trace.log("Drawing point"); {
+			if (drawLayer != null) {
+				Trace.log("Drawing point");
 				var style:Style = Style.getDefaultPointStyle();
 			
 				var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
@@ -59,7 +59,8 @@ package org.openscales.core.handler.feature.draw
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
 
 				var pointFeature:PointFeature = new PointFeature(point, null, style);
-				pointFeature.name = id.toString(); id++;
+				pointFeature.name = id.toString();
+				id++;
 				pointFeature.geometry = new Point(lonlat.lon, lonlat.lat); 			
 				drawLayer.addFeature(pointFeature);
 				pointFeature.draw();
