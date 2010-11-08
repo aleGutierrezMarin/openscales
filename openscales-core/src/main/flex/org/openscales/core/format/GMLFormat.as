@@ -16,6 +16,7 @@ package org.openscales.core.format
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.MultiPolygonFeature;
+	import org.openscales.geometry.Polygon;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.geometry.Geometry;
@@ -50,13 +51,14 @@ package org.openscales.core.format
 		
 		private var _featuresids:HashMap;
 		
+		private var projectionxml:String = "srsName=\"http://www.opengis.net/gml/srs/epsg.xml#4326\"";
+		
 		
 		private var xmlString:String;
 		private var sXML:String;
 		private var eXML:String    = "</gml:featureMember></wfs:FeatureCollection>";// it must not have reference at wfs in sthis class
 		private var eFXML:String   = "</gml:featureMember>";
 		private var sFXML:String   = "<gml:featureMember>";
-		private var step:int       = 200;
 		private var lastInd:int    = 0;
 		//fps
 		private var allowedTime:Number = 10;
@@ -85,8 +87,6 @@ package org.openscales.core.format
 		 *
 		 * @return features.
 		 */
-		
-		
 		override public function read(data:Object):Object {
 			this.xmlString = data as String;
 			data = null;
@@ -102,6 +102,11 @@ package org.openscales.core.format
 		}
 		
 		
+		/**
+		 * 
+		 * @param event
+		 * 
+		 */
 		private function readTimer(event:Event):void {
 			startTime = getTimer();
 			if(this.xmlString==null) {
@@ -371,8 +376,46 @@ package org.openscales.core.format
 			}*/
 			return featureCollection;
 		}
-		
-		
+		public function buildPointNode(point:Point):XML{
+			
+			var pointMember:XML = new XML("<" + this._gmlprefix + ":pointMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+				"</" + this._gmlprefix + ":pointMember>");
+			var pointXML:XML = new XML("<" + this._gmlprefix + ":Point xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " >" +
+				"</" + this._gmlprefix + ":Point>");
+			pointXML.appendChild(this.buildCoordinatesNode(point));
+			pointMember.appendChild(pointXML);
+			return pointMember;
+		}
+		/**
+		 * write
+		 * @param polygon
+		 * @return xml
+		 * 
+		 */		
+		public function buildPolygonNode(polygon:Polygon):XML {
+			
+			var polygonMember:XML = new XML("<" + this._gmlprefix + ":polygonMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":polygonMember>");
+			
+			var polygonXML:XML = new XML("<" + this._gmlprefix + ":Polygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":Polygon>");
+			var outerRing:XML = new XML("<" + this._gmlprefix + ":outerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":outerBoundaryIs>");
+			var innerRing:XML = new XML("<" + this._gmlprefix + ":innerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":innerBoundaryIs>");
+			var linearRing:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
+			var linearRingInner:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
+			linearRing.appendChild(this.buildCoordinatesNode(polygon.componentByIndex(0)));
+			outerRing.appendChild(linearRing);
+			polygonXML.appendChild(outerRing);
+			// 1 -> n linearing is innerBoundaryIs
+			var length:uint = polygon.componentsLength;
+			for(var i:uint=1;i <length;i++ ){
+				linearRingInner.appendChild(this.buildCoordinatesNode(polygon.componentByIndex(i)));
+			}			
+			innerRing.appendChild(linearRingInner);
+			polygonXML.appendChild(innerRing);
+			polygonMember.appendChild(polygonXML);
+			
+			return polygonMember;
+			
+		}
 		/**
 		 * create a GML Object
 		 *
@@ -382,7 +425,8 @@ package org.openscales.core.format
 		 */
 		public function buildGeometryNode(geometry:Object):XML {
 			var gml:XML;
-			var projectionxml:String = "srsName=\"http://www.opengis.net/gml/srs/epsg.xml#4326\"";
+			var length:uint,index:uint;
+			
 			if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiPolygon"
 				) {
 				gml = new XML("<" + this._gmlprefix + ":MultiPolygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " 
@@ -391,36 +435,16 @@ package org.openscales.core.format
 				
 				var polygonMember:XML = new XML("<" + this._gmlprefix + ":polygonMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">"
 					                            + "</" + this._gmlprefix + ":polygonMember>");
-				
-				var polygon:XML = new XML("<" + this._gmlprefix + ":Polygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":Polygon>");
-				var outerRing:XML = new XML("<" + this._gmlprefix + ":outerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":outerBoundaryIs>");
-				var linearRing:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
-				//TODO improve this part of code to manage outer and inter ring and multipolygone
-				linearRing.appendChild(this.buildCoordinatesNode(geometry.components[0]));
-				outerRing.appendChild(linearRing);
-				polygon.appendChild(outerRing);
-				polygonMember.appendChild(polygon);
+				length = (geometry as MultiPolygon).componentsLength;
+				for(index=0;index <length;index++ ){
+					polygonMember.appendChild(this.buildCoordinatesNode((geometry as MultiPolygon).componentByIndex(index)));
+				}
 				
 				gml.appendChild(polygonMember);
 			}
 			else if ( getQualifiedClassName(geometry) == "org.openscales.geometry::Polygon") {
-				gml = new XML("<" + this._gmlprefix + ":MultiPolygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " ></" + this._gmlprefix + ":MultiPolygon>");
-				
-				var polygonMember:XML = new XML("<" + this._gmlprefix + ":polygonMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":polygonMember>");
-				
-				var polygon:XML = new XML("<" + this._gmlprefix + ":Polygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":Polygon>");
-				var outerRing:XML = new XML("<" + this._gmlprefix + ":outerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":outerBoundaryIs>");
-				var linearRing:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
-				//TODO improve this part of code to manage outer and inter ring
-				var length:uint = (geometry as Polygon).componentsLength;
-				for(var index:uint=0;i <length;i++ ){
-					linearRing.appendChild(this.buildCoordinatesNode((geometry as Polygon).componentByIndex(index)));
-				}				
-				linearRing.appendChild(this.buildCoordinatesNode(geometry.components[0]));
-				outerRing.appendChild(linearRing);
-				polygon.appendChild(outerRing);
-				polygonMember.appendChild(polygon);
-				
+				gml = new XML("<" + this._gmlprefix + ":Polygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " ></" + this._gmlprefix + ":Polygon>");
+				this.buildPolygonNode(geometry as Polygon);
 				gml.appendChild(polygonMember);
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiLineString") 
@@ -434,8 +458,8 @@ package org.openscales.core.format
 				var lineString:XML = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
 					"</" + this._gmlprefix + ":LineString>");
 				
-				var length:uint = (geometry as MultiLineString).componentsLength;
-				for(var index:uint=0;i <length;i++ ){
+				length = (geometry as MultiLineString).componentsLength;
+				for(index=0;index <length;index++ ){
 				 lineString.appendChild(this.buildCoordinatesNode((geometry as MultiLineString).componentByIndex(index)));
 				}				
 				lineStringMember.appendChild(lineString);
@@ -444,46 +468,24 @@ package org.openscales.core.format
 				gml.appendChild(lineStringMember);
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::LineString") {
-				gml = new XML("<" + this._gmlprefix + ":MultiLineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " >" +
-					"</" + this._gmlprefix + ":MultiLineString>");
-				
-				var lineStringMember:XML = new XML("<" + this._gmlprefix + ":lineStringMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
-					"</" + this._gmlprefix + ":lineStringMember>");
-				
-				var lineString:XML = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
+				gml = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " >" +
 					"</" + this._gmlprefix + ":LineString>");
-				
 				lineString.appendChild(this.buildCoordinatesNode(geometry));
-				lineStringMember.appendChild(lineString);
-				
-				gml.appendChild(lineStringMember);
+				gml.appendChild(lineString);
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiPoint") {
 				
 				gml = new XML("<" + this._gmlprefix + ":MultiPoint xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " >" +
 					          "</" + this._gmlprefix + ":MultiPoint>");
-				var parts:Object = "";
-				parts = geometry.components;   
-				
-				var j:int = parts.length;
-				var i:int;
-				for (i = 0; i < j; ++i) { 
-					var pointMember:XML = new XML("<" + this._gmlprefix + ":pointMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
-						"</" + this._gmlprefix + ":pointMember>");
-					var point:XML = new XML("<" + this._gmlprefix + ":Point xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
-						"</" + this._gmlprefix + ":Point>");
-					var length:uint = (geometry as MultiPoint).componentsLength;
-					for(var index:uint=0;i <length;i++ ){
-						point.appendChild(this.buildCoordinatesNode((geometry as MultiPoint).componentByIndex(index)));
-					}	
-					pointMember.appendChild(point);
-					gml.appendChild(pointMember);
-				}     
+				length = (geometry as MultiPoint).componentsLength;
+				for(index=0;index <length;index++ ){
+					gml.appendChild(buildPointNode(((geometry as MultiPoint).componentByIndex(index)) as Point))
+				}	
+					
 			} else if (getQualifiedClassName(geometry) == "org.openscales.geometry::Point") {
-				parts = geometry;
 				gml = new XML("<" + this._gmlprefix + ":Point xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " >" +
 					"</" + this._gmlprefix + ":Point>");
-				gml.appendChild(this.buildCoordinatesNode(parts));
+				gml.appendChild(this.buildCoordinatesNode(geometry));
 			}
 			return gml; 
 		}
