@@ -15,7 +15,7 @@ package org.openscales.core.control
 	 */
 	public class logoRotator extends Control
 	{
-		public static var DEFAULT_ROTATION_CYCLE=2000;
+		public static var DEFAULT_ROTATION_CYCLE:uint=2000;
 		private var _ll:LinkedList = null;
 		private var _dn:LinkedListBitmapNode = null;
 		private var _tm:Timer = null;
