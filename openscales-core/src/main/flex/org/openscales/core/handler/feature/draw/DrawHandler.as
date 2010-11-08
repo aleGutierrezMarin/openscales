@@ -4,8 +4,6 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.DrawingEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -17,6 +15,8 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	public class DrawHandler extends Handler
 	{
@@ -29,19 +29,19 @@ package org.openscales.core.handler.feature.draw
 		public static const DRAW_POINT_MODE:int = 2;
 		public static const DRAW_PATH_MODE:int = 3;
 		public static const DRAW_POLYGON_MODE:int = 4;
-		public static const EDIT_MODE:int = 5;		
+		public static const EDIT_MODE:int = 5;
+		
 		/**
 		 * Type of drawing (point, path or polygon)
 		 */
 		public var drawType:String = "";
-		
-			
+
 		/**
 		 * Layer of drawing, which contains all drawing features
 		 */
 		private var _drawLayer:FeatureLayer = null;
-		
-		public var dragHandler:DragHandler = new DragHandler();
+
+		public var dragHandler:DragHandler;
 
 		/**
 		 * Handler of PointFeature
@@ -59,7 +59,7 @@ package org.openscales.core.handler.feature.draw
 		public var pathHandler:DrawPathHandler = new DrawPathHandler(null, false, drawLayer);
 		/**
 		 * Edition Handler
-		 * */
+		 */
 		public var editionHandler:FeatureLayerEditionHandler = new FeatureLayerEditionHandler(null, drawLayer, false, true, true, true);
 
 		/**
@@ -77,10 +77,9 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public var selectFeaturesHandler:SelectFeaturesHandler; //to select features
 		
-				
 		public function DrawHandler(map:Map=null, active:Boolean=false, drawLayer:FeatureLayer=null)
 		{
-			
+
 			if(drawLayer) {
 				this.drawLayer = drawLayer;
 			} else {
@@ -90,7 +89,6 @@ package org.openscales.core.handler.feature.draw
 		}
 				
 		private function onSelectionUpdated(selectedFeatures:Array):void {
-		
 		}
 		
 		private function deleteAllFeatures():void {
@@ -126,7 +124,18 @@ package org.openscales.core.handler.feature.draw
 		
 		override public function set map(value:Map):void {
 			super.map = value;
-			if (this.map != null) {
+			
+			if (this.map != null){
+				
+				for each (var h:Handler in this.map.handlers){
+					if(h is DragHandler){
+						dragHandler = (h as DragHandler);
+					}
+				}
+
+				if(!dragHandler){
+					dragHandler = new DragHandler();
+				}
 				
 				this.selectFeaturesHandler = new SelectFeaturesHandler(this.map, false);
 				this.selectFeaturesHandler.onSelectionUpdated = this.onSelectionUpdated;
