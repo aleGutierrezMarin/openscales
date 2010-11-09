@@ -281,8 +281,7 @@ package org.openscales.core.handler.feature.draw
 				}
 				
 				var lastFeature:Feature = null;
-                var pointToDelete:org.openscales.geometry.Point;
-				
+				var pointToDelete:org.openscales.geometry.Point;
 				if (drawType == "") {
 					drawLayer.removeFeature(drawLayerFeatures[last]);
 				} else if (drawType == "point") {
@@ -290,7 +289,7 @@ package org.openscales.core.handler.feature.draw
 				} else if (drawType == "path") {
 					//case the last feature is a LineString			
 					if (drawLayerFeatures[last] is LineStringFeature) {
-						// we check if the lineString contain more than 2 points. If not, we delete the feature
+						// we check if the lineString contains more than 2 points. If not, we delete the feature
 						if ((drawLayerFeatures[last] as LineStringFeature).lineString.componentsLength > 2) {
 							pointToDelete = (drawLayerFeatures[last] as LineStringFeature).lineString.getLastPoint();
 							(drawLayerFeatures[last] as LineStringFeature).lineString.removePoint(pointToDelete);
@@ -311,19 +310,28 @@ package org.openscales.core.handler.feature.draw
 					}
 				} else if (drawType == "polygon") {
 					if (drawLayerFeatures[last] is PolygonFeature) {
-						// we check if the polygon contain more than 2 points. If not, we delete the feature									
-						if (((drawLayerFeatures[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing).componentsLength > 2) {
+						// we check if the polygon contains more than 3 points. If not, we delete the feature									
+						if (((drawLayerFeatures[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing).componentsLength > 3) {
 							var lineRing:LinearRing = ((drawLayerFeatures[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing);
 							pointToDelete = lineRing.getLastPoint();
-							lineRing.removeComponent(pointToDelete);
+							lineRing.removePoint(pointToDelete);
+							/*polygonHandler.lastPoint = lineRing.getLastPoint();
+							//update the starting point of the temporary line
+							var pix:Pixel = polygonHandler.map.getMapPxFromLocation(new Location(polygonHandler.lastPoint.x, polygonHandler.lastPoint.y));
+							polygonHandler.startPoint = pix;*/
 						} else {
 							drawLayer.removeFeature(drawLayerFeatures[last]);
 							polygonHandler.newFeature = true;
+							//remove the listener which draw temporary line
+							polygonHandler.map.removeEventListener(MouseEvent.MOUSE_MOVE, polygonHandler.drawTemporaryPolygon);
 						}
+						// clear the temporary line
+						polygonHandler.drawContainer.graphics.clear();
 					} else {
 						drawLayer.removeFeature(drawLayerFeatures[last]);
 					}
 				}
+				
 				drawLayer.redraw();
 			}
 			
