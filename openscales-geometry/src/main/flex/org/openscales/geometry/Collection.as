@@ -226,10 +226,14 @@ package org.openscales.geometry
      	 *
      	 * @param components The components to be removed
      	 */
-		public function removeComponents(components:Array):void {
+		public function removeComponents(components:Array):Boolean {
+			var allRemoved:Boolean = true;
 			for (var i:int = 0; i < components.length; ++i) {
-				this.removeComponent(components[i]);
+				if (! this.removeComponent(components[i])) {
+					allRemoved = false;
+				}
 			}
+			return allRemoved;
 		}
 		
 		/**
@@ -237,10 +241,15 @@ package org.openscales.geometry
      	 *
      	 * @param component 
      	 */
-		public function removeComponent(component:Geometry):void {    
+		public function removeComponent(component:Geometry):Boolean {    
 			var indice:int = this._components.indexOf(component);
-			this._components.splice(indice,1);
-			this.clearBounds();
+			if (indice > 0) {
+				this._components.splice(indice,1);
+				this.clearBounds();
+				return true;
+			} else {
+				return false;
+			}
 		}
 		
 		/**

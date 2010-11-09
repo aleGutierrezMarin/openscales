@@ -16,7 +16,7 @@ package org.openscales.geometry
 		function get componentsLength():int;
 		function componentByIndex(i:int):Geometry;
 		function replaceComponent(index:int, component:Geometry):Boolean;
-		function removeComponents(components:Array):void;
-		function removeComponent(component:Geometry):void;
+		function removeComponents(components:Array):Boolean;
+		function removeComponent(component:Geometry):Boolean;
 	}
 }
