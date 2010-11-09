@@ -6,8 +6,6 @@ package org.openscales.core.handler.feature.draw
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -18,6 +16,8 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 
 	/**
@@ -307,21 +307,24 @@ package org.openscales.core.handler.feature.draw
 		 	}
 		 	_layerToEdit.redraw();
 		 }
-		 /**
+		
+		/**
 		 * To find the index of feature currently dragged in it's geometry parent array
 		 * @param vectorfeature:PointFeature the dragged feature
-		 * */
-		 public function findIndexOfFeatureCurrentlyDrag(vectorfeature:PointFeature):Number{
-		 	var parentFeature:Feature=findVirtualVerticeParent(vectorfeature);
-		 var parentgeometry:ICollection=editionFeatureParentGeometry(vectorfeature,parentFeature.geometry as ICollection);
-		 	if(parentFeature && parentFeature.geometry && parentFeature.geometry is ICollection){
-		 		if(vectorfeature==AbstractEditCollectionHandler._pointUnderTheMouse){
-		 			return vectorfeature.getSegmentsIntersection(parentgeometry);
-		 		}
-		 		else return IsRealVertice(vectorfeature,parentgeometry);
-		 	}
-		 	return -1;
-		 }
+		 */
+		public function findIndexOfFeatureCurrentlyDrag(vectorfeature:PointFeature):Number {
+			var parentFeature:Feature = findVirtualVerticeParent(vectorfeature);
+			if (parentFeature && parentFeature.geometry && parentFeature.geometry is ICollection) {
+				var parentgeometry:ICollection = editionFeatureParentGeometry(vectorfeature, parentFeature.geometry as ICollection);
+				if (vectorfeature == AbstractEditCollectionHandler._pointUnderTheMouse) {
+					return vectorfeature.getSegmentsIntersection(parentgeometry);
+				} else {
+					return IsRealVertice(vectorfeature, parentgeometry);
+				}
+			}
+			return -1;
+		}
+		
 		 /**
 		 * To know if a dragged point is a under the mouse or is a vertice
 		 * if it's a point returns its index else returns -1

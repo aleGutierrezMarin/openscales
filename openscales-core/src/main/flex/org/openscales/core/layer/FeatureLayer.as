@@ -216,9 +216,9 @@ package org.openscales.core.layer
 		}
 
 		override protected function draw():void {
-			var i:int;
+			var nbChildren:int = this.numChildren;
 			var o:DisplayObject;
-			for(i=this.numChildren-1; i>-1; --i) {
+			for(var i:uint=0 ; i<nbChildren; ++i) {
 				o = this.getChildAt(i);
 				if (o is Feature) {
 					(o as Feature).draw();
@@ -239,15 +239,17 @@ package org.openscales.core.layer
 		}
 
 		public function removeFeature(feature:Feature, dispatchFeatureEvent:Boolean=true):void {
-			if(feature==null)
+			if (feature == null) {
 				return;
+			}
 			var i:int = this._featuresID.indexOf(feature.name);
-			if(i==-1)
+			if (i == -1) {
 				return;
+			}
 			this._featuresID.splice(i,1);
 
 			var j:int = this.numChildren;
-			for(i = 0;i<j;++i) {
+			for(i=0; i<j; ++i) {
 				if (this.getChildAt(i) == feature) {
 					this.removeChildAt(i);
 					break;
@@ -279,10 +281,10 @@ package org.openscales.core.layer
 		// Getters and setters
 		public function get features():Vector.<Feature> {
 			var _features:Vector.<Feature> = new Vector.<Feature>();
-			var j:int = this.numChildren - 1;
+			var nbChildren:int = this.numChildren;
 			var o:DisplayObject;
-			for(j ; j>-1 ; --j) {
-				o = this.getChildAt(j)
+			for(var i:uint=0 ; i<nbChildren; ++i) {
+				o = this.getChildAt(i);
 				if (o is Feature) {
 					_features.push(o);
 				}
@@ -297,7 +299,7 @@ package org.openscales.core.layer
 				this._featuresBbox=null;
 				return;
 			}
-			this._featuresBbox = features[0].geometry.bounds;
+			this._featuresBbox = features[0].geometry.bounds.clone();
 			for(var j:uint=1; j<i; ++j) {
 				this._featuresBbox.extendFromBounds(features[j].geometry.bounds);
 			}

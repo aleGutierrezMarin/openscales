@@ -155,7 +155,6 @@ package org.openscales.core.handler.feature.draw
 		
 		public function drawTemporaryPolygon(event:MouseEvent=null):void{
 			//position of the last point drawn
-			
 			_drawContainer.graphics.clear();
 			_drawContainer.graphics.beginFill(0x00ff00,0.5);
 			_drawContainer.graphics.lineStyle(2, 0x00ff00);		
@@ -215,6 +214,10 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function get newFeature():Boolean {
 			return _newFeature;
+		}
+		
+		public function get drawContainer():Sprite{
+			return _drawContainer;
 		}
 		
 		/**
