@@ -3,16 +3,17 @@ package org.openscales.core.handler.feature.draw
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PointFeature;
-	import org.openscales.geometry.Point;
+	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * This Handler is used for point edition 
@@ -62,6 +63,7 @@ package org.openscales.core.handler.feature.draw
 			vectorfeature.geometry=newGeom;
 			vectorfeature.x=0;
 			vectorfeature.y=0;
+			vectorfeature.state = State.UPDATE;
 			this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,vectorfeature));
 			this._layerToEdit.redraw();
 		}

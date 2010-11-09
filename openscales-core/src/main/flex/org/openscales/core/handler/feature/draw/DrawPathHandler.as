@@ -4,16 +4,17 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.LineStringFeature;
-	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LineString;
-	import org.openscales.geometry.Point;
+	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * This handler manage the function draw of the LineString (path).
@@ -110,6 +111,7 @@ package org.openscales.core.handler.feature.draw
 					
 					if(this._currentLineStringFeature!=null){
 						this._currentLineStringFeature.style=Style.getDefaultLineStyle();
+						this._currentLineStringFeature.state = State.INSERT;
 						drawLayer.redraw();
 					}
 			}	

@@ -4,12 +4,15 @@ package org.openscales.core.handler.feature.draw
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
-	import org.openscales.geometry.Point;
+	import org.openscales.core.feature.State;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
+	import org.openscales.geometry.MultiPoint;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Handler to draw points.
@@ -49,21 +52,36 @@ package org.openscales.core.handler.feature.draw
 		 */		
 		protected function drawPoint(event:MouseEvent):void {
 			//We draw the point
-			if (drawLayer != null) {
+			if (drawLayer != null){
 				Trace.log("Drawing point");
+			  
 				var style:Style = Style.getDefaultPointStyle();
 			
 				var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
 				var lonlat:Location = this.map.getLocationFromLayerPx(pixel);
 				
+				
+				//todo change this bad way
+               if(drawLayer.geometryType == "org.openscales.geometry::MultiPoint"){
+				   var multiPoint:MultiPoint = new MultiPoint();
+				   multiPoint.addPoint(lonlat.lon,lonlat.lat);
+				   var multiPointFeature:MultiPointFeature = new MultiPointFeature(multiPoint, null, style);
+				   multiPointFeature.name = id.toString(); id++;
+				   drawLayer.addFeature(multiPointFeature);
+				   //must be after adding map
+				   multiPointFeature.state = State.INSERT;
+				   multiPointFeature.draw();
+				   
+			   }else{
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
-
 				var pointFeature:PointFeature = new PointFeature(point, null, style);
 				pointFeature.name = id.toString();
 				id++;
-				pointFeature.geometry = new Point(lonlat.lon, lonlat.lat); 			
 				drawLayer.addFeature(pointFeature);
+				//must be after adding map
+				pointFeature.state = State.INSERT;
 				pointFeature.draw();
+			   }
 			}
 		}
 	}
