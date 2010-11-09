@@ -20,6 +20,12 @@ package org.openscales.core.events
 		
 		public static const WFSTLAYER_REMOVED:String="openscales.removed";
 		
+		public static const WFSTLAYER_UPDATE_MODEL:String="openscales.updated";
+		
+		public static const WFSTLAYER_TRANSACTION_SUCCES:String="openscales.transactionsucces";
+		
+		public static const WFSTLAYER_TRANSACTION_FAIL:String="openscales.transactionfail";
+		
 		public static const WFSTLAYER_READY:String="openscales.ready";
 
 

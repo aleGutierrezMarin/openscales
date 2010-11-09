@@ -46,6 +46,21 @@ package org.openscales.core.feature
 		{
 			return _attributes;
 		}
+		/**
+		 *maybe to remove 
+		 * @return 
+		 * 
+		 */		
+	    public function getAttributesWithoutType():Object{
+			var attributesTemp:Object = new Object();
+			
+	        for each(var temp:String in _attributes ){
+
+				attributesTemp[temp] = "";
+				
+			}	
+			return attributesTemp;
+		}	
 		
 		public function set attributes(value:Object):void
 		{

@@ -5,13 +5,13 @@ package org.openscales.core.format
 	import mx.messaging.management.Attribute;
 	
 	import org.openscales.core.Trace;
+	import org.openscales.core.UID;
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.DescribeFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.layer.ogc.WFS;
-	import org.openscales.core.UID;
 	import org.openscales.core.layer.ogc.WFST.Transaction;
-	import org.openscales.core.basetypes.maps.HashMap;
 	
 	/**
 	 * WFS writer extending GML format.
@@ -30,9 +30,9 @@ package org.openscales.core.format
 		
 		protected var _ogcprefix:String = "ogc";
 		
-		protected var _featureNS:String = "http://www.openplans.org/topp";
+		private var _featureNS:String = "http://www.openplans.org/topp";
 		
-		protected var _featurePrefix:String = "topp"; 
+		private var _featurePrefix:String = "topp"; 
 		
 		protected var _featureName:String = "featureMember";
 		
@@ -52,9 +52,6 @@ package org.openscales.core.format
 		public function WFSFormat(layer:WFS) {
 			super(layer.addFeature,layer.featuresids,true);
 			this.layer = layer;
-			if (this.layer.featureNS) {
-				this._featureNS = this.layer.featureNS;
-			}    
 			if (layer.geometryColumn) {
 				this._geometryName = layer.geometryColumn;
 			}
@@ -211,8 +208,8 @@ package org.openscales.core.format
 		 **/
 		public function describeFeatureRead(value:XML):DescribeFeature{
 			var describeFeature:DescribeFeature = null;
-			var length:uint = value..*::element.length()
-			
+			var length:uint = value..*::element.length();
+
 			if (length > 0){
 				var elements:XMLList;
 				var name:String = "";
@@ -222,7 +219,7 @@ package org.openscales.core.format
 				
 				for(var i:uint;i<length;i++ ){
 					name = elements[i].@name;
-					if(name == "__gid" ) continue;
+					//if(name == "__gid" ) continue;
 					if(name != this._geometryName){
 						attributes[name] = elements[i].@type;
 					}else{
@@ -235,9 +232,6 @@ package org.openscales.core.format
 			
 			}
 
-
-
-
 			return describeFeature;
 		}
 		/**
@@ -248,49 +242,27 @@ package org.openscales.core.format
 		 */		
 		public function readTransactionResponse(xml:XML,transactions:Vector.<Transaction>):void{
 		
-		if(xml.localName() != "WFS_TransactionResponse" ) return;
+		//if(xml.localName() != "WFS_TransactionResponse" ) return;
 		/**
 		 * in the specifiaction there are writed, the same order
 		 * */
 		var featureId:XMLList = xml..*::FeatureId;
 		var length:uint = featureId.length();
 		for(var i:uint = 0; i < length; ++i){
-			if(featureId[i].@fid != "none" ){
-				transactions[i].feature.name = featureId[i].@fid;
-				transactions[i].id = featureId[i].@fid;
-			}
-			transactions[i].state = Transaction.SUCCESS;
-		} 
-		
-		  
-		/* great with hasmap
-		   var response:XMLList = xml.children();
-		   var length:uint = response.length();
-		   if(length <= 0) return;
-		   var transactionTemp:Transaction;
-		   var newId:String;
-		   var status:String;
-		   
-		   if ( xml..*::SUCCESS.length() > 0) {
-			   status = Transaction.SUCCESS
-		   }
-		   
-		   /* great with hasmap
-		   for(var i:uint = 0; i < length; ++i) {
-			   
-			   if(response[i].localName() == "InsertResult"){
-				   transactionTemp = transactions[response[i].@handle] as Transaction;
-				   newId = response[i].FeatureId.@fid
-					   if(newId != "none")
-						   transactionTemp.feature.name = newId;
-				   if (status!=null){
-					   transactionTemp.state = status;
-				   }
-				  
+			//update just the operation from this transaction and not the old
+			if(transactions[i].state == Transaction.NOTSEND){
+			if(xml.localName() != "ServiceExceptionReport" ) {
+			   if(featureId[i].@fid != "none" ){
+				 transactions[i].feature.name = featureId[i].@fid;
+				 transactions[i].id = featureId[i].@fid;
 			   }
-		  }*/
-		
-		
+			   transactions[i].feature.state = State.UNKNOWN;
+			   transactions[i].state = Transaction.SUCCESS;
+			 } else{
+				 transactions[i].state = Transaction.FAIL;
+			 }
+		  }
+		} 
 		}
 
 		override public function destroy():void {
@@ -305,6 +277,26 @@ package org.openscales.core.format
 
 		public function set layer(value:WFS):void {
 			this._layer = value;
+		}
+		
+		public function get featurePrefix():String
+		{
+			return _featurePrefix;
+		}
+		
+		public function set featurePrefix(value:String):void
+		{
+			_featurePrefix = value;
+		}
+		
+		public function get featureNS():String
+		{
+			return _featureNS;
+		}
+		
+		public function set featureNS(value:String):void
+		{
+			_featureNS = value;
 		}
 		/**
 		 * example

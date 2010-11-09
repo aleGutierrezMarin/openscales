@@ -61,7 +61,7 @@ package org.openscales.core.handler.feature.draw
 				var lonlat:Location = this.map.getLocationFromLayerPx(pixel);
 				
 				
-				//todo change this shit
+				//todo change this bad way
                if(drawLayer.geometryType == "org.openscales.geometry::MultiPoint"){
 				   var multiPoint:MultiPoint = new MultiPoint();
 				   multiPoint.addPoint(lonlat.lon,lonlat.lat);
