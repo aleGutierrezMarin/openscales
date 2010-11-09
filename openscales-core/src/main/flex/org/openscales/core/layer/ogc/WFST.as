@@ -21,22 +21,26 @@ package org.openscales.core.layer.ogc
 		
 		private var _callbackDescribeFeatureInfo:Function = null;
 		
-		private var _callbackTransaction:Function = null;
 		
-		[Bindable]
-		public var transactionArray:Vector.<Transaction> = new Vector.<Transaction>;
+		private var _transactionArray:Vector.<Transaction> = new Vector.<Transaction>;
+		
+
 		/*
 		*see to delete this tab cause it is redundant with transactionArray
 		*/
 		public var featureArray:Vector.<Feature> = new Vector.<Feature>;
 
 		
-		public function WFST(name:String, url:String, typename:String)
+		public function WFST(name:String, url:String, typename:String,featureNS:String = null)
 		{
 			//TODO: implement function
 			super(name, url, typename);
 			getDescribeFeatureInfo();
-			
+			var featurePrefix:String = typename.split(":")[0];
+			if(featurePrefix  != null && featurePrefix != typename){
+			  this.featurePrefix = featurePrefix;
+			}
+			this._wfsFormat.featureNS = featureNS;
 		}
 		
 		override public function set map(map:Map):void {
@@ -50,7 +54,15 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override public function destroy():void {
+			
+			this.map.removeEventListener(WFSTFeatureEvent.INSERT,this.addTransaction);
+			this.map.removeEventListener(WFSTFeatureEvent.UPDATE,this.addTransaction);
+			this.map.removeEventListener(WFSTFeatureEvent.DELETE,this.addTransaction);
+			
 			this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_REMOVED,this));
+			_describeFeature = null;
+			_transactionArray = null;
+			super.destroy();
 			//todo desactivate event
 		}
 		
@@ -58,13 +70,17 @@ package org.openscales.core.layer.ogc
 			
 			var tempFeature:Vector.<Feature> = event.features;
 			for(var i:uint=0;i<tempFeature.length;i++ ){
-				//think about where this code must be
-				tempFeature[i].attributes = this.describeFeature.attributes;
-				if(tempFeature[i].state != null && tempFeature[i].state != State.UNKNOWN ){
+				
+				if(tempFeature[i].state != null && tempFeature[i].state != State.UNKNOWN ){//&& tempFeature[i].layer == this){
+					//think about where this code must be and how improve it
+					/*if(tempFeature[i].state == State.INSERT && ){
+					tempFeature[i].attributes = this.describeFeature.attributes;
+					}*/
 					transactionArray.push(new Transaction(tempFeature[i].state,tempFeature[i]));
 					featureArray.push(tempFeature[i]);
 				}
 			}
+			this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL,this));
 			
 		}
 		
@@ -77,29 +93,33 @@ package org.openscales.core.layer.ogc
 		{
 			_describeFeature = value;
 		}
-		
 		/**
-		 * wfs-t
-		 * */
-		
-		public function saveTransaction(callBackTransaction:Function = null):void{
+		 *save curent transaction 
+		 * @param callBackTransaction
+		 * 
+		 */		
+		public function saveTransaction():void{
 			//todo
 			
 			var xmlRequestTransaction:XMLRequest = 	new XMLRequest(this.url+"?TYPENAME=" 
 				         + this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
-			xmlRequestTransaction.postContent = this._wfsFormat.write(featureArray);//this._writer.write(features);
+			xmlRequestTransaction.postContent = this._wfsFormat.write(featureArray);
 			xmlRequestTransaction.postContentType = "application/xml";
-			_callbackTransaction = callBackTransaction
 			xmlRequestTransaction.send();
 			
 			
 		}
+		/**
+		 * save feature without use interne process of class 
+		 * @param features
+		 * 
+		 */		
 		public function saveTransaction2(features:Object):void{
 			//todo
 			
 			var xmlRequestTransaction:XMLRequest = 	new XMLRequest(this.url+"?TYPENAME=" 
 				+ this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
-			xmlRequestTransaction.postContent = this._wfsFormat.write(features);//this._writer.write(features);
+			xmlRequestTransaction.postContent = this._wfsFormat.write(features);
 			xmlRequestTransaction.postContentType = "application/xml"; 
 			xmlRequestTransaction.send();
 			
@@ -113,10 +133,12 @@ package org.openscales.core.layer.ogc
 		protected function onSuccessTransaction(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
 			var xmlReponse:XML =   new XML(loader.data);
-			this._wfsFormat.readTransactionResponse(xmlReponse,this.transactionArray);
-			if(this._callbackTransaction != null)
-				this._callbackTransaction.call();
-			//xmlReponse.*Status
+			//delete the feature link
+			featureArray= new Vector.<Feature>;
+			if(this.transactionArray.length > 0){
+			  this._wfsFormat.readTransactionResponse(xmlReponse,this.transactionArray);
+			}
+		    this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_TRANSACTION_SUCCES,this));
 			
 			
 		}
@@ -147,6 +169,7 @@ package org.openscales.core.layer.ogc
 			var xmlReponse:XML =   new XML(loader.data);
 			this.describeFeature = this._wfsFormat.describeFeatureRead(xmlReponse);
 			this.geometryType = this.describeFeature.geometryType;
+			this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_READY,this));
 			if(this._callbackDescribeFeatureInfo != null)
 			  this._callbackDescribeFeatureInfo.call();
 		}
@@ -176,6 +199,25 @@ package org.openscales.core.layer.ogc
 		protected function updateIdAfterInsertTransaction():void{
 			
 		}
+
+		/**
+		 * this object is use for front end
+		 * */
+		public function get transactionArray():Vector.<Transaction>
+		{
+			return _transactionArray;
+		}
+		
+		public function get featurePrefix():String
+		{
+			return this._wfsFormat.featurePrefix;
+		}
+		
+		public function set featurePrefix(value:String):void
+		{
+			this._wfsFormat.featurePrefix = value;
+		}
+
 		/**
 		 * end of wfs-t
 		 * */

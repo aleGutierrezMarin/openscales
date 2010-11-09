@@ -26,8 +26,6 @@ package org.openscales.core.layer.ogc
 	{
 		private var _writer:Format = null;
 
-		private var _featureNS:String = null;
-
 		private var _geometryColumn:String = null;
 		
 		private var _featuresids:HashMap = new HashMap();
@@ -265,8 +263,7 @@ package org.openscales.core.layer.ogc
 
 			if(this._wfsFormat != null)
 				this._wfsFormat.reset();
-			else
-				this._wfsFormat = new WFSFormat(this);
+
 
 			if (this.map.baseLayer.projSrsCode != null && this.projSrsCode != null && this.projSrsCode != this.map.baseLayer.projSrsCode) {
 				this._wfsFormat.externalProjSrsCode = this.projSrsCode;
@@ -352,11 +349,11 @@ package org.openscales.core.layer.ogc
 		}
 
 		public function get featureNS():String {
-			return this._featureNS;
+			return this._wfsFormat.featureNS;
 		}
 
 		public function set featureNS(value:String):void {
-			this._featureNS = value;
+			this._wfsFormat.featureNS = value;
 		}
 
 		public function get geometryColumn():String {
