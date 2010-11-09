@@ -160,10 +160,10 @@ package org.openscales.core.layer
 
 			// Check if the feature may be added to this layer
 			var vectorfeature:Feature = feature;
+			
 			if (this.geometryType &&
 				(getQualifiedClassName(vectorfeature.geometry) != this.geometryType)) {
-				var throwStr:String = "addFeatures : component should be an " + 
-					getQualifiedClassName(this.geometryType);
+				var throwStr:String = "addFeatures : component should be an " + this.geometryType +"and it is : " + getQualifiedClassName(vectorfeature.geometry);
 				throw throwStr;
 			}
 
@@ -301,7 +301,7 @@ package org.openscales.core.layer
 			}
 			this._featuresBbox = features[0].geometry.bounds.clone();
 			for(var j:uint=1; j<i; ++j) {
-				this._featuresBbox.extendFromBounds(features[j].geometry.bounds);
+				this._featuresBbox.extendFromBounds(features[j].geometry.bounds.clone());
 			}
 		}
 		

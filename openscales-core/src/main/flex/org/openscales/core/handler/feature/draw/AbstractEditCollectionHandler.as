@@ -11,6 +11,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
@@ -142,7 +143,10 @@ package org.openscales.core.handler.feature.draw
 							parentGeometry.addComponent(newVertice,indexOfFeatureCurrentlyDrag);
 		 				if(displayedVirtualVertices)
 							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	
-		 			} 				
+						    
+		 			} 	
+					//we change the state here beacause we are sur that feature has been modified
+					parentFeature.state = State.UPDATE;
 		 		}
 		 	}
 		 	//we add the new mouseEvent move and remove the MouseEvent on the draw Temporary feature

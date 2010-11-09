@@ -11,6 +11,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.Format;
 	import org.openscales.core.format.GMLFormat;
+	import org.openscales.core.format.WFSFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.params.ogc.WFSParams;
@@ -24,8 +25,6 @@ package org.openscales.core.layer.ogc
 	public class WFS extends FeatureLayer
 	{
 		private var _writer:Format = null;
-
-		private var _featureNS:String = null;
 
 		private var _geometryColumn:String = null;
 		
@@ -61,8 +60,9 @@ package org.openscales.core.layer.ogc
 
 		private var _fullRedraw:Boolean = false;
 
-		private var _gml:GMLFormat = null;
-
+		protected var _wfsFormat:WFSFormat = null;
+		
+		
 		/**
 		 * WFS class constructor
 		 *
@@ -88,15 +88,15 @@ package org.openscales.core.layer.ogc
 
 			this.params = new WFSParams(typename);
 			this.url = url;
+			this._wfsFormat = new WFSFormat(this);
 		}
-
-		override public function destroy():void {
+        override public function destroy():void {
 			if(this._request)
 				this._request.destroy();
 			this._request = null;
-			if(this._gml != null)
-				this._gml.destroy();
-			this._gml = null;
+			if(this._wfsFormat != null)
+				this._wfsFormat.destroy();
+			this._wfsFormat = null;
 			super.destroy();
 		}
 		override public function set map(map:Map):void {
@@ -261,17 +261,16 @@ package org.openscales.core.layer.ogc
 
 			this.loading = false;			
 
-			if(this._gml != null)
-				this._gml.reset();
-			else
-				this._gml = new GMLFormat(this.addFeature,this._featuresids,this.extractAttributes);
+			if(this._wfsFormat != null)
+				this._wfsFormat.reset();
+
 
 			if (this.map.baseLayer.projSrsCode != null && this.projSrsCode != null && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-				this._gml.externalProjSrsCode = this.projSrsCode;
-				this._gml.internalProjSrsCode = this.map.baseLayer.projSrsCode;
+				this._wfsFormat.externalProjSrsCode = this.projSrsCode;
+				this._wfsFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
 			}
 
-			this._gml.read(loader.data as String);
+			this._wfsFormat.read(loader.data as String);
 
 			if(this._fullRedraw) {
 				var farray:Array = this._featuresids.getValues();
@@ -303,10 +302,13 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override public function removeFeature(feature:Feature, dispatchFeatureEvent:Boolean=true):void {
-			this._featuresids.remove(feature.name);
-			super.removeFeature(feature,dispatchFeatureEvent);
+             if(feature != null){
+			   this._featuresids.remove(feature.name);
+			   super.removeFeature(feature,dispatchFeatureEvent);
+			 }
 		}
-
+		
+		
 		/**
 		 * Called on return from request failure.
 		 *
@@ -347,11 +349,11 @@ package org.openscales.core.layer.ogc
 		}
 
 		public function get featureNS():String {
-			return this._featureNS;
+			return this._wfsFormat.featureNS;
 		}
 
 		public function set featureNS(value:String):void {
-			this._featureNS = value;
+			this._wfsFormat.featureNS = value;
 		}
 
 		public function get geometryColumn():String {
