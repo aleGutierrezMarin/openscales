@@ -6,12 +6,14 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.Map;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -36,7 +38,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * The LineStringfeature currently drawn
 		 * */
-		private var _currentLineStringFeature:LineStringFeature=null;
+		private var _currentLineStringFeature:MultiLineStringFeature=null;
 		/**
 		 * The last point of the lineString. 
 		 */
@@ -129,10 +131,14 @@ package org.openscales.core.handler.feature.draw
 			
 			//The user click for the first time
 			if(newFeature){
+			
 				_lineString = new LineString(new <Number>[point.x,point.y]);
 				lastPoint = point;
+				var tempVector:Vector.<Geometry> = new Vector.<Geometry>;
+				tempVector.push(_lineString);
+				var tempMulti:MultiLineString = new MultiLineString(tempVector);
 				//the current drawn linestringfeature
-				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDrawLineStyle(),true);
+				this._currentLineStringFeature= new MultiLineStringFeature(tempMulti,null, Style.getDrawLineStyle(),true);
 				this._currentLineStringFeature.name="path." + id.toString(); ++id;
 				drawLayer.addFeature(_currentLineStringFeature);
 				

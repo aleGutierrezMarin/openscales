@@ -10,6 +10,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoom;
 	import org.openscales.core.control.ScaleLine;
+	import org.openscales.core.format.FilerEncodingFormat;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.DragFeatureHandler;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
@@ -54,6 +55,7 @@ package org.openscales.core.configuration
 		protected var _config:XML;
 		private var _map:Map;
 		protected var _styles:Object = {};
+		protected var _filter:Object = {};
 		
 		public function Configuration(config:XML = null) {
 			this.config = config;
@@ -83,6 +85,43 @@ package org.openscales.core.configuration
 			}
 			
 		}
+		
+		private function loadFilters():void {
+			var filters:XMLList=config.Filters.*;
+			var filter:XML;
+			var xmlNode:XML
+			for each(xmlNode in filters){
+				if(xmlNode.@id=="")
+					continue;
+				this._filter[xmlNode.@id.toString()] = this.parseFilter(xmlNode);
+				Trace.log("Find new filter");
+			}
+			
+		}
+		
+		protected function parseFilter(filter:XML):XML {
+			var filterFormat:FilerEncodingFormat = new FilerEncodingFormat();
+			
+			var propertyType:String,propertyName:String,literalValue:String;
+			
+			if(filter.@PropertyType != ""){
+				propertyType =  filter.@PropertyType;
+			}else{
+				return null;
+			}
+			if(filter.@PropertyName != ""){
+				propertyName = filter.@PropertyName;
+			}else{
+				return null;
+			}
+			if(filter.@LiteralValue != ""){
+				literalValue = filter.@LiteralValue;
+			}else{
+				return null;
+			}
+			
+			return filterFormat.addComparisonFilter(propertyType,propertyName,literalValue);
+      }
 		
 		protected function beginConfigureMap():void {
 			// Parse the XML (children of Layers, Handlers, Controls ...)    
@@ -361,6 +400,12 @@ package org.openscales.core.configuration
 					else
 						wfsLayer.style = this.getDefaultStyle(String(xmlNode.@style));
 				}
+				if(String(xmlNode.@filter) !="")
+				{
+					if(this._filter[xmlNode.@filter.toString()])
+						wfsLayer.filter = this._filter[xmlNode.@filter.toString()];
+				}
+				
 				
 				if (String(xmlNode.@minZoomLevel) != "" ) {
 					wfsLayer.minZoomLevel = Number(xmlNode.@minZoomLevel);
@@ -431,10 +476,13 @@ package org.openscales.core.configuration
 			//Init layer parameters
 			return layer;
 		}
+		
 		/**
 		 * 
-		 **/
-		
+		 * @param styleNode
+		 * @return 
+		 * 
+		 */		
 		protected function parseStyle(styleNode:XML):Style {
 			var style:Style = new Style();
 			var ruleNodes:XMLList = styleNode.rules.*;

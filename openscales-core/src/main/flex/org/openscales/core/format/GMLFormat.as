@@ -16,7 +16,6 @@ package org.openscales.core.format
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.MultiPolygonFeature;
-	import org.openscales.geometry.Polygon;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.geometry.Geometry;
@@ -28,6 +27,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
 	
@@ -162,6 +162,14 @@ package org.openscales.core.format
 		public function destroy():void {
 			this.reset();
 			this._onFeature = null;
+		}
+		
+		public function boxNode(bound:Bounds):XML{
+			
+			var boxNode:XML = new XML("<" + this._gmlprefix + ":Box xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" >" +
+				"</" + this._gmlprefix +":Box>");
+			boxNode.appendChild(this.buildCoordinatesNodeFromVector(new <Number>[bound.left,bound.bottom,bound.right,bound.top]));
+			return boxNode;
 		}
 		
 		/**
@@ -490,6 +498,7 @@ package org.openscales.core.format
 			return gml; 
 		}
 		
+		
 		/**
 		 * Builds the coordinates XmlNode
 		 *
@@ -524,19 +533,7 @@ package org.openscales.core.format
 			  }
 			 
 			  if (points) {
-				var j:int = points.length -1;
-				var i:int;
-				var pointTemp:Point;
-				for (i = 0; i < j; i=i+2) {
-					if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
-						pointTemp = new Point(points[i],points[i+1]);
-					    pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
-						path += pointTemp.x + "," + pointTemp.y + " ";
-					}else{
-						path += points[i] + "," + points[i+1] + " ";
-					}
-					
-				}
+				 path = buildCoordinatesNodeFromVector(points);
 			  }
 			}
 			
@@ -544,6 +541,27 @@ package org.openscales.core.format
 			
 			return coordinatesNode;
 		}
+		
+		public function buildCoordinatesNodeFromVector(points:Vector.<Number>):String {
+			
+			var j:int = points.length -1;
+			var i:int;
+			var pointTemp:Point;
+			var path:String = "";
+			for (i = 0; i < j; i=i+2) {
+				if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
+					pointTemp = new Point(points[i],points[i+1]);
+					pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
+					path += pointTemp.x + "," + pointTemp.y + " ";
+				}else{
+					path += points[i] + "," + points[i+1] + " ";
+				}
+				
+			}
+			return path;
+		}
+		
+		
 		
 		
 		//Getters and Setters
