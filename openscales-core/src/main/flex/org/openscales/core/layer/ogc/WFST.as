@@ -11,6 +11,8 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.DescribeFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.State;
+	import org.openscales.core.filter.Comparison;
+	import org.openscales.core.format.FilerEncodingFormat;
 	import org.openscales.core.layer.ogc.WFST.Transaction;
 	import org.openscales.core.request.XMLRequest;
 
@@ -31,16 +33,41 @@ package org.openscales.core.layer.ogc
 		public var featureArray:Vector.<Feature> = new Vector.<Feature>;
 
 		
-		public function WFST(name:String, url:String, typename:String,featureNS:String = null)
+		public function WFST(name:String, url:String, typename:String,featureNSlocal:String = null)
 		{
 			//TODO: implement function
 			super(name, url, typename);
 			getDescribeFeatureInfo();
-			var featurePrefix:String = typename.split(":")[0];
-			if(featurePrefix  != null && featurePrefix != typename){
-			  this.featurePrefix = featurePrefix;
+			
+			var featurePrefixTemp:String = typename.split(":")[0];
+			if(featurePrefixTemp  != null && featurePrefixTemp != typename){
+			  this.featurePrefix = featurePrefixTemp;
 			}
-			this._wfsFormat.featureNS = featureNS;
+			
+			if(featureNSlocal != null){
+			  this._wfsFormat.featureNS = featureNSlocal;
+			}
+		}
+
+		/**
+		 * Combine the layer's url with its params and these newParams.
+		 *
+		 * @param newParams
+		 * @param altUrl Use this as the url instead of the layer's url
+		 */
+		override public function getFullRequestString(altUrl:String = null):String {
+		
+			//filter by url way , by post way is maybe better
+			var filterUrl:String ="";
+			if(_filter){
+				filterUrl = "&FILTER=";
+			var filterEncodingFormat:FilerEncodingFormat = new FilerEncodingFormat();
+			  filterUrl = "(" + _filter.toXMLString() + ")";
+			  filterUrl += "(" + filterEncodingFormat.within("the_geom",this._wfsFormat.boxNode(this.featuresBbox)).toXMLString() + ")";
+			 //bbox are mutually exclusive with filter and featurid
+			  this.params.bbox = null;
+			}
+			return super.getFullRequestString(altUrl) + filterUrl;
 		}
 		
 		override public function set map(map:Map):void {

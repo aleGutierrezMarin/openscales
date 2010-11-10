@@ -45,7 +45,7 @@ package org.openscales.core.format
 				 case Comparison.GREATER_THAN:
 					 filterNode.appendChild(this.greaterThan(PropertyName,LiteralValue));
 					 break;
-			 }
+					 }
 			 return filterNode;
 		 }
 	
@@ -56,10 +56,26 @@ package org.openscales.core.format
 		  * @param LiteralValue:String
 		  */
 		 public function equalTo(PropertyName:String,LiteralValue:String):XML {
-			 var equalNode:XML = new XML("<" + this._ogcprefix + ":PropertyIsEqualTo>" +				
+			 var equalNode:XML = new XML("<" + this._ogcprefix + ":PropertyIsEqualTo xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
 				 "</" + this._ogcprefix + ":PropertyIsEqualTo>");
 			
-			 equalNode.appendChild(this.filterParams(PropertyName,LiteralValue));
+			 equalNode.appendChild(this.propertyName(PropertyName));
+			 equalNode.appendChild(this.literalValue(LiteralValue));
+			 return equalNode;
+		 }
+		 
+		 /**
+		  * Generate a propertyType @Comparison.EQUAL_TO xmlNode
+		  *
+		  * @param PropertyName:String
+		  * @param LiteralValue:String
+		  */
+		 public function within(PropertyName:String,gml:XML):XML {
+			 var equalNode:XML = new XML("<" + this._ogcprefix + ":Within xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
+				 "</" + this._ogcprefix + ":Within>");
+			 
+			 equalNode.appendChild(this.propertyName(PropertyName));
+			 equalNode.appendChild(gml);
 			 return equalNode;
 		 }
 		 
@@ -70,10 +86,11 @@ package org.openscales.core.format
 		  * @param LiteralValue:String
 		  */
 		 public function notEqualTo(PropertyName:String,LiteralValue:String):XML {
-			 var notEqualNode:XML = new XML("<" + this._ogcprefix + ":PropertyIsNotEqualTo>" +				
+			 var notEqualNode:XML = new XML("<" + this._ogcprefix + ":PropertyIsNotEqualTo xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
 				 "</" + this._ogcprefix + ":PropertyIsNotEqualTo>");
 			 
-			 notEqualNode.appendChild(this.filterParams(PropertyName,LiteralValue));
+			 notEqualNode.appendChild(this.propertyName(PropertyName));
+			 notEqualNode.appendChild(this.literalValue(LiteralValue));
 			 return notEqualNode;
 		 }
 		 
@@ -84,10 +101,13 @@ package org.openscales.core.format
 		  * @param LiteralValue:String
 		  */
 		 public function lessThan(PropertyName:String,LiteralValue:String):XML {
-			 var lessThanNode:XML = new XML("<" + this._ogcprefix + ":PropertyIsLessThan>" +				
+			 var lessThanNode:XML = new XML("<" + this._ogcprefix + ":PropertyIsLessThan xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
 				 "</" + this._ogcprefix + ":PropertyIsLessThan>");
 			 
-			 lessThanNode.appendChild(this.filterParams(PropertyName,LiteralValue));
+			 
+			 lessThanNode.appendChild(this.propertyName(PropertyName));
+			 lessThanNode.appendChild(this.literalValue(LiteralValue));
+			 
 			 return lessThanNode;
 		 }
 		 
@@ -98,10 +118,11 @@ package org.openscales.core.format
 		  * @param LiteralValue:String
 		  */
 		 public function greaterThan(PropertyName:String,LiteralValue:String):XML {
-			 var greaterThanNode:XML = new XML("<" + this._ogcprefix + ":PropertyIsGreaterThan>" +				
+			 var greaterThanNode:XML = new XML("<" + this._ogcprefix + ":PropertyIsGreaterThan xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
 				 "</" + this._ogcprefix + ":PropertyIsGreaterThan>");
+			 greaterThanNode.appendChild(this.propertyName(PropertyName));
+			 greaterThanNode.appendChild(this.literalValue(LiteralValue));
 			 
-			 greaterThanNode.appendChild(this.filterParams(PropertyName,LiteralValue));
 			 return greaterThanNode;
 		 }
 		 /**
@@ -110,15 +131,20 @@ package org.openscales.core.format
 		  * @param PropertyName:String
 		  * @param LiteralValue:String
 		  */
-		 public function filterParams(PropertyName:String,LiteralValue:String):XML {
-			 var filterParamsNode:XML = new XML(
-				 "<" + this._ogcprefix + ":PropertyName>" +
+		 public function propertyName(PropertyName:String):XML {
+			 var propertyNameNode:XML = new XML(
+				 "<" + this._ogcprefix + ":PropertyName xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +
 				 PropertyName +
-				 "</" + this._ogcprefix + ":PropertyName>"+
-				 "<" + this._ogcprefix + ":Literal>" +
+				 "</" + this._ogcprefix + ":PropertyName>")
+			 return propertyNameNode;
+		 }
+		 
+		 public function literalValue(LiteralValue:String):XML {
+			 var literalValueNode:XML = new XML("<" + this._ogcprefix + ":Literal " +
+				 " xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\" >" +
 				 LiteralValue +
 				 "</" + this._ogcprefix + ":Literal>");
-			 return filterParamsNode;
+			 return literalValueNode;
 		 }
 	}
 }

@@ -36,10 +36,6 @@ package org.openscales.core.layer.ogc.WFST
 			_state = NOTSEND;
 		}
 		
-		public function generateIDTemp(transationType:String):String{
-			return transationType + new UID().gen_uid();
-		}
-		
 		public function get state():String
 		{
 			return _state;

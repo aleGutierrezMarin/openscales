@@ -34,6 +34,7 @@ package org.openscales.core.filter
 		public static var LIKE:String = "PropertyIsLike";
 		public static var NULL:String = "PropertyIsNull";
 		public static var BETWEEN:String = "PropertyIsBetween";
+		public static var WITHIN:String = "Within";
 		
 		
 	}
