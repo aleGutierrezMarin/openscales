@@ -63,7 +63,6 @@ package org.openscales.core.handler.feature.draw
 			vectorfeature.geometry=newGeom;
 			vectorfeature.x=0;
 			vectorfeature.y=0;
-			vectorfeature.state = State.UPDATE;
 			this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,vectorfeature));
 			this._layerToEdit.redraw();
 		}
