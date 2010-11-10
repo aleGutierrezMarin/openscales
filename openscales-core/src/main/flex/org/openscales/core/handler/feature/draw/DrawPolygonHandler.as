@@ -6,7 +6,6 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.Map;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
@@ -183,7 +182,6 @@ package org.openscales.core.handler.feature.draw
 				if((this._polygonFeature.polygon.componentByIndex(0) as LinearRing).componentsLength>2){
 					//Apply the "finished" style
 					this._polygonFeature.style = style;	
-					this._polygonFeature.state = State.INSERT;
 					this._polygonFeature.registerListeners();				
 				}
 				else{

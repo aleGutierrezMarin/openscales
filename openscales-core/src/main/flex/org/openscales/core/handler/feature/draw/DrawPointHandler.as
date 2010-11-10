@@ -6,7 +6,6 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.Trace;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
-	import org.openscales.core.feature.State;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.MultiPoint;
@@ -69,7 +68,6 @@ package org.openscales.core.handler.feature.draw
 				   multiPointFeature.name = id.toString(); id++;
 				   drawLayer.addFeature(multiPointFeature);
 				   //must be after adding map
-				   multiPointFeature.state = State.INSERT;
 				   multiPointFeature.draw();
 				   
 			   }else{
@@ -79,7 +77,6 @@ package org.openscales.core.handler.feature.draw
 				id++;
 				drawLayer.addFeature(pointFeature);
 				//must be after adding map
-				pointFeature.state = State.INSERT;
 				pointFeature.draw();
 			   }
 			}
