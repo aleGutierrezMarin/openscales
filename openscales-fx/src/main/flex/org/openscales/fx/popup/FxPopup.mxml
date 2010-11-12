@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:openscales="http://openscales.org"
+		 xmlns:d="http://ns.adobe.com/fxg/2008/dt"
+		 xmlns:control="net.awl.openscales.fx.control.*"
+		 creationComplete="create()">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.fxg.ButtonCloseOver;
+			import assets.fxg.ButtonCloseUp;
+			import assets.fxg.ButtonOpacity;
+			import assets.fxg.Popup;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.SpanElement;
+			import flashx.textLayout.elements.TextFlow;
+			
+			import mx.containers.HBox;
+			import mx.containers.VBox;
+			import mx.controls.Alert;
+			import mx.controls.Text;
+			import mx.effects.effectClasses.AddChildActionInstance;
+			import mx.events.CloseEvent;
+			import mx.graphics.codec.PNGEncoder;
+			import mx.utils.StringUtil;
+			
+			import org.openscales.core.feature.Feature;
+			import org.openscales.fx.FxMap;
+			import org.openscales.fx.popup.skin.PopupPanelSkinTR;
+			import org.openscales.geometry.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.geometry.basetypes.Size;
+			
+			import spark.components.TextArea;
+			import spark.components.TextInput;
+			import spark.components.supportClasses.SkinnableTextBase;
+			import spark.utils.TextFlowUtil;
+			//End GAB
+			
+			private var _feature:Feature = null;
+			private var _loc:Location = null;
+			private var _fxmap:FxMap;
+			[Bindable] private var _content:String="";
+			private var _size:Size = null;
+			private var _relativePosition:String = "";
+			
+			[Bindable] public var WIDTH:Number = 200;
+			[Bindable] public var HEIGHT:Number = 200;
+			static public var BR:String = "br";
+			static public var TR:String = "tr";
+			static public var TL:String = "tl";
+			static public var BL:String = "bl";
+			
+			private var _anchor:Sprite = null;
+			
+			private var _mode:String = "VIEW";
+			private var _editionMode:String = "";
+			private var _editable:Boolean=false;
+			
+			/* [Bindable]
+			[Embed(source="/assets/images/icons/Icons-08.png")]
+			private var _editFeature:Class; */
+			
+			private var _initialized:Boolean;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/edit.png")]
+			private var _editFeature2:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/saveDisk.png")]
+			private var _saveDiskIcon:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/saveDisk_red.png")]
+			private var _saveDiskIcon_red:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/cancelIconRed.png")]
+			private var _cancelIcon_Red:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/cancelIconGrey.png")]
+			private var _cancelIcon_Grey:Class;
+			
+			private function create():void{
+				/*
+				if ((this.loc != null) && (this.fxmap.map != null)) {
+					var px:Pixel = this.fxmap.map.getMapPxFromLocation(this.feature.lonlat);
+					this.relativePosition = this.calculateRelativePosition(px);
+				}
+				this.position = px;
+				this.setCurrentState(relativePosition,false);
+				if (size != null){
+					this._size = size;
+				}
+				else{
+					this.size = new Size(WIDTH,HEIGHT);
+				}
+				this.fxmap.addFxPopup(this,true);
+				*/
+				
+				if ((this.loc != null) && (this.fxmap.map != null)) {
+					var px:Pixel = this.fxmap.map.getMapPxFromLocation(this.feature.lonlat);
+					this.relativePosition = this.calculateRelativePosition(px);
+				}
+				this.position = px;
+				this.setCurrentState(relativePosition,false);
+				if (size != null){
+					this._size = size;
+				}
+				else{
+					this.size = new Size(WIDTH,HEIGHT);
+					//GAB
+					//this.iconButtonEdit.y = (this.size.h-10);
+					//this.iconButtonSave.y = (this.size.h-10);
+					//this.iconButtonCancel.y = (this.size.h-10);
+					//Hide Save and Cancel buttons
+					//this.iconButtonCancel.visible = false;
+					//this.iconButtonSave.visible = false;
+				}
+				this.fxmap.addFxPopup(this,true);
+				this.changeMode();
+				_initialized = true;
+			}
+			
+			private function changeMode():void{
+				if(_mode == "EDIT"){
+					setEditMode();
+				}
+				else if (_mode == "VIEW"){
+					setViewMode();
+				}
+			}
+			
+			public function set editable(value:Boolean):void{
+				_editable = value;
+				if (_editable==true){
+					this.iconButtonEdit.visible = true;
+				}
+				else{
+					this.iconButtonEdit.visible = false;
+				}
+			}
+			
+			public function get editionMode():String{
+				return _editionMode;
+			}
+			
+			public function set editionMode(value:String):void{
+				_editionMode = value;
+				
+				if (_editionMode == "DRAG"){
+					//Show Save and Cancel icon buttons
+					showIconButtonSave();
+					showIconButtonCancel();
+				}
+				else{
+					//Hide Save and Cancel icon buttons
+					hideIconButtonCancel();
+					hideIconButtonSave();
+				}
+			}
+			
+			private function showIconButtonSave():void{
+				this.iconButtonSave.visible = (_editionMode == "DRAG");
+			}
+			
+			private function hideIconButtonSave():void{
+				this.iconButtonSave.visible = false;
+			}
+			
+			private function showIconButtonCancel():void{
+				this.iconButtonCancel.visible = (_editionMode == "DRAG");
+			}
+			
+			private function hideIconButtonCancel():void{
+				this.iconButtonCancel.visible = false;
+			}
+			
+			private function showIconButtonEdit():void{
+				this.iconButtonEdit.visible = _editable;
+			}
+			
+			private function hideIconButtonEdit():void{
+				this.iconButtonEdit.visible = false;
+			}
+			
+			public function remove():void {
+				this.visible=false;
+				var i:uint = this.numElements;
+				for (;i>0;--i) {
+					this.removeElementAt(0);
+				}
+				this.feature = null;
+				this.loc = null;
+				if (this.fxmap != null) {
+					this.fxmap.removeFxPopup(this);
+				}
+			}
+			
+			public function calculateRelativePosition(px:Pixel):String {
+				var lonlat:Location = this.fxmap.map.getLocationFromMapPx(px);
+				
+				var extent:Bounds = this.fxmap.map.extent;
+				var quadrant:String = extent.determineQuadrant(lonlat);
+				
+				return Bounds.oppositeQuadrant(quadrant);
+			}
+			
+			public function get relativePosition():String {
+				return this._relativePosition;
+			}
+			
+			public function set relativePosition(value:String):void {
+				this._relativePosition = value;
+				this.setCurrentState(_relativePosition,false);
+			}
+			
+			public function get loc():Location {
+				return this._loc;
+			}
+			
+			public function set loc(value:Location):void {
+				this._loc = value;
+			}
+			
+			public function get feature():Feature {
+				return this._feature;
+			}
+			
+			public function set feature(value:Feature):void {
+				this._feature = value;
+				
+				if(!this.feature)
+					return;
+				
+				this.loc = this.feature.lonlat;
+				
+			}
+			
+			public function calculateNewPx(px:Pixel):Pixel {
+				var newPx:Pixel = px;
+				
+				if(this.relativePosition == BR){
+					/* newPx.x = newPx.x - 45;
+					newPx.y = newPx.y + 48; */
+					newPx.x = newPx.x - 5;
+					newPx.y = newPx.y + 10;
+				}
+				else if (this.relativePosition == BL){
+					/* newPx.x = newPx.x - this.width + 45;
+					newPx.y = newPx.y + 48; */
+					newPx.x = newPx.x - this.width + 5;
+					newPx.y = newPx.y + 10;
+				}
+				else if (this.relativePosition == TR){
+					/* newPx.x = newPx.x - 45; 
+					newPx.y = newPx.y - this.height - 48; */
+					newPx.x = newPx.x  - 5; 
+					newPx.y = newPx.y - this.height - 10;
+				}
+				else if (this.relativePosition == TL){
+					/* newPx.x = newPx.x - this.width + 45;
+					newPx.y = newPx.y - this.height - 48; */
+					newPx.x = newPx.x - this.width  - 5;
+					newPx.y = newPx.y - this.height - 10;
+				}
+				return newPx;
+			}
+			
+			public function set position(px:Pixel):void {
+				var newPx:Pixel = this.calculateNewPx(px);
+				if (newPx != null) {
+					this.x = newPx.x;
+					this.y = newPx.y;
+				}
+			}
+			
+			public function get position():Pixel {
+				return new Pixel(this.x, this.y);
+			}
+			
+			public function get content():String{
+				return this._content;
+			}
+			
+			public function set content(value:String):void {
+				this._content = value;
+			}
+			
+			public function get fxmap():FxMap {
+				return this._fxmap;
+				
+			}
+			
+			public function set fxmap(value:FxMap):void {
+				this._fxmap = value;
+			}
+			
+			public function get size():Size {
+				return this._size;
+				
+			}
+			
+			public function set size(size:Size):void {
+				if (size != null) {
+					this._size = size;
+					this.width = this.size.w;
+					this.height = this.size.h;
+				}
+			}
+			
+			public function closePopup(event:MouseEvent):void {
+				var target:Sprite = (event.target as Sprite);
+				target.removeEventListener(event.type, closePopup);
+				remove();
+				event.stopPropagation();
+			}
+			
+			//Test GAB
+			
+			public function set mode(value:String):void{
+				_mode = value;
+				if(_initialized)
+					changeMode();
+			}
+			
+			private function editPopup(event:MouseEvent=null):void{
+				this.setEditMode();
+			}
+			
+			private function setViewMode():void{
+				/**
+				 * The aim is to have a single TextArea within the FxPop.
+				 * In this TextArea, we shall display the content (HTML format).
+				 * 
+				 * This must be done for each one of the 4 quadrant.
+				 * */
+				
+				this.setViewModeQuadrant("TR");
+				this.setViewModeQuadrant("TL");
+				this.setViewModeQuadrant("BR");
+				this.setViewModeQuadrant("BL");
+				
+				this.iconButtonEdit.y = (this.size.h-30);
+				this.iconButtonSave.y = (this.size.h-30);
+				this.iconButtonCancel.y = (this.size.h-30);
+				
+				//Hide Save and Cancel buttons
+				hideIconButtonCancel();
+				hideIconButtonSave();
+				//Display Edit button
+				showIconButtonEdit(); 
+				
+			}
+			
+			private function setViewModeQuadrant(_quadrant:String):void{
+				/**
+				 * Given a quadrant, insert a TextArea to the quadrant's panel.
+				 * Fill the TextArea's textFlow with the content of FxPopup.
+				 * The TextArea must not be editable by the user. 
+				 * */
+				var _panel:Panel = getPanel(_quadrant);
+				var _tAreaID:String;
+				if (_quadrant == "TR"){
+					_tAreaID = "textAreaTR";
+				}
+				else if (_quadrant == "TL"){
+					_tAreaID = "textAreaTL";
+				}
+				else if (_quadrant == "BR"){
+					_tAreaID = "textAreaBR";
+				}
+				else if (_quadrant == "BL"){
+					_tAreaID = "textAreaBL";
+				}				
+				//Before inserting the unique TextArea, empty the Panel.
+				_panel.removeAllElements();
+				
+				var _textZone:Text = new Text();
+				_textZone.id = _tAreaID;
+				_textZone.htmlText = this._content;
+				_textZone.percentWidth=100;
+				_textZone.percentHeight = 100;
+				_textZone.top=13;
+				_textZone.bottom=13;
+				
+				_panel.addElement(_textZone);
+				_panel.percentHeight = 100;
+				_panel.percentWidth = 100;
+			}
+			
+			private function setEditMode():void{
+				/**
+				 * Place the content of the FwPop. 
+				 * Unlick the view mode, in the edit mode we must insert fields and not one single
+				 * TextArea.
+				 * */
+				
+				this.setEditModeQuadrant("TR");
+				this.setEditModeQuadrant("TL");
+				this.setEditModeQuadrant("BR");
+				this.setEditModeQuadrant("BL");
+				
+				var _panel:Panel = this.getPanel();
+				this.iconButtonEdit.y = (this.size.h-30);
+				this.iconButtonSave.y = (this.size.h-30);
+				this.iconButtonCancel.y = (this.size.h-30);
+				
+				//Display Save and Cancel buttons
+				/* if (_editionMode == "DRAG"){
+					this.iconButtonCancel.visible = true;
+					this.iconButtonSave.visible = true;					
+				} */
+				showIconButtonCancel();
+				showIconButtonSave();
+				//Hide Edit button
+				hideIconButtonEdit();
+				
+			}
+			
+			private function setEditModeQuadrant(_quadrant:String):void{
+				var _panel:Panel = this.getPanel(_quadrant);
+				var _hBox:HBox;
+				var _nbFields:int = 0;
+				var _nbFieldsMulti:int = 0;
+				var _fieldName:String;
+				var _fieldValue:String;
+				
+				//_panel.title = this._title;
+				//The first thing to do it to empty the panel
+				_panel.removeAllElements();
+				var _array:Array = this._content.split("<br />");
+				var _vBox:VBox = new VBox();
+				//Treat PopUp title (i==0)
+				_fieldName = "Nom:";
+				_fieldValue = _array[0];
+				_fieldValue =_fieldValue.replace("<b><font size='15'>", "");
+				_fieldValue = _fieldValue.replace("</font></b>","");
+				_hBox = this.getEditionItem(_fieldName, _fieldValue, false, NaN, true);
+				_nbFields ++;
+				_vBox.addElement(_hBox);
+				for (var i:int=1; i<_array.length; i++){
+					var _subArray:Array = (_array[i] as String).split(":");
+					if (_subArray.length == 2){
+						_fieldName = _subArray[0];
+						_fieldValue = _subArray[1];
+						
+						_fieldName = _fieldName.replace("<b>","");
+						_fieldName = _fieldName.replace("</b>","");
+						
+						if (_fieldName.search("Adresse") >=0 || _fieldName.search("Nom")>=0){
+							_hBox = this.getEditionItem(_fieldName, _fieldValue, true, 4, true);
+							_nbFieldsMulti ++;
+						}
+						else{
+							_hBox = this.getEditionItem(_fieldName, _fieldValue);
+							_nbFields ++;
+						}
+						_vBox.addElement(_hBox);
+						
+					}
+				}
+				//Add a "Mandatory fields" message
+				var _text:Text = new Text();
+				_text.htmlText = "<font color='#FF0000'><b>(* Champs obligatoires)</b></font>";
+				_vBox.addElement(_text);
+				
+				_vBox.verticalScrollPolicy = "auto";
+				_vBox.height = (_panel.height-10);
+				_vBox.width = _panel.width;
+				_vBox.top=13;
+				_vBox.bottom=15;
+				_panel.addElement(_vBox);
+				
+			}
+			
+			private function getEditionItem(_label:String, _value:String=null, _multiLine:Boolean=false, _nbLines:int=1, _mandatory:Boolean=false):HBox{
+				var _hBox:HBox = new HBox();
+				var textField:SkinnableTextBase;
+				var _text:Text = new Text();
+				
+				//Multiline treatment:
+				if (_multiLine){
+					//Use a TextArea object	
+					textField = new TextArea();	
+					textField.height= 50;
+				}
+				else{
+					//Use a TextInput object
+					textField = new TextInput();
+				}
+				
+				_text.htmlText = "<b>" + _label + "</b>";
+				//Mandatory field treatment:
+				if (_mandatory){
+					_text.htmlText += "<FONT color='#FF0000'>*</FONT>";	
+				}
+				
+				textField.percentWidth = 100;
+				_hBox.percentWidth = 95;
+				if (_value)
+					textField.text = _value;
+				
+				_hBox.addChild(_text);
+				_hBox.addChild(textField);
+				
+				return _hBox;
+			}
+			
+			private function displayPopup(event:MouseEvent=null):void{
+				this.setViewMode();
+				//Hide Save and Cancel buttons
+				/* this.iconButtonCancel.visible = false;
+				this.iconButtonSave.visible = false; */
+				hideIconButtonCancel();
+				hideIconButtonSave();
+				//Display Edit button
+				showIconButtonEdit();
+			}
+			private function savePopup(event:MouseEvent):void{
+				if (this.mandatoryFieldVerification() == true){
+					Alert.show("Sauvegarde en cours");
+					displayPopup();
+					/**
+					 * [To be completed] Call the Saving process method
+					 * */
+					/*
+					var _panel:Panel = this.getPanel();
+					if (_panel.numElements == 1){
+						//This only element of a Panel is a VBox
+						var obj:Object = _panel.getElementAt(0);
+						var _vBox:VBox = (_panel.getElementAt(0) as VBox);
+						//A VBox can have 0-many elements, each element is a HBox object.
+						
+						for (var i:int=0; i<_vBox.numElements; i++){
+							var _hBox:HBox = (_vBox.getElementAt(i) as HBox);
+							
+							//A HBox is composed of one Text (index=0) and one TextInput (index=1)
+							if (_hBox.numElements == 2){
+								var _text:Text = (_hBox.getElementAt(0) as Text);
+								var _textInput:TextInput = (_hBox.getElementAt(1) as TextInput);
+								
+								var _fieldName:String = _text.text;
+								var _value:String = _textInput.text;
+								
+								//Alert.show("New value of " + _fieldName + " is " + _value);
+							}
+						}
+					}
+					*/
+					//Hide Save and Cancel buttons
+					/* this.iconButtonCancel.visible = false;
+					this.iconButtonSave.visible = false; */
+					hideIconButtonCancel();
+					hideIconButtonSave();
+					//Display Edit button
+					showIconButtonEdit();
+				}
+				else{
+					//A mandatory field hasn't been filled, save can't be done
+					Alert.show("Merci de renseigner les champs obligatoires.");
+					
+				}
+			}
+			/**
+			 * mandatoryFieldVerification: Check that all mandatory fields have none empty value.
+			 * If so, return TRUE.
+			 * If not, return FALSE.
+			 **/
+			public function mandatoryFieldVerification():Boolean{
+				var _panel:Panel = this.getPanel();
+				
+				if (_panel.numElements == 1){
+					//This only element of a Panel is a VBox
+					//var obj:Object = _panel.getElementAt(0);
+					var _vBox:VBox = (_panel.getElementAt(0) as VBox);
+					//A VBox can have 0-many elements, each element is a HBox object.
+					
+					for (var i:int=0; i<_vBox.numElements; i++){
+						var _hBox:HBox = (_vBox.getElementAt(i) as HBox);
+						
+						//A HBox is composed of one Text (index=0) and one TextInput (index=1)
+						if (_hBox != null && _hBox.numElements == 2){
+							//Get the field label
+							var _text:Text = (_hBox.getElementAt(0) as Text);
+
+							//Look for an "*" within the label
+							if (_text.text.indexOf("*") >= 0){
+								//Make sure that the corresponding value is not empty
+								var _textField:SkinnableTextBase = (_hBox.getElementAt(1) as SkinnableTextBase);
+								if (_textField == null || StringUtil.trim(_textField.text) == "" || _textField.text == null){
+									//A mandatory field hasn't been filled, return FALSE
+									return false;
+								}
+									
+							}
+						}
+					}
+				}
+				//All mandatory fields have been filled with values, return TRUE
+				return true;
+			}
+			private function getPanel(_quadrant:String=null):Panel{
+				var _panel:Panel;
+				if (_quadrant != null){
+					//Return the panel of the requested quadrant
+					if (_quadrant == "TR"){
+						_panel = this.panelTR;
+					}
+					else if (_quadrant == "TL"){
+						_panel = this.panelTL;
+					}
+					else if (_quadrant == "BR"){
+						_panel = this.panelBR;
+					}
+					else if (_quadrant == "BL"){
+						_panel = this.panelBL;
+					}
+					
+				}
+				else{
+					//Return the panel of the relative position
+					if(this.relativePosition == BR){
+						_panel = this.panelBR;
+					}
+					else if (this.relativePosition == BL){
+						_panel = this.panelBL;
+					}
+					else if (this.relativePosition == TR){
+						_panel = this.panelTR;
+					}
+					else if (this.relativePosition == TL){
+						_panel = this.panelTL;
+					}
+				}
+				if (_panel == null)
+					_panel = new Panel();
+				
+				return _panel;
+				
+			}
+			//Fin Test GAB
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="tr"/>
+		<s:State name="tl"/>
+		<s:State name="br"/>
+		<s:State name="bl"/>
+	</s:states>
+	<!-- Test GAB -->
+	
+	<s:Panel id="panelTR"
+			 includeIn="tr"
+			 width="{WIDTH}"
+			 height="{HEIGHT-10}" 
+			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTR"/>
+			 
+			
+	<s:Panel id="panelTL"
+			 includeIn="tl"
+			 width="{WIDTH}"
+			 height="{HEIGHT-50}"
+			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTL"/>
+	<s:Panel id="panelBR"
+			 includeIn="br"
+			 width="{WIDTH}"
+			 height="{HEIGHT-50}"
+			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBR"/>
+	<s:Panel id="panelBL"
+			 includeIn="bl"
+			 width="{WIDTH}"
+			 height="{HEIGHT-50}"
+			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBL"/>
+	<openscales:IconButton id="iconButtonCancel"
+						   x="{WIDTH-40}"
+						   y="3"
+						   icon="{_cancelIcon_Red}"
+						   iconOver="{_cancelIcon_Grey}"
+						   iconDown="{_cancelIcon_Grey}"
+						   toolTip="Display"
+						   click="displayPopup(event)"
+						   />
+	<openscales:IconButton id="iconButtonEdit"
+						   x="{WIDTH-40}"
+						   y="3"
+						   icon="{_editFeature2}"
+						   toolTip="Edit"
+						   click="editPopup(event)"
+						   />
+	<openscales:IconButton id="iconButtonSave"
+						   x="{WIDTH-60}"
+						   y="3"
+						   icon="{_saveDiskIcon}"
+						   iconOver="{_saveDiskIcon_red}"
+						   iconDown="{_saveDiskIcon_red}"
+						   toolTip="Save"
+						   click="savePopup(event)"
+						   />
+	<!-- Fin test GAB -->
+	<openscales:IconButton id="close"
+						   x="{WIDTH-20}"
+						   y="{17.5}"
+						   icon="{new ButtonCloseUp()}"
+						   iconOver="{new ButtonCloseOver()}"
+						   iconDown="{new ButtonCloseOver()}"
+						   alpha="1"
+						   click="closePopup(event)"/>
+	
+	
+</s:Group>
