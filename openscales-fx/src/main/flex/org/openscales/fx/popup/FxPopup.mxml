@@ -445,7 +445,7 @@
 				_fieldValue = _array[0];
 				_fieldValue =_fieldValue.replace("<b><font size='15'>", "");
 				_fieldValue = _fieldValue.replace("</font></b>","");
-				_hBox = this.getEditionItem(_fieldName, _fieldValue);
+				_hBox = this.getEditionItem(_fieldName, _fieldValue, false, NaN, true);
 				_nbFields ++;
 				_vBox.addElement(_hBox);
 				for (var i:int=1; i<_array.length; i++){
@@ -457,7 +457,7 @@
 						_fieldName = _fieldName.replace("<b>","");
 						_fieldName = _fieldName.replace("</b>","");
 						
-						if (_fieldName.search("Adress") >=0){
+						if (_fieldName.search("Adresse") >=0 || _fieldName.search("Nom")>=0){
 							_hBox = this.getEditionItem(_fieldName, _fieldValue, true, 4, true);
 							_nbFieldsMulti ++;
 						}
@@ -576,7 +576,7 @@
 			 * If so, return TRUE.
 			 * If not, return FALSE.
 			 **/
-			private function mandatoryFieldVerification():Boolean{
+			public function mandatoryFieldVerification():Boolean{
 				var _panel:Panel = this.getPanel();
 				
 				if (_panel.numElements == 1){
