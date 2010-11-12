@@ -4,6 +4,7 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.mouse.ClickHandler;
@@ -182,7 +183,8 @@ package org.openscales.core.handler.feature.draw
 				if((this._polygonFeature.polygon.componentByIndex(0) as LinearRing).componentsLength>2){
 					//Apply the "finished" style
 					this._polygonFeature.style = style;	
-					this._polygonFeature.registerListeners();				
+					this._polygonFeature.registerListeners();	
+					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._polygonFeature));
 				}
 				else{
 					drawLayer.removeFeature(this._polygonFeature);

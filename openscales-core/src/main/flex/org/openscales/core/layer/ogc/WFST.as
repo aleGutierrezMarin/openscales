@@ -73,9 +73,15 @@ package org.openscales.core.layer.ogc
 		override public function set map(map:Map):void {
 			super.map = map;
 			if(map){
+				
+				/*
+				this.map.addEventListener(FeatureEvent.FEATURE_DRAWING_END,this.addTransaction);
+				this.map.addEventListener(FeatureEvent.FEATURE_EDITED_END,this.addTransaction);
+				*/
 				this.map.addEventListener(WFSTFeatureEvent.INSERT,this.addTransaction);
 				this.map.addEventListener(WFSTFeatureEvent.UPDATE,this.addTransaction);
 				this.map.addEventListener(WFSTFeatureEvent.DELETE,this.addTransaction);
+				
 				this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_ADDED,this));
 			}
 		}
@@ -235,16 +241,6 @@ package org.openscales.core.layer.ogc
 			return _transactionArray;
 		}
 		
-		public function get featurePrefix():String
-		{
-			return this._wfsFormat.featurePrefix;
-		}
-		
-		public function set featurePrefix(value:String):void
-		{
-			this._wfsFormat.featurePrefix = value;
-		}
-
 		/**
 		 * end of wfs-t
 		 * */

@@ -64,6 +64,7 @@ package org.openscales.core.handler.feature.draw
 			vectorfeature.x=0;
 			vectorfeature.y=0;
 			this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,vectorfeature));
+			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,vectorfeature));
 			this._layerToEdit.redraw();
 		}
 	    /**
