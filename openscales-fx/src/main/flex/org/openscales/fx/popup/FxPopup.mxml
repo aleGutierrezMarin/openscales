@@ -4,6 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:openscales="http://openscales.org"
 		 xmlns:d="http://ns.adobe.com/fxg/2008/dt"
+		 xmlns:control="net.awl.openscales.fx.control.*"
 		 creationComplete="create()">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
@@ -25,6 +26,7 @@
 			import mx.controls.Alert;
 			import mx.controls.Text;
 			import mx.effects.effectClasses.AddChildActionInstance;
+			import mx.events.CloseEvent;
 			import mx.graphics.codec.PNGEncoder;
 			import mx.utils.StringUtil;
 			
@@ -58,10 +60,33 @@
 			
 			private var _anchor:Sprite = null;
 			
-			private var _title:String = "";
-			[Bindable]
+			private var _mode:String = "VIEW";
+			private var _editionMode:String = "";
+			private var _editable:Boolean=false;
+			
+			/* [Bindable]
 			[Embed(source="/assets/images/icons/Icons-08.png")]
-			private var _editFeature:Class;
+			private var _editFeature:Class; */
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/edit.png")]
+			private var _editFeature2:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/saveDisk.png")]
+			private var _saveDiskIcon:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/saveDisk_red.png")]
+			private var _saveDiskIcon_red:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/cancelIconRed.png")]
+			private var _cancelIcon_Red:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/cancelIconGrey.png")]
+			private var _cancelIcon_Grey:Class;
 			
 			private function create():void{
 				/*
@@ -101,8 +126,65 @@
 				}
 				this.fxmap.addFxPopup(this,true);
 				this.setViewMode();
+				
 			}
 			
+			public function get editable():Boolean{
+				return _editable;
+			}
+			
+			public function set editable(value:Boolean):void{
+				_editable = value;
+				if (_editable==true){
+					this.iconButtonEdit.visible = true;
+				}
+				else{
+					this.iconButtonEdit.visible = false;
+				}
+			}
+			
+			public function get editionMode():String{
+				return _editionMode;
+			}
+			
+			public function set editionMode(value:String):void{
+				_editionMode = value;
+				
+				if (_editionMode == "DRAG"){
+					//Show Save and Cancel icon buttons
+					showIconButtonSave();
+					showIconButtonCancel();
+				}
+				else{
+					//Hide Save and Cancel icon buttons
+					hideIconButtonCancel();
+					hideIconButtonSave();
+				}
+			}
+			
+			private function showIconButtonSave():void{
+				this.iconButtonSave.visible = (_editionMode == "DRAG");
+			}
+			
+			private function hideIconButtonSave():void{
+				this.iconButtonSave.visible = false;
+			}
+			
+			private function showIconButtonCancel():void{
+				this.iconButtonCancel.visible = (_editionMode == "DRAG");
+			}
+			
+			private function hideIconButtonCancel():void{
+				this.iconButtonCancel.visible = false;
+			}
+			
+			private function showIconButtonEdit():void{
+				this.iconButtonEdit.visible = _editable;
+			}
+			
+			private function hideIconButtonEdit():void{
+				this.iconButtonEdit.visible = false;
+			}
 			
 			public function remove():void {
 				this.visible=false;
@@ -163,38 +245,27 @@
 				if(this.relativePosition == BR){
 					/* newPx.x = newPx.x - 45;
 					newPx.y = newPx.y + 48; */
-					newPx.x = newPx.x - 10;
-					newPx.y = newPx.y + 20;
+					newPx.x = newPx.x - 5;
+					newPx.y = newPx.y + 10;
 				}
 				else if (this.relativePosition == BL){
 					/* newPx.x = newPx.x - this.width + 45;
 					newPx.y = newPx.y + 48; */
-					newPx.x = newPx.x - this.width + 10;
-					newPx.y = newPx.y + 20;
+					newPx.x = newPx.x - this.width + 5;
+					newPx.y = newPx.y + 10;
 				}
 				else if (this.relativePosition == TR){
 					/* newPx.x = newPx.x - 45; 
 					newPx.y = newPx.y - this.height - 48; */
-					newPx.x = newPx.x - 10; 
-					newPx.y = newPx.y - this.height - 20;
+					newPx.x = newPx.x  - 5; 
+					newPx.y = newPx.y - this.height - 10;
 				}
 				else if (this.relativePosition == TL){
 					/* newPx.x = newPx.x - this.width + 45;
 					newPx.y = newPx.y - this.height - 48; */
-					newPx.x = newPx.x - this.width + 10;
-					newPx.y = newPx.y - this.height - 20;
+					newPx.x = newPx.x - this.width  - 5;
+					newPx.y = newPx.y - this.height - 10;
 				}
-				
-				/*
-				var top:Boolean = (this.relativePosition == TR || this.relativePosition == TL);
-				if(top){
-				newPx.y -= (this.height + this.height/2);
-				}
-				var left:Boolean = (this.relativePosition == BL || this.relativePosition == TL);
-				if(left){
-				newPx.x -= this.width;
-				}*/
-				
 				return newPx;
 			}
 			
@@ -248,15 +319,8 @@
 			}
 			
 			//Test GAB
-			public function get title():String{
-				return _title;
-			}
-			public function set title(value:String):void{
-				_title = value;
-			}
 			private function editPopup(event:MouseEvent):void{
 				this.setEditMode();
-				
 			}
 			
 			private function setViewMode():void{
@@ -272,15 +336,15 @@
 				this.setViewModeQuadrant("BR");
 				this.setViewModeQuadrant("BL");
 				
-				this.iconButtonEdit.y = (this.size.h-25);
-				this.iconButtonSave.y = (this.size.h-25);
-				this.iconButtonCancel.y = (this.size.h-25);
+				this.iconButtonEdit.y = (this.size.h-30);
+				this.iconButtonSave.y = (this.size.h-30);
+				this.iconButtonCancel.y = (this.size.h-30);
 				
 				//Hide Save and Cancel buttons
-				this.iconButtonCancel.visible = false;
-				this.iconButtonSave.visible = false;
+				hideIconButtonCancel();
+				hideIconButtonSave();
 				//Display Edit button
-				this.iconButtonEdit.visible = true;
+				showIconButtonEdit(); 
 				
 			}
 			
@@ -312,20 +376,12 @@
 				_textZone.htmlText = this._content;
 				_textZone.percentWidth=100;
 				_textZone.percentHeight = 100;
-
- 				var nbFields:int = _content.split("<br />").length;
+				_textZone.top=13;
+				_textZone.bottom=13;
 				
 				_panel.addElement(_textZone);
-				//Test
 				_panel.percentHeight = 100;
 				_panel.percentWidth = 100;
-				/* _panel.height = (this.HEIGHT -20);
-				_panel.width = (this.WIDTH + 20); */
-				var popupH:int = this.HEIGHT;
-				var panelH:int = _panel.height;
-				var textAreaH:int = _textZone.height;
-				//Alert.show(popupH + " - " + panelH + " - " + textAreaH);
-				//End Test
 			}
 			
 			private function setEditMode():void{
@@ -341,15 +397,19 @@
 				this.setEditModeQuadrant("BL");
 				
 				var _panel:Panel = this.getPanel();
-				this.iconButtonEdit.y = (this.size.h-25);
-				this.iconButtonSave.y = (this.size.h-25);
-				this.iconButtonCancel.y = (this.size.h-25);
+				this.iconButtonEdit.y = (this.size.h-30);
+				this.iconButtonSave.y = (this.size.h-30);
+				this.iconButtonCancel.y = (this.size.h-30);
 				
 				//Display Save and Cancel buttons
-				this.iconButtonCancel.visible = true;
-				this.iconButtonSave.visible = true;
+				/* if (_editionMode == "DRAG"){
+					this.iconButtonCancel.visible = true;
+					this.iconButtonSave.visible = true;					
+				} */
+				showIconButtonCancel();
+				showIconButtonSave();
 				//Hide Edit button
-				this.iconButtonEdit.visible = false;
+				hideIconButtonEdit();
 				
 			}
 			
@@ -361,7 +421,7 @@
 				var _fieldName:String;
 				var _fieldValue:String;
 				
-				_panel.title = this._title;
+				//_panel.title = this._title;
 				//The first thing to do it to empty the panel
 				_panel.removeAllElements();
 				var _array:Array = this._content.split("<br />");
@@ -403,10 +463,9 @@
 				_vBox.verticalScrollPolicy = "auto";
 				_vBox.height = (_panel.height-10);
 				_vBox.width = _panel.width;
+				_vBox.top=13;
+				_vBox.bottom=15;
 				_panel.addElement(_vBox);
-				
-				/* _panel.height = (_nbFields*35 + _nbFieldsMulti*70);
-				this.HEIGHT = (_nbFields*35 + _nbFieldsMulti*70); */
 				
 			}
 			
@@ -446,10 +505,12 @@
 			private function displayPopup(event:MouseEvent=null):void{
 				this.setViewMode();
 				//Hide Save and Cancel buttons
-				this.iconButtonCancel.visible = false;
-				this.iconButtonSave.visible = false;
+				/* this.iconButtonCancel.visible = false;
+				this.iconButtonSave.visible = false; */
+				hideIconButtonCancel();
+				hideIconButtonSave();
 				//Display Edit button
-				this.iconButtonEdit.visible = true;
+				showIconButtonEdit();
 			}
 			private function savePopup(event:MouseEvent):void{
 				if (this.mandatoryFieldVerification() == true){
@@ -483,10 +544,12 @@
 					}
 					*/
 					//Hide Save and Cancel buttons
-					this.iconButtonCancel.visible = false;
-					this.iconButtonSave.visible = false;
+					/* this.iconButtonCancel.visible = false;
+					this.iconButtonSave.visible = false; */
+					hideIconButtonCancel();
+					hideIconButtonSave();
 					//Display Edit button
-					this.iconButtonEdit.visible = true;
+					showIconButtonEdit();
 				}
 				else{
 					//A mandatory field hasn't been filled, save can't be done
@@ -512,7 +575,7 @@
 						var _hBox:HBox = (_vBox.getElementAt(i) as HBox);
 						
 						//A HBox is composed of one Text (index=0) and one TextInput (index=1)
-						if (_hBox.numElements == 2){
+						if (_hBox != null && _hBox.numElements == 2){
 							//Get the field label
 							var _text:Text = (_hBox.getElementAt(0) as Text);
 
@@ -581,100 +644,59 @@
 		<s:State name="br"/>
 		<s:State name="bl"/>
 	</s:states>
-	
-	<!--
-	<s:TextArea id="textAreaTR"
-				includeIn="tr"
-				horizontalScrollPolicy="auto"
-				verticalScrollPolicy="auto"
-				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
-				width="{WIDTH}"
-				height="{HEIGHT}"
-				skinClass="org.openscales.fx.popup.skin.PopupSkinTR"
-				editable="false"/>
-	<s:TextArea id="textAreaTL"
-				includeIn="tl"
-				horizontalScrollPolicy="auto"
-				verticalScrollPolicy="auto"
-				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
-				width="{WIDTH}"
-				height="{HEIGHT}"
-				skinClass="org.openscales.fx.popup.skin.PopupSkinTL"
-				editable="false"/>
-	<s:TextArea id="textAreaBR"
-				includeIn="br"
-				horizontalScrollPolicy="auto"
-				verticalScrollPolicy="auto"
-				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
-				width="{WIDTH}"
-				height="{HEIGHT}"
-				skinClass="org.openscales.fx.popup.skin.PopupSkinBR"
-				editable="false"/>
-	<s:TextArea id="textAreaBL"
-				includeIn="bl"
-				horizontalScrollPolicy="auto"
-				verticalScrollPolicy="auto"
-				textFlow="{TextConverter.importToFlow(this._content,TextConverter.TEXT_FIELD_HTML_FORMAT)}"
-				width="{WIDTH}"
-				height="{HEIGHT}"
-				skinClass="org.openscales.fx.popup.skin.PopupSkinBL"
-				editable="false"/>
-	-->
 	<!-- Test GAB -->
 	
 	<s:Panel id="panelTR"
 			 includeIn="tr"
 			 width="{WIDTH}"
-			 height="{HEIGHT}" 
+			 height="{HEIGHT-10}" 
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTR"/>
 			 
 			
 	<s:Panel id="panelTL"
 			 includeIn="tl"
 			 width="{WIDTH}"
-			 height="{HEIGHT}"
+			 height="{HEIGHT-50}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTL"/>
 	<s:Panel id="panelBR"
 			 includeIn="br"
 			 width="{WIDTH}"
-			 height="{HEIGHT}"
+			 height="{HEIGHT-50}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBR"/>
 	<s:Panel id="panelBL"
 			 includeIn="bl"
 			 width="{WIDTH}"
-			 height="{HEIGHT}"
+			 height="{HEIGHT-50}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBL"/>
 	<openscales:IconButton id="iconButtonCancel"
 						   x="{WIDTH-40}"
 						   y="3"
-						   icon="{new ButtonOpacity()}"
-						   iconOver="{new ButtonCloseOver()}"
-						   iconDown="{new ButtonCloseOver()}"
+						   icon="{_cancelIcon_Red}"
+						   iconOver="{_cancelIcon_Grey}"
+						   iconDown="{_cancelIcon_Grey}"
 						   toolTip="Display"
 						   click="displayPopup(event)"
 						   />
 	<openscales:IconButton id="iconButtonEdit"
 						   x="{WIDTH-40}"
 						   y="3"
-						   icon="{_editFeature}"
-						   iconOver="{new ButtonCloseOver()}"
-						   iconDown="{new ButtonCloseOver()}"
+						   icon="{_editFeature2}"
 						   toolTip="Edit"
 						   click="editPopup(event)"
 						   />
 	<openscales:IconButton id="iconButtonSave"
 						   x="{WIDTH-60}"
 						   y="3"
-						   icon="{new ButtonOpacity()}"
-						   iconOver="{new ButtonCloseOver()}"
-						   iconDown="{new ButtonCloseOver()}"
+						   icon="{_saveDiskIcon}"
+						   iconOver="{_saveDiskIcon_red}"
+						   iconDown="{_saveDiskIcon_red}"
 						   toolTip="Save"
 						   click="savePopup(event)"
 						   />
 	<!-- Fin test GAB -->
 	<openscales:IconButton id="close"
 						   x="{WIDTH-20}"
-						   y="3"
+						   y="{17.5}"
 						   icon="{new ButtonCloseUp()}"
 						   iconOver="{new ButtonCloseOver()}"
 						   iconDown="{new ButtonCloseOver()}"
