@@ -63,6 +63,10 @@
 			[Embed(source="/assets/images/icons/Icons-08.png")]
 			private var _editFeature:Class;
 			
+			private var _mode:String = "VIEW";
+			private var _initialized:Boolean;
+			
+			
 			private function create():void{
 				/*
 				if ((this.loc != null) && (this.fxmap.map != null)) {
@@ -100,7 +104,17 @@
 					//this.iconButtonSave.visible = false;
 				}
 				this.fxmap.addFxPopup(this,true);
-				this.setViewMode();
+				this.changeMode();
+				_initialized = true;
+			}
+			
+			private function changeMode():void{
+				if(_mode == "EDIT"){
+					setEditMode();
+				}
+				else if(_mode == "VIEW"){
+					setViewMode();
+				}
 			}
 			
 			
@@ -254,7 +268,14 @@
 			public function set title(value:String):void{
 				_title = value;
 			}
-			private function editPopup(event:MouseEvent):void{
+			
+			public function set mode(value:String):void{
+				_mode = value;
+				if(_initialized)
+					changeMode();
+			}
+			
+			private function editPopup(event:MouseEvent=null):void{
 				this.setEditMode();
 				
 			}
