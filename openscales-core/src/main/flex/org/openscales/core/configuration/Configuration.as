@@ -406,6 +406,14 @@ package org.openscales.core.configuration
 						wfsLayer.filter = this._filter[xmlNode.@filter.toString()];
 				}
 				
+				if (String(xmlNode.@featureNS) != "") {
+					wfsLayer.featureNS = String(xmlNode.@featureNS);
+				}
+				
+				if (String(xmlNode.@featurePrefix) != "") {
+					wfsLayer.featurePrefix = String(xmlNode.@featurePrefix);
+				}
+				
 				
 				if (String(xmlNode.@minZoomLevel) != "" ) {
 					wfsLayer.minZoomLevel = Number(xmlNode.@minZoomLevel);

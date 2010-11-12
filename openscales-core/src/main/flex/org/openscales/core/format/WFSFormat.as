@@ -75,7 +75,7 @@ package org.openscales.core.format
 				" xsi:schemaLocation=\"http://www.opengis.net/wfs "                        +
 				  this._featureNS                                                          +
 				" http://schemas.opengis.net/wfs/1.0.0/WFS-transaction.xsd\  "             +
-				"http://visu.sig.aw.atosorigin.com/text.xml \" " +
+				this.describeFeatureType +" \" " +
 				" xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\" >" +
 				"</" + this._wfsprefix + ":Transaction>");
 			

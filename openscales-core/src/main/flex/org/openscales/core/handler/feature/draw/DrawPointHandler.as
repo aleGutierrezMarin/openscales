@@ -4,6 +4,8 @@ package org.openscales.core.handler.feature.draw
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.layer.FeatureLayer;
@@ -58,27 +60,28 @@ package org.openscales.core.handler.feature.draw
 			
 				var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
 				var lonlat:Location = this.map.getLocationFromLayerPx(pixel);
-				
+				var feature:Feature;
 				
 				//todo change this bad way
                if(drawLayer.geometryType == "org.openscales.geometry::MultiPoint"){
 				   var multiPoint:MultiPoint = new MultiPoint();
 				   multiPoint.addPoint(lonlat.lon,lonlat.lat);
-				   var multiPointFeature:MultiPointFeature = new MultiPointFeature(multiPoint, null, style);
-				   multiPointFeature.name = id.toString(); id++;
-				   drawLayer.addFeature(multiPointFeature);
+				   feature = new MultiPointFeature(multiPoint, null, style);
+				   feature.name = id.toString(); id++;
+				   drawLayer.addFeature(feature);
 				   //must be after adding map
-				   multiPointFeature.draw();
+				   feature.draw();
 				   
 			   }else{
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
-				var pointFeature:PointFeature = new PointFeature(point, null, style);
-				pointFeature.name = id.toString();
+				feature = new PointFeature(point, null, style);
+				feature.name = id.toString();
 				id++;
-				drawLayer.addFeature(pointFeature);
+				drawLayer.addFeature(feature);
 				//must be after adding map
-				pointFeature.draw();
+				feature.draw();
 			   }
+			   this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,feature));
 			}
 		}
 	}

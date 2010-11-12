@@ -357,6 +357,14 @@ package org.openscales.core.layer.ogc
 			this._wfsFormat.featureNS = value;
 		}
 		
+		public function get featurePrefix():String {
+			return this._wfsFormat.featurePrefix;
+		}
+		
+		public function set featurePrefix(value:String):void {
+			this._wfsFormat.featurePrefix = value;
+		}
+		
 		public function get geometryColumn():String {
 			return this._geometryColumn;
 		}
