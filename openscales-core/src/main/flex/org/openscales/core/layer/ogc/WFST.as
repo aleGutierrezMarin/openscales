@@ -12,7 +12,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.filter.Comparison;
-	import org.openscales.core.format.FilerEncodingFormat;
+	import org.openscales.core.format.FilterEncodingFormat;
 	import org.openscales.core.layer.ogc.WFST.Transaction;
 	import org.openscales.core.request.XMLRequest;
 
@@ -61,7 +61,7 @@ package org.openscales.core.layer.ogc
 			var filterUrl:String ="";
 			if(_filter){
 				filterUrl = "&FILTER=";
-			var filterEncodingFormat:FilerEncodingFormat = new FilerEncodingFormat();
+			var filterEncodingFormat:FilterEncodingFormat = new FilterEncodingFormat();
 			  filterUrl = "(" + _filter.toXMLString() + ")";
 			  filterUrl += "(" + filterEncodingFormat.within("the_geom",this._wfsFormat.boxNode(this.featuresBbox)).toXMLString() + ")";
 			 //bbox are mutually exclusive with filter and featurid
