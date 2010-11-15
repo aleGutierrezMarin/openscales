@@ -142,6 +142,8 @@
 			}
 			public function set canBeClosed(value:Boolean):void{
 				_canBeClosed = value;
+				
+				this.close.visible = _canBeClosed;
 			}
 			public function get canBeClosed():Boolean{
 				return _canBeClosed;
@@ -336,8 +338,6 @@
 				}
 	
 			}
-			//Test GAB
-			
 			public function set mode(value:String):void{
 				_mode = value;
 				if(_initialized)
@@ -427,10 +427,6 @@
 				this.iconButtonCancel.y = (this.size.h-30);
 				
 				//Display Save and Cancel buttons
-				/* if (_editionMode == "DRAG"){
-					this.iconButtonCancel.visible = true;
-					this.iconButtonSave.visible = true;					
-				} */
 				showIconButtonCancel();
 				showIconButtonSave();
 				//Hide Edit button
@@ -446,7 +442,6 @@
 				var _fieldName:String;
 				var _fieldValue:String;
 				
-				//_panel.title = this._title;
 				//The first thing to do it to empty the panel
 				_panel.removeAllElements();
 				var _array:Array = this._content.split("<br />");
@@ -530,8 +525,6 @@
 			private function displayPopup(event:MouseEvent=null):void{
 				this.setViewMode();
 				//Hide Save and Cancel buttons
-				/* this.iconButtonCancel.visible = false;
-				this.iconButtonSave.visible = false; */
 				hideIconButtonCancel();
 				hideIconButtonSave();
 				//Display Edit button
@@ -569,8 +562,6 @@
 					}
 					*/
 					//Hide Save and Cancel buttons
-					/* this.iconButtonCancel.visible = false;
-					this.iconButtonSave.visible = false; */
 					hideIconButtonCancel();
 					hideIconButtonSave();
 					//Display Edit button
