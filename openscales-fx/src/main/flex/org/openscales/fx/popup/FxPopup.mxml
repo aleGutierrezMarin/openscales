@@ -69,6 +69,7 @@
 			private var _editFeature:Class; */
 			
 			private var _initialized:Boolean;
+			private var _canBeClosed:Boolean;
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/edit.png")]
@@ -139,7 +140,12 @@
 					setViewMode();
 				}
 			}
-			
+			public function set canBeClosed(value:Boolean):void{
+				_canBeClosed = value;
+			}
+			public function get canBeClosed():Boolean{
+				return _canBeClosed;
+			}
 			public function set editable(value:Boolean):void{
 				_editable = value;
 				if (_editable==true){
@@ -319,10 +325,16 @@
 			}
 			
 			public function closePopup(event:MouseEvent):void {
-				var target:Sprite = (event.target as Sprite);
-				target.removeEventListener(event.type, closePopup);
-				remove();
-				event.stopPropagation();
+				if (_canBeClosed){
+					var target:Sprite = (event.target as Sprite);
+					target.removeEventListener(event.type, closePopup);
+					remove();
+					event.stopPropagation();					
+				}
+				else {
+					Alert.show("Action non disponible");
+				}
+
 			}
 			
 			//Test GAB
