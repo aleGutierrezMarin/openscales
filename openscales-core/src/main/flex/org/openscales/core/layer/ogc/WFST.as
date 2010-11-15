@@ -4,14 +4,12 @@ package org.openscales.core.layer.ogc
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.basetypes.maps.HashMap;
-	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.Trace;
 	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.events.WFSTLayerEvent;
 	import org.openscales.core.feature.DescribeFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.State;
-	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.format.FilterEncodingFormat;
 	import org.openscales.core.layer.ogc.WFST.Transaction;
 	import org.openscales.core.request.XMLRequest;
@@ -19,11 +17,11 @@ package org.openscales.core.layer.ogc
 	public class WFST extends WFS
 	{
 		
+
 		private var _describeFeature:DescribeFeature = null;
 		
 		private var _callbackDescribeFeatureInfo:Function = null;
-		
-		
+
 		private var _transactionArray:Vector.<Transaction> = new Vector.<Transaction>;
 		
 
@@ -127,7 +125,8 @@ package org.openscales.core.layer.ogc
 			_describeFeature = value;
 		}
 		/**
-		 *save curent transaction 
+		 * Save curent transaction 
+		 * 
 		 * @param callBackTransaction
 		 * 
 		 */		
@@ -143,25 +142,23 @@ package org.openscales.core.layer.ogc
 			
 		}
 		/**
-		 * save feature without use interne process of class 
+		 * Save feature without use interne process of class 
+		 * 
 		 * @param features
 		 * 
 		 */		
-		public function saveTransaction2(features:Object):void{
-			//todo
-			
+		public function saveFeaturesTransaction(features:Object):void{
 			var xmlRequestTransaction:XMLRequest = 	new XMLRequest(this.url+"?TYPENAME=" 
 				+ this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
 			xmlRequestTransaction.postContent = this._wfsFormat.write(features);
 			xmlRequestTransaction.postContentType = "application/xml"; 
 			xmlRequestTransaction.send();
-			
-			
+
 		}
 		
 		
 		/**
-		 * read the responde of server
+		 * Read the responde of server
 		 * */
 		protected function onSuccessTransaction(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
@@ -172,18 +169,17 @@ package org.openscales.core.layer.ogc
 			  this._wfsFormat.readTransactionResponse(xmlReponse,this.transactionArray);
 			}
 		    this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_TRANSACTION_SUCCES,this));
-			
-			
+
 		}
 		/**
-		 * read error
+		 * Read error
 		 **/
 		protected function onFailureTransaction(event:Event):void {
-			
+			Trace.log("The transaction failed");
 		}
 		
 		/**
-		 * take the description of feature of layer
+		 * Take the description of feature of layer
 		 **/
 		public function getDescribeFeatureInfo(callback:Function = null):void{
 			
@@ -195,8 +191,9 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * read the responde of server
-		 * */
+		 * Read the responde of server
+		 * 
+		 */
 		protected function onSuccessDescribeFeature(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
 			var xmlReponse:XML =   new XML(loader.data);
@@ -208,29 +205,29 @@ package org.openscales.core.layer.ogc
 		}
 		
 		protected function onFailureDescribeFeature(event:Event):void {
-			
+			Trace.log("The describe feature transaction failed");
 		}
 		
 		/**
 		 * the client must negociate with the server which version is the better
 		 * */
 		protected function neagociateVersionWithServer():void{
-			
+			throw "Not yet implement ";
 		}
 		
 		/**
-		 * client does a request to lock a feature which want to edit.
+		 * Client does a request to lock a feature which want to edit.
 		 * So clien request server:
 		 * if the feature is locked , it can not edit the feature 
 		 * if the feature is not locked it can edit the feature
 		 * a transaction id, must be save to unlock feature
 		 * */
 		protected function lockFeature():void{
-			
+			throw "Not yet implement ";
 		}
 		
 		protected function updateIdAfterInsertTransaction():void{
-			
+			throw "Not yet implement ";
 		}
 
 		/**
@@ -242,7 +239,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * end of wfs-t
-		 * */
+		 * End of wfs-t
+		 */
 	}
 }
