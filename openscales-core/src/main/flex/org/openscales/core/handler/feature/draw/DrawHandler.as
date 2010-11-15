@@ -152,8 +152,6 @@ package org.openscales.core.handler.feature.draw
 				this.editionHandler.map = value;
 				this.selectFeaturesHandler.map = value;
 				this.dragHandler.map = value;
-				
-				
 			}
 		}
 		
@@ -177,7 +175,7 @@ package org.openscales.core.handler.feature.draw
 			
 		public function set mode(mode:int):void {
 				switch (mode) {
-					case 0:
+					case 0: //click on buton pan
 						selectFeaturesHandler.active = false;
 						pointHandler.active = false;
 						dragHandler.active = true;
@@ -190,7 +188,8 @@ package org.openscales.core.handler.feature.draw
 						editionHandler.active = false;
 						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.DISABLED));
 						break;
-					case 1:
+					
+					case 1: //click on button select
 						selectFeaturesHandler.active = true;
 						pointHandler.active = false;
 						if (pathHandler.active) {
@@ -203,7 +202,7 @@ package org.openscales.core.handler.feature.draw
 						editionHandler.active = false;
 						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.DISABLED));
 						break;
-
+					
 					case 2: //click on button point
 						if (drawType != "point") {
 							if (pathHandler.active) {
@@ -211,51 +210,54 @@ package org.openscales.core.handler.feature.draw
 							} else if (polygonHandler.active) {
 								this.finishPolygon();
 							}
-							pointHandler.active = true;
 							drawType = "point";
+							pointHandler.active = true;
 						}
 						dragHandler.active = false;
 						selectFeaturesHandler.active = false;
 						editionHandler.active = false;
 						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
 						break;
-
+					
 					case 3: //click on button path
 						if (drawType != "path") {
 							if (polygonHandler.active) {
 								this.finishPolygon();
 							}
+							drawType = "path";
 							pointHandler.active = false;
 							pathHandler.active = true;
 							editionHandler.active = false;
-							drawType = "path";
 						}
 						dragHandler.active = false;
 						selectFeaturesHandler.active = false;
 						editionHandler.active = false;
 						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
 						break;
-
+					
 					case 4: //click on button polygon
 						if (drawType != "polygon") {
 							if (pathHandler.active) {
 								this.finishPath();
 							}
+							drawType = "polygon";
 							pointHandler.active = false;
 							polygonHandler.active = true;
 							editionHandler.active = false;
-							drawType = "polygon";
 						}
 						dragHandler.active = false;
 						selectFeaturesHandler.active = false;
 						this.map.dispatchEvent(new DrawingEvent(DrawingEvent.ENABLED));
 						break;
-					case 5:
+					
+					case 5: //click on button edit
 						if (drawType != "") {
-							if (pathHandler.active)
+							if (pathHandler.active) {
 								this.finishPath();
-							else if (polygonHandler.active)
+							} else if (polygonHandler.active) {
 								this.finishPolygon();
+							}
+							drawType = "";
 						}
 						editionHandler.active = true;
 						dragHandler.active = false;
@@ -263,7 +265,6 @@ package org.openscales.core.handler.feature.draw
 						polygonHandler.active = false;
 						pointHandler.active = false;
 						pathHandler.active = false;
-						drawType = "";
 						dragHandler.active = false;
 						break;
 				}
@@ -273,30 +274,31 @@ package org.openscales.core.handler.feature.draw
 			 * User clicks on delete last feature button
 			 */
 			public function onDeleteLastClick(event:Event):void {
-				var last:Number = drawLayer.features.length - 1;
-				if(last == -1) return;
+				var drawLayerFeatures:Vector.<Feature> = drawLayer.features;
+				var last:Number = drawLayerFeatures.length - 1;
+				if (last < 0) {
+					return;
+				}
 				
 				var lastFeature:Feature = null;
-                var pointToDelete:org.openscales.geometry.Point;
-
+				var pointToDelete:org.openscales.geometry.Point;
 				if (drawType == "") {
-					drawLayer.removeFeature(drawLayer.features[last]);
+					drawLayer.removeFeature(drawLayerFeatures[last]);
 				} else if (drawType == "point") {
-					drawLayer.removeFeature(drawLayer.features[last]);
+					drawLayer.removeFeature(drawLayerFeatures[last]);
 				} else if (drawType == "path") {
 					//case the last feature is a LineString			
-					if (last >= 0 && drawLayer.features[last] is LineStringFeature) {
-						// we check if the lineString contain more than 2 points. If not, we delete the feature
-						if ((drawLayer.features[last] as LineStringFeature).lineString.componentsLength > 2) {
-							pointToDelete = (drawLayer.features[last] as LineStringFeature).lineString.getLastPoint();
-							(drawLayer.features[last] as LineStringFeature).lineString.removePoint(pointToDelete);
-							pathHandler.lastPoint = (drawLayer.features[last] as LineStringFeature).lineString.getLastPoint();
-
+					if (drawLayerFeatures[last] is LineStringFeature) {
+						// we check if the lineString contains more than 2 points. If not, we delete the feature
+						if ((drawLayerFeatures[last] as LineStringFeature).lineString.componentsLength > 2) {
+							pointToDelete = (drawLayerFeatures[last] as LineStringFeature).lineString.getLastPoint();
+							(drawLayerFeatures[last] as LineStringFeature).lineString.removePoint(pointToDelete);
+							pathHandler.lastPoint = (drawLayerFeatures[last] as LineStringFeature).lineString.getLastPoint();
 							//update the starting point of the temporary line
 							var pix:Pixel = pathHandler.map.getMapPxFromLocation(new Location(pathHandler.lastPoint.x, pathHandler.lastPoint.y));
 							pathHandler.startPoint = pix;
 						} else {
-							drawLayer.removeFeature(drawLayer.features[last]);
+							drawLayer.removeFeature(drawLayerFeatures[last]);
 							pathHandler.newFeature = true;
 							//remove the listener which draw temporary line
 							pathHandler.map.removeEventListener(MouseEvent.MOUSE_MOVE, pathHandler.temporaryLine);
@@ -304,23 +306,32 @@ package org.openscales.core.handler.feature.draw
 						// clear the temporary line
 						pathHandler.drawContainer.graphics.clear();
 					} else {
-						drawLayer.removeFeature(drawLayer.features[last]);
+						drawLayer.removeFeature(drawLayerFeatures[last]);
 					}
 				} else if (drawType == "polygon") {
-					if (last >= 0 && drawLayer.features[last] is PolygonFeature) {
-						// we check if the polygon contain more than 2 points. If not, we delete the feature									
-						if (((drawLayer.features[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing).componentsLength > 2) {
-							var lineRing:LinearRing = ((drawLayer.features[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing);
+					if (drawLayerFeatures[last] is PolygonFeature) {
+						// we check if the polygon contains more than 3 points. If not, we delete the feature									
+						if (((drawLayerFeatures[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing).componentsLength > 3) {
+							var lineRing:LinearRing = ((drawLayerFeatures[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing);
 							pointToDelete = lineRing.getLastPoint();
-							lineRing.removeComponent(pointToDelete);
+							lineRing.removePoint(pointToDelete);
+							/*polygonHandler.lastPoint = lineRing.getLastPoint();
+							//update the starting point of the temporary line
+							var pix:Pixel = polygonHandler.map.getMapPxFromLocation(new Location(polygonHandler.lastPoint.x, polygonHandler.lastPoint.y));
+							polygonHandler.startPoint = pix;*/
 						} else {
-							drawLayer.removeFeature(drawLayer.features[last]);
+							drawLayer.removeFeature(drawLayerFeatures[last]);
 							polygonHandler.newFeature = true;
+							//remove the listener which draw temporary line
+							polygonHandler.map.removeEventListener(MouseEvent.MOUSE_MOVE, polygonHandler.drawTemporaryPolygon);
 						}
+						// clear the temporary line
+						polygonHandler.drawContainer.graphics.clear();
 					} else {
-						drawLayer.removeFeature(drawLayer.features[last]);
+						drawLayer.removeFeature(drawLayerFeatures[last]);
 					}
 				}
+				
 				drawLayer.redraw();
 			}
 			

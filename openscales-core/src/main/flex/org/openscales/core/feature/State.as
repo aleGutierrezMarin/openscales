@@ -9,7 +9,6 @@ package org.openscales.core.feature
 		public static var INSERT:String = "Insert";
 		public static var UPDATE:String = "Update";
 		public static var DELETE:String = "Delete";
-
 		public static var EDIT:String="edit";
 	}
 }
