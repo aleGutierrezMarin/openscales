@@ -76,8 +76,6 @@
 				}
 			}
 
-			
-
 			/**
 			 * User clicks on delete all button
 			 */
@@ -98,7 +96,6 @@
 					this._drawHandler.map = this.map;
 				}
 			}
-
 
 			/**
 			 * Click on the togglebarbutton. Index button starts from 0.

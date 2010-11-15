@@ -10,6 +10,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoom;
 	import org.openscales.core.control.ScaleLine;
+	import org.openscales.core.format.FilterEncodingFormat;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.DragFeatureHandler;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
@@ -20,6 +21,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WFS;
+	import org.openscales.core.layer.ogc.WFST;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.ogc.WMSC;
 	import org.openscales.core.layer.osm.CycleMap;
@@ -53,6 +55,7 @@ package org.openscales.core.configuration
 		protected var _config:XML;
 		private var _map:Map;
 		protected var _styles:Object = {};
+		protected var _filter:Object = {};
 		
 		public function Configuration(config:XML = null) {
 			this.config = config;
@@ -82,6 +85,43 @@ package org.openscales.core.configuration
 			}
 			
 		}
+		
+		private function loadFilters():void {
+			var filters:XMLList=config.Filters.*;
+			var filter:XML;
+			var xmlNode:XML
+			for each(xmlNode in filters){
+				if(xmlNode.@id=="")
+					continue;
+				this._filter[xmlNode.@id.toString()] = this.parseFilter(xmlNode);
+				Trace.log("Find new filter");
+			}
+			
+		}
+		
+		protected function parseFilter(filter:XML):XML {
+			var filterFormat:FilterEncodingFormat = new FilterEncodingFormat();
+			
+			var propertyType:String,propertyName:String,literalValue:String;
+			
+			if(filter.@PropertyType != ""){
+				propertyType =  filter.@PropertyType;
+			}else{
+				return null;
+			}
+			if(filter.@PropertyName != ""){
+				propertyName = filter.@PropertyName;
+			}else{
+				return null;
+			}
+			if(filter.@LiteralValue != ""){
+				literalValue = filter.@LiteralValue;
+			}else{
+				return null;
+			}
+			
+			return filterFormat.addComparisonFilter(propertyType,propertyName,literalValue);
+      }
 		
 		protected function beginConfigureMap():void {
 			// Parse the XML (children of Layers, Handlers, Controls ...)    
@@ -250,10 +290,11 @@ package org.openscales.core.configuration
 				for(var i:int =0;i<resolution.length;i++){
 					resolution[i]=int(resolution[i]);
 				}   
-			}             
+			}   
+			var type:String = xmlNode.name();
 			// Case where the layer is WMS or WMSC
-			if(xmlNode.name()== "WMSC" || xmlNode.name()== "WMS"){
-				var type:String = xmlNode.name();
+			if(type== "WMSC" || type== "WMS"){
+				
 				
 				//Params for layer                 
 				var urlWMS:String=xmlNode.@url;
@@ -314,8 +355,7 @@ package org.openscales.core.configuration
 				}                 
 			}
 				// Case when the layer is WFS 
-			else if(xmlNode.name() == "WFS"){
-				
+			else if(type == "WFS" || type == "WFST" ){
 				//params for layer
 				var urlWfs:String=xmlNode.@url;
 				
@@ -334,7 +374,20 @@ package org.openscales.core.configuration
 				Trace.log("Configuration - Find WFS Layer : " + xmlNode.name());
 				
 				// We create the WFS Layer with all params
-				var wfsLayer:WFS = new WFS(name,urlWfs,xmlNode.@typename);
+				var wfsLayer:WFS; 
+				switch(type){
+					case "WFS":{
+						Trace.log("Configuration - Find WFS Layer : " + xmlNode.name());  
+						wfsLayer = new WFS(name,urlWfs,xmlNode.@typename);
+						break;
+					}
+						
+					case "WFST":{
+						Trace.log("Configuration - Find WFST Layer : " + xmlNode.name());
+						wfsLayer = new WFST(name,urlWfs,xmlNode.@typename);
+						break;
+					}                                  
+				}
 				wfsLayer.visible = visible;
 				wfsLayer.useCapabilities = useCapabilities;
 				wfsLayer.capabilities = capabilities;
@@ -347,6 +400,20 @@ package org.openscales.core.configuration
 					else
 						wfsLayer.style = this.getDefaultStyle(String(xmlNode.@style));
 				}
+				if(String(xmlNode.@filter) !="")
+				{
+					if(this._filter[xmlNode.@filter.toString()])
+						wfsLayer.filter = this._filter[xmlNode.@filter.toString()];
+				}
+				
+				if (String(xmlNode.@featureNS) != "") {
+					wfsLayer.featureNS = String(xmlNode.@featureNS);
+				}
+				
+				if (String(xmlNode.@featurePrefix) != "") {
+					wfsLayer.featurePrefix = String(xmlNode.@featurePrefix);
+				}
+				
 				
 				if (String(xmlNode.@minZoomLevel) != "" ) {
 					wfsLayer.minZoomLevel = Number(xmlNode.@minZoomLevel);
@@ -357,7 +424,7 @@ package org.openscales.core.configuration
 				wfsLayer.capabilitiesVersion = capabilitiesVersion;
 				layer=wfsLayer;
 			}
-			else if(xmlNode.name() == "Mapnik"){
+			else if(type == "Mapnik"){
 				Trace.log("Configuration - Find Mapnik Layer : " + xmlNode.name());
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik(xmlNode.name());
@@ -373,7 +440,7 @@ package org.openscales.core.configuration
 					cycleMap.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,cycleMap.projSrsCode);
 				layer=cycleMap;
 			}
-			else if(xmlNode.name() == "Maplint"){
+			else if(type == "Maplint"){
 				Trace.log("Configuration - Find Maplint Layer : " + xmlNode.name());
 				// We create the CycleMap Layer with all params
 				var maplint:Maplint=new Maplint(xmlNode.name());
@@ -381,7 +448,7 @@ package org.openscales.core.configuration
 					maplint.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,maplint.projSrsCode);
 				layer=maplint;
 			}
-			else if(xmlNode.name() == "FeatureLayer"){
+			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
 				var featurelayer:FeatureLayer = new FeatureLayer(name);
 				featurelayer.projSrsCode = projSrsCode;
@@ -417,10 +484,13 @@ package org.openscales.core.configuration
 			//Init layer parameters
 			return layer;
 		}
+		
 		/**
 		 * 
-		 **/
-		
+		 * @param styleNode
+		 * @return 
+		 * 
+		 */		
 		protected function parseStyle(styleNode:XML):Style {
 			var style:Style = new Style();
 			var ruleNodes:XMLList = styleNode.rules.*;

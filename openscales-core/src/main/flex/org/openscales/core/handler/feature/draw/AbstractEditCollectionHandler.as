@@ -6,18 +6,19 @@ package org.openscales.core.handler.feature.draw
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 
 	/**
@@ -142,7 +143,10 @@ package org.openscales.core.handler.feature.draw
 							parentGeometry.addComponent(newVertice,indexOfFeatureCurrentlyDrag);
 		 				if(displayedVirtualVertices)
 							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	
-		 			} 				
+						    
+		 			} 	
+					//we change the state here beacause we are sur that feature has been modified
+					parentFeature.state = State.UPDATE;
 		 		}
 		 	}
 		 	//we add the new mouseEvent move and remove the MouseEvent on the draw Temporary feature
@@ -307,21 +311,24 @@ package org.openscales.core.handler.feature.draw
 		 	}
 		 	_layerToEdit.redraw();
 		 }
-		 /**
+		
+		/**
 		 * To find the index of feature currently dragged in it's geometry parent array
 		 * @param vectorfeature:PointFeature the dragged feature
-		 * */
-		 public function findIndexOfFeatureCurrentlyDrag(vectorfeature:PointFeature):Number{
-		 	var parentFeature:Feature=findVirtualVerticeParent(vectorfeature);
-		 var parentgeometry:ICollection=editionFeatureParentGeometry(vectorfeature,parentFeature.geometry as ICollection);
-		 	if(parentFeature && parentFeature.geometry && parentFeature.geometry is ICollection){
-		 		if(vectorfeature==AbstractEditCollectionHandler._pointUnderTheMouse){
-		 			return vectorfeature.getSegmentsIntersection(parentgeometry);
-		 		}
-		 		else return IsRealVertice(vectorfeature,parentgeometry);
-		 	}
-		 	return -1;
-		 }
+		 */
+		public function findIndexOfFeatureCurrentlyDrag(vectorfeature:PointFeature):Number {
+			var parentFeature:Feature = findVirtualVerticeParent(vectorfeature);
+			if (parentFeature && parentFeature.geometry && parentFeature.geometry is ICollection) {
+				var parentgeometry:ICollection = editionFeatureParentGeometry(vectorfeature, parentFeature.geometry as ICollection);
+				if (vectorfeature == AbstractEditCollectionHandler._pointUnderTheMouse) {
+					return vectorfeature.getSegmentsIntersection(parentgeometry);
+				} else {
+					return IsRealVertice(vectorfeature, parentgeometry);
+				}
+			}
+			return -1;
+		}
+		
 		 /**
 		 * To know if a dragged point is a under the mouse or is a vertice
 		 * if it's a point returns its index else returns -1

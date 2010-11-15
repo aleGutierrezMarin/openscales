@@ -5,8 +5,7 @@ package org.openscales.core.handler.feature.draw
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Util;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -19,6 +18,8 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	/**
 	 * This Handler is used for Path edition 
@@ -49,6 +50,7 @@ package org.openscales.core.handler.feature.draw
 		 	//The feature edited  is the parent of the virtual vertice
 		  	var featureEdited:Feature=findVirtualVerticeParent(vectorfeature as PointFeature);
 		 	if(featureEdited!=null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,featureEdited));	
 		 		return super.dragVerticeStop(vectorfeature);
 		 	}
 		 }
