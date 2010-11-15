@@ -69,7 +69,7 @@
 			private var _editFeature:Class; */
 			
 			private var _initialized:Boolean;
-			private var _canBeClosed:Boolean;
+			private var _canBeClosed:Boolean = true;
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/edit.png")]
@@ -329,14 +329,13 @@
 					var target:Sprite = (event.target as Sprite);
 					target.removeEventListener(event.type, closePopup);
 					remove();
-					event.stopPropagation();					
+					event.stopPropagation();				
 				}
-				else {
+				else{
 					Alert.show("Action non disponible");
 				}
-
+	
 			}
-			
 			//Test GAB
 			
 			public function set mode(value:String):void{
@@ -469,7 +468,7 @@
 						_fieldName = _fieldName.replace("<b>","");
 						_fieldName = _fieldName.replace("</b>","");
 						
-						if (_fieldName.search("Adresse") >=0 || _fieldName.search("Nom")>=0){
+						if (_fieldName.search("Adresse") >=0 || _fieldName.search("Nom") >=0){
 							_hBox = this.getEditionItem(_fieldName, _fieldValue, true, 4, true);
 							_nbFieldsMulti ++;
 						}
