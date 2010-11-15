@@ -166,7 +166,7 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
-    <classEntry path="org.openscales.core.format.FilerEncodingFormat"/>
+    <classEntry path="org.openscales.core.format.FilterEncodingFormat"/>
     <classEntry path="org.openscales.core.filter.Comparison"/>
   </includeClasses>
   <includeResources/>

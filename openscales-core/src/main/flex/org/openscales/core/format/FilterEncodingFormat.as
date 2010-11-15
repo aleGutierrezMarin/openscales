@@ -4,7 +4,7 @@ package org.openscales.core.format
 	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.layer.ogc.WFS;
 
-	public class FilerEncodingFormat extends Format
+	public class FilterEncodingFormat extends Format
 	{
 	
 		
@@ -12,7 +12,7 @@ package org.openscales.core.format
 		protected var _ogcns:String = "http://www.opengis.net/ogc";
 
 
-		public function FilerEncodingFormat()
+		public function FilterEncodingFormat()
 		{
 			super();
 		}

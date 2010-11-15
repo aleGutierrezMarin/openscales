@@ -10,7 +10,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoom;
 	import org.openscales.core.control.ScaleLine;
-	import org.openscales.core.format.FilerEncodingFormat;
+	import org.openscales.core.format.FilterEncodingFormat;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.DragFeatureHandler;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
@@ -100,7 +100,7 @@ package org.openscales.core.configuration
 		}
 		
 		protected function parseFilter(filter:XML):XML {
-			var filterFormat:FilerEncodingFormat = new FilerEncodingFormat();
+			var filterFormat:FilterEncodingFormat = new FilterEncodingFormat();
 			
 			var propertyType:String,propertyName:String,literalValue:String;
 			
