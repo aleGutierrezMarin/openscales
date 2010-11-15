@@ -69,6 +69,7 @@
 			private var _editFeature:Class; */
 			
 			private var _initialized:Boolean;
+			private var _canBeClosed:Boolean = true;
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/edit.png")]
@@ -140,6 +141,12 @@
 				}
 			}
 			
+			public function set canBeClosed(value:Boolean):void{
+				_canBeClosed = value;
+			}
+			public function get canBeClosed():Boolean{
+				return _canBeClosed;
+			}
 			public function set editable(value:Boolean):void{
 				_editable = value;
 				if (_editable==true){
@@ -319,12 +326,17 @@
 			}
 			
 			public function closePopup(event:MouseEvent):void {
-				var target:Sprite = (event.target as Sprite);
-				target.removeEventListener(event.type, closePopup);
-				remove();
-				event.stopPropagation();
+				if (_canBeClosed){
+					var target:Sprite = (event.target as Sprite);
+					target.removeEventListener(event.type, closePopup);
+					remove();
+					event.stopPropagation();				
+				}
+				else{
+					Alert.show("Action non disponible");
+				}
+	
 			}
-			
 			//Test GAB
 			
 			public function set mode(value:String):void{
@@ -457,7 +469,7 @@
 						_fieldName = _fieldName.replace("<b>","");
 						_fieldName = _fieldName.replace("</b>","");
 						
-						if (_fieldName.search("Adress") >=0){
+						if (_fieldName.search("Adresse") >=0 || _fieldName.search("Nom") >=0){
 							_hBox = this.getEditionItem(_fieldName, _fieldValue, true, 4, true);
 							_nbFieldsMulti ++;
 						}
@@ -576,7 +588,7 @@
 			 * If so, return TRUE.
 			 * If not, return FALSE.
 			 **/
-			private function mandatoryFieldVerification():Boolean{
+			public function mandatoryFieldVerification():Boolean{
 				var _panel:Panel = this.getPanel();
 				
 				if (_panel.numElements == 1){
