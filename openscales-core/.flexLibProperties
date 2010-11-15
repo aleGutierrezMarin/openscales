@@ -15,6 +15,11 @@
     <classEntry path="org.openscales.core.basetypes.maps.HashMapEntry"/>
     <classEntry path="org.openscales.core.basetypes.maps.IHashMapEntry"/>
     <classEntry path="org.openscales.core.basetypes.maps.IMap"/>
+    <classEntry path="org.openscales.core.basetypes.trees.BinaryTree"/>
+    <classEntry path="org.openscales.core.basetypes.trees.ITree"/>
+    <classEntry path="org.openscales.core.basetypes.trees.ITreeNode"/>
+    <classEntry path="org.openscales.core.basetypes.trees.QuadTree"/>
+    <classEntry path="org.openscales.core.basetypes.trees.TreeNode"/>
     <classEntry path="org.openscales.core.configuration.Configuration"/>
     <classEntry path="org.openscales.core.configuration.IConfiguration"/>
     <classEntry path="org.openscales.core.control.Control"/>
@@ -42,6 +47,8 @@
     <classEntry path="org.openscales.core.events.OpenScalesEvent"/>
     <classEntry path="org.openscales.core.events.TileEvent"/>
     <classEntry path="org.openscales.core.events.TraceEvent"/>
+    <classEntry path="org.openscales.core.events.WFSTFeatureEvent"/>
+    <classEntry path="org.openscales.core.events.WFSTLayerEvent"/>
     <classEntry path="org.openscales.core.events.ZoomBoxEvent"/>
     <classEntry path="org.openscales.core.feature.CustomMarker"/>
     <classEntry path="org.openscales.core.feature.Feature"/>
@@ -103,6 +110,8 @@
     <classEntry path="org.openscales.core.layer.capabilities.WMS110"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS111"/>
     <classEntry path="org.openscales.core.layer.ogc.WFS"/>
+    <classEntry path="org.openscales.core.layer.ogc.WFST.Transaction"/>
+    <classEntry path="org.openscales.core.layer.ogc.WFST"/>
     <classEntry path="org.openscales.core.layer.ogc.WMS"/>
     <classEntry path="org.openscales.core.layer.ogc.WMSC"/>
     <classEntry path="org.openscales.core.layer.osm.CycleMap"/>
@@ -148,6 +157,7 @@
     <classEntry path="org.openscales.core.tile.ImageTile"/>
     <classEntry path="org.openscales.core.tile.Tile"/>
     <classEntry path="org.openscales.core.MapTest"/>
+    <classEntry path="org.openscales.core.basetypes.TreeTest"/>
     <classEntry path="org.openscales.core.configuration.ConfigurationTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
@@ -156,12 +166,8 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
-    <classEntry path="org.openscales.core.basetypes.trees.ITreeNode"/>
-    <classEntry path="org.openscales.core.basetypes.trees.ITree"/>
-    <classEntry path="org.openscales.core.basetypes.trees.QuadTree"/>
-    <classEntry path="org.openscales.core.basetypes.trees.BinaryTree"/>
-    <classEntry path="org.openscales.core.basetypes.trees.TreeNode"/>
-    <classEntry path="org.openscales.core.basetypes.TreeTest"/>
+    <classEntry path="org.openscales.core.format.FilterEncodingFormat"/>
+    <classEntry path="org.openscales.core.filter.Comparison"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

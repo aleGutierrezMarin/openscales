@@ -5,8 +5,7 @@ package org.openscales.core.handler.feature.draw
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Util;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.MultiPolygonFeature;
@@ -18,6 +17,8 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * This Handler is used for polygon edition 
@@ -50,7 +51,8 @@ package org.openscales.core.handler.feature.draw
 		 	var featureEdited:Feature=findVirtualVerticeParent(vectorfeature as PointFeature);
 		 	if(featureEdited!=null && (featureEdited is PolygonFeature || featureEdited is MultiPolygonFeature)){
 		 		 super.dragVerticeStop(vectorfeature);
-		 	}
+				 this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,featureEdited));	 
+			}
 		 }
 		  /**
 		 * @inheritDoc 

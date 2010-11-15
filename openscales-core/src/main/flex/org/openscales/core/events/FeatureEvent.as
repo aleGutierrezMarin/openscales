@@ -111,6 +111,16 @@ package org.openscales.core.events
 		 * Event type dispatched when a feature is selected, and we want to update information in FeatureInfo component
 		 */
 		 public static const FEATURE_SHOW_INFORMATIONS:String="org.openscales.feature.showinformations";
+		 
+		 /**
+		  * Event type dispatched when a feature is finished to be drawn
+		  */
+		 public static const FEATURE_DRAWING_END:String="org.openscales.feature.drawingend";
+		 
+		 /**
+		  * Event type dispatched when a feature is finished to be edited
+		  */
+		 public static const FEATURE_EDITED_END:String="org.openscales.feature.editedend";
 		
 		/**
 		 * FeatureEvent constructor
