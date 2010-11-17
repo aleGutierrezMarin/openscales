@@ -1,8 +1,10 @@
 package org.openscales.core.format
 {
+	
 	import org.openscales.core.Trace;
 	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.layer.ogc.WFS;
+	import org.openscales.geometry.basetypes.Bounds;
 
 	public class FilterEncodingFormat extends Format
 	{
@@ -30,25 +32,32 @@ package org.openscales.core.format
 	
 		 public function addComparisonFilter(PropertyType:String,PropertyName:String,LiteralValue:String):XML{
 			 var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
-				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">"+
-				 "</" + this._ogcprefix + ":Filter>");
+				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Filter>");
+			 var and:XML = new XML(
+				 "<" + this._ogcprefix + ":And xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":And>");
 			 switch (PropertyType) {
 				 case Comparison.EQUAL_TO:
-					 filterNode.appendChild(this.equalTo(PropertyName,LiteralValue));
+					 and.appendChild(this.equalTo(PropertyName,LiteralValue));
 					 break;
 				 case Comparison.NOT_EQUAL_TO:
-					 filterNode.appendChild(this.notEqualTo(PropertyName,LiteralValue));
+					 and.appendChild(this.notEqualTo(PropertyName,LiteralValue));
 					 break;
 				 case Comparison.LESS_THAN:
-					 filterNode.appendChild(this.lessThan(PropertyName,LiteralValue));
+					 and.appendChild(this.lessThan(PropertyName,LiteralValue));
 					 break;
 				 case Comparison.GREATER_THAN:
-					 filterNode.appendChild(this.greaterThan(PropertyName,LiteralValue));
+					 and.appendChild(this.greaterThan(PropertyName,LiteralValue));
 					 break;
 					 }
+			 filterNode.appendChild(and);
 			 return filterNode;
 		 }
-	
+		 
+	     public function filterWithBbox(filter:XML,geom:String,bboxNodeGml:XML):XML{
+			var filterWith:XML = filter.copy();
+			filterWith.children()[0].appendChild(this.bbox(geom,bboxNodeGml));
+			 return  filterWith;
+		 }
 		 /**
 		  * Generate a propertyType @Comparison.EQUAL_TO xmlNode
 		  *
@@ -77,6 +86,20 @@ package org.openscales.core.format
 			 equalNode.appendChild(this.propertyName(PropertyName));
 			 equalNode.appendChild(gml);
 			 return equalNode;
+		 }
+		 
+		 public function bbox(PropertyName:String,gml:XML):XML {
+			 var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
+				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">"+
+				 "</" + this._ogcprefix + ":Filter>");
+			 
+			 var equalNode:XML = new XML("<" + this._ogcprefix + ":BBOX xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
+				 "</" + this._ogcprefix + ":BBOX>");
+			 
+			 equalNode.appendChild(this.propertyName(PropertyName));
+			 equalNode.appendChild(gml);
+			 filterNode.appendChild(equalNode);
+			 return filterNode;
 		 }
 		 
 		 /**

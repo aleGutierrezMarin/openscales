@@ -148,9 +148,7 @@ package org.openscales.core.format
 				this.sXML = null;
 				return;
 			}
-			
-			
-			
+
 		}
 		
 		
@@ -166,9 +164,13 @@ package org.openscales.core.format
 		
 		public function boxNode(bound:Bounds):XML{
 			
-			var boxNode:XML = new XML("<" + this._gmlprefix + ":Box xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" >" +
+			var boxNode:XML = new XML("<" + this._gmlprefix + ":Box xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
 				"</" + this._gmlprefix +":Box>");
-			boxNode.appendChild(this.buildCoordinatesNodeFromVector(new <Number>[bound.left,bound.bottom,bound.right,bound.top]));
+			var coodinateNode:XML = new XML("<" + this._gmlprefix + ":coordinates xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" >" +
+				"</" + this._gmlprefix +":coordinates>");
+			
+			coodinateNode.appendChild(this.buildCoordinatesWithoutProjSrsCode(new <Number>[bound.left,bound.bottom,bound.right,bound.top]));			
+			boxNode.appendChild(coodinateNode); 
 			return boxNode;
 		}
 		
@@ -456,7 +458,7 @@ package org.openscales.core.format
 				var linearRing:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
 				linearRing.appendChild(this.buildCoordinatesNode(geometry.componentByIndex(0)));
 				outerRing.appendChild(linearRing);
-				var length:uint = geometry.componentsLength;
+				length = geometry.componentsLength;
 				// 1 -> n linearing is innerBoundaryIs
 				if(length > 1){
 				 var innerRing:XML = new XML("<" + this._gmlprefix + ":innerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":innerBoundaryIs>");
@@ -572,9 +574,11 @@ package org.openscales.core.format
 			var path:String = "";
 			for (i = 0; i < j; i=i+2) {
 				if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
-					pointTemp = new Point(points[i],points[i+1]);
-					pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
-					path += pointTemp.x + "," + pointTemp.y + " ";
+					
+						pointTemp = new Point(points[i],points[i+1]);
+						pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
+						path += pointTemp.x + "," + pointTemp.y + " ";
+					
 				}else{
 					path += points[i] + "," + points[i+1] + " ";
 				}
@@ -583,8 +587,20 @@ package org.openscales.core.format
 			return path;
 		}
 		
+		public function buildCoordinatesWithoutProjSrsCode(points:Vector.<Number>):String {
+			
+			var j:int = points.length -1;
+			var i:int;
+			var pointTemp:Point;
+			var path:String = "";
+			for (i = 0; i < j; i=i+2) {
+					path += points[i] + "," + points[i+1] + " ";
+								
+			}
+			return path;
+		}
 		
-		
+			
 		
 		//Getters and Setters
 		

@@ -68,6 +68,7 @@ package org.openscales.core.configuration
 		public function configure():void {
 			this.map.reset();
 			this.loadStyles();
+			this.loadFilters();
 			this.beginConfigureMap();
 			this.middleConfigureMap();
 			this.endConfigureMap();
