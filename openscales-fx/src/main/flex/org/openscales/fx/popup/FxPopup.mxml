@@ -27,6 +27,7 @@
 			import mx.controls.Text;
 			import mx.effects.effectClasses.AddChildActionInstance;
 			import mx.events.CloseEvent;
+			import mx.formatters.DateFormatter;
 			import mx.graphics.codec.PNGEncoder;
 			import mx.utils.StringUtil;
 			
@@ -371,7 +372,7 @@
 				if(_feature.attributes["nom"] != undefined){
 					content = content + "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
 				}
-			
+		
 				//_content += addViewItemTo("nom");
 				_content += addViewItemTo("adresse");
 				_content += addViewItemTo("adresse_postale");
@@ -384,6 +385,14 @@
 				_content += addViewItemTo("formulaire_a_telech");
 				_content += addViewItemTo("accessibilite");
 				
+				if (_feature.attributes["date_modif"] != undefined){
+					//var _date:Date = new Date(_feature.attributes["date_modif"]);
+					//var _dateString:String = _date.getDate() +"-" + _date.getMonth() + "-" +_date.getFullYear();
+					var _dateString:String = _feature.attributes["date_modif"];
+					//_dateString += " " + _date.getHours() + "h" + _date.getMinutes();
+					_content +=  "<br /><i>Fiche modifiée le: " + _dateString.replace("T"," ") + "</i>";			
+				}
+				
 				var _textZone:Text = new Text();
 				_textZone.id = _tZoneID;
 				_textZone.htmlText = this._content;
@@ -393,6 +402,7 @@
 				_textZone.bottom=13;
 				
 				_panel.addElement(_textZone);
+				
 				_panel.percentHeight = 100;
 				_panel.percentWidth = 100;
 			}
@@ -586,7 +596,8 @@
 			}
 			
 			private function displayPopup(event:MouseEvent=null):void{
-				this.setViewMode();
+				//this.setViewMode();
+				this.mode = "VIEW";
 				//Hide Save and Cancel buttons
 				hideIconButtonCancel();
 				hideIconButtonSave();
@@ -621,6 +632,30 @@
 								_feature.attributes[_fieldName] = _value;
 							}
 						}
+						//Set "date_modif" column with current date
+						 var _date:Date = new Date();
+						 var _dateString:String = _date.getFullYear()+"-"+_date.getMonth()+"-"+_date.getDate();
+						 var _hours:String="";
+						 var _minutes:String="";
+						 var _seconds:String="";
+						 
+						 if (_date.getHours()< 10)
+							 _hours = "0"
+
+						 _hours += _date.getHours();
+						 
+						 if (_date.getMinutes() < 10)
+							 _minutes = "0";
+
+						 _minutes += _date.getMinutes();
+						 
+						 if (_date.getSeconds() < 10)
+							 _seconds = "0";
+						 
+						 _seconds += _date.getSeconds();
+						 //The "T" must be used in order for the query to be executed
+						 _dateString += "T" + _hours+":"+_minutes+":"+_seconds;
+						 _feature.attributes["date_modif"] = _dateString;  
 					}
 					//var _test:Object = _feature.attributes;
 					_featureOLD.attributes["active"] = 0;
@@ -633,11 +668,12 @@
 					hideIconButtonSave();
 					//Display Edit button
 					showIconButtonEdit();
+					return true;
 				}
 				else{
 					//A mandatory field hasn't been filled, save can't be done
 					Alert.show("Merci de renseigner les champs obligatoires.");
-					
+					return false;
 				}
 			}
 			private function featureClone(_value:Feature):Feature{
