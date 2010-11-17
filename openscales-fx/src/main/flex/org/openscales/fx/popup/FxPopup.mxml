@@ -482,6 +482,7 @@
 				addEditionItemTo("formulaire_a_telech", _vGroup);
 				addEditionItemTo("accessibilite", _vGroup);
 				
+				_vGroup.percentWidth = 95;
 				//Add a "Mandatory fields" message
 				var _text:Text = new Text();
 				_text.htmlText = "<font color='#FF0000'><b>(* Champs obligatoires)</b></font>";
@@ -498,6 +499,7 @@
 					_scroller.bottom = 15;	
 				}
 				_vGroup.clipAndEnableScrolling = true;
+				_vGroup.width = (_panel.width - 20);//(_panel.width - _scroller.width - _scroller.width);
 				_scroller.viewport = _vGroup;
 				_panel.addElement(_scroller);
 				
@@ -515,7 +517,8 @@
 						}
 						else{
 							_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue);
-						}							
+						}			
+						//_hGroup.width = (_vGroup.width*0.95);
 						_vGroup.addElement(_hGroup);													
 					}
 					
@@ -603,9 +606,8 @@
 				if (_mandatory){
 					_text.htmlText += "<FONT color='#FF0000'>*</FONT>";	
 				}
-				
 				textField.percentWidth = 100;
-				_text.percentWidth = 70;
+				_text.percentWidth = 50;
 				_hGroup.percentWidth = 95;
 				if (_value)
 					textField.text = _value;
