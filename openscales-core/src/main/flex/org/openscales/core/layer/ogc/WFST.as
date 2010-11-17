@@ -60,10 +60,9 @@ package org.openscales.core.layer.ogc
 			if(_filter){
 				filterUrl = "&FILTER=";
 			var filterEncodingFormat:FilterEncodingFormat = new FilterEncodingFormat();
-			  filterUrl = "(" + _filter.toXMLString() + ")";
-			  filterUrl += "(" + filterEncodingFormat.within("the_geom",this._wfsFormat.boxNode(this.featuresBbox)).toXMLString() + ")";
+			filterUrl += filterEncodingFormat.filterWithBbox(_filter,"the_geom",this._wfsFormat.boxNode(this.featuresBbox)).toXMLString();
 			 //bbox are mutually exclusive with filter and featurid
-			  this.params.bbox = null;
+			 this.params.bbox = null;
 			}
 			return super.getFullRequestString(altUrl) + filterUrl;
 		}
@@ -88,8 +87,7 @@ package org.openscales.core.layer.ogc
 			
 			this.map.removeEventListener(WFSTFeatureEvent.INSERT,this.addTransaction);
 			this.map.removeEventListener(WFSTFeatureEvent.UPDATE,this.addTransaction);
-			this.map.removeEventListener(WFSTFeatureEvent.DELETE,this.addTransaction);
-			
+			this.map.removeEventListener(WFSTFeatureEvent.DELETE,this.addTransaction);			
 			this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_REMOVED,this));
 			_describeFeature = null;
 			_transactionArray = null;
