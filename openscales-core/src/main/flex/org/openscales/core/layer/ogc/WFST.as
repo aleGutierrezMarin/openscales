@@ -156,6 +156,19 @@ package org.openscales.core.layer.ogc
 
 		}
 		
+		/**
+		 * cancel all current transaction 
+		 * @return 
+		 * 
+		 */		
+		public function cancelAllTransaction():void{
+			for(var i:uint=0;i<featureArray.length;i++ ){
+				featureArray[i].state = State.UNKNOWN;
+			}
+			featureArray = new Vector.<Feature>;
+			_transactionArray = new Vector.<Transaction>;
+		}
+		
 		
 		/**
 		 * Read the responde of server

@@ -145,8 +145,6 @@ package org.openscales.core.handler.feature.draw
 							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	
 						    
 		 			} 	
-					//we change the state here beacause we are sur that feature has been modified
-					parentFeature.state = State.UPDATE;
 		 		}
 		 	}
 		 	//we add the new mouseEvent move and remove the MouseEvent on the draw Temporary feature

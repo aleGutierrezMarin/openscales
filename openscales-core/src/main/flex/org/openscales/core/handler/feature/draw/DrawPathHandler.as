@@ -4,6 +4,7 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.State;
@@ -112,6 +113,7 @@ package org.openscales.core.handler.feature.draw
 				if(this._currentLineStringFeature!=null){
 					this._currentLineStringFeature.style=Style.getDefaultLineStyle();
 					this._currentLineStringFeature.state = State.INSERT;
+					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
 					drawLayer.redraw();
 				}
 			}	

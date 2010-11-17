@@ -322,10 +322,11 @@ package org.openscales.core.feature {
 				switch (this.state) {
 					case State.UNKNOWN:
 					case State.DELETE:
+						this._state = value;
 						if(this._layer != null && this._layer.map != null){
 							this._layer.map.dispatchEvent(new WFSTFeatureEvent(WFSTFeatureEvent.UPDATE,this));
 						}
-						this._state = value;
+						
 						break;
 					case State.UPDATE:
 					case State.INSERT:
