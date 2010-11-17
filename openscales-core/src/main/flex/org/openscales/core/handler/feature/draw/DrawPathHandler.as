@@ -4,21 +4,18 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.LineStringFeature;
-	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
-	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
-
+	
 	/**
 	 * This handler manage the function draw of the LineString (path).
 	 * Active this handler to draw a path.
@@ -39,7 +36,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * The LineStringfeature currently drawn
 		 * */
-		private var _currentLineStringFeature:MultiLineStringFeature=null;
+		private var _currentLineStringFeature:LineStringFeature=null;
 		/**
 		 * The last point of the lineString. 
 		 */
@@ -64,7 +61,7 @@ package org.openscales.core.handler.feature.draw
 		 * Handler which manage the doubleClick, to finalize the lineString
 		 */
 		private var _dblClickHandler:ClickHandler = new ClickHandler();
-
+		
 		/**
 		 * DrawPathHandler constructor
 		 *
@@ -85,7 +82,7 @@ package org.openscales.core.handler.feature.draw
 				this.map.addEventListener(MapEvent.MOVE_END, this.updateZoom);
 			} 
 		}
-
+		
 		override protected function unregisterListeners():void{
 			this._dblClickHandler.active = false;
 			if (this.map) {
@@ -107,16 +104,16 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function drawFinalPath():void{			
 			if(!newFeature){
-					newFeature = true;
-					//clear the temporary line
-					_drawContainer.graphics.clear();
-					this.map.removeEventListener(MouseEvent.MOUSE_MOVE,temporaryLine);
-					
-					if(this._currentLineStringFeature!=null){
-						this._currentLineStringFeature.style=Style.getDefaultLineStyle();
-						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
-						drawLayer.redraw();
-					}
+				newFeature = true;
+				//clear the temporary line
+				_drawContainer.graphics.clear();
+				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,temporaryLine);
+				
+				if(this._currentLineStringFeature!=null){
+					this._currentLineStringFeature.style=Style.getDefaultLineStyle();
+					this._currentLineStringFeature.state = State.INSERT;
+					drawLayer.redraw();
+				}
 			}	
 		}
 		
@@ -132,14 +129,10 @@ package org.openscales.core.handler.feature.draw
 			
 			//The user click for the first time
 			if(newFeature){
-			
 				_lineString = new LineString(new <Number>[point.x,point.y]);
 				lastPoint = point;
-				var tempVector:Vector.<Geometry> = new Vector.<Geometry>;
-				tempVector.push(_lineString);
-				var tempMulti:MultiLineString = new MultiLineString(tempVector);
 				//the current drawn linestringfeature
-				this._currentLineStringFeature= new MultiLineStringFeature(tempMulti,null, Style.getDrawLineStyle(),true);
+				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDrawLineStyle(),true);
 				this._currentLineStringFeature.name="path." + id.toString(); ++id;
 				drawLayer.addFeature(_currentLineStringFeature);
 				
@@ -183,7 +176,7 @@ package org.openscales.core.handler.feature.draw
 				_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));
 			}
 		}
-
+		
 		//Getters and Setters		
 		public function get id():Number {
 			return _id;
@@ -191,18 +184,18 @@ package org.openscales.core.handler.feature.draw
 		public function set id(nb:Number):void {
 			_id = nb;
 		}
-
+		
 		public function get newFeature():Boolean {
 			return _newFeature;
 		}
-
+		
 		public function set newFeature(newFeature:Boolean):void {
 			if(newFeature == true) {
 				lastPoint = null;
 			}
 			_newFeature = newFeature;
 		}
-
+		
 		public function get lastPoint():Point {
 			return _lastPoint;
 		}

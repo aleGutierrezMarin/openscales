@@ -303,7 +303,7 @@ package org.openscales.core.format
 		 *http://localhost:8080/geoserver/wfs/DescribeFeatureType?typename=topp:ebo_couchelocale3l\" 
 		 **/
 		public function get describeFeatureType():String{
-			return this._layer.url + "/DescribeFeatureType?typename=" + this._layer.typename;
+			return this._layer.url + "/DescribeFeatureType?typename=" + this._layer.typename+"&version="+ this._version;
 		}
 
 	}

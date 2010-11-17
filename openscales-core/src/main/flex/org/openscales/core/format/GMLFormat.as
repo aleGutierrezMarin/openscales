@@ -452,8 +452,22 @@ package org.openscales.core.format
 			}
 			else if ( getQualifiedClassName(geometry) == "org.openscales.geometry::Polygon") {
 				gml = new XML("<" + this._gmlprefix + ":Polygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " ></" + this._gmlprefix + ":Polygon>");
-				this.buildPolygonNode(geometry as Polygon);
-				gml.appendChild(polygonMember);
+				var outerRing:XML = new XML("<" + this._gmlprefix + ":outerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":outerBoundaryIs>");
+				var linearRing:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
+				linearRing.appendChild(this.buildCoordinatesNode(geometry.componentByIndex(0)));
+				outerRing.appendChild(linearRing);
+				var length:uint = geometry.componentsLength;
+				// 1 -> n linearing is innerBoundaryIs
+				if(length > 1){
+				 var innerRing:XML = new XML("<" + this._gmlprefix + ":innerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":innerBoundaryIs>");
+				 var linearRingInner:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
+				 for(var i:uint=1;i <length;i++ ){
+					linearRingInner.appendChild(this.buildCoordinatesNode(geometry.componentByIndex(i)));
+				 }
+				 innerRing.appendChild(linearRingInner);
+				 gml.appendChild(innerRing);
+				}
+				gml.appendChild(outerRing);
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiLineString") 
 			{
@@ -476,10 +490,9 @@ package org.openscales.core.format
 				gml.appendChild(lineStringMember);
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::LineString") {
-				gml = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " >" +
+				gml  = new XML("<" + this._gmlprefix + ":LineString xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " +projectionxml + " >" +
 					"</" + this._gmlprefix + ":LineString>");
-				lineString.appendChild(this.buildCoordinatesNode(geometry));
-				gml.appendChild(lineString);
+				gml.appendChild(this.buildCoordinatesNode(geometry));
 			}
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiPoint") {
 				
@@ -534,6 +547,15 @@ package org.openscales.core.format
 			 
 			  if (points) {
 				 path = buildCoordinatesNodeFromVector(points);
+				 if(geometry is LinearRing){
+					 if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
+						 var pointTemp:Point = new Point(points[0],points[1]);
+						 pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
+						 path += pointTemp.x + "," + pointTemp.y + " ";
+					 }else{
+					   path += points[0] + "," + points[1] + " ";
+					 }
+				 }
 			  }
 			}
 			
