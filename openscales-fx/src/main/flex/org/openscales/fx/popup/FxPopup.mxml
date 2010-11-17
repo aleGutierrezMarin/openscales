@@ -31,6 +31,8 @@
 			import mx.utils.StringUtil;
 			
 			import org.openscales.core.feature.Feature;
+			//import org.openscales.core.feature.State;
+			import org.openscales.core.layer.ogc.WFST;
 			import org.openscales.fx.FxMap;
 			import org.openscales.fx.popup.skin.PopupPanelSkinTR;
 			import org.openscales.geometry.basetypes.Bounds;
@@ -38,10 +40,14 @@
 			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.geometry.basetypes.Size;
 			
+			import spark.components.HGroup;
+			import spark.components.Scroller;
 			import spark.components.TextArea;
 			import spark.components.TextInput;
+			import spark.components.VGroup;
 			import spark.components.supportClasses.SkinnableTextBase;
 			import spark.utils.TextFlowUtil;
+			
 			//End GAB
 			
 			private var _feature:Feature = null;
@@ -380,6 +386,56 @@
 				 * The TextArea must not be editable by the user. 
 				 * */
 				var _panel:Panel = getPanel(_quadrant);
+				var _tZoneID:String;
+				if (_quadrant == "TR"){
+					_tZoneID = "textZoneTR";
+				}
+				else if (_quadrant == "TL"){
+					_tZoneID = "textZoneTL";
+				}
+				else if (_quadrant == "BR"){
+					_tZoneID = "textZoneBR";
+				}
+				else if (_quadrant == "BL"){
+					_tZoneID = "textZoneBL";
+				}				
+				//Before inserting the unique TextArea, empty the Panel.
+				_panel.removeAllElements();
+				//TEST
+				var _fieldLabel:String;
+				var _fieldValue:String;
+				_content = "";
+				//var _test:Object = _feature.attributes;
+				if(_feature.attributes["name"] != undefined){
+					content = content + "<b><font size='15'>" + _feature.attributes["name"] + "</font></b><br />";	
+				}
+				for(var attribute:String in _feature.attributes) {
+					_fieldLabel = getFieldLabelByName(attribute);
+					_fieldValue = _feature.attributes[attribute];
+					if (attribute != "name" && _fieldLabel != "" && _fieldValue != ""){						
+						_content += "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
+					}
+				}
+				//END TEST
+				var _textZone:Text = new Text();
+				_textZone.id = _tZoneID;
+				_textZone.htmlText = this._content;
+				_textZone.percentWidth=100;
+				_textZone.percentHeight = 100;
+				_textZone.top=13;
+				_textZone.bottom=13;
+				
+				_panel.addElement(_textZone);
+				_panel.percentHeight = 100;
+				_panel.percentWidth = 100;
+			}
+			/* private function setViewModeQuadrant(_quadrant:String):void{
+				/**
+				 * Given a quadrant, insert a TextArea to the quadrant's panel.
+				 * Fill the TextArea's textFlow with the content of FxPopup.
+				 * The TextArea must not be editable by the user. 
+				 * *//*
+				var _panel:Panel = getPanel(_quadrant);
 				var _tAreaID:String;
 				if (_quadrant == "TR"){
 					_tAreaID = "textAreaTR";
@@ -407,7 +463,7 @@
 				_panel.addElement(_textZone);
 				_panel.percentHeight = 100;
 				_panel.percentWidth = 100;
-			}
+			} */
 			
 			private function setEditMode():void{
 				/**
@@ -419,7 +475,7 @@
 				this.setEditModeQuadrant("TR");
 				this.setEditModeQuadrant("TL");
 				this.setEditModeQuadrant("BR");
-				this.setEditModeQuadrant("BL");
+				this.setEditModeQuadrant("BL"); 
 				
 				var _panel:Panel = this.getPanel();
 				this.iconButtonEdit.y = (this.size.h-30);
@@ -434,9 +490,125 @@
 				
 			}
 			
+			//Test new setEditModeQuadrant version
 			private function setEditModeQuadrant(_quadrant:String):void{
 				var _panel:Panel = this.getPanel(_quadrant);
-				var _hBox:HBox;
+				var _hGroup:HGroup;
+				var _vGroup:VGroup = new VGroup();
+			
+				//The first thing to do it to empty the panel
+				_panel.removeAllElements();
+				
+				addEditionItemTo("name", _vGroup);
+				addEditionItemTo("address", _vGroup);
+				addEditionItemTo("tel", _vGroup);
+				addEditionItemTo("schedule", _vGroup);
+				addEditionItemTo("mail1", _vGroup);
+				addEditionItemTo("mail2", _vGroup);
+				addEditionItemTo("website", _vGroup);
+				addEditionItemTo("webForm", _vGroup);
+				addEditionItemTo("downloadForm", _vGroup);
+				addEditionItemTo("accessibility", _vGroup);
+				//Add a "Mandatory fields" message
+				var _text:Text = new Text();
+				_text.htmlText = "<font color='#FF0000'><b>(* Champs obligatoires)</b></font>";
+				_vGroup.addElement(_text);
+				
+				//Scrolling treatment
+				var _scroller:Scroller = new Scroller();
+				if (_quadrant == "BL" || _quadrant == "BR"){
+					_scroller.top = 15;					
+					_scroller.bottom = 13;
+				}
+				else {
+					_scroller.top = 13;					
+					_scroller.bottom = 15;	
+				}
+				_vGroup.clipAndEnableScrolling = true;
+				_scroller.viewport = _vGroup;
+				_panel.addElement(_scroller);
+				
+			}
+			private function addEditionItemTo(_fieldName:String, _vGroup:VGroup):void{
+				var _hGroup:HGroup;
+				var _fieldLabel:String = getFieldLabelByName(_fieldName);
+				var _fieldValue:String = _feature.attributes[_fieldName];
+				
+				if (_fieldLabel != ""){
+					if (isFieldEditable(_fieldName)){
+						
+						if (isFieldMandatory(_fieldName)){
+							_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true, 4, true);
+						}
+						else{
+							_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue);
+						}							
+						_vGroup.addElement(_hGroup);													
+					}
+					
+				}
+			}
+			private function isFieldEditable(_fieldName:String):Boolean{
+				if (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date")
+					return true;
+				else
+					return false;
+			}
+			private function isFieldMandatory(_fieldName:String):Boolean{
+				if (_fieldName.search("address") >=0 || _fieldName.search("name") >=0)
+					return true;
+				else
+					return false;
+			}
+			private function getFieldLabelByName(_fieldName:String):String{
+				var _fieldLabel:String="";
+				switch(_fieldName){
+					case "name":
+						_fieldLabel = "Nom";
+						break;
+					case "address":
+						_fieldLabel = "Adresse";
+						break;
+					case "tel": 
+						_fieldLabel = "Téléphone";
+						break;
+					case "schedule":
+						_fieldLabel = "Horaire";
+						break;
+					case "mail1":
+						_fieldLabel = "Mail";
+						break;
+					case "mail2":
+						_fieldLabel = "Mail(2)";
+						break;
+					case "website":
+						_fieldLabel = "Site web";
+						break;
+					case "webForm":
+						_fieldLabel = "Formulaire web";
+						break;
+					case "downloadForm":
+						_fieldLabel = "Formulaire à télécharger";
+						break;
+					case "accessibility":
+						_fieldLabel = "Accessiblité";
+						break;
+					case "notes":
+						_fieldLabel = "Notes";
+						break;
+					case "code":
+						_fieldLabel = "code";
+						break;
+					case "date":
+						_fieldLabel = "Date de la dernière modification";
+						break;
+				}
+				return _fieldLabel;
+			}
+			//End Test
+			/* private function setEditModeQuadrant(_quadrant:String):void{
+				var _panel:Panel = this.getPanel(_quadrant);
+				var _hBox:HGroup;
 				var _nbFields:int = 0;
 				var _nbFieldsMulti:int = 0;
 				var _fieldName:String;
@@ -488,9 +660,10 @@
 				_panel.addElement(_vBox);
 				
 			}
-			
-			private function getEditionItem(_label:String, _value:String=null, _multiLine:Boolean=false, _nbLines:int=1, _mandatory:Boolean=false):HBox{
-				var _hBox:HBox = new HBox();
+			 */
+			private function getEditionItem(_fieldName:String, _label:String, _value:String=null, _multiLine:Boolean=false, _nbLines:int=1, _mandatory:Boolean=false):HGroup{
+				//var _hBox:HBox = new HBox();
+				var _hGroup:HGroup = new HGroup();
 				var textField:SkinnableTextBase;
 				var _text:Text = new Text();
 				
@@ -504,7 +677,7 @@
 					//Use a TextInput object
 					textField = new TextInput();
 				}
-				
+				_text.id = _fieldName;
 				_text.htmlText = "<b>" + _label + "</b>";
 				//Mandatory field treatment:
 				if (_mandatory){
@@ -512,14 +685,14 @@
 				}
 				
 				textField.percentWidth = 100;
-				_hBox.percentWidth = 95;
+				_hGroup.percentWidth = 95;
 				if (_value)
 					textField.text = _value;
 				
-				_hBox.addChild(_text);
-				_hBox.addChild(textField);
+				_hGroup.addElement(_text);
+				_hGroup.addElement(textField);
 				
-				return _hBox;
+				return _hGroup;
 			}
 			
 			private function displayPopup(event:MouseEvent=null):void{
@@ -531,12 +704,31 @@
 				showIconButtonEdit();
 			}
 			private function savePopup(event:MouseEvent):void{
+				var _featureOLD:Feature = _feature.clone();
+				_featureOLD.attributes["active"] = 0;
+				_featureOLD.state = "Update";//org.openscales.core.feature.State.UPDATE;
 				if (this.mandatoryFieldVerification() == true){
-					Alert.show("Sauvegarde en cours");
-					displayPopup();
-					/**
-					 * [To be completed] Call the Saving process method
-					 * */
+					//Alert.show("Sauvegarde en cours");
+					var _panel:Panel = getPanel();
+					if (_panel.numElements == 1){
+						var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
+						var _vGroup:VGroup = (_scroller.viewport as VGroup);
+						
+						for (var i:int=0; i<_vGroup.numElements; i++){
+							var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
+							//A HGroup is composed of one Text (index=0) and one TextInput (index=1)
+							if (_hGroup != null && _hGroup.numElements == 2){
+								//Get the field label
+								var _text:Text = (_hGroup.getElementAt(0) as Text);
+								var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
+								
+								var _fieldName:String = _text.id;
+								var _value:String = _textField.text;
+								
+								_feature.attributes[_fieldName] = _value;
+							}
+						}
+					}
 					/*
 					var _panel:Panel = this.getPanel();
 					if (_panel.numElements == 1){
@@ -561,6 +753,14 @@
 						}
 					}
 					*/
+					//var _test:Object = _feature.attributes;
+					/**
+					 * To be completed with saving method!!!!!!!!!!!
+					 * */
+					_feature.attributes["active"]=1;
+					_feature.state = "Insert";//org.openscales.core.feature.State.INSERT;
+					(_feature.layer as WFST).saveTransaction();
+					displayPopup();
 					//Hide Save and Cancel buttons
 					hideIconButtonCancel();
 					hideIconButtonSave();
@@ -582,23 +782,19 @@
 				var _panel:Panel = this.getPanel();
 				
 				if (_panel.numElements == 1){
-					//This only element of a Panel is a VBox
-					//var obj:Object = _panel.getElementAt(0);
-					var _vBox:VBox = (_panel.getElementAt(0) as VBox);
-					//A VBox can have 0-many elements, each element is a HBox object.
+					var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
+					var _vGroup:VGroup = (_scroller.viewport as VGroup);
 					
-					for (var i:int=0; i<_vBox.numElements; i++){
-						var _hBox:HBox = (_vBox.getElementAt(i) as HBox);
-						
-						//A HBox is composed of one Text (index=0) and one TextInput (index=1)
-						if (_hBox != null && _hBox.numElements == 2){
+					for (var i:int=0; i<_vGroup.numElements; i++){
+						var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
+						//A HGroup is composed of one Text (index=0) and one TextInput (index=1)
+						if (_hGroup != null && _hGroup.numElements == 2){
 							//Get the field label
-							var _text:Text = (_hBox.getElementAt(0) as Text);
-
+							var _text:Text = (_hGroup.getElementAt(0) as Text);
 							//Look for an "*" within the label
 							if (_text.text.indexOf("*") >= 0){
 								//Make sure that the corresponding value is not empty
-								var _textField:SkinnableTextBase = (_hBox.getElementAt(1) as SkinnableTextBase);
+								var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
 								if (_textField == null || StringUtil.trim(_textField.text) == "" || _textField.text == null){
 									//A mandatory field hasn't been filled, return FALSE
 									return false;
