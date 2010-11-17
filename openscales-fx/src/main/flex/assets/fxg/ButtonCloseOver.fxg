@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version="2.0" viewHeight="1000" viewWidth="1024" ATE:version="1.0.0" flm:version="1.0.0" d:using="" xmlns="http://ns.adobe.com/fxg/2008" xmlns:ATE="http://ns.adobe.com/ate/2009" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:flm="http://ns.adobe.com/flame/2008">
+	<Group y="-1">
+        <Group d:type="layer" d:userLabel="Calque 1">
+        	<Path data="M10.6 1.35Q12 2.75 12 4.7L12 7.25Q12 9.2 10.6 10.55 9.25 12 7.3 12L4.7 12Q2.75 12 1.35 10.55 0 9.2 0 7.25L0 4.7Q0 2.75 1.35 1.35 2.75 0 4.7 0L7.3 0Q9.25 0 10.6 1.35">
+            	<fill>
+              		<SolidColor color="#CCCCCC"/>
+            	</fill>
+          	</Path>
+          	<Path data="M10.6 1.35Q9.25 0 7.3 0L4.7 0Q2.75 0 1.35 1.35 0 2.75 0 4.7L0 7.25Q0 9.2 1.35 10.55 2.75 12 4.7 12L7.3 12Q9.25 12 10.6 10.55 12 9.2 12 7.25L12 4.7Q12 2.75 10.6 1.35">
+            	<stroke>
+              		<SolidColorStroke weight="0.1" scaleMode="none" pixelHinting="true" color="#9E6D1F"/>
+            	</stroke>
+          	</Path>
+        </Group>
+    </Group>
+	<Group>
+        <Group d:type="layer" d:userLabel="Calque 1" x="2.25" y="2.75">
+        	<Path data="M7.3 0 4.8 3.1 4.75 3.1 7.5 6.5 5.55 6.5 3.75 4.25 1.95 6.5 0 6.5 2.75 3.1 0.25 0 2.15 0 3.8 2.05 5.4 0 7.3 0">
+            	<fill>
+              		<SolidColor color="#9E6D1F"/>
+            	</fill>
+          	</Path>
+        </Group>
+    </Group>
+</Graphic>
