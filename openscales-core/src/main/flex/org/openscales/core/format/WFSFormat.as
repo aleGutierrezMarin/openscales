@@ -111,6 +111,11 @@ package org.openscales.core.format
 				                               " xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\">" +
 											   "</" + this._featureName + ">");
 			featureContainer.appendChild(geomContainer);
+			addAttributesInsert(featureContainer,feature);
+			return featureContainer;
+		}
+		
+		public function addAttributesInsert(featureContainer:XML,feature:Feature):void{
 			var attr:String;
 			for(attr in feature.attributes) {
 				//todo change this oldway xmlnodes
@@ -120,12 +125,38 @@ package org.openscales.core.format
 					nodename = attr.split(":")[1];
 				}    
 				var attrContainer:XML = new XML("<" + this._featurePrefix + ":" + nodename +
-					                            " xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\">" +
-												"</" + this._featurePrefix + ":" + nodename + ">");
+					" xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\">" +
+					"</" + this._featurePrefix + ":" + nodename + ">");
 				attrContainer.appendChild(attrText);
 				featureContainer.appendChild(attrContainer);
 			}    
-			return featureContainer;
+			
+		}
+		
+		public function addAttributesUpdate(featureContainer:XML,feature:Feature):void{
+			var attr:String;
+			for(attr in feature.attributes) {
+				
+				//todo change this oldway xmlnodes
+				var attrText:XMLNode = new XMLNode(2, feature.attributes[attr]); 
+				var nodename:String = attr;
+				if (attr.search(":") != -1) {
+					nodename = attr.split(":")[1];
+				}   
+				if(nodename == "coordinates") continue;
+				var propertyNode:XML = new XML("<" + this._wfsprefix + ":Property xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" >" +
+					"</" + this._wfsprefix + ":Property>");
+				var nameNode:XML = new XML("<" + this._wfsprefix + ":Name xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" >" +
+					"</" + this._wfsprefix + ":Name>");
+				var valueNode:XML = new XML("<" + this._wfsprefix + ":Value xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" >" +
+					"</" + this._wfsprefix + ":Value>");
+				nameNode.appendChild(nodename);
+				valueNode.appendChild(attrText);
+				propertyNode.appendChild(nameNode);
+				propertyNode.appendChild(valueNode)
+				featureContainer.appendChild(propertyNode);
+			}    
+			
 		}
 
 		/**
@@ -164,9 +195,10 @@ package org.openscales.core.format
 			var valueNode:XML = new XML("<wfs:Value xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\">" 
 				                        + this.buildGeometryNode(feature.geometry).toString() 
 										+ "</wfs:Value>");
-			
 			propertyNode.appendChild(valueNode);
 			updateNode.appendChild(propertyNode);
+			addAttributesUpdate(updateNode,feature);
+			
 			
 			var filterNode:XML = new XML("<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" ></ogc:Filter>");
 			var filterIdNode:XML = new XML("<ogc:FeatureId xmlns:ogc=\"http://www.opengis.net/ogc\" ></ogc:FeatureId>");

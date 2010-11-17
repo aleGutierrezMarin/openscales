@@ -593,7 +593,8 @@
 				//Display Edit button
 				showIconButtonEdit();
 			}
-			private function savePopup(event:MouseEvent):void{
+			
+			public function savePopup(event:MouseEvent=null):void{
 				//Clone feature BEFORE modification and desactivate it
 				var _featureOLD:Feature = featureClone(_feature);
 				
