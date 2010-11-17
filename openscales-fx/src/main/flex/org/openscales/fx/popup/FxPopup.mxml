@@ -30,8 +30,8 @@
 			import mx.graphics.codec.PNGEncoder;
 			import mx.utils.StringUtil;
 			
+			import org.openscales.core.events.WFSTLayerEvent;
 			import org.openscales.core.feature.Feature;
-			//import org.openscales.core.feature.State;
 			import org.openscales.core.layer.ogc.WFST;
 			import org.openscales.fx.FxMap;
 			import org.openscales.fx.popup.skin.PopupPanelSkinTR;
@@ -368,16 +368,22 @@
 				var _fieldValue:String;
 				_content = "";
 				//var _test:Object = _feature.attributes;
-				if(_feature.attributes["name"] != undefined){
-					content = content + "<b><font size='15'>" + _feature.attributes["name"] + "</font></b><br />";	
+				if(_feature.attributes["nom"] != undefined){
+					content = content + "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
 				}
-				for(var attribute:String in _feature.attributes) {
-					_fieldLabel = getFieldLabelByName(attribute);
-					_fieldValue = _feature.attributes[attribute];
-					if (attribute != "name" && _fieldLabel != "" && _fieldValue != ""){						
-						_content += "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
-					}
-				}
+			
+				//_content += addViewItemTo("nom");
+				_content += addViewItemTo("adresse");
+				_content += addViewItemTo("adresse_postale");
+				_content += addViewItemTo("telfax");
+				_content += addViewItemTo("horaire");
+				_content += addViewItemTo("courriel1");
+				_content += addViewItemTo("courriel2");
+				_content += addViewItemTo("site");
+				_content += addViewItemTo("formulaire");
+				_content += addViewItemTo("formulaire_a_telech");
+				_content += addViewItemTo("accessibilite");
+				
 				var _textZone:Text = new Text();
 				_textZone.id = _tZoneID;
 				_textZone.htmlText = this._content;
@@ -389,7 +395,17 @@
 				_panel.addElement(_textZone);
 				_panel.percentHeight = 100;
 				_panel.percentWidth = 100;
-			}			
+			}
+			private function addViewItemTo(_fieldName:String):String{
+				var _outPut:String="";
+				var _fieldLabel:String = getFieldLabelByName(_fieldName);
+				var _fieldValue:String = _feature.attributes[_fieldName];
+				if (_fieldName != "name" && _fieldLabel != "" && _fieldValue != "" && _fieldValue != null){						
+					_outPut = "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
+				}
+				
+				return _outPut;
+			}
 			private function setEditMode():void{
 				/**
 				 * Place the content of the FwPop. 
@@ -422,16 +438,18 @@
 				//The first thing to do it to empty the panel
 				_panel.removeAllElements();
 				
-				addEditionItemTo("name", _vGroup);
-				addEditionItemTo("address", _vGroup);
-				addEditionItemTo("tel", _vGroup);
-				addEditionItemTo("schedule", _vGroup);
-				addEditionItemTo("mail1", _vGroup);
-				addEditionItemTo("mail2", _vGroup);
-				addEditionItemTo("website", _vGroup);
-				addEditionItemTo("webForm", _vGroup);
-				addEditionItemTo("downloadForm", _vGroup);
-				addEditionItemTo("accessibility", _vGroup);
+				addEditionItemTo("nom", _vGroup);
+				addEditionItemTo("adresse", _vGroup);
+				addEditionItemTo("adresse_postale", _vGroup);
+				addEditionItemTo("telfax", _vGroup);
+				addEditionItemTo("horaire", _vGroup);
+				addEditionItemTo("courriel1", _vGroup);
+				addEditionItemTo("courriel2", _vGroup);
+				addEditionItemTo("site", _vGroup);
+				addEditionItemTo("formulaire", _vGroup);
+				addEditionItemTo("formulaire_a_telech", _vGroup);
+				addEditionItemTo("accessibilite", _vGroup);
+				
 				//Add a "Mandatory fields" message
 				var _text:Text = new Text();
 				_text.htmlText = "<font color='#FF0000'><b>(* Champs obligatoires)</b></font>";
@@ -472,13 +490,13 @@
 				}
 			}
 			private function isFieldEditable(_fieldName:String):Boolean{
-				if (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date")
+				if (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date_modif")
 					return true;
 				else
 					return false;
 			}
 			private function isFieldMandatory(_fieldName:String):Boolean{
-				if (_fieldName.search("address") >=0 || _fieldName.search("name") >=0)
+				if (_fieldName.search("adresse") >=0 || _fieldName.search("nom") >=0)
 					return true;
 				else
 					return false;
@@ -486,34 +504,37 @@
 			private function getFieldLabelByName(_fieldName:String):String{
 				var _fieldLabel:String="";
 				switch(_fieldName){
-					case "name":
+					case "nom":
 						_fieldLabel = "Nom";
 						break;
-					case "address":
+					case "adresse":
 						_fieldLabel = "Adresse";
 						break;
-					case "tel": 
-						_fieldLabel = "Téléphone";
+					case "adresse_postale":
+						_fieldLabel = "Adresse postale";
 						break;
-					case "schedule":
+					case "telfax": 
+						_fieldLabel = "Tél/Fax";
+						break;
+					case "horaire":
 						_fieldLabel = "Horaire";
 						break;
-					case "mail1":
+					case "courriel1":
 						_fieldLabel = "Mail";
 						break;
-					case "mail2":
+					case "courriel2":
 						_fieldLabel = "Mail(2)";
 						break;
-					case "website":
+					case "site":
 						_fieldLabel = "Site web";
 						break;
-					case "webForm":
+					case "formulaire":
 						_fieldLabel = "Formulaire web";
 						break;
-					case "downloadForm":
+					case "formulaire_a_telech":
 						_fieldLabel = "Formulaire à télécharger";
 						break;
-					case "accessibility":
+					case "accessibilite":
 						_fieldLabel = "Accessiblité";
 						break;
 					case "notes":
@@ -522,7 +543,7 @@
 					case "code":
 						_fieldLabel = "code";
 						break;
-					case "date":
+					case "date_modif":
 						_fieldLabel = "Date de la dernière modification";
 						break;
 				}
@@ -573,9 +594,11 @@
 				showIconButtonEdit();
 			}
 			private function savePopup(event:MouseEvent):void{
-				var _featureOLD:Feature = _feature.clone();
-				_featureOLD.attributes["active"] = 0;
-				_featureOLD.state = "Update";//org.openscales.core.feature.State.UPDATE;
+				//Clone feature BEFORE modification and desactivate it
+				var _featureOLD:Feature = featureClone(_feature);
+				
+								
+				//Set new attributs data
 				if (this.mandatoryFieldVerification() == true){
 					//Alert.show("Sauvegarde en cours");
 					var _panel:Panel = getPanel();
@@ -599,9 +622,10 @@
 						}
 					}
 					//var _test:Object = _feature.attributes;
-					_feature.attributes["active"]=1;
-					_feature.state = "Insert";//org.openscales.core.feature.State.INSERT;
-					(_feature.layer as WFST).saveTransaction();
+					_featureOLD.attributes["active"] = 0;
+					this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
+					_featureOLD.state = "Update";//org.openscales.core.feature.State.UPDATE;
+					
 					displayPopup();
 					//Hide Save and Cancel buttons
 					hideIconButtonCancel();
@@ -614,6 +638,25 @@
 					Alert.show("Merci de renseigner les champs obligatoires.");
 					
 				}
+			}
+			private function featureClone(_value:Feature):Feature{
+				var _nFeature:Feature = _value.clone();
+				_nFeature.layer = _value.layer;
+				
+				for(var attribute:String in _value.attributes) {
+					_nFeature.attributes[attribute] = _value.attributes[attribute];
+				}
+				return _nFeature;
+			}
+			private function whenUpdateTransaction(event:WFSTLayerEvent):void{
+				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
+				this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
+				_feature.attributes["active"]=1;
+				_feature.state = "Insert";
+			}
+			private function whenInsertTransaction(event:WFSTLayerEvent):void{
+				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
+				(_feature.layer as WFST).saveTransaction();
 			}
 			/**
 			 * mandatoryFieldVerification: Check that all mandatory fields have none empty value.
