@@ -188,6 +188,7 @@ package org.openscales.core.layer.ogc
 		 * Read error
 		 **/
 		protected function onFailureTransaction(event:Event):void {
+			this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_TRANSACTION_FAIL,this));
 			Trace.log("The transaction failed");
 		}
 		
