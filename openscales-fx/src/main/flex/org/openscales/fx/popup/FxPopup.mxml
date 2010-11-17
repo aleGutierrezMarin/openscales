@@ -25,6 +25,7 @@
 			import mx.containers.VBox;
 			import mx.controls.Alert;
 			import mx.controls.Text;
+			import mx.controls.scrollClasses.ScrollBar;
 			import mx.effects.effectClasses.AddChildActionInstance;
 			import mx.events.CloseEvent;
 			import mx.formatters.DateFormatter;
@@ -47,6 +48,7 @@
 			import spark.components.TextInput;
 			import spark.components.VGroup;
 			import spark.components.supportClasses.SkinnableTextBase;
+			import spark.core.IViewport;
 			import spark.utils.TextFlowUtil;
 						
 			private var _feature:Feature = null;
@@ -393,14 +395,34 @@
 					_content +=  "<br /><i>Fiche modifiée le: " + _dateString.replace("T"," ") + "</i>";			
 				}
 				
-				var _textZone:Text = new Text();
+				//Text version
+				/* var _textZone:Text = new Text();
 				_textZone.id = _tZoneID;
 				_textZone.htmlText = this._content;
 				_textZone.percentWidth=100;
 				_textZone.percentHeight = 100;
 				_textZone.top=13;
 				_textZone.bottom=13;
+				var _scroll:Scroller = new Scroller();
+				var _group:Group = new Group();
+				_group.addElement(_textZone);
+				_group.percentHeight = 100;
+				_scroll.viewport = _group;
+				_panel.addElement(_scroll); */
+				//END 
 				
+				//TextArea version
+				 var _textZone:TextArea = new TextArea();
+				_textZone.id = _tZoneID;
+				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				_textZone.percentWidth=100;
+				_textZone.percentHeight = 100;
+				_textZone.top=13;
+				_textZone.bottom=13;
+				_textZone.editable = false;
+				_textZone.setStyle("borderVisible", false); 
+				//END
+			
 				_panel.addElement(_textZone);
 				
 				_panel.percentHeight = 100;
@@ -583,9 +605,8 @@
 				}
 				
 				textField.percentWidth = 100;
-				/* _text.percentWidth = 60;
-				textField.percentWidth = 100; */ 
-				_hGroup.percentWidth = 100;
+				_text.percentWidth = 70;
+				_hGroup.percentWidth = 95;
 				if (_value)
 					textField.text = _value;
 				
