@@ -605,9 +605,10 @@
 				showIconButtonEdit();
 			}
 			
-			public function savePopup(event:MouseEvent=null):void{
+			public function savePopup(event:MouseEvent=null):Boolean{
 				//Clone feature BEFORE modification and desactivate it
-				var _featureOLD:Feature = featureClone(_feature);
+				if (event != null)
+					var _featureOLD:Feature = featureClone(_feature);
 				
 								
 				//Set new attributs data
@@ -657,10 +658,13 @@
 						 _dateString += "T" + _hours+":"+_minutes+":"+_seconds;
 						 _feature.attributes["date_modif"] = _dateString;  
 					}
-					//var _test:Object = _feature.attributes;
-					_featureOLD.attributes["active"] = 0;
-					this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
-					_featureOLD.state = "Update";//org.openscales.core.feature.State.UPDATE;
+					if (event != null){
+						//var _test:Object = _feature.attributes;
+						_featureOLD.attributes["active"] = 0;
+						this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
+						_featureOLD.state = "Update";//org.openscales.core.feature.State.UPDATE;
+						
+					}
 					
 					displayPopup();
 					//Hide Save and Cancel buttons
