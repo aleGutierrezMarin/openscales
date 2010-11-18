@@ -112,7 +112,6 @@ package org.openscales.core.handler.feature.draw
 				
 				if(this._currentLineStringFeature!=null){
 					this._currentLineStringFeature.style=Style.getDefaultLineStyle();
-					this._currentLineStringFeature.state = State.INSERT;
 					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
 					drawLayer.redraw();
 				}
