@@ -52,6 +52,7 @@
 			import spark.utils.TextFlowUtil;
 						
 			private var _feature:Feature = null;
+			private var _featureNew:Feature = null;
 			private var _loc:Location = null;
 			private var _fxmap:FxMap;
 			[Bindable] private var _content:String="";
@@ -513,10 +514,16 @@
 					if (isFieldEditable(_fieldName)){
 						
 						if (isFieldMandatory(_fieldName)){
-							_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true, 4, true);
+							if (isFieldMultiLine(_fieldName))
+								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true, 4, true);
+							else
+								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, false, 1, true);	
 						}
 						else{
-							_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue);
+							if (isFieldMultiLine(_fieldName))
+								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true,4,false);								
+							else
+								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue);
 						}			
 						//_hGroup.width = (_vGroup.width*0.95);
 						_vGroup.addElement(_hGroup);													
@@ -524,11 +531,11 @@
 					
 				}
 			}
+			private function isFieldMultiLine(_fieldName:String):Boolean{
+				return (_fieldName == "adresse" || _fieldName == "telfax" || _fieldName == "horaire" || _fieldName == "accessibilite" || _fieldName == "notes");
+			}
 			private function isFieldEditable(_fieldName:String):Boolean{
-				if (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date_modif")
-					return true;
-				else
-					return false;
+				return (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date_modif");
 			}
 			private function isFieldMandatory(_fieldName:String):Boolean{
 				if (_fieldName.search("adresse") >=0 || _fieldName.search("nom") >=0)
@@ -629,11 +636,8 @@
 			}
 			
 			public function savePopup(event:MouseEvent=null):Boolean{
-				//Clone feature BEFORE modification and desactivate it
-				if (event != null)
-					var _featureOLD:Feature = featureClone(_feature);
-				
-								
+				//Clone feature BEFORE modification
+				this._featureNew = featureClone(this._feature);
 				//Set new attributs data
 				if (this.mandatoryFieldVerification() == true){
 					//Alert.show("Sauvegarde en cours");
@@ -642,6 +646,7 @@
 						var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
 						var _vGroup:VGroup = (_scroller.viewport as VGroup);
 						
+						//The new values must be set on the NEW feature
 						for (var i:int=0; i<_vGroup.numElements; i++){
 							var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
 							//A HGroup is composed of one Text (index=0) and one TextInput (index=1)
@@ -653,7 +658,7 @@
 								var _fieldName:String = _text.id;
 								var _value:String = _textField.text;
 								
-								_feature.attributes[_fieldName] = _value;
+								_featureNew.attributes[_fieldName] = _value;
 							}
 						}
 						//Set "date_modif" column with current date
@@ -665,28 +670,29 @@
 						 
 						 if (_date.getHours()< 10)
 							 _hours = "0"
-
 						 _hours += _date.getHours();
 						 
 						 if (_date.getMinutes() < 10)
 							 _minutes = "0";
-
 						 _minutes += _date.getMinutes();
 						 
 						 if (_date.getSeconds() < 10)
 							 _seconds = "0";
-						 
 						 _seconds += _date.getSeconds();
 						 //The "T" must be used in order for the query to be executed
 						 _dateString += "T" + _hours+":"+_minutes+":"+_seconds;
-						 _feature.attributes["date_modif"] = _dateString;  
+						 _feature.attributes["date_modif"] = _dateString; 
+						 _featureNew.attributes["date_modif"] = _dateString;
 					}
 					if (event != null){
-						//var _test:Object = _feature.attributes;
-						_featureOLD.attributes["active"] = 0;
+						//Desactivate the "old" feature and UPDATE it
+						_feature.attributes["active"] = 0;
 						this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
-						_featureOLD.state = "Update";//org.openscales.core.feature.State.UPDATE;
+						_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
 						
+					}else {
+						this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
+						featureInsert(_featureNew);
 					}
 					
 					displayPopup();
@@ -712,11 +718,18 @@
 				}
 				return _nFeature;
 			}
+			private function featureInsert(_value:Feature):void{
+				_value.attributes["active"]=1;
+				_value.state = "Insert";
+				
+				//Set the _feateure with the NEW values!!!!!
+				_feature.attributes = _value.attributes;
+			}
 			private function whenUpdateTransaction(event:WFSTLayerEvent):void{
 				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
 				this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
-				_feature.attributes["active"]=1;
-				_feature.state = "Insert";
+				
+				featureInsert(_featureNew);
 			}
 			private function whenInsertTransaction(event:WFSTLayerEvent):void{
 				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
