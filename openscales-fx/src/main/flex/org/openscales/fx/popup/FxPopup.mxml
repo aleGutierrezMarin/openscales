@@ -392,27 +392,11 @@
 					//var _date:Date = new Date(_feature.attributes["date_modif"]);
 					//var _dateString:String = _date.getDate() +"-" + _date.getMonth() + "-" +_date.getFullYear();
 					var _dateString:String = _feature.attributes["date_modif"];
+					
 					//_dateString += " " + _date.getHours() + "h" + _date.getMinutes();
 					_content +=  "<br /><i>Fiche modifiée le: " + _dateString.replace("T"," ") + "</i>";			
 				}
-				
-				//Text version
-				/* var _textZone:Text = new Text();
-				_textZone.id = _tZoneID;
-				_textZone.htmlText = this._content;
-				_textZone.percentWidth=100;
-				_textZone.percentHeight = 100;
-				_textZone.top=13;
-				_textZone.bottom=13;
-				var _scroll:Scroller = new Scroller();
-				var _group:Group = new Group();
-				_group.addElement(_textZone);
-				_group.percentHeight = 100;
-				_scroll.viewport = _group;
-				_panel.addElement(_scroll); */
-				//END 
-				
-				//TextArea version
+	
 				 var _textZone:TextArea = new TextArea();
 				_textZone.id = _tZoneID;
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
@@ -422,8 +406,7 @@
 				_textZone.bottom=13;
 				_textZone.editable = false;
 				_textZone.setStyle("borderVisible", false); 
-				//END
-			
+	
 				_panel.addElement(_textZone);
 				
 				_panel.percentHeight = 100;
@@ -665,13 +648,21 @@
 						 var _date:Date = new Date();
 						 var _dateString:String = _date.getFullYear()+"-"+_date.getMonth()+"-"+_date.getDate();
 						 var _hours:String="";
+						 var _hoursINT:int;
 						 var _minutes:String="";
 						 var _seconds:String="";
 						 
-						 if (_date.getHours()< 10)
+						/*  _hoursINT = (_date.getHours() - 2);
+						 if (_hoursINT < 0)
+							 _hoursINT = (24 - _hoursINT);
+						 if (_hoursINT < 10)
+							 _hours = ("0" + _hoursINT.toString());
+						 else
+							 _hours = _hoursINT.toString(); */
+ 						 if (_date.getHours()< 10)
 							 _hours = "0"
 						 _hours += _date.getHours();
-						 
+ 						 
 						 if (_date.getMinutes() < 10)
 							 _minutes = "0";
 						 _minutes += _date.getMinutes();
@@ -691,8 +682,9 @@
 						_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
 						
 					}else {
-						this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
-						featureInsert(_featureNew);
+						_featureNew.attributes["active"] = 1;
+						_feature.attributes = _featureNew.attributes;
+						
 					}
 					
 					displayPopup();
@@ -718,21 +710,19 @@
 				}
 				return _nFeature;
 			}
-			private function featureInsert(_value:Feature):void{
-				_value.attributes["active"]=1;
-				_value.state = "Insert";
-				
-				//Set the _feateure with the NEW values!!!!!
-				_feature.attributes = _value.attributes;
-			}
+		
 			private function whenUpdateTransaction(event:WFSTLayerEvent):void{
 				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
 				this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
 				
-				featureInsert(_featureNew);
+				_featureNew.attributes["active"]=1;
+				_featureNew.state = "Insert";
+				_feature.attributes = _featureNew.attributes;
+				
 			}
 			private function whenInsertTransaction(event:WFSTLayerEvent):void{
 				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
+				
 				(_feature.layer as WFST).saveTransaction();
 			}
 			/**
