@@ -417,7 +417,13 @@
 				var _fieldLabel:String = getFieldLabelByName(_fieldName);
 				var _fieldValue:String = _feature.attributes[_fieldName];
 				if (_fieldName != "name" && _fieldLabel != "" && _fieldValue != "" && _fieldValue != null){						
-					_outPut = "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
+					if (_fieldName == "site")
+						_outPut = "<b>" + _fieldLabel + "</b>:<a href='" + _fieldValue + "'>" + _fieldValue + "</a><br />";
+					else if (_fieldName == "courriel1" || _fieldName == "courriel2")
+						_outPut = "<b>" + _fieldLabel + "</b>:<a href='mailto:" + _fieldValue + "'>" + _fieldValue + "</a><br />";
+					else
+						_outPut = "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
+
 				}
 				
 				return _outPut;
@@ -641,16 +647,22 @@
 								var _fieldName:String = _text.id;
 								var _value:String = _textField.text;
 								
+								if ((_fieldName == "site") && (_value.indexOf("www.") == 0))
+									_value = "http://" + _value;
+								
+								//In case of TextArea, treat the multi-line case
+								if (_textField.className == "TextArea")
+									_value = _value.replace('\n','<br/>');
 								_featureNew.attributes[_fieldName] = _value;
 							}
 						}
 						//Set "date_modif" column with current date
-						 var _date:Date = new Date();
+						 /* var _date:Date = new Date();
 						 var _dateString:String = _date.getFullYear()+"-"+_date.getMonth()+"-"+_date.getDate();
 						 var _hours:String="";
 						 var _hoursINT:int;
 						 var _minutes:String="";
-						 var _seconds:String="";
+						 var _seconds:String=""; */
 						 
 						/*  _hoursINT = (_date.getHours() - 2);
 						 if (_hoursINT < 0)
@@ -659,7 +671,7 @@
 							 _hours = ("0" + _hoursINT.toString());
 						 else
 							 _hours = _hoursINT.toString(); */
- 						 if (_date.getHours()< 10)
+ 						/*  if (_date.getHours()< 10)
 							 _hours = "0"
 						 _hours += _date.getHours();
  						 
@@ -673,7 +685,7 @@
 						 //The "T" must be used in order for the query to be executed
 						 _dateString += "T" + _hours+":"+_minutes+":"+_seconds;
 						 _feature.attributes["date_modif"] = _dateString; 
-						 _featureNew.attributes["date_modif"] = _dateString;
+						 _featureNew.attributes["date_modif"] = _dateString; */
 					}
 					if (event != null){
 						//Desactivate the "old" feature and UPDATE it
