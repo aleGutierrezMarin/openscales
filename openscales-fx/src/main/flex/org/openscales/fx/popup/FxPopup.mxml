@@ -33,6 +33,7 @@
 			import mx.utils.StringUtil;
 			
 			import org.hamcrest.mxml.collection.Array;
+			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.WFSTLayerEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.layer.ogc.WFST;
@@ -112,6 +113,9 @@
 				this.fxmap.addFxPopup(this,true);
 				this.changeMode();
 				_initialized = true;
+				//Test
+				this._fxmap.map.addEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
+				//END Test
 			}
 			
 			private function changeMode():void{
@@ -178,6 +182,10 @@
 				this.iconButtonEdit.visible = false;
 			}
 			
+			public function whenLayerRemoved(event:LayerEvent):void{
+				this._fxmap.map.removeEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
+				remove();
+			}
 			public function remove():void {
 				this.visible=false;
 				var i:uint = this.numElements;
