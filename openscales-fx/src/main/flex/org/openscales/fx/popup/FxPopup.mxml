@@ -32,6 +32,7 @@
 			import mx.graphics.codec.PNGEncoder;
 			import mx.utils.StringUtil;
 			
+			import org.hamcrest.mxml.collection.Array;
 			import org.openscales.core.events.WFSTLayerEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.layer.ogc.WFST;
@@ -383,17 +384,8 @@
 				_content += addViewItemTo("formulaire_a_telech");
 				_content += addViewItemTo("accessibilite");
 				
-				var _dateString:String 
-				if (_feature.attributes["date_modif"] != undefined && _feature.attributes["date_modif"] != ""){
-					_dateString= _feature.attributes["date_modif"];
-					if (_dateString.indexOf(".")>=0)
-						_dateString = _dateString.split(".")[0];
-				}
-				else if (_feature.attributes["IHM_date_modif"] != undefined){
-					_dateString= _feature.attributes["IHM_date_modif"];
-				}
-				_content +=  "<br /><i>Fiche modifiée le: " + _dateString.replace("T"," ") + "</i>";			
-	
+				_content +=  "<br /><i>Fiche modifiée le: " + _feature.dateCreation.replace("T", " ") + "</i>";			
+				
 				 var _textZone:TextArea = new TextArea();
 				_textZone.id = _tZoneID;
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
@@ -653,19 +645,18 @@
 								_featureNew.attributes[_fieldName] = _value;
 							}
 						}
-						//Empty date_modif value
-						_featureNew.attributes["date_modif"] = "";
 					}
 					if (event != null){
 						//Desactivate the "old" feature and UPDATE it
 						_feature.attributes["active"] = 0;
+						delete _feature.attributes["date_modif"];
 						this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
 						_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
 						
 					}else {
 						//New feature, it will not be necessary to display date_modif attribut
 						_featureNew.attributes["active"] = 1;
-						//_feature.attributes["IHM_date_modif"] = returnCurrentDate();
+						_feature.dateCreation = returnCurrentDate();
 						for(var attribute:String in _featureNew.attributes) {
 							if (attribute != "date_modif")
 								_feature.attributes[attribute] = _featureNew.attributes[attribute];
@@ -727,17 +718,16 @@
 				_featureNew.attributes["active"]=1;
 				_featureNew.state = "Insert";
 				
-				for(var attribute:String in _featureNew.attributes) {
-					if (attribute != "date_modif")
-						_feature.attributes[attribute] = _featureNew.attributes[attribute];
-				}
-				//_feature.attributes["IHM_date_modif"] = returnCurrentDate();
-				
 			}
 			private function whenInsertTransaction(event:WFSTLayerEvent):void{
 				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
 				
 				(_feature.layer as WFST).saveTransaction();
+				for(var attribute:String in _featureNew.attributes) {
+					if (attribute != "date_modif")
+						_feature.attributes[attribute] = _featureNew.attributes[attribute];
+				}
+				_feature.dateCreation = returnCurrentDate();
 			}
 			/**
 			 * mandatoryFieldVerification: Check that all mandatory fields have none empty value.
