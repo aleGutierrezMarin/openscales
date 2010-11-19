@@ -30,6 +30,10 @@ package org.openscales.core.feature {
 		private var _state:String = null;
 		private var _style:Style = null;
 		private var _originalStyle:Style = null;
+		
+		//GAB
+		private var _dateCreation:String="";
+		//End GAB
 
 		/**
 		 * To know if the vector feature is editable when its
@@ -88,6 +92,10 @@ package org.openscales.core.feature {
 			if (data) {
 				this._attributes = Util.extend(this._attributes, data);
 			}
+			//GAB
+			if (this._attributes["date_modif"] != undefined )
+				this._dateCreation = this._attributes["date_modif"];
+			//END GAB
 
 			this._geometry = geom;
 			this._state = null;
@@ -427,6 +435,19 @@ package org.openscales.core.feature {
 		public function set isEditable(value:Boolean):void {
 			this._isEditable = value;
 
+		}
+		
+		public function set dateCreation(value:String):void{
+			this._dateCreation = value;
+		}
+		public function get dateCreation():String{
+			var _value:String;
+			if (this._dateCreation.indexOf(".")>=0)
+				_value = this._dateCreation.split(".")[0];
+			else
+				_value = this._dateCreation;
+			
+			return _value;
 		}
 
 		static public function compatibleFeatures(features:Vector.<Feature>):Boolean {
