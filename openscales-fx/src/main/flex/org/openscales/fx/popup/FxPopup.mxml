@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:openscales="http://openscales.org"
+		 xmlns:d="http://ns.adobe.com/fxg/2008/dt"
+		 xmlns:control="net.awl.openscales.fx.control.*"
+		 creationComplete="create()">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.fxg.ButtonCloseOver;
+			import assets.fxg.ButtonCloseUp;
+			import assets.fxg.ButtonOpacity;
+			import assets.fxg.Popup;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.SpanElement;
+			import flashx.textLayout.elements.TextFlow;
+			
+			import mx.containers.HBox;
+			import mx.containers.VBox;
+			import mx.controls.Alert;
+			import mx.controls.Text;
+			import mx.controls.scrollClasses.ScrollBar;
+			import mx.effects.effectClasses.AddChildActionInstance;
+			import mx.events.CloseEvent;
+			import mx.formatters.DateFormatter;
+			import mx.graphics.codec.PNGEncoder;
+			import mx.utils.StringUtil;
+			
+			import org.hamcrest.mxml.collection.Array;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.WFSTLayerEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.layer.ogc.WFST;
+			import org.openscales.fx.FxMap;
+			import org.openscales.fx.popup.skin.PopupPanelSkinTR;
+			import org.openscales.geometry.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.geometry.basetypes.Size;
+			
+			import spark.components.HGroup;
+			import spark.components.Scroller;
+			import spark.components.TextArea;
+			import spark.components.TextInput;
+			import spark.components.VGroup;
+			import spark.components.supportClasses.SkinnableTextBase;
+			import spark.core.IViewport;
+			import spark.utils.TextFlowUtil;
+						
+			private var _feature:Feature = null;
+			private var _featureNew:Feature = null;
+			private var _loc:Location = null;
+			private var _fxmap:FxMap;
+			[Bindable] private var _content:String="";
+			private var _size:Size = null;
+			private var _relativePosition:String = "";
+			
+			[Bindable] public var WIDTH:Number = 200;
+			[Bindable] public var HEIGHT:Number = 200;
+			static public var BR:String = "br";
+			static public var TR:String = "tr";
+			static public var TL:String = "tl";
+			static public var BL:String = "bl";
+			
+			private var _anchor:Sprite = null;
+			
+			private var _mode:String = "VIEW";
+			private var _editionMode:String = "";
+			private var _editable:Boolean=false;
+						
+			private var _initialized:Boolean;
+			private var _canBeClosed:Boolean = true;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/edit.png")]
+			private var _editFeature2:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/saveDisk.png")]
+			private var _saveDiskIcon:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/saveDisk_red.png")]
+			private var _saveDiskIcon_red:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/cancelIconRed.png")]
+			private var _cancelIcon_Red:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/cancelIconGrey.png")]
+			private var _cancelIcon_Grey:Class;
+			
+			private function create():void{				
+				if ((this.loc != null) && (this.fxmap.map != null)) {
+					var px:Pixel = this.fxmap.map.getMapPxFromLocation(this.feature.lonlat);
+					this.relativePosition = this.calculateRelativePosition(px);
+				}
+				this.position = px;
+				this.setCurrentState(relativePosition,false);
+				if (size != null){
+					this._size = size;
+				}
+				else{
+					this.size = new Size(WIDTH,HEIGHT);
+				}
+				this.fxmap.addFxPopup(this,true);
+				this.changeMode();
+				_initialized = true;
+				//Test
+				this._fxmap.map.addEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
+				//END Test
+			}
+			
+			private function changeMode():void{
+				if(_mode == "EDIT"){
+					setEditMode();
+				}
+				else if (_mode == "VIEW"){
+					setViewMode();
+				}
+			}
+			public function set canBeClosed(value:Boolean):void{
+				_canBeClosed = value;
+				
+				this.close.visible = _canBeClosed;
+			}
+			public function get canBeClosed():Boolean{
+				return _canBeClosed;
+			}
+			public function set editable(value:Boolean):void{
+				_editable = value;
+				if (_editable==true){
+					this.iconButtonEdit.visible = true;
+				}
+				else{
+					this.iconButtonEdit.visible = false;
+				}
+			}
+			
+			public function get editionMode():String{
+				return _editionMode;
+			}
+			
+			public function set editionMode(value:String):void{
+				_editionMode = value;
+				
+				if (_editionMode != "DRAG"){
+					//Hide Save and Cancel icon buttons
+					hideIconButtonCancel();
+					hideIconButtonSave();
+				}
+			}
+			
+			private function showIconButtonSave():void{
+				this.iconButtonSave.visible = (_editionMode == "DRAG");
+			}
+			
+			private function hideIconButtonSave():void{
+				this.iconButtonSave.visible = false;
+			}
+			
+			private function showIconButtonCancel():void{
+				this.iconButtonCancel.visible = (_editionMode == "DRAG");
+			}
+			
+			private function hideIconButtonCancel():void{
+				this.iconButtonCancel.visible = false;
+			}
+			
+			private function showIconButtonEdit():void{
+				this.iconButtonEdit.visible = _editable;
+			}
+			
+			private function hideIconButtonEdit():void{
+				this.iconButtonEdit.visible = false;
+			}
+			
+			public function whenLayerRemoved(event:LayerEvent):void{
+				this._fxmap.map.removeEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
+				remove();
+			}
+			public function remove():void {
+				this.visible=false;
+				var i:uint = this.numElements;
+				for (;i>0;--i) {
+					this.removeElementAt(0);
+				}
+				this.feature = null;
+				this.loc = null;
+				if (this.fxmap != null) {
+					this.fxmap.removeFxPopup(this);
+				}
+			}
+			
+			public function calculateRelativePosition(px:Pixel):String {
+				var lonlat:Location = this.fxmap.map.getLocationFromMapPx(px);
+				
+				var extent:Bounds = this.fxmap.map.extent;
+				var quadrant:String = extent.determineQuadrant(lonlat);
+				
+				return Bounds.oppositeQuadrant(quadrant);
+			}
+			
+			public function get relativePosition():String {
+				return this._relativePosition;
+			}
+			
+			public function set relativePosition(value:String):void {
+				this._relativePosition = value;
+				this.setCurrentState(_relativePosition,false);
+			}
+			
+			public function get loc():Location {
+				return this._loc;
+			}
+			
+			public function set loc(value:Location):void {
+				this._loc = value;
+			}
+			
+			public function get feature():Feature {
+				return this._feature;
+			}
+			
+			public function set feature(value:Feature):void {
+				this._feature = value;
+				
+				if(!this.feature)
+					return;
+				
+				this.loc = this.feature.lonlat;
+				
+			}
+			
+			public function calculateNewPx(px:Pixel):Pixel {
+				var newPx:Pixel = px;
+				
+				if(this.relativePosition == BR){
+					newPx.x = newPx.x - 5;
+					newPx.y = newPx.y + 10;
+				}
+				else if (this.relativePosition == BL){
+					newPx.x = newPx.x - this.width + 5;
+					newPx.y = newPx.y + 10;
+				}
+				else if (this.relativePosition == TR){
+					newPx.x = newPx.x  - 5; 
+					newPx.y = newPx.y - this.height - 10;
+				}
+				else if (this.relativePosition == TL){
+					newPx.x = newPx.x - this.width  - 5;
+					newPx.y = newPx.y - this.height - 10;
+				}
+				return newPx;
+			}
+			
+			public function set position(px:Pixel):void {
+				var newPx:Pixel = this.calculateNewPx(px);
+				if (newPx != null) {
+					this.x = newPx.x;
+					this.y = newPx.y;
+				}
+			}
+			
+			public function get position():Pixel {
+				return new Pixel(this.x, this.y);
+			}
+			
+			public function get content():String{
+				return this._content;
+			}
+			
+			public function set content(value:String):void {
+				this._content = value;
+			}
+			
+			public function get fxmap():FxMap {
+				return this._fxmap;
+				
+			}
+			
+			public function set fxmap(value:FxMap):void {
+				this._fxmap = value;
+			}
+			
+			public function get size():Size {
+				return this._size;
+				
+			}
+			
+			public function set size(size:Size):void {
+				if (size != null) {
+					this._size = size;
+					this.width = this.size.w;
+					this.height = this.size.h;
+				}
+			}
+			
+			public function closePopup(event:MouseEvent):void {
+				if (_canBeClosed){
+					var target:Sprite = (event.target as Sprite);
+					target.removeEventListener(event.type, closePopup);
+					remove();
+					event.stopPropagation();				
+				}
+				else{
+					Alert.show("Action non disponible");
+				}
+	
+			}
+			public function set mode(value:String):void{
+				_mode = value;
+				if(_initialized)
+					changeMode();
+			}
+			
+			private function editPopup(event:MouseEvent=null):void{
+				this.setEditMode();
+			}
+			
+			private function setViewMode():void{
+				/**
+				 * The aim is to have a single TextArea within the FxPop.
+				 * In this TextArea, we shall display the content (HTML format).
+				 * 
+				 * This must be done for each one of the 4 quadrant.
+				 * */
+				
+				this.setViewModeQuadrant("TR");
+				this.setViewModeQuadrant("TL");
+				this.setViewModeQuadrant("BR");
+				this.setViewModeQuadrant("BL");
+				
+				this.iconButtonEdit.y = (this.size.h-30);
+				this.iconButtonSave.y = (this.size.h-30);
+				this.iconButtonCancel.y = (this.size.h-30);
+				
+				//Hide Save and Cancel buttons
+				hideIconButtonCancel();
+				hideIconButtonSave();
+				//Display Edit button
+				showIconButtonEdit(); 
+				
+			}
+			
+			private function setViewModeQuadrant(_quadrant:String):void{
+				/**
+				 * Given a quadrant, insert a text zone to the quadrant's panel.
+				 * Fill the text zone's textFlow with the content of FxPopup.
+				 * The text zone must not be editable by the user. 
+				 * */
+				var _panel:Panel = getPanel(_quadrant);
+				var _tZoneID:String;
+				if (_quadrant == "TR"){
+					_tZoneID = "textZoneTR";
+				}
+				else if (_quadrant == "TL"){
+					_tZoneID = "textZoneTL";
+				}
+				else if (_quadrant == "BR"){
+					_tZoneID = "textZoneBR";
+				}
+				else if (_quadrant == "BL"){
+					_tZoneID = "textZoneBL";
+				}				
+				//Before inserting the unique TextArea, empty the Panel.
+				_panel.removeAllElements();
+				var _fieldLabel:String;
+				var _fieldValue:String;
+				_content = "";
+				//var _test:Object = _feature.attributes;
+				if(_feature.attributes["nom"] != undefined){
+					content = content + "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
+				}
+		
+				//_content += addViewItemTo("nom");
+				_content += addViewItemTo("adresse");
+				_content += addViewItemTo("adresse_postale");
+				_content += addViewItemTo("telfax");
+				_content += addViewItemTo("horaire");
+				_content += addViewItemTo("courriel1");
+				_content += addViewItemTo("courriel2");
+				_content += addViewItemTo("site");
+				_content += addViewItemTo("formulaire");
+				_content += addViewItemTo("formulaire_a_telech");
+				_content += addViewItemTo("accessibilite");
+				
+				if (_feature.dateCreation != "")
+					_content +=  "<br /><i>Fiche modifiée le: " + _feature.dateCreation + "</i>";			
+				
+				 var _textZone:TextArea = new TextArea();
+				_textZone.id = _tZoneID;
+				_content = _content.split("&amp;lt;br/&amp;gt;").join("<br />");
+				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				_textZone.percentWidth=100;
+				_textZone.percentHeight = 100;
+				_textZone.top=13;
+				_textZone.bottom=13;
+				_textZone.editable = false;
+				_textZone.setStyle("borderVisible", false); 
+	
+				_panel.addElement(_textZone);
+				
+				_panel.percentHeight = 100;
+				_panel.percentWidth = 100;
+			}
+			private function addViewItemTo(_fieldName:String):String{
+				var _outPut:String="";
+				var _fieldLabel:String = getFieldLabelByName(_fieldName);
+				var _fieldValue:String = _feature.attributes[_fieldName];
+				if (_fieldName != "name" && _fieldLabel != "" && _fieldValue != "" && _fieldValue != null){						
+					if (_fieldName == "site")
+						_outPut = "<b>" + _fieldLabel + "</b>:<a href='" + _fieldValue + "'>" + _fieldValue + "</a><br />";
+					else if (_fieldName == "courriel1" || _fieldName == "courriel2")
+						_outPut = "<b>" + _fieldLabel + "</b>:<a href='mailto:" + _fieldValue + "'>" + _fieldValue + "</a><br />";
+					else
+						_outPut = "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
+
+				}
+				
+				return _outPut;
+			}
+			private function setEditMode():void{
+				/**
+				 * Place the content of the FwPop. 
+				 * Unlick the view mode, in the edit mode we must insert fields and not one single
+				 * TextArea.
+				 * */
+				
+				this.setEditModeQuadrant("TR");
+				this.setEditModeQuadrant("TL");
+				this.setEditModeQuadrant("BR");
+				this.setEditModeQuadrant("BL"); 
+				
+				var _panel:Panel = this.getPanel();
+				this.iconButtonEdit.y = (this.size.h-30);
+				this.iconButtonSave.y = (this.size.h-30);
+				this.iconButtonCancel.y = (this.size.h-30);
+				
+				//Display Save and Cancel buttons
+				showIconButtonCancel();
+				showIconButtonSave();
+				//Hide Edit button
+				hideIconButtonEdit();
+				
+			}
+			private function setEditModeQuadrant(_quadrant:String):void{
+				var _panel:Panel = this.getPanel(_quadrant);
+				var _hGroup:HGroup;
+				var _vGroup:VGroup = new VGroup();
+			
+				//The first thing to do it to empty the panel
+				_panel.removeAllElements();
+				
+				addEditionItemTo("nom", _vGroup);
+				addEditionItemTo("adresse", _vGroup);
+				addEditionItemTo("adresse_postale", _vGroup);
+				addEditionItemTo("telfax", _vGroup);
+				addEditionItemTo("horaire", _vGroup);
+				addEditionItemTo("courriel1", _vGroup);
+				addEditionItemTo("courriel2", _vGroup);
+				addEditionItemTo("site", _vGroup);
+				addEditionItemTo("formulaire", _vGroup);
+				addEditionItemTo("formulaire_a_telech", _vGroup);
+				addEditionItemTo("accessibilite", _vGroup);
+				
+				_vGroup.percentWidth = 95;
+				//Add a "Mandatory fields" message
+				var _text:Text = new Text();
+				_text.htmlText = "<font color='#FF0000'><b>(* Champs obligatoires)</b></font>";
+				_vGroup.addElement(_text);
+				
+				//Scrolling treatment
+				var _scroller:Scroller = new Scroller();
+				if (_quadrant == "BL" || _quadrant == "BR"){
+					_scroller.top = 15;					
+					_scroller.bottom = 13;
+				}
+				else {
+					_scroller.top = 13;					
+					_scroller.bottom = 15;	
+				}
+				_vGroup.clipAndEnableScrolling = true;
+				_vGroup.width = (_panel.width - 20);//(_panel.width - _scroller.width - _scroller.width);
+				_scroller.viewport = _vGroup;
+				_panel.addElement(_scroller);
+				
+			}
+			private function addEditionItemTo(_fieldName:String, _vGroup:VGroup):void{
+				var _hGroup:HGroup;
+				var _fieldLabel:String = getFieldLabelByName(_fieldName);
+				var _fieldValue:String = _feature.attributes[_fieldName];
+				
+				if (_fieldLabel != ""){
+					if (isFieldEditable(_fieldName)){
+						
+						if (isFieldMandatory(_fieldName)){
+							if (isFieldMultiLine(_fieldName)){
+								if (_fieldValue != null){
+									_fieldValue = _fieldValue.split("&amp;lt;br/&amp;gt;").join("\n");
+									_fieldValue = _fieldValue.split("<br/>").join("\n");
+										
+								}
+								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true, 4, true);
+							}else
+								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, false, 1, true);	
+						}
+						else{
+							if (isFieldMultiLine(_fieldName)){
+								if (_fieldValue != null){
+									_fieldValue = _fieldValue.split("&amp;lt;br/&amp;gt;").join("\n");
+									_fieldValue = _fieldValue.split("<br/>").join("\n");
+								}
+								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true,4,false);								
+							}
+							else
+								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue);
+						}			
+						//_hGroup.width = (_vGroup.width*0.95);
+						_vGroup.addElement(_hGroup);													
+					}
+				}
+			}
+			private function isFieldMultiLine(_fieldName:String):Boolean{
+				return (_fieldName == "adresse" || _fieldName == "telfax" || _fieldName == "horaire" || _fieldName == "accessibilite" || _fieldName == "notes");
+			}
+			private function isFieldEditable(_fieldName:String):Boolean{
+				return (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date_modif");
+			}
+			private function isFieldMandatory(_fieldName:String):Boolean{
+				if (_fieldName.search("adresse") >=0 || _fieldName.search("nom") >=0)
+					return true;
+				else
+					return false;
+			}
+			private function getFieldLabelByName(_fieldName:String):String{
+				var _fieldLabel:String="";
+				switch(_fieldName){
+					case "nom":
+						_fieldLabel = "Nom";
+						break;
+					case "adresse":
+						_fieldLabel = "Adresse";
+						break;
+					case "adresse_postale":
+						_fieldLabel = "Adresse postale";
+						break;
+					case "telfax": 
+						_fieldLabel = "Tél/Fax";
+						break;
+					case "horaire":
+						_fieldLabel = "Horaire";
+						break;
+					case "courriel1":
+						_fieldLabel = "Mail";
+						break;
+					case "courriel2":
+						_fieldLabel = "Mail(2)";
+						break;
+					case "site":
+						_fieldLabel = "Site web";
+						break;
+					case "formulaire":
+						_fieldLabel = "Formulaire web";
+						break;
+					case "formulaire_a_telech":
+						_fieldLabel = "Formulaire à télécharger";
+						break;
+					case "accessibilite":
+						_fieldLabel = "Accessiblité";
+						break;
+					case "notes":
+						_fieldLabel = "Notes";
+						break;
+					case "code":
+						_fieldLabel = "code";
+						break;
+					case "date_modif":
+						_fieldLabel = "Date de la dernière modification";
+						break;
+				}
+				return _fieldLabel;
+			}
+			private function getEditionItem(_fieldName:String, _label:String, _value:String=null, _multiLine:Boolean=false, _nbLines:int=1, _mandatory:Boolean=false):HGroup{
+				//var _hBox:HBox = new HBox();
+				var _hGroup:HGroup = new HGroup();
+				var textField:SkinnableTextBase;
+				var _text:Text = new Text();
+				
+				//Multiline treatment:
+				if (_multiLine){
+					//Use a TextArea object	
+					textField = new TextArea();	
+					textField.height= 50;
+				}
+				else{
+					//Use a TextInput object
+					textField = new TextInput();
+				}
+				_text.id = _fieldName;
+				_text.htmlText = "<b>" + _label + "</b>";
+				//Mandatory field treatment:
+				if (_mandatory){
+					_text.htmlText += "<FONT color='#FF0000'>*</FONT>";	
+				}
+				textField.percentWidth = 100;
+				_text.percentWidth = 50;
+				_hGroup.percentWidth = 95;
+				if (_value)
+					textField.text = _value;
+				
+				_hGroup.addElement(_text);
+				_hGroup.addElement(textField);
+				
+				return _hGroup;
+			}
+			
+			private function displayPopup(event:MouseEvent=null):void{
+				//this.setViewMode();
+				this.mode = "VIEW";
+				//Hide Save and Cancel buttons
+				hideIconButtonCancel();
+				hideIconButtonSave();
+				//Display Edit button
+				showIconButtonEdit();
+			}
+			
+			public function savePopup(event:MouseEvent=null):Boolean{
+				//Clone feature BEFORE modification
+				this._featureNew = featureClone(this._feature);
+				//Set new attributs data
+				if (this.mandatoryFieldVerification() == true){
+					//Alert.show("Sauvegarde en cours");
+					var _panel:Panel = getPanel();
+					if (_panel.numElements == 1){
+						var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
+						var _vGroup:VGroup = (_scroller.viewport as VGroup);
+						
+						//The new values must be set on the NEW feature
+						for (var i:int=0; i<_vGroup.numElements; i++){
+							var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
+							//A HGroup is composed of one Text (index=0) and one TextInput (index=1)
+							if (_hGroup != null && _hGroup.numElements == 2){
+								//Get the field label
+								var _text:Text = (_hGroup.getElementAt(0) as Text);
+								var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
+								
+								var _fieldName:String = _text.id;
+								var _value:String = _textField.text;
+								
+								if ((_fieldName == "site") && (_value.indexOf("www.") == 0))
+									_value = "http://" + _value;
+								
+								//In case of TextArea, treat the multi-line case
+								if (_textField.className == "TextArea")
+									_value = _value.split('\n').join('<br/>');
+									//_value = _value.replace('\n','<br/>');
+								_featureNew.attributes[_fieldName] = _value;
+							}
+						}
+					}
+					if (event != null){
+						//Desactivate the "old" feature and UPDATE it
+						_feature.attributes["active"] = 0;
+						delete _feature.attributes["date_modif"];
+						this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
+						_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
+						
+					}else {
+						//New feature, it will not be necessary to display date_modif attribut
+						_featureNew.attributes["active"] = 1;
+						_feature.dateCreation = returnCurrentDate();
+						for(var attribute:String in _featureNew.attributes) {
+							if (attribute != "date_modif")
+								_feature.attributes[attribute] = _featureNew.attributes[attribute];
+						}
+					}
+					displayPopup();
+					//Hide Save and Cancel buttons
+					hideIconButtonCancel();
+					hideIconButtonSave();
+					//Display Edit button
+					showIconButtonEdit();
+					return true;
+				}
+				else{
+					//A mandatory field hasn't been filled, save can't be done
+					Alert.show("Merci de renseigner les champs obligatoires.");
+					return false;
+				}
+			}
+			private function returnCurrentDate():String{
+				var _date:Date = new Date();
+				var _dateString:String = _date.getFullYear()+"-"+_date.getMonth()+"-"+_date.getDate();
+				var _hours:String="";
+				var _hoursINT:int;
+				var _minutes:String="";
+				var _seconds:String=""; 
+			
+				 if (_date.getHours()< 10)
+					_hours = "0"
+				_hours += _date.getHours();
+					
+				if (_date.getMinutes() < 10)
+					_minutes = "0";
+				_minutes += _date.getMinutes();
+					
+				if (_date.getSeconds() < 10)
+					_seconds = "0";
+				_seconds += _date.getSeconds();
+				//The "T" must be used in order for the query to be executed
+				_dateString += "T" + _hours+":"+_minutes+":"+_seconds;
+				
+				return _dateString;
+			}
+			private function featureClone(_value:Feature):Feature{
+				var _nFeature:Feature = _value.clone();
+				_nFeature.layer = _value.layer;
+				
+				for(var attribute:String in _value.attributes) {
+					if (attribute != "date_modif")
+						_nFeature.attributes[attribute] = _value.attributes[attribute];
+				}
+				return _nFeature;
+			}
+		
+			private function whenUpdateTransaction(event:WFSTLayerEvent):void{
+				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
+				this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
+				
+				_featureNew.attributes["active"]=1;
+				_featureNew.state = "Insert";
+				
+			}
+			private function whenInsertTransaction(event:WFSTLayerEvent):void{
+				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
+				
+				(_feature.layer as WFST).saveTransaction();
+				for(var attribute:String in _featureNew.attributes) {
+					if (attribute != "date_modif")
+						_feature.attributes[attribute] = _featureNew.attributes[attribute];
+				}
+				_feature.dateCreation = returnCurrentDate();
+			}
+			/**
+			 * mandatoryFieldVerification: Check that all mandatory fields have none empty value.
+			 * If so, return TRUE.
+			 * If not, return FALSE.
+			 **/
+			public function mandatoryFieldVerification():Boolean{
+				var _panel:Panel = this.getPanel();
+				
+				if (_panel.numElements == 1){
+					var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
+					var _vGroup:VGroup = (_scroller.viewport as VGroup);
+					
+					for (var i:int=0; i<_vGroup.numElements; i++){
+						var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
+						//A HGroup is composed of one Text (index=0) and one TextInput (index=1)
+						if (_hGroup != null && _hGroup.numElements == 2){
+							//Get the field label
+							var _text:Text = (_hGroup.getElementAt(0) as Text);
+							//Look for an "*" within the label
+							if (_text.text.indexOf("*") >= 0){
+								//Make sure that the corresponding value is not empty
+								var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
+								if (_textField == null || StringUtil.trim(_textField.text) == "" || _textField.text == null){
+									//A mandatory field hasn't been filled, return FALSE
+									return false;
+								}
+									
+							}
+						}
+					}
+				}
+				//All mandatory fields have been filled with values, return TRUE
+				return true;
+			}
+			private function getPanel(_quadrant:String=null):Panel{
+				var _panel:Panel;
+				if (_quadrant != null){
+					//Return the panel of the requested quadrant
+					if (_quadrant == "TR"){
+						_panel = this.panelTR;
+					}
+					else if (_quadrant == "TL"){
+						_panel = this.panelTL;
+					}
+					else if (_quadrant == "BR"){
+						_panel = this.panelBR;
+					}
+					else if (_quadrant == "BL"){
+						_panel = this.panelBL;
+					}
+					
+				}
+				else{
+					//Return the panel of the relative position
+					if(this.relativePosition == BR){
+						_panel = this.panelBR;
+					}
+					else if (this.relativePosition == BL){
+						_panel = this.panelBL;
+					}
+					else if (this.relativePosition == TR){
+						_panel = this.panelTR;
+					}
+					else if (this.relativePosition == TL){
+						_panel = this.panelTL;
+					}
+				}
+				if (_panel == null)
+					_panel = new Panel();
+				
+				return _panel;
+				
+			}
+			//Fin Test GAB
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="tr"/>
+		<s:State name="tl"/>
+		<s:State name="br"/>
+		<s:State name="bl"/>
+	</s:states>
+	<!-- Test GAB -->
+	
+	<s:Panel id="panelTR"
+			 includeIn="tr"
+			 width="{WIDTH}"
+			 height="{HEIGHT-10}" 
+			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTR"/>
+			 
+			
+	<s:Panel id="panelTL"
+			 includeIn="tl"
+			 width="{WIDTH}"
+			 height="{HEIGHT-50}"
+			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTL"/>
+	<s:Panel id="panelBR"
+			 includeIn="br"
+			 width="{WIDTH}"
+			 height="{HEIGHT-50}"
+			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBR"/>
+	<s:Panel id="panelBL"
+			 includeIn="bl"
+			 width="{WIDTH}"
+			 height="{HEIGHT-50}"
+			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBL"/>
+	<openscales:IconButton id="iconButtonCancel"
+						   x="{WIDTH-40}"
+						   y="3"
+						   icon="{_cancelIcon_Red}"
+						   iconOver="{_cancelIcon_Grey}"
+						   iconDown="{_cancelIcon_Grey}"
+						   toolTip="Display"
+						   click="displayPopup(event)"
+						   />
+	<openscales:IconButton id="iconButtonEdit"
+						   x="{WIDTH-40}"
+						   y="3"
+						   icon="{_editFeature2}"
+						   toolTip="Edit"
+						   click="editPopup(event)"
+						   />
+	<openscales:IconButton id="iconButtonSave"
+						   x="{WIDTH-60}"
+						   y="3"
+						   icon="{_saveDiskIcon}"
+						   iconOver="{_saveDiskIcon_red}"
+						   iconDown="{_saveDiskIcon_red}"
+						   toolTip="Save"
+						   click="savePopup(event)"
+						   />
+	<!-- Fin test GAB -->
+	<openscales:IconButton id="close"
+						   x="{WIDTH-20}"
+						   y="{17.5}"
+						   icon="{new ButtonCloseUp()}"
+						   iconOver="{new ButtonCloseOver()}"
+						   iconDown="{new ButtonCloseOver()}"
+						   alpha="1"
+						   click="closePopup(event)"/>
+	
+	
+</s:Group>
