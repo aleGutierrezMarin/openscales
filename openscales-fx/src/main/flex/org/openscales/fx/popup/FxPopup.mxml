@@ -384,10 +384,12 @@
 				_content += addViewItemTo("formulaire_a_telech");
 				_content += addViewItemTo("accessibilite");
 				
-				_content +=  "<br /><i>Fiche modifiée le: " + _feature.dateCreation.replace("T", " ") + "</i>";			
+				if (_feature.dateCreation != "")
+					_content +=  "<br /><i>Fiche modifiée le: " + _feature.dateCreation + "</i>";			
 				
 				 var _textZone:TextArea = new TextArea();
 				_textZone.id = _tZoneID;
+				_content = _content.replace("&amp;lt;br/&amp;gt;", "<br/>");
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
 				_textZone.percentWidth=100;
 				_textZone.percentHeight = 100;
@@ -492,14 +494,19 @@
 					if (isFieldEditable(_fieldName)){
 						
 						if (isFieldMandatory(_fieldName)){
-							if (isFieldMultiLine(_fieldName))
+							if (isFieldMultiLine(_fieldName)){
+								if (_fieldValue != null)
+									_fieldValue = _fieldValue.replace("&amp;lt;br/&amp;gt;", "\n");
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true, 4, true);
-							else
+							}else
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, false, 1, true);	
 						}
 						else{
-							if (isFieldMultiLine(_fieldName))
+							if (isFieldMultiLine(_fieldName)){
+								if (_fieldValue != null)
+									_fieldValue = _fieldValue.replace("&amp;lt;br/&amp;gt;", "\n");
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true,4,false);								
+							}
 							else
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue);
 						}			
