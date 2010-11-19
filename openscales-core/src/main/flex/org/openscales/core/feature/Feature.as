@@ -442,12 +442,16 @@ package org.openscales.core.feature {
 		}
 		public function get dateCreation():String{
 			var _value:String;
+			if (this._dateCreation == ""){
+				if (this._attributes["date_modif"] != undefined )
+					this._dateCreation = this._attributes["date_modif"];
+			}
 			if (this._dateCreation.indexOf(".")>=0)
 				_value = this._dateCreation.split(".")[0];
 			else
 				_value = this._dateCreation;
 			
-			return _value;
+			return _value.replace("T", " ");
 		}
 
 		static public function compatibleFeatures(features:Vector.<Feature>):Boolean {
