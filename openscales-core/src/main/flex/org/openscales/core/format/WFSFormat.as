@@ -263,6 +263,7 @@ package org.openscales.core.format
 				describeFeature.setGeometryTypeFromGMLFormat(geometryType);
 			
 			}
+import org.openscales.core.feature.State;
 
 			return describeFeature;
 		}
@@ -284,7 +285,7 @@ package org.openscales.core.format
 			//update just the operation from this transaction and not the old
 			if(transactions[i].state == Transaction.NOTSEND){
 			if(xml.localName() != "ServiceExceptionReport" ) {
-			   if(featureId[i].@fid != "none" ){
+			   if(featureId[i].@fid != "none" && transactions[i].feature.state == State.INSERT){
 				 transactions[i].feature.name = featureId[i].@fid;
 				 transactions[i].id = featureId[i].@fid;
 			   }
