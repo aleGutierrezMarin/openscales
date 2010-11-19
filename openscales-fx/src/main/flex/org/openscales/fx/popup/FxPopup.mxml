@@ -389,7 +389,7 @@
 				
 				 var _textZone:TextArea = new TextArea();
 				_textZone.id = _tZoneID;
-				_content = _content.replace("&amp;lt;br/&amp;gt;", "<br/>");
+				_content = _content.split("&amp;lt;br/&amp;gt;").join("<br />");
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
 				_textZone.percentWidth=100;
 				_textZone.percentHeight = 100;
@@ -495,16 +495,21 @@
 						
 						if (isFieldMandatory(_fieldName)){
 							if (isFieldMultiLine(_fieldName)){
-								if (_fieldValue != null)
-									_fieldValue = _fieldValue.replace("&amp;lt;br/&amp;gt;", "\n");
+								if (_fieldValue != null){
+									_fieldValue = _fieldValue.split("&amp;lt;br/&amp;gt;").join("\n");
+									_fieldValue = _fieldValue.split("<br/>").join("\n");
+										
+								}
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true, 4, true);
 							}else
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, false, 1, true);	
 						}
 						else{
 							if (isFieldMultiLine(_fieldName)){
-								if (_fieldValue != null)
-									_fieldValue = _fieldValue.replace("&amp;lt;br/&amp;gt;", "\n");
+								if (_fieldValue != null){
+									_fieldValue = _fieldValue.split("&amp;lt;br/&amp;gt;").join("\n");
+									_fieldValue = _fieldValue.split("<br/>").join("\n");
+								}
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true,4,false);								
 							}
 							else
@@ -513,7 +518,6 @@
 						//_hGroup.width = (_vGroup.width*0.95);
 						_vGroup.addElement(_hGroup);													
 					}
-					
 				}
 			}
 			private function isFieldMultiLine(_fieldName:String):Boolean{
@@ -648,7 +652,8 @@
 								
 								//In case of TextArea, treat the multi-line case
 								if (_textField.className == "TextArea")
-									_value = _value.replace('\n','<br/>');
+									_value = _value.split('\n').join('<br/>');
+									//_value = _value.replace('\n','<br/>');
 								_featureNew.attributes[_fieldName] = _value;
 							}
 						}
