@@ -146,12 +146,7 @@
 			public function set editionMode(value:String):void{
 				_editionMode = value;
 				
-				if (_editionMode == "DRAG"){
-					//Show Save and Cancel icon buttons
-					showIconButtonSave();
-					showIconButtonCancel();
-				}
-				else{
+				if (_editionMode != "DRAG"){
 					//Hide Save and Cancel icon buttons
 					hideIconButtonCancel();
 					hideIconButtonSave();
@@ -388,14 +383,16 @@
 				_content += addViewItemTo("formulaire_a_telech");
 				_content += addViewItemTo("accessibilite");
 				
+				var _dateString:String 
 				if (_feature.attributes["date_modif"] != undefined){
-					//var _date:Date = new Date(_feature.attributes["date_modif"]);
-					//var _dateString:String = _date.getDate() +"-" + _date.getMonth() + "-" +_date.getFullYear();
-					var _dateString:String = _feature.attributes["date_modif"];
-					
-					//_dateString += " " + _date.getHours() + "h" + _date.getMinutes();
-					_content +=  "<br /><i>Fiche modifiée le: " + _dateString.replace("T"," ") + "</i>";			
+					_dateString= _feature.attributes["date_modif"];
+					if (_dateString.indexOf(".")>=0)
+						_dateString = _dateString.split(".")[0];
 				}
+				else if (_feature.attributes["IHM_date_modif"] != undefined){
+					_dateString= _feature.attributes["IHM_date_modif"];
+				}
+				_content +=  "<br /><i>Fiche modifiée le: " + _dateString.replace("T"," ") + "</i>";			
 	
 				 var _textZone:TextArea = new TextArea();
 				_textZone.id = _tZoneID;
@@ -656,36 +653,6 @@
 								_featureNew.attributes[_fieldName] = _value;
 							}
 						}
-						//Set "date_modif" column with current date
-						 /* var _date:Date = new Date();
-						 var _dateString:String = _date.getFullYear()+"-"+_date.getMonth()+"-"+_date.getDate();
-						 var _hours:String="";
-						 var _hoursINT:int;
-						 var _minutes:String="";
-						 var _seconds:String=""; */
-						 
-						/*  _hoursINT = (_date.getHours() - 2);
-						 if (_hoursINT < 0)
-							 _hoursINT = (24 - _hoursINT);
-						 if (_hoursINT < 10)
-							 _hours = ("0" + _hoursINT.toString());
-						 else
-							 _hours = _hoursINT.toString(); */
- 						/*  if (_date.getHours()< 10)
-							 _hours = "0"
-						 _hours += _date.getHours();
- 						 
-						 if (_date.getMinutes() < 10)
-							 _minutes = "0";
-						 _minutes += _date.getMinutes();
-						 
-						 if (_date.getSeconds() < 10)
-							 _seconds = "0";
-						 _seconds += _date.getSeconds();
-						 //The "T" must be used in order for the query to be executed
-						 _dateString += "T" + _hours+":"+_minutes+":"+_seconds;
-						 _feature.attributes["date_modif"] = _dateString; 
-						 _featureNew.attributes["date_modif"] = _dateString; */
 					}
 					if (event != null){
 						//Desactivate the "old" feature and UPDATE it
@@ -694,11 +661,14 @@
 						_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
 						
 					}else {
+						//New feature, it will not be necessary to display date_modif attribut
 						_featureNew.attributes["active"] = 1;
-						_feature.attributes = _featureNew.attributes;
-						
+						_feature.attributes["IHM_date_modif"] = returnCurrentDate();
+						for(var attribute:String in _featureNew.attributes) {
+							//if (attribute != "date_modif")
+							_feature.attributes[attribute] = _featureNew.attributes[attribute];
+						}
 					}
-					
 					displayPopup();
 					//Hide Save and Cancel buttons
 					hideIconButtonCancel();
@@ -713,12 +683,37 @@
 					return false;
 				}
 			}
+			private function returnCurrentDate():String{
+				var _date:Date = new Date();
+				var _dateString:String = _date.getFullYear()+"-"+_date.getMonth()+"-"+_date.getDate();
+				var _hours:String="";
+				var _hoursINT:int;
+				var _minutes:String="";
+				var _seconds:String=""; 
+			
+				 if (_date.getHours()< 10)
+					_hours = "0"
+				_hours += _date.getHours();
+					
+				if (_date.getMinutes() < 10)
+					_minutes = "0";
+				_minutes += _date.getMinutes();
+					
+				if (_date.getSeconds() < 10)
+					_seconds = "0";
+				_seconds += _date.getSeconds();
+				//The "T" must be used in order for the query to be executed
+				_dateString += "T" + _hours+":"+_minutes+":"+_seconds;
+				
+				return _dateString;
+			}
 			private function featureClone(_value:Feature):Feature{
 				var _nFeature:Feature = _value.clone();
 				_nFeature.layer = _value.layer;
 				
 				for(var attribute:String in _value.attributes) {
-					_nFeature.attributes[attribute] = _value.attributes[attribute];
+					//if (attribute != "date_modif")
+						_nFeature.attributes[attribute] = _value.attributes[attribute];
 				}
 				return _nFeature;
 			}
@@ -730,6 +725,7 @@
 				_featureNew.attributes["active"]=1;
 				_featureNew.state = "Insert";
 				_feature.attributes = _featureNew.attributes;
+				_feature.attributes["IHM_date_modif"] = returnCurrentDate();
 				
 			}
 			private function whenInsertTransaction(event:WFSTLayerEvent):void{
