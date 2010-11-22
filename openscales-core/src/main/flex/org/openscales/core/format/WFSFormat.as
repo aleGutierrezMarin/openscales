@@ -263,6 +263,7 @@ package org.openscales.core.format
 				describeFeature.setGeometryTypeFromGMLFormat(geometryType);
 			
 			}
+import org.openscales.core.feature.State;
 			return describeFeature;
 		}
 		/**
