@@ -114,7 +114,7 @@
 				this.changeMode();
 				_initialized = true;
 				//Test
-				this._fxmap.map.addEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
+				//this._fxmap.map.addEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
 				//END Test
 			}
 			
@@ -182,10 +182,10 @@
 				this.iconButtonEdit.visible = false;
 			}
 			
-			public function whenLayerRemoved(event:LayerEvent):void{
+			/*public function whenLayerRemoved(event:LayerEvent):void{
 				this._fxmap.map.removeEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
 				remove();
-			}
+			}*/
 			public function remove():void {
 				this.visible=false;
 				var i:uint = this.numElements;
