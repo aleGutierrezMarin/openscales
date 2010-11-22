@@ -144,8 +144,7 @@ package org.openscales.core.layer.ogc
 				// If they are, we don't request data again
 				if (!previousFeatureBbox.containsBounds(projectedBounds)
 					&& ((this.capabilities == null) || (this.capabilities != null && !this.featuresBbox.containsBounds(this.capabilities.getValue("Extent"))))){
-				
-					if(fullRedraw && features.length>0) {
+					if(fullRedraw && this.features.length>0) {
 						this._fullRedraw = true;
 					}
 					this.featuresBbox = projectedBounds;

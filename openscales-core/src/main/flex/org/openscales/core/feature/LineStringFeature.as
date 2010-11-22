@@ -51,7 +51,11 @@ package org.openscales.core.feature
 		 * */
 		override public function clone():Feature{
 			var geometryClone:Geometry=this.geometry.clone();
-			var lineStringFeatureClone:LineStringFeature=new LineStringFeature(geometryClone as LineString,null,this.style,this.isEditable);
+			var style:Style = null;
+			if( this.style){
+				style  = this.style.clone();
+			}
+			var lineStringFeatureClone:LineStringFeature=new LineStringFeature(geometryClone as LineString,null,style,this.isEditable);
 			return lineStringFeatureClone;
 			
 		}		
