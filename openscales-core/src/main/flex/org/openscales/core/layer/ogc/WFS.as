@@ -142,8 +142,8 @@ package org.openscales.core.layer.ogc
 			} else {
 				// Use GetCapabilities to know if all features have already been retreived.
 				// If they are, we don't request data again
-				if (!previousFeatureBbox.containsBounds(projectedBounds)
-					&& ((this.capabilities == null) || (this.capabilities != null && !this.featuresBbox.containsBounds(this.capabilities.getValue("Extent"))))){
+				if (fullRedraw || (!previousFeatureBbox.containsBounds(projectedBounds)
+					&& ((this.capabilities == null) || (this.capabilities != null && !this.featuresBbox.containsBounds(this.capabilities.getValue("Extent")))))){
 					if(fullRedraw && this.features.length>0) {
 						this._fullRedraw = true;
 					}
