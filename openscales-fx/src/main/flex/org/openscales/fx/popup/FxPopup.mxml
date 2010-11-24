@@ -61,8 +61,8 @@
 			private var _size:Size = null;
 			private var _relativePosition:String = "";
 			
-			[Bindable] public var WIDTH:Number = 400;
-			[Bindable] public var HEIGHT:Number = 200;
+			[Bindable] public var WIDTH:Number = 350;
+			[Bindable] public var HEIGHT:Number = 250;
 			static public var BR:String = "br";
 			static public var TR:String = "tr";
 			static public var TL:String = "tl";
@@ -73,6 +73,15 @@
 			private var _mode:String = "VIEW";
 			private var _editionMode:String = "";
 			private var _editable:Boolean=false;
+			
+			private var _iconButtonOffset_y_buttom:int = 28;
+			private var _iconButtonOffset_y_top:int = 37;
+			private var _vGroupOffset_height:int = 50;
+			private var _vGroupOffset_width:int = 20;
+			private var _scroller_top_T:int = 20;
+			private var _scroller_top_B:int = 14;
+			private var _scroller_buttom_T:int = 14;
+			private var _scroller_button_B:int = 20;
 						
 			private var _initialized:Boolean;
 			private var _canBeClosed:Boolean = true;
@@ -338,9 +347,9 @@
 				this.setViewModeQuadrant("BR");
 				this.setViewModeQuadrant("BL");
 				
-				this.iconButtonEdit.y = (this.size.h-30);
-				this.iconButtonSave.y = (this.size.h-30);
-				this.iconButtonCancel.y = (this.size.h-30);
+				this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_buttom);
+				/* this.iconButtonSave.y = (this.size.h-30);
+				this.iconButtonCancel.y = (this.size.h-25); */
 				
 				//Hide Save and Cancel buttons
 				hideIconButtonCancel();
@@ -440,9 +449,19 @@
 				this.setEditModeQuadrant("BL"); 
 				
 				var _panel:Panel = this.getPanel();
-				this.iconButtonEdit.y = (this.size.h-30);
+				if (relativePosition == TR || relativePosition == TL){
+					this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_top);
+					this.iconButtonSave.y = (this.size.h-_iconButtonOffset_y_top);
+					this.iconButtonCancel.y = (this.size.h-_iconButtonOffset_y_top);	
+				}
+				else{
+					this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_buttom);
+					this.iconButtonSave.y = (this.size.h-_iconButtonOffset_y_buttom);
+					this.iconButtonCancel.y = (this.size.h-_iconButtonOffset_y_buttom);
+				}
+				/* this.iconButtonEdit.y = (this.size.h-30);
 				this.iconButtonSave.y = (this.size.h-30);
-				this.iconButtonCancel.y = (this.size.h-30);
+				this.iconButtonCancel.y = (this.size.h-37); */
 				
 				//Display Save and Cancel buttons
 				showIconButtonCancel();
@@ -480,15 +499,18 @@
 				//Scrolling treatment
 				var _scroller:Scroller = new Scroller();
 				if (_quadrant == "BL" || _quadrant == "BR"){
-					_scroller.top = 15;					
-					_scroller.bottom = 13;
+					_scroller.top = _scroller_top_T;					
+					_scroller.bottom = _scroller_top_B;
 				}
 				else {
-					_scroller.top = 13;					
-					_scroller.bottom = 15;	
+					_scroller.top = _scroller_buttom_T;					
+					_scroller.bottom = _scroller_button_B;	
 				}
 				_vGroup.clipAndEnableScrolling = true;
-				_vGroup.width = (_panel.width - 20);//(_panel.width - _scroller.width - _scroller.width);
+				_vGroup.width = (_panel.width - _vGroupOffset_width);//(_panel.width - _scroller.width - _scroller.width);
+				//Test
+				_vGroup.height = (_panel.height - _vGroupOffset_height);
+				//End Test
 				_scroller.viewport = _vGroup;
 				_panel.addElement(_scroller);
 				
