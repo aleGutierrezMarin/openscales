@@ -882,14 +882,14 @@
 						   icon="{_cancelIcon_Red}"
 						   iconOver="{_cancelIcon_Grey}"
 						   iconDown="{_cancelIcon_Grey}"
-						   toolTip="Display"
+						   toolTip="Annuler"
 						   click="displayPopup(event)"
 						   />
 	<openscales:IconButton id="iconButtonEdit"
 						   x="{WIDTH-40}"
 						   y="3"
 						   icon="{_editFeature2}"
-						   toolTip="Edit"
+						   toolTip="Editer"
 						   click="editPopup(event)"
 						   />
 	<openscales:IconButton id="iconButtonSave"
@@ -898,7 +898,7 @@
 						   icon="{_saveDiskIcon}"
 						   iconOver="{_saveDiskIcon_red}"
 						   iconDown="{_saveDiskIcon_red}"
-						   toolTip="Save"
+						   toolTip="Enregistrer"
 						   click="savePopup(event)"
 						   />
 	<!-- Fin test GAB -->
@@ -908,6 +908,7 @@
 						   icon="{new ButtonCloseUp()}"
 						   iconOver="{new ButtonCloseOver()}"
 						   iconDown="{new ButtonCloseOver()}"
+						   toolTip="Fermer"
 						   alpha="1"
 						   click="closePopup(event)"/>
 	
