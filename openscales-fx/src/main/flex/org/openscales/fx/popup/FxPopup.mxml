@@ -61,7 +61,7 @@
 			private var _size:Size = null;
 			private var _relativePosition:String = "";
 			
-			[Bindable] public var WIDTH:Number = 200;
+			[Bindable] public var WIDTH:Number = 300;
 			[Bindable] public var HEIGHT:Number = 200;
 			static public var BR:String = "br";
 			static public var TR:String = "tr";
@@ -535,10 +535,8 @@
 				return (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date_modif");
 			}
 			private function isFieldMandatory(_fieldName:String):Boolean{
-				if (_fieldName.search("adresse") >=0 || _fieldName.search("nom") >=0)
-					return true;
-				else
-					return false;
+				//if (_fieldName.search("adresse") >=0 || _fieldName.search("nom") >=0)
+				return (_fieldName == "adresse" || _fieldName == "nom");
 			}
 			private function getFieldLabelByName(_fieldName:String):String{
 				var _fieldLabel:String="";
