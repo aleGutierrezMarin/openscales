@@ -61,8 +61,8 @@
 			private var _size:Size = null;
 			private var _relativePosition:String = "";
 			
-			[Bindable] public var WIDTH:Number = 350;
-			[Bindable] public var HEIGHT:Number = 250;
+			[Bindable] public var WIDTH:Number = 250;
+			[Bindable] public var HEIGHT:Number = 200;
 			static public var BR:String = "br";
 			static public var TR:String = "tr";
 			static public var TL:String = "tl";
@@ -341,7 +341,7 @@
 				 * 
 				 * This must be done for each one of the 4 quadrant.
 				 * */
-				
+				this.WIDTH = 250;
 				this.setViewModeQuadrant("TR");
 				this.setViewModeQuadrant("TL");
 				this.setViewModeQuadrant("BR");
@@ -400,6 +400,9 @@
 				_content += addViewItemTo("formulaire");
 				_content += addViewItemTo("formulaire_a_telech");
 				_content += addViewItemTo("accessibilite");
+				//Test
+				_content += addViewItemTo("divers");
+				//End Test
 				
 				if (_feature.dateCreation != "")
 					_content +=  "<br /><i>Fiche modifiée le: " + _feature.dateCreation + "</i>";			
@@ -442,7 +445,7 @@
 				 * Unlick the view mode, in the edit mode we must insert fields and not one single
 				 * TextArea.
 				 * */
-				
+				this.WIDTH = 280;
 				this.setEditModeQuadrant("TR");
 				this.setEditModeQuadrant("TL");
 				this.setEditModeQuadrant("BR");
@@ -690,6 +693,9 @@
 						//Desactivate the "old" feature and UPDATE it
 						_feature.attributes["active"] = 0;
 						delete _feature.attributes["date_modif"];
+						//Test
+						delete _feature.attributes["divers"];
+						//Fin test
 						this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
 						_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
 						
