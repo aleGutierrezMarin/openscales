@@ -61,7 +61,7 @@
 			private var _size:Size = null;
 			private var _relativePosition:String = "";
 			
-			[Bindable] public var WIDTH:Number = 300;
+			[Bindable] public var WIDTH:Number = 400;
 			[Bindable] public var HEIGHT:Number = 200;
 			static public var BR:String = "br";
 			static public var TR:String = "tr";
