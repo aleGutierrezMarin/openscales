@@ -15,7 +15,7 @@ The layers manager is automatically updated.</p> -->
 		<DragHandler />
 		<WheelHandler />
 		
-		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<MousePosition x="10" y="{height-20}" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
 		<ControlPanel title="Layers Manager"  x="10" y="10" width="230">

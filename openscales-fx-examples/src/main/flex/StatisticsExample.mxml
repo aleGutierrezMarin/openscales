@@ -10,7 +10,7 @@
 		<WheelHandler/>
 		
 		<Spinner x="{width / 2}" y="{height / 2}"/>
-		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<MousePosition x="10" y="{height-20}" displayProjSrsCode="EPSG:4326"/>
 		
 		<WFS id="ignGeoplaRegion" name="IGN - Geopla (Départements)"
 				url="http://openscales.org/geoserver/wfs" typename="pg:simplif_dept" projection="EPSG:2154"

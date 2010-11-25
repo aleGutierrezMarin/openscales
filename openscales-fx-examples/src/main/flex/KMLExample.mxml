@@ -14,7 +14,7 @@
 		<WheelHandler/>
 		
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
-		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<MousePosition x="10" y="{height-20}" displayProjSrsCode="EPSG:4326"/>
 		
 		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
 		

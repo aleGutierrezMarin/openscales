@@ -13,7 +13,7 @@ Use the top-right button to switch the style of the rendering. -->
 		<WheelHandler/>
 
 		<Spinner x="{width / 2}" y="{height / 2}"/>
-		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<MousePosition x="10" y="{height-20}" displayProjSrsCode="EPSG:4326"/>
 
 		<WFS id="ignGeoplaFrance" name="IGN - Geopla (France)" url="http://openscales.org/geoserver/wfs"
 				typename="pg:simplif_france" projection="EPSG:2154"

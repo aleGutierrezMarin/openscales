@@ -11,7 +11,7 @@
 		<MaxExtent left="-180" bottom="-90" right="180" top="90"/>
 
 		<Spinner x="{width / 2}" y="{height / 2}"/>
-		<MousePosition x="10" y="{height-20}" displayProjection="EPSG:4326"/>
+		<MousePosition x="10" y="{height-20}" displayProjSrsCode="EPSG:4326"/>
 		<BorderPanHandler/>
 		<ClickHandler/>
 		<WheelHandler/>
