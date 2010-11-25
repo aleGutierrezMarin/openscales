@@ -1,5 +1,6 @@
 package org.openscales.fx.control
 {
+	import org.openscales.core.Map;
 	import org.openscales.core.control.MousePosition;
 
 	/**
@@ -14,7 +15,7 @@ package org.openscales.fx.control
 			super();
 		}
 		
-		public function set displayProjection(value:String):void {
+		public function set displayProjSrsCode(value:String):void {
 			if (this.control != null && value != null)
 				(this.control as MousePosition).displayProjSrsCode = value;
 		}
@@ -22,6 +23,16 @@ package org.openscales.fx.control
 		public function set numdigits(value:Number):void {
 			if (this.control != null)
 				(this.control as MousePosition).numdigits = value;
+		}
+		
+		public function set localNSEW(value:String):void {
+			if (this.control != null && value != null)
+				(this.control as MousePosition).localNSEW = value;
+		}
+		
+		public function set map(value:Map):void {
+			if (this.control != null && value != null)
+				(this.control as MousePosition).map = value;
 		}
 		
 	}
