@@ -146,6 +146,8 @@ package org.openscales.core.control
 		}
 		
 		private function onMouseUp(event:MouseEvent):void {
+			if(this._startDrag==null)
+				return;
 			this.removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMove);
 			var px:Pixel = new Pixel(this._overviewMap.mouseX,
 									 this._overviewMap.mouseY);
