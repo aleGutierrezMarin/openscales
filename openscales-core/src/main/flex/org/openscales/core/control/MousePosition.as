@@ -5,10 +5,12 @@ package org.openscales.core.control
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.Util;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
-
+	
 	/**
 	 * Control displaying the coordinates (Lon, Lat) of the current mouse position.
 	 * Don't forget to initialize the position of the control, and the width
@@ -34,18 +36,21 @@ package org.openscales.core.control
 		 * Text after coordinates in the label, which doesn't change.
 		 */
 		private var _suffix:String = "";
-
+		
 		private var _numdigits:Number = 5;
-
+		
 		private var _granularity:int = 10;
-
+		
 		private var _lastXy:Pixel = null;
+		
+		private var _useDMS:Boolean = true;
+		private var _localNSEW:String = "NSEW";
 		
 		/**
 		 * The projection display in the label
 		 */
 		[Bindable]
-		private var _displayProjSrsCode:String = null;
+		private var _displayProjSrsCode:String = "EPSG:4326";
 		
 		/**
 		 * MousePosition Constructor
@@ -63,14 +68,13 @@ package org.openscales.core.control
 			labelFormat.font = "Verdana";
 			this.label.setTextFormat(labelFormat);
 		}
-
+		
 		override public function draw():void {
 			super.draw();
 			this.addChild(label);
 			this.redraw();
-
 		}
-
+		
 		/**
 		 * Display the coordinate where is the mouse
 		 *
@@ -78,7 +82,7 @@ package org.openscales.core.control
 		 */
 		public function redraw(evt:MouseEvent = null):void {
 			var lonLat:Location;
-
+			
 			if (evt != null) {
 				if (this.lastXy == null ||
 					Math.abs(map.mouseX - this.lastXy.x) > this.granularity ||
@@ -90,24 +94,32 @@ package org.openscales.core.control
 				this.lastXy = new Pixel(map.mouseX, map.mouseY);
 				lonLat = this.map.getLocationFromMapPx(this.lastXy);
 			}
-
+			
 			if (lonLat == null) {
-				lonLat = new Location(0, 0);
+				lonLat = new Location(0,0,(this.map.baseLayer)?this.map.baseLayer.projSrsCode:Geometry.DEFAULT_SRS_CODE);
 			}
-
-			if (this._displayProjSrsCode && this.map.baseLayer) {
+			
+			if (this._displayProjSrsCode) {
 				lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
-			}    
-
-			var digits:int = int(this.numdigits);
-			this.label.text =
-				this.prefix +
-				lonLat.lon.toFixed(digits) +
-				this.separator + 
-				lonLat.lat.toFixed(digits) +
-				this.suffix;
+			}
+			
+			var coord1:String, coord2:String;
+			if (this.useDMS && (lonLat.projSrsCode == "EPSG:4326")) {
+				coord1 = (lonLat.lon < 0) ? (Util.degToDMS(-lonLat.lon)+" "+this.localNSEW.charAt(3)) : (Util.degToDMS(lonLat.lon)+" "+this.localNSEW.charAt(2));
+				coord2 = (lonLat.lat < 0) ? (Util.degToDMS(-lonLat.lat)+" "+this.localNSEW.charAt(1)) : (Util.degToDMS(lonLat.lat)+" "+this.localNSEW.charAt(0));
+			} else {
+				var digits:int = int(this.numdigits);
+				coord1 = lonLat.lon.toFixed(digits);
+				coord2 = lonLat.lat.toFixed(digits);
+			}
+			
+			this.label.text = this.prefix
+				+ coord1
+				+ this.separator
+				+ coord2
+				+ this.suffix;
 		}
-
+		
 		override public function set map(map:Map):void {
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
@@ -141,7 +153,7 @@ package org.openscales.core.control
 		private function activateDisplay(event:MapEvent):void {
 			this.map.addEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
 		}
-
+		
 		/**
 		 * Getters &amp; setters
 		 */
@@ -151,54 +163,81 @@ package org.openscales.core.control
 		public function set prefix(value:String):void {
 			_prefix = value;
 		}
-
+		
 		public function get separator():String {
 			return _separator;
 		}
 		public function set separator(value:String):void {
 			_separator = value;
 		}
-
+		
 		public function get suffix():String {
 			return _suffix;
 		}
 		public function set suffix(value:String):void {
 			_suffix = value;
 		}
-
+		
 		public function get numdigits():Number {
 			return _numdigits;
 		}
 		public function set numdigits(value:Number):void {
 			_numdigits = value;
 		}
-
+		
 		public function get granularity():int {
 			return _granularity;
 		}
 		public function set granularity(value:int):void {
 			_granularity = value;
 		}
-
+		
 		public function get lastXy():Pixel {
 			return _lastXy;
 		}
 		public function set lastXy(value:Pixel):void {
 			_lastXy = value;
 		}
-
+		
+		public function get useDMS():Boolean {
+			return this._useDMS;
+		}
+		public function set useDMS(value:Boolean):void {
+			this._useDMS = value;
+		}
+		
+		/**
+		 * By default localNSEW == "NSEW", which means that the
+		 * north id represented by N, the south by S, the east by E
+		 * and the west by W.
+		 * Use localNSEW = "NSEO" in french for instance.
+		 */
+		public function get localNSEW():String {
+			return this._localNSEW;
+		}
+		public function set localNSEW(value:String):void {
+			if (value.length == 4) {
+				this._localNSEW = value;
+			}
+		}
+		
+		/**
+		 * If null, the display projection used is the projection of the base layer.
+		 * By default, the display projection is "EPSG:4326" 
+		 */
 		public function get displayProjSrsCode():String {
 			return this._displayProjSrsCode;
 		}
 		public function set displayProjSrsCode(value:String):void {
 			this._displayProjSrsCode = value;
 		}
-
+		
 		public function get label():TextField {
 			return this._label;
 		}
 		public function set label(value:TextField):void {
 			this._label = value;
 		}
+		
 	}
 }
