@@ -31,8 +31,7 @@
 			import mx.formatters.DateFormatter;
 			import mx.graphics.codec.PNGEncoder;
 			import mx.utils.StringUtil;
-			
-			import org.hamcrest.mxml.collection.Array;
+
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.WFSTLayerEvent;
 			import org.openscales.core.feature.Feature;
