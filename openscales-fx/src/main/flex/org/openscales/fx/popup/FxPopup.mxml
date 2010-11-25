@@ -427,11 +427,13 @@
 				var _outPut:String="";
 				var _fieldLabel:String = getFieldLabelByName(_fieldName);
 				var _fieldValue:String = _feature.attributes[_fieldName];
-				if (_fieldName != "name" && _fieldLabel != "" && _fieldValue != "" && _fieldValue != null){						
+				if (_fieldName != "name" && _fieldValue != "" && _fieldValue != null){						
 					if (_fieldName == "site")
 						_outPut = "<b>" + _fieldLabel + "</b>:<a href='" + _fieldValue + "'>" + _fieldValue + "</a><br />";
 					else if (_fieldName == "courriel1" || _fieldName == "courriel2")
 						_outPut = "<b>" + _fieldLabel + "</b>:<a href='mailto:" + _fieldValue + "'>" + _fieldValue + "</a><br />";
+					else if (_fieldLabel == "")
+						_outPut = _fieldValue + "<br />";
 					else
 						_outPut = "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
 
