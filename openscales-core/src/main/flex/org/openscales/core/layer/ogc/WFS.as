@@ -56,7 +56,7 @@ package org.openscales.core.layer.ogc
 		
 		private var _params:WFSParams = null;
 		
-		private var _request:XMLRequest = null;	
+		protected var _request:XMLRequest = null;	
 		
 		private var _firstRendering:Boolean = true;
 		
