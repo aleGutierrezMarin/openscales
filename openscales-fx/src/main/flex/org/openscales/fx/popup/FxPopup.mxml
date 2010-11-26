@@ -31,7 +31,7 @@
 			import mx.formatters.DateFormatter;
 			import mx.graphics.codec.PNGEncoder;
 			import mx.utils.StringUtil;
-
+			
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.WFSTLayerEvent;
 			import org.openscales.core.feature.Feature;
@@ -388,7 +388,7 @@
 					content = content + "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
 				}
 		
-				//_content += addViewItemTo("nom");
+				_content += addViewItemTo("nom");
 				_content += addViewItemTo("adresse");
 				_content += addViewItemTo("adresse_postale");
 				_content += addViewItemTo("telfax");
@@ -409,6 +409,7 @@
 				 var _textZone:TextArea = new TextArea();
 				_textZone.id = _tZoneID;
 				_content = _content.split("&amp;lt;br/&amp;gt;").join("<br />");
+				_content = _content.split("&amp;apos;").join("'");
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
 				_textZone.percentWidth=100;
 				_textZone.percentHeight = 100;
@@ -426,7 +427,7 @@
 				var _outPut:String="";
 				var _fieldLabel:String = getFieldLabelByName(_fieldName);
 				var _fieldValue:String = _feature.attributes[_fieldName];
-				if (_fieldName != "name" && _fieldValue != "" && _fieldValue != null){						
+				if (_fieldName != "nom" && _fieldValue != "" && _fieldValue != null){						
 					if (_fieldName == "site")
 						_outPut = "<b>" + _fieldLabel + "</b>:<a href='" + _fieldValue + "'>" + _fieldValue + "</a><br />";
 					else if (_fieldName == "courriel1" || _fieldName == "courriel2")
@@ -436,6 +437,12 @@
 					else
 						_outPut = "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
 
+					//Replace all "&amp;apos;" by "'"
+					_feature.attributes[_fieldName] = _fieldValue.split("&amp;apos;").join("'");
+				}
+				else if (_fieldValue != "" && _fieldValue != null){
+					//Same for "nom" field
+					_feature.attributes[_fieldName] = _fieldValue.split("&amp;apos;").join("'");	
 				}
 				
 				return _outPut;
@@ -526,24 +533,20 @@
 				
 				if (_fieldLabel != ""){
 					if (isFieldEditable(_fieldName)){
-						
+						if (_fieldValue != null){
+							_fieldValue = _fieldValue.split("&amp;lt;br/&amp;gt;").join("\n");
+							_fieldValue = _fieldValue.split("<br/>").join("\n");
+							//Replace all "&amp;apos;" by "'"
+							_fieldValue = _fieldValue.split("&amp;apos;").join("'");
+						}
 						if (isFieldMandatory(_fieldName)){
 							if (isFieldMultiLine(_fieldName)){
-								if (_fieldValue != null){
-									_fieldValue = _fieldValue.split("&amp;lt;br/&amp;gt;").join("\n");
-									_fieldValue = _fieldValue.split("<br/>").join("\n");
-										
-								}
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true, 4, true);
 							}else
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, false, 1, true);	
 						}
 						else{
 							if (isFieldMultiLine(_fieldName)){
-								if (_fieldValue != null){
-									_fieldValue = _fieldValue.split("&amp;lt;br/&amp;gt;").join("\n");
-									_fieldValue = _fieldValue.split("<br/>").join("\n");
-								}
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true,4,false);								
 							}
 							else
@@ -661,61 +664,68 @@
 				this._featureNew = featureClone(this._feature);
 				//Set new attributs data
 				if (this.mandatoryFieldVerification() == true){
-					//Alert.show("Sauvegarde en cours");
-					var _panel:Panel = getPanel();
-					if (_panel.numElements == 1){
-						var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
-						var _vGroup:VGroup = (_scroller.viewport as VGroup);
+					if (specialCharVerification()){
+						var _panel:Panel = getPanel();
+						if (_panel.numElements == 1){
+							var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
+							var _vGroup:VGroup = (_scroller.viewport as VGroup);
 						
-						//The new values must be set on the NEW feature
-						for (var i:int=0; i<_vGroup.numElements; i++){
-							var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
-							//A HGroup is composed of one Text (index=0) and one TextInput (index=1)
-							if (_hGroup != null && _hGroup.numElements == 2){
-								//Get the field label
-								var _text:Text = (_hGroup.getElementAt(0) as Text);
-								var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
+							//The new values must be set on the NEW feature
+							for (var i:int=0; i<_vGroup.numElements; i++){
+								var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
+								//A HGroup is composed of one Text (index=0) and one TextInput (index=1)
+								if (_hGroup != null && _hGroup.numElements == 2){
+									//Get the field label
+									var _text:Text = (_hGroup.getElementAt(0) as Text);
+									var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
 								
-								var _fieldName:String = _text.id;
-								var _value:String = _textField.text;
+									var _fieldName:String = _text.id;
+									var _value:String = _textField.text;
 								
-								if ((_fieldName == "site") && (_value.indexOf("www.") == 0))
-									_value = "http://" + _value;
+									if ((_fieldName == "site") && (_value.indexOf("www.") == 0))
+										_value = "http://" + _value;
 								
-								//In case of TextArea, treat the multi-line case
-								if (_textField.className == "TextArea")
-									_value = _value.split('\n').join('<br/>');
-									//_value = _value.replace('\n','<br/>');
-								_featureNew.attributes[_fieldName] = _value;
+									//In case of TextArea, treat the multi-line case
+									if (_textField.className == "TextArea")
+										_value = _value.split('\n').join('<br/>');
+										//_value = _value.replace('\n','<br/>');
+								
+									_value = _value.split("&amp;apos;").join("'");
+									_featureNew.attributes[_fieldName] = _value;
+								}
 							}
 						}
-					}
-					if (event != null){
-						//Desactivate the "old" feature and UPDATE it
-						_feature.attributes["active"] = 0;
-						delete _feature.attributes["date_modif"];
-						//Test
-						delete _feature.attributes["divers"];
-						//Fin test
-						this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
-						_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
-						
-					}else {
-						//New feature, it will not be necessary to display date_modif attribut
-						_featureNew.attributes["active"] = 1;
-						_feature.dateCreation = returnCurrentDate();
-						for(var attribute:String in _featureNew.attributes) {
-							if (attribute != "date_modif")
-								_feature.attributes[attribute] = _featureNew.attributes[attribute];
+						if (event != null){
+							//Desactivate the "old" feature and UPDATE it
+							_feature.attributes["active"] = 0;
+							delete _feature.attributes["date_modif"];
+							//Test
+							delete _feature.attributes["divers"];
+							//Fin test
+							this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
+							_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
+							
+						}else {
+							//New feature, it will not be necessary to display date_modif attribut
+							_featureNew.attributes["active"] = 1;
+							_feature.dateCreation = returnCurrentDate();
+							for(var attribute:String in _featureNew.attributes) {
+								if (attribute != "date_modif")
+									_feature.attributes[attribute] = _featureNew.attributes[attribute];
+							}
 						}
+						displayPopup();
+						//Hide Save and Cancel buttons
+						hideIconButtonCancel();
+						hideIconButtonSave();
+						//Display Edit button
+						showIconButtonEdit();
+						return true;
 					}
-					displayPopup();
-					//Hide Save and Cancel buttons
-					hideIconButtonCancel();
-					hideIconButtonSave();
-					//Display Edit button
-					showIconButtonEdit();
-					return true;
+					else{
+						Alert.show("Merci de ne pas utiliser le '\\'.");
+						return false;
+					}
 				}
 				else{
 					//A mandatory field hasn't been filled, save can't be done
@@ -808,6 +818,29 @@
 					}
 				}
 				//All mandatory fields have been filled with values, return TRUE
+				return true;
+			}
+			public function specialCharVerification():Boolean{
+				var _panel:Panel = this.getPanel();
+				
+				if (_panel.numElements == 1){
+					var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
+					var _vGroup:VGroup = (_scroller.viewport as VGroup);
+					
+					for (var i:int=0; i<_vGroup.numElements; i++){
+						var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
+						//A HGroup is composed of one Text (index=0) and one TextInput (index=1)
+						if (_hGroup != null && _hGroup.numElements == 2){
+							//Get the field label
+							var _text:Text = (_hGroup.getElementAt(0) as Text);
+							var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
+							//Look for the presence of special Char
+							if (_textField == null || StringUtil.trim(_textField.text).indexOf("\\") >= 0){
+								return false;
+							}
+						}
+					}
+				}
 				return true;
 			}
 			private function getPanel(_quadrant:String=null):Panel{
