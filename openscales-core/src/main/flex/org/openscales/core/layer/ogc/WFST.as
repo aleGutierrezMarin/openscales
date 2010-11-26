@@ -5,6 +5,7 @@ package org.openscales.core.layer.ogc
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.events.WFSTLayerEvent;
 	import org.openscales.core.feature.DescribeFeature;
@@ -67,14 +68,27 @@ package org.openscales.core.layer.ogc
 			return super.getFullRequestString(altUrl) + filterUrl;
 		}
 		
+		override protected function loadFeatures(url:String):void {	
+			if (map) {
+				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_START, this ));
+			} else {
+				Trace.warn("Warning : no LAYER_LOAD_START dispatched because map event dispatcher is not defined");
+			}
+			
+			if(_request)
+				_request.destroy();
+			this.loading = true;
+			
+			_request = new XMLRequest(url, onSuccess, onFailure);
+			_request.proxy = this.proxy;
+			_request.security = this.security;
+			_request.cache = false;
+			_request.send();
+		}
+		
 		override public function set map(map:Map):void {
 			super.map = map;
 			if(map){
-				
-				/*
-				this.map.addEventListener(FeatureEvent.FEATURE_DRAWING_END,this.addTransaction);
-				this.map.addEventListener(FeatureEvent.FEATURE_EDITED_END,this.addTransaction);
-				*/
 				this.map.addEventListener(WFSTFeatureEvent.INSERT,this.addTransaction);
 				this.map.addEventListener(WFSTFeatureEvent.UPDATE,this.addTransaction);
 				this.map.addEventListener(WFSTFeatureEvent.DELETE,this.addTransaction);
