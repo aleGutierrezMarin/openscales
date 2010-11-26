@@ -99,6 +99,14 @@ package org.openscales.core.layer.ogc
 			if(this._wfsFormat != null)
 				this._wfsFormat.destroy();
 			this._wfsFormat = null;
+			
+			var farray:Array = this._featuresids.getValues();
+			var i:uint = farray.length;
+			for(;i>0;--i)
+				this.removeFeature(farray.pop(),true);
+			this._featuresids.clear();
+			this._featuresids = null;
+			
 			super.destroy();
 		}
 		override public function set map(map:Map):void {
@@ -272,14 +280,6 @@ package org.openscales.core.layer.ogc
 			
 			this._wfsFormat.read(loader.data as String);
 			
-			if(this._fullRedraw) {
-				var farray:Array = this._featuresids.getValues();
-				var i:uint = farray.length;
-				for(;i>0;--i)
-					this.removeFeature(farray.pop(),true);
-			}
-			this._featuresids.clear();
-			
 			this.draw();
 			
 			if (map) {
@@ -395,12 +395,12 @@ package org.openscales.core.layer.ogc
 		public function get capabilitiesVersion():String {
 			return this._capabilitiesVersion;
 		}
-
+		
 		public function get filter():XML
 		{
 			return _filter;
 		}
-
+		
 		public function set filter(value:XML):void
 		{
 			_filter = value;
