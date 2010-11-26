@@ -251,20 +251,20 @@
 				var newPx:Pixel = px;
 				
 				if(this.relativePosition == BR){
-					newPx.x = newPx.x - 5;
-					newPx.y = newPx.y + 10;
+					newPx.x = newPx.x;
+					newPx.y = newPx.y;
 				}
 				else if (this.relativePosition == BL){
-					newPx.x = newPx.x - this.width + 5;
-					newPx.y = newPx.y + 10;
+					newPx.x = newPx.x - this.width;
+					newPx.y = newPx.y;
 				}
 				else if (this.relativePosition == TR){
-					newPx.x = newPx.x  - 5; 
-					newPx.y = newPx.y - this.height - 10;
+					newPx.x = newPx.x; 
+					newPx.y = newPx.y - this.height;
 				}
 				else if (this.relativePosition == TL){
-					newPx.x = newPx.x - this.width  - 5;
-					newPx.y = newPx.y - this.height - 10;
+					newPx.x = newPx.x - this.width;
+					newPx.y = newPx.y - this.height;
 				}
 				return newPx;
 			}
