@@ -701,6 +701,11 @@ package org.openscales.core.configuration
 			_map = value;
 		}
 		
+		public function get styles():Object
+		{
+			return _styles;
+		}
+		
 		
 	}
 }

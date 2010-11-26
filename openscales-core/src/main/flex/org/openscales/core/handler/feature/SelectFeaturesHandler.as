@@ -3,8 +3,6 @@ package org.openscales.core.handler.feature {
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.FeatureEvent;
@@ -27,6 +25,8 @@ package org.openscales.core.handler.feature {
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Pixel;
 
 
 	/**
@@ -801,7 +801,7 @@ package org.openscales.core.handler.feature {
 		 */
 		private function setSelectedStyle(feature:Feature):void {
 			feature.originalStyle = feature.style;
-			feature.style = (this.selectedStyle != null) ? this.selectedStyle(feature) : SelectFeaturesHandler.defaultSelectedStyle(feature);
+			feature.style = (this.selectedStyle != null) ? this.selectedStyle(feature, this.map) : SelectFeaturesHandler.defaultSelectedStyle(feature, this.map);
 		}
 
 		/**
@@ -832,13 +832,16 @@ package org.openscales.core.handler.feature {
 		 * The style depends on the type of the input feature (point, multipoint,
 		 * linestring, multilinestring, polygon, multipolygon).
 		 */
-		static public function defaultSelectedStyle(feature:Feature):Style {
+		static public function defaultSelectedStyle(feature:Feature, map:Map):Style {
 			var selectedStyle:Style;
 			var symbolizer:Symbolizer;
 			var color:uint = 0xFFFF00;
 			var opacity:Number = 0.5;
 			var borderThin:int = 2;
 			if (feature is PointFeature || feature is MultiPointFeature) {
+				if(SelectFeaturesHandler.selectedStyleExist(feature.style.name, map)){
+					return map.configuration.styles[feature.style.name+"_selected"];
+				}
 				var markType:String = WellKnownMarker.WKN_SQUARE;
 				var markSize:Number = 12;
 				var currentMarkSymbolizer:Symbolizer = null; //feature.style.rules[0].symbolizers[0];
@@ -859,6 +862,18 @@ package org.openscales.core.handler.feature {
 			selectedStyle.rules[0] = new Rule();
 			selectedStyle.rules[0].symbolizers.push(symbolizer);
 			return selectedStyle;
+		}
+		
+		static private function selectedStyleExist(name:String, map:Map):Boolean{
+			for each(var s:Object in map.configuration.styles){
+				if(s is Style){
+					if((s as Style).name == (name+"_selected")){
+						return true;
+					}
+				}
+					
+			}
+			return false;
 		}
 
 	}
