@@ -56,7 +56,7 @@ package org.openscales.core.request
 		
 		private var _uid:String;
 
-		
+		private var _cache:Boolean=true;
 		/**
 		 * @constructor
 		 * Create a new Request
@@ -341,6 +341,9 @@ package org.openscales.core.request
 			if ((this.proxy != null)) {
 				_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
 			}
+			if (!this._cache){
+				_finalUrl += "&timestamp=" + new Date().getTime();
+			}
 
 			return _finalUrl;
 		}
@@ -453,6 +456,24 @@ package org.openscales.core.request
 		 */
 		public function get duration():Number {
 			return this._duration;
+		}
+		
+		/**
+		 * Setter for "cache" property
+		 * 
+		 * @param value Boolean
+		 */
+		public function set cache(value:Boolean):void{
+			this._cache = value;
+		}
+		
+		/**
+		 * getter for "cache" property
+		 * 
+		 * @return Boolean
+		 */
+		public function get cache():Boolean{
+			return this._cache;
 		}
 		
 	}
