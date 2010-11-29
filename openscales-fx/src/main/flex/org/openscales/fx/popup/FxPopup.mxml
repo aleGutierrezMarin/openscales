@@ -38,6 +38,7 @@
 			import org.openscales.core.layer.ogc.WFST;
 			import org.openscales.fx.FxMap;
 			import org.openscales.fx.popup.skin.PopupPanelSkinTR;
+			import org.openscales.fx.popup.skin.ScrollerSkin;
 			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -106,12 +107,12 @@
 			private var _cancelIcon_Grey:Class;
 			
 			private function create():void{				
-				if ((this.loc != null) && (this.fxmap.map != null)) {
+				/* if ((this.loc != null) && (this.fxmap.map != null)) {
 					var px:Pixel = this.fxmap.map.getMapPxFromLocation(this.feature.lonlat);
 					this.relativePosition = this.calculateRelativePosition(px);
-				}
+				} 
 				this.position = px;
-				this.setCurrentState(relativePosition,false);
+				this.setCurrentState(relativePosition,false);*/
 				if (size != null){
 					this._size = size;
 				}
@@ -242,9 +243,9 @@
 				
 				if(!this.feature)
 					return;
-				
-				this.loc = this.feature.lonlat;
-				
+				if(this._loc == null){
+					this._loc = this.feature.lonlat;
+				}
 			}
 			
 			public function calculateNewPx(px:Pixel):Pixel {
@@ -255,16 +256,16 @@
 					newPx.y = newPx.y;
 				}
 				else if (this.relativePosition == BL){
-					newPx.x = newPx.x - this.width;
+					newPx.x = newPx.x - this.WIDTH;
 					newPx.y = newPx.y;
 				}
 				else if (this.relativePosition == TR){
 					newPx.x = newPx.x; 
-					newPx.y = newPx.y - this.height;
+					newPx.y = newPx.y - this.HEIGHT;
 				}
 				else if (this.relativePosition == TL){
-					newPx.x = newPx.x - this.width;
-					newPx.y = newPx.y - this.height;
+					newPx.x = newPx.x - this.WIDTH;
+					newPx.y = newPx.y - this.HEIGHT;
 				}
 				return newPx;
 			}
@@ -275,6 +276,7 @@
 					this.x = newPx.x;
 					this.y = newPx.y;
 				}
+				
 			}
 			
 			public function get position():Pixel {
@@ -475,6 +477,7 @@
 				/* this.iconButtonEdit.y = (this.size.h-30);
 				this.iconButtonSave.y = (this.size.h-30);
 				this.iconButtonCancel.y = (this.size.h-37); */
+
 				
 				//Display Save and Cancel buttons
 				showIconButtonCancel();
@@ -482,7 +485,10 @@
 				//Hide Edit button
 				hideIconButtonEdit();
 				
+				this.position = this._fxmap.map.getMapPxFromLocation(this.loc);
+				
 			}
+			
 			private function setEditModeQuadrant(_quadrant:String):void{
 				var _panel:Panel = this.getPanel(_quadrant);
 				var _hGroup:HGroup;
@@ -511,6 +517,7 @@
 				
 				//Scrolling treatment
 				var _scroller:Scroller = new Scroller();
+				_scroller.setStyle("skinClass",ScrollerSkin);
 				if (_quadrant == "BL" || _quadrant == "BR"){
 					_scroller.top = _scroller_top_T;					
 					_scroller.bottom = _scroller_top_B;
@@ -526,6 +533,8 @@
 				//End Test
 				_scroller.viewport = _vGroup;
 				_panel.addElement(_scroller);
+				
+
 				
 			}
 			private function addEditionItemTo(_fieldName:String, _vGroup:VGroup):void{

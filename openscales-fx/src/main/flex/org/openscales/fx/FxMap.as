@@ -147,7 +147,8 @@ package org.openscales.fx
 			
 			if (fxPopup != null){
 				fxPopup.fxmap = this;
-				fxPopup.position = fxPopup.fxmap.map.getMapPxFromLocation(fxPopup.feature.lonlat);
+				//fxPopup.position = fxPopup.fxmap.map.getMapPxFromLocation(fxPopup.feature.lonlat);
+				//fxPopup.position = new Pixel(this.map.mouseX, this.map.mouseY);
 				this._flexOverlay.addElement(fxPopup);
 			}
 		}
