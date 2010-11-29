@@ -35,10 +35,12 @@
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.WFSTLayerEvent;
 			import org.openscales.core.feature.Feature;
+			import org.openscales.core.layer.FeatureLayer;
+			import org.openscales.core.layer.Layer;
+			import org.openscales.core.layer.ogc.WFS;
 			import org.openscales.core.layer.ogc.WFST;
 			import org.openscales.fx.FxMap;
 			import org.openscales.fx.popup.skin.PopupPanelSkinTR;
-			import org.openscales.fx.popup.skin.ScrollerSkin;
 			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -343,6 +345,7 @@
 				 * This must be done for each one of the 4 quadrant.
 				 * */
 				this.WIDTH = 250;
+				this.HEIGHT = 200;
 				this.setViewModeQuadrant("TR");
 				this.setViewModeQuadrant("TL");
 				this.setViewModeQuadrant("BR");
@@ -455,7 +458,8 @@
 				 * Unlick the view mode, in the edit mode we must insert fields and not one single
 				 * TextArea.
 				 * */
-				this.WIDTH = 280;
+				this.WIDTH = 350;
+				this.HEIGHT = 300;
 				this.setEditModeQuadrant("TR");
 				this.setEditModeQuadrant("TL");
 				this.setEditModeQuadrant("BR");
@@ -517,7 +521,6 @@
 				
 				//Scrolling treatment
 				var _scroller:Scroller = new Scroller();
-				_scroller.setStyle("skinClass",ScrollerSkin);
 				if (_quadrant == "BL" || _quadrant == "BR"){
 					_scroller.top = _scroller_top_T;					
 					_scroller.bottom = _scroller_top_B;
@@ -575,8 +578,16 @@
 				return (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date_modif");
 			}
 			private function isFieldMandatory(_fieldName:String):Boolean{
-				//if (_fieldName.search("adresse") >=0 || _fieldName.search("nom") >=0)
-				return (_fieldName == "adresse" || _fieldName == "nom");
+				//Correction for PHT-EB-RECETTE-485: field "adresse" is mandatory only for POINT type layers
+				//Get current editable layer
+				var _currentEditableLayer:FeatureLayer;
+				for each(var l:Layer in this._fxmap.map.layers){
+					if(l.editable == true && l is WFS){
+						_currentEditableLayer = (l as FeatureLayer);
+					}
+				}
+				var _layerGeoType:String = (_currentEditableLayer as WFST).describeFeature.geometryType;
+				return ((_fieldName == "adresse" && _layerGeoType == "org.openscales.geometry::Point") || _fieldName == "nom");
 			}
 			private function getFieldLabelByName(_fieldName:String):String{
 				var _fieldLabel:String="";
