@@ -71,6 +71,10 @@ package org.openscales.core.configuration
 		 * @return The child items of <Securities> </Securities> elements 
 		 */
 		 function get securities():XMLList;
+		 /**
+		  * @return The styles defined in the configuration
+		  */
+		 function get styles():Object;
 		 
 		
 	}
