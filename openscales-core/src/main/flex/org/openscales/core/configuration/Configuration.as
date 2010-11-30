@@ -504,7 +504,7 @@ package org.openscales.core.configuration
 				style.rules[i] = this.parseRule(xmlRule);
 				i++;
 			}
-			
+			style.name=styleNode.@id.toString();
 			return style;
 			
 		}
@@ -702,6 +702,11 @@ package org.openscales.core.configuration
 		public function set map(value:Map):void
 		{
 			_map = value;
+		}
+		
+		public function get styles():Object
+		{
+			return _styles;
 		}
 		
 		
