@@ -801,7 +801,7 @@ package org.openscales.core.handler.feature {
 		 */
 		private function setSelectedStyle(feature:Feature):void {
 			feature.originalStyle = feature.style;
-			feature.style = (this.selectedStyle != null) ? this.selectedStyle(feature,this.map) : SelectFeaturesHandler.defaultSelectedStyle(feature, this.map);
+			feature.style = (this.selectedStyle != null) ? this.selectedStyle(feature) : SelectFeaturesHandler.defaultSelectedStyle(feature);
 		}
 
 		/**
@@ -832,7 +832,7 @@ package org.openscales.core.handler.feature {
 		 * The style depends on the type of the input feature (point, multipoint,
 		 * linestring, multilinestring, polygon, multipolygon).
 		 */
-		static public function defaultSelectedStyle(feature:Feature, map:Map):Style {
+		static public function defaultSelectedStyle(feature:Feature):Style {
 			var selectedStyle:Style;
 			var symbolizer:Symbolizer;
 			var color:uint = 0xFFFF00;
