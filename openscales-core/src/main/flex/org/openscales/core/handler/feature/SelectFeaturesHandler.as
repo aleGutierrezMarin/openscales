@@ -801,7 +801,7 @@ package org.openscales.core.handler.feature {
 		 */
 		private function setSelectedStyle(feature:Feature):void {
 			feature.originalStyle = feature.style;
-			feature.style = (this.selectedStyle != null) ? this.selectedStyle(feature) : SelectFeaturesHandler.defaultSelectedStyle(feature, this.map);
+			feature.style = (this.selectedStyle != null) ? this.selectedStyle(feature,this.map) : SelectFeaturesHandler.defaultSelectedStyle(feature, this.map);
 		}
 
 		/**
