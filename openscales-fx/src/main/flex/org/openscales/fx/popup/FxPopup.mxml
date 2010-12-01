@@ -747,7 +747,7 @@
 						return true;
 					}
 					else{
-						Alert.show("Merci de ne pas utiliser le '\\'.");
+						Alert.show("Merci de ne pas utiliser les \\ , < , > , &.");
 						return false;
 					}
 				}
@@ -859,7 +859,7 @@
 							var _text:Text = (_hGroup.getElementAt(0) as Text);
 							var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
 							//Look for the presence of special Char
-							if (_textField == null || StringUtil.trim(_textField.text).indexOf("\\") >= 0){
+							if (_textField == null || StringUtil.trim(_textField.text).indexOf("\\") >= 0 || StringUtil.trim(_textField.text).indexOf("<") >= 0 || StringUtil.trim(_textField.text).indexOf(">") >= 0 || StringUtil.trim(_textField.text).indexOf("&") >= 0){
 								return false;
 							}
 						}
