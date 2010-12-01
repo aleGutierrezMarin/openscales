@@ -83,7 +83,9 @@
 			private var _scroller_top_T:int = 38;
 			private var _scroller_top_B:int = 14;
 			private var _scroller_buttom_T:int = 30;
-			private var _scroller_button_B:int = 20;
+			private var _scroller_buttom_B:int = 20;
+			private var _textArea_top:int = 35;
+			private var _textArea_buttom:int = 13;
 						
 			private var _initialized:Boolean;
 			private var _canBeClosed:Boolean = true;
@@ -418,8 +420,8 @@
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
 				_textZone.percentWidth=100;
 				_textZone.percentHeight = 100;
-				_textZone.top=13;
-				_textZone.bottom=13;
+				_textZone.top=this._textArea_top;
+				_textZone.bottom=this._textArea_buttom;
 				_textZone.editable = false;
 				_textZone.setStyle("borderVisible", false); 
 	
@@ -527,7 +529,7 @@
 				}
 				else {
 					_scroller.top = _scroller_buttom_T;					
-					_scroller.bottom = _scroller_button_B;	
+					_scroller.bottom = _scroller_buttom_B;	
 				}
 				_vGroup.clipAndEnableScrolling = true;
 				_vGroup.width = (_panel.width - _vGroupOffset_width);//(_panel.width - _scroller.width - _scroller.width);
