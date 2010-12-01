@@ -64,7 +64,7 @@
 			private var _relativePosition:String = "";
 			
 			[Bindable] public var WIDTH:Number = 250;
-			[Bindable] public var HEIGHT:Number = 200;
+			[Bindable] public var HEIGHT:Number = 150;
 			static public var BR:String = "br";
 			static public var TR:String = "tr";
 			static public var TL:String = "tl";
@@ -347,7 +347,7 @@
 				 * This must be done for each one of the 4 quadrant.
 				 * */
 				this.WIDTH = 250;
-				this.HEIGHT = 200;
+				this.HEIGHT = 150;
 				this.setViewModeQuadrant("TR");
 				this.setViewModeQuadrant("TL");
 				this.setViewModeQuadrant("BR");
