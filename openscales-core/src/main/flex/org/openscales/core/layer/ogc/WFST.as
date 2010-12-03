@@ -34,9 +34,9 @@ package org.openscales.core.layer.ogc
 		
 		public function WFST(name:String, url:String, typename:String,featureNSlocal:String = null)
 		{
-			//TODO: implement function
+			
 			super(name, url, typename);
-			getDescribeFeatureInfo();
+			
 			
 			var featurePrefixTemp:String = typename.split(":")[0];
 			if(featurePrefixTemp  != null && featurePrefixTemp != typename){
@@ -89,6 +89,7 @@ package org.openscales.core.layer.ogc
 		override public function set map(map:Map):void {
 			super.map = map;
 			if(map){
+				getDescribeFeatureInfo();
 				this.map.addEventListener(WFSTFeatureEvent.INSERT,this.addTransaction);
 				this.map.addEventListener(WFSTFeatureEvent.UPDATE,this.addTransaction);
 				this.map.addEventListener(WFSTFeatureEvent.DELETE,this.addTransaction);
@@ -237,7 +238,7 @@ package org.openscales.core.layer.ogc
 		/**
 		 * the client must negociate with the server which version is the better
 		 * */
-		protected function neagociateVersionWithServer():void{
+		protected function negociateVersionWithServer():void{
 			throw "Not yet implement ";
 		}
 		

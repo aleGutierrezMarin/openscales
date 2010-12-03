@@ -574,7 +574,7 @@
 				}
 			}
 			private function isFieldMultiLine(_fieldName:String):Boolean{
-				return (_fieldName == "adresse" || _fieldName == "telfax" || _fieldName == "horaire" || _fieldName == "accessibilite" || _fieldName == "notes");
+				return (_fieldName == "adresse" || _fieldName == "telfax" || _fieldName == "horaire" || _fieldName == "accessibilite" || _fieldName == "notes" || _fieldName == "adresse_postale");
 			}
 			private function isFieldEditable(_fieldName:String):Boolean{
 				return (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date_modif");
