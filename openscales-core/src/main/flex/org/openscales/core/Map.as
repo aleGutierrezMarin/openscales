@@ -273,6 +273,8 @@ package org.openscales.core
 			
 			if (setNewBaseLayer && (this.baseLayer == layer) && (l.length>0)) {
 				this.baseLayer = l[0];
+			} else if (this.baseLayer == layer || l.length==0){
+				this.baseLayer = null;
 			}
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
