@@ -100,14 +100,16 @@ package org.openscales.core.layer.ogc
 				this._wfsFormat.destroy();
 			this._wfsFormat = null;
 			
-			var farray:Array = this._featuresids.getValues();
-			var i:uint = farray.length;
-			for(;i>0;--i)
-				this.removeFeature(farray.pop(),true);
-			this._featuresids.clear();
-			this._featuresids = null;
-			
-			super.destroy();
+			if(!this._featuresids){
+				var farray:Array = this._featuresids.getValues();
+				var i:uint = farray.length;
+				for(;i>0;--i)
+					this.removeFeature(farray.pop(),true);
+				this._featuresids.clear();
+				this._featuresids = null;
+				
+				super.destroy();
+			}
 		}
 		override public function set map(map:Map):void {
 			super.map = map;

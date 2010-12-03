@@ -55,7 +55,8 @@ package org.openscales.core.layer.ogc
 		 * @param altUrl Use this as the url instead of the layer's url
 		 */
 		override public function getFullRequestString(altUrl:String = null):String {
-		
+			if(!_wfsFormat || !this.map)
+				return null;
 			//filter by url way , by post way is maybe better
 			var filterUrl:String ="";
 			if(_filter){
@@ -222,6 +223,8 @@ package org.openscales.core.layer.ogc
 		 * 
 		 */
 		protected function onSuccessDescribeFeature(event:Event):void {
+			if(!_wfsFormat || !this.map)
+				return;
 			var loader:URLLoader = event.target as URLLoader;
 			var xmlReponse:XML =   new XML(loader.data);
 			this.describeFeature = this._wfsFormat.describeFeatureRead(xmlReponse);
