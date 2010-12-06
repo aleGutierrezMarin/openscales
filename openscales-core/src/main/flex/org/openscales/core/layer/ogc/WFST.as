@@ -233,10 +233,15 @@ package org.openscales.core.layer.ogc
 			var loader:URLLoader = event.target as URLLoader;
 			var xmlReponse:XML =   new XML(loader.data);
 			this.describeFeature = this._wfsFormat.describeFeatureRead(xmlReponse);
-			this.geometryType = this.describeFeature.geometryType;
-			this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_READY,this));
-			if(this._callbackDescribeFeatureInfo != null)
-			  this._callbackDescribeFeatureInfo.call();
+			if(this.describeFeature != null){
+				this.geometryType = this.describeFeature.geometryType;
+				this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_READY,this));
+				if(this._callbackDescribeFeatureInfo != null)
+				  this._callbackDescribeFeatureInfo.call();
+			}
+			else{
+				getDescribeFeatureInfo();
+			}
 		}
 		
 		protected function onFailureDescribeFeature(event:Event):void {
