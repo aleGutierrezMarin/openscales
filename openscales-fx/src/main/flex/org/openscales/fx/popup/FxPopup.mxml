@@ -390,12 +390,12 @@
 				var _fieldLabel:String;
 				var _fieldValue:String;
 				_content = "";
-				//var _test:Object = _feature.attributes;
+				
+				addViewItemTo("nom");
 				if(_feature.attributes["nom"] != undefined){
 					content = content + "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
 				}
 		
-				_content += addViewItemTo("nom");
 				_content += addViewItemTo("adresse");
 				_content += addViewItemTo("adresse_postale");
 				_content += addViewItemTo("telfax");
@@ -406,17 +406,15 @@
 				_content += addViewItemTo("formulaire");
 				_content += addViewItemTo("formulaire_a_telech");
 				_content += addViewItemTo("accessibilite");
-				//Test
+				
 				_content += addViewItemTo("divers");
-				//End Test
+		
 				
 				if (_feature.dateCreation != "")
 					_content +=  "<br /><i>Fiche modifiée le: " + _feature.dateCreation + "</i>";			
 				
 				 var _textZone:TextArea = new TextArea();
 				_textZone.id = _tZoneID;
-				_content = _content.split("&amp;lt;br/&amp;gt;").join("<br />");
-				_content = _content.split("&amp;apos;").join("'");
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
 				_textZone.percentWidth=100;
 				_textZone.percentHeight = 100;
@@ -433,10 +431,14 @@
 			private function addViewItemTo(_fieldName:String):String{
 				var _outPut:String="";
 				var _fieldLabel:String = getFieldLabelByName(_fieldName);
-				var _fieldValue:String = _feature.attributes[_fieldName];
-				if (_fieldName != "nom" && _fieldValue != "" && _fieldValue != null){						
+				var _fieldValue:String;
+				
+				_feature.attributes[_fieldName] = this.specialCharTreatment(_feature.attributes[_fieldName], "VIEW");
+				_fieldValue = _feature.attributes[_fieldName];
+				
+				if (_fieldName != "nom" && _fieldValue != ""){	
 					if (_fieldName == "site")
-						_outPut = "<b>" + _fieldLabel + "</b>:<a href='" + _fieldValue + "'>" + _fieldValue + "</a><br />";
+						_outPut = "<b>" + _fieldLabel + "</b>:<a href='" + _fieldValue + "' target='_blank'>" + _fieldValue + "</a><br />";
 					else if (_fieldName == "courriel1" || _fieldName == "courriel2")
 						_outPut = "<b>" + _fieldLabel + "</b>:<a href='mailto:" + _fieldValue + "'>" + _fieldValue + "</a><br />";
 					else if (_fieldLabel == "")
@@ -444,14 +446,8 @@
 					else
 						_outPut = "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
 
-					//Replace all "&amp;apos;" by "'"
-					_feature.attributes[_fieldName] = _fieldValue.split("&amp;apos;").join("'");
+					
 				}
-				else if (_fieldValue != "" && _fieldValue != null){
-					//Same for "nom" field
-					_feature.attributes[_fieldName] = _fieldValue.split("&amp;apos;").join("'");	
-				}
-				
 				return _outPut;
 			}
 			private function setEditMode():void{
@@ -480,11 +476,7 @@
 					this.iconButtonCancel.y = 17.5;//(this.size.h-_iconButtonOffset_y_buttom);
 					this.close.y = 17.5;
 				}
-				/* this.iconButtonEdit.y = (this.size.h-30);
-				this.iconButtonSave.y = (this.size.h-30);
-				this.iconButtonCancel.y = (this.size.h-37); */
-
-				
+							
 				//Display Save and Cancel buttons
 				showIconButtonCancel();
 				showIconButtonSave();
@@ -532,10 +524,9 @@
 					_scroller.bottom = _scroller_buttom_B;	
 				}
 				_vGroup.clipAndEnableScrolling = true;
-				_vGroup.width = (_panel.width - _vGroupOffset_width);//(_panel.width - _scroller.width - _scroller.width);
-				//Test
+				_vGroup.width = (_panel.width - _vGroupOffset_width);
 				_vGroup.height = (_panel.height - _vGroupOffset_height);
-				//End Test
+			
 				_scroller.viewport = _vGroup;
 				_panel.addElement(_scroller);
 				
@@ -545,16 +536,13 @@
 			private function addEditionItemTo(_fieldName:String, _vGroup:VGroup):void{
 				var _hGroup:HGroup;
 				var _fieldLabel:String = getFieldLabelByName(_fieldName);
-				var _fieldValue:String = _feature.attributes[_fieldName];
+				var _fieldValue:String;
+				
+				_feature.attributes[_fieldName] = this.specialCharTreatment(_feature.attributes[_fieldName],"EDIT");
+				_fieldValue = _feature.attributes[_fieldName];
 				
 				if (_fieldLabel != ""){
 					if (isFieldEditable(_fieldName)){
-						if (_fieldValue != null){
-							_fieldValue = _fieldValue.split("&amp;lt;br/&amp;gt;").join("\n");
-							_fieldValue = _fieldValue.split("<br/>").join("\n");
-							//Replace all "&amp;apos;" by "'"
-							_fieldValue = _fieldValue.split("&amp;apos;").join("'");
-						}
 						if (isFieldMandatory(_fieldName)){
 							if (isFieldMultiLine(_fieldName)){
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue, true, 4, true);
@@ -567,8 +555,7 @@
 							}
 							else
 								_hGroup = getEditionItem(_fieldName, _fieldLabel, _fieldValue);
-						}			
-						//_hGroup.width = (_vGroup.width*0.95);
+						}
 						_vGroup.addElement(_hGroup);													
 					}
 				}
@@ -580,7 +567,7 @@
 				return (_fieldName != "notes" && _fieldName != "code" && _fieldName != "date_modif");
 			}
 			private function isFieldMandatory(_fieldName:String):Boolean{
-				//Correction for PHT-EB-RECETTE-485: field "adresse" is mandatory only for POINT type layers
+				//Field "adresse" is mandatory only for POINT type layers
 				//Get current editable layer
 				var _currentEditableLayer:FeatureLayer;
 				for each(var l:Layer in this._fxmap.map.layers){
@@ -640,7 +627,6 @@
 				return _fieldLabel;
 			}
 			private function getEditionItem(_fieldName:String, _label:String, _value:String=null, _multiLine:Boolean=false, _nbLines:int=1, _mandatory:Boolean=false):HGroup{
-				//var _hBox:HBox = new HBox();
 				var _hGroup:HGroup = new HGroup();
 				var textField:SkinnableTextBase;
 				var _text:Text = new Text();
@@ -674,7 +660,6 @@
 			}
 			
 			private function displayPopup(event:MouseEvent=null):void{
-				//this.setViewMode();
 				this.mode = "VIEW";
 				//Hide Save and Cancel buttons
 				hideIconButtonCancel();
@@ -706,15 +691,10 @@
 									var _fieldName:String = _text.id;
 									var _value:String = _textField.text;
 								
+									_value = this.specialCharTreatment(_value, "SAVE");
 									if ((_fieldName == "site") && (_value.indexOf("www.") == 0))
 										_value = "http://" + _value;
 								
-									//In case of TextArea, treat the multi-line case
-									if (_textField.className == "TextArea")
-										_value = _value.split('\n').join('<br/>');
-										//_value = _value.replace('\n','<br/>');
-								
-									_value = _value.split("&amp;apos;").join("'");
 									_featureNew.attributes[_fieldName] = _value;
 								}
 							}
@@ -723,9 +703,8 @@
 							//Desactivate the "old" feature and UPDATE it
 							_feature.attributes["active"] = 0;
 							delete _feature.attributes["date_modif"];
-							//Test
 							delete _feature.attributes["divers"];
-							//Fin test
+						
 							this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
 							_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
 							
@@ -906,7 +885,42 @@
 				return _panel;
 				
 			}
-			//Fin Test GAB
+			
+			private function specialCharTreatment(_text:String, _mode:String="VIEW"):String{
+				var _outPut:String = "";
+				
+				if (_text != "" && _text != null){
+					//Commun to all modes, remove all "&amp;"
+					_outPut = _text.split("&amp;").join("");
+					
+					//_mode must be either VIEW, EDIT or SAVE. If its not the case, force it to VIEW
+					if (_mode == "EDIT"){
+						//EDIT mode 
+						
+						//Special char 1: Reutrn Carrige
+						//1.1: Replace all "lt;br/gt;" by "\n"
+						_outPut = _outPut.split("lt;br/gt;").join("\n");
+						_outPut = _outPut.split("lt;br /gt;").join("\n");
+						//1.2: Replace all "<br /> by "\n"
+						_outPut = _outPut.split("<br />").join("\n");
+					}else if (_mode == "SAVE"){
+						//This is the SAVE mode part 
+						//Special char 1: Reutrn Carrige
+						//Replace all "\n" by  "<br />"
+						_outPut = _outPut.split("\n").join("<br />");
+					}else{
+						//This is the VIEW mode part 
+						
+						//Special char 1: Reutrn Carrige
+						//1.1: Replace all "lt;br/gt;" by "\n"
+						_outPut = _outPut.split("lt;br/gt;").join("<br />");
+						_outPut = _outPut.split("lt;br /gt;").join("<br />");
+					}
+					//Special char 2: Apostrophe
+					_outPut = _outPut.split("apos;").join("'");
+				}				
+				return _outPut;
+			}
 		]]>
 	</fx:Script>
 	
@@ -915,9 +929,7 @@
 		<s:State name="tl"/>
 		<s:State name="br"/>
 		<s:State name="bl"/>
-	</s:states>
-	<!-- Test GAB -->
-	
+	</s:states>	
 	<s:Panel id="panelTR"
 			 includeIn="tr"
 			 width="{WIDTH}"
@@ -966,7 +978,6 @@
 						   toolTip="Enregistrer"
 						   click="savePopup(event)"
 						   />
-	<!-- Fin test GAB -->
 	<openscales:IconButton id="close"
 						   x="{WIDTH-20}"
 						   y="{17.5}"
