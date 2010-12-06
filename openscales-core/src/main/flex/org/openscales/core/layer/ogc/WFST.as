@@ -21,6 +21,10 @@ package org.openscales.core.layer.ogc
 
 		private var _describeFeature:DescribeFeature = null;
 		
+		private var  _xmlRequestDescribeFeatureInfo:XMLRequest = null;
+		
+		private var _xmlRequestTransaction:XMLRequest = null;
+		
 		private var _callbackDescribeFeatureInfo:Function = null;
 
 		private var _transactionArray:Vector.<Transaction> = new Vector.<Transaction>;
@@ -55,8 +59,6 @@ package org.openscales.core.layer.ogc
 		 * @param altUrl Use this as the url instead of the layer's url
 		 */
 		override public function getFullRequestString(altUrl:String = null):String {
-			if(!_wfsFormat || !this.map)
-				return null;
 			//filter by url way , by post way is maybe better
 			var filterUrl:String ="";
 			if(_filter){
@@ -100,6 +102,11 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override public function destroy():void {
+			
+			if(_xmlRequestDescribeFeatureInfo != null)
+			  _xmlRequestDescribeFeatureInfo.destroy();
+			if(_xmlRequestTransaction != null)
+				_xmlRequestTransaction.destroy();
 			
 			this.map.removeEventListener(WFSTFeatureEvent.INSERT,this.addTransaction);
 			this.map.removeEventListener(WFSTFeatureEvent.UPDATE,this.addTransaction);
@@ -147,11 +154,11 @@ package org.openscales.core.layer.ogc
 		public function saveTransaction():void{
 			//todo
 			
-			var xmlRequestTransaction:XMLRequest = 	new XMLRequest(this.url+"?TYPENAME=" 
+			_xmlRequestTransaction = 	new XMLRequest(this.url+"?TYPENAME=" 
 				         + this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
-			xmlRequestTransaction.postContent = this._wfsFormat.write(featureArray);
-			xmlRequestTransaction.postContentType = "application/xml";
-			xmlRequestTransaction.send();
+			_xmlRequestTransaction.postContent = this._wfsFormat.write(featureArray);
+			_xmlRequestTransaction.postContentType = "application/xml";
+			_xmlRequestTransaction.send();
 			
 			
 		}
@@ -162,11 +169,11 @@ package org.openscales.core.layer.ogc
 		 * 
 		 */		
 		public function saveFeaturesTransaction(features:Object):void{
-			var xmlRequestTransaction:XMLRequest = 	new XMLRequest(this.url+"?TYPENAME=" 
+			_xmlRequestTransaction = new XMLRequest(this.url+"?TYPENAME=" 
 				+ this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
-			xmlRequestTransaction.postContent = this._wfsFormat.write(features);
-			xmlRequestTransaction.postContentType = "application/xml"; 
-			xmlRequestTransaction.send();
+			_xmlRequestTransaction.postContent = this._wfsFormat.write(features);
+			_xmlRequestTransaction.postContentType = "application/xml"; 
+			_xmlRequestTransaction.send();
 
 		}
 		
@@ -211,10 +218,10 @@ package org.openscales.core.layer.ogc
 		 **/
 		public function getDescribeFeatureInfo(callback:Function = null):void{
 			
-			var xmlRequestDescribeFeatureInfo:XMLRequest = 
+			_xmlRequestDescribeFeatureInfo = 
 				new XMLRequest(this._wfsFormat.describeFeatureType, onSuccessDescribeFeature, onFailureDescribeFeature);
 			this._callbackDescribeFeatureInfo = callback;
-			xmlRequestDescribeFeatureInfo.send();
+			_xmlRequestDescribeFeatureInfo.send();
 			
 		}
 		
@@ -223,8 +230,6 @@ package org.openscales.core.layer.ogc
 		 * 
 		 */
 		protected function onSuccessDescribeFeature(event:Event):void {
-			if(!_wfsFormat || !this.map)
-				return;
 			var loader:URLLoader = event.target as URLLoader;
 			var xmlReponse:XML =   new XML(loader.data);
 			this.describeFeature = this._wfsFormat.describeFeatureRead(xmlReponse);
