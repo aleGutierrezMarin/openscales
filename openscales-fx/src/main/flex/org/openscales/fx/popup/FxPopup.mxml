@@ -84,7 +84,7 @@
 			private var _scroller_top_B:int = 14;
 			private var _scroller_buttom_T:int = 30;
 			private var _scroller_buttom_B:int = 20;
-			private var _textArea_top:int = 35;
+			private var _textArea_top:int = 20;//35;
 			private var _textArea_buttom:int = 13;
 						
 			private var _initialized:Boolean;
@@ -390,12 +390,21 @@
 				var _fieldLabel:String;
 				var _fieldValue:String;
 				_content = "";
-				
+				//Test
+				var _title:Text = new Text();
 				addViewItemTo("nom");
+ 				_title.htmlText = "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
+				_title.left = 5;
+				_title.percentWidth = 90;
+				_title.toolTip = _feature.attributes["nom"];
+				_panel.addElement(_title);	 
+				//End Test
+				
+				/* addViewItemTo("nom");
 				if(_feature.attributes["nom"] != undefined){
 					content = content + "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
 				}
-		
+		 */
 				_content += addViewItemTo("adresse");
 				_content += addViewItemTo("adresse_postale");
 				_content += addViewItemTo("telfax");
@@ -424,7 +433,6 @@
 				_textZone.setStyle("borderVisible", false); 
 	
 				_panel.addElement(_textZone);
-				
 				_panel.percentHeight = 100;
 				_panel.percentWidth = 100;
 			}
