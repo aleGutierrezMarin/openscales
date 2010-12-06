@@ -107,9 +107,8 @@ package org.openscales.core.layer.ogc
 					this.removeFeature(farray.pop(),true);
 				this._featuresids.clear();
 				this._featuresids = null;
-				
-				super.destroy();
 			}
+			super.destroy();
 		}
 		override public function set map(map:Map):void {
 			super.map = map;
@@ -267,8 +266,6 @@ package org.openscales.core.layer.ogc
 		 * @param request
 		 */
 		protected function onSuccess(event:Event):void {
-			if(!_wfsFormat || !this.map)
-				return;
 			var loader:URLLoader = event.target as URLLoader;
 			
 			this.loading = false;			
