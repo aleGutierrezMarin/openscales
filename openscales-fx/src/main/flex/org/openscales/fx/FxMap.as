@@ -100,14 +100,6 @@ package org.openscales.fx
 		
 		private function onMoveStart(event:MapEvent):void{
 			_flexOverlay.visible = false;
-			/*var j:uint = _flexOverlay.numElements;
-			var element:IVisualElement;
-			for(var i:uint=0;i<j;++i){
-				element = _flexOverlay.getElementAt(i);
-				if(element is FxPopup)
-					(element as FxPopup).position = (element as FxPopup).fxmap.map.getMapPxFromLocation((element as FxPopup).loc);
-			}*/
-			
 		}
 		
 		private function onMoveEnd(event:MapEvent):void{
@@ -147,8 +139,6 @@ package org.openscales.fx
 			
 			if (fxPopup != null){
 				fxPopup.fxmap = this;
-				//fxPopup.position = fxPopup.fxmap.map.getMapPxFromLocation(fxPopup.feature.lonlat);
-				//fxPopup.position = new Pixel(this.map.mouseX, this.map.mouseY);
 				this._flexOverlay.addElement(fxPopup);
 			}
 		}
