@@ -537,8 +537,8 @@
 			
 				_scroller.viewport = _vGroup;
 				_panel.addElement(_scroller);
-				
-
+				//Set the focus on the panel in order to allow the Scrool Wheel to function
+				_panel.setFocus();
 				
 			}
 			private function addEditionItemTo(_fieldName:String, _vGroup:VGroup):void{
