@@ -3,6 +3,7 @@ package org.openscales.core.handler.feature.draw
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -48,6 +49,10 @@ package org.openscales.core.handler.feature.draw
 		 * @inheritDoc 
 		 * */
 		override public function dragVerticeStart(vectorfeature:PointFeature):void{
+			var px1:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
+			var px2:Pixel = map.getLayerPxFromLocation(vectorfeature.lonlat);
+			vectorfeature.x+=(px1.x-px2.x);
+			vectorfeature.y+=(px1.y-px2.y);
 			vectorfeature.startDrag();
 			this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,vectorfeature));
 		}
