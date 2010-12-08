@@ -64,13 +64,13 @@ package org.openscales.core.handler.feature
 			super(map, active);	
 		}
 		
-		 override protected function registerListeners():void{
+		override protected function registerListeners():void{
 			if (this.map) {
 				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEUP,this.mouseUp);
 				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEDOWN,this.mouseDown);
 			}
 			this._timer.addEventListener(TimerEvent.TIMER, chooseClick);
-		
+			
 		}
 		override protected function unregisterListeners():void{
 			this._timer.stop();
@@ -85,15 +85,15 @@ package org.openscales.core.handler.feature
 			if(_clickNum == 1) {
 				if(_click != null)
 				{
-				//If the handler could treat operation on this feature
-				if(_featureArray.indexOf(_featureEvent.feature)!=-1){
-					_click(_featureEvent);
-				}
-				_timer.stop();
-				_clickNum=0;
+					//If the handler could treat operation on this feature
+					if(_featureArray.indexOf(_featureEvent.feature)!=-1){
+						_click(_featureEvent);
+					}
+					_timer.stop();
+					_clickNum=0;
 				}
 			} 
-			//double click   
+				//double click   
 			else {
 				
 				//If the handler could treat operation on this feature
@@ -107,7 +107,7 @@ package org.openscales.core.handler.feature
 		/**
 		 * The MouseDown Listener
 		 */
-		 protected function mouseDown(evt:FeatureEvent):void
+		protected function mouseDown(evt:FeatureEvent):void
 		{
 			var vectorFeature:Feature=evt.feature as Feature;
 			if(vectorFeature!=null)this._startPixel=new Pixel(evt.feature.layer.mouseX ,evt.feature.layer.mouseY);
@@ -119,11 +119,11 @@ package org.openscales.core.handler.feature
 			this.dragfeatureStart(evt);
 			
 		}
-
+		
 		/**
 		 * MouseUp Listener
 		 */
-		 protected function mouseUp(evt:FeatureEvent):void
+		protected function mouseUp(evt:FeatureEvent):void
 		{
 			if(_isdragging){
 				var tmppx:Pixel=new Pixel(evt.feature.layer.mouseX ,evt.feature.layer.mouseY);
@@ -135,18 +135,18 @@ package org.openscales.core.handler.feature
 			}
 			if(!_isdragging)
 			{
-			if(this._startPixel!=null){
-				//dx and dy variables are use to know if there was a drag or a click
-				var vectorFeature:Feature=evt.feature as Feature;
-				var dx :Number = Math.abs(this._startPixel.x-evt.feature.layer.mouseX);
-				var dy :Number = Math.abs(this._startPixel.y-evt.feature.layer.mouseY);
-				if(dx<=this._tolerance && dy<=this._tolerance)
-				{
-					this.featureClick(evt);
+				if(this._startPixel!=null){
+					//dx and dy variables are use to know if there was a drag or a click
+					var vectorFeature:Feature=evt.feature as Feature;
+					var dx :Number = Math.abs(this._startPixel.x-evt.feature.layer.mouseX);
+					var dy :Number = Math.abs(this._startPixel.y-evt.feature.layer.mouseY);
+					if(dx<=this._tolerance && dy<=this._tolerance)
+					{
+						this.featureClick(evt);
+					}
 				}
 			}
-			}
-			//it's a drag
+				//it's a drag
 			else dragfeatureStop(this._featureEvent);		
 		}
 		//In this function we count the click to different the double click from the click
@@ -217,9 +217,9 @@ package org.openscales.core.handler.feature
 		private function dragfeatureStop(event:FeatureEvent):void{
 			var vectorfeature:Feature=event.feature as Feature;
 			if(_featureArray.indexOf(_featureEvent.feature)!=-1){
-			if(this._stopDrag!=null){
-				this._stopDrag(event);
-				
+				if(this._stopDrag!=null){
+					this._stopDrag(event);
+					
 				}
 				this._isdragging=false;
 				_featureEvent=null; 
@@ -228,8 +228,8 @@ package org.openscales.core.handler.feature
 		public function dropMouseUp(evt:MouseEvent):void{
 			if(_featureEvent!=null && _isdragging){
 				if(this._stopDrag!=null){
-				this._stopDrag(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,_featureEvent.feature));
-				this._isdragging=false;
+					this._stopDrag(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,_featureEvent.feature));
+					this._isdragging=false;
 				}
 			}
 		}
@@ -271,7 +271,7 @@ package org.openscales.core.handler.feature
 		/**
 		 * drop callback function
 		 * */
-		 
+		
 		public function get stopDrag():Function{
 			return this._stopDrag;
 		}

@@ -107,64 +107,64 @@ package org.openscales.core.handler.feature.draw
 				
 				
 				//The Vertice belongs to a polygon
-			//	 if	((vectorfeature.editionFeatureParent is PolygonFeature || vectorfeature.editionFeatureParent is MultiPolygonFeature )&& iEditPolygon!=null) iEditPolygon.dragVerticeStart(vectorfeature);
+				//	 if	((vectorfeature.editionFeatureParent is PolygonFeature || vectorfeature.editionFeatureParent is MultiPolygonFeature )&& iEditPolygon!=null) iEditPolygon.dragVerticeStart(vectorfeature);
 				//The vertice belongs to a line
-			//	else if((vectorfeature.editionFeatureParent is LineStringFeature ||  vectorfeature.editionFeatureParent is MultiLineStringFeature)&& iEditPath!=null) iEditPath.dragVerticeStart(vectorfeature);
-		
-			//	else if(iEditPoint!=null) iEditPoint.dragVerticeStart(vectorfeature);	
+				//	else if((vectorfeature.editionFeatureParent is LineStringFeature ||  vectorfeature.editionFeatureParent is MultiLineStringFeature)&& iEditPath!=null) iEditPath.dragVerticeStart(vectorfeature);
+				
+				//	else if(iEditPoint!=null) iEditPoint.dragVerticeStart(vectorfeature);	
 				
 				this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 				this.map.removeEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.EDITION_POINT_FEATURE_DRAG_START,vectorfeature));
 			}
-		 }
-		 /**
+		}
+		/**
 		 * 
 		 * drag vertice stop function
 		 * */
-		 private function dragVerticeStop(event:FeatureEvent):void{
-		 	
-		 	var vectorfeature:PointFeature=event.feature as PointFeature;
+		private function dragVerticeStop(event:FeatureEvent):void{
+			
+			var vectorfeature:PointFeature=event.feature as PointFeature;
 			if(vectorfeature!=null){
-					
-					switch(_featureEditedType){
-						case 0:
+				
+				switch(_featureEditedType){
+					case 0:
 						iEditPoint.dragVerticeStop(vectorfeature);
 						break;
-						case 1:
+					case 1:
 						iEditPath.dragVerticeStop(vectorfeature);
 						break;
-						case 2:
+					case 2:
 						iEditPolygon.dragVerticeStop(vectorfeature);
 						break;
-						default:break;
-					}
-					
-					
-					/* if(vectorfeature.editionFeatureParent==null && iEditPoint!=null) iEditPoint.dragVerticeStop(vectorfeature);
-					//The Vertice belongs to a polygon
-					else if	((vectorfeature.editionFeatureParent is PolygonFeature || vectorfeature.editionFeatureParent is MultiPolygonFeature ) && iEditPolygon!=null) iEditPolygon.dragVerticeStop(vectorfeature);
-					
-					//The vertice belongs to a line
-					else if((vectorfeature.editionFeatureParent is LineStringFeature ||  vectorfeature.editionFeatureParent is MultiLineStringFeature) && iEditPath!=null) iEditPath.dragVerticeStop(vectorfeature);
-					 */
-					 _featureEditedType=-1;
-					this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-					this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
-					//We define the new Position of the point before dispatching the event
-					var px:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
-					var lonlat:Location=this.map.getLocationFromLayerPx(px);
-					vectorfeature.x=0;
-					vectorfeature.y=0;
-					vectorfeature.geometry=new Point(lonlat.lon,lonlat.lat);
-					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.EDITION_POINT_FEATURE_DRAG_STOP,vectorfeature));
+					default:break;
 				}
+				
+				
+				/* if(vectorfeature.editionFeatureParent==null && iEditPoint!=null) iEditPoint.dragVerticeStop(vectorfeature);
+				//The Vertice belongs to a polygon
+				else if	((vectorfeature.editionFeatureParent is PolygonFeature || vectorfeature.editionFeatureParent is MultiPolygonFeature ) && iEditPolygon!=null) iEditPolygon.dragVerticeStop(vectorfeature);
+				
+				//The vertice belongs to a line
+				else if((vectorfeature.editionFeatureParent is LineStringFeature ||  vectorfeature.editionFeatureParent is MultiLineStringFeature) && iEditPath!=null) iEditPath.dragVerticeStop(vectorfeature);
+				*/
+				_featureEditedType=-1;
+				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+				//We define the new Position of the point before dispatching the event
+				var px:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
+				var lonlat:Location=this.map.getLocationFromLayerPx(px);
+				vectorfeature.x=0;
+				vectorfeature.y=0;
+				vectorfeature.geometry=new Point(lonlat.lon,lonlat.lat);
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.EDITION_POINT_FEATURE_DRAG_STOP,vectorfeature));
 			}
-			/**
-			 * feature click function
-			 * */
-		 private function featureClick(event:FeatureEvent):void{
-		 	var vectorfeature:PointFeature=(event.feature) as PointFeature;
+		}
+		/**
+		 * feature click function
+		 * */
+		private function featureClick(event:FeatureEvent):void{
+			var vectorfeature:PointFeature=(event.feature) as PointFeature;
 			if(vectorfeature!=null){
 				var clickAlreadyStart:Boolean=false;
 				if(iEditPolygon!=null){
@@ -185,20 +185,20 @@ package org.openscales.core.handler.feature.draw
 					}
 				}
 				
-					///real point feature
-			//		if(vectorfeature.editionFeatureParent==null && iEditPoint!=null) iEditPoint.featureClick(event);
-					//The Vertice belongs to a polygon
-			//		else if	((vectorfeature.editionFeatureParent is PolygonFeature || vectorfeature.editionFeatureParent is MultiPolygonFeature ) && iEditPolygon!=null) iEditPolygon.featureClick(event);
-					//The vertice belongs to a line
-			//		else if((vectorfeature.editionFeatureParent is LineStringFeature ||  vectorfeature.editionFeatureParent is MultiLineStringFeature) && iEditPath!=null) iEditPath.featureClick(event);
-					this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-					this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
-				}	 
-		 }
-		 /**
+				///real point feature
+				//		if(vectorfeature.editionFeatureParent==null && iEditPoint!=null) iEditPoint.featureClick(event);
+				//The Vertice belongs to a polygon
+				//		else if	((vectorfeature.editionFeatureParent is PolygonFeature || vectorfeature.editionFeatureParent is MultiPolygonFeature ) && iEditPolygon!=null) iEditPolygon.featureClick(event);
+				//The vertice belongs to a line
+				//		else if((vectorfeature.editionFeatureParent is LineStringFeature ||  vectorfeature.editionFeatureParent is MultiLineStringFeature) && iEditPath!=null) iEditPath.featureClick(event);
+				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			}	 
+		}
+		/**
 		 * feature double click
 		 * */
-		 private function featureDoubleClick(event:FeatureEvent):void{
+		private function featureDoubleClick(event:FeatureEvent):void{
 			var vectorfeature:PointFeature=(event.feature) as PointFeature;
 			if(vectorfeature!=null){
 				var dblclickAlreadyStart:Boolean=false;
@@ -225,15 +225,15 @@ package org.openscales.core.handler.feature.draw
 				///real point feature
 				if(vectorfeature.editionFeatureParentGeometry==null && iEditPoint!=null) iEditPoint.featureDoubleClick(event);
 				//The Vertice belongs to a polygon
-					else if	((vectorfeature.editionFeatureParent is PolygonFeature || vectorfeature.editionFeatureParent is MultiPolygonFeature ) && iEditPolygon!=null) iEditPolygon.featureDoubleClick(event);
+				else if	((vectorfeature.editionFeatureParent is PolygonFeature || vectorfeature.editionFeatureParent is MultiPolygonFeature ) && iEditPolygon!=null) iEditPolygon.featureDoubleClick(event);
 				//The vertice belongs to a line
-					else if((vectorfeature.editionFeatureParent is LineStringFeature ||  vectorfeature.editionFeatureParent is MultiLineStringFeature) && iEditPath!=null) iEditPath.featureDoubleClick(event);
-		 			 */
-		 			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-		 			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
-		 }
-		 
-		 }
+				else if((vectorfeature.editionFeatureParent is LineStringFeature ||  vectorfeature.editionFeatureParent is MultiLineStringFeature) && iEditPath!=null) iEditPath.featureDoubleClick(event);
+				*/
+				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			}
+			
+		}
 		
 		
 		/**
@@ -245,30 +245,30 @@ package org.openscales.core.handler.feature.draw
 				//We refresh the edited feature just one time
 				/* var alreadystarted:Boolean=false; */
 				
-					if(iEditPoint!=null) {
-						(this.iEditPoint as AbstractEditHandler).map=this.map;
-					 	iEditPoint.refreshEditedfeatures();
-						/* alreadystarted=true;  */
-					}
-					if(iEditPath!=null){
-						(this.iEditPath as AbstractEditHandler).map=this.map;
-/* 						if(!alreadystarted){ */
-							iEditPath.refreshEditedfeatures();				
-/* 							alreadystarted=true;
-						} */
-					}
-					if(iEditPolygon!=null){
-						(this.iEditPolygon as AbstractEditHandler).map=this.map;
-/* 						if(!alreadystarted){ */
-							iEditPolygon.refreshEditedfeatures();
-/* 							alreadystarted=true;
-						} */
-					}
+				if(iEditPoint!=null) {
+					(this.iEditPoint as AbstractEditHandler).map=this.map;
+					iEditPoint.refreshEditedfeatures();
+					/* alreadystarted=true;  */
+				}
+				if(iEditPath!=null){
+					(this.iEditPath as AbstractEditHandler).map=this.map;
+					/* 						if(!alreadystarted){ */
+					iEditPath.refreshEditedfeatures();				
+					/* 							alreadystarted=true;
+					} */
+				}
+				if(iEditPolygon!=null){
+					(this.iEditPolygon as AbstractEditHandler).map=this.map;
+					/* 						if(!alreadystarted){ */
+					iEditPolygon.refreshEditedfeatures();
+					/* 							alreadystarted=true;
+					} */
+				}
 			} 
 			if(map!=null){
-			this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_EDITION_MODE_START,_layerToEdit));
+				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_EDITION_MODE_START,_layerToEdit));
 			}
-			 _layerToEdit.redraw(); 
+			_layerToEdit.redraw(); 
 			return true;
 		}
 		/**
@@ -278,13 +278,13 @@ package org.openscales.core.handler.feature.draw
 			if(_layerToEdit !=null)
 			{
 				
-					
+				
 				if(iEditPath!=null)(this.iEditPath as AbstractEditHandler).editionModeStop();
-					
+				
 				if(iEditPolygon!=null)(this.iEditPolygon as AbstractEditHandler).editionModeStop();
 				
 				if(iEditPoint!=null) (this.iEditPoint as AbstractEditHandler).editionModeStop();
-
+				
 			}
 			if(map!=null)
 			{
@@ -305,46 +305,46 @@ package org.openscales.core.handler.feature.draw
 		
 		private function onFeatureOut(evt:FeatureEvent):void{
 			var vectorfeature:Feature=(evt.feature) as Feature;
-		  //The Vertice belongs to a polygon
-					 if	((vectorfeature is PolygonFeature ||  vectorfeature is MultiPolygonFeature) && iEditPolygon!=null) (iEditPolygon as AbstractEditCollectionHandler).onFeatureOut(evt);
+			//The Vertice belongs to a polygon
+			if	((vectorfeature is PolygonFeature ||  vectorfeature is MultiPolygonFeature) && iEditPolygon!=null) (iEditPolygon as AbstractEditCollectionHandler).onFeatureOut(evt);
 				//The vertice belongs to a line
-					else if((vectorfeature is LineStringFeature ||  vectorfeature is MultiLineStringFeature) && iEditPath!=null) (iEditPath as AbstractEditCollectionHandler).onFeatureOut(evt);		
+			else if((vectorfeature is LineStringFeature ||  vectorfeature is MultiLineStringFeature) && iEditPath!=null) (iEditPath as AbstractEditCollectionHandler).onFeatureOut(evt);		
 		}
 		/**
 		 * This function create the point under the mouse
 		 * */	
-		 private function createPointUndertheMouse(evt:FeatureEvent):void{
-		  	 var vectorfeature:Feature=(evt.feature) as Feature;
-		  //The Vertice belongs to a polygon
-					 if	((vectorfeature is PolygonFeature ||  vectorfeature is MultiPolygonFeature) && iEditPolygon!=null) (iEditPolygon as AbstractEditCollectionHandler).createPointUndertheMouse(evt);
+		private function createPointUndertheMouse(evt:FeatureEvent):void{
+			var vectorfeature:Feature=(evt.feature) as Feature;
+			//The Vertice belongs to a polygon
+			if	((vectorfeature is PolygonFeature ||  vectorfeature is MultiPolygonFeature) && iEditPolygon!=null) (iEditPolygon as AbstractEditCollectionHandler).createPointUndertheMouse(evt);
 				//The vertice belongs to a line
-					else if((vectorfeature is LineStringFeature ||  vectorfeature is MultiLineStringFeature) && iEditPath!=null) (iEditPath as AbstractEditCollectionHandler).createPointUndertheMouse(evt);
-		 }
-		 
+			else if((vectorfeature is LineStringFeature ||  vectorfeature is MultiLineStringFeature) && iEditPath!=null) (iEditPath as AbstractEditCollectionHandler).createPointUndertheMouse(evt);
+		}
+		
 		public  function refreshEditedfeatures(event:MapEvent=null):void{
 			if(_layerToEdit !=null)
 			{		
 				//Collection treatment
 				if(iEditPath!=null)iEditPath.refreshEditedfeatures(event);
-					
-			    if(iEditPolygon!=null)iEditPolygon.refreshEditedfeatures(event);
+				
+				if(iEditPolygon!=null)iEditPolygon.refreshEditedfeatures(event);
 				
 				if(iEditPoint!=null) iEditPoint.refreshEditedfeatures(event);
 				_layerToEdit.redraw();
 			}
 		}
 		
-		 /**
+		/**
 		 * @inherited
 		 **/
 		override protected function registerListeners():void {
-		if(this.map){		
-			this.map.addEventListener(MapEvent.MOVE_END,refreshEditedfeatures);
-			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			if(this.map){		
+				this.map.addEventListener(MapEvent.MOVE_END,refreshEditedfeatures);
+				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			}
 		}
-		}
-		 /**
+		/**
 		 * @inherited
 		 * */
 		override protected function unregisterListeners():void {
@@ -358,38 +358,38 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * The layer concerned by the Modification
 		 * */
-		 public function get layerToEdit():FeatureLayer{
-		 	return this._layerToEdit;
-		 }
-		 /**
+		public function get layerToEdit():FeatureLayer{
+			return this._layerToEdit;
+		}
+		/**
 		 * @private
 		 * */
-		 public function set layerToEdit(value:FeatureLayer):void{
-		 	 if(value!=null){
-		 	 	this._layerToEdit=value;
-		 	 	if(this._editPoint)
-		 	 		iEditPoint = new EditPointHandler(map,active,value,_featureClickHandler,_drawContainer,false);
+		public function set layerToEdit(value:FeatureLayer):void{
+			if(value!=null){
+				this._layerToEdit=value;
+				if(this._editPoint)
+					iEditPoint = new EditPointHandler(map,active,value,_featureClickHandler,_drawContainer,false);
 				if(this._editPath)
 					iEditPath = new EditPathHandler(map,active,value,_featureClickHandler,_drawContainer,false);
 				if(this._editPolygon)
 					iEditPolygon = new EditPolygonHandler(map,active,value,_featureClickHandler,_drawContainer,false);
-		 	 }
-		 }
-		 /**
+			}
+		}
+		/**
 		 *@inheritDoc 
 		 * */
-		 override public function set map(value:Map):void{
-		 	if(value!=null){
-		 		super.map=value;
-		 		if(iEditPoint!=null)(this.iEditPoint as AbstractEditHandler).map=this.map;
-		 		if(iEditPath!=null)(this.iEditPath as AbstractEditHandler).map=this.map;
-		 		if(iEditPolygon!=null)(this.iEditPolygon as AbstractEditHandler).map=this.map;
-		 		this._featureClickHandler.map=value;
-		 		this.map.addChild(_drawContainer);
-		 	}
-		 }
-
-		 /**
+		override public function set map(value:Map):void{
+			if(value!=null){
+				super.map=value;
+				if(iEditPoint!=null)(this.iEditPoint as AbstractEditHandler).map=this.map;
+				if(iEditPath!=null)(this.iEditPath as AbstractEditHandler).map=this.map;
+				if(iEditPolygon!=null)(this.iEditPolygon as AbstractEditHandler).map=this.map;
+				this._featureClickHandler.map=value;
+				this.map.addChild(_drawContainer);
+			}
+		}
+		
+		/**
 		 *@inheritDoc 
 		 * */
 		override public function set active(value:Boolean):void{
