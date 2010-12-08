@@ -86,12 +86,12 @@
 			[Bindable] public var _iconButtonOffset_y_top:int = 26;
 			[Bindable] public var _closeButtonOffset_y_buttom:int = 10;
 			[Bindable] public var _closeButtonOffset_y_top:int = 5;
-			private var _vGroupOffset_height:int = 15;
+			private var _vGroupOffset_height:int = 55;
 			private var _vGroupOffset_width:int = 20;
 			private var _scroller_top_T:int = 38;
 			private var _scroller_top_B:int = 14;
 			private var _scroller_buttom_T:int = 30;
-			private var _scroller_buttom_B:int = 20;
+			private var _scroller_buttom_B:int = 55;
 			private var _textArea_top:int = 20;//35;
 			[Bindable] public var _textArea_buttom:Number;// = 90;
 						
@@ -449,7 +449,7 @@
 				var gr:Group = new Group();
 				var path:Path = new Path();
 				path.data="M0 0 225 0";
-				var stroke:Stroke = new Stroke();
+				var stroke:SolidColorStroke = new SolidColorStroke();
 				stroke.weight=0.1;
 				stroke.scaleMode="none";
 				stroke.caps="none";
@@ -532,7 +532,7 @@
 				this.setEditModeQuadrant("BR");
 				this.setEditModeQuadrant("BL"); 
 				
-				var _panel:Panel = this.getPanel();
+				//var _panel:Panel = this.getPanel();
 				if (relativePosition == TR || relativePosition == TL){
 					//this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_top);
 					this.iconButtonSave.y = 10;//(this.size.h-_iconButtonOffset_y_top);
@@ -573,6 +573,8 @@
 				}
 				//The first thing to do it to empty the panel
 				_panel.removeAllElements();
+				_panel.width = this.WIDTH;
+				_panel.height = this.HEIGHT;
 				
 				addEditionItemTo("nom", _vGroup);
 				addEditionItemTo("adresse", _vGroup);
@@ -604,16 +606,17 @@
 					_scroller.top = 30;
 					_scroller.height = 180;
 					_vGroup.height = 180;
-					//_scroller.bottom = _scroller_buttom_B;	
+					_scroller.bottom = _scroller_buttom_B;	
 				}
 				_vGroup.clipAndEnableScrolling = true;
 				_vGroup.width = (_panel.width - _vGroupOffset_width);
-				//_vGroup.height = (_panel.height - _vGroupOffset_height);
+				_vGroup.height = (_panel.height - _vGroupOffset_height);
 			
 				_scroller.viewport = _vGroup;
 				_panel.addElement(_scroller);
 				//Set the focus on the panel in order to allow the Scrool Wheel to function
 				_panel.setFocus();
+				
 				this.position = this._fxmap.map.getMapPxFromLocation(this.loc);
 				
 			}
