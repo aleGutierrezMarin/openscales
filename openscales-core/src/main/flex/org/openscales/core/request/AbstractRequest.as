@@ -12,6 +12,8 @@ package org.openscales.core.request
 	import flash.system.LoaderContext;
 	import flash.utils.Timer;
 	
+	import mx.controls.Alert;
+	
 	import org.openscales.core.Trace;
 	import org.openscales.core.UID;
 	import org.openscales.core.basetypes.maps.HashMap;
@@ -74,6 +76,16 @@ package org.openscales.core.request
 			// Create a loader for a SWF or an image (Loader), or for an URL (URLLoader)
 			this._loader = (SWForImage) ? new Loader() : new URLLoader();
 
+			_loader.addEventListener(IOErrorEvent.IO_ERROR,function(event:Event):void{
+				event.stopImmediatePropagation();
+				Alert.show("Votre clé API n'est pas valide, sans elle vous ne pourrez pas visualiser les cartes.\n\n" +
+					"Merci de contacter votre administrateur de site.");
+				if (this._onFailure == null)
+					this._onFailure = onFailure;
+				
+				this._onFailure;
+			});
+			
 			this.url = url;
 			this._onComplete = onComplete;
 			this._onFailure = onFailure;
