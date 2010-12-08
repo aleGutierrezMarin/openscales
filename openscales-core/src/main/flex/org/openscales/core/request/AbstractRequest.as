@@ -78,8 +78,7 @@ package org.openscales.core.request
 
 			_loader.addEventListener(IOErrorEvent.IO_ERROR,function(event:Event):void{
 				event.stopImmediatePropagation();
-				Alert.show("La clé API Géoportail du site n’est pas/plus valide. Sans elle, vous ne pouvez pas utiliser @proximité.\n\n" +
-					"Merci de contacter l’administrateur du site.");
+				
 				if (this._onFailure == null)
 					this._onFailure = onFailure;
 				
