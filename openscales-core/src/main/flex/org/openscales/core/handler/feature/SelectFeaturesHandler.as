@@ -401,11 +401,17 @@ package org.openscales.core.handler.feature {
 				this.map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerRemoved);
 				this.map.addEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
 				this.map.addEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
+				this.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
 				this.map.addEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
 			}
 		}
 
+		private function onClickFeature(evt:FeatureEvent):void {
+			if(evt && this.map) {
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
+			}
+		}
 		/**
 		 * Remove the listeners to the associated map
 		 */
@@ -415,6 +421,7 @@ package org.openscales.core.handler.feature {
 				this.map.removeEventListener(LayerEvent.LAYER_REMOVED, this.onLayerRemoved);
 				this.map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
 				this.map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
+				this.map.removeEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
 				this.map.removeEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
 			}

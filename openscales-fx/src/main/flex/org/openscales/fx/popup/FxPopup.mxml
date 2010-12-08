@@ -7,7 +7,7 @@
 		 xmlns:control="net.awl.openscales.fx.control.*"
 		 creationComplete="create()">
 	<fx:Declarations>
-		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+		
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -28,7 +28,10 @@
 			import mx.controls.scrollClasses.ScrollBar;
 			import mx.effects.effectClasses.AddChildActionInstance;
 			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
 			import mx.formatters.DateFormatter;
+			import mx.graphics.SolidColorStroke;
+			import mx.graphics.Stroke;
 			import mx.graphics.codec.PNGEncoder;
 			import mx.utils.StringUtil;
 			
@@ -47,12 +50,15 @@
 			import org.openscales.geometry.basetypes.Size;
 			
 			import spark.components.HGroup;
+			import spark.components.RichEditableText;
+			import spark.components.RichText;
 			import spark.components.Scroller;
 			import spark.components.TextArea;
 			import spark.components.TextInput;
 			import spark.components.VGroup;
 			import spark.components.supportClasses.SkinnableTextBase;
 			import spark.core.IViewport;
+			import spark.primitives.Path;
 			import spark.utils.TextFlowUtil;
 						
 			private var _feature:Feature = null;
@@ -76,16 +82,18 @@
 			private var _editionMode:String = "";
 			private var _editable:Boolean=false;
 			
-			private var _iconButtonOffset_y_buttom:int = 28;
-			private var _iconButtonOffset_y_top:int = 37;
-			private var _vGroupOffset_height:int = 50;
+			[Bindable] public var _iconButtonOffset_y_buttom:int = 20;
+			[Bindable] public var _iconButtonOffset_y_top:int = 26;
+			[Bindable] public var _closeButtonOffset_y_buttom:int = 10;
+			[Bindable] public var _closeButtonOffset_y_top:int = 5;
+			private var _vGroupOffset_height:int = 15;
 			private var _vGroupOffset_width:int = 20;
 			private var _scroller_top_T:int = 38;
 			private var _scroller_top_B:int = 14;
 			private var _scroller_buttom_T:int = 30;
 			private var _scroller_buttom_B:int = 20;
 			private var _textArea_top:int = 20;//35;
-			private var _textArea_buttom:int = 13;
+			[Bindable] public var _textArea_buttom:Number;// = 90;
 						
 			private var _initialized:Boolean;
 			private var _canBeClosed:Boolean = true;
@@ -111,12 +119,6 @@
 			private var _cancelIcon_Grey:Class;
 			
 			private function create():void{				
-				/* if ((this.loc != null) && (this.fxmap.map != null)) {
-					var px:Pixel = this.fxmap.map.getMapPxFromLocation(this.feature.lonlat);
-					this.relativePosition = this.calculateRelativePosition(px);
-				} 
-				this.position = px;
-				this.setCurrentState(relativePosition,false);*/
 				if (size != null){
 					this._size = size;
 				}
@@ -126,9 +128,6 @@
 				this.fxmap.addFxPopup(this,true);
 				this.changeMode();
 				_initialized = true;
-				//Test
-				//this._fxmap.map.addEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
-				//END Test
 			}
 			
 			private function changeMode():void{
@@ -194,11 +193,7 @@
 			private function hideIconButtonEdit():void{
 				this.iconButtonEdit.visible = false;
 			}
-			
-			/*public function whenLayerRemoved(event:LayerEvent):void{
-				this._fxmap.map.removeEventListener(LayerEvent.LAYER_REMOVED, whenLayerRemoved);
-				remove();
-			}*/
+
 			public function remove():void {
 				this.visible=false;
 				var i:uint = this.numElements;
@@ -227,7 +222,49 @@
 			
 			public function set relativePosition(value:String):void {
 				this._relativePosition = value;
+				if(iconButtonEdit && iconButtonEdit.initialized){
+					if(_relativePosition == "tr" || _relativePosition == "tl"){
+						this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_top);
+					}
+					else{
+						this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_buttom);
+					}
+				}
+				else{
+					iconButtonEdit.addEventListener(FlexEvent.CREATION_COMPLETE,editButtonCreated);
+				}
+				if(close && close.initialized){
+					if(_relativePosition == "tr" || _relativePosition == "tl"){
+						this.close.y = _closeButtonOffset_y_top;
+					}
+					else{
+						this.close.y = _closeButtonOffset_y_buttom;
+					}
+				}
+				else{
+					close.addEventListener(FlexEvent.CREATION_COMPLETE,closeButtonCreated);
+				}
+				
+				
 				this.setCurrentState(_relativePosition,false);
+			}
+			
+			private function closeButtonCreated(event:FlexEvent):void{
+				if(_relativePosition == "tr" || _relativePosition == "tl"){
+					this.close.y = _closeButtonOffset_y_top;
+				}
+				else{
+					this.close.y = _closeButtonOffset_y_buttom;
+				}
+			}
+			
+			private function editButtonCreated(event:FlexEvent):void{
+				if(_relativePosition == "tr" || _relativePosition == "tl"){
+					this.iconButtonEdit.y = (HEIGHT-_iconButtonOffset_y_top);
+				}
+				else{
+					this.iconButtonEdit.y = (HEIGHT-_iconButtonOffset_y_buttom);
+				}
 			}
 			
 			public function get loc():Location {
@@ -353,9 +390,8 @@
 				this.setViewModeQuadrant("BR");
 				this.setViewModeQuadrant("BL");
 				
-				this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_buttom);
-				/* this.iconButtonSave.y = (this.size.h-30);
-				this.iconButtonCancel.y = (this.size.h-25); */
+				
+
 				
 				//Hide Save and Cancel buttons
 				hideIconButtonCancel();
@@ -364,7 +400,7 @@
 				showIconButtonEdit(); 
 				
 			}
-			
+
 			private function setViewModeQuadrant(_quadrant:String):void{
 				/**
 				 * Given a quadrant, insert a text zone to the quadrant's panel.
@@ -391,20 +427,42 @@
 				var _fieldValue:String;
 				_content = "";
 				//Test
-				var _title:Text = new Text();
+				var title:RichText = new RichText();
+				title.width = 215;
+				title.setStyle("lineBreak","toFit");
+				title.maxDisplayedLines=1;
+				title.setStyle("backgroundAlpha",0);
+				var titleContent:String = new String();
 				addViewItemTo("nom");
- 				_title.htmlText = "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
-				_title.left = 5;
-				_title.percentWidth = 90;
-				_title.toolTip = _feature.attributes["nom"];
-				_panel.addElement(_title);	 
-				//End Test
+ 				titleContent = "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b>";
+				title.textFlow = TextConverter.importToFlow(titleContent, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				title.textFlow.backgroundAlpha=0;
+				title.setStyle("borderVisible", false);
+				title.left = 2;
+				title.height=14;
+				title.top=6;
 				
-				/* addViewItemTo("nom");
-				if(_feature.attributes["nom"] != undefined){
-					content = content + "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b><br />";	
-				}
-		 */
+				title.toolTip = _feature.attributes["nom"];
+				_panel.addElement(title);	 
+
+				
+				var gr:Group = new Group();
+				var path:Path = new Path();
+				path.data="M0 0 225 0";
+				var stroke:Stroke = new Stroke();
+				stroke.weight=0.1;
+				stroke.scaleMode="none";
+				stroke.caps="none";
+				stroke.pixelHinting=true;
+				stroke.color=0x959595;
+				path.stroke = stroke;
+				gr.addElement(path);
+				gr.top=title.top + title.height;
+				gr.left=2;
+				
+				_panel.addElement(gr);
+				
+				
 				_content += addViewItemTo("adresse");
 				_content += addViewItemTo("adresse_postale");
 				_content += addViewItemTo("telfax");
@@ -423,14 +481,17 @@
 					_content +=  "<br /><i>Fiche modifiée le: " + _feature.dateCreation + "</i>";			
 				
 				 var _textZone:TextArea = new TextArea();
+				 _textZone.setStyle("contentBackgroundAlpha",0);
 				_textZone.id = _tZoneID;
+				_textZone.left=1;
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
-				_textZone.percentWidth=100;
-				_textZone.percentHeight = 100;
-				_textZone.top=this._textArea_top;
-				_textZone.bottom=this._textArea_buttom;
+				_textZone.width=248;
+				_textZone.height = 116;
+				_textZone.top=title.top + title.height + gr.height;
+				//_textZone.bottom=this._textArea_buttom;
 				_textZone.editable = false;
-				_textZone.setStyle("borderVisible", false); 
+				_textZone.setStyle("borderVisible", false);
+				
 	
 				_panel.addElement(_textZone);
 				_panel.percentHeight = 100;
@@ -446,13 +507,13 @@
 				
 				if (_fieldName != "nom" && _fieldValue != ""){	
 					if (_fieldName == "site")
-						_outPut = "<b>" + _fieldLabel + "</b>:<a href='" + _fieldValue + "' target='_blank'>" + _fieldValue + "</a><br />";
+						_outPut = "<b>" + _fieldLabel + "</b> : <a href='" + _fieldValue + "' target='_blank'>" + _fieldValue + "</a><br />";
 					else if (_fieldName == "courriel1" || _fieldName == "courriel2")
-						_outPut = "<b>" + _fieldLabel + "</b>:<a href='mailto:" + _fieldValue + "'>" + _fieldValue + "</a><br />";
+						_outPut = "<b>" + _fieldLabel + "</b> : <a href='mailto:" + _fieldValue + "'>" + _fieldValue + "</a><br />";
 					else if (_fieldLabel == "")
 						_outPut = _fieldValue + "<br />";
 					else
-						_outPut = "<b>" + _fieldLabel + "</b>:" + _fieldValue + "<br />";
+						_outPut = "<b>" + _fieldLabel + "</b> : " + _fieldValue + "<br />";
 
 					
 				}
@@ -473,16 +534,16 @@
 				
 				var _panel:Panel = this.getPanel();
 				if (relativePosition == TR || relativePosition == TL){
-					this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_top);
+					//this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_top);
 					this.iconButtonSave.y = 10;//(this.size.h-_iconButtonOffset_y_top);
 					this.iconButtonCancel.y = 10;//(this.size.h-_iconButtonOffset_y_top);	
-					this.close.y = 10;
+					//this.close.y = 7;
 				}
 				else{
 					this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_buttom);
 					this.iconButtonSave.y = 17.5;//(this.size.h-_iconButtonOffset_y_buttom);
 					this.iconButtonCancel.y = 17.5;//(this.size.h-_iconButtonOffset_y_buttom);
-					this.close.y = 17.5;
+					//this.close.y = 18;
 				}
 							
 				//Display Save and Cancel buttons
@@ -496,10 +557,20 @@
 			}
 			
 			private function setEditModeQuadrant(_quadrant:String):void{
+			
 				var _panel:Panel = this.getPanel(_quadrant);
 				var _hGroup:HGroup;
 				var _vGroup:VGroup = new VGroup();
-			
+				
+				_vGroup.left=4;
+				if(_relativePosition == "tr" || _relativePosition=="tl"){
+					//_vGroup.paddingTop=15;
+					close.y=10;
+				}
+				else{
+					//_vGroup.paddingTop=15;
+					close.y=17;
+				}
 				//The first thing to do it to empty the panel
 				_panel.removeAllElements();
 				
@@ -523,22 +594,27 @@
 				
 				//Scrolling treatment
 				var _scroller:Scroller = new Scroller();
-				if (_quadrant == "BL" || _quadrant == "BR"){
-					_scroller.top = _scroller_top_T;					
-					_scroller.bottom = _scroller_top_B;
+				if (_relativePosition == "BL" || _relativePosition == "BR"){
+					_scroller.top = 30;
+					_scroller.height = 180;
+					_vGroup.height = 180;
+					//_scroller.bottom = _scroller_top_B;
 				}
 				else {
-					_scroller.top = _scroller_buttom_T;					
-					_scroller.bottom = _scroller_buttom_B;	
+					_scroller.top = 30;
+					_scroller.height = 180;
+					_vGroup.height = 180;
+					//_scroller.bottom = _scroller_buttom_B;	
 				}
 				_vGroup.clipAndEnableScrolling = true;
 				_vGroup.width = (_panel.width - _vGroupOffset_width);
-				_vGroup.height = (_panel.height - _vGroupOffset_height);
+				//_vGroup.height = (_panel.height - _vGroupOffset_height);
 			
 				_scroller.viewport = _vGroup;
 				_panel.addElement(_scroller);
 				//Set the focus on the panel in order to allow the Scrool Wheel to function
 				_panel.setFocus();
+				this.position = this._fxmap.map.getMapPxFromLocation(this.loc);
 				
 			}
 			private function addEditionItemTo(_fieldName:String, _vGroup:VGroup):void{
@@ -677,6 +753,9 @@
 			}
 			
 			public function savePopup(event:MouseEvent=null):Boolean{
+				
+				//close.y-=3;
+				
 				//Clone feature BEFORE modification
 				this._featureNew = featureClone(this._feature);
 				//Set new attributs data
@@ -731,6 +810,7 @@
 						hideIconButtonSave();
 						//Display Edit button
 						showIconButtonEdit();
+						this.position = this._fxmap.map.getMapPxFromLocation(this.loc);
 						return true;
 					}
 					else{
@@ -937,28 +1017,27 @@
 		<s:State name="tl"/>
 		<s:State name="br"/>
 		<s:State name="bl"/>
-	</s:states>	
+	</s:states>
+	
 	<s:Panel id="panelTR"
 			 includeIn="tr"
 			 width="{WIDTH}"
-			 height="{HEIGHT-10}" 
+			 height="{HEIGHT-70}" 
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTR"/>
-			 
-			
 	<s:Panel id="panelTL"
 			 includeIn="tl"
 			 width="{WIDTH}"
-			 height="{HEIGHT-50}"
+			 height="{HEIGHT-70}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTL"/>
 	<s:Panel id="panelBR"
 			 includeIn="br"
 			 width="{WIDTH}"
-			 height="{HEIGHT-50}"
+			 height="{HEIGHT-70}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBR"/>
 	<s:Panel id="panelBL"
 			 includeIn="bl"
 			 width="{WIDTH}"
-			 height="{HEIGHT-50}"
+			 height="{HEIGHT-70}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBL"/>
 	<openscales:IconButton id="iconButtonCancel"
 						   x="{WIDTH-40}"
@@ -971,8 +1050,7 @@
 						   visible="false"
 						   />
 	<openscales:IconButton id="iconButtonEdit"
-						   x="{WIDTH-40}"
-						   y="3"
+						   x="{WIDTH-35}"
 						   icon="{_editFeature2}"
 						   toolTip="Editer"
 						   click="editPopup(event)"
@@ -987,14 +1065,10 @@
 						   click="savePopup(event)"
 						   />
 	<openscales:IconButton id="close"
-						   x="{WIDTH-20}"
-						   y="{17.5}"
+						   x="{WIDTH-18}"
 						   icon="{new ButtonCloseUp()}"
 						   iconOver="{new ButtonCloseOver()}"
 						   iconDown="{new ButtonCloseOver()}"
 						   toolTip="Fermer"
-						   alpha="1"
 						   click="closePopup(event)"/>
-	
-	
 </s:Group>
