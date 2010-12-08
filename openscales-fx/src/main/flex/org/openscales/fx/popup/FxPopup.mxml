@@ -84,8 +84,10 @@
 			
 			[Bindable] public var _iconButtonOffset_y_buttom:int = 20;
 			[Bindable] public var _iconButtonOffset_y_top:int = 26;
-			[Bindable] public var _closeButtonOffset_y_buttom:int = 10;
+			[Bindable] public var _closeButtonOffset_y_buttom:int = 15;
 			[Bindable] public var _closeButtonOffset_y_top:int = 5;
+			[Bindable] public var _iconButEditMode_y_top:int = 12;
+			[Bindable] public var _iconButEditMode_y_buttom:int = 21;
 			private var _vGroupOffset_height:int = 55;
 			private var _vGroupOffset_width:int = 20;
 			private var _scroller_top_T:int = 38;
@@ -534,16 +536,16 @@
 				
 				//var _panel:Panel = this.getPanel();
 				if (relativePosition == TR || relativePosition == TL){
-					//this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_top);
-					this.iconButtonSave.y = 10;//(this.size.h-_iconButtonOffset_y_top);
-					this.iconButtonCancel.y = 10;//(this.size.h-_iconButtonOffset_y_top);	
-					//this.close.y = 7;
+					this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_top);
+					this.iconButtonSave.y = this._iconButEditMode_y_top;//(this.size.h-_iconButtonOffset_y_top);
+					this.iconButtonCancel.y = this._iconButEditMode_y_top;//(this.size.h-_iconButtonOffset_y_top);	
+					this.close.y = this._iconButEditMode_y_top;
 				}
 				else{
 					this.iconButtonEdit.y = (this.size.h-_iconButtonOffset_y_buttom);
-					this.iconButtonSave.y = 17.5;//(this.size.h-_iconButtonOffset_y_buttom);
-					this.iconButtonCancel.y = 17.5;//(this.size.h-_iconButtonOffset_y_buttom);
-					//this.close.y = 18;
+					this.iconButtonSave.y = this._iconButEditMode_y_buttom;//(this.size.h-_iconButtonOffset_y_buttom);
+					this.iconButtonCancel.y = this._iconButEditMode_y_buttom;//(this.size.h-_iconButtonOffset_y_buttom);
+					this.close.y = this._iconButEditMode_y_buttom;
 				}
 							
 				//Display Save and Cancel buttons
@@ -573,8 +575,8 @@
 				}
 				//The first thing to do it to empty the panel
 				_panel.removeAllElements();
-				_panel.width = this.WIDTH;
-				_panel.height = this.HEIGHT;
+				//_panel.width = this.WIDTH;
+				//_panel.height = this.HEIGHT;
 				
 				addEditionItemTo("nom", _vGroup);
 				addEditionItemTo("adresse", _vGroup);
@@ -1025,22 +1027,22 @@
 	<s:Panel id="panelTR"
 			 includeIn="tr"
 			 width="{WIDTH}"
-			 height="{HEIGHT-70}" 
+			 height="{HEIGHT}" 
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTR"/>
 	<s:Panel id="panelTL"
 			 includeIn="tl"
 			 width="{WIDTH}"
-			 height="{HEIGHT-70}"
+			 height="{HEIGHT}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinTL"/>
 	<s:Panel id="panelBR"
 			 includeIn="br"
 			 width="{WIDTH}"
-			 height="{HEIGHT-70}"
+			 height="{HEIGHT}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBR"/>
 	<s:Panel id="panelBL"
 			 includeIn="bl"
 			 width="{WIDTH}"
-			 height="{HEIGHT-70}"
+			 height="{HEIGHT}"
 			 skinClass="org.openscales.fx.popup.skin.PopupPanelSkinBL"/>
 	<openscales:IconButton id="iconButtonCancel"
 						   x="{WIDTH-40}"
