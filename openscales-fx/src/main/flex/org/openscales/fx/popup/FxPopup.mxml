@@ -84,7 +84,7 @@
 			
 			[Bindable] public var _iconButtonOffset_y_buttom:int = 20;
 			[Bindable] public var _iconButtonOffset_y_top:int = 26;
-			[Bindable] public var _closeButtonOffset_y_buttom:int = 15;
+			[Bindable] public var _closeButtonOffset_y_buttom:int = 13;
 			[Bindable] public var _closeButtonOffset_y_top:int = 5;
 			[Bindable] public var _iconButEditMode_y_top:int = 12;
 			[Bindable] public var _iconButEditMode_y_buttom:int = 21;
