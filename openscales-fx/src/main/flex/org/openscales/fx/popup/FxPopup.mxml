@@ -986,6 +986,7 @@
 				if (_text != "" && _text != null){
 					//Commun to all modes, remove all "&amp;"
 					_outPut = _text.split("&amp;").join("");
+					_outPut = _text.split("amp;").join("");
 					
 					//_mode must be either VIEW, EDIT or SAVE. If its not the case, force it to VIEW
 					if (_mode == "EDIT"){
