@@ -998,18 +998,19 @@
 						_outPut = _outPut.split("lt;br /gt;").join("\n");
 						//1.2: Replace all "<br /> by "\n"
 						_outPut = _outPut.split("<br />").join("\n");
+						_outPut = _outPut.split("<br/>").join("\n");
 					}else if (_mode == "SAVE"){
 						//This is the SAVE mode part 
 						//Special char 1: Reutrn Carrige
 						//Replace all "\n" by  "<br />"
-						_outPut = _outPut.split("\n").join("<br />");
+						_outPut = _outPut.split("\n").join("<br/>");
 					}else{
 						//This is the VIEW mode part 
 						
 						//Special char 1: Reutrn Carrige
 						//1.1: Replace all "lt;br/gt;" by "\n"
-						_outPut = _outPut.split("lt;br/gt;").join("<br />");
-						_outPut = _outPut.split("lt;br /gt;").join("<br />");
+						_outPut = _outPut.split("&lt;br/&gt;").join("<br/>");
+						_outPut = _outPut.split("&lt;br /&gt;").join("<br/>");
 					}
 					//Special char 2: Apostrophe
 					_outPut = _outPut.split("apos;").join("'");
