@@ -869,6 +869,7 @@
 				this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
 				
 				_featureNew.attributes["active"]=1;
+				delete _featureNew.attributes["divers"];
 				_featureNew.state = "Insert";
 				
 			}
