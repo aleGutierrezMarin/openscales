@@ -82,12 +82,14 @@
 			private var _editionMode:String = "";
 			private var _editable:Boolean=false;
 			
-			[Bindable] public var _iconButtonOffset_y_buttom:int = 20;
-			[Bindable] public var _iconButtonOffset_y_top:int = 26;
-			[Bindable] public var _closeButtonOffset_y_buttom:int = 13;
-			[Bindable] public var _closeButtonOffset_y_top:int = 5;
-			[Bindable] public var _iconButEditMode_y_top:int = 12;
-			[Bindable] public var _iconButEditMode_y_buttom:int = 21;
+			[Bindable] private var _iconButtonOffset_y_buttom:int = 20;
+			[Bindable] private var _iconButtonOffset_y_top:int = 26;
+			[Bindable] private var _closeButtonOffset_y_buttom:int = 13;
+			[Bindable] private var _closeButtonOffset_y_top:int = 5;
+			[Bindable] private var _iconButEditMode_y_top:int = 12;
+			[Bindable] private var _iconButEditMode_y_buttom:int = 21;
+			[Bindable] private var _iconButViewMode_y_top:int = 5;
+			[Bindable] private var _iconButViewMode_y_button:int=17;
 			private var _vGroupOffset_height:int = 55;
 			private var _vGroupOffset_width:int = 20;
 			private var _scroller_top_T:int = 38;
@@ -392,8 +394,10 @@
 				this.setViewModeQuadrant("BR");
 				this.setViewModeQuadrant("BL");
 				
-				
-
+				 if (this.relativePosition == TL || this.relativePosition == TR)
+					this.close.y = this._iconButViewMode_y_top;
+				else
+					this.close.y = this._iconButViewMode_y_button; 
 				
 				//Hide Save and Cancel buttons
 				hideIconButtonCancel();
@@ -442,7 +446,7 @@
 				title.setStyle("borderVisible", false);
 				title.left = 2;
 				title.height=14;
-				title.top=6;
+				title.top=8;
 				
 				title.toolTip = _feature.attributes["nom"];
 				_panel.addElement(title);	 
