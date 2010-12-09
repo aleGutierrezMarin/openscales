@@ -631,9 +631,9 @@
 				var _fieldLabel:String = getFieldLabelByName(_fieldName);
 				var _fieldValue:String;
 				
-				_feature.attributes[_fieldName] = this.specialCharTreatment(_feature.attributes[_fieldName],"EDIT");
+				//_feature.attributes[_fieldName] = this.specialCharTreatment(_feature.attributes[_fieldName],"EDIT");
 				_fieldValue = _feature.attributes[_fieldName];
-				
+				_fieldValue  = this.specialCharTreatment(_fieldValue , "EDIT");
 				if (_fieldLabel != ""){
 					if (isFieldEditable(_fieldName)){
 						if (isFieldMandatory(_fieldName)){
