@@ -60,7 +60,7 @@
 			import spark.core.IViewport;
 			import spark.primitives.Path;
 			import spark.utils.TextFlowUtil;
-						
+			
 			private var _feature:Feature = null;
 			private var _featureNew:Feature = null;
 			private var _loc:Location = null;
@@ -98,7 +98,7 @@
 			private var _scroller_buttom_B:int = 55;
 			private var _textArea_top:int = 20;//35;
 			[Bindable] public var _textArea_buttom:Number;// = 90;
-						
+			
 			private var _initialized:Boolean;
 			private var _canBeClosed:Boolean = true;
 			
@@ -197,7 +197,7 @@
 			private function hideIconButtonEdit():void{
 				this.iconButtonEdit.visible = false;
 			}
-
+			
 			public function remove():void {
 				this.visible=false;
 				var i:uint = this.numElements;
@@ -368,7 +368,7 @@
 				else{
 					Alert.show("Action non disponible");
 				}
-	
+				
 			}
 			public function set mode(value:String):void{
 				_mode = value;
@@ -394,7 +394,7 @@
 				this.setViewModeQuadrant("BR");
 				this.setViewModeQuadrant("BL");
 				
-				 if (this.relativePosition == TL || this.relativePosition == TR)
+				if (this.relativePosition == TL || this.relativePosition == TR)
 					this.close.y = this._iconButViewMode_y_top;
 				else
 					this.close.y = this._iconButViewMode_y_button; 
@@ -406,7 +406,7 @@
 				showIconButtonEdit(); 
 				
 			}
-
+			
 			private function setViewModeQuadrant(_quadrant:String):void{
 				/**
 				 * Given a quadrant, insert a text zone to the quadrant's panel.
@@ -440,7 +440,7 @@
 				title.setStyle("backgroundAlpha",0);
 				var titleContent:String = new String();
 				addViewItemTo("nom");
- 				titleContent = "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b>";
+				titleContent = "<b><font size='15'>" + _feature.attributes["nom"] + "</font></b>";
 				title.textFlow = TextConverter.importToFlow(titleContent, TextConverter.TEXT_FIELD_HTML_FORMAT);
 				title.textFlow.backgroundAlpha=0;
 				title.setStyle("borderVisible", false);
@@ -450,7 +450,7 @@
 				
 				title.toolTip = _feature.attributes["nom"];
 				_panel.addElement(title);	 
-
+				
 				
 				var gr:Group = new Group();
 				var path:Path = new Path();
@@ -481,13 +481,13 @@
 				_content += addViewItemTo("accessibilite");
 				
 				_content += addViewItemTo("divers");
-		
+				
 				
 				if (_feature.dateCreation != "")
 					_content +=  "<br /><i>Fiche modifiée le: " + _feature.dateCreation + "</i>";			
 				
-				 var _textZone:TextArea = new TextArea();
-				 _textZone.setStyle("contentBackgroundAlpha",0);
+				var _textZone:TextArea = new TextArea();
+				_textZone.setStyle("contentBackgroundAlpha",0);
 				_textZone.id = _tZoneID;
 				_textZone.left=1;
 				_textZone.textFlow = TextConverter.importToFlow(_content, TextConverter.TEXT_FIELD_HTML_FORMAT);
@@ -498,7 +498,7 @@
 				_textZone.editable = false;
 				_textZone.setStyle("borderVisible", false);
 				
-	
+				
 				_panel.addElement(_textZone);
 				_panel.percentHeight = 100;
 				_panel.percentWidth = 100;
@@ -520,7 +520,7 @@
 						_outPut = _fieldValue + "<br />";
 					else
 						_outPut = "<b>" + _fieldLabel + "</b> : " + _fieldValue + "<br />";
-
+					
 					
 				}
 				return _outPut;
@@ -551,7 +551,7 @@
 					this.iconButtonCancel.y = this._iconButEditMode_y_buttom;//(this.size.h-_iconButtonOffset_y_buttom);
 					this.close.y = this._iconButEditMode_y_buttom;
 				}
-							
+				
 				//Display Save and Cancel buttons
 				showIconButtonCancel();
 				showIconButtonSave();
@@ -563,7 +563,7 @@
 			}
 			
 			private function setEditModeQuadrant(_quadrant:String):void{
-			
+				
 				var _panel:Panel = this.getPanel(_quadrant);
 				var _hGroup:HGroup;
 				var _vGroup:VGroup = new VGroup();
@@ -617,7 +617,7 @@
 				_vGroup.clipAndEnableScrolling = true;
 				_vGroup.width = (_panel.width - _vGroupOffset_width);
 				_vGroup.height = (_panel.height - _vGroupOffset_height);
-			
+				
 				_scroller.viewport = _vGroup;
 				_panel.addElement(_scroller);
 				//Set the focus on the panel in order to allow the Scrool Wheel to function
@@ -774,7 +774,7 @@
 						if (_panel.numElements == 1){
 							var _scroller:Scroller = (_panel.getElementAt(0) as Scroller);
 							var _vGroup:VGroup = (_scroller.viewport as VGroup);
-						
+							
 							//The new values must be set on the NEW feature
 							for (var i:int=0; i<_vGroup.numElements; i++){
 								var _hGroup:HGroup= (_vGroup.getElementAt(i) as HGroup);
@@ -783,14 +783,14 @@
 									//Get the field label
 									var _text:Text = (_hGroup.getElementAt(0) as Text);
 									var _textField:SkinnableTextBase = (_hGroup.getElementAt(1) as SkinnableTextBase);
-								
+									
 									var _fieldName:String = _text.id;
 									var _value:String = _textField.text;
-								
+									
 									_value = this.specialCharTreatment(_value, "SAVE");
 									if ((_fieldName == "site") && (_value.indexOf("www.") == 0))
 										_value = "http://" + _value;
-								
+									
 									_featureNew.attributes[_fieldName] = _value;
 								}
 							}
@@ -800,7 +800,7 @@
 							_feature.attributes["active"] = 0;
 							delete _feature.attributes["date_modif"];
 							delete _feature.attributes["divers"];
-						
+							
 							this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
 							_feature.state = "Update";//org.openscales.core.feature.State.UPDATE;
 							
@@ -813,13 +813,13 @@
 									_feature.attributes[attribute] = _featureNew.attributes[attribute];
 							}
 						}
-						displayPopup();
+						//displayPopup();
 						//Hide Save and Cancel buttons
 						hideIconButtonCancel();
 						hideIconButtonSave();
 						//Display Edit button
 						showIconButtonEdit();
-						this.position = this._fxmap.map.getMapPxFromLocation(this.loc);
+						//this.position = this._fxmap.map.getMapPxFromLocation(this.loc);
 						return true;
 					}
 					else{
@@ -840,15 +840,15 @@
 				var _hoursINT:int;
 				var _minutes:String="";
 				var _seconds:String=""; 
-			
-				 if (_date.getHours()< 10)
+				
+				if (_date.getHours()< 10)
 					_hours = "0"
 				_hours += _date.getHours();
-					
+				
 				if (_date.getMinutes() < 10)
 					_minutes = "0";
 				_minutes += _date.getMinutes();
-					
+				
 				if (_date.getSeconds() < 10)
 					_seconds = "0";
 				_seconds += _date.getSeconds();
@@ -867,7 +867,7 @@
 				}
 				return _nFeature;
 			}
-		
+			
 			private function whenUpdateTransaction(event:WFSTLayerEvent):void{
 				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenUpdateTransaction);
 				this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
@@ -880,12 +880,20 @@
 			private function whenInsertTransaction(event:WFSTLayerEvent):void{
 				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_UPDATE_MODEL, whenInsertTransaction);
 				
+				this._fxmap.map.addEventListener(WFSTLayerEvent.WFSTLAYER_TRANSACTION_SUCCES,redrawLayer);
 				(_feature.layer as WFST).saveTransaction();
-				for(var attribute:String in _featureNew.attributes) {
-					if (attribute != "date_modif")
-						_feature.attributes[attribute] = _featureNew.attributes[attribute];
+				/*for(var attribute:String in _featureNew.attributes) {
+				if (attribute != "date_modif")
+				_feature.attributes[attribute] = _featureNew.attributes[attribute];
 				}
-				_feature.dateCreation = returnCurrentDate();
+				_feature.dateCreation = returnCurrentDate();*/
+			}
+			
+			private function redrawLayer(event:WFSTLayerEvent):void{
+				this._fxmap.map.removeEventListener(WFSTLayerEvent.WFSTLAYER_TRANSACTION_SUCCES,redrawLayer);
+				(_feature.layer as FeatureLayer).removeFeature(_feature);
+				(_featureNew.layer as FeatureLayer).redraw(true);
+				this.remove();
 			}
 			/**
 			 * mandatoryFieldVerification: Check that all mandatory fields have none empty value.
@@ -913,7 +921,7 @@
 									//A mandatory field hasn't been filled, return FALSE
 									return false;
 								}
-									
+								
 							}
 						}
 					}
