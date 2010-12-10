@@ -35,8 +35,7 @@ Code to obtain the map
 		center="4.78783,45.68800"
 		x="60"
 		y="50">
-		<os:Mapnik name="Mapnik"
-			proxy="http://openscales.org/proxy.php?url="/>
+		<os:Mapnik name="Mapnik"/>
 		<os:MousePosition x="10"
 			y="{fxmap.height-20}"
 			displayProjection="EPSG:4326"/>
