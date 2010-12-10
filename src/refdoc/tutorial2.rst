@@ -204,24 +204,27 @@ Security
 
 OpenScales allows you to use security manager to access one or more layers.
 Here is an example with a layer from the French National Geographic Institute (IGN) portal (http://geoportail.fr). It uses an OGC protocol: Wep Map Service - Cached layer.
+In order to test IGN maps with you own api key on your personal computer, you have to use a local webserver (apache for instance), and deploy the swf within the webroot of your local web server. You can access it at : http://localhost/YourExample.swf
+If you can't test on a local web server, you need to upload your swf file on the website declared as referer when you requested your api key.
 
 .. code-block:: mxml
 
-	<os:IGNGeoRMSecurity key="xxxxxxxx"
-		layers="ORTHOPHOTOS"
-		proxy="http://openscales.org/proxy.php?url="/>
+	<IGNGeoRMSecurity key="xxxxxxxx"
+						  method="POST"
+						  layers="ORTHOPHOTOS"/>
 
-	<os:WMSC id="ortho"
-		name="ORTHOPHOTOS"
-		url="http://wxs.ign.fr/geoportail/wmsc"
-		layers="ORTHOIMAGERY.ORTHOPHOTOS"
-		format="image/jpeg"
-		resolutions="39135.75,19567.875,9783.9375,4891.96875,2445.984375,2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125,0.0625"
-		projection="IGNF:GEOPORTALFXX"
-		minZoomLevel="5"
-		maxZoomLevel="17"
-		maxExtent="-1048576,3670016,2097152,6815744"
-		exceptions="text/xml"/>
+	<WMSC id="ortho"
+			  name="ORTHOPHOTOS"
+			  url="http://wxs.ign.fr/geoportail/wmsc"
+			  layers="ORTHOIMAGERY.ORTHOPHOTOS"
+			  format="image/jpeg"
+			  resolutions="39135.75,19567.875,9783.9375,4891.96875,2445.984375,2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125,0.0625"
+			  projection="IGNF:GEOPORTALFXX"
+			  minZoomLevel="5"
+			  maxZoomLevel="17"
+			  maxExtent="-1048576,3670016,2097152,6815744"
+			  exceptions="text/xml"
+			  method="POST"/>
 		 
 Note: to well visualise the example, change the coordinates of the center Map parameter (centered on France for example) and set the zoom to 10.
 
