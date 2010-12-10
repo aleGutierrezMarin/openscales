@@ -408,8 +408,14 @@ package org.openscales.core.handler.feature {
 		}
 
 		private function onClickFeature(evt:FeatureEvent):void {
-			if(evt && this.map) {
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
+			if(evt && this.map && evt.feature && evt.feature.layer) {
+				for(var i:* in this.layers) {
+					if(layers[i].name == evt.feature.layer.name){
+						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
+						return;
+					}
+				}
+				
 			}
 		}
 		/**
