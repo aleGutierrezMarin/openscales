@@ -12,6 +12,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.fx.popup.renderer.IFxPopupRenderer;
 			import mx.events.FlexEvent;
 			
 			import org.openscales.core.feature.Feature;
@@ -55,7 +56,7 @@
 			/**
 			 * Popup renderer class, used to set the organization of the popup content (text Area, etc)
 			 */
-			private var _popupRenderer:IPopupRenderer=null;
+			private var _popupRenderer:IFxPopupRenderer=null;
 			
 			/**
 			 * destroy the popup and all its elements
@@ -105,11 +106,11 @@
 				return newPx;
 			}
 			
-			public function get popupRenderer():IPopupRenderer{
+			public function get popupRenderer():IFxPopupRenderer{
 				return this._popupRenderer;
 			}
 			
-			public function set popupRenderer(value:IPopupRenderer):void{
+			public function set popupRenderer(value:IFxPopupRenderer):void{
 				_popupRenderer = value;
 				_popupRenderer.fxpopup = this;
 			}
