@@ -1,51 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
-			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" blendMode="normal" mouseEnabled="false" 
-			 minWidth="131" minHeight="127" alpha.disabled="0.5" alpha.disabledWithControlBar="0.5"
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+			 blendMode="normal" mouseEnabled="false" 
+			 minWidth="131"
+			 minHeight="127"
+			 alpha.disabled="0.5"
+			 alpha.disabledWithControlBar="0.5"
 			 xmlns:d="http://ns.adobe.com/fxg/2008/dt">
 	
 	<fx:Metadata>
 		<![CDATA[ 
-		/** 
-		* @copy spark.skins.spark.ApplicationSkin#hostComponent
-		*/
-		[HostComponent("spark.components.Panel")]
+			[HostComponent("spark.components.Panel")]
 		]]>
 	</fx:Metadata> 
 	
 	<fx:Script fb:purpose="styling">
-		/* Define the skin elements that should not be colorized. 
-		For panel, border and title background are skinned, but the content area and title text are not. */
-		static private const exclusions:Array = ["background", "titleDisplay", "contentGroup", "controlBarGroup"];
-		
-		/**
-		 * @private
-		 */  
-		override public function get colorizeExclusions():Array {return exclusions;}
-		
-		/**
-		 * @private
-		 */
 		override protected function initializationComplete():void
 		{
-			useChromeColor = true;
 			super.initializationComplete();
 		}
 		
-		/**
-		 * @private
-		 */
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
-			var cr:Number = getStyle("cornerRadius");
-			var withControls:Boolean = 
-				(currentState == "disabledWithControlBar" || 
-					currentState == "normalWithControlBar");
-			
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
 		}
 		
-		private var cornerRadius:Number;
 	</fx:Script>
 	
 	<s:states>
@@ -66,6 +46,6 @@
 			</s:Group>
 		</s:Group>
 	</s:Group>
-		<s:Group id="contentGroup" width="100%" height="100%" minWidth="0" minHeight="0" top="9">
+		<s:Group id="contentGroup" contentBackgroundAlpha="0" width="100%" height="100%" minWidth="0" minHeight="0" top="9">
 	</s:Group>
 </s:SparkSkin>

@@ -37,9 +37,11 @@
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.PopupRenderer;
+			import org.openscales.geometry.basetypes.Pixel;
 			
 			//private var popup:Anchored
-			private var fxPopup:FxPopup;
+			private var fxpopup:FxPopup;
 			
 			Trace.useFireBugConsole = true;
 			
@@ -48,42 +50,34 @@
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {
-				/*
-				if(popup) {
-					popup.destroy();
+				if(fxpopup){
+					fxpopup.destroy();
 				}
-				popup = null;
-				popup = new Anchored();
-				popup.feature = event.feature;
-				var content:String = "";
-				if(event.feature.attributes["STATE_NAME"] != undefined)
-					content = content + "<b><font size='20'>" + event.feature.attributes["STATE_NAME"] + " (" + event.feature.attributes["STATE_ABBR"] + ")</font></b><br />";
-				for(var attribute:String in event.feature.attributes) {
-					if((attribute != "STATE_NAME") && (attribute != "STATE_ABBR") && (attribute != "coordinates")) 
-						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
-				}
-				popup.htmlText = content;
-				fxMap.map.addPopup(popup, true);
-				*/
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
 				
-				if(fxPopup){
-					fxPopup.remove()
-				}
-				fxPopup = null;
-				fxPopup = new FxPopup();
-				fxPopup.feature = event.feature;
-				fxPopup.position = fxMap.map.getMapPxFromLocation(event.feature.lonlat);
 				var content:String="";
-				if(event.feature.attributes["STATE_NAME"] != undefined)
-					content = content + "<b><font size='20'>" + event.feature.attributes["STATE_NAME"] + " (" + event.feature.attributes["STATE_ABBR"] + ")</font></b><br />";
+				
+				var fxpopupRenderer:PopupRenderer = new PopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				
+				fxpopup.feature = event.feature;
+				var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(event.feature.lonlat);
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+				fxpopup.position = px;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				if(event.feature.attributes["STATE_NAME"]){
+					fxpopupRenderer.titleContent = event.feature.attributes["STATE_NAME"] + " (" + event.feature.attributes["STATE_ABBR"] + ")";
+				}
 				for(var attribute:String in event.feature.attributes) {
 					if((attribute != "STATE_NAME") && (attribute != "STATE_ABBR") && (attribute != "coordinates")) 
 						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
 				}
+				fxpopupRenderer.content = content;
 				
-				fxMap.addFxPopup(fxPopup,true);
-				fxPopup.content = content;
-				fxPopup.visible = true;
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
 				
 			}
 			
