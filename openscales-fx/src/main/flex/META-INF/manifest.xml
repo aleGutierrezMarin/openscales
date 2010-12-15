@@ -57,6 +57,6 @@
 		
 	<component id="Control" class="org.openscales.fx.control.Control" />
 	<component id="IconButton" class="org.openscales.fx.control.IconButton" />
-	
+	<component id="Popup" class="org.openscales.fx.popup.FxPopup" />
 	<component id="PopupRenderer" class="org.openscales.fx.popup.renderer.FxPopupRenderer" />
 </componentPackage>
