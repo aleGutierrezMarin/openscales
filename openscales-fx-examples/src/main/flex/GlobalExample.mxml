@@ -37,7 +37,7 @@
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.popup.FxPopup;
-			import org.openscales.fx.popup.PopupRenderer;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			//private var popup:Anchored
@@ -59,7 +59,7 @@
 				
 				var content:String="";
 				
-				var fxpopupRenderer:PopupRenderer = new PopupRenderer();
+				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
 				fxpopup.popupRenderer = fxpopupRenderer;
 				
 				fxpopup.feature = event.feature;

@@ -1,15 +1,16 @@
-package org.openscales.fx.popup
+package org.openscales.fx.popup.renderer
 {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.fx.popup.FxPopup;
 	
 	/**
 	 * This  is the interface for popup renderers
 	 * 
 	 * */
-	public interface IPopupRenderer
+	public interface IFxPopupRenderer
 	{
 		function draw():void;
 		function destroy():void;
