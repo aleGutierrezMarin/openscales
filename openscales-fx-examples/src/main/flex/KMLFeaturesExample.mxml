@@ -31,32 +31,36 @@
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.PopupRenderer;
+			import org.openscales.geometry.basetypes.Pixel;
 			
 			//private var popup:Anchored;
-			private var fxPopup:FxPopup;
+			private var fxpopup:FxPopup;
 			
 			private function initMap():void {
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {
-				/*
-				if(popup) {
-					popup.destroy();
+				if(fxpopup){
+					fxpopup.destroy();
 				}
-				popup = null;
-				popup = new Anchored();
-				popup.feature = event.feature;
-				fxMap.map.addPopup(popup, true);
-				*/
-				if(fxPopup) {
-					fxPopup.remove();
-				}
-				fxPopup = null;
-				fxPopup = new FxPopup();
-				fxPopup.feature = event.feature;
-				fxPopup.content = fxPopup.feature.data.popupContentHTML;
-				fxMap.addFxPopup(fxPopup, true);
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+				
+				var fxpopupRenderer:PopupRenderer = new PopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				
+				fxpopup.feature = event.feature;
+				var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(event.feature.lonlat);
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+				fxpopup.position = px;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				fxpopupRenderer.content = event.feature.data.popupContentHTML;
+				
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
 			}
 		]]>
 	</fx:Script>

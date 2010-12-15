@@ -30,10 +30,13 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.PopupRenderer;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
 			
 			public var markLyon:Marker;
+			private var fxpopup:FxPopup;
 			
 			private function initMap():void {
 				
@@ -60,16 +63,27 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 			}
 			
 			private function showPopup(e:MouseEvent):void {
-				/*
-				var popup:Anchored = new Anchored();
-				popup.feature = markLyon;
-				fxMap.map.addPopup(popup, true);
-				*/
 				
-				var fxPopup:FxPopup = new FxPopup();
-				fxPopup.feature = markLyon;
-				fxPopup.content = markLyon.data.popupContentHTML;
-				fxMap.addFxPopup(fxPopup,true);
+				if(fxpopup){
+					fxpopup.destroy();
+				}
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+
+				var fxpopupRenderer:PopupRenderer = new PopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				
+				fxpopup.feature = markLyon;
+				var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(markLyon.lonlat);
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+				fxpopup.position = px;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				fxpopupRenderer.content = markLyon.data.popupContentHTML;
+				
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
+				
 			}
 		]]>
 	</fx:Script>
