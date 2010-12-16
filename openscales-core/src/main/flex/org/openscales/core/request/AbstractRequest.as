@@ -335,7 +335,9 @@ package org.openscales.core.request
 					return null;
 				}
 				_finalUrl += (_finalUrl.indexOf("?") == -1) ? "?" : "&"; // If there is no "?" in the url, we will have to add it, else we will have to add "&"
-				_finalUrl += this.security.securityParameter;
+				var token:String = this.security.securityParameter;
+				if(token!=null)
+					_finalUrl += this.security.securityParameter;
 			}
 
 			if ((this.proxy != null)) {
