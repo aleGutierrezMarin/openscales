@@ -5,10 +5,11 @@ package org.openscales.core.feature
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	public class CustomMarker extends PointFeature
 	{
@@ -110,13 +111,9 @@ package org.openscales.core.feature
 			// we compute the location of the marker
 			var x:Number;
 			var y:Number;
-			var resolution:Number = this.layer.map.resolution;
-			var dX:int = -int(this.layer.map.layerContainer.x) + this.left;
-			var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
-			x = dX - (this._clip.width/2) + _xOffset + point.x / resolution;
-			y = dY - (this._clip.height/2) + _yOffset - point.y / resolution;
-			_clip.x = x;
-			_clip.y = y;
+			var px:Pixel=this.layer.map.getLayerPxFromLocation(this.lonlat);
+			_clip.x=px.x + _xOffset;
+			_clip.y=px.y + _yOffset;
 		}
 		
 		private function onSuccess(e:Event):void {
