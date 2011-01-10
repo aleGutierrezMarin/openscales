@@ -351,7 +351,7 @@
 			</snapshots>
 		</pluginRepository>
 		<pluginRepository>
-			<id>snapshot</id>
+			<id>maven</id>
 			<url>http://repo1.maven.org/maven2/</url>
 			<snapshots>
 				<enabled>true</enabled>
