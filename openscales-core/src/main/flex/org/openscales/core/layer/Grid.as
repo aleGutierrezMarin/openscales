@@ -545,14 +545,15 @@ package org.openscales.core.layer
 				}
 			}
 
-			while (this._grid[0].length > columns) {
-				for (i=0, l=this._grid.length; i<l; i++) {
-					row = this._grid[i];
+			for (i=0, l=this._grid.length; i<l; i++) {
+				row = this._grid[i];
+				while (row.length > columns) {
 					tile = row.pop();
 					this.removeTileMonitoringHooks(tile);
 					tile.destroy();
 				}
 			}
+
 		}
 
 		/**
