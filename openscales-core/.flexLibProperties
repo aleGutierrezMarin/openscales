@@ -172,7 +172,7 @@
     <classEntry path="org.openscales.core.control.TermsOfService"/>
     <classEntry path="org.openscales.core.control.CopyrightTest"/>
     <classEntry path="org.openscales.core.control.TermsOfServiceTest"/>
-    <classEntry path="org.openscales.core.control.DataProviders"/>
+    <classEntry path="org.openscales.core.control.DataOriginators"/>
     <classEntry path="org.openscales.core.layer.originator.DataOriginator"/>
     <classEntry path="org.openscales.core.layer.originator.ConstraintOriginator"/>
   </includeClasses>
