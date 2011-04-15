@@ -2,6 +2,7 @@ package org.openscales.core.layer.ogc
 {
 
 	import org.openscales.core.layer.Grid;
+	import org.openscales.core.layer.ogc.provider.WMSTileProvider;
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.core.tile.Tile;
@@ -16,18 +17,37 @@ package org.openscales.core.layer.ogc
 	 */	
 	public class WMS extends Grid
 	{
-
+		/**
+		 * @private
+		 * Version of wms protocol used to request the server
+		 * Default version is 1.3.0
+		 */
+		private var _version:String="1.3.0";
+		
+		/**
+		 * @private
+		 * The tile provider allows users to generate requests to the server and get the requested tiles
+		 */
+		private var _tileProvider:WMSTileProvider=null;
+		
+		private var _style:String=null;
+		
 		private var _reproject:Boolean = true;
 
 		public function WMS(name:String = "",
 							url:String = "",
-							layers:String = "") {
+							layers:String = "",
+							style:String="default") {
 
-			super(name, url, new WMSParams(layers));
+			super(name, url);
 			
+			//in WMS we must be in single tile mode
 			this.singleTile = true;
-			
 			CACHE_SIZE = 32;
+			
+			//Call the tile provider to generate the request and get the tile requested 
+			this._tileProvider = new WMSTileProvider(this,url,this._version, layers,this.projSrsCode);
+			this._tileProvider.style=style;
 
 		}
 	    override public function get maxExtent():Bounds {
@@ -42,34 +62,9 @@ package org.openscales.core.layer.ogc
 			return maxExtent;
 		}
 		
-		override public function getURL(bounds:Bounds):String {
-			var projectedBounds:Bounds = bounds.clone();
-			
-			if (this.isBaseLayer != true  && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-			  	projectedBounds.transform(this.projSrsCode,this.map.baseLayer.projSrsCode);
-			}
-
-			this.params.bbox = projectedBounds.boundsToString();
-			(this.params as WMSParams).width = this.imageSize.w;
-			(this.params as WMSParams).height = this.imageSize.h;
-			if (this.reproject == false) {
-				if (this.projSrsCode != null || this.map.baseLayer.projSrsCode != null) {
-					(this.params as WMSParams).srs = (this.projSrsCode == null) ? this.map.baseLayer.projSrsCode : projSrsCode;
-				}
-			} else {
-				(this.params as WMSParams).srs = this.projSrsCode;
-			}
-			
-			return this.url + ((this.url.indexOf("?")==-1) ? "?" : "&") + this.params.toGETString();
-		}
-
+		
 		override public function addTile(bounds:Bounds, position:Pixel):ImageTile {
-			var url:String = this.getURL(bounds);
-			var img:ImageTile = new ImageTile(this, position, bounds, 
-				url, new Size(this.tileWidth, this.tileHeight));
-			if(this.method != null)
-				img.method = this.method;
-			return img;
+			return this._tileProvider.getTile(bounds);
 		}
 
 		public function get reproject():Boolean {
@@ -86,6 +81,48 @@ package org.openscales.core.layer.ogc
 		
 		public function set exception(value:String):void {
 			(this.params as WMSParams).exceptions = value;
+		}
+		
+		override public function redraw(fullRedraw:Boolean = true):void {
+			(_tileProvider as WMSTileProvider).width = this.tileWidth;
+			(_tileProvider as WMSTileProvider).height = this.tileHeight;
+			super.redraw(fullRedraw);
+		}
+
+		
+		/**
+		 * Get and set the version of the wms protocol
+		 */
+		public function get version():String
+		{
+			return _version;
+		}
+		/**
+		 * @private
+		 */
+		public function set version(value:String):void
+		{
+			this._version = value;
+			
+			//update the tileprovider version of the protocol at the same time
+			if (this._tileProvider != null){
+				this._tileProvider.version = value;
+			}
+		}
+
+		public function get style():String
+		{
+			return _style;
+		}
+
+		public function set style(value:String):void
+		{
+			_style = value;
+			
+			//update the tileprovider of the wmslayer at once
+			if(this._tileProvider != null){
+				this._tileProvider.style=value;
+			}
 		}
 
 	}
