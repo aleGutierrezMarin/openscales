@@ -15,6 +15,8 @@ package org.openscales.geometry.basetypes
 		public static var FOOT:String = "ft";
 		public static var MILE:String = "mi";
 		public static var INCH:String = "inch";
+		
+		public static var PIXEL_SIZE:Number = 0.00028;
 
 		public static var DOTS_PER_INCH:int = 72;
 
@@ -42,6 +44,19 @@ package org.openscales.geometry.basetypes
 					return 0;
 			}
 		}
+		
+		public static function getMetersPerUnit(unit:String):Number {
+			switch(unit){
+				case Unit.DEGREE:
+					return 111118.752;
+				case Unit.METER:
+					return 1;
+				case Unit.FOOT:
+					return 0.3048;
+				default:
+					return 0;
+			}
+		} 
 
 		public static function getResolutionFromScale(scale:Number, units:String = null):Number {
 

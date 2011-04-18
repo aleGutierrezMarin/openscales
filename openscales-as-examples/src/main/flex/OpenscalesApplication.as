@@ -61,7 +61,7 @@ package {
 
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			_map.zoom=5;
+			_map.zoom=13;
 						
 			this.addChild(_map);
 		}
