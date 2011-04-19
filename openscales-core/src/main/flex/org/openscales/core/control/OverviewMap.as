@@ -158,7 +158,7 @@ package org.openscales.core.control
 			} else {
 				var bounds:Bounds = pxToBound(px,this._startDrag);
 				if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
-					bounds.transform(this._overviewMap.baseLayer.projSrsCode,this.map.baseLayer.projSrsCode);
+					bounds = bounds.reprojectTo(this.map.baseLayer.projSrsCode);
 				}
 				this.map.zoomToExtent(bounds);
 			}
@@ -287,7 +287,7 @@ package org.openscales.core.control
 			var _extent:Bounds = this.map.extent;
 			
 			if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
-				_extent.transform(this.map.baseLayer.projSrsCode,this._overviewMap.baseLayer.projSrsCode);
+				_extent = _extent.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
 			}
 			
 			this._extentLayer.projSrsCode = this._overviewMap.baseLayer.projSrsCode;

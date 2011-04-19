@@ -88,6 +88,7 @@ package org.openscales.geometry.basetypes
 		
 		/**
 		 * Reproject the current location in another projection
+		 * 
 		 * @param newSrsCode:String SRS code of the target projection
 		 * @return Location the equivalent Location of this location in the new projection
 		 */
