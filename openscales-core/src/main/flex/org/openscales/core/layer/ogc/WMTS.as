@@ -1,5 +1,6 @@
 package org.openscales.core.layer.ogc
 {
+	import org.openscales.core.Trace;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
@@ -65,7 +66,6 @@ package org.openscales.core.layer.ogc
 		 */ 
 		override public function addTile(bounds:Bounds, center:Pixel):ImageTile
 		{
-			
 			var left:Number = this.map.maxExtent.left;
 			var top:Number = this.map.maxExtent.top;
 			var srs:String = this.map.maxExtent.projSrsCode;
@@ -93,12 +93,16 @@ package org.openscales.core.layer.ogc
 			for each(var matrix:Object in this._matrixIds){
 				if(matrix["scaleDenominator"]) {
 					var scale:Number = parseFloat(matrix["scaleDenominator"] as String);
-					var resolution:Number = scale * Unit.PIXEL_SIZE /  Unit.getMetersPerUnit(ProjProjection.getProjProjection(this.projSrsCode).projParams.units)
+					var resolution:Number = scale * Unit.PIXEL_SIZE /  Unit.getMetersPerUnit(ProjProjection.getProjProjection(this.projSrsCode).projParams.units);
 					resolutions.push(resolution);
 				}
 			}
 			this.resolutions = resolutions;
 			this._autoResolution = true;
+		}
+		
+		override public function getURL(bounds:Bounds):String {
+			return this._tileProvider.getTile(bounds).url;
 		}
 
 	}

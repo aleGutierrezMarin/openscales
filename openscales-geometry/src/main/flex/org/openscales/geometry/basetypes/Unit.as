@@ -20,6 +20,12 @@ package org.openscales.geometry.basetypes
 
 		public static var DOTS_PER_INCH:int = 72;
 
+		/**
+		 * Returns the number of inches per unit
+		 * 
+		 * @param the unit
+		 * @return the number of inches
+		 */
 		public static function getInchesPerUnit(unit:String):Number {
 			switch(unit) {
 				case Unit.INCH:
@@ -45,10 +51,16 @@ package org.openscales.geometry.basetypes
 			}
 		}
 		
+		/**
+		 * Returns the number of meters per unit
+		 * 
+		 * @param the unit
+		 * @return the number of meters
+		 */
 		public static function getMetersPerUnit(unit:String):Number {
 			switch(unit){
 				case Unit.DEGREE:
-					return 111118.752;
+					return 111195.0;
 				case Unit.METER:
 					return 1;
 				case Unit.FOOT:
@@ -58,6 +70,13 @@ package org.openscales.geometry.basetypes
 			}
 		} 
 
+		/**
+		 * Returns the resolution from a scale
+		 * 
+		 * @param the scale
+		 * @param the unit, if not specified Unit.DEGREE is used
+		 * @return the resolution
+		 */
 		public static function getResolutionFromScale(scale:Number, units:String = null):Number {
 
 			if (units == null) {
@@ -70,7 +89,14 @@ package org.openscales.geometry.basetypes
 				* Unit.DOTS_PER_INCH);
 			return resolution;
 		}
-
+		
+		/**
+		 * Returns the scale from a resolution
+		 * 
+		 * @param the resolution
+		 * @param the unit, if not specified Unit.DEGREE is used
+		 * @return the scale
+		 */
 		public static function getScaleFromResolution(resolution:Number, units:String):Number {
 			if (units == null) {
 				units = Unit.DEGREE;
@@ -79,6 +105,34 @@ package org.openscales.geometry.basetypes
 			var scale:Number = resolution * Unit.getInchesPerUnit(units) *
 				Unit.DOTS_PER_INCH;
 			return scale;
+		}
+		
+		/**
+		 * Returns the resolution from a scale denominator
+		 * 
+		 * @param the scale denominator
+		 * @param the unit, if not specified Unit.DEGREE is used
+		 * @return the resolution
+		 */
+		public static function getResolutionFromScaleDenominator(scaleDenominator:Number, units:String = null):Number {
+			if (units == null) {
+				units = Unit.DEGREE;
+			}
+			return (scaleDenominator * Unit.PIXEL_SIZE / Unit.getMetersPerUnit(units));
+		}
+		
+		/**
+		 * Returns the scale denominator from a resolution
+		 * 
+		 * @param the resolution
+		 * @param the unit, if not specified Unit.DEGREE is used
+		 * @return the scale
+		 */
+		public static function getScaleDenominatorFromResolution(resolution:Number, units:String = null):Number {
+			if (units == null) {
+				units = Unit.DEGREE;
+			}
+			return (resolution * Unit.getMetersPerUnit(units) / Unit.PIXEL_SIZE);
 		}
 
 	}
