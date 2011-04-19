@@ -54,10 +54,10 @@ package org.openscales.core
 		private var _controls:Vector.<IControl> = new Vector.<IControl>();
 		private var _handlers:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _size:Size = null;
-		private var _zoom:Number = 0;
+		protected var _zoom:Number = 0;
 		private var _zooming:Boolean = false;
 		private var _loading:Boolean;
-		private var _center:Location = null;
+		protected var _center:Location = null;
 		private var _maxExtent:Bounds = null;
 		private var _destroying:Boolean = false;
 		private var _tweenZoomEnabled:Boolean = true;
@@ -1075,8 +1075,8 @@ package org.openscales.core
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
 			if(maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
-				if (this.baseLayer && (this.baseLayer.projSrsCode != Geometry.DEFAULT_SRS_CODE)) {
-					maxExtent.transform(Geometry.DEFAULT_SRS_CODE, this.baseLayer.projSrsCode);
+				if (this.baseLayer && (this.baseLayer.projSrsCode != maxExtent.projSrsCode)) {
+					maxExtent = maxExtent.reprojectTo(this.baseLayer.projSrsCode);
 				}
 			}
 			return maxExtent;
