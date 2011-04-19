@@ -78,9 +78,29 @@ package org.openscales.core.layer.ogc.provider
 		 */
 		private var _bbox:String;
 		
+		/**
+		 * @private
+		 * Is the service returning tiled layers?
+		 */
+		private var _tiled:Boolean=false;
+		
+		/**
+		 * @private
+		 * SLD style (Not in WMS 1.3.0)
+		 */
+		private var _sld:String;
+		
 		
 		/**
 		 * Constructor of the WMSTileProvider.
+		 * 
+		 * @param openscalesLayer Layer in openscales linked to this tileProvider.
+		 * @param url URL of the server to request.
+		 * @param version Version of the service requested.
+		 * @param layer Layers to request on the server.
+		 * @param projection Projection system used to request the service.
+		 * @param style Styles of the requested layers.
+		 * @param format Mime type used for the returned tiles
 		 * 
 		 */
 		public function WMSTileProvider(openscalesLayer:WMS,
@@ -113,6 +133,10 @@ package org.openscales.core.layer.ogc.provider
 			if(this._openScalesLayer.method != null)
 				img.method = this._openScalesLayer.method;
 			return img;
+		}
+		
+		public function getTileUrl(bounds:Bounds):String {
+			return this.buildGETQuery(bounds,null);
 		}
 		
 		/**
@@ -173,6 +197,12 @@ package org.openscales.core.layer.ogc.provider
 			
 			if (this._exceptions != null)
 				str += "EXCEPTIONS=" + this._exceptions + "&";
+			
+			str += "TILED=" + this._tiled + "&";
+			
+			if(this.version=="1.1.0" || this.version=="1.1.1"){
+				str += "SLD=" + this._sld + "&";
+			}
 			
 			return str.substr(0, str.length-1);
 		}
@@ -336,5 +366,39 @@ package org.openscales.core.layer.ogc.provider
 		{
 			_bbox = value;
 		}
+
+		/**
+		 * Is the service returning tiled layers?
+		 */
+		public function get tiled():Boolean
+		{
+			return _tiled;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set tiled(value:Boolean):void
+		{
+			_tiled = value;
+		}
+
+		/**
+		 * SLD style (Not in WMS 1.3.0)
+		 */
+		public function get sld():String
+		{
+			return _sld;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set sld(value:String):void
+		{
+			_sld = value;
+		}
+
+
 	}
 }

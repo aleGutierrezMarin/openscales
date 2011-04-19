@@ -89,7 +89,9 @@ package org.openscales.core.layer.ogc
 			super.redraw(fullRedraw);
 		}
 
-		
+		override public function getURL(bounds:Bounds):String {
+			return this._tileProvider.getTileUrl(bounds);
+		}
 		/**
 		 * Get and set the version of the wms protocol
 		 */
@@ -124,6 +126,103 @@ package org.openscales.core.layer.ogc
 				this._tileProvider.style=value;
 			}
 		}
+
+		/**
+		 * This method sets the layers that the tileprovider is going to request
+		 * 
+		 * @param value Names of the layers to request
+		 * 
+		 */
+		public function setLayersToDisplay(value:String):void{
+			if(this._tileProvider != null){
+				this._tileProvider.layer=value;
+			}
+		}
+		
+		/**
+		 * This method sets the MIME format that the tileprovider is going to return after a request
+		 * 
+		 * @param value Format of the tiles returned
+		 * 
+		 */
+		public function setFormatToDisplay(value:String):void{
+			if(this._tileProvider != null){
+				this._tileProvider.format=value;
+			}
+		}
+		
+		////////
+		/**
+		 * This method sets the transparency of the tiles returned by the tileprovider
+		 * 
+		 * @param value true if transparent, false otherwise
+		 * 
+		 */
+		public function setTransparencyToDisplay(value:Boolean):void{
+			if(this._tileProvider != null){
+				this._tileProvider.transparent=value;
+			}
+		}
+		
+		/**
+		 * This method sets the background color of the tiles returned by the tileprovider
+		 * 
+		 * @param value background color of the tiles returned
+		 * 
+		 */
+		public function setBgcolorToDisplay(value:String):void{
+			if(this._tileProvider != null){
+				this._tileProvider.bgcolor=value;
+			}
+		}
+		
+		/**
+		 * This method sets the wms layer should be tiled or not
+		 * 
+		 * @param value true if the layer should be tiled, false otherwise.
+		 * 
+		 */
+		public function setTiledToDisplay(value:Boolean):void{
+			if(this._tileProvider != null){
+				this._tileProvider.tiled=value;
+			}
+		}
+		
+		/**
+		 * This method sets the way exceptions should be returned by the tileprovider
+		 * 
+		 * @param value Format of the exceptions returned
+		 * 
+		 */
+		public function setExceptionsToDisplay(value:String):void{
+			if(this._tileProvider != null){
+				this._tileProvider.exceptions=value;
+			}
+		}
+		
+		/**
+		 * This method sets the SLD style
+		 * 
+		 * @param value sld style to apply
+		 * 
+		 */
+		public function setSLDToDisplay(value:String):void{
+			if(this._tileProvider != null){
+				this._tileProvider.sld=value;
+			}
+		}
+		
+		/**
+		 * This method sets the URL to request
+		 *
+		 * @param value URL of the service to request
+		 */
+		public function setURLToDisplay(value:String):void{
+			if(this._tileProvider !=null){
+				this._tileProvider.url=value;
+			}
+		}
+		
 
 	}
 }
