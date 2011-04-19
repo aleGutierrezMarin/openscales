@@ -52,8 +52,7 @@ package org.openscales.core.layer.ogc.provider
 		/**
 		 * @protected
 		 * An object containing for each matrix (of the tileMatrixSet)
-		 * <br/><br/>
-		 * In the array, matrix are ordered, minimum index containing the identifier of the lowest matrix
+		 * <p>In the array, matrix are ordered, minimum index containing the identifier of the lowest matrix</p>
 		 */
 		protected var _matrixIds:Object;
 		
@@ -63,6 +62,12 @@ package org.openscales.core.layer.ogc.provider
 		 * @protected
 		 */ 
 		private var _tileOrigin:Location
+		
+		/**
+		 * TODO change this
+		 */
+		public var zoom:Number;
+		
 		/**
 		 * @param url String The url where the WMTS service is located
 		 * @param format String The MIME type for returned tiles
@@ -150,21 +155,23 @@ package org.openscales.core.layer.ogc.provider
 			return ret;
 		}
 		
-		public var zoom:Number;
+		
+		
 		
 		/**
 		 * @inheritDoc
 		 */ 
 		override public function getTile(bounds:Bounds):ImageTile
 		{
-			Trace.debug("get wmts tile for bounds:"+bounds.toString());
 			// Should calculateTileMatrix
 			var tileMatrix:String = calculateTileMatrix(this.zoom);
 			// then call calculateTileRowAndCol
 			
-			 var tOrigin:Location= new Location(-20037508.342789244,-20037508.342789244,"EPSG:3857");
+			 var tOrigin:Location= new Location(0,12000000,"IGNF:LAMB93");
 			
 			var infos:Array = this.calculateTileRowAndCol(bounds, tOrigin);
+			/*if(infos[0]<0 || infos[1]<0)
+				return null;*/
 			
 			var params:Object = {
 				"TILECOL" : String(infos[0]),
@@ -220,48 +227,65 @@ package org.openscales.core.layer.ogc.provider
 			{
 				queryString += "TILECOL=" + tileCol + "&";
 			}
-			
-			//if(queryString == null || queryString == "") Trace.debug("yeahhhhhhhhhhhhhhhhh");
-			//Trace.debug("youhou: "+queryString.substr(0,queryString.length-1));
+
 			return queryString.substr(0,queryString.length-1);
 		}
 		
-		
+		/**
+		 * ???
+		 */
 		public function get openScaleLayer():WMTS
 		{
 			return _openScaleLayer;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set openScaleLayer(value:WMTS):void
 		{
 			_openScaleLayer = value;
 		}
 		
+		/**
+		 * Indicates the requested layer
+		 */
 		public function get layer():String
 		{
 			return _layer;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set layer(value:String):void
 		{
 			_layer = value;
 		}
 		
+		/**
+		 * Indicates the tile matrix set
+		 */
 		public function get tileMatrixSet():String
 		{
 			return _tileMatrixSet;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set tileMatrixSet(value:String):void
 		{
 			_tileMatrixSet = value;
 		}
 		
+		/**
+		 * Indicates the requested style
+		 */
 		public function get style():String
 		{
 			return this._style;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set style(value:String):void
 		{
 			this.style = value;
@@ -284,7 +308,6 @@ package org.openscales.core.layer.ogc.provider
 		{
 			_tileOrigin = value;
 		}
-
 		
 	}
 }

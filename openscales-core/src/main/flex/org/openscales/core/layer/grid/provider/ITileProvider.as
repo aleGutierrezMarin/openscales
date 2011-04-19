@@ -21,6 +21,5 @@ package org.openscales.core.layer.grid.provider
 		 * @return an ImageTile representing the tile
 		 */ 
 		function getTile(bounds:Bounds):ImageTile;
-		
 	}
 }
