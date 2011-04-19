@@ -171,6 +171,7 @@
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>
     <classEntry path="org.openscales.core.layer.grid.provider.HTTPTileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.OGCTileProvider"/>
+    <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProvider"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -400,6 +400,7 @@ package org.openscales.core.request
 					this._loadEnd(null);
 					return;
 				}
+				Trace.log("url: "+_finalUrl);
 				var urlRequest:URLRequest = new URLRequest(_finalUrl);
 				urlRequest.method = this.method;
 				if (urlRequest.method == URLRequestMethod.POST) {
@@ -423,7 +424,7 @@ package org.openscales.core.request
 					(this.loader as URLLoader).load(urlRequest);
 				}
 			} catch (e:Error) {
-				Trace.error("OpenLSRequest - send: " + e.message);
+				Trace.error("Request - send: " + e.message);
 				this._loadEnd(null);
 			}
 		}
