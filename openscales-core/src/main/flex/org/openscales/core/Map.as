@@ -1075,8 +1075,8 @@ package org.openscales.core
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
 			if(maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
-				if (this.baseLayer && (this.baseLayer.projSrsCode != Geometry.DEFAULT_SRS_CODE)) {
-					maxExtent.transform(Geometry.DEFAULT_SRS_CODE, this.baseLayer.projSrsCode);
+				if (this.baseLayer && (this.baseLayer.projSrsCode != maxExtent.projSrsCode)) {
+					maxExtent = maxExtent.reprojectTo(this.baseLayer.projSrsCode);
 				}
 			}
 			return maxExtent;

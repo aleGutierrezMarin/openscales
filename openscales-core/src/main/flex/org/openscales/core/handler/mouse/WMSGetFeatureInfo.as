@@ -104,7 +104,7 @@ package org.openscales.core.handler.mouse
 			
 			// setup params for call
 			var infoParams:WMSGetFeatureInfoParams = new WMSGetFeatureInfoParams(layerNames, _format, layerStyles);
-			infoParams.bbox = this.map.extent.boundsToString();
+			infoParams.bbox = this.map.extent.toString();
 			if (_srs == null)
 				infoParams.srs = this.map.baseLayer.projSrsCode;
 			else
