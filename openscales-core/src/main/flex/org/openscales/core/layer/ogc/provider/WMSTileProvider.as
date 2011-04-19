@@ -10,6 +10,15 @@ package org.openscales.core.layer.ogc.provider
 	
 	use namespace os_internal;
 	
+	/**
+	 * The WMSTileProvider is the exclusive way of requesting a service.
+	 * It contains the mandatory and optional parameters needed to construct the request.
+	 * The request is automaticaly generated when necessary, based on the previously set parameters.
+	 * 
+	 * @author javocale
+	 * 
+	 */
+	
 	public class WMSTileProvider extends OGCTileProvider
 	{
 		/**
@@ -100,7 +109,7 @@ package org.openscales.core.layer.ogc.provider
 		 * @param layer Layers to request on the server.
 		 * @param projection Projection system used to request the service.
 		 * @param style Styles of the requested layers.
-		 * @param format Mime type used for the returned tiles
+		 * @param format Mime type used for the returned tiles.
 		 * 
 		 */
 		public function WMSTileProvider(openscalesLayer:WMS,
@@ -135,36 +144,22 @@ package org.openscales.core.layer.ogc.provider
 			return img;
 		}
 		
+		/**
+		 * Generate a well-formated URL to request a WMS tile with all the parameters set in the provider.
+		 * 
+		 * @param bounds Bounds of the requested tile 
+		 */
 		public function getTileUrl(bounds:Bounds):String {
 			return this.buildGETQuery(bounds,null);
 		}
 		
 		/**
-		 * @inheritDoc
+		 * Generate a request URL based on the parameters set in the tile provider
+		 * 
+		 * @param bounds bounds of the tile to set in the request string
 		 */ 
 		override os_internal function buildGETQuery(bounds:Bounds, params:Object):String {
-			
-			
-			//			var projection:ProjProjection = this._layer.projection;
-			//			var projectedBounds:Bounds = bounds.clone();
-			//			
-			//			if( this._layer.isBaseLayer != true  && this._layer.reproject == true && projection.srsCode != this._layer.map.baseLayer.projection.srsCode)
-			//			{
-			//				projectedBounds.transform(this._layer.map.baseLayer.projection.clone(),projection.clone());
-			//			}
-			//			
-			//			this._bbox = projectedBounds.boundsToString();
-			//			this._width = this._layer.imageSize.w;
-			//			this._height = this._layer.imageSize.h;
-			//			if( this._layer.reproject == false){
-			//				if (projection != null || this._layer.map.baseLayer.projection != null)
-			//					this._crs = (projection == null) ? this._layer.map.baseLayer.projection.srsCode : projection.srsCode;
-			//			}
-			//			else{
-			//				this._crs = projection.srsCode;
-			//			}
-			//			
-			//			return super(bounds);
+						
 			var str:String = super.buildGETQuery(bounds, params);
 			
 			if (this._layer != null)

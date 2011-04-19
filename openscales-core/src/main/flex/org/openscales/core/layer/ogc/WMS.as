@@ -30,10 +30,26 @@ package org.openscales.core.layer.ogc
 		 */
 		private var _tileProvider:WMSTileProvider=null;
 		
+		/**
+		 * @private
+		 * Style of the layers to display
+		 */
 		private var _style:String=null;
 		
+		/**
+		 * @private
+		 * Indicate if the map is reprojected
+		 */
 		private var _reproject:Boolean = true;
 
+		/**
+		 * Constructor of the class
+		 * 
+		 * @param name Name of the layers to display
+		 * @param url URL of the service to request
+		 * @param style Styles of the layers to display
+		 * 
+		 */
 		public function WMS(name:String = "",
 							url:String = "",
 							layers:String = "",
@@ -62,7 +78,12 @@ package org.openscales.core.layer.ogc
 			return maxExtent;
 		}
 		
-		
+		/**
+		 * Generate the tile corresponding to the bounds given as parameter
+		 * 
+		 * @param bounds Bounds of the area to display
+		 * @param position
+		 */
 		override public function addTile(bounds:Bounds, position:Pixel):ImageTile {
 			return this._tileProvider.getTile(bounds);
 		}
@@ -83,12 +104,20 @@ package org.openscales.core.layer.ogc
 			(this.params as WMSParams).exceptions = value;
 		}
 		
+		/**
+		 * Override method used to update the wms tile displayed when using the zoom control
+		 * 
+		 */
 		override public function redraw(fullRedraw:Boolean = true):void {
 			(_tileProvider as WMSTileProvider).width = this.tileWidth;
 			(_tileProvider as WMSTileProvider).height = this.tileHeight;
 			super.redraw(fullRedraw);
 		}
 
+		/**
+		 * Override method to get the well-formed url to get the requested tile
+		 * 
+		 */
 		override public function getURL(bounds:Bounds):String {
 			return this._tileProvider.getTileUrl(bounds);
 		}
@@ -128,7 +157,7 @@ package org.openscales.core.layer.ogc
 		}
 
 		/**
-		 * This method sets the layers that the tileprovider is going to request
+		 * Set the layers that the tileprovider is going to request
 		 * 
 		 * @param value Names of the layers to request
 		 * 
@@ -140,7 +169,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * This method sets the MIME format that the tileprovider is going to return after a request
+		 * Set the MIME format that the tileprovider is going to return after a request
 		 * 
 		 * @param value Format of the tiles returned
 		 * 
@@ -151,9 +180,8 @@ package org.openscales.core.layer.ogc
 			}
 		}
 		
-		////////
 		/**
-		 * This method sets the transparency of the tiles returned by the tileprovider
+		 * Set the transparency of the tiles returned by the tileprovider
 		 * 
 		 * @param value true if transparent, false otherwise
 		 * 
@@ -165,7 +193,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * This method sets the background color of the tiles returned by the tileprovider
+		 * Set the background color of the tiles returned by the tileprovider
 		 * 
 		 * @param value background color of the tiles returned
 		 * 
@@ -177,7 +205,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * This method sets the wms layer should be tiled or not
+		 * Set the wms layer should be tiled or not
 		 * 
 		 * @param value true if the layer should be tiled, false otherwise.
 		 * 
@@ -189,7 +217,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * This method sets the way exceptions should be returned by the tileprovider
+		 * Set the way exceptions should be returned by the tileprovider
 		 * 
 		 * @param value Format of the exceptions returned
 		 * 
@@ -201,7 +229,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * This method sets the SLD style
+		 * Set the SLD style
 		 * 
 		 * @param value sld style to apply
 		 * 
@@ -213,7 +241,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * This method sets the URL to request
+		 * Set the URL to request
 		 *
 		 * @param value URL of the service to request
 		 */
