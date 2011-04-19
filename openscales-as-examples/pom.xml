@@ -22,6 +22,19 @@
 			<version>1.3.0-SNAPSHOT</version>
 			<type>swc</type>
 		</dependency>
-	</dependencies>	
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flexmojos.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<sourceFile>OpenscalesApplication.as</sourceFile>
+				</configuration> 
+			</plugin>
+		</plugins>
+	</build>
 	
 </project>
