@@ -190,7 +190,7 @@ package org.openscales.geometry
 				this.clearBounds();
 			} else {
 				if (this._bounds != null) { // the private variable is tested to avoid to create the bounds if it doesn't exist
-					this._bounds.transform(this._bounds.projSrsCode, value);
+					this._bounds = this._bounds.reprojectTo(this._projSrsCode);
 				}
 			}
 		}

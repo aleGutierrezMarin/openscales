@@ -20,7 +20,7 @@ package org.openscales.core.layer.ogc
 			super(name, url, layers);
 			this.singleTile = false;
 
-			(this.params as WMSParams).tiled= true;				
+			//(this.params as WMSParams).tiled= true;
 		}
 
 	}
