@@ -2,6 +2,7 @@ package {
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
@@ -20,26 +21,20 @@ package {
 	import org.openscales.geometry.basetypes.Size;
 	
 	[SWF(width='1200',height='700')]
-	public class WMSExample extends Sprite {
+	public class WMS130Example extends Sprite {
 		protected var _map:Map;
 		
-		public function WMSExample() {
+		public function WMS130Example() {
+			Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			
-//			// Add layers to map
-//			var layerWMS:WMS=new WMS("MyMap","http://localhost:8080/geoserver/ows","Arc_Sample","rain");
-//			layerWMS.version="1.3.0";
-//			layerWMS.maxExtent = new Bounds(-180.0,-90.0,180.0,90.0,"EPSG:4326");
-//			this._map.addLayer(layerWMS);
-			
-			
-			_map.proxy="http://openscales.org/proxy.php?url=";
-			var layerWMS111:WMS = new WMS("Germany","http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map","Germany");
-			layerWMS111.maxExtent = new Bounds(5.60075,47.2441,15.425,55.0317,"EPSG:4326");
-			layerWMS111.version="1.1.1";
-			this._map.addLayer(layerWMS111);
-			
+			// Add layers to map
+			var layerWMS:WMS=new WMS("MyMap","http://localhost:8080/geoserver/ows","Arc_Sample","rain");
+			layerWMS.version="1.3.0";
+			//layerWMS.maxExtent = new Bounds(-180.0,-90.0,180.0,90.0,"EPSG:4326");
+			this._map.addLayer(layerWMS);
+						
 			
 			// Add Controls to map
 			_map.addControl(new MousePosition());
