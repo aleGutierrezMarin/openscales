@@ -54,10 +54,10 @@ package org.openscales.core
 		private var _controls:Vector.<IControl> = new Vector.<IControl>();
 		private var _handlers:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _size:Size = null;
-		private var _zoom:Number = 0;
+		protected var _zoom:Number = 0;
 		private var _zooming:Boolean = false;
 		private var _loading:Boolean;
-		private var _center:Location = null;
+		protected var _center:Location = null;
 		private var _maxExtent:Bounds = null;
 		private var _destroying:Boolean = false;
 		private var _tweenZoomEnabled:Boolean = true;

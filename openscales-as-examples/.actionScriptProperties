@@ -23,7 +23,9 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
+    <application path="WMS11xExample.as"/>
     <application path="OpenscalesApplication.as"/>
+    <application path="WMS130Example.as"/>
   </applications>
   <modules/>
   <buildCSSFiles/>
