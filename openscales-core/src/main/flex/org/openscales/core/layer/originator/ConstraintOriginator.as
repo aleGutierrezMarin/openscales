@@ -48,6 +48,23 @@ package org.openscales.core.layer.originator
 			this._maxResolution = maxResolution;
 		}
 		
+		/**
+		 * Determines if the ConstraintOriginator passed as param is equal to current instance
+		 *
+		 * @param constraint ConstraintOriginator to check equality
+		 * @return It is equal or not
+		 */
+		public function equals(constraint:ConstraintOriginator):Boolean {
+			var equals:Boolean = false;
+			if (constraint != null) 
+			{
+				equals = this._extent == constraint.extent &&
+					this._minResolution == constraint.minResolution &&
+					this._maxResolution == constraint.maxResolution;
+			}
+			return equals;
+		}
+		
 		// getters setters
 		
 		/**

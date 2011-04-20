@@ -77,6 +77,12 @@ package org.openscales.core.events
 		 * */
 		public static const LAYER_CHANGED_ORDER:String="openscales.layerChangeOrder";
 
+		/**
+		 * Event type dispatched when the originators list of the layer is changed
+		 * */
+		public static const LAYER_CHANGED_ORIGINATORS:String="openscales.layerChangeOriginators";
+
+		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{
 			this._layer = layer;

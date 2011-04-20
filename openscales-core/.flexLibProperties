@@ -175,6 +175,10 @@
     <classEntry path="org.openscales.core.control.DataOriginators"/>
     <classEntry path="org.openscales.core.layer.originator.DataOriginator"/>
     <classEntry path="org.openscales.core.layer.originator.ConstraintOriginator"/>
+    <classEntry path="org.openscales.core.control.DataOriginatorsTest"/>
+    <classEntry path="org.openscales.core.layer.originator.DataOriginatorTest"/>
+    <classEntry path="org.openscales.core.layer.originator.ConstraintOriginatorTest"/>
+    <classEntry path="org.openscales.core.events.OriginatorEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
