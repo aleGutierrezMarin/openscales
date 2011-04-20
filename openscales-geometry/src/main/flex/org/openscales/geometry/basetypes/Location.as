@@ -21,6 +21,7 @@ package org.openscales.geometry.basetypes
 		
 		/**
 		 * Constructor
+		 * 
 		 * @param x:Number the X coordinate of the location
 		 * @param y:Number the Y coordinate of the location
 		 * @param srsCode:String the SRS code defining the projection of the coordinates, default is Geometry.DEFAULT_SRS_CODE
@@ -33,7 +34,7 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Clone the current location
+		 * Clones the current location
 		 * 
 		 * @return IProjectable a clone of the current location
 		 */
@@ -42,52 +43,43 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * getter for x coordinate of the Location
-		 * 
-		 * @return Number the x coordinate
+		 * Indicates the x coordinate
 		 */
 		public function get x():Number {
 			return this._x;
 		}
 		
 		/**
-		 * getter for Y coordinate of the Location
-		 * 
-		 * @return Number the y coordinate
+		 * Indicates the y coordinate
 		 */
 		public function get y():Number {
 			return this._y;
 		}
 		
 		/**
-		 * getter for the projection's SRS code of the Location
-		 * 
-		 * @return String the SRS code defining projection of the Location
+		 * Indicates the SRS code defining projection of the Location
 		 */
 		public function get projSrsCode():String {
 			return this._projSrsCode;
 		}
 		
 		/**
-		 * getter for lon coordinate of the Location
-		 * 
-		 * @return Number the lon coordinate
+		 * Indicates the lon coordinate
 		 */
 		public function get lon():Number {
 			return this._x;
 		}
 		
 		/**
-		 * getter for lat coordinate of the Location
-		 * 
-		 * @return Number the lat coordinate
+		 * Indicates the lat coordinate
 		 */
 		public function get lat():Number {
 			return this._y;
 		}
 		
 		/**
-		 * Reproject the current location in another projection
+		 * Reprojects the current location in another projection
+		 * 
 		 * @param newSrsCode:String SRS code of the target projection
 		 * @return Location the equivalent Location of this location in the new projection
 		 */
@@ -101,7 +93,7 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * give the equivalent string of the current location
+		 * Gives the equivalent string of the current location
 		 * 
 		 * @return String the current location
 		 */
@@ -110,7 +102,7 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * give the equivalent short string of the current location
+		 * Gives the equivalent short string of the current location
 		 * 
 		 * @return String the current location
 		 */
@@ -119,7 +111,7 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * add delta derivation to the current Location
+		 * Adds delta derivation to the current Location
 		 * 
 		 * @param x:Number the X derivation
 		 * @param y:Number the Y derivation
@@ -131,7 +123,7 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * compare a Location with the current one
+		 * Compares a Location with the current one
 		 * 
 		 * @param loc:Location the Location to compare with
 		 * 
@@ -141,14 +133,14 @@ package org.openscales.geometry.basetypes
 			var equals:Boolean = false;
 			if (loc != null) {
 				equals = this._x == loc.x
-						&& this._y == loc.y
-						&& this._projSrsCode == loc.projSrsCode;
+					&& this._y == loc.y
+					&& this._projSrsCode == loc.projSrsCode;
 			}
 			return equals;
 		}
 		
 		/**
-		 * Create a Location from a string
+		 * Creates a Location from a string
 		 * @param str:String the string representing the coordinates
 		 * @param srsCode:String the SRS code defining the projection of the coordinate
 		 * 

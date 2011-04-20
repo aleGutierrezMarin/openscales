@@ -31,7 +31,7 @@ package org.openscales.core.layer {
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
 
 		public static function get DEFAULT_MAXEXTENT():Bounds {
-			return new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			return new Bounds(-180, -90, 180, 90, Geometry.DEFAULT_SRS_CODE);
 		}
 
 		private var _map:Map = null;
