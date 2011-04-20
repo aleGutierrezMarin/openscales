@@ -178,6 +178,7 @@
     <classEntry path="org.openscales.geometry.GeometryTest"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProviderTest"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMTS100"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
