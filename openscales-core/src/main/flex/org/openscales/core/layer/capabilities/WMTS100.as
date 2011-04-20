@@ -1,5 +1,7 @@
 package org.openscales.core.layer.capabilities
 {
+	
+	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 
 	/**
@@ -10,6 +12,7 @@ package org.openscales.core.layer.capabilities
 	public class WMTS100 extends CapabilitiesParser
 	{
 		private namespace _wmtsns = "http://www.opengis.net/wmts/1.0";
+		private namespace _owsns = "htttp://www.opengis.net/ows/1.1" 
 		
 		public function WMTS100()
 		{
@@ -26,15 +29,22 @@ package org.openscales.core.layer.capabilities
 		 */
 		public override function read(doc:XML):HashMap {
 			use namespace _wmtsns;
+			use namespace _owsns;
+			
 			var matrixSets:HashMap = new HashMap();
 			var layerCapabilities:HashMap = new HashMap();
 			var node:XML;
 			
 			//parse TilematrixSets
 			var matrixSetsNodes:XMLList = doc..*::TileMatrixSet;
+			
+			var identifier:String;
+			var supportedCRS:String;
+			var tileMatrices:HashMap;
+			
 			for each (node in matrixSetsNodes){
 				if(node.parent().localName()=="Contents") {
-					
+					Trace.debug(node.Identifier);
 				}
 			}
 			//parse Layers
