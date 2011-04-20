@@ -32,7 +32,7 @@ package {
 			// Add layers to map
 			
 			_map.proxy="http://openscales.org/proxy.php?url=";
-			var layerWMS111:WMS = new WMS("Germany","http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map","Germany");
+			var layerWMS111:WMS = new WMS("Germany","http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map","Germany","default");
 			layerWMS111.maxExtent = new Bounds(5.60075,47.2441,15.425,55.0317,"EPSG:4326");
 			layerWMS111.version="1.1.1";
 			

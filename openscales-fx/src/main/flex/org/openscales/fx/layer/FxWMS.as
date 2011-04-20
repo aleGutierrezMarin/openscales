@@ -40,6 +40,7 @@ package org.openscales.fx.layer
 			if(this.layer != null) {
 				//((this.layer as WMS).params as WMSParams).srs = value;
 				(this.layer as WMS).projSrsCode=value;
+				(this.layer as WMS).setProjectionToDisplay(value);
 			}
 		}
 
@@ -85,5 +86,16 @@ package org.openscales.fx.layer
 				(this.layer as WMS).setURLToDisplay(value);
 		}
 		
+		public function set tHeight(value:Number):void{
+			if(this.layer != null){
+				(this.layer as WMS).setHeightToDisplay(value);
+			}
+		}
+		
+		public function set tWidth(value:Number):void{
+			if(this.layer != null){
+				(this.layer as WMS).setWidthToDisplay(value);
+			}
+		}
 	}
 }

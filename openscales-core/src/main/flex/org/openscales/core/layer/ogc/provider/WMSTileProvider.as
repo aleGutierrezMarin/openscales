@@ -56,19 +56,19 @@ package org.openscales.core.layer.ogc.provider
 		 * @private 
 		 * Way to display errors for the requested tile
 		 */
-		private var _exceptions:String;
+		private var _exceptions:String="XML";
 		
 		/**
 		 * @private 
 		 * Indicates if the tile should be transparent or not
 		 */
-		private var _transparent:Boolean;
+		private var _transparent:Boolean=false;
 		
 		/**
 		 * @private
 		 * Background color of the requested tile
 		 */
-		private var _bgcolor:String;
+		private var _bgcolor:String="0xFFFFFF";
 		
 		/**
 		 * @pivate
@@ -118,7 +118,7 @@ package org.openscales.core.layer.ogc.provider
 										version:String,
 										layer:String,
 										projection:String,
-										style:String = "rain",
+										style:String = "",
 										format:String = "image/jpeg")
 		{
 			//call the constructor of the mother class OGCTileProvider
