@@ -85,7 +85,9 @@ package org.openscales.core.layer.ogc
 		 * @param position
 		 */
 		override public function addTile(bounds:Bounds, position:Pixel):ImageTile {
-			return this._tileProvider.getTile(bounds);
+			var imgTile:ImageTile =  this._tileProvider.getTile(bounds);
+			imgTile.position = position;
+			return imgTile;
 		}
 
 		public function get reproject():Boolean {

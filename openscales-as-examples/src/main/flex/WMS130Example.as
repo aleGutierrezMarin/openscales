@@ -25,15 +25,20 @@ package {
 		protected var _map:Map;
 		
 		public function WMS130Example() {
-			Trace.useFireBugConsole = true;
-			_map=new Map();
-			_map.size=new Size(1200, 700);
+			//Trace.useFireBugConsole = true;
+			_map=new Map(1200,700);
+			//_map.size=new Size(1200, 700);
+			
 			
 			// Add layers to map
-			var layerWMS:WMS=new WMS("MyMap","http://localhost:8080/geoserver/ows","Arc_Sample","rain");
+			var layerWMS:WMS=new WMS("Map 1.3.0","http://openscales.org/geoserver/wms","topp:states","");
 			layerWMS.version="1.3.0";
-			//layerWMS.maxExtent = new Bounds(-180.0,-90.0,180.0,90.0,"EPSG:4326");
 			this._map.addLayer(layerWMS);
+			
+			// Add layers to map
+			var layerWMS130:WMS=new WMS("Map 1.1.1","http://openscales.org/geoserver/wms","topp:states","");
+			layerWMS130.version="1.1.1";
+			this._map.addLayer(layerWMS130);
 						
 			
 			// Add Controls to map
@@ -54,7 +59,7 @@ package {
 			
 			// Set the map center
 			//_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			//_map.zoom=5;
+			
 			
 			
 			this.addChild(_map);
