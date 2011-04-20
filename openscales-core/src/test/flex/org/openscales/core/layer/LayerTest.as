@@ -1,7 +1,7 @@
 package org.openscales.core.layer
 {
 	import org.flexunit.Assert;
-	
+	import org.openscales.core.layer.originator.DataOriginator;
 
 	public class LayerTest
 	{
@@ -87,6 +87,37 @@ package org.openscales.core.layer
 			layer.minZoomLevel = -1;
 			
 			Assert.assertEquals(layer.minZoomLevel, 5);
+		}
+		
+		[Test]
+		public function testOriginators():void 
+		{
+			var layer:Layer = new Layer("test");
+			
+			var name:String = "originator";
+			var url:String = "url_originator";
+			var urlPicture:String = "url_picture_originator";
+			
+			var dataOriginators:Vector.<DataOriginator> = new Vector.<DataOriginator>();
+			var originator:DataOriginator = new DataOriginator(name, url, urlPicture);
+			
+			dataOriginators.push(originator);
+			
+			// set originators
+			layer.originators = dataOriginators;
+			
+			Assert.assertEquals(originator, layer.originators[0]);
+			
+			// add Originator
+			var originator2:DataOriginator = new DataOriginator("originator2", url, urlPicture);
+			layer.addOriginator(originator2);
+			
+			Assert.assertEquals(originator2, layer.originators[1]);
+			
+			// check the default constraint
+			Assert.assertEquals(layer.maxExtent, layer.originators[1].constraints[0].extent);
+			Assert.assertEquals(layer.minResolution, layer.originators[1].constraints[0].minResolution);
+			Assert.assertEquals(layer.maxResolution, layer.originators[1].constraints[0].maxResolution);
 		}
 	}
 }

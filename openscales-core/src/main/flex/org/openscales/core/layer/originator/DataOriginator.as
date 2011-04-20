@@ -1,5 +1,7 @@
 package org.openscales.core.layer.originator
 {
+	import org.openscales.geometry.basetypes.Bounds;
+
 	/**
 	 * Instances of DataOriginator are used to keep the informations about the origintor/provider of a Layer 
 	 * (name, url, logo and extent and resolution constraint).
@@ -51,6 +53,7 @@ package org.openscales.core.layer.originator
 			this._name = name;
 			this._url = url;
 			this._urlPicture = urlPicture;	
+			this._constraints = new Vector.<ConstraintOriginator>();
 		}
 		
 		/**
@@ -61,20 +64,24 @@ package org.openscales.core.layer.originator
 		{
 			
 			// Is the input constraint valid ?
-			if (! constraint) {
+			if (! constraint) 
+			{
 				trace("DataOriginator.addConstraint: null constraint not added");
 				return;
 			}
 			var i:uint = 0;
 			var j:uint = this._constraints.length;
-			for (; i<j; ++i) {
-				if (constraint == this._constraints[i]) {
+			for (; i<j; ++i) 
+			{
+				if (constraint == this._constraints[i]) 
+				{
 					trace("DataOriginator.addConstraint: this constraint is already registered, not added ");
 					return;
 				}
 			}
 			// If the constraint is a new constraint, add it
-			if (i == j) {
+			if (i == j) 
+			{
 				trace("DataOriginator.addConstraint: add a new constraint");
 				this._constraints.push(constraint);
 			}
@@ -88,10 +95,61 @@ package org.openscales.core.layer.originator
 		{
 			// get the contraint to remove
 			var i:int = this._constraints.indexOf(constraint);
-			if(i!=-1) {
+					
+			if(i!=-1) 
+			{
 				// remove form the vector
-				this._constraints = this._constraints.slice(i,1);
+				this._constraints.splice(i,1);
 			}
+			constraint = null;
+		}
+		
+		/**
+		 * Determines if the DataOriginator passed as param is equal to current instance
+		 *
+		 * @param originator DataOriginator to check equality
+		 * @return It is equal or not
+		 */
+		public function equals(originator:DataOriginator):Boolean {
+			var equals:Boolean = false;
+			if (originator != null) {
+				equals = this._name == originator.name &&
+					this._url == originator.url &&
+					this._urlPicture == originator.urlPicture;
+				
+				var size:Number = this._constraints.length;
+				for(var i:int=0; i<size; ++i) {
+					if(! this._constraints[i].equals(originator.constraints[i])) {
+						return false;
+					}
+				}
+			}
+			return equals;
+		}
+		
+		/**
+		 * This function check for a given extent and resolution is the originator cover the are
+		 * Search and check for each constraint for the originator if the area is covered
+		 * 
+		 * @param extent The extent at which the coverage is checked
+		 * @param resolution The resolution at which the coverage is checked
+		 */
+		public function isCoveredArea(extent:Bounds, resolution:Number):Boolean
+		{
+			var i:uint = 0;
+			var j:uint = this._constraints.length;
+			// check for each constraint
+			for (; i<j; ++i) 
+			{
+				// if extent and resolution contain given extent and resolution : covered
+				if( this._constraints[i].extent.intersectsBounds(extent) &&
+					this._constraints[i].minResolution <= resolution &&
+					this._constraints[i].maxResolution >= resolution)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 		
 		// getters setters
