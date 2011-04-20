@@ -26,10 +26,11 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="FlexUnitApplication.as"/>
+    <application path="TileStretchingExample.as"/>
+    <application path="WMS130Example.as"/>
     <application path="WMS11xExample.as"/>
     <application path="OpenscalesApplication.as"/>
-    <application path="WMS130Example.as"/>
+    <application path="FlexUnitApplication.as"/>
   </applications>
   <modules/>
   <buildCSSFiles/>
