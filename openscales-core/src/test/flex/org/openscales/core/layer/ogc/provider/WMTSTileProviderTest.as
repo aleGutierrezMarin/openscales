@@ -1,8 +1,12 @@
 package org.openscales.core.layer.ogc.provider
 {
+	import flashx.textLayout.debug.assert;
+	
 	import flexunit.framework.Assert;
 	
 	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertNotNull;
 	import org.flexunit.asserts.assertTrue;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.ogc.WMTS;
@@ -32,8 +36,8 @@ package org.openscales.core.layer.ogc.provider
 				"STYLE":"default",
 				"TILEMATRIXSET":"EPSG:900913",
 				"TILEMATRIX":"2",
-				"TILEROW":"5",
-				"TILECOL":"4"     
+				"TILEROW":"10",
+				"TILECOL":"20"     
 			};
 		
 		/**
@@ -44,16 +48,16 @@ package org.openscales.core.layer.ogc.provider
 			/**
 			 * verifies if when a is greater than b, it returns -1
 			 */ 
-			assertEquals(WMTSTileProvider.calculateTileIndex(2,1,1),-1);
+			assertEquals(-1,WMTSTileProvider.calculateTileIndex(2,1,1));
 			/**
 			 * verifies if when a is equal to b, it returns 0
 			 */ 
-			assertEquals(WMTSTileProvider.calculateTileIndex(2,2,1),0);
+			assertEquals(0,WMTSTileProvider.calculateTileIndex(2,2,1));
 			
 			/**
 			 * verifies that it validates (3-2/0.5) = 2
 			 */ 
-			assertEquals(WMTSTileProvider.calculateTileIndex(1.34791,576.765,0.5),Math.floor(((576.765-1.34791)/0.5)));
+			assertEquals(Math.floor(((576.765-1.34791)/0.5)),WMTSTileProvider.calculateTileIndex(1.34791,576.765,0.5));
 			
 		}
 		
@@ -71,11 +75,11 @@ package org.openscales.core.layer.ogc.provider
 		[Test]
 		public function testWMTSTileProviderInit():void {
 			var tp:WMTSTileProvider = new WMTSTileProvider("http://test.test","image/png","tmtest","testlayer");
-			assertEquals(tp.url,"http://test.test");
-			assertEquals(tp.format,"image/png");
-			assertEquals(tp.tileMatrixSet,"tmtest");
-			assertEquals(tp.layer,"testlayer");
-			assertEquals(tp.tileMatrixSets,null);
+			assertEquals("http://test.test", tp.url);
+			assertEquals("image/png", tp.format);
+			assertEquals("tmtest", tp.tileMatrixSet);
+			assertEquals("testlayer", tp.layer);
+			assertEquals(null,tp.tileMatrixSets);
 		}
 		
 		private function populateTileMatrixSet(tms:TileMatrixSet):void {
@@ -168,64 +172,53 @@ package org.openscales.core.layer.ogc.provider
 			
 			//add tilematrix to the tilematrixset
 			this.populateTileMatrixSet(tms);
-			assertEquals(tms.tileMatrices.size(),22);
+			assertEquals(22,tms.tileMatrices.size());
 			
 			var resolutions:Array = tp.generateResolutions(0);
 			
-			assertEquals(resolutions.length,0);
+			assertEquals(0,resolutions.length);
 			
 			resolutions = tp.generateResolutions(1);
-			assertEquals(resolutions.length,1);
+			assertEquals(1,resolutions.length);
 			
 			resolutions = tp.generateResolutions(22);
-			assertEquals(resolutions.length,22);
+			assertEquals(22,resolutions.length);
 			
 			resolutions = tp.generateResolutions(23);
-			assertEquals(resolutions.length,22);
+			assertEquals(22,resolutions.length);
 			
 		}
 		
 		[Test]
 		public function testGETQuerySyntax():void
 		{
+			var tp:WMTSTileProvider = new WMTSTileProvider("http://test.test",
+				"image/png",
+				"tmtest",
+				"testlayer");
 			
-
-			assertTrue(true);
-			/*
-			//test if the getTile is
-			assertEquals(tp.getTile(null,null,null),null);
-			var bounds:Bounds = new Bounds(-180,-90,180,90,"epsg:4326");
+			//hashmap of tilematrixsets
+			tp.tileMatrixSets = new HashMap();
 			
-			assertEquals(tp.getTile(bounds,null,null),null);
-			*/
-
-			/*
-			// Creating an instance
+			//test tilematrixset
+			var tms:TileMatrixSet = new TileMatrixSet("tmtest","IGNF:LAMB93",new HashMap());
 			
-			var matrixIds:Object = {"EPSG:900913:13":"EPSG"}
+			//add the tilematrixset to the hashmap of tilematrixsets
+			tp.tileMatrixSets.put("tmtest",tms);
 			
-			var instance:WMTSTileProvider = new WMTSTileProvider(
-				_SAMPLE_URL, 
-				_SAMPLE_REQUEST["FORMAT"].toString(), 
-				_SAMPLE_REQUEST["TILEMATRIXSET"].toString(), 
-				_SAMPLE_REQUEST["LAYER"].toString(), 
-				_SAMPLE_REQUEST["STYLE"].toString(), matrixIds);
-			// Defining dummies values for tile col and tile row (calculation should return 5 and 4)
-			var infos:Array = instance.calculateTileRowAndCol(new Bounds(-50,-50,30,30,"EPSG:900913"),new Location(-90,90));
-			// Defining dummies info for tile Matrix (calcuation should return 2)
-			var tileMatrix:String = instance.calculateTileMatrix(2);
+			//add tilematrix to the tilematrixset
+			this.populateTileMatrixSet(tms);
+			
 			var parameters:Object = {
-				"TILECOL" : String(infos[0]),
-				"TILEROW" : String(infos[1]),
-				"TILEMATRIX" : tileMatrix
-			}
-			
-			// Calling the method to test
-			var queryString:String =  instance.buildGETQuery(null, parameters);
+				"TILEMATRIX" : 21,
+				"TILECOL" : 10,
+				"TILEROW" : 20
+			};
+			var queryString:String =  tp.buildGETQuery(null, parameters);
 			
 			// Checking if url is correct
-			var urlPart:String = queryString.slice(0, queryString.lastIndexOf("?"));            
-			Assert.assertEquals(instance.url,urlPart);
+			var urlPart:String = queryString.slice(0, queryString.lastIndexOf("?"));
+			Assert.assertEquals(tp.url,urlPart);
 			
 			// Getting the params string of the query
 			var paramsString:String = queryString.slice(queryString.lastIndexOf("?")+1);
@@ -234,24 +227,175 @@ package org.openscales.core.layer.ogc.provider
 			var length:int = params.length;
 			
 			// Checking params total number 
-			Assert.assertEquals(length,10);
+			Assert.assertEquals(9,length);
 			
 			var i:int = 0;
 			
+			var hm:HashMap = new HashMap();
+			var keyValue:Array;
+			var lgth:Number;
+			var key:String;
+			var value:String;
 			// For each param
-			for(i;i<length;++i)
-			{
-				// spliting the key from the value
-				var keyValue:Array = (params[i] as String).split("=");
-				var lgth:Number = keyValue.length;
-				// there should be only one key and only one value
-				assertEquals(lgth, 2);
-				// The key should be an existing WMTS request parameter 
-				assertTrue(_SAMPLE_REQUEST[ keyValue[0].toString() ]!=null);
-				// The value should be consistant with the sample request
-				assertEquals(_SAMPLE_REQUEST[ keyValue[0].toString() ].toString(), keyValue[1].toString());
+			for(i;i<length;++i){
+				keyValue = (params[i] as String).split("=");
+				lgth = keyValue.length;
+				assertEquals(2,lgth);
+				key = keyValue[0].toString();
+				value = keyValue[1].toString();
+				hm.put(key,value);
 			}
-			*/
+			assertEquals(9,hm.getKeys().length);
+			
+			if(!hm.containsKey("SERVICE")) {
+				assertTrue(false);
+			}else {
+				assertEquals("WMTS",hm.getValue("SERVICE").toString());
+				hm.remove("SERVICE");
+			}
+			if(!hm.containsKey("VERSION")) {
+				assertTrue(false);
+			}else {
+				assertEquals("1.0.0",hm.getValue("VERSION").toString());
+				hm.remove("VERSION");
+			}
+			if(!hm.containsKey("REQUEST")) {
+				assertTrue(false);
+			}else {
+				assertEquals("GetTile",hm.getValue("REQUEST").toString());
+				hm.remove("REQUEST");
+			}
+			if(!hm.containsKey("FORMAT")) {
+				assertTrue(false);
+			}else {
+				assertEquals("image/png",hm.getValue("FORMAT").toString());
+				hm.remove("FORMAT");
+			}
+			if(!hm.containsKey("LAYER")) {
+				assertTrue(false);
+			}else {
+				assertEquals("testlayer",hm.getValue("LAYER").toString());
+				hm.remove("LAYER");
+			}
+			if(!hm.containsKey("TILEMATRIXSET")) {
+				assertTrue(false);
+			}else {
+				assertEquals("tmtest",hm.getValue("TILEMATRIXSET").toString());
+				hm.remove("TILEMATRIXSET");
+			}
+			if(!hm.containsKey("TILEMATRIX")) {
+				assertTrue(false);
+			}else {
+				assertEquals("21",hm.getValue("TILEMATRIX").toString());
+				hm.remove("TILEMATRIX");
+			}
+			if(!hm.containsKey("TILEROW")) {
+				assertTrue(false);
+			}else {
+				assertEquals("20",hm.getValue("TILEROW").toString());
+				hm.remove("TILEROW");
+			}
+			if(!hm.containsKey("TILECOL")) {
+				assertTrue(false);
+			}else {
+				assertEquals("10",hm.getValue("TILECOL").toString());
+				hm.remove("TILECOL");
+			}
+			assertTrue(hm.isEmpty());
+
+			
+			tp.style = "teststyle";
+			
+			
+			queryString =  tp.buildGETQuery(null, parameters);
+			
+			// Checking if url is correct
+			urlPart = queryString.slice(0, queryString.lastIndexOf("?"));
+			Assert.assertEquals(tp.url,urlPart);
+			
+			// Getting the params string of the query
+			paramsString = queryString.slice(queryString.lastIndexOf("?")+1);
+			// Splitting the params string into an array
+			params = paramsString.split("&");
+			length = params.length;
+			// Checking params total number 
+			Assert.assertEquals(10,length);
+			
+			hm.clear();
+
+			i = 0;
+			// For each param
+			for(i;i<length;++i){
+				keyValue = (params[i] as String).split("=");
+				lgth = keyValue.length;
+				assertEquals(2,lgth);
+				key = keyValue[0].toString();
+				value = keyValue[1].toString();
+				hm.put(key,value);
+			}
+			assertEquals(10,hm.getKeys().length);
+			
+			if(!hm.containsKey("SERVICE")) {
+				assertTrue(false);
+			}else {
+				assertEquals("WMTS",hm.getValue("SERVICE").toString());
+				hm.remove("SERVICE");
+			}
+			if(!hm.containsKey("VERSION")) {
+				assertTrue(false);
+			}else {
+				assertEquals("1.0.0",hm.getValue("VERSION").toString());
+				hm.remove("VERSION");
+			}
+			if(!hm.containsKey("REQUEST")) {
+				assertTrue(false);
+			}else {
+				assertEquals("GetTile",hm.getValue("REQUEST").toString());
+				hm.remove("REQUEST");
+			}
+			if(!hm.containsKey("FORMAT")) {
+				assertTrue(false);
+			}else {
+				assertEquals("image/png",hm.getValue("FORMAT").toString());
+				hm.remove("FORMAT");
+			}
+			if(!hm.containsKey("LAYER")) {
+				assertTrue(false);
+			}else {
+				assertEquals("testlayer",hm.getValue("LAYER").toString());
+				hm.remove("LAYER");
+			}
+			if(!hm.containsKey("TILEMATRIXSET")) {
+				assertTrue(false);
+			}else {
+				assertEquals("tmtest",hm.getValue("TILEMATRIXSET").toString());
+				hm.remove("TILEMATRIXSET");
+			}
+			if(!hm.containsKey("TILEMATRIX")) {
+				assertTrue(false);
+			}else {
+				assertEquals("21",hm.getValue("TILEMATRIX").toString());
+				hm.remove("TILEMATRIX");
+			}
+			if(!hm.containsKey("TILEROW")) {
+				assertTrue(false);
+			}else {
+				assertEquals("20",hm.getValue("TILEROW").toString());
+				hm.remove("TILEROW");
+			}
+			if(!hm.containsKey("TILECOL")) {
+				assertTrue(false);
+			}else {
+				assertEquals("10",hm.getValue("TILECOL").toString());
+				hm.remove("TILECOL");
+			}
+			if(!hm.containsKey("STYLE")) {
+				assertTrue(false);
+			}else {
+				assertEquals("teststyle",hm.getValue("STYLE").toString());
+				hm.remove("STYLE");
+			}
+			assertTrue(hm.isEmpty());
 		}
 	}
 }

@@ -149,9 +149,6 @@ package org.openscales.core.layer
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
-			Trace.debug("redraw");
-			if(fullRedraw)
-				Trace.debug("fullredraw");
 			if (!displayed) {
 				this.clear();
 				return;
@@ -279,7 +276,6 @@ package org.openscales.core.layer
 			var resolution:Number = this.map.resolution;
 			var tilelon:Number = resolution * this.tileWidth;
 			var tilelat:Number = resolution * this.tileHeight;
-			Trace.debug("bleh "+resolution+" "+tilelon+" "+tilelat+" "+maxExtent);
 			var offsetlon:Number = bounds.left - extent.left;
 			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
 			var tilecolremain:Number = offsetlon/tilelon - tilecol;

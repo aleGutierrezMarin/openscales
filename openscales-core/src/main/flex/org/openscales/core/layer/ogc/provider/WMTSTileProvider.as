@@ -73,6 +73,10 @@ package org.openscales.core.layer.ogc.provider
 			this._tileMatrixSets = tileMatrixSets;
 		}
 		
+		public function destroy():void {
+			//TODO
+		}
+		
 		os_internal static function calculateTileIndex(a:Number,b:Number,span:Number):Number {
 			if(b<a)
 				return -1;
@@ -128,7 +132,8 @@ package org.openscales.core.layer.ogc.provider
 			
 			var params:Object = {
 				"TILECOL" : col,
-				"TILEROW" : row
+				"TILEROW" : row,
+				"TILEMATRIX" : tileMatrix.identifier
 			};
 			
 			var queryString:String =  buildGETQuery(bounds,params);
@@ -167,6 +172,7 @@ package org.openscales.core.layer.ogc.provider
 			
 			var tileRow:String = String(params["TILEROW"]);
 			var tileCol:String = String(params["TILECOL"]);
+			var tileMatrix:String = String(params["TILEMATRIX"]);
 			
 			if(this._layer != null)
 			{
@@ -188,7 +194,7 @@ package org.openscales.core.layer.ogc.provider
 			
 			if(this._tileMatrixSet != null)
 			{
-				queryString += "TILEMATRIX=" + this._tileMatrixSet + "&";
+				queryString += "TILEMATRIX=" + tileMatrix + "&";
 			}
 			
 			if(tileRow != null)
