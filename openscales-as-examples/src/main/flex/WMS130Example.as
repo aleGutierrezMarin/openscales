@@ -31,14 +31,14 @@ package {
 			
 			
 			// Add layers to map
-			var layerWMS:WMS=new WMS("Map 1.3.0","http://openscales.org/geoserver/wms","topp:states","");
-			layerWMS.version="1.3.0";
-			this._map.addLayer(layerWMS);
+			var layerWMS130:WMS=new WMS("Map 1.3.0","http://openscales.org/geoserver/wms","topp:states","");
+			layerWMS130.version="1.3.0";
+			this._map.addLayer(layerWMS130);
 			
 			// Add layers to map
-			var layerWMS130:WMS=new WMS("Map 1.1.1","http://openscales.org/geoserver/wms","topp:states","");
-			layerWMS130.version="1.1.1";
-			this._map.addLayer(layerWMS130);
+			var layerWMS111:WMS=new WMS("Map 1.1.1","http://openscales.org/geoserver/wms","topp:states","");
+			layerWMS111.version="1.1.1";
+			this._map.addLayer(layerWMS111);
 						
 			
 			// Add Controls to map
