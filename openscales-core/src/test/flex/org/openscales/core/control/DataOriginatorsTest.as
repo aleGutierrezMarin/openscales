@@ -247,12 +247,6 @@ package org.openscales.core.control
 			}
 		}
 		
-		// TODO
-		[Test]
-		public function testUpdateOriginators():void
-		{
-			
-		}
 		
 		[Test]
 		public function testRemoveAll():void
