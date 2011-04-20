@@ -80,6 +80,7 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
+    <classEntry path="org.openscales.fx.layer.capabilities.WMTS100Test"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
