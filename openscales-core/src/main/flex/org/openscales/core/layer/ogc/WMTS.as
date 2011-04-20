@@ -1,6 +1,7 @@
 package org.openscales.core.layer.ogc
 {
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
@@ -14,24 +15,27 @@ package org.openscales.core.layer.ogc
 	
 	/**
 	 * Instances of the WMTS class allow viewing of tiles from a service that 
-	 *     implements the OGC WMTS specification version 1.0.0.
-	 * <br/><br/>
-	 * Bellow is an example:
-	 * <code>
+	 * implements the OGC WMTS specification version 1.0.0.
+	 * 
+	 * @example Usage example
+	 * <listing version="3.0"> 
 	 * 		var m:Map = new Map();
-	 * 		var wmts:WMTS = new WMTS("myLayer","http://foo.org","layer1","matrixSet15","image/jpeg","_null");
+	 * 		var wmts:WMTS = new WMTS("myLayer","http://foo.org","layer1","matrixSet15");
 	 * 		m.addLayer(wmts);
-	 * </code>
+	 * </listing>
+	 * 
+	 * @author htulipe
+	 * @author slopez
 	 */
 	public class WMTS extends Grid
 	{
+		public static const WMTS_DEFAULT_FORMAT:String = "image/jpeg";
 		/**
 		 * @private
 		 *  
 		 * A tile provider for this layer.
 		 */ 
 		private var _tileProvider:WMTSTileProvider;
-		private var _matrixIds:Object;
 		
 		/**
 		 * Constructor
@@ -46,63 +50,108 @@ package org.openscales.core.layer.ogc
 		 */ 
 		public function WMTS(name:String, 
 							 url:String, 
-							 layer:String, 
-							 tileMatrixSet:String, 
-							 format:String, 
-							 style:String,
-							 matrixIds:Object)
+							 layer:String,
+							 tileMatrixSet:String,
+							 tileMatrixSets:HashMap = null)
 		{
-			this._matrixIds = matrixIds;
 			super(name, url);
-			
-			
-			
 			// building the tile provider
-			_tileProvider = new WMTSTileProvider(url,format,tileMatrixSet,layer,style,matrixIds);
+			this._tileProvider = new WMTSTileProvider(url,format,tileMatrixSet,layer,tileMatrixSets);
+			this.format = WMTS.WMTS_DEFAULT_FORMAT;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */ 
 		override public function addTile(bounds:Bounds, center:Pixel):ImageTile
-		{
-			var left:Number = this.map.maxExtent.left;
-			var top:Number = this.map.maxExtent.top;
-			var srs:String = this.map.maxExtent.projSrsCode;
-			var tileOrigin:Location = new Location(left,top,srs);  
-			
-			_tileProvider.tileOrigin = tileOrigin;
-			
+		{	
 			// using the provider to get a tile from its bounds
-			_tileProvider.zoom = this.map.zoom;
-			var tile:ImageTile = _tileProvider.getTile(bounds);
-			
-			// Setting the tile center
-			tile.position = center;
-			tile.layer = this;
-			
-			return tile;
+			return _tileProvider.getTile(bounds, center, layer);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
 		override public function generateResolutions(numZoomLevels:uint=Layer.DEFAULT_NUM_ZOOM_LEVELS, nominalResolution:Number=NaN):void {
-			//TODO;
-			var resolutions:Array = new Array();
-			for each(var matrix:Object in this._matrixIds){
-				if(matrix["scaleDenominator"]) {
-					var scale:Number = parseFloat(matrix["scaleDenominator"] as String);
-					var resolution:Number = scale * Unit.PIXEL_SIZE /  Unit.getMetersPerUnit(ProjProjection.getProjProjection(this.projSrsCode).projParams.units);
-					resolutions.push(resolution);
-				}
-			}
-			this.resolutions = resolutions;
+			this.resolutions = this._tileProvider.generateResolutions(numZoomLevels,nominalResolution);
 			this._autoResolution = true;
 		}
 		
 		override public function getURL(bounds:Bounds):String {
 			return this._tileProvider.getTile(bounds).url;
+		}
+		
+		/**
+		 * Indicates tile mimetype
+		 */
+		public function get format():String {
+			return this._tileProvider.format;
+		}
+		/**
+		 * @private
+		 */
+		public function set format(value:String):void {
+			this._tileProvider.format = value;
+		}
+		
+		/**
+		 * Indicates the requested layer
+		 */
+		public function get layer():String
+		{
+			return this._tileProvider.layer;
+		}
+		/**
+		 * @private
+		 */
+		public function set layer(value:String):void
+		{
+			this._tileProvider.layer = value;
+		}
+		
+		/**
+		 * Indicates the tile matrix set
+		 */
+		public function get tileMatrixSet():String
+		{
+			return this._tileProvider.tileMatrixSet;
+		}
+		/**
+		 * @private
+		 */
+		public function set tileMatrixSet(value:String):void
+		{
+			this._tileProvider.tileMatrixSet = value;
+		}
+		
+		/**
+		 * Indicates the requested style
+		 */
+		public function get style():String
+		{
+			return this._tileProvider.style;
+		}
+		/**
+		 * @private
+		 */
+		public function set style(value:String):void
+		{
+			this._tileProvider.style = value;
+		}
+		
+		/**
+		 * Indicates available tileMatrixSets
+		 */
+		public function get tileMatrixSets():HashMap
+		{
+			return this._tileProvider.tileMatrixSets;
+		}
+		/**
+		 * @private
+		 */
+		public function set tileMatrixSets(value:HashMap):void
+		{
+			this._tileProvider.tileMatrixSets = value;
 		}
 
 	}
