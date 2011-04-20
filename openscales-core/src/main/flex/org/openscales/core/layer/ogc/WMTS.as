@@ -4,6 +4,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WMTS.TileMatrixSet;
 	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.tile.ImageTile;
@@ -35,7 +36,7 @@ package org.openscales.core.layer.ogc
 		 *  
 		 * A tile provider for this layer.
 		 */ 
-		private var _tileProvider:WMTSTileProvider;
+		private var _tileProvider:WMTSTileProvider = null;
 		
 		/**
 		 * Constructor
@@ -54,10 +55,17 @@ package org.openscales.core.layer.ogc
 							 tileMatrixSet:String,
 							 tileMatrixSets:HashMap = null)
 		{
-			super(name, url);
 			// building the tile provider
 			this._tileProvider = new WMTSTileProvider(url,format,tileMatrixSet,layer,tileMatrixSets);
 			this.format = WMTS.WMTS_DEFAULT_FORMAT;
+			super(name, url);
+		}
+		override public function destroy():void {
+			if(this._tileProvider!=null) {
+				this._tileProvider.destroy();
+				this._tileProvider = null;
+			}
+			super.destroy();
 		}
 		
 		/**
@@ -81,10 +89,19 @@ package org.openscales.core.layer.ogc
 			return this._tileProvider.getTile(bounds,null,this).url;
 		}
 		
+		override public function get projSrsCode():String {
+			if(this._tileProvider.tileMatrixSets==null
+			|| !this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet))
+				return "undefined";
+			var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(this._tileProvider.tileMatrixSet) as TileMatrixSet;
+			return tms.supportedCRS;
+		}
 		/**
 		 * Indicates tile mimetype
 		 */
 		public function get format():String {
+			if(this._tileProvider == null)
+				return WMTS.WMTS_DEFAULT_FORMAT;
 			return this._tileProvider.format;
 		}
 		/**
@@ -122,6 +139,7 @@ package org.openscales.core.layer.ogc
 		public function set tileMatrixSet(value:String):void
 		{
 			this._tileProvider.tileMatrixSet = value;
+			this.generateResolutions();
 		}
 		
 		/**
@@ -152,6 +170,7 @@ package org.openscales.core.layer.ogc
 		public function set tileMatrixSets(value:HashMap):void
 		{
 			this._tileProvider.tileMatrixSets = value;
+			this.generateResolutions();
 		}
 
 	}
