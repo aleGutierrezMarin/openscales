@@ -2,10 +2,6 @@ package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
 	import org.openscales.core.basetypes.linkedlist.LinkedList;
@@ -14,7 +10,12 @@ package org.openscales.core.layer
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.params.IHttpParams;
+	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 
 	/**
 	 * Base class for layers that use a lattice of tiles.
@@ -46,6 +47,8 @@ package org.openscales.core.layer
 		private var _tileWidth:Number = DEFAULT_TILE_WIDTH;
 		
 		private var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
+		
+
 
 		/**
 		 * Create a new grid layer
@@ -75,8 +78,11 @@ package org.openscales.core.layer
 		override protected function onMapMove(e:MapEvent):void {
 			// Clear pending requests after zooming in order to avoid to add
 			// too many tile requests  when the user is zooming step by step
+			// If the zoom has changed we must retile to avoid row and colums
+			// shifts due to tile stretching
 			if(e.zoomChanged) {
 				var j:uint;
+				
 				for each(var array:Vector.<ImageTile> in this._grid)	{
 					j = array.length;
 					for (var i:Number = 0;i<j;i++)	{
@@ -259,13 +265,19 @@ package org.openscales.core.layer
 
 		/**
 		 * Ititialize gridded tiles
-		 * 
+		 * <p>
 		 * when clearTiles == true (most of time), Tile.clearAndMoveTo is called. 
 		 * This method reset tile, so produce a white flash (usefull when loading map)
 		 * Actually used when zooming in / out
-		 * 
 		 * when clearTiles == false, Tile.moveTo is called,
 		 * no white flash, but there is some problems if used for something else than modifying map extent
+		 * </p>
+		 * <p>
+		 * If the projection of the asociated layer is different from the one of the
+		 * baseMap and the resolutions are different then the tiles are streched linearly to fit with 
+		 * the base layer tiles.
+		 * </p>
+		 * TODO : This method use BaseMap. The behaviour must be changed when BaseMap will be deleted 
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
 			var viewSize:Size = this.map.size;
@@ -645,6 +657,11 @@ package org.openscales.core.layer
 
 		public function set buffer(value:Number):void {
 			this._buffer = value; 
+		}
+		
+		os_internal function getoriginPixel():Pixel
+		{
+			return _origin;
 		}
 
 	}
