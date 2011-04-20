@@ -1,6 +1,7 @@
 package org.openscales.core.layer.ogc.provider
 {
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.grid.provider.HTTPTileProvider;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
@@ -49,7 +50,7 @@ package org.openscales.core.layer.ogc.provider
 		/**
 		 * @inheritDoc
 		 */ 
-		override public function getTile(bounds:Bounds):ImageTile
+		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			return null;
 		}
