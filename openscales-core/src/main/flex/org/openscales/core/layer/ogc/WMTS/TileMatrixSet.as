@@ -70,7 +70,7 @@ package org.openscales.core.layer.ogc.WMTS
 		/**
 		 * An HashMap containing all tileMatrices contained within this tile matrix set.
 		 * <ul>
-		 * 	<li>Key: the tile matrix identifier as a String</li>
+		 * 	<li>Key: the tile matrix resolution (calculated from scaleDenominator)</li>
 		 *  <li>Value: the TileMatrix instance that represents the tile matrix</li>
 		 * </ul>
 		 * <p>
