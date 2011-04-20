@@ -22,6 +22,9 @@
 					case "basic":
 						state = new GlobalExample();
 						break;
+					case "legalInformations":
+						state = new LegalInformationsExample();
+						break;
 					case "osm":
 						state = new PanZoomExample();
 						break;
@@ -67,6 +70,9 @@
 					case "germany":
 						state = new WMSExample();
 						break;
+					case "wms130":
+						state= new WMS130Example();
+						break;
 					case "imagelayer":
 						state = new ImageLayerExample();
 						break;
@@ -105,6 +111,7 @@
 				</s:layout>
 				<s:Button id="about" label="About OpenScales" click="changeState(event)" width="100%"/>
 				<s:Button id="basic" label="Basic example" click="changeState(event)" width="100%"/>
+				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
 				<s:Button id="osm" label="OpenStreetMap" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Map configuration" width="100%" height="100%">
@@ -139,7 +146,8 @@
 				</s:layout>
 				<s:Button id="wfsbaselayer" label="WFS as a base layer" click="changeState(event)" width="100%"/>
 				<s:Button id="nasa" label="NASA WMS-C" click="changeState(event)" width="100%"/>
-				<s:Button id="germany" label="German WMS" click="changeState(event)" width="100%"/>
+				<s:Button id="germany" label="WMS 1.1.x" click="changeState(event)" width="100%"/>
+				<s:Button id="wms130" label="WMS 1.3.0" click="changeState(event)" width="100%"/>
 				<s:Button id="imagelayer" label="Image Layer" click="changeState(event)" width="100%"/>
 				<s:Button id="simplekml" label="Simple KML layer" click="changeState(event)" width="100%"/>
 				<s:Button id="fullkml" label="Advanced KML layer" click="changeState(event)" width="100%"/>

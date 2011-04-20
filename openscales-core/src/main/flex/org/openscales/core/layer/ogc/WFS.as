@@ -128,8 +128,8 @@ package org.openscales.core.layer.ogc
 			
 			var projectedBounds:Bounds = this.map.extent.clone();
 			
-			if (this.projSrsCode != this.map.baseLayer.projSrsCode) {
-				projectedBounds.transform(this.map.baseLayer.projSrsCode, this.projSrsCode);
+			if (this.projSrsCode != projectedBounds.projSrsCode) {
+				projectedBounds = projectedBounds.reprojectTo(this.projSrsCode);
 			}
 			var center:Location = projectedBounds.center;
 			
@@ -142,7 +142,7 @@ package org.openscales.core.layer.ogc
 				previousFeatureBbox = previousFeatureBbox.clone();
 			//bbox are mutually exclusive with filter and featurid
 			if(!_filter){
-				this.params.bbox = projectedBounds.boundsToString();
+				this.params.bbox = projectedBounds.toString();
 			}
 			if (this._firstRendering) {
 				this.featuresBbox = projectedBounds;

@@ -6,7 +6,7 @@ package org.openscales.geometry.basetypes
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
-
+	
 	/**
 	 * Instances of this class represent bounding boxes.
 	 * Data stored as left, bottom, right, top floats.
@@ -20,7 +20,7 @@ package org.openscales.geometry.basetypes
 		private var _right:Number = 0.0;
 		private var _top:Number = 0.0;
 		private var _projSrsCode:String;
-
+		
 		/**
 		 * Class constructor
 		 *
@@ -49,11 +49,16 @@ package org.openscales.geometry.basetypes
 				this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
 			}
 		}
-
+		
+		/**
+		 * Clone the bounds
+		 * 
+		 * @return A clone of the bounds
+		 */
 		public function clone():Bounds {
 			return new Bounds(this._left, this._bottom, this._right, this._top, this.projSrsCode);
 		}
-
+		
 		/**
 		 * Determines if the bounds passed as param is equal to current instance
 		 *
@@ -71,19 +76,14 @@ package org.openscales.geometry.basetypes
 			}
 			return equals;
 		}
-
-		public function toString():String {
-			return "left-bottom=(" + this.left + "," + this.bottom + ")"
-				+ " right-top=(" + this.right + "," + this.top + ")";
-		}
-
+		
 		/**
-		 * Return a bbox string separating the bounds, with the decimal number passed as param, by commas.
+		 * Returns a bbox string separating the bounds, with the decimal number passed as param, by commas.
 		 *
 		 * @param decimal Bounds number of decimals.
 		 * @return The bounds separated by commas.
 		 */  
-		public function boundsToString(decimal:Number = -1):String {
+		public function toString(decimal:Number = -1):String {
 			if (decimal == -1) {
 				decimal = 9;
 			}
@@ -94,87 +94,44 @@ package org.openscales.geometry.basetypes
 				Math.round(this.top * mult) / mult;
 			return bbox;
 		}
-
-		// Getters & setters for _left, _bottom, _right and _top
-
-		public function get projSrsCode():String {
-			return this._projSrsCode;
-		}
-		public function set projSrsCode(value:String):void {
-			this._projSrsCode = value;
-		}
-		public function get left():Number {
-			return _left;
-		}
-		public function set left(value:Number):void {
-			_left = value;
-		}
-
-		public function get bottom():Number {
-			return _bottom;
-		}
-		public function set bottom(value:Number):void {
-			_bottom = value;
-		}
-
-		public function get right():Number {
-			return _right;
-		}
-		public function set right(value:Number):void {
-			_right = value;
-		}
-
-		public function get top():Number {
-			return _top;
-		}
-		public function set top(value:Number):void {
-			_top = value;
-		}
-
-		// Getters for width, height and size
-
-		public function get width():Number {
-			return Math.abs(this.right - this.left);
-		}
-
-		public function get height():Number {
-			return Math.abs(this.top - this.bottom);
-		}
-
-		public function get size():Size {
-			return new Size(this.width, this.height);
-		}
-
-		public function get center():Location {
-			return new Location((this.left + this.right) / 2, (this.bottom + this.top) / 2, this.projSrsCode);
-		}
-
+		
+		/**
+		 * Returns a the new bounds equivalent to the present one plus the specified offset
+		 * 
+		 * @param x the x offset
+		 * @param y the y offet
+		 * @return the new bound
+		 */
 		public function add(x:Number, y:Number):Bounds {
 			return new Bounds(this.left + x, this.bottom + y, this.right + x, this.top + y, this.projSrsCode);
 		}
-
+		
 		/**
 		 * Extends the current instance of Bounds from a location.
 		 *
 		 * @param lonlat The LonLat which will extend the bounds.
 		 */
-		public function extendFromLonLat(lonlat:Location):void {
-			this.extendFromBounds(new Bounds(lonlat.lon, lonlat.lat, lonlat.lon, lonlat.lat, this.projSrsCode));
+		public function extendFromLocation(location:Location):void {
+			this.extendFromBounds(new Bounds(location.lon, location.lat, location.lon, location.lat, location.projSrsCode));
 		}
-
+		
 		/**
 		 * Extends the current instance of Bounds from bounds.
 		 *
 		 * @param bounds The bounds which will extend the current bounds.
 		 */
 		public function extendFromBounds(bounds:Bounds):void {
+			var tmpBounds:Bounds = bounds;
+			if(this.projSrsCode!=tmpBounds.projSrsCode) {
+				tmpBounds = tmpBounds.reprojectTo(this.projSrsCode);
+			}
 			// TODO: check the equality of the projSrsCode of the two bounds ?!
-			this.left = (bounds.left < this.left) ? bounds.left : this.left;
-			this.bottom = (bounds.bottom < this.bottom) ? bounds.bottom : this.bottom;
-			this.right = (bounds.right > this.right) ? bounds.right : this.right;
-			this.top = (bounds.top > this.top) ? bounds.top : this.top;
+			this.left = (tmpBounds.left < this.left) ? tmpBounds.left : this.left;
+			this.bottom = (tmpBounds.bottom < this.bottom) ? tmpBounds.bottom : this.bottom;
+			this.right = (tmpBounds.right > this.right) ? tmpBounds.right : this.right;
+			this.top = (tmpBounds.top > this.top) ? tmpBounds.top : this.top;
 		}
-
+		
 		/**
 		 * Returns if the current bounds contains the LonLat passed as param
 		 *
@@ -183,17 +140,21 @@ package org.openscales.geometry.basetypes
 		 * @return Lonlat is contained or not by the bounds
 		 */
 		public function containsLocation(loc:Location, inclusive:Boolean = true):Boolean {
+			var tmpLoc:Location = loc;
+			if(this.projSrsCode != tmpLoc.projSrsCode)
+				tmpLoc = tmpLoc.reprojectTo(this.projSrsCode);
+			
 			var contains:Boolean = false;
 			if (inclusive) {
-				contains = ((loc.lon >= this.left) && (loc.lon <= this.right) &&
-					(loc.lat >= this.bottom) && (loc.lat <= this.top));
+				contains = ((tmpLoc.lon >= this.left) && (tmpLoc.lon <= this.right) &&
+					(tmpLoc.lat >= this.bottom) && (tmpLoc.lat <= this.top));
 			} else {
-				contains = ((loc.lon > this.left) && (loc.lon < this.right) &&
-					(loc.lat > this.bottom) && (loc.lat < this.top));
+				contains = ((tmpLoc.lon > this.left) && (tmpLoc.lon < this.right) &&
+					(tmpLoc.lat > this.bottom) && (tmpLoc.lat < this.top));
 			}
 			return contains;
 		}
-
+		
 		/**
 		 * Determines if the bounds passed in param intersects the current bounds.
 		 *
@@ -203,25 +164,28 @@ package org.openscales.geometry.basetypes
 		 * @return If the bounds intersects current bounds or not.
 		 */
 		public function intersectsBounds(bounds:Bounds, inclusive:Boolean = true):Boolean {
-			// TODO: check the equality of the projSrsCode of the two bounds ?!
-			var inBottom:Boolean = (bounds.bottom == this.bottom && bounds.top == this.top) ?
-				true : (((bounds.bottom > this.bottom) && (bounds.bottom < this.top)) ||
-				((this.bottom > bounds.bottom) && (this.bottom < bounds.top)));
-			var inTop:Boolean = (bounds.bottom == this.bottom && bounds.top == this.top) ?
-				true : (((bounds.top > this.bottom) && (bounds.top < this.top)) ||
-				((this.top > bounds.bottom) && (this.top < bounds.top)));
-			var inRight:Boolean = (bounds.right == this.right && bounds.left == this.left) ?
-				true : (((bounds.right > this.left) && (bounds.right < this.right)) ||
-				((this.right > bounds.left) && (this.right < bounds.right)));
-			var inLeft:Boolean = (bounds.right == this.right && bounds.left == this.left) ?
-				true : (((bounds.left > this.left) && (bounds.left < this.right)) ||
-				((this.left > bounds.left) && (this.left < bounds.right)));
-
-			return (this.containsBounds(bounds, true, inclusive) ||
-				bounds.containsBounds(this, true, inclusive) ||
+			var tmpBounds:Bounds = bounds;
+			if(this.projSrsCode!=tmpBounds.projSrsCode) {
+				tmpBounds= tmpBounds.reprojectTo(this.projSrsCode);
+			}
+			var inBottom:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
+				true : (((tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top)) ||
+					((this.bottom > tmpBounds.bottom) && (this.bottom < tmpBounds.top)));
+			var inTop:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
+				true : (((tmpBounds.top > this.bottom) && (tmpBounds.top < this.top)) ||
+					((this.top > tmpBounds.bottom) && (this.top < tmpBounds.top)));
+			var inRight:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
+				true : (((tmpBounds.right > this.left) && (tmpBounds.right < this.right)) ||
+					((this.right > tmpBounds.left) && (this.right < tmpBounds.right)));
+			var inLeft:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
+				true : (((tmpBounds.left > this.left) && (tmpBounds.left < this.right)) ||
+					((this.left > tmpBounds.left) && (this.left < tmpBounds.right)));
+			
+			return (this.containsBounds(tmpBounds, true, inclusive) ||
+				tmpBounds.containsBounds(this, true, inclusive) ||
 				((inTop || inBottom ) && (inLeft || inRight )));
 		}
-
+		
 		/**
 		 * Returns if the current bounds contains the bounds passed as param
 		 *
@@ -232,28 +196,34 @@ package org.openscales.geometry.basetypes
 		 * @return Bounds are contained or not by the bounds
 		 */
 		public function containsBounds(bounds:Bounds, partial:Boolean = false, inclusive:Boolean = true):Boolean {
+			
+			var tmpBounds:Bounds = bounds;
+			if(this.projSrsCode!=tmpBounds.projSrsCode) {
+				tmpBounds = tmpBounds.reprojectTo(this.projSrsCode);
+			}
+			
 			// TODO: check the equality of the projSrsCode of the two bounds ?!
 			var inLeft:Boolean;
 			var inTop:Boolean;
 			var inRight:Boolean;
 			var inBottom:Boolean;
-
+			
 			if (inclusive) {
-				inLeft = (bounds.left >= this.left) && (bounds.left <= this.right);
-				inTop = (bounds.top >= this.bottom) && (bounds.top <= this.top);
-				inRight= (bounds.right >= this.left) && (bounds.right <= this.right);
-				inBottom = (bounds.bottom >= this.bottom) && (bounds.bottom <= this.top);
+				inLeft = (tmpBounds.left >= this.left) && (tmpBounds.left <= this.right);
+				inTop = (tmpBounds.top >= this.bottom) && (tmpBounds.top <= this.top);
+				inRight= (tmpBounds.right >= this.left) && (tmpBounds.right <= this.right);
+				inBottom = (tmpBounds.bottom >= this.bottom) && (tmpBounds.bottom <= this.top);
 			} else {
-				inLeft = (bounds.left > this.left) && (bounds.left < this.right);
-				inTop = (bounds.top > this.bottom) && (bounds.top < this.top);
-				inRight= (bounds.right > this.left) && (bounds.right < this.right);
-				inBottom = (bounds.bottom > this.bottom) && (bounds.bottom < this.top);
+				inLeft = (tmpBounds.left > this.left) && (tmpBounds.left < this.right);
+				inTop = (tmpBounds.top > this.bottom) && (tmpBounds.top < this.top);
+				inRight= (tmpBounds.right > this.left) && (tmpBounds.right < this.right);
+				inBottom = (tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top);
 			}
-
+			
 			return (partial) ? (inTop || inBottom ) && (inLeft || inRight )
 				: (inTop && inLeft && inBottom && inRight);
 		}
-
+		
 		/**
 		 * Determines in which quadrant is placed the lonlat in relation to the current bounds.
 		 *
@@ -264,27 +234,27 @@ package org.openscales.geometry.basetypes
 		public function determineQuadrant(lonlat:Location):String {
 			var quadrant:String = "";
 			var center:Location = this.center;
-
+			
 			/* quadrant += (lonlat.lat < center.lat) ? "b" : "t";
-			 quadrant += (lonlat.lon < center.lon) ? "l" : "r"; */
-
+			quadrant += (lonlat.lon < center.lon) ? "l" : "r"; */
+			
 			if (lonlat.lat < center.lat){
 				quadrant += "b";
 			}
 			else{
 				quadrant += "t";
 			}
-
+			
 			if(lonlat.lon < center.lon){
 				quadrant += "l";
 			}
 			else{
 				quadrant += "r";
 			}
-
+			
 			return quadrant;
 		}
-
+		
 		/**
 		 * Returns a bounds instance from a string following this format: "left,bottom,right,top".
 		 *
@@ -297,7 +267,7 @@ package org.openscales.geometry.basetypes
 			var bounds:Array = str.split(",");
 			return Bounds.getBoundsFromArray(bounds,srsCode);
 		}
-
+		
 		/**
 		 * Returns a bounds instance from an array following this format: [left,bottom,right,top].
 		 *
@@ -309,7 +279,7 @@ package org.openscales.geometry.basetypes
 		public static function getBoundsFromArray(bbox:Array,srsCode:String):Bounds {
 			return new Bounds(Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]), srsCode);
 		}
-
+		
 		/**
 		 * Returns a bounds instance from a size instance.
 		 *
@@ -320,7 +290,7 @@ package org.openscales.geometry.basetypes
 		public static function getBoundsFromSize(size:Size):Bounds {
 			return new Bounds(0, size.h, size.w, 0, null);
 		}
-
+		
 		/**
 		 * Returns the opposite quadrant compared to the quadrant where is placed
 		 * the lonlat in relation to the current bounds.
@@ -331,13 +301,13 @@ package org.openscales.geometry.basetypes
 		 */
 		public static function oppositeQuadrant(quadrant:String):String {
 			var opp:String = "";
-
+			
 			opp += (quadrant.charAt(0) == 't') ? 'b' : 't';
 			opp += (quadrant.charAt(1) == 'l') ? 'r' : 'l';
-
+			
 			return opp;
 		}
-
+		
 		/**
 		 * Returns a bounds string from an url containing the bbox param
 		 *
@@ -357,7 +327,7 @@ package org.openscales.geometry.basetypes
 			var tempBboxArr:Array = tempBbox.split("%2C");
 			return tempBboxArr[0] + "," + tempBboxArr[1] + " " + tempBboxArr[2] + "," + tempBboxArr[3];
 		}
-
+		
 		/**
 		 * Returns a bounds string from an instance of bounds
 		 *
@@ -369,39 +339,133 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Method to convert the bounds from a projection system to an other.
-		 *
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
+		 * Reproject the current bounds in another projection
+		 * 
+		 * @param newSrsCode:String SRS code of the target projection
+		 * @return the reprojected bounds
 		 */
-		public function transform(sourceSrs:String, destSrs:String):void {
-			this.projSrsCode = destSrs;
-			if (sourceSrs == destSrs) {
-				return;
+		public function reprojectTo(newSrsCode:String):Bounds {
+			if (newSrsCode == this._projSrsCode) {
+				return this;
 			}
 			var pLB:ProjPoint = new ProjPoint(this._left, this._bottom);
 			var pRT:ProjPoint = new ProjPoint(this._right, this._top);
-			Proj4as.transform(sourceSrs, destSrs, pLB);
-			Proj4as.transform(sourceSrs, destSrs, pRT);
-			this._left = pLB.x; this._bottom = pLB.y;
-			this._right = pRT.x; this._top = pRT.y;
+			Proj4as.transform(this.projSrsCode, newSrsCode, pLB);
+			Proj4as.transform(this.projSrsCode, newSrsCode, pRT);
+			
+			return new Bounds(pLB.x,pLB.y,pRT.x,pRT.y,newSrsCode);
 		}
-
+		
 		/**
-     	 * Create a new polygon geometry based on this bounds.
-     	 *
-     	 * @return A new polygon with the coordinates of this bounds.
-     	 */
-    	 public function toGeometry():Polygon {
+		 * Create a new polygon geometry based on this bounds.
+		 *
+		 * @return A new polygon with the coordinates of this bounds.
+		 */
+		public function toGeometry():Polygon {
 			var geom:Polygon = new Polygon(new <Geometry>[
-            	 new LinearRing(new <Number>[
-                	 this.left, this.bottom,
-                	 this.right, this.bottom,
-                	 this.right, this.top,
-                	 this.left, this.top])
-         	]);
+				new LinearRing(new <Number>[
+					this.left, this.bottom,
+					this.right, this.bottom,
+					this.right, this.top,
+					this.left, this.top])
+			]);
 			geom.projSrsCode = this.projSrsCode;
 			return geom;
-    	 }
+		}
+		
+		
+		/**
+		 * Indicates the projection code.
+		 */
+		public function get projSrsCode():String {
+			return this._projSrsCode;
+		}
+		/** 
+		 * @private 
+		 */ 
+		public function set projSrsCode(value:String):void {
+			this._projSrsCode = value;
+		}
+		
+		/**
+		 * Indicates the left bound of the bounds
+		 */
+		public function get left():Number {
+			return _left;
+		}
+		/** 
+		 * @private 
+		 */ 
+		public function set left(value:Number):void {
+			_left = value;
+		}
+		
+		/**
+		 * Indicates the bottom bound of the bounds
+		 */
+		public function get bottom():Number {
+			return _bottom;
+		}
+		/** 
+		 * @private 
+		 */ 
+		public function set bottom(value:Number):void {
+			_bottom = value;
+		}
+		
+		/**
+		 * Indicates the right bound of the bounds
+		 */
+		public function get right():Number {
+			return _right;
+		}
+		/** 
+		 * @private 
+		 */ 
+		public function set right(value:Number):void {
+			_right = value;
+		}
+		
+		/**
+		 * Indicates the top bound of the bounds
+		 */
+		public function get top():Number {
+			return _top;
+		}
+		/** 
+		 * @private 
+		 */ 
+		public function set top(value:Number):void {
+			_top = value;
+		}
+		
+		/**
+		 * Indicates the width of the bounds
+		 */
+		public function get width():Number {
+			return Math.abs(this.right - this.left);
+		}
+		
+		/**
+		 * Indicates the height of the bounds
+		 */
+		public function get height():Number {
+			return Math.abs(this.top - this.bottom);
+		}
+		
+		/**
+		 * Indicates the size of the bounds
+		 */
+		public function get size():Size {
+			return new Size(this.width, this.height);
+		}
+		
+		/**
+		 * Indicates the center of the bounds
+		 */
+		public function get center():Location {
+			return new Location((this.left + this.right) / 2, (this.bottom + this.top) / 2, this.projSrsCode);
+		}
+		
 	}
 }

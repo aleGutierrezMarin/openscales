@@ -32,6 +32,8 @@
 	<component id="DragFeatureHandler" class="org.openscales.fx.handler.feature.FxDragFeatureHandler" />
 	<component id="SelectFeaturesHandler" class="org.openscales.fx.handler.feature.FxSelectFeaturesHandler" />
 	
+	<component id="Copyright" class="org.openscales.fx.control.Copyright" />
+	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
   	<component id="MousePosition" class="org.openscales.fx.control.FxMousePosition" />
 	<component id="Pan" class="org.openscales.fx.control.Pan" />
