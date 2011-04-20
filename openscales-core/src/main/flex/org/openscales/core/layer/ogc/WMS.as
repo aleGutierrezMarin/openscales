@@ -53,7 +53,7 @@ package org.openscales.core.layer.ogc
 		public function WMS(name:String = "",
 							url:String = "",
 							layers:String = "",
-							style:String="default") {
+							style:String="") {
 
 			super(name, url);
 			
@@ -248,6 +248,39 @@ package org.openscales.core.layer.ogc
 		public function setURLToDisplay(value:String):void{
 			if(this._tileProvider !=null){
 				this._tileProvider.url=value;
+			}
+		}
+		
+		/**
+		 * Projection system used to request the service
+		 *
+		 * @param value projection system used to request
+		 */
+		public function setProjectionToDisplay(value:String):void{
+			if(this._tileProvider !=null){
+				this._tileProvider.projection=value;
+			}
+		}
+		
+		/**
+		 * Set the width of the tile returned by the request
+		 *
+		 * @param value width of the tile
+		 */
+		public function setWidthToDisplay(value:Number):void{
+			if(this._tileProvider !=null){
+				this._tileProvider.width=value;
+			}
+		}
+		
+		/**
+		 * Set the height of the tile returned by the request
+		 *
+		 * @param value height of the tile
+		 */
+		public function setHeightToDisplay(value:Number):void{
+			if(this._tileProvider !=null){
+				this._tileProvider.height=value;
 			}
 		}
 		
