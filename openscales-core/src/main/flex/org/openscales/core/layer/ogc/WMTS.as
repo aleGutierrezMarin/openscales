@@ -66,7 +66,7 @@ package org.openscales.core.layer.ogc
 		override public function addTile(bounds:Bounds, center:Pixel):ImageTile
 		{	
 			// using the provider to get a tile from its bounds
-			return _tileProvider.getTile(bounds, center, layer);
+			return _tileProvider.getTile(bounds, center, this);
 		}
 		
 		/**
@@ -78,7 +78,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override public function getURL(bounds:Bounds):String {
-			return this._tileProvider.getTile(bounds).url;
+			return this._tileProvider.getTile(bounds,null,this).url;
 		}
 		
 		/**

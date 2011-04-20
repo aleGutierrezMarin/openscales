@@ -114,6 +114,7 @@
     <classEntry path="org.openscales.core.layer.capabilities.WMS100"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS110"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS111"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMTS100"/>
     <classEntry path="org.openscales.core.layer.grid.provider.HTTPTileProvider"/>
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.WFS"/>
@@ -121,8 +122,12 @@
     <classEntry path="org.openscales.core.layer.ogc.WFST"/>
     <classEntry path="org.openscales.core.layer.ogc.WMS"/>
     <classEntry path="org.openscales.core.layer.ogc.WMSC"/>
+    <classEntry path="org.openscales.core.layer.ogc.WMTS.TileMatrix"/>
+    <classEntry path="org.openscales.core.layer.ogc.WMTS.TileMatrixSet"/>
+    <classEntry path="org.openscales.core.layer.ogc.WMTS"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.OGCTileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProvider"/>
+    <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProvider"/>
     <classEntry path="org.openscales.core.layer.osm.CycleMap"/>
     <classEntry path="org.openscales.core.layer.osm.Maplint"/>
     <classEntry path="org.openscales.core.layer.osm.Mapnik"/>
@@ -173,13 +178,10 @@
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProviderTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
-    <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProvider"/>
-    <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProviderTest"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMTS100"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMTS100Test"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
