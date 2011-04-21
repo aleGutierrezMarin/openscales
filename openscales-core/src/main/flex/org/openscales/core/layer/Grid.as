@@ -385,7 +385,7 @@ package org.openscales.core.layer
 					var sh:int = Math.round(y + this.tileHeight) - inty;
 					//sw = 500;
 					//sh = sh / 2
-					var sz:Size = new Size(2*sw, 2*sh);
+					var sz:Size = new Size(sw, sh);
 					this.tileHeight = Math.round(this.tileHeight);
 					this.tileWidth = Math.round(this.tileWidth);
 						
