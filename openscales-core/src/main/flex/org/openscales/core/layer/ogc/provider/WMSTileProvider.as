@@ -6,6 +6,7 @@ package org.openscales.core.layer.ogc.provider
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	
 	use namespace os_internal;
@@ -55,19 +56,19 @@ package org.openscales.core.layer.ogc.provider
 		 * @private 
 		 * Way to display errors for the requested tile
 		 */
-		private var _exceptions:String;
+		private var _exceptions:String="XML";
 		
 		/**
 		 * @private 
 		 * Indicates if the tile should be transparent or not
 		 */
-		private var _transparent:Boolean;
+		private var _transparent:Boolean=false;
 		
 		/**
 		 * @private
 		 * Background color of the requested tile
 		 */
-		private var _bgcolor:String;
+		private var _bgcolor:String="0xFFFFFF";
 		
 		/**
 		 * @pivate
@@ -117,7 +118,7 @@ package org.openscales.core.layer.ogc.provider
 										version:String,
 										layer:String,
 										projection:String,
-										style:String = "rain",
+										style:String = "",
 										format:String = "image/jpeg")
 		{
 			//call the constructor of the mother class OGCTileProvider
@@ -169,13 +170,15 @@ package org.openscales.core.layer.ogc.provider
 				str += "STYLES=" + this._style + "&";
 			
 			//the projection parameter depends on the version of the protocol
+			//The bbox parameters depends on the version
+			//Lon/Lat if less than 1.3.0, lat/lon otherwise
 			if(this.version=="1.3.0"){
 				str += "CRS=" + this._projection + "&";
+				str += "BBOX=" + bounds.bottom+","+ bounds.left +","+ bounds.top +","+ bounds.right+"&";
 			}else if(this.version=="1.1.0" || this.version=="1.1.1"){
 				str += "SRS=" + this._projection + "&";
+				str += "BBOX=" + bounds.left+","+ bounds.bottom +","+ bounds.right +","+ bounds.top+"&";
 			}
-						
-			str += "BBOX=" + bounds.left+","+ bounds.bottom +","+ bounds.right +","+ bounds.top+"&";
 				
 			
 			str += "WIDTH=" + this._width + "&";
@@ -196,7 +199,9 @@ package org.openscales.core.layer.ogc.provider
 			str += "TILED=" + this._tiled + "&";
 			
 			if(this.version=="1.1.0" || this.version=="1.1.1"){
-				str += "SLD=" + this._sld + "&";
+				if(this._sld != null){
+					str += "SLD=" + this._sld + "&";
+				}
 			}
 			
 			return str.substr(0, str.length-1);
