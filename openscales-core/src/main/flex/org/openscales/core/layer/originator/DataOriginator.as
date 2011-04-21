@@ -32,7 +32,7 @@ package org.openscales.core.layer.originator
 		 * @default null
 		 * The url of the originator logo picture.
 		 */
-		private var _urlPicture:String = null;
+		private var _pictureUrl:String = null;
 		
 		/**
 		 * @private
@@ -48,11 +48,11 @@ package org.openscales.core.layer.originator
 		 * @param url The url of the originator website (mandatory)
 		 * @param urlPicture The url to the logo picture originator (mandatory)
 		 */ 
-		public function DataOriginator(name:String, url:String, urlPicture:String)
+		public function DataOriginator(name:String, url:String, pictureUrl:String)
 		{
 			this._name = name;
 			this._url = url;
-			this._urlPicture = urlPicture;	
+			this._pictureUrl = pictureUrl;	
 			this._constraints = new Vector.<ConstraintOriginator>();
 		}
 		
@@ -115,7 +115,7 @@ package org.openscales.core.layer.originator
 			if (originator != null) {
 				equals = this._name == originator.name &&
 					this._url == originator.url &&
-					this._urlPicture == originator.urlPicture;
+					this._pictureUrl == originator.pictureUrl;
 				
 				var size:Number = this._constraints.length;
 				for(var i:int=0; i<size; ++i) {
@@ -187,16 +187,16 @@ package org.openscales.core.layer.originator
 		/**
 		 * The url of the originator logo picture.
 		 */
-		public function get urlPicture():String
+		public function get pictureUrl():String
 		{
-			return this._urlPicture;
+			return this._pictureUrl;
 		}
 		/**
 		 * @private
 		 */
-		public function set urlPicture(urlPicture:String):void 
+		public function set pictureUrl(pictureUrl:String):void 
 		{
-			this._urlPicture = urlPicture;
+			this._pictureUrl = pictureUrl;
 		}
 		
 		/**

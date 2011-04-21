@@ -558,23 +558,6 @@ package org.openscales.core.control
 			
 			Assert.assertEquals(dataOriginatorsControl.findOriginatorByName(name), originator);
 			Assert.assertEquals(dataOriginatorsControl.findOriginatorByName("test"), null);
-		}
-		
-		[Test]
-		public function testFindOriginatorByUrlPicture():void
-		{
-			// DataOriginators control
-			var dataOriginatorsControl:DataOriginators = new DataOriginators();
-			
-			var name:String = "originator";
-			var url:String = "url_originator";
-			var urlPicture:String = "url_picture_originator";
-			var originator:DataOriginator = new DataOriginator(name, url, urlPicture);
-			dataOriginatorsControl.addOriginator(originator);
-			
-			Assert.assertEquals(dataOriginatorsControl.findOriginatorByUrlPicture(urlPicture), originator);
-			Assert.assertEquals(dataOriginatorsControl.findOriginatorByUrlPicture("test"), null);
-		}
-		
+		}		
 	}
 }
