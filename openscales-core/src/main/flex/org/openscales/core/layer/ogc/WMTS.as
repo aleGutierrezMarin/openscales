@@ -92,7 +92,7 @@ package org.openscales.core.layer.ogc
 		override public function get projSrsCode():String {
 			if(this._tileProvider.tileMatrixSets==null
 			|| !this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet))
-				return "undefined";
+				return "epsg:4326";
 			var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(this._tileProvider.tileMatrixSet) as TileMatrixSet;
 			return tms.supportedCRS;
 		}
