@@ -55,8 +55,8 @@ package org.openscales.core.layer
 			geoServer.maxExtent = new Bounds(-180,-90,180,90,geoServer.projSrsCode);
 			map.addLayer(geoServer);
 			
-			Assert.assertEquals(mapnik.grid[1][1].width, geoServer.grid[1][1].width);
-			Assert.assertEquals(mapnik.grid[1][1].height, geoServer.grid[1][1].height);
+			Assert.assertEquals(mapnik.grid[0][0].width, geoServer.grid[0][0].width);
+			Assert.assertEquals(mapnik.grid[0][0].height, geoServer.grid[0][0].height);
 			
 		}
 		
@@ -77,8 +77,8 @@ package org.openscales.core.layer
 			geoServer.maxExtent = new Bounds(-180,-90,180,90,geoServer.projSrsCode);
 			map.addLayer(geoServer);
 			
-			Assert.assertEquals(mapnik.grid[1][1].x, geoServer.grid[1][1].x);
-			Assert.assertEquals(mapnik.grid[1][1].y, geoServer.grid[1][1].y);
+			Assert.assertEquals(mapnik.grid[0][0].x, geoServer.grid[0][0].x);
+			Assert.assertEquals(mapnik.grid[0][0].y, geoServer.grid[0][0].y);
 			
 		}
 	}

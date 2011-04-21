@@ -9,6 +9,8 @@ package {
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
+	import org.openscales.core.layer.capabilities.WMS110;
+	import org.openscales.core.layer.capabilities.WMS111;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WFST;
 	import org.openscales.core.layer.ogc.WMSC;
@@ -32,23 +34,24 @@ package {
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			//mapnik.proxy = "http://openscales.org/proxy.php?url=";
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
-			//_map.addLayer(mapnik);
+			_map.addLayer(mapnik);
 			
 			var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
 			cycle.proxy = "http://openscales.org/proxy.php?url=";
 			//_map.addLayer(cycle); 
 			
 			
-			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
+			var regions:WMS = new WMS("IGN - Geopla (Region)", "http://openscales.org/geoserver/pg/wms","pg:ign_geopla_region");
 			regions.projSrsCode = "EPSG:2154";
-			regions.style = Style.getDefaultSurfaceStyle();
 			
-			//_map.addLayer(regions);
+			regions.style = Style.getDefaultSurfaceStyle();
+			regions.alpha = 0.5;
+			_map.addLayer(regions);
 			
 			var geoServer:WMSC = new WMSC("nasa", "http://openscales.org/geoserver/gwc/service/wms", "bluemarble");
 			geoServer.version = "1.1.1";
 			geoServer.maxExtent = new Bounds(-180,-90,180,90, geoServer.projSrsCode);
-			_map.addLayer(geoServer);
+			//_map.addLayer(geoServer);
 			mapnik.alpha = 0.5;
 			geoServer.alpha = 0.5;
 			

@@ -12,6 +12,7 @@ package org.openscales.core.layer
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
+	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -282,13 +283,48 @@ package org.openscales.core.layer
 		 * TODO : This method use BaseMap. The behaviour must be changed when BaseMap will be deleted 
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
+			
+			var resolution:Number = this.map.resolution;
+			var resolutionBuffer:Number = resolution;
+			if (this.projSrsCode != this.map.baseLayer.projSrsCode)
+			{
+				var unityProj:Point = new Point(1, 1);
+				unityProj.transform(this.projSrsCode, this.map.baseLayer.projSrsCode);
+				var bestRatio:Number = 0;
+				var i:int = Math.max(0, this.minZoomLevel);
+				var len:int = Math.min(this.resolutions.length, this.maxZoomLevel+1);
+				for (i; i < len; ++i)
+				{
+					var ratio:Number = this.resolutions[i] * unityProj . x / resolution;
+					if ( ratio > 1){
+						ratio = 1/ratio;
+					}
+					if ( ratio > bestRatio){
+						bestRatio = ratio;
+						resolutionBuffer = this.resolutions[i];
+					}
+				}
+				this.tileHeight = this.DEFAULT_TILE_HEIGHT * resolutionBuffer / resolution * unityProj.y;
+				this.tileWidth = this.DEFAULT_TILE_WIDTH * resolutionBuffer / resolution * unityProj.x;
+				//this.tileHeight = Math.round(this.tileHeight);
+				//this.tileWidth = Math.round(this.tileWidth);
+				///minRows = Math.ceil(viewSize.h/this.tileHeight) + 
+				//	Math.max(1, 2 * this.buffer);
+				//minCols = Math.ceil(viewSize.w/this.tileWidth) +
+				//	Math.max(1, 2 * this.buffer);
+				
+					
+				resolution = resolutionBuffer;
+			}
+			
+			
 			var viewSize:Size = this.map.size;
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
-											Math.max(1, 2 * this.buffer);
+				Math.max(1, 2 * this.buffer);
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
-											Math.max(1, 2 * this.buffer);
+				Math.max(1, 2 * this.buffer);
 			var extent:Bounds = this.maxExtent;
-			var resolution:Number = this.map.resolution;
+			
 			var tilelon:Number = resolution * this.tileWidth;
 			var tilelat:Number = resolution * this.tileHeight;
 			var offsetlon:Number = bounds.left - extent.left;
@@ -339,10 +375,27 @@ package org.openscales.core.layer
 					var y:Number = tileoffsety;
 					y -= int(this.map.layerContainer.y);
 
-					var px:Pixel = new Pixel(x, y);
+					var intx:int = Math.round(x);
+					var inty:int = Math.round(y);
+					
+					var px:Pixel = new Pixel(intx, inty);
 					var tile:ImageTile;
+					
+					var sw:int = Math.round(x + this.tileWidth) - intx;
+					var sh:int = Math.round(y + this.tileHeight) - inty;
+					//sw = 500;
+					//sh = sh / 2
+					var sz:Size = new Size(2*sw, 2*sh);
+					this.tileHeight = Math.round(this.tileHeight);
+					this.tileWidth = Math.round(this.tileWidth);
+						
 					if(row.length==colidx) {
 						tile = this.addTile(tileBounds, px);
+						if (this.projSrsCode != this.map.baseLayer.projSrsCode)
+						{
+							tile.size = sz;
+
+						}
 						row.push(tile);
 					} else {
 						tile = row[colidx];
@@ -352,6 +405,7 @@ package org.openscales.core.layer
 							tile.moveTo(tileBounds, px, false);
 					}
 					colidx=++colidx;
+
 
 					tileoffsetlon += tilelon;       
 					tileoffsetx += this.tileWidth;
