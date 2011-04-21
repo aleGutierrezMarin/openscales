@@ -1,7 +1,10 @@
 package org.openscales.core.layer.ogc.WMTS
 {
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
-
+	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.ProjProjection;
+	
 	/**
 	 * A class that represents a tile matrix as specified by WMTS GetCapabilities response.
 	 * 
@@ -22,6 +25,7 @@ package org.openscales.core.layer.ogc.WMTS
 		private var _tileHeight:uint;
 		private var _matrixWidth:uint;
 		private var _matrixHeight:uint;
+		private var _maxExtent:Bounds;
 		
 		/**
 		 * @param identifer String The string that uniquely identify this tile matrix within its tile matrix set
@@ -47,8 +51,19 @@ package org.openscales.core.layer.ogc.WMTS
 			this._tileHeight = tileHeight;
 			this._matrixWidth = matrixWidth;
 			this._matrixHeight = matrixHeight;
+			var left:Number = topLeftCorner.x;
+			var bottom:Number = topLeftCorner.y;
+			var resolution:Number = Unit.getResolutionFromScaleDenominator(scaleDenominator,ProjProjection.getProjProjection(this._topLeftCorner.projSrsCode).projParams.units);
+			var right:Number = left+(resolution*tileWidth);
+			var top:Number = bottom+(resolution*tileHeight);
+			this._maxExtent = new Bounds(left,bottom,right,top,this._topLeftCorner.projSrsCode);
+			
 		}
-
+		
+		public function get maxExtent():Bounds {
+			return this._maxExtent.clone();
+		}
+		
 		/**
 		 * The string that uniquely identify this tile matrix in its tile matrix set
 		 * <p>
@@ -59,15 +74,8 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			return _identifier;
 		}
-
-		/**
-		 * @private
-		 */ 
-		public function set identifier(value:String):void
-		{
-			_identifier = value;
-		}
-
+		
+		
 		/**
 		 * The scale denominator for this tile matrix (in map units)
 		 * <p>
@@ -78,15 +86,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			return _scaleDenominator;
 		}
-
-		/**
-		 * @private
-		 */ 
-		public function set scaleDenominator(value:Number):void
-		{
-			_scaleDenominator = value;
-		}
-
+		
 		/**
 		 * The location of this tile matrix top left corner (in maps units)
 		 * <p>
@@ -95,17 +95,10 @@ package org.openscales.core.layer.ogc.WMTS
 		 */ 
 		public function get topLeftCorner():Location
 		{
-			return _topLeftCorner;
+			return _topLeftCorner.clone();
 		}
-
-		/**
-		 * @private
-		 */ 
-		public function set topLeftCorner(value:Location):void
-		{
-			_topLeftCorner = value;
-		}
-
+		
+		
 		/**
 		 * The width of this tile matrix (in pixels)
 		 * <p>
@@ -116,15 +109,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			return _tileWidth;
 		}
-
-		/**
-		 * @private
-		 */ 
-		public function set tileWidth(value:uint):void
-		{
-			_tileWidth = value;
-		}
-
+		
 		/**
 		 * The height of this tile matrix (in pixels)
 		 * <p>
@@ -135,15 +120,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			return _tileHeight;
 		}
-
-		/**
-		 * @private
-		 */ 
-		public function set tileHeight(value:uint):void
-		{
-			_tileHeight = value;
-		}
-
+		
 		/**
 		 * The width of this tile matrix (ie the number of tiles in a row)
 		 * <p>
@@ -154,15 +131,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			return _matrixWidth;
 		}
-
-		/**
-		 * @private
-		 */ 
-		public function set matrixWidth(value:uint):void
-		{
-			_matrixWidth = value;
-		}
-
+		
 		/**
 		 * The height of this tile matrix (ie the number of tiles in a column)
 		 * <p>
@@ -172,14 +141,6 @@ package org.openscales.core.layer.ogc.WMTS
 		public function get matrixHeight():uint
 		{
 			return _matrixHeight;
-		}
-
-		/**
-		 * @private
-		 */ 
-		public function set matrixHeight(value:uint):void
-		{
-			_matrixHeight = value;
 		}
 	}
 }
