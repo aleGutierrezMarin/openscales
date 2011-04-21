@@ -1,7 +1,7 @@
 package org.openscales.core.layer.ogc.WMTS
 {
 	import org.openscales.core.basetypes.maps.HashMap;
-
+	
 	/**
 	 * This class represents a tile matrix set as defined in getCapablilties. It is meant to be created
 	 * while parsing WMTS GetCapabilities response and meant to be accessed when a user creates a WMTS layer.
@@ -39,7 +39,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			return _identifier;
 		}
-
+		
 		/**
 		 * @private
 		 */ 
@@ -47,7 +47,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			_identifier = value;
 		}
-
+		
 		/**
 		 * The string that uniquely identify the supported CRS for this tile matrix set
 		 * <p>
@@ -58,7 +58,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			return _supportedCRS;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -66,7 +66,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			_supportedCRS = value;
 		}
-
+		
 		/**
 		 * An HashMap containing all tileMatrices contained within this tile matrix set.
 		 * <ul>
@@ -81,7 +81,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			return _tileMatrices;
 		}
-
+		
 		/**
 		 * @private
 		 */ 
@@ -89,7 +89,7 @@ package org.openscales.core.layer.ogc.WMTS
 		{
 			_tileMatrices = value;
 		}
-
-
+		
+		
 	}
 }

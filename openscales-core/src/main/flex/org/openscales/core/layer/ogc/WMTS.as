@@ -4,6 +4,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WMTS.TileMatrix;
 	import org.openscales.core.layer.ogc.WMTS.TileMatrixSet;
 	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
 	import org.openscales.core.layer.params.IHttpParams;
@@ -91,7 +92,7 @@ package org.openscales.core.layer.ogc
 		
 		override public function get projSrsCode():String {
 			if(this._tileProvider.tileMatrixSets==null
-			|| !this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet))
+				|| !this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet))
 				return "epsg:4326";
 			var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(this._tileProvider.tileMatrixSet) as TileMatrixSet;
 			return tms.supportedCRS;
@@ -172,7 +173,57 @@ package org.openscales.core.layer.ogc
 			this._tileProvider.tileMatrixSets = value;
 			this.generateResolutions();
 		}
-
+		
+		/**
+		 * @private
+		 * returns revelant tilematrix
+		 * 
+		 * @return a tilematrix or null if none
+		 */
+		public function get tileMatrix():TileMatrix {
+			if(this._tileProvider.tileMatrixSets!=null
+				&& this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet)) {
+				var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(this._tileProvider.tileMatrixSet) as TileMatrixSet;
+				var zoom:Number = this.getZoomForResolution(this.map.resolution);
+				var resolution:Number = this.resolutions[zoom] as Number;
+				if(tms.tileMatrices.containsKey(resolution))
+					return (tms.tileMatrices.getValue(resolution) as TileMatrix);
+			}
+			return null;
+		}
+		
+		/**
+		 * @Inherit
+		 */
+		override public function get tileHeight():Number {
+			var tm:TileMatrix = this.tileMatrix;
+			if(tm != null)
+				return tm.tileHeight;
+			return super.tileHeight;
+		}
+		
+		/**
+		 * @Inherit
+		 */
+		override public function get tileWidth():Number {
+			var tm:TileMatrix = this.tileMatrix;
+			if(tm != null)
+				return tm.tileWidth;
+			return super.tileWidth;
+		}
+		
+		/**
+		 * @Inherit
+		 */
+		override public function get maxExtent():Bounds {
+			if(this._tileProvider != null) {
+				var _maxExtent:Bounds = this._tileProvider.maxExtent;
+				if(_maxExtent!=null)
+					return _maxExtent;
+			}
+			return super.maxExtent;
+		}
+		
 	}
 	
 }
