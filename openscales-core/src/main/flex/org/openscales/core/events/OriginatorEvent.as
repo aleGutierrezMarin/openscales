@@ -25,6 +25,11 @@ package org.openscales.core.events
 		public static const ORIGINATOR_REMOVED:String="openscales.removeOriginator";
 		
 		/**
+		 * Event type dispatched when an originator is not displayed on the map.
+		 */
+		public static const ORIGINATOR_REMOVE_FROM_DISPLAY:String="openscales.removeFromDisplayOriginator";
+		
+		/**
 		 * Constructor of the class OriginatorEvent.
 		 * 
 		 * @param type The type of event (mandatory).

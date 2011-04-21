@@ -12,20 +12,15 @@ package org.openscales.core.control
 	
 	
 	/**
-	 * Instances of DataOriginators are used to show the different originator informations (logo / copyright)
+	 * Instances of DataOriginators are used to keep the different originator informations (logo / copyright)
 	 * for all the layer of a map.
-	 * This list is updated when layer are changed (add / remove / visibility change...)
-	 * This list contains originator with no double.
+	 * This orignators are keep on a list which is updated when layers are changed (add / remove / visibility change...)
+	 * This list is updated when the extent and the resolution of the map is changed
+	 * This list is also updated when an originator is add or change on the layer.
+	 * This list contains originators with no double.
 	 * 
-	 * This DataOriginators class represents a component to add to the map.
+	 * This DataOriginators class represents a list of originators to be stored on a DataOriginatorsDisplay component.
 	 * 
-	 * @example The following code describe how to add a copyright on a map : 
-	 * 
-	 * <listing version="3.0">
-	 *   var theMap = geoportal.Map();
-	 *   theMap.addComponent(new DataOriginators());
-	 * </listing>
-	 *
 	 * @author ajard
 	 */ 
 	
@@ -68,7 +63,8 @@ package org.openscales.core.control
 		 * 
 		 * Remove the DataOriginators from the map and remove reference on object.
 		 */
-		override public function destroy():void {
+		override public function destroy():void 
+		{
 			super.destroy();
 			
 			this._originators = null;
@@ -84,16 +80,7 @@ package org.openscales.core.control
 			this._map.removeEventListener(MapEvent.MOVE_END, this.onMapChanged);
 		}
 		
-		/**
-		 * @inheritDoc
-		 * 
-		 * Display the DataOriginators component on the map.
-		 */
-		override public function draw():void 
-		{
-			super.draw();
-		}
-		
+
 		/**
 		 * Add an originator in the list
 		 * If the originator exist : increment its layers count
@@ -452,13 +439,37 @@ package org.openscales.core.control
 			}			
 			return null;
 		}
+		
+		/**
+		 * Find an originator in the originators list by its urlPicture.
+		 * 
+		 * @param urlPicture The urlPicture of the searched originator.
+		 * @return The DataOriginator corresponding to the given name if find
+		 * else return null
+		 */
+		public function findOriginatorByUrlPicture(urlPicture:String):DataOriginator
+		{
+			var i:uint = 0;
+			var j:uint = originators.length;
+			
+			// for each originator in the list
+			for (; i<j; ++i) 
+			{
+				if( originators[i].urlPicture == urlPicture )
+				{
+					return originators[i];
+				}
+			}			
+			return null;
+		}
 
 		// getters / setters
 		/**
 		 * Set the map linked to this DataOriginators control
 		 * @param map The current map linked to this component.
 		 */
-		override public function set map(map:Map):void {
+		override public function set map(map:Map):void 
+		{
 			super._map = map;
 			
 			// add listener on Layer
