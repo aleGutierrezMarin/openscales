@@ -91,22 +91,22 @@ package org.openscales.core.layer.ogc.provider
 		 */ 
 		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
+			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
 			if(this._tileMatrixSets==null || layer == null || layer.map == null)
-				return null;
+				return imageTile;
 			
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
-				return null;
+				return imageTile;
 			
 			var tileMatrixSet:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
-			
+
 			if(tileMatrixSet==null)
-				return null;
+				return imageTile;
 			
 			if(tileMatrixSet.supportedCRS == bounds.projSrsCode) {
 				bounds = bounds.reprojectTo(tileMatrixSet.supportedCRS);
-				return null;
 			}
-			
+
 			var mapResolution:Number = layer.map.resolution;
 			var mapUnit:String = ProjProjection.getProjProjection(layer.map.baseLayer.projSrsCode).projParams.units;
 			var scaleDenominator:Number = Unit.getScaleFromResolution(mapResolution,mapUnit);
@@ -125,10 +125,10 @@ package org.openscales.core.layer.ogc.provider
 			var location:Location = bounds.center;
 			var tileOrigin:Location = tileMatrix.topLeftCorner;
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
-			var row:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.y,location.y,tileSpanY);;
+			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);;
 			
 			if(col<0 || row< 0 || col>tileMatrix.matrixWidth-1 || row>tileMatrix.matrixHeight-1)
-				return null;
+				return imageTile;
 			
 			var params:Object = {
 				"TILECOL" : col,
@@ -136,9 +136,11 @@ package org.openscales.core.layer.ogc.provider
 				"TILEMATRIX" : tileMatrix.identifier
 			};
 			
-			var queryString:String =  buildGETQuery(bounds,params);
+			imageTile.url = buildGETQuery(bounds,params);
 			
-			return new ImageTile(layer,center,bounds, queryString, new Size(tileWidth,tileHeight) );
+			imageTile.size = new Size(tileWidth,tileHeight);
+			Trace.debug("Tile url: "+imageTile.url);
+			return imageTile;
 		}
 		
 		public function generateResolutions(numZoomLevels:uint, nominalResolution:Number=NaN):Array {
