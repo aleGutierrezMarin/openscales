@@ -13,6 +13,7 @@ package {
 	import org.openscales.core.layer.capabilities.WMS111;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WFST;
+	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.ogc.WMSC;
 	import org.openscales.core.layer.osm.CycleMap;
 	import org.openscales.core.layer.osm.Mapnik;
@@ -21,6 +22,7 @@ package {
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.osmf.utils.Version;
 	
 	[SWF(width='1200',height='700')]
 	public class TileStretchingExample extends Sprite {
@@ -41,12 +43,22 @@ package {
 			//_map.addLayer(cycle); 
 			
 			
-			var regions:WMS = new WMS("IGN - Geopla (Region)", "http://openscales.org/geoserver/pg/wms","pg:ign_geopla_region");
-			regions.projSrsCode = "EPSG:2154";
+			//var regions:WMS = new WMS("IGN - Geopla (Region)", "http://openscales.org/geoserver/pg/wms","pg:ign_geopla_region");
+			//regions.projSrsCode = "EPSG:2154";
+			//regions.version = "1.1.1";
+			//regions.maxExtent
+			//regions.style = Style.getDefaultSurfaceStyle();
+			//regions.alpha = 0.5;
+			//_map.addLayer(regions);
 			
-			regions.style = Style.getDefaultSurfaceStyle();
-			regions.alpha = 0.5;
-			_map.addLayer(regions);
+			//var layerWMS111:WMS = new WMS("Germany","http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map","Germany");
+			var layerWMS110:WMS = new WMS("pg:ign_geopla_region","http://openscales.org/geoserver/pg/wms?service=WMS","");
+			layerWMS110.projSrsCode = "EPSG:2154";
+
+			layerWMS110.maxExtent = new Bounds(99226.0,6049647.0,1242375.0,7110524.0,"EPSG:2154");
+			layerWMS110.version="1.1.0";
+			this._map.addLayer(layerWMS110);
+			layerWMS110.alpha = 0.5;
 			
 			var geoServer:WMSC = new WMSC("nasa", "http://openscales.org/geoserver/gwc/service/wms", "bluemarble");
 			geoServer.version = "1.1.1";
