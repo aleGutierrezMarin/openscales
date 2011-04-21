@@ -1,5 +1,7 @@
 package org.openscales.geometry.basetypes
 {
+	import flash.system.Capabilities;
+	
 	import org.openscales.geometry.utils.UtilGeometry;
 	
 	/**
@@ -17,9 +19,9 @@ package org.openscales.geometry.basetypes
 		public static var INCH:String = "inch";
 		
 		public static var PIXEL_SIZE:Number = 0.00028;
-
-		public static var DOTS_PER_INCH:int = 72;
-
+		
+		public static var DOTS_PER_INCH:Number = Capabilities.screenDPI;
+		
 		/**
 		 * Returns the number of inches per unit
 		 * 
@@ -69,7 +71,7 @@ package org.openscales.geometry.basetypes
 					return 0;
 			}
 		} 
-
+		
 		/**
 		 * Returns the resolution from a scale
 		 * 
@@ -78,13 +80,13 @@ package org.openscales.geometry.basetypes
 		 * @return the resolution
 		 */
 		public static function getResolutionFromScale(scale:Number, units:String = null):Number {
-
+			
 			if (units == null) {
 				units = Unit.DEGREE;
 			}
-
+			
 			var normScale:Number = UtilGeometry.normalizeScale(scale);
-
+			
 			var resolution:Number = 1 / (normScale * Unit.getInchesPerUnit(units)
 				* Unit.DOTS_PER_INCH);
 			return resolution;
@@ -101,7 +103,7 @@ package org.openscales.geometry.basetypes
 			if (units == null) {
 				units = Unit.DEGREE;
 			}
-
+			
 			var scale:Number = resolution * Unit.getInchesPerUnit(units) *
 				Unit.DOTS_PER_INCH;
 			return scale;
@@ -134,7 +136,7 @@ package org.openscales.geometry.basetypes
 			}
 			return (resolution * Unit.getMetersPerUnit(units) / Unit.PIXEL_SIZE);
 		}
-
+		
 	}
 }
 
