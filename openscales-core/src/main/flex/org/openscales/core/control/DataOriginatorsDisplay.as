@@ -213,30 +213,32 @@ package org.openscales.core.control
 		 { 
 			// get the corresponding button
 			var btn:Button = this.getChildByName(originatorNode.originator.name) as Button;
-			 
-			trace("btn "+btn.name);
-			
-			btn.removeEventListener(MouseEvent.CLICK, this.onClick);
-			this.removeChild(btn);
-			 
-			// event : not display any more (to delete the originator if asked)
-			this.dispatchEvent(new OriginatorEvent(OriginatorEvent.ORIGINATOR_REMOVE_FROM_DISPLAY, originatorNode.originator));
+
+			if( btn != null)
+			{
+				btn.removeEventListener(MouseEvent.CLICK, this.onClick);
+				this.removeChild(btn);
+				
+				// event : not display any more (to delete the originator if asked)
+				this.dispatchEvent(new OriginatorEvent(OriginatorEvent.ORIGINATOR_REMOVE_FROM_DISPLAY, originatorNode.originator));
+			}
 		 }
 		
 		/**
+		 * @private
 		 * Add a new Orginator in the list.
 		 * Load its bitmap logo.
 		 * When the bitmap is load, call the completeLoading function to insert the component in the linkedList
 		 * 
 		 * @param The originator to add.
 		 */
-		public function addOriginator(originator:DataOriginator):void
+		private function addOriginator(originator:DataOriginator):void
 		{
 			var loader:Loader = new Loader();
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.completeLoading);
 			loader.name = originator.name;
 			
-			var request:URLRequest = new URLRequest(originator.urlPicture);
+			var request:URLRequest = new URLRequest(originator.pictureUrl);
 			loader.load(request);
 		}
 		
@@ -271,20 +273,23 @@ package org.openscales.core.control
 		}
 		
 		/**
+		 * @private
 		 * Remove an originator in the list.
 		 * If the originator is currently displayed add it on the removeList
 		 * 
 		 * @param The originator to remove.
 		 */
-		public function removeOriginator(originator:DataOriginator):void
+		private function removeOriginator(originator:DataOriginator):void
 		{
 			if(isDisplayed(originator))
 			{
+				trace("Is currently displayed so waiting list : "+originator.name);
 				// to delete it when not displayed
 				this._removedOriginatorList.push(originator);
 			}
 			else
 			{
+				trace("not displayed so I kill it : "+originator.name);
 				this.linkedList.remove(originator.name);
 			}
 		}
@@ -305,9 +310,7 @@ package org.openscales.core.control
 			var bmp:Bitmap = Bitmap(event.target.loader.content);
 			bmp.addEventListener(MouseEvent.CLICK, this.onClick);
 			
-			trace("Loading OK "+name);
-			
-			// get the DataOriginator linked to this bitmap and urlPicture :
+			// get the DataOriginator linked to this bitmap and pictureUrl :
 			var originator:DataOriginator = this._dataOriginators.findOriginatorByName(name);
 			
 			if(originator!=null)
@@ -317,13 +320,13 @@ package org.openscales.core.control
 		}
 		
 		/**
+		 * @private
 		 * Call when an originatorEvent.ORIGINATOR_ADDED occur
 		 * The new originator bitmap logo is add at the enf of the list of logos
 		 * 
 		 * @param event The OriginatorEvent received.
 		 */
-		// TODO
-		public function onOriginatorAdded(event:OriginatorEvent):void
+		private function onOriginatorAdded(event:OriginatorEvent):void
 		{
 			trace("originator added");
 			
@@ -332,15 +335,15 @@ package org.openscales.core.control
 		}
 		
 		/**
+		 * @private
 		 * Call when an originatorEvent.ORIGINATOR_REMOVED occur
 		 * The originator bitmap logo is removed from the list once its not display
 		 * 
 		 * @param event The OriginatorEvent received.
 		 */
-		// TODO
-		public function onOriginatorRemoved(event:OriginatorEvent):void
+		private function onOriginatorRemoved(event:OriginatorEvent):void
 		{
-			trace("originator removed");
+			trace("originator removed : "+event.originator.name);
 			removeOriginator(event.originator);
 		}
 		

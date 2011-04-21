@@ -439,29 +439,6 @@ package org.openscales.core.control
 			}			
 			return null;
 		}
-		
-		/**
-		 * Find an originator in the originators list by its urlPicture.
-		 * 
-		 * @param urlPicture The urlPicture of the searched originator.
-		 * @return The DataOriginator corresponding to the given name if find
-		 * else return null
-		 */
-		public function findOriginatorByUrlPicture(urlPicture:String):DataOriginator
-		{
-			var i:uint = 0;
-			var j:uint = originators.length;
-			
-			// for each originator in the list
-			for (; i<j; ++i) 
-			{
-				if( originators[i].urlPicture == urlPicture )
-				{
-					return originators[i];
-				}
-			}			
-			return null;
-		}
 
 		// getters / setters
 		/**

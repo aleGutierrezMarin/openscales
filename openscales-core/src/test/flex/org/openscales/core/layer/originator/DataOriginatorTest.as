@@ -11,12 +11,12 @@ package org.openscales.core.layer.originator
 		{
 			var name:String = "originator";
 			var url:String = "url_originator";
-			var urlPicture:String = "url_picture_originator";
-			var dataOriginator:DataOriginator = new DataOriginator(name, url, urlPicture);
+			var pictureUrl:String = "url_picture_originator";
+			var dataOriginator:DataOriginator = new DataOriginator(name, url, pictureUrl);
 			
 			Assert.assertEquals(name, dataOriginator.name);
 			Assert.assertEquals(url, dataOriginator.url);
-			Assert.assertEquals(urlPicture, dataOriginator.urlPicture);
+			Assert.assertEquals(pictureUrl, dataOriginator.pictureUrl);
 		}
 		
 		[Test]
@@ -25,8 +25,8 @@ package org.openscales.core.layer.originator
 			// new DataOriginator
 			var name:String = "originator";
 			var url:String = "url_originator";
-			var urlPicture:String = "url_picture_originator";
-			var dataOriginator:DataOriginator = new DataOriginator(name, url, urlPicture);
+			var pictureUrl:String = "url_picture_originator";
+			var dataOriginator:DataOriginator = new DataOriginator(name, url, pictureUrl);
 			
 			// contraint params
 			var bounds:Bounds = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"");		
@@ -48,8 +48,8 @@ package org.openscales.core.layer.originator
 			// new DataOriginator
 			var name:String = "originator";
 			var url:String = "url_originator";
-			var urlPicture:String = "url_picture_originator";
-			var dataOriginator:DataOriginator = new DataOriginator(name, url, urlPicture);
+			var pictureUrl:String = "url_picture_originator";
+			var dataOriginator:DataOriginator = new DataOriginator(name, url, pictureUrl);
 			
 			// contraint params
 			var bounds:Bounds = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"");		
@@ -70,8 +70,8 @@ package org.openscales.core.layer.originator
 			// new DataOriginator
 			var name:String = "originator";
 			var url:String = "url_originator";
-			var urlPicture:String = "url_picture_originator";
-			var dataOriginator:DataOriginator = new DataOriginator(name, url, urlPicture);
+			var pictureUrl:String = "url_picture_originator";
+			var dataOriginator:DataOriginator = new DataOriginator(name, url, pictureUrl);
 			
 			// contraint params
 			var bounds:Bounds = new Bounds(-2,-2,2,2,"");		
@@ -117,8 +117,8 @@ package org.openscales.core.layer.originator
 			// new DataOriginator
 			var name:String = "originator";
 			var url:String = "url_originator";
-			var urlPicture:String = "url_picture_originator";
-			var dataOriginator:DataOriginator = new DataOriginator(name, url, urlPicture);
+			var pictureUrl:String = "url_picture_originator";
+			var dataOriginator:DataOriginator = new DataOriginator(name, url, pictureUrl);
 			
 			// default resolution :
 			var maxResolution:Number = Layer.DEFAULT_NOMINAL_RESOLUTION;
