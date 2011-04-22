@@ -57,7 +57,6 @@ package org.openscales.core.layer.capabilities
 		}
 		
 		/**
-		 * @Inherit
 		 * 
 		 * <p>
 		 * for WMTS the returned value is an HashMap as follows:
