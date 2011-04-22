@@ -7,7 +7,7 @@ package org.openscales.core.layer.ogc.WMTS
 	 * while parsing WMTS GetCapabilities response and meant to be accessed when a user creates a WMTS layer.
 	 * <p>
 	 * The class corresponds to the TileMatrixSet tag of the capabilities xml file
-	 * <p>
+	 * </p>
 	 * @author htulipe
 	 */ 
 	public class TileMatrixSet
