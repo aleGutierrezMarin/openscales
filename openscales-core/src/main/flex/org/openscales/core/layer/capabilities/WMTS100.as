@@ -12,8 +12,35 @@ package org.openscales.core.layer.capabilities
 
 	/**
 	 * WMTS 1.0.0 capabilities parser
+	 *
+	 * 
+	 * Supported tags are the followings (other ones are disregarded):  
+	 *<ul>
+	 *<li>Layer</li>
+	 *<ul>
+	 *	<li>Identifier</li>
+	 *	<li>TileMatrixSetLink</li>
+	 *  <ul><li>TileMatrixSet</li></ul>
+	 *</ul>
+	 *<li>TileMatrixSet</li>
+	 *<ul>
+	 *	<li>Identifier</li>
+	 *	<li>SupportedCRS</li>
+	 *	<li>TileMatrix</li>
+	 *	<ul>
+	 *		<li>Identifier</li>
+	 *		<li>ScaleDenominator</li>
+	 *		<li>TopLeftCorner</li>
+	 * 		<li>TileWidth</li>
+	 *		<li>TileHeight</li>
+	 *		<li>MatrixWidth</li>
+	 *		<li>MatrixHeight</li>
+	 *	</ul>
+	 *</ul>
+	 *</ul>
 	 * 
 	 * @author slopez
+	 * @author htulipe
 	 */
 	public class WMTS100 extends CapabilitiesParser
 	{
