@@ -52,17 +52,20 @@ package {
 			//_map.addLayer(regions);
 			
 			//var layerWMS111:WMS = new WMS("Germany","http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map","Germany");
-			var layerWMS110:WMS = new WMS("pg:ign_geopla_region","http://openscales.org/geoserver/pg/wms?service=WMS","");
-			layerWMS110.projSrsCode = "EPSG:2154";
+			var layerWMS110:WMS = new WMS("topp:states","http://openscales.org/geoserver/wms","topp:states","");
+			layerWMS110.projSrsCode = "EPSG:4326";
 
-			layerWMS110.maxExtent = new Bounds(99226.0,6049647.0,1242375.0,7110524.0,"EPSG:2154");
-			layerWMS110.version="1.1.0";
+			//layerWMS110.maxExtent = new Bounds(99226.0,6049647.0,1242375.0,7110524.0,"EPSG:4326");
+			layerWMS110.version="1.3.0";
 			this._map.addLayer(layerWMS110);
-			layerWMS110.alpha = 0.5;
+			layerWMS110.setTransparencyToDisplay(true);
+			//layerWMS110.alpha = 0.5;
 			
-			var geoServer:WMSC = new WMSC("nasa", "http://openscales.org/geoserver/gwc/service/wms", "bluemarble");
-			geoServer.version = "1.1.1";
-			geoServer.maxExtent = new Bounds(-180,-90,180,90, geoServer.projSrsCode);
+			var geoServer:WMSC = new WMSC("nasa", "http://openscales.org/geoserver/wms", "topp:states");
+			geoServer.style = "";
+			geoServer.setSLDToDisplay("");
+			geoServer.version = "1.1.0";
+			//geoServer.maxExtent = new Bounds(-180,-90,180,90, geoServer.projSrsCode);
 			//_map.addLayer(geoServer);
 			mapnik.alpha = 0.5;
 			geoServer.alpha = 0.5;

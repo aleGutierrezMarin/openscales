@@ -17,6 +17,8 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * Base class for layers that use a lattice of tiles.
@@ -162,14 +164,17 @@ package org.openscales.core.layer
 				return;
 			}
 			
-			var bounds:Bounds = this.map.extent.clone();
+			//var bounds:Bounds = this.map.extent.clone();
 			
 			// Reprojecting the extend to the layer projection
-			bounds = bounds.reprojectTo(this.projSrsCode)
+			var bounds:Bounds = this.map.extent.reprojectTo(this.projSrsCode)
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw;
 
 			var tilesBounds:Bounds = this.getTilesBounds();            
-
+			if (this.projSrsCode != this.map.baseLayer.projSrsCode)
+			{
+				forceReTile = true;
+			}
 			if (this.singleTile) {
 				if(fullRedraw)
 					this.clear();
@@ -247,7 +252,9 @@ package org.openscales.core.layer
 												center.lat + (tileHeight/2),
 												this.projSrsCode);
 			var ul:Location = new Location(tileBounds.left, tileBounds.top);
+			//ul.reprojectTo(this.map.baseLayer.projSrsCode);
 			var px:Pixel = this.map.getLayerPxFromLocation(ul);
+			
 
 			if(this._grid==null) {
 				this._grid = new Vector.<Vector.<ImageTile>>(1);
@@ -256,6 +263,7 @@ package org.openscales.core.layer
 			}
 
 			var tile:ImageTile = this._grid[0][0];
+			px = new Pixel(0 , 0);
 			if (!tile) {
 				tile = this.addTile(tileBounds, px);
 				tile.draw();
@@ -266,6 +274,8 @@ package org.openscales.core.layer
 			this.removeExcessTiles(1,1);
 		}
 
+		
+		
 		/**
 		 * Ititialize gridded tiles
 		 * <p>
@@ -283,6 +293,7 @@ package org.openscales.core.layer
 		 * TODO : This method use BaseMap. The behaviour must be changed when BaseMap will be deleted 
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
+			//ProjProjection.getProjProjection(bounds.projSrsCode).projParams.units;
 			
 			var resolution:Number = this.map.resolution;
 			var resolutionBuffer:Number = resolution;
@@ -315,6 +326,8 @@ package org.openscales.core.layer
 				
 					
 				resolution = resolutionBuffer;
+				//resolution = resolutionBuffer * unityProj.x;
+				//resolution = resolutionBuffer * Unit.getInchesPerUnit(ProjProjection.getProjProjection(this.projSrsCode).projParams.units) / Unit.getInchesPerUnit(ProjProjection.getProjProjection(this.map.baseLayer.projSrsCode).projParams.units)
 			}
 			
 			
