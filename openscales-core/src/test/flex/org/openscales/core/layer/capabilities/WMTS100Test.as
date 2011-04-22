@@ -2,6 +2,7 @@ package org.openscales.core.layer.capabilities
 {
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNotNull;
+	import org.flexunit.asserts.assertTrue;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.ogc.WMTS.TileMatrixSet;
 	
@@ -22,31 +23,56 @@ package org.openscales.core.layer.capabilities
 			// hash map sould be of size 3 (xmlData contains 3 Layer tags)
 			assertEquals(WMTSLayers.size(), 3);
 			
-			// Getting matrixSets for a specific layer
-			var tileMatrixSets:HashMap = WMTSLayers.getValue("medford:buildings");
+			//Getting layer capabilities
+			var layerCapabilities:HashMap = WMTSLayers.getValue("medford:buildings");
+			// Returned value should be non null
+			assertNotNull(layerCapabilities);
+			// layer capabilites should contains three keys: TileMatrixSets, Formats, Styles
+			assertTrue(layerCapabilities.containsKey("TileMatrixSets"));
+			assertTrue(layerCapabilities.containsKey("Formats"));
+			assertTrue(layerCapabilities.containsKey("Styles"));
+			assertEquals(layerCapabilities.size(),3);
 			
+			//Getting tile matrix sets hashmap
+			var tileMatrixSets:HashMap = layerCapabilities.getValue("TileMatrixSets");
 			// Returned value should be non null
 			assertNotNull(tileMatrixSets);
 			// Returned value shoudl be a 2 element hashmap
 			assertEquals(tileMatrixSets.size(), 2);
-			
 			// Getting a tile matrix set
 			var tileMatrixSet:TileMatrixSet = tileMatrixSets.getValue("EPSG:4326");
-			
 			// Returned value should not be null
 			assertNotNull(tileMatrixSet);
 			// returned value should be the one expected
 			assertEquals("EPSG:4326", tileMatrixSet.supportedCRS);
-			
 			// getting tile matrices
 			var tileMatrices:HashMap = tileMatrixSet.tileMatrices;
-			
 			// Returned value should not be null
 			assertNotNull(tileMatrices);
-			// Siez should be 31
+			// Size should be 31
 			assertEquals(31, tileMatrices.size());
 			
+			// Getting styles array
+			var styles:Array = layerCapabilities.getValue("Styles");
+			// Returned value should not be null
+			assertNotNull(styles);
+			// Size should be 1
+			assertEquals(styles.length,1);
+			// Value should be consitent with XML
+			assertEquals(styles[0] as String,"_null");
 			
+			// Getting formats array
+			var formats:Array = layerCapabilities.getValue("Formats");
+			// Returned value should not be null
+			assertNotNull(formats);
+			// Size should be 5
+			assertEquals(formats.length,5);
+			// Value should be consitent with XML
+			assertEquals(formats[0] as String,"image/png");
+			assertEquals(formats[1] as String,"image/gif");
+			assertEquals(formats[2] as String,"image/png8");
+			assertEquals(formats[3] as String,"image/jpeg");
+			assertEquals(formats[4] as String,"application/vnd.google-earth.kml+xml");		
 		}
 		
 		// Sample xml data

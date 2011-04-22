@@ -3,6 +3,7 @@ package org.openscales.core.layer.capabilities
 	
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.format.Format;
 	import org.openscales.core.layer.ogc.WMTS.TileMatrix;
 	import org.openscales.core.layer.ogc.WMTS.TileMatrixSet;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -15,29 +16,27 @@ package org.openscales.core.layer.capabilities
 	 *
 	 * 
 	 * Supported tags are the followings (other ones are disregarded):  
-	 *<ul>
-	 *	<li>Layer</li>
-	 *	<ul>
-	 * 		<li>Identifier</li>
-	 *		<li>TileMatrixSetLink</li>
-	 *  	<ul><li>TileMatrixSet</li></ul>
-	 * 	</ul>
-	 *	<li>TileMatrixSet</li>
-	 *	<ul>
-	 *		<li>Identifier</li>
-	 *		<li>SupportedCRS</li>
-	 *		<li>TileMatrix</li>
-	 *		<ul>
-	 *			<li>Identifier</li>
-	 *			<li>ScaleDenominator</li>
-	 *			<li>TopLeftCorner</li>
-	 * 			<li>TileWidth</li>
-	 *			<li>TileHeight</li>
-	 *			<li>MatrixWidth</li>
-	 *			<li>MatrixHeight</li>
-	 *		</ul>
-	 *	</ul>
-	 *</ul>
+	 *
+	 * <ul>
+	 * 		<li>Layer</li>
+	 * 		<li>Layer.Identifier</li>
+	 * 		<li>Layer.Style</li>
+	 * 		<li>Layer.Style.Identifier</li>
+	 * 		<li>Layer.Format</li>
+	 * 		<li>Layer.TileMatrixSetLink</li>
+	 * 		<li>Layer.TileMatrixSetLink.TileMatrixSet</li>
+	 * 		<li>TileMatrixSet</li>
+	 * 		<li>TileMatrixSet.Identifier</li>
+	 * 		<li>TileMatrixSet.SupportedCRS</li>
+	 * 		<li>TileMatrixSet.TileMatrix</li>
+	 * 		<li>TileMatrixSet.TileMatrix.Identifier</li>
+	 * 		<li>TileMatrixSet.TileMatrix.ScaleDenominator</li>
+	 * 		<li>TileMatrixSet.TileMatrix.TopLeftCorner</li>
+	 * 		<li>TileMatrixSet.TileMatrix.TileWidth</li>
+	 * 		<li>TileMatrixSet.TileMatrix.TileHeight</li>
+	 * 		<li>TileMatrixSet.TileMatrix.MatrixWidth</li>
+	 * 		<li>TileMatrixSet.TileMatrix.MatrixHeight</li>	
+	 * </ul>
 	 * 
 	 * @author slopez
 	 * @author htulipe
@@ -59,6 +58,14 @@ package org.openscales.core.layer.capabilities
 		
 		/**
 		 * @Inherit
+		 * 
+		 * <p>
+		 * for WMTS the returned value is an HashMap as follows:
+		 * 
+		 * "TileMatrixSets" ==> HashMap(String ==> TileMatrixSet)<br/>
+		 * "Formats" ==> Array(String)
+		 * "Styles" ==> Array(String)
+		 * </p> 
 		 */
 		public override function read(doc:XML):HashMap {
 			
@@ -188,9 +195,15 @@ package org.openscales.core.layer.capabilities
 			var layersNodes:XMLList = doc..*::Layer;
 			
 			//Variables needed for parsing layers tag
+			var layerCapabilities:HashMap; // map containing all data about a layer
 			var linkedTileMatrixSets:HashMap; // map containing all linked tilematrix set for the layer
+			var styles:Array; // array containg available styles for the layer
+			var formats:Array; // array containing available formats for the layer
+			
 			var layerIdentifier:String; // Identifier of the layer
 			var tileMatrixSetId:String; // Identifier of a tilematrixSet
+			var style:String;
+			var format:String;
 			
 			for each (node in layersNodes){
 				if(node.parent().localName()=="Contents") {
@@ -199,7 +212,10 @@ package org.openscales.core.layer.capabilities
 					// layerIdentifier must be a non null non empty string because it will be an hash map key
 					if (layerIdentifier == "" || layerIdentifier == null) return null;
 					
+					layerCapabilities = new HashMap();
 					linkedTileMatrixSets = new HashMap();
+					styles = new Array();
+					formats = new Array();
 					
 					for each (var XMLTileMatrixSet:XML in node.TileMatrixSetLink)
 					{
@@ -210,9 +226,30 @@ package org.openscales.core.layer.capabilities
 							linkedTileMatrixSets.put(tileMatrixSetId, matrixSets.getValue(tileMatrixSetId))
 						}
 					}
+					
+					layerCapabilities.put("TileMatrixSets", linkedTileMatrixSets);
+					
+					// Parsing Format tags
+					for each (var XMLFormat:XML in node.Format)
+					{
+						format = XMLFormat;						
+						formats.push(format);
+					}
+					
+					layerCapabilities.put("Formats", formats);
+					
+					// Parsing Style tags
+					for each(var XMLStyle:XML in node.Style)
+					{
+						style = XMLStyle._owsns::Identifier;	
+						styles.push(style);
+					}
+					
+					layerCapabilities.put("Styles", styles);
+					
 				}
 				
-				this._capabilities.put(layerIdentifier, linkedTileMatrixSets);
+				this._capabilities.put(layerIdentifier, layerCapabilities);
 			}
 			
 			// END OF SECOND STEP
