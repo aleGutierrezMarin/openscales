@@ -14,8 +14,10 @@
 		<MousePosition x="10" y="{height-20}" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
-		<TermsOfService x="200" y="{height-20}" url="http://openscales.org/index.html" />
+		<DataOriginatorsDisplay x="550" y="{height-200}" />
+		<TermsOfService x="500" y="{height-20}" url="http://openscales.org/index.html" />
 		<Copyright x="400" y="{height-20}" copyright="openscales" />
+		<TraceInfo x="300" />
 		
 	</Map>
 	

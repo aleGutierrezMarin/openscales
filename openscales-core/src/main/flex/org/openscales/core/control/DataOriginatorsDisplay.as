@@ -348,6 +348,13 @@ package org.openscales.core.control
 			{
 				this._linkedList.insertTail(new LinkedListOriginatorNode(originator,bmp,originator.name));
 			}
+			
+			/*
+			var bmp:Bitmap = ( event.target as LoaderInfo ).content as Bitmap;
+			imgColl.addItem(bmp); //sore elements
+			Alert.show("load complete");//scheck for loadin
+			img.source = imgColl.getItemAt(1) as Bitmap;
+			*/
 		}
 		
 		/**
@@ -358,10 +365,7 @@ package org.openscales.core.control
 		 * @param event The OriginatorEvent received.
 		 */
 		private function onOriginatorAdded(event:OriginatorEvent):void
-		{
-			// add to the list :
-			//addOriginator(event.originator);
-			
+		{	
 			// if not already in the add list :
 			if(!this.isOnTheList(event.originator, this._addOriginatorList))
 			{
