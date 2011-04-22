@@ -81,8 +81,7 @@ package org.openscales.core.layer
 		override protected function onMapMove(e:MapEvent):void {
 			// Clear pending requests after zooming in order to avoid to add
 			// too many tile requests  when the user is zooming step by step
-			// If the zoom has changed we must retile to avoid row and colums
-			// shifts due to tile stretching
+
 			if(e.zoomChanged) {
 				var j:uint;
 				
@@ -264,12 +263,14 @@ package org.openscales.core.layer
 
 			var tile:ImageTile = this._grid[0][0];
 			px = new Pixel(0 , 0);
+			
 			if (!tile) {
 				tile = this.addTile(tileBounds, px);
 				tile.draw();
 				this._grid[0][0] = tile;
 			} else {
 				tile.moveTo(tileBounds, px);
+				
 			}           
 			this.removeExcessTiles(1,1);
 		}
