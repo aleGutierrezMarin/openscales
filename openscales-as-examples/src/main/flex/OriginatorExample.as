@@ -62,7 +62,7 @@ package {
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerManager());
 			_map.addControl(new PanZoomBar());
-			_map.addControl(new DataOriginatorsDisplay(2));
+			_map.addControl(new DataOriginatorsDisplay(2, new Pixel(300, 250)));
 			
 			
 			var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();

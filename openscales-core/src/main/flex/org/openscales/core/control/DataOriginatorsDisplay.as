@@ -39,10 +39,22 @@ package org.openscales.core.control
 		public static var DEFAULT_ROTATION_CYCLE:uint=2000;
 		
 		/**
-		 * @default 2000
+		 * @default 30
 		 * The default value for rotation cycle.
 		 */
-		public static var DEFAULT_SPACING:uint=1;
+		public static var DEFAULT_SPACING:uint=30;
+		
+		/**
+		 * @default 50
+		 * The default value for rotation cycle.
+		 */
+		public static var DEFAULT_LOGO_WIDTH:uint=50;	
+		
+		/**
+		 * @default 50
+		 * The default value for rotation cycle.
+		 */
+		public static var DEFAULT_LOGO_HEIGHT:uint=50;
 		
 		/**
 		 * @private
@@ -68,9 +80,16 @@ package org.openscales.core.control
 		/**
 		 * @private
 		 * @default null
-		 * LinkedLiist where bitmap to remove but currently displayed are srored
+		 * LinkedLiist to store originator to remove at the next change
 		 */
-		private var _removedOriginatorList:Vector.<DataOriginator> = null;
+		private var _removeOriginatorList:Vector.<DataOriginator> = null;
+		
+		/**
+		 * @private
+		 * @default null
+		 * LinkedLiist to store originator to add at the next change
+		 */
+		private var _addOriginatorList:Vector.<DataOriginator> = null;
 		
 		/**
 		 * @private
@@ -100,6 +119,19 @@ package org.openscales.core.control
 		 */
 		private var _spacing:Number = DataOriginatorsDisplay.DEFAULT_SPACING;
 		
+		/**
+		 * @private
+		 * @default DEFAULT_LOGO_WIDTH
+		 * The width of all displayed logos.
+		 */
+		private var _logoWidth:Number = DataOriginatorsDisplay.DEFAULT_LOGO_WIDTH;
+			
+		/**
+		 * @private
+		 * @default DEFAULT_LOGO_HEIGHT
+		 * The height of all displayed logos.
+		 */
+		private var _logoHeight:Number = DataOriginatorsDisplay.DEFAULT_LOGO_HEIGHT;
 		
 		/**
 		 * Constructor of the class DataOriginatorsDisplay.
@@ -116,9 +148,8 @@ package org.openscales.core.control
 			this._logoNumber = logoNumber;
 			this._dataOriginators = new DataOriginators(position);
 			this._linkedList = new LinkedList();
-			this._removedOriginatorList = new Vector.<DataOriginator>();
-			
-			this.addEventListener(OriginatorEvent.ORIGINATOR_REMOVE_FROM_DISPLAY, this.manageRemoveOriginatorList);
+			this._removeOriginatorList = new Vector.<DataOriginator>();
+			this._addOriginatorList = new Vector.<DataOriginator>();
 		}
 		
 		/**
@@ -126,30 +157,33 @@ package org.openscales.core.control
 		 * 
 		 * Remove the bitmap from the list and remove the listener for the timer.
 		 */
-		// TODO
 		override public function destroy():void {
 			
 			super.destroy();
 			
-			this.removeEventListener(OriginatorEvent.ORIGINATOR_REMOVE_FROM_DISPLAY, this.manageRemoveOriginatorList);
-			
-			
-			if(this._timer!=null) {
+			if(this._timer!=null) 
+			{
 				this._timer.stop();
 				this._timer.removeEventListener(TimerEvent.TIMER,this.changeDisplay);
 				this._timer = null;
 			}
-			if(this._currentOriginator!=null) {
-				this.removeChild(this._currentOriginator.bitmap());
+			if(this._currentOriginator!=null) 
+			{
+				var i:uint = 0;
+				var listSize:uint = this._linkedList.size;
+				var j:uint = (listSize < this._logoNumber) ? listSize : this._logoNumber;
+				
+				for(; i<j; ++i)
+				{
+					this.removeChild(this._currentOriginator.bitmap());
+					this._currentOriginator = this.getFollowing(this._currentOriginator);
+				}
 				this._currentOriginator = null;
 			}
 			if(this._linkedList!=null) {
 				this._linkedList.clear();
 				this._linkedList = null;
 			}
-			
-			// TODO remove the displayed logos
-			
 		}
 		
 		/**
@@ -219,8 +253,6 @@ package org.openscales.core.control
 				btn.removeEventListener(MouseEvent.CLICK, this.onClick);
 				this.removeChild(btn);
 				
-				// event : not display any more (to delete the originator if asked)
-				this.dispatchEvent(new OriginatorEvent(OriginatorEvent.ORIGINATOR_REMOVE_FROM_DISPLAY, originatorNode.originator));
 			}
 		 }
 		
@@ -234,67 +266,64 @@ package org.openscales.core.control
 		 */
 		private function addOriginator(originator:DataOriginator):void
 		{
-			var loader:Loader = new Loader();
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.completeLoading);
-			loader.name = originator.name;
-			
-			var request:URLRequest = new URLRequest(originator.pictureUrl);
-			loader.load(request);
+			// if not already on the linked list
+			if(this._linkedList.getIndex(originator.name)==-1)
+			{
+				var loader:Loader = new Loader();
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.completeLoading);
+				loader.name = originator.name;
+				
+				var request:URLRequest = new URLRequest(originator.pictureUrl);
+				loader.load(request);
+			}
 		}
 		
+		
 		/**
-		 * Check if the given originator is curretly display or not
-		 * Return true if the DataOriginator is display
-		 * Otherwise return false
+		 * @private
+		 * Check if the given originator is in the given list
+		 * 
+		 * @param originator The searched originator
+		 * @param list The list where the originator is searched
+		 * 
+		 * @return true if the originator is infd in the list, false otherwise
 		 */
-		public function isDisplayed(originator:DataOriginator):Boolean
+		private function isOnTheList(originator:DataOriginator, list:Vector.<DataOriginator>):Boolean
 		{
-			var i:uint;
-			var j:uint = this._logoNumber;
-			var tmpOriginator:LinkedListOriginatorNode = this._currentOriginator;
+			var i:uint = 0;
+			var j:uint = list.length;
 			
-			if( tmpOriginator != null )
+			for(; i<j; ++i)
 			{
-				if( this._linkedList.size < this._logoNumber )
+				if(list[i] == originator)
 				{
-					j = this._linkedList.size;
-				}
-				
-				for (; i<j; ++i) 
-				{
-					if( tmpOriginator.originator == originator )
-					{
-						return true;
-					}
-					tmpOriginator = tmpOriginator.nextNode as LinkedListOriginatorNode;
+					return true;
 				}
 			}
 			return false;
 		}
-		
+			
 		/**
 		 * @private
-		 * Remove an originator in the list.
-		 * If the originator is currently displayed add it on the removeList
+		 * Delete a DataOriginator from a given list
 		 * 
-		 * @param The originator to remove.
+		 * @param originator The DataOriginator to remove
+		 * @param list The list where the originator has to be removed
 		 */
-		private function removeOriginator(originator:DataOriginator):void
+		private function removeFromList(originator:DataOriginator, list:Vector.<DataOriginator>):void
 		{
-			if(isDisplayed(originator))
+			var i:uint = 0;
+			var j:uint = list.length;
+			
+			for(; i<j; ++i)
 			{
-				trace("Is currently displayed so waiting list : "+originator.name);
-				// to delete it when not displayed
-				this._removedOriginatorList.push(originator);
-			}
-			else
-			{
-				trace("not displayed so I kill it : "+originator.name);
-				this.linkedList.remove(originator.name);
+				if(list[i] == originator)
+				{
+					list.splice(i, 1);
+					return;
+				}
 			}
 		}
-		
-		
 		
 		// Events
 		/**
@@ -309,6 +338,8 @@ package org.openscales.core.control
 			var name:String = event.target.loader.name;
 			var bmp:Bitmap = Bitmap(event.target.loader.content);
 			bmp.addEventListener(MouseEvent.CLICK, this.onClick);
+			bmp.width = this._logoWidth;
+			bmp.height = this._logoHeight;
 			
 			// get the DataOriginator linked to this bitmap and pictureUrl :
 			var originator:DataOriginator = this._dataOriginators.findOriginatorByName(name);
@@ -322,62 +353,98 @@ package org.openscales.core.control
 		/**
 		 * @private
 		 * Call when an originatorEvent.ORIGINATOR_ADDED occur
-		 * The new originator bitmap logo is add at the enf of the list of logos
+		 * The originator is stored in the addOriginatorList
 		 * 
 		 * @param event The OriginatorEvent received.
 		 */
 		private function onOriginatorAdded(event:OriginatorEvent):void
 		{
-			trace("originator added");
-			
 			// add to the list :
-			addOriginator(event.originator);
+			//addOriginator(event.originator);
+			
+			// if not already in the add list :
+			if(!this.isOnTheList(event.originator, this._addOriginatorList))
+			{
+				// if remove asked cancel it :
+				if( this.isOnTheList(event.originator, this._removeOriginatorList ))
+				{
+					this.removeFromList(event.originator, this._removeOriginatorList);
+				}
+				this._addOriginatorList.push(event.originator);
+			}
 		}
 		
 		/**
 		 * @private
 		 * Call when an originatorEvent.ORIGINATOR_REMOVED occur
-		 * The originator bitmap logo is removed from the list once its not display
+		 * The originator is stored in the removeOriginatorList
 		 * 
 		 * @param event The OriginatorEvent received.
 		 */
 		private function onOriginatorRemoved(event:OriginatorEvent):void
 		{
-			trace("originator removed : "+event.originator.name);
-			removeOriginator(event.originator);
-		}
-		
-		/**
-		 * This function check if the originator of the evet wait for remove and in this case remove it
-		 * 
-		 * This function is called when a logo is removed from the map. 
-		 * If the not displayed logo is on the remove list it is removed.
-		 * 
-		 * @param event The OriginatorEvent.ORIGINATOR_REMOVE_FROM_DISPLAY received
-		 */
-		private function manageRemoveOriginatorList(event:OriginatorEvent):void
-		{
-			// if originator waiting for remove
-			if( this._removedOriginatorList.length > 0 )
+			// if not already in the remove list :
+			if(!this.isOnTheList(event.originator, this._removeOriginatorList))
 			{
-				var i:uint = 0;
-				var j:uint = this._removedOriginatorList.length;
-				
-				for (; i<j; ++i) 
+				// if add asked cancel it :
+				if( this.isOnTheList(event.originator, this._addOriginatorList ))
 				{
-					if( this._removedOriginatorList[i] == event.originator )
-					{
-						this._removedOriginatorList.splice(i, 1);
-						this.linkedList.remove(event.originator.name);
-						return;
-					}
+					this.removeFromList(event.originator, this._addOriginatorList);
 				}
+				this._removeOriginatorList.push(event.originator);
 			}
 		}
 		
+		/**
+		 * This function check if originators are on waiting lists for add or remove.
+		 *
+		 * This function has to be called before a new display to be sure that the list is updated.
+		 * This function is called when no logo are displayed. 
+		 * 
+		 */
+		private function manageWaitingOriginatorList():void
+		{
+			var i:uint;
+			var j:uint;
+			
+			// if originator waiting for remove
+			if( this._removeOriginatorList.length > 0 )
+			{
+				i = 0;
+				j = this._removeOriginatorList.length;
+
+				for (; i<j; ++i) 
+				{
+					// if the current is deleted
+					if( this._removeOriginatorList[i] == this._currentOriginator.originator )
+					{
+						this._currentOriginator = getPrevious(this._currentOriginator);
+					}
+					this.linkedList.remove(this._removeOriginatorList[i].name);
+				}
+				// clear the waiting list
+				this._removeOriginatorList.splice(0,j);
+			}
+			
+			// if originator waiting for add
+			if( this._addOriginatorList.length > 0 )
+			{
+				i = 0;
+				j = this._addOriginatorList.length;
+				
+				for (; i<j; ++i) 
+				{
+					this.addOriginator(this._addOriginatorList[i]);
+				}
+				// clear the waiting list
+				this._addOriginatorList.splice(0,j);
+			}
+			
+		}
+		
 		
 		/**
-		 * Get the following originator logo of the current (this._currentOriginator)
+		 * Get the following originator logo (after the originator givenn in paramters)
 		 * If its the end of the list go back to the head
 		 * 
 		 * @param originator The LinkedListOriginatorNode to get the following
@@ -395,88 +462,121 @@ package org.openscales.core.control
 			}
 		}
 		
+		/**
+		 * Get the previous originator logo (before the originator givenn in paramters)
+		 * If its the head of the list go to the tail
+		 * 
+		 * @param originator The LinkedListOriginatorNode to get the following
+		 * @return the following OriginatorNode
+		 */
+		private function getPrevious(originator:LinkedListOriginatorNode):LinkedListOriginatorNode
+		{
+			if(originator != this._linkedList.head)
+			{
+				return originator.previousNode as LinkedListOriginatorNode;
+			}
+			else
+			{
+				return this._linkedList.tail as LinkedListOriginatorNode;
+			}
+		}
+		
+		/**
+		 * @private
+		 * Change the current originator to the following one according to the _logoNumber 
+		 * if the LinkedList size is superior than the given logoNumber.
+		 * Else, no chnage
+		 */
+		private function moveToNextCurrent():void
+		{
+			if( this._linkedList.size > this._logoNumber )
+			{
+				var i:uint = 0;
+				for(; i<this._logoNumber; ++i)
+				{
+					this._currentOriginator = getFollowing(this._currentOriginator);
+				}
+			}
+		}
 		
 		/**
 		 * Change the logos display (debauce delay betewen two changes is spent)
 		 * 
 		 * @param event The event received.
 		 */
-		// TODO
-		private function changeDisplay(event:Event):void
-		{
-			// to progress on the list wihtout changing the current Originator
-			var tmpOriginator:LinkedListOriginatorNode;
-			
+		public function changeDisplay(event:Event):void
+		{	
 			var listSize:Number = this._linkedList.size;
-			var i:uint;
-			var j:uint;
-			var currentPosition:Pixel = position;
-			
 			
 			if(listSize>0) 
 			{
-				// not the fisrt time
-				if( this._currentOriginator != null )
-				{
-					if(listSize >= this._logoNumber)
-					{
-						// remove the given number of logos
-						i = 0;
-						for (; i<this._logoNumber; ++i) 
-						{
-							/// this.removeChild(this._currentOriginator.bitmap());
-							removeLogoButton(this._currentOriginator);
-							
-							// the following logo (head if current is tail)
-							this._currentOriginator = getFollowing(this._currentOriginator);
-						}
-						
-						// add new logos to display
-						i = 0;		
-						tmpOriginator = this._currentOriginator;
-						for (; i<this._logoNumber; ++i) 
-						{
-							tmpOriginator.bitmap().x = currentPosition.x;
-
-							addLogoButton(tmpOriginator, currentPosition);
-							
-							currentPosition.x += tmpOriginator.bitmap().width + this._spacing;
-							// the following logo (head if current is tail)
-							tmpOriginator = getFollowing(tmpOriginator);
-						}
-					}
-					else // less than given logoNumber
-					{
-						// no change
-					}
-				}
-				else
+				// to progress on the list wihtout changing the current Originator
+				var tmpOriginator:LinkedListOriginatorNode = this._currentOriginator;
+				
+				var i:uint = 0;
+				// if enought logo display logoNumber, else display the number max of logo in the list		
+				var j:uint = (listSize < this._logoNumber) ? listSize : this._logoNumber;
+				var currentPosition:Pixel = position;
+				
+				// first time : first init
+				if(tmpOriginator == null)
 				{
 					this._currentOriginator = this._linkedList.head as LinkedListOriginatorNode;
 					tmpOriginator = this._currentOriginator;
-					
-					if(listSize >= this._logoNumber)
-					{
-						j = this._logoNumber;
-					}
-					else
-					{
-						j = listSize;
-					}
 					
 					// add new logos to display
 					i = 0;
 					for (; i<j; ++i) 
 					{
 						tmpOriginator.bitmap().x = currentPosition.x;
-
+						
 						addLogoButton(tmpOriginator, currentPosition);			
-						currentPosition.x += tmpOriginator.bitmap().width + this._spacing;
+						currentPosition.x += this._spacing;
 						
 						// the following logo (head if current is tail)
 						tmpOriginator = getFollowing(tmpOriginator);
 					}
 				}
+				else
+				{
+					// remove current logo from the scene
+					i = 0;
+					for (; i<j; ++i) 
+					{
+						/// this.removeChild(this._currentOriginator.bitmap());
+						removeLogoButton(tmpOriginator);
+						
+						// the following logo (head if current is tail)
+						tmpOriginator = getFollowing(tmpOriginator);
+					}
+					
+					// remove oiginator if necessary while no originator display
+					this.manageWaitingOriginatorList();	
+					
+					// update j with the new linkedList size
+					if( listSize != this._linkedList.size )
+					{
+						listSize = this._linkedList.size;
+						j = (listSize < this._logoNumber) ? listSize : this._logoNumber;;
+					}
+				
+					// change this._currentOriginator
+					this.moveToNextCurrent();
+					
+					// add new logos to display
+					i = 0;		
+					tmpOriginator = this._currentOriginator;
+					for (; i<j; ++i) 
+					{
+						tmpOriginator.bitmap().x = currentPosition.x;
+						
+						addLogoButton(tmpOriginator, currentPosition);
+						
+						currentPosition.x += this._spacing;
+						// the following logo (head if current is tail)
+						tmpOriginator = getFollowing(tmpOriginator);
+					}
+				}	
 			}
 		}
 		
@@ -572,6 +672,36 @@ package org.openscales.core.control
 		}
 
 		/**
+		 * LinkedLiist to store originator to remove at the next change
+		 */
+		public function get removeOriginatorList():Vector.<DataOriginator>
+		{
+			return this._removeOriginatorList;
+		}
+		/**
+		 * @private
+		 */
+		public function set removeOriginatorList(removeOriginatorList:Vector.<DataOriginator>):void
+		{
+			this._removeOriginatorList = removeOriginatorList;
+		}
+		
+		/**
+		 * LinkedLiist to store originator to add at the next change
+		 */
+		public function get addOriginatorList():Vector.<DataOriginator>
+		{
+			return this._addOriginatorList;
+		}
+		/**
+		 * @private
+		 */
+		public function set addOriginatorList(addOriginatorList:Vector.<DataOriginator>):void
+		{
+			this._addOriginatorList = addOriginatorList;
+		}
+		
+		/**
 		 * The LinkedListBitmapNode of a logo (corresponding to a logo load on a bitmap).
 		 */
 		public function get currentOriginator():LinkedListOriginatorNode
@@ -634,6 +764,37 @@ package org.openscales.core.control
 		{
 			this._spacing = spacing;
 		}
-
+		
+		/**
+		 * The width of all displayed logos.
+		 */
+		public function get logoWidth():Number
+		{
+			return this._logoWidth;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set logoWidth(spacing:Number):void
+		{
+			this._logoWidth = logoWidth;
+		}
+		
+		/**
+		 * The height of all displayed logos.
+		 */
+		public function get logoHeight():Number
+		{
+			return this._logoHeight;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set logoHeight(spacing:Number):void
+		{
+			this._logoHeight = logoHeight;
+		}
 	}
 }
