@@ -94,16 +94,13 @@ package org.openscales.core.layer.ogc.provider
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
 			if(this._tileMatrixSets==null || layer == null || layer.map == null)
 				return imageTile;
-			
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
 				return imageTile;
-			
 			var tileMatrixSet:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
-			
 			if(tileMatrixSet==null)
 				return imageTile;
-			
-			if(tileMatrixSet.supportedCRS == bounds.projSrsCode) {
+			Trace.debug(bounds.toString());
+			if(tileMatrixSet.supportedCRS.toUpperCase() != bounds.projSrsCode.toUpperCase()) {
 				bounds = bounds.reprojectTo(tileMatrixSet.supportedCRS);
 			}
 			
@@ -124,11 +121,10 @@ package org.openscales.core.layer.ogc.provider
 			var location:Location = bounds.center;
 			var tileOrigin:Location = tileMatrix.topLeftCorner;
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
-			var row:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.y,location.y,tileSpanY);
-			
+			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
 			if(col<0 || row< 0 || col>tileMatrix.matrixWidth-1 || row>tileMatrix.matrixHeight-1)
 				return imageTile;
-			
+			Trace.debug("test1");
 			var params:Object = {
 				"TILECOL" : col,
 				"TILEROW" : row,
@@ -139,6 +135,10 @@ package org.openscales.core.layer.ogc.provider
 			
 			imageTile.size = new Size(tileWidth,tileHeight);
 			Trace.debug("Tile url: "+imageTile.url);
+			if(center != null)
+				Trace.debug(center.toString());
+			else
+				Trace.debug("pas de center");
 			return imageTile;
 		}
 		

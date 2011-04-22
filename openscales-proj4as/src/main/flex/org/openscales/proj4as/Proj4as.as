@@ -28,6 +28,8 @@ package org.openscales.proj4as {
 				trace("Parameters not created!");
 				return null;
 			}
+			if(sourceSrs.toUpperCase() == destSrs.toUpperCase())
+				return point;
 			
 			var source:ProjProjection = ProjProjection.getProjProjection(sourceSrs.toUpperCase());
 			var dest:ProjProjection = ProjProjection.getProjProjection(destSrs.toUpperCase());
