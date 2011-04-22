@@ -92,7 +92,14 @@ package org.openscales.core.layer.capabilities
 					
 					// TODO SupportedCRS is URI formated whereas OpenScale Projection's code are not, need to convert
 					supportedCRS = node._owsns::SupportedCRS;
-					if( supportedCRS == null) return null; // Can't be null need to alculate tile matrices hash map key
+					
+					if( supportedCRS == null)
+						continue; // Can't be null need to alculate tile matrices hash map key
+					
+					supportedCRS = supportedCRS.replace("urn:ogc:def:crs:","").replace("::",":");
+					
+					if(supportedCRS=="")
+						continue;
 					
 					// For each tile matrix 
 					for each (var XMLTileMatrix:XML in node.TileMatrix)
