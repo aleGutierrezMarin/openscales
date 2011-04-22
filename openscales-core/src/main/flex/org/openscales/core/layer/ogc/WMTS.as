@@ -212,6 +212,7 @@ package org.openscales.core.layer.ogc
 			return super.tileWidth;
 		}
 		
+
 		/**
 		 * @Inherit
 		 */
