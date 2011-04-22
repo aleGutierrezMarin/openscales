@@ -16,27 +16,27 @@ package org.openscales.core.layer.capabilities
 	 * 
 	 * Supported tags are the followings (other ones are disregarded):  
 	 *<ul>
-	 *<li>Layer</li>
-	 *<ul>
-	 *	<li>Identifier</li>
-	 *	<li>TileMatrixSetLink</li>
-	 *  <ul><li>TileMatrixSet</li></ul>
-	 *</ul>
-	 *<li>TileMatrixSet</li>
-	 *<ul>
-	 *	<li>Identifier</li>
-	 *	<li>SupportedCRS</li>
-	 *	<li>TileMatrix</li>
+	 *	<li>Layer</li>
+	 *	<ul>
+	 * 		<li>Identifier</li>
+	 *		<li>TileMatrixSetLink</li>
+	 *  	<ul><li>TileMatrixSet</li></ul>
+	 * 	</ul>
+	 *	<li>TileMatrixSet</li>
 	 *	<ul>
 	 *		<li>Identifier</li>
-	 *		<li>ScaleDenominator</li>
-	 *		<li>TopLeftCorner</li>
-	 * 		<li>TileWidth</li>
-	 *		<li>TileHeight</li>
-	 *		<li>MatrixWidth</li>
-	 *		<li>MatrixHeight</li>
+	 *		<li>SupportedCRS</li>
+	 *		<li>TileMatrix</li>
+	 *		<ul>
+	 *			<li>Identifier</li>
+	 *			<li>ScaleDenominator</li>
+	 *			<li>TopLeftCorner</li>
+	 * 			<li>TileWidth</li>
+	 *			<li>TileHeight</li>
+	 *			<li>MatrixWidth</li>
+	 *			<li>MatrixHeight</li>
+	 *		</ul>
 	 *	</ul>
-	 *</ul>
 	 *</ul>
 	 * 
 	 * @author slopez
