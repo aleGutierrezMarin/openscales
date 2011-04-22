@@ -113,8 +113,8 @@ package org.openscales.core.layer.capabilities
 						{
 							topLeftCornerArray = topLeftCornerString.split(" ");
 							topLeftCorner = new Location(
-													parseFloat(topLeftCornerArray[0]),
 													parseFloat(topLeftCornerArray[1]),
+													parseFloat(topLeftCornerArray[0]),
 													supportedCRS);
 						}	
 						
