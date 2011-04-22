@@ -121,7 +121,7 @@ package org.openscales.core.tile
 					bottomRight = new Location(180+bottomRight.lon+180, bottomRight.y, bottomRight.projSrsCode);
 				}        
 			}
-			bounds = new Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat, null);  
+			bounds = new Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat, topLeft.projSrsCode);  
 			return bounds;
 		}
 
