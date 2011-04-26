@@ -15,6 +15,13 @@ package org.openscales.core.events
 		private var _originator:DataOriginator = null;
 		
 		/**
+		 * @private
+		 * Position of this originator in its container list.
+		 * @default -1
+		 */
+		private var _position:Number = -1;
+		
+		/**
 		 * Event type dispatched when an originator is added to the map.
 		 */ 
 		public static const ORIGINATOR_ADDED:String="openscales.addOriginator";
@@ -32,9 +39,10 @@ package org.openscales.core.events
 		 * @param bubbles Indicates whether an event is a bubbling event.
 		 * @param cancelable Indicates whether the behavior associated with the event can be prevented.
 		 */ 
-		public function OriginatorEvent(type:String, originator:DataOriginator, bubbles:Boolean=false,cancelable:Boolean=false)
+		public function OriginatorEvent(type:String, originator:DataOriginator, position:Number=-1, bubbles:Boolean=false,cancelable:Boolean=false)
 		{
 			this._originator = originator;
+			this._position = position;
 			super(type, bubbles, cancelable);
 		}
 		
@@ -52,6 +60,20 @@ package org.openscales.core.events
 		 */
 		public function set originator(originator:DataOriginator):void {
 			this._originator = originator;	
+		}
+
+		/**
+		 * Position of this originator in its container list.
+		 */
+		public function get position():Number {
+			return this._position;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set position(value:Number):void {
+			this._position = value;	
 		}
 
 	}

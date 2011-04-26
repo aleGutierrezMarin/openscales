@@ -198,7 +198,7 @@ package org.openscales.core.control
 					this._originatorsLayersCount.remove(originator.name);
 					
 					// Event Originator_removed
-					this.dispatchEvent(new OriginatorEvent(OriginatorEvent.ORIGINATOR_REMOVED, originator));
+					this.dispatchEvent(new OriginatorEvent(OriginatorEvent.ORIGINATOR_REMOVED, originator, i));
 				}
 			}
 			else

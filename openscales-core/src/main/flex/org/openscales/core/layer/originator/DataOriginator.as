@@ -11,7 +11,7 @@ package org.openscales.core.layer.originator
 	 * @author ajard
 	 */ 
 	
-	public class DataOriginator
+	public class DataOriginator 
 	{
 		/**
 		 * @private

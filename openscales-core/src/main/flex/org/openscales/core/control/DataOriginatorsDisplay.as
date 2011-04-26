@@ -101,7 +101,7 @@ package org.openscales.core.control
 		/**
 		 * @private
 		 * @default null
-		 * The timer use to rotate the display of logos.
+		 * The timer to control the delay between two displays.
 		 */
 		private var _timer:Timer = null;
 		
@@ -504,7 +504,7 @@ package org.openscales.core.control
 		}
 		
 		/**
-		 * Change the logos display (debauce delay betewen two changes is spent)
+		 * Change the logos display (because delay betewen two changes is spent)
 		 * 
 		 * @param event The event received.
 		 */
