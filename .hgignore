@@ -3,5 +3,6 @@ target
 .DS_Store
 FlexUnitApplication.mxml
 FlexUnitApplicationLastRun.xml
+.flexLibProperties
 
 glob:src/refdoc/_build
