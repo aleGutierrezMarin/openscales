@@ -82,6 +82,8 @@
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
     <classEntry path="org.openscales.fx.control.Copyright"/>
     <classEntry path="org.openscales.fx.control.TermsOfService"/>
+    <classEntry path="org.openscales.fx.control.DataOriginatorsDisplay"/>
+    <classEntry path="org.openscales.fx.control.DataOriginatorsRenderer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
