@@ -17,13 +17,31 @@
 				TermsOfServiceText.htmlText = "<a href='"+this._url+"' target='_blank'>"+this._label+"</a>";
 			}
 			
+			/**
+			 * Label displayed for the Terms of service link.
+			 * @return The string value of the label (default : "Terms of Service")
+			 */
+			public function get label():String{
+				return this._label;
+			}
+			
 			public function set label(value:String):void{
 				this._label = value;
+			}
+			
+			/**
+			 * The url to the page where terms of Service are explained.
+			 * @return The string value of the url
+			 */
+			public function get url():String{
+				return this._url;
 			}
 			
 			public function set url(value:String):void{
 				this._url = value;
 			}
+			
+
 			
 		]]>
 	</fx:Script>
