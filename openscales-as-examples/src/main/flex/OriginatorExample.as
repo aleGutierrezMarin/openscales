@@ -7,14 +7,16 @@ package {
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.core.control.PanZoomBar;
+	import org.openscales.core.control.Copyright;
+	import org.openscales.core.control.TermsOfService;
 	import org.openscales.core.control.logoRotator;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.ogc.WFS;
+	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.layer.osm.CycleMap;
 	import org.openscales.core.layer.osm.Mapnik;
-	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -62,6 +64,8 @@ package {
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerManager());
 			_map.addControl(new PanZoomBar());
+			_map.addControl(new Copyright("openscales", new Pixel(50, 620)));
+			_map.addControl(new TermsOfService("http://openscales.org/index.html", "Terms of services", new Pixel(150, 620)));
 			_map.addControl(new DataOriginatorsDisplay(2, new Pixel(300, 250)));
 			
 			
