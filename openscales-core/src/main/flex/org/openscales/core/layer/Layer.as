@@ -35,7 +35,7 @@ package org.openscales.core.layer {
 		}
 
 		private var _map:Map = null;
-		private var _projSrsCode:String = null;
+		protected var _projSrsCode:String = null;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
 		private var _minResolution:Number = NaN;

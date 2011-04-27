@@ -24,7 +24,7 @@ package org.openscales.fx.layer
 
 		public function set singleTile(value:Boolean):void {
 			if(this.layer != null)
-				(this.layer as Grid).singleTile = value;
+				(this.layer as Grid).tiled = value;
 		}
 		
 	}
