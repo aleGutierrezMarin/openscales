@@ -30,7 +30,7 @@ package org.openscales.core.layer
 		/** The grid array contains tiles **/		
 		private var _grid:Vector.<Vector.<ImageTile>> = null;
 
-		private var _singleTile:Boolean = false;
+		protected var _tiled:Boolean = false;
 
 		private var _numLoadingTiles:int = 0;
 
@@ -161,7 +161,7 @@ package org.openscales.core.layer
 
 			var tilesBounds:Bounds = this.getTilesBounds();            
 
-			if (this.singleTile) {
+			if (this.tiled) {
 				if(fullRedraw)
 					this.clear();
 				if ( forceReTile || !tilesBounds.containsBounds(bounds)) {
@@ -181,7 +181,7 @@ package org.openscales.core.layer
 		}
 
 		public function get tileWidth():Number {
-			if (this.singleTile) {
+			if (this.tiled) {
 				return map.size.w;
 			} 			
 			return this._tileWidth;
@@ -192,7 +192,7 @@ package org.openscales.core.layer
 		}
 
 		public function get tileHeight():Number {
-			if (this.singleTile) {
+			if (this.tiled) {
 				return map.size.h;
 			}
 			return this._tileHeight;
@@ -618,12 +618,12 @@ package org.openscales.core.layer
 			this._grid = value;
 		}
 
-		public function get singleTile():Boolean {
-			return this._singleTile;
+		public function get tiled():Boolean {
+			return this._tiled;
 		}
 
-		public function set singleTile(value:Boolean):void {
-			this._singleTile = value;
+		public function set tiled(value:Boolean):void {
+			this._tiled = value;
 		}
 
 		public function get numLoadingTiles():int {
