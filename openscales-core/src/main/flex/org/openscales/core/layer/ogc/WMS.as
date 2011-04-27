@@ -286,6 +286,12 @@ package org.openscales.core.layer.ogc
 			}
 		}
 		
+		// TODO To remove before merging !!!!
+		public override function set projSrsCode (projSrsCode:String):void{
+			super.projSrsCode = projSrsCode;
+			this._tileProvider.projection = projSrsCode;
+		}
+		
 
 	}
 }
