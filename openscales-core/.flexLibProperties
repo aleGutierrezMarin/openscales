@@ -98,6 +98,7 @@
     <classEntry path="org.openscales.core.handler.feature.draw.EditPolygonHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.IEditFeature"/>
+    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.BorderPanHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.ClickHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.DragHandler"/>
@@ -183,6 +184,7 @@
     <classEntry path="org.openscales.core.control.TermsOfServiceTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
+    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
     <classEntry path="org.openscales.core.layer.originator.ConstraintOriginatorTest"/>
@@ -190,8 +192,6 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
-    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandler"/>
-    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
