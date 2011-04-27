@@ -19,10 +19,16 @@ package org.openscales.core.layer.ogc
 	{
 		/**
 		 * @private
+		 * Layer name in the layer switcher
+		 */ 
+		protected var _layerName:String;
+		
+		/**
+		 * @private
 		 * Version of wms protocol used to request the server
 		 * Default version is 1.3.0
 		 */
-		private var _version:String="1.3.0";
+		protected var _version:String="1.3.0";
 		
 		/**
 		 * @private
@@ -34,7 +40,39 @@ package org.openscales.core.layer.ogc
 		 * @private
 		 * Style of the layers to display
 		 */
-		private var _style:String=null;
+		protected var _style:String="";
+		
+		/**
+		 * @private
+		 * MIME type for the requested layer
+		 */
+		protected var _format:String;
+		
+		/**
+		 * @private 
+		 * Way to display errors for the requested tile
+		 */ 
+		protected var _exceptions:String;
+		
+		/**
+		 * @private 
+		 * Indicates if the tile should be transparent or not
+		 */ 
+		protected var _transparent:Boolean;
+		
+		/**
+		 * @private 
+		 * Background color of the requested tile
+		 */ 
+		protected var _bgcolor:String;
+		
+		/**
+		 * @private
+		 * Layer identifier to request from service
+		 */
+		protected var _layers:String;
+		
+		
 		
 		/**
 		 * @private
@@ -58,7 +96,7 @@ package org.openscales.core.layer.ogc
 			super(name, url);
 			
 			//in WMS we must be in single tile mode
-			this.singleTile = true;
+			this.tiled = true;
 			CACHE_SIZE = 32;
 			
 			//Call the tile provider to generate the request and get the tile requested 
@@ -157,112 +195,182 @@ package org.openscales.core.layer.ogc
 				this._tileProvider.style=value;
 			}
 		}
-
+		
 		/**
-		 * Set the layers that the tileprovider is going to request
-		 * 
-		 * @param value Names of the layers to request
-		 * 
+		 * Way to display errors for the requested tile
+		 */ 
+		public function get exceptions():String {
+			return this._exceptions;
+		}
+		/**
+		 * @private
 		 */
-		public function setLayersToDisplay(value:String):void{
+		public function set exceptions(exceptions:String):void {
+			this._exceptions = exceptions;
+			
+			//update the tileprovider of the wmslayer at once
 			if(this._tileProvider != null){
-				this._tileProvider.layer=value;
+				this._tileProvider.exceptions=exceptions;
 			}
 		}
 		
-		/**
-		 * Set the MIME format that the tileprovider is going to return after a request
-		 * 
-		 * @param value Format of the tiles returned
-		 * 
-		 */
-		public function setFormatToDisplay(value:String):void{
-			if(this._tileProvider != null){
-				this._tileProvider.format=value;
-			}
+		override public function get tiled():Boolean {
+			return super._tiled;
 		}
 		
-		/**
-		 * Set the transparency of the tiles returned by the tileprovider
-		 * 
-		 * @param value true if transparent, false otherwise
-		 * 
-		 */
-		public function setTransparencyToDisplay(value:Boolean):void{
-			if(this._tileProvider != null){
-				this._tileProvider.transparent=value;
-			}
-		}
-		
-		/**
-		 * Set the background color of the tiles returned by the tileprovider
-		 * 
-		 * @param value background color of the tiles returned
-		 * 
-		 */
-		public function setBgcolorToDisplay(value:String):void{
-			if(this._tileProvider != null){
-				this._tileProvider.bgcolor=value;
-			}
-		}
-		
-		/**
-		 * Set the wms layer should be tiled or not
-		 * 
-		 * @param value true if the layer should be tiled, false otherwise.
-		 * 
-		 */
-		public function setTiledToDisplay(value:Boolean):void{
+		override public function set tiled(value:Boolean):void {
+			super._tiled = value;
+			
+			//update the tileprovider of the wmslayer at once
 			if(this._tileProvider != null){
 				this._tileProvider.tiled=value;
 			}
 		}
 		
 		/**
-		 * Set the way exceptions should be returned by the tileprovider
-		 * 
-		 * @param value Format of the exceptions returned
-		 * 
+		 * Indicates if the layer's tiles should be transparent or not
+		 */ 
+		public function get transparent():Boolean {
+			return this._transparent;
+		}
+		/**
+		 * @private
 		 */
-		public function setExceptionsToDisplay(value:String):void{
+		public function set transparent(transparent:Boolean):void {
+			this._transparent = transparent;
+			
+			//update the tileprovider of the wmslayer at once
 			if(this._tileProvider != null){
-				this._tileProvider.exceptions=value;
+				this._tileProvider.transparent=transparent;
 			}
 		}
 		
 		/**
-		 * Set the SLD style
-		 * 
-		 * @param value sld style to apply
-		 * 
+		 * Background color of the requested tiles
+		 */ 
+		public function get bgcolor():String {
+			return this._bgcolor;
+		}
+		/**
+		 * @private
 		 */
-		public function setSLDToDisplay(value:String):void{
+		public function set bgcolor(bgcolor:String):void {
+			this._bgcolor = bgcolor;
+			
+			//update the tileprovider of the wmslayer at once
 			if(this._tileProvider != null){
-				this._tileProvider.sld=value;
+				this._tileProvider.bgcolor=bgcolor;
 			}
 		}
 		
 		/**
-		 * Set the URL to request
-		 *
-		 * @param value URL of the service to request
+		 * 
+		 * MIME type for the requested layer (default : image/jpeg) 
 		 */
-		public function setURLToDisplay(value:String):void{
-			if(this._tileProvider !=null){
+		public function get format():String
+		{
+			return _format;
+		}
+		/**
+		 * @private
+		 */
+		public function set format(value:String):void
+		{
+			this._format = value;
+			
+			//update the tileprovider of the wmslayer at once
+			if(this._tileProvider != null){
+				this._tileProvider.format=format;
+			}
+		}
+		
+		/**
+		 * Service url where the developper get the layer
+		 */
+		override public function get url():String
+		{
+			return super._url;
+		}
+		/**
+		 * @private
+		 */
+		override public function set url(value:String):void
+		{
+			super._url = value;
+			
+			//update the tileprovider of the wmslayer at once
+			if(this._tileProvider != null){
 				this._tileProvider.url=value;
 			}
 		}
 		
 		/**
-		 * Projection system used to request the service
-		 *
-		 * @param value projection system used to request
+		 * Set the SLD style (Only for WMS 1.1.x)
+		 * 
+		 * @param value sld style to apply
+		 * 
 		 */
-		public function setProjectionToDisplay(value:String):void{
-			if(this._tileProvider !=null){
+		public function set SLD(value:String):void{
+			if(this._tileProvider != null){
+				this._tileProvider.sld=value;
+			}
+		}
+		
+		
+		/**
+		 * Set the layers that the tileprovider is going to request
+		 * 
+		 * @param value Names of the layers to request
+		 * 
+		 */
+		public function get layers():String
+		{
+			return this._layers;
+		}
+		/**
+		 * @private
+		 */
+		public function set layers(value:String):void
+		{
+			this._layers = value;
+			
+			if(this._tileProvider != null){
+				this._tileProvider.layer=value;
+			}
+		}
+		
+		public function get projection():String
+		{
+			return _projSrsCode;
+		}
+		/**
+		 * @private
+		 */
+		public function set projection (value:String):void
+		{
+			super.projSrsCode=value;
+			
+			if(this._tileProvider != null){
 				this._tileProvider.projection=value;
 			}
 		}
+		
+		/**
+		 * 
+		 * Layer name to display in the layer switcher
+		 */ 
+		public function get layerName():String
+		{
+			return this._layerName;
+		}
+		/**
+		 * @private
+		 */
+		public function set layerName(value:String):void
+		{
+			this._layerName = value;
+		}
+		
 		
 		/**
 		 * Set the width of the tile returned by the request
@@ -285,8 +393,6 @@ package org.openscales.core.layer.ogc
 				this._tileProvider.height=value;
 			}
 		}
-		
-
 	}
 }
 
