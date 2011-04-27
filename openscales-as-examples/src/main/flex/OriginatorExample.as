@@ -2,14 +2,16 @@ package {
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.control.Copyright;
 	import org.openscales.core.control.DataOriginatorsDisplay;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.core.control.PanZoomBar;
-	import org.openscales.core.control.Copyright;
+	import org.openscales.core.control.ScaleLine;
 	import org.openscales.core.control.TermsOfService;
 	import org.openscales.core.control.logoRotator;
+	import org.openscales.core.control.NumericScale;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
@@ -64,10 +66,12 @@ package {
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerManager());
 			_map.addControl(new PanZoomBar());
-			_map.addControl(new Copyright("openscales", new Pixel(50, 620)));
-			_map.addControl(new TermsOfService("http://openscales.org/index.html", "Terms of services", new Pixel(150, 620)));
+			_map.addControl(new Copyright("openscales", new Pixel(50, 600)));
+			_map.addControl(new TermsOfService("http://openscales.org/index.html", "Terms of services", new Pixel(150, 600)));
 			_map.addControl(new DataOriginatorsDisplay(2, new Pixel(300, 250)));
 			
+			_map.addControl(new ScaleLine(new Pixel(500, 550)));
+			_map.addControl(new NumericScale(new Pixel(400, 600)));
 			
 			var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
 			selectHandler.enableClickSelection = false;
