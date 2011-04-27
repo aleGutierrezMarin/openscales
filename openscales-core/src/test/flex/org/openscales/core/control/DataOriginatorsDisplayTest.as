@@ -83,24 +83,5 @@ package org.openscales.core.control
 			Assert.assertTrue(containsOriginator3);
 			
 		}
-		
-		[Test]
-		public function textChangeDisplay():void
-		{		
-			// check result
-			Assert.fail("DataOriginatorsDisplayTest.textChangeDisplay");
-		}
-		
-		[Test]
-		public function testOriginatorAdded():void 
-		{
-			Assert.fail("DataOriginatorsDisplayTest.testOriginatorAdded");
-		}
-		
-		[Test]
-		public function testOriginatorRemoved():void 
-		{
-			Assert.fail("DataOriginatorsDisplayTest.testOriginatorRemoved");
-		}
 	}
 }
