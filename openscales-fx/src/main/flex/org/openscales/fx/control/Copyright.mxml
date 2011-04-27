@@ -17,6 +17,15 @@
 				copyrightLabel.text= "© "+this._copyright;
 			}
 			
+			/**
+			 * Provider label for the copyright.
+			 * @return The string label of the copyright
+			 */
+			public function get copyright():String
+			{
+				return this._copyright;
+			}
+			
 			public function set copyright(value:String):void
 			{
 				this._copyright = value;
