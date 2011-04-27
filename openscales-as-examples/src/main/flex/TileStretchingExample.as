@@ -57,7 +57,7 @@ package {
 			IGN.maxExtent = new Bounds(-1048576,3670016,2097152,6815744, "IGNF:GEOPORTALFXX");
 			var securityIGN:IGNGeoRMSecurity = new IGNGeoRMSecurity(_map, "1905042184761803857", "http://www.openscales.org/proxy.php?url=", "http://jeton-api.ign.fr", "POST");
 			IGN.security = securityIGN;
-			IGN.security.initialize();
+			//IGN.security.initialize();
 			_map.addLayer(IGN);
 			
 			
