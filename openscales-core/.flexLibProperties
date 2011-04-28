@@ -105,6 +105,7 @@
     <classEntry path="org.openscales.core.handler.mouse.MouseHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
+    <classEntry path="org.openscales.core.handler.mouse.ZoomBoxHandler"/>
     <classEntry path="org.openscales.core.layer.FeatureLayer"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
@@ -186,7 +187,6 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
-    <classEntry path="org.openscales.core.handler.mouse.ZoomBoxHandler"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
