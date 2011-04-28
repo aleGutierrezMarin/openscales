@@ -50,6 +50,7 @@
 	<component id="YahooSearch" class="org.openscales.fx.control.search.YahooSearch" />
 	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
 	<component id="ScaleLine" class="org.openscales.fx.control.FxScaleLine" />
+	<component id="NumericScale" class="org.openscales.fx.control.NumericScale" />
 	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
 	
 	<component id="SampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
