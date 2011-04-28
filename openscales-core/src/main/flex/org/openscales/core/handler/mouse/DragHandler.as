@@ -1,6 +1,7 @@
 package org.openscales.core.handler.mouse
 {
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
@@ -19,6 +20,8 @@ package org.openscales.core.handler.mouse
 	 */
 	public class DragHandler extends Handler
 	{
+		private var _shiftPressed:Boolean = false;
+		
 		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
 		private var _offset:Pixel = null;
@@ -48,6 +51,8 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+				this.map.addEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
 			}
 		}
 		
@@ -55,6 +60,8 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.removeEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+				this.map.removeEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
 			}
 		}
 		
@@ -63,6 +70,8 @@ package org.openscales.core.handler.mouse
 		 */
 		protected function onMouseDown(event:Event):void
 		{
+			if(_shiftPressed) return;
+			
 			if (_firstDrag) {
 				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
 				_firstDrag = false;
@@ -96,6 +105,9 @@ package org.openscales.core.handler.mouse
 		 *The MouseUp Listener
 		 */
 		protected function onMouseUp(event:Event):void {
+			
+			if(_shiftPressed) return;
+			
 			if((!this.map) || (!this.map.stage))
 				return;
 			
@@ -107,6 +119,23 @@ package org.openscales.core.handler.mouse
 			this._dragging=false;
 			if (this.oncomplete!=null)
 				this.oncomplete(event as MouseEvent);
+		}
+		
+		/**
+		 * 
+		 */
+		private function onKeyDown(event:KeyboardEvent):void
+		{
+			if(event.keyCode == 16) _shiftPressed = true;
+
+		}
+		
+		/**
+		 * 
+		 */
+		private function onKeyUp(event:KeyboardEvent):void
+		{
+			if(event.keyCode == 16) _shiftPressed = false;
 		}
 		
 		// Getters & setters as3
@@ -169,7 +198,7 @@ package org.openscales.core.handler.mouse
 				event.oldZoom = this.map.zoom;
 				event.newZoom = this.map.zoom;
 				this.map.dispatchEvent(event);
-				Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");
+				//Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");
 				return;
 			}
 			// Try to set the new position as the center of the map
@@ -179,7 +208,7 @@ package org.openscales.core.handler.mouse
 			// bitmap that represents the map is centered to the new position.
 			// We have to reset the bitmap position to the right center.
 			if (this.map.center.equals(oldCenter)) {
-				Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
+				//Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
 				this.map.moveTo(this.map.center);
 			}
 		}
