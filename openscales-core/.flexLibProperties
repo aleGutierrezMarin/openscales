@@ -11,6 +11,7 @@
     <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedListNode"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedList"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode"/>
+    <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedListOriginatorNode"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMap"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMapEntry"/>
     <classEntry path="org.openscales.core.basetypes.maps.IHashMapEntry"/>
@@ -92,12 +93,12 @@
     <classEntry path="org.openscales.core.handler.feature.draw.EditPolygonHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.IEditFeature"/>
+    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.BorderPanHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.ClickHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.DragHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
-    <classEntry path="org.openscales.core.handler.zoom.ZoomBoxHandler"/>
     <classEntry path="org.openscales.core.layer.FeatureLayer"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
@@ -123,6 +124,8 @@
     <classEntry path="org.openscales.core.layer.ogc.WMSC"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.OGCTileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProvider"/>
+    <classEntry path="org.openscales.core.layer.originator.ConstraintOriginator"/>
+    <classEntry path="org.openscales.core.layer.originator.DataOriginator"/>
     <classEntry path="org.openscales.core.layer.osm.CycleMap"/>
     <classEntry path="org.openscales.core.layer.osm.Maplint"/>
     <classEntry path="org.openscales.core.layer.osm.Mapnik"/>
@@ -171,13 +174,12 @@
     <classEntry path="org.openscales.core.configuration.ConfigurationTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
+    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
-    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandler"/>
-    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
