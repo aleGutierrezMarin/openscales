@@ -20,6 +20,9 @@ package org.openscales.core.handler.mouse
 	 */
 	public class DragHandler extends Handler
 	{
+		/**
+		 * @private 
+		 */ 
 		private var _shiftPressed:Boolean = false;
 		
 		private var _startCenter:Location = null;
