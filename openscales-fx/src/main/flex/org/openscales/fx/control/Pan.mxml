@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Old Pan control, you should use brand new PanZoom Flex control instead --> 
+<Control xmlns="http://openscales.org" xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"> 
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import org.openscales.geometry.basetypes.Location;
+			
+			[Bindable] private var _toolTipNorth:String = "Move the map to the North direction";
+			[Bindable] private var _toolTipSouth:String = "Move the map to the South direction";
+			[Bindable] private var _toolTipEast:String = "Move the map to the East direction";
+			[Bindable] private var _toolTipWest:String = "Move the map to the West direction";
+			
+			[Bindable]
+			[Embed(source="/assets/images/mapPanNorth-upskin.swf")]
+			public var arrowUp:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/mapPanWest-upskin.swf")]
+			public var arrowLeft:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/mapPanEast-upskin.swf")]
+			public var arrowRight:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/mapPanSouth-upskin.swf")]
+			public var arrowDown:Class;
+			
+			public var DELTA_PX:Number = 100; // TODO: should be an attribute of the control and depending on the size of the map by default
+			
+			public function onButtonClick(event:MouseEvent):void {
+				
+				var oldCenter:Location = this.map.center;
+				var deltaX:Number = 0;
+				var deltaY:Number = 0;
+				
+				if(event.currentTarget==this.upButton) {
+					this.map.pan(0, -this.DELTA_PX, true);
+					
+				}
+				else if(event.currentTarget==this.rightButton) {
+					this.map.pan(this.DELTA_PX, 0, true);
+				}
+				else if(event.currentTarget==this.downButton) {
+					this.map.pan(0, this.DELTA_PX, true);				
+				}
+				else if(event.currentTarget==this.leftButton) {
+					this.map.pan(-this.DELTA_PX, 0, true);	
+				}
+			}
+			
+			public function set toolTipNorth(value:String):void{
+				this._toolTipNorth = value;
+			}
+			
+			public function set toolTipSouth(value:String):void{ 
+				this._toolTipSouth = value;
+			}
+			
+			public function set toolTipEast(value:String):void{ 
+				this._toolTipEast = value;
+			}
+			
+			public function set toolTipWest(value:String):void{ 
+				this._toolTipWest = value;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:TileGroup horizontalGap="0" verticalGap="0">
+
+			<s:Rect width="20" />
+			<IconButton id="upButton"
+								width="20"
+								height="20"
+								toolTip="{this._toolTipNorth}"
+								icon="{arrowUp}"
+								click="this.onButtonClick(event)" />
+			<s:Rect width="20" />
+			<IconButton id="leftButton"
+								width="20"
+								height="20"
+								toolTip="{this._toolTipWest}"
+								icon="{arrowLeft}"
+								click="this.onButtonClick(event)" />
+			<s:Rect width="20" />
+			<IconButton id="rightButton"
+								width="20"
+								height="20"
+								toolTip="{this._toolTipEast}"
+								icon="{arrowRight}"
+								click="this.onButtonClick(event)" />
+			<s:Rect width="20" />
+			<IconButton id="downButton"
+								width="20"
+								height="20"
+								toolTip="{this._toolTipSouth}"
+								icon="{arrowDown}"
+								click="this.onButtonClick(event)" />
+	</s:TileGroup>
+	
+</Control>
