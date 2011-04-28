@@ -49,7 +49,7 @@ package org.openscales.fx
 	 */
 	public class FxMap extends Group
 	{
-		private var _map:Map;
+		protected var _map:Map;
 		private var _controls:Vector.<IControl> = new Vector.<IControl>();
 		private var _zoom:Number = NaN;
 		private var _center:Location = null;
@@ -152,8 +152,13 @@ package org.openscales.fx
 		/**
 		 * FxMap creation complete callback, initialize the map at the right Flex lifecycle time 
 		 */
-		private function onCreationComplete(event:Event):void {
-			this._map = new Map(this.width, this.height);
+		protected function onCreationComplete(event:Event):void {
+			
+			// Check is a child class as already created the map
+			if (this._map == null)
+			{
+				this._map = new Map(this.width, this.height);
+			}
 			
 			var i:int = 0;
 			var element:IVisualElement = null;
