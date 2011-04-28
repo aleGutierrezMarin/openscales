@@ -20,11 +20,16 @@ package org.openscales.core.control
 	public class NumericScale extends Control
 	{
 		/**
+		 * The default fixed round for scale precision
+		 */
+		public static var DEFAULT_FIXED_ROUND:uint=0;
+		
+		/**
 		 * @private
 		 * The value of the current numeric scale
-		 * @default 0
+		 * @default 1
 		 */
-		private var _value:Number = 0;
+		private var _value:Number = 1;
 		
 		/**
 		 * @private
@@ -54,7 +59,7 @@ package org.openscales.core.control
 	
 		
 		/**
-		 * Update the value of the numeric scale when a zoom occur or a base layer is changed.
+		 * Update the value of the numeric scale.
 		 * The new numeric scale is obtain by Unit.getScaleFrom resolution with the current resolution and the current baseLayer unit.
 		 */
 		public function update():void
@@ -62,9 +67,10 @@ package org.openscales.core.control
 			this._value = Unit.getScaleFromResolution(this._map.resolution, ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode).projParams.units);
 			
 			trace("zoom level :"+this._map.zoom);
+			trace("Resolution : "+this._map.resolution);
 			trace("numeric scale : "+this._value);
 			
-			this._textField.text = String(this._value);
+			this._textField.text = "1 / "+this._value.toFixed(NumericScale.DEFAULT_FIXED_ROUND);
 		}	
 		
 		/**
@@ -94,6 +100,10 @@ package org.openscales.core.control
 		}
 		
 		// Event
+		/**
+		 * Update the value of the numeric scale when a zoom occur or a base layer is changed.
+		 * @param event The event received
+		 */
 		public function updateScale(event:Event):void
 		{
 			this.update();
