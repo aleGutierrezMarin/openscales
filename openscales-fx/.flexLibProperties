@@ -9,7 +9,6 @@
     <classEntry path="org.openscales.fx.configuration.FxConfiguration"/>
     <classEntry path="org.openscales.fx.control.Capabilities"/>
     <classEntry path="org.openscales.fx.control.Control"/>
-    <classEntry path="org.openscales.fx.control.DataOriginatorsRenderer"/>
     <classEntry path="org.openscales.fx.control.FeatureDrawing"/>
     <classEntry path="org.openscales.fx.control.FeatureInfo"/>
     <classEntry path="org.openscales.fx.control.FxControl"/>
@@ -22,6 +21,7 @@
     <classEntry path="org.openscales.fx.control.IconButton"/>
     <classEntry path="org.openscales.fx.control.Pan"/>
     <classEntry path="org.openscales.fx.control.PanZoom"/>
+    <classEntry path="org.openscales.fx.control.TermsOfService"/>
     <classEntry path="org.openscales.fx.control.TraceInfo"/>
     <classEntry path="org.openscales.fx.control.Zoom"/>
     <classEntry path="org.openscales.fx.control.ZoomBox"/>
