@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Copyright control to display a copyright -->
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100" height="50" initialize="configure()">
+
+	<fx:Script>
+		<![CDATA[
+			
+			[Bindable] private var _copyright:String = "Copyright";
+			
+			
+			public function  configure():void
+			{ 
+				copyrightLabel.text= "© "+this._copyright;
+			}
+			
+			/**
+			 * Provider label for the copyright.
+			 * @return The string label of the copyright
+			 */
+			public function get copyright():String
+			{
+				return this._copyright;
+			}
+			
+			public function set copyright(value:String):void
+			{
+				this._copyright = value;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<mx:Label id="copyrightLabel"
+					width="100%"
+					height="100%" />
+	
+</Control>
