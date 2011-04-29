@@ -1,4 +1,118 @@
+
 package org.openscales.core.control
+{
+	import flash.display.Bitmap;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	
+	import org.openscales.core.Map;
+	import org.openscales.core.control.ui.Button;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
+	
+	/**
+	 * Control showing some arrows to be able to pan the map and zoom in/out.
+	 * This PanZoom class represents a component to add to the map.
+	 * 
+	 * @example The following code describe how to add a pan on a map : 
+	 * 
+	 * <listing version="3.0">
+	 *   var theMap = Map();
+	 *   theMap.addControl(new PanZoom());
+	 * </listing>
+	 */
+	public class PanZoom extends Control
+	{
+		
+		public static var X:int = 4;
+		public static var Y:int = 4;
+		
+		/**
+		 * @private
+		 * The pan component to pan the map.
+		 * @default null
+		 */
+		private var _pan:Pan = null;
+		
+		/**
+		 * @private
+		 * The zoom component to zoom in/out the map.
+		 * @default
+		 */
+		private var _zoom:Zoom = null;
+		
+		/**
+		 * Constructor for the PanZoom component
+		 * 
+		 * @param position The position of the component in the scene
+		 */
+		public function PanZoom(position:Pixel = null) {
+			super(position);
+			
+			this._pan = new Pan(position);
+			this._zoom = new Zoom(position);
+		}
+		
+		/**
+		 * @inherit
+		 */
+		override public function draw():void {
+			super.draw();
+			
+			this.addChild(this._pan);	
+			this.addChild(this._zoom);	
+			
+			this._pan.draw();
+			this._zoom.draw();
+		}
+		
+		/**
+		 * @inherit
+		 */
+		override public function destroy():void {
+			super.destroy();
+			
+			this._pan.destroy();
+			this._zoom.destroy();
+		}
+		
+		
+		//Getters and setters.
+		/**
+		 * The pan component to pan the map.
+		 */
+		public function get pan():Pan
+		{
+			return _pan;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set pan(value:Pan):void
+		{
+			_pan = value;
+		}
+		
+		/**
+		 * The zoom component to zoom in/out the map.
+		 */
+		public function get zoom():Zoom
+		{
+			return _zoom;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set zoom(value:Zoom):void
+		{
+			_zoom = value;
+		}
+	}
+}
+
+/*package org.openscales.core.control
 {
 	import flash.display.Bitmap;
 	import flash.events.Event;
@@ -8,51 +122,52 @@ package org.openscales.core.control
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.control.ui.Button;
-
+	
 	/**
 	 * Control showing some arrows to be able to pan the map and zoom in/out.
 	 */
+/*
 	public class PanZoom extends Control
 	{
-
+		
 		public static var X:int = 4;
 		public static var Y:int = 4;
 		private var _slideFactor:int = 50;
 		private var _buttons:Vector.<Button> = null;
 		private var _tween:Boolean;
-
+		
 		[Embed(source="/assets/images/north-mini.png")]
 		protected var northMiniImg:Class;
-
+		
 		[Embed(source="/assets/images/west-mini.png")]
 		protected var westMiniImg:Class;
-
+		
 		[Embed(source="/assets/images/east-mini.png")]
 		protected var eastMiniImg:Class;
-
+		
 		[Embed(source="/assets/images/south-mini.png")]
 		protected var southMiniImg:Class;
-
+		
 		[Embed(source="/assets/images/zoom-plus-mini.png")]
 		protected var zoomPlusMiniImg:Class;
-
+		
 		[Embed(source="/assets/images/zoom-minus-mini.png")]
 		protected var zoomMinusMiniImg:Class;
-
+		
 		[Embed(source="/assets/images/zoom-world-mini.png")]
 		protected var zoomWorldMiniImg:Class;
-
+		
 		[Embed(source="/assets/images/slider.png")]
 		protected var sliderImg:Class;
-
+		
 		[Embed(source="/assets/images/zoombar.png")]
 		protected var zoombarImg:Class;
-
+		
 		public function PanZoom(position:Pixel = null, tween:Boolean = true) {
 			this._tween = tween;
 			super(position);
 		}
-
+		
 		override public function destroy():void {
 			super.destroy();
 			while(this.buttons.length) {
@@ -63,20 +178,20 @@ package org.openscales.core.control
 			this.buttons = null;
 			this.position = null;
 		}
-
-
+		
+		
 		override public function draw():void {
 			super.draw();
-
+			
 			var px:Pixel = this.position;
-
+			
 			// place the controls
 			this.buttons = new Vector.<Button>();
-
+			
 			var sz:Size = new Size(18,18);
-
+			
 			var centered:Pixel = new Pixel(this.x+sz.w/2, this.y);
-
+			
 			this._addButton("panup", new northMiniImg(), centered, sz);
 			px.y = centered.y+sz.h;
 			this._addButton("panleft", new westMiniImg(), px, sz);
@@ -85,9 +200,9 @@ package org.openscales.core.control
 			this._addButton("zoomin", new zoomPlusMiniImg(), centered.add(0, sz.h*3+5), sz);
 			this._addButton("zoomworld", new zoomWorldMiniImg(), centered.add(0, sz.h*4+5), sz);
 			this._addButton("zoomout", new zoomMinusMiniImg(), centered.add(0, sz.h*5+5), sz);
-
+			
 		}
-
+		
 		/**
 		 * Add button
 		 *
@@ -97,30 +212,31 @@ package org.openscales.core.control
 		 * @param sz
 		 * @param alt
 		 */
+/*
 		public function _addButton(name:String, image:Bitmap, xy:Pixel, sz:Size, alt:String = null):void {
-
+			
 			var btn:Button = new Button(name, image, xy, sz);
-
+			
 			this.addChild(btn);
-
+			
 			btn.addEventListener(MouseEvent.CLICK, this.click);
 			btn.addEventListener(MouseEvent.DOUBLE_CLICK, this.doubleClick);
-
+			
 			this.buttons.push(btn);
 		}
-
+		
 		//Events
-
+		
 		public function doubleClick(evt:Event):Boolean {
 			evt.stopPropagation();
 			return false;
 		}
-
+		
 		public function click(evt:Event):void {
 			if (!(evt.type == MouseEvent.CLICK)) return;
-
+			
 			var btn:Button = evt.currentTarget as Button;
-
+			
 			switch (btn.name) {
 				case "panup": 
 					this.map.pan(0, -100);
@@ -145,25 +261,26 @@ package org.openscales.core.control
 					break;
 			}
 		}
-
+		
 		//Getters and setters.
-
+		
 		public function get slideFactor():int {
 			return this._slideFactor;   
 		}
-
+		
 		public function set slideFactor(value:int):void {
 			this._slideFactor = value;   
 		}
-
+		
 		public function get buttons():Vector.<Button> {
 			return this._buttons;   
 		}
-
+		
 		public function set buttons(value:Vector.<Button>):void {
 			this._buttons = value;   
 		}
-
+		
 	}
-}
+}*/
+
 
