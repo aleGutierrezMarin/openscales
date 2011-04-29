@@ -35,7 +35,7 @@ package org.openscales.core.control
 		 * @param position Position of the overview map
 		 * 
 		 */
-		public function OverviewMapRatio(position:Pixel = null)
+		public function OverviewMapRatio(position:Pixel = null, layer:Layer = null, ratio = 1)
 		{
 		}
 		
@@ -68,6 +68,23 @@ package org.openscales.core.control
 		public function set ratio(ratio:Number):void
 		{
 			
+		}
+		
+		/**
+		 * 
+		 * @private
+		 */
+		public function get ratio():Number
+		{
+			return null;
+		}
+		
+		/**
+		 * The overview map resolution
+		 */
+		public function get resolution():Number
+		{
+			return null;
 		}
 	}
 }

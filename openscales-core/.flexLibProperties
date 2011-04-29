@@ -189,6 +189,7 @@
     <classEntry path="org.openscales.core.handler.mouse.MouseHandler"/>
     <classEntry path="org.openscales.core.control.NumericScale"/>
     <classEntry path="org.openscales.core.control.OverviewMapRatio"/>
+    <classEntry path="org.openscales.core.control.OverviewMapRatioTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
