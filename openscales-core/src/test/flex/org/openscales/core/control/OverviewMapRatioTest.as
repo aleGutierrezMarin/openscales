@@ -15,7 +15,7 @@ package org.openscales.core.control
 	{
 		
 		[Test]
-		public function zoomCallbackTest()
+		public function zoomCallbackTest():void
 		{
 			var _map:Map = new Map(600, 400);
 			
@@ -42,7 +42,8 @@ package org.openscales.core.control
 			
 			var position:Pixel = new Pixel(10, 10);
 			var ratio:Number = 1.5;
-			var overview:OverviewMapRatio = new OverviewMapRatio(position, mapnik, ratio);
+			var overview:OverviewMapRatio = new OverviewMapRatio(position, mapnik);
+			overview.map = _map;
 			
 			var firstReso:Number = overview.resolution;
 			_map.zoomToMousePosition(true);
@@ -80,7 +81,8 @@ package org.openscales.core.control
 			
 			var position:Pixel = new Pixel(10, 10);
 			var ratio:Number = 1.5;
-			var overview:OverviewMapRatio = new OverviewMapRatio(position, mapnik, ratio);
+			var overview:OverviewMapRatio = new OverviewMapRatio(position, mapnik);
+			overview.map = _map;
 			
 			var firstReso:Number = overview.resolution;
 			_map.zoomToMousePosition(true);

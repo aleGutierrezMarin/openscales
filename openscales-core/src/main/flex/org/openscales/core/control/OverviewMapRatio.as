@@ -1,8 +1,18 @@
 package org.openscales.core.control
 {
+	import flash.display.Shape;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	
 	import org.openscales.core.Map;
+	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 	
 	/**
 	 * Display an overview linked with the map.
@@ -30,13 +40,156 @@ package org.openscales.core.control
 		private var _ratio:Number;
 		
 		/**
+		 * @private
+		 * Point that will be displayed at the center of the overview map
+		 * to show the location
+		 */
+		private var _centerPoint:PointFeature;
+		
+		/**
+		 * @private
+		 * Layer used to draw the center point of the overview map
+		 */
+		private var _centerLayer:FeatureLayer;
+		
+		
+		/**
 		 * Constructor of the overview map
 		 * 
 		 * @param position Position of the overview map
 		 * 
 		 */
-		public function OverviewMapRatio(position:Pixel = null, layer:Layer = null, ratio = 1)
+		public function OverviewMapRatio(position:Pixel = null, layer:Layer = null)
 		{
+			super(position);
+			this._overviewMap = new Map();
+			this._overviewMap.size = new Size(100, 100);
+			this.layer = layer;
+			this.ratio = ratio;
+			this._centerLayer = new FeatureLayer("centerLayer");
+			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			
+			
+		}
+		
+		/**
+		 * @private
+		 * Draw the overview map when added to the map 
+		 */
+		private function onAddedToStage(event:Event):void
+		{
+			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
+			this.mapChanged();
+			this.draw();
+			
+		}
+		
+		/**
+		 * Draw the overview map
+		 */
+		public override function draw():void {
+			this.addChild(this._overviewMap);
+		}
+		
+		/**
+		 * Draw the center point
+		 */
+		private function drawCenter():void
+		{
+			this._centerLayer.projSrsCode = this._overviewMap.baseLayer.projSrsCode;
+			if (this._centerPoint == null)
+			{
+				this._centerPoint = new PointFeature(new Point(this._overviewMap.center.x, this._overviewMap.center.y));
+				this._centerLayer.addFeature(this._centerPoint);
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 * Compute the zoom level of the overviewMap according to the ratio setted
+		 */
+		private function computeZoomLevel():void
+		{
+			if (this.map != null && this._overviewMap.baseLayer != null)
+			{
+				var mapsRatio:Number = (this.map.width / this._overviewMap.size.w)/* *(this.map.height / this._overviewMap.height)*/; 
+				var unityReproj:Location = new Location(1, 1, this.map.baseLayer.projSrsCode);
+				unityReproj = unityReproj.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+				var targetResolution:Number = this.map.resolution * unityReproj.x* mapsRatio;
+				var bestZoomLevel:int = 0;
+				var bestRatio:Number = 0;
+				var i:int = Math.max(0, this._overviewMap.baseLayer.minZoomLevel);
+				var len:int = Math.min(this._overviewMap.baseLayer.resolutions.length, this._overviewMap.baseLayer.maxZoomLevel+1);
+				for (i; i < len; ++i)
+				{
+					var ratioSeeker:Number = this._overviewMap.baseLayer.resolutions[i] / targetResolution;
+					if ( ratioSeeker > ratio){
+						ratioSeeker = ratio/ratioSeeker;
+					}
+					if ( ratioSeeker > bestRatio){
+						bestRatio = ratioSeeker;
+						bestZoomLevel = i;
+					}
+				}
+				this._overviewMap.zoom = bestZoomLevel;
+				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+			}
+		}
+		
+		/**
+		 * The size of the overview map
+		 */
+		public function set size(value:Size):void {
+			if(!value)
+				return;
+			this._overviewMap.size = value;
+			mapChanged();
+		}
+		
+		/**
+		 * The map used to compute the ratio
+		 * 
+		 */
+		public override function set map(map:Map):void
+		{
+			if (this.map != null)
+			{
+				this.map.removeEventListener(MapEvent.MOVE_END,
+					mapChanged);
+				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN,
+					onMouseDown);
+			}
+			super.map = map;	
+			if (map != null)
+			{
+				this.map.addEventListener(MapEvent.MOVE_END,
+					mapChanged);
+				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN,
+					onMouseDown);
+			}
+		}
+		
+		/**
+		 * @private
+		 * Callback to recompute the zoom level of the overview when the zoom level of the map
+		 * has changed 
+		 */
+		private function mapChanged(event:Event = null):void
+		{
+			computeZoomLevel();
+			drawCenter();
+		}
+		
+		/**
+		 * @private
+		 * Callback to change the center of the general map when clicking on the minimap
+		 */
+		private function onMouseDown(event:MouseEvent):void {
+			var mousePosition:Pixel =  new Pixel(this._overviewMap.mouseX, this._overviewMap.mouseY);
+			var newCenter:Location = this._overviewMap.getLocationFromMapPx(mousePosition);
+			this._overviewMap.center = newCenter;
+			this.map.center = newCenter.reprojectTo(this.map.baseLayer.projSrsCode);			
 		}
 		
 		/**
@@ -47,7 +200,12 @@ package org.openscales.core.control
 		 */
 		public function set layer(layer:Layer):void
 		{
-			
+			if (layer != null)
+			{
+				_overviewMap.removeAllLayers();
+				_overviewMap.addLayer(layer, true, true);
+				_overviewMap.addLayer(this._centerLayer);
+			}
 		}
 		
 		/**
@@ -56,18 +214,19 @@ package org.openscales.core.control
 		 */
 		public function get layer():Layer
 		{
-			return null;
+			return _overviewMap.baseLayer;
 		}
 		
 		/**
 		 * Ratio between the overview resolution and the map resolution
 		 * The ratio is MapResolution/OverviewMapResolution
+		 * While setting a new ratio the oveview zoom level will be recomputed
 		 * 
-		 * @param The curent ratio between the overview map and the map
+		 * @param ratio The curent ratio between the overview map and the map
 		 */
 		public function set ratio(ratio:Number):void
 		{
-			
+			this._ratio = ratio;
 		}
 		
 		/**
@@ -76,7 +235,7 @@ package org.openscales.core.control
 		 */
 		public function get ratio():Number
 		{
-			return null;
+			return _ratio;
 		}
 		
 		/**
@@ -84,7 +243,7 @@ package org.openscales.core.control
 		 */
 		public function get resolution():Number
 		{
-			return null;
+			return _overviewMap.resolution;
 		}
 	}
 }

@@ -44,6 +44,7 @@
 	<component id="ZoomBox" class="org.openscales.fx.control.ZoomBox" />
 	
 	<component id="OverviewMap" class="org.openscales.fx.control.FxOverviewMap" />
+	<component id="OverviewMapRatio" class="org.openscales.fx.control.FxOverviewMapRatio" />
 	<component id="Capabilities" class="org.openscales.fx.control.Capabilities" />
 	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
