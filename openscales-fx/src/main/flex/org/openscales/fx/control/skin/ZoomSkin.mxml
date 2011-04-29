@@ -29,6 +29,7 @@
 		</s:Path>
 	</s:Group>
 	
+
 	<s:Button id="track" skinClass="org.openscales.fx.control.skin.ZoomTrackSkin" x="0" y="0" height="105"/>
 	<s:Button id="thumb" skinClass="org.openscales.fx.control.skin.ZoomThumbSkin" x="4" />
 	
