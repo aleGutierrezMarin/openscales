@@ -30,7 +30,6 @@
     <classEntry path="org.openscales.core.control.IControl"/>
     <classEntry path="org.openscales.core.control.LayerManager"/>
     <classEntry path="org.openscales.core.control.MousePosition"/>
-    <classEntry path="org.openscales.core.control.NumericScale"/>
     <classEntry path="org.openscales.core.control.OverviewMap"/>
     <classEntry path="org.openscales.core.control.PanZoom"/>
     <classEntry path="org.openscales.core.control.PanZoomBar"/>
@@ -103,10 +102,9 @@
     <classEntry path="org.openscales.core.handler.mouse.BorderPanHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.ClickHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.DragHandler"/>
-    <classEntry path="org.openscales.core.handler.mouse.MouseHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
-    <classEntry path="org.openscales.core.handler.mouse.ZoomBoxHandler"/>
+    <classEntry path="org.openscales.core.handler.zoom.ZoomBoxHandler"/>
     <classEntry path="org.openscales.core.layer.FeatureLayer"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
@@ -188,8 +186,8 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
-    <classEntry path="org.openscales.core.control.OverviewMapRatio"/>
-    <classEntry path="org.openscales.core.control.OverviewMapRatioTest"/>
+    <classEntry path="org.openscales.core.handler.mouse.MouseHandler"/>
+    <classEntry path="org.openscales.core.control.NumericScale"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

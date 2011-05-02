@@ -72,7 +72,6 @@
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
     <classEntry path="org.openscales.fx.control.NumericScale"/>
-    <classEntry path="org.openscales.fx.control.MousePosition"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
