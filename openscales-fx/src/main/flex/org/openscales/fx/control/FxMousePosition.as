@@ -11,28 +11,28 @@ package org.openscales.fx.control
 	{
 		public function FxMousePosition()
 		{
-			this.control = new MousePosition();
+			this.control = new org.openscales.core.control.MousePosition();
 			super();
 		}
 		
 		public function set displayProjSrsCode(value:String):void {
 			if (this.control != null && value != null)
-				(this.control as MousePosition).displayProjSrsCode = value;
+				(this.control as org.openscales.core.control.MousePosition).displayProjSrsCode = value;
 		}
 		
 		public function set numdigits(value:Number):void {
 			if (this.control != null)
-				(this.control as MousePosition).numdigits = value;
+				(this.control as org.openscales.core.control.MousePosition).numdigits = value;
 		}
 		
 		public function set localNSEW(value:String):void {
 			if (this.control != null && value != null)
-				(this.control as MousePosition).localNSEW = value;
+				(this.control as org.openscales.core.control.MousePosition).localNSEW = value;
 		}
 		
 		public function set map(value:Map):void {
 			if (this.control != null && value != null)
-				(this.control as MousePosition).map = value;
+				(this.control as org.openscales.core.control.MousePosition).map = value;
 		}
 		
 	}
