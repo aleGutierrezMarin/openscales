@@ -9,6 +9,12 @@ package org.openscales.core.control
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.style.Rule;
+	import org.openscales.core.style.Style;
+	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -41,16 +47,10 @@ package org.openscales.core.control
 		
 		/**
 		 * @private
-		 * Point that will be displayed at the center of the overview map
+		 * Shape that will be displayed at the center of the overview map
 		 * to show the location
 		 */
-		private var _centerPoint:PointFeature;
-		
-		/**
-		 * @private
-		 * Layer used to draw the center point of the overview map
-		 */
-		private var _centerLayer:FeatureLayer;
+		private var _centerPoint:Shape;
 		
 		
 		/**
@@ -66,10 +66,7 @@ package org.openscales.core.control
 			this._overviewMap.size = new Size(100, 100);
 			this.layer = layer;
 			this.ratio = ratio;
-			this._centerLayer = new FeatureLayer("centerLayer");
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			
-			
 		}
 		
 		/**
@@ -81,6 +78,7 @@ package org.openscales.core.control
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
 			this.mapChanged();
 			this.draw();
+			
 			
 		}
 		
@@ -96,12 +94,17 @@ package org.openscales.core.control
 		 */
 		private function drawCenter():void
 		{
-			this._centerLayer.projSrsCode = this._overviewMap.baseLayer.projSrsCode;
 			if (this._centerPoint == null)
 			{
-				this._centerPoint = new PointFeature(new Point(this._overviewMap.center.x, this._overviewMap.center.y));
-				this._centerLayer.addFeature(this._centerPoint);
+				_centerPoint = new Shape();
 			}
+			_centerPoint.graphics.clear();
+			_centerPoint.graphics.lineStyle(1, 0xFF0000);
+			_centerPoint.graphics.moveTo(this.width/2 - 5, this.height/2);
+			_centerPoint.graphics.lineTo(this.width/2 + 5, this.height/2);
+			_centerPoint.graphics.moveTo(this.width/2, this.height/2 - 5);
+			_centerPoint.graphics.lineTo(this.width/2, this.height/2 + 5);
+			this._overviewMap.addChild(_centerPoint);
 		}
 		
 		
@@ -113,10 +116,18 @@ package org.openscales.core.control
 		{
 			if (this.map != null && this._overviewMap.baseLayer != null)
 			{
-				var mapsRatio:Number = (this.map.width / this._overviewMap.size.w)/* *(this.map.height / this._overviewMap.height)*/; 
+				// Compute the size ratio between the map and the voerview map
+				var mapsRatio:Number = (this.map.width / this._overviewMap.size.w); 
+				
+				// Compute the reprojection factor for the resolution
 				var unityReproj:Location = new Location(1, 1, this.map.baseLayer.projSrsCode);
 				unityReproj = unityReproj.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+				
+				// Reproject and multiply by the maps ratio the resolution
 				var targetResolution:Number = this.map.resolution * unityReproj.x* mapsRatio;
+				
+				
+				// Find the best zoom to fit the resolutions ratio
 				var bestZoomLevel:int = 0;
 				var bestRatio:Number = 0;
 				var i:int = Math.max(0, this._overviewMap.baseLayer.minZoomLevel);
@@ -132,6 +143,7 @@ package org.openscales.core.control
 						bestZoomLevel = i;
 					}
 				}
+				
 				this._overviewMap.zoom = bestZoomLevel;
 				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
 			}
@@ -157,13 +169,17 @@ package org.openscales.core.control
 			{
 				this.map.removeEventListener(MapEvent.MOVE_END,
 					mapChanged);
+				this.map.removeEventListener(MapEvent.LOAD_END,
+					mapChanged);
 				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN,
 					onMouseDown);
 			}
 			super.map = map;	
 			if (map != null)
-			{
+			{	
 				this.map.addEventListener(MapEvent.MOVE_END,
+					mapChanged);
+				this.map.addEventListener(MapEvent.LOAD_END,
 					mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN,
 					onMouseDown);
@@ -178,7 +194,7 @@ package org.openscales.core.control
 		private function mapChanged(event:Event = null):void
 		{
 			computeZoomLevel();
-			drawCenter();
+			this.drawCenter();	
 		}
 		
 		/**
@@ -204,7 +220,6 @@ package org.openscales.core.control
 			{
 				_overviewMap.removeAllLayers();
 				_overviewMap.addLayer(layer, true, true);
-				_overviewMap.addLayer(this._centerLayer);
 			}
 		}
 		
