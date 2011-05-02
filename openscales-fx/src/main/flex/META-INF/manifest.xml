@@ -37,7 +37,7 @@
 	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
 	
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
-  	<component id="MousePosition" class="org.openscales.fx.control.FxMousePosition" />
+	<component id="MousePosition" class="org.openscales.fx.control.MousePosition" />
 	<component id="Pan" class="org.openscales.fx.control.Pan" />
 	<component id="PanZoom" class="org.openscales.fx.control.PanZoom" />
 	<component id="Zoom" class="org.openscales.fx.control.Zoom" />
