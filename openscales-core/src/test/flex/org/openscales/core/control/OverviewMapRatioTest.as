@@ -53,7 +53,7 @@ package org.openscales.core.control
 		}
 
 		[Test]
-		public function ratioTest()
+		public function ratioTest():void
 		{
 			
 			var _map:Map = new Map(600, 400);
