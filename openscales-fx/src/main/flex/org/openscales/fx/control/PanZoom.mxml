@@ -8,6 +8,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.sliderClasses.Slider;
 			import mx.events.SliderEvent;
 			import mx.events.SliderEventClickTarget;
 			import mx.events.StateChangeEvent;
@@ -18,6 +19,10 @@
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.fx.control.skin.PanSkin;
 			import org.openscales.fx.control.skin.ZoomSkin;
+			import org.openscales.fx.control.skin.ZoomThumbSkin;
+			
+			import spark.events.TrackBaseEvent;
+
 			
 			public var DELTA_PX:Number = 100;
 			
@@ -50,12 +55,12 @@
 				
 				this.panSkin.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onPan);
 				this.zoomSlider.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onZoom);
+
+				if(this._scalesLabels == null)
+				{
+					this._scalesLabels = new Vector.<ZoomData>();
+				}
 				
-				_scalesLabels = new Vector.<ZoomData>();
-				/*
-				_scalesLabels.push(new ZoomData("World", 0.0439453125, 0.087890625)); // 5- 4
-				_scalesLabels.push(new ZoomData("Country", 0.00274658203125, 0.01098328125)); // 9 - 7
-*/
 			}
 			
 			/**
@@ -67,14 +72,38 @@
 			{
 				if(this._map!=null)
 				{
-					trace("** zoom : "+this._map.zoom+" res : "+this._map.resolution)
-					
 					// update the value
 					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
 					
-					// update the display
-					zoomLabel.text = this._map.zoom+" - "+this._currentLabel;
+					// update the display label
+					if(zoomSlider.skin is ZoomSkin)
+						((zoomSlider.skin as ZoomSkin).thumb.skin as ZoomThumbSkin).thumbLabel.text = this._currentLabel;
+					
 				}
+			}
+			
+			/**
+			 * Return the label associated to the given resolution 
+			 * 
+			 * @param resolution The resolution 
+			 * @return The string value of the label corresponding to the resolution
+			 */
+			public function getLabelFromZoom(zoom:Number):String
+			{
+				// get the resolution for the current zoom
+				var resolution:Number = this._map.baseLayer.resolutions[zoom];
+	
+				var i:uint = 0;
+				var j:uint = this._scalesLabels.length;
+				for (; i<j; ++i) 
+				{
+					if( resolution>=this._scalesLabels[i].minResolution
+						&& resolution<=this._scalesLabels[i].maxResolution )
+					{
+						return this._scalesLabels[i].label;
+					}
+				}
+				return new String("");
 			}
 			
 			/**
@@ -85,7 +114,6 @@
 			 */
 			public function getLabelFromResolution(resolution:Number):String
 			{
-				var label:String = new String("");
 				var i:uint = 0;
 				var j:uint = this._scalesLabels.length;
 				for (; i<j; ++i) 
@@ -93,10 +121,10 @@
 					if( resolution>=this._scalesLabels[i].minResolution
 						&& resolution<=this._scalesLabels[i].maxResolution )
 					{
-						label = this._scalesLabels[i].label;
+						return this._scalesLabels[i].label;
 					}
 				}
-				return label;
+				return new String("");
 			}
 			
 			public function onPan(event:StateChangeEvent):void
@@ -163,8 +191,26 @@
 				}
 			}
 			
-
+			/**
+			 * When the slider value is changed : update label
+			 * 
+			 * @param event The event received
+			 */
 			public function zoomSliderChange(event:Event):void {
+				
+				// update the display label
+				if(zoomSlider.skin is ZoomSkin)
+					((zoomSlider.skin as ZoomSkin).thumb.skin as ZoomThumbSkin).thumbLabel.text = this.getLabelFromZoom(zoomSlider.value);
+				
+			}
+			
+			/**
+			 * When the slider cursor is released : move the map to the new resolution
+			 * 
+			 * @param event The event received
+			 */
+			public function zoomSliderThumbRelease(event:Event):void 
+			{
 				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
 			}
 			
@@ -178,17 +224,18 @@
 			 */
 			public function set scalesLabels(labels:String):void
 			{
+				
+				var scales:Vector.<ZoomData>  = new Vector.<ZoomData>();
+				
 				var zoomDataString:String = null;
-				var scalesLabel:Vector.<ZoomData> = new Vector.<ZoomData>();
 				
 				for each (zoomDataString in labels.split(";")) {
-					
 					var values:Array = zoomDataString.split(",");
-					var zoomdata:ZoomData = new ZoomData(values[0], values[1], values[2]);
+					var zoomData:ZoomData = new ZoomData(values[0], Number(values[1]), Number(values[2]));
 					
-					scalesLabel.push(zoomdata);
+					scales.push(zoomData);
 				}
-				this._scalesLabels = scalesLabel;
+				this._scalesLabels = scales;
 			}
 			
 
@@ -206,25 +253,23 @@
 			public function set currentLabel(value:String):void
 			{
 				_currentLabel = value;
-			}
-			
-		
+			}			
+
 			
 		]]>
 	</fx:Script>
 
-	<mx:HBox width="100%" x="70" y="10">
-		<mx:Label id="zoomLabel" />
-	</mx:HBox>
 
 	<s:VSlider id="zoomSlider" x="54" y="10"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
-			   liveDragging="false"
+			   liveDragging="true"
 			   skinClass="org.openscales.fx.control.skin.ZoomSkin"
 			   focusEnabled="false"
-			   showDataTip="true" />
+			   showDataTip="true"
+			   thumbRelease="zoomSliderThumbRelease(event);"/>
+	
 	
 	<s:SkinnableContainer id="panSkin"
 						  skinClass="org.openscales.fx.control.skin.PanSkin"

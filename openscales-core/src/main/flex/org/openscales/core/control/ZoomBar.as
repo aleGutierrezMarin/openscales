@@ -232,12 +232,12 @@ package org.openscales.core.control
 		}
 		
 		public function moveZoomBar(e:MapEvent = null):void {
-			if(e.zoomChanged) {
+			//if(e.zoomChanged) {
 				var newTop:Number = 
 					((this.map.baseLayer.numZoomLevels-1) - this.map.zoom) * 
 					this.zoomStopHeight + this.startTop + 1;
 				this.slider.y = newTop;
-			}
+			//}
 		}
 		
 		//Getters and setters

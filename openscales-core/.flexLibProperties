@@ -188,6 +188,10 @@
     <classEntry path="org.openscales.geometry.GeometryTest"/>
     <classEntry path="org.openscales.core.handler.mouse.MouseHandler"/>
     <classEntry path="org.openscales.core.control.NumericScale"/>
+    <classEntry path="org.openscales.core.control.Pan"/>
+    <classEntry path="org.openscales.core.control.Zoom"/>
+    <classEntry path="org.openscales.core.control.ZoomBar"/>
+    <classEntry path="org.openscales.core.control.ZoomData"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
