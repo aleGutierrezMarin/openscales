@@ -1,132 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--- Old Zoom control, you should use brand new PanZoom Flex control instead --> 
-<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark">
+<!--- Zoom control with zoomLabels --> 
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="400" height="300" initialize="configure()">
+	
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.sliderClasses.Slider;
 			import mx.events.SliderEvent;
+			import mx.events.SliderEventClickTarget;
+			import mx.events.StateChangeEvent;
 			
+			import org.openscales.core.Map;
+			import org.openscales.core.control.ZoomData;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
+			import org.openscales.fx.control.skin.PanSkin;
+			import org.openscales.fx.control.skin.ZoomSkin;
+			import org.openscales.fx.control.skin.ZoomThumbSkin;
 			
-			[Bindable] private var _toolTipZoomIn:String = "Zoom In";
-			[Bindable] private var _toolTipZoomOut:String = "Zoom Out";
-			[Bindable] private var _toolTipZoomSlider:String = "Set the scale of the map";
-			[Bindable] private var _showDataTip:Boolean = true;
+			import spark.events.TrackBaseEvent;
 			
-			[Bindable]
-			[Embed(source="/assets/images/mapZoomIn-upskin.swf")]
-			private var _mapZoomInIcon:Class;
 			
-			[Bindable]
-			[Embed(source="/assets/images/mapZoomOut-upskin.swf")]
-			private var _mapZoomOutIcon:Class;
+			public var DELTA_PX:Number = 100;
 			
-			public function set showDataTip(value:String):void
+			
+			/**
+			 * @private
+			 * The list of labels for the different resolution.
+			 * @default null
+			 */
+			private var _scalesLabels:Vector.<ZoomData> = null;
+			
+			/**
+			 * @private
+			 * The current value of the zoom label
+			 * @default null
+			 */
+			private var _currentLabel:String = null;
+			
+			
+			override public function set map(value:Map):void {
+				super.map = value;
+			}
+			
+			/**
+			 * Configure the listener for the pan and the zoom
+			 * Configure the list of zoom label once the component is created 
+			 * and set the first zoomLabel text value.
+			 */
+			public function  configure():void{ 
+				
+				this.zoomSlider.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onZoom);
+				
+				if(this._scalesLabels == null)
+				{
+					this._scalesLabels = new Vector.<ZoomData>();
+				}
+				
+			}
+			
+			/**
+			 * Refresh the current zoom label.
+			 * Get the current map resolution and search the associated label.
+			 * Then refresh the display of the label value.
+			 */
+			public function updateCurrentLabel():void
 			{
-				if(value == true)
+				if(this._map!=null)
 				{
-					this._showDataTip = true;
+					// update the value
+					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
+					
+					// update the display label
+					if(zoomSlider.skin is ZoomSkin)
+						((zoomSlider.skin as ZoomSkin).thumb.skin as ZoomThumbSkin).thumbLabel.text = this._currentLabel;
 				}
-				else
+			}
+			
+			/**
+			 * Return the label associated to the given resolution 
+			 * 
+			 * @param resolution The resolution 
+			 * @return The string value of the label corresponding to the resolution
+			 */
+			public function getLabelFromZoom(zoom:Number):String
+			{
+				// get the resolution for the current zoom
+				var resolution:Number = this._map.baseLayer.resolutions[zoom];
+				
+				var i:uint = 0;
+				var j:uint = this._scalesLabels.length;
+				for (; i<j; ++i) 
 				{
-					this._showDataTip = false;
+					if( resolution>=this._scalesLabels[i].minResolution
+						&& resolution<=this._scalesLabels[i].maxResolution )
+					{
+						return this._scalesLabels[i].label;
+					}
 				}
+				return new String("");
 			}
 			
-			private function onZoomOutClick(event:MouseEvent):void{
-				this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+			/**
+			 * Return the label associated to the given resolution 
+			 * 
+			 * @param resolution The resolution 
+			 * @return The string value of the label corresponding to the resolution
+			 */
+			public function getLabelFromResolution(resolution:Number):String
+			{
+				var i:uint = 0;
+				var j:uint = this._scalesLabels.length;
+				for (; i<j; ++i) 
+				{
+					if( resolution>=this._scalesLabels[i].minResolution
+						&& resolution<=this._scalesLabels[i].maxResolution )
+					{
+						return this._scalesLabels[i].label;
+					}
+				}
+				return new String("");
 			}
 			
-			private function onZoomInClick(event:MouseEvent):void{
-				this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
-			}
 			
-			public function onZoomSliderThumbPress():void {
-				zoomSlider.removeEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
-				zoomSlider.addEventListener(SliderEvent.THUMB_RELEASE,this.onZoomSliderThumbRelease);
-			}
 			
-			public function onZoomSliderThumbRelease():void {
-				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
-						
-				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
-			}
-			
-			public function zoomSliderChange(event:Event):void {
-				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+			public function onZoom(event:StateChangeEvent):void
+			{
+				switch(event.newState)
+				{
+					case "zoomin":
+						this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+						break;
+					case "zoomout":
+						this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+						break;
+					default : 
+				}	
 			}
 			
 			private function initializeZoomLevels(event:Event = null):void {
 				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
 				zoomSlider.minimum = map.baseLayer.minZoomLevel;
 				zoomSlider.value = map.zoom;
+				// initialise the label value
+				this.updateCurrentLabel();
 				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
 			}
 			
 			override public function set active(value:Boolean):void {
 				if(value) {					
-					map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
-					map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
+					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					initializeZoomLevels();								
 				} else {
-					map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
-					map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
+					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 				}
 				super.active = value;
 			}
 			
 			private function updateZoomLevels(e:MapEvent = null):void {
 				if(e.zoomChanged)
+				{
 					zoomSlider.value = map.zoom;
+					this.updateCurrentLabel();
+				}
 			}
 			
-			public function set toolTipZoomIn(value:String):void{ 
-				this._toolTipZoomIn = value;
+			/**
+			 * When the slider value is changed : update label
+			 * 
+			 * @param event The event received
+			 */
+			public function zoomSliderChange(event:Event):void {
+				
+				// update the display label
+				if(zoomSlider.skin is ZoomSkin)
+					((zoomSlider.skin as ZoomSkin).thumb.skin as ZoomThumbSkin).thumbLabel.text = this.getLabelFromZoom(zoomSlider.value);
+				
+				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+			}
+
+			
+			override public function destroy():void {
+				this.active = false;
+				super.destroy();
 			}
 			
-			public function set toolTipZoomOut(value:String):void{ 
-				this._toolTipZoomOut = value;
+			/**
+			 * The list of labels for the different resolution.
+			 */
+			public function set scalesLabels(labels:String):void
+			{
+				if( labels != null )
+				{
+					var scales:Vector.<ZoomData>  = new Vector.<ZoomData>();
+					
+					var zoomDataString:String = null;
+					
+					for each (zoomDataString in labels.split(";")) {
+						var values:Array = zoomDataString.split(",");
+						var zoomData:ZoomData = new ZoomData(values[0], Number(values[1]), Number(values[2]));
+						
+						scales.push(zoomData);
+					}
+					this._scalesLabels = scales;
+				}
+
 			}
 			
-			public function set toolTipZoomSlider(value:String):void{ 
-				this._toolTipZoomSlider = value;
+			
+			/**
+			 * The current value of the zoom label
+			 */
+			public function get currentLabel():String
+			{
+				return _currentLabel;
 			}
+			
+			/**
+			 * @private
+			 */
+			public function set currentLabel(value:String):void
+			{
+				_currentLabel = value;
+			}		
 		]]>
 	</fx:Script>
 	
-	<s:HGroup verticalAlign="middle">
-		
-		<s:VGroup height="100%">
-			
-			<IconButton id="zoomIn"
-					  toolTip="{this._toolTipZoomIn}"
-					  click="this.onZoomInClick(event);"
-					  width="24"
-					  height="24"
-					  icon="{_mapZoomInIcon}" />
-			<s:Rect height="100%" />
-			<IconButton id="zoomOut"
-					  toolTip="{this._toolTipZoomOut}"
-					  click="this.onZoomOutClick(event);"
-					  width="24"
-					  height="24"
-					  icon="{_mapZoomOutIcon}" />
-		</s:VGroup>
-		
-		<s:VSlider id="zoomSlider"
-				   toolTip="{this._toolTipZoomSlider}"
-				   height="100"
-				   liveDragging="true"
-				   snapInterval="1"
-				   thumbRelease="this.onZoomSliderThumbRelease();"
-				   useHandCursor="true"
-				   buttonMode="true"
-				   showDataTip="{this._showDataTip}"
-				   
-				   />
-		
-	</s:HGroup>
+	<s:VSlider id="zoomSlider" x="54" y="10"
+			   snapInterval="1"
+			   useHandCursor="true"
+			   buttonMode="true"
+			   liveDragging="false"
+			   skinClass="org.openscales.fx.control.skin.ZoomSkin"
+			   focusEnabled="false"
+			   showDataTip="true"/>
+	
 	
 </Control>
+
