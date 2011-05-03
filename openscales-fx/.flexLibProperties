@@ -17,7 +17,6 @@
     <classEntry path="org.openscales.fx.control.FxControl"/>
     <classEntry path="org.openscales.fx.control.FxCorePanZoom"/>
     <classEntry path="org.openscales.fx.control.FxCorePanZoomBar"/>
-    <classEntry path="org.openscales.fx.control.FxMousePosition"/>
     <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
     <classEntry path="org.openscales.fx.control.FxScaleLine"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>

@@ -281,6 +281,9 @@ package org.openscales.core.handler.mouse
 		 * @param evt the TimerEvent (not used)
 		 */
 		private function useRightCallback(evt:TimerEvent):void {
+			
+			Trace.debug("useRightCallback");
+			
 			if(this._dragging) {
 				this._dragging = false;
 				if (this.drop != null) {

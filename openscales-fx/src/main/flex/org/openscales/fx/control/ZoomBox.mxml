@@ -13,7 +13,7 @@
 			import org.openscales.core.events.ZoomBoxEvent;
 			import org.openscales.core.handler.Handler;
 			import org.openscales.core.handler.mouse.DragHandler;
-			import org.openscales.core.handler.zoom.ZoomBoxHandler;
+			import org.openscales.core.handler.mouse.ZoomBoxHandler;
 			
 			import spark.skins.spark.ButtonSkin;
 			
@@ -53,12 +53,12 @@
 			private function onSelectZoomBox(event:Event):void {
 				if (_selected == false) {
 					_selected = true;
-					_zoomBoxHandler.deactiveDrag();
+					//_zoomBoxHandler.deactiveDrag();
 					_zoomBoxHandler.active = true;
 					// Change to the specific cursor
 					zoomBoxCursorID = CursorManager.setCursor(CrosshairCursor);
 				} else {
-					_zoomBoxHandler.activeDrag();
+					//_zoomBoxHandler.activeDrag();
 					_zoomBoxHandler.active = false;
 					_selected = false;
 					// Remove the specific cursor
@@ -68,7 +68,7 @@
 			}
 			
 			private function disabled(event:ZoomBoxEvent):void {
-				_zoomBoxHandler.activeDrag();
+				//_zoomBoxHandler.activeDrag();
 				_zoomBoxHandler.active = false;
 				_selected = false;
 				// Remove the specific cursor

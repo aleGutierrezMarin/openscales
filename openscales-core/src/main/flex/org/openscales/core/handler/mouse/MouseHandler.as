@@ -1,6 +1,7 @@
 package org.openscales.core.handler.mouse
 {
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.handler.Handler;
 
 	/**
@@ -10,12 +11,13 @@ package org.openscales.core.handler.mouse
 	 * handlers are enabled. 
 	 * </p>
 	 * <p>
-	 * Encapsulated handlers are ClickHandler, DragHandler and WheelHandler
+	 * Encapsulated handlers are ClickHandler, DragHandler, ZoomBoxHandler (shift mode) and WheelHandler
 	 * </p>
 	 * 
 	 * @see ClickHandler
 	 * @see DragHandler
 	 * @see WheelHandler
+	 * @see ZoomBoxHandler
 	 */ 
 	public class MouseHandler extends Handler
 	{
@@ -34,9 +36,16 @@ package org.openscales.core.handler.mouse
 		 */ 
 		public static const WHEEL_HANDLER:String = "wheelHandler";
 		
+		/**
+		 * Constant used to enable/disable the zoom box handler
+		 */ 
+		public static const ZOOM_BOX_HANDLER:String = "zoomBoxHandler";
+		
+		
 		private var _clickHandler:ClickHandler;
 		private var _dragHandler:DragHandler;
 		private var _wheelHandler:WheelHandler;
+		private var _zoomBoxHandler:ZoomBoxHandler;
 		
 		/**
 		 * Constructor. All encapsulated handlers are enabled.
@@ -47,9 +56,10 @@ package org.openscales.core.handler.mouse
 		public function MouseHandler(map:Map=null, active:Boolean=true)
 		{
 			super(map, active);
-			_clickHandler = new ClickHandler(map,true);
-			_dragHandler = new DragHandler(map,true);
-			_wheelHandler = new WheelHandler(map,true);	
+			_clickHandler = new ClickHandler(map,active);
+			_dragHandler = new DragHandler(map,active);
+			_wheelHandler = new WheelHandler(map,active);
+			_zoomBoxHandler = new ZoomBoxHandler(true,map,active);
 		}
 		
 		/**
@@ -69,7 +79,10 @@ package org.openscales.core.handler.mouse
 					break;
 				case WHEEL_HANDLER:
 					_wheelHandler.active = true;
-					break;				
+					break;	
+				case ZOOM_BOX_HANDLER:
+					_zoomBoxHandler.active = true;
+					break;
 			}
 		}
 		
@@ -90,7 +103,10 @@ package org.openscales.core.handler.mouse
 					break;
 				case WHEEL_HANDLER:
 					_wheelHandler.active = false;
-					break;				
+					break;	
+				case ZOOM_BOX_HANDLER:
+					_zoomBoxHandler.active = false;
+					break;
 			}
 		}
 		
@@ -106,6 +122,7 @@ package org.openscales.core.handler.mouse
 				this.map.addHandler(_clickHandler);
 				this.map.addHandler(_dragHandler);
 				this.map.addHandler(_wheelHandler);
+				this.map.addHandler(_zoomBoxHandler);
 			}
 		}
 	}
