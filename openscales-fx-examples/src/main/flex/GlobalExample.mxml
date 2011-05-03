@@ -22,7 +22,7 @@
 				projection="EPSG:4326" version="1.0.0" useCapabilities="true" capabilitiesVersion="1.0.0"
 				style="{Style.getDefaultPointStyle()}" />
 		
-		<!-- Resolution :	
+		<!-- Resolutions :	
 			res : 0.000010728836059570313 17
 			res : 0.000021457672119140625 16
 			res : 0.00004291534423828125 15
@@ -42,9 +42,9 @@
 			res : 0.703125 1
 			res : 1.40625 0	-->
 		
-		<PanZoom id="panZoom" x="10" y="10" 
-				 scalesLabels="	World,0.3515625,1.40625;Country,0.0439453125,0.3515625;State,0.0054931640625,0.0439453125;Town,0.0006866455078125,0.0054931640625;Street,0.0000858306884765625,0.0006866455078125;House,0.000010728836059570313,0.0000858306884765625"/>
+		<PanZoom id="panZoom" x="10" y="10" scalesLabels="	World,0.3515625,1.40625;Country,0.0439453125,0.3515625;State,0.0054931640625,0.0439453125;Town,0.0006866455078125,0.0054931640625;Street,0.0000858306884765625,0.0006866455078125;House,0.000010728836059570313,0.0000858306884765625"/>
 		
+	
 		<ControlPanel title="Layers" x="{width - 225}" y="10" width="215">
 			 <LayerManager />
 		 </ControlPanel>
