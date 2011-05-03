@@ -18,9 +18,12 @@
     <classEntry path="org.openscales.fx.control.FxCorePanZoom"/>
     <classEntry path="org.openscales.fx.control.FxCorePanZoomBar"/>
     <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
+    <classEntry path="org.openscales.fx.control.FxOverviewMapRatio"/>
     <classEntry path="org.openscales.fx.control.FxScaleLine"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.control.IconButton"/>
+    <classEntry path="org.openscales.fx.control.MousePosition"/>
+    <classEntry path="org.openscales.fx.control.NumericScale"/>
     <classEntry path="org.openscales.fx.control.Pan"/>
     <classEntry path="org.openscales.fx.control.PanZoom"/>
     <classEntry path="org.openscales.fx.control.TermsOfService"/>
@@ -71,7 +74,6 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
-    <classEntry path="org.openscales.fx.control.NumericScale"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
