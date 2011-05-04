@@ -6,9 +6,11 @@ package
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
-	import org.openscales.core.control.PanZoomBar;
-	
 	import org.openscales.core.control.OverviewMapRatio;
+	import org.openscales.core.control.PanZoomBar;
+	import org.openscales.core.handler.feature.SelectFeaturesHandler;
+	import org.openscales.core.handler.mouse.DragHandler;
+	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.ogc.WMSC;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.security.ign.IGNGeoRMSecurity;
@@ -16,9 +18,6 @@ package
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
-	import org.openscales.core.handler.feature.SelectFeaturesHandler;
-	import org.openscales.core.handler.mouse.DragHandler;
-	import org.openscales.core.handler.mouse.WheelHandler;
 	
 	[SWF(width='1200',height='700')]
 	public class OverviewMapRatioExample extends Sprite
@@ -52,10 +51,12 @@ package
 			mapnik.proxy = "http://openscales.org/proxy.php?url=";
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);
 			
-			var position:Pixel = new Pixel(10, 10);
-			var ratio:Number = 1.5;
+			var position:Pixel = new Pixel(100, 100);
 			var overview:OverviewMapRatio = new OverviewMapRatio(position, mapnik);
+			overview.ratio = 4;
 			overview.map = _map;
+			overview.size = new Size(200, 200);
+			_map.addControl(overview);
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerManager());
 			_map.addControl(new PanZoomBar());
