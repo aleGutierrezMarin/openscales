@@ -37,7 +37,7 @@
 	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
 	
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
-  	<component id="MousePosition" class="org.openscales.fx.control.FxMousePosition" />
+	<component id="MousePosition" class="org.openscales.fx.control.MousePosition" />
 	<component id="Pan" class="org.openscales.fx.control.Pan" />
 	<component id="PanZoom" class="org.openscales.fx.control.PanZoom" />
 	<component id="Zoom" class="org.openscales.fx.control.Zoom" />
@@ -53,6 +53,7 @@
 	<component id="ScaleLine" class="org.openscales.fx.control.FxScaleLine" />
 	<component id="NumericScale" class="org.openscales.fx.control.NumericScale" />
 	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
+	<component id="LanguageSwitcher" class="org.openscales.fx.control.LanguageSwitcher" />
 	
 	<component id="SampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
 	<component id="SampleRoutingControl" class="org.openscales.fx.control.routing.SampleRoutingControl"/>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- 			
+The language Switcher is a drop down list used to change the language of the application.
+This is a DropList UI component that show all the languages avaliables.
+You don't have to configure the LanguageSwitcher.
+It will retrieve the language information and display the availlable languages.
+
+@author Maxime Viry
+
+--> 
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100" height="100" initialize="configure()">
+	<fx:Script>
+		<![CDATA[		
+			import mx.collections.ArrayCollection;
+			
+			import org.openscales.core.control.LanguageSwitcher;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			import spark.components.DropDownList;
+			import spark.events.IndexChangeEvent;
+			
+			/**
+			 * Array collection containing the list of the languages to show in the droplist
+			 */
+			[Bindable]
+			private var _languagesList:ArrayCollection;
+			
+			/**
+			* @private
+			* The actionScript component that communicate with the map 
+			*/
+			private var _languageSwitcher:org.openscales.core.control.LanguageSwitcher;
+			
+			
+			/**
+			 * Initialize the Language swticher component
+			 */
+			public function configure():void
+			{ 
+				_languagesList = new ArrayCollection()
+				_languageSwitcher = new org.openscales.core.control.LanguageSwitcher();
+				actualizeLanguages();
+				var languageIndex:int = this._languagesList.getItemIndex(this._languageSwitcher.language);
+				this.languageDropList.selectedIndex = languageIndex;		
+			}
+			
+			/**
+			 * Retrieve the language informations from the actionScript component 
+			 * and actualize the dropdown list
+			 */
+			public function actualizeLanguages():void
+			{
+				var languagesVector:Vector.<String> = _languageSwitcher.languageList;
+				var length:int = languagesVector.length;
+				for (var i:int = 0; i < length; i++)
+				{
+					_languagesList.addItem(languagesVector[i]);
+				}
+			}
+			
+			/**
+			 * Callback to change the map language when the dropBox selection is changed
+			 */
+			private function updateSelection(e:IndexChangeEvent):void
+			{
+				this._languageSwitcher.language = languageDropList.selectedItem;
+				this.superLabel.text = this._languageSwitcher.language;
+			}
+		]]>
+	</fx:Script>
+	
+	<!-- DropDownList will call the updateSelection function when the
+	selectionChanged event is dispatched -->
+	<s:DropDownList id="languageDropList" prompt="Select One"
+					 dataProvider="{_languagesList}"
+					labelField="product"
+					change="updateSelection(event);" />
+	
+	<s:Label id="superLabel" />
+</Control>

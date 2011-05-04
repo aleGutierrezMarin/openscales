@@ -9,9 +9,11 @@ package org.openscales.geometry.basetypes
 	 */
 	public class Unit
 	{
+		public static var SEXAGESIMAL:String = "dms";
 		public static var DEGREE:String = "degrees";
 		public static var METER:String = "m";
 		public static var KILOMETER:String = "km";
+		public static var CENTIMETER:String = "cm";
 		public static var FOOT:String = "ft";
 		public static var MILE:String = "mi";
 		public static var INCH:String = "inch";
@@ -30,10 +32,10 @@ package org.openscales.geometry.basetypes
 					return 63360.0;
 					break;
 				case Unit.METER:
-					return 39.3701;
+					return 39.3700787;
 					break;
 				case Unit.KILOMETER:
-					return 39370.1;
+					return 39370.0787;
 					break;
 				case Unit.DEGREE:
 					return 4374754;
@@ -63,6 +65,12 @@ package org.openscales.geometry.basetypes
 
 			var scale:Number = resolution * Unit.getInchesPerUnit(units) *
 				Unit.DOTS_PER_INCH;
+			
+			trace("** UNIT _ res : "+resolution);
+			trace("** UNIT _ units : "+units);
+			trace("** UNIT _ Unit.getInchesPerUnit(units) : "+Unit.getInchesPerUnit(units));
+			trace("** UNIT _ Unit.DOTS_PER_INCH : "+Unit.DOTS_PER_INCH);
+			trace("** UNIT _ result : "+scale);
 			return scale;
 		}
 
