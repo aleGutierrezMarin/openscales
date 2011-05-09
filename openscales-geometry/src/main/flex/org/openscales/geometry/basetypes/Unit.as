@@ -65,12 +65,7 @@ package org.openscales.geometry.basetypes
 
 			var scale:Number = resolution * Unit.getInchesPerUnit(units) *
 				Unit.DOTS_PER_INCH;
-			
-			trace("** UNIT _ res : "+resolution);
-			trace("** UNIT _ units : "+units);
-			trace("** UNIT _ Unit.getInchesPerUnit(units) : "+Unit.getInchesPerUnit(units));
-			trace("** UNIT _ Unit.DOTS_PER_INCH : "+Unit.DOTS_PER_INCH);
-			trace("** UNIT _ result : "+scale);
+		
 			return scale;
 		}
 
