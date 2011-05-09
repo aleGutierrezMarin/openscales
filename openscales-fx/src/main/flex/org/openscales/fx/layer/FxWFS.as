@@ -100,5 +100,17 @@ package org.openscales.fx.layer
 			return this.capabilitiesVersion;
 		}
 		
+		public override function set projection(value:String):void
+		{
+			super.projection = value;
+			//super.maxExtent = super.maxExtent;
+			super.configureLayer();
+		}
+		
+		public function get projection():String
+		{
+			return super.layer.projSrsCode;
+		}
+		
 	}
 }
