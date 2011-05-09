@@ -43,7 +43,7 @@ package org.openscales.core.control
 		 * Ratio between the overview resolution and the map resolution
 		 * The ratio is MapResolution/OverviewMapResolution
 		 */
-		private var _ratio:Number;
+		private var _ratio:Number = 1;
 		
 		/**
 		 * @private
@@ -65,7 +65,6 @@ package org.openscales.core.control
 			this._overviewMap = new Map();
 			this._overviewMap.size = new Size(100, 100);
 			this.layer = layer;
-			this.ratio = ratio;
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -135,8 +134,8 @@ package org.openscales.core.control
 				for (i; i < len; ++i)
 				{
 					var ratioSeeker:Number = this._overviewMap.baseLayer.resolutions[i] / targetResolution;
-					if ( ratioSeeker > ratio){
-						ratioSeeker = ratio/ratioSeeker;
+					if ( ratioSeeker > _ratio){
+						ratioSeeker = _ratio/ratioSeeker;
 					}
 					if ( ratioSeeker > bestRatio){
 						bestRatio = ratioSeeker;
@@ -200,12 +199,20 @@ package org.openscales.core.control
 		/**
 		 * @private
 		 * Callback to change the center of the general map when clicking on the minimap
+		 * If the new center is out of the max extend of the base map the overview map center is not
+		 * changed
 		 */
 		private function onMouseDown(event:MouseEvent):void {
 			var mousePosition:Pixel =  new Pixel(this._overviewMap.mouseX, this._overviewMap.mouseY);
 			var newCenter:Location = this._overviewMap.getLocationFromMapPx(mousePosition);
-			this._overviewMap.center = newCenter;
-			this.map.center = newCenter.reprojectTo(this.map.baseLayer.projSrsCode);			
+			var oldCenter:Location = this._overviewMap.center;
+			
+			this.map.center = newCenter.reprojectTo(this.map.baseLayer.projSrsCode);	
+			//If the new center is valid change the center of the overview
+			if (this.map.center == newCenter.reprojectTo(this.map.baseLayer.projSrsCode))
+				{
+					this._overviewMap.center = newCenter;
+				}
 		}
 		
 		/**
