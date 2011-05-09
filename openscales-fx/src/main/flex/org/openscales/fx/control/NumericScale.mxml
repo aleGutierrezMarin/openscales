@@ -84,8 +84,12 @@
 		]]>
 	</fx:Script>
 	
-	<mx:Label id="scaleLabel"
+	<s:Label id="scaleLabel"
 			  width="100%"
-			  height="100%" />
+			  height="25"
+			  backgroundColor="0xFFFFFF" 
+			  paddingTop="5" 
+			  paddingLeft="5" 
+			  paddingRight="5"/>
 	
 </Control>
