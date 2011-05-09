@@ -396,7 +396,7 @@
 	</fx:Script>
 	
 	<s:VGroup width="100%">
-		<s:Label id="coordinates"> 
+		<s:Label id="coordinates" backgroundColor="0xFFFFFF" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
 		<s:HGroup width="100%"> 
 			
