@@ -23,7 +23,7 @@ package org.openscales.fx.layer
 		
 		protected var _numZoomLevels:Number = NaN;
 		
-		protected var _maxExtent:Bounds = null;
+		//protected var _maxExtent:Bounds = null;
 		
 		protected var _resolutions:Array = null;
 		
@@ -59,8 +59,8 @@ package org.openscales.fx.layer
 				this.layer.minZoomLevel = this.minZoomLevel;
 			if(!isNaN(this.maxZoomLevel))
 				this.layer.maxZoomLevel = this.maxZoomLevel;
-			if(this._maxExtent)
-				this.layer.maxExtent = this._maxExtent;
+			//if(this._maxExtent)
+				//this.layer.maxExtent = this._maxExtent;
 			this.layer.tweenOnZoom = this._tweenOnZoom;
 			
 			return this.layer;
@@ -101,10 +101,12 @@ package org.openscales.fx.layer
 		
 		public function set maxExtent(value:String):void {
 			if(this._projection)
-				this._maxExtent = Bounds.getBoundsFromString(value,this._projection);
+				this.layer.maxExtent = Bounds.getBoundsFromString(value,this._projection);
 			else
-				this._maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
+				this.layer.maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
 		}
+		
+		
 		
 		public function set proxy(value:String):void {
 			if(this.layer != null)
@@ -159,8 +161,8 @@ package org.openscales.fx.layer
 		
 		public function set projection(value:String):void {
 			this._projection = value;
-			if(this._maxExtent)
-				this._maxExtent.projSrsCode = this._projection;
+			if(this.layer.maxExtent)
+				this.layer.maxExtent.projSrsCode = this._projection;
 		}
 		
 		override public function set alpha(value:Number):void {
