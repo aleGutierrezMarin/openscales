@@ -101,12 +101,24 @@
 				var lgth:uint = tmp.length;
 				var i:uint = 0;
 				var selectedIndex:uint = 0;
+				var displayProjSrsCodeInList:Boolean = false;
 				
 				for(i;i<lgth;i++)
 				{
 					this.crsComboBox.dataProvider.addItem(tmp[i]);
-					if(_displayProjSrsCode == (tmp[i] as String)) selectedIndex = i;
+					if(_displayProjSrsCode == (tmp[i] as String)) 
+					{
+						selectedIndex = i;
+						displayProjSrsCodeInList = true;
+					}
 				}
+				
+				if(!displayProjSrsCodeInList)
+				{
+					this.crsComboBox.dataProvider.addItem(_displayProjSrsCode);
+					selectedIndex = i;
+				}
+				
 				this.crsComboBox.selectedIndex = selectedIndex;
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 				feedUnitsComboBox();
@@ -167,7 +179,6 @@
 			{
 				var items:ArrayCollection;
 				
-				// TODO constants from ProjProjection?
 				switch(_srsUnits){
 					case Unit.METER:
 						items = new ArrayCollection([
@@ -175,6 +186,7 @@
 							{data:Unit.METER, label:"mètres"},
 							{data:Unit.CENTIMETER, label:"centimètres"}
 						]);
+						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll();
 						this.unitsComboBox.dataProvider = items;
 						this.unitsComboBox.selectedIndex = 1;						
 						break;
@@ -184,6 +196,7 @@
 							{data:Unit.SEXAGESIMAL,label:"degrés séxagécimaux"},
 							{data:Unit.DEGREE, label:"degrés décimaux"}
 						]);
+						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll();
 						this.unitsComboBox.dataProvider = items;
 						this.unitsComboBox.selectedIndex = 0;
 						break;

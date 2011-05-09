@@ -125,5 +125,7 @@ package org.openscales.core.handler.mouse
 				this.map.addHandler(_zoomBoxHandler);
 			}
 		}
+		
+		
 	}
 }
