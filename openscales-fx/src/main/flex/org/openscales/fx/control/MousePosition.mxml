@@ -135,6 +135,7 @@
 				_displayProjSrsCode = this.crsComboBox.dataProvider.getItemAt(event.newIndex).toString();
 				// Getting units for this SRS
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
+
 				// Feeding units combo box
 				feedUnitsComboBox();
 			}
@@ -165,8 +166,6 @@
 					case Unit.CENTIMETER:
 						_displayMetricUnits = Unit.CENTIMETER;
 						break;
-						break;
-					
 				}
 			}
 			
@@ -186,9 +185,9 @@
 							{data:Unit.METER, label:"mètres"},
 							{data:Unit.CENTIMETER, label:"centimètres"}
 						]);
-						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll();
+						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll(); // Clearing list if already set
 						this.unitsComboBox.dataProvider = items;
-						this.unitsComboBox.selectedIndex = 1;						
+						this.unitsComboBox.selectedIndex = 1;
 						break;
 					case "dd":
 					case Unit.DEGREE:
@@ -196,11 +195,13 @@
 							{data:Unit.SEXAGESIMAL,label:"degrés séxagécimaux"},
 							{data:Unit.DEGREE, label:"degrés décimaux"}
 						]);
-						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll();
+						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll(); // Clearing list if already set
 						this.unitsComboBox.dataProvider = items;
 						this.unitsComboBox.selectedIndex = 0;
 						break;
 				}
+				
+				unitsChanged(null);
 			}
 			
 			override public function draw():void {
