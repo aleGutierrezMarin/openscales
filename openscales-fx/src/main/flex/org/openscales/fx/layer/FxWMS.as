@@ -39,7 +39,7 @@ package org.openscales.fx.layer
 			super.projection = value;
 			if(this.layer != null) {
 				//((this.layer as WMS).params as WMSParams).srs = value;
-				(this.layer as WMS).projSrsCode=value;
+				(this.layer as WMS).projection=value;
 			}
 		}
 
@@ -65,14 +65,7 @@ package org.openscales.fx.layer
 			if(this.layer != null)
 				//((this.layer as WMS).params as WMSParams).exceptions = value;
 				(this.layer as WMS).exception=value;
-		}
-
-		public function set sld(value:String):void {
-			if(this.layer != null)
-				//((this.layer as WMS).params as WMSParams).sld = value;
-				(this.layer as WMS).SLD= value;
-		}
-		
+		}		
 		
 		public function set version(value:String):void{
 			if(this.layer != null){
@@ -87,14 +80,23 @@ package org.openscales.fx.layer
 		
 		public function set tHeight(value:Number):void{
 			if(this.layer != null){
-				(this.layer as WMS).setHeightToDisplay(value);
+				(this.layer as WMS).tileHeight=value;
 			}
 		}
 		
+		public function get tHeight():Number{
+			return (this.layer as WMS).tileHeight;
+		}
+		
+		
 		public function set tWidth(value:Number):void{
 			if(this.layer != null){
-				(this.layer as WMS).setWidthToDisplay(value);
+				(this.layer as WMS).tileWidth = value;
 			}
+		}
+		
+		public function get tWidth():Number{
+			return (this.layer as WMS).tileHeight;
 		}
 	}
 }

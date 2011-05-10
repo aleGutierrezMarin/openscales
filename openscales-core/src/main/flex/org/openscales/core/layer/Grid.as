@@ -43,9 +43,9 @@ package org.openscales.core.layer
 		private var tileCache:LinkedList = new LinkedList();
 		private var cptCached:int = 0;
 		
-		private var _tileWidth:Number = DEFAULT_TILE_WIDTH;
+		protected var _tileWidth:Number = DEFAULT_TILE_WIDTH;
 		
-		private var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
+		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
 
 		/**
 		 * Create a new grid layer
