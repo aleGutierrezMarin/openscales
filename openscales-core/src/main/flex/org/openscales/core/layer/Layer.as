@@ -47,7 +47,7 @@ package org.openscales.core.layer {
 		private var _isFixed:Boolean = false;		
 		private var _security:ISecurity = null;
 		private var _loading:Boolean = false;
-		private var _autoResolution:Boolean = true;
+		protected var _autoResolution:Boolean = true;
 		protected var _imageSize:Size = null;
 		private var _tweenOnZoom:Boolean = true;
 		private var _tweenOnLoad:Boolean = true;

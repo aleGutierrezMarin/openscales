@@ -21,13 +21,7 @@ package org.openscales.core.layer.ogc.provider
 	 */
 	
 	public class WMSTileProvider extends OGCTileProvider
-	{
-		/**
-		 * @private
-		 * Reference to openscales layer
-		 */ 
-		private var _openScalesLayer:WMS;
-		
+	{	
 		/**
 		 * @private
 		 * Layer identifier to request from service
@@ -107,8 +101,7 @@ package org.openscales.core.layer.ogc.provider
 		 * @param format Mime type used for the returned tiles.
 		 * 
 		 */
-		public function WMSTileProvider(openscalesLayer:WMS,
-										url:String,
+		public function WMSTileProvider(url:String,
 										version:String,
 										layer:String,
 										projection:String,
@@ -117,8 +110,6 @@ package org.openscales.core.layer.ogc.provider
 		{
 			//call the constructor of the mother class OGCTileProvider
 			super(url,"WMS",version,"GetMap");
-			
-			this._openScalesLayer = openscalesLayer;
 			
 			//Save WMS specific parameters
 			this._layer=layer;
@@ -130,12 +121,12 @@ package org.openscales.core.layer.ogc.provider
 		/**
 		 * @inheritDoc
 		 */ 
-		override public function getTile(bounds:Bounds):ImageTile
+		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			var url:String = this.buildGETQuery(bounds, null);
-			var img:ImageTile = new ImageTile(this._openScalesLayer, null, bounds, url, new Size(this._width, this._height));
-			if(this._openScalesLayer.method != null)
-				img.method = this._openScalesLayer.method;
+			var img:ImageTile = new ImageTile(layer, center, bounds, url, new Size(this._width, this._height));
+			if(layer is WMS && (layer as WMS).method != null)
+				img.method = (layer as WMS).method;
 			return img;
 		}
 		

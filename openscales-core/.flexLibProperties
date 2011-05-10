@@ -11,7 +11,6 @@
     <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedListNode"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedList"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode"/>
-    <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedListOriginatorNode"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMap"/>
     <classEntry path="org.openscales.core.basetypes.maps.HashMapEntry"/>
     <classEntry path="org.openscales.core.basetypes.maps.IHashMapEntry"/>
@@ -24,8 +23,6 @@
     <classEntry path="org.openscales.core.configuration.Configuration"/>
     <classEntry path="org.openscales.core.configuration.IConfiguration"/>
     <classEntry path="org.openscales.core.control.Control"/>
-    <classEntry path="org.openscales.core.control.Copyright"/>
-    <classEntry path="org.openscales.core.control.DataOriginators"/>
     <classEntry path="org.openscales.core.control.DataOriginatorsDisplay"/>
     <classEntry path="org.openscales.core.control.IControl"/>
     <classEntry path="org.openscales.core.control.LanguageSwitcher"/>
@@ -39,8 +36,6 @@
     <classEntry path="org.openscales.core.control.PanZoomBar"/>
     <classEntry path="org.openscales.core.control.ScaleLine"/>
     <classEntry path="org.openscales.core.control.Spinner"/>
-    <classEntry path="org.openscales.core.control.TermsOfService"/>
-    <classEntry path="org.openscales.core.control.Zoom"/>
     <classEntry path="org.openscales.core.control.ZoomBar"/>
     <classEntry path="org.openscales.core.control.ZoomData"/>
     <classEntry path="org.openscales.core.control.logoRotator"/>
