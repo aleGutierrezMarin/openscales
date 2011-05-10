@@ -133,9 +133,12 @@
 					
 					// add the DataOriginators as a control in the map
 					this._map.addControl(this._dataOriginators);
-						
-					// add listener to add / remove Originators
-					// this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_ADDED, this.onOriginatorAdded);
+	
+					if(this._dataOriginators == null)
+					{
+						this.configure();
+					}
+					// add listener to add / remove Originators	
 					this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
 					
 					startTimer();
