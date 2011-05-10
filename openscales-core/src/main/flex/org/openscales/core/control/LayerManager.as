@@ -351,6 +351,8 @@ package org.openscales.core.control
 				this.addEventListener(MouseEvent.MOUSE_DOWN,layerswitcherStopPropagation);
 				this.addChild(_minimizeButton);
 			}
+			
+			if(this.stage) this.stage.focus = this.map;
 
 		}
 

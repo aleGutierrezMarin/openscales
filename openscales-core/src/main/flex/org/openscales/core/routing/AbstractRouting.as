@@ -198,7 +198,7 @@ package org.openscales.core.routing
 		}
 		/**
 		 * To add an intermediary point to the itinerary
-		 * @param intermedPoint PointFeature the point to add
+		 * @param intermedPoint the point to add
 		 * */
 		public function addIntermediaryPoint(intermedPoint:PointFeature):void{
 			if(_intermedPoints.indexOf(intermedPoint)==-1)
@@ -206,7 +206,7 @@ package org.openscales.core.routing
 		}
 		/**
 		 * To add an array of intermediaries point to the itinerary
-		 * @param intermedPointArray:Vector.<PointFeature> the array to add
+		 * @param intermedPointArray the array to add
 		 * */
 		public function addIntermediaryPoints(intermedPointsArray:Vector.<PointFeature>):void{
 			for each(var intermedPoint:PointFeature in intermedPointsArray){
@@ -217,7 +217,7 @@ package org.openscales.core.routing
 		}
 		/**
 		 * To remove an intermediary point from the itinerary
-	     * @param intermedPoint PointFeature the point to remove
+	     * @param intermedPoint the point to remove
 		 * */
 		public function removeIntermediaryPoint(intermedPoint:PointFeature):void{
 			var i:int = _intermedPoints.indexOf(intermedPoint);
@@ -227,7 +227,7 @@ package org.openscales.core.routing
 		}
 		/**
 		 * To remove an array of intermediary point from the itinerary
-	     * @param intermedPoint PointFeature the array to remove
+	     * @param intermedPoint the array to remove
 		 *
 		 */
 		public function removeIntermediaryPoints(intermedPointsArray:Vector.<PointFeature>):void{

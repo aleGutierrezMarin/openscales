@@ -62,7 +62,7 @@ package org.openscales.core.layer.ogc.provider
 		 * @private
 		 * Background color of the requested tile
 		 */
-		private var _bgcolor:String="0xFFFFFF";
+		private var _bgcolor:String;
 		
 		/**
 		 * @pivate
@@ -87,12 +87,6 @@ package org.openscales.core.layer.ogc.provider
 		 * Is the service returning tiled layers?
 		 */
 		private var _tiled:Boolean=false;
-		
-		/**
-		 * @private
-		 * SLD style (Not in WMS 1.3.0)
-		 */
-		private var _sld:String;
 		
 		
 		/**
@@ -154,11 +148,16 @@ package org.openscales.core.layer.ogc.provider
 						
 			var str:String = super.buildGETQuery(bounds, params);
 			
-			if (this._layer != null)
+			if (this._layer != null && this._layer != "")
 				str += "LAYERS=" + this._layer + "&";
-			
-			if (this._style != null)
-				str += "STYLES=" + this._style + "&";
+						
+			if(this._style != null && this._style != "") {
+				if(this.version=="1.3.0") {
+					str += "STYLES=" + this._style + "&";
+				} else if(this.version=="1.1.0" || this.version=="1.1.1") {
+					str += "SLD=" + this._style + "&";
+				}
+			}			
 			
 			//the projection parameter depends on the version of the protocol
 			//The bbox parameters depends on the version
@@ -176,24 +175,19 @@ package org.openscales.core.layer.ogc.provider
 			str += "HEIGHT=" + this._height + "&";
 			
 			
-			if (this._format != null)
+			if (this._format != null && this._format != "")
 				str += "FORMAT=" + this._format + "&";
 			
 			str += "TRANSPARENT=" + this._transparent.toString().toUpperCase() + "&";
 			
-			if (this._bgcolor != null)
+			if (this._bgcolor != null && this._bgcolor != "")
 				str += "BGCOLOR=" + this._bgcolor + "&";
 			
-			if (this._exceptions != null)
+			if (this._exceptions != null && this._exceptions != "")
 				str += "EXCEPTIONS=" + this._exceptions + "&";
 			
 			str += "TILED=" + this._tiled + "&";
 			
-			if(this.version=="1.1.0" || this.version=="1.1.1"){
-				if(this._sld != null){
-					str += "SLD=" + this._sld + "&";
-				}
-			}
 			
 			return str.substr(0, str.length-1);
 		}
@@ -373,23 +367,5 @@ package org.openscales.core.layer.ogc.provider
 		{
 			_tiled = value;
 		}
-
-		/**
-		 * SLD style (Not in WMS 1.3.0)
-		 */
-		public function get sld():String
-		{
-			return _sld;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set sld(value:String):void
-		{
-			_sld = value;
-		}
-
-
 	}
 }

@@ -10,7 +10,7 @@ package org.openscales.core.layer
 	{
 		public var URL_HASH_FACTOR:Number = (Math.sqrt(5) - 1) / 2;
 
-		private var _url:String = null;
+		protected var _url:String = null;
 		private var _method:String  = null;
 
 		/**

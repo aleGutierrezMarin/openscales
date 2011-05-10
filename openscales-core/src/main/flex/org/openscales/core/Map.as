@@ -99,6 +99,8 @@ package org.openscales.core
 			
 			Trace.stage = this.stage;
 			
+			this.focusRect = false;// Needed to hide yellow rectangle around map when focused
+			this.addEventListener(MouseEvent.CLICK, onMouseClick); //Needed to prevent focus losing 
 		}
 		
 		/**
@@ -1119,7 +1121,7 @@ package org.openscales.core
 			var scale:Number = NaN;
 			if (this.baseLayer) {
 				var units:String = ProjProjection.getProjProjection(this.baseLayer.projSrsCode).projParams.units;
-				scale = Unit.getScaleFromResolution(this.resolution, units);
+				scale = Unit.getScaleFromResolution(this.resolution, units, this.baseLayer.dpi);
 			}
 			return scale;
 		}
@@ -1245,6 +1247,19 @@ package org.openscales.core
 				this._loading = value;
 				dispatchEvent(new MapEvent(MapEvent.LOAD_END,this));
 			} 
+		}
+		
+		/**
+		 * @private
+		 * 
+		 * Method called when the map is clicked
+		 * <p>
+		 * It happens that map loses focus when clicked.
+		 * This method ensures that focus stays on the map object.</p>
+		 */ 
+		private function onMouseClick(event:MouseEvent):void
+		{
+			this.stage.focus = this;
 		}
 	}
 }

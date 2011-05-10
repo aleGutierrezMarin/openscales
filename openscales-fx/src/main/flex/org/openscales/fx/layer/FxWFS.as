@@ -64,16 +64,32 @@ package org.openscales.fx.layer
 			this._url = value;
 		}
 		
+		public function get url():String{
+			return this._url;
+		}
+		
 		public function set typename(value:String):void {
 			this._typename = value;
+		}
+		
+		public function get typename():String{
+			return this._typename;
 		}
 		
 		public function set version(value:String):void {
 			this._version = value;
 		}
 		
+		public function get version():String{
+			return this._version;
+		}	
+		
 		public function set useCapabilities(value:Boolean):void {
 			this._useCapabilities = value;
+		}
+		
+		public function get useCapabilities():Boolean{
+			return this._useCapabilities;
 		}
 		
 		public function set capabilitiesVersion(value:String):void {
@@ -82,6 +98,18 @@ package org.openscales.fx.layer
 		
 		public function get capabilitiesVersion():String {
 			return this.capabilitiesVersion;
+		}
+		
+		public override function set projection(value:String):void
+		{
+			super.projection = value;
+			//super.maxExtent = super.maxExtent;
+			super.configureLayer();
+		}
+		
+		public function get projection():String
+		{
+			return super.layer.projSrsCode;
 		}
 		
 	}

@@ -32,21 +32,28 @@
 	<component id="DragFeatureHandler" class="org.openscales.fx.handler.feature.FxDragFeatureHandler" />
 	<component id="SelectFeaturesHandler" class="org.openscales.fx.handler.feature.FxSelectFeaturesHandler" />
 	
+	<component id="Copyright" class="org.openscales.fx.control.Copyright" />
+	<component id="DataOriginatorsDisplay" class="org.openscales.fx.control.DataOriginatorsDisplay" />
+	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
+	
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
-  	<component id="MousePosition" class="org.openscales.fx.control.FxMousePosition" />
+	<component id="MousePosition" class="org.openscales.fx.control.MousePosition" />
 	<component id="Pan" class="org.openscales.fx.control.Pan" />
 	<component id="PanZoom" class="org.openscales.fx.control.PanZoom" />
 	<component id="Zoom" class="org.openscales.fx.control.Zoom" />
 	<component id="ZoomBox" class="org.openscales.fx.control.ZoomBox" />
 	
 	<component id="OverviewMap" class="org.openscales.fx.control.FxOverviewMap" />
+	<component id="OverviewMapRatio" class="org.openscales.fx.control.FxOverviewMapRatio" />
 	<component id="Capabilities" class="org.openscales.fx.control.Capabilities" />
 	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
 	<component id="YahooSearch" class="org.openscales.fx.control.search.YahooSearch" />
 	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
 	<component id="ScaleLine" class="org.openscales.fx.control.FxScaleLine" />
+	<component id="NumericScale" class="org.openscales.fx.control.NumericScale" />
 	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
+	<component id="LanguageSwitcher" class="org.openscales.fx.control.LanguageSwitcher" />
 	
 	<component id="SampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
 	<component id="SampleRoutingControl" class="org.openscales.fx.control.routing.SampleRoutingControl"/>

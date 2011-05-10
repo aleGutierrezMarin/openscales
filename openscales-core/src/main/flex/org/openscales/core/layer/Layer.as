@@ -6,6 +6,8 @@ package org.openscales.core.layer {
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.layer.originator.ConstraintOriginator;
+	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.security.events.SecurityEvent;
 	import org.openscales.geometry.Geometry;
@@ -23,17 +25,20 @@ package org.openscales.core.layer {
 	 * @author Bouiaw
 	 */
 	public class Layer extends Sprite {
+		public static const DEFAULT_DPI:Number = 92;
 		
 		public static const DEFAULT_NOMINAL_RESOLUTION:Number = 1.40625;
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
+
 
 		public static function get DEFAULT_MAXEXTENT():Bounds {
 			return new Bounds(-180, -90, 180, 90, Geometry.DEFAULT_SRS_CODE);
 		}
 
 		private var _map:Map = null;
-		private var _projSrsCode:String = null;
+		protected var _projSrsCode:String = null;
+		private var _dpi:Number = Layer.DEFAULT_DPI;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
 		private var _minResolution:Number = NaN;
@@ -50,6 +55,13 @@ package org.openscales.core.layer {
 		private var _editable:Boolean = false;
 
 		/**
+		 * @private
+		 * The list of originators for the layer.
+		 * @default null
+		 */
+		private var _originators:Vector.<DataOriginator> = null;
+		
+		/**
 		 * Layer constructor
 		 */
 		public function Layer(name:String) {
@@ -58,6 +70,8 @@ package org.openscales.core.layer {
 			this.doubleClickEnabled = true;
 			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
 			this.generateResolutions();
+			
+			this._originators = new Vector.<DataOriginator>();
 		}
 
 		/**
@@ -143,6 +157,22 @@ package org.openscales.core.layer {
 			this.redraw(e.zoomChanged);
 		}
 
+		/**
+		 * the dpi used to calculate resolution and scale upon this layer
+		 */
+		public function get dpi():Number
+		{
+			return _dpi;
+		}
+		
+		/**
+		 * @Private
+		 */
+		public function set dpi(value:Number):void
+		{
+			_dpi = value;
+		}
+		
 		/**
 		 * Return a reference to the map where belong this layer
 		 */
@@ -260,6 +290,50 @@ package org.openscales.core.layer {
 				this.draw();
 			}
 		}
+		
+		/**
+		 * Add a new originator for the layer
+		 * @param originator Informations of this new originator (with or without constraints)
+		 * If no constraint is defined, one default constraint is made with the current extent, minResolution and maxResolution of the layer
+		 */
+		public function addOriginator(originator:DataOriginator):void
+		{
+			// Is the input originator valid ?
+			if (! originator) 
+			{
+				trace("Layer.addOriginator: null originator not added");
+				return;
+			}
+			
+			// If no constraint, generate default
+			if(originator.constraints.length == 0)
+			{
+				originator.constraints.push(new ConstraintOriginator(this._maxExtent, this.minResolution, this.maxResolution));
+			}
+			
+			var i:uint = 0;
+			var j:uint = this._originators.length;
+			for (; i<j; ++i) 
+			{
+				if (originator == this._originators[i]) 
+				{
+					trace("Layer.addOriginator: this originator is already registered");
+					return;
+				}
+			}
+			// If the constraint is a new constraint, register it
+			if (i == j) 
+			{
+				trace("Layer.addOriginator: add a new originator ");
+				this._originators.push(originator);
+			}
+			// Event Originator_list_changed
+			if(this._map)
+			{
+				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
+			}
+		}
+		
 
 		/**
 		 * Is this layer currently in range, based on its min and max resolutions
@@ -546,6 +620,25 @@ package org.openscales.core.layer {
 			_editable = value;
 		}
 		
+		/**
+		 * The list of originators for the layer.
+		 */
+		public function get originators():Vector.<DataOriginator>
+		{
+			return _originators;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set originators(originators:Vector.<DataOriginator>):void
+		{
+			_originators = originators;
+			if(this._map)
+			{
+				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
+			}
+		}
 	}
 }
 

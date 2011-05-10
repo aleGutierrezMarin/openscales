@@ -32,6 +32,7 @@ package {
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 
+			
 			var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
 			cycle.proxy = "http://openscales.org/proxy.php?url=";
 			_map.addLayer(cycle); 
@@ -43,6 +44,7 @@ package {
 			
 			_map.addLayer(regions);
 
+	
 			// Add Controls to map
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerManager());
