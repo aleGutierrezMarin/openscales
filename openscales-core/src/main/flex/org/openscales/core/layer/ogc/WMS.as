@@ -304,18 +304,6 @@ package org.openscales.core.layer.ogc
 			}
 		}
 		
-		/**
-		 * Set the SLD style (Only for WMS 1.1.x)
-		 * 
-		 * @param value sld style to apply
-		 * 
-		 */
-		public function set SLD(value:String):void{
-			if(this._tileProvider != null){
-				this._tileProvider.sld=value;
-			}
-		}
-		
 		
 		/**
 		 * Set the layers that the tileprovider is going to request
@@ -377,7 +365,8 @@ package org.openscales.core.layer.ogc
 		 *
 		 * @param value width of the tile
 		 */
-		public function setWidthToDisplay(value:Number):void{
+		override public function set tileWidth(value:Number):void {
+			super.tileWidth = value;
 			if(this._tileProvider !=null){
 				this._tileProvider.width=value;
 			}
@@ -388,7 +377,8 @@ package org.openscales.core.layer.ogc
 		 *
 		 * @param value height of the tile
 		 */
-		public function setHeightToDisplay(value:Number):void{
+		override public function set tileHeight(value:Number):void {
+			super.tileHeight = value;
 			if(this._tileProvider !=null){
 				this._tileProvider.height=value;
 			}
