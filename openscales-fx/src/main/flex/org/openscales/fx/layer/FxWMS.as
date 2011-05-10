@@ -64,7 +64,7 @@ package org.openscales.fx.layer
 		public function set exceptions(value:String):void {
 			if(this.layer != null)
 				//((this.layer as WMS).params as WMSParams).exceptions = value;
-				(this.layer as WMS).exception=value;
+				(this.layer as WMS).exceptions=value;
 		}		
 		
 		public function set version(value:String):void{
