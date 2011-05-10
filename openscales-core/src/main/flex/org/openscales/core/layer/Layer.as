@@ -25,10 +25,12 @@ package org.openscales.core.layer {
 	 * @author Bouiaw
 	 */
 	public class Layer extends Sprite {
+		public static const DEFAULT_DPI:Number = 92;
 		
 		public static const DEFAULT_NOMINAL_RESOLUTION:Number = 1.40625;
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
+
 
 		public static function get DEFAULT_MAXEXTENT():Bounds {
 			return new Bounds(-180, -90, 180, 90, Geometry.DEFAULT_SRS_CODE);
@@ -36,6 +38,7 @@ package org.openscales.core.layer {
 
 		private var _map:Map = null;
 		protected var _projSrsCode:String = null;
+		private var _dpi:Number = Layer.DEFAULT_DPI;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
 		private var _minResolution:Number = NaN;
@@ -154,6 +157,22 @@ package org.openscales.core.layer {
 			this.redraw(e.zoomChanged);
 		}
 
+		/**
+		 * the dpi used to calculate resolution and scale upon this layer
+		 */
+		public function get dpi():Number
+		{
+			return _dpi;
+		}
+		
+		/**
+		 * @Private
+		 */
+		public function set dpi(value:Number):void
+		{
+			_dpi = value;
+		}
+		
 		/**
 		 * Return a reference to the map where belong this layer
 		 */

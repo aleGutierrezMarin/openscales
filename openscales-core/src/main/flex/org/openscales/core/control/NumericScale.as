@@ -64,11 +64,9 @@ package org.openscales.core.control
 		 */
 		public function update():void
 		{
-			this._value = Unit.getScaleFromResolution(this._map.resolution, ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode).projParams.units);
-			
-			trace("zoom level :"+this._map.zoom);
-			trace("Resolution : "+this._map.resolution);
-			trace("numeric scale : "+this._value);
+			this._value = Unit.getScaleFromResolution(this._map.resolution,
+				ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode).projParams.units,
+				this._map.baseLayer.dpi);
 			
 			this._textField.text = "1 / "+this._value.toFixed(NumericScale.DEFAULT_FIXED_ROUND);
 		}	

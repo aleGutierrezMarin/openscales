@@ -1121,7 +1121,7 @@ package org.openscales.core
 			var scale:Number = NaN;
 			if (this.baseLayer) {
 				var units:String = ProjProjection.getProjProjection(this.baseLayer.projSrsCode).projParams.units;
-				scale = Unit.getScaleFromResolution(this.resolution, units);
+				scale = Unit.getScaleFromResolution(this.resolution, units, this.baseLayer.dpi);
 			}
 			return scale;
 		}

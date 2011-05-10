@@ -58,14 +58,13 @@ package org.openscales.geometry.basetypes
 			return resolution;
 		}
 
-		public static function getScaleFromResolution(resolution:Number, units:String):Number {
+		public static function getScaleFromResolution(resolution:Number, units:String, dpi:Number):Number {
 			if (units == null) {
 				units = Unit.DEGREE;
 			}
 
-			var scale:Number = resolution * Unit.getInchesPerUnit(units) *
-				Unit.DOTS_PER_INCH;
-		
+			var scale:Number = resolution * Unit.getInchesPerUnit(units) * dpi;
+
 			return scale;
 		}
 
