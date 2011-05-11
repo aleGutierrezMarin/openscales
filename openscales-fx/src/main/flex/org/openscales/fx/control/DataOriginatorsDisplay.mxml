@@ -118,8 +118,6 @@
 				// change the display when the delay is spent
 				this._timer.addEventListener(TimerEvent.TIMER,this.changeDisplay);
 				this._timer.start();
-				
-				trace("Toimer start");
 			}	
 				
 			
@@ -130,14 +128,15 @@
 			override public function set map(value:Map):void {
 				if (value != null) {
 					super.map = value;
-					
-					// add the DataOriginators as a control in the map
-					this._map.addControl(this._dataOriginators);
-	
+
 					if(this._dataOriginators == null)
 					{
 						this.configure();
 					}
+					
+					// add the DataOriginators as a control in the map
+					this._map.addControl(this._dataOriginators);
+					
 					// add listener to add / remove Originators	
 					this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
 					
