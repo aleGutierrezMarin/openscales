@@ -388,7 +388,9 @@
 
 		<s:List id="originatorsList" height="60"
 				horizontalCenter="0" verticalCenter="0" dataProvider="{_originator}"
-				itemRenderer="org.openscales.fx.control.DataOriginatorsRenderer">
+				itemRenderer="org.openscales.fx.control.DataOriginatorsRenderer"
+				contentBackgroundAlpha="0"
+				borderVisible="false" >
 			<s:layout>
 				<s:HorizontalLayout 
 					id="hLayout" 
