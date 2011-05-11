@@ -4,7 +4,6 @@
 		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="100" height="50" 
 		 creationComplete="configure()">
 	
 	<fx:Script>
@@ -26,7 +25,7 @@
 			/**
 			 * The default value of time between two changes.
 			 */
-			public static var DEFAULT_TIME_CYCLE:uint=2000;
+			public static var DEFAULT_TIME_CYCLE:uint=3000;
 			
 			/**
 			 * The default logo displayed number.
@@ -102,7 +101,10 @@
 			 */
 			public function  configure():void
 			{
-				this._dataOriginators = new DataOriginators();
+				if(this._dataOriginators == null)
+				{
+					this._dataOriginators = new DataOriginators();
+				}
 			}
 			
 			/**
@@ -118,8 +120,6 @@
 				// change the display when the delay is spent
 				this._timer.addEventListener(TimerEvent.TIMER,this.changeDisplay);
 				this._timer.start();
-				
-				trace("Toimer start");
 			}	
 				
 			
@@ -130,14 +130,15 @@
 			override public function set map(value:Map):void {
 				if (value != null) {
 					super.map = value;
-					
-					// add the DataOriginators as a control in the map
-					this._map.addControl(this._dataOriginators);
-	
+
 					if(this._dataOriginators == null)
 					{
 						this.configure();
 					}
+					
+					// add the DataOriginators as a control in the map
+					this._map.addControl(this._dataOriginators);
+					
 					// add listener to add / remove Originators	
 					this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
 					
