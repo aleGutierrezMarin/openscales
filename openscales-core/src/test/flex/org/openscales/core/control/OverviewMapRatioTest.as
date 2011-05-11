@@ -10,6 +10,7 @@ package org.openscales.core.control
 	import org.openscales.core.security.ign.IGNGeoRMSecurity;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 	
 	public class OverviewMapRatioTest
 	{
@@ -58,21 +59,6 @@ package org.openscales.core.control
 			overview.size = new Size(200, 200);
 			
 			assertEquals(overview.map.center.reprojectTo(_map.baseLayer.projSrsCode), _map.center);
-		}
-		[Test]
-		public function zoomCallbackTest():void
-		{
-		
-			
-		}
-
-		[Test]
-		public function ratioTest():void
-		{
-			
-	
-			
-			
 		}
 	}
 }
