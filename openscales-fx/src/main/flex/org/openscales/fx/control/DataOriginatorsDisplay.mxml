@@ -25,7 +25,7 @@
 			/**
 			 * The default value of time between two changes.
 			 */
-			public static var DEFAULT_TIME_CYCLE:uint=3000;
+			public static var DEFAULT_TIME_CYCLE:uint=10000;
 			
 			/**
 			 * The default logo displayed number.
@@ -141,7 +141,7 @@
 					
 					// add listener to add / remove Originators	
 					this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
-					
+					this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_ADDED, this.changeDisplay);
 					startTimer();
 				}
 			}
@@ -379,28 +379,26 @@
 			public function set logoNumber(value:Number):void
 			{
 				this._logoNumber = value;
+				hLayout.requestedColumnCount = this._logoNumber;
 			}
 			
 		]]>
 	</fx:Script>
 	
-	<s:VGroup width="100%"
-			  paddingLeft="2"
-			  paddingRight="2"
-			  paddingBottom="2"
-			  paddingTop="2"
-			  height="100%"> 
 
-		<s:List id="originatorsList"
+		<s:List id="originatorsList" height="60"
 				horizontalCenter="0" verticalCenter="0" dataProvider="{_originator}"
-				width="160" height="60"
 				itemRenderer="org.openscales.fx.control.DataOriginatorsRenderer">
 			<s:layout>
-				<s:HorizontalLayout requestedColumnCount="{this._logoNumber}" gap="{this._spacing}" />
+				<s:HorizontalLayout 
+					id="hLayout" 
+					requestedColumnCount="{this._logoNumber}" 
+					gap="{this._spacing}"
+					paddingLeft="{this._spacing}"
+					paddingRight="{this._spacing}"
+					paddingBottom="{this._spacing}"
+					paddingTop="{this._spacing}"/>
 			</s:layout>
 		</s:List>
-	
-	</s:VGroup>
-	
-	
+
 </Control>

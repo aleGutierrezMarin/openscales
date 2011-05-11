@@ -4,12 +4,14 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				xmlns:s="library://ns.adobe.com/flex/spark">
 	
-	<s:VGroup name="DataOriginatorsRenderer"
-			  xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			  xmlns:s="library://ns.adobe.com/flex/spark" 
-			  xmlns:mx="library://ns.adobe.com/flex/mx"
-			  horizontalAlign="center"
-			  verticalAlign="middle">
+	<mx:Image source="{_pictureUrl}"
+			  name="{_name}"
+			  width="50" 
+			  height="50" 
+			  useHandCursor="true"
+			  buttonMode="true" 
+			  click="onClick(event)"/>
+	
 		
 		<fx:Script>
 			<![CDATA[
@@ -19,6 +21,8 @@
 				
 				[Bindable]
 				private var _name:String="";
+				
+				
 				
 				override public function set data(value:Object):void{
 					
@@ -38,14 +42,8 @@
 		</fx:Script>
 		
 		
-		<mx:Image source="{_pictureUrl}"
-				name="{_name}"
-				width="50" 
-				height="50" 
-				useHandCursor="true"
-				buttonMode="true" 
-				click="onClick(event)"/>
-	</s:VGroup>
+		
+	
 	
 </s:ItemRenderer>
 
