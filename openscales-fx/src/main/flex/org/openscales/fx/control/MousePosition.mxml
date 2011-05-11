@@ -151,11 +151,9 @@
 				{
 					case Unit.DEGREE:
 						this._useDMS = false;
-						this.draw();
 						break;
 					case Unit.SEXAGESIMAL:
-						this._useDMS = true;
-						this.draw();	
+						this._useDMS = true;	
 						break;
 					case Unit.METER:
 						_displayMetricUnits = Unit.METER;
@@ -293,13 +291,16 @@
 			
 			
 			override public function set map(map:Map):void {
+				
+				super.map = map;
+				
 				if (this.map) {
 					this.map.removeEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
 					this.map.removeEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
 					this.map.removeEventListener(MapEvent.MOVE_END, this.activateDisplay);
 				}
 				
-				super.map = map;
+				
 				
 				if (this.map) {
 					this.map.addEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
