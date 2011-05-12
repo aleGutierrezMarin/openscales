@@ -90,6 +90,20 @@ package org.openscales.core.layer.ogc.WMTS
 			_tileMatrices = value;
 		}
 		
+		/**
+		 * Destroy the TileMatrixSet
+		 */
+		public function destroy():void {
+			if(!this._tileMatrices)
+				return;
+			var tms:Array = this._tileMatrices.getValues();
+			var l:uint = tms.length;
+			for(var i:uint = 0; i<l; ++i) {
+				(tms[i] as TileMatrix).destroy();
+			}
+			this._tileMatrices.clear();
+			this._tileMatrices = null;
+		}
 		
 	}
 }

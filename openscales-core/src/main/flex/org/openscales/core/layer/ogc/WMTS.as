@@ -61,6 +61,10 @@ package org.openscales.core.layer.ogc
 			this.format = WMTS.WMTS_DEFAULT_FORMAT;
 			super(name, url);
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		override public function destroy():void {
 			if(this._tileProvider!=null) {
 				this._tileProvider.destroy();
@@ -82,14 +86,24 @@ package org.openscales.core.layer.ogc
 		 * @inheritDoc
 		 */
 		override public function generateResolutions(numZoomLevels:uint=Layer.DEFAULT_NUM_ZOOM_LEVELS, nominalResolution:Number=NaN):void {
-			this.resolutions = this._tileProvider.generateResolutions(numZoomLevels,nominalResolution);
+			var resolutions:Array = this._tileProvider.generateResolutions(numZoomLevels,nominalResolution);
+			if(resolutions)
+				this.resolutions = resolutions;
+			else
+				super.generateResolutions(numZoomLevels, nominalResolution);
 			this._autoResolution = true;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function getURL(bounds:Bounds):String {
 			return this._tileProvider.getTile(bounds,null,this).url;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function get projSrsCode():String {
 			if(this._tileProvider.tileMatrixSets==null
 				|| !this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet))
@@ -97,6 +111,7 @@ package org.openscales.core.layer.ogc
 			var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(this._tileProvider.tileMatrixSet) as TileMatrixSet;
 			return tms.supportedCRS;
 		}
+		
 		/**
 		 * Indicates tile mimetype
 		 */
@@ -193,7 +208,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * @Inherit
+		 * @inheritDoc
 		 */
 		override public function get tileHeight():Number {
 			var tm:TileMatrix = this.tileMatrix;
@@ -203,7 +218,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * @Inherit
+		 * @inheritDoc
 		 */
 		override public function get tileWidth():Number {
 			var tm:TileMatrix = this.tileMatrix;
@@ -214,7 +229,7 @@ package org.openscales.core.layer.ogc
 		
 
 		/**
-		 * @Inherit
+		 * @inheritDoc
 		 */
 		override public function get maxExtent():Bounds {
 			if(this._tileProvider != null) {
