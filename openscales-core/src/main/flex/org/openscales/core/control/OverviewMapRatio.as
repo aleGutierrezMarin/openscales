@@ -160,7 +160,7 @@ package org.openscales.core.control
 		
 		/**
 		 * The map used to compute the ratio
-		 * 
+		 * It may be the main map of the application
 		 */
 		public override function set map(map:Map):void
 		{
