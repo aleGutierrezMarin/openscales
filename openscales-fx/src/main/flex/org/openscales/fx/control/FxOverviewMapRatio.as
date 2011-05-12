@@ -14,30 +14,55 @@ package org.openscales.fx.control
 	import spark.core.SpriteVisualElement;
 	
 	/**
-	 * <p>OverviewMap Flex wrapper.</p>
-	 * <p>To use it, declare a &lt;OverviewMap /&gt; MXML component using xmlns="http://openscales.org"</p>
+ 	 * Display an overview linked with the map.
+	 * The map and the overview resolutions are linked with a ratio.
+	 * This ratio will be kept when you zoom on the map.
+	 * The overview map is a single layer
+	 * 
+	 * @author Viry Maxime
 	 */
 	public class FxOverviewMapRatio extends Control
 	{
+		/**
+		 * @private
+		 * ActionScript object of the overviewMapRatio
+		 * 
+		 */
 		private var _overviewmap:OverviewMapRatio;
+		
+		/**
+		 * FxOverviewMapRatio constructor
+		 */
 		public function FxOverviewMapRatio()
 		{
 			super();
-			//this.width=100;
-			//this.height=100;
 			_overviewmap = new OverviewMapRatio();
 			this.addEventListener(FlexEvent.CREATION_COMPLETE, this.onCreationComplete);
 		}
 		
+		/**
+		 * The map used to compute the ratio
+		 * It may be the main map of the application
+		 * 
+		 * @param value The map linked with the overviewMap
+		 */
 		override public function set map(value:Map):void {
 			_overviewmap.map = value;
 			this.draw();
 		}
+		
+		/**
+		 * @private
+		 * 
+		 */
 		override public function get map():Map {
 			return _overviewmap.map;
 		}
 		
 		
+		/**
+		 * Draw the overview map
+		 */
 		override public function draw():void {
 			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
 			this.addElementAt(mapContainer, 0);
@@ -46,6 +71,10 @@ package org.openscales.fx.control
 				this._overviewmap.size = new Size(this.width,this.height);
 		}
 		
+		
+		/**
+		 * The Flex side of the control has been created, so activate the overviewMap
+		 */
 		override protected function onCreationComplete(event:Event):void {
 			var i:uint;
 			var element:IVisualElement;
@@ -56,17 +85,43 @@ package org.openscales.fx.control
 				}
 			}
 		}
+		
+		/**
+		 * Add a layer to the overviewMap
+		 * Currently you can only set one layer in the overviewMap
+		 * 
+		 * @param fxLayer The flex layer to add to the overviewMap
+		 */
 		private function addFxLayer(fxLayer:FxLayer):void {
 			_overviewmap.layer = fxLayer.layer;
 		}
 		
+		/**
+		 * @private
+		 */
 		public function get overviewMap():OverviewMapRatio {
 			return this._overviewmap;
 		}
 		
+		
+		/**
+		 * Ratio between the overview resolution and the map resolution
+		 * The ratio is MapResolution/OverviewMapResolution
+		 * While setting a new ratio the oveview zoom level will be recomputed
+		 * 
+		 * @param ratio The curent ratio between the overview map and the map
+		 */
 		public function set ratio(value:String):void
 		{
 			_overviewmap.ratio = Number(value);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get ratio():String
+		{
+			return String(_overviewmap.ratio);
 		}
 	}
 }
