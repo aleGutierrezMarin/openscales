@@ -14,6 +14,7 @@
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
+  <theme themeIsDefault="false" themeIsSDK="false" themeLocation="${EXTERNAL_THEME_DIR}/OpenscalesTheme"/>
   <applications>
     <application path="FxExamples.mxml"/>
   </applications>

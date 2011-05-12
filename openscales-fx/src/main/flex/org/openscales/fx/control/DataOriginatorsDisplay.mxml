@@ -379,7 +379,7 @@
 			public function set logoNumber(value:Number):void
 			{
 				this._logoNumber = value;
-				hLayout.requestedColumnCount = this._logoNumber;
+				originatorsHorizontalLayout.requestedColumnCount = this._logoNumber;
 			}
 			
 		]]>
@@ -393,7 +393,7 @@
 				borderVisible="false" >
 			<s:layout>
 				<s:HorizontalLayout 
-					id="hLayout" 
+					id="originatorsHorizontalLayout" 
 					requestedColumnCount="{this._logoNumber}" 
 					gap="{this._spacing}"
 					paddingLeft="{this._spacing}"
