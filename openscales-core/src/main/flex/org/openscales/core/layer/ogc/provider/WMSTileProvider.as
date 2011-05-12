@@ -8,6 +8,7 @@ package org.openscales.core.layer.ogc.provider
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	use namespace os_internal;
 	
@@ -160,13 +161,18 @@ package org.openscales.core.layer.ogc.provider
 			}			
 			
 			//the projection parameter depends on the version of the protocol
-			//The bbox parameters depends on the version
-			//Lon/Lat if less than 1.3.0, lat/lon otherwise
-			if(this.version=="1.3.0"){
+			if(this.version=="1.3.0") {
 				str += "CRS=" + this._projection + "&";
-				str += "BBOX=" + bounds.bottom+","+ bounds.left +","+ bounds.top +","+ bounds.right+"&";
-			}else if(this.version=="1.1.0" || this.version=="1.1.1"){
+			} else {
 				str += "SRS=" + this._projection + "&";
+			}
+			//The bbox parameters depends on the version
+			//Lon/Lat if less than 1.3.0 or if axis order of the projection is East/North, lat/lon otherwise
+			if(this.version=="1.3.0"
+					&& ProjProjection.projAxisOrder[this._projection]
+					&& ProjProjection.projAxisOrder[this._projection] == ProjProjection.AXIS_ORDER_NE){
+				str += "BBOX=" + bounds.bottom+","+ bounds.left +","+ bounds.top +","+ bounds.right+"&";
+			}else {
 				str += "BBOX=" + bounds.left+","+ bounds.bottom +","+ bounds.right +","+ bounds.top+"&";
 			}
 				
