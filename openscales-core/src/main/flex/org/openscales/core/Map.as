@@ -446,6 +446,8 @@ package org.openscales.core
 		 * @param tween use tween effect
 		 */
 		public function pan(dx:int, dy:int, tween:Boolean=false):void {
+			if(!this.baseLayer)
+				return;
 			// Is there a real offset ?
 			if ((dx==0) && (dy==0)) {
 				return;
