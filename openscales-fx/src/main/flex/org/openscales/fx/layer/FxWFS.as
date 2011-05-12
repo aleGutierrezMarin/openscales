@@ -62,6 +62,8 @@ package org.openscales.fx.layer
 		
 		public function set url(value:String):void {
 			this._url = value;
+			if(this.layer)
+				(this._layer as WFS).url = this._url;
 		}
 		
 		public function get url():String{
@@ -105,11 +107,6 @@ package org.openscales.fx.layer
 			super.projection = value;
 			//super.maxExtent = super.maxExtent;
 			super.configureLayer();
-		}
-		
-		public function get projection():String
-		{
-			return super.layer.projSrsCode;
 		}
 		
 	}
