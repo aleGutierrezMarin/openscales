@@ -236,7 +236,6 @@
 			   useHandCursor="true"
 			   buttonMode="true"
 			   liveDragging="false"
-			   skinClass="org.openscales.fx.control.skin.ZoomSkin"
 			   focusEnabled="false"
 			   showDataTip="true"/>
 	

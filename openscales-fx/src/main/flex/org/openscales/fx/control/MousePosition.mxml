@@ -94,7 +94,7 @@
 			 */ 
 			private function init():void {				
 				
-				this.crsComboBox.dataProvider = new ArrayList();
+				this.mousePositionCrsComboBox.dataProvider = new ArrayList();
 				
 				var tmp:Array = _availableProjSrsList.split(",");
 				
@@ -105,7 +105,7 @@
 				
 				for(i;i<lgth;i++)
 				{
-					this.crsComboBox.dataProvider.addItem(tmp[i]);
+					this.mousePositionCrsComboBox.dataProvider.addItem(tmp[i]);
 					if(_displayProjSrsCode == (tmp[i] as String)) 
 					{
 						selectedIndex = i;
@@ -115,11 +115,11 @@
 				
 				if(!displayProjSrsCodeInList)
 				{
-					this.crsComboBox.dataProvider.addItem(_displayProjSrsCode);
+					this.mousePositionCrsComboBox.dataProvider.addItem(_displayProjSrsCode);
 					selectedIndex = i;
 				}
 				
-				this.crsComboBox.selectedIndex = selectedIndex;
+				this.mousePositionCrsComboBox.selectedIndex = selectedIndex;
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 				feedUnitsComboBox();
 			}
@@ -132,7 +132,7 @@
 			private function crsChanged(event:IndexChangeEvent):void
 			{
 				// Getting the value
-				_displayProjSrsCode = this.crsComboBox.dataProvider.getItemAt(event.newIndex).toString();
+				_displayProjSrsCode = this.mousePositionCrsComboBox.dataProvider.getItemAt(event.newIndex).toString();
 				// Getting units for this SRS
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 
@@ -147,7 +147,7 @@
 			 */ 
 			private function unitsChanged(event:IndexChangeEvent):void
 			{
-				switch(this.unitsComboBox.selectedItem.data)
+				switch(this.mousePositionUnitsComboBox.selectedItem.data)
 				{
 					case Unit.DEGREE:
 						this._useDMS = false;
@@ -183,9 +183,9 @@
 							{data:Unit.METER, label:"mètres"},
 							{data:Unit.CENTIMETER, label:"centimètres"}
 						]);
-						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll(); // Clearing list if already set
-						this.unitsComboBox.dataProvider = items;
-						this.unitsComboBox.selectedIndex = 1;
+						if(this.mousePositionUnitsComboBox.dataProvider) this.mousePositionUnitsComboBox.dataProvider.removeAll(); // Clearing list if already set
+						this.mousePositionUnitsComboBox.dataProvider = items;
+						this.mousePositionUnitsComboBox.selectedIndex = 1;
 						break;
 					case "dd":
 					case Unit.DEGREE:
@@ -193,9 +193,9 @@
 							{data:Unit.SEXAGESIMAL,label:"degrés séxagécimaux"},
 							{data:Unit.DEGREE, label:"degrés décimaux"}
 						]);
-						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll(); // Clearing list if already set
-						this.unitsComboBox.dataProvider = items;
-						this.unitsComboBox.selectedIndex = 0;
+						if(this.mousePositionUnitsComboBox.dataProvider) this.mousePositionUnitsComboBox.dataProvider.removeAll(); // Clearing list if already set
+						this.mousePositionUnitsComboBox.dataProvider = items;
+						this.mousePositionUnitsComboBox.selectedIndex = 0;
 						break;
 				}
 				
@@ -264,7 +264,7 @@
 					}
 				}
 				
-				this.coordinates.text = this.prefix
+				this.mousePositionCoordinates.text = this.prefix
 					+ coord1
 					+ this.separator
 					+ coord2
@@ -396,16 +396,16 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup width="100%">
-		<s:Label id="coordinates" backgroundColor="0xFFFFFF" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
+	<s:VGroup id="mousePositionVGroup" width="100%">
+		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
-		<s:HGroup width="100%"> 
+		<s:HGroup id="mousePositionHGroup" width="100%"> 
 			
-			<s:ComboBox id="crsComboBox"  change="crsChanged(event);">
+			<s:ComboBox id="mousePositionCrsComboBox"  change="crsChanged(event);">
 				
 			</s:ComboBox>
 			
-			<s:ComboBox id="unitsComboBox" labelField="label" change="unitsChanged(event)">
+			<s:ComboBox id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)">
 				
 			</s:ComboBox>
 		</s:HGroup>
