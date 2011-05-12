@@ -184,7 +184,9 @@ package org.openscales.core.layer {
 		 * A Bounds object which represents the location bounds of the current extent display on the map.
 		 */
 		public function get extent():Bounds {
-			return this.map.extent;
+			if(this._map)
+				return this._map.extent;
+			return null;
 		}
 
 		/**
@@ -244,10 +246,11 @@ package org.openscales.core.layer {
 		 */
 		public function getMapPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = null;
-			if (lonlat != null) {
+			var b:Bounds = this.extent;
+			if (lonlat != null && b) {
 				var resolution:Number = this.map.resolution;
-				var extent:Bounds = this.map.extent;
-				px = new Pixel(Math.round((lonlat.lon - extent.left) / resolution), Math.round((extent.top - lonlat.lat) / resolution));
+				if(resolution)
+					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
 			}
 			return px;
 		}
