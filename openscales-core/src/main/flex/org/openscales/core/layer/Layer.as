@@ -158,7 +158,7 @@ package org.openscales.core.layer {
 		}
 
 		/**
-		 * the dpi used to calculate resolution and scale upon this layer
+		 * Indicates the dpi used to calculate resolution and scale upon this layer
 		 */
 		public function get dpi():Number
 		{
@@ -518,7 +518,9 @@ package org.openscales.core.layer {
 		public function get isFixed():Boolean {
 			return this._isFixed;
 		}
-		
+		/**
+		 * @Private
+		 */
 		public function set isFixed(value:Boolean):void {
 			this._isFixed = value;
 		}
