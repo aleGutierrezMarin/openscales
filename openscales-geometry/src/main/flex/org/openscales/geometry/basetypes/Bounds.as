@@ -56,7 +56,7 @@ package org.openscales.geometry.basetypes
 		 * @return A clone of the bounds
 		 */
 		public function clone():Bounds {
-			return new Bounds(this._left, this._bottom, this._right, this._top, this.projSrsCode);
+			return new Bounds(this._left, this._bottom, this._right, this._top, this._projSrsCode);
 		}
 		
 		/**
