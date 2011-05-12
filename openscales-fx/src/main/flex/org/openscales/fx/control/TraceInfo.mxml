@@ -39,6 +39,18 @@
 			override public function set map(value:Map):void {
 				if(value) {
 					super.map = value;
+					if(map.stage) {
+						this.addListeners();
+					} else {
+						this.map.addEventListener(Event.ADDED_TO_STAGE,addListeners);
+					}
+				}
+			}
+			
+			private function addListeners(e:Event=null):void {
+				if(this.map) {
+					if(e)
+						this.map.removeEventListener(Event.ADDED_TO_STAGE,addListeners);
 					Trace.stage = this.map.stage;
 					this.map.stage.addEventListener(TraceEvent.LOG, displayLog);
 					this.map.stage.addEventListener(TraceEvent.INFO, displayLog);
