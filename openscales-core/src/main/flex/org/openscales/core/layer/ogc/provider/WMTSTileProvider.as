@@ -1,6 +1,7 @@
 package org.openscales.core.layer.ogc.provider
 {
 	import org.openscales.core.Trace;
+	import org.openscales.core.UID;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
@@ -47,6 +48,7 @@ package org.openscales.core.layer.ogc.provider
 		private var _tileMatrixSets:HashMap = null;
 		private var _capabilitiesRequested:Boolean = false;
 		
+		private var _maxExtents:HashMap = null;
 		
 		/**
 		 * @param url String The url where the WMTS service is located
@@ -71,12 +73,79 @@ package org.openscales.core.layer.ogc.provider
 			this._style = style;
 			this._format = format;
 			this._tileMatrixSets = tileMatrixSets;
+			this.generateMaxExtents();
+		}
+		
+		/**
+		 * @Private
+		 * calculates maxExtent of each TileMatrixSet
+		 */
+		private function generateMaxExtents():void {
+			if(this._maxExtents) {
+				this._maxExtents.clear();
+			} else {
+				this._maxExtents = new HashMap();
+			}
+			if(!this._tileMatrixSets)
+				return;
+			var tmkeys:Array = this._tileMatrixSets.getKeys();
+			var l:uint = tmkeys.length;
+			if(l==0)
+				return;
+			var tms:TileMatrixSet;
+			var tm:TileMatrix;
+			var key:String;
+			var keys:Array;
+			var j:uint;
+			var i:uint;
+			var maxExtent:Bounds;
+			for(var m:uint=0; m<l; ++m) {
+				maxExtent = null;
+				key = tmkeys[m];
+				tms = this._tileMatrixSets.getValue(key);
+				if(tms.tileMatrices != null) {
+					keys = tms.tileMatrices.getKeys();
+					j = keys.length;
+					for(i=0; i<j; ++i) {
+						tm = (tms.tileMatrices.getValue(keys[i]) as TileMatrix);
+						if(tm == null)
+							continue;
+						if(maxExtent==null) {
+							maxExtent = tm.maxExtent;
+						}
+						else {
+							if(tm.maxExtent.containsBounds(maxExtent,false,false))
+								maxExtent = tm.maxExtent;
+						}
+					}
+					if(maxExtent)
+						this._maxExtents.put(key,maxExtent.clone());
+				}
+			}
 		}
 		
 		public function destroy():void {
-			//TODO
+			this._layer = null;
+			if(this._maxExtents) {
+				this._maxExtents.clear();
+				this._maxExtents = null;
+			}
+			
+			if(this._tileMatrixSets) {
+				var tmss:Array = this._tileMatrixSets.getValues();
+				var l:uint = tmss.length;
+				for(var i:uint = 0; i<l; ++i) {
+					(tmss[i] as TileMatrixSet).destroy();
+				}
+				this._tileMatrixSets.clear();
+				this._tileMatrixSets = null;
+			}
 		}
 		
+		/**
+		 * @Private
+		 * calculate Tile index
+		 */
 		os_internal static function calculateTileIndex(a:Number,b:Number,span:Number):Number {
 			if(b<a)
 				return -1;
@@ -92,6 +161,7 @@ package org.openscales.core.layer.ogc.provider
 		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
+			
 			if(this._tileMatrixSets==null || layer == null || layer.map == null)
 				return imageTile;
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
@@ -99,7 +169,7 @@ package org.openscales.core.layer.ogc.provider
 			var tileMatrixSet:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
 			if(tileMatrixSet==null)
 				return imageTile;
-			Trace.debug(bounds.toString());
+			
 			if(tileMatrixSet.supportedCRS.toUpperCase() != bounds.projSrsCode.toUpperCase()) {
 				bounds = bounds.reprojectTo(tileMatrixSet.supportedCRS);
 			}
@@ -124,7 +194,7 @@ package org.openscales.core.layer.ogc.provider
 			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
 			if(col<0 || row< 0 || col>tileMatrix.matrixWidth-1 || row>tileMatrix.matrixHeight-1)
 				return imageTile;
-			Trace.debug("test1");
+			
 			var params:Object = {
 				"TILECOL" : col,
 				"TILEROW" : row,
@@ -134,19 +204,24 @@ package org.openscales.core.layer.ogc.provider
 			imageTile.url = buildGETQuery(bounds,params);
 			
 			imageTile.size = new Size(tileWidth,tileHeight);
-			Trace.debug("Tile url: "+imageTile.url);
-			if(center != null)
-				Trace.debug(center.toString());
-			else
-				Trace.debug("pas de center");
+			Trace.debug("WMTS Tile url: "+imageTile.url);
+			
 			return imageTile;
 		}
 		
+		/**
+		 * generate resolutions uppon tile matrix set
+		 */
 		public function generateResolutions(numZoomLevels:uint, nominalResolution:Number=NaN):Array {
-			var resolutions:Array = new Array();
-			if(numZoomLevels==0 || !this._tileMatrixSets.containsKey(this._tileMatrixSet))
-				return resolutions;
+			//TODO manage nominal resolution
+			if(numZoomLevels==0 
+				|| this._tileMatrixSet == null
+				|| this._tileMatrixSets == null
+				|| !this._tileMatrixSets.containsKey(this._tileMatrixSet)) {
+				return null;
+			}
 			
+			var resolutions:Array = new Array();
 			var tms:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
 			
 			if(tms==null)
@@ -284,6 +359,7 @@ package org.openscales.core.layer.ogc.provider
 		public function set tileMatrixSets(value:HashMap):void
 		{
 			this._tileMatrixSets = value;
+			this.generateMaxExtents();
 		}
 		
 		/**
@@ -292,30 +368,11 @@ package org.openscales.core.layer.ogc.provider
 		 * @return the maxExtent or null
 		 */
 		public function get maxExtent():Bounds {
-			var maxExtent:Bounds = null;
-			if(this._tileMatrixSets != null
-				&& this._tileMatrixSets.containsKey(this._tileMatrixSet)) {
-				var tms:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
-				if(tms.tileMatrices != null) {
-					var keys:Array = tms.tileMatrices.getKeys();
-					var j:uint = keys.length;
-					for(var i:uint=0; i<j; ++i) {
-						var tm:TileMatrix = (tms.tileMatrices.getValue(keys[i]) as TileMatrix);
-						if(tm == null)
-							continue;
-						if(maxExtent==null) {
-							maxExtent = tm.maxExtent;
-						}
-						else {
-							if(tm.maxExtent.containsBounds(maxExtent,false,false))
-								maxExtent = tm.maxExtent;
-						}
-					}
-				}
-			}
-			if(maxExtent != null)
-				return maxExtent.clone();
-			return null;
+			if(!this._maxExtents)
+				return null;
+			if(!this._maxExtents.containsKey(this._tileMatrixSet))
+				return null;
+			return (this._maxExtents.getValue(this._tileMatrixSet) as Bounds).clone();
 		}
 	}
 }
