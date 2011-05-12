@@ -557,7 +557,8 @@ package org.openscales.core
 						this.centerLayerContainer(newCenter, dragTween);
 					}
 					this._center = newCenter.clone();
-					mapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
+					var mapEventZoom:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
+					this.dispatchEvent(mapEventZoom);
 				}
 				
 				if ((zoomChanged) || (this._layerContainerOrigin == null)) {
@@ -568,7 +569,8 @@ package org.openscales.core
 				
 				if (zoomChanged) {
 					this._zoom = newZoom;
-					mapEvent = new MapEvent(MapEvent.ZOOM_CHANGED, this);
+					var mapEventCenter:MapEvent = new MapEvent(MapEvent.ZOOM_CHANGED, this);
+					this.dispatchEvent(mapEventCenter);
 				}
 				
 				
