@@ -80,7 +80,12 @@ package org.openscales.proj4as {
 		 * @return ProjProjection the ProjProjection
 		 */
 		public static function getProjProjection(srsCode:String):ProjProjection {
-			if (srsCode == null || ProjProjection.defs[srsCode] == null) {
+			if(srsCode==null)
+				return null;
+			
+			srsCode = srsCode.toUpperCase();
+			
+			if (ProjProjection.defs[srsCode] == null) {
 				return null;
 			}
 			if (ProjProjection.projProjections[srsCode]) {
