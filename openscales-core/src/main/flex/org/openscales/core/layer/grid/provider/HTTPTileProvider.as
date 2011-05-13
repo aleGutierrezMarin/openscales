@@ -1,8 +1,10 @@
 package org.openscales.core.layer.grid.provider
 {
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Layer;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	public class HTTPTileProvider implements ITileProvider
 	{
@@ -24,7 +26,7 @@ package org.openscales.core.layer.grid.provider
 			this._params=params;			
 		}
 		
-		public function getTile(bounds:Bounds):ImageTile
+		public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			return null;
 		}

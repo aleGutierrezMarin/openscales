@@ -28,9 +28,11 @@ package org.openscales.proj4as {
 				trace("Parameters not created!");
 				return null;
 			}
+			if(sourceSrs.toUpperCase() == destSrs.toUpperCase())
+				return point;
 			
-			var source:ProjProjection = ProjProjection.getProjProjection(sourceSrs);
-			var dest:ProjProjection = ProjProjection.getProjProjection(destSrs);
+			var source:ProjProjection = ProjProjection.getProjProjection(sourceSrs.toUpperCase());
+			var dest:ProjProjection = ProjProjection.getProjProjection(destSrs.toUpperCase());
 			if (!source.readyToUse || !dest.readyToUse) {
 				trace("Proj4as initialization for " + source.srsCode + " or " + dest.srsCode + " not yet complete");
 				return point;

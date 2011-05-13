@@ -13,6 +13,12 @@ package org.openscales.fx.layer
 			super();
 		}
 		
+		public function get url():String {
+			if(this.layer != null)
+				return (this.layer as HTTPRequest).url;
+			return null;
+		}
+		
 		public function set url(value:String):void {
 	    	if(this.layer != null)
 	    		(this.layer as HTTPRequest).url = value;

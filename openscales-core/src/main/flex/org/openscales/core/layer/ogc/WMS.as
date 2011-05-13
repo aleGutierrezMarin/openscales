@@ -100,7 +100,7 @@ package org.openscales.core.layer.ogc
 			CACHE_SIZE = 32;
 			
 			//Call the tile provider to generate the request and get the tile requested 
-			this._tileProvider = new WMSTileProvider(this,url,this._version, layers,this.projSrsCode);
+			this._tileProvider = new WMSTileProvider(url,this._version, layers,this.projSrsCode);
 			this._tileProvider.style=style;
 
 		}
@@ -108,7 +108,7 @@ package org.openscales.core.layer.ogc
 			if (! super.maxExtent) {
 				return null;
 			}
-			
+
 			var maxExtent:Bounds =  super.maxExtent.clone();
 			if (this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
 				maxExtent = maxExtent.reprojectTo(this.map.baseLayer.projSrsCode);
@@ -123,9 +123,7 @@ package org.openscales.core.layer.ogc
 		 * @param position
 		 */
 		override public function addTile(bounds:Bounds, position:Pixel):ImageTile {
-			var imgTile:ImageTile =  this._tileProvider.getTile(bounds);
-			imgTile.position = position;
-			return imgTile;
+			return this._tileProvider.getTile(bounds, position, this);
 		}
 
 		public function get reproject():Boolean {

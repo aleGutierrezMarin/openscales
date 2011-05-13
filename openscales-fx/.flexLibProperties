@@ -60,6 +60,7 @@
     <classEntry path="org.openscales.fx.layer.FxWFS"/>
     <classEntry path="org.openscales.fx.layer.FxWMS"/>
     <classEntry path="org.openscales.fx.layer.FxWMSC"/>
+    <classEntry path="org.openscales.fx.layer.capabilities.WMTS100Test"/>
     <classEntry path="org.openscales.fx.layer.osm.FxCycleMap"/>
     <classEntry path="org.openscales.fx.layer.osm.FxMaplint"/>
     <classEntry path="org.openscales.fx.layer.osm.FxMapnik"/>
@@ -75,6 +76,7 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
+    <classEntry path="org.openscales.fx.layer.FxWMTS"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
