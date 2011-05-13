@@ -134,6 +134,7 @@
 			{
 				if(!this._map || !this._map.baseLayer)
 					return;
+				
 				var button:Button = event.target as Button;
 				
 				switch(button.name)
@@ -241,7 +242,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:VSlider id="zoomSlider" x="54" y="10"
+	<s:VSlider id="zoomSlider" x="80" y="10"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
@@ -249,8 +250,8 @@
 			   focusEnabled="false"
 			   showDataTip="true"/>
 	
-	<s:Button id="zoomIn" name="zoomin" label="+" width="30" x="40" y="0" useHandCursor="true" />
-	<s:Button id="zoomOut" name="zoomout" label="-" width="30" x="40" y="40" useHandCursor="true" />
+	<s:Button id="zoomIn" name="zoomin" label="-" width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
+	<s:Button id="zoomOut" name="zoomout" label="+" width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
 	
 </Control>
