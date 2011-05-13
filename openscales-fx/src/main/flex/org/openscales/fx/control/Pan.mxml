@@ -83,7 +83,7 @@
 						  buttonMode="true">	
 	</s:SkinnableContainer>
 	
-	<s:Button id="panNorth" name="north" label="N" width="35" x="20" y="0"  />
+	<s:Button id="panNorth" name="north" label="N" width="35" x="20" y="0" />
 	<s:Button id="panSouth" name="south" label="S" width="35" x="20" y="40" />
 	<s:Button id="panEast" name="east" label="E" width="35" x="40" y="20" />
 	<s:Button id="panWest" name="west" label="W" width="35" x="0" y="20"/>
