@@ -53,13 +53,16 @@
 			 */
 			public function  configure():void{ 
 				
-				this.zoomSlider.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onZoom);
+				// this.zoomSlider.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onZoom);
 				
 				if(this._scalesLabels == null)
 				{
 					this._scalesLabels = new Vector.<ZoomData>();
 				}
 				
+				// listener for the zoom in/out buttons
+				this.zoomIn.addEventListener(MouseEvent.CLICK, this.onZoom);
+				this.zoomOut.addEventListener(MouseEvent.CLICK, this.onZoom);
 			}
 			
 			/**
@@ -127,9 +130,11 @@
 			
 			
 			
-			public function onZoom(event:StateChangeEvent):void
+			public function onZoom(event:MouseEvent):void
 			{
-				switch(event.newState)
+				var button:Button = event.target as Button;
+				
+				switch(button.name)
 				{
 					case "zoomin":
 						this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
@@ -238,6 +243,9 @@
 			   liveDragging="false"
 			   focusEnabled="false"
 			   showDataTip="true"/>
+	
+	<s:Button id="zoomIn" name="zoomin" label="+" width="30" x="40" y="0" useHandCursor="true" />
+	<s:Button id="zoomOut" name="zoomout" label="-" width="30" x="40" y="40" useHandCursor="true" />
 	
 	
 </Control>
