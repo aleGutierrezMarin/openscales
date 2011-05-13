@@ -10,6 +10,7 @@
 	<component id="ImageLayer" class="org.openscales.fx.layer.FxImageLayer" />
 	<component id="WMS" class="org.openscales.fx.layer.FxWMS" />
 	<component id="WMSC" class="org.openscales.fx.layer.FxWMSC" />
+	<component id="WMTS" class="org.openscales.fx.layer.FxWMTS" />
 	<component id="WFS" class="org.openscales.fx.layer.FxWFS" />
 	<component id="KML" class="org.openscales.fx.layer.FxKML" />
 	<component id="HTC" class="org.openscales.fx.layer.FxHTC" />
