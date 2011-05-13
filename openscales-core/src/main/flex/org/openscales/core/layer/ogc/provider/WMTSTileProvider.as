@@ -67,8 +67,8 @@ package org.openscales.core.layer.ogc.provider
 		)
 		{
 			super(url, "WMTS", "1.0.0", "GetTile");
-			
-			this._tileMatrixSet = tileMatrixSet.toUpperCase();
+			if(tileMatrixSet)
+				this._tileMatrixSet = tileMatrixSet.toUpperCase();
 			this._layer = layer;
 			this._style = style;
 			this._format = format;
@@ -161,7 +161,6 @@ package org.openscales.core.layer.ogc.provider
 		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
-			
 			if(this._tileMatrixSets==null || layer == null || layer.map == null)
 				return imageTile;
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
@@ -204,7 +203,6 @@ package org.openscales.core.layer.ogc.provider
 			imageTile.url = buildGETQuery(bounds,params);
 			
 			imageTile.size = new Size(tileWidth,tileHeight);
-			Trace.debug("WMTS Tile url: "+imageTile.url);
 			
 			return imageTile;
 		}
