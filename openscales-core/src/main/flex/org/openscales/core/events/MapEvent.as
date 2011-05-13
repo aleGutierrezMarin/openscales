@@ -70,7 +70,19 @@ package org.openscales.core.events{
  		 * Cannot use namingconvention with dot "." here because name is used in mxml
 		 */
 		public static const LOAD_END:String="openscales.maploadend";
-
+		
+		
+		/**
+		 * Event type dispatched when zoom of the map has been changed.
+		 * Cannot use namingconvention with dot "." here because name is used in mxml
+		 */
+		public static const ZOOM_CHANGED:String="openscales.mapzoomchanged";
+		
+		/**
+		 * Event type dispatched when center of the map has been changed.
+		 * Cannot use namingconvention with dot "." here because name is used in mxml
+		 */
+		public static const CENTER_CHANGED:String="openscales.mapcenterchanged";
 
 		/**
 		 * Instances of MapEvent are events dispatched by the Map
