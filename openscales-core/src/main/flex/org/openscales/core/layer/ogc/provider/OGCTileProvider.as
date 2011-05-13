@@ -61,6 +61,8 @@ package org.openscales.core.layer.ogc.provider
 		os_internal function buildGETQuery(bounds:Bounds, params:Object):String
 		{
 			var requestString:String;
+			if(!this._url)
+				return null;
 			if(this._url.indexOf("?")==-1) requestString = this._url+"?"+this.buildGETParams();
 			else requestString=this._url+"&"+this.buildGETParams();
 			

@@ -400,7 +400,7 @@ package org.openscales.core.request
 					this._loadEnd(null);
 					return;
 				}
-				Trace.log("url: "+_finalUrl);
+				
 				var urlRequest:URLRequest = new URLRequest(_finalUrl);
 				urlRequest.method = this.method;
 				if (urlRequest.method == URLRequestMethod.POST) {
