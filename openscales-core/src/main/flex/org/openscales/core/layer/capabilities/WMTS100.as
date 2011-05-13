@@ -133,6 +133,7 @@ package org.openscales.core.layer.capabilities
 					
 					if(supportedCRS=="")
 						continue;
+					supportedCRS = supportedCRS.toUpperCase();
 					
 					// For each tile matrix 
 					for each (var XMLTileMatrix:XML in node.TileMatrix)
@@ -145,10 +146,17 @@ package org.openscales.core.layer.capabilities
 						if(topLeftCornerString != null)
 						{
 							topLeftCornerArray = topLeftCornerString.split(" ");
-							topLeftCorner = new Location(
-													parseFloat(topLeftCornerArray[0]),
-													parseFloat(topLeftCornerArray[1]),
-													supportedCRS);
+							if(ProjProjection.projAxisOrder[supportedCRS]
+								&& ProjProjection.projAxisOrder[supportedCRS] == ProjProjection.AXIS_ORDER_NE)
+								topLeftCorner = new Location(
+														parseFloat(topLeftCornerArray[1]),
+														parseFloat(topLeftCornerArray[0]),
+														supportedCRS);
+							else
+								topLeftCorner = new Location(
+														parseFloat(topLeftCornerArray[0]),
+														parseFloat(topLeftCornerArray[1]),
+														supportedCRS);
 						}	
 						
 						tileWidth = XMLTileMatrix.TileWidth;
