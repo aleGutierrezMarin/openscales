@@ -19,7 +19,6 @@
     <classEntry path="org.openscales.fx.control.FxCorePanZoomBar"/>
     <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
     <classEntry path="org.openscales.fx.control.FxOverviewMapRatio"/>
-    <classEntry path="org.openscales.fx.control.FxScaleLine"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.control.IconButton"/>
     <classEntry path="org.openscales.fx.control.LanguageSwitcher"/>
@@ -77,6 +76,7 @@
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
     <classEntry path="org.openscales.fx.layer.FxWMTS"/>
+    <classEntry path="org.openscales.fx.control.ScaleLine"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
