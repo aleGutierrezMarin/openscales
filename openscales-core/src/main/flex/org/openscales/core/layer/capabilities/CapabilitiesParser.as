@@ -27,6 +27,10 @@ package org.openscales.core.layer.capabilities
 			_capabilities = new HashMap(false);
 		}
 
+		/**
+		 * @param doc XML an XML tree representing a capabilities
+		 * @return An Hash containing capabilities
+		 */ 
 		public function read(doc:XML):HashMap {
 			Trace.warn("Not implemented method.");
 			return this._capabilities;

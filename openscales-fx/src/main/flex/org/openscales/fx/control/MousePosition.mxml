@@ -203,6 +203,8 @@
 			}
 			
 			override public function draw():void {
+				if(!this.map)
+					return;
 				super.draw();
 				this.redraw();
 			}

@@ -446,6 +446,8 @@ package org.openscales.core
 		 * @param tween use tween effect
 		 */
 		public function pan(dx:int, dy:int, tween:Boolean=false):void {
+			if(!this.baseLayer)
+				return;
 			// Is there a real offset ?
 			if ((dx==0) && (dy==0)) {
 				return;
@@ -537,6 +539,7 @@ package org.openscales.core
 			}
 			var oldCenter:Location = this._center;
 			
+			
 			if (zoomChanged || centerChanged) {
 				
 				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
@@ -556,6 +559,10 @@ package org.openscales.core
 						this.centerLayerContainer(newCenter, dragTween);
 					}
 					this._center = newCenter.clone();
+					var mapEventCenter:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
+					mapEventCenter.oldCenter = oldCenter;
+					mapEventCenter.newCenter = newCenter;
+					this.dispatchEvent(mapEventCenter);
 				}
 				
 				if ((zoomChanged) || (this._layerContainerOrigin == null)) {
@@ -566,6 +573,10 @@ package org.openscales.core
 				
 				if (zoomChanged) {
 					this._zoom = newZoom;
+					var mapEventZoom:MapEvent = new MapEvent(MapEvent.ZOOM_CHANGED, this);
+					mapEventZoom.oldZoom = oldZoom;
+					mapEventZoom.newZoom = newZoom;
+					this.dispatchEvent(mapEventZoom);
 				}
 				
 				

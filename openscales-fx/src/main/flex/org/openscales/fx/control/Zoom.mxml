@@ -72,7 +72,7 @@
 			 */
 			public function updateCurrentLabel():void
 			{
-				if(this._map!=null)
+				if(!this._map || this._map.baseLayer)
 				{
 					// update the value
 					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
@@ -132,6 +132,8 @@
 			
 			public function onZoom(event:MouseEvent):void
 			{
+				if(!this._map || !this._map.baseLayer)
+					return;
 				var button:Button = event.target as Button;
 				
 				switch(button.name)
@@ -147,6 +149,8 @@
 			}
 			
 			private function initializeZoomLevels(event:Event = null):void {
+				if(!this._map || !this._map.baseLayer)
+					return;
 				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
 				zoomSlider.minimum = map.baseLayer.minZoomLevel;
 				zoomSlider.value = map.zoom;
@@ -181,7 +185,8 @@
 			 * @param event The event received
 			 */
 			public function zoomSliderChange(event:Event):void {
-				
+				if(!this._map || !this._map.baseLayer)
+					return;
 				// update the display label
 				if(zoomSlider.skin is ZoomSkin)
 					((zoomSlider.skin as ZoomSkin).thumb.skin as ZoomThumbSkin).thumbLabel.text = this.getLabelFromZoom(zoomSlider.value);

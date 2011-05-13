@@ -118,7 +118,8 @@ package org.openscales.core.tile
 					this.position = _drawPosition;					
 					_drawPosition = null;
 				}
-
+				if(this.size==null)
+					return;
 				bitmap.width = this.size.w;
 				bitmap.height = this.size.h;
 

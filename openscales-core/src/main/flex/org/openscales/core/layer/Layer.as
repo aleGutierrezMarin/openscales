@@ -47,7 +47,7 @@ package org.openscales.core.layer {
 		private var _isFixed:Boolean = false;		
 		private var _security:ISecurity = null;
 		private var _loading:Boolean = false;
-		private var _autoResolution:Boolean = true;
+		protected var _autoResolution:Boolean = true;
 		protected var _imageSize:Size = null;
 		private var _tweenOnZoom:Boolean = true;
 		private var _tweenOnLoad:Boolean = true;
@@ -158,7 +158,7 @@ package org.openscales.core.layer {
 		}
 
 		/**
-		 * the dpi used to calculate resolution and scale upon this layer
+		 * Indicates the dpi used to calculate resolution and scale upon this layer
 		 */
 		public function get dpi():Number
 		{
@@ -184,7 +184,9 @@ package org.openscales.core.layer {
 		 * A Bounds object which represents the location bounds of the current extent display on the map.
 		 */
 		public function get extent():Bounds {
-			return this.map.extent;
+			if(this._map)
+				return this._map.extent;
+			return null;
 		}
 
 		/**
@@ -244,10 +246,11 @@ package org.openscales.core.layer {
 		 */
 		public function getMapPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = null;
-			if (lonlat != null) {
+			var b:Bounds = this.extent;
+			if (lonlat != null && b) {
 				var resolution:Number = this.map.resolution;
-				var extent:Bounds = this.map.extent;
-				px = new Pixel(Math.round((lonlat.lon - extent.left) / resolution), Math.round((extent.top - lonlat.lat) / resolution));
+				if(resolution)
+					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
 			}
 			return px;
 		}
@@ -518,7 +521,9 @@ package org.openscales.core.layer {
 		public function get isFixed():Boolean {
 			return this._isFixed;
 		}
-		
+		/**
+		 * @Private
+		 */
 		public function set isFixed(value:Boolean):void {
 			this._isFixed = value;
 		}

@@ -1,5 +1,6 @@
 package org.openscales.core.layer.grid.provider
 {
+	import org.openscales.core.layer.Layer;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -18,9 +19,9 @@ package org.openscales.core.layer.grid.provider
 		 * 
 		 * @param bounds Bounding box for the required tile (in map coordinates)
 		 * @param position Center pixel of the required tile
+		 * @param the layer that needs the tile
 		 * @return an ImageTile representing the tile
 		 */ 
-		function getTile(bounds:Bounds):ImageTile;
-		
+		function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile;
 	}
 }

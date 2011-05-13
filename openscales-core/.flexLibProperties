@@ -129,6 +129,7 @@
     <classEntry path="org.openscales.core.layer.capabilities.WMS100"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS110"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS111"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMTS100"/>
     <classEntry path="org.openscales.core.layer.grid.provider.HTTPTileProvider"/>
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.WFS"/>
@@ -136,8 +137,12 @@
     <classEntry path="org.openscales.core.layer.ogc.WFST"/>
     <classEntry path="org.openscales.core.layer.ogc.WMS"/>
     <classEntry path="org.openscales.core.layer.ogc.WMSC"/>
+    <classEntry path="org.openscales.core.layer.ogc.WMTS.TileMatrix"/>
+    <classEntry path="org.openscales.core.layer.ogc.WMTS.TileMatrixSet"/>
+    <classEntry path="org.openscales.core.layer.ogc.WMTS"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.OGCTileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProvider"/>
+    <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProvider"/>
     <classEntry path="org.openscales.core.layer.originator.ConstraintOriginator"/>
     <classEntry path="org.openscales.core.layer.originator.DataOriginator"/>
     <classEntry path="org.openscales.core.layer.osm.CycleMap"/>

@@ -139,7 +139,8 @@ package org.openscales.core.control
 			
 			this.addButton("zoomin", new zoomPlusMiniImg(), centered.add(0, sz.h*3+5), sz, "Zoom In");
 			centered = this._addZoomBar(centered.add(0, sz.h*4 + 5));
-			this.addButton("zoomout", new zoomMinusMiniImg(), centered, sz, "Zoom Out");
+			if(centered)
+				this.addButton("zoomout", new zoomMinusMiniImg(), centered, sz, "Zoom Out");
 			
 		}
 		
@@ -151,7 +152,8 @@ package org.openscales.core.control
 		 * @return Pixel
 		 */
 		public function _addZoomBar(centered:Pixel):Pixel {
-			
+			if(!this.map.baseLayer)
+				return null;
 			var zoomsToEnd:int = this.map.baseLayer.numZoomLevels - 1 - this.map.zoom;
 			var sz:Size = new Size(20,9);
 			this.slider =new Button("slider",new sliderImg(),new Pixel(centered.x - 1,centered.y + zoomsToEnd * this.zoomStopHeight),sz);
@@ -188,6 +190,8 @@ package org.openscales.core.control
 		}
 		
 		public function zoomBarClick(evt:MouseEvent):void {
+			if(!this.map.baseLayer)
+				return;
 			var y:Number = evt.stageY;
 			var top:Number = Util.pagePosition(evt.currentTarget)[1];
 			var levels:Number = Math.floor((y - top)/this.zoomStopHeight);
@@ -232,6 +236,8 @@ package org.openscales.core.control
 		}
 		
 		public function moveZoomBar(e:MapEvent = null):void {
+			if(!this.map.baseLayer)
+				return;
 			//if(e.zoomChanged) {
 				var newTop:Number = 
 					((this.map.baseLayer.numZoomLevels-1) - this.map.zoom) * 
