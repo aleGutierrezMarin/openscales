@@ -1164,7 +1164,19 @@ package org.openscales.core
 			var length:int = this.layerContainer.numChildren;
 			var newIndexTemp:int = length - newIndex - 1;
 			if(newIndex >= 0 && newIndex < length )
-			  this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
+			{
+				if (newIndex < this.layerContainer.getChildIndex(this))
+				{
+					var layerEventUp:LayerEvent = new LayerEvent(LayerEvent.LAYER_MOVED_DOWN, layer);
+					this.dispatchEvent(layerEventUp);
+				} else if (newIndex > this.parent.getChildIndex(this))
+				{
+					var layerEventDown:LayerEvent = new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer);
+					this.dispatchEvent(layerEventDown);
+				}
+				
+				this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
+			}
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		/**
