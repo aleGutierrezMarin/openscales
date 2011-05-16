@@ -58,7 +58,6 @@
 		<module>openscales-proj4as</module>
 		<module>openscales-geometry</module>
 		<module>openscales-viewer</module>
-		<module>openscales-theme</module>
 	</modules>
 	<issueManagement>
 		<system>Bitbucket Issue management</system>
