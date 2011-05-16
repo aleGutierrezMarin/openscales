@@ -381,15 +381,6 @@ package org.openscales.core.layer {
 		}
 
 		public function set zindex(value:int):void {
-			if (value < this.parent.getChildIndex(this))
-			{
-				var layerEventUp:LayerEvent = new LayerEvent(LayerEvent.LAYER_MOVED_DOWN, this);
-				this.dispatchEvent(layerEventUp);
-			} else if (value > this.parent.getChildIndex(this))
-			{
-				var layerEventDown:LayerEvent = new LayerEvent(LayerEvent.LAYER_MOVED_UP , this);
-				this.dispatchEvent(layerEventDown);
-			}
 			this.parent.setChildIndex(this, value);
 		}
 		
