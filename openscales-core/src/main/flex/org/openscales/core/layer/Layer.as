@@ -6,6 +6,7 @@ package org.openscales.core.layer {
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.layer.originator.ConstraintOriginator;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.security.ISecurity;
@@ -380,6 +381,15 @@ package org.openscales.core.layer {
 		}
 
 		public function set zindex(value:int):void {
+			if (value < this.parent.getChildIndex(this))
+			{
+				var layerEventUp:LayerEvent = new LayerEvent(LayerEvent.LAYER_MOVED_DOWN, this);
+				this.dispatchEvent(layerEventUp);
+			} else if (value > this.parent.getChildIndex(this))
+			{
+				var layerEventDown:LayerEvent = new LayerEvent(LayerEvent.LAYER_MOVED_UP , this);
+				this.dispatchEvent(layerEventDown);
+			}
 			this.parent.setChildIndex(this, value);
 		}
 		
