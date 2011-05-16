@@ -633,9 +633,12 @@ package org.openscales.core.layer {
 			
 			var event:LayerEvent = new LayerEvent(LayerEvent.LAYER_OPACITY_CHANGED, this);
 			event.oldOpacity = this.alpha;
-			this.alpha = value;
+			super.alpha = value;
 			event.newOpacity = this.alpha;
-			this._map.dispatchEvent(event);
+			if (this._map != null)
+			{
+				this._map.dispatchEvent(event);
+			}
 		} 
 		
 		//GAB
