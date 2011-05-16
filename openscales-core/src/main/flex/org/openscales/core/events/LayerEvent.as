@@ -96,12 +96,23 @@ package org.openscales.core.events
 		 * Event type dispatched when the opacity of the layer is changed
 		 */
 		public static const LAYER_OPACITY_CHANGED:String = "openscales.layerOpacityChanged";
+		
+		/**
+		 * Event type dispatched when the layer is moved up in the display list
+		 */
+		public static const LAYER_MOVED_UP:String = "openscales.layerMovedUp";
+		
+		/**
+		 * Event type dispatched when the layer is moved down in the display list
+		 */
+		public static const LAYER_MOVED_DOWN:String = "openscales.layerMovedDown";
 
 		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{
 			this._layer = layer;
 			super(type, bubbles, cancelable);
+			this._newOpacity = layer.alpha;
 		}
 		
 		/**
