@@ -616,6 +616,18 @@ package org.openscales.core.layer {
 			_tweenOnLoad = value;
 		}
 		
+		/**
+		 * opacity of the layer
+		 */
+		override public function set alpha(value:Number):void{
+			
+			var event:LayerEvent = new LayerEvent(LayerEvent.LAYER_OPACITY_CHANGED, this);
+			event.oldOpacity = this.alpha;
+			this.alpha = value;
+			event.newOpacity = this.alpha;
+			this._map.dispatchEvent(event);
+		} 
+		
 		//GAB
 		public function get editable():Boolean{
 			return _editable;
