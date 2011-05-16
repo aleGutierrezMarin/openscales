@@ -49,6 +49,11 @@ package org.openscales.core
 		 */
 		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
 		
+		/**
+		 * The url to the default Theme (OpenscalesTheme)
+		 */
+		public static var URL_THEME:String = null;
+		
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
 		private var _controls:Vector.<IControl> = new Vector.<IControl>();
@@ -73,6 +78,13 @@ package org.openscales.core
 		 */
 		private var _layerContainerOrigin:Location = null;
 
+		/** 
+		 * @private
+		 * Url to the theme used to custom the components of the current map
+		 * @default URL_THEME (url to the basic OpenscalesTheme)
+		 */
+		private var _theme:String = Map.URL_THEME;
+		
 		/**
 		 * Map constructor
 		 *
@@ -1239,6 +1251,23 @@ package org.openscales.core
 		}
 		
 		/**
+		 * Url to the theme used to custom the components of the current map
+		 * @default URL_THEME (url to the basic OpenscalesTheme)
+		 */
+		public function get theme():String
+		{
+			return this._theme;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set theme(value:String):void
+		{
+			this._theme = value;
+		}
+		
+		/**
 		 * Whether or not the map is loading data
 		 */
 		public function get loadComplete():Boolean {
@@ -1259,6 +1288,7 @@ package org.openscales.core
 				dispatchEvent(new MapEvent(MapEvent.LOAD_END,this));
 			} 
 		}
+		
 		
 		/**
 		 * @private

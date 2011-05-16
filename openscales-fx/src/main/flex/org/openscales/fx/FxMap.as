@@ -65,6 +65,9 @@ package org.openscales.fx
 		public function FxMap() {
 			super();
 			
+			//create a new map object
+			this._map = new Map();
+			
 			// Useful for a Map only defined with width="100%" or "height="100%"
 			this.minWidth = 100;
 			this.minHeight = 100;
@@ -366,6 +369,30 @@ package org.openscales.fx
 		public function set controls(value:Vector.<IControl>):void
 		{
 			_controls = value;
+		}
+		
+		/** 
+		 * Url to the theme used to custom the components of the current map
+		 */
+		public function get theme():String
+		{
+			if(!this._map) 
+				return null;
+			else
+				return (this._map as Map).theme;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set theme(value:String):void
+		{
+			if(this._map && value!=null)
+			{
+				styleManager.unloadStyleDeclarations((this._map as Map).theme);
+				(this._map as Map).theme = value;
+				styleManager.loadStyleDeclarations(value,true,false);
+			}
 		}
 		
 		/**
