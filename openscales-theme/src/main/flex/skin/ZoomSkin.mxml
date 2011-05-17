@@ -11,8 +11,8 @@
 		<s:State name="disabled" />
 	</s:states>
 
-	<s:Button id="track" skinClass="skin.ZoomTrackSkin" x="-26" y="0" height="105"/>
-	<s:Button id="thumb" skinClass="skin.ZoomThumbSkin" x="-22" />
+	<s:Button id="track" skinClass="main.flex.skin.ZoomTrackSkin" x="-26" y="0" height="105"/>
+	<s:Button id="thumb" skinClass="main.flex.skin.ZoomThumbSkin" x="-22" />
 
 
 	
