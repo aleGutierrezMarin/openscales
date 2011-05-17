@@ -391,7 +391,8 @@ package org.openscales.core.layer.ogc
 		
 		public function set useCapabilities(value:Boolean):void {
 			this._useCapabilities = value;
-			this.projSrsCode = null;
+			if (value)
+				this.projSrsCode = null;
 		}
 		
 		public function set capabilitiesVersion(value:String):void {
