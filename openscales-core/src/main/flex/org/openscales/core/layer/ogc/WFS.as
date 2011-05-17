@@ -125,6 +125,8 @@ package org.openscales.core.layer.ogc
 			if (!displayed) {
 				return;
 			}
+			if(this.useCapabilities && !this.projSrsCode)
+				return;
 			
 			var projectedBounds:Bounds = this.map.extent.clone();
 			
@@ -230,8 +232,10 @@ package org.openscales.core.layer.ogc
 			if (this.params != null) {
 				this._capabilities = caller.getLayerCapabilities(this.params.typename);
 			}
-			if ((this._capabilities != null) && (this.projSrsCode == null)) {
+			if ((this._capabilities != null) && (this.projSrsCode == null || this.useCapabilities)) {
 				this.projSrsCode = this._capabilities.getValue("SRS");
+				if(this.map)
+					this.redraw();
 			}
 		}
 		
@@ -387,6 +391,7 @@ package org.openscales.core.layer.ogc
 		
 		public function set useCapabilities(value:Boolean):void {
 			this._useCapabilities = value;
+			this.projSrsCode = null;
 		}
 		
 		public function set capabilitiesVersion(value:String):void {
