@@ -76,6 +76,7 @@
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
     <classEntry path="org.openscales.fx.layer.FxWMTS"/>
+    <classEntry path="org.openscales.fx.control.ScaleLine"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
