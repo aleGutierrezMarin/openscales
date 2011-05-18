@@ -3,6 +3,8 @@ package org.openscales.fx
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
+	import flash.system.ApplicationDomain;
+	import flash.system.SecurityDomain;
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.core.IVisualElement;
@@ -391,7 +393,7 @@ package org.openscales.fx
 			{
 				styleManager.unloadStyleDeclarations((this._map as Map).theme);
 				(this._map as Map).theme = value;
-				styleManager.loadStyleDeclarations(value,true,false);
+				styleManager.loadStyleDeclarations(value,true,true,ApplicationDomain.currentDomain);
 			}
 		}
 		

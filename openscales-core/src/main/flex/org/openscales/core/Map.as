@@ -52,7 +52,7 @@ package org.openscales.core
 		/**
 		 * The url to the default Theme (OpenscalesTheme)
 		 */
-		public static var URL_THEME:String = null;
+		public var URL_THEME:String = "http://openscales.org/nexus/service/local/repo_groups/public-snapshots/content/org/openscales/openscales-fx-theme/2.0.0-SNAPSHOT/openscales-fx-theme-2.0.0-20110517.142043-5.swf";
 		
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
@@ -83,7 +83,7 @@ package org.openscales.core
 		 * Url to the theme used to custom the components of the current map
 		 * @default URL_THEME (url to the basic OpenscalesTheme)
 		 */
-		private var _theme:String = Map.URL_THEME;
+		private var _theme:String = URL_THEME;
 		
 		/**
 		 * Map constructor
