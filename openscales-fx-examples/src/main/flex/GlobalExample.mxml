@@ -48,7 +48,7 @@
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
 				
-				fxMap.theme = "custom/style.swf";
+			//	fxMap.theme = fxMap.map.theme;
 				
 				// load the new CSS
 				styleManager.loadStyleDeclarations(fxMap.theme,true,false);
