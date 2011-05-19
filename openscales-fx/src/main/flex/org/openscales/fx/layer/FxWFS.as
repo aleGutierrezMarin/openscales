@@ -20,7 +20,7 @@ package org.openscales.fx.layer
 		
 		private var _version:String;
 		
-		private var _useCapabilities:Boolean = false;
+		private var _useCapabilities:Boolean = true;
 		
 		private var _capabilitiesVersion:String = "1.1.0";
 		
