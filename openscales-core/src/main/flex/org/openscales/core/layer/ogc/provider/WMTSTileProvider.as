@@ -184,6 +184,8 @@ package org.openscales.core.layer.ogc.provider
 			var tileWidth:Number = tileMatrix.tileWidth;
 			var tileHeight:Number = tileMatrix.tileHeight;
 			
+			imageTile.size = new Size(tileWidth,tileHeight);
+			
 			var tileSpanX:Number = tileWidth * resolution;
 			var tileSpanY:Number = tileHeight * resolution;
 			
@@ -201,8 +203,6 @@ package org.openscales.core.layer.ogc.provider
 			};
 			
 			imageTile.url = buildGETQuery(bounds,params);
-			
-			imageTile.size = new Size(tileWidth,tileHeight);
 			
 			return imageTile;
 		}
