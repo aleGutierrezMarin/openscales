@@ -5,15 +5,17 @@
 		<![CDATA[
 			import mx.managers.CursorManager;
 			
-			import org.openscales.geometry.basetypes.Bounds;
-			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.core.Map;
 			import org.openscales.core.cursor.CrosshairCursor;
 			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.ZoomBoxEvent;
 			import org.openscales.core.handler.Handler;
 			import org.openscales.core.handler.mouse.DragHandler;
 			import org.openscales.core.handler.mouse.ZoomBoxHandler;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.geometry.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Pixel;
 			
 			import spark.skins.spark.ButtonSkin;
 			
@@ -27,7 +29,7 @@
 			private var _icon:Class;
 			
 			[Bindable]
-			private var _toolTip:String = "Draw the desired area to zoom in";
+			private var _toolTip:String = Catalog.getLocalizationForKey("zoombox.tooltip");;
 			
 			/**
 			 * Handler of ZoomBox
@@ -38,6 +40,10 @@
 			 * ID of the cursor used during the drawing of the zoom-box.
 			 */
 			private var zoomBoxCursorID:int = CursorManager.NO_CURSOR;
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this._toolTip = Catalog.getLocalizationForKey("zoombox.tooltip");
+			}
 			
 			override public function set map(value:Map):void {
 				super.map = value;
