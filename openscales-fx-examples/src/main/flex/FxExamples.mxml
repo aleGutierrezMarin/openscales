@@ -73,6 +73,9 @@
 					case "wms130":
 						state= new WMS130Example();
 						break;
+					case "wmts100":
+						state= new WMTSExample();
+						break;
 					case "imagelayer":
 						state = new ImageLayerExample();
 						break;
@@ -152,6 +155,7 @@
 				<s:Button id="nasa" label="NASA WMS-C" click="changeState(event)" width="100%"/>
 				<s:Button id="germany" label="WMS 1.1.x" click="changeState(event)" width="100%"/>
 				<s:Button id="wms130" label="WMS 1.3.0" click="changeState(event)" width="100%"/>
+				<s:Button id="wmts100" label="WMTS 1.0.0" click="changeState(event)" width="100%"/>
 				<s:Button id="imagelayer" label="Image Layer" click="changeState(event)" width="100%"/>
 				<s:Button id="simplekml" label="Simple KML layer" click="changeState(event)" width="100%"/>
 				<s:Button id="fullkml" label="Advanced KML layer" click="changeState(event)" width="100%"/>
