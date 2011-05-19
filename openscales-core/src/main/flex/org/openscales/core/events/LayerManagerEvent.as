@@ -18,9 +18,22 @@ package org.openscales.core.events
 		private var _y:int=0;
 		
 		/**
+		 *  State of the LayerManager that dispatch the event
+		 */
+		
+		private var _iconified:Boolean = false;
+		
+		/**
 		 * Event type dispatched when a button opacity is clicked
 		 */
 		public static const COMPONENT_OPACITY:String="openscales.opacity";
+		
+		/**
+		 * Event type dispatched when the minMaxButton is clicked
+		 */
+		
+		public static const LAYERMANAGER_CHANGED:String="openscales.layerManagerChanged";
+		
 		
 		public function LayerManagerEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
@@ -51,6 +64,15 @@ package org.openscales.core.events
 		public function get y():int
 		{
 			return this._y;
+		}
+		
+		public function set iconified(value:Boolean):void
+		{
+			this._iconified = value
+		}
+		public function get iconified():Boolean
+		{
+			return this._iconified;
 		}
 	}
 }
