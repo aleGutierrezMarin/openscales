@@ -21,6 +21,7 @@ package org.openscales.fx.layer
 		private var _tileMatrixSet:String = null;
 		private var _tileMatrixSets:HashMap = null;
 		private var _isConfigured:Boolean = false;
+		private var _format:String = "image/jpg";
 		
 		public function FxWMTS()
 		{
@@ -57,10 +58,9 @@ package org.openscales.fx.layer
 			if(!this._useCapabilities) {
 				(this.layer as WMTS).tileMatrixSets = this.tileMatrixSets;
 				(this.layer as WMTS).tileMatrixSet = this.tileMatrixSet;
+				(this.layer as WMTS).format = this.format;
 				this.layer.generateResolutions();
 			}
-			
-			(this.layer as WMTS).format = this.format;
 			
 			return this.layer;
 		}
@@ -85,12 +85,11 @@ package org.openscales.fx.layer
 		}
 		
 		public function get format():String {
-			if(this.layer)
-				return (this.layer as WMTS).format;
-			return null;
+			return this._format;
 		}
 		
 		public function set format(value:String):void {
+			this._format = value;
 			if(this.layer != null)
 				(this.layer as WMTS).format=value;
 		}
@@ -150,6 +149,8 @@ package org.openscales.fx.layer
 			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
 			
 			this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
+			
+			(this._layer as WMTS).format = this.format;
 			
 			if(this._isConfigured) {
 				this.configureLayer();
