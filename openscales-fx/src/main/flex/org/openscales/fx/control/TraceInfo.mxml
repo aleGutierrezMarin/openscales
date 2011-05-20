@@ -18,12 +18,19 @@
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.TraceEvent;
+			import org.openscales.core.i18n.Catalog;
 			
 			import spark.skins.spark.ButtonSkin;
 			import spark.utils.TextFlowUtil;
 			
 			[Bindable] public var _clearButton:Boolean = true;
+			[Bindable] public var _clearLabel:String = Catalog.getLocalizationForKey("traceinfo.clearlabel");
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this._clearLabel = Catalog.getLocalizationForKey("traceinfo.clearlabel");
+			}
 			
 			public function get clearButton():Boolean {
 				return _clearButton;
@@ -112,7 +119,7 @@
 					width="100%"
 					height="100%" />
 		<s:Button id="clearLogsButton"
-				  label="Clear logs"
+				  label="{this._clearLabel}"
 				  click="clearTrace()"/>
 	</s:VGroup>
 </Control>

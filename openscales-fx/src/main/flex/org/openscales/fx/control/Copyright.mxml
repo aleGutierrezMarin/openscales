@@ -8,13 +8,17 @@
 
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
 			
-			[Bindable] private var _copyright:String = "Copyright";
+			private var _copyright:String = "copyright:copyright";
 			
-			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this.configure();
+			}
 			public function  configure():void
 			{ 
-				copyrightLabel.text= "© "+this._copyright;
+				copyrightLabel.text= "© "+this.copyright;
 			}
 			
 			/**
@@ -23,7 +27,7 @@
 			 */
 			public function get copyright():String
 			{
-				return this._copyright;
+				return Catalog.getLocalizationForKey(this._copyright);
 			}
 			
 			public function set copyright(value:String):void
