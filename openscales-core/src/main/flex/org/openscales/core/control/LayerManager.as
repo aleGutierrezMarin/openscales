@@ -76,7 +76,6 @@ package org.openscales.core.control
 			this.map.removeEventListener(LayerEvent.LAYER_CHANGED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_REMOVED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.layerUpdated);
-			//add
 			this.map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_OPACITY_CHANGED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.layerUpdated);
@@ -116,7 +115,6 @@ package org.openscales.core.control
 			this.map.addEventListener(LayerEvent.LAYER_CHANGED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_REMOVED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.layerUpdated);
-			//add
 			this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.layerUpdated);
@@ -562,13 +560,15 @@ package org.openscales.core.control
 				if((layer.zindex-1)>numBaseLayer - 1)
 				{
 					layer.zindex = layer.zindex-1;
+					this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN,layer));
 				}	
 			}
 			else
 			{
 				if((layer.zindex+1)<=(this.map.layers.length-1))
 				{
-					layer.zindex = layer.zindex+1;	
+					layer.zindex = layer.zindex+1;
+					this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP,layer));
 				}	
 			}
 			this.draw();//refresh the layerswitcher
