@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
+    <classEntry path="FlexUnitApplication"/>
+    <classEntry path="assets.fxg.ButtonCloseOver"/>
+    <classEntry path="assets.fxg.ButtonCloseUp"/>
+    <classEntry path="assets.fxg.ButtonOpacity"/>
+    <classEntry path="assets.fxg.DownArrowDown"/>
+    <classEntry path="assets.fxg.DownArrowOver"/>
+    <classEntry path="assets.fxg.DownArrowUp"/>
+    <classEntry path="assets.fxg.LayerItemOver"/>
+    <classEntry path="assets.fxg.LayerItemUp"/>
+    <classEntry path="assets.fxg.Popup"/>
+    <classEntry path="assets.fxg.UpArrowDown"/>
+    <classEntry path="assets.fxg.UpArrowOver"/>
+    <classEntry path="assets.fxg.UpArrowUp"/>
     <classEntry path="org.openscales.fx.ControlPanel"/>
     <classEntry path="org.openscales.fx.FxExtent"/>
     <classEntry path="org.openscales.fx.FxMap"/>
@@ -19,6 +32,7 @@
     <classEntry path="org.openscales.fx.control.FxCorePanZoomBar"/>
     <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
     <classEntry path="org.openscales.fx.control.FxOverviewMapRatio"/>
+    <classEntry path="org.openscales.fx.control.FxScaleLine"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.control.IconButton"/>
     <classEntry path="org.openscales.fx.control.LanguageSwitcher"/>
@@ -30,6 +44,11 @@
     <classEntry path="org.openscales.fx.control.TraceInfo"/>
     <classEntry path="org.openscales.fx.control.Zoom"/>
     <classEntry path="org.openscales.fx.control.ZoomBox"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibility"/>
+    <classEntry path="org.openscales.fx.control.layer.DeleteLayer"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerControl"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
     <classEntry path="org.openscales.fx.control.layer.LayerRenderer"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
@@ -59,6 +78,7 @@
     <classEntry path="org.openscales.fx.layer.FxWFS"/>
     <classEntry path="org.openscales.fx.layer.FxWMS"/>
     <classEntry path="org.openscales.fx.layer.FxWMSC"/>
+    <classEntry path="org.openscales.fx.layer.FxWMTS"/>
     <classEntry path="org.openscales.fx.layer.capabilities.WMTS100Test"/>
     <classEntry path="org.openscales.fx.layer.osm.FxCycleMap"/>
     <classEntry path="org.openscales.fx.layer.osm.FxMaplint"/>
@@ -75,7 +95,8 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
-    <classEntry path="org.openscales.fx.layer.FxWMTS"/>
+    <classEntry path="org.openscales.fx.control.ChangeLayerPositionTest"/>
+    <classEntry path="org.openscales.fx.TestTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

@@ -8,7 +8,8 @@
 				width="100%"
 				height="25"
 				xmlns:fxg="assets.fxg.*"
-		  		autoDrawBackground="false">
+		  		autoDrawBackground="false"
+				creationComplete="configure()">
 	
 	<fx:Script>
 		<![CDATA[
@@ -20,9 +21,6 @@
 			import assets.fxg.DownArrowUp;
 			import assets.fxg.LayerItemOver;
 			import assets.fxg.LayerItemUp;
-			import assets.fxg.UpArrowDown;
-			import assets.fxg.UpArrowOver;
-			import assets.fxg.UpArrowUp;
 			
 			import mx.accessibility.ButtonAccImpl;
 			import mx.binding.utils.BindingUtils;
@@ -36,13 +34,14 @@
 			import mx.events.SliderEvent;
 			import mx.skins.halo.ButtonSkin;
 			
-			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.fx.control.layer.LayerManager;
+			import org.openscales.geometry.basetypes.Bounds;
 			
 			import spark.components.Button;
 			import spark.components.CheckBox;
@@ -61,6 +60,24 @@
 			
 			[Bindable]
 			private var _opacity:String;
+			
+			
+			/**
+			 * Use the rendererOptions in the LayerManager to set the current optional controls
+			 * Get the owner of this rendrer (the List and get its parent to get the LayerManager)
+			 */
+			public function configure():void
+			{
+				var list:List = (this.owner as List);
+				
+				var layerManager:LayerManager = (list.parent.parent as LayerManager);
+				
+				// check if some options have to be displayed :
+				if( layerManager.rendererOptions.hasOwnProperty("displayLegend") && (layerManager.rendererOptions["displayLegend"] == true) )
+					{
+						
+					}
+			}
 			
 			/**
 			 * Get the layer that the List into the LayerManager.mxml send to display it
@@ -85,10 +102,40 @@
 				}
 			} 
 			
+			/**
+			 * Give the current layer to the LayerManager Control which are on this renderer
+			 */
+			public function setLayerToControls():void
+			{
+				var i:uint = 0;
+				var j:uint = 0;
+				var sizeElement:uint = this.numElements;
+				
+				var element:IVisualElement = null;
+				var subElement:IVisualElement = null;
+				
+				// Check elements in the Group
+				for(i=0; i<sizeElement; i++) {
+					element = this.getElementAt(i);
+					
+					if (element is Group) {
+						
+						var group:Group = (element as Group)
+						var sizeSubElement:uint = group.numElements;
+						
+						for(j=0; j<sizeSubElement; j++) {
+							subElement = group.getElementAt(j);
+							
+							if (subElement is LayerControl) {
+								(subElement as LayerControl).layer = this._layer;
+							} 
+						}
+					}
+				}
+			}
 			
 			/**
 			 * Delete the layer on the map
-			 *
 			 * @param event Click event
 			 */
 			public function deleteLayer(event:MouseEvent):void {
@@ -129,43 +176,28 @@
 						_layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
 						_layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
 					}
+					
+					/*
 					displayControl.removeAllElements();
-					_opacity = Math.floor(this.layer.alpha*100) + "%";
+					
 					labelLayer = new Label();
 					labelLayer.text = this.layer.name;
 					labelLayer.percentWidth = 100;
 					this.baseLayerChanged();
 					displayControl.addElement(labelLayer);		
+					*/
 					
-					if(this.parent != null){
-						var overlayArray:Array=(LayerManager.layerManager).layerList.dataProvider.toArray();
-						
-						if(overlayArray.length<=1) {
-							ArrowUp.enabled = false;
-							ArrowDown.enabled = false;
-							
-						}
-						else {
-							// the layer is on the bottom of the list, we hide the arrowDown
-							
-							if(overlayArray.indexOf(this.layer) == 0){
-								ArrowUp.enabled = false;
-								ArrowDown.enabled = true;
-							}
-								// the layer is on the to of the list, we hide the arrowUp
-							else if(overlayArray.indexOf(this.layer)==overlayArray.length-1){
-								ArrowUp.enabled = true;
-								ArrowDown.enabled = false;
-							}
-								// the layer is in the middle, you can up or down it
-							else{
-								ArrowUp.enabled = true;
-								ArrowDown.enabled = true;
-							}           	
-						}
-					}
+					_opacity = Math.floor(this.layer.alpha*100) + "%";
+					layerSwitcherLabel.text = this.layer.name;
+					this.baseLayerChanged();
+					
+					this.setLayerToControls();
 					
 				}
+				
+				// setting the layer to the sub component :
+				
+				
 				
 			}
 			
@@ -192,20 +224,15 @@
 					return;
 				
 				if(_layer.isBaseLayer) {
-					labelLayer.setStyle("fontWeight", "bold");
+					layerSwitcherLabel.setStyle("fontWeight", "bold");
 					deleteButton.visible = false;
 				} else {
-					labelLayer.setStyle("fontWeight", "normal");
+					layerSwitcherLabel.setStyle("fontWeight", "normal");
 					deleteButton.visible = true;
 				}
 			}
 			
-			public function upLayer(event:MouseEvent):void {
-				_layer.map.changeLayerIndexByStep(_layer,+1);
-			}
-			public function downLayer(event:MouseEvent):void {
-				_layer.map.changeLayerIndexByStep(_layer,-1);
-			}
+			
 			
 			public function manageOpacity(event:Event):void {
 				var layerManagerEvent:LayerManagerEvent = new LayerManagerEvent(LayerManagerEvent.COMPONENT_OPACITY);
@@ -228,32 +255,23 @@
 			  paddingTop="2"
 			  verticalAlign="middle">
 		
+		
+		<!--<s:Button id="layerSwitcherMoreLess" />-->
+		
+		<s:Label id="layerSwitcherLabel" percentWidth="100"/>
+		 
+		
 		<!-- TODO : radio button not editable for now because there is some issue when you change baseLayer -->
 		<!-- <s:RadioButton id="isBaseLayer"
 		click="changeBaseLayer(event)"
 		enabled="false"/>-->
 		
-		<s:VGroup verticalAlign="middle" gap="0">
-			<IconButton id="ArrowUp"
-						toolTip="Déplacer vers l'avant plan"
-						click="upLayer(event)"
-						icon="{new UpArrowUp()}"
-						iconOver="{new UpArrowOver()}"
-						iconDown="{new UpArrowDown()}"
-						width="10"
-						height="10"
-						/>
-
-			<IconButton id="ArrowDown"
-						toolTip="Déplacer vers l'arrière plan"
-						click="downLayer(event)"
-						icon="{new DownArrowUp()}"
-						iconOver="{new DownArrowOver()}"
-						iconDown="{new DownArrowDown()}"
-						width="10"
-						height="10"
-						/>
-		</s:VGroup>
+		<ChangeLayerPosition  />
+		
+		
+		
+		
+		
 		<IconButton id="opacityButton"
 					width="16"
 					height="16"
