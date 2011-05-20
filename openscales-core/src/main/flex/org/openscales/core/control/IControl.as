@@ -1,6 +1,7 @@
 package org.openscales.core.control {
 
 	import org.openscales.core.Map;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
@@ -32,6 +33,8 @@ package org.openscales.core.control {
 		function get y():Number;
 
 		function set y(value:Number):void;
+		
+		function onMapLanguageChange(event:I18NEvent):void;
 	}
 }
 
