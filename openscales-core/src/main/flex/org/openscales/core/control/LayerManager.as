@@ -384,9 +384,10 @@ package org.openscales.core.control
 		{
 			this._minimized = !this._minimized;
 			this.draw();
-			var lmEvent:LayerManagerEvent = new LayerManagerEvent(LayerManagerEvent.LAYERMANAGER_CHANGED);
-			lmEvent.iconified = this._minimized;
-			this.map.dispatchEvent(lmEvent);
+			var evt:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+			evt.componentName = "LayerManager";
+			evt.componentIconified = this._minimized;
+			this.map.dispatchEvent(evt);
 		}
 
 		/**
