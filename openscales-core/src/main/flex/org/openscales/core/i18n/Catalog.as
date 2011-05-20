@@ -3,7 +3,9 @@ package org.openscales.core.i18n
 	import org.openscales.core.basetypes.maps.HashMap;
 
 	/**
-	 * This class 
+	 * This class represent an abstration to the Json files used to store the keys.
+	 * The class is used to read and write association key - values.
+	 * It should never be instanciated but used as a static class.
 	 * 
 	 * 
 	 * @author javocale
