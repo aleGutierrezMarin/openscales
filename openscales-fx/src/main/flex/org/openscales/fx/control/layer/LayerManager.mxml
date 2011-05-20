@@ -3,7 +3,7 @@
 <Control xmlns="http://openscales.org"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 width="215">
+		 width="215" xmlns:layer="org.openscales.fx.control.layer.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -42,7 +42,8 @@
 			private var _layer:Layer;
 			
 			// Array wich contains all layers
-			[Bindable]private var _layerArray:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var _layerArray:ArrayCollection = new ArrayCollection();
 			
 			private var _hSlider:HSlider = null;
 			private var _closeButton:IconButton = null;
@@ -51,6 +52,17 @@
 			private var _layerOldZindex:int=0;
 			
 			private var myTimer:Timer = null;
+			
+			/**
+			 * @private
+			 * LOptions for the LayerManager renderer (for additionnal controls to display like Metadatas, legend...)
+			 * @default null
+			 */
+			[Bindable]
+			private var _rendererOptions:Object = null;
+			
+
+		
 			
 			// static reference to itself : makes LayerRenderer code cleaner
 			static public var layerManager:LayerManager;
@@ -313,8 +325,27 @@
 				return this._layerArray;
 			}
 			
+			// getter / setter
+			public function get rendererOptions():Object
+			{
+				return this._rendererOptions;
+			}
+			
+			public function set rendererOptions(value:Object):void
+			{
+				this._rendererOptions=value;
+			}
+			
+			public function get label():Label{
+				return this._label;
+			}
+			
+			
 		]]>
 	</fx:Script>
+	
+
+	
 	
 	<s:VGroup width="100%"
 			  paddingLeft="2" paddingRight="2" paddingBottom="2" paddingTop="2"> 
