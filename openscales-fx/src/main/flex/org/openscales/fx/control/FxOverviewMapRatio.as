@@ -7,6 +7,7 @@ package org.openscales.fx.control
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.control.OverviewMapRatio;
+	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.layer.FxLayer;
 	import org.openscales.geometry.basetypes.Size;
 	
@@ -26,9 +27,43 @@ package org.openscales.fx.control
 		/**
 		 * @private
 		 * ActionScript object of the overviewMapRatio
-		 * 
 		 */
 		private var _overviewmap:OverviewMapRatio;
+		
+		// --- Properties --- //
+		/**
+		 * Ratio between the overview resolution and the map resolution
+		 * The ratio is MapResolution/OverviewMapResolution
+		 * While setting a new ratio the oveview zoom level will be recomputed
+		 * 
+		 * @param ratio The curent ratio between the overview map and the map
+		 */
+		public function set ratio(value:String):void
+		{
+			_overviewmap.ratio = Number(value);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get ratio():String
+		{
+			return String(_overviewmap.ratio);
+		}
+		
+		/**
+		 * Layer displayed on the overview map
+		 */		
+		public function set layer(value:Layer):void{
+			
+			this._overviewmap.layer = value;	
+		}
+		
+		public function get layer():Layer{
+			
+			return this._overviewmap.layer;
+		}
+		
 		
 		/**
 		 * FxOverviewMapRatio constructor
@@ -70,7 +105,7 @@ package org.openscales.fx.control
 			if(this.width && this.height)
 				this._overviewmap.size = new Size(this.width,this.height);
 		}
-		
+				
 		
 		/**
 		 * The Flex side of the control has been created, so activate the overviewMap
@@ -99,29 +134,11 @@ package org.openscales.fx.control
 		/**
 		 * @private
 		 */
-		public function get overviewMap():OverviewMapRatio {
+		private function get overviewMap():OverviewMapRatio {
 			return this._overviewmap;
 		}
 		
 		
-		/**
-		 * Ratio between the overview resolution and the map resolution
-		 * The ratio is MapResolution/OverviewMapResolution
-		 * While setting a new ratio the oveview zoom level will be recomputed
-		 * 
-		 * @param ratio The curent ratio between the overview map and the map
-		 */
-		public function set ratio(value:String):void
-		{
-			_overviewmap.ratio = Number(value);
-		}
 		
-		/**
-		 * @private
-		 */
-		public function get ratio():String
-		{
-			return String(_overviewmap.ratio);
-		}
 	}
 }

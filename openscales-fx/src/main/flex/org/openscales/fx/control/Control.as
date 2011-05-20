@@ -7,6 +7,7 @@ package org.openscales.fx.control
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.control.IControl;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.fx.FxMap;
 	import org.openscales.geometry.basetypes.Pixel;
 	
@@ -80,7 +81,17 @@ package org.openscales.fx.control
 			return this._map;
 		}
 		public function set map(value:Map):void {
+			
+			if(this._map) {
+				this.map.removeEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
+			}
+			
 			this._map = value;
+			
+			if(this._map) {
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
+			}
+			
 			// Activate the control only if this control has already thrown an Event.COMPLETE
 			if(this._isInitialized) {
 				this.active = true;
@@ -133,5 +144,11 @@ package org.openscales.fx.control
 			return new Pixel(this.x, this.y);
 		}
 		
+		/**
+		 * to be overrided in sub classes
+		 */
+		public function onMapLanguageChange(event:I18NEvent):void {
+			
+		}
 	}
 }

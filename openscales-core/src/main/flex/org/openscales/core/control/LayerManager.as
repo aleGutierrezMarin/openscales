@@ -6,7 +6,6 @@ package org.openscales.core.control
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.control.ui.Arrow;
 	import org.openscales.core.control.ui.Button;
 	import org.openscales.core.control.ui.CheckBox;
@@ -14,8 +13,10 @@ package org.openscales.core.control
 	import org.openscales.core.control.ui.SliderHorizontal;
 	import org.openscales.core.control.ui.SliderVertical;
 	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.events.LayerManagerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 
 	/**
@@ -75,6 +76,9 @@ package org.openscales.core.control
 			this.map.removeEventListener(LayerEvent.LAYER_CHANGED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_REMOVED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.layerUpdated);
+			this.map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER, this.layerUpdated);
+			this.map.removeEventListener(LayerEvent.LAYER_OPACITY_CHANGED, this.layerUpdated);
+			this.map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.layerUpdated);
 
 			super.destroy();
 		}
@@ -111,6 +115,9 @@ package org.openscales.core.control
 			this.map.addEventListener(LayerEvent.LAYER_CHANGED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_REMOVED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.layerUpdated);
+			this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, this.layerUpdated);
+			this.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED, this.layerUpdated);
+			this.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.layerUpdated);
 		}
 
 		/**
@@ -377,6 +384,10 @@ package org.openscales.core.control
 		{
 			this._minimized = !this._minimized;
 			this.draw();
+			var evt:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+			evt.componentName = "LayerManager";
+			evt.componentIconified = this._minimized;
+			this.map.dispatchEvent(evt);
 		}
 
 		/**
@@ -550,13 +561,15 @@ package org.openscales.core.control
 				if((layer.zindex-1)>numBaseLayer - 1)
 				{
 					layer.zindex = layer.zindex-1;
+					this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN,layer));
 				}	
 			}
 			else
 			{
 				if((layer.zindex+1)<=(this.map.layers.length-1))
 				{
-					layer.zindex = layer.zindex+1;	
+					layer.zindex = layer.zindex+1;
+					this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP,layer));
 				}	
 			}
 			this.draw();//refresh the layerswitcher

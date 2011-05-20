@@ -2,6 +2,10 @@ package org.openscales.core.control
 {
 	import flash.events.Event;
 	
+	import org.openscales.core.Map;
+	import org.openscales.core.events.I18NEvent;
+	import org.openscales.core.i18n.Catalog;
+	import org.openscales.core.i18n.Locale;
 	import org.openscales.geometry.basetypes.Pixel;
 	
 
@@ -23,12 +27,7 @@ package org.openscales.core.control
 		 * @private
 		 * Vector containing the languages to show in the drop down list
 		 */
-		private var _languageList:Vector.<String>;
-		
-		/**
-		 * Temporary variable
-		 */
-		private var _toRemoveMapLanguage:String = "French";
+		private var _languageList:Vector.<Locale>;
 		
 		
 		/**
@@ -38,21 +37,7 @@ package org.openscales.core.control
 		public function LanguageSwitcher(position:Pixel = null)
 		{
 			super(position);
-			this._languageList = new Vector.<String>();
-			this._languageList = getLanguageInformations();			
-		}
-		
-		/**
-		 * @private
-		 * Return the languages informations in a Vector with the String name of the Language
-		 * 
-		 * TODO : To link with the service that will provide languages informations
-		 */
-		private function getLanguageInformations():Vector.<String>
-		{
-			var languages:Vector.<String> = new Vector.<String>();
-			languages.push("French","English","Japanese");
-			return languages;
+			this._languageList = new Vector.<Locale>();			
 		}
 		
 		/**
@@ -60,7 +45,7 @@ package org.openscales.core.control
 		 * Callback to actualize the language information when the langage in the map has changed
 		 * TODO : Listen to Events.
 		 */
-		private function onMapLanguageChange(event:Event):void
+		override public function onMapLanguageChange(event:I18NEvent):void
 		{
 			
 		}
@@ -71,9 +56,11 @@ package org.openscales.core.control
 		 */
 		public function set language(value:String):void
 		{
-			if (_languageList.indexOf(value) != -1)
-			{
-				this._toRemoveMapLanguage = value;
+			if(!this.map)
+				return;
+			var locale:Locale = Locale.getLocaleByKey(value);
+			if(locale) {
+				this.map.locale = locale.localeKey;
 			}
 		}
 		
@@ -82,12 +69,19 @@ package org.openscales.core.control
 		 */
 		public function get language():String
 		{
-			return this._toRemoveMapLanguage;
+			if(!this.map)
+				return null;
+			return this.map.locale;
 		}
 		
-		public function get languageList():Vector.<String>
+		public function get languageList():Vector.<Locale>
 		{
 			return this._languageList;
+		}
+		
+		override public function set map(value:Map):void {
+			super.map = value;
+			this._languageList = Catalog.getAvailableLocalizations();
 		}
 		
 	}
