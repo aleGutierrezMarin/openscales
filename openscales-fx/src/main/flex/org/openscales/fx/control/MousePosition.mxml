@@ -13,7 +13,9 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.Util;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.geometry.Geometry;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -86,6 +88,10 @@
 			
 			
 			private var _availableProjSrsList:String;
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this.feedUnitsComboBox();
+			}
 			
 			/**
 			 * @private
@@ -179,9 +185,9 @@
 				switch(_srsUnits){
 					case Unit.METER:
 						items = new ArrayCollection([
-							{data:Unit.KILOMETER,label:"kilomètres"},
-							{data:Unit.METER, label:"mètres"},
-							{data:Unit.CENTIMETER, label:"centimètres"}
+							{data:Unit.KILOMETER,label:Catalog.getLocalizationForKey("mouseposition:kilometers")},
+							{data:Unit.METER, label:Catalog.getLocalizationForKey("mouseposition:meters")},
+							{data:Unit.CENTIMETER, label:Catalog.getLocalizationForKey("mouseposition:centimeters")}
 						]);
 						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll(); // Clearing list if already set
 						this.unitsComboBox.dataProvider = items;
@@ -190,8 +196,8 @@
 					case "dd":
 					case Unit.DEGREE:
 						items = new ArrayCollection([
-							{data:Unit.SEXAGESIMAL,label:"degrés séxagécimaux"},
-							{data:Unit.DEGREE, label:"degrés décimaux"}
+							{data:Unit.SEXAGESIMAL,label:Catalog.getLocalizationForKey("mouseposition:dms")},
+							{data:Unit.DEGREE, label:Catalog.getLocalizationForKey("mouseposition:decimaldegrees")}
 						]);
 						if(this.unitsComboBox.dataProvider) this.unitsComboBox.dataProvider.removeAll(); // Clearing list if already set
 						this.unitsComboBox.dataProvider = items;
@@ -407,7 +413,7 @@
 				
 			</s:ComboBox>
 			
-			<s:ComboBox id="unitsComboBox" labelField="label" change="unitsChanged(event)">
+			<s:ComboBox id="unitsComboBox" labelField="label" change="unitsChanged(event)" >
 				
 			</s:ComboBox>
 		</s:HGroup>

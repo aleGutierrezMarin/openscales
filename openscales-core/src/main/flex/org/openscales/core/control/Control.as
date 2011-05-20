@@ -5,8 +5,9 @@ package org.openscales.core.control
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Control base class
@@ -39,11 +40,15 @@ package org.openscales.core.control
 		}
 
 		public function set map(value:Map):void {
-			if(this._map != null)
+			if(this._map != null) {
 				this._map.removeEventListener(MapEvent.RESIZE, this.resize);
+				this.map.removeEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
+			}
 			this._map = value;
-
-			this._map.addEventListener(MapEvent.RESIZE, this.resize);
+			if(this._map) {
+				this._map.addEventListener(MapEvent.RESIZE, this.resize);
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
+			}	
 		}
 
 		public function resize(event:MapEvent):void {
@@ -78,6 +83,12 @@ package org.openscales.core.control
 			return new Pixel(this.x, this.y);
 		}
 
+		/**
+		 * to be overrided in sub classes
+		 */
+		public function onMapLanguageChange(event:I18NEvent):void {
+			
+		}
 	}
 }
 

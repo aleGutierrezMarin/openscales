@@ -1,7 +1,9 @@
-bin
-target
-.DS_Store
-FlexUnitApplication.mxml
-FlexUnitApplicationLastRun.xml
+syntax: glob
+*.orig
+*/bin-release
+*/bin-debug
+*/bin
+*/target
+*.DS_Store
+*/_build
 
-glob:src/refdoc/_build

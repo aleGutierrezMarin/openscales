@@ -10,6 +10,7 @@ package {
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
+	import org.openscales.core.i18n.provider.JSONProvider;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.osm.CycleMap;
@@ -24,7 +25,7 @@ package {
 	public class WMS130Example extends Sprite {
 		protected var _map:Map;
 		
-		public function WMS130Example() {
+		public function WMS130Example() {			
 			//Trace.useFireBugConsole = true;
 			_map=new Map(1200,700);
 			//_map.size=new Size(1200, 700);
