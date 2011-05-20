@@ -33,6 +33,16 @@ package org.openscales.core.events{
 		  */
 		 private var _newCenter:Location = null;
 		 
+		 /**
+		  * name of the component which has been changed
+		  */
+		 private var _componentName:String = null;
+		 
+		 /**
+		  * state of the component which has been changed
+		  */
+		 private var _componentIconified:Boolean = false;
+		 
 		/**
 		 * Event type dispatched before map move (drag or zoom).
 		 */
@@ -83,6 +93,11 @@ package org.openscales.core.events{
 		 * Cannot use namingconvention with dot "." here because name is used in mxml
 		 */
 		public static const CENTER_CHANGED:String="openscales.mapcenterchanged";
+		
+		/**
+		 * Event type dispatched when a component of the map is toggled or iconified.
+		 */
+		public static const COMPONENT_CHANGED:String="openscales.componentChanged";
 
 		/**
 		 * Instances of MapEvent are events dispatched by the Map
@@ -146,6 +161,26 @@ package org.openscales.core.events{
 			if(this._newCenter != this._oldCenter)
 				return true;
 			return false;
+		}
+		
+		// getter and setter for the _componentIconified property
+		public function set componentIconified(value:Boolean):void
+		{
+			this._componentIconified = value;
+		}
+		public function get componentIconified():Boolean
+		{
+			return this._componentIconified;
+		}
+		
+		// getter and setter for the _componentName property
+		public function set componentName(value:String):void
+		{
+			this._componentName = value;
+		}
+		public function get componentName():String
+		{
+			return this._componentName;
 		}
 	}
 }
