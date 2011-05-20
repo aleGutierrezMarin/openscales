@@ -11,6 +11,16 @@ package org.openscales.core.events
 		 * Layer concerned by the event.
 		 */
 		private var _layer:Layer = null;
+		
+		/**
+		 * Opacity of the layer before of layer opacity change
+		 */
+		private var _oldOpacity:Number;
+		
+		/**
+		 * Opacity of the layer after the layer opacity change
+		 */
+		private var _newOpacity:Number;
 
 		/**
 		 * Event type dispatched when a layer is added to the map.
@@ -81,12 +91,28 @@ package org.openscales.core.events
 		 * Event type dispatched when the originators list of the layer is changed
 		 * */
 		public static const LAYER_CHANGED_ORIGINATORS:String="openscales.layerChangeOriginators";
+		
+		/**
+		 * Event type dispatched when the opacity of the layer is changed
+		 */
+		public static const LAYER_OPACITY_CHANGED:String = "openscales.layerOpacityChanged";
+		
+		/**
+		 * Event type dispatched when the layer is moved up in the display list
+		 */
+		public static const LAYER_MOVED_UP:String = "openscales.layerMovedUp";
+		
+		/**
+		 * Event type dispatched when the layer is moved down in the display list
+		 */
+		public static const LAYER_MOVED_DOWN:String = "openscales.layerMovedDown";
 
 		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{
 			this._layer = layer;
 			super(type, bubbles, cancelable);
+			this._newOpacity = layer.alpha;
 		}
 		
 		/**
@@ -97,6 +123,36 @@ package org.openscales.core.events
 		}
 		public function set layer(layer:Layer):void {
 			this._layer = layer;	
+		}
+		
+		/**
+		 * Opacity of the layer before of layer opacity change
+		 */
+		public function get oldOpacity():Number{
+			return _oldOpacity;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set oldOpacity(value:Number):void
+		{
+			this._oldOpacity = value;
+		}
+		
+		/**
+		 * Opacity of the layer after of layer opacity change
+		 */
+		public function get newOpacity():Number{
+			return _newOpacity;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set newOpacity(value:Number):void
+		{
+			this._newOpacity = value;
 		}
 
 
