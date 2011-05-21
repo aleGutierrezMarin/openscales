@@ -1,0 +1,9 @@
+syntax: glob
+*.orig
+*/bin-release
+*/bin-debug
+*/bin
+*/target
+*.DS_Store
+*/_build
+

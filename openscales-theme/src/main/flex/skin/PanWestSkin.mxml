@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Skin for the button to pan the map North -->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+             xmlns:fb="http://ns.adobe.com/flashbuilder/2009" minWidth="21" minHeight="21" alpha.disabled="0.5">
+    
+    <!-- host component -->
+    <fx:Metadata>
+        [HostComponent("spark.components.Button")]
+    </fx:Metadata>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+		<s:State name="up" />
+		<s:State name="over" />
+		<s:State name="down" />
+	</s:states>
+	
+	<s:Group x="4" y="9">
+		<s:Path data="M13.5 18.75 12.1 24.6 13.8 30.4 4.3 24.85 13.5 18.75" x="0" y="-14">
+			<s:fill>
+				<s:SolidColor color="#D38201"/>
+			</s:fill>
+		</s:Path>
+		<s:Path data="M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75M16.3 17.8Q19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15 13.5 15 16.3 17.8" x="0" y="-14">
+			<s:fill>
+				<s:SolidColor color="#FFFFFF"/>
+			</s:fill>
+		</s:Path>
+		<s:Path includeIn="down" data="M13.5 18.75 4.3 24.85 13.8 30.4 12.1 24.6 13.5 18.75M16.3 17.8Q19.1 20.6 19.1 24.55 19.1 28.5 16.3 31.3 13.5 34.1 9.55 34.1 5.6 34.1 2.8 31.3 0 28.5 0 24.55 0 20.6 2.8 17.8 5.6 15 9.55 15 13.5 15 16.3 17.8" x="0" y="-14">
+			<s:fill>
+				<s:SolidColor color="#CCCCCC"/>
+			</s:fill>
+		</s:Path>
+		
+		<s:Path data="M16.3 17.8Q13.5 15 9.55 15 5.6 15 2.8 17.8 0 20.6 0 24.55 0 28.5 2.8 31.3 5.6 34.1 9.55 34.1 13.5 34.1 16.3 31.3 19.1 28.5 19.1 24.55 19.1 20.6 16.3 17.8" x="0" y="-14">
+			<s:stroke>
+				<s:SolidColorStroke weight="0.1" scaleMode="none" caps="none" color="#D38201"/>
+			</s:stroke>
+		</s:Path>
+	</s:Group>
+   
+</s:SparkSkin>
