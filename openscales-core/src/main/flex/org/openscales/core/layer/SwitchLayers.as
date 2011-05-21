@@ -6,7 +6,7 @@ package org.openscales.core.layer
     /**
      *this class allow to have a layer with two layer inside , one layer is displayed according to scale 
      */
-	public class PolyLayers extends Layer
+	public class SwitchLayers extends Layer
 	{
 		private var _firstLayer:Layer;
 		
@@ -107,7 +107,7 @@ package org.openscales.core.layer
 		  
 		private var _zoomToSwitch:Number;
 		
-		public function PolyLayers(name:String,
+		public function SwitchLayers(name:String,
 								   firstLayer:Layer,
 								   lastLayer:Layer,
 								   zoomToSwitch:Number)
