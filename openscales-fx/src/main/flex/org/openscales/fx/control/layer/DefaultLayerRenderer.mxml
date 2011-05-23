@@ -95,19 +95,19 @@
 			{
 				var list:List = (this.owner as List);
 				
-				var layerManager:LayerManager = (list.parent.parent as LayerManager);
+				this.rendererOptions = (list.parent.parent as LayerManager).rendererOptions;
 				
 				// check if some options have to be displayed :
-				if( layerManager.rendererOptions.hasOwnProperty("displayLegend") && (layerManager.rendererOptions["displayLegend"] == true) )
+				if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
 				{
 					layerControlLegend.visible = true;
 				}
 				
-				if( layerManager.rendererOptions.hasOwnProperty("displayZoomToExtent") && (layerManager.rendererOptions["displayZoomToExtent"] == true) )
+				if( this.rendererOptions.hasOwnProperty("displayZoomToExtent") && (this.rendererOptions["displayZoomToExtent"] == true) )
 				{
 					layerControlZoomToExtent.visible = true;
 				}
-				if( layerManager.rendererOptions.hasOwnProperty("displayMetadatas") && (layerManager.rendererOptions["displayMetadatas"] == true) )
+				if( this.rendererOptions.hasOwnProperty("displayMetadatas") && (this.rendererOptions["displayMetadatas"] == true) )
 				{
 					layerControlMetadatas.visible = true;
 				}
