@@ -39,7 +39,7 @@
 			import spark.components.VSlider;
 			import spark.primitives.Rect;
 			
-			private var _layer:Layer;
+
 			
 			/**
 			 * @private
