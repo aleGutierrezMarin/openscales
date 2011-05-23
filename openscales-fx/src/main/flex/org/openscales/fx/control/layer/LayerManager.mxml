@@ -162,7 +162,7 @@
 	<s:VGroup width="100%"
 			  paddingLeft="2" paddingRight="2" paddingBottom="2" paddingTop="2"> 
 		<s:List id="layerList" 
-				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
+				itemRenderer="org.openscales.fx.control.layer.DefaultLayerRenderer"
 				dropEnabled="false"
 				dragEnabled="false"
 				dragMoveEnabled="false"

@@ -31,8 +31,6 @@ package org.openscales.fx.control.layer
 		 */
 		public function LayerRenderer():void
 		{
-			var list:List = (this.owner as List);
-			this._rendererOptions = (list.parent.parent as LayerManager).rendererOptions;
 		}
 		
 		/**
