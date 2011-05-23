@@ -56,10 +56,7 @@
 			 */
 			[Bindable]
 			private var _rendererOptions:Object = null;
-			
 
-			// static reference to itself : makes LayerRenderer code cleaner
-			static public var layerManager:LayerManager;
 			
 			/**
 			 * Set the map
@@ -72,12 +69,10 @@
 					this.map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this.map.removeEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
 					this.map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-					layerManager = null;
 				}
 				super.map = value;
 				
 				if(this.map != null) {
-					layerManager = this;
 					//Listening of layer event
 					this.map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
 					this.map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
@@ -168,13 +163,13 @@
 			  paddingLeft="2" paddingRight="2" paddingBottom="2" paddingTop="2"> 
 		<s:List id="layerList" 
 				itemRenderer="org.openscales.fx.control.layer.LayerRenderer"
-				dropEnabled="true"
-				dragEnabled="true"
-				dragMoveEnabled="true"
+				dropEnabled="false"
+				dragEnabled="false"
+				dragMoveEnabled="false"
 				width="100%"
 				x="0"
 				y="0"
-				dragComplete="changeLayerOrder(event)" borderVisible="false">
+				borderVisible="false">
 			<s:layout>
 				<s:VerticalLayout horizontalAlign="justify"
 								  variableRowHeight="true"

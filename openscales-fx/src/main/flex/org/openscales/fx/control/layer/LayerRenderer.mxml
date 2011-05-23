@@ -52,6 +52,14 @@
 			import spark.core.SpriteVisualElement;
 			
 			
+			[Bindable]
+			[Embed(source="/assets/images/widgetHide.png")]
+			private var _btnMinimize:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/widgetShow.png")]
+			private var _btnMaximize:Class;
+			
 			/**
 			 * The layer associated with the current item
 			 */
@@ -105,6 +113,7 @@
 				}
 				
 				// if drawing layer add the drawing tools :
+				/*
 				this._drawGroup = new Group();
 				this._drawGroup.id = "layerSwitcherDrawTools";
 				
@@ -113,7 +122,7 @@
 				this._drawGroup.addElement(this._drawTools);
 				
 				layerSwitcherMainGroup.addElementAt(this._drawGroup, 1);
-				
+				*/
 			}
 			
 			/**
@@ -184,9 +193,6 @@
 			 */
 			override public function set data(value:Object):void 
 			{
-				if(LayerManager.layerManager == null)
-					return;
-				
 				this._layer = value as Layer;
 				
 				if((this.layer != null) )
@@ -246,10 +252,18 @@
 				var groupSize:uint = layerSwitcherOptionnalDisplay.height + layerSwitcherAdditionnalDisplay.height;
 				
 				if(!this._isMinimized)
+				{
 					this.height += groupSize;
+					//layerSwitcherReduceMaximize.icon = _btnMinimize;
+				}
+					
 				
 				else
+				{
 					this.height -= groupSize; 
+					//layerSwitcherReduceMaximize.icon = _btnMaximize;
+				}
+					
 
 			}
 			
@@ -279,9 +293,7 @@
 						width="16"
 						height="16"
 						click="reduceMaximizeLayerSwitcher(event)"
-						icon="{new ButtonOpacity()}"
-						iconOver="{new ButtonOpacity()}"
-						iconDown="{new ButtonOpacity()}"/>
+						icon="{_btnMaximize}" />
 			<DeleteLayer id="layerSwitcherDeleteLayer" />
 			
 			<s:Group id="displayControl" />	
