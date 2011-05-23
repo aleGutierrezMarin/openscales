@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
-	<fx:Declarations>
-		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
-	</fx:Declarations>
-</s:Group>
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="http://openscales.org" >
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import assets.fxg.ButtonCloseOver;
+			import assets.fxg.ButtonCloseUp;
+			
+			/**
+			 * Delete the layer on the map
+			 * @param event Click event
+			 */
+			public function deleteLayer(event:MouseEvent):void {
+				_layer.map.removeLayer(_layer);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<IconButton id="deleteButton"
+				toolTip="Supprimer la couche"
+				click="deleteLayer(event)"
+				icon="{new ButtonCloseUp()}"
+				iconOver="{new ButtonCloseOver()}"
+				iconDown="{new ButtonCloseOver()}"
+				width="14"
+				height="14"/>
+	
+</LayerControl>

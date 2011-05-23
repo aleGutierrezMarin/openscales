@@ -39,10 +39,13 @@
 	
 	<component id="LayerControl" class="org.openscales.fx.control.layer.LayerControl" />
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
+	<component id="LayerLegend" class="org.openscales.fx.control.layer.LayerLegend" />
+	<component id="LayerMetadatas" class="org.openscales.fx.control.layer.LayerMetadatas" />
 	<component id="ChangeLayerOpacity" class="org.openscales.fx.control.layer.ChangeLayerOpacity" />
 	<component id="ChangeLayerPosition" class="org.openscales.fx.control.layer.ChangeLayerPosition" />
 	<component id="ChangeLayerVisibility" class="org.openscales.fx.control.layer.ChangeLayerVisibility" />
 	<component id="DeleteLayer" class="org.openscales.fx.control.layer.DeleteLayer" />
+	<component id="LayerZoomToExtent" class="org.openscales.fx.control.layer.LayerZoomToExtent" />
 	
 	<component id="MousePosition" class="org.openscales.fx.control.MousePosition" />
 	<component id="Pan" class="org.openscales.fx.control.Pan" />

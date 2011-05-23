@@ -27,12 +27,6 @@
 			{
 				if(this.parent != null)
 				{
-					if(this.parent is LayerManager) 
-						trace("true Manager");
-					
-					if(this.parent is LayerRenderer) 
-						trace("true Renderer");
-					
 					var overlayArray:Array=(LayerManager.layerManager).layerList.dataProvider.toArray();
 					
 					if(overlayArray.length<=1) 

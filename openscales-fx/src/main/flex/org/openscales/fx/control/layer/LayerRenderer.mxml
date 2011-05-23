@@ -13,8 +13,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import assets.fxg.ButtonCloseOver;
-			import assets.fxg.ButtonCloseUp;
 			import assets.fxg.ButtonOpacity;
 			import assets.fxg.DownArrowDown;
 			import assets.fxg.DownArrowOver;
@@ -40,6 +38,7 @@
 			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.fx.control.FeatureDrawing;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.basetypes.Bounds;
 			
@@ -52,15 +51,33 @@
 			import spark.components.VSlider;
 			import spark.core.SpriteVisualElement;
 			
-			private var labelLayer:Label;
+			
+			/**
+			 * The layer associated with the current item
+			 */
 			private var _layer:Layer;
 			
+			/**
+			 * @private
+			 * To know if the current LayerRenderer display a minimize or maximize item
+			 * @default true
+			 */
+			private var _isMinimized:Boolean = true;
+		
 			
+			/**
+			 * @private
+			 * The default Group for drawing tools. Only added if the layer associated is a drawing one
+			 * @default null
+			 */
+			private var _drawGroup:Group = null;
 			
-			
-			[Bindable]
-			private var _opacity:String;
-			
+			/**
+			 * @private
+			 * The default drawing components
+			 * @default null
+			 */
+			private var _drawTools:FeatureDrawing = null;
 			
 			/**
 			 * Use the rendererOptions in the LayerManager to set the current optional controls
@@ -74,33 +91,40 @@
 				
 				// check if some options have to be displayed :
 				if( layerManager.rendererOptions.hasOwnProperty("displayLegend") && (layerManager.rendererOptions["displayLegend"] == true) )
-					{
-						
-					}
+				{
+					layerControlLegend.visible = true;
+				}
+				
+				if( layerManager.rendererOptions.hasOwnProperty("displayZoomToExtent") && (layerManager.rendererOptions["displayZoomToExtent"] == true) )
+				{
+					layerControlZoomToExtent.visible = true;
+				}
+				if( layerManager.rendererOptions.hasOwnProperty("displayMetadatas") && (layerManager.rendererOptions["displayMetadatas"] == true) )
+				{
+					layerControlMetadatas.visible = true;
+				}
+				
+				// if drawing layer add the drawing tools :
+				this._drawGroup = new Group();
+				this._drawGroup.id = "layerSwitcherDrawTools";
+				
+				
+				this._drawTools = new FeatureDrawing();
+				this._drawGroup.addElement(this._drawTools);
+				
+				layerSwitcherMainGroup.addElementAt(this._drawGroup, 1);
+				
 			}
 			
 			/**
 			 * Get the layer that the List into the LayerManager.mxml send to display it
-			 *
 			 * @return return the layer
 			 */
-			private function get layer():Layer {
+			private function get layer():Layer 
+			{
 				return this._layer;
 			}
 			
-			/**
-			 * Change the layer visibility
-			 *
-			 * @param event Change event
-			 */
-			public function layerVisible(event:MouseEvent):void{
-				layer.visible = !layer.visible;
-				// If the layer was uncheck from the beggining, he hadn't load yet so we need
-				// to redraw it to load it.
-				if(layer.visible){
-					layer.redraw();
-				}
-			} 
 			
 			/**
 			 * Give the current layer to the LayerManager Control which are on this renderer
@@ -109,14 +133,14 @@
 			{
 				var i:uint = 0;
 				var j:uint = 0;
-				var sizeElement:uint = this.numElements;
+				var sizeElement:uint = layerSwitcherMainGroup.numElements;
 				
 				var element:IVisualElement = null;
 				var subElement:IVisualElement = null;
 				
 				// Check elements in the Group
 				for(i=0; i<sizeElement; i++) {
-					element = this.getElementAt(i);
+					element = layerSwitcherMainGroup.getElementAt(i);
 					
 					if (element is Group) {
 						
@@ -134,16 +158,11 @@
 				}
 			}
 			
-			/**
-			 * Delete the layer on the map
-			 * @param event Click event
-			 */
-			public function deleteLayer(event:MouseEvent):void {
-				_layer.map.removeLayer(_layer);
-			}
+
 			
 			
-			public function inOutRange(event:LayerEvent):void {
+			public function inOutRange(event:LayerEvent):void 
+			{
 				var component:IVisualElement = displayControl.getElementAt(0);
 				if(component is CheckBox)
 				{
@@ -163,134 +182,127 @@
 			 *
 			 * @param value
 			 */
-			override public function set data(value:Object):void {
+			override public function set data(value:Object):void 
+			{
 				if(LayerManager.layerManager == null)
 					return;
 				
-				_layer = value as Layer;
+				this._layer = value as Layer;
 				
-				if((this.layer != null) && (displayControl != null))
+				if((this.layer != null) )
 				{
-					if(_layer.map!=null){
-						_layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
-						_layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
-						_layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
+					if(this._layer.map!=null){
+						this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
+						this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+						this._layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
 					}
-					
-					/*
-					displayControl.removeAllElements();
-					
-					labelLayer = new Label();
-					labelLayer.text = this.layer.name;
-					labelLayer.percentWidth = 100;
-					this.baseLayerChanged();
-					displayControl.addElement(labelLayer);		
-					*/
-					
-					_opacity = Math.floor(this.layer.alpha*100) + "%";
+		
 					layerSwitcherLabel.text = this.layer.name;
 					this.baseLayerChanged();
 					
+					// setting the layer to the sub LayerManager Control component :
 					this.setLayerToControls();
 					
 				}
-				
-				// setting the layer to the sub component :
-				
-				
-				
 			}
 			
 			/**
-			 * Center the map on the layer
-			 *
-			 * @param event Click event
+			 * Update extent when BaseLayer changed
 			 */
-			private function setLayerExtent(event:MouseEvent):void
+			private function changeBaseLayer(event:MouseEvent):void 
 			{
-				var bounds:Bounds = _layer.maxExtent;
-				if (bounds != null) {
-					_layer.map.zoomToExtent(bounds);
-				}
-			}
-			
-			private function changeBaseLayer(event:MouseEvent):void {
 				layer.map.baseLayer = this._layer;
 				layer.map.moveTo(layer.map.center);
 			}
 			
-			private function baseLayerChanged(event:LayerEvent=null):void {
+			/**
+			 * Update the display of base layer (bold) on baseLayerChanged
+			 */
+			private function baseLayerChanged(event:LayerEvent=null):void 
+			{
 				if(!_layer)
 					return;
 				
 				if(_layer.isBaseLayer) {
 					layerSwitcherLabel.setStyle("fontWeight", "bold");
-					deleteButton.visible = false;
+					layerSwitcherDeleteLayer.deleteButton.visible = false;
 				} else {
 					layerSwitcherLabel.setStyle("fontWeight", "normal");
-					deleteButton.visible = true;
+					layerSwitcherDeleteLayer.deleteButton.visible = true;
 				}
 			}
 			
+			/**
+			 * Reduce or maximize the current LayerManager
+			 */
+			public function reduceMaximizeLayerSwitcher(event:Event):void 
+			{
 			
-			
-			public function manageOpacity(event:Event):void {
-				var layerManagerEvent:LayerManagerEvent = new LayerManagerEvent(LayerManagerEvent.COMPONENT_OPACITY);
-				layerManagerEvent.layer = _layer;
-				layerManagerEvent.x = (event.target as IconButton).x + (event.target as IconButton).width/2;
-				layerManagerEvent.y = this.y + 10;
-				if(layer&&layer.map)
-					layer.map.dispatchEvent(layerManagerEvent);
+				this._isMinimized = !this._isMinimized;
+
+				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
+				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
+				
+				var groupSize:uint = layerSwitcherOptionnalDisplay.height + layerSwitcherAdditionnalDisplay.height;
+				
+				if(!this._isMinimized)
+					this.height += groupSize;
+				
+				else
+					this.height -= groupSize; 
+
 			}
+			
+			
 			
 		]]>
 	</fx:Script>
 	
+	<s:VGroup id="layerSwitcherMainGroup" >
+		<s:HGroup width="100%"
+				  id="hgroup"
+				  paddingLeft="2"
+				  paddingBottom="2"
+				  paddingRight="4"
+				  paddingTop="2"
+				  verticalAlign="middle">
+			
+			<ChangeLayerVisibility />
+			
+			<s:Label id="layerSwitcherLabel" width="100"/>
+			
+			
+			<ChangeLayerPosition  />
+			
+			
+			<IconButton id="layerSwitcherReduceMaximize"
+						width="16"
+						height="16"
+						click="reduceMaximizeLayerSwitcher(event)"
+						icon="{new ButtonOpacity()}"
+						iconOver="{new ButtonOpacity()}"
+						iconDown="{new ButtonOpacity()}"/>
+			<DeleteLayer id="layerSwitcherDeleteLayer" />
+			
+			<s:Group id="displayControl" />	
+
+		</s:HGroup>
+
+		
+		<s:Group id="layerSwitcherAdditionnalDisplay" visible="false" height="20">
+			<ChangeLayerOpacity id="layerControlOpacity" />
+		</s:Group>
+		
+		<s:Group id="layerSwitcherOptionnalDisplay" visible="false">
+			<LayerZoomToExtent id="layerControlZoomToExtent" visible="false" />
+			<LayerLegend x="20" id="layerControlLegend" visible="false" />
+			<LayerMetadatas x="40" id="layerControlMetadatas" visible="false" />
+		</s:Group>
+		
+		
+		
+		
+	</s:VGroup>
 	
-	<s:HGroup width="100%"
-			  id="hgroup"
-			  paddingLeft="2"
-			  paddingBottom="2"
-			  paddingRight="4"
-			  paddingTop="2"
-			  verticalAlign="middle">
-		
-		
-		<!--<s:Button id="layerSwitcherMoreLess" />-->
-		
-		<s:Label id="layerSwitcherLabel" percentWidth="100"/>
-		 
-		
-		<!-- TODO : radio button not editable for now because there is some issue when you change baseLayer -->
-		<!-- <s:RadioButton id="isBaseLayer"
-		click="changeBaseLayer(event)"
-		enabled="false"/>-->
-		
-		<ChangeLayerPosition  />
-		
-		
-		
-		
-		
-		<IconButton id="opacityButton"
-					width="16"
-					height="16"
-					toolTip="Régler l'opacité"
-					click="manageOpacity(event)"
-					icon="{new ButtonOpacity()}"
-					iconOver="{new ButtonOpacity()}"
-					iconDown="{new ButtonOpacity()}"/>
-		
-		<s:Group id="displayControl" width="100%"/>
-		<IconButton id="deleteButton"
-					toolTip="Supprimer la couche"
-					click="deleteLayer(event)"
-					icon="{new ButtonCloseUp()}"
-					iconOver="{new ButtonCloseOver()}"
-					iconDown="{new ButtonCloseOver()}"
-					width="14"
-					height="14"/>
-		
-		
-	</s:HGroup>
+	
 </s:ItemRenderer>

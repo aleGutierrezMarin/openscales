@@ -1,8 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
-	<fx:Declarations>
-		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
-	</fx:Declarations>
-</s:Group>
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="http://openscales.org" 
+		 creationComplete="configure()">
+	
+	<fx:Script>
+		<![CDATA[
+
+			import mx.events.SliderEvent;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.LayerManagerEvent;
+			import org.openscales.fx.control.IconButton; 
+			import org.openscales.core.layer.Layer;
+			
+			/**
+			 * Configure events once the control is created
+			 */
+			public function configure():void
+			{
+				layerControlOpacity.addEventListener(MouseEvent.MOUSE_DOWN,onDrag);
+				layerControlOpacity.addEventListener(SliderEvent.CHANGE,layerOpacity);
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function set layer(value:Layer):void
+			{
+				super.layer = value;
+				layerControlOpacity.value=this._layer.alpha*100;
+			}
+			
+			/*
+			this._hSlider = new HSlider();
+			this._hSlider.height = 11;
+			this._hSlider.width = 100;
+			this._hSlider.x=this.width/2 - this._hSlider.width/2;
+			this._hSlider.y=this.height/2 - this._hSlider.height/2;
+			this._hSlider.minimum = 0;
+			this._hSlider.maximum = 100;
+			this._hSlider.value = this._layer.alpha*100;
+			this._hSlider.snapInterval = 1;
+			this._hSlider.dataTipFormatFunction = percentDataTip;
+			this._hSlider.addEventListener(MouseEvent.MOUSE_DOWN,onDrag);
+			this._hSlider.addEventListener(SliderEvent.CHANGE,layerOpacity);
+			this.addElement(this._hSlider);
+			*/
+			
+			/**
+			 * Change the opacity of the layer
+			 *
+			 * @param event event send by a slide
+			 */
+			public function layerOpacity(event:Event):void
+			{	
+				this._layer.alpha = (event.target as HSlider).value/100;
+			}
+			
+			/**
+			 * Change the display value of the datatip
+			 * add %
+			 */
+			public function percentDataTip(value:Number):String
+			{
+				return value+"%";
+			}
+			
+			/**
+			 * Stop propagation onDrag
+			 */
+			private function onDrag(event:Event):void {
+				event.stopPropagation();
+			}
+			
+			/**
+			 * Change the layer opacity when the slider value change
+			 */
+			public function manageOpacity(event:Event):void {
+				var layerManagerEvent:LayerManagerEvent = new LayerManagerEvent(LayerManagerEvent.COMPONENT_OPACITY);
+				layerManagerEvent.layer = this._layer;
+				layerManagerEvent.x = (event.target as IconButton).x + (event.target as IconButton).width/2;
+				layerManagerEvent.y = this.y + 10;
+				if(this._layer&&this._layer.map)
+					this._layer.map.dispatchEvent(layerManagerEvent);
+			}
+		]]>
+	</fx:Script>
+	
+
+	<s:HSlider id="layerControlOpacity"
+			   height="11" width="100" minimum="0" maximum="100" 
+			   snapInterval="1"
+			   dataTipFormatFunction="percentDataTip" />
+	
+</LayerControl>

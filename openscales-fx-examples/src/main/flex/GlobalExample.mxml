@@ -30,7 +30,7 @@
 						<fx:Object
 							displayLegend="true"
 							displayMetadatas="true"
-							displayInformation="true" />
+							displayZoomToExtent="true" />
 					</rendererOptions>
 			 </LayerManager>
 		 </ControlPanel>
