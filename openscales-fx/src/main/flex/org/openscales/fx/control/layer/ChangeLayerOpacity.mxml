@@ -2,27 +2,18 @@
 <LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns="http://openscales.org" 
-		 creationComplete="configure()">
+		 xmlns="http://openscales.org" >
 	
 	<fx:Script>
 		<![CDATA[
 
 			import mx.events.SliderEvent;
+			
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
-			import org.openscales.fx.control.IconButton; 
 			import org.openscales.core.layer.Layer;
-			
-			/**
-			 * Configure events once the control is created
-			 */
-			public function configure():void
-			{
-				layerControlOpacity.addEventListener(MouseEvent.MOUSE_DOWN,onDrag);
-				layerControlOpacity.addEventListener(SliderEvent.CHANGE,layerOpacity);
-			}
-			
+			import org.openscales.fx.control.IconButton;
+
 			/**
 			 * @inherit
 			 */
@@ -31,23 +22,7 @@
 				super.layer = value;
 				layerControlOpacity.value=this._layer.alpha*100;
 			}
-			
-			/*
-			this._hSlider = new HSlider();
-			this._hSlider.height = 11;
-			this._hSlider.width = 100;
-			this._hSlider.x=this.width/2 - this._hSlider.width/2;
-			this._hSlider.y=this.height/2 - this._hSlider.height/2;
-			this._hSlider.minimum = 0;
-			this._hSlider.maximum = 100;
-			this._hSlider.value = this._layer.alpha*100;
-			this._hSlider.snapInterval = 1;
-			this._hSlider.dataTipFormatFunction = percentDataTip;
-			this._hSlider.addEventListener(MouseEvent.MOUSE_DOWN,onDrag);
-			this._hSlider.addEventListener(SliderEvent.CHANGE,layerOpacity);
-			this.addElement(this._hSlider);
-			*/
-			
+
 			/**
 			 * Change the opacity of the layer
 			 *
@@ -68,13 +43,6 @@
 			}
 			
 			/**
-			 * Stop propagation onDrag
-			 */
-			private function onDrag(event:Event):void {
-				event.stopPropagation();
-			}
-			
-			/**
 			 * Change the layer opacity when the slider value change
 			 */
 			public function manageOpacity(event:Event):void {
@@ -92,6 +60,7 @@
 	<s:HSlider id="layerControlOpacity"
 			   height="11" width="100" minimum="0" maximum="100" 
 			   snapInterval="1"
+			   change="layerOpacity(event)"
 			   dataTipFormatFunction="percentDataTip" />
 	
 </LayerControl>

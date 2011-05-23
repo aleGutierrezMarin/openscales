@@ -9,6 +9,10 @@
 			
 			import assets.fxg.ButtonOpacity;
 			
+			[Bindable]
+			[Embed(source="/assets/images/layer/legend.png")]
+			private var _btnLegend:Class;
+			
 			/**
 			 * Center the map on the layer
 			 * @param event Click event
@@ -25,8 +29,6 @@
 				width="16"
 				height="16"
 				click="displayLegend(event)"
-				icon="{new ButtonOpacity()}"
-				iconOver="{new ButtonOpacity()}"
-				iconDown="{new ButtonOpacity()}"/>
+				icon="{_btnLegend}" />
 	
 </LayerControl>

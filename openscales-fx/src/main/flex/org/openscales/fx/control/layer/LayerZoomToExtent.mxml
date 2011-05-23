@@ -10,6 +10,10 @@
 			import org.openscales.geometry.basetypes.Bounds;
 			import assets.fxg.ButtonOpacity;
 			
+			[Bindable]
+			[Embed(source="/assets/images/layer/zoomToExtent.png")]
+			private var _btnZoom:Class;
+			
 			/**
 			 * Center the map on the layer
 			 * @param event Click event
@@ -29,8 +33,6 @@
 				width="16"
 				height="16"
 				click="setLayerExtent(event)"
-				icon="{new ButtonOpacity()}"
-				iconOver="{new ButtonOpacity()}"
-				iconDown="{new ButtonOpacity()}"/>
+				icon="{_btnZoom}" />
 	
 </LayerControl>
