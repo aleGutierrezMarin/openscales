@@ -21,6 +21,7 @@
 			{
 				super.layer = value;
 				layerControlOpacity.value=this._layer.alpha*100;
+				layerControlOpacityLabel.text = layerControlOpacity.value+" %";
 			}
 
 			/**
@@ -31,6 +32,7 @@
 			public function layerOpacity(event:Event):void
 			{	
 				this._layer.alpha = (event.target as HSlider).value/100;
+				layerControlOpacityLabel.text = layerControlOpacity.value+"%";
 			}
 			
 			/**
@@ -57,10 +59,21 @@
 	</fx:Script>
 	
 
-	<s:HSlider id="layerControlOpacity"
-			   height="11" width="100" minimum="0" maximum="100" 
-			   snapInterval="1"
-			   change="layerOpacity(event)"
-			   dataTipFormatFunction="percentDataTip" />
+	<s:HGroup height="20" width="100%"
+			  paddingLeft="2"
+			  paddingBottom="2"
+			  paddingRight="4"
+			  paddingTop="2"
+			  horizontalAlign="center">
+		
 	
+		<s:HSlider id="layerControlOpacity"
+				   height="11" width="100" minimum="0" maximum="100" 
+				   snapInterval="1"
+				   change="layerOpacity(event)"
+				   dataTipFormatFunction="percentDataTip" />
+		<s:Label id="layerControlOpacityLabel" />
+		
+	</s:HGroup>
+		
 </LayerControl>

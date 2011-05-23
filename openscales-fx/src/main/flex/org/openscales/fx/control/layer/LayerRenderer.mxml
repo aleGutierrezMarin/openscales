@@ -301,7 +301,7 @@
 		</s:HGroup>
 
 		
-		<s:Group id="layerSwitcherAdditionnalDisplay" visible="false" height="20">
+		<s:Group id="layerSwitcherAdditionnalDisplay" visible="false">
 			<ChangeLayerOpacity id="layerControlOpacity" />
 		</s:Group>
 		
