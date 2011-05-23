@@ -1,8 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" >
-	<fx:Declarations>
-		<s:CheckBox id="layerSwitcherCheckBox" />
-	</fx:Declarations>
-</s:Group>
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="http://openscales.org" >
+	
+	<fx:Script>
+		<![CDATA[
+	
+			import org.openscales.core.layer.Layer;
+			
+			/**
+			 * @inherit
+			 * Set the first value of the checkbox
+			 */
+			override public function set layer(value:Layer):void
+			{
+				super.layer = value;
+				layerSwitcherCheckBox.selected = layer.visible;
+			}
+			
+			/**
+			* Change the layer visibility
+			* @param event Change event
+			*/
+			public function layerVisible(event:MouseEvent):void{
+				layer.visible = !layer.visible;
+				// If the layer was uncheck from the beggining, he hadn't load yet so we need
+				// to redraw it to load it.
+				if(layer.visible){
+					layer.redraw();
+				}
+			} 
+		]]>
+	</fx:Script>
+	
+
+		<s:CheckBox id="layerSwitcherCheckBox" click="layerVisible(event)" />
+
+</LayerControl>
