@@ -1,15 +1,12 @@
 package {
 	import flash.display.Sprite;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.core.control.PanZoomBar;
+	import org.openscales.core.control.ScaleLine;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
@@ -17,6 +14,10 @@ package {
 	import org.openscales.core.layer.osm.CycleMap;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Style;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 
 	[SWF(width='1200',height='700')]
 	public class OpenscalesApplication extends Sprite {
@@ -49,6 +50,7 @@ package {
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerManager());
 			_map.addControl(new PanZoomBar());
+			_map.addControl(new ScaleLine(new Pixel(100, 100)));
 			
 
 			var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();

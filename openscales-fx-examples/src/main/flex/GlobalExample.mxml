@@ -47,6 +47,11 @@
 			
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				
+			//	fxMap.theme = fxMap.map.theme;
+				
+				// load the new CSS
+				styleManager.loadStyleDeclarations(fxMap.theme,true,false);
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {
@@ -78,6 +83,7 @@
 				
 				fxMap.addFxPopup(fxpopup,true);
 				fxpopup.visible = true;
+				
 				
 			}
 			
