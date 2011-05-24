@@ -393,7 +393,7 @@ package org.openscales.fx
 			{
 				styleManager.unloadStyleDeclarations((this._map as Map).theme);
 				(this._map as Map).theme = value;
-				styleManager.loadStyleDeclarations(value,true,true,ApplicationDomain.currentDomain);
+				styleManager.loadStyleDeclarations(value);
 			}
 		}
 		

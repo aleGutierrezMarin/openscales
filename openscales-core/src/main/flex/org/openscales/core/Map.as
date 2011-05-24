@@ -56,6 +56,7 @@ package org.openscales.core
 		
 		/**
 		 * The url to the default Theme (OpenscalesTheme)
+		 * TODO : fix and set the real path to  the default theme
 		 */
 		public var URL_THEME:String = "http://openscales.org/nexus/service/local/repo_groups/public-snapshots/content/org/openscales/openscales-fx-theme/2.0.0-SNAPSHOT/openscales-fx-theme-2.0.0-20110517.142043-5.swf";
 		
