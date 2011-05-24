@@ -31,28 +31,28 @@
 			 * Units for zoomed out on top bar.
 			 * @default km.
 			 */
-			private var _topOutUnits:String = "km";
+			private var _topOutUnits:String = "scaleline:km";
 			
 			/**
 			 * @private
 			 * Units for zoomed in on top bar.  
 			 * @default m.
 			 */
-			private var _topInUnits:String = "m";
+			private var _topInUnits:String = "scaleline:m";
 			
 			/**
 			 * @private
 			 * Units for zoomed out on bottom bar.
 			 * @default mi.
 			 */
-			private var _bottomOutUnits:String = "mi";
+			private var _bottomOutUnits:String = "scaleline:mi";
 			
 			/**
 			 * @private
 			 * Units for zoomed in on bottom bar.
 			 * @default ft
 			 */
-			private var _bottomInUnits:String = "ft";
+			private var _bottomInUnits:String = "scaleline:ft";
 			
 			
 			/**
