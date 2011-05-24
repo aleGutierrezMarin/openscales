@@ -131,8 +131,17 @@
 			/**
 			 * Array wich contains all layers
 			 */
-			public function get overlayArray():ArrayCollection {
+			public function get layerArray():ArrayCollection 
+			{
 				return this._layerArray;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set layerArray(value:ArrayCollection):void 
+			{
+				this._layerArray = value;
 			}
 			
 			/**
