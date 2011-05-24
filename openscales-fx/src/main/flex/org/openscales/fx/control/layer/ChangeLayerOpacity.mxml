@@ -33,7 +33,7 @@
 			 */
 			public function layerOpacity(event:Event):void
 			{	
-				this._layer.alpha = (event.target as HSlider).value/100;
+				this._layer.alpha = layerControlOpacity.value/100;
 				layerControlOpacityLabel.text = layerControlOpacity.value+"%";
 			}
 			

@@ -38,9 +38,9 @@ package org.openscales.fx.control.layer
 		public function clickZoomToExtentTest():void
 		{
 			var maxExtent:Bounds = _layer1.maxExtent;
-			
+			trace("_map.extent "+_map.extent);
 			_zoom.setLayerExtent(new MouseEvent(MouseEvent.CLICK));
-			
+			trace("_map.extent 2 "+_map.extent);
 			Assert.assertEquals(maxExtent, _map.extent);
 		}
 		

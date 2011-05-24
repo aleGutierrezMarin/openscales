@@ -6,4 +6,5 @@ syntax: glob
 */target
 *.DS_Store
 */_build
-
+*/.FlexUnitSettings
+*FlexUnitApplication.mxml
