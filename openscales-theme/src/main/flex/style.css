@@ -97,7 +97,7 @@ os|TermsOfService mx|Text#TermsOfServiceText
 /************************
 * DataOriginatorDisplay *
 *************************/
-os|DataOriginatorDisplay s|List#originatorsList
+os|DataOriginatorsDisplay s|List#originatorsList
 {
 	
 }

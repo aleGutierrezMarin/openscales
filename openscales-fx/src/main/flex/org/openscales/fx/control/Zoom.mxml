@@ -15,8 +15,10 @@
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.control.ZoomData;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.fx.control.skin.PanSkin;
 			import org.openscales.fx.control.skin.ZoomSkin;
 			import org.openscales.fx.control.skin.ZoomThumbSkin;
@@ -65,6 +67,10 @@
 				this.zoomOut.addEventListener(MouseEvent.CLICK, this.onZoom);
 			}
 			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this.updateCurrentLabel();
+			}
+			
 			/**
 			 * Refresh the current zoom label.
 			 * Get the current map resolution and search the associated label.
@@ -93,18 +99,7 @@
 			{
 				// get the resolution for the current zoom
 				var resolution:Number = this._map.baseLayer.resolutions[zoom];
-				
-				var i:uint = 0;
-				var j:uint = this._scalesLabels.length;
-				for (; i<j; ++i) 
-				{
-					if( resolution>=this._scalesLabels[i].minResolution
-						&& resolution<=this._scalesLabels[i].maxResolution )
-					{
-						return this._scalesLabels[i].label;
-					}
-				}
-				return new String("");
+				return this.getLabelFromResolution(resolution);
 			}
 			
 			/**
@@ -122,13 +117,11 @@
 					if( resolution>=this._scalesLabels[i].minResolution
 						&& resolution<=this._scalesLabels[i].maxResolution )
 					{
-						return this._scalesLabels[i].label;
+						return Catalog.getLocalizationForKey(this._scalesLabels[i].label);
 					}
 				}
 				return new String("");
 			}
-			
-			
 			
 			public function onZoom(event:MouseEvent):void
 			{

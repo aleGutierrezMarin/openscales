@@ -8,8 +8,11 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
 			
-			[Bindable] private var _label:String = "Terms of Service";
+			private var _autoTranslate:Boolean = true;
+			[Bindable] private var _label:String = Catalog.getLocalizationForKey("tos.label");
 			[Bindable] private var _url:String = "";
 			
 			public function  configure():void
@@ -26,6 +29,7 @@
 			}
 			
 			public function set label(value:String):void{
+				this._autoTranslate = false;
 				this._label = value;
 			}
 			
@@ -41,6 +45,12 @@
 				this._url = value;
 			}
 			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				if(this._autoTranslate) {
+					this._label = Catalog.getLocalizationForKey("tos.label");
+				}
+				this.configure();
+			}
 
 			
 		]]>

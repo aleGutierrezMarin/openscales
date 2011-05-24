@@ -1,6 +1,7 @@
 package org.openscales.core
 {
 	
+	import com.adobe.serialization.json.JSON;
 	import com.gskinner.motion.GTween;
 	import com.gskinner.motion.easing.Cubic;
 	
@@ -14,9 +15,13 @@ package org.openscales.core
 	
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
+	import org.openscales.core.i18n.Catalog;
+	import org.openscales.core.i18n.Locale;
+	import org.openscales.core.i18n.provider.JSONProvider;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.popup.Popup;
@@ -77,6 +82,12 @@ package org.openscales.core
 		 * The location where the layer container was re-initialized (on-zoom)
 		 */
 		private var _layerContainerOrigin:Location = null;
+		
+		//Source file for i18n english translation
+		[Embed(source="/assets/i18n/EN.json", mimeType="application/octet-stream")]
+		private const ENLocale:Class;
+		[Embed(source="/assets/i18n/FR.json", mimeType="application/octet-stream")]
+		private const FRLocale:Class;
 
 		/** 
 		 * @private
@@ -93,6 +104,10 @@ package org.openscales.core
 		 */
 		public function Map(width:Number=600, height:Number=400) {
 			super();
+			
+			//load i18n module
+			new JSONProvider(Locale.getLocaleByKey("EN"),ENLocale);
+			new JSONProvider(Locale.getLocaleByKey("FR"),FRLocale);
 			
 			this.size = new Size(width, height);
 			this._layerContainer = new Sprite();
@@ -1173,10 +1188,29 @@ package org.openscales.core
 		 * @param newIndex its new index (0 based) 
 		 * */
 		public function changeLayerIndex(layer:Layer,newIndex:int):void{
-			var length:int = this.layerContainer.numChildren;
-			var newIndexTemp:int = length - newIndex - 1;
-			if(newIndex >= 0 && newIndex < length )
-			  this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
+			var layers:Vector.<Layer> = this.layers;
+			var i:int = layers.indexOf(layer);
+			var delta:int = newIndex - i;
+			if(i==-1 || delta==0 || i+delta>=layers.length)
+				return;
+			
+			i+=delta;
+			if(i<0)
+				return;
+			
+			var targetLayer:Layer = layers[i];
+			var targetNum:int = this.layerContainer.getChildIndex(targetLayer);
+			
+			if(targetNum<0)
+				return;
+			
+			this.layerContainer.setChildIndex(layer,targetNum);
+			
+			if(delta>0)
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer));
+			else
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN , layer));
+			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		/**
@@ -1190,7 +1224,12 @@ package org.openscales.core
 			var newIndex:int = indexLayer + step;
 			if(newIndex >= 0 && newIndex < length)
 			  this.layerContainer.setChildIndex(layer,newIndex);
-			//- cause the ordre is not the same that the dysplay order
+			
+			if(step>0)
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer));
+			else
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN , layer));
+			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		
@@ -1301,6 +1340,26 @@ package org.openscales.core
 		private function onMouseClick(event:MouseEvent):void
 		{
 			this.stage.focus = this;
+		}
+		
+		/**
+		 * Indicates the active locale key
+		 */
+		public function get locale():String {
+			return Locale.activeLocale.localeKey;
+		}
+		/**
+		 * @Private
+		 */
+		public function set locale(value:String):void {
+			if(value) {
+				var locale:Locale = Locale.getLocaleByKey(value);
+				if(locale) {
+					Locale.activeLocale = locale;
+					Trace.info("Locale changed to: "+locale.localeKey);
+					this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,locale));
+				}
+			}
 		}
 	}
 }
