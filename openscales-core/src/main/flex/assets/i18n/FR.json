@@ -14,6 +14,16 @@
    "mouseposition:decimaldegrees":"degrés décimaux",
    "mouseposition:dms": "degrés sexagécimaux",
    
+   "pan.N": "N",
+   "pan.S": "S",
+   "pan.E": "E",
+   "pan.W": "O",
+   
+   "scaleline.km": "km",
+   "scaleline.m": "m",
+   "scaleline.mi": "mi",
+   "scaleline.ft": "ft",
+   
    "copyright:copyright": "Copyright",
    
    "zoombox.tooltip": "Dessinez la zone sur laquelle zoomer",

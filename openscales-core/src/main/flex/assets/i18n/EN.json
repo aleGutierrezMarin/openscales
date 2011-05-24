@@ -14,6 +14,16 @@
    "mouseposition.decimaldegrees":"decimal degrees",
    "mouseposition.dms": "Degrees, Minutes, Seconds",
    
+   "pan.N": "N",
+   "pan.S": "S",
+   "pan.E": "E",
+   "pan.W": "W",
+   
+   "scaleline.km": "km",
+   "scaleline.m": "m",
+   "scaleline.mi": "mi",
+   "scaleline.ft": "ft",
+   
    "copyright.copyright": "Copyright",
    
    "zoombox.tooltip": "Draw the desired area to zoom in",
