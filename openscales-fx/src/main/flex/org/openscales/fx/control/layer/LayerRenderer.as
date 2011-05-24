@@ -10,6 +10,7 @@ package org.openscales.fx.control.layer
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.control.layer.LayerManager;
 	
+	import spark.components.Group;
 	import spark.components.List;
 	import spark.components.supportClasses.ItemRenderer;
 	
@@ -18,12 +19,12 @@ package org.openscales.fx.control.layer
 		/**
 		 * The layer associated with the current item
 		 */
-		private var _layer:Layer;
+		protected var _layer:Layer;
 		
 		/**
 		 * The rendererOptions Object define by the LayerManager rendererOtpions attribute
 		 */
-		private var _rendererOptions:Object = null;
+		protected var _rendererOptions:Object = null;
 		
 		/**
 		 * Use the rendererOptions in the LayerManager to set the current optional controls
@@ -34,28 +35,70 @@ package org.openscales.fx.control.layer
 		}
 		
 		/**
-		 * TODO : check for all children !
 		 * Give the current layer to the LayerManager Control which are on this renderer
 		 */
 		public function setLayerToControls():void
 		{
-			var i:uint = 0;
-			var j:uint = 0;
-			var sizeElement:uint = this.numElements;
+			this.setLayer(this.getElementAt(0));
+		}
+		
+		/**
+		 * Recursively set the layer of all LayerControl in the LayerRenderer
+		 */
+		public function setLayer(elt:IVisualElement):void
+		{
+			var group:Group = null;
+			var i:uint;
+			var sizeElement:uint;
 			
-			var element:IVisualElement = null;
-			var subElement:IVisualElement = null;
-			
-			// Check elements in the Group
-			for(i=0; i<sizeElement; i++) {
-				element = this.getElementAt(i);
-				
-				if (subElement is LayerControl) {
-					(subElement as LayerControl).layer = this._layer;
-				} 
+			// if is a LayerControl, set the map 
+			if (elt is LayerControl) {
+				(elt as LayerControl).layer = this._layer;
+			}
+	
+			// if contains object that contains LayerControl
+			else
+			{
+				if(elt is Group)
+				{
+					group = elt as Group;
+					
+					i = 0;
+					sizeElement = group.numElements;
+					
+					for(i=0; i<sizeElement; i++) {
+						var subElement:IVisualElement = group.getElementAt(i);
+						this.setLayer(subElement);
+					}
+				}
 			}
 		}
 
+		/**
+		 * Manage rendererOptions : get the rendererOptions object in the LayerMananger owner
+		 */
+		public function manageRendererOptions():void
+		{
+			// get the rendererOptions in the LayerManager parent
+			var searching:Boolean = true;
+			
+			// the list owner
+			var list:List = (this.owner as List);
+			var object:Object = this.owner;
+			
+			while(searching)
+			{
+				object = object.parent;
+				if( object == null )
+					searching = false; // no more parents
+					
+				else if( object is LayerManager)
+				{
+					this._rendererOptions = (object as LayerManager).rendererOptions;
+					searching = false;
+				}
+			}
+		}
 
 		/**
 		 * Set the data
@@ -70,6 +113,8 @@ package org.openscales.fx.control.layer
 				// setting the layer to the sub LayerManager Control component :
 				this.setLayerToControls();
 			}
+
+			this.manageRendererOptions();
 		}
 
 

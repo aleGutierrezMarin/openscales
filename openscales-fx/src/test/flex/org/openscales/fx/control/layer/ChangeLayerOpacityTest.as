@@ -28,19 +28,32 @@ package org.openscales.fx.control.layer
 		{
 			_map = new Map();
 			_layer1 = new Layer("layer");
+			
+			_map.addLayer(_layer1);
+			
 			_opacity = new ChangeLayerOpacity();
 			_opacity.layer = _layer1;
 		}
 		
 		[Test]
-		public function testOpacityChange():void
+		public function testSliderOpacityChange():void
 		{
 			var opacityValue:Number = 0.5;
 			
 			_opacity.layerControlOpacity.value = opacityValue;
 			
 			Assert.assertEquals(opacityValue, _layer1.alpha);
+		}
+		
+		
+		[Test]
+		public function testLayerOpacityChange():void
+		{
+			var opacityValue:Number = 0.5;
 			
+			_layer1.alpha = opacityValue;
+			
+			Assert.assertEquals(opacityValue, _opacity.layerControlOpacity.value);
 		}
 	}
 }

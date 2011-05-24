@@ -22,6 +22,8 @@
 				super.layer = value;
 				layerControlOpacity.value=this._layer.alpha*100;
 				layerControlOpacityLabel.text = layerControlOpacity.value+" %";
+				
+				this._layer.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED,layerChangeOpacity);
 			}
 
 			/**
@@ -47,13 +49,10 @@
 			/**
 			 * Change the layer opacity when the slider value change
 			 */
-			public function manageOpacity(event:Event):void {
-				var layerManagerEvent:LayerManagerEvent = new LayerManagerEvent(LayerManagerEvent.COMPONENT_OPACITY);
-				layerManagerEvent.layer = this._layer;
-				layerManagerEvent.x = (event.target as IconButton).x + (event.target as IconButton).width/2;
-				layerManagerEvent.y = this.y + 10;
-				if(this._layer&&this._layer.map)
-					this._layer.map.dispatchEvent(layerManagerEvent);
+			public function layerChangeOpacity(event:LayerEvent):void 
+			{
+				if(event.target is Layer)
+					layerControlOpacity.value = (event.target as Layer).alpha;
 			}
 		]]>
 	</fx:Script>

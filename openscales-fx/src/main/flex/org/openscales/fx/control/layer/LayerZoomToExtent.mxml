@@ -18,7 +18,7 @@
 			 * Center the map on the layer
 			 * @param event Click event
 			 */
-			private function setLayerExtent(event:MouseEvent):void
+			public function setLayerExtent(event:MouseEvent):void
 			{
 				var bounds:Bounds = this._layer.maxExtent;
 				if (bounds != null) {

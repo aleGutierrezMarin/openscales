@@ -8,8 +8,7 @@
 				width="100%"
 				height="25"
 				xmlns:fxg="assets.fxg.*"
-		  		autoDrawBackground="false"
-				creationComplete="configure()">
+		  		autoDrawBackground="false" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -60,10 +59,6 @@
 			[Embed(source="/assets/images/widgetShow.png")]
 			private var _btnMaximize:Class;
 			
-			/**
-			 * The layer associated with the current item
-			 */
-			private var _layer:Layer;
 			
 			/**
 			 * @private
@@ -93,25 +88,6 @@
 			 */
 			public function configure():void
 			{
-				var list:List = (this.owner as List);
-				
-				this.rendererOptions = (list.parent.parent as LayerManager).rendererOptions;
-				
-				// check if some options have to be displayed :
-				if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
-				{
-					layerControlLegend.visible = true;
-				}
-				
-				if( this.rendererOptions.hasOwnProperty("displayZoomToExtent") && (this.rendererOptions["displayZoomToExtent"] == true) )
-				{
-					layerControlZoomToExtent.visible = true;
-				}
-				if( this.rendererOptions.hasOwnProperty("displayMetadatas") && (this.rendererOptions["displayMetadatas"] == true) )
-				{
-					layerControlMetadatas.visible = true;
-				}
-				
 				// if drawing layer add the drawing tools :
 				/*
 				this._drawGroup = new Group();
@@ -126,59 +102,32 @@
 			}
 			
 		
-			
-			
-			/**
-			 * Give the current layer to the LayerManager Control which are on this renderer
-			 */
-			override public function setLayerToControls():void
+			override public function manageRendererOptions():void
 			{
-				var i:uint = 0;
-				var j:uint = 0;
-				var sizeElement:uint = layerSwitcherMainGroup.numElements;
+				super.manageRendererOptions();
 				
-				var element:IVisualElement = null;
-				var subElement:IVisualElement = null;
-				
-				// Check elements in the Group
-				for(i=0; i<sizeElement; i++) {
-					element = layerSwitcherMainGroup.getElementAt(i);
-					
-					if (element is Group) {
-						
-						var group:Group = (element as Group)
-						var sizeSubElement:uint = group.numElements;
-						
-						for(j=0; j<sizeSubElement; j++) {
-							subElement = group.getElementAt(j);
-							
-							if (subElement is LayerControl) {
-								(subElement as LayerControl).layer = this._layer;
-							} 
-						}
-					}
-				}
-			}
-			
-
-			
-			
-			public function inOutRange(event:LayerEvent):void 
-			{
-				var component:IVisualElement = displayControl.getElementAt(0);
-				if(component is CheckBox)
+				if(this._rendererOptions)
 				{
-					if(event.type == LayerEvent.LAYER_OUT_RANGE)
-					{     
-						(component as CheckBox).enabled = false;
-					}
-					else
+					// check if some options have to be displayed :
+					if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
 					{
-						(component as CheckBox).enabled = true;
-						event.layer.visible = (component as CheckBox).selected; 
+						layerControlLegend.visible = true;
+					}
+					
+					if( this.rendererOptions.hasOwnProperty("displayZoomToExtent") && (this.rendererOptions["displayZoomToExtent"] == true) )
+					{
+						layerControlZoomToExtent.visible = true;
+					}
+					
+					if( this.rendererOptions.hasOwnProperty("displayMetadatas") && (this.rendererOptions["displayMetadatas"] == true) )
+					{
+						layerControlMetadatas.visible = true;
 					}
 				}
 			}
+			
+			
+			
 			/**
 			 * Set the data
 			 *
@@ -186,22 +135,17 @@
 			 */
 			override public function set data(value:Object):void 
 			{
-				this._layer = value as Layer;
+				super.data = value;
 				
-				if((this.layer != null) )
+				if((this._layer != null) )
 				{
 					if(this._layer.map!=null){
-						this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
-						this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
 						this._layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
 					}
 		
 					layerSwitcherLabel.text = this.layer.name;
 					this.baseLayerChanged();
-					
-					// setting the layer to the sub LayerManager Control component :
-					this.setLayerToControls();
-					
+
 				}
 			}
 			
@@ -243,6 +187,7 @@
 				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
 				
 				var groupSize:uint = layerSwitcherOptionnalDisplay.height + layerSwitcherAdditionnalDisplay.height;
+				trace("groupSize "+groupSize);
 				
 				if(!this._isMinimized)
 				{
