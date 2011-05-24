@@ -6,7 +6,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-	
+			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.layer.Layer;
 			
 			/**
@@ -16,7 +16,36 @@
 			override public function set layer(value:Layer):void
 			{
 				super.layer = value;
-				layerSwitcherCheckBox.selected = layer.visible;
+				
+				layerSwitcherCheckBox.selected = this._layer.visible;
+				
+				this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
+				this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+				this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, updateCheckbox);
+			}
+			
+			/**
+			 * Update the checkbox value is the layer visibility change
+			 */
+			public function updateCheckbox(event:LayerEvent):void
+			{
+				layerSwitcherCheckBox.selected = this._layer.visible;	
+			}
+			
+			/**
+			 * Update the checkbox value if the layer is OutOfRange
+			 */
+			public function inOutRange(event:LayerEvent):void 
+			{
+				if(event.type == LayerEvent.LAYER_OUT_RANGE)
+				{     
+					layerSwitcherCheckBox.selected = false;
+				}
+				else
+				{
+					layerSwitcherCheckBox.selected = true;
+					event.layer.visible = layerSwitcherCheckBox.selected; 
+				}
 			}
 			
 			/**
