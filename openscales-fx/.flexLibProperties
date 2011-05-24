@@ -26,6 +26,7 @@
     <classEntry path="org.openscales.fx.control.NumericScale"/>
     <classEntry path="org.openscales.fx.control.Pan"/>
     <classEntry path="org.openscales.fx.control.PanZoom"/>
+    <classEntry path="org.openscales.fx.control.ScaleLine"/>
     <classEntry path="org.openscales.fx.control.TermsOfService"/>
     <classEntry path="org.openscales.fx.control.TraceInfo"/>
     <classEntry path="org.openscales.fx.control.Zoom"/>
@@ -35,6 +36,7 @@
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
+    <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomThumbSkin"/>
