@@ -38,22 +38,18 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function testSliderOpacityChange():void
 		{
-			var opacityValue:Number = 0.5;
+			_opacity.layerControlOpacity.value = 50;
 			
-			_opacity.layerControlOpacity.value = opacityValue;
-			
-			Assert.assertEquals(opacityValue, _layer1.alpha);
+			Assert.assertEquals(_opacity.layerControlOpacity.value, (_layer1.alpha*100));
 		}
 		
 		
 		[Test]
 		public function testLayerOpacityChange():void
 		{
-			var opacityValue:Number = 0.5;
+			_layer1.alpha = 0.5;
 			
-			_layer1.alpha = opacityValue;
-			
-			Assert.assertEquals(opacityValue, _opacity.layerControlOpacity.value);
+			Assert.assertEquals((_layer1.alpha*100), _opacity.layerControlOpacity.value);
 		}
 	}
 }

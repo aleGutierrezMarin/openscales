@@ -1,7 +1,6 @@
 package org.openscales.fx.control.layer
 {
 
-
 	import mx.core.IVisualElement;
 	
 	import org.openscales.core.Map;
@@ -14,15 +13,28 @@ package org.openscales.fx.control.layer
 	import spark.components.List;
 	import spark.components.supportClasses.ItemRenderer;
 	
+	
+	/**
+	 * Basic class for LayerRenderer use with LayerManager.
+	 * No controls are set in this component but mandatory functions are implemented.
+	 * Inherit from this class to implement your own LayerSwitcherRenderer.
+	 * 
+	 * @author ajard
+	 * 
+	 * @example
+	 */
+	
 	public class LayerRenderer extends ItemRenderer
 	{
 		/**
-		 * The layer associated with the current item
+		 * The layer associated to the current item
+		 * @default null
 		 */
-		protected var _layer:Layer;
+		protected var _layer:Layer = null;
 		
 		/**
 		 * The rendererOptions Object define by the LayerManager rendererOtpions attribute
+		 * @default null
 		 */
 		protected var _rendererOptions:Object = null;
 		
@@ -35,7 +47,10 @@ package org.openscales.fx.control.layer
 		}
 		
 		/**
-		 * Give the current layer to the LayerManager Control which are on this renderer
+		 * Give the current layer (corresponding to an item of the LayerManager List)
+		 * to all the LayerControl defined in the LayerRenderer
+		 * 
+		 * Call the setLayer function to the first child of the LayerRenderer
 		 */
 		public function setLayerToControls():void
 		{
@@ -43,7 +58,9 @@ package org.openscales.fx.control.layer
 		}
 		
 		/**
-		 * Recursively set the layer of all LayerControl in the LayerRenderer
+		 * Recursively set the layer of the current IVisualElement and its child 
+		 * if they are LayerControl type
+		 * @param elt The current visualElement to set the layer if it is type of LayerControl
 		 */
 		public function setLayer(elt:IVisualElement):void
 		{
@@ -75,7 +92,9 @@ package org.openscales.fx.control.layer
 		}
 
 		/**
-		 * Manage rendererOptions : get the rendererOptions object in the LayerMananger owner
+		 * Manage rendererOptions : get the rendererOptions object in the LayerManager owner
+		 * and set the current rendererOptions with it
+		 * Override this method to add your own actions according to the rendererOptions contents
 		 */
 		public function manageRendererOptions():void
 		{
@@ -101,8 +120,9 @@ package org.openscales.fx.control.layer
 		}
 
 		/**
-		 * Set the data
-		 * @param value
+		 * Function call when the data is set to the LayerRenderer.
+		 * Functions setLayerToControls and manageRendererOptions are called at that time.
+		 * @param value The data value from the current item of the LayerManager List
 		 */
 		override public function set data(value:Object):void 
 		{
@@ -119,8 +139,7 @@ package org.openscales.fx.control.layer
 
 
 		/**
-		 * Get the layer that the List into the LayerManager.mxml send to display it
-		 * @return return the layer
+		 * The layer associated to the current item
 		 */
 		public function get layer():Layer 
 		{
