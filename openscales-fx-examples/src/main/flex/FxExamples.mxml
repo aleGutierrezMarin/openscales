@@ -97,6 +97,9 @@
 					case "overviewRatio":
 						state = new OverviewRatioExample();
 						break;
+					case "runtimetheme":
+						state = new RunTimeThemeExample();
+						break;
 					default:
 						state = data['basic'];
 						break;
@@ -121,6 +124,7 @@
 				<s:Button id="about" label="About OpenScales" click="changeState(event)" width="100%"/>
 				<s:Button id="basic" label="Basic example" click="changeState(event)" width="100%"/>
 				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
+				<s:Button id="runtimetheme" label="Changing theme on runtime" click="changeState(event)" width="100%"/>
 				<s:Button id="osm" label="OpenStreetMap" click="changeState(event)" width="100%"/>
 				<s:Button id="polylayer" label="Poly Layer" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
