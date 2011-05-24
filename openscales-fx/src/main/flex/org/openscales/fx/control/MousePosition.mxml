@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openscales:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					xmlns:s="library://ns.adobe.com/flex/spark" 
-					xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:openscales="http://openscales.org" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" 
+					xmlns:openscales="http://openscales.org" 
 					width="400" 
 					height="300"
 					creationComplete="init();">
@@ -409,13 +410,13 @@
 		</s:Label>
 		<s:HGroup id="mousePositionHGroup" width="100%"> 
 			
-			<s:ComboBox id="mousePositionCrsComboBox"  change="crsChanged(event);">
+			<s:DropDownList id="crsComboBox"  change="crsChanged(event);">
 				
-			</s:ComboBox>
+			</s:DropDownList>
 			
-			<s:ComboBox id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)" >
+			<s:DropDownList id="unitsComboBox" labelField="label" change="unitsChanged(event)">
 				
-			</s:ComboBox>
+			</s:DropDownList>
 		</s:HGroup>
 	</s:VGroup>
 </openscales:Control>

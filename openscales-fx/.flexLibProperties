@@ -31,6 +31,7 @@
     <classEntry path="org.openscales.fx.control.Zoom"/>
     <classEntry path="org.openscales.fx.control.ZoomBox"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerRenderer"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
@@ -58,6 +59,7 @@
     <classEntry path="org.openscales.fx.layer.FxWFS"/>
     <classEntry path="org.openscales.fx.layer.FxWMS"/>
     <classEntry path="org.openscales.fx.layer.FxWMSC"/>
+    <classEntry path="org.openscales.fx.layer.FxWMTS"/>
     <classEntry path="org.openscales.fx.layer.capabilities.WMTS100Test"/>
     <classEntry path="org.openscales.fx.layer.osm.FxCycleMap"/>
     <classEntry path="org.openscales.fx.layer.osm.FxMaplint"/>
@@ -74,8 +76,6 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
-    <classEntry path="org.openscales.fx.layer.FxWMTS"/>
-    <classEntry path="org.openscales.fx.control.ScaleLine"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

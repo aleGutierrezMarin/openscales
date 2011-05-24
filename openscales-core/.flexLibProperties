@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
-    <classEntry path="org.openscales.core.Map"/>
     <classEntry path="org.openscales.core.StringUtils"/>
     <classEntry path="org.openscales.core.Trace"/>
     <classEntry path="org.openscales.core.UID"/>
@@ -125,6 +124,7 @@
     <classEntry path="org.openscales.core.layer.ImageLayer"/>
     <classEntry path="org.openscales.core.layer.KML"/>
     <classEntry path="org.openscales.core.layer.Layer"/>
+    <classEntry path="org.openscales.core.layer.PolyLayer"/>
     <classEntry path="org.openscales.core.layer.SwitchLayers"/>
     <classEntry path="org.openscales.core.layer.TMS"/>
     <classEntry path="org.openscales.core.layer.capabilities.CapabilitiesParser"/>
@@ -205,7 +205,6 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
-    <classEntry path="org.openscales.core.layer.PolyLayer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
