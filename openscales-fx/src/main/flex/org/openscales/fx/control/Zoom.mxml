@@ -55,13 +55,16 @@
 			 */
 			public function  configure():void{ 
 				
-				this.zoomSlider.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onZoom);
+				// this.zoomSlider.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onZoom);
 				
 				if(this._scalesLabels == null)
 				{
 					this._scalesLabels = new Vector.<ZoomData>();
 				}
 				
+				// listener for the zoom in/out buttons
+				this.zoomIn.addEventListener(MouseEvent.CLICK, this.onZoom);
+				this.zoomOut.addEventListener(MouseEvent.CLICK, this.onZoom);
 			}
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
@@ -120,11 +123,14 @@
 				return new String("");
 			}
 			
-			public function onZoom(event:StateChangeEvent):void
+			public function onZoom(event:MouseEvent):void
 			{
 				if(!this._map || !this._map.baseLayer)
 					return;
-				switch(event.newState)
+				
+				var button:Button = event.target as Button;
+				
+				switch(button.name)
 				{
 					case "zoomin":
 						this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
@@ -229,14 +235,16 @@
 		]]>
 	</fx:Script>
 	
-	<s:VSlider id="zoomSlider" x="54" y="10"
+	<s:VSlider id="zoomSlider" x="80" y="10"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
 			   liveDragging="false"
-			   skinClass="org.openscales.fx.control.skin.ZoomSkin"
 			   focusEnabled="false"
 			   showDataTip="true"/>
+	
+	<s:Button id="zoomIn" name="zoomin" label="-" width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
+	<s:Button id="zoomOut" name="zoomout" label="+" width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
 	
 </Control>

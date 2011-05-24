@@ -54,6 +54,12 @@ package org.openscales.core
 		 */
 		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
 		
+		/**
+		 * The url to the default Theme (OpenscalesTheme)
+		 * TODO : fix and set the real path to  the default theme
+		 */
+		public var URL_THEME:String = "http://openscales.org/nexus/service/local/repo_groups/public-snapshots/content/org/openscales/openscales-fx-theme/2.0.0-SNAPSHOT/openscales-fx-theme-2.0.0-20110517.142043-5.swf";
+		
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
 		private var _controls:Vector.<IControl> = new Vector.<IControl>();
@@ -84,6 +90,13 @@ package org.openscales.core
 		[Embed(source="/assets/i18n/FR.json", mimeType="application/octet-stream")]
 		private const FRLocale:Class;
 
+		/** 
+		 * @private
+		 * Url to the theme used to custom the components of the current map
+		 * @default URL_THEME (url to the basic OpenscalesTheme)
+		 */
+		private var _theme:String = URL_THEME;
+		
 		/**
 		 * Map constructor
 		 *
@@ -1278,6 +1291,23 @@ package org.openscales.core
 		}
 		
 		/**
+		 * Url to the theme used to custom the components of the current map
+		 * @default URL_THEME (url to the basic OpenscalesTheme)
+		 */
+		public function get theme():String
+		{
+			return this._theme;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set theme(value:String):void
+		{
+			this._theme = value;
+		}
+		
+		/**
 		 * Whether or not the map is loading data
 		 */
 		public function get loadComplete():Boolean {
@@ -1298,6 +1328,7 @@ package org.openscales.core
 				dispatchEvent(new MapEvent(MapEvent.LOAD_END,this));
 			} 
 		}
+		
 		
 		/**
 		 * @private

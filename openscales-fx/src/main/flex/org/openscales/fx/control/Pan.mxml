@@ -3,7 +3,7 @@
 <Control xmlns="http://openscales.org" xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 width="400" height="300" initialize="configure()" > 
-	
+
 	<fx:Script>
 		<![CDATA[
 			
@@ -32,7 +32,11 @@
 			 * and set the first zoomLabel text value.
 			 */
 			public function  configure():void{ 
-				this.panSkin.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onPan);
+				// Add listener to the fourth pan buttons
+				this.panNorth.addEventListener(MouseEvent.CLICK, this.onPan);
+				this.panSouth.addEventListener(MouseEvent.CLICK, this.onPan);
+				this.panEast.addEventListener(MouseEvent.CLICK, this.onPan);
+				this.panWest.addEventListener(MouseEvent.CLICK, this.onPan);
 			}
 			
 			/**
@@ -40,9 +44,15 @@
 			 * 
 			 * @param The event received
 			 */
-			public function onPan(event:StateChangeEvent):void
+			//public function onPan(event:StateChangeEvent):void
+			public function onPan(event:MouseEvent):void
 			{
-				switch(event.newState)
+				if(!this._map || !this._map.baseLayer)
+					return;
+				
+				var button:Button = event.target as Button;
+				
+				switch(button.name)
 				{
 					case "south" :
 						this.map.pan(0, this.DELTA_PX, true);
@@ -70,10 +80,16 @@
 			
 		]]>
 	</fx:Script>
-	
-	<s:SkinnableContainer id="panSkin"
-						  skinClass="org.openscales.fx.control.skin.PanSkin"
+
+	<s:SkinnableContainer id="panContainer"
 						  useHandCursor="true"
-						  buttonMode="true">
+						  buttonMode="true">	
 	</s:SkinnableContainer>
+	
+	<s:Button id="panNorth" name="north" label="pan:N" width="35" x="20" y="0" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panSouth" name="south" label="pan:S" width="35" x="20" y="40" useHandCursor="true" buttonMode="true" />
+	<s:Button id="panEast" name="east" label="pan:E" width="35" x="40" y="20" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panWest" name="west" label="pan:W" width="35" x="0" y="20" useHandCursor="true" buttonMode="true"/>
+	
+	
 </Control>

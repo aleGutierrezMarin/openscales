@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- This example shows WMS-C layer, WFS layer, layer manager, PanZoom control, SelectFeature handler and popup used together -->
 <s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()">
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()" xmlns:mx="library://ns.adobe.com/flex/mx">
 	
 	<Map id="fxMap" width="100%" height="100%" zoom="4" center="-74.011,40.710">
 		
@@ -28,10 +28,23 @@
 			 <LayerManager />
 		 </ControlPanel>
 		
+		<!-- Change theme -->
+		<s:Panel id="theme" title="Themes" width="250" height="100" x="300" y="0">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			
+			<s:ComboBox dataProvider="{themes}" id="themeCombo" width="100" 
+						selectedIndex="0"
+						change="changeTheme(event);" x="308" y="205"/>
+		</s:Panel>
+		
 	</Map>
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.popup.Anchored;
@@ -45,8 +58,20 @@
 			
 			Trace.useFireBugConsole = true;
 			
+			/**
+			 *  Data values for theme combobox
+			 */
+			[Bindable]
+			public var themes:ArrayCollection = new ArrayCollection(
+				[ {label:"Openscales theme", data:0},
+					{label:"Custom theme", data:1} ]);
+			
+			
+			
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				
+				fxMap.theme = "http://slopez.org/gis/fxtheme.swf";
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {
@@ -80,6 +105,20 @@
 				fxpopup.visible = true;
 				
 				
+			}
+			
+			/**
+			 * Change the current theme 
+			 */
+			private function changeTheme(event:Event):void
+			{
+				if(event.target.selectedItem.data == 0){
+					fxMap.theme = "http://slopez.org/gis/fxtheme.swf";
+				}
+				
+				if(event.target.selectedItem.data == 1){
+					fxMap.theme = "http://slopez.org/gis/geoportal.swf";
+				}
 			}
 			
 		]]>
