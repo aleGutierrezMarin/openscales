@@ -235,8 +235,8 @@ package org.openscales.core.layer
 				center.lat - (tileHeight/2),
 				center.lon + (tileWidth/2),
 				center.lat + (tileHeight/2),
-				this.projSrsCode);
-			var ul:Location = new Location(tileBounds.left, tileBounds.top);
+				center.projSrsCode);
+			var ul:Location = new Location(tileBounds.left, tileBounds.top, tileBounds.projSrsCode);
 			var px:Pixel = this.map.getLayerPxFromLocation(ul);
 			
 			if(this._grid==null) {

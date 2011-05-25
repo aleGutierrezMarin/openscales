@@ -334,10 +334,17 @@ package org.openscales.core.layer.ogc
 		 */
 		public function set projection (value:String):void
 		{
+			this.projSrsCode = value;
+		}
+		
+		/**
+		 * @Private
+		 */
+		override public function set projSrsCode(value:String):void {
 			super.projSrsCode=value;
 			
 			if(this._tileProvider != null){
-				this._tileProvider.projection=value;
+				this._tileProvider.projection = _projSrsCode;
 			}
 		}
 		
