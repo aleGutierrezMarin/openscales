@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="http://openscales.org" >
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.fxg.DownArrowDown;
+			import assets.fxg.DownArrowOver;
+			import assets.fxg.DownArrowUp;
+			import assets.fxg.UpArrowDown;
+			import assets.fxg.UpArrowOver;
+			import assets.fxg.UpArrowUp;
+			
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.layer.Layer;
+			import org.openscales.fx.control.layer.LayerManager;
+			import org.openscales.fx.control.layer.LayerRenderer;
+			
+
+			/**
+			 * Configure the first display for this component when the layer is set
+			 * Set one or two arrows depending of the position of the current layer
+			 */ 
+			override public function set layer(value:Layer):void
+			{
+				super.layer = value;
+				
+				if(this.parent != null)
+				{
+					this.updateArrowsDisplay();
+					
+					this._layer.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, updateArrowsDisplay);
+					this._layer.map.addEventListener(LayerEvent.LAYER_ADDED, updateArrowsDisplay);
+					this._layer.map.addEventListener(LayerEvent.LAYER_REMOVED, updateArrowsDisplay);
+				}
+			}
+			
+			/**
+			 * Update the display of arrows according to the position of the layer
+			 */
+			public function updateArrowsDisplay(event:LayerEvent = null):void
+			{
+				// get the current map layer
+				var length:uint = this._layer.map.layerContainer.numChildren;
+				
+				if(length<=1) 
+				{
+					layerSwitcherArrowUp.enabled = false;
+					layerSwitcherArrowDown.enabled = false;
+				}
+				else 
+				{
+					// the layer is at the bottom of the list, we hide the arrowDown						
+					if(this._layer.map.layerContainer.getChildIndex(this._layer) == 0)
+					{
+						layerSwitcherArrowUp.enabled = true;
+						layerSwitcherArrowDown.enabled = false;
+					}
+						// the layer is on the top of the list, we hide the arrowUp
+					else if(this._layer.map.layerContainer.getChildIndex(this._layer)==length-1)
+					{
+						layerSwitcherArrowUp.enabled = false;
+						layerSwitcherArrowDown.enabled = true;
+					}
+						// the layer is in the middle, you can up or down it
+					else
+					{
+						layerSwitcherArrowUp.enabled = true;
+						layerSwitcherArrowDown.enabled = true;
+					}           	
+				}
+			}
+
+			/**
+			 * Move the current Layer up on the map
+			 */
+			public function upLayer(event:MouseEvent):void {
+				this._layer.map.changeLayerIndexByStep(this._layer,+1);
+			}
+			
+			/**
+			 * Move the current Layer down on the map
+			 */
+			public function downLayer(event:MouseEvent):void {
+				this._layer.map.changeLayerIndexByStep(this._layer,-1);
+			}
+			
+			
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup verticalAlign="middle" gap="0">
+		<IconButton id="layerSwitcherArrowUp"
+					toolTip="Déplacer vers l'avant plan"
+					click="upLayer(event)"
+					icon="{new UpArrowUp()}"
+					iconOver="{new UpArrowOver()}"
+					iconDown="{new UpArrowDown()}"
+					width="10"
+					height="10"
+					/>
+		
+		<IconButton id="layerSwitcherArrowDown"
+					toolTip="Déplacer vers l'arrière plan"
+					click="downLayer(event)"
+					icon="{new DownArrowUp()}"
+					iconOver="{new DownArrowOver()}"
+					iconDown="{new DownArrowDown()}"
+					width="10"
+					height="10"
+					/>
+	</s:VGroup>
+</LayerControl>

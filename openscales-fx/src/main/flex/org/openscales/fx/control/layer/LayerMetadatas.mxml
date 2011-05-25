@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx"
+			  xmlns="http://openscales.org" >
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import assets.fxg.ButtonOpacity;
+			
+			[Bindable]
+			[Embed(source="/assets/images/layer/display_information.png")]
+			private var _btnMetadatas:Class;
+			
+			
+			/**
+			 * Center the map on the layer
+			 * @param event Click event
+			 */
+			private function displayMetadatas(event:MouseEvent):void
+			{
+				trace("display Metadatas");
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<IconButton id="layerControlMetadatasIcon"
+				width="16"
+				height="16"
+				click="displayMetadatas(event)"
+				icon="{_btnMetadatas}" />
+	
+</LayerControl>
