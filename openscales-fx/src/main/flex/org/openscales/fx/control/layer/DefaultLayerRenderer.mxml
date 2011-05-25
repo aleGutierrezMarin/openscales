@@ -35,9 +35,11 @@
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
+			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.core.layer.ImageLayer;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.core.layer.ogc.WMSC;
 			import org.openscales.fx.control.FeatureDrawing;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.basetypes.Bounds;
@@ -74,7 +76,39 @@
 			 * @default false
 			 */
 			private var _isDrawingLayer:Boolean = false;
+			
+			/**
+			 * @private
+			 * Define if the optionnal group has to be displayed
+			 * @default false
+			 */
+			private var _optionnalGroupDisplayed:Boolean = false;
+			
+			/**
+			 * @private
+			 * Define the difference of size between maximize and minimize renderer
+			 * @default 0
+			 */
+			private var _maximizeGroupSize:Number = 0;
+			
+			/**
+			 * @private
+			 * The position of the layerSwitcherDrawingTools
+			 * @default 0
+			 */
+			private var _groupPositionDraw:Number = 0;
+			
+			/**
+			 * @private
+			 * The position of the layerSwitcherOptionnalDisplay
+			 * @defualt 0
+			 */
+			private var _groupPositionOptionnal:Number = 0;
 
+			
+			/**
+			 * @inherit
+			 */
 			override public function manageRendererOptions():void
 			{
 				super.manageRendererOptions();
@@ -85,29 +119,58 @@
 					if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
 					{
 						layerControlLegend.visible = true;
+						this._optionnalGroupDisplayed = true;
 					}
 					
 					if( this.rendererOptions.hasOwnProperty("displayZoomToExtent") && (this.rendererOptions["displayZoomToExtent"] == true) )
 					{
 						layerControlZoomToExtent.visible = true;
+						this._optionnalGroupDisplayed = true;
 					}
 					
 					if( this.rendererOptions.hasOwnProperty("displayMetadatas") && (this.rendererOptions["displayMetadatas"] == true) )
 					{
 						layerControlMetadatas.visible = true;
+						this._optionnalGroupDisplayed = true;
 					}
 				}
 			}
 			
-			
+			/**
+			 * According to the group optionnal and drawing tools, set the size and position for this renderer
+			 */
+			public function setGroupSize():void
+			{
+				this._maximizeGroupSize = layerSwitcherAdditionnalDisplay.height;
+				
+				// according to yhe group displayed or not, set the position of the different group
+				this._groupPositionOptionnal = hgroup.height + layerSwitcherAdditionnalDisplay.height;
+				this._groupPositionDraw = this._groupPositionOptionnal;
+				
+				if(this._optionnalGroupDisplayed = true)
+				{
+					this._maximizeGroupSize += layerSwitcherOptionnalDisplay.height;
+					this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
+				}
+				
+				if(this._isDrawingLayer)
+				{
+					this._maximizeGroupSize += layerSwitcherDrawingTools.height;
+				}
+				
+				layerSwitcherOptionnalDisplay.y = this._groupPositionOptionnal;
+				layerSwitcherDrawingTools.y = this._groupPositionDraw;
+			}
 			
 			/**
-			 * Set the data
-			 *
-			 * @param value
+			 * @inherit
 			 */
 			override public function set data(value:Object):void 
 			{
+				// if the layer has changed
+				if(this._layer != value)
+					this._isMinimized = true;
+					
 				super.data = value;
 				
 				if((this._layer != null) )
@@ -119,10 +182,16 @@
 					layerSwitcherLabel.text = this.layer.name;
 					this.baseLayerChanged();
 					
-					/** TODO : only Draw layer */
-					this._isDrawingLayer = true;
+					if(this._layer is FeatureLayer)
+						this._isDrawingLayer = true;
 					
+					else
+						this._isDrawingLayer = false;
 				}
+				
+				this.setGroupSize();
+				
+				this.updateOptionnalDisplay();
 			}
 			
 			
@@ -160,34 +229,33 @@
 				
 				this._isMinimized = !this._isMinimized;
 				
-				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
+				this.updateOptionnalDisplay();
+			}
+			
+			/**
+			 * Display all the renderer or minimize version
+			 */
+			public function updateOptionnalDisplay():void
+			{
 				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
-				
-				var groupSize:uint = layerSwitcherOptionnalDisplay.height + layerSwitcherAdditionnalDisplay.height;
+				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
 				
 				if(this._isDrawingLayer)
 				{
-					groupSize += layerSwitcherDrawingTools.height;
 					layerSwitcherDrawingTools.visible = !this._isMinimized;
 				}
 				
 				
-				trace("groupSize "+groupSize);
-				
 				if(!this._isMinimized)
 				{
-					this.height += groupSize;
-					//layerSwitcherReduceMaximize.icon = _btnMinimize;
+					this.height = this._maximizeGroupSize;
 				}
 					
 					
 				else
 				{
-					this.height -= groupSize; 
-					//layerSwitcherReduceMaximize.icon = _btnMaximize;
+					this.height = layerSwitcherReduceMaximize.height; 
 				}
-				
-				
 			}
 			
 		]]>
@@ -226,11 +294,11 @@
 			<ChangeLayerOpacity id="layerControlOpacity" />
 		</s:Group>
 		
-		<s:Group id="layerSwitcherDrawingTools" visible="false">
+		<s:Group id="layerSwitcherDrawingTools" visible="false" includeInLayout="false" height ="90">
 			<FeatureDrawing id="layerControlDrawTools" />
 		</s:Group>
 		
-		<s:Group id="layerSwitcherOptionnalDisplay" visible="false">
+		<s:Group id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20">
 			<LayerZoomToExtent id="layerControlZoomToExtent" />
 			<LayerLegend x="20" id="layerControlLegend" />
 			<LayerMetadatas x="40" id="layerControlMetadatas" />
