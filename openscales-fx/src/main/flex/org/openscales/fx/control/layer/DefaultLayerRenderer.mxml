@@ -108,6 +108,17 @@
 			
 			/**
 			 * @inherit
+			 * 
+			 * The options implemented by the DefaultLayerRenderer are :
+			 * 
+			 * <LayerSwitcher>
+			 *	 	<rendererOptions>
+			 *			<fx:Object
+			 *				displayLegend="true/false"
+			 *				displayZoomToExtent="true/false"
+			 *				displayMetadatas="true/false" />
+			 *		</rendererOptions>
+			 * </LayerSwitcher>
 			 */
 			override public function manageRendererOptions():void
 			{
