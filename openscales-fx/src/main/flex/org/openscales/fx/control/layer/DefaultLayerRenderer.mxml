@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- LayerManager item renderer, design to render a layer in the LayerManager list -->
 <LayerRenderer xmlns="http://openscales.org"
-				xmlns:mx="library://ns.adobe.com/flex/mx"
-				xmlns:s="library://ns.adobe.com/flex/spark"
-				xmlns:fx="http://ns.adobe.com/mxml/2009"
-				xmlns:d="http://ns.adobe.com/fxg/2008/dt" 
-				width="100%"
-				height="25"
-				xmlns:fxg="assets.fxg.*"
-		  		autoDrawBackground="false" >
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:d="http://ns.adobe.com/fxg/2008/dt" 
+			   width="100%"
+			   height="25"
+			   xmlns:fxg="assets.fxg.*"
+			   autoDrawBackground="false" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -35,6 +35,7 @@
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
+			import org.openscales.core.layer.ImageLayer;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.ogc.WFS;
 			import org.openscales.fx.control.FeatureDrawing;
@@ -66,42 +67,14 @@
 			 * @default true
 			 */
 			private var _isMinimized:Boolean = true;
-		
 			
 			/**
 			 * @private
-			 * The default Group for drawing tools. Only added if the layer associated is a drawing one
-			 * @default null
+			 * Define if the current layer is a drawing layer or not
+			 * @default false
 			 */
-			private var _drawGroup:Group = null;
-			
-			/**
-			 * @private
-			 * The default drawing components
-			 * @default null
-			 */
-			private var _drawTools:FeatureDrawing = null;
-			
-			/**
-			 * Use the rendererOptions in the LayerManager to set the current optional controls
-			 * Get the owner of this rendrer (the List and get its parent to get the LayerManager)
-			 */
-			public function configure():void
-			{
-				// if drawing layer add the drawing tools :
-				/*
-				this._drawGroup = new Group();
-				this._drawGroup.id = "layerSwitcherDrawTools";
-				
-				
-				this._drawTools = new FeatureDrawing();
-				this._drawGroup.addElement(this._drawTools);
-				
-				layerSwitcherMainGroup.addElementAt(this._drawGroup, 1);
-				*/
-			}
-			
-		
+			private var _isDrawingLayer:Boolean = false;
+
 			override public function manageRendererOptions():void
 			{
 				super.manageRendererOptions();
@@ -142,12 +115,16 @@
 					if(this._layer.map!=null){
 						this._layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
 					}
-		
+					
 					layerSwitcherLabel.text = this.layer.name;
 					this.baseLayerChanged();
-
+					
+					/** TODO : only Draw layer */
+					this._isDrawingLayer = true;
+					
 				}
 			}
+			
 			
 			/**
 			 * Update extent when BaseLayer changed
@@ -180,13 +157,21 @@
 			 */
 			public function reduceMaximizeLayerSwitcher(event:Event):void 
 			{
-			
+				
 				this._isMinimized = !this._isMinimized;
-
+				
 				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
 				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
 				
 				var groupSize:uint = layerSwitcherOptionnalDisplay.height + layerSwitcherAdditionnalDisplay.height;
+				
+				if(this._isDrawingLayer)
+				{
+					groupSize += layerSwitcherDrawingTools.height;
+					layerSwitcherDrawingTools.visible = !this._isMinimized;
+				}
+				
+				
 				trace("groupSize "+groupSize);
 				
 				if(!this._isMinimized)
@@ -195,14 +180,14 @@
 					//layerSwitcherReduceMaximize.icon = _btnMinimize;
 				}
 					
-				
+					
 				else
 				{
 					this.height -= groupSize; 
 					//layerSwitcherReduceMaximize.icon = _btnMaximize;
 				}
-					
-
+				
+				
 			}
 			
 		]]>
@@ -233,18 +218,22 @@
 			<DeleteLayer id="layerSwitcherDeleteLayer" />
 			
 			<s:Group id="displayControl" />	
-
+			
 		</s:HGroup>
-
+		
 		
 		<s:Group id="layerSwitcherAdditionnalDisplay" visible="false">
 			<ChangeLayerOpacity id="layerControlOpacity" />
 		</s:Group>
 		
+		<s:Group id="layerSwitcherDrawingTools" visible="false">
+			<FeatureDrawing id="layerControlDrawTools" />
+		</s:Group>
+		
 		<s:Group id="layerSwitcherOptionnalDisplay" visible="false">
-			<LayerZoomToExtent id="layerControlZoomToExtent" visible="false" />
-			<LayerLegend x="20" id="layerControlLegend" visible="false" />
-			<LayerMetadatas x="40" id="layerControlMetadatas" visible="false" />
+			<LayerZoomToExtent id="layerControlZoomToExtent" />
+			<LayerLegend x="20" id="layerControlLegend" />
+			<LayerMetadatas x="40" id="layerControlMetadatas" />
 		</s:Group>
 		
 		

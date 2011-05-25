@@ -39,15 +39,6 @@
 			import spark.components.VSlider;
 			import spark.primitives.Rect;
 			
-
-			
-			/**
-			 * @private
-			 * Array wich contains all layers
-			 * @default new ArrayCollection()
-			 */
-			[Bindable]
-			private var _layerArray:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * @private
@@ -128,21 +119,6 @@
 			}
 			
 			// getter / setter
-			/**
-			 * Array wich contains all layers
-			 */
-			public function get layerArray():ArrayCollection 
-			{
-				return this._layerArray;
-			}
-			
-			/**
-			 * @private
-			 */
-			public function set layerArray(value:ArrayCollection):void 
-			{
-				this._layerArray = value;
-			}
 			
 			/**
 			 * Options for the LayerManager renderer (for additionnal controls to display like Metadatas, legend...)
