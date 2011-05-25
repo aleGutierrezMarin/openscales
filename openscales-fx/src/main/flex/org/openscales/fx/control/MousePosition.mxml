@@ -186,9 +186,9 @@
 				switch(_srsUnits){
 					case Unit.METER:
 						items = new ArrayCollection([
-							{data:Unit.KILOMETER,label:Catalog.getLocalizationForKey("mouseposition:kilometers")},
-							{data:Unit.METER, label:Catalog.getLocalizationForKey("mouseposition:meters")},
-							{data:Unit.CENTIMETER, label:Catalog.getLocalizationForKey("mouseposition:centimeters")}
+							{data:Unit.KILOMETER,label:Catalog.getLocalizationForKey("mouseposition.kilometers")},
+							{data:Unit.METER, label:Catalog.getLocalizationForKey("mouseposition.meters")},
+							{data:Unit.CENTIMETER, label:Catalog.getLocalizationForKey("mouseposition.centimeters")}
 						]);
 						if(this.mousePositionUnitsComboBox.dataProvider) this.mousePositionUnitsComboBox.dataProvider.removeAll(); // Clearing list if already set
 						this.mousePositionUnitsComboBox.dataProvider = items;
@@ -197,8 +197,8 @@
 					case "dd":
 					case Unit.DEGREE:
 						items = new ArrayCollection([
-							{data:Unit.SEXAGESIMAL,label:Catalog.getLocalizationForKey("mouseposition:dms")},
-							{data:Unit.DEGREE, label:Catalog.getLocalizationForKey("mouseposition:decimaldegrees")}
+							{data:Unit.SEXAGESIMAL,label:Catalog.getLocalizationForKey("mouseposition.dms")},
+							{data:Unit.DEGREE, label:Catalog.getLocalizationForKey("mouseposition.decimaldegrees")}
 						]);
 						if(this.mousePositionUnitsComboBox.dataProvider) this.mousePositionUnitsComboBox.dataProvider.removeAll(); // Clearing list if already set
 						this.mousePositionUnitsComboBox.dataProvider = items;
