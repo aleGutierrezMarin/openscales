@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
+    <classEntry path="assets.fxg.ButtonCloseOver"/>
+    <classEntry path="assets.fxg.ButtonCloseUp"/>
+    <classEntry path="assets.fxg.ButtonOpacity"/>
+    <classEntry path="assets.fxg.DownArrowDown"/>
+    <classEntry path="assets.fxg.DownArrowOver"/>
+    <classEntry path="assets.fxg.DownArrowUp"/>
+    <classEntry path="assets.fxg.LayerItemOver"/>
+    <classEntry path="assets.fxg.LayerItemUp"/>
+    <classEntry path="assets.fxg.Popup"/>
+    <classEntry path="assets.fxg.UpArrowDown"/>
+    <classEntry path="assets.fxg.UpArrowOver"/>
+    <classEntry path="assets.fxg.UpArrowUp"/>
     <classEntry path="org.openscales.fx.ControlPanel"/>
     <classEntry path="org.openscales.fx.FxExtent"/>
     <classEntry path="org.openscales.fx.FxMap"/>
@@ -31,8 +43,17 @@
     <classEntry path="org.openscales.fx.control.TraceInfo"/>
     <classEntry path="org.openscales.fx.control.Zoom"/>
     <classEntry path="org.openscales.fx.control.ZoomBox"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibility"/>
+    <classEntry path="org.openscales.fx.control.layer.DefaultLayerRenderer"/>
+    <classEntry path="org.openscales.fx.control.layer.DeleteLayer"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerControl"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerLegend"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerMetadatas"/>
     <classEntry path="org.openscales.fx.control.layer.LayerRenderer"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtent"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
@@ -78,8 +99,112 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacityTest"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerPositionTest"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibilityTest"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerLegendTest"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerManagerTest"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerMetadatasTest"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>
   </includeClasses>
-  <includeResources/>
+  <includeResources>
+    <resourceEntry destPath="META-INF/manifest.xml" sourcePath="META-INF/manifest.xml"/>
+    <resourceEntry destPath="assets/fxg/ButtonCloseOver.fxg" sourcePath="assets/fxg/ButtonCloseOver.fxg"/>
+    <resourceEntry destPath="assets/fxg/ButtonCloseUp.fxg" sourcePath="assets/fxg/ButtonCloseUp.fxg"/>
+    <resourceEntry destPath="assets/fxg/ButtonOpacity.fxg" sourcePath="assets/fxg/ButtonOpacity.fxg"/>
+    <resourceEntry destPath="assets/fxg/DownArrowDown.fxg" sourcePath="assets/fxg/DownArrowDown.fxg"/>
+    <resourceEntry destPath="assets/fxg/DownArrowOver.fxg" sourcePath="assets/fxg/DownArrowOver.fxg"/>
+    <resourceEntry destPath="assets/fxg/DownArrowUp.fxg" sourcePath="assets/fxg/DownArrowUp.fxg"/>
+    <resourceEntry destPath="assets/fxg/LayerItemOver.fxg" sourcePath="assets/fxg/LayerItemOver.fxg"/>
+    <resourceEntry destPath="assets/fxg/LayerItemUp.fxg" sourcePath="assets/fxg/LayerItemUp.fxg"/>
+    <resourceEntry destPath="assets/fxg/Popup.fxg" sourcePath="assets/fxg/Popup.fxg"/>
+    <resourceEntry destPath="assets/fxg/UpArrowDown.fxg" sourcePath="assets/fxg/UpArrowDown.fxg"/>
+    <resourceEntry destPath="assets/fxg/UpArrowOver.fxg" sourcePath="assets/fxg/UpArrowOver.fxg"/>
+    <resourceEntry destPath="assets/images/layerZoomTo-upskin.svg" sourcePath="assets/images/layerZoomTo-upskin.svg"/>
+    <resourceEntry destPath="assets/fxg/DownArrowDown.fxg" sourcePath="assets/fxg/DownArrowDown.fxg"/>
+    <resourceEntry destPath="assets/images/featureDeleteLastVertex-upskin.png" sourcePath="assets/images/featureDeleteLastVertex-upskin.png"/>
+    <resourceEntry destPath="assets/images/layerUp-upskin.svg" sourcePath="assets/images/layerUp-upskin.svg"/>
+    <resourceEntry destPath="assets/fxg/ButtonCloseUp.fxg" sourcePath="assets/fxg/ButtonCloseUp.fxg"/>
+    <resourceEntry destPath="assets/images/layerUp-disabledskin.svg" sourcePath="assets/images/layerUp-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomBox-downskin.svg" sourcePath="assets/images/mapZoomBox-downskin.svg"/>
+    <resourceEntry destPath="assets/images/layerEditStyle-upskin.svg" sourcePath="assets/images/layerEditStyle-upskin.svg"/>
+    <resourceEntry destPath="assets/images/layerDown-overskin.svg" sourcePath="assets/images/layerDown-overskin.svg"/>
+    <resourceEntry destPath="assets/fxg/ButtonCloseOver.fxg" sourcePath="assets/fxg/ButtonCloseOver.fxg"/>
+    <resourceEntry destPath="assets/images/layerEditStyle-downskin.svg" sourcePath="assets/images/layerEditStyle-downskin.svg"/>
+    <resourceEntry destPath="assets/images/layerEyeClose.png" sourcePath="assets/images/layerEyeClose.png"/>
+    <resourceEntry destPath="assets/images/featureMerge-upskin.png" sourcePath="assets/images/featureMerge-upskin.png"/>
+    <resourceEntry destPath="assets/images/mapZoomIn-disabledskin.svg" sourcePath="assets/images/mapZoomIn-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/icons/Icons-06.png" sourcePath="assets/images/icons/Icons-06.png"/>
+    <resourceEntry destPath="assets/images/icons/Icons-05.swf" sourcePath="assets/images/icons/Icons-05.swf"/>
+    <resourceEntry destPath="assets/images/mapZoomIn-upskin.svg" sourcePath="assets/images/mapZoomIn-upskin.svg"/>
+    <resourceEntry destPath="assets/images/marker.png" sourcePath="assets/images/marker.png"/>
+    <resourceEntry destPath="assets/images/widgetClose.png" sourcePath="assets/images/widgetClose.png"/>
+    <resourceEntry destPath="assets/images/cross.swf" sourcePath="assets/images/cross.swf"/>
+    <resourceEntry destPath="assets/images/icons/Icons-02.png" sourcePath="assets/images/icons/Icons-02.png"/>
+    <resourceEntry destPath="assets/images/layerDown-downskin.svg" sourcePath="assets/images/layerDown-downskin.svg"/>
+    <resourceEntry destPath="assets/images/widgetShow.png" sourcePath="assets/images/widgetShow.png"/>
+    <resourceEntry destPath="assets/images/mapPanEast-upskin.swf" sourcePath="assets/images/mapPanEast-upskin.swf"/>
+    <resourceEntry destPath="assets/images/close.gif" sourcePath="assets/images/close.gif"/>
+    <resourceEntry destPath="assets/images/layerZoomTo-downskin.svg" sourcePath="assets/images/layerZoomTo-downskin.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomOut-overskin.svg" sourcePath="assets/images/mapZoomOut-overskin.svg"/>
+    <resourceEntry destPath="assets/images/icons/Icons-03.png" sourcePath="assets/images/icons/Icons-03.png"/>
+    <resourceEntry destPath="assets/images/marker-green.png" sourcePath="assets/images/marker-green.png"/>
+    <resourceEntry destPath="assets/fxg/UpArrowDown.fxg" sourcePath="assets/fxg/UpArrowDown.fxg"/>
+    <resourceEntry destPath="assets/images/mapZoomIn-downskin.svg" sourcePath="assets/images/mapZoomIn-downskin.svg"/>
+    <resourceEntry destPath="assets/images/feed-upskin.svg" sourcePath="assets/images/feed-upskin.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomIn-upskin.swf" sourcePath="assets/images/mapZoomIn-upskin.swf"/>
+    <resourceEntry destPath="assets/images/picto_layer_slide.png" sourcePath="assets/images/picto_layer_slide.png"/>
+    <resourceEntry destPath="assets/images/ArrowDown.swf" sourcePath="assets/images/ArrowDown.swf"/>
+    <resourceEntry destPath="assets/fxg/DownArrowOver.fxg" sourcePath="assets/fxg/DownArrowOver.fxg"/>
+    <resourceEntry destPath="assets/images/icons/Icons-09.png" sourcePath="assets/images/icons/Icons-09.png"/>
+    <resourceEntry destPath="assets/images/mapZoomBox-upskin-h32.png" sourcePath="assets/images/mapZoomBox-upskin-h32.png"/>
+    <resourceEntry destPath="assets/images/layerInformation-downskin.svg" sourcePath="assets/images/layerInformation-downskin.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomBox-disabledskin.svg" sourcePath="assets/images/mapZoomBox-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/layerDown-upskin.svg" sourcePath="assets/images/layerDown-upskin.svg"/>
+    <resourceEntry destPath="assets/images/layerZoomTo-overskin.svg" sourcePath="assets/images/layerZoomTo-overskin.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomOut-upskin.swf" sourcePath="assets/images/mapZoomOut-upskin.swf"/>
+    <resourceEntry destPath="assets/images/mapZoom-upskin-h32.svg" sourcePath="assets/images/mapZoom-upskin-h32.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomOut-upskin.svg" sourcePath="assets/images/mapZoomOut-upskin.svg"/>
+    <resourceEntry destPath="assets/images/layerInformation-upskin.svg" sourcePath="assets/images/layerInformation-upskin.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomIn-overskin.svg" sourcePath="assets/images/mapZoomIn-overskin.svg"/>
+    <resourceEntry destPath="assets/images/widgetHide.png" sourcePath="assets/images/widgetHide.png"/>
+    <resourceEntry destPath="assets/images/layerRemove-downskin.svg" sourcePath="assets/images/layerRemove-downskin.svg"/>
+    <resourceEntry destPath="assets/fxg/LayerItemOver.fxg" sourcePath="assets/fxg/LayerItemOver.fxg"/>
+    <resourceEntry destPath="assets/images/mapZoomBox-overskin.svg" sourcePath="assets/images/mapZoomBox-overskin.svg"/>
+    <resourceEntry destPath="assets/images/feed-overskin.svg" sourcePath="assets/images/feed-overskin.svg"/>
+    <resourceEntry destPath="assets/images/ArrowUp.swf" sourcePath="assets/images/ArrowUp.swf"/>
+    <resourceEntry destPath="assets/images/layerZoomTo-disabledskin.svg" sourcePath="assets/images/layerZoomTo-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/icons/Icons-10.png" sourcePath="assets/images/icons/Icons-10.png"/>
+    <resourceEntry destPath="assets/images/mapZoomOut-downskin.svg" sourcePath="assets/images/mapZoomOut-downskin.svg"/>
+    <resourceEntry destPath="assets/images/featureDragMap-upskin.swf" sourcePath="assets/images/featureDragMap-upskin.swf"/>
+    <resourceEntry destPath="assets/images/feed-downskin.svg" sourcePath="assets/images/feed-downskin.svg"/>
+    <resourceEntry destPath="assets/images/layerUp-overskin.svg" sourcePath="assets/images/layerUp-overskin.svg"/>
+    <resourceEntry destPath="assets/images/mapPanSouth-upskin.swf" sourcePath="assets/images/mapPanSouth-upskin.swf"/>
+    <resourceEntry destPath="assets/fxg/DownArrowUp.fxg" sourcePath="assets/fxg/DownArrowUp.fxg"/>
+    <resourceEntry destPath="assets/images/layerRemove-upskin.svg" sourcePath="assets/images/layerRemove-upskin.svg"/>
+    <resourceEntry destPath="assets/fxg/LayerItemUp.fxg" sourcePath="assets/fxg/LayerItemUp.fxg"/>
+    <resourceEntry destPath="assets/images/mapPanWest-upskin.swf" sourcePath="assets/images/mapPanWest-upskin.swf"/>
+    <resourceEntry destPath="assets/fxg/Popup.fxg" sourcePath="assets/fxg/Popup.fxg"/>
+    <resourceEntry destPath="assets/images/icons/Icons-08.png" sourcePath="assets/images/icons/Icons-08.png"/>
+    <resourceEntry destPath="assets/images/icons/Icons-07.png" sourcePath="assets/images/icons/Icons-07.png"/>
+    <resourceEntry destPath="assets/images/layerRemove-disabledskin.svg" sourcePath="assets/images/layerRemove-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/featureDrawPolyline-upskin.swf" sourcePath="assets/images/featureDrawPolyline-upskin.swf"/>
+    <resourceEntry destPath="assets/images/icons/Icons-04.png" sourcePath="assets/images/icons/Icons-04.png"/>
+    <resourceEntry destPath="assets/images/featureDeleteLastSelected-upskin.png" sourcePath="assets/images/featureDeleteLastSelected-upskin.png"/>
+    <resourceEntry destPath="assets/images/layerInformation-disabledskin.svg" sourcePath="assets/images/layerInformation-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/icons/Icons-05.png" sourcePath="assets/images/icons/Icons-05.png"/>
+    <resourceEntry destPath="assets/images/featureDrawPolygon-upskin.swf" sourcePath="assets/images/featureDrawPolygon-upskin.swf"/>
+    <resourceEntry destPath="assets/images/mapZoomOut-upskin-h32.svg" sourcePath="assets/images/mapZoomOut-upskin-h32.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomIn-upskin-h32.svg" sourcePath="assets/images/mapZoomIn-upskin-h32.svg"/>
+    <resourceEntry destPath="assets/images/featureDrawPoint-upskin.swf" sourcePath="assets/images/featureDrawPoint-upskin.swf"/>
+    <resourceEntry destPath="assets/images/layerEditStyle-disabledskin.svg" sourcePath="assets/images/layerEditStyle-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/mapPanNorth-upskin.swf" sourcePath="assets/images/mapPanNorth-upskin.swf"/>
+    <resourceEntry destPath="assets/fxg/UpArrowUp.fxg" sourcePath="assets/fxg/UpArrowUp.fxg"/>
+    <resourceEntry destPath="assets/images/feed-disabledskin.svg" sourcePath="assets/images/feed-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/mapZoomOut-disabledskin.svg" sourcePath="assets/images/mapZoomOut-disabledskin.svg"/>
+    <resourceEntry destPath="assets/images/marker-gold.png" sourcePath="assets/images/marker-gold.png"/>
+    <resourceEntry destPath="assets/images/layerInformation-overskin.svg" sourcePath="assets/images/layerInformation-overskin.svg"/>
+  </includeResources>
   <namespaceManifests>
     <namespaceManifestEntry manifest="META-INF/manifest.xml" namespace="http://openscales.org"/>
   </namespaceManifests>

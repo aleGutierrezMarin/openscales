@@ -35,10 +35,9 @@ package org.openscales.core.i18n
 			}
 			else{ // the language doesn't exist, create it and put the key value
 				hmTmp = new HashMap();
+				_hmCatalog.put(locale.localeKey, hmTmp);
 			}
-			
 			hmTmp.put(key,translation);
-			_hmCatalog.put(locale.localeKey, hmTmp);
 		}
 		
 		
