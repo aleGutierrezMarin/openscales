@@ -108,17 +108,17 @@
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>
   </includeClasses>
   <includeResources>
-    <resourceEntry destPath="assets/images/layerUp-downskin.svg" sourcePath="assets/images/layerUp-downskin.svg"/>
-    <resourceEntry destPath="assets/images/layerRemove-upskin.png" sourcePath="assets/images/layerRemove-upskin.png"/>
-    <resourceEntry destPath="assets/images/layerRemove-overskin.svg" sourcePath="assets/images/layerRemove-overskin.svg"/>
-    <resourceEntry destPath="assets/images/icons/Icons-01.png" sourcePath="assets/images/icons/Icons-01.png"/>
     <resourceEntry destPath="META-INF/manifest.xml" sourcePath="META-INF/manifest.xml"/>
-    <resourceEntry destPath="assets/images/featureDeleteAll-upskin.png" sourcePath="assets/images/featureDeleteAll-upskin.png"/>
-    <resourceEntry destPath="assets/images/layerEditStyle-overskin.svg" sourcePath="assets/images/layerEditStyle-overskin.svg"/>
+    <resourceEntry destPath="assets/fxg/ButtonCloseOver.fxg" sourcePath="assets/fxg/ButtonCloseOver.fxg"/>
+    <resourceEntry destPath="assets/fxg/ButtonCloseUp.fxg" sourcePath="assets/fxg/ButtonCloseUp.fxg"/>
     <resourceEntry destPath="assets/fxg/ButtonOpacity.fxg" sourcePath="assets/fxg/ButtonOpacity.fxg"/>
-    <resourceEntry destPath="assets/images/layerEyeOpen.png" sourcePath="assets/images/layerEyeOpen.png"/>
-    <resourceEntry destPath="assets/images/layerDown-disabledskin.svg" sourcePath="assets/images/layerDown-disabledskin.svg"/>
-    <resourceEntry destPath="assets/images/marker-blue.png" sourcePath="assets/images/marker-blue.png"/>
+    <resourceEntry destPath="assets/fxg/DownArrowDown.fxg" sourcePath="assets/fxg/DownArrowDown.fxg"/>
+    <resourceEntry destPath="assets/fxg/DownArrowOver.fxg" sourcePath="assets/fxg/DownArrowOver.fxg"/>
+    <resourceEntry destPath="assets/fxg/DownArrowUp.fxg" sourcePath="assets/fxg/DownArrowUp.fxg"/>
+    <resourceEntry destPath="assets/fxg/LayerItemOver.fxg" sourcePath="assets/fxg/LayerItemOver.fxg"/>
+    <resourceEntry destPath="assets/fxg/LayerItemUp.fxg" sourcePath="assets/fxg/LayerItemUp.fxg"/>
+    <resourceEntry destPath="assets/fxg/Popup.fxg" sourcePath="assets/fxg/Popup.fxg"/>
+    <resourceEntry destPath="assets/fxg/UpArrowDown.fxg" sourcePath="assets/fxg/UpArrowDown.fxg"/>
     <resourceEntry destPath="assets/fxg/UpArrowOver.fxg" sourcePath="assets/fxg/UpArrowOver.fxg"/>
     <resourceEntry destPath="assets/images/layerZoomTo-upskin.svg" sourcePath="assets/images/layerZoomTo-upskin.svg"/>
     <resourceEntry destPath="assets/fxg/DownArrowDown.fxg" sourcePath="assets/fxg/DownArrowDown.fxg"/>
