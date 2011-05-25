@@ -21,7 +21,7 @@ package org.openscales.core
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
-	import org.openscales.core.i18n.provider.JSONProvider;
+	import org.openscales.core.i18n.provider.I18nJSONProvider;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.popup.Popup;
@@ -107,8 +107,8 @@ package org.openscales.core
 			super();
 			
 			//load i18n module
-			new JSONProvider(Locale.getLocaleByKey("EN"),ENLocale);
-			new JSONProvider(Locale.getLocaleByKey("FR"),FRLocale);
+			I18nJSONProvider.addTranslation(ENLocale);
+			I18nJSONProvider.addTranslation(FRLocale);
 			
 			this.size = new Size(width, height);
 			this._layerContainer = new Sprite();
