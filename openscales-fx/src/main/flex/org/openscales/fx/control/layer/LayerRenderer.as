@@ -126,6 +126,7 @@ package org.openscales.fx.control.layer
 		 */
 		override public function set data(value:Object):void 
 		{
+			super.data = value;
 			this._layer = value as Layer;
 			
 			if((this.layer != null) )

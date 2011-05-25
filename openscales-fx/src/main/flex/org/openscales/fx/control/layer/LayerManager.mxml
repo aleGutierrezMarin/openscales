@@ -101,10 +101,11 @@
 				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
 					var overlayArray:Vector.<Layer> = this.map.layers;
 					var i:uint = overlayArray.length;
-					var ac:ArrayCollection = new ArrayCollection();
+					layerList.dataProvider.removeAll();
+					layerList.invalidateDisplayList();
 					for(i;i>0;--i)
-						ac.addItem(overlayArray[i-1]);
-					layerList.dataProvider = ac;
+						layerList.dataProvider.addItem(overlayArray[i-1]);
+					layerList.invalidateDisplayList();
 					
 				}
 			}

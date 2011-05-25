@@ -53,7 +53,7 @@
 			* @param event Change event
 			*/
 			public function layerVisible(event:MouseEvent):void{
-				layer.visible = !layer.visible;
+				this._layer.visible = !this._layer.visible;
 				// If the layer was uncheck from the beggining, he hadn't load yet so we need
 				// to redraw it to load it.
 				if(layer.visible){
