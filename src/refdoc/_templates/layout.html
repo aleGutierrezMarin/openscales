@@ -1,0 +1,10 @@
+{% extends "!layout.html" %}
+
+
+{% block relbar1 %}
+
+<a href="{{ pathto('index') }}"><img src="{{
+pathto("_static/logo.png", 1) }}" border="0" alt="OpenScales"/></a>
+{{ super() }}
+{% endblock %}
+
