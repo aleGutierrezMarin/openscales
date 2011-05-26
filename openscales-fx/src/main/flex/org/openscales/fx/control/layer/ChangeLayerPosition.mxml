@@ -13,6 +13,8 @@
 			import assets.fxg.UpArrowOver;
 			import assets.fxg.UpArrowUp;
 			
+			import org.openscales.core.i18n.Catalog;
+			
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.control.layer.LayerManager;
@@ -96,7 +98,7 @@
 	
 	<s:VGroup verticalAlign="middle" gap="0">
 		<IconButton id="layerSwitcherArrowUp"
-					toolTip="Déplacer vers l'avant plan"
+					toolTip="{Catalog.getLocalizationForKey('layercontrol.movefront')}"
 					click="upLayer(event)"
 					icon="{new UpArrowUp()}"
 					iconOver="{new UpArrowOver()}"
@@ -106,7 +108,7 @@
 					/>
 		
 		<IconButton id="layerSwitcherArrowDown"
-					toolTip="Déplacer vers l'arrière plan"
+					toolTip="{Catalog.getLocalizationForKey('layercontrol.moveback')}"
 					click="downLayer(event)"
 					icon="{new DownArrowUp()}"
 					iconOver="{new DownArrowOver()}"

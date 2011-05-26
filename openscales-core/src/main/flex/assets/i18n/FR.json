@@ -1,4 +1,9 @@
  {
+ 
+   "layercontrol.movefront": "Déplacer vers l'avant plan",
+   "layercontrol.moveback": "Déplacer vers l'arrière plan",
+   "layercontrol.deletelayer": "Supprimer la couche",
+ 
    "locale.key": "FR",
    "locale.name": "French",
    "locale.localizedName": "Français",
