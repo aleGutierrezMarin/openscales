@@ -152,7 +152,7 @@
 			 */
 			public function setGroupSize():void
 			{
-				this._maximizeGroupSize = layerSwitcherAdditionnalDisplay.height;
+				this._maximizeGroupSize = hgroup.height+layerSwitcherAdditionnalDisplay.height;
 				
 				// according to yhe group displayed or not, set the position of the different group
 				this._groupPositionOptionnal = hgroup.height + layerSwitcherAdditionnalDisplay.height;
@@ -265,7 +265,7 @@
 					
 				else
 				{
-					this.height = layerSwitcherReduceMaximize.height; 
+					this.height = hgroup.height; 
 				}
 			}
 			
@@ -274,6 +274,7 @@
 	
 	<s:VGroup id="layerSwitcherMainGroup" >
 		<s:HGroup width="100%"
+				  height="25"
 				  id="hgroup"
 				  paddingLeft="2"
 				  paddingBottom="2"
