@@ -27,10 +27,7 @@
 			label="Change visibility mapnik" 
 			click="changeVisibility(event)"/>
 
-		
-		<ControlPanel title="Layers Manager" x="10" y="10" width="215">
-			<LayerManager />
-		</ControlPanel>
+		<LayerManager x="10" y="10" width="215" />
 		
 	</Map>
 	<fx:Script>
@@ -57,7 +54,6 @@
 						
 				var constraint:ConstraintOriginator = new ConstraintOriginator(mapnikLayer.layer.map.maxExtent, mapnikLayer.layer.minResolution, mapnikLayer.layer.maxResolution);
 				
-				originatorCC.addConstraint(constraint);
 				originatorOSM.addConstraint(constraint);
 				
 				originatorList.push(originatorCC);

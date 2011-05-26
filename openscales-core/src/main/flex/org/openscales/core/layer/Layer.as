@@ -309,12 +309,6 @@ package org.openscales.core.layer {
 				return;
 			}
 			
-			// If no constraint, generate default
-			if(originator.constraints.length == 0)
-			{
-				originator.constraints.push(new ConstraintOriginator(this._maxExtent, this.minResolution, this.maxResolution));
-			}
-			
 			var i:uint = 0;
 			var j:uint = this._originators.length;
 			for (; i<j; ++i) 
