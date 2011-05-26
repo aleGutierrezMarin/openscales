@@ -6,9 +6,10 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import assets.fxg.ButtonCloseOver;
 			import assets.fxg.ButtonCloseUp;
+			
+			import org.openscales.core.i18n.Catalog;
 			
 			/**
 			 * Delete the layer on the map
@@ -22,7 +23,7 @@
 	</fx:Script>
 	
 	<IconButton id="deleteButton"
-				toolTip="Supprimer la couche"
+				toolTip="{Catalog.getLocalizationForKey('layercontrol.deletelayer')}"
 				click="deleteLayer(event)"
 				icon="{new ButtonCloseUp()}"
 				iconOver="{new ButtonCloseOver()}"
