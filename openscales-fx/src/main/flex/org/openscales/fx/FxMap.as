@@ -3,14 +3,11 @@ package org.openscales.fx
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
-	import flash.system.ApplicationDomain;
-	import flash.system.SecurityDomain;
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
-	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
 	
@@ -31,7 +28,6 @@ package org.openscales.fx
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	
 	import spark.components.Group;
@@ -164,6 +160,8 @@ package org.openscales.fx
 			if (this._map == null)
 			{
 				this._map = new Map(this.width, this.height);
+			} else {
+				this._map.size = new Size(this.width,this.height);
 			}
 			
 			var i:int = 0;
