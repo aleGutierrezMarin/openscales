@@ -499,7 +499,9 @@ package org.openscales.core.layer {
 		}
 		
 		public function set projSrsCode(value:String):void {
-			this._projSrsCode = value.toUpperCase();
+			if(value != null)
+				this._projSrsCode = value.toUpperCase();
+			
 			if (this._autoResolution) {
 				this.generateResolutions();
 			}
