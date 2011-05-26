@@ -79,15 +79,6 @@
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
   </includeClasses>
   <includeResources/>
-    <resourceEntry destPath="assets/fxg/ButtonCloseOver.fxg" sourcePath="assets/fxg/ButtonCloseOver.fxg"/>
-    <resourceEntry destPath="assets/fxg/ButtonCloseUp.fxg" sourcePath="assets/fxg/ButtonCloseUp.fxg"/>
-    <resourceEntry destPath="assets/fxg/DownArrowDown.fxg" sourcePath="assets/fxg/DownArrowDown.fxg"/>
-    <resourceEntry destPath="assets/fxg/DownArrowOver.fxg" sourcePath="assets/fxg/DownArrowOver.fxg"/>
-    <resourceEntry destPath="assets/fxg/DownArrowUp.fxg" sourcePath="assets/fxg/DownArrowUp.fxg"/>
-    <resourceEntry destPath="assets/fxg/LayerItemOver.fxg" sourcePath="assets/fxg/LayerItemOver.fxg"/>
-    <resourceEntry destPath="assets/fxg/LayerItemUp.fxg" sourcePath="assets/fxg/LayerItemUp.fxg"/>
-    <resourceEntry destPath="assets/fxg/Popup.fxg" sourcePath="assets/fxg/Popup.fxg"/>
-    <resourceEntry destPath="assets/fxg/UpArrowDown.fxg" sourcePath="assets/fxg/UpArrowDown.fxg"/>
   <namespaceManifests>
     <namespaceManifestEntry manifest="META-INF/manifest.xml" namespace="http://openscales.org"/>
   </namespaceManifests>

@@ -26,7 +26,7 @@ package org.openscales.core.i18n
 		private var _map:Map;
 		
 		private var _existingKey:String = "zoombar.state";
-		private var _notExistingKey = "notexisting";
+		private var _notExistingKey:String = "notexisting";
 
 		
 		[Before]
