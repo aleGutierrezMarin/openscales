@@ -13,9 +13,9 @@
 			import assets.fxg.UpArrowOver;
 			import assets.fxg.UpArrowUp;
 			
-			import org.openscales.core.i18n.Catalog;
-			
+			import org.openscales.core.Map;
 			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.fx.control.layer.LayerRenderer;
@@ -42,10 +42,11 @@
 			 */
 			public function updateArrowsDisplay(event:LayerEvent = null):void
 			{
-				if(this._layer.map != null )
+				var map:Map = this._layer.map;
+				if(map)
 				{
 					// get the current map layer
-					var length:uint = this._layer.map.layerContainer.numChildren;
+					var length:uint = map.layerContainer.numChildren;
 					
 					if(length<=1) 
 					{
@@ -55,13 +56,13 @@
 					else 
 					{
 						// the layer is at the bottom of the list, we hide the arrowDown						
-						if(this._layer.map.layerContainer.getChildIndex(this._layer) == 0)
+						if(map.layerContainer.getChildIndex(this._layer) == 0)
 						{
 							layerSwitcherArrowUp.enabled = true;
 							layerSwitcherArrowDown.enabled = false;
 						}
 							// the layer is on the top of the list, we hide the arrowUp
-						else if(this._layer.map.layerContainer.getChildIndex(this._layer)==length-1)
+						else if(map.layerContainer.getChildIndex(this._layer)==length-1)
 						{
 							layerSwitcherArrowUp.enabled = false;
 							layerSwitcherArrowDown.enabled = true;
