@@ -126,6 +126,7 @@
 				
 				if(this._rendererOptions)
 				{
+					/** TODO : work in progress
 					// check if some options have to be displayed :
 					if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
 					{
@@ -144,6 +145,7 @@
 						layerControlMetadatas.visible = true;
 						this._optionnalGroupDisplayed = true;
 					}
+					 */
 				}
 			}
 			
@@ -158,6 +160,7 @@
 				this._groupPositionOptionnal = hgroup.height + layerSwitcherAdditionnalDisplay.height;
 				this._groupPositionDraw = this._groupPositionOptionnal;
 				
+				/** TODO : work in progress
 				if(this._optionnalGroupDisplayed = true)
 				{
 					this._maximizeGroupSize += layerSwitcherOptionnalDisplay.height;
@@ -171,6 +174,7 @@
 				
 				layerSwitcherOptionnalDisplay.y = this._groupPositionOptionnal;
 				layerSwitcherDrawingTools.y = this._groupPositionDraw;
+				 */
 			}
 			
 			/**
@@ -249,13 +253,15 @@
 			public function updateOptionnalDisplay():void
 			{
 				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
+				
+				/** TODO : work in progress
 				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
 				
 				if(this._isDrawingLayer)
 				{
 					layerSwitcherDrawingTools.visible = !this._isMinimized;
 				}
-				
+				*/
 				
 				if(!this._isMinimized)
 				{
@@ -302,10 +308,12 @@
 		</s:HGroup>
 		
 		
-		<s:Group id="layerSwitcherAdditionnalDisplay" visible="false">
+		<s:Group id="layerSwitcherAdditionnalDisplay" height="20" visible="false">
 			<ChangeLayerOpacity id="layerControlOpacity" />
 		</s:Group>
 		
+		
+		<!--- TODO : work in progress
 		<s:Group id="layerSwitcherDrawingTools" visible="false" includeInLayout="false" height ="90">
 			<FeatureDrawing id="layerControlDrawTools" />
 		</s:Group>
@@ -315,7 +323,7 @@
 			<LayerLegend x="20" id="layerControlLegend" />
 			<LayerMetadatas x="40" id="layerControlMetadatas" />
 		</s:Group>
-		
+		-->
 		
 		
 		
