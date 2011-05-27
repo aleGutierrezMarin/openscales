@@ -102,7 +102,6 @@ package org.openscales.fx.control.layer
 			var searching:Boolean = true;
 			
 			// the list owner
-			var list:List = (this.owner as List);
 			var object:Object = this.owner;
 			
 			while(searching)
