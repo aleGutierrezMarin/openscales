@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Map center="538007,5743089" zoom="6">
+	<Layers>
+		<Mapnik name="Mapnik" />
+	</Layers>
+	<Handlers>
+		<DragHandler/>
+		<WheelHandler/>
+	</Handlers>
+</Map>	
