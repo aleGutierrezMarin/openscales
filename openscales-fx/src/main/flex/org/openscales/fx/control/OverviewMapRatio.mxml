@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- 			
+The language Switcher is a drop down list used to change the language of the application.
+This is a DropList UI component that show all the languages avaliables.
+You don't have to configure the LanguageSwitcher.
+It will retrieve the language information and display the availlable languages.
+
+@author Maxime Viry
+
+--> 
+<os:OverviewMapRatio 
+	xmlns:os="http://openscales.org"
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Declarations>
+	</fx:Declarations>
+</os:OverviewMapRatio>
