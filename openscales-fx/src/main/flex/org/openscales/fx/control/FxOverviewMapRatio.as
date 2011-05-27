@@ -38,17 +38,17 @@ package org.openscales.fx.control
 		 * 
 		 * @param ratio The curent ratio between the overview map and the map
 		 */
-		public function set ratio(value:String):void
+		public function set ratio(value:Number):void
 		{
-			_overviewmap.ratio = Number(value);
+			_overviewmap.ratio = value;
 		}
 		
 		/**
 		 * @private
 		 */
-		public function get ratio():String
+		public function get ratio():Number
 		{
-			return String(_overviewmap.ratio);
+			return _overviewmap.ratio;
 		}
 		
 		/**
@@ -59,6 +59,9 @@ package org.openscales.fx.control
 			this._overviewmap.layer = value;	
 		}
 		
+		/**
+		 * @private
+		 */
 		public function get layer():Layer{
 			
 			return this._overviewmap.layer;
@@ -104,6 +107,22 @@ package org.openscales.fx.control
 			mapContainer.addChild(this._overviewmap);
 			if(this.width && this.height)
 				this._overviewmap.size = new Size(this.width,this.height);
+		}
+		
+		/**
+		 * The width of the overview map
+		 */
+		override public function set width(value:Number):void{
+			super.width = value;
+			this._overviewmap.width = value;
+		}
+		
+		/**
+		 * The height of the overview map
+		 */
+		override public function set height(value:Number):void{
+			super.height = value;
+			this._overviewmap.height = value;
 		}
 				
 		
