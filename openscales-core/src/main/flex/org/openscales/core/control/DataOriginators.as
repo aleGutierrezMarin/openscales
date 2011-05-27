@@ -238,7 +238,8 @@ package org.openscales.core.control
 				for (; i<j; ++i) 
 				{
 					// if originator covered the current area :
-					if( layer.originators[i].isCoveredArea(this._map.extent, this._map.resolution))
+					if( layer.originators[i].constraints.length == 0 
+						|| layer.originators[i].isCoveredArea(this._map.extent, this._map.resolution))
 					{
 						// remove the orignator (drecrement counter or remove the originator)
 						removeOriginator(layer.originators[i]);
