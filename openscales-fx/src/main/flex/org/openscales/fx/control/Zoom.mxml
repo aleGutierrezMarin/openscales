@@ -31,6 +31,13 @@
 			
 			/**
 			 * @private
+			 * The string value for the list of labels for the different resolution.
+			 * @default null
+			 */
+			private var _scalesName:String = null;
+			
+			/**
+			 * @private
 			 * The list of labels for the different resolution.
 			 * @default null
 			 */
@@ -84,8 +91,7 @@
 					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
 					
 					// update the display label
-					if(zoomSlider.skin is ZoomSkin)
-						((zoomSlider.skin as ZoomSkin).thumb.skin as ZoomThumbSkin).thumbLabel.text = this._currentLabel;
+					scalesNameLabel.text = this._currentLabel;
 				}
 			}
 			
@@ -182,8 +188,7 @@
 				if(!this._map || !this._map.baseLayer)
 					return;
 				// update the display label
-				if(zoomSlider.skin is ZoomSkin)
-					((zoomSlider.skin as ZoomSkin).thumb.skin as ZoomThumbSkin).thumbLabel.text = this.getLabelFromZoom(zoomSlider.value);
+				scalesNameLabel.text = this._currentLabel;
 				
 				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
 			}
@@ -216,6 +221,23 @@
 
 			}
 			
+			/**
+			 * The string value for the list of labels for the different resolution.
+			 */
+			public function get scalesName():String
+			{
+				return this._scalesName;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set scalesName(value:String):void
+			{
+				this._scalesName = value;
+				this.scalesLabels = this._scalesName;
+			}	
+			
 			
 			/**
 			 * The current value of the zoom label
@@ -246,6 +268,6 @@
 	<s:Button id="zoomIn" name="zoomin" label="-" width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
 	<s:Button id="zoomOut" name="zoomout" label="+" width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
-	
+	<s:Label id="scalesNameLabel" x="70" y="120" backgroundColor="0xDDDDDD" />
 </Control>
 
