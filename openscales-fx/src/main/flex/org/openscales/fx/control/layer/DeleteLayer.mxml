@@ -16,7 +16,8 @@
 			 * @param event Click event
 			 */
 			public function deleteLayer(event:MouseEvent):void {
-				_layer.map.removeLayer(_layer);
+			
+				this._layer.map.removeLayer(this._layer);
 			}
 			
 		]]>
