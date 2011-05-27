@@ -248,7 +248,7 @@
 				<configuration>
 					<targetPlayer>${flex.player.version.major}.${flex.player.version.minor}.${flex.player.version.revision}</targetPlayer>
 					<outputDirectory>${project.build.directory}/site/asdoc</outputDirectory>
-					<testTimeout>20000</testTimeout>
+					<testTimeout>200000</testTimeout>
 				</configuration>
 			</plugin>
 			<plugin>
