@@ -259,6 +259,7 @@
 				{
 					this._currentOriginator = 0; // back to the begining
 				}
+				this.changeDisplay(null);
 			}
 			
 			// getter / setter :
