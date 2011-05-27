@@ -181,7 +181,7 @@ package org.openscales.core.control
 				this.map.addEventListener(MapEvent.LOAD_END,
 					mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN,
-					onMouseDown);
+					onMouseDown,true);
 			}
 		}
 		

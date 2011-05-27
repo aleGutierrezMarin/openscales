@@ -18,14 +18,9 @@ Draw a rectangle on the overview to define a new extent for the main map.-->
 		
 		<TraceInfo x="{width-200}" y="0" />
 		
-		<s:Panel id="miniMapPanel" title="Overview map" x="{width-miniMapPanel.width-10}" y="{height-miniMapPanel.height-10}">
-			<s:layout>
-				<s:HorizontalLayout/>
-			</s:layout>
-			<OverviewMapRatio ratio ="4" id="miniMap" width="100%" height="100%" >
-				<Mapnik name="mapnik" proxy="http://openscales.org/proxy.php?url="/>
-			</OverviewMapRatio>		
-		</s:Panel>
+		<OverviewMapRatio bottom="10" right="10" ratio ="4" id="miniMap" width="200" height="200" >
+			<Mapnik name="mapnik" proxy="http://openscales.org/proxy.php?url="/>
+		</OverviewMapRatio>		
 		
 		<PanZoom id="panZoom" x="10" y="10" />
 
@@ -36,8 +31,6 @@ Draw a rectangle on the overview to define a new extent for the main map.-->
 		<![CDATA[
 						
 			private function resizeMap():void {
-				miniMap.height = 0.2 * this.height;
-				miniMap.width = this.width * miniMap.height / this.height;
 			}
 			
 		]]>
