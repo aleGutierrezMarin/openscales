@@ -28,7 +28,7 @@ package org.openscales.core.layer.ogc
 		 * Version of wms protocol used to request the server
 		 * Default version is 1.3.0
 		 */
-		protected var _version:String="1.3.0";
+		protected var _version:String="1.1.1";
 		
 		/**
 		 * @private
@@ -46,7 +46,7 @@ package org.openscales.core.layer.ogc
 		 * @private
 		 * MIME type for the requested layer
 		 */
-		protected var _format:String;
+		protected var _format:String ="image/jpeg";
 		
 		/**
 		 * @private 
@@ -58,7 +58,7 @@ package org.openscales.core.layer.ogc
 		 * @private 
 		 * Indicates if the tile should be transparent or not
 		 */ 
-		protected var _transparent:Boolean;
+		protected var _transparent:Boolean = true;
 		
 		/**
 		 * @private 
