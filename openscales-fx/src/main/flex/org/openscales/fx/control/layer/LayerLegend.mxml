@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx"
+			  xmlns="http://openscales.org" >
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import assets.fxg.ButtonOpacity;
+			
+			[Bindable]
+			[Embed(source="/assets/images/layer/legend.png")]
+			private var _btnLegend:Class;
+			
+			/**
+			 * Center the map on the layer
+			 * @param event Click event
+			 */
+			private function displayLegend(event:MouseEvent):void
+			{
+				trace("display Legend");
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<IconButton id="layerControlLegendIcon"
+				width="16"
+				height="16"
+				click="displayLegend(event)"
+				icon="{_btnLegend}" />
+	
+</LayerControl>
