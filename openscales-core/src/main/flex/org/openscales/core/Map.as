@@ -361,7 +361,7 @@ package org.openscales.core
 		public function removeControl(control:IControl):void {
 			var i:int = this._controls.indexOf(control);
 			if(i!=-1) {
-				this._controls = this._controls.slice(i,1);
+				this._controls.splice(i,1);
 				this.removeChild(control as Sprite);
 				control.destroy();
 			}
