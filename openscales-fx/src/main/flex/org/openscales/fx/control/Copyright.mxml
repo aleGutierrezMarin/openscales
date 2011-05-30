@@ -33,6 +33,7 @@
 			public function set copyright(value:String):void
 			{
 				this._copyright = value;
+				copyrightLabel.text = "© "+this.copyright;
 			}
 			
 		]]>

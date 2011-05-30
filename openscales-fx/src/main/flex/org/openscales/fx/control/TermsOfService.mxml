@@ -17,7 +17,7 @@
 			
 			public function  configure():void
 			{ 
-				termsOfServiceText.htmlText = "<a href='"+this._url+"' target='_blank'>"+this._label+"</a>";
+				this.updateHtmlTextValue();	
 			}
 			
 			/**
@@ -31,6 +31,7 @@
 			public function set label(value:String):void{
 				this._autoTranslate = false;
 				this._label = value;
+				this.updateHtmlTextValue();
 			}
 			
 			/**
@@ -43,13 +44,22 @@
 			
 			public function set url(value:String):void{
 				this._url = value;
+				this.updateHtmlTextValue();
+			}
+			
+			/**
+			 * Update the htmltext of the Text according to the current url and label
+			 */
+			public function updateHtmlTextValue():void
+			{
+				termsOfServiceText.htmlText = "<a href='"+this._url+"' target='_blank'>"+this._label+"</a>";
 			}
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
 				if(this._autoTranslate) {
 					this._label = Catalog.getLocalizationForKey("tos.label");
 				}
-				this.configure();
+				this.updateHtmlTextValue();
 			}
 
 			
