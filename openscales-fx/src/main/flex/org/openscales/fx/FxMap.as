@@ -11,7 +11,6 @@ package org.openscales.fx
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
 	
-	import org.flexunit.internals.namespaces.classInternal;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.control.IControl;
