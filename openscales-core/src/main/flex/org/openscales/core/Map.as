@@ -1372,7 +1372,11 @@ package org.openscales.core
 			var i:int = this._controls.indexOf(control);
 			if(i!=-1) {
 				this._controls.splice(i,1);
-				this.removeChild(control as Sprite);
+				
+				if((control as DisplayObject).parent == this){
+					this.removeChild(control as DisplayObject);
+				}				
+				
 				control.destroy();
 			}
 		}

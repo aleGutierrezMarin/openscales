@@ -58,9 +58,26 @@ package org.openscales.map{
 			map.removeControl(control);
 			
 			// Then the map no longer contains the control
-			assertFalse("Map still contains the control",map.controls.some(function(item:Control,index:uint,controls:Vector.<IControl>):Boolean{
-				return item === control;
-			}));
+			assertTrue("Map still contains the control", map.controls.indexOf(control) == -1);
+		}
+		
+		[Test]
+		public function shouldCorrectlyRemoveAControlNotDisplayedInTheMap():void{
+			
+			// Given a map
+			var map:Map = new Map();
+			
+			// And a control added to the map, without displaying it
+			var control:Control = new Control();
+			map.addControl(control, false);
+			
+			// When the control is removed
+			map.removeControl(control);
+			
+			// Then the map no longer contains the control
+			assertTrue("Map still contains the control", map.controls.indexOf(control) == -1);
+			
+			// And no exception was thrown ...
 		}
 		
 		[Test]
@@ -93,9 +110,7 @@ package org.openscales.map{
 		// --- Utility methods --- //
 		private function assertControlIsOnTheMap(map:Map,control:IControl):void{
 			
-			assertTrue("Map does not contain the control",map.controls.some(function(item:Control,index:uint,controls:Vector.<IControl>):Boolean{
-				return item === control;
-			}));
+			assertTrue("Map does not contain the control",map.controls.indexOf(control) != -1);
 		}
 	}
 }
