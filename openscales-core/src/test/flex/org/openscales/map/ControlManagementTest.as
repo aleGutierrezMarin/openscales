@@ -11,19 +11,36 @@ package org.openscales.map{
 			
 			// Given a map
 			var map:Map = new Map();
-			var initialControlCount:uint = map.controls.length;
 			
 			// When a control is added to the map
 			var control:Control = new Control();
 			map.addControl(control);
 			
 			// Then the map contains the control
-			assertTrue("Map does not contain the control",map.controls.some(function(item:Control,index:uint,controls:Vector.<IControl>):Boolean{
-				return item === control;
-			}));
+			this.assertControlIsOnTheMap(map,control);
 			
 			// And the control is properly linked to the map
 			assertEquals("Control is not linked to the map", map, control.map);
+		}
+		
+		[Test]
+		public function shouldContainControlButNotAsAChildAfterItIsAdded():void{
+			
+			// Given a map
+			var map:Map = new Map();
+			
+			// When a control is added but not attached to the map
+			var control:Control = new Control();
+			map.addControl(control, false);
+			
+			// Then the map contains the control
+			this.assertControlIsOnTheMap(map,control);
+			
+			// And the control is properly linked to the map
+			assertEquals("Control is not linked to the map", map, control.map);
+			
+			// But the control is not displayed on the map
+			assertNull("Control parent is not null",control.parent);
 		}
 		
 		[Test]
@@ -73,5 +90,12 @@ package org.openscales.map{
 			assertFalse("Control detected in the map", map.hasControl(control));
 		}
 		
+		// --- Utility methods --- //
+		private function assertControlIsOnTheMap(map:Map,control:IControl):void{
+			
+			assertTrue("Map does not contain the control",map.controls.some(function(item:Control,index:uint,controls:Vector.<IControl>):Boolean{
+				return item === control;
+			}));
+		}
 	}
 }
