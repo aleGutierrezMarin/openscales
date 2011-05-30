@@ -11,6 +11,7 @@ package org.openscales.fx
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
 	
+	import org.flexunit.internals.namespaces.classInternal;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.control.IControl;
@@ -362,15 +363,7 @@ package org.openscales.fx
 			return this._flexOverlay;
 		}
 
-		public function get controls():Vector.<IControl>
-		{
-			return _controls;
-		}
-
-		public function set controls(value:Vector.<IControl>):void
-		{
-			_controls = value;
-		}
+		
 		
 		/** 
 		 * Url to the theme used to custom the components of the current map
@@ -425,6 +418,41 @@ package org.openscales.fx
 			}
 		}
 
+		// --- Control management --- //
+		/**
+		 * List of the controls linked to the map
+		 */
+		public function get controls():Vector.<IControl>
+		{
+			// TODO : return a clone of the controls list
+			return this._map.controls;
+		}
 		
+		/**
+		 * Adds given control to the map, displaying it on the map if the <code>attach</code> parameter is true.
+		 * Otherwise, the control is just linked to the map and can be displayed anywhere else
+		 * 
+		 * @param control Control to add
+		 * @param attach If true, component is displayed on the map. Otherwise, control is just linked to the map. 
+		 * 
+		 * @example The following code explains how to add a control :
+		 * 
+		 * <listing version="3.0">
+		 * 	myMap.addControl(new geoportal.control.OverviewMap());
+		 * </listing>
+		 */
+		public function addControl(control:IControl, attach:Boolean = false):void{
+			
+			if(control is IVisualElement){
+				this._map.addControl(control, false);
+				
+				if(attach){
+					this.addElement(control as IVisualElement);
+				}
+			}
+			else{
+				this._map.addControl(control,attach);
+			}
+		}
 	}
 }

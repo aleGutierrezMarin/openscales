@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- LayerManager Flex control, used to change layer order or visbility -->
-<Control xmlns="http://openscales.org"
+<Control xmlns="org.openscales.fx.control.*"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 width="215" xmlns:layer="org.openscales.fx.control.layer.*"
+		 width="215"
 		 creationComplete="configure()">
 	
 	<fx:Script>
