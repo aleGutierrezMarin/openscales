@@ -304,6 +304,7 @@ package org.openscales.fx
 		 */
 		public function set zoom(value:Number):void {
 			this._zoom = value;
+			this._map.zoom = value;
 		}
 		
 		/**
