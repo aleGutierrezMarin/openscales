@@ -91,8 +91,10 @@ package org.openscales.core.control
 		override public function set map(map:Map):void {
 			super.map = map;
 			
-			this._map.addControl(this._pan);
-			this._map.addControl(this._zoom);
+			if(this._map != null){
+				this._map.addControl(this._pan);
+				this._map.addControl(this._zoom);
+			}
 		}
 		
 		/**
