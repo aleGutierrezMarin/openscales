@@ -440,7 +440,7 @@ package org.openscales.fx
 		 * 	myMap.addControl(new geoportal.control.OverviewMap());
 		 * </listing>
 		 */
-		public function addControl(control:IControl, attach:Boolean = false):void{
+		public function addControl(control:IControl, attach:Boolean = true):void{
 			
 			if(control is IVisualElement){
 				this._map.addControl(control, false);
@@ -451,6 +451,19 @@ package org.openscales.fx
 			}
 			else{
 				this._map.addControl(control,attach);
+			}
+		}
+		
+		/**
+		 * Adds a list of controls to the map and displays them
+		 * 
+		 * @param controls The list of controls to add to the map.
+		 */
+		public function addControls(controls:Vector.<IControl>):void{
+			
+			for each (var control:IControl in controls){
+				
+				this.addControl(control);
 			}
 		}
 	}
