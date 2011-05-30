@@ -9,6 +9,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.sliderClasses.Slider;
+			import mx.events.DragEvent;
 			import mx.events.SliderEvent;
 			import mx.events.SliderEventClickTarget;
 			import mx.events.StateChangeEvent;
@@ -51,6 +52,14 @@
 			private var _currentLabel:String = null;
 			
 			
+			/**
+			 * @private
+			 * Indicates if the slider thumb is dragged
+			 * @default false
+			 */
+			private var _onDrag:Boolean = false;
+			
+			
 			override public function set map(value:Map):void {
 				super.map = value;
 			}
@@ -60,9 +69,8 @@
 			 * Configure the list of zoom label once the component is created 
 			 * and set the first zoomLabel text value.
 			 */
-			public function  configure():void{ 
-				
-				// this.zoomSlider.skin.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE,this.onZoom);
+			public function  configure():void
+			{ 
 				
 				if(this._scalesLabels == null)
 				{
@@ -72,6 +80,23 @@
 				// listener for the zoom in/out buttons
 				this.zoomIn.addEventListener(MouseEvent.CLICK, this.onZoom);
 				this.zoomOut.addEventListener(MouseEvent.CLICK, this.onZoom);
+			}
+			
+			/**
+			 * @inherit
+			 */			
+			override public function set active(value:Boolean):void {
+				if(value) {					
+					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
+					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
+					initializeZoomLevels();								
+				} else {
+					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
+					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
+				}
+				super.active = value;
 			}
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
@@ -96,9 +121,9 @@
 			}
 			
 			/**
-			 * Return the label associated to the given resolution 
+			 * Return the label associated to the given zoom (converted in resolution)
 			 * 
-			 * @param resolution The resolution 
+			 * @param zoom  The zoom given
 			 * @return The string value of the label corresponding to the resolution
 			 */
 			public function getLabelFromZoom(zoom:Number):String
@@ -129,6 +154,12 @@
 				return new String("");
 			}
 			
+			/**
+			 * Fonction called when one of the two zoom buttons is pressed
+			 * Swith on the button name and then zoom in or out
+			 * 
+			 * @param event The MouseEvent received
+			 */
 			public function onZoom(event:MouseEvent):void
 			{
 				if(!this._map || !this._map.baseLayer)
@@ -148,30 +179,23 @@
 				}	
 			}
 			
+			/**
+			 * Initialise the zoomSlider according to current map zoomLevels
+			 */
 			private function initializeZoomLevels(event:Event = null):void {
 				if(!this._map || !this._map.baseLayer)
 					return;
 				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
 				zoomSlider.minimum = map.baseLayer.minZoomLevel;
 				zoomSlider.value = map.zoom;
+				scalesNameLabel.y = zoomSlider.thumb.y;
+				
 				// initialise the label value
 				this.updateCurrentLabel();
 				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
 			}
 			
-			override public function set active(value:Boolean):void {
-				if(value) {					
-					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
-					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
-					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
-					initializeZoomLevels();								
-				} else {
-					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
-					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
-					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
-				}
-				super.active = value;
-			}
+			
 			
 			private function updateZoomLevels(e:MapEvent = null):void {
 				if(e.zoomChanged)
@@ -182,6 +206,23 @@
 			}
 			
 			/**
+			 * Function called when the thumb slider start drag event
+			 */
+			public function thumbDrag(event:TrackBaseEvent):void
+			{
+				this._onDrag = true;
+			}
+			
+			/**
+			 * Function called when the thumb slider start drag  complete (when the thumb is released)
+			 */
+			public function thumbRelease(event:TrackBaseEvent):void
+			{
+				this._onDrag = false;
+				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+			}
+			
+			/**
 			 * When the slider value is changed : update label
 			 * 
 			 * @param event The event received
@@ -189,10 +230,15 @@
 			public function zoomSliderChange(event:Event):void {
 				if(!this._map || !this._map.baseLayer)
 					return;
+
 				// update the display label
+				this._currentLabel = getLabelFromZoom(zoomSlider.value);
 				scalesNameLabel.text = this._currentLabel;
+				scalesNameLabel.y = zoomSlider.thumb.y;
 				
-				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+				// if not onDrag update the zoom
+				if(!this._onDrag)
+					this.map.moveTo(this.map.center, zoomSlider.value, false, true);
 			}
 
 			
@@ -256,6 +302,26 @@
 			{
 				_currentLabel = value;
 			}		
+			
+			
+			/**
+			 * Indicates if the slider thumb is dragged
+			 */
+			public function get onDrag():Boolean
+			{
+				return this._onDrag;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set onDrag(value:Boolean):void
+			{
+				this._onDrag = value;
+			}	
+			
+			
+			
 		]]>
 	</fx:Script>
 	
@@ -263,13 +329,15 @@
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
-			   liveDragging="false"
+			   liveDragging="true"
 			   focusEnabled="false"
-			   showDataTip="true"/>
+			   showDataTip="false"
+			   thumbDrag="thumbDrag(event)"
+			   thumbRelease="thumbRelease(event)" />
 	
 	<s:Button id="zoomIn" name="zoomin" label="-" width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
 	<s:Button id="zoomOut" name="zoomout" label="+" width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
-	<s:Label id="scalesNameLabel" x="70" y="120" backgroundColor="0xDDDDDD" />
+	<s:Label id="scalesNameLabel" x="90" backgroundColor="0xDDDDDD" />
 </Control>
 
