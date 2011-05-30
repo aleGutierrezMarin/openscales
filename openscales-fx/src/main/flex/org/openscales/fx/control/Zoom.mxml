@@ -170,10 +170,10 @@
 				switch(button.name)
 				{
 					case "zoomin":
-						this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+						this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
 						break;
 					case "zoomout":
-						this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+						this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
 						break;
 					default : 
 				}	
@@ -335,8 +335,8 @@
 			   thumbDrag="thumbDrag(event)"
 			   thumbRelease="thumbRelease(event)" />
 	
-	<s:Button id="zoomIn" name="zoomin" label="-" width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
-	<s:Button id="zoomOut" name="zoomout" label="+" width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
+	<s:Button id="zoomOut" name="zoomout" label="-" width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
+	<s:Button id="zoomIn" name="zoomin" label="+" width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
 	<s:Label id="scalesNameLabel" x="90" backgroundColor="0xDDDDDD" />
 </Control>
