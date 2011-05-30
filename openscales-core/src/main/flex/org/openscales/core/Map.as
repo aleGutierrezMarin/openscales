@@ -320,53 +320,7 @@ package org.openscales.core
 				removeLayer(this.layers[i],false);
 			}
 		}
-		
-		/**
-		 * Add a new control to the map.
-		 *
-		 * @param control the control to add.
-		 * @param attach if true, the control will be added as child component of the map. This
-		 *  parameter may be for example set to false when adding a Flex component displayed
-		 *  outside the map.
-		 */
-		public function addControl(control:IControl, attach:Boolean=true):void {
-			// Is the input control valid ?
-			if (! control) {
-				Trace.warn("Map.addControl: null control not added");
-				return;
-			}
-			var i:uint = 0;
-			var j:uint = this._controls.length;
-			for (; i<j; ++i) {
-				if (control == this._controls[i]) {
-					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
-					return;
-				}
-			}
-			// If the control is a new control, register it
-			if (i == j) {
-				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
-				this._controls.push(control);
-				control.map = this;
-				control.draw();
-				if (attach) {
-					this.addChild(control as Sprite);
-				}
-			}
-		}
-		
-		/**
-		 * Remove the control passed as parameter
-		 */
-		public function removeControl(control:IControl):void {
-			var i:int = this._controls.indexOf(control);
-			if(i!=-1) {
-				this._controls.splice(i,1);
-				this.removeChild(control as Sprite);
-				control.destroy();
-			}
-		}
-		
+				
 		/**
 		 * Register a handler as one of the handlers of the map.
 		 * The handler must have its map property setted to this before.
@@ -1360,6 +1314,66 @@ package org.openscales.core
 					Trace.info("Locale changed to: "+locale.localeKey);
 					this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,locale));
 				}
+			}
+		}
+		
+		
+		// --- Control management -- //
+		/**
+		 * Add a new control to the map.
+		 *
+		 * @param control the control to add.
+		 * @param attach if true, the control will be added as child component of the map. This
+		 *  parameter may be for example set to false when adding a Flex component displayed
+		 *  outside the map.
+		 */
+		public function addControl(control:IControl, attach:Boolean=true):void {
+			// Is the input control valid ?
+			if (! control) {
+				Trace.warn("Map.addControl: null control not added");
+				return;
+			}
+			var i:uint = 0;
+			var j:uint = this._controls.length;
+			for (; i<j; ++i) {
+				if (control == this._controls[i]) {
+					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
+					return;
+				}
+			}
+			// If the control is a new control, register it
+			if (i == j) {
+				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
+				this._controls.push(control);
+				control.map = this;
+				control.draw();
+				if (attach) {
+					this.addChild(control as Sprite);
+				}
+			}
+		}
+		
+		/**
+		 * Detects if given control is linked to this map
+		 * 
+		 * @return true if the control controls this map, false otherwise
+		 */
+		public function hasControl(control:IControl):Boolean{
+			
+			return (this._controls.indexOf(control) != -1);
+		}
+		
+		/**
+		 * Removes given control from the map. 
+		 * If the control is not present on the map, nothing happens.
+		 * 
+		 */
+		public function removeControl(control:IControl):void {
+			var i:int = this._controls.indexOf(control);
+			if(i!=-1) {
+				this._controls.splice(i,1);
+				this.removeChild(control as Sprite);
+				control.destroy();
 			}
 		}
 	}

@@ -46,5 +46,32 @@ package org.openscales.map{
 			}));
 		}
 		
+		[Test]
+		public function shouldReturnTrueWhenControlIsInTheMap():void{
+			
+			//Given a map
+			var map:Map = new Map();
+			
+			// And a control on this map
+			var control:Control = new Control();
+			map.addControl(control);
+						
+			// Then map announces the control is present
+			assertTrue("Control not detected in the map", map.hasControl(control));
+		}
+		
+		[Test]
+		public function shouldReturnFalseWhenControlInNotInTheMap():void{
+			
+			// Given a map
+			var map:Map = new Map();
+			
+			// And a control that is not on this map
+			var control:Control = new Control();
+			
+			// Then map announces the control is not present
+			assertFalse("Control detected in the map", map.hasControl(control));
+		}
+		
 	}
 }
