@@ -79,6 +79,21 @@ package org.openscales.core
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
 		
+		
+		/**
+		 * @private
+		 * The minimum resolution of the map
+		 * @default Number.NEGATIVE_INFINITY
+		 */
+		private var _minResolution:Number = Number.NEGATIVE_INFINITY;
+		
+		/**
+		 * @private
+		 * The maximum resolution of the map
+		 * @default Number.POSITIVE_INFINITY
+		 */
+		private var _maxResolution:Number = Number.POSITIVE_INFINITY;
+		
 		/**
 		 * The location where the layer container was re-initialized (on-zoom)
 		 */
@@ -691,6 +706,49 @@ package org.openscales.core
 			this.zoomToExtent(this.maxExtent);
 		}
 		
+		/**
+		 * <p>
+		 * Zoom to the closest resolution.
+		 * This methods choose within the resolution array of the baseLayer the zoom level
+		 * which associated resolution is the closest to the specifed one and zoom to it.
+		 * </p>
+		 * <p>
+		 * The resolution must be in the same unity as the one of the base layer
+		 * </p>
+		 * 
+		 * @example The following code explains how to zoom to a specified resolution
+		 * 
+		 * <listing version="3.0">
+		 * 	var myMap:Map = new Map(); 
+		 * 	myMap.zoomToResolution(125420);
+		 * </listing>
+		 */ 
+		public function zoomToResolution(resolution:Number):void
+		{
+			if ((resolution >= minResolution) && (resolution <= maxResolution))
+			{
+				if (baseLayer != null)
+				{
+					var targetResolution:Number = resolution;
+					var bestZoomLevel:int = 0;
+					var bestRatio:Number = 0;
+					var i:int = Math.max(0, this.baseLayer.minZoomLevel);
+					var len:int = Math.min(this.baseLayer.resolutions.length, this.baseLayer.maxZoomLevel+1);
+					for (i; i < len; ++i)
+					{
+						var ratio:Number = this.baseLayer.resolutions[i] / targetResolution;
+						if ( ratio > 1){
+							ratio = 1/ratio;
+						}
+						if ( ratio > bestRatio){
+							bestRatio = ratio;
+							bestZoomLevel = i;
+						}
+					}
+					this.zoom = bestZoomLevel;
+				}
+			}
+		}
 		
 		/**
 		 * Return a Location which is the passed-in view port Pixel, translated into lon/lat
@@ -1259,6 +1317,51 @@ package org.openscales.core
 		public function set theme(value:String):void
 		{
 			this._theme = value;
+		}
+		
+		
+		/**
+		 * The maximum resolution of the map.
+		 * If the given max resolution is inferior than the actual map resolution
+		 * then the map resolution is set to the new maxResolution
+		 */
+		public function get maxResolution():Number
+		{
+			return this._maxResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set maxResolution(value:Number):void
+		{
+			if(value < this.resolution)
+			{
+				this.zoomToResolution(value);
+			}
+			this._maxResolution = value;
+		}
+		
+		/**
+		 * The minimum resolution of the map.
+		 * You cannot reach a resolution lower than this resolution
+		 * If you try to reach a resolution behind the minResolution nothing will be done
+		 */
+		public function get minResolution():Number
+		{
+			return this._minResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set minResolution(value:Number):void
+		{
+			if(value > this.resolution)
+			{
+				this.zoomToResolution(value);
+			}
+			this._minResolution = value;
 		}
 		
 		/**
