@@ -33,6 +33,7 @@
 			
 			public function set label(value:String):void{
 				this._autoTranslate = false;
+				this._label = value;
 				this.updateTextLabel();
 			}
 			
