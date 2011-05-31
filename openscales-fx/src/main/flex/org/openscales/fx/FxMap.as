@@ -96,8 +96,8 @@ package org.openscales.fx
 			// Add the layer to the map
 			l.fxmap = this;
 			l.configureLayer();
-			if(l.layer)
-				this._map.addLayer(l.layer);
+			if(l.nativeLayer)
+				this._map.addLayer(l.nativeLayer);
 		}
 		
 		private function onMoveStart(event:MapEvent):void{

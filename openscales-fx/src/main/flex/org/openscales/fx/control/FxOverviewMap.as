@@ -66,7 +66,7 @@ package org.openscales.fx.control
 		private function addFxLayer(l:FxLayer):void {
 			l.configureLayer();
 			if(_overviewmap.baselayer == null) {
-				_overviewmap.baselayer = l.layer;
+				_overviewmap.baselayer = l.nativeLayer;
 			} else {
 			}
 		}
