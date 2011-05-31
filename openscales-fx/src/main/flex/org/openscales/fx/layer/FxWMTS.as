@@ -75,10 +75,10 @@ package org.openscales.fx.layer
 		}
 		
 		public function get WMTSLayer():String {
-			return this._WMTSlayer;
+			return this._WMTSlayer; 
 		}
 		
-		public function set WMTSlayer(value:String):void {
+		public function set WMTSLayer(value:String):void {
 			if(this.layer != null)
 				(this.layer as WMTS).layer = value;;
 			this._WMTSlayer = value;

@@ -13,7 +13,7 @@
 		<WMTS name="myLayer"
 			  url="http://openscales.org/geoserver/gwc/service/wmts"
 			  tileMatrixSet="epsg:4326"
-			  WMTSlayer="topp:world_borders"
+			  WMTSLayer="topp:world_borders"
 			  format="image/png" />
 		<OverviewMap />
 	</Map>
