@@ -14,29 +14,29 @@ package org.openscales.fx.layer
 		}
 		
 		public function get url():String {
-			if(this.layer != null)
-				return (this.layer as HTTPRequest).url;
+			if(this._layer != null)
+				return (this._layer as HTTPRequest).url;
 			return null;
 		}
 		
 		public function set url(value:String):void {
-	    	if(this.layer != null)
-	    		(this.layer as HTTPRequest).url = value;
+	    	if(this._layer != null)
+	    		(this._layer as HTTPRequest).url = value;
 	    }
 		
 		public function set altUrls(value:Array):void {
-	    	if(this.layer != null)
-	    		(this.layer as HTTPRequest).altUrls = value;
+	    	if(this._layer != null)
+	    		(this._layer as HTTPRequest).altUrls = value;
 	    }
 	    
 	    public function set params(value:Object):void {
-	    	if(this.layer != null)
-	    		Util.extend((this.layer as HTTPRequest).params, value);
+	    	if(this._layer != null)
+	    		Util.extend((this._layer as HTTPRequest).params, value);
 	    }
 		
 		public function set method(value:String):void {
-			if(this.layer != null)
-				(this.layer as HTTPRequest).method = value;
+			if(this._layer != null)
+				(this._layer as HTTPRequest).method = value;
 		}
 	}
 }
