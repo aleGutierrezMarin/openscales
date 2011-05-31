@@ -6,6 +6,7 @@ package org.openscales.core.layer {
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.layer.originator.ConstraintOriginator;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.security.ISecurity;
@@ -25,17 +26,20 @@ package org.openscales.core.layer {
 	 * @author Bouiaw
 	 */
 	public class Layer extends Sprite {
+		public static const DEFAULT_DPI:Number = 92;
 		
 		public static const DEFAULT_NOMINAL_RESOLUTION:Number = 1.40625;
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
+
 
 		public static function get DEFAULT_MAXEXTENT():Bounds {
 			return new Bounds(-180, -90, 180, 90, Geometry.DEFAULT_SRS_CODE);
 		}
 
 		private var _map:Map = null;
-		private var _projSrsCode:String = null;
+		protected var _projSrsCode:String = null;
+		private var _dpi:Number = Layer.DEFAULT_DPI;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
 		private var _minResolution:Number = NaN;
@@ -44,7 +48,7 @@ package org.openscales.core.layer {
 		private var _isFixed:Boolean = false;		
 		private var _security:ISecurity = null;
 		private var _loading:Boolean = false;
-		private var _autoResolution:Boolean = true;
+		protected var _autoResolution:Boolean = true;
 		protected var _imageSize:Size = null;
 		private var _tweenOnZoom:Boolean = true;
 		private var _tweenOnLoad:Boolean = true;
@@ -155,6 +159,22 @@ package org.openscales.core.layer {
 		}
 
 		/**
+		 * Indicates the dpi used to calculate resolution and scale upon this layer
+		 */
+		public function get dpi():Number
+		{
+			return _dpi;
+		}
+		
+		/**
+		 * @Private
+		 */
+		public function set dpi(value:Number):void
+		{
+			_dpi = value;
+		}
+		
+		/**
 		 * Return a reference to the map where belong this layer
 		 */
 		public function get map():Map {
@@ -165,7 +185,9 @@ package org.openscales.core.layer {
 		 * A Bounds object which represents the location bounds of the current extent display on the map.
 		 */
 		public function get extent():Bounds {
-			return this.map.extent;
+			if(this._map)
+				return this._map.extent;
+			return null;
 		}
 
 		/**
@@ -225,10 +247,11 @@ package org.openscales.core.layer {
 		 */
 		public function getMapPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = null;
-			if (lonlat != null) {
+			var b:Bounds = this.extent;
+			if (lonlat != null && b) {
 				var resolution:Number = this.map.resolution;
-				var extent:Bounds = this.map.extent;
-				px = new Pixel(Math.round((lonlat.lon - extent.left) / resolution), Math.round((extent.top - lonlat.lat) / resolution));
+				if(resolution)
+					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
 			}
 			return px;
 		}
@@ -284,12 +307,6 @@ package org.openscales.core.layer {
 			{
 				trace("Layer.addOriginator: null originator not added");
 				return;
-			}
-			
-			// If no constraint, generate default
-			if(originator.constraints.length == 0)
-			{
-				originator.constraints.push(new ConstraintOriginator(this._maxExtent, this.minResolution, this.maxResolution));
 			}
 			
 			var i:uint = 0;
@@ -476,7 +493,9 @@ package org.openscales.core.layer {
 		}
 		
 		public function set projSrsCode(value:String):void {
-			this._projSrsCode = value;
+			if(value != null)
+				this._projSrsCode = value.toUpperCase();
+			
 			if (this._autoResolution) {
 				this.generateResolutions();
 			}
@@ -499,7 +518,9 @@ package org.openscales.core.layer {
 		public function get isFixed():Boolean {
 			return this._isFixed;
 		}
-		
+		/**
+		 * @Private
+		 */
 		public function set isFixed(value:Boolean):void {
 			this._isFixed = value;
 		}
@@ -591,6 +612,21 @@ package org.openscales.core.layer {
 		public function set tweenOnLoad(value:Boolean):void {
 			_tweenOnLoad = value;
 		}
+		
+		/**
+		 * opacity of the layer
+		 */
+		override public function set alpha(value:Number):void{
+			
+			var event:LayerEvent = new LayerEvent(LayerEvent.LAYER_OPACITY_CHANGED, this);
+			event.oldOpacity = this.alpha;
+			super.alpha = value;
+			event.newOpacity = this.alpha;
+			if (this._map != null)
+			{
+				this._map.dispatchEvent(event);
+			}
+		} 
 		
 		//GAB
 		public function get editable():Boolean{

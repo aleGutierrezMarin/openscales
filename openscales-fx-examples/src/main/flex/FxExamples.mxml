@@ -31,6 +31,9 @@
 					case "managelayers":
 						state = new LayersManagerExample();
 						break;
+					case "polylayer":
+						state = new PolyLayerExample();
+						break;
 					case "addlayers":
 						state = new CapabilitiesExample();
 						break;
@@ -73,6 +76,9 @@
 					case "wms130":
 						state= new WMS130Example();
 						break;
+					case "wmts100":
+						state= new WMTSExample();
+						break;
 					case "imagelayer":
 						state = new ImageLayerExample();
 						break;
@@ -87,6 +93,12 @@
 						break;
 					case "ign":
 						state = new SecurityMapExample();
+						break;
+					case "overviewRatio":
+						state = new OverviewRatioExample();
+						break;
+					case "runtimetheme":
+						state = new RunTimeThemeExample();
 						break;
 					default:
 						state = data['basic'];
@@ -112,7 +124,9 @@
 				<s:Button id="about" label="About OpenScales" click="changeState(event)" width="100%"/>
 				<s:Button id="basic" label="Basic example" click="changeState(event)" width="100%"/>
 				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
+				<s:Button id="runtimetheme" label="Changing theme on runtime" click="changeState(event)" width="100%"/>
 				<s:Button id="osm" label="OpenStreetMap" click="changeState(event)" width="100%"/>
+				<s:Button id="polylayer" label="Poly Layer" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Map configuration" width="100%" height="100%">
 				<s:layout>
@@ -128,6 +142,7 @@
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
 				<s:Button id="overview" label="Overview map" click="changeState(event)" width="100%"/>
+				<s:Button id="overviewRatio" label="Overview ratio map" click="changeState(event)" width="100%"/>
 				<s:Button id="yahoo" label="with Yahoo geocoder" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Features handling" width="100%" height="100%">
@@ -148,6 +163,7 @@
 				<s:Button id="nasa" label="NASA WMS-C" click="changeState(event)" width="100%"/>
 				<s:Button id="germany" label="WMS 1.1.x" click="changeState(event)" width="100%"/>
 				<s:Button id="wms130" label="WMS 1.3.0" click="changeState(event)" width="100%"/>
+				<s:Button id="wmts100" label="WMTS 1.0.0" click="changeState(event)" width="100%"/>
 				<s:Button id="imagelayer" label="Image Layer" click="changeState(event)" width="100%"/>
 				<s:Button id="simplekml" label="Simple KML layer" click="changeState(event)" width="100%"/>
 				<s:Button id="fullkml" label="Advanced KML layer" click="changeState(event)" width="100%"/>

@@ -11,8 +11,9 @@
 		<WheelHandler/>
 		
 		<Spinner x="{width / 2}" y="{height / 2}"/>
-		<MousePosition x="10" y="{height-20}" displayProjSrsCode="EPSG:4326"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}"/>
+		<NumericScale x="{width-250}" y="{height-40}"/>
 		
 		<TraceInfo x="{width-200}" y="0" />
 		

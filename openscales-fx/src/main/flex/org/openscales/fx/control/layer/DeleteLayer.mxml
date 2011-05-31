@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="org.openscales.fx.control.layer.*"
+		 xmlns:os="org.openscales.fx.control.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.fxg.ButtonCloseOver;
+			import assets.fxg.ButtonCloseUp;
+			
+			import org.openscales.core.i18n.Catalog;
+			
+			/**
+			 * Delete the layer on the map
+			 * @param event Click event
+			 */
+			public function deleteLayer(event:MouseEvent):void {
+			
+				this._layer.map.removeLayer(this._layer);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<os:IconButton id="deleteButton"
+				toolTip="{Catalog.getLocalizationForKey('layercontrol.deletelayer')}"
+				click="deleteLayer(event)"
+				icon="{new ButtonCloseUp()}"
+				iconOver="{new ButtonCloseOver()}"
+				iconDown="{new ButtonCloseOver()}"
+				width="14"
+				height="14"/>
+	
+</LayerControl>

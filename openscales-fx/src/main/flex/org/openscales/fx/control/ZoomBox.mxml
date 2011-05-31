@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- ZoomBox control, allow the user to draw a zoom extent --> 
-<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" width="24" height="24">
+<Control xmlns="org.openscales.fx.control.*" xmlns:fx="http://ns.adobe.com/mxml/2009" width="24" height="24">
 	<fx:Script>
 		<![CDATA[
 			import mx.managers.CursorManager;
 			
-			import org.openscales.geometry.basetypes.Bounds;
-			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.core.Map;
 			import org.openscales.core.cursor.CrosshairCursor;
 			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.ZoomBoxEvent;
 			import org.openscales.core.handler.Handler;
 			import org.openscales.core.handler.mouse.DragHandler;
-			import org.openscales.core.handler.zoom.ZoomBoxHandler;
+			import org.openscales.core.handler.mouse.ZoomBoxHandler;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.geometry.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Pixel;
 			
 			import spark.skins.spark.ButtonSkin;
 			
@@ -27,7 +29,7 @@
 			private var _icon:Class;
 			
 			[Bindable]
-			private var _toolTip:String = "Draw the desired area to zoom in";
+			private var _toolTip:String = Catalog.getLocalizationForKey("zoombox.tooltip");;
 			
 			/**
 			 * Handler of ZoomBox
@@ -38,6 +40,10 @@
 			 * ID of the cursor used during the drawing of the zoom-box.
 			 */
 			private var zoomBoxCursorID:int = CursorManager.NO_CURSOR;
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this._toolTip = Catalog.getLocalizationForKey("zoombox.tooltip");
+			}
 			
 			override public function set map(value:Map):void {
 				super.map = value;
@@ -53,12 +59,12 @@
 			private function onSelectZoomBox(event:Event):void {
 				if (_selected == false) {
 					_selected = true;
-					_zoomBoxHandler.deactiveDrag();
+					//_zoomBoxHandler.deactiveDrag();
 					_zoomBoxHandler.active = true;
 					// Change to the specific cursor
 					zoomBoxCursorID = CursorManager.setCursor(CrosshairCursor);
 				} else {
-					_zoomBoxHandler.activeDrag();
+					//_zoomBoxHandler.activeDrag();
 					_zoomBoxHandler.active = false;
 					_selected = false;
 					// Remove the specific cursor
@@ -68,7 +74,7 @@
 			}
 			
 			private function disabled(event:ZoomBoxEvent):void {
-				_zoomBoxHandler.activeDrag();
+				//_zoomBoxHandler.activeDrag();
 				_zoomBoxHandler.active = false;
 				_selected = false;
 				// Remove the specific cursor

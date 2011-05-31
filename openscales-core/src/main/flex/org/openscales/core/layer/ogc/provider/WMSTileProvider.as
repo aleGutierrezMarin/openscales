@@ -6,7 +6,9 @@ package org.openscales.core.layer.ogc.provider
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	use namespace os_internal;
 	
@@ -20,13 +22,7 @@ package org.openscales.core.layer.ogc.provider
 	 */
 	
 	public class WMSTileProvider extends OGCTileProvider
-	{
-		/**
-		 * @private
-		 * Reference to openscales layer
-		 */ 
-		private var _openScalesLayer:WMS;
-		
+	{	
 		/**
 		 * @private
 		 * Layer identifier to request from service
@@ -55,13 +51,13 @@ package org.openscales.core.layer.ogc.provider
 		 * @private 
 		 * Way to display errors for the requested tile
 		 */
-		private var _exceptions:String;
+		private var _exceptions:String="XML";
 		
 		/**
 		 * @private 
 		 * Indicates if the tile should be transparent or not
 		 */
-		private var _transparent:Boolean;
+		private var _transparent:Boolean=false;
 		
 		/**
 		 * @private
@@ -93,12 +89,6 @@ package org.openscales.core.layer.ogc.provider
 		 */
 		private var _tiled:Boolean=false;
 		
-		/**
-		 * @private
-		 * SLD style (Not in WMS 1.3.0)
-		 */
-		private var _sld:String;
-		
 		
 		/**
 		 * Constructor of the WMSTileProvider.
@@ -112,18 +102,15 @@ package org.openscales.core.layer.ogc.provider
 		 * @param format Mime type used for the returned tiles.
 		 * 
 		 */
-		public function WMSTileProvider(openscalesLayer:WMS,
-										url:String,
+		public function WMSTileProvider(url:String,
 										version:String,
 										layer:String,
 										projection:String,
-										style:String = "rain",
+										style:String = "",
 										format:String = "image/jpeg")
 		{
 			//call the constructor of the mother class OGCTileProvider
 			super(url,"WMS",version,"GetMap");
-			
-			this._openScalesLayer = openscalesLayer;
 			
 			//Save WMS specific parameters
 			this._layer=layer;
@@ -135,12 +122,12 @@ package org.openscales.core.layer.ogc.provider
 		/**
 		 * @inheritDoc
 		 */ 
-		override public function getTile(bounds:Bounds):ImageTile
+		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			var url:String = this.buildGETQuery(bounds, null);
-			var img:ImageTile = new ImageTile(this._openScalesLayer, null, bounds, url, new Size(this._width, this._height));
-			if(this._openScalesLayer.method != null)
-				img.method = this._openScalesLayer.method;
+			var img:ImageTile = new ImageTile(layer, center, bounds, url, new Size(this._width, this._height));
+			if(layer is WMS && (layer as WMS).method != null)
+				img.method = (layer as WMS).method;
 			return img;
 		}
 		
@@ -162,42 +149,51 @@ package org.openscales.core.layer.ogc.provider
 						
 			var str:String = super.buildGETQuery(bounds, params);
 			
-			if (this._layer != null)
+			if (this._layer != null && this._layer != "")
 				str += "LAYERS=" + this._layer + "&";
-			
-			if (this._style != null)
-				str += "STYLES=" + this._style + "&";
+						
+			if(this._style != null && this._style != "") {
+				if(this.version=="1.3.0") {
+					str += "STYLES=" + this._style + "&";
+				} else if(this.version=="1.1.0" || this.version=="1.1.1") {
+					str += "SLD=" + this._style + "&";
+				}
+			}			
 			
 			//the projection parameter depends on the version of the protocol
-			if(this.version=="1.3.0"){
+			if(this.version=="1.3.0") {
 				str += "CRS=" + this._projection + "&";
-			}else if(this.version=="1.1.0" || this.version=="1.1.1"){
+			} else {
 				str += "SRS=" + this._projection + "&";
 			}
-						
-			str += "BBOX=" + bounds.left+","+ bounds.bottom +","+ bounds.right +","+ bounds.top+"&";
+			//The bbox parameters depends on the version
+			//Lon/Lat if less than 1.3.0 or if axis order of the projection is East/North, lat/lon otherwise
+			if(this.version=="1.3.0"
+					&& ProjProjection.projAxisOrder[this._projection]
+					&& ProjProjection.projAxisOrder[this._projection] == ProjProjection.AXIS_ORDER_NE){
+				str += "BBOX=" + bounds.bottom+","+ bounds.left +","+ bounds.top +","+ bounds.right+"&";
+			}else {
+				str += "BBOX=" + bounds.left+","+ bounds.bottom +","+ bounds.right +","+ bounds.top+"&";
+			}
 				
 			
 			str += "WIDTH=" + this._width + "&";
 			str += "HEIGHT=" + this._height + "&";
 			
 			
-			if (this._format != null)
+			if (this._format != null && this._format != "")
 				str += "FORMAT=" + this._format + "&";
 			
 			str += "TRANSPARENT=" + this._transparent.toString().toUpperCase() + "&";
 			
-			if (this._bgcolor != null)
+			if (this._bgcolor != null && this._bgcolor != "")
 				str += "BGCOLOR=" + this._bgcolor + "&";
 			
-			if (this._exceptions != null)
+			if (this._exceptions != null && this._exceptions != "")
 				str += "EXCEPTIONS=" + this._exceptions + "&";
 			
 			str += "TILED=" + this._tiled + "&";
 			
-			if(this.version=="1.1.0" || this.version=="1.1.1"){
-				str += "SLD=" + this._sld + "&";
-			}
 			
 			return str.substr(0, str.length-1);
 		}
@@ -377,23 +373,5 @@ package org.openscales.core.layer.ogc.provider
 		{
 			_tiled = value;
 		}
-
-		/**
-		 * SLD style (Not in WMS 1.3.0)
-		 */
-		public function get sld():String
-		{
-			return _sld;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set sld(value:String):void
-		{
-			_sld = value;
-		}
-
-
 	}
 }

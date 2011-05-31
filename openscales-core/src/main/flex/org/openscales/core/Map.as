@@ -1,6 +1,7 @@
 package org.openscales.core
 {
 	
+	import com.adobe.serialization.json.JSON;
 	import com.gskinner.motion.GTween;
 	import com.gskinner.motion.easing.Cubic;
 	
@@ -14,9 +15,13 @@ package org.openscales.core
 	
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
+	import org.openscales.core.i18n.Catalog;
+	import org.openscales.core.i18n.Locale;
+	import org.openscales.core.i18n.provider.I18nJSONProvider;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.popup.Popup;
@@ -49,6 +54,12 @@ package org.openscales.core
 		 */
 		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
 		
+		/**
+		 * The url to the default Theme (OpenscalesTheme)
+		 * TODO : fix and set the real path to  the default theme
+		 */
+		public var URL_THEME:String = "http://openscales.org/nexus/service/local/repo_groups/public-snapshots/content/org/openscales/openscales-fx-theme/2.0.0-SNAPSHOT/openscales-fx-theme-2.0.0-20110517.142043-5.swf";
+		
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
 		private var _controls:Vector.<IControl> = new Vector.<IControl>();
@@ -72,7 +83,20 @@ package org.openscales.core
 		 * The location where the layer container was re-initialized (on-zoom)
 		 */
 		private var _layerContainerOrigin:Location = null;
+		
+		//Source file for i18n english translation
+		[Embed(source="/assets/i18n/EN.json", mimeType="application/octet-stream")]
+		private const ENLocale:Class;
+		[Embed(source="/assets/i18n/FR.json", mimeType="application/octet-stream")]
+		private const FRLocale:Class;
 
+		/** 
+		 * @private
+		 * Url to the theme used to custom the components of the current map
+		 * @default URL_THEME (url to the basic OpenscalesTheme)
+		 */
+		private var _theme:String = URL_THEME;
+		
 		/**
 		 * Map constructor
 		 *
@@ -81,6 +105,10 @@ package org.openscales.core
 		 */
 		public function Map(width:Number=600, height:Number=400) {
 			super();
+			
+			//load i18n module
+			I18nJSONProvider.addTranslation(ENLocale);
+			I18nJSONProvider.addTranslation(FRLocale);
 			
 			this.size = new Size(width, height);
 			this._layerContainer = new Sprite();
@@ -99,6 +127,8 @@ package org.openscales.core
 			
 			Trace.stage = this.stage;
 			
+			this.focusRect = false;// Needed to hide yellow rectangle around map when focused
+			this.addEventListener(MouseEvent.CLICK, onMouseClick); //Needed to prevent focus losing 
 		}
 		
 		/**
@@ -290,53 +320,7 @@ package org.openscales.core
 				removeLayer(this.layers[i],false);
 			}
 		}
-		
-		/**
-		 * Add a new control to the map.
-		 *
-		 * @param control the control to add.
-		 * @param attach if true, the control will be added as child component of the map. This
-		 *  parameter may be for example set to false when adding a Flex component displayed
-		 *  outside the map.
-		 */
-		public function addControl(control:IControl, attach:Boolean=true):void {
-			// Is the input control valid ?
-			if (! control) {
-				Trace.warn("Map.addControl: null control not added");
-				return;
-			}
-			var i:uint = 0;
-			var j:uint = this._controls.length;
-			for (; i<j; ++i) {
-				if (control == this._controls[i]) {
-					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
-					return;
-				}
-			}
-			// If the control is a new control, register it
-			if (i == j) {
-				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
-				this._controls.push(control);
-				control.map = this;
-				control.draw();
-				if (attach) {
-					this.addChild(control as Sprite);
-				}
-			}
-		}
-		
-		/**
-		 * Remove the control passed as parameter
-		 */
-		public function removeControl(control:IControl):void {
-			var i:int = this._controls.indexOf(control);
-			if(i!=-1) {
-				this._controls = this._controls.slice(i,1);
-				this.removeChild(control as Sprite);
-				control.destroy();
-			}
-		}
-		
+				
 		/**
 		 * Register a handler as one of the handlers of the map.
 		 * The handler must have its map property setted to this before.
@@ -444,6 +428,8 @@ package org.openscales.core
 		 * @param tween use tween effect
 		 */
 		public function pan(dx:int, dy:int, tween:Boolean=false):void {
+			if(!this.baseLayer)
+				return;
 			// Is there a real offset ?
 			if ((dx==0) && (dy==0)) {
 				return;
@@ -535,6 +521,7 @@ package org.openscales.core
 			}
 			var oldCenter:Location = this._center;
 			
+			
 			if (zoomChanged || centerChanged) {
 				
 				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
@@ -554,6 +541,10 @@ package org.openscales.core
 						this.centerLayerContainer(newCenter, dragTween);
 					}
 					this._center = newCenter.clone();
+					var mapEventCenter:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
+					mapEventCenter.oldCenter = oldCenter;
+					mapEventCenter.newCenter = newCenter;
+					this.dispatchEvent(mapEventCenter);
 				}
 				
 				if ((zoomChanged) || (this._layerContainerOrigin == null)) {
@@ -564,6 +555,10 @@ package org.openscales.core
 				
 				if (zoomChanged) {
 					this._zoom = newZoom;
+					var mapEventZoom:MapEvent = new MapEvent(MapEvent.ZOOM_CHANGED, this);
+					mapEventZoom.oldZoom = oldZoom;
+					mapEventZoom.newZoom = newZoom;
+					this.dispatchEvent(mapEventZoom);
 				}
 				
 				
@@ -1119,7 +1114,7 @@ package org.openscales.core
 			var scale:Number = NaN;
 			if (this.baseLayer) {
 				var units:String = ProjProjection.getProjProjection(this.baseLayer.projSrsCode).projParams.units;
-				scale = Unit.getScaleFromResolution(this.resolution, units);
+				scale = Unit.getScaleFromResolution(this.resolution, units, this.baseLayer.dpi);
 			}
 			return scale;
 		}
@@ -1148,10 +1143,29 @@ package org.openscales.core
 		 * @param newIndex its new index (0 based) 
 		 * */
 		public function changeLayerIndex(layer:Layer,newIndex:int):void{
-			var length:int = this.layerContainer.numChildren;
-			var newIndexTemp:int = length - newIndex - 1;
-			if(newIndex >= 0 && newIndex < length )
-			  this.layerContainer.setChildIndex(layer,newIndexTemp);// the tab of layer are inverse
+			var layers:Vector.<Layer> = this.layers;
+			var i:int = layers.indexOf(layer);
+			var delta:int = newIndex - i;
+			if(i==-1 || delta==0 || i+delta>=layers.length)
+				return;
+			
+			i+=delta;
+			if(i<0)
+				return;
+			
+			var targetLayer:Layer = layers[i];
+			var targetNum:int = this.layerContainer.getChildIndex(targetLayer);
+			
+			if(targetNum<0)
+				return;
+			
+			this.layerContainer.setChildIndex(layer,targetNum);
+			
+			if(delta>0)
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer));
+			else
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN , layer));
+			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		/**
@@ -1165,7 +1179,12 @@ package org.openscales.core
 			var newIndex:int = indexLayer + step;
 			if(newIndex >= 0 && newIndex < length)
 			  this.layerContainer.setChildIndex(layer,newIndex);
-			//- cause the ordre is not the same that the dysplay order
+			
+			if(step>0)
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer));
+			else
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN , layer));
+			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		
@@ -1226,6 +1245,23 @@ package org.openscales.core
 		}
 		
 		/**
+		 * Url to the theme used to custom the components of the current map
+		 * @default URL_THEME (url to the basic OpenscalesTheme)
+		 */
+		public function get theme():String
+		{
+			return this._theme;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set theme(value:String):void
+		{
+			this._theme = value;
+		}
+		
+		/**
 		 * Whether or not the map is loading data
 		 */
 		public function get loadComplete():Boolean {
@@ -1245,6 +1281,104 @@ package org.openscales.core
 				this._loading = value;
 				dispatchEvent(new MapEvent(MapEvent.LOAD_END,this));
 			} 
+		}
+		
+		
+		/**
+		 * @private
+		 * 
+		 * Method called when the map is clicked
+		 * <p>
+		 * It happens that map loses focus when clicked.
+		 * This method ensures that focus stays on the map object.</p>
+		 */ 
+		private function onMouseClick(event:MouseEvent):void
+		{
+			this.stage.focus = this;
+		}
+		
+		/**
+		 * Indicates the active locale key
+		 */
+		public function get locale():String {
+			return Locale.activeLocale.localeKey;
+		}
+		/**
+		 * @Private
+		 */
+		public function set locale(value:String):void {
+			if(value) {
+				var locale:Locale = Locale.getLocaleByKey(value);
+				if(locale) {
+					Locale.activeLocale = locale;
+					Trace.info("Locale changed to: "+locale.localeKey);
+					this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,locale));
+				}
+			}
+		}
+		
+		
+		// --- Control management -- //
+		/**
+		 * Add a new control to the map.
+		 *
+		 * @param control the control to add.
+		 * @param attach if true, the control will be added as child component of the map. This
+		 *  parameter may be for example set to false when adding a Flex component displayed
+		 *  outside the map.
+		 */
+		public function addControl(control:IControl, attach:Boolean=true):void {
+			// Is the input control valid ?
+			if (! control) {
+				Trace.warn("Map.addControl: null control not added");
+				return;
+			}
+			var i:uint = 0;
+			var j:uint = this._controls.length;
+			for (; i<j; ++i) {
+				if (control == this._controls[i]) {
+					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
+					return;
+				}
+			}
+			// If the control is a new control, register it
+			if (i == j) {
+				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
+				this._controls.push(control);
+				control.map = this;
+				control.draw();
+				if (attach) {
+					this.addChild(control as Sprite);
+				}
+			}
+		}
+		
+		/**
+		 * Detects if given control is linked to this map
+		 * 
+		 * @return true if the control controls this map, false otherwise
+		 */
+		public function hasControl(control:IControl):Boolean{
+			
+			return (this._controls.indexOf(control) != -1);
+		}
+		
+		/**
+		 * Removes given control from the map. 
+		 * If the control is not present on the map, nothing happens.
+		 * 
+		 */
+		public function removeControl(control:IControl):void {
+			var i:int = this._controls.indexOf(control);
+			if(i!=-1) {
+				this._controls.splice(i,1);
+				
+				if((control as DisplayObject).parent == this){
+					this.removeChild(control as DisplayObject);
+				}				
+				
+				control.destroy();
+			}
 		}
 	}
 }

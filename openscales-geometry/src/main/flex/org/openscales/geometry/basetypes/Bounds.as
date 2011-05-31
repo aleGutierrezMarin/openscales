@@ -29,7 +29,7 @@ package org.openscales.geometry.basetypes
 		 * @param right Right bound of Bounds instance
 		 * @param top Top bound of Bounds instance
 		 */
-		public function Bounds(left:Number, bottom:Number, right:Number, top:Number, srsCode:String)
+		public function Bounds(left:Number, bottom:Number, right:Number, top:Number, srsCode:String = "EPSG:4326")
 		{
 			if (!isNaN(left)) {
 				this.left = left;
@@ -56,7 +56,7 @@ package org.openscales.geometry.basetypes
 		 * @return A clone of the bounds
 		 */
 		public function clone():Bounds {
-			return new Bounds(this._left, this._bottom, this._right, this._top, this.projSrsCode);
+			return new Bounds(this._left, this._bottom, this._right, this._top, this._projSrsCode);
 		}
 		
 		/**
