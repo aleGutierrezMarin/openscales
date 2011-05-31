@@ -111,7 +111,7 @@
 			 */
 			public function updateCurrentLabel():void
 			{
-				if(!this._map || this._map.baseLayer)
+				if(this._map && this._map.resolution)
 				{
 					// update the value
 					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
@@ -253,6 +253,7 @@
 			public function set scalesLabels(value:Vector.<ZoomData>):void
 			{
 				this._scalesLabels = value;
+				this.updateCurrentLabel();
 			}
 			
 			/**
@@ -293,6 +294,7 @@
 					}
 					this._scalesLabels = scales;
 				}
+				this.updateCurrentLabel();
 			}	
 			
 			
