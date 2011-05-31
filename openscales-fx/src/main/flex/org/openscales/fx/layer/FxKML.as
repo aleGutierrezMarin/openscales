@@ -18,13 +18,13 @@ package org.openscales.fx.layer
 	    }
 		
 		public function set url(value:String):void {
-			if(this.layer != null)
-				(this.layer as KML).url = value;
+			if(this._layer != null)
+				(this._layer as KML).url = value;
 		}
 
 		public function set srs(value:String):void {
-			if (this.layer != null) {
-				this.layer.projSrsCode = value;
+			if (this._layer != null) {
+				this._layer.projSrsCode = value;
 			}
 		}
 		
