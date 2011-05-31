@@ -107,7 +107,7 @@
 			 * @param fxLayer The flex layer to add to the overviewMap
 			 */
 			protected function addFxLayer(fxLayer:FxLayer):void {
-				_overviewmap.layer = fxLayer.layer;
+				_overviewmap.layer = fxLayer.nativeLayer;
 			}
 			
 			/**

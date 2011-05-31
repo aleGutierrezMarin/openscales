@@ -46,8 +46,8 @@ package org.openscales.fx.layer
 				}
 			}
 		}
-		
-		override public function get layer():Layer {
+		//ici override
+		public function get layer():Layer {
 			if (this.style != null) {
 				(this._layer as WFS).style = this.style;
 			}
