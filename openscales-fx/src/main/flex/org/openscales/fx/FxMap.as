@@ -416,6 +416,12 @@ package org.openscales.fx
 				this._controls.push(control);
 			}
 		}
+		
+		// --- Layer management --- //
+		public function get layers():Vector.<Layer>{
+			
+			return this._map.layers;
+		}
 
 		// --- Control management --- //
 		/**
