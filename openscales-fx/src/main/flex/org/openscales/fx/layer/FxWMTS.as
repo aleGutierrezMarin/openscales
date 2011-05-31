@@ -75,10 +75,10 @@ package org.openscales.fx.layer
 		}
 		
 		public function get WMTSLayer():String {
-			return this._WMTSlayer;
+			return this._WMTSlayer; 
 		}
 		
-		public function set WMTSlayer(value:String):void {
+		public function set WMTSLayer(value:String):void {
 			if(this.layer != null)
 				(this.layer as WMTS).layer = value;;
 			this._WMTSlayer = value;
@@ -92,6 +92,14 @@ package org.openscales.fx.layer
 			this._format = value;
 			if(this.layer != null)
 				(this.layer as WMTS).format=value;
+		}
+		
+		public function get style():String {
+			return (this.layer as WMTS).style;
+		}
+		public function set style(value:String):void {
+			if(this.layer != null)
+				(this.layer as WMTS).style = value;
 		}
 		
 		public function get useCapabilities():Boolean
