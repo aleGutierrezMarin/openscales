@@ -54,6 +54,7 @@ package org.openscales.core.layer {
 		private var _tweenOnLoad:Boolean = true;
 		//GAB
 		private var _editable:Boolean = false;
+		private var _metaData:Object;
 
 		/**
 		 * @private
@@ -656,6 +657,23 @@ package org.openscales.core.layer {
 				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
 			}
 		}
+
+		/**
+		 * Allows to add custom metadata about the layer
+		 */ 
+		public function get metaData():Object
+		{
+			return _metaData;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set metaData(value:Object):void
+		{
+			_metaData = value;
+		}
+
 	}
 }
 
