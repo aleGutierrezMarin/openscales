@@ -1,6 +1,7 @@
 package org.openscales.core.handler.mouse
 {
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
@@ -19,6 +20,11 @@ package org.openscales.core.handler.mouse
 	 */
 	public class DragHandler extends Handler
 	{
+		/**
+		 * @private 
+		 */ 
+		private var _shiftPressed:Boolean = false;
+		
 		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
 		private var _offset:Pixel = null;
@@ -48,6 +54,8 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+				this.map.addEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
 			}
 		}
 		
@@ -55,14 +63,18 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.removeEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+				this.map.removeEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
 			}
 		}
 		
 		/**
 		 * The MouseDown Listener
 		 */
-		protected function onMouseDown(event:Event):void
+		protected function onMouseDown(event:MouseEvent):void
 		{
+			if(_shiftPressed) return;
+			
 			if (_firstDrag) {
 				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
 				_firstDrag = false;
@@ -70,8 +82,8 @@ package org.openscales.core.handler.mouse
 			
 			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			
-			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
-			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
+			this._start = new Pixel(event.localX,event.localY);
+			this._offset = new Pixel(this._start.x - this.map.layerContainer.x,this._start.y - this.map.layerContainer.y);
 			this._startCenter = this.map.center;
 			this.map.buttonMode=true;
 			this._dragging=true;
@@ -81,8 +93,8 @@ package org.openscales.core.handler.mouse
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
-			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
-			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
+			this.map.layerContainer.x = event.localX - this._offset.x;
+			this.map.layerContainer.y = event.localY - this._offset.y;
 			if(this.map.bitmapTransition) {
 				this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - this._offset.x;
 				this.map.bitmapTransition.y = this.map.bitmapTransition.parent.mouseY - this._offset.y;
@@ -95,18 +107,38 @@ package org.openscales.core.handler.mouse
 		/**
 		 *The MouseUp Listener
 		 */
-		protected function onMouseUp(event:Event):void {
+		protected function onMouseUp(event:MouseEvent):void {
+			
+			if(_shiftPressed) return;
+			
 			if((!this.map) || (!this.map.stage))
 				return;
 			
 			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			
 			this.map.buttonMode=false;
-			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
+			this.done(new Pixel(event.localX, event.localY));
 			// A MapEvent.MOVE_END is emitted by the "set center" called in this.done
 			this._dragging=false;
 			if (this.oncomplete!=null)
 				this.oncomplete(event as MouseEvent);
+		}
+		
+		/**
+		 * 
+		 */
+		private function onKeyDown(event:KeyboardEvent):void
+		{
+			if(event.keyCode == 16) _shiftPressed = true;
+
+		}
+		
+		/**
+		 * 
+		 */
+		private function onKeyUp(event:KeyboardEvent):void
+		{
+			if(event.keyCode == 16) _shiftPressed = false;
 		}
 		
 		// Getters & setters as3
@@ -169,7 +201,7 @@ package org.openscales.core.handler.mouse
 				event.oldZoom = this.map.zoom;
 				event.newZoom = this.map.zoom;
 				this.map.dispatchEvent(event);
-				Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");
+				//Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");
 				return;
 			}
 			// Try to set the new position as the center of the map
@@ -179,7 +211,7 @@ package org.openscales.core.handler.mouse
 			// bitmap that represents the map is centered to the new position.
 			// We have to reset the bitmap position to the right center.
 			if (this.map.center.equals(oldCenter)) {
-				Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
+				//Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
 				this.map.moveTo(this.map.center);
 			}
 		}

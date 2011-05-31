@@ -10,6 +10,7 @@
 	<component id="ImageLayer" class="org.openscales.fx.layer.FxImageLayer" />
 	<component id="WMS" class="org.openscales.fx.layer.FxWMS" />
 	<component id="WMSC" class="org.openscales.fx.layer.FxWMSC" />
+	<component id="WMTS" class="org.openscales.fx.layer.FxWMTS" />
 	<component id="WFS" class="org.openscales.fx.layer.FxWFS" />
 	<component id="KML" class="org.openscales.fx.layer.FxKML" />
 	<component id="HTC" class="org.openscales.fx.layer.FxHTC" />
@@ -36,21 +37,35 @@
 	<component id="DataOriginatorsDisplay" class="org.openscales.fx.control.DataOriginatorsDisplay" />
 	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
 	
+	<component id="DefaultLayerRenderer" class="org.openscales.fx.control.layer.DefaultLayerRenderer" />
+	<component id="LayerRenderer" class="org.openscales.fx.control.layer.LayerRenderer" />
+	<component id="LayerControl" class="org.openscales.fx.control.layer.LayerControl" />
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
-  	<component id="MousePosition" class="org.openscales.fx.control.FxMousePosition" />
+	<component id="LayerLegend" class="org.openscales.fx.control.layer.LayerLegend" />
+	<component id="LayerMetadatas" class="org.openscales.fx.control.layer.LayerMetadatas" />
+	<component id="ChangeLayerOpacity" class="org.openscales.fx.control.layer.ChangeLayerOpacity" />
+	<component id="ChangeLayerPosition" class="org.openscales.fx.control.layer.ChangeLayerPosition" />
+	<component id="ChangeLayerVisibility" class="org.openscales.fx.control.layer.ChangeLayerVisibility" />
+	<component id="DeleteLayer" class="org.openscales.fx.control.layer.DeleteLayer" />
+	<component id="LayerZoomToExtent" class="org.openscales.fx.control.layer.LayerZoomToExtent" />
+	
+	<component id="MousePosition" class="org.openscales.fx.control.MousePosition" />
 	<component id="Pan" class="org.openscales.fx.control.Pan" />
 	<component id="PanZoom" class="org.openscales.fx.control.PanZoom" />
 	<component id="Zoom" class="org.openscales.fx.control.Zoom" />
 	<component id="ZoomBox" class="org.openscales.fx.control.ZoomBox" />
 	
 	<component id="OverviewMap" class="org.openscales.fx.control.FxOverviewMap" />
+	<component id="OverviewMapRatio" class="org.openscales.fx.control.OverviewMapRatio" />
 	<component id="Capabilities" class="org.openscales.fx.control.Capabilities" />
 	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
 	<component id="YahooSearch" class="org.openscales.fx.control.search.YahooSearch" />
 	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
-	<component id="ScaleLine" class="org.openscales.fx.control.FxScaleLine" />
+	<component id="ScaleLine" class="org.openscales.fx.control.ScaleLine" />
+	<component id="NumericScale" class="org.openscales.fx.control.NumericScale" />
 	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
+	<component id="LanguageSwitcher" class="org.openscales.fx.control.LanguageSwitcher" />
 	
 	<component id="SampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
 	<component id="SampleRoutingControl" class="org.openscales.fx.control.routing.SampleRoutingControl"/>
@@ -63,4 +78,5 @@
 	<component id="IconButton" class="org.openscales.fx.control.IconButton" />
 	<component id="Popup" class="org.openscales.fx.popup.FxPopup" />
 	<component id="PopupRenderer" class="org.openscales.fx.popup.renderer.FxPopupRenderer" />
+
 </componentPackage>

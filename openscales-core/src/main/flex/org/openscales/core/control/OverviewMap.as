@@ -284,6 +284,9 @@ package org.openscales.core.control
 		}
 		
 		private function _drawExtent(event:Event=null):void {
+			if(!this.map || !this.map.baseLayer || !this._overviewMap.baseLayer)
+				return;
+			
 			var _extent:Bounds = this.map.extent;
 			
 			if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {

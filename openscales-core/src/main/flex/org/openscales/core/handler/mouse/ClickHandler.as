@@ -7,6 +7,7 @@ package org.openscales.core.handler.mouse
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.Geometry;
@@ -36,7 +37,7 @@ package org.openscales.core.handler.mouse
 		 * This function is called after a MouseUp event (in the case of a
 		 * double click)
 		 */
-		private var _doubleClick:Function = null;
+		private var _doubleClick:Function = onDoubleClick;
 		
 		/**
 		 * Callback function drag(evt:MouseEvent):void
@@ -84,13 +85,16 @@ package org.openscales.core.handler.mouse
 		protected var _shiftKey:Boolean = false;
 		
 		protected var _dragging:Boolean = false;
-				
+			
+		private var _doubleClickZoomOnMousePosition:Boolean = true;
+		
 		/**
 		 * Constructor of the handler.
 		 * @param map the map associated to the handler
-		 * @param active boolean defining if the handler is active or not
+		 * @param active Boolean defining if the handler is active or not
+		 * @param doubleClickZoomOnMousePosition boolean defining if zoom on double click should be made toward mouse position
 		 */
-		public function ClickHandler(map:Map=null, active:Boolean=false) {
+		public function ClickHandler(map:Map=null, active:Boolean=false, doubleClickZoomOnMousePosition:Boolean = true) {
 			super(map, active);
 		}
 		
@@ -277,6 +281,7 @@ package org.openscales.core.handler.mouse
 		 * @param evt the TimerEvent (not used)
 		 */
 		private function useRightCallback(evt:TimerEvent):void {
+			
 			if(this._dragging) {
 				this._dragging = false;
 				if (this.drop != null) {
@@ -290,7 +295,7 @@ package org.openscales.core.handler.mouse
 				}
 			} else if (this.doubleClick != null) {
 					// Use the callback function for a double click
-					this.doubleClick(this._upPixel);
+					this.doubleClick();
 			}
 			
 			this._timer.stop();
@@ -300,6 +305,38 @@ package org.openscales.core.handler.mouse
 			this._ctrlKey = false;
 			this._shiftKey = false;
 		}
+		
+		/**
+		 * Call back method for doubleclick events
+		 */ 
+		private function onDoubleClick():void
+		{
+			// If the handler is configured to zoom on mouse position
+			if(this.doubleClickZoomOnMousePosition){
+				this.map.zoomToMousePosition(true);	
+			}else // Otherwise, zooming to current center
+			{
+				this.map.moveTo(map.center,map.zoom+1,false,true);
+			} 
+		}
+
+		/**
+		 * boolean specifying if zoom on double click should be made toward mouse position or not.
+		 * Default is true.
+		 */
+		public function get doubleClickZoomOnMousePosition():Boolean
+		{
+			return _doubleClickZoomOnMousePosition;
+		}
+
+		/**
+		 * @private
+		 */ 
+		public function set doubleClickZoomOnMousePosition(value:Boolean):void
+		{
+			_doubleClickZoomOnMousePosition = value;
+		}
+
 		
 	}
 }

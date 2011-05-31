@@ -8,7 +8,6 @@ package org.openscales.fx
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
-	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
 	
@@ -29,7 +28,6 @@ package org.openscales.fx
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	
 	import spark.components.Group;
@@ -49,7 +47,7 @@ package org.openscales.fx
 	 */
 	public class FxMap extends Group
 	{
-		private var _map:Map;
+		protected var _map:Map;
 		private var _controls:Vector.<IControl> = new Vector.<IControl>();
 		private var _zoom:Number = NaN;
 		private var _center:Location = null;
@@ -64,6 +62,9 @@ package org.openscales.fx
 		 */
 		public function FxMap() {
 			super();
+			
+			//create a new map object
+			this._map = new Map();
 			
 			// Useful for a Map only defined with width="100%" or "height="100%"
 			this.minWidth = 100;
@@ -95,7 +96,8 @@ package org.openscales.fx
 			// Add the layer to the map
 			l.fxmap = this;
 			l.configureLayer();
-			this._map.addLayer(l.layer);
+			if(l.layer)
+				this._map.addLayer(l.layer);
 		}
 		
 		private function onMoveStart(event:MapEvent):void{
@@ -152,8 +154,15 @@ package org.openscales.fx
 		/**
 		 * FxMap creation complete callback, initialize the map at the right Flex lifecycle time 
 		 */
-		private function onCreationComplete(event:Event):void {
-			this._map = new Map(this.width, this.height);
+		protected function onCreationComplete(event:Event):void {
+			
+			// Check is a child class as already created the map
+			if (this._map == null)
+			{
+				this._map = new Map(this.width, this.height);
+			} else {
+				this._map.size = new Size(this.width,this.height);
+			}
 			
 			var i:int = 0;
 			var element:IVisualElement = null;
@@ -295,6 +304,7 @@ package org.openscales.fx
 		 */
 		public function set zoom(value:Number):void {
 			this._zoom = value;
+			this._map.zoom = value;
 		}
 		
 		/**
@@ -352,14 +362,30 @@ package org.openscales.fx
 			return this._flexOverlay;
 		}
 
-		public function get controls():Vector.<IControl>
+		
+		
+		/** 
+		 * Url to the theme used to custom the components of the current map
+		 */
+		public function get theme():String
 		{
-			return _controls;
+			if(!this._map) 
+				return null;
+			else
+				return (this._map as Map).theme;
 		}
-
-		public function set controls(value:Vector.<IControl>):void
+		
+		/**
+		 * @private
+		 */
+		public function set theme(value:String):void
 		{
-			_controls = value;
+			if(this._map && value!=null)
+			{
+				styleManager.unloadStyleDeclarations((this._map as Map).theme);
+				(this._map as Map).theme = value;
+				styleManager.loadStyleDeclarations(value);
+			}
 		}
 		
 		/**
@@ -391,6 +417,54 @@ package org.openscales.fx
 			}
 		}
 
+		// --- Control management --- //
+		/**
+		 * List of the controls linked to the map
+		 */
+		public function get controls():Vector.<IControl>
+		{
+			// TODO : return a clone of the controls list
+			return this._map.controls;
+		}
 		
+		/**
+		 * Adds given control to the map, displaying it on the map if the <code>attach</code> parameter is true.
+		 * Otherwise, the control is just linked to the map and can be displayed anywhere else
+		 * 
+		 * @param control Control to add
+		 * @param attach If true, component is displayed on the map. Otherwise, control is just linked to the map. 
+		 * 
+		 * @example The following code explains how to add a control :
+		 * 
+		 * <listing version="3.0">
+		 * 	myMap.addControl(new geoportal.control.OverviewMap());
+		 * </listing>
+		 */
+		public function addControl(control:IControl, attach:Boolean = true):void{
+			
+			if(control is IVisualElement){
+				this._map.addControl(control, false);
+				
+				if(attach){
+					this.addElement(control as IVisualElement);
+				}
+			}
+			else{
+				this._map.addControl(control,attach);
+			}
+		}
+		
+		/**
+		 * Adds a list of controls to the map and displays them
+		 * 
+		 * @param controls The list of controls to add to the map.
+		 */
+		public function addControls(controls:Vector.<IControl>):void{
+			
+			for each (var control:IControl in controls){
+				
+				this.addControl(control);
+			}
+		}
 	}
 }

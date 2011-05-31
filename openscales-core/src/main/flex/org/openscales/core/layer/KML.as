@@ -9,28 +9,28 @@ package org.openscales.core.layer
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.KMLFormat;
 	import org.openscales.core.request.XMLRequest;
-
+	
 	/**
 	 * KML layer, most useful feature of KML 2.2 specifications are supported
 	 */
 	public class KML extends FeatureLayer
 	{
-	    private var _url:String = "";
+		private var _url:String = "";
 		private var _request:XMLRequest = null;
 		private var _kmlFormat:KMLFormat = null;
 		private var _xml:XML = null;
-
-	    public function KML(name:String,
-	    					url:String,
-	    					bounds:Bounds = null) {
-	        this._url = url;
-	        this.maxExtent = bounds;
-
-	        super(name);
+		
+		public function KML(name:String,
+							url:String,
+							bounds:Bounds = null) {
+			this._url = url;
+			this.maxExtent = bounds;
+			
+			super(name);
 			this._kmlFormat = new KMLFormat();
-	    }
-
-		 override public function destroy():void {
+		}
+		
+		override public function destroy():void {
 			if (this._request) {
 				this._request.destroy();
 				this._request = null;
@@ -38,13 +38,13 @@ package org.openscales.core.layer
 			this.loading = false;
 			super.destroy();
 		}
-
+		
 		override public function redraw(fullRedraw:Boolean = true):void {
 			if (!displayed) {
 				this.clear();
 				return;
 			}
-
+			
 			if (! this._request) {
 				this.loading = true;
 				this._request = new XMLRequest(url, onSuccess, onFailure);
@@ -56,12 +56,12 @@ package org.openscales.core.layer
 				this.draw();
 			}
 		}
-
+		
 		public function onSuccess(event:Event):void
 		{
 			this.loading = false;
 			var loader:URLLoader = event.target as URLLoader;
-
+			
 			// To avoid errors if the server is dead
 			try {
 				this._xml = new XML(loader.data);
@@ -72,7 +72,7 @@ package org.openscales.core.layer
 				this._kmlFormat.proxy = this.proxy;
 				var features:Vector.<Feature> = this._kmlFormat.read(this._xml) as Vector.<Feature>;
 				this.addFeatures(features);
-
+				
 				this.clear();
 				this.draw();
 			}
@@ -85,18 +85,18 @@ package org.openscales.core.layer
 			this.loading = false;
 			Trace.error("Error when loading kml " + this._url);			
 		}
-
+		
 		public function get url():String {
 			return this._url;
 		}
-
+		
 		public function set url(value:String):void {
 			this._url = value;
 		}
-
+		
 		override public function getURL(bounds:Bounds):String {
 			return this._url;
 		}
-
+		
 	}
 }

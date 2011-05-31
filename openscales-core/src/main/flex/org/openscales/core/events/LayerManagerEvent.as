@@ -17,10 +17,12 @@ package org.openscales.core.events
 		
 		private var _y:int=0;
 		
+		
 		/**
 		 * Event type dispatched when a button opacity is clicked
 		 */
 		public static const COMPONENT_OPACITY:String="openscales.opacity";
+		
 		
 		public function LayerManagerEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

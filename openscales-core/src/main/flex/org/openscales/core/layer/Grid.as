@@ -2,10 +2,6 @@ package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
 	import org.openscales.core.basetypes.linkedlist.LinkedList;
@@ -15,7 +11,11 @@ package org.openscales.core.layer
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.tile.ImageTile;
-
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
+	
 	/**
 	 * Base class for layers that use a lattice of tiles.
 	 *
@@ -26,27 +26,27 @@ package org.openscales.core.layer
 		private const DEFAULT_TILE_WIDTH:Number = 256;
 		
 		private const DEFAULT_TILE_HEIGHT:Number = 256;
-
+		
 		/** The grid array contains tiles **/		
 		private var _grid:Vector.<Vector.<ImageTile>> = null;
-
-		private var _singleTile:Boolean = false;
-
+		
+		protected var _tiled:Boolean = false;
+		
 		private var _numLoadingTiles:int = 0;
-
+		
 		private var _origin:Pixel = null;
-
+		
 		private var _buffer:Number;
-
+		
 		protected var CACHE_SIZE:int = 64;
-
+		
 		private var tileCache:LinkedList = new LinkedList();
 		private var cptCached:int = 0;
 		
-		private var _tileWidth:Number = DEFAULT_TILE_WIDTH;
+		protected var _tileWidth:Number = DEFAULT_TILE_WIDTH;
 		
-		private var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
-
+		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
+		
 		/**
 		 * Create a new grid layer
 		 *
@@ -61,11 +61,11 @@ package org.openscales.core.layer
 		public function Grid(name:String,
 							 url:String,
 							 params:IHttpParams = null) {
-
+			
 			//TODO delete url and params after osmparams work
 			super(name, url, params);
-
-
+			
+			
 			this.buffer = 1;
 			
 			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
@@ -89,14 +89,14 @@ package org.openscales.core.layer
 			}
 			super.onMapMove(e);
 		}
-
+		
 		override public function destroy():void {
 			this.clear();
 			tileCache.clear();
 			this.grid = null;
 			super.destroy();
 		}
-
+		
 		/**
 		 * Go through and remove all tiles from the grid, calling
 		 *    destroy() on each of them to kill circular references
@@ -120,7 +120,7 @@ package org.openscales.core.layer
 				this.grid = null;
 			}
 		}
-
+		
 		/**
 		 * cache a tile
 		 */
@@ -149,7 +149,6 @@ package org.openscales.core.layer
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
-						
 			if (!displayed) {
 				this.clear();
 				return;
@@ -158,10 +157,10 @@ package org.openscales.core.layer
 			var bounds:Bounds = this.map.extent.clone();
 			
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw;
-
+			
 			var tilesBounds:Bounds = this.getTilesBounds();            
-
-			if (this.singleTile) {
+			
+			if (this.tiled) {
 				if(fullRedraw)
 					this.clear();
 				if ( forceReTile || !tilesBounds.containsBounds(bounds)) {
@@ -179,9 +178,9 @@ package org.openscales.core.layer
 		public function set tileWidth(value:Number):void {
 			this._tileWidth = value;	
 		}
-
+		
 		public function get tileWidth():Number {
-			if (this.singleTile) {
+			if (this.tiled) {
 				return map.size.w;
 			} 			
 			return this._tileWidth;
@@ -190,15 +189,15 @@ package org.openscales.core.layer
 		public function set tileHeight(value:Number):void {
 			this._tileHeight= value;	
 		}
-
+		
 		public function get tileHeight():Number {
-			if (this.singleTile) {
+			if (this.tiled) {
 				return map.size.h;
 			}
 			return this._tileHeight;
 		}	
-
-
+		
+		
 		/**
 		 * Return the bounds of the tile grid.
 		 *
@@ -208,21 +207,21 @@ package org.openscales.core.layer
 			if(this._grid == null)
 				return null;
 			var i:uint = this._grid.length;
-
+			
 			if (i>0) {
 				var bottom:int = i - 1;
 				var bottomLeftTile:ImageTile = this._grid[bottom][0];
 				var right:int = this._grid[0].length - 1; 
 				var topRightTile:ImageTile = this._grid[0][right];
 				return new Bounds(bottomLeftTile.bounds.left, 
-									bottomLeftTile.bounds.bottom,
-									topRightTile.bounds.right, 
-									topRightTile.bounds.top,
-									this.projSrsCode);
+					bottomLeftTile.bounds.bottom,
+					topRightTile.bounds.right, 
+					topRightTile.bounds.top,
+					this.projSrsCode);
 			}
 			return null;
 		}
-
+		
 		/**
 		 * Initialization singleTile
 		 *
@@ -233,19 +232,19 @@ package org.openscales.core.layer
 			var tileWidth:Number = bounds.width;
 			var tileHeight:Number = bounds.height;
 			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
-												center.lat - (tileHeight/2),
-												center.lon + (tileWidth/2),
-												center.lat + (tileHeight/2),
-												this.projSrsCode);
-			var ul:Location = new Location(tileBounds.left, tileBounds.top);
+				center.lat - (tileHeight/2),
+				center.lon + (tileWidth/2),
+				center.lat + (tileHeight/2),
+				center.projSrsCode);
+			var ul:Location = new Location(tileBounds.left, tileBounds.top, tileBounds.projSrsCode);
 			var px:Pixel = this.map.getLayerPxFromLocation(ul);
-
+			
 			if(this._grid==null) {
 				this._grid = new Vector.<Vector.<ImageTile>>(1);
 				this._grid[0] = new Vector.<ImageTile>(1);
 				this._grid[0][0] = null;
 			}
-
+			
 			var tile:ImageTile = this._grid[0][0];
 			if (!tile) {
 				tile = this.addTile(tileBounds, px);
@@ -256,7 +255,7 @@ package org.openscales.core.layer
 			}           
 			this.removeExcessTiles(1,1);
 		}
-
+		
 		/**
 		 * Ititialize gridded tiles
 		 * 
@@ -270,9 +269,9 @@ package org.openscales.core.layer
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
 			var viewSize:Size = this.map.size;
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
-											Math.max(1, 2 * this.buffer);
+				Math.max(1, 2 * this.buffer);
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
-											Math.max(1, 2 * this.buffer);
+				Math.max(1, 2 * this.buffer);
 			var extent:Bounds = this.maxExtent;
 			var resolution:Number = this.map.resolution;
 			var tilelon:Number = resolution * this.tileWidth;
@@ -287,16 +286,16 @@ package org.openscales.core.layer
 			var tilerowremain:Number = tilerow - offsetlat/tilelat;
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
 			var tileoffsetlat:Number = extent.bottom + tilerow * tilelat;
-
+			
 			tileoffsetx = Math.round(tileoffsetx);
 			tileoffsety = Math.round(tileoffsety);
-
+			
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
-
+			
 			var startX:Number = tileoffsetx; 
 			var startLon:Number = tileoffsetlon;
 			var rowidx:int = 0;
-
+			
 			if(this._grid == null) {
 				this._grid = new Vector.<Vector.<ImageTile>>();
 			}
@@ -309,22 +308,22 @@ package org.openscales.core.layer
 					row = this._grid[rowidx];
 				}
 				rowidx=++rowidx;
-
+				
 				tileoffsetlon = startLon;
 				tileoffsetx = startX;
 				var colidx:int = 0;
 				do {
 					var tileBounds:Bounds = new Bounds(tileoffsetlon, 
-														tileoffsetlat, 
-														tileoffsetlon + tilelon,
-														tileoffsetlat + tilelat,
-														this.projSrsCode);
+						tileoffsetlat, 
+						tileoffsetlon + tilelon,
+						tileoffsetlat + tilelat,
+						this.projSrsCode);
 					var x:Number = tileoffsetx;
 					x -= int(this.map.layerContainer.x);
-
+					
 					var y:Number = tileoffsety;
 					y -= int(this.map.layerContainer.y);
-
+					
 					var px:Pixel = new Pixel(x, y);
 					var tile:ImageTile;
 					if(row.length==colidx) {
@@ -338,22 +337,21 @@ package org.openscales.core.layer
 							tile.moveTo(tileBounds, px, false);
 					}
 					colidx=++colidx;
-
+					
 					tileoffsetlon += tilelon;       
 					tileoffsetx += this.tileWidth;
 				} while ((tileoffsetlon <= bounds.right + tilelon * this.buffer) || colidx < minCols)  
-
+				
 				tileoffsetlat -= tilelat;
 				tileoffsety += this.tileHeight;
 			} while((tileoffsetlat >= bounds.bottom - tilelat * this.buffer) || rowidx < minRows)
-
+			
 			//shave off exceess rows and colums
 			this.removeExcessTiles(rowidx, colidx);
-
+			
 			//now actually draw the tiles
 			this.spiralTileLoad();
 		}
-
 		/**
 		 *   Starts at the top right corner of the grid and proceeds in a spiral
 		 *    towards the center, adding tiles one at a time to the beginning of a
@@ -370,7 +368,7 @@ package org.openscales.core.layer
 			var iCell:int = -1;
 			var direction:int = 0;
 			var directionsTried:int = 0;
-
+			
 			while( directionsTried < 4) {
 				var testRow:int = iRow;
 				var testCell:int = iCell;
@@ -388,7 +386,7 @@ package org.openscales.core.layer
 						testRow--;
 						break;
 				} 
-
+				
 				// if the test grid coordinates are within the bounds of the 
 				//  grid, get a reference to the tile.
 				var tile:ImageTile = null;
@@ -396,12 +394,12 @@ package org.openscales.core.layer
 					(testCell < this._grid[testRow].length) && (testCell >= 0)) {
 					tile = this._grid[testRow][testCell];
 				}
-
+				
 				if ((tile != null) && (!tile.queued)) {
 					//add tile to beginning of queue, mark it as queued.
 					tileQueue.push(tile);
 					tile.queued = true;
-
+					
 					//restart the directions counter and take on the new coords
 					directionsTried = 0;
 					iRow = testRow;
@@ -412,7 +410,7 @@ package org.openscales.core.layer
 					directionsTried++;
 				}
 			} 
-
+			
 			// now we go through and draw the tiles in forward order
 			for(var i:int=tileQueue.length-1; i >= 0; i--) {
 				tile = tileQueue[i];
@@ -421,12 +419,12 @@ package org.openscales.core.layer
 				tile.queued = false;       
 			}
 		}
-
+		
 		public function addTile(bounds:Bounds, position:Pixel):ImageTile {
 			return null;
 		}
-
-
+		
+		
 		public function removeTileMonitoringHooks(tile:ImageTile):void {
 		}
 		/**
@@ -466,7 +464,7 @@ package org.openscales.core.layer
 				}
 			}
 		}
-
+		
 		/**
 		 * Shifty grid work
 		 *
@@ -480,7 +478,7 @@ package org.openscales.core.layer
 			var deltaY:Number = (prepend) ? -this.tileHeight : this.tileHeight;
 			var deltaLat:Number = resolution * -deltaY;
 			var row:Vector.<ImageTile> = (prepend) ? this._grid.pop() : this._grid.shift();
-
+			
 			var j:uint = modelRow.length;
 			for (var i:uint=0; i < j; ++i) {
 				var modelTile:ImageTile = modelRow[i];
@@ -491,14 +489,14 @@ package org.openscales.core.layer
 				position.y = position.y + deltaY;
 				row[i].clearAndMoveTo(bounds, position);
 			}
-
+			
 			if (prepend) {
 				this._grid.unshift(row);
 			} else {
 				this._grid.push(row);
 			}
 		}
-
+		
 		/**
 		 * Shift grid work in the other dimension
 		 *
@@ -509,7 +507,7 @@ package org.openscales.core.layer
 			var deltaX:Number = (prepend) ? -this.tileWidth : this.tileWidth;
 			var resolution:Number = this.map.resolution;
 			var deltaLon:Number = resolution * deltaX;
-
+			
 			var j:uint = this._grid.length;
 			for (var i:uint=0; i<j; ++i) {
 				var row:Vector.<ImageTile> = this._grid[i];
@@ -529,7 +527,7 @@ package org.openscales.core.layer
 				}
 			}
 		}
-
+		
 		/**
 		 * When the size of the map or the buffer changes, we may need to
 		 *     remove some excess rows and columns.
@@ -546,7 +544,7 @@ package org.openscales.core.layer
 					tile.destroy();
 				}
 			}
-
+			
 			for (i=0, l=this._grid.length; i<l; i++) {
 				row = this._grid[i];
 				while (row.length > columns) {
@@ -555,9 +553,9 @@ package org.openscales.core.layer
 					tile.destroy();
 				}
 			}
-
+			
 		}
-
+		
 		/**
 		 * Returns The tile bounds for a layer given a pixel location.
 		 *
@@ -574,10 +572,10 @@ package org.openscales.core.layer
 			var tileLeft:Number = maxExtent.left + (tileMapWidth * Math.floor((mapPoint.lon - maxExtent.left) / tileMapWidth));
 			var tileBottom:Number = maxExtent.bottom + (tileMapHeight * Math.floor((mapPoint.lat - maxExtent.bottom) / tileMapHeight));
 			return new Bounds(tileLeft,
-							  tileBottom,
-							  tileLeft + tileMapWidth,
-							  tileBottom + tileMapHeight,
-							  this.projSrsCode);
+				tileBottom,
+				tileLeft + tileMapWidth,
+				tileBottom + tileMapHeight,
+				this.projSrsCode);
 		}
 		
 		private function tileLoadHandler(event:TileEvent):void	{
@@ -594,7 +592,7 @@ package org.openscales.core.layer
 						for (var i:Number = 0;i<j;i++)	{
 							var tile:ImageTile = array[i];
 							if (tile != null && !tile.loadComplete)
-							  return;	
+								return;	
 						}
 					}
 					this.loading = false;
@@ -602,38 +600,38 @@ package org.openscales.core.layer
 				}
 			}			
 		}
-
+		
 		//Getters and Setters
 		override public function get imageSize():Size {
 			if(this._imageSize == null)
 				this._imageSize = new Size(this.tileWidth, this.tileHeight);
 			return new Size(this.tileWidth, this.tileHeight); 
 		}
-
+		
 		public function get grid():Vector.<Vector.<ImageTile>> {
 			return this._grid;
 		}
-
+		
 		public function set grid(value:Vector.<Vector.<ImageTile>>):void {
 			this._grid = value;
 		}
-
-		public function get singleTile():Boolean {
-			return this._singleTile;
+		
+		public function get tiled():Boolean {
+			return this._tiled;
 		}
-
-		public function set singleTile(value:Boolean):void {
-			this._singleTile = value;
+		
+		public function set tiled(value:Boolean):void {
+			this._tiled = value;
 		}
-
+		
 		public function get numLoadingTiles():int {
 			return this._numLoadingTiles;
 		}
-
+		
 		public function set numLoadingTiles(value:int):void {
 			this._numLoadingTiles = value;
 		}
-
+		
 		/**
 		 * Used only when in gridded mode, this specifies the number of
 		 * extra rows and colums of tiles on each side which will
@@ -642,11 +640,11 @@ package org.openscales.core.layer
 		public function get buffer():Number {
 			return this._buffer; 
 		}
-
+		
 		public function set buffer(value:Number):void {
 			this._buffer = value; 
 		}
-
+		
 	}
 }
 

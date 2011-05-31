@@ -5,12 +5,12 @@
 	
 	<Map id="fxMap" height="100%" width="100%">
 		
-		<WMS name="MyMap" url="http://openscales.org/geoserver/gwc/service/wms"
-			 layers="Arc_Sample" format="image/jpeg" version="1.3.0" styles="rain" />
+		<WMS name="MyMap" url="http://openscales.org/geoserver/wms"
+			 layers="topp:states" format="image/jpeg" version="1.3.0" styles="" />
 		
 		<Spinner x="{width / 2}" y="{height / 2}"/>
 		
-		<MousePosition x="10" y="{height-20}" displayProjSrsCode="EPSG:4326"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
 		
 		<DragHandler/>
 		<WheelHandler/>

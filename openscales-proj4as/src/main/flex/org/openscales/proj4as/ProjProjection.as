@@ -28,7 +28,7 @@ package org.openscales.proj4as {
 			'EPSG:32638': "+title=WGS 84 / UTM zone 38N +proj=utm +zone=38 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 			'EPSG:32639': "+title=WGS 84 / UTM zone 39N +proj=utm +zone=39 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 			'EPSG:32640': "+title=WGS 84 / UTM zone 40N +proj=utm +zone=40 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-			'EPSG:32639': "+title=WGS 84 / UTM zone 41N +proj=utm +zone=41 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",			 
+			'EPSG:32641': "+title=WGS 84 / UTM zone 41N +proj=utm +zone=41 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",			 
 			
 			'EPSG:28991': "+title=RD +proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=0 +y_0=0 +ellps=bessel +units=m +no_defs",
 			'EPSG:28992': "+title=RD2004 +proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs",					 
@@ -45,7 +45,7 @@ package org.openscales.proj4as {
 			'EPSG:2154'	: "+title=RGF93 / Lambert-93 +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs", 	
 			
 			'EPSG:3346' : "+title=LKS94 / Lithuania TM +proj=tmerc +lat_0=0 +lon_0=24 +k=0.9998 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
-			
+			'EPSG:3857' : "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ",
 			'EPSG:2065' : "+title=S-JTSK (Ferro) / Krovak +proj=krovak +lat_0=49.5 +lon_0=42.5 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +pm=ferro +units=m +no_defs",
 			
 			// DGR 2009-08-27 : IGNF, Geoportal cache projections :
@@ -67,8 +67,66 @@ package org.openscales.proj4as {
 			'IGNF:RGF93G': "+title=Reseau geodesique francais 1993 +proj=longlat +towgs84=0.0000,0.0000,0.0000 +a=6378137.0000 +rf=298.2572221010000 +units=m +no_defs",
 			'IGNF:LAMB93': "+title=Lambert 93 +proj=lcc +towgs84=0.0000,0.0000,0.0000 +a=6378137.0000 +rf=298.2572221010000 +lat_0=46.500000000 +lon_0=3.000000000 +lat_1=44.000000000 +lat_2=49.000000000 +x_0=700000.000 +y_0=6600000.000 +units=m +no_defs",
 			
-			'CRS:84': "+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-		}
+			'CRS:84': "+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=degrees"
+		};
+		
+		//North/East ordering
+		static public const AXIS_ORDER_EN:String="EN";
+		//East/North ordering
+		static public const AXIS_ORDER_NE:String="NE";
+		
+		static public const projAxisOrder:Object={
+			'EPSG:900913': ProjProjection.AXIS_ORDER_EN,
+			'WGS84': ProjProjection.AXIS_ORDER_NE,
+			'EPSG:4326': ProjProjection.AXIS_ORDER_NE,
+			'EPSG:4269': ProjProjection.AXIS_ORDER_NE,
+			'EPSG:27700': ProjProjection.AXIS_ORDER_EN,
+			
+			'EPSG:32637': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:32638': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:32639': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:32640': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:32641': ProjProjection.AXIS_ORDER_EN,			 
+			
+			'EPSG:28991': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:28992': ProjProjection.AXIS_ORDER_EN,					 
+			
+			'EPSG:31300': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:31370': ProjProjection.AXIS_ORDER_EN,			
+			
+			'EPSG:2176': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:2177': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:2178': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:2179': ProjProjection.AXIS_ORDER_EN,
+			'EPSG:2180': ProjProjection.AXIS_ORDER_EN,
+			
+			'EPSG:2154'	: ProjProjection.AXIS_ORDER_EN, 	
+			
+			'EPSG:3346' : ProjProjection.AXIS_ORDER_EN,
+			'EPSG:3857' : ProjProjection.AXIS_ORDER_EN,
+			'EPSG:2065' : ProjProjection.AXIS_ORDER_EN,
+			
+			// DGR 2009-08-27 : IGNF, Geoportal cache projections :
+			'IGNF:GEOPORTALANF': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALASP': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALCRZ': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALFXX': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALGUF': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALKER': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALMYT': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALNCL': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALPYF': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALREU': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALSPA': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALSPM': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:GEOPORTALWLF': ProjProjection.AXIS_ORDER_EN,
+			
+			//DGR 2010-02-10 :
+			'IGNF:RGF93G': ProjProjection.AXIS_ORDER_EN,
+			'IGNF:LAMB93': ProjProjection.AXIS_ORDER_EN,
+			
+			'CRS:84': ProjProjection.AXIS_ORDER_EN
+		};
 		
 		static private const projProjections:Object={}
 		
@@ -80,7 +138,12 @@ package org.openscales.proj4as {
 		 * @return ProjProjection the ProjProjection
 		 */
 		public static function getProjProjection(srsCode:String):ProjProjection {
-			if (srsCode == null || ProjProjection.defs[srsCode] == null) {
+			if(srsCode==null)
+				return null;
+			
+			srsCode = srsCode.toUpperCase();
+			
+			if (!ProjProjection.defs[srsCode]) {
 				return null;
 			}
 			if (ProjProjection.projProjections[srsCode]) {

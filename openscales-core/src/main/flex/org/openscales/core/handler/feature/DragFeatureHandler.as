@@ -1,6 +1,7 @@
 package org.openscales.core.handler.feature
 {
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Util;
@@ -44,7 +45,7 @@ package org.openscales.core.handler.feature
 		/**
 		 * This function is launched when the Mouse is down
 		 */
-		override  protected function onMouseDown(event:Event):void{
+		override  protected function onMouseDown(event:MouseEvent):void{
 			var feature:Feature=event.target as Feature;
 			//The target is a feature , its' layer is draggable and it doesn't belongs to the undraggableFeatures Array
 			if(feature!=null && _draggableLayers.indexOf(feature.layer)!=-1 && _undraggableFeatures.indexOf(feature)==-1){
@@ -56,7 +57,7 @@ package org.openscales.core.handler.feature
 		/**
 		 * This function is launched when the Mouse is up
 		 */
-		 override protected function onMouseUp(event:Event):void{
+		 override protected function onMouseUp(event:MouseEvent):void{
 		 	var feature:Feature=event.target as Feature;
 		 	//The target is a feature and is the feature currently dragged
 		 	if(feature!=null && _featureCurrentlyDragged==feature){

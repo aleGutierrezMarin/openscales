@@ -59,8 +59,8 @@ package org.openscales.core.layer.capabilities
 				featureCapabilities.put("Title", value);
 
 				srsCode = feature.DefaultSRS;
-				value = srsCode.substr(srsCode.indexOf("EPSG"));
-				featureCapabilities.put("SRS", value);
+				srsCode = srsCode.substr(srsCode.indexOf("EPSG"));
+				featureCapabilities.put("SRS", srsCode);
 
 				value = feature.Abstract;
 				featureCapabilities.put("Abstract", value);
