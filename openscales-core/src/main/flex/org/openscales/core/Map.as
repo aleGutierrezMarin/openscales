@@ -646,7 +646,13 @@ package org.openscales.core
 		 * range of zoom levels.
 		 */
 		private function isValidZoomLevel(zoomLevel:Number):Boolean {
-			return (this.baseLayer && !isNaN(zoomLevel) && (zoomLevel >= this.baseLayer.minZoomLevel) && (zoomLevel <= this.baseLayer.maxZoomLevel));
+			return (this.baseLayer 
+				&& !isNaN(zoomLevel) 
+				&& (zoomLevel >= this.baseLayer.minZoomLevel) 
+				&& (zoomLevel <= this.baseLayer.maxZoomLevel)
+				&& this._baseLayer.resolutions[zoomLevel] < this.maxResolution
+				&& this._baseLayer.resolutions[zoomLevel] > this.minResolution
+			);
 		}
 		
 		/**
@@ -749,7 +755,7 @@ package org.openscales.core
 				}
 			}
 		}
-		
+				
 		/**
 		 * Return a Location which is the passed-in view port Pixel, translated into lon/lat
 		 *	by the current base layer
@@ -1163,6 +1169,11 @@ package org.openscales.core
 		 */
 		public function get resolution():Number {
 			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : NaN;
+		}
+		
+		public function set resolution(value:Number):void
+		{
+			this.zoomToResolution(value);
 		}
 		
 		/**
