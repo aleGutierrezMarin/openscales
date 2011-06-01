@@ -118,6 +118,8 @@
 					
 					// update the display label
 					scalesNameLabel.text = this._currentLabel;
+					
+					scalesNameLabel.y = zoomSlider.thumb.y;
 				}
 			}
 			
@@ -189,7 +191,6 @@
 				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
 				zoomSlider.minimum = map.baseLayer.minZoomLevel;
 				zoomSlider.value = map.zoom;
-				scalesNameLabel.y = zoomSlider.thumb.y;
 				
 				// initialise the label value
 				this.updateCurrentLabel();
