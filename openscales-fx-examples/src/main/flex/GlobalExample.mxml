@@ -29,8 +29,6 @@
 		<LayerManager x="{width - 225}" y="10">
 			 	<rendererOptions>
 					<fx:Object
-						displayLegend="true"
-						displayMetadatas="true"
 						displayZoomToExtent="true" />
 				</rendererOptions>
 		</LayerManager>
