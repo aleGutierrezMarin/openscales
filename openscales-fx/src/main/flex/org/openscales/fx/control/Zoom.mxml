@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Zoom control with zoomLabels --> 
+<Control xmlns="org.openscales.fx.control.*" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="400" height="300" initialize="configure()">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.sliderClasses.Slider;
+			import mx.events.DragEvent;
+			import mx.events.SliderEvent;
+			import mx.events.SliderEventClickTarget;
+			import mx.events.StateChangeEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.control.ZoomData;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.fx.control.skin.PanSkin;
+			import org.openscales.fx.control.skin.ZoomSkin;
+			import org.openscales.fx.control.skin.ZoomThumbSkin;
+			
+			import spark.events.TrackBaseEvent;
+			
+			
+			public var DELTA_PX:Number = 100;
+			
+			
+			/**
+			 * @private
+			 * The string value for the list of labels for the different resolution.
+			 * @default null
+			 */
+			private var _scalesName:String = null;
+			
+			/**
+			 * @private
+			 * The list of labels for the different resolution.
+			 * @default null
+			 */
+			private var _scalesLabels:Vector.<ZoomData> = null;
+			
+			/**
+			 * @private
+			 * The current value of the zoom label
+			 * @default null
+			 */
+			private var _currentLabel:String = null;
+			
+			
+			/**
+			 * @private
+			 * Indicates if the slider thumb is dragged
+			 * @default false
+			 */
+			private var _onDrag:Boolean = false;
+			
+			
+			override public function set map(value:Map):void {
+				super.map = value;
+			}
+			
+			/**
+			 * Configure the listener for the pan and the zoom
+			 * Configure the list of zoom label once the component is created 
+			 * and set the first zoomLabel text value.
+			 */
+			public function  configure():void
+			{ 
+				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
+				
+				if(this._scalesLabels == null)
+				{
+					this._scalesLabels = new Vector.<ZoomData>();
+				}
+				
+				// listener for the zoom in/out buttons
+				this.zoomIn.addEventListener(MouseEvent.CLICK, this.onZoom);
+				this.zoomOut.addEventListener(MouseEvent.CLICK, this.onZoom);
+			}
+			
+			/**
+			 * @inherit
+			 */			
+			override public function set active(value:Boolean):void {
+				if(value) {					
+					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
+					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
+					initializeZoomLevels();								
+				} else {
+					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
+					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
+				}
+				super.active = value;
+			}
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this.updateCurrentLabel();
+			}
+			
+			/**
+			 * Refresh the current zoom label.
+			 * Get the current map resolution and search the associated label.
+			 * Then refresh the display of the label value.
+			 */
+			public function updateCurrentLabel():void
+			{
+				if(this._map && this._map.resolution)
+				{
+					// update the value
+					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
+					
+					// update the display label
+					scalesNameLabel.text = this._currentLabel;
+				}
+			}
+			
+			/**
+			 * Return the label associated to the given zoom (converted in resolution)
+			 * 
+			 * @param zoom  The zoom given
+			 * @return The string value of the label corresponding to the resolution
+			 */
+			public function getLabelFromZoom(zoom:Number):String
+			{
+				// get the resolution for the current zoom
+				var resolution:Number = this._map.baseLayer.resolutions[zoom];
+				return this.getLabelFromResolution(resolution);
+			}
+			
+			/**
+			 * Return the label associated to the given resolution 
+			 * 
+			 * @param resolution The resolution 
+			 * @return The string value of the label corresponding to the resolution
+			 */
+			public function getLabelFromResolution(resolution:Number):String
+			{
+				var i:uint = 0;
+				var j:uint = this._scalesLabels.length;
+				for (; i<j; ++i) 
+				{
+					if( resolution>=this._scalesLabels[i].minResolution
+						&& resolution<=this._scalesLabels[i].maxResolution )
+					{
+						return Catalog.getLocalizationForKey(this._scalesLabels[i].label);
+					}
+				}
+				return new String("");
+			}
+			
+			/**
+			 * Fonction called when one of the two zoom buttons is pressed
+			 * Swith on the button name and then zoom in or out
+			 * 
+			 * @param event The MouseEvent received
+			 */
+			public function onZoom(event:MouseEvent):void
+			{
+				if(!this._map || !this._map.baseLayer)
+					return;
+				
+				var button:Button = event.target as Button;
+				
+				switch(button.name)
+				{
+					case "zoomin":
+						this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+						break;
+					case "zoomout":
+						this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+						break;
+					default : 
+				}	
+			}
+			
+			/**
+			 * Initialise the zoomSlider according to current map zoomLevels
+			 */
+			private function initializeZoomLevels(event:Event = null):void {
+				if(!this._map || !this._map.baseLayer)
+					return;
+				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
+				zoomSlider.minimum = map.baseLayer.minZoomLevel;
+				zoomSlider.value = map.zoom;
+				scalesNameLabel.y = zoomSlider.thumb.y;
+				
+				// initialise the label value
+				this.updateCurrentLabel();
+			}
+			
+			
+			
+			private function updateZoomLevels(e:MapEvent = null):void {
+				if(e.zoomChanged)
+				{
+					zoomSlider.value = map.zoom;
+					this.updateCurrentLabel();
+				}
+			}
+			
+			/**
+			 * Function called when the thumb slider start drag event
+			 */
+			public function thumbDrag(event:TrackBaseEvent):void
+			{
+				this._onDrag = true;
+			}
+			
+			/**
+			 * Function called when the thumb slider start drag  complete (when the thumb is released)
+			 */
+			public function thumbRelease(event:TrackBaseEvent):void
+			{
+				this._onDrag = false;
+				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+			}
+			
+			/**
+			 * When the slider value is changed : update label
+			 * 
+			 * @param event The event received
+			 */
+			public function zoomSliderChange(event:Event):void {
+				if(!this._map || !this._map.baseLayer)
+					return;
+
+				// update the display label
+				this._currentLabel = getLabelFromZoom(zoomSlider.value);
+				scalesNameLabel.text = this._currentLabel;
+				scalesNameLabel.y = zoomSlider.thumb.y;
+				
+				// if not onDrag update the zoom
+				if(!this._onDrag)
+					this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+			}
+
+			
+			override public function destroy():void {
+				this.active = false;
+				super.destroy();
+			}
+			
+			/**
+			 * The list of labels for the different resolution.
+			 */
+			public function set scalesLabels(value:Vector.<ZoomData>):void
+			{
+				this._scalesLabels = value;
+				this.updateCurrentLabel();
+			}
+			
+			/**
+			 * @private
+			 */
+			public function get scalesLabels():Vector.<ZoomData>
+			{
+				return this._scalesLabels;				
+			}
+			
+			/**
+			 * The string value for the list of labels for the different resolution.
+			 */
+			public function get scalesName():String
+			{
+				return this._scalesName;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set scalesName(value:String):void
+			{
+				this._scalesName = value;
+				
+				// parse the data
+				if( value != null )
+				{
+					var scales:Vector.<ZoomData>  = new Vector.<ZoomData>();
+					
+					var zoomDataString:String = null;
+					
+					for each (zoomDataString in value.split(";")) {
+						var values:Array = zoomDataString.split(",");
+						var zoomData:ZoomData = new ZoomData(values[0], Number(values[1]), Number(values[2]));
+						
+						scales.push(zoomData);
+					}
+					this._scalesLabels = scales;
+				}
+				this.updateCurrentLabel();
+			}	
+			
+			
+			/**
+			 * The current value of the zoom label
+			 */
+			public function get currentLabel():String
+			{
+				return _currentLabel;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set currentLabel(value:String):void
+			{
+				_currentLabel = value;
+			}		
+			
+			
+			/**
+			 * Indicates if the slider thumb is dragged
+			 */
+			public function get onDrag():Boolean
+			{
+				return this._onDrag;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set onDrag(value:Boolean):void
+			{
+				this._onDrag = value;
+			}	
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:VSlider id="zoomSlider" x="80" y="10"
+			   snapInterval="1"
+			   useHandCursor="true"
+			   buttonMode="true"
+			   liveDragging="true"
+			   focusEnabled="false"
+			   showDataTip="false"
+			   thumbDrag="thumbDrag(event)"
+			   thumbRelease="thumbRelease(event)" />
+	
+	<s:Button id="zoomOut" name="zoomout" label="-" width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
+	<s:Button id="zoomIn" name="zoomin" label="+" width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
+	
+	<s:Label id="scalesNameLabel" x="90" backgroundColor="0xDDDDDD" />
+</Control>
+

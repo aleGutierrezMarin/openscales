@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Copyright control to display a copyright -->
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="400" height="100" initialize="configure()">
+
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			private var _copyright:String = "copyright:copyright";
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this.configure();
+			}
+			public function  configure():void
+			{ 
+				copyrightLabel.text= "© "+this.copyright;
+			}
+			
+			/**
+			 * Provider label for the copyright.
+			 * @return The string label of the copyright
+			 */
+			public function get copyright():String
+			{
+				return Catalog.getLocalizationForKey(this._copyright);
+			}
+			
+			public function set copyright(value:String):void
+			{
+				this._copyright = value;
+				copyrightLabel.text = "© "+this.copyright;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Label id="copyrightLabel"
+					width="100%"
+					height="100%" />
+	
+</Control>
