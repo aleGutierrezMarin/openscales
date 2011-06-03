@@ -5,8 +5,8 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.core.layer.ogc.WMTS.TileMatrix;
-	import org.openscales.core.layer.ogc.WMTS.TileMatrixSet;
+	import org.openscales.core.layer.ogc.WMTS2.TileMatrix;
+	import org.openscales.core.layer.ogc.WMTS2.TileMatrixSet;
 	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.tile.ImageTile;
