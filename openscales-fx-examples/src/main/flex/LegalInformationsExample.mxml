@@ -73,7 +73,7 @@
 				originatorListWMS.push(originatorPlanet);
 				originatorListWMS.push(originatorIGN);
 				
-				wfs.layer.originators = originatorListWMS;
+				wfs.nativeLayer.originators = originatorListWMS;
 			}
 			
 		]]>

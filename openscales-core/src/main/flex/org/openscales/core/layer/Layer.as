@@ -102,6 +102,10 @@ package org.openscales.core.layer {
 			}
 			this._resolutions.sort(Array.NUMERIC | Array.DESCENDING);
 
+			if(this._maxResolution == Infinity){
+				this._maxResolution = this._resolutions[0];
+			}
+			
 			this._autoResolution = true;
 		}
 
