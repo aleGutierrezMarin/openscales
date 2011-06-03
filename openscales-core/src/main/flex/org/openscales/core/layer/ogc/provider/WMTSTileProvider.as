@@ -5,8 +5,8 @@ package org.openscales.core.layer.ogc.provider
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
-	import org.openscales.core.layer.ogc.WMTS2.TileMatrix;
-	import org.openscales.core.layer.ogc.WMTS2.TileMatrixSet;
+	import org.openscales.core.layer.ogc.wmts.TileMatrix;
+	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.core.layer.ogc.provider.OGCTileProvider;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
