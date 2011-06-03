@@ -1,4 +1,4 @@
-package org.openscales.core.layer.ogc.WMTS
+package org.openscales.core.layer.ogc.WMTS2
 {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
