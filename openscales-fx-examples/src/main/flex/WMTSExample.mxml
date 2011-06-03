@@ -12,7 +12,7 @@
 		<PanZoom id="panZoom" x="10" y="10" />
 		<WMTS name="myLayer"
 			  url="http://openscales.org/geoserver/gwc/service/wmts"
-			  tileMatrixSet="epsg:4326"
+			  tileMatrixSet="EPSG:4326"
 			  WMTSLayer="topp:world_borders"
 			  format="image/png" />
 		<OverviewMap />

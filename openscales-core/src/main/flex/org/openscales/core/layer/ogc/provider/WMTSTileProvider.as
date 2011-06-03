@@ -68,7 +68,7 @@ package org.openscales.core.layer.ogc.provider
 		{
 			super(url, "WMTS", "1.0.0", "GetTile");
 			if(tileMatrixSet)
-				this._tileMatrixSet = tileMatrixSet.toUpperCase();
+				this._tileMatrixSet = tileMatrixSet;
 			this._layer = layer;
 			this._style = style;
 			this._format = format;
