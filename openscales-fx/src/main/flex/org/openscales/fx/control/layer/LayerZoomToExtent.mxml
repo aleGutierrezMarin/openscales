@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="http://openscales.org" >
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import org.openscales.geometry.basetypes.Bounds;
+			import assets.fxg.ButtonOpacity;
+			
+			[Bindable]
+			[Embed(source="/assets/images/layer/zoomToExtent.png")]
+			private var _btnZoom:Class;
+			
+			/**
+			 * Center the map on the layer
+			 * @param event Click event
+			 */
+			public function setLayerExtent(event:MouseEvent):void
+			{
+				var bounds:Bounds = this._layer.maxExtent;
+				if (bounds != null) {
+					this._layer.map.zoomToExtent(bounds);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<IconButton id="layerControlZoomToExtent"
+				width="16"
+				height="16"
+				click="setLayerExtent(event)"
+				icon="{_btnZoom}" />
+	
+</LayerControl>
