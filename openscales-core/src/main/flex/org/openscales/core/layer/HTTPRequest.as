@@ -9,8 +9,6 @@ package org.openscales.core.layer
 	public class HTTPRequest extends Layer
 	{
 		public var URL_HASH_FACTOR:Number = (Math.sqrt(5) - 1) / 2;
-
-		protected var _url:String = null;
 		private var _method:String  = null;
 
 		/**
@@ -24,7 +22,7 @@ package org.openscales.core.layer
 									url:String,
 									params:IHttpParams = null) {
 			super(name);
-			this._url = url;
+			this.url = url;
 			this.params = params;
 		}
 
@@ -69,14 +67,6 @@ package org.openscales.core.layer
 		
 		
 		// Getters & setters	
-		
-		public function get url():String {
-			return this._url;
-		}
-		public function set url(value:String):void {
-			this._url = value;
-		}
-
 		public function get altUrls():Array {
 			return this._altUrls;
 		}
