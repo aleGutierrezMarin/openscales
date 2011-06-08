@@ -31,7 +31,7 @@
 			/**
 			 * Update the checkbox value if the displayed value has changed
 			 */
-			public function checkLayerDisplayed(event:MapEvent):void
+			public function checkLayerDisplayed(event:Event):void
 			{
 				layerSwitcherCheckBox.selected = this._layer.displayed;	
 			}
