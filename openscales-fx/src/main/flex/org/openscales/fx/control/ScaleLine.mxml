@@ -15,6 +15,7 @@
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.geometry.basetypes.Unit;
 			import org.openscales.proj4as.ProjProjection;
@@ -31,28 +32,28 @@
 			 * Units for zoomed out on top bar.
 			 * @default km.
 			 */
-			private var _topOutUnits:String = "scaleline:km";
+			private var _topOutUnits:String = Catalog.getLocalizationForKey("scaleline.km");
 			
 			/**
 			 * @private
 			 * Units for zoomed in on top bar.  
 			 * @default m.
 			 */
-			private var _topInUnits:String = "scaleline:m";
+			private var _topInUnits:String = Catalog.getLocalizationForKey("scaleline.m");
 			
 			/**
 			 * @private
 			 * Units for zoomed out on bottom bar.
 			 * @default mi.
 			 */
-			private var _bottomOutUnits:String = "scaleline:mi";
+			private var _bottomOutUnits:String = Catalog.getLocalizationForKey("scaleline.mi");
 			
 			/**
 			 * @private
 			 * Units for zoomed in on bottom bar.
 			 * @default ft
 			 */
-			private var _bottomInUnits:String = "scaleline:ft";
+			private var _bottomInUnits:String = Catalog.getLocalizationForKey("scaleline.ft");
 			
 			
 			/**

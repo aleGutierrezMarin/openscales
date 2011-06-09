@@ -1,4 +1,4 @@
-package org.openscales.core.layer.ogc.WMTS
+package org.openscales.core.layer.ogc.wmts
 {
 	import org.openscales.core.basetypes.maps.HashMap;
 	

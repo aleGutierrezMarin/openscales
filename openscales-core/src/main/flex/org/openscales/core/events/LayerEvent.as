@@ -107,6 +107,10 @@ package org.openscales.core.events
 		 */
 		public static const LAYER_MOVED_DOWN:String = "openscales.layerMovedDown";
 
+		/**
+		 * Event type dispatched when a polylayer has changed.
+		 */ 
+		public static const POLY_LAYER_CHANGED:String="openscales.polylayerchanged";
 		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{

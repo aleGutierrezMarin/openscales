@@ -382,12 +382,22 @@ package org.openscales.core.control
 		 */
 		private function minMaxButtonClick(event:MouseEvent):void 
 		{
-			this._minimized = !this._minimized;
+			this.minimized = !this.minimized;
+		}
+		
+		public function set minimized(value:Boolean):void
+		{
+			this._minimized = value;
 			this.draw();
 			var evt:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
 			evt.componentName = "LayerManager";
 			evt.componentIconified = this._minimized;
 			this.map.dispatchEvent(evt);
+		}
+		
+		public function get minimized():Boolean
+		{
+			return this._minimized;	
 		}
 
 		/**

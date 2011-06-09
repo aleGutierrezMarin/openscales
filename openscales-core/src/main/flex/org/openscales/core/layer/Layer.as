@@ -54,7 +54,16 @@ package org.openscales.core.layer {
 		private var _tweenOnLoad:Boolean = true;
 		//GAB
 		private var _editable:Boolean = false;
+		private var _metaData:Object;
 
+		
+		/**
+		 * @private
+		 * The url use for the layer request if necessary.
+		 * @default null
+		 */
+		private var _url:String = null;
+		
 		/**
 		 * @private
 		 * The list of originators for the layer.
@@ -101,6 +110,10 @@ package org.openscales.core.layer {
 			}
 			this._resolutions.sort(Array.NUMERIC | Array.DESCENDING);
 
+			if(this._maxResolution == Infinity){
+				this._maxResolution = this._resolutions[0];
+			}
+			
 			this._autoResolution = true;
 		}
 
@@ -309,12 +322,6 @@ package org.openscales.core.layer {
 				return;
 			}
 			
-			// If no constraint, generate default
-			if(originator.constraints.length == 0)
-			{
-				originator.constraints.push(new ConstraintOriginator(this._maxExtent, this.minResolution, this.maxResolution));
-			}
-			
 			var i:uint = 0;
 			var j:uint = this._originators.length;
 			for (; i<j; ++i) 
@@ -499,7 +506,9 @@ package org.openscales.core.layer {
 		}
 		
 		public function set projSrsCode(value:String):void {
-			this._projSrsCode = value;
+			if(value != null)
+				this._projSrsCode = value.toUpperCase();
+			
 			if (this._autoResolution) {
 				this.generateResolutions();
 			}
@@ -639,6 +648,36 @@ package org.openscales.core.layer {
 		
 		public function set editable(value:Boolean):void{
 			_editable = value;
+		}
+		
+		/**
+		 * Allows to add custom metadata about the layer
+		 */ 
+		public function get metaData():Object
+		{
+			return _metaData;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set metaData(value:Object):void
+		{
+			_metaData = value;
+		}
+
+		/**
+		 * The url use for the layer request if necessary.
+		 */
+		public function get url():String {		
+			return this._url;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set url(value:String):void {
+			this._url=value;
 		}
 		
 		/**

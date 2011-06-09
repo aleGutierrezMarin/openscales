@@ -71,7 +71,7 @@ package org.openscales.core.handler.mouse
 		/**
 		 * The MouseDown Listener
 		 */
-		protected function onMouseDown(event:Event):void
+		protected function onMouseDown(event:MouseEvent):void
 		{
 			if(_shiftPressed) return;
 			
@@ -107,7 +107,7 @@ package org.openscales.core.handler.mouse
 		/**
 		 *The MouseUp Listener
 		 */
-		protected function onMouseUp(event:Event):void {
+		protected function onMouseUp(event:MouseEvent):void {
 			
 			if(_shiftPressed) return;
 			

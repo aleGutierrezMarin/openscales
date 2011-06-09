@@ -41,11 +41,20 @@ package org.openscales.core.handler.mouse
 		 */ 
 		public static const ZOOM_BOX_HANDLER:String = "zoomBoxHandler";
 		
-		
 		private var _clickHandler:ClickHandler;
 		private var _dragHandler:DragHandler;
 		private var _wheelHandler:WheelHandler;
 		private var _zoomBoxHandler:ZoomBoxHandler;
+		
+		/**
+		 * Enabled or disabled the wheel handler
+		 */
+		private var _zoomWheelEnabled:Boolean;
+		
+		/**
+		 * Enabled or disabled the zoom box handler
+		 */
+		private var _zoomBoxEnabled:Boolean;
 		
 		/**
 		 * Constructor. All encapsulated handlers are enabled.
@@ -60,6 +69,9 @@ package org.openscales.core.handler.mouse
 			_dragHandler = new DragHandler(map,active);
 			_wheelHandler = new WheelHandler(map,active);
 			_zoomBoxHandler = new ZoomBoxHandler(true,map,active);
+			
+			_zoomWheelEnabled = active;
+			_zoomBoxEnabled = active;
 		}
 		
 		/**
@@ -79,9 +91,11 @@ package org.openscales.core.handler.mouse
 					break;
 				case WHEEL_HANDLER:
 					_wheelHandler.active = true;
+					_zoomWheelEnabled = true;
 					break;	
 				case ZOOM_BOX_HANDLER:
 					_zoomBoxHandler.active = true;
+					_zoomBoxEnabled = true;
 					break;
 			}
 		}
@@ -103,9 +117,11 @@ package org.openscales.core.handler.mouse
 					break;
 				case WHEEL_HANDLER:
 					_wheelHandler.active = false;
+					_zoomWheelEnabled = false;
 					break;	
 				case ZOOM_BOX_HANDLER:
 					_zoomBoxHandler.active = false;
+					_zoomBoxEnabled = false;
 					break;
 			}
 		}
@@ -126,6 +142,38 @@ package org.openscales.core.handler.mouse
 			}
 		}
 		
+		/**
+		 * zoomWheelEnabled getter
+		 */
+		public function get zoomWheelEnabled():Boolean
+		{
+			return _zoomWheelEnabled;
+		}
 		
+		/**
+		 * zoomWheelEnabled setter
+		 */
+		public function set zoomWheelEnabled(value:Boolean):void
+		{
+			_wheelHandler.active = value;
+			_zoomWheelEnabled = value;
+		}
+		
+		/**
+		 * zoomBoxEnabled getter
+		 */
+		public function get zoomBoxEnabled():Boolean
+		{
+			return _zoomBoxEnabled;
+		}
+		
+		/**
+		 * zoomBoxEnabled setter
+		 */
+		public function set zoomBoxEnabled(value:Boolean):void
+		{
+			_zoomBoxHandler.active = value;
+			_zoomBoxEnabled = value;
+		}
 	}
 }

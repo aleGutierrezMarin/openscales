@@ -31,6 +31,9 @@
 					case "managelayers":
 						state = new LayersManagerExample();
 						break;
+					case "polylayer":
+						state = new PolyLayerExample();
+						break;
 					case "addlayers":
 						state = new CapabilitiesExample();
 						break;
@@ -123,6 +126,7 @@
 				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
 				<s:Button id="runtimetheme" label="Changing theme on runtime" click="changeState(event)" width="100%"/>
 				<s:Button id="osm" label="OpenStreetMap" click="changeState(event)" width="100%"/>
+				<s:Button id="polylayer" label="Poly Layer" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Map configuration" width="100%" height="100%">
 				<s:layout>

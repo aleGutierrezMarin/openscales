@@ -47,7 +47,12 @@ package org.openscales.fx.layer
 			}
 		}
 		
-		override public function get layer():Layer {
+		public function get layer():Layer{
+			
+			return this.nativeLayer;
+		}
+		//ici override
+		override public function get nativeLayer():Layer {
 			if (this.style != null) {
 				(this._layer as WFS).style = this.style;
 			}
@@ -62,7 +67,7 @@ package org.openscales.fx.layer
 		
 		public function set url(value:String):void {
 			this._url = value;
-			if(this.layer)
+			if(this.nativeLayer)
 				(this._layer as WFS).url = this._url;
 		}
 		

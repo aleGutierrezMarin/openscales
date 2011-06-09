@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- ZoomBox control, allow the user to draw a zoom extent --> 
-<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" width="24" height="24">
+<Control xmlns="org.openscales.fx.control.*" xmlns:fx="http://ns.adobe.com/mxml/2009" width="24" height="24">
 	<fx:Script>
 		<![CDATA[
 			import mx.managers.CursorManager;

@@ -4,12 +4,15 @@
 		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="400" height="100" initialize="configure()">
+		 initialize="configure()">
 	
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
+			
+			import spark.utils.TextFlowUtil;
+			
 			
 			private var _autoTranslate:Boolean = true;
 			[Bindable] private var _label:String = Catalog.getLocalizationForKey("tos.label");
@@ -17,7 +20,7 @@
 			
 			public function  configure():void
 			{ 
-				termsOfServiceText.htmlText = "<a href='"+this._url+"' target='_blank'>"+this._label+"</a>";
+				this.updateTextLabel();	
 			}
 			
 			/**
@@ -31,6 +34,7 @@
 			public function set label(value:String):void{
 				this._autoTranslate = false;
 				this._label = value;
+				this.updateTextLabel();
 			}
 			
 			/**
@@ -45,18 +49,43 @@
 				this._url = value;
 			}
 			
-			override public function onMapLanguageChange(event:I18NEvent):void {
+			/**
+			 * Update the current text label (get the current language)
+			 */
+			public function updateTextLabel():void
+			{
 				if(this._autoTranslate) {
 					this._label = Catalog.getLocalizationForKey("tos.label");
 				}
-				this.configure();
+				
+				termsOfServiceText.text = this._label;
 			}
-
 			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this.updateTextLabel();
+			}
+			
+			/**
+			 * Function called on click
+			 * 
+			 * @param event The click mouse event received
+			 */
+			public function onClick(event:Event):void
+			{
+				// open a new page with the originator url
+				var targetURL:URLRequest = new URLRequest(this._url);
+				navigateToURL(targetURL);
+			}
 		]]>
 	</fx:Script>
 	
-	<mx:Text id="termsOfServiceText"
+	<s:Label id="termsOfServiceText"
+			 buttonMode="true"
+			 useHandCursor="true"
+			 click="onClick(event)"
 			 width="100%"
 			 height="100%" />
 	

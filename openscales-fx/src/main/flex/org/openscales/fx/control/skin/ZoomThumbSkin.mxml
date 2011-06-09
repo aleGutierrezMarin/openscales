@@ -30,6 +30,6 @@
 			</s:Path>
 		</s:Group>
 	</s:Group>
-	<s:Label id="thumbLabel" y="5" x="25" backgroundColor="0xDDDDDD" />
+	
 
 </s:Skin>

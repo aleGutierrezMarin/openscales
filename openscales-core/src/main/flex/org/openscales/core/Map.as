@@ -21,7 +21,7 @@ package org.openscales.core
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
-	import org.openscales.core.i18n.provider.JSONProvider;
+	import org.openscales.core.i18n.provider.I18nJSONProvider;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.popup.Popup;
@@ -79,6 +79,21 @@ package org.openscales.core
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
 		
+		
+		/**
+		 * @private
+		 * The minimum resolution of the map
+		 * @default Number.NEGATIVE_INFINITY
+		 */
+		private var _minResolution:Number = Number.NEGATIVE_INFINITY;
+		
+		/**
+		 * @private
+		 * The maximum resolution of the map
+		 * @default Number.POSITIVE_INFINITY
+		 */
+		private var _maxResolution:Number = Number.POSITIVE_INFINITY;
+		
 		/**
 		 * The location where the layer container was re-initialized (on-zoom)
 		 */
@@ -107,8 +122,8 @@ package org.openscales.core
 			super();
 			
 			//load i18n module
-			new JSONProvider(Locale.getLocaleByKey("EN"),ENLocale);
-			new JSONProvider(Locale.getLocaleByKey("FR"),FRLocale);
+			I18nJSONProvider.addTranslation(ENLocale);
+			I18nJSONProvider.addTranslation(FRLocale);
 			
 			this.size = new Size(width, height);
 			this._layerContainer = new Sprite();
@@ -320,53 +335,7 @@ package org.openscales.core
 				removeLayer(this.layers[i],false);
 			}
 		}
-		
-		/**
-		 * Add a new control to the map.
-		 *
-		 * @param control the control to add.
-		 * @param attach if true, the control will be added as child component of the map. This
-		 *  parameter may be for example set to false when adding a Flex component displayed
-		 *  outside the map.
-		 */
-		public function addControl(control:IControl, attach:Boolean=true):void {
-			// Is the input control valid ?
-			if (! control) {
-				Trace.warn("Map.addControl: null control not added");
-				return;
-			}
-			var i:uint = 0;
-			var j:uint = this._controls.length;
-			for (; i<j; ++i) {
-				if (control == this._controls[i]) {
-					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
-					return;
-				}
-			}
-			// If the control is a new control, register it
-			if (i == j) {
-				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
-				this._controls.push(control);
-				control.map = this;
-				control.draw();
-				if (attach) {
-					this.addChild(control as Sprite);
-				}
-			}
-		}
-		
-		/**
-		 * Remove the control passed as parameter
-		 */
-		public function removeControl(control:IControl):void {
-			var i:int = this._controls.indexOf(control);
-			if(i!=-1) {
-				this._controls = this._controls.slice(i,1);
-				this.removeChild(control as Sprite);
-				control.destroy();
-			}
-		}
-		
+				
 		/**
 		 * Register a handler as one of the handlers of the map.
 		 * The handler must have its map property setted to this before.
@@ -677,7 +646,13 @@ package org.openscales.core
 		 * range of zoom levels.
 		 */
 		private function isValidZoomLevel(zoomLevel:Number):Boolean {
-			return (this.baseLayer && !isNaN(zoomLevel) && (zoomLevel >= this.baseLayer.minZoomLevel) && (zoomLevel <= this.baseLayer.maxZoomLevel));
+			return (this.baseLayer 
+				&& !isNaN(zoomLevel) 
+				&& (zoomLevel >= this.baseLayer.minZoomLevel) 
+				&& (zoomLevel <= this.baseLayer.maxZoomLevel)
+				&& this._baseLayer.resolutions[zoomLevel] < this.maxResolution
+				&& this._baseLayer.resolutions[zoomLevel] > this.minResolution
+			);
 		}
 		
 		/**
@@ -737,7 +712,50 @@ package org.openscales.core
 			this.zoomToExtent(this.maxExtent);
 		}
 		
-		
+		/**
+		 * <p>
+		 * Zoom to the closest resolution.
+		 * This methods choose within the resolution array of the baseLayer the zoom level
+		 * which associated resolution is the closest to the specifed one and zoom to it.
+		 * </p>
+		 * <p>
+		 * The resolution must be in the same unity as the one of the base layer
+		 * </p>
+		 * 
+		 * @example The following code explains how to zoom to a specified resolution
+		 * 
+		 * <listing version="3.0">
+		 * 	var myMap:Map = new Map(); 
+		 * 	myMap.zoomToResolution(125420);
+		 * </listing>
+		 */ 
+		public function zoomToResolution(resolution:Number):void
+		{
+			if ((resolution >= minResolution) && (resolution <= maxResolution))
+			{
+				if (baseLayer != null)
+				{
+					var targetResolution:Number = resolution;
+					var bestZoomLevel:int = 0;
+					var bestRatio:Number = 0;
+					var i:int = Math.max(0, this.baseLayer.minZoomLevel);
+					var len:int = Math.min(this.baseLayer.resolutions.length, this.baseLayer.maxZoomLevel+1);
+					for (i; i < len; ++i)
+					{
+						var ratio:Number = this.baseLayer.resolutions[i] / targetResolution;
+						if ( ratio > 1){
+							ratio = 1/ratio;
+						}
+						if ( ratio > bestRatio){
+							bestRatio = ratio;
+							bestZoomLevel = i;
+						}
+					}
+					this.zoom = bestZoomLevel;
+				}
+			}
+		}
+				
 		/**
 		 * Return a Location which is the passed-in view port Pixel, translated into lon/lat
 		 *	by the current base layer
@@ -1153,6 +1171,11 @@ package org.openscales.core
 			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : NaN;
 		}
 		
+		public function set resolution(value:Number):void
+		{
+			this.zoomToResolution(value);
+		}
+		
 		/**
 		 * Current scale denominator of the map. 
 		 */
@@ -1307,6 +1330,51 @@ package org.openscales.core
 			this._theme = value;
 		}
 		
+		
+		/**
+		 * The maximum resolution of the map.
+		 * If the given max resolution is inferior than the actual map resolution
+		 * then the map resolution is set to the new maxResolution
+		 */
+		public function get maxResolution():Number
+		{
+			return this._maxResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set maxResolution(value:Number):void
+		{
+			if(value < this.resolution)
+			{
+				this.zoomToResolution(value);
+			}
+			this._maxResolution = value;
+		}
+		
+		/**
+		 * The minimum resolution of the map.
+		 * You cannot reach a resolution lower than this resolution
+		 * If you try to reach a resolution behind the minResolution nothing will be done
+		 */
+		public function get minResolution():Number
+		{
+			return this._minResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set minResolution(value:Number):void
+		{
+			if(value > this.resolution)
+			{
+				this.zoomToResolution(value);
+			}
+			this._minResolution = value;
+		}
+		
 		/**
 		 * Whether or not the map is loading data
 		 */
@@ -1360,6 +1428,70 @@ package org.openscales.core
 					Trace.info("Locale changed to: "+locale.localeKey);
 					this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,locale));
 				}
+			}
+		}
+		
+		
+		// --- Control management -- //
+		/**
+		 * Add a new control to the map.
+		 *
+		 * @param control the control to add.
+		 * @param attach if true, the control will be added as child component of the map. This
+		 *  parameter may be for example set to false when adding a Flex component displayed
+		 *  outside the map.
+		 */
+		public function addControl(control:IControl, attach:Boolean=true):void {
+			// Is the input control valid ?
+			if (! control) {
+				Trace.warn("Map.addControl: null control not added");
+				return;
+			}
+			var i:uint = 0;
+			var j:uint = this._controls.length;
+			for (; i<j; ++i) {
+				if (control == this._controls[i]) {
+					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
+					return;
+				}
+			}
+			// If the control is a new control, register it
+			if (i == j) {
+				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
+				this._controls.push(control);
+				control.map = this;
+				control.draw();
+				if (attach) {
+					this.addChild(control as Sprite);
+				}
+			}
+		}
+		
+		/**
+		 * Detects if given control is linked to this map
+		 * 
+		 * @return true if the control controls this map, false otherwise
+		 */
+		public function hasControl(control:IControl):Boolean{
+			
+			return (this._controls.indexOf(control) != -1);
+		}
+		
+		/**
+		 * Removes given control from the map. 
+		 * If the control is not present on the map, nothing happens.
+		 * 
+		 */
+		public function removeControl(control:IControl):void {
+			var i:int = this._controls.indexOf(control);
+			if(i!=-1) {
+				this._controls.splice(i,1);
+				
+				if((control as DisplayObject).parent == this){
+					this.removeChild(control as DisplayObject);
+				}				
+				
+				control.destroy();
 			}
 		}
 	}

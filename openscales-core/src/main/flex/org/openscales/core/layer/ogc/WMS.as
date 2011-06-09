@@ -28,7 +28,7 @@ package org.openscales.core.layer.ogc
 		 * Version of wms protocol used to request the server
 		 * Default version is 1.3.0
 		 */
-		protected var _version:String="1.3.0";
+		protected var _version:String="1.1.1";
 		
 		/**
 		 * @private
@@ -46,7 +46,7 @@ package org.openscales.core.layer.ogc
 		 * @private
 		 * MIME type for the requested layer
 		 */
-		protected var _format:String;
+		protected var _format:String ="image/jpeg";
 		
 		/**
 		 * @private 
@@ -58,7 +58,7 @@ package org.openscales.core.layer.ogc
 		 * @private 
 		 * Indicates if the tile should be transparent or not
 		 */ 
-		protected var _transparent:Boolean;
+		protected var _transparent:Boolean = true;
 		
 		/**
 		 * @private 
@@ -287,14 +287,14 @@ package org.openscales.core.layer.ogc
 		 */
 		override public function get url():String
 		{
-			return super._url;
+			return super.url;
 		}
 		/**
 		 * @private
 		 */
 		override public function set url(value:String):void
 		{
-			super._url = value;
+			super.url = value;
 			
 			//update the tileprovider of the wmslayer at once
 			if(this._tileProvider != null){
@@ -334,10 +334,17 @@ package org.openscales.core.layer.ogc
 		 */
 		public function set projection (value:String):void
 		{
+			this.projSrsCode = value;
+		}
+		
+		/**
+		 * @Private
+		 */
+		override public function set projSrsCode(value:String):void {
 			super.projSrsCode=value;
 			
 			if(this._tileProvider != null){
-				this._tileProvider.projection=value;
+				this._tileProvider.projection = _projSrsCode;
 			}
 		}
 		

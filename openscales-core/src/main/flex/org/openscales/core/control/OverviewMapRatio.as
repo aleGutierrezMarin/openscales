@@ -181,7 +181,7 @@ package org.openscales.core.control
 				this.map.addEventListener(MapEvent.LOAD_END,
 					mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN,
-					onMouseDown);
+					onMouseDown,true);
 			}
 		}
 		
@@ -266,6 +266,14 @@ package org.openscales.core.control
 		public function get resolution():Number
 		{
 			return _overviewMap.resolution;
+		}
+		
+		/**
+		 * The overview map
+		 */
+		public function get overviewMap():Map
+		{
+			return _overviewMap;
 		}
 	}
 }

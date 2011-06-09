@@ -37,7 +37,18 @@
 	<component id="DataOriginatorsDisplay" class="org.openscales.fx.control.DataOriginatorsDisplay" />
 	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
 	
+	<component id="DefaultLayerRenderer" class="org.openscales.fx.control.layer.DefaultLayerRenderer" />
+	<component id="LayerRenderer" class="org.openscales.fx.control.layer.LayerRenderer" />
+	<component id="LayerControl" class="org.openscales.fx.control.layer.LayerControl" />
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
+	<component id="LayerLegend" class="org.openscales.fx.control.layer.LayerLegend" />
+	<component id="LayerMetadatas" class="org.openscales.fx.control.layer.LayerMetadatas" />
+	<component id="ChangeLayerOpacity" class="org.openscales.fx.control.layer.ChangeLayerOpacity" />
+	<component id="ChangeLayerPosition" class="org.openscales.fx.control.layer.ChangeLayerPosition" />
+	<component id="ChangeLayerVisibility" class="org.openscales.fx.control.layer.ChangeLayerVisibility" />
+	<component id="DeleteLayer" class="org.openscales.fx.control.layer.DeleteLayer" />
+	<component id="LayerZoomToExtent" class="org.openscales.fx.control.layer.LayerZoomToExtent" />
+	
 	<component id="MousePosition" class="org.openscales.fx.control.MousePosition" />
 	<component id="Pan" class="org.openscales.fx.control.Pan" />
 	<component id="PanZoom" class="org.openscales.fx.control.PanZoom" />
@@ -45,7 +56,7 @@
 	<component id="ZoomBox" class="org.openscales.fx.control.ZoomBox" />
 	
 	<component id="OverviewMap" class="org.openscales.fx.control.FxOverviewMap" />
-	<component id="OverviewMapRatio" class="org.openscales.fx.control.FxOverviewMapRatio" />
+	<component id="OverviewMapRatio" class="org.openscales.fx.control.OverviewMapRatio" />
 	<component id="Capabilities" class="org.openscales.fx.control.Capabilities" />
 	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
@@ -67,4 +78,5 @@
 	<component id="IconButton" class="org.openscales.fx.control.IconButton" />
 	<component id="Popup" class="org.openscales.fx.popup.FxPopup" />
 	<component id="PopupRenderer" class="org.openscales.fx.popup.renderer.FxPopupRenderer" />
+
 </componentPackage>

@@ -132,36 +132,48 @@ package org.openscales.core.control
 		 */
 		public function addOriginators(layer:Layer):void
 		{
-			var i:uint = 0;
-			var j:uint = layer.originators.length;
-			
-			// if the layer added is NOT the first one
-			if( this._map.baseLayer != null )
+			// if the layer is displayed :
+			if(layer.displayed)
 			{
-				// for each originators of this layer :
-				for (; i<j; ++i) 
+				var i:uint = 0;
+				var j:uint = layer.originators.length;
+				
+				// if the layer added is NOT the first one
+				if( this._map.baseLayer != null )
 				{
-					// if originator cover the current area :
-					var mapExtent:Bounds = this._map.extent;
-					if(mapExtent)
+					// for each originators of this layer :
+					for (; i<j; ++i) 
 					{
-						if( layer.originators[i].isCoveredArea(mapExtent, this._map.resolution))
+						// if no contraint : display
+						if(layer.originators[i].constraints.length == 0)
 						{
-							// add the orignator (add new or increment layers count)
 							addOriginator(layer.originators[i]);
 						}
+						// else check if the current extent fit with  the originator constraint
+						else
+						{
+							// if originator cover the current area :
+							var mapExtent:Bounds = this._map.extent;
+							if(mapExtent)
+							{
+								if( layer.originators[i].isCoveredArea(mapExtent, this._map.resolution))
+								{
+									// add the orignator (add new or increment layers count)
+									addOriginator(layer.originators[i]);
+								}
+							}	
+						}
 					}
-					
 				}
-			}
-			else
-			{
-				// add its orignators without checking the extent (since the baselayer is not defined yet)
-				for (; i<j; ++i) 
+				else
 				{
-					// add the orignator (add new or increment layers count)
-					addOriginator(layer.originators[i]);
-				}
+					// add its orignators without checking the extent (since the baselayer is not defined yet)
+					for (; i<j; ++i) 
+					{
+						// add the orignator (add new or increment layers count)
+						addOriginator(layer.originators[i]);
+					}
+				}	
 			}
 		}
 		
@@ -226,7 +238,8 @@ package org.openscales.core.control
 				for (; i<j; ++i) 
 				{
 					// if originator covered the current area :
-					if( layer.originators[i].isCoveredArea(this._map.extent, this._map.resolution))
+					if( layer.originators[i].constraints.length == 0 
+						|| layer.originators[i].isCoveredArea(this._map.extent, this._map.resolution))
 					{
 						// remove the orignator (drecrement counter or remove the originator)
 						removeOriginator(layer.originators[i]);
@@ -274,12 +287,7 @@ package org.openscales.core.control
 				
 				for (; n<m; ++n) 
 				{
-					// if originator cover the current area :
-					if( layers[i].originators[n].isCoveredArea(this._map.extent, this._map.resolution))
-					{
-						// add the orignator (add new or increment layers count)
-						addOriginator(layers[i].originators[n]);
-					}
+					addOriginators(layers[i]);
 				}
 			}
 		}
@@ -315,19 +323,7 @@ package org.openscales.core.control
 			// for each layer in the current map
 			for (; i<j; ++i) 
 			{
-				// for each originator of a layer
-				var n:uint = 0;
-				var m:uint = layers[i].originators.length;
-				
-				for (; n<m; ++n) 
-				{
-					// if originator cover the current area :
-					if( layers[i].originators[n].isCoveredArea(this._map.extent, this._map.resolution))
-					{
-						// add the orignator (add new or increment layers count)
-						addOriginator(layers[i].originators[n]);
-					}
-				}
+				addOriginators(layers[i]);
 			}
 			
 			// Now check the counter list :

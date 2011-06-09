@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- Pan control to pan the map --> 
-<Control xmlns="http://openscales.org" xmlns:s="library://ns.adobe.com/flex/spark"
+<Control xmlns="org.openscales.fx.control.*" xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 width="400" height="300" initialize="configure()" > 
 
@@ -19,8 +19,10 @@
 			import org.openscales.fx.control.skin.PanSkin;
 			import org.openscales.fx.control.skin.ZoomSkin;
 			import org.openscales.fx.control.skin.ZoomThumbSkin;
+			import org.openscales.core.i18n.Catalog;
 			
 			import spark.events.TrackBaseEvent;
+			
 			
 			
 			public var DELTA_PX:Number = 100;
@@ -86,10 +88,10 @@
 						  buttonMode="true">	
 	</s:SkinnableContainer>
 	
-	<s:Button id="panNorth" name="north" label="pan:N" width="35" x="20" y="0" useHandCursor="true" buttonMode="true"/>
-	<s:Button id="panSouth" name="south" label="pan:S" width="35" x="20" y="40" useHandCursor="true" buttonMode="true" />
-	<s:Button id="panEast" name="east" label="pan:E" width="35" x="40" y="20" useHandCursor="true" buttonMode="true"/>
-	<s:Button id="panWest" name="west" label="pan:W" width="35" x="0" y="20" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panNorth" name="north" label="{Catalog.getLocalizationForKey('pan.N')}" width="35" x="20" y="0" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panSouth" name="south" label="{Catalog.getLocalizationForKey('pan.S')}" width="35" x="20" y="40" useHandCursor="true" buttonMode="true" />
+	<s:Button id="panEast" name="east" label="{Catalog.getLocalizationForKey('pan.E')}" width="35" x="40" y="20" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panWest" name="west" label="{Catalog.getLocalizationForKey('pan.W')}" width="35" x="0" y="20" useHandCursor="true" buttonMode="true"/>
 	
 	
 </Control>

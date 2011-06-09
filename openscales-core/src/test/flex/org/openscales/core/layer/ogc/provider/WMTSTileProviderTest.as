@@ -10,8 +10,8 @@ package org.openscales.core.layer.ogc.provider
 	import org.flexunit.asserts.assertTrue;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.ogc.WMTS;
-	import org.openscales.core.layer.ogc.WMTS.TileMatrix;
-	import org.openscales.core.layer.ogc.WMTS.TileMatrixSet;
+	import org.openscales.core.layer.ogc.wmts.TileMatrix;
+	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;

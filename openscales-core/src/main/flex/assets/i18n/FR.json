@@ -1,4 +1,15 @@
  {
+ 
+   "layercontrol.movefront": "Déplacer vers l'avant plan",
+   "layercontrol.moveback": "Déplacer vers l'arrière plan",
+   "layercontrol.deletelayer": "Supprimer la couche",
+   
+   "layerswitcher.layers": "Couches",
+ 
+   "locale.key": "FR",
+   "locale.name": "French",
+   "locale.localizedName": "Français",
+   
    "tos.label": "Conditions d'utilisation",
    
    "zoombar.world": "Monde",

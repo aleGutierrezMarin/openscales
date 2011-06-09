@@ -4,7 +4,7 @@ package org.openscales.core.layer.capabilities
 	import org.flexunit.asserts.assertNotNull;
 	import org.flexunit.asserts.assertTrue;
 	import org.openscales.core.basetypes.maps.HashMap;
-	import org.openscales.core.layer.ogc.WMTS.TileMatrixSet;
+	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	
 	public class WMTS100Test
 	{

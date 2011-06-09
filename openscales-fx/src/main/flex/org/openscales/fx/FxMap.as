@@ -3,14 +3,11 @@ package org.openscales.fx
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
-	import flash.system.ApplicationDomain;
-	import flash.system.SecurityDomain;
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
 	import mx.core.UIComponent;
-	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
 	import mx.events.ResizeEvent;
 	
@@ -31,7 +28,6 @@ package org.openscales.fx
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	
 	import spark.components.Group;
@@ -100,8 +96,8 @@ package org.openscales.fx
 			// Add the layer to the map
 			l.fxmap = this;
 			l.configureLayer();
-			if(l.layer)
-				this._map.addLayer(l.layer);
+			if(l.nativeLayer)
+				this._map.addLayer(l.nativeLayer);
 		}
 		
 		private function onMoveStart(event:MapEvent):void{
@@ -164,6 +160,8 @@ package org.openscales.fx
 			if (this._map == null)
 			{
 				this._map = new Map(this.width, this.height);
+			} else {
+				this._map.size = new Size(this.width,this.height);
 			}
 			
 			var i:int = 0;
@@ -306,6 +304,7 @@ package org.openscales.fx
 		 */
 		public function set zoom(value:Number):void {
 			this._zoom = value;
+			this._map.zoom = value;
 		}
 		
 		/**
@@ -363,15 +362,7 @@ package org.openscales.fx
 			return this._flexOverlay;
 		}
 
-		public function get controls():Vector.<IControl>
-		{
-			return _controls;
-		}
-
-		public function set controls(value:Vector.<IControl>):void
-		{
-			_controls = value;
-		}
+		
 		
 		/** 
 		 * Url to the theme used to custom the components of the current map
@@ -425,7 +416,61 @@ package org.openscales.fx
 				this._controls.push(control);
 			}
 		}
-
 		
+		// --- Layer management --- //
+		public function get layers():Vector.<Layer>{
+			
+			return this._map.layers;
+		}
+
+		// --- Control management --- //
+		/**
+		 * List of the controls linked to the map
+		 */
+		public function get controls():Vector.<IControl>
+		{
+			// TODO : return a clone of the controls list
+			return this._map.controls;
+		}
+		
+		/**
+		 * Adds given control to the map, displaying it on the map if the <code>attach</code> parameter is true.
+		 * Otherwise, the control is just linked to the map and can be displayed anywhere else
+		 * 
+		 * @param control Control to add
+		 * @param attach If true, component is displayed on the map. Otherwise, control is just linked to the map. 
+		 * 
+		 * @example The following code explains how to add a control :
+		 * 
+		 * <listing version="3.0">
+		 * 	myMap.addControl(new geoportal.control.OverviewMap());
+		 * </listing>
+		 */
+		public function addControl(control:IControl, attach:Boolean = true):void{
+			
+			if(control is IVisualElement){
+				this._map.addControl(control, false);
+				
+				if(attach){
+					this.addElement(control as IVisualElement);
+				}
+			}
+			else{
+				this._map.addControl(control,attach);
+			}
+		}
+		
+		/**
+		 * Adds a list of controls to the map and displays them
+		 * 
+		 * @param controls The list of controls to add to the map.
+		 */
+		public function addControls(controls:Vector.<IControl>):void{
+			
+			for each (var control:IControl in controls){
+				
+				this.addControl(control);
+			}
+		}
 	}
 }
