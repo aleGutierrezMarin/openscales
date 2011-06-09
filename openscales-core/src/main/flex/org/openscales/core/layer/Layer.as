@@ -62,7 +62,7 @@ package org.openscales.core.layer {
 		 * The url use for the layer request if necessary.
 		 * @default null
 		 */
-		private var _url:String = null;
+		protected var _url:String = null;
 		
 		/**
 		 * @private
