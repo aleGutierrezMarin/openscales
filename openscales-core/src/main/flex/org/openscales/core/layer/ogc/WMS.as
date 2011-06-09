@@ -287,14 +287,14 @@ package org.openscales.core.layer.ogc
 		 */
 		override public function get url():String
 		{
-			return super._url;
+			return super.url;
 		}
 		/**
 		 * @private
 		 */
 		override public function set url(value:String):void
 		{
-			super._url = value;
+			super.url = value;
 			
 			//update the tileprovider of the wmslayer at once
 			if(this._tileProvider != null){

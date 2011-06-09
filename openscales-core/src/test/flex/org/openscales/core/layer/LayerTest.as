@@ -114,10 +114,6 @@ package org.openscales.core.layer
 			
 			Assert.assertEquals(originator2, layer.originators[1]);
 			
-			// check the default constraint
-			Assert.assertEquals(layer.maxExtent, layer.originators[1].constraints[0].extent);
-			Assert.assertEquals(layer.minResolution, layer.originators[1].constraints[0].minResolution);
-			Assert.assertEquals(layer.maxResolution, layer.originators[1].constraints[0].maxResolution);
 		}
 	}
 }

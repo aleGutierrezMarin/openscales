@@ -42,7 +42,7 @@ package org.openscales.geometry
 			
 			var point:Point =  new Point(4,5);
 			
-			Assert.assertEquals(point.toShortString(),"4,5"); 
+			Assert.assertEquals(point.toShortString(),"4, 5"); 
 		}
 		
 		[Test] public function testMovePoint():void {
@@ -50,7 +50,7 @@ package org.openscales.geometry
 			var point:Point =  new Point(4,5);
 			point.move(2,4);
 			Assert.assertStrictlyEquals(point.x,6);
-			Assert.assertStrictlyEquals(point.y,7);
+			Assert.assertStrictlyEquals(point.y,9);
 		}
 		
 		[Test] public function testTransformPoint():void {

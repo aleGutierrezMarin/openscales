@@ -52,8 +52,6 @@ package org.openscales.core.layer.ogc
 		
 		private var _capabilitiesVersion:String = "1.1.0";
 		
-		private var _url:String = null;
-		
 		private var _params:WFSParams = null;
 		
 		protected var _request:XMLRequest = null;	
@@ -325,7 +323,7 @@ package org.openscales.core.layer.ogc
 				this._fullRedraw = false;
 				this.reset();
 			}
-			Trace.error("Error when loading WFS request " + this._url);			
+			Trace.error("Error when loading WFS request " + this.url);			
 		}
 		
 		public function get params():WFSParams {
@@ -336,13 +334,9 @@ package org.openscales.core.layer.ogc
 			this._params = value;
 		}
 		
-		public function get url():String {		
-			return this._url;
-		}
-		
-		public function set url(value:String):void {
+		override public function set url(value:String):void {
 			this._firstRendering = true;
-			this._url=value;
+			super.url=value;
 		}
 		
 		public function get writer():Format {

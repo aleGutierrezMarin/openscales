@@ -267,5 +267,13 @@ package org.openscales.core.control
 		{
 			return _overviewMap.resolution;
 		}
+		
+		/**
+		 * The overview map
+		 */
+		public function get overviewMap():Map
+		{
+			return _overviewMap;
+		}
 	}
 }

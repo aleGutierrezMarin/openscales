@@ -49,9 +49,9 @@ package org.openscales.core.layer
 			
 			// By default no range defined for feature layers
 			this.minResolution = 0;
-			this.maxResolution = Number.MAX_VALUE;
+			this.maxResolution = Infinity;
 			
-			// Maje drag smooth even with a lot of points
+			// Make drag smooth even with a lot of points
 			this.cacheAsBitmap = true;
 		}
 

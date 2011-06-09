@@ -15,8 +15,8 @@ package org.openscales.fx.layer
 		}
 		
 		public function set url(value:String):void {
-			if(this.layer != null)
-				(this.layer as ImageLayer).url = value;
+			if(this._layer != null)
+				(this._layer as ImageLayer).url = value;
 		}
 		
 		public function set bounds(value:String):void {

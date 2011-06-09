@@ -53,38 +53,38 @@ package org.openscales.fx.layer
 		public function configureLayer():Layer {
 			
 			if(this._projection)
-				this.layer.projSrsCode = this._projection;
+				this._layer.projSrsCode = this._projection;
 			
 			this.generateResolutions();
 			
-			this.layer.name = this.name;
+			this._layer.name = this.name;
 			
 			if(this._proxy)
-				this.layer.proxy = this._proxy;
+				this._layer.proxy = this._proxy;
 			
 			if(this._dpi)
-				this.layer.dpi = this._dpi;
+				this._layer.dpi = this._dpi;
 			
 			if(this._resolutions)
-				this.layer.resolutions = this._resolutions;
+				this._layer.resolutions = this._resolutions;
 			
 			if(!isNaN(this.minZoomLevel))
-				this.layer.minZoomLevel = this.minZoomLevel;
+				this._layer.minZoomLevel = this.minZoomLevel;
 			
 			if(!isNaN(this.maxZoomLevel))
-				this.layer.maxZoomLevel = this.maxZoomLevel;
+				this._layer.maxZoomLevel = this.maxZoomLevel;
 			
 			if(this._maxExtent) {
-				this.layer.maxExtent = this._maxExtent;
+				this._layer.maxExtent = this._maxExtent;
 				this._maxExtent = null;
 			}
 			
-			this.layer.tweenOnZoom = this._tweenOnZoom;
+			this._layer.tweenOnZoom = this._tweenOnZoom;
 			
-			this.layer.alpha = super.alpha;
-			this.layer.visible = super.visible;
+			this._layer.alpha = super.alpha;
+			this._layer.visible = super.visible;
 			
-			return this.layer;
+			return this._layer;
 		}
 		
 		/**
@@ -92,14 +92,14 @@ package org.openscales.fx.layer
 		 * generate layer resolutions
 		 */
 		private function generateResolutions():void {
-			if(!this.layer)
+			if(!this._layer)
 				return;
 			
 			if(!isNaN(this.numZoomLevels)) {
-				this.layer.generateResolutions(this.numZoomLevels, this.maxResolution);
+				this._layer.generateResolutions(this.numZoomLevels, this.maxResolution);
 			}else{
 				if(!isNaN(this.maxResolution)) {
-					this.layer.generateResolutions(Layer.DEFAULT_NUM_ZOOM_LEVELS, this.maxResolution);
+					this._layer.generateResolutions(Layer.DEFAULT_NUM_ZOOM_LEVELS, this.maxResolution);
 				}
 			}
 		}
@@ -107,7 +107,7 @@ package org.openscales.fx.layer
 		/**
 		 * Indicates the layer represented by the flex wrapper
 		 */
-		public function get layer():Layer {
+		public function get nativeLayer():Layer {
 			return this._layer;
 		}
 		
@@ -128,8 +128,8 @@ package org.openscales.fx.layer
 		 * Indicates the map associated to the layer
 		 */
 		public function get map():Map {
-			if (this.layer != null)
-				return this.layer.map;
+			if (this._layer != null)
+				return this._layer.map;
 			else
 				return null;
 		}
@@ -138,16 +138,16 @@ package org.openscales.fx.layer
 		 * Indicates the dpi used to calculate resolution and scale upon this layer
 		 */
 		public function get dpi():Number {
-			if(this.layer)
-				return this.layer.dpi;
+			if(this._layer)
+				return this._layer.dpi;
 			return this._dpi;
 		}
 		/**
 		 * @Private
 		 */
 		public function set dpi(value:Number):void {
-			if(this.layer != null)
-				this.layer.dpi = value;
+			if(this._layer != null)
+				this._layer.dpi = value;
 			else
 				this._dpi = value;
 		}
@@ -156,8 +156,8 @@ package org.openscales.fx.layer
 		 * Indicates the layer name
 		 */
 		public override function get name():String {
-			if(this.layer)
-				return this.layer.name;
+			if(this._layer)
+				return this._layer.name;
 			return super.name;
 		}
 		/**
@@ -165,8 +165,8 @@ package org.openscales.fx.layer
 		 */
 		public override function set name(value:String):void {
 			super.name = value;
-			if(this.layer != null)
-				this.layer.name = value;
+			if(this._layer != null)
+				this._layer.name = value;
 		}
 		
 		/**
@@ -174,24 +174,24 @@ package org.openscales.fx.layer
 		 * Fixed layers cannot be controlled by users
 		 */
 		public function get isFixed():Boolean {
-			if(this.layer)
-				return this.layer.isFixed;
+			if(this._layer)
+				return this._layer.isFixed;
 			return false;
 		}
 		/**
 		 * @Private
 		 */
 		public function set isFixed(value:Boolean):void {
-			if(this.layer != null)
-				this.layer.isFixed = value;
+			if(this._layer != null)
+				this._layer.isFixed = value;
 		}
 		
 		/**
 		 * Indicates the max extent as a string in the layer projection
 		 */
 		public function get maxExtent():String {
-			if(this.layer)
-				return this.layer.maxExtent.toString();
+			if(this._layer)
+				return this._layer.maxExtent.toString();
 			if(this._maxExtent)
 				return this._maxExtent.toString();
 			return null;
@@ -200,8 +200,8 @@ package org.openscales.fx.layer
 		 * @Private
 		 */
 		public function set maxExtent(value:String):void {
-			if(this.layer)
-				this.layer.maxExtent = Bounds.getBoundsFromString(value,this.layer.projSrsCode);
+			if(this._layer)
+				this._layer.maxExtent = Bounds.getBoundsFromString(value,this._layer.projSrsCode);
 			else if(this._projection)
 				this._maxExtent = Bounds.getBoundsFromString(value,this._projection);
 			else
@@ -212,8 +212,8 @@ package org.openscales.fx.layer
 		 * Indicates the proxy used to request layer datas
 		 */
 		public function get proxy():String {
-			if(this.layer)
-				return this.layer.proxy;
+			if(this._layer)
+				return this._layer.proxy;
 			return this._proxy;
 		}
 		/**
@@ -221,32 +221,32 @@ package org.openscales.fx.layer
 		 */
 		public function set proxy(value:String):void {
 			this._proxy = value;
-			if(this.layer)
-				this.layer.proxy = this._proxy;
+			if(this._layer)
+				this._layer.proxy = this._proxy;
 		}
 		
 		/**
 		 * Indicates if the layer is visible
 		 */
 		override public function get visible():Boolean {
-			if(this.layer)
-				return this.layer.visible;
+			if(this._layer)
+				return this._layer.visible;
 			return super.visible;
 		}
 		/**
 		 * @Private
 		 */
 		override public function set visible(value:Boolean):void {
-			if(this.layer)
-				this.layer.visible = value;
+			if(this._layer)
+				this._layer.visible = value;
 		}
 		
 		/**
 		 * Indicates the layer maxResolution
 		 */
 		public function get maxResolution():Number {
-			if(this.layer)
-				return this.layer.maxResolution;
+			if(this._layer)
+				return this._layer.maxResolution;
 			return this._maxResolution;
 		}
 		/**
@@ -261,8 +261,8 @@ package org.openscales.fx.layer
 		 * Indicates the minZoomLevel of the layer
 		 */
 		public function get minZoomLevel():Number {
-			if(this.layer)
-				return this.layer.minZoomLevel;
+			if(this._layer)
+				return this._layer.minZoomLevel;
 			return this._minZoomLevel;
 		}
 		/**
@@ -277,8 +277,8 @@ package org.openscales.fx.layer
 		 * Indicates the maxZoomLevel of the layer
 		 */
 		public function get maxZoomLevel():Number {
-			if(this.layer)
-				return this.layer.maxZoomLevel;
+			if(this._layer)
+				return this._layer.maxZoomLevel;
 			return this._maxZoomLevel;
 		}
 		/**
@@ -307,8 +307,8 @@ package org.openscales.fx.layer
 		 * Indicates available resolutions of the layer
 		 */
 		public function get resolutions():String {
-			if(this.layer)
-				return this.layer.resolutions.join(",");
+			if(this._layer)
+				return this._layer.resolutions.join(",");
 			return this._resolutions.join(",");
 		}
 		/**
@@ -321,16 +321,16 @@ package org.openscales.fx.layer
 				resNumberArray.push(Number(resString));
 			}
 			this._resolutions = resNumberArray;
-			if(this.layer)
-				this.layer.resolutions = this._resolutions;
+			if(this._layer)
+				this._layer.resolutions = this._resolutions;
 		}
 		
 		/**
 		 * Indicates teh projection of the layer
 		 */
 		public function get projection():String {
-			if(this.layer)
-				return this.layer.projSrsCode;
+			if(this._layer)
+				return this._layer.projSrsCode;
 			return this._projection;
 		}
 		/**
@@ -338,10 +338,10 @@ package org.openscales.fx.layer
 		 */
 		public function set projection(value:String):void {
 			this._projection = value;
-			if(this.layer) {
-				this.layer.projSrsCode = this._projection;
-				if(this.layer.maxExtent)
-					this.layer.maxExtent.projSrsCode = this._projection;
+			if(this._layer) {
+				this._layer.projSrsCode = this._projection;
+				if(this._layer.maxExtent)
+					this._layer.maxExtent.projSrsCode = this._projection;
 			}
 			else if(this._maxExtent)
 				this._maxExtent.projSrsCode = this._projection;
@@ -351,8 +351,8 @@ package org.openscales.fx.layer
 		 * Indicates the alpha of the layer
 		 */
 		override public function get alpha():Number {
-			if(this.layer)
-				return this.layer.alpha;
+			if(this._layer)
+				return this._layer.alpha;
 			return super.alpha;
 		}
 		/**
@@ -360,16 +360,16 @@ package org.openscales.fx.layer
 		 */
 		override public function set alpha(value:Number):void {
 			super.alpha = value;
-			if(layer)
-				this.layer.alpha = value;
+			if(_layer)
+				this._layer.alpha = value;
 		}
 		
 		/**
 		 * Indicates if the layer should be tweened on zoom
 		 */
 		public function get tweenOnZoom():Boolean {
-			if(this.layer)
-				return this.layer.tweenOnZoom;
+			if(this._layer)
+				return this._layer.tweenOnZoom;
 			return this._tweenOnZoom;
 		}
 		/**
@@ -377,7 +377,7 @@ package org.openscales.fx.layer
 		 */
 		public function set tweenOnZoom(value:Boolean):void {
 			this._tweenOnZoom = value;
-			if(this.layer)
+			if(this._layer)
 				this._layer.tweenOnZoom;
 		}
 		

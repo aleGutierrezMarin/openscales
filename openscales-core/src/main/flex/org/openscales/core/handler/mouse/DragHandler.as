@@ -82,8 +82,8 @@ package org.openscales.core.handler.mouse
 			
 			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			
-			this._start = new Pixel(event.localX,event.localY);
-			this._offset = new Pixel(this._start.x - this.map.layerContainer.x,this._start.y - this.map.layerContainer.y);
+			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
+			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
 			this._startCenter = this.map.center;
 			this.map.buttonMode=true;
 			this._dragging=true;
@@ -93,8 +93,8 @@ package org.openscales.core.handler.mouse
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
-			this.map.layerContainer.x = event.localX - this._offset.x;
-			this.map.layerContainer.y = event.localY - this._offset.y;
+			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
+			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
 			if(this.map.bitmapTransition) {
 				this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - this._offset.x;
 				this.map.bitmapTransition.y = this.map.bitmapTransition.parent.mouseY - this._offset.y;
@@ -117,7 +117,7 @@ package org.openscales.core.handler.mouse
 			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			
 			this.map.buttonMode=false;
-			this.done(new Pixel(event.localX, event.localY));
+			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
 			// A MapEvent.MOVE_END is emitted by the "set center" called in this.done
 			this._dragging=false;
 			if (this.oncomplete!=null)

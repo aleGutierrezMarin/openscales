@@ -106,14 +106,14 @@
 			 * 
 			 * @param fxLayer The flex layer to add to the overviewMap
 			 */
-			protected function addFxLayer(fxLayer:FxLayer):void {
-				_overviewmap.layer = fxLayer.layer;
+			public function addFxLayer(fxLayer:FxLayer):void {
+				_overviewmap.layer = fxLayer.nativeLayer;
 			}
 			
 			/**
 			 * @private
 			 */
-			private function get overviewMap():org.openscales.core.control.OverviewMapRatio {
+			public function get overviewMapRatio():org.openscales.core.control.OverviewMapRatio {
 				return this._overviewmap;
 			}
 			

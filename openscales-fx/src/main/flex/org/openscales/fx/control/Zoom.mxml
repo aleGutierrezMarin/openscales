@@ -59,9 +59,27 @@
 			 */
 			private var _onDrag:Boolean = false;
 			
+			/**
+			 * @private
+			 * Indicates the minimum value for the slider
+			 * @default 0
+			 */
+			[Bindable]
+			private var _minSlider:Number = 0;
+			
+			/**
+			 * @private
+			 * Indicates the maximum value for the slider
+			 * @default 20
+			 */
+			[Bindable]
+			private var _maxSlider:Number = 20;
 			
 			override public function set map(value:Map):void {
 				super.map = value;
+				
+				this._minSlider = map.baseLayer.getZoomForResolution(map.maxResolution);
+				this._maxSlider = map.baseLayer.getZoomForResolution(map.minResolution);
 			}
 			
 			/**
@@ -71,6 +89,7 @@
 			 */
 			public function  configure():void
 			{ 
+				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
 				
 				if(this._scalesLabels == null)
 				{
@@ -110,13 +129,15 @@
 			 */
 			public function updateCurrentLabel():void
 			{
-				if(!this._map || this._map.baseLayer)
+				if(this._map && this._map.resolution)
 				{
 					// update the value
 					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
 					
 					// update the display label
 					scalesNameLabel.text = this._currentLabel;
+					
+					scalesNameLabel.y = zoomSlider.thumb.y;
 				}
 			}
 			
@@ -188,11 +209,9 @@
 				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
 				zoomSlider.minimum = map.baseLayer.minZoomLevel;
 				zoomSlider.value = map.zoom;
-				scalesNameLabel.y = zoomSlider.thumb.y;
 				
 				// initialise the label value
 				this.updateCurrentLabel();
-				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
 			}
 			
 			
@@ -250,23 +269,18 @@
 			/**
 			 * The list of labels for the different resolution.
 			 */
-			public function set scalesLabels(labels:String):void
+			public function set scalesLabels(value:Vector.<ZoomData>):void
 			{
-				if( labels != null )
-				{
-					var scales:Vector.<ZoomData>  = new Vector.<ZoomData>();
-					
-					var zoomDataString:String = null;
-					
-					for each (zoomDataString in labels.split(";")) {
-						var values:Array = zoomDataString.split(",");
-						var zoomData:ZoomData = new ZoomData(values[0], Number(values[1]), Number(values[2]));
-						
-						scales.push(zoomData);
-					}
-					this._scalesLabels = scales;
-				}
-
+				this._scalesLabels = value;
+				this.updateCurrentLabel();
+			}
+			
+			/**
+			 * @private
+			 */
+			public function get scalesLabels():Vector.<ZoomData>
+			{
+				return this._scalesLabels;				
 			}
 			
 			/**
@@ -283,7 +297,23 @@
 			public function set scalesName(value:String):void
 			{
 				this._scalesName = value;
-				this.scalesLabels = this._scalesName;
+				
+				// parse the data
+				if( value != null )
+				{
+					var scales:Vector.<ZoomData>  = new Vector.<ZoomData>();
+					
+					var zoomDataString:String = null;
+					
+					for each (zoomDataString in value.split(";")) {
+						var values:Array = zoomDataString.split(",");
+						var zoomData:ZoomData = new ZoomData(values[0], Number(values[1]), Number(values[2]));
+						
+						scales.push(zoomData);
+					}
+					this._scalesLabels = scales;
+				}
+				this.updateCurrentLabel();
 			}	
 			
 			
@@ -326,6 +356,8 @@
 	</fx:Script>
 	
 	<s:VSlider id="zoomSlider" x="80" y="10"
+			   minimum="{this._minSlider}"
+			   maximum="{this._maxSlider}"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"

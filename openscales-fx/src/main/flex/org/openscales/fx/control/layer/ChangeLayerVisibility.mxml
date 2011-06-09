@@ -7,6 +7,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.layer.Layer;
 			
 			/**
@@ -17,19 +18,22 @@
 			{
 				super.layer = value;
 				
-				layerSwitcherCheckBox.selected = this._layer.visible;
+				layerSwitcherCheckBox.selected = this._layer.displayed;
 				
 				this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
 				this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
-				this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, updateCheckbox);
+				this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, checkLayerDisplayed);
+				
+				this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, checkLayerDisplayed);
+				this._layer.map.addEventListener(MapEvent.ZOOM_CHANGED, checkLayerDisplayed);
 			}
 			
 			/**
-			 * Update the checkbox value is the layer visibility change
+			 * Update the checkbox value if the displayed value has changed
 			 */
-			public function updateCheckbox(event:LayerEvent):void
+			public function checkLayerDisplayed(event:Event):void
 			{
-				layerSwitcherCheckBox.selected = this._layer.visible;	
+				layerSwitcherCheckBox.selected = this._layer.displayed;	
 			}
 			
 			/**
