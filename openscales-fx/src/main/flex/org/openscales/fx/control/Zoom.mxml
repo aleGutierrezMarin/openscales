@@ -78,8 +78,11 @@
 			override public function set map(value:Map):void {
 				super.map = value;
 				
-				this._minSlider = map.baseLayer.getZoomForResolution(map.maxResolution);
-				this._maxSlider = map.baseLayer.getZoomForResolution(map.minResolution);
+				if(this.map.baseLayer)
+				{
+					this._minSlider = map.baseLayer.getZoomForResolution(map.maxResolution);
+					this._maxSlider = map.baseLayer.getZoomForResolution(map.minResolution);
+				}
 			}
 			
 			/**
