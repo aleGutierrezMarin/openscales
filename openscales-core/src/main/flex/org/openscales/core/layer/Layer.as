@@ -576,7 +576,8 @@ package org.openscales.core.layer {
 		public override function set visible(value:Boolean):void {
 			super.visible = value;
 			if (this.map != null) {
-				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_VISIBLE_CHANGED, this));
+				var event:LayerEvent = new LayerEvent(LayerEvent.LAYER_VISIBLE_CHANGED, this)
+				this.map.dispatchEvent(event);
 			}
 		}
 		
