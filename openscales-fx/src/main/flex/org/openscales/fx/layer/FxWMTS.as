@@ -42,32 +42,32 @@ package org.openscales.fx.layer
 				return null;
 			}
 			
-			this.layer.name = this.name;
+			this._layer.name = this.name;
 			
 			if(this.proxy)
-				this.layer.proxy = this.proxy;
+				this._layer.proxy = this.proxy;
 			
 			if(this.dpi)
-				this.layer.dpi = this.dpi;
+				this._layer.dpi = this.dpi;
 
-			this.layer.tweenOnZoom = this.tweenOnZoom;
+			this._layer.tweenOnZoom = this.tweenOnZoom;
 			
-			this.layer.alpha = super.alpha;
-			this.layer.visible = super.visible;
+			this._layer.alpha = super.alpha;
+			this._layer.visible = super.visible;
 			
 			if(!this._useCapabilities) {
-				(this.layer as WMTS).tileMatrixSets = this.tileMatrixSets;
-				(this.layer as WMTS).tileMatrixSet = this.tileMatrixSet;
-				(this.layer as WMTS).format = this.format;
-				this.layer.generateResolutions();
+				(this._layer as WMTS).tileMatrixSets = this.tileMatrixSets;
+				(this._layer as WMTS).tileMatrixSet = this.tileMatrixSet;
+				(this._layer as WMTS).format = this.format;
+				this._layer.generateResolutions();
 			}
 			
-			return this.layer;
+			return this._layer;
 		}
 		
 		override public function set url(value:String):void {
-			if(this.layer != null)
-				(this.layer as WMTS).url=value;
+			if(this._layer != null)
+				(this._layer as WMTS).url=value;
 			this._url = value;
 			if(this._useCapabilities && this._url) {
 				this.getCapabilities();
@@ -75,12 +75,12 @@ package org.openscales.fx.layer
 		}
 		
 		public function get WMTSLayer():String {
-			return this._WMTSlayer;
+			return this._WMTSlayer; 
 		}
 		
-		public function set WMTSlayer(value:String):void {
-			if(this.layer != null)
-				(this.layer as WMTS).layer = value;;
+		public function set WMTSLayer(value:String):void {
+			if(this._layer != null)
+				(this._layer as WMTS).layer = value;;
 			this._WMTSlayer = value;
 		}
 		
@@ -90,8 +90,16 @@ package org.openscales.fx.layer
 		
 		public function set format(value:String):void {
 			this._format = value;
-			if(this.layer != null)
-				(this.layer as WMTS).format=value;
+			if(this._layer != null)
+				(this._layer as WMTS).format=value;
+		}
+		
+		public function get style():String {
+			return (this._layer as WMTS).style;
+		}
+		public function set style(value:String):void {
+			if(this._layer != null)
+				(this._layer as WMTS).style = value;
 		}
 		
 		public function get useCapabilities():Boolean
@@ -112,8 +120,8 @@ package org.openscales.fx.layer
 		public function set tileMatrixSets(value:HashMap):void
 		{
 			_tileMatrixSets = value;
-			if(this.layer)
-				(this.layer as WMTS).tileMatrixSets = value;
+			if(this._layer)
+				(this._layer as WMTS).tileMatrixSets = value;
 		}
 		
 		public function get tileMatrixSet():String
@@ -124,8 +132,8 @@ package org.openscales.fx.layer
 		public function set tileMatrixSet(value:String):void
 		{
 			_tileMatrixSet = value;
-			if(this.layer)
-				(this.layer as WMTS).tileMatrixSet = value;
+			if(this._layer)
+				(this._layer as WMTS).tileMatrixSet = value;
 		}
 		
 		public function onFailure(event:Event):void {
@@ -156,8 +164,8 @@ package org.openscales.fx.layer
 				this.configureLayer();
 				this._isConfigured = false;
 				if(this.fxmap && this.fxmap.map) {
-					this.fxmap.map.addLayer(this.layer);
-					this.layer.redraw();
+					this.fxmap.map.addLayer(this._layer);
+					this._layer.redraw();
 					this.fxmap.map.size = this.fxmap.map.size;
 				}
 			}

@@ -15,18 +15,18 @@ package org.openscales.fx.layer
 				this._layer = new TMS("","");
 		}
 		public function set format(value:String):void {
-			if(this.layer != null)
-				(this.layer as TMS).format = value;
+			if(this._layer != null)
+				(this._layer as TMS).format = value;
 		}
 		public function set origin(value:String):void {
-			if(this.layer != null) {
-				(this.layer as TMS).origin = Location.getLocationFromString(value);
+			if(this._layer != null) {
+				(this._layer as TMS).origin = Location.getLocationFromString(value);
 			}
 		}
 		
 		public function set layerName(value:String):void {
-			if(this.layer != null) {
-				(this.layer as TMS).layerName = value;
+			if(this._layer != null) {
+				(this._layer as TMS).layerName = value;
 			}
 		}
 	}

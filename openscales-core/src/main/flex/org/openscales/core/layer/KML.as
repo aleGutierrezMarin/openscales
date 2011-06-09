@@ -15,7 +15,6 @@ package org.openscales.core.layer
 	 */
 	public class KML extends FeatureLayer
 	{
-		private var _url:String = "";
 		private var _request:XMLRequest = null;
 		private var _kmlFormat:KMLFormat = null;
 		private var _xml:XML = null;
@@ -23,7 +22,7 @@ package org.openscales.core.layer
 		public function KML(name:String,
 							url:String,
 							bounds:Bounds = null) {
-			this._url = url;
+			this.url = url;
 			this.maxExtent = bounds;
 			
 			super(name);
@@ -83,19 +82,11 @@ package org.openscales.core.layer
 		
 		protected function onFailure(event:Event):void {
 			this.loading = false;
-			Trace.error("Error when loading kml " + this._url);			
+			Trace.error("Error when loading kml " + this.url);			
 		}
-		
-		public function get url():String {
-			return this._url;
-		}
-		
-		public function set url(value:String):void {
-			this._url = value;
-		}
-		
+
 		override public function getURL(bounds:Bounds):String {
-			return this._url;
+			return this.url;
 		}
 		
 	}

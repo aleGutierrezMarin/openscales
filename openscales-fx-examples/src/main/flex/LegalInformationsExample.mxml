@@ -42,7 +42,7 @@
 			public function changeVisibility(event:Event):void
 			{
 				visibility = visibility == true ? false : true;
-				mapnikLayer.layer.visible = visibility;
+				mapnikLayer.nativeLayer.visible = visibility;
 			}
 			
 			public function configure():void
@@ -52,14 +52,14 @@
 				var originatorOSM:DataOriginator = new DataOriginator("OSM", "http://www.openstreetmap.org/", "http://syvolc.free.fr/pictures/logo-osm.jpg");
 				var originatorList:Vector.<DataOriginator> = new Vector.<DataOriginator>();
 						
-				var constraint:ConstraintOriginator = new ConstraintOriginator(mapnikLayer.layer.map.maxExtent, mapnikLayer.layer.minResolution, mapnikLayer.layer.maxResolution);
+				var constraint:ConstraintOriginator = new ConstraintOriginator(mapnikLayer.nativeLayer.map.maxExtent, mapnikLayer.nativeLayer.minResolution, mapnikLayer.nativeLayer.maxResolution);
 				
 				originatorOSM.addConstraint(constraint);
 				
 				originatorList.push(originatorCC);
 				originatorList.push(originatorOSM);
 
-				mapnikLayer.layer.originators = originatorList;
+				mapnikLayer.nativeLayer.originators = originatorList;
 			
 				// originator and constraint for the WMS
 				var originatorPlanet:DataOriginator = new DataOriginator("Planet observer", "http://www.planetobserver.com/", "http://www.toulousespaceshow.eu/tss08/logos/logo_planetobserver.jpg");
@@ -73,7 +73,7 @@
 				originatorListWMS.push(originatorPlanet);
 				originatorListWMS.push(originatorIGN);
 				
-				wfs.layer.originators = originatorListWMS;
+				wfs.nativeLayer.originators = originatorListWMS;
 			}
 			
 		]]>

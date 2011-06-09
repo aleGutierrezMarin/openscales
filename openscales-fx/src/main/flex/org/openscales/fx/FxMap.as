@@ -96,8 +96,8 @@ package org.openscales.fx
 			// Add the layer to the map
 			l.fxmap = this;
 			l.configureLayer();
-			if(l.layer)
-				this._map.addLayer(l.layer);
+			if(l.nativeLayer)
+				this._map.addLayer(l.nativeLayer);
 		}
 		
 		private function onMoveStart(event:MapEvent):void{
@@ -415,6 +415,12 @@ package org.openscales.fx
 				Trace.log("FxMap.addControlToFxMapControlsList: add a new control "+getQualifiedClassName(control));
 				this._controls.push(control);
 			}
+		}
+		
+		// --- Layer management --- //
+		public function get layers():Vector.<Layer>{
+			
+			return this._map.layers;
 		}
 
 		// --- Control management --- //

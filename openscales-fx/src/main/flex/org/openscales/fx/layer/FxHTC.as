@@ -14,8 +14,8 @@ package org.openscales.fx.layer
 		}
 
 		public function set directoryPrefix(value:String):void {
-			if(this.layer != null)
-				(this.layer as HTC).directoryPrefix = value;
+			if(this._layer != null)
+				(this._layer as HTC).directoryPrefix = value;
 		}
 	}
 }

@@ -76,7 +76,7 @@
 				
 				this.styles.push(style);
 				this.ignGeoplaRegion.style = style;
-				this.ignGeoplaRegion.layer.redraw();
+				this.ignGeoplaRegion.nativeLayer.redraw();
 			}
 		]]>
 	</fx:Script>

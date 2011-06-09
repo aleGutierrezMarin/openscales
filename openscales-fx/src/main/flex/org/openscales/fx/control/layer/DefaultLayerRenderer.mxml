@@ -105,7 +105,7 @@
 			 * @defualt 0
 			 */
 			private var _groupPositionOptionnal:Number = 0;
-
+			
 			
 			/**
 			 * @inherit
@@ -127,25 +127,25 @@
 				
 				if(this._rendererOptions)
 				{
-					/** TODO : work in progress
-					// check if some options have to be displayed :
-					if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
-					{
-						layerControlLegend.visible = true;
-						this._optionnalGroupDisplayed = true;
-					}
-					
 					if( this.rendererOptions.hasOwnProperty("displayZoomToExtent") && (this.rendererOptions["displayZoomToExtent"] == true) )
 					{
 						layerControlZoomToExtent.visible = true;
 						this._optionnalGroupDisplayed = true;
 					}
 					
-					if( this.rendererOptions.hasOwnProperty("displayMetadatas") && (this.rendererOptions["displayMetadatas"] == true) )
-					{
-						layerControlMetadatas.visible = true;
-						this._optionnalGroupDisplayed = true;
-					}
+					/** TODO : work in progress
+					 // check if some options have to be displayed :
+					 if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
+					 {
+					 layerControlLegend.visible = true;
+					 this._optionnalGroupDisplayed = true;
+					 }
+					 
+					 if( this.rendererOptions.hasOwnProperty("displayMetadatas") && (this.rendererOptions["displayMetadatas"] == true) )
+					 {
+					 layerControlMetadatas.visible = true;
+					 this._optionnalGroupDisplayed = true;
+					 }
 					 */
 				}
 			}
@@ -159,23 +159,24 @@
 				
 				// according to yhe group displayed or not, set the position of the different group
 				this._groupPositionOptionnal = hgroup.height + layerSwitcherAdditionnalDisplay.height;
-				this._groupPositionDraw = this._groupPositionOptionnal;
+				//this._groupPositionDraw = this._groupPositionOptionnal;
 				
-				/** TODO : work in progress
+				
 				if(this._optionnalGroupDisplayed = true)
 				{
 					this._maximizeGroupSize += layerSwitcherOptionnalDisplay.height;
-					this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
+					// this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
 				}
 				
-				if(this._isDrawingLayer)
-				{
-					this._maximizeGroupSize += layerSwitcherDrawingTools.height;
-				}
+				/** TODO : work in progress
+				 if(this._isDrawingLayer)
+				 {
+				 this._maximizeGroupSize += layerSwitcherDrawingTools.height;
+				 }*/
 				
 				layerSwitcherOptionnalDisplay.y = this._groupPositionOptionnal;
-				layerSwitcherDrawingTools.y = this._groupPositionDraw;
-				 */
+				// layerSwitcherDrawingTools.y = this._groupPositionDraw; // work in progress
+				
 			}
 			
 			/**
@@ -186,21 +187,16 @@
 				// if the layer has changed
 				if(this._layer != value)
 					this._isMinimized = true;
-					
+				
 				super.data = value;
 				
 				if((this._layer != null) )
-				{
-					if(this._layer.map!=null){
-						this._layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,baseLayerChanged);
-					}
-					
-					layerSwitcherLabel.text = this.layer.name;
-					this.baseLayerChanged();
+				{	
+					layerSwitcherLabel.text = this.layer.name;	
 					
 					if(this._layer is FeatureLayer)
 						this._isDrawingLayer = true;
-					
+						
 					else
 						this._isDrawingLayer = false;
 				}
@@ -210,32 +206,6 @@
 				this.updateOptionnalDisplay();
 			}
 			
-			
-			/**
-			 * Update extent when BaseLayer changed
-			 */
-			private function changeBaseLayer(event:MouseEvent):void 
-			{
-				layer.map.baseLayer = this._layer;
-				layer.map.moveTo(layer.map.center);
-			}
-			
-			/**
-			 * Update the display of base layer (bold) on baseLayerChanged
-			 */
-			private function baseLayerChanged(event:LayerEvent=null):void 
-			{
-				if(!_layer)
-					return;
-				
-				if(_layer.isBaseLayer) {
-					layerSwitcherLabel.setStyle("fontWeight", "bold");
-					layerSwitcherDeleteLayer.deleteButton.visible = false;
-				} else {
-					layerSwitcherLabel.setStyle("fontWeight", "normal");
-					layerSwitcherDeleteLayer.deleteButton.visible = true;
-				}
-			}
 			
 			/**
 			 * Reduce or maximize the current LayerManager
@@ -255,14 +225,15 @@
 			{
 				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
 				
-				/** TODO : work in progress
+				
 				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
 				
-				if(this._isDrawingLayer)
-				{
-					layerSwitcherDrawingTools.visible = !this._isMinimized;
-				}
-				*/
+				/** TODO : work in progress
+				 if(this._isDrawingLayer)
+				 {
+				 layerSwitcherDrawingTools.visible = !this._isMinimized;
+				 }
+				 */
 				
 				if(!this._isMinimized)
 				{
@@ -298,10 +269,10 @@
 			
 			
 			<os:IconButton id="layerSwitcherReduceMaximize"
-						width="16"
-						height="16"
-						click="reduceMaximizeLayerSwitcher(event)"
-						icon="{_btnMaximize}" />
+						   width="16"
+						   height="16"
+						   click="reduceMaximizeLayerSwitcher(event)"
+						   icon="{_btnMaximize}" />
 			<DeleteLayer id="layerSwitcherDeleteLayer" />
 			
 			<s:Group id="displayControl" />	
@@ -316,15 +287,15 @@
 		
 		<!--- TODO : work in progress
 		<s:Group id="layerSwitcherDrawingTools" visible="false" includeInLayout="false" height ="90">
-			<FeatureDrawing id="layerControlDrawTools" />
-		</s:Group>
-		
-		<s:Group id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20">
-			<LayerZoomToExtent id="layerControlZoomToExtent" />
-			<LayerLegend x="20" id="layerControlLegend" />
-			<LayerMetadatas x="40" id="layerControlMetadatas" />
+		<FeatureDrawing id="layerControlDrawTools" />
 		</s:Group>
 		-->
+		
+		<s:Group id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20">
+			<LayerZoomToExtent id="layerControlZoomToExtent" visible="false" />
+			<LayerLegend x="20" id="layerControlLegend" visible="false" />
+			<LayerMetadatas x="40" id="layerControlMetadatas" visible="false" />
+		</s:Group>
 		
 		
 		

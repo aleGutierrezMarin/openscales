@@ -33,7 +33,7 @@ package org.openscales.core.layer.ogc.provider
 		 * @private
 		 * Style identifier for the requested layer
 		 */
-		private var _style:String;
+		private var _style:String = '';
 		
 		/**
 		 * @private
@@ -149,40 +149,35 @@ package org.openscales.core.layer.ogc.provider
 						
 			var str:String = super.buildGETQuery(bounds, params);
 			
-			if (this._layer != null && this._layer != "")
-				str += "LAYERS=" + this._layer + "&";
-						
-			if(this._style != null && this._style != "") {
-				if(this.version=="1.3.0") {
-					str += "STYLES=" + this._style + "&";
-				} else if(this.version=="1.1.0" || this.version=="1.1.1") {
-					str += "SLD=" + this._style + "&";
-				}
-			}			
+			// Mandatory LAYERS parameter
+			str += "LAYERS=" + ((this._layer != null) ? this._layer : '') + "&";
 			
-			//the projection parameter depends on the version of the protocol
+			// Mandatory STYLES parameter
+			str += "STYLES=" + ((this._style != null) ? this._style : '') +'&';
+	
+			
+			// Mandatory CRS or SRS parameter
 			if(this.version=="1.3.0") {
 				str += "CRS=" + this._projection + "&";
 			} else {
 				str += "SRS=" + this._projection + "&";
 			}
-			//The bbox parameters depends on the version
-			//Lon/Lat if less than 1.3.0 or if axis order of the projection is East/North, lat/lon otherwise
+			
+			// Mandatory BBOX parameters
+			// Lon/Lat if less than 1.3.0 or if axis order of the projection is East/North, lat/lon otherwise
 			if(this.version=="1.3.0"
-					&& ProjProjection.projAxisOrder[this._projection]
 					&& ProjProjection.projAxisOrder[this._projection] == ProjProjection.AXIS_ORDER_NE){
 				str += "BBOX=" + bounds.bottom+","+ bounds.left +","+ bounds.top +","+ bounds.right+"&";
 			}else {
 				str += "BBOX=" + bounds.left+","+ bounds.bottom +","+ bounds.right +","+ bounds.top+"&";
 			}
 				
-			
+			// Mandatory HEIGHT and WIDTH parameters
 			str += "WIDTH=" + this._width + "&";
 			str += "HEIGHT=" + this._height + "&";
 			
-			
-			if (this._format != null && this._format != "")
-				str += "FORMAT=" + this._format + "&";
+			// Mandatory FORMAT parameters
+			str += "FORMAT=" + this._format + "&";
 			
 			str += "TRANSPARENT=" + this._transparent.toString().toUpperCase() + "&";
 			

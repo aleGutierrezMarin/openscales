@@ -189,7 +189,7 @@ Use the top-right button to switch the style of the rendering. -->
 				
 				this.styles.push(style);
 				this.ignGeoplaRegion.style = style;
-				this.ignGeoplaRegion.layer.redraw();
+				this.ignGeoplaRegion.nativeLayer.redraw();
 			}
 			
 			private function createStyleGeographical():void {
@@ -219,7 +219,7 @@ Use the top-right button to switch the style of the rendering. -->
 				
 				this.styles.push(style);
 				this.ignGeoplaRegion.style = style;
-				this.ignGeoplaRegion.layer.redraw();
+				this.ignGeoplaRegion.nativeLayer.redraw();
 			}
 			
 			private function createBitmapStyle():Style {
