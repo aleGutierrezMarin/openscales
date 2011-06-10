@@ -275,7 +275,7 @@
 						   icon="{_btnMaximize}" />
 			<DeleteLayer id="layerSwitcherDeleteLayer" />
 			
-			<s:Group id="displayControl" />	
+				
 			
 		</s:HGroup>
 		
