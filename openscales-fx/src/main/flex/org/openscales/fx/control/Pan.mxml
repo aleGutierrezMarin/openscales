@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Pan control to pan the map --> 
+<Control xmlns="org.openscales.fx.control.*" xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 width="400" height="300" initialize="configure()" > 
+
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.controls.sliderClasses.Slider;
+			import mx.events.SliderEvent;
+			import mx.events.SliderEventClickTarget;
+			import mx.events.StateChangeEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.control.ZoomData;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.fx.control.skin.PanSkin;
+			import org.openscales.fx.control.skin.ZoomSkin;
+			import org.openscales.fx.control.skin.ZoomThumbSkin;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.events.TrackBaseEvent;
+			
+			
+			
+			public var DELTA_PX:Number = 100;
+			
+			
+			/**
+			 * Configure the listener for the pan and the zoom
+			 * Configure the list of zoom label once the component is created 
+			 * and set the first zoomLabel text value.
+			 */
+			public function  configure():void{ 
+				// Add listener to the fourth pan buttons
+				this.panNorth.addEventListener(MouseEvent.CLICK, this.onPan);
+				this.panSouth.addEventListener(MouseEvent.CLICK, this.onPan);
+				this.panEast.addEventListener(MouseEvent.CLICK, this.onPan);
+				this.panWest.addEventListener(MouseEvent.CLICK, this.onPan);
+			}
+			
+			/**
+			 * Pan the map when a pan button is pressed 
+			 * 
+			 * @param The event received
+			 */
+			//public function onPan(event:StateChangeEvent):void
+			public function onPan(event:MouseEvent):void
+			{
+				if(!this._map || !this._map.baseLayer)
+					return;
+				
+				var button:Button = event.target as Button;
+				
+				switch(button.name)
+				{
+					case "south" :
+						this.map.pan(0, this.DELTA_PX, true);
+						break;
+					case "east" :
+						this.map.pan(this.DELTA_PX, 0, true);
+						break;
+					case "north" :
+						this.map.pan(0, -this.DELTA_PX, true);		
+						break;
+					case "west":
+						this.map.pan(-this.DELTA_PX, 0, true);
+						break;
+					default : 
+				}
+				
+			}
+			
+			
+			override public function destroy():void {
+				this.active = false;
+				super.destroy();
+			}
+			
+			
+		]]>
+	</fx:Script>
+
+	<s:SkinnableContainer id="panContainer"
+						  useHandCursor="true"
+						  buttonMode="true">	
+	</s:SkinnableContainer>
+	
+	<s:Button id="panNorth" name="north" label="{Catalog.getLocalizationForKey('pan.N')}" width="35" x="20" y="0" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panSouth" name="south" label="{Catalog.getLocalizationForKey('pan.S')}" width="35" x="20" y="40" useHandCursor="true" buttonMode="true" />
+	<s:Button id="panEast" name="east" label="{Catalog.getLocalizationForKey('pan.E')}" width="35" x="40" y="20" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panWest" name="west" label="{Catalog.getLocalizationForKey('pan.W')}" width="35" x="0" y="20" useHandCursor="true" buttonMode="true"/>
+	
+	
+</Control>
