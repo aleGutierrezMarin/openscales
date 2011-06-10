@@ -22,7 +22,7 @@
 			{
 				super.layer = value;
 				layerControlOpacity.value=this._layer.alpha*100;
-				layerControlOpacityLabel.text = layerControlOpacity.value+" %";
+				layerControlOpacityLabel.text = Math.round(layerControlOpacity.value)+" %";
 				
 				this._layer.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED,layerChangeOpacity);
 			}
@@ -35,7 +35,7 @@
 			public function layerOpacity(event:Event):void
 			{	
 				this._layer.alpha = layerControlOpacity.value/100;
-				layerControlOpacityLabel.text = layerControlOpacity.value+"%";
+				layerControlOpacityLabel.text = Math.round(layerControlOpacity.value)+"%";
 			}
 			
 			/**
