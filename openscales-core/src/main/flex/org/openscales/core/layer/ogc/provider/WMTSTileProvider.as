@@ -195,9 +195,10 @@ package org.openscales.core.layer.ogc.provider
 				location = location.reprojectTo(tileOrigin.projSrsCode.toUpperCase());
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
 			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
+			/*
 			if(col<0 || row< 0 || col>tileMatrix.matrixWidth-1 || row>tileMatrix.matrixHeight-1)
 				return imageTile;
-			
+			*/
 			var params:Object = {
 				"TILECOL" : col,
 				"TILEROW" : row,
