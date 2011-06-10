@@ -172,9 +172,8 @@ package org.openscales.fx.layer
 				this.configureLayer();
 				this._isConfigured = false;
 				if(this.fxmap && this.fxmap.map) {
-					//this.fxmap.map.addLayer(this._layer);
+					this._layer.clear();
 					this._layer.redraw();
-					//this.fxmap.map.size = this.fxmap.map.size;
 				}
 			}
 		}
