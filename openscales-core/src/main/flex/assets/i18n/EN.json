@@ -1,0 +1,43 @@
+ {
+ 
+   "layercontrol.movefront": "Move front",
+   "layercontrol.moveback": "Move back",
+   "layercontrol.deletelayer": "Delete this layer",
+   
+   "layerswitcher.layers": "Layers",
+   
+   "locale.key": "EN",
+   "locale.name": "English",
+   "locale.localizedName": "English",
+   
+   "tos.label": "Terms of Service",
+   
+   "zoombar.world": "World",
+   "zoombar.country": "Country",
+   "zoombar.state": "State",
+   "zoombar.town": "Town",
+   "zoombar.street": "Street",
+   "zoombar.house": "House",
+   
+   "mouseposition.kilometers": "kilometers",
+   "mouseposition.meters": "meters",
+   "mouseposition.centimeters": "centimeters",
+   "mouseposition.decimaldegrees":"decimal degrees",
+   "mouseposition.dms": "Degrees, Minutes, Seconds",
+   
+   "pan.N": "N",
+   "pan.S": "S",
+   "pan.E": "E",
+   "pan.W": "W",
+   
+   "scaleline.km": "km",
+   "scaleline.m": "m",
+   "scaleline.mi": "mi",
+   "scaleline.ft": "ft",
+   
+   "copyright.copyright": "Copyright",
+   
+   "zoombox.tooltip": "Draw the desired area to zoom in",
+   
+   "traceinfo.clearlabel": "Clear"
+ }

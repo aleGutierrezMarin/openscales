@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- LayerManager item renderer, design to render a layer in the LayerManager list -->
+<LayerRenderer xmlns="org.openscales.fx.control.layer.*"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:d="http://ns.adobe.com/fxg/2008/dt"
+			   xmlns:os="org.openscales.fx.control.*"
+			   width="100%"
+			   height="25"
+			   xmlns:fxg="assets.fxg.*"
+			   autoDrawBackground="false" >
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.fxg.ButtonOpacity;
+			import assets.fxg.DownArrowDown;
+			import assets.fxg.DownArrowOver;
+			import assets.fxg.DownArrowUp;
+			import assets.fxg.LayerItemOver;
+			import assets.fxg.LayerItemUp;
+			
+			import mx.accessibility.ButtonAccImpl;
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.core.ButtonAsset;
+			import mx.core.IVisualElement;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.events.PropertyChangeEvent;
+			import mx.events.ScrollEvent;
+			import mx.events.SliderEvent;
+			import mx.skins.halo.ButtonSkin;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.LayerManagerEvent;
+			import org.openscales.core.layer.FeatureLayer;
+			import org.openscales.core.layer.ImageLayer;
+			import org.openscales.core.layer.Layer;
+			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.core.layer.ogc.WMSC;
+			import org.openscales.fx.control.FeatureDrawing;
+			import org.openscales.fx.control.layer.LayerManager;
+			import org.openscales.geometry.basetypes.Bounds;
+			
+			import spark.components.Button;
+			import spark.components.CheckBox;
+			import spark.components.Label;
+			import spark.components.List;
+			import spark.components.RadioButton;
+			import spark.components.RadioButtonGroup;
+			import spark.components.VSlider;
+			import spark.core.SpriteVisualElement;
+			
+			
+			[Bindable]
+			[Embed(source="/assets/images/widgetHide.png")]
+			private var _btnMinimize:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/widgetShow.png")]
+			private var _btnMaximize:Class;
+			
+			
+			/**
+			 * @private
+			 * To know if the current LayerRenderer display a minimize or maximize item
+			 * @default true
+			 */
+			private var _isMinimized:Boolean = true;
+			
+			/**
+			 * @private
+			 * Define if the current layer is a drawing layer or not
+			 * @default false
+			 */
+			private var _isDrawingLayer:Boolean = false;
+			
+			/**
+			 * @private
+			 * Define if the optionnal group has to be displayed
+			 * @default false
+			 */
+			private var _optionnalGroupDisplayed:Boolean = false;
+			
+			/**
+			 * @private
+			 * Define the difference of size between maximize and minimize renderer
+			 * @default 0
+			 */
+			private var _maximizeGroupSize:Number = 0;
+			
+			/**
+			 * @private
+			 * The position of the layerSwitcherDrawingTools
+			 * @default 0
+			 */
+			private var _groupPositionDraw:Number = 0;
+			
+			/**
+			 * @private
+			 * The position of the layerSwitcherOptionnalDisplay
+			 * @defualt 0
+			 */
+			private var _groupPositionOptionnal:Number = 0;
+			
+			
+			/**
+			 * @inherit
+			 * 
+			 * The options implemented by the DefaultLayerRenderer are :
+			 * 
+			 * <LayerSwitcher>
+			 *	 	<rendererOptions>
+			 *			<fx:Object
+			 *				displayLegend="true/false"
+			 *				displayZoomToExtent="true/false"
+			 *				displayMetadatas="true/false" />
+			 *		</rendererOptions>
+			 * </LayerSwitcher>
+			 */
+			override public function manageRendererOptions():void
+			{
+				super.manageRendererOptions();
+				
+				if(this._rendererOptions)
+				{
+					if( this.rendererOptions.hasOwnProperty("displayZoomToExtent") && (this.rendererOptions["displayZoomToExtent"] == true) )
+					{
+						layerControlZoomToExtent.visible = true;
+						this._optionnalGroupDisplayed = true;
+					}
+					
+					/** TODO : work in progress
+					 // check if some options have to be displayed :
+					 if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
+					 {
+					 layerControlLegend.visible = true;
+					 this._optionnalGroupDisplayed = true;
+					 }
+					 
+					 if( this.rendererOptions.hasOwnProperty("displayMetadatas") && (this.rendererOptions["displayMetadatas"] == true) )
+					 {
+					 layerControlMetadatas.visible = true;
+					 this._optionnalGroupDisplayed = true;
+					 }
+					 */
+				}
+			}
+			
+			/**
+			 * According to the group optionnal and drawing tools, set the size and position for this renderer
+			 */
+			public function setGroupSize():void
+			{
+				this._maximizeGroupSize = hgroup.height+layerSwitcherAdditionnalDisplay.height;
+				
+				// according to yhe group displayed or not, set the position of the different group
+				this._groupPositionOptionnal = hgroup.height + layerSwitcherAdditionnalDisplay.height;
+				//this._groupPositionDraw = this._groupPositionOptionnal;
+				
+				
+				if(this._optionnalGroupDisplayed = true)
+				{
+					this._maximizeGroupSize += layerSwitcherOptionnalDisplay.height;
+					// this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
+				}
+				
+				/** TODO : work in progress
+				 if(this._isDrawingLayer)
+				 {
+				 this._maximizeGroupSize += layerSwitcherDrawingTools.height;
+				 }*/
+				
+				layerSwitcherOptionnalDisplay.y = this._groupPositionOptionnal;
+				// layerSwitcherDrawingTools.y = this._groupPositionDraw; // work in progress
+				
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function set data(value:Object):void 
+			{
+				// if the layer has changed
+				if(this._layer != value)
+					this._isMinimized = true;
+				
+				super.data = value;
+				
+				if((this._layer != null) )
+				{	
+					layerSwitcherLabel.text = this.layer.name;	
+					
+					if(this._layer is FeatureLayer)
+						this._isDrawingLayer = true;
+						
+					else
+						this._isDrawingLayer = false;
+				}
+				
+				this.setGroupSize();
+				
+				this.updateOptionnalDisplay();
+			}
+			
+			
+			/**
+			 * Reduce or maximize the current LayerManager
+			 */
+			public function reduceMaximizeLayerSwitcher(event:Event):void 
+			{
+				
+				this._isMinimized = !this._isMinimized;
+				
+				this.updateOptionnalDisplay();
+			}
+			
+			/**
+			 * Display all the renderer or minimize version
+			 */
+			public function updateOptionnalDisplay():void
+			{
+				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
+				
+				
+				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
+				
+				/** TODO : work in progress
+				 if(this._isDrawingLayer)
+				 {
+				 layerSwitcherDrawingTools.visible = !this._isMinimized;
+				 }
+				 */
+				
+				if(!this._isMinimized)
+				{
+					this.height = this._maximizeGroupSize;
+				}
+					
+					
+				else
+				{
+					this.height = hgroup.height; 
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup id="layerSwitcherMainGroup" >
+		<s:HGroup width="100%"
+				  height="25"
+				  id="hgroup"
+				  paddingLeft="2"
+				  paddingBottom="2"
+				  paddingRight="4"
+				  paddingTop="2"
+				  verticalAlign="middle">
+			
+			<ChangeLayerVisibility />
+			
+			<s:Label id="layerSwitcherLabel" width="100"/>
+			
+			
+			<ChangeLayerPosition  />
+			
+			
+			<os:IconButton id="layerSwitcherReduceMaximize"
+						   width="16"
+						   height="16"
+						   click="reduceMaximizeLayerSwitcher(event)"
+						   icon="{_btnMaximize}" />
+			<DeleteLayer id="layerSwitcherDeleteLayer" />
+			
+				
+			
+		</s:HGroup>
+		
+		
+		<s:Group id="layerSwitcherAdditionnalDisplay" height="20" visible="false">
+			<ChangeLayerOpacity id="layerControlOpacity" />
+		</s:Group>
+		
+		
+		<!--- TODO : work in progress
+		<s:Group id="layerSwitcherDrawingTools" visible="false" includeInLayout="false" height ="90">
+		<FeatureDrawing id="layerControlDrawTools" />
+		</s:Group>
+		-->
+		
+		<s:Group id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20">
+			<LayerZoomToExtent id="layerControlZoomToExtent" visible="false" />
+			<LayerLegend x="20" id="layerControlLegend" visible="false" />
+			<LayerMetadatas x="40" id="layerControlMetadatas" visible="false" />
+		</s:Group>
+		
+		
+		
+	</s:VGroup>
+	
+	
+</LayerRenderer>
