@@ -1,0 +1,134 @@
+﻿/*
+ * openscales.css
+ * ~~~~~~~
+ *
+ * OpenScales stylesheet -- openscales theme.
+ *
+ * :copyright: Copyright 2010 Atos Worldline
+ * :author: Loïc Frering
+ * :author: Sébastien Deleuze
+ */
+ 
+@import url("basic.css");
+ 
+body {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 90%;
+    counter-reset: counter1;
+    background-color: #ccc;
+}
+
+.documentwrapper {
+    float: left;
+    width: 100%;
+}
+
+.bodywrapper {
+    margin-left: 230px;
+}
+
+div.sphinxsidebar a {
+    color: #000;
+    text-decoration: none;
+}
+
+div.sphinxsidebar a:hover {
+    text-decoration: underline;
+}
+
+div.sphinxsidebar ul {
+    margin: 10px;
+    padding: 0;
+}
+
+div.body {
+    margin: 10px;
+    padding: 4em;
+    border: 2px solid gray;
+    background-color: white;
+    -moz-box-shadow:10px 10px 5px #888;
+    box-shadow:10px 10px 5px #888;
+    -moz-border-radius: 8px;
+}
+
+div.body h1:first-child {
+    margin-top: 0;
+}
+
+div.body h1, div.body h2, div.body h3, div.body h4, div.body h5, div.body h6 {
+    color: #2564a2;
+}
+
+div.body h1 {
+    counter-reset: counter2;
+}
+
+div.body h2 {
+    counter-reset: counter3;
+    margin-left: 1em;
+}
+
+div.body h3 {
+    counter-reset: counter4;
+    margin-left: 2em;
+}
+
+div.body h4 {
+    counter-reset: counter5;
+    margin-left: 3em;
+}
+
+div.body h5 {
+    counter-reset: counter6;
+    margin-left: 4em;
+}
+
+div.body h6 {
+    margin-left: 5em;
+}
+
+div.body h1:before {
+    counter-increment: counter1;
+    content: counter(counter1) ". ";
+}
+
+div.body h2:before {
+    counter-increment: counter2;
+    content: counter(counter1) "." counter(counter2) ". " ;
+}
+
+div.body h3:before {
+    counter-increment: counter3;
+    content: counter(counter1) "." counter(counter2) "." counter(counter3) ". " ;
+}
+
+div.body h4:before {
+    counter-increment: counter4;
+    content: counter(counter1) "." counter(counter2) "." counter(counter3) "." counter(counter4) ". " ;
+}
+
+div.body h5:before {
+    counter-increment: counter5;
+    content: counter(counter1) "." counter(counter2) "." counter(counter3) "." counter(counter4) "." counter(counter5) ". " ;
+}
+
+div.body h6:before {
+    counter-increment: counter6;
+    content: counter(counter1) "." counter(counter2) "." counter(counter3) "." counter(counter4) "." counter(counter5) "." counter(counter6) ". " ;
+}
+
+div.body a.headerlink {
+    color: #c00;
+    text-decoration: none;
+}
+
+div.body p {
+    text-align: justify;
+}
+
+div.body blockquote.highlights {
+    padding: 1em;
+    border: solid 1px #444;
+    background-color: #eee;
+    text-align: justify;
+}
