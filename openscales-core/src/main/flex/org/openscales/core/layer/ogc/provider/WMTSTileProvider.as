@@ -5,9 +5,9 @@ package org.openscales.core.layer.ogc.provider
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
+	import org.openscales.core.layer.ogc.provider.OGCTileProvider;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
-	import org.openscales.core.layer.ogc.provider.OGCTileProvider;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -221,17 +221,23 @@ package org.openscales.core.layer.ogc.provider
 				return null;
 			}
 			
-			var resolutions:Array = new Array();
 			var tms:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
-			
 			if(tms==null)
-				return resolutions;
+				return null;
+			var proj:ProjProjection = ProjProjection.getProjProjection(tms.supportedCRS);
+			if(!proj)
+				return null;
+			
+			var resolutions:Array = new Array();
+			
+			var units:String = proj.projParams.units;
+			
 			var j:uint = 0;
 			for each(var i:* in tms.tileMatrices.getValues()) {
 				if(i==null)
 					continue;
 				var tm:TileMatrix = i as TileMatrix;
-				resolutions.push(Unit.getResolutionFromScaleDenominator(tm.scaleDenominator,ProjProjection.getProjProjection(tms.supportedCRS).projParams.units));
+				resolutions.push(Unit.getResolutionFromScaleDenominator(tm.scaleDenominator,units));
 				++j;
 				if(j>=numZoomLevels)
 					break;
