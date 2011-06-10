@@ -377,11 +377,11 @@ package org.openscales.core.layer.ogc
 		}
 		
 		public function get extractAttributes():Boolean {
-			return this._extractAttributes;
+			return this._wfsFormat.extractAttributes;
 		}
 		
 		public function set extractAttributes(value:Boolean):void {
-			this._extractAttributes = value;
+			this._wfsFormat.extractAttributes = value;
 		}
 		
 		public function get useCapabilities():Boolean {
