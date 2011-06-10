@@ -36,24 +36,24 @@ package org.openscales.fx.layer
 		}
 		
 		override public function configureLayer():Layer {
+			if(!this._layer)
+				this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
+			
 			this._isConfigured = true;
-			if(this._useCapabilities && !this._tileMatrixSets) {
-				this.getCapabilities();
-				return null;
-			}
 			
 			this._layer.name = this.name;
-			
 			if(this.proxy)
 				this._layer.proxy = this.proxy;
-			
 			if(this.dpi)
 				this._layer.dpi = this.dpi;
-
 			this._layer.tweenOnZoom = this.tweenOnZoom;
-			
 			this._layer.alpha = super.alpha;
 			this._layer.visible = super.visible;
+			
+			if(this._useCapabilities && !this._tileMatrixSets) {
+				this.getCapabilities();
+				return this._layer;
+			}
 			
 			if(!this._useCapabilities) {
 				(this._layer as WMTS).tileMatrixSets = this.tileMatrixSets;
@@ -156,7 +156,15 @@ package org.openscales.fx.layer
 			
 			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
 			
-			this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
+			if(!this._layer)
+				this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
+			else {
+				this._layer.name = this.name;
+				this._layer.url = this._url;
+				(this._layer as WMTS).layer = this._WMTSlayer;
+				(this._layer as WMTS).tileMatrixSet = this._tileMatrixSet;
+				(this._layer as WMTS).tileMatrixSets = this._tileMatrixSets;
+			}
 			
 			(this._layer as WMTS).format = this.format;
 			
@@ -164,9 +172,9 @@ package org.openscales.fx.layer
 				this.configureLayer();
 				this._isConfigured = false;
 				if(this.fxmap && this.fxmap.map) {
-					this.fxmap.map.addLayer(this._layer);
+					//this.fxmap.map.addLayer(this._layer);
 					this._layer.redraw();
-					this.fxmap.map.size = this.fxmap.map.size;
+					//this.fxmap.map.size = this.fxmap.map.size;
 				}
 			}
 		}
