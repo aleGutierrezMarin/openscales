@@ -32,6 +32,7 @@
 			 * Scale value corresponding to the current rectangle size for top Unit
 			 * @default 0
 			 */
+			[Bindable]
 			private var _topScaleValue:Number = 0;
 			
 			/**
@@ -60,6 +61,7 @@
 			 * Scale value corresponding to the current rectangle size for bottom Unit
 			 * @default 0
 			 */
+			[Bindable]
 			private var _bottomScaleValue:Number = 0;
 			
 			/**
