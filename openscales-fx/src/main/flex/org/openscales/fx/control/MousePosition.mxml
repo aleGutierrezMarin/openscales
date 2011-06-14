@@ -435,20 +435,23 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup id="mousePositionVGroup" width="100%">
+	<s:SkinnableContainer id="mousePositionVGroup" width="100%">
+		<s:layout>
+			<s:VerticalLayout />
+		</s:layout>
 		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
 				 text="{this._mousePositionLabel}"
 				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
-		<s:HGroup id="mousePositionHGroup" width="100%"> 
-			
-			<s:DropDownList id="mousePositionCrsComboBox"  change="crsChanged(event);">
+		<s:SkinnableContainer id="mousePositionHGroup" width="100%"> 
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
 				
-			</s:DropDownList>
+			<s:DropDownList id="mousePositionCrsComboBox"  change="crsChanged(event);" />
 			
-			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)">
-				
-			</s:DropDownList>
-		</s:HGroup>
-	</s:VGroup>
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)" />
+
+		</s:SkinnableContainer>
+	</s:SkinnableContainer>
 </openscales:Control>
