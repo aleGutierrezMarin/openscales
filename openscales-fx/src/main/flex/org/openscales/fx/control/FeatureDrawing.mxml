@@ -119,10 +119,16 @@
 		]]>
 	</fx:Script>
 
-	<s:VGroup horizontalAlign="center">
+	<s:SkinnableContainer >
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center" />
+		</s:layout>
 		
-		<s:HGroup id="tgBar"
-				 width="100%">
+		<s:SkinnableContainer id="tgBar" width="100%">
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			
 			<IconButton id="btnPan"
 								width="25"
 								height="25"
@@ -164,9 +170,12 @@
 								toolTip="Edit Feature on draw Layer"
 								icon="{_editFeature}"
 								click="this.clickHandler(event)" />
-		</s:HGroup>
+		</s:SkinnableContainer>
 		
-		<s:HGroup gap="6">
+		<s:SkinnableContainer >
+			<s:layout> 
+				<s:HorizontalLayout gap="6" />
+			</s:layout>
 			<IconButton id="btnDeleteLast"
 								width="25"
 								height="25"
@@ -180,8 +189,8 @@
 								toolTip="Delete all the drawn features"
 								icon="{_btnDeleteAll}"
 								click="onDeleteAllClick(event)" />
-		</s:HGroup>
+		</s:SkinnableContainer>
 		
-	</s:VGroup>
+	</s:SkinnableContainer>
 
 </Control>
