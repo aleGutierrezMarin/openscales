@@ -129,6 +129,7 @@
 				this.mousePositionCrsComboBox.selectedIndex = selectedIndex;
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 				feedUnitsComboBox();
+				
 			}
 			
 			/**
@@ -416,7 +417,7 @@
 			public function get displayMetricUnits():String{
 				return _displayMetricUnits;
 			} 
-			
+	
 			/**
 			 * displayMetricUnits setter
 			 */ 
@@ -433,11 +434,11 @@
 		</s:Label>
 		<s:HGroup id="mousePositionHGroup" width="100%"> 
 			
-			<s:DropDownList id="mousePositionCrsComboBox"  change="crsChanged(event);">
+			<s:DropDownList id="mousePositionCrsComboBox"  change="crsChanged(event);" width="150">
 				
 			</s:DropDownList>
 			
-			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)">
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)" width="200">
 				
 			</s:DropDownList>
 		</s:HGroup>
