@@ -10,26 +10,39 @@
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			
-			private var _copyright:String = "copyright:copyright";
+			/**
+			 * @private
+			 * The given value is translate with i18n process.
+			 * @default : copyright.copyright
+			 */
+			private var _copyright:String = "copyright.copyright";
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
-				
+				var eventObj:Event = new Event("copyrightChanged");
+				dispatchEvent(eventObj);
 			}
 			
 			/**
 			 * Provider label for the copyright.
 			 * The given value is translate with i18n process.
+			 * 
 			 * @return The string label of the copyright
+			 * @default : copyright.copyright
 			 */
-			[Bindable]
+			[Bindable(event="copyrightChanged")]
 			public function get copyright():String
 			{
-				return this._copyright;
+				return "© "+Catalog.getLocalizationForKey(this._copyright);
 			}
 			
+			/**
+			 * @private
+			 */
 			public function set copyright(value:String):void
 			{
-				this._copyright = "© "+Catalog.getLocalizationForKey(value);
+				this._copyright = value;
+				var eventObj:Event = new Event("copyrightChanged");
+				dispatchEvent(eventObj);
 			}
 			
 		]]>
