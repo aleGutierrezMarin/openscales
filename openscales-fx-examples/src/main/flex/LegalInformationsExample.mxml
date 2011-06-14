@@ -21,10 +21,9 @@
 		
 		<DataOriginatorsDisplay x="700" y="{height-80}" />
 		<TermsOfService x="500" y="{height-20}" url="http://openscales.org/index.html" />
-		<Copyright x="400" y="{height-20}" copyright="openscales" />
+		<Copyright id="copyright" x="400" y="{height-20}" />
 
 		<LayerManager x="10" y="10" width="215" />
-		
 	</Map>
 	<fx:Script>
 		<![CDATA[
