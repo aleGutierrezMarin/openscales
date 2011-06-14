@@ -59,9 +59,30 @@
 			 */
 			private var _onDrag:Boolean = false;
 			
+			/**
+			 * @private
+			 * Indicates the minimum value for the slider
+			 * @default 0
+			 */
+			[Bindable]
+			private var _minSlider:Number = 0;
+			
+			/**
+			 * @private
+			 * Indicates the maximum value for the slider
+			 * @default 20
+			 */
+			[Bindable]
+			private var _maxSlider:Number = 20;
 			
 			override public function set map(value:Map):void {
 				super.map = value;
+				
+				if(this.map.baseLayer)
+				{
+					this._minSlider = map.baseLayer.getZoomForResolution(map.maxResolution);
+					this._maxSlider = map.baseLayer.getZoomForResolution(map.minResolution);
+				}
 			}
 			
 			/**
@@ -338,6 +359,8 @@
 	</fx:Script>
 	
 	<s:VSlider id="zoomSlider" x="80" y="10"
+			   minimum="{this._minSlider}"
+			   maximum="{this._maxSlider}"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
