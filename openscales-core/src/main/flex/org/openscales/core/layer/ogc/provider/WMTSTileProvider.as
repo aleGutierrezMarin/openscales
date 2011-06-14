@@ -5,9 +5,9 @@ package org.openscales.core.layer.ogc.provider
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
+	import org.openscales.core.layer.ogc.provider.OGCTileProvider;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
-	import org.openscales.core.layer.ogc.provider.OGCTileProvider;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -191,11 +191,14 @@ package org.openscales.core.layer.ogc.provider
 			
 			var location:Location = bounds.center;
 			var tileOrigin:Location = tileMatrix.topLeftCorner;
+			if(location.projSrsCode.toUpperCase()!=tileOrigin.projSrsCode.toUpperCase())
+				location = location.reprojectTo(tileOrigin.projSrsCode.toUpperCase());
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
 			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
+			/*
 			if(col<0 || row< 0 || col>tileMatrix.matrixWidth-1 || row>tileMatrix.matrixHeight-1)
 				return imageTile;
-			
+			*/
 			var params:Object = {
 				"TILECOL" : col,
 				"TILEROW" : row,
@@ -219,17 +222,23 @@ package org.openscales.core.layer.ogc.provider
 				return null;
 			}
 			
-			var resolutions:Array = new Array();
 			var tms:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
-			
 			if(tms==null)
-				return resolutions;
+				return null;
+			var proj:ProjProjection = ProjProjection.getProjProjection(tms.supportedCRS);
+			if(!proj)
+				return null;
+			
+			var resolutions:Array = new Array();
+			
+			var units:String = proj.projParams.units;
+			
 			var j:uint = 0;
 			for each(var i:* in tms.tileMatrices.getValues()) {
 				if(i==null)
 					continue;
 				var tm:TileMatrix = i as TileMatrix;
-				resolutions.push(Unit.getResolutionFromScaleDenominator(tm.scaleDenominator,ProjProjection.getProjProjection(tms.supportedCRS).projParams.units));
+				resolutions.push(Unit.getResolutionFromScaleDenominator(tm.scaleDenominator,units));
 				++j;
 				if(j>=numZoomLevels)
 					break;
@@ -326,7 +335,7 @@ package org.openscales.core.layer.ogc.provider
 		 */
 		public function set tileMatrixSet(value:String):void
 		{
-			this._tileMatrixSet = value.toUpperCase();
+			this._tileMatrixSet = value;
 		}
 		
 		/**

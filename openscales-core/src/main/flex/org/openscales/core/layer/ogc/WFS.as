@@ -281,9 +281,7 @@ package org.openscales.core.layer.ogc
 				this._wfsFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
 			}
 			
-			this._wfsFormat.read(loader.data as String);
-			
-			this.draw();
+			this.parseResponse(loader.data as String);
 			
 			if (map) {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this ));
@@ -292,9 +290,16 @@ package org.openscales.core.layer.ogc
 			}
 		}
 		
+		public function parseResponse(wfsResponse:String):void{
+			
+			this._wfsFormat.read(wfsResponse);
+		}
+		
 		public function get featuresids():HashMap {
 			return this._featuresids;
 		}
+		
+		
 		
 		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
 			super.addFeature(feature,dispatchFeatureEvent, reproject);
@@ -372,11 +377,11 @@ package org.openscales.core.layer.ogc
 		}
 		
 		public function get extractAttributes():Boolean {
-			return this._extractAttributes;
+			return this._wfsFormat.extractAttributes;
 		}
 		
 		public function set extractAttributes(value:Boolean):void {
-			this._extractAttributes = value;
+			this._wfsFormat.extractAttributes = value;
 		}
 		
 		public function get useCapabilities():Boolean {

@@ -124,7 +124,6 @@
 					for(i;i>0;--i)
 						layerList.dataProvider.addItem(overlayArray[i-1]);
 					layerList.invalidateDisplayList();
-					
 				}
 			}
 			
@@ -177,35 +176,21 @@
 	
 
 	
-	<s:Panel id="layerPanel" title="{Catalog.getLocalizationForKey('layerswitcher.layers')}" width="220" >
-		<s:VGroup width="100%"
-				  paddingLeft="2" paddingRight="2" paddingBottom="2" paddingTop="2"> 
-			<s:List id="layerList" 
-					dropEnabled="false"
-					dragEnabled="false"
-					dragMoveEnabled="false"
-					width="100%"
-					x="0"
-					y="0"
-					borderVisible="false">
-				<s:layout>
-					<s:VerticalLayout horizontalAlign="justify"
-									  variableRowHeight="true"
-									  requestedRowCount="4"/>
-				</s:layout>
-			</s:List>
-		</s:VGroup>
-		<s:Rect id="overRect"
-				x="0" y="0"
-				width="0" height="0"
-				visible="false">
-			<s:fill>
-				<s:SolidColor color="white" alpha="1" />
-			</s:fill>
-			<s:stroke>
-				<s:SolidColorStroke color="black" weight="1" alpha="1" />
-			</s:stroke>
-		</s:Rect>
+	<s:Panel id="layerPanel" title="{Catalog.getLocalizationForKey('layerswitcher.layers')}" width="220" > 
+		<s:List id="layerList" 
+				dropEnabled="false"
+				dragEnabled="false"
+				dragMoveEnabled="false"
+				width="100%"
+				x="0"
+				y="0"
+				borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="justify"
+								  variableRowHeight="true"
+								  requestedRowCount="4"/>
+			</s:layout>
+		</s:List>
 	</s:Panel>
 	
 </Control>

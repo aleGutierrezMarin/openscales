@@ -29,6 +29,21 @@
 			
 			/**
 			 * @private
+			 * Scale value corresponding to the current rectangle size for top Unit
+			 * @default 0
+			 */
+			[Bindable]
+			private var _topScaleValue:Number = 0;
+			
+			/**
+			 * @private
+			 * The current unit for the top scale value
+			 * @default null
+			 */
+			private var _topCurrentUnit:String = null;
+			
+			/**
+			 * @private
 			 * Units for zoomed out on top bar.
 			 * @default km.
 			 */
@@ -43,6 +58,21 @@
 			
 			/**
 			 * @private
+			 * Scale value corresponding to the current rectangle size for bottom Unit
+			 * @default 0
+			 */
+			[Bindable]
+			private var _bottomScaleValue:Number = 0;
+			
+			/**
+			 * @private
+			 * The current unit for the bottom scale value
+			 * @default null
+			 */
+			private var _bottomCurrentUnit:String = null;
+			
+			/**
+			 * @private
 			 * Units for zoomed out on bottom bar.
 			 * @default mi.
 			 */
@@ -54,6 +84,8 @@
 			 * @default ft
 			 */
 			private var _bottomInUnits:String = Catalog.getLocalizationForKey("scaleline.ft");
+			
+			
 			
 			
 			/**
@@ -135,28 +167,25 @@
 				var maxSizeData:Number = this._scaleMaxWidth * mapResolution * Unit.getInchesPerUnit(currentBaseLayerUnits);
 				
 				// decide whether to use large or small scale units. it's independent of the map unit    
-				var topUnits:String;		
-				var bottomUnits:String;	
 				if(maxSizeData > 100000) {
-					topUnits = this.topOutUnits;
-					bottomUnits = this._bottomOutUnits;
+					this._topCurrentUnit = this.topOutUnits;
+					this._bottomCurrentUnit = this._bottomOutUnits;
 				} else {
-					topUnits = this.topInUnits;
-					bottomUnits = this._bottomInUnits;
+					this._topCurrentUnit = this.topInUnits;
+					this._bottomCurrentUnit = this._bottomInUnits;
 				}
 				
 				// and to map units units
-				var topMax:Number = maxSizeData / Unit.getInchesPerUnit(topUnits);
-				var bottomMax:Number = maxSizeData / Unit.getInchesPerUnit(bottomUnits);
+				var topMax:Number = maxSizeData / Unit.getInchesPerUnit(this._topCurrentUnit);
+				var bottomMax:Number = maxSizeData / Unit.getInchesPerUnit(this._bottomCurrentUnit);
 				
 				// now trim this down to useful block length
-				
-				var topRounded:Number = this.getBarLen(topMax);
-				var bottomRounded:Number = this.getBarLen(bottomMax);
+				this._topScaleValue = this.getBarLen(topMax);
+				this._bottomScaleValue = this.getBarLen(bottomMax);
 				
 				// and back to display units
-				topMax = topRounded / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(topUnits);
-				bottomMax = bottomRounded / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(bottomUnits);
+				topMax = this._topScaleValue / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(this._topCurrentUnit);
+				bottomMax = this._bottomScaleValue / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(this._bottomCurrentUnit);
 				
 				// and to pixel units
 				var topPx:Number = topMax / mapResolution;
@@ -166,8 +195,8 @@
 				scaleTopWidth.width = Math.round(topPx);
 				scaleBottomWidth.width = Math.round(bottomPx);
 			
-				scaleTopValue.text = topRounded + " " + topUnits ;
-				scaleBottomValue.text = bottomRounded + " " + bottomUnits;
+				scaleTopValue.text = this._topScaleValue + " " + this._topCurrentUnit ;
+				scaleBottomValue.text = this._bottomScaleValue + " " + this._bottomCurrentUnit;
 	
 			}	
 			
@@ -187,6 +216,38 @@
 				this._scaleMaxWidth = value;
 			}
 			
+			/**
+			 * Scale value corresponding to the current rectangle size for top Unit
+			 */
+			public function get topScaleValue():Number
+			{
+				return this._topScaleValue;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set topScaleValue(value:Number):void
+			{
+				this._topScaleValue=value;
+			}
+
+			/**
+			 * Scale value corresponding to the current rectangle size for top Unit
+			 */
+			public function get topCurrentUnit():String
+			{
+				return this._topCurrentUnit;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set topCurrentUnit(value:String):void
+			{
+				this._topCurrentUnit=value;
+			}
+				
 			/**
 			 * Units for zoomed out on top bar.
 			 */
@@ -213,6 +274,38 @@
 			 */
 			public function set topInUnits(value:String):void {
 				this._topInUnits = value;
+			}
+			
+			/**
+			 * Scale value corresponding to the current rectangle size for bottom Unit
+			 */
+			public function get bottomScaleValue():Number
+			{
+				return this._bottomScaleValue;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set bottomScaleValue(value:Number):void
+			{
+				this._bottomScaleValue=value;
+			}
+			
+			/**
+			 * Scale value corresponding to the current rectangle size for bottom Unit
+			 */
+			public function get bottomCurrentUnit():String
+			{
+				return this._bottomCurrentUnit;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set bottomCurrentUnit(value:String):void
+			{
+				this._bottomCurrentUnit=value;
 			}
 			
 			/**
