@@ -1,6 +1,7 @@
 package org.openscales.core.control
 {
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -93,7 +94,7 @@ package org.openscales.core.control
 			// Is the input originator valid ?
 			if (!originator) 
 			{
-				trace("DataOriginators: null originator not added");
+				Trace.debug("DataOriginators: null originator not added");
 				return;
 			}
 			
@@ -102,7 +103,7 @@ package org.openscales.core.control
 			var j:uint = this._originators.length;
 			for (; i<j; ++i) 
 			{
-				if (originator == this._originators[i]) 
+				if (originator.equals(this._originators[i])) 
 				{			
 					// increment the number of layer pointing at this originator
 					var count:Number = this._originatorsLayersCount.getValue(originator.name);
@@ -215,7 +216,7 @@ package org.openscales.core.control
 			}
 			else
 			{
-				trace("DataOriginators.removeOriginator : originator not in the list, can't be removed");
+				Trace.debug("DataOriginators.removeOriginator : originator not in the list, can't be removed");
 			}
 		}
 		
