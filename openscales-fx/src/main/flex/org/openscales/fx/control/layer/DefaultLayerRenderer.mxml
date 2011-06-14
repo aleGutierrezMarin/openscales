@@ -36,6 +36,7 @@
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.core.layer.ImageLayer;
 			import org.openscales.core.layer.Layer;
@@ -112,13 +113,13 @@
 			 * 
 			 * The options implemented by the DefaultLayerRenderer are :
 			 * 
-			 * <LayerSwitcher>
-			 *	 	<rendererOptions>
-			 *			<fx:Object
+			 * &lt;LayerSwitcher&gt;
+			 *	 	&lt;rendererOptions&gt;
+			 *			&lt;fx:Object
 			 *				displayLegend="true/false"
 			 *				displayZoomToExtent="true/false"
-			 *				displayMetadatas="true/false" />
-			 *		</rendererOptions>
+			 *				displayMetadatas="true/false" /&gt;
+			 *		&lt;/rendererOptions&gt;
 			 * </LayerSwitcher>
 			 */
 			override public function manageRendererOptions():void
@@ -272,7 +273,8 @@
 						   width="16"
 						   height="16"
 						   click="reduceMaximizeLayerSwitcher(event)"
-						   icon="{_btnMaximize}" />
+						   icon="{_btnMaximize}"
+						   toolTip="{Catalog.getLocalizationForKey('layercontrol.reducemaximize')}" />
 			<DeleteLayer id="layerSwitcherDeleteLayer" />
 			
 				

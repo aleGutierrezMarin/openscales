@@ -370,8 +370,10 @@
 			   thumbDrag="thumbDrag(event)"
 			   thumbRelease="thumbRelease(event)" />
 	
-	<s:Button id="zoomOut" name="zoomout" label="-" width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
-	<s:Button id="zoomIn" name="zoomin" label="+" width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
+	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{Catalog.getLocalizationForKey('zoom.zoomout')}"
+			  width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
+	<s:Button id="zoomIn" name="zoomin" label="+" toolTip="{Catalog.getLocalizationForKey('zoom.zoomin')}"
+			  width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
 	<s:Label id="scalesNameLabel" x="90" backgroundColor="0xDDDDDD" />
 </Control>

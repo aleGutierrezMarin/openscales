@@ -6,8 +6,9 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import assets.fxg.ButtonOpacity;
+			
+			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/display_information.png")]
@@ -30,6 +31,7 @@
 				width="16"
 				height="16"
 				click="displayMetadatas(event)"
+				toolTip="{Catalog.getLocalizationForKey('layercontrol.metadatas')}"
 				icon="{_btnMetadatas}" />
 	
 </LayerControl>

@@ -6,8 +6,9 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import assets.fxg.ButtonOpacity;
+			
+			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/legend.png")]
@@ -29,6 +30,7 @@
 				width="16"
 				height="16"
 				click="displayLegend(event)"
+				toolTip="{Catalog.getLocalizationForKey('layercontrol.legend')}"
 				icon="{_btnLegend}" />
 	
 </LayerControl>

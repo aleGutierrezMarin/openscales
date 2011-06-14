@@ -3,6 +3,11 @@
    "layercontrol.movefront": "Déplacer vers l'avant plan",
    "layercontrol.moveback": "Déplacer vers l'arrière plan",
    "layercontrol.deletelayer": "Supprimer la couche",
+   "layercontrol.metadatas": "Afficher les métadonnées",
+   "layercontrol.changevisibility": "Changer la visibilité de la couche",
+   "layercontrol.reducemaximize": "Reduire ou agrandir l'élément",
+   "layercontrol.legend": "Afficher la légende",
+   "layercontrol.zoomToExtent": "Zoomer sur l'emprise de la couche",
    
    "layerswitcher.layers": "Couches",
  
@@ -38,6 +43,8 @@
    "copyright:copyright": "Copyright",
    
    "zoombox.tooltip": "Dessinez la zone sur laquelle zoomer",
+   "zoom.zoomin": "Zoomer",
+   "zoom.zoomout": "Dézoomer",
    
    "traceinfo.clearlabel": "Effacer"
  }

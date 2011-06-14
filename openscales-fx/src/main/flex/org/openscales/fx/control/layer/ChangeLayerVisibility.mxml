@@ -8,6 +8,7 @@
 		<![CDATA[
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			
 			/**
@@ -68,6 +69,7 @@
 	</fx:Script>
 	
 
-		<s:CheckBox id="layerSwitcherCheckBox" click="layerVisible(event)" />
+		<s:CheckBox id="layerSwitcherCheckBox" click="layerVisible(event)"
+					toolTip="{Catalog.getLocalizationForKey('layercontrol.changevisibility')}" />
 
 </LayerControl>

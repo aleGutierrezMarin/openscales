@@ -6,9 +6,10 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
-			import org.openscales.geometry.basetypes.Bounds;
 			import assets.fxg.ButtonOpacity;
+			
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.geometry.basetypes.Bounds;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/zoomToExtent.png")]
@@ -32,6 +33,7 @@
 	<IconButton id="layerControlZoomToExtent"
 				width="16"
 				height="16"
+				toolTip="{Catalog.getLocalizationForKey('layercontrol.zoomToExtent')}"
 				click="setLayerExtent(event)"
 				icon="{_btnZoom}" />
 	
