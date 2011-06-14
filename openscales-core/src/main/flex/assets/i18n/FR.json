@@ -34,6 +34,10 @@
    "pan.S": "S",
    "pan.E": "E",
    "pan.W": "O",
+   "pan.pannorth": "Se déplacer vers le nord",
+   "pan.pansouth": "Se déplacer vers le sud",
+   "pan.paneast": "Se déplacer vers l'est",
+   "pan.panwest": "Se déplacer vers l'ouest",
    
    "scaleline.km": "km",
    "scaleline.m": "m",
