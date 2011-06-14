@@ -34,6 +34,10 @@
    "pan.S": "S",
    "pan.E": "E",
    "pan.W": "W",
+   "pan.pannorth": "Pan north",
+   "pan.pansouth": "Pan south",
+   "pan.paneast": "Pan east",
+   "pan.panwest": "Pan west",
    
    "scaleline.km": "km",
    "scaleline.m": "m",
