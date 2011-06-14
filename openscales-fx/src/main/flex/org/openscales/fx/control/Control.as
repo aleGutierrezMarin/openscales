@@ -11,13 +11,13 @@ package org.openscales.fx.control
 	import org.openscales.fx.FxMap;
 	import org.openscales.geometry.basetypes.Pixel;
 	
-	import spark.components.Group;
+	import spark.components.SkinnableContainer;
 	
 	/**
 	 * <p>Base class for all Flex based OpenScales control.</p>
 	 * <p>Provide a Flex compatible implementation of IControl interface.</p>
 	 */
-	public class Control extends Group implements IControl
+	public class Control extends SkinnableContainer implements IControl
 	{
 		protected var _map:Map = null;
 		protected var _fxMap:FxMap = null;
