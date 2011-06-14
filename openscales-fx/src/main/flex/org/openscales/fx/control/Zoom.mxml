@@ -64,7 +64,6 @@
 			 * Indicates the minimum value for the slider
 			 * @default 0
 			 */
-			[Bindable]
 			private var _minSlider:Number = 0;
 			
 			/**
@@ -72,7 +71,6 @@
 			 * Indicates the maximum value for the slider
 			 * @default 20
 			 */
-			[Bindable]
 			private var _maxSlider:Number = 20;
 			
 			override public function set map(value:Map):void {
@@ -98,10 +96,6 @@
 				{
 					this._scalesLabels = new Vector.<ZoomData>();
 				}
-				
-				// listener for the zoom in/out buttons
-				this.zoomIn.addEventListener(MouseEvent.CLICK, this.onZoom);
-				this.zoomOut.addEventListener(MouseEvent.CLICK, this.onZoom);
 			}
 			
 			/**
@@ -179,28 +173,25 @@
 			}
 			
 			/**
-			 * Fonction called when one of the two zoom buttons is pressed
-			 * Swith on the button name and then zoom in or out
+			 * Fonction called when the zoom in button is presssed.
+			 * Zoom in on the map if possible.
 			 * 
 			 * @param event The MouseEvent received
 			 */
-			public function onZoom(event:MouseEvent):void
+			public function onZoomIn(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
-					return;
-				
-				var button:Button = event.target as Button;
-				
-				switch(button.name)
-				{
-					case "zoomin":
-						this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
-						break;
-					case "zoomout":
-						this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
-						break;
-					default : 
-				}	
+				this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+			}
+			
+			/**
+			 * Fonction called when the zoom out button is presssed.
+			 * Zoom out on the map if possible.
+			 * 
+			 * @param event The MouseEvent received
+			 */
+			public function onZoomOut(event:MouseEvent):void
+			{
+				this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
 			}
 			
 			/**
@@ -209,6 +200,7 @@
 			private function initializeZoomLevels(event:Event = null):void {
 				if(!this._map || !this._map.baseLayer)
 					return;
+				
 				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
 				zoomSlider.minimum = map.baseLayer.minZoomLevel;
 				zoomSlider.value = map.zoom;
@@ -255,8 +247,6 @@
 
 				// update the display label
 				this._currentLabel = getLabelFromZoom(zoomSlider.value);
-				scalesNameLabel.text = this._currentLabel;
-				scalesNameLabel.y = zoomSlider.thumb.y;
 				
 				// if not onDrag update the zoom
 				if(!this._onDrag)
@@ -323,6 +313,7 @@
 			/**
 			 * The current value of the zoom label
 			 */
+			[Bindable]
 			public function get currentLabel():String
 			{
 				return _currentLabel;
@@ -353,14 +344,48 @@
 				this._onDrag = value;
 			}	
 			
+			/**
+			 * Indicates the minimum value for the slider
+			 * @default 0
+			 */
+			[Bindable]
+			public function get minSlider():Number
+			{
+				return this._minSlider;
+			}	
 			
+			/**
+			 * @private
+			 */
+			public function set minSlider(value:Number):void
+			{
+				this._minSlider = value;
+			}
+				
+			/**
+			 * Indicates the maximum value for the slider
+			 * @default 20
+			 */
+			[Bindable]
+			public function get maxSlider():Number
+			{
+				return this._maxSlider;
+			}	
+			
+			/**
+			 * @private
+			 */
+			public function set maxSlider(value:Number):void
+			{
+				this._maxSlider = value;
+			}
 			
 		]]>
 	</fx:Script>
 	
 	<s:VSlider id="zoomSlider" x="80" y="10"
-			   minimum="{this._minSlider}"
-			   maximum="{this._maxSlider}"
+			   minimum="{this.minSlider}"
+			   maximum="{this.maxSlider}"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
@@ -371,10 +396,13 @@
 			   thumbRelease="thumbRelease(event)" />
 	
 	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{Catalog.getLocalizationForKey('zoom.zoomout')}"
+			  click="onZoomOut(event)"
 			  width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
 	<s:Button id="zoomIn" name="zoomin" label="+" toolTip="{Catalog.getLocalizationForKey('zoom.zoomin')}"
+			  click="onZoomIn(event)"
 			  width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
-	<s:Label id="scalesNameLabel" x="90" backgroundColor="0xDDDDDD" />
+	<s:Label id="scalesNameLabel" x="90" y="{this.zoomSlider.thumb.y}"
+			 backgroundColor="0xDDDDDD" text="{this.currentLabel}"/>
 </Control>
 
