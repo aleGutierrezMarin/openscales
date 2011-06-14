@@ -3,8 +3,6 @@
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
 					xmlns:openscales="http://openscales.org" 
-					width="400" 
-					height="300"
 					creationComplete="init();">
 	<fx:Script>
 		<![CDATA[
@@ -90,6 +88,17 @@
 			
 			private var _availableProjSrsList:String = "EPSG:4326";
 			
+			
+			/**
+			 * The display value for the mouse position
+			 * @default : null
+			 */
+			[Bindable]
+			public var _mousePositionLabel:String = null;
+			
+			/**
+			 * @inherit
+			 */
 			override public function onMapLanguageChange(event:I18NEvent):void {
 				this.feedUnitsComboBox();
 			}
@@ -277,11 +286,11 @@
 					}
 				}
 				
-				this.mousePositionCoordinates.text = this.prefix
-					+ coord1
-					+ this.separator
-					+ coord2
-					+ this.suffix;
+				this._mousePositionLabel = this.prefix
+											+ coord1
+											+ this.separator
+											+ coord2
+											+ this.suffix;
 			}
 			
 			/**
@@ -312,8 +321,6 @@
 					this.map.removeEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
 					this.map.removeEventListener(MapEvent.MOVE_END, this.activateDisplay);
 				}
-				
-				
 				
 				if (this.map) {
 					this.map.addEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
@@ -429,7 +436,9 @@
 	</fx:Script>
 	
 	<s:VGroup id="mousePositionVGroup" width="100%">
-		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
+		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
+				 text="{this._mousePositionLabel}"
+				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
 		<s:HGroup id="mousePositionHGroup" width="100%"> 
 			
