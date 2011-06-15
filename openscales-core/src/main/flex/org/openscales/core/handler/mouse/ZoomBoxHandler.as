@@ -6,6 +6,7 @@ package org.openscales.core.handler.mouse
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.ZoomBoxEvent;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.mouse.DragHandler;
@@ -29,9 +30,9 @@ package org.openscales.core.handler.mouse
 		
 		/**
 		 * @private
-		 * boolean saying if shift key is pressed or not
+		 * boolean saying if the map is currently dragged
 		 */ 
-		private var _shiftPressed:Boolean = false;
+		private var _dragging:Boolean = false;
 		
 		/**
 		 * @private
@@ -67,8 +68,8 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN,startBox);
 				this.map.addEventListener(MouseEvent.MOUSE_UP,endBox);
-				this.map.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
-				this.map.addEventListener(KeyboardEvent.KEY_UP,onKeyUp);
+				this.map.addEventListener(MapEvent.DRAG_START, dragStart);
+				this.map.addEventListener(MapEvent.DRAG_END, dragEnd);
 			}
 		}
 		
@@ -80,8 +81,8 @@ package org.openscales.core.handler.mouse
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN,startBox);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP,endBox);
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
-				this.map.removeEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
-				this.map.removeEventListener(KeyboardEvent.KEY_UP,onKeyUp);
+				this.map.removeEventListener(MapEvent.DRAG_START, dragStart);
+				this.map.removeEventListener(MapEvent.DRAG_END, dragEnd);
 			}
 		}
 		
@@ -102,7 +103,7 @@ package org.openscales.core.handler.mouse
 		private function startBox(e:MouseEvent) : void {
 			
 			
-			if(_shiftMode && !_shiftPressed) return;
+			if(!_shiftMode || !e.shiftKey || _dragging) return;
 			
 			this.map.addEventListener(MouseEvent.MOUSE_MOVE,expandArea);
 			_drawContainer.graphics.beginFill(_fillColor,0.5);
@@ -124,9 +125,7 @@ package org.openscales.core.handler.mouse
 			_drawContainer.graphics.clear();
 			var endCoordinates:Location = this.map.getLocationFromMapPx(new Pixel(map.mouseX, map.mouseY));
 			if(_startCoordinates != null) {
-				if(_startCoordinates.equals(endCoordinates)){
-					this.map.moveTo(endCoordinates);
-				}else{
+				if(!_startCoordinates.equals(endCoordinates)){
 					this.map.zoomToExtent(new Bounds(Math.min(_startCoordinates.lon,endCoordinates.lon),
 						Math.min(endCoordinates.lat,_startCoordinates.lat),
 						Math.max(_startCoordinates.lon,endCoordinates.lon),
@@ -152,22 +151,6 @@ package org.openscales.core.handler.mouse
 			_drawContainer.graphics.drawRect(ll.x,ll.y,map.mouseX - ll.x,map.mouseY - ll.y);
 			_drawContainer.graphics.endFill();
 		}
-
-		/**
-		 * 
-		 */ 
-		public function onKeyUp(event:KeyboardEvent):void
-		{
-			if(event.keyCode == 16) _shiftPressed = false;
-		}
-		
-		/**
-		 * 
-		 */ 
-		public function onKeyDown(event:KeyboardEvent):void
-		{
-			if(event.keyCode == 16) _shiftPressed = true;
-		}
 		
 		/**
 		 * Boolean specifying whether the shift mode is active or not
@@ -183,6 +166,22 @@ package org.openscales.core.handler.mouse
 		public function set shiftMode(value:Boolean):void
 		{
 			_shiftMode = value;
+		}
+		
+		/**
+		 * @private
+		 * Callback of the MapEvent.DRAG_START event to set the dragging boolean;
+		 */
+		private function dragStart(event:MapEvent):void{
+			this._dragging = true;
+		}
+		
+		/**
+		 * @private
+		 * Callback of the MapEvent.DRAG_END event to set the dragging boolean;
+		 */
+		private function dragEnd(event:MapEvent):void{
+			this._dragging = false;
 		}
 
 
