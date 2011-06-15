@@ -31,7 +31,7 @@ It will retrieve the language information and display the availlable languages.
 			 * Array collection containing the list of the languages to show in the droplist
 			 */
 			[Bindable]
-			private var _languagesList:ArrayCollection;
+			public var _languagesList:ArrayCollection;
 			
 			/**
 			 * @Private
@@ -80,7 +80,7 @@ It will retrieve the language information and display the availlable languages.
 			/**
 			 * Callback to change the map language when the dropBox selection is changed
 			 */
-			private function updateSelection(e:Event):void
+			public function updateSelection(e:Event):void
 			{
 				var selected:Locale = languageDropList.selectedItem as Locale;
 				var locale:Locale = null;
@@ -108,7 +108,7 @@ It will retrieve the language information and display the availlable languages.
 	<!-- DropDownList will call the updateSelection function when the
 	selectionChanged event is dispatched -->
 	<s:DropDownList id="languageDropList"
-					 dataProvider="{_languagesList}"
+					dataProvider="{_languagesList}"
 					labelField="localizedName"
 					change="updateSelection(event);" />
 </Control>
