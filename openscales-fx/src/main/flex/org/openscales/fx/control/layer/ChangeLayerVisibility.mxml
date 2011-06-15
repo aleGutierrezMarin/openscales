@@ -2,7 +2,8 @@
 <LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns="org.openscales.fx.control.layer.*" >
+		 xmlns="org.openscales.fx.control.layer.*"
+		 xmlns:os="org.openscales.fx.control.*" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -12,14 +13,20 @@
 			import org.openscales.core.layer.Layer;
 			
 			/**
+			 * Indicates if the current layer is visible or not.
+			 * This vakue is bind to the checkbox selected attribute.
+			 */
+			[Bindable]
+			public var _displayed:Boolean = true;
+			
+			/**
 			 * @inherit
 			 * Set the first value of the checkbox
 			 */
 			override public function set layer(value:Layer):void
 			{
 				super.layer = value;
-				
-				layerSwitcherCheckBox.selected = this._layer.displayed;
+				this._displayed = this._layer.displayed;
 				
 				this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
 				this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
@@ -34,7 +41,7 @@
 			 */
 			public function checkLayerDisplayed(event:Event):void
 			{
-				layerSwitcherCheckBox.selected = this._layer.displayed;	
+				this._displayed = this._layer.displayed;	
 			}
 			
 			/**
@@ -44,12 +51,12 @@
 			{
 				if(event.type == LayerEvent.LAYER_OUT_RANGE)
 				{     
-					layerSwitcherCheckBox.selected = false;
+					this._displayed = false;
 				}
 				else
 				{
-					layerSwitcherCheckBox.selected = true;
-					event.layer.visible = layerSwitcherCheckBox.selected; 
+					this._displayed = true;
+					event.layer.visible = this._displayed; 
 				}
 			}
 			
@@ -70,6 +77,7 @@
 	
 
 		<s:CheckBox id="layerSwitcherCheckBox" click="layerVisible(event)"
+					selected = "{this._displayed}"
 					toolTip="{Catalog.getLocalizationForKey('layercontrol.changevisibility')}" />
 
 </LayerControl>

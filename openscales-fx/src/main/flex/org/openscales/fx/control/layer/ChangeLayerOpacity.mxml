@@ -16,13 +16,31 @@
 			import org.openscales.fx.control.IconButton;
 
 			/**
+			 * Indicates the current value of the layer alpha (in purcent).
+			 * This value is bind to the slider value.
+			 * 
+			 * @default 100
+			 */
+			[Bindable]
+			public var _alpha:Number = 100;
+			
+			/**
+			 * Indicates the current text display beside the slider.
+			 * This value is bind to the label text attribute.
+			 * 
+			 * @default 100%
+			 */
+			[Bindable]
+			public var _alphaLabel:String = "100 %";
+			
+			/**
 			 * @inherit
 			 */
 			override public function set layer(value:Layer):void
 			{
 				super.layer = value;
-				layerControlOpacity.value=this._layer.alpha*100;
-				layerControlOpacityLabel.text = Math.round(layerControlOpacity.value)+" %";
+				this._alpha=this._layer.alpha*100;
+				this._alphaLabel=Math.round(layerControlOpacity.value)+" %";
 				
 				this._layer.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED,layerChangeOpacity);
 			}
@@ -34,8 +52,8 @@
 			 */
 			public function layerOpacity(event:Event):void
 			{	
-				this._layer.alpha = layerControlOpacity.value/100;
-				layerControlOpacityLabel.text = Math.round(layerControlOpacity.value)+"%";
+				this._layer.alpha = this._alpha/100;
+				this._alphaLabel = Math.round(layerControlOpacity.value)+"%";
 			}
 			
 			/**
@@ -53,27 +71,30 @@
 			public function layerChangeOpacity(event:LayerEvent):void 
 			{
 				if(event.target is Layer)
-					layerControlOpacity.value = (event.target as Layer).alpha;
+					this._alpha = (event.target as Layer).alpha;
 			}
 		]]>
 	</fx:Script>
 	
 
-	<s:HGroup height="20" width="100%"
-			  paddingLeft="2"
-			  paddingBottom="2"
-			  paddingRight="4"
-			  paddingTop="2"
-			  horizontalAlign="center">
-		
+	<s:SkinnableContainer height="20" width="100%" >
+		<s:layout>
+			<s:HorizontalLayout 
+				   paddingLeft="2"
+				   paddingBottom="2"
+				   paddingRight="4"
+				   paddingTop="2"
+				   horizontalAlign="center"/>
+		</s:layout>
 	
 		<s:HSlider id="layerControlOpacity"
 				   height="11" width="100" minimum="0" maximum="100" 
 				   snapInterval="1"
 				   change="layerOpacity(event)"
-				   dataTipFormatFunction="percentDataTip" />
-		<s:Label id="layerControlOpacityLabel" />
+				   dataTipFormatFunction="percentDataTip"
+				   value="{this._alpha}" />
+		<s:Label id="layerControlOpacityLabel" text="{this._alphaLabel}" />
 		
-	</s:HGroup>
+	</s:SkinnableContainer>
 		
 </LayerControl>
