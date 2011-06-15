@@ -451,7 +451,7 @@
 				
 			<s:DropDownList id="mousePositionCrsComboBox"  change="crsChanged(event);" />
 			
-			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)" width="200">
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)" width="200" />
 
 		</s:SkinnableContainer>
 	</s:SkinnableContainer>
