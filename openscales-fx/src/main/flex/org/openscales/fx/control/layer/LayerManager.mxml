@@ -42,6 +42,10 @@
 			import spark.components.supportClasses.ItemRenderer;
 			import spark.primitives.Rect;
 			
+			/**
+			 * The dataProvider use for the list.
+			 */
+			private var _dataProvider:ArrayCollection = null;
 			
 			/**
 			 * @private
@@ -94,7 +98,7 @@
 					var i:int = overlayArray.length;
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
-					layerList.dataProvider = ac;
+					this._dataProvider = ac;
 					
 				}
 			}
@@ -106,20 +110,20 @@
 			public function refresh(event:LayerEvent):void {	
 				//Test the triggered event
 				if(event.type == LayerEvent.LAYER_ADDED){
-					layerList.dataProvider.addItemAt(event.layer,0);
+					this._dataProvider.addItemAt(event.layer,0);
 					layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_REMOVED){
 					var index:int = layerList.dataProvider.getItemIndex(event.layer);
-					layerList.dataProvider.removeItemAt(index);
+					this._dataProvider.removeItemAt(index);
 					layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
 					var overlayArray:Vector.<Layer> = this.map.layers;
 					var i:uint = overlayArray.length;
-					layerList.dataProvider.removeAll();
+					this._dataProvider.removeAll();
 					layerList.invalidateDisplayList();
 					for(i;i>0;--i)
 						layerList.dataProvider.addItem(overlayArray[i-1]);
@@ -137,6 +141,22 @@
 			}
 			
 			// getter / setter
+			/**
+			 * The dataProvider use for the list.
+			 */
+			[Bindable]
+			public function get dataProvider():ArrayCollection
+			{
+				return this._dataProvider;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set dataProvider(value:ArrayCollection):void
+			{
+				this._dataProvider=value;
+			}
 			
 			/**
 			 * Options for the LayerManager renderer (for additionnal controls to display like Metadatas, legend...)
@@ -181,6 +201,7 @@
 				dropEnabled="false"
 				dragEnabled="false"
 				dragMoveEnabled="false"
+				dataProvider="{this.dataProvider}"
 				width="100%"
 				x="0"
 				y="0"
