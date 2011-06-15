@@ -45,7 +45,7 @@
 			/**
 			 * The dataProvider use for the list.
 			 */
-			private var _dataProvider:ArrayCollection = null;
+			private var _dataProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * @private
@@ -98,7 +98,7 @@
 					var i:int = overlayArray.length;
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
-					this._dataProvider = ac;
+					this.dataProvider = ac;
 					
 				}
 			}
@@ -111,12 +111,18 @@
 				//Test the triggered event
 				if(event.type == LayerEvent.LAYER_ADDED){
 					this._dataProvider.addItemAt(event.layer,0);
+					
+					// indicates change to synchronyse the data
+					dispatchEvent(new Event("dataProviderChanged"));
 					layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_REMOVED){
 					var index:int = layerList.dataProvider.getItemIndex(event.layer);
 					this._dataProvider.removeItemAt(index);
+					
+					// indicates change to synchronyse the data
+					dispatchEvent(new Event("dataProviderChanged"));
 					layerList.invalidateDisplayList();
 				}
 				
@@ -127,6 +133,9 @@
 					layerList.invalidateDisplayList();
 					for(i;i>0;--i)
 						layerList.dataProvider.addItem(overlayArray[i-1]);
+					
+					// indicates change to synchronyse the data
+					dispatchEvent(new Event("dataProviderChanged"));
 					layerList.invalidateDisplayList();
 				}
 			}
@@ -144,7 +153,7 @@
 			/**
 			 * The dataProvider use for the list.
 			 */
-			[Bindable]
+			[Bindable(event="dataProviderChanged")]
 			public function get dataProvider():ArrayCollection
 			{
 				return this._dataProvider;
@@ -156,6 +165,11 @@
 			public function set dataProvider(value:ArrayCollection):void
 			{
 				this._dataProvider=value;
+				dispatchEvent(new Event("dataProviderChanged"));
+				if( layerList )
+				{
+					layerList.invalidateDisplayList();
+				}
 			}
 			
 			/**
