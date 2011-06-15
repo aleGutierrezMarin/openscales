@@ -80,7 +80,6 @@
 			 * The number of logos displayed at the same time
 			 * @default DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER
 			 */
-			[Bindable]
 			private var _logoNumber:Number = DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER;
 			
 			
@@ -369,6 +368,7 @@
 			 * The number of logos displayed at the same time
 			 * @default DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER
 			 */
+			[Bindable]
 			public function get logoNumber():Number
 			{
 				return this._logoNumber;
@@ -380,7 +380,6 @@
 			public function set logoNumber(value:Number):void
 			{
 				this._logoNumber = value;
-				originatorsHorizontalLayout.requestedColumnCount = this._logoNumber;
 			}
 			
 		]]>
@@ -395,7 +394,7 @@
 			<s:layout>
 				<s:HorizontalLayout 
 					id="originatorsHorizontalLayout" 
-					requestedColumnCount="{this._logoNumber}" 
+					requestedColumnCount="{this.logoNumber}" 
 					gap="{this._spacing}"
 					paddingLeft="{this._spacing}"
 					paddingRight="{this._spacing}"
