@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
+    <classEntry path="assets.fxg.ButtonCloseOver"/>
+    <classEntry path="assets.fxg.ButtonCloseUp"/>
+    <classEntry path="assets.fxg.ButtonOpacity"/>
+    <classEntry path="assets.fxg.DownArrowDown"/>
+    <classEntry path="assets.fxg.DownArrowOver"/>
+    <classEntry path="assets.fxg.DownArrowUp"/>
+    <classEntry path="assets.fxg.LayerItemOver"/>
+    <classEntry path="assets.fxg.LayerItemUp"/>
+    <classEntry path="assets.fxg.Popup"/>
+    <classEntry path="assets.fxg.UpArrowDown"/>
+    <classEntry path="assets.fxg.UpArrowOver"/>
+    <classEntry path="assets.fxg.UpArrowUp"/>
     <classEntry path="org.openscales.fx.ControlPanel"/>
     <classEntry path="org.openscales.fx.FxExtent"/>
     <classEntry path="org.openscales.fx.FxMap"/>
@@ -44,9 +56,11 @@
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtent"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
+    <classEntry path="org.openscales.fx.control.skin.GroupTest"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanSkin"/>
+    <classEntry path="org.openscales.fx.control.skin.PanSkinTest"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomThumbSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomTrackSkin"/>
@@ -87,6 +101,13 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacityTest"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerPositionTest"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibilityTest"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerLegendTest"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerManagerTest"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerMetadatasTest"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
   </includeClasses>
   <includeResources/>
