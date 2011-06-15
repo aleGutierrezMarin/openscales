@@ -8,12 +8,12 @@ package org.openscales.fx.control.layer
 	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.fail;
-	import org.openscales.core.layer.Layer;
 	import org.openscales.core.Map;
+	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.control.layer.ChangeLayerOpacity;
 	import org.openscales.fx.control.layer.LayerManager;
 	
-	public class ChangeLayerOpacityTest
+	public class ChangeLayerOpacityTest extends OpenScalesTest
 	{	
 		
 		/**
@@ -24,8 +24,10 @@ package org.openscales.fx.control.layer
 		private var _opacity:ChangeLayerOpacity = null;
 		
 		[Before]
-		public function setUp():void
+		override public function setUp():void
 		{
+			super.setUp();
+			
 			_map = new Map();
 			_layer1 = new Layer("layer");
 			
@@ -33,6 +35,8 @@ package org.openscales.fx.control.layer
 			
 			_opacity = new ChangeLayerOpacity();
 			_opacity.layer = _layer1;
+			
+			this._container.addElement(_opacity);
 		}
 		
 		[Test]
