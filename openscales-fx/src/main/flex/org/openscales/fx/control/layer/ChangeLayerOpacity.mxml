@@ -40,7 +40,7 @@
 			{
 				super.layer = value;
 				this._alpha=this._layer.alpha*100;
-				this._alphaLabel=Math.round(layerControlOpacity.value)+" %";
+				this._alphaLabel=Math.round(this._alpha)+" %";
 				
 				this._layer.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED,layerChangeOpacity);
 			}
@@ -48,12 +48,13 @@
 			/**
 			 * Change the opacity of the layer
 			 *
-			 * @param event event send by a slide
+			 * @param event event send by the slider
 			 */
 			public function layerOpacity(event:Event):void
 			{	
+				this._alpha = layerControlOpacity.value;
 				this._layer.alpha = this._alpha/100;
-				this._alphaLabel = Math.round(layerControlOpacity.value)+"%";
+				this._alphaLabel = Math.round(this._alpha)+"%";
 			}
 			
 			/**
