@@ -90,6 +90,9 @@
 			
 			private var _availableProjSrsList:String = "EPSG:4326";
 			
+			// ajout
+			private var _init:Boolean = false;
+			
 			override public function onMapLanguageChange(event:I18NEvent):void {
 				this.feedUnitsComboBox();
 			}
@@ -128,6 +131,10 @@
 				
 				this.mousePositionCrsComboBox.selectedIndex = selectedIndex;
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
+				
+				//add
+				this._init = true;
+				
 				feedUnitsComboBox();
 				
 			}
@@ -387,8 +394,35 @@
 			/**
 			 * @private
 			 */ 
-			public function set displayProjSrsCode(value:String):void {
-				this._displayProjSrsCode = value;
+			// modified
+			public function set displayProjSrsCode(value:String):void
+			{
+				if(this._init)
+				{
+					if(this._displayProjSrsCode == value)
+						return;
+					
+					var tmp:Array = this.mousePositionCrsComboBox.dataProvider.toArray();
+					var i:uint = 0;
+					var displayProjSrsCodeInList:Boolean = false;
+					
+					for(i; i<tmp.length; i++)
+					{
+						if(value == (tmp[i] as String))
+						{
+							this._displayProjSrsCode = value;
+							this._srsUnits = ProjProjection.getProjProjection(this._displayProjSrsCode).projParams.units;
+							this.mousePositionCrsComboBox.selectedIndex = i;
+							this.feedUnitsComboBox();
+							displayProjSrsCodeInList = true;
+							break;
+						}
+					}
+					if(!displayProjSrsCodeInList)
+						trace("The ProjSrsCode to display isn't valid");
+				}
+				else
+					this._displayProjSrsCode = value;	
 			}
 			
 			/**
@@ -421,11 +455,26 @@
 			/**
 			 * displayMetricUnits setter
 			 */ 
+			// modified
 			public function set displayMetricUnits(value:String):void
 			{
-				_displayMetricUnits = value;
+				var tmp:Array = this.mousePositionUnitsComboBox.dataProvider.toArray();
+				var i:uint = 0;
+				var displayMetricUnitsInList:Boolean = false;
+				
+				for(i; i<tmp.length; i++)
+				{
+					if(value == (tmp[i]["data"] as String))
+					{
+						this.mousePositionUnitsComboBox.selectedIndex = i;
+						this.unitsChanged(null);
+						displayMetricUnitsInList = true;
+						break;
+					}
+				}
+				if(!displayMetricUnitsInList)
+					trace("The MetricUnits to display isn't valid");
 			}
-						
 		]]>
 	</fx:Script>
 	
