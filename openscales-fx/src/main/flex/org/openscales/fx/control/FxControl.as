@@ -4,12 +4,12 @@ package org.openscales.fx.control
 	
 	import org.openscales.core.control.IControl;
 	
-	import spark.components.Group;
+	import spark.components.SkinnableContainer;
 
 	/**
 	 * Abstract Control Flex wrapper
 	 */
-	public class FxControl extends Group
+	public class FxControl extends SkinnableContainer
 	{
 		private var _control:IControl;
 		
