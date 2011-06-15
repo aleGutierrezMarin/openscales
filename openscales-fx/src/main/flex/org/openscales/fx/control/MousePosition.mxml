@@ -90,8 +90,12 @@
 			
 			private var _availableProjSrsList:String = "EPSG:4326";
 			
-			// ajout
+			/**
+			 * @private
+			 * Boolean setted to true at the end of the init function
+			 */
 			private var _init:Boolean = false;
+			
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
 				this.feedUnitsComboBox();
@@ -132,7 +136,7 @@
 				this.mousePositionCrsComboBox.selectedIndex = selectedIndex;
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 				
-				//add
+				// this boolean is used in the displayProjSrsCode setter
 				this._init = true;
 				
 				feedUnitsComboBox();
@@ -384,8 +388,7 @@
 			}
 			
 			/**
-			 * 
-			 * The projection displayed. Must be an existing value of availableProjSrsList
+			 * The projection displayed. Must be an existing value of availableProjSrsList.
 			 */
 			public function get displayProjSrsCode():String {
 				return this._displayProjSrsCode;
@@ -394,7 +397,6 @@
 			/**
 			 * @private
 			 */ 
-			// modified
 			public function set displayProjSrsCode(value:String):void
 			{
 				if(this._init)
@@ -426,12 +428,12 @@
 			}
 			
 			/**
-			 * A comma separated list of SRS code that is passed to constructor
-			 * <p>Example: "EPSG:900913,EPSG:4326" </p>
+			 * A comma separated list of SRS code that is passed to constructor.
+			 * <p>Example: "EPSG:900913,EPSG:4326"</p>
 			 */ 
-			public function get availableProjSrsList():String{
-				return _availableProjSrsList;	
-			} 
+			public function get availableProjSrsList():String {
+				return _availableProjSrsList;
+			}
 			
 			/**
 			 * @private
@@ -443,19 +445,16 @@
 			
 			/**
 			 * displayMetricUnits getter
-			 * Contains the metric units currently displayed
-			 * <p>
-			 * Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL
-			 * </p> 
+			 * Contains the metric units currently displayed.
+			 * <p>Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL</p>
 			 */ 
-			public function get displayMetricUnits():String{
+			public function get displayMetricUnits():String {
 				return _displayMetricUnits;
 			} 
-	
+			
 			/**
 			 * displayMetricUnits setter
 			 */ 
-			// modified
 			public function set displayMetricUnits(value:String):void
 			{
 				var tmp:Array = this.mousePositionUnitsComboBox.dataProvider.toArray();
