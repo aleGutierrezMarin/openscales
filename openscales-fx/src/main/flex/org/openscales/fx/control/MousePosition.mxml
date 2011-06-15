@@ -97,6 +97,18 @@
 			public var _mousePositionLabel:String = null;
 			
 			/**
+			 * @private
+			 * DataProvider for mousePosition crs choice
+			 */
+			private var _crsDataProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * @private
+			 * DataProvider for mousePosition unit choice
+			 */
+			private var _unitDataProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
 			 * @inherit
 			 */
 			override public function onMapLanguageChange(event:I18NEvent):void {
@@ -109,9 +121,7 @@
 			 * Method called when creation complete event occurs
 			 */ 
 			private function init():void {				
-				
-				this.mousePositionCrsComboBox.dataProvider = new ArrayList();
-				
+		
 				var tmp:Array = _availableProjSrsList.split(",");
 				
 				var lgth:uint = tmp.length;
@@ -121,7 +131,7 @@
 				
 				for(i;i<lgth;i++)
 				{
-					this.mousePositionCrsComboBox.dataProvider.addItem(tmp[i]);
+					this._crsDataProvider.addItem(tmp[i]);
 					if(_displayProjSrsCode == (tmp[i] as String)) 
 					{
 						selectedIndex = i;
@@ -131,7 +141,7 @@
 				
 				if(!displayProjSrsCodeInList)
 				{
-					this.mousePositionCrsComboBox.dataProvider.addItem(_displayProjSrsCode);
+					this._crsDataProvider.addItem(_displayProjSrsCode);
 					selectedIndex = i;
 				}
 				
@@ -139,6 +149,7 @@
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 				feedUnitsComboBox();
 				
+				dispatchEvent(new Event("crsDataProviderChanged"));
 			}
 			
 			/**
@@ -146,10 +157,10 @@
 			 * 
 			 * function called when selected item in srs combo box has changed
 			 */ 
-			private function crsChanged(event:IndexChangeEvent):void
+			public function crsChanged(event:IndexChangeEvent):void
 			{
 				// Getting the value
-				_displayProjSrsCode = this.mousePositionCrsComboBox.dataProvider.getItemAt(event.newIndex).toString();
+				_displayProjSrsCode = this._crsDataProvider.getItemAt(event.newIndex).toString();
 				// Getting units for this SRS
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 
@@ -162,27 +173,30 @@
 			 * 
 			 * function called when selected item in units combo box has changed
 			 */ 
-			private function unitsChanged(event:IndexChangeEvent):void
+			public function unitsChanged(event:IndexChangeEvent):void
 			{
-				switch(this.mousePositionUnitsComboBox.selectedItem.data)
+				if(this.mousePositionUnitsComboBox.selectedItem)
 				{
-					case Unit.DEGREE:
-						this._useDMS = false;
-						_displayMetricUnits = Unit.DEGREE;
-						break;
-					case Unit.SEXAGESIMAL:
-						_displayMetricUnits = Unit.SEXAGESIMAL;
-						this._useDMS = true;	
-						break;
-					case Unit.METER:
-						_displayMetricUnits = Unit.METER;
-						break;
-					case Unit.KILOMETER:
-						_displayMetricUnits = Unit.KILOMETER;
-						break;
-					case Unit.CENTIMETER:
-						_displayMetricUnits = Unit.CENTIMETER;
-						break;
+					switch(this.mousePositionUnitsComboBox.selectedItem.data)
+					{
+						case Unit.DEGREE:
+							this._useDMS = false;
+							_displayMetricUnits = Unit.DEGREE;
+							break;
+						case Unit.SEXAGESIMAL:
+							_displayMetricUnits = Unit.SEXAGESIMAL;
+							this._useDMS = true;	
+							break;
+						case Unit.METER:
+							_displayMetricUnits = Unit.METER;
+							break;
+						case Unit.KILOMETER:
+							_displayMetricUnits = Unit.KILOMETER;
+							break;
+						case Unit.CENTIMETER:
+							_displayMetricUnits = Unit.CENTIMETER;
+							break;
+					}
 				}
 			}
 			
@@ -202,8 +216,8 @@
 							{data:Unit.METER, label:Catalog.getLocalizationForKey("mouseposition.meters")},
 							{data:Unit.CENTIMETER, label:Catalog.getLocalizationForKey("mouseposition.centimeters")}
 						]);
-						if(this.mousePositionUnitsComboBox.dataProvider) this.mousePositionUnitsComboBox.dataProvider.removeAll(); // Clearing list if already set
-						this.mousePositionUnitsComboBox.dataProvider = items;
+						if(this._unitDataProvider) this._unitDataProvider.removeAll(); // Clearing list if already set
+						this._unitDataProvider = items;
 						this.mousePositionUnitsComboBox.selectedIndex = 1;
 						break;
 					case "dd":
@@ -212,8 +226,8 @@
 							{data:Unit.SEXAGESIMAL,label:Catalog.getLocalizationForKey("mouseposition.dms")},
 							{data:Unit.DEGREE, label:Catalog.getLocalizationForKey("mouseposition.decimaldegrees")}
 						]);
-						if(this.mousePositionUnitsComboBox.dataProvider) this.mousePositionUnitsComboBox.dataProvider.removeAll(); // Clearing list if already set
-						this.mousePositionUnitsComboBox.dataProvider = items;
+						if(this._unitDataProvider) this._unitDataProvider.removeAll(); // Clearing list if already set
+						this._unitDataProvider = items;
 						this.mousePositionUnitsComboBox.selectedIndex = 0;
 						break;
 				}
@@ -432,6 +446,31 @@
 			{
 				_displayMetricUnits = value;
 			}
+			
+			[Bindable(event="crsDataProviderChanged")]
+			public function get crsDataProvider():ArrayCollection
+			{
+				return this._crsDataProvider;
+			}
+			
+			public function set crsDataProvider(value:ArrayCollection):void
+			{
+				this._crsDataProvider = value;
+				dispatchEvent(new Event("crsDataProviderChanged"));
+			}
+			
+			[Bindable(event="unitDataProviderChanged")]
+			public function get unitDataProvider():ArrayCollection
+			{
+				return this._unitDataProvider;
+			}
+			
+			public function set unitDataProvider(value:ArrayCollection):void
+			{
+				this._unitDataProvider = value;
+				dispatchEvent(new Event("unitDataProviderChanged"));
+			}
+			
 						
 		]]>
 	</fx:Script>
@@ -449,9 +488,13 @@
 				<s:HorizontalLayout />
 			</s:layout>
 				
-			<s:DropDownList id="mousePositionCrsComboBox"  change="crsChanged(event);" />
+			<s:DropDownList id="mousePositionCrsComboBox"  
+							change="crsChanged(event);"
+							dataProvider="{this.crsDataProvider} "/>
 			
-			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)" width="200" />
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" 
+							change="unitsChanged(event)" width="200"
+							dataProvider="{this.unitDataProvider}" />
 
 		</s:SkinnableContainer>
 	</s:SkinnableContainer>

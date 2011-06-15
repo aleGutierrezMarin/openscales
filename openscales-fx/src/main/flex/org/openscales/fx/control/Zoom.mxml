@@ -90,8 +90,6 @@
 			 */
 			public function  configure():void
 			{ 
-				zoomSlider.addEventListener(SliderEvent.CHANGE,this.zoomSliderChange);
-				
 				if(this._scalesLabels == null)
 				{
 					this._scalesLabels = new Vector.<ZoomData>();
@@ -133,8 +131,6 @@
 					
 					// update the display label
 					scalesNameLabel.text = this._currentLabel;
-					
-					scalesNameLabel.y = zoomSlider.thumb.y;
 				}
 			}
 			
@@ -222,7 +218,7 @@
 			/**
 			 * Function called when the thumb slider start drag event
 			 */
-			public function thumbDrag(event:TrackBaseEvent):void
+			public function onThumbDrag(event:TrackBaseEvent):void
 			{
 				this._onDrag = true;
 			}
@@ -230,7 +226,7 @@
 			/**
 			 * Function called when the thumb slider start drag  complete (when the thumb is released)
 			 */
-			public function thumbRelease(event:TrackBaseEvent):void
+			public function onThumbRelease(event:TrackBaseEvent):void
 			{
 				this._onDrag = false;
 				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
@@ -241,7 +237,7 @@
 			 * 
 			 * @param event The event received
 			 */
-			public function zoomSliderChange(event:Event):void {
+			public function onZoomSliderChange(event:Event):void {
 				if(!this._map || !this._map.baseLayer)
 					return;
 
@@ -392,8 +388,9 @@
 			   liveDragging="true"
 			   focusEnabled="false"
 			   showDataTip="false"
-			   thumbDrag="thumbDrag(event)"
-			   thumbRelease="thumbRelease(event)" />
+			   thumbDrag="onThumbDrag(event)"
+			   thumbRelease="onThumbRelease(event)"
+			   change="{onZoomSliderChange(event)}"/>
 	
 	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{Catalog.getLocalizationForKey('zoom.zoomout')}"
 			  click="onZoomOut(event)"
