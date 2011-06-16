@@ -529,12 +529,12 @@
 			
 		]]>
 	</fx:Script>
-	<s:SkinnableContainer id="mousePositionMainGroup" width="100%">
+	<s:SkinnableContainer styleName="verticalLayout" id="mousePositionMainGroup" width="100%">
 		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
 				 text="{this.mousePositionLabel}"
 				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
-		<s:SkinnableContainer id="mousePositionChoiceGroup" width="100%" top="20"> 
+		<s:SkinnableContainer styleName="horizontalLayout" id="mousePositionChoiceGroup" width="100%" top="20"> 
 			<s:DropDownList id="mousePositionCrsComboBox"  
 							change="crsChanged(event);"
 							dataProvider="{this.crsDataProvider}"
