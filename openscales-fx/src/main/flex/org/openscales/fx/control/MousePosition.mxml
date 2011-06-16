@@ -224,6 +224,7 @@
 						_displayMetricUnits = Unit.CENTIMETER;
 						break;
 				}
+				dispatchEvent(new Event('selectedIndexUnitChanged'));
 			}
 			
 			/**
@@ -258,7 +259,6 @@
 						break;
 				}
 				
-				dispatchEvent(new Event('selectedIndexUnitChanged'));
 				unitsChanged(null);
 			}
 			
