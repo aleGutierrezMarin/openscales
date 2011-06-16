@@ -58,7 +58,7 @@
 			
 			/**
 			 * @private
-			 * The itemRenderer class for display item of the layerSwithcer list
+			 * The itemRenderer class for display item of the LayerMananger list
 			 * @default DefaultLayerRenderer
 			 */
 			private var _itemRenderer:Class = DefaultLayerRenderer;
