@@ -128,8 +128,12 @@
 			public var _selectedIndexUnit:Number = 0;
 			
 			/**
-			 * @inherit
+			 * @private
+			 * Boolean setted to true at the end of the init function
 			 */
+			private var _init:Boolean = false;
+			
+			
 			override public function onMapLanguageChange(event:I18NEvent):void {
 				this.feedUnitsComboBox();
 			}
@@ -166,6 +170,10 @@
 				
 				this._selectedIndexCrs = selectedIndex;
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
+				
+				// this boolean is used in the displayProjSrsCode setter
+				this._init = true;
+				
 				feedUnitsComboBox();
 			}
 			
@@ -417,8 +425,7 @@
 			}
 			
 			/**
-			 * 
-			 * The projection displayed. Must be an existing value of availableProjSrsList
+			 * The projection displayed. Must be an existing value of availableProjSrsList.
 			 */
 			public function get displayProjSrsCode():String {
 				return this._displayProjSrsCode;
@@ -427,17 +434,43 @@
 			/**
 			 * @private
 			 */ 
-			public function set displayProjSrsCode(value:String):void {
-				this._displayProjSrsCode = value;
+			public function set displayProjSrsCode(value:String):void
+			{
+				if(this._init)
+				{
+					if(this._displayProjSrsCode == value)
+						return;
+					
+					var tmp:Array = this.mousePositionCrsComboBox.dataProvider.toArray();
+					var i:uint = 0;
+					var displayProjSrsCodeInList:Boolean = false;
+					
+					for(i; i<tmp.length; i++)
+					{
+						if(value == (tmp[i] as String))
+						{
+							this._displayProjSrsCode = value;
+							this._srsUnits = ProjProjection.getProjProjection(this._displayProjSrsCode).projParams.units;
+							this.mousePositionCrsComboBox.selectedIndex = i;
+							this.feedUnitsComboBox();
+							displayProjSrsCodeInList = true;
+							break;
+						}
+					}
+					if(!displayProjSrsCodeInList)
+						trace("The ProjSrsCode to display isn't valid");
+				}
+				else
+					this._displayProjSrsCode = value;	
 			}
 			
 			/**
-			 * A comma separated list of SRS code that is passed to constructor
-			 * <p>Example: "EPSG:900913,EPSG:4326" </p>
+			 * A comma separated list of SRS code that is passed to constructor.
+			 * <p>Example: "EPSG:900913,EPSG:4326"</p>
 			 */ 
-			public function get availableProjSrsList():String{
-				return _availableProjSrsList;	
-			} 
+			public function get availableProjSrsList():String {
+				return _availableProjSrsList;
+			}
 			
 			/**
 			 * @private
@@ -449,12 +482,10 @@
 			
 			/**
 			 * displayMetricUnits getter
-			 * Contains the metric units currently displayed
-			 * <p>
-			 * Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL
-			 * </p> 
+			 * Contains the metric units currently displayed.
+			 * <p>Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL</p>
 			 */ 
-			public function get displayMetricUnits():String{
+			public function get displayMetricUnits():String {
 				return _displayMetricUnits;
 			} 
 			
@@ -463,12 +494,23 @@
 			 */ 
 			public function set displayMetricUnits(value:String):void
 			{
-				_displayMetricUnits = value;
+				var tmp:Array = this.mousePositionUnitsComboBox.dataProvider.toArray();
+				var i:uint = 0;
+				var displayMetricUnitsInList:Boolean = false;
+				
+				for(i; i<tmp.length; i++)
+				{
+					if(value == (tmp[i]["data"] as String))
+					{
+						this.mousePositionUnitsComboBox.selectedIndex = i;
+						this.unitsChanged(null);
+						displayMetricUnitsInList = true;
+						break;
+					}
+				}
+				if(!displayMetricUnitsInList)
+					trace("The MetricUnits to display isn't valid");
 			}
-			
-			
-			
-			
 		]]>
 	</fx:Script>
 	
