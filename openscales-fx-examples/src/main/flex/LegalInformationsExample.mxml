@@ -21,14 +21,9 @@
 		
 		<DataOriginatorsDisplay x="700" y="{height-80}" />
 		<TermsOfService x="500" y="{height-20}" url="http://openscales.org/index.html" />
-		<Copyright x="400" y="{height-20}" copyright="openscales" />
-		
-		<s:Button x="10" y="200"
-			label="Change visibility mapnik" 
-			click="changeVisibility(event)"/>
+		<Copyright id="copyright" x="400" y="{height-20}" />
 
 		<LayerManager x="10" y="10" width="215" />
-		
 	</Map>
 	<fx:Script>
 		<![CDATA[
@@ -38,12 +33,6 @@
 			import org.openscales.geometry.basetypes.Bounds;
 			
 			private var visibility:Boolean = true;
-			
-			public function changeVisibility(event:Event):void
-			{
-				visibility = visibility == true ? false : true;
-				mapnikLayer.nativeLayer.visible = visibility;
-			}
 			
 			public function configure():void
 			{

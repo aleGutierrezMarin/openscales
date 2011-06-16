@@ -13,7 +13,7 @@ package org.openscales.fx.control.layer
 	import org.openscales.fx.control.layer.ChangeLayerVisibility;
 	import org.openscales.fx.control.layer.LayerManager;
 	
-	public class ChangeLayerVisibilityTest
+	public class ChangeLayerVisibilityTest extends OpenScalesTest
 	{		
 		/**
 		 * Basic controls for testing
@@ -23,8 +23,10 @@ package org.openscales.fx.control.layer
 		private var _visibility:ChangeLayerVisibility = null;
 		
 		[Before]
-		public function setUp():void
+		override public function setUp():void
 		{
+			super.setUp();
+			
 			_map = new Map();
 			_layer1 = new Layer("layer");
 		
@@ -32,6 +34,8 @@ package org.openscales.fx.control.layer
 			
 			_visibility = new ChangeLayerVisibility();
 			_visibility.layer = _layer1;
+			
+			this._container.addElement(_visibility);
 		}
 		
 		/**

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testrun name="" >
-<testsuite  name="Default Test Suite" project="openscales-geometry">
-<testsuite name="org.openscales.geometry:ContainsPointTest" type="testsuiteclass"/>
-<testsuite name="org.openscales.proj4as.projections:ProjectionTest" type="testsuiteclass"/>
-<testsuite name="org.openscales.geometry:OperationGeometryTest" type="testsuiteclass"/>
-</testsuite>
-</testrun>

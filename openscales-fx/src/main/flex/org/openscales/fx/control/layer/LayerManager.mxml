@@ -42,6 +42,10 @@
 			import spark.components.supportClasses.ItemRenderer;
 			import spark.primitives.Rect;
 			
+			/**
+			 * The dataProvider use for the list.
+			 */
+			private var _dataProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * @private
@@ -94,7 +98,7 @@
 					var i:int = overlayArray.length;
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
-					layerList.dataProvider = ac;
+					this.dataProvider = ac;
 					
 				}
 			}
@@ -106,23 +110,32 @@
 			public function refresh(event:LayerEvent):void {	
 				//Test the triggered event
 				if(event.type == LayerEvent.LAYER_ADDED){
-					layerList.dataProvider.addItemAt(event.layer,0);
+					this._dataProvider.addItemAt(event.layer,0);
+					
+					// indicates change to synchronyse the data
+					dispatchEvent(new Event("dataProviderChanged"));
 					layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_REMOVED){
 					var index:int = layerList.dataProvider.getItemIndex(event.layer);
-					layerList.dataProvider.removeItemAt(index);
+					this._dataProvider.removeItemAt(index);
+					
+					// indicates change to synchronyse the data
+					dispatchEvent(new Event("dataProviderChanged"));
 					layerList.invalidateDisplayList();
 				}
 				
 				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
 					var overlayArray:Vector.<Layer> = this.map.layers;
 					var i:uint = overlayArray.length;
-					layerList.dataProvider.removeAll();
+					this._dataProvider.removeAll();
 					layerList.invalidateDisplayList();
 					for(i;i>0;--i)
 						layerList.dataProvider.addItem(overlayArray[i-1]);
+					
+					// indicates change to synchronyse the data
+					dispatchEvent(new Event("dataProviderChanged"));
 					layerList.invalidateDisplayList();
 				}
 			}
@@ -137,6 +150,27 @@
 			}
 			
 			// getter / setter
+			/**
+			 * The dataProvider use for the list.
+			 */
+			[Bindable(event="dataProviderChanged")]
+			public function get dataProvider():ArrayCollection
+			{
+				return this._dataProvider;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set dataProvider(value:ArrayCollection):void
+			{
+				this._dataProvider=value;
+				dispatchEvent(new Event("dataProviderChanged"));
+				if( layerList )
+				{
+					layerList.invalidateDisplayList();
+				}
+			}
 			
 			/**
 			 * Options for the LayerManager renderer (for additionnal controls to display like Metadatas, legend...)
@@ -181,6 +215,7 @@
 				dropEnabled="false"
 				dragEnabled="false"
 				dragMoveEnabled="false"
+				dataProvider="{this.dataProvider}"
 				width="100%"
 				x="0"
 				y="0"

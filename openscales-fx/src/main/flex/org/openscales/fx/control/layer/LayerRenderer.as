@@ -9,8 +9,9 @@ package org.openscales.fx.control.layer
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.control.layer.LayerManager;
 	
-	import spark.components.Group;
+	import spark.components.SkinnableContainer;
 	import spark.components.List;
+	import spark.components.SkinnableContainer;
 	import spark.components.supportClasses.ItemRenderer;
 	
 	
@@ -64,7 +65,7 @@ package org.openscales.fx.control.layer
 		 */
 		public function setLayer(elt:IVisualElement):void
 		{
-			var group:Group = null;
+			var group:SkinnableContainer = null;
 			var i:uint;
 			var sizeElement:uint;
 			
@@ -76,9 +77,9 @@ package org.openscales.fx.control.layer
 			// if contains object that contains LayerControl
 			else
 			{
-				if(elt is Group)
+				if(elt is SkinnableContainer)
 				{
-					group = elt as Group;
+					group = elt as SkinnableContainer;
 					
 					i = 0;
 					sizeElement = group.numElements;
