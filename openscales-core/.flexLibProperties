@@ -215,7 +215,6 @@
     <classEntry path="org.openscales.core.layer.originator.DataOriginatorTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
-    <classEntry path="org.openscales.geometry.GeometryTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
