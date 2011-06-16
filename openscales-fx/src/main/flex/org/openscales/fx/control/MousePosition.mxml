@@ -23,12 +23,15 @@
 			
 			import spark.events.IndexChangeEvent;
 			
+			
+			public static var DEFAULT_PROJECTION_CODE:String = "EPSG:4326";
+			
 			/**
 			 * @private
 			 * The projection displayed. If null, the display projection used is the projection of the base layer.
 			 * By default, the display projection is "EPSG:4326" 
 			 */
-			private var _displayProjSrsCode:String = "EPSG:4326";
+			private var _displayProjSrsCode:String = DEFAULT_PROJECTION_CODE;
 			
 			/**
 			 * @private 
@@ -86,7 +89,7 @@
 			private var _localNSEW:String = "NSEW";
 			
 			
-			private var _availableProjSrsList:String = "EPSG:4326";
+			private var _availableProjSrsList:String = DEFAULT_PROJECTION_CODE;
 			
 			
 			/**
@@ -100,13 +103,18 @@
 			 * @private
 			 * DataProvider for mousePosition crs choice
 			 */
-			private var _crsDataProvider:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var _crsDataProvider:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			public var _selectedIndexCrs:Number = 0;
 			
 			/**
 			 * @private
 			 * DataProvider for mousePosition unit choice
 			 */
-			private var _unitDataProvider:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var _unitDataProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * @inherit
@@ -121,7 +129,7 @@
 			 * Method called when creation complete event occurs
 			 */ 
 			private function init():void {				
-		
+				
 				var tmp:Array = _availableProjSrsList.split(",");
 				
 				var lgth:uint = tmp.length;
@@ -145,11 +153,9 @@
 					selectedIndex = i;
 				}
 				
-				this.mousePositionCrsComboBox.selectedIndex = selectedIndex;
+				this._selectedIndexCrs = selectedIndex;
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 				feedUnitsComboBox();
-				
-				dispatchEvent(new Event("crsDataProviderChanged"));
 			}
 			
 			/**
@@ -163,7 +169,7 @@
 				_displayProjSrsCode = this._crsDataProvider.getItemAt(event.newIndex).toString();
 				// Getting units for this SRS
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
-
+				
 				// Feeding units combo box
 				feedUnitsComboBox();
 			}
@@ -302,10 +308,10 @@
 				}
 				
 				this._mousePositionLabel = this.prefix
-											+ coord1
-											+ this.separator
-											+ coord2
-											+ this.suffix;
+					+ coord1
+					+ this.separator
+					+ coord2
+					+ this.suffix;
 			}
 			
 			/**
@@ -438,7 +444,7 @@
 			public function get displayMetricUnits():String{
 				return _displayMetricUnits;
 			} 
-	
+			
 			/**
 			 * displayMetricUnits setter
 			 */ 
@@ -447,31 +453,9 @@
 				_displayMetricUnits = value;
 			}
 			
-			[Bindable(event="crsDataProviderChanged")]
-			public function get crsDataProvider():ArrayCollection
-			{
-				return this._crsDataProvider;
-			}
 			
-			public function set crsDataProvider(value:ArrayCollection):void
-			{
-				this._crsDataProvider = value;
-				dispatchEvent(new Event("crsDataProviderChanged"));
-			}
 			
-			[Bindable(event="unitDataProviderChanged")]
-			public function get unitDataProvider():ArrayCollection
-			{
-				return this._unitDataProvider;
-			}
 			
-			public function set unitDataProvider(value:ArrayCollection):void
-			{
-				this._unitDataProvider = value;
-				dispatchEvent(new Event("unitDataProviderChanged"));
-			}
-			
-						
 		]]>
 	</fx:Script>
 	
@@ -487,15 +471,16 @@
 			<s:layout>
 				<s:HorizontalLayout />
 			</s:layout>
-				
+			
 			<s:DropDownList id="mousePositionCrsComboBox"  
 							change="crsChanged(event);"
-							dataProvider="{this.crsDataProvider} "/>
+							dataProvider="{this._crsDataProvider}"
+							selectedIndex="{this._selectedIndexCrs}"/>
 			
 			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" 
 							change="unitsChanged(event)" width="200"
-							dataProvider="{this.unitDataProvider}" />
-
+							dataProvider="{this._unitDataProvider}" />
+			
 		</s:SkinnableContainer>
 	</s:SkinnableContainer>
 </openscales:Control>
