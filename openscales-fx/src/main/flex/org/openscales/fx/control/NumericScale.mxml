@@ -79,19 +79,6 @@
 			{
 				this._value = value;
 			}
-			
-			/**
-			 * The value of the current numeric scale label
-			 */
-			public function get scaleLabel():String
-			{
-				return this._scaleLabel;
-			}
-			
-			public function set scaleLabel(value:String):void
-			{
-				this._scaleLabel = value;
-			}
 		]]>
 	</fx:Script>
 	
