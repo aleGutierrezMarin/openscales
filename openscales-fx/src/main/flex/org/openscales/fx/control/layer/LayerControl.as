@@ -1,9 +1,9 @@
 package org.openscales.fx.control.layer
 {
 	import org.openscales.core.layer.Layer;
-	import spark.components.Group;
+	import spark.components.SkinnableContainer;
 	
-	public class LayerControl extends Group
+	public class LayerControl extends SkinnableContainer
 	{
 		/**
 		 * @private 

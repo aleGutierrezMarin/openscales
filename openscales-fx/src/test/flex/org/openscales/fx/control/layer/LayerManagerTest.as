@@ -1,15 +1,13 @@
 package org.openscales.fx.control.layer
 {
-	import org.openscales.core.Map;
-	
-	import org.openscales.fx.control.layer.LayerManager;
-	
 	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.asserts.fail;
+	import org.openscales.core.Map;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.fx.control.layer.LayerManager;
 	
-	public class LayerManagerTest
+	public class LayerManagerTest extends OpenScalesTest
 	{		
 		private var _map:Map;
 		private var _layer1:Layer;
@@ -19,8 +17,10 @@ package org.openscales.fx.control.layer
 		private var _layerManager:LayerManager;
 		
 		[Before]
-		public function setUp():void
+		override public function setUp():void
 		{
+			super.setUp();
+			
 			_map = new Map();
 			
 			_layer1 = new Layer("layer1");
@@ -33,6 +33,8 @@ package org.openscales.fx.control.layer
 			
 			_layerManager = new LayerManager();
 			_map.addControl(_layerManager);
+			
+			this._container.addElement(_layerManager);
 		}
 		
 		/**
@@ -43,9 +45,11 @@ package org.openscales.fx.control.layer
 		public function layerSwitcherInitializeTest():void
 		{
 			var layerManager:LayerManager = new LayerManager();
+
 			_map.addControl(layerManager);
+			this._container.addElement(layerManager);
 			
-			var size:Number = layerManager.layerList.dataProvider.length;
+			var size:Number = layerManager.dataProvider.length;
 			
 			Assert.assertEquals(_map.layers.length, size);
 			
@@ -112,9 +116,10 @@ package org.openscales.fx.control.layer
 			var size:int = _layerManager.layerList.dataProvider.length;
 			
 			_map.removeLayer(_layer2);
+			size-=1;
 			
 			// layer removed from LayerSwitcher list
-			Assert.assertEquals(size-1, _layerManager.layerList.dataProvider.length);
+			Assert.assertEquals(size, _layerManager.layerList.dataProvider.length);
 			
 			
 			var findLayer4:Boolean = false;
