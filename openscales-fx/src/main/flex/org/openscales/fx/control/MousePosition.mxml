@@ -125,7 +125,7 @@
 			 * @default 0
 			 */
 			[Bindable]
-			public var _selectedIndexUnit:int = 0;
+			public var _selectedIndexUnit:Number = 0;
 			
 			/**
 			 * @inherit
@@ -195,7 +195,9 @@
 				if(event)
 					this._selectedIndexUnit = event.newIndex;
 				
-				switch(this._unitDataProvider.getItemAt(this._selectedIndexUnit))
+				var item:String = (this._unitDataProvider.getItemAt(this._selectedIndexUnit).data as String);
+					
+				switch(item)
 				{
 					case Unit.DEGREE:
 						this._useDMS = false;
