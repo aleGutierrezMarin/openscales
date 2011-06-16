@@ -52,6 +52,12 @@ It will retrieve the language information and display the availlable languages.
 			public var currentLanguage:Locale = null;
 			
 			/**
+			 * The current index slected
+			 */
+			
+			
+			
+			/**
 			 * Initialize the Language swticher component
 			 */
 			public function configure():void
@@ -59,7 +65,6 @@ It will retrieve the language information and display the availlable languages.
 				_languageSwitcher = new org.openscales.core.control.LanguageSwitcher();
 				_languageSwitcher.map = this.map;
 				actualizeLanguages();
-				this.currentLanguage = Locale.activeLocale;
 			}
 			
 			override public function set map(value:Map):void {
@@ -80,6 +85,7 @@ It will retrieve the language information and display the availlable languages.
 				{
 					languagesList.addItem(_supportedLocales[i]);
 				}
+				this.currentLanguage = Locale.activeLocale;
 			}
 			
 			/**
@@ -90,6 +96,7 @@ It will retrieve the language information and display the availlable languages.
 				var list:DropDownList = e.currentTarget as DropDownList
 				
 				this.currentLanguage = list.selectedItem as Locale;
+				
 				var locale:Locale = null;
 				var i:uint = _supportedLocales.length;
 				for(var j:uint = 0;j<i;++j) {
@@ -106,9 +113,11 @@ It will retrieve the language information and display the availlable languages.
 				if(event.locale == this.currentLanguage)
 					return;
 				
-				var languageIndex:int = this.languagesList.getItemIndex(event.locale);
-				this.languageDropList.selectedIndex = languageIndex;
+				this.currentLanguage = event.locale;
 			}
+			
+			
+		
 		]]>
 	</fx:Script>
 	
