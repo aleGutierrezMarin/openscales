@@ -8,10 +8,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.sliderClasses.Slider;
 			import mx.events.DragEvent;
-			import mx.events.SliderEvent;
-			import mx.events.SliderEventClickTarget;
 			import mx.events.StateChangeEvent;
 			
 			import org.openscales.core.Map;
@@ -24,6 +21,7 @@
 			import org.openscales.fx.control.skin.ZoomSkin;
 			import org.openscales.fx.control.skin.ZoomThumbSkin;
 			
+			import spark.components.supportClasses.SliderBase;
 			import spark.events.TrackBaseEvent;
 			
 			
@@ -73,14 +71,22 @@
 			 */
 			private var _maxSlider:Number = 20;
 			
+			
+			/**
+			 * 
+			 */
+			[Bindable]
+			public var _currentZoom:Number = 0;
+			
 			override public function set map(value:Map):void {
 				super.map = value;
 				
 				if(this.map.baseLayer)
 				{
-					this._minSlider = map.baseLayer.getZoomForResolution(map.maxResolution);
-					this._maxSlider = map.baseLayer.getZoomForResolution(map.minResolution);
+					this.minSlider = map.baseLayer.getZoomForResolution(map.maxResolution);
+					this.maxSlider = map.baseLayer.getZoomForResolution(map.minResolution);
 				}
+				
 			}
 			
 			/**
@@ -197,9 +203,7 @@
 				if(!this._map || !this._map.baseLayer)
 					return;
 				
-				zoomSlider.maximum = map.baseLayer.maxZoomLevel;
-				zoomSlider.minimum = map.baseLayer.minZoomLevel;
-				zoomSlider.value = map.zoom;
+				this._currentZoom = map.zoom;
 				
 				// initialise the label value
 				this.updateCurrentLabel();
@@ -210,7 +214,7 @@
 			private function updateZoomLevels(e:MapEvent = null):void {
 				if(e.zoomChanged)
 				{
-					zoomSlider.value = map.zoom;
+					this._currentZoom = map.zoom;
 					this.updateCurrentLabel();
 				}
 			}
@@ -228,8 +232,10 @@
 			 */
 			public function onThumbRelease(event:TrackBaseEvent):void
 			{
+				var currentSlider:SliderBase= event.target as SliderBase;
+				this._currentZoom = currentSlider.value;
 				this._onDrag = false;
-				this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+				this.map.moveTo(this.map.center, this._currentZoom, false, true);
 			}
 			
 			/**
@@ -238,17 +244,24 @@
 			 * @param event The event received
 			 */
 			public function onZoomSliderChange(event:Event):void {
+				
+				var currentSlider:SliderBase= event.target as SliderBase;
+
 				if(!this._map || !this._map.baseLayer)
 					return;
-
-				// update the display label
-				this._currentLabel = getLabelFromZoom(zoomSlider.value);
 				
-				// if not onDrag update the zoom
+				// update the display label
+				this._currentLabel = getLabelFromZoom(currentSlider.value);
+				
+				// if not onDrag really update the zoom
 				if(!this._onDrag)
-					this.map.moveTo(this.map.center, zoomSlider.value, false, true);
+				{
+					this._currentZoom = currentSlider.value;
+					this.map.moveTo(this.map.center, this._currentZoom, false, true);
+				}
+				
 			}
-
+			
 			
 			override public function destroy():void {
 				this.active = false;
@@ -357,7 +370,7 @@
 			{
 				this._minSlider = value;
 			}
-				
+			
 			/**
 			 * Indicates the maximum value for the slider
 			 * @default 20
@@ -382,6 +395,7 @@
 	<s:VSlider id="zoomSlider" x="80" y="10"
 			   minimum="{this.minSlider}"
 			   maximum="{this.maxSlider}"
+			   value="{this._currentZoom}"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
@@ -390,7 +404,7 @@
 			   showDataTip="false"
 			   thumbDrag="onThumbDrag(event)"
 			   thumbRelease="onThumbRelease(event)"
-			   change="{onZoomSliderChange(event)}"/>
+			   change="onZoomSliderChange(event)" />
 	
 	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{Catalog.getLocalizationForKey('zoom.zoomout')}"
 			  click="onZoomOut(event)"
