@@ -23,9 +23,9 @@ package org.openscales.core.handler.keyboard
 	 */ 
 	public class KeyboardHandler extends Handler
 	{
-		private var _slideRatio:Number = 0.3;
+		private var _slideRatio:Number = 0.1;
 		
-		private var _slideRatioShiftkey:Number = 0.6;
+		private var _slideRatioShiftkey:Number = 0.2;
 		
 		private var _panWest:uint = Keyboard.LEFT;
 		
@@ -127,8 +127,8 @@ package org.openscales.core.handler.keyboard
 		 */
 		public function setKeyCodesToDefault():void
 		{
-			this.slideRatio = 0.3;
-			this.slideRatioShiftkey = 0.6;
+			this.slideRatio = 0.1;
+			this.slideRatioShiftkey = 0.2;
 			this.panWest = Keyboard.LEFT;
 			this.panNorth = Keyboard.UP;
 			this.panEast = Keyboard.RIGHT;
