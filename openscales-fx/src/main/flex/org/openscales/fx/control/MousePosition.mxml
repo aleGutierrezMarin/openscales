@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openscales:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" 
+					xmlns:openscales="http://openscales.org" 
+					creationComplete="init();">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			import org.openscales.core.Util;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.geometry.Geometry;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.geometry.basetypes.Unit;
+			import org.openscales.proj4as.ProjProjection;
+			
+			import spark.events.IndexChangeEvent;
+			
+			
+			public static var DEFAULT_PROJECTION_CODE:String = "EPSG:4326";
+			
+			/**
+			 * @private
+			 * The projection displayed. If null, the display projection used is the projection of the base layer.
+			 * By default, the display projection is "EPSG:4326" 
+			 */
+			private var _displayProjSrsCode:String = DEFAULT_PROJECTION_CODE;
+			
+			/**
+			 * @private 
+			 * Contains the metric units currently displayed
+			 * <p>
+			 * Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL
+			 * </p> 
+			 */ 
+			private var _displayMetricUnits:String = Unit.METER;
+			
+			/**
+			 * @private
+			 * 
+			 * Units of the _displayProjSrsCode
+			 */ 
+			private var _srsUnits:String;
+			
+			/**
+			 * Text before coordinates in the label, which doesn't change.
+			 */
+			private var _prefix:String = "";
+			
+			/**
+			 * the caracter between the lon and the lat
+			 */
+			private var _separator:String = ", ";
+			
+			/**
+			 * Text after coordinates in the label, which doesn't change.
+			 */
+			private var _suffix:String = "";
+			
+			/**
+			 * Number of digits for the displayed values
+			 */ 
+			private var _numdigits:Number = 5;
+			
+			private var _granularity:int = 10;
+			
+			/**
+			 * @private
+			 * When the component is drawn without an mouse event, 
+			 * lastXy will be the mouse position and values will be calculated according to it
+			 */ 
+			private var _lastXy:Pixel = null;
+			
+			/**
+			 * @private
+			 * 
+			 * Boolean definign whever to use sexagesimal when _srsUnits is degrees
+			 * 
+			 */ 
+			private var _useDMS:Boolean = true;
+			
+			private var _localNSEW:String = "NSEW";
+			
+			
+			private var _availableProjSrsList:String = DEFAULT_PROJECTION_CODE;
+			
+			
+			/**
+			 * The display value for the mouse position
+			 * @default : null
+			 */
+			[Bindable]
+			public var _mousePositionLabel:String = null;
+			
+			/**
+			 * DataProvider for mousePosition crs choice
+			 * @default empty ArrayCollection
+			 */
+			[Bindable]
+			public var _crsDataProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * The selected index value selected for crs projection
+			 * @default 0
+			 */
+			[Bindable]
+			public var _selectedIndexCrs:Number = 0;
+			
+			/**
+			 * DataProvider for mousePosition unit choice
+			 * @default empty ArrayCollection
+			 */
+			[Bindable]
+			public var _unitDataProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * The selected index value selected for unit
+			 * @default 0
+			 */
+			private var _selectedIndexUnit:Number = 0;
+			
+			/**
+			 * @private
+			 * Boolean setted to true at the end of the init function
+			 */
+			private var _init:Boolean = false;
+			
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this.feedUnitsComboBox();
+			}
+			
+			/**
+			 * @private
+			 * 
+			 * Method called when creation complete event occurs
+			 */ 
+			private function init():void {				
+				
+				var tmp:Array = _availableProjSrsList.split(",");
+				
+				var lgth:uint = tmp.length;
+				var i:uint = 0;
+				var selectedIndex:uint = 0;
+				var displayProjSrsCodeInList:Boolean = false;
+				
+				for(i;i<lgth;i++)
+				{
+					this._crsDataProvider.addItem(tmp[i]);
+					if(_displayProjSrsCode == (tmp[i] as String)) 
+					{
+						selectedIndex = i;
+						displayProjSrsCodeInList = true;
+					}
+				}
+				
+				if(!displayProjSrsCodeInList)
+				{
+					this._crsDataProvider.addItem(_displayProjSrsCode);
+					selectedIndex = i;
+				}
+				
+				this._selectedIndexCrs = selectedIndex;
+				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
+				
+				// this boolean is used in the displayProjSrsCode setter
+				this._init = true;
+				
+				feedUnitsComboBox();
+			}
+			
+			/**
+			 * @private
+			 * 
+			 * function called when selected item in srs combo box has changed
+			 */ 
+			public function crsChanged(event:IndexChangeEvent):void
+			{
+				// Getting the value
+				_displayProjSrsCode = this._crsDataProvider.getItemAt(event.newIndex).toString();
+				// Getting units for this SRS
+				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
+				
+				// Feeding units combo box
+				feedUnitsComboBox();
+			}
+			
+			/**
+			 * @private
+			 * 
+			 * function called when selected item in units combo box has changed
+			 */ 
+			public function unitsChanged(event:IndexChangeEvent):void
+			{
+				if(event)
+					this._selectedIndexUnit = event.newIndex;
+				
+				var item:String = (this._unitDataProvider.getItemAt(this._selectedIndexUnit).data as String);
+					
+				switch(item)
+				{
+					case Unit.DEGREE:
+						this._useDMS = false;
+						_displayMetricUnits = Unit.DEGREE;
+						break;
+					case Unit.SEXAGESIMAL:
+						_displayMetricUnits = Unit.SEXAGESIMAL;
+						this._useDMS = true;	
+						break;
+					case Unit.METER:
+						_displayMetricUnits = Unit.METER;
+						break;
+					case Unit.KILOMETER:
+						_displayMetricUnits = Unit.KILOMETER;
+						break;
+					case Unit.CENTIMETER:
+						_displayMetricUnits = Unit.CENTIMETER;
+						break;
+				}
+			}
+			
+			/**
+			 * @private
+			 * 
+			 * Method called when srs code has changed in crs combo box
+			 */ 
+			private function feedUnitsComboBox():void
+			{
+				var items:ArrayCollection;
+				
+				switch(_srsUnits){
+					case Unit.METER:
+						items = new ArrayCollection([
+							{data:Unit.KILOMETER,label:Catalog.getLocalizationForKey("mouseposition.kilometers")},
+							{data:Unit.METER, label:Catalog.getLocalizationForKey("mouseposition.meters")},
+							{data:Unit.CENTIMETER, label:Catalog.getLocalizationForKey("mouseposition.centimeters")}
+						]);
+						if(this._unitDataProvider) this._unitDataProvider.removeAll(); // Clearing list if already set
+						this._unitDataProvider = items;
+						this._selectedIndexUnit = 1;
+						break;
+					case "dd":
+					case Unit.DEGREE:
+						items = new ArrayCollection([
+							{data:Unit.SEXAGESIMAL,label:Catalog.getLocalizationForKey("mouseposition.dms")},
+							{data:Unit.DEGREE, label:Catalog.getLocalizationForKey("mouseposition.decimaldegrees")}
+						]);
+						if(this._unitDataProvider) this._unitDataProvider.removeAll(); // Clearing list if already set
+						this._unitDataProvider = items;
+						this._selectedIndexUnit = 0;
+						break;
+				}
+				
+				dispatchEvent(new Event('selectedIndexUnitChanged'));
+				unitsChanged(null);
+			}
+			
+			override public function draw():void {
+				if(!this.map)
+					return;
+				super.draw();
+				this.redraw();
+			}
+			
+			
+			/**
+			 * Display the coordinate where is the mouse
+			 *
+			 * @param evt
+			 */
+			public function redraw(evt:MouseEvent = null):void {
+				var lonLat:Location;
+				
+				if (evt != null) {
+					if (this._lastXy == null ||
+						Math.abs(map.mouseX - this._lastXy.x) > this._granularity ||
+						Math.abs(map.mouseY - this._lastXy.y) > this._granularity)
+					{
+						this._lastXy = new Pixel(map.mouseX, map.mouseY);
+						return;
+					}
+					this._lastXy = new Pixel(map.mouseX, map.mouseY);
+					lonLat = this.map.getLocationFromMapPx(this._lastXy);
+				}
+				
+				if (lonLat == null) {
+					lonLat = new Location(0,0,(this.map.baseLayer)?this.map.baseLayer.projSrsCode:Geometry.DEFAULT_SRS_CODE);
+				}
+				
+				if (this._displayProjSrsCode) {
+					lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
+				}
+				
+				var coord1:String, coord2:String;
+				if(_srsUnits == "dd" || _srsUnits == Unit.DEGREE)
+				{
+					if (this._useDMS /*&& (lonLat.projSrsCode == "EPSG:4326")*/) {
+						_displayMetricUnits == Unit.SEXAGESIMAL;
+						coord1 = (lonLat.lon < 0) ? (Util.degToDMS(-lonLat.lon)+" "+this.localNSEW.charAt(3)) : (Util.degToDMS(lonLat.lon)+" "+this.localNSEW.charAt(2));
+						coord2 = (lonLat.lat < 0) ? (Util.degToDMS(-lonLat.lat)+" "+this.localNSEW.charAt(1)) : (Util.degToDMS(lonLat.lat)+" "+this.localNSEW.charAt(0));
+					} else {
+						_displayMetricUnits == Unit.DEGREE;
+						var digits:int = int(this.numdigits);
+						coord1 = lonLat.lon.toFixed(digits);
+						coord2 = lonLat.lat.toFixed(digits);
+					}
+				}
+				else if(_srsUnits == "m")
+				{
+					coord1 = lonLat.lon.toFixed(int(this.numdigits));
+					coord2 = lonLat.lat.toFixed(int(this.numdigits));
+					
+					if(_displayMetricUnits == Unit.CENTIMETER)
+					{
+						coord1 = String(Number(coord1)*100);
+						coord2 =  String(Number(coord2)*100);
+					}else if(_displayMetricUnits == Unit.KILOMETER)
+					{
+						coord1 = String(Number(coord1)/100);
+						coord2 =  String(Number(coord2)/100);
+					}
+				}
+				
+				this._mousePositionLabel = this.prefix
+					+ coord1
+					+ this.separator
+					+ coord2
+					+ this.suffix;
+			}
+			
+			/**
+			 * Stop the update of coordinates. Useful while paning the map.
+			 * 
+			 * @param event
+			 */
+			private function deactivateDisplay(event:MapEvent):void {
+				this.map.removeEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
+			}
+			
+			/**
+			 * Start the update of coordinates.
+			 * 
+			 * @param event
+			 */
+			private function activateDisplay(event:MapEvent):void {
+				this.map.addEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
+			}
+			
+			
+			override public function set map(map:Map):void {
+				
+				super.map = map;
+				
+				if (this.map) {
+					this.map.removeEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
+					this.map.removeEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
+					this.map.removeEventListener(MapEvent.MOVE_END, this.activateDisplay);
+				}
+				
+				if (this.map) {
+					this.map.addEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
+					this.map.addEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
+					this.map.addEventListener(MapEvent.MOVE_END, this.activateDisplay);
+				}
+			}
+			
+			/**
+			 * Getters &amp; setters
+			 */
+			public function get prefix():String {
+				return _prefix;
+			}
+			public function set prefix(value:String):void {
+				_prefix = value;
+			}
+			
+			public function get separator():String {
+				return _separator;
+			}
+			public function set separator(value:String):void {
+				_separator = value;
+			}
+			
+			public function get suffix():String {
+				return _suffix;
+			}
+			public function set suffix(value:String):void {
+				_suffix = value;
+			}
+			
+			public function get numdigits():Number {
+				return _numdigits;
+			}
+			public function set numdigits(value:Number):void {
+				_numdigits = value;
+			}
+			
+			public function get granularity():int {
+				return _granularity;
+			}
+			public function set granularity(value:int):void {
+				_granularity = value;
+			}
+			
+			/** 
+			 * By default localNSEW == "NSEW", which means that the
+			 * north id represented by N, the south by S, the east by E
+			 * and the west by W.
+			 * Use localNSEW = "NSEO" in french for instance.
+			 */
+			public function get localNSEW():String {
+				return this._localNSEW;
+			}
+			public function set localNSEW(value:String):void {
+				if (value.length == 4) {
+					this._localNSEW = value;
+				}
+			}
+			
+			/**
+			 * The projection displayed. Must be an existing value of availableProjSrsList.
+			 */
+			public function get displayProjSrsCode():String {
+				return this._displayProjSrsCode;
+			}
+			
+			/**
+			 * @private
+			 */ 
+			public function set displayProjSrsCode(value:String):void
+			{
+				if(this._init)
+				{
+					if(this._displayProjSrsCode == value)
+						return;
+					
+					var tmp:Array = this._crsDataProvider.toArray();
+					var i:uint = 0;
+					var displayProjSrsCodeInList:Boolean = false;
+					
+					for(i; i<tmp.length; i++)
+					{
+						if(value == (tmp[i] as String))
+						{
+							this._displayProjSrsCode = value;
+							this._srsUnits = ProjProjection.getProjProjection(this._displayProjSrsCode).projParams.units;
+							this._selectedIndexCrs = i;
+							this.feedUnitsComboBox();
+							displayProjSrsCodeInList = true;
+							break;
+						}
+					}
+					if(!displayProjSrsCodeInList)
+						trace("The ProjSrsCode to display isn't valid");
+				}
+				else
+					this._displayProjSrsCode = value;	
+			}
+			
+			/**
+			 * A comma separated list of SRS code that is passed to constructor.
+			 * <p>Example: "EPSG:900913,EPSG:4326"</p>
+			 */ 
+			public function get availableProjSrsList():String {
+				return _availableProjSrsList;
+			}
+			
+			/**
+			 * @private
+			 */ 
+			public function set availableProjSrsList(value:String):void
+			{
+				_availableProjSrsList = value;
+			}
+			
+			/**
+			 * displayMetricUnits getter
+			 * Contains the metric units currently displayed.
+			 * <p>Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL</p>
+			 */ 
+			public function get displayMetricUnits():String {
+				return _displayMetricUnits;
+			} 
+			
+			/**
+			 * displayMetricUnits setter
+			 */ 
+			public function set displayMetricUnits(value:String):void
+			{
+				var tmp:Array = this._unitDataProvider.toArray();
+				var i:uint = 0;
+				var displayMetricUnitsInList:Boolean = false;
+				
+				for(i; i<tmp.length; i++)
+				{
+					if(value == (tmp[i]["data"] as String))
+					{
+						this._selectedIndexUnit = i;
+						this.unitsChanged(null);
+						displayMetricUnitsInList = true;
+						break;
+					}
+				}
+				if(!displayMetricUnitsInList)
+					trace("The MetricUnits to display isn't valid");
+			}
+			
+			/**
+			 * 
+			 */
+			[Bindable(event='selectedIndexUnitChanged')]
+			public function get selectedIndexUnit():Number
+			{
+				return this._selectedIndexUnit;
+			}
+			
+			public function set selectedIndexUnit(value:Number):void
+			{
+				this._selectedIndexUnit = value;
+				dispatchEvent(new Event('selectedIndexUnitChanged'));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:SkinnableContainer id="mousePositionVGroup" width="100%">
+		<s:layout>
+			<s:VerticalLayout />
+		</s:layout>
+		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
+				 text="{this._mousePositionLabel}"
+				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
+		</s:Label>
+		<s:SkinnableContainer id="mousePositionHGroup" width="100%"> 
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			
+			<s:DropDownList id="mousePositionCrsComboBox"  
+							change="crsChanged(event);"
+							dataProvider="{this._crsDataProvider}"
+							selectedIndex="{this._selectedIndexCrs}"/>
+			
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" 
+							change="unitsChanged(event)" width="200"
+							dataProvider="{this._unitDataProvider}"
+							selectedIndex="{this.selectedIndexUnit}"/>
+			
+		</s:SkinnableContainer>
+	</s:SkinnableContainer>
+</openscales:Control>

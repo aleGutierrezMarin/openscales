@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Numeric scale display a scale ratio -->
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.geometry.basetypes.Unit;
+			import org.openscales.proj4as.ProjProjection;
+			
+			/**
+			 * The default fixed round for scale precision
+			 */
+			public static var DEFAULT_FIXED_ROUND:uint=0;
+			
+			/**
+			 * @private
+			 * The value of the current numeric scale
+			 * @default 1
+			 */
+			private var _value:Number = 1;
+			
+			/**
+			 * The current value of the scale Label
+			 * @default "1 / 1"
+			 */
+			[Bindable]
+			public var _scaleLabel: String = "1 / 1";
+				
+			override public function set map(value:Map):void {
+				
+				if(this._map!=null)
+				{
+					this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
+					this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
+				}
+				super.map = value;
+				if(value) {
+					this._map.addEventListener(MapEvent.MOVE_END,this.updateScale);
+					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
+				}
+				this.updateScale();
+			}
+			
+			/**
+			 * Update the value of the numeric scale.
+			 * The new numeric scale is obtain by Unit.getScaleFrom resolution with the current resolution and the current baseLayer unit.
+			 * 
+			 * @param event The event received if the function is called 
+			 * when a zoom occur or when the baselayer is changed.
+			 */
+			public function updateScale(event:Event=null):void
+			{
+				if(this._map == null || this._map.baseLayer == null)
+					return;
+				this._value = Unit.getScaleFromResolution(this._map.resolution,
+					ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode).projParams.units,
+					this._map.baseLayer.dpi);
+				
+				// update the label :
+				_scaleLabel = "1 / "+this._value;
+			}
+			
+			/**
+			 * The value of the current numeric scale
+			 */
+			public function get value():Number
+			{
+				return this._value;
+			}
+			
+			public function set value(value:Number):void
+			{
+				this._value = value;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Label id="numericScaleLabel"
+			  width="100%"
+			  height="25"
+			  backgroundColor="0xFFFFFF" 
+			  paddingTop="5" 
+			  paddingLeft="5" 
+			  paddingRight="5"
+			  text="{this._scaleLabel}"/>
+	
+</Control>
