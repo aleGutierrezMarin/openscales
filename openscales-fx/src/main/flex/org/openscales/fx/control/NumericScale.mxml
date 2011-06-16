@@ -89,6 +89,6 @@
 			  paddingTop="5" 
 			  paddingLeft="5" 
 			  paddingRight="5"
-			  text="{this._scaleLabel}"/>
+			  text="{this.scaleLabel}"/>
 	
 </Control>
