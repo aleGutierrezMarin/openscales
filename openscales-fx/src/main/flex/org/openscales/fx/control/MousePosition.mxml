@@ -529,26 +529,18 @@
 			
 		]]>
 	</fx:Script>
-	
-	<s:SkinnableContainer id="mousePositionVGroup" width="100%">
-		<s:layout>
-			<s:VerticalLayout />
-		</s:layout>
+	<s:SkinnableContainer id="mousePositionMainGroup" width="100%">
 		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
 				 text="{this.mousePositionLabel}"
 				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
-		<s:SkinnableContainer id="mousePositionHGroup" width="100%"> 
-			<s:layout>
-				<s:HorizontalLayout />
-			</s:layout>
-			
+		<s:SkinnableContainer id="mousePositionChoiceGroup" width="100%" top="20"> 
 			<s:DropDownList id="mousePositionCrsComboBox"  
 							change="crsChanged(event);"
 							dataProvider="{this.crsDataProvider}"
 							selectedIndex="{this.selectedIndexCrs}"/>
 			
-			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" 
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" left="100"
 							change="unitsChanged(event)" width="200"
 							dataProvider="{this.unitDataProvider}"
 							selectedIndex="{this.selectedIndexUnit}"/>
