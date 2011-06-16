@@ -47,6 +47,13 @@ package org.openscales.core.handler.mouse
 		 * Color of the rectangle
 		 */
 		private var _fillColor:uint = 0xFF0000;
+		
+		/**
+		 * @private
+		 * 
+		 * Is the rectangle is drawn
+		 */
+		private var _drawing:Boolean = false
 			
 		private var _drawContainer:Sprite = new Sprite();     
 		
@@ -67,9 +74,10 @@ package org.openscales.core.handler.mouse
 		override protected function registerListeners():void{
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN,startBox);
-				this.map.addEventListener(MouseEvent.MOUSE_UP,endBox);
+				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,endBox);
 				this.map.addEventListener(MapEvent.DRAG_START, dragStart);
 				this.map.addEventListener(MapEvent.DRAG_END, dragEnd);
+				
 			}
 		}
 		
@@ -79,10 +87,11 @@ package org.openscales.core.handler.mouse
 		override protected function unregisterListeners():void{
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN,startBox);
-				this.map.removeEventListener(MouseEvent.MOUSE_UP,endBox);
-				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+				this.map.stage.removeEventListener(MouseEvent.MOUSE_UP,endBox);
+				this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
 				this.map.removeEventListener(MapEvent.DRAG_START, dragStart);
 				this.map.removeEventListener(MapEvent.DRAG_END, dragEnd);
+				//this.map.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 			}
 		}
 		
@@ -105,7 +114,9 @@ package org.openscales.core.handler.mouse
 			
 			if(!_shiftMode || !e.shiftKey || _dragging) return;
 			
-			this.map.addEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+			//this.map.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+			this._drawing = true;
 			_drawContainer.graphics.beginFill(_fillColor,0.5);
 			_drawContainer.graphics.drawRect(map.mouseX,map.mouseY,1,1);
 			_drawContainer.graphics.endFill();
@@ -121,21 +132,27 @@ package org.openscales.core.handler.mouse
 		 */ 
 		private function endBox(e:MouseEvent) : void {
 			
-			this.map.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
-			_drawContainer.graphics.clear();
-			var endCoordinates:Location = this.map.getLocationFromMapPx(new Pixel(map.mouseX, map.mouseY));
-			if(_startCoordinates != null) {
-				if(!_startCoordinates.equals(endCoordinates)){
-					this.map.zoomToExtent(new Bounds(Math.min(_startCoordinates.lon,endCoordinates.lon),
-						Math.min(endCoordinates.lat,_startCoordinates.lat),
-						Math.max(_startCoordinates.lon,endCoordinates.lon),
-						Math.max(endCoordinates.lat,_startCoordinates.lat),
-						endCoordinates.projSrsCode));
+			if (this._drawing){
+				this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+				this._drawing = false;
+				//this.map.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+				_drawContainer.graphics.clear();
+				if(!e)
+					return;
+				var endCoordinates:Location = this.map.getLocationFromMapPx(new Pixel(map.mouseX, map.mouseY));
+				if(_startCoordinates != null && this.map.hitTestPoint(e.stageX, e.stageY)) {
+					if(!_startCoordinates.equals(endCoordinates)){
+						this.map.zoomToExtent(new Bounds(Math.min(_startCoordinates.lon,endCoordinates.lon),
+							Math.min(endCoordinates.lat,_startCoordinates.lat),
+							Math.max(_startCoordinates.lon,endCoordinates.lon),
+							Math.max(endCoordinates.lat,_startCoordinates.lat),
+							endCoordinates.projSrsCode));
+					}
 				}
+				this._startCoordinates = null;
+				this.map.dispatchEvent(new ZoomBoxEvent(ZoomBoxEvent.END));
+				this.map.stage.focus = this.map; // Giving focus back to the map
 			}
-			this._startCoordinates = null;
-			this.map.dispatchEvent(new ZoomBoxEvent(ZoomBoxEvent.END));
-			this.map.stage.focus = this.map; // Giving focus back to the map
 		}
 		
 		/**
@@ -144,12 +161,16 @@ package org.openscales.core.handler.mouse
 		 */ 
 		private function expandArea(e:MouseEvent) : void {
 			
-			var ll:Pixel = map.getMapPxFromLocation(_startCoordinates);
-			_drawContainer.graphics.clear();
-			_drawContainer.graphics.lineStyle(1,_fillColor);
-			_drawContainer.graphics.beginFill(_fillColor,0.25);
-			_drawContainer.graphics.drawRect(ll.x,ll.y,map.mouseX - ll.x,map.mouseY - ll.y);
-			_drawContainer.graphics.endFill();
+			if (! this.map.hitTestPoint(e.stageX, e.stageY)){
+				this.endBox(e);
+			}else{
+				var ll:Pixel = map.getMapPxFromLocation(_startCoordinates);
+				_drawContainer.graphics.clear();
+				_drawContainer.graphics.lineStyle(1,_fillColor);
+				_drawContainer.graphics.beginFill(_fillColor,0.25);
+				_drawContainer.graphics.drawRect(ll.x,ll.y,map.mouseX - ll.x,map.mouseY - ll.y);
+				_drawContainer.graphics.endFill();
+			}
 		}
 		
 		/**
@@ -182,6 +203,12 @@ package org.openscales.core.handler.mouse
 		 */
 		private function dragEnd(event:MapEvent):void{
 			this._dragging = false;
+		}
+		
+		private function  onMouseOut(event:MouseEvent):void{
+			if(event.target!=this.map)
+				return;
+			this.endBox(null);
 		}
 
 
