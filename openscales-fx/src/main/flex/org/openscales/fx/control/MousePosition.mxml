@@ -124,8 +124,7 @@
 			 * The selected index value selected for unit
 			 * @default 0
 			 */
-			[Bindable]
-			public var _selectedIndexUnit:Number = 0;
+			private var _selectedIndexUnit:Number = 0;
 			
 			/**
 			 * @private
@@ -259,6 +258,7 @@
 						break;
 				}
 				
+				dispatchEvent(new Event('selectedIndexUnitChanged'));
 				unitsChanged(null);
 			}
 			
@@ -441,7 +441,7 @@
 					if(this._displayProjSrsCode == value)
 						return;
 					
-					var tmp:Array = this.mousePositionCrsComboBox.dataProvider.toArray();
+					var tmp:Array = this._crsDataProvider.toArray();
 					var i:uint = 0;
 					var displayProjSrsCodeInList:Boolean = false;
 					
@@ -451,7 +451,7 @@
 						{
 							this._displayProjSrsCode = value;
 							this._srsUnits = ProjProjection.getProjProjection(this._displayProjSrsCode).projParams.units;
-							this.mousePositionCrsComboBox.selectedIndex = i;
+							this._selectedIndexCrs = i;
 							this.feedUnitsComboBox();
 							displayProjSrsCodeInList = true;
 							break;
@@ -494,7 +494,7 @@
 			 */ 
 			public function set displayMetricUnits(value:String):void
 			{
-				var tmp:Array = this.mousePositionUnitsComboBox.dataProvider.toArray();
+				var tmp:Array = this._unitDataProvider.toArray();
 				var i:uint = 0;
 				var displayMetricUnitsInList:Boolean = false;
 				
@@ -502,7 +502,7 @@
 				{
 					if(value == (tmp[i]["data"] as String))
 					{
-						this.mousePositionUnitsComboBox.selectedIndex = i;
+						this._selectedIndexUnit = i;
 						this.unitsChanged(null);
 						displayMetricUnitsInList = true;
 						break;
@@ -511,6 +511,22 @@
 				if(!displayMetricUnitsInList)
 					trace("The MetricUnits to display isn't valid");
 			}
+			
+			/**
+			 * 
+			 */
+			[Bindable(event='selectedIndexUnitChanged')]
+			public function get selectedIndexUnit():Number
+			{
+				return this._selectedIndexUnit;
+			}
+			
+			public function set selectedIndexUnit(value:Number):void
+			{
+				this._selectedIndexUnit = value;
+				dispatchEvent(new Event('selectedIndexUnitChanged'));
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -535,7 +551,7 @@
 			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" 
 							change="unitsChanged(event)" width="200"
 							dataProvider="{this._unitDataProvider}"
-							selectedIndex="{this._selectedIndexUnit}"/>
+							selectedIndex="{this.selectedIndexUnit}"/>
 			
 		</s:SkinnableContainer>
 	</s:SkinnableContainer>
