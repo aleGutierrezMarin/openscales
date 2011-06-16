@@ -100,21 +100,32 @@
 			public var _mousePositionLabel:String = null;
 			
 			/**
-			 * @private
 			 * DataProvider for mousePosition crs choice
+			 * @default empty ArrayCollection
 			 */
 			[Bindable]
 			public var _crsDataProvider:ArrayCollection = new ArrayCollection();
 			
+			/**
+			 * The selected index value selected for crs projection
+			 * @default 0
+			 */
 			[Bindable]
 			public var _selectedIndexCrs:Number = 0;
 			
 			/**
-			 * @private
 			 * DataProvider for mousePosition unit choice
+			 * @default empty ArrayCollection
 			 */
 			[Bindable]
 			public var _unitDataProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * The selected index value selected for unit
+			 * @default 0
+			 */
+			[Bindable]
+			public var _selectedIndexUnit:int = 0;
 			
 			/**
 			 * @inherit
@@ -181,28 +192,28 @@
 			 */ 
 			public function unitsChanged(event:IndexChangeEvent):void
 			{
-				if(this.mousePositionUnitsComboBox.selectedItem)
+				if(event)
+					this._selectedIndexUnit = event.newIndex;
+				
+				switch(this._unitDataProvider.getItemAt(this._selectedIndexUnit))
 				{
-					switch(this.mousePositionUnitsComboBox.selectedItem.data)
-					{
-						case Unit.DEGREE:
-							this._useDMS = false;
-							_displayMetricUnits = Unit.DEGREE;
-							break;
-						case Unit.SEXAGESIMAL:
-							_displayMetricUnits = Unit.SEXAGESIMAL;
-							this._useDMS = true;	
-							break;
-						case Unit.METER:
-							_displayMetricUnits = Unit.METER;
-							break;
-						case Unit.KILOMETER:
-							_displayMetricUnits = Unit.KILOMETER;
-							break;
-						case Unit.CENTIMETER:
-							_displayMetricUnits = Unit.CENTIMETER;
-							break;
-					}
+					case Unit.DEGREE:
+						this._useDMS = false;
+						_displayMetricUnits = Unit.DEGREE;
+						break;
+					case Unit.SEXAGESIMAL:
+						_displayMetricUnits = Unit.SEXAGESIMAL;
+						this._useDMS = true;	
+						break;
+					case Unit.METER:
+						_displayMetricUnits = Unit.METER;
+						break;
+					case Unit.KILOMETER:
+						_displayMetricUnits = Unit.KILOMETER;
+						break;
+					case Unit.CENTIMETER:
+						_displayMetricUnits = Unit.CENTIMETER;
+						break;
 				}
 			}
 			
@@ -224,7 +235,7 @@
 						]);
 						if(this._unitDataProvider) this._unitDataProvider.removeAll(); // Clearing list if already set
 						this._unitDataProvider = items;
-						this.mousePositionUnitsComboBox.selectedIndex = 1;
+						this._selectedIndexUnit = 1;
 						break;
 					case "dd":
 					case Unit.DEGREE:
@@ -234,7 +245,7 @@
 						]);
 						if(this._unitDataProvider) this._unitDataProvider.removeAll(); // Clearing list if already set
 						this._unitDataProvider = items;
-						this.mousePositionUnitsComboBox.selectedIndex = 0;
+						this._selectedIndexUnit = 0;
 						break;
 				}
 				
@@ -479,7 +490,8 @@
 			
 			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" 
 							change="unitsChanged(event)" width="200"
-							dataProvider="{this._unitDataProvider}" />
+							dataProvider="{this._unitDataProvider}"
+							selectedIndex="{this._selectedIndexUnit}"/>
 			
 		</s:SkinnableContainer>
 	</s:SkinnableContainer>
