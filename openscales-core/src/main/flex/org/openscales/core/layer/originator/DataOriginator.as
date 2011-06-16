@@ -116,13 +116,6 @@ package org.openscales.core.layer.originator
 				equals = this._name == originator.name &&
 					this._url == originator.url &&
 					this._pictureUrl == originator.pictureUrl;
-				
-				var size:Number = this._constraints.length;
-				for(var i:int=0; i<size; ++i) {
-					if(! this._constraints[i].equals(originator.constraints[i])) {
-						return false;
-					}
-				}
 			}
 			return equals;
 		}
