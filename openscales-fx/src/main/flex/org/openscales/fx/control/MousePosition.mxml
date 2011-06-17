@@ -67,7 +67,8 @@
 			/**
 			 * Number of digits for the displayed values
 			 */ 
-			private var _numdigits:Number = 5;
+			private var _digitsLon:Number = 0;
+			private var _digitsLat:Number = 0;
 			
 			private var _granularity:int = 10;
 			
@@ -187,6 +188,8 @@
 				_displayProjSrsCode = this._crsDataProvider.getItemAt(event.newIndex).toString();
 				// Getting units for this SRS
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
+				// Getting new index for the combo box
+				this._selectedIndexCrs = event.newIndex;
 				
 				// Feeding units combo box
 				feedUnitsComboBox();
@@ -276,6 +279,7 @@
 			 * @param evt
 			 */
 			public function redraw(evt:MouseEvent = null):void {
+				
 				var lonLat:Location;
 				
 				if (evt != null) {
@@ -301,30 +305,30 @@
 				var coord1:String, coord2:String;
 				if(_srsUnits == "dd" || _srsUnits == Unit.DEGREE)
 				{
-					if (this._useDMS /*&& (lonLat.projSrsCode == "EPSG:4326")*/) {
+					if (this._useDMS) {
 						_displayMetricUnits == Unit.SEXAGESIMAL;
-						coord1 = (lonLat.lon < 0) ? (Util.degToDMS(-lonLat.lon)+" "+this.localNSEW.charAt(3)) : (Util.degToDMS(lonLat.lon)+" "+this.localNSEW.charAt(2));
-						coord2 = (lonLat.lat < 0) ? (Util.degToDMS(-lonLat.lat)+" "+this.localNSEW.charAt(1)) : (Util.degToDMS(lonLat.lat)+" "+this.localNSEW.charAt(0));
+						coord1 = (lonLat.lon < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lon,"lon")) + " " + this.localNSEW.charAt(3)) : (Util.degToDMS(this.roundCoordinates(lonLat.lon,"lon")) + " " + this.localNSEW.charAt(2));
+						coord2 = (lonLat.lat < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lat,"lat")) + " " + this.localNSEW.charAt(1)) : (Util.degToDMS(this.roundCoordinates(lonLat.lat,"lat")) + " " + this.localNSEW.charAt(0));
 					} else {
 						_displayMetricUnits == Unit.DEGREE;
-						var digits:int = int(this.numdigits);
-						coord1 = lonLat.lon.toFixed(digits);
-						coord2 = lonLat.lat.toFixed(digits);
+						coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
+						coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
 					}
 				}
 				else if(_srsUnits == "m")
 				{
-					coord1 = lonLat.lon.toFixed(int(this.numdigits));
-					coord2 = lonLat.lat.toFixed(int(this.numdigits));
+					coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
+					coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
 					
 					if(_displayMetricUnits == Unit.CENTIMETER)
 					{
 						coord1 = String(Number(coord1)*100);
-						coord2 =  String(Number(coord2)*100);
-					}else if(_displayMetricUnits == Unit.KILOMETER)
+						coord2 = String(Number(coord2)*100);
+					}
+					else if(_displayMetricUnits == Unit.KILOMETER)
 					{
 						coord1 = String(Number(coord1)/100);
-						coord2 =  String(Number(coord2)/100);
+						coord2 = String(Number(coord2)/100);
 					}
 				}
 				
@@ -333,6 +337,55 @@
 					+ this.separator
 					+ coord2
 					+ this.suffix;
+			}
+			
+			/**
+			 * 
+			 * 
+			 * @param coord:Number
+			 */
+			private function roundCoordinates(coord:Number, type:String):Number {
+				
+				var roundedCoord:Number = coord;
+				
+				// Define 2 pixels
+				var pixel1:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+				var pixel2:Pixel = new Pixel(this.map.mouseX + 1, this.map.mouseY + 1);
+				
+				// Get the associated locations
+				var loc1:Location = this.map.getLocationFromMapPx(pixel1);
+				var loc2:Location = this.map.getLocationFromMapPx(pixel2);
+				
+				if(loc1 == null || loc2 == null)
+					return roundedCoord;
+				
+				if(this._displayProjSrsCode) {
+					loc1 = loc1.reprojectTo(this._displayProjSrsCode);
+					loc2 = loc2.reprojectTo(this._displayProjSrsCode);
+				}
+				
+				// Calculate the differences
+				var diffLon:Number = Math.abs(loc2.lon - loc1.lon);
+				var diffLat:Number = Math.abs(loc2.lat - loc1.lat);
+				
+				// Calculate et return the rounded coordinate
+				if(type == "lon" && diffLon > 0) {
+					var puissLon:int = Math.floor(Math.log(diffLon) / Math.LN10) - 2;
+					if(puissLon < 0)
+						this._digitsLon = -puissLon;
+					else
+						this._digitsLon = 0;
+					roundedCoord = Math.round(coord * Math.pow(10,-puissLon)) / Math.pow(10,-puissLon);
+				}
+				else if(type == "lat" && diffLat > 0) {
+					var puissLat:int = Math.floor(Math.log(diffLat) / Math.LN10) - 2;
+					if(puissLat < 0)
+						this._digitsLat = -puissLat;
+					else
+						this._digitsLat = 0;
+					roundedCoord = Math.round(coord * Math.pow(10,-puissLat)) / Math.pow(10,-puissLat);
+				}
+				return roundedCoord;
 			}
 			
 			/**
@@ -393,13 +446,6 @@
 			}
 			public function set suffix(value:String):void {
 				_suffix = value;
-			}
-			
-			public function get numdigits():Number {
-				return _numdigits;
-			}
-			public function set numdigits(value:Number):void {
-				_numdigits = value;
 			}
 			
 			public function get granularity():int {
