@@ -189,7 +189,7 @@
 				// Getting units for this SRS
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
 				// Getting new index for the combo box
-				this._selectedIndexCrs = event.newIndex;
+				this.selectedIndexCrs = event.newIndex;
 				
 				// Feeding units combo box
 				feedUnitsComboBox();
