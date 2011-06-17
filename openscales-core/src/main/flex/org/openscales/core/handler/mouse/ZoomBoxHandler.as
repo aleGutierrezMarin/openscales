@@ -1,6 +1,7 @@
 package org.openscales.core.handler.mouse
 {
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	
@@ -74,11 +75,18 @@ package org.openscales.core.handler.mouse
 		override protected function registerListeners():void{
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN,startBox);
-				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,endBox);
+				if (this.map.stage)
+				{
+					this.registerMouseUp();
+				}
 				this.map.addEventListener(MapEvent.DRAG_START, dragStart);
 				this.map.addEventListener(MapEvent.DRAG_END, dragEnd);
 				
 			}
+		}
+		
+		private function registerMouseUp():void{
+			this.map.stage.addEventListener(MouseEvent.MOUSE_UP,endBox);
 		}
 		
 		/**
@@ -115,6 +123,7 @@ package org.openscales.core.handler.mouse
 			if(!_shiftMode || !e.shiftKey || _dragging) return;
 			
 			//this.map.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+			this.registerMouseUp();
 			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,expandArea);
 			this._drawing = true;
 			_drawContainer.graphics.beginFill(_fillColor,0.5);
