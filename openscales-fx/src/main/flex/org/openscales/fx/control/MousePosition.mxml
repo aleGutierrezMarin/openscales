@@ -586,7 +586,7 @@
 							dataProvider="{this.crsDataProvider}"
 							selectedIndex="{this.selectedIndexCrs}"/>
 			
-			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" left="100"
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" left="120"
 							change="unitsChanged(event)" width="200"
 							dataProvider="{this.unitDataProvider}"
 							selectedIndex="{this.selectedIndexUnit}"/>
