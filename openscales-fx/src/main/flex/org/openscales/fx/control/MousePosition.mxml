@@ -414,13 +414,13 @@
 				if (this.map) {
 					this.map.removeEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
 					this.map.removeEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
-					this.map.removeEventListener(MapEvent.MOVE_END, this.activateDisplay);
+					this.map.removeEventListener(MapEvent.DRAG_END, this.activateDisplay);
 				}
 				
 				if (this.map) {
 					this.map.addEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
 					this.map.addEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
-					this.map.addEventListener(MapEvent.MOVE_END, this.activateDisplay);
+					this.map.addEventListener(MapEvent.DRAG_END, this.activateDisplay);
 				}
 			}
 			
