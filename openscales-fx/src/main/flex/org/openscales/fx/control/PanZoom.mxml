@@ -17,7 +17,7 @@
 			 * @default null
 			 */
 			[Bindable]
-			public var _scalesLabels:String = null;
+			public var scalesLabels:String = null;
 			
 			override public function set map(value:Map):void {
 				super.map = value;
@@ -25,16 +25,12 @@
 				zoomSlider.map = value;
 				panSkin.map = value;
 			}
-				
-			public function set scalesLabels(value:String):void
-			{
-				this._scalesLabels = value;
-			}
+			
 		]]>
 	</fx:Script>
 
 
-	<Zoom id="zoomSlider" scalesName="{this._scalesLabels}"/>
+	<Zoom id="zoomSlider" scalesName="{this.scalesLabels}"/>
 	<Pan id="panSkin" />
 	
 	

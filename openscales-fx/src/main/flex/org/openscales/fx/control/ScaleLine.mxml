@@ -91,14 +91,14 @@
 			 * @default 0
 			 */
 			[Bindable]
-			public var _topScaleWidth:Number = 0;
+			public var topScaleWidth:Number = 0;
 			
 			/**
 			 * Bottom scale width
 			 * @default 0
 			 */
 			[Bindable]
-			public var _bottomScaleWidth:Number = 0;
+			public var bottomScaleWidth:Number = 0;
 			
 			/**
 			 * Get the existing map and add event listener on event Zoom end and baseLayer change.
@@ -205,8 +205,8 @@
 				var bottomPx:Number = bottomMax / mapResolution;
 				
 				// update the top rect width
-				this._topScaleWidth = Math.round(topPx);
-				this._bottomScaleWidth = Math.round(bottomPx);
+				this.topScaleWidth = Math.round(topPx);
+				this.bottomScaleWidth = Math.round(bottomPx);
 				
 			}	
 			
@@ -357,14 +357,14 @@
 	
 	
 	<s:Label id="scaleTopValue" x="13" y="0" text="{this.topScaleValue + ' ' + this.topCurrentUnit}" />
-	<s:Rect id="scaleTopWidth" x="13" y="12" height="8" width="{this._topScaleWidth}">     
+	<s:Rect id="scaleTopWidth" x="13" y="12" height="8" width="{this.topScaleWidth}">     
 		<s:fill>
 			<s:SolidColor color="0x666666" alpha=".5"/>
 		</s:fill>
 	</s:Rect>
 	
 	<s:Label id="scaleBottomValue" x="13" y="33" text="{this.bottomScaleValue + ' ' + this.bottomCurrentUnit}" />
-	<s:Rect id="scaleBottomWidth" x="13" y="23" height="8" width="{this._bottomScaleWidth}">
+	<s:Rect id="scaleBottomWidth" x="13" y="23" height="8" width="{this.bottomScaleWidth}">
 		<s:fill>
 			<s:SolidColor color="0x666666" alpha=".5"/>
 		</s:fill>

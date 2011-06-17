@@ -65,6 +65,11 @@ package org.openscales.core.events{
 		public static const DRAG_START:String="openscales.mapdragstart";
 		
 		/**
+		 * Event type dispatched just after the map was dragged.
+		 */
+		public static const DRAG_END:String = "openscales.dragEnd";
+		
+		/**
  		 * Event type dispatched during map resize.
 		 */
 		public static const RESIZE:String="openscales.mapresize";
@@ -98,6 +103,8 @@ package org.openscales.core.events{
 		 * Event type dispatched when a component of the map is toggled or iconified.
 		 */
 		public static const COMPONENT_CHANGED:String="openscales.componentChanged";
+		
+
 
 		/**
 		 * Instances of MapEvent are events dispatched by the Map
