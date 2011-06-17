@@ -23,9 +23,9 @@ package org.openscales.core.handler.keyboard
 	 */ 
 	public class KeyboardHandler extends Handler
 	{
-		private var _slideRatio:Number = 0.1;
+		private var _slideRatio:Number = 75;
 		
-		private var _slideRatioShiftkey:Number = 0.2;
+		private var _slideRatioShiftkey:Number = 225;
 		
 		private var _panWest:uint = Keyboard.LEFT;
 		
@@ -83,27 +83,27 @@ package org.openscales.core.handler.keyboard
 			{
 				case _panWest:
 					if(event.shiftKey)
-						this.map.pan(-Math.floor(this.map.width * _slideRatioShiftkey),0,true);
+						this.map.pan(-_slideRatioShiftkey,0,true);
 					else
-						this.map.pan(-Math.floor(this.map.width * _slideRatio),0,true);
+						this.map.pan(-_slideRatio,0,true);
 					break;
 				case _panNorth:
 					if(event.shiftKey)
-						this.map.pan(0,-Math.floor(this.map.height * _slideRatioShiftkey),true);
+						this.map.pan(0,-_slideRatioShiftkey,true);
 					else
-						this.map.pan(0,-Math.floor(this.map.height * _slideRatio),true);
+						this.map.pan(0,-_slideRatio,true);
 					break;
 				case _panEast:
 					if(event.shiftKey)
-						this.map.pan(Math.floor(this.map.width * _slideRatioShiftkey),0,true);
+						this.map.pan(_slideRatioShiftkey,0,true);
 					else
-						this.map.pan(Math.floor(this.map.width * _slideRatio),0,true);
+						this.map.pan(_slideRatio,0,true);
 					break;
 				case _panSouth:
 					if(event.shiftKey)
-						this.map.pan(0,Math.floor(this.map.height * _slideRatioShiftkey),true);
+						this.map.pan(0,_slideRatioShiftkey,true);
 					else
-						this.map.pan(0,Math.floor(this.map.height * _slideRatio),true);
+						this.map.pan(0,_slideRatio,true);
 					break;
 				case _zoomIn:
 					this.map.moveTo(this.map.center,this.map.zoom + 1,false,true);
@@ -127,8 +127,8 @@ package org.openscales.core.handler.keyboard
 		 */
 		public function setKeyCodesToDefault():void
 		{
-			this.slideRatio = 0.1;
-			this.slideRatioShiftkey = 0.2;
+			this.slideRatio = 75;
+			this.slideRatioShiftkey = 225;
 			this.panWest = Keyboard.LEFT;
 			this.panNorth = Keyboard.UP;
 			this.panEast = Keyboard.RIGHT;
@@ -140,8 +140,8 @@ package org.openscales.core.handler.keyboard
 		}
 		
 		/**
-		 * Ratio used to calculate new map position when panning without shift key pressed
-		 * <p>Default is 0.1</p>
+		 * Step (in pixels) used to calculate new map position when panning without shift key pressed
+		 * <p>Default is 75</p>
 		 */
 		public function get slideRatio():Number
 		{
@@ -157,8 +157,8 @@ package org.openscales.core.handler.keyboard
 		}
 		
 		/**
-		 * Ratio used to calculate new map position when panning with shift key pressed
-		 * <p>Default is 0.3</p>
+		 * Step (in pixels) used to calculate new map position when panning with shift key pressed
+		 * <p>Default is 225</p>
 		 */
 		public function get slideRatioShiftkey():Number
 		{
