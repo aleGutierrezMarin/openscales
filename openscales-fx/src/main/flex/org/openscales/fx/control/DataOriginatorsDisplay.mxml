@@ -93,6 +93,12 @@
 			private var _currentOriginator:Number = -1;
 
 
+			/**
+			 * @private
+			 * The itemRenderer class for display item of the Logo list
+			 * @default DataOriginatorsRenderer
+			 */
+			private var _itemRenderer:Class = DataOriginatorsRenderer;
 		
 
 			/**
@@ -382,13 +388,30 @@
 				this._logoNumber = value;
 			}
 			
+			/**
+			 * The itemRenderer for the list contains by the Logo list
+			 */
+			[Bindable]
+			public function get itemRenderer():Class
+			{
+				return this._itemRenderer;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set itemRenderer(value:Class):void
+			{
+				this._itemRenderer=value;
+			}
+			
 		]]>
 	</fx:Script>
 	
 
 		<s:List id="originatorsList" height="60"
 				horizontalCenter="0" verticalCenter="0" dataProvider="{_originator}"
-				itemRenderer="org.openscales.fx.control.DataOriginatorsRenderer"
+				itemRenderer="{new ClassFactory(this.itemRenderer)}"
 				contentBackgroundAlpha="0"
 				borderVisible="false" >
 			<s:layout>

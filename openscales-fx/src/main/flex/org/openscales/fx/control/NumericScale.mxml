@@ -31,7 +31,7 @@
 			 * @default "1 / 1"
 			 */
 			[Bindable]
-			public var _scaleLabel: String = "1 / 1";
+			public var scaleLabel: String = "1 / 1";
 				
 			override public function set map(value:Map):void {
 				
@@ -64,7 +64,7 @@
 					this._map.baseLayer.dpi);
 				
 				// update the label :
-				_scaleLabel = "1 / "+this._value;
+				this.scaleLabel = "1 / "+this._value;
 			}
 			
 			/**
@@ -89,6 +89,6 @@
 			  paddingTop="5" 
 			  paddingLeft="5" 
 			  paddingRight="5"
-			  text="{this._scaleLabel}"/>
+			  text="{this.scaleLabel}"/>
 	
 </Control>

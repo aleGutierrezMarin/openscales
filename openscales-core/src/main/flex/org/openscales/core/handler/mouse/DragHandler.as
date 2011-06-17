@@ -23,7 +23,6 @@ package org.openscales.core.handler.mouse
 		/**
 		 * @private 
 		 */ 
-		private var _shiftPressed:Boolean = false;
 		
 		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
@@ -54,8 +53,6 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
-				this.map.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
-				this.map.addEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
 			}
 		}
 		
@@ -63,8 +60,6 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
-				this.map.removeEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
-				this.map.removeEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
 			}
 		}
 		
@@ -73,13 +68,13 @@ package org.openscales.core.handler.mouse
 		 */
 		protected function onMouseDown(event:MouseEvent):void
 		{
-			if(_shiftPressed) return;
+			if(event.shiftKey) return;
 			
 			if (_firstDrag) {
 				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
 				_firstDrag = false;
 			}
-			
+			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_START, this.map));
 			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			
 			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
@@ -87,17 +82,17 @@ package org.openscales.core.handler.mouse
 			this._startCenter = this.map.center;
 			this.map.buttonMode=true;
 			this._dragging=true;
-			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_START, this.map));
+			
 			if(this.onstart!=null)
 				this.onstart(event as MouseEvent);
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
-			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
-			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
-			if(this.map.bitmapTransition) {
-				this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - this._offset.x;
-				this.map.bitmapTransition.y = this.map.bitmapTransition.parent.mouseY - this._offset.y;
+				this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
+				this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
+				if(this.map.bitmapTransition) {
+					this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - this._offset.x;
+					this.map.bitmapTransition.y = this.map.bitmapTransition.parent.mouseY - this._offset.y;
 			}
 			
 			// Force update regardless of the framerate for smooth drag
@@ -109,36 +104,19 @@ package org.openscales.core.handler.mouse
 		 */
 		protected function onMouseUp(event:MouseEvent):void {
 			
-			if(_shiftPressed) return;
+			if(!_dragging) return;
 			
 			if((!this.map) || (!this.map.stage))
 				return;
 			
 			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
-			
+			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_END, this.map));
 			this.map.buttonMode=false;
 			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
 			// A MapEvent.MOVE_END is emitted by the "set center" called in this.done
 			this._dragging=false;
 			if (this.oncomplete!=null)
 				this.oncomplete(event as MouseEvent);
-		}
-		
-		/**
-		 * 
-		 */
-		private function onKeyDown(event:KeyboardEvent):void
-		{
-			if(event.keyCode == 16) _shiftPressed = true;
-
-		}
-		
-		/**
-		 * 
-		 */
-		private function onKeyUp(event:KeyboardEvent):void
-		{
-			if(event.keyCode == 16) _shiftPressed = false;
 		}
 		
 		// Getters & setters as3
