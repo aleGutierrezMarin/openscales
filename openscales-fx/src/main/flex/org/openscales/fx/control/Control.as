@@ -76,26 +76,32 @@ package org.openscales.fx.control
 			this.map = this._fxMap.map;
 		}
 		
-		[Bindable(event="propertyChange")]
+		/**
+		 * The current map linked to the control
+		 */
+		[Bindable]
 		public function get map():Map {
 			return this._map;
 		}
-		public function set map(value:Map):void {
-			
-			if(this._map) {
-				this.map.removeEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
-			}
+		
+		/**
+		 * @private
+		 */
+		public function set map(value:Map):void 
+		{
+			// remove listener to old map if necessary
+			this.desactivate();
 			
 			this._map = value;
 			
-			if(this._map) {
-				this._map.addEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
-			}
-			
 			// Activate the control only if this control has already thrown an Event.COMPLETE
 			if(this._isInitialized) {
-				this.active = true;
+				this._active = true;
 			}
+			
+			// update listener to the map if the control is activate:
+			if(this._active)
+				this.activate();
 			
 			if(!this._isAddedToFxMapControlList){
 				if(this.fxMap){
@@ -103,17 +109,52 @@ package org.openscales.fx.control
 					this._isAddedToFxMapControlList = true;
 				}
 			}
-			
-			// Dispatch an event to allow binding for the map of this Control
-			dispatchEvent(new Event("propertyChange"));
 		}
 		
+		/**
+		 * indicates if the control is currently active or not
+		 */
 		public function get active():Boolean {
 			return this._active;
 		}
 		
+		/**
+		 * @private
+		 */
 		public function set active(value:Boolean):void {
-			this._active = value;
+			
+			if(value)
+				this.activate();
+			else
+				this.desactivate();
+		}
+		
+		/**
+		 * Define the active status to true and
+		 * add listeners to the current map to really active the control.
+		 */
+		public function activate():void
+		{
+			this._active = true;
+			
+			if(this._map)
+			{
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
+			}
+		}
+		
+		/**
+		 * Define the active status to false and
+		 * remove listeners from the current map (if defined) to really desactive the control.
+		 */
+		public function desactivate():void
+		{
+			this._active = false;
+			
+			if(this._map)
+			{
+				this.map.removeEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
+			}
 		}
 		
 		public function draw():void

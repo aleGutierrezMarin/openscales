@@ -28,12 +28,15 @@
 				super.layer = value;
 				this._displayed = this._layer.displayed;
 				
-				this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
-				this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
-				this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, checkLayerDisplayed);
-				
-				this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, checkLayerDisplayed);
-				this._layer.map.addEventListener(MapEvent.ZOOM_CHANGED, checkLayerDisplayed);
+				if(this._layer.map)
+				{
+					this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
+					this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+					this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, checkLayerDisplayed);
+					
+					this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, checkLayerDisplayed);
+					this._layer.map.addEventListener(MapEvent.ZOOM_CHANGED, checkLayerDisplayed);
+				}
 			}
 			
 			/**

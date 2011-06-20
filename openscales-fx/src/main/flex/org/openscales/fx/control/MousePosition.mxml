@@ -407,20 +407,39 @@
 			}
 			
 			
-			override public function set map(map:Map):void {
-				
+			override public function set map(map:Map):void {		
 				super.map = map;
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
 				
-				if (this.map) {
-					this.map.removeEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
-					this.map.removeEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
-					this.map.removeEventListener(MapEvent.DRAG_END, this.activateDisplay);
-				}
-				
-				if (this.map) {
+				// add listener to the map
+				if(this._map)
+				{
 					this.map.addEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
 					this.map.addEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
 					this.map.addEventListener(MapEvent.DRAG_END, this.activateDisplay);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				// remove listener to the map
+				if(this._map)
+				{
+					this.map.removeEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
+					this.map.removeEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
+					this.map.removeEventListener(MapEvent.DRAG_END, this.activateDisplay);
 				}
 			}
 			

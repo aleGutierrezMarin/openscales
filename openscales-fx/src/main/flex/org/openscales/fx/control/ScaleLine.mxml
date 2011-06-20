@@ -103,15 +103,42 @@
 			/**
 			 * Get the existing map and add event listener on event Zoom end and baseLayer change.
 			 *
-			 * @param value
+			 * @param value The new map to set
 			 */
-			override public function set map(value:Map):void {
-				if(value != null) {
-					this._map=value;	      	
+			override public function set map(value:Map):void 
+			{
+				super.map = value;
+				this.updateScale();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				// add listener to the map
+				if(this._map)
+				{
 					this._map.addEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
 					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
 				}
-				this.updateScale();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				// remove listener to the map
+				if(this._map)
+				{
+					this._map.removeEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
+					this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
+				}
 			}
 			
 			/**

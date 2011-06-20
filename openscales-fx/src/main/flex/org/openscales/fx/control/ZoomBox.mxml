@@ -41,15 +41,48 @@
 			 */
 			private var zoomBoxCursorID:int = CursorManager.NO_CURSOR;
 			
+			/**
+			 * @inherit
+			 */
 			override public function onMapLanguageChange(event:I18NEvent):void {
 				this._toolTip = Catalog.getLocalizationForKey("zoombox.tooltip");
 			}
 			
+			/**
+			 * @inherit
+			 */
 			override public function set map(value:Map):void {
 				super.map = value;
-				if (map != null) {
-					_zoomBoxHandler.map = map;
-					map.addEventListener(ZoomBoxEvent.END, disabled);
+				if (this._map != null) {
+					this._zoomBoxHandler.map = this._map;
+				}
+			}
+	
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				// add listener to the map
+				if(this._map)
+				{
+					this._map.addEventListener(ZoomBoxEvent.END, disabled);	
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				// remove listener to the map
+				if(this._map)
+				{
+					this._map.removeEventListener(ZoomBoxEvent.END, disabled);	
 				}
 			}
 			
