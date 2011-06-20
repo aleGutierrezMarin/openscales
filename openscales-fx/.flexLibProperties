@@ -107,6 +107,8 @@
     <classEntry path="org.openscales.fx.control.layer.LayerMetadatasTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
+    <classEntry path="org.openscales.fx.control.LayerCatalog"/>
+    <classEntry path="org.openscales.fx.control.LayerCatalogTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
