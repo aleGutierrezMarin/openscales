@@ -163,7 +163,7 @@ package org.openscales.core.layer
 			
 			var tilesBounds:Bounds = this.getTilesBounds();            
 			
-			if (this.tiled) {
+			if (!this.tiled) {
 				if(fullRedraw)
 					this.clear();
 				if ( forceReTile || !tilesBounds.containsBounds(bounds)) {
