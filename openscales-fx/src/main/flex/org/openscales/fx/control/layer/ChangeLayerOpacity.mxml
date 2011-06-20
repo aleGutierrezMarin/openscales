@@ -42,7 +42,8 @@
 				this._alpha=this._layer.alpha*100;
 				this._alphaLabel=Math.round(this._alpha)+" %";
 				
-				this._layer.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED,layerChangeOpacity);
+				if(this._layer.map)
+					this._layer.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED,layerChangeOpacity);
 			}
 
 			/**
