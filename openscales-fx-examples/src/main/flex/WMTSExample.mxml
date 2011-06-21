@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="http://openscales.org"
+		 width="100%" height="100%">
+	
+	<Map id="fxMap" width="100%" height="100%" center="4.833,45.767">
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		<DragHandler/>
+		<WheelHandler/>
+		<PanZoom id="panZoom" x="10" y="10" />
+		<WMTS name="myLayer"
+			  url="http://openscales.org/geoserver/gwc/service/wmts"
+			  tileMatrixSet="EPSG:4326"
+			  WMTSLayer="topp:world_borders"
+			  format="image/png" />
+		<OverviewMap />
+	</Map>
+</s:Group>

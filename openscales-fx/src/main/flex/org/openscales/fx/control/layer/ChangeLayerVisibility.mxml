@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="org.openscales.fx.control.layer.*" >
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.layer.Layer;
+			
+			/**
+			 * @inherit
+			 * Set the first value of the checkbox
+			 */
+			override public function set layer(value:Layer):void
+			{
+				super.layer = value;
+				
+				layerSwitcherCheckBox.selected = this._layer.visible;
+				
+				this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
+				this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+				this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, updateCheckbox);
+			}
+			
+			/**
+			 * Update the checkbox value is the layer visibility change
+			 */
+			public function updateCheckbox(event:LayerEvent):void
+			{
+				layerSwitcherCheckBox.selected = this._layer.visible;	
+			}
+			
+			/**
+			 * Update the checkbox value if the layer is OutOfRange
+			 */
+			public function inOutRange(event:LayerEvent):void 
+			{
+				if(event.type == LayerEvent.LAYER_OUT_RANGE)
+				{     
+					layerSwitcherCheckBox.selected = false;
+				}
+				else
+				{
+					layerSwitcherCheckBox.selected = true;
+					event.layer.visible = layerSwitcherCheckBox.selected; 
+				}
+			}
+			
+			/**
+			* Change the layer visibility
+			* @param event Change event
+			*/
+			public function layerVisible(event:MouseEvent):void{
+				this._layer.visible = !this._layer.visible;
+				// If the layer was uncheck from the beggining, he hadn't load yet so we need
+				// to redraw it to load it.
+				if(layer.visible){
+					layer.redraw();
+				}
+			} 
+		]]>
+	</fx:Script>
+	
+
+		<s:CheckBox id="layerSwitcherCheckBox" click="layerVisible(event)" />
+
+</LayerControl>
