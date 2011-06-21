@@ -19,14 +19,13 @@ package org.openscales.core.layer
 	public class ImageLayer extends Layer
 	{
     
-	    private var _url:String = "";
 		private var _request:DataRequest = null;
 		private var _size:Size = null;
 		
 	    public function ImageLayer(name:String,
 	    						  url:String,
 	    						  bounds:Bounds) {
-	        this._url = url;
+	        this.url = url;
 	        this.maxExtent = bounds;
 						
 	        super(name);
@@ -56,7 +55,7 @@ package org.openscales.core.layer
 			}
 			
 	        if (! this._request) {
-				this._request = new DataRequest(this._url, onTileLoadEnd, onTileLoadError);
+				this._request = new DataRequest(this.url, onTileLoadEnd, onTileLoadError);
 				this._request.proxy = this.proxy;
 				this._request.security = this.security;
 				this.loading = true;
@@ -98,19 +97,11 @@ package org.openscales.core.layer
 		
 		public function onTileLoadError(event:IOErrorEvent):void
 		{
-			Trace.error("Error when loading image layer " + this._url);
-		}
-		
-		public function get url():String {
-			return this._url;
-		}
-		
-		public function set url(value:String):void {
-			this._url = value;
+			Trace.error("Error when loading image layer " + this.url);
 		}
 		
 		override public function getURL(bounds:Bounds):String {
-			return this._url;
+			return this.url;
 		}
 	}
 }

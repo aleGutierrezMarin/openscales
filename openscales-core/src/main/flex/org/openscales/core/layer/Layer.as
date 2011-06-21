@@ -56,6 +56,14 @@ package org.openscales.core.layer {
 		private var _editable:Boolean = false;
 		private var _metaData:Object;
 
+		
+		/**
+		 * @private
+		 * The url use for the layer request if necessary.
+		 * @default null
+		 */
+		protected var _url:String = null;
+		
 		/**
 		 * @private
 		 * The list of originators for the layer.
@@ -568,7 +576,8 @@ package org.openscales.core.layer {
 		public override function set visible(value:Boolean):void {
 			super.visible = value;
 			if (this.map != null) {
-				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_VISIBLE_CHANGED, this));
+				var event:LayerEvent = new LayerEvent(LayerEvent.LAYER_VISIBLE_CHANGED, this)
+				this.map.dispatchEvent(event);
 			}
 		}
 		
@@ -643,6 +652,36 @@ package org.openscales.core.layer {
 		}
 		
 		/**
+		 * Allows to add custom metadata about the layer
+		 */ 
+		public function get metaData():Object
+		{
+			return _metaData;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set metaData(value:Object):void
+		{
+			_metaData = value;
+		}
+
+		/**
+		 * The url use for the layer request if necessary.
+		 */
+		public function get url():String {		
+			return this._url;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set url(value:String):void {
+			this._url=value;
+		}
+		
+		/**
 		 * The list of originators for the layer.
 		 */
 		public function get originators():Vector.<DataOriginator>
@@ -661,23 +700,6 @@ package org.openscales.core.layer {
 				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
 			}
 		}
-
-		/**
-		 * Allows to add custom metadata about the layer
-		 */ 
-		public function get metaData():Object
-		{
-			return _metaData;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set metaData(value:Object):void
-		{
-			_metaData = value;
-		}
-
 	}
 }
 

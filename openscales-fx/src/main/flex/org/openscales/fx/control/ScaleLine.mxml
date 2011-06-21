@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Control xmlns="http://openscales.org" 
-		xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" 
-		width="400" height="300" >
-
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="400" height="300" >
+	
 	<fx:Script>
 		<![CDATA[
 			import flash.events.Event;
@@ -29,6 +29,21 @@
 			
 			/**
 			 * @private
+			 * Scale value corresponding to the current rectangle size for top Unit
+			 * @default 0
+			 */
+			[Bindable]
+			private var _topScaleValue:Number = 0;
+			
+			/**
+			 * @private
+			 * The current unit for the top scale value
+			 * @default null
+			 */
+			private var _topCurrentUnit:String = null;
+			
+			/**
+			 * @private
 			 * Units for zoomed out on top bar.
 			 * @default km.
 			 */
@@ -40,6 +55,21 @@
 			 * @default m.
 			 */
 			private var _topInUnits:String = Catalog.getLocalizationForKey("scaleline.m");
+			
+			/**
+			 * @private
+			 * Scale value corresponding to the current rectangle size for bottom Unit
+			 * @default 0
+			 */
+			[Bindable]
+			private var _bottomScaleValue:Number = 0;
+			
+			/**
+			 * @private
+			 * The current unit for the bottom scale value
+			 * @default null
+			 */
+			private var _bottomCurrentUnit:String = null;
 			
 			/**
 			 * @private
@@ -57,6 +87,20 @@
 			
 			
 			/**
+			 * Top scale width
+			 * @default 0
+			 */
+			[Bindable]
+			public var topScaleWidth:Number = 0;
+			
+			/**
+			 * Bottom scale width
+			 * @default 0
+			 */
+			[Bindable]
+			public var bottomScaleWidth:Number = 0;
+			
+			/**
 			 * Get the existing map and add event listener on event Zoom end and baseLayer change.
 			 *
 			 * @param value
@@ -67,6 +111,7 @@
 					this._map.addEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
 					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
 				}
+				this.updateScale();
 			}
 			
 			/**
@@ -135,40 +180,34 @@
 				var maxSizeData:Number = this._scaleMaxWidth * mapResolution * Unit.getInchesPerUnit(currentBaseLayerUnits);
 				
 				// decide whether to use large or small scale units. it's independent of the map unit    
-				var topUnits:String;		
-				var bottomUnits:String;	
 				if(maxSizeData > 100000) {
-					topUnits = this.topOutUnits;
-					bottomUnits = this._bottomOutUnits;
+					this.topCurrentUnit = this.topOutUnits;
+					this.bottomCurrentUnit = this._bottomOutUnits;
 				} else {
-					topUnits = this.topInUnits;
-					bottomUnits = this._bottomInUnits;
+					this.topCurrentUnit = this.topInUnits;
+					this.bottomCurrentUnit = this._bottomInUnits;
 				}
 				
 				// and to map units units
-				var topMax:Number = maxSizeData / Unit.getInchesPerUnit(topUnits);
-				var bottomMax:Number = maxSizeData / Unit.getInchesPerUnit(bottomUnits);
+				var topMax:Number = maxSizeData / Unit.getInchesPerUnit(this._topCurrentUnit);
+				var bottomMax:Number = maxSizeData / Unit.getInchesPerUnit(this._bottomCurrentUnit);
 				
 				// now trim this down to useful block length
-				
-				var topRounded:Number = this.getBarLen(topMax);
-				var bottomRounded:Number = this.getBarLen(bottomMax);
+				this.topScaleValue = this.getBarLen(topMax);
+				this.bottomScaleValue = this.getBarLen(bottomMax);
 				
 				// and back to display units
-				topMax = topRounded / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(topUnits);
-				bottomMax = bottomRounded / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(bottomUnits);
+				topMax = this._topScaleValue / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(this._topCurrentUnit);
+				bottomMax = this._bottomScaleValue / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(this._bottomCurrentUnit);
 				
 				// and to pixel units
 				var topPx:Number = topMax / mapResolution;
 				var bottomPx:Number = bottomMax / mapResolution;
 				
 				// update the top rect width
-				scaleTopWidth.width = Math.round(topPx);
-				scaleBottomWidth.width = Math.round(bottomPx);
-			
-				scaleTopValue.text = topRounded + " " + topUnits ;
-				scaleBottomValue.text = bottomRounded + " " + bottomUnits;
-	
+				this.topScaleWidth = Math.round(topPx);
+				this.bottomScaleWidth = Math.round(bottomPx);
+				
 			}	
 			
 			// GETTERS AND SETTERS
@@ -185,6 +224,40 @@
 			 */
 			public function set scaleMaxWidth(value:Number):void {
 				this._scaleMaxWidth = value;
+			}
+			
+			/**
+			 * Scale value corresponding to the current rectangle size for top Unit
+			 */
+			[Bindable]
+			public function get topScaleValue():Number
+			{
+				return this._topScaleValue;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set topScaleValue(value:Number):void
+			{
+				this._topScaleValue=value;
+			}
+			
+			/**
+			 * Scale value corresponding to the current rectangle size for top Unit
+			 */
+			[Bindable]
+			public function get topCurrentUnit():String
+			{
+				return this._topCurrentUnit;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set topCurrentUnit(value:String):void
+			{
+				this._topCurrentUnit=value;
 			}
 			
 			/**
@@ -216,8 +289,43 @@
 			}
 			
 			/**
+			 * Scale value corresponding to the current rectangle size for bottom Unit
+			 */
+			[Bindable]
+			public function get bottomScaleValue():Number
+			{
+				return this._bottomScaleValue;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set bottomScaleValue(value:Number):void
+			{
+				this._bottomScaleValue=value;
+			}
+			
+			/**
+			 * Scale value corresponding to the current rectangle size for bottom Unit
+			 */
+			[Bindable]
+			public function get bottomCurrentUnit():String
+			{
+				return this._bottomCurrentUnit;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set bottomCurrentUnit(value:String):void
+			{
+				this._bottomCurrentUnit=value;
+			}
+			
+			/**
 			 * Units for zoomed out on bottom bar.
 			 */
+			[Bindable]
 			public function get bottomOutUnits():String {
 				return this._bottomOutUnits;
 			}
@@ -243,19 +351,20 @@
 				this._bottomInUnits = value;
 			}
 			
+			
 		]]>
 	</fx:Script>
 	
-
-	<s:Label id="scaleTopValue" x="13" y="0" text="text" />
-	<s:Rect id="scaleTopWidth" x="13" y="12" height="8">     
+	
+	<s:Label id="scaleTopValue" x="13" y="0" text="{this.topScaleValue + ' ' + this.topCurrentUnit}" />
+	<s:Rect id="scaleTopWidth" x="13" y="12" height="8" width="{this.topScaleWidth}">     
 		<s:fill>
 			<s:SolidColor color="0x666666" alpha=".5"/>
 		</s:fill>
 	</s:Rect>
 	
-	<s:Label id="scaleBottomValue" x="13" y="33" text="text" />
-	<s:Rect id="scaleBottomWidth" x="13" y="23" height="8">
+	<s:Label id="scaleBottomValue" x="13" y="33" text="{this.bottomScaleValue + ' ' + this.bottomCurrentUnit}" />
+	<s:Rect id="scaleBottomWidth" x="13" y="23" height="8" width="{this.bottomScaleWidth}">
 		<s:fill>
 			<s:SolidColor color="0x666666" alpha=".5"/>
 		</s:fill>

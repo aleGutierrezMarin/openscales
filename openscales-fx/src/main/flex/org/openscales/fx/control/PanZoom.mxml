@@ -11,6 +11,13 @@
 			
 			import org.openscales.core.Map;
 			
+			/**
+			 * @private
+			 * The list of labels for different resolutions.
+			 * @default null
+			 */
+			[Bindable]
+			public var scalesLabels:String = null;
 			
 			override public function set map(value:Map):void {
 				super.map = value;
@@ -19,21 +26,11 @@
 				panSkin.map = value;
 			}
 			
-
-			/**
-			 * The list of labels for the different resolution.
-			 */
-			public function set scalesLabels(labels:String):void
-			{
-				zoomSlider.scalesName = labels;
-			}
-			
-			
 		]]>
 	</fx:Script>
 
 
-	<Zoom id="zoomSlider" />
+	<Zoom id="zoomSlider" scalesName="{this.scalesLabels}"/>
 	<Pan id="panSkin" />
 	
 	

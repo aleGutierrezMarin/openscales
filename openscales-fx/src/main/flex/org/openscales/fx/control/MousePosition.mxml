@@ -3,8 +3,6 @@
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
 					xmlns:openscales="http://openscales.org" 
-					width="400" 
-					height="300"
 					creationComplete="init();">
 	<fx:Script>
 		<![CDATA[
@@ -25,12 +23,15 @@
 			
 			import spark.events.IndexChangeEvent;
 			
+			
+			public static var DEFAULT_PROJECTION_CODE:String = "EPSG:4326";
+			
 			/**
 			 * @private
 			 * The projection displayed. If null, the display projection used is the projection of the base layer.
 			 * By default, the display projection is "EPSG:4326" 
 			 */
-			private var _displayProjSrsCode:String = "EPSG:4326";
+			private var _displayProjSrsCode:String = DEFAULT_PROJECTION_CODE;
 			
 			/**
 			 * @private 
@@ -66,7 +67,8 @@
 			/**
 			 * Number of digits for the displayed values
 			 */ 
-			private var _numdigits:Number = 5;
+			private var _digitsLon:Number = 0;
+			private var _digitsLat:Number = 0;
 			
 			private var _granularity:int = 10;
 			
@@ -88,7 +90,49 @@
 			private var _localNSEW:String = "NSEW";
 			
 			
-			private var _availableProjSrsList:String;
+			private var _availableProjSrsList:String = DEFAULT_PROJECTION_CODE;
+			
+			
+			/**
+			 * The display value for the mouse position
+			 * @default : null
+			 */
+			[Bindable]
+			public var mousePositionLabel:String = null;
+			
+			/**
+			 * DataProvider for mousePosition crs choice
+			 * @default empty ArrayCollection
+			 */
+			[Bindable]
+			public var crsDataProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * The selected index value selected for crs projection
+			 * @default 0
+			 */
+			[Bindable]
+			public var selectedIndexCrs:Number = 0;
+			
+			/**
+			 * DataProvider for mousePosition unit choice
+			 * @default empty ArrayCollection
+			 */
+			[Bindable]
+			public var unitDataProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * The selected index value selected for unit
+			 * @default 0
+			 */
+			private var _selectedIndexUnit:Number = 0;
+			
+			/**
+			 * @private
+			 * Boolean setted to true at the end of the init function
+			 */
+			private var _init:Boolean = false;
+			
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
 				this.feedUnitsComboBox();
@@ -101,8 +145,6 @@
 			 */ 
 			private function init():void {				
 				
-				this.mousePositionCrsComboBox.dataProvider = new ArrayList();
-				
 				var tmp:Array = _availableProjSrsList.split(",");
 				
 				var lgth:uint = tmp.length;
@@ -112,7 +154,7 @@
 				
 				for(i;i<lgth;i++)
 				{
-					this.mousePositionCrsComboBox.dataProvider.addItem(tmp[i]);
+					this.crsDataProvider.addItem(tmp[i]);
 					if(_displayProjSrsCode == (tmp[i] as String)) 
 					{
 						selectedIndex = i;
@@ -122,12 +164,16 @@
 				
 				if(!displayProjSrsCodeInList)
 				{
-					this.mousePositionCrsComboBox.dataProvider.addItem(_displayProjSrsCode);
+					this.crsDataProvider.addItem(_displayProjSrsCode);
 					selectedIndex = i;
 				}
 				
-				this.mousePositionCrsComboBox.selectedIndex = selectedIndex;
+				this.selectedIndexCrs = selectedIndex;
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
+				
+				// this boolean is used in the displayProjSrsCode setter
+				this._init = true;
+				
 				feedUnitsComboBox();
 			}
 			
@@ -136,13 +182,15 @@
 			 * 
 			 * function called when selected item in srs combo box has changed
 			 */ 
-			private function crsChanged(event:IndexChangeEvent):void
+			public function crsChanged(event:IndexChangeEvent):void
 			{
 				// Getting the value
-				_displayProjSrsCode = this.mousePositionCrsComboBox.dataProvider.getItemAt(event.newIndex).toString();
+				_displayProjSrsCode = this.crsDataProvider.getItemAt(event.newIndex).toString();
 				// Getting units for this SRS
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
-
+				// Getting new index for the combo box
+				this.selectedIndexCrs = event.newIndex;
+				
 				// Feeding units combo box
 				feedUnitsComboBox();
 			}
@@ -152,9 +200,14 @@
 			 * 
 			 * function called when selected item in units combo box has changed
 			 */ 
-			private function unitsChanged(event:IndexChangeEvent):void
+			public function unitsChanged(event:IndexChangeEvent):void
 			{
-				switch(this.mousePositionUnitsComboBox.selectedItem.data)
+				if(event)
+					this._selectedIndexUnit = event.newIndex;
+				
+				var item:String = (this.unitDataProvider.getItemAt(this.selectedIndexUnit).data as String);
+					
+				switch(item)
 				{
 					case Unit.DEGREE:
 						this._useDMS = false;
@@ -174,6 +227,7 @@
 						_displayMetricUnits = Unit.CENTIMETER;
 						break;
 				}
+				dispatchEvent(new Event('selectedIndexUnitChanged'));
 			}
 			
 			/**
@@ -192,9 +246,9 @@
 							{data:Unit.METER, label:Catalog.getLocalizationForKey("mouseposition.meters")},
 							{data:Unit.CENTIMETER, label:Catalog.getLocalizationForKey("mouseposition.centimeters")}
 						]);
-						if(this.mousePositionUnitsComboBox.dataProvider) this.mousePositionUnitsComboBox.dataProvider.removeAll(); // Clearing list if already set
-						this.mousePositionUnitsComboBox.dataProvider = items;
-						this.mousePositionUnitsComboBox.selectedIndex = 1;
+						if(this.unitDataProvider) this.unitDataProvider.removeAll(); // Clearing list if already set
+						this.unitDataProvider = items;
+						this.selectedIndexUnit = 1;
 						break;
 					case "dd":
 					case Unit.DEGREE:
@@ -202,9 +256,9 @@
 							{data:Unit.SEXAGESIMAL,label:Catalog.getLocalizationForKey("mouseposition.dms")},
 							{data:Unit.DEGREE, label:Catalog.getLocalizationForKey("mouseposition.decimaldegrees")}
 						]);
-						if(this.mousePositionUnitsComboBox.dataProvider) this.mousePositionUnitsComboBox.dataProvider.removeAll(); // Clearing list if already set
-						this.mousePositionUnitsComboBox.dataProvider = items;
-						this.mousePositionUnitsComboBox.selectedIndex = 0;
+						if(this.unitDataProvider) this.unitDataProvider.removeAll(); // Clearing list if already set
+						this.unitDataProvider = items;
+						this.selectedIndexUnit = 0;
 						break;
 				}
 				
@@ -225,6 +279,7 @@
 			 * @param evt
 			 */
 			public function redraw(evt:MouseEvent = null):void {
+				
 				var lonLat:Location;
 				
 				if (evt != null) {
@@ -250,38 +305,87 @@
 				var coord1:String, coord2:String;
 				if(_srsUnits == "dd" || _srsUnits == Unit.DEGREE)
 				{
-					if (this._useDMS /*&& (lonLat.projSrsCode == "EPSG:4326")*/) {
+					if (this._useDMS) {
 						_displayMetricUnits == Unit.SEXAGESIMAL;
-						coord1 = (lonLat.lon < 0) ? (Util.degToDMS(-lonLat.lon)+" "+this.localNSEW.charAt(3)) : (Util.degToDMS(lonLat.lon)+" "+this.localNSEW.charAt(2));
-						coord2 = (lonLat.lat < 0) ? (Util.degToDMS(-lonLat.lat)+" "+this.localNSEW.charAt(1)) : (Util.degToDMS(lonLat.lat)+" "+this.localNSEW.charAt(0));
+						coord1 = (lonLat.lon < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lon,"lon")) + " " + this.localNSEW.charAt(3)) : (Util.degToDMS(this.roundCoordinates(lonLat.lon,"lon")) + " " + this.localNSEW.charAt(2));
+						coord2 = (lonLat.lat < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lat,"lat")) + " " + this.localNSEW.charAt(1)) : (Util.degToDMS(this.roundCoordinates(lonLat.lat,"lat")) + " " + this.localNSEW.charAt(0));
 					} else {
 						_displayMetricUnits == Unit.DEGREE;
-						var digits:int = int(this.numdigits);
-						coord1 = lonLat.lon.toFixed(digits);
-						coord2 = lonLat.lat.toFixed(digits);
+						coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
+						coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
 					}
 				}
 				else if(_srsUnits == "m")
 				{
-					coord1 = lonLat.lon.toFixed(int(this.numdigits));
-					coord2 = lonLat.lat.toFixed(int(this.numdigits));
+					coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
+					coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
 					
 					if(_displayMetricUnits == Unit.CENTIMETER)
 					{
 						coord1 = String(Number(coord1)*100);
-						coord2 =  String(Number(coord2)*100);
-					}else if(_displayMetricUnits == Unit.KILOMETER)
+						coord2 = String(Number(coord2)*100);
+					}
+					else if(_displayMetricUnits == Unit.KILOMETER)
 					{
 						coord1 = String(Number(coord1)/100);
-						coord2 =  String(Number(coord2)/100);
+						coord2 = String(Number(coord2)/100);
 					}
 				}
 				
-				this.mousePositionCoordinates.text = this.prefix
+				this.mousePositionLabel = this.prefix
 					+ coord1
 					+ this.separator
 					+ coord2
 					+ this.suffix;
+			}
+			
+			/**
+			 * 
+			 * 
+			 * @param coord:Number
+			 */
+			private function roundCoordinates(coord:Number, type:String):Number {
+				
+				var roundedCoord:Number = coord;
+				
+				// Define 2 pixels
+				var pixel1:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+				var pixel2:Pixel = new Pixel(this.map.mouseX + 1, this.map.mouseY + 1);
+				
+				// Get the associated locations
+				var loc1:Location = this.map.getLocationFromMapPx(pixel1);
+				var loc2:Location = this.map.getLocationFromMapPx(pixel2);
+				
+				if(loc1 == null || loc2 == null)
+					return roundedCoord;
+				
+				if(this._displayProjSrsCode) {
+					loc1 = loc1.reprojectTo(this._displayProjSrsCode);
+					loc2 = loc2.reprojectTo(this._displayProjSrsCode);
+				}
+				
+				// Calculate the differences
+				var diffLon:Number = Math.abs(loc2.lon - loc1.lon);
+				var diffLat:Number = Math.abs(loc2.lat - loc1.lat);
+				
+				// Calculate et return the rounded coordinate
+				if(type == "lon" && diffLon > 0) {
+					var puissLon:int = Math.floor(Math.log(diffLon) / Math.LN10) - 2;
+					if(puissLon < 0)
+						this._digitsLon = -puissLon;
+					else
+						this._digitsLon = 0;
+					roundedCoord = Math.round(coord * Math.pow(10,-puissLon)) / Math.pow(10,-puissLon);
+				}
+				else if(type == "lat" && diffLat > 0) {
+					var puissLat:int = Math.floor(Math.log(diffLat) / Math.LN10) - 2;
+					if(puissLat < 0)
+						this._digitsLat = -puissLat;
+					else
+						this._digitsLat = 0;
+					roundedCoord = Math.round(coord * Math.pow(10,-puissLat)) / Math.pow(10,-puissLat);
+				}
+				return roundedCoord;
 			}
 			
 			/**
@@ -310,15 +414,13 @@
 				if (this.map) {
 					this.map.removeEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
 					this.map.removeEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
-					this.map.removeEventListener(MapEvent.MOVE_END, this.activateDisplay);
+					this.map.removeEventListener(MapEvent.DRAG_END, this.activateDisplay);
 				}
-				
-				
 				
 				if (this.map) {
 					this.map.addEventListener(MouseEvent.MOUSE_MOVE, this.redraw);
 					this.map.addEventListener(MapEvent.DRAG_START, this.deactivateDisplay);
-					this.map.addEventListener(MapEvent.MOVE_END, this.activateDisplay);
+					this.map.addEventListener(MapEvent.DRAG_END, this.activateDisplay);
 				}
 			}
 			
@@ -346,13 +448,6 @@
 				_suffix = value;
 			}
 			
-			public function get numdigits():Number {
-				return _numdigits;
-			}
-			public function set numdigits(value:Number):void {
-				_numdigits = value;
-			}
-			
 			public function get granularity():int {
 				return _granularity;
 			}
@@ -376,8 +471,7 @@
 			}
 			
 			/**
-			 * 
-			 * The projection displayed. Must be an existing value of availableProjSrsList
+			 * The projection displayed. Must be an existing value of availableProjSrsList.
 			 */
 			public function get displayProjSrsCode():String {
 				return this._displayProjSrsCode;
@@ -386,17 +480,43 @@
 			/**
 			 * @private
 			 */ 
-			public function set displayProjSrsCode(value:String):void {
-				this._displayProjSrsCode = value;
+			public function set displayProjSrsCode(value:String):void
+			{
+				if(this._init)
+				{
+					if(this._displayProjSrsCode == value)
+						return;
+					
+					var tmp:Array = this.crsDataProvider.toArray();
+					var i:uint = 0;
+					var displayProjSrsCodeInList:Boolean = false;
+					
+					for(i; i<tmp.length; i++)
+					{
+						if(value == (tmp[i] as String))
+						{
+							this._displayProjSrsCode = value;
+							this._srsUnits = ProjProjection.getProjProjection(this.displayProjSrsCode).projParams.units;
+							this.selectedIndexCrs = i;
+							this.feedUnitsComboBox();
+							displayProjSrsCodeInList = true;
+							break;
+						}
+					}
+					if(!displayProjSrsCodeInList)
+						trace("The ProjSrsCode to display isn't valid");
+				}
+				else
+					this._displayProjSrsCode = value;	
 			}
 			
 			/**
-			 * A comma separated list of SRS code that is passed to constructor
-			 * <p>Example: "EPSG:900913,EPSG:4326" </p>
+			 * A comma separated list of SRS code that is passed to constructor.
+			 * <p>Example: "EPSG:900913,EPSG:4326"</p>
 			 */ 
-			public function get availableProjSrsList():String{
-				return _availableProjSrsList;	
-			} 
+			public function get availableProjSrsList():String {
+				return _availableProjSrsList;
+			}
 			
 			/**
 			 * @private
@@ -408,12 +528,10 @@
 			
 			/**
 			 * displayMetricUnits getter
-			 * Contains the metric units currently displayed
-			 * <p>
-			 * Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL
-			 * </p> 
+			 * Contains the metric units currently displayed.
+			 * <p>Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL</p>
 			 */ 
-			public function get displayMetricUnits():String{
+			public function get displayMetricUnits():String {
 				return _displayMetricUnits;
 			} 
 			
@@ -422,24 +540,57 @@
 			 */ 
 			public function set displayMetricUnits(value:String):void
 			{
-				_displayMetricUnits = value;
+				var tmp:Array = this.unitDataProvider.toArray();
+				var i:uint = 0;
+				var displayMetricUnitsInList:Boolean = false;
+				
+				for(i; i<tmp.length; i++)
+				{
+					if(value == (tmp[i]["data"] as String))
+					{
+						this._selectedIndexUnit = i;
+						this.unitsChanged(null);
+						displayMetricUnitsInList = true;
+						break;
+					}
+				}
+				if(!displayMetricUnitsInList)
+					trace("The MetricUnits to display isn't valid");
 			}
-						
+			
+			/**
+			 * 
+			 */
+			[Bindable(event='selectedIndexUnitChanged')]
+			public function get selectedIndexUnit():Number
+			{
+				return this._selectedIndexUnit;
+			}
+			
+			public function set selectedIndexUnit(value:Number):void
+			{
+				this._selectedIndexUnit = value;
+				dispatchEvent(new Event('selectedIndexUnitChanged'));
+			}
+			
 		]]>
 	</fx:Script>
-	
-	<s:VGroup id="mousePositionVGroup" width="100%">
-		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
+	<s:SkinnableContainer styleName="verticalLayout" id="mousePositionMainGroup" width="100%">
+		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
+				 text="{this.mousePositionLabel}"
+				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
-		<s:HGroup id="mousePositionHGroup" width="100%"> 
+		<s:SkinnableContainer styleName="horizontalLayout" id="mousePositionChoiceGroup" width="100%" top="20"> 
+			<s:DropDownList id="mousePositionCrsComboBox"  
+							change="crsChanged(event);"
+							dataProvider="{this.crsDataProvider}"
+							selectedIndex="{this.selectedIndexCrs}"/>
 			
-			<s:DropDownList id="mousePositionCrsComboBox"  change="crsChanged(event);">
-				
-			</s:DropDownList>
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" left="120"
+							change="unitsChanged(event)" width="200"
+							dataProvider="{this.unitDataProvider}"
+							selectedIndex="{this.selectedIndexUnit}"/>
 			
-			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" change="unitsChanged(event)">
-				
-			</s:DropDownList>
-		</s:HGroup>
-	</s:VGroup>
+		</s:SkinnableContainer>
+	</s:SkinnableContainer>
 </openscales:Control>
