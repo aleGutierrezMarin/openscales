@@ -107,11 +107,11 @@
 			public var crsDataProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
+			 * @private
 			 * The selected index value selected for crs projection
 			 * @default 0
 			 */
-			[Bindable]
-			public var selectedIndexCrs:Number = 0;
+			private var _selectedIndexCrs:Number = 0;
 			
 			/**
 			 * DataProvider for mousePosition unit choice
@@ -121,6 +121,7 @@
 			public var unitDataProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
+			 * @private
 			 * The selected index value selected for unit
 			 * @default 0
 			 */
@@ -134,6 +135,10 @@
 			
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
+				
+				dispatchEvent(new Event("selectedIndexCrsChanged"));
+				dispatchEvent(new Event("selectedIndexUnittChanged"));
+				
 				this.feedUnitsComboBox();
 			}
 			
@@ -142,8 +147,8 @@
 			 * 
 			 * Method called when creation complete event occurs
 			 */ 
-			private function init():void {				
-				Trace.useFireBugConsole = true;
+			private function init():void {			
+				
 				var tmp:Array = _availableProjSrsList.split(",");
 				
 				var lgth:uint = tmp.length;
@@ -580,7 +585,24 @@
 			}
 			
 			/**
-			 * 
+			 * The selected index value selected for crs projection
+			 * @default 0
+			 */
+			[Bindable(event='selectedIndexCrsChanged')]
+			public function get selectedIndexCrs():Number
+			{
+				return this._selectedIndexCrs;
+			}
+			
+			public function set selectedIndexCrs(value:Number):void
+			{
+				this._selectedIndexCrs = value;
+				dispatchEvent(new Event('selectedIndexCrsChanged'));
+			}
+			
+			/**
+			 * The selected index value selected for unit
+			 * @default 0
 			 */
 			[Bindable(event='selectedIndexUnitChanged')]
 			public function get selectedIndexUnit():Number

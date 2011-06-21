@@ -13,6 +13,7 @@
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
@@ -47,14 +48,14 @@
 			 * Units for zoomed out on top bar.
 			 * @default km.
 			 */
-			private var _topOutUnits:String = Catalog.getLocalizationForKey("scaleline.km");
+			private var _topOutUnits:String = "km";
 			
 			/**
 			 * @private
 			 * Units for zoomed in on top bar.  
 			 * @default m.
 			 */
-			private var _topInUnits:String = Catalog.getLocalizationForKey("scaleline.m");
+			private var _topInUnits:String = "m";
 			
 			/**
 			 * @private
@@ -76,14 +77,14 @@
 			 * Units for zoomed out on bottom bar.
 			 * @default mi.
 			 */
-			private var _bottomOutUnits:String = Catalog.getLocalizationForKey("scaleline.mi");
+			private var _bottomOutUnits:String = "mi";
 			
 			/**
 			 * @private
 			 * Units for zoomed in on bottom bar.
 			 * @default ft
 			 */
-			private var _bottomInUnits:String = Catalog.getLocalizationForKey("scaleline.ft");
+			private var _bottomInUnits:String = "ft";
 			
 			
 			/**
@@ -101,6 +102,20 @@
 			public var bottomScaleWidth:Number = 0;
 			
 			/**
+			 * @private
+			 * Scale text to display on Top
+			 */
+			[Bindable]
+			public var translateTopUnit:String = "";
+			
+			/**
+			 * @private
+			 * Scale text to display on Bottom
+			 */
+			[Bindable]
+			public var translateBottomUnit:String = "";
+			
+			/**
 			 * Get the existing map and add event listener on event Zoom end and baseLayer change.
 			 *
 			 * @param value The new map to set
@@ -111,6 +126,14 @@
 				
 				if(this._map)
 					this.updateScale();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void
+			{
+				this.updateScale();
 			}
 			
 			/**
@@ -195,6 +218,10 @@
 			 */
 			private function updateScale():void
 			{
+				// to keep current key for bottom/top unit
+				var topUnitKey:String = "";	
+				var bottomUnitKey:String = "";			
+				
 				// Get the resolution of the map
 				var mapResolution:Number = this.map.resolution;
 				
@@ -210,11 +237,15 @@
 				
 				// decide whether to use large or small scale units. it's independent of the map unit    
 				if(maxSizeData > 100000) {
-					this.topCurrentUnit = this.topOutUnits;
+					this.topCurrentUnit = this._topOutUnits;
+					topUnitKey = "scaleline.km"
 					this.bottomCurrentUnit = this._bottomOutUnits;
+					bottomUnitKey = "scaleline.mi"
 				} else {
-					this.topCurrentUnit = this.topInUnits;
-					this.bottomCurrentUnit = this._bottomInUnits;
+					this.topCurrentUnit = this._topInUnits;
+					topUnitKey = "scaleline.m"
+					this.bottomCurrentUnit =  this._bottomOutUnits;
+					bottomUnitKey = "scaleline.ft"
 				}
 				
 				// and to map units units
@@ -236,6 +267,9 @@
 				// update the top rect width
 				this.topScaleWidth = Math.round(topPx);
 				this.bottomScaleWidth = Math.round(bottomPx);
+				
+				this.translateTopUnit = Catalog.getLocalizationForKey(topUnitKey);
+				this.translateBottomUnit = Catalog.getLocalizationForKey(bottomUnitKey);
 				
 			}	
 			
@@ -380,19 +414,18 @@
 				this._bottomInUnits = value;
 			}
 			
-			
 		]]>
 	</fx:Script>
 	
 	
-	<s:Label id="scaleTopValue" x="13" y="0" text="{this.topScaleValue + ' ' + this.topCurrentUnit}" />
+	<s:Label id="scaleTopValue" x="13" y="0" text="{this.topScaleValue+' '+this.translateTopUnit}" />
 	<s:Rect id="scaleTopWidth" x="13" y="12" height="8" width="{this.topScaleWidth}">     
 		<s:fill>
 			<s:SolidColor color="0x666666" alpha=".5"/>
 		</s:fill>
 	</s:Rect>
 	
-	<s:Label id="scaleBottomValue" x="13" y="33" text="{this.bottomScaleValue + ' ' + this.bottomCurrentUnit}" />
+	<s:Label id="scaleBottomValue" x="13" y="33" text="{this.bottomScaleValue+' '+this.translateBottomUnit}" />
 	<s:Rect id="scaleBottomWidth" x="13" y="23" height="8" width="{this.bottomScaleWidth}">
 		<s:fill>
 			<s:SolidColor color="0x666666" alpha=".5"/>
