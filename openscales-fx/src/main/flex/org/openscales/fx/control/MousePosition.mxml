@@ -3,7 +3,7 @@
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
 					xmlns:openscales="http://openscales.org" 
-					creationComplete="init();">
+					initialize="init()" >
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
@@ -22,7 +22,6 @@
 			import org.openscales.proj4as.ProjProjection;
 			
 			import spark.events.IndexChangeEvent;
-			
 			
 			public static var DEFAULT_PROJECTION_CODE:String = "EPSG:4326";
 			
@@ -144,7 +143,7 @@
 			 * Method called when creation complete event occurs
 			 */ 
 			private function init():void {				
-				
+				Trace.useFireBugConsole = true;
 				var tmp:Array = _availableProjSrsList.split(",");
 				
 				var lgth:uint = tmp.length;
@@ -165,7 +164,7 @@
 				if(!displayProjSrsCodeInList)
 				{
 					this.crsDataProvider.addItem(_displayProjSrsCode);
-					selectedIndex = i;
+					selectedIndex = 0;
 				}
 				
 				this.selectedIndexCrs = selectedIndex;
