@@ -76,22 +76,11 @@
 			 * @param value
 			 */	 
 			override public function set map(value:Map):void {
-				//cleanup
-				if(this.map != null) {
-					this.map.removeEventListener(LayerEvent.LAYER_ADDED,this.refresh);
-					this.map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
-					this.map.removeEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
-					this.map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-				}
+				
 				super.map = value;
 				
-				if(this.map != null) {
-					//Listening of layer event
-					this.map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
-					this.map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
-					this.map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
-					this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-					
+				if(this._map != null) 
+				{
 					//stock layer by type : baselayer and overlays
 					var overlayArray:Vector.<Layer>  = this.map.layers;
 					var ac:ArrayCollection = new ArrayCollection();
@@ -99,7 +88,39 @@
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
 					this.dataProvider = ac;
-					
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				if(this._map)
+				{
+					//Listening of layer event
+					this._map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				if(this._map)
+				{
+					this._map.removeEventListener(LayerEvent.LAYER_ADDED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
 				}
 			}
 			

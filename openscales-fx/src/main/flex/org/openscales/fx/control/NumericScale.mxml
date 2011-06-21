@@ -33,19 +33,40 @@
 			[Bindable]
 			public var scaleLabel: String = "1 / 1";
 				
-			override public function set map(value:Map):void {
+			override public function set map(value:Map):void
+			{
+				super.map = value;
+				this.updateScale();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
 				
-				if(this._map!=null)
+				// add listener to the map
+				if(this._map)
+				{
+					this._map.addEventListener(MapEvent.MOVE_END,this.updateScale);
+					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				// add listener to the map
+				if(this._map)
 				{
 					this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
 					this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
 				}
-				super.map = value;
-				if(value) {
-					this._map.addEventListener(MapEvent.MOVE_END,this.updateScale);
-					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
-				}
-				this.updateScale();
 			}
 			
 			/**

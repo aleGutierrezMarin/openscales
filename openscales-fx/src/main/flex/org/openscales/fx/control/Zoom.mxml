@@ -78,17 +78,6 @@
 			[Bindable]
 			public var _currentZoom:Number = 0;
 			
-			override public function set map(value:Map):void {
-				super.map = value;
-				
-				if(this.map.baseLayer)
-				{
-					this.minSlider = map.baseLayer.getZoomForResolution(map.maxResolution);
-					this.maxSlider = map.baseLayer.getZoomForResolution(map.minResolution);
-				}
-				
-			}
-			
 			/**
 			 * Configure the listener for the pan and the zoom
 			 * Configure the list of zoom label once the component is created 
@@ -104,19 +93,53 @@
 			
 			/**
 			 * @inherit
-			 */			
-			override public function set active(value:Boolean):void {
-				if(value) {					
+			 */
+			override public function set map(value:Map):void 
+			{
+				super.map = value;
+				
+				if(value)
+				{
+					if(this.map.baseLayer)
+					{
+						this.minSlider = this.map.baseLayer.getZoomForResolution(this.map.maxResolution);
+						this.maxSlider = this.map.baseLayer.getZoomForResolution(this.map.minResolution);
+					}
+					
+					initializeZoomLevels();
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				// add listener to the map
+				if(this._map)
+				{
 					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
 					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
-					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
-					initializeZoomLevels();								
-				} else {
+					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);	
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				// remove listener to the map
+				if(this._map)
+				{
 					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
 					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
 				}
-				super.active = value;
 			}
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
@@ -134,9 +157,6 @@
 				{
 					// update the value
 					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
-					
-					// update the display label
-					scalesNameLabel.text = this._currentLabel;
 				}
 			}
 			
@@ -161,14 +181,17 @@
 			 */
 			public function getLabelFromResolution(resolution:Number):String
 			{
-				var i:uint = 0;
-				var j:uint = this._scalesLabels.length;
-				for (; i<j; ++i) 
+				if(this._scalesLabels)
 				{
-					if( resolution>=this._scalesLabels[i].minResolution
-						&& resolution<=this._scalesLabels[i].maxResolution )
+					var i:uint = 0;
+					var j:uint = this._scalesLabels.length;
+					for (; i<j; ++i) 
 					{
-						return Catalog.getLocalizationForKey(this._scalesLabels[i].label);
+						if( resolution>=this._scalesLabels[i].minResolution
+							&& resolution<=this._scalesLabels[i].maxResolution )
+						{
+							return Catalog.getLocalizationForKey(this._scalesLabels[i].label);
+						}
 					}
 				}
 				return new String("");
