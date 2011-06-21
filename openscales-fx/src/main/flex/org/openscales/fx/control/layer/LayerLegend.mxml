@@ -9,12 +9,20 @@
 		<![CDATA[
 			import assets.fxg.ButtonOpacity;
 			
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/legend.png")]
 			private var _btnLegend:Class;
 			
+			/**
+			 * Tootip for legend button
+			 */
+			[Bindable]
+			public var tooltipLegend:String = Catalog.getLocalizationForKey('layercontrol.legend')
+				
+				
 			/**
 			 * Center the map on the layer
 			 * @param event Click event
@@ -24,6 +32,13 @@
 				trace("display Legend");
 			}
 			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.tooltipLegend = Catalog.getLocalizationForKey('layercontrol.legend');	
+			}
 		]]>
 	</fx:Script>
 	
@@ -31,7 +46,7 @@
 				width="16"
 				height="16"
 				click="displayLegend(event)"
-				toolTip="{Catalog.getLocalizationForKey('layercontrol.legend')}"
+				toolTip="{this.tooltipLegend}"
 				icon="{_btnLegend}" />
 	
 </LayerControl>
