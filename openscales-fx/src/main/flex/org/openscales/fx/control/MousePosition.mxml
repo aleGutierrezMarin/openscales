@@ -280,63 +280,66 @@
 			 */
 			public function redraw(evt:MouseEvent = null):void {
 				
-				var lonLat:Location;
-				
-				if (evt != null) {
-					if (this._lastXy == null ||
-						Math.abs(map.mouseX - this._lastXy.x) > this._granularity ||
-						Math.abs(map.mouseY - this._lastXy.y) > this._granularity)
-					{
-						this._lastXy = new Pixel(map.mouseX, map.mouseY);
-						return;
-					}
-					this._lastXy = new Pixel(map.mouseX, map.mouseY);
-					lonLat = this.map.getLocationFromMapPx(this._lastXy);
-				}
-				
-				if (lonLat == null) {
-					lonLat = new Location(0,0,(this.map.baseLayer)?this.map.baseLayer.projSrsCode:Geometry.DEFAULT_SRS_CODE);
-				}
-				
-				if (this._displayProjSrsCode) {
-					lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
-				}
-				
-				var coord1:String, coord2:String;
-				if(_srsUnits == "dd" || _srsUnits == Unit.DEGREE)
+				if(this._active)
 				{
-					if (this._useDMS) {
-						_displayMetricUnits == Unit.SEXAGESIMAL;
-						coord1 = (lonLat.lon < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lon,"lon")) + " " + this.localNSEW.charAt(3)) : (Util.degToDMS(this.roundCoordinates(lonLat.lon,"lon")) + " " + this.localNSEW.charAt(2));
-						coord2 = (lonLat.lat < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lat,"lat")) + " " + this.localNSEW.charAt(1)) : (Util.degToDMS(this.roundCoordinates(lonLat.lat,"lat")) + " " + this.localNSEW.charAt(0));
-					} else {
-						_displayMetricUnits == Unit.DEGREE;
+					var lonLat:Location;
+					
+					if (evt != null) {
+						if (this._lastXy == null ||
+							Math.abs(map.mouseX - this._lastXy.x) > this._granularity ||
+							Math.abs(map.mouseY - this._lastXy.y) > this._granularity)
+						{
+							this._lastXy = new Pixel(map.mouseX, map.mouseY);
+							return;
+						}
+						this._lastXy = new Pixel(map.mouseX, map.mouseY);
+						lonLat = this.map.getLocationFromMapPx(this._lastXy);
+					}
+					
+					if (lonLat == null) {
+						lonLat = new Location(0,0,(this.map.baseLayer)?this.map.baseLayer.projSrsCode:Geometry.DEFAULT_SRS_CODE);
+					}
+					
+					if (this._displayProjSrsCode) {
+						lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
+					}
+					
+					var coord1:String, coord2:String;
+					if(_srsUnits == "dd" || _srsUnits == Unit.DEGREE)
+					{
+						if (this._useDMS) {
+							_displayMetricUnits == Unit.SEXAGESIMAL;
+							coord1 = (lonLat.lon < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lon,"lon")) + " " + this.localNSEW.charAt(3)) : (Util.degToDMS(this.roundCoordinates(lonLat.lon,"lon")) + " " + this.localNSEW.charAt(2));
+							coord2 = (lonLat.lat < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lat,"lat")) + " " + this.localNSEW.charAt(1)) : (Util.degToDMS(this.roundCoordinates(lonLat.lat,"lat")) + " " + this.localNSEW.charAt(0));
+						} else {
+							_displayMetricUnits == Unit.DEGREE;
+							coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
+							coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
+						}
+					}
+					else if(_srsUnits == "m")
+					{
 						coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
 						coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
+						
+						if(_displayMetricUnits == Unit.CENTIMETER)
+						{
+							coord1 = String(Number(coord1)*100);
+							coord2 = String(Number(coord2)*100);
+						}
+						else if(_displayMetricUnits == Unit.KILOMETER)
+						{
+							coord1 = String(Number(coord1)/100);
+							coord2 = String(Number(coord2)/100);
+						}
 					}
-				}
-				else if(_srsUnits == "m")
-				{
-					coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
-					coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
 					
-					if(_displayMetricUnits == Unit.CENTIMETER)
-					{
-						coord1 = String(Number(coord1)*100);
-						coord2 = String(Number(coord2)*100);
-					}
-					else if(_displayMetricUnits == Unit.KILOMETER)
-					{
-						coord1 = String(Number(coord1)/100);
-						coord2 = String(Number(coord2)/100);
-					}
+					this.mousePositionLabel = this.prefix
+						+ coord1
+						+ this.separator
+						+ coord2
+						+ this.suffix;
 				}
-				
-				this.mousePositionLabel = this.prefix
-					+ coord1
-					+ this.separator
-					+ coord2
-					+ this.suffix;
 			}
 			
 			/**
