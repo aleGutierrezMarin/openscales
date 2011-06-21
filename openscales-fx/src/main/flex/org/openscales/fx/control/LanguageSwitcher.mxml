@@ -49,13 +49,7 @@ It will retrieve the language information and display the availlable languages.
 			 * The current language selected
 			 */
 			[Bindable]
-			public var currentLanguage:Locale = null;
-			
-			/**
-			 * The current index slected
-			 */
-			
-			
+			public var currentLanguage:Locale = null;			
 			
 			/**
 			 * Initialize the Language swticher component
