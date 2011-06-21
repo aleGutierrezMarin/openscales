@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="org.openscales.fx.control.layer.*"
+		 xmlns:os="org.openscales.fx.control.*" >
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.Layer;
+			
+			/**
+			 * Indicates if the current layer is visible or not.
+			 * This vakue is bind to the checkbox selected attribute.
+			 */
+			[Bindable]
+			public var _displayed:Boolean = true;
+			
+			/**
+			 * @inherit
+			 * Set the first value of the checkbox
+			 */
+			override public function set layer(value:Layer):void
+			{
+				super.layer = value;
+				this._displayed = this._layer.displayed;
+				
+				if(this._layer.map)
+				{
+					this._layer.map.addEventListener(LayerEvent.LAYER_IN_RANGE,inOutRange);
+					this._layer.map.addEventListener(LayerEvent.LAYER_OUT_RANGE,inOutRange);
+					this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, checkLayerDisplayed);
+					
+					this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, checkLayerDisplayed);
+					this._layer.map.addEventListener(MapEvent.ZOOM_CHANGED, checkLayerDisplayed);
+				}
+			}
+			
+			/**
+			 * Update the checkbox value if the displayed value has changed
+			 */
+			public function checkLayerDisplayed(event:Event):void
+			{
+				this._displayed = this._layer.displayed;	
+			}
+			
+			/**
+			 * Update the checkbox value if the layer is OutOfRange
+			 */
+			public function inOutRange(event:LayerEvent):void 
+			{
+				if(event.type == LayerEvent.LAYER_OUT_RANGE)
+				{     
+					this._displayed = false;
+				}
+				else
+				{
+					this._displayed = true;
+					event.layer.visible = this._displayed; 
+				}
+			}
+			
+			/**
+			* Change the layer visibility
+			* @param event Change event
+			*/
+			public function layerVisible(event:MouseEvent):void{
+				this._layer.visible = !this._layer.visible;
+				// If the layer was uncheck from the beggining, he hadn't load yet so we need
+				// to redraw it to load it.
+				if(layer.visible){
+					layer.redraw();
+				}
+			} 
+		]]>
+	</fx:Script>
+	
+
+		<s:CheckBox id="layerSwitcherCheckBox" click="layerVisible(event)"
+					selected = "{this._displayed}"
+					toolTip="{Catalog.getLocalizationForKey('layercontrol.changevisibility')}" />
+
+</LayerControl>
