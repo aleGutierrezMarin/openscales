@@ -1451,6 +1451,7 @@ package org.openscales.core
 				Trace.warn("Map.addControl: null control not added");
 				return;
 			}
+			
 			var i:uint = 0;
 			var j:uint = this._controls.length;
 			for (; i<j; ++i) {
@@ -1463,7 +1464,9 @@ package org.openscales.core
 			if (i == j) {
 				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
 				this._controls.push(control);
+				
 				control.map = this;
+				
 				control.draw();
 				if (attach) {
 					this.addChild(control as Sprite);
@@ -1495,6 +1498,7 @@ package org.openscales.core
 					this.removeChild(control as DisplayObject);
 				}				
 				
+				control.map = null;
 				control.destroy();
 			}
 		}
