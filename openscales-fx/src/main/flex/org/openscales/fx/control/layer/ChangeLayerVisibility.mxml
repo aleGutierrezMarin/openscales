@@ -7,11 +7,17 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			
+			/**
+			 * Tooltip^for change visibility button
+			 */
+			[Bindable]
+			public var tooltipChangeVisibility:String =  Catalog.getLocalizationForKey('layercontrol.changevisibility');
 			/**
 			 * Indicates if the current layer is visible or not.
 			 * This vakue is bind to the checkbox selected attribute.
@@ -37,6 +43,14 @@
 					this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, checkLayerDisplayed);
 					this._layer.map.addEventListener(MapEvent.ZOOM_CHANGED, checkLayerDisplayed);
 				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.tooltipChangeVisibility = Catalog.getLocalizationForKey('layercontrol.changevisibility');	
 			}
 			
 			/**
@@ -81,6 +95,6 @@
 
 		<s:CheckBox id="layerSwitcherCheckBox" click="layerVisible(event)"
 					selected = "{this._displayed}"
-					toolTip="{Catalog.getLocalizationForKey('layercontrol.changevisibility')}" />
+					toolTip="{this.tooltipChangeVisibility}" />
 
 </LayerControl>

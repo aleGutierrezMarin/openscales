@@ -73,10 +73,24 @@
 			
 			
 			/**
-			 * 
+			 * The current zoom value
 			 */
 			[Bindable]
-			public var _currentZoom:Number = 0;
+			public var currentZoom:Number = 0;
+			
+			/**
+			 * @private
+			 * The bindable value corresponding to the zoom out tooltip
+			 */
+			[Bindable]
+			public var toolTipZoomOut:String = Catalog.getLocalizationForKey('zoom.zoomout');
+			
+			/**
+			 * @private
+			 * The bindable value corresponding to the zoom in tooltip
+			 */
+			[Bindable]
+			public var toolTipZoomIn:String = Catalog.getLocalizationForKey('zoom.zoomin');
 			
 			/**
 			 * Configure the listener for the pan and the zoom
@@ -89,6 +103,16 @@
 				{
 					this._scalesLabels = new Vector.<ZoomData>();
 				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.toolTipZoomOut = Catalog.getLocalizationForKey('zoom.zoomout');
+				this.toolTipZoomIn = Catalog.getLocalizationForKey('zoom.zoomin');
+				this.updateCurrentLabel();
 			}
 			
 			/**
@@ -141,10 +165,7 @@
 					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
 				}
 			}
-			
-			override public function onMapLanguageChange(event:I18NEvent):void {
-				this.updateCurrentLabel();
-			}
+
 			
 			/**
 			 * Refresh the current zoom label.
@@ -226,7 +247,7 @@
 				if(!this._map || !this._map.baseLayer)
 					return;
 				
-				this._currentZoom = map.zoom;
+				this.currentZoom = map.zoom;
 				
 				// initialise the label value
 				this.updateCurrentLabel();
@@ -237,7 +258,7 @@
 			private function updateZoomLevels(e:MapEvent = null):void {
 				if(e.zoomChanged)
 				{
-					this._currentZoom = map.zoom;
+					this.currentZoom = map.zoom;
 					this.updateCurrentLabel();
 				}
 			}
@@ -256,9 +277,9 @@
 			public function onThumbRelease(event:TrackBaseEvent):void
 			{
 				var currentSlider:SliderBase= event.target as SliderBase;
-				this._currentZoom = currentSlider.value;
+				this.currentZoom = currentSlider.value;
 				this._onDrag = false;
-				this.map.moveTo(this.map.center, this._currentZoom, false, true);
+				this.map.moveTo(this.map.center, this.currentZoom, false, true);
 			}
 			
 			/**
@@ -279,8 +300,8 @@
 				// if not onDrag really update the zoom
 				if(!this._onDrag)
 				{
-					this._currentZoom = currentSlider.value;
-					this.map.moveTo(this.map.center, this._currentZoom, false, true);
+					this.currentZoom = currentSlider.value;
+					this.map.moveTo(this.map.center, this.currentZoom, false, true);
 				}
 				
 			}
@@ -418,7 +439,7 @@
 	<s:VSlider id="zoomSlider" x="80" y="10"
 			   minimum="{this.minSlider}"
 			   maximum="{this.maxSlider}"
-			   value="{this._currentZoom}"
+			   value="{this.currentZoom}"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
@@ -429,10 +450,10 @@
 			   thumbRelease="onThumbRelease(event)"
 			   change="onZoomSliderChange(event)" />
 	
-	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{Catalog.getLocalizationForKey('zoom.zoomout')}"
+	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{this.toolTipZoomOut}"
 			  click="onZoomOut(event)"
 			  width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
-	<s:Button id="zoomIn" name="zoomin" label="+" toolTip="{Catalog.getLocalizationForKey('zoom.zoomin')}"
+	<s:Button id="zoomIn" name="zoomin" label="+" toolTip="{this.toolTipZoomIn}"
 			  click="onZoomIn(event)"
 			  width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
