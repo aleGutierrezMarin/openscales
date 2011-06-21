@@ -5,7 +5,6 @@
 
 	<fx:Script>
 		<![CDATA[
-			
 			import mx.controls.sliderClasses.Slider;
 			import mx.events.SliderEvent;
 			import mx.events.SliderEventClickTarget;
@@ -13,6 +12,7 @@
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.control.ZoomData;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
@@ -24,6 +24,73 @@
 			
 			public var DELTA_PX:Number = 100;
 			
+			/**
+			 * @private
+			 * Bindable value for panNorth label
+			 */
+			[Bindable]
+			public var labelPanNorth:String = Catalog.getLocalizationForKey('pan.N');
+			
+			/**
+			 * @private
+			 * Bindable value for panNorth tooltip
+			 */
+			[Bindable]
+			public var toolTipPanNorth:String = Catalog.getLocalizationForKey('pan.pannorth');
+			
+			/**
+			 * @private
+			 * Bindable value for panSouth label
+			 */
+			[Bindable]
+			public var labelPanSouth:String = Catalog.getLocalizationForKey('pan.S');
+			/**
+			 * @private
+			 * Bindable value for panSouth tooltip
+			 */
+			[Bindable]
+			public var toolTipPanSouth:String = Catalog.getLocalizationForKey('pan.pansouth');
+			
+			/**
+			 * @private
+			 * Bindable value for panEast label
+			 */
+			[Bindable]
+			public var labelPanEast:String = Catalog.getLocalizationForKey('pan.E');
+			/**
+			 * @private
+			 * Bindable value for panEast tooltip
+			 */
+			[Bindable]
+			public var toolTipPanEast:String = Catalog.getLocalizationForKey('pan.paneast');
+			
+			/**
+			 * @private
+			 * Bindable value for panWest label
+			 */
+			[Bindable]
+			public var labelPanWest:String = Catalog.getLocalizationForKey('pan.W');
+			
+			/**
+			 * @private
+			 * Bindable value for panWesth tooltip
+			 */
+			[Bindable]
+			public var toolTipPanWest:String = Catalog.getLocalizationForKey('pan.panwest');
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void {	
+				this.labelPanNorth = Catalog.getLocalizationForKey('pan.N');	
+				this.toolTipPanNorth = Catalog.getLocalizationForKey('pan.pannorth');	
+				this.labelPanSouth = Catalog.getLocalizationForKey('pan.S');
+				this.toolTipPanSouth = Catalog.getLocalizationForKey('pan.pansouth');
+				this.labelPanEast = Catalog.getLocalizationForKey('pan.E');
+				this.toolTipPanEast = Catalog.getLocalizationForKey('pan.paneast');	
+				this.labelPanWest = Catalog.getLocalizationForKey('pan.W');
+				this.toolTipPanWest = Catalog.getLocalizationForKey('pan.panwest');
+			}
 			
 			/**
 			 * Pan the map North when the north button is pressed.
@@ -95,17 +162,17 @@
 						  buttonMode="true">	
 	</s:SkinnableContainer>
 	
-	<s:Button id="panNorth" name="north" label="{Catalog.getLocalizationForKey('pan.N')}" 
-			  click="onPanNorth(event)" toolTip="{Catalog.getLocalizationForKey('pan.pannorth')}"
+	<s:Button id="panNorth" name="north" label="{this.labelPanNorth}" 
+			  click="onPanNorth(event)" toolTip="{this.toolTipPanNorth}"
 			  width="35" x="20" y="0" useHandCursor="true" buttonMode="true"/>
-	<s:Button id="panSouth" name="south" label="{Catalog.getLocalizationForKey('pan.S')}" 
-			  click="onPanSouth(event)" toolTip="{Catalog.getLocalizationForKey('pan.pansouth')}"
+	<s:Button id="panSouth" name="south" label="{this.labelPanSouth}" 
+			  click="onPanSouth(event)" toolTip="{this.toolTipPanSouth}"
 			  width="35" x="20" y="40" useHandCursor="true" buttonMode="true" />
-	<s:Button id="panEast" name="east" label="{Catalog.getLocalizationForKey('pan.E')}" 
-			  click="onPanEast(event)" toolTip="{Catalog.getLocalizationForKey('pan.paneast')}"
+	<s:Button id="panEast" name="east" label="{this.labelPanEast}" 
+			  click="onPanEast(event)" toolTip="{this.toolTipPanEast}"
 			  width="35" x="40" y="20" useHandCursor="true" buttonMode="true"/>
-	<s:Button id="panWest" name="west" label="{Catalog.getLocalizationForKey('pan.W')}" 
-			  click="onPanWest(event)" toolTip="{Catalog.getLocalizationForKey('pan.panwest')}"
+	<s:Button id="panWest" name="west" label="{this.labelPanWest}" 
+			  click="onPanWest(event)" toolTip="{this.toolTipPanWest}"
 			  width="35" x="0" y="20" useHandCursor="true" buttonMode="true"/>
 	
 	
