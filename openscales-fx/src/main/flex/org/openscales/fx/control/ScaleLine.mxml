@@ -108,7 +108,9 @@
 			override public function set map(value:Map):void 
 			{
 				super.map = value;
-				this.updateScale();
+				
+				if(this._map)
+					this.updateScale();
 			}
 			
 			/**
