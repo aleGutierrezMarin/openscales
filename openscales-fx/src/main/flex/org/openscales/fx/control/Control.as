@@ -90,18 +90,15 @@ package org.openscales.fx.control
 		public function set map(value:Map):void 
 		{
 			// remove listener to old map if necessary
-			this.desactivate();
+			this.active = false;
 			
 			this._map = value;
 			
-			// Activate the control only if this control has already thrown an Event.COMPLETE
-			if(this._isInitialized) {
-				this._active = true;
+			if(this._map) //if not null
+			{
+				// Activate the control 
+				this.active = true;
 			}
-			
-			// update listener to the map if the control is activate:
-			if(this._active)
-				this.activate();
 			
 			if(!this._isAddedToFxMapControlList){
 				if(this.fxMap){
