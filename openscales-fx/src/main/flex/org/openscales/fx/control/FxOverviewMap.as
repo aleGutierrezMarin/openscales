@@ -10,7 +10,6 @@ package org.openscales.fx.control
 	import org.openscales.fx.layer.FxLayer;
 	import org.openscales.geometry.basetypes.Size;
 	
-	import spark.components.Group;
 	import spark.core.SpriteVisualElement;
 	
 	/**

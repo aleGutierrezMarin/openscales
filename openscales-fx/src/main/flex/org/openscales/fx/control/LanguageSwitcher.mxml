@@ -31,7 +31,7 @@ It will retrieve the language information and display the availlable languages.
 			 * Array collection containing the list of the languages to show in the droplist
 			 */
 			[Bindable]
-			private var _languagesList:ArrayCollection;
+			public var languagesList:ArrayCollection;
 			
 			/**
 			 * @Private
@@ -40,10 +40,21 @@ It will retrieve the language information and display the availlable languages.
 			private var _supportedLocales:Vector.<Locale>;
 			
 			/**
-			* @private
-			* The actionScript component that communicate with the map 
-			*/
+			 * @private
+			 * The actionScript component that communicate with the map 
+			 */
 			private var _languageSwitcher:org.openscales.core.control.LanguageSwitcher;
+			
+			/**
+			 * The current language selected
+			 */
+			[Bindable]
+			public var currentLanguage:Locale = null;
+			
+			/**
+			 * The current index slected
+			 */
+			
 			
 			
 			/**
@@ -54,7 +65,6 @@ It will retrieve the language information and display the availlable languages.
 				_languageSwitcher = new org.openscales.core.control.LanguageSwitcher();
 				_languageSwitcher.map = this.map;
 				actualizeLanguages();
-				this.languageDropList.selectedItem = Locale.activeLocale;		
 			}
 			
 			override public function set map(value:Map):void {
@@ -68,25 +78,29 @@ It will retrieve the language information and display the availlable languages.
 			 */
 			public function actualizeLanguages():void
 			{
-				_languagesList = new ArrayCollection();
+				languagesList = new ArrayCollection();
 				_supportedLocales = Catalog.getAvailableLocalizations();
 				var length:int = _supportedLocales.length;
 				for (var i:int = 0; i < length; i++)
 				{
-					_languagesList.addItem(_supportedLocales[i]);
+					languagesList.addItem(_supportedLocales[i]);
 				}
+				this.currentLanguage = Locale.activeLocale;
 			}
 			
 			/**
 			 * Callback to change the map language when the dropBox selection is changed
 			 */
-			private function updateSelection(e:Event):void
+			public function updateSelection(e:Event):void
 			{
-				var selected:Locale = languageDropList.selectedItem as Locale;
+				var list:DropDownList = e.currentTarget as DropDownList
+				
+				this.currentLanguage = list.selectedItem as Locale;
+				
 				var locale:Locale = null;
 				var i:uint = _supportedLocales.length;
 				for(var j:uint = 0;j<i;++j) {
-					if(_supportedLocales[j] == selected) {
+					if(_supportedLocales[j] == this.currentLanguage) {
 						locale = _supportedLocales[j];
 						break;
 					}
@@ -96,19 +110,22 @@ It will retrieve the language information and display the availlable languages.
 			
 			override public function onMapLanguageChange(event:I18NEvent):void
 			{
-				if(event.locale == this.languageDropList.selectedItem)
+				if(event.locale == this.currentLanguage)
 					return;
 				
-				var languageIndex:int = this._languagesList.getItemIndex(event.locale);
-				this.languageDropList.selectedIndex = languageIndex;
+				this.currentLanguage = event.locale;
 			}
+			
+			
+		
 		]]>
 	</fx:Script>
 	
 	<!-- DropDownList will call the updateSelection function when the
 	selectionChanged event is dispatched -->
 	<s:DropDownList id="languageDropList"
-					 dataProvider="{_languagesList}"
+					dataProvider="{languagesList}"
 					labelField="localizedName"
-					change="updateSelection(event);" />
+					change="updateSelection(event);"
+					selectedItem="{this.currentLanguage}"/>
 </Control>

@@ -21,7 +21,24 @@
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.fx.control.layer.LayerRenderer;
 			
+			/**
+			 * Indicates if the arrow up has to be displayed (if true) or not otherwise.
+			 * This value is bind to the layerSwitcherArrowUp enable attribute
+			 * 
+			 * @default true
+			 */
+			[Bindable]
+			public var _arrowUpVisibility:Boolean = true;
 
+			/**
+			 * Indicates if the arrow down has to be displayed (if true) or not otherwise.
+			 * This value is bind to the layerSwitcherArrowDown enable attribute
+			 * 
+			 * @default true
+			 */
+			[Bindable]
+			public var _arrowDownVisibility:Boolean = true;
+			
 			/**
 			 * Configure the first display for this component when the layer is set
 			 * Set one or two arrows depending of the position of the current layer
@@ -51,28 +68,28 @@
 					
 					if(length<=1) 
 					{
-						layerSwitcherArrowUp.enabled = false;
-						layerSwitcherArrowDown.enabled = false;
+						this._arrowUpVisibility = false;
+						this._arrowDownVisibility = false;
 					}
 					else 
 					{
 						// the layer is at the bottom of the list, we hide the arrowDown						
 						if(map.layerContainer.getChildIndex(this._layer) == 0)
 						{
-							layerSwitcherArrowUp.enabled = true;
-							layerSwitcherArrowDown.enabled = false;
+							this._arrowUpVisibility = true;
+							this._arrowDownVisibility = false;
 						}
 							// the layer is on the top of the list, we hide the arrowUp
 						else if(map.layerContainer.getChildIndex(this._layer)==length-1)
 						{
-							layerSwitcherArrowUp.enabled = false;
-							layerSwitcherArrowDown.enabled = true;
+							this._arrowUpVisibility = false;
+							this._arrowDownVisibility = true;
 						}
 							// the layer is in the middle, you can up or down it
 						else
 						{
-							layerSwitcherArrowUp.enabled = true;
-							layerSwitcherArrowDown.enabled = true;
+							this._arrowUpVisibility = true;
+							this._arrowDownVisibility = true;
 						}           	
 					}
 				}
@@ -99,7 +116,10 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup verticalAlign="middle" gap="0">
+	<s:SkinnableContainer>
+		<s:layout>
+			<s:VerticalLayout gap="0" verticalAlign="middle" />
+		</s:layout>
 		<os:IconButton id="layerSwitcherArrowUp"
 					toolTip="{Catalog.getLocalizationForKey('layercontrol.movefront')}"
 					click="upLayer(event)"
@@ -107,8 +127,8 @@
 					iconOver="{new UpArrowOver()}"
 					iconDown="{new UpArrowDown()}"
 					width="10"
-					height="10"
-					/>
+					height="10" 
+					enabled="{this._arrowUpVisibility}"/>
 		
 		<os:IconButton id="layerSwitcherArrowDown"
 					toolTip="{Catalog.getLocalizationForKey('layercontrol.moveback')}"
@@ -118,6 +138,6 @@
 					iconDown="{new DownArrowDown()}"
 					width="10"
 					height="10"
-					/>
-	</s:VGroup>
+					enabled="{this._arrowDownVisibility}"/>
+	</s:SkinnableContainer>
 </LayerControl>

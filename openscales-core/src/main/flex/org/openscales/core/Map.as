@@ -1148,15 +1148,19 @@ package org.openscales.core
 			var extent:Bounds = null;
 			
 			if ((this.center != null) && (this.resolution != -1)) {
-				
+				var center:Location;
+				if(this.center.projSrsCode.toUpperCase() != this._baseLayer.projSrsCode.toUpperCase())
+					center = this.center.reprojectTo(this._baseLayer.projSrsCode.toUpperCase());
+				else
+					center = this.center;
 				var w_deg:Number = this.size.w * this.resolution;
 				var h_deg:Number = this.size.h * this.resolution;
 				
-				extent = new Bounds(this.center.lon - w_deg / 2,
-					this.center.lat - h_deg / 2,
-					this.center.lon + w_deg / 2,
-					this.center.lat + h_deg / 2,
-					this.baseLayer.projSrsCode);
+				extent = new Bounds(center.lon - w_deg / 2,
+					center.lat - h_deg / 2,
+					center.lon + w_deg / 2,
+					center.lat + h_deg / 2,
+					center.projSrsCode);
 			} 
 			
 			return extent;

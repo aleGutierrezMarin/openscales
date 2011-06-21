@@ -16,8 +16,8 @@
 			 * Delete the layer on the map
 			 * @param event Click event
 			 */
-			public function deleteLayer(event:MouseEvent):void {
-			
+			public function deleteLayer(event:MouseEvent):void 
+			{
 				this._layer.map.removeLayer(this._layer);
 			}
 			

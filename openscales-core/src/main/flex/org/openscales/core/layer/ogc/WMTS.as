@@ -5,11 +5,12 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
-	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.tile.ImageTile;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -39,7 +40,7 @@ package org.openscales.core.layer.ogc
 		 * A tile provider for this layer.
 		 */ 
 		private var _tileProvider:WMTSTileProvider = null;
-		private var _projection:String = "EPSG:4326";
+		private var _projection:String = Geometry.DEFAULT_SRS_CODE;
 		
 		/**
 		 * Constructor
@@ -60,11 +61,8 @@ package org.openscales.core.layer.ogc
 		{
 			// building the tile provider
 			this._tileProvider = new WMTSTileProvider(url,format,tileMatrixSet,layer,tileMatrixSets);
-			if(tileMatrixSet && tileMatrixSets) {
-				var tms:TileMatrixSet = tileMatrixSets.getValue(tileMatrixSet.toUpperCase()) as TileMatrixSet;
-				if(tms)
-					_projection = tms.supportedCRS;
-			}
+
+			this.tileMatrixSet = tileMatrixSet;
 			this.format = WMTS.WMTS_DEFAULT_FORMAT;
 			super(name, url);
 		}
@@ -158,8 +156,8 @@ package org.openscales.core.layer.ogc
 		 */
 		public function set tileMatrixSet(value:String):void
 		{
-			if(this._tileProvider && this._tileProvider.tileMatrixSets) {
-				var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(value.toUpperCase()) as TileMatrixSet;
+			if(value && this._tileProvider && this._tileProvider.tileMatrixSets) {
+				var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(value) as TileMatrixSet;
 				this._tileProvider.tileMatrixSet = value;
 				if(!tms)
 					_projection = "EPSG:4326";
@@ -199,8 +197,7 @@ package org.openscales.core.layer.ogc
 		public function set tileMatrixSets(value:HashMap):void
 		{
 			this._tileProvider.tileMatrixSets = value;
-			if(this._tileProvider.tileMatrixSet)
-				this.tileMatrixSet = this._tileProvider.tileMatrixSet;
+			this.tileMatrixSet = this.tileMatrixSet;
 			this.generateResolutions();
 		}
 		

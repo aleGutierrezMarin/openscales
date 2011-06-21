@@ -6,12 +6,12 @@ package org.openscales.fx.control.layer
 	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.fail;
-	import org.openscales.core.layer.Layer;
 	import org.openscales.core.Map;
+	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.control.layer.ChangeLayerPosition;
 	import org.openscales.fx.control.layer.LayerManager;
 	
-	public class ChangeLayerPositionTest
+	public class ChangeLayerPositionTest extends OpenScalesTest
 	{		
 		/**
 		 * Basic controls for testing
@@ -23,8 +23,10 @@ package org.openscales.fx.control.layer
 		private var _position:ChangeLayerPosition = null;
 		
 		[Before]
-		public function setUp():void
+		override public function setUp():void
 		{
+			super.setUp();
+			
 			_map = new Map();
 			
 			_layer1 = new Layer("layer 1");
@@ -39,6 +41,8 @@ package org.openscales.fx.control.layer
 			// change position control
 			_position = new ChangeLayerPosition();
 			_position.layer = _layer2;
+			
+			this._container.addElement(_position);
 		}
 		
 		/**

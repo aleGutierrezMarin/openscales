@@ -80,7 +80,6 @@
 			 * The number of logos displayed at the same time
 			 * @default DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER
 			 */
-			[Bindable]
 			private var _logoNumber:Number = DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER;
 			
 			
@@ -94,6 +93,12 @@
 			private var _currentOriginator:Number = -1;
 
 
+			/**
+			 * @private
+			 * The itemRenderer class for display item of the Logo list
+			 * @default DataOriginatorsRenderer
+			 */
+			private var _itemRenderer:Class = DataOriginatorsRenderer;
 		
 
 			/**
@@ -369,6 +374,7 @@
 			 * The number of logos displayed at the same time
 			 * @default DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER
 			 */
+			[Bindable]
 			public function get logoNumber():Number
 			{
 				return this._logoNumber;
@@ -380,7 +386,23 @@
 			public function set logoNumber(value:Number):void
 			{
 				this._logoNumber = value;
-				originatorsHorizontalLayout.requestedColumnCount = this._logoNumber;
+			}
+			
+			/**
+			 * The itemRenderer for the list contains by the Logo list
+			 */
+			[Bindable]
+			public function get itemRenderer():Class
+			{
+				return this._itemRenderer;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set itemRenderer(value:Class):void
+			{
+				this._itemRenderer=value;
 			}
 			
 		]]>
@@ -389,13 +411,13 @@
 
 		<s:List id="originatorsList" height="60"
 				horizontalCenter="0" verticalCenter="0" dataProvider="{_originator}"
-				itemRenderer="org.openscales.fx.control.DataOriginatorsRenderer"
+				itemRenderer="{new ClassFactory(this.itemRenderer)}"
 				contentBackgroundAlpha="0"
 				borderVisible="false" >
 			<s:layout>
 				<s:HorizontalLayout 
 					id="originatorsHorizontalLayout" 
-					requestedColumnCount="{this._logoNumber}" 
+					requestedColumnCount="{this.logoNumber}" 
 					gap="{this._spacing}"
 					paddingLeft="{this._spacing}"
 					paddingRight="{this._spacing}"

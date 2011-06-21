@@ -36,6 +36,7 @@
 			import org.openscales.core.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.core.layer.ImageLayer;
 			import org.openscales.core.layer.Layer;
@@ -112,13 +113,13 @@
 			 * 
 			 * The options implemented by the DefaultLayerRenderer are :
 			 * 
-			 * <LayerSwitcher>
-			 *	 	<rendererOptions>
-			 *			<fx:Object
+			 * &lt;LayerSwitcher&gt;
+			 *	 	&lt;rendererOptions&gt;
+			 *			&lt;fx:Object
 			 *				displayLegend="true/false"
 			 *				displayZoomToExtent="true/false"
-			 *				displayMetadatas="true/false" />
-			 *		</rendererOptions>
+			 *				displayMetadatas="true/false" /&gt;
+			 *		&lt;/rendererOptions&gt;
 			 * </LayerSwitcher>
 			 */
 			override public function manageRendererOptions():void
@@ -250,15 +251,21 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup id="layerSwitcherMainGroup" >
-		<s:HGroup width="100%"
+	<s:SkinnableContainer id="layerSwitcherMainGroup" >
+		<s:layout>
+			<s:VerticalLayout />
+		</s:layout>
+		<s:SkinnableContainer width="100%"
 				  height="25"
-				  id="hgroup"
-				  paddingLeft="2"
-				  paddingBottom="2"
-				  paddingRight="4"
-				  paddingTop="2"
-				  verticalAlign="middle">
+				  id="hgroup" >
+			<s:layout>
+				<s:HorizontalLayout 
+					paddingLeft="2"
+					paddingBottom="2"
+					paddingRight="4"
+					paddingTop="2"
+					verticalAlign="middle" />
+			</s:layout>
 			
 			<ChangeLayerVisibility />
 			
@@ -272,34 +279,35 @@
 						   width="16"
 						   height="16"
 						   click="reduceMaximizeLayerSwitcher(event)"
-						   icon="{_btnMaximize}" />
+						   icon="{_btnMaximize}"
+						   toolTip="{Catalog.getLocalizationForKey('layercontrol.reducemaximize')}" />
 			<DeleteLayer id="layerSwitcherDeleteLayer" />
 			
-			<s:Group id="displayControl" />	
+				
 			
-		</s:HGroup>
+		</s:SkinnableContainer>
 		
 		
-		<s:Group id="layerSwitcherAdditionnalDisplay" height="20" visible="false">
+		<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="false">
 			<ChangeLayerOpacity id="layerControlOpacity" />
-		</s:Group>
+		</s:SkinnableContainer>
 		
 		
 		<!--- TODO : work in progress
-		<s:Group id="layerSwitcherDrawingTools" visible="false" includeInLayout="false" height ="90">
+		<s:SkinnableContainer id="layerSwitcherDrawingTools" visible="false" includeInLayout="false" height ="90">
 		<FeatureDrawing id="layerControlDrawTools" />
-		</s:Group>
+		</s:SkinnableContainer>
 		-->
 		
-		<s:Group id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20">
+		<s:SkinnableContainer id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20">
 			<LayerZoomToExtent id="layerControlZoomToExtent" visible="false" />
 			<LayerLegend x="20" id="layerControlLegend" visible="false" />
 			<LayerMetadatas x="40" id="layerControlMetadatas" visible="false" />
-		</s:Group>
+		</s:SkinnableContainer>
 		
 		
 		
-	</s:VGroup>
+	</s:SkinnableContainer>
 	
 	
 </LayerRenderer>

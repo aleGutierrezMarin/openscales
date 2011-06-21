@@ -2,13 +2,15 @@
 <LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns="http://openscales.org" >
+		 xmlns="org.openscales.fx.control.layer.*"
+		 xmlns:os="org.openscales.fx.control.*" >
 	
 	<fx:Script>
 		<![CDATA[
-			
-			import org.openscales.geometry.basetypes.Bounds;
 			import assets.fxg.ButtonOpacity;
+			
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.geometry.basetypes.Bounds;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/zoomToExtent.png")]
@@ -29,9 +31,10 @@
 		]]>
 	</fx:Script>
 	
-	<IconButton id="layerControlZoomToExtent"
+	<os:IconButton id="layerControlZoomToExtent"
 				width="16"
 				height="16"
+				toolTip="{Catalog.getLocalizationForKey('layercontrol.zoomToExtent')}"
 				click="setLayerExtent(event)"
 				icon="{_btnZoom}" />
 	

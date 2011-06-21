@@ -3,7 +3,12 @@
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",
    "layercontrol.deletelayer": "Delete this layer",
-   
+   "layercontrol.metadatas": "Display metadatas",
+   "layercontrol.changevisibility": "Change the layer visibility",
+   "layercontrol.reducemaximize": "Reduce or maximize this item",
+   "layercontrol.legend": "Display the legend",
+   "layercontrol.zoomToExtent": "Zoom to the max extent of this layer",
+
    "layerswitcher.layers": "Layers",
    
    "locale.key": "EN",
@@ -29,6 +34,10 @@
    "pan.S": "S",
    "pan.E": "E",
    "pan.W": "W",
+   "pan.pannorth": "Pan north",
+   "pan.pansouth": "Pan south",
+   "pan.paneast": "Pan east",
+   "pan.panwest": "Pan west",
    
    "scaleline.km": "km",
    "scaleline.m": "m",
@@ -38,6 +47,8 @@
    "copyright.copyright": "Copyright",
    
    "zoombox.tooltip": "Draw the desired area to zoom in",
+   "zoom.zoomin": "Zoom in",
+   "zoom.zoomout": "Zoom out",
    
    "traceinfo.clearlabel": "Clear"
  }

@@ -382,7 +382,8 @@ package org.openscales.fx
 		{
 			if(this._map && value!=null)
 			{
-				styleManager.unloadStyleDeclarations((this._map as Map).theme);
+				if( (this._map as Map).theme )
+					styleManager.unloadStyleDeclarations((this._map as Map).theme);
 				(this._map as Map).theme = value;
 				styleManager.loadStyleDeclarations(value);
 			}

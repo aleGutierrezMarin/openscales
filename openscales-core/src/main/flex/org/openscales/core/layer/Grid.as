@@ -156,6 +156,9 @@ package org.openscales.core.layer
 			
 			var bounds:Bounds = this.map.extent.clone();
 			
+			if(bounds.projSrsCode.toUpperCase() != this.projSrsCode.toUpperCase())
+				bounds = bounds.reprojectTo(this.projSrsCode.toUpperCase());
+			
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw;
 			
 			var tilesBounds:Bounds = this.getTilesBounds();            
