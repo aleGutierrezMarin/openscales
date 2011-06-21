@@ -9,6 +9,7 @@
 		<![CDATA[
 			import assets.fxg.ButtonOpacity;
 			
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.geometry.basetypes.Bounds;
 			
@@ -16,6 +17,13 @@
 			[Embed(source="/assets/images/layer/zoomToExtent.png")]
 			private var _btnZoom:Class;
 			
+			/**
+			 * Tootip for metadatas button
+			 */
+			[Bindable]
+			public var tooltipZoomToExtent:String = Catalog.getLocalizationForKey('layercontrol.zoomToExtent')
+				
+				
 			/**
 			 * Center the map on the layer
 			 * @param event Click event
@@ -28,13 +36,20 @@
 				}
 			}
 			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.tooltipZoomToExtent = Catalog.getLocalizationForKey('layercontrol.zoomToExtent');
+			}
 		]]>
 	</fx:Script>
 	
 	<os:IconButton id="layerControlZoomToExtent"
 				width="16"
 				height="16"
-				toolTip="{Catalog.getLocalizationForKey('layercontrol.zoomToExtent')}"
+				toolTip="{this.tooltipZoomToExtent}"
 				click="setLayerExtent(event)"
 				icon="{_btnZoom}" />
 	
