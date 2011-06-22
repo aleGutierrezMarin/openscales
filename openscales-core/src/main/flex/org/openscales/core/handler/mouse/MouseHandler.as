@@ -41,10 +41,10 @@ package org.openscales.core.handler.mouse
 		 */ 
 		public static const ZOOM_BOX_HANDLER:String = "zoomBoxHandler";
 		
-		private var _clickHandler:ClickHandler;
-		private var _dragHandler:DragHandler;
-		private var _wheelHandler:WheelHandler;
-		private var _zoomBoxHandler:ZoomBoxHandler;
+		private var _clickHandler:ClickHandler = null;
+		private var _dragHandler:DragHandler = null;
+		private var _wheelHandler:WheelHandler = null;
+		private var _zoomBoxHandler:ZoomBoxHandler = null;
 		
 		/**
 		 * Enabled or disabled the wheel handler
@@ -175,5 +175,19 @@ package org.openscales.core.handler.mouse
 			_zoomBoxHandler.active = value;
 			_zoomBoxEnabled = value;
 		}
+		
+		override public function set active(value:Boolean):void {
+			super.active = value;
+			
+			if(_clickHandler)
+				_clickHandler.active = value; 
+			if(_dragHandler)
+				_dragHandler.active = value;
+			if(_wheelHandler)
+				_wheelHandler.active = value;
+			if(_zoomBoxHandler)
+				_zoomBoxHandler.active = value;
+		}
+
 	}
 }

@@ -73,21 +73,30 @@
 			
 			
 			/**
-			 * 
+			 * The current zoom value
 			 */
 			[Bindable]
-			public var _currentZoom:Number = 0;
+			public var currentZoom:Number = 150;
 			
-			override public function set map(value:Map):void {
-				super.map = value;
-				
-				if(this.map.baseLayer)
-				{
-					this.minSlider = map.baseLayer.getZoomForResolution(map.maxResolution);
-					this.maxSlider = map.baseLayer.getZoomForResolution(map.minResolution);
-				}
-				
-			}
+			/**
+			 * @private
+			 * The bindable value corresponding to the zoom out tooltip
+			 */
+			[Bindable]
+			public var toolTipZoomOut:String = Catalog.getLocalizationForKey('zoom.zoomout');
+			
+			/**
+			 * @private
+			 * The bindable value corresponding to the zoom in tooltip
+			 */
+			[Bindable]
+			public var toolTipZoomIn:String = Catalog.getLocalizationForKey('zoom.zoomin');
+			
+			/**
+			 * The current y for the label that display scaleName
+			 */
+			[Bindable]
+			public var scaleNameY:Number = 0;
 			
 			/**
 			 * Configure the listener for the pan and the zoom
@@ -104,24 +113,65 @@
 			
 			/**
 			 * @inherit
-			 */			
-			override public function set active(value:Boolean):void {
-				if(value) {					
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.toolTipZoomOut = Catalog.getLocalizationForKey('zoom.zoomout');
+				this.toolTipZoomIn = Catalog.getLocalizationForKey('zoom.zoomin');
+				this.updateCurrentLabel();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function set map(value:Map):void 
+			{
+				super.map = value;
+				
+				if(value)
+				{
+					if(this.map.baseLayer)
+					{
+						this.minSlider = this.map.baseLayer.getZoomForResolution(this.map.maxResolution);
+						this.maxSlider = this.map.baseLayer.getZoomForResolution(this.map.minResolution);
+					}
+					
+					initializeZoomLevels();
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				// add listener to the map
+				if(this._map)
+				{
 					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
 					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
-					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
-					initializeZoomLevels();								
-				} else {
+					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);	
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				// remove listener to the map
+				if(this._map)
+				{
 					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
 					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
 				}
-				super.active = value;
 			}
-			
-			override public function onMapLanguageChange(event:I18NEvent):void {
-				this.updateCurrentLabel();
-			}
+
 			
 			/**
 			 * Refresh the current zoom label.
@@ -133,11 +183,20 @@
 				if(this._map && this._map.resolution)
 				{
 					// update the value
-					this._currentLabel = this.getLabelFromResolution(this._map.resolution);
-					
-					// update the display label
-					scalesNameLabel.text = this._currentLabel;
+					this.currentLabel = this.getLabelFromResolution(this._map.resolution);
+					this.updateScalesNameLabel();
 				}
+			}
+			
+			/**
+			 * 
+			 * @private
+			 * Update the label y when the thumb slider y change
+			 */
+			private function updateScalesNameLabel():void
+			{
+				if(zoomSlider)
+					this.scaleNameY = zoomSlider.thumb.y;
 			}
 			
 			/**
@@ -161,14 +220,17 @@
 			 */
 			public function getLabelFromResolution(resolution:Number):String
 			{
-				var i:uint = 0;
-				var j:uint = this._scalesLabels.length;
-				for (; i<j; ++i) 
+				if(this._scalesLabels)
 				{
-					if( resolution>=this._scalesLabels[i].minResolution
-						&& resolution<=this._scalesLabels[i].maxResolution )
+					var i:uint = 0;
+					var j:uint = this._scalesLabels.length;
+					for (; i<j; ++i) 
 					{
-						return Catalog.getLocalizationForKey(this._scalesLabels[i].label);
+						if( resolution>=this._scalesLabels[i].minResolution
+							&& resolution<=this._scalesLabels[i].maxResolution )
+						{
+							return Catalog.getLocalizationForKey(this._scalesLabels[i].label);
+						}
 					}
 				}
 				return new String("");
@@ -203,7 +265,7 @@
 				if(!this._map || !this._map.baseLayer)
 					return;
 				
-				this._currentZoom = map.zoom;
+				this.currentZoom = map.zoom;
 				
 				// initialise the label value
 				this.updateCurrentLabel();
@@ -212,9 +274,11 @@
 			
 			
 			private function updateZoomLevels(e:MapEvent = null):void {
+				this.updateScalesNameLabel();
+				
 				if(e.zoomChanged)
 				{
-					this._currentZoom = map.zoom;
+					this.currentZoom = map.zoom;
 					this.updateCurrentLabel();
 				}
 			}
@@ -224,6 +288,7 @@
 			 */
 			public function onThumbDrag(event:TrackBaseEvent):void
 			{
+				this.updateScalesNameLabel();
 				this._onDrag = true;
 			}
 			
@@ -232,10 +297,11 @@
 			 */
 			public function onThumbRelease(event:TrackBaseEvent):void
 			{
+				this.updateScalesNameLabel();
 				var currentSlider:SliderBase= event.target as SliderBase;
-				this._currentZoom = currentSlider.value;
+				this.currentZoom = currentSlider.value;
 				this._onDrag = false;
-				this.map.moveTo(this.map.center, this._currentZoom, false, true);
+				this.map.moveTo(this.map.center, this.currentZoom, false, true);
 			}
 			
 			/**
@@ -251,13 +317,13 @@
 					return;
 				
 				// update the display label
-				this._currentLabel = getLabelFromZoom(currentSlider.value);
+				this.currentLabel = getLabelFromZoom(currentSlider.value);
 				
 				// if not onDrag really update the zoom
 				if(!this._onDrag)
 				{
-					this._currentZoom = currentSlider.value;
-					this.map.moveTo(this.map.center, this._currentZoom, false, true);
+					this.currentZoom = currentSlider.value;
+					this.map.moveTo(this.map.center, this.currentZoom, false, true);
 				}
 				
 			}
@@ -325,7 +391,7 @@
 			[Bindable]
 			public function get currentLabel():String
 			{
-				return _currentLabel;
+				return this._currentLabel;
 			}
 			
 			/**
@@ -333,7 +399,7 @@
 			 */
 			public function set currentLabel(value:String):void
 			{
-				_currentLabel = value;
+				this._currentLabel = value;
 			}		
 			
 			
@@ -395,7 +461,7 @@
 	<s:VSlider id="zoomSlider" x="80" y="10"
 			   minimum="{this.minSlider}"
 			   maximum="{this.maxSlider}"
-			   value="{this._currentZoom}"
+			   value="{this.currentZoom}"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
@@ -404,16 +470,16 @@
 			   showDataTip="false"
 			   thumbDrag="onThumbDrag(event)"
 			   thumbRelease="onThumbRelease(event)"
-			   change="onZoomSliderChange(event)" />
+			   change="onZoomSliderChange(event)"  />
 	
-	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{Catalog.getLocalizationForKey('zoom.zoomout')}"
+	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{this.toolTipZoomOut}"
 			  click="onZoomOut(event)"
 			  width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
-	<s:Button id="zoomIn" name="zoomin" label="+" toolTip="{Catalog.getLocalizationForKey('zoom.zoomin')}"
+	<s:Button id="zoomIn" name="zoomin" label="+" toolTip="{this.toolTipZoomIn}"
 			  click="onZoomIn(event)"
 			  width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
-	<s:Label id="scalesNameLabel" x="90" y="{this.zoomSlider.thumb.y}"
+	<s:Label id="scalesNameLabel" x="90" y="{this.scaleNameY}"
 			 backgroundColor="0xDDDDDD" text="{this.currentLabel}"/>
 </Control>
 
