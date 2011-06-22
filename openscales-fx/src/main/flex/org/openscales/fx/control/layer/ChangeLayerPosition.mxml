@@ -15,11 +15,23 @@
 			import assets.fxg.UpArrowUp;
 			
 			import org.openscales.core.Map;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.fx.control.layer.LayerRenderer;
+			
+			/**
+			 * Tooltip for move front button
+			 */
+			[Bindable]
+			public var tooltipMoveFront:String = Catalog.getLocalizationForKey('layercontrol.movefront');
+			/**
+			 * Tooltip for move back button
+			 */
+			[Bindable]
+			public var tooltipMoveBack:String = Catalog.getLocalizationForKey('layercontrol.moveback');
 			
 			/**
 			 * Indicates if the arrow up has to be displayed (if true) or not otherwise.
@@ -53,6 +65,15 @@
 					
 					this._layer.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, updateArrowsDisplay);
 				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.tooltipMoveFront = Catalog.getLocalizationForKey('layercontrol.movefront');
+				this.tooltipMoveBack = Catalog.getLocalizationForKey('layercontrol.moveback');		
 			}
 			
 			/**
@@ -121,7 +142,7 @@
 			<s:VerticalLayout gap="0" verticalAlign="middle" />
 		</s:layout>
 		<os:IconButton id="layerSwitcherArrowUp"
-					toolTip="{Catalog.getLocalizationForKey('layercontrol.movefront')}"
+					toolTip="{this.tooltipMoveBack}"
 					click="upLayer(event)"
 					icon="{new UpArrowUp()}"
 					iconOver="{new UpArrowOver()}"
@@ -131,7 +152,7 @@
 					enabled="{this._arrowUpVisibility}"/>
 		
 		<os:IconButton id="layerSwitcherArrowDown"
-					toolTip="{Catalog.getLocalizationForKey('layercontrol.moveback')}"
+					toolTip="{this.tooltipMoveBack}"
 					click="downLayer(event)"
 					icon="{new DownArrowUp()}"
 					iconOver="{new DownArrowOver()}"

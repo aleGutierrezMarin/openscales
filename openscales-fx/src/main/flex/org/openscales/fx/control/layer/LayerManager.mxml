@@ -26,6 +26,7 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.control.LayerManager;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.events.MapEvent;
@@ -41,6 +42,13 @@
 			import spark.components.VSlider;
 			import spark.components.supportClasses.ItemRenderer;
 			import spark.primitives.Rect;
+			
+			/**
+			 * Title value for the Panel
+			 */
+			[Bindable]
+			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.layers');
+			
 			
 			/**
 			 * The dataProvider use for the list.
@@ -89,6 +97,14 @@
 						ac.addItem(overlayArray[i-1]);
 					this.dataProvider = ac;
 				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				panelTitle = Catalog.getLocalizationForKey('layerswitcher.layers');
 			}
 			
 			/**
@@ -231,7 +247,7 @@
 	
 
 	
-	<s:Panel id="layerPanel" title="{Catalog.getLocalizationForKey('layerswitcher.layers')}" width="220" > 
+	<s:Panel id="layerPanel" title="{this.panelTitle}" width="220" > 
 		<s:List id="layerList" 
 				dropEnabled="false"
 				dragEnabled="false"
