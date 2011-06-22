@@ -124,7 +124,9 @@
 			 * @param value The map linked with the overviewMap
 			 */
 			override public function set map(value:Map):void {
-				_overviewmap.map = value;
+				super.map = value;
+				
+				this._overviewmap.map = value;
 				this.draw();
 			}
 			

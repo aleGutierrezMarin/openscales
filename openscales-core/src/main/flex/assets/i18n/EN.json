@@ -1,5 +1,8 @@
  {
- 
+   "locale.key": "EN",
+   "locale.name": "English",
+   "locale.localizedName": "English",
+   
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",
    "layercontrol.deletelayer": "Delete this layer",
@@ -10,11 +13,7 @@
    "layercontrol.zoomToExtent": "Zoom to the max extent of this layer",
 
    "layerswitcher.layers": "Layers",
-   
-   "locale.key": "EN",
-   "locale.name": "English",
-   "locale.localizedName": "English",
-   
+
    "tos.label": "Terms of Service",
    
    "zoombar.world": "World",

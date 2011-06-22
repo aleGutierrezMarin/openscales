@@ -9,12 +9,18 @@
 		<![CDATA[
 			import assets.fxg.ButtonOpacity;
 			
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/display_information.png")]
 			private var _btnMetadatas:Class;
 			
+			/**
+			 * Tootip for metadatas button
+			 */
+			[Bindable]
+			public var tooltipMetadatas:String = Catalog.getLocalizationForKey('layercontrol.metadatas')
 			
 			/**
 			 * Center the map on the layer
@@ -25,6 +31,13 @@
 				trace("display Metadatas");
 			}
 			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.tooltipMetadatas = Catalog.getLocalizationForKey('layercontrol.metadatas');	
+			}
 		]]>
 	</fx:Script>
 	
@@ -32,7 +45,7 @@
 				width="16"
 				height="16"
 				click="displayMetadatas(event)"
-				toolTip="{Catalog.getLocalizationForKey('layercontrol.metadatas')}"
+				toolTip="{this.tooltipMetadatas}"
 				icon="{_btnMetadatas}" />
 	
 </LayerControl>
