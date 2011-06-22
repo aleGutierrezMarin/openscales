@@ -135,10 +135,6 @@
 			
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
-				
-				dispatchEvent(new Event("selectedIndexCrsChanged"));
-				dispatchEvent(new Event("selectedIndexUnittChanged"));
-				
 				this.feedUnitsComboBox();
 			}
 			
