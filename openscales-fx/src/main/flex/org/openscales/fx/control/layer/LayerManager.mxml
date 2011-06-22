@@ -26,6 +26,7 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
 			import org.openscales.core.control.LayerManager;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.events.MapEvent;
@@ -41,6 +42,13 @@
 			import spark.components.VSlider;
 			import spark.components.supportClasses.ItemRenderer;
 			import spark.primitives.Rect;
+			
+			/**
+			 * Title value for the Panel
+			 */
+			[Bindable]
+			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.layers');
+			
 			
 			/**
 			 * The dataProvider use for the list.
@@ -76,22 +84,11 @@
 			 * @param value
 			 */	 
 			override public function set map(value:Map):void {
-				//cleanup
-				if(this.map != null) {
-					this.map.removeEventListener(LayerEvent.LAYER_ADDED,this.refresh);
-					this.map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
-					this.map.removeEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
-					this.map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-				}
+				
 				super.map = value;
 				
-				if(this.map != null) {
-					//Listening of layer event
-					this.map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
-					this.map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
-					this.map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
-					this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-					
+				if(this._map != null) 
+				{
 					//stock layer by type : baselayer and overlays
 					var overlayArray:Vector.<Layer>  = this.map.layers;
 					var ac:ArrayCollection = new ArrayCollection();
@@ -99,7 +96,47 @@
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
 					this.dataProvider = ac;
-					
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				panelTitle = Catalog.getLocalizationForKey('layerswitcher.layers');
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				if(this._map)
+				{
+					//Listening of layer event
+					this._map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				if(this._map)
+				{
+					this._map.removeEventListener(LayerEvent.LAYER_ADDED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
 				}
 			}
 			
@@ -210,7 +247,7 @@
 	
 
 	
-	<s:Panel id="layerPanel" title="{Catalog.getLocalizationForKey('layerswitcher.layers')}" width="220" > 
+	<s:Panel id="layerPanel" title="{this.panelTitle}" width="220" > 
 		<s:List id="layerList" 
 				dropEnabled="false"
 				dragEnabled="false"
