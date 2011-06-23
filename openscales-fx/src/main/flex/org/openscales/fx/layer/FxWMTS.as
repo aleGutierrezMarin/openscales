@@ -25,8 +25,8 @@ package org.openscales.fx.layer
 		
 		public function FxWMTS()
 		{
-			this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
 			super();
+			this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
 		}
 
 		override public function configureLayer():Layer {
@@ -38,7 +38,7 @@ package org.openscales.fx.layer
 			(this._layer as WMTS).tileMatrixSets = this.tileMatrixSets;
 			(this._layer as WMTS).tileMatrixSet = this.tileMatrixSet;
 			(this._layer as WMTS).format = this.format;
-			
+
 			return this._layer;
 		}
 		
