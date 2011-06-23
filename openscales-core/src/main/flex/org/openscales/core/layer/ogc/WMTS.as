@@ -137,7 +137,7 @@ package org.openscales.core.layer.ogc
 			if(this.map)
 			{
 				this.clear();
-				this.redraw();
+				this.redraw(true);
 			}
 		}
 		
