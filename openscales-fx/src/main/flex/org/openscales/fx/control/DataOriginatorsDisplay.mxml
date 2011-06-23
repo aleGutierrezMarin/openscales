@@ -42,7 +42,7 @@
 			 * The data list of current originators to display (use to synchronise with display).
 			 * @default null
 			 */
-			private var _dataOriginators:DataOriginators = null;
+			protected var _dataOriginators:DataOriginators = null;
 
 			/**
 			 * @private
@@ -113,7 +113,7 @@
 			}
 			
 			/**
-			 * Start the timer use to change hte display.
+			 * Start the timer use to change the display.
 			 */
 			public function startTimer():void
 			{	
@@ -126,29 +126,65 @@
 				this._timer.addEventListener(TimerEvent.TIMER,this.changeDisplay);
 				this._timer.start();
 			}	
-				
 			
 			/**
-			 * Map setter 
-			 * @param value The map to set
+			 * Stop the timer use to change the display.
 			 */
-			override public function set map(value:Map):void {
-				if (value != null) {
-					super.map = value;
-
-					if(this._dataOriginators == null)
-					{
-						this.configure();
-					}
-					
-					// add the DataOriginators as a control in the map
-					this._map.addControl(this._dataOriginators);
-					
-					// add listener to add / remove Originators	
-					this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
-					this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_ADDED, this.changeDisplay);
-					startTimer();
+			public function stopTimer():void
+			{	
+				if(this._timer)
+				{
+					this._timer.removeEventListener(TimerEvent.TIMER,this.changeDisplay);
+					this._timer.stop();
 				}
+			}	
+				
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				if(this._dataOriginators == null)
+					this.configure();
+				
+				// add the DataOriginators as a control in the map
+				if(this._map)
+					this._map.addControl(this._dataOriginators);
+				
+				// add listener to add / remove Originators	
+				this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
+				this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_ADDED, this.changeDisplay);
+				this.startTimer();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				
+				// add the DataOriginators as a control in the map
+				if(this._map)
+					this._map.removeControl(this._dataOriginators);
+				
+				// add listener to add / remove Originators	
+				if(this._dataOriginators)
+				{
+					this._dataOriginators.removeEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
+					this._dataOriginators.removeEventListener(OriginatorEvent.ORIGINATOR_ADDED, this.changeDisplay);
+				}
+				this.stopTimer();
+			}
+			/**
+			 * @inherit
+			 */
+			override public function set map(value:Map):void 
+			{
+				super.map = value;
 			}
 			
 			/**

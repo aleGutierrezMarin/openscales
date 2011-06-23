@@ -4,12 +4,12 @@ package org.openscales.fx.control.layer
 	import mx.core.IVisualElement;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.LayerManagerEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.control.layer.LayerManager;
 	
-	import spark.components.SkinnableContainer;
 	import spark.components.List;
 	import spark.components.SkinnableContainer;
 	import spark.components.supportClasses.ItemRenderer;
@@ -90,7 +90,16 @@ package org.openscales.fx.control.layer
 					}
 				}
 			}
+			
+			
+			this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED,onMapLanguageChange);
 		}
+		
+		/**
+		 * Do actions on Map language change if necessary
+		 */
+		public function onMapLanguageChange(event:I18NEvent):void 
+		{ }
 
 		/**
 		 * Manage rendererOptions : get the rendererOptions object in the LayerManager owner

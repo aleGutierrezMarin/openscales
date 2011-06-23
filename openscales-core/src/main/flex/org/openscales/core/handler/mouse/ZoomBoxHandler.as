@@ -95,8 +95,11 @@ package org.openscales.core.handler.mouse
 		override protected function unregisterListeners():void{
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN,startBox);
-				this.map.stage.removeEventListener(MouseEvent.MOUSE_UP,endBox);
-				this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+				if(this.map.stage)
+				{
+					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP,endBox);
+					this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+				}
 				this.map.removeEventListener(MapEvent.DRAG_START, dragStart);
 				this.map.removeEventListener(MapEvent.DRAG_END, dragEnd);
 				//this.map.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
