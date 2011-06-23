@@ -35,6 +35,7 @@ package {
 			var layerWMS111:WMS = new WMS("Germany","http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map","Germany","default");
 			layerWMS111.maxExtent = new Bounds(5.60075,47.2441,15.425,55.0317,"EPSG:4326");
 			layerWMS111.version="1.1.1";
+			layerWMS111.tiled = true;
 			
 			this._map.addLayer(layerWMS111);
 			

@@ -30,7 +30,7 @@ package org.openscales.core.layer
 		/** The grid array contains tiles **/		
 		private var _grid:Vector.<Vector.<ImageTile>> = null;
 		
-		protected var _tiled:Boolean = false;
+		protected var _tiled:Boolean = true;
 		
 		private var _numLoadingTiles:int = 0;
 		
@@ -184,9 +184,9 @@ package org.openscales.core.layer
 		
 		public function get tileWidth():Number {
 			if (this.tiled) {
-				return map.size.w;
-			} 			
-			return this._tileWidth;
+				return this._tileWidth;
+			} 
+			return map.size.w;
 		}
 		
 		public function set tileHeight(value:Number):void {
@@ -195,9 +195,9 @@ package org.openscales.core.layer
 		
 		public function get tileHeight():Number {
 			if (this.tiled) {
-				return map.size.h;
+				return this._tileHeight;
 			}
-			return this._tileHeight;
+			return map.size.h;
 		}	
 		
 		
@@ -234,6 +234,8 @@ package org.openscales.core.layer
 			var center:Location = bounds.center;
 			var tileWidth:Number = bounds.width;
 			var tileHeight:Number = bounds.height;
+			this.tileWidth = this.map.width;
+			this.tileHeight = this.map.height;
 			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
 				center.lat - (tileHeight/2),
 				center.lon + (tileWidth/2),

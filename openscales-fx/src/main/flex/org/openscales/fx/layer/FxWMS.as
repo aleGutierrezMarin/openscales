@@ -55,7 +55,7 @@ package org.openscales.fx.layer
 				(this._layer as WMS).bgcolor=value;
 		}
 
-		public function set tiled(value:Boolean):void {
+		override public function set tiled(value:Boolean):void {
 			if(this._layer != null)
 				//((this.layer as WMS).params as WMSParams).tiled = value;
 				(this._layer as WMS).tiled=value;

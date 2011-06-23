@@ -22,10 +22,21 @@ package org.openscales.fx.layer
 	    		(this._layer as Grid).tileHeight = value;
 	    }
 
+		/**
+		 * @Deprecated
+		 */
 		public function set singleTile(value:Boolean):void {
 			if(this._layer != null)
-				(this._layer as Grid).tiled = value;
+				(this._layer as Grid).tiled = !value;
 		}
 		
+		/**
+		 * Value to set if the layer is tiled
+		 * 
+		 */
+		public function set tiled(value:Boolean):void{
+			if(this._layer != null)
+				(this._layer as Grid).tiled = value;
+		}		
 	}
 }
