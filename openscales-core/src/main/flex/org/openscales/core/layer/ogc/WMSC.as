@@ -18,7 +18,7 @@ package org.openscales.core.layer.ogc
 							 layers:String = "")
 		{
 			super(name, url, layers);
-			this.tiled = false;
+			this.tiled = true;
 
 			//(this.params as WMSParams).tiled= true;
 		}
