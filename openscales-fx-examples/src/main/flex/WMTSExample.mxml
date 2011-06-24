@@ -10,18 +10,10 @@
 		<DragHandler/>
 		<WheelHandler/>
 		<PanZoom id="panZoom" x="10" y="10" />
-		<!--<WMTS name="myLayer"
+		<WMTS name="myLayer"
 			  url="http://openscales.org/geoserver/gwc/service/wmts"
 			  tileMatrixSet="EPSG:4326"
 			  WMTSLayer="topp:world_borders"
-			  format="image/png" />-->
-		
-		<WMTS name="myWMTSLayer"
-						 url="http://gpp3-wxs-ign-fr.aw.atosorigin.com/rok4"
-						 tileMatrixSet="LAMB93_12.5m"
-						 WMTSLayer="SCANDEP_PNG_IGNF_LAMB93"
-						 format="image/png" />
-		
-		
+			  format="image/png" />	
 	</Map>
 </s:Group>
