@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openscales</groupId>
 	<artifactId>openscales-viewer</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>2.0-PREALPHA-2</version>
 	<packaging>swf</packaging>
 	<name>Viewer</name>
 	<description />
@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.openscales</groupId>
 		<artifactId>openscales</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>2.0-PREALPHA-2</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	
@@ -33,7 +33,7 @@
 		  	<dependency>
 				<groupId>org.openscales</groupId>
 				<artifactId>openscales-fx</artifactId>
-				<version>2.0.0-SNAPSHOT</version>
+				<version>2.0-PREALPHA-2</version>
 				<type>swc</type>
 			</dependency>
 		</dependencies>
