@@ -26,22 +26,15 @@ package org.openscales.fx.layer
 		public function FxWMTS()
 		{
 			super();
+			this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
 		}
-		
-		private function getCapabilities():void {
-			var req:XMLRequest = new XMLRequest(this._url+"?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities", loadEnd, onFailure);
-			if(this.proxy)
-				req.proxy = this.proxy;
-			req.send();
-		}
-		
+
 		override public function configureLayer():Layer {
-			if(!this._layer)
-				this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
-			
-			this._isConfigured = true;
+
 			
 			this._layer.name = this.name;
+			this._layer.url = this._url;
+			
 			if(this.proxy)
 				this._layer.proxy = this.proxy;
 			if(this.dpi)
@@ -50,16 +43,13 @@ package org.openscales.fx.layer
 			this._layer.alpha = super.alpha;
 			this._layer.visible = super.visible;
 			
-			if(this._useCapabilities && !this._tileMatrixSets) {
-				this.getCapabilities();
-				return this._layer;
-			}
 			
-			if(!this._useCapabilities) {
-				(this._layer as WMTS).tileMatrixSets = this.tileMatrixSets;
-				(this._layer as WMTS).tileMatrixSet = this.tileMatrixSet;
-				(this._layer as WMTS).format = this.format;
-				this._layer.generateResolutions();
+			if(!this._useCapabilities)
+			{
+				(this._layer as WMTS).layer = this._WMTSlayer;
+				(this._layer as WMTS).tileMatrixSets = this._tileMatrixSets;
+				(this._layer as WMTS).tileMatrixSet = this._tileMatrixSet;
+				(this._layer as WMTS).format = this._format;	
 			}
 			
 			return this._layer;
@@ -69,9 +59,6 @@ package org.openscales.fx.layer
 			if(this._layer != null)
 				(this._layer as WMTS).url=value;
 			this._url = value;
-			if(this._useCapabilities && this._url) {
-				this.getCapabilities();
-			}
 		}
 		
 		public function get WMTSLayer():String {
@@ -119,7 +106,10 @@ package org.openscales.fx.layer
 		
 		public function set tileMatrixSets(value:HashMap):void
 		{
-			_tileMatrixSets = value;
+			this._tileMatrixSets = value;
+			
+			this._useCapabilities = false;
+			
 			if(this._layer)
 				(this._layer as WMTS).tileMatrixSets = value;
 		}
@@ -135,48 +125,5 @@ package org.openscales.fx.layer
 			if(this._layer)
 				(this._layer as WMTS).tileMatrixSet = value;
 		}
-		
-		public function onFailure(event:Event):void {
-			
-		}
-		
-		public function loadEnd(event:Event):void {
-			var loader:URLLoader = event.target as URLLoader;
-			var cap:WMTS100 = new WMTS100();
-			var layers:HashMap = cap.read(new XML(loader.data as String));
-			if(!layers)
-				return;
-			
-			if(!layers.containsKey(this.WMTSLayer))
-				return;
-			
-			var layer:HashMap = (layers.getValue(this.WMTSLayer) as HashMap);
-			if(!layer.containsKey("TileMatrixSets"))
-				return;
-			
-			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
-			
-			if(!this._layer)
-				this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
-			else {
-				this._layer.name = this.name;
-				this._layer.url = this._url;
-				(this._layer as WMTS).layer = this._WMTSlayer;
-				(this._layer as WMTS).tileMatrixSet = this._tileMatrixSet;
-				(this._layer as WMTS).tileMatrixSets = this._tileMatrixSets;
-			}
-			
-			(this._layer as WMTS).format = this.format;
-			
-			if(this._isConfigured) {
-				this.configureLayer();
-				this._isConfigured = false;
-				if(this.fxmap && this.fxmap.map) {
-					this._layer.clear();
-					this._layer.redraw();
-				}
-			}
-		}
-		
 	}
 }
