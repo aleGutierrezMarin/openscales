@@ -68,6 +68,10 @@ package org.openscales.core.tile
 			}
 
 			if(! withinMapBounds()) {
+				//add
+				trace("out bounds");
+				//this.loading = true;
+				//this.loading = false;
 				return false;    
 			}
 			if (this.url == null) {
@@ -76,13 +80,18 @@ package org.openscales.core.tile
 
 			var cachedBitmap:Bitmap;
 			if ((this.layer is Grid) && ((cachedBitmap=(this.layer as Grid).getTileCache(this.url)) != null)) {
+				trace("don't load tile");
+				this.loading = true;
+				//add
 				drawLoader(this.url,cachedBitmap,true);
 			}else {
 				if (_request) {
 					_request.destroy();
 				}
+				//add
 				this.loading = true;		     
 				_request = new DataRequest(this.url, onTileLoadEnd, onTileLoadError,method);
+				trace("load tile");
 				if(_request.method == URLRequestMethod.POST){
 					_request.postContent = new URLVariables(this.url);
 				}
@@ -136,7 +145,7 @@ package org.openscales.core.tile
 
 				this.drawn = true;
 				this.loading = false;
-
+				
 				// We put the loader into the cache if it's a recently loaded
 				if ((this.layer is Grid) && (! cached)) {
 					var node:LinkedListBitmapNode = new LinkedListBitmapNode(bitmap,url);
@@ -154,6 +163,7 @@ package org.openscales.core.tile
 				// Maximum number of tries reached
 				Trace.error("ImageTile - onTileLoadError: Error while loading tile " + this.url);
 				this.loading = false;
+				
 			}
 		}
 

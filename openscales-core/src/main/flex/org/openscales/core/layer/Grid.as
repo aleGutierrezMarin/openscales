@@ -47,6 +47,7 @@ package org.openscales.core.layer
 		
 		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
 		
+		private var _numLoadingTile:uint = 0;
 		/**
 		 * Create a new grid layer
 		 *
@@ -76,12 +77,14 @@ package org.openscales.core.layer
 			// Clear pending requests after zooming in order to avoid to add
 			// too many tile requests  when the user is zooming step by step
 			if(e.zoomChanged) {
+				trace("---------------------------- new zoom ------------------------------");
 				var j:uint;
 				for each(var array:Vector.<ImageTile> in this._grid)	{
 					j = array.length;
 					for (var i:Number = 0;i<j;i++)	{
 						var tile:ImageTile = array[i];
 						if (tile != null && !tile.loadComplete) {
+							trace(j + " " + i);
 							tile.clear();
 						}
 					}
@@ -251,6 +254,7 @@ package org.openscales.core.layer
 			var tile:ImageTile = this._grid[0][0];
 			if (!tile) {
 				tile = this.addTile(tileBounds, px);
+				this._numLoadingTile++;
 				tile.draw();
 				this._grid[0][0] = tile;
 			} else {
@@ -413,10 +417,12 @@ package org.openscales.core.layer
 					directionsTried++;
 				}
 			} 
-			
+			//this._numLoadingTile+=tileQueue.length;
+			this._numLoadingTile = tileQueue.length;
 			// now we go through and draw the tiles in forward order
 			for(var i:int=tileQueue.length-1; i >= 0; i--) {
 				tile = tileQueue[i];
+				trace("tile position in queue " + i);
 				tile.draw();
 				//mark tile as unqueued for the next time (since tiles are reused)
 				tile.queued = false;       
@@ -454,6 +460,9 @@ package org.openscales.core.layer
 			if (this.buffer == 0) {
 				var rl:int = this._grid.length;
 				var cl:int;
+				if(rl>0 && this._grid[0]) {
+					this._numLoadingTile+=rl*this._grid[0].length;
+				}
 				for (var r:int=0; r<rl; r++) {
 					var row:Vector.<ImageTile> = this._grid[r];
 					cl = row.length;
@@ -580,6 +589,7 @@ package org.openscales.core.layer
 				tileBottom + tileMapHeight,
 				this.projSrsCode);
 		}
+		//
 		
 		private function tileLoadHandler(event:TileEvent):void	{
 			switch(event.type)	{
@@ -589,19 +599,26 @@ package org.openscales.core.layer
 					break;
 				}
 				case TileEvent.TILE_LOAD_END:	{
+					
+					/*this._numLoadingTile--;
+					trace("numLoadingTile = " + this._numLoadingTile);
+					if(this._numLoadingTile==0)
+						this.loading = false;*/
 					// check if there are still tiles loading
 					for each(var array:Vector.<ImageTile> in this._grid)	{
 						var j:uint = array.length;
 						for (var i:Number = 0;i<j;i++)	{
-							var tile:ImageTile = array[i];
-							if (tile != null && !tile.loadComplete)
+							var tile:ImageTile = array[i];//add
+							if (tile != null && !tile.loadComplete){
+								trace(j + " " + i);
 								return;	
+							}
 						}
 					}
 					this.loading = false;
 					break;
 				}
-			}			
+			}
 		}
 		
 		//Getters and Setters
@@ -647,7 +664,6 @@ package org.openscales.core.layer
 		public function set buffer(value:Number):void {
 			this._buffer = value; 
 		}
-		
 	}
 }
 
