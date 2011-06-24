@@ -15,6 +15,6 @@
 			  tileMatrixSet="EPSG:4326"
 			  WMTSLayer="topp:world_borders"
 			  format="image/png" />
-		<OverviewMap />
+		
 	</Map>
 </s:Group>
