@@ -31,14 +31,27 @@ package org.openscales.fx.layer
 
 		override public function configureLayer():Layer {
 
-			super.configureLayer();
-
-			this._layer.url = this.url;
-			(this._layer as WMTS).layer = this._WMTSlayer;
-			(this._layer as WMTS).tileMatrixSets = this.tileMatrixSets;
-			(this._layer as WMTS).tileMatrixSet = this.tileMatrixSet;
-			(this._layer as WMTS).format = this.format;
-
+			
+			this._layer.name = this.name;
+			this._layer.url = this._url;
+			
+			if(this.proxy)
+				this._layer.proxy = this.proxy;
+			if(this.dpi)
+				this._layer.dpi = this.dpi;
+			this._layer.tweenOnZoom = this.tweenOnZoom;
+			this._layer.alpha = super.alpha;
+			this._layer.visible = super.visible;
+			
+			
+			if(!this._useCapabilities)
+			{
+				(this._layer as WMTS).layer = this._WMTSlayer;
+				(this._layer as WMTS).tileMatrixSets = this._tileMatrixSets;
+				(this._layer as WMTS).tileMatrixSet = this._tileMatrixSet;
+				(this._layer as WMTS).format = this._format;	
+			}
+			
 			return this._layer;
 		}
 		
@@ -93,7 +106,10 @@ package org.openscales.fx.layer
 		
 		public function set tileMatrixSets(value:HashMap):void
 		{
-			_tileMatrixSets = value;
+			this._tileMatrixSets = value;
+			
+			this._useCapabilities = false;
+			
 			if(this._layer)
 				(this._layer as WMTS).tileMatrixSets = value;
 		}
