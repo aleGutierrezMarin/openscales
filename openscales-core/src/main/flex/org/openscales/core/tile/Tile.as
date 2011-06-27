@@ -107,7 +107,9 @@ package org.openscales.core.tile
 			}	
 		}
 		
-		public function clear():void {
+		public function clear():void
+		{
+			this.loading = false;
 			this.drawn = false;
 		}
 		
@@ -213,6 +215,7 @@ package org.openscales.core.tile
 		public function get loadComplete():Boolean {
 			return !this._loading;
 		}
+
 		
 		/**
 		 * Used to set loading status of tile
@@ -226,7 +229,7 @@ package org.openscales.core.tile
 			
 			if (value == false && this._loading == true && this.layer!=null) { // this.layer can be null, if you're unlucky and removed layer before it was totally loaded
 				this._loading = value;
-				// to inform layer that loading of tile has been ended				
+				// to inform layer that loading of tile has been ended
 				this.layer.dispatchEvent(new TileEvent(TileEvent.TILE_LOAD_END,this));		
 			}		
 		}
