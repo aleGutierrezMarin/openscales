@@ -415,7 +415,6 @@ package org.openscales.core.layer
 					directionsTried++;
 				}
 			} 
-			
 			// now we go through and draw the tiles in forward order
 			for(var i:int=tileQueue.length-1; i >= 0; i--) {
 				tile = tileQueue[i];
@@ -596,14 +595,15 @@ package org.openscales.core.layer
 						var j:uint = array.length;
 						for (var i:Number = 0;i<j;i++)	{
 							var tile:ImageTile = array[i];
-							if (tile != null && !tile.loadComplete)
+							if (tile != null && !tile.loadComplete){
 								return;	
+							}
 						}
 					}
 					this.loading = false;
 					break;
 				}
-			}			
+			}
 		}
 		
 		//Getters and Setters
@@ -649,7 +649,6 @@ package org.openscales.core.layer
 		public function set buffer(value:Number):void {
 			this._buffer = value; 
 		}
-		
 	}
 }
 

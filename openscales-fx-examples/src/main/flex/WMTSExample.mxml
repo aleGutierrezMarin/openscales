@@ -14,7 +14,7 @@
 			  url="http://openscales.org/geoserver/gwc/service/wmts"
 			  tileMatrixSet="EPSG:4326"
 			  WMTSLayer="topp:world_borders"
-			  format="image/png" />
+			  format="image/png" />	
 		<OverviewMap />
 	</Map>
 </s:Group>

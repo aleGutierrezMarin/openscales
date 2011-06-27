@@ -76,6 +76,7 @@ package org.openscales.core.tile
 
 			var cachedBitmap:Bitmap;
 			if ((this.layer is Grid) && ((cachedBitmap=(this.layer as Grid).getTileCache(this.url)) != null)) {
+				this.loading = true;
 				drawLoader(this.url,cachedBitmap,true);
 			}else {
 				if (_request) {
@@ -136,7 +137,7 @@ package org.openscales.core.tile
 
 				this.drawn = true;
 				this.loading = false;
-
+				
 				// We put the loader into the cache if it's a recently loaded
 				if ((this.layer is Grid) && (! cached)) {
 					var node:LinkedListBitmapNode = new LinkedListBitmapNode(bitmap,url);
@@ -154,6 +155,7 @@ package org.openscales.core.tile
 				// Maximum number of tries reached
 				Trace.error("ImageTile - onTileLoadError: Error while loading tile " + this.url);
 				this.loading = false;
+				
 			}
 		}
 
