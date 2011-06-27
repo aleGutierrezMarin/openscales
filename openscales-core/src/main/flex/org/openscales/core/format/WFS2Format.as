@@ -49,7 +49,7 @@ package org.openscales.core.format
 		 *
 		 * @param layer
 		 */
-		public function WFSFormat(layer:WFS) {
+		public function WFS2Format(layer:WFS) {
 			super(layer.addFeature,layer.featuresids,true);
 			this.layer = layer;
 			if (layer.geometryColumn) {
