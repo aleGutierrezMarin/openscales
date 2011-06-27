@@ -18,11 +18,11 @@ package org.openscales.fx.layer
 		
 		private var _typename:String;
 		
-		private var _version:String;
+		private var _version:String = "1.1.0";
 		
 		private var _useCapabilities:Boolean = true;
 		
-		private var _capabilitiesVersion:String = "1.1.0";
+		//private var _capabilitiesVersion:String = "1.1.0";
 		
 		
 		public function FxWFS() {
@@ -47,11 +47,11 @@ package org.openscales.fx.layer
 			}
 		}
 		
-		public function get layer():Layer{
-			
+		public function get layer():Layer
+		{
 			return this.nativeLayer;
 		}
-		//ici override
+		
 		override public function get nativeLayer():Layer {
 			if (this.style != null) {
 				(this._layer as WFS).style = this.style;
@@ -60,7 +60,7 @@ package org.openscales.fx.layer
 			(this._layer as WFS).url = this._url;
 			(this._layer as WFS).typename = this._typename;
 			(this._layer as WFS).useCapabilities = this._useCapabilities;
-			(this._layer as WFS).capabilitiesVersion = this._capabilitiesVersion;
+			(this._layer as WFS).capabilitiesVersion = this._version;
 			
 			return this._layer;
 		}
@@ -85,11 +85,12 @@ package org.openscales.fx.layer
 		
 		public function set version(value:String):void {
 			this._version = value;
+			if(this.nativeLayer)
+				(this._layer as WFS).capabilitiesVersion = value;
 		}
-		
 		public function get version():String{
 			return this._version;
-		}	
+		}
 		
 		public function set useCapabilities(value:Boolean):void {
 			this._useCapabilities = value;
@@ -98,15 +99,16 @@ package org.openscales.fx.layer
 		public function get useCapabilities():Boolean{
 			return this._useCapabilities;
 		}
-		
+		/*
 		public function set capabilitiesVersion(value:String):void {
 			this._capabilitiesVersion = value;
+			if(this._layer != null)
+				(this._layer as WFS).capabilitiesVersion = value;
 		}
-		
 		public function get capabilitiesVersion():String {
-			return this.capabilitiesVersion;
+			return this._capabilitiesVersion;
 		}
-		
+		*/
 		public override function set projection(value:String):void
 		{
 			super.projection = value;
