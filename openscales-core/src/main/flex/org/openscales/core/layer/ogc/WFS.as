@@ -60,7 +60,7 @@ package org.openscales.core.layer.ogc
 		
 		private var _fullRedraw:Boolean = false;
 		
-		protected var _wfsFormat:WFSFormat = null;
+		protected var _wfsFormat:WFS2Format = null;
 		
 		
 		/**
