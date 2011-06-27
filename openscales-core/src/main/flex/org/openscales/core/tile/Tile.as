@@ -27,8 +27,6 @@ package org.openscales.core.tile
 		private var _onLoadEnd:Function = null;
 		private var _loading:Boolean = false;
 		protected var _drawPosition:Pixel = null;
-		//add
-		private var _tileDone:Boolean = false;
 		
 		public function Tile(layer:Layer, position:Pixel, bounds:Bounds, url:String, size:Size) {
 			this.layer = layer;
@@ -109,8 +107,8 @@ package org.openscales.core.tile
 			}	
 		}
 		
-		public function clear():void {
-			//add
+		public function clear():void
+		{
 			this.loading = false;
 			this.drawn = false;
 		}
@@ -232,7 +230,6 @@ package org.openscales.core.tile
 			if (value == false && this._loading == true && this.layer!=null) { // this.layer can be null, if you're unlucky and removed layer before it was totally loaded
 				this._loading = value;
 				// to inform layer that loading of tile has been ended
-				trace("tile_load_end");
 				this.layer.dispatchEvent(new TileEvent(TileEvent.TILE_LOAD_END,this));		
 			}		
 		}

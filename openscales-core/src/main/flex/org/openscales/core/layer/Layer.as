@@ -599,7 +599,6 @@ package org.openscales.core.layer {
 
 			if (value == false && this._loading == true && this.map != null) {
 				_loading = value;
-				trace("layer_load_end dispatched");
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this));
 			}
 		}

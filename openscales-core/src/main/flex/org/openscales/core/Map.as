@@ -136,7 +136,6 @@ package org.openscales.core
 			this._layerContainer.height = this.size.h;
 			// The sprite is now fully defined.
 			this.addChild(this._layerContainer);
-			trace("coin"+this._layerContainer.visible);
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
 			
@@ -1009,8 +1008,6 @@ package org.openscales.core
 			if(this._bitmapTransition != null && this._bitmapTransition.visible && this._baseLayer != null && this._baseLayer.loadComplete) {
 				this._bitmapTransition.visible=false;
 			}
-			if(this._bitmapTransition != null)
-				trace("la bitmap " + this._bitmapTransition.visible);
 		}
 		
 		/**	
@@ -1034,7 +1031,6 @@ package org.openscales.core
 						if (layer != null && !layer.loadComplete)
 							return;	
 					}
-					trace("before loading false de la map");
 					// all layers are done loading.					
 					this.loading = false;
 					break;

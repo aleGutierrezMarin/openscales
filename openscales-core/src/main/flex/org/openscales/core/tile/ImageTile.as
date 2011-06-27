@@ -68,10 +68,6 @@ package org.openscales.core.tile
 			}
 
 			if(! withinMapBounds()) {
-				//add
-				trace("out bounds");
-				//this.loading = true;
-				//this.loading = false;
 				return false;    
 			}
 			if (this.url == null) {
@@ -80,18 +76,14 @@ package org.openscales.core.tile
 
 			var cachedBitmap:Bitmap;
 			if ((this.layer is Grid) && ((cachedBitmap=(this.layer as Grid).getTileCache(this.url)) != null)) {
-				trace("don't load tile");
 				this.loading = true;
-				//add
 				drawLoader(this.url,cachedBitmap,true);
 			}else {
 				if (_request) {
 					_request.destroy();
 				}
-				//add
 				this.loading = true;		     
 				_request = new DataRequest(this.url, onTileLoadEnd, onTileLoadError,method);
-				trace("load tile");
 				if(_request.method == URLRequestMethod.POST){
 					_request.postContent = new URLVariables(this.url);
 				}
