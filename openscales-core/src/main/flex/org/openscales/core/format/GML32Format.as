@@ -163,7 +163,8 @@ package org.openscales.core.format
 			this._onFeature = null;
 		}
 		
-		public function boxNode(bound:Bounds):XML{
+		public function boxNode(bound:Bounds):XML
+		{
 			
 			var boxNode:XML = new XML("<" + this._gmlprefix + ":Box xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
 				"</" + this._gmlprefix +":Box>");
