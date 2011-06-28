@@ -22,9 +22,7 @@ package org.openscales.fx.layer
 		
 		private var _useCapabilities:Boolean = true;
 		
-		//private var _capabilitiesVersion:String = "1.1.0";
-		
-		
+		// Constructor
 		public function FxWFS() {
 			super();
 		}
@@ -99,16 +97,7 @@ package org.openscales.fx.layer
 		public function get useCapabilities():Boolean{
 			return this._useCapabilities;
 		}
-		/*
-		public function set capabilitiesVersion(value:String):void {
-			this._capabilitiesVersion = value;
-			if(this._layer != null)
-				(this._layer as WFS).capabilitiesVersion = value;
-		}
-		public function get capabilitiesVersion():String {
-			return this._capabilitiesVersion;
-		}
-		*/
+		
 		public override function set projection(value:String):void
 		{
 			super.projection = value;
