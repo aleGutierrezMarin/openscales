@@ -164,7 +164,6 @@ package org.openscales.fx.control
 			var i:int = this.numElements;
 			var elt:IVisualElement;
 			for(i;i>0;--i) {
-				elt = this.removeElementAt(0);
 				if(elt is IControl)
 					(elt as IControl).destroy();
 			}
