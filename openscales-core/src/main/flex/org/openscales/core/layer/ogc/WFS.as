@@ -78,18 +78,22 @@ package org.openscales.core.layer.ogc
 		 */	                    
 		public function WFS(name:String,
 							url:String,
-							typename:String) {
-			
+							typename:String,
+							version:String = "1.1.0")
+		{
 			super(name);
 			
-			if (!(this.geometryColumn)) {
+			// Properties initialization
+			if(!(this.geometryColumn)) {
 				this.geometryColumn = "the_geom";
-			}    
-			
-			this.params = new WFSParams(typename);
+			}
+			this._params = new WFSParams(typename, version);
 			this.url = url;
+			this._capabilitiesVersion = version;
 			this._wfsFormat = new WFSFormat(this);
 		}
+		
+		
 		override public function destroy():void {
 			if(this._request)
 				this._request.destroy();
@@ -108,6 +112,8 @@ package org.openscales.core.layer.ogc
 			}
 			super.destroy();
 		}
+		
+		
 		override public function set map(map:Map):void {
 			super.map = map;
 			
@@ -396,8 +402,9 @@ package org.openscales.core.layer.ogc
 		
 		public function set capabilitiesVersion(value:String):void {
 			this._capabilitiesVersion = value;
+			if(this._params != null)
+				this._params.version = value;
 		}
-		
 		public function get capabilitiesVersion():String {
 			return this._capabilitiesVersion;
 		}
