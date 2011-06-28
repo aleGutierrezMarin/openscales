@@ -151,7 +151,7 @@
 				var i:uint = 0;
 				var selectedIndex:uint = 0;
 				var displayProjSrsCodeInList:Boolean = false;
-				
+
 				for(i;i<lgth;i++)
 				{
 					this.crsDataProvider.addItem(tmp[i]);
@@ -184,12 +184,13 @@
 			 */ 
 			public function crsChanged(event:IndexChangeEvent):void
 			{
+				var list:DropDownList = event.currentTarget as DropDownList
+				this.selectedIndexCrs = list.selectedIndex;
+				
 				// Getting the value
-				_displayProjSrsCode = this.crsDataProvider.getItemAt(event.newIndex).toString();
+				_displayProjSrsCode = this.crsDataProvider.getItemAt(this.selectedIndexCrs).toString();
 				// Getting units for this SRS
 				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
-				// Getting new index for the combo box
-				this.selectedIndexCrs = event.newIndex;
 				
 				// Feeding units combo box
 				feedUnitsComboBox();
@@ -200,10 +201,14 @@
 			 * 
 			 * function called when selected item in units combo box has changed
 			 */ 
-			public function unitsChanged(event:IndexChangeEvent):void
+			public function unitsChanged(event:Event):void
 			{
+				
 				if(event)
-					this._selectedIndexUnit = event.newIndex;
+				{
+					var list:DropDownList = event.currentTarget as DropDownList
+					this.selectedIndexUnit = list.selectedIndex;
+				}	
 				
 				var item:String = (this.unitDataProvider.getItemAt(this.selectedIndexUnit).data as String);
 					
