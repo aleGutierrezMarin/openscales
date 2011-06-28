@@ -91,19 +91,27 @@ package org.openscales.core.layer.ogc
 		public function WMS(name:String = "",
 							url:String = "",
 							layers:String = "",
-							style:String="") {
-
+							style:String = "",
+							format:String = "image/jpeg")
+		{
 			super(name, url);
 			
-			//in WMS we must be in single tile mode
+			// Properties initialization
+			this._layerName = name;
+			super.url = url;
+			this._layers = layers;
+			this._style = style;
+			this._format = format;
+			
+			// In WMS we must be in single tile mode
 			this.tiled = false;
 			CACHE_SIZE = 32;
 			
-			//Call the tile provider to generate the request and get the tile requested 
-			this._tileProvider = new WMSTileProvider(url,this._version, layers,this.projSrsCode);
-			this._tileProvider.style=style;
-
+			// Call the tile provider to generate the request and get the tile requested
+			this._tileProvider = new WMSTileProvider(url, this._version, layers, this.projSrsCode, style, format);
 		}
+		
+		//
 	    override public function get maxExtent():Bounds {
 			if (! super.maxExtent) {
 				return null;
@@ -160,8 +168,9 @@ package org.openscales.core.layer.ogc
 		override public function getURL(bounds:Bounds):String {
 			return this._tileProvider.getTileUrl(bounds);
 		}
+		
 		/**
-		 * Get and set the version of the wms protocol
+		 * Get and set the version of the WMS protocol
 		 */
 		public function get version():String
 		{
@@ -174,44 +183,52 @@ package org.openscales.core.layer.ogc
 		{
 			this._version = value;
 			
-			//update the tileprovider version of the protocol at the same time
-			if (this._tileProvider != null){
+			// Update the tileProvider version at the same time
+			if(this._tileProvider != null){
 				this._tileProvider.version = value;
 			}
 		}
-
+		
+		/**
+		 * Get and set the style of the WMS protocol
+		 */
 		public function get style():String
 		{
 			return _style;
 		}
-
+		/**
+		 * @private
+		 */
 		public function set style(value:String):void
 		{
 			_style = value;
 			
-			//update the tileprovider of the wmslayer at once
+			// Update the tileProvider style at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.style=value;
+				this._tileProvider.style = value;
 			}
 		}
 		
 		/**
 		 * Way to display errors for the requested tile
 		 */ 
-		public function get exceptions():String {
+		public function get exceptions():String
+		{
 			return this._exceptions;
 		}
 		/**
 		 * @private
 		 */
-		public function set exceptions(exceptions:String):void {
+		public function set exceptions(exceptions:String):void
+		{
 			this._exceptions = exceptions;
 			
-			//update the tileprovider of the wmslayer at once
+			// Update the tileProvider exceptions at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.exceptions=exceptions;
+				this._tileProvider.exceptions = exceptions;
 			}
 		}
+		
 		
 		override public function get tiled():Boolean {
 			return super._tiled;
@@ -263,8 +280,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * 
-		 * MIME type for the requested layer (default : image/jpeg) 
+		 * MIME type for the requested layer (default : image/jpeg)
 		 */
 		public function get format():String
 		{
@@ -277,9 +293,9 @@ package org.openscales.core.layer.ogc
 		{
 			this._format = value;
 			
-			//update the tileprovider of the wmslayer at once
+			// Update the tileProvider format at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.format=format;
+				this._tileProvider.format = format;
 			}
 		}
 		
@@ -297,12 +313,11 @@ package org.openscales.core.layer.ogc
 		{
 			super.url = value;
 			
-			//update the tileprovider of the wmslayer at once
+			// Update the tileProvider version of the protocol at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.url=value;
+				this._tileProvider.url = value;
 			}
 		}
-		
 		
 		/**
 		 * Set the layers that the tileprovider is going to request
@@ -321,10 +336,12 @@ package org.openscales.core.layer.ogc
 		{
 			this._layers = value;
 			
+			// Update the tileProvider layer at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.layer=value;
+				this._tileProvider.layer = value;
 			}
 		}
+		
 		
 		public function get projection():String
 		{
@@ -336,16 +353,23 @@ package org.openscales.core.layer.ogc
 		public function set projection (value:String):void
 		{
 			this.projSrsCode = value;
+			
+			// Update the tileProvider projection at the same time
+			if(this._tileProvider != null){
+				this._tileProvider.projection = value;
+			}
 		}
 		
 		/**
 		 * @Private
 		 */
-		override public function set projSrsCode(value:String):void {
-			super.projSrsCode=value;
+		override public function set projSrsCode(value:String):void
+		{
+			super.projSrsCode = value;
 			
+			// Update the tileProvider projection at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.projection = _projSrsCode;
+				this._tileProvider.projection = value;
 			}
 		}
 		
