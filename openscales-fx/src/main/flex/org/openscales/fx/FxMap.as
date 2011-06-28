@@ -380,13 +380,13 @@ package org.openscales.fx
 		 */
 		public function set theme(value:String):void
 		{
-			if(this._map && value!=null)
-			{
-				if( (this._map as Map).theme )
-					styleManager.unloadStyleDeclarations((this._map as Map).theme);
-				(this._map as Map).theme = value;
+			if(this.map.theme)
+				styleManager.unloadStyleDeclarations(this._map.theme);
+			
+			this._map.theme = value;
+			
+			if(this._map.theme && this._map.theme != "")
 				styleManager.loadStyleDeclarations(value);
-			}
 		}
 		
 		/**
