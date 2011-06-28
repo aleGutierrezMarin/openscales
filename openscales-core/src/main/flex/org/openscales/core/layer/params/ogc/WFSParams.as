@@ -68,13 +68,5 @@ package org.openscales.core.layer.params.ogc
 		public function set handle(handle:String):void {
 			_handle = handle;
 		}
-		/*
-		public override function get version():String {
-			return this.version;
-		}
-		
-		public override function set version(value:String):void {
-			this.version = value;
-		}*/
 	}
 }
