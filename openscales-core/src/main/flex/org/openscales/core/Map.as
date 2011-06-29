@@ -1363,6 +1363,8 @@ package org.openscales.core
 				this.zoomToResolution(value);
 			}
 			this._maxResolution = value;
+			
+			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
 		}
 		
 		/**
@@ -1385,6 +1387,8 @@ package org.openscales.core
 				this.zoomToResolution(value);
 			}
 			this._minResolution = value;
+			
+			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
 		}
 		
 		/**
