@@ -154,6 +154,7 @@ package org.openscales.core.layer.ogc
 				this.featuresBbox = projectedBounds;
 				this.loadFeatures(this.getFullRequestString());
 				this._firstRendering = false;
+				this.draw();
 			} else {
 				// Use GetCapabilities to know if all features have already been retreived.
 				// If they are, we don't request data again
