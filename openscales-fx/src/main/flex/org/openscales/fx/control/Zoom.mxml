@@ -122,6 +122,21 @@
 			}
 			
 			/**
+			 * Update the min/maxSlider when the map.maxResolution and minResolution can have changed
+			 * Call on 
+			 * 
+			 * @param event The MapEvent received or null otherwise
+			 */
+			public function updateMinMaxSliderChanged(event:MapEvent = null):void
+			{
+				if(this.map.baseLayer)
+				{
+					this.minSlider = this.map.baseLayer.getZoomForResolution(this.map.maxResolution);
+					this.maxSlider = (this.map.baseLayer.getZoomForResolution(this.map.minResolution));
+				}
+			}
+			
+			/**
 			 * @inherit
 			 */
 			override public function set map(value:Map):void 
@@ -130,13 +145,8 @@
 				
 				if(value)
 				{
-					if(this.map.baseLayer)
-					{
-						this.minSlider = this.map.baseLayer.getZoomForResolution(this.map.maxResolution);
-						this.maxSlider = this.map.baseLayer.getZoomForResolution(this.map.minResolution);
-					}
-					
-					initializeZoomLevels();
+					this.updateMinMaxSliderChanged();
+					this.initializeZoomLevels();
 				}
 			}
 			
@@ -153,6 +163,7 @@
 					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
 					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);	
+					super.map.addEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.updateMinMaxSliderChanged);
 				}
 			}
 			
@@ -169,6 +180,7 @@
 					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
 					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
+					super.map.removeEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.updateMinMaxSliderChanged);
 				}
 			}
 
