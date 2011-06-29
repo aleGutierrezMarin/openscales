@@ -222,15 +222,15 @@
     <resourceEntry destPath="assets/images/slider.png" sourcePath="assets/images/slider.png"/>
     <resourceEntry destPath="assets/i18n/FR.json" sourcePath="assets/i18n/FR.json"/>
     <resourceEntry destPath="assets/images/layer-switcher-minimize.png" sourcePath="assets/images/layer-switcher-minimize.png"/>
-    <resourceEntry destPath="assets/images/layerViz.png" sourcePath="assets/images/layerViz.png"/>
     <resourceEntry destPath="assets/images/marker-blue.png" sourcePath="assets/images/marker-blue.png"/>
-    <resourceEntry destPath="assets/kml/sample1.kml" sourcePath="assets/kml/sample1.kml"/>
+    <resourceEntry destPath="assets/images/layerViz.png" sourcePath="assets/images/layerViz.png"/>
     <resourceEntry destPath="assets/images/close.gif" sourcePath="assets/images/close.gif"/>
-    <resourceEntry destPath="assets/images/radiobutton-noselected.png" sourcePath="assets/images/radiobutton-noselected.png"/>
+    <resourceEntry destPath="assets/kml/sample1.kml" sourcePath="assets/kml/sample1.kml"/>
     <resourceEntry destPath="assets/images/drag-rectangle-on.png" sourcePath="assets/images/drag-rectangle-on.png"/>
+    <resourceEntry destPath="assets/images/radiobutton-noselected.png" sourcePath="assets/images/radiobutton-noselected.png"/>
     <resourceEntry destPath="assets/images/panning-hand-on.png" sourcePath="assets/images/panning-hand-on.png"/>
-    <resourceEntry destPath="assets/kml/sample3.kml" sourcePath="assets/kml/sample3.kml"/>
     <resourceEntry destPath="assets/images/measuring-stick-on.png" sourcePath="assets/images/measuring-stick-on.png"/>
+    <resourceEntry destPath="assets/kml/sample3.kml" sourcePath="assets/kml/sample3.kml"/>
     <resourceEntry destPath="assets/images/marker-green.png" sourcePath="assets/images/marker-green.png"/>
     <resourceEntry destPath="assets/images/layerSave.png" sourcePath="assets/images/layerSave.png"/>
     <resourceEntry destPath="assets/images/zoombar.png" sourcePath="assets/images/zoombar.png"/>
