@@ -6,12 +6,15 @@
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns="org.openscales.fx.control.layer.*"
-		  click="this.addLayerToMap()">
+		  click="this.addLayerToMap()"
+		  label="{Catalog.getLocalizationForKey('addLayerButton.label')}">
 		
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			
 			protected var _map:Map;
@@ -32,6 +35,7 @@
 				
 				if(this._map){
 					
+					this._map.addEventListener(I18NEvent.LOCALE_CHANGED,this.onLocaleChanged);
 					this._map.addEventListener(LayerEvent.LAYER_REMOVED,this.onLayerRemoved);
 				}
 			}
@@ -60,6 +64,11 @@
 					
 					this.enabled = true;
 				}
+			}
+			
+			private function onLocaleChanged(event:I18NEvent):void{
+				
+				this.label = Catalog.getLocalizationForKey('addLayerButton.label');
 			}
 			
 			public function addLayerToMap():void{
