@@ -104,6 +104,10 @@ package org.openscales.core.events{
 		 */
 		public static const COMPONENT_CHANGED:String="openscales.componentChanged";
 		
+		/**
+		 * Event type dispatched when min or max map resolution changed
+		 */
+		public static const MIN_MAX_RESOLUTION_CHANGED:String="openscales.minMaxresolutionChanged";
 
 
 		/**
