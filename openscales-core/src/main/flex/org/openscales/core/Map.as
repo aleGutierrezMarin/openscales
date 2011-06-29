@@ -1499,8 +1499,6 @@ package org.openscales.core
 				if((control as DisplayObject).parent == this){
 					this.removeChild(control as DisplayObject);
 				}				
-				
-				control.map = null;
 				control.destroy();
 			}
 		}

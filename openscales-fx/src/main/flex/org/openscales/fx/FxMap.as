@@ -19,6 +19,7 @@ package org.openscales.fx
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.fx.configuration.FxConfiguration;
+	import org.openscales.fx.control.Control;
 	import org.openscales.fx.control.FxControl;
 	import org.openscales.fx.control.FxOverviewMap;
 	import org.openscales.fx.handler.FxHandler;
@@ -380,13 +381,13 @@ package org.openscales.fx
 		 */
 		public function set theme(value:String):void
 		{
-			if(this._map && value!=null)
-			{
-				if( (this._map as Map).theme )
-					styleManager.unloadStyleDeclarations((this._map as Map).theme);
-				(this._map as Map).theme = value;
+			if(this.map.theme)
+				styleManager.unloadStyleDeclarations(this._map.theme);
+			
+			this._map.theme = value;
+			
+			if(this._map.theme && this._map.theme != "")
 				styleManager.loadStyleDeclarations(value);
-			}
 		}
 		
 		/**
@@ -450,11 +451,12 @@ package org.openscales.fx
 		public function addControl(control:IControl, attach:Boolean = true):void{
 			
 			if(control is IVisualElement){
-				this._map.addControl(control, false);
 				
 				if(attach){
 					this.addElement(control as IVisualElement);
 				}
+				
+				this._map.addControl(control, false);
 			}
 			else{
 				this._map.addControl(control,attach);
@@ -472,6 +474,45 @@ package org.openscales.fx
 				
 				this.addControl(control);
 			}
+		}
+		
+		/**
+		 * Removes given control to the map, displaying it on the map if the <code>attach</code> parameter is true.
+		 * Otherwise, the control is just linked to the map and can be displayed anywhere else
+		 * 
+		 * @param control Control to add
+		 * @param attach If true, component is displayed on the map. Otherwise, control is just linked to the map. 
+		 * 
+		 * @example The following code explains how to add a control :
+		 * 
+		 * <listing version="3.0">
+		 * 	myMap.addControl(new geoportal.control.OverviewMap());
+		 * </listing>
+		 */
+		public function removeControl(control:Control):void
+		{
+			var test:Vector.<IVisualElement> = new Vector.<IVisualElement>();
+			
+			var h:int = 0;
+			var j:int = this.numElements;
+			
+			for(; h<j; ++h)
+			{
+				test.push(this.getElementAt(h));
+			}
+				
+			
+			// removeElement if added as Fxmap element
+			var i:int = this.controls.indexOf(control);
+			if(i!=-1)
+			{
+				if((control as IVisualElement).parent == this){
+					this.removeElement(control as IVisualElement);
+				}
+			}
+			
+			this._map.removeControl(control);
+			
 		}
 	}
 }
