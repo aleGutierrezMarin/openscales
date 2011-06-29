@@ -256,7 +256,6 @@ package org.openscales.core
 					}
 					
 					this._baseLayer = newBaseLayer;
-					this._baseLayer.visible = true;
 					
 					var center:Location = this.center;
 					if (center != null) {
