@@ -1,6 +1,5 @@
 package org.openscales.geometry.basetypes
 {
-	import org.hamcrest.core.throws;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
@@ -278,7 +277,7 @@ package org.openscales.geometry.basetypes
 		 * @return An instance of bounds.
 		 */
 		public static function getBoundsFromArray(bbox:Array,srsCode:String):Bounds {
-			if(bbox.length != 4) throws(new ArgumentError("the array must contains 4 numbers for bbox"));
+			if(bbox.length != 4) throw(new ArgumentError("the array must contains 4 numbers for bbox"));
 			return new Bounds(Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]), srsCode);
 		}
 		
