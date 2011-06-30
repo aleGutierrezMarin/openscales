@@ -88,11 +88,16 @@ package org.openscales.core.handler.mouse
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
-				this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
-				this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
-				if(this.map.bitmapTransition) {
-					this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - this._offset.x;
-					this.map.bitmapTransition.y = this.map.bitmapTransition.parent.mouseY - this._offset.y;
+			var centerLayerContainer:Pixel = new Pixel(this.map.layerContainer.x+this.map.layerContainer.width/2, this.map.layerContainer.y+this.map.layerContainer.height/2);
+			
+			var dx:int=this.map.layerContainer.x-(this.map.layerContainer.parent.mouseX - this._offset.x);
+			var dy:int=this.map.layerContainer.y-(this.map.layerContainer.parent.mouseY - this._offset.y);
+			
+			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
+			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
+			if(this.map.bitmapTransition) {
+				this.map.bitmapTransition.x -= dx;
+				this.map.bitmapTransition.y -= dy;
 			}
 			
 			// Force update regardless of the framerate for smooth drag
