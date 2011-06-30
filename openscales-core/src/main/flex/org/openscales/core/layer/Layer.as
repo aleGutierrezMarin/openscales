@@ -395,7 +395,7 @@ package org.openscales.core.layer {
 		 * Minimal valid resolution for this layer
 		 */
 		public function get minResolution():Number {
-			var minRes:Number = this._minResolution;;
+			var minRes:Number = this._minResolution;
 			if (isNaN(minRes) && this.resolutions && (this.resolutions.length > 0)) {
 				minRes = this.resolutions[this.resolutions.length - 1];
 			}

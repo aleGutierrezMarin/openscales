@@ -52,7 +52,6 @@
     <classEntry path="org.openscales.fx.control.layer.LayerLegend"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
     <classEntry path="org.openscales.fx.control.layer.LayerMetadatas"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerRenderer"/>
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtent"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
