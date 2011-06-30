@@ -225,7 +225,7 @@ package org.openscales.core.layer {
 				return this.resolutions.length - 1;
 			}
 			var i:int = 1;
-			var j:int = this.resolutions.length - 1;
+			var j:int = this.resolutions.length;
 			for (i; i < j; ++i) {
 				if ((this.resolutions[i] < resolution) && (Math.abs(this.resolutions[i] - resolution) > RESOLUTION_TOLERANCE)) {
 					break;

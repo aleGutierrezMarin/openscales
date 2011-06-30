@@ -79,6 +79,8 @@ package org.openscales.core
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
 		
+		private var _cptGTween:uint = 0;
+		
 		
 		/**
 		 * @private
@@ -254,7 +256,6 @@ package org.openscales.core
 					}
 					
 					this._baseLayer = newBaseLayer;
-					this._baseLayer.visible = true;
 					
 					var center:Location = this.center;
 					if (center != null) {
@@ -620,6 +621,7 @@ package org.openscales.core
 			if(tween) {
 				var layerContainerTween:GTween = new GTween(this._layerContainer, 0.5, {x: lx, y: ly}, {ease: Cubic.easeOut});
 				layerContainerTween.onComplete = onDragTweenComplete;
+				this._cptGTween++;
 				if(bitmapTransition != null) {
 					new GTween(bitmapTransition, 0.5, {x: bx, y: by}, {ease: Cubic.easeOut});
 				} 
@@ -633,8 +635,11 @@ package org.openscales.core
 			}
 		}
 		
-		private function onDragTweenComplete(tween:GTween):void {
-			this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
+		private function onDragTweenComplete(tween:GTween):void
+		{
+			this._cptGTween--;
+			if(this._cptGTween == 0)
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
 		}
 		
 		/**
@@ -1357,6 +1362,8 @@ package org.openscales.core
 				this.zoomToResolution(value);
 			}
 			this._maxResolution = value;
+			
+			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
 		}
 		
 		/**
@@ -1379,6 +1386,8 @@ package org.openscales.core
 				this.zoomToResolution(value);
 			}
 			this._minResolution = value;
+			
+			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
 		}
 		
 		/**
