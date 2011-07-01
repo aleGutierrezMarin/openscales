@@ -70,6 +70,8 @@ package org.openscales.core.handler.mouse
 		{
 			if(event.shiftKey) return;
 			
+			if (this.map.center == null) return;
+			
 			if (_firstDrag) {
 				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
 				_firstDrag = false;
