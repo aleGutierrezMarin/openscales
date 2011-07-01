@@ -53,6 +53,7 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 			}
 		}
 		
@@ -60,6 +61,7 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.removeEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 			}
 		}
 		
@@ -70,26 +72,14 @@ package org.openscales.core.handler.mouse
 		{
 			if(event.shiftKey) return;
 			
-			if (_firstDrag) {
-				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
-				_firstDrag = false;
-			}
-			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_START, this.map));
-			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
+			this.startDrag();
 			
-			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
-			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
-			this._startCenter = this.map.center;
-			this.map.buttonMode=true;
-			this._dragging=true;
-			
-			if(this.onstart!=null)
+			if(this.onstart!=null && event)
 				this.onstart(event as MouseEvent);
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
-			var centerLayerContainer:Pixel = new Pixel(this.map.layerContainer.x+this.map.layerContainer.width/2, this.map.layerContainer.y+this.map.layerContainer.height/2);
-			
+	
 			var dx:int=this.map.layerContainer.x-(this.map.layerContainer.parent.mouseX - this._offset.x);
 			var dy:int=this.map.layerContainer.y-(this.map.layerContainer.parent.mouseY - this._offset.y);
 			
@@ -109,7 +99,18 @@ package org.openscales.core.handler.mouse
 		 */
 		protected function onMouseUp(event:MouseEvent):void {
 			
-			if(!_dragging) return;
+			this.stopDrag();
+			
+			if (this.oncomplete!=null && event)
+				this.oncomplete(event as MouseEvent);
+		}
+		
+		/**
+		 * Stop the drag (call the map map center update with a moveTo)
+		 */
+		public function stopDrag():void
+		{
+			if(!this.dragging) return;
 			
 			if((!this.map) || (!this.map.stage))
 				return;
@@ -119,9 +120,40 @@ package org.openscales.core.handler.mouse
 			this.map.buttonMode=false;
 			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
 			// A MapEvent.MOVE_END is emitted by the "set center" called in this.done
-			this._dragging=false;
-			if (this.oncomplete!=null)
-				this.oncomplete(event as MouseEvent);
+			this.dragging=false;
+		}
+		
+		/**
+		 * Start the drag action
+		 */
+		public function startDrag():void
+		{
+			if (_firstDrag) {
+				this.map.stage.addEventListener(MouseEvent.MOUSE_UP,this.onMouseUp);
+				_firstDrag = false;
+			}
+			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_START, this.map));
+			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
+			
+			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
+		
+			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
+			this._startCenter = this.map.center;
+			this.map.buttonMode=true;
+			this.dragging=true;
+		}
+			
+		/**
+		 * If the layerContainer become visible during a drag the offset value has to be updated
+		 * 
+		 * @param event The MapEvent
+		 */
+		public function onLayerContainerVisible(event:MapEvent):void
+		{
+			if(this.dragging)
+			{
+				this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
+			}
 		}
 		
 		// Getters & setters as3
@@ -135,6 +167,7 @@ package org.openscales.core.handler.mouse
 		public function set dragging(dragging:Boolean):void
 		{
 			this._dragging=dragging;
+			this.map.dragging = this._dragging;
 		}
 		/**
 		 * Start's callback this function is call when the drag starts
@@ -165,11 +198,11 @@ package org.openscales.core.handler.mouse
 		private function done(xy:Pixel):void {
 			if (this.dragging) {
 				this.panMap(xy);
-				this._dragging = false;
+				this.dragging = false;
 			}
 		}
-		private function panMap(xy:Pixel):void {
-			this._dragging = true;
+		public function panMap(xy:Pixel):void {
+			this.dragging = true;
 			var oldCenter:Location = this.map.center;
 			var deltaX:Number = this._start.x - xy.x;
 			var deltaY:Number = this._start.y - xy.y;
