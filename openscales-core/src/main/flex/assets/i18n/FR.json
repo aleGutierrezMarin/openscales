@@ -49,5 +49,7 @@
    "zoom.zoomin": "Zoomer",
    "zoom.zoomout": "Dézoomer",
    
-   "traceinfo.clearlabel": "Effacer"
+   "traceinfo.clearlabel": "Effacer",
+   
+   "addLayerButton.label": "Ajouter à la carte"
  }
