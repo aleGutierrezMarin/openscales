@@ -180,7 +180,7 @@ package org.openscales.core
 		 * @param layer The layer to add.
 		 * @return true if the layer have been added, false if it has not.
 		 */
-		public function addLayer(layer:Layer, isBaseLayer:Boolean = false, redraw:Boolean = false):Boolean {
+		public function addLayer(layer:Layer, isBaseLayer:Boolean = false, redraw:Boolean = true):Boolean {
 			var i:uint = 0;
 			var j:uint = this.layers.length;
 			for(; i < j; ++i) {
@@ -256,7 +256,6 @@ package org.openscales.core
 					}
 					
 					this._baseLayer = newBaseLayer;
-					this._baseLayer.visible = true;
 					
 					var center:Location = this.center;
 					if (center != null) {
