@@ -36,6 +36,7 @@
 						this.addFxLayer(element as FxLayer);
 					}
 				}
+				_overviewmap.size = new Size(super.width, super.height);
 			}
 			
 			override public function draw():void
@@ -73,7 +74,8 @@
 			 * Layer displayed on the overview map
 			 */		
 			public function set layer(value:Layer):void{
-				
+				this._overviewmap.width = this.width;
+				this._overviewmap.height = this.height;
 				this._overviewmap.layer = value;	
 			}
 			
@@ -90,6 +92,7 @@
 			 */
 			override public function set width(value:Number):void{
 				super.width = value;
+				_overviewmap.width = value;
 			}
 			
 			/**
@@ -97,6 +100,7 @@
 			 */
 			override public function set height(value:Number):void{
 				super.height = value;
+				_overviewmap.height = value;
 			}
 			
 			
