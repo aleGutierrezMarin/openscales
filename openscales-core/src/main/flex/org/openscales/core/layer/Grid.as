@@ -186,7 +186,7 @@ package org.openscales.core.layer
 			if (this.tiled) {
 				return this._tileWidth;
 			} 
-			return map.size.w;
+			return map!=null?map.size.w:NaN;
 		}
 		
 		public function set tileHeight(value:Number):void {
@@ -197,7 +197,7 @@ package org.openscales.core.layer
 			if (this.tiled) {
 				return this._tileHeight;
 			}
-			return map.size.h;
+			return map!=null?map.size.h:NaN;
 		}	
 		
 		

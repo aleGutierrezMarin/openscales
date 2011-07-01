@@ -118,6 +118,9 @@ package org.openscales.core.layer.ogc
 			}
 
 			var maxExtent:Bounds =  super.maxExtent.clone();
+			if(this.map == null){
+				return maxExtent;
+			}
 			// fix me
 			if (this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
 				maxExtent = maxExtent.reprojectTo(this.map.baseLayer.projSrsCode);
@@ -231,11 +234,11 @@ package org.openscales.core.layer.ogc
 		
 		
 		override public function get tiled():Boolean {
-			return super._tiled;
+			return this._tiled;
 		}
 		
 		override public function set tiled(value:Boolean):void {
-			super._tiled = value;
+			this._tiled = value;
 			
 			//update the tileprovider of the wmslayer at once
 			if(this._tileProvider != null){
