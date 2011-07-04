@@ -392,9 +392,10 @@ package org.openscales.core.layer {
 		 */
 		public function get minResolution():Number {
 			var minRes:Number = this._minResolution;
-			// add !isFinite case
-			if ((isNaN(minRes) || !isFinite(minRes)) && this.resolutions && (this.resolutions.length > 0)) {
+			
+			if (this.resolutions && (this.resolutions.length > 0)) {
 				minRes = this.resolutions[this.resolutions.length - 1];
+				this._minResolution = minRes;
 			}
 			return minRes;
 		}
@@ -408,9 +409,10 @@ package org.openscales.core.layer {
 		 */
 		public function get maxResolution():Number {
 			var maxRes:Number = this._maxResolution;
-			// add !isFinite case
-			if ((isNaN(maxRes) || !isFinite(maxRes)) && this.resolutions && (this.resolutions.length > 0)) {
+			
+			if (this.resolutions && (this.resolutions.length > 0)) {
 				maxRes = this.resolutions[0];
+				this._maxResolution = maxRes;
 			}
 			return maxRes;
 		}
