@@ -13,12 +13,16 @@ package org.openscales.core
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	
+	import mx.events.DragEvent;
+	
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
+	import org.openscales.core.handler.feature.DragFeatureHandler;
+	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
 	import org.openscales.core.i18n.provider.I18nJSONProvider;
@@ -67,6 +71,7 @@ package org.openscales.core
 		private var _size:Size = null;
 		protected var _zoom:Number = 0;
 		private var _zooming:Boolean = false;
+		private var _dragging:Boolean = false;
 		private var _loading:Boolean;
 		protected var _center:Location = null;
 		private var _maxExtent:Bounds = null;
@@ -469,9 +474,29 @@ package org.openscales.core
 			if (! this.baseLayer) {
 				return;
 			}
-			// Compute the center of the zoom and the new level
+			
 			const px:Pixel = new Pixel(this.mouseX, this.mouseY);
+			
+			if(this.dragging)
+			{
+				var i:int = 0;
+				var j:int = this.handlers.length;
+				
+				for(; i<j; ++i)
+				{
+					if(this.handlers[i] is DragHandler && this.handlers[i].active)
+					{
+						var drag:DragHandler = this.handlers[i] as DragHandler;
+						// stop the drag to pan the map to the current drag to apply the zoom at the correct place
+						drag.stopDrag();
+						// restart drag then
+						drag.startDrag();
+					}
+				}
+			}			
+			
 			const centerPx:Pixel = new Pixel(this.width/2, this.height/2);
+
 			var newCenterPx:Pixel;
 			var z:Number = this.zoom;
 			if (zoomIn) {
@@ -487,6 +512,7 @@ package org.openscales.core
 				}
 				newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
 			}
+		
 			this.moveTo(this.getLocationFromMapPx(newCenterPx), z, false, true);
 		}
 		
@@ -552,7 +578,7 @@ package org.openscales.core
 				}
 				
 				if (centerChanged) {
-					if ((!zoomChanged) && (this.center)) {
+					if ((!zoomChanged) && (this.center) && !this._dragging) {
 						this.centerLayerContainer(newCenter, dragTween);
 					}
 					this._center = newCenter.clone();
@@ -604,6 +630,7 @@ package org.openscales.core
 		 * @param tween use tween effect if set to true
 		 */
 		private function centerLayerContainer(lonlat:Location, tween:Boolean = false):void {
+			
 			var originPx:Pixel = this.getMapPxFromLocation(this._layerContainerOrigin);
 			var newPx:Pixel = this.getMapPxFromLocation(lonlat);
 			
@@ -981,6 +1008,7 @@ package org.openscales.core
 				
 				//We calculate the bitmapTransition position
 				var pix:Pixel = this.getMapPxFromLocation(newCenter);
+				
 				var bt:Sprite = this.bitmapTransition;
 				var oldCenterPix:Pixel = new Pixel(bt.x+bt.width/2, bt.y+bt.height/2);
 				var centerOffset:Pixel = new Pixel(oldCenterPix.x-pix.x, oldCenterPix.y-pix.y);
@@ -1004,6 +1032,7 @@ package org.openscales.core
 				_zooming = false;
 				moveTo(newCenter, newZoom);
 				layerContainer.visible = true;
+				dispatchEvent(new MapEvent(MapEvent.LAYERCONTAINER_IS_VISIBLE, null));
 				clearBitmapTransition();
 			} 
 
@@ -1388,6 +1417,23 @@ package org.openscales.core
 			this._minResolution = value;
 			
 			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
+		}
+		
+	
+		/**
+		 * Indicates if the map is currently dragged or not
+		 */
+		public function get dragging():Boolean
+		{
+			return this._dragging;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set dragging(value:Boolean):void
+		{
+			this._dragging = value;
 		}
 		
 		/**
