@@ -50,7 +50,7 @@ package org.openscales.core.layer.ogc
 		 */
 		private var _useCapabilities:Boolean = false;
 		
-		private var _capabilitiesVersion:String = "1.1.0";
+		private var _capabilitiesVersion:String = "1.0.0";
 		
 		private var _params:WFSParams = null;
 		
@@ -79,7 +79,7 @@ package org.openscales.core.layer.ogc
 		public function WFS(name:String,
 							url:String,
 							typename:String,
-							version:String = "1.1.0")
+							version:String = "1.0.0")
 		{
 			super(name);
 			
