@@ -132,35 +132,41 @@ package org.openscales.core.handler.mouse
 			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			
 			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
-		
 			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
 			
 			this._startCenter = this.map.center;
 			var resol:Number = this.map.resolution;
+			//size in the projection
 			this._w_deg = this.map.size.w * resol;
 			this._h_deg = this.map.size.h * resol;
 			
-
-			Trace.log("before => map extend" + this.map.extent.toString());
+            //init the new bound with the current extent
 			this._newBounds =  this.map.extent.clone();
             this.map.buttonMode=true;
 			this.dragging=true;
 		}
 		
-		protected function testLon(maxExtend:Bounds,extent:Bounds):Boolean{
-			
+		/**
+		 * Test if new lon coordinate are in the maxEtent 
+		 * @param maxExtend of the current map
+		 * @param extent of the new center
+		 */
+		protected function contentLon(maxExtend:Bounds,extent:Bounds):Boolean{
 			
 			var inTop:Boolean;
-			
 			var inBottom:Boolean;
-			
 			inTop = (maxExtend.top > extent.bottom) && (maxExtend.top < extent.top);
 			inBottom = (maxExtend.bottom > extent.bottom) && (maxExtend.bottom < extent.top);
 			return (inTop && inBottom);
 			
 		}
 		
-		protected function testLat(maxExtend:Bounds,extent:Bounds):Boolean{
+		/**
+		 * Test if new lon coordinate are in the maxEtent 
+		 * @param maxExtend of the current map
+		 * @param extent of the new center
+		 */
+		protected function contentLat(maxExtend:Bounds,extent:Bounds):Boolean{
 			var inRight:Boolean;
 			var inLeft:Boolean;
 			inLeft = (maxExtend.left > extent.left) && (maxExtend.left < extent.right);
@@ -168,13 +174,16 @@ package org.openscales.core.handler.mouse
 			return (inLeft && inRight);
 		}
 		
+		/**
+		 *
+		 */
 		protected function onMouseMove(event:MouseEvent):void  {
 			
-			//take new center
 			var resol:Number = this.map.resolution;
 			//calcul new position
 			var deltaX:Number = this._start.x - this.map.mouseX;
 			var deltaY:Number = this._start.y - this.map.mouseY;
+			
 			var newPosition:Location = new Location(this._startCenter.lon + deltaX * resol,
 				this._startCenter.lat - deltaY * resol,
 				this._startCenter.projSrsCode);
@@ -184,26 +193,25 @@ package org.openscales.core.handler.mouse
 				newPosition.lon + this._w_deg / 2,
 				newPosition.lat + this._h_deg / 2,
 				newPosition.projSrsCode);
-			Trace.log("maxextend" + this.map.maxExtent.toString());
-			Trace.log("current extend" + extent.toString());
 			
 			var maxExtent:Bounds = this.map.maxExtent;
-			
-			if(testLat(extent,maxExtent)){
+			var inLat:Boolean =contentLat(extent,maxExtent);
+			var inLong:Boolean = contentLon(extent,maxExtent);
+			if(inLat){
 			  this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
 			  this._newBounds.left = extent.left;
 			  this._newBounds.right = extent.right;
 			
 			}
-			if(testLon(extent,maxExtent)){
+			if(inLong){
 			  this.map.layerContainer.y =  this.map.layerContainer.parent.mouseY - this._offset.y;
 			  this._newBounds.top = extent.top;
 			  this._newBounds.bottom = extent.bottom;
 			}
 			if(this.map.bitmapTransition) {
-				if(testLat(maxExtent,extent))
+				if(inLat)
 					this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - this._offset.x;
-				if(testLon(maxExtent,extent))
+				if(inLong)
 					this.map.bitmapTransition.y =  this.map.bitmapTransition.parent.mouseY - this._offset.y;
 			}
 			event.updateAfterEvent();
@@ -284,7 +292,6 @@ package org.openscales.core.handler.mouse
 				return;
 			}
 			var extent:Bounds = _newBounds.clone();
-			if(!this.map.maxExtent.containsBounds(extent)) return;
 			this.map.center = this._newBounds.center.clone();
 
 		}
