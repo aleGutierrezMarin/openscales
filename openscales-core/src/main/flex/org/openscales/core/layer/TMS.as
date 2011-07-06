@@ -19,7 +19,7 @@ package org.openscales.core.layer
 	{
 		private var _serviceVersion:String = "1.0.0";
 
-		private var _tileOrigin:Location = null;
+		//private var _tileOrigin:Location = null;
 		
 		private var _format:String = "png";
 		
