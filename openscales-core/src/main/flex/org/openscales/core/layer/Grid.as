@@ -47,6 +47,8 @@ package org.openscales.core.layer
 		
 		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
 		
+		protected var _tileOrigin:Location = new Location(0,0,"EPSG:4326");
+		
 		/**
 		 * Create a new grid layer
 		 *
@@ -272,6 +274,9 @@ package org.openscales.core.layer
 		 * no white flash, but there is some problems if used for something else than modifying map extent
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
+			
+			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(this.map.baseLayer.projSrsCode);
+			
 			var viewSize:Size = this.map.size;
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
 				Math.max(1, 2 * this.buffer);
@@ -279,18 +284,23 @@ package org.openscales.core.layer
 				Math.max(1, 2 * this.buffer);
 			var extent:Bounds = this.maxExtent;
 			var resolution:Number = this.map.resolution;
+			
 			var tilelon:Number = resolution * this.tileWidth;
 			var tilelat:Number = resolution * this.tileHeight;
-			var offsetlon:Number = bounds.left - extent.left;
+			
+			// Longitude
+			var offsetlon:Number = bounds.left - this._tileOrigin.lon;
 			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
 			var tilecolremain:Number = offsetlon/tilelon - tilecol;
 			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
-			var tileoffsetlon:Number = extent.left + tilecol * tilelon;
-			var offsetlat:Number = bounds.top - (extent.bottom + tilelat);  
+			var tileoffsetlon:Number = this._tileOrigin.lon + tilecol * tilelon;
+			
+			// Latitude
+			var offsetlat:Number = bounds.top - (this._tileOrigin.lat + tilelat);  
 			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
 			var tilerowremain:Number = tilerow - offsetlat/tilelat;
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
-			var tileoffsetlat:Number = extent.bottom + tilerow * tilelat;
+			var tileoffsetlat:Number = this._tileOrigin.lat + tilerow * tilelat;
 			
 			tileoffsetx = Math.round(tileoffsetx);
 			tileoffsety = Math.round(tileoffsety);
@@ -648,6 +658,24 @@ package org.openscales.core.layer
 		
 		public function set buffer(value:Number):void {
 			this._buffer = value; 
+		}
+		
+		/**
+		 * The tileOrigin to define the grid
+		 * @default 0,0
+		 */
+		public function get tileOrigin():Location
+		{
+			return this._tileOrigin;
+		}	
+		
+		/**
+		 * @private
+		 */
+		public function set tileOrigin(value:Location):void
+		{
+			this._tileOrigin = value;
+			this.initGriddedTiles(this.map.extent, true);
 		}
 	}
 }
