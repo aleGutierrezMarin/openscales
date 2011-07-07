@@ -234,8 +234,8 @@ package org.openscales.core.layer
 			var center:Location = bounds.center;
 			var tileWidth:Number = bounds.width;
 			var tileHeight:Number = bounds.height;
-			this.tileWidth = this.map.width;
-			this.tileHeight = this.map.height;
+			this.tileWidth = this.map.size.w;
+			this.tileHeight = this.map.size.h;
 			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
 				center.lat - (tileHeight/2),
 				center.lon + (tileWidth/2),

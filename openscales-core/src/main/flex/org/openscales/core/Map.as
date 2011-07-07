@@ -1208,7 +1208,7 @@ package org.openscales.core
 		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
 		 */
 		public function get resolution():Number {
-			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : NaN;
+			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
 		}
 		
 		public function set resolution(value:Number):void

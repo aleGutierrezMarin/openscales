@@ -394,8 +394,9 @@ package org.openscales.core.layer.ogc
 		
 		
 		/**
-		 * Set the width of the tile returned by the request
-		 *
+		 * The width of the tiles requested.
+		 * If the layer is not in tiled mode, the value of tileWidth 
+		 * is the width of the map or NaN if the layer is not in a map
 		 * @param value width of the tile
 		 */
 		override public function set tileWidth(value:Number):void {
@@ -406,8 +407,9 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Set the height of the tile returned by the request
-		 *
+		 * The height of the tiles requested.
+		 * If the layer is not in tiled mode, the value of tileHeight
+		 * is the height of the map or NaN if the layer is not in a map
 		 * @param value height of the tile
 		 */
 		override public function set tileHeight(value:Number):void {
