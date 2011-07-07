@@ -49,7 +49,6 @@ package org.openscales.fx
 	public class FxMap extends Group
 	{
 		protected var _map:Map;
-		private var _controls:Vector.<IControl> = new Vector.<IControl>();
 		private var _zoom:Number = NaN;
 		private var _center:Location = null;
 		private var _creationHeight:Number = NaN;
@@ -82,9 +81,6 @@ package org.openscales.fx
 				if(elt is IControl)
 					(elt as IControl).destroy();
 			}
-			i = this._controls.length;
-			for(i;i>0;--i)
-				this._controls.pop();
 			this.map.reset();
 			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
 			this.addElementAt(mapContainer, 0);
@@ -388,35 +384,6 @@ package org.openscales.fx
 			
 			if(this._map.theme && this._map.theme != "")
 				styleManager.loadStyleDeclarations(value);
-		}
-		
-		/**
-		 * Add a new control to the map.
-		 *
-		 * @param control the control to add.
-		 * @param attach if true, the control will be added as child component of the map. This
-		 *  parameter may be for example set to false when adding a Flex component displayed
-		 *  outside the map.
-		 */
-		public function addControlToFxMapControlsList(control:IControl):void {
-			// Is the input control valid ?
-			if (! control) {
-				Trace.warn("FxMap.addControlToFxMapControlsList: null control not added");
-				return;
-			}
-			var i:uint = 0;
-			var j:uint = this._controls.length;
-			for (; i<j; ++i) {
-				if (control == this._controls[i]) {
-					Trace.warn("FxMap.addControlToFxMapControlsList: this control is already registered ("+getQualifiedClassName(control)+")");
-					return;
-				}
-			}
-			// If the control is a new control, register it
-			if (i == j) {
-				Trace.log("FxMap.addControlToFxMapControlsList: add a new control "+getQualifiedClassName(control));
-				this._controls.push(control);
-			}
 		}
 		
 		// --- Layer management --- //

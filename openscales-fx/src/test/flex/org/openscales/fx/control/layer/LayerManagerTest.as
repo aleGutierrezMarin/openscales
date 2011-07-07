@@ -141,10 +141,5 @@ package org.openscales.fx.control.layer
 		/**
 		 * Test the setting of a rendererOptions object in the LayerManager
 		 */
-		[Test]
-		public function rendererOptionsTest():void
-		{
-			Assert.fail("rendererOptionsTest to be done");
-		}
 	}
 }
