@@ -7,6 +7,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.core.tile.Tile;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 
@@ -417,6 +418,22 @@ package org.openscales.core.layer.ogc
 			if(this._tileProvider !=null){
 				this._tileProvider.height=value;
 			}
+		}
+		
+		/**
+		 * @inherit
+		 */
+		override public function get tileOrigin():Location
+		{
+			return super.tileOrigin;
+		}	
+		
+		/**
+		 * @private
+		 */
+		override public function set tileOrigin(value:Location):void
+		{
+			super.tileOrigin = value;
 		}
 	}
 }
