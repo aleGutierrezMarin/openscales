@@ -4,13 +4,10 @@ package org.openscales.core.handler.mouse
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	
-	import mx.charts.chartClasses.BoundedValue;
-	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
-	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
@@ -34,12 +31,6 @@ package org.openscales.core.handler.mouse
 		private var _firstDrag:Boolean = true;
 		
 		private var _dragging:Boolean = false;
-
-       private var _newBounds:Bounds = null;
-		
-		private var _w_deg:Number = 0.0;
-		private var _h_deg:Number = 0.0;
-		
 		
 		/**
 		 *Callbacks function
@@ -87,7 +78,21 @@ package org.openscales.core.handler.mouse
 				this.onstart(event as MouseEvent);
 		}
 		
-		
+		protected function onMouseMove(event:MouseEvent):void  {
+	
+			var dx:int=this.map.layerContainer.x-(this.map.layerContainer.parent.mouseX - this._offset.x);
+			var dy:int=this.map.layerContainer.y-(this.map.layerContainer.parent.mouseY - this._offset.y);
+			
+			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
+			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
+			if(this.map.bitmapTransition) {
+				this.map.bitmapTransition.x -= dx;
+				this.map.bitmapTransition.y -= dy;
+			}
+			
+			// Force update regardless of the framerate for smooth drag
+			event.updateAfterEvent();
+		}
 		
 		/**
 		 *The MouseUp Listener
@@ -113,8 +118,7 @@ package org.openscales.core.handler.mouse
 			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_END, this.map));
 			this.map.buttonMode=false;
-
-			this.done();
+			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
 			// A MapEvent.MOVE_END is emitted by the "set center" called in this.done
 			this.dragging=false;
 		}
@@ -132,89 +136,11 @@ package org.openscales.core.handler.mouse
 			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			
 			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
+		
 			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
-			
 			this._startCenter = this.map.center;
-			var resol:Number = this.map.resolution;
-			//size in the projection
-			this._w_deg = this.map.size.w * resol;
-			this._h_deg = this.map.size.h * resol;
-			
-            //init the new bound with the current extent
-			this._newBounds =  this.map.extent.clone();
-            this.map.buttonMode=true;
+			this.map.buttonMode=true;
 			this.dragging=true;
-		}
-		
-		/**
-		 * Test if new lon coordinate are in the maxEtent 
-		 * @param maxExtend of the current map
-		 * @param extent of the new center
-		 */
-		protected function contentLon(maxExtend:Bounds,extent:Bounds):Boolean{
-			
-			var inTop:Boolean;
-			var inBottom:Boolean;
-			inTop = (maxExtend.top > extent.bottom) && (maxExtend.top < extent.top);
-			inBottom = (maxExtend.bottom > extent.bottom) && (maxExtend.bottom < extent.top);
-			return (inTop && inBottom);
-			
-		}
-		
-		/**
-		 * Test if new lon coordinate are in the maxEtent 
-		 * @param maxExtend of the current map
-		 * @param extent of the new center
-		 */
-		protected function contentLat(maxExtend:Bounds,extent:Bounds):Boolean{
-			var inRight:Boolean;
-			var inLeft:Boolean;
-			inLeft = (maxExtend.left > extent.left) && (maxExtend.left < extent.right);
-			inRight= (maxExtend.right > extent.left) && (maxExtend.right < extent.right);
-			return (inLeft && inRight);
-		}
-		
-		/**
-		 *
-		 */
-		protected function onMouseMove(event:MouseEvent):void  {
-			
-			var resol:Number = this.map.resolution;
-			//calcul new position
-			var deltaX:Number = this._start.x - this.map.mouseX;
-			var deltaY:Number = this._start.y - this.map.mouseY;
-			
-			var newPosition:Location = new Location(this._startCenter.lon + deltaX * resol,
-				this._startCenter.lat - deltaY * resol,
-				this._startCenter.projSrsCode);
-			
-			var extent:Bounds = new Bounds(newPosition.lon - this._w_deg / 2,
-				newPosition.lat - this._h_deg / 2,
-				newPosition.lon + this._w_deg / 2,
-				newPosition.lat + this._h_deg / 2,
-				newPosition.projSrsCode);
-			
-			var maxExtent:Bounds = this.map.maxExtent;
-			var inLat:Boolean =contentLat(extent,maxExtent);
-			var inLong:Boolean = contentLon(extent,maxExtent);
-			if(inLat){
-			  this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
-			  this._newBounds.left = extent.left;
-			  this._newBounds.right = extent.right;
-			
-			}
-			if(inLong){
-			  this.map.layerContainer.y =  this.map.layerContainer.parent.mouseY - this._offset.y;
-			  this._newBounds.top = extent.top;
-			  this._newBounds.bottom = extent.bottom;
-			}
-			if(this.map.bitmapTransition) {
-				if(inLat)
-					this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - this._offset.x;
-				if(inLong)
-					this.map.bitmapTransition.y =  this.map.bitmapTransition.parent.mouseY - this._offset.y;
-			}
-			event.updateAfterEvent();
 		}
 			
 		/**
@@ -269,19 +195,22 @@ package org.openscales.core.handler.mouse
 		/**
 		 * This function is used to recenter map after dragging
 		 */
-		private function done():void {
+		private function done(xy:Pixel):void {
 			if (this.dragging) {
-				this.panMap();
+				this.panMap(xy);
 				this.dragging = false;
 			}
 		}
-		
-		public function panMap():void {
+		public function panMap(xy:Pixel):void {
 			this.dragging = true;
-			if(this._newBounds == null) return;
-			// If the new position equals the old center, stop here
 			var oldCenter:Location = this.map.center;
-			if (this._newBounds.center.equals(oldCenter)) {
+			var deltaX:Number = this._start.x - xy.x;
+			var deltaY:Number = this._start.y - xy.y;
+			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
+				this._startCenter.lat - deltaY * this.map.resolution,
+				this._startCenter.projSrsCode);
+			// If the new position equals the old center, stop here
+			if (newPosition.equals(oldCenter)) {
 				var event:MapEvent = new MapEvent(MapEvent.MOVE_NO_MOVE, this.map);
 				event.oldCenter = this.map.center;
 				event.newCenter = this.map.center;
@@ -291,9 +220,16 @@ package org.openscales.core.handler.mouse
 				//Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");
 				return;
 			}
-			var extent:Bounds = _newBounds.clone();
-			this.map.center = this._newBounds.center.clone();
-
+			// Try to set the new position as the center of the map
+			this.map.center = newPosition;
+			// If the new position is invalid (see Map.setCenter for the
+			// conditions), the center of the map is always the old one but the
+			// bitmap that represents the map is centered to the new position.
+			// We have to reset the bitmap position to the right center.
+			if (this.map.center.equals(oldCenter)) {
+				//Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
+				this.map.moveTo(this.map.center);
+			}
 		}
 	}
 }
