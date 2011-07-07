@@ -9,6 +9,7 @@ package org.openscales.fx.control.layer
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.fail;
 	import org.openscales.core.Map;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.control.layer.ChangeLayerOpacity;
 	import org.openscales.fx.control.layer.LayerManager;
@@ -43,7 +44,7 @@ package org.openscales.fx.control.layer
 		public function testSliderOpacityChange():void
 		{
 			_opacity.layerControlOpacity.value = 50;
-			
+			_opacity.layerOpacity(new Event(Event.CHANGE));
 			Assert.assertEquals(_opacity.layerControlOpacity.value, (_layer1.alpha*100));
 		}
 		
