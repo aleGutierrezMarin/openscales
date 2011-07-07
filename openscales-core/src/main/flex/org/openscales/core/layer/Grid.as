@@ -47,7 +47,7 @@ package org.openscales.core.layer
 		
 		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
 		
-		protected var _tileOrigin:Location = new Location(4,56,"EPSG:4326");
+		protected var _tileOrigin:Location = new Location(0,0,"EPSG:4326");
 		
 		/**
 		 * Create a new grid layer
@@ -276,6 +276,7 @@ package org.openscales.core.layer
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
 			
 			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(this.map.baseLayer.projSrsCode);
+			
 			var viewSize:Size = this.map.size;
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
 				Math.max(1, 2 * this.buffer);
@@ -657,6 +658,24 @@ package org.openscales.core.layer
 		
 		public function set buffer(value:Number):void {
 			this._buffer = value; 
+		}
+		
+		/**
+		 * The tileOrigin to define the grid
+		 * @default 0,0
+		 */
+		public function get tileOrigin():Location
+		{
+			return this._tileOrigin;
+		}	
+		
+		/**
+		 * @private
+		 */
+		public function set tileOrigin(value:Location):void
+		{
+			this._tileOrigin = value;
+			this.initGriddedTiles(this.map.extent, true);
 		}
 	}
 }
