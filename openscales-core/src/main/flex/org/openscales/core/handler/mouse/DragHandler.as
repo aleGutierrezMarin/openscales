@@ -27,10 +27,18 @@ package org.openscales.core.handler.mouse
 		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
 		private var _offset:Pixel = null;
+		private var _layerContainerPositionBeforeDrag:Pixel =null;
+		
+		private var _mouseOffsetLayerContainerCenter:Pixel = new Pixel();
 		
 		private var _firstDrag:Boolean = true;
 		
 		private var _dragging:Boolean = false;
+		
+		/**
+		 * Used to store the center when we reach the limit of the max extend.
+		 */
+		private var _lastValidCenter:Location = null;
 		
 		/**
 		 *Callbacks function
@@ -82,12 +90,39 @@ package org.openscales.core.handler.mouse
 	
 			var dx:int=this.map.layerContainer.x-(this.map.layerContainer.parent.mouseX - this._offset.x);
 			var dy:int=this.map.layerContainer.y-(this.map.layerContainer.parent.mouseY - this._offset.y);
+			//this._mouseOffsetLayerContainerCenter.x = this._offset.x + (this.map.layerContainer.width/2 + this.map.layerContainer.x);
+			//this._mouseOffsetLayerContainerCenter.y = this._offset.y + (this.map.layerContainer.height/2 + this.map.layerContainer.y);
 			
-			this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
-			this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
-			if(this.map.bitmapTransition) {
-				this.map.bitmapTransition.x -= dx;
-				this.map.bitmapTransition.y -= dy;
+			//var layerContainerCenter:Pixel = new Pixel(this.map.layerContainer.parent.mouseX - this._mouseOffsetLayerContainerCenter.x, this.map.layerContainer.parent.mouseY - this._mouseOffsetLayerContainerCenter.y);
+			
+			//Trace.debug("Layer XY : "+this.map.layerContainer.x+" "+this.map.layerContainer.y);
+			
+			//Trace.debug("Offset : "+this._offset.x+" "+this._offset.y);
+			
+			//Trace.debug("LC : "+layerContainerCenter.x +" "+layerContainerCenter.y);
+			
+			//Trace.debug("location : "+ this.map.getLocationFromMapPx(layerContainerCenter));
+			
+			//Trace.debug("center : "+ this.map.center);
+			
+
+			var deltaX:Number = this._start.x - this.map.mouseX;
+			var deltaY:Number = this._start.y - this.map.mouseY;
+			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
+				this._startCenter.lat - deltaY * this.map.resolution,
+				this._startCenter.projSrsCode);
+			
+			
+		//	Trace.debug(this._offset.x +" "+this._offset.y);
+			if(this.map.maxExtent.containsLocation(newPosition))
+			{
+				_lastValidCenter = newPosition;
+				this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
+				this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
+				if(this.map.bitmapTransition) {
+					this.map.bitmapTransition.x -= dx;
+					this.map.bitmapTransition.y -= dy;
+				}
 			}
 			
 			// Force update regardless of the framerate for smooth drag
@@ -140,6 +175,7 @@ package org.openscales.core.handler.mouse
 			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
 			this._startCenter = this.map.center;
 			this.map.buttonMode=true;
+			this._layerContainerPositionBeforeDrag = new Pixel(this.map.layerContainer.x, this.map.layerContainer.y);
 			this.dragging=true;
 		}
 			
@@ -221,6 +257,10 @@ package org.openscales.core.handler.mouse
 				return;
 			}
 			// Try to set the new position as the center of the map
+			if(!this.map.maxExtent.containsLocation(newPosition))
+			{
+				newPosition = _lastValidCenter;
+			}
 			this.map.center = newPosition;
 			// If the new position is invalid (see Map.setCenter for the
 			// conditions), the center of the map is always the old one but the
@@ -229,6 +269,8 @@ package org.openscales.core.handler.mouse
 			if (this.map.center.equals(oldCenter)) {
 				//Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
 				this.map.moveTo(this.map.center);
+				//this.map.layerContainer.x = _layerContainerPositionBeforeDrag.x;
+				//this.map.layerContainer.y = _layerContainerPositionBeforeDrag.y;
 			}
 		}
 	}
