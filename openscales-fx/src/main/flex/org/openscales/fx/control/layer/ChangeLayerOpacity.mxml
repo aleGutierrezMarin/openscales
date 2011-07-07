@@ -72,8 +72,7 @@
 			 */
 			public function layerChangeOpacity(event:LayerEvent):void 
 			{
-				if(event.target is Layer)
-					this._alpha = (event.target as Layer).alpha;
+					this._alpha = event.newOpacity*100;
 			}
 		]]>
 	</fx:Script>

@@ -42,7 +42,6 @@ package org.openscales.core.control
 		public function OverviewMap(position:Pixel=null)
 		{
 			super(position);
-			this.width
 			this._overviewMap = new Map();
 			this._overviewMap.size = new Size(100,100);
 			this._extentLayer = new FeatureLayer("extentLayer");

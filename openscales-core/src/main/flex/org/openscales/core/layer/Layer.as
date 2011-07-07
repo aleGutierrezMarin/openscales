@@ -109,10 +109,6 @@ package org.openscales.core.layer {
 				this._resolutions.push(this.resolutions[i - 1] / 2);
 			}
 			this._resolutions.sort(Array.NUMERIC | Array.DESCENDING);
-
-			if(this._maxResolution == Infinity){
-				this._maxResolution = this._resolutions[0];
-			}
 			
 			this._autoResolution = true;
 		}
@@ -396,8 +392,10 @@ package org.openscales.core.layer {
 		 */
 		public function get minResolution():Number {
 			var minRes:Number = this._minResolution;
-			if (isNaN(minRes) && this.resolutions && (this.resolutions.length > 0)) {
+			
+			if (this.resolutions && (this.resolutions.length > 0)) {
 				minRes = this.resolutions[this.resolutions.length - 1];
+				this._minResolution = minRes;
 			}
 			return minRes;
 		}
@@ -412,8 +410,9 @@ package org.openscales.core.layer {
 		public function get maxResolution():Number {
 			var maxRes:Number = this._maxResolution;
 			
-			if (isNaN(maxRes) &&  this.resolutions && (this.resolutions.length > 0)) {
+			if (this.resolutions && (this.resolutions.length > 0)) {
 				maxRes = this.resolutions[0];
+				this._maxResolution = maxRes;
 			}
 			return maxRes;
 		}
