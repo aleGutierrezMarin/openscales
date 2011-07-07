@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Pan control to pan the map --> 
+<Control xmlns="org.openscales.fx.control.*" xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" > 
+
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.sliderClasses.Slider;
+			import mx.events.SliderEvent;
+			import mx.events.SliderEventClickTarget;
+			import mx.events.StateChangeEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.control.ZoomData;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.fx.control.skin.PanSkin;
+			import org.openscales.fx.control.skin.ZoomSkin;
+			import org.openscales.fx.control.skin.ZoomThumbSkin;
+			
+			import spark.events.TrackBaseEvent;
+			
+			public var DELTA_PX:Number = 100;
+			
+			/**
+			 * @private
+			 * Bindable value for panNorth label
+			 */
+			[Bindable]
+			public var labelPanNorth:String = Catalog.getLocalizationForKey('pan.N');
+			
+			/**
+			 * @private
+			 * Bindable value for panNorth tooltip
+			 */
+			[Bindable]
+			public var toolTipPanNorth:String = Catalog.getLocalizationForKey('pan.pannorth');
+			
+			/**
+			 * @private
+			 * Bindable value for panSouth label
+			 */
+			[Bindable]
+			public var labelPanSouth:String = Catalog.getLocalizationForKey('pan.S');
+			/**
+			 * @private
+			 * Bindable value for panSouth tooltip
+			 */
+			[Bindable]
+			public var toolTipPanSouth:String = Catalog.getLocalizationForKey('pan.pansouth');
+			
+			/**
+			 * @private
+			 * Bindable value for panEast label
+			 */
+			[Bindable]
+			public var labelPanEast:String = Catalog.getLocalizationForKey('pan.E');
+			/**
+			 * @private
+			 * Bindable value for panEast tooltip
+			 */
+			[Bindable]
+			public var toolTipPanEast:String = Catalog.getLocalizationForKey('pan.paneast');
+			
+			/**
+			 * @private
+			 * Bindable value for panWest label
+			 */
+			[Bindable]
+			public var labelPanWest:String = Catalog.getLocalizationForKey('pan.W');
+			
+			/**
+			 * @private
+			 * Bindable value for panWesth tooltip
+			 */
+			[Bindable]
+			public var toolTipPanWest:String = Catalog.getLocalizationForKey('pan.panwest');
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void {	
+				this.labelPanNorth = Catalog.getLocalizationForKey('pan.N');	
+				this.toolTipPanNorth = Catalog.getLocalizationForKey('pan.pannorth');	
+				this.labelPanSouth = Catalog.getLocalizationForKey('pan.S');
+				this.toolTipPanSouth = Catalog.getLocalizationForKey('pan.pansouth');
+				this.labelPanEast = Catalog.getLocalizationForKey('pan.E');
+				this.toolTipPanEast = Catalog.getLocalizationForKey('pan.paneast');	
+				this.labelPanWest = Catalog.getLocalizationForKey('pan.W');
+				this.toolTipPanWest = Catalog.getLocalizationForKey('pan.panwest');
+			}
+			
+			/**
+			 * Pan the map North when the north button is pressed.
+			 * The button is linked to this function with the lick property.
+			 * 
+			 * @param The MouseEvent received
+			 */
+			public function onPanNorth(event:MouseEvent):void
+			{
+				if(!this._map || !this._map.baseLayer)
+					return;
+				
+				this.map.pan(0, -this.DELTA_PX, true);
+			}
+			
+			/**
+			 * Pan the map South when the south button is pressed.
+			 * The button is linked to this function with the lick property.
+			 * 
+			 * @param The MouseEvent received
+			 */
+			public function onPanSouth(event:MouseEvent):void
+			{
+				if(!this._map || !this._map.baseLayer)
+					return;
+				
+				this.map.pan(0, this.DELTA_PX, true);
+			}
+			
+			/**
+			 * Pan the map East when the east button is pressed.
+			 * The button is linked to this function with the lick property.
+			 * 
+			 * @param The MouseEvent received
+			 */
+			public function onPanEast(event:MouseEvent):void
+			{
+				if(!this._map || !this._map.baseLayer)
+					return;
+				
+				this.map.pan(this.DELTA_PX, 0, true);
+			}
+			
+			/**
+			 * Pan the map West when the west button is pressed.
+			 * The button is linked to this function with the lick property.
+			 * 
+			 * @param The MouseEvent received
+			 */
+			public function onPanWest(event:MouseEvent):void
+			{
+				if(!this._map || !this._map.baseLayer)
+					return;
+				
+				this.map.pan(-this.DELTA_PX, 0, true);
+			}			
+			
+			override public function destroy():void {
+				this.active = false;
+				super.destroy();
+			}
+			
+			
+		]]>
+	</fx:Script>
+
+	<s:SkinnableContainer id="panContainer"
+						  useHandCursor="true"
+						  buttonMode="true">	
+	</s:SkinnableContainer>
+	
+	<s:Button id="panNorth" name="north" label="{this.labelPanNorth}" 
+			  click="onPanNorth(event)" toolTip="{this.toolTipPanNorth}"
+			  width="35" x="20" y="0" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panSouth" name="south" label="{this.labelPanSouth}" 
+			  click="onPanSouth(event)" toolTip="{this.toolTipPanSouth}"
+			  width="35" x="20" y="40" useHandCursor="true" buttonMode="true" />
+	<s:Button id="panEast" name="east" label="{this.labelPanEast}" 
+			  click="onPanEast(event)" toolTip="{this.toolTipPanEast}"
+			  width="35" x="40" y="20" useHandCursor="true" buttonMode="true"/>
+	<s:Button id="panWest" name="west" label="{this.labelPanWest}" 
+			  click="onPanWest(event)" toolTip="{this.toolTipPanWest}"
+			  width="35" x="0" y="20" useHandCursor="true" buttonMode="true"/>
+	
+	
+</Control>
