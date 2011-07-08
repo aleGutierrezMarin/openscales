@@ -49,7 +49,7 @@ package org.openscales.core.layer
 			
 			Assert.assertEquals(layer.minZoomLevel, 2);
 			Assert.assertEquals(layer.minResolution, 0);
-			Assert.assertEquals(layer.maxResolution, 7);
+			Assert.assertEquals(layer.maxResolution, 9);
 		}
 		
 		[Test]
@@ -59,7 +59,7 @@ package org.openscales.core.layer
 			layer.maxZoomLevel = 8;
 			
 			Assert.assertEquals(layer.maxZoomLevel, 8);
-			Assert.assertEquals(layer.minResolution, 1);
+			Assert.assertEquals(layer.minResolution, 0);
 			Assert.assertEquals(layer.maxResolution, 9);
 		}
 		
