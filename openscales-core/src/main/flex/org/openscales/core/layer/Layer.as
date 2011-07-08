@@ -391,12 +391,34 @@ package org.openscales.core.layer {
 		 * Minimal valid resolution for this layer
 		 */
 		public function get minResolution():Number {
+
 			var minRes:Number = this._minResolution;
 			
-			if (this.resolutions && (this.resolutions.length > 0)) {
-				minRes = this.resolutions[this.resolutions.length - 1];
-				this._minResolution = minRes;
+			if(isNaN(this._minResolution) || !isFinite(this._minResolution))
+			{
+				if (this.resolutions && (this.resolutions.length > 0)) {
+					minRes = this.resolutions[this.resolutions.length - 1];
+					this._minResolution = minRes;
+				}
 			}
+			else
+			{
+				// if is valide
+				var i:int = 0;
+				var j:int = this.resolutions.length;
+				for(; i<j; ++i)
+				{
+					if( this.resolutions[i] == this._minResolution)
+						return this._minResolution;
+				}
+				
+				if (this.resolutions && (this.resolutions.length > 0)) {
+					minRes = this.resolutions[this.resolutions.length - 1];
+					this._minResolution = minRes;
+				}
+				
+			}
+			
 			return minRes;
 		}
 		
@@ -408,12 +430,34 @@ package org.openscales.core.layer {
 		 * Maximal valid resolution for this layer
 		 */
 		public function get maxResolution():Number {
+
 			var maxRes:Number = this._maxResolution;
 			
-			if (this.resolutions && (this.resolutions.length > 0)) {
-				maxRes = this.resolutions[0];
-				this._maxResolution = maxRes;
+			if(isNaN(this._maxResolution) || !isFinite(this._maxResolution))
+			{
+				if (this.resolutions && (this.resolutions.length > 0)) {
+					maxRes = this.resolutions[0];
+					this._maxResolution = maxRes;
+				}
 			}
+			else
+			{
+				// if is valide
+				var i:int = 0;
+				var j:int = this.resolutions.length;
+				for(; i<j; ++i)
+				{
+					if( this.resolutions[i] == this._maxResolution)
+						return this._maxResolution;
+				}
+				
+				if (this.resolutions && (this.resolutions.length > 0)) {
+					maxRes = this.resolutions[0];
+					this._maxResolution = maxRes;
+				}
+				
+			}
+			
 			return maxRes;
 		}
 		
