@@ -21,7 +21,7 @@
 		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
 				projection="EPSG:4326" version="1.0.0" useCapabilities="true" 
 				style="{Style.getDefaultPointStyle()}" />
-		
+				
 		<LanguageSwitcher x="300" y="10"/>
 
 		<PanZoom id="panZoom" x="10" y="10" scalesLabels="World,0.3515625,1.40625;Country,0.0439453125,0.3515625;State,0.0054931640625,0.0439453125;Town,0.0006866455078125,0.0054931640625;Street,0.0000858306884765625,0.0006866455078125;House,0.000010728836059570313,0.0000858306884765625"/>
