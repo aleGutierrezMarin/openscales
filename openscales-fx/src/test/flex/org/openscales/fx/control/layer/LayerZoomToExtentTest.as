@@ -16,7 +16,7 @@ package org.openscales.fx.control.layer
 	import org.openscales.fx.control.layer.LayerZoomToExtent;
 	import org.openscales.geometry.basetypes.Bounds;
 	
-	public class LayerZoomToExtentTest extends OpenScalesTest
+	public class LayerZoomToExtentTest
 	{		
 		/**
 		 * Basic controls for testing
@@ -28,11 +28,8 @@ package org.openscales.fx.control.layer
 		private const RESOLUTION:Number = 0.3515625;
 		private const PRECISION:Number = 1e-6;
 		
-		private var _timer:Timer;
-		private const THICK_TIME:uint = 1200;
-		
 		[Before]
-		override public function setUp():void
+		public function setUp():void
 		{
 			_map = new Map(200,100);
 			_layer1 = new Layer("layer1");
@@ -42,37 +39,17 @@ package org.openscales.fx.control.layer
 			_map.addLayer(_layer2);
 			_zoom = new LayerZoomToExtent();
 			_zoom.layer = _layer2;
-			
-			this._container.addElement(_zoom);
-			
-			this._timer = new Timer(THICK_TIME);
 		}
-		
-		[After]
-		override public function tearDown():void
-		{
-			super.tearDown();
-			_timer.stop();
-			//_timer = null
-		}
-		
-		
 		
 		[Test]
-		public function shouldClickZoomToExtentTest():void
+		public function shouldZoomToExtentOnClick():void
 		{
 			var maxExtent:Bounds = new Bounds(-(200 * RESOLUTION)/2,-(100 * RESOLUTION)/2,(200 * RESOLUTION)/2,(100 * RESOLUTION)/2);
 			_zoom.setLayerExtent(new MouseEvent(MouseEvent.CLICK));
 			Assert.assertTrue("bound left invalid", (maxExtent.left - _map.extent.left)<PRECISION);
-			Assert.assertTrue("bound left invalid", (maxExtent.bottom - _map.extent.bottom)<PRECISION);
-			Assert.assertTrue("bound left invalid", (maxExtent.right - _map.extent.right)<PRECISION);
-			Assert.assertTrue("bound left invalid", (maxExtent.height - _map.extent.height)<PRECISION);
-		}
-		
-		private function assertClickZoomToExtentTest():void{
-			var maxExtent:Bounds = _layer1.maxExtent;
-			
-			Assert.assertEquals(maxExtent, _map.extent);
+			Assert.assertTrue("bound bottom invalid", (maxExtent.bottom - _map.extent.bottom)<PRECISION);
+			Assert.assertTrue("bound right invalid", (maxExtent.right - _map.extent.right)<PRECISION);
+			Assert.assertTrue("bound height invalid", (maxExtent.height - _map.extent.height)<PRECISION);
 		}
 	}
 }
