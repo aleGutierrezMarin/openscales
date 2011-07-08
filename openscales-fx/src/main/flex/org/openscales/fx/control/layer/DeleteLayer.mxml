@@ -12,6 +12,7 @@
 			
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.Layer;
 			
 			/**
 			 * Tootip for delete layer button
@@ -19,6 +20,23 @@
 			[Bindable]
 			public var tooltipDelete:String = Catalog.getLocalizationForKey('layercontrol.deletelayer')
 				
+			/**
+			 * Configure the first display for this component when the layer is set
+			 * Set one or two arrows depending of the position of the current layer
+			 */ 
+			override public function set layer(value:Layer):void
+			{
+				super.layer = value;
+				
+				if(this._layer.map != null)
+				{
+					// if baselayer no delete button
+					if(this._layer == this._layer.map.baseLayer )
+						deleteButton.visible = false;
+					else
+						deleteButton.visible = true;
+				}
+			}
 				
 			/**
 			 * Delete the layer on the map
