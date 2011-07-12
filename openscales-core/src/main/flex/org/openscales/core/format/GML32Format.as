@@ -57,6 +57,8 @@ package org.openscales.core.format
 		
 		private var projectionxml:String = "srsName=\"http://www.opengis.net/gml/srs/epsg.xml#4326\"";	
 		
+		private var projection:String = "http://www.opengis.net/gml/srs/epsg.xml#4326";
+		
 		private var xmlString:String;
 		private var sXML:String;
 		private var eXML:String    = "</wfs:member></wfs:FeatureCollection>";// it must not have reference at wfs in sthis class
@@ -126,7 +128,7 @@ package org.openscales.core.format
 			
 			for(i=0; i<featureCol.length; i++){
 				
-				/* calculate and add an Envelope for each wfs:member */
+				/* calculate and add an Envelope for each wfs:member; create a buildEnvelope function*/
 				var wfsNode:XML = new XML("<member></member>");
 				wfsNode.setNamespace(wfsns);
 				var featureNode:XML = buildFeatureNode (featureCol[i],ns,featureType,geometryName);
@@ -175,7 +177,7 @@ package org.openscales.core.format
 				var multiSurfaceNode:XML = new XML("<MultiSurface></MultiSurface>");
 				multiSurfaceNode.setNamespace(gmlns);
 				multiSurfaceNode.@srsDimension = this.dim;
-				multiSurfaceNode.@srsName = "http://www.opengis.net/gml/srs/epsg.xml#4326";
+				multiSurfaceNode.@srsName = this.projection;
 			
 				var mpf:MultiPolygonFeature = feature as MultiPolygonFeature;
 				var mp:MultiPolygon = mpf.polygons;
@@ -193,7 +195,7 @@ package org.openscales.core.format
 				var multiPointNode:XML = new XML("<MultiPoint></MultiPoint>");
 				multiPointNode.setNamespace(gmlns);
 				multiPointNode.@srsDimension = this.dim;
-				multiPointNode.@srsName = "http://www.opengis.net/gml/srs/epsg.xml#4326";
+				multiPointNode.@srsName = this.projection;
 			
 				var multiPointFeature:MultiPointFeature = feature as MultiPointFeature;
 				var multiPoint:MultiPoint = multiPointFeature.points as MultiPoint;
@@ -213,7 +215,21 @@ package org.openscales.core.format
 				xmlNode.appendChild(this.buildLineStringNode(lineString));
 				
 			}else if (feature is MultiLineStringFeature){
-				var multiLineStringNode:XML = new XML("");
+				var mlsNode:XML = new XML("<MultiLineString></MultiLineString>");
+				mlsNode.setNamespace(gmlns);
+				mlsNode.@srsDimension = this.dim;
+				mlsNode.@srsName = this.projection;
+				
+				var mlsf:MultiLineStringFeature = feature as MultiLineStringFeature;
+				var mls:MultiLineString = mlsf.lineStrings as MultiLineString;
+				var lsVector:Vector.<Geometry> = mls.getcomponentsClone();
+				for(i = 0; i < mls.length; i++){
+					var lsMember:XML = new XML("<lineStringMember></lineStringMember>");
+					lsMember.setNamespace(gmlns);
+					lsMember.appendChild(this.buildLineStringNode(lsVector[i] as LineString));
+					mlsNode.appendChild(lsMember);					
+				}
+				xmlNode.appendChild(mlsNode);
 			}
 		
 			return featureNode; 
@@ -226,7 +242,7 @@ package org.openscales.core.format
 			pointNode.pos = String(point.x)+" "+String(point.y);
 			pointNode.children().setNamespace(gmlns);
 			pointNode.@srsDimension = this.dim;
-			pointNode.@srsName = "http://www.opengis.net/gml/srs/epsg.xml#4326";
+			pointNode.@srsName = this.projection;
 			return pointNode;
 		}
 		
@@ -245,7 +261,7 @@ package org.openscales.core.format
 			lineStringNode.posList=coordList;
 			lineStringNode.children().setNamespace(gmlns);
 			lineStringNode.@srsDimension = this.dim;
-			lineStringNode.@srsName = "http://www.opengis.net/gml/srs/epsg.xml#4326";
+			lineStringNode.@srsName = this.projection;
 			return lineStringNode;
 		}
 		
@@ -421,7 +437,7 @@ package org.openscales.core.format
 
 				
 			} else if (xmlNode..*::MultiCurve.length() > 0) { 
-				var multiCurve:XML = xmlNode..*::MultiLineString[0];
+				var multiCurve:XML = xmlNode..*::MultiCurve[0];
 				if( multiCurve.hasOwnProperty('@srsDimension') && multiCurve.@srsDimension.length() )
 				{
 					dim = Number(multiCurve.@srsDimension);

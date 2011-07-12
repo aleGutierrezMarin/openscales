@@ -8,14 +8,16 @@ package org.openscales.core.format
 	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
-	import org.openscales.core.feature.MultiPolygonFeature;
+	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
+	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
-	import org.openscales.geometry.MultiPolygon;
+	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.MultiPoint;
+	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	
@@ -272,9 +274,9 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 </wfs:member>;		
 			
 			var feature:Feature = format.parseFeature(xml);	
+			Assert.assertTrue("This feature should be a PointFeature", feature is PointFeature);
 			var pf:PointFeature = feature as PointFeature;
 			Assert.assertNotNull("The PointFeature should not be null", pf);
-			Assert.assertTrue("This feature should be a PointFeature", pf is PointFeature);
 			Assert.assertTrue("This component should be a Point", pf.point is Point);
 			var p:Point = pf.point;
 			Assert.assertEquals("The first coordinate is incorrect",-74.0108375113659, p.x );
@@ -358,29 +360,30 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 </gml:Envelope>
 </gml:boundedBy>
 <topp:the_geom>
-<gml:MultiLineString srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lineStringMember>			
+<gml:MultiCurve srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:curveMember>			
 <gml:LineString>
 <gml:posList>-102 22 -442.145 19.099</gml:posList>		
 </gml:LineString>
-</gml:lineStringMember>
-<gml:lineStringMember>			
+</gml:curveMember>
+<gml:curveMember>			
 <gml:LineString>
 <gml:posList>24 122 -15.222 19.099</gml:posList>		
 </gml:LineString>
-</gml:lineStringMember>				
-</gml:MultiLineString>
+</gml:curveMember>				
+</gml:MultiCurve>
 </topp:the_geom>
 </topp:states>
 </wfs:member>;			
 			
 			var feature:Feature = format.parseFeature(xml);	
-			var lsf:LineStringFeature = feature as LineStringFeature;
+			Assert.assertTrue("this should be a multiLineString object", feature is MultiLineStringFeature);
+			var mlsf:MultiLineStringFeature = feature as MultiLineStringFeature;
 			var ns:String = "topp=\"http://www.openplans.org/topp\"";
 			var featureType:String = "states";
 			var geometryName:String = "the_geom";
 			
-			var xmlNode:XML = format.buildFeatureNode(feature, ns, featureType, geometryName);
+		//	var xmlNode:XML = format.buildFeatureNode(mlsf, ns, featureType, geometryName);
 			
 		}
 		
