@@ -45,7 +45,6 @@ package org.openscales.core.utils
 		 */
 		[Test]
 		public function testSexagecimalX1 ( ) : void {
-			trace("SexagecimalTest - test 1 :");
 			var dec:Number;
 			for (var i:Number= 0, l:Number= _PMS.length; i<l; i++) {
 				dec= Util.dmsToDeg(_PMS[i].dms);
@@ -58,7 +57,6 @@ package org.openscales.core.utils
 		 */
 		[Test]
 		public function testSexagecimalX2 ( ) : void {
-			trace("SexagecimalTest - test 2 :");
 			var dms:String;
 			for (var i:Number= 0, l:Number= _PMS.length; i<l; i++) {
 				dms= Util.degToDMS(_PMS[i].dec, _PMS[i].dir, 3);

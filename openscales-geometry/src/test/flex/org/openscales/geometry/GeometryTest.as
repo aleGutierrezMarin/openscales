@@ -3,7 +3,7 @@ package org.openscales.geometry
 	import org.flexunit.Assert;
 	import org.openscales.geometry.basetypes.Bounds;
 
-	public class OperationGeometryTest
+	public class GeometryTest
 	{
 		/**
 		 * Test to transform gemetry in vector of point
