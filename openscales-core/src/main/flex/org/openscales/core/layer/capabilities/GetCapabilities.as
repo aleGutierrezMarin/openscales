@@ -126,7 +126,7 @@ package org.openscales.core.layer.capabilities
 			}
 			catch (error:Error) 
 			{
-			     trace("XML parse error");
+			     Trace.debug("XML parse error");
 			     onFailure(event);
 			     return;
 			}

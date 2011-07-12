@@ -1,5 +1,6 @@
 package org.openscales.core.layer.originator
 {
+	import org.openscales.core.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
@@ -66,7 +67,7 @@ package org.openscales.core.layer.originator
 			// Is the input constraint valid ?
 			if (! constraint) 
 			{
-				trace("DataOriginator.addConstraint: null constraint not added");
+				Trace.debug("DataOriginator.addConstraint: null constraint not added");
 				return;
 			}
 			var i:uint = 0;
@@ -75,14 +76,14 @@ package org.openscales.core.layer.originator
 			{
 				if (constraint == this._constraints[i]) 
 				{
-					trace("DataOriginator.addConstraint: this constraint is already registered, not added ");
+					Trace.debug("DataOriginator.addConstraint: this constraint is already registered, not added ");
 					return;
 				}
 			}
 			// If the constraint is a new constraint, add it
 			if (i == j) 
 			{
-				trace("DataOriginator.addConstraint: add a new constraint");
+				Trace.debug("DataOriginator.addConstraint: add a new constraint");
 				this._constraints.push(constraint);
 			}
 		}
