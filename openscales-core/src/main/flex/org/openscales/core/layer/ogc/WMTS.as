@@ -20,7 +20,6 @@ package org.openscales.core.layer.ogc
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Unit;
-	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Instances of the WMTS class allow viewing of tiles from a service that 
@@ -138,6 +137,7 @@ package org.openscales.core.layer.ogc
 			{
 				this.clear();
 				this.redraw(true);
+				this.map.redrawLayers();
 			}
 		}
 		
