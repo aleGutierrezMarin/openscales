@@ -6,6 +6,7 @@ package org.openscales.core.layer.ogc
 	
 	import flexunit.framework.Assert;
 	
+	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
 	import org.openscales.core.events.TileEvent;
@@ -243,6 +244,94 @@ package org.openscales.core.layer.ogc
 					
 				}
 			}
+		}
+		
+		/**
+		 * Validate that if the map extent is greater than the layer maxExtent and the map maxExtent,
+		 * then, the extent requested is limited by the layer maxExtent and the map maxExtent in not
+		 * tiled mode
+		 */
+		[Test(async)]
+		public function shouldRequestAnExtentSmallerIfExtentIsGreaterThanMapAndLayerMaxExtentInNotTiledMode():void
+		{
+			// Given a map with a layer in untiled mode and a map maxExtend and a Layer maxExtent
+			_map = new Map();
+			_map.size = new Size(200,200);
+			_map.center = new Location(5, 2);
+			
+			// this is a dummy BaseLayer added to force the map to have her how maxExtent. 
+			// while refactoring openscales to remove the base layer just set the maxExtent of the map
+			// instead of setting a baseLayer : _map.maxExtent = new Bounds(-50, -40, 10, 10, "EPSG:4326");
+			var _dummyMaxExtent:WMS = new WMS(NAME, URL, LAYERS, "", FORMAT);
+			_dummyMaxExtent.maxExtent = new Bounds(-50, -40, 10, 10, "EPSG:4326");
+			_map.addLayer(_dummyMaxExtent);
+			
+			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
+			_wms.maxExtent = new Bounds(-10, -10, 50, 40, "EPSG:4326");
+			_wms.version = VERSION;
+			_wms.tiled = false;
+			_map.addLayer(_wms);
+			
+			_map.zoomToExtent(new Bounds(-180, -90, 180, 90, "EPSG:4326"));
+			
+			// When the tile is requested, the map extent is greater and contains the map maxExtent and the layer maxExtent
+			_wms.addEventListener(TileEvent.TILE_LOAD_START,Async.asyncHandler(this,function(event:TileEvent,obj:Object):void{
+				
+				var url:String = event.tile.url;
+				var intersectionExtent:Bounds = new Bounds(-10, -10, 10, 10, "EPSG:4326");
+				
+				// Then the extent requested is smaller and limited by the layer and the map maxExtent
+				assertTrue("BBox is not the proper intersection of extends", url.match('BBOX='+intersectionExtent.toString()));
+			},100,null,function(event:Event):void{
+				
+				Assert.fail("No request sent");
+			}));
+			
+			_wms.redraw();
+		}
+		
+		/**
+		 * Validate that if the map extent is smaller than the layer maxExtent and the map maxExtent,
+		 * then the extent requested is the map extent in not tiled mode.
+		 */
+		[Test(async)]
+		public function shouldResquestionTheMapExtentIfItsSmallerThanMapAndAlyerMaxExtentInNotTiledMode():void
+		{
+			// Given a map with a layer in untiled mode and a map maxExtent and a Layer maxExtent
+			_map = new Map();
+			_map.size = new Size(200,200);
+			_map.center = new Location(5, 2);
+			
+			// this is a dummy BaseLayer added to force the map to have her how maxExtent. 
+			// while refactoring openscales to remove the base layer just set the maxExtent of the map
+			// instead of setting a baseLayer : _map.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			var _dummyMaxExtent:WMS = new WMS(NAME, URL, LAYERS, "", FORMAT);
+			_dummyMaxExtent.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			_map.addLayer(_dummyMaxExtent);
+			
+			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
+			_wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			_wms.version = VERSION;
+			_wms.tiled = false;
+			_map.addLayer(_wms);
+			
+			_map.zoomToExtent(new Bounds(-40, -50, 40, 50, "EPSG:4326"));
+			
+			
+			// When the tile is requested, the map extent is smaller and is contained by the map maxExtent and the layer maxExtent
+			_wms.addEventListener(TileEvent.TILE_LOAD_START,Async.asyncHandler(this,function(event:TileEvent,obj:Object):void{
+				
+				var url:String = event.tile.url;
+				var intersectionExtent:Bounds = new Bounds(-70.3125,-70.3125,70.3125,70.3125, "EPSG:4326");
+				
+				// Then the extent resquested is the extent of the map
+				assertTrue("BBox is not the proper extends", url.match('BBOX='+intersectionExtent.toString()));
+			},100,null,function(event:Event):void{
+				
+				Assert.fail("No request sent");
+			}));
+			
+			_wms.redraw();
 		}
 	}
 }
