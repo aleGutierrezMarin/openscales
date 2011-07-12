@@ -22,6 +22,7 @@
     <classEntry path="org.openscales.geometry.ContainsPointTest"/>
     <classEntry path="org.openscales.geometry.OperationGeometryTest"/>
     <classEntry path="org.openscales.geometry.PointTest"/>
+    <classEntry path="org.openscales.geometry.basetypes.BoundsTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
