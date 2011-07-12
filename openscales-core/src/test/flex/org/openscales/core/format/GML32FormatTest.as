@@ -1,5 +1,7 @@
 package org.openscales.core.format
 {
+	import com.gskinner.motion.easing.Linear;
+	
 	import flash.xml.XMLNode;
 	
 	import flexunit.framework.Assert;
@@ -7,10 +9,13 @@ package org.openscales.core.format
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiPolygonFeature;
+	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiPolygon;
+	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	
@@ -114,7 +119,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:the_geom>
 <gml:MultiSurface srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
 <gml:surfaceMember>
-<gml:Polygon>
+	<gml:Polygon>
 <gml:exterior>
 <gml:LinearRing>
 <gml:posList>-88.071564 37.51099000000001 -88.087883 37.476273000000006 -88.311707 37.442852</gml:posList>
@@ -125,14 +130,16 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <gml:posList>-28.071564 27.51099000000001 -58.087883 17.476273000000006</gml:posList>
 </gml:LinearRing>
 </gml:interior>				
-</gml:Polygon>
-<gml:Polygon>
+	</gml:Polygon>
+</gml:surfaceMember>
+<gml:surfaceMember>				
+	<gml:Polygon>
 <gml:exterior>
 <gml:LinearRing>
 <gml:posList>-28.071564 27.51099000000001 -58.087883 17.476273000000006</gml:posList>
 </gml:LinearRing>
 </gml:exterior>			
-</gml:Polygon>
+	</gml:Polygon>
 </gml:surfaceMember>
 </gml:MultiSurface>
 </topp:the_geom>
@@ -166,7 +173,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 		
 		[Test]
 		public function testReadComplexPolygon2():void {
-			/* tests the order of the interior/exterior LinearRings */ 
+			// tests the order of the interior/exterior LinearRings 
 			var xml:XML = <wfs:member
 xmlns:gml="http://www.opengis.net/gml/3.2"
 xmlns:topp="http://www.openplans.org/topp"
@@ -337,6 +344,191 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			
 		}
 		
+		[Test]
+		public function TestBuildMultiLineStringNode():void{
+			var xml:XML = <wfs:member
+xmlns:gml="http://www.opengis.net/gml/3.2"
+xmlns:topp="http://www.openplans.org/topp"
+xmlns:wfs="http://www.opengis.net/wfs/2.0">
+<topp:states gml:id="states.1">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>-91 36</gml:lowerCorner>
+<gml:upperCorner>-87 42</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+<gml:MultiLineString srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lineStringMember>			
+<gml:LineString>
+<gml:posList>-102 22 -442.145 19.099</gml:posList>		
+</gml:LineString>
+</gml:lineStringMember>
+<gml:lineStringMember>			
+<gml:LineString>
+<gml:posList>24 122 -15.222 19.099</gml:posList>		
+</gml:LineString>
+</gml:lineStringMember>				
+</gml:MultiLineString>
+</topp:the_geom>
+</topp:states>
+</wfs:member>;			
+			
+			var feature:Feature = format.parseFeature(xml);	
+			var lsf:LineStringFeature = feature as LineStringFeature;
+			var ns:String = "topp=\"http://www.openplans.org/topp\"";
+			var featureType:String = "states";
+			var geometryName:String = "the_geom";
+			
+			var xmlNode:XML = format.buildFeatureNode(feature, ns, featureType, geometryName);
+			
+		}
+		
+		
+		
+		[Test]
+		public function TestBuildPolygonNode():void{
+			var xml:XML = <wfs:member
+xmlns:gml="http://www.opengis.net/gml/3.2"
+xmlns:topp="http://www.openplans.org/topp"
+xmlns:wfs="http://www.opengis.net/wfs/2.0">
+<topp:states gml:id="states.1">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>-91 36</gml:lowerCorner>
+<gml:upperCorner>-87 42</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+<gml:Polygon>
+<gml:exterior>
+<gml:LinearRing>
+<gml:posList>-4.0715 22.51099 -102.145 17.222</gml:posList>
+</gml:LinearRing>
+</gml:exterior>			
+</gml:Polygon>
+</topp:the_geom>
+</topp:states>
+</wfs:member>;	
+			
+			var feature:Feature = format.parseFeature(xml);	
+			var pf:PolygonFeature = feature as PolygonFeature;
+			var ns:String = "topp=\"http://www.openplans.org/topp\"";
+			var featureType:String = "states";
+			var geometryName:String = "the_geom";
+			
+			//Assert.assertNull("this element should be null",pf.polygon);
+			var xmlNode:XML = format.buildFeatureNode(feature, ns, featureType, geometryName);
+			
+		}		
+		
+		[Test]
+		public function TestBuildMultiPolygonNode():void{
+			var xml:XML = <wfs:member
+xmlns:gml="http://www.opengis.net/gml/3.2"
+xmlns:topp="http://www.openplans.org/topp"
+xmlns:wfs="http://www.opengis.net/wfs/2.0">
+<topp:states gml:id="states.1">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>-91.516129 36.986771000000005</gml:lowerCorner>
+<gml:upperCorner>-87.507889 42.50936100000001</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+	<topp:the_geom>
+	<gml:MultiSurface srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+				
+	<gml:surfaceMember>
+		<gml:Polygon>
+			<gml:exterior>
+			<gml:LinearRing>
+			<gml:posList>-88.07 37.51 -88.08 37.47 -88.311 37.442</gml:posList>
+			</gml:LinearRing>
+			</gml:exterior>
+			<gml:interior>
+			<gml:LinearRing>
+			<gml:posList>-28.071 27.51099 -58.0878 17.476273</gml:posList>
+			</gml:LinearRing>
+			</gml:interior>	
+			<gml:interior>
+			<gml:LinearRing>
+			<gml:posList>45.2356 -25.2599 -56.0809 72.00089</gml:posList>
+			</gml:LinearRing>
+			</gml:interior>		
+		</gml:Polygon>
+	</gml:surfaceMember>			
+	
+	<gml:surfaceMember>			
+		<gml:Polygon>
+			<gml:exterior>
+			<gml:LinearRing>
+			<gml:posList>-4.0715 22.51099 -102.145 17.222</gml:posList>
+			</gml:LinearRing>
+			</gml:exterior>			
+		</gml:Polygon>
+	</gml:surfaceMember>
+				
+	</gml:MultiSurface>
+	</topp:the_geom>
+</topp:states>
+</wfs:member>;			
+			
+			var feature:Feature = format.parseFeature(xml);	
+			var mpf:MultiPolygonFeature = feature as MultiPolygonFeature;
+			var mp:MultiPolygon = mpf.polygons;
+			var polygon:Polygon = mp.getcomponentsClone()[0] as Polygon;
+			
+			var ns:String = "topp=\"http://www.openplans.org/topp\"";
+			var featureType:String = "states";
+			var geometryName:String = "the_geom";
+
+			Assert.assertEquals("There should be 3 LinearRings inside",3,polygon.getcomponentsClone().length);
+			var xmlNode:XML = format.buildFeatureNode(feature, ns, featureType, geometryName);
+			
+		}
+		
+		[Test]
+		public function TestBuildMultiPointNode():void{
+			var xml:XML = <wfs:member
+xmlns:gml="http://www.opengis.net/gml/3.2"
+xmlns:topp="http://www.openplans.org/topp"
+xmlns:wfs="http://www.opengis.net/wfs/2.0">
+<topp:tasmania_cities gml:id="tasmania_cities.2">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.617773828125 -41.6182861328125</gml:lowerCorner>
+<gml:upperCorner>147.617773828125 -41.6182861328125</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.617773828125 -41.6182861328125</gml:pos>
+</gml:Point>
+</gml:pointMember>
+<gml:pointMember>
+<gml:Point>
+<gml:pos>58.35168321968 -123.54576589999</gml:pos>
+</gml:Point>
+</gml:pointMember>				
+</gml:MultiPoint>
+</topp:the_geom>
+</topp:tasmania_cities>
+</wfs:member>;			
+			
+			var feature:Feature = format.parseFeature(xml);	
+			var mpf:MultiPointFeature = feature as MultiPointFeature;
+			var mp:MultiPoint = mpf.points;
+			var points:Vector.<Point> = mp.toVertices(); 
+			var ns:String = "topp=\"http://www.openplans.org/topp\"";
+			var featureType:String = "tasmania_cities";
+			var geometryName:String = "the_geom";
+			
+			Assert.assertEquals("there should be two points inside the multipoint",2, points.length);
+			var xmlNode:XML = format.buildFeatureNode(feature, ns, featureType, geometryName);
+			
+		}
 		
 	}
 	
