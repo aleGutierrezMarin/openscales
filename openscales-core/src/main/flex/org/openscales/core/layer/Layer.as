@@ -314,7 +314,7 @@ package org.openscales.core.layer {
 			// Is the input originator valid ?
 			if (! originator) 
 			{
-				trace("Layer.addOriginator: null originator not added");
+				Trace.debug("Layer.addOriginator: null originator not added");
 				return;
 			}
 			
@@ -324,14 +324,14 @@ package org.openscales.core.layer {
 			{
 				if (originator == this._originators[i]) 
 				{
-					trace("Layer.addOriginator: this originator is already registered");
+					Trace.debug("Layer.addOriginator: this originator is already registered");
 					return;
 				}
 			}
 			// If the constraint is a new constraint, register it
 			if (i == j) 
 			{
-				trace("Layer.addOriginator: add a new originator ");
+				Trace.debug("Layer.addOriginator: add a new originator ");
 				this._originators.push(originator);
 			}
 			// Event Originator_list_changed
