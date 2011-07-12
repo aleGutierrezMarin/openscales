@@ -50,13 +50,13 @@
 		</profile>
 	</profiles>
 	<modules>
+        <module>openscales-proj4as</module>
+		<module>openscales-geometry</module>
 		<module>openscales-core</module>
 		<module>openscales-core-flash-10.1</module>
 		<module>openscales-as-examples</module>
 		<module>openscales-fx-examples</module>
 		<module>openscales-fx</module>
-		<module>openscales-proj4as</module>
-		<module>openscales-geometry</module>
 		<module>openscales-viewer</module>
 	</modules>
 	<issueManagement>
