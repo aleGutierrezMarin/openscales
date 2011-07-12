@@ -28,6 +28,7 @@ package org.openscales.core
 	import org.openscales.core.i18n.provider.I18nJSONProvider;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.geometry.Geometry;
@@ -146,7 +147,7 @@ package org.openscales.core
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
-			this.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, layerProjectionChanged);
+//			this.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, layerProjectionChanged);
 			
 			Trace.stage = this.stage;
 			
@@ -1073,12 +1074,15 @@ package org.openscales.core
 				}						
 			}
 		}
+	
+		
+		
 		
 		/**
 		 * Call when a Layer has its projection changed.
 		 * If this layer is the baselayer, reproject other layers
 		 */
-		private function layerProjectionChanged(event:LayerEvent):void
+	/*	private function layerProjectionChanged(event:LayerEvent):void
 		{
 			var layer:Layer = event.target as Layer;
 			
@@ -1086,9 +1090,27 @@ package org.openscales.core
 			{
 				var i:int = 0;
 				var j:int = layers.length;
-				for(; i<j; ++j)
+				for(; i<j; ++i)
 				{
 					layers[i].redraw(true);
+				}
+			}
+		} */
+		public function redrawLayers():void
+		{
+			
+			var i:int = 0;
+			var j:int = layers.length;
+			for(; i<j; ++i)
+			{
+				if(layers[i] != this.baseLayer)
+				{
+					layers[i].redraw(true);
+					
+					if( layers[i] is WMTS)
+					{
+						(layers[i] as WMTS).initGriddedTiles(this.extent);
+					}
 				}
 			}
 		}
