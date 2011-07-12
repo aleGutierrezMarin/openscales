@@ -48,6 +48,7 @@ package org.openscales.core.layer.ogc
 		private var _projection:String = Geometry.DEFAULT_SRS_CODE;
 		private var _useCapabilities:Boolean = false;
 		private var _loadingCapabilities:Boolean = false;
+		private var _req:XMLRequest = null;
 		/**
 		 * Constructor
 		 * 
@@ -94,11 +95,15 @@ package org.openscales.core.layer.ogc
 		private function getCapabilities():void {
 			if(!this.tileMatrixSets && !this._loadingCapabilities)
 			{
+				if(_req) {
+					_req.destroy();
+					_req = null;
+				}
 				this._loadingCapabilities = true;
-				var req:XMLRequest = new XMLRequest(this._url+"?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities", loadEnd, onFailure);
+				_req = new XMLRequest(this._url+"?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities", loadEnd, onFailure);
 				if(this.proxy)
-					req.proxy = this.proxy;
-				req.send();
+					_req.proxy = this.proxy;
+				_req.send();
 			}
 		}
 		
@@ -145,6 +150,10 @@ package org.openscales.core.layer.ogc
 		 * @inheritDoc
 		 */
 		override public function destroy():void {
+			if(_req) {
+				_req.destroy();
+				_req = null;
+			}
 			if(this._tileProvider!=null) {
 				this._tileProvider.destroy();
 				this._tileProvider = null;

@@ -1049,12 +1049,16 @@ package org.openscales.core
 		 * and if so, MapEvent.LOAD_COMPLETE can be dispatched
 		 */
 		private function layerLoadHandler(event:LayerEvent):void {
+			
 			switch(event.type) {
 				case LayerEvent.LAYER_LOAD_START: {
 					this.loading = true;
 					break;
 				}	
 				case LayerEvent.LAYER_LOAD_END: {
+					
+					
+					
 					this.clearBitmapTransition();
 					
 					// check all layers 
