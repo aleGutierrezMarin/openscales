@@ -177,11 +177,19 @@ package org.openscales.core.layer.originator
 			}
 		}
 		
+		/**
+		 * @private
+		 * handle image loading end
+		 */
 		private function onLoadEnd(event:Event):void {
 			this._loading = false;
 			this._callback(this, event);
 		}
 		
+		/**
+		 * @private
+		 * handle image loading errors
+		 */
 		private function onLoadError(event:IOErrorEvent):void {
 			Trace.log("Originator image load failure: "+this.pictureUrl);
 		}
