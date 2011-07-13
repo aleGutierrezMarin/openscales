@@ -50,6 +50,8 @@ package org.openscales.core.layer.ogc {
 		[Embed(source="/assets/layer/capabilities/wmtscapabilities.xml",mimeType="application/octet-stream")]
 		private const SIMPLECAPABILITIES:Class;
 		
+		public function WMTSTest() {}
+		
 		[Before]
 		public function setUp():void
 		{

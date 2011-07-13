@@ -32,6 +32,8 @@ package org.openscales.core.layer.ogc.provider
 				"TILECOL":"20"     
 			};
 		
+		public function WMTSTileProviderTest() {}
+		
 		/**
 		 * This method test the exactitude of tile index calculation
 		 */ 

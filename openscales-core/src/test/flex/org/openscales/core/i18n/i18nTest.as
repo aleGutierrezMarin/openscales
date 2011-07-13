@@ -32,6 +32,7 @@ package org.openscales.core.i18n
 		private var _locale:Locale = Locale.getLocaleByKey("EN");
 		private var _frenchLocale:Locale = Locale.getLocaleByKey("FR");
 
+		public function i18nTest() {}
 		
 		[Before]
 		public function prepareResource():void

@@ -23,6 +23,8 @@ package org.openscales.map {
 		
 		private var _map:Map;
 		
+		public function PositioningTest() {}
+		
 		[Before]
 		public function setUpMap():void{
 			
