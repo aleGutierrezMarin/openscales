@@ -235,5 +235,53 @@ package org.openscales.core.layer.ogc {
 			assertTrue("Incorrect displayed", wmts.displayed);
 		}
 
+		
+		/**
+		 * Test if a map with a WMTS and a WMS with EPSG:2154 display all layers correctly even if 
+		 * WMTS has asynchronous behaviour
+		 * 
+		 * Given a map with a WMTS (as baselayer) and a WMS with Lambert projection
+		 * When the WMTS is loaded
+		 * Then the map contains the two layers and both are displayed
+		 * 
+		 */
+		[Test(async)] 
+		public function shouldDisplayLayersCorrectlyWithAWMTSBaselayerAndWMSWithLambert93Projection():void
+		{
+			// Given a map with a WMTS (as baselayer) and a WMS with Lambert projection
+			this._map = new Map();
+			this._map.size = new Size(256,256);
+			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
+			
+			var wmts:WMTS = new WMTS(NAME,REAL_URL,REAL_LAYER,REAL_MATRIX_SET_ID);
+			var wms:WMS = new WMS("wms", "http://openscales.org/geoserver/wms", "pg:ign_geopla_dep", null, "image/jpeg");
+			wms.version =  "1.3.0";
+			
+			this._map.addLayer(wmts);
+			this._map.addLayer(wms);
+			
+			// When the WMTS is loaded
+			wmts.addEventListener(TileEvent.TILE_LOAD_START,Async.asyncHandler(this,function(event:TileEvent,obj:Object):void{
+		
+				var map:Map = obj as Map;
+				assertNotNull("Inccorect Map", map); 
+				
+				// Then the map contains the two layers and both are displayed
+				assertEquals("Incorrect number of layers in the map", 2, map.layers.length);
+				assertNotNull("Inccorect baselayer type", (map.baseLayer as WMTS)); 
+				
+				assertNotNull("Inccorect layer 0 should be WMTS", (map.layers[0] as WMTS)); 
+				assertNotNull("Inccorect layer 1 should be WMS", (map.layers[1]  as WMS)); 
+				
+				assertTrue("Incorrect display value for the WMTS layer", map.layers[0].displayed);
+				assertTrue("Incorrect display value for the WMS layer", map.layers[1].displayed);
+				
+			},100,this._map,function(event:Event):void{
+				
+				fail("No request sent");
+			}));
+			
+		}
+		
 	}
 }
