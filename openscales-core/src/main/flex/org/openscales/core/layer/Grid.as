@@ -1,12 +1,15 @@
 package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
+	import flash.sampler.getInvocationCount;
+	import flash.sampler.getMemberNames;
+	
+	import mx.olap.aggregators.MaxAggregator;
 	
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
 	import org.openscales.core.basetypes.linkedlist.LinkedList;
 	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
-	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.params.IHttpParams;
@@ -48,6 +51,8 @@ package org.openscales.core.layer
 		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
 		
 		protected var _tileOrigin:Location = new Location(0,0,"EPSG:4326");
+		
+		private var _tileToRemove:ImageTile;
 		
 		/**
 		 * Create a new grid layer
@@ -185,10 +190,11 @@ package org.openscales.core.layer
 		}
 		
 		public function get tileWidth():Number {
-			if (this.tiled) {
+			/*if (this.tiled) {
 				return this._tileWidth;
 			} 
-			return map!=null?map.size.w:NaN;
+			return map!=null?map.size.w:NaN;*/
+			return this._tileWidth;
 		}
 		
 		public function set tileHeight(value:Number):void {
@@ -196,10 +202,11 @@ package org.openscales.core.layer
 		}
 		
 		public function get tileHeight():Number {
-			if (this.tiled) {
+			/*if (this.tiled) {
 				return this._tileHeight;
 			}
-			return map!=null?map.size.h:NaN;
+			return map!=null?map.size.h:NaN;*/
+			return this._tileHeight;
 		}	
 		
 		
@@ -229,21 +236,26 @@ package org.openscales.core.layer
 		
 		/**
 		 * Initialization singleTile
-		 *
+		 * This Method compute the intersection between the map extent, the layer maxExtent and the map maxExtent
+		 * to resquest the correct extent and build the grid to set up a single tile layer.
 		 * @param bounds
 		 */
 		public function initSingleTile(bounds:Bounds):void {
-			var center:Location = bounds.center;
-			var tileWidth:Number = bounds.width;
-			var tileHeight:Number = bounds.height;
-			this.tileWidth = this.map.size.w;
-			this.tileHeight = this.map.size.h;
-			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
-				center.lat - (tileHeight/2),
-				center.lon + (tileWidth/2),
-				center.lat + (tileHeight/2),
-				center.projSrsCode);
-			var ul:Location = new Location(tileBounds.left, tileBounds.top, tileBounds.projSrsCode);
+			var center:Location;
+			var geoTileWidth:Number;
+			var geoTileHeight:Number;
+			
+			bounds = this.maxExtent.getIntersection(bounds);
+			bounds = this.map.maxExtent.getIntersection(bounds);
+			
+			center= bounds.center;
+			geoTileWidth = bounds.width;
+			geoTileHeight = bounds.height;
+			var topLeftCorner:Location = new Location(bounds.left, bounds.top);
+			var bottomRightCorner:Location = new Location(bounds.right, bounds.bottom);
+			this.tileWidth = Math.round(geoTileWidth/this.map.resolution);
+			this.tileHeight = Math.round(geoTileHeight/this.map.resolution);
+			var ul:Location = new Location(bounds.left, bounds.top, bounds.projSrsCode);
 			var px:Pixel = this.map.getLayerPxFromLocation(ul);
 			
 			if(this._grid==null) {
@@ -252,15 +264,24 @@ package org.openscales.core.layer
 				this._grid[0][0] = null;
 			}
 			
-			var tile:ImageTile = this._grid[0][0];
-			if (!tile) {
-				tile = this.addTile(tileBounds, px);
-				tile.draw();
-				this._grid[0][0] = tile;
-			} else {
-				tile.moveTo(tileBounds, px);
-			}           
+			var tile:ImageTile = this.addTile(bounds, px);
+			tile.draw();
+			if ( this._grid[0][0] != null)
+			{
+				this._tileToRemove = this._grid[0][0];
+				tile.addEventListener(TileEvent.TILE_LOAD_END,this.removeTransitionTile);
+				
+			}
+			this._grid[0][0] = tile;         
 			this.removeExcessTiles(1,1);
+		}
+		
+		/**
+		 * 
+		 */
+		private function removeTransitionTile(event:TileEvent):void
+		{
+			this._tileToRemove.destroy();
 		}
 		
 		/**
@@ -442,7 +463,7 @@ package org.openscales.core.layer
 		public function removeTileMonitoringHooks(tile:ImageTile):void {
 		}
 		/**
-		 * This metod is called only when mapEvent.MOVE_END is thrown
+		 * This mOonly when mapEvent.MOVE_END is thrown
 		 */
 		public function moveGriddedTiles(bounds:Bounds):void {
 			var buffer:Number = this.buffer || 1;

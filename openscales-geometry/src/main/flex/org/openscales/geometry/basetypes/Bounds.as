@@ -374,6 +374,70 @@ package org.openscales.geometry.basetypes
 			return geom;
 		}
 		
+		/**
+		 * Use this method if you want to get the intersection between thoses Bounds 
+		 * and the given ones. Use intersectsBounds() before to avoid problem with 
+		 * empty intersections.
+		 * <p>
+		 * If the two Bounds are not in the same projection, they will be converted in
+		 * EPSG:4326 and the returned Bounds will be in EPSG:4326 too, don't forget to
+		 * reproject it with reprojectTo if you are not working with this projection.
+		 * </p>
+		 * 
+		 * @return The Bounds representing the intersection between thosesBounds and the
+		 * given ones. If the intersection is empty, the retuned Bounds will be empty with
+		 * EPSG:4326 projection if the two bounds are not in the same projection, or the
+		 * projection of the two bounds if they are in the same projection. 
+		 */
+		public function getIntersection(bounds:Bounds):Bounds{
+			
+
+			// Variable used of a reprojection is needed
+			var thisBounds:Bounds = this;
+			if (thisBounds.projSrsCode != bounds.projSrsCode)
+			{
+				thisBounds = thisBounds.reprojectTo("EPSG:4326");
+				bounds = bounds.reprojectTo("EPSG:4326");
+			}
+			
+			if (!(this.intersectsBounds(bounds)))
+			{
+				return new Bounds(0,0,0,0, thisBounds.projSrsCode);
+			}
+			
+			// Init the values with on of the bounds
+			var left:Number = bounds.left;
+			var right:Number = bounds.right;
+			var top:Number = bounds.top;
+			var bottom:Number = bounds.bottom;
+			
+			// Compute the left limit of the extent
+			if(thisBounds.left > bounds.left)
+			{
+				left = thisBounds.left;
+			}
+			
+			// Compute the right limit of the extent
+			if(thisBounds.right < bounds.right)
+			{
+				right = thisBounds.right;
+			}
+			
+			// Compute the top limit of the extent
+			if(thisBounds.top < bounds.top)
+			{
+				top = thisBounds.top;	
+			}
+			
+			// Compute the bottom limit of the extent
+			if(thisBounds.bottom > bounds.bottom)
+			{
+				bottom = thisBounds.bottom;
+			}
+			
+			return new Bounds(left,bottom, right, top, thisBounds.projSrsCode);
+		}
+		
 		
 		/**
 		 * Indicates the projection code.
