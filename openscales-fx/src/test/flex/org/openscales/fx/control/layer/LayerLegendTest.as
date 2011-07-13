@@ -1,7 +1,9 @@
 package org.openscales.fx.control.layer
 {
 	public class LayerLegendTest
-	{		
+	{
+		public function LayerLegendTest() {}
+		
 		[Before]
 		public function setUp():void
 		{

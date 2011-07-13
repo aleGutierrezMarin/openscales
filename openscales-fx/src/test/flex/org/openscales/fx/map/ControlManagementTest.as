@@ -8,6 +8,8 @@ package org.openscales.fx.map{
 		
 		private var control:Control;
 		
+		public function ControlManagementTest() {}
+		
 		[Test]
 		public function shouldContainControlAfterItIsAdded():void{
 			

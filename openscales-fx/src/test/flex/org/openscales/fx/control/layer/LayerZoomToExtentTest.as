@@ -28,6 +28,8 @@ package org.openscales.fx.control.layer
 		private const RESOLUTION:Number = 0.3515625;
 		private const PRECISION:Number = 1e-6;
 		
+		public function LayerZoomToExtentTest() {}
+		
 		[Before]
 		public function setUp():void
 		{
