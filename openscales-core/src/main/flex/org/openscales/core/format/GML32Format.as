@@ -215,7 +215,7 @@ package org.openscales.core.format
 				xmlNode.appendChild(this.buildLineStringNode(lineString));
 				
 			}else if (feature is MultiLineStringFeature){
-				var mlsNode:XML = new XML("<MultiLineString></MultiLineString>");
+				var mlsNode:XML = new XML("<MultiCurve></MultiCurve>");
 				mlsNode.setNamespace(gmlns);
 				mlsNode.@srsDimension = this.dim;
 				mlsNode.@srsName = this.projection;
@@ -223,8 +223,8 @@ package org.openscales.core.format
 				var mlsf:MultiLineStringFeature = feature as MultiLineStringFeature;
 				var mls:MultiLineString = mlsf.lineStrings as MultiLineString;
 				var lsVector:Vector.<Geometry> = mls.getcomponentsClone();
-				for(i = 0; i < mls.length; i++){
-					var lsMember:XML = new XML("<lineStringMember></lineStringMember>");
+				for(i = 0; i < mls.componentsLength; i++){
+					var lsMember:XML = new XML("<curveMember></curveMember>");
 					lsMember.setNamespace(gmlns);
 					lsMember.appendChild(this.buildLineStringNode(lsVector[i] as LineString));
 					mlsNode.appendChild(lsMember);					

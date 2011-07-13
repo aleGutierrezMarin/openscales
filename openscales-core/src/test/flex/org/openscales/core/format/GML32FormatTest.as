@@ -375,15 +375,24 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 </topp:the_geom>
 </topp:states>
 </wfs:member>;			
-			
+			/* tests readMultiLineString (MultiCurve) */
 			var feature:Feature = format.parseFeature(xml);	
 			Assert.assertTrue("this should be a multiLineString object", feature is MultiLineStringFeature);
 			var mlsf:MultiLineStringFeature = feature as MultiLineStringFeature;
+			Assert.assertTrue("this element should be a MultiLineString", mlsf.lineStrings is MultiLineString);
+			var ls:MultiLineString = mlsf.lineStrings;
+			Assert.assertEquals("there should be 2 lineStrings inside", 2, ls.componentsLength);
+			Assert.assertTrue("this element should be a LineString", ls.getcomponentsClone()[0] is LineString);
+			var lineStringOne:LineString = ls.getcomponentsClone()[0] as LineString;
+			Assert.assertTrue("this element should be a Point",lineStringOne.getPointAt(0) is Point);
+			var pointOne:Point = lineStringOne.getPointAt(0);
+			Assert.assertEquals("the x coord should be -102", -102, pointOne.x);
+			
 			var ns:String = "topp=\"http://www.openplans.org/topp\"";
 			var featureType:String = "states";
 			var geometryName:String = "the_geom";
 			
-		//	var xmlNode:XML = format.buildFeatureNode(mlsf, ns, featureType, geometryName);
+			var xmlNode:XML = format.buildFeatureNode(mlsf, ns, featureType, geometryName);
 			
 		}
 		
