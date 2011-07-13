@@ -20,6 +20,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
+	import org.openscales.geometry.basetypes.Bounds;
 	
 	public class GML32FormatTest
 	{
@@ -183,8 +184,8 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:states gml:id="states.1"> 
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>-91 36</gml:lowerCorner>
-<gml:upperCorner>-87 42</gml:upperCorner>
+<gml:lowerCorner>-58 17</gml:lowerCorner>
+<gml:upperCorner>-28 27</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
 <topp:the_geom>
@@ -230,8 +231,8 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:states gml:id="states.1">
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>-91 36</gml:lowerCorner>
-<gml:upperCorner>-87 42</gml:upperCorner>
+<gml:lowerCorner>-73 40</gml:lowerCorner>
+<gml:upperCorner>-10 42</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
 <topp:the_geom>
@@ -261,8 +262,8 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:states gml:id="states.1">
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>-91 36</gml:lowerCorner>
-<gml:upperCorner>-87 42</gml:upperCorner>
+<gml:lowerCorner>-74.0108375113659 40.70754683896324</gml:lowerCorner>
+<gml:upperCorner>-74.0108375113659 40.70754683896324</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
 <topp:the_geom>
@@ -282,8 +283,10 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			Assert.assertEquals("The first coordinate is incorrect",-74.0108375113659, p.x );
 			Assert.assertEquals("The second coordinate is incorrect",40.70754683896324, p.y );
 			
-		}
+		}	
 		
+		
+			
 		[Test]
 		public function TestBuildPointNode():void{
 			var xml:XML = <wfs:member
@@ -293,8 +296,8 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:states gml:id="states.1">
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>-91 36</gml:lowerCorner>
-<gml:upperCorner>-87 42</gml:upperCorner>
+<gml:lowerCorner>-74.0108375113659 40.70754683896324</gml:lowerCorner>
+<gml:upperCorner>-74.0108375113659 40.70754683896324</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
 <topp:the_geom>
@@ -324,8 +327,8 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:states gml:id="states.1">
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>-91 36</gml:lowerCorner>
-<gml:upperCorner>-87 42</gml:upperCorner>
+<gml:lowerCorner>-73 40</gml:lowerCorner>
+<gml:upperCorner>-10 42</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
 <topp:the_geom>
@@ -355,8 +358,8 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:states gml:id="states.1">
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>-91 36</gml:lowerCorner>
-<gml:upperCorner>-87 42</gml:upperCorner>
+<gml:lowerCorner>-442.145 19.099</gml:lowerCorner>
+<gml:upperCorner>24 122</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
 <topp:the_geom>
@@ -407,8 +410,8 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:states gml:id="states.1">
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>-91 36</gml:lowerCorner>
-<gml:upperCorner>-87 42</gml:upperCorner>
+<gml:lowerCorner>-102.145 17.222</gml:lowerCorner>
+<gml:upperCorner>-4.0715 22.51099</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
 <topp:the_geom>
@@ -443,8 +446,8 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:states gml:id="states.1">
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>-91.516129 36.986771000000005</gml:lowerCorner>
-<gml:upperCorner>-87.507889 42.50936100000001</gml:upperCorner>
+<gml:lowerCorner>-91.2356 36.51099</gml:lowerCorner>
+<gml:upperCorner>-88.07 41.222</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
 	<topp:the_geom>
@@ -459,12 +462,12 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			</gml:exterior>
 			<gml:interior>
 			<gml:LinearRing>
-			<gml:posList>-28.071 27.51099 -58.0878 17.476273</gml:posList>
+			<gml:posList>-90.071 39.51099 -89.0878 40.476273</gml:posList>
 			</gml:LinearRing>
 			</gml:interior>	
 			<gml:interior>
 			<gml:LinearRing>
-			<gml:posList>45.2356 -25.2599 -56.0809 72.00089</gml:posList>
+			<gml:posList>-91.2356 37.2599 -88.0809 38.00089</gml:posList>
 			</gml:LinearRing>
 			</gml:interior>		
 		</gml:Polygon>
@@ -474,7 +477,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 		<gml:Polygon>
 			<gml:exterior>
 			<gml:LinearRing>
-			<gml:posList>-4.0715 22.51099 -102.145 17.222</gml:posList>
+			<gml:posList>-89.0715 36.51099 -90.145 41.222</gml:posList>
 			</gml:LinearRing>
 			</gml:exterior>			
 		</gml:Polygon>
@@ -508,7 +511,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 <topp:tasmania_cities gml:id="tasmania_cities.2">
 <gml:boundedBy>
 <gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
-<gml:lowerCorner>147.617773828125 -41.6182861328125</gml:lowerCorner>
+<gml:lowerCorner>58.35168321968 -123.54576589999</gml:lowerCorner>
 <gml:upperCorner>147.617773828125 -41.6182861328125</gml:upperCorner>
 </gml:Envelope>
 </gml:boundedBy>
@@ -530,6 +533,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 </wfs:member>;			
 			
 			var feature:Feature = format.parseFeature(xml);	
+			var x:String = feature.name;
 			var mpf:MultiPointFeature = feature as MultiPointFeature;
 			var mp:MultiPoint = mpf.points;
 			var points:Vector.<Point> = mp.toVertices(); 
@@ -540,6 +544,74 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			Assert.assertEquals("there should be two points inside the multipoint",2, points.length);
 			var xmlNode:XML = format.buildFeatureNode(feature, ns, featureType, geometryName);
 			
+		}
+		
+		
+		[Test]
+		public function TestBuildFeatureCollectionNode():void{
+			var xml:XML =<wfs:FeatureCollection xmlns:sf="http://www.openplans.org/spearfish" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:wfs="http://www.opengis.net/wfs/2.0">
+<wfs:member>
+<sf:restricted gml:id="restricted.3">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#26713">
+<gml:lowerCorner>598239.5942270659 4916224.777098622</gml:lowerCorner>
+<gml:upperCorner>599657.4754089377 4917345.075533595</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<sf:the_geom>
+<gml:MultiSurface srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#26713">
+<gml:surfaceMember>
+<gml:Polygon>
+<gml:exterior>
+<gml:LinearRing>
+<gml:posList>598239.5942270659 4917334.785918331 599645.0893316591 4917345.075533595 599657.4754089377 4916247.277528859 598255.0195882423 4916224.777098622 598239.5942270659 4917334.785918331</gml:posList>
+</gml:LinearRing>
+</gml:exterior>
+</gml:Polygon>
+</gml:surfaceMember>
+</gml:MultiSurface>
+</sf:the_geom>
+<sf:cat>4</sf:cat>
+</sf:restricted>
+</wfs:member>
+<wfs:member>
+<sf:restricted gml:id="restricted.4">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#26713">
+<gml:lowerCorner>592250.9171658278 4916851.195066947</gml:lowerCorner>
+<gml:upperCorner>597086.9686143089 4921789.551205</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<sf:the_geom>
+<gml:MultiSurface srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#26713">
+<gml:surfaceMember>
+<gml:Polygon>
+<gml:exterior>
+<gml:LinearRing>
+<gml:posList>592316.9379796328 4921789.551205 595825.0954050707 4921744.536515899 595885.9596931553 4921724.645000904 595988.6597380087 4921687.164865309 596085.2476595924 4921639.762469891 596199.3035518276 4921572.496462965 596425.0407301437 4921395.970557282 596646.8773303393 4921175.924634823 596705.3044231973 4921085.024251698 596895.7087137242 4920764.209535123 597037.3181371056 4920411.356964448 597086.9686143089 4920134.155276274 597086.9455551769 4920123.465548163 595404.9389344064 4916851.195066947 595299.9499316034 4916886.386015123 595162.2497092936 4916933.814845423 594983.526128624 4917022.501919034 594829.906966761 4917102.010213899 594395.0453582691 4917391.676438842 594318.2555423079 4917440.593210369 594052.0932835294 4917582.785221043 593703.9205438099 4917824.291862512 593327.876386339 4918204.019530202 592902.7306171365 4918762.450187511 592799.5541783689 4918932.025310009 592746.4663403123 4919027.503578438 592681.9715953676 4919129.097605954 592425.6305890534 4919588.921377501 592354.4073250518 4919747.786211425 592321.8954023286 4919852.413886508 592250.9171658278 4920477.809486801 592252.310983779 4920771.012968304 592264.8066111131 4921269.605086448 592316.9379796328 4921789.551205</gml:posList>
+</gml:LinearRing>
+</gml:exterior>
+</gml:Polygon>
+</gml:surfaceMember>
+</gml:MultiSurface>
+</sf:the_geom>
+<sf:cat>3</sf:cat>
+</sf:restricted>
+</wfs:member>
+</wfs:FeatureCollection>;
+			
+			var features:Vector.<Feature> = new Vector.<Feature>();
+			var i:uint;
+			var memberList:XMLList = xml..*::member;
+			for(i = 0; i<memberList.length(); i++){
+			features[i] = format.parseFeature(memberList[i]);
+			}
+			
+			var ns:String = "sf=\"http://www.openplans.org/spearfish\""
+			var featureType:String = "restricted";
+			var geometryName:String = "the_geom";
+			
+			var featureCollection:XML = format.buildFeatureCollectionNode(features,ns,featureType,geometryName);
 		}
 		
 	}

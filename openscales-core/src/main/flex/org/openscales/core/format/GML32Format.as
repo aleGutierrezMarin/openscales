@@ -66,7 +66,7 @@ package org.openscales.core.format
 		private var sFXML:String   = "<wfs:member>";
 		private var lastInd:int    = 0;
 		//fps
-		private var allowedTime:Number = 10; /* 10 milisecondes */
+		private var allowedTime:Number = 10; /* 10 miliseconds */
 		private var startTime:Number = 0;
 		private var savedIndex:Number = 0;
 		private var sprite:Sprite = new Sprite();
@@ -104,210 +104,13 @@ package org.openscales.core.format
 			if(this.xmlString.indexOf(this.sFXML)!=-1){ /* if xmlString contains "<wfs:member>" */
 				var end:int = this.xmlString.indexOf(">",this.xmlString.indexOf(">")+1)+1; 
 				this.sXML = this.xmlString.slice(0,end); 
-				this.sprite.addEventListener(Event.ENTER_FRAME, this.readTimer); /* an event on a frame triggers the readTimer function */
+				this.sprite.addEventListener(Event.ENTER_FRAME, this.readTimer); 
 			} else { 
 				this.xmlString = null;
 			}
 			return null;
 		}
-		
-		/**
-		 * Creates a FeatureCollectionNode as a gml file
-		 * Contains multiple FeatureNodes
-		 * 
-		 */
-		
-		public function buildFeatureCollectionNode(featureCol:Vector.<Feature>, ns:String, featureType:String, geometryName:String):XML{
-
-			var i:uint;
-			var wfsns:Namespace = new Namespace("wfs","http://www.opengis.net/wfs/2.0");
-			var collectionNode:XML = new XML("<FeatureCollection></FeatureCollection>");
-			collectionNode.addNamespace(wfsns);
-			collectionNode.addNamespace(gmlns);
-			collectionNode.setNamespace(wfsns);
-			
-			for(i=0; i<featureCol.length; i++){
 				
-				/* calculate and add an Envelope for each wfs:member; create a buildEnvelope function*/
-				var wfsNode:XML = new XML("<member></member>");
-				wfsNode.setNamespace(wfsns);
-				var featureNode:XML = buildFeatureNode (featureCol[i],ns,featureType,geometryName);
-				wfsNode.appendChild(featureNode);
-				collectionNode.appendChild(wfsNode);
-				
-			}
-			return collectionNode;
-		}
-		
-		/**
-		 * Creates a FeatureNode as a gml file 
-		 * 
-		 */
-		
-		public function buildFeatureNode(feature:Feature, ns:String, featureType:String, geometryName:String):XML{
-			
-			var i:uint;
-			var nsName:String = ns.split("=")[0];
-			var nsURL:String = ns.split("\"")[1];
-			var geomns:Namespace = new Namespace(nsName, nsURL);
-			
-			var featureNode:XML = new XML("<"+featureType+"></"+featureType+">");
-			featureNode.addNamespace(geomns);
-			featureNode.setNamespace(geomns);
-			featureNode.addNamespace(gmlns);
-			
-			var xmlNode:XML = new XML ("<"+geometryName+"></"+geometryName+">"); 
-			xmlNode.setNamespace(geomns);
-			
-			featureNode.appendChild(xmlNode);
-			if(feature is PointFeature){
-				
-				var pf:PointFeature = feature as PointFeature;
-				var point:Point = pf.point as Point;
-				xmlNode.appendChild(this.buildPointNode(point));	
-			}else if(feature is PolygonFeature){
-				
-				var polygonFeature:PolygonFeature = feature as PolygonFeature;
-				var polygon:Polygon = polygonFeature.polygon;
-				xmlNode.appendChild(this.buildPolygonNode(polygon));
-				
-			}else if (feature is MultiPolygonFeature){
-				/* builds a MultiSurface tag with multiple surfaceMembers (polygons) inside */
-				
-				var multiSurfaceNode:XML = new XML("<MultiSurface></MultiSurface>");
-				multiSurfaceNode.setNamespace(gmlns);
-				multiSurfaceNode.@srsDimension = this.dim;
-				multiSurfaceNode.@srsName = this.projection;
-			
-				var mpf:MultiPolygonFeature = feature as MultiPolygonFeature;
-				var mp:MultiPolygon = mpf.polygons;
-				var polygonVector:Vector.<Geometry> = mp.getcomponentsClone();
-				
-				for(i=0; i<mp.componentsLength; i++){ /* create a subnode for each Polygon inside the multiSurface tag */
-					var surfaceMemberNode:XML = new XML("<surfaceMember></surfaceMember>");
-					surfaceMemberNode.setNamespace(gmlns);
-					surfaceMemberNode.appendChild(this.buildPolygonNode(polygonVector[i] as Polygon));
-					multiSurfaceNode.appendChild(surfaceMemberNode);
-				}
-				xmlNode.appendChild(multiSurfaceNode);
-				
-			}else if (feature is MultiPointFeature){
-				var multiPointNode:XML = new XML("<MultiPoint></MultiPoint>");
-				multiPointNode.setNamespace(gmlns);
-				multiPointNode.@srsDimension = this.dim;
-				multiPointNode.@srsName = this.projection;
-			
-				var multiPointFeature:MultiPointFeature = feature as MultiPointFeature;
-				var multiPoint:MultiPoint = multiPointFeature.points as MultiPoint;
-				var points:Vector.<Point> = multiPoint.toVertices();
-				for(i = 0; i < points.length; i++){
-					var pointMember:XML = new XML("<pointMember></pointMember>");
-					pointMember.setNamespace(gmlns);
-					pointMember.appendChild(this.buildPointNode(points[i]));
-					multiPointNode.appendChild(pointMember);					
-				}
-				xmlNode.appendChild(multiPointNode);
-				
-			}else if (feature is LineStringFeature){
-				
-				var lsf:LineStringFeature = feature as LineStringFeature;
-				var lineString:LineString = lsf.lineString as LineString;
-				xmlNode.appendChild(this.buildLineStringNode(lineString));
-				
-			}else if (feature is MultiLineStringFeature){
-				var mlsNode:XML = new XML("<MultiCurve></MultiCurve>");
-				mlsNode.setNamespace(gmlns);
-				mlsNode.@srsDimension = this.dim;
-				mlsNode.@srsName = this.projection;
-				
-				var mlsf:MultiLineStringFeature = feature as MultiLineStringFeature;
-				var mls:MultiLineString = mlsf.lineStrings as MultiLineString;
-				var lsVector:Vector.<Geometry> = mls.getcomponentsClone();
-				for(i = 0; i < mls.componentsLength; i++){
-					var lsMember:XML = new XML("<curveMember></curveMember>");
-					lsMember.setNamespace(gmlns);
-					lsMember.appendChild(this.buildLineStringNode(lsVector[i] as LineString));
-					mlsNode.appendChild(lsMember);					
-				}
-				xmlNode.appendChild(mlsNode);
-			}
-		
-			return featureNode; 
-		}
-		
-		
-		public function buildPointNode(point:Point):XML{
-			var pointNode:XML = new XML("<Point></Point>");
-			pointNode.setNamespace(gmlns);
-			pointNode.pos = String(point.x)+" "+String(point.y);
-			pointNode.children().setNamespace(gmlns);
-			pointNode.@srsDimension = this.dim;
-			pointNode.@srsName = this.projection;
-			return pointNode;
-		}
-		
-		public function buildLineStringNode(lineString:LineString):XML{
-			var i:uint;
-			var coord:Vector.<Number> = lineString.components;
-			var coordList:String = "";
-			for(i=0; i<coord.length; i++){
-				coordList+=String(coord[i]);
-				if (i!=coord.length)
-					coordList+=" ";
-			}
-			
-			var lineStringNode:XML = new XML("<LineString></LineString>");
-			lineStringNode.setNamespace(gmlns);
-			lineStringNode.posList=coordList;
-			lineStringNode.children().setNamespace(gmlns);
-			lineStringNode.@srsDimension = this.dim;
-			lineStringNode.@srsName = this.projection;
-			return lineStringNode;
-		}
-		
-		public function buildPolygonNode(polygon:Polygon):XML{
-			var i:uint;
-			var polygonNode:XML = new XML("<Polygon></Polygon>");
-			polygonNode.setNamespace(gmlns);
-		
-			var linearRings:Vector.<Geometry> = polygon.getcomponentsClone();
-			var exteriorRing:LinearRing = linearRings[0] as LinearRing;
-			var exteriorRingNode:XML = buildLinearRingNode("exterior",exteriorRing);
-			polygonNode.appendChild(exteriorRingNode);
-			
-			if(polygon.componentsLength> 1){/* if multiple LinearRings inside the Polygon => one is exterior and the others are interior*/
-				for(i=1; i<polygon.componentsLength; i++){ /* for each interior LinearRing*/
-					var interiorRing:LinearRing = linearRings[i] as LinearRing;
-					var interiorNode:XML = this.buildLinearRingNode("interior", interiorRing);
-					polygonNode.appendChild(interiorNode);
-					
-				}
-				
-			}
-			
-			return polygonNode;
-		}
-		
-		public function buildLinearRingNode(type:String, ring:LinearRing):XML{
-			var i:uint;
-			var ringNode:XML = new XML("<"+type+"></"+type+">");
-			ringNode.setNamespace(gmlns);
-			
-			var linearRingNode:XML = new XML("<LinearRing></LinearRing>");
-			linearRingNode.setNamespace(gmlns);
-			ringNode.appendChild(linearRingNode);
-
-			var coordList:String = "";
-			for(i=0; i<ring.components.length; i++)
-			{
-				coordList += String(ring.components[i]);
-				if (i != ring.componentsLength - 1)
-					coordList += " ";
-			}
-			linearRingNode.posList = coordList;
-			linearRingNode.children().setNamespace(gmlns);
-			return ringNode;
-		}
 		
 		
 		/**
@@ -658,6 +461,224 @@ package org.openscales.core.format
 		}
 		
 		/**
+		 * Creates a FeatureCollectionNode as a gml file
+		 * Contains multiple FeatureNodes
+		 * 
+		 */
+		
+		public function buildFeatureCollectionNode(featureCol:Vector.<Feature>, ns:String, featureType:String, geometryName:String):XML{
+			
+			var i:uint;
+			var wfsns:Namespace = new Namespace("wfs","http://www.opengis.net/wfs/2.0");
+			var collectionNode:XML = new XML("<FeatureCollection></FeatureCollection>");
+			collectionNode.addNamespace(wfsns);
+			collectionNode.addNamespace(gmlns);
+			collectionNode.setNamespace(wfsns);
+			
+			for(i=0; i<featureCol.length; i++){
+				var wfsNode:XML = new XML("<member></member>");
+				wfsNode.setNamespace(wfsns);
+				
+				var featureNode:XML = buildFeatureNode (featureCol[i],ns,featureType,geometryName);
+				wfsNode.appendChild(featureNode);
+				collectionNode.appendChild(wfsNode);
+				
+			}
+			return collectionNode;
+		}
+		
+		/**
+		 * Creates a FeatureNode as a gml file 
+		 * 
+		 */
+		
+		public function buildFeatureNode(feature:Feature, ns:String, featureType:String, geometryName:String):XML{
+			
+			var i:uint;
+			var nsName:String = ns.split("=")[0];
+			var nsURL:String = ns.split("\"")[1];
+			var geomns:Namespace = new Namespace(nsName, nsURL);
+			
+			var featureNode:XML = new XML("<"+featureType+"></"+featureType+">");
+			featureNode.addNamespace(geomns);
+			featureNode.setNamespace(geomns);
+			featureNode.addNamespace(gmlns);
+			featureNode.@id = feature.name;
+			featureNode.@id.setNamespace(gmlns);
+			
+			var xmlNode:XML = new XML ("<"+geometryName+"></"+geometryName+">"); 
+			xmlNode.setNamespace(geomns);
+			
+			featureNode.appendChild(xmlNode);
+			featureNode.insertChildBefore(xmlNode, this.buildEnvelopeNode(feature.geometry.bounds));
+			if(feature is PointFeature){
+				
+				var pf:PointFeature = feature as PointFeature;
+				var point:Point = pf.point as Point;
+				xmlNode.appendChild(this.buildPointNode(point));	
+			}else if(feature is PolygonFeature){
+				
+				var polygonFeature:PolygonFeature = feature as PolygonFeature;
+				var polygon:Polygon = polygonFeature.polygon;
+				xmlNode.appendChild(this.buildPolygonNode(polygon));
+				
+			}else if (feature is MultiPolygonFeature){
+				/* builds a MultiSurface tag with multiple surfaceMembers (polygons) inside */
+				
+				var multiSurfaceNode:XML = new XML("<MultiSurface></MultiSurface>");
+				multiSurfaceNode.setNamespace(gmlns);
+				multiSurfaceNode.@srsDimension = this.dim;
+				multiSurfaceNode.@srsName = this.projection;
+				
+				var mpf:MultiPolygonFeature = feature as MultiPolygonFeature;
+				var mp:MultiPolygon = mpf.polygons;
+				var polygonVector:Vector.<Geometry> = mp.getcomponentsClone();
+				
+				for(i=0; i<mp.componentsLength; i++){ /* create a subnode for each Polygon inside the multiSurface tag */
+					var surfaceMemberNode:XML = new XML("<surfaceMember></surfaceMember>");
+					surfaceMemberNode.setNamespace(gmlns);
+					surfaceMemberNode.appendChild(this.buildPolygonNode(polygonVector[i] as Polygon));
+					multiSurfaceNode.appendChild(surfaceMemberNode);
+				}
+				xmlNode.appendChild(multiSurfaceNode);
+				
+			}else if (feature is MultiPointFeature){
+				var multiPointNode:XML = new XML("<MultiPoint></MultiPoint>");
+				multiPointNode.setNamespace(gmlns);
+				multiPointNode.@srsDimension = this.dim;
+				multiPointNode.@srsName = this.projection;
+				
+				var multiPointFeature:MultiPointFeature = feature as MultiPointFeature;
+				var multiPoint:MultiPoint = multiPointFeature.points as MultiPoint;
+				var points:Vector.<Point> = multiPoint.toVertices();
+				for(i = 0; i < points.length; i++){
+					var pointMember:XML = new XML("<pointMember></pointMember>");
+					pointMember.setNamespace(gmlns);
+					pointMember.appendChild(this.buildPointNode(points[i]));
+					multiPointNode.appendChild(pointMember);					
+				}
+				xmlNode.appendChild(multiPointNode);
+				
+			}else if (feature is LineStringFeature){
+				
+				var lsf:LineStringFeature = feature as LineStringFeature;
+				var lineString:LineString = lsf.lineString as LineString;
+				xmlNode.appendChild(this.buildLineStringNode(lineString));
+				
+			}else if (feature is MultiLineStringFeature){
+				var mlsNode:XML = new XML("<MultiCurve></MultiCurve>");
+				mlsNode.setNamespace(gmlns);
+				mlsNode.@srsDimension = this.dim;
+				mlsNode.@srsName = this.projection;
+				
+				var mlsf:MultiLineStringFeature = feature as MultiLineStringFeature;
+				var mls:MultiLineString = mlsf.lineStrings as MultiLineString;
+				var lsVector:Vector.<Geometry> = mls.getcomponentsClone();
+				for(i = 0; i < mls.componentsLength; i++){
+					var lsMember:XML = new XML("<curveMember></curveMember>");
+					lsMember.setNamespace(gmlns);
+					lsMember.appendChild(this.buildLineStringNode(lsVector[i] as LineString));
+					mlsNode.appendChild(lsMember);					
+				}
+				xmlNode.appendChild(mlsNode);
+			}
+			
+			return featureNode; 
+		}
+		
+		
+		public function buildPointNode(point:Point):XML{
+			var pointNode:XML = new XML("<Point></Point>");
+			pointNode.setNamespace(gmlns);
+			pointNode.pos = String(point.x)+" "+String(point.y);
+			pointNode.children().setNamespace(gmlns);
+			pointNode.@srsDimension = this.dim;
+			pointNode.@srsName = this.projection;
+			return pointNode;
+		}
+		
+		
+		public function buildLineStringNode(lineString:LineString):XML{
+			var i:uint;
+			var coord:Vector.<Number> = lineString.components;
+			var coordList:String = "";
+			for(i=0; i<coord.length; i++){
+				coordList+=String(coord[i]);
+				if (i!=coord.length)
+					coordList+=" ";
+			}
+			
+			var lineStringNode:XML = new XML("<LineString></LineString>");
+			lineStringNode.setNamespace(gmlns);
+			lineStringNode.posList=coordList;
+			lineStringNode.children().setNamespace(gmlns);
+			lineStringNode.@srsDimension = this.dim;
+			lineStringNode.@srsName = this.projection;
+			return lineStringNode;
+		}
+		
+		public function buildPolygonNode(polygon:Polygon):XML{
+			var i:uint;
+			var polygonNode:XML = new XML("<Polygon></Polygon>");
+			polygonNode.setNamespace(gmlns);
+			
+			var linearRings:Vector.<Geometry> = polygon.getcomponentsClone();
+			var exteriorRing:LinearRing = linearRings[0] as LinearRing;
+			var exteriorRingNode:XML = buildLinearRingNode("exterior",exteriorRing);
+			polygonNode.appendChild(exteriorRingNode);
+			
+			if(polygon.componentsLength> 1){/* if multiple LinearRings inside the Polygon => one is exterior and the others are interior*/
+				for(i=1; i<polygon.componentsLength; i++){ /* for each interior LinearRing*/
+					var interiorRing:LinearRing = linearRings[i] as LinearRing;
+					var interiorNode:XML = this.buildLinearRingNode("interior", interiorRing);
+					polygonNode.appendChild(interiorNode);
+					
+				}
+				
+			}
+			
+			return polygonNode;
+		}
+		
+		public function buildLinearRingNode(type:String, ring:LinearRing):XML{
+			var i:uint;
+			var ringNode:XML = new XML("<"+type+"></"+type+">");
+			ringNode.setNamespace(gmlns);
+			
+			var linearRingNode:XML = new XML("<LinearRing></LinearRing>");
+			linearRingNode.setNamespace(gmlns);
+			ringNode.appendChild(linearRingNode);
+			
+			var coordList:String = "";
+			for(i=0; i<ring.components.length; i++)
+			{
+				coordList += String(ring.components[i]);
+				if (i != ring.componentsLength - 1)
+					coordList += " ";
+			}
+			linearRingNode.posList = coordList;
+			linearRingNode.children().setNamespace(gmlns);
+			return ringNode;
+		}
+		
+		public function buildEnvelopeNode(bounds:Bounds):XML{
+			var i:uint;
+			var boundNode:XML = new XML("<boundedBy></boundedBy>");
+			boundNode.setNamespace(gmlns);
+			var envNode:XML = new XML("<Envelope></Envelope>");
+			envNode.setNamespace(gmlns);
+			envNode.@srsDimension = this.dim;
+			envNode.@srsName = this.projection;
+			var low:String = String(bounds.left) +" "+ String(bounds.bottom);
+			var up:String = String(bounds.right) +" "+ String(bounds.top);
+			envNode.lowerCorner = low;
+			envNode.upperCorner = up;
+			boundNode.appendChild(envNode);
+			
+			return boundNode;
+		}
+		
+		/**
 		 * Generate a GML document object given a list of features.
 		 *
 		 * @param features List of features to serialize into an object.
@@ -889,13 +910,11 @@ package org.openscales.core.format
 			}
 			return path;
 		}
-		
-		
-		
+	
 		//Getters and Setters
 		
 		public function get extractAttributes():Boolean {
-			return this._extractAttributes; /* codé en dur = true */
+			return this._extractAttributes; 
 		}
 		
 		public function set extractAttributes(value:Boolean):void {
