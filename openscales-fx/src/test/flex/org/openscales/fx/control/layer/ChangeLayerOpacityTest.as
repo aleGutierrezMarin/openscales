@@ -24,6 +24,8 @@ package org.openscales.fx.control.layer
 		private var _layer1:Layer = null;
 		private var _opacity:ChangeLayerOpacity = null;
 		
+		public function ChangeLayerOpacityTest() {}
+		
 		[Before]
 		override public function setUp():void
 		{

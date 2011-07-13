@@ -1,7 +1,9 @@
 package org.openscales.fx.control.layer
 {
 	public class LayerMetadatasTest
-	{		
+	{
+		public function LayerMetadatasTest() {}
+		
 		[Before]
 		public function setUp():void
 		{

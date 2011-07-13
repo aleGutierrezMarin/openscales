@@ -22,6 +22,8 @@ package org.openscales.fx.control.layer
 		private var _layer3:Layer = null;
 		private var _position:ChangeLayerPosition = null;
 		
+		public function ChangeLayerPositionTest() {}
+		
 		[Before]
 		override public function setUp():void
 		{

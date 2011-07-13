@@ -22,6 +22,8 @@ package org.openscales.fx.control.layer
 		private var _layer1:Layer = null;
 		private var _visibility:ChangeLayerVisibility = null;
 		
+		public function ChangeLayerVisibilityTest() {}
+		
 		[Before]
 		override public function setUp():void
 		{
