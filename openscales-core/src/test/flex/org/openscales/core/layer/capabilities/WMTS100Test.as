@@ -9,6 +9,7 @@ package org.openscales.core.layer.capabilities
 	public class WMTS100Test
 	{
 		
+		public function WMTS100Test() {}
 		
 		[Test]
 		public function testRead():void 

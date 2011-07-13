@@ -16,6 +16,7 @@ package org.openscales.core
 		 */
 		private var _SPRINTF:RegExp;
 		
+		public function StringUtilsTest() {}
 
 		/**
 		 * Initial state.

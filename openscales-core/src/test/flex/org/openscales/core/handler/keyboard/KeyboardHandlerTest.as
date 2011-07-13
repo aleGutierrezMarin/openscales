@@ -27,6 +27,8 @@ package org.openscales.core.handler.keyboard
 		private var _event:KeyboardEvent;
 		private var _oldZoom:Number;
 		
+		public function KeyboardHandlerTest() {}
+		
 		[Before]
 		public function prepareResource():void
 		{
