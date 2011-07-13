@@ -16,7 +16,7 @@ package org.openscales.fx.control.layer
 		
 		private var _layerManager:LayerManager;
 		
-		public function LayerMetadatasTest() {}
+		public function LayerManagerTest() {}
 		
 		[Before]
 		override public function setUp():void
