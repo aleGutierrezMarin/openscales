@@ -32,6 +32,8 @@ package org.openscales.core.layer.ogc
 		private var _timer:Timer = null;
 		private const THICK_TIME:uint = 800;
 		
+		public function WMSTest() {}
+		
 		[Before]
 		public function setUp():void
 		{
