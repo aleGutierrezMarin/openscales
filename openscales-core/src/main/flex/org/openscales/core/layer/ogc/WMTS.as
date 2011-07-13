@@ -239,6 +239,7 @@ package org.openscales.core.layer.ogc
 		 */
 		public function set tileMatrixSet(value:String):void
 		{
+			var event:LayerEvent = null;
 			this._projection = "EPSG:4326";
 			
 			if(value && this._tileProvider) {
@@ -247,12 +248,15 @@ package org.openscales.core.layer.ogc
 				if(this._tileProvider.tileMatrixSets) {
 					var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(value) as TileMatrixSet;
 					
-					if(tms)
+					if(tms) {
 						_projection = tms.supportedCRS;
-
+						event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
+					}
 				}
 			}
 			this.generateResolutions();
+			if(this.map && event)
+				this.map.dispatchEvent(event);
 		}
 		
 		/**

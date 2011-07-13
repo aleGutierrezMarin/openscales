@@ -112,6 +112,12 @@ package org.openscales.core.events
 		 */ 
 		public static const POLY_LAYER_CHANGED:String="openscales.polylayerchanged";
 		
+		/**
+		 * Event type dispatched when the layer projection is changed
+		 */ 
+		public static const LAYER_PROJECTION_CHANGED:String="openscales.layerProjectionChanged";
+		
+		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{
 			this._layer = layer;

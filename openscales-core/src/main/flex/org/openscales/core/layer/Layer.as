@@ -549,12 +549,16 @@ package org.openscales.core.layer {
 		}
 		
 		public function set projSrsCode(value:String):void {
-			if(value != null)
+			var event:LayerEvent = null;
+			if(value != null){
 				this._projSrsCode = value.toUpperCase();
-			
-			if (this._autoResolution) {
+				event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
+			}
+			if(this._autoResolution){
 				this.generateResolutions();
 			}
+			if(this.map && event)
+				this.map.dispatchEvent(event);
 		}
 		
 		/**
