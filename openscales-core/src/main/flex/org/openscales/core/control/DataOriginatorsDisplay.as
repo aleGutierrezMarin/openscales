@@ -509,6 +509,7 @@ package org.openscales.core.control
 				var tmpOriginator:LinkedListOriginatorNode = this._currentOriginator;
 				
 				var i:uint = 0;
+				var max:uint = this._linkedList.size;
 				// if enought logo display logoNumber, else display the number max of logo in the list		
 				var j:uint = (listSize < this._logoNumber) ? listSize : this._logoNumber;
 				var currentPosition:Pixel = position;
@@ -521,7 +522,8 @@ package org.openscales.core.control
 					
 					// add new logos to display
 					i = 0;
-					while ( i<j) {
+					while ( i<j && max>0 ) {
+						--max;
 						if(!tmpOriginator.bitmap)
 							continue;
 						++i;
@@ -537,7 +539,8 @@ package org.openscales.core.control
 				{
 					// remove current logo from the scene
 					i = 0;
-					while ( i<j) {
+					while ( i<j && max<0 ) {
+						--max;
 						if(!tmpOriginator.bitmap)
 							continue;
 						++i;
@@ -565,7 +568,8 @@ package org.openscales.core.control
 					i = 0;		
 					tmpOriginator = this._currentOriginator;
 					i = 0;
-					while ( i<j) {
+					while ( i<j && max<0 ) {
+						--max;
 						if(!tmpOriginator.bitmap)
 							continue;
 						++i;
