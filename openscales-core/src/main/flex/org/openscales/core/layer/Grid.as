@@ -163,9 +163,6 @@ package org.openscales.core.layer
 			
 			var bounds:Bounds = this.map.extent.clone();
 			
-			if(bounds.projSrsCode.toUpperCase() != this.projSrsCode.toUpperCase())
-				bounds = bounds.reprojectTo(this.projSrsCode.toUpperCase());
-			
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw;
 			
 			var tilesBounds:Bounds = this.getTilesBounds();            
@@ -296,14 +293,15 @@ package org.openscales.core.layer
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
 			
-			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(this.map.baseLayer.projSrsCode);
+			
+			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projSrsCode);
 			
 			var viewSize:Size = this.map.size;
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
 				Math.max(1, 2 * this.buffer);
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
 				Math.max(1, 2 * this.buffer);
-			var extent:Bounds = this.maxExtent;
+			
 			var resolution:Number = this.map.resolution;
 			
 			var tilelon:Number = resolution * this.tileWidth;
@@ -422,6 +420,11 @@ package org.openscales.core.layer
 						testRow--;
 						break;
 				} 
+				
+				var gridx:int = this._grid.length;
+				
+				if(testRow < this._grid.length)
+					var gridy:int = this._grid[testRow].length;
 				
 				// if the test grid coordinates are within the bounds of the 
 				//  grid, get a reference to the tile.
