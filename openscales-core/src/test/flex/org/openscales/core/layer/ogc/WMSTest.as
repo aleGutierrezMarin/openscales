@@ -4,7 +4,7 @@ package org.openscales.core.layer.ogc
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	import flexunit.framework.Assert;
+	import org.flexunit.Assert;
 	
 	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.async.Async;
