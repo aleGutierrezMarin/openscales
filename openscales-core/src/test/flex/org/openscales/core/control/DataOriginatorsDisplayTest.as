@@ -23,15 +23,15 @@ package org.openscales.core.control
 			// create map
 			var _map:Map = new Map();
 			_map.size = new Size(1200, 700);
-			
+
 			// add layers
 			var mapnik:Mapnik = new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 			
 			// new originator for mapnik
-			var url:String = "url_originator";
-			var urlPicture:String = "url_picture_originator";
+			var url:String = "http://url_originator";
+			var urlPicture:String = "http://url_picture_originator";
 			var originator1:DataOriginator = new DataOriginator("originator", url, urlPicture);
 			mapnik.addOriginator(originator1);
 			
@@ -81,7 +81,6 @@ package org.openscales.core.control
 			Assert.assertTrue(containsOriginator1);
 			Assert.assertTrue(containsOriginator2);
 			Assert.assertTrue(containsOriginator3);
-			
 		}
 	}
 }

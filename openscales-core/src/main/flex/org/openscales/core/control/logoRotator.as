@@ -80,14 +80,14 @@ package org.openscales.core.control
 			if(this._ll.size>0) {
 				if(this._dn == null || this._dn == this._ll.tail) {
 					if(this._dn!=null)
-						this.removeChild(this._dn.bitmap());
+						this.removeChild(this._dn.bitmap);
 					this._dn = this._ll.head as LinkedListBitmapNode;
-					this.addChild(this._dn.bitmap());
+					this.addChild(this._dn.bitmap);
 				} else {
 					if(this._ll.size>1) {
-						this.removeChild(this._dn.bitmap());
+						this.removeChild(this._dn.bitmap);
 						this._dn = this._dn.nextNode as LinkedListBitmapNode;
-						this.addChild(this._dn.bitmap());
+						this.addChild(this._dn.bitmap);
 					}
 				}
 			}
@@ -101,7 +101,7 @@ package org.openscales.core.control
 				this._tm = null;
 			}
 			if(this._dn!=null) {
-				this.removeChild(this._dn.bitmap());
+				this.removeChild(this._dn.bitmap);
 				this._dn = null;
 			}
 			if(this._ll!=null) {

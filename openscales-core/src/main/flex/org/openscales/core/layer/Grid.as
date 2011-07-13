@@ -145,7 +145,7 @@ package org.openscales.core.layer
 				return null;
 			}else if(node is LinkedListBitmapNode) {
 				this.addTileCache(node);
-				return (node as LinkedListBitmapNode).bitmap();
+				return (node as LinkedListBitmapNode).bitmap;
 			}
 			return null;
 		}
