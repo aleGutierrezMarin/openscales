@@ -72,6 +72,7 @@
 			 */
 			public function layerChangeOpacity(event:LayerEvent):void 
 			{
+				if (this._layer == event.layer)
 					this._alpha = event.newOpacity*100;
 			}
 		]]>
