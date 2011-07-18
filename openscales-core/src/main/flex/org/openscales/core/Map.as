@@ -37,6 +37,7 @@ package org.openscales.core
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -83,9 +84,13 @@ package org.openscales.core
 		private var _bitmapTransition:Sprite;
 		private var _configuration:IConfiguration;
 		
+		private var _resolution:Number = 0;
+		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
 		
 		private var _cptGTween:uint = 0;
+		
+		private var _projection:String = Geometry.DEFAULT_SRS_CODE;
 		
 		
 		/**
@@ -146,13 +151,36 @@ package org.openscales.core
 			this.addChild(this._layerContainer);
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
-			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
+			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);
+			this.addEventListener(MapEvent.ZOOM_CHANGED,onZoomChanged);
 //			this.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, layerProjectionChanged);
 			
 			Trace.stage = this.stage;
 			
 			this.focusRect = false;// Needed to hide yellow rectangle around map when focused
 			this.addEventListener(MouseEvent.CLICK, onMouseClick); //Needed to prevent focus losing 
+		}
+		
+		/**
+		 * Projection of the Map
+		 * 
+		 */
+		public function get projection():String
+		{
+			return _projection;
+		}
+
+		public function set projection(value:String):void
+		{
+			_projection = value;
+		}
+
+		public function onZoomChanged(event:MapEvent):void
+		{
+			if (this.baseLayer != null)
+			{
+				this._resolution = this.baseLayer.resolutions[event.newZoom];
+			}	
 		}
 		
 		/**
@@ -203,6 +231,7 @@ package org.openscales.core
 			
 			if (isBaseLayer || (this.baseLayer == null)) {
 				this.baseLayer = layer;
+				this.zoomToResolution(this.resolution);
 			}
 			
 			if (redraw){
@@ -258,23 +287,40 @@ package org.openscales.core
 							if (this._layerContainerOrigin != null)
 								this._layerContainerOrigin = this._layerContainerOrigin.reprojectTo(newBaseLayer.projSrsCode);
 							
+
+							
 							oldExtent = null;
 							this.maxExtent = newBaseLayer.maxExtent;
 						}
 					}
 					
 					this._baseLayer = newBaseLayer;
+					this.resolution = Proj4as.unit_transform(this.projection, newBaseLayer.projSrsCode, this.resolution);
+					this._projection = this._baseLayer.projSrsCode; 
 					
 					var center:Location = this.center;
 					if (center != null) {
-						if (oldExtent == null) {
-							this.moveTo(center, this.zoom);
-						} else {
-							this.moveTo(oldExtent.center, this.getZoomForExtent(oldExtent));
+						if (this.resolution != 0)
+						{
+							this.zoomToResolution(this.resolution);
+						}else{
+							if (oldExtent == null) {
+								this.moveTo(center, this.zoom);
+							} else {
+								this.moveTo(oldExtent.center, this.getZoomForExtent(oldExtent));
+							}
 						}
 					} else {
-						// The map must be fully defined as soon as its baseLayer is defined
-						this.moveTo(this._baseLayer.maxExtent.center, this.getZoomForExtent(this._baseLayer.maxExtent));
+						
+						if (this.resolution != 0)
+						{
+							this.moveTo(this._baseLayer.maxExtent.center);
+							this.zoomToResolution(this.resolution);
+						}else
+						{
+							// The map must be fully defined as soon as its baseLayer is defined
+							this.moveTo(this._baseLayer.maxExtent.center, this.getZoomForExtent(this._baseLayer.maxExtent));
+						}
 					}
 					
 					this.dispatchEvent(new LayerEvent(LayerEvent.BASE_LAYER_CHANGED, newBaseLayer));
@@ -770,6 +816,11 @@ package org.openscales.core
 				if (baseLayer != null)
 				{
 					var targetResolution:Number = resolution;
+					if (this.projection != this.baseLayer.projSrsCode)
+					{
+						targetResolution = Proj4as.unit_transform(this.projection, this.baseLayer.projSrsCode, this.resolution);
+					}
+					
 					var bestZoomLevel:int = 0;
 					var bestRatio:Number = 0;
 					var i:int = Math.max(0, this.baseLayer.minZoomLevel);
@@ -786,6 +837,7 @@ package org.openscales.core
 						}
 					}
 					this.zoom = bestZoomLevel;
+					this._resolution = this.baseLayer.resolutions[this.zoom];
 				}
 			}
 		}
@@ -1128,6 +1180,7 @@ package org.openscales.core
 		public function set size(value:Size):void {
 			if (value) {
 				_size = value;
+				
 				this.graphics.clear();
 				this.graphics.beginFill(0xFFFFFF);
 				this.graphics.drawRect(0,0,this.size.w,this.size.h);
@@ -1255,11 +1308,13 @@ package org.openscales.core
 		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
 		 */
 		public function get resolution():Number {
-			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
+			//return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
+			return this._resolution;
 		}
 		
 		public function set resolution(value:Number):void
 		{
+			this._resolution = value;
 			this.zoomToResolution(value);
 		}
 		
