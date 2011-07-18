@@ -124,7 +124,7 @@ package org.openscales.core.layer
 		public function shouldSetAlpha():void
 		{
 			// Given a Layer and a number value
-			var layer:Layer = new Layer("WFS layer");
+			var layer:Layer = new Layer("layer");
 			var alpha:Number = 0.43;
 			
 			// When the alpha is set
@@ -143,7 +143,7 @@ package org.openscales.core.layer
 		public function shouldSetMinimumAlpha():void
 		{
 			// Given a Layer and a number value under 0
-			var layer:Layer = new Layer("WFS layer");
+			var layer:Layer = new Layer("layer");
 			var alpha:Number = -5;
 			
 			// When the opacity is set
@@ -160,7 +160,7 @@ package org.openscales.core.layer
 		public function shouldSetMaximumAlpha():void
 		{
 			// Given a Layer and a number value higher than 1
-			var layer:Layer = new Layer("WFS layer");
+			var layer:Layer = new Layer("layer");
 			var alpha:Number = 5;
 			
 			// When the opacity is set
