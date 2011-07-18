@@ -677,9 +677,14 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * opacity of the layer
+		 * opacity of the layer (between 0 and 1)
 		 */
 		override public function set alpha(value:Number):void{
+			
+			if(value < 0)
+				value = 0;
+			if(value > 1)
+				value = 1;
 			
 			var event:LayerEvent = new LayerEvent(LayerEvent.LAYER_OPACITY_CHANGED, this);
 			event.oldOpacity = this.alpha;
