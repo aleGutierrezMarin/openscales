@@ -57,7 +57,7 @@ package org.openscales.core.handler
 			// Associate the handler and the input map
 			this._map = value;
 			if (this.map) {
-				this.map.addHandler(this);
+				this.map.addControl(this);
 			}
 			// If the handler is active, register its listeners
 			if (this._active) {

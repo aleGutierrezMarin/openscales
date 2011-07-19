@@ -352,7 +352,7 @@ package org.openscales.core
 		 * This function should only be called by the Handler.map setter !
 		 *  
 		 * @param handler the handler to add.
-		 */
+		 *//*
 		public function addHandler(handler:IHandler):void {
 			// Is the input handler valid ?
 			if (! handler) {
@@ -388,7 +388,7 @@ package org.openscales.core
 				this._handlers.push(handler);
 				//handler.map = this; // this is done by the Handler.map setter
 			}
-		}
+		}*/
 		
 		/**
 		 * Unregister a handler as one of the handlers of the map.
@@ -1549,31 +1549,50 @@ package org.openscales.core
 		 *  parameter may be for example set to false when adding a Flex component displayed
 		 *  outside the map.
 		 */
-		public function addControl(control:IControl, attach:Boolean=true):void {
+		public function addControl(control:IHandler, attach:Boolean=true):void {
+			
 			// Is the input control valid ?
-			if (! control) {
+			if (!control) {
 				Trace.warn("Map.addControl: null control not added");
 				return;
+			}
+			
+			if (!(control is IControl)) {
+				// control is an IHandler
+				// If no map is defined, define this one as the map
+				if (!control.map) {
+					control.map = this;
+				} else if (control.map != this) {
+					Trace.error("Map.addControl: handler not added because it is associated to an other map");
+					return;
+				}
 			}
 			
 			var i:uint = 0;
 			var j:uint = this._controls.length;
 			for (; i<j; ++i) {
 				if (control == this._controls[i]) {
-					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
+					Trace.warn("Map.addControl: this control is already registered (" + getQualifiedClassName(control) + ")");
+					return;
+				}
+				// if control is an IHandler
+				if (!(control is IControl) && (getQualifiedClassName(control) == getQualifiedClassName(this._controls[i]))) {
+					Trace.warn("Map.addControl: an other handler is already registered for " + getQualifiedClassName(control));
 					return;
 				}
 			}
+			
 			// If the control is a new control, register it
 			if (i == j) {
-				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
+				Trace.log("Map.addControl: add a new control " + getQualifiedClassName(control));
 				this._controls.push(control);
 				
-				control.map = this;
-				
-				control.draw();
-				if (attach) {
-					this.addChild(control as Sprite);
+				if (control is IControl) {
+					control.map = this;
+					(control as IControl).draw();
+					if (attach) {
+						this.addChild(control as Sprite);
+					}
 				}
 			}
 		}
