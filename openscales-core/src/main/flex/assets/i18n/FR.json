@@ -12,7 +12,7 @@
    "layercontrol.legend": "Afficher la légende",
    "layercontrol.zoomToExtent": "Zoomer sur l'emprise de la couche",
    
-   "layerswitcher.layers": "Couches",
+   "layerswitcher.title": "Couches",
 
    "tos.label": "Conditions d'utilisation",
    
