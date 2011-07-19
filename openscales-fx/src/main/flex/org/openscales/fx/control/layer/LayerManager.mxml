@@ -47,7 +47,7 @@
 			 * Title value for the Panel
 			 */
 			[Bindable]
-			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.layers');
+			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.title');
 			
 			
 			/**
@@ -104,7 +104,7 @@
 			 */
 			override public function onMapLanguageChange(event:I18NEvent):void 
 			{
-				panelTitle = Catalog.getLocalizationForKey('layerswitcher.layers');
+				panelTitle = Catalog.getLocalizationForKey('layerswitcher.title');
 			}
 			
 			/**
@@ -247,7 +247,7 @@
 	
 
 	
-	<s:Panel id="layerPanel" title="{this.panelTitle}" width="220" > 
+	<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" > 
 		<s:List id="layerList" 
 				dropEnabled="false"
 				dragEnabled="false"
@@ -260,7 +260,7 @@
 			<s:layout>
 				<s:VerticalLayout horizontalAlign="justify"
 								  variableRowHeight="true"
-								  requestedRowCount="4"/>
+								  requestedRowCount="4" />
 			</s:layout>
 		</s:List>
 	</s:Panel>
