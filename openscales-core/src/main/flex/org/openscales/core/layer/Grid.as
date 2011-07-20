@@ -245,6 +245,9 @@ package org.openscales.core.layer
 			bounds = this.maxExtent.getIntersection(bounds);
 			bounds = this.map.maxExtent.getIntersection(bounds);
 			
+			if(bounds.projSrsCode!=this.projSrsCode)
+				bounds = bounds.reprojectTo(this.projSrsCode);
+			
 			center= bounds.center;
 			geoTileWidth = bounds.width;
 			geoTileHeight = bounds.height;
