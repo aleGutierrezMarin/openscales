@@ -168,31 +168,26 @@ package org.openscales.geometry.basetypes
 		public function intersectsBounds(bounds:Bounds, inclusive:Boolean = true):Boolean {
 			
 			var tmpBounds:Bounds = bounds;
-			var tmpThis:Bounds = this;
-			
-			// Compare all in 4326
-			if(this.projSrsCode!=bounds.projSrsCode || this.projSrsCode != DEFAULT_PROJ_SRS_CODE)
-			{
-				tmpThis = tmpThis.reprojectTo(Bounds.DEFAULT_PROJ_SRS_CODE);
-				tmpBounds = tmpBounds.reprojectTo(Bounds.DEFAULT_PROJ_SRS_CODE);
+			if(this.projSrsCode!=tmpBounds.projSrsCode) {
+				tmpBounds= tmpBounds.reprojectTo(this.projSrsCode);
 			}
 			
-			var inBottom:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
-				true : (((tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top)) ||
-					((tmpThis.bottom > tmpBounds.bottom) && (tmpThis.bottom < tmpBounds.top)));
-			var inTop:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
-				true : (((tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top)) ||
-					((tmpThis.top > tmpBounds.bottom) && (tmpThis.top < tmpBounds.top)));
-			var inRight:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
-				true : (((tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right)) ||
-					((this.right > tmpBounds.left) && (tmpThis.right < tmpBounds.right)));
-			var inLeft:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
-				true : (((tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right)) ||
-					((this.left > tmpBounds.left) && (tmpThis.left < tmpBounds.right)));
+				var inBottom:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
+					true : (((tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top)) ||
+						((this.bottom > tmpBounds.bottom) && (this.bottom < tmpBounds.top)));
+				var inTop:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
+					true : (((tmpBounds.top > this.bottom) && (tmpBounds.top < this.top)) ||
+						((this.top > tmpBounds.bottom) && (this.top < tmpBounds.top)));
+				var inRight:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
+					true : (((tmpBounds.right > this.left) && (tmpBounds.right < this.right)) ||
+						((this.right > tmpBounds.left) && (this.right < tmpBounds.right)));
+				var inLeft:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
+					true : (((tmpBounds.left > this.left) && (tmpBounds.left < this.right)) ||
+						((this.left > tmpBounds.left) && (this.left < tmpBounds.right)));
 			
-			return (this.containsBounds(tmpBounds, true, inclusive) ||
-				tmpBounds.containsBounds(tmpThis, true, inclusive) ||
-				((inTop || inBottom ) && (inLeft || inRight )));
+				return (this.containsBounds(tmpBounds, true, inclusive) ||
+					tmpBounds.containsBounds(this, true, inclusive) ||
+					((inTop || inBottom ) && (inLeft || inRight )));
 		}
 		
 		/**
