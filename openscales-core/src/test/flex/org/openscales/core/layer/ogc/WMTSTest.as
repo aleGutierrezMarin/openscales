@@ -170,7 +170,7 @@ package org.openscales.core.layer.ogc {
 				assertTrue("Incorrect TILEMATRIXSET parameter", url.match('TILEMATRIXSET='+wmts.tileMatrixSet));
 				assertTrue("Incorrect STYLE parameter",url.match('STYLE='+wmts.style));
 				
-			},100,null,function(event:Event):void{
+			},100,null,function(obj:Object):void{
 				
 				fail("No request sent");
 			}));
@@ -276,7 +276,7 @@ package org.openscales.core.layer.ogc {
 				assertTrue("Incorrect display value for the WMTS layer", map.layers[0].displayed);
 				assertTrue("Incorrect display value for the WMS layer", map.layers[1].displayed);
 				
-			},100,this._map,function(event:Event):void{
+			},100,this._map,function(obj:Object):void{
 				
 				fail("No request sent");
 			}));
