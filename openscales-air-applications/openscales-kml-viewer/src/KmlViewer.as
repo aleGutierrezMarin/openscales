@@ -32,8 +32,8 @@ package
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 			
-			_map.addHandler(new DragHandler());
-			_map.addHandler(new WheelHandler());
+			_map.addControl(new DragHandler());
+			_map.addControl(new WheelHandler());
 			
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
