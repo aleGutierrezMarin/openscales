@@ -36,6 +36,8 @@ package org.openscales.fx.layer
 		protected var _proxy:String = null;
 		
 		protected var _fxmap:FxMap;
+
+		protected var _displayInLayerManager:Boolean = true;
 		
 		public function FxLayer() {
 			super();
@@ -378,5 +380,25 @@ package org.openscales.fx.layer
 				this._layer.tweenOnZoom;
 		}
 		
+		/**
+		 * Indicates if the layer should be displayed in the LayerSwitcher List or not
+		 * @default true
+		 */
+		public function get displayInLayerManager():Boolean 
+		{		
+			if(this.nativeLayer)
+				return this.nativeLayer.displayInLayerManager;
+			else return this._displayInLayerManager;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set displayInLayerManager(value:Boolean):void 
+		{
+			this._displayInLayerManager = value;
+			if(this.nativeLayer)
+				this.nativeLayer.displayInLayerManager = value;
+		}
 	}
 }

@@ -1,10 +1,15 @@
 package org.openscales.fx.control.layer
 {
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
 	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.asserts.fail;
+	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.fx.FxMap;
 	import org.openscales.fx.control.layer.LayerManager;
 	
 	public class LayerManagerTest extends OpenScalesTest
@@ -16,11 +21,14 @@ package org.openscales.fx.control.layer
 		
 		private var _layerManager:LayerManager;
 		
+		private var _timer:Timer;
+		private const THICK_TIME:uint = 800;
+		private var _handler:Function = null;
+		
 		public function LayerManagerTest() {}
 		
 		[Before]
-		override public function setUp():void
-		{
+		override public function setUp():void{
 			super.setUp();
 			
 			_map = new Map();
@@ -37,7 +45,19 @@ package org.openscales.fx.control.layer
 			_map.addControl(_layerManager);
 			
 			this._container.addElement(_layerManager);
+			
+			_timer = new Timer(THICK_TIME, 1);
 		}
+		
+		[After]
+		override public function tearDown():void{
+			super.tearDown();
+			if(this._handler!=null)
+				_timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
+			_timer.stop();
+			_timer=null;
+		}
+		
 		
 		/**
 		 * When a LayerSwicther is added to a map this control
@@ -141,7 +161,67 @@ package org.openscales.fx.control.layer
 		}
 		
 		/**
-		 * Test the setting of a rendererOptions object in the LayerManager
+		 * Validates that the layerManager display is synchronised with the layer idsplayInLayerManager value
 		 */
+		[Test(async)]
+		public function shouldSynchroniseWithDisplayInLayerManagerValues():void
+		{
+			// Given a fxmap with several layer (with displayInLayerManager property set to true or false)
+			// and a LayerManager control 
+
+			// When the layerManager is init :	
+			this._handler = Async.asyncHandler(this,assertSynchroniseWithDisplayInLayerManagerValues,1500,null, timeOut);
+			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this._handler, false, 0, true );
+			
+			this._timer.start();
+			
+		}
+		
+		private function assertSynchroniseWithDisplayInLayerManagerValues(event:TimerEvent, obj:Object):void
+		{
+			// Then the layerManager onshould have all layers
+			Assert.assertEquals("Incorrect number of layer in LayerManager", this._map.layers.length, this._layerManager.dataProvider.length);
+			
+			var i:int;
+			var j:int = this._map.layers.length-1;
+			
+			for(i=0; i<=j; ++i)
+			{
+				Assert.assertEquals("Incorrect layer in LayerManager",this._map.layers[j-i].name, (this._layerManager.dataProvider[i] as Layer).name);
+			}
+		}
+		
+		/**
+		 * Validates that the layerManager display updated when a layer has its displayInLayerManager property changed
+		 */
+		[Test(async)]
+		public function shouldUpdateWhenADisplayInLayerManagerValueChange():void
+		{
+			// given a map with layers and layerManager control
+			
+			// when the layer displayInLayerManager properties are changed :
+			this._layer1.displayInLayerManager = false;
+			this._layer2.displayInLayerManager = true;
+			this._layer3.displayInLayerManager = false;
+			
+			this._handler = Async.asyncHandler(this,assertUpdateWhenADisplayInLayerManagerValueChange,1500,null, timeOut);
+			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this._handler, false, 0, true );
+			
+			this._timer.start();
+		}
+		
+		private function assertUpdateWhenADisplayInLayerManagerValueChange(event:TimerEvent, obk:Object):void
+		{
+			// Then the layerManager only display the layer with the true value (layer 2)
+			Assert.assertEquals("Incorrect number of layer in LayerManager", 1, this._layerManager.dataProvider.length);
+			
+			Assert.assertEquals("Incorrect layer in LayerManager",this._layer2.name, (this._layerManager.dataProvider[0] as Layer).name);
+			
+		}
+		
+		private function timeOut():void
+		{
+			fail("Timer out");
+		}
 	}
 }

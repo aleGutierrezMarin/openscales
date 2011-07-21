@@ -69,7 +69,14 @@ package org.openscales.core.layer {
 		 * The list of originators for the layer.
 		 * @default null
 		 */
-		private var _originators:Vector.<DataOriginator> = null;
+		protected var _originators:Vector.<DataOriginator> = null;
+		
+		/**
+		 * @private
+		 * Indicates if the layer should be displayed in the LayerSwitcher List or not
+		 * @default true
+		 */
+		protected var _displayInLayerManager:Boolean = true;
 		
 		/**
 		 * Layer constructor
@@ -752,6 +759,30 @@ package org.openscales.core.layer {
 			if(this._map)
 			{
 				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
+			}
+		}
+		
+		/**
+		 * Indicates if the layer should be displayed in the LayerManager List or not
+		 * @default true
+		 */
+		public function get displayInLayerManager():Boolean 
+		{		
+			return this._displayInLayerManager;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set displayInLayerManager(value:Boolean):void 
+		{
+			if(value!=this._displayInLayerManager)
+			{
+				this._displayInLayerManager = value;
+				if(this._map)
+				{
+					this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED, this));
+				}
 			}
 		}
 	}

@@ -79,6 +79,7 @@ package org.openscales.core.control
 			this.map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_OPACITY_CHANGED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.layerUpdated);
+			this.map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED, this.layerUpdated);
 
 			super.destroy();
 		}
@@ -118,6 +119,7 @@ package org.openscales.core.control
 			this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.layerUpdated);
+			this.map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED, this.layerUpdated);
 		}
 
 		/**
@@ -182,7 +184,8 @@ package org.openscales.core.control
 				// Display baselayers
 				for(i=0;i<this.map.layers.length;i++) {
 					layer = this.map.layers[i] as Layer;
-					if(layer.isBaseLayer && !layer.isFixed) {
+					if(layer.isBaseLayer && !layer.isFixed && layer.displayInLayerManager) 
+					{
 						var radioButton:RadioButton;
 						if(i == 0)
 						{
@@ -274,7 +277,7 @@ package org.openscales.core.control
 				i=layerArray.length-1;
 				for(i;i>=0;--i) {
 					layer = layerArray[i];
-					if(!layer.isBaseLayer && !layer.isFixed) {
+					if(!layer.isBaseLayer && !layer.isFixed && layer.displayInLayerManager) {
 						if(_firstOverlays)
 						{
 							y+=this._textOffset-15;

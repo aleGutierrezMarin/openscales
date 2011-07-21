@@ -1,6 +1,8 @@
 package org.openscales.core.layer
 {
 	import org.flexunit.Assert;
+	import org.openscales.core.Map;
+	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.layer.originator.DataOriginator;
 
 	public class LayerTest
@@ -169,5 +171,26 @@ package org.openscales.core.layer
 			// Then the opacity parameter should be the maximum value : 1
 			Assert.assertEquals("Incorrect opacity value", 1, layer.alpha);
 		}
+		
+		/**
+		 * Validates that the displayInLayerManager param is correctly set
+		 */
+		[Test]
+		public function shouldSetDisplayInLayerManager():void
+		{
+			// Given a layer
+			var layer:Layer = new Layer("Layer");
+			
+			// the default value should be true
+			Assert.assertTrue("Incorect displayInLayerManager default value ", layer.displayInLayerManager);
+			
+			// When the displayInLayerManager value is changed to false
+			layer.displayInLayerManager = false;
+			
+			// Then the displayInLayerManager value should be false
+			Assert.assertFalse("Incorect displayInLayerManager value ", layer.displayInLayerManager);
+			
+		}
+		
 	}
 }
