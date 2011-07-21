@@ -127,7 +127,7 @@ package org.openscales.core.handler.feature.draw
 			
 			if (this.map != null){
 				
-				for each (var h:Handler in this.map.handlers){
+				for each (var h:Handler in this.map.controls){
 					if(h is DragHandler){
 						dragHandler = (h as DragHandler);
 					}
