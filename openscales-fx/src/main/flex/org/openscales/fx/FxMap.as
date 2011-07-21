@@ -396,7 +396,7 @@ package org.openscales.fx
 		/**
 		 * List of the controls linked to the map
 		 */
-		public function get controls():Vector.<IControl>
+		public function get controls():Vector.<IHandler>
 		{
 			// TODO : return a clone of the controls list
 			return this._map.controls;
