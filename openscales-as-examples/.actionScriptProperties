@@ -26,9 +26,8 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="WMS11xExample.as"/>
     <application path="OriginatorExample.as"/>
-    <application path="FlexUnitApplication.as"/>
+    <application path="WMS11xExample.as"/>
     <application path="OverviewMapRatioExample.as"/>
     <application path="OpenscalesApplication.as"/>
     <application path="WMS130Example.as"/>
