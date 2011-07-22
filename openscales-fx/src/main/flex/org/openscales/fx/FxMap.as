@@ -458,7 +458,7 @@ package org.openscales.fx
 		 * 	myMap.addControl(new geoportal.control.OverviewMap());
 		 * </listing>
 		 */
-		public function removeControl(control:Control):void
+		public function removeControl(control:IHandler):void
 		{
 			var test:Vector.<IVisualElement> = new Vector.<IVisualElement>();
 			
@@ -469,19 +469,16 @@ package org.openscales.fx
 			{
 				test.push(this.getElementAt(h));
 			}
-				
 			
-			// removeElement if added as Fxmap element
+			// removeElement if added as IVisualElement
 			var i:int = this.controls.indexOf(control);
-			if(i!=-1)
+			if (i != -1)
 			{
-				if((control as IVisualElement).parent == this){
+				if ((control as IVisualElement) && ((control as IVisualElement).parent == this)) {
 					this.removeElement(control as IVisualElement);
 				}
+				this._map.removeControl(control);
 			}
-			
-			this._map.removeControl(control);
-			
 		}
 	}
 }
