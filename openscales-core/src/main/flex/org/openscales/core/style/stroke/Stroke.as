@@ -33,7 +33,7 @@ package org.openscales.core.style.stroke
 		private var _linecap:String;
 		
 		private var _linejoin:String;
-		
+				
 		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND)
 		{
 			this._color = color;

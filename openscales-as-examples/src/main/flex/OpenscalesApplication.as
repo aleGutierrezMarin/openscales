@@ -7,13 +7,18 @@ package {
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.core.control.PanZoomBar;
 	import org.openscales.core.control.ScaleLine;
+	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
+	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.osm.CycleMap;
 	import org.openscales.core.layer.osm.Mapnik;
+	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
+	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -39,11 +44,16 @@ package {
 			_map.addLayer(cycle); 
 			
 			
-			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
-			regions.projSrsCode = "EPSG:2154";
-			regions.style = Style.getDefaultSurfaceStyle();
+			var features:FeatureLayer = new FeatureLayer('Features');			
+			var string:LineString = new LineString(new <Number>[2,48,4,45]);
+			string.projSrsCode = 'EPSG:4326';			
+			features.addFeature(new LineStringFeature(string));
 			
-			_map.addLayer(regions);
+			features.style = Style.getDefaultLineStyle();			
+			features.style.rules[0].symbolizers.push(new ArrowSymbolizer(ArrowSymbolizer.POSITION_BEGINNING));
+
+			
+			_map.addLayer(features);
 
 	
 			// Add Controls to map
