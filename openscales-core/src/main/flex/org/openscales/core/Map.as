@@ -67,8 +67,8 @@ package org.openscales.core
 		
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
-		private var _controls:Vector.<IControl> = new Vector.<IControl>();
-		private var _handlers:Vector.<IHandler> = new Vector.<IHandler>();
+		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
+		//private var _handlers:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _size:Size = null;
 		protected var _zoom:Number = 0;
 		private var _zooming:Boolean = false;
@@ -161,15 +161,15 @@ package org.openscales.core
 		public function reset():void {
 			this.removeAllLayers();
 			this.baseLayer = null;
-			
+			/*
 			if (this._handlers != null) {
 				for each(var handler:IHandler in this._handlers) {
 					this.removeHandler(handler);
 				}
 			}
-			
+			*/
 			if (this._controls != null) {
-				for each(var control:IControl in this._controls) {
+				for each(var control:IHandler in this._controls) {
 					this.removeControl(control);
 				}
 			}
@@ -352,7 +352,7 @@ package org.openscales.core
 		 * This function should only be called by the Handler.map setter !
 		 *  
 		 * @param handler the handler to add.
-		 */
+		 *//*
 		public function addHandler(handler:IHandler):void {
 			// Is the input handler valid ?
 			if (! handler) {
@@ -388,7 +388,7 @@ package org.openscales.core
 				this._handlers.push(handler);
 				//handler.map = this; // this is done by the Handler.map setter
 			}
-		}
+		}*/
 		
 		/**
 		 * Unregister a handler as one of the handlers of the map.
@@ -398,7 +398,7 @@ package org.openscales.core
 		 * This function should only be called by the Handler.map setter !
 		 * 
 		 * @param handler the handler to remove.
-		 */
+		 *//*
 		public function removeHandler(handler:IHandler):void {
 			var newHandlers:Vector.<IHandler> = new Vector.<IHandler>();
 			for each (var mapHandler:IHandler in this._handlers) {
@@ -410,7 +410,7 @@ package org.openscales.core
 				}
 			}
 			this._handlers = newHandlers;
-		}
+		}*/
 		
 		/**
 		 * @param {OpenLayers.Popup} popup
@@ -482,14 +482,15 @@ package org.openscales.core
 			
 			if(this.dragging)
 			{
+				// handlers changed to _controls
 				var i:int = 0;
-				var j:int = this.handlers.length;
+				var j:int = this._controls.length;
 				
 				for(; i<j; ++i)
 				{
-					if(this.handlers[i] is DragHandler && this.handlers[i].active)
+					if(this._controls[i] is DragHandler && this._controls[i].active)
 					{
-						var drag:DragHandler = this.handlers[i] as DragHandler;
+						var drag:DragHandler = this._controls[i] as DragHandler;
 						// stop the drag to pan the map to the current drag to apply the zoom at the correct place
 						drag.stopDrag();
 						// restart drag then
@@ -1169,16 +1170,16 @@ package org.openscales.core
 		/**
 		 * Map controls
 		 */
-		public function get controls():Vector.<IControl> {
+		public function get controls():Vector.<IHandler> {
 			return this._controls;
 		}
 		
 		/**
 		 * Map handlers
-		 */
+		 *//*
 		public function get handlers():Vector.<IHandler> {
 			return this._handlers;
-		}
+		}*/
 		
 		/**
 		 * Map container where layers are added. It is used for panning and scaling layers.
@@ -1549,31 +1550,51 @@ package org.openscales.core
 		 *  parameter may be for example set to false when adding a Flex component displayed
 		 *  outside the map.
 		 */
-		public function addControl(control:IControl, attach:Boolean=true):void {
+		// fusion avec addHandler
+		public function addControl(control:IHandler, attach:Boolean=true):void {
+			
 			// Is the input control valid ?
-			if (! control) {
+			if (!control) {
 				Trace.warn("Map.addControl: null control not added");
 				return;
+			}
+			
+			if (!(control is IControl)) {
+				// control is an IHandler
+				// If no map is defined, define this one as the map
+				if (!control.map) {
+					control.map = this;
+				} else if (control.map != this) {
+					Trace.error("Map.addControl: handler not added because it is associated to an other map");
+					return;
+				}
 			}
 			
 			var i:uint = 0;
 			var j:uint = this._controls.length;
 			for (; i<j; ++i) {
 				if (control == this._controls[i]) {
-					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
+					Trace.warn("Map.addControl: this control is already registered (" + getQualifiedClassName(control) + ")");
+					return;
+				}
+				// if control is an IHandler
+				if (!(control is IControl) && (getQualifiedClassName(control) == getQualifiedClassName(this._controls[i]))) {
+					Trace.warn("Map.addControl: an other handler is already registered for " + getQualifiedClassName(control));
 					return;
 				}
 			}
+			
 			// If the control is a new control, register it
 			if (i == j) {
-				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
+				Trace.log("Map.addControl: add a new control " + getQualifiedClassName(control));
 				this._controls.push(control);
 				
-				control.map = this;
-				
-				control.draw();
-				if (attach) {
-					this.addChild(control as Sprite);
+				if (control is IControl) {
+					control.map = this;
+					(control as IControl).draw();
+					if (attach) {
+						this.addChild(control as Sprite);
+					}
 				}
 			}
 		}
@@ -1583,7 +1604,8 @@ package org.openscales.core
 		 * 
 		 * @return true if the control controls this map, false otherwise
 		 */
-		public function hasControl(control:IControl):Boolean{
+		// changed
+		public function hasControl(control:IHandler):Boolean {
 			
 			return (this._controls.indexOf(control) != -1);
 		}
@@ -1593,15 +1615,23 @@ package org.openscales.core
 		 * If the control is not present on the map, nothing happens.
 		 * 
 		 */
-		public function removeControl(control:IControl):void {
+		// fusion avec removeHandler
+		public function removeControl(control:IHandler):void {
+			
 			var i:int = this._controls.indexOf(control);
-			if(i!=-1) {
+			if (i != -1) {
 				this._controls.splice(i,1);
 				
-				if((control as DisplayObject).parent == this){
-					this.removeChild(control as DisplayObject);
-				}				
-				control.destroy();
+				if (control is IControl) {
+					if ((control as DisplayObject).parent == this) {
+						this.removeChild(control as DisplayObject);
+					}
+					(control as IControl).destroy();
+				}
+				else {
+					control.active = false;
+					control.map = null;
+				}
 			}
 		}
 	}

@@ -56,11 +56,11 @@ package {
 			
 			
 			if(Multitouch.supportsGestureEvents) {
-				_map.addHandler(new ZoomGestureHandler());
-				_map.addHandler(new PanGestureHandler());
+				_map.addControl(new ZoomGestureHandler());
+				_map.addControl(new PanGestureHandler());
 			} else {
-				_map.addHandler(new DragHandler());
-				_map.addHandler(new WheelHandler());
+				_map.addControl(new DragHandler());
+				_map.addControl(new WheelHandler());
 			}
 			
 			

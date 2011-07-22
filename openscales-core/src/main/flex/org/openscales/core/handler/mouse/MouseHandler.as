@@ -135,10 +135,10 @@ package org.openscales.core.handler.mouse
 			
 			if(this.map)// Handler constructor calls "set map" with null value, need to check
 			{
-				this.map.addHandler(_clickHandler);
-				this.map.addHandler(_dragHandler);
-				this.map.addHandler(_wheelHandler);
-				this.map.addHandler(_zoomBoxHandler);
+				this.map.addControl(_clickHandler);
+				this.map.addControl(_dragHandler);
+				this.map.addControl(_wheelHandler);
+				this.map.addControl(_zoomBoxHandler);
 			}
 		}
 		
