@@ -21,6 +21,8 @@ package org.openscales.geometry.basetypes
 		private var _top:Number = 0.0;
 		private var _projSrsCode:String;
 		
+		public static var DEFAULT_PROJ_SRS_CODE:String = "EPSG:4326";
+		
 		/**
 		 * Class constructor
 		 *
@@ -164,26 +166,28 @@ package org.openscales.geometry.basetypes
 		 * @return If the bounds intersects current bounds or not.
 		 */
 		public function intersectsBounds(bounds:Bounds, inclusive:Boolean = true):Boolean {
+			
 			var tmpBounds:Bounds = bounds;
 			if(this.projSrsCode!=tmpBounds.projSrsCode) {
 				tmpBounds= tmpBounds.reprojectTo(this.projSrsCode);
 			}
-			var inBottom:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
-				true : (((tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top)) ||
-					((this.bottom > tmpBounds.bottom) && (this.bottom < tmpBounds.top)));
-			var inTop:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
-				true : (((tmpBounds.top > this.bottom) && (tmpBounds.top < this.top)) ||
-					((this.top > tmpBounds.bottom) && (this.top < tmpBounds.top)));
-			var inRight:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
-				true : (((tmpBounds.right > this.left) && (tmpBounds.right < this.right)) ||
-					((this.right > tmpBounds.left) && (this.right < tmpBounds.right)));
-			var inLeft:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
-				true : (((tmpBounds.left > this.left) && (tmpBounds.left < this.right)) ||
-					((this.left > tmpBounds.left) && (this.left < tmpBounds.right)));
 			
-			return (this.containsBounds(tmpBounds, true, inclusive) ||
-				tmpBounds.containsBounds(this, true, inclusive) ||
-				((inTop || inBottom ) && (inLeft || inRight )));
+				var inBottom:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
+					true : (((tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top)) ||
+						((this.bottom > tmpBounds.bottom) && (this.bottom < tmpBounds.top)));
+				var inTop:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
+					true : (((tmpBounds.top > this.bottom) && (tmpBounds.top < this.top)) ||
+						((this.top > tmpBounds.bottom) && (this.top < tmpBounds.top)));
+				var inRight:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
+					true : (((tmpBounds.right > this.left) && (tmpBounds.right < this.right)) ||
+						((this.right > tmpBounds.left) && (this.right < tmpBounds.right)));
+				var inLeft:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
+					true : (((tmpBounds.left > this.left) && (tmpBounds.left < this.right)) ||
+						((this.left > tmpBounds.left) && (this.left < tmpBounds.right)));
+			
+				return (this.containsBounds(tmpBounds, true, inclusive) ||
+					tmpBounds.containsBounds(this, true, inclusive) ||
+					((inTop || inBottom ) && (inLeft || inRight )));
 		}
 		
 		/**

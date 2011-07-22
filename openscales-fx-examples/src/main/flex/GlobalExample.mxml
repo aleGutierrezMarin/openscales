@@ -30,7 +30,7 @@
 			 	<rendererOptions>
 					<fx:Object
 						displayZoomToExtent="true" />
-				</rendererOptions>
+				</rendererOptions> 
 		</LayerManager>
 		
 		

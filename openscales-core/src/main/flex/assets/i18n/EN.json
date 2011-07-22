@@ -12,7 +12,7 @@
    "layercontrol.legend": "Display the legend",
    "layercontrol.zoomToExtent": "Zoom to the max extent of this layer",
 
-   "layerswitcher.layers": "Layers",
+   "layerswitcher.title": "Layers",
 
    "tos.label": "Terms of Service",
    
