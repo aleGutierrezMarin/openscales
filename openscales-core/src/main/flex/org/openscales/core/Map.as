@@ -68,7 +68,6 @@ package org.openscales.core
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
 		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
-		//private var _handlers:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _size:Size = null;
 		protected var _zoom:Number = 0;
 		private var _zooming:Boolean = false;
@@ -161,13 +160,7 @@ package org.openscales.core
 		public function reset():void {
 			this.removeAllLayers();
 			this.baseLayer = null;
-			/*
-			if (this._handlers != null) {
-				for each(var handler:IHandler in this._handlers) {
-					this.removeHandler(handler);
-				}
-			}
-			*/
+			
 			if (this._controls != null) {
 				for each(var control:IHandler in this._controls) {
 					this.removeControl(control);
@@ -343,74 +336,6 @@ package org.openscales.core
 				removeLayer(this.layers[i],false);
 			}
 		}
-				
-		/**
-		 * Register a handler as one of the handlers of the map.
-		 * The handler must have its map property setted to this before.
-		 * The handler is not automatically activated. If needed, you have to do
-		 * it by using the active setter of the handler.
-		 * This function should only be called by the Handler.map setter !
-		 *  
-		 * @param handler the handler to add.
-		 *//*
-		public function addHandler(handler:IHandler):void {
-			// Is the input handler valid ?
-			if (! handler) {
-				Trace.warn("Map.addHandler: null handler not added");
-				return;
-			}
-			
-			// If not map is defined, define this one as the map
-			if(!handler.map) {
-				handler.map = this;
-			} else if (handler.map != this) {
-				Trace.error("Map.addHandler: handler not added because it is associated to an other map");
-				return;
-			}
-			
-			// Is the input handler already registered ?
-			// Or an other handler of the same type ?
-			var i:uint = 0;
-			var j:uint = this.handlers.length;
-			for (; i<j; ++i) {
-				if (handler == this.handlers[i]) {
-					Trace.warn("Map.addHandler: this handler is already registered ("+getQualifiedClassName(handler)+")");
-					return;
-				}
-				if (getQualifiedClassName(handler) == getQualifiedClassName(this.handlers[i])) {
-					Trace.warn("Map.addHandler: an other handler is already registered for "+getQualifiedClassName(handler));
-					return;
-				}
-			}
-			// If the handler is a new handler, register it
-			if (i == j) {
-				Trace.log("Map.addHandler: add a new handler "+getQualifiedClassName(handler));
-				this._handlers.push(handler);
-				//handler.map = this; // this is done by the Handler.map setter
-			}
-		}*/
-		
-		/**
-		 * Unregister a handler as one of the handlers of the map.
-		 * The handler must have its map property setted null before or after.
-		 * The handler is not automatically deactivated. You have to do it by
-		 * using the active setter of the handler.
-		 * This function should only be called by the Handler.map setter !
-		 * 
-		 * @param handler the handler to remove.
-		 *//*
-		public function removeHandler(handler:IHandler):void {
-			var newHandlers:Vector.<IHandler> = new Vector.<IHandler>();
-			for each (var mapHandler:IHandler in this._handlers) {
-				if (mapHandler == handler) {
-					handler.active = false;
-					handler = null;
-				} else {
-					newHandlers.push(mapHandler);
-				}
-			}
-			this._handlers = newHandlers;
-		}*/
 		
 		/**
 		 * @param {OpenLayers.Popup} popup
@@ -482,7 +407,6 @@ package org.openscales.core
 			
 			if(this.dragging)
 			{
-				// handlers changed to _controls
 				var i:int = 0;
 				var j:int = this._controls.length;
 				
@@ -1168,20 +1092,6 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Map controls
-		 */
-		public function get controls():Vector.<IHandler> {
-			return this._controls;
-		}
-		
-		/**
-		 * Map handlers
-		 *//*
-		public function get handlers():Vector.<IHandler> {
-			return this._handlers;
-		}*/
-		
-		/**
 		 * Map container where layers are added. It is used for panning and scaling layers.
 		 */
 		public function get layerContainer():Sprite {
@@ -1541,16 +1451,19 @@ package org.openscales.core
 		}
 		
 		
-		// --- Control management -- //
+		// --- Control and Handler management -- //
 		/**
-		 * Add a new control to the map.
-		 *
-		 * @param control the control to add.
+		 * Add a new control to the map or register a handler as one of the handlers of the map.
+		 * The handler must have its map property setted to this before.
+		 * The handler is not automatically activated. If needed, you have to do
+		 * it by using the active setter of the handler.
+		 * For a handler, this function should only be called by the Handler.map setter !
+		 * 
+		 * @param control the control or handler to add.
 		 * @param attach if true, the control will be added as child component of the map. This
 		 *  parameter may be for example set to false when adding a Flex component displayed
 		 *  outside the map.
 		 */
-		// fusion avec addHandler
 		public function addControl(control:IHandler, attach:Boolean=true):void {
 			
 			// Is the input control valid ?
@@ -1600,22 +1513,25 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Detects if given control is linked to this map
+		 * Detects if given control or handler is linked to this map.
 		 * 
-		 * @return true if the control controls this map, false otherwise
+		 * @return true if the control or handler controls this map, false otherwise.
 		 */
-		// changed
 		public function hasControl(control:IHandler):Boolean {
 			
 			return (this._controls.indexOf(control) != -1);
 		}
 		
 		/**
-		 * Removes given control from the map. 
-		 * If the control is not present on the map, nothing happens.
+		 * Removes given control from the map or unregister given handler as one of the handlers of the map.
+		 * If the control or handler is not present on the map, nothing happens.
+		 * The handler must have its map property setted null before or after.
+		 * The handler is not automatically deactivated. You have to do it by
+		 * using the active setter of the handler.
+		 * For a handler, this function should only be called by the Handler.map setter !
 		 * 
+		 * @param control the control or handler to remove.
 		 */
-		// fusion avec removeHandler
 		public function removeControl(control:IHandler):void {
 			
 			var i:int = this._controls.indexOf(control);
@@ -1634,6 +1550,12 @@ package org.openscales.core
 				}
 			}
 		}
+		
+		/**
+		 * Map controls and handlers
+		 */
+		public function get controls():Vector.<IHandler> {
+			return this._controls;
+		}
 	}
 }
-
