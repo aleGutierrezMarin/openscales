@@ -10,14 +10,15 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.Format;
-	import org.openscales.core.format.GMLFormat;
 	import org.openscales.core.format.WFSFormat;
+	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.params.ogc.WFSParams;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
@@ -61,6 +62,7 @@ package org.openscales.core.layer.ogc
 		private var _fullRedraw:Boolean = false;
 		
 		protected var _wfsFormat:WFSFormat = null;
+		protected var _gmlFormat:GMLFormat = null;
 		
 		
 		/**
@@ -91,6 +93,7 @@ package org.openscales.core.layer.ogc
 			this.url = url;
 			this._capabilitiesVersion = version;
 			this._wfsFormat = new WFSFormat(this);
+			this._gmlFormat = new GMLFormat(this.addFeature,this.featuresids,true);
 		}
 		
 		
@@ -148,7 +151,10 @@ package org.openscales.core.layer.ogc
 				previousFeatureBbox = previousFeatureBbox.clone();
 			//bbox are mutually exclusive with filter and featurid
 			if(!_filter){
-				this.params.bbox = projectedBounds.toString();
+				if(this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode]!=ProjProjection.AXIS_ORDER_EN)
+					this.params.bbox = projectedBounds.toString(-1,false);
+				else
+					this.params.bbox = projectedBounds.toString();
 			}
 			if (this._firstRendering) {
 				this.featuresBbox = projectedBounds;
@@ -298,8 +304,20 @@ package org.openscales.core.layer.ogc
 		}
 		
 		public function parseResponse(wfsResponse:String):void{
-			
-			this._wfsFormat.read(wfsResponse);
+			switch (_capabilitiesVersion) {
+				case "1.0.0":
+					this._gmlFormat.version = "2.0";
+					break;
+				case "1.1.0":
+					this._gmlFormat.version = "3.1.1";
+					break;
+				default:
+					return;
+			}
+			this._gmlFormat.externalProjSrsCode = this.projSrsCode;
+			this._gmlFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
+			this._gmlFormat.read(wfsResponse);
+			//this._wfsFormat.read(wfsResponse);
 		}
 		
 		public function get featuresids():HashMap {
@@ -309,6 +327,8 @@ package org.openscales.core.layer.ogc
 		
 		
 		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
+			if(!feature)
+				return;
 			super.addFeature(feature,dispatchFeatureEvent, reproject);
 			if(feature.layer==null)
 				return;

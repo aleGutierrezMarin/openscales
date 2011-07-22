@@ -1,4 +1,4 @@
-package org.openscales.core.format
+package org.openscales.core.format.gml
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -18,6 +18,10 @@ package org.openscales.core.format
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.core.format.Format;
+	import org.openscales.core.format.gml.parser.GML2;
+	import org.openscales.core.format.gml.parser.GML311;
+	import org.openscales.core.format.gml.parser.GMLParser;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
@@ -30,6 +34,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 	
 	
 	/**
@@ -53,12 +58,16 @@ package org.openscales.core.format
 		
 		private var projectionxml:String = "srsName=\"http://www.opengis.net/gml/srs/epsg.xml#4326\"";
 		
+		private var _version:String = "2.0";
+		
+		private var _gmlParser:GMLParser = null;
+		
+		private var gml:Namespace = null;
+		
 		
 		private var xmlString:String;
 		private var sXML:String;
-		private var eXML:String    = "</gml:featureMember></wfs:FeatureCollection>";// it must not have reference at wfs in sthis class
-		private var eFXML:String   = "</gml:featureMember>";
-		private var sFXML:String   = "<gml:featureMember>";
+
 		private var lastInd:int    = 0;
 		//fps
 		private var allowedTime:Number = 10;
@@ -88,9 +97,37 @@ package org.openscales.core.format
 		 * @return features.
 		 */
 		override public function read(data:Object):Object {
+			
+			switch (this._version) {
+				case "2.0":
+					if(!this._gmlParser || !(this._gmlParser is GML2))
+						this._gmlParser = new GML2();
+					break;
+				case "3.1.1":
+					if(!this._gmlParser || !(this._gmlParser is GML311))
+						this._gmlParser = new GML311();
+					
+					var dataXML:XML = new XML(data);
+
+					var features:XMLList = dataXML..*::featureMembers;
+					if(features.length()!=1)
+						return null;
+					dataXML = features[0];
+					features = dataXML.children();
+					var lonlat:Boolean = true;
+					if(ProjProjection.projAxisOrder[this.externalProjSrsCode]!=ProjProjection.AXIS_ORDER_EN)
+						lonlat=false;
+					for each( dataXML in features) {
+						this._onFeature(this._gmlParser.parseFeature(dataXML,lonlat));
+					}
+					return null;
+					break;
+				default:
+					return null;
+			}
 			this.xmlString = data as String;
 			data = null;
-			if(this.xmlString.indexOf(this.sFXML)!=-1){
+			if(this.xmlString.indexOf(this._gmlParser.sFXML)!=-1){
 				var end:int = this.xmlString.indexOf(">",this.xmlString.indexOf(">")+1)+1;
 				this.sXML = this.xmlString.slice(0,end);
 				this.dim = 2;
@@ -113,7 +150,7 @@ package org.openscales.core.format
 				this.sprite.removeEventListener(Event.ENTER_FRAME,this.readTimer);
 				return;
 			}
-			this.lastInd = this.xmlString.indexOf(this.sFXML,this.lastInd);
+			this.lastInd = this.xmlString.indexOf(this._gmlParser.sFXML,this.lastInd);
 			if(this.lastInd==-1) {
 				this.sprite.removeEventListener(Event.ENTER_FRAME,this.readTimer);
 				return;
@@ -128,15 +165,25 @@ package org.openscales.core.format
 					return;
 				}
 				
-				end = this.xmlString.indexOf(eFXML,this.lastInd);
+				end = this.xmlString.indexOf(this._gmlParser.eFXML,this.lastInd);
 				if(end<0)
 					break;
-				xmlNode = new XML( this.sXML + this.xmlString.substr(this.lastInd,end-this.lastInd) + this.eXML )
-				this.lastInd = this.xmlString.indexOf(this.sFXML,this.lastInd+1);
-				if(this._featuresids.containsKey((xmlNode..@fid) as String))
-					continue;
+				xmlNode = new XML( this.sXML + this.xmlString.substr(this.lastInd,end-this.lastInd) + this._gmlParser.eXML )
+				this.lastInd = this.xmlString.indexOf(this._gmlParser.sFXML,this.lastInd+1);
+				switch (this._version) {
+					case "2.0":
+						if(this._featuresids.containsKey((xmlNode..@fid) as String))
+							continue;
+						break;
+					case "3.1.1":
+						if(this._featuresids.containsKey((xmlNode..@id) as String))
+							continue;
+						break;
+					default:
+						continue;
+				}
 				
-				feature = this.parseFeature(xmlNode);
+				feature = this._gmlParser.parseFeature(xmlNode);
 				if (feature) {
 					this._onFeature(feature, true, false);
 				}
@@ -174,199 +221,9 @@ package org.openscales.core.format
 			return boxNode;
 		}
 		
-		/**
-		 *    It creates the geometries that are then attached to the returned
-		 *    feature, and calls parseAttributes() to get attribute data out.
-		 * 
-		 *    Important note: All geom node names 'the_geom.*::' have been removed 
-		 * 	  until a config is implemented to be able to parse the geom nodes in a
-		 *    generic way. See Issue 185 for more info.
-		 *
-		 * @param node A XML feature node.
-		 *
-		 * @return A vetor of feature
-		 */
-		public function parseFeature(xmlNode:XML):Feature {
-			var geom:ICollection = null;
-			var p:Vector.<Number> = new Vector.<Number>();
-			
-			var feature:Feature = null;
-			
-			var i:int;
-			var j:int;
-			
-			if (xmlNode..*::MultiPolygon.length() > 0) {
-				var multipolygon:XML = xmlNode..*::MultiPolygon[0];
-				
-				geom = new MultiPolygon();
-				var polygons:XMLList = multipolygon..*::Polygon;
-				j = polygons.length();
-				for (i = 0; i < j; i++) {
-					var polygon:Polygon = this.parsePolygonNode(polygons[i]);
-					geom.addComponent(polygon);
-				}
-				feature = new MultiPolygonFeature(geom as MultiPolygon);
-			}
-            else if (xmlNode..*::MultiLineString.length() > 0) {
-				var multilinestring:XML = xmlNode..*::MultiLineString[0];
-				
-				geom = new MultiLineString();
-				var lineStrings:XMLList = multilinestring..*::LineString;
-				j = lineStrings.length();
-				
-				for (i = 0; i < j; ++i) {
-					p = this.parseCoords(lineStrings[i]);
-					if(p){
-						var lineString:LineString = new LineString(p);
-						geom.addComponent(lineString);
-					}
-				}
-				feature = new MultiLineStringFeature(geom as MultiLineString);
-			} else if (xmlNode..*::MultiPoint.length() > 0) {
-				var multiPoint:XML = xmlNode..*::MultiPoint[0];
-				
-				geom = new MultiPoint();
-				
-				var points:XMLList = multiPoint..*::Point;
-				j = points.length();
-				p = this.parseCoords(points[i]);
-				if (p)
-					geom.addPoints(p);
-				feature = new MultiPointFeature(geom as MultiPoint);
-				
-			} else if (xmlNode..*::Polygon.length() > 0) {
-				var polygon2:XML = xmlNode..*::Polygon[0];
-				feature = new PolygonFeature(this.parsePolygonNode(polygon2));
-			} else if (xmlNode..*::LineString.length() > 0) {
-				var lineString2:XML = xmlNode..*::LineString[0];
-				
-				p = this.parseCoords(lineString2);
-				if (p) {
-					geom = new LineString(p);
-				}
-				feature = new LineStringFeature(geom as LineString);
-			} else if (xmlNode..*::Point.length() > 0) {
-				var point:XML = xmlNode..*::Point[0];
-				var pointObject:Point; 
-				p = this.parseCoords(point);
-				if (p) {
-					pointObject = new Point(p[0],p[1]);
-					feature = new PointFeature(pointObject);
-				}
-			}else{
-				Trace.warn("GMLFormat.parseFeature: unrecognized geometry);"); 
-				return null; 
-			}
-			if (feature) {
-				feature.name = xmlNode..@fid;
-				
-				if (this.extractAttributes) {
-					feature.attributes = this.parseAttributes(xmlNode);
-				}    
-				//todo see if the feature is locked or can be modified
-				feature.isEditable = true;
-				return feature;
-				
-			} else {
-				return null;
-			}
-		}
 		
-		/**
-		 * Parse attributes
-		 *
-		 * @param node A XML feature node.
-		 *
-		 * @return An attributes object.
-		 */
-		public function parseAttributes(xmlNode:XML):Object {
-			var nodes:XMLList = xmlNode.children();
-			var attributes:Object = {};
-			var j:int = nodes.length();
-			var i:int;
-			for(i = 0; i < j; ++i) {
-				var name:String = nodes[i].localName();
-				var value:Object = nodes[i].valueOf();
-				if(name == null){
-					continue;    
-				}
-				
-				// Check for a leaf node
-				if((nodes[i].children().length() == 1)
-					&& !(nodes[i].children().children()[0] is XML)) {
-					attributes[name] = value.children()[0].toXMLString();
-				}
-				Util.extend(attributes, this.parseAttributes(nodes[i]));
-			}   
-			return attributes;
-		}
 		
-		/**
-		 * Given a GML node representing a polygon geometry
-		 *
-		 * @param node
-		 *
-		 * @return A polygon geometry.
-		 */
-		public function parsePolygonNode(polygonNode:Object):Polygon {
-			var linearRings:XMLList = polygonNode..*::LinearRing;
-			// Optimize by specifying the array size
-			var j:int = linearRings.length();
-			var rings:Vector.<Geometry> = new Vector.<Geometry>();
-			var i:int;
-			for (i = 0; i < j; i++) {
-				rings[i] = new LinearRing(this.parseCoords(linearRings[i]));
-			}
-			return new Polygon(rings);
-		}
 		
-		/**
-		 * Return an array of coords
-		 */ 
-		public function parseCoords(xmlNode:XML):Vector.<Number> {
-			var x:Number, y:Number, left:Number, bottom:Number, right:Number, top:Number;
-			
-			var points:Vector.<Number>  = new Vector.<Number>();
-			
-			if (xmlNode) {
-				
-				var coordNodes:XMLList = xmlNode.*::posList;
-				
-				if (coordNodes.length() == 0) { 
-					coordNodes = xmlNode.*::pos;
-				}    
-				
-				if (coordNodes.length() == 0) {
-					coordNodes = xmlNode.*::coordinates;
-				}    
-				
-				var coordString:String = coordNodes[0].text();
-				
-				var nums:Array = (coordString) ? coordString.split(/[, \n\t]+/) : [];
-				
-				while (nums[0] == "") 
-					nums.shift();
-				
-				var j:int = nums.length;
-				while (nums[j-1] == "") 
-					nums.pop();
-				
-				j = nums.length;
-				var i:int;
-				for(i = 0; i < j; i = i + this.dim) {
-					x = Number(nums[i]);
-					y = Number(nums[i+1]);
-					var p:Point = new Point(x, y);
-					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
-						p.transform(this.externalProjSrsCode, this.internalProjSrsCode);
-					}
-					points.push(p.x);
-					points.push(p.y);
-				}
-				return points
-			}
-			return points;
-		}
 		
 		/**
 		 * Generate a GML document object given a list of features.
@@ -620,6 +477,18 @@ package org.openscales.core.format
 			this._dim = value;
 		}
 		
+		/**
+		 * Indicates the GML version
+		 */
+		public function get version():String {
+			return this._version;
+		}
+		/**
+		 * @Private
+		 */
+		public function set version(value:String):void {
+			this._version = value;
+		}
 	}
 }
 

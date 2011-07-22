@@ -12,6 +12,7 @@ package org.openscales.core.format
 	import org.openscales.core.feature.State;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WFST.Transaction;
+	import org.openscales.core.format.gml.GMLFormat;
 	
 	/**
 	 * WFS writer extending GML format.
