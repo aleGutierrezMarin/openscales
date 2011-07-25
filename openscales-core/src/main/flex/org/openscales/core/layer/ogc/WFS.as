@@ -10,7 +10,6 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.Format;
-	import org.openscales.core.format.GMLFormat;
 	import org.openscales.core.format.WFSFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;

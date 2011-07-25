@@ -40,7 +40,7 @@ package org.openscales.core.layer.params.ogc
 
 			if (this._handle != null)
 				str += "HANDLE=" + this._handle + "&";
-
+			str += "outputFormat=text/xml; subtype=gml/3.2&";
 			return str.substr(0, str.length-1);
 		}
 

@@ -95,7 +95,7 @@ package org.openscales.geometry
 			if(componentslength<=0) return null;
 			else componentsClone=new Vector.<Geometry>(componentslength);
 			for(var i:int=0;i<componentslength;++i)	{
-				componentsClone.push((this._components[i]).clone());
+				componentsClone[i]=(this._components[i]).clone();
 			}
 			return componentsClone;
 		}
