@@ -99,7 +99,7 @@ package org.openscales.core.format
 		 * @return features.
 		 */
 		override public function read(data:Object):Object {
-			this.xmlString = data as String; /* data = the xml file */
+			this.xmlString = data as String; 
 			data = null;
 			if(this.xmlString.indexOf(this.sFXML)!=-1){ /* if xmlString contains "<wfs:member>" */
 				var end:int = this.xmlString.indexOf(">",this.xmlString.indexOf(">")+1)+1; 
@@ -187,6 +187,18 @@ package org.openscales.core.format
 			coodinateNode.appendChild(this.buildCoordinatesWithoutProjSrsCode(new <Number>[bound.left,bound.bottom,bound.right,bound.top]));			
 			boxNode.appendChild(coodinateNode); 
 			return boxNode;
+		}
+		
+		
+		public function parseGmlFile(xml:XML):Vector.<Feature>{
+			var featureVector:Vector.<Feature> = new Vector.<Feature>();
+			var membersList:XMLList = xml..*::member;
+			var i:uint;
+			for (i = 0; i < membersList.length(); i++){
+				featureVector[i] = parseFeature(membersList[i]);
+			}
+			
+			return featureVector;
 		}
 		
 		/**
@@ -679,6 +691,8 @@ package org.openscales.core.format
 		}
 		
 		/**
+		 * TODO refactor
+		 * 
 		 * Generate a GML document object given a list of features.
 		 *
 		 * @param features List of features to serialize into an object.
@@ -737,6 +751,8 @@ package org.openscales.core.format
 			
 		}
 		/**
+		 * TODO refactor
+		 * 
 		 * create a GML Object
 		 *
 		 * @param geometry

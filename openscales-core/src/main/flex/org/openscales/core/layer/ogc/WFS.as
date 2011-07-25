@@ -10,7 +10,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.Format;
-	import org.openscales.core.format.WFS2Format;
+	import org.openscales.core.format.WFSFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.params.ogc.WFSParams;
@@ -59,7 +59,7 @@ package org.openscales.core.layer.ogc
 		
 		private var _fullRedraw:Boolean = false;
 		
-		protected var _wfsFormat:WFS2Format = null;
+		protected var _wfsFormat:WFSFormat = null;
 		
 		
 		/**
@@ -87,7 +87,7 @@ package org.openscales.core.layer.ogc
 			
 			this.params = new WFSParams(typename);
 			this.url = url;
-			this._wfsFormat = new WFS2Format(this);
+			this._wfsFormat = new WFSFormat(this);
 		}
 		override public function destroy():void {
 			if(this._request)

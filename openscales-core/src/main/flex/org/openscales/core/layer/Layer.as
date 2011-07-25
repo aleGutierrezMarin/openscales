@@ -188,7 +188,7 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * Return a reference to the map where belong this layer
+		 * Return a reference to the map where this layer belongs
 		 */
 		public function get map():Map {
 			return this._map;

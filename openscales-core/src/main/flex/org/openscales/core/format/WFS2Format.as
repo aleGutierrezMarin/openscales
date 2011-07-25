@@ -27,6 +27,8 @@ package org.openscales.core.format
 		protected var _wfsprefix:String = "wfs";
 		
 		protected var _ogcns:String = "http://www.opengis.net/ogc";
+
+		protected var _fesns:String = "http://www.opengis.net/fes/2.0";
 		
 		protected var _ogcprefix:String = "ogc";
 		
@@ -42,7 +44,10 @@ package org.openscales.core.format
 		
 		protected var _collectionName:String = "FeatureCollection";
 		
-		protected var _version:String = "1.0.0";
+		protected var _version:String = "2.0.0";
+		
+		private var wfsNS:Namespace;
+		private var fesNS:Namespace;
 
 		/**
 		 * WFSFormat constructor
@@ -50,7 +55,7 @@ package org.openscales.core.format
 		 * @param layer
 		 */
 		public function WFS2Format(layer:WFS) {
-			super(layer.addFeature,layer.featuresids,true);
+			super(layer.addFeature,layer.featuresids,true); /* call GML32 constructor */
 			this.layer = layer;
 			if (layer.geometryColumn) {
 				this._geometryName = layer.geometryColumn;
@@ -59,6 +64,8 @@ package org.openscales.core.format
 			if (wfsLayer.typename) {
 				this._featureName = wfsLayer.typename;
 			}
+			wfsNS = new Namespace("wfs",this._wfsns);
+			fesNS = new Namespace("fes",this._fesns);
 		}
 
 		/**
@@ -67,6 +74,7 @@ package org.openscales.core.format
 		 * @param features
 		 */
 		override public function write(features:Object):Object {
+			
 			var transaction:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
 				"<" + this._wfsprefix + ":Transaction service=\"WFS\" version=\"" + this._version + "\"  " +
 				" xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" "                  +
@@ -78,6 +86,7 @@ package org.openscales.core.format
 				this.describeFeatureType +" \" " +
 				" xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\" >" +
 				"</" + this._wfsprefix + ":Transaction>");
+			
 			
 			for (var i:int=0; i < features.length; i++) {
 				switch (features[i].state) {
@@ -101,17 +110,21 @@ package org.openscales.core.format
 		 * @param feature A vectorfeature
 		 */
 		public function createFeatureXML(feature:Feature):XML {
-			var geometryNode:XML = this.buildGeometryNode(feature.geometry);
-			var geomContainer:XML = new XML("<" + this._featurePrefix + ":" + this._geometryName +
+			var geometryNode:XML = this.buildGeometryNode(feature.geometry); // or this.buildFeatureNode.children[1].children[0]
+			var geomContainer:XML = new XML("<" + this._featurePrefix + ":" + this._geometryName + 
+				//<topp:the_geom xmlns:topp="http://www.openplans.org/topp"/>; 
+				// same ns or _featurePrefix (topp) and same geometryName (the_geom) for all the features? 
 				" xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\">" +
 				"</" + this._featurePrefix + ":" + this._geometryName + ">");
 			
 			geomContainer.appendChild(geometryNode);
 			var featureContainer:XML = new XML("<"+ this._featureName + "" +
 				                               " xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\">" +
-											   "</" + this._featureName + ">");
+											   "</" + this._featureName + ">"); // WFS 2: add feature id (feature.name)
 			featureContainer.appendChild(geomContainer);
-			addAttributesInsert(featureContainer,feature);
+	
+			
+			addAttributesInsert(featureContainer,feature); 
 			return featureContainer;
 		}
 		
@@ -119,15 +132,15 @@ package org.openscales.core.format
 			var attr:String;
 			for(attr in feature.attributes) {
 				//todo change this oldway xmlnodes
-				var attrText:XMLNode = new XMLNode(2, feature.attributes[attr]); 
+				var attrText:XMLNode = new XMLNode(2, feature.attributes[attr]); // 1 or 3. why 2?
 				var nodename:String = attr;
 				if (attr.search(":") != -1) {
 					nodename = attr.split(":")[1];
 				}    
 				var attrContainer:XML = new XML("<" + this._featurePrefix + ":" + nodename +
 					" xmlns:" + this._featurePrefix + "=\"" + this._featureNS + "\">" +
-					"</" + this._featurePrefix + ":" + nodename + ">");
-				attrContainer.appendChild(attrText);
+					"</" + this._featurePrefix + ":" + nodename + ">");  
+				attrContainer.appendChild(attrText);// add the value
 				featureContainer.appendChild(attrContainer);
 			}    
 			
@@ -137,21 +150,22 @@ package org.openscales.core.format
 			var attr:String;
 			for(attr in feature.attributes) {
 				
-				//todo change this oldway xmlnodes
 				var attrText:XMLNode = new XMLNode(2, feature.attributes[attr]); 
 				var nodename:String = attr;
 				if (attr.search(":") != -1) {
 					nodename = attr.split(":")[1];
 				}   
-				if(nodename == "coordinates") continue;
-				var propertyNode:XML = new XML("<" + this._wfsprefix + ":Property xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" >" +
-					"</" + this._wfsprefix + ":Property>");
-				var nameNode:XML = new XML("<" + this._wfsprefix + ":Name xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" >" +
-					"</" + this._wfsprefix + ":Name>");
-				var valueNode:XML = new XML("<" + this._wfsprefix + ":Value xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" >" +
-					"</" + this._wfsprefix + ":Value>");
+				if(nodename == "pos" || nodename == "posList") continue; // not allowed to add coords node  ?; 
+				var propertyNode:XML = new XML("<Property></Property>");
+				propertyNode.setNamespace(wfsNS);
+				
+				var nameNode:XML = new XML("<ValueReference></ValueReferece>");
+				nameNode.setNamespace(wfsNS);
+				var valueNode:XML = new XML("<Value></Value>");
+				valueNode.setNamespace(wfsNS);
+				
 				nameNode.appendChild(nodename);
-				valueNode.appendChild(attrText);
+				valueNode.appendChild(attrText);// add the value for the node <Value>
 				propertyNode.appendChild(nameNode);
 				propertyNode.appendChild(valueNode)
 				featureContainer.appendChild(propertyNode);
@@ -165,10 +179,11 @@ package org.openscales.core.format
 		 * @param feature
 		 */
 		public function insert(feature:Feature):XML {
-			var insertNode:XML = new XML("<" + this._wfsprefix + ":Insert" +
-				" xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\">"  +
-				"</" + this._wfsprefix + ":Insert>");
-			insertNode.@handle = feature.name;
+			var insertNode:XML = new XML("<Insert></Insert>");
+			insertNode.addNamespace(wfsNS);
+			insertNode.setNamespace(wfsNS);
+			
+			insertNode.@handle = feature.name; // handle or id?
 			insertNode.appendChild(this.createFeatureXML(feature));
 			return insertNode;
 		}
@@ -178,17 +193,21 @@ package org.openscales.core.format
 		 *
 		 * @param feature
 		 */
-		public function update(feature:Feature):XML {
+		public function update(feature:Feature):XML { // calls addAttributesUpdate;
+			// what about changing the value of an attribute?
 			if (!feature.name) { Trace.error("Can't update a feature for which there is no FID."); }
 		
-			var updateNode:XML = new XML("<wfs:Update xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" ></wfs:Update>");
-			updateNode.@typeName = this._layer.typename;
-			updateNode.@handle = feature.name;
+			var updateNode:XML = new XML("<Update></Update>");
+			updateNode.addNamespace(wfsNS);
+			updateNode.setNamespace(wfsNS);
 			
-			var propertyNode:XML = new XML("<wfs:Property xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" ></wfs:Property>");
-			var nameNode:XML = new XML("<wfs:Name xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" >"
-				                       + this._geometryName 
-									   + "</wfs:Name>");
+			updateNode.@typeName = this._layer.typename;
+			updateNode.@handle = feature.name; // why "handle" instead of "id"?
+			
+			var propertyNode:XML = new XML("<Property></Property>");
+			propertyNode.setNamespace(wfsNS);
+			var nameNode:XML = new XML("<ValueReference></ValueReference>"); // the node whose value (content) will be updated
+			nameNode.appendChild(this._geometryName);
 			
 			propertyNode.appendChild(nameNode);
 			//TODO improve this
@@ -197,15 +216,17 @@ package org.openscales.core.format
 										+ "</wfs:Value>");
 			propertyNode.appendChild(valueNode);
 			updateNode.appendChild(propertyNode);
-			addAttributesUpdate(updateNode,feature);
+			addAttributesUpdate(updateNode,feature);// call in case you want to add NEW tags/attributes to the feature
 			
 			
-			var filterNode:XML = new XML("<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\" ></ogc:Filter>");
-			var filterIdNode:XML = new XML("<ogc:FeatureId xmlns:ogc=\"http://www.opengis.net/ogc\" ></ogc:FeatureId>");
-			filterIdNode.@fid = feature.name;
+			var filterNode:XML = new XML("<Filter></Filter>");
+			filterNode.addNamespace(fesNS);
+			filterNode.setNamespace(fesNS);
+			var filterIdNode:XML = new XML("<ResourceId></ResourceId>");
+			filterNode.setNamespace(fesNS);
+			filterIdNode.@rid = feature.name;
 			filterNode.appendChild(filterIdNode);
 			updateNode.appendChild(filterNode);
-			
 
 			return updateNode;
 		}
@@ -218,16 +239,20 @@ package org.openscales.core.format
 		public function remove(feature:Feature):XML {
 			//todo must be tested
 			if (!feature.attributes.fid) { 
-				Trace.error("Can't update a feature for which there is no FID."); 
+				Trace.error("Can't remove a feature for which there is no FID."); 
 				return null; 
 			}
-			var deleteNode:XML = new XML("<wfs:Delete></wfs:Delete>");
+			var deleteNode:XML = new XML("<Delete></Delete>");
+			deleteNode.setNamespace(wfsNS);
 			deleteNode.@handle = feature.name;
 			deleteNode.@typeName = this._layerName;
 
-			var filterNode:XML = new XML("<ogc:Filter></ogc:Filter>");
-			var filterIdNode:XML = new XML("<ogc:FeatureId></ogc:FeatureId>");
-			filterIdNode.@fid = feature.attributes.fid;
+			var filterNode:XML = new XML("<Filter></Filter>");
+			filterNode.addNamespace(fesNS);
+			filterNode.setNamespace(fesNS);
+			var filterIdNode:XML = new XML("<ResourceId></ResourceId>");
+			filterIdNode.setNamespace(fesNS);
+			filterIdNode.@rid = feature.attributes.fid;
 			filterNode.appendChild(filterIdNode);
 			deleteNode.appendChild(filterNode);
 
@@ -276,12 +301,12 @@ import org.openscales.core.feature.State;
 		
 		//if(xml.localName() != "WFS_TransactionResponse" ) return;
 		/**
-		 * in the specifiaction there are writed, the same order
+		 * there are written in the same order in the specification
 		 * */
 		var featureId:XMLList = xml..*::FeatureId;
 		var length:uint = featureId.length();
 		for(var i:uint = 0; i < length; ++i){
-			//update just the operation from this transaction and not the old
+			//update only the operation from this transaction and not the old
 			if(transactions[i].state == Transaction.NOTSEND){
 			if(xml.localName() != "ServiceExceptionReport" ) {
 			   if(featureId[i].@fid != "none" && transactions[i].feature.state == State.INSERT ){

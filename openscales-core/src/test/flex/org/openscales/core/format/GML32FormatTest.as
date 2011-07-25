@@ -6,6 +6,7 @@ package org.openscales.core.format
 	
 	import flexunit.framework.Assert;
 	
+	import org.openscales.core.Map;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
@@ -13,6 +14,8 @@ package org.openscales.core.format
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.core.layer.ogc.GML;
+	import org.openscales.core.style.Style;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiLineString;
@@ -21,10 +24,14 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Size;
 	
 	public class GML32FormatTest
 	{
 		private var format:GML32Format;
+		[Embed(source="/assets/GMLtest.xml",mimeType="application/octet-stream")]
+		private const GMLFILE:Class;
 		
 		[Before]
 		public function setUp():void
@@ -396,6 +403,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			var geometryName:String = "the_geom";
 			
 			var xmlNode:XML = format.buildFeatureNode(mlsf, ns, featureType, geometryName);
+		
 			
 		}
 		
@@ -612,7 +620,21 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			var geometryName:String = "the_geom";
 			
 			var featureCollection:XML = format.buildFeatureCollectionNode(features,ns,featureType,geometryName);
+			
 		}
+		
+		
+		[Test]
+		public function TestParseGML32Collection():void{
+			
+			var xml:XML = new XML(new GMLFILE());
+			var featureVector:Vector.<Feature> = format.parseGmlFile(xml);
+			var i:uint;
+			for (i = 0; i < featureVector.length; i++)
+			{
+				Assert.assertTrue("the component should be a LineStringFeature", featureVector[i] is LineStringFeature);
+			}
+		}	
 		
 	}
 	
