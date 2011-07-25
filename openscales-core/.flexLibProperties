@@ -210,6 +210,9 @@
     <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
     <classEntry path="org.openscales.map.ControlManagementTest"/>
     <classEntry path="org.openscales.core.format.GML32FormatTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.GML"/>
+    <classEntry path="org.openscales.core.filter.GeometryTypeFilter"/>
+    <classEntry path="org.openscales.core.filter.GeometryTypeFilterTest"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="assets/images/cursorCrosshair.swf" sourcePath="assets/images/cursorCrosshair.swf"/>

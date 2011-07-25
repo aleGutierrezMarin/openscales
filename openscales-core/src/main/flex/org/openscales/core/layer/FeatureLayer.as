@@ -15,7 +15,7 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
-	 * Layer that display features stored as child element
+	 * Layer that displays features stored as child element
 	 */
 	public class FeatureLayer extends Layer
 	{

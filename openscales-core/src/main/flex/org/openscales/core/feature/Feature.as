@@ -51,7 +51,7 @@ package org.openscales.core.feature {
 		 * GML data for WFS features
 		 *
 		 * TODO : specify where we can specify if data are kept or not, in order to
-		 * minimize memory consumption (GML use a lot of memory)
+		 * minimize memory consumption (GML uses a lot of memory)
 		 */
 		private var _data:Object = null;
 

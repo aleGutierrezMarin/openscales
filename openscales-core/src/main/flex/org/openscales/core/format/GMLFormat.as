@@ -173,7 +173,7 @@ package org.openscales.core.format
 			boxNode.appendChild(coodinateNode); 
 			return boxNode;
 		}
-		
+
 		/**
 		 *    It creates the geometries that are then attached to the returned
 		 *    feature, and calls parseAttributes() to get attribute data out.
