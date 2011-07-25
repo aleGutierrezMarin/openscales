@@ -166,7 +166,7 @@ package org.openscales.core.layer.ogc.provider
 			// Mandatory BBOX parameters
 			// Lon/Lat if less than 1.3.0 or if axis order of the projection is East/North, lat/lon otherwise
 			if(this.version=="1.3.0"
-					&& ProjProjection.projAxisOrder[this._projection] == ProjProjection.AXIS_ORDER_NE){
+					&& ProjProjection.projAxisOrder[this._projection.toUpperCase()] == ProjProjection.AXIS_ORDER_NE){
 				str += "BBOX=" + bounds.bottom+","+ bounds.left +","+ bounds.top +","+ bounds.right+"&";
 			}else {
 				str += "BBOX=" + bounds.left+","+ bounds.bottom +","+ bounds.right +","+ bounds.top+"&";

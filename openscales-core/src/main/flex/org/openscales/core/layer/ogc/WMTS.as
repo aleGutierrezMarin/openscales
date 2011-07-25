@@ -20,7 +20,6 @@ package org.openscales.core.layer.ogc
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Unit;
-	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Instances of the WMTS class allow viewing of tiles from a service that 
@@ -45,9 +44,10 @@ package org.openscales.core.layer.ogc
 		 * A tile provider for this layer.
 		 */ 
 		private var _tileProvider:WMTSTileProvider = null;
-		private var _projection:String = Geometry.DEFAULT_SRS_CODE;
+		//	private var _projection:String = Geometry.DEFAULT_SRS_CODE;
 		private var _useCapabilities:Boolean = false;
 		private var _loadingCapabilities:Boolean = false;
+		private var _req:XMLRequest = null;
 		/**
 		 * Constructor
 		 * 
@@ -94,11 +94,15 @@ package org.openscales.core.layer.ogc
 		private function getCapabilities():void {
 			if(!this.tileMatrixSets && !this._loadingCapabilities)
 			{
+				if(_req) {
+					_req.destroy();
+					_req = null;
+				}
 				this._loadingCapabilities = true;
-				var req:XMLRequest = new XMLRequest(this._url+"?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities", loadEnd, onFailure);
+				_req = new XMLRequest(this._url+"?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities", loadEnd, onFailure);
 				if(this.proxy)
-					req.proxy = this.proxy;
-				req.send();
+					_req.proxy = this.proxy;
+				_req.send();
 			}
 		}
 		
@@ -131,13 +135,14 @@ package org.openscales.core.layer.ogc
 				return;
 			
 			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
-	
+			
 			this._loadingCapabilities = false;
 			
 			if(this.map)
 			{
 				this.clear();
 				this.redraw(true);
+				this.map.redrawLayers();
 			}
 		}
 		
@@ -145,6 +150,10 @@ package org.openscales.core.layer.ogc
 		 * @inheritDoc
 		 */
 		override public function destroy():void {
+			if(_req) {
+				_req.destroy();
+				_req = null;
+			}
 			if(this._tileProvider!=null) {
 				this._tileProvider.destroy();
 				this._tileProvider = null;
@@ -184,10 +193,11 @@ package org.openscales.core.layer.ogc
 		/**
 		 * @inheritDoc
 		 */
+		/*
 		override public function get projSrsCode():String {
-			return _projection;
+		return _projection;
 		}
-		
+		*/
 		/**
 		 * Indicates tile mimetype
 		 */
@@ -230,7 +240,7 @@ package org.openscales.core.layer.ogc
 		 */
 		public function set tileMatrixSet(value:String):void
 		{
-			this._projection = "EPSG:4326";
+			var event:LayerEvent = null;
 			
 			if(value && this._tileProvider) {
 				this._tileProvider.tileMatrixSet = value;
@@ -238,12 +248,15 @@ package org.openscales.core.layer.ogc
 				if(this._tileProvider.tileMatrixSets) {
 					var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(value) as TileMatrixSet;
 					
-					if(tms)
-						_projection = tms.supportedCRS;
-
+					if(tms) {
+						this.projSrsCode = tms.supportedCRS;
+						event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
+					}
 				}
 			}
 			this.generateResolutions();
+			if(this.map && event)
+				this.map.dispatchEvent(event);
 		}
 		
 		/**

@@ -116,7 +116,7 @@ package org.openscales.core.control
 			if (this.map != null && this._overviewMap.baseLayer != null)
 			{
 				// Compute the size ratio between the map and the voerview map
-				var mapsRatio:Number = (this.map.width / this._overviewMap.size.w); 
+				var mapsRatio:Number =(this.map.size.w / this._overviewMap.size.w); 
 				
 				// Compute the reprojection factor for the resolution
 				var unityReproj:Location = new Location(1, 1, this.map.baseLayer.projSrsCode);
@@ -226,6 +226,7 @@ package org.openscales.core.control
 			if (layer != null)
 			{
 				_overviewMap.removeAllLayers();
+				_overviewMap.baseLayer = layer;
 				_overviewMap.addLayer(layer, true, true);
 			}
 		}
@@ -274,6 +275,24 @@ package org.openscales.core.control
 		public function get overviewMap():Map
 		{
 			return _overviewMap;
+		}
+		
+		override public function set width(value:Number):void{
+			_overviewMap.size = new Size(value, _overviewMap.size.h);
+			mapChanged();
+		}
+		
+		override public function get width():Number{
+			return _overviewMap.size.w;
+		}
+		
+		override public function set height(value:Number):void{
+			_overviewMap.size = new Size(_overviewMap.size.w, value);
+			mapChanged();
+		}
+		
+		override public function get height():Number{
+			return _overviewMap.size.h;
 		}
 	}
 }

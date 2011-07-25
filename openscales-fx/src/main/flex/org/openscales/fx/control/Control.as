@@ -28,10 +28,6 @@ package org.openscales.fx.control
 		 */
 		protected var _isInitialized:Boolean = false;
 		
-		/**
-		 * Store if the control has been added to the fxMap control list
-		 */
-		private var _isAddedToFxMapControlList:Boolean = false;
 		
 		public function Control()
 		{
@@ -58,14 +54,6 @@ package org.openscales.fx.control
 		public function set fxMap(value:FxMap):void
 		{
 			this._fxMap = value;
-			
-			if(!this._isAddedToFxMapControlList){
-				if(value){
-					this._fxMap.addControlToFxMapControlsList(this);
-					this._isAddedToFxMapControlList = true;
-				}
-			}
-			
 			this.fxMap.addEventListener(FlexEvent.CREATION_COMPLETE, onFxMapCreationComplete);
 		}
 		
@@ -98,13 +86,6 @@ package org.openscales.fx.control
 			{
 				// Activate the control 
 				this.active = true;
-			}
-			
-			if(!this._isAddedToFxMapControlList){
-				if(this.fxMap){
-					this.fxMap.addControlToFxMapControlsList(this);
-					this._isAddedToFxMapControlList = true;
-				}
 			}
 		}
 		
@@ -164,7 +145,6 @@ package org.openscales.fx.control
 			var i:int = this.numElements;
 			var elt:IVisualElement;
 			for(i;i>0;--i) {
-				elt = this.removeElementAt(0);
 				if(elt is IControl)
 					(elt as IControl).destroy();
 			}

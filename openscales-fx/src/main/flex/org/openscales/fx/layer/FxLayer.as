@@ -337,14 +337,11 @@ package org.openscales.fx.layer
 		 * @Private
 		 */
 		public function set projection(value:String):void {
+			
 			this._projection = value;
 			if(this._layer) {
 				this._layer.projSrsCode = this._projection;
-				if(this._layer.maxExtent)
-					this._layer.maxExtent.projSrsCode = this._projection;
 			}
-			else if(this._maxExtent)
-				this._maxExtent.projSrsCode = this._projection;
 		}
 		
 		/**

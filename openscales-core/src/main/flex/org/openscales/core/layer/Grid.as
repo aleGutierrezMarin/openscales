@@ -1,12 +1,15 @@
 package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
+	import flash.sampler.getInvocationCount;
+	import flash.sampler.getMemberNames;
+	
+	import mx.olap.aggregators.MaxAggregator;
 	
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
 	import org.openscales.core.basetypes.linkedlist.LinkedList;
 	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
-	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.params.IHttpParams;
@@ -46,6 +49,10 @@ package org.openscales.core.layer
 		protected var _tileWidth:Number = DEFAULT_TILE_WIDTH;
 		
 		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
+		
+		protected var _tileOrigin:Location = new Location(0,0,"EPSG:4326");
+		
+		private var _tileToRemove:ImageTile;
 		
 		/**
 		 * Create a new grid layer
@@ -143,7 +150,7 @@ package org.openscales.core.layer
 				return null;
 			}else if(node is LinkedListBitmapNode) {
 				this.addTileCache(node);
-				return (node as LinkedListBitmapNode).bitmap();
+				return (node as LinkedListBitmapNode).bitmap;
 			}
 			return null;
 		}
@@ -155,9 +162,6 @@ package org.openscales.core.layer
 			}
 			
 			var bounds:Bounds = this.map.extent.clone();
-			
-			if(bounds.projSrsCode.toUpperCase() != this.projSrsCode.toUpperCase())
-				bounds = bounds.reprojectTo(this.projSrsCode.toUpperCase());
 			
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw;
 			
@@ -183,10 +187,11 @@ package org.openscales.core.layer
 		}
 		
 		public function get tileWidth():Number {
-			if (this.tiled) {
+			/*if (this.tiled) {
 				return this._tileWidth;
 			} 
-			return map.size.w;
+			return map!=null?map.size.w:NaN;*/
+			return this._tileWidth;
 		}
 		
 		public function set tileHeight(value:Number):void {
@@ -194,10 +199,11 @@ package org.openscales.core.layer
 		}
 		
 		public function get tileHeight():Number {
-			if (this.tiled) {
+			/*if (this.tiled) {
 				return this._tileHeight;
 			}
-			return map.size.h;
+			return map!=null?map.size.h:NaN;*/
+			return this._tileHeight;
 		}	
 		
 		
@@ -227,21 +233,29 @@ package org.openscales.core.layer
 		
 		/**
 		 * Initialization singleTile
-		 *
+		 * This Method compute the intersection between the map extent, the layer maxExtent and the map maxExtent
+		 * to resquest the correct extent and build the grid to set up a single tile layer.
 		 * @param bounds
 		 */
 		public function initSingleTile(bounds:Bounds):void {
-			var center:Location = bounds.center;
-			var tileWidth:Number = bounds.width;
-			var tileHeight:Number = bounds.height;
-			this.tileWidth = this.map.width;
-			this.tileHeight = this.map.height;
-			var tileBounds:Bounds =  new Bounds(center.lon - (tileWidth/2),
-				center.lat - (tileHeight/2),
-				center.lon + (tileWidth/2),
-				center.lat + (tileHeight/2),
-				center.projSrsCode);
-			var ul:Location = new Location(tileBounds.left, tileBounds.top, tileBounds.projSrsCode);
+			var center:Location;
+			var geoTileWidth:Number;
+			var geoTileHeight:Number;
+			
+			bounds = this.maxExtent.getIntersection(bounds);
+			bounds = this.map.maxExtent.getIntersection(bounds);
+			
+			if(bounds.projSrsCode!=this.projSrsCode)
+				bounds = bounds.reprojectTo(this.projSrsCode);
+			
+			center= bounds.center;
+			geoTileWidth = bounds.width;
+			geoTileHeight = bounds.height;
+			var topLeftCorner:Location = new Location(bounds.left, bounds.top);
+			var bottomRightCorner:Location = new Location(bounds.right, bounds.bottom);
+			this.tileWidth = Math.round(geoTileWidth/this.map.resolution);
+			this.tileHeight = Math.round(geoTileHeight/this.map.resolution);
+			var ul:Location = new Location(bounds.left, bounds.top, bounds.projSrsCode);
 			var px:Pixel = this.map.getLayerPxFromLocation(ul);
 			
 			if(this._grid==null) {
@@ -250,15 +264,24 @@ package org.openscales.core.layer
 				this._grid[0][0] = null;
 			}
 			
-			var tile:ImageTile = this._grid[0][0];
-			if (!tile) {
-				tile = this.addTile(tileBounds, px);
-				tile.draw();
-				this._grid[0][0] = tile;
-			} else {
-				tile.moveTo(tileBounds, px);
-			}           
+			var tile:ImageTile = this.addTile(bounds, px);
+			tile.draw();
+			if ( this._grid[0][0] != null)
+			{
+				this._tileToRemove = this._grid[0][0];
+				tile.addEventListener(TileEvent.TILE_LOAD_END,this.removeTransitionTile);
+				
+			}
+			this._grid[0][0] = tile;         
 			this.removeExcessTiles(1,1);
+		}
+		
+		/**
+		 * 
+		 */
+		private function removeTransitionTile(event:TileEvent):void
+		{
+			this._tileToRemove.destroy();
 		}
 		
 		/**
@@ -272,25 +295,34 @@ package org.openscales.core.layer
 		 * no white flash, but there is some problems if used for something else than modifying map extent
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
+			
+			
+			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projSrsCode);
+			
 			var viewSize:Size = this.map.size;
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
 				Math.max(1, 2 * this.buffer);
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
 				Math.max(1, 2 * this.buffer);
-			var extent:Bounds = this.maxExtent;
+			
 			var resolution:Number = this.map.resolution;
+			
 			var tilelon:Number = resolution * this.tileWidth;
 			var tilelat:Number = resolution * this.tileHeight;
-			var offsetlon:Number = bounds.left - extent.left;
+			
+			// Longitude
+			var offsetlon:Number = bounds.left - this._tileOrigin.lon;
 			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
 			var tilecolremain:Number = offsetlon/tilelon - tilecol;
 			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
-			var tileoffsetlon:Number = extent.left + tilecol * tilelon;
-			var offsetlat:Number = bounds.top - (extent.bottom + tilelat);  
+			var tileoffsetlon:Number = this._tileOrigin.lon + tilecol * tilelon;
+			
+			// Latitude
+			var offsetlat:Number = bounds.top - (this._tileOrigin.lat + tilelat);  
 			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
 			var tilerowremain:Number = tilerow - offsetlat/tilelat;
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
-			var tileoffsetlat:Number = extent.bottom + tilerow * tilelat;
+			var tileoffsetlat:Number = this._tileOrigin.lat + tilerow * tilelat;
 			
 			tileoffsetx = Math.round(tileoffsetx);
 			tileoffsety = Math.round(tileoffsety);
@@ -392,6 +424,11 @@ package org.openscales.core.layer
 						break;
 				} 
 				
+				var gridx:int = this._grid.length;
+				
+				if(testRow < this._grid.length)
+					var gridy:int = this._grid[testRow].length;
+				
 				// if the test grid coordinates are within the bounds of the 
 				//  grid, get a reference to the tile.
 				var tile:ImageTile = null;
@@ -432,7 +469,7 @@ package org.openscales.core.layer
 		public function removeTileMonitoringHooks(tile:ImageTile):void {
 		}
 		/**
-		 * This metod is called only when mapEvent.MOVE_END is thrown
+		 * This mOonly when mapEvent.MOVE_END is thrown
 		 */
 		public function moveGriddedTiles(bounds:Bounds):void {
 			var buffer:Number = this.buffer || 1;
@@ -648,6 +685,24 @@ package org.openscales.core.layer
 		
 		public function set buffer(value:Number):void {
 			this._buffer = value; 
+		}
+		
+		/**
+		 * The tileOrigin to define the grid
+		 * @default 0,0
+		 */
+		public function get tileOrigin():Location
+		{
+			return this._tileOrigin;
+		}	
+		
+		/**
+		 * @private
+		 */
+		public function set tileOrigin(value:Location):void
+		{
+			this._tileOrigin = value;
+			this.initGriddedTiles(this.map.extent, true);
 		}
 	}
 }

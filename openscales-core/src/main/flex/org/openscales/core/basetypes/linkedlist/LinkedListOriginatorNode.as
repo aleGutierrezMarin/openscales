@@ -1,6 +1,7 @@
 package org.openscales.core.basetypes.linkedlist
 {
 	import flash.display.Bitmap;
+	
 	import org.openscales.core.layer.originator.DataOriginator;
 	
 	/**
@@ -48,6 +49,12 @@ package org.openscales.core.basetypes.linkedlist
 			this._originator = originator;
 		}
 		
+		/**
+		 * the originator's bitmap
+		 */
+		public function set bitmap(value:Bitmap):void {
+			this._bitmap = value;
+		}
 		/**
 		 * @inheritDoc
 		 */

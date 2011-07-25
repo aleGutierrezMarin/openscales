@@ -27,6 +27,7 @@ package
 		 */ 
 		protected var _container:Group;
 		
+		public function OpenScalesTest() {}
 		
 		/**
 		 * This function will be executed before each test.

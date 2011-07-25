@@ -104,7 +104,15 @@ package org.openscales.core.events{
 		 */
 		public static const COMPONENT_CHANGED:String="openscales.componentChanged";
 		
+		/**
+		 * Event type dispatched when min or max map resolution changed
+		 */
+		public static const MIN_MAX_RESOLUTION_CHANGED:String="openscales.minMaxresolutionChanged";
 
+		/**
+		 * Event type dispatched when the map LayerContainer visibility is set to true
+		 */
+		public static const LAYERCONTAINER_IS_VISIBLE:String="openscales.layercontainerIsVisible";
 
 		/**
 		 * Instances of MapEvent are events dispatched by the Map

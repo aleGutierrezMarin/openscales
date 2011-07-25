@@ -13,17 +13,22 @@ package org.openscales.core
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
 	
+	import mx.events.DragEvent;
+	
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
+	import org.openscales.core.handler.feature.DragFeatureHandler;
+	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
 	import org.openscales.core.i18n.provider.I18nJSONProvider;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.geometry.Geometry;
@@ -62,11 +67,11 @@ package org.openscales.core
 		
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
-		private var _controls:Vector.<IControl> = new Vector.<IControl>();
-		private var _handlers:Vector.<IHandler> = new Vector.<IHandler>();
+		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _size:Size = null;
 		protected var _zoom:Number = 0;
 		private var _zooming:Boolean = false;
+		private var _dragging:Boolean = false;
 		private var _loading:Boolean;
 		protected var _center:Location = null;
 		private var _maxExtent:Bounds = null;
@@ -78,6 +83,8 @@ package org.openscales.core
 		private var _configuration:IConfiguration;
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
+		
+		private var _cptGTween:uint = 0;
 		
 		
 		/**
@@ -136,8 +143,10 @@ package org.openscales.core
 			this._layerContainer.height = this.size.h;
 			// The sprite is now fully defined.
 			this.addChild(this._layerContainer);
+			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
+//			this.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, layerProjectionChanged);
 			
 			Trace.stage = this.stage;
 			
@@ -152,14 +161,8 @@ package org.openscales.core
 			this.removeAllLayers();
 			this.baseLayer = null;
 			
-			if (this._handlers != null) {
-				for each(var handler:IHandler in this._handlers) {
-					this.removeHandler(handler);
-				}
-			}
-			
 			if (this._controls != null) {
-				for each(var control:IControl in this._controls) {
+				for each(var control:IHandler in this._controls) {
 					this.removeControl(control);
 				}
 			}
@@ -178,7 +181,7 @@ package org.openscales.core
 		 * @param layer The layer to add.
 		 * @return true if the layer have been added, false if it has not.
 		 */
-		public function addLayer(layer:Layer, isBaseLayer:Boolean = false, redraw:Boolean = false):Boolean {
+		public function addLayer(layer:Layer, isBaseLayer:Boolean = false, redraw:Boolean = true):Boolean {
 			var i:uint = 0;
 			var j:uint = this.layers.length;
 			for(; i < j; ++i) {
@@ -254,7 +257,6 @@ package org.openscales.core
 					}
 					
 					this._baseLayer = newBaseLayer;
-					this._baseLayer.visible = true;
 					
 					var center:Location = this.center;
 					if (center != null) {
@@ -334,74 +336,6 @@ package org.openscales.core
 				removeLayer(this.layers[i],false);
 			}
 		}
-				
-		/**
-		 * Register a handler as one of the handlers of the map.
-		 * The handler must have its map property setted to this before.
-		 * The handler is not automatically activated. If needed, you have to do
-		 * it by using the active setter of the handler.
-		 * This function should only be called by the Handler.map setter !
-		 *  
-		 * @param handler the handler to add.
-		 */
-		public function addHandler(handler:IHandler):void {
-			// Is the input handler valid ?
-			if (! handler) {
-				Trace.warn("Map.addHandler: null handler not added");
-				return;
-			}
-			
-			// If not map is defined, define this one as the map
-			if(!handler.map) {
-				handler.map = this;
-			} else if (handler.map != this) {
-				Trace.error("Map.addHandler: handler not added because it is associated to an other map");
-				return;
-			}
-			
-			// Is the input handler already registered ?
-			// Or an other handler of the same type ?
-			var i:uint = 0;
-			var j:uint = this.handlers.length;
-			for (; i<j; ++i) {
-				if (handler == this.handlers[i]) {
-					Trace.warn("Map.addHandler: this handler is already registered ("+getQualifiedClassName(handler)+")");
-					return;
-				}
-				if (getQualifiedClassName(handler) == getQualifiedClassName(this.handlers[i])) {
-					Trace.warn("Map.addHandler: an other handler is already registered for "+getQualifiedClassName(handler));
-					return;
-				}
-			}
-			// If the handler is a new handler, register it
-			if (i == j) {
-				Trace.log("Map.addHandler: add a new handler "+getQualifiedClassName(handler));
-				this._handlers.push(handler);
-				//handler.map = this; // this is done by the Handler.map setter
-			}
-		}
-		
-		/**
-		 * Unregister a handler as one of the handlers of the map.
-		 * The handler must have its map property setted null before or after.
-		 * The handler is not automatically deactivated. You have to do it by
-		 * using the active setter of the handler.
-		 * This function should only be called by the Handler.map setter !
-		 * 
-		 * @param handler the handler to remove.
-		 */
-		public function removeHandler(handler:IHandler):void {
-			var newHandlers:Vector.<IHandler> = new Vector.<IHandler>();
-			for each (var mapHandler:IHandler in this._handlers) {
-				if (mapHandler == handler) {
-					handler.active = false;
-					handler = null;
-				} else {
-					newHandlers.push(mapHandler);
-				}
-			}
-			this._handlers = newHandlers;
-		}
 		
 		/**
 		 * @param {OpenLayers.Popup} popup
@@ -468,9 +402,29 @@ package org.openscales.core
 			if (! this.baseLayer) {
 				return;
 			}
-			// Compute the center of the zoom and the new level
+			
 			const px:Pixel = new Pixel(this.mouseX, this.mouseY);
+			
+			if(this.dragging)
+			{
+				var i:int = 0;
+				var j:int = this._controls.length;
+				
+				for(; i<j; ++i)
+				{
+					if(this._controls[i] is DragHandler && this._controls[i].active)
+					{
+						var drag:DragHandler = this._controls[i] as DragHandler;
+						// stop the drag to pan the map to the current drag to apply the zoom at the correct place
+						drag.stopDrag();
+						// restart drag then
+						drag.startDrag();
+					}
+				}
+			}			
+			
 			const centerPx:Pixel = new Pixel(this.width/2, this.height/2);
+
 			var newCenterPx:Pixel;
 			var z:Number = this.zoom;
 			if (zoomIn) {
@@ -486,6 +440,7 @@ package org.openscales.core
 				}
 				newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
 			}
+		
 			this.moveTo(this.getLocationFromMapPx(newCenterPx), z, false, true);
 		}
 		
@@ -551,7 +506,7 @@ package org.openscales.core
 				}
 				
 				if (centerChanged) {
-					if ((!zoomChanged) && (this.center)) {
+					if ((!zoomChanged) && (this.center) && !this._dragging) {
 						this.centerLayerContainer(newCenter, dragTween);
 					}
 					this._center = newCenter.clone();
@@ -603,6 +558,7 @@ package org.openscales.core
 		 * @param tween use tween effect if set to true
 		 */
 		private function centerLayerContainer(lonlat:Location, tween:Boolean = false):void {
+			
 			var originPx:Pixel = this.getMapPxFromLocation(this._layerContainerOrigin);
 			var newPx:Pixel = this.getMapPxFromLocation(lonlat);
 			
@@ -620,6 +576,7 @@ package org.openscales.core
 			if(tween) {
 				var layerContainerTween:GTween = new GTween(this._layerContainer, 0.5, {x: lx, y: ly}, {ease: Cubic.easeOut});
 				layerContainerTween.onComplete = onDragTweenComplete;
+				this._cptGTween++;
 				if(bitmapTransition != null) {
 					new GTween(bitmapTransition, 0.5, {x: bx, y: by}, {ease: Cubic.easeOut});
 				} 
@@ -633,8 +590,11 @@ package org.openscales.core
 			}
 		}
 		
-		private function onDragTweenComplete(tween:GTween):void {
-			this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
+		private function onDragTweenComplete(tween:GTween):void
+		{
+			this._cptGTween--;
+			if(this._cptGTween == 0)
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
 		}
 		
 		/**
@@ -976,6 +936,7 @@ package org.openscales.core
 				
 				//We calculate the bitmapTransition position
 				var pix:Pixel = this.getMapPxFromLocation(newCenter);
+				
 				var bt:Sprite = this.bitmapTransition;
 				var oldCenterPix:Pixel = new Pixel(bt.x+bt.width/2, bt.y+bt.height/2);
 				var centerOffset:Pixel = new Pixel(oldCenterPix.x-pix.x, oldCenterPix.y-pix.y);
@@ -999,6 +960,7 @@ package org.openscales.core
 				_zooming = false;
 				moveTo(newCenter, newZoom);
 				layerContainer.visible = true;
+				dispatchEvent(new MapEvent(MapEvent.LAYERCONTAINER_IS_VISIBLE, null));
 				clearBitmapTransition();
 			} 
 
@@ -1015,12 +977,16 @@ package org.openscales.core
 		 * and if so, MapEvent.LOAD_COMPLETE can be dispatched
 		 */
 		private function layerLoadHandler(event:LayerEvent):void {
+			
 			switch(event.type) {
 				case LayerEvent.LAYER_LOAD_START: {
 					this.loading = true;
 					break;
 				}	
 				case LayerEvent.LAYER_LOAD_END: {
+					
+					
+					
 					this.clearBitmapTransition();
 					
 					// check all layers 
@@ -1035,6 +1001,46 @@ package org.openscales.core
 					this.loading = false;
 					break;
 				}						
+			}
+		}
+	
+		
+		
+		
+		/**
+		 * Call when a Layer has its projection changed.
+		 * If this layer is the baselayer, reproject other layers
+		 */
+	/*	private function layerProjectionChanged(event:LayerEvent):void
+		{
+			var layer:Layer = event.target as Layer;
+			
+			if(layer == this.baseLayer)
+			{
+				var i:int = 0;
+				var j:int = layers.length;
+				for(; i<j; ++i)
+				{
+					layers[i].redraw(true);
+				}
+			}
+		} */
+		public function redrawLayers():void
+		{
+			
+			var i:int = 0;
+			var j:int = layers.length;
+			for(; i<j; ++i)
+			{
+				if(layers[i] != this.baseLayer)
+				{
+					layers[i].redraw(true);
+					
+					if( layers[i] is WMTS)
+					{
+						(layers[i] as WMTS).initGriddedTiles(this.extent);
+					}
+				}
 			}
 		}
 		
@@ -1083,20 +1089,6 @@ package org.openscales.core
 			} else {
 				Trace.error("Map - height not changed since the value is not valid");
 			}
-		}
-		
-		/**
-		 * Map controls
-		 */
-		public function get controls():Vector.<IControl> {
-			return this._controls;
-		}
-		
-		/**
-		 * Map handlers
-		 */
-		public function get handlers():Vector.<IHandler> {
-			return this._handlers;
 		}
 		
 		/**
@@ -1174,7 +1166,7 @@ package org.openscales.core
 		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
 		 */
 		public function get resolution():Number {
-			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : NaN;
+			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
 		}
 		
 		public function set resolution(value:Number):void
@@ -1357,6 +1349,8 @@ package org.openscales.core
 				this.zoomToResolution(value);
 			}
 			this._maxResolution = value;
+			
+			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
 		}
 		
 		/**
@@ -1379,6 +1373,25 @@ package org.openscales.core
 				this.zoomToResolution(value);
 			}
 			this._minResolution = value;
+			
+			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
+		}
+		
+	
+		/**
+		 * Indicates if the map is currently dragged or not
+		 */
+		public function get dragging():Boolean
+		{
+			return this._dragging;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set dragging(value:Boolean):void
+		{
+			this._dragging = value;
 		}
 		
 		/**
@@ -1438,72 +1451,111 @@ package org.openscales.core
 		}
 		
 		
-		// --- Control management -- //
+		// --- Control and Handler management -- //
 		/**
-		 * Add a new control to the map.
-		 *
-		 * @param control the control to add.
+		 * Add a new control to the map or register a handler as one of the handlers of the map.
+		 * The handler must have its map property setted to this before.
+		 * The handler is not automatically activated. If needed, you have to do
+		 * it by using the active setter of the handler.
+		 * For a handler, this function should only be called by the Handler.map setter !
+		 * 
+		 * @param control the control or handler to add.
 		 * @param attach if true, the control will be added as child component of the map. This
 		 *  parameter may be for example set to false when adding a Flex component displayed
 		 *  outside the map.
 		 */
-		public function addControl(control:IControl, attach:Boolean=true):void {
+		public function addControl(control:IHandler, attach:Boolean=true):void {
+			
 			// Is the input control valid ?
-			if (! control) {
+			if (!control) {
 				Trace.warn("Map.addControl: null control not added");
 				return;
+			}
+			
+			if (!(control is IControl)) {
+				// control is an IHandler
+				// If no map is defined, define this one as the map
+				if (!control.map) {
+					control.map = this;
+				} else if (control.map != this) {
+					Trace.error("Map.addControl: handler not added because it is associated to an other map");
+					return;
+				}
 			}
 			
 			var i:uint = 0;
 			var j:uint = this._controls.length;
 			for (; i<j; ++i) {
 				if (control == this._controls[i]) {
-					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
+					Trace.warn("Map.addControl: this control is already registered (" + getQualifiedClassName(control) + ")");
+					return;
+				}
+				// if control is an IHandler
+				if (!(control is IControl) && (getQualifiedClassName(control) == getQualifiedClassName(this._controls[i]))) {
+					Trace.warn("Map.addControl: an other handler is already registered for " + getQualifiedClassName(control));
 					return;
 				}
 			}
+			
 			// If the control is a new control, register it
 			if (i == j) {
-				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
+				Trace.log("Map.addControl: add a new control " + getQualifiedClassName(control));
 				this._controls.push(control);
 				
-				control.map = this;
-				
-				control.draw();
-				if (attach) {
-					this.addChild(control as Sprite);
+				if (control is IControl) {
+					control.map = this;
+					(control as IControl).draw();
+					if (attach) {
+						this.addChild(control as Sprite);
+					}
 				}
 			}
 		}
 		
 		/**
-		 * Detects if given control is linked to this map
+		 * Detects if given control or handler is linked to this map.
 		 * 
-		 * @return true if the control controls this map, false otherwise
+		 * @return true if the control or handler controls this map, false otherwise.
 		 */
-		public function hasControl(control:IControl):Boolean{
+		public function hasControl(control:IHandler):Boolean {
 			
 			return (this._controls.indexOf(control) != -1);
 		}
 		
 		/**
-		 * Removes given control from the map. 
-		 * If the control is not present on the map, nothing happens.
+		 * Removes given control from the map or unregister given handler as one of the handlers of the map.
+		 * If the control or handler is not present on the map, nothing happens.
+		 * The handler must have its map property setted null before or after.
+		 * The handler is not automatically deactivated. You have to do it by
+		 * using the active setter of the handler.
+		 * For a handler, this function should only be called by the Handler.map setter !
 		 * 
+		 * @param control the control or handler to remove.
 		 */
-		public function removeControl(control:IControl):void {
+		public function removeControl(control:IHandler):void {
+			
 			var i:int = this._controls.indexOf(control);
-			if(i!=-1) {
+			if (i != -1) {
 				this._controls.splice(i,1);
 				
-				if((control as DisplayObject).parent == this){
-					this.removeChild(control as DisplayObject);
-				}				
-				
-				control.map = null;
-				control.destroy();
+				if (control is IControl) {
+					if ((control as DisplayObject).parent == this) {
+						this.removeChild(control as DisplayObject);
+					}
+					(control as IControl).destroy();
+				}
+				else {
+					control.active = false;
+					control.map = null;
+				}
 			}
+		}
+		
+		/**
+		 * Map controls and handlers
+		 */
+		public function get controls():Vector.<IHandler> {
+			return this._controls;
 		}
 	}
 }
-

@@ -51,6 +51,7 @@
 				{
 					this._map.addEventListener(MapEvent.MOVE_END,this.updateScale);
 					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
+					this._map.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,this.updateScale);
 				}
 			}
 			
@@ -66,6 +67,7 @@
 				{
 					this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
 					this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
+					this._map.removeEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,this.updateScale);
 				}
 			}
 			
@@ -80,9 +82,9 @@
 			{
 				if(this._map == null || this._map.baseLayer == null)
 					return;
-				this._value = Unit.getScaleFromResolution(this._map.resolution,
+				this._value = Math.round(Unit.getScaleFromResolution(this._map.resolution,
 					ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode).projParams.units,
-					this._map.baseLayer.dpi);
+					this._map.baseLayer.dpi));
 				
 				// update the label :
 				this.scaleLabel = "1 / "+this._value;

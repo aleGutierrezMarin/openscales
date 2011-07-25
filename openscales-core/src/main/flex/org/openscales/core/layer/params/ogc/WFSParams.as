@@ -9,25 +9,27 @@ package org.openscales.core.layer.params.ogc
 	 */
 	public class WFSParams extends OGCParams
 	{
-
 		private var _typename:String;
 		private var _maxFeatures:Number;
 		private var _handle:String;
-
-
-
-		public function WFSParams(typename:String)
+		
+		// Constructor
+		public function WFSParams(typename:String, version:String = "1.1.0")
 		{
-			super("WFS", "1.0.0", "GetFeature");
-
+			super("WFS", version, "GetFeature");
+			
+			// Properties initialization
 			this._typename = typename;
 		}
-
-		override public function toGETString():String {
+		
+		override public function toGETString():String
+		{
 			var str:String = super.toGETString();
-			if (this.bbox != null) {
-				(this.srs!=null && this.version!="1.0.0")?
-					str += "BBOX=" + this.bbox + ","+this.srs+"&SRSNAME="+this.srs+"&":
+			
+			if (this.bbox != null)
+			{
+				(this.srs != null && this.version != "1.0.0" && this.version != "1.1.0")?
+					str += "BBOX=" + this.bbox + "," + this.srs + "&SRSNAME=" + this.srs + "&":
 					str += "BBOX=" + this.bbox + "&";
 			}
 			if (this._typename != null)
@@ -66,7 +68,5 @@ package org.openscales.core.layer.params.ogc
 		public function set handle(handle:String):void {
 			_handle = handle;
 		}
-
 	}
 }
-

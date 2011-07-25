@@ -1,5 +1,10 @@
 package org.openscales.core.layer.originator
 {
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	
+	import org.openscales.core.Trace;
+	import org.openscales.core.request.DataRequest;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
@@ -36,6 +41,20 @@ package org.openscales.core.layer.originator
 		
 		/**
 		 * @private
+		 * @default false
+		 * is the image loading
+		 */
+		private var _loading:Boolean = false;
+
+		/**
+		 * @Private
+		 * @default null
+		 * The callback called when image is retrieved
+		 */
+		private var _callback:Function = null;
+		
+		/**
+		 * @private
 		 * @default null
 		 * The constraint list of the originator.
 		 */
@@ -66,7 +85,7 @@ package org.openscales.core.layer.originator
 			// Is the input constraint valid ?
 			if (! constraint) 
 			{
-				trace("DataOriginator.addConstraint: null constraint not added");
+				Trace.debug("DataOriginator.addConstraint: null constraint not added");
 				return;
 			}
 			var i:uint = 0;
@@ -75,14 +94,14 @@ package org.openscales.core.layer.originator
 			{
 				if (constraint == this._constraints[i]) 
 				{
-					trace("DataOriginator.addConstraint: this constraint is already registered, not added ");
+					Trace.debug("DataOriginator.addConstraint: this constraint is already registered, not added ");
 					return;
 				}
 			}
 			// If the constraint is a new constraint, add it
 			if (i == j) 
 			{
-				trace("DataOriginator.addConstraint: add a new constraint");
+				Trace.debug("DataOriginator.addConstraint: add a new constraint");
 				this._constraints.push(constraint);
 			}
 		}
@@ -145,6 +164,36 @@ package org.openscales.core.layer.originator
 			return false;
 		}
 		
+		/**
+		 * This function makes the dataoriginator to retrieve the picture
+		 * 
+		 * @param callback The callback to call when the loading is finished
+		 */
+		public function getImage(callback:Function):void {
+			if(callback!=null && this._callback!=null && !this._loading) {
+				this._loading = true;
+				this._callback = callback;
+				new DataRequest(this.pictureUrl, this.onLoadEnd, this.onLoadError);
+			}
+		}
+		
+		/**
+		 * @private
+		 * handle image loading end
+		 */
+		private function onLoadEnd(event:Event):void {
+			this._loading = false;
+			this._callback(this, event);
+		}
+		
+		/**
+		 * @private
+		 * handle image loading errors
+		 */
+		private function onLoadError(event:IOErrorEvent):void {
+			Trace.log("Originator image load failure: "+this.pictureUrl);
+		}
+		
 		// getters setters
 		
 		/**
@@ -205,6 +254,14 @@ package org.openscales.core.layer.originator
 		public function set constraints(constraints:Vector.<ConstraintOriginator>):void 
 		{
 			this._constraints = constraints;
+		}
+		
+		/**
+		 * indicates if the image loading
+		 */
+		public function get loading():Boolean
+		{
+			return _loading;
 		}
 	}
 }

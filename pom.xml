@@ -50,13 +50,13 @@
 		</profile>
 	</profiles>
 	<modules>
+        <module>openscales-proj4as</module>
+		<module>openscales-geometry</module>
 		<module>openscales-core</module>
 		<module>openscales-core-flash-10.1</module>
 		<module>openscales-as-examples</module>
 		<module>openscales-fx-examples</module>
 		<module>openscales-fx</module>
-		<module>openscales-proj4as</module>
-		<module>openscales-geometry</module>
 		<module>openscales-viewer</module>
 	</modules>
 	<issueManagement>
@@ -206,6 +206,13 @@
 		<developer>
 			<id>mjourdain</id>
 			<name>Marine Jourdain</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+        <developer>
+			<id>mviry</id>
+			<name>Maxime Viry</name>
 			<organization>Atos Worldline</organization>
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>

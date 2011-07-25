@@ -12,6 +12,7 @@ package org.openscales.core.i18n
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.i18n.Catalog;
+	import org.openscales.core.i18n.Locale;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
 	
@@ -23,28 +24,20 @@ package org.openscales.core.i18n
 	public class i18nTest
 	{
 		
-		private var _map:Map;
+		private var _map:Map = new Map();
 		
 		private var _existingKey:String = "zoombar.state";
 		private var _notExistingKey:String = "notexisting";
+		
+		private var _locale:Locale = Locale.getLocaleByKey("EN");
+		private var _frenchLocale:Locale = Locale.getLocaleByKey("FR");
 
+		public function i18nTest() {}
 		
 		[Before]
 		public function prepareResource():void
 		{
-			this._map = new Map();
-		}
-		
-		/**
-		 * Test an existing key with the default system locale (french)
-		 */
-		[Test]
-		public function testExistingValueWithSystemLocale():void
-		{
-			Locale.activeLocale= Locale.systemLocale;
-			var test:String = Catalog.getLocalizationForKey(this._existingKey);
-			
-			assertEquals("Région",test);
+			Locale.activeLocale = _locale;
 		}
 		
 		/**
@@ -53,7 +46,7 @@ package org.openscales.core.i18n
 		[Test]
 		public function testExistingValueWithSetLocale():void
 		{
-			Locale.activeLocale=Locale.getLocaleByKey("EN");
+			Locale.activeLocale = _locale;
 			var test:String = Catalog.getLocalizationForKey(this._existingKey);
 			
 			assertEquals("State",test);
@@ -65,7 +58,7 @@ package org.openscales.core.i18n
 		[Test]
 		public function testNonExistingKey():void
 		{
-			Locale.activeLocale=Locale.getLocaleByKey("EN");
+			Locale.activeLocale = _locale;
 			var test:String = Catalog.getLocalizationForKey(this._notExistingKey);
 			
 			assertEquals("notexisting",test);
@@ -78,9 +71,9 @@ package org.openscales.core.i18n
 		[Test]
 		public function testAddOneKey():void
 		{
-			Locale.activeLocale= Locale.systemLocale;
+			Locale.activeLocale = _locale;
 			
-			Catalog.setLocalizationForKey(Locale.getLocaleByKey("FR"),"NewKey","MyNewKey");
+			Catalog.setLocalizationForKey(_locale,"NewKey","MyNewKey");
 			
 			var test:String = Catalog.getLocalizationForKey("NewKey");
 			
@@ -94,18 +87,19 @@ package org.openscales.core.i18n
 		public function testAddOneKeyMultipleLocales():void
 		{
 			var hm:HashMap = new HashMap();
-			hm.put(Locale.getLocaleByKey("FR"),"MyNewKeyFR");
-			hm.put(Locale.getLocaleByKey("EN"),"MyNewKeyEN");
+			hm.put(_locale,"MyNewKeyEN");
+			hm.put(_frenchLocale,"MyNewKeyFR");
+			
 			
 			Catalog.setLocalizationsForKey("NewKey",hm);
 			
-			Locale.activeLocale= Locale.systemLocale;
+			Locale.activeLocale = _locale;
 			var test:String = Catalog.getLocalizationForKey("NewKey");
-			assertEquals("MyNewKeyFR",test);
-			
-			Locale.activeLocale= Locale.getLocaleByKey("EN");
-			test = Catalog.getLocalizationForKey("NewKey");
 			assertEquals("MyNewKeyEN",test);
+			
+			Locale.activeLocale = _frenchLocale;
+			test = Catalog.getLocalizationForKey("NewKey");
+			assertEquals("MyNewKeyFR",test);
 		}
 		
 		/**
@@ -117,12 +111,13 @@ package org.openscales.core.i18n
 			
 			
 			var hm1:HashMap = new HashMap();
-			hm1.put(Locale.getLocaleByKey("FR"),"MyNewKeyFR");
-			hm1.put(Locale.getLocaleByKey("EN"),"MyNewKeyEN");
+			hm1.put(_locale,"MyNewKeyEN");
+			hm1.put(_frenchLocale,"MyNewKeyFR");
+			
 			
 			var hm2:HashMap = new HashMap();
-			hm2.put(Locale.getLocaleByKey("FR"),"MySecondKeyFR");
-			hm2.put(Locale.getLocaleByKey("EN"),"MySecondKeyEN");
+			hm2.put(_locale,"MySecondKeyEN");
+			hm2.put(_frenchLocale,"MySecondKeyFR");
 			
 			var hm:HashMap = new HashMap();
 			hm.put("NewKey",hm1);
@@ -130,17 +125,18 @@ package org.openscales.core.i18n
 			
 			Catalog.setLocalizationsForKeys(hm);
 			
-			Locale.activeLocale= Locale.systemLocale;
+			Locale.activeLocale = _locale;
+			test = Catalog.getLocalizationForKey("NewKey");
+			assertEquals("MyNewKeyEN",test);
+			test = Catalog.getLocalizationForKey("SecondKey");
+			assertEquals("MySecondKeyEN",test);
+			
+			Locale.activeLocale = _frenchLocale;
 			var test:String = Catalog.getLocalizationForKey("NewKey");
 			assertEquals("MyNewKeyFR",test);
 			test = Catalog.getLocalizationForKey("SecondKey");
 			assertEquals("MySecondKeyFR",test);
 			
-			Locale.activeLocale= Locale.getLocaleByKey("EN");
-			test = Catalog.getLocalizationForKey("NewKey");
-			assertEquals("MyNewKeyEN",test);
-			test = Catalog.getLocalizationForKey("SecondKey");
-			assertEquals("MySecondKeyEN",test);
 		}
 	}
 }

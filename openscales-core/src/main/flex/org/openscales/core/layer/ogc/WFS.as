@@ -49,7 +49,7 @@ package org.openscales.core.layer.ogc
 		 */
 		private var _useCapabilities:Boolean = false;
 		
-		private var _capabilitiesVersion:String = "1.1.0";
+		private var _capabilitiesVersion:String = "1.0.0";
 		
 		private var _params:WFSParams = null;
 		
@@ -77,18 +77,22 @@ package org.openscales.core.layer.ogc
 		 */	                    
 		public function WFS(name:String,
 							url:String,
-							typename:String) {
-			
+							typename:String,
+							version:String = "1.0.0")
+		{
 			super(name);
 			
-			if (!(this.geometryColumn)) {
+			// Properties initialization
+			if(!(this.geometryColumn)) {
 				this.geometryColumn = "the_geom";
-			}    
-			
-			this.params = new WFSParams(typename);
+			}
+			this._params = new WFSParams(typename, version);
 			this.url = url;
+			this._capabilitiesVersion = version;
 			this._wfsFormat = new WFSFormat(this);
 		}
+		
+		
 		override public function destroy():void {
 			if(this._request)
 				this._request.destroy();
@@ -107,6 +111,8 @@ package org.openscales.core.layer.ogc
 			}
 			super.destroy();
 		}
+		
+		
 		override public function set map(map:Map):void {
 			super.map = map;
 			
@@ -147,6 +153,7 @@ package org.openscales.core.layer.ogc
 				this.featuresBbox = projectedBounds;
 				this.loadFeatures(this.getFullRequestString());
 				this._firstRendering = false;
+				this.draw();
 			} else {
 				// Use GetCapabilities to know if all features have already been retreived.
 				// If they are, we don't request data again
@@ -395,8 +402,9 @@ package org.openscales.core.layer.ogc
 		
 		public function set capabilitiesVersion(value:String):void {
 			this._capabilitiesVersion = value;
+			if(this._params != null)
+				this._params.version = value;
 		}
-		
 		public function get capabilitiesVersion():String {
 			return this._capabilitiesVersion;
 		}

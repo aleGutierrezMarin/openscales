@@ -21,6 +21,8 @@ package org.openscales.geometry.basetypes
 		private var _top:Number = 0.0;
 		private var _projSrsCode:String;
 		
+		public static var DEFAULT_PROJ_SRS_CODE:String = "EPSG:4326";
+		
 		/**
 		 * Class constructor
 		 *
@@ -164,26 +166,32 @@ package org.openscales.geometry.basetypes
 		 * @return If the bounds intersects current bounds or not.
 		 */
 		public function intersectsBounds(bounds:Bounds, inclusive:Boolean = true):Boolean {
-			var tmpBounds:Bounds = bounds;
-			if(this.projSrsCode!=tmpBounds.projSrsCode) {
-				tmpBounds= tmpBounds.reprojectTo(this.projSrsCode);
-			}
-			var inBottom:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
-				true : (((tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top)) ||
-					((this.bottom > tmpBounds.bottom) && (this.bottom < tmpBounds.top)));
-			var inTop:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
-				true : (((tmpBounds.top > this.bottom) && (tmpBounds.top < this.top)) ||
-					((this.top > tmpBounds.bottom) && (this.top < tmpBounds.top)));
-			var inRight:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
-				true : (((tmpBounds.right > this.left) && (tmpBounds.right < this.right)) ||
-					((this.right > tmpBounds.left) && (this.right < tmpBounds.right)));
-			var inLeft:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
-				true : (((tmpBounds.left > this.left) && (tmpBounds.left < this.right)) ||
-					((this.left > tmpBounds.left) && (this.left < tmpBounds.right)));
 			
-			return (this.containsBounds(tmpBounds, true, inclusive) ||
-				tmpBounds.containsBounds(this, true, inclusive) ||
-				((inTop || inBottom ) && (inLeft || inRight )));
+			var tmpBounds:Bounds = bounds;
+			var tmpThis:Bounds = this;
+			
+			if(tmpThis.projSrsCode!=tmpBounds.projSrsCode)
+			{
+				tmpBounds = tmpBounds.reprojectTo(DEFAULT_PROJ_SRS_CODE);
+				tmpThis = tmpThis.reprojectTo(DEFAULT_PROJ_SRS_CODE);
+			}
+			
+				var inBottom:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
+					true : (((tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top)) ||
+						((tmpThis.bottom > tmpBounds.bottom) && (tmpThis.bottom < tmpBounds.top)));
+				var inTop:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
+					true : (((tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top)) ||
+						((tmpThis.top > tmpBounds.bottom) && (tmpThis.top < tmpBounds.top)));
+				var inRight:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
+					true : (((tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right)) ||
+						((tmpThis.right > tmpBounds.left) && (tmpThis.right < tmpBounds.right)));
+				var inLeft:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
+					true : (((tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right)) ||
+						((tmpThis.left > tmpBounds.left) && (tmpThis.left < tmpBounds.right)));
+			
+				return (tmpThis.containsBounds(tmpBounds, true, inclusive) ||
+					tmpBounds.containsBounds(tmpThis, true, inclusive) ||
+					((inTop || inBottom ) && (inLeft || inRight )));
 		}
 		
 		/**
@@ -195,12 +203,18 @@ package org.openscales.geometry.basetypes
 		 *
 		 * @return Bounds are contained or not by the bounds
 		 */
+		
 		public function containsBounds(bounds:Bounds, partial:Boolean = false, inclusive:Boolean = true):Boolean {
 			
 			var tmpBounds:Bounds = bounds;
-			if(this.projSrsCode!=tmpBounds.projSrsCode) {
-				tmpBounds = tmpBounds.reprojectTo(this.projSrsCode);
+			var tmpThis:Bounds = this;
+			
+			if(tmpThis.projSrsCode!=tmpBounds.projSrsCode)
+			{
+				tmpBounds = tmpBounds.reprojectTo(DEFAULT_PROJ_SRS_CODE);
+				tmpThis = tmpThis.reprojectTo(DEFAULT_PROJ_SRS_CODE);
 			}
+			
 			
 			// TODO: check the equality of the projSrsCode of the two bounds ?!
 			var inLeft:Boolean;
@@ -209,15 +223,15 @@ package org.openscales.geometry.basetypes
 			var inBottom:Boolean;
 			
 			if (inclusive) {
-				inLeft = (tmpBounds.left >= this.left) && (tmpBounds.left <= this.right);
-				inTop = (tmpBounds.top >= this.bottom) && (tmpBounds.top <= this.top);
-				inRight= (tmpBounds.right >= this.left) && (tmpBounds.right <= this.right);
-				inBottom = (tmpBounds.bottom >= this.bottom) && (tmpBounds.bottom <= this.top);
+				inLeft = (tmpBounds.left >= tmpThis.left) && (tmpBounds.left <= tmpThis.right);
+				inTop = (tmpBounds.top >= tmpThis.bottom) && (tmpBounds.top <= tmpThis.top);
+				inRight= (tmpBounds.right >= tmpThis.left) && (tmpBounds.right <= tmpThis.right);
+				inBottom = (tmpBounds.bottom >= tmpThis.bottom) && (tmpBounds.bottom <= tmpThis.top);
 			} else {
-				inLeft = (tmpBounds.left > this.left) && (tmpBounds.left < this.right);
-				inTop = (tmpBounds.top > this.bottom) && (tmpBounds.top < this.top);
-				inRight= (tmpBounds.right > this.left) && (tmpBounds.right < this.right);
-				inBottom = (tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top);
+				inLeft = (tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right);
+				inTop = (tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top);
+				inRight= (tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right);
+				inBottom = (tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top);
 			}
 			
 			return (partial) ? (inTop || inBottom ) && (inLeft || inRight )
@@ -277,6 +291,7 @@ package org.openscales.geometry.basetypes
 		 * @return An instance of bounds.
 		 */
 		public static function getBoundsFromArray(bbox:Array,srsCode:String):Bounds {
+			if(bbox.length != 4) throw(new ArgumentError("the array must contains 4 numbers for bbox"));
 			return new Bounds(Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]), srsCode);
 		}
 		
@@ -371,6 +386,70 @@ package org.openscales.geometry.basetypes
 			]);
 			geom.projSrsCode = this.projSrsCode;
 			return geom;
+		}
+		
+		/**
+		 * Use this method if you want to get the intersection between thoses Bounds 
+		 * and the given ones. Use intersectsBounds() before to avoid problem with 
+		 * empty intersections.
+		 * <p>
+		 * If the two Bounds are not in the same projection, they will be converted in
+		 * EPSG:4326 and the returned Bounds will be in EPSG:4326 too, don't forget to
+		 * reproject it with reprojectTo if you are not working with this projection.
+		 * </p>
+		 * 
+		 * @return The Bounds representing the intersection between thosesBounds and the
+		 * given ones. If the intersection is empty, the retuned Bounds will be empty with
+		 * EPSG:4326 projection if the two bounds are not in the same projection, or the
+		 * projection of the two bounds if they are in the same projection. 
+		 */
+		public function getIntersection(bounds:Bounds):Bounds{
+			
+
+			// Variable used of a reprojection is needed
+			var thisBounds:Bounds = this;
+			if (thisBounds.projSrsCode != bounds.projSrsCode)
+			{
+				thisBounds = thisBounds.reprojectTo("EPSG:4326");
+				bounds = bounds.reprojectTo("EPSG:4326");
+			}
+			
+			if (!(this.intersectsBounds(bounds)))
+			{
+				return new Bounds(0,0,0,0, thisBounds.projSrsCode);
+			}
+			
+			// Init the values with on of the bounds
+			var left:Number = bounds.left;
+			var right:Number = bounds.right;
+			var top:Number = bounds.top;
+			var bottom:Number = bounds.bottom;
+			
+			// Compute the left limit of the extent
+			if(thisBounds.left > bounds.left)
+			{
+				left = thisBounds.left;
+			}
+			
+			// Compute the right limit of the extent
+			if(thisBounds.right < bounds.right)
+			{
+				right = thisBounds.right;
+			}
+			
+			// Compute the top limit of the extent
+			if(thisBounds.top < bounds.top)
+			{
+				top = thisBounds.top;	
+			}
+			
+			// Compute the bottom limit of the extent
+			if(thisBounds.bottom > bounds.bottom)
+			{
+				bottom = thisBounds.bottom;
+			}
+			
+			return new Bounds(left,bottom, right, top, thisBounds.projSrsCode);
 		}
 		
 		

@@ -19,6 +19,7 @@ package org.openscales.fx
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.fx.configuration.FxConfiguration;
+	import org.openscales.fx.control.Control;
 	import org.openscales.fx.control.FxControl;
 	import org.openscales.fx.control.FxOverviewMap;
 	import org.openscales.fx.handler.FxHandler;
@@ -48,7 +49,6 @@ package org.openscales.fx
 	public class FxMap extends Group
 	{
 		protected var _map:Map;
-		private var _controls:Vector.<IControl> = new Vector.<IControl>();
 		private var _zoom:Number = NaN;
 		private var _center:Location = null;
 		private var _creationHeight:Number = NaN;
@@ -81,9 +81,6 @@ package org.openscales.fx
 				if(elt is IControl)
 					(elt as IControl).destroy();
 			}
-			i = this._controls.length;
-			for(i;i>0;--i)
-				this._controls.pop();
 			this.map.reset();
 			var mapContainer:SpriteVisualElement = new SpriteVisualElement();
 			this.addElementAt(mapContainer, 0);
@@ -380,42 +377,13 @@ package org.openscales.fx
 		 */
 		public function set theme(value:String):void
 		{
-			if(this._map && value!=null)
-			{
-				if( (this._map as Map).theme )
-					styleManager.unloadStyleDeclarations((this._map as Map).theme);
-				(this._map as Map).theme = value;
+			if(this.map.theme)
+				styleManager.unloadStyleDeclarations(this._map.theme);
+			
+			this._map.theme = value;
+			
+			if(this._map.theme && this._map.theme != "")
 				styleManager.loadStyleDeclarations(value);
-			}
-		}
-		
-		/**
-		 * Add a new control to the map.
-		 *
-		 * @param control the control to add.
-		 * @param attach if true, the control will be added as child component of the map. This
-		 *  parameter may be for example set to false when adding a Flex component displayed
-		 *  outside the map.
-		 */
-		public function addControlToFxMapControlsList(control:IControl):void {
-			// Is the input control valid ?
-			if (! control) {
-				Trace.warn("FxMap.addControlToFxMapControlsList: null control not added");
-				return;
-			}
-			var i:uint = 0;
-			var j:uint = this._controls.length;
-			for (; i<j; ++i) {
-				if (control == this._controls[i]) {
-					Trace.warn("FxMap.addControlToFxMapControlsList: this control is already registered ("+getQualifiedClassName(control)+")");
-					return;
-				}
-			}
-			// If the control is a new control, register it
-			if (i == j) {
-				Trace.log("FxMap.addControlToFxMapControlsList: add a new control "+getQualifiedClassName(control));
-				this._controls.push(control);
-			}
 		}
 		
 		// --- Layer management --- //
@@ -424,22 +392,22 @@ package org.openscales.fx
 			return this._map.layers;
 		}
 
-		// --- Control management --- //
+		// --- Control and Handler management --- //
 		/**
-		 * List of the controls linked to the map
+		 * List of the controls and handlers linked to the map
 		 */
-		public function get controls():Vector.<IControl>
+		public function get controls():Vector.<IHandler>
 		{
 			// TODO : return a clone of the controls list
 			return this._map.controls;
 		}
 		
 		/**
-		 * Adds given control to the map, displaying it on the map if the <code>attach</code> parameter is true.
-		 * Otherwise, the control is just linked to the map and can be displayed anywhere else
+		 * Adds given control or handler to the map, displaying it (for a control) on the map if the <code>attach</code> parameter is true.
+		 * Otherwise, the control is just linked to the map and can be displayed anywhere else.
 		 * 
-		 * @param control Control to add
-		 * @param attach If true, component is displayed on the map. Otherwise, control is just linked to the map. 
+		 * @param control Control or Handler to add.
+		 * @param attach If true, control is displayed on the map. Otherwise, control is just linked to the map. 
 		 * 
 		 * @example The following code explains how to add a control :
 		 * 
@@ -447,14 +415,15 @@ package org.openscales.fx
 		 * 	myMap.addControl(new geoportal.control.OverviewMap());
 		 * </listing>
 		 */
-		public function addControl(control:IControl, attach:Boolean = true):void{
+		public function addControl(control:IHandler, attach:Boolean = true):void{
 			
 			if(control is IVisualElement){
-				this._map.addControl(control, false);
 				
 				if(attach){
 					this.addElement(control as IVisualElement);
 				}
+				
+				this._map.addControl(control, false);
 			}
 			else{
 				this._map.addControl(control,attach);
@@ -462,15 +431,49 @@ package org.openscales.fx
 		}
 		
 		/**
-		 * Adds a list of controls to the map and displays them
+		 * Adds a list of controls and handlers to the map and displays them.
 		 * 
-		 * @param controls The list of controls to add to the map.
+		 * @param controls The list of controls and handlers to add to the map.
 		 */
-		public function addControls(controls:Vector.<IControl>):void{
+		public function addControls(controls:Vector.<IHandler>):void{
 			
-			for each (var control:IControl in controls){
+			for each (var control:IHandler in controls){
 				
 				this.addControl(control);
+			}
+		}
+		
+		/**
+		 * Removes given control or handler from the map.
+		 * 
+		 * @param control Control or Handler to remove
+		 * 
+		 * @example The following code explains how to remove a control :
+		 * 
+		 * <listing version="3.0">
+		 * 	myMap.removeControl(new geoportal.control.OverviewMap());
+		 * </listing>
+		 */
+		public function removeControl(control:IHandler):void
+		{
+			var test:Vector.<IVisualElement> = new Vector.<IVisualElement>();
+			
+			var h:int = 0;
+			var j:int = this.numElements;
+			
+			for(; h<j; ++h)
+			{
+				test.push(this.getElementAt(h));
+			}
+			
+			// removeElement if added as IVisualElement
+			var i:int = this.controls.indexOf(control);
+			if (i != -1)
+			{
+				if ((control as IVisualElement) && ((control as IVisualElement).parent == this)) {
+					this.removeElement(control as IVisualElement);
+				}
+				this._map.removeControl(control);
 			}
 		}
 	}

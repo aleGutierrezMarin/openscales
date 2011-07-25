@@ -78,23 +78,37 @@ package org.openscales.fx.layer
 				(this._layer as WMS).url=value;
 		}
 		
+		/**
+		 * The height of the tiles requested.
+		 * If the layer is not in tiled mode, the value of tHeight 
+		 * is the height of the map or NaN if the layer is not in a map
+		 */
 		public function set tHeight(value:Number):void{
 			if(this._layer != null){
 				(this._layer as WMS).tileHeight=value;
 			}
 		}
-		
+		/**
+		 * @private
+		 */
 		public function get tHeight():Number{
 			return (this._layer as WMS).tileHeight;
 		}
 		
-		
+		/**
+		 * The width of the tiles requested.
+		 * If the layer is not in tiled mode, the value of tWidth 
+		 * is the width of the map or NaN if the layer is not in a map
+		 */
 		public function set tWidth(value:Number):void{
 			if(this._layer != null){
 				(this._layer as WMS).tileWidth = value;
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		public function get tWidth():Number{
 			return (this._layer as WMS).tileHeight;
 		}

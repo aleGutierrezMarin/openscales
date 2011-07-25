@@ -58,22 +58,14 @@
 				this._alphaLabel = Math.round(this._alpha)+"%";
 			}
 			
-			/**
-			 * Change the display value of the datatip
-			 * add %
-			 */
-			public function percentDataTip(value:Number):String
-			{
-				return value+"%";
-			}
 			
 			/**
 			 * Change the layer opacity when the slider value change
 			 */
 			public function layerChangeOpacity(event:LayerEvent):void 
 			{
-				if(event.target is Layer)
-					this._alpha = (event.target as Layer).alpha;
+				if (this._layer == event.layer)
+					this._alpha = event.newOpacity*100;
 			}
 		]]>
 	</fx:Script>
@@ -93,7 +85,7 @@
 				   height="11" width="100" minimum="0" maximum="100" 
 				   snapInterval="1"
 				   change="layerOpacity(event)"
-				   dataTipFormatFunction="percentDataTip"
+				   showDataTip="false"
 				   value="{this._alpha}" />
 		<s:Label id="layerControlOpacityLabel" text="{this._alphaLabel}" />
 		

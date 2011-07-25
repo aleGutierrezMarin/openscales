@@ -2,6 +2,8 @@ package org.openscales.fx.control.layer
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	import mx.events.SliderEvent;
 	
@@ -21,28 +23,35 @@ package org.openscales.fx.control.layer
 		 */
 		private var _map:Map = null;
 		private var _layer1:Layer = null;
+		private var _layer2:Layer = null;
 		private var _zoom:LayerZoomToExtent = null;
+		private const RESOLUTION:Number = 0.3515625;
+		private const PRECISION:Number = 1e-6;
+		
+		public function LayerZoomToExtentTest() {}
 		
 		[Before]
 		public function setUp():void
 		{
-			_map = new Map();
-			_layer1 = new Layer("layer");
+			_map = new Map(200,100);
+			_layer1 = new Layer("layer1");
 			_map.addLayer(_layer1);
+			_layer2 = new Layer("layer2");
+			_layer2.maxExtent = new Bounds(-10,-10,10,10);
+			_map.addLayer(_layer2);
 			_zoom = new LayerZoomToExtent();
-			_zoom.layer = _layer1;
+			_zoom.layer = _layer2;
 		}
-		
 		
 		[Test]
-		public function clickZoomToExtentTest():void
+		public function shouldZoomToExtentOnClick():void
 		{
-			var maxExtent:Bounds = _layer1.maxExtent;
-			trace("_map.extent "+_map.extent);
+			var maxExtent:Bounds = new Bounds(-(200 * RESOLUTION)/2,-(100 * RESOLUTION)/2,(200 * RESOLUTION)/2,(100 * RESOLUTION)/2);
 			_zoom.setLayerExtent(new MouseEvent(MouseEvent.CLICK));
-			trace("_map.extent 2 "+_map.extent);
-			Assert.assertEquals(maxExtent, _map.extent);
+			Assert.assertTrue("bound left invalid", (maxExtent.left - _map.extent.left)<PRECISION);
+			Assert.assertTrue("bound bottom invalid", (maxExtent.bottom - _map.extent.bottom)<PRECISION);
+			Assert.assertTrue("bound right invalid", (maxExtent.right - _map.extent.right)<PRECISION);
+			Assert.assertTrue("bound height invalid", (maxExtent.height - _map.extent.height)<PRECISION);
 		}
-		
 	}
 }

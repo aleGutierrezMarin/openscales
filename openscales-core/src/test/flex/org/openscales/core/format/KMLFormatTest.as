@@ -23,6 +23,8 @@ package org.openscales.core.format
 		[Embed(source="/assets/kml/sample3.kml", mimeType="application/octet-stream")]
 		protected const Sample3KML:Class;
 		
+		public function KMLFormatTest() {}
+		
 		protected function sample1KML():XML {
 			var ba : ByteArray = (new Sample1KML()) as ByteArray;
 			return new XML(ba.readUTFBytes( ba.length ));

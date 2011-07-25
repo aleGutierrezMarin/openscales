@@ -14,6 +14,8 @@ package org.openscales.core.configuration
 		[Embed(source="/assets/configuration/sampleMapConfOk.xml", mimeType="application/octet-stream")]
 		protected const SampleMapConfOk:Class;
 		
+		public function ConfigurationTest() {}
+		
 		[Test]
 		public function testLoadingConfOkByContructor( ) : void {
 			var conf:IConfiguration = new Configuration(XML(new SampleMapConfOk()));

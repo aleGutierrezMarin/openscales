@@ -3,7 +3,7 @@
 <Control xmlns="org.openscales.fx.control.*"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 width="215"
+		 width="250" height="200"      
 		 creationComplete="configure()">
 	
 	<fx:Script>
@@ -47,7 +47,7 @@
 			 * Title value for the Panel
 			 */
 			[Bindable]
-			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.layers');
+			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.title');
 			
 			
 			/**
@@ -104,7 +104,7 @@
 			 */
 			override public function onMapLanguageChange(event:I18NEvent):void 
 			{
-				panelTitle = Catalog.getLocalizationForKey('layerswitcher.layers');
+				panelTitle = Catalog.getLocalizationForKey('layerswitcher.title');
 			}
 			
 			/**
@@ -247,20 +247,21 @@
 	
 
 	
-	<s:Panel id="layerPanel" title="{this.panelTitle}" width="220" > 
+	<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" > 
 		<s:List id="layerList" 
 				dropEnabled="false"
 				dragEnabled="false"
 				dragMoveEnabled="false"
 				dataProvider="{this.dataProvider}"
 				width="100%"
+				height="{(this.height-35)}"
 				x="0"
 				y="0"
 				borderVisible="false">
 			<s:layout>
 				<s:VerticalLayout horizontalAlign="justify"
 								  variableRowHeight="true"
-								  requestedRowCount="4"/>
+								  requestedRowCount="4" />
 			</s:layout>
 		</s:List>
 	</s:Panel>

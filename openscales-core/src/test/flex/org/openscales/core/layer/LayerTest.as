@@ -115,5 +115,59 @@ package org.openscales.core.layer
 			Assert.assertEquals(originator2, layer.originators[1]);
 			
 		}
+		
+		
+		/**
+		 * Validates that the layer alpha is correctly set
+		 */
+		[Test]
+		public function shouldSetAlpha():void
+		{
+			// Given a Layer and a number value
+			var layer:Layer = new Layer("layer");
+			var alpha:Number = 0.43;
+			
+			// When the alpha is set
+			layer.alpha = alpha;
+			
+			var epsilon:Number = 0.01;
+			
+			// Then the opacity parameter is set to the given value
+			Assert.assertTrue("Incorrect opacity value", Math.abs(alpha-layer.alpha) < epsilon);
+		}
+		
+		/**
+		 * Validates that the layer alpha minimum value is 0 even if a lower value is given
+		 */
+		[Test]
+		public function shouldSetMinimumAlpha():void
+		{
+			// Given a Layer and a number value under 0
+			var layer:Layer = new Layer("layer");
+			var alpha:Number = -5;
+			
+			// When the opacity is set
+			layer.alpha = alpha;
+			
+			// Then the alpha parameter should be the minimum value : 0
+			Assert.assertEquals("Incorrect opacity value", 0, layer.alpha);
+		}
+		
+		/**
+		 * Validates that the layer opacity maximum value is 1 even if a higher value is given
+		 */
+		[Test]
+		public function shouldSetMaximumAlpha():void
+		{
+			// Given a Layer and a number value higher than 1
+			var layer:Layer = new Layer("layer");
+			var alpha:Number = 5;
+			
+			// When the opacity is set
+			layer.alpha = alpha;
+			
+			// Then the opacity parameter should be the maximum value : 1
+			Assert.assertEquals("Incorrect opacity value", 1, layer.alpha);
+		}
 	}
 }
