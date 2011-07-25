@@ -1,7 +1,6 @@
 package org.openscales.geometry.basetypes
 {
 	import org.flexunit.Assert;
-	
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertTrue;
 
@@ -13,6 +12,103 @@ package org.openscales.geometry.basetypes
 		public function BoundsTest()
 		{
 		}
+		
+		/**
+		 * Validate that the intersectsBounds return true with two bounds that are 
+		 * in intersection in the same projection
+		 */
+		[Test]
+		public function shouldReturnTrueWithTwoIntersectBoundsInSameProjection():void
+		{
+			// Given two bounds with same projection that are in intersection
+			var bounds1:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
+			var bounds2:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
+			
+			// When the intersectsBounds is called
+			var result:Boolean = bounds1.intersectsBounds(bounds2);
+			
+			// Then the function return true
+			Assert.assertTrue("Bounds should intersect", result);
+		}
+		
+		/**
+		 * Validate that the intersectsBounds return false with two bounds that are 
+		 * not in intersection in the same projection
+		 */
+		[Test]
+		public function shouldReturnFalseWithTwoBoundsInSameProjectionWithNoIntersection():void
+		{
+			// Given two bounds with same projection that are in intersection
+			var bounds1:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
+			var bounds2:Bounds = new Bounds(10,5,10,7,"EPSG:2154");
+			
+			// When the intersectsBounds is called
+			var result:Boolean = bounds1.intersectsBounds(bounds2);
+			
+			// Then the function return true
+			Assert.assertFalse("Bounds should intersect", result);
+			Assert.assertFalse("Bounds should intersect", bounds2.intersectsBounds(bounds1));
+		}
+		
+		/**
+		 * Validate that the intersectsBounds return true with two bounds that are in intersection
+		 * but defined in two different projections
+		 */
+		[Test]
+		public function shouldReturnTrueWithTwoIntersectBoundsInDifferentProjection():void
+		{
+			// Given two bounds with different projection that are in intersection
+			var bounds1:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
+			var bounds2:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
+			bounds2.reprojectTo("EPSG:4326");
+			
+			// When the intersectsBounds is called
+			var result:Boolean = bounds1.intersectsBounds(bounds2);
+			
+			// Then the function return true
+			Assert.assertTrue("Bounds should intersect", result);
+			Assert.assertTrue("Bounds should intersect",  bounds2.intersectsBounds(bounds1));
+		}
+		
+		/**
+		 * Validate that the intersectsBounds return false with two bounds that are not in intersection
+		 * and defined in two different projections
+		 */
+		[Test]
+		public function shouldReturnFalseWithTwoBoundsInDifferentProjectionWithNoIntersection():void
+		{
+			// Given two bounds with different projection that are not in intersection
+			var bounds1:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
+			var bounds2:Bounds = new Bounds(10,5,10,7,"EPSG:2154");
+			bounds2.reprojectTo("EPSG:4326");
+			
+			// When the intersectsBounds is called
+			var result:Boolean = bounds1.intersectsBounds(bounds2);
+			
+			// Then the function return true
+			Assert.assertFalse("Bounds should intersect", result);
+			Assert.assertFalse("Bounds should intersect",  bounds2.intersectsBounds(bounds1));
+		}
+		
+		/**
+		 * Validate that the containsBounds return true with two bounds that are contains one by other
+		 * but defined in two different projections
+		 */
+		[Test]
+		public function shouldReturnTrueWithTwoContainsBoundsInDifferentProjection():void
+		{
+			// Given two bounds with different projection that are in contains one than another one
+			var bounds1:Bounds = new Bounds(1,2,10,10,"EPSG:2154");
+			var bounds2:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
+			bounds2.reprojectTo("EPSG:4326");
+			
+			// When the intersectsBounds is called
+			var result:Boolean = bounds1.containsBounds(bounds2);
+			
+			// Then the function return true
+			Assert.assertTrue("Bounds should intersect", result);
+		}
+		
 		
 		/**
 		 * Validate that the bounds returner by getIntersection return a proper bounds 
