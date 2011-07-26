@@ -69,7 +69,14 @@ package org.openscales.core.layer {
 		 * The list of originators for the layer.
 		 * @default null
 		 */
-		private var _originators:Vector.<DataOriginator> = null;
+		protected var _originators:Vector.<DataOriginator> = null;
+		
+		/**
+		 * @private
+		 * Indicates if the layer should be displayed in the LayerSwitcher List or not
+		 * @default true
+		 */
+		protected var _displayInLayerManager:Boolean = true;
 		
 		/**
 		 * Layer constructor
@@ -516,8 +523,8 @@ package org.openscales.core.layer {
 			return this._maxExtent;
 		}
 		
-		public function set maxExtent(value:Bounds):void {
-			this._maxExtent = value;
+		public function set maxExtent(value:*):void {
+			this._maxExtent = (value as Bounds);
 		}
 		
 		/**
@@ -742,16 +749,42 @@ package org.openscales.core.layer {
 		{
 			return _originators;
 		}
+
+		/**
+		 * @private
+		 * Take * in paramteter instead of Vector.<DataOriginator> to allowed several way of definition 
+		 * (string and Vector.<DataOriginator> usefull for layer or FxLayer)
+		 */
+		public function set originators(originators:Vector.<DataOriginator>):void
+		{
+			this._originators = (originators as Vector.<DataOriginator>);
+			if(this._map)
+			{
+				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
+			}
+		}
+		
+		/**
+		 * Indicates if the layer should be displayed in the LayerManager List or not
+		 * @default true
+		 */
+		public function get displayInLayerManager():Boolean 
+		{		
+			return this._displayInLayerManager;
+		}
 		
 		/**
 		 * @private
 		 */
-		public function set originators(originators:Vector.<DataOriginator>):void
+		public function set displayInLayerManager(value:Boolean):void 
 		{
-			_originators = originators;
-			if(this._map)
+			if(value!=this._displayInLayerManager)
 			{
-				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
+				this._displayInLayerManager = value;
+				if(this._map)
+				{
+					this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED, this));
+				}
 			}
 		}
 	}
