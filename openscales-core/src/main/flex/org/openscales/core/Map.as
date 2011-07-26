@@ -1506,7 +1506,9 @@ package org.openscales.core
 					control.map = this;
 					(control as IControl).draw();
 					if (attach) {
-						this.addChild(control as Sprite);
+						this.addChild(control as Sprite)
+						if((control as Sprite))
+							(control as Sprite).visible = true;
 					}
 				}
 			}

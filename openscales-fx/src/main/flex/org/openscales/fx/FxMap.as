@@ -421,6 +421,7 @@ package org.openscales.fx
 				
 				if(attach){
 					this.addElement(control as IVisualElement);
+					(control as IVisualElement).visible = true;
 				}
 				
 				this._map.addControl(control, false);
