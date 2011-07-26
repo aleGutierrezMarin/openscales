@@ -1,7 +1,7 @@
 package org.openscales.core.layer.params
 {
 	/**
-	 * This class is an abstract class don't use it directly use others oarams like
+	 * This class is an abstract class so don't use it directly; use others params like
 	 * wmsparams WFSparams...
 	 * */
 	public class AbstractParams implements IHttpParams

@@ -48,27 +48,23 @@ package {
 			_map.addLayer(mapnik);
 			
 			// GML layer (draws polygons over France)
-			var xml:XML = new XML(new XMLCONTENT());
+			/*var xml:XML = new XML(new XMLCONTENT());
 			var style:Style = Style.getDefaultStyle();
 			var GMLlayer:GML = new GML("GMLlayer", "3.2.1", xml, "EPSG:2154",style);
-			_map.addLayer(GMLlayer,false, true);
+			_map.addLayer(GMLlayer);*/
 			
-			// GML layer (draws points in USA)
+			/*// GML layer (draws points in USA)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();
 			var GMLlayer3:GML = new GML("GMLlayer3", "3.2.1", xml3, "EPSG:4326", style3);
-			_map.addLayer(GMLlayer3, false, true);
+			_map.addLayer(GMLlayer3);
 			
 			//GML layer (draws lines over Tasmania)
 			
 			var xml2:XML = new XML(new XMLCONTENTLINES());
 			var style2:Style = Style.getDefaultStyle();
 			var GMLlayer2:GML = new GML("GMLlayer2", "3.2.1", xml2, "EPSG:4326", style2);
-			_map.addLayer(GMLlayer2, false, true);
-			
-			var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
-			cycle.proxy = "http://openscales.org/proxy.php?url=";
-			_map.addLayer(cycle); 
+			_map.addLayer(GMLlayer2);*/
 			
 			
 			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");

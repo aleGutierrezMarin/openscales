@@ -66,7 +66,7 @@ package org.openscales.core.format
 		private var sFXML:String   = "<wfs:member>";
 		private var lastInd:int    = 0;
 		//fps
-		private var allowedTime:Number = 10; /* 10 miliseconds */
+		private var allowedTime:Number = 10;
 		private var startTime:Number = 0;
 		private var savedIndex:Number = 0;
 		private var sprite:Sprite = new Sprite();
