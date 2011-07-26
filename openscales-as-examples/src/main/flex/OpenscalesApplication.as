@@ -38,7 +38,6 @@ package {
 
 		public function OpenscalesApplication() {
 			_map=new Map();
-			_map.center=new Location(65,35);
 			_map.size=new Size(1200, 700);
 
 			// Add layers to map
@@ -48,12 +47,12 @@ package {
 			_map.addLayer(mapnik);
 			
 			// GML layer (draws polygons over France)
-			/*var xml:XML = new XML(new XMLCONTENT());
+			var xml:XML = new XML(new XMLCONTENT());
 			var style:Style = Style.getDefaultStyle();
 			var GMLlayer:GML = new GML("GMLlayer", "3.2.1", xml, "EPSG:2154",style);
-			_map.addLayer(GMLlayer);*/
+			_map.addLayer(GMLlayer);
 			
-			/*// GML layer (draws points in USA)
+			// GML layer (draws points in USA)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();
 			var GMLlayer3:GML = new GML("GMLlayer3", "3.2.1", xml3, "EPSG:4326", style3);
@@ -64,14 +63,14 @@ package {
 			var xml2:XML = new XML(new XMLCONTENTLINES());
 			var style2:Style = Style.getDefaultStyle();
 			var GMLlayer2:GML = new GML("GMLlayer2", "3.2.1", xml2, "EPSG:4326", style2);
-			_map.addLayer(GMLlayer2);*/
+			_map.addLayer(GMLlayer2);
 			
 			
-			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
+			/*var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
 			regions.projSrsCode = "EPSG:2154";
 			regions.style = Style.getDefaultSurfaceStyle();
 			
-			_map.addLayer(regions);
+			_map.addLayer(regions);*/
 
 	
 			// Add Controls to map
@@ -92,7 +91,6 @@ package {
 			_map.addControl(new DragHandler());
 
 			// Set the map center
-			_map.center=new Location(65,35);
 			_map.zoom=3;
 						
 			this.addChild(_map);
