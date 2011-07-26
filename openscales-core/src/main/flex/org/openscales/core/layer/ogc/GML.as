@@ -25,7 +25,7 @@ package org.openscales.core.layer.ogc
 		private var _gmlFormat:GML32Format = null;
 		private var _xml:XML = null;
 		private var _style:Style = null;
-		private var _featureVector:Vector.<Feature>;
+		private var _featureVector:Vector.<Feature> = null;
 		
 		public function GML(name:String, 
 							version:String,
@@ -40,28 +40,20 @@ package org.openscales.core.layer.ogc
 			this._style = style;
 			this._style.rules.push(new Rule());
 			//this._style.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x808800,3,1,Stroke.LINECAP_BUTT)));
-			
-			featureVector = new Vector.<Feature>();
-			featureVector = this._gmlFormat.parseGmlFile(xml);
-			var i:uint;
-			for (i = 0; i < _featureVector.length; i++){
-				
-				_featureVector[i].style = this._style;
-				this.addFeature(_featureVector[i]);
-				
-			}
 		
 		}
 		
 		override protected function draw():void{
-			
-			var nbChildren:int = this.numChildren;
-			var o:DisplayObject;
-			for(var i:uint=0 ; i<nbChildren; ++i) {
-				o = this.getChildAt(i);
-				if (o is Feature) {
-					(o as Feature).draw();
+			if(this._featureVector == null && this._xml) {
+				featureVector = new Vector.<Feature>();
+				featureVector = this._gmlFormat.parseGmlFile(this._xml);
+				var i:uint;
+				for (i = 0; i < _featureVector.length; i++){
+					_featureVector[i].style = this._style;
+					this.addFeature(_featureVector[i]);
 				}
+			} else {
+				super.draw();
 			}
 		}
 
