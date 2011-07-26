@@ -14,7 +14,7 @@ Set the opacity of each layer (base layer or overlay) using its slider.</p> -->
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
-		<Mapnik name="Mapnik" />
+		<Mapnik id="mapnik" name="Mapnik" />
 		
 		<CycleMap name="CycleMap" alpha="0.5" proxy="http://openscales.org/proxy.php?url="/>
 
@@ -26,5 +26,19 @@ Set the opacity of each layer (base layer or overlay) using its slider.</p> -->
 		<LayerManager x="10" y="10" width="215" />
 		
 	</Map>
+	
+	
+	<s:Button name="button" label="Change displayInLayerManager Mapnik value" 
+			  bottom="100" right="50"
+			  click="changeDisplayInLayerManager(event)" />
+	
+	<fx:Script>
+		<![CDATA[
+			public function changeDisplayInLayerManager(event:Event):void
+			{
+				mapnik.displayInLayerManager = !mapnik.displayInLayerManager;
+			}
+		]]>
+	</fx:Script>
 	
 </s:Group>
