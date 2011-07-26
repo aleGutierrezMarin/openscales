@@ -634,6 +634,12 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			{
 				Assert.assertTrue("the component should be a LineStringFeature", featureVector[i] is LineStringFeature);
 			}
+			var xml3:XML = new XML(new GMLFILE());
+			var style3:Style = Style.getDefaultStyle();
+			var GMLlayer3:GML = new GML("GMLlayer3", "3.2.1", xml3, "EPSG:4326", style3);
+			var featureVector2:Vector.<Feature> = GMLlayer3.featureVector;
+			
+			
 		}	
 		
 	}
