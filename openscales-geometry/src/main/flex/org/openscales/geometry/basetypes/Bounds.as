@@ -270,16 +270,27 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Returns a bounds instance from a string following this format: "left,bottom,right,top".
+		 * Returns a bounds instance from a string following this format: "left,bottom,right,top" or  "left,bottom,right,top,projection".
 		 *
 		 * @param str The string from which we want create a bounds instance.
 		 * @param srsCode The code defining the projection
 		 * 
+		 * @throw an Argument error if the string contains other that 4 or 5 elements
+		 * 
 		 * @return An instance of bounds.
 		 */
-		public static function getBoundsFromString(str:String,srsCode:String):Bounds {
+		public static function getBoundsFromString(str:String,srsCode:String = "EPSG:4326"):Bounds {
 			var bounds:Array = str.split(",");
-			return Bounds.getBoundsFromArray(bounds,srsCode);
+			
+			if(bounds.length == 4)
+				return Bounds.getBoundsFromArray(bounds,srsCode);
+			
+			if(bounds.length == 5)
+			{
+				var projection:String = bounds.pop();
+				return Bounds.getBoundsFromArray(bounds,projection);
+			}
+			throw(new ArgumentError("the array must contains 4 or 5 values for bbox"));
 		}
 		
 		/**

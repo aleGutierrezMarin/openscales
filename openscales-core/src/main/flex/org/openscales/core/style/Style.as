@@ -113,9 +113,23 @@ package org.openscales.core.style {
 		}
 		
 		public static function getDefaultSurfaceStyle():Style {
-
+			var fill1:SolidFill = new SolidFill();
+			fill1.color = 0x99D0F2;
+			fill1.opacity = 0.4;
+			var stroke1:Stroke = new Stroke();
+			stroke1.width = 1;
+			stroke1.color = 0x96A621;
+			var stroke2:Stroke = new Stroke();
+			stroke2.width = 4;
+			stroke2.color = 0xffffff;
+			var ps1:PolygonSymbolizer = new PolygonSymbolizer(fill1, stroke2);
+			var ps2:PolygonSymbolizer = new PolygonSymbolizer(null, stroke1);
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(ps1);
+			rule.symbolizers.push(ps2);
 			var style:Style = new Style();
-			style.rules.push(getPolygonRule());
+			style.rules.push(rule);
 			style.name = "Surface Style";
 
 			return style;

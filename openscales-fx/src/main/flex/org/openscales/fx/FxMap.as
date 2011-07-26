@@ -311,12 +311,20 @@ package org.openscales.fx
 		 * WGS84 = EPSG:4326 only (not in the SRS of the base layer) !
 		 */
 		public function set center(value:String):void {
-			var strCenterLonLat:Array = value.split(",");
-			if (strCenterLonLat.length != 2) {
-				Trace.error("Map.centerLonLat: invalid number of components");
-				return ;
-			}
-			_center = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]), Geometry.DEFAULT_SRS_CODE);
+			
+			var centerStringArray:Array = value.split(",");
+			
+			if ( centerStringArray.length == 2)
+			{
+				_map.center = new Location(centerStringArray[0], centerStringArray[1], Geometry.DEFAULT_SRS_CODE);
+			} else 
+				if ( centerStringArray.length == 3 )
+				{
+					_map.center = new Location(centerStringArray[0], centerStringArray[1], centerStringArray[2]);
+				} else
+				{
+					return;
+				}
 		}
 		
 		/**
@@ -421,6 +429,7 @@ package org.openscales.fx
 				
 				if(attach){
 					this.addElement(control as IVisualElement);
+					(control as IVisualElement).visible = true;
 				}
 				
 				this._map.addControl(control, false);
