@@ -122,6 +122,7 @@
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this._map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,this.refresh);
 				}
 			}
 			
@@ -138,6 +139,7 @@
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,this.refresh);
 				}
 			}
 			
@@ -146,7 +148,6 @@
 			 * @param event Layer event
 			 */
 			public function refresh(event:LayerEvent):void {	
-				
 				if(event.type == LayerEvent.LAYER_ADDED){
 					
 					// Add item at the bottom of the list
@@ -162,10 +163,16 @@
 
 				}
 				
-				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
+				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER
+					|| event.type == LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED ){
 					var overlayArray:Vector.<Layer> = this.map.layers;
 					var i:uint = overlayArray.length;
 					this._layers.removeAll();
+					{
+						if(overlayArray[i-1].displayInLayerManager)
+						layerList.dataProvider.addItem(overlayArray[i-1]);
+					}
+						
 
 					for(i;i>0;--i){
 						
