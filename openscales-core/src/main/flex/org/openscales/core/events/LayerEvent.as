@@ -117,6 +117,12 @@ package org.openscales.core.events
 		 */ 
 		public static const LAYER_PROJECTION_CHANGED:String="openscales.layerProjectionChanged";
 		
+		/**
+		 * Event type dispatched when the layer displayInLayerManager is changed
+		 */ 
+		public static const LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED:String="openscales.displayInLayerManagerChanged";
+		
+		
 		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{

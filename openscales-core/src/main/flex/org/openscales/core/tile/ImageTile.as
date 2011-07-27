@@ -73,6 +73,13 @@ package org.openscales.core.tile
 			if (this.url == null) {
 				this.url = this.layer.getURL(this.bounds);
 			}
+			if(this.url==null) {
+				if (_request) {
+					_request.destroy();
+					_request = null;
+				}
+				return false;
+			}
 
 			var cachedBitmap:Bitmap;
 			if ((this.layer is Grid) && ((cachedBitmap=(this.layer as Grid).getTileCache(this.url)) != null)) {

@@ -1,8 +1,8 @@
 package org.openscales.core.layer
 {
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.geometry.basetypes.Bounds;
     /**
      *this class allow to have a layer with two layer inside , one layer is displayed according to scale 
      */
@@ -14,10 +14,10 @@ package org.openscales.core.layer
 		
 		private var _isFirstLayer:Boolean;
 		
-		override public function set maxExtent(value:Bounds):void {
+		override public function set maxExtent(value:*):void {
 			super.maxExtent = value;
-			this._firstLayer.maxExtent = value;
-			this._lastLayer.maxExtent = value;
+			this._firstLayer.maxExtent = value as Bounds;
+			this._lastLayer.maxExtent = value as Bounds;
 		}
 		
 		override public function set map(map:Map):void {

@@ -17,6 +17,7 @@ package org.openscales.core.layer {
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.proj4as.Proj4as;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * A Layer displays raster (image) of vector datas on the map, usually loaded from a remote datasource.
@@ -69,7 +70,14 @@ package org.openscales.core.layer {
 		 * The list of originators for the layer.
 		 * @default null
 		 */
-		private var _originators:Vector.<DataOriginator> = null;
+		protected var _originators:Vector.<DataOriginator> = null;
+		
+		/**
+		 * @private
+		 * Indicates if the layer should be displayed in the LayerSwitcher List or not
+		 * @default true
+		 */
+		protected var _displayInLayerManager:Boolean = true;
 		
 		/**
 		 * Layer constructor
@@ -94,7 +102,15 @@ package org.openscales.core.layer {
 				if (this.projSrsCode == Geometry.DEFAULT_SRS_CODE) {
 					nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION;
 				} else {
-					nominalResolution = Proj4as.unit_transform(Geometry.DEFAULT_SRS_CODE, this.projSrsCode, Layer.DEFAULT_NOMINAL_RESOLUTION);
+					if(ProjProjection.getProjProjection(this.projSrsCode))
+					{
+						nominalResolution = Proj4as.unit_transform(Geometry.DEFAULT_SRS_CODE, this.projSrsCode, Layer.DEFAULT_NOMINAL_RESOLUTION);
+					}
+					else
+					{
+						this.projSrsCode = Geometry.DEFAULT_SRS_CODE;
+						nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION;
+					}
 				}
 			}
 			// numZoomLevels must be strictly greater than zero
@@ -516,8 +532,8 @@ package org.openscales.core.layer {
 			return this._maxExtent;
 		}
 		
-		public function set maxExtent(value:Bounds):void {
-			this._maxExtent = value;
+		public function set maxExtent(value:*):void {
+			this._maxExtent = (value as Bounds);
 		}
 		
 		/**
@@ -742,16 +758,42 @@ package org.openscales.core.layer {
 		{
 			return _originators;
 		}
+
+		/**
+		 * @private
+		 * Take * in paramteter instead of Vector.<DataOriginator> to allowed several way of definition 
+		 * (string and Vector.<DataOriginator> usefull for layer or FxLayer)
+		 */
+		public function set originators(originators:Vector.<DataOriginator>):void
+		{
+			this._originators = (originators as Vector.<DataOriginator>);
+			if(this._map)
+			{
+				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
+			}
+		}
+		
+		/**
+		 * Indicates if the layer should be displayed in the LayerManager List or not
+		 * @default true
+		 */
+		public function get displayInLayerManager():Boolean 
+		{		
+			return this._displayInLayerManager;
+		}
 		
 		/**
 		 * @private
 		 */
-		public function set originators(originators:Vector.<DataOriginator>):void
+		public function set displayInLayerManager(value:Boolean):void 
 		{
-			_originators = originators;
-			if(this._map)
+			if(value!=this._displayInLayerManager)
 			{
-				this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
+				this._displayInLayerManager = value;
+				if(this._map)
+				{
+					this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED, this));
+				}
 			}
 		}
 	}
