@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns="org.openscales.fx.control.layer.*"
@@ -20,7 +20,6 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.control.layer.LayerManager;
-			import org.openscales.fx.control.layer.LayerRenderer;
 			
 			/**
 			 * Tooltip for move front button
@@ -51,15 +50,23 @@
 			[Bindable]
 			public var _arrowDownVisibility:Boolean = true;
 			
+			private var _layer:Layer;
+			
+			private var _layerManager:LayerManager;
+			
+			public function get layer():Layer{
+				return _layer;
+			}
+						
 			/**
 			 * Configure the first display for this component when the layer is set
 			 * Set one or two arrows depending of the position of the current layer
 			 */ 
-			override public function set layer(value:Layer):void
+			public function set layer(value:Layer):void
 			{
-				super.layer = value;
+				this._layer = value;
 				
-				if(this._layer.map != null)
+				if(_layer && _layer.map)
 				{
 					this.updateArrowsDisplay();
 					
@@ -67,10 +74,20 @@
 				}
 			}
 			
+			public function get layerManager():LayerManager{
+			
+				return _layerManager;
+			}
+			
+			public function set layerManager(value:LayerManager):void{
+			
+				_layerManager = value;
+			}
+			
 			/**
 			 * @inherit
 			 */
-			override public function onMapLanguageChange(event:I18NEvent):void 
+			public function onMapLanguageChange(event:I18NEvent):void 
 			{
 				this.tooltipMoveFront = Catalog.getLocalizationForKey('layercontrol.movefront');
 				this.tooltipMoveBack = Catalog.getLocalizationForKey('layercontrol.moveback');		
@@ -81,37 +98,39 @@
 			 */
 			public function updateArrowsDisplay(event:LayerEvent = null):void
 			{
-				var map:Map = this._layer.map;
-				if(map)
-				{
-					// get the current map layer
-					var length:uint = map.layerContainer.numChildren;
-					
-					if(length<=1) 
+				if(_layer){
+					var map:Map = _layer.map;
+					if(map)
 					{
-						this._arrowUpVisibility = false;
-						this._arrowDownVisibility = false;
-					}
-					else 
-					{
-						// the layer is at the bottom of the list, we hide the arrowDown						
-						if(map.layerContainer.getChildIndex(this._layer) == 0)
-						{
-							this._arrowUpVisibility = true;
-							this._arrowDownVisibility = false;
-						}
-							// the layer is on the top of the list, we hide the arrowUp
-						else if(map.layerContainer.getChildIndex(this._layer)==length-1)
+						// get the current map layer
+						var length:uint = map.layerContainer.numChildren;
+						
+						if(length<=1) 
 						{
 							this._arrowUpVisibility = false;
-							this._arrowDownVisibility = true;
+							this._arrowDownVisibility = false;
 						}
-							// the layer is in the middle, you can up or down it
-						else
+						else 
 						{
-							this._arrowUpVisibility = true;
-							this._arrowDownVisibility = true;
-						}           	
+							// the layer is at the bottom of the list, we hide the arrowDown						
+							if(map.layerContainer.getChildIndex(this._layer) == 0)
+							{
+								this._arrowUpVisibility = true;
+								this._arrowDownVisibility = false;
+							}
+								// the layer is on the top of the list, we hide the arrowUp
+							else if(map.layerContainer.getChildIndex(this._layer)==length-1)
+							{
+								this._arrowUpVisibility = false;
+								this._arrowDownVisibility = true;
+							}
+								// the layer is in the middle, you can up or down it
+							else
+							{
+								this._arrowUpVisibility = true;
+								this._arrowDownVisibility = true;
+							}           	
+						}
 					}
 				}
 			}
@@ -120,20 +139,27 @@
 			 * Move the current Layer up on the map
 			 */
 			public function upLayer(event:MouseEvent):void {
-				this._layer.map.changeLayerIndexByStep(this._layer,+1);
+				if(_layerManager){
+				
+					_layerManager.moveForward(_layer);
+				}
+				else{
+					this._layer.map.changeLayerIndexByStep(this._layer,+1);
+				}
 			}
 			
 			/**
 			 * Move the current Layer down on the map
 			 */
 			public function downLayer(event:MouseEvent):void {
-				this._layer.map.changeLayerIndexByStep(this._layer,-1);
+				if(_layerManager){
+					
+					_layerManager.moveBack(_layer);
+				}
+				else{
+					this._layer.map.changeLayerIndexByStep(this._layer,-1);
+				}
 			}
-			
-			
-			
-			
-			
 		]]>
 	</fx:Script>
 	
@@ -161,4 +187,4 @@
 					height="10"
 					enabled="{this._arrowDownVisibility}"/>
 	</s:SkinnableContainer>
-</LayerControl>
+</s:Group>

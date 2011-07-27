@@ -35,6 +35,7 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.control.IconButton;
+			import org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer;
 			
 			import spark.components.Group;
 			import spark.components.HSlider;
@@ -53,7 +54,7 @@
 			/**
 			 * The dataProvider use for the list.
 			 */
-			private var _dataProvider:ArrayCollection = new ArrayCollection();
+			protected var _layers:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * @private
@@ -69,7 +70,7 @@
 			 * The itemRenderer class for display item of the LayerMananger list
 			 * @default DefaultLayerRenderer
 			 */
-			private var _itemRenderer:Class = DefaultLayerRenderer;
+			private var _itemRenderer:Class = DefaultLayerManagerItemRenderer;
 			
 			/**
 			 * Configure the object
@@ -95,7 +96,7 @@
 					var i:int = overlayArray.length;
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
-					this.dataProvider = ac;
+					this.layers = ac;
 				}
 			}
 			
@@ -145,38 +146,82 @@
 			 * @param event Layer event
 			 */
 			public function refresh(event:LayerEvent):void {	
-				//Test the triggered event
+				
 				if(event.type == LayerEvent.LAYER_ADDED){
-					this._dataProvider.addItemAt(event.layer,0);
 					
-					// indicates change to synchronyse the data
-					dispatchEvent(new Event("dataProviderChanged"));
-					layerList.invalidateDisplayList();
+					// Add item at the bottom of the list
+					// To ensure layers are presented in reverse order
+					this._layers.addItemAt(event.layer,0);
 				}
 				
 				if(event.type == LayerEvent.LAYER_REMOVED){
-					var index:int = layerList.dataProvider.getItemIndex(event.layer);
-					this._dataProvider.removeItemAt(index);
-					
-					// indicates change to synchronyse the data
-					dispatchEvent(new Event("dataProviderChanged"));
-					layerList.invalidateDisplayList();
+					var index:int = _layers.getItemIndex(event.layer);
+					if(index != -1){
+						_layers.removeItemAt(index);
+					}
+
 				}
 				
 				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
 					var overlayArray:Vector.<Layer> = this.map.layers;
 					var i:uint = overlayArray.length;
-					this._dataProvider.removeAll();
-					layerList.invalidateDisplayList();
-					for(i;i>0;--i)
-						layerList.dataProvider.addItem(overlayArray[i-1]);
-					
-					// indicates change to synchronyse the data
-					dispatchEvent(new Event("dataProviderChanged"));
-					layerList.invalidateDisplayList();
+					this._layers.removeAll();
+
+					for(i;i>0;--i){
+						
+						_layers.addItem(overlayArray[i-1]);
+					}
 				}
 			}
 			
+			/**
+			 * Moves given layer closer to the user, 
+			 * unless it is already on top of all the other layers 
+			 */
+			public function moveForward(layer:Layer):void{
+				
+				var index:uint = _layers.getItemIndex(layer);
+				
+				if(index > 0){
+					
+					var nextLayer:Layer = _layers.getItemAt(index-1) as Layer;
+					var nextLayerPositionInMap:int = _map.layers.indexOf(nextLayer);
+					
+					_map.changeLayerIndex(layer,nextLayerPositionInMap);	
+				}
+			}
+			
+			/**
+			 * Moves back the layer,
+			 * unless it is already behing all the other layers 
+			 */
+			public function moveBack(layer:Layer):void{
+				
+				var index:uint = _layers.getItemIndex(layer);
+				
+				if(index < _layers.length -1){
+					
+					var nextLayer:Layer = _layers.getItemAt(index+1) as Layer;
+					var nextLayerPositionInMap:int = _map.layers.indexOf(nextLayer);
+					
+					_map.changeLayerIndex(layer,nextLayerPositionInMap);	
+				}
+			}
+			
+			/**
+			 * Moves layer at given index
+			 */
+			public function moveLayerAtIndex(layer:Layer,index:uint):void{
+				
+				if( index < 0 && index > _layers.length-1 ){
+					return;
+				}
+				
+				var layerAtIndex:Layer = _layers.getItemAt(index) as Layer;
+				var mapIndex:int = _map.layers.indexOf(layerAtIndex);
+				_map.changeLayerIndex(layer,mapIndex);
+			}
+									
 			/**
 			 * Update layers order when a user change it
 			 * @param event Drag event
@@ -188,25 +233,20 @@
 			
 			// getter / setter
 			/**
-			 * The dataProvider use for the list.
+			 * The list of layers displayed in the LayerSwitcher
 			 */
-			[Bindable(event="dataProviderChanged")]
-			public function get dataProvider():ArrayCollection
+			[Bindable]
+			public function get layers():ArrayCollection
 			{
-				return this._dataProvider;
+				return this._layers;
 			}
 			
 			/**
 			 * @private
 			 */
-			public function set dataProvider(value:ArrayCollection):void
+			public function set layers(value:ArrayCollection):void
 			{
-				this._dataProvider=value;
-				dispatchEvent(new Event("dataProviderChanged"));
-				if( layerList )
-				{
-					layerList.invalidateDisplayList();
-				}
+				this._layers=value;
 			}
 			
 			/**
@@ -239,9 +279,16 @@
 			public function set itemRenderer(value:Class):void
 			{
 				this._itemRenderer=value;
-				layerList.itemRenderer = new ClassFactory(this._itemRenderer);
+				
+				var factory:ClassFactory = new ClassFactory(this._itemRenderer); 
+				
+				factory.properties = {
+					rendererOptions: this._rendererOptions,
+					layermanager: this
+				}
+				
+				layerList.itemRenderer = factory;
 			}
-			
 		]]>
 	</fx:Script>
 	
@@ -252,7 +299,7 @@
 				dropEnabled="false"
 				dragEnabled="false"
 				dragMoveEnabled="false"
-				dataProvider="{this.dataProvider}"
+				dataProvider="{this.layers}"
 				width="100%"
 				height="{(this.height-35)}"
 				x="0"
