@@ -133,14 +133,17 @@ package org.openscales.core.layer.ogc
 				return;
 			
 			var projectedBounds:Bounds = this.map.extent.clone();
+			var projectedMaxExtent:Bounds = this.maxExtent;
 			
 			if (this.projSrsCode != projectedBounds.projSrsCode) {
 				projectedBounds = projectedBounds.reprojectTo(this.projSrsCode);
+				projectedMaxExtent = projectedMaxExtent.reprojectTo(this.projSrsCode);
 			}
+			
 			var center:Location = projectedBounds.center;
 			
-			if (projectedBounds.containsBounds(this.maxExtent)) {
-				projectedBounds = this.maxExtent.clone();
+			if (projectedBounds.containsBounds(projectedMaxExtent)) {
+				projectedBounds = projectedMaxExtent.clone();
 			}
 			
 			var previousFeatureBbox:Bounds = this.featuresBbox; 
