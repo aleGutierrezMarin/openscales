@@ -149,7 +149,8 @@
 			 */ 
 			private function creationComplete(event:Event):void
 			{
-				this.width = this.parent.width - MARGING;
+				if(this.parent)
+					this.width = this.parent.width - MARGING;
 				
 				// First height and width values
 				this.labelHeight = layerSwitcherLabel.height + MARGING ;
@@ -157,7 +158,8 @@
 				
 				this.updateOptionnalDisplay();
 				
-				this.parent.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
+				if(this.parent)
+					this.parent.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
 				this.layerSwitcherLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
 			}
 			
