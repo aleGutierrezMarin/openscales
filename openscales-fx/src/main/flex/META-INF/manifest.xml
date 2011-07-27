@@ -81,5 +81,6 @@
 	
 	<component id="LayerCatalog" class="org.openscales.fx.control.LayerCatalog" />
 	<component id="AddLayerButton" class="org.openscales.fx.control.layer.AddLayerButton" />
+	<component id="RemoveLayerButton" class="org.openscales.fx.control.layer.RemoveLayerButton" />
 
 </componentPackage>

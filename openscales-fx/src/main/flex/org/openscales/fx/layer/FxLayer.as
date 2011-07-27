@@ -2,6 +2,7 @@ package org.openscales.fx.layer
 {	
 	import org.openscales.core.Map;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.fx.FxMap;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -21,6 +22,8 @@ package org.openscales.fx.layer
 		
 		protected var _dpi:Number = NaN;
 		
+		protected var _minResolution:Number = NaN;
+		
 		protected var _maxResolution:Number = NaN;
 		
 		protected var _numZoomLevels:Number = NaN;
@@ -36,6 +39,8 @@ package org.openscales.fx.layer
 		protected var _proxy:String = null;
 		
 		protected var _fxmap:FxMap;
+
+		protected var _displayInLayerManager:Boolean = true;
 		
 		public function FxLayer() {
 			super();
@@ -189,23 +194,26 @@ package org.openscales.fx.layer
 		/**
 		 * Indicates the max extent as a string in the layer projection
 		 */
-		public function get maxExtent():String {
+		public function get maxExtent():Bounds {
 			if(this._layer)
-				return this._layer.maxExtent.toString();
+				return this._layer.maxExtent;
 			if(this._maxExtent)
-				return this._maxExtent.toString();
+				return this._maxExtent;
 			return null;
 		}
 		/**
 		 * @Private
 		 */
-		public function set maxExtent(value:String):void {
-			if(this._layer)
-				this._layer.maxExtent = Bounds.getBoundsFromString(value,this._layer.projSrsCode);
-			else if(this._projection)
-				this._maxExtent = Bounds.getBoundsFromString(value,this._projection);
-			else
-				this._maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
+		public function set maxExtent(value:*):void {
+			if(value)
+			{
+				if(this._layer)
+					this._layer.maxExtent = Bounds.getBoundsFromString(value,this._layer.projSrsCode);
+				else if(this._projection)
+					this._maxExtent = Bounds.getBoundsFromString(value,this._projection);
+				else
+					this._maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
+			}
 		}
 		
 		/**
@@ -244,6 +252,24 @@ package org.openscales.fx.layer
 		/**
 		 * Indicates the layer maxResolution
 		 */
+		public function get minResolution():Number {
+			if(this._layer)
+				return this._layer.minResolution;
+			return this._minResolution;
+		}
+		/**
+		 * @Private
+		 */
+		public function set minResolution(value:Number):void {
+			this._minResolution = value;
+			if(this._layer)
+				this._layer.minResolution = value;
+			this.generateResolutions();
+		}
+		
+		/**
+		 * Indicates the layer maxResolution
+		 */
 		public function get maxResolution():Number {
 			if(this._layer)
 				return this._layer.maxResolution;
@@ -254,6 +280,8 @@ package org.openscales.fx.layer
 		 */
 		public function set maxResolution(value:Number):void {
 			this._maxResolution = value;
+			if(this._layer)
+				this._layer.maxResolution = value;
 			this.generateResolutions();
 		}
 		
@@ -378,5 +406,44 @@ package org.openscales.fx.layer
 				this._layer.tweenOnZoom;
 		}
 		
+		/**
+		 * Indicates if the layer should be displayed in the LayerSwitcher List or not
+		 * @default true
+		 */
+		public function get displayInLayerManager():Boolean 
+		{		
+			if(this.nativeLayer)
+				return this.nativeLayer.displayInLayerManager;
+			else return this._displayInLayerManager;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set displayInLayerManager(value:Boolean):void 
+		{
+			this._displayInLayerManager = value;
+			if(this.nativeLayer)
+				this.nativeLayer.displayInLayerManager = value;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get originators():Vector.<DataOriginator> 
+		{		
+			if(this.nativeLayer)
+				return this.nativeLayer.originators;
+			return null;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set originators(value:Vector.<DataOriginator>):void 
+		{
+			if(this.nativeLayer)
+				this.nativeLayer.originators = value;
+		}
 	}
 }

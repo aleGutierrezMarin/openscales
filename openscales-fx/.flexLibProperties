@@ -110,6 +110,8 @@
     <classEntry path="org.openscales.fx.control.LayerCatalogTest"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButtonTest"/>
+    <classEntry path="org.openscales.fx.control.layer.RemoveLayerButton"/>
+    <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

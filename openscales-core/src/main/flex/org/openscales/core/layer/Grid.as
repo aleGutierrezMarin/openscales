@@ -155,7 +155,8 @@ package org.openscales.core.layer
 			return null;
 		}
 		
-		override public function redraw(fullRedraw:Boolean = true):void {
+		override public function redraw(fullRedraw:Boolean = true):void 
+		{
 			if (!displayed) {
 				this.clear();
 				return;
@@ -171,10 +172,12 @@ package org.openscales.core.layer
 				if(fullRedraw)
 					this.clear();
 				if ( forceReTile || !tilesBounds.containsBounds(bounds)) {
+					this.clear();
 					this.initSingleTile(bounds);
 				}
 			} else {
 				if (forceReTile || !tilesBounds.containsBounds(bounds, true)) {
+					this.clear();
 					this.initGriddedTiles(bounds);
 				} else {
 					this.moveGriddedTiles(bounds);
