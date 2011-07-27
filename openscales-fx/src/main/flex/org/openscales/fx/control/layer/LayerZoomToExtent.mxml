@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns="org.openscales.fx.control.layer.*"
@@ -11,11 +11,22 @@
 			
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.Layer;
 			import org.openscales.geometry.basetypes.Bounds;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/zoomToExtent.png")]
 			private var _btnZoom:Class;
+			
+			private var _layer:Layer;
+			
+			public function get layer():Layer{
+				return _layer;
+			}
+			
+			public function set layer(value:Layer):void{
+				_layer = value;
+			}
 			
 			/**
 			 * Tootip for metadatas button
@@ -39,7 +50,7 @@
 			/**
 			 * @inherit
 			 */
-			override public function onMapLanguageChange(event:I18NEvent):void 
+			public function onMapLanguageChange(event:I18NEvent):void 
 			{
 				this.tooltipZoomToExtent = Catalog.getLocalizationForKey('layercontrol.zoomToExtent');
 			}
@@ -53,4 +64,4 @@
 				click="setLayerExtent(event)"
 				icon="{_btnZoom}" />
 	
-</LayerControl>
+</s:Group>
