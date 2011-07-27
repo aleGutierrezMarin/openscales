@@ -51,7 +51,7 @@ package org.openscales.core.format
 			format = null;
 		}
 		
-		/*[Test]
+		[Test]
 		public function testParseCoords():void
 		{
 			var xml:XML = <coords
@@ -330,7 +330,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
      		var xmlNode:XML = format.buildFeatureNode(feature, ns, featureType, geometryName);
 				
 		}
-		*/
+		
 
 		[Test]
 		public function TestBuildMultiLineStringNode():void{
