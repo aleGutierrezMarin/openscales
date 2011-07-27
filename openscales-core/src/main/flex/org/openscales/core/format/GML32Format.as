@@ -616,8 +616,8 @@ package org.openscales.core.format
 			var coordList:String = "";
 			for(i=0; i<coord.length; i++){
 				coordList+=String(coord[i]);
-				if (i!=coord.length)
-					coordList+=" ";
+				if (i != (coord.length - 1))
+					coordList += " ";
 			}
 			
 			var lineStringNode:XML = new XML("<LineString></LineString>");
@@ -665,7 +665,7 @@ package org.openscales.core.format
 			for(i=0; i<ring.components.length; i++)
 			{
 				coordList += String(ring.components[i]);
-				if (i != ring.componentsLength - 1)
+				if (i != ring.components.length - 1)
 					coordList += " ";
 			}
 			linearRingNode.posList = coordList;
@@ -725,6 +725,7 @@ package org.openscales.core.format
 		 * @param polygon
 		 * @return xml
 		 * 
+		 * todo Refactor
 		 */		
 		public function buildpolygonNode(polygon:Polygon):XML {
 			

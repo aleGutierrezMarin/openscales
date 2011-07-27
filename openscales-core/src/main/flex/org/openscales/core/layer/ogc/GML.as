@@ -23,20 +23,20 @@ package org.openscales.core.layer.ogc
 	{
 		private var _serverReq:XMLRequest = null;
 		private var _gmlFormat:GML32Format = null;
-		private var _xml:XML = null;
+		private var _xmlFile:XML = null;
 		private var _style:Style = null;
 		private var _featureVector:Vector.<Feature> = null;
 		
 		public function GML(name:String, 
 							version:String,
-							xml:XML,
+							xmlFile:XML,
 							projection:String,
 							style:Style)
 		{
 			super(name);
 			this.projSrsCode = projection;
 			this._gmlFormat = new GML32Format(null,null);
-			this._xml = xml;
+			this._xmlFile = xmlFile;
 			this._style = style;
 			this._style.rules.push(new Rule());
 			//this._style.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x808800,3,1,Stroke.LINECAP_BUTT)));
@@ -44,9 +44,9 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override protected function draw():void{
-			if(this._featureVector == null && this._xml) {
+			if(this._featureVector == null && this._xmlFile) {
 				featureVector = new Vector.<Feature>();
-				featureVector = this._gmlFormat.parseGmlFile(this._xml);
+				featureVector = this._gmlFormat.parseGmlFile(this._xmlFile);
 				var i:uint;
 				for (i = 0; i < _featureVector.length; i++){
 					_featureVector[i].style = this._style;

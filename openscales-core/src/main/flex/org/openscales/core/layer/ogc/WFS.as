@@ -23,7 +23,7 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WFS extends FeatureLayer
 	{
-		private var _writer:Format = null;
+		private var _writer:Format = null; 
 		
 		private var _geometryColumn:String = null;
 		
