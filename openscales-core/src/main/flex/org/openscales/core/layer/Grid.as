@@ -73,7 +73,7 @@ package org.openscales.core.layer
 			super(name, url, params);
 			
 			
-			this.buffer = 1;
+			this.buffer = 0;
 			
 			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
 			this.addEventListener(TileEvent.TILE_LOAD_START,tileLoadHandler);
@@ -163,9 +163,9 @@ package org.openscales.core.layer
 			
 			var bounds:Bounds = this.map.extent.clone();
 			
-			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw;
+			var tilesBounds:Bounds = this.getTilesBounds();  
 			
-			var tilesBounds:Bounds = this.getTilesBounds();            
+			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
 			
 			if (!this.tiled) {
 				if(fullRedraw)
@@ -187,10 +187,6 @@ package org.openscales.core.layer
 		}
 		
 		public function get tileWidth():Number {
-			/*if (this.tiled) {
-				return this._tileWidth;
-			} 
-			return map!=null?map.size.w:NaN;*/
 			return this._tileWidth;
 		}
 		
@@ -199,10 +195,6 @@ package org.openscales.core.layer
 		}
 		
 		public function get tileHeight():Number {
-			/*if (this.tiled) {
-				return this._tileHeight;
-			}
-			return map!=null?map.size.h:NaN;*/
 			return this._tileHeight;
 		}	
 		
@@ -344,7 +336,7 @@ package org.openscales.core.layer
 				} else {
 					row = this._grid[rowidx];
 				}
-				rowidx=++rowidx;
+				++rowidx;
 				
 				tileoffsetlon = startLon;
 				tileoffsetx = startX;
