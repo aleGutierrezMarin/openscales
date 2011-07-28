@@ -66,10 +66,10 @@
 			{
 				this._layer = value;
 				
+				this.updateArrowsDisplay();
+				
 				if(_layer && _layer.map)
-				{
-					this.updateArrowsDisplay();
-					
+				{					
 					this._layer.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, updateArrowsDisplay);
 				}
 			}
@@ -82,6 +82,7 @@
 			public function set layerManager(value:LayerManager):void{
 			
 				_layerManager = value;
+				this.updateArrowsDisplay();
 			}
 			
 			/**
@@ -98,41 +99,33 @@
 			 */
 			public function updateArrowsDisplay(event:LayerEvent = null):void
 			{
-				if(_layer){
-					var map:Map = _layer.map;
-					if(map)
-					{
-						// get the current map layer
-						var length:uint = map.layerContainer.numChildren;
-						
-						if(length<=1) 
-						{
-							this._arrowUpVisibility = false;
+				if(_layerManager && _layer && _layerManager.layers.length > 1){
+
+					
+					switch(_layerManager.layers.getItemIndex(_layer)){
+						// the layer is at the bottom of the list, we hide the arrowDown						
+						case  _layerManager.layers.length-1:{
+							this._arrowUpVisibility = true;
 							this._arrowDownVisibility = false;
+							break;
 						}
-						else 
-						{
-							// the layer is at the bottom of the list, we hide the arrowDown						
-							if(map.layerContainer.getChildIndex(this._layer) == 0)
-							{
-								this._arrowUpVisibility = true;
-								this._arrowDownVisibility = false;
-							}
-								// the layer is on the top of the list, we hide the arrowUp
-							else if(map.layerContainer.getChildIndex(this._layer)==length-1)
-							{
-								this._arrowUpVisibility = false;
-								this._arrowDownVisibility = true;
-							}
-								// the layer is in the middle, you can up or down it
-							else
-							{
-								this._arrowUpVisibility = true;
-								this._arrowDownVisibility = true;
-							}           	
+						case 0:{
+							this._arrowUpVisibility = false;
+							this._arrowDownVisibility = true;
+							break;
 						}
+						default:{
+							this._arrowUpVisibility = true;
+							this._arrowDownVisibility = true;
+						}
+					
 					}
 				}
+				else{
+					this._arrowUpVisibility = false;
+					this._arrowDownVisibility = false;
+				}
+				
 			}
 
 			/**

@@ -308,10 +308,10 @@
 			
 			<ChangeLayerVisibility layer="{_layer}" />
 			
-			<s:Label id="layerSwitcherLabel" width="100"/>
+			<s:Label id="layerSwitcherLabel" width="100" text="{_layer.name}"/>
 			
 			
-			<ChangeLayerPosition layer="{_layer}"  />
+			<ChangeLayerPosition layer="{_layer}" layerManager="{_layerManager}" />
 			
 			
 			<os:IconButton id="layerSwitcherReduceMaximize"
@@ -323,9 +323,6 @@
 						   iconDown="{this._btnReduceMaximize}"
 						   toolTip="{this.tooltipReduceMaximize}" />
 			<DeleteLayer id="layerSwitcherDeleteLayer" layer="{_layer}" />
-			
-			
-			
 		</s:SkinnableContainer>
 		
 		
