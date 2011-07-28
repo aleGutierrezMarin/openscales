@@ -37,6 +37,7 @@ package org.openscales.core
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -86,6 +87,32 @@ package org.openscales.core
 		
 		private var _cptGTween:uint = 0;
 		
+		private var _projection:String = "EPSG:4326";
+		
+		/**
+		 * The projection of the map. This is the display projection of the map
+		 * If a layer is not in the same projection as the projection of the map
+		 * he will not be displayed. 
+		 * 
+		 * @default EPSG:4326
+		 */
+		public function set projection(value:String):void
+		{
+			var event:MapEvent = new MapEvent(MapEvent.PROJECTION_CHANGED, this);
+			event.oldProjection = this._projection;
+			event.newProjection = value;
+			this._projection = value;
+			this.dispatchEvent(event);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get projection():String
+		{
+			return this._projection;
+		}
+		
 		
 		/**
 		 * @private
@@ -124,14 +151,16 @@ package org.openscales.core
 		 *
 		 * @param width the map's width in pixels
 		 * @param height the map's height in pixels
+		 * @param projection the map's projection
 		 */
-		public function Map(width:Number=600, height:Number=400) {
+		public function Map(width:Number=600, height:Number=400, projection:String="EPSG:4326") {
 			super();
 			
 			//load i18n module
 			I18nJSONProvider.addTranslation(ENLocale);
 			I18nJSONProvider.addTranslation(FRLocale);
 			
+			this._projection = projection;
 			this.size = new Size(width, height);
 			this._layerContainer = new Sprite();
 			// It is necessary to draw something before to define the size...
@@ -219,6 +248,7 @@ package org.openscales.core
 		}
 		
 		/**
+		 * @deprecated
 		 * The current baseLayer.
 		 * 
 		 * The baseLayer is used to identify what layer is used to define map display projection,

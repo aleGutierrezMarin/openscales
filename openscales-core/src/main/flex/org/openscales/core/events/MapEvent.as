@@ -19,9 +19,19 @@ package org.openscales.core.events{
 		 private var _oldZoom:Number = 0;
 		 
 		 /**
-		  * old zoom of the map
+		  * new zoom of the map
 		  */
 		 private var _newZoom:Number = 0;
+		 
+		 /**
+		 * old projection of the map
+		 */
+		 private var _oldProjection:String = null;
+		 
+		 /**
+		 * new projection of the map
+		 */
+		 private var _newProjection:String = null;
 		 
 		 /**
 		  * old center of the map
@@ -58,6 +68,11 @@ package org.openscales.core.events{
 		 * Event type dispatched when the map didn't move after a move_start or a drag_start
 		 */
 		public static const MOVE_NO_MOVE:String="openscales.mapnomove";
+		
+		/**
+		 * Event type dispatched when the projection of the map is changed
+		 */
+		public static const PROJECTION_CHANGED:String = "openscales.mapprojectionchanged";
 		
 		/**
 		 * Event type dispatched just before dragging the map.
@@ -144,6 +159,26 @@ package org.openscales.core.events{
 
 		public function set newZoom(value:Number):void {
 			this._newZoom = value;	
+		}
+		
+		public function set oldProjection(value:String):void
+		{
+			this._oldProjection = value;
+		}
+		
+		public function get oldProjection():String
+		{
+			return this._oldProjection;
+		}
+	
+		public function set newProjection(value:String):void
+		{
+			this._newProjection = value;
+		}
+		
+		public function get newProjection():String
+		{
+			return this._newProjection;
 		}
 		
 		public function get newCenter():Location
