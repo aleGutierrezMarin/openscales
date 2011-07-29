@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- LayerManager item renderer, design to render a layer in the LayerManager list -->
-<LayerRenderer xmlns="org.openscales.fx.control.layer.*"
-			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   xmlns:s="library://ns.adobe.com/flex/spark"
-			   xmlns:fx="http://ns.adobe.com/mxml/2009"
-			   xmlns:d="http://ns.adobe.com/fxg/2008/dt"
-			   xmlns:os="org.openscales.fx.control.*"
-			   xmlns:fxg="assets.fxg.*"
-			   autoDrawBackground="false"
-			   width="100%"
-			   height="100%"
-			   creationComplete="creationComplete(event)">
+<s:ItemRenderer xmlns="org.openscales.fx.control.layer.*"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:d="http://ns.adobe.com/fxg/2008/dt"
+		 xmlns:os="org.openscales.fx.control.*"
+		 width="100%"
+		 height="25"
+		 xmlns:fxg="assets.fxg.*"
+		 autoDrawBackground="false" 
+		 implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer">
 	
 	<fx:Script>
 		<![CDATA[
@@ -59,16 +59,10 @@
 			
 			
 			[Embed(source="/assets/images/widgetHide.png")]
-			private const BTN_MINIMIZE:Class;
+			protected const BTN_MINIMIZE:Class;
 			
 			[Embed(source="/assets/images/widgetShow.png")]
-			private const BTN_MAXIMIZE:Class;
-			
-			/**
-			 * @private
-			 * Marhing for width and height values
-			 */
-			private const MARGING:uint = 10;
+			protected const BTN_MAXIMIZE:Class;
 			
 			/**
 			 * The current source to the button to display reduce or maximize
@@ -82,100 +76,86 @@
 			 */
 			[Bindable]
 			public var tooltipReduceMaximize:String = Catalog.getLocalizationForKey('layercontrol.reducemaximize')
-				
+			
 			/**
 			 * @private
 			 * To know if the current LayerRenderer display a minimize or maximize item
 			 * @default true
 			 */
-			private var _isMinimized:Boolean = true;
+			protected var _isMinimized:Boolean = true;
 			
 			/**
 			 * @private
 			 * Define if the current layer is a drawing layer or not
 			 * @default false
 			 */
-			private var _isDrawingLayer:Boolean = false;
+			protected var _isDrawingLayer:Boolean = false;
 			
 			/**
 			 * @private
 			 * Define if the optionnal group has to be displayed
 			 * @default false
 			 */
-			private var _optionnalGroupDisplayed:Boolean = false;
+			protected var _optionnalGroupDisplayed:Boolean = false;
 			
 			/**
 			 * @private
 			 * Define the difference of size between maximize and minimize renderer
 			 * @default 0
 			 */
-			private var _maximizeGroupSize:Number = 0;
+			protected var _maximizeGroupSize:Number = 0;
 			
 			/**
 			 * @private
 			 * The position of the layerSwitcherDrawingTools
 			 * @default 0
 			 */
-			private var _groupPositionDraw:Number = 0;
+			protected var _groupPositionDraw:Number = 0;
 			
 			/**
 			 * @private
 			 * The position of the layerSwitcherOptionnalDisplay
 			 * @defualt 0
 			 */
-			private var _groupPositionOptionnal:Number = 0;
-			
+			protected var _groupPositionOptionnal:Number = 0;
 			
 			/**
-			 * @private
-			 * The height of the Layer Label
-			 * @default 30
+			 * The layer rendered by this ItemRenderer
 			 */
 			[Bindable]
-			public var labelHeight:Number = 30;
+			protected var _layer:Layer;
 			
-			/**
-			 * @private
-			 * The width for the Layer Label
-			 * @default 200
-			 */
 			[Bindable]
-			public var labelWidth:Number = 100;
+			protected var _layerManager:LayerManager;
 			
-			
+			[Bindable]
+			protected var _rendererOptions:Object;
 			
 			/**
-			 * Add listener for subcomponent properties changed
-			 */ 
-			private function creationComplete(event:Event):void
-			{
-				if(this.parent)
-					this.width = this.parent.width - MARGING;
+			 * The Layer rendered by this itemrenderer
+			 */
+			public function get layer():Layer{
 				
-				// First height and width values
-				this.labelHeight = layerSwitcherLabel.height + MARGING ;
-				this.labelWidth = this.width - 1.5*(changeLayerVisibility.width+changeLayerPosition.width+layerSwitcherReduceMaximize.width+layerSwitcherDeleteLayer.width);
-				
-				this.updateOptionnalDisplay();
-				
-				if(this.parent)
-					this.parent.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
-				this.layerSwitcherLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
+				return _layer;
 			}
 			
+			public function set layer(value:Layer):void{
+				
+				_layer = value;
+			}
 			
-			private function parentChange(event:PropertyChangeEvent):void
-			{
-				if(event.property == "width" || event.property == "contentWidth")
-				{
-					this.labelWidth = this.width - 1.5*(changeLayerVisibility.width+changeLayerPosition.width+layerSwitcherReduceMaximize.width+layerSwitcherDeleteLayer.width);					
-				}
-				if(event.property == "height" || event.property == "contentHeight")
-				{
-					this.labelHeight = layerSwitcherLabel.height + MARGING ;
-					this.updateOptionnalDisplay();
-				}
-			}		
+			/**
+			 * The LayerManager this ItemRenderer is displayed in
+			 */
+			public function get layerManager():LayerManager{
+				
+				return _layerManager;
+			}
+			
+			public function set layerManager(value:LayerManager):void{
+				
+				_layerManager = value;
+			}
 			
 			/**
 			 * @inherit
@@ -189,41 +169,22 @@
 			 *				displayZoomToExtent="true/false"
 			 *				displayMetadatas="true/false" /&gt;
 			 *		&lt;/rendererOptions&gt;
-			 * </LayerSwitcher>
+			 * &lt;/LayerSwitcher&gt;
 			 */
-			override public function manageRendererOptions():void
-			{
-				super.manageRendererOptions();
-				
-				if(this._rendererOptions)
-				{
-					if( this.rendererOptions.hasOwnProperty("displayZoomToExtent") && (this.rendererOptions["displayZoomToExtent"] == true) )
-					{
-						layerControlZoomToExtent.visible = true;
-						this._optionnalGroupDisplayed = true;
-					}
-					
-					/** TODO : work in progress
-					 // check if some options have to be displayed :
-					 if( this.rendererOptions.hasOwnProperty("displayLegend") && (this.rendererOptions["displayLegend"] == true) )
-					 {
-					 layerControlLegend.visible = true;
-					 this._optionnalGroupDisplayed = true;
-					 }
-					 
-					 if( this.rendererOptions.hasOwnProperty("displayMetadatas") && (this.rendererOptions["displayMetadatas"] == true) )
-					 {
-					 layerControlMetadatas.visible = true;
-					 this._optionnalGroupDisplayed = true;
-					 }
-					 */
-				}
+			public function get rendererOptions():Object{
+			
+				return _rendererOptions;
 			}
 			
+			public function set rendererOptions(value:Object):void{
+				
+				_rendererOptions = value;
+			}
+						
 			/**
 			 * @inherit
 			 */
-			override public function onMapLanguageChange(event:I18NEvent):void 
+			public function onMapLanguageChange(event:I18NEvent):void 
 			{
 				this.tooltipReduceMaximize = Catalog.getLocalizationForKey('layercontrol.reducemaximize');	
 			}
@@ -267,10 +228,11 @@
 					this._isMinimized = true;
 				
 				super.data = value;
+				this._layer = value as Layer;
 				
 				if((this._layer != null) )
 				{	
-					layerSwitcherLabel.text = this.layer.name;	
+					layerSwitcherLabel.text = this._layer.name;	
 					
 					if(this._layer is FeatureLayer)
 						this._isDrawingLayer = true;
@@ -323,19 +285,18 @@
 				{
 					this.height = hgroup.height; 
 				}
-				
 			}
 			
 		]]>
 	</fx:Script>
+
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
 	
-	<s:SkinnableContainer id="layerSwitcherMainGroup" >
-		<s:layout>
-			<s:VerticalLayout />
-		</s:layout>
-		<s:SkinnableContainer width="100%"
-				  height="{this.labelHeight}"
-				  id="hgroup" >
+	<s:SkinnableContainer width="100%"
+						  height="25"
+						  id="hgroup" >
 			<s:layout>
 				<s:HorizontalLayout 
 					paddingLeft="2"
@@ -345,13 +306,12 @@
 					verticalAlign="middle" />
 			</s:layout>
 			
-			<ChangeLayerVisibility id="changeLayerVisibility"/>
+			<ChangeLayerVisibility layer="{_layer}" />
 			
-			<s:Label id="layerSwitcherLabel" 
-					width="{this.labelWidth}"/>
+			<s:Label id="layerSwitcherLabel" width="100" text="{_layer.name}"/>
 			
 			
-			<ChangeLayerPosition id="changeLayerPosition" />
+			<ChangeLayerPosition layer="{_layer}" layerManager="{_layerManager}" />
 			
 			
 			<os:IconButton id="layerSwitcherReduceMaximize"
@@ -362,15 +322,12 @@
 						   iconOver="{this._btnReduceMaximize}"
 						   iconDown="{this._btnReduceMaximize}"
 						   toolTip="{this.tooltipReduceMaximize}" />
-			<DeleteLayer id="layerSwitcherDeleteLayer" />
-			
-				
-			
+			<DeleteLayer id="layerSwitcherDeleteLayer" layer="{_layer}" />
 		</s:SkinnableContainer>
 		
 		
 		<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="false">
-			<ChangeLayerOpacity id="layerControlOpacity" />
+			<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
 		</s:SkinnableContainer>
 		
 		
@@ -381,14 +338,9 @@
 		-->
 		
 		<s:SkinnableContainer id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20">
-			<LayerZoomToExtent id="layerControlZoomToExtent" visible="false" />
+			<LayerZoomToExtent id="layerControlZoomToExtent" visible="false" layer="{_layer}" />
 			<LayerLegend x="20" id="layerControlLegend" visible="false" />
 			<LayerMetadatas x="40" id="layerControlMetadatas" visible="false" />
 		</s:SkinnableContainer>
-		
-		
-		
-	</s:SkinnableContainer>
 	
-	
-</LayerRenderer>
+</s:ItemRenderer>
