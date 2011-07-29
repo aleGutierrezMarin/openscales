@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- PanZoom control : contains Pan and Zoom control -->
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="400" height="300" >
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import org.openscales.core.Map;
+			
+			/**
+			 * @private
+			 * The list of labels for different resolutions.
+			 * @default null
+			 */
+			[Bindable]
+			public var scalesLabels:String = null;
+			
+			override public function set map(value:Map):void {
+				super.map = value;
+				
+				zoomSlider.map = value;
+				panSkin.map = value;
+			}
+			
+		]]>
+	</fx:Script>
+
+
+	<Zoom id="zoomSlider" scalesName="{this.scalesLabels}"/>
+	<Pan id="panSkin" />
+	
+	
+ 	
+</Control>
