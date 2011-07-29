@@ -208,7 +208,8 @@
 			private function updateScalesNameLabel():void
 			{
 				if(zoomSlider)
-					this.scaleNameY = zoomSlider.thumb.y;
+					if(zoomSlider.thumb)
+						this.scaleNameY = zoomSlider.thumb.y;
 			}
 			
 			/**
