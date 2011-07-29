@@ -164,7 +164,7 @@
 	
 	<s:Button id="panNorth" name="north" label="{this.labelPanNorth}" 
 			  click="onPanNorth(event)" toolTip="{this.toolTipPanNorth}"
-			  width="35" x="20" y="0" useHandCursor="true" buttonMode="true"/>
+			  width="35" x="20" y="0" useHandCursor="true" buttonMode="true" />
 	<s:Button id="panSouth" name="south" label="{this.labelPanSouth}" 
 			  click="onPanSouth(event)" toolTip="{this.toolTipPanSouth}"
 			  width="35" x="20" y="40" useHandCursor="true" buttonMode="true" />
