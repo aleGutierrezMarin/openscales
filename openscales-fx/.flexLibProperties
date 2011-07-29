@@ -110,10 +110,6 @@
     <classEntry path="org.openscales.fx.control.layer.AddLayerButtonTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
-    <classEntry path="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer"/>
-    <classEntry path="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"/>
-    <classEntry path="org.openscales.fx.control.layer.MapSyncSort"/>
-    <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
