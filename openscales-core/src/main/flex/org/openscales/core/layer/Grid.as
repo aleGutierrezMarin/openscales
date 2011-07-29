@@ -177,7 +177,6 @@ package org.openscales.core.layer
 				}
 			} else {
 				if (forceReTile || !tilesBounds.containsBounds(bounds, true)) {
-					this.clear();
 					this.initGriddedTiles(bounds);
 				} else {
 					this.moveGriddedTiles(bounds);
@@ -264,7 +263,7 @@ package org.openscales.core.layer
 			if ( this._grid[0][0] != null)
 			{
 				this._tileToRemove = this._grid[0][0];
-				tile.addEventListener(TileEvent.TILE_LOAD_END,this.removeTransitionTile);
+				tile.layer.addEventListener(TileEvent.TILE_LOAD_END,this.removeTransitionTile);
 				
 			}
 			this._grid[0][0] = tile;         
