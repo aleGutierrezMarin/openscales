@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns="org.openscales.fx.control.layer.*"
@@ -33,12 +33,19 @@
 			[Bindable]
 			public var _alphaLabel:String = "100 %";
 			
+			
+			private var _layer:Layer;
+			
+			public function get layer():Layer{
+				return _layer;
+			}
+			
 			/**
 			 * @inherit
 			 */
-			override public function set layer(value:Layer):void
+			public function set layer(value:Layer):void
 			{
-				super.layer = value;
+				this._layer = value;
 				this._alpha=this._layer.alpha*100;
 				this._alphaLabel=Math.round(this._alpha)+" %";
 				
@@ -91,4 +98,4 @@
 		
 	</s:SkinnableContainer>
 		
-</LayerControl>
+</s:Group>
