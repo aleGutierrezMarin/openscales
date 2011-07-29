@@ -24,6 +24,7 @@
 			import mx.accessibility.ButtonAccImpl;
 			import mx.binding.utils.BindingUtils;
 			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
 			import mx.core.ButtonAsset;
 			import mx.core.IVisualElement;
 			import mx.events.DragEvent;
@@ -35,6 +36,7 @@
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.Trace;
+			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
@@ -63,6 +65,8 @@
 			
 			[Embed(source="/assets/images/widgetShow.png")]
 			protected const BTN_MAXIMIZE:Class;
+			
+			private static var _maximizedLayers:HashMap = new HashMap();
 			
 			/**
 			 * The current source to the button to display reduce or maximize
@@ -155,6 +159,11 @@
 			public function set layerManager(value:LayerManager):void{
 				
 				_layerManager = value;
+				
+				if(_maximizedLayers.getValue(_layerManager) == null){
+					
+					_maximizedLayers.put(_layerManager, new ArrayCollection());
+				}
 			}
 			
 			/**
@@ -223,12 +232,17 @@
 			 */
 			override public function set data(value:Object):void 
 			{
-				// if the layer has changed
-				if(this._layer != value)
-					this._isMinimized = true;
-				
 				super.data = value;
 				this._layer = value as Layer;
+				
+				if((_maximizedLayers.getValue(_layerManager) as ArrayCollection).getItemIndex(_layer) < 0){
+					
+					this._isMinimized = true;
+				}
+				else{
+					
+					this._isMinimized = false;
+				}
 				
 				if((this._layer != null) )
 				{	
@@ -256,6 +270,14 @@
 				this._isMinimized = !this._isMinimized;
 				
 				this._btnReduceMaximize = this._isMinimized ?  BTN_MAXIMIZE : BTN_MINIMIZE;
+				
+				if(_isMinimized){
+					var index:uint = (_maximizedLayers.getValue(_layerManager) as ArrayCollection).getItemIndex(_layer);
+					(_maximizedLayers.getValue(_layerManager) as ArrayCollection).removeItemAt(index);					
+				}
+				else{
+					(_maximizedLayers.getValue(_layerManager) as ArrayCollection).addItem(_layer);
+				}
 				
 				this.updateOptionnalDisplay();
 			}

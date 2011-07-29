@@ -88,6 +88,8 @@
 				layerList.itemRenderer = factory;
 			}
 			
+			
+			
 			/**
 			 * Set the map
 			 * @param value
