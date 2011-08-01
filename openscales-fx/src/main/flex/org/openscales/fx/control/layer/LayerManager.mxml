@@ -185,6 +185,7 @@
 			protected function onLayerAdded(event:LayerEvent):void{
 				
 				this._layers.addItemAt(event.layer,0);
+				this._layers.refresh();
 			}
 			
 			protected function onLayerRemoved(event:LayerEvent):void{
@@ -192,6 +193,7 @@
 				var index:int = _layers.getItemIndex(event.layer);
 				if(index != -1){
 					_layers.removeItemAt(index);
+					this._layers.refresh();
 				}
 			}
 			
