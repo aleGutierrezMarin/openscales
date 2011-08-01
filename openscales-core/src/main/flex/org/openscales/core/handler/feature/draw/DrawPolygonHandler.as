@@ -148,8 +148,12 @@ package org.openscales.core.handler.feature.draw
 				
 			}		
 		}
-
-		public function mouseDblClick(LastPX:Pixel):void {
+		
+		/**
+		 * This function occured when a double click occured
+		 * during the drawing operation
+		 */
+		public function mouseDblClick():void{
 			drawFinalPoly();
 		}
 		
