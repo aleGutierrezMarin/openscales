@@ -86,7 +86,8 @@ package org.openscales.core.layer {
 			this.name = name;
 			this.visible = false;
 			this.doubleClickEnabled = true;
-			//this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
+			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
+			this.generateResolutions();
 			
 			
 			this._originators = new Vector.<DataOriginator>();
@@ -169,8 +170,8 @@ package org.openscales.core.layer {
 				if (_projSrsCode == null)
 				{
 					this._projSrsCode = this._map.projection;
+					this.generateResolutions();
 				}
-				this.generateResolutions();
 				
 				this.map.addEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED,onMapProjectionChanged);
