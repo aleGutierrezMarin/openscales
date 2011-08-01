@@ -46,9 +46,7 @@
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibility"/>
-    <classEntry path="org.openscales.fx.control.layer.DefaultLayerRenderer"/>
     <classEntry path="org.openscales.fx.control.layer.DeleteLayer"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerControl"/>
     <classEntry path="org.openscales.fx.control.layer.LayerLegend"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
     <classEntry path="org.openscales.fx.control.layer.LayerMetadatas"/>

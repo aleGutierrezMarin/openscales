@@ -7,6 +7,7 @@
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns="org.openscales.fx.control.layer.*"
 		  click="this.addLayerToMap()"
+		  enabled="true"
 		  label="{Catalog.getLocalizationForKey(I18N_LABEL_KEY)}">
 		
 	<fx:Script>
@@ -54,10 +55,7 @@
 				
 				this._layer = value;
 				
-				if(this._layer){
-					
-					this.enabled = this._layer.map != this._map;
-				}
+				this.enabled = this._layer && this._layer.map != this._map;
 			}
 			
 			private function onLayerRemoved(event:LayerEvent):void{

@@ -2,6 +2,7 @@ package org.openscales.core.events{
 
 	import org.openscales.core.Map;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Size;
 
 	/**
 	 * Event related to a map.
@@ -12,6 +13,11 @@ package org.openscales.core.events{
 		 * Map concerned by the event.
 		 */
 		private var _map:Map = null;
+		
+		/**
+		 * new size of the map
+		 */
+		private var _newSize:Size = null;
 		
 		/**
 		 * old zoom of the map
@@ -143,6 +149,18 @@ package org.openscales.core.events{
 
 		public function set map(map:Map):void {
 			this._map = map;	
+		}
+		
+		/**
+		 * newSize getter and setter
+		 */
+		public function get newSize():Size
+		{
+			return _newSize;
+		}
+		public function set newSize(value:Size):void
+		{
+			_newSize = value;
 		}
 		
 		public function get oldZoom():Number {

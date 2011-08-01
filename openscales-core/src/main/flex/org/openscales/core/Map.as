@@ -1078,20 +1078,6 @@ package org.openscales.core
 		 * Call when a Layer has its projection changed.
 		 * If this layer is the baselayer, reproject other layers
 		 */
-	/*	private function layerProjectionChanged(event:LayerEvent):void
-		{
-			var layer:Layer = event.target as Layer;
-			
-			if(layer == this.baseLayer)
-			{
-				var i:int = 0;
-				var j:int = layers.length;
-				for(; i<j; ++i)
-				{
-					layers[i].redraw(true);
-				}
-			}
-		} */
 		public function redrawLayers():void
 		{
 			
