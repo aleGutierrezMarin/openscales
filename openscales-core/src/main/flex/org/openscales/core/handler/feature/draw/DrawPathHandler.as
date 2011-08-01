@@ -91,14 +91,14 @@ package org.openscales.core.handler.feature.draw
 				this.map.removeEventListener(MapEvent.MOVE_END, this.updateZoom);
 			}
 		}
+		
 		/**
 		 * This function occured when a double click occured
 		 * during the drawing operation
-		 * @param Lastpx: The position of the double click pixel
-		 * */
-		public function mouseDblClick(Lastpx:Pixel):void {
-			this.drawFinalPath();		
-		} 
+		 */
+		public function mouseDblClick():void{
+			this.drawFinalPath();
+		}
 		
 		/**
 		 * Finish the LineString
