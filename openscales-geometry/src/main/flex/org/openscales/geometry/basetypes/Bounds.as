@@ -109,29 +109,38 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Extends the current instance of Bounds from a location.
+		 * Extends the current instance of Bounds from a location and return the result
 		 *
 		 * @param lonlat The LonLat which will extend the bounds.
 		 */
-		public function extendFromLocation(location:Location):void {
-			this.extendFromBounds(new Bounds(location.lon, location.lat, location.lon, location.lat, location.projSrsCode));
+		public function extendFromLocation(location:Location):Bounds {
+			var tmpBounds:Bounds = this.extendFromBounds(new Bounds(location.lon, location.lat, location.lon, location.lat, location.projSrsCode));
+			if (tmpBounds.projSrsCode != location.projSrsCode)
+			{
+				tmpBounds = tmpBounds.reprojectTo(location.projSrsCode);
+			}
+			return tmpBounds;
 		}
 		
 		/**
-		 * Extends the current instance of Bounds from bounds.
-		 *
+		 * Extends the current instance of Bounds from bounds and return the result
+		 * if the two bounds are not in the same projection, the return bounds will
+		 * be in "EPSG:4326". Do not forget to reproject it with the reprojectTo method
+		 * 
 		 * @param bounds The bounds which will extend the current bounds.
 		 */
-		public function extendFromBounds(bounds:Bounds):void {
+		public function extendFromBounds(bounds:Bounds):Bounds {
 			var tmpBounds:Bounds = bounds;
 			if(this.projSrsCode!=tmpBounds.projSrsCode) {
 				tmpBounds = tmpBounds.reprojectTo(this.projSrsCode);
 			}
 			// TODO: check the equality of the projSrsCode of the two bounds ?!
-			this.left = (tmpBounds.left < this.left) ? tmpBounds.left : this.left;
-			this.bottom = (tmpBounds.bottom < this.bottom) ? tmpBounds.bottom : this.bottom;
-			this.right = (tmpBounds.right > this.right) ? tmpBounds.right : this.right;
-			this.top = (tmpBounds.top > this.top) ? tmpBounds.top : this.top;
+			var newLeft:Number = (tmpBounds.left < this.left) ? tmpBounds.left : this.left;
+			var newBottom:Number = (tmpBounds.bottom < this.bottom) ? tmpBounds.bottom : this.bottom;
+			var newRight:Number = (tmpBounds.right > this.right) ? tmpBounds.right : this.right;
+			var newTop:Number = (tmpBounds.top > this.top) ? tmpBounds.top : this.top
+				;
+			return new Bounds(newLeft,newBottom,newRight, newTop, this.projSrsCode);
 		}
 		
 		/**

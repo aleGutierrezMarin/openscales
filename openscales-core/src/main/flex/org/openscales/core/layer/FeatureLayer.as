@@ -301,7 +301,12 @@ package org.openscales.core.layer
 			}
 			this._featuresBbox = features[0].geometry.bounds.clone();
 			for(var j:uint=1; j<i; ++j) {
-				this._featuresBbox.extendFromBounds(features[j].geometry.bounds.clone());
+				var tmpBounds:Bounds = this._featuresBbox.extendFromBounds(features[j].geometry.bounds.clone());
+				if (tmpBounds.projSrsCode != this._featuresBbox.projSrsCode)
+				{
+					tmpBounds = tmpBounds.reprojectTo(this._featuresBbox.projSrsCode);
+				}
+				this._featuresBbox = tmpBounds; 
 			}
 		}
 		
