@@ -125,7 +125,7 @@ package org.openscales.core.format
 			
 			while(this.lastInd!=-1) {
 				if (getTimer() - startTime > allowedTime){
-					return;
+					//return;
 				}
 				
 				end = this.xmlString.indexOf(eFXML,this.lastInd);

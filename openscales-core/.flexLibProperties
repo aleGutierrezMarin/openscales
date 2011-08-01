@@ -87,6 +87,7 @@
     <classEntry path="org.openscales.core.format.Format"/>
     <classEntry path="org.openscales.core.format.GML32Format"/>
     <classEntry path="org.openscales.core.format.GMLFormat"/>
+    <classEntry path="org.openscales.core.format.GPXFormat"/>
     <classEntry path="org.openscales.core.format.KMLFormat"/>
     <classEntry path="org.openscales.core.format.WFS2Format"/>
     <classEntry path="org.openscales.core.format.WFSFormat"/>
@@ -203,16 +204,17 @@
     <classEntry path="org.openscales.core.configuration.ConfigurationTest"/>
     <classEntry path="org.openscales.core.filter.GeometryTypeFilterTest"/>
     <classEntry path="org.openscales.core.format.GML32FormatTest"/>
+    <classEntry path="org.openscales.core.format.GPXFormatTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.WFSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WMTSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProviderTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.core.layer.ogc.WFSTest"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="assets/configuration/sampleMapConfOk.xml" sourcePath="assets/configuration/sampleMapConfOk.xml"/>

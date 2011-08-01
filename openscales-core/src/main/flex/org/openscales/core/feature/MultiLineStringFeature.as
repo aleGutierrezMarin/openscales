@@ -25,7 +25,6 @@ package org.openscales.core.feature
 			this.graphics.endFill();
 			
 			// Variable declaration before for loop to improve performances
-			// Variable declaration before for loop to improve performances
 			var p:Point = null;
 			var x:Number; 
             var y:Number;

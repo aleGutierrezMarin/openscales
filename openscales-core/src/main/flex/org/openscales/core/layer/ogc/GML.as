@@ -21,7 +21,7 @@ package org.openscales.core.layer.ogc
 	
 	public class GML extends FeatureLayer
 	{
-		private var _serverReq:XMLRequest = null;
+		
 		private var _gmlFormat:GML32Format = null;
 		private var _xmlFile:XML = null;
 		private var _style:Style = null;
