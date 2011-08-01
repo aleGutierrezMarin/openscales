@@ -195,17 +195,16 @@ package org.openscales.core.layer.ogc.provider
 				location = location.reprojectTo(tileOrigin.projSrsCode.toUpperCase());
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
 			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
-			/*
-			if(col<0 || row< 0 || col>tileMatrix.matrixWidth-1 || row>tileMatrix.matrixHeight-1)
-				return imageTile;
-			*/
+			
 			var params:Object = {
 				"TILECOL" : col,
 				"TILEROW" : row,
 				"TILEMATRIX" : tileMatrix.identifier
 			};
-			
-			imageTile.url = buildGETQuery(bounds,params);
+			if(col>-1 && row>-1)
+				imageTile.url = buildGETQuery(bounds,params);
+			else
+				imageTile.url=null;
 			
 			return imageTile;
 		}

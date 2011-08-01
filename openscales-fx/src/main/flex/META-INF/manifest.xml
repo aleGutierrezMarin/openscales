@@ -37,10 +37,9 @@
 	<component id="DataOriginatorsDisplay" class="org.openscales.fx.control.DataOriginatorsDisplay" />
 	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
 	
-	<component id="DefaultLayerRenderer" class="org.openscales.fx.control.layer.DefaultLayerRenderer" />
-	<component id="LayerRenderer" class="org.openscales.fx.control.layer.LayerRenderer" />
-	<component id="LayerControl" class="org.openscales.fx.control.layer.LayerControl" />
+	<!-- LayerManager -->
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
+	<component id="DefaultLayerManagerItemRenderer" class="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer" />
 	<component id="LayerLegend" class="org.openscales.fx.control.layer.LayerLegend" />
 	<component id="LayerMetadatas" class="org.openscales.fx.control.layer.LayerMetadatas" />
 	<component id="ChangeLayerOpacity" class="org.openscales.fx.control.layer.ChangeLayerOpacity" />

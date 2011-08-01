@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			  xmlns:s="library://ns.adobe.com/flex/spark" 
 			  xmlns:mx="library://ns.adobe.com/flex/mx"
 			  xmlns="org.openscales.fx.control.layer.*"
@@ -35,7 +35,7 @@
 			/**
 			 * @inherit
 			 */
-			override public function onMapLanguageChange(event:I18NEvent):void 
+			public function onMapLanguageChange(event:I18NEvent):void 
 			{
 				this.tooltipLegend = Catalog.getLocalizationForKey('layercontrol.legend');	
 			}
@@ -49,4 +49,4 @@
 				toolTip="{this.tooltipLegend}"
 				icon="{_btnLegend}" />
 	
-</LayerControl>
+</s:Group>
