@@ -2,6 +2,7 @@ package org.openscales.core.format
 {
 	import flash.utils.getQualifiedClassName;
 	
+	import org.openscales.core.Util;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -13,7 +14,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
 	
-	//parsing GPX 1.1
+	//parsing GPX 1.1 et 1.0
 	
 	public class GPXFormat extends Format
 	{
@@ -24,13 +25,17 @@ package org.openscales.core.format
 		//before adding the feature to the _featuresVector, check if its ID is already in the hashmap
 		//skip this check if the name is missing
 		
-		//attributes contained by the metadata element
-		private var _bounds:Bounds = null;
-
- // the bounds of the whole collection of objects contained by the gpxFile
-		private var _fileName:String; // the name of the gpxFile
-		private var _author:String;
+		private var _version:String = "1.1";
+		
+		private var _bounds:Bounds = null; 
+       // the bounds of the whole collection of objects contained by the gpxFile
+		
+		//information about the gpxFile
+		private var _fileName:String; 
+		private var _author:String;   
 		private var _description:String;
+		private var _authorEmail:String;
+		private var _fileURL:String;
 		
 		public function GPXFormat(featuresids:HashMap,
 								  extractAttributes:Boolean = true)
@@ -51,16 +56,37 @@ package org.openscales.core.format
 
 		public function parseGpxFile(gpxFile:XML):Vector.<Feature>{
 			this.gpxFile = gpxFile;
+			
 			this._featuresVector = new Vector.<Feature>();
 			
 			var membersList:XMLList = this.gpxFile.children();
 			var listLength:uint = membersList.length();
 			var i:uint;
+			if(gpxFile.hasOwnProperty('@version') && gpxFile.@version.length() )
+				this._version = String(gpxFile..@version);
+			
+			if(this._version == "1.0"){ //get children of gpxFile!! as a list and run through it
+				this._fileName = String(gpxFile..*::name[0]);
+				this._author = String(gpxFile..*::author[0]);
+				this._description = String(gpxFile..*::desc[0]);
+				this._authorEmail = String(gpxFile..*::email[0]);
+				this._fileURL = String(gpxFile..*::url[0]);
+				
+				var bounds:XML = gpxFile..*::bounds[0];
+				if(bounds)
+					this._bounds = new Bounds(Number(bounds..@minlat), Number(bounds..@minlon), 
+					Number(bounds..@maxlat), Number(bounds..@maxlon));
+				
+			}
+			
 			for (i = 0; i < listLength; i++){
 				
 				var feature:Feature = this.parseFeature(membersList[i]);
-				if (feature)
+				if (feature){
 					this._featuresVector.push(feature);
+					this._featuresids.put(feature.name, feature);
+				}
+					
 			}
 			
 			return this._featuresVector;
@@ -82,7 +108,7 @@ package org.openscales.core.format
 			var coords:Vector.<Number> = null;
 			var duplicateID:Boolean = false;
 		
-			if(featureNode.localName() == "metadata"){
+			if(featureNode.localName() == "metadata"){ //available only for the 1.1 version
 				
 				this.parseMetadataNode(featureNode);
 			}
@@ -119,7 +145,7 @@ package org.openscales.core.format
 				}
 				else if (featureNode.localName() == "trk")
 				{
-					var trkSeg:XMLList = this._gpxFile..*::trkseg;
+					var trkSeg:XMLList = featureNode..*::trkseg;
 					var listLength:uint = trkSeg.length();
 					var multiLine:MultiLineString = new MultiLineString();
 					
@@ -141,6 +167,7 @@ package org.openscales.core.format
 				}
 				
 				if(feature && this._extractAttributes){
+					feature.attributes = this.parseAttributes(featureNode);
 					
 				}
 				
@@ -193,19 +220,50 @@ package org.openscales.core.format
 			return coords; // if coords is null for a point, one or both of its coordinates are missing
 		}
 		
+		/**
+		 * This function is called only if the version of the gpx is 1.1
+		 */
+		
 		public function parseMetadataNode(xmlNode:XML):void{
 			var bounds:XML = xmlNode..*::bounds[0];
 			this._bounds = new Bounds(Number(bounds..@minlat), Number(bounds..@minlon), 
 				Number(bounds..@maxlat), Number(bounds..@maxlon));
 			
 			this._description = xmlNode..*::desc[0].toString();
+			this._fileName = xmlNode..*::name[0].toString();
+			
 			var authorNode:XML = xmlNode..*::author[0];
+			var emailNode:XML = authorNode..*::email[0];
+			
 			this._author = authorNode..*::name[0].toString();
+			this._authorEmail = String(emailNode..@id) + String(emailNode..@domain);
+			
+			var linkNode:XML = xmlNode..*::link[1]; // todo change this; first link node could be the one for the mail address
+			//maybe get children of metadata node
+			this._fileURL = String(linkNode..@href);
+			
 			
 		}
 		
-		public function parseAttributes(xmlNode:XML):Object{
-			
+		public function parseAttributes(xmlNode:XML):Object{	
+			var nodes:XMLList = xmlNode.children();
+			var attributes:Object = {};
+			var j:int = nodes.length();
+			var i:int;
+			for(i = 0; i < j; ++i) {
+				var name:String = nodes[i].localName();
+				var value:Object = nodes[i].valueOf();
+				if(name == null){
+					continue;    
+				}
+					
+				if((nodes[i].children().length() == 1)
+					&& !(nodes[i].children().children()[0] is XML) && name != "name") {
+					attributes[name] = value.children()[0].toXMLString(); 
+				}
+				Util.extend(attributes, this.parseAttributes(nodes[i]));
+			}   
+			return attributes;
 			
 			return null;
 		} 

@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <gpx xmlns="http://www.topografix.com/GPX/1/1"
       xmlns:gpx="http://www.topografix.com/GPX/1/1"
@@ -10,8 +9,8 @@
       <name>GPX file name</name>
       <desc>GPX file description</desc>
       <author>
-        <name>Name of person or organization</name>   
-        <email id="ID" domain="DOMAIN"></email>       
+        <name>Somebody's name</name>   
+        <email id="somebody" domain="@atos.net"></email>       
         <link href="HREF">
           <text>TEXT</text>
           <type>MIME</type>
@@ -21,7 +20,7 @@
         <year>YEAR</year>
         <license>URL</license>
       </copyright>
-      <link href="URL">                               
+      <link href="http://someAddress">                               
         <text>TEXT</text>                            
         <type>MIME</type>
       </link>
@@ -30,11 +29,11 @@
       <bounds minlat="-90.0" minlon="-180.0" maxlat="90.0" maxlon="180.0"/>
     </metadata>
     <wpt lat="-20.23" lon="15.0">
-      <ele>0.0</ele>
+      <ele>19.9</ele>
       <time>TIME</time>
-      <magvar>0</magvar>
+      <magvar>0.33</magvar>
       <geoidheight>0.0</geoidheight>
-      <name>FirstPoint</name>
+      <name>Point001</name>
       <cmt>CMT</cmt>
       <desc>DESC</desc>
       <src>the source of this data: "Garmin eTrex", "Map", etc</src>
@@ -54,7 +53,7 @@
       <extensions></extensions>
     </wpt>
     <rte>
-      <name>NAME</name>
+      <name>Route001</name>
       <cmt>CMT</cmt>
       <desc>DESC</desc>
       <src>the source of this data: "Garmin eTrex", "Map", etc</src>
@@ -89,7 +88,7 @@
       
     </rte>
     <trk>
-      <name>NAME</name>
+      <name>Track001</name>
       <cmt>CMT</cmt>
       <desc>DESC</desc>
       <src>the source of this data: "Garmin eTrex", "Map", etc</src>
@@ -128,5 +127,22 @@
         </trkpt>
       </trkseg>
     </trk>
+    <trk>
+    <name>Track002</name>
+    <trkseg>
+      <trkpt lat="47.644548" lon="-122.326897">
+        <ele>4.46</ele>
+        <time>2009-10-17T18:37:26Z</time>
+      </trkpt>
+      <trkpt lat="47.644548" lon="-122.326897">
+        <ele>4.94</ele>
+        <time>2009-10-17T18:37:31Z</time>
+      </trkpt>
+      <trkpt lat="47.644548" lon="-122.326897">
+        <ele>6.87</ele>
+        <time>2009-10-17T18:37:34Z</time>
+      </trkpt>
+    </trkseg>
+ 	 </trk>
     <extensions></extensions>
   </gpx>
