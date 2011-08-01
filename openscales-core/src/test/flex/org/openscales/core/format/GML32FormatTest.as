@@ -51,7 +51,7 @@ package org.openscales.core.format
 			format = null;
 		}
 		
-		[Test]
+	/*	[Test]
 		public function testParseCoords():void
 		{
 			var xml:XML = <coords
@@ -388,7 +388,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			Assert.assertEquals("This feature should contain 2 LineStrings", 2, lineStringNode.length());
 			Assert.assertTrue("The content of the first LineString member is incorrect",lineStringNode[0].toString().match("<gml:posList>-102 22 -442.145 19.099</gml:posList>"));
 		}
-		
+		*/
 		
 		[Test]
 		public function TestBuildMultiPointCollection():void{
@@ -410,7 +410,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			Assert.assertEquals("The coordinates of the 10th Point are incorrect","147.9144046875 -41.82977294921875",pointCollection[9].children()[0].toString());
 		}
 
-		[Test]
+	/*	[Test]
 		public function TestBuildLineStringCollection():void{
 			
 			var xml:XML = new XML(new GMLFILE3());
@@ -454,7 +454,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			Assert.assertEquals("The coordinates of the second Polygon are incorrect", "591954.3359385601 4925859.483293301 591957.3824433001 4925860.249209401 591996.9678179699 4925842.719067588 592066.2434228227 4925813.759259981 592235.2420918944 4925738.302342218 592551.8201372348 4925671.437550496 592560.7822126707 4925327.905382568 591595.3483009903 4925296.068594761 591593.0136062276 4925322.439424193 591587.74604609 4925412.531691931 591618.2329452335 4925451.495549678 591630.4333543724 4925475.174502224 591801.1266256558 4925645.575178106 591930.6806241288 4925789.2201092215 591954.3359385637 4925859.483293386",
 			rings2[0].children()[0].toString());
 		
-		}
+		}*/
 	}
 	
 }

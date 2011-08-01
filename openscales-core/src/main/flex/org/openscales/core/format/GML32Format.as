@@ -248,6 +248,7 @@ package org.openscales.core.format
 						geom.addComponent(polygon);
 					}
 					feature = new MultiPolygonFeature(geom as MultiPolygon);
+				
 				}
 
 				
@@ -373,7 +374,7 @@ package org.openscales.core.format
 				
 				// Check for a leaf node
 				
-				var properties:Vector.<String> = new <String>["posList", "upperCorner", "lowerCorner"];
+				var properties:Vector.<String> = new <String>["posList", "upperCorner", "lowerCorner", "pos"];
 				if((nodes[i].children().length() == 1)
 					&& !(nodes[i].children().children()[0] is XML) && properties.indexOf(name) == -1) {
 					attributes[name] = value.children()[0].toXMLString(); 
