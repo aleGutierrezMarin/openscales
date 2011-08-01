@@ -83,10 +83,10 @@ package org.openscales.core.layer {
 		 */
 		public function Layer(name:String) {
 			this.name = name;
-			this.visible = true;
+			this.visible = false;
 			this.doubleClickEnabled = true;
-			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
-			this.generateResolutions();
+			//this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
+			
 			
 			this._originators = new Vector.<DataOriginator>();
 		}
@@ -134,6 +134,7 @@ package org.openscales.core.layer {
 		public function removeEventListenerFromMap():void {
 			if (this.map != null) {
 				map.removeEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
+				map.removeEventListener(MapEvent.PROJECTION_CHANGED, onMapProjectionChanged);
 				map.removeEventListener(MapEvent.MOVE_END, onMapMove);
 				map.removeEventListener(MapEvent.RESIZE, onMapResize);
 			}
@@ -154,15 +155,45 @@ package org.openscales.core.layer {
 				removeEventListenerFromMap();
 			}
 			
-			this._map = map;
-			
+			this._map = map;		
 			if (this.map) {
+				if (_projSrsCode == null)
+				{
+					this._projSrsCode = this._map.projection;
+				}
+				this.generateResolutions();
+				
 				this.map.addEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
+				this.map.addEventListener(MapEvent.PROJECTION_CHANGED,onMapProjectionChanged);
 				this.map.addEventListener(MapEvent.MOVE_END, onMapMove);
 				this.map.addEventListener(MapEvent.RESIZE, onMapResize);
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;
 				}
+				if (this._projSrsCode == _map.projection)
+				{
+					this.visible = true;
+				}
+			}
+		}
+		
+		/**
+		 * Return a reference to the map where belong this layer
+		 */
+		public function get map():Map {
+			return this._map;
+		}
+		
+		/**
+		 * Check if the layer should be displayed when the map projection is changed
+		 */
+		private function onMapProjectionChanged(event:MapEvent):void
+		{
+			if (this.projSrsCode != event.newProjection)
+			{
+				this.visible = false;
+			} else {
+				this.visible = true;
 			}
 		}
 		
@@ -190,12 +221,7 @@ package org.openscales.core.layer {
 			_dpi = value;
 		}
 		
-		/**
-		 * Return a reference to the map where belong this layer
-		 */
-		public function get map():Map {
-			return this._map;
-		}
+
 		
 		/**
 		 * A Bounds object which represents the location bounds of the current extent display on the map.
@@ -356,8 +382,8 @@ package org.openscales.core.layer {
 			var inRange:Boolean = false;
 			if (this.map) {
 				var resolutionProjected:Number = this.map.resolution;
-				if (this.isBaseLayer != true && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-					resolutionProjected = Proj4as.unit_transform(this.map.baseLayer.projSrsCode,this.projSrsCode,this.map.resolution);
+				if (this.isBaseLayer != true && this.projSrsCode != this.map.projection) {
+					resolutionProjected = Proj4as.unit_transform(this.map.projection,this.projSrsCode,this.map.resolution);
 				}
 				inRange = ((resolutionProjected >= this.minResolution) && (resolutionProjected <= this.maxResolution));
 			}

@@ -113,6 +113,21 @@ package org.openscales.core
 			return this._projection;
 		}
 		
+		private var _resolution:Number = NaN;
+
+		/**
+		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
+		 */
+		public function set resolution(value:Number):void
+		{
+			this._resolution = value;
+			this.zoomToResolution(value);
+		}
+		
+		public function get resolution():Number {
+			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
+		}	
+		
 		
 		/**
 		 * @private
@@ -174,7 +189,8 @@ package org.openscales.core
 			this.addChild(this._layerContainer);
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
-			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
+			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);	
+			this.addEventListener(MapEvent.PROJECTION_CHANGED,this.onMapProjectionChanged);
 //			this.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, layerProjectionChanged);
 			
 			Trace.stage = this.stage;
@@ -199,6 +215,23 @@ package org.openscales.core
 			var i:int = this._securities.length;
 			for(i;i>0;--i)
 				this._securities.pop().destroy();
+		}
+		
+		/**
+		 * Change the resolution of the projection of all the variables in the map
+		 * when the resolution of the map is changed
+		 */
+		private function onMapProjectionChanged(event:MapEvent):void
+		{
+			this.resolution = Proj4as.unit_transform(event.oldProjection, event.newProjection, this.resolution);
+			if (this.maxExtent != null)
+			{
+				this.maxExtent = this.maxExtent.reprojectTo(event.newProjection);	
+			}
+			if (this.center != null)
+			{
+				this.center = this.center.reprojectTo(event.newProjection);
+			}
 		}
 		
 		// Layer management
@@ -891,6 +924,10 @@ package org.openscales.core
 		}
 		public function set center(newCenter:Location):void
 		{
+			if (newCenter.projSrsCode != this.projection)
+			{
+				newCenter = newCenter.reprojectTo(this.projection);
+			}
 			this.moveTo(newCenter);
 		}
 		
@@ -1140,6 +1177,10 @@ package org.openscales.core
 		}
 		
 		public function set maxExtent(value:Bounds):void {
+			if (value.projSrsCode != this.projection)
+			{
+				value = value.reprojectTo(this.projection);
+			}
 			this._maxExtent = value;
 		}
 		
@@ -1192,17 +1233,7 @@ package org.openscales.core
 		}
 		
 		
-		/**
-		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
-		 */
-		public function get resolution():Number {
-			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
-		}
-		
-		public function set resolution(value:Number):void
-		{
-			this.zoomToResolution(value);
-		}
+
 		
 		/**
 		 * Current scale denominator of the map. 

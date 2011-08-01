@@ -116,11 +116,18 @@
 	</fx:Script>
 	
 	<s:HGroup id="app" width="100%" height="100%">
+		<fx:Script>
+			<![CDATA[
+				import mx.managers.SystemManager;
+			]]>
+		</fx:Script>
 		<mx:Accordion width="200" height="100%">
+			
 			<s:NavigatorContent label="Global examples" width="100%" height="100%">
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
+				<s:Label text="{stage.frameRate}"/>
 				<s:Button id="about" label="About OpenScales" click="changeState(event)" width="100%"/>
 				<s:Button id="basic" label="Basic example" click="changeState(event)" width="100%"/>
 				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
