@@ -410,8 +410,8 @@ package org.openscales.geometry.basetypes
 		 * </p>
 		 * 
 		 * @return The Bounds representing the intersection between thosesBounds and the
-		 * given ones. If the intersection is empty, the retuned Bounds will be empty with
-		 * EPSG:4326 projection if the two bounds are not in the same projection, or the
+		 * given ones. If the intersection is empty, the retuned Bounds will be null,
+		 * if the two bounds are not in the same projection, or the
 		 * projection of the two bounds if they are in the same projection. 
 		 */
 		public function getIntersection(bounds:Bounds):Bounds{
@@ -427,7 +427,7 @@ package org.openscales.geometry.basetypes
 			
 			if (!(this.intersectsBounds(bounds)))
 			{
-				return new Bounds(0,0,0,0, thisBounds.projSrsCode);
+				return null;
 			}
 			
 			// Init the values with on of the bounds
