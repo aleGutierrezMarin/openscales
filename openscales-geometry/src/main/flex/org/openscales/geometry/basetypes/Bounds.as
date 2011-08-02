@@ -6,6 +6,7 @@ package org.openscales.geometry.basetypes
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Instances of this class represent bounding boxes.
@@ -85,15 +86,23 @@ package org.openscales.geometry.basetypes
 		 * @param decimal Bounds number of decimals.
 		 * @return The bounds separated by commas.
 		 */  
-		public function toString(decimal:Number = -1):String {
+		public function toString(decimal:Number = -1,forceLatLon:Boolean=true):String {
 			if (decimal == -1) {
 				decimal = 9;
 			}
 			var mult:Number = Math.pow(10, decimal);
-			var bbox:String = Math.round(this.left * mult) / mult + "," +
-				Math.round(this.bottom * mult) / mult + "," +
-				Math.round(this.right * mult) / mult + "," +
-				Math.round(this.top * mult) / mult;
+			var bbox:String = "";
+			if(forceLatLon || ProjProjection.projAxisOrder[this.projSrsCode] == ProjProjection.AXIS_ORDER_EN) {
+				bbox = Math.round(this.left * mult) / mult + "," +
+					Math.round(this.bottom * mult) / mult + "," +
+					Math.round(this.right * mult) / mult + "," +
+					Math.round(this.top * mult) / mult;
+			} else {
+				bbox = Math.round(this.bottom * mult) / mult + "," +
+					Math.round(this.left * mult) / mult + "," +
+					Math.round(this.top * mult) / mult + "," +
+					Math.round(this.right * mult) / mult;
+			}
 			return bbox;
 		}
 		

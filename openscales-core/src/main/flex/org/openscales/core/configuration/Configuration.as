@@ -122,7 +122,7 @@ package org.openscales.core.configuration
 			}
 			
 			return filterFormat.addComparisonFilter(propertyType,propertyName,literalValue);
-      }
+		}
 		
 		protected function beginConfigureMap():void {
 			// Parse the XML (children of Layers, Handlers, Controls ...)    
@@ -404,20 +404,23 @@ package org.openscales.core.configuration
 					else
 						wfsLayer.style = this.getDefaultStyle(String(xmlNode.@style));
 				}
-				if(String(xmlNode.@filter) !="")
-				{
-					if(this._filter[xmlNode.@filter.toString()])
-						wfsLayer.filter = this._filter[xmlNode.@filter.toString()];
-				}
 				
-				if (String(xmlNode.@featureNS) != "") {
-					wfsLayer.featureNS = String(xmlNode.@featureNS);
+				if(wfsLayer is WFST) {
+					var wfstLayer:WFST = (wfsLayer as WFST);
+					if(String(xmlNode.@filter) !="" && (wfsLayer is WFST))
+					{
+						if(this._filter[xmlNode.@filter.toString()])
+							wfstLayer.filter = this._filter[xmlNode.@filter.toString()];
+					}
+					
+					if (String(xmlNode.@featureNS) != "") {
+						wfstLayer.featureNS = String(xmlNode.@featureNS);
+					}
+					
+					if (String(xmlNode.@featurePrefix) != "") {
+						wfstLayer.featurePrefix = String(xmlNode.@featurePrefix);
+					}
 				}
-				
-				if (String(xmlNode.@featurePrefix) != "") {
-					wfsLayer.featurePrefix = String(xmlNode.@featurePrefix);
-				}
-				
 				
 				if (String(xmlNode.@minZoomLevel) != "" ) {
 					wfsLayer.minZoomLevel = Number(xmlNode.@minZoomLevel);
@@ -425,7 +428,7 @@ package org.openscales.core.configuration
 				if (String(xmlNode.@maxZoomLevel) != "") {
 					wfsLayer.maxZoomLevel = Number(xmlNode.@maxZoomLevel);
 				}
-				wfsLayer.capabilitiesVersion = capabilitiesVersion;
+				wfsLayer.version = capabilitiesVersion;
 				layer=wfsLayer;
 			}
 			else if(type == "Mapnik"){
