@@ -161,31 +161,19 @@
 			 * Refresh the LayerSwitcher when a layer is add, delete or update
 			 * @param event Layer event
 			 */
-			public function refresh(event:LayerEvent):void {	
-								
-				/*var mapLayers:Vector.<Layer> = _map.layers;
-				
-				// Create a temporary list of the layers in the Map
-				// filtered with the same filter as the LayerManager layers
-				var filteredMapLayersList:ArrayCollection = new ArrayCollection();
-				for each (var layer:Layer in mapLayers){
-					
-					filteredMapLayersList.addItem(layer);
-				}
-				filteredMapLayersList.filterFunction = shallDisplayLayer;
-				filteredMapLayersList.refresh();
-				
-				var newIndex:int = filteredMapLayersList.getItemIndex(event.layer);
-				
-				_layers.addItemAt(event.layer,newIndex);*/
+			public function refresh():void {	
 				
 				_layers.refresh();
+				// Redraws all the layers
+				var rendererBackup:IFactory = this.layerList.itemRenderer;
+				this.layerList.itemRenderer = null;
+				this.layerList.itemRenderer = rendererBackup;
 			}
 			
 			protected function onLayerAdded(event:LayerEvent):void{
 				
 				this._layers.addItemAt(event.layer,0);
-				this._layers.refresh();
+				this.refresh();
 			}
 			
 			protected function onLayerRemoved(event:LayerEvent):void{
@@ -193,13 +181,13 @@
 				var index:int = _layers.getItemIndex(event.layer);
 				if(index != -1){
 					_layers.removeItemAt(index);
-					this._layers.refresh();
+					this.refresh();
 				}
 			}
 			
 			protected function onLayerDisplayInLayerManagerChange(event:LayerEvent):void{
 				
-				_layers.refresh();
+				this.refresh();
 			}
 			
 			/**
