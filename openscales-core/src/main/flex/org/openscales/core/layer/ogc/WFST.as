@@ -12,13 +12,15 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.format.FilterEncodingFormat;
+	import org.openscales.core.format.Format;
+	import org.openscales.core.format.WFSFormat;
 	import org.openscales.core.layer.ogc.WFST.Transaction;
 	import org.openscales.core.request.XMLRequest;
-
+	
 	public class WFST extends WFS
 	{
+		private var _filter:XML;
 		
-
 		private var _describeFeature:DescribeFeature = null;
 		
 		private var  _xmlRequestDescribeFeatureInfo:XMLRequest = null;
@@ -26,51 +28,60 @@ package org.openscales.core.layer.ogc
 		private var _xmlRequestTransaction:XMLRequest = null;
 		
 		private var _callbackDescribeFeatureInfo:Function = null;
-
+		
 		private var _transactionArray:Vector.<Transaction> = new Vector.<Transaction>;
 		
-
+		/**
+		 * @private
+		 * the wfsformat
+		 */
+		private var _wfsFormat:WFSFormat = null;
+		private var _writer:Format = null;
+		
+		private var _geometryColumn:String = "the_geom";
+		
 		/*
 		*see to delete this tab cause it is redundant with transactionArray
 		*/
 		public var featureArray:Vector.<Feature> = new Vector.<Feature>;
-
+		
 		
 		public function WFST(name:String, url:String, typename:String,featureNSlocal:String = null)
 		{
 			
 			super(name, url, typename);
 			
+			this._wfsFormat = new WFSFormat(this);
 			
 			var featurePrefixTemp:String = typename.split(":")[0];
 			if(featurePrefixTemp  != null && featurePrefixTemp != typename){
-			  this.featurePrefix = featurePrefixTemp;
+				this.featurePrefix = featurePrefixTemp;
 			}
 			
 			if(featureNSlocal != null){
-			  this._wfsFormat.featureNS = featureNSlocal;
+				this._wfsFormat.featureNS = featureNSlocal;
 			}
 		}
-
+		
 		/**
-		 * Combine the layer's url with its params and these newParams.
-		 *
-		 * @param newParams
-		 * @param altUrl Use this as the url instead of the layer's url
+		 * @inheritDoc
 		 */
-		override public function getFullRequestString(altUrl:String = null):String {
+		override public function getFullRequestString():String {
 			//filter by url way , by post way is maybe better
 			var filterUrl:String ="";
 			if(_filter){
 				filterUrl = "&FILTER=";
-			var filterEncodingFormat:FilterEncodingFormat = new FilterEncodingFormat();
-			filterUrl += filterEncodingFormat.filterWithBbox(_filter,"the_geom",this._wfsFormat.boxNode(this.featuresBbox)).toXMLString();
-			 //bbox are mutually exclusive with filter and featurid
-			 this.params.bbox = null;
+				var filterEncodingFormat:FilterEncodingFormat = new FilterEncodingFormat();
+				filterUrl += filterEncodingFormat.filterWithBbox(_filter,"the_geom",this._wfsFormat.boxNode(this.featuresBbox)).toXMLString();
+				//bbox are mutually exclusive with filter and featurid
+				this.params.bbox = null;
 			}
-			return super.getFullRequestString(altUrl) + filterUrl;
+			return super.getFullRequestString() + filterUrl;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function loadFeatures(url:String):void {	
 			if (map) {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_START, this ));
@@ -89,6 +100,24 @@ package org.openscales.core.layer.ogc
 			_request.send();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function onSuccess(event:Event):void {
+			if(this._wfsFormat != null)
+				this._wfsFormat.reset();
+			
+			
+			if (this.map.baseLayer.projSrsCode != null && this.projSrsCode != null && this.projSrsCode != this.map.baseLayer.projSrsCode) {
+				this._wfsFormat.externalProjSrsCode = this.projSrsCode;
+				this._wfsFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
+			}
+			super.onSuccess(event);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		override public function set map(map:Map):void {
 			super.map = map;
 			if(map){
@@ -101,10 +130,17 @@ package org.openscales.core.layer.ogc
 			}
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function destroy():void {
 			
+			if(this._wfsFormat != null)
+				this._wfsFormat.destroy();
+			this._wfsFormat = null;
+			
 			if(_xmlRequestDescribeFeatureInfo != null)
-			  _xmlRequestDescribeFeatureInfo.destroy();
+				_xmlRequestDescribeFeatureInfo.destroy();
 			if(_xmlRequestTransaction != null)
 				_xmlRequestTransaction.destroy();
 			
@@ -155,7 +191,7 @@ package org.openscales.core.layer.ogc
 			//todo
 			
 			_xmlRequestTransaction = 	new XMLRequest(this.url+"?TYPENAME=" 
-				         + this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
+				+ this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
 			_xmlRequestTransaction.postContent = this._wfsFormat.write(featureArray);
 			_xmlRequestTransaction.postContentType = "application/xml";
 			_xmlRequestTransaction.send();
@@ -174,7 +210,7 @@ package org.openscales.core.layer.ogc
 			_xmlRequestTransaction.postContent = this._wfsFormat.write(features);
 			_xmlRequestTransaction.postContentType = "application/xml"; 
 			_xmlRequestTransaction.send();
-
+			
 		}
 		
 		/**
@@ -200,10 +236,10 @@ package org.openscales.core.layer.ogc
 			//delete the feature link
 			featureArray= new Vector.<Feature>;
 			if(this.transactionArray.length > 0){
-			  this._wfsFormat.readTransactionResponse(xmlReponse,this.transactionArray);
+				this._wfsFormat.readTransactionResponse(xmlReponse,this.transactionArray);
 			}
-		    this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_TRANSACTION_SUCCES,this));
-
+			this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_TRANSACTION_SUCCES,this));
+			
 		}
 		/**
 		 * Read error
@@ -237,7 +273,7 @@ package org.openscales.core.layer.ogc
 				this.geometryType = this.describeFeature.geometryType;
 				this.map.dispatchEvent(new WFSTLayerEvent(WFSTLayerEvent.WFSTLAYER_READY,this));
 				if(this._callbackDescribeFeatureInfo != null)
-				  this._callbackDescribeFeatureInfo.call();
+					this._callbackDescribeFeatureInfo.call();
 			}
 			else{
 				getDescribeFeatureInfo();
@@ -269,7 +305,7 @@ package org.openscales.core.layer.ogc
 		protected function updateIdAfterInsertTransaction():void{
 			throw "Not yet implement ";
 		}
-
+		
 		/**
 		 * this object is use for front end
 		 * */
@@ -278,8 +314,83 @@ package org.openscales.core.layer.ogc
 			return _transactionArray;
 		}
 		
+		public function get filter():XML
+		{
+			return _filter;
+		}
+		
+		public function set filter(value:XML):void
+		{
+			_filter = value;
+		}
+		
+		
 		/**
-		 * End of wfs-t
+		 * Indicates the writer
 		 */
+		public function get writer():Format {
+			return this._writer;
+		}
+		/**
+		 * @private
+		 */
+		public function set writer(value:Format):void {
+			this._writer = value;
+		}
+		
+		/**
+		 * Indicates the feature namespace
+		 */
+		public function get featureNS():String {
+			return this._wfsFormat.featureNS;
+		}
+		/**
+		 * @private
+		 */
+		public function set featureNS(value:String):void {
+			this._wfsFormat.featureNS = value;
+		}
+		
+		/**
+		 * Indicates the feature prefix
+		 */
+		public function get featurePrefix():String {
+			return this._wfsFormat.featurePrefix;
+		}
+		/**
+		 * @private
+		 */
+		public function set featurePrefix(value:String):void {
+			this._wfsFormat.featurePrefix = value;
+		}
+		
+		/**
+		 * Indicates the geometry attribute name
+		 */
+		public function get geometryColumn():String {
+			return this._geometryColumn;
+		}
+		/**
+		 * @private
+		 */
+		public function set geometryColumn(value:String):void {
+			this._geometryColumn = value;
+		}
+		
+		/**
+		 * Indicates if attributes should be parsed.
+		 * If enabled, parsing is slower, but attributes are available
+		 * in the attributes property of features.
+		 * Default true
+		 */
+		public function get extractAttributes():Boolean {
+			return this._wfsFormat.extractAttributes;
+		}
+		/**
+		 * @private
+		 */
+		public function set extractAttributes(value:Boolean):void {
+			this._wfsFormat.extractAttributes = value;
+		}
 	}
 }
