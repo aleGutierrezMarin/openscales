@@ -2,12 +2,15 @@
 <!--- Drag the map or draw some points, polylines or polygons using the buttons of the first line.
 Use click and CTRL+click to select features.
 Use the buttons of the second line to remove the last drawn vertex, to delete the selected features, to delete all the drawn features or to merge the selected features. -->
-<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+<s:Group xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 width="100%" height="100%">
 	
 	<Map id="fxMap" width="100%" height="100%" zoom="2" center="4.833,45.767">
 		
 		<Mapnik name="Mapnik" />
+		<FeatureLayer id="features" />
 		
 		<WheelHandler />
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
@@ -15,7 +18,10 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
 		<ControlPanel title="Drawing Tools" x="10" y="10">
-			<FeatureDrawing />
+			
+			<DrawPoint id="drawPoint" target="{features.nativeLayer as FeatureLayer}" map="{fxMap.map}" />
+			<DrawPath id="drawLine" target="{features.nativeLayer as FeatureLayer}" map="{fxMap.map}" />
+			<DrawPolygon id="drawPolygon" target="{features.nativeLayer as FeatureLayer}" map="{fxMap.map}" />
 		</ControlPanel>
 		
 	</Map>

@@ -149,7 +149,7 @@ package org.openscales.core.handler.feature.draw
 			}		
 		}
 
-		public function mouseDblClick(LastPX:Pixel):void {
+		public function mouseDblClick(LastPX:Pixel = null):void {
 			drawFinalPoly();
 		}
 		

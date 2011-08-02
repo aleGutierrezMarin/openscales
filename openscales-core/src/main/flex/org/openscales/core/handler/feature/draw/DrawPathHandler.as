@@ -96,7 +96,7 @@ package org.openscales.core.handler.feature.draw
 		 * during the drawing operation
 		 * @param Lastpx: The position of the double click pixel
 		 * */
-		public function mouseDblClick(Lastpx:Pixel):void {
+		public function mouseDblClick(Lastpx:Pixel=null):void {
 			this.drawFinalPath();		
 		} 
 		
