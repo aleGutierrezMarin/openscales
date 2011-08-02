@@ -14,6 +14,7 @@ package {
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.KML;
 	import org.openscales.core.layer.ogc.GML;
+	import org.openscales.core.layer.ogc.GPX;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.osm.CycleMap;
 	import org.openscales.core.layer.osm.Mapnik;
@@ -27,14 +28,17 @@ package {
 	public class OpenscalesApplication extends Sprite {
 		protected var _map:Map;
 		
-		[Embed(source="/assets/GMLtest.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/GML32Sample1.xml",mimeType="application/octet-stream")]
 		private const XMLCONTENT:Class;
 		
-		[Embed(source="/assets/GMLtest2.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/GML32Sample2.xml",mimeType="application/octet-stream")]
 		private const XMLCONTENTLINES:Class;
 		
-		[Embed(source="/assets/GMLtest3.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/GML32Sample3.xml",mimeType="application/octet-stream")]
 		private const XMLCONTENTPOINTS:Class;
+		
+		[Embed(source="/assets/gpx11Sample.xml",mimeType="application/octet-stream")]
+		private const GPXFILE:Class;
 
 		public function OpenscalesApplication() {
 			_map=new Map();
@@ -47,7 +51,7 @@ package {
 			_map.addLayer(mapnik);
 			
 			// GML layer (draws polygons over France)
-			var xml:XML = new XML(new XMLCONTENT());
+		/*	var xml:XML = new XML(new XMLCONTENT());
 			var style:Style = Style.getDefaultStyle();
 			var GMLlayer:GML = new GML("GMLlayer", "3.2.1", xml, "EPSG:2154",style);
 			_map.addLayer(GMLlayer);
@@ -64,6 +68,13 @@ package {
 			var style2:Style = Style.getDefaultStyle();
 			var GMLlayer2:GML = new GML("GMLlayer2", "3.2.1", xml2, "EPSG:4326", style2);
 			_map.addLayer(GMLlayer2);
+			
+		*/	
+			//GPX layer (draws lines & points in Australia)
+			
+			var gpxData:XML = new XML(new GPXFILE());
+			var gpxLayer:GPX = new GPX("gpxLayer","1.1",null, gpxData);
+			_map.addLayer(gpxLayer);
 			
 			
 			/*var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
