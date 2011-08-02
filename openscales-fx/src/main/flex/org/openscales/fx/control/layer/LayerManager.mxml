@@ -35,6 +35,7 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.control.IconButton;
+			import org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer;
 			
 			import spark.components.Group;
 			import spark.components.HSlider;
@@ -53,7 +54,7 @@
 			/**
 			 * The dataProvider use for the list.
 			 */
-			private var _dataProvider:ArrayCollection = new ArrayCollection();
+			protected var _layers:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * @private
@@ -69,15 +70,25 @@
 			 * The itemRenderer class for display item of the LayerMananger list
 			 * @default DefaultLayerRenderer
 			 */
-			private var _itemRenderer:Class = DefaultLayerRenderer;
+			private var _itemRenderer:Class = DefaultLayerManagerItemRenderer;
 			
 			/**
 			 * Configure the object
 			 */
 			public function configure():void
 			{
-				layerList.itemRenderer = new ClassFactory(this._itemRenderer);
+				
+				var factory:ClassFactory = new ClassFactory(this._itemRenderer) 
+				
+				factory.properties = {
+					rendererOptions: this._rendererOptions,
+					layerManager: this
+				}
+					
+				layerList.itemRenderer = factory;
 			}
+			
+			
 			
 			/**
 			 * Set the map
@@ -95,7 +106,11 @@
 					var i:int = overlayArray.length;
 					for(i;i>0;--i)
 						ac.addItem(overlayArray[i-1]);
-					this.dataProvider = ac;
+					this.layers = ac;
+					
+					_layers.sort = new MapSyncSort(_map);
+					_layers.filterFunction = shallDisplayLayer;
+					_layers.refresh();
 				}
 			}
 			
@@ -117,10 +132,11 @@
 				if(this._map)
 				{
 					//Listening of layer event
-					this._map.addEventListener(LayerEvent.LAYER_ADDED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_ADDED,onLayerAdded);
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
-					this._map.addEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
 				}
 			}
 			
@@ -128,15 +144,16 @@
 			 * @inherit
 			 */
 			override public function desactivate():void 
-			{
+			{	
 				super.desactivate();
 				
 				if(this._map)
 				{
-					this._map.removeEventListener(LayerEvent.LAYER_ADDED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_ADDED,onLayerAdded);
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
-					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
 				}
 			}
 			
@@ -145,38 +162,102 @@
 			 * @param event Layer event
 			 */
 			public function refresh(event:LayerEvent):void {	
-				//Test the triggered event
-				if(event.type == LayerEvent.LAYER_ADDED){
-					this._dataProvider.addItemAt(event.layer,0);
-					
-					// indicates change to synchronyse the data
-					dispatchEvent(new Event("dataProviderChanged"));
-					layerList.invalidateDisplayList();
-				}
+								
+				/*var mapLayers:Vector.<Layer> = _map.layers;
 				
-				if(event.type == LayerEvent.LAYER_REMOVED){
-					var index:int = layerList.dataProvider.getItemIndex(event.layer);
-					this._dataProvider.removeItemAt(index);
+				// Create a temporary list of the layers in the Map
+				// filtered with the same filter as the LayerManager layers
+				var filteredMapLayersList:ArrayCollection = new ArrayCollection();
+				for each (var layer:Layer in mapLayers){
 					
-					// indicates change to synchronyse the data
-					dispatchEvent(new Event("dataProviderChanged"));
-					layerList.invalidateDisplayList();
+					filteredMapLayersList.addItem(layer);
 				}
+				filteredMapLayersList.filterFunction = shallDisplayLayer;
+				filteredMapLayersList.refresh();
 				
-				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER){
-					var overlayArray:Vector.<Layer> = this.map.layers;
-					var i:uint = overlayArray.length;
-					this._dataProvider.removeAll();
-					layerList.invalidateDisplayList();
-					for(i;i>0;--i)
-						layerList.dataProvider.addItem(overlayArray[i-1]);
-					
-					// indicates change to synchronyse the data
-					dispatchEvent(new Event("dataProviderChanged"));
-					layerList.invalidateDisplayList();
+				var newIndex:int = filteredMapLayersList.getItemIndex(event.layer);
+				
+				_layers.addItemAt(event.layer,newIndex);*/
+				
+				_layers.refresh();
+			}
+			
+			protected function onLayerAdded(event:LayerEvent):void{
+				
+				this._layers.addItemAt(event.layer,0);
+				this._layers.refresh();
+			}
+			
+			protected function onLayerRemoved(event:LayerEvent):void{
+				
+				var index:int = _layers.getItemIndex(event.layer);
+				if(index != -1){
+					_layers.removeItemAt(index);
+					this._layers.refresh();
 				}
 			}
 			
+			protected function onLayerDisplayInLayerManagerChange(event:LayerEvent):void{
+				
+				_layers.refresh();
+			}
+			
+			/**
+			 * Checks if the layer shall be displayed in the LayerManager
+			 */
+			public function shallDisplayLayer(layer:Layer):Boolean{
+				
+				return layer.displayInLayerManager;	
+			}
+			
+			/**
+			 * Moves given layer closer to the user, 
+			 * unless it is already on top of all the other layers 
+			 */
+			public function moveForward(layer:Layer):void{
+				
+				var index:uint = _layers.getItemIndex(layer);
+				
+				if(index > 0){
+					
+					var nextLayer:Layer = _layers.getItemAt(index-1) as Layer;
+					var nextLayerPositionInMap:int = _map.layers.indexOf(nextLayer);
+					
+					_map.changeLayerIndex(layer,nextLayerPositionInMap);	
+				}
+			}
+			
+			/**
+			 * Moves back the layer,
+			 * unless it is already behing all the other layers 
+			 */
+			public function moveBack(layer:Layer):void{
+				
+				var index:uint = _layers.getItemIndex(layer);
+				
+				if(index < _layers.length -1){
+					
+					var nextLayer:Layer = _layers.getItemAt(index+1) as Layer;
+					var nextLayerPositionInMap:int = _map.layers.indexOf(nextLayer);
+					
+					_map.changeLayerIndex(layer,nextLayerPositionInMap);	
+				}
+			}
+			
+			/**
+			 * Moves layer at given index
+			 */
+			public function moveLayerAtIndex(layer:Layer,index:uint):void{
+				
+				if( index < 0 && index > _layers.length-1 ){
+					return;
+				}
+				
+				var layerAtIndex:Layer = _layers.getItemAt(index) as Layer;
+				var mapIndex:int = _map.layers.indexOf(layerAtIndex);
+				_map.changeLayerIndex(layer,mapIndex);
+			}
+									
 			/**
 			 * Update layers order when a user change it
 			 * @param event Drag event
@@ -188,25 +269,20 @@
 			
 			// getter / setter
 			/**
-			 * The dataProvider use for the list.
+			 * The list of layers displayed in the LayerSwitcher
 			 */
-			[Bindable(event="dataProviderChanged")]
-			public function get dataProvider():ArrayCollection
+			[Bindable]
+			public function get layers():ArrayCollection
 			{
-				return this._dataProvider;
+				return this._layers;
 			}
 			
 			/**
 			 * @private
 			 */
-			public function set dataProvider(value:ArrayCollection):void
+			public function set layers(value:ArrayCollection):void
 			{
-				this._dataProvider=value;
-				dispatchEvent(new Event("dataProviderChanged"));
-				if( layerList )
-				{
-					layerList.invalidateDisplayList();
-				}
+				this._layers=value;
 			}
 			
 			/**
@@ -239,9 +315,9 @@
 			public function set itemRenderer(value:Class):void
 			{
 				this._itemRenderer=value;
-				layerList.itemRenderer = new ClassFactory(this._itemRenderer);
+				
+				this.configure();
 			}
-			
 		]]>
 	</fx:Script>
 	
@@ -252,7 +328,7 @@
 				dropEnabled="false"
 				dragEnabled="false"
 				dragMoveEnabled="false"
-				dataProvider="{this.dataProvider}"
+				dataProvider="{this.layers}"
 				width="100%"
 				height="{(this.height-35)}"
 				x="0"

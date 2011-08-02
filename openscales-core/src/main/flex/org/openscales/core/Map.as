@@ -67,8 +67,7 @@ package org.openscales.core
 		
 		private var _baseLayer:Layer = null;
 		private var _layerContainer:Sprite = null;
-		private var _controls:Vector.<IControl> = new Vector.<IControl>();
-		private var _handlers:Vector.<IHandler> = new Vector.<IHandler>();
+		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _size:Size = null;
 		protected var _zoom:Number = 0;
 		private var _zooming:Boolean = false;
@@ -162,14 +161,8 @@ package org.openscales.core
 			this.removeAllLayers();
 			this.baseLayer = null;
 			
-			if (this._handlers != null) {
-				for each(var handler:IHandler in this._handlers) {
-					this.removeHandler(handler);
-				}
-			}
-			
 			if (this._controls != null) {
-				for each(var control:IControl in this._controls) {
+				for each(var control:IHandler in this._controls) {
 					this.removeControl(control);
 				}
 			}
@@ -343,74 +336,6 @@ package org.openscales.core
 				removeLayer(this.layers[i],false);
 			}
 		}
-				
-		/**
-		 * Register a handler as one of the handlers of the map.
-		 * The handler must have its map property setted to this before.
-		 * The handler is not automatically activated. If needed, you have to do
-		 * it by using the active setter of the handler.
-		 * This function should only be called by the Handler.map setter !
-		 *  
-		 * @param handler the handler to add.
-		 */
-		public function addHandler(handler:IHandler):void {
-			// Is the input handler valid ?
-			if (! handler) {
-				Trace.warn("Map.addHandler: null handler not added");
-				return;
-			}
-			
-			// If not map is defined, define this one as the map
-			if(!handler.map) {
-				handler.map = this;
-			} else if (handler.map != this) {
-				Trace.error("Map.addHandler: handler not added because it is associated to an other map");
-				return;
-			}
-			
-			// Is the input handler already registered ?
-			// Or an other handler of the same type ?
-			var i:uint = 0;
-			var j:uint = this.handlers.length;
-			for (; i<j; ++i) {
-				if (handler == this.handlers[i]) {
-					Trace.warn("Map.addHandler: this handler is already registered ("+getQualifiedClassName(handler)+")");
-					return;
-				}
-				if (getQualifiedClassName(handler) == getQualifiedClassName(this.handlers[i])) {
-					Trace.warn("Map.addHandler: an other handler is already registered for "+getQualifiedClassName(handler));
-					return;
-				}
-			}
-			// If the handler is a new handler, register it
-			if (i == j) {
-				Trace.log("Map.addHandler: add a new handler "+getQualifiedClassName(handler));
-				this._handlers.push(handler);
-				//handler.map = this; // this is done by the Handler.map setter
-			}
-		}
-		
-		/**
-		 * Unregister a handler as one of the handlers of the map.
-		 * The handler must have its map property setted null before or after.
-		 * The handler is not automatically deactivated. You have to do it by
-		 * using the active setter of the handler.
-		 * This function should only be called by the Handler.map setter !
-		 * 
-		 * @param handler the handler to remove.
-		 */
-		public function removeHandler(handler:IHandler):void {
-			var newHandlers:Vector.<IHandler> = new Vector.<IHandler>();
-			for each (var mapHandler:IHandler in this._handlers) {
-				if (mapHandler == handler) {
-					handler.active = false;
-					handler = null;
-				} else {
-					newHandlers.push(mapHandler);
-				}
-			}
-			this._handlers = newHandlers;
-		}
 		
 		/**
 		 * @param {OpenLayers.Popup} popup
@@ -483,13 +408,13 @@ package org.openscales.core
 			if(this.dragging)
 			{
 				var i:int = 0;
-				var j:int = this.handlers.length;
+				var j:int = this._controls.length;
 				
 				for(; i<j; ++i)
 				{
-					if(this.handlers[i] is DragHandler && this.handlers[i].active)
+					if(this._controls[i] is DragHandler && this._controls[i].active)
 					{
-						var drag:DragHandler = this.handlers[i] as DragHandler;
+						var drag:DragHandler = this._controls[i] as DragHandler;
 						// stop the drag to pan the map to the current drag to apply the zoom at the correct place
 						drag.stopDrag();
 						// restart drag then
@@ -1086,20 +1011,6 @@ package org.openscales.core
 		 * Call when a Layer has its projection changed.
 		 * If this layer is the baselayer, reproject other layers
 		 */
-	/*	private function layerProjectionChanged(event:LayerEvent):void
-		{
-			var layer:Layer = event.target as Layer;
-			
-			if(layer == this.baseLayer)
-			{
-				var i:int = 0;
-				var j:int = layers.length;
-				for(; i<j; ++i)
-				{
-					layers[i].redraw(true);
-				}
-			}
-		} */
 		public function redrawLayers():void
 		{
 			
@@ -1164,20 +1075,6 @@ package org.openscales.core
 			} else {
 				Trace.error("Map - height not changed since the value is not valid");
 			}
-		}
-		
-		/**
-		 * Map controls
-		 */
-		public function get controls():Vector.<IControl> {
-			return this._controls;
-		}
-		
-		/**
-		 * Map handlers
-		 */
-		public function get handlers():Vector.<IHandler> {
-			return this._handlers;
 		}
 		
 		/**
@@ -1540,70 +1437,113 @@ package org.openscales.core
 		}
 		
 		
-		// --- Control management -- //
+		// --- Control and Handler management -- //
 		/**
-		 * Add a new control to the map.
-		 *
-		 * @param control the control to add.
+		 * Add a new control to the map or register a handler as one of the handlers of the map.
+		 * The handler must have its map property setted to this before.
+		 * The handler is not automatically activated. If needed, you have to do
+		 * it by using the active setter of the handler.
+		 * For a handler, this function should only be called by the Handler.map setter !
+		 * 
+		 * @param control the control or handler to add.
 		 * @param attach if true, the control will be added as child component of the map. This
 		 *  parameter may be for example set to false when adding a Flex component displayed
 		 *  outside the map.
 		 */
-		public function addControl(control:IControl, attach:Boolean=true):void {
+		public function addControl(control:IHandler, attach:Boolean=true):void {
+			
 			// Is the input control valid ?
-			if (! control) {
+			if (!control) {
 				Trace.warn("Map.addControl: null control not added");
 				return;
+			}
+			
+			if (!(control is IControl)) {
+				// control is an IHandler
+				// If no map is defined, define this one as the map
+				if (!control.map) {
+					control.map = this;
+				} else if (control.map != this) {
+					Trace.error("Map.addControl: handler not added because it is associated to an other map");
+					return;
+				}
 			}
 			
 			var i:uint = 0;
 			var j:uint = this._controls.length;
 			for (; i<j; ++i) {
 				if (control == this._controls[i]) {
-					Trace.warn("Map.addControl: this control is already registered ("+getQualifiedClassName(control)+")");
+					Trace.warn("Map.addControl: this control is already registered (" + getQualifiedClassName(control) + ")");
+					return;
+				}
+				// if control is an IHandler
+				if (!(control is IControl) && (getQualifiedClassName(control) == getQualifiedClassName(this._controls[i]))) {
+					Trace.warn("Map.addControl: an other handler is already registered for " + getQualifiedClassName(control));
 					return;
 				}
 			}
+			
 			// If the control is a new control, register it
 			if (i == j) {
-				Trace.log("Map.addControl: add a new control "+getQualifiedClassName(control));
+				Trace.log("Map.addControl: add a new control " + getQualifiedClassName(control));
 				this._controls.push(control);
 				
-				control.map = this;
-				
-				control.draw();
-				if (attach) {
-					this.addChild(control as Sprite);
+				if (control is IControl) {
+					control.map = this;
+					(control as IControl).draw();
+					if (attach) {
+						this.addChild(control as Sprite)
+						if((control as Sprite))
+							(control as Sprite).visible = true;
+					}
 				}
 			}
 		}
 		
 		/**
-		 * Detects if given control is linked to this map
+		 * Detects if given control or handler is linked to this map.
 		 * 
-		 * @return true if the control controls this map, false otherwise
+		 * @return true if the control or handler controls this map, false otherwise.
 		 */
-		public function hasControl(control:IControl):Boolean{
+		public function hasControl(control:IHandler):Boolean {
 			
 			return (this._controls.indexOf(control) != -1);
 		}
 		
 		/**
-		 * Removes given control from the map. 
-		 * If the control is not present on the map, nothing happens.
+		 * Removes given control from the map or unregister given handler as one of the handlers of the map.
+		 * If the control or handler is not present on the map, nothing happens.
+		 * The handler must have its map property setted null before or after.
+		 * The handler is not automatically deactivated. You have to do it by
+		 * using the active setter of the handler.
+		 * For a handler, this function should only be called by the Handler.map setter !
 		 * 
+		 * @param control the control or handler to remove.
 		 */
-		public function removeControl(control:IControl):void {
+		public function removeControl(control:IHandler):void {
+			
 			var i:int = this._controls.indexOf(control);
-			if(i!=-1) {
+			if (i != -1) {
 				this._controls.splice(i,1);
 				
-				if((control as DisplayObject).parent == this){
-					this.removeChild(control as DisplayObject);
-				}				
-				control.destroy();
+				if (control is IControl) {
+					if ((control as DisplayObject).parent == this) {
+						this.removeChild(control as DisplayObject);
+					}
+					(control as IControl).destroy();
+				}
+				else {
+					control.active = false;
+					control.map = null;
+				}
 			}
+		}
+		
+		/**
+		 * Map controls and handlers
+		 */
+		public function get controls():Vector.<IHandler> {
+			return this._controls;
 		}
 	}
 }
-

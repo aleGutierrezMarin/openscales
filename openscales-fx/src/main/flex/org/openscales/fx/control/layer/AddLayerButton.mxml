@@ -7,7 +7,8 @@
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns="org.openscales.fx.control.layer.*"
 		  click="this.addLayerToMap()"
-		  label="{Catalog.getLocalizationForKey('addLayerButton.label')}">
+		  enabled="true"
+		  label="{Catalog.getLocalizationForKey(I18N_LABEL_KEY)}">
 		
 	<fx:Script>
 		<![CDATA[
@@ -20,6 +21,8 @@
 			protected var _map:Map;
 			
 			protected var _layer:Layer;
+			
+			public static const I18N_LABEL_KEY:String = 'addLayerButton.label';
 			
 			/**
 			 * The map the layer will be added to
@@ -52,10 +55,7 @@
 				
 				this._layer = value;
 				
-				if(this._layer){
-					
-					this.enabled = this._layer.map != this._map;
-				}
+				this.enabled = this._layer && this._layer.map != this._map;
 			}
 			
 			private function onLayerRemoved(event:LayerEvent):void{
@@ -68,7 +68,7 @@
 			
 			private function onLocaleChanged(event:I18NEvent):void{
 				
-				this.label = Catalog.getLocalizationForKey('addLayerButton.label');
+				this.label = Catalog.getLocalizationForKey(I18N_LABEL_KEY);
 			}
 			
 			public function addLayerToMap():void{

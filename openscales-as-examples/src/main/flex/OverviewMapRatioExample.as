@@ -67,9 +67,9 @@ package
 			selectHandler.enableOverSelection = true;
 			selectHandler.active = true;
 			
-			_map.addHandler(selectHandler);
-			_map.addHandler(new WheelHandler());
-			_map.addHandler(new DragHandler());
+			_map.addControl(selectHandler);
+			_map.addControl(new WheelHandler());
+			_map.addControl(new DragHandler());
 			
 			_map.zoom = 6;
 			_map.center = new Location(-0.14908,46.99964, IGN.projSrsCode);

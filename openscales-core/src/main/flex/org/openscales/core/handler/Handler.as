@@ -52,12 +52,12 @@ package org.openscales.core.handler
 			}
 			// Remove the handler of its previous associated map
 			if (this._map) {
-				this._map.removeHandler(this);
+				this._map.removeControl(this);
 			}
 			// Associate the handler and the input map
 			this._map = value;
 			if (this.map) {
-				this.map.addHandler(this);
+				this.map.addControl(this);
 			}
 			// If the handler is active, register its listeners
 			if (this._active) {

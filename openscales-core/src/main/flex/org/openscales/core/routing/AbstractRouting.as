@@ -278,8 +278,8 @@ package org.openscales.core.routing
 				//featureLayerEdition
 				if(!_featureLayerEdition) _featureLayerEdition=new FeatureLayerEditionHandler(map,resultsLayer,true,true,true,false); 
 				if(!_featureLayerEdition.map)_featureLayerEdition.map=map;
-				map.addHandler(_featureLayerEdition);
-				map.addHandler(_click);
+				map.addControl(_featureLayerEdition);
+				map.addControl(_click);
 				_click.active=this.active;
 				map.addEventListener(FeatureEvent.EDITION_POINT_FEATURE_DRAG_STOP,editItinerary);
 			}

@@ -177,25 +177,29 @@ package org.openscales.geometry.basetypes
 		public function intersectsBounds(bounds:Bounds, inclusive:Boolean = true):Boolean {
 			
 			var tmpBounds:Bounds = bounds;
-			if(this.projSrsCode!=tmpBounds.projSrsCode) {
-				tmpBounds= tmpBounds.reprojectTo(this.projSrsCode);
+			var tmpThis:Bounds = this;
+			
+			if(tmpThis.projSrsCode!=tmpBounds.projSrsCode)
+			{
+				tmpBounds = tmpBounds.reprojectTo(DEFAULT_PROJ_SRS_CODE);
+				tmpThis = tmpThis.reprojectTo(DEFAULT_PROJ_SRS_CODE);
 			}
 			
-				var inBottom:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
-					true : (((tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top)) ||
-						((this.bottom > tmpBounds.bottom) && (this.bottom < tmpBounds.top)));
-				var inTop:Boolean = (tmpBounds.bottom == this.bottom && tmpBounds.top == this.top) ?
-					true : (((tmpBounds.top > this.bottom) && (tmpBounds.top < this.top)) ||
-						((this.top > tmpBounds.bottom) && (this.top < tmpBounds.top)));
-				var inRight:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
-					true : (((tmpBounds.right > this.left) && (tmpBounds.right < this.right)) ||
-						((this.right > tmpBounds.left) && (this.right < tmpBounds.right)));
-				var inLeft:Boolean = (tmpBounds.right == this.right && tmpBounds.left == this.left) ?
-					true : (((tmpBounds.left > this.left) && (tmpBounds.left < this.right)) ||
-						((this.left > tmpBounds.left) && (this.left < tmpBounds.right)));
+				var inBottom:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
+					true : (((tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top)) ||
+						((tmpThis.bottom > tmpBounds.bottom) && (tmpThis.bottom < tmpBounds.top)));
+				var inTop:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
+					true : (((tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top)) ||
+						((tmpThis.top > tmpBounds.bottom) && (tmpThis.top < tmpBounds.top)));
+				var inRight:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
+					true : (((tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right)) ||
+						((tmpThis.right > tmpBounds.left) && (tmpThis.right < tmpBounds.right)));
+				var inLeft:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
+					true : (((tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right)) ||
+						((tmpThis.left > tmpBounds.left) && (tmpThis.left < tmpBounds.right)));
 			
-				return (this.containsBounds(tmpBounds, true, inclusive) ||
-					tmpBounds.containsBounds(this, true, inclusive) ||
+				return (tmpThis.containsBounds(tmpBounds, true, inclusive) ||
+					tmpBounds.containsBounds(tmpThis, true, inclusive) ||
 					((inTop || inBottom ) && (inLeft || inRight )));
 		}
 		
@@ -208,12 +212,18 @@ package org.openscales.geometry.basetypes
 		 *
 		 * @return Bounds are contained or not by the bounds
 		 */
+		
 		public function containsBounds(bounds:Bounds, partial:Boolean = false, inclusive:Boolean = true):Boolean {
 			
 			var tmpBounds:Bounds = bounds;
-			if(this.projSrsCode!=tmpBounds.projSrsCode) {
-				tmpBounds = tmpBounds.reprojectTo(this.projSrsCode);
+			var tmpThis:Bounds = this;
+			
+			if(tmpThis.projSrsCode!=tmpBounds.projSrsCode)
+			{
+				tmpBounds = tmpBounds.reprojectTo(DEFAULT_PROJ_SRS_CODE);
+				tmpThis = tmpThis.reprojectTo(DEFAULT_PROJ_SRS_CODE);
 			}
+			
 			
 			// TODO: check the equality of the projSrsCode of the two bounds ?!
 			var inLeft:Boolean;
@@ -222,15 +232,15 @@ package org.openscales.geometry.basetypes
 			var inBottom:Boolean;
 			
 			if (inclusive) {
-				inLeft = (tmpBounds.left >= this.left) && (tmpBounds.left <= this.right);
-				inTop = (tmpBounds.top >= this.bottom) && (tmpBounds.top <= this.top);
-				inRight= (tmpBounds.right >= this.left) && (tmpBounds.right <= this.right);
-				inBottom = (tmpBounds.bottom >= this.bottom) && (tmpBounds.bottom <= this.top);
+				inLeft = (tmpBounds.left >= tmpThis.left) && (tmpBounds.left <= tmpThis.right);
+				inTop = (tmpBounds.top >= tmpThis.bottom) && (tmpBounds.top <= tmpThis.top);
+				inRight= (tmpBounds.right >= tmpThis.left) && (tmpBounds.right <= tmpThis.right);
+				inBottom = (tmpBounds.bottom >= tmpThis.bottom) && (tmpBounds.bottom <= tmpThis.top);
 			} else {
-				inLeft = (tmpBounds.left > this.left) && (tmpBounds.left < this.right);
-				inTop = (tmpBounds.top > this.bottom) && (tmpBounds.top < this.top);
-				inRight= (tmpBounds.right > this.left) && (tmpBounds.right < this.right);
-				inBottom = (tmpBounds.bottom > this.bottom) && (tmpBounds.bottom < this.top);
+				inLeft = (tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right);
+				inTop = (tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top);
+				inRight= (tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right);
+				inBottom = (tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top);
 			}
 			
 			return (partial) ? (inTop || inBottom ) && (inLeft || inRight )
@@ -269,16 +279,27 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Returns a bounds instance from a string following this format: "left,bottom,right,top".
+		 * Returns a bounds instance from a string following this format: "left,bottom,right,top" or  "left,bottom,right,top,projection".
 		 *
 		 * @param str The string from which we want create a bounds instance.
 		 * @param srsCode The code defining the projection
 		 * 
+		 * @throw an Argument error if the string contains other that 4 or 5 elements
+		 * 
 		 * @return An instance of bounds.
 		 */
-		public static function getBoundsFromString(str:String,srsCode:String):Bounds {
+		public static function getBoundsFromString(str:String,srsCode:String = "EPSG:4326"):Bounds {
 			var bounds:Array = str.split(",");
-			return Bounds.getBoundsFromArray(bounds,srsCode);
+			
+			if(bounds.length == 4)
+				return Bounds.getBoundsFromArray(bounds,srsCode);
+			
+			if(bounds.length == 5)
+			{
+				var projection:String = bounds.pop();
+				return Bounds.getBoundsFromArray(bounds,projection);
+			}
+			throw(new ArgumentError("the array must contains 4 or 5 values for bbox"));
 		}
 		
 		/**

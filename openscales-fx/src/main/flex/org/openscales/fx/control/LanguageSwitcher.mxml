@@ -58,12 +58,32 @@ It will retrieve the language information and display the availlable languages.
 			{
 				_languageSwitcher = new org.openscales.core.control.LanguageSwitcher();
 				_languageSwitcher.map = this.map;
+				
+				Catalog.catalog.addEventListener(I18NEvent.LOCALE_ADDED, this.updateLocale);
+				
 				actualizeLanguages();
 			}
 			
 			override public function set map(value:Map):void {
 				super.map = value;
 				configure();
+			}
+			
+			
+			/**
+			 * Update the locale list when a new locale is added
+			 */
+			private function updateLocale(event:I18NEvent):void
+			{
+				var locale:Locale = event.locale;
+				
+				this._supportedLocales = Catalog.getAvailableLocalizations();
+				
+				if(locale!=null && !languagesList.contains(locale))
+				{
+					languagesList.addItem(locale);
+				}
+				
 			}
 			
 			/**

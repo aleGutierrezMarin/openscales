@@ -82,6 +82,16 @@ package org.openscales.core.layer.ogc
 			if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
 				this.getCapabilities();
 			} else {
+				var zoom:Number = this.getZoomForResolution(this.map.resolution);
+				var resolution:Number = (this.resolutions[zoom] as Number);
+				var tms:HashMap = this.tileMatrixSets;
+				if(!tms.containsKey(this.tileMatrixSet)) {
+					this.clear();
+					return;
+				}
+				var tileMatrixSet:TileMatrixSet = tms.getValue(this.tileMatrixSet);
+				var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
+				this.tileOrigin = tileMatrix.topLeftCorner.clone();
 				super.redraw(fullRedraw);
 			}
 		}
