@@ -110,7 +110,7 @@ package org.openscales.core.format.gml.parser
 				
 				if (this.parseExtractAttributes) {
 					feature.attributes = this.parseAttributes(data);
-				}    
+				}
 				//todo see if the feature is locked or can be modified
 				feature.isEditable = true;
 				return feature;
