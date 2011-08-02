@@ -457,8 +457,6 @@ package org.openscales.core.format.gml
 			return path;
 		}
 		
-			
-		
 		//Getters and Setters
 		
 		public function get extractAttributes():Boolean {

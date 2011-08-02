@@ -378,19 +378,17 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Indicates if attributes should be parsed.
-		 * If enabled, parsing is slower, but attributes are available
-		 * in the attributes property of features.
-		 * Default true
+		 * @inheritDoc
 		 */
-		public function get extractAttributes():Boolean {
+		override public function get extractAttributes():Boolean {
 			return this._wfsFormat.extractAttributes;
 		}
 		/**
 		 * @private
 		 */
-		public function set extractAttributes(value:Boolean):void {
+		override public function set extractAttributes(value:Boolean):void {
 			this._wfsFormat.extractAttributes = value;
+			super.extractAttributes = value;
 		}
 	}
 }
