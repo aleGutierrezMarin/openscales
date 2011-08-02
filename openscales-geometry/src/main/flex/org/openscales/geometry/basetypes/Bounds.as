@@ -1,6 +1,5 @@
 package org.openscales.geometry.basetypes
 {
-	import org.hamcrest.object.nullValue;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
