@@ -51,7 +51,7 @@ package {
 			_map.addLayer(mapnik);
 			
 			// GML layer (draws polygons over France)
-		/*	var xml:XML = new XML(new XMLCONTENT());
+			var xml:XML = new XML(new XMLCONTENT());
 			var style:Style = Style.getDefaultStyle();
 			var GMLlayer:GML = new GML("GMLlayer", "3.2.1", xml, "EPSG:2154",style);
 			_map.addLayer(GMLlayer);
@@ -69,7 +69,7 @@ package {
 			var GMLlayer2:GML = new GML("GMLlayer2", "3.2.1", xml2, "EPSG:4326", style2);
 			_map.addLayer(GMLlayer2);
 			
-		*/	
+			
 			//GPX layer (draws lines & points in Australia)
 			
 			var gpxData:XML = new XML(new GPXFILE());
