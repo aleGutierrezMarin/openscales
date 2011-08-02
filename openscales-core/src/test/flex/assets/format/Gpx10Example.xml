@@ -1,51 +1,206 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.0">
-	<name>Example gpx</name>
-	<wpt lat="46.57638889" lon="8.89263889">
-		<ele>2372</ele>
-		<name>LAGORETICO</name>
-	</wpt>
-	<trk>
-	<name>Track001</name>
-	<number>1</number>
-	<trkseg>
-		<trkpt lat="46.57608333" lon="8.89241667"><ele>2376</ele><time>2007-10-14T10:09:57Z</time></trkpt>
-		<trkpt lat="46.57619444" lon="8.89252778"><ele>2375</ele><time>2007-10-14T10:10:52Z</time></trkpt>
-		<trkpt lat="46.57641667" lon="8.89266667"><ele>2372</ele><time>2007-10-14T10:12:39Z</time></trkpt>
-		<trkpt lat="46.57650000" lon="8.89280556"><ele>2373</ele><time>2007-10-14T10:13:12Z</time></trkpt>
-		<trkpt lat="46.57638889" lon="8.89302778"><ele>2374</ele><time>2007-10-14T10:13:20Z</time></trkpt>
-		<trkpt lat="46.57652778" lon="8.89322222"><ele>2375</ele><time>2007-10-14T10:13:48Z</time></trkpt>
-		<trkpt lat="46.57661111" lon="8.89344444"><ele>2376</ele><time>2007-10-14T10:14:08Z</time></trkpt>
-	</trkseg>
-	</trk>
-	
-	<rte>
-	<name>BELLEVUE</name>
- 	<desc><![CDATA[Bike Loop Bellevue]]></desc>
- 	<number>1</number>
-	<rtept lat="42.453256" lon="-71.121211">
- <ele>77.992066</ele>
- <time>2001-11-07T23:53:41Z</time>
- <name>5252PURPLE</name>
- <desc><![CDATA[Purple Rock Hill]]></desc>
- <sym>Summit</sym>
- <type><![CDATA[Summit]]></type>
-	</rtept>
-	<rtept lat="42.456252" lon="-71.119356">
- <ele>78.713135</ele>
- <time>2001-11-07T23:53:41Z</time>
- <name>527631</name>
- <desc><![CDATA[527631]]></desc>
- <sym>Dot</sym>
- <type><![CDATA[Dot]]></type>
-	</rtept>
-	<rtept lat="42.456592" lon="-71.119676">
- <ele>78.713135</ele>
- <time>2001-11-07T23:53:41Z</time>
- <name>527614</name>
- <desc><![CDATA[527614]]></desc>
- <sym>Dot</sym>
- <type><![CDATA[Dot]]></type>
-	</rtept>
-	</rte>
+<gpx version="1.0" creator="Wissenbach Map3D 2.20" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd&#xD;&#xA;                       http://www.cableone.net/cdwissenbach http://www.cableone.net/cdwissenbach/wissenbach.xsd" xmlns="http://www.topografix.com/GPX/1/0" xmlns:wissenbach="http://www.cableone.net/cdwissenbach" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <name>
+    Bogus Basin Ski Trails
+  </name>
+  <desc>
+    This sample map contains a cross-country ski trail and a few downhill ski trails from the Bogus Basin Ski Area.
+  </desc>
+  <author>
+    Dave Wissenbach
+  </author>
+  <email>
+    davewissenbach@yahoo.com
+  </email>
+  <url>
+    http://www.bogusbasin.com
+  </url>
+  <urlname>
+    Bogus Basin Ski Area
+  </urlname>
+  <time>
+    2003-06-30T03:34:20Z
+  </time>
+  <keywords>
+    Cross country ski, Downhill Ski, Boise, Hike, GPX, Trails
+  </keywords>
+  <bounds maxlat="43.812168" minlon="-116.119051" minlat="43.739126" maxlon="-116.040430"/>
+  <wpt lat="43.778619" lon="-116.041192">
+    <ele>
+      1575.474365
+    </ele>
+    <name>
+      MKSPIN
+    </name>
+    <desc>
+      <![CDATA[Intersection of Mack's Creek Road and Pine Creek Road (FR366). Mack's Creek Road contours  to the west and then to the north, joining the Boise Ridge Road between More's Mountain and Harris Creek Summit. Heading South leads to the junction of the South Fork of Pine Creek, and then down to Grime's creek. Head West up the ridge from here to get to Bogus Basin Ski Resort over your choice of abandoned logging roads.]]>
+    </desc>
+    <sym>
+      Dot
+    </sym>
+    <wissenbach:layer>
+      trailmap
+    </wissenbach:layer>
+  </wpt>
+  <wpt lat="43.754697" lon="-116.096061">
+    <name>
+      DEERPT
+    </name>
+    <cmt>
+      DEER POINT
+    </cmt>
+    <sym>
+      Dot
+    </sym>
+    <type>
+      Place Name
+    </type>
+    <wissenbach:layer>
+      trailmap
+    </wissenbach:layer>
+  </wpt>
+  <wpt lat="43.776578" lon="-116.104822">
+    <name>
+      Meadow
+    </name>
+    <desc>
+      Small meadow at the confluence of two ski trails.
+    </desc>
+    <sym>
+      Dot
+    </sym>
+    <wissenbach:layer>
+      trailmap
+    </wissenbach:layer>
+  </wpt>
+  <wpt lat="43.775908" lon="-116.076431">
+    <ele>
+      1981.628418
+    </ele>
+    <name>
+      PRD366
+    </name>
+    <cmt>
+      PARADISE FR366
+    </cmt>
+    <desc>
+      Forest Road 366 rejoins the Paradise Trail here, buried under about 20 feet of rubble.
+    </desc>
+    <sym>
+      Dot
+    </sym>
+    <wissenbach:layer>
+      trailmap
+    </wissenbach:layer>
+  </wpt>
+  <wpt lat="43.777581" lon="-116.107106">
+    <ele>
+      1886.939209
+    </ele>
+    <name>
+      MKSPIN
+    </name>
+    <cmt>
+      Bitterroot Lift Terminal
+    </cmt>
+    <sym>
+      Trailhead
+    </sym>
+    <wissenbach:layer>
+      trailmap
+    </wissenbach:layer>
+  </wpt>
+  <trk>
+    <name>
+      OLDBOISERRD
+    </name>
+    <cmt>
+      Old Boise Ridge Road
+    </cmt>
+    <wissenbach:layer>
+      trailmap
+    </wissenbach:layer>
+    <wissenbach:type>
+      Jeep Trail
+    </wissenbach:type>
+    <trkseg>
+      <trkpt lat="43.802190" lon="-116.078968">
+        <ele>
+          1924.216064
+        </ele>
+      </trkpt>
+      <trkpt lat="43.802125" lon="-116.078925">
+        <ele>
+          1924.696777
+        </ele>
+      </trkpt>
+      <trkpt lat="43.802040" lon="-116.078968">
+        <ele>
+          1926.619385
+        </ele>
+      </trkpt>
+      <trkpt lat="43.802018" lon="-116.079011">
+        <ele>
+          1927.580566
+        </ele>
+      </trkpt>
+      <trkpt lat="43.801997" lon="-116.079054">
+        <ele>
+          1928.061279
+        </ele>
+      </trkpt>
+      <trkpt lat="43.801975" lon="-116.079075">
+        <ele>
+          1927.580566
+        </ele>
+      </trkpt>
+      <trkpt lat="43.801954" lon="-116.079118">
+        <ele>
+          1928.541992
+        </ele>
+      </trkpt>
+      <trkpt lat="43.801868" lon="-116.079183">
+        <ele>
+          1929.022461
+        </ele>
+      </trkpt>
+      <trkpt lat="43.801804" lon="-116.079247">
+        <ele>
+          1930.464600
+        </ele>
+      </trkpt>
+      <trkpt lat="43.801739" lon="-116.079333">
+        <ele>
+          1931.906494
+        </ele>
+      </trkpt>
+      <trkpt lat="43.801653" lon="-116.079376">
+        <ele>
+          1932.867920
+        </ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+  <trk>
+    <name>
+      Sappers
+    </name>
+    <desc>
+      This short cross-country ski trail/hiking trail parallels the Boise ridge road. Good wildflowers in spring.
+    </desc>
+    <wissenbach:layer>
+      trailmap
+    </wissenbach:layer>
+    <wissenbach:type>
+      Jeep Trail
+    </wissenbach:type>
+    <trkseg>
+      <trkpt lat="43.777406" lon="-116.107393"/>
+      <trkpt lat="43.777383" lon="-116.107673"/>
+      <trkpt lat="43.777405" lon="-116.107788"/>
+      <trkpt lat="43.777534" lon="-116.107697"/>
+      <trkpt lat="43.777622" lon="-116.107742"/>
+      <trkpt lat="43.777641" lon="-116.107742"/>
+      <trkpt lat="43.777706" lon="-116.107933"/>
+    </trkseg>
+  </trk>
 </gpx>

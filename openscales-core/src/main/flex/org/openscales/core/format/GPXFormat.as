@@ -58,35 +58,56 @@ package org.openscales.core.format
 			this.gpxFile = gpxFile;
 			
 			this._featuresVector = new Vector.<Feature>();
-			
 			var membersList:XMLList = this.gpxFile.children();
+			
 			var listLength:uint = membersList.length();
 			var i:uint;
-			if(gpxFile.hasOwnProperty('@version') && gpxFile.@version.length() )
+			var j:uint = 0;
+			if(gpxFile.hasOwnProperty('@version') && gpxFile.@version.length())
 				this._version = String(gpxFile..@version);
 			
-			if(this._version == "1.0"){ //get children of gpxFile!! as a list and run through it
-				this._fileName = String(gpxFile..*::name[0]);
-				this._author = String(gpxFile..*::author[0]);
-				this._description = String(gpxFile..*::desc[0]);
-				this._authorEmail = String(gpxFile..*::email[0]);
-				this._fileURL = String(gpxFile..*::url[0]);
-				
-				var bounds:XML = gpxFile..*::bounds[0];
-				if(bounds)
-					this._bounds = new Bounds(Number(bounds..@minlat), Number(bounds..@minlon), 
-					Number(bounds..@maxlat), Number(bounds..@maxlon));
-				
+			if(this._version == "1.0") {
+				//extract the file information, stored in the first 9 nodes, at most
+				//count the nodes that can't be turned into features
+				for (i = 0; i < 9; i++){
+					if(membersList[i].localName() == "name" ){
+						this._fileName = membersList[i].toString();
+						j++;
+					}
+					else if (membersList[i].localName() == "desc"){
+						this._description = membersList[i].toString();
+						j++;
+					}
+						
+					else if(membersList[i].localName() == "author"){
+						this._author = membersList[i].toString();
+						j++;
+					}
+					else if(membersList[i].localName() == "email"){
+						this._authorEmail = membersList[i].toString();
+						j++;
+					}
+						
+					else if(membersList[i].localName() == "url"){
+						this._fileURL = membersList[i].toString();
+						j++;
+					}
+					else if(membersList[i].localName() == "bounds"){
+						var bounds:XML = gpxFile..*::bounds[0];
+						this._bounds = new Bounds(Number(bounds..@minlat), Number(bounds..@minlon), 
+							Number(bounds..@maxlat), Number(bounds..@maxlon));
+						j++;
+					}
+				}
 			}
-			
-			for (i = 0; i < listLength; i++){
 				
+			for (i = j; i < listLength; i++){
 				var feature:Feature = this.parseFeature(membersList[i]);
 				if (feature){
 					this._featuresVector.push(feature);
 					this._featuresids.put(feature.name, feature);
 				}
-					
+				
 			}
 			
 			return this._featuresVector;
@@ -106,24 +127,18 @@ package org.openscales.core.format
 			var i:uint;
 			var feature:Feature = null;
 			var coords:Vector.<Number> = null;
-			var duplicateID:Boolean = false;
 		
 			if(featureNode.localName() == "metadata"){ //available only for the 1.1 version
 				
 				this.parseMetadataNode(featureNode);
 			}
-			
-			
-			if(featureName){
-				if(this._featuresids && this._featuresids.containsKey(featureName.toString()))
-					duplicateID = true;
-			}
-			
-			if (duplicateID){
-				return null;
-			}
 			else
-			{
+			{	//check if ID already exists
+				if(featureName){
+					if(this._featuresids && this._featuresids.containsKey(featureName.toString()))
+						return null; 
+				}
+
 				if (featureNode.localName() == "wpt")
 				{
 					coords = this.parsePointCoords(featureNode);
@@ -162,7 +177,6 @@ package org.openscales.core.format
 				}
 			
 				if(feature && featureName){
-				
 					feature.name = featureName.toString();
 				}
 				
@@ -174,6 +188,7 @@ package org.openscales.core.format
 				return feature;
 				
 			}
+			return null;
 	
 		}
 		
@@ -225,23 +240,28 @@ package org.openscales.core.format
 		 */
 		
 		public function parseMetadataNode(xmlNode:XML):void{
-			var bounds:XML = xmlNode..*::bounds[0];
-			this._bounds = new Bounds(Number(bounds..@minlat), Number(bounds..@minlon), 
-				Number(bounds..@maxlat), Number(bounds..@maxlon));
 			
-			this._description = xmlNode..*::desc[0].toString();
-			this._fileName = xmlNode..*::name[0].toString();
-			
-			var authorNode:XML = xmlNode..*::author[0];
-			var emailNode:XML = authorNode..*::email[0];
-			
-			this._author = authorNode..*::name[0].toString();
-			this._authorEmail = String(emailNode..@id) + String(emailNode..@domain);
-			
-			var linkNode:XML = xmlNode..*::link[1]; // todo change this; first link node could be the one for the mail address
-			//maybe get children of metadata node
-			this._fileURL = String(linkNode..@href);
-			
+			var nodes:XMLList = xmlNode.children();
+			var i:uint;
+			var nodesLength:uint = nodes.length();
+			for(i = 0; i < nodesLength; i++){
+				if(nodes[i].localName() == "name" )
+					this._fileName = nodes[i].toString();
+				else if (nodes[i].localName() == "desc")
+					this._description = nodes[i].toString();
+				else if(nodes[i].localName() == "author"){
+					this._author = nodes[i]..*::name[0].toString();
+					var emailNode:XML = nodes[i]..*::email[0];
+					this._authorEmail = String(emailNode..@id) + String(emailNode..@domain);
+				}
+				else if(nodes[i].localName() == "link")
+					this._fileURL = String(nodes[i]..@href);
+				else if(nodes[i].localName() == "bounds"){
+					var bounds:XML = xmlNode..*::bounds[0];
+					this._bounds = new Bounds(Number(bounds..@minlat), Number(bounds..@minlon), 
+						Number(bounds..@maxlat), Number(bounds..@maxlon));
+				}
+			}
 			
 		}
 		
