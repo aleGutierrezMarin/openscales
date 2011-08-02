@@ -25,14 +25,6 @@ package org.openscales.core.layer.ogc
 	{
 		/**
 		 * @private
-		 * Should the WFS layer parse attributes from the retrieved
-		 * GML? Defaults to true. If enabled, parsing is slower, but
-		 * attributes are available in the attributes property of
-		 * layer features.
-		 */
-		private var _extractAttributes:Boolean = true;
-		/**
-		 * @private
 		 * An HashMap containing the capabilities of the layer.
 		 */
 		private var _capabilities:HashMap = null;
@@ -248,11 +240,9 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * TODO: Refactor this to use events
-		 *
 		 * Callback method called by the capabilities retriever.
 		 *
-		 * @param caller The GetCapabilities instance which call it.
+		 * @param the GetCapabilities instance which call it.
 		 */
 		public function capabilitiesGetter(caller:GetCapabilities):void {
 			if (this.params != null) {
@@ -429,6 +419,20 @@ package org.openscales.core.layer.ogc
 				default:
 					this._gmlFormat.version = null;
 			}
+		}
+		
+		/**
+		 * Indicates if vectorial data attributes must be extracted from the XML or if only
+		 * the object geometry is extracted 
+		 */
+		public function get extractAttributes():Boolean {
+			return this._gmlFormat.extractAttributes;
+		}
+		/**
+		 * @private
+		 */
+		public function set extractAttributes(value:Boolean):void {
+			this._gmlFormat.extractAttributes = value;
 		}
 	}
 }
