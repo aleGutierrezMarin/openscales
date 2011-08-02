@@ -424,7 +424,6 @@ package org.openscales.geometry.basetypes
 		 * projection of the two bounds if they are in the same projection. 
 		 */
 		public function getIntersection(bounds:Bounds):Bounds{
-			
 
 			// Variable used of a reprojection is needed
 			var thisBounds:Bounds = this;

@@ -57,6 +57,17 @@ package org.openscales.core.layer {
 		private var _editable:Boolean = false;
 		private var _metaData:Object;
 		
+		protected var _available:Boolean = false;
+		
+		/**
+		 * The boolean that say if the layer is drawn or not.
+		 * This is a readonly parameter.
+		 * This parameter is protected but MUST only be modified in the redraw method.
+		 */
+		public function get available():Boolean
+		{
+			return this._available;
+		}
 		
 		/**
 		 * @private
@@ -84,7 +95,7 @@ package org.openscales.core.layer {
 		 */
 		public function Layer(name:String) {
 			this.name = name;
-			this.visible = false;
+			this.visible = true;
 			this.doubleClickEnabled = true;
 			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
 			this.generateResolutions();
@@ -175,6 +186,8 @@ package org.openscales.core.layer {
 				
 				this.map.addEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED,onMapProjectionChanged);
+				this.map.addEventListener(MapEvent.CENTER_CHANGED, onMapCenterChanged);
+				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
 				this.map.addEventListener(MapEvent.MOVE_END, onMapMove);
 				this.map.addEventListener(MapEvent.RESIZE, onMapResize);
 				if (! this.maxExtent) {
@@ -195,16 +208,36 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * Check if the layer should be displayed when the map projection is changed
+		 * This function is call when the MapEvent.PROJECTION_CHANGED
+		 * Call the redraw function to check if the layer can be displayed. 
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the projection of the map is changed
 		 */
 		private function onMapProjectionChanged(event:MapEvent):void
 		{
-			if (this.projSrsCode != event.newProjection)
-			{
-				this.visible = false;
-			} else {
-				this.visible = true;
-			}
+			this.redraw();
+		}
+		
+		/**
+		 * This function is call when the MapEvent.RESOLUTION_CHANGED
+		 * Call the redraw function to check if the layer can be displayed
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the resolution of the map is changed
+		 */
+		private function onMapResolutionChanged(event:MapEvent):void
+		{
+			this.redraw();
+		}
+		
+		/**
+		 * This function is call when the MapEvent.CENTER_CHANGED
+		 * Call the redraw function to check if the layer can be displayed
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the center is changed
+		 */
+		private function onMapCenterChanged(event:MapEvent):void
+		{
+			this.redraw();	
 		}
 		
 		protected function onSecurityInitialized(e:SecurityEvent):void {
@@ -336,15 +369,15 @@ package org.openscales.core.layer {
 		}	
 		
 		/**
-		 * Clear and draw, if needed, layer based on current data eventually retreived previously by moveTo function.
-		 * 
-		 * @param fullRedraw boolean forece the redraw
+		 * Check if the layer can be drawn according to the map parameters. If the layer can be drawn 
+		 * it will draw itself. 
+		 *  It will set the available parameter to expose if the layer is drawn or not.
 		 */
 		public function redraw(fullRedraw:Boolean = true):void {
-			this.clear();
+			/*this.clear();
 			if (this.displayed) {
 				this.draw();
-			}
+			}*/
 		}
 		
 		/**

@@ -929,6 +929,7 @@ package org.openscales.core
 				newCenter = newCenter.reprojectTo(this.projection);
 			}
 			this.moveTo(newCenter);
+			
 		}
 		
 		/**
@@ -1078,7 +1079,7 @@ package org.openscales.core
 		 * Call when a Layer has its projection changed.
 		 * If this layer is the baselayer, reproject other layers
 		 */
-		public function redrawLayers():void
+		/*public function redrawLayers():void
 		{
 			
 			var i:int = 0;
@@ -1095,7 +1096,7 @@ package org.openscales.core
 					}
 				}
 			}
-		}
+		}*/
 		
 		/**
 		 * Map size in pixels.

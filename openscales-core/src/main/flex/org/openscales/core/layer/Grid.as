@@ -155,30 +155,55 @@ package org.openscales.core.layer
 			return null;
 		}
 		
+		/**
+		 * Override the redraw method for raster data. Check the informations of the map
+		 * to define the available parameter for raster data.
+		 */
 		override public function redraw(fullRedraw:Boolean = true):void 
 		{
-			if (!displayed) {
+			this._available = true;
+			
+			if (this.maxExtent.getIntersection(this.map.extent) == null)
+			{
+				this._available = false;
+			}
+			
+			if ((this.map.resolution > this.maxResolution) || (this.map.resolution < this.minResolution))
+			{
+				this._available = false;
+			}
+			
+			if (this.projSrsCode != this.map.projection)
+			{
+				this._available = false;
+			}
+			
+			if (!available) 
+			{
 				this.clear();
 				return;
 			}
-			
+				
 			var bounds:Bounds = this.map.extent.clone();
-			
 			var tilesBounds:Bounds = this.getTilesBounds();  
-			
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
 			
-			if (!this.tiled) {
+			if (!this.tiled) 
+			{
 				if(fullRedraw)
 					this.clear();
-				if ( forceReTile || !tilesBounds.containsBounds(bounds)) {
+				if ( forceReTile || !tilesBounds.containsBounds(bounds)) 
+				{
 					this.clear();
 					this.initSingleTile(bounds);
 				}
-			} else {
-				if (forceReTile || !tilesBounds.containsBounds(bounds, true)) {
+			} else 
+			{
+				if (forceReTile || !tilesBounds.containsBounds(bounds, true)) 
+				{
 					this.initGriddedTiles(bounds);
-				} else {
+				} else 
+				{
 					this.moveGriddedTiles(bounds);
 				}
 			}
