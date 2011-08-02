@@ -44,8 +44,9 @@ package org.openscales.core.tile
 		override public function destroy():void {
 			this.clear();
 			
-			if(this.layer.contains(this))
-				this.layer.removeChild(this);
+			if(this.layer)
+				if(this.layer.contains(this))
+					this.layer.removeChild(this);
 			if(_request)
 				_request.destroy();	
 
@@ -72,6 +73,13 @@ package org.openscales.core.tile
 			}
 			if (this.url == null) {
 				this.url = this.layer.getURL(this.bounds);
+			}
+			if(this.url==null) {
+				if (_request) {
+					_request.destroy();
+					_request = null;
+				}
+				return false;
 			}
 
 			var cachedBitmap:Bitmap;
@@ -165,8 +173,9 @@ package org.openscales.core.tile
 		override public function clear():void {
 			super.clear();
 			
-			if(this.layer.tweenOnLoad)
-				this.alpha = 0;
+			if(this.layer)
+				if(this.layer.tweenOnLoad)
+					this.alpha = 0;
 
 			if(this._request) {
 				_request.destroy();

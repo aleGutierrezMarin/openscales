@@ -1,16 +1,20 @@
 package org.openscales.core.i18n
 {
 	import flash.events.KeyboardEvent;
+	import flash.events.TimerEvent;
 	import flash.ui.Keyboard;
+	import flash.utils.Timer;
 	
 	import flexunit.framework.Assert;
 	
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.asserts.fail;
+	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
 	import org.openscales.core.layer.Layer;
@@ -32,6 +36,11 @@ package org.openscales.core.i18n
 		private var _locale:Locale = Locale.getLocaleByKey("EN");
 		private var _frenchLocale:Locale = Locale.getLocaleByKey("FR");
 
+		private var _timer:Timer = null;
+		private const THICK_TIME:uint = 1000;
+		private var _handler:Function = null;
+		
+		
 		public function i18nTest() {}
 		
 		[Before]
@@ -108,8 +117,6 @@ package org.openscales.core.i18n
 		[Test]
 		public function testAddMultipleKeysMultipleLocales():void
 		{
-			
-			
 			var hm1:HashMap = new HashMap();
 			hm1.put(_locale,"MyNewKeyEN");
 			hm1.put(_frenchLocale,"MyNewKeyFR");
@@ -137,6 +144,40 @@ package org.openscales.core.i18n
 			test = Catalog.getLocalizationForKey("SecondKey");
 			assertEquals("MySecondKeyFR",test);
 			
+		}
+		
+		/**
+		 * Validate that the Catalog dispatch an event LOCALE_ADDED when a new Locale is added on the catalog
+		 */
+		[Test(async)]
+		public function testDispatchEventOnNewLocaleAdded():void
+		{
+			// Given a Catalog and a function linked to the LOCALE_ADDED event
+			var catalog:Catalog = Catalog.catalog;
+			
+			catalog.addEventListener(I18NEvent.LOCALE_ADDED, this.onLocaleAdded);
+			
+			// When a new locale with translations is added
+				
+			this._handler = Async.asyncHandler(this,assertDispatchEventOnNewLocaleAdded,1500,null, assertDispatchEventOnNewLocaleAdded);
+			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this._handler, false, 0, true );
+			
+			this._timer = new Timer(THICK_TIME, 1);
+	
+		}
+		
+		/**
+		 * Then the function linked to the LOCALE_ADDED event is called
+		 */
+		private function onLocaleAdded():void
+		{
+			// Then the function linked to the LOCALE_ADDED event is called
+			this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
+		}
+		
+		private function assertDispatchEventOnNewLocaleAdded(obj:Object):void
+		{
+			fail("The LOCALE_ADDED event has not been dispatched");
 		}
 	}
 }

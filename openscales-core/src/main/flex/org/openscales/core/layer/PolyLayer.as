@@ -191,11 +191,11 @@ package org.openscales.core.layer
 			return true;
 		}
 		
-		override public function set maxExtent(value:Bounds):void {
+		override public function set maxExtent(value:*):void {
 			super.maxExtent = value;
 			var numLayer:uint = this.layers.length;
 			for(var i:uint = 0;i<numLayer;++i) {
-				layers[i].maxExtent = value;
+				layers[i].maxExtent = (value as Bounds);
 			}
 		}
 		

@@ -9,6 +9,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.layer.FeatureLayer;
@@ -127,7 +128,7 @@ package org.openscales.core.handler.feature.draw
 			
 			if (this.map != null){
 				
-				for each (var h:Handler in this.map.handlers){
+				for each (var h:IHandler in this.map.controls){
 					if(h is DragHandler){
 						dragHandler = (h as DragHandler);
 					}

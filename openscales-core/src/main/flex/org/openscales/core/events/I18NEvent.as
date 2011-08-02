@@ -16,6 +16,11 @@ package org.openscales.core.events
 		 * Event type dispatched when the locale is changed.
 		 */ 
 		public static const LOCALE_CHANGED:String="openscales.localeChanged";
+		
+		/**
+		 * Event type dispatched when a new Locale is set.
+		 */ 
+		public static const LOCALE_ADDED:String="openscales.localeAdded";
 
 		public function I18NEvent(type:String, locale:Locale, bubbles:Boolean=false,cancelable:Boolean=false)
 		{

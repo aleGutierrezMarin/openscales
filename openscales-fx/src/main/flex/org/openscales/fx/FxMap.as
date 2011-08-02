@@ -311,12 +311,20 @@ package org.openscales.fx
 		 * WGS84 = EPSG:4326 only (not in the SRS of the base layer) !
 		 */
 		public function set center(value:String):void {
-			var strCenterLonLat:Array = value.split(",");
-			if (strCenterLonLat.length != 2) {
-				Trace.error("Map.centerLonLat: invalid number of components");
-				return ;
-			}
-			_center = new Location(Number(strCenterLonLat[0]), Number(strCenterLonLat[1]), Geometry.DEFAULT_SRS_CODE);
+			
+			var centerStringArray:Array = value.split(",");
+			
+			if ( centerStringArray.length == 2)
+			{
+				_map.center = new Location(centerStringArray[0], centerStringArray[1], Geometry.DEFAULT_SRS_CODE);
+			} else 
+				if ( centerStringArray.length == 3 )
+				{
+					_map.center = new Location(centerStringArray[0], centerStringArray[1], centerStringArray[2]);
+				} else
+				{
+					return;
+				}
 		}
 		
 		/**
@@ -392,22 +400,22 @@ package org.openscales.fx
 			return this._map.layers;
 		}
 
-		// --- Control management --- //
+		// --- Control and Handler management --- //
 		/**
-		 * List of the controls linked to the map
+		 * List of the controls and handlers linked to the map
 		 */
-		public function get controls():Vector.<IControl>
+		public function get controls():Vector.<IHandler>
 		{
 			// TODO : return a clone of the controls list
 			return this._map.controls;
 		}
 		
 		/**
-		 * Adds given control to the map, displaying it on the map if the <code>attach</code> parameter is true.
-		 * Otherwise, the control is just linked to the map and can be displayed anywhere else
+		 * Adds given control or handler to the map, displaying it (for a control) on the map if the <code>attach</code> parameter is true.
+		 * Otherwise, the control is just linked to the map and can be displayed anywhere else.
 		 * 
-		 * @param control Control to add
-		 * @param attach If true, component is displayed on the map. Otherwise, control is just linked to the map. 
+		 * @param control Control or Handler to add.
+		 * @param attach If true, control is displayed on the map. Otherwise, control is just linked to the map. 
 		 * 
 		 * @example The following code explains how to add a control :
 		 * 
@@ -415,12 +423,13 @@ package org.openscales.fx
 		 * 	myMap.addControl(new geoportal.control.OverviewMap());
 		 * </listing>
 		 */
-		public function addControl(control:IControl, attach:Boolean = true):void{
+		public function addControl(control:IHandler, attach:Boolean = true):void{
 			
 			if(control is IVisualElement){
 				
 				if(attach){
 					this.addElement(control as IVisualElement);
+					(control as IVisualElement).visible = true;
 				}
 				
 				this._map.addControl(control, false);
@@ -431,32 +440,30 @@ package org.openscales.fx
 		}
 		
 		/**
-		 * Adds a list of controls to the map and displays them
+		 * Adds a list of controls and handlers to the map and displays them.
 		 * 
-		 * @param controls The list of controls to add to the map.
+		 * @param controls The list of controls and handlers to add to the map.
 		 */
-		public function addControls(controls:Vector.<IControl>):void{
+		public function addControls(controls:Vector.<IHandler>):void{
 			
-			for each (var control:IControl in controls){
+			for each (var control:IHandler in controls){
 				
 				this.addControl(control);
 			}
 		}
 		
 		/**
-		 * Removes given control to the map, displaying it on the map if the <code>attach</code> parameter is true.
-		 * Otherwise, the control is just linked to the map and can be displayed anywhere else
+		 * Removes given control or handler from the map.
 		 * 
-		 * @param control Control to add
-		 * @param attach If true, component is displayed on the map. Otherwise, control is just linked to the map. 
+		 * @param control Control or Handler to remove
 		 * 
-		 * @example The following code explains how to add a control :
+		 * @example The following code explains how to remove a control :
 		 * 
 		 * <listing version="3.0">
-		 * 	myMap.addControl(new geoportal.control.OverviewMap());
+		 * 	myMap.removeControl(new geoportal.control.OverviewMap());
 		 * </listing>
 		 */
-		public function removeControl(control:Control):void
+		public function removeControl(control:IHandler):void
 		{
 			var test:Vector.<IVisualElement> = new Vector.<IVisualElement>();
 			
@@ -467,19 +474,16 @@ package org.openscales.fx
 			{
 				test.push(this.getElementAt(h));
 			}
-				
 			
-			// removeElement if added as Fxmap element
+			// removeElement if added as IVisualElement
 			var i:int = this.controls.indexOf(control);
-			if(i!=-1)
+			if (i != -1)
 			{
-				if((control as IVisualElement).parent == this){
+				if ((control as IVisualElement) && ((control as IVisualElement).parent == this)) {
 					this.removeElement(control as IVisualElement);
 				}
+				this._map.removeControl(control);
 			}
-			
-			this._map.removeControl(control);
-			
 		}
 	}
 }
