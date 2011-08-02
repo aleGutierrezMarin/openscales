@@ -39,16 +39,15 @@ package org.openscales.core.layer.ogc
 			this._xmlFile = xmlFile;
 			this._style = style;
 			this._style.rules.push(new Rule());
-			//this._style.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x808800,3,1,Stroke.LINECAP_BUTT)));
 		
 		}
 		
 		override protected function draw():void{
 			if(this._featureVector == null && this._xmlFile) {
-				featureVector = new Vector.<Feature>();
 				featureVector = this._gmlFormat.parseGmlFile(this._xmlFile);
 				var i:uint;
-				for (i = 0; i < _featureVector.length; i++){
+				var vectorLength:uint = this.featureVector.length;
+				for (i = 0; i < vectorLength; i++){
 					_featureVector[i].style = this._style;
 					this.addFeature(_featureVector[i]);
 				}
