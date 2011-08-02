@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Button xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 implements="org.openscales.core.control.IControl"
+		 label="Draw points"
+		 click="activate()"
+		 enabled="{active}">
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.control.IControl;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
+			import org.openscales.core.handler.feature.draw.DrawPointHandler;
+			import org.openscales.core.layer.FeatureLayer;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+		
+			private var _active:Boolean = true;
+			
+			private var _map:Map;
+						
+			private var _handler:AbstractDrawHandler = new DrawPointHandler();
+			
+			/**
+			 * Flag for activating and deactivating the component
+			 * @default true;
+			 */
+			[Bindable]
+			public function get active():Boolean{
+				
+				return _active;
+			}
+			
+			public function set active(value:Boolean):void{
+				
+				_active = value;
+				if(! _active){
+					
+					_handler.active = false;
+				}
+			}
+			
+			/**
+			 * Map controled by this control
+			 */
+			public function get map():Map{
+				
+				return _handler.map;
+			}
+			
+			public function set map(value:Map):void{
+				
+				_handler.map = value;
+			}
+			
+			/**
+			 * Position (x,y) of the layer
+			 */
+			public function get position():Pixel{
+				
+				return new Pixel(x,y);
+			}
+			
+			public function set position(value:Pixel):void{
+				
+				if(value){
+					
+					x = value.x;
+					y = value.y;
+				}
+			}
+			
+			/**
+			 * Layer the features will be drawn on
+			 */
+			public function get target():FeatureLayer{
+				
+				return _handler.drawLayer;
+			}
+			
+			public function set target(value:FeatureLayer):void{
+				
+				_handler.drawLayer = value;
+			}
+			
+			public function onMapLanguageChange(event:I18NEvent):void{
+				
+			}
+			
+			public function draw():void{
+				this.invalidateDisplayList();
+			}
+			
+			public function destroy():void{}
+			
+			private function activate():void{
+				
+				_handler.active = true;
+			}			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+
+</s:Button>
