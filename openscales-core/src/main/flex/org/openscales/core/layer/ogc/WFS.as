@@ -6,11 +6,8 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
-	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
-	import org.openscales.core.format.Format;
-	import org.openscales.core.format.WFSFormat;
 	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
@@ -22,61 +19,71 @@ package org.openscales.core.layer.ogc
 	
 	/**
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
+	 * It supports 1.0.0, 1.1.0 and 2.0.0 versions of WFS standard.
 	 */
 	public class WFS extends FeatureLayer
 	{
-		private var _writer:Format = null;
-		
-		private var _geometryColumn:String = null;
-		
-		private var _featuresids:HashMap = new HashMap();
-		
-		protected var _filter:XML;
-		
 		/**
-		 * 	 Should the WFS layer parse attributes from the retrieved
-		 *     GML? Defaults to false. If enabled, parsing is slower, but
-		 *     attributes are available in the attributes property of
-		 *     layer features.
+		 * @private
+		 * Should the WFS layer parse attributes from the retrieved
+		 * GML? Defaults to true. If enabled, parsing is slower, but
+		 * attributes are available in the attributes property of
+		 * layer features.
 		 */
 		private var _extractAttributes:Boolean = true;
-		
 		/**
+		 * @private
 		 * An HashMap containing the capabilities of the layer.
 		 */
 		private var _capabilities:HashMap = null;
-		
 		/**
-		 * Do we get capabilities ?
+		 * @private
+		 * Do we use get capabilities?
 		 */
 		private var _useCapabilities:Boolean = false;
 		
-		private var _capabilitiesVersion:String = "1.0.0";
-		
+		/**
+		 * @private
+		 * WFS version
+		 */
+		private var _version:String = "1.0.0";
+		/**
+		 * @private
+		 * WFS params
+		 */
 		private var _params:WFSParams = null;
+		/**
+		 * @private
+		 * the xmlrequest used in the layer. It prevents simultaneous requests.
+		 */ 
+		protected var _request:XMLRequest = null;
 		
-		protected var _request:XMLRequest = null;	
-		
+		/**
+		 * @private
+		 * Indicates if the layer haven't been displayed yet.
+		 */
 		private var _firstRendering:Boolean = true;
-		
+		/**
+		 * @private
+		 * Indicates if the layer should be fully redrawn
+		 */
 		private var _fullRedraw:Boolean = false;
 		
-		protected var _wfsFormat:WFSFormat = null;
 		protected var _gmlFormat:GMLFormat = null;
 		
+		/**
+		 * @private
+		 * Hashmap containing id of features that have allready been drawn
+		 */
+		private var _featuresids:HashMap = new HashMap();
 		
 		/**
 		 * WFS class constructor
 		 *
-		 * @param name Layer's name
-		 * @param url The WFS server url to request
-		 * @param params
-		 * @param isBaseLayer
-		 * @param visible
-		 * @param projection
-		 * @param proxy
-		 * @param capabilities
-		 * @param useCapabilities
+		 * @param Layer's name
+		 * @param The WFS server url to request
+		 * @param the WFS typename
+		 * @param The wfs version
 		 */	                    
 		public function WFS(name:String,
 							url:String,
@@ -85,25 +92,51 @@ package org.openscales.core.layer.ogc
 		{
 			super(name);
 			
-			// Properties initialization
-			if(!(this.geometryColumn)) {
-				this.geometryColumn = "the_geom";
-			}
 			this._params = new WFSParams(typename, version);
 			this.url = url;
-			this._capabilitiesVersion = version;
-			this._wfsFormat = new WFSFormat(this);
-			this._gmlFormat = new GMLFormat(this.addFeature,this.featuresids,true);
+			
+			this._gmlFormat = new GMLFormat(this.addFeature,
+				this.featuresids,
+				true);
+			this.version = version;
 		}
 		
+		/**
+		 * Combine the layer's url with its params.
+		 * 
+		 * @return the full request url 
+		 */
+		public function getFullRequestString():String {
+			
+			var requestString:String = this.url;
+			
+			if (this.projSrsCode != null || this.map.baseLayer.projSrsCode != null) {
+				this.params.srs = (this.projSrsCode == null) ? this.map.baseLayer.projSrsCode : this.projSrsCode;
+			}
+			
+			var lastServerChar:String = url.charAt(url.length - 1);
+			if ((lastServerChar == "&") || (lastServerChar == "?")) {
+				requestString += this.params.toGETString();
+			} 
+			else {
+				if (url.indexOf('?') == -1) {
+					requestString += '?' + this.params.toGETString();
+				} 
+				else {
+					requestString += '&' + this.params.toGETString();
+				}
+			}
+			
+			return requestString;
+		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function destroy():void {
 			if(this._request)
 				this._request.destroy();
 			this._request = null;
-			if(this._wfsFormat != null)
-				this._wfsFormat.destroy();
-			this._wfsFormat = null;
 			
 			if(!this._featuresids){
 				var farray:Array = this._featuresids.getValues();
@@ -116,22 +149,29 @@ package org.openscales.core.layer.ogc
 			super.destroy();
 		}
 		
-		
+		/**
+		 * @inheritDoc
+		 */
 		override public function set map(map:Map):void {
 			super.map = map;
 			
 			// GetCapabilities request made here in order to have the proxy set 
 			if (url != null && url != "" && this.capabilities == null && useCapabilities == true) {
 				var getCap:GetCapabilities = new GetCapabilities("wfs", url, this.capabilitiesGetter,
-					capabilitiesVersion, this.proxy);
+					version, this.proxy);
 			}
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function redraw(fullRedraw:Boolean = true):void {
 			this.clear();
+			
 			if (!displayed) {
 				return;
 			}
+			
 			if(this.useCapabilities && !this.projSrsCode)
 				return;
 			
@@ -153,12 +193,11 @@ package org.openscales.core.layer.ogc
 			if(previousFeatureBbox!=null)
 				previousFeatureBbox = previousFeatureBbox.clone();
 			//bbox are mutually exclusive with filter and featurid
-			if(!_filter){
-				if(this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode]!=ProjProjection.AXIS_ORDER_EN)
-					this.params.bbox = projectedBounds.toString(-1,false);
-				else
-					this.params.bbox = projectedBounds.toString();
-			}
+			if(this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode]!=ProjProjection.AXIS_ORDER_EN)
+				this.params.bbox = projectedBounds.toString(-1,false);
+			else
+				this.params.bbox = projectedBounds.toString();
+			
 			if (this._firstRendering) {
 				this.featuresBbox = projectedBounds;
 				this.loadFeatures(this.getFullRequestString());
@@ -184,53 +223,26 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Combine the layer's url with its params and these newParams.
-		 *
-		 * @param newParams
-		 * @param altUrl Use this as the url instead of the layer's url
+		 * Indicates the WFS typename
 		 */
-		public function getFullRequestString(altUrl:String = null):String {
-			var url:String;
-			
-			if (altUrl != null)
-				url = altUrl;
-			else
-				url = this.url;
-			
-			var requestString:String = url;
-			
-			if (this.projSrsCode != null || this.map.baseLayer.projSrsCode != null) {
-				this.params.srs = (this.projSrsCode == null) ? this.map.baseLayer.projSrsCode : this.projSrsCode;
-			}
-			
-			var lastServerChar:String = url.charAt(url.length - 1);
-			if ((lastServerChar == "&") || (lastServerChar == "?")) {
-				requestString += this.params.toGETString();
-			} 
-			else {
-				if (url.indexOf('?') == -1) {
-					requestString += '?' + this.params.toGETString();
-				} 
-				else {
-					requestString += '&' + this.params.toGETString();
-				}
-			}
-			
-			return requestString;
-		}
-		
-		public function set typename(value:String):void {
-			this.params.typename = value;
-		}
-		
 		public function get typename():String {
 			return this.params.typename;
 		}
-		
+		/**
+		 * @private
+		 */
+		public function set typename(value:String):void {
+			this.params.typename = value;
+		}
+		/**
+		 * Indicates the capabilities result
+		 */
 		public function get capabilities():HashMap {
 			return this._capabilities;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set capabilities(value:HashMap):void {
 			this._capabilities = value;
 		}
@@ -254,12 +266,10 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Abort any pending requests and issue another request for data.
+		 * Perform the request allowing to get features.
+		 * It aborts any pending requests and issue another request for data.
 		 *
-		 * Input are function pointers for what to do on success and failure.
-		 *
-		 * @param success
-		 * @param failure
+		 * @param the url to request
 		 */
 		protected function loadFeatures(url:String):void {		
 			if (map) {
@@ -281,21 +291,12 @@ package org.openscales.core.layer.ogc
 		/**
 		 * Called on return from request succcess.
 		 *
-		 * @param request
+		 * @param the success event
 		 */
 		protected function onSuccess(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
 			
-			this.loading = false;			
-			
-			if(this._wfsFormat != null)
-				this._wfsFormat.reset();
-			
-			
-			if (this.map.baseLayer.projSrsCode != null && this.projSrsCode != null && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-				this._wfsFormat.externalProjSrsCode = this.projSrsCode;
-				this._wfsFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
-			}
+			this.loading = false;
 			
 			this.parseResponse(loader.data as String);
 			
@@ -306,29 +307,21 @@ package org.openscales.core.layer.ogc
 			}
 		}
 		
+		/**
+		 * Parse the wfs response
+		 * 
+		 * @param the xml corresponding to the wfs response
+		 */
 		public function parseResponse(wfsResponse:String):void{
-			switch (_capabilitiesVersion) {
-				case "1.0.0":
-					this._gmlFormat.version = "2.0";
-					break;
-				case "1.1.0":
-					this._gmlFormat.version = "3.1.1";
-					break;
-				default:
-					return;
-			}
 			this._gmlFormat.externalProjSrsCode = this.projSrsCode;
 			this._gmlFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
 			this._gmlFormat.read(wfsResponse);
 			//this._wfsFormat.read(wfsResponse);
 		}
 		
-		public function get featuresids():HashMap {
-			return this._featuresids;
-		}
-		
-		
-		
+		/**
+		 * @inheritDoc
+		 */
 		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
 			if(!feature)
 				return;
@@ -339,6 +332,9 @@ package org.openscales.core.layer.ogc
 			this._featuresids.put(feature.name,feature);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function removeFeature(feature:Feature, dispatchFeatureEvent:Boolean=true):void {
 			if(feature != null){
 				this._featuresids.remove(feature.name);
@@ -346,11 +342,10 @@ package org.openscales.core.layer.ogc
 			}
 		}
 		
-		
 		/**
 		 * Called on return from request failure.
 		 *
-		 * @param event
+		 * @param the failure event
 		 */
 		protected function onFailure(event:Event):void {
 			this.loading = false;
@@ -361,89 +356,80 @@ package org.openscales.core.layer.ogc
 			Trace.error("Error when loading WFS request " + this.url);			
 		}
 		
+		// getters setters
+		
+		/**
+		 * Indicates the id of features allready displayed
+		 */
+		public function get featuresids():HashMap {
+			return this._featuresids;
+		}
+		
+		/**
+		 * Indicates the wfs params
+		 */
 		public function get params():WFSParams {
 			return this._params;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set params(value:WFSParams):void {
 			this._params = value;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function set url(value:String):void {
 			this._firstRendering = true;
 			super.url=value;
 		}
 		
-		public function get writer():Format {
-			return this._writer;
-		}
-		
-		public function set writer(value:Format):void {
-			this._writer = value;
-		}
-		
-		public function get featureNS():String {
-			return this._wfsFormat.featureNS;
-		}
-		
-		public function set featureNS(value:String):void {
-			this._wfsFormat.featureNS = value;
-		}
-		
-		public function get featurePrefix():String {
-			return this._wfsFormat.featurePrefix;
-		}
-		
-		public function set featurePrefix(value:String):void {
-			this._wfsFormat.featurePrefix = value;
-		}
-		
-		public function get geometryColumn():String {
-			return this._geometryColumn;
-		}
-		
-		public function set geometryColumn(value:String):void {
-			this._geometryColumn = value;
-		}
-		
-		public function get extractAttributes():Boolean {
-			return this._wfsFormat.extractAttributes;
-		}
-		
-		public function set extractAttributes(value:Boolean):void {
-			this._wfsFormat.extractAttributes = value;
-		}
-		
+		/**
+		 * Indicates if capabilities should be used.
+		 * Default false
+		 */
 		public function get useCapabilities():Boolean {
 			return this._useCapabilities;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set useCapabilities(value:Boolean):void {
 			this._useCapabilities = value;
 			if (value)
 				this.projSrsCode = null;
 		}
 		
-		public function set capabilitiesVersion(value:String):void {
-			this._capabilitiesVersion = value;
+		/**
+		 * Indicates the wfs version.
+		 * Default 1.0.0
+		 */
+		public function get version():String {
+			return this._version;
+		}
+		/**
+		 * @private
+		 */
+		public function set version(value:String):void {
+			this._version = value;
 			if(this._params != null)
 				this._params.version = value;
+			switch (value) {
+				case "1.0.0":
+					this._gmlFormat.version = "2.0";
+					break;
+				case "1.1.0":
+					this._gmlFormat.version = "3.1.1";
+					break;
+				case "2.0":
+					this._gmlFormat.version = "3.2.1";
+					break;
+				default:
+					this._gmlFormat.version = null;
+			}
 		}
-		public function get capabilitiesVersion():String {
-			return this._capabilitiesVersion;
-		}
-		
-		public function get filter():XML
-		{
-			return _filter;
-		}
-		
-		public function set filter(value:XML):void
-		{
-			_filter = value;
-		}
-		
-		
 	}
 }
 
