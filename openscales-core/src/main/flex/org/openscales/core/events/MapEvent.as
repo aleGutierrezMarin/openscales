@@ -1,14 +1,14 @@
 package org.openscales.core.events{
-
+	
 	import org.openscales.core.Map;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
-
+	
 	/**
 	 * Event related to a map.
 	 */
 	public class MapEvent extends OpenScalesEvent {
-
+		
 		/**
 		 * Map concerned by the event.
 		 */
@@ -22,54 +22,64 @@ package org.openscales.core.events{
 		/**
 		 * old zoom of the map
 		 */
-		 private var _oldZoom:Number = 0;
-		 
-		 /**
-		  * new zoom of the map
-		  */
-		 private var _newZoom:Number = 0;
-		 
-		 /**
+		private var _oldZoom:Number = 0;
+		
+		/**
+		 * new zoom of the map
+		 */
+		private var _newZoom:Number = 0;
+		
+		/**
 		 * old projection of the map
 		 */
-		 private var _oldProjection:String = null;
-		 
-		 /**
+		private var _oldProjection:String = null;
+		
+		/**
 		 * new projection of the map
 		 */
-		 private var _newProjection:String = null;
-		 
-		 /**
-		  * old center of the map
-		  */
-		 private var _oldCenter:Location = null;
-
-		 /**
-		  * old center of the map
-		  */
-		 private var _newCenter:Location = null;
-		 
-		 /**
-		  * name of the component which has been changed
-		  */
-		 private var _componentName:String = null;
-		 
-		 /**
-		  * state of the component which has been changed
-		  */
-		 private var _componentIconified:Boolean = false;
-		 
+		private var _newProjection:String = null;
+		
+		/**
+		 * old center of the map
+		 */
+		private var _oldCenter:Location = null;
+		
+		/**
+		 * new center of the map
+		 */
+		private var _newCenter:Location = null;
+		
+		/**
+		 * old resolution of the map
+		 */
+		private var _oldResolution:Number = 0;
+		
+		/**
+		 * new resolution of the map
+		 */
+		private var _newResolution:Number = 0;
+		
+		/**
+		 * name of the component which has been changed
+		 */
+		private var _componentName:String = null;
+		
+		/**
+		 * state of the component which has been changed
+		 */
+		private var _componentIconified:Boolean = false;
+		
 		/**
 		 * Event type dispatched before map move (drag or zoom).
 		 */
 		public static const MOVE_START:String="openscales.mapmovestart";
-
+		
 		/**
 		 * Event type dispatched after map move if the center and/or zoom has changed.
 		 * There is no DRAG_END since a MOVE_END event is emitted if the center has finally changed
 		 */
 		public static const MOVE_END:String="openscales.mapmoveend";
-
+		
 		/**
 		 * Event type dispatched when the map didn't move after a move_start or a drag_start
 		 */
@@ -79,6 +89,11 @@ package org.openscales.core.events{
 		 * Event type dispatched when the projection of the map is changed
 		 */
 		public static const PROJECTION_CHANGED:String = "openscales.mapprojectionchanged";
+		
+		/**
+		 * Event type dispatched when the resolution of the map has been changed.
+		 */
+		public static const RESOLUTION_CHANGED:String="openscales.mapresolutionchanged";
 		
 		/**
 		 * Event type dispatched just before dragging the map.
@@ -91,32 +106,29 @@ package org.openscales.core.events{
 		public static const DRAG_END:String = "openscales.dragEnd";
 		
 		/**
- 		 * Event type dispatched during map resize.
+		 * Event type dispatched during map resize.
 		 */
 		public static const RESIZE:String="openscales.mapresize";
 		
 		/**
- 		 * Event type dispatched during map resize.
- 		 * Cannot use namingconvention with dot "." here because name is used in mxml
+		 * Event type dispatched during map resize.
+		 * Cannot use namingconvention with dot "." here because name is used in mxml
 		 */
 		public static const LOAD_START:String="openscales.maploadstart";
 		
 		/**
- 		 * Event type dispatched when map has been loaded completely.
- 		 * Cannot use namingconvention with dot "." here because name is used in mxml
+		 * Event type dispatched when map has been loaded completely.
+		 * Cannot use namingconvention with dot "." here because name is used in mxml
 		 */
 		public static const LOAD_END:String="openscales.maploadend";
 		
-		
 		/**
-		 * Event type dispatched when zoom of the map has been changed.
-		 * Cannot use namingconvention with dot "." here because name is used in mxml
+		 * Event type dispatched when the zoom of the map has been changed.
 		 */
 		public static const ZOOM_CHANGED:String="openscales.mapzoomchanged";
 		
 		/**
-		 * Event type dispatched when center of the map has been changed.
-		 * Cannot use namingconvention with dot "." here because name is used in mxml
+		 * Event type dispatched when the center of the map has been changed.
 		 */
 		public static const CENTER_CHANGED:String="openscales.mapcenterchanged";
 		
@@ -129,12 +141,12 @@ package org.openscales.core.events{
 		 * Event type dispatched when min or max map resolution changed
 		 */
 		public static const MIN_MAX_RESOLUTION_CHANGED:String="openscales.minMaxresolutionChanged";
-
+		
 		/**
 		 * Event type dispatched when the map LayerContainer visibility is set to true
 		 */
 		public static const LAYERCONTAINER_IS_VISIBLE:String="openscales.layercontainerIsVisible";
-
+		
 		/**
 		 * Instances of MapEvent are events dispatched by the Map
 		 */
@@ -142,11 +154,11 @@ package org.openscales.core.events{
 			this._map = map;
 			super(type, bubbles, cancelable);
 		}
-
+		
 		public function get map():Map {
 			return this._map;
 		}
-
+		
 		public function set map(map:Map):void {
 			this._map = map;	
 		}
@@ -166,7 +178,7 @@ package org.openscales.core.events{
 		public function get oldZoom():Number {
 			return this._oldZoom;
 		}
-
+		
 		public function set oldZoom(value:Number):void {
 			this._oldZoom = value;	
 		}
@@ -174,7 +186,7 @@ package org.openscales.core.events{
 		public function get newZoom():Number {
 			return this._newZoom;
 		}
-
+		
 		public function set newZoom(value:Number):void {
 			this._newZoom = value;	
 		}
@@ -188,7 +200,7 @@ package org.openscales.core.events{
 		{
 			return this._oldProjection;
 		}
-	
+		
 		public function set newProjection(value:String):void
 		{
 			this._newProjection = value;
@@ -217,6 +229,26 @@ package org.openscales.core.events{
 		public function set oldCenter(value:Location):void
 		{
 			_oldCenter = value;
+		}
+		
+		public function get oldResolution():Number
+		{
+			return  _oldResolution;
+		}
+		
+		public function set oldResolution(value:Number):void
+		{
+			_oldResolution = value;
+		}
+		
+		public function get newResolution():Number
+		{
+			return _newResolution;
+		}
+		
+		public function set newResolution(value:Number):void
+		{
+			_newResolution = value;
 		}
 		
 		public function get zoomChanged():Boolean {
