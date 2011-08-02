@@ -225,5 +225,20 @@ package org.openscales.geometry.basetypes
 			assertEquals("Incorrect top value", 4, bounds.top);
 			assertEquals("Incorrect projection", "EPSG:2154", bounds.projSrsCode);
 		}
+		
+		[Test]
+		public function shouldIntersectBoundsReprojectedInEPSG4326():void
+		{
+			// Given two intersected bounds in IGNF:LAMB93
+			var firstBounds:Bounds = new Bounds(0, -14214400, 26214400, 12000000, "IGNF:LAMB93");
+			var secondBounds:Bounds = new Bounds(409600, 6265600, 614400, 6470400, "IGNF:LAMB93");
+			
+			// When you reproject these bounds in EPSG:4326
+			var firstBoundsReproj:Bounds = firstBounds.preciseReprojectBounds(firstBounds,"IGNF:LAMB93","EPSG:4326");
+			var secondBoundsReproj:Bounds = secondBounds.preciseReprojectBounds(secondBounds,"IGNF:LAMB93","EPSG:4326");
+			
+			// Then the bounds are still intersected
+			assertEquals("Incorrect bounds intersection", firstBounds.intersectsBounds(secondBounds), firstBoundsReproj.intersectsBounds(secondBoundsReproj));
+		}
 	}
 }
