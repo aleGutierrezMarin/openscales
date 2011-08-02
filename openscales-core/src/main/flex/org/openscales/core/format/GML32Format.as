@@ -135,19 +135,18 @@ package org.openscales.core.format
 			var end:int;		
 			
 			
-			while(this.lastInd!=-1) { /* while the last member hasn't been reached */
+			while(this.lastInd!=-1) { 
 				if (getTimer() - startTime > allowedTime){
 					return;
 				}
 				
-				end = this.xmlString.indexOf(eFXML,this.lastInd); /* the index of the end of the current member */
+				end = this.xmlString.indexOf(eFXML,this.lastInd);
 				if(end<0)
 					break;
-				xmlNode = new XML( this.sXML + this.xmlString.substr(this.lastInd,end-this.lastInd) + this.eXML ) /* create a node
-				for the current member*/ 
+				xmlNode = new XML( this.sXML + this.xmlString.substr(this.lastInd,end-this.lastInd) + this.eXML ) 
 				
-				this.lastInd = this.xmlString.indexOf(this.sFXML,this.lastInd+1); /* update of the index of the beginning of the next member */
-				if(this._featuresids.containsKey((xmlNode..@id) as String)) /* check if the memeber id is in the HashMap _featuresids */
+				this.lastInd = this.xmlString.indexOf(this.sFXML,this.lastInd+1); 
+				if(this._featuresids.containsKey((xmlNode..@id) as String))
 					continue;
 				feature = this.parseFeature(xmlNode);
 				if (feature) {
@@ -179,9 +178,9 @@ package org.openscales.core.format
 		{
 			
 			var boxNode:XML = new XML("<" + this._gmlprefix + ":Box xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">" +
-				"</" + this._gmlprefix +":Box>"); /* <gml:Box xmlns:gml="http://www.opengis.net/gml"> </gml:Box> */
+				"</" + this._gmlprefix +":Box>"); 
 			var coodinateNode:XML = new XML("<" + this._gmlprefix + ":coordinates xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" >" +
-				"</" + this._gmlprefix +":coordinates>"); /* <gml:coordinates xmlns:gml="http://www.opengis.net/gml"> </gml:coordinates> */
+				"</" + this._gmlprefix +":coordinates>"); 
 			
 			
 			coodinateNode.appendChild(this.buildCoordinatesWithoutProjSrsCode(new <Number>[bound.left,bound.bottom,bound.right,bound.top]));			
@@ -243,7 +242,7 @@ package org.openscales.core.format
 					geom = new MultiPolygon();
 					var polygons:XMLList = multiSurface..*::Polygon; 
 					j = polygons.length();
-					for (i = 0; i < j; i++) { /* parse every polygon in the vector */
+					for (i = 0; i < j; i++) {
 						var polygon:Polygon = this.parsePolygonNode(polygons[i], dim); 
 						geom.addComponent(polygon);
 					}
@@ -420,7 +419,7 @@ package org.openscales.core.format
 		}
 		
 		/**
-		 * Return an array of coords - Point objects (the coordinates of the LinearRing received as a parameter (xmlNode) )
+		 * @return: an array of coords - Point objects (the coordinates of the LinearRing received as a parameter (xmlNode) )
 		 */ 
 		public function parseCoords(xmlNode:XML, dim:Number):Vector.<Number> { 
 			var x:Number, y:Number, left:Number, bottom:Number, right:Number, top:Number;
@@ -453,7 +452,7 @@ package org.openscales.core.format
 				
 				j = nums.length;
 				
-				/* verifies if the dimension of the feature is compatible with the number of coordinates */
+				// verifies if the dimension of the feature is compatible with the number of coordinates 
 				if ( j % dim == 0 ){
 					var i:int;
 					for(i = 0; i < j; i = i + dim) {
@@ -536,7 +535,7 @@ package org.openscales.core.format
 				xmlNode.appendChild(this.buildPolygonNode(polygon));
 				
 			}else if (feature is MultiPolygonFeature){
-				/* builds a MultiSurface tag with multiple surfaceMembers (polygons) inside */
+				// builds a MultiSurface tag with multiple surfaceMembers (polygons) inside 
 				
 				var multiSurfaceNode:XML = new XML("<MultiSurface></MultiSurface>");
 				multiSurfaceNode.setNamespace(gmlns);
@@ -547,7 +546,7 @@ package org.openscales.core.format
 				var mp:MultiPolygon = mpf.polygons;
 				var polygonVector:Vector.<Geometry> = mp.getcomponentsClone();
 				
-				for(i=0; i<mp.componentsLength; i++){ /* create a subnode for each Polygon inside the multiSurface tag */
+				for(i=0; i<mp.componentsLength; i++){ // create a subnode for each Polygon inside the multiSurface tag 
 					var surfaceMemberNode:XML = new XML("<surfaceMember></surfaceMember>");
 					surfaceMemberNode.setNamespace(gmlns);
 					surfaceMemberNode.appendChild(this.buildPolygonNode(polygonVector[i] as Polygon));
@@ -640,7 +639,7 @@ package org.openscales.core.format
 			var exteriorRingNode:XML = buildLinearRingNode("exterior",exteriorRing);
 			polygonNode.appendChild(exteriorRingNode);
 			
-			if(polygon.componentsLength> 1){/* if multiple LinearRings inside the Polygon => one is exterior and the others are interior*/
+			if(polygon.componentsLength> 1){// if multiple LinearRings inside the Polygon => one is exterior and the others are interior
 				for(i=1; i<polygon.componentsLength; i++){ /* for each interior LinearRing*/
 					var interiorRing:LinearRing = linearRings[i] as LinearRing;
 					var interiorNode:XML = this.buildLinearRingNode("interior", interiorRing);
