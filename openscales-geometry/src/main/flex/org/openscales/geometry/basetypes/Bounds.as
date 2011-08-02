@@ -208,7 +208,7 @@ package org.openscales.geometry.basetypes
 		 * 
 		 * @return The reprojected bounds
 		 */
-		private function preciseReprojectBounds(bounds:Bounds, source:String, dest:String):Bounds {
+		public function preciseReprojectBounds(bounds:Bounds, source:String, dest:String):Bounds {
 			
 			// Precise reprojection
 			// --------------------
