@@ -34,9 +34,11 @@ package org.openscales.core.format
 		public function testParseCoords():void
 		{
 			var gpx:XML = new XML(new GPX11FILE());
-		//	var features:Vector.<Feature> = this.format.parseGpxFile(gpx);
-			this.gpxLayer = new GPX("gpxLayer","1.1",url,gpx);
-			var features:Vector.<Feature> = this.gpxLayer.featureVector;
+			var features:Vector.<Feature> = this.format.parseGpxFile(gpx);
+			//this.gpxLayer = new GPX("gpxLayer","1.1",url,gpx);
+			//var features:Vector.<Feature> = this.gpxLayer.featureVector;
+			var pointNode:XML = this.format.buildAttributeNodes(features[0]);
+
 			
 		}
 		
