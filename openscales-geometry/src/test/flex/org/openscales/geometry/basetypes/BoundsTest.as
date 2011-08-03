@@ -162,7 +162,11 @@ package org.openscales.geometry.basetypes
 			var intersectionBounds:Bounds = firstBounds.getIntersection(secondBounds);
 
 			// Then the result is the intersection with EPSG:4326 projection
-			assertTrue("The intersect bounds is not correct", intersectionBounds.equals(new Bounds(-50, -40, 49.99999999999999, 39.99999999999999, "EPSG:4326")));	
+			assertTrue("The projection should be EPSG:4326", "EPSG:4326", intersectionBounds.projSrsCode);
+			assertEquals("Left bound should be -50",-50,intersectionBounds.left);
+			assertEquals("Right bound should be -50",49.99999999999999,intersectionBounds.right);
+			assertEquals("Bottom bound should be -40",-40,intersectionBounds.bottom);
+			assertEquals("Top bound should be 39.99999999999999",39.99999999999999,intersectionBounds.top);	
 		}
 		
 		/**
