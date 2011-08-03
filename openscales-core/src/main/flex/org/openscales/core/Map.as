@@ -541,8 +541,8 @@ package org.openscales.core
 			} else if(this.center && !newCenter) {
 				newCenter = this.center;
 			}			
-			if (this._baseLayer!=null && (this._baseLayer.projSrsCode!=null) && newCenter.projSrsCode && (newCenter.projSrsCode!=this._baseLayer.projSrsCode)) {
-				newCenter = newCenter.reprojectTo(this._baseLayer.projSrsCode);
+			if (newCenter.projSrsCode && (newCenter.projSrsCode!=this.projection)) {
+				newCenter = newCenter.reprojectTo(this.projection);
 			}
 			
 			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
@@ -1186,9 +1186,7 @@ package org.openscales.core
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
 			if(maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
-				if (this.baseLayer && (this.baseLayer.projSrsCode != maxExtent.projSrsCode)) {
-					maxExtent = maxExtent.reprojectTo(this.baseLayer.projSrsCode);
-				}
+				maxExtent = maxExtent.reprojectTo(this.projection);
 			}
 			return maxExtent;
 		}
@@ -1201,8 +1199,8 @@ package org.openscales.core
 			
 			if ((this.center != null) && (this.resolution != -1)) {
 				var center:Location;
-				if(this.center.projSrsCode.toUpperCase() != this._baseLayer.projSrsCode.toUpperCase())
-					center = this.center.reprojectTo(this._baseLayer.projSrsCode.toUpperCase());
+				if(this.center.projSrsCode.toUpperCase() != this.projection.toUpperCase())
+					center = this.center.reprojectTo(this.projection.toUpperCase());
 				else
 					center = this.center;
 				var w_deg:Number = this.size.w * this.resolution;
@@ -1225,7 +1223,8 @@ package org.openscales.core
 		/**
 		 * Current scale denominator of the map. 
 		 */
-		public function get scale():Number {
+		// TODO : remove?
+		/*public function get scale():Number {
 			var scale:Number = NaN;
 			if (this.baseLayer) {
 				var units:String = ProjProjection.getProjProjection(this.baseLayer.projSrsCode).projParams.units;
@@ -1233,7 +1232,7 @@ package org.openscales.core
 			}
 			return scale;
 		}
-		
+		*/
 		/**
 		 * List all layers of this map
 		 */

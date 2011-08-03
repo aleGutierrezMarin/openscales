@@ -6,7 +6,7 @@ Draw a rectangle on the overview to define a new extent for the main map.-->
 		 xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="resizeMap()"
 		 width="100%" height="100%" resize="resizeMap()">
 	
-	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.833,45.767">
+	<Map id="fxMap" width="100%" height="100%" zoom="5" center="4.833,45.767" projection="EPSG:4326">
 		
 		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms" layers="bluemarble"
 				 format="image/jpeg" maxExtent="-180,-90,180,90" version="1.1.1"/>
@@ -22,7 +22,7 @@ Draw a rectangle on the overview to define a new extent for the main map.-->
 			<s:layout>
 				<s:HorizontalLayout/>
 			</s:layout>
-			<OverviewMap id="miniMap" width="100%" height="100%" extentColor="0xFF3300" newExtentColor="0x00FF33">
+			<OverviewMap id="miniMap" width="100%" height="100%" extentColor="0xFF3300" newExtentColor="0x00FF33" projection="EPSG:900913">
 				<CycleMap name="cyclemap" proxy="http://openscales.org/proxy.php?url="/>
 			</OverviewMap>		
 		</s:Panel>

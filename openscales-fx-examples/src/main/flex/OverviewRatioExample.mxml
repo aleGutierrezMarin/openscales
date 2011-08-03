@@ -18,7 +18,7 @@ Draw a rectangle on the overview to define a new extent for the main map.-->
 		
 		<TraceInfo x="{width-200}" y="0" />
 		
-		<OverviewMapRatio bottom="10" right="10" ratio ="4" id="miniMap" width="200" height="200" >
+		<OverviewMapRatio bottom="10" right="10" ratio ="4" id="miniMap" width="200" height="200" projection="EPSG:900913">
 			<Mapnik name="mapnik" proxy="http://openscales.org/proxy.php?url="/>
 		</OverviewMapRatio>		
 		

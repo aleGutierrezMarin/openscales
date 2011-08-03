@@ -231,8 +231,8 @@ package org.openscales.fx
 			
 			// Set both center and zoom to avoid invalid request set when we define both separately
 			var mapCenter:Location = this._center;
-			if (mapCenter && this._map.baseLayer) {
-				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projSrsCode);
+			if (mapCenter) {
+				mapCenter = mapCenter.reprojectTo(this._map.projection);
 			}
 			if (mapCenter || (! isNaN(this._zoom))) {
 				this._map.moveTo(mapCenter, this._zoom);
@@ -485,5 +485,22 @@ package org.openscales.fx
 				this._map.removeControl(control);
 			}
 		}
+		
+		/** 
+		 * Current projection system used in the map.
+		 */
+		public function get projection():String
+		{
+			return (this._map as Map).projection;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set projection(value:String):void
+		{
+			(this._map as Map).projection = value;
+		}
+		
 	}
 }

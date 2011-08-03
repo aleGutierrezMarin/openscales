@@ -173,8 +173,9 @@ package org.openscales.core.layer.ogc.provider
 				bounds = bounds.reprojectTo(tileMatrixSet.supportedCRS);
 			}
 			
+			// TODO : remove?
 			var mapResolution:Number = layer.map.resolution;
-			var mapUnit:String = ProjProjection.getProjProjection(layer.map.baseLayer.projSrsCode).projParams.units;
+			/*var mapUnit:String = ProjProjection.getProjProjection(layer.map.projection).projParams.units;*/
 			
 			//tileMatrix are referenced by their resolutions
 			var zoom:Number = layer.getZoomForResolution(mapResolution);
