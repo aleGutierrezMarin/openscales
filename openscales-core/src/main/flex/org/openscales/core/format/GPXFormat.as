@@ -14,14 +14,20 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
 	
-	//parsing GPX 1.1 et 1.0
+	//parsing/building GPX 1.1 et 1.0
+	/**
+	 * todo finish this list
+	 * limitations:
+	 * - the element <extension/> is not supported
+	 * 
+	 */ 
 	
 	public class GPXFormat extends Format
 	{
 		private var _gpxFile:XML = null;
 		private var _featuresVector:Vector.<Feature> = null;
 		private var _extractAttributes:Boolean;
-		private var _featuresids:HashMap = null; // the ID of the gpx Member is considered to be the tag <name>
+		private var _featuresids:HashMap = null; // the ID of the feature is fetched from the tag <name>
 		//before adding the feature to the _featuresVector, check if its ID is already in the hashmap
 		//skip this check if the name is missing
 		
@@ -30,7 +36,7 @@ package org.openscales.core.format
 		private var _bounds:Bounds = null; 
        // the bounds of the whole collection of objects contained by the gpxFile
 		
-		//information about the gpxFile
+		//information on the gpxFile
 		private var _fileName:String; 
 		private var _author:String;   
 		private var _description:String;
@@ -106,10 +112,8 @@ package org.openscales.core.format
 				if (feature){
 					this._featuresVector.push(feature);
 					this._featuresids.put(feature.name, feature);
-				}
-				
-			}
-			
+				}			
+			}	
 			return this._featuresVector;
 		}
 
@@ -149,9 +153,7 @@ package org.openscales.core.format
 					}
 				}
 				else if (featureNode.localName() == "rte")
-				{
-					
-					
+				{					
 					var lineCoords:Vector.<Number> = this.parseLineStringCoords(featureNode);
 					if (lineCoords)
 					{	
@@ -172,8 +174,7 @@ package org.openscales.core.format
 					}
 					
 					if(multiLine.componentsLength != 0)
-						feature = new MultiLineStringFeature(multiLine);
-					
+						feature = new MultiLineStringFeature(multiLine);	
 				}
 			
 				if(feature && featureName){
@@ -182,7 +183,6 @@ package org.openscales.core.format
 				
 				if(feature && this._extractAttributes){
 					feature.attributes = this.parseAttributes(featureNode);
-					
 				}
 				
 				return feature;
@@ -267,26 +267,158 @@ package org.openscales.core.format
 		
 		public function parseAttributes(xmlNode:XML):Object{	
 			var nodes:XMLList = xmlNode.children();
+			var pointNodes:XMLList = xmlNode..*::rtept; //the attributes of routePoints or trackPoint are ignored
+			if(pointNodes.length() == 0)
+				pointNodes = xmlNode..*::trkseg;
+			
 			var attributes:Object = {};
-			var j:int = nodes.length();
+			var j:int = nodes.length() - pointNodes.length();
 			var i:int;
 			for(i = 0; i < j; ++i) {
 				var name:String = nodes[i].localName();
 				var value:Object = nodes[i].valueOf();
-				if(name == null){
+				/*if(name == null){
 					continue;    
-				}
+				}*/
 					
 				if((nodes[i].children().length() == 1)
 					&& !(nodes[i].children().children()[0] is XML) && name != "name") {
+					
 					attributes[name] = value.children()[0].toXMLString(); 
 				}
+				if (name == "link"){
+					attributes["href"] = String(nodes[i]..@href);
+				}
+				
 				Util.extend(attributes, this.parseAttributes(nodes[i]));
 			}   
 			return attributes;
 			
 			return null;
 		} 
+		
+		
+		/**
+		 * calls buildAttributeNodes
+		 *
+		 * @param featureVector: the objects based on which the gpx file will be created
+		 * 
+		 * @return: the gpx file 
+		 */
+		
+		public function buildGpxFile(featureVector:Vector.<Feature>):XML{
+
+			var gpxNode:XML = new XML("<gpx></gpx>"); 
+			var i:uint;
+			var j:uint;
+			var vectorLength:uint = featureVector.length;
+			var attNodes:XMLList;
+			var featureNode:XML;
+			var length:uint;
+			for(i = 0; i < vectorLength; i++){
+					
+				if( featureVector[i] is PointFeature ){
+					
+					var point:Point = (featureVector[i] as PointFeature).point;
+					featureNode = new XML("<wpt></wpt>");
+					featureNode.@lat = point.x;
+					featureNode.@lon = point.y;
+					attNodes = this.buildAttributeNodes(featureVector[i]).children();
+					length = attNodes.length();
+					for(j = 0; j < length; j++)
+						featureNode.appendChild(attNodes[j]);
+					gpxNode.appendChild(featureNode);
+				}
+				else if(featureVector[i] is LineStringFeature){
+					
+					
+				}
+				
+				
+			}
+			
+			return gpxNode;
+		}
+		
+		public function buildRouteNode(line:LineStringFeature):XML{
+			
+			//todo add name and attribute tags to the node
+			var rteNode:XML = new XML("<rte></rte>");
+			var attributes:Object = line.attributes;
+			
+			
+			var lineS:LineString = line.lineString;
+			var pointsVector:Vector.<Number> = lineS.getcomponentsClone();
+			var length:uint = pointsVector.length;
+			var i:uint;
+			for( i = 0; i < length; i += 2 ){
+				
+				var rtept:XML = new XML("<rtept></rtept>");
+				rtept.@lat = pointsVector[i];
+				rtept.@lon = pointsVector[i + 1];
+				rteNode.appendChild(rtept);
+			}
+			
+			return rteNode;
+		}
+		
+		/**
+		 * @param feature
+		 * 
+		 * @return An xml containig the nodes created based on the feature attributes
+		 * 
+		 * The attribute nodes can be created in the same way, regardless of the type
+		 * of feature because the routes and the tracks have the same type of
+		 * attributes, in the same order; the waypoints may have additional attributes
+		 * but the order remains unchanged
+		 * 
+		 */ 
+		
+		public function buildAttributeNodes(feature:Feature):XML{
+			var att:Object = feature.attributes;
+			var alist:XML = new XML("<container></container>");
+			//the order of elements is important in gpx files
+			//elements specific to points
+			if (att.hasOwnProperty("ele"))
+				alist.appendChild(new XML("<ele>" + att["ele"] + "</ele>"));
+			if (att.hasOwnProperty("time"))
+				alist.appendChild(new XML("<time>" + att["time"] + "</time>"));
+			if (att.hasOwnProperty("magvar"))
+				alist.appendChild(new XML("<magvar>" + att["magvar"] + "</magvar>"));
+			if (att.hasOwnProperty("geoidheight"))
+				alist.appendChild(new XML("<geoidheight>" + att["geoidheight"] + "</geoidheight>"));
+			//elements common to points, routes and tracks
+			if(feature.name)
+				alist.appendChild(new XML("<name>" + feature.name + "</name>"));	
+			if (att.hasOwnProperty("cmt"))
+				alist.appendChild(new XML("<cmt>" + att["cmt"] + "</cmt>"));
+			if (att.hasOwnProperty("desc"))
+				alist.appendChild(new XML("<desc>" + att["desc"] + "</desc>"));
+			if (att.hasOwnProperty("src"))
+				alist.appendChild(new XML("<src>" + att["src"] + "</src>"));
+			//differences between 1.0 & 1.1 
+			
+			if(this._version == "1.0")
+			{
+				if (att.hasOwnProperty("url"))
+					alist.appendChild(new XML("<url>" + att["url"] + "</url>"));
+				if (att.hasOwnProperty("urlname"))
+					alist.appendChild(new XML("<urlname>" + att["urlname"] + "</urlname>"));
+			}
+			else
+			{ // todo finish this + type element problem
+				var linkNode:XML = new XML("<link></link>");
+				
+				if (att.hasOwnProperty("href"))
+					linkNode.@href = att["href"];
+				
+				if (att.hasOwnProperty("text"))
+					linkNode.appendChild(new XML("<text>" + att["text"] + "</text>"));
+			}
+			
+			
+			return alist;
+		}
 		
 		public function get gpxFile():XML
 		{
