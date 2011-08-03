@@ -1,7 +1,7 @@
 package org.openscales.geometry
 {
-	import org.flexunit.asserts.fail;
-
+	import org.flexunit.Assert;
+	
 	public class CollectionTest
 	{		
 		[Before]
@@ -26,7 +26,7 @@ package org.openscales.geometry
 		
 		[Test]
 		public function doSomeTests():void{
-			fail("TODO");
+			Assert.fail("TODO");
 		}
 		
 	}
