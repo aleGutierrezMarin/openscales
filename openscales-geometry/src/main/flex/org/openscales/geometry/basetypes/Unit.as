@@ -3,6 +3,7 @@ package org.openscales.geometry.basetypes
 	import flash.system.Capabilities;
 	
 	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * The map unit
@@ -138,6 +139,50 @@ package org.openscales.geometry.basetypes
 			}
 			return (resolution * Unit.getMetersPerUnit(units) / Unit.PIXEL_SIZE);
 		}
+		
+		/**
+		 * Returns the resolution approximate 
+		 * 
+		 * @param resolution The current map resolution
+		 * @param center The current map center
+		 * @param projection The current map projection
+		 * 
+		 * @return the resolution value at the given center
+		 */
+		public static function getResolutionOnCenter(resolution:Number, center:Location, projection:ProjProjection):Number
+		{
+			var bFound:Boolean = false;
+			var res:Number = resolution;
+			
+			if(projection && projection.projName  == "longlat") {
+				
+				var a:Number = projection.a;
+				var b:Number = projection.b;
+				
+				if (!(a && b)) {
+					// approx is to calculate the resolution at the center's latitude :
+					
+					//res*=rayon_eq_terre*Pi*lat in radius
+					//res*= 6378137*3.141592653589793238*Math.cos(center.lat*3.141592653589793238/180.0)/180.0
+					res*= 111319.490793273573*Math.cos(center.lat*0.0174532925199432958);
+				} else {
+					// approximation of a longitudinal degree at latitude phi :
+					var cosphi:Number = Math.cos(center.lat*0.0174532925199432958);
+					var cosphi2:Number = cosphi*cosphi;
+					var sinphi:Number = Math.sin(center.lat*0.0174532925199432958);
+					var sinphi2:Number = sinphi*sinphi;
+					var a2:Number = a*a;
+					var a4:Number= a*a*a*a;
+					var b2:Number= b*b;
+					var b4:Number = b*b*b*b;
+					res*= 0.0174532925199432958*cosphi*Math.sqrt((a4*cosphi2+b4*sinphi2)/(a2*cosphi2+b2*sinphi2));
+				}
+			}
+			
+			return res;
+		}
+		
+		
 		
 	}
 }
