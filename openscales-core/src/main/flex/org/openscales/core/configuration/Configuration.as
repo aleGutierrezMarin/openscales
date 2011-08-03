@@ -146,7 +146,7 @@ package org.openscales.core.configuration
 				map.y = Number(config.@y);
 			
 			if (String(config.@maxExtent) != "") {
-				map.maxExtent = Bounds.getBoundsFromString(config.@maxExtent, Geometry.DEFAULT_SRS_CODE);
+				map.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent), Geometry.DEFAULT_SRS_CODE);
 			}
 			
 		}
@@ -334,7 +334,7 @@ package org.openscales.core.configuration
 						wmscLayer.visible=visible;
 						wmscLayer.projSrsCode = projSrsCode;
 						if (String(config.@maxExtent) != "")
-							wmscLayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmscLayer.projSrsCode);
+							wmscLayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent),wmscLayer.projSrsCode);
 						wmscLayer.params = paramsWms;
 						layer = wmscLayer;
 						if (method!=null) {
@@ -350,7 +350,7 @@ package org.openscales.core.configuration
 						wmslayer.visible = visible;
 						wmslayer.projSrsCode = projSrsCode;  
 						if (String(config.@maxExtent) != "")
-							wmslayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmslayer.projSrsCode);
+							wmslayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent),wmslayer.projSrsCode);
 						wmslayer.params = paramsWms;
 						layer=wmslayer;
 						break;
@@ -435,7 +435,7 @@ package org.openscales.core.configuration
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					mapnik.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,mapnik.projSrsCode);
+					mapnik.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent),mapnik.projSrsCode);
 				layer=mapnik;
 			}
 			else if(xmlNode.name() == "CycleMap"){
@@ -443,7 +443,7 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var cycleMap:CycleMap=new CycleMap(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					cycleMap.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,cycleMap.projSrsCode);
+					cycleMap.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent),cycleMap.projSrsCode);
 				layer=cycleMap;
 			}
 			else if(type == "Maplint"){
@@ -451,7 +451,7 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var maplint:Maplint=new Maplint(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					maplint.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,maplint.projSrsCode);
+					maplint.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent),maplint.projSrsCode);
 				layer=maplint;
 			}
 			else if(type == "FeatureLayer"){
