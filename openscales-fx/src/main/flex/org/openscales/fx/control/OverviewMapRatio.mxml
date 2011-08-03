@@ -142,6 +142,22 @@
 				return _overviewmap.map;
 			}
 			
+			/**
+			 * The actual projection of the map, the default vaglue is EPSG:4326
+			 */
+			public function set projection(value:String):void
+			{
+				this._overviewmap.projection = value;
+			}
+			
+			/**
+			 * @public
+			 */
+			public function get projection():String
+			{
+				return this._overviewmap.projection;
+			}
+			
 			
 		]]>
 	</fx:Script>

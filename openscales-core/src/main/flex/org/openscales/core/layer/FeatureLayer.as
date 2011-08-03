@@ -91,15 +91,15 @@ package org.openscales.core.layer
 		}
 
 		private function updateCurrentProjection(evt:LayerEvent = null):void {
-			if ((this.map) && (this.map.baseLayer) && (this._displayProjSrsCode != this.map.baseLayer.projSrsCode)) {
+			if ((this.map) && (this.map.baseLayer) && (this._displayProjSrsCode != this.map.projection)) {
 				if (this.features.length > 0) {	
 					for each (var f:Feature in this.features) {
-						f.geometry.transform(this._displayProjSrsCode, this.map.baseLayer.projSrsCode);
+						f.geometry.transform(this._displayProjSrsCode, this.map.projection);
 					}
-					this._displayProjSrsCode = this.map.baseLayer.projSrsCode;
+					this._displayProjSrsCode = this.map.projection;
 					this.redraw();
 				} else {
-					this._displayProjSrsCode = this.map.baseLayer.projSrsCode;
+					this._displayProjSrsCode = this.map.projection;
 				}
 			}
 		}

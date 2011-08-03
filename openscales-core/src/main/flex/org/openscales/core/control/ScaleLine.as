@@ -149,7 +149,7 @@ package org.openscales.core.control
 
 			// get the current units of the map
 			/* var currentBaseLayerUnits:String = this.map.units; */
-			var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.baseLayer.projSrsCode).projParams.units;
+			var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.projection).projParams.units;
 
 			// convert the scaleMaxWidth to map units
 			// The result is the max distance IN MAP UNIT, represent in the scaleline

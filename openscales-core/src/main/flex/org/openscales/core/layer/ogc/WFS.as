@@ -193,8 +193,8 @@ package org.openscales.core.layer.ogc
 			
 			var requestString:String = url;
 			
-			if (this.projSrsCode != null || this.map.baseLayer.projSrsCode != null) {
-				this.params.srs = (this.projSrsCode == null) ? this.map.baseLayer.projSrsCode : this.projSrsCode;
+			if (this.projSrsCode != null || this.map.projection != null) {
+				this.params.srs = (this.projSrsCode == null) ? this.map.projection : this.projSrsCode;
 			}
 			
 			var lastServerChar:String = url.charAt(url.length - 1);
@@ -286,9 +286,9 @@ package org.openscales.core.layer.ogc
 				this._wfsFormat.reset();
 			
 			
-			if (this.map.baseLayer.projSrsCode != null && this.projSrsCode != null && this.projSrsCode != this.map.baseLayer.projSrsCode) {
+			if (this.map.projection != null && this.projSrsCode != null && this.projSrsCode != this.map.projection) {
 				this._wfsFormat.externalProjSrsCode = this.projSrsCode;
-				this._wfsFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
+				this._wfsFormat.internalProjSrsCode = this.map.projection;
 			}
 			
 			this.parseResponse(loader.data as String);

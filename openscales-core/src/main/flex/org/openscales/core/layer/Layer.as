@@ -215,7 +215,7 @@ package org.openscales.core.layer {
 		 */
 		private function onMapProjectionChanged(event:MapEvent):void
 		{
-			this.redraw();
+			this.redraw(false);
 		}
 		
 		/**
@@ -226,7 +226,7 @@ package org.openscales.core.layer {
 		 */
 		private function onMapResolutionChanged(event:MapEvent):void
 		{
-			this.redraw();
+			this.redraw(false);
 		}
 		
 		/**
@@ -237,7 +237,7 @@ package org.openscales.core.layer {
 		 */
 		private function onMapCenterChanged(event:MapEvent):void
 		{
-			this.redraw();	
+			this.redraw(false);	
 		}
 		
 		protected function onSecurityInitialized(e:SecurityEvent):void {

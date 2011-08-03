@@ -119,8 +119,8 @@ package org.openscales.core.control
 				var mapsRatio:Number =(this.map.size.w / this._overviewMap.size.w); 
 				
 				// Compute the reprojection factor for the resolution
-				var unityReproj:Location = new Location(1, 1, this.map.baseLayer.projSrsCode);
-				unityReproj = unityReproj.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+				var unityReproj:Location = new Location(1, 1, this.map.projection);
+				unityReproj = unityReproj.reprojectTo(this._overviewMap.projection);
 				
 				// Reproject and multiply by the maps ratio the resolution
 				var targetResolution:Number = this.map.resolution * unityReproj.x* mapsRatio;
@@ -144,7 +144,7 @@ package org.openscales.core.control
 				}
 				
 				this._overviewMap.zoom = bestZoomLevel;
-				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.projection);
 			}
 		}
 		
@@ -207,9 +207,9 @@ package org.openscales.core.control
 			var newCenter:Location = this._overviewMap.getLocationFromMapPx(mousePosition);
 			var oldCenter:Location = this._overviewMap.center;
 			
-			this.map.center = newCenter.reprojectTo(this.map.baseLayer.projSrsCode);	
+			this.map.center = newCenter.reprojectTo(this.map.projection);	
 			//If the new center is valid change the center of the overview
-			if (this.map.center == newCenter.reprojectTo(this.map.baseLayer.projSrsCode))
+			if (this.map.center == newCenter.reprojectTo(this.map.projection))
 				{
 					this._overviewMap.center = newCenter;
 				}
@@ -293,6 +293,22 @@ package org.openscales.core.control
 		
 		override public function get height():Number{
 			return _overviewMap.size.h;
+		}
+		
+		/**
+		 * The actual projection of the map. The default value is EPSG:4326
+		 */
+		public function set projection(value:String):void
+		{
+			this._overviewMap.projection = value;
+		}
+		
+		/**
+		 * @public
+		 */
+		public function get projection():String
+		{
+			return this._overviewMap.projection;
 		}
 	}
 }

@@ -44,6 +44,7 @@
 				map.configuration.configure();
 				map.width = fxmap.width;
 				map.height = fxmap.height;
+				map.projection = "EPSG:900913";
 				xml.text = new SampleFxConf();
 			}
 			

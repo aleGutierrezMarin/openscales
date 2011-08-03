@@ -159,7 +159,7 @@ package org.openscales.core.layer
 		 * Override the redraw method for raster data. Check the informations of the map
 		 * to define the available parameter for raster data.
 		 */
-		override public function redraw(fullRedraw:Boolean = true):void 
+		override public function redraw(fullRedraw:Boolean = false):void 
 		{
 			this._available = true;
 			
