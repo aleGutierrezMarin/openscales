@@ -221,8 +221,8 @@
 			private function updateScale():void
 			{
 				// to keep current key for bottom/top unit
-				var topUnitKey:String = "";	
-				var bottomUnitKey:String = "";			
+				var topUnitKey:String = "";     
+				var bottomUnitKey:String = "";                  
 				
 				// Get the resolution of the map
 				var mapResolution:Number = this.map.resolution;
@@ -233,9 +233,19 @@
 				// get the current units of the map
 				var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.baseLayer.projSrsCode).projParams.units;
 				
+				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode);
+				var centerResolution:Number = Unit.getResolutionOnCenter(this._map.resolution, this._map.center, projection);
+				
+				
+				if(projection.projName  == "longlat")
+					currentBaseLayerUnits = Unit.METER;
+				
 				// convert the scaleMaxWidth to map units
 				// The result is the max distance IN MAP UNIT, represent in the scaleline
-				var maxSizeData:Number = this._scaleMaxWidth * mapResolution * Unit.getInchesPerUnit(currentBaseLayerUnits);
+				
+				var u:Number = Unit.getInchesPerUnit(currentBaseLayerUnits);
+				var maxSizeData:Number = this._scaleMaxWidth * centerResolution * Unit.getInchesPerUnit(currentBaseLayerUnits);
+				
 				
 				// decide whether to use large or small scale units. it's independent of the map unit    
 				if(maxSizeData > 100000) {
@@ -263,8 +273,8 @@
 				bottomMax = this._bottomScaleValue / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(this._bottomCurrentUnit);
 				
 				// and to pixel units
-				var topPx:Number = topMax / mapResolution;
-				var bottomPx:Number = bottomMax / mapResolution;
+				var topPx:Number = topMax / centerResolution;
+				var bottomPx:Number = bottomMax / centerResolution;
 				
 				// update the top rect width
 				this.topScaleWidth = Math.round(topPx);
