@@ -404,12 +404,12 @@ package org.openscales.core.layer.ogc
 				this.projSrsCode = null;
 		}
 		
-		public function set capabilitiesVersion(value:String):void {
+		public function set version(value:String):void {
 			this._capabilitiesVersion = value;
 			if(this._params != null)
 				this._params.version = value;
 		}
-		public function get capabilitiesVersion():String {
+		public function get version():String {
 			return this._capabilitiesVersion;
 		}
 		
