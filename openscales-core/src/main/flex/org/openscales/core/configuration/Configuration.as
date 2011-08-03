@@ -333,7 +333,9 @@ package org.openscales.core.configuration
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
 						wmscLayer.visible=visible;
 						wmscLayer.projSrsCode = projSrsCode;
-						wmscLayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmscLayer.projSrsCode);
+						
+						if (String(xmlNode.@maxExtent) != "")
+							wmscLayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmscLayer.projSrsCode);
 						wmscLayer.params = paramsWms;
 						layer = wmscLayer;
 						if (method!=null) {
@@ -347,8 +349,9 @@ package org.openscales.core.configuration
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
 						wmslayer.visible = visible;
-						wmslayer.projSrsCode = projSrsCode;                       
-						wmslayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmslayer.projSrsCode);
+						wmslayer.projSrsCode = projSrsCode;        
+						if (String(xmlNode.@maxExtent) != "")
+							wmslayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmslayer.projSrsCode);
 						wmslayer.params = paramsWms;
 						layer=wmslayer;
 						break;

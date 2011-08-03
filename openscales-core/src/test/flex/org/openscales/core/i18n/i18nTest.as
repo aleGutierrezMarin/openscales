@@ -17,6 +17,7 @@ package org.openscales.core.i18n
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
+	import org.openscales.core.i18n.provider.I18nJSONProvider;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.osmf.events.TimeEvent;
@@ -28,7 +29,7 @@ package org.openscales.core.i18n
 	
 	public class i18nTest
 	{
-		
+		// useful for : testExistingValueWithSetLocale
 		private var _map:Map = new Map();
 		
 		private var _existingKey:String = "zoombar.state";
@@ -41,6 +42,8 @@ package org.openscales.core.i18n
 		private const THICK_TIME:uint = 5000;
 		private var _handler:Function = null;
 		
+		[Embed(source="/assets/i18n/IT.json", mimeType="application/octet-stream")]
+		private const ITLocale:Class;
 		
 		public function i18nTest() {}
 		
@@ -53,10 +56,13 @@ package org.openscales.core.i18n
 		
 		[After]
 		public function tearDown():void{
-			if(this._handler!=null)
-				_timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
-			_timer.stop();
-			_timer=null;
+			if(this._timer)
+			{
+				if(this._handler!=null)
+					_timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
+				_timer.stop();
+				_timer=null;
+			}
 		}
 		
 		/**
@@ -165,13 +171,14 @@ package org.openscales.core.i18n
 			// Given a Catalog and a function linked to the LOCALE_ADDED event
 			var catalog:Catalog = Catalog.catalog;
 			
-			catalog.addEventListener(I18NEvent.LOCALE_ADDED, this.onLocaleAdded);
-			
 			// When a new locale with translations is added
 			this._handler = this.assertDispatchEventOnNewLocaleAdded;
 			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this._handler, false, 0, true );
-			
 			this._timer.start();
+			
+			
+			catalog.addEventListener(I18NEvent.LOCALE_ADDED, this.onLocaleAdded);
+			I18nJSONProvider.addTranslation(ITLocale);
 			
 		}
 		
@@ -181,9 +188,13 @@ package org.openscales.core.i18n
 		private function onLocaleAdded(event:I18NEvent):void
 		{
 			// Then the function linked to the LOCALE_ADDED event is called
-			this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
-			this._timer.stop();
-			this._timer = null;
+			if(this._timer)
+			{
+				if(this._handler!=null)
+					this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
+				this._timer.stop();
+				this._timer = null;
+			}
 		}
 		
 		private function assertDispatchEventOnNewLocaleAdded(event:TimeEvent = null, obj:Object = null):void
