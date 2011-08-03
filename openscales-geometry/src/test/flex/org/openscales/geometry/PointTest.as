@@ -60,21 +60,11 @@ package org.openscales.geometry
 		}
 		
 		[Test]
-		public function testTransformPoint():void {
-			Assert.fail("TODO");
-		}
-		
-		[Test]
 		public function testIntersectsPoint():void {
 			
 			var point:Point =  new Point(4,5);
 			var point2:Point = new Point(4,5);
 			point.intersects(point2);
-		}
-		
-		[Test]
-		public function testDistanceToPoint():void {
-			Assert.fail("TODO");
 		}
 		
 		[Test]
