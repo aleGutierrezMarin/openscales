@@ -25,7 +25,7 @@ package org.openscales.core.control
 		{
 			// DataOriginators control
 			var dataOriginatorsControl:DataOriginators = new DataOriginators();
-
+			
 			// new originator for mapnik
 			var name:String = "originator";
 			var url:String = "url_originator";
@@ -38,8 +38,8 @@ package org.openscales.core.control
 			Assert.assertEquals(1, dataOriginatorsControl.originators.length);
 			
 			// check if the layers count in the hasmap has been set to 1 :
-			Assert.assertEquals(1, dataOriginatorsControl.originatorsLayersCount.getValue(originator.name));
-				
+			Assert.assertEquals(1, dataOriginatorsControl.originatorsLayersCount.getValue(originator.key));
+			
 			// check if the originator is now on the list
 			var containsOriginator:Boolean = false;
 			
@@ -61,8 +61,8 @@ package org.openscales.core.control
 			Assert.assertEquals(1, dataOriginatorsControl.originators.length);
 			
 			// check if the layers count in the hasmap has been set to 2 :
-			Assert.assertEquals(2, dataOriginatorsControl.originatorsLayersCount.getValue(originator.name));
-				
+			Assert.assertEquals(2, dataOriginatorsControl.originatorsLayersCount.getValue(originator.key));
+			
 		}
 		
 		[Test]
@@ -83,14 +83,16 @@ package org.openscales.core.control
 			dataOriginatorsControl.addOriginator(originator);
 			dataOriginatorsControl.addOriginator(originator2);
 			
+			Assert.assertEquals("There should be 2 originators", 2, dataOriginatorsControl.originators.length);
+			
 			// delete one of 2 "originator"
 			dataOriginatorsControl.removeOriginator(originator);
 			
 			// check if "originator" still exist :
-			Assert.assertEquals(2, dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There still should be 2 originators ", 2, dataOriginatorsControl.originators.length);
 			
 			// check if counter is set to 1 instead of 2 :
-			Assert.assertEquals(1, dataOriginatorsControl.originatorsLayersCount.getValue(originator.name));
+			Assert.assertEquals("The originator layers count should be 1", 1, dataOriginatorsControl.originatorsLayersCount.getValue(originator.key));
 			
 			// check if the originator is now on the list
 			var containsOriginator:Boolean = false;
@@ -105,7 +107,7 @@ package org.openscales.core.control
 				}
 			}
 			Assert.assertTrue(containsOriginator);
-
+			
 			// delete the last "originator"
 			dataOriginatorsControl.removeOriginator(originator);
 			
@@ -188,15 +190,15 @@ package org.openscales.core.control
 			_map.addLayer(regions);
 			
 			regions.addOriginator(originatorIGN);
-
+			
 			// create DataOriginators controller
 			var dataOriginatorsControl:DataOriginators = new DataOriginators();
 			_map.addControl(dataOriginatorsControl);
 			
 			// check generateOriginators
 			
-			// if list count != 2 : fail
-			Assert.assertEquals(dataOriginatorsControl.originators.length, 2);
+			// if list count != 3 : fail
+			Assert.assertEquals("There should be 3 originator", 3, dataOriginatorsControl.originators.length);
 			
 			
 			var containsOriginator:Boolean = false;
@@ -271,7 +273,7 @@ package org.openscales.core.control
 			// No value in the originator counter list
 			Assert.assertEquals(dataOriginatorsControl.originatorsLayersCount.size(), 0);
 		}
-	
+		
 		[Test]
 		public function testLayerAddedEvent():void
 		{
@@ -281,7 +283,7 @@ package org.openscales.core.control
 			
 			// DataOriginators control
 			var dataOriginatorsControl:DataOriginators = new DataOriginators();
-
+			
 			map.addControl(dataOriginatorsControl);
 			
 			// No originator in the list
@@ -289,7 +291,11 @@ package org.openscales.core.control
 			
 			// layer 1
 			var mapnik:Mapnik = new Mapnik("Mapnik"); // a base layer
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
+			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);
+			map.addLayer(mapnik);
+			
+			// One originator in the list
+			Assert.assertEquals("There should be 1 originator",1,dataOriginatorsControl.originators.length);
 			
 			// an originator for this layer
 			var name:String = "originator";
@@ -297,11 +303,9 @@ package org.openscales.core.control
 			var urlPicture:String = "url_picture_originator";
 			var originator:DataOriginator = new DataOriginator(name, url, urlPicture);
 			mapnik.addOriginator(originator);
-
-			map.addLayer(mapnik);
 			
 			// One originator in the list
-			Assert.assertEquals("There should be 1 originator",1,dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There should be 2 originators",2,dataOriginatorsControl.originators.length);
 			
 			// layer 2
 			var mapnik2:Mapnik = new Mapnik("Mapnik2"); // a base layer
@@ -310,17 +314,16 @@ package org.openscales.core.control
 			map.addLayer(mapnik2);
 			
 			// Still one originator
-			Assert.assertEquals("There still should be 1 originator",dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There still should be 2 originator",2,dataOriginatorsControl.originators.length);
 			
 			// layer 3
 			var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
-			cycle.proxy = "http://openscales.org/proxy.php?url=";
 			var originator2:DataOriginator = new DataOriginator("originator2", url, urlPicture);
 			cycle.addOriginator(originator2);
 			map.addLayer(cycle); 
 			
-			// 2 originators in the list
-			Assert.assertEquals("There should be 2 originators",2,dataOriginatorsControl.originators.length);
+			// 3 originators in the list
+			Assert.assertEquals("There should be 3 originators",3,dataOriginatorsControl.originators.length);
 		}
 		
 		[Test]
@@ -364,13 +367,13 @@ package org.openscales.core.control
 			map.removeLayer(mapnik2);
 			
 			// Still 2 originators in the list
-			Assert.assertEquals("There should be 2 originators",2,dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There should be 3 originators",3,dataOriginatorsControl.originators.length);
 			
 			// remove another one :
 			map.removeLayer(cycle);
 			
 			// Still 1 originator in the list
-			Assert.assertEquals("There should be 1 originator",1,dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There should be 2 originator",2,dataOriginatorsControl.originators.length);
 			
 			// re-add
 			map.addLayer(mapnik2);
@@ -406,29 +409,33 @@ package org.openscales.core.control
 			
 			map.addLayer(mapnik);
 			
+			Assert.assertEquals("There should be 2 originator",2,dataOriginatorsControl.originators.length);
+			
 			// Layer 2
 			var mapnik2:Mapnik = new Mapnik("Mapnik2"); // a base layer
 			mapnik2.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			mapnik2.addOriginator(originator);
 			map.addLayer(mapnik2);
 			
+			Assert.assertEquals("There still should be 2 originator",2,dataOriginatorsControl.originators.length);
+			
 			var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
-			cycle.proxy = "http://openscales.org/proxy.php?url=";
 			var originator2:DataOriginator = new DataOriginator("originator2", url, urlPicture);
 			cycle.addOriginator(originator2);
 			map.addLayer(cycle); 
 			
+			Assert.assertEquals("There should be 3 originator",3,dataOriginatorsControl.originators.length);
+			
 			// change visibility :
 			mapnik.visible = true;
 			
-			// no change : 2 originators 
-			Assert.assertEquals("There should be 2 originator",2,dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There still should be 3 originator",3,dataOriginatorsControl.originators.length);
 			
 			// hide a layer with a specific originator
 			cycle.visible = false;
 			
 			// only one originator in the list
-			Assert.assertEquals("There should be 1 originator",1,dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There should be 2 only originator",2,dataOriginatorsControl.originators.length);
 		}
 		
 		[Test]
@@ -436,7 +443,7 @@ package org.openscales.core.control
 		{
 			var map:Map = new Map();
 			map.size = new Size(1200, 700);
-
+			
 			// Layer 1
 			var mapnik:Mapnik = new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
@@ -458,7 +465,6 @@ package org.openscales.core.control
 			
 			// Layer 2
 			var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
-			cycle.proxy = "http://openscales.org/proxy.php?url=";
 			var originator2:DataOriginator = new DataOriginator("originator2", url, urlPicture);
 			cycle.addOriginator(originator2); // default constraint
 			map.addLayer(cycle); 
@@ -466,17 +472,17 @@ package org.openscales.core.control
 			// DataOriginators control
 			var dataOriginatorsControl:DataOriginators = new DataOriginators();
 			map.addControl(dataOriginatorsControl);
-
+			
 			// no change : 2 originators 
-			Assert.assertEquals("There should be 2 originators",2,dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There should be 3 originators",3,dataOriginatorsControl.originators.length);
 			
 			// change map
 			var notCoverBounds:Bounds = new Bounds(1000,1000,2000,2000,mapnik.projSrsCode);
-
+			
 			map.zoomToExtent(notCoverBounds);
 			
-			// 1 originator
-			Assert.assertEquals("There should be 1 originator",dataOriginatorsControl.originators.length);
+			// 2 originator
+			Assert.assertEquals("There should be 2 originator",2,dataOriginatorsControl.originators.length);
 			
 			// only contains originator 2 ?
 			var containsOriginator2:Boolean = false;
@@ -510,7 +516,7 @@ package org.openscales.core.control
 			var url:String = "url_originator";
 			var urlPicture:String = "url_picture_originator";
 			var originator:DataOriginator = new DataOriginator(name, url, urlPicture);
-
+			
 			mapnik.addOriginator(originator);
 			map.addLayer(mapnik);
 			
@@ -519,14 +525,14 @@ package org.openscales.core.control
 			map.addControl(dataOriginatorsControl);
 			
 			// 1 originator
-			Assert.assertEquals("There should be 1 originator",1,dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There should be 2 originator",2,dataOriginatorsControl.originators.length);
 			
 			// second originator
 			var originator2:DataOriginator = new DataOriginator("originator2", url, urlPicture);
 			mapnik.addOriginator(originator2);
 			
 			// 2 originators
-			Assert.assertEquals("There should be 2 originators",2,dataOriginatorsControl.originators.length);
+			Assert.assertEquals("There should be 3 originators",3,dataOriginatorsControl.originators.length);
 			
 			// only contains originator 2 ?
 			var containsOriginator2:Boolean = false;
@@ -545,7 +551,7 @@ package org.openscales.core.control
 		}
 		
 		[Test]
-		public function testFindOriginatorByName():void
+		public function testFindOriginatorByKey():void
 		{
 			// DataOriginators control
 			var dataOriginatorsControl:DataOriginators = new DataOriginators();
@@ -556,8 +562,8 @@ package org.openscales.core.control
 			var originator:DataOriginator = new DataOriginator(name, url, urlPicture);
 			dataOriginatorsControl.addOriginator(originator);
 			
-			Assert.assertEquals(originator,dataOriginatorsControl.findOriginatorByName(name));
-			Assert.assertNull(dataOriginatorsControl.findOriginatorByName("test"));
+			Assert.assertEquals(originator,dataOriginatorsControl.findOriginatorByKey(originator.key));
+			Assert.assertNull(dataOriginatorsControl.findOriginatorByKey("test"));
 		}		
 	}
 }
