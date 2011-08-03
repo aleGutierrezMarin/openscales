@@ -425,7 +425,7 @@ package org.openscales.core.configuration
 				if (String(xmlNode.@maxZoomLevel) != "") {
 					wfsLayer.maxZoomLevel = Number(xmlNode.@maxZoomLevel);
 				}
-				wfsLayer.capabilitiesVersion = capabilitiesVersion;
+				wfsLayer.version = capabilitiesVersion;
 				layer=wfsLayer;
 			}
 			else if(type == "Mapnik"){

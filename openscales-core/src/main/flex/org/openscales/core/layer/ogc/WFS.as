@@ -120,7 +120,7 @@ package org.openscales.core.layer.ogc
 			// GetCapabilities request made here in order to have the proxy set 
 			if (url != null && url != "" && this.capabilities == null && useCapabilities == true) {
 				var getCap:GetCapabilities = new GetCapabilities("wfs", url, this.capabilitiesGetter,
-					capabilitiesVersion, this.proxy);
+					version, this.proxy);
 			}
 		}
 		
