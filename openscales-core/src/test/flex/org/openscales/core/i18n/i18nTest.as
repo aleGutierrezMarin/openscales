@@ -181,9 +181,12 @@ package org.openscales.core.i18n
 		private function onLocaleAdded(event:I18NEvent):void
 		{
 			// Then the function linked to the LOCALE_ADDED event is called
-			this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
-			this._timer.stop();
-			this._timer = null;
+			if(this._timer)
+			{
+				this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
+				this._timer.stop();
+				this._timer = null;
+			}
 		}
 		
 		private function assertDispatchEventOnNewLocaleAdded(event:TimeEvent = null, obj:Object = null):void
