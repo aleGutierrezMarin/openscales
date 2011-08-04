@@ -27,15 +27,15 @@ package
 		 */ 
 		protected var _container:Group;
 		
-		public function OpenScalesTest() {}
+		public function OpenScalesTest() {
+			this._container = new Group();
+		}
 		
 		/**
 		 * This function will be executed before each test.
 		 */
 		 [Before]
 		 public function setUp():void{
-			 
-			 this._container = new Group();
 			 (FlexGlobals.topLevelApplication as Application).addElement(this._container);
 		 }
 		 
@@ -44,7 +44,6 @@ package
 		  */
 		 [After]
 		 public function tearDown():void{
-			 
 			 (FlexGlobals.topLevelApplication as Application).removeElement(this._container);
 		 }
 		
