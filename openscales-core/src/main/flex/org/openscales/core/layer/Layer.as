@@ -57,16 +57,16 @@ package org.openscales.core.layer {
 		private var _editable:Boolean = false;
 		private var _metaData:Object;
 		
-		protected var _available:Boolean = false;
 		
 		/**
 		 * The boolean that say if the layer is drawn or not.
 		 * This is a readonly parameter.
-		 * This parameter is protected but MUST only be modified in the redraw method.
+		 * Override this method and check what you need to check and return if your layer
+		 * is available or not.
 		 */
 		public function get available():Boolean
 		{
-			return this._available;
+			return false
 		}
 		
 		/**
