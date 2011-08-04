@@ -6,6 +6,7 @@ package org.openscales.geometry.basetypes
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Instances of this class represent bounding boxes.
@@ -85,15 +86,23 @@ package org.openscales.geometry.basetypes
 		 * @param decimal Bounds number of decimals.
 		 * @return The bounds separated by commas.
 		 */  
-		public function toString(decimal:Number = -1):String {
+		public function toString(decimal:Number = -1,forceLatLon:Boolean=true):String {
 			if (decimal == -1) {
 				decimal = 9;
 			}
 			var mult:Number = Math.pow(10, decimal);
-			var bbox:String = Math.round(this.left * mult) / mult + "," +
-				Math.round(this.bottom * mult) / mult + "," +
-				Math.round(this.right * mult) / mult + "," +
-				Math.round(this.top * mult) / mult;
+			var bbox:String = "";
+			if(forceLatLon || ProjProjection.projAxisOrder[this.projSrsCode] == ProjProjection.AXIS_ORDER_EN) {
+				bbox = Math.round(this.left * mult) / mult + "," +
+					Math.round(this.bottom * mult) / mult + "," +
+					Math.round(this.right * mult) / mult + "," +
+					Math.round(this.top * mult) / mult;
+			} else {
+				bbox = Math.round(this.bottom * mult) / mult + "," +
+					Math.round(this.left * mult) / mult + "," +
+					Math.round(this.top * mult) / mult + "," +
+					Math.round(this.right * mult) / mult;
+			}
 			return bbox;
 		}
 		
@@ -167,7 +176,7 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Determines if the bounds passed in param intersects the current bounds.
+		 * Determines if the bounds passed by parameter intersects the current bounds.
 		 *
 		 * @param bounds The bounds to test intersection.
 		 * @param inclusive It will include the border's bounds ?
@@ -176,13 +185,18 @@ package org.openscales.geometry.basetypes
 		 */
 		public function intersectsBounds(bounds:Bounds, inclusive:Boolean = true):Boolean {
 			
-			var tmpBounds:Bounds = bounds;
-			var tmpThis:Bounds = this;
+			var tmpBounds:Bounds = null;
+			var tmpThis:Bounds = null;
 			
-			if(tmpThis.projSrsCode!=tmpBounds.projSrsCode)
+			if(this.projSrsCode != bounds.projSrsCode)
 			{
-				tmpBounds = tmpBounds.reprojectTo(DEFAULT_PROJ_SRS_CODE);
-				tmpThis = tmpThis.reprojectTo(DEFAULT_PROJ_SRS_CODE);
+				tmpThis = this.preciseReprojectBounds(this, this.projSrsCode, DEFAULT_PROJ_SRS_CODE);
+				tmpBounds = this.preciseReprojectBounds(bounds, bounds.projSrsCode, DEFAULT_PROJ_SRS_CODE);
+			}
+			else
+			{
+				tmpBounds = bounds;
+				tmpThis = this;
 			}
 			
 				var inBottom:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
@@ -204,28 +218,106 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Returns if the current bounds contains the bounds passed as param
+		 * Precise bounds reprojection
+		 * 
+		 * @param bounds The bounds to reproject
+		 * @param source The source projection
+		 * @param dest The destination projection
+		 * 
+		 * @return The reprojected bounds
+		 */
+		public function preciseReprojectBounds(bounds:Bounds, source:String, dest:String):Bounds {
+			
+			// Precise reprojection
+			// --------------------
+			// We considerer that just reprojecting the extent is really not accurate :
+			// a rectangle in a given projection is not a rectangle in another projection.
+			// This algorithm comes from OpenLayers.
+			
+			var precision:Number = 0.000028;
+			var left:Number = NaN;
+			var right:Number = NaN;
+			var top:Number = NaN;
+			var bottom:Number = NaN;
+			var step:Number = 1;
+			
+			for(var i:uint = 0; i < 7; i++) {
+				
+				var dx:Number = (bounds._right - bounds._left)/(1.0 * step);
+				var dy:Number = (bounds._top - bounds._bottom)/(1.0 * step);
+				var fleft:Number = NaN;
+				var fright:Number = NaN;
+				var ftop:Number = NaN;
+				var fbottom:Number = NaN;
+				var pts:Vector.<ProjPoint> = new Vector.<ProjPoint>();
+				var npts:uint = 0;
+				for(var j:uint = 0; j < step; j++) {
+					
+					pts[npts] = new ProjPoint(bounds._left + j*dx, bounds._bottom);
+					Proj4as.transform(source, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(bounds._right, bounds._bottom + j*dy);
+					Proj4as.transform(source, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(bounds._right - j*dx, bounds._top);
+					Proj4as.transform(source, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(bounds._left, bounds._top - j*dy);
+					Proj4as.transform(source, dest, pts[npts++]);
+				}
+				fleft = fright = pts[0].x;
+				fbottom = ftop = pts[0].y;
+				
+				for(var ipts:uint = 0; ipts < npts; ipts++) {
+					if(pts[ipts].x < fleft)
+						fleft = pts[ipts].x;
+					if(pts[ipts].y < fbottom)
+						fbottom = pts[ipts].y;
+					if(pts[ipts].x > fright)
+						fright = pts[ipts].x;
+					if(pts[ipts].y > ftop)
+						ftop = pts[ipts].y;
+				}
+				
+				if(left && 
+					Math.abs(fleft - left) < precision && 
+					Math.abs(fbottom - bottom) < precision && 
+					Math.abs(fright - right) < precision && 
+					Math.abs(ftop - top) < precision)
+				{
+						return new Bounds(left, bottom, right, top, dest);
+				}
+				left = fleft;
+				bottom = fbottom;
+				right = fright;
+				top = ftop;
+				step *= 2;
+			}
+			return new Bounds(left, bottom, right, top, dest);
+		}
+		
+		/**
+		 * Determines if the current bounds contains the bounds passed by parameter.
 		 *
-		 * @param bounds The bounds to check
+		 * @param bounds The bounds to check.
 		 * @param partial Partial containing shoulds return true ?
 		 * @param inclusive It will include the border's bounds ?
 		 *
-		 * @return Bounds are contained or not by the bounds
+		 * @return If the bounds are contained or not by the current bounds.
 		 */
-		
 		public function containsBounds(bounds:Bounds, partial:Boolean = false, inclusive:Boolean = true):Boolean {
 			
-			var tmpBounds:Bounds = bounds;
-			var tmpThis:Bounds = this;
+			var tmpBounds:Bounds = null;
+			var tmpThis:Bounds = null;
 			
-			if(tmpThis.projSrsCode!=tmpBounds.projSrsCode)
+			if(this.projSrsCode != bounds.projSrsCode)
 			{
-				tmpBounds = tmpBounds.reprojectTo(DEFAULT_PROJ_SRS_CODE);
-				tmpThis = tmpThis.reprojectTo(DEFAULT_PROJ_SRS_CODE);
+				tmpThis = this.preciseReprojectBounds(this, this.projSrsCode, DEFAULT_PROJ_SRS_CODE);
+				tmpBounds = this.preciseReprojectBounds(bounds, bounds.projSrsCode, DEFAULT_PROJ_SRS_CODE);
+			}
+			else
+			{
+				tmpBounds = bounds;
+				tmpThis = this;
 			}
 			
-			
-			// TODO: check the equality of the projSrsCode of the two bounds ?!
 			var inLeft:Boolean;
 			var inTop:Boolean;
 			var inRight:Boolean;

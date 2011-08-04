@@ -1,5 +1,7 @@
 package
 {
+	import flexunit.framework.Test;
+	
 	import mx.core.FlexGlobals;
 	
 	import org.flexunit.asserts.assertTrue;
@@ -27,15 +29,15 @@ package
 		 */ 
 		protected var _container:Group;
 		
-		public function OpenScalesTest() {}
+		public function OpenScalesTest() {
+			this._container = new Group();
+		}
 		
 		/**
 		 * This function will be executed before each test.
 		 */
 		 [Before]
 		 public function setUp():void{
-			 
-			 this._container = new Group();
 			 (FlexGlobals.topLevelApplication as Application).addElement(this._container);
 		 }
 		 
@@ -44,7 +46,6 @@ package
 		  */
 		 [After]
 		 public function tearDown():void{
-			 
 			 (FlexGlobals.topLevelApplication as Application).removeElement(this._container);
 		 }
 		
@@ -54,6 +55,7 @@ package
 		 * @param map The FxMap where you want to find the handler
 		 * @param handler The Handler type you want to find in the map
 		 */
+		[Test]
 		public function assertMapHasControl(map:FxMap, control:Class):void{
 			
 			assertTrue("Map does not contain control of this type : "+control , this.mapHasControl(map, control));
@@ -76,6 +78,7 @@ package
 		 * @param map The FxMap where you want to find the handler
 		 * @param handler The Handler type you want to find in the map
 		 */
+		[Test]
 		public function assertMapHasHandler(map:FxMap, handler:Class):void{
 			
 			assertTrue("Map does not contain handler of this type : "+handler , this.mapHasHandler(map, handler));
@@ -98,6 +101,7 @@ package
 		 * @param map The FxMap where you want to find the layer
 		 * @param layer The Layer type you want to find in the map
 		 */
+		[Test]
 		public function assertMapHasLayer(map:FxMap, layer:Class):void{
 			
 			assertTrue("Map does not contain layer of this type : " + layer, this.mapHasLayer(map, layer));

@@ -18,7 +18,6 @@
     <classEntry path="org.openscales.geometry.basetypes.Unit"/>
     <classEntry path="org.openscales.geometry.utils.StringUtils"/>
     <classEntry path="org.openscales.geometry.utils.UtilGeometry"/>
-    <classEntry path="org.openscales.geometry.CollectionTest"/>
     <classEntry path="org.openscales.geometry.ContainsPointTest"/>
     <classEntry path="org.openscales.geometry.GeometryTest"/>
     <classEntry path="org.openscales.geometry.PointTest"/>

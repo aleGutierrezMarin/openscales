@@ -1,9 +1,8 @@
 package org.openscales.geometry
 {
 	import org.flexunit.Assert;
-	import org.flexunit.asserts.fail;
 	import org.openscales.geometry.basetypes.Bounds;
-
+	
 	public class PointTest
 	{		
 		[Before]
@@ -28,7 +27,7 @@ package org.openscales.geometry
 		
 		[Test]
 		public function testClonePoint():void {
-		
+			
 			var point:Point =  new Point(4,5);
 			var point2:Point = point.clone() as Point;
 			Assert.assertStrictlyEquals(point.x,point2.x);
@@ -61,21 +60,11 @@ package org.openscales.geometry
 		}
 		
 		[Test]
-		public function testTransformPoint():void {
-			fail("TODO");
-		}
-		
-		[Test]
 		public function testIntersectsPoint():void {
 			
 			var point:Point =  new Point(4,5);
 			var point2:Point = new Point(4,5);
 			point.intersects(point2);
-		}
-		
-		[Test]
-		public function testDistanceToPoint():void {
-			fail("TODO");
 		}
 		
 		[Test]

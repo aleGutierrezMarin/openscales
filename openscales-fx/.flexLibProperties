@@ -102,17 +102,13 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
-    <classEntry path="OpenScalesTest"/>
     <classEntry path="org.openscales.fx.control.LayerCatalogTest"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButtonTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacityTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPositionTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibilityTest"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerLegendTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManagerTest"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerMetadatasTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>
-    <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
   </includeClasses>

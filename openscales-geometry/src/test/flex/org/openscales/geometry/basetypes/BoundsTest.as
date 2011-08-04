@@ -1,6 +1,7 @@
 package org.openscales.geometry.basetypes
 {
 	import org.flexunit.Assert;
+	import org.flexunit.assertThat;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNull;
 	import org.flexunit.asserts.assertTrue;
@@ -163,7 +164,11 @@ package org.openscales.geometry.basetypes
 			var intersectionBounds:Bounds = firstBounds.getIntersection(secondBounds);
 
 			// Then the result is the intersection with EPSG:4326 projection
-			assertTrue("The intersect bounds is not correct", intersectionBounds.equals(new Bounds(-50, -40, 49.99999999999999, 39.99999999999999, "EPSG:4326")));	
+			assertTrue("The projection should be EPSG:4326", "EPSG:4326", intersectionBounds.projSrsCode);
+			assertEquals("Left bound should be -50",-50,intersectionBounds.left);
+			assertTrue("Right bound should be near from 49.99999",(intersectionBounds.right>49.99999 && intersectionBounds.right<=50));
+			assertEquals("Bottom bound should be -40",-40,intersectionBounds.bottom);
+			assertTrue("Top bound should be near from 39.99999",(intersectionBounds.top>39.99999 && intersectionBounds.top<=40));
 		}
 		
 		/**
@@ -225,6 +230,21 @@ package org.openscales.geometry.basetypes
 			assertEquals("Incorrect right value", 3, bounds.right);
 			assertEquals("Incorrect top value", 4, bounds.top);
 			assertEquals("Incorrect projection", "EPSG:2154", bounds.projSrsCode);
+		}
+		
+		[Test]
+		public function shouldIntersectBoundsReprojectedInEPSG4326():void
+		{
+			// Given two intersected bounds in IGNF:LAMB93
+			var firstBounds:Bounds = new Bounds(0, -14214400, 26214400, 12000000, "IGNF:LAMB93");
+			var secondBounds:Bounds = new Bounds(409600, 6265600, 614400, 6470400, "IGNF:LAMB93");
+			
+			// When you reproject these bounds in EPSG:4326
+			var firstBoundsReproj:Bounds = firstBounds.preciseReprojectBounds(firstBounds,"IGNF:LAMB93","EPSG:4326");
+			var secondBoundsReproj:Bounds = secondBounds.preciseReprojectBounds(secondBounds,"IGNF:LAMB93","EPSG:4326");
+			
+			// Then the bounds are still intersected
+			assertEquals("Incorrect bounds intersection", firstBounds.intersectsBounds(secondBounds), firstBoundsReproj.intersectsBounds(secondBoundsReproj));
 		}
 		
 		/**

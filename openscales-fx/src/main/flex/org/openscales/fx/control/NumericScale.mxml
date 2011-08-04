@@ -7,10 +7,10 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import org.openscales.core.Map;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
+			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Unit;
 			import org.openscales.proj4as.ProjProjection;
 			
@@ -82,9 +82,18 @@
 			{
 				if(this._map == null || this._map.baseLayer == null)
 					return;
-				this._value = Math.round(Unit.getScaleFromResolution(this._map.resolution,
-					ProjProjection.getProjProjection(this._map.projection).projParams.units,
-					this._map.baseLayer.dpi));
+				
+				// Calculate the scale according to the current center resolution
+				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode);
+				var resolutionAtCenter:Number = Unit.getResolutionOnCenter(this._map.resolution, this._map.center, projection);
+				
+				var unit:String = ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode).projParams.units;
+				
+				if(projection.projName  == "longlat")
+					unit = Unit.METER;
+				
+				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._map.baseLayer.dpi));
+
 				
 				// update the label :
 				this.scaleLabel = "1 / "+this._value;

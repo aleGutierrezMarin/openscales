@@ -58,7 +58,7 @@ package org.openscales.fx.layer
 			(this._layer as WFS).url = this._url;
 			(this._layer as WFS).typename = this._typename;
 			(this._layer as WFS).useCapabilities = this._useCapabilities;
-			(this._layer as WFS).capabilitiesVersion = this._version;
+			(this._layer as WFS).version = this._version;
 			
 			return this._layer;
 		}
@@ -84,7 +84,7 @@ package org.openscales.fx.layer
 		public function set version(value:String):void {
 			this._version = value;
 			if(this.nativeLayer)
-				(this._layer as WFS).capabilitiesVersion = value;
+				(this._layer as WFS).version = value;
 		}
 		public function get version():String{
 			return this._version;
