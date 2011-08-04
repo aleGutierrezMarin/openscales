@@ -63,6 +63,10 @@ package org.openscales.core.layer.ogc {
 		public function tearDown():void
 		{
 			_map = null;
+			
+			if(this._handler!=null && _wmts)
+				_wmts.removeEventListener(TileEvent.TILE_LOAD_START, this._handler);
+			
 			_wmts = null;
 			_wms = null;
 			
@@ -71,7 +75,7 @@ package org.openscales.core.layer.ogc {
 				if(this._handler!=null)
 					this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
 				if(this._handlerFail!=null)
-					this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
+					this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handlerFail);
 				
 				this._timer.stop();
 				this._timer = null;
