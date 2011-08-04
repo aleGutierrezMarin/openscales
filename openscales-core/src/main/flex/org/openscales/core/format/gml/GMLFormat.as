@@ -67,7 +67,7 @@ package org.openscales.core.format.gml
 		
 		private var xmlString:String;
 		private var sXML:String;
-
+		
 		private var lastInd:int    = 0;
 		//fps
 		private var allowedTime:Number = 10;
@@ -75,6 +75,7 @@ package org.openscales.core.format.gml
 		private var savedIndex:Number = 0;
 		private var sprite:Sprite = new Sprite();
 		
+		private var _asyncLoading:Boolean = false;
 		/**
 		 * GMLFormat constructor
 		 *
@@ -97,44 +98,64 @@ package org.openscales.core.format.gml
 		 * @return features.
 		 */
 		override public function read(data:Object):Object {
+			if(!this._asyncLoading) {
+				var dataXML:XML = new XML(data);
+				var features:XMLList;
+			}
+			
+			var lonlat:Boolean = true;
 			
 			switch (this._version) {
-				case "2.0":
+				case "2.1.1":
 					if(!this._gmlParser || !(this._gmlParser is GML2))
 						this._gmlParser = new GML2();
+					if(!this._asyncLoading) {
+						features = dataXML..*::featureMember;
+					}
+					//featureMember
 					break;
 				case "3.1.1":
+					if(ProjProjection.projAxisOrder[this.externalProjSrsCode]
+						&& ProjProjection.projAxisOrder[this.externalProjSrsCode]==ProjProjection.AXIS_ORDER_NE)
+						lonlat = false;
 					if(!this._gmlParser || !(this._gmlParser is GML311))
 						this._gmlParser = new GML311();
-					
-					var dataXML:XML = new XML(data);
-
-					var features:XMLList = dataXML..*::featureMembers;
-					if(features.length()!=1)
-						return null;
-					dataXML = features[0];
-					features = dataXML.children();
-					var lonlat:Boolean = true;
-					if(ProjProjection.projAxisOrder[this.externalProjSrsCode]!=ProjProjection.AXIS_ORDER_EN)
-						lonlat=false;
-					for each( dataXML in features) {
-						this._onFeature(this._gmlParser.parseFeature(dataXML,lonlat));
+					//featureMembers
+					if(!this._asyncLoading) {
+						features = dataXML..*::featureMembers;
 					}
+					break;
+				case "3.2.1":
+					if(ProjProjection.projAxisOrder[this.externalProjSrsCode]
+						&& ProjProjection.projAxisOrder[this.externalProjSrsCode]==ProjProjection.AXIS_ORDER_NE)
+						lonlat = false;
 					return null;
 					break;
 				default:
 					return null;
 			}
-			this.xmlString = data as String;
-			data = null;
-			if(this.xmlString.indexOf(this._gmlParser.sFXML)!=-1){
-				var end:int = this.xmlString.indexOf(">",this.xmlString.indexOf(">")+1)+1;
-				this.sXML = this.xmlString.slice(0,end);
-				this.dim = 2;
-				this.sprite.addEventListener(Event.ENTER_FRAME, this.readTimer);
+			
+			if(this._asyncLoading) {
+				this.xmlString = data as String;
+				data = null;
+				if(this.xmlString.indexOf(this._gmlParser.sFXML)!=-1){
+					var end:int = this.xmlString.indexOf(">",this.xmlString.indexOf(">")+1)+1;
+					this.sXML = this.xmlString.slice(0,end);
+					this.dim = 2;
+					this.sprite.addEventListener(Event.ENTER_FRAME, this.readTimer);
+				} else {
+					this.xmlString = null;
+				}
 			} else {
-				this.xmlString = null;
+				if(features.length()!=1)
+					return null;
+				dataXML = features[0];
+				features = dataXML.children();
+				for each( dataXML in features) {
+					this._onFeature(this._gmlParser.parseFeature(dataXML,lonlat));
+				}
 			}
+			
 			return null;
 		}
 		
@@ -195,7 +216,7 @@ package org.openscales.core.format.gml
 				this.sXML = null;
 				return;
 			}
-
+			
 		}
 		
 		
@@ -234,12 +255,12 @@ package org.openscales.core.format.gml
 		 */
 		override public function write(features:Object):Object {
 			var featureCollection:XML = new XML(""/*<" + this._wfsprefix + ":" + this._collectionName + " xmlns:" 
-				+ this._wfsprefix + "=\"" + this._wfsns + "\"></" + this._wfsprefix + ":" + this._collectionName + ">"*/);
+			+ this._wfsprefix + "=\"" + this._wfsns + "\"></" + this._wfsprefix + ":" + this._collectionName + ">"*/);
 			/*
 			var j:int = features.length;
 			var i:int;
 			for (i = 0; i < j; i++) {
-				featureCollection.appendChild(this.createFeatureXML(features[i]));
+			featureCollection.appendChild(this.createFeatureXML(features[i]));
 			}*/
 			return featureCollection;
 		}
@@ -295,13 +316,13 @@ package org.openscales.core.format.gml
 			var length:uint,index:uint;
 			
 			if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiPolygon"
-				) {
+			) {
 				gml = new XML("<" + this._gmlprefix + ":MultiPolygon xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" " 
-					           + projectionxml + " >"
-							  +"</" + this._gmlprefix + ":MultiPolygon>");
+					+ projectionxml + " >"
+					+"</" + this._gmlprefix + ":MultiPolygon>");
 				
 				var polygonMember:XML = new XML("<" + this._gmlprefix + ":polygonMember xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\">"
-					                            + "</" + this._gmlprefix + ":polygonMember>");
+					+ "</" + this._gmlprefix + ":polygonMember>");
 				length = (geometry as MultiPolygon).componentsLength;
 				for(index=0;index <length;index++ ){
 					polygonMember.appendChild(this.buildCoordinatesNode((geometry as MultiPolygon).componentByIndex(index)));
@@ -318,13 +339,13 @@ package org.openscales.core.format.gml
 				length = geometry.componentsLength;
 				// 1 -> n linearing is innerBoundaryIs
 				if(length > 1){
-				 var innerRing:XML = new XML("<" + this._gmlprefix + ":innerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":innerBoundaryIs>");
-				 var linearRingInner:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
-				 for(var i:uint=1;i <length;i++ ){
-					linearRingInner.appendChild(this.buildCoordinatesNode(geometry.componentByIndex(i)));
-				 }
-				 innerRing.appendChild(linearRingInner);
-				 gml.appendChild(innerRing);
+					var innerRing:XML = new XML("<" + this._gmlprefix + ":innerBoundaryIs xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":innerBoundaryIs>");
+					var linearRingInner:XML = new XML("<" + this._gmlprefix + ":LinearRing xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"></" + this._gmlprefix + ":LinearRing>");
+					for(var i:uint=1;i <length;i++ ){
+						linearRingInner.appendChild(this.buildCoordinatesNode(geometry.componentByIndex(i)));
+					}
+					innerRing.appendChild(linearRingInner);
+					gml.appendChild(innerRing);
 				}
 				gml.appendChild(outerRing);
 			}
@@ -341,7 +362,7 @@ package org.openscales.core.format.gml
 				
 				length = (geometry as MultiLineString).componentsLength;
 				for(index=0;index <length;index++ ){
-				 lineString.appendChild(this.buildCoordinatesNode((geometry as MultiLineString).componentByIndex(index)));
+					lineString.appendChild(this.buildCoordinatesNode((geometry as MultiLineString).componentByIndex(index)));
 				}				
 				lineStringMember.appendChild(lineString);
 				
@@ -356,12 +377,12 @@ package org.openscales.core.format.gml
 			else if (getQualifiedClassName(geometry) == "org.openscales.geometry::MultiPoint") {
 				
 				gml = new XML("<" + this._gmlprefix + ":MultiPoint xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " >" +
-					          "</" + this._gmlprefix + ":MultiPoint>");
+					"</" + this._gmlprefix + ":MultiPoint>");
 				length = (geometry as MultiPoint).componentsLength;
 				for(index=0;index <length;index++ ){
 					gml.appendChild(buildPointNode(((geometry as MultiPoint).componentByIndex(index)) as Point))
 				}	
-					
+				
 			} else if (getQualifiedClassName(geometry) == "org.openscales.geometry::Point") {
 				gml = new XML("<" + this._gmlprefix + ":Point xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\"  " +projectionxml + " >" +
 					"</" + this._gmlprefix + ":Point>");
@@ -397,25 +418,25 @@ package org.openscales.core.format.gml
 				path += geometry.x + "," + geometry.y + " ";
 				
 			}else{
-			  var points:Vector.<Number> = null;
-			  if (geometry.components) {
-				if (geometry.components.length > 0) {
-					points = geometry.components;
+				var points:Vector.<Number> = null;
+				if (geometry.components) {
+					if (geometry.components.length > 0) {
+						points = geometry.components;
+					}
 				}
-			  }
-			 
-			  if (points) {
-				 path = buildCoordinatesNodeFromVector(points);
-				 if(geometry is LinearRing){
-					 if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
-						 var pointTemp:Point = new Point(points[0],points[1]);
-						 pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
-						 path += pointTemp.x + "," + pointTemp.y + " ";
-					 }else{
-					   path += points[0] + "," + points[1] + " ";
-					 }
-				 }
-			  }
+				
+				if (points) {
+					path = buildCoordinatesNodeFromVector(points);
+					if(geometry is LinearRing){
+						if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
+							var pointTemp:Point = new Point(points[0],points[1]);
+							pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
+							path += pointTemp.x + "," + pointTemp.y + " ";
+						}else{
+							path += points[0] + "," + points[1] + " ";
+						}
+					}
+				}
 			}
 			
 			coordinatesNode.appendChild(path);
@@ -432,9 +453,9 @@ package org.openscales.core.format.gml
 			for (i = 0; i < j; i=i+2) {
 				if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
 					
-						pointTemp = new Point(points[i],points[i+1]);
-						pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
-						path += pointTemp.x + "," + pointTemp.y + " ";
+					pointTemp = new Point(points[i],points[i+1]);
+					pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
+					path += pointTemp.x + "," + pointTemp.y + " ";
 					
 				}else{
 					path += points[i] + "," + points[i+1] + " ";
@@ -451,8 +472,8 @@ package org.openscales.core.format.gml
 			var pointTemp:Point;
 			var path:String = "";
 			for (i = 0; i < j; i=i+2) {
-					path += points[i] + "," + points[i+1] + " ";
-								
+				path += points[i] + "," + points[i+1] + " ";
+				
 			}
 			return path;
 		}
