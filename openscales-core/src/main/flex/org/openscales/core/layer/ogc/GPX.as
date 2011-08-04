@@ -69,15 +69,16 @@ package org.openscales.core.layer.ogc
 				var lineStyle:Style = Style.getDefaultLineStyle();
 				pointStyle.rules.push(new Rule());
 				lineStyle.rules.push(new Rule());
-				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
-				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
+				//pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
+				//lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
 				
 				this.featureVector = this.gpxFormat.parseGpxFile(this.gpxData);
 				var i:uint;
 				var vectorLength:uint = this.featureVector.length;
 				for (i = 0; i < vectorLength; i++){
-					if(this.featureVector[i] is PointFeature)
+					if(this.featureVector[i] is PointFeature) {
 						this.featureVector[i].style = pointStyle;
+					}
 					else // feature is linestring or multilinestring
 						this.featureVector[i].style = lineStyle;
 					this.addFeature(this.featureVector[i]);
