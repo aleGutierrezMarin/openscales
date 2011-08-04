@@ -64,6 +64,13 @@ package org.openscales.core.layer
 			this.selectedFeatures = null;
 			this.featuresBbox = null;
 		}
+		
+		override public function redraw(fullRedraw:Boolean = true):void {
+			this.clear();
+			if (this.displayed) {
+			this.draw();
+			}
+		}
 
 		// Clear layer and children graphics
 		override public function clear():void {

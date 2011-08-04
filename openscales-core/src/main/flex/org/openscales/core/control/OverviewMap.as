@@ -269,6 +269,7 @@ package org.openscales.core.control
 			// by default it uses a mapnik baselayer 
 			if(this._overviewMap.baseLayer == null) {
 				var layer:Layer = new Mapnik("defaultbaselayer");
+				this._overviewMap.projection="EPSG:900913";
 				this._overviewMap.addLayer(layer,true);
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 				this._overviewMap.addLayer(this._extentLayer);
