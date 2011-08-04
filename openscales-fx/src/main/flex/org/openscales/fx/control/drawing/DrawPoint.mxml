@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Button xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 implements="org.openscales.core.control.IControl"
-		 label="Draw points"
-		 click="activate()"
-		 enabled="{active}">
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  implements="org.openscales.core.control.IControl"
+		  label="Draw points"
+		  click="onClick()"
+		  enabled="{active}">
+	
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
 			import org.openscales.core.control.IControl;
+			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.PointFeature;
@@ -19,12 +21,10 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-		
+			
 			private var _active:Boolean = true;
 			
-			private var _map:Map;
-						
-			private var _handler:AbstractDrawHandler = new DrawPointHandler();
+			private var _handler:AbstractDrawHandler= new DrawPointHandler();
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -35,12 +35,10 @@
 				
 				return _active;
 			}
-			
 			public function set active(value:Boolean):void{
 				
 				_active = value;
 				if(! _active){
-					
 					_handler.active = false;
 				}
 			}
@@ -52,24 +50,22 @@
 				
 				return _handler.map;
 			}
-			
 			public function set map(value:Map):void{
 				
 				_handler.map = value;
+				_handler.map.addEventListener(DrawingEvent.CREATE_GEOMETRY, onCreateGeometry);
 			}
 			
 			/**
-			 * Position (x,y) of the layer
+			 * Position (x,y) of the handler
 			 */
 			public function get position():Pixel{
 				
 				return new Pixel(x,y);
 			}
-			
 			public function set position(value:Pixel):void{
 				
 				if(value){
-					
 					x = value.x;
 					y = value.y;
 				}
@@ -82,30 +78,50 @@
 				
 				return _handler.drawLayer;
 			}
-			
 			public function set target(value:FeatureLayer):void{
 				
 				_handler.drawLayer = value;
 			}
 			
-			public function onMapLanguageChange(event:I18NEvent):void{
-				
-			}
-			
-			public function draw():void{
-				this.invalidateDisplayList();
-			}
-			
-			public function destroy():void{}
-			
+			/**
+			 * To activate or disactivate the handler
+			 */
 			private function activate():void{
 				
 				_handler.active = true;
-			}			
+			}
+			private function disactivate():void{
+				
+				_handler.active = false;
+			}
+			
+			/**
+			 * On button click, dispatch a DrawingEvent.CREATE_GEOMETRY event
+			 */
+			private function onClick():void{
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CREATE_GEOMETRY);
+				evt.drawHandler = _handler;
+				_handler.map.dispatchEvent(evt);
+				activate();
+			}
+			
+			/**
+			 * Check the handler when a DrawingEvent.CREATE_GEOMETRY event occured
+			 */
+			private function onCreateGeometry(evt:DrawingEvent):void{
+				
+				if(_handler != evt.drawHandler)
+					disactivate();
+			}
+			
+			// to do
+			public function onMapLanguageChange(event:I18NEvent):void{}
+			public function draw():void{
+				
+				this.invalidateDisplayList();
+			}
+			public function destroy():void{}
 		]]>
-	</fx:Script>
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-
+	</fx:Script>			
 </s:Button>
