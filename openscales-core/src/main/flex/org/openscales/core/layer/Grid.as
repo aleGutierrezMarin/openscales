@@ -155,29 +155,33 @@ package org.openscales.core.layer
 			return null;
 		}
 		
+		override public function get available():Boolean
+		{
+			var _available:Boolean = true;
+			
+			if (this.maxExtent.getIntersection(this.map.extent) == null)
+			{
+				_available = false;
+			}
+			
+			if ((this.map.resolution > this.maxResolution) || (this.map.resolution < this.minResolution))
+			{
+				_available = false;
+			}
+			
+			if (this.projSrsCode != this.map.projection)
+			{
+				_available = false;
+			}
+			return _available;
+		}
+		
 		/**
 		 * Override the redraw method for raster data. Check the informations of the map
 		 * to define the available parameter for raster data.
 		 */
 		override public function redraw(fullRedraw:Boolean = false):void 
 		{
-			this._available = true;
-			
-			if (this.maxExtent.getIntersection(this.map.extent) == null)
-			{
-				this._available = false;
-			}
-			
-			if ((this.map.resolution > this.maxResolution) || (this.map.resolution < this.minResolution))
-			{
-				this._available = false;
-			}
-			
-			if (this.projSrsCode != this.map.projection)
-			{
-				this._available = false;
-			}
-			
 			if (!available) 
 			{
 				this.clear();
