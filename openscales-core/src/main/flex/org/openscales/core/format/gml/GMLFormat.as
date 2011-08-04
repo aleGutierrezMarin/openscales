@@ -134,7 +134,7 @@ package org.openscales.core.format.gml
 				default:
 					return null;
 			}
-			
+			this._gmlParser.parseExtractAttributes = this.extractAttributes;
 			if(this._asyncLoading) {
 				this.xmlString = data as String;
 				data = null;
@@ -147,7 +147,7 @@ package org.openscales.core.format.gml
 					this.xmlString = null;
 				}
 			} else {
-				if(features.length()!=1)
+				if(features.length()==0)
 					return null;
 				dataXML = features[0];
 				features = dataXML.children();
