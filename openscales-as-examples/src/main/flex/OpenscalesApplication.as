@@ -26,7 +26,7 @@ package {
 		public function OpenscalesApplication() {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-
+			_map.projection = "EPSG:900913";
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			//mapnik.proxy = "http://openscales.org/proxy.php?url=";

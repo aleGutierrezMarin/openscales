@@ -140,7 +140,7 @@ package org.openscales.core.control
 				bottom,
 				right,
 				top,
-				this._overviewMap.baseLayer.projSrsCode);
+				this._overviewMap.projection);
 			return bounds;
 		}
 		
@@ -153,11 +153,11 @@ package org.openscales.core.control
 			
 			if(px.equals(this._startDrag)) {
 				var loc:Location = this._overviewMap.getLocationFromMapPx(px);
-				this.map.moveTo(loc.reprojectTo(this.map.baseLayer.projSrsCode));
+				this.map.moveTo(loc.reprojectTo(this.map.projection));
 			} else {
 				var bounds:Bounds = pxToBound(px,this._startDrag);
-				if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
-					bounds = bounds.reprojectTo(this.map.baseLayer.projSrsCode);
+				if (this.map.projection != this._overviewMap.projection) {
+					bounds = bounds.reprojectTo(this.map.projection);
 				}
 				this.map.zoomToExtent(bounds);
 			}
@@ -288,11 +288,11 @@ package org.openscales.core.control
 			
 			var _extent:Bounds = this.map.extent;
 			
-			if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
-				_extent = _extent.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+			if (this.map.projection != this._overviewMap.projection) {
+				_extent = _extent.reprojectTo(this._overviewMap.projection);
 			}
 			
-			this._extentLayer.projSrsCode = this._overviewMap.baseLayer.projSrsCode;
+			this._extentLayer.projSrsCode = this._overviewMap.projection;
 			if (this._extentFeature == null) {
 				this._extentFeature = new PolygonFeature(_extent.toGeometry(),
 					null,
@@ -304,6 +304,22 @@ package org.openscales.core.control
 				this._extentFeature.geometry = _extent.toGeometry();
 				this._extentFeature.draw();
 			}
+		}
+		
+		/**
+		 * The Actual projection of the overviewMap, the default value is EPSG:4326
+		 */
+		public function set projection(value:String):void
+		{
+			this._overviewMap.projection = value;
+		}
+		
+		/**
+		 * Private
+		 */
+		public function get projection():String
+		{
+			return this._overviewMap.projection;
 		}
 	}
 }

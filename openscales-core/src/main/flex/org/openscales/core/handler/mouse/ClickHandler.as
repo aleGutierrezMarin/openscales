@@ -185,7 +185,7 @@ package org.openscales.core.handler.mouse
 			var bottomLeft:Location = this.map.getLocationFromMapPx(new Pixel(rect.left, rect.bottom));
 			var topRight:Location = this.map.getLocationFromMapPx(new Pixel(rect.right, rect.top));
 			if (this.map.baseLayer) {
-				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, this.map.baseLayer.projSrsCode);
+				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, this.map.projection);
 			} else {
 				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, Geometry.DEFAULT_SRS_CODE);
 			}

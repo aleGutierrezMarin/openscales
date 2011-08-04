@@ -172,7 +172,11 @@ package org.openscales.geometry
 			if (this._bounds == null) {
 				this._bounds = newBounds;
 			} else {
-				this._bounds.extendFromBounds(newBounds);
+				var tmpBounds:Bounds = this._bounds.extendFromBounds(newBounds);
+				if (this._bounds.projSrsCode != tmpBounds.projSrsCode)
+				{
+					this._bounds = tmpBounds.reprojectTo(this._bounds.projSrsCode);
+				}
 			}
 		}
 		

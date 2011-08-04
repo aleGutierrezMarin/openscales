@@ -30,7 +30,7 @@ package org.openscales.core.handler.feature.draw
 			if(value!=null){
 				super.map = value;
 				if (map.baseLayer!=null && this.drawLayer.projSrsCode!=null) {
-					this.drawLayer.projSrsCode = this.map.baseLayer.projSrsCode;
+					this.drawLayer.projSrsCode = this.map.projection;
 					this.drawLayer.resolutions = this.map.baseLayer.resolutions;
 				} 
 			}

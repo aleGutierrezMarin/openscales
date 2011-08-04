@@ -72,5 +72,21 @@ package org.openscales.fx.control
 		public function get overviewMap():OverviewMap {
 			return this._overviewmap;
 		}
+		
+		/**
+		 * The actual projection of the overview map, default value is EPSG:4326
+		 */
+		public function set projection(value:String):void
+		{
+			this._overviewmap.projection = value;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get projection():String
+		{
+			return this._overviewmap.projection;
+		}
 	}
 }

@@ -96,7 +96,7 @@ package org.openscales.core.control
 			}
 			
 			if (lonLat == null) {
-				lonLat = new Location(0,0,(this.map.baseLayer)?this.map.baseLayer.projSrsCode:Geometry.DEFAULT_SRS_CODE);
+				lonLat = new Location(0,0,(this.map.baseLayer)?this.map.projection:Geometry.DEFAULT_SRS_CODE);
 			}
 			
 			if (this._displayProjSrsCode) {

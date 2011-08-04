@@ -57,6 +57,17 @@ package org.openscales.core.layer {
 		private var _editable:Boolean = false;
 		private var _metaData:Object;
 		
+		protected var _available:Boolean = false;
+		
+		/**
+		 * The boolean that say if the layer is drawn or not.
+		 * This is a readonly parameter.
+		 * This parameter is protected but MUST only be modified in the redraw method.
+		 */
+		public function get available():Boolean
+		{
+			return this._available;
+		}
 		
 		/**
 		 * @private
@@ -88,6 +99,7 @@ package org.openscales.core.layer {
 			this.doubleClickEnabled = true;
 			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
 			this.generateResolutions();
+			
 			
 			this._originators = new Vector.<DataOriginator>();
 		}
@@ -143,6 +155,7 @@ package org.openscales.core.layer {
 		public function removeEventListenerFromMap():void {
 			if (this.map != null) {
 				map.removeEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
+				map.removeEventListener(MapEvent.PROJECTION_CHANGED, onMapProjectionChanged);
 				map.removeEventListener(MapEvent.MOVE_END, onMapMove);
 				map.removeEventListener(MapEvent.RESIZE, onMapResize);
 			}
@@ -163,16 +176,68 @@ package org.openscales.core.layer {
 				removeEventListenerFromMap();
 			}
 			
-			this._map = map;
-			
+			this._map = map;		
 			if (this.map) {
+				if (_projSrsCode == null)
+				{
+					this._projSrsCode = this._map.projection;
+					this.generateResolutions();
+				}
+				
 				this.map.addEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
+				this.map.addEventListener(MapEvent.PROJECTION_CHANGED,onMapProjectionChanged);
+				this.map.addEventListener(MapEvent.CENTER_CHANGED, onMapCenterChanged);
+				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
 				this.map.addEventListener(MapEvent.MOVE_END, onMapMove);
 				this.map.addEventListener(MapEvent.RESIZE, onMapResize);
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;
 				}
+				if (this._projSrsCode == _map.projection)
+				{
+					this.visible = true;
+				}
 			}
+		}
+		
+		/**
+		 * Return a reference to the map where belong this layer
+		 */
+		public function get map():Map {
+			return this._map;
+		}
+		
+		/**
+		 * This function is call when the MapEvent.PROJECTION_CHANGED
+		 * Call the redraw function to check if the layer can be displayed. 
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the projection of the map is changed
+		 */
+		private function onMapProjectionChanged(event:MapEvent):void
+		{
+			this.redraw(false);
+		}
+		
+		/**
+		 * This function is call when the MapEvent.RESOLUTION_CHANGED
+		 * Call the redraw function to check if the layer can be displayed
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the resolution of the map is changed
+		 */
+		private function onMapResolutionChanged(event:MapEvent):void
+		{
+			this.redraw(false);
+		}
+		
+		/**
+		 * This function is call when the MapEvent.CENTER_CHANGED
+		 * Call the redraw function to check if the layer can be displayed
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the center is changed
+		 */
+		private function onMapCenterChanged(event:MapEvent):void
+		{
+			this.redraw(false);	
 		}
 		
 		protected function onSecurityInitialized(e:SecurityEvent):void {
@@ -199,12 +264,7 @@ package org.openscales.core.layer {
 			_dpi = value;
 		}
 		
-		/**
-		 * Return a reference to the map where belong this layer
-		 */
-		public function get map():Map {
-			return this._map;
-		}
+
 		
 		/**
 		 * A Bounds object which represents the location bounds of the current extent display on the map.
@@ -309,15 +369,15 @@ package org.openscales.core.layer {
 		}	
 		
 		/**
-		 * Clear and draw, if needed, layer based on current data eventually retreived previously by moveTo function.
-		 * 
-		 * @param fullRedraw boolean forece the redraw
+		 * Check if the layer can be drawn according to the map parameters. If the layer can be drawn 
+		 * it will draw itself. 
+		 *  It will set the available parameter to expose if the layer is drawn or not.
 		 */
 		public function redraw(fullRedraw:Boolean = true):void {
-			this.clear();
+			/*this.clear();
 			if (this.displayed) {
 				this.draw();
-			}
+			}*/
 		}
 		
 		/**
@@ -365,8 +425,8 @@ package org.openscales.core.layer {
 			var inRange:Boolean = false;
 			if (this.map) {
 				var resolutionProjected:Number = this.map.resolution;
-				if (this.isBaseLayer != true && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-					resolutionProjected = Proj4as.unit_transform(this.map.baseLayer.projSrsCode,this.projSrsCode,this.map.resolution);
+				if (this.isBaseLayer != true && this.projSrsCode != this.map.projection) {
+					resolutionProjected = Proj4as.unit_transform(this.map.projection,this.projSrsCode,this.map.resolution);
 				}
 				inRange = ((resolutionProjected >= this.minResolution) && (resolutionProjected <= this.maxResolution));
 			}
