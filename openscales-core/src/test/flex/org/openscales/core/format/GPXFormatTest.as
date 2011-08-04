@@ -20,7 +20,7 @@ package org.openscales.core.format
 		[Before]
 		public function setUp():void
 		{
-			url = "http://openscales.org/geoserver/tiger/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=tiger:tiger_roads&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2"; 
+			url = "http://openscales.org/assets/sample.gpx"; 
 			this.format = new GPXFormat(new HashMap());
 		}
 		
@@ -34,10 +34,10 @@ package org.openscales.core.format
 		public function testParseCoords():void
 		{
 			var gpx:XML = new XML(new GPX11FILE());
-			var features:Vector.<Feature> = this.format.parseGpxFile(gpx);
-			//this.gpxLayer = new GPX("gpxLayer","1.1",url,gpx);
-			//var features:Vector.<Feature> = this.gpxLayer.featureVector;
-			var pointNode:XML = this.format.buildAttributeNodes(features[0]);
+			//var features:Vector.<Feature> = this.format.parseGpxFile(gpx);
+			this.gpxLayer = new GPX("gpxLayer","1.1",url,gpx);
+			var features:Vector.<Feature> = this.gpxLayer.featureVector;
+			//var gpxNode:XML = this.format.buildGpxFile(features);
 
 			
 		}
