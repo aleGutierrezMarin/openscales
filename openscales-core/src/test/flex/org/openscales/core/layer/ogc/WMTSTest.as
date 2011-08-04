@@ -1,8 +1,9 @@
 package org.openscales.core.layer.ogc {
 	
-	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
+	
+	import flexunit.framework.Assert;
 	
 	import org.flexunit.asserts.*;
 	import org.flexunit.async.Async;
@@ -11,15 +12,12 @@ package org.openscales.core.layer.ogc {
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.WMTS100;
-	import org.openscales.core.layer.ogc.wmts.TileMatrix;
-	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
 	
 	public class WMTSTest {
 		
-		private const THICK_TIME:uint = 5000;
-		private const THICK_TIME_OUT:uint = 7000;
+		private const THICK_TIME:uint = 8000;
 		private const NAME:String = "WMTS Layer";
 		
 		private const URL:String = "http://someServer.com/wmts";
@@ -41,7 +39,8 @@ package org.openscales.core.layer.ogc {
 		private var _map:Map = null;
 		
 		private var _timer:Timer;
-		
+		private var _wmts:WMTS = null;
+		private var _wms:WMS = null;
 		
 		private var _handler:Function = null;
 		
@@ -55,7 +54,7 @@ package org.openscales.core.layer.ogc {
 		[Before]
 		public function setUp():void
 		{
-			this._timer = new Timer(THICK_TIME);
+			this._timer = new Timer(THICK_TIME, 1);
 			this._timer.start();
 		}
 		
@@ -63,40 +62,13 @@ package org.openscales.core.layer.ogc {
 		public function tearDown():void
 		{
 			_map = null;
+			_wmts = null;
+			_wms = null;
+			if(this._handler!=null)
+				this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handler);
 			this._timer.stop();
 		}
 		
-		/**
-		 * @private
-		 * On timer function to launch method asynchronous on timer event
-		 * @param event The event received
-		 * @param passThroughData An object given as parameter for the function to call
-		 */
-		private function onTimer(event:TimerEvent,passThroughData:Object):void{
-			
-			var steps:Array = passThroughData as Array;
-			
-			if(steps.length){
-				var step:Object = steps.shift();
-				var f:Function = null;
-				var args:Array = [];
-				
-				if(step is Function){
-					f = step as Function;
-				}
-				else{
-					f = step.shift() as Function;
-					args = step as Array;
-				}
-				
-				f.apply(this,args);
-				var handler:Function = Async.asyncHandler(this,this.onTimer,THICK_TIME+100,steps);
-				this._timer.addEventListener(TimerEvent.TIMER,handler);
-			}
-			else{
-				this._timer.stop();
-			}
-		}
 		
 		/**
 		 * @private
@@ -141,45 +113,51 @@ package org.openscales.core.layer.ogc {
 		public function shouldGenerateCorrectQueriesWithMinimumParams():void
 		{
 			// Given a map of 256x256px, centered on 0,12000000
-			var map:Map = new Map();
-			map.size = new Size(256,256);
-			map.center = new Location(0,12000000,"IGNF:LAMB93");
+			this._map = new Map();
+			this._map.size = new Size(256,256);
+			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
 			
 			// And a WMTS layer on this map
 			var cap:WMTS100 = new WMTS100();
 			var layers:HashMap = cap.read(new XML(new SIMPLECAPABILITIES()));
 			var tmshm:HashMap = (layers.getValue(LAYER) as HashMap).getValue("TileMatrixSets") as HashMap;
-			var wmts:WMTS = new WMTS(NAME,URL,LAYER, MATRIX_SET_ID,tmshm);
-			wmts.buffer=0;
-			wmts.style="default";
-			map.addLayer(wmts);
+			
+			this._wmts = new WMTS(NAME,URL,LAYER, MATRIX_SET_ID,tmshm);
+			this._wmts.buffer=0;
+			this._wmts.style="default";
+			this._map.addLayer(this._wmts);
 			
 			// Then request is sent according to the layer parameters
-			wmts.addEventListener(TileEvent.TILE_LOAD_START,Async.asyncHandler(this,function(event:TileEvent,obj:Object):void{
-				
-				var url:String = event.tile.url;
-				assertTrue("Request sent to incorrect server",url.match('^'+wmts.url));
-				
-				// OGC parameters (version, service & request)
-				assertTrue("Incorrect VERSION", url.match('VERSION=1.0.0'));
-				assertTrue("Incorrect REQUEST", url.match('REQUEST=GetTile'));
-				assertTrue("Incorrect SERVICE", url.match('SERVICE=WMTS'));
-				
-				// wmts specific parameters
-				assertTrue("Incorrect LAYER parameter",url.match('LAYER='+wmts.layer));
-				assertTrue("Incorrect TILEMATRIXSET parameter", url.match('TILEMATRIXSET='+wmts.tileMatrixSet));
-				assertTrue("Incorrect STYLE parameter",url.match('STYLE='+wmts.style));
-				
-			},100,null,function(obj:Object):void{
-				
-				fail("No request sent");
-			}));
+			
+			this._handler = Async.asyncHandler(this,assertGenerateCorrectQueriesWithMinimumParams,
+				100,null,noRequestSend);
+			
+			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			
 			// When layer is redrawn
-			wmts.redraw();
+			this._wmts.redraw();
 			
 		}
 		
+		
+		private function assertGenerateCorrectQueriesWithMinimumParams(event:TileEvent,obj:Object):void
+		{
+			this._wmts.removeEventListener(TileEvent.TILE_LOAD_START,this._handler);
+			
+			var url:String = event.tile.url;
+			assertTrue("Request sent to incorrect server",url.match('^'+this._wmts..url));
+			
+			// OGC parameters (version, service & request)
+			assertTrue("Incorrect VERSION", url.match('VERSION=1.0.0'));
+			assertTrue("Incorrect REQUEST", url.match('REQUEST=GetTile'));
+			assertTrue("Incorrect SERVICE", url.match('SERVICE=WMTS'));
+			
+			// wmts specific parameters
+			assertTrue("Incorrect LAYER parameter",url.match('LAYER='+this._wmts..layer));
+			assertTrue("Incorrect TILEMATRIXSET parameter", url.match('TILEMATRIXSET='+this._wmts..tileMatrixSet));
+			assertTrue("Incorrect STYLE parameter",url.match('STYLE='+this._wmts..style));
+			
+		}
 		
 		/**
 		 * Test if the tilematrixSets params is correctly set
@@ -202,18 +180,14 @@ package org.openscales.core.layer.ogc {
 			this._map.addLayer(wmts);
 			
 			// wait few times...
-			this._handler = Async.asyncHandler(this,this.onTimer,6000,[
-				[this.assertGenerateCorrectTileMatrixSetsWithAGetCapabilities,this._map]] );
+			this._handler = this.assertGenerateCorrectTileMatrixSetsWithAGetCapabilities;
 			
-			
-			this._timer.addEventListener(TimerEvent.TIMER,this._handler);
+			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE,this._handler);
 		}
 		
-		private function assertGenerateCorrectTileMatrixSetsWithAGetCapabilities(passThroughData:Object):void{
+		private function assertGenerateCorrectTileMatrixSetsWithAGetCapabilities():void{
 			
 			this._timer.removeEventListener(TimerEvent.TIMER,this._handler);
-			
-			this._map = passThroughData as Map;
 			
 			assertNotNull("Incorrect map can't be null", this._map);
 			
@@ -234,7 +208,7 @@ package org.openscales.core.layer.ogc {
 			assertEquals("Incorrect opacity", wmts.alpha, 1);
 			assertTrue("Incorrect displayed", wmts.displayed);
 		}
-
+		
 		
 		/**
 		 * Test if a map with a WMTS and a WMS with EPSG:2154 display all layers correctly even if 
@@ -253,34 +227,43 @@ package org.openscales.core.layer.ogc {
 			this._map.size = new Size(256,256);
 			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
 			
-			var wmts:WMTS = new WMTS(NAME,REAL_URL,REAL_LAYER,REAL_MATRIX_SET_ID);
-			var wms:WMS = new WMS("wms", "http://openscales.org/geoserver/wms", "pg:ign_geopla_dep", null, "image/jpeg");
-			wms.version =  "1.3.0";
+			this._wmts = new WMTS(NAME,REAL_URL,REAL_LAYER,REAL_MATRIX_SET_ID);
+			this._wms = new WMS("wms", "http://openscales.org/geoserver/wms", "pg:ign_geopla_dep", null, "image/jpeg");
+			this._wms.version =  "1.3.0";
 			
-			this._map.addLayer(wmts);
-			this._map.addLayer(wms);
+			this._map.addLayer(this._wmts);
+			this._map.addLayer(this._wms);
 			
 			// When the WMTS is loaded
-			wmts.addEventListener(TileEvent.TILE_LOAD_START,Async.asyncHandler(this,function(event:TileEvent,obj:Object):void{
-		
-				var map:Map = obj as Map;
-				assertNotNull("Inccorect Map", map); 
-				
-				// Then the map contains the two layers and both are displayed
-				assertEquals("Incorrect number of layers in the map", 2, map.layers.length);
-				assertNotNull("Inccorect baselayer type", (map.baseLayer as WMTS)); 
-				
-				assertNotNull("Inccorect layer 0 should be WMTS", (map.layers[0] as WMTS)); 
-				assertNotNull("Inccorect layer 1 should be WMS", (map.layers[1]  as WMS)); 
-				
-				assertTrue("Incorrect display value for the WMTS layer", map.layers[0].displayed);
-				assertTrue("Incorrect display value for the WMS layer", map.layers[1].displayed);
-				
-			},100,this._map,function(obj:Object):void{
-				
-				fail("No request sent");
-			}));
+			this._handler = Async.asyncHandler(this,
+				assertDisplayLayersCorrectlyWithAWMTSBaselayerAndWMSWithLambert93Projection,100,
+				this._map,noRequestSend);
 			
+			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
+			
+		}
+		
+		private function assertDisplayLayersCorrectlyWithAWMTSBaselayerAndWMSWithLambert93Projection(event:TileEvent,obj:Object):void
+		{
+			this._wmts.removeEventListener(TileEvent.TILE_LOAD_START,this._handler);
+			
+			assertNotNull("Inccorect Map", this._map); 
+			
+			// Then the map contains the two layers and both are displayed
+			assertEquals("Incorrect number of layers in the map", 2, this._map.layers.length);
+			assertNotNull("Inccorect baselayer type", (this._map.baseLayer as WMTS)); 
+			
+			assertNotNull("Inccorect layer 0 should be WMTS", (this._map.layers[0] as WMTS)); 
+			assertNotNull("Inccorect layer 1 should be WMS", (this._map.layers[1]  as WMS)); 
+			
+			assertTrue("Incorrect display value for the WMTS layer", this._map.layers[0].displayed);
+			assertTrue("Incorrect display value for the WMS layer", this._map.layers[1].displayed);
+		}
+		
+		private function noRequestSend(obj:Object):void
+		{
+			this._wmts.removeEventListener(TileEvent.TILE_LOAD_START,this._handler);
+			Assert.fail("No request sent");
 		}
 		
 	}
