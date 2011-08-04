@@ -126,7 +126,7 @@ package org.openscales.core.control
 		 * The width of all displayed logos.
 		 */
 		private var _logoWidth:Number = DataOriginatorsDisplay.DEFAULT_LOGO_WIDTH;
-			
+		
 		/**
 		 * @private
 		 * @default DEFAULT_LOGO_HEIGHT
@@ -194,7 +194,7 @@ package org.openscales.core.control
 		 * (according to the logoNumber given) and rotate each given delay
 		 */
 		override public function draw():void {
-
+			
 			if(this._timer!=null)
 				return;
 			
@@ -229,33 +229,33 @@ package org.openscales.core.control
 		 * @param originator The originator node of the logo to add
 		 * @param position The position of this button
 		 */
-		 private function addLogoButton(originatorNode:LinkedListOriginatorNode, position:Pixel):void
-		 {
-			 var btn:Button = new Button(originatorNode.originator.name, originatorNode.bitmap, position);
-			 btn.addEventListener(MouseEvent.CLICK, this.onClick);
-			 
-			 this.addChild(btn);
-		 }
-		 
-		 /**
-		  * @private
-		  * Remove logo button from the stage.
-		  * Remove the listener on this button
-		  *
-		  * @param originator The originator node of the logo to remove
-		  */
-		 private function removeLogoButton(originatorNode:LinkedListOriginatorNode):void
-		 { 
+		private function addLogoButton(originatorNode:LinkedListOriginatorNode, position:Pixel):void
+		{
+			var btn:Button = new Button(originatorNode.originator.key, originatorNode.bitmap, position);
+			btn.addEventListener(MouseEvent.CLICK, this.onClick);
+			
+			this.addChild(btn);
+		}
+		
+		/**
+		 * @private
+		 * Remove logo button from the stage.
+		 * Remove the listener on this button
+		 *
+		 * @param originator The originator node of the logo to remove
+		 */
+		private function removeLogoButton(originatorNode:LinkedListOriginatorNode):void
+		{ 
 			// get the corresponding button
-			var btn:Button = this.getChildByName(originatorNode.originator.name) as Button;
-
+			var btn:Button = this.getChildByName(originatorNode.originator.key) as Button;
+			
 			if( btn != null)
 			{
 				btn.removeEventListener(MouseEvent.CLICK, this.onClick);
 				this.removeChild(btn);
 				
 			}
-		 }
+		}
 		
 		/**
 		 * @private
@@ -268,9 +268,9 @@ package org.openscales.core.control
 		private function addOriginator(originator:DataOriginator):void
 		{
 			// if not already on the linked list
-			if(this._linkedList.getIndex(originator.name)==-1)
+			if(this._linkedList.getIndex(originator.key)==-1)
 			{
-				this._linkedList.insertTail(new LinkedListOriginatorNode(originator,null,originator.name));
+				this._linkedList.insertTail(new LinkedListOriginatorNode(originator,null,originator.key));
 				originator.getImage(this.completeLoading);
 			}
 		}
@@ -298,7 +298,7 @@ package org.openscales.core.control
 			}
 			return false;
 		}
-			
+		
 		/**
 		 * @private
 		 * Delete a DataOriginator from a given list
@@ -333,11 +333,10 @@ package org.openscales.core.control
 		{
 			if(!dataOriginator || !event)
 				return;
-			var i:int = this._linkedList.getIndex(dataOriginator.name);
+			var i:int = this._linkedList.getIndex(dataOriginator.key);
 			if(i==-1)
 				return;
-				
-			var name:String = dataOriginator.name;
+			
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
 			var bmp:Bitmap = Bitmap(loader.content);
@@ -407,7 +406,7 @@ package org.openscales.core.control
 			{
 				i = 0;
 				j = this._removeOriginatorList.length;
-
+				
 				for (; i<j; ++i) 
 				{
 					// if the current is deleted
@@ -415,7 +414,7 @@ package org.openscales.core.control
 					{
 						this._currentOriginator = getPrevious(this._currentOriginator);
 					}
-					this.linkedList.remove(this._removeOriginatorList[i].name);
+					this.linkedList.remove(this._removeOriginatorList[i].key);
 				}
 				// clear the waiting list
 				this._removeOriginatorList.splice(0,j);
@@ -560,7 +559,7 @@ package org.openscales.core.control
 						listSize = this._linkedList.size;
 						j = (listSize < this._logoNumber) ? listSize : this._logoNumber;;
 					}
-				
+					
 					// change this._currentOriginator
 					this.moveToNextCurrent();
 					
@@ -595,8 +594,8 @@ package org.openscales.core.control
 			if (!(event.type == MouseEvent.CLICK)) return;
 			
 			var btn:Button = event.currentTarget as Button;
-
-			var originatorClick:DataOriginator = this._dataOriginators.findOriginatorByName(btn.name);
+			
+			var originatorClick:DataOriginator = this._dataOriginators.findOriginatorByKey(btn.name);
 			if(originatorClick!=null)
 			{
 				// open a new page with the originator url
@@ -675,7 +674,7 @@ package org.openscales.core.control
 		{
 			this._linkedList = linkedList;
 		}
-
+		
 		/**
 		 * LinkedLiist to store originator to remove at the next change
 		 */

@@ -17,6 +17,7 @@
 			import mx.collections.IList;
 			import mx.controls.RadioButton;
 			import mx.core.Application;
+			import mx.core.IFactory;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
 			import mx.events.IndexChangedEvent;
@@ -161,13 +162,15 @@
 			 * Refresh the LayerSwitcher when a layer is add, delete or update
 			 * @param event Layer event
 			 */
-			public function refresh():void {	
+			public function refresh(event:Event = null):void {	
 				
 				_layers.refresh();
 				// Redraws all the layers
-				var rendererBackup:IFactory = this.layerList.itemRenderer;
-				this.layerList.itemRenderer = null;
-				this.layerList.itemRenderer = rendererBackup;
+				if(this.layerList){
+					var rendererBackup:IFactory = this.layerList.itemRenderer;
+					this.layerList.itemRenderer = null;
+					this.layerList.itemRenderer = rendererBackup;
+				}
 			}
 			
 			protected function onLayerAdded(event:LayerEvent):void{

@@ -130,13 +130,7 @@ package org.openscales.core.layer.originator
 		 * @return It is equal or not
 		 */
 		public function equals(originator:DataOriginator):Boolean {
-			var equals:Boolean = false;
-			if (originator != null) {
-				equals = this._name == originator.name &&
-					this._url == originator.url &&
-					this._pictureUrl == originator.pictureUrl;
-			}
-			return equals;
+			return (originator != null && (this.key == originator.key));
 		}
 		
 		/**
@@ -262,6 +256,13 @@ package org.openscales.core.layer.originator
 		public function get loading():Boolean
 		{
 			return _loading;
+		}
+		
+		/**
+		 * indicates the unique key of the originator
+		 */
+		public function get key():String {
+			return this.name+this.url+this.pictureUrl;
 		}
 	}
 }
