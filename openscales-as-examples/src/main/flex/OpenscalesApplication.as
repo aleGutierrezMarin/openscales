@@ -48,25 +48,25 @@ package {
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
-			/*
+			
 			// GML layer (draws polygons over France)
 			var xml:XML = new XML(new XMLCONTENT());
 			var style:Style = Style.getDefaultStyle();
 			var GMLlayer:GML = new GML("GMLlayer", "3.2.1", xml, "EPSG:2154",style);
 			_map.addLayer(GMLlayer);
-			*/
-			/*// GML layer (draws points in USA)
+			
+			// GML layer (draws points in USA)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();
 			var GMLlayer3:GML = new GML("GMLlayer3", "3.2.1", xml3, "EPSG:4326", style3);
 			_map.addLayer(GMLlayer3);
-			*/
+			
 			//GML layer (draws lines over Tasmania)
 			
-			/*var xml2:XML = new XML(new XMLCONTENTLINES());
+			var xml2:XML = new XML(new XMLCONTENTLINES());
 			var style2:Style = Style.getDefaultStyle();
 			var GMLlayer2:GML = new GML("GMLlayer2", "3.2.1", xml2, "EPSG:4326", style2);
-			_map.addLayer(GMLlayer2);*/
+			_map.addLayer(GMLlayer2);
 			
 			
 			//GPX layer (draws lines & points in Australia)
@@ -76,27 +76,27 @@ package {
 			_map.addLayer(gpxLayer);
 			
 			
-			/*var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
+			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
 			regions.projSrsCode = "EPSG:2154";
 			regions.style = Style.getDefaultSurfaceStyle();
 			
-			_map.addLayer(regions);*/
+			_map.addLayer(regions);
 
 	
 			// Add Controls to map
-			/*_map.addControl(new MousePosition(new Pixel(200,0)));
+			_map.addControl(new MousePosition(new Pixel(200,0)));
 			_map.addControl(new LayerManager());
 			_map.addControl(new PanZoomBar());
-			_map.addControl(new ScaleLine(new Pixel(100, 100)));*/
+			_map.addControl(new ScaleLine(new Pixel(100, 100)));
 			
 
-			/*var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
+			var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
 			selectHandler.enableClickSelection = false;
 			selectHandler.enableBoxSelection = false;
 			selectHandler.enableOverSelection = true;
 			selectHandler.active = true;
 			
-			_map.addControl(selectHandler);*/
+			_map.addControl(selectHandler);
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 

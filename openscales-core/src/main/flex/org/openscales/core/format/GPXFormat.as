@@ -9,20 +9,27 @@ package org.openscales.core.format
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.style.Style;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LineString;
 	
 	/**
 	 * The purpose of this class is to parse or build GPX files
 	 * Supported versions: 1.1 & 1.0
 	 * 
-	 * limitations:
-	 * - the element <extension/>(version 1.1) is not supported
+	 * The element <extension/>(version 1.1) is not supported
 	 * 
+	 * @param featuresids: HashMap containing the ids of the features
+	 * duplicate ids are not allowed
+	 * the id of the feature is fetched from the gpx tag <name/>
+	 * 
+	 * @param version: gpx version 1.1 by default
+	 * 
+	 * @attribute bounds: the bounds of the whole collection of objects contained by the gpxFile
+	 * 
+	 * @attributes fileName, author, description, authorEmail, fileURL: information on the gpxFile
 	 */ 
 	
 	public class GPXFormat extends Format
@@ -30,16 +37,11 @@ package org.openscales.core.format
 		private var _gpxFile:XML = null;
 		private var _featuresVector:Vector.<Feature> = null;
 		private var _extractAttributes:Boolean;
-		private var _featuresids:HashMap = null; // the ID of the feature is fetched from the tag <name>
-		//before adding the feature to the _featuresVector, check if its ID is already in the hashmap
-		//skip this check if the name is missing
+		private var _featuresids:HashMap = null; 
 		
 		private var _version:String = "1.1";
-		
 		private var _bounds:Bounds = null; 
-       // the bounds of the whole collection of objects contained by the gpxFile
-		
-		//information on the gpxFile
+
 		private var _fileName:String; 
 		private var _author:String;   
 		private var _description:String;
@@ -47,11 +49,13 @@ package org.openscales.core.format
 		private var _fileURL:String;
 		
 		public function GPXFormat(featuresids:HashMap,
+								  version:String = "1.1",
 								  extractAttributes:Boolean = true)
 		{
 			super();
 			this._extractAttributes = extractAttributes;
 			this._featuresids = featuresids;
+			this._version = version;
 			
 		}
 		
@@ -78,7 +82,8 @@ package org.openscales.core.format
 			if(this._version == "1.0") {
 				//extract the file information, stored in the first 9 nodes, at most
 				//count the nodes that can't be turned into features
-				for (i = 0; i < 9; i++){
+				var limit:uint = (listLength < 9) ? listLength : 9;
+				for (i = 0; i < limit; i++){
 					if(membersList[i].localName() == "name" ){
 						this._fileName = membersList[i].toString();
 						j++;
@@ -143,7 +148,8 @@ package org.openscales.core.format
 				this.parseMetadataNode(featureNode);
 			}
 			else
-			{	//check if ID already exists
+			{	//before parsing the feature, check if its ID is already in the hashmap
+				//skip this check if the name is missing
 				if(featureName){
 					if(this._featuresids && this._featuresids.containsKey(featureName.toString()))
 						return null; 
@@ -284,7 +290,7 @@ package org.openscales.core.format
 				
 				if((nodes[i].children().length() == 1)&& name != "name" && name != "extensions") {
 					
-					attributes[name] = nodes[i].toString();//value.children()[0].toXMLString(); 
+					attributes[name] = nodes[i].toString();
 				}
 				else if (name == "link"){
 					attributes["href"] = String(nodes[i]..@href);
@@ -319,7 +325,11 @@ package org.openscales.core.format
 			var i:uint;
 			var vectorLength:uint = featureVector.length;
 
-			//todo add metadata node based on the gpx file info
+			if( (this._fileName || this._author || this._description || this._authorEmail || this._fileURL)
+				&& this.version == "1.1")
+			{
+				gpxNode.appendChild(this.buildMetadataNode());
+			}
 			
 			for(i = 0; i < vectorLength; i++){
 					
@@ -336,6 +346,13 @@ package org.openscales.core.format
 			}
 			
 			return gpxNode;
+		}
+		
+		//todo finish this + handle the 1.0 version
+		public function buildMetadataNode():XML{
+			
+			var meta:XML = new XML("<metadata></metadata>");
+			return meta;
 		}
 		
 		public function buildPointNode(pointFeature:PointFeature):XML{
@@ -460,18 +477,20 @@ package org.openscales.core.format
 			}
 			else
 			{ 
-				var linkNode:XML = new XML("<link></link>");
-				
-				if (att.hasOwnProperty("href"))
-					linkNode.@href = att["href"];
-				
-				if (att.hasOwnProperty("linkText"))
-					linkNode.appendChild(new XML("<text>" + att["linkText"] + "</text>"));
-				
-				if (att.hasOwnProperty("linkType"))
-					linkNode.appendChild(new XML("<type>" + att["linkType"] + "</type>"));
-				
-				alist.appendChild(linkNode);
+				if(att.hasOwnProperty("link")){
+					var linkNode:XML = new XML("<link></link>");
+					
+					if (att.hasOwnProperty("href"))
+						linkNode.@href = att["href"];
+					
+					if (att.hasOwnProperty("linkText"))
+						linkNode.appendChild(new XML("<text>" + att["linkText"] + "</text>"));
+					
+					if (att.hasOwnProperty("linkType"))
+						linkNode.appendChild(new XML("<type>" + att["linkType"] + "</type>"));
+					
+					alist.appendChild(linkNode);
+				}
 			}
 			
 			if(feature is PointFeature)
@@ -554,6 +573,17 @@ package org.openscales.core.format
 		{
 			_author = value;
 		}
+		
+		public function get version():String
+		{
+			return _version;
+		}
+		
+		public function set version(value:String):void
+		{
+			_version = value;
+		}
+
 		
 	}
 }

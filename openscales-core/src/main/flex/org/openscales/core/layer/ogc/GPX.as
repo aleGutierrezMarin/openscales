@@ -17,8 +17,22 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	
+	/**
+	 * GPX layer; versions 1.0 & 1.1 supported 
+	 * 
+	 * @param name: the name of the layer
+	 * 
+	 * @param version
+	 * 
+	 * @param url: the url of the file that contains the gpx data
+	 * 
+	 * @param data: the file that contains the gpx data
+	 * 
+	 * The data and url params are not compatible with each other
+	 */
 	
-	//todo fix file fetching from url
+	
+	
 	
 	public class GPX extends FeatureLayer
 	{
@@ -31,7 +45,7 @@ package org.openscales.core.layer.ogc
 		public function GPX(name:String, 
 							version:String,
 							url:String = null,
-							xml:XML = null)
+							data:XML = null)
 		{
 			super(name);
 			this.gpxFormat = new GPXFormat(new HashMap());
@@ -47,7 +61,7 @@ package org.openscales.core.layer.ogc
 			}
 			else // load data from local file
 			{
-				this.gpxData = xml;
+				this.gpxData = data;
 				
 			}
 		}
@@ -64,13 +78,15 @@ package org.openscales.core.layer.ogc
 		}
 			
 		override protected function draw():void{
-			if(this.featureVector == null && this.gpxData) {
+			
+			if(this.featureVector == null && this.gpxData){
+				
 				var pointStyle:Style = Style.getDefaultPointStyle();
 				var lineStyle:Style = Style.getDefaultLineStyle();
 				pointStyle.rules.push(new Rule());
 				lineStyle.rules.push(new Rule());
-				//pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
-				//lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
+				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
+				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
 				
 				this.featureVector = this.gpxFormat.parseGpxFile(this.gpxData);
 				var i:uint;
