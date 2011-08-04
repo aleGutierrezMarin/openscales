@@ -24,21 +24,24 @@ package org.openscales.core.events
 		/**
 		 * 
 		 */
-		public static const CREATE_GEOMETRY:String = "openscales.drawing.create_geometry";
+		public static const CHANGE_ACTIVE_HANDLER:String = "openscales.drawing.change_active_handler";
+		
+		/**
+		 * 
+		 */
+		private var _activeHandler:String;
 		
 		
-		private var _drawHandler:AbstractDrawHandler = null;
-
 		public function DrawingEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 		}
 		
-		public function get drawHandler():AbstractDrawHandler{
-			return _drawHandler;
+		public function get activeHandler():String{
+			return _activeHandler;
 		}
-		public function set drawHandler(value:AbstractDrawHandler):void{
-			_drawHandler = value;
+		public function set activeHandler(value:String):void{
+			_activeHandler = value;
 		}
 	}
 }

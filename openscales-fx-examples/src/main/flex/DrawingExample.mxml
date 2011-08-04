@@ -14,7 +14,7 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		
 		<FeatureLayer id="features"/>
 		
-		<WheelHandler/>
+		<WheelHandler />
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}"/>
@@ -23,6 +23,7 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 			<DrawPoint id="drawPoint" target="{features.nativeLayer as FeatureLayer}" />
 			<DrawPath id="drawPath" target="{features.nativeLayer as FeatureLayer}"  />
 			<DrawPolygon id="drawPolygon" target="{features.nativeLayer as FeatureLayer}" />
+			<SelectFeatures id="selectFeatures" target="{features.nativeLayer as FeatureLayer}" />
 		</ControlPanel>
 		
 		<ControlPanel title="Drawing Tools" x="200" y="10">
