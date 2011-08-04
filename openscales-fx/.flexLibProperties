@@ -110,7 +110,10 @@
     <classEntry path="org.openscales.fx.control.layer.LayerManagerTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
