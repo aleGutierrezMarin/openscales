@@ -447,6 +447,9 @@ package org.openscales.core.layer
 						break;
 				} 
 				
+				if(testRow < 0)
+					continue;
+				
 				var gridx:int = this._grid.length;
 				
 				if(testRow < this._grid.length)

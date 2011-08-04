@@ -123,6 +123,8 @@ package org.openscales.core.format.gml
 					//featureMembers
 					if(!this._asyncLoading) {
 						features = dataXML..*::featureMembers;
+						dataXML = features[0];
+						features = dataXML.children();
 					}
 					break;
 				case "3.2.1":
@@ -134,7 +136,11 @@ package org.openscales.core.format.gml
 				default:
 					return null;
 			}
+			
+			this._gmlParser.internalProjSrsCode = this.internalProjSrsCode;
+			this._gmlParser.externalProjSrsCode = this.externalProjSrsCode;
 			this._gmlParser.parseExtractAttributes = this.extractAttributes;
+			
 			if(this._asyncLoading) {
 				this.xmlString = data as String;
 				data = null;
@@ -147,10 +153,6 @@ package org.openscales.core.format.gml
 					this.xmlString = null;
 				}
 			} else {
-				if(features.length()==0)
-					return null;
-				dataXML = features[0];
-				features = dataXML.children();
 				for each( dataXML in features) {
 					this._onFeature(this._gmlParser.parseFeature(dataXML,lonlat));
 				}
