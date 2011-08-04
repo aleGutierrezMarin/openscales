@@ -40,21 +40,37 @@ package org.openscales.core.format.gml.parser
 			
 			var i:int;
 			var j:int;
-			
+			//multiSurface
 			if (data..*::MultiSurface.length() > 0) {
-				var multipolygon:XML = data..*::MultiSurface[0];
+				var multisurface:XML = data..*::MultiSurface[0];
+				
+				geom = new MultiPolygon();
+				var surfaces:XMLList = multisurface..*::Polygon;
+				j = surfaces.length();
+				for (i = 0; i < j; i++) {
+					var surface:Polygon = this.parsePolygonNode(surfaces[i],lonLat);
+					if(surface)
+						geom.addComponent(surface);
+				}
+				feature = new MultiPolygonFeature(geom as MultiPolygon);
+			}
+			//MultiPolygon
+			else if (data..*::MultiPolygon.length() > 0) {
+				var multipolygon:XML = data..*::MultiPolygon[0];
 				
 				geom = new MultiPolygon();
 				var polygons:XMLList = multipolygon..*::Polygon;
 				j = polygons.length();
 				for (i = 0; i < j; i++) {
 					var polygon:Polygon = this.parsePolygonNode(polygons[i],lonLat);
-					geom.addComponent(polygon);
+					if(polygon)
+						geom.addComponent(polygon);
 				}
 				feature = new MultiPolygonFeature(geom as MultiPolygon);
-			} else if (data..*::MultiLineString.length() > 0) {
+			}
+			//multilinestring
+			else if (data..*::MultiLineString.length() > 0) {
 				var multilinestring:XML = data..*::MultiLineString[0];
-				
 				geom = new MultiLineString();
 				var lineStrings:XMLList = multilinestring..*::LineString;
 				j = lineStrings.length();
@@ -63,11 +79,31 @@ package org.openscales.core.format.gml.parser
 					p = this.parseCoords(lineStrings[i],lonLat);
 					if(p){
 						var lineString:LineString = new LineString(p);
-						geom.addComponent(lineString);
+						if(lineString)
+							geom.addComponent(lineString);
 					}
 				}
 				feature = new MultiLineStringFeature(geom as MultiLineString);
-			} else if (data..*::MultiPoint.length() > 0) {
+			}
+			// multiCurve
+			else if (data..*::MultiCurve.length() > 0) {
+				var multicurve:XML = data..*::MultiCurve[0];
+				geom = new MultiLineString();
+				var curves:XMLList = multicurve..*::LineString;
+				j = curves.length();
+				
+				for (i = 0; i < j; ++i) {
+					p = this.parseCoords(curves[i],lonLat);
+					if(p){
+						var curve:LineString = new LineString(p);
+						if(curve)
+							geom.addComponent(curve);
+					}
+				}
+				feature = new MultiLineStringFeature(geom as MultiLineString);
+			}
+			//MultiPoint
+			else if (data..*::MultiPoint.length() > 0) {
 				var multiPoint:XML = data..*::MultiPoint[0];
 				
 				geom = new MultiPoint();
@@ -78,23 +114,30 @@ package org.openscales.core.format.gml.parser
 				if (p)
 					geom.addPoints(p);
 				feature = new MultiPointFeature(geom as MultiPoint);
-				
-			} else if (data..*::Polygon.length() > 0) {
+			}
+			//Polygon
+			else if (data..*::Polygon.length() > 0) {
 				var polygon2:XML = data..*::Polygon[0];
-				feature = new PolygonFeature(this.parsePolygonNode(polygon2,lonLat));
-			} else if (data..*::LineString.length() > 0) {
+				geom = this.parsePolygonNode(polygon2,lonLat);
+				if(geom)
+					feature = new PolygonFeature(geom as Polygon);
+			}
+			//Linestring
+			else if (data..*::LineString.length() > 0) {
 				var lineString2:XML = data..*::LineString[0];
 				
 				p = this.parseCoords(lineString2,lonLat);
-				if (p) {
+				if (p && p.length==2) {
 					geom = new LineString(p);
+					feature = new LineStringFeature(geom as LineString);
 				}
-				feature = new LineStringFeature(geom as LineString);
-			} else if (data..*::Point.length() > 0) {
+			}
+			//point
+			else if (data..*::Point.length() > 0) {
 				var point:XML = data..*::Point[0];
 				var pointObject:Point; 
 				p = this.parseCoords(point,lonLat);
-				if (p) {
+				if (p && p.length==2) {
 					pointObject = new Point(p[0],p[1]);
 					feature = new PointFeature(pointObject);
 				}
@@ -102,6 +145,7 @@ package org.openscales.core.format.gml.parser
 				Trace.warn("GMLFormat.parseFeature: unrecognized geometry);"); 
 				return null; 
 			}
+			
 			if (feature) {
 				feature.name = data.@*;
 				
@@ -133,7 +177,7 @@ package org.openscales.core.format.gml.parser
 			for(i = 0; i < j; ++i) {
 				var name:String = nodes[i].localName();
 				var value:Object = nodes[i].valueOf();
-				if(name == null){
+				if(name == null || name=="posList"){
 					continue;    
 				}
 				
@@ -155,14 +199,24 @@ package org.openscales.core.format.gml.parser
 		 * @return A polygon geometry.
 		 */
 		private function parsePolygonNode(polygonNode:Object, lonlat:Boolean):Polygon {
-			var linearRings:XMLList = polygonNode..*::LinearRing;
+			var exterior:XMLList = polygonNode..*::exterior;
+			if(exterior.length()!=1)
+				return null;
+			var poslist:XMLList = exterior[0]..*::LinearRing;
 			// Optimize by specifying the array size
-			var j:int = linearRings.length();
+			if(poslist.length()!=1)
+				return null;
+			
 			var rings:Vector.<Geometry> = new Vector.<Geometry>();
-			var i:int;
-			for (i = 0; i < j; i++) {
-				rings[i] = new LinearRing(this.parseCoords(linearRings[i],lonlat));
+			rings[0] = new LinearRing(this.parseCoords(poslist[0],lonlat));
+			
+			var interior:XMLList = polygonNode..*::interior;
+			if(interior.length()==1) {
+				poslist = interior[0]..*::LinearRing;
+				if(poslist.length()==1)
+					rings[1] = new LinearRing(this.parseCoords(poslist[0],lonlat));
 			}
+			
 			return new Polygon(rings);
 		}
 	}

@@ -408,7 +408,7 @@ package org.openscales.core.layer.ogc
 				this._params.version = value;
 			switch (value) {
 				case "1.0.0":
-					this._gmlFormat.version = "2.0";
+					this._gmlFormat.version = "2.1.1";
 					break;
 				case "1.1.0":
 					this._gmlFormat.version = "3.1.1";
