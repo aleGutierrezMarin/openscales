@@ -99,25 +99,25 @@ package org.openscales.core.control
 			}
 			
 			// check if the originator already exist
-			var i:uint = 0;
-			var j:uint = this._originators.length;
-			for (; i<j; ++i) 
-			{
-				if (originator.equals(this._originators[i])) 
+			var i:uint = this._originators.length;
+			var found:Boolean = false;
+			while (i>0 && !found) {
+				if (originator.equals(this._originators[i-1])) 
 				{			
 					// increment the number of layer pointing at this originator
-					var count:Number = this._originatorsLayersCount.getValue(originator.name);
-					this._originatorsLayersCount.put(originator.name, ++count);
-					
-					i=j+1; // ending the search
+					var count:Number = this._originatorsLayersCount.getValue(originator.key);
+					this._originatorsLayersCount.put(originator.key, ++count);
+					found = true;
+					break; // ending the search
 				}
+				--i;
 			}
 			
 			// if not found during the for : new originator
-			if( i == j )
+			if( !found )
 			{
 				this._originators.push(originator);
-				this._originatorsLayersCount.put(originator.name, 1);
+				this._originatorsLayersCount.put(originator.key, 1);
 				
 				// Event Originator_added
 				this.dispatchEvent(new OriginatorEvent(OriginatorEvent.ORIGINATOR_ADDED, originator));
@@ -192,13 +192,13 @@ package org.openscales.core.control
 			
 			if(i!=-1) 
 			{
-				var count:Number = this._originatorsLayersCount.getValue(originator.name);
+				var count:Number = this._originatorsLayersCount.getValue(originator.key);
 				
 				// if not yet setted to 0
 				if(count > 0)
 				{
 					// decrement the layers counter
-					this._originatorsLayersCount.put(originator.name, --count);
+					this._originatorsLayersCount.put(originator.key, --count);
 				}
 				
 				// if it was the last link to the originator, delete it
@@ -208,7 +208,7 @@ package org.openscales.core.control
 					this._originators.splice(i,1);
 					
 					// remove form the hasmap
-					this._originatorsLayersCount.remove(originator.name);
+					this._originatorsLayersCount.remove(originator.key);
 					
 					// Event Originator_removed
 					this.dispatchEvent(new OriginatorEvent(OriginatorEvent.ORIGINATOR_REMOVED, originator, i));
@@ -334,7 +334,7 @@ package org.openscales.core.control
 				// if an originator count is set to 0 : remove it :
 				if( this._originatorsLayersCount.getValue(key) == 0 )
 				{
-					removeOriginator(findOriginatorByName(key));
+					removeOriginator(findOriginatorByKey(key));
 				}
 			}
 			
@@ -415,13 +415,13 @@ package org.openscales.core.control
 		}
 	
 		/**
-		 * Find an originator in the originators list by its name.
+		 * Find an originator in the originators list by its key.
 		 * 
-		 * @param name The name of the searched originator.
+		 * @param The key of the searched originator.
 		 * @return The DataOriginator corresponding to the given name if find
 		 * else return null
 		 */
-		public function findOriginatorByName(name:String):DataOriginator
+		public function findOriginatorByKey(key:String):DataOriginator
 		{
 			var i:uint = 0;
 			var j:uint = originators.length;
@@ -429,7 +429,7 @@ package org.openscales.core.control
 			// for each originator in the list
 			for (; i<j; ++i) 
 			{
-				if( originators[i].name == name )
+				if( originators[i].key == key )
 				{
 					return originators[i];
 				}
