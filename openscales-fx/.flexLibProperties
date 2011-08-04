@@ -107,7 +107,6 @@
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacityTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPositionTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibilityTest"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerLegendTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManagerTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerMetadatasTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>

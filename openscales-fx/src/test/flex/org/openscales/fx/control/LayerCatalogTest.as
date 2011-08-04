@@ -12,7 +12,9 @@ package org.openscales.fx.control {
 	
 	public class LayerCatalogTest {
 		
-		public function LayerCatalogTest(){	}
+		public function LayerCatalogTest(){
+			this._catalog = new LayerCatalog();
+		}
 		
 		private var _catalog:LayerCatalog;
 		
@@ -20,9 +22,8 @@ package org.openscales.fx.control {
 		
 		[Before(async)]
 		public function createLayerCatalog():void{
-			
 			// Given a layer catalog
-			this._catalog = new LayerCatalog();
+			
 			Async.proceedOnEvent(this,this._catalog,FlexEvent.CREATION_COMPLETE);
 			(FlexGlobals.topLevelApplication as Application).addElement(this._catalog);
 			
@@ -36,9 +37,7 @@ package org.openscales.fx.control {
 		
 		[After]
 		public function removeCatalog():void{
-			
 			(FlexGlobals.topLevelApplication as Application).removeElement(this._catalog);
-			this._catalog = null;
 		}
 		
 		/**
