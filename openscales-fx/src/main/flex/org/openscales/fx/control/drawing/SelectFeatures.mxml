@@ -3,7 +3,7 @@
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  implements="org.openscales.core.control.IControl"
-		  label="Draw polygons"
+		  label="Select features"
 		  click="onClick()"
 		  enabled="{active}">
 	
@@ -15,8 +15,9 @@
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.PointFeature;
-			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
-			import org.openscales.core.handler.feature.draw.DrawPolygonHandler;
+			import org.openscales.core.handler.feature.SelectFeaturesHandler;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.handler.mouse.DragHandler;
 			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
@@ -24,7 +25,8 @@
 			
 			private var _active:Boolean = true;
 			
-			private var _handler:AbstractDrawHandler= new DrawPolygonHandler();
+			private var _handler:SelectFeaturesHandler = new SelectFeaturesHandler();
+			private var _dragHandler:DragHandler;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -54,6 +56,16 @@
 				
 				_handler.map = value;
 				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				
+				for each(var ih:IHandler in this.map.controls){
+					if(ih is DragHandler){
+						_dragHandler = (ih as DragHandler);
+					}
+				}
+				if(!_dragHandler){
+					_dragHandler = new DragHandler();
+				}
+				_dragHandler.map = value;
 			}
 			
 			/**
@@ -72,15 +84,15 @@
 			}
 			
 			/**
-			 * Layer the features will be drawn on
+			 * list of layers ?
 			 */
 			public function get target():FeatureLayer{
 				
-				return _handler.drawLayer;
+				return _handler.layers[0];
 			}
 			public function set target(value:FeatureLayer):void{
 				
-				_handler.drawLayer = value;
+				_handler.layers.push(value);
 			}
 			
 			/**
@@ -89,10 +101,12 @@
 			private function activate():void{
 				
 				_handler.active = true;
+				_dragHandler.active = false;
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
+				_dragHandler.active = true;
 			}
 			
 			/**
@@ -112,10 +126,7 @@
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
 				if(_handler.active && this.id != evt.activeHandler)
-				{
-					(_handler as DrawPolygonHandler).drawFinalPoly();
 					disactivate();
-				}
 			}
 			
 			// to do

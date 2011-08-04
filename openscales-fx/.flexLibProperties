@@ -114,6 +114,7 @@
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
+    <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

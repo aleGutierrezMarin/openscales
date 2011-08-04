@@ -86,5 +86,6 @@
 	<component id="DrawPoint" class="org.openscales.fx.control.drawing.DrawPoint" />
 	<component id="DrawPath" class="org.openscales.fx.control.drawing.DrawPath" />
 	<component id="DrawPolygon" class="org.openscales.fx.control.drawing.DrawPolygon" />
+	<component id="SelectFeatures" class="org.openscales.fx.control.drawing.SelectFeatures" />
 	
 </componentPackage>
