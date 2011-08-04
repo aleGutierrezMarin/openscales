@@ -1,6 +1,7 @@
 package org.openscales.geometry.basetypes
 {
 	import org.flexunit.Assert;
+	import org.flexunit.assertThat;
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertTrue;
 
@@ -162,7 +163,11 @@ package org.openscales.geometry.basetypes
 			var intersectionBounds:Bounds = firstBounds.getIntersection(secondBounds);
 
 			// Then the result is the intersection with EPSG:4326 projection
-			assertTrue("The intersect bounds is not correct", intersectionBounds.equals(new Bounds(-50, -40, 49.99999999999999, 39.99999999999999, "EPSG:4326")));	
+			assertTrue("The projection should be EPSG:4326", "EPSG:4326", intersectionBounds.projSrsCode);
+			assertEquals("Left bound should be -50",-50,intersectionBounds.left);
+			assertTrue("Right bound should be near from 49.99999",(intersectionBounds.right>49.99999 && intersectionBounds.right<=50));
+			assertEquals("Bottom bound should be -40",-40,intersectionBounds.bottom);
+			assertTrue("Top bound should be near from 39.99999",(intersectionBounds.top>39.99999 && intersectionBounds.top<=40));
 		}
 		
 		/**
