@@ -123,8 +123,8 @@ package org.openscales.core.layer.ogc
 				return maxExtent;
 			}
 			// fix me
-			if (this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-				maxExtent = maxExtent.reprojectTo(this.map.baseLayer.projSrsCode);
+			if (this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.projection) {
+				maxExtent = maxExtent.reprojectTo(this.map.projection);
 			}
 			return maxExtent;
 		}

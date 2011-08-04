@@ -37,6 +37,7 @@ package org.openscales.core
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -86,6 +87,47 @@ package org.openscales.core
 		
 		private var _cptGTween:uint = 0;
 		
+		private var _projection:String = "EPSG:4326";
+		
+		/**
+		 * The projection of the map. This is the display projection of the map
+		 * If a layer is not in the same projection as the projection of the map
+		 * he will not be displayed. 
+		 * 
+		 * @default EPSG:4326
+		 */
+		public function set projection(value:String):void
+		{
+			var event:MapEvent = new MapEvent(MapEvent.PROJECTION_CHANGED, this);
+			event.oldProjection = this._projection;
+			event.newProjection = value;
+			this._projection = value;
+			this.dispatchEvent(event);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get projection():String
+		{
+			return this._projection;
+		}
+		
+		private var _resolution:Number = NaN;
+
+		/**
+		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
+		 */
+		public function set resolution(value:Number):void
+		{
+			this._resolution = value;
+			this.zoomToResolution(value);
+		}
+		
+		public function get resolution():Number {
+			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
+		}	
+		
 		
 		/**
 		 * @private
@@ -124,14 +166,16 @@ package org.openscales.core
 		 *
 		 * @param width the map's width in pixels
 		 * @param height the map's height in pixels
+		 * @param projection the map's projection
 		 */
-		public function Map(width:Number=600, height:Number=400) {
+		public function Map(width:Number=600, height:Number=400, projection:String="EPSG:4326") {
 			super();
 			
 			//load i18n module
 			I18nJSONProvider.addTranslation(ENLocale);
 			I18nJSONProvider.addTranslation(FRLocale);
 			
+			this._projection = projection;
 			this.size = new Size(width, height);
 			this._layerContainer = new Sprite();
 			// It is necessary to draw something before to define the size...
@@ -145,7 +189,8 @@ package org.openscales.core
 			this.addChild(this._layerContainer);
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
-			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);						
+			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);	
+			this.addEventListener(MapEvent.PROJECTION_CHANGED,this.onMapProjectionChanged);
 //			this.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, layerProjectionChanged);
 			
 			Trace.stage = this.stage;
@@ -170,6 +215,23 @@ package org.openscales.core
 			var i:int = this._securities.length;
 			for(i;i>0;--i)
 				this._securities.pop().destroy();
+		}
+		
+		/**
+		 * Change the resolution of the projection of all the variables in the map
+		 * when the resolution of the map is changed
+		 */
+		private function onMapProjectionChanged(event:MapEvent):void
+		{
+			this.resolution = Proj4as.unit_transform(event.oldProjection, event.newProjection, this.resolution);
+			if (this.maxExtent != null)
+			{
+				this.maxExtent = this.maxExtent.reprojectTo(event.newProjection);	
+			}
+			if (this.center != null)
+			{
+				this.center = this.center.reprojectTo(event.newProjection);
+			}
 		}
 		
 		// Layer management
@@ -219,6 +281,7 @@ package org.openscales.core
 		}
 		
 		/**
+		 * @deprecated
 		 * The current baseLayer.
 		 * 
 		 * The baseLayer is used to identify what layer is used to define map display projection,
@@ -478,8 +541,8 @@ package org.openscales.core
 			} else if(this.center && !newCenter) {
 				newCenter = this.center;
 			}			
-			if (this._baseLayer!=null && (this._baseLayer.projSrsCode!=null) && newCenter.projSrsCode && (newCenter.projSrsCode!=this._baseLayer.projSrsCode)) {
-				newCenter = newCenter.reprojectTo(this._baseLayer.projSrsCode);
+			if (newCenter.projSrsCode && (newCenter.projSrsCode!=this.projection)) {
+				newCenter = newCenter.reprojectTo(this.projection);
 			}
 			
 			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
@@ -861,7 +924,12 @@ package org.openscales.core
 		}
 		public function set center(newCenter:Location):void
 		{
+			if (newCenter.projSrsCode != this.projection)
+			{
+				newCenter = newCenter.reprojectTo(this.projection);
+			}
 			this.moveTo(newCenter);
+			
 		}
 		
 		/**
@@ -1011,7 +1079,7 @@ package org.openscales.core
 		 * Call when a Layer has its projection changed.
 		 * If this layer is the baselayer, reproject other layers
 		 */
-		public function redrawLayers():void
+		/*public function redrawLayers():void
 		{
 			
 			var i:int = 0;
@@ -1028,7 +1096,7 @@ package org.openscales.core
 					}
 				}
 			}
-		}
+		}*/
 		
 		/**
 		 * Map size in pixels.
@@ -1096,6 +1164,10 @@ package org.openscales.core
 		}
 		
 		public function set maxExtent(value:Bounds):void {
+			if (value.projSrsCode != this.projection)
+			{
+				value = value.reprojectTo(this.projection);
+			}
 			this._maxExtent = value;
 		}
 		
@@ -1114,9 +1186,7 @@ package org.openscales.core
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
 			if(maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
-				if (this.baseLayer && (this.baseLayer.projSrsCode != maxExtent.projSrsCode)) {
-					maxExtent = maxExtent.reprojectTo(this.baseLayer.projSrsCode);
-				}
+				maxExtent = maxExtent.reprojectTo(this.projection);
 			}
 			return maxExtent;
 		}
@@ -1129,8 +1199,8 @@ package org.openscales.core
 			
 			if ((this.center != null) && (this.resolution != -1)) {
 				var center:Location;
-				if(this.center.projSrsCode.toUpperCase() != this._baseLayer.projSrsCode.toUpperCase())
-					center = this.center.reprojectTo(this._baseLayer.projSrsCode.toUpperCase());
+				if(this.center.projSrsCode.toUpperCase() != this.projection.toUpperCase())
+					center = this.center.reprojectTo(this.projection.toUpperCase());
 				else
 					center = this.center;
 				var w_deg:Number = this.size.w * this.resolution;
@@ -1148,22 +1218,13 @@ package org.openscales.core
 		}
 		
 		
-		/**
-		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
-		 */
-		public function get resolution():Number {
-			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
-		}
-		
-		public function set resolution(value:Number):void
-		{
-			this.zoomToResolution(value);
-		}
+
 		
 		/**
 		 * Current scale denominator of the map. 
 		 */
-		public function get scale():Number {
+		// TODO : remove?
+		/*public function get scale():Number {
 			var scale:Number = NaN;
 			if (this.baseLayer) {
 				var units:String = ProjProjection.getProjProjection(this.baseLayer.projSrsCode).projParams.units;
@@ -1171,7 +1232,7 @@ package org.openscales.core
 			}
 			return scale;
 		}
-		
+		*/
 		/**
 		 * List all layers of this map
 		 */

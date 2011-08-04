@@ -58,7 +58,7 @@ package org.openscales.core.control
 			overview.map = _map;
 			overview.size = new Size(200, 200);
 			
-			assertEquals(overview.map.center.reprojectTo(_map.baseLayer.projSrsCode), _map.center);
+			assertEquals(overview.map.center.reprojectTo(_map.projection), _map.center);
 		}
 	}
 }

@@ -194,7 +194,7 @@ package org.openscales.core.layer.ogc
 			_map.addLayer(_wms);
 			
 			// When the tileOrigin is set
-			_wms.tileOrigin = new Location(4,56,_wms.map.baseLayer.projSrsCode);
+			_wms.tileOrigin = new Location(4,56,_wms.map.projection);
 			
 			var handler:Function = Async.asyncHandler(this,this.onTimer,1200,[
 				[this.assertChangeGridWithCorrectTileOriginOnTileOriginValueChange]] );
