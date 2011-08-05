@@ -17,6 +17,7 @@ package org.openscales.core.layer {
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.proj4as.Proj4as;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * A Layer displays raster (image) of vector datas on the map, usually loaded from a remote datasource.
@@ -101,7 +102,15 @@ package org.openscales.core.layer {
 				if (this.projSrsCode == Geometry.DEFAULT_SRS_CODE) {
 					nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION;
 				} else {
-					nominalResolution = Proj4as.unit_transform(Geometry.DEFAULT_SRS_CODE, this.projSrsCode, Layer.DEFAULT_NOMINAL_RESOLUTION);
+					if(ProjProjection.getProjProjection(this.projSrsCode))
+					{
+						nominalResolution = Proj4as.unit_transform(Geometry.DEFAULT_SRS_CODE, this.projSrsCode, Layer.DEFAULT_NOMINAL_RESOLUTION);
+					}
+					else
+					{
+						this.projSrsCode = Geometry.DEFAULT_SRS_CODE;
+						nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION;
+					}
 				}
 			}
 			// numZoomLevels must be strictly greater than zero

@@ -136,11 +136,5 @@ package org.openscales.core.format
 			Assert.assertNotNull(format.write(multiPolygonFeature));
 		}
 		
-		[Test]
-		public function testWriteGeometryCollection():void
-		{
-			fail("TODO");
-		}
-		
 	}
 }

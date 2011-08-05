@@ -14,7 +14,7 @@ package org.openscales.core.layer.params.ogc
 		private var _handle:String;
 		
 		// Constructor
-		public function WFSParams(typename:String, version:String = "1.1.0")
+		public function WFSParams(typename:String, version:String = "1.0.0")
 		{
 			super("WFS", version, "GetFeature");
 			

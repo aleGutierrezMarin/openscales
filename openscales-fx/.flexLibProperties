@@ -33,6 +33,7 @@
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.control.IconButton"/>
     <classEntry path="org.openscales.fx.control.LanguageSwitcher"/>
+    <classEntry path="org.openscales.fx.control.LayerCatalog"/>
     <classEntry path="org.openscales.fx.control.MousePosition"/>
     <classEntry path="org.openscales.fx.control.NumericScale"/>
     <classEntry path="org.openscales.fx.control.OverviewMapRatio"/>
@@ -43,16 +44,19 @@
     <classEntry path="org.openscales.fx.control.TraceInfo"/>
     <classEntry path="org.openscales.fx.control.Zoom"/>
     <classEntry path="org.openscales.fx.control.ZoomBox"/>
+    <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibility"/>
-    <classEntry path="org.openscales.fx.control.layer.DefaultLayerRenderer"/>
     <classEntry path="org.openscales.fx.control.layer.DeleteLayer"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerControl"/>
     <classEntry path="org.openscales.fx.control.layer.LayerLegend"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
     <classEntry path="org.openscales.fx.control.layer.LayerMetadatas"/>
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtent"/>
+    <classEntry path="org.openscales.fx.control.layer.MapSyncSort"/>
+    <classEntry path="org.openscales.fx.control.layer.RemoveLayerButton"/>
+    <classEntry path="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer"/>
+    <classEntry path="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
@@ -98,20 +102,15 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
+    <classEntry path="org.openscales.fx.control.LayerCatalogTest"/>
+    <classEntry path="org.openscales.fx.control.layer.AddLayerButtonTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacityTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPositionTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibilityTest"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerLegendTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerManagerTest"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerMetadatasTest"/>
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>
-    <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.control.LayerCatalog"/>
-    <classEntry path="org.openscales.fx.control.LayerCatalogTest"/>
-    <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
-    <classEntry path="org.openscales.fx.control.layer.AddLayerButtonTest"/>
-    <classEntry path="org.openscales.fx.control.layer.RemoveLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
+    <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
