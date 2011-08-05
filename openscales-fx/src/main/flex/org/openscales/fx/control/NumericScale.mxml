@@ -83,8 +83,6 @@
 				if(this._map == null || this._map.baseLayer == null)
 					return;
 				
-				/*
-				
 				// Calculate the scale according to the current center resolution
 				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode);
 				var resolutionAtCenter:Number = Unit.getResolutionOnCenter(this._map.resolution, this._map.center, projection);
@@ -94,67 +92,9 @@
 				if(projection.projName  == "longlat")
 					unit = Unit.METER;
 				
-				// get the screen dpi
-				var dpi:Number = flash.system.Capabilities.screenDPI;
+				// screen dpi flash.system.Capabilities.screenDPI
+				var dpi:Number = this._map.baseLayer.dpi;
 				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,dpi));
-
-			
-				*/
-				
-			
-				
-				var dpi:Number = 101.6;
-				
-				
-				// Get the resolution of the map
-				var mapResolution:Number = this.map.resolution;
-				
-				// Map has no resolution, return.
-				if (!mapResolution) {return;}
-				
-				// get the current units of the map
-				var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.baseLayer.projSrsCode).projParams.units;
-				
-				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode);
-				var centerResolution:Number = Unit.getResolutionOnCenter(this._map.resolution, this._map.center, projection);
-				
-				
-				if(projection.projName  == "longlat")
-					currentBaseLayerUnits = Unit.METER;
-				
-				
-				var scaleMaxWidth:Number = 100;
-				// convert the scaleMaxWidth to map units
-				var maxSizeData:Number = scaleMaxWidth * centerResolution * Unit.getInchesPerUnit(currentBaseLayerUnits);
-				
-				var currentUnit:String;
-				
-				// decide whether to use large or small scale units. it's independent of the map unit    
-				if(maxSizeData > 100000) 
-					currentUnit = "km";
-				else
-					currentUnit = "m";
-				// and to map units units
-				var topMax:Number = maxSizeData / Unit.getInchesPerUnit(currentUnit);
-				
-				
-				// now trim this down to useful block length
-				var topScaleValue:Number = this.getBarLen(topMax);
-				
-				// and back to display units
-				topMax = topScaleValue / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(currentUnit);
-				
-				// and to pixel units
-				var topPx:Number = topMax / centerResolution;
-				
-				// update the top rect width
-				var topScaleWidth:Number = Math.round(topPx);
-				
-				
-				var inch:Number = topScaleWidth/dpi;
-				var inchInUnit:Number = inch/Unit.getInchesPerUnit(currentUnit);
-				
-				this._value = topScaleValue/inchInUnit;
 				
 				// update the label :
 				this.scaleLabel = "1 / "+this._value;
