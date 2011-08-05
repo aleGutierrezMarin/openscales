@@ -18,9 +18,9 @@
 				typename="topp:states" projection="EPSG:4326" version="1.1.0"
 				style="{Style.getDefaultSurfaceStyle()}" />
 		
-		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
+		<!--<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
 				projection="EPSG:4326" version="1.1.0" useCapabilities="true" 
-				style="{Style.getDefaultPointStyle()}" />
+				style="{Style.getDefaultPointStyle()}" />-->
 				
 		<LanguageSwitcher x="300" y="10"/>
 

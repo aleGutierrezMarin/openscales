@@ -147,7 +147,7 @@ package org.openscales.core.events
 		}
 		
 		/**
-		 * Feature concerned by the event. If the event concern multiple features, the first one is returned.
+		 * Feature concerned by the event. If the event concerns multiple features, the first one is returned.
 		 */
 		public function get feature():Feature{
 			return this._features[0];

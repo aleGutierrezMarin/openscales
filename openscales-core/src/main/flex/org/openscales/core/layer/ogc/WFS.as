@@ -23,6 +23,7 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WFS extends FeatureLayer
 	{
+		private var _writer:Format = null;
 		/**
 		 * @private
 		 * An HashMap containing the capabilities of the layer.

@@ -44,6 +44,7 @@ package org.openscales.core.feature {
 					x = dX + point.x / resolution;
 					y = dY - point.y / resolution;
 					this.graphics.drawRect(x, y, 5, 5);
+					this.graphics.endFill();
 					
 					var pointSymbolizer:PointSymbolizer = (symbolizer as PointSymbolizer);
 					if (pointSymbolizer.graphic) {

@@ -137,7 +137,7 @@
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this._map.addEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-					this._map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
+					this._map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,this.refresh);
 				}
 			}
 			
@@ -154,7 +154,7 @@
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-					this._map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
+					this._map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,this.refresh);
 				}
 			}
 			
@@ -163,6 +163,7 @@
 			 * @param event Layer event
 			 */
 			public function refresh(event:Event = null):void {	
+			
 				
 				_layers.refresh();
 				// Redraws all the layers
@@ -179,7 +180,13 @@
 				this.refresh();
 			}
 			
-			protected function onLayerRemoved(event:LayerEvent):void{
+				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER
+					|| event.type == LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED ){
+					{
+						if(overlayArray[i-1].displayInLayerManager)
+							layerList.dataProvider.addItem(overlayArray[i-1]);
+					}
+						
 				
 				var index:int = _layers.getItemIndex(event.layer);
 				if(index != -1){
