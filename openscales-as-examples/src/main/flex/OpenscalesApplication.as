@@ -42,39 +42,41 @@ package {
 
 		public function OpenscalesApplication() {
 			_map=new Map();
-			_map.size=new Size(1200, 700);
+			_map.size=new Size(1000, 700);
 
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 			
-			// GML layer (draws polygons over France)
+			// GML 3.2.1 layer; fetch data from url (polygons over the world -> world borders)
 			var xml:XML = new XML(new XMLCONTENT());
-			var style:Style = Style.getDefaultStyle();
-			var GMLlayer:GML = new GML("GMLlayer", "3.2.1", xml, "EPSG:2154",style);
+			var style:Style = Style.getDefaultSurfaceStyle();
+			var GMLlayer:GML = new GML("World Borders", "3.2.1","EPSG:4326",style,
+			"http://openscales.org/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:world_borders&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
+			xml);
 			_map.addLayer(GMLlayer);
 			
-			// GML layer (draws points in USA)
+			// GML 3.2.1 layer; fetch data from file; (points in New York)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();
-			var GMLlayer3:GML = new GML("GMLlayer3", "3.2.1", xml3, "EPSG:4326", style3);
+			var GMLlayer3:GML = new GML("New York Points", "3.2.1","EPSG:4326", style3,null,xml3);
 			_map.addLayer(GMLlayer3);
 			
-			//GML layer (draws lines over Tasmania)
 			
+			//GML 3.2.1 layer; fetch data from url; (lines in Tasmania)
 			var xml2:XML = new XML(new XMLCONTENTLINES());
-			var style2:Style = Style.getDefaultStyle();
-			var GMLlayer2:GML = new GML("GMLlayer2", "3.2.1", xml2, "EPSG:4326", style2);
+			var style2:Style = Style.getDefaultLineStyle();
+			var GMLlayer2:GML = new GML("Tasmania Roads", "3.2.1","EPSG:4326", style2,
+			"http://openscales.org/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:tasmania_roads&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
+			xml2);
 			_map.addLayer(GMLlayer2);
 			
 			
-			//GPX layer (draws lines & points in Australia)
-			
+			//GPX layer; fetch data from url (lines & points in Australia)	
 			var gpxData:XML = new XML(new GPXFILE());
-			var gpxLayer:GPX = new GPX("gpxLayer","1.1","http://openscales.org/assets/sample.gpx", null);
+			var gpxLayer:GPX = new GPX("Australia lines&points","1.1","http://openscales.org/assets/sample.gpx", null);
 			_map.addLayer(gpxLayer);
-			
 			
 			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
 			regions.projSrsCode = "EPSG:2154";
@@ -82,7 +84,6 @@ package {
 			
 			_map.addLayer(regions);
 
-	
 			// Add Controls to map
 			_map.addControl(new MousePosition(new Pixel(200,0)));
 			_map.addControl(new LayerManager());
