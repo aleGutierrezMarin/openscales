@@ -24,6 +24,7 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 			<DrawPath id="drawPath" target="{features.nativeLayer as FeatureLayer}"  />
 			<DrawPolygon id="drawPolygon" target="{features.nativeLayer as FeatureLayer}" />
 			<SelectFeatures id="selectFeatures" target="{features.nativeLayer as FeatureLayer}" />
+			<EditFeatures id="editFeatures" target="{features.nativeLayer as FeatureLayer}" />
 		</ControlPanel>
 		
 		<ControlPanel title="Drawing Tools" x="200" y="10">
