@@ -29,6 +29,8 @@ package org.openscales.core.layer.ogc
 	 * @param data: the file that contains the gpx data
 	 * 
 	 * The data and url params are not compatible with each other
+	 * 
+	 * The data projection for this layer is set to "EPSG:4326" by default (@see class Layer)
 	 */
 	
 	
@@ -76,6 +78,11 @@ package org.openscales.core.layer.ogc
 			if(this.gpxData) 
 				this.draw();
 		}
+		
+		protected function onFailure(event:Event):void {
+			this.loading = false;
+			Trace.error("Error when loading gpx file" + this.url);			
+		}
 			
 		override protected function draw():void{
 			
@@ -104,10 +111,10 @@ package org.openscales.core.layer.ogc
 			}
 		}
 		
-		protected function onFailure(event:Event):void {
-			this.loading = false;
-			Trace.error("Error when loading kml " + this.url);			
-		}
+		
+		/**
+		 * Getters & Setters
+		 */
 		
 		public function get featureVector():Vector.<Feature>
 		{
