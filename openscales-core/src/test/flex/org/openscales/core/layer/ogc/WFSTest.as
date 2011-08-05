@@ -33,7 +33,8 @@ package org.openscales.core.layer.ogc
 		[Test]
 		public function getFullRequestStringTest():void {
 			
-			var request:String = _wfs.getFullRequestString("http://someServer.com");
+			_wfs.url = "http://someServer.com";
+			var request:String = _wfs.getFullRequestString();
 			Assert.assertTrue('Mandatory parameter VERSION is not present',request.match('VERSION=2.0.0'));
 			Assert.assertTrue('Mandatory parameter SERVICE is not present',request.match('SERVICE=WFS'));
 			Assert.assertTrue('Mandatory parameter REQUEST is not present',request.match('REQUEST=GetFeature'));

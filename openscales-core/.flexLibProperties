@@ -91,6 +91,12 @@
     <classEntry path="org.openscales.core.format.WFS2Format"/>
     <classEntry path="org.openscales.core.format.WFSFormat"/>
     <classEntry path="org.openscales.core.format.WKTFormat"/>
+    <classEntry path="org.openscales.core.format.gml.GMLFormat"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML2"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML311"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML321"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
+    <classEntry path="org.openscales.core.format.gml.writer.GMLWriter"/>
     <classEntry path="org.openscales.core.handler.Handler"/>
     <classEntry path="org.openscales.core.handler.IHandler"/>
     <classEntry path="org.openscales.core.handler.feature.DragFeatureHandler"/>
@@ -142,6 +148,7 @@
     <classEntry path="org.openscales.core.layer.grid.provider.HTTPTileProvider"/>
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.GML"/>
+    <classEntry path="org.openscales.core.layer.ogc.GPX"/>
     <classEntry path="org.openscales.core.layer.ogc.WFS"/>
     <classEntry path="org.openscales.core.layer.ogc.WFST.Transaction"/>
     <classEntry path="org.openscales.core.layer.ogc.WFST"/>
@@ -211,6 +218,9 @@
     <classEntry path="org.openscales.core.control.LanguageSwitcherTest"/>
     <classEntry path="org.openscales.core.control.OverviewMapRatioTest"/>
     <classEntry path="org.openscales.core.control.TermsOfServiceTest"/>
+    <classEntry path="org.openscales.core.filter.GeometryTypeFilterTest"/>
+    <classEntry path="org.openscales.core.format.GML32FormatTest"/>
+    <classEntry path="org.openscales.core.format.GPXFormatTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
@@ -218,6 +228,7 @@
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMTS100Test"/>
+    <classEntry path="org.openscales.core.layer.ogc.WFSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WMSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WMTSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WFSTest"/>
