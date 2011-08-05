@@ -13,6 +13,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.format.Format;
 	import org.openscales.core.format.GML32Format;
+	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.style.Rule;
@@ -43,10 +44,11 @@ package org.openscales.core.layer.ogc
 	
 	public class GML extends FeatureLayer
 	{	
-		private var _gmlFormat:GML32Format = null;
+		private var _gmlFormat:GMLFormat = null;
 		private var _gmlData:XML = null;
 		private var _featureVector:Vector.<Feature> = null;
 		private var _request:XMLRequest = null;
+		private var _version:String;
 		
 		public function GML(name:String, 
 							version:String,
@@ -57,7 +59,9 @@ package org.openscales.core.layer.ogc
 		{
 			super(name);
 			this.projSrsCode = projection;
-			this.gmlFormat = new GML32Format(null,null);
+			this.version = version;
+			this.gmlFormat = new GMLFormat(this.addFeature,null);
+			this.gmlFormat.version = version;
 			this.style = style;
 			this.style.rules.push(new Rule());
 			
@@ -84,7 +88,7 @@ package org.openscales.core.layer.ogc
 			var loader:URLLoader = event.target as URLLoader;
 			this.gmlData = new XML(loader.data);
 			
-			if(this.gmlData) 
+			if(this.gmlData)
 				this.draw();
 		}
 		
@@ -95,29 +99,29 @@ package org.openscales.core.layer.ogc
 		
 		override protected function draw():void{
 			if(this._featureVector == null && this.gmlData) {
+
+				this._gmlFormat.read(this.gmlData);
 				
-				var pointStyle:Style = Style.getDefaultPointStyle();
-				var lineStyle:Style = Style.getDefaultLineStyle();
-				var surfaceStyle:Style = Style.getDefaultSurfaceStyle();
-				
-				featureVector = this._gmlFormat.parseGmlFile(this.gmlData);
-				var i:uint;
-				var vectorLength:uint = this.featureVector.length;
-				for (i = 0; i < vectorLength; i++){
-					
-					if(this.featureVector[i] is PointFeature || this.featureVector[i] is MultiPointFeature) {
-						this.featureVector[i].style = pointStyle;
-					}
-					else if (this.featureVector[i] is LineStringFeature || this.featureVector[i] is MultiLineStringFeature){
-						this.featureVector[i].style = lineStyle;
-					}
-					else
-						this.featureVector[i].style = surfaceStyle;				
-					this.addFeature(this.featureVector[i]);
-				}
 			} else {
 				super.draw();
 			}
+		}
+		
+		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
+			
+			var pointStyle:Style = Style.getDefaultPointStyle();
+			var lineStyle:Style = Style.getDefaultLineStyle();
+			var surfaceStyle:Style = Style.getDefaultSurfaceStyle();
+			
+			if(feature is PointFeature || feature is MultiPointFeature) {
+				feature.style = pointStyle;
+			}
+			else if (feature is LineStringFeature || feature is MultiLineStringFeature){
+				feature.style = lineStyle;
+			}
+			else
+				feature.style = surfaceStyle;
+			super.addFeature(feature, dispatchFeatureEvent, reproject);
 		}
 		
 		/**
@@ -144,14 +148,24 @@ package org.openscales.core.layer.ogc
 			_gmlData = value;
 		}
 		
-		public function get gmlFormat():GML32Format
+		public function get gmlFormat():GMLFormat
 		{
 			return _gmlFormat;
 		}
 		
-		public function set gmlFormat(value:GML32Format):void
+		public function set gmlFormat(value:GMLFormat):void
 		{
 			_gmlFormat = value;
+		}
+
+		public function get version():String
+		{
+			return _version;
+		}
+
+		public function set version(value:String):void
+		{
+			_version = value;
 		}
 		
 		

@@ -8,6 +8,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.format.Format;
 	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;

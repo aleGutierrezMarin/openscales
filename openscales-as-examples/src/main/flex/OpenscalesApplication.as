@@ -60,7 +60,9 @@ package {
 			// GML 3.2.1 layer; fetch data from file; (points in New York)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();
-			var GMLlayer3:GML = new GML("New York Points", "3.2.1","EPSG:4326", style3,null,xml3);
+			var GMLlayer3:GML = new GML("New York Points", "3.2.1","EPSG:4326", style3,
+			"http://openscales.org/geoserver/tiger/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=tiger:poi&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
+			xml3);
 			_map.addLayer(GMLlayer3);
 			
 			

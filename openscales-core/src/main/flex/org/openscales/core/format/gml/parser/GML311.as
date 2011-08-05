@@ -147,7 +147,7 @@ package org.openscales.core.format.gml.parser
 			}
 			
 			if (feature) {
-				feature.name = data.@*;
+				feature.name = data..@id;
 				
 				if (this.parseExtractAttributes) {
 					feature.attributes = this.parseAttributes(data);
