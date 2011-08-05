@@ -242,8 +242,6 @@
 				
 				// convert the scaleMaxWidth to map units
 				// The result is the max distance IN MAP UNIT, represent in the scaleline
-				
-				var u:Number = Unit.getInchesPerUnit(currentBaseLayerUnits);
 				var maxSizeData:Number = this._scaleMaxWidth * centerResolution * Unit.getInchesPerUnit(currentBaseLayerUnits);
 				
 				
