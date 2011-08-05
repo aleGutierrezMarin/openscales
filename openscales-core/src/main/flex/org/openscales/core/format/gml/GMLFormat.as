@@ -21,6 +21,7 @@ package org.openscales.core.format.gml
 	import org.openscales.core.format.Format;
 	import org.openscales.core.format.gml.parser.GML2;
 	import org.openscales.core.format.gml.parser.GML311;
+	import org.openscales.core.format.gml.parser.GML321;
 	import org.openscales.core.format.gml.parser.GMLParser;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
@@ -131,7 +132,12 @@ package org.openscales.core.format.gml
 					if(ProjProjection.projAxisOrder[this.externalProjSrsCode]
 						&& ProjProjection.projAxisOrder[this.externalProjSrsCode]==ProjProjection.AXIS_ORDER_NE)
 						lonlat = false;
-					return null;
+					if(!this._gmlParser || !(this._gmlParser is GML321))
+						this._gmlParser = new GML321();
+					//members
+					//if(!this._asyncLoading) {
+					features = dataXML..*::member;
+					//}
 					break;
 				default:
 					return null;
@@ -198,10 +204,6 @@ package org.openscales.core.format.gml
 						if(this._featuresids.containsKey((xmlNode..@fid) as String))
 							continue;
 						break;
-					case "3.1.1":
-						if(this._featuresids.containsKey((xmlNode..@id) as String))
-							continue;
-						break;
 					default:
 						continue;
 				}
@@ -255,6 +257,7 @@ package org.openscales.core.format.gml
 		 *
 		 * @return An object representing the GML document.
 		 */
+		
 		override public function write(features:Object):Object {
 			var featureCollection:XML = new XML(""/*<" + this._wfsprefix + ":" + this._collectionName + " xmlns:" 
 			+ this._wfsprefix + "=\"" + this._wfsns + "\"></" + this._wfsprefix + ":" + this._collectionName + ">"*/);
