@@ -400,6 +400,9 @@ package org.openscales.core.layer
 			var direction:int = 0;
 			var directionsTried:int = 0;
 			
+			if(this._grid.length==0)
+				return;
+			
 			while( directionsTried < 4) {
 				var testRow:int = iRow;
 				var testCell:int = iCell;
