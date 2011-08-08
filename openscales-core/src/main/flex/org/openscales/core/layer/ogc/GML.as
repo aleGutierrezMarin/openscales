@@ -12,7 +12,6 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.format.Format;
-	import org.openscales.core.format.GML32Format;
 	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.request.XMLRequest;
