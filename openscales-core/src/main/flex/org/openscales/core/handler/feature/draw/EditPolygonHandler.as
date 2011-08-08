@@ -26,10 +26,11 @@ package org.openscales.core.handler.feature.draw
 	 * */
 	public class EditPolygonHandler extends AbstractEditCollectionHandler
 	{
-		public function EditPolygonHandler(map:Map = null, active:Boolean = false,layerToEdit:FeatureLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function EditPolygonHandler(map:Map = null,active:Boolean = false,layerToEdit:FeatureLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null)
 		{
-			this.featureClickHandler=featureClickHandler;
-			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);			
+			this.featureClickHandler = featureClickHandler;
+			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
+			this.featuresToEdit = featuresToEdit;
 		}
 	
 		 /**
