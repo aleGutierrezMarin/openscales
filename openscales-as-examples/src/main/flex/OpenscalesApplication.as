@@ -49,7 +49,7 @@ package {
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 			
-			// GML 3.2.1 layer; fetch data from url (polygons over the world -> world borders)
+			// GML 3.2.1 layer; fetch data from url (polygons World Borders)
 			var xml:XML = new XML(new XMLCONTENT());
 			var style:Style = Style.getDefaultSurfaceStyle();
 			var GMLlayer:GML = new GML("World Borders", "3.2.1","EPSG:4326",style,
@@ -57,7 +57,7 @@ package {
 			xml);
 			_map.addLayer(GMLlayer);
 			
-			// GML 3.2.1 layer; fetch data from file; (points in New York)
+			// GML 3.2.1 layer; fetch data from url; (points in New York)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();
 			var GMLlayer3:GML = new GML("New York Points", "3.2.1","EPSG:4326", style3,
@@ -80,11 +80,13 @@ package {
 			var gpxLayer:GPX = new GPX("Australia lines&points","1.1","http://openscales.org/assets/sample.gpx", null);
 			_map.addLayer(gpxLayer);
 			
+			/*
 			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
 			regions.projSrsCode = "EPSG:2154";
 			regions.style = Style.getDefaultSurfaceStyle();
 			
 			_map.addLayer(regions);
+			*/
 
 			// Add Controls to map
 			_map.addControl(new MousePosition(new Pixel(200,0)));
