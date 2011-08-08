@@ -190,12 +190,14 @@ package org.openscales.core.control
 		}
 		
 		public function zoomBarClick(evt:MouseEvent):void {
+			// TODO : Refactor Zoom Bar behaviour to use resolution
+			/*
 			if(!this.map.baseLayer)
 				return;
 			var y:Number = evt.stageY;
 			var top:Number = Util.pagePosition(evt.currentTarget)[1];
 			var levels:Number = Math.floor((y - top)/this.zoomStopHeight);
-			this.map.zoom = (this.map.baseLayer.numZoomLevels -1) -  levels;
+			this.map.zoom = (this.map.baseLayer.numZoomLevels -1) -  levels;*/
 			evt.stopPropagation();
 		}
 		
@@ -222,7 +224,7 @@ package org.openscales.core.control
 		}
 		
 		public function zoomBarUp(evt:MouseEvent):void {
-			if (this.zoomStart) {
+			/*if (this.zoomStart) {
 				this.useHandCursor = false;
 				
 				var deltaY:Number = this.zoomStart.y - evt.stageY;
@@ -232,18 +234,18 @@ package org.openscales.core.control
 				slider.removeEventListener(MouseEvent.MOUSE_MOVE,this.zoomBarDrag);
 				
 				evt.stopPropagation();
-			}
+			}*/
 		}
 		
 		public function moveZoomBar(e:MapEvent = null):void {
-			if(!this.map.baseLayer)
+			/*if(!this.map.baseLayer)
 				return;
 			//if(e.zoomChanged) {
 				var newTop:Number = 
 					((this.map.baseLayer.numZoomLevels-1) - this.map.zoom) * 
 					this.zoomStopHeight + this.startTop + 1;
 				this.slider.y = newTop;
-			//}
+			//}*/
 		}
 		
 		//Getters and setters

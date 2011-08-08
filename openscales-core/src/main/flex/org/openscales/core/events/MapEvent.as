@@ -1,6 +1,7 @@
 package org.openscales.core.events{
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
 	
@@ -52,12 +53,12 @@ package org.openscales.core.events{
 		/**
 		 * old resolution of the map
 		 */
-		private var _oldResolution:Number = 0;
+		private var _oldResolution:Resolution = new Resolution(0, "EPSG:4326");
 		
 		/**
 		 * new resolution of the map
 		 */
-		private var _newResolution:Number = 0;
+		private var _newResolution:Resolution = new Resolution(0, "EPSG:4326");
 		
 		/**
 		 * name of the component which has been changed
@@ -231,22 +232,22 @@ package org.openscales.core.events{
 			_oldCenter = value;
 		}
 		
-		public function get oldResolution():Number
+		public function get oldResolution():Resolution
 		{
 			return  _oldResolution;
 		}
 		
-		public function set oldResolution(value:Number):void
+		public function set oldResolution(value:Resolution):void
 		{
 			_oldResolution = value;
 		}
 		
-		public function get newResolution():Number
+		public function get newResolution():Resolution
 		{
 			return _newResolution;
 		}
 		
-		public function set newResolution(value:Number):void
+		public function set newResolution(value:Resolution):void
 		{
 			_newResolution = value;
 		}

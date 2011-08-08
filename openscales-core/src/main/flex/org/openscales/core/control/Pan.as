@@ -131,8 +131,6 @@ package org.openscales.core.control
 		 * 
 		 */
 		public function click(evt:Event):void {
-			if(!this.map.baseLayer)
-				return;
 			if (!(evt.type == MouseEvent.CLICK)) return;
 			
 			var btn:Button = evt.currentTarget as Button;

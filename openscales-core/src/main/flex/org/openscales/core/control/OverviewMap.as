@@ -93,7 +93,8 @@ package org.openscales.core.control
 		 * @param event the event to forward to the map
 		 */
 		private function forwardMouseWheelToMap(event:MouseEvent):void {
-			var zoom:Number = this.map.zoom;
+			// TODO : Change behaviour now that there is no zoom level
+			/*var zoom:Number = this.map.zoom;
 			if(event.delta > 0) {
 				zoom++;
 				if(zoom > this.map.baseLayer.maxZoomLevel)
@@ -103,7 +104,7 @@ package org.openscales.core.control
 				if(zoom < this.map.baseLayer.minZoomLevel)
 					return;
 			}
-			this.map.moveTo(this.map.center,zoom,false,false);
+			this.map.moveTo(this.map.center,zoom,false,false);*/
 		}
 		
 		private function onMouseDown(event:MouseEvent):void {
@@ -243,7 +244,7 @@ package org.openscales.core.control
 		 * change the baselayer
 		 * @param layer:Layer the new baselayer of the overview
 		 */
-		public function set baselayer(layer:Layer):void {
+		/*public function set baselayer(layer:Layer):void {
 			if(this._overviewMap.baseLayer != layer) {
 				if(this._overviewMap.baseLayer!=null) {
 					this._overviewMap.removeLayer(this._extentLayer);
@@ -253,11 +254,11 @@ package org.openscales.core.control
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 				this._overviewMap.addLayer(this._extentLayer);
 			}
-		}
+		}*/
 		
-		public function get baselayer():Layer {
+		/*public function get baselayer():Layer {
 			return this._overviewMap.baseLayer;
-		}
+		}*/
 		
 		private function onAddedToStage(event:Event):void {
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
@@ -267,13 +268,12 @@ package org.openscales.core.control
 		override public function draw():void {
 			this.addChild(this._overviewMap);
 			// by default it uses a mapnik baselayer 
-			if(this._overviewMap.baseLayer == null) {
-				var layer:Layer = new Mapnik("defaultbaselayer");
-				this._overviewMap.projection="EPSG:900913";
-				this._overviewMap.addLayer(layer,true);
-				this._overviewMap.zoomToExtent(layer.maxExtent);
-				this._overviewMap.addLayer(this._extentLayer);
-			}
+			var layer:Layer = new Mapnik("defaultbaselayer");
+			this._overviewMap.projection="EPSG:900913";
+			this._overviewMap.addLayer(layer,true);
+			this._overviewMap.zoomToExtent(layer.maxExtent);
+			this._overviewMap.addLayer(this._extentLayer);
+			
 			if(this._extentStyle == null) {
 				this._extentStyle = new Style();
 				this._extentStyle.rules[0] = new Rule();
@@ -284,7 +284,7 @@ package org.openscales.core.control
 		}
 		
 		private function _drawExtent(event:Event=null):void {
-			if(!this.map || !this.map.baseLayer || !this._overviewMap.baseLayer)
+			if(!this.map)
 				return;
 			
 			var _extent:Bounds = this.map.extent;

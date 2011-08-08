@@ -5,6 +5,7 @@ package org.openscales.core.control
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.layer.FeatureLayer;
@@ -113,7 +114,8 @@ package org.openscales.core.control
 		 */
 		private function computeZoomLevel():void
 		{
-			if (this.map != null && this._overviewMap.baseLayer != null)
+			// TODO : Refactor now that the zoom level disapeard
+			/*if (this.map != null)
 			{
 				// Compute the size ratio between the map and the voerview map
 				var mapsRatio:Number =(this.map.size.w / this._overviewMap.size.w); 
@@ -145,7 +147,7 @@ package org.openscales.core.control
 				
 				this._overviewMap.zoom = bestZoomLevel;
 				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.projection);
-			}
+			}*/
 		}
 		
 		/**
@@ -226,7 +228,6 @@ package org.openscales.core.control
 			if (layer != null)
 			{
 				_overviewMap.removeAllLayers();
-				_overviewMap.baseLayer = layer;
 				_overviewMap.addLayer(layer, true, true);
 			}
 		}
@@ -237,7 +238,7 @@ package org.openscales.core.control
 		 */
 		public function get layer():Layer
 		{
-			return _overviewMap.baseLayer;
+			return _overviewMap.layers[0];
 		}
 		
 		/**
@@ -264,7 +265,7 @@ package org.openscales.core.control
 		/**
 		 * The overview map resolution
 		 */
-		public function get resolution():Number
+		public function get resolution():Resolution
 		{
 			return _overviewMap.resolution;
 		}

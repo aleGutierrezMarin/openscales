@@ -15,6 +15,7 @@ package org.openscales.core
 	
 	import mx.events.DragEvent;
 	
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.I18NEvent;
@@ -89,59 +90,23 @@ package org.openscales.core
 		
 		private var _projection:String = "EPSG:4326";
 		
-		/**
-		 * The projection of the map. This is the display projection of the map
-		 * If a layer is not in the same projection as the projection of the map
-		 * he will not be displayed. 
-		 * 
-		 * @default EPSG:4326
-		 */
-		public function set projection(value:String):void
-		{
-			var event:MapEvent = new MapEvent(MapEvent.PROJECTION_CHANGED, this);
-			event.oldProjection = this._projection;
-			event.newProjection = value;
-			this._projection = value;
-			this.dispatchEvent(event);
-		}
-		
-		/**
-		 * @private
-		 */
-		public function get projection():String
-		{
-			return this._projection;
-		}
-		
-		private var _resolution:Number = NaN;
+		private var _resolution:Resolution;
 
-		/**
-		 * Current resolution (units per pixel) of the map. Unit depends of the projection.
-		 */
-		public function set resolution(value:Number):void
-		{
-			this._resolution = value;
-			this.zoomToResolution(value);
-		}
-		
-		public function get resolution():Number {
-			return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
-		}	
 		
 		
 		/**
 		 * @private
 		 * The minimum resolution of the map
-		 * @default Number.NEGATIVE_INFINITY
+		 * @default Number.NEGATIVE_INFINITY in EPSG:4326
 		 */
-		private var _minResolution:Number = Number.NEGATIVE_INFINITY;
+		private var _minResolution:Resolution = new Resolution(Number.NEGATIVE_INFINITY, "EPSG:4326");
 		
 		/**
 		 * @private
 		 * The maximum resolution of the map
-		 * @default Number.POSITIVE_INFINITY
+		 * @default Number.POSITIVE_INFINITY in EPSG:4326
 		 */
-		private var _maxResolution:Number = Number.POSITIVE_INFINITY;
+		private var _maxResolution:Resolution = new Resolution(Number.POSITIVE_INFINITY, "EPSG:4326");
 		
 		/**
 		 * The location where the layer container was re-initialized (on-zoom)
@@ -204,7 +169,6 @@ package org.openscales.core
 		 */
 		public function reset():void {
 			this.removeAllLayers();
-			this.baseLayer = null;
 			
 			if (this._controls != null) {
 				for each(var control:IHandler in this._controls) {
@@ -223,7 +187,7 @@ package org.openscales.core
 		 */
 		private function onMapProjectionChanged(event:MapEvent):void
 		{
-			this.resolution = Proj4as.unit_transform(event.oldProjection, event.newProjection, this.resolution);
+			this._resolution = this._resolution.reprojectTo(event.newProjection);
 			if (this.maxExtent != null)
 			{
 				this.maxExtent = this.maxExtent.reprojectTo(event.newProjection);	
@@ -256,10 +220,6 @@ package org.openscales.core
 			
 			layer.map = this;
 			
-			if (isBaseLayer || (this.baseLayer == null)) {
-				this.baseLayer = layer;
-			}
-			
 			if (redraw){
 				layer.redraw();	
 			}
@@ -289,7 +249,7 @@ package org.openscales.core
 		 *
 		 * @param newBaseLayer the new base layer, must be one of the map layers
 		 */
-		public function set baseLayer(newBaseLayer:Layer):void {
+		/*public function set baseLayer(newBaseLayer:Layer):void {
 			if (! newBaseLayer) {
 				this._baseLayer = null;
 				return;
@@ -340,7 +300,7 @@ package org.openscales.core
 
 		public function get baseLayer():Layer {
 			return this._baseLayer;
-		}
+		}*/
 		
 		/**
 		 * Get a layer from its name.
@@ -372,19 +332,13 @@ package org.openscales.core
 		 * @param setNewBaseLayer if set to true, a new base layer will be set if the removed
 		 * 	layer was a based layer
 		 */
-		public function removeLayer(layer:Layer, setNewBaseLayer:Boolean=true):void {
+		public function removeLayer(layer:Layer):void {
 			this._layerContainer.removeChild(layer);
 			layer.destroy();
 			var l:Vector.<Layer> = this.layers;
 			var i:int = l.indexOf(layer);
 			if(i>-1)
 				l.splice(i,1);
-			
-			if (setNewBaseLayer && (this.baseLayer == layer) && (l.length>0)) {
-				this.baseLayer = l[0];
-			} else if (this.baseLayer == layer || l.length==0){
-				this.baseLayer = null;
-			}
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
 			layer = null;
@@ -396,7 +350,7 @@ package org.openscales.core
 		 */
 		public function removeAllLayers():void {
 			for(var i:int=this.layers.length-1; i>=0; i--) {
-				removeLayer(this.layers[i],false);
+				removeLayer(this.layers[i]);
 			}
 		}
 		
@@ -439,8 +393,6 @@ package org.openscales.core
 		 * @param tween use tween effect
 		 */
 		public function pan(dx:int, dy:int, tween:Boolean=false):void {
-			if(!this.baseLayer)
-				return;
 			// Is there a real offset ?
 			if ((dx==0) && (dy==0)) {
 				return;
@@ -448,23 +400,20 @@ package org.openscales.core
 			if(this.center) {
 				var newCenterPx:Pixel = this.getMapPxFromLocation(this.center).add(dx, dy);
 				var newCenterLocation:Location = this.getLocationFromMapPx(newCenterPx);
-				this.moveTo(newCenterLocation, NaN, tween);
+				this.moveTo(newCenterLocation, null, tween);
 			}
 		}
 		
-		public function zoomOnDoubleClick(evt:MouseEvent):void {
+		/*public function zoomOnDoubleClick(evt:MouseEvent):void {
 			this.zoomToMousePosition(true);
-		}
+		}*/
 		
 		/**
 		 * Allows user to zoom in or zoom out with conserving the current mouse position
 		 *
 		 * @param zoomIn Boolean defining if a zoom (true) or a zoom out (false) must be realized.
 		 */
-		public function zoomToMousePosition(zoomIn:Boolean):void {
-			if (! this.baseLayer) {
-				return;
-			}
+		/*public function zoomToMousePosition(zoomIn:Boolean):void {
 			
 			const px:Pixel = new Pixel(this.mouseX, this.mouseY);
 			
@@ -505,7 +454,7 @@ package org.openscales.core
 			}
 		
 			this.moveTo(this.getLocationFromMapPx(newCenterPx), z, false, true);
-		}
+		}*/
 		
 		/**
 		 * Set the map center (and optionally, the zoom level).
@@ -521,11 +470,11 @@ package org.openscales.core
 		 *
 		 */
 		public function moveTo(newCenter:Location,
-								newZoom:Number = NaN,
+								newResolution:Resolution = null,
 								dragTween:Boolean = false,
 								zoomTween:Boolean = false):void {
 					
-			var zoomChanged:Boolean = (this.isValidZoomLevel(newZoom) && (newZoom!=this._zoom));
+			var resolutionChanged:Boolean = (this.isValidResolution(newResolution) && (newResolution.resolutionValue != this._resolution.resolutionValue));
 			var validLocation:Boolean = this.isValidLocation(newCenter);
 			var mapEvent:MapEvent = null;
 			
@@ -547,29 +496,29 @@ package org.openscales.core
 			
 			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
 			validLocation = this.isValidLocation(newCenter);
-			var oldZoom:Number = this._zoom;
-			if(!zoomChanged){
-			  newZoom = oldZoom; 
+			var oldResolution:Resolution = this.resolution;
+			if(!resolutionChanged){
+			  newResolution = oldResolution; 
 			}
 			var oldCenter:Location = this._center;
 			
 			
-			if (zoomChanged || centerChanged) {
+			if (resolutionChanged || centerChanged) {
 				
 				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
-				mapEvent.oldZoom = oldZoom;
-				mapEvent.newZoom = newZoom;
+				mapEvent.oldResolution = oldResolution;
+				mapEvent.newResolution = newResolution;
 				mapEvent.oldCenter = oldCenter;
 				mapEvent.newCenter = newCenter;
 				this.dispatchEvent(mapEvent);
 
-				if (zoomChanged && zoomTween) {
+				/*if (zoomChanged && zoomTween) {
 					this.zoomTransition(newZoom, newCenter);
 					return;
-				}
+				}*/
 				
 				if (centerChanged) {
-					if ((!zoomChanged) && (this.center) && !this._dragging) {
+					if ((!resolutionChanged) && (this.center) && !this._dragging) {
 						this.centerLayerContainer(newCenter, dragTween);
 					}
 					this._center = newCenter.clone();
@@ -579,25 +528,25 @@ package org.openscales.core
 					this.dispatchEvent(mapEventCenter);
 				}
 				
-				if ((zoomChanged) || (this._layerContainerOrigin == null)) {
+				if ((resolutionChanged) || (this._layerContainerOrigin == null)) {
 					this._layerContainerOrigin = this.center.clone();
 					this._layerContainer.x = 0;
 					this._layerContainer.y = 0;
 				}
 				
-				if (zoomChanged) {
-					this._zoom = newZoom;
+				if (resolutionChanged) {
+					this.resolution = newResolution;
 					var mapEventZoom:MapEvent = new MapEvent(MapEvent.ZOOM_CHANGED, this);
-					mapEventZoom.oldZoom = oldZoom;
-					mapEventZoom.newZoom = newZoom;
+					mapEventZoom.oldResolution = oldResolution;
+					mapEventZoom.newResolution = newResolution;
 					this.dispatchEvent(mapEventZoom);
 				}
 				
 				
 				if (!dragTween) {
 					mapEvent = new MapEvent(MapEvent.MOVE_END, this);
-					mapEvent.oldZoom = oldZoom;
-					mapEvent.newZoom = newZoom;
+					mapEvent.oldResolution = oldResolution;
+					mapEvent.newResolution = newResolution;
 					mapEvent.oldCenter = oldCenter;
 					mapEvent.newCenter = newCenter;
 					this.dispatchEvent(mapEvent);
@@ -667,14 +616,25 @@ package org.openscales.core
 		 * @return Whether or not the zoom level passed in is non-null and within the min/max
 		 * range of zoom levels.
 		 */
-		private function isValidZoomLevel(zoomLevel:Number):Boolean {
-			return (this.baseLayer 
+		private function isValidResolution(resolution:Resolution):Boolean {
+			if (resolution.resolutionValue < this.minResolution.resolutionValue)
+			{
+				return false;
+			}
+			
+			if (resolution.resolutionValue > this.maxResolution.resolutionValue)
+			{
+				return false;
+			}
+			
+			return true
+			/*return (this.baseLayer 
 				&& !isNaN(zoomLevel) 
 				&& (zoomLevel >= this.baseLayer.minZoomLevel) 
 				&& (zoomLevel <= this.baseLayer.maxZoomLevel)
 				&& this._baseLayer.resolutions[zoomLevel] < this.maxResolution
 				&& this._baseLayer.resolutions[zoomLevel] > this.minResolution
-			);
+			);*/
 		}
 		
 		/**
@@ -688,19 +648,20 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Find the zoom level that most closely fits the specified bounds. Note that this may
-		 * result in a zoom that does not exactly contain the entire extent.
+		 * Find the resolution that most closely fits the specified bounds. Note that this may
+		 * result in a resolution that does not exactly contain the entire extent.
 		 *
 		 * @param bounds the extent to use
-		 * @return the matching zoom level
+		 * @return the matching resolution
 		 *
 		 */
-		private function getZoomForExtent(bounds:Bounds):Number {
+		private function getResolutionForExtent(bounds:Bounds):Resolution {
+			// TODO : Reimplement to use resolution
 			var zoom:int = -1;
-			if (this.baseLayer != null) {
+			/*if (this.baseLayer != null) {
 				zoom = this.baseLayer.getZoomForExtent(bounds);
-			}
-			return zoom;
+			}*/
+			return new Resolution(0, "EPSG:4326");
 		}
 		
 		/**
@@ -710,13 +671,13 @@ package org.openscales.core
 		 * @return the matching zoom level
 		 *
 		 */
-		public function getZoomForResolution(resolution:Number):Number {
+		/*public function getZoomForResolution(resolution:Number):Number {
 			var zoom:int = -1;
 			if (this.baseLayer != null) {
 				zoom = this.baseLayer.getZoomForResolution(resolution);
 			}
 			return zoom;
-		}
+		}*/
 		
 		/**
 		 * Zoom to the passed in bounds, recenter.
@@ -724,7 +685,7 @@ package org.openscales.core
 		 * @param bounds
 		 */
 		public function zoomToExtent(bounds:Bounds):void {
-			this.moveTo(bounds.center, this.getZoomForExtent(bounds));
+			this.moveTo(bounds.center, this.getResolutionForExtent(bounds));
 		}
 		
 		/**
@@ -751,7 +712,7 @@ package org.openscales.core
 		 * 	myMap.zoomToResolution(125420);
 		 * </listing>
 		 */ 
-		public function zoomToResolution(resolution:Number):void
+		/*public function zoomToResolution(resolution:Number):void
 		{
 			if ((resolution >= minResolution) && (resolution <= maxResolution))
 			{
@@ -776,7 +737,7 @@ package org.openscales.core
 					this.zoom = bestZoomLevel;
 				}
 			}
-		}
+		}*/
 				
 		/**
 		 * Return a Location which is the passed-in view port Pixel, translated into lon/lat
@@ -784,9 +745,10 @@ package org.openscales.core
 		 */
 		public function getLocationFromMapPx(px:Pixel):Location {
 			var lonlat:Location = null;
-			if (this.baseLayer != null) {
+			//TODO : reimplement without the base Layer 
+			/*if (this.baseLayer != null) {
 				lonlat = this.baseLayer.getLocationFromMapPx(px);
-			}
+			}*/
 			return lonlat;
 		}
 		
@@ -796,9 +758,10 @@ package org.openscales.core
 		 */
 		public function getMapPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = null;
-			if (this.baseLayer != null) {
+			//TODO : reimplement without the base Layer 
+			/*if (this.baseLayer != null) {
 				px = this.baseLayer.getMapPxFromLocation(lonlat);
-			}
+			}*/
 			return px;
 		}
 		
@@ -935,20 +898,20 @@ package org.openscales.core
 		/**
 		 * Current map zoom level
 		 */
-		public function get zoom():Number
+		/*public function get zoom():Number
 		{
 			return _zoom;
 		}
 		public function set zoom(newZoom:Number):void 
 		{
 			this.moveTo(this.center, newZoom);
-		}
+		}*/
 		
 		
 		/**
 		 * Copy the layerContainer in a bitmap and display this (this function is use for zoom)
 		 */
-		private function zoomTransition(newZoom:Number, newCenter:Location):void {
+		/*private function zoomTransition(newZoom:Number, newCenter:Location):void {
 			if (!_zooming && newZoom >= 0) {
 				
 				// Disable more zooming until this zooming is complete 
@@ -1032,7 +995,7 @@ package org.openscales.core
 				clearBitmapTransition();
 			} 
 
-		}
+		}*/
 		
 		public function clearBitmapTransition():void {
 			if(this._bitmapTransition != null && this._bitmapTransition.visible && this._baseLayer != null && this._baseLayer.loadComplete) {
@@ -1115,9 +1078,7 @@ package org.openscales.core
 				
 				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
 				
-				if (this.baseLayer != null) {
-					this.moveTo(null,this.zoom);
-				}
+				this.moveTo(null,this.resolution);
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
 			}
@@ -1178,11 +1139,6 @@ package org.openscales.core
 			// use map maxExtent
 			var maxExtent:Bounds = this._maxExtent;
 			
-			// If baselayer is defined, override with baselayer maxExtent
-			if (this.baseLayer) {
-				maxExtent = this.baseLayer.maxExtent;
-			}
-			
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
 			if(maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
@@ -1197,14 +1153,14 @@ package org.openscales.core
 		public function get extent():Bounds {
 			var extent:Bounds = null;
 			
-			if ((this.center != null) && (this.resolution != -1)) {
+			if ((this.center != null) && (this.resolution != null)) {
 				var center:Location;
 				if(this.center.projSrsCode.toUpperCase() != this.projection.toUpperCase())
 					center = this.center.reprojectTo(this.projection.toUpperCase());
 				else
 					center = this.center;
-				var w_deg:Number = this.size.w * this.resolution;
-				var h_deg:Number = this.size.h * this.resolution;
+				var w_deg:Number = this.size.w * this.resolution.resolutionValue;
+				var h_deg:Number = this.size.h * this.resolution.resolutionValue;
 				
 				extent = new Bounds(center.lon - w_deg / 2,
 					center.lat - h_deg / 2,
@@ -1381,7 +1337,7 @@ package org.openscales.core
 		 * If the given max resolution is inferior than the actual map resolution
 		 * then the map resolution is set to the new maxResolution
 		 */
-		public function get maxResolution():Number
+		public function get maxResolution():Resolution
 		{
 			return this._maxResolution;
 		}
@@ -1389,14 +1345,18 @@ package org.openscales.core
 		/**
 		 * @private
 		 */
-		public function set maxResolution(value:Number):void
+		public function set maxResolution(value:Resolution):void
 		{
-			if(value < this.resolution)
+			if (value.projection != this.projection)
 			{
-				this.zoomToResolution(value);
+				value = value.reprojectTo(this.projection);
 			}
-			this._maxResolution = value;
 			
+			if(value.resolutionValue < this.resolution.resolutionValue)
+			{
+				this.resolution = new Resolution(value.resolutionValue, this.projection);
+			}
+			this._maxResolution = value;		
 			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
 		}
 		
@@ -1405,7 +1365,7 @@ package org.openscales.core
 		 * You cannot reach a resolution lower than this resolution
 		 * If you try to reach a resolution behind the minResolution nothing will be done
 		 */
-		public function get minResolution():Number
+		public function get minResolution():Resolution
 		{
 			return this._minResolution;
 		}
@@ -1413,11 +1373,16 @@ package org.openscales.core
 		/**
 		 * @private
 		 */
-		public function set minResolution(value:Number):void
+		public function set minResolution(value:Resolution):void
 		{
-			if(value > this.resolution)
+			if (value.projection != this.projection)
 			{
-				this.zoomToResolution(value);
+				value = value.reprojectTo(this.projection);
+			}
+			
+			if(value.resolutionValue > this.resolution.resolutionValue)
+			{
+				this.resolution = new Resolution(value.resolutionValue, this.projection);
 			}
 			this._minResolution = value;
 			
@@ -1606,5 +1571,47 @@ package org.openscales.core
 		public function get controls():Vector.<IHandler> {
 			return this._controls;
 		}
+		
+		/**
+		 * The projection of the map. This is the display projection of the map
+		 * If a layer is not in the same projection as the projection of the map
+		 * he will not be displayed. 
+		 * 
+		 * @default EPSG:4326
+		 */
+		public function set projection(value:String):void
+		{
+			var event:MapEvent = new MapEvent(MapEvent.PROJECTION_CHANGED, this);
+			event.oldProjection = this._projection;
+			event.newProjection = value;
+			this._projection = value;
+			this.dispatchEvent(event);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get projection():String
+		{
+			return this._projection;
+		}
+		
+		/**
+		 * Current resolution (units per pixel) of the map with its related projection
+		 */
+		public function set resolution(value:Resolution):void
+		{
+			this._resolution = value;
+			//this.zoomToResolution(value);
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get resolution():Resolution {
+			//return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
+			return this._resolution;
+		}	
+		
 	}
 }
