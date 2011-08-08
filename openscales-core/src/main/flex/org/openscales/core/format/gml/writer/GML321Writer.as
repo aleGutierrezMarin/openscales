@@ -27,8 +27,11 @@ package org.openscales.core.format.gml.writer
 		}
 		
 		/**
-		 * Creates a FeatureCollectionNode as a gml file
-		 * Contains multiple FeatureNodes
+		 * Given a list of Features, this function creates a GML file.
+		 * 
+		 * @return: An XML object
+		 * 
+		 * @calls: buildFeatureNode to create an XML node for each feature in the list
 		 * 
 		 */
 		
@@ -58,7 +61,15 @@ package org.openscales.core.format.gml.writer
 		}
 		
 		/**
-		 * Creates a FeatureNode as a gml file 
+		 * @param : A feature
+		 * 
+		 * @return : an XML node
+		 * 
+		 * @calls : buildPointNode, buildPolygonNode, buildLineStringNode, 
+		 * depending on the type of feature 
+		 * 
+		 * @calls : buildEnvelopeNode 
+		 * In GML, each member is preceded by an <Envelope/> node
 		 * 
 		 */
 		
@@ -156,6 +167,13 @@ package org.openscales.core.format.gml.writer
 			return featureNode; 
 		}
 		
+		/**
+		 * Creates a GML <Point/> node
+		 * 
+		 * @param: a Point Feature
+		 * @return: an XML object
+		 * 
+		 */
 		
 		public function buildPointNode(point:Point):XML{
 			var pointNode:XML = new XML("<Point></Point>");
@@ -167,6 +185,13 @@ package org.openscales.core.format.gml.writer
 			return pointNode;
 		}
 		
+		/**
+		 * Creates a GML <LineString/> node
+		 * 
+		 * @param: a LineString Feature
+		 * @return: an XML object
+		 * 
+		 */
 		
 		public function buildLineStringNode(lineString:LineString):XML{
 			var i:uint;
@@ -186,6 +211,16 @@ package org.openscales.core.format.gml.writer
 			lineStringNode.@srsName = lineString.projSrsCode;
 			return lineStringNode;
 		}
+		
+		/**
+		 * Creates a GML <Polygon/> node
+		 * 
+		 * @param: a Polygon Feature
+		 * @return: an XML object
+		 * 
+		 * @calls: buildLinearRingNode to create GML <LinearRing/> nodes
+		 * 
+		 */
 		
 		public function buildPolygonNode(polygon:Polygon):XML{
 			var i:uint;
@@ -231,6 +266,13 @@ package org.openscales.core.format.gml.writer
 			return ringNode;
 		}
 		
+		/**
+		 * Given the Bounds of the Geometry, this function creates a GML <Envelope/> node
+		 * 
+		 * @param: Bounds
+		 * @return: an XML object
+		 * 
+		 */
 		public function buildEnvelopeNode(bounds:Bounds):XML{
 			var i:uint;
 			var boundNode:XML = new XML("<boundedBy></boundedBy>");
@@ -248,6 +290,11 @@ package org.openscales.core.format.gml.writer
 			return boundNode;
 		}
 
+		
+		/**
+		 * Getters & Setters
+		 */
+		
 		public function get geomns():Namespace
 		{
 			return _geomns;
