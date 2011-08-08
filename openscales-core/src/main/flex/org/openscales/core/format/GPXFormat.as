@@ -309,7 +309,7 @@ package org.openscales.core.format
 		} 
 			
 		/**
-		 * Calls buildPointNode(), buildRouteNode() & buildTrackNode()
+		 * @calls buildPointNode(), buildRouteNode() & buildTrackNode()
 		 *
 		 * @param featureVector: the objects based on which the gpx file will be created
 		 * 
@@ -330,6 +330,13 @@ package org.openscales.core.format
 			{
 				gpxNode.appendChild(this.buildMetadataNode());
 			}
+			else{
+				var info:XMLList = this.buildFileInfoNodes().children();
+				for(i = 0; i < info.length(); i++)
+					gpxNode.appendChild(info[i]);
+				
+			}
+			
 			
 			for(i = 0; i < vectorLength; i++){
 					
@@ -348,11 +355,84 @@ package org.openscales.core.format
 			return gpxNode;
 		}
 		
-		//todo finish this + handle the 1.0 version
+		
+		/**
+		 *  This function is called only for the 1.1 version
+		 * 
+		 * 	@return: the metadata node containing information on the gpx file
+		 */
+		
 		public function buildMetadataNode():XML{
 			
 			var meta:XML = new XML("<metadata></metadata>");
+			if(this._fileName)
+				meta.appendChild(new XML("<name>" + this._fileName + "</name>"));
+			if(this._description)
+				meta.appendChild(new XML("<desc>" + this._description + "</desc>"));
+			if(this._author || this._authorEmail){
+				var authorNode:XML = new XML("<author></author>");
+				if (this._author)
+					authorNode.appendChild(new XML("<name>" + this._author + "</name>"));
+				if(this._authorEmail){
+					var email:XML = new XML("<email></email>");
+					var pos:int = this._authorEmail.indexOf("@")
+					email.@id = String(this._authorEmail.slice(0, pos));
+					email.@domain = String(this._authorEmail.slice(pos, this._authorEmail.length));
+					authorNode.appendChild(email);
+				}
+				meta.appendChild(authorNode);
+			}
+			
+			if(this._fileURL)
+			{
+				var fileLink:XML = new XML("<link></link>");
+				fileLink.@href = this._fileURL;
+				meta.appendChild(fileLink);
+					
+			}
+			if(this.bounds){
+				meta.appendChild(this.buildBoundsNode());
+			}
+			
 			return meta;
+		}
+		
+		
+		/**
+		 *  This function is called only for the 1.0 version
+		 * 
+		 *  @return: an xml containing information on the gpx file
+		 */
+		
+		public function buildFileInfoNodes():XML{
+			//name, desc, author, email, url, bounds
+			var container:XML = new XML(<container></container>);
+			if(this._fileName)
+				container.appendChild(new XML("<name>" + this._fileName + "</name>"));
+			if(this._description)
+				container.appendChild(new XML("<desc>" + this._description + "</desc>"));
+			if(this._author)
+				container.appendChild(new XML("<author>" + this._author + "</author>"));
+			if(this._authorEmail)
+				container.appendChild(new XML("<email>" + this._authorEmail + "</email>"));
+			if(this._fileURL)
+				container.appendChild(new XML("<url>" + this._fileURL + "</url>"));
+			if(this._bounds){
+				container.appendChild(this.buildBoundsNode);
+			}
+			
+			return container;
+		}
+		
+		
+		public function buildBoundsNode():XML{
+			
+			var boundsNode:XML = new XML("<bounds></bounds>");
+			boundsNode.@minlat = this.bounds.left;
+			boundsNode.@minlon = this.bounds.bottom;
+			boundsNode.@maxlat = this.bounds.right;
+			boundsNode.@maxlon = this.bounds.top;
+			return boundsNode;
 		}
 		
 		public function buildPointNode(pointFeature:PointFeature):XML{

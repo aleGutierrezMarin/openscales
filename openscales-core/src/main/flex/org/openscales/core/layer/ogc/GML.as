@@ -45,7 +45,6 @@ package org.openscales.core.layer.ogc
 	{	
 		private var _gmlFormat:GMLFormat = null;
 		private var _gmlData:XML = null;
-		private var _featureVector:Vector.<Feature> = null;
 		private var _request:XMLRequest = null;
 		private var _version:String;
 		
@@ -97,7 +96,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override protected function draw():void{
-			if(this._featureVector == null && this.gmlData) {
+			if(this.featuresID && this.featuresID.length == 0 && this.gmlData) {
 
 				this._gmlFormat.read(this.gmlData);
 				
@@ -126,16 +125,6 @@ package org.openscales.core.layer.ogc
 		/**
 		 * Getters & Setters
 		 */ 
-		
-		public function get featureVector():Vector.<Feature>
-		{
-			return _featureVector;
-		}
-		
-		public function set featureVector(value:Vector.<Feature>):void
-		{
-			_featureVector = value;
-		}
 		
 		public function get gmlData():XML
 		{
