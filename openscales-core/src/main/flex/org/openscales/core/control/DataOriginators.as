@@ -139,40 +139,27 @@ package org.openscales.core.control
 				var i:uint = 0;
 				var j:uint = layer.originators.length;
 				
-				// if the layer added is NOT the first one
-				if( this._map.baseLayer != null )
+				// for each originators of this layer :
+				for (; i<j; ++i) 
 				{
-					// for each originators of this layer :
-					for (; i<j; ++i) 
+					// if no contraint : display
+					if(layer.originators[i].constraints.length == 0)
 					{
-						// if no contraint : display
-						if(layer.originators[i].constraints.length == 0)
-						{
-							addOriginator(layer.originators[i]);
-						}
-						// else check if the current extent fit with  the originator constraint
-						else
-						{
-							// if originator cover the current area :
-							var mapExtent:Bounds = this._map.extent;
-							if(mapExtent)
-							{
-								if( layer.originators[i].isCoveredArea(mapExtent, this._map.resolution))
-								{
-									// add the orignator (add new or increment layers count)
-									addOriginator(layer.originators[i]);
-								}
-							}	
-						}
-					}
-				}
-				else
-				{
-					// add its orignators without checking the extent (since the baselayer is not defined yet)
-					for (; i<j; ++i) 
-					{
-						// add the orignator (add new or increment layers count)
 						addOriginator(layer.originators[i]);
+					}
+					// else check if the current extent fit with  the originator constraint
+					else
+					{
+						// if originator cover the current area :
+						var mapExtent:Bounds = this._map.extent;
+						if(mapExtent)
+						{
+							if( layer.originators[i].isCoveredArea(mapExtent, this._map.resolution))
+							{
+								// add the orignator (add new or increment layers count)
+								addOriginator(layer.originators[i]);
+							}
+						}	
 					}
 				}	
 			}
@@ -229,28 +216,20 @@ package org.openscales.core.control
 		 */
 		public function removeOriginators(layer:Layer):void
 		{
-			// if the layer removed was not the last one
-			if( this._map.baseLayer != null )
+			var i:uint = 0;
+			var j:uint = layer.originators.length;
+			
+			// for each originators of this layer :
+			for (; i<j; ++i) 
 			{
-				var i:uint = 0;
-				var j:uint = layer.originators.length;
-				
-				// for each originators of this layer :
-				for (; i<j; ++i) 
+				// if originator covered the current area :
+				if( layer.originators[i].constraints.length == 0 
+					|| layer.originators[i].isCoveredArea(this._map.extent, this._map.resolution))
 				{
-					// if originator covered the current area :
-					if( layer.originators[i].constraints.length == 0 
-						|| layer.originators[i].isCoveredArea(this._map.extent, this._map.resolution))
-					{
-						// remove the orignator (drecrement counter or remove the originator)
-						removeOriginator(layer.originators[i]);
-					}
-				}	
-			}
-			else // no longer originators
-			{
-				removeAll();
-			}
+					// remove the orignator (drecrement counter or remove the originator)
+					removeOriginator(layer.originators[i]);
+				}
+			}	
 		}
 
 		/**

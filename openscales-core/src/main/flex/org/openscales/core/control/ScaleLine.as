@@ -6,6 +6,7 @@ package org.openscales.core.control
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -142,7 +143,7 @@ package org.openscales.core.control
 		 private function updateScale():void
 		{
 			// Get the resolution of the map
-			var mapResolution:Number = this.map.resolution;
+			var mapResolution:Resolution = this.map.resolution;
 			
 			// Map has no resolution, return.
 			if (!mapResolution) {return;}
@@ -153,7 +154,7 @@ package org.openscales.core.control
 
 			// convert the scaleMaxWidth to map units
 			// The result is the max distance IN MAP UNIT, represent in the scaleline
-			var maxSizeData:Number = this._scaleMaxWidth * mapResolution * Unit.getInchesPerUnit(currentBaseLayerUnits);
+			var maxSizeData:Number = this._scaleMaxWidth * mapResolution.resolutionValue * Unit.getInchesPerUnit(currentBaseLayerUnits);
 
 			// decide whether to use large or small scale units. it's independent of the map unit    
 			var topUnits:String;		
@@ -180,8 +181,8 @@ package org.openscales.core.control
 			bottomMax = bottomRounded / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(bottomUnits);
 	
 			// and to pixel units
-			_topPx = topMax / mapResolution;
-			var bottomPx:Number = bottomMax / mapResolution;
+			_topPx = topMax / mapResolution.resolutionValue;
+			var bottomPx:Number = bottomMax / mapResolution.resolutionValue;
 			
 			this.graphics.clear();
 			this.graphics.beginFill(this._color);

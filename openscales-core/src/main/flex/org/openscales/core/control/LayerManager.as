@@ -436,8 +436,9 @@ package org.openscales.core.control
 			var eventLayer:Layer = this.map.getLayerByName((event.target as RadioButton).layerName);
 			if(!(event.target as RadioButton).status)
 			{
+				// TODO : Did not understant the usage of the baseLayer but commented 
 				// Hide current baselayer
-				this.map.baseLayer.visible = false;
+				//this.map.baseLayer.visible = false;
 
 				// Reset other radio buttons
 				for(i=0; i < this.numChildren; i++) {
@@ -446,7 +447,7 @@ package org.openscales.core.control
 						(child as RadioButton).status = false; 
 				}
 
-				this.map.baseLayer = eventLayer;
+				//this.map.baseLayer = eventLayer;
 				eventLayer.visible = true;
 				(event.target as RadioButton).status = true;
 

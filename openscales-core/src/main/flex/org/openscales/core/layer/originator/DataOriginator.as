@@ -4,6 +4,7 @@ package org.openscales.core.layer.originator
 	import flash.events.IOErrorEvent;
 	
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.geometry.basetypes.Bounds;
 
@@ -140,7 +141,7 @@ package org.openscales.core.layer.originator
 		 * @param extent The extent at which the coverage is checked
 		 * @param resolution The resolution at which the coverage is checked
 		 */
-		public function isCoveredArea(extent:Bounds, resolution:Number):Boolean
+		public function isCoveredArea(extent:Bounds, resolution:Resolution):Boolean
 		{
 			var i:uint = 0;
 			var j:uint = this._constraints.length;
@@ -149,8 +150,8 @@ package org.openscales.core.layer.originator
 			{
 				// if extent and resolution contain given extent and resolution : covered
 				if( this._constraints[i].extent.intersectsBounds(extent) &&
-					this._constraints[i].minResolution <= resolution &&
-					this._constraints[i].maxResolution >= resolution)
+					this._constraints[i].minResolution <= resolution.resolutionValue &&
+					this._constraints[i].maxResolution >= resolution.resolutionValue)
 				{
 					return true;
 				}

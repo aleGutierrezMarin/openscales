@@ -5,10 +5,10 @@ package org.openscales.core.layer.ogc
 	import flash.utils.Timer;
 	
 	import org.flexunit.Assert;
-	
 	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -140,7 +140,7 @@ package org.openscales.core.layer.ogc
 			var cols:int = 0;
 			
 			var tileOrigin:Location = _wms.tileOrigin;
-			var resolution:Number = _wms.map.resolution;
+			var resolution:Resolution = _wms.map.resolution;
 			var tileHeight:Number = _wms.tileHeight;
 			var tileWidth:Number = _wms.tileWidth;
 			
@@ -154,10 +154,10 @@ package org.openscales.core.layer.ogc
 					var y:int = offsetrow - i;
 					
 					// The bounds values for the curent tile checked
-					var left:Number = tileOrigin.lon + (tileWidth*resolution*x);
-					var right:Number = tileOrigin.lon + (tileWidth*resolution*(x+1));
-					var top:Number = tileOrigin.lat + (tileHeight*resolution*(y));
-					var bottom:Number = tileOrigin.lat + (tileHeight*resolution*(y-1));
+					var left:Number = tileOrigin.lon + (tileWidth*resolution.resolutionValue*x);
+					var right:Number = tileOrigin.lon + (tileWidth*resolution.resolutionValue*(x+1));
+					var top:Number = tileOrigin.lat + (tileHeight*resolution.resolutionValue*(y));
+					var bottom:Number = tileOrigin.lat + (tileHeight*resolution.resolutionValue*(y-1));
 					
 					Assert.assertEquals("Incorrect value for tile left bounds "+j+","+i, left, currentGrid[i][j].bounds.left);
 					Assert.assertEquals("Incorrect value for tile right bounds "+j+","+i, right, currentGrid[i][j].bounds.right);
@@ -220,7 +220,7 @@ package org.openscales.core.layer.ogc
 			var cols:int = 0;
 			
 			var tileOrigin:Location = _wms.tileOrigin;
-			var resolution:Number = _wms.map.resolution;
+			var resolution:Resolution = _wms.map.resolution;
 			var tileHeight:Number = _wms.tileHeight;
 			var tileWidth:Number = _wms.tileWidth;
 			
@@ -234,10 +234,10 @@ package org.openscales.core.layer.ogc
 					var y:int = offsetrow - i;
 					
 					// The bounds values for the curent tile checked
-					var left:Number = tileOrigin.lon + (tileWidth*resolution*x);
-					var right:Number = tileOrigin.lon + (tileWidth*resolution*(x+1));
-					var top:Number = tileOrigin.lat + (tileHeight*resolution*(y));
-					var bottom:Number = tileOrigin.lat + (tileHeight*resolution*(y-1));
+					var left:Number = tileOrigin.lon + (tileWidth*resolution.resolutionValue*x);
+					var right:Number = tileOrigin.lon + (tileWidth*resolution.resolutionValue*(x+1));
+					var top:Number = tileOrigin.lat + (tileHeight*resolution.resolutionValue*(y));
+					var bottom:Number = tileOrigin.lat + (tileHeight*resolution.resolutionValue*(y-1));
 					
 					Assert.assertEquals("Incorrect value for tile left bounds "+j+","+i, left, currentGrid[i][j].bounds.left);
 					Assert.assertEquals("Incorrect value for tile right bounds "+j+","+i, right, currentGrid[i][j].bounds.right);

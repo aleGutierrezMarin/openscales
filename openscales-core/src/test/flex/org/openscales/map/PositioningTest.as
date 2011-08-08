@@ -5,6 +5,7 @@ package org.openscales.map {
 	import org.flexunit.asserts.*;
 	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.basetypes.Location;
@@ -19,7 +20,7 @@ package org.openscales.map {
 		/**
 		 * Initial resolution of the map
 		 */
-		private const INITIAL_RESOLUTION:Number = 0.3515625;
+		private const INITIAL_RESOLUTION:Resolution = new Resolution(0.3515625, "EPSG:4326");
 		
 		private var _map:Map;
 		
@@ -75,10 +76,10 @@ package org.openscales.map {
 			}));
 			
 			// When map resolution is setted
-			_map.resolution = 0.703125;
+			_map.resolution = new Resolution(0.703125, "EPSG:4326");
 			
 			// And resolution is set to this value
-			assertTrue('Incorrect resolution', 0.703125 - _map.resolution < PRECISION);
+			assertTrue('Incorrect resolution', 0.703125 - _map.resolution.resolutionValue < PRECISION);
 		}
 		
 		/**
@@ -98,7 +99,7 @@ package org.openscales.map {
 			_map.zoom++;
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",0.17578125-_map.resolution < PRECISION);
+			assertTrue("Incorrect map resolution",0.17578125-_map.resolution.resolutionValue < PRECISION);
 		}
 		
 		/**
@@ -118,14 +119,14 @@ package org.openscales.map {
 			_map.zoom--;
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",0.703125-_map.resolution < PRECISION);
+			assertTrue("Incorrect map resolution",0.703125-_map.resolution.resolutionValue < PRECISION);
 		}
 		
 		[Test(async)]
 		public function shouldNotZoomInIfMaxResolutionIsReached():void{
 			
 			// Given the map has a maxResolution
-			_map.maxResolution = 0.4;
+			_map.maxResolution = new Resolution(0.4, "EPSG:4326");
 			
 			// Then no event is dispatched advertising zoom change
 			_map.addEventListener(MapEvent.ZOOM_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
@@ -138,14 +139,14 @@ package org.openscales.map {
 			_map.zoom--;
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION-_map.resolution < PRECISION);
+			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION.resolutionValue - _map.resolution.resolutionValue < PRECISION);
 		}
 		
 		[Test(async)]
 		public function shouldNotZoomOutIfMinResolutionIsReached():void{
 			
 			// Given the map has a minResolution
-			_map.minResolution = 0.2;
+			_map.minResolution = new Resolution(0.2, "EPSG:4326");
 			
 			// Then no event is dispatched advertising zoom change
 			_map.addEventListener(MapEvent.ZOOM_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
@@ -158,7 +159,7 @@ package org.openscales.map {
 			_map.zoom++;
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION-_map.resolution < PRECISION);
+			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION.resolutionValue - _map.resolution.resolutionValue < PRECISION);
 		}
 	}
 }

@@ -4,6 +4,7 @@ package org.openscales.core.configuration
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.control.Control;
 	import org.openscales.core.control.LayerManager;
@@ -184,15 +185,13 @@ package org.openscales.core.configuration
 		}
 		
 		protected function endConfigureMap():void {
-			if(String(config.@zoom) != ""){
-				map.zoom = Number(config.@zoom);
+			if(String(config.@resolution) != ""){
+				// TODO : DEFAULT SRS CODE USED Changed Config to complete resolution difinition
+				map.resolution = new Resolution(Number(config.@resolution), "EPSG:4326");
 			}
 			if(String(config.@center) != ""){
 				var location:Array = String(config.@center).split(",");
-				if (this.map.baseLayer != null)
-					map.center = new Location(Number(location[0]), Number(location[1]), this.map.projection);
-				else
-					map.center = new Location(Number(location[0]), Number(location[1]));
+				map.center = new Location(Number(location[0]), Number(location[1]), this.map.projection);
 			}
 		}
 		
