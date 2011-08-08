@@ -33,6 +33,19 @@ package org.openscales.core.format.gml.parser
 		
 		}
 		
+		//this function has no purpose other than to be used in tests
+		public function parseGmlFile(xml:XML):Vector.<Feature>{
+			var featureVector:Vector.<Feature> = new Vector.<Feature>();
+			var membersList:XMLList = xml..*::member;
+			var i:uint;
+			for (i = 0; i < membersList.length(); i++){
+				featureVector[i] = parseFeature(membersList[i]);
+			}
+			
+			return featureVector;
+		}
+		
+		
 		/**
 		 * @param xmlNode: it contains one gml node member (@see GMLFormat, function read)
 		 * @param lonLat: true if the order of coordinates is (x,y)
