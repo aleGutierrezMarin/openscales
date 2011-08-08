@@ -311,7 +311,7 @@ package org.openscales.core
 		 */
 		public function removeLayer(layer:Layer, setNewBaseLayer:Boolean=true):void {
 			this._layerContainer.removeChild(layer);
-			layer.destroy();
+			//layer.destroy();
 			var l:Vector.<Layer> = this.layers;
 			var i:int = l.indexOf(layer);
 			if(i>-1)
@@ -324,7 +324,7 @@ package org.openscales.core
 			}
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
-			layer = null;
+			
 		}
 		
 		

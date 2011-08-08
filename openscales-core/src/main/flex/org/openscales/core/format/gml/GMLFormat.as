@@ -58,7 +58,7 @@ package org.openscales.core.format.gml
 		
 		private var projectionxml:String = "srsName=\"http://www.opengis.net/gml/srs/epsg.xml#4326\"";
 		
-		private var _version:String = "2.0";
+		private var _version:String = "2.1.1";
 		
 		private var _gmlParser:GMLParser = null;
 		
@@ -75,7 +75,7 @@ package org.openscales.core.format.gml
 		private var savedIndex:Number = 0;
 		private var sprite:Sprite = new Sprite();
 		
-		private var _asyncLoading:Boolean = false;
+		private var _asyncLoading:Boolean = true;
 		/**
 		 * GMLFormat constructor
 		 *
@@ -98,7 +98,7 @@ package org.openscales.core.format.gml
 		 * @return features.
 		 */
 		override public function read(data:Object):Object {
-			if(!this._asyncLoading) {
+			if(!this._asyncLoading || this._version!="2.1.1") {
 				var dataXML:XML = new XML(data);
 				var features:XMLList;
 			}
@@ -121,9 +121,11 @@ package org.openscales.core.format.gml
 					if(!this._gmlParser || !(this._gmlParser is GML311))
 						this._gmlParser = new GML311();
 					//featureMembers
-					if(!this._asyncLoading) {
+					//if(!this._asyncLoading) {
 						features = dataXML..*::featureMembers;
-					}
+						dataXML = features[0];
+						features = dataXML.children();
+					//}
 					break;
 				case "3.2.1":
 					if(ProjProjection.projAxisOrder[this.externalProjSrsCode]
@@ -134,8 +136,12 @@ package org.openscales.core.format.gml
 				default:
 					return null;
 			}
+			
+			this._gmlParser.internalProjSrsCode = this.internalProjSrsCode;
+			this._gmlParser.externalProjSrsCode = this.externalProjSrsCode;
 			this._gmlParser.parseExtractAttributes = this.extractAttributes;
-			if(this._asyncLoading) {
+			
+			if(this._asyncLoading && this._version=="2.1.1") {
 				this.xmlString = data as String;
 				data = null;
 				if(this.xmlString.indexOf(this._gmlParser.sFXML)!=-1){
@@ -147,10 +153,6 @@ package org.openscales.core.format.gml
 					this.xmlString = null;
 				}
 			} else {
-				if(features.length()==0)
-					return null;
-				dataXML = features[0];
-				features = dataXML.children();
 				for each( dataXML in features) {
 					this._onFeature(this._gmlParser.parseFeature(dataXML,lonlat));
 				}
@@ -192,7 +194,7 @@ package org.openscales.core.format.gml
 				xmlNode = new XML( this.sXML + this.xmlString.substr(this.lastInd,end-this.lastInd) + this._gmlParser.eXML )
 				this.lastInd = this.xmlString.indexOf(this._gmlParser.sFXML,this.lastInd+1);
 				switch (this._version) {
-					case "2.0":
+					case "2.1.1":
 						if(this._featuresids.containsKey((xmlNode..@fid) as String))
 							continue;
 						break;
