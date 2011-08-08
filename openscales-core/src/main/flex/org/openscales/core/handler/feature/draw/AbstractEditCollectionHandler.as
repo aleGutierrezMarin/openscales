@@ -15,6 +15,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.style.Style;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
@@ -264,7 +265,10 @@ package org.openscales.core.handler.feature.draw
 						var lonlat:Location=this.map.getLocationFromLayerPx(px);
 						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);	
 						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-							AbstractEditCollectionHandler._pointUnderTheMouse.geometry=PointGeomUnderTheMouse;
+							AbstractEditCollectionHandler._pointUnderTheMouse.geometry = PointGeomUnderTheMouse;
+							//AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
+							//AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,Style.getDefaultCircleStyle());
+							//this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 						}
 						else {
 							AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,Style.getDefaultCircleStyle());

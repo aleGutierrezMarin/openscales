@@ -12,10 +12,12 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.handler.mouse.DragHandler;
 			import org.openscales.core.layer.FeatureLayer;
@@ -27,6 +29,7 @@
 			
 			private var _handler:FeatureLayerEditionHandler = new FeatureLayerEditionHandler();
 			private var _dragHandler:DragHandler;
+			private var _selectFeaturesHandler:SelectFeaturesHandler;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -56,10 +59,14 @@
 				
 				_handler.map = value;
 				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				_handler.map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
 				
 				for each(var ih:IHandler in this.map.controls){
 					if(ih is DragHandler){
 						_dragHandler = (ih as DragHandler);
+					}
+					if(ih is SelectFeaturesHandler){
+						_selectFeaturesHandler = (ih as SelectFeaturesHandler);
 					}
 				}
 				if(!_dragHandler){
@@ -127,6 +134,11 @@
 				
 				if(_handler.active && this.id != evt.activeHandler)
 					disactivate();
+			}
+			
+			private function onFeatureSelected(evt:FeatureEvent):void{
+				
+				_handler.featuresToEdit = _selectFeaturesHandler.selectedFeatures;
 			}
 			
 			// to do
