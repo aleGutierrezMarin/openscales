@@ -63,9 +63,15 @@ package org.openscales.map
 		public function shouldChangeResolutionByTheDefaultZoomInFactorWhenZoomIn():void
 		{
 			// Given a map with a resolution
+			var _map:Map = new Map(600, 400, "EPSG:4326");
+			_map.resolution = new Resolution(10, "EPSG:4326");
+			
 			// When I zoomIn
+			_map.defaultZoomInFactor = 0.9;
+			_map.zoomIn();
+			
 			// Then the resolution is multiplied by the default zoomIn factor
-			fail("Not implemented yet");
+			assertEquals("The resolution has not been properly changed by the zoomIn", 9, _map.resolution.resolutionValue); 
 		}
 		
 		/**
@@ -76,9 +82,15 @@ package org.openscales.map
 		public function shouldChangeResolutionByTheDefaultZoomOutFactorWhenZoomOut():void
 		{
 			// Given a map with a resolution
+			var _map:Map = new Map(600, 400, "EPSG:4326");
+			_map.resolution = new Resolution(10, "EPSG:4326");
+			
 			// When I zoomOut
+			_map.defaultZoomOutFactor = 1.1;
+			_map.zoomOut();
+			
 			// Then the resolution is multiplied by the default zoomOut factor
-			fail("Not implemented yet");
+			assertEquals("The resolution has not been properly changed by the zoomOut", 11, _map.resolution.resolutionValue);
 		}
 		
 		/**
@@ -89,9 +101,14 @@ package org.openscales.map
 		public function shouldChangeResolutionByTheGivenZoomFactorWhenZoom():void
 		{
 			// Given a map with a resolution
+			var _map:Map = new Map(600, 400, "EPSG:4326");
+			_map.resolution = new Resolution(10, "EPSG:4326");
+			
 			// When I zoom with a factor as parameter
+			_map.zoom(1.2);
+
 			// Then the resolution is multiplied by the given factor
-			fail("Not implemented yet");
+			assertEquals("The resolution has not been properly changed by the zoom", 12, _map.resolution.resolutionValue);
 		}
 		
 		/**
@@ -102,9 +119,15 @@ package org.openscales.map
 		public function shouldSetResolutionToMaxResolutionIfZoomWhentTooFar():void
 		{
 			// Given a map with a resolution and a maxResolution
+			var _map:Map = new Map(600, 400, "EPSG:4326");
+			_map.resolution = new Resolution(10, "EPSG:4326");
+			_map.maxResolution = new Resolution(12, "EPSG:4326");
+			
 			// When I zoom with a factor that will set the resolution above the maxResolution
+			_map.zoom(1.3);
+			
 			// Then the resolution is setted to maxResolution
-			fail("Not implemented yet");
+			assertEquals("The resolution has not been set to maxResolution", 12, _map.resolution.resolutionValue);
 		}
 		
 		/**
@@ -114,10 +137,16 @@ package org.openscales.map
 		[Test]
 		public function shouldSetResolutionToMinResolutionIfZoomWhentTooFar():void
 		{
-			// fiven a map with a resolution and a minResolution
+			// Given a map with a resolution and a minResolution
+			var _map:Map = new Map(600, 400, "EPSG:4326");
+			_map.resolution = new Resolution(10, "EPSG:4326");
+			_map.minResolution = new Resolution(8, "EPSG:4326");
+			
 			// When I zoom with a factor that will set the resolution below the minResolution
+			_map.zoom(0.7);
+			
 			// Then the resolution is setted to minResolution
-			fail("Not implemented yet");
+			assertEquals("The resolution has not been set to minResolution", 8, _map.resolution.resolutionValue);
 		}
 	}
 }

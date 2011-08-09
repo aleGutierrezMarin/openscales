@@ -15,6 +15,7 @@ package org.openscales.core
 	
 	import mx.events.DragEvent;
 	
+	import org.hamcrest.core.throws;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
@@ -91,6 +92,9 @@ package org.openscales.core
 		private var _projection:String = "EPSG:4326";
 		
 		private var _resolution:Resolution;
+		
+		private var _defaultZoomInFactor:Number = 0.9;
+		private var _defaultZoomOutFactor:Number = 1.1;
 
 		
 		
@@ -404,6 +408,70 @@ package org.openscales.core
 				var newCenterLocation:Location = this.getLocationFromMapPx(newCenterPx);
 				this.moveTo(newCenterLocation, null, tween);
 			}
+		}
+		
+		/**
+		 * Zoom in
+		 * It use the defaultZoomInFactor parameter of the map to change the resolution.
+		 * You can change this parameter to change the zoom factor for this method
+		 * If you want to give a zoom factor that will change frequently, use the zoom method
+		 * If the resolution reach a value below the minResolution, the resolution is setted
+		 * to minResolution
+		 */
+		public function zoomIn():void
+		{
+			var _newResolution:Number = this.resolution.resolutionValue * this._defaultZoomInFactor;
+			
+			if (_newResolution < this.minResolution.resolutionValue)
+			{
+				_newResolution = this.minResolution.resolutionValue;
+			}
+			this.resolution = new Resolution(_newResolution, this.resolution.projection);
+		}
+		
+		/**
+		 * Zoom out
+		 * It use the defaultZoomOutFactor parameter of the map to change the resolution.
+		 * You can change this parameter to change the zoom factor for this method
+		 * If you want to give a aoom factor that will change frequently, use the zoom method
+		 * If the resolution reach a value above the maxResolution, the resolution is setted
+		 * to maxResolution
+		 */
+		public function zoomOut():void
+		{
+			var _newResolution:Number = this.resolution.resolutionValue * this._defaultZoomOutFactor;
+			
+			if (_newResolution > this.maxResolution.resolutionValue)
+			{
+				_newResolution = this.maxResolution.resolutionValue;
+			}
+			this.resolution = new Resolution(_newResolution, this.resolution.projection);
+		}
+		
+		/**
+		 * Zoom
+		 * It use the given parameter to change the resolution.
+		 * The parameter must be above 0. If the factor is bellow 0, this method throw an argument error.
+		 * If the resolution reach a value above the maxResolution or below the minResolution,
+		 * the Resolution is setted to maxResolution or minResolution
+		 */
+		public function zoom(factor:Number):void
+		{
+			if (factor < 0)
+				throws(new ArgumentError);
+			
+			var _newResolution:Number = this.resolution.resolutionValue * factor;
+			
+			if (_newResolution > this.maxResolution.resolutionValue)
+			{
+				_newResolution = this.maxResolution.resolutionValue;
+			}
+			
+			if (_newResolution < this.minResolution.resolutionValue)
+			{
+				_newResolution = this.minResolution.resolutionValue;
+			}
+			this.resolution = new Resolution(_newResolution, this.resolution.projection);
 		}
 		
 		/*public function zoomOnDoubleClick(evt:MouseEvent):void {
@@ -1615,5 +1683,47 @@ package org.openscales.core
 			return this._resolution;
 		}	
 		
+		/**
+		 * The default zoomIn factor that will be used by zoomIn().
+		 * This parameter must be between 0 and 1, if you try to set
+		 * a value that is not between 0 and 1, and argument error is
+		 * thrown
+		 */
+		public function set defaultZoomInFactor(value:Number):void
+		{
+			if (value < 0 || value > 1)
+				throws(new ArgumentError);
+			
+			this._defaultZoomInFactor = value;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get defaultZoomInFactor():Number
+		{
+			return this._defaultZoomInFactor;
+		}
+		
+		/**
+		 * The default zoomOut factor that will be used by zoomOut().
+		 * This parameter must be between above 1, if you try to set
+		 * a value that is not above 1, and argument error is thrown
+		 */
+		public function set defaultZoomOutFactor(value:Number):void
+		{
+			if (value < 1)
+				throws(new ArgumentError);
+			
+			this._defaultZoomOutFactor = value;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get defaultZoomOutFactor():Number
+		{
+			return this._defaultZoomOutFactor;
+		}
 	}
 }
