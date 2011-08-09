@@ -267,7 +267,6 @@ package org.openscales.core.layer.ogc {
 			
 			// Then the map contains the two layers and both are displayed
 			assertEquals("Incorrect number of layers in the map", 2, this._map.layers.length);
-			assertNotNull("Inccorect baselayer type", (this._map.baseLayer as WMTS)); 
 			
 			assertNotNull("Inccorect layer 0 should be WMTS", (this._map.layers[0] as WMTS)); 
 			assertNotNull("Inccorect layer 1 should be WMS", (this._map.layers[1]  as WMS)); 
