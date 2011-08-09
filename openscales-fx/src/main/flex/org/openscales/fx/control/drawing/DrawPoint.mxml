@@ -17,6 +17,8 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPointHandler;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.handler.mouse.DragHandler;
 			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
@@ -25,6 +27,7 @@
 			private var _active:Boolean = true;
 			
 			private var _handler:AbstractDrawHandler= new DrawPointHandler();
+			private var _dragHandler:DragHandler;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -54,6 +57,13 @@
 				
 				_handler.map = value;
 				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				
+				for each(var ih:IHandler in this.map.controls){
+					if(ih is DragHandler){
+						_dragHandler = (ih as DragHandler);
+						_dragHandler.map = value;
+					}
+				}
 			}
 			
 			/**
@@ -89,14 +99,18 @@
 			private function activate():void{
 				
 				_handler.active = true;
+				if(_dragHandler)
+					_dragHandler.active = false;
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
+				//if(_dragHandler)
+					//_dragHandler.active = true;
 			}
 			
 			/**
-			 * On button click, dispatch a DrawingEvent.CREATE_GEOMETRY event
+			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
 			 */
 			private function onClick():void{
 				
@@ -107,7 +121,7 @@
 			}
 			
 			/**
-			 * Check the handler when a DrawingEvent.CREATE_GEOMETRY event occured
+			 * Check the handler when a DrawingEvent.CHANGE_ACTIVE_HANDLER event occured
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
