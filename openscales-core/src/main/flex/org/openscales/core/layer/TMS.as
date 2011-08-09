@@ -39,15 +39,15 @@ package org.openscales.core.layer
 		}
 		
 		override public function getURL(bounds:Bounds):String {
-			var res:Number = this.map.resolution;
+			var res:Number = this.map.resolution.resolutionValue;
 			if(this._tileOrigin==null) {
 				this._tileOrigin = new Location(this.maxExtent.left,this.maxExtent.bottom);
 			}
 			
 			var x:Number = Math.round((bounds.left - this._tileOrigin.lon) / (res * this.tileWidth));
 			var y:Number = Math.round((bounds.bottom - this._tileOrigin.lat) / ( res* this.tileHeight));
-			var z:Number = (this._serverResolutions!=null) ? this._serverResolutions.indexOf(res) : this.map.zoom;
-
+			var z:Number = this.getZoomForResolution(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue);
+			
 			var url:String = this.url + this._serviceVersion +"/" + this.layerName + "/" + z + "/" + x + "/" + y+"."+this._format;
 			return url ;
 		}

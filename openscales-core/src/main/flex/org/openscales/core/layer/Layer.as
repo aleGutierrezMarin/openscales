@@ -316,7 +316,7 @@ package org.openscales.core.layer {
 				var size:Size = this.map.size;
 				var center:Location = this.map.center;
 				if (center) {
-					var res:Number = this.map.resolution;
+					var res:Number = this.map.resolution.resolutionValue;
 					
 					var delta_x:Number = viewPortPx.x - (size.w / 2);
 					var delta_y:Number = viewPortPx.y - (size.h / 2);
@@ -334,7 +334,7 @@ package org.openscales.core.layer {
 			var px:Pixel = null;
 			var b:Bounds = this.extent;
 			if (lonlat != null && b) {
-				var resolution:Number = this.map.resolution;
+				var resolution:Number = this.map.resolution.resolutionValue;
 				if(resolution)
 					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
 			}
@@ -424,9 +424,9 @@ package org.openscales.core.layer {
 		public  function get inRange():Boolean {
 			var inRange:Boolean = false;
 			if (this.map) {
-				var resolutionProjected:Number = this.map.resolution;
-				if (this.isBaseLayer != true && this.projSrsCode != this.map.projection) {
-					resolutionProjected = Proj4as.unit_transform(this.map.projection,this.projSrsCode,this.map.resolution);
+				var resolutionProjected:Number = this.map.resolution.resolutionValue;
+				if (this.projSrsCode != this.map.projection) {
+					resolutionProjected = this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue;
 				}
 				inRange = ((resolutionProjected >= this.minResolution) && (resolutionProjected <= this.maxResolution));
 			}
@@ -642,12 +642,12 @@ package org.openscales.core.layer {
 		/**
 		 * Whether or not this layer is a baselayer.
 		 */
-		public function get isBaseLayer():Boolean {
+		/*public function get isBaseLayer():Boolean {
 			if ((! this._map) || (! this._map.baseLayer)) {
 				return false;
 			}
 			return (this.map.baseLayer == this);
-		}
+		}*/
 		
 		/**
 		 * Whether or not the layer is a fixed layer.
