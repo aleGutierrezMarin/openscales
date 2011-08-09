@@ -259,7 +259,6 @@
     <resourceEntry destPath="assets/images/panning-hand-on.png" sourcePath="assets/images/panning-hand-on.png"/>
     <resourceEntry destPath="assets/images/measuring-stick-on.png" sourcePath="assets/images/measuring-stick-on.png"/>
     <resourceEntry destPath="assets/images/marker-green.png" sourcePath="assets/images/marker-green.png"/>
-    <resourceEntry destPath="org/openscales/core/layer/Layer.as.orig" sourcePath="org/openscales/core/layer/Layer.as.orig"/>
     <resourceEntry destPath="assets/images/zoom-world-mini.png" sourcePath="assets/images/zoom-world-mini.png"/>
     <resourceEntry destPath="assets/images/zoom-minus-mini.png" sourcePath="assets/images/zoom-minus-mini.png"/>
     <resourceEntry destPath="assets/images/blank.gif" sourcePath="assets/images/blank.gif"/>
