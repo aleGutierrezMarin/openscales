@@ -152,6 +152,7 @@ package org.openscales.core.control
 		 * @return Pixel
 		 */
 		public function _addZoomBar(centered:Pixel):Pixel {
+			/*
 			if(!this.map.baseLayer)
 				return null;
 			var zoomsToEnd:int = this.map.baseLayer.numZoomLevels - 1 - this.map.zoom;
@@ -179,7 +180,7 @@ package org.openscales.core.control
 			this.map.addEventListener(MapEvent.MOVE_END,this.moveZoomBar);
 			
 			centered = centered.add(0, 
-				this.zoomStopHeight * this.map.baseLayer.numZoomLevels);
+				this.zoomStopHeight * this.map.baseLayer.numZoomLevels);*/
 			return centered; 
 		}
 		

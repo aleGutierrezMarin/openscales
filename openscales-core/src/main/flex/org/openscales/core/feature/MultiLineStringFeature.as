@@ -29,7 +29,7 @@ package org.openscales.core.feature
 			var p:Point = null;
 			var x:Number; 
             var y:Number;
-            var resolution:Number = this.layer.map.resolution 
+            var resolution:Number = this.layer.map.resolution.resolutionValue; 
             var dX:int = -int(this.layer.map.layerContainer.x) + this.left; 
             var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
 			var lineString:LineString = null;

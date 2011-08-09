@@ -29,7 +29,8 @@ package org.openscales.core.handler.mouse {
 		
 		private function onMouseWheel(event:MouseEvent):void {
 			if (this.map) {
-				this.map.zoomToMousePosition((event.delta > 0));
+				// TODO : now that we can zoom with resolution use it !!
+				//this.map.zoomToMousePosition((event.delta > 0));
 			}
 		}
 		

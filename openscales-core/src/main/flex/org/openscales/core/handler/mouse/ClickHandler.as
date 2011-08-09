@@ -184,11 +184,7 @@ package org.openscales.core.handler.mouse
 			}
 			var bottomLeft:Location = this.map.getLocationFromMapPx(new Pixel(rect.left, rect.bottom));
 			var topRight:Location = this.map.getLocationFromMapPx(new Pixel(rect.right, rect.top));
-			if (this.map.baseLayer) {
-				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, this.map.projection);
-			} else {
-				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, Geometry.DEFAULT_SRS_CODE);
-			}
+			return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, this.map.projection);
 		}
 		
 		/**
@@ -311,12 +307,13 @@ package org.openscales.core.handler.mouse
 		 */ 
 		private function onDoubleClick():void
 		{
+			// TODO refactor double click
 			// If the handler is configured to zoom on mouse position
 			if(this.doubleClickZoomOnMousePosition){
-				this.map.zoomToMousePosition(true);	
+				//this.map.zoomToMousePosition(true);	
 			}else // Otherwise, zooming to current center
 			{
-				this.map.moveTo(map.center,map.zoom+1,false,true);
+				//this.map.moveTo(map.center,map.zoom+1,false,true);
 			} 
 		}
 
