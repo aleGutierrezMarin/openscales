@@ -58,6 +58,36 @@ package org.openscales.core
 	{
 		
 		/**
+		 * Default SRS Code of the Map
+		 */
+		public static const DEFAULT_SRS_CODE:String = "EPSG:4326";
+		
+		/**
+		 * Default Resolution of the map. The projection of the resolution is the DEFAULT_SRS_CODE
+		 */
+		public static const DEFAULT_RESOLUTION:Resolution = new Resolution(1, DEFAULT_SRS_CODE);
+		
+		/**
+		 * Default MaxExtent of the map. The projection of the maxExtent is the DEFAULT_SRS_CODE
+		 */
+		public static const DEFAULT_MAX_EXTENT:Bounds = new Bounds(-180, -90, 180, 90, DEFAULT_SRS_CODE);
+		
+		/**
+		 * Default Center of the map. The projection of the center is the DEFAULT_SRS_CODE
+		 */
+		public static const DEFAULT_CENTER:Location = new Location(0, 0, DEFAULT_SRS_CODE);
+		
+		/**
+		 * Default Min Resolution of the map. The projection of the min resolution is the DEFAULT_SRS_CODE
+		 */
+		public static const DEFAULT_MIN_RESOLUTION:Resolution = new Resolution(0, DEFAULT_SRS_CODE);
+		
+		/**
+		 * Default Max Resolution of the map. The projection of the max resolution is the DEFAULT_SRS_CODE
+		 */
+		public static const DEFAULT_MAX_RESOLUTION:Resolution = new Resolution(Number.POSITIVE_INFINITY, DEFAULT_SRS_CODE);
+		
+		/**
 		 * Number of attempt for downloading an image tile
 		 */
 		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
@@ -76,8 +106,8 @@ package org.openscales.core
 		private var _zooming:Boolean = false;
 		private var _dragging:Boolean = false;
 		private var _loading:Boolean;
-		protected var _center:Location = null;
-		private var _maxExtent:Bounds = null;
+		protected var _center:Location = DEFAULT_CENTER;
+		private var _maxExtent:Bounds = DEFAULT_MAX_EXTENT;
 		private var _destroying:Boolean = false;
 		private var _tweenZoomEnabled:Boolean = true;
 		
@@ -89,28 +119,26 @@ package org.openscales.core
 		
 		private var _cptGTween:uint = 0;
 		
-		private var _projection:String = "EPSG:4326";
+		private var _projection:String = DEFAULT_SRS_CODE;
 		
-		private var _resolution:Resolution;
+		private var _resolution:Resolution = DEFAULT_RESOLUTION;
 		
 		private var _defaultZoomInFactor:Number = 0.9;
 		private var _defaultZoomOutFactor:Number = 1.1;
 
-		
-		
 		/**
 		 * @private
 		 * The minimum resolution of the map
 		 * @default 0 in EPSG:4326
 		 */
-		private var _minResolution:Resolution = new Resolution(0, "EPSG:4326");
+		private var _minResolution:Resolution = DEFAULT_MIN_RESOLUTION;
 		
 		/**
 		 * @private
 		 * The maximum resolution of the map
 		 * @default Number.POSITIVE_INFINITY in EPSG:4326
 		 */
-		private var _maxResolution:Resolution = new Resolution(Number.POSITIVE_INFINITY, "EPSG:4326");
+		private var _maxResolution:Resolution = DEFAULT_MAX_RESOLUTION;
 		
 		/**
 		 * The location where the layer container was re-initialized (on-zoom)
@@ -417,16 +445,20 @@ package org.openscales.core
 		 * If you want to give a zoom factor that will change frequently, use the zoom method
 		 * If the resolution reach a value below the minResolution, the resolution is setted
 		 * to minResolution
+		 * 
+		 * You can give a pixel to specify the pixel where to zoom. The default value is the center of the 
+		 * map
 		 */
-		public function zoomIn():void
+		public function zoomIn(px:Pixel = null):void
 		{
 			var _newResolution:Number = this.resolution.resolutionValue * this._defaultZoomInFactor;
+			var _targetPixel:Pixel = px;
 			
-			if (_newResolution < this.minResolution.resolutionValue)
+			if (_targetPixel == null)
 			{
-				_newResolution = this.minResolution.resolutionValue;
+				_targetPixel = this.getMapPxFromLocation(this.center);
 			}
-			this.resolution = new Resolution(_newResolution, this.resolution.projection);
+			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), this.getLocationFromMapPx(_targetPixel));
 		}
 		
 		/**
@@ -436,16 +468,20 @@ package org.openscales.core
 		 * If you want to give a aoom factor that will change frequently, use the zoom method
 		 * If the resolution reach a value above the maxResolution, the resolution is setted
 		 * to maxResolution
+		 * 
+		 * You can give a pixel to specify the pixel where to zoom. The default value is the center of the 
+		 * map
 		 */
-		public function zoomOut():void
+		public function zoomOut(px:Pixel = null):void
 		{
 			var _newResolution:Number = this.resolution.resolutionValue * this._defaultZoomOutFactor;
+			var _targetPixel:Pixel = px;
 			
-			if (_newResolution > this.maxResolution.resolutionValue)
+			if (_targetPixel == null)
 			{
-				_newResolution = this.maxResolution.resolutionValue;
+				_targetPixel = this.getMapPxFromLocation(this.center);
 			}
-			this.resolution = new Resolution(_newResolution, this.resolution.projection);
+			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), this.getLocationFromMapPx(_targetPixel));
 		}
 		
 		/**
@@ -454,24 +490,83 @@ package org.openscales.core
 		 * The parameter must be above 0. If the factor is bellow 0, this method throw an argument error.
 		 * If the resolution reach a value above the maxResolution or below the minResolution,
 		 * the Resolution is setted to maxResolution or minResolution
+		 * 
+		 * You can give a pixel to specify the pixel where to zoom. The default value is the center of the 
+		 * map
 		 */
-		public function zoom(factor:Number):void
+		public function zoom(factor:Number, px:Pixel = null):void
 		{
 			if (factor < 0)
 				throws(new ArgumentError);
 			
 			var _newResolution:Number = this.resolution.resolutionValue * factor;
+			var _targetPixel:Pixel = px;
 			
-			if (_newResolution > this.maxResolution.resolutionValue)
+			if (_targetPixel == null)
 			{
-				_newResolution = this.maxResolution.resolutionValue;
+				_targetPixel = this.getMapPxFromLocation(this.center);
+			}
+			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), this.getLocationFromMapPx(_targetPixel));
+		
+		}
+		
+		/**
+		 * @private
+		 * This method is the one that will execute the zoom.
+		 * It's called by every zoom method exposed by the API 
+		 * this method will check that the resolution is in range
+		 * of min and max resolution
+		 */
+		private function zoomTo(resolution:Resolution, newCenter:Location):void
+		{
+			// Temporary 
+			var dragTween:Boolean = false;
+			
+			var mapEvent:MapEvent;
+			var newResolution:Number = this.resolution.resolutionValue
+				
+			if (newResolution > this.maxResolution.resolutionValue)
+			{
+				newResolution = this.maxResolution.resolutionValue;
 			}
 			
-			if (_newResolution < this.minResolution.resolutionValue)
+			if (newResolution < this.minResolution.resolutionValue)
 			{
-				_newResolution = this.minResolution.resolutionValue;
+				newResolution = this.minResolution.resolutionValue;
 			}
-			this.resolution = new Resolution(_newResolution, this.resolution.projection);
+			var targetResolution:Resolution = new Resolution(newResolution, this.resolution.projection);
+			var resolutionChanged:Boolean = (this.isValidResolution(targetResolution) && (targetResolution.resolutionValue != this._resolution.resolutionValue));
+			var validLocation:Boolean = this.isValidLocation(newCenter);
+			
+			if (newCenter && !validLocation) {
+				Trace.log("Not a valid center, so do nothing");
+				return;
+			}
+			
+			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
+			
+			if (resolutionChanged || centerChanged) {
+				
+				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
+				this.dispatchEvent(mapEvent);
+				
+				if (centerChanged) {
+					if ((!resolutionChanged) && (this.center) && !this._dragging) {
+						this.centerLayerContainer(newCenter, dragTween);
+					}
+					this.center = newCenter.clone();
+				}
+				
+				if ((resolutionChanged) || (this._layerContainerOrigin == null)) {
+					this._layerContainerOrigin = this.center.clone();
+					this._layerContainer.x = 0;
+					this._layerContainer.y = 0;
+				}
+				
+				if (resolutionChanged) {
+					this.resolution = targetResolution;
+				}
+			}
 		}
 		
 		/*public function zoomOnDoubleClick(evt:MouseEvent):void {
@@ -483,11 +578,11 @@ package org.openscales.core
 		 *
 		 * @param zoomIn Boolean defining if a zoom (true) or a zoom out (false) must be realized.
 		 */
-		/*public function zoomToMousePosition(zoomIn:Boolean):void {
+		public function zoomToMousePosition(zoomIn:Boolean):void {
 			
 			const px:Pixel = new Pixel(this.mouseX, this.mouseY);
-			
-			if(this.dragging)
+			// TODO : Check if we still need to lock drag
+			/*if(this.dragging)
 			{
 				var i:int = 0;
 				var j:int = this._controls.length;
@@ -503,28 +598,21 @@ package org.openscales.core
 						drag.startDrag();
 					}
 				}
-			}			
+			}	*/		
 			
 			const centerPx:Pixel = new Pixel(this.width/2, this.height/2);
 
 			var newCenterPx:Pixel;
-			var z:Number = this.zoom;
 			if (zoomIn) {
-				z++;
-				if (z > this.baseLayer.maxZoomLevel) {
-					return;
-				}
+				this.zoomIn();
 				newCenterPx = new Pixel((px.x+centerPx.x)/2, (px.y+centerPx.y)/2);
 			} else {
-				z--;
-				if (z < this.baseLayer.minZoomLevel) {
-					return;
-				}
+				this.zoomOut();
 				newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
 			}
 		
-			this.moveTo(this.getLocationFromMapPx(newCenterPx), z, false, true);
-		}*/
+			this.moveTo(this.getLocationFromMapPx(newCenterPx), null, false, true);
+		}
 		
 		/**
 		 * Set the map center (and optionally, the zoom level).
@@ -544,16 +632,17 @@ package org.openscales.core
 								dragTween:Boolean = false,
 								zoomTween:Boolean = false):void {
 					
-			var resolutionChanged:Boolean = (this.isValidResolution(newResolution) && (newResolution.resolutionValue != this._resolution.resolutionValue));
+			/*if (newResolution != null)
+				var resolutionChanged:Boolean = (this.isValidResolution(newResolution) && (newResolution.resolutionValue != this._resolution.resolutionValue));
 			var validLocation:Boolean = this.isValidLocation(newCenter);
 			var mapEvent:MapEvent = null;
 			
 			if (newCenter && !validLocation) {
 				Trace.log("Not a valid center, so do nothing");
 				return;
-			}		
+			}	*/	
 			
-			// If the map is not initialized, the center of the extent is used
+			/*// If the map is not initialized, the center of the extent is used
 			// as the current center
 			if (!this.center && !validLocation) {
 				newCenter = this.maxExtent.center;
@@ -562,40 +651,40 @@ package org.openscales.core
 			}			
 			if (newCenter.projSrsCode && (newCenter.projSrsCode!=this.projection)) {
 				newCenter = newCenter.reprojectTo(this.projection);
-			}
+			}*/
 			
-			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
-			validLocation = this.isValidLocation(newCenter);
-			var oldResolution:Resolution = this.resolution;
-			if(!resolutionChanged){
-			  newResolution = oldResolution; 
-			}
-			var oldCenter:Location = this._center;
+			//var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
+			//validLocation = this.isValidLocation(newCenter);
+			//var oldResolution:Resolution = this.resolution;
+			//if(!resolutionChanged){
+			//  newResolution = oldResolution; 
+			//}
+			//var oldCenter:Location = this._center;
 			
 			
-			if (resolutionChanged || centerChanged) {
+		/*	if (resolutionChanged || centerChanged) {
 				
 				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
-				mapEvent.oldResolution = oldResolution;
-				mapEvent.newResolution = newResolution;
-				mapEvent.oldCenter = oldCenter;
-				mapEvent.newCenter = newCenter;
+				//mapEvent.oldResolution = oldResolution;
+				//mapEvent.newResolution = newResolution;
+				//mapEvent.oldCenter = oldCenter;
+				//mapEvent.newCenter = newCenter;
 				this.dispatchEvent(mapEvent);
 
-				/*if (zoomChanged && zoomTween) {
+				if (zoomChanged && zoomTween) {
 					this.zoomTransition(newZoom, newCenter);
 					return;
-				}*/
+				}
 				
 				if (centerChanged) {
 					if ((!resolutionChanged) && (this.center) && !this._dragging) {
 						this.centerLayerContainer(newCenter, dragTween);
 					}
-					this._center = newCenter.clone();
-					var mapEventCenter:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
-					mapEventCenter.oldCenter = oldCenter;
-					mapEventCenter.newCenter = newCenter;
-					this.dispatchEvent(mapEventCenter);
+					this.center = newCenter.clone();
+					//var mapEventCenter:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
+					//mapEventCenter.oldCenter = oldCenter;
+					//mapEventCenter.newCenter = newCenter;
+					//this.dispatchEvent(mapEventCenter);
 				}
 				
 				if ((resolutionChanged) || (this._layerContainerOrigin == null)) {
@@ -606,10 +695,10 @@ package org.openscales.core
 				
 				if (resolutionChanged) {
 					this.resolution = newResolution;
-					var mapEventZoom:MapEvent = new MapEvent(MapEvent.ZOOM_CHANGED, this);
-					mapEventZoom.oldResolution = oldResolution;
-					mapEventZoom.newResolution = newResolution;
-					this.dispatchEvent(mapEventZoom);
+					//var mapEventZoom:MapEvent = new MapEvent(MapEvent.ZOOM_CHANGED, this);
+					//mapEventZoom.oldResolution = oldResolution;
+					//mapEventZoom.newResolution = newResolution;
+					//this.dispatchEvent(mapEventZoom);
 				}
 				
 				
@@ -621,7 +710,7 @@ package org.openscales.core
 					mapEvent.newCenter = newCenter;
 					this.dispatchEvent(mapEvent);
 				}
-			}
+			}*/
 		}
 		
 		/**
@@ -687,6 +776,7 @@ package org.openscales.core
 		 * range of zoom levels.
 		 */
 		private function isValidResolution(resolution:Resolution):Boolean {
+			
 			if (resolution.resolutionValue < this.minResolution.resolutionValue)
 			{
 				return false;
@@ -696,15 +786,7 @@ package org.openscales.core
 			{
 				return false;
 			}
-			
 			return true
-			/*return (this.baseLayer 
-				&& !isNaN(zoomLevel) 
-				&& (zoomLevel >= this.baseLayer.minZoomLevel) 
-				&& (zoomLevel <= this.baseLayer.maxZoomLevel)
-				&& this._baseLayer.resolutions[zoomLevel] < this.maxResolution
-				&& this._baseLayer.resolutions[zoomLevel] > this.minResolution
-			);*/
 		}
 		
 		/**
@@ -815,10 +897,18 @@ package org.openscales.core
 		 */
 		public function getLocationFromMapPx(px:Pixel):Location {
 			var lonlat:Location = null;
-			//TODO : reimplement without the base Layer 
-			/*if (this.baseLayer != null) {
-				lonlat = this.baseLayer.getLocationFromMapPx(px);
-			}*/
+			if (px != null) {
+				var size:Size = this.size;
+				var center:Location = this.center;
+				if (center) {
+					var res:Number = this.resolution.resolutionValue;
+					
+					var delta_x:Number = px.x - (size.w / 2);
+					var delta_y:Number = px.y - (size.h / 2);
+					
+					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res, this.projection);
+				}
+			}
 			return lonlat;
 		}
 		
@@ -828,10 +918,12 @@ package org.openscales.core
 		 */
 		public function getMapPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = null;
-			//TODO : reimplement without the base Layer 
-			/*if (this.baseLayer != null) {
-				px = this.baseLayer.getMapPxFromLocation(lonlat);
-			}*/
+			var b:Bounds = this.extent;
+			if (lonlat != null && b) {
+				var resolution:Number = this.resolution.resolutionValue;
+				if(resolution)
+					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
+			}	
 			return px;
 		}
 		
@@ -1670,16 +1762,18 @@ package org.openscales.core
 		 * Current resolution (units per pixel) of the map with its related projection
 		 */
 		public function set resolution(value:Resolution):void
-		{
+		{		
+			var event:MapEvent = new MapEvent(MapEvent.RESOLUTION_CHANGED, this);
+			event.oldResolution = this._resolution;
+			event.newResolution = value;
 			this._resolution = value;
-			//this.zoomToResolution(value);
+			this.dispatchEvent(event);
 		}
 		
 		/**
 		 * @private
 		 */
 		public function get resolution():Resolution {
-			//return (this.baseLayer) ? this.baseLayer.resolutions[this.zoom] : 0;
 			return this._resolution;
 		}	
 		

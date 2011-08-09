@@ -41,18 +41,18 @@ package {
 			
 			
 			// Add Controls to map
-			_map.addControl(new MousePosition());
-			_map.addControl(new LayerManager());
-			_map.addControl(new PanZoomBar());
+			//_map.addControl(new MousePosition());
+			//_map.addControl(new LayerManager());
+			//_map.addControl(new PanZoomBar());
 			
 			
-			var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
+		/*	var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
 			selectHandler.enableClickSelection = false;
 			selectHandler.enableBoxSelection = false;
 			selectHandler.enableOverSelection = true;
 			selectHandler.active = true;
 			
-			_map.addControl(selectHandler);
+			_map.addControl(selectHandler);*/
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 			
