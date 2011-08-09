@@ -27,32 +27,34 @@ package org.openscales.core.layer
 			  this._lastLayer.map  = map;
 			  this._lastLayer.removeEventListenerFromMap();
 			  super.map = map;
-			  if(this.map.zoom > this._zoomToSwitch )
-			  {
+			 
+			  // TODO : Refactor Zoom
+			  //if(this.map.zoom > this._zoomToSwitch )
+			  //{
 			  	_isFirstLayer = true;
 			    this.addChild(this._firstLayer);
-			  }
-			  else{
-			  	_isFirstLayer = false;
-			    this.addChild(this._lastLayer);
-			  }
+			  //}
+			 // else{
+			 // 	_isFirstLayer = false;
+			 //   this.addChild(this._lastLayer);
+			//  }
 			}
 			
 		}
 		
 		public function changeLayer():void{
-		
-			 if(_isFirstLayer== false && this.map.zoom > this._zoomToSwitch )
-			  {
+			// TODO Zoom Refactor
+			// if(_isFirstLayer== false && this.map.zoom > this._zoomToSwitch )
+			//  {
 			  	this.removeChild(this._lastLayer);
 			  	_isFirstLayer = true;
 			    this.addChild(this._firstLayer);
-			  }
-			  if(_isFirstLayer== true && this.map.zoom <= this._zoomToSwitch ){
+			//  }
+			//  if(_isFirstLayer== true && this.map.zoom <= this._zoomToSwitch ){
 			  	this.removeChild(this._firstLayer);
 			  	_isFirstLayer = false;
 			    this.addChild(this._lastLayer);
-			  }
+			//  }
 			
 		}
 		
@@ -78,28 +80,31 @@ package org.openscales.core.layer
 			if (this.map == null) {
 				  return this._firstLayer.projSrsCode;
 			}
-			if(this.map.zoom > this._zoomToSwitch ) {
+			// TODO Zoom refactor
+			//if(this.map.zoom > this._zoomToSwitch ) {
 			  return this._firstLayer.projSrsCode;
-			} else {
-			  return this._lastLayer.projSrsCode;
-			}
+			//} else {
+			//  return this._lastLayer.projSrsCode;
+			//}
 		}
 		
 		override public function get minResolution():Number {
-			if (this.map.zoom > this._zoomToSwitch ) {
+			// TODO Zoom Refactor
+			//if (this.map.zoom > this._zoomToSwitch ) {
 			  return this._firstLayer.minResolution;
-			} else {
-			  return this._lastLayer.minResolution;
-			}
+			//} else {
+			//  return this._lastLayer.minResolution;
+			//}
 			
 		}
 		
 		override public function get maxResolution():Number {
-			if (this.map.zoom > this._zoomToSwitch ) {
+			// TODO Zoom Refaactor
+			//if (this.map.zoom > this._zoomToSwitch ) {
 			  return this._firstLayer.maxResolution;
-			} else {
-			  return this._lastLayer.maxResolution;
-			}
+			//} else {
+			//  return this._lastLayer.maxResolution;
+			//}
 		}
 		/*before this zoom the firtlayer will be visible
 		  after this zoom the lastlayer will be visible
@@ -123,12 +128,13 @@ package org.openscales.core.layer
 			
 			if(this.visible)
 			{
-			  if(this.map.zoom > this._zoomToSwitch ) {
+				// TODO zoom Refactor
+			  //if(this.map.zoom > this._zoomToSwitch ) {
 				this._firstLayer.redraw();
-			  }
-			  else{
-			  	this._lastLayer.redraw();
-			  }
+			 // }
+			 // else{
+			 // 	this._lastLayer.redraw();
+			 // }
 		    }
 		}
 	
@@ -138,12 +144,13 @@ package org.openscales.core.layer
 		 */
 		override public function clear():void {
 			
-			if(this.map.zoom > this._zoomToSwitch ) {
+			//if(this.map.zoom > this._zoomToSwitch ) {
+				// Todo Zoom Refactor
 				this._firstLayer.clear();
-			  }
-			  else{
-			  	this._lastLayer.clear();
-			  }
+			//  }
+			//  else{
+			//  	this._lastLayer.clear();
+			//  }
 			
 		}
 		
@@ -151,12 +158,13 @@ package org.openscales.core.layer
 		 * Reset layer data
 		 */
 		override public function reset():void {
-			if(this.map.zoom > this._zoomToSwitch ) {
+			// Todo Zoom Refactor
+			//if(this.map.zoom > this._zoomToSwitch ) {
 				this._firstLayer.reset();
-			  }
-			  else{
-			  	this._lastLayer.reset();
-			  }
+			//  }
+			//  else{
+			//  	this._lastLayer.reset();
+			//  }
 		}
 		/**
 		 * Clear and draw, if needed, layer based on current data eventually retreived previously by moveTo function.
@@ -164,24 +172,25 @@ package org.openscales.core.layer
 		 * @return true if the layer was redrawn, false if not
 		 */
 		override public function redraw(fullRedraw:Boolean = true):void {
-			if(this.map.zoom > this._zoomToSwitch ) {
+			// TODO : Zoom Refactor
+			//if(this.map.zoom > this._zoomToSwitch ) {
 				this._firstLayer.redraw();
-			  }
-			  else{
-			  	this._lastLayer.redraw();
-			  }
+			 // }
+			 // else{
+			 // 	this._lastLayer.redraw();
+			 // }
 		}
 		/**
 		 * return the layer that is displayed on the map
 		 */ 
 		public function getDisplayLayer():Layer{
-			
-			if(this.map.zoom > this._zoomToSwitch ) {
+			// TODO : Zoom Refactor
+			//if(this.map.zoom > this._zoomToSwitch ) {
 				return this._firstLayer;
-			  }
-			  else{
-			  	return this._lastLayer;
-			  }
+			//  }
+			//  else{
+			//  	return this._lastLayer;
+			//  }
 		}
 		/**
 		 * return the vector layer, if there one
@@ -191,12 +200,13 @@ package org.openscales.core.layer
 		 */
 		public function getFeatureLayer():FeatureLayer{
 			if(this._firstLayer is FeatureLayer && this._lastLayer is FeatureLayer){
-			  if(this.map.zoom > this._zoomToSwitch ) {
+				// TODO : Zoom Refactor
+			 // if(this.map.zoom > this._zoomToSwitch ) {
 				 return this._firstLayer as FeatureLayer;
-			  }
-			  else{
-			  	return this._lastLayer as FeatureLayer;
-			  }
+			//  }
+			//  else{
+			//  	return this._lastLayer as FeatureLayer;
+			//  }
 			}
 			else{
 				if(this._firstLayer is FeatureLayer){
