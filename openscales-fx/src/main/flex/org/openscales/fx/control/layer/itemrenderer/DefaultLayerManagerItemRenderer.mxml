@@ -71,7 +71,7 @@
 			
 			/**
 			 * The current source to the button to display reduce or maximize
-			 * @default : maximize
+			 * @default maximize
 			 */
 			[Bindable]
 			public var _btnReduceMaximize:Class = BTN_MAXIMIZE;
@@ -179,7 +179,7 @@
 			/**
 			 * @inherit
 			 * 
-			 * The options implemented by the DefaultLayerRenderer are :
+			 * The options implemented by the DefaultLayerRenderer are 
 			 * 
 			 * &lt;LayerSwitcher&gt;
 			 *	 	&lt;rendererOptions&gt;
@@ -232,7 +232,7 @@
 					// this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
 				}
 				
-				/** TODO : work in progress
+				/** TODO  work in progress
 				 if(this._isDrawingLayer)
 				 {
 				 this._maximizeGroupSize += layerSwitcherDrawingTools.height;
@@ -311,7 +311,7 @@
 				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
 				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
 				
-				/** TODO : work in progress
+				/** TODO work in progress
 				 if(this._isDrawingLayer)
 				 {
 				 layerSwitcherDrawingTools.visible = !this._isMinimized;
@@ -377,13 +377,6 @@
 		<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="false">
 			<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
 		</s:SkinnableContainer>
-		
-		
-		<!--- TODO : work in progress
-		<s:SkinnableContainer id="layerSwitcherDrawingTools" visible="false" includeInLayout="false" height ="90">
-		<FeatureDrawing id="layerControlDrawTools" />
-		</s:SkinnableContainer>
-		-->
 		
 		<s:SkinnableContainer id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20" >
 			<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
