@@ -5,7 +5,7 @@
 	
 	<Map id="fxMap" width="100%" height="100%" zoom="11" center="2.338345,48.871692">
 		
-		<Mapnik name="Mapnik" alpha="0.1"/>
+		<Mapnik name="Mapnik" alpha="0.5"/>
 		
 		<KML id="kmlLayer" url="http://www.parisavelo.net/velib.kml" proxy="http://openscales.org/proxy.php?url="
 				numZoomLevels="20" style="{Style.getDefaultCircleStyle()}" tweenOnZoom="false" />
