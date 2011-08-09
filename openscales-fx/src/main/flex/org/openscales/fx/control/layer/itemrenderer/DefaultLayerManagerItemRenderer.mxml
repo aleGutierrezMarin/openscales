@@ -359,7 +359,7 @@
 			<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" />
 			
 			
-			<ChangeLayerPosition layer="{_layer}" layerManager="{_layerManager}" />
+			<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 			
 			
 			<os:IconButton id="layerSwitcherReduceMaximize"
