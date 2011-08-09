@@ -1,6 +1,7 @@
 package org.openscales.core.layer.originator
 {
 	import org.flexunit.Assert;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.basetypes.Bounds;
 	
@@ -91,22 +92,22 @@ package org.openscales.core.layer.originator
 			// test resolutions covered :
 			
 			// test 1 : too low / FALSE
-			var resolutionTest1:Number = -1;
+			var resolutionTest1:Resolution = new Resolution(-1, "EPSG:4326");
 			
 			Assert.assertFalse(dataOriginator.isCoveredArea(bounds, resolutionTest1));
 			
 			// test 2 : too hight / FALSE
-			var resolutionTest2:Number = 6;
+			var resolutionTest2:Resolution = new Resolution(6, "EPSG:4326");
 			
 			Assert.assertFalse(dataOriginator.isCoveredArea(bounds, resolutionTest2));
 			
 			// test 3 : between one resolution constraint / TRUE
-			var resolutionTest3:Number = 1;
+			var resolutionTest3:Resolution = new Resolution(1, "EPSG:4326");
 			
 			Assert.assertTrue(dataOriginator.isCoveredArea(bounds, resolutionTest3));
 			
 			// test 4 : equal to one resolution limit / TRUE
-			var resolutionTest4:Number = 4;
+			var resolutionTest4:Resolution = new Resolution(4, "EPSG:4326");;
 			
 			Assert.assertTrue(dataOriginator.isCoveredArea(bounds, resolutionTest4));
 		}
@@ -125,7 +126,7 @@ package org.openscales.core.layer.originator
 			var minResolution:Number = maxResolution/Layer.DEFAULT_NUM_ZOOM_LEVELS
 			
 			// resolution valid for coverage
-			var moyResolution:Number = (minResolution+maxResolution)/2.0;
+			var moyResolution:Resolution = new Resolution((minResolution+maxResolution)/2.0, "EPSG:4326");
 			
 			// contraint originator 1 :
 			var bounds1:Bounds = new Bounds(-2,-2,2,2,"");		
