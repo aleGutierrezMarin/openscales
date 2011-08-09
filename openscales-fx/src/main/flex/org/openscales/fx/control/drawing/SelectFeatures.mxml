@@ -60,12 +60,9 @@
 				for each(var ih:IHandler in this.map.controls){
 					if(ih is DragHandler){
 						_dragHandler = (ih as DragHandler);
+						_dragHandler.map = value;
 					}
 				}
-				if(!_dragHandler){
-					_dragHandler = new DragHandler();
-				}
-				_dragHandler.map = value;
 			}
 			
 			/**
@@ -101,16 +98,18 @@
 			private function activate():void{
 				
 				_handler.active = true;
-				_dragHandler.active = false;
+				if(_dragHandler)
+					_dragHandler.active = false;
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
-				_dragHandler.active = true;
+				//if(_dragHandler)
+					//_dragHandler.active = true;
 			}
 			
 			/**
-			 * On button click, dispatch a DrawingEvent.CREATE_GEOMETRY event
+			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
 			 */
 			private function onClick():void{
 				
@@ -121,7 +120,7 @@
 			}
 			
 			/**
-			 * Check the handler when a DrawingEvent.CREATE_GEOMETRY event occured
+			 * Check the handler when a DrawingEvent.CHANGE_ACTIVE_HANDLER event occured
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
