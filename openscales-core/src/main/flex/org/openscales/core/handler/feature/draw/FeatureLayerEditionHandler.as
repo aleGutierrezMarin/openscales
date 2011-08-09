@@ -203,7 +203,7 @@ package org.openscales.core.handler.feature.draw
 					}
 				}
 				if(!dblclickAlreadyStart && iEditPoint != null){
-					if(iEditPoint.findVirtualVerticeParent(vectorfeature) != null){
+					if(isSelectedFeature(vectorfeature)){
 						iEditPoint.featureDoubleClick(event);
 					}
 				}
