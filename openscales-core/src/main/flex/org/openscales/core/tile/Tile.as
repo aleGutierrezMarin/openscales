@@ -121,7 +121,7 @@ package org.openscales.core.tile
 		 *
 		 * @return bounds
 		 */
-		public function getBoundsFromBaseLayer(position:Pixel):Bounds {
+		public function getBoundsFromMap(position:Pixel):Bounds {
 			if(this.size == null)
 				return new Bounds(0,0,0,0);
 			var topLeft:Location = this.layer.map.getLocationFromLayerPx(position); 

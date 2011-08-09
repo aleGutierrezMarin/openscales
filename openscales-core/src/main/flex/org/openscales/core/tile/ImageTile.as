@@ -59,14 +59,14 @@ package org.openscales.core.tile
 		 * @return Always returns true.
 		 */
 		override public function draw():Boolean {
-
-			if (this.layer != this.layer.map.baseLayer) {
+			//TODO check if still OK
+			//if (this.layer != this.layer.map.baseLayer) {
 				if(_drawPosition != null) {
-					this.bounds = this.getBoundsFromBaseLayer(_drawPosition);
+					this.bounds = this.getBoundsFromMap(_drawPosition);
 				} else {
-					this.bounds = this.getBoundsFromBaseLayer(position);
+					this.bounds = this.getBoundsFromMap(position);
 				}
-			}
+			//}
 
 			if(! withinMapBounds()) {
 				return false;    
