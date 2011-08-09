@@ -6,14 +6,12 @@ package org.openscales.core.layer
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.Style;
-	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
-
+	
 	/**
 	 * Layer that display features stored as child element
 	 */
@@ -26,19 +24,19 @@ package org.openscales.core.layer
 		 * when they are added to the layer and not only for the display. 
 		 */
 		private var _displayProjSrsCode:String = null;
-
+		
 		private var _featuresBbox:Bounds = null;
-
+		
 		private var _style:Style = null;
-
+		
 		private var _geometryType:String = null;
-
+		
 		private var _selectedFeatures:Vector.<String> = null;
-
+		
 		private var _isInEditionMode:Boolean=false;
-
+		
 		private var _featuresID:Vector.<String> = new Vector.<String>();
-
+		
 		public function FeatureLayer(name:String)
 		{
 			super(name);
@@ -54,7 +52,7 @@ package org.openscales.core.layer
 			// Make drag smooth even with a lot of points
 			this.cacheAsBitmap = true;
 		}
-
+		
 		override public function destroy():void {
 			super.destroy();  
 			this.reset();
@@ -68,10 +66,10 @@ package org.openscales.core.layer
 		override public function redraw(fullRedraw:Boolean = true):void {
 			this.clear();
 			if (this.displayed) {
-			this.draw();
+				this.draw();
 			}
 		}
-
+		
 		// Clear layer and children graphics
 		override public function clear():void {
 			var child:Sprite = null;
@@ -96,9 +94,9 @@ package org.openscales.core.layer
 			}
 			this.graphics.clear();
 		}
-
+		
 		private function updateCurrentProjection(evt:LayerEvent = null):void {
-			if ((this.map) && (this.map.baseLayer) && (this._displayProjSrsCode != this.map.projection)) {
+			if ((this.map) && (this._displayProjSrsCode != this.map.projection)) {
 				if (this.features.length > 0) {	
 					for each (var f:Feature in this.features) {
 						f.geometry.transform(this._displayProjSrsCode, this.map.projection);
@@ -110,7 +108,7 @@ package org.openscales.core.layer
 				}
 			}
 		}
-
+		
 		override public function set map(map:Map):void {
 			if (this.map != null) {
 				this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.updateCurrentProjection);
@@ -125,7 +123,7 @@ package org.openscales.core.layer
 				this.height = map.height;
 			}
 		}
-
+		
 		/**
 		 * Add Features to the layer.
 		 *
@@ -139,13 +137,13 @@ package org.openscales.core.layer
 				fevt.features = features;
 				this.map.dispatchEvent(fevt);
 			}
-
+			
 			var i:int;
 			var j:int = features.length
 			for (i=0; i<j; i++) {
 				this.addFeature(features[i], false, reproject);
 			}
-
+			
 			// Dispatch an event with all the features added
 			if (this.map) {
 				fevt = new FeatureEvent(FeatureEvent.FEATURE_INSERT, null);
@@ -153,7 +151,7 @@ package org.openscales.core.layer
 				this.map.dispatchEvent(fevt);
 			}
 		}
-
+		
 		/**
 		 * Add Feature to the layer.
 		 *
@@ -164,7 +162,7 @@ package org.openscales.core.layer
 				return;
 			}
 			this._featuresID.push(feature.name);
-
+			
 			// Check if the feature may be added to this layer
 			var vectorfeature:Feature = feature;
 			
@@ -173,7 +171,7 @@ package org.openscales.core.layer
 				var throwStr:String = "addFeatures : component should be an " + this.geometryType +"and it is : " + getQualifiedClassName(vectorfeature.geometry);
 				throw throwStr;
 			}
-
+			
 			// If needed dispatch a PRE_INSERT event before the feature is added
 			var fevt:FeatureEvent = null;
 			if (dispatchFeatureEvent && this.map) {
@@ -182,7 +180,7 @@ package org.openscales.core.layer
 			}
 			
 			// Reprojection if needed
-			if (reproject && (this.map) && (this.map.baseLayer) && (this.projSrsCode != this._displayProjSrsCode)) {
+			if (reproject && (this.map) && (this.projSrsCode != this._displayProjSrsCode)) {
 				feature.geometry.transform(this.projSrsCode, this._displayProjSrsCode);
 			}
 			
@@ -203,7 +201,7 @@ package org.openscales.core.layer
 				this.map.dispatchEvent(fevt);
 			}
 		}
-
+		
 		override public function reset():void {
 			var deleted:Boolean = false;
 			this._featuresID = new Vector.<String>();
@@ -221,7 +219,7 @@ package org.openscales.core.layer
 			}
 			this._featuresBbox = null;
 		}
-
+		
 		override protected function draw():void {
 			var nbChildren:int = this.numChildren;
 			var o:DisplayObject;
@@ -244,7 +242,7 @@ package org.openscales.core.layer
 				this.map.dispatchEvent(fevt);
 			}
 		}
-
+		
 		public function removeFeature(feature:Feature, dispatchFeatureEvent:Boolean=true):void {
 			if (feature == null) {
 				return;
@@ -254,7 +252,7 @@ package org.openscales.core.layer
 				return;
 			}
 			this._featuresID.splice(i,1);
-
+			
 			var j:int = this.numChildren;
 			for(i=0; i<j; ++i) {
 				if (this.getChildAt(i) == feature) {
@@ -273,7 +271,7 @@ package org.openscales.core.layer
 			}
 			this._featuresBbox=null;
 		}
-
+		
 		public function get featuresID():Vector.<String> {
 			var _features:Vector.<String> = new Vector.<String>(this._featuresID.length);
 			var i:uint = 0;
@@ -284,7 +282,7 @@ package org.openscales.core.layer
 			}
 			return _features;
 		}
-
+		
 		// Getters and setters
 		public function get features():Vector.<Feature> {
 			var _features:Vector.<Feature> = new Vector.<Feature>();
@@ -298,7 +296,7 @@ package org.openscales.core.layer
 			}
 			return _features;
 		}
-
+		
 		private function computeFeaturesBbox():void {
 			var features:Vector.<Feature> = this.features;
 			var i:uint = features.length;
@@ -323,15 +321,15 @@ package org.openscales.core.layer
 			}
 			return this._featuresBbox;
 		}
-
+		
 		public function set featuresBbox(value:Bounds):void {
 			this._featuresBbox = value;
 		}
-
+		
 		public function get selectedFeatures():Vector.<String> {
 			return this._selectedFeatures;
 		}
-
+		
 		public function set selectedFeatures(value:Vector.<String>):void {
 			this._selectedFeatures = value;
 		}
@@ -339,27 +337,27 @@ package org.openscales.core.layer
 		public function get style():Style {
 			return this._style;
 		}
-
+		
 		public function set style(value:Style):void {
 			this._style = value;
 		}
-
+		
 		public function get geometryType():String {
 			return this._geometryType;
 		}
-
+		
 		public function set geometryType(value:String):void {
 			this._geometryType = value;
 		}
-
+		
 		public function get inEditionMode():Boolean {
 			return this._isInEditionMode;
 		}
-
+		
 		public function set inEditionMode(value:Boolean):void {
 			this._isInEditionMode = value;
 		}
-
+		
 		override public function set projSrsCode(value:String):void {
 			super.projSrsCode = value;
 			this._displayProjSrsCode = this.projSrsCode;
