@@ -61,6 +61,7 @@
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
 	<component id="YahooSearch" class="org.openscales.fx.control.search.YahooSearch" />
 	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
+	<component id="TraceInfoMobile" class="org.openscales.fx.control.mobile.TraceInfoMobile" />
 	<component id="ScaleLine" class="org.openscales.fx.control.ScaleLine" />
 	<component id="NumericScale" class="org.openscales.fx.control.NumericScale" />
 	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
