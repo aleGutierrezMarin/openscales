@@ -207,6 +207,13 @@ package org.openscales.core.handler.feature.draw
 
 			 	if(index!=-1){	 		
 			 		 parentGeometry.removeComponent(parentGeometry.componentByIndex(index));
+					 
+					 //add
+					 if(parentGeometry.componentsLength == 1){
+						 parentGeometry.removeComponent(parentGeometry.componentByIndex(0));
+						 this._layerToEdit.removeFeature(parentFeature);
+					 }
+					 
 			 		 if(displayedVirtualVertices)
 						 displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));
 		 		}
