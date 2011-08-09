@@ -249,7 +249,7 @@ package org.openscales.core.handler.feature.draw
 		 		var px:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
 				//drawing equals false if the mouse is too close from Virtual vertice
 				var drawing:Boolean=true;
-					for(var i:int=0;i<_editionFeatureArray.length;i++){
+					/*for(var i:int=0;i<_editionFeatureArray.length;i++){
 						var feature:Feature=_editionFeatureArray[i][0] as Feature;
 						if(feature!=null && feature!=AbstractEditCollectionHandler._pointUnderTheMouse &&  vectorfeature==_editionFeatureArray[i][1]){
 							var tmpPx:Pixel=this.map.getLayerPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
@@ -259,21 +259,23 @@ package org.openscales.core.handler.feature.draw
 								break;
 							}
 						}
-					}
+					}*/
 					if(drawing){
 						layerToEdit.map.buttonMode=true;
 						var lonlat:Location=this.map.getLocationFromLayerPx(px);
 						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);	
 						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-							AbstractEditCollectionHandler._pointUnderTheMouse.geometry = PointGeomUnderTheMouse;
-							//AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
-							//AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,Style.getDefaultCircleStyle());
-							//this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
+							//AbstractEditCollectionHandler._pointUnderTheMouse.geometry = (PointGeomUnderTheMouse as Geometry);
+							AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
+							//_timer.stop();
+							AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,Style.getDefaultCircleStyle());
+							this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 						}
 						else {
 							AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,Style.getDefaultCircleStyle());
 							this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 						}
+						
 						if(AbstractEditCollectionHandler._pointUnderTheMouse.layer==null) {
 							layerToEdit.addFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 							var v:Vector.<Feature> = new Vector.<Feature>();
@@ -285,8 +287,11 @@ package org.openscales.core.handler.feature.draw
 					 	if(findIndexOfFeatureCurrentlyDrag(AbstractEditCollectionHandler._pointUnderTheMouse)!=-1){ 
 							AbstractEditCollectionHandler._pointUnderTheMouse.visible=true;
 						 } 
-						else AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
-							layerToEdit.redraw();	
+						else
+							AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
+						
+						layerToEdit.redraw();
+						layerToEdit.map.buttonMode=false;
 					}
 					else {
 						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null)

@@ -143,6 +143,9 @@ package org.openscales.core.handler.feature.draw
 						break;
 				}
 			}
+			//add
+			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
 		/**
