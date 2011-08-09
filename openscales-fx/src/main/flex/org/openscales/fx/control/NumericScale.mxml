@@ -92,11 +92,44 @@
 				if(projection.projName  == "longlat")
 					unit = Unit.METER;
 				
-				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._map.baseLayer.dpi));
-
+				// screen dpi flash.system.Capabilities.screenDPI
+				var dpi:Number = this._map.baseLayer.dpi;
+				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,dpi));
 				
 				// update the label :
 				this.scaleLabel = "1 / "+this._value;
+			}
+			
+			
+			/**
+			 * Given a number, round it down to the nearest 1,2,5 times a power of 10.
+			 * That seems a fairly useful set of number groups to use.
+			 *
+			 * @param maxLen the number we're rounding down from
+			 *
+			 * @return the rounded number (less than or equal to maxLen)
+			 */
+			private function getBarLen(maxLen:Number):Number 
+			{
+				// nearest power of 10 lower than maxLen
+				var digits:Number = int(Math.log(maxLen) / Math.log(10));
+				var pow10:Number = Math.pow(10, digits);
+				
+				// ok, find first character
+				var firstChar:Number = int(maxLen / pow10);
+				
+				// right, put it into the correct bracket
+				var barLen:Number;
+				if(firstChar > 5) {
+					barLen = 5;
+				} else if(firstChar > 2) {
+					barLen = 2;
+				} else {
+					barLen = 1;
+				}
+				
+				// scale it up the correct power of 10
+				return barLen * pow10;
 			}
 			
 			/**
