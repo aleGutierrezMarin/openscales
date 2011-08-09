@@ -48,7 +48,7 @@ package org.openscales.core.handler.feature
 		override  protected function onMouseDown(event:MouseEvent):void{
 			var feature:Feature=event.target as Feature;
 			//The target is a feature , its' layer is draggable and it doesn't belongs to the undraggableFeatures Array
-			if(feature!=null && _draggableLayers.indexOf(feature.layer)!=-1 && _undraggableFeatures.indexOf(feature)==-1){
+			if(feature!=null){// && _draggableLayers.indexOf(feature.layer)!=-1 && _undraggableFeatures.indexOf(feature)==-1){
 				feature.startDrag();
 				_featureCurrentlyDragged=feature;
 				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,feature));

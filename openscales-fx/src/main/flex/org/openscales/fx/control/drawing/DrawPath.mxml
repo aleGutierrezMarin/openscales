@@ -15,6 +15,7 @@
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.handler.feature.DragFeatureHandler;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
 			import org.openscales.core.layer.FeatureLayer;
@@ -25,6 +26,7 @@
 			private var _active:Boolean = true;
 			
 			private var _handler:AbstractDrawHandler= new DrawPathHandler();
+			private var _dragFeatureHandler:DragFeatureHandler = new DragFeatureHandler();
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -54,6 +56,8 @@
 				
 				_handler.map = value;
 				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				_dragFeatureHandler.map = value;
+				_dragFeatureHandler.active = true;
 			}
 			
 			/**

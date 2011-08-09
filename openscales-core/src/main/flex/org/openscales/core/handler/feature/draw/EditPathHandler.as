@@ -33,49 +33,50 @@ package org.openscales.core.handler.feature.draw
 			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
 			this.featuresToEdit = featuresToEdit;
 		}
-
+		
 		 /**
 		 * @inheritDoc 
 		 * */
-		  override public function dragVerticeStart(vectorfeature:PointFeature):void{
-		  	//The feature edited  is the parent of the virtual vertice
-		  	var featureEdited:Feature=findVirtualVerticeParent(vectorfeature as PointFeature);
-		 	if(featureEdited!=null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
+		 override public function dragVerticeStart(vectorfeature:PointFeature):void{
+		  	// The feature edited is the parent of the virtual vertice
+		  	var featureEdited:Feature = findVirtualVerticeParent(vectorfeature as PointFeature);
+		 	if(featureEdited != null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
 		 		super.dragVerticeStart(vectorfeature);
 		 	}
-		 	
 		 }
+		 
 		 /**
 		 * @inheritDoc 
 		 * */
-		 override  public function dragVerticeStop(vectorfeature:PointFeature):void{
-		 	//The feature edited  is the parent of the virtual vertice
-		  	var featureEdited:Feature=findVirtualVerticeParent(vectorfeature as PointFeature);
-		 	if(featureEdited!=null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,featureEdited));	
+		 override public function dragVerticeStop(vectorfeature:PointFeature):void{
+		 	// The feature edited is the parent of the virtual vertice
+		  	var featureEdited:Feature = findVirtualVerticeParent(vectorfeature as PointFeature);
+		 	if(featureEdited != null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,featureEdited));
 		 		return super.dragVerticeStop(vectorfeature);
 		 	}
 		 }
+		 
 		 /**
 		 * @inheritDoc 
 		 * */
-		override public function refreshEditedfeatures(event:MapEvent=null):void{
-
-		 	if(_layerToEdit!=null && !_isUsedAlone){
-		 		//for each(var feature:Feature in this._layerToEdit.features){
+		 override public function refreshEditedfeatures(event:MapEvent = null):void{
+			
+		 	if(_layerToEdit != null && !_isUsedAlone){
 				for each(var feature:Feature in this.featuresToEdit){
-					if(feature.isEditable && (feature.geometry is LineString || feature.geometry is MultiLineString)){			
-						//We display on the layer concerned by the operation the virtual vertices used for edition
-						//if the virtual vertices have to be displayed we displayed them
-						if(displayedVirtualVertices)displayVisibleVirtualVertice(feature);
+					if(feature.isEditable && (feature.geometry is LineString || feature.geometry is MultiLineString)){
+						// We display on the layer concerned by the operation the virtual vertices used for edition
+						// If the virtual vertices have to be displayed we displayed them
+						if(displayedVirtualVertices)
+							displayVisibleVirtualVertice(feature);
 					}
-					//Virtual vertices treatment
-					else if(feature is Point /*&&  Util.indexOf(this._editionFeatureArray,feature)!=-1 */)
+					// Virtual vertices treatment ?
+					else if(feature is Point)
 					{
 						var j:int;
 						var i:int = this._editionFeatureArray.length - 1;
-						for(i;i>-1;--i){
-							if(this._editionFeatureArray[i][0]==feature){
+						for(i; i>-1; --i){
+							if(this._editionFeatureArray[i][0] == feature){
 								//We remove the edition feature to create another 						
 								//TODO Damien nda only delete the feature concerned by the operation
 								layerToEdit.removeFeature(feature);
