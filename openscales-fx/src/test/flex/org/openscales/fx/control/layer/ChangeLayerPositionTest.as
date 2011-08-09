@@ -47,6 +47,22 @@ package org.openscales.fx.control.layer
 			this._container.addElement(_position);
 		}
 		
+		[After]
+		override public function tearDown():void {
+			super.tearDown();
+			this._container.removeElement(_position);
+			_position.layer = null;
+			_position = null;
+			_map.removeAllLayers();
+			_map = null;
+			_layer1.destroy();
+			_layer1 = null;
+			_layer2.destroy();
+			_layer2 = null;
+			_layer3.destroy();
+			_layer3 = null;
+		}
+		
 		/**
 		 * Test if the index of the layer in the containerChild of map change when the layer is moveUp
 		 */
