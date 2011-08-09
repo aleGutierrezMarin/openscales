@@ -97,9 +97,9 @@ package org.openscales.core
 		/**
 		 * @private
 		 * The minimum resolution of the map
-		 * @default Number.NEGATIVE_INFINITY in EPSG:4326
+		 * @default 0 in EPSG:4326
 		 */
-		private var _minResolution:Resolution = new Resolution(Number.NEGATIVE_INFINITY, "EPSG:4326");
+		private var _minResolution:Resolution = new Resolution(0, "EPSG:4326");
 		
 		/**
 		 * @private
@@ -188,6 +188,8 @@ package org.openscales.core
 		private function onMapProjectionChanged(event:MapEvent):void
 		{
 			this._resolution = this._resolution.reprojectTo(event.newProjection);
+			this._maxResolution = this._maxResolution.reprojectTo(event.newProjection);
+			this._minResolution = this._minResolution.reprojectTo(event.newProjection);
 			if (this.maxExtent != null)
 			{
 				this.maxExtent = this.maxExtent.reprojectTo(event.newProjection);	
@@ -1077,8 +1079,8 @@ package org.openscales.core
 				this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
 				
 				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
-				
-				this.moveTo(null,this.resolution);
+				// TODO Refactor?
+				//this.moveTo(null,this.resolution);
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
 			}
