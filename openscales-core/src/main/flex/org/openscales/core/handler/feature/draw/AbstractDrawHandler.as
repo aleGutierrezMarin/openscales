@@ -29,10 +29,10 @@ package org.openscales.core.handler.feature.draw
 		override public function set map(value:Map):void{
 			if(value!=null){
 				super.map = value;
-				if (map.baseLayer!=null && this.drawLayer.projSrsCode!=null) {
-					this.drawLayer.projSrsCode = this.map.projection;
-					this.drawLayer.resolutions = this.map.baseLayer.resolutions;
-				} 
+				this.drawLayer.projSrsCode = this.map.projection;
+				
+				// TODO : Where can i find those resolutions
+				//this.drawLayer.resolutions = this.map.baseLayer.resolutions;
 			}
 		}
 		//Getters and setters

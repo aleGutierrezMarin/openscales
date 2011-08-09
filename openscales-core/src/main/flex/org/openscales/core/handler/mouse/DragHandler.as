@@ -108,8 +108,8 @@ package org.openscales.core.handler.mouse
 
 			var deltaX:Number = this._start.x - this.map.mouseX;
 			var deltaY:Number = this._start.y - this.map.mouseY;
-			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
-				this._startCenter.lat - deltaY * this.map.resolution,
+			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution.resolutionValue,
+				this._startCenter.lat - deltaY * this.map.resolution.resolutionValue,
 				this._startCenter.projSrsCode);
 			
 			
@@ -242,16 +242,16 @@ package org.openscales.core.handler.mouse
 			var oldCenter:Location = this.map.center;
 			var deltaX:Number = this._start.x - xy.x;
 			var deltaY:Number = this._start.y - xy.y;
-			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
-				this._startCenter.lat - deltaY * this.map.resolution,
+			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution.resolutionValue,
+				this._startCenter.lat - deltaY * this.map.resolution.resolutionValue,
 				this._startCenter.projSrsCode);
 			// If the new position equals the old center, stop here
 			if (newPosition.equals(oldCenter)) {
 				var event:MapEvent = new MapEvent(MapEvent.MOVE_NO_MOVE, this.map);
 				event.oldCenter = this.map.center;
 				event.newCenter = this.map.center;
-				event.oldZoom = this.map.zoom;
-				event.newZoom = this.map.zoom;
+				event.oldResolution = this.map.resolution;
+				event.newResolution = this.map.resolution;
 				this.map.dispatchEvent(event);
 				//Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");
 				return;
