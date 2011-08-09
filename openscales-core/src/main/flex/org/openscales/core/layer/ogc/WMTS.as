@@ -82,7 +82,7 @@ package org.openscales.core.layer.ogc
 			if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
 				this.getCapabilities();
 			} else {
-				var zoom:Number = this.getZoomForResolution(this.map.resolution);
+				var zoom:Number = this.getZoomForResolution(this.map.resolution.resolutionValue);
 				var resolution:Number = (this.resolutions[zoom] as Number);
 				var tms:HashMap = this.tileMatrixSets;
 				if(!tms.containsKey(this.tileMatrixSet)) {
@@ -315,7 +315,7 @@ package org.openscales.core.layer.ogc
 			if(this._tileProvider.tileMatrixSets!=null
 				&& this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet)) {
 				var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(this._tileProvider.tileMatrixSet) as TileMatrixSet;
-				var zoom:Number = this.getZoomForResolution(this.map.resolution);
+				var zoom:Number = this.getZoomForResolution(this.map.resolution.resolutionValue);
 				var resolution:Number = this.resolutions[zoom] as Number;
 				if(tms.tileMatrices.containsKey(resolution))
 					return (tms.tileMatrices.getValue(resolution) as TileMatrix);
