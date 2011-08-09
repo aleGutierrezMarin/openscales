@@ -221,15 +221,15 @@
     <classEntry path="org.openscales.map.PositioningTest"/>
   </includeClasses>
   <includeResources>
-    <resourceEntry destPath="assets/i18n/IT.json" sourcePath="assets/i18n/IT.json"/>
     <resourceEntry destPath="assets/images/cursorCrosshair.swf" sourcePath="assets/images/cursorCrosshair.swf"/>
+    <resourceEntry destPath="assets/i18n/IT.json" sourcePath="assets/i18n/IT.json"/>
     <resourceEntry destPath="assets/configuration/sampleMapConfOk.xml" sourcePath="assets/configuration/sampleMapConfOk.xml"/>
     <resourceEntry destPath="assets/images/west-mini.png" sourcePath="assets/images/west-mini.png"/>
     <resourceEntry destPath="assets/images/check.png" sourcePath="assets/images/check.png"/>
     <resourceEntry destPath="assets/images/layerDel.png" sourcePath="assets/images/layerDel.png"/>
     <resourceEntry destPath="assets/images/panning-hand-off.png" sourcePath="assets/images/panning-hand-off.png"/>
-    <resourceEntry destPath="assets/images/layerViz.png" sourcePath="assets/images/layerViz.png"/>
     <resourceEntry destPath="assets/images/marker-blue.png" sourcePath="assets/images/marker-blue.png"/>
+    <resourceEntry destPath="assets/images/layerViz.png" sourcePath="assets/images/layerViz.png"/>
     <resourceEntry destPath="assets/kml/sample1.kml" sourcePath="assets/kml/sample1.kml"/>
     <resourceEntry destPath="assets/images/radiobutton-noselected.png" sourcePath="assets/images/radiobutton-noselected.png"/>
     <resourceEntry destPath="assets/kml/sample3.kml" sourcePath="assets/kml/sample3.kml"/>
@@ -271,6 +271,7 @@
     <resourceEntry destPath="assets/images/marker-gold.png" sourcePath="assets/images/marker-gold.png"/>
     <resourceEntry destPath="assets/images/arrow_down.png" sourcePath="assets/images/arrow_down.png"/>
     <resourceEntry destPath="assets/layer/capabilities/wmtscapabilities.xml" sourcePath="assets/layer/capabilities/wmtscapabilities.xml"/>
+    <resourceEntry destPath="assets/images/east-mini.png" sourcePath="assets/images/east-mini.png"/>
     <resourceEntry destPath="assets/images/north-mini.png" sourcePath="assets/images/north-mini.png"/>
     <resourceEntry destPath="assets/images/layerCancel.png" sourcePath="assets/images/layerCancel.png"/>
     <resourceEntry destPath="assets/images/layer-switcher-maximize.png" sourcePath="assets/images/layer-switcher-maximize.png"/>
