@@ -174,7 +174,7 @@ package org.openscales.core.layer.ogc.provider
 			}
 			
 			// TODO : remove?
-			var mapResolution:Number = layer.map.resolution;
+			var mapResolution:Number = layer.map.resolution.resolutionValue;
 			/*var mapUnit:String = ProjProjection.getProjProjection(layer.map.projection).projParams.units;*/
 			
 			//tileMatrix are referenced by their resolutions

@@ -164,7 +164,7 @@ package org.openscales.core.layer
 				_available = false;
 			}
 			
-			if ((this.map.resolution > this.maxResolution) || (this.map.resolution < this.minResolution))
+			if ((this.map.resolution.resolutionValue > this.maxResolution) || (this.map.resolution.resolutionValue < this.minResolution))
 			{
 				_available = false;
 			}
@@ -276,8 +276,8 @@ package org.openscales.core.layer
 			geoTileHeight = bounds.height;
 			var topLeftCorner:Location = new Location(bounds.left, bounds.top);
 			var bottomRightCorner:Location = new Location(bounds.right, bounds.bottom);
-			this.tileWidth = Math.round(geoTileWidth/this.map.resolution);
-			this.tileHeight = Math.round(geoTileHeight/this.map.resolution);
+			this.tileWidth = Math.round(geoTileWidth/this.map.resolution.resolutionValue);
+			this.tileHeight = Math.round(geoTileHeight/this.map.resolution.resolutionValue);
 			var ul:Location = new Location(bounds.left, bounds.top, bounds.projSrsCode);
 			var px:Pixel = this.map.getLayerPxFromLocation(ul);
 			
@@ -328,7 +328,7 @@ package org.openscales.core.layer
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
 				Math.max(1, 2 * this.buffer);
 			
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.map.resolution.resolutionValue;
 			
 			var tilelon:Number = resolution * this.tileWidth;
 			var tilelat:Number = resolution * this.tileHeight;
@@ -541,7 +541,7 @@ package org.openscales.core.layer
 		private function shiftRow(prepend:Boolean):void {
 			var modelRowIndex:int = (prepend) ? 0 : (this._grid.length - 1);
 			var modelRow:Vector.<ImageTile> = this._grid[modelRowIndex];
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.map.resolution.resolutionValue;
 			var deltaY:Number = (prepend) ? -this.tileHeight : this.tileHeight;
 			var deltaLat:Number = resolution * -deltaY;
 			var row:Vector.<ImageTile> = (prepend) ? this._grid.pop() : this._grid.shift();
@@ -572,7 +572,7 @@ package org.openscales.core.layer
 		 */
 		private function shiftColumn(prepend:Boolean):void {
 			var deltaX:Number = (prepend) ? -this.tileWidth : this.tileWidth;
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.map.resolution.resolutionValue;
 			var deltaLon:Number = resolution * deltaX;
 			
 			var j:uint = this._grid.length;
@@ -632,7 +632,7 @@ package org.openscales.core.layer
 		 */
 		public function getTileBounds(viewPortPx:Pixel):Bounds {
 			var maxExtent:Bounds = this.maxExtent;
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.map.resolution.resolutionValue;
 			var tileMapWidth:Number = resolution * this.tileWidth;
 			var tileMapHeight:Number = resolution * this.tileHeight;
 			var mapPoint:Location = this.getLocationFromMapPx(viewPortPx);
