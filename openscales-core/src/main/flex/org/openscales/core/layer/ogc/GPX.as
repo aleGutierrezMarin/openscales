@@ -31,10 +31,8 @@ package org.openscales.core.layer.ogc
 	 * The data and url params are not compatible with each other
 	 * 
 	 * The data projection for this layer is set to "EPSG:4326" by default (@see class Layer)
+	 * 
 	 */
-	
-	
-	
 	
 	public class GPX extends FeatureLayer
 	{
@@ -43,15 +41,27 @@ package org.openscales.core.layer.ogc
 		private var _gpxFormat:GPXFormat;
 		
 		private var _request:XMLRequest = null;
+		private var _version:String;
 		
 		public function GPX(name:String, 
 							version:String,
 							url:String = null,
 							data:XML = null)
 		{
+			this.version = version;
+			this.url = url;	
+			this.gpxData = data;
 			super(name);
+			
 			this.gpxFormat = new GPXFormat(new HashMap());
 			
+		}
+		
+		override public function redraw(fullRedraw:Boolean = true):void {
+			if (!displayed) {
+				this.clear();
+				return;
+			}
 			if (url){
 				if (! this._request) {
 					this.loading = true;
@@ -59,34 +69,38 @@ package org.openscales.core.layer.ogc
 					this._request.proxy = this.proxy;
 					this._request.security = this.security;
 					this._request.send();
-				}
+				} else {
+					this.clear();
+					this.draw();
+				}	
 			}
-			else // load data from local file
+			else if (this.gpxData){	
+				this.drawFeatures();				
+			}
+			else
 			{
-				this.gpxData = data;
-				
+				this.clear();
+				this.draw();
 			}
 		}
 		
-		
 		public function onSuccess(event:Event):void
 		{
-			this.loading = true;
+			this.loading = false;
 			var loader:URLLoader = event.target as URLLoader;
 			this.gpxData = new XML(loader.data);
-			
-			if(this.gpxData) 
-				this.draw();
+			if (this.gpxData)
+				this.drawFeatures();	
 		}
 		
 		protected function onFailure(event:Event):void {
 			this.loading = false;
 			Trace.error("Error when loading gpx file" + this.url);			
-		}
+		} 
+		
+		public function drawFeatures():void{
 			
-		override protected function draw():void{
-			
-			if(this.featureVector == null && this.gpxData){
+			if(this.featureVector == null) {
 				
 				var pointStyle:Style = Style.getDefaultPointStyle();
 				var lineStyle:Style = Style.getDefaultLineStyle();
@@ -106,11 +120,12 @@ package org.openscales.core.layer.ogc
 						this.featureVector[i].style = lineStyle;
 					this.addFeature(this.featureVector[i]);
 				}
-			}else{
-				super.draw();
 			}
+			else {
+				this.clear();
+				this.draw();
+			}			
 		}
-		
 		
 		/**
 		 * Getters & Setters
@@ -125,27 +140,37 @@ package org.openscales.core.layer.ogc
 		{
 			_featureVector = value;
 		}
-
+		
 		public function get gpxData():XML
 		{
 			return _gpxData;
 		}
-
+		
 		public function set gpxData(value:XML):void
 		{
 			_gpxData = value;
 		}
-
+		
 		public function get gpxFormat():GPXFormat
 		{
 			return _gpxFormat;
 		}
-
+		
 		public function set gpxFormat(value:GPXFormat):void
 		{
 			_gpxFormat = value;
 		}
-
-
+		
+		public function get version():String
+		{
+			return _version;
+		}
+		
+		public function set version(value:String):void
+		{
+			_version = value;
+		}
+		
+		
 	}
 }
