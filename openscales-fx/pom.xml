@@ -52,7 +52,21 @@
 						<org.openscales.fx>Contains wrapper around openscales-core pure AS3 components</org.openscales.fx>
 					</packageDescriptions>
 				</configuration>
-				
+				<executions>
+                	<execution>
+						<id>source-asdoc</id>
+						<phase>site</phase>
+						<goals>
+							<goal>asdoc</goal>
+						</goals>
+                        <configuration>
+							<docSources>
+								<docSource>${project.build.sourceDirectory}</docSource>
+							</docSources>
+							<output> ${project.build.directory}/${project.build.finalName}-asdoc.zip</output>
+                        </configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

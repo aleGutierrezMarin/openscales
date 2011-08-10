@@ -1,6 +1,7 @@
 package org.openscales.core.handler.keyboard
 {
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
 	
 	import org.openscales.core.Map;
@@ -60,6 +61,7 @@ package org.openscales.core.handler.keyboard
 		override protected function registerListeners():void {
 			if (this.map) {
 				this.map.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeyDown);
+				this.map.addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
 			}
 		}
 		
@@ -69,7 +71,17 @@ package org.openscales.core.handler.keyboard
 		override protected function unregisterListeners():void {
 			if (this.map) {
 				this.map.removeEventListener(KeyboardEvent.KEY_DOWN,this.onKeyDown);
+				this.map.removeEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
 			}
+		}
+		
+		/**
+		 * Set the focus to the map when the mouse is over the map
+		 * Avoid the user to click on the map to give it focus after focusing on another map control
+		 */
+		private function onMouseOver(event:MouseEvent):void
+		{
+			this.map.stage.focus = this.map;
 		}
 		
 		/**

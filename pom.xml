@@ -256,6 +256,9 @@
 					<targetPlayer>${flex.player.version.major}.${flex.player.version.minor}.${flex.player.version.revision}</targetPlayer>
 					<outputDirectory>${project.build.directory}/site/asdoc</outputDirectory>
 					<testTimeout>200000</testTimeout>
+					<excludeTestFiles> 
+                        <param>OpenScalesTest.as</param> 
+                    </excludeTestFiles> 
 				</configuration>
 			</plugin>
 			<plugin>
