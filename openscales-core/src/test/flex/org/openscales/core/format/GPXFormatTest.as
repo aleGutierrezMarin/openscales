@@ -70,8 +70,8 @@ package org.openscales.core.format
 		
 			var gpxNode:XML = this.format.buildGpxFile(features);
 
-			Assert.assertEquals("The abscissa of the 10th Point should be 43.801739", 43.801739, points[9].x);
-			Assert.assertEquals("The ordinate of the 10th Point should be -116.079333", -116.079333, points[9].y);
+			Assert.assertEquals("The longitute of the 10th Point should be -116.079333", -116.079333, points[9].x);
+			Assert.assertEquals("The latitude of the 10th Point should be -116.079333", 43.801739, points[9].y);
 		}
 		
 	}

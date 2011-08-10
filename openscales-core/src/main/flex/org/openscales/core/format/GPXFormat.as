@@ -239,8 +239,9 @@ package org.openscales.core.format
 			   xmlNode.hasOwnProperty('@lon') && xmlNode.@lon.length()){
 				
 				coords = new Vector.<Number>();
-				coords.push(Number(xmlNode..@lat));
 				coords.push(Number(xmlNode..@lon));
+				coords.push(Number(xmlNode..@lat));
+				
 			}
 	
 			return coords; // if coords is null for a point, one or both of its coordinates are missing
@@ -439,8 +440,8 @@ package org.openscales.core.format
 			
 			var point:Point = pointFeature.point;
 			var wptNode:XML = new XML("<wpt></wpt>");
-			wptNode.@lat = point.x;
-			wptNode.@lon = point.y;
+			wptNode.@lat = point.y;
+			wptNode.@lon = point.x;
 			var attNodes:XMLList = this.buildAttributeNodes(pointFeature).children();
 			var attLength:uint = attNodes.length();
 			var j:uint;
@@ -465,8 +466,8 @@ package org.openscales.core.format
 			for( i = 0; i < length; i += 2 ){
 				
 				var rtept:XML = new XML("<rtept></rtept>");
-				rtept.@lat = pointsVector[i];
-				rtept.@lon = pointsVector[i + 1];
+				rtept.@lon = pointsVector[i];
+				rtept.@lat = pointsVector[i + 1];
 				rteNode.appendChild(rtept);
 			}
 			
@@ -495,8 +496,8 @@ package org.openscales.core.format
 				for(j = 0; j < numberOfPoints; j += 2)
 				{
 					var trkpt:XML = new XML ("<trkpt></trkpt>");
-					trkpt.@lat = line[j];
-					trkpt.@lon = line[j+1];
+					trkpt.@lon = line[j];
+					trkpt.@lat = line[j+1];
 					trkseg.appendChild(trkpt);
 				}
 				trkNode.appendChild(trkseg);		

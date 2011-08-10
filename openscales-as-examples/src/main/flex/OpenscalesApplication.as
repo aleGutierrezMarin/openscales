@@ -56,7 +56,7 @@ package {
 			"http://openscales.org/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:world_borders&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
 			xml);
 			_map.addLayer(GMLlayer);
-			/*
+			
 			// GML 3.2.1 layer; fetch data from url; (points in New York)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();
@@ -73,11 +73,12 @@ package {
 			"http://openscales.org/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:tasmania_roads&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
 			xml2);
 			_map.addLayer(GMLlayer2);
-			*/
 			
-			//GPX layer; fetch data from url (lines & points in Australia)	
+			
+			//GPX layer; fetch data from url (draws roads and point in France)
 			var gpxData:XML = new XML(new GPXFILE());
-			var gpxLayer:GPX = new GPX("Australia lines&points","1.1",/*"http://openscales.org/assets/sample.gpx"*/null,gpxData);
+			var url:String = "http://openscales.org/assets/simple_dep.gpx";
+			var gpxLayer:GPX = new GPX("Australia lines&points","1.0",url,gpxData);
 			_map.addLayer(gpxLayer);
 			
 			/*
