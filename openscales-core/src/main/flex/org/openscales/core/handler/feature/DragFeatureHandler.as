@@ -7,9 +7,13 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	/**
 	 * DragFeature is use to drag a feature
@@ -18,7 +22,10 @@ package org.openscales.core.handler.feature
 	 */
 	public class DragFeatureHandler extends DragHandler
 	{
-	
+		private var _featuresToMove:Vector.<Feature>;
+		private var _startPixel:Pixel;
+		private var _stopPixel:Pixel;
+		private var _layerToMove:FeatureLayer;
 		/**
 		* The feature currently dragged
 		* */
@@ -46,24 +53,27 @@ package org.openscales.core.handler.feature
 		 * This function is launched when the Mouse is down
 		 */
 		override  protected function onMouseDown(event:MouseEvent):void{
-			var feature:Feature=event.target as Feature;
-			//The target is a feature , its' layer is draggable and it doesn't belongs to the undraggableFeatures Array
-			if(feature!=null){// && _draggableLayers.indexOf(feature.layer)!=-1 && _undraggableFeatures.indexOf(feature)==-1){
+			var feature:Feature = event.target as Feature;
+			if(feature != null && isSelectedFeature(feature)){
+				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.startDrag();
-				_featureCurrentlyDragged=feature;
+				_featureCurrentlyDragged = feature;
 				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,feature));
 			}
 		}
 		/**
 		 * This function is launched when the Mouse is up
 		 */
-		 override protected function onMouseUp(event:MouseEvent):void{
-		 	var feature:Feature=event.target as Feature;
-		 	//The target is a feature and is the feature currently dragged
-		 	if(feature!=null && _featureCurrentlyDragged==feature){
+		override protected function onMouseUp(event:MouseEvent):void{
+		 	var feature:Feature = event.target as Feature;
+		 	if(feature != null && _featureCurrentlyDragged == feature){
+				_stopPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.stopDrag();
-				_featureCurrentlyDragged=null;
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
+				_featureCurrentlyDragged = null;
+				updateFeature(feature);
+				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,feature));
+				this._layerToMove.redraw();
 			}
 		 }
 		 /**
@@ -114,6 +124,44 @@ package org.openscales.core.handler.feature
 		public function addDraggableLayer(layer:FeatureLayer):void{
 			if(layer!=null && _draggableLayers.indexOf(layer)==-1){
 				_draggableLayers.push(layer);
+			}
+		}
+		
+		public function get featuresToMove():Vector.<Feature>{
+			return this._featuresToMove;
+		}
+		public function set featuresToMove(value:Vector.<Feature>):void{
+			this._featuresToMove = value;
+		}
+		
+		public function get layerToMove():FeatureLayer{
+			return this._layerToMove;
+		}
+		public function set layerToMove(value:FeatureLayer):void{
+			this._layerToMove = value;
+		}
+		
+		private function isSelectedFeature(myFeature:Feature):Boolean{
+			
+			for each(var fte:Feature in this.featuresToMove){
+				if(fte == myFeature){
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		private function updateFeature(feature:Feature):void{
+			
+			if(feature is PointFeature){
+				for each(var fte:Feature in this.featuresToMove){
+					if(fte == feature){
+						var lonlat:Location = this.map.getLocationFromLayerPx(_stopPixel);
+						fte.geometry = new Point(lonlat.lon,lonlat.lat);
+						fte.x = 0;
+						fte.y = 0;
+					}
+				}
 			}
 		}
 	}

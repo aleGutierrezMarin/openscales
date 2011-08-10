@@ -81,7 +81,7 @@
 			}
 			
 			/**
-			 * list of layers ?
+			 * List of layers ?
 			 */
 			public function get target():FeatureLayer{
 				
