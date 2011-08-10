@@ -184,9 +184,9 @@ package org.openscales.core.handler.mouse
 			if(_dragHandler)
 				_dragHandler.active = value;
 			if(_wheelHandler)
-				_wheelHandler.active = value;
+				_wheelHandler.active = value && _zoomWheelEnabled;
 			if(_zoomBoxHandler)
-				_zoomBoxHandler.active = value;
+				_zoomBoxHandler.active = value && _zoomBoxEnabled;
 		}
 
 	}
