@@ -173,7 +173,7 @@ package org.openscales.core.handler.multitouch {
 		}
 		
 		private function onDoubleClick(event:MouseEvent):void {
-			this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+			this.map.moveTo(this.map.getLocationFromMapPx(new Pixel(event.stageX, event.stageY)), this.map.zoom + 1, false, true);
 		}
 		
 
