@@ -7,11 +7,19 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.style.Style;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.ICollection;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
@@ -127,6 +135,9 @@ package org.openscales.core.handler.feature
 			}
 		}
 		
+		/**
+		 * The selected features
+		 */
 		public function get featuresToMove():Vector.<Feature>{
 			return this._featuresToMove;
 		}
@@ -134,6 +145,9 @@ package org.openscales.core.handler.feature
 			this._featuresToMove = value;
 		}
 		
+		/**
+		 * The layer
+		 */
 		public function get layerToMove():FeatureLayer{
 			return this._layerToMove;
 		}
@@ -141,6 +155,9 @@ package org.openscales.core.handler.feature
 			this._layerToMove = value;
 		}
 		
+		/**
+		 * Is the feature selected ?
+		 */
 		private function isSelectedFeature(myFeature:Feature):Boolean{
 			
 			for each(var fte:Feature in this.featuresToMove){
@@ -151,15 +168,71 @@ package org.openscales.core.handler.feature
 			return false;
 		}
 		
+		/**
+		 * Update the feature when moved
+		 */
 		private function updateFeature(feature:Feature):void{
 			
+			var targetFeature:Feature;
+			var loc:Location;
+			var pt:Point;
+			var px:Pixel;
+			var i:uint;
+			
 			if(feature is PointFeature){
-				for each(var fte:Feature in this.featuresToMove){
-					if(fte == feature){
-						var lonlat:Location = this.map.getLocationFromLayerPx(_stopPixel);
-						fte.geometry = new Point(lonlat.lon,lonlat.lat);
-						fte.x = 0;
-						fte.y = 0;
+				for each(targetFeature in this.featuresToMove){
+					if(targetFeature == feature){
+						loc = this.map.getLocationFromLayerPx(_stopPixel);
+						targetFeature.geometry = new Point(loc.lon,loc.lat);
+						targetFeature.x = 0;
+						targetFeature.y = 0;
+					}
+				}
+			}
+			else if(feature is LineStringFeature){
+				for each(targetFeature in this.featuresToMove){
+					if(targetFeature == feature){
+						var lineString:LineString;
+						var tpIC:ICollection = targetFeature.geometry as ICollection;
+						for(i=0; i<tpIC.componentsLength; i++){
+							pt = tpIC.componentByIndex(i) as Point;
+							px = this.map.getLayerPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
+							loc = this.map.getLocationFromLayerPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
+							pt = new Point(loc.lon,loc.lat);
+							if(i == 0)
+								lineString = new LineString(new <Number>[pt.x,pt.y]);
+							else{
+								lineString.addPoint(pt.x,pt.y);
+							}
+						}
+						targetFeature.geometry = lineString;
+						targetFeature.x = 0;
+						targetFeature.y = 0;
+					}
+				}
+			}
+			else if(feature is PolygonFeature){
+				for each(targetFeature in this.featuresToMove){
+					if(targetFeature == feature){
+						var linearRing:LinearRing;
+						var polygon:Polygon;
+						var tpLR:LinearRing = (targetFeature.geometry as Polygon).componentByIndex(0) as LinearRing;
+						for(i=0; i<tpLR.componentsLength; i++){
+							pt = tpLR.componentByIndex(i) as Point;
+							px = this.map.getLayerPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
+							loc = this.map.getLocationFromLayerPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
+							pt = new Point(loc.lon,loc.lat);
+							if(i == 0){
+								linearRing = new LinearRing(new <Number>[pt.x,pt.y]);
+								polygon = new Polygon(new <Geometry>[linearRing]);
+							}
+							else{
+								linearRing.addPoint(pt.x,pt.y);
+							}
+						}
+						targetFeature.geometry = polygon;
+						targetFeature.x = 0;
+						targetFeature.y = 0;
 					}
 				}
 			}
