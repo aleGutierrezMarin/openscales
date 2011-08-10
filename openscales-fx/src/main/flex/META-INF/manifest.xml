@@ -88,5 +88,6 @@
 	<component id="DrawPolygon" class="org.openscales.fx.control.drawing.DrawPolygon" />
 	<component id="SelectFeatures" class="org.openscales.fx.control.drawing.SelectFeatures" />
 	<component id="EditFeatures" class="org.openscales.fx.control.drawing.EditFeatures" />
+	<component id="MoveFeatures" class="org.openscales.fx.control.drawing.MoveFeatures" />
 	
 </componentPackage>

@@ -115,6 +115,7 @@
     <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
+    <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
