@@ -33,10 +33,10 @@
 				
 				//mutual exclusion between xmlData & URL
 				gpxLayer.xmlData = sample;
-				gpxLayer.url = "http://openscales.org/assets/sample.gpx";
+				//gpxLayer.url = "http://openscales.org/assets/simple_dep.gpx"; 
 				
-				fxMap.center = "146,-42,EPSG:4326";
-				fxMap.zoom = 6;
+				fxMap.center = "7.27,48.39,EPSG:4326";
+				fxMap.zoom = 13;
 			}
 			
 		]]>
