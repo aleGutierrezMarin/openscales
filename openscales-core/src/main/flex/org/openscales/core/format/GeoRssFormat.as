@@ -1,6 +1,7 @@
 package org.openscales.core.format
 {
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.PolygonFeature;
 
 	public class GeoRssFormat extends Format
 	{
@@ -18,7 +19,6 @@ package org.openscales.core.format
 		private var _rssFile:XML;
 		private var _featureVector:Vector.<Feature>;
 		
-		
 		public function GeoRssFormat()
 		{
 			super();
@@ -27,7 +27,24 @@ package org.openscales.core.format
 		override public function read(data:Object):Object{
 			
 			this.rssFile = new XML(data);
+			var items:XMLList = this.rssFile..*::item;
+			var itemNumber:uint = items.length();
+			var i:uint;
 			
+			for(i = 0; i < itemNumber; i++){
+				
+				this.featureVector.push(this.parseItem(items[i]));
+				
+			}
+			
+			return this.featureVector;
+		}
+		
+		public function parseItem(item:XML):Feature{
+			
+			var children:XMLList = item.children();
+			var childrenNum:uint = children.length();
+			var s:String = String((children[childrenNum - 1] as XML).localName());
 			
 			return null;
 		}
