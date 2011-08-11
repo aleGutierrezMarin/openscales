@@ -22,10 +22,10 @@ package org.openscales.core.format
 		private var gpxLayer:GPX;
 		private var url:String;
 		
-		[Embed(source="/assets/format/Gpx11Example.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/format/GPX/Gpx11Example.xml",mimeType="application/octet-stream")]
 		private const GPX11FILE:Class;
 		
-		[Embed(source="/assets/format/Gpx10Example.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/format/GPX/Gpx10Example.xml",mimeType="application/octet-stream")]
 		private const GPX10FILE:Class;
 		
 		[Before]

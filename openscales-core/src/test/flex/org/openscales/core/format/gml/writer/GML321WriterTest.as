@@ -15,13 +15,13 @@ package org.openscales.core.format.gml.writer
 
 	public class GML321WriterTest
 	{
-		[Embed(source="/assets/format/MultiSurfaceCollection.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/format/GML/MultiSurfaceCollection.xml",mimeType="application/octet-stream")]
 		private const GMLFILE1:Class;
 		
-		[Embed(source="/assets/format/MultiPointCollection.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/format/GML/MultiPointCollection.xml",mimeType="application/octet-stream")]
 		private const GMLFILE2:Class;
 		
-		[Embed(source="/assets/format/LineStringCollection.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/format/GML/LineStringCollection.xml",mimeType="application/octet-stream")]
 		private const GMLFILE3:Class;
 		
 		private var writer:GML321Writer;
