@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Button xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		  xmlns:s="library://ns.adobe.com/flex/spark" 
-		  xmlns:mx="library://ns.adobe.com/flex/mx"
-		  implements="org.openscales.core.control.IControl"
-		  label="Select features"
-		  click="onClick()"
-		  enabled="{active}">
+<os:IconButton xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:os="http://openscales.org"
+			   implements="org.openscales.core.control.IControl"
+			   toolTip="Select features"
+			   icon="{_btnSelect}"
+			   width="25"
+			   height="25"
+			   click="onClick()"
+			   enabled="{active}">
 	
 	<fx:Script>
 		<![CDATA[
@@ -23,8 +27,10 @@
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
 			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-06.png")]
+			private var _btnSelect:Class;
 			private var _active:Boolean = true;
-			
 			private var _handler:SelectFeaturesHandler = new SelectFeaturesHandler();
 			private var _dragHandler:DragHandler;
 			
@@ -137,4 +143,4 @@
 			public function destroy():void{}
 		]]>
 	</fx:Script>			
-</s:Button>
+</os:IconButton>
