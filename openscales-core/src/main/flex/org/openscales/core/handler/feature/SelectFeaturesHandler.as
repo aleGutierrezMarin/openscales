@@ -837,6 +837,9 @@ package org.openscales.core.handler.feature
 		private function drawSelectionBox(evt:MouseEvent):void {
 			// Compute the selection box (in pixels)
 			var rect:Rectangle = this.selectionBoxPixels(new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY));
+			if(rect == null)
+				return;
+			
 			// Display the selection box
 			_drawContainer.graphics.clear();
 			_drawContainer.graphics.lineStyle(this.selectionAreaBorderThin, this.selectionAreaBorderColor);
