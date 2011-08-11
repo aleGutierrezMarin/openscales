@@ -61,6 +61,8 @@ package org.openscales.core.layer
 		private var _defaultMatrixTranform:Matrix
 		
 		private var _resquestResolution:Number = 0;
+
+		private var _initialized:Boolean = false;
 		
 		/**
 		 * Create a new grid layer
@@ -177,67 +179,73 @@ package org.openscales.core.layer
 			if (!available) 
 			{
 				this.clear();
+				this._initialized = false;
 				return;
 			}
-				
+			
 			var bounds:Bounds = this.map.extent.clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
 			
-			if (!this.tiled) 
+			
+			if (!_initialized)
 			{
-				if(fullRedraw)
-					this.clear();
-				if ( forceReTile || !tilesBounds.containsBounds(bounds)) 
+				if (!this.tiled) 
 				{
-					this.clear();
 					this.initSingleTile(bounds);
-				}
-			} else 
-			{
-				if (forceReTile || !tilesBounds.containsBounds(bounds, true)) 
-				{
-					this.initGriddedTiles(bounds);
 				} else 
 				{
-					//this.initGriddedTiles(bounds);
-					this.moveGriddedTiles(bounds);
+					this.initGriddedTiles(bounds);
+				}
+				_initialized = true;
+			}
+			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
+			{
+				
+				
+				if (!this.tiled) 
+				{
+					if(fullRedraw)
+						this.clear();
+					if ( forceReTile || !tilesBounds.containsBounds(bounds)) 
+					{
+						this.clear();
+						this.initSingleTile(bounds);
+					}
+				} else 
+				{
+					if (forceReTile || !tilesBounds.containsBounds(bounds, true)) 
+					{
+						this.initGriddedTiles(bounds);
+					} else 
+					{
+						this.moveGriddedTiles(bounds);
+					}
 				}
 				
-				/*var _centerPoint:Shape = new Shape();
-				_centerPoint.graphics.clear();
-				_centerPoint.graphics.lineStyle(1, 0xFF0000);
-				_centerPoint.graphics.moveTo(this.map.width/2 - 5, this.map.height/2);
-				_centerPoint.graphics.lineTo(this.map.width/2 + 5, this.map.height/2);
-				_centerPoint.graphics.moveTo(this.map.width/2, this.map.height/2 - 5);
-				_centerPoint.graphics.lineTo(this.map.width/2, this.map.height/2 + 5);
-				this.addChild(_centerPoint);
-				
-				var _centerLoc:Shape = new Shape();
-				_centerLoc.graphics.clear();
-				_centerLoc.graphics.lineStyle(1, 0x00FF00);
-				var px:Pixel = this.getMapPxFromLocation(this.map.center);
-				_centerLoc.graphics.moveTo(px.x - 5, px.y);
-				_centerLoc.graphics.lineTo(px.x + 5, px.y);
-				_centerLoc.graphics.moveTo(px.x, px.y - 5);
-				_centerLoc.graphics.lineTo(px.x, px.y + 5);
-				this.addChild(_centerLoc);*/
-				
-			}
-			
-			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
-			//var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);
-			var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
-			if (resolution != this._resquestResolution)
-			{
-				this.scaleLayer(1, px);
-				this.initGriddedTiles(bounds, true);
-			}
-			var ratio:Number = resolution/this.map.resolution.value;
-			//var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
-			
-			this.scaleLayer(ratio, px);
 
+				var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
+				//var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);
+				var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+				if (resolution != this._resquestResolution)
+				{
+					if (!this.tiled) 
+					{
+						this.clear();
+						this.initSingleTile(bounds);
+					}else
+					{
+						this.initGriddedTiles(bounds, true);
+					}
+				}
+				var ratio:Number = resolution/this.map.resolution.value;
+				//var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+				
+				this.scaleLayer(ratio, px);
+				this._centerChanged = false;
+				this._projectionChanged = false;
+				this._resolutionChanged = false;
+			}
 		}
 		
 		/**
@@ -275,6 +283,16 @@ package org.openscales.core.layer
 		}	
 		
 		
+		override protected function onMapCenterChanged(event:MapEvent):void
+		{
+			var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
+			var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
+			var deltaX:Number = deltaLon/this.map.resolution.value;
+			var deltaY:Number = deltaLat/this.map.resolution.value;
+			this.x += deltaX;
+			this.y += deltaY;
+			super.onMapCenterChanged(event);
+		}
 		/**
 		 * Return the bounds of the tile grid.
 		 *

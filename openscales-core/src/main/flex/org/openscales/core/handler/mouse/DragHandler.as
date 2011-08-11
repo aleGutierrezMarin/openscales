@@ -35,6 +35,8 @@ package org.openscales.core.handler.mouse
 		
 		private var _dragging:Boolean = false;
 		
+		private var _previousMapPosition:Pixel = new Pixel(0, 0);
+		
 		/**
 		 * Used to store the center when we reach the limit of the max extend.
 		 */
@@ -90,7 +92,7 @@ package org.openscales.core.handler.mouse
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
-	
+			
 			/*var dx:int=this.map.layerContainer.x-(this.map.layerContainer.parent.mouseX - this._offset.x);
 			var dy:int=this.map.layerContainer.y-(this.map.layerContainer.parent.mouseY - this._offset.y);
 			//this._mouseOffsetLayerContainerCenter.x = this._offset.x + (this.map.layerContainer.width/2 + this.map.layerContainer.x);
@@ -125,14 +127,21 @@ package org.openscales.core.handler.mouse
 				if(this.map.bitmapTransition) {
 					this.map.bitmapTransition.x -= dx;
 					this.map.bitmapTransition.y -= dy;
-				}
+				
 			}
 			
 			// Force update regardless of the framerate for smooth drag
 			event.updateAfterEvent()*/
-			Trace.debug("X : "+this.map.mouseX);
-			Trace.debug("Y : "+this.map.mouseY);
-			this.map.center = this.map.getLocationFromMapPx(new Pixel(this.map.mouseX, this.map.mouseY));
+			//Trace.debug("X : "+this.map.mouseX);
+			//Trace.debug("Y : "+this.map.mouseY);
+			var deltaX:Number = this.map.stage.mouseX - this._previousMapPosition.x;
+			var deltaY:Number = this.map.stage.mouseY - this._previousMapPosition.y;
+			this._previousMapPosition.x = this.map.stage.mouseX;
+			this._previousMapPosition.y = this.map.stage.mouseY;
+			this.map.pan(deltaX, deltaY);
+
+			
+		//	this.map.center = this.map.getLocationFromMapPx(new Pixel(this.map.mouseX, this.map.mouseY));
 		}
 		
 		/**
@@ -156,7 +165,7 @@ package org.openscales.core.handler.mouse
 			if((!this.map) || (!this.map.stage))
 				return;
 			
-			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
+			this.map.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_END, this.map));
 			this.map.buttonMode=false;
 			//this.done(new Pixel(this.map.mouseX, this.map.mouseY));
@@ -174,15 +183,17 @@ package org.openscales.core.handler.mouse
 				_firstDrag = false;
 			}
 			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_START, this.map));
-			this.map.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
+			this.map.addEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			
-			this._start = new Pixel(this.map.mouseX,this.map.mouseY);
+			/*this._start = new Pixel(this.map.mouseX,this.map.mouseY);
 		
 			this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
 			this._startCenter = this.map.center;
 			this.map.buttonMode=true;
 			this._layerContainerPositionBeforeDrag = new Pixel(this.map.layerContainer.x, this.map.layerContainer.y);
-			this.dragging=true;
+			*/this.dragging=true;
+			this._previousMapPosition = new Pixel(this.map.stage.mouseX, this.map.stage.mouseY);
+			
 		}
 			
 		/**

@@ -159,7 +159,7 @@ package org.openscales.core.layer.ogc
 		 * Override method used to update the wms tile displayed when using the zoom control
 		 * 
 		 */
-		override public function redraw(fullRedraw:Boolean = true):void {
+		override public function redraw(fullRedraw:Boolean = false):void {
 			(_tileProvider as WMSTileProvider).width = this.tileWidth;
 			(_tileProvider as WMSTileProvider).height = this.tileHeight;
 			super.redraw(fullRedraw);

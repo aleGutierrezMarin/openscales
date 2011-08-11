@@ -447,9 +447,9 @@ package org.openscales.core
 				return;
 			}		
 			if(this.center) {
-				var newCenterPx:Pixel = this.getMapPxFromLocation(this.center).add(dx, dy);
+				var newCenterPx:Pixel = this.getMapPxFromLocation(this.center).add(dx, -dy);
 				var newCenterLocation:Location = this.getLocationFromMapPx(newCenterPx);
-				this.moveTo(newCenterLocation, null, tween);
+				this.center = newCenterLocation;
 			}
 		}
 		
