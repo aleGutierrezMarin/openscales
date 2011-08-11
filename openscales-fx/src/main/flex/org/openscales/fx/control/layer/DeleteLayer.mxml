@@ -11,6 +11,7 @@
 			import assets.fxg.ButtonCloseUp;
 			
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			
@@ -41,6 +42,8 @@
 						deleteButton.visible = false;
 					else
 						deleteButton.visible = true;
+					
+					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 				}
 			}
 				

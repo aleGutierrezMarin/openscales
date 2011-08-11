@@ -71,6 +71,7 @@
 				if(_layer && _layer.map)
 				{					
 					this._layer.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, updateArrowsDisplay);
+					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 				}
 			}
 			
