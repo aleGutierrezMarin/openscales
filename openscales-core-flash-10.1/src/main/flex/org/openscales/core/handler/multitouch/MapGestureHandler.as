@@ -120,6 +120,19 @@ package org.openscales.core.handler.multitouch {
 				this.map.layerContainer.scaleX *= event.scaleX;
 				this.map.layerContainer.scaleY *= event.scaleY;
 				
+				
+				var scale:Pixel = new Pixel(event.stageX*event.scaleX, event.stageY*event.scaleY);
+				var previous:Pixel = new Pixel(event.stageX,event.stageY);
+				var origin:Pixel = new Pixel(this.map.layerContainer.x, this.map.layerContainer.y);
+				
+				var result:Pixel = new Pixel();
+				result.x = (scale.x - origin.x) - (previous.x - origin.x);
+				result.y = (scale.y - origin.y) - (previous.y - origin.y);
+				
+				this.map.layerContainer.x += result.x;
+				this.map.layerContainer.y += result.y;
+				
+				
 			} if (event.phase==GesturePhase.END) {
 				
 				this.map.layerContainer.scaleX = 1;
