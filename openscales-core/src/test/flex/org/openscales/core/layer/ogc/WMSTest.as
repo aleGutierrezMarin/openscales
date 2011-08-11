@@ -154,10 +154,10 @@ package org.openscales.core.layer.ogc
 					var y:int = offsetrow - i;
 					
 					// The bounds values for the curent tile checked
-					var left:Number = tileOrigin.lon + (tileWidth*resolution.resolutionValue*x);
-					var right:Number = tileOrigin.lon + (tileWidth*resolution.resolutionValue*(x+1));
-					var top:Number = tileOrigin.lat + (tileHeight*resolution.resolutionValue*(y));
-					var bottom:Number = tileOrigin.lat + (tileHeight*resolution.resolutionValue*(y-1));
+					var left:Number = tileOrigin.lon + (tileWidth*resolution.value*x);
+					var right:Number = tileOrigin.lon + (tileWidth*resolution.value*(x+1));
+					var top:Number = tileOrigin.lat + (tileHeight*resolution.value*(y));
+					var bottom:Number = tileOrigin.lat + (tileHeight*resolution.value*(y-1));
 					
 					Assert.assertEquals("Incorrect value for tile left bounds "+j+","+i, left, currentGrid[i][j].bounds.left);
 					Assert.assertEquals("Incorrect value for tile right bounds "+j+","+i, right, currentGrid[i][j].bounds.right);
@@ -234,10 +234,10 @@ package org.openscales.core.layer.ogc
 					var y:int = offsetrow - i;
 					
 					// The bounds values for the curent tile checked
-					var left:Number = tileOrigin.lon + (tileWidth*resolution.resolutionValue*x);
-					var right:Number = tileOrigin.lon + (tileWidth*resolution.resolutionValue*(x+1));
-					var top:Number = tileOrigin.lat + (tileHeight*resolution.resolutionValue*(y));
-					var bottom:Number = tileOrigin.lat + (tileHeight*resolution.resolutionValue*(y-1));
+					var left:Number = tileOrigin.lon + (tileWidth*resolution.value*x);
+					var right:Number = tileOrigin.lon + (tileWidth*resolution.value*(x+1));
+					var top:Number = tileOrigin.lat + (tileHeight*resolution.value*(y));
+					var bottom:Number = tileOrigin.lat + (tileHeight*resolution.value*(y-1));
 					
 					Assert.assertEquals("Incorrect value for tile left bounds "+j+","+i, left, currentGrid[i][j].bounds.left);
 					Assert.assertEquals("Incorrect value for tile right bounds "+j+","+i, right, currentGrid[i][j].bounds.right);

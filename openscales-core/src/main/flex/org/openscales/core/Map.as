@@ -455,7 +455,7 @@ package org.openscales.core
 		 */
 		public function zoomIn(px:Pixel = null):void
 		{
-			var _newResolution:Number = this.resolution.resolutionValue * this._defaultZoomInFactor;
+			var _newResolution:Number = this.resolution.value * this._defaultZoomInFactor;
 			var _targetPixel:Pixel = px;
 			
 			if (_targetPixel == null)
@@ -478,7 +478,7 @@ package org.openscales.core
 		 */
 		public function zoomOut(px:Pixel = null):void
 		{
-			var _newResolution:Number = this.resolution.resolutionValue * this._defaultZoomOutFactor;
+			var _newResolution:Number = this.resolution.value * this._defaultZoomOutFactor;
 			var _targetPixel:Pixel = px;
 			
 			if (_targetPixel == null)
@@ -503,7 +503,7 @@ package org.openscales.core
 			if (factor < 0)
 				throws(new ArgumentError);
 			
-			var _newResolution:Number = this.resolution.resolutionValue * factor;
+			var _newResolution:Number = this.resolution.value * factor;
 			var _targetPixel:Pixel = px;
 			
 			if (_targetPixel == null)
@@ -528,19 +528,19 @@ package org.openscales.core
 			var dragTween:Boolean = false;
 			
 			var mapEvent:MapEvent;
-			var newResolution:Number = resolution.resolutionValue
+			var newResolution:Number = resolution.value
 				
-			if (newResolution > this.maxResolution.resolutionValue)
+			if (newResolution > this.maxResolution.value)
 			{
-				newResolution = this.maxResolution.resolutionValue;
+				newResolution = this.maxResolution.value;
 			}
 			
-			if (newResolution < this.minResolution.resolutionValue)
+			if (newResolution < this.minResolution.value)
 			{
-				newResolution = this.minResolution.resolutionValue;
+				newResolution = this.minResolution.value;
 			}
 			var targetResolution:Resolution = new Resolution(newResolution, this.resolution.projection);
-			var resolutionChanged:Boolean = (this.isValidResolution(targetResolution) && (targetResolution.resolutionValue != this._resolution.resolutionValue));
+			var resolutionChanged:Boolean = (this.isValidResolution(targetResolution) && (targetResolution.value != this._resolution.value));
 			//var validLocation:Boolean = this.isValidLocation(newCenter);
 			
 			/*if (newCenter && !validLocation) {
@@ -556,12 +556,12 @@ package org.openscales.core
 				this.dispatchEvent(mapEvent);
 				
 
-				var ratio:Number = this.resolution.resolutionValue/targetResolution.resolutionValue;
-				var newCenter:Location = this.getLocationFromMapPx(new Pixel(this.width*ratio/2, this.height*ratio/2));
+				var ratio:Number = this.resolution.value/targetResolution.value;
+				//var newCenter:Location = this.getLocationFromMapPx(new Pixel(this.width*ratio/2, this.height*ratio/2));
 				
-				if (! newCenter.equals(this.center))
+				if (! zoomTarget.equals(this.center))
 				{
-					this.center = newCenter.clone();
+					this.center = zoomTarget.clone();
 				}
 
 				if (resolutionChanged) {
@@ -733,12 +733,12 @@ package org.openscales.core
 		 */
 		private function isValidResolution(resolution:Resolution):Boolean {
 			
-			if (resolution.resolutionValue < this.minResolution.resolutionValue)
+			if (resolution.value < this.minResolution.value)
 			{
 				return false;
 			}
 			
-			if (resolution.resolutionValue > this.maxResolution.resolutionValue)
+			if (resolution.value > this.maxResolution.value)
 			{
 				return false;
 			}
@@ -857,7 +857,7 @@ package org.openscales.core
 				var size:Size = this.size;
 				var center:Location = this.center;
 				if (center) {
-					var res:Number = this.resolution.resolutionValue;
+					var res:Number = this.resolution.value;
 					
 					var delta_x:Number = px.x - (size.w / 2);
 					var delta_y:Number = px.y - (size.h / 2);
@@ -876,7 +876,7 @@ package org.openscales.core
 			var px:Pixel = null;
 			var b:Bounds = this.extent;
 			if (lonlat != null && b) {
-				var resolution:Number = this.resolution.resolutionValue;
+				var resolution:Number = this.resolution.value;
 				if(resolution)
 					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
 			}	
@@ -1293,8 +1293,8 @@ package org.openscales.core
 					center = this.center.reprojectTo(this.projection.toUpperCase());
 				else
 					center = this.center;
-				var w_deg:Number = this.size.w * this.resolution.resolutionValue;
-				var h_deg:Number = this.size.h * this.resolution.resolutionValue;
+				var w_deg:Number = this.size.w * this.resolution.value;
+				var h_deg:Number = this.size.h * this.resolution.value;
 				
 				extent = new Bounds(center.lon - w_deg / 2,
 					center.lat - h_deg / 2,
@@ -1486,9 +1486,9 @@ package org.openscales.core
 				value = value.reprojectTo(this.projection);
 			}
 			
-			if(value.resolutionValue < this.resolution.resolutionValue)
+			if(value.value < this.resolution.value)
 			{
-				this.resolution = new Resolution(value.resolutionValue, this.projection);
+				this.resolution = new Resolution(value.value, this.projection);
 			}
 			this._maxResolution = value;		
 			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
@@ -1514,9 +1514,9 @@ package org.openscales.core
 				value = value.reprojectTo(this.projection);
 			}
 			
-			if(value.resolutionValue > this.resolution.resolutionValue)
+			if(value.value > this.resolution.value)
 			{
-				this.resolution = new Resolution(value.resolutionValue, this.projection);
+				this.resolution = new Resolution(value.value, this.projection);
 			}
 			this._minResolution = value;
 			
@@ -1740,7 +1740,7 @@ package org.openscales.core
 			event.newResolution = value;
 			this._resolution = value;
 			this.dispatchEvent(event);
-			Trace.log("Changing resolution"+ event.newResolution.resolutionValue);
+			Trace.log("Changing resolution"+ event.newResolution.value);
 		}
 		
 		/**

@@ -117,7 +117,6 @@
     <classEntry path="org.openscales.core.i18n.Locale"/>
     <classEntry path="org.openscales.core.i18n.provider.I18nJSONProvider"/>
     <classEntry path="org.openscales.core.i18n.provider.Ii18nProvider"/>
-    <classEntry path="org.openscales.core.layer.VectorLayer"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
     <classEntry path="org.openscales.core.layer.HTTPRequest"/>

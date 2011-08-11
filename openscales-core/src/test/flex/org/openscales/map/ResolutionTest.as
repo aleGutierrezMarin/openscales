@@ -71,7 +71,7 @@ package org.openscales.map
 			_map.zoomIn();
 			
 			// Then the resolution is multiplied by the default zoomIn factor
-			assertEquals("The resolution has not been properly changed by the zoomIn", 9, _map.resolution.resolutionValue); 
+			assertEquals("The resolution has not been properly changed by the zoomIn", 9, _map.resolution.value); 
 		}
 		
 		/**
@@ -90,7 +90,7 @@ package org.openscales.map
 			_map.zoomOut();
 			
 			// Then the resolution is multiplied by the default zoomOut factor
-			assertEquals("The resolution has not been properly changed by the zoomOut", 11, _map.resolution.resolutionValue);
+			assertEquals("The resolution has not been properly changed by the zoomOut", 11, _map.resolution.value);
 		}
 		
 		/**
@@ -108,7 +108,7 @@ package org.openscales.map
 			_map.zoom(1.2);
 
 			// Then the resolution is multiplied by the given factor
-			assertEquals("The resolution has not been properly changed by the zoom", 12, _map.resolution.resolutionValue);
+			assertEquals("The resolution has not been properly changed by the zoom", 12, _map.resolution.value);
 		}
 		
 		/**
@@ -127,7 +127,7 @@ package org.openscales.map
 			_map.zoom(1.3);
 			
 			// Then the resolution is setted to maxResolution
-			assertEquals("The resolution has not been set to maxResolution", 12, _map.resolution.resolutionValue);
+			assertEquals("The resolution has not been set to maxResolution", 12, _map.resolution.value);
 		}
 		
 		/**
@@ -146,7 +146,7 @@ package org.openscales.map
 			_map.zoom(0.7);
 			
 			// Then the resolution is setted to minResolution
-			assertEquals("The resolution has not been set to minResolution", 8, _map.resolution.resolutionValue);
+			assertEquals("The resolution has not been set to minResolution", 8, _map.resolution.value);
 		}
 	}
 }

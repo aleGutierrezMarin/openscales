@@ -80,7 +80,7 @@ package org.openscales.core.layer
 		 */
 		override public function getURL(bounds:Bounds):String
 		{
-			var resolution:Number = this.map.resolution.resolutionValue;
+			var resolution:Number = this.map.resolution.value;
 			
 			// TODO : Refactor zoom
 			// htc has reverse zoom 

@@ -68,8 +68,8 @@ package org.openscales.core.layer {
 		{
 			return (this.visible
 				&& this.maxExtent.getIntersection(this.map.extent) != null
-				&& (this.map.resolution.resolutionValue <= this.maxResolution)
-				&& (this.map.resolution.resolutionValue >= this.minResolution));
+				&& (this.map.resolution.value <= this.maxResolution)
+				&& (this.map.resolution.value >= this.minResolution));
 		}
 		
 		/**
@@ -322,7 +322,7 @@ package org.openscales.core.layer {
 				var size:Size = this.map.size;
 				var center:Location = this.map.center;
 				if (center) {
-					var res:Number = this.map.resolution.resolutionValue;
+					var res:Number = this.map.resolution.value;
 					
 					var delta_x:Number = viewPortPx.x - (size.w / 2);
 					var delta_y:Number = viewPortPx.y - (size.h / 2);
@@ -340,7 +340,7 @@ package org.openscales.core.layer {
 			var px:Pixel = null;
 			var b:Bounds = this.extent;
 			if (lonlat != null && b) {
-				var resolution:Number = this.map.resolution.resolutionValue;
+				var resolution:Number = this.map.resolution.value;
 				if(resolution)
 					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
 			}
@@ -430,9 +430,9 @@ package org.openscales.core.layer {
 		public  function get inRange():Boolean {
 			var inRange:Boolean = false;
 			if (this.map) {
-				var resolutionProjected:Number = this.map.resolution.resolutionValue;
+				var resolutionProjected:Number = this.map.resolution.value;
 				if (this.projSrsCode != this.map.projection) {
-					resolutionProjected = this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue;
+					resolutionProjected = this.map.resolution.reprojectTo(this.projSrsCode).value;
 				}
 				inRange = ((resolutionProjected >= this.minResolution) && (resolutionProjected <= this.maxResolution));
 			}
