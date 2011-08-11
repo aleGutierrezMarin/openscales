@@ -18,19 +18,19 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}"/>
-		
-		<ControlPanel title="Drawing Tools" x="10" y="10">
+				
+		<s:Panel title="Drawing Tools" x="10" y="10" height="70" >
+			<s:layout>
+				<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
+									horizontalAlign="center" verticalAlign="middle"/>
+			</s:layout>
 			<DrawPoint id="drawPoint" target="{features.nativeLayer as FeatureLayer}" />
 			<DrawPath id="drawPath" target="{features.nativeLayer as FeatureLayer}"  />
 			<DrawPolygon id="drawPolygon" target="{features.nativeLayer as FeatureLayer}" />
 			<SelectFeatures id="selectFeatures" target="{features.nativeLayer as FeatureLayer}" />
 			<EditFeatures id="editFeatures" target="{features.nativeLayer as FeatureLayer}" />
 			<MoveFeatures id="moveFeatures" target="{features.nativeLayer as FeatureLayer}" />
-		</ControlPanel>
-		
-		<ControlPanel title="Drawing Tools" x="200" y="10">
-			<FeatureDrawing />
-		</ControlPanel>
+		</s:Panel>
 		
 	</Map>
 
