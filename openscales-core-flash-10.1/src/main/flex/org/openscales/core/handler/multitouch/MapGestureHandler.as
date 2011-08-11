@@ -60,6 +60,8 @@ package org.openscales.core.handler.multitouch {
 		private var _onStart:Function=null;
 		private var _oncomplete:Function=null;
 		
+		protected var _currentCenter:Pixel;
+		
 		public function MapGestureHandler(target:Map = null, active:Boolean = true) {
 			super(target,active);
 		}
@@ -69,10 +71,10 @@ package org.openscales.core.handler.multitouch {
 				if(Multitouch.inputMode != MultitouchInputMode.GESTURE)
 					Multitouch.inputMode = MultitouchInputMode.GESTURE;
 				this.map.addEventListener(TransformGestureEvent.GESTURE_ZOOM,this.onGestureZoom);
-				this.map.addEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
-				this.map.addEventListener(MouseEvent.DOUBLE_CLICK,this.onDoubleClick);			
-				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+	//			this.map.addEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
+	//			this.map.addEventListener(MouseEvent.DOUBLE_CLICK,this.onDoubleClick);			
+	//			this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+	//			this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 			}
 		}
@@ -104,7 +106,7 @@ package org.openscales.core.handler.multitouch {
 				this.cummulativeScaleY = 1;
 				
 				
-				Trace.debug("localX "+event.stageX+" / y: "+event.stageY);
+				
 				
 				var label:Label = new Label();
 				label.text="ici";
@@ -116,11 +118,6 @@ package org.openscales.core.handler.multitouch {
 				this.cummulativeScaleX = this.cummulativeScaleX * event.scaleX;
 				this.cummulativeScaleY = this.cummulativeScaleY * event.scaleY;
 				
-				
-				this.map.layerContainer.scaleX *= event.scaleX;
-				this.map.layerContainer.scaleY *= event.scaleY;
-				
-				
 				var scale:Pixel = new Pixel(event.stageX*event.scaleX, event.stageY*event.scaleY);
 				var previous:Pixel = new Pixel(event.stageX,event.stageY);
 				var origin:Pixel = new Pixel(this.map.layerContainer.x, this.map.layerContainer.y);
@@ -128,10 +125,17 @@ package org.openscales.core.handler.multitouch {
 				var result:Pixel = new Pixel();
 				result.x = (scale.x - origin.x) - (previous.x - origin.x);
 				result.y = (scale.y - origin.y) - (previous.y - origin.y);
+			
 				
-				this.map.layerContainer.x += result.x;
-				this.map.layerContainer.y += result.y;
+				this.map.layerContainer.scaleX *= event.scaleX;
+				this.map.layerContainer.scaleY *= event.scaleY;
 				
+				this.map.layerContainer.x -= result.x;
+				this.map.layerContainer.y -= result.y;
+				
+				
+				
+				Trace.debug("result x "+result.x+" / result y: "+result.y);
 				
 			} if (event.phase==GesturePhase.END) {
 				
@@ -144,7 +148,7 @@ package org.openscales.core.handler.multitouch {
 				{
 					sign = 1;
 					zoom = Math.round(zoom);
-					zoom = Math.log(cummulativeScaleX) / Math.log(2);
+					zoom = Math.log(cummulativeScaleX*cummulativeScaleY) / Math.log(2);
 					
 					if(zoom+this.map.zoom > this.map.baseLayer.maxZoomLevel)
 						zoom = this.map.baseLayer.maxZoomLevel - this.map.zoom;
@@ -154,14 +158,14 @@ package org.openscales.core.handler.multitouch {
 				{
 					sign = -1;
 					
-					zoom = Math.log(cummulativeScaleX) / Math.log(1/2);
+					zoom = Math.log(cummulativeScaleX*cummulativeScaleY) / Math.log(1/2);
 					zoom = Math.round(zoom);
 					
 					if(this.map.zoom-zoom < this.map.baseLayer.minZoomLevel)
 						zoom = this.map.baseLayer.maxZoomLevel - this.map.zoom;
 				}
 					
-				/*
+				
 				const px:Pixel = new Pixel(event.stageX, event.stageY);
 				const centerPx:Pixel = new Pixel(this.map.width/2, this.map.height/2);
 				
@@ -174,7 +178,7 @@ package org.openscales.core.handler.multitouch {
 				}
 				
 				this.map.moveTo(this.map.getLocationFromMapPx(newCenterPx), (this.map.zoom +(sign*zoom)), false, true);
-				*/
+				
 				
 				this.map.moveTo(this.map.center, this.map.zoom + (sign*zoom), false, true);
 				//Trace.debug("cumX " + cummulativeScaleX + " cumY " + cummulativeScaleY+"Zoom "+zoom);
