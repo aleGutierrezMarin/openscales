@@ -81,5 +81,13 @@
 	<component id="LayerCatalog" class="org.openscales.fx.control.LayerCatalog" />
 	<component id="AddLayerButton" class="org.openscales.fx.control.layer.AddLayerButton" />
 	<component id="RemoveLayerButton" class="org.openscales.fx.control.layer.RemoveLayerButton" />
-
+	
+	<!-- Drawing tools -->
+	<component id="DrawPoint" class="org.openscales.fx.control.drawing.DrawPoint" />
+	<component id="DrawPath" class="org.openscales.fx.control.drawing.DrawPath" />
+	<component id="DrawPolygon" class="org.openscales.fx.control.drawing.DrawPolygon" />
+	<component id="SelectFeatures" class="org.openscales.fx.control.drawing.SelectFeatures" />
+	<component id="EditFeatures" class="org.openscales.fx.control.drawing.EditFeatures" />
+	<component id="MoveFeatures" class="org.openscales.fx.control.drawing.MoveFeatures" />
+	
 </componentPackage>

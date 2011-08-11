@@ -26,10 +26,11 @@ package org.openscales.core.handler.feature.draw
 	 * */
 	public class EditPolygonHandler extends AbstractEditCollectionHandler
 	{
-		public function EditPolygonHandler(map:Map = null, active:Boolean = false,layerToEdit:FeatureLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function EditPolygonHandler(map:Map = null,active:Boolean = false,layerToEdit:FeatureLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null)
 		{
-			this.featureClickHandler=featureClickHandler;
-			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);			
+			this.featureClickHandler = featureClickHandler;
+			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
+			this.featuresToEdit = featuresToEdit;
 		}
 	
 		 /**
@@ -60,7 +61,7 @@ package org.openscales.core.handler.feature.draw
 		override public function refreshEditedfeatures(event:MapEvent=null):void{
 
 		 	if(_layerToEdit!=null && !_isUsedAlone){
-		 		for each(var feature:Feature in this._layerToEdit.features){	
+		 		for each(var feature:Feature in this.featuresToEdit){	
 					if(feature.isEditable && (feature.geometry is Polygon || feature.geometry is MultiPolygon)){			
 						//We display on the layer concerned by the operation the virtual vertices used for edition
 						displayVisibleVirtualVertice(feature);
