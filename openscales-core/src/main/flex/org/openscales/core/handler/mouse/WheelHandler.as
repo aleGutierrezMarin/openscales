@@ -32,8 +32,8 @@ package org.openscales.core.handler.mouse {
 				var mousePx:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
 				if (event.delta > 0)
 				{
-					this.map.zoomIn();
-					//this.map.zoomIn(mousePx);
+					//this.map.zoomIn();
+					this.map.zoomIn(mousePx);
 				}else
 				{
 					this.map.zoomOut();
