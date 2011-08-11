@@ -1,6 +1,7 @@
 package org.openscales.core.layer {
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
@@ -56,6 +57,10 @@ package org.openscales.core.layer {
 		//GAB
 		private var _editable:Boolean = false;
 		private var _metaData:Object;
+		
+		protected var _resolutionChanged:Boolean = false;
+		protected var _centerChanged:Boolean = false;
+		protected var _projectionChanged:Boolean = false;
 		
 		
 		/**
@@ -196,6 +201,7 @@ package org.openscales.core.layer {
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
 				this.map.addEventListener(MapEvent.MOVE_END, onMapMove);
 				this.map.addEventListener(MapEvent.RESIZE, onMapResize);
+				this.map.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;
 				}
@@ -206,6 +212,11 @@ package org.openscales.core.layer {
 			}
 		}
 		
+		
+		protected function onEnterFrame(event:Event)
+		{
+			this.redraw();
+		}
 		/**
 		 * Return a reference to the map where belong this layer
 		 */
@@ -219,9 +230,10 @@ package org.openscales.core.layer {
 		 * Override this method if you want a specific behaviour in your layer
 		 * when the projection of the map is changed
 		 */
-		private function onMapProjectionChanged(event:MapEvent):void
+		protected function onMapProjectionChanged(event:MapEvent):void
 		{
-			this.redraw(false);
+			this._projectionChanged = true;
+			//this.redraw(false);
 		}
 		
 		/**
@@ -230,9 +242,10 @@ package org.openscales.core.layer {
 		 * Override this method if you want a specific behaviour in your layer
 		 * when the resolution of the map is changed
 		 */
-		private function onMapResolutionChanged(event:MapEvent):void
+		protected function onMapResolutionChanged(event:MapEvent):void
 		{
-			this.redraw(false);
+			this._resolutionChanged = true;
+			//this.redraw(false);
 		}
 		
 		/**
@@ -241,9 +254,10 @@ package org.openscales.core.layer {
 		 * Override this method if you want a specific behaviour in your layer
 		 * when the center is changed
 		 */
-		private function onMapCenterChanged(event:MapEvent):void
+		protected function onMapCenterChanged(event:MapEvent):void
 		{
-			this.redraw(false);	
+			this._centerChanged;
+			//this.redraw(false);	
 		}
 		
 		protected function onSecurityInitialized(e:SecurityEvent):void {
@@ -379,7 +393,7 @@ package org.openscales.core.layer {
 		 * it will draw itself. 
 		 *  It will set the available parameter to expose if the layer is drawn or not.
 		 */
-		public function redraw(fullRedraw:Boolean = true):void {
+		public function redraw(fullRedraw:Boolean = false):void {
 			/*this.clear();
 			if (this.displayed) {
 				this.draw();
