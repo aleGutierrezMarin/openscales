@@ -226,8 +226,8 @@ package org.openscales.core.layer
 			}
 			
 			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
-			var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);
-			
+			//var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);
+			var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
 			if (resolution != this._resquestResolution)
 			{
 				this.scaleLayer(1, px);

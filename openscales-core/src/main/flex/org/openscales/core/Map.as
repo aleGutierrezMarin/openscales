@@ -29,8 +29,8 @@ package org.openscales.core
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
 	import org.openscales.core.i18n.provider.I18nJSONProvider;
-	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.security.ISecurity;
@@ -126,6 +126,8 @@ package org.openscales.core
 		
 		private var _defaultZoomInFactor:Number = 0.9;
 		private var _defaultZoomOutFactor:Number = 1.1;
+		
+		private var _centerShape:Shape;
 
 		/**
 		 * @private
@@ -260,6 +262,15 @@ package org.openscales.core
 			if (redraw){
 				layer.redraw();	
 			}
+			
+			var _centerPoint:Shape = new Shape();
+			_centerPoint.graphics.clear();
+			_centerPoint.graphics.lineStyle(1, 0xFF0000);
+			_centerPoint.graphics.moveTo(this.width/2 - 5, this.height/2);
+			_centerPoint.graphics.lineTo(this.width/2 + 5, this.height/2);
+			_centerPoint.graphics.moveTo(this.width/2, this.height/2 - 5);
+			_centerPoint.graphics.lineTo(this.width/2, this.height/2 + 5);
+			this.addChild(_centerPoint);
 			
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_ADDED, layer));
@@ -453,16 +464,15 @@ package org.openscales.core
 		 * You can give a pixel to specify the pixel where to zoom. The default value is the center of the 
 		 * map
 		 */
-		public function zoomIn(px:Pixel = null):void
+		public function zoomIn(targetPixel:Pixel = null):void
 		{
 			var _newResolution:Number = this.resolution.value * this._defaultZoomInFactor;
-			var _targetPixel:Pixel = px;
 			
-			if (_targetPixel == null)
+			if (targetPixel == null)
 			{
-				_targetPixel = this.getMapPxFromLocation(this.center);
+				targetPixel = this.getMapPxFromLocation(this.center);
 			}
-			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), this.getLocationFromMapPx(_targetPixel));
+			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), targetPixel);
 		}
 		
 		/**
@@ -476,16 +486,15 @@ package org.openscales.core
 		 * You can give a pixel to specify the pixel where to zoom. The default value is the center of the 
 		 * map
 		 */
-		public function zoomOut(px:Pixel = null):void
+		public function zoomOut(targetPixel:Pixel = null):void
 		{
 			var _newResolution:Number = this.resolution.value * this._defaultZoomOutFactor;
-			var _targetPixel:Pixel = px;
 			
-			if (_targetPixel == null)
+			if (targetPixel == null)
 			{
-				_targetPixel = this.getMapPxFromLocation(this.center);
+				targetPixel = this.getMapPxFromLocation(this.center);
 			}
-			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), this.getLocationFromMapPx(_targetPixel));
+			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), targetPixel);
 		}
 		
 		/**
@@ -498,19 +507,18 @@ package org.openscales.core
 		 * You can give a pixel to specify the pixel where to zoom. The default value is the center of the 
 		 * map
 		 */
-		public function zoom(factor:Number, px:Pixel = null):void
+		public function zoom(factor:Number, targetPixel:Pixel = null):void
 		{
 			if (factor < 0)
 				throws(new ArgumentError);
 			
 			var _newResolution:Number = this.resolution.value * factor;
-			var _targetPixel:Pixel = px;
 			
-			if (_targetPixel == null)
+			if (targetPixel == null)
 			{
-				_targetPixel = this.getMapPxFromLocation(this.center);
+				targetPixel = this.getMapPxFromLocation(this.center);
 			}
-			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), this.getLocationFromMapPx(_targetPixel));
+			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), targetPixel);
 		
 		}
 		
@@ -521,7 +529,7 @@ package org.openscales.core
 		 * this method will check that the resolution is in range
 		 * of min and max resolution
 		 */
-		private function zoomTo(resolution:Resolution, zoomTarget:Location):void
+		private function zoomTo(resolution:Resolution, zoomTarget:Pixel):void
 		{
 			// Manage while dragging?
 			// Temporary 
@@ -556,17 +564,42 @@ package org.openscales.core
 				this.dispatchEvent(mapEvent);
 				
 
-				var ratio:Number = this.resolution.value/targetResolution.value;
+				//var ratio:Number = this.resolution.value/targetResolution.value;
 				//var newCenter:Location = this.getLocationFromMapPx(new Pixel(this.width*ratio/2, this.height*ratio/2));
 				
-				if (! zoomTarget.equals(this.center))
-				{
-					this.center = zoomTarget.clone();
-				}
-
+				
+				//var centerPixel:Pixel = this.getMapPxFromLocation(this.center);
+				var zoomTargetLoc:Location = this.getLocationFromMapPx(zoomTarget);
 				if (resolutionChanged) {
 					this.resolution = targetResolution;
 				}
+				
+				
+				if (! zoomTargetLoc.equals(this.center))
+				{
+					var deltaX:Number = zoomTarget.x - this.width/2;
+					var deltaY:Number = zoomTarget.y - this.height/2;
+					var deltaLon:Number = deltaX*this.resolution.value;
+					var deltaLat:Number = deltaY*this.resolution.value;
+					Trace.debug("Zoom Location :"+zoomTargetLoc.lon+", "+zoomTargetLoc.lat);
+					Trace.debug("Delta Location :"+deltaLon+", "+deltaLat);
+					this.center = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projSrsCode);
+				}
+				
+				//var centerPx:Pixel = this.getMapPxFromLocation(zoomTarget);
+				var centerPx:Pixel = this.getMapPxFromLocation(this.center);
+				if (_centerShape != null)
+				{
+					this.removeChild(_centerShape);
+				}
+				_centerShape = new Shape();
+				_centerShape.graphics.clear();
+				_centerShape.graphics.lineStyle(1, 0x00FF00);
+				_centerShape.graphics.moveTo(centerPx.x - 5, centerPx.y);
+				_centerShape.graphics.lineTo(centerPx.x + 5, centerPx.y);
+				_centerShape.graphics.moveTo(centerPx.x, centerPx.y - 5);
+				_centerShape.graphics.lineTo(centerPx.x, centerPx.y + 5);
+				this.addChild(_centerShape);
 			}
 		}
 		
@@ -1012,11 +1045,10 @@ package org.openscales.core
 			{
 				newCenter = newCenter.reprojectTo(this.projection);
 			}
-			Trace.debug("New Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projSrsCode);
+			Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projSrsCode);
 			if (this.maxExtent.containsLocation(newCenter))
 			{
 				this._center = newCenter;
-				Trace.debug("New Center : "+this.center.x+", "+this.center.y+", "+ this.center.projSrsCode);
 				this.dispatchEvent(event);
 			}
 			else
