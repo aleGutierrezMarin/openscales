@@ -172,7 +172,8 @@ package org.openscales.core.format.gml.writer
 		 * 
 		 * @param: a Point Feature
 		 * @return: an XML object
-		 * 
+		 *
+		 * The order of the coordinates will be: longitude, latitude  
 		 */
 		
 		public function buildPointNode(point:Point):XML{

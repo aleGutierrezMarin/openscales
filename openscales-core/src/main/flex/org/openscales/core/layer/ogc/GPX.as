@@ -171,6 +171,5 @@ package org.openscales.core.layer.ogc
 			_version = value;
 		}
 		
-		
 	}
 }
