@@ -19,7 +19,6 @@ package org.openscales.core.format
 	{
 		
 		private var format:GPXFormat;
-		private var gpxLayer:GPX;
 		private var url:String;
 		
 		[Embed(source="/assets/format/GPX/Gpx11Example.xml",mimeType="application/octet-stream")]
@@ -46,7 +45,7 @@ package org.openscales.core.format
 		{
 			var i:uint;
 			var gpx:XML = new XML(new GPX10FILE());
-			var features:Vector.<Feature> = this.format.parseGpxFile(gpx);
+			var features:Vector.<Feature> = this.format.read(gpx) as Vector.<Feature>;
 			
 			//there are 7 features in the gpx file but two of them have the same name
 			//so the last point will not be added to the list because 

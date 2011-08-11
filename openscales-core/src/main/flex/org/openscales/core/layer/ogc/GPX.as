@@ -109,7 +109,7 @@ package org.openscales.core.layer.ogc
 				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
 				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
 				
-				this.featureVector = this.gpxFormat.parseGpxFile(this.gpxData);
+				this.featureVector = this.gpxFormat.read(this.gpxData) as Vector.<Feature>;
 				var i:uint;
 				var vectorLength:uint = this.featureVector.length;
 				for (i = 0; i < vectorLength; i++){

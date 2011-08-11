@@ -75,10 +75,10 @@ package {
 			_map.addLayer(GMLlayer2);
 			
 			
-			//GPX layer; fetch data from url (draws roads and point in France)
+			//GPX layer; fetch data from url (draws roads and points in France)
 			var gpxData:XML = new XML(new GPXFILE());
 			var url:String = "http://openscales.org/assets/simple_dep.gpx";
-			var gpxLayer:GPX = new GPX("Australia lines&points","1.0",url,gpxData);
+			var gpxLayer:GPX = new GPX("Départements","1.0",url,gpxData);
 			_map.addLayer(gpxLayer);
 			
 			/*

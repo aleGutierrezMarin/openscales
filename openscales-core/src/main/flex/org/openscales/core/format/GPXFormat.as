@@ -62,13 +62,12 @@ package org.openscales.core.format
 		/**
 		 * Calls parseFeature() to create the Feature objects and then adds them to a list of Features 
 		 * 
-		 * @param: A gpx file
-		 *
-		 * @return: A vector of features
+		 * @param: data to parse (a GPX file)
+		 * @return: Object (a vector of features)
 		 */
 
-		public function parseGpxFile(gpxFile:XML):Vector.<Feature>{
-			this.gpxFile = gpxFile;
+		override public function read(data:Object):Object{
+			this.gpxFile = new XML(data);
 			
 			this._featuresVector = new Vector.<Feature>();
 			var membersList:XMLList = this.gpxFile.children();
