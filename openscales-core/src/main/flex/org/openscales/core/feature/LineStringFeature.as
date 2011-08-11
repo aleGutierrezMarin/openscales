@@ -26,7 +26,7 @@ package org.openscales.core.feature
 			this.graphics.endFill();
 			
 			// Variable declaration before for loop to improve performances
-            var resolution:Number = this.layer.map.resolution.resolutionValue; 
+            var resolution:Number = this.layer.map.resolution.value; 
             var dX:int = -int(this.layer.map.layerContainer.x) + this.left; 
             var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
 			var j:uint = (this.lineString.componentsLength*2);

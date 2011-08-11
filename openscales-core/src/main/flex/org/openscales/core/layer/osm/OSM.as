@@ -28,10 +28,10 @@ package org.openscales.core.layer.osm
 
 		override public function getURL(bounds:Bounds):String
 		{
-			var res:Number = this.map.resolution.resolutionValue;
+			var res:Number = this.map.resolution.value;
 			var x:Number = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileWidth));
 			var y:Number = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileHeight));
-			var z:Number = this.getZoomForResolution(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue);
+			var z:Number = this.getZoomForResolution(this.map.resolution.reprojectTo(this.projSrsCode).value);
 			var limit:Number = Math.pow(2, z);
 
 			if (y < 0 || y >= limit ||x < 0 || x >= limit) {

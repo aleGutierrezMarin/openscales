@@ -150,8 +150,8 @@ package org.openscales.core.layer.originator
 			{
 				// if extent and resolution contain given extent and resolution : covered
 				if( this._constraints[i].extent.intersectsBounds(extent) &&
-					this._constraints[i].minResolution <= resolution.resolutionValue &&
-					this._constraints[i].maxResolution >= resolution.resolutionValue)
+					this._constraints[i].minResolution <= resolution.value &&
+					this._constraints[i].maxResolution >= resolution.value)
 				{
 					return true;
 				}

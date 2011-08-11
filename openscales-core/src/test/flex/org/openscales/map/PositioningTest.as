@@ -79,7 +79,7 @@ package org.openscales.map {
 			_map.resolution = new Resolution(0.703125, "EPSG:4326");
 			
 			// And resolution is set to this value
-			assertTrue('Incorrect resolution', 0.703125 - _map.resolution.resolutionValue < PRECISION);
+			assertTrue('Incorrect resolution', 0.703125 - _map.resolution.value < PRECISION);
 		}
 		
 		/**
@@ -100,7 +100,7 @@ package org.openscales.map {
 			//_map.zoom++;
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",0.17578125-_map.resolution.resolutionValue < PRECISION);
+			assertTrue("Incorrect map resolution",0.17578125-_map.resolution.value < PRECISION);
 		}
 		
 		/**
@@ -121,7 +121,7 @@ package org.openscales.map {
 			//_map.zoom--;
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",0.703125-_map.resolution.resolutionValue < PRECISION);
+			assertTrue("Incorrect map resolution",0.703125-_map.resolution.value < PRECISION);
 		}
 		
 		[Test(async)]
@@ -142,7 +142,7 @@ package org.openscales.map {
 			//_map.zoom--;
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION.resolutionValue - _map.resolution.resolutionValue < PRECISION);
+			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION.value - _map.resolution.value < PRECISION);
 		}
 		
 		[Test(async)]
@@ -163,7 +163,7 @@ package org.openscales.map {
 			//_map.zoom++;
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION.resolutionValue - _map.resolution.resolutionValue < PRECISION);
+			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION.value - _map.resolution.value < PRECISION);
 		}
 	}
 }

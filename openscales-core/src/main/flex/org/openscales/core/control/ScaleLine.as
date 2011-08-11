@@ -154,7 +154,7 @@ package org.openscales.core.control
 
 			// convert the scaleMaxWidth to map units
 			// The result is the max distance IN MAP UNIT, represent in the scaleline
-			var maxSizeData:Number = this._scaleMaxWidth * mapResolution.resolutionValue * Unit.getInchesPerUnit(currentBaseLayerUnits);
+			var maxSizeData:Number = this._scaleMaxWidth * mapResolution.value * Unit.getInchesPerUnit(currentBaseLayerUnits);
 
 			// decide whether to use large or small scale units. it's independent of the map unit    
 			var topUnits:String;		
@@ -181,8 +181,8 @@ package org.openscales.core.control
 			bottomMax = bottomRounded / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(bottomUnits);
 	
 			// and to pixel units
-			_topPx = topMax / mapResolution.resolutionValue;
-			var bottomPx:Number = bottomMax / mapResolution.resolutionValue;
+			_topPx = topMax / mapResolution.value;
+			var bottomPx:Number = bottomMax / mapResolution.value;
 			
 			this.graphics.clear();
 			this.graphics.beginFill(this._color);

@@ -27,7 +27,7 @@ package org.openscales.core.layer
 			  this._lastLayer.map  = map;
 			  this._lastLayer.removeEventListenerFromMap();
 			  super.map = map;
-			  if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch)
+			  if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch)
 			  {
 			  	_isFirstLayer = true;
 			    this.addChild(this._firstLayer);
@@ -42,13 +42,13 @@ package org.openscales.core.layer
 		
 		public function changeLayer():void{
 		
-			 if(_isFirstLayer== false && this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch )
+			 if(_isFirstLayer== false && this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch )
 			  {
 			  	this.removeChild(this._lastLayer);
 			  	_isFirstLayer = true;
 			    this.addChild(this._firstLayer);
 			  }
-			  if(_isFirstLayer== true && this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue <= this._resolutionToSwitch ){
+			  if(_isFirstLayer== true && this.map.resolution.reprojectTo(this.projSrsCode).value <= this._resolutionToSwitch ){
 			  	this.removeChild(this._firstLayer);
 			  	_isFirstLayer = false;
 			    this.addChild(this._lastLayer);
@@ -78,7 +78,7 @@ package org.openscales.core.layer
 			if (this.map == null) {
 				  return this._firstLayer.projSrsCode;
 			}
-			if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 			  return this._firstLayer.projSrsCode;
 			} else {
 			  return this._lastLayer.projSrsCode;
@@ -86,7 +86,7 @@ package org.openscales.core.layer
 		}
 		
 		override public function get minResolution():Number {
-			if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 			  return this._firstLayer.minResolution;
 			} else {
 			  return this._lastLayer.minResolution;
@@ -95,7 +95,7 @@ package org.openscales.core.layer
 		}
 		
 		override public function get maxResolution():Number {
-			if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 			  return this._firstLayer.maxResolution;
 			} else {
 			  return this._lastLayer.maxResolution;
@@ -123,7 +123,7 @@ package org.openscales.core.layer
 			
 			if(this.visible)
 			{
-			  if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+			  if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 				this._firstLayer.redraw();
 			  }
 			  else{
@@ -138,7 +138,7 @@ package org.openscales.core.layer
 		 */
 		override public function clear():void {
 			
-			if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 				this._firstLayer.clear();
 			  }
 			  else{
@@ -151,7 +151,7 @@ package org.openscales.core.layer
 		 * Reset layer data
 		 */
 		override public function reset():void {
-			if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 				this._firstLayer.reset();
 			  }
 			  else{
@@ -164,7 +164,7 @@ package org.openscales.core.layer
 		 * @return true if the layer was redrawn, false if not
 		 */
 		override public function redraw(fullRedraw:Boolean = true):void {
-			if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 				this._firstLayer.redraw();
 			  }
 			  else{
@@ -176,7 +176,7 @@ package org.openscales.core.layer
 		 */ 
 		public function getDisplayLayer():Layer{
 			
-			if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 				return this._firstLayer;
 			  }
 			  else{
@@ -191,7 +191,7 @@ package org.openscales.core.layer
 		 */
 		public function getFeatureLayer():VectorLayer{
 			if(this._firstLayer is VectorLayer && this._lastLayer is VectorLayer){
-				if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
+				if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 				 return this._firstLayer as VectorLayer;
 			  }
 			  else{

@@ -10,12 +10,12 @@ package org.openscales.core.basetypes
 	{
 		
 		private var _projection:String;
-		private var _resolutionValue:Number; 
+		private var _value:Number; 
 			
 		public function Resolution(resolutionValue:Number, projection:String = "EPSG:4326")
 		{
 			this._projection = projection;
-			this._resolutionValue = resolutionValue;
+			this._value = resolutionValue;
 		}
 		
 		/**
@@ -23,7 +23,7 @@ package org.openscales.core.basetypes
 		 */
 		public function reprojectTo(newSrsCode:String):Resolution
 		{
-			var resolution:Number = this._resolutionValue;
+			var resolution:Number = this._value;
 			
 			if (this._projection != newSrsCode)
 			{
@@ -44,9 +44,9 @@ package org.openscales.core.basetypes
 		/**
 		 * @private
 		 */
-		public function get resolutionValue():Number
+		public function get value():Number
 		{
-			return this._resolutionValue;
+			return this._value;
 		}
 	}
 }
