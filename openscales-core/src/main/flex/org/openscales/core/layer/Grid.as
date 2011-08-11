@@ -165,23 +165,7 @@ package org.openscales.core.layer
 		
 		override public function get available():Boolean
 		{
-			var _available:Boolean = true;
-			
-			if (this.maxExtent.getIntersection(this.map.extent) == null)
-			{
-				_available = false;
-			}
-			
-			if ((this.map.resolution.resolutionValue > this.maxResolution) || (this.map.resolution.resolutionValue < this.minResolution))
-			{
-				_available = false;
-			}
-			
-			if (this.projSrsCode != this.map.projection)
-			{
-				_available = false;
-			}
-			return _available;
+			return (this.projSrsCode == this.map.projection && super.available);
 		}
 		
 		/**

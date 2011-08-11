@@ -66,7 +66,10 @@ package org.openscales.core.layer {
 		 */
 		public function get available():Boolean
 		{
-			return false
+			return (this.visible
+				&& this.maxExtent.getIntersection(this.map.extent) != null
+				&& (this.map.resolution.resolutionValue <= this.maxResolution)
+				&& (this.map.resolution.resolutionValue >= this.minResolution));
 		}
 		
 		/**
