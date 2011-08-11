@@ -9,7 +9,7 @@ package org.openscales.core.control
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Rule;
@@ -33,7 +33,7 @@ package org.openscales.core.control
 		private var _newExtentColor:uint = 0x0000FF;
 		
 		private var _startDrag:Pixel = null;
-		private var _extentLayer:FeatureLayer;
+		private var _extentLayer:VectorLayer;
 		private var _extentFeature:PolygonFeature = null;
 		private var _newExtentFeature:PolygonFeature = null;
 		private var _extentStyle:Style;
@@ -44,7 +44,7 @@ package org.openscales.core.control
 			super(position);
 			this._overviewMap = new Map();
 			this._overviewMap.size = new Size(100,100);
-			this._extentLayer = new FeatureLayer("extentLayer");
+			this._extentLayer = new VectorLayer("extentLayer");
 			addEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
 		}
 		

@@ -8,7 +8,7 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.handler.mouse.DragHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	
 	/**
@@ -82,7 +82,7 @@ package org.openscales.core.handler.feature
 		public function addUndraggableFeature(feature:Feature):void{
 			var addFeature:Boolean=false;
 			if(feature!=null){
-				for each(var featureLayer:FeatureLayer in _draggableLayers){
+				for each(var featureLayer:VectorLayer in _draggableLayers){
 					//The feature belongs to a draggable layers
 					if(featureLayer.features.indexOf(feature)!=-1){
 						addFeature=true;	
@@ -103,15 +103,15 @@ package org.openscales.core.handler.feature
 		public function addDraggableLayers(layers:Vector.<Layer>):void {
 			var layer:Layer;
 			for each(layer in layers) {
-				if(layer is FeatureLayer)
-					addDraggableLayer(layer as FeatureLayer);
+				if(layer is VectorLayer)
+					addDraggableLayer(layer as VectorLayer);
 			}
 		}
 		/**
 		 * This function add a layers as draggabble layer
 		 * @param layer:FeatureLayer the layer to add
 		 * */
-		public function addDraggableLayer(layer:FeatureLayer):void{
+		public function addDraggableLayer(layer:VectorLayer):void{
 			if(layer!=null && _draggableLayers.indexOf(layer)==-1){
 				_draggableLayers.push(layer);
 			}

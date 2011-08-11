@@ -29,7 +29,7 @@ package org.openscales.core
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
 	import org.openscales.core.i18n.provider.I18nJSONProvider;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.popup.Popup;
@@ -1395,8 +1395,8 @@ package org.openscales.core
 		/**
 		 * List all feature layers (including layers that inherit FeatureLayer like WFS) of the map
 		 **/
-		public function get featureLayers():Vector.<FeatureLayer> {
-			var layerArray:Vector.<FeatureLayer> = new Vector.<FeatureLayer>();
+		public function get featureLayers():Vector.<VectorLayer> {
+			var layerArray:Vector.<VectorLayer> = new Vector.<VectorLayer>();
 			if (this.layerContainer == null) {
 				return layerArray;
 			}
@@ -1404,7 +1404,7 @@ package org.openscales.core
 			var i:int = this.layerContainer.numChildren -1;
 			for (i;i>-1;--i) {
 				s = this.layerContainer.getChildAt(i);
-				if(s is FeatureLayer) {
+				if(s is VectorLayer) {
 					layerArray.push(s);
 				}
 			}

@@ -8,7 +8,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;
@@ -24,14 +24,14 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * The layer in which we'll draw
 		 */
-		private var _drawLayer:FeatureLayer = null;
+		private var _drawLayer:VectorLayer = null;
 
 		/**
 		 * Single ID for point
 		 */		
 		private var id:Number = 0;
 
-		public function DrawPointHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.FeatureLayer=null)
+		public function DrawPointHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.VectorLayer=null)
 		{
 			super(map, active, drawLayer);
 		}

@@ -8,7 +8,7 @@ package org.openscales.core.feature {
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.filter.ElseFilter;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -196,7 +196,7 @@ package org.openscales.core.feature {
 			var style:Style;
 			if (this._style == null) {
 				// FIXME : Ugly thing done here
-				style = (this.layer as FeatureLayer).style;
+				style = (this.layer as VectorLayer).style;
 			} else {
 				style = this._style;
 			}

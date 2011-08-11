@@ -13,7 +13,7 @@ package org.openscales.core.handler.feature {
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.mouse.ClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -43,7 +43,7 @@ package org.openscales.core.handler.feature {
 		 * Array of the layers to treat during a selection.
 		 * If void (default), all the layers are managed.
 		 */
-		private var _layers:Vector.<FeatureLayer> = new Vector.<FeatureLayer>();
+		private var _layers:Vector.<VectorLayer> = new Vector.<VectorLayer>();
 
 		/**
 		 * Array of some features that may not be selected.
@@ -169,11 +169,11 @@ package org.openscales.core.handler.feature {
 		/**
 		 * Layers array getter and setter
 		 */
-		public function get layers():Vector.<FeatureLayer> {
+		public function get layers():Vector.<VectorLayer> {
 			return this._layers;
 		}
 
-		public function set layers(value:Vector.<FeatureLayer>):void {
+		public function set layers(value:Vector.<VectorLayer>):void {
 			// Assert that the input array is composed of not null FeatureLayers
 			if (value == null) {
 				Trace.error("SelectFeaturesHandler - invalid layers (null)");
@@ -182,7 +182,7 @@ package org.openscales.core.handler.feature {
 				var len:int = value.length;
 				// Restrict the input array to the not null FeatureLayers
 				if (len > 0) {
-					var filteredValue:Vector.<FeatureLayer> = new Vector.<FeatureLayer>();
+					var filteredValue:Vector.<VectorLayer> = new Vector.<VectorLayer>();
 					for each (var l:Layer in value) {
 						if ((l != null)) {
 							filteredValue.push(l);
@@ -200,7 +200,7 @@ package org.openscales.core.handler.feature {
 			// a void array, the new layers are all the layers of the map, so
 			// there is nothing to do in this case.
 			if ((len > 0) && (this.layers.length > 0) && (this.selectedFeatures.length > 0)) {
-				var layer:FeatureLayer;
+				var layer:VectorLayer;
 				var i:int=0;
 				for each (layer in this.layers) {
 					// Is the layer in the array of the new layers ?
@@ -378,7 +378,7 @@ package org.openscales.core.handler.feature {
 			// Reset the selection and the array of the layers to treat
 			if (this.map != value) {
 				clearSelection();
-				this.layers = new Vector.<FeatureLayer>();
+				this.layers = new Vector.<VectorLayer>();
 			}
 			// Update the map associated to the handler
 			if (this.map) {
@@ -439,7 +439,7 @@ package org.openscales.core.handler.feature {
 		 * Unselect all the features of the input layer.
 		 * @param layer the FeatureLayer removed from the layers to manage
 		 */
-		private function unselectFeaturesOfLayer(layer:FeatureLayer):void {
+		private function unselectFeaturesOfLayer(layer:VectorLayer):void {
 			// Look for all the selected features attached to the removed layers
 			var featuresToUnselect:Vector.<Feature> = new Vector.<Feature>();
 			for each (var feature:Feature in this.selectedFeatures) {
@@ -457,10 +457,10 @@ package org.openscales.core.handler.feature {
 		 * @param evt the LayerEvent that defines the layer removed from the map
 		 */
 		private function onLayerRemoved(evt:LayerEvent):void {
-			if ((!evt) || (evt.type != LayerEvent.LAYER_REMOVED) || (!evt.layer) || (!(evt.layer is FeatureLayer))) {
+			if ((!evt) || (evt.type != LayerEvent.LAYER_REMOVED) || (!evt.layer) || (!(evt.layer is VectorLayer))) {
 				return;
 			}
-			unselectFeaturesOfLayer(evt.layer as FeatureLayer);
+			unselectFeaturesOfLayer(evt.layer as VectorLayer);
 		}
 
 		/**
@@ -528,7 +528,7 @@ package org.openscales.core.handler.feature {
 		 * the features
 		 */
 		private function onSomething(evt:FeatureEvent, updateStyleFeature:Function, onSomethingFeature:Function):void {
-			var i:int, layer:FeatureLayer, layersTmp:Array = new Array();
+			var i:int, layer:VectorLayer, layersTmp:Array = new Array();
 
 			if (this._dragging)
 				return;
@@ -605,8 +605,8 @@ package org.openscales.core.handler.feature {
 			// Look for all the features that intersect the selection geometry
 			var featuresToSelect:Vector.<Feature> = new Vector.<Feature>();
 			if (geom) {
-				var layersToTest:Vector.<FeatureLayer> = (this.layers.length > 0) ? this.layers : this.map.featureLayers;
-				var layer:FeatureLayer, layersTmp:Vector.<FeatureLayer> = new Vector.<FeatureLayer>();
+				var layersToTest:Vector.<VectorLayer> = (this.layers.length > 0) ? this.layers : this.map.featureLayers;
+				var layer:VectorLayer, layersTmp:Vector.<VectorLayer> = new Vector.<VectorLayer>();
 				// Remove invisible layers from the list of selectable layers
 				for each (layer in layersToTest) {
 					if (layer.displayed) {
