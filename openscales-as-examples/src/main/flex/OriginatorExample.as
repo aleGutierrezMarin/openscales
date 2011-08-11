@@ -85,7 +85,7 @@ package {
 			
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,_ign.projection);
-			_map.zoom=5;
+			//_map.zoom=5;
 			
 			this.addChild(_map);
 			

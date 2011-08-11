@@ -225,14 +225,14 @@
     <classEntry path="org.openscales.map.ResolutionTest"/>
   </includeClasses>
   <includeResources>
-    <resourceEntry destPath="assets/i18n/IT.json" sourcePath="assets/i18n/IT.json"/>
     <resourceEntry destPath="assets/images/cursorCrosshair.swf" sourcePath="assets/images/cursorCrosshair.swf"/>
+    <resourceEntry destPath="assets/i18n/IT.json" sourcePath="assets/i18n/IT.json"/>
     <resourceEntry destPath="assets/images/west-mini.png" sourcePath="assets/images/west-mini.png"/>
     <resourceEntry destPath="assets/images/check.png" sourcePath="assets/images/check.png"/>
     <resourceEntry destPath="assets/images/layerDel.png" sourcePath="assets/images/layerDel.png"/>
     <resourceEntry destPath="assets/images/panning-hand-off.png" sourcePath="assets/images/panning-hand-off.png"/>
-    <resourceEntry destPath="assets/images/layerViz.png" sourcePath="assets/images/layerViz.png"/>
     <resourceEntry destPath="assets/images/marker-blue.png" sourcePath="assets/images/marker-blue.png"/>
+    <resourceEntry destPath="assets/images/layerViz.png" sourcePath="assets/images/layerViz.png"/>
     <resourceEntry destPath="assets/kml/sample1.kml" sourcePath="assets/kml/sample1.kml"/>
     <resourceEntry destPath="assets/images/radiobutton-noselected.png" sourcePath="assets/images/radiobutton-noselected.png"/>
     <resourceEntry destPath="assets/kml/sample3.kml" sourcePath="assets/kml/sample3.kml"/>
@@ -243,8 +243,8 @@
     <resourceEntry destPath="assets/images/south-mini.png" sourcePath="assets/images/south-mini.png"/>
     <resourceEntry destPath="assets/images/slide-vertical.png" sourcePath="assets/images/slide-vertical.png"/>
     <resourceEntry destPath="assets/i18n/EN.json" sourcePath="assets/i18n/EN.json"/>
-    <resourceEntry destPath="assets/images/north-mini.png" sourcePath="assets/images/north-mini.png"/>
     <resourceEntry destPath="assets/images/arrow_down.png" sourcePath="assets/images/arrow_down.png"/>
+    <resourceEntry destPath="assets/images/north-mini.png" sourcePath="assets/images/north-mini.png"/>
     <resourceEntry destPath="assets/images/arrow_up.png" sourcePath="assets/images/arrow_up.png"/>
     <resourceEntry destPath="assets/images/layerSel.png" sourcePath="assets/images/layerSel.png"/>
     <resourceEntry destPath="assets/images/layer-switcher-maximize.png" sourcePath="assets/images/layer-switcher-maximize.png"/>
@@ -263,7 +263,6 @@
     <resourceEntry destPath="assets/images/panning-hand-on.png" sourcePath="assets/images/panning-hand-on.png"/>
     <resourceEntry destPath="assets/images/measuring-stick-on.png" sourcePath="assets/images/measuring-stick-on.png"/>
     <resourceEntry destPath="assets/images/marker-green.png" sourcePath="assets/images/marker-green.png"/>
-    <resourceEntry destPath="org/openscales/core/layer/Layer.as.orig" sourcePath="org/openscales/core/layer/Layer.as.orig"/>
     <resourceEntry destPath="assets/images/zoom-world-mini.png" sourcePath="assets/images/zoom-world-mini.png"/>
     <resourceEntry destPath="assets/images/zoom-minus-mini.png" sourcePath="assets/images/zoom-minus-mini.png"/>
     <resourceEntry destPath="assets/images/blank.gif" sourcePath="assets/images/blank.gif"/>
@@ -271,10 +270,10 @@
     <resourceEntry destPath="assets/images/layerAccept.png" sourcePath="assets/images/layerAccept.png"/>
     <resourceEntry destPath="assets/images/marker-gold.png" sourcePath="assets/images/marker-gold.png"/>
     <resourceEntry destPath="assets/layer/capabilities/wmtscapabilities.xml" sourcePath="assets/layer/capabilities/wmtscapabilities.xml"/>
-    <resourceEntry destPath="assets/images/east-mini.png" sourcePath="assets/images/east-mini.png"/>
     <resourceEntry destPath="assets/images/layerCancel.png" sourcePath="assets/images/layerCancel.png"/>
-    <resourceEntry destPath="assets/images/measuring-stick-off.png" sourcePath="assets/images/measuring-stick-off.png"/>
+    <resourceEntry destPath="assets/images/east-mini.png" sourcePath="assets/images/east-mini.png"/>
     <resourceEntry destPath="assets/images/drag-rectangle-off.png" sourcePath="assets/images/drag-rectangle-off.png"/>
+    <resourceEntry destPath="assets/images/measuring-stick-off.png" sourcePath="assets/images/measuring-stick-off.png"/>
   </includeResources>
   <namespaceManifests/>
 </flexLibProperties>

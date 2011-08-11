@@ -8,6 +8,7 @@ package org.openscales.core
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -99,7 +100,7 @@ package org.openscales.core
 		public var URL_THEME:String = "http://openscales.org/nexus/service/local/repo_groups/public-snapshots/content/org/openscales/openscales-fx-theme/2.0.0-SNAPSHOT/openscales-fx-theme-2.0.0-20110517.142043-5.swf";
 		
 		private var _baseLayer:Layer = null;
-		private var _layerContainer:Sprite = null;
+		//private var _layerContainer:Sprite = null;
 		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _size:Size = null;
 		protected var _zoom:Number = 0;
@@ -143,7 +144,7 @@ package org.openscales.core
 		/**
 		 * The location where the layer container was re-initialized (on-zoom)
 		 */
-		private var _layerContainerOrigin:Location = null;
+		//private var _layerContainerOrigin:Location = null;
 		
 		//Source file for i18n english translation
 		[Embed(source="/assets/i18n/EN.json", mimeType="application/octet-stream")]
@@ -174,16 +175,16 @@ package org.openscales.core
 			
 			this._projection = projection;
 			this.size = new Size(width, height);
-			this._layerContainer = new Sprite();
+			//this._layerContainer = new Sprite();
 			// It is necessary to draw something before to define the size...
-			this._layerContainer.graphics.beginFill(0xFFFFFF,0);
-			this._layerContainer.graphics.drawRect(0,0,this.size.w,this.size.h);
-			this._layerContainer.graphics.endFill();
+			this.graphics.beginFill(0xFFFFFF,0);
+			this.graphics.drawRect(0,0,this.size.w,this.size.h);
+			this.graphics.endFill();
 			// ... and then the size may be defined.
-			this._layerContainer.width = this.size.w;
-			this._layerContainer.height = this.size.h;
+			this.width = this.size.w;
+			this.height = this.size.h;
 			// The sprite is now fully defined.
-			this.addChild(this._layerContainer);
+			//this.addChild(this._layerContainer);
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);	
@@ -194,6 +195,8 @@ package org.openscales.core
 			
 			this.focusRect = false;// Needed to hide yellow rectangle around map when focused
 			this.addEventListener(MouseEvent.CLICK, onMouseClick); //Needed to prevent focus losing 
+
+			
 		}
 		
 		/**
@@ -250,13 +253,14 @@ package org.openscales.core
 				}
 			}
 			
-			this._layerContainer.addChild(layer);
+			this.addChild(layer);
 			
 			layer.map = this;
 			
 			if (redraw){
 				layer.redraw();	
 			}
+			
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_ADDED, layer));
 			
@@ -367,7 +371,7 @@ package org.openscales.core
 		 * 	layer was a based layer
 		 */
 		public function removeLayer(layer:Layer):void {
-			this._layerContainer.removeChild(layer);
+			this.removeChild(layer);
 			layer.destroy();
 			var l:Vector.<Layer> = this.layers;
 			var i:int = l.indexOf(layer);
@@ -396,8 +400,8 @@ package org.openscales.core
 			var i:Number;
 			if(exclusive){
 				var child:DisplayObject;
-				for(i=this._layerContainer.numChildren-1;i>=0;i--){
-					child = this._layerContainer.getChildAt(i);
+				for(i=this.numChildren-1;i>=0;i--){
+					child = this.getChildAt(i);
 					if(child is Popup){
 						if(child != popup) {
 							Trace.warn("Map.addPopup: popup already displayed so escape");
@@ -410,13 +414,13 @@ package org.openscales.core
 			if (popup != null){
 				popup.map = this;
 				popup.draw();
-				this._layerContainer.addChild(popup);
+				this.addChild(popup);
 			}
 		}
 		
 		public function removePopup(popup:Popup):void {
-			if(this._layerContainer.contains(popup))
-				this._layerContainer.removeChild(popup);
+			if(this.contains(popup))
+				this.removeChild(popup);
 		}
 		
 		/**
@@ -517,13 +521,14 @@ package org.openscales.core
 		 * this method will check that the resolution is in range
 		 * of min and max resolution
 		 */
-		private function zoomTo(resolution:Resolution, newCenter:Location):void
+		private function zoomTo(resolution:Resolution, zoomTarget:Location):void
 		{
+			// Manage while dragging?
 			// Temporary 
 			var dragTween:Boolean = false;
 			
 			var mapEvent:MapEvent;
-			var newResolution:Number = this.resolution.resolutionValue
+			var newResolution:Number = resolution.resolutionValue
 				
 			if (newResolution > this.maxResolution.resolutionValue)
 			{
@@ -536,82 +541,33 @@ package org.openscales.core
 			}
 			var targetResolution:Resolution = new Resolution(newResolution, this.resolution.projection);
 			var resolutionChanged:Boolean = (this.isValidResolution(targetResolution) && (targetResolution.resolutionValue != this._resolution.resolutionValue));
-			var validLocation:Boolean = this.isValidLocation(newCenter);
+			//var validLocation:Boolean = this.isValidLocation(newCenter);
 			
-			if (newCenter && !validLocation) {
+			/*if (newCenter && !validLocation) {
 				Trace.log("Not a valid center, so do nothing");
 				return;
-			}
+			}*/
 			
-			var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
+			//var centerChanged:Boolean = validLocation && (! newCenter.equals(this.center));
 			
-			if (resolutionChanged || centerChanged) {
+			if (resolutionChanged /*|| centerChanged*/) {
 				
 				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
 				this.dispatchEvent(mapEvent);
 				
-				if (centerChanged) {
-					if ((!resolutionChanged) && (this.center) && !this._dragging) {
-						this.centerLayerContainer(newCenter, dragTween);
-					}
+
+				var ratio:Number = this.resolution.resolutionValue/targetResolution.resolutionValue;
+				var newCenter:Location = this.getLocationFromMapPx(new Pixel(this.width*ratio/2, this.height*ratio/2));
+				
+				if (! newCenter.equals(this.center))
+				{
 					this.center = newCenter.clone();
 				}
-				
-				if ((resolutionChanged) || (this._layerContainerOrigin == null)) {
-					this._layerContainerOrigin = this.center.clone();
-					this._layerContainer.x = 0;
-					this._layerContainer.y = 0;
-				}
-				
+
 				if (resolutionChanged) {
 					this.resolution = targetResolution;
 				}
 			}
-		}
-		
-		/*public function zoomOnDoubleClick(evt:MouseEvent):void {
-			this.zoomToMousePosition(true);
-		}*/
-		
-		/**
-		 * Allows user to zoom in or zoom out with conserving the current mouse position
-		 *
-		 * @param zoomIn Boolean defining if a zoom (true) or a zoom out (false) must be realized.
-		 */
-		public function zoomToMousePosition(zoomIn:Boolean):void {
-			
-			const px:Pixel = new Pixel(this.mouseX, this.mouseY);
-			// TODO : Check if we still need to lock drag
-			/*if(this.dragging)
-			{
-				var i:int = 0;
-				var j:int = this._controls.length;
-				
-				for(; i<j; ++i)
-				{
-					if(this._controls[i] is DragHandler && this._controls[i].active)
-					{
-						var drag:DragHandler = this._controls[i] as DragHandler;
-						// stop the drag to pan the map to the current drag to apply the zoom at the correct place
-						drag.stopDrag();
-						// restart drag then
-						drag.startDrag();
-					}
-				}
-			}	*/		
-			
-			const centerPx:Pixel = new Pixel(this.width/2, this.height/2);
-
-			var newCenterPx:Pixel;
-			if (zoomIn) {
-				this.zoomIn();
-				newCenterPx = new Pixel((px.x+centerPx.x)/2, (px.y+centerPx.y)/2);
-			} else {
-				this.zoomOut();
-				newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
-			}
-		
-			this.moveTo(this.getLocationFromMapPx(newCenterPx), null, false, true);
 		}
 		
 		/**
@@ -719,7 +675,7 @@ package org.openscales.core
 		 * @param tween use tween effect if set to true (default)
 		 */
 		public function resetCenterLayerContainer(tween:Boolean = true):void {
-			this.centerLayerContainer(this.center, tween);
+			//this.centerLayerContainer(this.center, tween);
 		}
 		
 		/**
@@ -728,7 +684,7 @@ package org.openscales.core
 		 * @param lonlat the new layer container center
 		 * @param tween use tween effect if set to true
 		 */
-		private function centerLayerContainer(lonlat:Location, tween:Boolean = false):void {
+		/*private function centerLayerContainer(lonlat:Location, tween:Boolean = false):void {
 			
 			var originPx:Pixel = this.getMapPxFromLocation(this._layerContainerOrigin);
 			var newPx:Pixel = this.getMapPxFromLocation(lonlat);
@@ -759,7 +715,7 @@ package org.openscales.core
 					bitmapTransition.y = by;
 				} 
 			}
-		}
+		}*/
 		
 		private function onDragTweenComplete(tween:GTween):void
 		{
@@ -933,8 +889,8 @@ package org.openscales.core
 		public function getMapPxFromLayerPx(layerPx:Pixel):Pixel {
 			var viewPortPx:Pixel = null;
 			if (layerPx != null) {
-				var dX:int = int(this._layerContainer.x);
-				var dY:int = int(this._layerContainer.y);
+				var dX:int = int(this.x);
+				var dY:int = int(this.y);
 				viewPortPx = layerPx.add(dX, dY);
 			}
 			return viewPortPx;
@@ -946,8 +902,8 @@ package org.openscales.core
 		public function getLayerPxFromMapPx(mapPx:Pixel):Pixel {
 			var layerPx:Pixel = null;
 			if (mapPx != null) {
-				var dX:int = -int(this._layerContainer.x);
-				var dY:int = -int(this._layerContainer.y);
+				var dX:int = -int(this.x);
+				var dY:int = -int(this.y);
 				layerPx = mapPx.add(dX, dY);
 			}
 			return layerPx;
@@ -1049,11 +1005,24 @@ package org.openscales.core
 		}
 		public function set center(newCenter:Location):void
 		{
+			var event:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
+			event.oldCenter = this._center;
+			event.newCenter = newCenter;
 			if (newCenter.projSrsCode != this.projection)
 			{
 				newCenter = newCenter.reprojectTo(this.projection);
 			}
-			this.moveTo(newCenter);
+			Trace.debug("New Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projSrsCode);
+			if (this.maxExtent.containsLocation(newCenter))
+			{
+				this._center = newCenter;
+				Trace.debug("New Center : "+this.center.x+", "+this.center.y+", "+ this.center.projSrsCode);
+				this.dispatchEvent(event);
+			}
+			else
+			{
+				Trace.debug("Center out of maxExtent so do nothing");
+			}
 			
 		}
 		
@@ -1241,6 +1210,9 @@ package org.openscales.core
 				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
 				// TODO Refactor?
 				//this.moveTo(null,this.resolution);
+				
+
+				
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
 			}
@@ -1272,7 +1244,7 @@ package org.openscales.core
 		 * Map container where layers are added. It is used for panning and scaling layers.
 		 */
 		public function get layerContainer():Sprite {
-			return this._layerContainer;
+			return this;
 		}
 		
 		/**
@@ -1768,6 +1740,7 @@ package org.openscales.core
 			event.newResolution = value;
 			this._resolution = value;
 			this.dispatchEvent(event);
+			Trace.log("Changing resolution"+ event.newResolution.resolutionValue);
 		}
 		
 		/**
