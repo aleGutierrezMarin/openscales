@@ -82,6 +82,8 @@ package org.openscales.proj4as {
 			'EPSG:4269': ProjProjection.AXIS_ORDER_NE,
 			'EPSG:27700': ProjProjection.AXIS_ORDER_EN,
 			
+			'EPSG:4171'	: ProjProjection.AXIS_ORDER_NE, 
+			
 			'EPSG:32637': ProjProjection.AXIS_ORDER_EN,
 			'EPSG:32638': ProjProjection.AXIS_ORDER_EN,
 			'EPSG:32639': ProjProjection.AXIS_ORDER_EN,
