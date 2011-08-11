@@ -70,7 +70,7 @@ package org.openscales.core.handler.multitouch {
 			if (this.map) {
 				if(Multitouch.inputMode != MultitouchInputMode.GESTURE)
 					Multitouch.inputMode = MultitouchInputMode.GESTURE;
-				this.map.addEventListener(TransformGestureEvent.GESTURE_ZOOM,this.onGestureZoom);
+				this.map.addEventListener(TransformGestureEvent.GESTURE_ZOOM, this.onGestureZoom);
 	//			this.map.addEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
 	//			this.map.addEventListener(MouseEvent.DOUBLE_CLICK,this.onDoubleClick);			
 	//			this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
@@ -98,22 +98,10 @@ package org.openscales.core.handler.multitouch {
 			var sign:int = 1;
 			
 	//		Trace.debug("ScaleX " + event.scaleX + " ScaleY " + event.scaleY+"CumX "+cummulativeScaleX+" CumY "+cummulativeScaleY);
-		
-			
-			
+
 			if (event.phase==GesturePhase.BEGIN) {
 				this.cummulativeScaleX = 1;
 				this.cummulativeScaleY = 1;
-				
-				
-				
-				
-				var label:Label = new Label();
-				label.text="ici";
-				label.x = event.stageX;
-				label.x = event.stageY;
-				this.map.stage.addChild(label);
-				
 			} else if (event.phase==GesturePhase.UPDATE) {
 				this.cummulativeScaleX = this.cummulativeScaleX * event.scaleX;
 				this.cummulativeScaleY = this.cummulativeScaleY * event.scaleY;
@@ -126,21 +114,15 @@ package org.openscales.core.handler.multitouch {
 				result.x = (scale.x - origin.x) - (previous.x - origin.x);
 				result.y = (scale.y - origin.y) - (previous.y - origin.y);
 			
-				
 				this.map.layerContainer.scaleX *= event.scaleX;
 				this.map.layerContainer.scaleY *= event.scaleY;
 				
 				this.map.layerContainer.x -= result.x;
 				this.map.layerContainer.y -= result.y;
 				
-				
-				
 				Trace.debug("result x "+result.x+" / result y: "+result.y);
 				
 			} if (event.phase==GesturePhase.END) {
-				
-				this.map.layerContainer.scaleX = 1;
-				this.map.layerContainer.scaleY = 1;
 				
 				
 				sign = cummulativeScaleX*cummulativeScaleY
@@ -181,6 +163,9 @@ package org.openscales.core.handler.multitouch {
 				
 				
 				this.map.moveTo(this.map.center, this.map.zoom + (sign*zoom), false, true);
+				this.map.layerContainer.scaleX = 1;
+				this.map.layerContainer.scaleY = 1;
+				
 				//Trace.debug("cumX " + cummulativeScaleX + " cumY " + cummulativeScaleY+"Zoom "+zoom);
 			}
 		}
