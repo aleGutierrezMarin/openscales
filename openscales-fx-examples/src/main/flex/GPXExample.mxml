@@ -8,6 +8,8 @@
 		<Mapnik name="Mapnik" alpha="0.7"/>
 		
 		<GPX id="gpxLayer" version = "1.1" />
+		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
+		<LayerManager/>
 		
 		<DragHandler/>
 		<WheelHandler/>

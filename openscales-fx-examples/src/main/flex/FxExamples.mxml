@@ -88,6 +88,9 @@
 					case "fullkml":
 						state = new KMLFeaturesExample();
 						break;
+					case "gpx":
+						state = new GPXExample();
+						break;
 					case "tms":
 						state = new TmsExample();
 						break;
@@ -99,9 +102,6 @@
 						break;
 					case "runtimetheme":
 						state = new RunTimeThemeExample();
-						break;
-					case "gpx":
-						state = new GPXExample();
 						break;
 					default:
 						state = data['basic'];
