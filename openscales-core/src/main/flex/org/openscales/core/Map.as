@@ -79,7 +79,7 @@ package org.openscales.core
 		private var _tweenZoomEnabled:Boolean = true;
 		
 		private var _proxy:String = null;
-		private var _bitmapTransition:Sprite;
+	//	private var _bitmapTransition:Sprite;
 		private var _configuration:IConfiguration;
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
@@ -234,9 +234,9 @@ package org.openscales.core
 			
 			var oldExtent:Bounds = (this.baseLayer) ? this.baseLayer.extent : null;
 			
-			if (this.bitmapTransition != null)
+/*			if (this.bitmapTransition != null)
 				this.bitmapTransition.visible = false;
-			
+*/			
 			if (newBaseLayer != this.baseLayer) {
 				if (this.layers.indexOf(newBaseLayer) != -1) {
 					// if we set a baselayer with a different projection, we
@@ -568,25 +568,26 @@ package org.openscales.core
 			// X and Y positions for the layer container and bitmap transition, respectively.
 			var lx:Number = originPx.x - newPx.x;
 			var ly:Number = originPx.y - newPx.y; 
+/*			
 			if (bitmapTransition != null) {
 				var bx:Number = bitmapTransition.x + lx - _layerContainer.x;
 				var by:Number = bitmapTransition.y + ly - _layerContainer.y;
 			}
-			
+*/			
 			if(tween) {
 				var layerContainerTween:GTween = new GTween(this._layerContainer, 0.5, {x: lx, y: ly}, {ease: Cubic.easeOut});
 				layerContainerTween.onComplete = onDragTweenComplete;
 				this._cptGTween++;
-				if(bitmapTransition != null) {
+/*				if(bitmapTransition != null) {
 					new GTween(bitmapTransition, 0.5, {x: bx, y: by}, {ease: Cubic.easeOut});
-				} 
+				} */
 			} else {
 				this._layerContainer.x = lx;
 				this._layerContainer.y = ly;    
-				if(bitmapTransition != null) {
+	/*			if(bitmapTransition != null) {
 					bitmapTransition.x = bx;
 					bitmapTransition.y = by;
-				} 
+				} */
 			}
 		}
 		
@@ -892,7 +893,7 @@ package org.openscales.core
 				var bitmapData:BitmapData = new BitmapData(this.width,this.height);
 				
 				// We draw the old transition before drawing the better-fitting tiles on top and removing the old transition. 
-				if(this.bitmapTransition != null) {
+/*				if(this.bitmapTransition != null) {
 					if(this._loading ) {
 						bitmapData.draw(this.bitmapTransition, bitmapTransition.transform.matrix);
 					}
@@ -901,7 +902,7 @@ package org.openscales.core
 					bmp.bitmapData.dispose();
 					bmp.bitmapData = null;
 					
-				}				
+				}	*/			
 
 				var hiddenLayers:Vector.<Layer> = new Vector.<Layer>();
 				for each(var layer:Layer in this.layers) {
@@ -920,16 +921,16 @@ package org.openscales.core
 				}				
 				
 				// We create the background layer from the bitmap data
-				this.bitmapTransition = new Sprite();
+/*				this.bitmapTransition = new Sprite();
 				var bitmap:Bitmap = new Bitmap(bitmapData);
 				bitmap.smoothing = true;
 				this.bitmapTransition.addChild(bitmap);		
-				
+	*/			
 				for each(var hiddenLayer:Layer in hiddenLayers) {
 					layer.visible = true;
 				}
 				
-				this.addChildAt(bitmapTransition, 0);
+	//			this.addChildAt(bitmapTransition, 0);
 				
 				// We hide the layerContainer (to avoid zooming out issues)
 				this.layerContainer.visible = false;
@@ -937,7 +938,7 @@ package org.openscales.core
 				//We calculate the bitmapTransition position
 				var pix:Pixel = this.getMapPxFromLocation(newCenter);
 				
-				var bt:Sprite = this.bitmapTransition;
+/*				var bt:Sprite = this.bitmapTransition;
 				var oldCenterPix:Pixel = new Pixel(bt.x+bt.width/2, bt.y+bt.height/2);
 				var centerOffset:Pixel = new Pixel(oldCenterPix.x-pix.x, oldCenterPix.y-pix.y);
 				var alpha:Number = Math.pow(2, newZoom-this.zoom);
@@ -953,6 +954,7 @@ package org.openscales.core
 						y: y
 					}, {ease: Cubic.easeOut});
 				tween.onComplete = clbZoomTween;
+				*/
 			}
 			
 			// The zoom tween callback method defined here to avoid a class attribute for newZoom
@@ -967,9 +969,10 @@ package org.openscales.core
 		}
 		
 		public function clearBitmapTransition():void {
-			if(this._bitmapTransition != null && this._bitmapTransition.visible && this._baseLayer != null && this._baseLayer.loadComplete) {
+/*			if(this._bitmapTransition != null && this._bitmapTransition.visible && this._baseLayer != null && this._baseLayer.loadComplete) {
 				this._bitmapTransition.visible=false;
 			}
+*/
 		}
 		
 		/**	
@@ -1087,13 +1090,14 @@ package org.openscales.core
 		/**
 		 * Bitmap representation of the map display used for tween effects
 		 */
+		/*
 		public function get bitmapTransition():Sprite {
 			return this._bitmapTransition;
 		}
 		
 		public function set bitmapTransition(value:Sprite):void {
 			this._bitmapTransition = value;
-		}
+		}*/
 		
 		public function set maxExtent(value:Bounds):void {
 			this._maxExtent = value;
