@@ -42,6 +42,19 @@ package org.openscales.fx.control.layer
 			this._container.addElement(_opacity);
 		}
 		
+		[After]
+		override public function tearDown():void
+		{
+			super.tearDown();
+			this._container.removeElement(_opacity);
+			_opacity.layer = null;
+			_opacity = null;
+			_map.removeAllLayers();
+			_map = null;
+			_layer1.destroy();
+			_layer1 = null;
+		}
+		
 		[Test]
 		public function testSliderOpacityChange():void
 		{
