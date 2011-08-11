@@ -95,6 +95,9 @@ package org.openscales.core.layer {
 		 */
 		public function Layer(name:String) {
 			this.name = name;
+			/*this.graphics.beginFill(0xFFFFFF,0);
+			this.graphics.drawRect(0,0,this.size.w,this.size.h);
+			this.graphics.endFill();*/
 			this.visible = true;
 			this.doubleClickEnabled = true;
 			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;

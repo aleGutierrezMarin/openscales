@@ -71,7 +71,7 @@ package
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 			
-			_map.zoom = 6;
+			//_map.zoom = 6;
 			_map.center = new Location(-0.14908,46.99964, IGN.projSrsCode);
 			
 			this.addChild(_map);

@@ -2,12 +2,14 @@ package {
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.core.control.PanZoomBar;
 	import org.openscales.core.control.ScaleLine;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
+	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.ogc.WFS;
@@ -26,8 +28,9 @@ package {
 
 		public function OpenscalesApplication() {
 			_map=new Map();
-			//_map.size=new Size(1200, 700);
+			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
+			_map.resolution = new Resolution(1.40625, "EPSG:4326")
 			// Add layers to map
 			var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
 			wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
@@ -66,9 +69,10 @@ package {
 			//_map.addControl(selectHandler);
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
+			//_map.addControl(new ClickHandler());
 
 			// Set the map center
-			_map.center=new Location(0, 42, "EPSG:4326");
+			//_map.center=new Location(50, 42, "EPSG:4326");
 			//_map.zoom=13;
 						
 			this.addChild(_map);

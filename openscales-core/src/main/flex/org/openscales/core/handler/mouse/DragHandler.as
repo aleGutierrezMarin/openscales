@@ -84,11 +84,14 @@ package org.openscales.core.handler.mouse
 			
 			if(this.onstart!=null && event)
 				this.onstart(event as MouseEvent);
+			
+			/*var _downPixel:Pixel = new Pixel(event.currentTarget.mouseX, event.currentTarget.mouseY);
+			this.map.center = this.map.getLocationFromMapPx(_downPixel);*/
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
 	
-			var dx:int=this.map.layerContainer.x-(this.map.layerContainer.parent.mouseX - this._offset.x);
+			/*var dx:int=this.map.layerContainer.x-(this.map.layerContainer.parent.mouseX - this._offset.x);
 			var dy:int=this.map.layerContainer.y-(this.map.layerContainer.parent.mouseY - this._offset.y);
 			//this._mouseOffsetLayerContainerCenter.x = this._offset.x + (this.map.layerContainer.width/2 + this.map.layerContainer.x);
 			//this._mouseOffsetLayerContainerCenter.y = this._offset.y + (this.map.layerContainer.height/2 + this.map.layerContainer.y);
@@ -126,7 +129,10 @@ package org.openscales.core.handler.mouse
 			}
 			
 			// Force update regardless of the framerate for smooth drag
-			event.updateAfterEvent();
+			event.updateAfterEvent()*/
+			Trace.debug("X : "+this.map.mouseX);
+			Trace.debug("Y : "+this.map.mouseY);
+			this.map.center = this.map.getLocationFromMapPx(new Pixel(this.map.mouseX, this.map.mouseY));
 		}
 		
 		/**
@@ -136,8 +142,8 @@ package org.openscales.core.handler.mouse
 			
 			this.stopDrag();
 			
-			if (this.oncomplete!=null && event)
-				this.oncomplete(event as MouseEvent);
+			/*if (this.oncomplete!=null && event)
+				this.oncomplete(event as MouseEvent);*/
 		}
 		
 		/**
@@ -153,7 +159,7 @@ package org.openscales.core.handler.mouse
 			this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_END, this.map));
 			this.map.buttonMode=false;
-			this.done(new Pixel(this.map.mouseX, this.map.mouseY));
+			//this.done(new Pixel(this.map.mouseX, this.map.mouseY));
 			// A MapEvent.MOVE_END is emitted by the "set center" called in this.done
 			this.dragging=false;
 		}
@@ -266,12 +272,12 @@ package org.openscales.core.handler.mouse
 			// conditions), the center of the map is always the old one but the
 			// bitmap that represents the map is centered to the new position.
 			// We have to reset the bitmap position to the right center.
-			if (this.map.center.equals(oldCenter)) {
+			//if (this.map.center.equals(oldCenter)) {
 				//Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
-				this.map.moveTo(this.map.center);
+				//this.map.moveTo(this.map.center);
 				//this.map.layerContainer.x = _layerContainerPositionBeforeDrag.x;
 				//this.map.layerContainer.y = _layerContainerPositionBeforeDrag.y;
-			}
+			//}
 		}
 	}
 }
