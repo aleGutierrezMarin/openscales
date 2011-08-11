@@ -9,7 +9,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.gml.GMLFormat;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.params.ogc.WFSParams;
 	import org.openscales.core.request.XMLRequest;
@@ -21,7 +21,7 @@ package org.openscales.core.layer.ogc
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
 	 * It supports 1.0.0, 1.1.0 and 2.0.0 versions of WFS standard.
 	 */
-	public class WFS extends FeatureLayer
+	public class WFS extends VectorLayer
 	{
 		/**
 		 * @private

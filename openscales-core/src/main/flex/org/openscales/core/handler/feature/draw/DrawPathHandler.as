@@ -9,7 +9,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.mouse.ClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -70,7 +70,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param active
 		 * @param drawLayer The layer on which we'll draw
 		 */
-		public function DrawPathHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.FeatureLayer=null)
+		public function DrawPathHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.VectorLayer=null)
 		{
 			super(map, active, drawLayer);
 		}

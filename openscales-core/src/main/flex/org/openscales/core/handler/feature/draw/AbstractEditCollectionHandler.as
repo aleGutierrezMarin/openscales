@@ -13,7 +13,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.Point;
@@ -59,7 +59,7 @@ package org.openscales.core.handler.feature.draw
 	 	* don't use it use EditPathHandler if you want to edit a LineString or a MultiLineString
 	 	* or EditPolygon 
 	 	* */
-		public function AbstractEditCollectionHandler(map:Map=null, active:Boolean=false, layerToEdit:FeatureLayer=null, featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function AbstractEditCollectionHandler(map:Map=null, active:Boolean=false, layerToEdit:VectorLayer=null, featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
 		{
 			super(map, active, layerToEdit, featureClickHandler,drawContainer,isUsedAlone);
 			this.featureClickHandler=featureClickHandler;

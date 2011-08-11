@@ -11,7 +11,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -30,7 +30,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param layerToEdit:FeatureLayer 
 		 * @param featureClickHandler:FeatureClickHandler handler only use it when you want to use this handler alone
 		 * */
-		public function EditPointHandler(map:Map = null, active:Boolean = false,layerToEdit:FeatureLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function EditPointHandler(map:Map = null, active:Boolean = false,layerToEdit:VectorLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
 		{
 						
 			this.featureClickHandler=featureClickHandler;

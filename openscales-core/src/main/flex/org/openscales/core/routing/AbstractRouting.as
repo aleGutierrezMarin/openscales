@@ -10,7 +10,7 @@ package org.openscales.core.routing
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 	import org.openscales.core.handler.mouse.ClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -22,7 +22,7 @@ package org.openscales.core.routing
 		/**
 		 * @private
 		 **/
-		 private var _resultsLayer:FeatureLayer;
+		 private var _resultsLayer:VectorLayer;
 		 /**
 		 * @private
 		 **/
@@ -75,7 +75,7 @@ package org.openscales.core.routing
 		 * @param host The url of the server used for the routing
 		 * @param key  The application key it could be null or not it depends on the application
 		 **/
-		public function AbstractRouting(map:Map=null,active:Boolean=false,resultsLayer:FeatureLayer=null)
+		public function AbstractRouting(map:Map=null,active:Boolean=false,resultsLayer:VectorLayer=null)
 		{
 			super(map,active);
 			this.resultsLayer=resultsLayer;
@@ -299,13 +299,13 @@ package org.openscales.core.routing
 		/**
 		 * The layer which contains the results of the request
 		 **/
-		public function get resultsLayer():FeatureLayer{
+		public function get resultsLayer():VectorLayer{
 			return this._resultsLayer;
 		}
 		/**
 		 * @private
 		 **/
-		public function set resultsLayer(value:FeatureLayer):void{
+		public function set resultsLayer(value:VectorLayer):void{
 			if(value!=_resultsLayer && value!=null){
 				this._resultsLayer=value;
 				resultsLayer.addFeature(_itinerary);

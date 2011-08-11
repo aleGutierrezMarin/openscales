@@ -19,7 +19,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WFST;
@@ -458,7 +458,7 @@ package org.openscales.core.configuration
 			}
 			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
-				var featurelayer:FeatureLayer = new FeatureLayer(name);
+				var featurelayer:VectorLayer = new VectorLayer(name);
 				featurelayer.projSrsCode = projSrsCode;
 				layer = featurelayer;
 			} else {

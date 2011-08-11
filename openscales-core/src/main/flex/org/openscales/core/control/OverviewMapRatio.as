@@ -8,7 +8,7 @@ package org.openscales.core.control
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.PointFeature;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;

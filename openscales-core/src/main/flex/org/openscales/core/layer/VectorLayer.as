@@ -15,7 +15,7 @@ package org.openscales.core.layer
 	/**
 	 * Layer that display features stored as child element
 	 */
-	public class FeatureLayer extends Layer
+	public class VectorLayer extends Layer
 	{
 		/**
 		 * The display projection defined by displayProjSrsCode is the
@@ -37,7 +37,7 @@ package org.openscales.core.layer
 		
 		private var _featuresID:Vector.<String> = new Vector.<String>();
 		
-		public function FeatureLayer(name:String)
+		public function VectorLayer(name:String)
 		{
 			super(name);
 			this._displayProjSrsCode = this.projSrsCode;
@@ -51,6 +51,10 @@ package org.openscales.core.layer
 			
 			// Make drag smooth even with a lot of points
 			this.cacheAsBitmap = true;
+		}
+		
+		override public function get available():Boolean {
+			return super.available;
 		}
 		
 		override public function destroy():void {

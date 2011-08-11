@@ -13,7 +13,7 @@ package org.openscales.core.layer
 	/**
 	 * KML layer, most useful feature of KML 2.2 specifications are supported
 	 */
-	public class KML extends FeatureLayer
+	public class KML extends VectorLayer
 	{
 		private var _request:XMLRequest = null;
 		private var _kmlFormat:KMLFormat = null;

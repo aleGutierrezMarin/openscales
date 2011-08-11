@@ -17,7 +17,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.Point;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	
 	/**
 	 * This handler is used to have an edition Mode 
@@ -29,7 +29,7 @@ package org.openscales.core.handler.feature.draw
 		 *Layer to edit
 		 * @private 
 		 **/
-		protected var _layerToEdit:FeatureLayer=null;
+		protected var _layerToEdit:VectorLayer=null;
 		
 		private var iEditPoint:IEditFeature=null; 
 		private var iEditPath:IEditFeature=null;
@@ -59,7 +59,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param editPath to know if the edition of path is allowed
 		 * @param editPolygon to know if the edition of polygon is allowed
 		 * */
-		public function FeatureLayerEditionHandler(map:Map = null,layer:FeatureLayer=null,active:Boolean = false,editPoint:Boolean=true,editPath:Boolean=true,editPolygon:Boolean=true)
+		public function FeatureLayerEditionHandler(map:Map = null,layer:VectorLayer=null,active:Boolean = false,editPoint:Boolean=true,editPath:Boolean=true,editPolygon:Boolean=true)
 		{
 			//Handler click Management
 			
@@ -358,13 +358,13 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * The layer concerned by the Modification
 		 * */
-		public function get layerToEdit():FeatureLayer{
+		public function get layerToEdit():VectorLayer{
 			return this._layerToEdit;
 		}
 		/**
 		 * @private
 		 * */
-		public function set layerToEdit(value:FeatureLayer):void{
+		public function set layerToEdit(value:VectorLayer):void{
 			if(value!=null){
 				this._layerToEdit=value;
 				if(this._editPoint)

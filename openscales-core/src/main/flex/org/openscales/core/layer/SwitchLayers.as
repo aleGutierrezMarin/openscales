@@ -189,21 +189,21 @@ package org.openscales.core.layer
 		 * return null if there are no vector layer
 		 * this function is usefull , for legend(for example).
 		 */
-		public function getFeatureLayer():FeatureLayer{
-			if(this._firstLayer is FeatureLayer && this._lastLayer is FeatureLayer){
+		public function getFeatureLayer():VectorLayer{
+			if(this._firstLayer is VectorLayer && this._lastLayer is VectorLayer){
 				if(this.map.resolution.reprojectTo(this.projSrsCode).resolutionValue > this._resolutionToSwitch) {
-				 return this._firstLayer as FeatureLayer;
+				 return this._firstLayer as VectorLayer;
 			  }
 			  else{
-			  	return this._lastLayer as FeatureLayer;
+			  	return this._lastLayer as VectorLayer;
 			  }
 			}
 			else{
-				if(this._firstLayer is FeatureLayer){
-					return this._firstLayer as FeatureLayer;
+				if(this._firstLayer is VectorLayer){
+					return this._firstLayer as VectorLayer;
 				}
-				if(this._lastLayer is FeatureLayer){
-					return this._lastLayer as FeatureLayer;
+				if(this._lastLayer is VectorLayer){
+					return this._lastLayer as VectorLayer;
 				}
 				return null;
 			}
