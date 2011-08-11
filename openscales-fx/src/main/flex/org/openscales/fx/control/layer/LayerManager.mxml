@@ -113,6 +113,11 @@
 					_layers.filterFunction = shallDisplayLayer;
 					_layers.refresh();
 				}
+				
+				if(this.active){
+					
+					this.activate();
+				}
 			}
 			
 			/**
@@ -165,6 +170,13 @@
 			public function refresh(event:Event = null):void {	
 				
 				_layers.refresh();
+				this.invalidateDisplayList();
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+				
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				
 				// Redraws all the layers
 				if(this.layerList){
 					var rendererBackup:IFactory = this.layerList.itemRenderer;
@@ -181,7 +193,8 @@
 			
 			protected function onLayerRemoved(event:LayerEvent):void{
 				
-				var index:int = _layers.getItemIndex(event.layer);
+				var layer = event.layer;
+				var index:int = _layers.getItemIndex(layer);
 				if(index != -1){
 					_layers.removeItemAt(index);
 					this.refresh();
