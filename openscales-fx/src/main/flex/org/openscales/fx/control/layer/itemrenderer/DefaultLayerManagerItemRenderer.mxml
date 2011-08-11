@@ -160,6 +160,11 @@
 				
 				_layerManager = value;
 				
+				if(_layerManager.map){
+					
+					_layerManager.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.onMapLanguageChange);
+				}
+				
 				if(_maximizedLayers.getValue(_layerManager) == null){
 					
 					_maximizedLayers.put(_layerManager, new ArrayCollection());
