@@ -2,6 +2,9 @@ package org.openscales.core.format
 {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.Polygon;
 
 	public class GeoRssFormat extends Format
 	{
@@ -40,14 +43,57 @@ package org.openscales.core.format
 			return this.featureVector;
 		}
 		
+		/**
+		 * @return: a feature
+		 * this function will also parse the feature attributes
+		 * 
+		 * @call
+		 * 
+		 */ 
 		public function parseItem(item:XML):Feature{
 			
 			var children:XMLList = item.children();
 			var childrenNum:uint = children.length();
-			var s:String = String((children[childrenNum - 1] as XML).localName());
+			var i:uint;
+			var feature:Feature = null;
+			var id:String = null;
+			
+			for(i = 0; i < childrenNum; i++){
+				var itemType:String = String((children[i] as XML).localName());
+				
+				if(itemType == "guid")
+					id = children[i].toString();
+				
+				//a polygon element contains a list of pairs of coordinates 
+				else if(itemType == "polygon"){
+					var geom:Vector.<Geometry>;
+					geom.push(LinearRing(this.parseCoords(children[i])));
+					var polygon:Polygon = new Polygon(geom);
+				}
+			}
+			
+			return feature;
+		}
+		/**
+		 * a pair of coordinates represents latitude then longitude (WGS84 reference)
+		 */ 
+		
+		public function parseCoords(node:XML):Vector.<Number>{
+			
+			var coordsVector:Vector.<Number>;
+			var coords:String = node.toString();
+			var coordNum:uint = coords.split(" ").length;
+			var i:uint;
+			for(i = 0; i < coordNum; i += 2){
+				coordsVector.push(coords.split(" ")[i+1]);
+				coordsVector.push(coords.split(" ")[i]);
+			}
+				
+					
 			
 			return null;
 		}
+		
 		
 		
 		/**
