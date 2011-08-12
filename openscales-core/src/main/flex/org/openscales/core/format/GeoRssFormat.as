@@ -15,12 +15,12 @@ package org.openscales.core.format
 	{
 		/** This class reads and writes RSS files with GeoRss content.
 		 * 
-		 * Supported GeoRss version: 1.1 
+		 * Supported GeoRss version 1.1 
 		 * @see GeoRss Schema at http://www.georss.org/xml/1.1/georss.xsd 
 		 * 
-		 * Suported Rss version: 2.0
+		 * Suported Rss version 2.0
 		 * 
-		 * @attribute rssFile: the GeoRss data 
+		 * @attribute rssFile the GeoRss data 
 		 * @attribute featureVector
 		 */
 	
@@ -57,7 +57,7 @@ package org.openscales.core.format
 		}
 		
 		/**
-		 * @return: a feature
+		 * @return a feature
 		 * This function will also parse the feature attributes
 		 * 
 		 * @call
