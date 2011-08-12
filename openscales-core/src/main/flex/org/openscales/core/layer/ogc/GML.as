@@ -51,17 +51,21 @@ package org.openscales.core.layer.ogc
 		public function GML(name:String, 
 							version:String,
 							projection:String,
-							style:Style,
 							url:String = null,
-							data:XML = null)
+							data:XML = null,
+							style:Style = null)
 		{
 			super(name);
 			this.projSrsCode = projection;
 			this.version = version;
 			this.gmlFormat = new GMLFormat(this.addFeature,null);
 			this.gmlFormat.version = version;
-			this.style = style;
-			this.style.rules.push(new Rule());
+			if(style){
+				this.style = style;
+				this.style.rules.push(new Rule());
+			}
+			else this.style = null;
+			
 			
 			if (url){
 				if (! this._request) {
@@ -111,14 +115,21 @@ package org.openscales.core.layer.ogc
 			var lineStyle:Style = Style.getDefaultLineStyle();
 			var surfaceStyle:Style = Style.getDefaultSurfaceStyle();
 			
-			if(feature is PointFeature || feature is MultiPointFeature) {
-				feature.style = pointStyle;
+			if(this.style){
+				feature.style = this.style;
 			}
-			else if (feature is LineStringFeature || feature is MultiLineStringFeature){
-				feature.style = lineStyle;
+			else//default style
+			{
+				if(feature is PointFeature || feature is MultiPointFeature) {
+					feature.style = pointStyle;
+				}
+				else if (feature is LineStringFeature || feature is MultiLineStringFeature){
+					feature.style = lineStyle;
+				}
+				else
+					feature.style = surfaceStyle;
 			}
-			else
-				feature.style = surfaceStyle;
+
 			super.addFeature(feature, dispatchFeatureEvent, reproject);
 		}
 		

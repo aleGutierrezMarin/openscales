@@ -51,27 +51,27 @@ package {
 			
 			// GML 3.2.1 layer; fetch data from url (polygons World Borders)
 			var xml:XML = new XML(new XMLCONTENT());
-			var style:Style = Style.getDefaultSurfaceStyle();
-			var GMLlayer:GML = new GML("World Borders", "3.2.1","EPSG:4326",style,
+			//var style:Style = Style.getDefaultSurfaceStyle();
+			var GMLlayer:GML = new GML("World Borders", "3.2.1","EPSG:4326",
 			"http://openscales.org/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:world_borders&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
-			xml);
+			xml,null);
 			_map.addLayer(GMLlayer);
 			
 			// GML 3.2.1 layer; fetch data from url; (points in New York)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();
-			var GMLlayer3:GML = new GML("New York Points", "3.2.1","EPSG:4326", style3,
+			var GMLlayer3:GML = new GML("New York Points", "3.2.1","EPSG:4326",
 			"http://openscales.org/geoserver/tiger/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=tiger:poi&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
-			xml3);
+			xml3,null);
 			_map.addLayer(GMLlayer3);
 			
 			
 			//GML 3.2.1 layer; fetch data from url; (lines in Tasmania)
 			var xml2:XML = new XML(new XMLCONTENTLINES());
 			var style2:Style = Style.getDefaultLineStyle();
-			var GMLlayer2:GML = new GML("Tasmania Roads", "3.2.1","EPSG:4326", style2,
+			var GMLlayer2:GML = new GML("Tasmania Roads", "3.2.1","EPSG:4326",
 			"http://openscales.org/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:tasmania_roads&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
-			xml2);
+			xml2,null);
 			_map.addLayer(GMLlayer2);
 			
 			

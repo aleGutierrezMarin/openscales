@@ -7,6 +7,7 @@
 <atom:link href="http://openscales.org:80/geoserver/sf/wms?height=512&amp;bbox=591579.1858092896%2C4916236.662227167%2C599648.9251686076%2C4925872.146218054&amp;width=428&amp;layers=sf%3Arestricted&amp;request=GetMap&amp;service=wms&amp;styles=restricted&amp;srs=EPSG%3A26713&amp;format=application%2Frss+xml&amp;transparent=false&amp;version=1.1.1" rel="self"/>
 <item>
 <title>restricted.1</title>
+<author>   </author>
 <link><![CDATA[http://openscales.org:80/geoserver/wms/reflect?featureid=restricted.1&layers=sf%3Arestricted&format=application%2Fatom%2Bxml]]></link>
 <guid><![CDATA[http://openscales.org:80/geoserver/wms/reflect?featureid=restricted.1&layers=sf%3Arestricted&format=application%2Fatom%2Bxml]]></guid>
 <description><![CDATA[<h4>restricted</h4>
