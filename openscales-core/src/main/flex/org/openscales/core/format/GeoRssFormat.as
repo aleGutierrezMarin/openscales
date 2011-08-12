@@ -152,7 +152,7 @@ package org.openscales.core.format
 		}		
 		
 		/**
-		 * Setters & getters
+		 * Setters and getters
 		 */ 
 			
 		public function get featureVector():Vector.<Feature>
