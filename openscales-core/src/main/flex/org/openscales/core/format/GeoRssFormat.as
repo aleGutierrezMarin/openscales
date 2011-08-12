@@ -35,8 +35,8 @@ package org.openscales.core.format
 		/**
 		 * @calls parseItem to create the features and add them to featureVector
 		 * 
-		 * @param: data to parse (a GeoRss file)
-		 * @return: Object (a vector of features)
+		 * @param data to parse (a GeoRss file)
+		 * @return Object (a vector of features)
 		 */
 
 		override public function read(data:Object):Object{
@@ -57,7 +57,7 @@ package org.openscales.core.format
 		}
 		
 		/**
-		 * @return: a feature
+		 * @return a feature
 		 * This function will also parse the feature attributes
 		 * 
 		 * @call

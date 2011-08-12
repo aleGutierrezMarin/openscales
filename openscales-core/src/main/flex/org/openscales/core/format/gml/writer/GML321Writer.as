@@ -29,9 +29,9 @@ package org.openscales.core.format.gml.writer
 		/**
 		 * Given a list of Features, this function creates a GML file.
 		 * 
-		 * @return: An XML object
+		 * @return An XML object
 		 * 
-		 * @calls: buildFeatureNode to create an XML node for each feature in the list
+		 * @calls buildFeatureNode to create an XML node for each feature in the list
 		 * 
 		 */
 		
@@ -61,11 +61,11 @@ package org.openscales.core.format.gml.writer
 		}
 		
 		/**
-		 * @param : A feature
+		 * @param  A feature
 		 * 
-		 * @return : an XML node
+		 * @return  an XML node
 		 * 
-		 * @calls : buildPointNode, buildPolygonNode, buildLineStringNode, 
+		 * @calls  buildPointNode, buildPolygonNode, buildLineStringNode, 
 		 * depending on the type of feature 
 		 * 
 		 * @calls : buildEnvelopeNode 
@@ -170,8 +170,8 @@ package org.openscales.core.format.gml.writer
 		/**
 		 * Creates a GML <Point/> node
 		 * 
-		 * @param: a Point Feature
-		 * @return: an XML object
+		 * @param a Point Feature
+		 * @return an XML object
 		 *
 		 * The order of the coordinates will be: longitude, latitude  
 		 */
@@ -189,8 +189,8 @@ package org.openscales.core.format.gml.writer
 		/**
 		 * Creates a GML <LineString/> node
 		 * 
-		 * @param: a LineString Feature
-		 * @return: an XML object
+		 * @param a LineString Feature
+		 * @return an XML object
 		 * 
 		 */
 		
@@ -216,10 +216,10 @@ package org.openscales.core.format.gml.writer
 		/**
 		 * Creates a GML <Polygon/> node
 		 * 
-		 * @param: a Polygon Feature
-		 * @return: an XML object
+		 * @param a Polygon Feature
+		 * @return an XML object
 		 * 
-		 * @calls: buildLinearRingNode to create GML <LinearRing/> nodes
+		 * @calls buildLinearRingNode to create GML <LinearRing/> nodes
 		 * 
 		 */
 		
@@ -270,8 +270,8 @@ package org.openscales.core.format.gml.writer
 		/**
 		 * Given the Bounds of the Geometry, this function creates a GML <Envelope/> node
 		 * 
-		 * @param: Bounds
-		 * @return: an XML object
+		 * @param Bounds
+		 * @return an XML object
 		 * 
 		 */
 		public function buildEnvelopeNode(bounds:Bounds):XML{

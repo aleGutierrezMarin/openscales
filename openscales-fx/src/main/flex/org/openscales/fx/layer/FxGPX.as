@@ -17,7 +17,7 @@ package org.openscales.fx.layer
 		}
 	
 		/**
-		 * Setters & Getters 
+		 * Setters and Getters 
 		 */
 		
 		public function get url():String{

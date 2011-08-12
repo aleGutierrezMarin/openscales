@@ -23,7 +23,7 @@ package org.openscales.core.format.gml.parser
 	{
 		/**
 		 * The purpose of this class is to read gml data
-		 * Supported version: 3.2.1
+		 * Supported version 3.2.1
 		 * 
 		 */ 
 		
@@ -52,9 +52,9 @@ package org.openscales.core.format.gml.parser
 		 * 
 		 * @return feature 
 		 * 
-		 * calls parseCoords (@see GMLFormat)
-		 * calls parseAttributes
-		 * calls parsePolygonNode
+		 * @calls parseCoords (@see GMLFormat)
+		 * @calls parseAttributes
+		 * @calls parsePolygonNode
 		 * 
 		 */
 		

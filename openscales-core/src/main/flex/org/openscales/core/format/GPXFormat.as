@@ -25,9 +25,9 @@ package org.openscales.core.format
 	 * duplicate ids are not allowed
 	 * the id of the feature is fetched from the gpx tag <name/>
 	 * 
-	 * @param version: gpx version 1.1 by default
+	 * @param version gpx version 1.1 by default
 	 * 
-	 * @attribute bounds: the bounds of the whole collection of objects contained by the gpxFile
+	 * @attribute bounds the bounds of the whole collection of objects contained by the gpxFile
 	 * 
 	 * @attributes fileName, author, description, authorEmail, fileURL: information on the gpxFile
 	 */ 
@@ -62,8 +62,8 @@ package org.openscales.core.format
 		/**
 		 * @calls parseFeature to create the features and add them to featureVector
 		 * 
-		 * @param: data to parse (a GPX file)
-		 * @return: Object (a vector of features)
+		 * @param data to parse (a GPX file)
+		 * @return Object (a vector of features)
 		 */
 
 		override public function read(data:Object):Object{
@@ -130,9 +130,9 @@ package org.openscales.core.format
 		 * 
 		 * Calls parseLineStringCoords to extract the coordinates of routes or track segments
 		 *
-		 * @param node: An XML feature node
+		 * @param node An XML feature node
 		 *
-		 * @return: A feature
+		 * @return A feature
 		 */
 		
 		public function parseFeature(featureNode:XML):Feature
@@ -313,7 +313,7 @@ package org.openscales.core.format
 		 *
 		 * @param featureVector: the objects based on which the gpx file will be created
 		 * 
-		 * @return: the gpx file 
+		 * @return the gpx file 
 		 * 
 		 * This function does not cover PolygonFeatures or MultiPolygonFeatures 
 		 * because they don't have a corresponding element in GPX
@@ -359,7 +359,7 @@ package org.openscales.core.format
 		/**
 		 *  This function is called only for the 1.1 version
 		 * 
-		 * 	@return: the metadata node containing information on the gpx file
+		 * 	@return the metadata node containing information on the gpx file
 		 */
 		
 		public function buildMetadataNode():XML{
@@ -401,7 +401,7 @@ package org.openscales.core.format
 		/**
 		 *  This function is called only for the 1.0 version
 		 * 
-		 *  @return: an xml containing information on the gpx file
+		 *  @return an xml containing information on the gpx file
 		 */
 		
 		public function buildFileInfoNodes():XML{
@@ -507,9 +507,9 @@ package org.openscales.core.format
 		
 		
 		/**
-		 * @param: feature
+		 * @param feature
 		 * 
-		 * @return: An xml containig the nodes created based on the feature attributes
+		 * @return An xml containig the nodes created based on the feature attributes
 		 * 
 		 * The attribute nodes can be created in the same way, regardless of the type
 		 * of feature because the routes and the tracks have the same type of
