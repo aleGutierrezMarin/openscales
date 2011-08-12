@@ -1,14 +1,18 @@
 package org.openscales.geometry
 {
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	
 	import org.openscales.geometry.basetypes.Bounds;
-	import spark.components.Label;
 	
 	/**
 	 * Description of the class
 	 */
 	public class LabelPoint extends Geometry
 	{
-		private var _label:Label = new Label();
+		private var _x:Number = NaN;
+		private var _y:Number = NaN;
+		private var _label:TextField = new TextField();
 		
 		/**
 		 * Constructor class
@@ -20,8 +24,10 @@ package org.openscales.geometry
 		public function LabelPoint(text:String=null, x:Number=NaN, y:Number=NaN)
 		{
 			super();
-			this._label.x = x;
-			this._label.y = y;
+			this._x = x;
+			this._y = y;
+			this._label.selectable = false;
+			this._label.autoSize = flash.text.TextFieldAutoSize.CENTER;
 			this._label.text = text;
 		}
 		
@@ -29,32 +35,38 @@ package org.openscales.geometry
 		 * @inherits
 		 */
 		override public function clone():Geometry{
-			return new LabelPoint(this._label.text, this._label.x, this._label.y);
+			return new LabelPoint(this._label.text, this._x, this._y);
 		}
 		
 		/**
 		 * @inherits
 		 */
 		override public function calculateBounds():void{
-			this._bounds = new Bounds(this._label.x, this._label.y, this._label.x, this._label.y, this.projSrsCode);
+			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projSrsCode);
 		}
 		
 		/**
 		 * Coordinates getters and setters
 		 */
 		public function get x():Number{
-			return this._label.x;
+			return this._x;
 		}
 		public function set x(value:Number):void{
-			this._label.x = value;
+			this._x = value;
 		}
 		
 		public function get y():Number{
-			return this._label.y;
+			return this._y;
 		}
 		public function set y(value:Number):void{
-			this._label.y = value;
+			this._y = value;
 		}
 		
+		/**
+		 * To get the associated TextField
+		 */
+		public function get label():TextField{
+			return this._label;
+		}
 	}
 }
