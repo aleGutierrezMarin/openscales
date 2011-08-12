@@ -122,7 +122,7 @@ package org.openscales.core.handler.feature.draw
 			
 			//we determine the point where the user clicked
 			var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
-			var lonlat:Location = this.map.getLocationFromLayerPx(pixel);
+			var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 			//manage the case where the layer projection is different from the map projection
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line

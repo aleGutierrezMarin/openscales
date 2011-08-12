@@ -59,7 +59,7 @@ package org.openscales.core.handler.feature.draw
 				var style:Style = Style.getDefaultPointStyle();
 			
 				var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
-				var lonlat:Location = this.map.getLocationFromLayerPx(pixel);
+				var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 				var feature:Feature;
 				
 				//todo change this bad way

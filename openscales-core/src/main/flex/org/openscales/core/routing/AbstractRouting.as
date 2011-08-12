@@ -164,7 +164,7 @@ package org.openscales.core.routing
 		private function addPoint(px:Pixel):void{
 			//we determine the point where the user clicked
 			if(_resultsLayer!=null){
-				var lonlat:Location = this.map.getLocationFromLayerPx(px);
+				var lonlat:Location = this.map.getLocationFromMapPx(px);//this.map.getLocationFromLayerPx(px);
 				var featureAdded:Marker=new Marker(new Point(lonlat.lon,lonlat.lat));
 				featureAdded.isEditable=true;
 				if(!_startPoint || _forceStartPointDrawing)
@@ -186,7 +186,7 @@ package org.openscales.core.routing
 		 * @param px The points coordinates
 		 * */
 		private function addfinalPoint(px:Pixel):void{
-			var lonlat:Location = this.map.getLocationFromLayerPx(px);
+			var lonlat:Location = this.map.getLocationFromMapPx(px);// this.map.getLocationFromLayerPx(px);
 			if(!_endPoint)
 			{
 				_endPoint=new Marker(new Point(lonlat.lon,lonlat.lat));

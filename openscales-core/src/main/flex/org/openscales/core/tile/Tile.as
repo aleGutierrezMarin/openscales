@@ -124,11 +124,11 @@ package org.openscales.core.tile
 		public function getBoundsFromMap(position:Pixel):Bounds {
 			if(this.size == null)
 				return new Bounds(0,0,0,0);
-			var topLeft:Location = this.layer.map.getLocationFromLayerPx(position); 
+			var topLeft:Location = this.layer.map.getLocationFromMapPx(position) //this.layer.map.getLocationFromLayerPx(position); 
 			var bottomRightPx:Pixel = position.clone();
 			bottomRightPx.x += this.size.w;
 			bottomRightPx.y += this.size.h;
-			var bottomRight:Location = this.layer.map.getLocationFromLayerPx(bottomRightPx); 
+			var bottomRight:Location = this.layer.map.getLocationFromMapPx(bottomRightPx)// this.layer.map.getLocationFromLayerPx(bottomRightPx); 
 			if (topLeft.lon > bottomRight.lon) {
 				if (topLeft.lon < 0) {
 					topLeft = new Location(-180 - (topLeft.lon+180), topLeft.x, topLeft.projSrsCode);

@@ -154,9 +154,9 @@ package org.openscales.core.feature {
 
 				var pointPxB:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointB.x, pointB.y));
 
-				pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
-				pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
-				pointPxB = this.layer.map.getMapPxFromLayerPx(pointPxB);
+				//pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
+				//pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
+				//pointPxB = this.layer.map.getMapPxFromLayerPx(pointPxB);
 
 
 
