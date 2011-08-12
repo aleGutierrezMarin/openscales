@@ -139,7 +139,7 @@
 				{
 					//Listening of layer event
 					this._map.addEventListener(LayerEvent.LAYER_ADDED,onLayerAdded);
-					this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+				//	this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this._map.addEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
 					this._map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
@@ -156,7 +156,7 @@
 				if(this._map)
 				{
 					this._map.removeEventListener(LayerEvent.LAYER_ADDED,onLayerAdded);
-					this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+				//	this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
 					this._map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
@@ -170,7 +170,7 @@
 			public function refresh(event:Event = null):void {	
 				
 				_layers.refresh();
-				this.invalidateDisplayList();
+			//	this.invalidateDisplayList();
 			}
 			
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
@@ -193,12 +193,17 @@
 			
 			protected function onLayerRemoved(event:LayerEvent):void{
 				
-				var layer = event.layer;
+				var layer:Layer = event.layer as Layer;
+				_layers.filterFunction = null;
+				_layers.sort = null;
+				_layers.refresh();
 				var index:int = _layers.getItemIndex(layer);
 				if(index != -1){
 					_layers.removeItemAt(index);
-					this.refresh();
 				}
+				_layers.filterFunction = shallDisplayLayer;
+				_layers.sort = new MapSyncSort(_map);
+				_layers.refresh();
 			}
 			
 			protected function onLayerDisplayInLayerManagerChange(event:LayerEvent):void{
