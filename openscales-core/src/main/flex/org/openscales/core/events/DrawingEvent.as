@@ -1,5 +1,6 @@
 package org.openscales.core.events
 {
+	import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 
 	/**
 	 * Event related to the drawing action :
@@ -10,7 +11,6 @@ package org.openscales.core.events
 	 **/
 	public class DrawingEvent extends OpenScalesEvent
 	{
-
 		/**
 		 * Drawing mode is enabled
 		 */
@@ -20,12 +20,29 @@ package org.openscales.core.events
 		 * Drawing mode is disabled
 		 */
 		public static const DISABLED:String="openscales.drawing.disabled";
-
+		
+		/**
+		 * 
+		 */
+		public static const CHANGE_ACTIVE_HANDLER:String = "openscales.drawing.change_active_handler";
+		
+		/**
+		 * 
+		 */
+		private var _activeHandler:String;
+		
+		
 		public function DrawingEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 		}
-
+		
+		public function get activeHandler():String{
+			return _activeHandler;
+		}
+		public function set activeHandler(value:String):void{
+			_activeHandler = value;
+		}
 	}
 }
 

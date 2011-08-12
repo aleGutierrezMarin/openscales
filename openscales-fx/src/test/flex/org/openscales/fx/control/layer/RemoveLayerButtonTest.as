@@ -9,6 +9,8 @@ package org.openscales.fx.control.layer{
 		
 		private var _button:RemoveLayerButton;
 		
+		public function RemoveLayerButtonTest() {}
+		
 		[Before]
 		public function background():void{
 			

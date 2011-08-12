@@ -64,7 +64,7 @@
 			 */
 			[Bindable]
 			private var _rendererOptions:Object = null;
-
+			
 			
 			/**
 			 * @private
@@ -83,9 +83,9 @@
 				
 				factory.properties = {
 					rendererOptions: this._rendererOptions,
-					layerManager: this
+						layerManager: this
 				}
-					
+				
 				layerList.itemRenderer = factory;
 			}
 			
@@ -113,6 +113,11 @@
 					_layers.filterFunction = shallDisplayLayer;
 					_layers.refresh();
 				}
+				
+				if(this.active){
+					
+					this.activate();
+				}
 			}
 			
 			/**
@@ -137,7 +142,7 @@
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this._map.addEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
 					this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-					this._map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
 				}
 			}
 			
@@ -154,7 +159,7 @@
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
 					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
 					this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
-					this._map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
 				}
 			}
 			
@@ -163,9 +168,15 @@
 			 * @param event Layer event
 			 */
 			public function refresh(event:Event = null):void {	
-			
 				
 				_layers.refresh();
+				this.invalidateDisplayList();
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+				
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				
 				// Redraws all the layers
 				if(this.layerList){
 					var rendererBackup:IFactory = this.layerList.itemRenderer;
@@ -180,15 +191,10 @@
 				this.refresh();
 			}
 			
-				if(event.type == LayerEvent.LAYER_CHANGED || event.type == LayerEvent.LAYER_CHANGED_ORDER
-					|| event.type == LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED ){
-					{
-						if(overlayArray[i-1].displayInLayerManager)
-							layerList.dataProvider.addItem(overlayArray[i-1]);
-					}
-						
+			protected function onLayerRemoved(event:LayerEvent):void{
 				
-				var index:int = _layers.getItemIndex(event.layer);
+				var layer = event.layer;
+				var index:int = _layers.getItemIndex(layer);
 				if(index != -1){
 					_layers.removeItemAt(index);
 					this.refresh();
@@ -255,7 +261,7 @@
 				var mapIndex:int = _map.layers.indexOf(layerAtIndex);
 				_map.changeLayerIndex(layer,mapIndex);
 			}
-									
+			
 			/**
 			 * Update layers order when a user change it
 			 * @param event Drag event
@@ -298,7 +304,7 @@
 			{
 				this._rendererOptions=value;
 			}
-	
+			
 			/**
 			 * The itemRenderer for the list contains by the LayerSwitcher
 			 */
@@ -319,7 +325,7 @@
 		]]>
 	</fx:Script>
 	
-
+	
 	
 	<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" > 
 		<s:List id="layerList" 
