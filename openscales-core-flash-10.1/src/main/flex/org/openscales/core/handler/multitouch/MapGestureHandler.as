@@ -145,7 +145,7 @@ package org.openscales.core.handler.multitouch {
 						zoom = this.map.baseLayer.maxZoomLevel - this.map.zoom;
 				}
 				
-				
+				/*
 				const px:Pixel = new Pixel(event.stageX, event.stageY);
 				const centerPx:Pixel = new Pixel(this.map.width/2, this.map.height/2);
 				
@@ -155,8 +155,8 @@ package org.openscales.core.handler.multitouch {
 					newCenterPx = new Pixel((px.x+centerPx.x)/2, (px.y+centerPx.y)/2);
 				} else {
 					newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
-				}
-				
+				}*/
+				var newCenterPx:Pixel = new Pixel(event.stageX, event.stageY);
 				
 				this.map.layerContainer.scaleX = 1;
 				this.map.layerContainer.scaleY = 1;
