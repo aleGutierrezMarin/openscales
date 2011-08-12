@@ -20,20 +20,29 @@
 			
 			private var _layer:Layer;
 			
-			public function get layer():Layer{
-				return _layer;
-			}
-			
-			public function set layer(value:Layer):void{
-				_layer = value;
-			}
-			
 			/**
 			 * Tootip for metadatas button
 			 */
 			[Bindable]
 			public var tooltipZoomToExtent:String = Catalog.getLocalizationForKey('layercontrol.zoomToExtent')
 				
+			public function get layer():Layer{
+				return _layer;
+			}
+			
+			/**
+			 * Configure the first display for this component when the layer is set
+			 * Set one or two arrows depending of the position of the current layer
+			 */ 
+			public function set layer(value:Layer):void
+			{
+				this._layer = value;
+				
+				if(this._layer.map != null)
+				{					
+					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				}
+			}
 				
 			/**
 			 * Center the map on the layer

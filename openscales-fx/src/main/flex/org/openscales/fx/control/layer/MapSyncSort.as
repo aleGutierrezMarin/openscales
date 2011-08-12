@@ -31,6 +31,35 @@ package org.openscales.fx.control.layer{
 			_map = value;
 		}
 		
+		override public function findItem(items:Array, values:Object, mode:String, returnInsertionIndex:Boolean=false, compareFunction:Function=null):int{
+			
+			var nbItems:int = items.length;
+			if(mode == Sort.LAST_INDEX_MODE){
+				
+				while(nbItems--){
+					
+					if(items[nbItems] == values){
+						
+						return nbItems;
+					}
+				}
+				
+				return -1
+			}
+			else{
+				
+				for(var i:uint = 0; i<nbItems; i++){
+					
+					if(items[i] == values){
+						
+						return i;
+					}
+				}
+				
+				return -1
+			}			
+		}
+		
 		override public function sort(items:Array):void{
 			
 			if(!_map || !items || items.length <= 1){

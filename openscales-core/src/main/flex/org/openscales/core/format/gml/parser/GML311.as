@@ -110,7 +110,7 @@ package org.openscales.core.format.gml.parser
 				
 				var points:XMLList = multiPoint..*::Point;
 				j = points.length();
-				p = this.parseCoords(points[i]);
+				p = this.parseCoords(points[i],lonLat);
 				if (p)
 					geom.addPoints(p);
 				feature = new MultiPointFeature(geom as MultiPoint);

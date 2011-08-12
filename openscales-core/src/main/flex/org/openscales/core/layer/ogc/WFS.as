@@ -320,7 +320,6 @@ package org.openscales.core.layer.ogc
 			super.addFeature(feature,dispatchFeatureEvent, reproject);
 			if(feature.layer==null)
 				return;
-			feature.draw();
 			this._featuresids.put(feature.name,feature);
 		}
 		

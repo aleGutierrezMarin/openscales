@@ -7,7 +7,6 @@
 		 xmlns:d="http://ns.adobe.com/fxg/2008/dt"
 		 xmlns:os="org.openscales.fx.control.*"
 		 width="100%"
-		 height="25"
 		 xmlns:fxg="assets.fxg.*"
 		 autoDrawBackground="false"
 		 implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"
@@ -161,6 +160,11 @@
 				
 				_layerManager = value;
 				
+				if(_layerManager.map){
+					
+					_layerManager.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.onMapLanguageChange);
+				}
+				
 				if(_maximizedLayers.getValue(_layerManager) == null){
 					
 					_maximizedLayers.put(_layerManager, new ArrayCollection());
@@ -309,7 +313,9 @@
 			public function updateOptionnalDisplay():void
 			{
 				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
+				layerSwitcherAdditionnalDisplay.includeInLayout = !this._isMinimized;
 				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
+				layerSwitcherOptionnalDisplay.includeInLayout = !this._isMinimized;
 				
 				/** TODO work in progress
 				 if(this._isDrawingLayer)
@@ -317,17 +323,6 @@
 				 layerSwitcherDrawingTools.visible = !this._isMinimized;
 				 }
 				 */
-				
-				if(!this._isMinimized)
-				{
-					this.height = this._maximizeGroupSize;
-				}
-					
-					
-				else
-				{
-					this.height = hgroup.height; 
-				}
 			}
 			
 			private function parentChange(event:PropertyChangeEvent):void
@@ -337,7 +332,7 @@
 			
 		]]>
 	</fx:Script>
-
+	
 	<s:layout>
 		<s:VerticalLayout />
 	</s:layout>
@@ -358,8 +353,7 @@
 			
 			<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" />
 			
-			
-			<ChangeLayerPosition layer="{_layer}" layerManager="{_layerManager}" />
+			<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 			
 			
 			<os:IconButton id="layerSwitcherReduceMaximize"
@@ -374,11 +368,11 @@
 		</s:SkinnableContainer>
 		
 		
-		<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="false">
+		<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="false" includeInLayout="false">
 			<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
 		</s:SkinnableContainer>
 		
-		<s:SkinnableContainer id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false" height="20" >
+		<s:SkinnableContainer id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false"  height="20" >
 			<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
 			<LayerLegend x="20" id="layerControlLegend" visible="{_displayLegend}" />
 			<LayerMetadatas x="40" id="layerControlMetadatas" visible="{_displayMetadatas}" />
