@@ -60,7 +60,7 @@ package org.openscales.core.format
 		}
 		
 		/**
-		 * Calls parseFeature() to create the Feature objects and then adds them to a list of Features 
+		 * @calls parseFeature to create the features and add them to featureVector
 		 * 
 		 * @param: data to parse (a GPX file)
 		 * @return: Object (a vector of features)
@@ -126,9 +126,9 @@ package org.openscales.core.format
 		}
 
 		/**
-		 * Calls parseAttributes() to get extract attribute data
+		 * Calls parseAttributes to get extract attribute data
 		 * 
-		 * Calls parseLineStringCoords() to extract the coordinates of routes or track segments
+		 * Calls parseLineStringCoords to extract the coordinates of routes or track segments
 		 *
 		 * @param node: An XML feature node
 		 *
@@ -309,7 +309,7 @@ package org.openscales.core.format
 		} 
 			
 		/**
-		 * @calls buildPointNode(), buildRouteNode() & buildTrackNode()
+		 * @calls buildPointNode, buildRouteNode & buildTrackNode
 		 *
 		 * @param featureVector: the objects based on which the gpx file will be created
 		 * 

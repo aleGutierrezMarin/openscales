@@ -46,12 +46,19 @@ package org.openscales.core.layer.ogc
 		public function GPX(name:String, 
 							version:String,
 							url:String = null,
-							data:XML = null)
+							data:XML = null,
+							style:Style = null)
 		{
 			this.version = version;
 			this.url = url;	
 			this.gpxData = data;
 			super(name);
+			
+			if(style){
+				this.style = style;
+				this.style.rules.push(new Rule());
+			}
+			else this.style = null;
 			
 			this.gpxFormat = new GPXFormat(new HashMap());
 			
@@ -113,11 +120,18 @@ package org.openscales.core.layer.ogc
 				var i:uint;
 				var vectorLength:uint = this.featureVector.length;
 				for (i = 0; i < vectorLength; i++){
-					if(this.featureVector[i] is PointFeature) {
-						this.featureVector[i].style = pointStyle;
+					
+					if(this.style){
+						this.featureVector[i].style = this.style;
 					}
-					else // feature is linestring or multilinestring
-						this.featureVector[i].style = lineStyle;
+					else//default style
+					{
+						if(this.featureVector[i] is PointFeature) {
+							this.featureVector[i].style = pointStyle;
+						}
+						else // feature is linestring or multilinestring
+							this.featureVector[i].style = lineStyle;
+					}
 					this.addFeature(this.featureVector[i]);
 				}
 			}
