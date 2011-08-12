@@ -134,7 +134,7 @@ package org.openscales.core.handler.feature.draw
 					this._layerToEdit.removeFeature(vectorfeature);
 					this._featureClickHandler.removeControledFeature(vectorfeature);
 		 			if(parentGeometry!=null){
-		 				var lonlat:Location=this.map.getLocationFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
+		 				var lonlat:Location=this.map.getLocationFromMapPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY)); //this.map.getLocationFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
 		 				var newVertice:Point=new Point(lonlat.lon,lonlat.lat);
 		 				//if it's a real vertice of the feature
 		 				if(vectorfeature!=AbstractEditCollectionHandler._pointUnderTheMouse)
@@ -261,7 +261,7 @@ package org.openscales.core.handler.feature.draw
 					}
 					if(drawing){
 						layerToEdit.map.buttonMode=true;
-						var lonlat:Location=this.map.getLocationFromLayerPx(px);
+						var lonlat:Location=this.map.getLocationFromMapPx(px); //this.map.getLocationFromLayerPx(px);
 						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);	
 						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
 							AbstractEditCollectionHandler._pointUnderTheMouse.geometry=PointGeomUnderTheMouse;

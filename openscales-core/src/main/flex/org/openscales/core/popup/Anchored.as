@@ -44,7 +44,7 @@ package org.openscales.core.popup
 		}
 
 		public function calculateRelativePosition(px:Pixel):String {
-			var lonlat:Location = this.map.getLocationFromLayerPx(px);
+			var lonlat:Location = this.map.getLocationFromMapPx(px);//this.map.getLocationFromLayerPx(px);
 
 			var extent:Bounds = this.map.extent;
 			var quadrant:String = extent.determineQuadrant(lonlat);

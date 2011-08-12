@@ -201,8 +201,6 @@ package org.openscales.core.layer
 			}
 			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
 			{
-				
-				
 				if (!this.tiled) 
 				{
 					if(fullRedraw)
@@ -222,7 +220,6 @@ package org.openscales.core.layer
 						this.moveGriddedTiles(bounds);
 					}
 				}
-				
 
 				var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 				//var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);

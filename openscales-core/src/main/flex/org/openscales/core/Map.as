@@ -919,7 +919,7 @@ package org.openscales.core
 		/**
 		 * Return a map Pixel computed from a layer Pixel.
 		 */
-		public function getMapPxFromLayerPx(layerPx:Pixel):Pixel {
+		/*public function getMapPxFromLayerPx(layerPx:Pixel):Pixel {
 			var viewPortPx:Pixel = null;
 			if (layerPx != null) {
 				var dX:int = int(this.x);
@@ -927,7 +927,7 @@ package org.openscales.core
 				viewPortPx = layerPx.add(dX, dY);
 			}
 			return viewPortPx;
-		}
+		}*/
 		
 		/**
 		 * Return a layer Pixel computed from a map Pixel.
@@ -945,10 +945,10 @@ package org.openscales.core
 		/**
 		 * Return a Location computed from a layer Pixel.
 		 */
-		public function getLocationFromLayerPx(px:Pixel):Location {
+		/*public function getLocationFromLayerPx(px:Pixel):Location {
 			px = this.getMapPxFromLayerPx(px);
 			return this.getLocationFromMapPx(px);
-		}
+		}*/
 		
 		/**
 		 * Return a layer Pixel computed from a Location.
@@ -1303,14 +1303,14 @@ package org.openscales.core
 		 */
 		public function get maxExtent():Bounds {
 			// use map maxExtent
-			var maxExtent:Bounds = this._maxExtent;
+		//	var maxExtent:Bounds = this._maxExtent;
 			
 			// If no maxExtent is defined, generate a worldwide maxExtent in the right projection
-			if(maxExtent == null) {
+			/*if(maxExtent == null) {
 				maxExtent = Layer.DEFAULT_MAXEXTENT;
 				maxExtent = maxExtent.reprojectTo(this.projection);
-			}
-			return maxExtent;
+			}*/
+			return this._maxExtent;
 		}
 		
 		/**

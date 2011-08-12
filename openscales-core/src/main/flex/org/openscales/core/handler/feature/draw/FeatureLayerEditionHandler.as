@@ -153,7 +153,7 @@ package org.openscales.core.handler.feature.draw
 				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 				//We define the new Position of the point before dispatching the event
 				var px:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
-				var lonlat:Location=this.map.getLocationFromLayerPx(px);
+				var lonlat:Location=this.map.getLocationFromMapPx(px); //this.map.getLocationFromLayerPx(px);
 				vectorfeature.x=0;
 				vectorfeature.y=0;
 				vectorfeature.geometry=new Point(lonlat.lon,lonlat.lat);
