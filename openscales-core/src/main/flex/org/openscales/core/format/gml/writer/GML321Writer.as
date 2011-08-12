@@ -293,7 +293,7 @@ package org.openscales.core.format.gml.writer
 
 		
 		/**
-		 * Getters & Setters
+		 * Getters and Setters
 		 */
 		
 		public function get geomns():Namespace
