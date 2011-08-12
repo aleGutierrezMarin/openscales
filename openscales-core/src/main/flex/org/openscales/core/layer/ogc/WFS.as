@@ -290,7 +290,8 @@ package org.openscales.core.layer.ogc
 			
 			this.loading = false;
 			
-			this.parseResponse(loader.data as String);
+			if(this.map)
+				this.parseResponse(loader.data as String);
 			
 			if (map) {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this ));
