@@ -323,6 +323,8 @@ package org.openscales.core
 				this.baseLayer = null;
 			}
 			
+			layer.map = null;
+			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
 			
 		}
