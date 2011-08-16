@@ -1059,11 +1059,14 @@ package org.openscales.core
 		{
 			return _center;
 		}
+		
 		public function set center(newCenter:Location):void
 		{
 			var event:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
 			event.oldCenter = this._center;
 			event.newCenter = newCenter;
+			event.oldResolution = this.resolution;
+			event.newResolution = this.resolution;
 			if (newCenter.projSrsCode != this.projection)
 			{
 				newCenter = newCenter.reprojectTo(this.projection);
@@ -1798,6 +1801,8 @@ package org.openscales.core
 			var event:MapEvent = new MapEvent(MapEvent.RESOLUTION_CHANGED, this);
 			event.oldResolution = this._resolution;
 			event.newResolution = value;
+			event.newCenter = this.center;
+			event.oldCenter = this.center;
 			this._resolution = value;
 			this.dispatchEvent(event);
 			Trace.log("Changing resolution"+ event.newResolution.value);

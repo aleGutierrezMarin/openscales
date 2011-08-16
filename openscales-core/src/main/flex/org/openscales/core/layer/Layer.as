@@ -256,7 +256,7 @@ package org.openscales.core.layer {
 		 */
 		protected function onMapCenterChanged(event:MapEvent):void
 		{
-			this._centerChanged;
+			this._centerChanged = true;
 			//this.redraw(false);	
 		}
 		
@@ -437,6 +437,10 @@ package org.openscales.core.layer {
 			}
 		}
 		
+		public function getLayerPxFromMapPx(mapPx:Pixel):Pixel
+		{
+			return new Pixel(mapPx.x + this.x, mapPx.y + this.y);
+		}
 		
 		/**
 		 * Is this layer currently in range, based on its min and max resolutions

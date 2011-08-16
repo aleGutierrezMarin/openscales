@@ -1,9 +1,11 @@
 package org.openscales.core.layer
 {
 	import org.flexunit.Assert;
+	import org.flexunit.asserts.assertEquals;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.layer.originator.DataOriginator;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	public class LayerTest
 	{
@@ -192,5 +194,26 @@ package org.openscales.core.layer
 			
 		}
 		
+		/**
+		 * Validates that when you ask to convert a mapPixel into a layer pixel it simply add
+		 * the origin offset of the layer to the map Pixel.
+		 */
+		[Test]
+		public function shouldReturnLayerPixelAsMapPixelWithOriginOffset():void
+		{
+			// Given a map, and a layer with an offset
+			var _map:Map = new Map();
+			var _layer:Layer = new Layer("testLayer");
+			_map.addLayer(_layer);
+			_layer.x = -100;
+			_layer.y = -50;
+			
+			// When I ask for a map pixel into a layer pixel
+			var _returnedPixel:Pixel = _layer.getLayerPxFromMapPx(new Pixel(300, 200));
+				
+			// Then the returned pixel is properly computed
+			assertEquals("The getLayerPxFromMapPx return a wrong value for the X coordinate of the layer pixel", 200, _returnedPixel.x); 
+			assertEquals("The getLayerPxFromMapPx return a wrong value for the Y coordinate of the layer pixel", 150, _returnedPixel.y); 
+		}
 	}
 }

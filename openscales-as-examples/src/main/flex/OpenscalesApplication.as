@@ -31,6 +31,7 @@ package {
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
 			_map.resolution = new Resolution(1.40625, "EPSG:4326")
+			//_map.resolution = new Resolution(1, "EPSG:4326")	
 			// Add layers to map
 			var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
 			wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");

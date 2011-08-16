@@ -186,7 +186,8 @@ package org.openscales.core.layer
 			var bounds:Bounds = this.map.extent.clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
-			
+			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
+			var ratio:Number = resolution/this.map.resolution.value;
 			
 			if (!_initialized)
 			{
@@ -196,75 +197,81 @@ package org.openscales.core.layer
 				} else 
 				{
 					this.initGriddedTiles(bounds);
+					
+					//var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+					this.scaleLayer(ratio);
+					this._centerChanged = false;
+					this._projectionChanged = false;
+					this._resolutionChanged = false;
 				}
+				
 				_initialized = true;
 			}
+			
 			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
 			{
 				if (!this.tiled) 
 				{
-					if(fullRedraw)
-						this.clear();
-					if ( forceReTile || !tilesBounds.containsBounds(bounds)) 
-					{
-						this.clear();
-						this.initSingleTile(bounds);
-					}
+					this.clear();
+					this.initSingleTile(bounds);
+					//if(fullRedraw)
+					//	this.clear();
+					//if ( forceReTile || !tilesBounds.containsBounds(bounds)) 
+					//{
+					//	this.clear();
+					//	this.initSingleTile(bounds);
+					//}
 				} else 
 				{
-					if (forceReTile || !tilesBounds.containsBounds(bounds, true)) 
-					{
-						this.initGriddedTiles(bounds);
-					} else 
-					{
-						this.moveGriddedTiles(bounds);
-					}
-				}
-
-				var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
-				//var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);
-				if (_centerChanged)
-				{
-					var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
-				}else
-				{
-					var px:Pixel = new Pixel(this.map.width/2, this.map.height/2);
-				}
-				if (resolution != this._resquestResolution)
-				{
-					if (!this.tiled) 
-					{
-						this.clear();
-						this.initSingleTile(bounds);
-					}else
+					if (resolution != this._resquestResolution)
 					{
 						this.initGriddedTiles(bounds, true);
+					} else 
+					{
+						//this.initGriddedTiles(bounds);
+						this.moveGriddedTiles(bounds);
+						
+						//var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);
+						//var px:Pixel;
+						/*if (_centerChanged)
+						{
+						px = new Pixel(this.map.mouseX, this.map.mouseY);
+						//px = new Pixel(this.map.width/2, this.map.height/2);
+						}else
+						{
+						px = new Pixel(this.map.width/2, this.map.height/2);
+						}*/
+						
+						
+						//var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+						if (this._resolutionChanged)
+						{
+							this.scaleLayer(ratio);
+						}
+						this._centerChanged = false;
+						this._projectionChanged = false;
+						this._resolutionChanged = false;
 					}
 				}
-				var ratio:Number = resolution/this.map.resolution.value;
-				//var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
-				
-				this.scaleLayer(ratio, px);
-				this._centerChanged = false;
-				this._projectionChanged = false;
-				this._resolutionChanged = false;
 			}
 		}
 		
 		/**
 		 * Method that will scale the layer sprite with the given scale at the given pixel
 		 */
-		private function scaleLayer(scale:Number, center:Pixel):void
+		private function scaleLayer(scale:Number):void
 		{
 			if (this.grid != null)
 			{
 				var affineTransform:Matrix = this._defaultMatrixTranform.clone();
 				//center = new Pixel(center.x - this.grid[0][0].x, center.y - this.grid[0][0].y);
-				//center = new Pixel(center.x, center.y);
-				affineTransform.translate( -center.x, -center.y );
+				var center:Pixel = new Pixel(this.map.width/2, this.map.height/2);
+				//var layerPixel:Pixel = center; // this.getLayerPxFromMapPx(center);
+				var layerPixel:Pixel = new Pixel(center.x + this._origin.x, center.y + this._origin.y);
+				//affineTransform.translate( -layerPixel.x, -layerPixel.y );
 				scale =Math.round(scale*100)/100;
 				affineTransform.scale( scale, scale );
-				affineTransform.translate( center.x, center.y );
+				//affineTransform.translate( layerPixel.x, layerPixel.y );
 				this.transform.matrix = affineTransform;
 			}
 		}
@@ -292,6 +299,8 @@ package org.openscales.core.layer
 			var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
 			var deltaX:Number = deltaLon/this.map.resolution.value;
 			var deltaY:Number = deltaLat/this.map.resolution.value;
+			//var deltaX:Number = deltaLon/event.oldResolution.value;
+			//var deltaY:Number = deltaLat/event.oldResolution.value;
 			this.x -= deltaX;
 			this.y += deltaY;
 			super.onMapCenterChanged(event);
