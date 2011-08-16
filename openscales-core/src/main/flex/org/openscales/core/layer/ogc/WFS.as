@@ -16,6 +16,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.core.events.MapEvent;
 	
 	/**
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
@@ -23,6 +24,8 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WFS extends VectorLayer
 	{
+		private var _initialized:Boolean = false;
+		
 		/**
 		 * @private
 		 * An HashMap containing the capabilities of the layer.
@@ -158,11 +161,7 @@ package org.openscales.core.layer.ogc
 		 * @inheritDoc
 		 */
 		override public function redraw(fullRedraw:Boolean = true):void {
-			this.clear();
-			
-			if (!displayed) {
-				return;
-			}
+			/*
 			
 			if(this.useCapabilities && !this.projSrsCode)
 				return;
@@ -211,6 +210,68 @@ package org.openscales.core.layer.ogc
 					this.draw();
 					this.loading = false;
 				}
+			}*/
+			
+			if (!this.available)
+			{
+				this.clear();
+				this._initialized = false;
+				return;
+			}
+			
+			if (!this._initialized)
+			{
+				var projectedBounds:Bounds = this.map.extent.clone();
+				var projectedMaxExtent:Bounds = this.maxExtent;
+				
+				if (this.projSrsCode != projectedBounds.projSrsCode)
+				{
+					projectedBounds = projectedBounds.reprojectTo(this.projSrsCode);
+					projectedMaxExtent = projectedMaxExtent.reprojectTo(this.projSrsCode);
+				}
+				
+				if (projectedBounds.containsBounds(projectedMaxExtent))
+				{
+					projectedBounds = projectedMaxExtent.clone();
+				}
+				/*
+				if (this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
+					this.params.bbox = projectedBounds.toString(-1, false);
+				else
+					this.params.bbox = projectedBounds.toString();
+				
+				this.featuresBbox = projectedBounds;*/
+				
+				
+				this.loadFeatures(this.getFullRequestString());
+				this._initialized = true;
+			}
+			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
+			{
+				if(this._centerChanged){
+					this._centerChanged = false;
+				}
+				else
+				{
+					this.x = 0;
+					this.y = 0;
+					this.draw();
+					this._projectionChanged = false;
+					this._resolutionChanged = false;
+				}
+			}
+		}
+		
+		override protected function onMapCenterChanged(event:MapEvent):void
+		{
+			if(!this._resolutionChanged){
+				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
+				var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
+				var deltaX:Number = deltaLon / this.map.resolution.value;
+				var deltaY:Number = deltaLat / this.map.resolution.value;
+				this.x -= deltaX;
+				this.y += deltaY;
+				super.onMapCenterChanged(event);
 			}
 		}
 		

@@ -30,11 +30,12 @@ package {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
-			_map.resolution = new Resolution(1.40625, "EPSG:4326")
+			_map.resolution = new Resolution(0.40625, "EPSG:4326")
 			// Add layers to map
+			/*
 			var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
 			wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
-			_map.addLayer(wms);
+			_map.addLayer(wms);*/
 			
 			//var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			//mapnik.proxy = "http://openscales.org/proxy.php?url=";
@@ -47,11 +48,15 @@ package {
 			_map.addLayer(cycle); */
 			
 			
-			/*var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
-			regions.projSrsCode = "EPSG:2154";
-			regions.style = Style.getDefaultSurfaceStyle();
+			var wfsLay1:WFS = new WFS("world rectangle","http://openscales.org/geoserver/wfs","tiger:giant_polygon");
+			wfsLay1.projSrsCode = "EPSG:4326";
+			wfsLay1.style = Style.getDefaultSurfaceStyle();
+			_map.addLayer(wfsLay1);
 			
-			_map.addLayer(regions);*/
+			var wfsLay2:WFS = new WFS("states","http://openscales.org/geoserver/wfs","topp:states");
+			wfsLay2.projSrsCode = "EPSG:4326";
+			wfsLay2.style = Style.getDefaultSurfaceStyle();
+			_map.addLayer(wfsLay2);
 
 	
 			// Add Controls to map
