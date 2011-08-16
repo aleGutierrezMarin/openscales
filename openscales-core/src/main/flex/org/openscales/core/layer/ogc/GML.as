@@ -134,7 +134,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Getters & Setters
+		 * Getters and Setters
 		 */ 
 		
 		public function get gmlData():XML
