@@ -256,7 +256,7 @@ package org.openscales.core.layer {
 		 */
 		protected function onMapCenterChanged(event:MapEvent):void
 		{
-			this._centerChanged;
+			this._centerChanged = true;
 			//this.redraw(false);	
 		}
 		
