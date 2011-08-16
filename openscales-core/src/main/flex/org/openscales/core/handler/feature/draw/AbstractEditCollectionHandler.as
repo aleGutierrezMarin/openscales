@@ -251,7 +251,7 @@ package org.openscales.core.handler.feature.draw
 					for(var i:int=0;i<_editionFeatureArray.length;i++){
 						var feature:Feature=_editionFeatureArray[i][0] as Feature;
 						if(feature!=null && feature!=AbstractEditCollectionHandler._pointUnderTheMouse &&  vectorfeature==_editionFeatureArray[i][1]){
-							var tmpPx:Pixel=this.map.getLayerPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
+							var tmpPx:Pixel=this.map.getMapPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
 							if(Math.abs(tmpPx.x-px.x)<this._ToleranceVirtualReal && Math.abs(tmpPx.y-px.y)<this._ToleranceVirtualReal)
 							{
 								drawing=false;

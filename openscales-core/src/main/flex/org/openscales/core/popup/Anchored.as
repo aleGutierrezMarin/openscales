@@ -35,7 +35,7 @@ package org.openscales.core.popup
 		override public function draw(px:Pixel=null):void {
 			if (px == null) {
 				if ((this.lonlat != null) && (this.map != null)) {
-					px = this.map.getLayerPxFromLocation(this.lonlat);
+					px = this.map.getMapPxFromLocation(this.lonlat);
 					this.relativePosition = this.calculateRelativePosition(px);
 				}
 			}
@@ -61,7 +61,7 @@ package org.openscales.core.popup
 			super.size = size;
 
 			if ((this.lonlat) && (this.map)) {
-				var px:Pixel = this.map.getLayerPxFromLocation(this.lonlat);
+				var px:Pixel = this.map.getMapPxFromLocation(this.lonlat);
 				this.position = px;
 			}
 		}

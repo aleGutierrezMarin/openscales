@@ -50,7 +50,7 @@ package org.openscales.core.handler.feature.draw
 		 * */
 		override public function dragVerticeStart(vectorfeature:PointFeature):void{
 			var px1:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
-			var px2:Pixel = map.getLayerPxFromLocation(vectorfeature.lonlat);
+			var px2:Pixel = map.getMapPxFromLocation(vectorfeature.lonlat);
 			vectorfeature.x+=(px1.x-px2.x);
 			vectorfeature.y+=(px1.y-px2.y);
 			vectorfeature.startDrag();

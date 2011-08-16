@@ -36,7 +36,7 @@ package org.openscales.core.handler.mouse {
 					this.map.zoomIn(mousePx);
 				}else
 				{
-					this.map.zoomOut();
+					this.map.zoomOut(mousePx);
 					//this.map.zoomOut(mousePx);
 				}
 			}

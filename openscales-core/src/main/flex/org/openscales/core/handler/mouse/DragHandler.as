@@ -138,7 +138,7 @@ package org.openscales.core.handler.mouse
 			var deltaY:Number = this.map.stage.mouseY - this._previousMapPosition.y;
 			this._previousMapPosition.x = this.map.stage.mouseX;
 			this._previousMapPosition.y = this.map.stage.mouseY;
-			this.map.pan(deltaX, deltaY);
+			this.map.pan(-deltaX, -deltaY);
 
 			
 		//	this.map.center = this.map.getLocationFromMapPx(new Pixel(this.map.mouseX, this.map.mouseY));

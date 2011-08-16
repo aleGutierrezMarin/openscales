@@ -10,6 +10,7 @@ package org.openscales.core
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.getQualifiedClassName;
@@ -128,6 +129,8 @@ package org.openscales.core
 		private var _defaultZoomOutFactor:Number = 1.1;
 		
 		private var _centerShape:Shape;
+		
+		private var _extenTDebug:Shape;
 
 		/**
 		 * @private
@@ -191,6 +194,7 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);	
 			this.addEventListener(MapEvent.PROJECTION_CHANGED,this.onMapProjectionChanged);
+			this.addEventListener(Event.ENTER_FRAME, this.onDraw);
 //			this.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, layerProjectionChanged);
 			
 			Trace.stage = this.stage;
@@ -199,6 +203,25 @@ package org.openscales.core
 			this.addEventListener(MouseEvent.CLICK, onMouseClick); //Needed to prevent focus losing 
 
 			
+		}
+		
+		private function onDraw(event:Event)
+		{
+			if (_extenTDebug == null)
+			{
+				_extenTDebug = new Shape();
+			} else
+			{
+				_extenTDebug.graphics.clear();
+			}
+			var extent:Bounds = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			var topLeft:Pixel = this.getMapPxFromLocation(new Location(extent.left, extent.top));
+			var bottomRight:Pixel = this.getMapPxFromLocation(new Location(extent.right, extent.bottom));
+			
+			_extenTDebug.graphics.beginFill(0xFF0000);
+			_extenTDebug.graphics.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
+			_extenTDebug.graphics.endFill();
+			this.addChild(_extenTDebug);
 		}
 		
 		/**
@@ -447,8 +470,8 @@ package org.openscales.core
 				return;
 			}		
 			if(this.center) {
-				var newCenterPx:Pixel = this.getMapPxFromLocation(this.center).add(dx, -dy);
-				var newCenterLocation:Location = this.getLocationFromMapPx(newCenterPx);
+				//var newCenterPx:Pixel = this.getMapPxFromLocation(this.center).add(dx, -dy);
+				var newCenterLocation:Location = this.center.add(dx*this.resolution.value, -dy*this.resolution.value);
 				this.center = newCenterLocation;
 			}
 		}
@@ -932,7 +955,7 @@ package org.openscales.core
 		/**
 		 * Return a layer Pixel computed from a map Pixel.
 		 */
-		public function getLayerPxFromMapPx(mapPx:Pixel):Pixel {
+		/*public function getLayerPxFromMapPx(mapPx:Pixel):Pixel {
 			var layerPx:Pixel = null;
 			if (mapPx != null) {
 				var dX:int = -int(this.x);
@@ -940,7 +963,7 @@ package org.openscales.core
 				layerPx = mapPx.add(dX, dY);
 			}
 			return layerPx;
-		}
+		}*/
 		
 		/**
 		 * Return a Location computed from a layer Pixel.
@@ -953,10 +976,10 @@ package org.openscales.core
 		/**
 		 * Return a layer Pixel computed from a Location.
 		 */
-		public function getLayerPxFromLocation(lonlat:Location):Pixel {
+		/*public function getLayerPxFromLocation(lonlat:Location):Pixel {
 			var px:Pixel = this.getMapPxFromLocation(lonlat);
 			return this.getLayerPxFromMapPx(px);
-		}
+		}*/
 		
 		/**
 		 * Remove a Security
@@ -1055,6 +1078,11 @@ package org.openscales.core
 			{
 				Trace.debug("Center out of maxExtent so do nothing");
 			}
+			
+			
+			/*this.graphics.beginFill(0xFFFFFF,0);
+			this.graphics.drawRect(0,0,this.size.w,this.size.h);
+			this.graphics.endFill();*/
 			
 		}
 		
