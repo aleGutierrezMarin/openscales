@@ -213,7 +213,7 @@ package org.openscales.core.layer {
 		}
 		
 		
-		protected function onEnterFrame(event:Event)
+		protected function onEnterFrame(event:Event):void
 		{
 			this.redraw();
 		}
