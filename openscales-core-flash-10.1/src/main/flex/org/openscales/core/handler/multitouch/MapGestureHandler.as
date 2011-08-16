@@ -75,8 +75,8 @@ package org.openscales.core.handler.multitouch {
 				this.map.addEventListener(TransformGestureEvent.GESTURE_ZOOM, this.onGestureZoom);
 				//			this.map.addEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
 				this.map.addEventListener(MouseEvent.DOUBLE_CLICK,this.onDoubleClick);			
-	//			this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-	//			this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 			}
 		}
@@ -86,8 +86,8 @@ package org.openscales.core.handler.multitouch {
 				this.map.removeEventListener(TransformGestureEvent.GESTURE_ZOOM,this.onGestureZoom);
 				//			this.map.removeEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
 				this.map.removeEventListener(MouseEvent.DOUBLE_CLICK,this.onDoubleClick);
-		//		this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-		//		this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.removeEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 				
 			}
@@ -103,8 +103,8 @@ package org.openscales.core.handler.multitouch {
 				this.cummulativeScaleX = 1;
 				this.cummulativeScaleY = 1;
 				
-		//		this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-		//		this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
+				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+				this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
 				
 			} else if (event.phase==GesturePhase.UPDATE) {
 				
@@ -162,7 +162,7 @@ package org.openscales.core.handler.multitouch {
 				this.map.layerContainer.scaleY = 1;
 				this.map.moveTo(this.map.getLocationFromMapPx(newCenterPx), (this.map.zoom +(sign*zoom)), false, true);
 				
-			//	this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				
 				Trace.debug("New center x: " + newCenterPx.x + " y: " + newCenterPx.y);
 				
