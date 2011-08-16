@@ -17,11 +17,11 @@ package org.openscales.core.format
 	
 	/**
 	 * The purpose of this class is to parse or build GPX files
-	 * Supported versions: 1.1 & 1.0
+	 * Supported versions 1.1 and 1.0
 	 * 
 	 * The element <extension/>(version 1.1) is not supported
 	 * 
-	 * @param featuresids: HashMap containing the ids of the features
+	 * @param featuresids HashMap containing the ids of the features
 	 * duplicate ids are not allowed
 	 * the id of the feature is fetched from the gpx tag <name/>
 	 * 
@@ -309,9 +309,9 @@ package org.openscales.core.format
 		} 
 			
 		/**
-		 * @calls buildPointNode, buildRouteNode & buildTrackNode
+		 * @calls buildPointNode, buildRouteNode and buildTrackNode
 		 *
-		 * @param featureVector: the objects based on which the gpx file will be created
+		 * @param featureVector the objects based on which the gpx file will be created
 		 * 
 		 * @return the gpx file 
 		 * 
@@ -547,7 +547,7 @@ package org.openscales.core.format
 			if (att.hasOwnProperty("src"))
 				alist.appendChild(new XML("<src>" + att["src"] + "</src>"));
 			
-			//differences between 1.0 & 1.1: URL file tags
+			//differences between 1.0 and 1.1: URL file tags
 			if(this._version == "1.0")
 			{
 				if (att.hasOwnProperty("url"))
@@ -610,7 +610,7 @@ package org.openscales.core.format
 		}
 		
 		/**
-		 *  Setters & Getters
+		 *  Setters and Getters
 		 * 
 		 */ 
 		

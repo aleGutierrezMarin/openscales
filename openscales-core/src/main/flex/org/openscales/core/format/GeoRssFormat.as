@@ -1,5 +1,6 @@
 package org.openscales.core.format
 {
+	import org.openscales.core.Trace;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -15,10 +16,11 @@ package org.openscales.core.format
 	{
 		/** This class reads and writes RSS files with GeoRss content.
 		 * 
-		 * Supported GeoRss version: 1.1 
+		 * Supported GeoRss version 1.1 
 		 * @see GeoRss Schema at http://www.georss.org/xml/1.1/georss.xsd 
 		 * 
-		 * Suported Rss version: 2.0
+		 * Suported Rss version 2.0
+		 * @see Rss Schema at http://cyber.law.harvard.edu/rss/rss.html
 		 * 
 		 * @attribute rssFile: the GeoRss data 
 		 * @attribute featureVector
@@ -27,21 +29,35 @@ package org.openscales.core.format
 		private var _rssFile:XML;
 		private var _featureVector:Vector.<Feature>;
 		
-		public function GeoRssFormat()
-		{
-			super();
-		}
+		private var _title:String;
+		private var _description:String;
+		private var _link:String;
+		//private var gmlns:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
+		private var geoRssNs:Namespace = new Namespace("georss", "http://www.georss.org/georss");
+
 
 		/**
 		 * @calls parseItem to create the features and add them to featureVector
 		 * 
 		 * @param data to parse (a GeoRss file)
 		 * @return Object (a vector of features)
+		 * 
+		 * @see RSS 2.0 specification: the <rss> element has a single child, <channel>, with 3 required elements
+		 * 
+		 * The external GML geometry is supported only inside the <where> element
+		 * 
 		 */
-
+		
+		//todo HASHMAP?
 		override public function read(data:Object):Object{
 			
+			this.featureVector = new Vector.<Feature>();
 			this.rssFile = new XML(data);
+			
+			this.title = this.rssFile..*::title[0].toString();
+			this.description = this.rssFile..*::description[0].toString();
+			this.link = this.rssFile..*::link[0].toString();
+				
 			var items:XMLList = this.rssFile..*::item;
 			var itemNumber:uint = items.length();
 			var i:uint;
@@ -74,85 +90,174 @@ package org.openscales.core.format
 			var att:Object = {};
 		
 			for(i = 0; i < childrenNum; i++){
-				var itemType:String = String((children[i] as XML).localName());
+				var elementType:String = String((children[i] as XML).localName());
 				
-				if(itemType == "guid")
-					id = children[i].toString();
-				
+				if(elementType == "guid"){
+					var guid:String = children[i].toString();
+					if(guid.indexOf("featureid") != -1)
+						id = guid.substring(guid.indexOf("=")+1,guid.indexOf("&"));
+					else id = guid;
+				}
+					
 				//a polygon element contains at least 3 pairs of coordinates @see geoRss schema 
-				else if(itemType == "polygon"){	
+				else if(elementType == "polygon"){	
 					coords = this.parseCoords(children[i]);
 					if(coords.length >= 6)
 					{
-						var ringGeom:Vector.<Geometry>;
-						ringGeom.push(LinearRing(coords));
+						var ringGeom:Vector.<Geometry> = new Vector.<Geometry>();
+						ringGeom.push(new LinearRing(coords));
 						feature = new PolygonFeature(new Polygon(ringGeom));
 					}		
 				}		
-				else if(itemType == "point"){
+				else if(elementType == "point"){
 					coords = this.parseCoords(children[i]);
 					if(coords.length == 2){
 						feature = new PointFeature(new Point(coords[0],coords[1])); //longitude, latitude
 					}	
 				}
 				//a line element contains at least 2 pairs of coordinates @see geoRss schema 
-				else if(itemType == "line"){
+				else if(elementType == "line"){
 					coords = this.parseCoords(children[i]);
 					if(coords.length >= 4){
 						feature = new LineStringFeature(new LineString(coords));
 					}
 				}
-				//external geometry: GML 3.1.1 content
-				else if(itemType == "where"){
-					this.parseExternalGeom(children[i] as XML);
+				
+				//if the <where> element contains more than one GML feature, only the first one will be parsed
+				else if(elementType == "where"){
+					var gmlFormat:GML311 = new GML311();
+					feature = gmlFormat.parseFeature(children[i], false);
+					
 				}
 				//parse attributes
 				else {
-					if((children[i].children().length()) > 0)
-					att[itemType] = children[i].toString();
+					if((children[i].children().length()) > 0)//OK; false if the node doesn't contain any value
+					att[elementType] = children[i].toString();
 				}
 			}
 			
-			if(feature)
+			if(feature){
 				feature.attributes = att;
+				if(id)
+					feature.name = id;
+			}
+				
 			return feature;
 		}
 		
-		public function parseExternalGeom(whereNode:XML):void{
-			//default CRS for GML: WSG84: latitude, longitude (in that order)
-			var i:uint;
-			var gmlFormat:GML311 = new GML311();
-			var gmlList:XMLList = whereNode.children();
-			var j:uint = gmlList.length();
-			for(i = 0; i < j; i++){
-				var feature:Feature = gmlFormat.parseFeature(gmlList[i],false);
-				if(feature)
-					this.featureVector.push(feature);
-			}
-		}
-		
 		/**
-		 * A pair of coordinates represents latitude then longitude (WGS84 reference)
+		 * @georss schema A pair of coordinates represents latitude then longitude (WGS84 reference)
 		 * In openScales, the order of coordinates is: longitude then latitude
 		 */ 
 		
 		public function parseCoords(node:XML):Vector.<Number>{
 			
-			var coordsVector:Vector.<Number>;
+			var coordsVector:Vector.<Number> = new Vector.<Number>();
 			var coords:String = node.toString();
 			var coordNum:uint = coords.split(" ").length;
 			var i:uint;
 			for(i = 0; i < coordNum; i += 2){
-				coordsVector.push(coords.split(" ")[i+1]);
-				coordsVector.push(coords.split(" ")[i]);
+				coordsVector.push(Number(coords.split(" ")[i+1]));
+				coordsVector.push(Number(coords.split(" ")[i]));
 			}
-							
-			
-			return null;
-		}		
+			return coordsVector;
+		}	
 		
 		/**
-		 * Setters & getters
+		 * @calls buildItemNode
+		 * @param the features to include in the RSS file
+		 * @return Object (the RSS file)
+		 * @see RSS 2.0 specification: the <rss> element has a single child, <channel>, with 3 required elements
+		 * 
+		 */
+		
+		override public function write(features:Object):Object{
+			
+			//use the setters to change these default values before calling write
+			this.title = "default title";
+			this.link = "default link";
+			this.description = "default description";
+			
+			var i:uint;
+			var rssFile:XML = new XML("<rss></rss>");
+			var channel:XML = new XML("<channel></channel>");
+			channel.appendChild(new XML("<title>" + this.title + "</title>"));
+			channel.appendChild(new XML("<link>" + this.link + "</link>"));
+			channel.appendChild(new XML("<description>" + this._description + "</description>"));
+			rssFile.appendChild(channel);
+			rssFile.addNamespace(this.geoRssNs);
+			
+			var data:Vector.<Feature> = features as Vector.<Feature>;
+			var numberOfFeatures:uint = data.length; 
+			for(i = 0; i < numberOfFeatures; i++){
+				var nodeToAdd:XML = this.buildItemNode(data[i]);
+				if(nodeToAdd)	
+					channel.appendChild(nodeToAdd);
+			} 
+			return rssFile;
+		}	
+		
+		/**
+		 * @param the feature to write in the Rss file
+		 * @return the feature XML node
+		 * The supported features are Points, LineStrings and Polygons
+		 */ 
+		public function buildItemNode(feature:Feature):XML{
+			
+			var i:uint;
+			var item:XML = new XML("<item></item>");
+			var attributes:Object = feature.attributes;
+			item.addNamespace(this.geoRssNs);
+		
+			if (attributes.hasOwnProperty("title"))
+				item.appendChild(new XML("<title>" + attributes["title"] + "</title>"));
+			if (attributes.hasOwnProperty("link"))
+				item.appendChild(new XML("<link>" + attributes["link"] + "</link>"));
+			if (attributes.hasOwnProperty("description"))
+				item.appendChild(new XML("<description>" + attributes["description"] + "</description>"));
+			if(feature.name)
+				item.appendChild(new XML("<guid>" + String(feature.name) + "</guid>"));
+			
+			if(feature is PointFeature){
+				var pointGeom:Point = (feature as PointFeature).point;
+				var point:XML = new XML("<point></point>");
+				point.setNamespace(this.geoRssNs);
+				point.appendChild(String(pointGeom.y) + " " + String(pointGeom.x));
+				
+				item.appendChild(point);
+			}
+			else if(feature is LineStringFeature){
+				var lineGeom:LineString = (feature as LineStringFeature).lineString;
+				var line:XML = new XML("<line></line>");
+				line.setNamespace(this.geoRssNs);
+				
+				var coords:String = "";
+				var points:Vector.<Number> = lineGeom.getcomponentsClone();
+				var numberOfPoints:uint = points.length;
+				for(i = 0; i < numberOfPoints; i += 2){
+					coords += String(points[i+1])+" ";
+					coords += String(points[i]);
+					if( i != (numberOfPoints -2))
+						coords += " ";
+				}
+				line.appendChild(coords);
+				item.appendChild(line);
+				
+			}//todo finish this
+			else if(feature is PolygonFeature){
+				return null;
+			}
+			else{
+				Trace.warn("This type of feature has no correspondent in the geoRss specification"); 
+				return null; 
+			}
+			
+			return item;
+		}
+		
+		
+		/**
+		 * Setters and getters
 		 */ 
 			
 		public function get featureVector():Vector.<Feature>
@@ -175,5 +280,39 @@ package org.openscales.core.format
 			_rssFile = value;
 		}
 		
+		
+		public function GeoRssFormat()
+		{
+			super();
+		}
+		
+		public function get title():String
+		{
+			return _title;
+		}
+		
+		public function set title(value:String):void
+		{
+			_title = value;
+		}
+		public function get link():String
+		{
+			return _link;
+		}
+		
+		public function set link(value:String):void
+		{
+			_link = value;
+		}
+		public function get description():String
+		{
+			return _description;
+		}
+		
+		public function set description(value:String):void
+		{
+			_description = value;
+		}
+
 	}
 }

@@ -18,7 +18,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	
 	/**
-	 * GPX layer; versions 1.0 & 1.1 supported 
+	 * GPX layer; versions 1.0 and 1.1 supported 
 	 * 
 	 * @param name: the name of the layer
 	 * 
@@ -142,7 +142,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Getters & Setters
+		 * Getters and Setters
 		 */
 		
 		public function get featureVector():Vector.<Feature>
