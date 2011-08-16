@@ -205,7 +205,7 @@ package org.openscales.core
 			
 		}
 		
-		private function onDraw(event:Event)
+		private function onDraw(event:Event):void
 		{
 			if (_extenTDebug == null)
 			{
@@ -218,7 +218,7 @@ package org.openscales.core
 			var topLeft:Pixel = this.getMapPxFromLocation(new Location(extent.left, extent.top));
 			var bottomRight:Pixel = this.getMapPxFromLocation(new Location(extent.right, extent.bottom));
 			
-			_extenTDebug.graphics.beginFill(0xFF0000);
+			_extenTDebug.graphics.beginFill(0xFF0000, 0.3);
 			_extenTDebug.graphics.drawRect(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y);
 			_extenTDebug.graphics.endFill();
 			this.addChild(_extenTDebug);
