@@ -223,7 +223,13 @@ package org.openscales.core.layer
 
 				var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 				//var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);
-				var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+				if (_centerChanged)
+				{
+					var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+				}else
+				{
+					var px:Pixel = new Pixel(this.map.width/2, this.map.height/2);
+				}
 				if (resolution != this._resquestResolution)
 				{
 					if (!this.tiled) 
@@ -286,7 +292,7 @@ package org.openscales.core.layer
 			var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
 			var deltaX:Number = deltaLon/this.map.resolution.value;
 			var deltaY:Number = deltaLat/this.map.resolution.value;
-			this.x += deltaX;
+			this.x -= deltaX;
 			this.y += deltaY;
 			super.onMapCenterChanged(event);
 		}
@@ -339,7 +345,7 @@ package org.openscales.core.layer
 			this.tileWidth = Math.round(geoTileWidth/this.map.resolution.value);
 			this.tileHeight = Math.round(geoTileHeight/this.map.resolution.value);
 			var ul:Location = new Location(bounds.left, bounds.top, bounds.projSrsCode);
-			var px:Pixel = this.map.getLayerPxFromLocation(ul);
+			var px:Pixel = this.map.getMapPxFromLocation(ul);
 			
 			if(this._grid==null) {
 				this._grid = new Vector.<Vector.<ImageTile>>(1);

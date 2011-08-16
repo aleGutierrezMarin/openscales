@@ -148,11 +148,11 @@ package org.openscales.core.feature {
 				var pointA:Point = (arrayResult[i][0] as LineString).componentByIndex(0) as Point;
 				var pointB:Point = (arrayResult[i][0] as LineString).componentByIndex(1) as Point;
 
-				var pointPx:Pixel = this.layer.map.getLayerPxFromLocation(new Location(point.x, point.y));
+				var pointPx:Pixel = this.layer.map.getMapPxFromLocation(new Location(point.x, point.y));
 
-				var pointPxA:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointA.x, pointA.y));
+				var pointPxA:Pixel = this.layer.map.getMapPxFromLocation(new Location(pointA.x, pointA.y));
 
-				var pointPxB:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointB.x, pointB.y));
+				var pointPxB:Pixel = this.layer.map.getMapPxFromLocation(new Location(pointB.x, pointB.y));
 
 				//pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
 				//pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
