@@ -12,7 +12,7 @@
 			private var data:Object = {};
 			private function init():void {
 				data['about'] = new AboutOpenScales();
-				example.addElement(getState('drawedit'));
+				example.addElement(getState('graticule'));
 			}
 			
 			private function getState(id:String):IVisualElement {
@@ -92,6 +92,9 @@
 					case "gpx":
 						state = new GPXExample();
 						break;
+					case "graticule":
+						state = new GraticuleExample();
+						break;
 					case "tms":
 						state = new TmsExample();
 						break;
@@ -132,6 +135,7 @@
 				<s:Button id="osm" label="OpenStreetMap" click="changeState(event)" width="100%"/>
 				<s:Button id="polylayer" label="Poly Layer" click="changeState(event)" width="100%"/>
 				<s:Button id="gpx" label="GPX Layer" click="changeState(event)" width="100%"/>
+				<s:Button id="graticule" label="Graticule" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Map configuration" width="100%" height="100%">
 				<s:layout>
