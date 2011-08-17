@@ -25,6 +25,7 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WFS extends VectorLayer
 	{
+		private var _currentScale:uint = 0;
 		private var _initialized:Boolean = false;
 		
 		/**
@@ -241,19 +242,20 @@ package org.openscales.core.layer.ogc
 				}
 				if (this._resolutionChanged)
 				{
-					/*
-					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+					if (this._currentScale > 5)
 					{
-						this.loadFeatures(this.getFullRequestString());
+						this._currentScale = 0;
+						if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+						{
+							this.loadFeatures(this.getFullRequestString());
+						}
+						this.x = 0;
+						this.y = 0;
+						this.scaleX = 1;
+						this.scaleY = 1;
+						this.resetFeaturesPosition();
+						this.draw();
 					}
-					this.x = 0;
-					this.y = 0;
-					this.resetFeaturesPosition();
-					this.draw();*/
-					
-					
-					
-					
 					this._resolutionChanged = false;
 				}
 				if (this._projectionChanged)
@@ -271,6 +273,7 @@ package org.openscales.core.layer.ogc
 			this.y -= (px.y - this.y) * (ratio - 1);
 			this.scaleX = this.scaleX * ratio;
 			this.scaleY = this.scaleY * ratio;
+			this._currentScale++;
 			this._resolutionChanged = true;
 		}
 		
