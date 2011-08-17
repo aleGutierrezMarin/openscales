@@ -190,6 +190,9 @@ package org.openscales.core.layer
 			
 			// Add the feature to the layer
 			feature.layer = this;
+			//test
+			feature.x = -feature.layer.x;
+			feature.y = -feature.layer.y;
 			this.addChild(feature);
 			// Reset the BBOX of the features
 			this._featuresBbox = null;
@@ -203,6 +206,19 @@ package org.openscales.core.layer
 			if (dispatchFeatureEvent && this.map) {
 				fevt = new FeatureEvent(FeatureEvent.FEATURE_INSERT, feature);
 				this.map.dispatchEvent(fevt);
+			}
+		}
+		
+		public function resetFeaturesPosition():void
+		{
+			var nbChildren:int = this.numChildren;
+			var o:DisplayObject;
+			for(var i:uint=0 ; i<nbChildren ; ++i) {
+				o = this.getChildAt(i);
+				if (o is Feature) {
+					(o as Feature).x = 0;
+					(o as Feature).y = 0;
+				}
 			}
 		}
 		
