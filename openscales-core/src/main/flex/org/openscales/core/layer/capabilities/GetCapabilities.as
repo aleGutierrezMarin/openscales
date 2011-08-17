@@ -46,6 +46,7 @@ package org.openscales.core.layer.capabilities
 		    _parsers.put("WMS 1.0.0",WMS100);
 		    _parsers.put("WMS 1.1.0",WMS110);
 		    _parsers.put("WMS 1.1.1",WMS111);
+			_parsers.put("WMS 1.3.0",WMS130);
 			_parsers.put("WMTS 1.0.0",WMTS100)
 				
 			this._proxy = proxy;
