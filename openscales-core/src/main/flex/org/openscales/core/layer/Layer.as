@@ -439,8 +439,15 @@ package org.openscales.core.layer {
 		
 		public function getLayerPxFromMapPx(mapPx:Pixel):Pixel
 		{
-			return new Pixel(mapPx.x + this.x, mapPx.y + this.y);
+			return new Pixel(mapPx.x - this.x, mapPx.y - this.y);
 		}
+		
+		public function getMapPxFromLayerPx(layerPx:Pixel):Pixel
+		{
+			return new Pixel(layerPx.x + this.x, layerPx.y + this.y);
+		}
+		
+
 		
 		/**
 		 * Is this layer currently in range, based on its min and max resolutions

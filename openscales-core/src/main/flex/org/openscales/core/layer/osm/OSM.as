@@ -1,5 +1,6 @@
 package org.openscales.core.layer.osm
 {
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.layer.TMS;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -28,10 +29,10 @@ package org.openscales.core.layer.osm
 
 		override public function getURL(bounds:Bounds):String
 		{
-			var res:Number = this.map.resolution.value;
-			var x:Number = Math.round((bounds.left - this.maxExtent.left) / (res * this.tileWidth));
-			var y:Number = Math.round((this.maxExtent.top - bounds.top) / (res * this.tileHeight));
-			var z:Number = this.getZoomForResolution(this.map.resolution.reprojectTo(this.projSrsCode).value);
+			var res:Resolution = this.getSupportedResolution(this.map.resolution);
+			var x:Number = Math.round((bounds.left - this.maxExtent.left) / (res.value * this.tileWidth));
+			var y:Number = Math.round((this.maxExtent.top - bounds.top) / (res.value * this.tileHeight));
+			var z:Number = this.getZoomForResolution(res.reprojectTo(this.projSrsCode).value);
 			var limit:Number = Math.pow(2, z);
 
 			if (y < 0 || y >= limit ||x < 0 || x >= limit) {

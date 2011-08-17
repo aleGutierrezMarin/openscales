@@ -59,15 +59,19 @@ package org.openscales.core.tile
 		 * @return Always returns true.
 		 */
 		override public function draw():Boolean {
+			Trace.debug("map resolution: "+this.layer.map.resolution.value);
+			Trace.debug("tile resolution before: "+(bounds.right-bounds.left)/256);
 			//TODO check if still OK
 			//if (this.layer != this.layer.map.baseLayer) {
 				if(_drawPosition != null) {
 					this.bounds = this.getBoundsFromMap(_drawPosition);
 				} else {
+					//var px:Pixel = new Pixel(this.x/this.layer.transform.matrix.a,
+					//						this.y/this.layer.transform.matrix.d);
 					this.bounds = this.getBoundsFromMap(position);
 				}
 			//}
-
+				Trace.debug("tile resolution after: "+(bounds.right-bounds.left)/256);
 			if(! withinMapBounds()) {
 				return false;    
 			}
