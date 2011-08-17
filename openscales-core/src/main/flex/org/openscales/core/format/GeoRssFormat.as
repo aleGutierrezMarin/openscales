@@ -1,6 +1,7 @@
 package org.openscales.core.format
 {
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -28,13 +29,27 @@ package org.openscales.core.format
 	
 		private var _rssFile:XML;
 		private var _featureVector:Vector.<Feature>;
+		private var _extractAttributes:Boolean;
+		private var _featuresids:HashMap = null; 
 		
 		private var _title:String;
 		private var _description:String;
 		private var _link:String;
-		//private var gmlns:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
 		private var geoRssNs:Namespace = new Namespace("georss", "http://www.georss.org/georss");
 
+		public function GeoRssFormat(featuresids:HashMap,
+									 extractAttributes:Boolean = true)
+		{
+			super();
+			this._extractAttributes = extractAttributes;
+			this._featuresids = featuresids;
+			
+			//use the setters to change these default values before calling the write function
+			this.title = "default title";
+			this.link = "default link";
+			this.description = "default description";
+		
+		}
 
 		/**
 		 * @calls parseItem to create the features and add them to featureVector
@@ -48,7 +63,6 @@ package org.openscales.core.format
 		 * 
 		 */
 		
-		//todo HASHMAP?
 		override public function read(data:Object):Object{
 			
 			this.featureVector = new Vector.<Feature>();
@@ -65,10 +79,12 @@ package org.openscales.core.format
 			for(i = 0; i < itemNumber; i++){
 				
 				var feature:Feature = this.parseItem(items[i]);
-				if(feature)
-					this.featureVector.push(feature);	
+				if(feature){
+					this.featureVector.push(feature);
+					if(feature.name)
+						this._featuresids.put(feature.name, feature);
+				}
 			}
-			
 			return this.featureVector;
 		}
 		
@@ -76,7 +92,8 @@ package org.openscales.core.format
 		 * @return a feature
 		 * This function will also parse the feature attributes
 		 * 
-		 * @call
+		 * @call parseCoords
+		 * @call parseFeature for exterior GML data (@see GML311.as)
 		 * 
 		 */ 
 		public function parseItem(item:XML):Feature{
@@ -97,6 +114,9 @@ package org.openscales.core.format
 					if(guid.indexOf("featureid") != -1)
 						id = guid.substring(guid.indexOf("=")+1,guid.indexOf("&"));
 					else id = guid;
+					
+					if(this._featuresids && this._featuresids.containsKey(id))
+						return null; 
 				}
 					
 				//a polygon element contains at least 3 pairs of coordinates @see geoRss schema 
@@ -126,22 +146,20 @@ package org.openscales.core.format
 				//if the <where> element contains more than one GML feature, only the first one will be parsed
 				else if(elementType == "where"){
 					var gmlFormat:GML311 = new GML311();
-					feature = gmlFormat.parseFeature(children[i], false);
-					
+					feature = gmlFormat.parseFeature(children[i], false);			
 				}
 				//parse attributes
 				else {
 					if((children[i].children().length()) > 0)//OK; false if the node doesn't contain any value
 					att[elementType] = children[i].toString();
 				}
-			}
-			
+			}	
 			if(feature){
 				feature.attributes = att;
-				if(id)
+				if(id){
 					feature.name = id;
-			}
-				
+				}		
+			}	
 			return feature;
 		}
 		
@@ -173,11 +191,6 @@ package org.openscales.core.format
 		
 		override public function write(features:Object):Object{
 			
-			//use the setters to change these default values before calling write
-			this.title = "default title";
-			this.link = "default link";
-			this.description = "default description";
-			
 			var i:uint;
 			var rssFile:XML = new XML("<rss></rss>");
 			var channel:XML = new XML("<channel></channel>");
@@ -200,11 +213,13 @@ package org.openscales.core.format
 		/**
 		 * @param the feature to write in the Rss file
 		 * @return the feature XML node
+		 * @call buildCoordsAsString
 		 * The supported features are Points, LineStrings and Polygons
 		 */ 
 		public function buildItemNode(feature:Feature):XML{
 			
 			var i:uint;
+			var coords:String = "";
 			var item:XML = new XML("<item></item>");
 			var attributes:Object = feature.attributes;
 			item.addNamespace(this.geoRssNs);
@@ -222,37 +237,46 @@ package org.openscales.core.format
 				var pointGeom:Point = (feature as PointFeature).point;
 				var point:XML = new XML("<point></point>");
 				point.setNamespace(this.geoRssNs);
-				point.appendChild(String(pointGeom.y) + " " + String(pointGeom.x));
-				
+				point.appendChild(String(pointGeom.y) + " " + String(pointGeom.x));			
 				item.appendChild(point);
 			}
 			else if(feature is LineStringFeature){
 				var lineGeom:LineString = (feature as LineStringFeature).lineString;
 				var line:XML = new XML("<line></line>");
 				line.setNamespace(this.geoRssNs);
-				
-				var coords:String = "";
-				var points:Vector.<Number> = lineGeom.getcomponentsClone();
-				var numberOfPoints:uint = points.length;
-				for(i = 0; i < numberOfPoints; i += 2){
-					coords += String(points[i+1])+" ";
-					coords += String(points[i]);
-					if( i != (numberOfPoints -2))
-						coords += " ";
-				}
-				line.appendChild(coords);
+
+				line.appendChild(this.buildCoordsAsString(lineGeom.getcomponentsClone()));
 				item.appendChild(line);
 				
-			}//todo finish this
+			}
 			else if(feature is PolygonFeature){
-				return null;
+				var polyGeom:Polygon = (feature as PolygonFeature).polygon;
+				var poly:XML = new XML("<polygon></polygon>");
+				poly.setNamespace(this.geoRssNs);
+				
+				var linearRings:Vector.<Geometry> = polyGeom.getcomponentsClone();
+				//there's only one linearRing (the exterior one) in a GeoRss <polygon> tag 
+				poly.appendChild(this.buildCoordsAsString((linearRings[0] as LinearRing).getcomponentsClone()));	
+				item.appendChild(poly);
 			}
 			else{
 				Trace.warn("This type of feature has no correspondent in the geoRss specification"); 
 				return null; 
 			}
-			
 			return item;
+		}
+		
+		public function buildCoordsAsString(coords:Vector.<Number>):String{
+			var i:uint;
+			var stringCoords:String = "";
+			var numberOfPoints:uint = coords.length;
+			for(i = 0; i < numberOfPoints; i += 2){
+				stringCoords += String(coords[i+1])+" ";
+				stringCoords += String(coords[i]);
+				if( i != (numberOfPoints -2))
+					stringCoords += " ";
+			}
+			return stringCoords;
 		}
 		
 		
@@ -278,12 +302,6 @@ package org.openscales.core.format
 		public function set rssFile(value:XML):void
 		{
 			_rssFile = value;
-		}
-		
-		
-		public function GeoRssFormat()
-		{
-			super();
 		}
 		
 		public function get title():String
