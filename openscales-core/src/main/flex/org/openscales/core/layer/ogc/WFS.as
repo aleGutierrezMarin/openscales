@@ -7,6 +7,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.layer.VectorLayer;
@@ -16,7 +17,6 @@ package org.openscales.core.layer.ogc
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
-	import org.openscales.core.events.MapEvent;
 	
 	/**
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
@@ -221,50 +221,81 @@ package org.openscales.core.layer.ogc
 			
 			if (!this._initialized)
 			{
-				var projectedBounds:Bounds = this.map.extent.clone();
-				var projectedMaxExtent:Bounds = this.maxExtent;
-				
-				if (this.projSrsCode != projectedBounds.projSrsCode)
-				{
-					projectedBounds = projectedBounds.reprojectTo(this.projSrsCode);
-					projectedMaxExtent = projectedMaxExtent.reprojectTo(this.projSrsCode);
-				}
-				
-				if (projectedBounds.containsBounds(projectedMaxExtent))
-				{
-					projectedBounds = projectedMaxExtent.clone();
-				}
-				/*
-				if (this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
-					this.params.bbox = projectedBounds.toString(-1, false);
-				else
-					this.params.bbox = projectedBounds.toString();
-				
-				this.featuresBbox = projectedBounds;*/
-				
-				
+				this.featuresBbox = this.defineBounds();
 				this.loadFeatures(this.getFullRequestString());
 				this._initialized = true;
 			}
 			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
 			{
-				if(this._centerChanged){
+				var previousFeatureBbox:Bounds = this.featuresBbox;
+				this.featuresBbox = this.defineBounds();
+				
+				if (this._centerChanged)
+				{
+					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+					{
+						this.loadFeatures(this.getFullRequestString());
+					}
 					this._centerChanged = false;
 				}
-				else
+				if (this._resolutionChanged)
 				{
+					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+					{
+						this.loadFeatures(this.getFullRequestString());
+					}
 					this.x = 0;
 					this.y = 0;
+					this.resetFeaturesPosition();
 					this.draw();
-					this._projectionChanged = false;
 					this._resolutionChanged = false;
+				}
+				if (this._projectionChanged)
+				{
+					this._projectionChanged = false;
 				}
 			}
 		}
 		
+		private function defineBounds():Bounds
+		{
+			var layerMaxExtent:Bounds;
+			var mapExtent:Bounds;
+			var layerExtent:Bounds;
+			
+			// Define the maxExtent of the layer
+			if (this.capabilities != null)
+			{
+				layerMaxExtent = this.capabilities.getValue("Extent");
+			}
+			else
+				layerMaxExtent = this.maxExtent;
+			
+			// Intersect with the extent of the map
+			mapExtent = this.map.extent.clone();
+			
+			if (this.projSrsCode != mapExtent.projSrsCode)
+			{
+				mapExtent = mapExtent.preciseReprojectBounds(mapExtent,mapExtent.projSrsCode,this.projSrsCode);
+				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(layerMaxExtent,layerMaxExtent.projSrsCode,this.projSrsCode);
+			}
+			
+			layerExtent = mapExtent.getIntersection(layerMaxExtent);
+			
+			// Update the bbox
+			if (this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
+				this.params.bbox = layerExtent.toString(-1, false);
+			else
+				this.params.bbox = layerExtent.toString();
+			
+			// Return the bounds
+			return layerExtent;
+		}
+		
 		override protected function onMapCenterChanged(event:MapEvent):void
 		{
-			if(!this._resolutionChanged){
+			if (!this._resolutionChanged)
+			{
 				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
 				var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
 				var deltaX:Number = deltaLon / this.map.resolution.value;
@@ -273,6 +304,14 @@ package org.openscales.core.layer.ogc
 				this.y += deltaY;
 				super.onMapCenterChanged(event);
 			}
+		}
+		
+		override public function get available():Boolean
+		{
+			if (this.useCapabilities && !this.projSrsCode)
+				return false;
+			else
+				return true;
 		}
 		
 		/**
