@@ -69,7 +69,8 @@ package org.openscales.core.layer.ogc
 				this.clear();
 				return;
 			}
-			if (url){
+			if (url)
+			{
 				if (! this._request) {
 					this.loading = true;
 					this._request = new XMLRequest(url, onSuccess, onFailure);
@@ -81,7 +82,8 @@ package org.openscales.core.layer.ogc
 					this.draw();
 				}	
 			}
-			else if (this.gpxData){	
+			else if (this.gpxData)
+			{	
 				this.drawFeatures();				
 			}
 			else
