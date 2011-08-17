@@ -30,7 +30,7 @@ package {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
-			_map.resolution = new Resolution(0.010625, "EPSG:4326");
+			_map.resolution = new Resolution(1.40625, "EPSG:4326");
 			_map.center = new Location(2.57778, 41.88194);
 			//_map.resolution = new Resolution(1, "EPSG:4326")	
 			// Add layers to map
@@ -59,13 +59,19 @@ package {
 			wfsLay2.projSrsCode = "EPSG:4326";
 			wfsLay2.useCapabilities = true;
 			wfsLay2.style = Style.getDefaultSurfaceStyle();
-			//_map.addLayer(wfsLay2);
+			_map.addLayer(wfsLay2);
 			
 			var wfsLay3:WFS = new WFS("regions","http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
 			wfsLay3.projSrsCode = "EPSG:2154";
 			wfsLay3.useCapabilities = true;
 			wfsLay3.style = Style.getDefaultSurfaceStyle();
 			_map.addLayer(wfsLay3);
+			
+			var wfsLay4:WFS = new WFS("departements","http://openscales.org/geoserver/wfs","pg:ign_geopla_dep");
+			wfsLay4.projSrsCode = "EPSG:2154";
+			wfsLay4.useCapabilities = true;
+			wfsLay4.style = Style.getDefaultSurfaceStyle();
+			_map.addLayer(wfsLay4);
 
 	
 			// Add Controls to map

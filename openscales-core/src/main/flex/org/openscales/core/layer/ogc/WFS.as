@@ -16,6 +16,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -230,7 +231,7 @@ package org.openscales.core.layer.ogc
 				var previousFeatureBbox:Bounds = this.featuresBbox;
 				this.featuresBbox = this.defineBounds();
 				
-				if (this._centerChanged)
+				if (this._centerChanged && !this._resolutionChanged)
 				{
 					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
 					{
@@ -240,6 +241,7 @@ package org.openscales.core.layer.ogc
 				}
 				if (this._resolutionChanged)
 				{
+					/*
 					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
 					{
 						this.loadFeatures(this.getFullRequestString());
@@ -247,7 +249,11 @@ package org.openscales.core.layer.ogc
 					this.x = 0;
 					this.y = 0;
 					this.resetFeaturesPosition();
-					this.draw();
+					this.draw();*/
+					
+					
+					
+					
 					this._resolutionChanged = false;
 				}
 				if (this._projectionChanged)
@@ -255,6 +261,17 @@ package org.openscales.core.layer.ogc
 					this._projectionChanged = false;
 				}
 			}
+		}
+		
+		override protected function onMapResolutionChanged(event:MapEvent):void
+		{
+			var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+			var ratio:Number = event.oldResolution.value / event.newResolution.value;
+			this.x -= (px.x - this.x) * (ratio - 1);
+			this.y -= (px.y - this.y) * (ratio - 1);
+			this.scaleX = this.scaleX * ratio;
+			this.scaleY = this.scaleY * ratio;
+			this._resolutionChanged = true;
 		}
 		
 		private function defineBounds():Bounds
@@ -277,16 +294,25 @@ package org.openscales.core.layer.ogc
 			if (this.projSrsCode != mapExtent.projSrsCode)
 			{
 				mapExtent = mapExtent.preciseReprojectBounds(mapExtent,mapExtent.projSrsCode,this.projSrsCode);
+				//fix bug
+				layerMaxExtent.projSrsCode = "EPSG:4326";
 				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(layerMaxExtent,layerMaxExtent.projSrsCode,this.projSrsCode);
 			}
 			
-			layerExtent = mapExtent.getIntersection(layerMaxExtent);
+			//fix bug
+			if(!(mapExtent.left == 0 && mapExtent.right == 0 && mapExtent.bottom == 0 && mapExtent.top == 0))
+				layerExtent = mapExtent.getIntersection(layerMaxExtent);
+			else
+				layerExtent = layerMaxExtent.clone();
 			
 			// Update the bbox
-			if (this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
-				this.params.bbox = layerExtent.toString(-1, false);
-			else
-				this.params.bbox = layerExtent.toString();
+			if (layerExtent != null)
+			{
+				if (this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
+					this.params.bbox = layerExtent.toString(-1, false);
+				else
+					this.params.bbox = layerExtent.toString();
+			}
 			
 			// Return the bounds
 			return layerExtent;
@@ -310,8 +336,11 @@ package org.openscales.core.layer.ogc
 		{
 			if (this.useCapabilities && !this.projSrsCode)
 				return false;
-			else
-				return true;
+			
+			if (!this.defineBounds())
+				return false;
+			
+			return true;
 		}
 		
 		/**
