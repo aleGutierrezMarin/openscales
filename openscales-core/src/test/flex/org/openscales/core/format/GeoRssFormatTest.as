@@ -2,6 +2,7 @@ package org.openscales.core.format
 {
 	import flexunit.framework.Assert;
 	
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -27,7 +28,7 @@ package org.openscales.core.format
 		[Before]
 		public function setUp():void
 		{
-			this.format = new GeoRssFormat();
+			this.format = new GeoRssFormat(new HashMap());
 		}
 		
 		[After] 
@@ -37,7 +38,7 @@ package org.openscales.core.format
 		}
 		
 		[Test]
-		public function testParsePolygons():void
+		public function testParseAndBuildPolygons():void
 		{
 			var i:uint;
 			var rss:XML = new XML(new RSSFILE1());
@@ -52,12 +53,28 @@ package org.openscales.core.format
 				Assert.assertTrue("This element should be a polygon feature", features[i] is PolygonFeature);
 				var id:String = "restricted."+String(i+1);
 				Assert.assertEquals("The id of this feature is incorrect",id, features[i].name);
-			}	
+			}
+			
+			/**
+			 * test the build
+			 */ 
+			this.format.title = "Polygons";
+			this.format.description = "This RSS files contains 4 geometries";
+			var rssFile:XML = this.format.write(features) as XML;
+			var polyNodes:XMLList = rssFile..*::polygon;
+			var itemNodes:XMLList = rssFile..*::item;
+			Assert.assertEquals("There should be 4 polygons in this file",4,polyNodes.length());
+			Assert.assertEquals("There should be 4 items in this file",4,itemNodes.length());
+			for(i = 0; i < 4; i++){
+				var itemNode:XML = itemNodes[i];
+				var idNode:XML = itemNode..*::guid[0];
+				Assert.assertEquals("The id of this feature is incorrect","restricted."+String(i+1), idNode.toString());
+			}
 			
 		}
 		
 		[Test]
-		public function testParseLines():void
+		public function testParseAndBuildLines():void
 		{
 			var i:uint;
 			var rss:XML = new XML(new RSSFILE2());
@@ -73,7 +90,9 @@ package org.openscales.core.format
 				var id:String = "tasmania_roads."+String(i+1);
 				Assert.assertEquals("The id of this feature is incorrect",id, features[i].name);
 			}	
-			//test the build
+			/**
+			 * test the build
+			 */ 
 			var xmlFile:XML = this.format.write(features) as XML;
 			
 		}
@@ -89,14 +108,12 @@ package org.openscales.core.format
 			"http://serverName.net",
 			this.format.link);
 			
-			
-			//problem GML 321 parse line
-			Assert.assertEquals("There should be 2 geometries inside",2,features.length);
+			Assert.assertEquals("There should be 3 geometries inside",3,features.length);
 			
 			Assert.assertTrue("This element should be a Point feature", features[0] is PointFeature);
 			Assert.assertEquals("The id of this feature is incorrect","Point001", features[i].name);
-			
-			Assert.assertTrue("This element should be a Polygon feature", features[1] is PolygonFeature);
+			Assert.assertTrue("This element should be a LineString feature", features[1] is LineStringFeature);
+			Assert.assertTrue("This element should be a Polygon feature", features[2] is PolygonFeature);
 			
 		}
 	}
