@@ -30,19 +30,20 @@ package {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
-			_map.resolution = new Resolution(1.40625, "EPSG:4326");
-			_map.center = new Location(2.57778, 41.88194);
-			//_map.resolution = new Resolution(1, "EPSG:4326")	
+			_map.projection = "EPSG:900913";
+			//_map.resolution = new Resolution(1.40625, "EPSG:4326")
+			_map.resolution = new Resolution(1, "EPSG:4326");
+			_map.resolution = new Resolution(100000.0339, "EPSG:900913");
+			_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
 			// Add layers to map
-			/*
-			var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
+			/*var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
 			wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
-			_map.addLayer(wms);*/
-			
-			//var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
+			_map.addLayer(wms);
+			*/
+			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			//mapnik.proxy = "http://openscales.org/proxy.php?url=";
-			//mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
-			//_map.addLayer(mapnik);
+			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
+			_map.addLayer(mapnik);
 
 			
 			/*var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
@@ -50,28 +51,11 @@ package {
 			_map.addLayer(cycle); */
 			
 			
-			var wfsLay1:WFS = new WFS("world rectangle","http://openscales.org/geoserver/wfs","tiger:giant_polygon");
-			wfsLay1.projSrsCode = "EPSG:4326";
-			wfsLay1.style = Style.getDefaultSurfaceStyle();
-			//_map.addLayer(wfsLay1);
+			/*var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
+			regions.projSrsCode = "EPSG:2154";
+			regions.style = Style.getDefaultSurfaceStyle();
 			
-			var wfsLay2:WFS = new WFS("states","http://openscales.org/geoserver/wfs","topp:states");
-			wfsLay2.projSrsCode = "EPSG:4326";
-			wfsLay2.useCapabilities = true;
-			wfsLay2.style = Style.getDefaultSurfaceStyle();
-			_map.addLayer(wfsLay2);
-			
-			var wfsLay3:WFS = new WFS("regions","http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
-			wfsLay3.projSrsCode = "EPSG:2154";
-			wfsLay3.useCapabilities = true;
-			wfsLay3.style = Style.getDefaultSurfaceStyle();
-			_map.addLayer(wfsLay3);
-			
-			var wfsLay4:WFS = new WFS("departements","http://openscales.org/geoserver/wfs","pg:ign_geopla_dep");
-			wfsLay4.projSrsCode = "EPSG:2154";
-			wfsLay4.useCapabilities = true;
-			wfsLay4.style = Style.getDefaultSurfaceStyle();
-			_map.addLayer(wfsLay4);
+			_map.addLayer(regions);*/
 
 	
 			// Add Controls to map

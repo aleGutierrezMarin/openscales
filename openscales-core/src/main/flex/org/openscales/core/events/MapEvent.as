@@ -3,6 +3,7 @@ package org.openscales.core.events{
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	
 	/**
@@ -60,6 +61,11 @@ package org.openscales.core.events{
 		 */
 		private var _newResolution:Resolution = new Resolution(0, "EPSG:4326");
 		
+		/**
+		 * Target pixel to zoom
+		 */
+		private var _targetZoomPixel:Pixel = null;
+			
 		/**
 		 * name of the component which has been changed
 		 */
@@ -250,6 +256,16 @@ package org.openscales.core.events{
 		public function set newResolution(value:Resolution):void
 		{
 			_newResolution = value;
+		}
+		
+		public function get targetZoomPixel():Pixel
+		{
+			return this._targetZoomPixel;
+		}
+		
+		public function set targetZoomPixel(value:Pixel):void
+		{
+			_targetZoomPixel = value;
 		}
 		
 		public function get zoomChanged():Boolean {

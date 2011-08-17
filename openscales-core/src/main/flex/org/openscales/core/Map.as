@@ -128,6 +128,8 @@ package org.openscales.core
 		private var _defaultZoomInFactor:Number = 0.9;
 		private var _defaultZoomOutFactor:Number = 1.1;
 		
+		private var _targetZoomPixel:Pixel = null;
+		
 		private var _centerShape:Shape;
 		
 		private var _extenTDebug:Shape;
@@ -259,6 +261,8 @@ package org.openscales.core
 				this.center = this.center.reprojectTo(event.newProjection);
 			}
 		}
+		
+		
 		
 		// Layer management
 		
@@ -558,6 +562,7 @@ package org.openscales.core
 			// Temporary 
 			var dragTween:Boolean = false;
 			
+			this._targetZoomPixel = null;
 			var mapEvent:MapEvent;
 			var newResolution:Number = resolution.value
 				
@@ -594,6 +599,7 @@ package org.openscales.core
 				//var centerPixel:Pixel = this.getMapPxFromLocation(this.center);
 				var zoomTargetLoc:Location = this.getLocationFromMapPx(zoomTarget);
 				if (resolutionChanged) {
+					this._targetZoomPixel = zoomTarget;
 					this.resolution = targetResolution;
 				}
 				
@@ -1370,6 +1376,29 @@ package org.openscales.core
 
 		}
 		
+		public function getExtentForResolution(resolution:Resolution):Bounds
+		{
+			var extent:Bounds = null;
+			
+			if (this.center != null) {
+				var center:Location;
+				if(this.center.projSrsCode.toUpperCase() != this.projection.toUpperCase())
+					center = this.center.reprojectTo(this.projection.toUpperCase());
+				else
+					center = this.center;
+				var w_deg:Number = this.size.w * resolution.value;
+				var h_deg:Number = this.size.h * resolution.value;
+				
+				extent = new Bounds(center.lon - w_deg / 2,
+					center.lat - h_deg / 2,
+					center.lon + w_deg / 2,
+					center.lat + h_deg / 2,
+					center.projSrsCode);
+			} 
+			
+			return extent;
+		}
+		
 		
 
 		
@@ -1803,6 +1832,7 @@ package org.openscales.core
 			event.newResolution = value;
 			event.newCenter = this.center;
 			event.oldCenter = this.center;
+			event.targetZoomPixel = this._targetZoomPixel;
 			this._resolution = value;
 			this.dispatchEvent(event);
 			Trace.log("Changing resolution"+ event.newResolution.value);
