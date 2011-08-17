@@ -16,6 +16,7 @@
 	<component id="HTC" class="org.openscales.fx.layer.FxHTC" />
 	<component id="TMS" class="org.openscales.fx.layer.FxTMS" />
 	<component id="GPX" class="org.openscales.fx.layer.FxGPX" />
+	<component id="Graticule" class="org.openscales.fx.layer.FxGraticule" />
 	
 	<component id="Mapnik" class="org.openscales.fx.layer.osm.FxMapnik" />
 	<component id="CycleMap" class="org.openscales.fx.layer.osm.FxCycleMap" />
