@@ -1,6 +1,9 @@
 package {
 	import flash.display.Sprite;
 	import flash.geom.Point;
+	import flash.trace.Trace;
+	
+	import mx.controls.TextArea;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.control.LayerManager;
@@ -14,7 +17,6 @@ package {
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.KML;
 	import org.openscales.core.layer.ogc.GML;
-	import org.openscales.core.layer.ogc.GPX;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.osm.CycleMap;
 	import org.openscales.core.layer.osm.Mapnik;
@@ -23,6 +25,7 @@ package {
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	
 
 	[SWF(width='1200',height='700')]
 	public class OpenscalesApplication extends Sprite {
@@ -37,8 +40,6 @@ package {
 		[Embed(source="/assets/GML32Sample3.xml",mimeType="application/octet-stream")]
 		private const XMLCONTENTPOINTS:Class;
 		
-		[Embed(source="/assets/gpx11Sample.xml",mimeType="application/octet-stream")]
-		private const GPXFILE:Class;
 
 		public function OpenscalesApplication() {
 			_map=new Map();
@@ -75,26 +76,18 @@ package {
 			_map.addLayer(GMLlayer2);
 			
 			
-			//GPX layer; fetch data from url (draws roads and points in France)
-			var gpxData:XML = new XML(new GPXFILE());
-			var url:String = "http://openscales.org/assets/simple_dep.gpx";
-			var gpxLayer:GPX = new GPX("Départements","1.0",url,gpxData);
-			_map.addLayer(gpxLayer);
-			
-			/*
 			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
 			regions.projSrsCode = "EPSG:2154";
 			regions.style = Style.getDefaultSurfaceStyle();
 			
 			_map.addLayer(regions);
-			*/
+			
 
 			// Add Controls to map
 			_map.addControl(new MousePosition(new Pixel(200,0)));
 			_map.addControl(new LayerManager());
 			_map.addControl(new PanZoomBar());
 			_map.addControl(new ScaleLine(new Pixel(100, 100)));
-			
 
 			var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
 			selectHandler.enableClickSelection = false;
@@ -106,7 +99,7 @@ package {
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 
-			// Set the map center
+			// Set the map zoom
 			_map.zoom=3;
 						
 			this.addChild(_map);
