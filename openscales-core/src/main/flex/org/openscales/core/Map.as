@@ -1854,7 +1854,12 @@ package org.openscales.core
 			event.newResolution = value;
 			event.newCenter = this.center;
 			event.oldCenter = this.center;
+			if (this._targetZoomPixel == null)
+			{
+				this._targetZoomPixel = new Pixel(this.width/2, this.height/2);
+			}
 			event.targetZoomPixel = this._targetZoomPixel;
+			this._targetZoomPixel = null;
 			this._resolution = value;
 			this.dispatchEvent(event);
 			Trace.log("Changing resolution"+ event.newResolution.value);
