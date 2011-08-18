@@ -256,9 +256,7 @@ package org.openscales.core.layer.ogc
 			if (this.projSrsCode != mapExtent.projSrsCode)
 			{
 				mapExtent = mapExtent.preciseReprojectBounds(mapExtent,mapExtent.projSrsCode,this.projSrsCode);
-				//fix bug
-				layerMaxExtent.projSrsCode = "EPSG:4326";
-				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(layerMaxExtent,layerMaxExtent.projSrsCode,this.projSrsCode);
+				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(layerMaxExtent,"EPSG:4326",this.projSrsCode);
 			}
 			
 			if (!(mapExtent.width == 0 || mapExtent.height == 0))
