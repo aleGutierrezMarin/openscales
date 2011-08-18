@@ -100,7 +100,7 @@
 			 */
 			public function onPanNorth(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
 				this.map.pan(0, -this.DELTA_PX, true);
@@ -114,7 +114,7 @@
 			 */
 			public function onPanSouth(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
 				this.map.pan(0, this.DELTA_PX, true);
@@ -128,7 +128,7 @@
 			 */
 			public function onPanEast(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
 				this.map.pan(this.DELTA_PX, 0, true);
@@ -142,7 +142,7 @@
 			 */
 			public function onPanWest(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
 				this.map.pan(-this.DELTA_PX, 0, true);

@@ -13,6 +13,7 @@ package org.openscales.fx
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
@@ -95,6 +96,16 @@ package org.openscales.fx
 			l.configureLayer();
 			if(l.nativeLayer)
 				this._map.addLayer(l.nativeLayer);
+		}
+		
+		public function set resolution(value:Resolution):void
+		{
+			this.map.resolution = value;
+		}
+		
+		public function get resolution():Resolution
+		{
+			return this.map.resolution;
 		}
 		
 		private function onMoveStart(event:MapEvent):void{
@@ -232,10 +243,8 @@ package org.openscales.fx
 			// Set both center and zoom to avoid invalid request set when we define both separately
 			var mapCenter:Location = this._center;
 			if (mapCenter) {
-				mapCenter = mapCenter.reprojectTo(this._map.projection);
-			}
-			if (mapCenter || (! isNaN(this._zoom))) {
-				this._map.moveTo(mapCenter, this._zoom);
+				//this._map.moveTo(mapCenter, this._zoom);
+				this._map.center = mapCenter;
 			}
 			
 			var extentDefined:Boolean = false;
@@ -300,8 +309,8 @@ package org.openscales.fx
 		 * Zoom MXML setter
 		 */
 		public function set zoom(value:Number):void {
-			this._zoom = value;
-			this._map.zoom = value;
+			//this._zoom = value;
+			//this._map.zoom = value;
 		}
 		
 		/**

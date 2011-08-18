@@ -225,7 +225,7 @@
 				var bottomUnitKey:String = "";                  
 				
 				// Get the resolution of the map
-				var mapResolution:Number = this.map.resolution;
+				var mapResolution:Number = this.map.resolution.value;
 				
 				// Map has no resolution, return.
 				if (!mapResolution) {return;}
@@ -233,8 +233,8 @@
 				// get the current units of the map
 				var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.projection).projParams.units;
 				
-				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode);
-				var centerResolution:Number = Unit.getResolutionOnCenter(this._map.resolution, this._map.center, projection);
+				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
+				var centerResolution:Number = Unit.getResolutionOnCenter(this._map.resolution.value, this._map.center, projection);
 				
 				
 				if(projection.projName  == "longlat")

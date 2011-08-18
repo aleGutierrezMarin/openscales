@@ -41,9 +41,9 @@
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.i18n.Catalog;
-			import org.openscales.core.layer.FeatureLayer;
 			import org.openscales.core.layer.ImageLayer;
 			import org.openscales.core.layer.Layer;
+			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.layer.ogc.WFS;
 			import org.openscales.core.layer.ogc.WMSC;
 			import org.openscales.fx.control.FeatureDrawing;
@@ -273,7 +273,7 @@
 				{	
 					layerSwitcherLabel.text = this._layer.name;	
 					
-					if(this._layer is FeatureLayer)
+					if(this._layer is VectorLayer)
 						this._isDrawingLayer = true;
 						
 					else
