@@ -303,7 +303,7 @@ package org.openscales.geometry
 				}
 			}
 			
-			if (indice > 0) {
+			if (indice >= 0) {
 				this._components.splice(indice, 2);
 				this.clearBounds();
 				return true;

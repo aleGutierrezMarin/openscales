@@ -81,7 +81,7 @@ package org.openscales.geometry
     	}
 	
 		/**
-		 * Method to convert the point (x/y) from a projection sysrtem to an other.
+		 * Method to convert the point (x/y) from a projection system to another.
 		 *
 		 * @param sourceSrs SRS of the source projection
 		 * @param destSrs SRS of the destination projection

@@ -1,4 +1,5 @@
-package org.openscales.core.handler.feature {
+package org.openscales.core.handler.feature
+{
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -38,7 +39,8 @@ package org.openscales.core.handler.feature {
 	 * the new selection is removed.
 	 * A click on a selected feature unselect it.
 	 */
-	public class SelectFeaturesHandler extends ClickHandler {
+	public class SelectFeaturesHandler extends ClickHandler
+	{
 		/**
 		 * Array of the layers to treat during a selection.
 		 * If void (default), all the layers are managed.
@@ -99,7 +101,7 @@ package org.openscales.core.handler.feature {
 		private var _drawContainer:Sprite = new Sprite();
 
 		/**
-		 * Style of the selection area: border thin (default=1)
+		 * Style of the selection area: border thin (default=2)
 		 */
 		private var _selectionAreaBorderThin:Number = 2;
 
@@ -118,6 +120,9 @@ package org.openscales.core.handler.feature {
 		 */
 		private var _selectionAreaFillOpacity:Number = 0.33;
 
+		/**
+		 * 
+		 */		
 		private var _enableClickSelection:Boolean;
 		private var _enableBoxSelection:Boolean;
 		private var _enableSelection:Boolean;
@@ -832,6 +837,9 @@ package org.openscales.core.handler.feature {
 		private function drawSelectionBox(evt:MouseEvent):void {
 			// Compute the selection box (in pixels)
 			var rect:Rectangle = this.selectionBoxPixels(new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY));
+			if(rect == null)
+				return;
+			
 			// Display the selection box
 			_drawContainer.graphics.clear();
 			_drawContainer.graphics.lineStyle(this.selectionAreaBorderThin, this.selectionAreaBorderColor);

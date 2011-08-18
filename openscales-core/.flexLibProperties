@@ -44,7 +44,6 @@
     <classEntry path="org.openscales.core.control.Zoom"/>
     <classEntry path="org.openscales.core.control.ZoomBar"/>
     <classEntry path="org.openscales.core.control.ZoomData"/>
-    <classEntry path="org.openscales.core.control.logoRotator"/>
     <classEntry path="org.openscales.core.control.ui.Arrow"/>
     <classEntry path="org.openscales.core.control.ui.Button"/>
     <classEntry path="org.openscales.core.control.ui.CheckBox"/>

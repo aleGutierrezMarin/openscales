@@ -78,7 +78,7 @@ package org.openscales.core.style.marker {
 				}
 				// TODO : Add support for other well known names
 			}
-
+			shape.graphics.endFill();
 			return shape;
 		}
 

@@ -11,6 +11,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.format.Format;
 	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
@@ -29,6 +30,7 @@ package org.openscales.core.layer.ogc
 	public class WFS extends VectorLayer
 	{
 		private var _timer:Timer;
+		private var _writer:Format = null;
 		private var _startTimer:Boolean = true;
 		private const _MAX_NUMBER_OF_SCALES:uint = 5;
 		private var _currentScale:uint = 0;
@@ -73,6 +75,12 @@ package org.openscales.core.layer.ogc
 		private var _fullRedraw:Boolean = false;
 		
 		protected var _gmlFormat:GMLFormat = null;
+		
+		private var _currentScale:uint = 0;
+		
+		private var _initialized:Boolean = false;
+		
+		private const  _MAX_NUMBER_OF_SCALES:uint = 5;
 		
 		/**
 		 * @private
@@ -394,7 +402,8 @@ package org.openscales.core.layer.ogc
 			
 			this.loading = false;
 			
-			this.parseResponse(loader.data as String);
+			if(this.map)
+				this.parseResponse(loader.data as String);
 			
 			if (map) {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this ));
@@ -424,7 +433,6 @@ package org.openscales.core.layer.ogc
 			super.addFeature(feature,dispatchFeatureEvent, reproject);
 			if(feature.layer==null)
 				return;
-			feature.draw();
 			this._featuresids.put(feature.name,feature);
 		}
 		

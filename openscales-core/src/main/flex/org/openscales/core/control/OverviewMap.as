@@ -9,8 +9,8 @@ package org.openscales.core.control
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -238,6 +238,11 @@ package org.openscales.core.control
 		 */
 		public function set OverViewSize(value:Size):void {
 			this._overviewMap.size = value;
+		}
+		
+		public function addLayer(value:Layer):void
+		{
+			this._overviewMap.addLayer(value);
 		}
 		
 		/**

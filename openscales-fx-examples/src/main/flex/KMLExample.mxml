@@ -25,7 +25,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.events.FeatureEvent;
-			import org.openscales.core.layer.FeatureLayer;
+			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.popup.FxPopup;

@@ -12,7 +12,7 @@
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.handler.feature.draw.DrawHandler;
-			import org.openscales.core.layer.FeatureLayer;
+			import org.openscales.core.layer.VectorLayer;
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-10.png")]
@@ -44,7 +44,7 @@
 			 */
 			private var _indexTabDrawing:Number = -1;
 			
-			public var drawLayer:FeatureLayer = new FeatureLayer("Drawings");
+			public var drawLayer:VectorLayer = new VectorLayer("Drawings");
 			
 			private var _drawHandler:DrawHandler = new DrawHandler(null, true, drawLayer);;
 			
