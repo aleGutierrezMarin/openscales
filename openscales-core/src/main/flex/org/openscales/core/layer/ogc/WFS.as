@@ -32,9 +32,7 @@ package org.openscales.core.layer.ogc
 		private var _timer:Timer;
 		private var _writer:Format = null;
 		private var _startTimer:Boolean = true;
-		private const _MAX_NUMBER_OF_SCALES:uint = 5;
-		private var _currentScale:uint = 0;
-		private var _initialized:Boolean = false;
+		
 		
 		/**
 		 * @private
