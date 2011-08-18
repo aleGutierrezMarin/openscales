@@ -72,6 +72,16 @@ package org.openscales.core.layer
 			var xmax:Number = extent.right;
 			var ymin:Number = extent.bottom;
 			var ymax:Number = extent.top;
+			var maxextent:Bounds = this.map.maxExtent.reprojectTo("EPSG:4326");
+			var xminextent:Number = maxextent.left;
+			var xmaxextent:Number = maxextent.right;
+			var yminextent:Number = maxextent.bottom;
+			var ymaxextent:Number = maxextent.top;
+			// merge bounds of map and maxExtent, not to draw outside maxExtent
+			xmin=Math.max(xmin, xminextent);
+			xmax=Math.min(xmax, xmaxextent);
+			ymin=Math.max(ymin, yminextent);
+			ymax=Math.min(ymax, ymaxextent);
 			
 			// calculates which interval to use
 			var interval:Number = getBestInterval(xmin, xmax, ymin, ymax);
