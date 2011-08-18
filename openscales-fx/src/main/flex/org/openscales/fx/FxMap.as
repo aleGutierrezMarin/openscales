@@ -369,7 +369,7 @@ package org.openscales.fx
 		 * MaxExtent MXML setter
 		 */
 		public function set maxExtent(value:String):void {
-			this._maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
+			this._maxExtent = Bounds.getBoundsFromString(value);
 		}
 		
 		public function get flexOverlay():Group{
