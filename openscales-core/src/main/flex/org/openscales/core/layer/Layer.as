@@ -380,6 +380,21 @@ package org.openscales.core.layer {
 			return null;
 		}
 		
+		
+		/**
+		 * The layer Name (appears in LayerManager for example)
+		 */
+		[Bindable]
+		override public function get name():String
+		{
+			return super.name;
+		}
+		
+		override public function set name(value:String):void
+		{
+			super.name = value;
+		}
+		
 		/**
 		 * For layers with a gutter, the image is larger than
 		 * the tile by twice the gutter in each dimension.

@@ -30,6 +30,7 @@
     <classEntry path="org.openscales.core.control.IControl"/>
     <classEntry path="org.openscales.core.control.LanguageSwitcher"/>
     <classEntry path="org.openscales.core.control.LayerManager"/>
+    <classEntry path="org.openscales.core.control.LogoRotator"/>
     <classEntry path="org.openscales.core.control.MousePosition"/>
     <classEntry path="org.openscales.core.control.NumericScale"/>
     <classEntry path="org.openscales.core.control.OverviewMap"/>
@@ -43,7 +44,6 @@
     <classEntry path="org.openscales.core.control.Zoom"/>
     <classEntry path="org.openscales.core.control.ZoomBar"/>
     <classEntry path="org.openscales.core.control.ZoomData"/>
-    <classEntry path="org.openscales.core.control.logoRotator"/>
     <classEntry path="org.openscales.core.control.ui.Arrow"/>
     <classEntry path="org.openscales.core.control.ui.Button"/>
     <classEntry path="org.openscales.core.control.ui.CheckBox"/>
@@ -86,6 +86,7 @@
     <classEntry path="org.openscales.core.format.FilterEncodingFormat"/>
     <classEntry path="org.openscales.core.format.Format"/>
     <classEntry path="org.openscales.core.format.GPXFormat"/>
+    <classEntry path="org.openscales.core.format.GeoRssFormat"/>
     <classEntry path="org.openscales.core.format.KMLFormat"/>
     <classEntry path="org.openscales.core.format.WFSFormat"/>
     <classEntry path="org.openscales.core.format.WKTFormat"/>
@@ -94,6 +95,8 @@
     <classEntry path="org.openscales.core.format.gml.parser.GML311"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML321"/>
     <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
+    <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
     <classEntry path="org.openscales.core.format.gml.writer.GMLWriter"/>
     <classEntry path="org.openscales.core.handler.Handler"/>
     <classEntry path="org.openscales.core.handler.IHandler"/>
@@ -214,10 +217,12 @@
     <classEntry path="org.openscales.core.control.OverviewMapRatioTest"/>
     <classEntry path="org.openscales.core.control.TermsOfServiceTest"/>
     <classEntry path="org.openscales.core.filter.GeometryTypeFilterTest"/>
-    <classEntry path="org.openscales.core.format.gml.parser.GML321ParserTest"/>
     <classEntry path="org.openscales.core.format.GPXFormatTest"/>
+    <classEntry path="org.openscales.core.format.GeoRssFormatTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML321ParserTest"/>
+    <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
     <classEntry path="org.openscales.core.i18n.i18nTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
@@ -231,10 +236,6 @@
     <classEntry path="org.openscales.core.layer.originator.DataOriginatorTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
-    <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
-    <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
-    <classEntry path="org.openscales.core.format.GeoRssFormat"/>
-    <classEntry path="org.openscales.core.format.GeoRssFormatTest"/>
     <classEntry path="org.openscales.core.layer.ogc.GeoRss"/>
   </includeClasses>
   <includeResources/>
