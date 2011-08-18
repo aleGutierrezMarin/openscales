@@ -127,7 +127,7 @@ package org.openscales.core.format.gml.parser
 				var lineString2:XML = data..*::LineString[0];
 				
 				p = this.parseCoords(lineString2,lonLat);
-				if (p && p.length==2) {
+				if (p) {
 					geom = new LineString(p);
 					feature = new LineStringFeature(geom as LineString);
 				}
