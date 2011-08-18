@@ -44,12 +44,33 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flexmojos.version}</version>
 				<extensions>true</extensions>
-				<configuration>
-					<packageDescriptions>
-						<org.openscales.core.geometry>Geometries are descriptions of a geographic object</org.openscales.core.geometry>
-					</packageDescriptions>
-				</configuration>
-			</plugin>
+				<dependencies>
+		  			<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex.sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+				<executions>
+                	<execution>
+						<id>source-asdoc</id>
+						<phase>site</phase>
+						<goals>
+							<goal>asdoc</goal>
+						</goals>
+                        <configuration>
+                        <docSources>
+							<docSource>${project.build.sourceDirectory}</docSource>
+							</docSources>
+							<output> ${project.build.directory}/${project.build.finalName}-asdoc.zip</output>
+							<packageDescriptions>
+								<org.openscales.core.geometry>Geometries are descriptions of a geographic object</org.openscales.core.geometry>
+							</packageDescriptions>
+                        </configuration>
+					</execution>
+				</executions>
+            </plugin>
 		</plugins>
 	</build>
 	

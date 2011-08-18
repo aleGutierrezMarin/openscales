@@ -119,8 +119,7 @@ package org.openscales.core.format.gml.parser
 				return null;
 			}
 		}
-		
-		
+			
 		/**
 		 * Parse attributes
 		 *

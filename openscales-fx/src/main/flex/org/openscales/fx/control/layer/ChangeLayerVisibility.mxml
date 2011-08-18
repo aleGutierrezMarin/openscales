@@ -49,6 +49,8 @@
 						
 						this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, checkLayerDisplayed);
 						this._layer.map.addEventListener(MapEvent.ZOOM_CHANGED, checkLayerDisplayed);
+						
+						this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 					}
 				}
 			}

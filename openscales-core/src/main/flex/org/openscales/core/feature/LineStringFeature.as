@@ -44,6 +44,7 @@ package org.openscales.core.feature
 				}
 			} 
 			this.graphics.drawPath(commands, coords);
+			this.graphics.endFill();
 			
 		}
 		/**

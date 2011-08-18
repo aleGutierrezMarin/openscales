@@ -110,7 +110,7 @@ package org.openscales.core.format.gml.parser
 				
 				var points:XMLList = multiPoint..*::Point;
 				j = points.length();
-				p = this.parseCoords(points[i]);
+				p = this.parseCoords(points[i],lonLat);
 				if (p)
 					geom.addPoints(p);
 				feature = new MultiPointFeature(geom as MultiPoint);
@@ -127,7 +127,7 @@ package org.openscales.core.format.gml.parser
 				var lineString2:XML = data..*::LineString[0];
 				
 				p = this.parseCoords(lineString2,lonLat);
-				if (p && p.length==2) {
+				if (p) {
 					geom = new LineString(p);
 					feature = new LineStringFeature(geom as LineString);
 				}
@@ -147,7 +147,7 @@ package org.openscales.core.format.gml.parser
 			}
 			
 			if (feature) {
-				feature.name = data.@*;
+				feature.name = data..@id;
 				
 				if (this.parseExtractAttributes) {
 					feature.attributes = this.parseAttributes(data);

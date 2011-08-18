@@ -594,6 +594,9 @@ package org.openscales.core.layer
 			var direction:int = 0;
 			var directionsTried:int = 0;
 			
+			if(this._grid.length==0)
+				return;
+			
 			while( directionsTried < 4) {
 				var testRow:int = iRow;
 				var testCell:int = iCell;
@@ -612,12 +615,9 @@ package org.openscales.core.layer
 						break;
 				} 
 				
-				if(testRow < 0)
-					continue;
-				
 				var gridx:int = this._grid.length;
 				
-				if(testRow < this._grid.length)
+				if(testRow>=0 && testRow < this._grid.length && this._grid[testRow])
 					var gridy:int = this._grid[testRow].length;
 				
 				// if the test grid coordinates are within the bounds of the 

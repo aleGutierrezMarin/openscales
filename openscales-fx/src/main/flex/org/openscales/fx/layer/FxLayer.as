@@ -247,6 +247,7 @@ package org.openscales.fx.layer
 		override public function set visible(value:Boolean):void {
 			if(this._layer)
 				this._layer.visible = value;
+			super.visible = value;
 		}
 		
 		/**

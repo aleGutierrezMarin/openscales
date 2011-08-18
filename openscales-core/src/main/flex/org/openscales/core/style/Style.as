@@ -1,11 +1,20 @@
 package org.openscales.core.style {
 
+	import flash.geom.Point;
+	
+	import org.openscales.core.filter.ElseFilter;
+	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.MultiLineString;
+	import org.openscales.geometry.MultiPoint;
+	import org.openscales.geometry.MultiPolygon;
+	import org.openscales.geometry.Polygon;
 
 	/**
 	 * Style describe graphical attributes used to render vectors.
@@ -38,21 +47,9 @@ package org.openscales.core.style {
 
 		public static function getDefaultPointStyle():Style {
 
-			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
-			var stroke:Stroke = new Stroke(0xA6430A, 1);
-
-			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke);
-
-			var symbolizer:PointSymbolizer = new PointSymbolizer();
-			symbolizer.graphic = mark;
-
-			var rule:Rule = new Rule();
-			rule.name = "Default rule";
-			rule.symbolizers.push(symbolizer);
-
 			var style:Style = new Style();
 			style.name = "Default point style";
-			style.rules.push(rule);
+			style.rules.push(getPointRule());
 			return style;
 		}
 
@@ -94,14 +91,9 @@ package org.openscales.core.style {
 
 		public static function getDefaultLineStyle():Style {
 
-			var rule:Rule = new Rule();
-			rule.name = "Default rule";
-			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x184054, 7)));
-			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x40A6D9, 1)));
-
 			var style:Style = new Style();
 			style.name = "Default line style";
-			style.rules.push(rule);
+			style.rules.push(getLineRule());
 			return style;
 		}
 
@@ -119,34 +111,103 @@ package org.openscales.core.style {
 
 			return style;
 		}
-
+		
 		public static function getDefaultSurfaceStyle():Style {
-
 			var fill1:SolidFill = new SolidFill();
 			fill1.color = 0x99D0F2;
 			fill1.opacity = 0.4;
-
 			var stroke1:Stroke = new Stroke();
 			stroke1.width = 1;
 			stroke1.color = 0x96A621;
-
 			var stroke2:Stroke = new Stroke();
 			stroke2.width = 4;
 			stroke2.color = 0xffffff;
-
 			var ps1:PolygonSymbolizer = new PolygonSymbolizer(fill1, stroke2);
 			var ps2:PolygonSymbolizer = new PolygonSymbolizer(null, stroke1);
-
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(ps1);
 			rule.symbolizers.push(ps2);
-
 			var style:Style = new Style();
 			style.rules.push(rule);
 			style.name = "Surface Style";
 
 			return style;
+		}
+		
+		protected static function getPointRule():Rule{
+			
+			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
+			var stroke:Stroke = new Stroke(0xA6430A, 1);
+			
+			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = mark;
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(symbolizer);
+			
+			return rule;
+		}
+		
+		protected static function getLineRule():Rule{
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x184054, 7)));
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x40A6D9, 1)));
+			
+			return rule;
+		}
+		
+		protected static function getPolygonRule():Rule{ 
+			
+			var fill1:SolidFill = new SolidFill();
+			fill1.color = 0x99D0F2;
+			fill1.opacity = 0.4;
+			
+			var stroke1:Stroke = new Stroke();
+			stroke1.width = 1;
+			stroke1.color = 0x96A621;
+			
+			var stroke2:Stroke = new Stroke();
+			stroke2.width = 4;
+			stroke2.color = 0xffffff;
+			
+			var ps1:PolygonSymbolizer = new PolygonSymbolizer(fill1, stroke2);
+			var ps2:PolygonSymbolizer = new PolygonSymbolizer(null, stroke1);
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default polygon rule";
+			rule.symbolizers.push(ps1);
+			rule.symbolizers.push(ps2);
+			
+			return rule; 
+		}
+		
+		public static function getDefaultStyle():Style{
+			
+			var style:Style = new Style();
+			style.name = "OpenScales default style";
+			
+			// Style for Polygon and Multipolygon
+			var polygonRule:Rule = getPolygonRule();
+			polygonRule.filter = new GeometryTypeFilter(new <Class>[Polygon,MultiPolygon]);
+			style.rules.push(polygonRule);
+			
+			// Style for LineString and MultilineString
+			var lineRule:Rule = getLineRule();
+			lineRule.filter = new GeometryTypeFilter(new <Class>[LineString,MultiLineString]);
+			style.rules.push(lineRule);
+			
+			// Default rule for other types
+			var pointRule:Rule = getPointRule();
+			pointRule.filter =  new GeometryTypeFilter(new <Class>[Point,MultiPoint]);
+			style.rules.push(pointRule);
+			
+			return style;			
 		}
 
 		/**
