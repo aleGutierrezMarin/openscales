@@ -180,7 +180,15 @@ package org.openscales.core.layer.ogc
 			{
 				this.featuresBbox = this.defineBounds();
 				this.loadFeatures(this.getFullRequestString());
+				this._currentScale = 0;
+				this.x = 0;
+				this.y = 0;
+				this.scaleX = 1;
+				this.scaleY = 1;
+				this.resetFeaturesPosition();
+				this.draw();
 				this._initialized = true;
+				return;
 			}
 			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
 			{
@@ -252,9 +260,7 @@ package org.openscales.core.layer.ogc
 			if (this.projSrsCode != mapExtent.projSrsCode)
 			{
 				mapExtent = mapExtent.preciseReprojectBounds(mapExtent,mapExtent.projSrsCode,this.projSrsCode);
-				//fix bug
-				layerMaxExtent.projSrsCode = "EPSG:4326";
-				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(layerMaxExtent,layerMaxExtent.projSrsCode,this.projSrsCode);
+				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(layerMaxExtent,"EPSG:4326",this.projSrsCode);
 			}
 			
 			if (!(mapExtent.width == 0 || mapExtent.height == 0))
@@ -285,7 +291,7 @@ package org.openscales.core.layer.ogc
 				var deltaY:Number = deltaLat / this.map.resolution.value;
 				this.x -= deltaX;
 				this.y += deltaY;
-				super.onMapCenterChanged(event);
+				this._centerChanged = true;
 			}
 		}
 		
