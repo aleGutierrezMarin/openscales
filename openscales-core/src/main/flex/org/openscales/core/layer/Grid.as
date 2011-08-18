@@ -66,6 +66,8 @@ package org.openscales.core.layer
 		
 		private var _scaleOnZoomRatiochanged:Number = 1;
 		
+		private var _requestedResolution:Resolution;
+		
 		/**
 		 * Create a new grid layer
 		 *
@@ -485,6 +487,7 @@ package org.openscales.core.layer
 				Math.max(1, 2 * this.buffer);
 			
 			_resquestResolution = this.getSupportedResolution(this.map.resolution).value;
+			this.requestedResolution = this.getSupportedResolution(this.map.resolution)
 			//_resquestResolution = this.map.resolution.value;
 			
 			/*var ratio:Number = this.resolutions[0]/this.map.resolution.resolutionValue;
@@ -664,7 +667,7 @@ package org.openscales.core.layer
 			
 			while (true) {
 				var tlLayer:Pixel = this.grid[0][0].position;
-				var tlViewPort:Pixel = this.getMapPxFromLayerPx(tlLayer);//this.getMapPxFromLayerPx(tlLayer);//this.map.getMapPxFromLayerPx(tlLayer);
+				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x/this.transform.matrix.a, tlLayer.y + this.y/this.transform.matrix.d);
 				if (tlViewPort.x > -this.tileWidth * (buffer - 1)) {
 					this.shiftColumn(true);
 				} else if (tlViewPort.x < -this.tileWidth * buffer) {
@@ -734,7 +737,7 @@ package org.openscales.core.layer
 		 */
 		private function shiftColumn(prepend:Boolean):void {
 			var deltaX:Number = (prepend) ? -this.tileWidth : this.tileWidth;
-			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
+			var resolution:Number = this.requestedResolution.value;
 			var deltaLon:Number = resolution * deltaX;
 			
 			var j:uint = this._grid.length;
@@ -898,6 +901,16 @@ package org.openscales.core.layer
 			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 			var ratio:Number = resolution/this.map.resolution.value;
 			return new Pixel(layerPx.x + this.x / ratio, layerPx.y + this.y / ratio);
+		}
+		
+		public function set requestedResolution(value:Resolution):void
+		{
+			this._requestedResolution = value;
+		}
+		
+		public function get requestedResolution():Resolution
+		{
+			return this._requestedResolution;
 		}
 	}
 }
