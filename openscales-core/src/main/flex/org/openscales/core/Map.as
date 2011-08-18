@@ -913,18 +913,21 @@ package org.openscales.core
 		 * Return a Location which is the passed-in view port Pixel, translated into lon/lat
 		 *	by the current base layer
 		 */
-		public function getLocationFromMapPx(px:Pixel):Location {
+		public function getLocationFromMapPx(px:Pixel, res:Resolution = null):Location {
 			var lonlat:Location = null;
 			if (px != null) {
 				var size:Size = this.size;
 				var center:Location = this.center;
 				if (center) {
-					var res:Number = this.resolution.value;
+					if (!res)
+					{
+						res = this.resolution;
+					}
 					
 					var delta_x:Number = px.x - (size.w / 2);
 					var delta_y:Number = px.y - (size.h / 2);
 					
-					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res, this.projection);
+					lonlat = new Location(center.lon + delta_x * res.value, center.lat - delta_y * res.value, this.projection);
 				}
 			}
 			return lonlat;

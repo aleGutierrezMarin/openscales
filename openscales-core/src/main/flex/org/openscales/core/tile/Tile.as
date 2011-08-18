@@ -65,14 +65,10 @@ package org.openscales.core.tile
 			if(!this.bounds.intersectsBounds(this.layer.map.maxExtent, false))
 				return false;
 			if((this.layer as Grid).buffer == 0
-				&& !this.bounds.intersectsBounds(this.layer.map.extent, false))
+				&& !this.bounds.intersectsBounds(this.layer.map.getExtentForResolution((this.layer as Grid).requestedResolution), false))
 				return false;
-			
+
 			return true;
-			/*return (((this.layer.maxExtent
-			&& this.bounds.intersectsBounds(this.layer.maxExtent, false)))
-			&& !((this.layer as Grid != null) && ((this.layer as Grid).buffer == 0)
-			&& !this.bounds.intersectsBounds(this.layer.map.extent, false)));*/
 		}
 		
 		public function moveTo(bounds:Bounds, position:Pixel, redraw:Boolean = true):void 
@@ -125,11 +121,11 @@ package org.openscales.core.tile
 			if(this.size == null)
 				return new Bounds(0,0,0,0);
 			position =  this.layer.getMapPxFromLayerPx(position);
-			var topLeft:Location = this.layer.map.getLocationFromMapPx(position) //this.layer.map.getLocationFromLayerPx(position); 
+			var topLeft:Location = this.layer.map.getLocationFromMapPx(position, (this.layer as Grid).requestedResolution) //this.layer.map.getLocationFromLayerPx(position); 
 			var bottomRightPx:Pixel = position.clone();
 			bottomRightPx.x += this.size.w//*this.layer.transform.matrix.a;
 			bottomRightPx.y += this.size.h//*this.layer.transform.matrix.d;
-			var bottomRight:Location = this.layer.map.getLocationFromMapPx(bottomRightPx)// this.layer.map.getLocationFromLayerPx(bottomRightPx); 
+			var bottomRight:Location = this.layer.map.getLocationFromMapPx(bottomRightPx, (this.layer as Grid).requestedResolution)// this.layer.map.getLocationFromLayerPx(bottomRightPx); 
 			if (topLeft.lon > bottomRight.lon) {
 				if (topLeft.lon < 0) {
 					topLeft = new Location(-180 - (topLeft.lon+180), topLeft.x, topLeft.projSrsCode);

@@ -30,20 +30,20 @@ package {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
-			_map.projection = "EPSG:900913";
+			//_map.projection = "EPSG:900913";
 			//_map.resolution = new Resolution(1.40625, "EPSG:4326")
 			_map.resolution = new Resolution(1, "EPSG:4326");
-			_map.resolution = new Resolution(100000.0339, "EPSG:900913");
-			_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
+			//_map.resolution = new Resolution(100000.0339, "EPSG:900913");
+			_map.maxExtent = new Bounds(-180, -90, 180, 90,"EPSG:4326");
+			//_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
 			// Add layers to map
-			/*var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
+			var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
 			wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
 			_map.addLayer(wms);
-			*/
-			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
-			//mapnik.proxy = "http://openscales.org/proxy.php?url=";
+			
+			/*var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
-			_map.addLayer(mapnik);
+			_map.addLayer(mapnik);*/
 
 			
 			/*var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
@@ -51,11 +51,12 @@ package {
 			_map.addLayer(cycle); */
 			
 			
-			/*var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
+			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
+			regions.useCapabilities = true;
 			regions.projSrsCode = "EPSG:2154";
 			regions.style = Style.getDefaultSurfaceStyle();
 			
-			_map.addLayer(regions);*/
+			_map.addLayer(regions);
 
 	
 			// Add Controls to map

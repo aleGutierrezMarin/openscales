@@ -5,6 +5,7 @@ package org.openscales.core.layer {
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.filter.ElseFilter;
@@ -61,6 +62,7 @@ package org.openscales.core.layer {
 		protected var _resolutionChanged:Boolean = false;
 		protected var _centerChanged:Boolean = false;
 		protected var _projectionChanged:Boolean = false;
+		
 		
 		
 		/**
