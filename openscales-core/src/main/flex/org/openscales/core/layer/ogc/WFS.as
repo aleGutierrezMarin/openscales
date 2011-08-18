@@ -25,6 +25,7 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WFS extends VectorLayer
 	{
+		private const _MAX_NUMBER_OF_SCALES:uint = 5;
 		private var _currentScale:uint = 0;
 		private var _initialized:Boolean = false;
 		
@@ -163,56 +164,6 @@ package org.openscales.core.layer.ogc
 		 * @inheritDoc
 		 */
 		override public function redraw(fullRedraw:Boolean = true):void {
-			/*
-			
-			if(this.useCapabilities && !this.projSrsCode)
-				return;
-			
-			var projectedBounds:Bounds = this.map.extent.clone();
-			var projectedMaxExtent:Bounds = this.maxExtent;
-			
-			if (this.projSrsCode != projectedBounds.projSrsCode) {
-				projectedBounds = projectedBounds.reprojectTo(this.projSrsCode);
-				projectedMaxExtent = projectedMaxExtent.reprojectTo(this.projSrsCode);
-			}
-			
-			var center:Location = projectedBounds.center;
-			
-			if (projectedBounds.containsBounds(projectedMaxExtent)) {
-				projectedBounds = projectedMaxExtent.clone();
-			}
-			
-			var previousFeatureBbox:Bounds = this.featuresBbox; 
-			if(previousFeatureBbox!=null)
-				previousFeatureBbox = previousFeatureBbox.clone();
-			//bbox are mutually exclusive with filter and featurid
-			if(this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode]!=ProjProjection.AXIS_ORDER_EN)
-				this.params.bbox = projectedBounds.toString(-1,false);
-			else
-				this.params.bbox = projectedBounds.toString();
-			
-			if (this._firstRendering) {
-				this.featuresBbox = projectedBounds;
-				this.loadFeatures(this.getFullRequestString());
-				this._firstRendering = false;
-				this.draw();
-			} else {
-				// Use GetCapabilities to know if all features have already been retreived.
-				// If they are, we don't request data again
-				if (fullRedraw || (!previousFeatureBbox.containsBounds(projectedBounds)
-					&& ((this.capabilities == null) || (this.capabilities != null && !this.featuresBbox.containsBounds(this.capabilities.getValue("Extent")))))){
-					if(fullRedraw && this.features.length>0) {
-						this._fullRedraw = true;
-					}
-					this.featuresBbox = projectedBounds;
-					this.loadFeatures(this.getFullRequestString());
-					this.draw();
-				}else {
-					this.loading = true;
-					this.draw();
-					this.loading = false;
-				}
-			}*/
 			
 			if (!this.available)
 			{
@@ -232,7 +183,7 @@ package org.openscales.core.layer.ogc
 				var previousFeatureBbox:Bounds = this.featuresBbox;
 				this.featuresBbox = this.defineBounds();
 				
-				if (this._centerChanged && !this._resolutionChanged)
+				if (this._centerChanged)
 				{
 					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
 					{
@@ -242,13 +193,13 @@ package org.openscales.core.layer.ogc
 				}
 				if (this._resolutionChanged)
 				{
-					if (this._currentScale > 5)
+					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+					{
+						this.loadFeatures(this.getFullRequestString());
+					}
+					if (!previousFeatureBbox.containsBounds(this.featuresBbox) || this._currentScale > this._MAX_NUMBER_OF_SCALES)
 					{
 						this._currentScale = 0;
-						if (!previousFeatureBbox.containsBounds(this.featuresBbox))
-						{
-							this.loadFeatures(this.getFullRequestString());
-						}
 						this.x = 0;
 						this.y = 0;
 						this.scaleX = 1;
@@ -267,7 +218,7 @@ package org.openscales.core.layer.ogc
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
 		{
-			var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+			var px:Pixel = event.targetZoomPixel;
 			var ratio:Number = event.oldResolution.value / event.newResolution.value;
 			this.x -= (px.x - this.x) * (ratio - 1);
 			this.y -= (px.y - this.y) * (ratio - 1);
@@ -302,8 +253,7 @@ package org.openscales.core.layer.ogc
 				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(layerMaxExtent,layerMaxExtent.projSrsCode,this.projSrsCode);
 			}
 			
-			//fix bug
-			if(!(mapExtent.left == 0 && mapExtent.right == 0 && mapExtent.bottom == 0 && mapExtent.top == 0))
+			if (!(mapExtent.width == 0 || mapExtent.height == 0))
 				layerExtent = mapExtent.getIntersection(layerMaxExtent);
 			else
 				layerExtent = layerMaxExtent.clone();
