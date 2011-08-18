@@ -598,21 +598,40 @@ package org.openscales.core
 				
 				//var centerPixel:Pixel = this.getMapPxFromLocation(this.center);
 				var zoomTargetLoc:Location = this.getLocationFromMapPx(zoomTarget);
+				var deltaX:Number = zoomTarget.x - this.width/2;
+				var deltaY:Number = zoomTarget.y - this.height/2;
+				var deltaLon:Number = deltaX*targetResolution.value;
+				var deltaLat:Number = deltaY*targetResolution.value;
+				var newCenter:Location = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projSrsCode);
 				if (resolutionChanged) {
-					this._targetZoomPixel = zoomTarget;
+					
+					if(!this.maxExtent.containsLocation(zoomTargetLoc) || !this.maxExtent.containsLocation(newCenter)){
+						this._targetZoomPixel = new Pixel(this.width/2,this.height/2);
+					}
+					else{
+						this._targetZoomPixel = zoomTarget;
+					}
 					this.resolution = targetResolution;
 				}
 				
 				
 				if (! zoomTargetLoc.equals(this.center))
 				{
-					var deltaX:Number = zoomTarget.x - this.width/2;
+					/*var deltaX:Number = zoomTarget.x - this.width/2;
 					var deltaY:Number = zoomTarget.y - this.height/2;
 					var deltaLon:Number = deltaX*this.resolution.value;
 					var deltaLat:Number = deltaY*this.resolution.value;
 					Trace.debug("Zoom Location :"+zoomTargetLoc.lon+", "+zoomTargetLoc.lat);
 					Trace.debug("Delta Location :"+deltaLon+", "+deltaLat);
-					this.center = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projSrsCode);
+					var newCenter:Location = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projSrsCode);
+					*/
+					
+					if(!this.maxExtent.containsLocation(zoomTargetLoc) || !this.maxExtent.containsLocation(newCenter)){
+						this.center = new Location(this.width/2,this.height/2,this.center.projSrsCode);
+					}
+					else{
+						this.center = newCenter;
+					}
 				}
 				
 				//var centerPx:Pixel = this.getMapPxFromLocation(zoomTarget);
