@@ -1,7 +1,9 @@
 package org.openscales.core.layer.ogc
 {
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.net.URLLoader;
+	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
@@ -18,6 +20,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.proj4as.ProjProjection;
+	import org.osmf.events.TimeEvent;
 	
 	/**
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
@@ -25,6 +28,8 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WFS extends VectorLayer
 	{
+		private var _timer:Timer;
+		private var _startTimer:Boolean = true;
 		private const _MAX_NUMBER_OF_SCALES:uint = 5;
 		private var _currentScale:uint = 0;
 		private var _initialized:Boolean = false;
@@ -152,7 +157,12 @@ package org.openscales.core.layer.ogc
 		 */
 		override public function set map(map:Map):void {
 			super.map = map;
-			
+			if(this._timer) {
+				this._timer.reset();
+			} else {
+				this._timer = new Timer(1000,1);
+				this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			}
 			// GetCapabilities request made here in order to have the proxy set 
 			if (url != null && url != "" && this.capabilities == null && useCapabilities == true) {
 				var getCap:GetCapabilities = new GetCapabilities("wfs", url, this.capabilitiesGetter,
@@ -201,8 +211,11 @@ package org.openscales.core.layer.ogc
 				}
 				if (this._resolutionChanged)
 				{
-					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+					if (this._startTimer && !previousFeatureBbox.containsBounds(this.featuresBbox))
 					{
+						this._timer.reset();
+						this._timer.start();
+						this._startTimer = false;
 						this.loadFeatures(this.getFullRequestString());
 					}
 					if (!previousFeatureBbox.containsBounds(this.featuresBbox) || this._currentScale > this._MAX_NUMBER_OF_SCALES)
@@ -222,6 +235,11 @@ package org.openscales.core.layer.ogc
 					this._projectionChanged = false;
 				}
 			}
+		}
+		
+		private function onTimerEnd(event:TimerEvent):void
+		{
+			this._startTimer = true;
 		}
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
