@@ -21,7 +21,7 @@ package org.openscales.core.format
 		 * @see GeoRss Schema at http://www.georss.org/xml/1.1/georss.xsd 
 		 * 
 		 * Suported Rss version 2.0
-		 * @see Rss Schema at http://cyber.law.harvard.edu/rss/rss.html
+		 * @see Rss Schema at http://cyber.law.harvard.edu/rss/rss
 		 * 
 		 * @attribute rssFile: the GeoRss data 
 		 * @attribute featureVector
@@ -57,9 +57,9 @@ package org.openscales.core.format
 		 * @param data to parse (a GeoRss file)
 		 * @return Object (a vector of features)
 		 * 
-		 * @see RSS 2.0 specification: the <rss> element has a single child, <channel>, with 3 required elements
+		 * @see RSS 2.0 specification the rss element has a single child, channel, with 3 required elements
 		 * 
-		 * The external GML geometry is supported only inside the <where> element
+		 * The external GML geometry is supported only inside the where element
 		 * 
 		 */
 		
@@ -143,7 +143,7 @@ package org.openscales.core.format
 					}
 				}
 				
-				//if the <where> element contains more than one GML feature, only the first one will be parsed
+				//if the where element contains more than one GML feature, only the first one will be parsed
 				else if(elementType == "where"){
 					var gmlFormat:GML311 = new GML311();
 					feature = gmlFormat.parseFeature(children[i], false);			
@@ -185,7 +185,7 @@ package org.openscales.core.format
 		 * @calls buildItemNode
 		 * @param the features to include in the RSS file
 		 * @return Object (the RSS file)
-		 * @see RSS 2.0 specification: the <rss> element has a single child, <channel>, with 3 required elements
+		 * @see RSS 2.0 specification the rss element has a single child, channel, with 3 required elements
 		 * 
 		 */
 		
@@ -255,7 +255,7 @@ package org.openscales.core.format
 				poly.setNamespace(this.geoRssNs);
 				
 				var linearRings:Vector.<Geometry> = polyGeom.getcomponentsClone();
-				//there's only one linearRing (the exterior one) in a GeoRss <polygon> tag 
+				//there's only one linearRing (the exterior one) in a GeoRss polygon tag 
 				poly.appendChild(this.buildCoordsAsString((linearRings[0] as LinearRing).getcomponentsClone()));	
 				item.appendChild(poly);
 			}
