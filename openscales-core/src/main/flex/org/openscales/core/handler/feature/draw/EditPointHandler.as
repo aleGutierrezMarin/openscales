@@ -64,7 +64,8 @@ package org.openscales.core.handler.feature.draw
 			
 			// update vectorfeature ?
 			var px:Pixel = new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
-			var lonlat:Location = this.map.getLocationFromLayerPx(px);
+			// TODO : getLocationFromMapPx?
+			var lonlat:Location = this.map.getLocationFromMapPx(px);
 			vectorfeature.geometry = new Point(lonlat.lon,lonlat.lat);
 			vectorfeature.x = 0;
 			vectorfeature.y = 0;

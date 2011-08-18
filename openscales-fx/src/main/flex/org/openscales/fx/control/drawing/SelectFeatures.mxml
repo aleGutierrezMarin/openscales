@@ -19,10 +19,10 @@
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.PointFeature;
-			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.mouse.DragHandler;
-			import org.openscales.core.layer.FeatureLayer;
+			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -89,11 +89,11 @@
 			/**
 			 * List of layers ?
 			 */
-			public function get target():FeatureLayer{
+			public function get target():VectorLayer{
 				
 				return _handler.layers[0];
 			}
-			public function set target(value:FeatureLayer):void{
+			public function set target(value:VectorLayer):void{
 				
 				_handler.layers.push(value);
 			}

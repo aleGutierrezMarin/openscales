@@ -80,6 +80,8 @@
 			 */
 			public function updateScale(event:Event=null):void
 			{
+				//TODO Where can I find the DPI information
+				/*
 				if(this._map == null || this._map.baseLayer == null)
 					return;
 				
@@ -97,7 +99,7 @@
 				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,dpi));
 				
 				// update the label :
-				this.scaleLabel = "1 / "+this._value;
+				this.scaleLabel = "1 / "+this._value;*/
 			}
 			
 			

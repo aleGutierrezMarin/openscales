@@ -39,9 +39,9 @@
 				if(this._layer.map != null)
 				{
 					// if baselayer no delete button
-					if(this._layer == this._layer.map.baseLayer )
+					/*if(this._layer == this._layer.map.baseLayer )
 						deleteButton.visible = false;
-					else
+					else*/
 						deleteButton.visible = true;
 					
 					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
@@ -71,9 +71,9 @@
 				if(this._layer.map != null)
 				{
 					// if baselayer no delete button
-					if(this._layer == this._layer.map.baseLayer )
+					/*if(this._layer == this._layer.map.baseLayer )
 						deleteButton.visible = false;
-					else
+					else*/
 						deleteButton.visible = true;
 				}
 			}

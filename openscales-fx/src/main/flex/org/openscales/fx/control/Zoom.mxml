@@ -132,11 +132,12 @@
 			 */
 			public function updateMinMaxSliderChanged(event:MapEvent = null):void
 			{
-				if(this.map.baseLayer)
+				// TODO refactor
+				/*if(this.map.baseLayer)
 				{
-					this.minSlider = this.map.baseLayer.getZoomForResolution(this.map.maxResolution);
-					this.maxSlider = (this.map.baseLayer.getZoomForResolution(this.map.minResolution));
-				}
+					this.minSlider = this.map.baseLayer.getZoomForResolution(this.map.maxResolution.value);
+					this.maxSlider = (this.map.baseLayer.getZoomForResolution(this.map.minResolution.value));
+				}*/
 			}
 			
 			/**
@@ -198,7 +199,7 @@
 				if(this._map && this._map.resolution)
 				{
 					// update the value
-					this.currentLabel = this.getLabelFromResolution(this._map.resolution);
+					this.currentLabel = this.getLabelFromResolution(this._map.resolution.value);
 					this.updateScalesNameLabel();
 				}
 			}
@@ -224,8 +225,9 @@
 			public function getLabelFromZoom(zoom:Number):String
 			{
 				// get the resolution for the current zoom
-				var resolution:Number = this._map.baseLayer.resolutions[zoom];
-				return this.getLabelFromResolution(resolution);
+				//var resolution:Number = this._map.baseLayer.resolutions[zoom];
+				//return this.getLabelFromResolution(resolution);
+				return "TODO : Refactor";
 			}
 			
 			/**
@@ -271,17 +273,18 @@
 			 */
 			public function onZoomOut(event:MouseEvent):void
 			{
-				this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+				// TODO refactor
+				//this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
 			}
 			
 			/**
 			 * Initialise the zoomSlider according to current map zoomLevels
 			 */
 			private function initializeZoomLevels(event:Event = null):void {
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
-				
-				this.currentZoom = map.zoom;
+				// TODO refactor
+				//this.currentZoom = map.zoom;
 				
 				// initialise the label value
 				this.updateCurrentLabel();
@@ -294,7 +297,8 @@
 				
 				if(e.zoomChanged)
 				{
-					this.currentZoom = map.zoom;
+					// TODO refactor
+				//	this.currentZoom = map.zoom;
 					this.updateCurrentLabel();
 				}
 			}
@@ -317,7 +321,8 @@
 				var currentSlider:SliderBase= event.target as SliderBase;
 				this.currentZoom = currentSlider.value;
 				this._onDrag = false;
-				this.map.moveTo(this.map.center, this.currentZoom, false, true);
+				// TODO refactor
+				//this.map.moveTo(this.map.center, this.currentZoom, false, true);
 			}
 			
 			/**
@@ -329,7 +334,7 @@
 				
 				var currentSlider:SliderBase= event.target as SliderBase;
 				
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
 				// update the display label
@@ -339,7 +344,8 @@
 				if(!this._onDrag)
 				{
 					this.currentZoom = currentSlider.value;
-					this.map.moveTo(this.map.center, this.currentZoom, false, true);
+					// TODO refactor
+					//this.map.moveTo(this.map.center, this.currentZoom, false, true);
 				}
 				
 			}

@@ -417,7 +417,7 @@ package org.openscales.core
 				l.splice(i,1);
 			
 			layer.map = null;
-			this._layerContainer.removeChild(layer);
+			this.removeChild(layer);
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
 			

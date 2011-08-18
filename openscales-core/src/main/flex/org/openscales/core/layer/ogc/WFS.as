@@ -67,6 +67,12 @@ package org.openscales.core.layer.ogc
 		
 		protected var _gmlFormat:GMLFormat = null;
 		
+		private var _currentScale:uint = 0;
+		
+		private var _initialized:Boolean = false;
+		
+		private const  _MAX_NUMBER_OF_SCALES:uint = 5;
+		
 		/**
 		 * @private
 		 * Hashmap containing id of features that have allready been drawn

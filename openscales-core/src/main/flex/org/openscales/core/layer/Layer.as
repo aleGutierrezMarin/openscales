@@ -285,14 +285,7 @@ package org.openscales.core.layer {
 		{
 			_dpi = value;
 		}
-		
-		/**
-		 * Return a reference to the map where this layer belongs
-		 */
-		public function get map():Map {
-			return this._map;
-		}
-		
+	
 		/**
 		 * A Bounds object which represents the location bounds of the current extent display on the map.
 		 */
