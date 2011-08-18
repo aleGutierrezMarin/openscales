@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="true" version="1">
+<flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
     <classEntry path="org.openscales.core.Map"/>
     <classEntry path="org.openscales.core.StringUtils"/>
@@ -30,6 +30,7 @@
     <classEntry path="org.openscales.core.control.IControl"/>
     <classEntry path="org.openscales.core.control.LanguageSwitcher"/>
     <classEntry path="org.openscales.core.control.LayerManager"/>
+    <classEntry path="org.openscales.core.control.LogoRotator"/>
     <classEntry path="org.openscales.core.control.MousePosition"/>
     <classEntry path="org.openscales.core.control.NumericScale"/>
     <classEntry path="org.openscales.core.control.OverviewMap"/>
@@ -43,7 +44,6 @@
     <classEntry path="org.openscales.core.control.Zoom"/>
     <classEntry path="org.openscales.core.control.ZoomBar"/>
     <classEntry path="org.openscales.core.control.ZoomData"/>
-    <classEntry path="org.openscales.core.control.logoRotator"/>
     <classEntry path="org.openscales.core.control.ui.Arrow"/>
     <classEntry path="org.openscales.core.control.ui.Button"/>
     <classEntry path="org.openscales.core.control.ui.CheckBox"/>
@@ -79,14 +79,25 @@
     <classEntry path="org.openscales.core.filter.Comparison"/>
     <classEntry path="org.openscales.core.filter.ContainsFilter"/>
     <classEntry path="org.openscales.core.filter.ElseFilter"/>
+    <classEntry path="org.openscales.core.filter.GeometryTypeFilter"/>
     <classEntry path="org.openscales.core.filter.IFilter"/>
     <classEntry path="org.openscales.core.filter.IntersectsFilter"/>
     <classEntry path="org.openscales.core.filter.expression.IExpression"/>
     <classEntry path="org.openscales.core.format.FilterEncodingFormat"/>
     <classEntry path="org.openscales.core.format.Format"/>
+    <classEntry path="org.openscales.core.format.GPXFormat"/>
+    <classEntry path="org.openscales.core.format.GeoRssFormat"/>
     <classEntry path="org.openscales.core.format.KMLFormat"/>
     <classEntry path="org.openscales.core.format.WFSFormat"/>
     <classEntry path="org.openscales.core.format.WKTFormat"/>
+    <classEntry path="org.openscales.core.format.gml.GMLFormat"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML2"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML311"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML321"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
+    <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
+    <classEntry path="org.openscales.core.format.gml.writer.GMLWriter"/>
     <classEntry path="org.openscales.core.handler.Handler"/>
     <classEntry path="org.openscales.core.handler.IHandler"/>
     <classEntry path="org.openscales.core.handler.feature.DragFeatureHandler"/>
@@ -137,6 +148,8 @@
     <classEntry path="org.openscales.core.layer.capabilities.WMTS100"/>
     <classEntry path="org.openscales.core.layer.grid.provider.HTTPTileProvider"/>
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>
+    <classEntry path="org.openscales.core.layer.ogc.GML"/>
+    <classEntry path="org.openscales.core.layer.ogc.GPX"/>
     <classEntry path="org.openscales.core.layer.ogc.WFS"/>
     <classEntry path="org.openscales.core.layer.ogc.WFST.Transaction"/>
     <classEntry path="org.openscales.core.layer.ogc.WFST"/>
@@ -203,13 +216,18 @@
     <classEntry path="org.openscales.core.control.LanguageSwitcherTest"/>
     <classEntry path="org.openscales.core.control.OverviewMapRatioTest"/>
     <classEntry path="org.openscales.core.control.TermsOfServiceTest"/>
+    <classEntry path="org.openscales.core.filter.GeometryTypeFilterTest"/>
+    <classEntry path="org.openscales.core.format.GPXFormatTest"/>
+    <classEntry path="org.openscales.core.format.GeoRssFormatTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
-    <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML321ParserTest"/>
+    <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
     <classEntry path="org.openscales.core.i18n.i18nTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMTS100Test"/>
+    <classEntry path="org.openscales.core.layer.ogc.WFSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WMSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WMTSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProviderTest"/>
@@ -217,59 +235,9 @@
     <classEntry path="org.openscales.core.layer.originator.ConstraintOriginatorTest"/>
     <classEntry path="org.openscales.core.layer.originator.DataOriginatorTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
-    <classEntry path="org.openscales.map.ControlManagementTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.GeoRss"/>
   </includeClasses>
-  <includeResources>
-    <resourceEntry destPath="assets/images/cursorCrosshair.swf" sourcePath="assets/images/cursorCrosshair.swf"/>
-    <resourceEntry destPath="assets/i18n/IT.json" sourcePath="assets/i18n/IT.json"/>
-    <resourceEntry destPath="assets/images/west-mini.png" sourcePath="assets/images/west-mini.png"/>
-    <resourceEntry destPath="assets/images/check.png" sourcePath="assets/images/check.png"/>
-    <resourceEntry destPath="assets/images/layerDel.png" sourcePath="assets/images/layerDel.png"/>
-    <resourceEntry destPath="assets/images/panning-hand-off.png" sourcePath="assets/images/panning-hand-off.png"/>
-    <resourceEntry destPath="assets/images/marker-blue.png" sourcePath="assets/images/marker-blue.png"/>
-    <resourceEntry destPath="assets/images/layerViz.png" sourcePath="assets/images/layerViz.png"/>
-    <resourceEntry destPath="assets/kml/sample1.kml" sourcePath="assets/kml/sample1.kml"/>
-    <resourceEntry destPath="assets/images/radiobutton-noselected.png" sourcePath="assets/images/radiobutton-noselected.png"/>
-    <resourceEntry destPath="assets/kml/sample3.kml" sourcePath="assets/kml/sample3.kml"/>
-    <resourceEntry destPath="assets/images/layerSave.png" sourcePath="assets/images/layerSave.png"/>
-    <resourceEntry destPath="assets/images/zoombar.png" sourcePath="assets/images/zoombar.png"/>
-    <resourceEntry destPath="assets/images/zoom-plus-mini.png" sourcePath="assets/images/zoom-plus-mini.png"/>
-    <resourceEntry destPath="assets/images/slide-horizontal.png" sourcePath="assets/images/slide-horizontal.png"/>
-    <resourceEntry destPath="assets/images/south-mini.png" sourcePath="assets/images/south-mini.png"/>
-    <resourceEntry destPath="assets/images/slide-vertical.png" sourcePath="assets/images/slide-vertical.png"/>
-    <resourceEntry destPath="assets/i18n/EN.json" sourcePath="assets/i18n/EN.json"/>
-    <resourceEntry destPath="assets/images/north-mini.png" sourcePath="assets/images/north-mini.png"/>
-    <resourceEntry destPath="assets/images/arrow_down.png" sourcePath="assets/images/arrow_down.png"/>
-    <resourceEntry destPath="assets/images/arrow_up.png" sourcePath="assets/images/arrow_up.png"/>
-    <resourceEntry destPath="assets/images/layerSel.png" sourcePath="assets/images/layerSel.png"/>
-    <resourceEntry destPath="assets/images/layer-switcher-maximize.png" sourcePath="assets/images/layer-switcher-maximize.png"/>
-    <resourceEntry destPath="assets/configuration/sampleMapConfOk.xml" sourcePath="assets/configuration/sampleMapConfOk.xml"/>
-    <resourceEntry destPath="assets/images/layerDraw.png" sourcePath="assets/images/layerDraw.png"/>
-    <resourceEntry destPath="org/openscales/core/configuration/openscales-configuration.xsd" sourcePath="org/openscales/core/configuration/openscales-configuration.xsd"/>
-    <resourceEntry destPath="assets/images/marker.png" sourcePath="assets/images/marker.png"/>
-    <resourceEntry destPath="assets/images/uncheck.png" sourcePath="assets/images/uncheck.png"/>
-    <resourceEntry destPath="assets/kml/sample2.kml" sourcePath="assets/kml/sample2.kml"/>
-    <resourceEntry destPath="assets/images/radiobutton-selected.png" sourcePath="assets/images/radiobutton-selected.png"/>
-    <resourceEntry destPath="assets/images/slider.png" sourcePath="assets/images/slider.png"/>
-    <resourceEntry destPath="assets/i18n/FR.json" sourcePath="assets/i18n/FR.json"/>
-    <resourceEntry destPath="assets/images/layer-switcher-minimize.png" sourcePath="assets/images/layer-switcher-minimize.png"/>
-    <resourceEntry destPath="assets/images/close.gif" sourcePath="assets/images/close.gif"/>
-    <resourceEntry destPath="assets/images/drag-rectangle-on.png" sourcePath="assets/images/drag-rectangle-on.png"/>
-    <resourceEntry destPath="assets/images/panning-hand-on.png" sourcePath="assets/images/panning-hand-on.png"/>
-    <resourceEntry destPath="assets/images/measuring-stick-on.png" sourcePath="assets/images/measuring-stick-on.png"/>
-    <resourceEntry destPath="assets/images/marker-green.png" sourcePath="assets/images/marker-green.png"/>
-    <resourceEntry destPath="assets/images/zoom-world-mini.png" sourcePath="assets/images/zoom-world-mini.png"/>
-    <resourceEntry destPath="assets/images/zoom-minus-mini.png" sourcePath="assets/images/zoom-minus-mini.png"/>
-    <resourceEntry destPath="assets/images/blank.gif" sourcePath="assets/images/blank.gif"/>
-    <resourceEntry destPath="assets/images/cursorCrosshair.fla" sourcePath="assets/images/cursorCrosshair.fla"/>
-    <resourceEntry destPath="assets/images/layerAccept.png" sourcePath="assets/images/layerAccept.png"/>
-    <resourceEntry destPath="assets/images/marker-gold.png" sourcePath="assets/images/marker-gold.png"/>
-    <resourceEntry destPath="assets/layer/capabilities/wmtscapabilities.xml" sourcePath="assets/layer/capabilities/wmtscapabilities.xml"/>
-    <resourceEntry destPath="assets/images/layerCancel.png" sourcePath="assets/images/layerCancel.png"/>
-    <resourceEntry destPath="assets/images/east-mini.png" sourcePath="assets/images/east-mini.png"/>
-    <resourceEntry destPath="assets/images/measuring-stick-off.png" sourcePath="assets/images/measuring-stick-off.png"/>
-    <resourceEntry destPath="assets/images/drag-rectangle-off.png" sourcePath="assets/images/drag-rectangle-off.png"/>
-  </includeResources>
+  <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>

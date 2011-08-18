@@ -125,7 +125,7 @@ package org.openscales.core.handler.feature.draw
 					this._firstPointFeature=  new PointFeature(point,null,Style.getDefaultPointStyle());
 					
 					//add the point feature to the drawLayer, and the polygon (which contains only one point for the moment)
-					drawLayer.addFeature(this._firstPointFeature);
+					//drawLayer.addFeature(this._firstPointFeature);
 					drawLayer.addFeature(this._polygonFeature);
 					this._polygonFeature.unregisterListeners();
 					this._firstPointFeature.unregisterListeners();
@@ -149,7 +149,7 @@ package org.openscales.core.handler.feature.draw
 			}		
 		}
 
-		public function mouseDblClick(LastPX:Pixel):void {
+		public function mouseDblClick(LastPX:Pixel = null):void {
 			drawFinalPoly();
 		}
 		

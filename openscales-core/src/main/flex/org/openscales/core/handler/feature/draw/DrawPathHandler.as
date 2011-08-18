@@ -96,7 +96,7 @@ package org.openscales.core.handler.feature.draw
 		 * during the drawing operation
 		 * @param Lastpx: The position of the double click pixel
 		 * */
-		public function mouseDblClick(Lastpx:Pixel):void {
+		public function mouseDblClick(Lastpx:Pixel=null):void {
 			this.drawFinalPath();		
 		} 
 		
@@ -127,6 +127,7 @@ package org.openscales.core.handler.feature.draw
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line
 			_startPoint = this.map.getMapPxFromLocation(lonlat);
+			trace("draw line : " + _startPoint.x + " " + _startPoint.y);
 			
 			//The user click for the first time
 			if(newFeature){
@@ -149,6 +150,7 @@ package org.openscales.core.handler.feature.draw
 				}								
 			}
 		}
+		
 		/**
 		 * Update the temporary line
 		 */
@@ -156,16 +158,19 @@ package org.openscales.core.handler.feature.draw
 			_drawContainer.graphics.clear();
 			_drawContainer.graphics.lineStyle(2, 0x00ff00);
 			_drawContainer.graphics.moveTo(_startPoint.x, _startPoint.y);
-			_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);	
-			_drawContainer.graphics.endFill();	
+			_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
+			_drawContainer.graphics.endFill();
 		}
+		
 		/**
-		 * @inherited 
-		 * */
-		override public function set map(value:Map):void {
+		 * @inherited
+		 */
+		override public function set map(value:Map):void{
 			super.map = value;
 			this._dblClickHandler.map = value;
-			if(map!=null){map.addChild(_drawContainer);}
+			if(map != null){
+				map.addChild(_drawContainer);
+			}
 		}
 		
 		private function updateZoom(evt:MapEvent):void{
