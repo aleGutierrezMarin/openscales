@@ -1,7 +1,9 @@
 package org.openscales.core.layer
 {
+	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.stroke.Stroke;
@@ -11,131 +13,184 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	
-	/*
+	use namespace os_internal;
+	
+	/**
 	 * Graticule control.
-	 * Displays a grid based on geographical coordinates.
+	 * Displays a grid on the map, based on geographical coordinates.
+	 * The possible intervals are defined by default, but can be overrided by the developper.
+	 * The graticule layer appears in the layer switcher.
+	 * @author xlaprete
 	 */
 	public class Graticule extends FeatureLayer
 	{
 		/**
-		 * APIProperty: intervals
-		 * {Array(Float)} A list of possible graticule widths in degrees.
+		 * @private
+		 * Array of possible graticule widths in degrees, from biggest to smallest.
+		 * 
+		 * @default [45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001]
 		 */
 		private var _intervals:Array = new Array(45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001);
 		
-		/*
+		/**
+		 * @private
+		 * Minimum number of lines to display for the graticule.
+		 * 
+		 * @default 3
+		 */
+		private var _minNumberOfLines:uint = 3;
+		
+		/**
 		 * Default constructor.
+		 * @param name Name of the graticule layer.
+		 * @param style Style of the graticule layer.
 		 */
 		public function Graticule(name:String, style:Style = null) 
 		{
+			// default init
 			super(name);
-			// TODO: gestion d'un nom par défaut en constante? i18n?
 			
 			// style setup
 			if(style){
 				this.style = style;
-				this.style.rules.push(new Rule());
-				this.style.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0xc9c9c9,1,1,Stroke.LINECAP_BUTT)));
+			} else {
+				this.style = Style.getDefaultGraticuleStyle();
 			}
-			else this.style = null;
-			// TODO: définition d'un style par défaut pour le graticule?
 			
-			// feature layer initialisation
-			this.projSrsCode = "EPSG:4326";
-			
+			// puts layer in geographical coordinates
+			this._projSrsCode = "EPSG:4326";
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function draw():void {
-			Trace.useFireBugConsole = true;
-			Trace.debug("début draw");
-			// calculates which interval to use
-			var interval:Number = NaN;
+			
+			// gets bounds of the map, in geographical coordinates
 			var extent:Bounds = this.map.extent.reprojectTo("EPSG:4326");
 			var xmin:Number = extent.left;
 			var xmax:Number = extent.right;
 			var ymin:Number = extent.bottom;
 			var ymax:Number = extent.top;
-			Trace.debug("xmin="+xmin);
-			Trace.debug("xmax="+xmax);
-			Trace.debug("ymin="+ymin);
-			Trace.debug("ymax="+ymax);
-			var minMapSize:Number = Math.min(xmax-xmin, ymax-ymin);
-			Trace.debug("minMapSize="+minMapSize);
-			var j:uint = _intervals.length;
-			for (var i:uint = 0; i<j ;i++) {
-				Trace.debug("_intervals[i]="+_intervals[i]);
-				if (minMapSize/_intervals[i] > 2) {
-					interval = _intervals[i]; 
-					break;
-				}
-			}
-			Trace.debug("interval="+interval);
+			
+			// calculates which interval to use
+			var interval:Number = getBestInterval(xmin, xmax, ymin, ymax);
 			
 			// verifies interval has been found
 			if (interval) {
 				
 				//
-				// vertical lines
+				// draw vertical lines
 				//
 				
 				// calculates first x coordinate
-				var firstX:Number = interval*Math.floor(xmin/interval);
-				Trace.debug("firstX="+firstX);
+				var firstX:Number = getFirstCoordinateForGraticule(xmin, interval);
 				
 				// loop till xmax is reached
 				var currentX:Number = firstX;
 				while (currentX<xmax) {	
-					Trace.debug("currentX="+currentX);
 					var points:Vector.<Number> = new Vector.<Number>();
 					points.push(currentX, ymin, currentX, ymax);
 					var line:LineString = new LineString(points);
 					var lineFeature:LineStringFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
+					// TODO: display label in degrees
 					currentX = currentX+interval;
 				}
 				
 				//
-				// horizontal lines
+				// draw horizontal lines
 				//
 				
 				// calculates first y coordinate
-				var firstY:Number = interval*Math.floor(ymin/interval);
-				Trace.debug("firstY="+firstY);
+				var firstY:Number = getFirstCoordinateForGraticule(ymin, interval);
 				
 				// loop till ymax is reached
 				var currentY:Number = firstY;
 				while (currentY<ymax) {	
-					Trace.debug("currentY="+currentY);
 					points = new Vector.<Number>();
 					points.push(xmin, currentY, xmax, currentY);
 					line = new LineString(points);
 					lineFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
+					// TODO: display label in degrees
 					currentY = currentY+interval;
 				}
-				
-
 			}
 		}
 		
-		override public function redraw(fullRedraw:Boolean = true):void {
-			// TODO ne faire le super que si besoin
-			
-			super.redraw();
+		/**
+		 * Gets best interval of the graticule for the map.
+		 * There must be at least 2 lines in each direction.
+		 * @param xmin x coordinate on the left of the map.
+		 * @param xmax x coordinate on the right of the map.
+		 * @param ymin y coordinate on the bottom of the map.
+		 * @param ymax y coordinate on the top of the map.
+		 * @return The best interval of the graticule for the map.
+		 */
+		os_internal function getBestInterval(xmin:Number, xmax:Number, ymin:Number, ymax:Number):Number {
+			var interval:Number = NaN;
+			var minMapSize:Number = Math.min(xmax-xmin, ymax-ymin);
+			var j:uint = _intervals.length;
+			for (var i:uint = 0; i<j ;i++) {
+				if (minMapSize/_intervals[i] > _minNumberOfLines) {
+					interval = _intervals[i]; 
+					break;
+				}
+			}
+			return interval;
 		}
 		
 		/**
-		 * Getters and Setters
+		 * Gets first coordinate for the graticule line.
+		 * @param firstCoordinateOfMap x coordinate on the left of the map or y coordinate on the bottom of the map.
+		 * @param interval Interval used for the graticule.
+		 * @return The first coordinate to use for the graticule line.
 		 */
-
+		os_internal function getFirstCoordinateForGraticule(firstCoordinateOfMap:Number, interval:Number):Number {
+			var firstCoordinate:Number = interval*Math.floor(firstCoordinateOfMap/interval);
+			return firstCoordinate;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function set projSrsCode(value:String):void {
+			// SRS code cannot be overriden. Graticule is always built in EPSG:4326
+			// and then reprojected to the projection of the map.
+			this._projSrsCode = "EPSG:4326";
+		}
+		
+		/**
+		 * @return Array of possible graticule widths in degrees, from biggest to smallest.
+		 */
 		public function get intervals():Array
 		{
 			return _intervals;
 		}
 		
+		/**
+		 * @param value Array of possible graticule widths in degrees, from biggest to smallest.
+		 */
 		public function set intervals(value:Array):void
 		{
 			_intervals = value;
+		}
+		
+		/**
+		 * @return Minimum number of lines to display for the graticule.
+		 */
+		public function get minNumberOfLines():uint
+		{
+			return _minNumberOfLines;
+		}
+		
+		/**
+		 * @param value Minimum number of lines to display for the graticule.
+		 */
+		public function set minNumberOfLines(value:uint):void
+		{
+			_minNumberOfLines = value;
 		}
 	}
 }
