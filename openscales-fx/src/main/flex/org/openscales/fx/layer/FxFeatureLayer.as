@@ -1,6 +1,6 @@
 package org.openscales.fx.layer
 {
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	
 	/**
@@ -14,16 +14,16 @@ package org.openscales.fx.layer
 		}
 		
 		override public function init():void {
-			this._layer = new FeatureLayer("");
+			this._layer = new VectorLayer("");
 		}
 		
 		public function get style():Style{
-			return (this._layer as FeatureLayer).style;
+			return (this._layer as VectorLayer).style;
 		}
 		
 		public function set style(value:Style):void{
 			if (this._layer) {
-				(this._layer as FeatureLayer).style = value; 
+				(this._layer as VectorLayer).style = value; 
 			}
 		}
 		

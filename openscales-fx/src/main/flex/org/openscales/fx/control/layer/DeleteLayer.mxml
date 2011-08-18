@@ -11,6 +11,8 @@
 			import assets.fxg.ButtonCloseUp;
 			
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			
@@ -37,10 +39,13 @@
 				if(this._layer.map != null)
 				{
 					// if baselayer no delete button
-					if(this._layer == this._layer.map.baseLayer )
+					/*if(this._layer == this._layer.map.baseLayer )
 						deleteButton.visible = false;
-					else
+					else*/
 						deleteButton.visible = true;
+					
+					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+					this._layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.onBaseLayerChanged);
 				}
 			}
 				
@@ -56,9 +61,21 @@
 			/**
 			 * @inherit
 			 */
-			public function onMapLanguageChange(event:I18NEvent):void 
+			private function onMapLanguageChange(event:I18NEvent):void 
 			{
 				this.tooltipDelete = Catalog.getLocalizationForKey('layercontrol.deletelayer');	
+			}
+			
+			private function onBaseLayerChanged(event:LayerEvent):void
+			{
+				if(this._layer.map != null)
+				{
+					// if baselayer no delete button
+					/*if(this._layer == this._layer.map.baseLayer )
+						deleteButton.visible = false;
+					else*/
+						deleteButton.visible = true;
+				}
 			}
 			
 		]]>

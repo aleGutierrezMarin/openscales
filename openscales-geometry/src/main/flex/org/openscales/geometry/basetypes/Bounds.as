@@ -372,19 +372,18 @@ package org.openscales.geometry.basetypes
 		
 		/**
 		 * Returns a bounds instance from a string following this format: "left,bottom,right,top" or  "left,bottom,right,top,projection".
-		 *
+		 * If no projection is setted the default value will be EPSG:4326
 		 * @param str The string from which we want create a bounds instance.
-		 * @param srsCode The code defining the projection
 		 * 
 		 * @throw an Argument error if the string contains other that 4 or 5 elements
 		 * 
 		 * @return An instance of bounds.
 		 */
-		public static function getBoundsFromString(str:String,srsCode:String = "EPSG:4326"):Bounds {
+		public static function getBoundsFromString(str:String):Bounds {
 			var bounds:Array = str.split(",");
 			
 			if(bounds.length == 4)
-				return Bounds.getBoundsFromArray(bounds,srsCode);
+				return Bounds.getBoundsFromArray(bounds,"EPSG:4326");
 			
 			if(bounds.length == 5)
 			{

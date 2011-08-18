@@ -15,7 +15,7 @@ package {
 	import org.openscales.core.control.ScaleLine;
 	import org.openscales.core.control.TermsOfService;
 	import org.openscales.core.control.Zoom;
-	import org.openscales.core.control.logoRotator;
+	import org.openscales.core.control.LogoRotator;
 	import org.openscales.core.control.ui.Button;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;

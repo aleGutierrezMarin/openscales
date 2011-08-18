@@ -1,15 +1,24 @@
 package org.openscales.core.handler.feature
 {
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.mouse.DragHandler;
-	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.ICollection;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.Point;
+	import org.openscales.geometry.Polygon;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	/**
 	 * DragFeature is use to drag a feature
@@ -18,7 +27,10 @@ package org.openscales.core.handler.feature
 	 */
 	public class DragFeatureHandler extends DragHandler
 	{
-	
+		private var _featuresToMove:Vector.<Feature>;
+		private var _startPixel:Pixel;
+		private var _stopPixel:Pixel;
+		private var _layerToMove:VectorLayer;
 		/**
 		* The feature currently dragged
 		* */
@@ -46,24 +58,27 @@ package org.openscales.core.handler.feature
 		 * This function is launched when the Mouse is down
 		 */
 		override  protected function onMouseDown(event:MouseEvent):void{
-			var feature:Feature=event.target as Feature;
-			//The target is a feature , its' layer is draggable and it doesn't belongs to the undraggableFeatures Array
-			if(feature!=null && _draggableLayers.indexOf(feature.layer)!=-1 && _undraggableFeatures.indexOf(feature)==-1){
+			var feature:Feature = event.target as Feature;
+			if(feature != null && isSelectedFeature(feature)){
+				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.startDrag();
-				_featureCurrentlyDragged=feature;
+				_featureCurrentlyDragged = feature;
 				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,feature));
 			}
 		}
 		/**
 		 * This function is launched when the Mouse is up
 		 */
-		 override protected function onMouseUp(event:MouseEvent):void{
-		 	var feature:Feature=event.target as Feature;
-		 	//The target is a feature and is the feature currently dragged
-		 	if(feature!=null && _featureCurrentlyDragged==feature){
+		override protected function onMouseUp(event:MouseEvent):void{
+		 	var feature:Feature = event.target as Feature;
+		 	if(feature != null && _featureCurrentlyDragged == feature){
+				_stopPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.stopDrag();
-				_featureCurrentlyDragged=null;
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
+				_featureCurrentlyDragged = null;
+				updateFeature(feature);
+				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,feature));
+				this._layerToMove.redraw();
 			}
 		 }
 		 /**
@@ -114,6 +129,114 @@ package org.openscales.core.handler.feature
 		public function addDraggableLayer(layer:VectorLayer):void{
 			if(layer!=null && _draggableLayers.indexOf(layer)==-1){
 				_draggableLayers.push(layer);
+			}
+		}
+		
+		/**
+		 * The selected features
+		 */
+		public function get featuresToMove():Vector.<Feature>{
+			return this._featuresToMove;
+		}
+		public function set featuresToMove(value:Vector.<Feature>):void{
+			this._featuresToMove = value;
+		}
+		
+		/**
+		 * The layer
+		 */
+		public function get layerToMove():VectorLayer{
+			return this._layerToMove;
+		}
+		public function set layerToMove(value:VectorLayer):void{
+			this._layerToMove = value;
+		}
+		
+		/**
+		 * Is the feature selected ?
+		 */
+		private function isSelectedFeature(myFeature:Feature):Boolean{
+			
+			for each(var fte:Feature in this.featuresToMove){
+				if(fte == myFeature){
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		/**
+		 * Update the feature when moved
+		 */
+		private function updateFeature(feature:Feature):void{
+			
+			var targetFeature:Feature;
+			var loc:Location;
+			var pt:Point;
+			var px:Pixel;
+			var i:uint;
+			
+			if(feature is PointFeature){
+				for each(targetFeature in this.featuresToMove){
+					if(targetFeature == feature){
+						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
+						loc = this.map.getLocationFromMapPx(_stopPixel);
+						targetFeature.geometry = new Point(loc.lon,loc.lat);
+						targetFeature.x = 0;
+						targetFeature.y = 0;
+					}
+				}
+			}
+			else if(feature is LineStringFeature){
+				for each(targetFeature in this.featuresToMove){
+					if(targetFeature == feature){
+						var lineString:LineString;
+						var tpIC:ICollection = targetFeature.geometry as ICollection;
+						for(i=0; i<tpIC.componentsLength; i++){
+							pt = tpIC.componentByIndex(i) as Point;
+							// TODO getMapPxFromLocation
+							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
+							// TODO getLocationFromMapPx?
+							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
+							pt = new Point(loc.lon,loc.lat);
+							if(i == 0)
+								lineString = new LineString(new <Number>[pt.x,pt.y]);
+							else{
+								lineString.addPoint(pt.x,pt.y);
+							}
+						}
+						targetFeature.geometry = lineString;
+						targetFeature.x = 0;
+						targetFeature.y = 0;
+					}
+				}
+			}
+			else if(feature is PolygonFeature){
+				for each(targetFeature in this.featuresToMove){
+					if(targetFeature == feature){
+						var linearRing:LinearRing;
+						var polygon:Polygon;
+						var tpLR:LinearRing = (targetFeature.geometry as Polygon).componentByIndex(0) as LinearRing;
+						for(i=0; i<tpLR.componentsLength; i++){
+							pt = tpLR.componentByIndex(i) as Point;
+							// TODO : getMapPxFromLocation?
+							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
+							// TODO : getLocationFromMapPx
+							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
+							pt = new Point(loc.lon,loc.lat);
+							if(i == 0){
+								linearRing = new LinearRing(new <Number>[pt.x,pt.y]);
+								polygon = new Polygon(new <Geometry>[linearRing]);
+							}
+							else{
+								linearRing.addPoint(pt.x,pt.y);
+							}
+						}
+						targetFeature.geometry = polygon;
+						targetFeature.x = 0;
+						targetFeature.y = 0;
+					}
+				}
 			}
 		}
 	}

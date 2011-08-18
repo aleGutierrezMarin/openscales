@@ -40,6 +40,19 @@ package org.openscales.fx.control.layer
 			this._container.addElement(_visibility);
 		}
 		
+		[After]
+		override public function tearDown():void
+		{
+			super.tearDown();
+			_visibility.layer = null;
+			this._container.removeElement(_visibility);
+			_visibility = null;
+			_map.removeAllLayers();
+			_layer1.destroy();
+			_layer1 = null;
+			_map = null;
+		}
+		
 		/**
 		 * Test if the layer visibility is set to false when the checkbox is unchecked
 		 */

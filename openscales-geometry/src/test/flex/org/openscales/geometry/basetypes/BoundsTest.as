@@ -198,11 +198,11 @@ package org.openscales.geometry.basetypes
 		public function shouldReturnBoundsWithGivenProjection():void
 		{
 			// Given : a string (left,bottom,right,top) and a projection
-			var string:String = "1,2,3,4";
+			var string:String = "1,2,3,4,EPSG:2154";
 			var projection:String = "EPSG:2154";
 			
 			// When the function is called with the string and projection
-			var bounds:Bounds = Bounds.getBoundsFromString(string, projection);
+			var bounds:Bounds = Bounds.getBoundsFromString(string);
 			
 			// Then the bounds retun is in with the given projection :
 			assertEquals("Incorrect left value", 1, bounds.left);
@@ -245,41 +245,6 @@ package org.openscales.geometry.basetypes
 			
 			// Then the bounds are still intersected
 			assertEquals("Incorrect bounds intersection", firstBounds.intersectsBounds(secondBounds), firstBoundsReproj.intersectsBounds(secondBoundsReproj));
-		}
-		
-		/**
-		 * Validated that the extendFromBounds method return the proper extended bounds
-		 */
-		[Test]
-		public function shouldReturnExtendedBounds():void
-		{
-			// Given a bounds
-			var firstBounds:Bounds = new Bounds(-5, 42, 5, 45, "EPSG:4326");
-			
-			// When the extendFromBounds is called with an external bounds
-			var secondBounds:Bounds = new Bounds(0, 43, 6, 50, "EPSG:4326");
-			var returnedBounds:Bounds = firstBounds.extendFromBounds(secondBounds);
-			
-			// Then, the returned bounds is extended
-			assertTrue("The bound was not properly extended", returnedBounds.equals(new Bounds(-5, 42, 6, 50, "EPSG:4326")));
-		}
-		
-		/**
-		 * Validate that the extendFromBounds method return the proper extended bounds
-		 * with "EPSG:4326" bound projection if the two bounds are not in the same projection
-		 */
-		[Test]
-		public function shouldReturn4326ExtendedBounds():void
-		{
-			// Given a bounds with a projection
-			var firstBounds:Bounds = new Bounds(-5, 42, 5, 45, "EPSG:4326");
-			
-			// When the extendFromBounds is call with an external bounds in another projection
-			var secondBounds:Bounds = new Bounds (455217.448, 6215834.245, 915236.203, 6989509.411, "EPSG:2154");
-			var returnedBounds:Bounds = firstBounds.extendFromBounds(secondBounds);
-
-			// Then, the return bounds is extended and in EPSG:4326
-			assertTrue("The bound was not properly extended", returnedBounds.equals(new Bounds(-5, 42, 5.998077343937253, 49.96737488439113, "EPSG:4326")));
 		}
 	}
 }

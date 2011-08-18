@@ -26,7 +26,7 @@ package org.openscales.geometry
 					}
 				}
 			}
-			// Check if almost one ring is defined.
+			// Check if at least one ring is defined.
 			// If one (or more) ring is invalid, this condition is not tested
 			if (validRings) {
 				if (rings && (rings.length < 1)) {

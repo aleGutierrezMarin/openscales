@@ -233,6 +233,7 @@ package org.openscales.core.style {
 				}
 				// TODO : Implement other well known names and take into account opacity, rotation of the mark
 			}
+			canvas.graphics.endFill();
 		}
 
 		private function drawPolygon(symbolizer:Symbolizer, canvas:Sprite):void {
