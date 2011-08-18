@@ -17,6 +17,7 @@ package org.openscales.core.format
 	{
 		/** This class reads and writes RSS files with GeoRss content.
 		 * 
+		 * test modif
 		 * Supported GeoRss version 1.1 
 		 * @see GeoRss Schema at http://www.georss.org/xml/1.1/georss.xsd 
 		 * 
