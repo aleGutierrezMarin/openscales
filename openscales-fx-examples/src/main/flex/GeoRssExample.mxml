@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns = "http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 creationComplete="initMap()">
+	
+	<Map id="map" width="100%" height="100%">
+		
+		<Mapnik id="mapnik" name="Mapnik" alpha="0.7" />
+		<GeoRss id="rsslayer" name="Spearfish Roads" numZoomLevels="22"/>
+		
+		<!-- Handlers -->
+		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
+		<LayerManager/>
+		
+		<DragHandler/>
+		<WheelHandler/>
+		
+		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		
+		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
+	
+	</Map>	
+	
+	<fx:Declarations>	
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Trace;
+			private function initMap():void{
+				
+				var dataUrl:String = "http://openscales.org:80/geoserver/sf/wms?height=358&bbox=589434.8564686741%2C4914006.337837095%2C609527.2102150217%2C4928063.398014731&width=512&layers=sf%3Aroads&request=GetMap&service=wms&styles=simple_roads&srs=EPSG%3A26713&format=application%2Frss+xml&transparent=false&version=1.1.1";
+				rsslayer.url = dataUrl;
+				
+				map.center = "-103.8601212,44.4904744,WGS84";
+				map.zoom = 14;
+				//mapnik.projection = "EPSG:4326";
+				Trace.debug("Mapnick projection: " + mapnik.projection);
+				Trace.debug("GeoRssLayer projection: " + rsslayer.projection);
+	
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>
