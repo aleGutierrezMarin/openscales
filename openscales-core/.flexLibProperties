@@ -95,6 +95,7 @@
     <classEntry path="org.openscales.core.format.gml.parser.GML311"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML321"/>
     <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
     <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
     <classEntry path="org.openscales.core.format.gml.writer.GMLWriter"/>
     <classEntry path="org.openscales.core.handler.Handler"/>
@@ -235,6 +236,7 @@
     <classEntry path="org.openscales.core.layer.originator.DataOriginatorTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.GeoRss"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
