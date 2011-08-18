@@ -2,7 +2,7 @@ package org.openscales.core.format.gml.parser
 {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.geometry.Point;
-
+	
 	public class GMLParser
 	{
 		protected var _internalProjSrsCode:String = null;
@@ -18,7 +18,7 @@ package org.openscales.core.format.gml.parser
 		public function GMLParser()
 		{
 		}
-
+		
 		/**
 		 * Read the feature contained in a XML node
 		 * 
@@ -40,14 +40,14 @@ package org.openscales.core.format.gml.parser
 			
 			if (xmlNode) {
 				
-				var coordNodes:XMLList = xmlNode.*::posList;
+				var coordNodes:XMLList = xmlNode..*::posList;
 				
 				if (coordNodes.length() == 0) { 
-					coordNodes = xmlNode.*::pos;
+					coordNodes = xmlNode..*::pos;
 				}    
 				
 				if (coordNodes.length() == 0) {
-					coordNodes = xmlNode.*::coordinates;
+					coordNodes = xmlNode..*::coordinates;
 				}    
 				
 				var coordString:String = coordNodes[0].text();
@@ -62,29 +62,32 @@ package org.openscales.core.format.gml.parser
 					nums.pop();
 				
 				j = nums.length;
-				var i:int;
-				for(i = 0; i < j; i = i + this.dim) {
-					if(lonLat) {
-						x = Number(nums[i]);
-						y = Number(nums[i+1]);
-					} else {
-						x = Number(nums[i+1]);
-						y = Number(nums[i]);
+				// verifies if the dimension of the feature is compatible with the number of coordinates 
+				if ( j % dim == 0 ){
+					var i:int;
+					for(i = 0; i < j; i = i + this.dim) {
+						if(lonLat) {
+							x = Number(nums[i]);
+							y = Number(nums[i+1]);
+						} else {
+							x = Number(nums[i+1]);
+							y = Number(nums[i]);
+						}
+						var p:Point = new Point(x, y);
+						if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+							p.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+						}
+						points.push(p.x);
+						points.push(p.y);
 					}
-					var p:Point = new Point(x, y);
-					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
-						p.transform(this.externalProjSrsCode, this.internalProjSrsCode);
-					}
-					points.push(p.x);
-					points.push(p.y);
+					return points;
 				}
-				return points
 			}
-			return points;
+			return null;
 		}
 		
 		/**
-		 * Indicates the dimention of the coordinates
+		 * Indicates the dimension of the coordinates
 		 */
 		public function get dim():Number {
 			return this._dim;
@@ -125,7 +128,7 @@ package org.openscales.core.format.gml.parser
 		}
 		
 		public function get gml():Namespace {
-		  return null;	
+			return null;	
 		}
 		
 		public function get internalProjSrsCode():String {

@@ -8,6 +8,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.format.Format;
 	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
@@ -23,6 +24,7 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WFS extends FeatureLayer
 	{
+		private var _writer:Format = null;
 		/**
 		 * @private
 		 * An HashMap containing the capabilities of the layer.
@@ -288,7 +290,8 @@ package org.openscales.core.layer.ogc
 			
 			this.loading = false;
 			
-			this.parseResponse(loader.data as String);
+			if(this.map)
+				this.parseResponse(loader.data as String);
 			
 			if (map) {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this ));

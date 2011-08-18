@@ -17,7 +17,7 @@ package org.openscales.fx.control.layer {
 		
 		[Before]
 		public function setUp():void{
-
+			
 			// Given an empty map
 			_map = new Map();
 			
@@ -61,7 +61,7 @@ package org.openscales.fx.control.layer {
 		 */
 		[Test]
 		public function shouldUpdateAfterALayerIsAdded():void{
-							
+			
 			// Given the LayerManager is added to the map
 			_map.addControl(_layerManager);
 			
@@ -109,7 +109,7 @@ package org.openscales.fx.control.layer {
 			// And in the LayerManager
 			assertLayerManagerHasTheSameLayersAsTheMap();
 		} 
-
+		
 		/**
 		 * Validates that layer are properly moved back
 		 */
@@ -151,7 +151,7 @@ package org.openscales.fx.control.layer {
 			assertEquals("Layer 1 in wrong position", 2, _map.layers.indexOf(_layer1));
 		}
 		
-
+		
 		/**
 		 * Validates that layers are moved up
 		 * according to their position after filtering

@@ -3,7 +3,7 @@ package org.openscales.geometry
 	import org.openscales.geometry.utils.UtilGeometry;
 
 	/**
-	 * A LineString is a is a MultiPoint (2 vertices min), whose points are
+	 * A LineString is a MultiPoint (2 vertices min), whose points are
 	 * assumed to be connected.
 	 */
 	public class LineString extends MultiPoint

@@ -200,7 +200,7 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * Return a reference to the map where belong this layer
+		 * Return a reference to the map where this layer belongs
 		 */
 		public function get map():Map {
 			return this._map;
@@ -378,6 +378,21 @@ package org.openscales.core.layer {
 		 */
 		public function getURL(bounds:Bounds):String {
 			return null;
+		}
+		
+		
+		/**
+		 * The layer Name (appears in LayerManager for example)
+		 */
+		[Bindable]
+		override public function get name():String
+		{
+			return super.name;
+		}
+		
+		override public function set name(value:String):void
+		{
+			super.name = value;
 		}
 		
 		/**
