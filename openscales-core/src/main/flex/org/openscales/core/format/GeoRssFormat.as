@@ -21,7 +21,7 @@ package org.openscales.core.format
 		 * @see GeoRss Schema at http://www.georss.org/xml/1.1/georss.xsd 
 		 * 
 		 * Suported Rss version 2.0
-		 * @see Rss Schema at http://cyber.law.harvard.edu/rss/rss.html
+		 * @see Rss Schema at http://cyber.law.harvard.edu/rss/rss
 		 * 
 		 * @attribute rssFile: the GeoRss data 
 		 * @attribute featureVector
@@ -57,7 +57,7 @@ package org.openscales.core.format
 		 * @param data to parse (a GeoRss file)
 		 * @return Object (a vector of features)
 		 * 
-		 * @see RSS 2.0 specification: the <rss> element has a single child, <channel>, with 3 required elements
+		 * @see RSS 2.0 specification the <rss> element has a single child, <channel>, with 3 required elements
 		 * 
 		 * The external GML geometry is supported only inside the <where> element
 		 * 
@@ -185,7 +185,7 @@ package org.openscales.core.format
 		 * @calls buildItemNode
 		 * @param the features to include in the RSS file
 		 * @return Object (the RSS file)
-		 * @see RSS 2.0 specification: the <rss> element has a single child, <channel>, with 3 required elements
+		 * @see RSS 2.0 specification the <rss> element has a single child, <channel>, with 3 required elements
 		 * 
 		 */
 		
