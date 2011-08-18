@@ -11,6 +11,7 @@
 			import mx.events.StateChangeEvent;
 			
 			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.control.ZoomData;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
@@ -66,16 +67,16 @@
 			/**
 			 * @private
 			 * Indicates the maximum value for the slider
-			 * @default 20
+			 * @default 100
 			 */
-			private var _maxSlider:Number = 20;
+			private var _maxSlider:Number = 100;
 			
 			
 			/**
 			 * The current zoom value
 			 */
 			[Bindable]
-			public var currentZoom:Number = 150;
+			public var currentSliderValue:Number = 50;
 			
 			/**
 			 * @private
@@ -126,7 +127,7 @@
 			
 			/**
 			 * Update the min/maxSlider when the map.maxResolution and minResolution can have changed
-			 * Call on 
+			 * Call on a MapEvent.MIN_MAX_RESOLUTION_CHANGED 
 			 * 
 			 * @param event The MapEvent received or null otherwise
 			 */
@@ -216,19 +217,6 @@
 						this.scaleNameY = zoomSlider.thumb.y;
 			}
 			
-			/**
-			 * Return the label associated to the given zoom (converted in resolution)
-			 * 
-			 * @param zoom  The zoom given
-			 * @return The string value of the label corresponding to the resolution
-			 */
-			public function getLabelFromZoom(zoom:Number):String
-			{
-				// get the resolution for the current zoom
-				//var resolution:Number = this._map.baseLayer.resolutions[zoom];
-				//return this.getLabelFromResolution(resolution);
-				return "TODO : Refactor";
-			}
 			
 			/**
 			 * Return the label associated to the given resolution 
@@ -262,7 +250,8 @@
 			 */
 			public function onZoomIn(event:MouseEvent):void
 			{
-				this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+				//this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+				this.map.zoomIn();
 			}
 			
 			/**
@@ -275,6 +264,7 @@
 			{
 				// TODO refactor
 				//this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+				this.map.zoomOut();
 			}
 			
 			/**
@@ -318,11 +308,13 @@
 			public function onThumbRelease(event:TrackBaseEvent):void
 			{
 				this.updateScalesNameLabel();
-				var currentSlider:SliderBase= event.target as SliderBase;
-				this.currentZoom = currentSlider.value;
+				var currentSlider:SliderBase = event.target as SliderBase;
+				this.currentSliderValue = currentSlider.value;
 				this._onDrag = false;
-				// TODO refactor
-				//this.map.moveTo(this.map.center, this.currentZoom, false, true);
+				
+				var resolution:Number = this.getResolutionFromSliderValue(this.currentSliderValue);
+				var newResolution:Resolution = new Resolution(resolution, this.map.projection);
+				this.map.moveTo(this.map.center, newResolution);
 			}
 			
 			/**
@@ -332,23 +324,41 @@
 			 */
 			public function onZoomSliderChange(event:Event):void {
 				
-				var currentSlider:SliderBase= event.target as SliderBase;
-				
 				if(!this._map)
 					return;
 				
+				var currentSlider:SliderBase= event.target as SliderBase;
+				
 				// update the display label
-				this.currentLabel = getLabelFromZoom(currentSlider.value);
+				var resolution:Number = this.getResolutionFromSliderValue(currentSlider.value);
+				this.currentLabel = this.getLabelFromResolution(resolution);
 				
 				// if not onDrag really update the zoom
 				if(!this._onDrag)
 				{
-					this.currentZoom = currentSlider.value;
+					this.currentSliderValue = currentSlider.value;
 					// TODO refactor
 					//this.map.moveTo(this.map.center, this.currentZoom, false, true);
+					
+					var newResolution:Resolution = new Resolution(resolution, this.map.projection);
+					this.map.moveTo(this.map.center, newResolution);
 				}
 				
 			}
+			
+			private function getResolutionFromSliderValue(value:Number):Number
+			{
+				
+				var ratio:Number = value/100;
+				
+	//			var resolution:Number = this.map.minResolution.value + (this.map.maxResolution.value - this.map.minResolution.value) * ratio;
+				
+				var resolution:Number = this.map.minResolution.value + (1 - this.map.minResolution.value) * ratio;
+				
+				
+				return resolution;
+			}
+			
 			
 			override public function destroy():void {
 				this.active = false;
@@ -482,7 +492,7 @@
 	<s:VSlider id="zoomSlider" x="80" y="10"
 			   minimum="{this.minSlider}"
 			   maximum="{this.maxSlider}"
-			   value="{this.currentZoom}"
+			   value="{this.currentSliderValue}"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
