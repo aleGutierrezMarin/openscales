@@ -409,15 +409,18 @@ package org.openscales.core
 		 * 	layer was a based layer
 		 */
 		public function removeLayer(layer:Layer):void {
-			this.removeChild(layer);
-			layer.destroy();
+			
+			//layer.destroy();
 			var l:Vector.<Layer> = this.layers;
 			var i:int = l.indexOf(layer);
 			if(i>-1)
 				l.splice(i,1);
 			
+			layer.map = null;
+			this._layerContainer.removeChild(layer);
+			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
-			layer = null;
+			
 		}
 		
 		

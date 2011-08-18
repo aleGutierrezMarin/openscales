@@ -106,7 +106,6 @@
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPolygonHandler"/>
-    <classEntry path="org.openscales.core.handler.feature.draw.EditPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPolygonHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler"/>

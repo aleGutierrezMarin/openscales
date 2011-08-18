@@ -23,24 +23,31 @@ package org.openscales.core.layer.params.ogc
 		}
 		
 		override public function toGETString():String
+			//Creates request to fetch feature
 		{
 			var str:String = super.toGETString();
 			
 			if (this.bbox != null)
 			{
-				(this.srs != null && this.version != "1.0.0" && this.version != "1.1.0")?
+				(this.srs != null && this.version != "1.0.0" && this.version != "1.1.0" && this.version != "2.0.0")?
 					str += "BBOX=" + this.bbox + "," + this.srs + "&SRSNAME=" + this.srs + "&":
 					str += "BBOX=" + this.bbox + "&";
 			}
 			if (this._typename != null)
-				str += "TYPENAME=" + this._typename + "&";
+				if(version != "2.0.0"){
+					str += "TYPENAME=" + this._typename + "&";	
+				}else
+				{
+					str += "TYPENAMES=" + this._typename + "&";
+				}
 
-			if (this._maxFeatures >= 0)
-				str += "MAXFEATURES=" + this._maxFeatures + "&";
+			if (this._maxFeatures >= 0 && version != "2.0.0")
+				str += "MAXFEATURES=" + this._maxFeatures + "&"; 
 
 			if (this._handle != null)
 				str += "HANDLE=" + this._handle + "&";
-
+			if(version == "2.0.0")
+				str += "outputFormat=text/xml; subtype=gml/3.2&";
 			return str.substr(0, str.length-1);
 		}
 

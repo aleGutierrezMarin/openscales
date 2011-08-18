@@ -11,6 +11,7 @@
 			
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.Layer;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/display_information.png")]
@@ -21,6 +22,27 @@
 			 */
 			[Bindable]
 			public var tooltipMetadatas:String = Catalog.getLocalizationForKey('layercontrol.metadatas')
+			
+			private var _layer:Layer;
+			
+				
+			public function get layer():Layer{
+				return _layer;
+			}
+			
+			/**
+			 * Configure the first display for this component when the layer is set
+			 * Set one or two arrows depending of the position of the current layer
+			 */ 
+			public function set layer(value:Layer):void
+			{
+				this._layer = value;
+				
+				if(this._layer.map != null)
+				{					
+					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				}
+			}
 			
 			/**
 			 * Center the map on the layer
@@ -38,6 +60,8 @@
 			{
 				this.tooltipMetadatas = Catalog.getLocalizationForKey('layercontrol.metadatas');	
 			}
+			
+			
 		]]>
 	</fx:Script>
 	

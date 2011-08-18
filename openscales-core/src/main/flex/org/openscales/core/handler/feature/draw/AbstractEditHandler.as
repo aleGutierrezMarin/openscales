@@ -23,6 +23,8 @@ package org.openscales.core.handler.feature.draw
 	**/
 	public class AbstractEditHandler extends Handler implements IEditFeature
 	{
+		//add
+		protected var _featuresToEdit:Vector.<Feature> = null;
 		/**
 		 * the layer concerned by the edition
 		 * @protected
@@ -283,7 +285,8 @@ package org.openscales.core.handler.feature.draw
 					arrayTosearch=this._editionFeatureArray;
 				for(var i:int=0;i<arrayTosearch.length;i++){
 					//we return the parent if we find the virtual 
-					if(arrayTosearch[i][0]==virtualVertice) return arrayTosearch[i][1];
+					if(arrayTosearch[i][0]==virtualVertice) 
+						return arrayTosearch[i][1];
 				}	
 			}
 			return null;
@@ -296,5 +299,11 @@ package org.openscales.core.handler.feature.draw
 		 	return this._layerToEdit;
 		 }
 		 
+		 public function set featuresToEdit(value:Vector.<Feature>):void{
+			 this._featuresToEdit = value;
+		 }
+		 public function get featuresToEdit():Vector.<Feature>{
+			 return this._featuresToEdit;
+		 }
 	}
 }
