@@ -198,11 +198,11 @@ package org.openscales.geometry.basetypes
 		public function shouldReturnBoundsWithGivenProjection():void
 		{
 			// Given : a string (left,bottom,right,top) and a projection
-			var string:String = "1,2,3,4";
+			var string:String = "1,2,3,4,EPSG:2154";
 			var projection:String = "EPSG:2154";
 			
 			// When the function is called with the string and projection
-			var bounds:Bounds = Bounds.getBoundsFromString(string, projection);
+			var bounds:Bounds = Bounds.getBoundsFromString(string);
 			
 			// Then the bounds retun is in with the given projection :
 			assertEquals("Incorrect left value", 1, bounds.left);
