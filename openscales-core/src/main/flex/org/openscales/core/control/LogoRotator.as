@@ -13,19 +13,19 @@ package org.openscales.core.control
 	/**
 	 * Control allowing display of alternating logo
 	 */
-	public class logoRotator extends Control
+	public class LogoRotator extends Control
 	{
 		public static var DEFAULT_ROTATION_CYCLE:uint=2000;
 		private var _ll:LinkedList = null;
 		private var _dn:LinkedListBitmapNode = null;
 		private var _tm:Timer = null;
-		private var _dr:Number = logoRotator.DEFAULT_ROTATION_CYCLE;
+		private var _dr:Number = LogoRotator.DEFAULT_ROTATION_CYCLE;
 		
 		/**
 		 * Constructor
 		 * @param position:Pixel the position of the control
 		 */
-		public function logoRotator(position:Pixel=null)
+		public function LogoRotator(position:Pixel=null)
 		{
 			super(position);
 			this._ll = new LinkedList();
