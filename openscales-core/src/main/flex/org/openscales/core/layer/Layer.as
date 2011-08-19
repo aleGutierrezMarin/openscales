@@ -171,6 +171,7 @@ package org.openscales.core.layer {
 				map.removeEventListener(MapEvent.PROJECTION_CHANGED, onMapProjectionChanged);
 				map.removeEventListener(MapEvent.MOVE_END, onMapMove);
 				map.removeEventListener(MapEvent.RESIZE, onMapResize);
+				map.removeEventListener(Event.ENTER_FRAME, redraw);
 			}
 		}
 		

@@ -60,6 +60,11 @@ package org.openscales.core
 	{
 		
 		/**
+		 * Draw a debug shape on the map representig the maxExtent
+		 */
+		public static const DEBUG_MAX_EXTENT:Boolean = false;
+		
+		/**
 		 * Default SRS Code of the Map
 		 */
 		public static const DEFAULT_SRS_CODE:String = "EPSG:4326";
@@ -196,7 +201,11 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);	
 			this.addEventListener(MapEvent.PROJECTION_CHANGED,this.onMapProjectionChanged);
-			this.addEventListener(Event.ENTER_FRAME, this.onDraw);
+			
+			if (DEBUG_MAX_EXTENT)
+			{
+				this.addEventListener(Event.ENTER_FRAME, this.onDraw);
+			}
 //			this.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, layerProjectionChanged);
 			
 			Trace.stage = this.stage;
@@ -216,7 +225,7 @@ package org.openscales.core
 			{
 				_extenTDebug.graphics.clear();
 			}
-			var extent:Bounds = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			var extent:Bounds = this.maxExtent; //new Bounds(-180, -90, 180, 90, "EPSG:4326");
 			var topLeft:Pixel = this.getMapPxFromLocation(new Location(extent.left, extent.top));
 			var bottomRight:Pixel = this.getMapPxFromLocation(new Location(extent.right, extent.bottom));
 			

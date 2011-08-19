@@ -512,8 +512,8 @@ package org.openscales.core.layer
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
 			var tileoffsetlat:Number = this._tileOrigin.lat + tilerow * tilelat;
 			
-			tileoffsetx = Math.round(tileoffsetx);
-			tileoffsety = Math.round(tileoffsety);
+			//tileoffsetx = Math.round(tileoffsetx);
+			//tileoffsety = Math.round(tileoffsety);
 			
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
 			
