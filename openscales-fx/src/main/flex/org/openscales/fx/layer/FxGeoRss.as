@@ -1,5 +1,6 @@
 package org.openscales.fx.layer
 {
+	import org.openscales.core.feature.Feature;
 	import org.openscales.core.layer.ogc.GeoRss;
 
 	public class FxGeoRss extends FxFeatureLayer
@@ -41,6 +42,13 @@ package org.openscales.fx.layer
 		public function get georssData():XML{
 			if(this._layer != null)
 				return (this._layer as GeoRss).georssData;
+			return null;
+		}
+		
+		public function get featureVector():Vector.<Feature>
+		{
+			if(this._layer != null)
+				return (this._layer as GeoRss).featureVector;
 			return null;
 		}
 		
