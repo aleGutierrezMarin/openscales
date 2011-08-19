@@ -29,8 +29,8 @@ package org.openscales.core.feature {
 			var x:Number; 
 			var y:Number;
 			var resolution:Number = this.layer.map.resolution.value; 
-			var dX:int = -int(this.layer.map.layerContainer.x) + this.left; 
-			var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
+			var dX:int = -int(this.layer.map.x) + this.left; 
+			var dY:int = -int(this.layer.map.y) + this.top;
 			
 			var point:Point = null;
 			var i:int;
