@@ -131,6 +131,8 @@ package org.openscales.core.handler.keyboard
 					if(!event.shiftKey)
 						this.map.zoomOut();
 					break;
+				default:
+					return;
 			}
 		}
 		
@@ -269,26 +271,6 @@ package org.openscales.core.handler.keyboard
 		{
 			_zoomInKeyCode = value;
 		}
-
-		
-		/**
-		 * Zoom in 2 key code
-		 * <p>Default is plus sign (on alphanumerical pad) code</p>
-		 */
-		 /*
-		public function get zoomInKeyCode2():uint
-		{
-			return _zoomInKeyCode2;
-		}
-		*/
-		/**
-		 * @private
-		 */
-		/*
-		public function set zoomInKeyCode2(value:uint):void
-		{
-			_zoomInKeyCode2 = value;
-		}*/
 		
 		/**
 		 * Zoom out key code
@@ -306,27 +288,6 @@ package org.openscales.core.handler.keyboard
 		{
 			_zoomOutKeyCode = value;
 		}
-
-		/**
-		 * Zoom out 2 key code
-		 * 
-		 * <p> Default is minus sign (on alphanumerical pad) code</p>
-		 */
-		/*
-		public function get zoomOutKeyCode2():uint
-		{
-			return _zoomOutKeyCode2;
-		}*/
-
-		/**
-		 * @private
-		 */
-		/*
-		public function set zoomOutKeyCode2(value:uint):void
-		{
-			_zoomOutKeyCode2 = value;
-		}*/
-
-
+		
 	}
 }
