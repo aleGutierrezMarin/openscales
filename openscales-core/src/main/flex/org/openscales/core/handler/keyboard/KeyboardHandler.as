@@ -118,19 +118,18 @@ package org.openscales.core.handler.keyboard
 						this.map.pan(0,_slideRatio,true);
 					break;
 				case _zoomIn:
-					// TODO change after zoom refactor
-					//this.map.moveTo(this.map.center,this.map.zoom + 1,false,true);
+					this.map.zoomIn();
 					break;
 				case _zoomIn2:
 					if(event.shiftKey)
-						//this.map.moveTo(this.map.center,this.map.zoom + 1,false,true);
+						this.map.zoomIn();
 					break;
 				case _zoomOut:
-					//this.map.moveTo(this.map.center,this.map.zoom - 1,false,true);
+					this.map.zoomOut();
 					break;
 				case _zoomOut2:
 					if(!event.shiftKey)
-						//this.map.moveTo(this.map.center,this.map.zoom - 1,false,true);
+						this.map.zoomOut();
 					break;
 			}
 		}
