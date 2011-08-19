@@ -30,14 +30,14 @@ package {
 		public function OpenscalesApplication() {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			//_map.projection = "EPSG:4326";
-			_map.projection = "EPSG:900913";
-			_map.resolution = new Resolution(0.010625, "EPSG:4326");
+			_map.projection = "EPSG:4326";
+			//_map.projection = "EPSG:900913";
+			_map.resolution = new Resolution(1.40625, "EPSG:4326");
 			//_map.center = new Location(2,48, "EPSG:4326");
 			//_map.resolution = new Resolution(1, "EPSG:4326");
-			_map.resolution = new Resolution(100000.0339, "EPSG:900913");
-			//_map.maxExtent = new Bounds(-180,-90, 180, 90,"EPSG:4326");
-			_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
+			//_map.resolution = new Resolution(100000.0339, "EPSG:900913");
+			_map.maxExtent = new Bounds(-180,-90, 180, 90,"EPSG:4326");
+			//_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
 			// Add layers to map
 			/*var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
 			wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
@@ -48,7 +48,7 @@ package {
 			_map.addLayer(wmts);*/
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
-			_map.addLayer(mapnik);
+			//_map.addLayer(mapnik);
 
 			
 			/*var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
@@ -56,13 +56,13 @@ package {
 			_map.addLayer(cycle); */
 			
 			
-					var states:WFS = new WFS("states","http://openscales.org/geoserver/wfs","topp:states");
+					var states:WFS = new WFS("states","http://openscales.org/geoserver/wfs","topp:states","1.1.0");
 					states.projSrsCode = "EPSG:4326";
 					states.useCapabilities = true;
 					states.style = Style.getDefaultSurfaceStyle();
 					_map.addLayer(states);
 					
-					var regions:WFS = new WFS("regions","http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
+					var regions:WFS = new WFS("regions","http://openscales.org/geoserver/wfs","pg:ign_geopla_region","1.0.0");
 					regions.projSrsCode = "EPSG:2154";
 					regions.useCapabilities = true;
 					regions.style = Style.getDefaultSurfaceStyle();

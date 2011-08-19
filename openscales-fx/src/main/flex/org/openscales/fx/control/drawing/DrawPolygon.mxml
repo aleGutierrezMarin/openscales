@@ -105,8 +105,8 @@
 			private function activate():void{
 				
 				_handler.active = true;
-				if(_dragHandler)
-					_dragHandler.active = false;
+				//if(_dragHandler)
+					//_dragHandler.active = false;
 			}
 			private function disactivate():void{
 				
