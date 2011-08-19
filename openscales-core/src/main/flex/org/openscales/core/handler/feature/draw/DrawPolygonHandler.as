@@ -98,7 +98,9 @@ package org.openscales.core.handler.feature.draw
 		protected function mouseClick(event:MouseEvent):void {
 
 			if (drawLayer != null) {
-
+				drawLayer.scaleX=1;
+				drawLayer.scaleY=1;
+				
 				var name:String = "polygon."+id.toString(); id++;
 				_drawContainer.graphics.clear();
 				//we determine the point where the user clicked

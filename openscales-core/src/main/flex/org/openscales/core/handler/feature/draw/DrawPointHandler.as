@@ -55,10 +55,13 @@ package org.openscales.core.handler.feature.draw
 			//We draw the point
 			if (drawLayer != null){
 				Trace.log("Drawing point");
+				drawLayer.scaleX=1;
+				drawLayer.scaleY=1;
 			  
 				var style:Style = Style.getDefaultPointStyle();
 			
-				var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
+				//var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
+				var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
 				var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 				var feature:Feature;
 				
@@ -77,6 +80,7 @@ package org.openscales.core.handler.feature.draw
 				feature = new PointFeature(point, null, style);
 				feature.name = id.toString();
 				id++;
+				//test
 				drawLayer.addFeature(feature);
 				//must be after adding map
 				feature.draw();
