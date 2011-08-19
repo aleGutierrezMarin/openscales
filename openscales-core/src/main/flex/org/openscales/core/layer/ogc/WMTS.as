@@ -96,7 +96,7 @@ package org.openscales.core.layer.ogc
 				}
 				var tileMatrixSet:TileMatrixSet = tms.getValue(this.tileMatrixSet);
 				var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
-				//this.tileOrigin = tileMatrix.topLeftCorner.clone();
+				this.tileOrigin = tileMatrix.topLeftCorner.clone();
 				super.redraw(fullRedraw);
 			}
 		}
