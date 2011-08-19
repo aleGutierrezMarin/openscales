@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:IconButton xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:os="http://openscales.org"
+			   implements="org.openscales.core.control.IControl"
+			   toolTip="Draw a polygon"
+			   icon="{_btnPolygon}"
+			   width="25"
+			   height="25"
+			   click="onClick()"
+			   enabled="{active}">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.control.IControl;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
+			import org.openscales.core.handler.feature.draw.DrawPolygonHandler;
+			import org.openscales.core.handler.mouse.DragHandler;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-02.png")]
+			private var _btnPolygon:Class;
+			private var _active:Boolean = true;
+			private var _handler:AbstractDrawHandler= new DrawPolygonHandler();
+			private var _dragHandler:DragHandler;
+			
+			/**
+			 * Flag for activating and deactivating the component
+			 * @default true;
+			 */
+			[Bindable]
+			public function get active():Boolean{
+				
+				return _active;
+			}
+			public function set active(value:Boolean):void{
+				
+				_active = value;
+				if(! _active){
+					_handler.active = false;
+				}
+			}
+			
+			/**
+			 * Map controled by this control
+			 */
+			public function get map():Map{
+				
+				return _handler.map;
+			}
+			public function set map(value:Map):void{
+				
+				_handler.map = value;
+				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				
+				for each(var ih:IHandler in this.map.controls){
+					if(ih is DragHandler){
+						_dragHandler = (ih as DragHandler);
+						_dragHandler.map = value;
+					}
+				}
+			}
+			
+			/**
+			 * Position (x,y) of the handler
+			 */
+			public function get position():Pixel{
+				
+				return new Pixel(x,y);
+			}
+			public function set position(value:Pixel):void{
+				
+				if(value){
+					x = value.x;
+					y = value.y;
+				}
+			}
+			
+			/**
+			 * Layer the features will be drawn on
+			 */
+			public function get target():VectorLayer{
+				
+				return _handler.drawLayer;
+			}
+			public function set target(value:VectorLayer):void{
+				
+				_handler.drawLayer = value;
+			}
+			
+			/**
+			 * To activate or disactivate the handler
+			 */
+			private function activate():void{
+				
+				_handler.active = true;
+				//if(_dragHandler)
+					//_dragHandler.active = false;
+			}
+			private function disactivate():void{
+				
+				_handler.active = false;
+				//if(_dragHandler)
+					//_dragHandler.active = true;
+			}
+			
+			/**
+			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
+			 */
+			private function onClick():void{
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+				evt.activeHandler = this.id;
+				_handler.map.dispatchEvent(evt);
+				activate();
+			}
+			
+			/**
+			 * Check the handler when a DrawingEvent.CHANGE_ACTIVE_HANDLER event occured
+			 */
+			private function onChangeActiveHandler(evt:DrawingEvent):void{
+				
+				if(_handler.active && this.id != evt.activeHandler)
+				{
+					(_handler as DrawPolygonHandler).drawFinalPoly();
+					disactivate();
+				}
+			}
+			
+			// to do
+			public function onMapLanguageChange(event:I18NEvent):void{}
+			public function draw():void{
+				
+				this.invalidateDisplayList();
+			}
+			public function destroy():void{}
+		]]>
+	</fx:Script>			
+</os:IconButton>
