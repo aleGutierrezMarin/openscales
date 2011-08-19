@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns="http://openscales.org"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%"
+		 height="100%"
+		 creationComplete="initMap()">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	<Map id="fxmap" width="100%" height="100%" zoom="4" center="-74.011,40.710" projection="EPSG:4326">
+		<DragHandler />
+		<WheelHandler />
+		<LayerManager right="0"/>
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms"
+			  layers="bluemarble" format="image/jpeg" maxExtent="-180,-90,180,90" version="1.1.1"/>
+	</Map>
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.layer.KML;
+			import org.openscales.core.layer.PolyLayer;
+			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.core.layer.ogc.WMS;
+			import org.openscales.core.layer.osm.Mapnik;
+			private function initMap():void {
+				var pl:PolyLayer = new PolyLayer("PolyLayer");
+				var wms:WMS = new WMS("wms","http://openscales.org/geoserver/wms", "topp:states");
+				wms.transparent = true;
+				wms.format = "image/png";
+				pl.addLayer(wms);
+				
+				var kml:KML = new KML("kml", "http://code.google.com/intl/fr/apis/kml/documentation/KML_Samples.kml");
+				kml.proxy = "http://openscales.org/proxy.php?url=";
+				pl.addLayer(kml);
+				
+				fxmap.map.addLayer(pl);
+			}
+		]]>
+	</fx:Script>
+</s:Group>
