@@ -30,18 +30,18 @@ package {
 		public function OpenscalesApplication() {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			//_map.projection = "EPSG:4326";
-			_map.projection = "EPSG:900913";
-			_map.resolution = new Resolution(0.010625, "EPSG:4326");
+			_map.projection = "EPSG:4326";
+			//_map.projection = "EPSG:900913";
+			//_map.resolution = new Resolution(0.010625, "EPSG:4326");
 			//_map.center = new Location(2,48, "EPSG:4326");
 			//_map.resolution = new Resolution(1, "EPSG:4326");
 			_map.resolution = new Resolution(100000.0339, "EPSG:900913");
 			//_map.maxExtent = new Bounds(-180,-90, 180, 90,"EPSG:4326");
-			_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
+			//_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
 			// Add layers to map
-			/*var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
+			var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
 			wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
-			_map.addLayer(wms);*/
+			_map.addLayer(wms);
 			
 			/*var wmts:WMTS = new WMTS("myLayer", "http://openscales.org/geoserver/gwc/service/wmts", "topp:world_borders", "EPSG:4326");
 			wmts.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
