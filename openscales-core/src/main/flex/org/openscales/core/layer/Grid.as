@@ -456,7 +456,7 @@ package org.openscales.core.layer
 				}
 				if (bestResolution == 0)
 				{
-					bestResolution = resolutions[len-1];
+					bestResolution = resolutions[0];
 				}
 			}
 			return new Resolution(bestResolution, targetResolution.projection);

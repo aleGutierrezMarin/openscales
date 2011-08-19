@@ -72,7 +72,7 @@ package org.openscales.core
 		/**
 		 * Default Resolution of the map. The projection of the resolution is the DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_RESOLUTION:Resolution = new Resolution(1.5, DEFAULT_SRS_CODE);
+		public static const DEFAULT_RESOLUTION:Resolution = new Resolution(1, DEFAULT_SRS_CODE);
 		
 		/**
 		 * Default MaxExtent of the map. The projection of the maxExtent is the DEFAULT_SRS_CODE
@@ -1838,6 +1838,11 @@ package org.openscales.core
 			event.oldProjection = this._projection;
 			event.newProjection = value;
 			this._projection = value;
+			this._resolution = this._resolution.reprojectTo(event.newProjection);
+			this._maxExtent =  this._maxExtent.reprojectTo(event.newProjection);
+			this._center = this.center.reprojectTo(event.newProjection);
+			this._maxResolution = this._maxResolution.reprojectTo(event.newProjection);
+			this._minResolution = this._minResolution.reprojectTo(event.newProjection);
 			this.dispatchEvent(event);
 		}
 		
