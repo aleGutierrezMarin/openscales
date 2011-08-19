@@ -26,7 +26,7 @@ package org.openscales.core.layer.ogc
 	 * 
 	 * @param name The name of the layer
 	 * @param url The url of the file that contains the RSS data
-	 * @param refreshDelay The refresh time between two operations of reading the file at the given URL 
+	 * @param refreshDelay The refresh time between two operations of reading the file at the given URL
 	 * @param style
 	 * 
 	 * The srs code of the layer projection is "WGS84"
@@ -208,6 +208,16 @@ package org.openscales.core.layer.ogc
 			_georssFormat = value;
 		}
 
+		public function get projection():String
+		{
+			return this._projSrsCode;	
+		}
+		
+		public function set projection(value:String):void
+		{
+			this._projSrsCode = value;
+		}
+		
 		public function get refresh():int
 		{
 			return _refresh;
