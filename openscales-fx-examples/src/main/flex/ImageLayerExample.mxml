@@ -7,6 +7,9 @@
 		
 		<ImageLayer name="City Lights" url="http://openscales.org/4_m_citylights_lg.gif"
 					   bounds="-180,-88.759,180,88.759" minZoomLevel="1" maxZoomLevel="5"/>
+		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+			 typename="topp:states" projection="EPSG:4326" version="1.0.0"
+			 style="{Style.getDefaultSurfaceStyle()}" />
 		
 		<DragHandler/>
 		<WheelHandler/>

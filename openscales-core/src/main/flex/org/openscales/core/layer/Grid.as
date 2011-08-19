@@ -218,15 +218,11 @@ package org.openscales.core.layer
 			{
 				if (!this.tiled) 
 				{
-					this.clear();
-					this.initSingleTile(bounds);
-					//if(fullRedraw)
-					//	this.clear();
-					//if ( forceReTile || !tilesBounds.containsBounds(bounds)) 
-					//{
-					//	this.clear();
-					//	this.initSingleTile(bounds);
-					//}
+					if (this._resolutionChanged)
+					{
+						this.clear();
+						this.initSingleTile(bounds);
+					}
 				} else 
 				{
 					if (resolution != this._resquestResolution)
@@ -236,34 +232,12 @@ package org.openscales.core.layer
 						this.scaleLayer(ratio, new Pixel(this.map.width/2, this.map.height/2));
 					} else 
 					{
-						//this.initGriddedTiles(bounds);
-						//var transMatrix:Matrix = this.transform.matrix.clone();
-						//this.transform.matrix = this._defaultMatrixTranform.clone();
 						this.moveGriddedTiles(bounds);
-						//this.transform.matrix = transMatrix.clone();
-						
-						//var px:Pixel =  this.map.getMapPxFromLocation(this.map.center);
-						//var px:Pixel;
-						/*if (_centerChanged)
-						{
-						px = new Pixel(this.map.mouseX, this.map.mouseY);
-						//px = new Pixel(this.map.width/2, this.map.height/2);
-						}else
-						{
-						px = new Pixel(this.map.width/2, this.map.height/2);
-						}*/
-						
-						
-						//var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
-						if (this._resolutionChanged)
-						{
-							//this.scaleLayer(ratio);
-						}
-						this._centerChanged = false;
-						this._projectionChanged = false;
-						this._resolutionChanged = false;
 					}
 				}
+				this._centerChanged = false;
+				this._projectionChanged = false;
+				this._resolutionChanged = false;
 			}
 		}
 		
@@ -389,6 +363,8 @@ package org.openscales.core.layer
 		 * @param bounds
 		 */
 		public function initSingleTile(bounds:Bounds):void {
+			this.transform.matrix = this._defaultMatrixTranform.clone();
+			this._requestedResolution = this.getSupportedResolution(this.map.resolution);
 			var center:Location;
 			var geoTileWidth:Number;
 			var geoTileHeight:Number;
@@ -897,7 +873,6 @@ package org.openscales.core.layer
 		public function set tileOrigin(value:Location):void
 		{
 			this._tileOrigin = value;
-			this.initGriddedTiles(this.map.extent, true);
 		}
 		
 		public function getMapPxRescalesFromLayerPx(layerPx:Pixel):Pixel
