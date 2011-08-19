@@ -202,26 +202,16 @@ package org.openscales.core
 			this._layers.push(layer);
 			
 			layer.map = this;
-			
 			if (redraw){
 				layer.redraw();	
 			}
-			
-			var _centerPoint:Shape = new Shape();
-			_centerPoint.graphics.clear();
-			_centerPoint.graphics.lineStyle(1, 0xFF0000);
-			_centerPoint.graphics.moveTo(this.width/2 - 5, this.height/2);
-			_centerPoint.graphics.lineTo(this.width/2 + 5, this.height/2);
-			_centerPoint.graphics.moveTo(this.width/2, this.height/2 - 5);
-			_centerPoint.graphics.lineTo(this.width/2, this.height/2 + 5);
-			this.addChild(_centerPoint);
-			
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_ADDED, layer));
 			
 			return true;
 		}
 		
+		// manage layers
 		/**
 		 * Add a group of layers.
 		 * @param layers to add.
@@ -281,6 +271,62 @@ package org.openscales.core
 			for(var i:int=this._layers.length-1; i>=0; i--) {
 				removeLayer(this._layers[i]);
 			}
+		}
+		
+		/**
+		 * Change the layer index (position in the display list)
+		 * @param layer layer that will be updated
+		 * @param newIndex its new index (0 based) 
+		 * */
+		public function changeLayerIndex(layer:Layer,newIndex:int):void{
+			var layerIndex:int = this._layers.indexOf(layer);
+			
+			var delta:int = newIndex - layerIndex;
+			var targetIndex:int = layerIndex+delta;
+			if(layerIndex==-1 || delta==0 || targetIndex<0 || targetIndex>=this._layers.length)
+				return;
+			
+			if(targetIndex<0)
+				return;
+			this.setChildIndex(layer,targetIndex);
+			
+			if(delta>0) {
+				this._layers.splice(layerIndex,1);
+				this._layers.splice(targetIndex,0,layer);
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer));
+			}
+			else {
+				this._layers.splice(layerIndex,1);
+				this._layers.splice(targetIndex,0,layer);
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN , layer));
+			}
+			
+			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
+		}
+		/**
+		 * Change the layer index (position in the display list) by a delta relative to its current index
+		 * @param layer layer that will be updated
+		 * @param step value that will be added to the current index (could be negative) 
+		 * */
+		public function changeLayerIndexByStep(layer:Layer,step:int):void{
+			var indexLayer:int = this._layers.indexOf(layer);
+			var length:int = this._layers.length;
+			var newIndex:int = indexLayer + step;
+			if(newIndex >= 0 && newIndex < length)
+				this.setChildIndex(layer,newIndex);
+			
+			if(step>0) {
+				this._layers.splice(indexLayer,1);
+				this._layers.splice(newIndex,0,layer);
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer));
+			}
+			else {
+				this._layers.splice(indexLayer,1);
+				this._layers.splice(newIndex,0,layer);
+				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN , layer));
+			}
+			
+			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		
 		// popup management
@@ -568,56 +614,6 @@ package org.openscales.core
 			} 
 			
 			return extent;
-		}
-		
-		// manage layers
-		/**
-		 * Change the layer index (position in the display list)
-		 * @param layer layer that will be updated
-		 * @param newIndex its new index (0 based) 
-		 * */
-		public function changeLayerIndex(layer:Layer,newIndex:int):void{
-			var i:int = this._layers.indexOf(layer);
-			var delta:int = newIndex - i;
-			if(i==-1 || delta==0 || i+delta>=this._layers.length)
-				return;
-			
-			i+=delta;
-			if(i<0)
-				return;
-			
-			var targetLayer:Layer = this._layers[i];
-			var targetNum:int = this.getChildIndex(targetLayer);
-			
-			if(targetNum<0)
-				return;
-			this.setChildIndex(layer,targetNum);
-			
-			if(delta>0)
-				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer));
-			else
-				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN , layer));
-			
-			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
-		}
-		/**
-		 * Change the layer index (position in the display list) by a delta relative to its current index
-		 * @param layer layer that will be updated
-		 * @param step value that will be added to the current index (could be negative) 
-		 * */
-		public function changeLayerIndexByStep(layer:Layer,step:int):void{
-			var indexLayer:int = this._layers.indexOf(layer);
-			var length:int = this._layers.length;
-			var newIndex:int = indexLayer + step;
-			if(newIndex >= 0 && newIndex < length)
-				this.setChildIndex(layer,newIndex);
-			
-			if(step>0)
-				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_UP , layer));
-			else
-				this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_MOVED_DOWN , layer));
-			
-			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORDER, layer));
 		}
 		
 		// --- Control and Handler management -- //
