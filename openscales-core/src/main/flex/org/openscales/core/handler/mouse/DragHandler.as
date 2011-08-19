@@ -204,9 +204,7 @@ package org.openscales.core.handler.mouse
 		public function onLayerContainerVisible(event:MapEvent):void
 		{
 			if(this.dragging)
-			{
-				this._offset = new Pixel(this.map.mouseX - this.map.layerContainer.x,this.map.mouseY - this.map.layerContainer.y);
-			}
+				this._offset = new Pixel(this.map.mouseX - this.map.x,this.map.mouseY - this.map.y);
 		}
 		
 		// Getters & setters as3

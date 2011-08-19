@@ -95,27 +95,27 @@ package org.openscales.core.handler.keyboard
 			{
 				case _panWestKeyCode:
 					if(event.shiftKey)
-						this.map.pan(-_panStepShiftkey,0,true);
+						this.map.pan(-_panStepShiftkey,0);
 					else
-						this.map.pan(-_panStep,0,true);
+						this.map.pan(-_panStep,0);
 					break;
 				case _panNorthKeyCode:
 					if(event.shiftKey)
-						this.map.pan(0,-_panStepShiftkey,true);
+						this.map.pan(0,-_panStepShiftkey);
 					else
-						this.map.pan(0,-_panStep,true);
+						this.map.pan(0,-_panStep);
 					break;
 				case _panEastKeyCode:
 					if(event.shiftKey)
-						this.map.pan(_panStepShiftkey,0,true);
+						this.map.pan(_panStepShiftkey,0);
 					else
-						this.map.pan(_panStep,0,true);
+						this.map.pan(_panStep,0);
 					break;
 				case _panSouthKeyCode:
 					if(event.shiftKey)
-						this.map.pan(0,_panStepShiftkey,true);
+						this.map.pan(0,_panStepShiftkey);
 					else
-						this.map.pan(0,_panStep,true);
+						this.map.pan(0,_panStep);
 					break;
 				case _zoomInKeyCode:
 					this.map.zoomIn();

@@ -154,7 +154,7 @@ package org.openscales.core.control
 			
 			if(px.equals(this._startDrag)) {
 				var loc:Location = this._overviewMap.getLocationFromMapPx(px);
-				this.map.moveTo(loc.reprojectTo(this.map.projection));
+				this.map.center = loc.reprojectTo(this.map.projection);
 			} else {
 				var bounds:Bounds = pxToBound(px,this._startDrag);
 				if (this.map.projection != this._overviewMap.projection) {
