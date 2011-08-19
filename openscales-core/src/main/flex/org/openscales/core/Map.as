@@ -17,7 +17,6 @@ package org.openscales.core
 	
 	import mx.events.DragEvent;
 	
-	import org.hamcrest.core.throws;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
@@ -543,7 +542,7 @@ package org.openscales.core
 		public function zoom(factor:Number, targetPixel:Pixel = null):void
 		{
 			if (factor < 0)
-				throws(new ArgumentError);
+				throw(new ArgumentError);
 			
 			var _newResolution:Number = this.resolution.value * factor;
 			
@@ -1922,7 +1921,7 @@ package org.openscales.core
 		public function set defaultZoomInFactor(value:Number):void
 		{
 			if (value < 0 || value > 1)
-				throws(new ArgumentError);
+				throw(new ArgumentError);
 			
 			this._defaultZoomInFactor = value;
 		}
@@ -1943,7 +1942,7 @@ package org.openscales.core
 		public function set defaultZoomOutFactor(value:Number):void
 		{
 			if (value < 1)
-				throws(new ArgumentError);
+				throw(new ArgumentError);
 			
 			this._defaultZoomOutFactor = value;
 		}
