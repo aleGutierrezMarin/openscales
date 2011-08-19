@@ -31,6 +31,7 @@
     <classEntry path="org.openscales.core.control.IControl"/>
     <classEntry path="org.openscales.core.control.LanguageSwitcher"/>
     <classEntry path="org.openscales.core.control.LayerManager"/>
+    <classEntry path="org.openscales.core.control.LogoRotator"/>
     <classEntry path="org.openscales.core.control.MousePosition"/>
     <classEntry path="org.openscales.core.control.NumericScale"/>
     <classEntry path="org.openscales.core.control.OverviewMap"/>
@@ -79,6 +80,7 @@
     <classEntry path="org.openscales.core.filter.Comparison"/>
     <classEntry path="org.openscales.core.filter.ContainsFilter"/>
     <classEntry path="org.openscales.core.filter.ElseFilter"/>
+    <classEntry path="org.openscales.core.filter.GeometryTypeFilter"/>
     <classEntry path="org.openscales.core.filter.IFilter"/>
     <classEntry path="org.openscales.core.filter.IntersectsFilter"/>
     <classEntry path="org.openscales.core.filter.expression.IExpression"/>
