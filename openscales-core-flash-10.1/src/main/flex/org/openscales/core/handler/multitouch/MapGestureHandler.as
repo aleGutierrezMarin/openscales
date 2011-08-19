@@ -93,18 +93,27 @@ package org.openscales.core.handler.multitouch {
 			}
 		}
 		
+		private var _touchPoint:Location;
+		
 		private function onGestureZoom(event:TransformGestureEvent):void {
 			
 			var zoom:int = 0;
 			// Zoom in or out (according to the sign of the cummulativeX and Y dot)
 			var sign:int = 1;
-
+			
 			if (event.phase==GesturePhase.BEGIN) {
+				
+				this._startCenter = this.map.center;
+				
 				this.cummulativeScaleX = 1;
 				this.cummulativeScaleY = 1;
 				
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
+				
+				_touchPoint = this.map.baseLayer.getLocationFromMapPx(new Pixel(event.stageX, event.stageY));
+				
+				Trace.debug("touch x: "+_touchPoint.lon+" y:"+_touchPoint.lat);
 				
 			} else if (event.phase==GesturePhase.UPDATE) {
 				
@@ -119,7 +128,7 @@ package org.openscales.core.handler.multitouch {
 				pinchMatrix.scale(event.scaleX, event.scaleY);
 				pinchMatrix.translate(pinchPoint.x, pinchPoint.y);
 				this.map.layerContainer.transform.matrix = pinchMatrix;
-			
+				
 				
 			} if (event.phase==GesturePhase.END) {
 				
@@ -127,8 +136,9 @@ package org.openscales.core.handler.multitouch {
 				if(sign > 1) 
 				{
 					sign = 1;
-					zoom = Math.round(zoom);
+					zoom = Math.round(cummulativeScaleX);
 					zoom = Math.log(cummulativeScaleX) / Math.log(2);
+					zoom = Math.round(zoom);
 					
 					if(zoom+this.map.zoom > this.map.baseLayer.maxZoomLevel)
 						zoom = this.map.baseLayer.maxZoomLevel - this.map.zoom;
@@ -145,29 +155,35 @@ package org.openscales.core.handler.multitouch {
 						zoom = this.map.baseLayer.maxZoomLevel - this.map.zoom;
 				}
 				
-				/*
+				
 				const px:Pixel = new Pixel(event.stageX, event.stageY);
 				const centerPx:Pixel = new Pixel(this.map.width/2, this.map.height/2);
 				
-				var newCenterPx:Pixel;
-				// zoom in
-				if (sign > 0) {
-					newCenterPx = new Pixel((px.x+centerPx.x)/2, (px.y+centerPx.y)/2);
-				} else {
-					newCenterPx = new Pixel(2*centerPx.x-px.x, 2*centerPx.y-px.y);
-				}*/
-				var newCenterPx:Pixel = new Pixel(event.stageX, event.stageY);
+				var origin:Pixel = new Pixel(this.map.layerContainer.x, this.map.layerContainer.y);
 				
-				this.map.layerContainer.scaleX = 1;
-				this.map.layerContainer.scaleY = 1;
-				this.map.moveTo(this.map.getLocationFromMapPx(newCenterPx), (this.map.zoom +(sign*zoom)), false, true);
 				
+				var deltaPx:Pixel = new Pixel();
+				
+				deltaPx.x = centerPx.x-px.x;
+				deltaPx.y = centerPx.y-px.y;
+				
+				var idZoom:int = (this.map.zoom +(sign*zoom));
+				
+				var newPosition:Location = new Location(
+					this._touchPoint.lon + deltaPx.x * this.map.baseLayer.resolutions[idZoom],
+					this._touchPoint.lat - deltaPx.y * this.map.baseLayer.resolutions[idZoom],
+					this._touchPoint.projSrsCode);
+				
+				if(zoom!=0 && this.map.maxExtent.containsLocation(newPosition))
+				{
+					this.map.layerContainer.transform.matrix = pinchMatrix;
+					
+					this.map.layerContainer.scaleX = 1;
+					this.map.layerContainer.scaleY = 1;
+					
+					this.map.moveTo(newPosition, (this.map.zoom +(sign*zoom)), false, true);
+				}	
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-				
-				Trace.debug("New center x: " + newCenterPx.x + " y: " + newCenterPx.y);
-				
-				//	this.map.moveTo(this.map.center, this.map.zoom + (sign*zoom), false, true);
-				
 			}
 		}
 		
@@ -197,8 +213,6 @@ package org.openscales.core.handler.multitouch {
 			
 			var dx:int=this.map.layerContainer.x-(this.map.layerContainer.parent.mouseX - this._offset.x);
 			var dy:int=this.map.layerContainer.y-(this.map.layerContainer.parent.mouseY - this._offset.y);
-			//this._mouseOffsetLayerContainerCenter.x = this._offset.x + (this.map.layerContainer.width/2 + this.map.layerContainer.x);
-			//this._mouseOffsetLayerContainerCenter.y = this._offset.y + (this.map.layerContainer.height/2 + this.map.layerContainer.y);
 			
 			var deltaX:Number = this._start.x - this.map.mouseX;
 			var deltaY:Number = this._start.y - this.map.mouseY;
@@ -211,8 +225,10 @@ package org.openscales.core.handler.multitouch {
 			if(this.map.maxExtent.containsLocation(newPosition))
 			{
 				_lastValidCenter = newPosition;
-				this.map.layerContainer.x = this.map.layerContainer.parent.mouseX - this._offset.x;
-				this.map.layerContainer.y = this.map.layerContainer.parent.mouseY - this._offset.y;
+				
+				var pinchMatrix:Matrix = this.map.layerContainer.transform.matrix;
+				pinchMatrix.translate(-dx, -dy);
+				this.map.layerContainer.transform.matrix = pinchMatrix;
 			}
 			
 			// Force update regardless of the framerate for smooth drag
@@ -359,8 +375,6 @@ package org.openscales.core.handler.multitouch {
 			if (this.map.center.equals(oldCenter)) {
 				//Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
 				this.map.moveTo(this.map.center);
-				//this.map.layerContainer.x = _layerContainerPositionBeforeDrag.x;
-				//this.map.layerContainer.y = _layerContainerPositionBeforeDrag.y;
 			}
 		}
 		
