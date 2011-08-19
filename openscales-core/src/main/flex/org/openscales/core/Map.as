@@ -149,7 +149,7 @@ package org.openscales.core
 		/**
 		 * @private
 		 * The maximum resolution of the map
-		 * @default Number.POSITIVE_INFINITY in EPSG:4326
+		 * @default 1.5 in EPSG:4326
 		 */
 		private var _maxResolution:Resolution = DEFAULT_MAX_RESOLUTION;
 		
