@@ -9,6 +9,8 @@
 				 layers="bluemarble" format="image/jpeg" 
 				 maxExtent="-180,-90,180,90" version="1.1.1"/>
 		
+		<KeyBoardHandler id="keyboardHandler" />
+		
 		<DragHandler id="dragHandler" />
 		<WheelHandler id="wheelHandler" />
 		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
