@@ -92,7 +92,7 @@ package org.openscales.core
 		/**
 		 * Default Max Resolution of the map. The projection of the max resolution is the DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_MAX_RESOLUTION:Resolution = new Resolution(Number.POSITIVE_INFINITY, DEFAULT_SRS_CODE);
+		public static const DEFAULT_MAX_RESOLUTION:Resolution = new Resolution(1.5, DEFAULT_SRS_CODE);
 		
 		/**
 		 * Number of attempt for downloading an image tile
@@ -973,8 +973,7 @@ package org.openscales.core
 			var b:Bounds = this.extent;
 			if (lonlat != null && b) {
 				var resolution:Number = this.resolution.value;
-				if(resolution)
-					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
+				px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
 			}	
 			return px;
 		}
