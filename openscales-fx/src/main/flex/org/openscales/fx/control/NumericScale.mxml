@@ -19,6 +19,12 @@
 			 */
 			public static var DEFAULT_FIXED_ROUND:uint=0;
 			
+			
+			/**
+			 * The default dpi value to use
+			 */
+			public static const DEFAUL_DPI:Number = 101.6;
+			
 			/**
 			 * @private
 			 * The value of the current numeric scale
@@ -26,6 +32,12 @@
 			 */
 			private var _value:Number = 1;
 			
+			
+			/**
+			 * @private
+			 * The dpi to use for the scale calculation
+			 */
+			private var _dpi:Number = DEFAUL_DPI;
 			/**
 			 * The current value of the scale Label
 			 * @default "1 / 1"
@@ -50,7 +62,7 @@
 				if(this._map)
 				{
 					this._map.addEventListener(MapEvent.MOVE_END,this.updateScale);
-					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
+					this._map.addEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
 					this._map.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,this.updateScale);
 				}
 			}
@@ -66,7 +78,7 @@
 				if(this._map)
 				{
 					this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
-					this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
+					this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
 					this._map.removeEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,this.updateScale);
 				}
 			}
@@ -80,26 +92,23 @@
 			 */
 			public function updateScale(event:Event=null):void
 			{
-				//TODO Where can I find the DPI information
-				/*
-				if(this._map == null || this._map.baseLayer == null)
+				if(this._map == null)
 					return;
 				
 				// Calculate the scale according to the current center resolution
-				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode);
-				var resolutionAtCenter:Number = Unit.getResolutionOnCenter(this._map.resolution, this._map.center, projection);
+				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
+				var resolutionAtCenter:Number = Unit.getResolutionOnCenter(this._map.resolution.value, this._map.center, projection);
 				
-				var unit:String = ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode).projParams.units;
+				var unit:String = ProjProjection.getProjProjection(this._map.projection).projParams.units;
 				
 				if(projection.projName  == "longlat")
 					unit = Unit.METER;
 				
 				// screen dpi flash.system.Capabilities.screenDPI
-				var dpi:Number = this._map.baseLayer.dpi;
-				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,dpi));
+				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._dpi));
 				
 				// update the label :
-				this.scaleLabel = "1 / "+this._value;*/
+				this.scaleLabel = "1 / "+this._value;
 			}
 			
 			
