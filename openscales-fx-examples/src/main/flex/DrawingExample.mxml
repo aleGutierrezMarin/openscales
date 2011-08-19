@@ -17,7 +17,7 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<WMS id="wmsLayer" name="myLayer" url="http://openscales.org/geoserver/wms"
 			 layers="bluemarble" format="image/jpeg" version="1.1.0" styles="" alpha="0.75"/>
 		
-		<FeatureLayer id="features"/>
+		<VectorLayer id="features"/>
 		
 		<WheelHandler />
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
