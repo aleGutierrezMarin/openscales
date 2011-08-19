@@ -38,14 +38,9 @@
 				
 				if(this._layer.map != null)
 				{
-					// if baselayer no delete button
-					/*if(this._layer == this._layer.map.baseLayer )
-						deleteButton.visible = false;
-					else*/
-						deleteButton.visible = true;
+					deleteButton.visible = true;
 					
 					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
-					this._layer.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.onBaseLayerChanged);
 				}
 			}
 				
@@ -66,17 +61,6 @@
 				this.tooltipDelete = Catalog.getLocalizationForKey('layercontrol.deletelayer');	
 			}
 			
-			private function onBaseLayerChanged(event:LayerEvent):void
-			{
-				if(this._layer.map != null)
-				{
-					// if baselayer no delete button
-					/*if(this._layer == this._layer.map.baseLayer )
-						deleteButton.visible = false;
-					else*/
-						deleteButton.visible = true;
-				}
-			}
 			
 		]]>
 	</fx:Script>

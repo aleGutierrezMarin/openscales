@@ -160,6 +160,8 @@ package org.openscales.core.layer.ogc
 		 * 
 		 */
 		override public function redraw(fullRedraw:Boolean = false):void {
+			if (this.map == null)
+				return;
 			(_tileProvider as WMSTileProvider).width = this.tileWidth;
 			(_tileProvider as WMSTileProvider).height = this.tileHeight;
 			super.redraw(fullRedraw);

@@ -79,6 +79,10 @@ package org.openscales.core.layer.ogc
 		 * @inheritDoc
 		 */
 		override public function redraw(fullRedraw:Boolean=true):void {
+			
+			if (this.map == null)
+				return;
+			
 			if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
 				this.getCapabilities();
 			} else {
