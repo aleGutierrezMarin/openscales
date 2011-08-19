@@ -17,7 +17,6 @@ package org.openscales.core
 	
 	import mx.events.DragEvent;
 	
-	import org.hamcrest.core.throws;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.configuration.IConfiguration;
 	import org.openscales.core.control.IControl;
@@ -543,7 +542,7 @@ package org.openscales.core
 		public function zoom(factor:Number, targetPixel:Pixel = null):void
 		{
 			if (factor < 0)
-				throws(new ArgumentError);
+				throw(new ArgumentError);
 			
 			var _newResolution:Number = this.resolution.value * factor;
 			
@@ -882,17 +881,19 @@ package org.openscales.core
 		 */
 		public function zoomToExtent(bounds:Bounds):void 
 		{
-			if(this.maxExtent.containsBounds(bounds))
+			var newBounds:Bounds = this.maxExtent.getIntersection(bounds);
+			
+			if( newBounds )
 			{
-				if(bounds.projSrsCode != this.projection)
-					bounds = bounds.reprojectTo(this.projection);
+				if(newBounds.projSrsCode != this.projection)
+					newBounds = newBounds.reprojectTo(this.projection);
 				
-				var x:Number = (bounds.left + bounds.right)/2;
-				var y:Number = (bounds.top + bounds.bottom)/2;
+				var x:Number = (newBounds.left + newBounds.right)/2;
+				var y:Number = (newBounds.top + newBounds.bottom)/2;
 				this.center = new Location(x, y, this.projection);
 				
-				var resolutionX:Number = (bounds.right-bounds.left) / this.width;
-				var resolutionY:Number = (bounds.top-bounds.bottom) / this.height;
+				var resolutionX:Number = (newBounds.right-bounds.left) / this.width;
+				var resolutionY:Number = (newBounds.top-bounds.bottom) / this.height;
 				
 				// choose max resolution to be sure that all the extent is include in the current map
 				var resolution:Number = (resolutionX > resolutionY) ? resolutionX : resolutionY;
@@ -1920,7 +1921,7 @@ package org.openscales.core
 		public function set defaultZoomInFactor(value:Number):void
 		{
 			if (value < 0 || value > 1)
-				throws(new ArgumentError);
+				throw(new ArgumentError);
 			
 			this._defaultZoomInFactor = value;
 		}
@@ -1941,7 +1942,7 @@ package org.openscales.core
 		public function set defaultZoomOutFactor(value:Number):void
 		{
 			if (value < 1)
-				throws(new ArgumentError);
+				throw(new ArgumentError);
 			
 			this._defaultZoomOutFactor = value;
 		}

@@ -180,12 +180,18 @@ package org.openscales.core.layer
 		 */
 		override public function redraw(fullRedraw:Boolean = false):void 
 		{
+			if (this.map == null)
+				return;
+			
 			if (!available) 
 			{
 				this.clear();
 				this._initialized = false;
 				return;
 			}
+			
+			var ratio:Number;
+			
 			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 			//var bounds:Bounds = this.map.extent.clone();
 			var bounds:Bounds = this.map.getExtentForResolution(new Resolution(resolution, this.map.resolution.projection)).clone();
@@ -202,7 +208,7 @@ package org.openscales.core.layer
 					this.initGriddedTiles(bounds);
 					
 					//var px:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
-					var ratio:Number = resolution/this.map.resolution.value;
+					ratio = resolution/this.map.resolution.value;
 					this.scaleLayer(ratio, new Pixel(this.map.width/2, this.map.height/2));
 					//this.scaleX = this.scaleX * ratio;
 					//this.scaleY = this.scaleY * ratio;
@@ -213,6 +219,8 @@ package org.openscales.core.layer
 				
 				_initialized = true;
 			}
+			
+			
 			
 			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
 			{
@@ -232,7 +240,7 @@ package org.openscales.core.layer
 					if (resolution != this._resquestResolution)
 					{
 						this.initGriddedTiles(bounds, true);
-						var ratio:Number = resolution/this.map.resolution.value;
+						ratio = resolution/this.map.resolution.value;
 						this.scaleLayer(ratio, new Pixel(this.map.width/2, this.map.height/2));
 					} else 
 					{

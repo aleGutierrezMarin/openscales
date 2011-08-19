@@ -179,6 +179,9 @@ package org.openscales.core.layer.ogc
 		 */
 		override public function redraw(fullRedraw:Boolean = true):void {
 			
+			if (this.map == null)
+				return;
+			
 			if (!this.available)
 			{
 				this.clear();
