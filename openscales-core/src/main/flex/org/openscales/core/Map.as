@@ -875,12 +875,29 @@ package org.openscales.core
 		}*/
 		
 		/**
-		 * Zoom to the passed in bounds, recenter.
+		 * Zoom to the given extent
+		 * Change the map center and resolution to be at the exetnt given
 		 *
 		 * @param bounds
 		 */
-		public function zoomToExtent(bounds:Bounds):void {
-			this.moveTo(bounds.center, this.getResolutionForExtent(bounds));
+		public function zoomToExtent(bounds:Bounds):void 
+		{
+			if(this.maxExtent.containsBounds(bounds))
+			{
+				if(bounds.projSrsCode != this.projection)
+					bounds = bounds.reprojectTo(this.projection);
+				
+				var x:Number = (bounds.left + bounds.right)/2;
+				var y:Number = (bounds.top + bounds.bottom)/2;
+				this.center = new Location(x, y, this.projection);
+				
+				var resolutionX:Number = (bounds.right-bounds.left) / this.width;
+				var resolutionY:Number = (bounds.top-bounds.bottom) / this.height;
+				
+				// choose max resolution to be sure that all the extent is include in the current map
+				var resolution:Number = (resolutionX > resolutionY) ? resolutionX : resolutionY;
+				this.resolution = new Resolution(resolution, this.projection);
+			}
 		}
 		
 		/**
@@ -1860,6 +1877,18 @@ package org.openscales.core
 		public function set resolution(value:Resolution):void
 		{		
 			var event:MapEvent = new MapEvent(MapEvent.RESOLUTION_CHANGED, this);
+			if (value.projection != this.projection)
+			{
+				value = value.reprojectTo(this.projection);
+			}
+			if (value > this.maxResolution)
+			{
+				value = maxResolution;
+			}
+			if (value < this.minResolution)
+			{
+				value = minResolution;
+			}
 			event.oldResolution = this._resolution;
 			event.newResolution = value;
 			event.newCenter = this.center;

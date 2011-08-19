@@ -44,12 +44,6 @@
     <classEntry path="org.openscales.fx.control.TraceInfo"/>
     <classEntry path="org.openscales.fx.control.Zoom"/>
     <classEntry path="org.openscales.fx.control.ZoomBox"/>
-    <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
-    <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
-    <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
-    <classEntry path="org.openscales.fx.control.drawing.EditFeatures"/>
-    <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
-    <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
@@ -80,7 +74,6 @@
     <classEntry path="org.openscales.fx.handler.mouse.FxDragHandler"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxWMSGetFeatureInfo"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxWheelHandler"/>
-    <classEntry path="org.openscales.fx.layer.FxGPX"/>
     <classEntry path="org.openscales.fx.layer.FxGrid"/>
     <classEntry path="org.openscales.fx.layer.FxHTC"/>
     <classEntry path="org.openscales.fx.layer.FxHTTPRequest"/>
@@ -88,7 +81,6 @@
     <classEntry path="org.openscales.fx.layer.FxKML"/>
     <classEntry path="org.openscales.fx.layer.FxLayer"/>
     <classEntry path="org.openscales.fx.layer.FxTMS"/>
-    <classEntry path="org.openscales.fx.layer.FxVectorLayer"/>
     <classEntry path="org.openscales.fx.layer.FxWFS"/>
     <classEntry path="org.openscales.fx.layer.FxWMS"/>
     <classEntry path="org.openscales.fx.layer.FxWMSC"/>
@@ -118,7 +110,13 @@
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtentTest"/>
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
+    <classEntry path="org.openscales.fx.layer.FxGPX"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
+    <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
+    <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
