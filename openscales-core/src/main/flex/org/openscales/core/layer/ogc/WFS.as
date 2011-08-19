@@ -31,8 +31,6 @@ package org.openscales.core.layer.ogc
 	{
 		private var _timer:Timer;
 		private var _writer:Format = null;
-		private var _startTimer:Boolean = true;
-		
 		
 		/**
 		 * @private
@@ -166,7 +164,7 @@ package org.openscales.core.layer.ogc
 			if(this._timer) {
 				this._timer.reset();
 			} else {
-				this._timer = new Timer(1000,1);
+				this._timer = new Timer(500,1);
 				this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			}
 			// GetCapabilities request made here in order to have the proxy set 
@@ -204,28 +202,33 @@ package org.openscales.core.layer.ogc
 			}
 			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
 			{
-				var previousFeatureBbox:Bounds = this.featuresBbox;
-				this.featuresBbox = this.defineBounds();
+				var previousFeatureBbox:Bounds;
 				
 				if (this._centerChanged)
 				{
-					if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+					if (!this._timer.running)
 					{
-						this.loadFeatures(this.getFullRequestString());
+						previousFeatureBbox = this.featuresBbox;
+						this.featuresBbox = this.defineBounds();
+						
+						if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+						{
+							this.loadFeatures(this.getFullRequestString());
+						}
 					}
 					this._centerChanged = false;
 				}
 				if (this._resolutionChanged)
 				{
-					if (this._startTimer && !previousFeatureBbox.containsBounds(this.featuresBbox))
+					if (!this._timer.running)
 					{
-						this._timer.reset();
-						this._timer.start();
-						this._startTimer = false;
-						this.loadFeatures(this.getFullRequestString());
-					}
-					if (!previousFeatureBbox.containsBounds(this.featuresBbox) || this._currentScale > this._MAX_NUMBER_OF_SCALES)
-					{
+						previousFeatureBbox = this.featuresBbox;
+						this.featuresBbox = this.defineBounds();
+						
+						if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+						{
+							this.loadFeatures(this.getFullRequestString());
+						}
 						this._currentScale = 0;
 						this.x = 0;
 						this.y = 0;
@@ -245,11 +248,15 @@ package org.openscales.core.layer.ogc
 		
 		private function onTimerEnd(event:TimerEvent):void
 		{
-			this._startTimer = true;
+			this._centerChanged = true;
+			this._resolutionChanged = true;
 		}
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
 		{
+			this._timer.reset();
+			this._timer.start();
+			
 			var px:Pixel = event.targetZoomPixel;
 			var ratio:Number = event.oldResolution.value / event.newResolution.value;
 			this.x -= (px.x - this.x) * (ratio - 1);
@@ -305,6 +312,9 @@ package org.openscales.core.layer.ogc
 		{
 			if (!this._resolutionChanged)
 			{
+				this._timer.reset();
+				this._timer.start();
+				
 				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
 				var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
 				var deltaX:Number = deltaLon / this.map.resolution.value;

@@ -31,7 +31,7 @@ package {
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
 			//_map.projection = "EPSG:900913";
-			_map.resolution = new Resolution(0.010625, "EPSG:4326");
+			_map.resolution = new Resolution(0.005625, "EPSG:4326");
 			_map.center = new Location(2,48);
 			//_map.resolution = new Resolution(1, "EPSG:4326");
 			//_map.resolution = new Resolution(100000.0339, "EPSG:900913");
@@ -63,6 +63,12 @@ package {
 					regions.useCapabilities = true;
 					regions.style = Style.getDefaultSurfaceStyle();
 					_map.addLayer(regions);
+					
+					var communes:WFS = new WFS("communes","http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/geoserver/sde/wfs","sde:commune");
+					communes.projSrsCode = "EPSG:4326";
+					communes.useCapabilities = true;
+					communes.style = Style.getDefaultSurfaceStyle();
+					//_map.addLayer(communes);
 
 	
 			// Add Controls to map
