@@ -1860,6 +1860,18 @@ package org.openscales.core
 		public function set resolution(value:Resolution):void
 		{		
 			var event:MapEvent = new MapEvent(MapEvent.RESOLUTION_CHANGED, this);
+			if (value.projection != this.projection)
+			{
+				value = value.reprojectTo(this.projection);
+			}
+			if (value > this.maxResolution)
+			{
+				value = maxResolution;
+			}
+			if (value < this.minResolution)
+			{
+				value = minResolution;
+			}
 			event.oldResolution = this._resolution;
 			event.newResolution = value;
 			event.newCenter = this.center;
