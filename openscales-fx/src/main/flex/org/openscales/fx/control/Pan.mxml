@@ -103,7 +103,7 @@
 				if(!this._map)
 					return;
 				
-				this.map.pan(0, -this.DELTA_PX, true);
+				this.map.pan(0, -this.DELTA_PX);
 			}
 			
 			/**
@@ -117,7 +117,7 @@
 				if(!this._map)
 					return;
 				
-				this.map.pan(0, this.DELTA_PX, true);
+				this.map.pan(0, this.DELTA_PX);
 			}
 			
 			/**
@@ -131,7 +131,7 @@
 				if(!this._map)
 					return;
 				
-				this.map.pan(this.DELTA_PX, 0, true);
+				this.map.pan(this.DELTA_PX, 0);
 			}
 			
 			/**
@@ -145,7 +145,7 @@
 				if(!this._map)
 					return;
 				
-				this.map.pan(-this.DELTA_PX, 0, true);
+				this.map.pan(-this.DELTA_PX, 0);
 			}			
 			
 			override public function destroy():void {

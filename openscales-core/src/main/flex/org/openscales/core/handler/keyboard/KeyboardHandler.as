@@ -24,25 +24,25 @@ package org.openscales.core.handler.keyboard
 	 */ 
 	public class KeyboardHandler extends Handler
 	{
-		private var _slideRatio:Number = 75;
+		private var _panStep:Number = 75;
 		
-		private var _slideRatioShiftkey:Number = 225;
+		private var _panStepShiftkey:Number = 225;
 		
-		private var _panWest:uint = Keyboard.LEFT;
+		private var _panWestKeyCode:uint = Keyboard.LEFT;
 		
-		private var _panNorth:uint = Keyboard.UP;
+		private var _panNorthKeyCode:uint = Keyboard.UP;
 		
-		private var _panEast:uint = Keyboard.RIGHT;
+		private var _panEastKeyCode:uint = Keyboard.RIGHT;
 		
-		private var _panSouth:uint = Keyboard.DOWN;
+		private var _panSouthKeyCode:uint = Keyboard.DOWN;
 		
-		private var _zoomIn:uint = 107;
+		private var _zoomInKeyCode:uint = 107;
 		
-		private var _zoomIn2:uint = 187;
+		private var _zoomInKeyCode2:uint = 187;
 		
-		private var _zoomOut:uint = 109;
+		private var _zoomOutKeyCode:uint = 109;
 		
-		private var _zoomOut2:uint = 54;
+		private var _zoomOutKeyCode2:uint = 54;
 		
 		/**
 		 * Constructor
@@ -93,45 +93,46 @@ package org.openscales.core.handler.keyboard
 		{			
 			switch(event.keyCode)
 			{
-				case _panWest:
+				case _panWestKeyCode:
 					if(event.shiftKey)
-						this.map.pan(-_slideRatioShiftkey,0,true);
+						this.map.pan(-_panStepShiftkey,0);
 					else
-						this.map.pan(-_slideRatio,0,true);
+						this.map.pan(-_panStep,0);
 					break;
-				case _panNorth:
+				case _panNorthKeyCode:
 					if(event.shiftKey)
-						this.map.pan(0,-_slideRatioShiftkey,true);
+						this.map.pan(0,-_panStepShiftkey);
 					else
-						this.map.pan(0,-_slideRatio,true);
+						this.map.pan(0,-_panStep);
 					break;
-				case _panEast:
+				case _panEastKeyCode:
 					if(event.shiftKey)
-						this.map.pan(_slideRatioShiftkey,0,true);
+						this.map.pan(_panStepShiftkey,0);
 					else
-						this.map.pan(_slideRatio,0,true);
+						this.map.pan(_panStep,0);
 					break;
-				case _panSouth:
+				case _panSouthKeyCode:
 					if(event.shiftKey)
-						this.map.pan(0,_slideRatioShiftkey,true);
+						this.map.pan(0,_panStepShiftkey);
 					else
-						this.map.pan(0,_slideRatio,true);
+						this.map.pan(0,_panStep);
 					break;
-				case _zoomIn:
-					// TODO change after zoom refactor
-					//this.map.moveTo(this.map.center,this.map.zoom + 1,false,true);
+				case _zoomInKeyCode:
+					this.map.zoomIn();
 					break;
-				case _zoomIn2:
+				case _zoomInKeyCode2:
 					if(event.shiftKey)
-						//this.map.moveTo(this.map.center,this.map.zoom + 1,false,true);
+						this.map.zoomIn();
 					break;
-				case _zoomOut:
-					//this.map.moveTo(this.map.center,this.map.zoom - 1,false,true);
+				case _zoomOutKeyCode:
+					this.map.zoomOut();
 					break;
-				case _zoomOut2:
+				case _zoomOutKeyCode2:
 					if(!event.shiftKey)
-						//this.map.moveTo(this.map.center,this.map.zoom - 1,false,true);
+						this.map.zoomOut();
 					break;
+				default:
+					return;
 			}
 		}
 		
@@ -140,194 +141,153 @@ package org.openscales.core.handler.keyboard
 		 */
 		public function setKeyCodesToDefault():void
 		{
-			this.slideRatio = 75;
-			this.slideRatioShiftkey = 225;
-			this.panWest = Keyboard.LEFT;
-			this.panNorth = Keyboard.UP;
-			this.panEast = Keyboard.RIGHT;
-			this.panSouth = Keyboard.DOWN;
-			this.zoomIn = 107;
-			//this.zoomIn2 = 187;
-			this.zoomOut = 109;
-			//this.zoomOut2 = 54;
+			this.panStep = 75;
+			this.panStepShiftkey = 225;
+			this.panWestKeyCode = Keyboard.LEFT;
+			this.panNorthKeyCode = Keyboard.UP;
+			this.panEastKeyCode = Keyboard.RIGHT;
+			this.panSouthKeyCode = Keyboard.DOWN;
+			this.zoomInKeyCode = 107;
+			//this.zoomInKeyCode2 = 187;
+			this.zoomOutKeyCode = 109;
+			//this.zoomOutKeyCode2 = 54;
 		}
 		
 		/**
 		 * Step (in pixels) used to calculate new map position when panning without shift key pressed
 		 * <p>Default is 75</p>
 		 */
-		public function get slideRatio():Number
+		public function get panStep():Number
 		{
-			return _slideRatio;
+			return _panStep;
 		}
 		
 		/**
 		 * @private
 		 */
-		public function set slideRatio(value:Number):void
+		public function set panStep(value:Number):void
 		{
-			_slideRatio = value;
+			_panStep = value;
 		}
 		
 		/**
 		 * Step (in pixels) used to calculate new map position when panning with shift key pressed
 		 * <p>Default is 225</p>
 		 */
-		public function get slideRatioShiftkey():Number
+		public function get panStepShiftkey():Number
 		{
-			return _slideRatioShiftkey;
+			return _panStepShiftkey;
 		}
 		
 		/**
 		 * @private
 		 */
-		public function set slideRatioShiftkey(value:Number):void
+		public function set panStepShiftkey(value:Number):void
 		{
-			_slideRatioShiftkey = value;
+			_panStepShiftkey = value;
 		}
 		
 		/**
 		 * Pan west key code
 		 * <p>Default is Keyboard.LEFT</p>
 		 */
-		public function get panWest():uint
+		public function get panWestKeyCode():uint
 		{
-			return _panWest;
+			return _panWestKeyCode;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set panWest(value:uint):void
+		public function set panWestKeyCode(value:uint):void
 		{
-			_panWest = value;
+			_panWestKeyCode = value;
 		}
 
 		/**
 		 * Pan north key code
 		 * <p>Default is Keyboard.UP</p>
 		 */
-		public function get panNorth():uint
+		public function get panNorthKeyCode():uint
 		{
-			return _panNorth;
+			return _panNorthKeyCode;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set panNorth(value:uint):void
+		public function set panNorthKeyCode(value:uint):void
 		{
-			_panNorth = value;
+			_panNorthKeyCode = value;
 		}
 
 		/**
 		 * Pan east key code
 		 * <p>Default is Keyboard.RIGHT</p>
 		 */
-		public function get panEast():uint
+		public function get panEastKeyCode():uint
 		{
-			return _panEast;
+			return _panEastKeyCode;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set panEast(value:uint):void
+		public function set panEastKeyCode(value:uint):void
 		{
-			_panEast = value;
+			_panEastKeyCode = value;
 		}
 
 		/**
 		 * Pan south key code
 		 * <p>Default is Keyboard.DOWN</p>
 		 */
-		public function get panSouth():uint
+		public function get panSouthKeyCode():uint
 		{
-			return _panSouth;
+			return _panSouthKeyCode;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set panSouth(value:uint):void
+		public function set panSouthKeyCode(value:uint):void
 		{
-			_panSouth = value;
+			_panSouthKeyCode = value;
 		}
 
 		/**
 		 * Zoom in key code
 		 * <p>Default is plus sign (on numerical pad) code</p>
 		 */
-		public function get zoomIn():uint
+		public function get zoomInKeyCode():uint
 		{
-			return _zoomIn;
+			return _zoomInKeyCode;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set zoomIn(value:uint):void
+		public function set zoomInKeyCode(value:uint):void
 		{
-			_zoomIn = value;
+			_zoomInKeyCode = value;
 		}
-
-		
-		/**
-		 * Zoom in 2 key code
-		 * <p>Default is plus sign (on alphanumerical pad) code</p>
-		 */
-		 /*
-		public function get zoomIn2():uint
-		{
-			return _zoomIn2;
-		}
-		*/
-		/**
-		 * @private
-		 */
-		/*
-		public function set zoomIn2(value:uint):void
-		{
-			_zoomIn2 = value;
-		}*/
 		
 		/**
 		 * Zoom out key code
 		 * <p>Default is minus sign (on numerical pad) code</p>
 		 */
-		public function get zoomOut():uint
+		public function get zoomOutKeyCode():uint
 		{
-			return _zoomOut;
+			return _zoomOutKeyCode;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set zoomOut(value:uint):void
+		public function set zoomOutKeyCode(value:uint):void
 		{
-			_zoomOut = value;
+			_zoomOutKeyCode = value;
 		}
-
-		/**
-		 * Zoom out 2 key code
-		 * 
-		 * <p> Default is minus sign (on alphanumerical pad) code</p>
-		 */
-		/*
-		public function get zoomOut2():uint
-		{
-			return _zoomOut2;
-		}*/
-
-		/**
-		 * @private
-		 */
-		/*
-		public function set zoomOut2(value:uint):void
-		{
-			_zoomOut2 = value;
-		}*/
-
-
+		
 	}
 }
