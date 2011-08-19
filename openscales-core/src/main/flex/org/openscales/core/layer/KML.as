@@ -39,10 +39,9 @@ package org.openscales.core.layer
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
-			/*if (!displayed) {
-				this.clear();
+			
+			if (this.map == null)
 				return;
-			}*/
 			
 			if (! this._request) {
 				this.loading = true;

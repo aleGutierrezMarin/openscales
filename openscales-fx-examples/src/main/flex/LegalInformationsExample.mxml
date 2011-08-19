@@ -11,8 +11,9 @@
 		<Mapnik id="mapnikLayer" name="Mapnik" />
 		
 		<WFS id="wfs" name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
-			 typename="topp:states" projection="EPSG:4326" version="1.0.0"
-			 style="{Style.getDefaultSurfaceStyle()}" />
+			 typename="topp:states" projection="EPSG:900913" version="1.0.0"
+			 style="{Style.getDefaultSurfaceStyle()}" 
+			 maxExtent = "-40037508.34,-10037508.34,10037508.34,10037508.34" />
 		
 		<WheelHandler />
 		<DragHandler/>
@@ -24,7 +25,12 @@
 		<TermsOfService x="500" y="{height-20}" url="http://openscales.org/index.html" />
 		<Copyright id="copyright" x="400" y="{height-20}" />
 
-		<LayerManager x="10" y="10" width="215" />
+		<LayerManager right="10" width="215">
+			<rendererOptions>
+				<fx:Object
+					displayZoomToExtent="true" />
+			</rendererOptions> 
+		</LayerManager>
 	</Map>
 	<fx:Script>
 		<![CDATA[

@@ -882,17 +882,19 @@ package org.openscales.core
 		 */
 		public function zoomToExtent(bounds:Bounds):void 
 		{
-			if(this.maxExtent.containsBounds(bounds))
+			var newBounds:Bounds = this.maxExtent.getIntersection(bounds);
+			
+			if( newBounds )
 			{
-				if(bounds.projSrsCode != this.projection)
-					bounds = bounds.reprojectTo(this.projection);
+				if(newBounds.projSrsCode != this.projection)
+					newBounds = newBounds.reprojectTo(this.projection);
 				
-				var x:Number = (bounds.left + bounds.right)/2;
-				var y:Number = (bounds.top + bounds.bottom)/2;
+				var x:Number = (newBounds.left + newBounds.right)/2;
+				var y:Number = (newBounds.top + newBounds.bottom)/2;
 				this.center = new Location(x, y, this.projection);
 				
-				var resolutionX:Number = (bounds.right-bounds.left) / this.width;
-				var resolutionY:Number = (bounds.top-bounds.bottom) / this.height;
+				var resolutionX:Number = (newBounds.right-bounds.left) / this.width;
+				var resolutionY:Number = (newBounds.top-bounds.bottom) / this.height;
 				
 				// choose max resolution to be sure that all the extent is include in the current map
 				var resolution:Number = (resolutionX > resolutionY) ? resolutionX : resolutionY;

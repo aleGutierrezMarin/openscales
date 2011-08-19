@@ -73,8 +73,7 @@ package org.openscales.core.layer {
 		 */
 		public function get available():Boolean
 		{
-			return (this.visible
-				&& this.maxExtent.getIntersection(this.map.extent) != null
+			return (this.maxExtent.getIntersection(this.map.extent) != null
 				&& (this.map.resolution.value <= this.maxResolution)
 				&& (this.map.resolution.value >= this.minResolution));
 		}
@@ -395,10 +394,8 @@ package org.openscales.core.layer {
 		 *  It will set the available parameter to expose if the layer is drawn or not.
 		 */
 		public function redraw(fullRedraw:Boolean = false):void {
-			/*this.clear();
-			if (this.displayed) {
-				this.draw();
-			}*/
+			if (this.map == null)
+				return;
 		}
 		
 		/**

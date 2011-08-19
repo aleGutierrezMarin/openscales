@@ -69,6 +69,10 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
+			
+			if (this.map == null)
+				return;
+			
 			//if the user chooses not to display this layer, stop timer to save ressources
 			if (!displayed) {
 				this.clear();
