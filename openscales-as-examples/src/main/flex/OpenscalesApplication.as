@@ -14,6 +14,7 @@ package {
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WMSC;
+	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.layer.osm.CycleMap;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Style;
@@ -29,22 +30,25 @@ package {
 		public function OpenscalesApplication() {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			_map.projection = "EPSG:4326";
-			//_map.projection = "EPSG:900913";
-			_map.resolution = new Resolution(0.010625, "EPSG:4326");
-			_map.center = new Location(2,48);
+			//_map.projection = "EPSG:4326";
+			_map.projection = "EPSG:900913";
+			//_map.resolution = new Resolution(0.010625, "EPSG:4326");
+			_map.center = new Location(2,48, "EPSG:4326");
 			//_map.resolution = new Resolution(1, "EPSG:4326");
 			//_map.resolution = new Resolution(100000.0339, "EPSG:900913");
-			_map.maxExtent = new Bounds(-180,-90, 180, 90,"EPSG:4326");
+			//_map.maxExtent = new Bounds(-180,-90, 180, 90,"EPSG:4326");
 			//_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
 			// Add layers to map
-			var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
-			wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
-			_map.addLayer(wms);
+			//var wms:WMSC = new WMSC("blueMarble", "http://openscales.org/geoserver/wms","bluemarble");
+			//wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			//_map.addLayer(wms);
 			
-			/*var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
+			/*var wmts:WMTS = new WMTS("myLayer", "http://openscales.org/geoserver/gwc/service/wmts", "topp:world_borders", "EPSG:4326");
+			wmts.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			_map.addLayer(wmts);*/
+			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
-			_map.addLayer(mapnik);*/
+			_map.addLayer(mapnik);
 
 			
 			/*var cycle:CycleMap=new CycleMap("Cycle"); // a base layer
