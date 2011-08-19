@@ -454,6 +454,10 @@ package org.openscales.core.layer
 					bestRatio = ratioSeeker;
 					bestResolution = this.resolutions[i];
 				}
+				if (bestResolution == 0)
+				{
+					bestResolution = resolutions[len-1];
+				}
 			}
 			return new Resolution(bestResolution, targetResolution.projection);
 		}
