@@ -98,6 +98,7 @@
 			[Bindable]
 			public var scaleNameY:Number = 0;
 			
+			
 			/**
 			 * Configure the listener for the pan and the zoom
 			 * Configure the list of zoom label once the component is created 
@@ -126,22 +127,6 @@
 			}
 			
 			/**
-			 * Update the min/maxSlider when the map.maxResolution and minResolution can have changed
-			 * Call on a MapEvent.MIN_MAX_RESOLUTION_CHANGED 
-			 * 
-			 * @param event The MapEvent received or null otherwise
-			 */
-			public function updateMinMaxSliderChanged(event:MapEvent = null):void
-			{
-				// TODO refactor
-				/*if(this.map.baseLayer)
-				{
-					this.minSlider = this.map.baseLayer.getZoomForResolution(this.map.maxResolution.value);
-					this.maxSlider = (this.map.baseLayer.getZoomForResolution(this.map.minResolution.value));
-				}*/
-			}
-			
-			/**
 			 * @inherit
 			 */
 			override public function set map(value:Map):void 
@@ -149,10 +134,7 @@
 				super.map = value;
 				
 				if(value)
-				{
-					this.updateMinMaxSliderChanged();
 					this.initializeZoomLevels();
-				}
 			}
 			
 			/**
@@ -167,8 +149,7 @@
 				{
 					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
 					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
-					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);	
-					super.map.addEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.updateMinMaxSliderChanged);
+					super.map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.updateZoomLevels);	
 				}
 			}
 			
@@ -184,8 +165,7 @@
 				{
 					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
 					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
-					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
-					super.map.removeEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.updateMinMaxSliderChanged);
+					super.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.updateZoomLevels);
 				}
 			}
 			
@@ -250,7 +230,6 @@
 			 */
 			public function onZoomIn(event:MouseEvent):void
 			{
-				//this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
 				this.map.zoomIn();
 			}
 			
@@ -262,35 +241,34 @@
 			 */
 			public function onZoomOut(event:MouseEvent):void
 			{
-				// TODO refactor
-				//this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
 				this.map.zoomOut();
 			}
 			
 			/**
+			 * @private
 			 * Initialise the zoomSlider according to current map zoomLevels
 			 */
 			private function initializeZoomLevels(event:Event = null):void {
 				if(!this._map)
 					return;
-				// TODO refactor
-				//this.currentZoom = map.zoom;
+				
+				this.currentSliderValue = this.getSliderValueFromResolution(this.map.resolution.value);
 				
 				// initialise the label value
 				this.updateCurrentLabel();
 			}
 			
-			
+			/**
+			 * @private
+			 * Update zoomLevels when the map resolution change
+			 */
 			
 			private function updateZoomLevels(e:MapEvent = null):void {
 				this.updateScalesNameLabel();
 				
-				if(e.zoomChanged)
-				{
-					// TODO refactor
-				//	this.currentZoom = map.zoom;
-					this.updateCurrentLabel();
-				}
+				this.currentSliderValue = this.getSliderValueFromResolution(this.map.resolution.value);
+				this.updateCurrentLabel();
+			
 			}
 			
 			/**
@@ -314,7 +292,8 @@
 				
 				var resolution:Number = this.getResolutionFromSliderValue(this.currentSliderValue);
 				var newResolution:Resolution = new Resolution(resolution, this.map.projection);
-				this.map.moveTo(this.map.center, newResolution);
+
+				this.map.resolution = newResolution;
 			}
 			
 			/**
@@ -327,7 +306,7 @@
 				if(!this._map)
 					return;
 				
-				var currentSlider:SliderBase= event.target as SliderBase;
+				var currentSlider:SliderBase = event.target as SliderBase;
 				
 				// update the display label
 				var resolution:Number = this.getResolutionFromSliderValue(currentSlider.value);
@@ -337,25 +316,26 @@
 				if(!this._onDrag)
 				{
 					this.currentSliderValue = currentSlider.value;
-					// TODO refactor
-					//this.map.moveTo(this.map.center, this.currentZoom, false, true);
-					
 					var newResolution:Resolution = new Resolution(resolution, this.map.projection);
-					this.map.moveTo(this.map.center, newResolution);
+					this.map.resolution = newResolution;
 				}
 				
 			}
 			
+			private function getSliderValueFromResolution(value:Number):Number
+			{
+				// sliderValues and resolution are inverted so 1 - ratio
+				var ratio:Number = 1 - (value/(this.map.maxResolution.value+this.map.minResolution.value));
+				var value:Number = this.minSlider + (this.maxSlider-this.minSlider) * ratio;
+				
+				return value;
+			}
+			
 			private function getResolutionFromSliderValue(value:Number):Number
 			{
-				
-				var ratio:Number = value/100;
-				
-	//			var resolution:Number = this.map.minResolution.value + (this.map.maxResolution.value - this.map.minResolution.value) * ratio;
-				
-				var resolution:Number = this.map.minResolution.value + (1 - this.map.minResolution.value) * ratio;
-				
-				
+				// sliderValues and resolution are inverted so 1 - ratio
+				var ratio:Number = 1 - (value/(this.maxSlider+this.minSlider));
+				var resolution:Number = this.map.minResolution.value + (this.map.maxResolution.value - this.map.minResolution.value) * ratio;
 				return resolution;
 			}
 			

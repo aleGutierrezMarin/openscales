@@ -12,7 +12,7 @@ package org.openscales.fx.layer
 	 * <p>WFS Flex wrapper.</p>
 	 * <p>To use it, declare a &lt;WFS /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
-	public class FxWFS extends FxFeatureLayer
+	public class FxWFS extends FxVectorLayer
 	{
 		private var _url:String;
 		

@@ -62,7 +62,7 @@ package org.openscales.core
 		/**
 		 * Draw a debug shape on the map representig the maxExtent
 		 */
-		public static const DEBUG_MAX_EXTENT:Boolean = false;
+		public static const DEBUG_MAX_EXTENT:Boolean = true;
 		
 		/**
 		 * Default SRS Code of the Map
@@ -72,7 +72,7 @@ package org.openscales.core
 		/**
 		 * Default Resolution of the map. The projection of the resolution is the DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_RESOLUTION:Resolution = new Resolution(1, DEFAULT_SRS_CODE);
+		public static const DEFAULT_RESOLUTION:Resolution = new Resolution(1.5, DEFAULT_SRS_CODE);
 		
 		/**
 		 * Default MaxExtent of the map. The projection of the maxExtent is the DEFAULT_SRS_CODE
@@ -92,7 +92,7 @@ package org.openscales.core
 		/**
 		 * Default Max Resolution of the map. The projection of the max resolution is the DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_MAX_RESOLUTION:Resolution = new Resolution(Number.POSITIVE_INFINITY, DEFAULT_SRS_CODE);
+		public static const DEFAULT_MAX_RESOLUTION:Resolution = new Resolution(1.5, DEFAULT_SRS_CODE);
 		
 		/**
 		 * Number of attempt for downloading an image tile
@@ -149,7 +149,7 @@ package org.openscales.core
 		/**
 		 * @private
 		 * The maximum resolution of the map
-		 * @default Number.POSITIVE_INFINITY in EPSG:4326
+		 * @default 1.5 in EPSG:4326
 		 */
 		private var _maxResolution:Resolution = DEFAULT_MAX_RESOLUTION;
 		
@@ -200,7 +200,7 @@ package org.openscales.core
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START,layerLoadHandler);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END,layerLoadHandler);	
-			this.addEventListener(MapEvent.PROJECTION_CHANGED,this.onMapProjectionChanged);
+			//this.addEventListener(MapEvent.PROJECTION_CHANGED,this.onMapProjectionChanged);
 			
 			if (DEBUG_MAX_EXTENT)
 			{
@@ -259,16 +259,10 @@ package org.openscales.core
 		private function onMapProjectionChanged(event:MapEvent):void
 		{
 			this._resolution = this._resolution.reprojectTo(event.newProjection);
+			this._maxExtent =  this._maxExtent.reprojectTo(event.newProjection);
+			this._center = this.center.reprojectTo(event.newProjection);
 			this._maxResolution = this._maxResolution.reprojectTo(event.newProjection);
 			this._minResolution = this._minResolution.reprojectTo(event.newProjection);
-			if (this.maxExtent != null)
-			{
-				this.maxExtent = this.maxExtent.reprojectTo(event.newProjection);	
-			}
-			if (this.center != null)
-			{
-				this.center = this.center.reprojectTo(event.newProjection);
-			}
 		}
 		
 		
@@ -973,8 +967,7 @@ package org.openscales.core
 			var b:Bounds = this.extent;
 			if (lonlat != null && b) {
 				var resolution:Number = this.resolution.value;
-				if(resolution)
-					px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
+				px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
 			}	
 			return px;
 		}

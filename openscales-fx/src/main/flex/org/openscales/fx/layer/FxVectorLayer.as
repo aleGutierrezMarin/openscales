@@ -7,9 +7,9 @@ package org.openscales.fx.layer
 	 * <p>FeatureLayer Flex wrapper.</p>
 	 * <p>To use it, declare a &lt;FeatureLayer /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
-	public class FxFeatureLayer extends FxLayer
+	public class FxVectorLayer extends FxLayer
 	{
-		public function FxFeatureLayer() {
+		public function FxVectorLayer() {
 			super();
 		}
 		
