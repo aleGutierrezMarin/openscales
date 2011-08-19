@@ -131,8 +131,8 @@ package org.openscales.core.handler.multitouch {
 			var oldCenter:Location = this.map.center;
 			var deltaX:Number = this._start.x - xy.x;
 			var deltaY:Number = this._start.y - xy.y;
-			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution,
-				this._startCenter.lat - deltaY * this.map.resolution,
+			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution.value,
+				this._startCenter.lat - deltaY * this.map.resolution.value,
 				this._startCenter.projSrsCode);
 			// If the new position equals the old center, stop here
 			if (newPosition.equals(oldCenter)) {
