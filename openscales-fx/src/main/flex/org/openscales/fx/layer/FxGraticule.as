@@ -20,7 +20,7 @@ package org.openscales.fx.layer
 		}
 		
 		/**
-		 * @return Array of possible graticule widths in degrees, from biggest to smallest.
+		 * Array of possible graticule widths in degrees, from biggest to smallest.
 		 */
 		public function get intervals():Array
 		{
@@ -28,7 +28,7 @@ package org.openscales.fx.layer
 		}
 		
 		/**
-		 * @param value Array of possible graticule widths in degrees, from biggest to smallest.
+		 * @private
 		 */
 		public function set intervals(value:Array):void
 		{
@@ -36,7 +36,7 @@ package org.openscales.fx.layer
 		}
 		
 		/**
-		 * @return Minimum number of lines to display for the graticule.
+		 * Minimum number of lines to display for the graticule.
 		 */
 		public function get minNumberOfLines():uint
 		{
@@ -44,7 +44,7 @@ package org.openscales.fx.layer
 		}
 		
 		/**
-		 * @param value Minimum number of lines to display for the graticule.
+		 * @private
 		 */
 		public function set minNumberOfLines(value:uint):void
 		{
