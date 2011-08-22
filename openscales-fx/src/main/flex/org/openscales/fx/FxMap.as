@@ -369,7 +369,10 @@ package org.openscales.fx
 		 * MaxExtent MXML setter
 		 */
 		public function set maxExtent(value:String):void {
-			this._maxExtent = Bounds.getBoundsFromString(value);
+			var newBounds:Bounds = Bounds.getBoundsFromString(value);
+			this._maxExtent = newBounds;
+			if(this._map)
+				this.map.maxExtent = newBounds;
 		}
 		
 		public function get flexOverlay():Group{

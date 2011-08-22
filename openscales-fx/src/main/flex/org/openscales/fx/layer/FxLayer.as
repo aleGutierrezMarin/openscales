@@ -207,12 +207,18 @@ package org.openscales.fx.layer
 		public function set maxExtent(value:*):void {
 			if(value)
 			{
-				if(this._layer)
-					this._layer.maxExtent = Bounds.getBoundsFromString(value+","+this._layer.projSrsCode);
-				else if(this._projection)
-					this._maxExtent = Bounds.getBoundsFromString(value+","+this._projection);
+				var length:Number = (value.split(",")).length;
+				
+				if(length == 4)
+				{
+					if(this._layer)
+						this._layer.maxExtent = Bounds.getBoundsFromString(value+","+this._layer.projSrsCode);
+					else if(this._projection)
+						this._maxExtent = Bounds.getBoundsFromString(value+","+this._projection);
+				}
+				
 				else
-					this._maxExtent = Bounds.getBoundsFromString(value+","+Geometry.DEFAULT_SRS_CODE);
+					this._maxExtent = Bounds.getBoundsFromString(value);
 			}
 		}
 		
