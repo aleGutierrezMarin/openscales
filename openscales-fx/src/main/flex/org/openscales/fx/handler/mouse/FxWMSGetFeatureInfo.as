@@ -1,6 +1,6 @@
 package org.openscales.fx.handler.mouse
 {
-	import org.openscales.core.handler.mouse.WMSGetFeatureInfo;
+	import org.openscales.core.handler.mouse.WMSGetFeatureInfo_old;
 	import org.openscales.fx.handler.FxHandler;
 	
 	/**
@@ -12,28 +12,28 @@ package org.openscales.fx.handler.mouse
 	
 		public function FxWMSGetFeatureInfo()
 		{
-			this.handler = new WMSGetFeatureInfo();
+			this.handler = new WMSGetFeatureInfo_old();
 			super();
 		}
 		
 		public function set url(url:String):void {
-			(this.handler as WMSGetFeatureInfo).url = url;
+			(this.handler as WMSGetFeatureInfo_old).url = url;
 		}
 		
 		public function set layers(layers:String):void {
-			(this.handler as WMSGetFeatureInfo).layers = layers;
+			(this.handler as WMSGetFeatureInfo_old).layers = layers;
 		}
 		
 		public function set srs(srs:String):void {
-			(this.handler as WMSGetFeatureInfo).srs = srs;
+			(this.handler as WMSGetFeatureInfo_old).srs = srs;
 		}
 		
 		public function set format(format:String):void {
-			(this.handler as WMSGetFeatureInfo).format = format;
+			(this.handler as WMSGetFeatureInfo_old).format = format;
 		}
 		
 		public function set maxFeatures(maxFeatures:Number):void {
-			(this.handler as WMSGetFeatureInfo).maxFeatures = maxFeatures;
+			(this.handler as WMSGetFeatureInfo_old).maxFeatures = maxFeatures;
 		}
 		
 	}

@@ -11,7 +11,7 @@
 	
 	<Map id="fxMap" width="100%" height="100%" zoom="13" center="-74.011,40.710">
 		
-		<Mapnik name="Mapnik" />
+		<!--<Mapnik name="Mapnik" />-->
 		
 		<DragHandler active="false" />
 		<WheelHandler />
@@ -19,10 +19,11 @@
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
+		<WMS name="coin" url="http://openscales.org/geoserver/wms" version="1.1.0" layers="tiger:poi" projection="EPSG:4326" numZoomLevels="30" format="image/png" transparent="true"/>
 		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs"
 				typename="tiger:poi" projection="EPSG:4326" version="1.0.0" useCapabilities="true"
 				style="{Style.getDefaultPointStyle()}" numZoomLevels="18" />
-	
+
 		<WMSGetFeatureInfo url="http://openscales.org/geoserver/wms" layers="tiger:poi" />
 		
 		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" />
