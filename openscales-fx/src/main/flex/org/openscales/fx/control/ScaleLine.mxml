@@ -146,9 +146,9 @@
 				// add listener to the map
 				if(this._map)
 				{
-					this._map.addEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
-					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
-					this._map.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,updateScaleLineOnBaseLayerChanged);
+					this._map.addEventListener(MapEvent.CENTER_CHANGED,updateScaleLine);
+					this._map.addEventListener(MapEvent.RESOLUTION_CHANGED,updateScaleLine);
+					this._map.addEventListener(MapEvent.PROJECTION_CHANGED,updateScaleLine);
 				}
 			}
 			
@@ -162,26 +162,21 @@
 				// remove listener to the map
 				if(this._map)
 				{
-					this._map.removeEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
-					this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
-					this._map.removeEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,updateScaleLineOnBaseLayerChanged);
+					this._map.removeEventListener(MapEvent.CENTER_CHANGED,updateScaleLine);
+					this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED,updateScaleLine);
+					this._map.removeEventListener(MapEvent.PROJECTION_CHANGED,updateScaleLine);
 				}
 			}
 			
 			/**
-			 * Redraw the scaleline with new parameters.
+			 * Redraw the scaleline with new map parameters.
+			 * Called when the map center, resolution or projection is changed
 			 * 
-			 * @param event the event can be a MapEvent.MOVE_END.
+			 * @param event the event can be a MapEvent
 			 */
-			public function updateScaleLineOnMove(e:MapEvent):void {
-				if(e.zoomChanged)
-					this.updateScale();
-			}
-			
-			public function updateScaleLineOnBaseLayerChanged(e:LayerEvent):void {
+			public function updateScaleLine(e:MapEvent):void {
 				this.updateScale();
 			}
-			
 			
 			
 			/**
@@ -231,14 +226,14 @@
 				if (!mapResolution) {return;}
 				
 				// get the current units of the map
-				var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.projection).projParams.units;
+				var currentMapUnits:String = ProjProjection.getProjProjection(this.map.projection).projParams.units;
 				
 				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
 				var centerResolution:Number = Unit.getResolutionOnCenter(this._map.resolution.value, this._map.center, projection);
 				
 				
 				if(projection.projName  == "longlat")
-					currentBaseLayerUnits = Unit.METER;
+					currentMapUnits = Unit.METER;
 				
 				// convert the scaleMaxWidth to map units
 				// The result is the max distance IN MAP UNIT, represent in the scaleline
