@@ -21,16 +21,13 @@ package org.openscales.core.layer.ogc
 	 * GPX layer; versions 1.0 and 1.1 supported 
 	 * 
 	 * @param name: the name of the layer
-	 * 
 	 * @param version
-	 * 
 	 * @param url: the url of the file that contains the gpx data
-	 * 
 	 * @param data: the file that contains the gpx data
 	 * 
 	 * The data and url params are not compatible with each other
-	 * 
 	 * The data projection for this layer is set to "EPSG:4326" by default (@see class Layer)
+	 * @see GPX 1.1 specification: all coordinates are relative to the WGS84 datum
 	 * 
 	 */
 	
@@ -49,6 +46,7 @@ package org.openscales.core.layer.ogc
 							data:XML = null,
 							style:Style = null)
 		{
+			this._projSrsCode = "EPSG:4326";
 			this.version = version;
 			this.url = url;	
 			this.gpxData = data;
@@ -185,6 +183,16 @@ package org.openscales.core.layer.ogc
 		public function set version(value:String):void
 		{
 			_version = value;
+		}
+		
+		public function get projection():String
+		{
+			return this._projSrsCode;	
+		}
+		
+		public function set projection(value:String):void
+		{
+			this._projSrsCode = value;
 		}
 		
 	}
