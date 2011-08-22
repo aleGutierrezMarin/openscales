@@ -32,13 +32,13 @@ package
 			_map.size=new Size(1200, 700);
 			
 			
-			// Add layers to map
-			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
+			// Add a base layer to the map
+			var mapnik:Mapnik=new Mapnik("Mapnik");
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 			
 			
-			//GeoRss layer; fetch data from url
+			//add the GeoRss layer; fetch data from url
 			var georssLayer:GeoRss = new GeoRss("Archeological Sites", this.url);
 			this._map.addLayer(georssLayer);
 			

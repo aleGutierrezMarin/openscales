@@ -45,7 +45,7 @@
 				//water bodies in Tasmania
 				var dataUrl2:String = "http://openscales.org:80/geoserver/topp/wms?height=512&bbox=145.97161899999998%2C-43.031944%2C147.219696%2C-41.775558&width=508&layers=topp%3Atasmania_water_bodies&request=GetMap&service=wms&styles=cite_lakes&srs=EPSG%3A4326&format=application%2Frss+xml&transparent=false&version=1.1.1";  
 				
-				rsslayer.url = dataUrl2;
+				rsslayer.url = dataUrl;
 				
 				fxMap.center = "-103.8601212,44.4904744,WGS84";
 				fxMap.zoom = 14;
@@ -84,7 +84,7 @@
 				}
 				
 				for(var attribute:String in event.feature.attributes) {
-					if((attribute != "title") && (attribute != "link")) 
+					if((attribute != "title") && (attribute != "link") ) 
 						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
 				}
 				
