@@ -207,6 +207,7 @@ package org.openscales.core.layer.capabilities
 			var styles:Array; // array containg available styles for the layer
 			var formats:Array; // array containing available formats for the layer
 			
+			var title:String; // The layer Title
 			var layerIdentifier:String; // Identifier of the layer
 			var tileMatrixSetId:String; // Identifier of a tilematrixSet
 			var style:String;
@@ -223,6 +224,13 @@ package org.openscales.core.layer.capabilities
 					linkedTileMatrixSets = new HashMap();
 					styles = new Array();
 					formats = new Array();
+					
+					// Identifier
+					layerCapabilities.put("Identifier", layerIdentifier);
+					
+					// Title
+					title = node._owsns::Title;
+					layerCapabilities.put("Title", title);
 					
 					for each (var XMLTileMatrixSet:XML in node.TileMatrixSetLink)
 					{
