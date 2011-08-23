@@ -11,7 +11,8 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.layer.VectorLayer;
 			
-			var res:Resolution = new Resolution(1.40625, "EPSG:4326");
+			[Bindable]
+			private var res:Resolution = new Resolution(1.40625, "EPSG:4326");
 		]]>
 	</fx:Script>
 	

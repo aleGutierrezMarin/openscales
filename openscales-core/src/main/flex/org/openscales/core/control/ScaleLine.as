@@ -81,7 +81,6 @@ package org.openscales.core.control
 			if(value != null) {
 				this._map=value;	      	
 				this.map.addEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
-				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
 			}
 		}
 

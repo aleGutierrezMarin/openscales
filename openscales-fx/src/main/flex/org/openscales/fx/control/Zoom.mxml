@@ -147,7 +147,7 @@
 				// add listener to the map
 				if(this._map)
 				{
-					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.addEventListener(MapEvent.PROJECTION_CHANGED, this.initializeZoomLevels);
 					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					super.map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.updateZoomLevels);	
 				}
@@ -163,7 +163,7 @@
 				// remove listener to the map
 				if(this._map)
 				{
-					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.initializeZoomLevels);
 					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					super.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.updateZoomLevels);
 				}
