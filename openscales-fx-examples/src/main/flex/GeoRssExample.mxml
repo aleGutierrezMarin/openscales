@@ -8,7 +8,7 @@
 	<Map id="fxMap" width="100%" height="100%">
 		
 		<Mapnik id="mapnik" name="Mapnik" alpha="0.7" />
-		<GeoRss id="rsslayer" name="Spearfish Roads" numZoomLevels="22"/>
+		<GeoRss id="rsslayer" name="French Regions" numZoomLevels="22" url="http://qlf-gpp3-api-ign-fr.aw.atosorigin.com/dataexample/georssdep.rss" />
 		
 		<!-- Handlers -->
 		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
@@ -39,16 +39,8 @@
 			
 			private function initMap():void
 			{	
-				//roads in USA
-				var dataUrl:String = "http://openscales.org:80/geoserver/sf/wms?height=358&bbox=589434.8564686741%2C4914006.337837095%2C609527.2102150217%2C4928063.398014731&width=512&layers=sf%3Aroads&request=GetMap&service=wms&styles=simple_roads&srs=EPSG%3A26713&format=application%2Frss+xml&transparent=false&version=1.1.1";
-				
-				//water bodies in Tasmania
-				var dataUrl2:String = "http://openscales.org:80/geoserver/topp/wms?height=512&bbox=145.97161899999998%2C-43.031944%2C147.219696%2C-41.775558&width=508&layers=topp%3Atasmania_water_bodies&request=GetMap&service=wms&styles=cite_lakes&srs=EPSG%3A4326&format=application%2Frss+xml&transparent=false&version=1.1.1";  
-				
-				rsslayer.url = dataUrl;
-				
-				fxMap.center = "-103.8601212,44.4904744,WGS84";
-				fxMap.zoom = 14;
+				fxMap.center = "4.32972,48.56215,WGS84";
+				fxMap.zoom = 7;
 				Trace.debug("Mapnik projection: " + mapnik.projection);
 				Trace.debug("GeoRssLayer projection: " + rsslayer.projection);
 				
