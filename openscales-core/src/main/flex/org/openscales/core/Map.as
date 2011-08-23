@@ -1079,11 +1079,12 @@ package org.openscales.core
 				value = value.reprojectTo(this.projection);
 			}
 			
-			if(value.value < this.resolution.value)
+			this._maxResolution = value;
+			if(this._maxResolution.value < this.resolution.value)
 			{
-				this.resolution = new Resolution(value.value, this.projection);
+				this.resolution = this._maxResolution;
 			}
-			this._maxResolution = value;		
+			
 			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
 		}
 		
@@ -1106,11 +1107,11 @@ package org.openscales.core
 				value = value.reprojectTo(this.projection);
 			}
 			
-			if(value.value > this.resolution.value)
-			{
-				this.resolution = new Resolution(value.value, this.projection);
-			}
 			this._minResolution = value;
+			if(this._minResolution.value >= this.resolution.value)
+			{
+				this.resolution = this._minResolution;
+			}
 			
 			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
 		}

@@ -73,9 +73,9 @@ package org.openscales.map
 			var _theMap:Map = (passThroughtData as Map);
 			
 			// Then, the resolution, the maxExtent and the center are reprojected
-			assertEquals("The map resolution has not been reprojected", _theMap.resolution.value, 100);
-			assertEquals("The map center has not been reprojected", _theMap.center.projSrsCode, "EPSG:4326");
-			assertEquals("The map maxExtent has not been reprojected", _theMap.maxExtent.projSrsCode, "EPSG:4326");
+			assertEquals("The map resolution has not been reprojected", "EPSG:4326", _theMap.resolution.projection);
+			assertEquals("The map center has not been reprojected", "EPSG:4326", _theMap.center.projSrsCode);
+			assertEquals("The map maxExtent has not been reprojected", "EPSG:4326", _theMap.maxExtent.projSrsCode);
 		}
 		
 		/**
