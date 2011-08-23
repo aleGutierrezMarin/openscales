@@ -104,9 +104,6 @@ package org.openscales.core.layer {
 		 */
 		public function Layer(name:String) {
 			this.name = name;
-			/*this.graphics.beginFill(0xFFFFFF,0);
-			this.graphics.drawRect(0,0,this.size.w,this.size.h);
-			this.graphics.endFill();*/
 			this.visible = true;
 			this.doubleClickEnabled = true;
 			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
@@ -235,7 +232,6 @@ package org.openscales.core.layer {
 		protected function onMapProjectionChanged(event:MapEvent):void
 		{
 			this._projectionChanged = true;
-			//this.redraw(false);
 		}
 		
 		/**
@@ -247,7 +243,6 @@ package org.openscales.core.layer {
 		protected function onMapResolutionChanged(event:MapEvent):void
 		{
 			this._resolutionChanged = true;
-			//this.redraw(false);
 		}
 		
 		/**
@@ -259,7 +254,6 @@ package org.openscales.core.layer {
 		protected function onMapCenterChanged(event:MapEvent):void
 		{
 			this._centerChanged = true;
-			//this.redraw(false);	
 		}
 		
 		protected function onSecurityInitialized(e:SecurityEvent):void {
@@ -682,16 +676,6 @@ package org.openscales.core.layer {
 			if(this.map && event)
 				this.map.dispatchEvent(event);
 		}
-		
-		/**
-		 * Whether or not this layer is a baselayer.
-		 */
-		/*public function get isBaseLayer():Boolean {
-			if ((! this._map) || (! this._map.baseLayer)) {
-				return false;
-			}
-			return (this.map.baseLayer == this);
-		}*/
 		
 		/**
 		 * Whether or not the layer is a fixed layer.
