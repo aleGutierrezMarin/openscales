@@ -57,7 +57,7 @@ package org.openscales.core.handler.multitouch {
 		}
 		
 		private function onTwoFingerTap(event:GestureEvent):void {
-			this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+			this.map.zoomIn();
 		}
 		
 	}

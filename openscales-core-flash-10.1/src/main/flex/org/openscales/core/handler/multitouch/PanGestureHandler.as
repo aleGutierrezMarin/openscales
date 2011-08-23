@@ -6,20 +6,19 @@ package org.openscales.core.handler.multitouch {
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
 	
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	/**
 	 * Handler use to panthe map based on gesture multitouche events.
 	 */
 	public class PanGestureHandler extends Handler {
 		
-		private var _startCenter:Location = null;
-		private var _start:Pixel = null;
+		private var _last:Pixel = null;
 		
 		private var _firstDrag:Boolean = true;
 		
@@ -52,9 +51,8 @@ package org.openscales.core.handler.multitouch {
 		
 		private function onPanZoom(event:TransformGestureEvent):void {
 			if (this.map) {
-				if (event.phase==GesturePhase.BEGIN) {			
-					this._start = new Pixel(event.stageX,event.stageY);
-					this._startCenter = this.map.center;
+				if (event.phase==GesturePhase.BEGIN) {
+					this._last = new Pixel(event.stageX,event.stageY);
 					this.map.buttonMode=true;
 					this._dragging=true;
 					this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_START, this.map));
@@ -62,22 +60,24 @@ package org.openscales.core.handler.multitouch {
 						this.onstart(event);
 				}
 				if (event.phase==GesturePhase.UPDATE) {
-					this.map.layerContainer.x += event.offsetX;
-					this.map.layerContainer.y += event.offsetY;
-					if(this.map.bitmapTransition) {
-						this.map.bitmapTransition.x = this.map.bitmapTransition.parent.mouseX - event.offsetX;
-						this.map.bitmapTransition.y = this.map.bitmapTransition.parent.mouseY - event.offsetY;
-					}
+					if(!this._last)
+						return;
+					
+					var _dX:Number = this._last.x-event.stageX;
+					var _dY:Number = this._last.y-event.stageY;
+					this._last = new Pixel(event.stageX,event.stageY);
+					
+					var _centerPx:Pixel = this.map.getMapPxFromLocation(this.map.center);
+					this.map.center = this.map.getLocationFromMapPx(_centerPx.add(_dX,_dY));
 					event.updateAfterEvent();
 				}
 				if (event.phase==GesturePhase.END) {
 				
 					this.map.buttonMode=false;
-					this.done(new Pixel(event.stageX, event.stageY));
-					// A MapEvent.MOVE_END is emitted by the "set center" called in this.done
 					this._dragging=false;
 					if (this.oncomplete!=null)
 						this.oncomplete(event);
+					this._last = null;
 				}
 			}
 		}
@@ -116,40 +116,5 @@ package org.openscales.core.handler.multitouch {
 		{
 			return this._oncomplete;
 		}
-		
-		/**
-		 * This function is used to recenter map after dragging
-		 */
-		private function done(xy:Pixel):void {
-			if (this.dragging) {
-				this.panMap(xy);
-				this._dragging = false;
-			}
-		}
-		private function panMap(xy:Pixel):void {
-			this._dragging = true;
-			var oldCenter:Location = this.map.center;
-			var deltaX:Number = this._start.x - xy.x;
-			var deltaY:Number = this._start.y - xy.y;
-			var newPosition:Location = new Location(this._startCenter.lon + deltaX * this.map.resolution.value,
-				this._startCenter.lat - deltaY * this.map.resolution.value,
-				this._startCenter.projSrsCode);
-			// If the new position equals the old center, stop here
-			if (newPosition.equals(oldCenter)) {
-				Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");
-				return;
-			}
-			// Try to set the new position as the center of the map
-			this.map.center = newPosition;
-			// If the new position is invalid (see Map.setCenter for the
-			// conditions), the center of the map is always the old one but the
-			// bitmap that represents the map is centered to the new position.
-			// We have to reset the bitmap position to the right center.
-			if (this.map.center.equals(oldCenter)) {
-				Trace.log("DragHandler.panMap INFO: invalid new center submitted, the bitmap of the map is reset");
-				this.map.moveTo(this.map.center);
-			}
-		}
-		
 	}
 }
