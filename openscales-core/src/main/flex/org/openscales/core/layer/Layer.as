@@ -5,11 +5,8 @@ package org.openscales.core.layer {
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
-	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
-	import org.openscales.core.filter.ElseFilter;
-	import org.openscales.core.layer.originator.ConstraintOriginator;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.security.events.SecurityEvent;
@@ -279,7 +276,7 @@ package org.openscales.core.layer {
 		{
 			_dpi = value;
 		}
-	
+		
 		/**
 		 * A Bounds object which represents the location bounds of the current extent display on the map.
 		 */
@@ -439,7 +436,7 @@ package org.openscales.core.layer {
 			return new Pixel(layerPx.x + this.x, layerPx.y + this.y);
 		}
 		
-
+		
 		
 		/**
 		 * Is this layer currently in range, based on its min and max resolutions
@@ -668,7 +665,7 @@ package org.openscales.core.layer {
 				this._projSrsCode = value.toUpperCase();
 				event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
 			}
-					
+			
 			if(this._autoResolution){
 				this.generateResolutions();
 			}
@@ -846,7 +843,7 @@ package org.openscales.core.layer {
 		{
 			return _originators;
 		}
-
+		
 		/**
 		 * @private
 		 * Take * in paramteter instead of Vector.<DataOriginator> to allowed several way of definition 

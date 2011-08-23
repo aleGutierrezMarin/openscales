@@ -13,13 +13,14 @@ package {
 	import flash.ui.Multitouch;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.handler.multitouch.PanGestureHandler;
 	import org.openscales.core.handler.multitouch.ZoomGestureHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -33,6 +34,8 @@ package {
 		protected var geo:Geolocation;
 		protected var firstPass:Boolean = true;
 		
+		private var _rotation:Number = 0;
+		
 		public function MobileTracker() {
 			_map=new Map();
 			
@@ -42,7 +45,7 @@ package {
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 			
-			var markers:FeatureLayer = new FeatureLayer("markers");
+			var markers:VectorLayer = new VectorLayer("markers");
 			markers.projSrsCode = "EPSG:4326";
 			markers.style = Style.getDefaultPointStyle();
 			markers.tweenOnZoom = false;
@@ -69,7 +72,7 @@ package {
 						
 			// Set the map center
 			_map.center = new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			_map.zoom=5;
+			_map.resolution = new Resolution(mapnik.resolutions[5],mapnik.projSrsCode);
 			
 			this.addChild(_map);
 			
@@ -100,14 +103,31 @@ package {
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, onOrientationChange);
 			
-			// Stile beta some comment this for now
 			//stage.addEventListener(TransformGestureEvent.GESTURE_ROTATE, onRotate);
 			
 		}
 		
 		private function onRotate(event:TransformGestureEvent):void {
-			_map.layerContainer.rotationZ -= event.rotation;
-			_map.bitmapTransition.rotationZ -= event.rotation;
+			_rotation += event.rotation;
+			
+			if((_rotation > 135 && _rotation < 225)
+				|| (_rotation < -135 && _rotation > -225)) {
+				if(_rotation>0)
+					_map.rotationZ = 180;
+				else
+					_map.rotationZ = 180;
+			}
+			else if((_rotation > 45 && rotation < 125 )
+				|| (_rotation < -45 && _rotation > -125)) {
+				var i:Number = _map.width;
+				_map.width = _map.height;
+				_map.height = i;
+				if(event.rotation>0)
+					_map.rotationZ = 90;
+				else
+					_map.rotationZ = 90;
+			}
+			
 		}
 		
 		private function onDeactivate(event:Event):void {
@@ -127,10 +147,10 @@ package {
 		private function geolocationUpdateHandler(event:GeolocationEvent):void
 		{
 			t.text = "Latitude " + event.latitude + ", longitude " + event.longitude;
-			(_map.getLayerByName("markers") as FeatureLayer).addFeature(PointFeature.createPointFeature(new Location(event.longitude, event.latitude)));
+			(_map.getLayerByName("markers") as VectorLayer).addFeature(PointFeature.createPointFeature(new Location(event.longitude, event.latitude)));
 			if(firstPass) {
 				firstPass = false;
-				this._map.moveTo(new Location(event.longitude, event.latitude), 16, false, true);
+				this._map.center = new Location(event.longitude, event.latitude, "EPGS:4326");
 			}
 		}
 		
