@@ -1,7 +1,6 @@
 package org.openscales.core.handler.feature
 {
 	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
@@ -18,7 +17,6 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.VectorLayer;
-	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
@@ -123,11 +121,6 @@ package org.openscales.core.handler.feature
 		 */
 		private var _selectionAreaFillOpacity:Number = 0.33;
 
-		/**
-		 * Indicates if the map is currently zooming
-		 */
-		private var _zooming:Boolean = false;
-		
 		/**
 		 * 
 		 */		
@@ -417,8 +410,6 @@ package org.openscales.core.handler.feature
 				this.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
 				this.map.addEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
-				this.map.addEventListener(LayerEvent.LAYER_LOAD_START, this.onLayerLoadStart);
-				this.map.addEventListener(LayerEvent.LAYER_LOAD_END, this.onLayerLoadEnd);
 			}
 		}
 
@@ -445,8 +436,6 @@ package org.openscales.core.handler.feature
 				this.map.removeEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
 				this.map.removeEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
-				this.map.removeEventListener(LayerEvent.LAYER_LOAD_START, this.onLayerLoadStart);
-				this.map.removeEventListener(LayerEvent.LAYER_LOAD_END, this.onLayerLoadEnd);
 			}
 			// Listeners of the super class
 			super.unregisterListeners();
@@ -531,33 +520,6 @@ package org.openscales.core.handler.feature
 				this.onSomething(evt, this.resetStyle, this.onUnselectedFeature);
 			}
 		}
-		
-		
-		/**
-		 * @private
-		 * Call when a Layer load Start event is dispatched
-		 * If the layer is one of selected : set t
-		 */
-		private function onLayerLoadStart(event:LayerEvent):void
-		{
-			if((event.layer) as WFS)
-			{
-				this._zooming = true;
-			}
-		}
-		
-		/**
-		 * @private
-		 * 
-		 * Call when a Layer load end event is dispatched
-		 */
-		private function onLayerLoadEnd(event:LayerEvent):void
-		{
-			if((event.layer) as WFS)
-			{
-				this._zooming = false;
-			}
-		}
 
 		/**
 		 * Generic function called by all the onOver, onOut, onSelected and
@@ -574,10 +536,7 @@ package org.openscales.core.handler.feature
 		private function onSomething(evt:FeatureEvent, updateStyleFeature:Function, onSomethingFeature:Function):void {
 			var i:int, layer:VectorLayer, layersTmp:Array = new Array();
 
-			Trace.info("Drag  : "+this._dragging);
-			Trace.info("Zoom  : "+this._zooming);
-			
-			if (this._dragging || this._zooming)
+			if (this._dragging)
 				return;
 
 			for each (var feature:Feature in evt.features) {
