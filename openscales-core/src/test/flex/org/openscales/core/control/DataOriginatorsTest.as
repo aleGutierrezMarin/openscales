@@ -366,13 +366,13 @@ package org.openscales.core.control
 			// remove one :
 			map.removeLayer(mapnik2);
 			
-			// Still 2 originators in the list
+			// Still 3 originators in the list
 			Assert.assertEquals("There should be 3 originators",3,dataOriginatorsControl.originators.length);
 			
 			// remove another one :
 			map.removeLayer(cycle);
 			
-			// Still 1 originator in the list
+			// Still 2 originator in the list
 			Assert.assertEquals("There should be 2 originator",2,dataOriginatorsControl.originators.length);
 			
 			// re-add
