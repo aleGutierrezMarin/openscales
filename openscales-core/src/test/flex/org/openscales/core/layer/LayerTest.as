@@ -212,8 +212,8 @@ package org.openscales.core.layer
 			var _returnedPixel:Pixel = _layer.getLayerPxFromMapPx(new Pixel(300, 200));
 				
 			// Then the returned pixel is properly computed
-			assertEquals("The getLayerPxFromMapPx return a wrong value for the X coordinate of the layer pixel", 200, _returnedPixel.x); 
-			assertEquals("The getLayerPxFromMapPx return a wrong value for the Y coordinate of the layer pixel", 150, _returnedPixel.y); 
+			assertEquals("The getLayerPxFromMapPx return a wrong value for the X coordinate of the layer pixel", 400, _returnedPixel.x); 
+			assertEquals("The getLayerPxFromMapPx return a wrong value for the Y coordinate of the layer pixel", 250, _returnedPixel.y); 
 		}
 	}
 }
