@@ -130,11 +130,6 @@ package org.openscales.core.events{
 		public static const LOAD_END:String="openscales.maploadend";
 		
 		/**
-		 * Event type dispatched when the zoom of the map has been changed.
-		 */
-		public static const ZOOM_CHANGED:String="openscales.mapzoomchanged";
-		
-		/**
 		 * Event type dispatched when the center of the map has been changed.
 		 */
 		public static const CENTER_CHANGED:String="openscales.mapcenterchanged";
