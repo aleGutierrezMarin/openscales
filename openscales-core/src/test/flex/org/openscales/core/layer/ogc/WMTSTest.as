@@ -281,7 +281,8 @@ package org.openscales.core.layer.ogc {
 				this._wmts.removeEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			
 			this._timer.stop();
-			this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handlerFail);
+			if(this._handlerFail!=null)
+				this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handlerFail);
 			
 			Assert.fail("No request sent");
 		}
