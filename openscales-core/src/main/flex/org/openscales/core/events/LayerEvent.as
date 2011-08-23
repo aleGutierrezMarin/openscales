@@ -38,12 +38,6 @@ package org.openscales.core.events
 		public static const LAYER_CHANGED:String="openscales.changelayer";
 		
 		/**
-		 * Event type dispatched when the base layer of the map has changed
-		 */	
-		public static const BASE_LAYER_CHANGED:String="openscales.changebaselayer";
-		
-		
-		/**
 		 * Event type dispatched when the current map resolution is within the layer's min/max range.
 		 */
 		public static const LAYER_IN_RANGE:String="openscales.layerinrange";

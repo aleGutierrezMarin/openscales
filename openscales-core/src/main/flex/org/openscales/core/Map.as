@@ -813,6 +813,8 @@ package org.openscales.core
 						this.center = newCenter;
 					}
 				}
+				mapEvent = new MapEvent(MapEvent.MOVE_END, this);
+				this.dispatchEvent(mapEvent);
 			}
 		}
 		/**
