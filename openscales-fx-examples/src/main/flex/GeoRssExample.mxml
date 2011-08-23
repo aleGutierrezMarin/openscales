@@ -80,6 +80,7 @@
 					fxpopupRenderer.titleContent = event.feature.attributes["title"];
 				}
 				if(event.feature.attributes["link"]){
+			
 					content = content + "<b>link</b> : "+ event.feature.attributes["link"] + "<br />" + "<br />";
 				}
 				
