@@ -23,8 +23,10 @@ Draw a rectangle on the overview to define a new extent for the main map.-->
 				<s:HorizontalLayout/>
 			</s:layout>
 			<OverviewMap id="miniMap" width="100%" height="100%" extentColor="0xFF3300" newExtentColor="0x00FF33" projection="EPSG:900913">
-				<CycleMap name="cyclemap" proxy="http://openscales.org/proxy.php?url="/>
-			</OverviewMap>		
+				<CycleMap name="cyclemap" proxy="http://openscales.org/proxy.php?url="
+						  maxExtent="-2000000,-2000000,2000000,2000000,EPSG:900913" />
+			</OverviewMap>	
+			
 		</s:Panel>
 		
 		<PanZoom id="panZoom" x="10" y="10" />
@@ -33,10 +35,14 @@ Draw a rectangle on the overview to define a new extent for the main map.-->
 	
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.basetypes.Resolution;
 						
 			private function resizeMap():void {
 				miniMap.height = 0.2 * this.height;
 				miniMap.width = this.width * miniMap.height / this.height;
+				
+				fxMap.resolution = new Resolution(0.703125);
+		
 			}
 			
 		]]>

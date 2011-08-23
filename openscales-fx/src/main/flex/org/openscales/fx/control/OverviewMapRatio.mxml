@@ -18,7 +18,6 @@
 			import spark.core.SpriteVisualElement;
 			
 			
-
 			/**
 			 * @private
 			 * ActionScript object of the overviewMapRatio
@@ -158,6 +157,37 @@
 				return this._overviewmap.projection;
 			}
 			
+			/**
+			 * The actual maxResolution of the map
+			 *//*
+			public function set maxResolution(value:Resolution):void
+			{
+			this._overviewmap.maxResolution = value;
+			}*/
+			
+			/**
+			 * @public
+			 *//*
+			public function get maxResolution():Resolution
+			{
+			return this._overviewmap.maxResolution;
+			}*/
+			
+			/**
+			 * The actual minResolution of the map
+			 *//*
+			public function set minResolution(value:Resolution):void
+			{
+			this._overviewmap.minResolution = value;
+			}*/
+			
+			/**
+			 * @public
+			 *//*
+			public function get minResolution():Resolution
+			{
+			return this._overviewmap.minResolution;
+			}*/
 			
 		]]>
 	</fx:Script>

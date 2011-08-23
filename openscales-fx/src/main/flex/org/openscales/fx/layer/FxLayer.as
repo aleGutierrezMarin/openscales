@@ -4,7 +4,6 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.fx.FxMap;
-	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	
 	import spark.components.Group;
@@ -39,7 +38,7 @@ package org.openscales.fx.layer
 		protected var _proxy:String = null;
 		
 		protected var _fxmap:FxMap;
-
+		
 		protected var _displayInLayerManager:Boolean = true;
 		
 		public function FxLayer() {
@@ -47,7 +46,7 @@ package org.openscales.fx.layer
 			this.init();
 		}
 		
-
+		
 		public function init():void {
 			
 		}
@@ -216,7 +215,7 @@ package org.openscales.fx.layer
 					else if(this._projection)
 						this._maxExtent = Bounds.getBoundsFromString(value+","+this._projection);
 				}
-				
+					
 				else
 					this._maxExtent = Bounds.getBoundsFromString(value);
 			}
