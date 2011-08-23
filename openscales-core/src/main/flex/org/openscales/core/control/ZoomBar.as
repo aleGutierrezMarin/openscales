@@ -93,8 +93,7 @@ package org.openscales.core.control
 			this.removeChild(this.zoomBar);
 			this.zoomBar = null;
 			
-			this.map.removeEventListener(MapEvent.MOVE_END,this.moveZoomBar);
-			this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.redraw);
+			this.map.removeEventListener(MapEvent.PROJECTION_CHANGED,this.redraw);
 			
 			super.destroy();
 		}
@@ -107,8 +106,10 @@ package org.openscales.core.control
 		 * @param value
 		 */
 		override public function set map(map:Map):void {
+			if(this.map)
+				this.map.removeEventListener(MapEvent.PROJECTION_CHANGED,this.redraw);
 			super.map = map;
-			this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,this.redraw);
+			this.map.addEventListener(MapEvent.PROJECTION_CHANGED,this.redraw);
 		}
 		
 		/**
