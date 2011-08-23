@@ -8,6 +8,7 @@ package org.openscales.core.layer
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -113,12 +114,12 @@ package org.openscales.core.layer
 		
 		override public function set map(map:Map):void {
 			if (this.map != null) {
-				this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.updateCurrentProjection);
+				this.map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.updateCurrentProjection);
 			}
 			super.map = map;
 			if (this.map != null) {
 				this.updateCurrentProjection();
-				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.updateCurrentProjection);
+				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, this.updateCurrentProjection);
 				// Ugly trick due to the fact we can't set the size of and empty Sprite
 				this.graphics.drawRect(0,0,map.width,map.height);
 				this.width = map.width;

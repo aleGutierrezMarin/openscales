@@ -9,7 +9,6 @@ package org.openscales.core.feature {
 	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.layer.VectorLayer;
-	import org.openscales.core.layer.Layer;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.Symbolizer;
@@ -58,7 +57,7 @@ package org.openscales.core.feature {
 		/**
 		 * The layer where this feature belong. Should be a LayerFeature or inherited classes.
 		 */
-		private var _layer:Layer = null;
+		private var _layer:VectorLayer = null;
 
 		/**
 		 * The geolocalized position of this feature, will be used to know where
@@ -196,7 +195,7 @@ package org.openscales.core.feature {
 			var style:Style;
 			if (this._style == null) {
 				// FIXME : Ugly thing done here
-				style = (this.layer as VectorLayer).style;
+				style = this.layer.style;
 			} else {
 				style = this._style;
 			}
@@ -226,11 +225,11 @@ package org.openscales.core.feature {
 			}
 		}
 
-		public function get layer():Layer {
+		public function get layer():VectorLayer {
 			return this._layer;
 		}
 
-		public function set layer(value:Layer):void {
+		public function set layer(value:VectorLayer):void {
 			this._layer = value;
 			if (this._layer != null) {
 				registerListeners();

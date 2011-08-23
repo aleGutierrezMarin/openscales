@@ -91,7 +91,6 @@ package org.openscales.core.control
 			if(this._map!=null)
 			{
 				this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
-				this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
 			}
 			
 			this._textField = null;
@@ -121,13 +120,11 @@ package org.openscales.core.control
 			if (this._map != null) 
 			{
 				this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
-				this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
 			}
 			super._map = value;
 			if(value!=null) 
 			{
 				this._map.addEventListener(MapEvent.MOVE_END,this.updateScale);
-				this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
 			}
 		}
 	

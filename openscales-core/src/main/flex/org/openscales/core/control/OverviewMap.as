@@ -66,8 +66,6 @@ package org.openscales.core.control
 			if (this.map != null) {
 				this.map.removeEventListener(MapEvent.MOVE_END,
 					_drawExtent);
-				this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,
-					_drawExtent);
 				this.removeEventListener(MouseEvent.MOUSE_WHEEL, forwardMouseWheelToMap);
 				this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 				this.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -75,8 +73,6 @@ package org.openscales.core.control
 			super.map = value;
 			if(value!=null) {
 				this.map.addEventListener(MapEvent.MOVE_END,
-					_drawExtent);
-				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,
 					_drawExtent);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_WHEEL,
 					forwardMouseWheelToMap);

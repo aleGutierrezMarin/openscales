@@ -147,7 +147,7 @@
 				if(this._map)
 				{
 					this._map.addEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
-					this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
+					this._map.addEventListener(MapEvent.PROJECTION_CHANGED,updateScaleLineOnBaseLayerChanged);
 					this._map.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,updateScaleLineOnBaseLayerChanged);
 				}
 			}
@@ -163,7 +163,7 @@
 				if(this._map)
 				{
 					this._map.removeEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
-					this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
+					this._map.removeEventListener(MapEvent.PROJECTION_CHANGED,updateScaleLineOnBaseLayerChanged);
 					this._map.removeEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,updateScaleLineOnBaseLayerChanged);
 				}
 			}
