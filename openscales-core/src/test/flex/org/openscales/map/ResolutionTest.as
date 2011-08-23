@@ -64,6 +64,8 @@ package org.openscales.map
 		{
 			// Given a map with a resolution
 			var _map:Map = new Map(600, 400, "EPSG:4326");
+			_map.minResolution = new Resolution(8, "EPSG:4326");
+			_map.maxResolution = new Resolution(12, "EPSG:4326");
 			_map.resolution = new Resolution(10, "EPSG:4326");
 			
 			// When I zoomIn
@@ -83,6 +85,7 @@ package org.openscales.map
 		{
 			// Given a map with a resolution
 			var _map:Map = new Map(600, 400, "EPSG:4326");
+			_map.maxResolution = new Resolution(12, "EPSG:4326");
 			_map.resolution = new Resolution(10, "EPSG:4326");
 			
 			// When I zoomOut
@@ -102,6 +105,7 @@ package org.openscales.map
 		{
 			// Given a map with a resolution
 			var _map:Map = new Map(600, 400, "EPSG:4326");
+			_map.maxResolution = new Resolution(12, "EPSG:4326");
 			_map.resolution = new Resolution(10, "EPSG:4326");
 			
 			// When I zoom with a factor as parameter
@@ -139,8 +143,9 @@ package org.openscales.map
 		{
 			// Given a map with a resolution and a minResolution
 			var _map:Map = new Map(600, 400, "EPSG:4326");
-			_map.resolution = new Resolution(10, "EPSG:4326");
+			_map.maxResolution = new Resolution(12, "EPSG:4326");
 			_map.minResolution = new Resolution(8, "EPSG:4326");
+			_map.resolution = new Resolution(10, "EPSG:4326");
 			
 			// When I zoom with a factor that will set the resolution below the minResolution
 			_map.zoom(0.7);
