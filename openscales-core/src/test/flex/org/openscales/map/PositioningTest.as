@@ -108,7 +108,7 @@ package org.openscales.map {
 		 */
 		[Test(async)]
 		public function shouldZoomTheMapOut():void{
-			_map.resolution = _map.maxResolution;
+			_map.resolution = _map.minResolution;
 			
 			// Then an event is dispatched advertising zoom change
 			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
@@ -119,7 +119,7 @@ package org.openscales.map {
 			_map.zoomOut();
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",(_map.resolution.value >= _map.maxResolution.value) &&  (_map.resolution.value > _map.minResolution.value));
+			assertTrue("Incorrect map resolution",(_map.resolution.value <= _map.maxResolution.value) &&  (_map.resolution.value >= _map.minResolution.value));
 		}
 		
 		[Test(async)]
@@ -146,12 +146,12 @@ package org.openscales.map {
 			
 			// Then no event is dispatched advertising zoom change
 			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-				if(event.map.resolution.value > event.map.minResolution.reprojectTo(event.map.resolution.projection).value)
+				if(event.map.resolution.value < event.map.minResolution.reprojectTo(event.map.resolution.projection).value)
 					fail("Event received for zoom change");
 			},100, null, function(event:Event):void{
 			}));
 			
-			_map.zoomOut();
+			_map.zoomIn();
 			
 			// And the map resolution is changed
 			assertTrue("Incorrect map resolution",_map.minResolution.value - _map.resolution.value < PRECISION);
