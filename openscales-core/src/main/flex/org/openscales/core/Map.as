@@ -1079,7 +1079,7 @@ package org.openscales.core
 				value = value.reprojectTo(this.projection);
 			}
 			
-			if(value.value < this.resolution.value)
+			if(value.value > this.resolution.value)
 			{
 				this.resolution = new Resolution(value.value, this.projection);
 			}
