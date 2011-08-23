@@ -36,8 +36,6 @@ package org.openscales.core.format.gml.parser
 		public function parseCoords(xmlNode:XML, lonLat:Boolean=true):Vector.<Number> {
 			var x:Number, y:Number, left:Number, bottom:Number, right:Number, top:Number;
 			
-			var points:Vector.<Number>  = new Vector.<Number>();
-			
 			if (xmlNode) {
 				
 				var coordNodes:XMLList = xmlNode..*::posList;
@@ -64,6 +62,7 @@ package org.openscales.core.format.gml.parser
 				j = nums.length;
 				// verifies if the dimension of the feature is compatible with the number of coordinates 
 				if ( j % dim == 0 ){
+					var points:Vector.<Number>  = new Vector.<Number>();
 					var i:int;
 					for(i = 0; i < j; i = i + this.dim) {
 						if(lonLat) {
