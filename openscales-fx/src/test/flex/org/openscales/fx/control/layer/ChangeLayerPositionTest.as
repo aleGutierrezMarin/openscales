@@ -69,10 +69,9 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function moveLayerUp():void
 		{
-			var layers:Vector.<Layer> = _map.layers;
-			var current:uint = layers.indexOf(_layer2);
+			var current:uint = _map.layers.indexOf(_layer2);
 			_position.upLayer(new MouseEvent(MouseEvent.MOUSE_DOWN));			
-			Assert.assertEquals(current+1, layers.indexOf(_layer2));
+			Assert.assertEquals(current+1, _map.layers.indexOf(_layer2));
 		}
 		
 		/**
@@ -81,10 +80,9 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function moveLayerDown():void
 		{
-			var layers:Vector.<Layer> = _map.layers;
-			var current:uint = layers.indexOf(_layer2);		
+			var current:uint = _map.layers.indexOf(_layer2);		
 			_position.downLayer(new MouseEvent(MouseEvent.MOUSE_DOWN));	
-			Assert.assertEquals(current-1, layers.indexOf(_layer2));
+			Assert.assertEquals(current-1, _map.layers.indexOf(_layer2));
 		}
 	}
 }
