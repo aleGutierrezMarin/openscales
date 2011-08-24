@@ -145,13 +145,20 @@ package org.openscales.core.layer.originator
 		{
 			var i:uint = 0;
 			var j:uint = this._constraints.length;
+			var constraint:ConstraintOriginator = null;
+			var minRes:Resolution = null;
+			var maxRes:Resolution = null;
 			// check for each constraint
 			for (; i<j; ++i) 
 			{
+				constraint = this._constraints[i];
+				minRes = constraint.minResolution.reprojectTo(resolution.projection);
+				maxRes = constraint.maxResolution.reprojectTo(resolution.projection);
+				
 				// if extent and resolution contain given extent and resolution : covered
-				if( this._constraints[i].extent.intersectsBounds(extent) &&
-					this._constraints[i].minResolution <= resolution.value &&
-					this._constraints[i].maxResolution >= resolution.value)
+				if( constraint.extent.intersectsBounds(extent) &&
+					minRes.value <= resolution.value &&
+					maxRes.value >= resolution.value)
 				{
 					return true;
 				}

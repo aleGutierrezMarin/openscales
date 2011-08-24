@@ -6,6 +6,7 @@ package org.openscales.core.control
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.fail;
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WFS;
@@ -441,12 +442,8 @@ package org.openscales.core.control
 		[Test]
 		public function testOnMapChanged():void
 		{
-			var map:Map = new Map();
-			map.size = new Size(1200, 700);
-			
 			// Layer 1
 			var mapnik:Mapnik = new Mapnik("Mapnik"); // a base layer
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			
 			// an originator for this layer
 			var name:String = "originator";
@@ -454,13 +451,20 @@ package org.openscales.core.control
 			var urlPicture:String = "url_picture_originator";
 			var originator:DataOriginator = new DataOriginator(name, url, urlPicture);
 			
-			var minResolution:Number = 0;
-			var maxResolution:Number = 156543;		
+			var minResolution:Resolution = new Resolution(0,mapnik.projSrsCode);
+			var maxResolution:Resolution = new Resolution(156543,mapnik.projSrsCode);
+			
 			var bounds:Bounds = new Bounds(-10,-10,10,10,mapnik.projSrsCode);		
 			// limited constraint
 			originator.addConstraint(new ConstraintOriginator(bounds, minResolution, maxResolution));
 			
 			mapnik.addOriginator(originator);
+			
+			var map:Map = new Map();
+			map.size = new Size(1200, 700);
+			map.projection = mapnik.projSrsCode;
+			map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);
+			
 			map.addLayer(mapnik);
 			
 			// Layer 2
@@ -484,7 +488,7 @@ package org.openscales.core.control
 			// 2 originator
 			Assert.assertEquals("There should be 2 originator",2,dataOriginatorsControl.originators.length);
 			
-			// only contains originator 2 ?
+			// contains originator 2 ?
 			var containsOriginator2:Boolean = false;
 			
 			var i:uint = 0;

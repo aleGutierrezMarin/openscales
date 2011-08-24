@@ -281,7 +281,7 @@ package org.openscales.core.configuration
 			else{visible = true;}
 			
 			var name:String=xmlNode.@name;
-			var projSrsCode:String = Geometry.DEFAULT_SRS_CODE;
+			var projSrsCode:String = Layer.DEFAULT_PROJECTION;
 			if (String(xmlNode.@projection) != "") {
 				projSrsCode = String(xmlNode.@projection);
 			}

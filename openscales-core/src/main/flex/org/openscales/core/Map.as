@@ -469,6 +469,7 @@ package org.openscales.core
 			
 			if( newBounds )
 			{
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
 				if(newBounds.projSrsCode != this.projection)
 					newBounds = newBounds.reprojectTo(this.projection);
 				
@@ -482,6 +483,8 @@ package org.openscales.core
 				// choose max resolution to be sure that all the extent is include in the current map
 				var resolution:Number = (resolutionX > resolutionY) ? resolutionX : resolutionY;
 				this.resolution = new Resolution(resolution, this.projection);
+				
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
 			}
 		}
 		

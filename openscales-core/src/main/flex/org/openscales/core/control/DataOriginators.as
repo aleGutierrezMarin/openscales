@@ -138,14 +138,15 @@ package org.openscales.core.control
 			{
 				var i:uint = 0;
 				var j:uint = layer.originators.length;
-				
+				var originator:DataOriginator = null;
 				// for each originators of this layer :
 				for (; i<j; ++i) 
 				{
+					originator = layer.originators[i];
 					// if no contraint : display
-					if(layer.originators[i].constraints.length == 0)
+					if(originator.constraints.length == 0)
 					{
-						addOriginator(layer.originators[i]);
+						addOriginator(originator);
 					}
 					// else check if the current extent fit with  the originator constraint
 					else
@@ -154,10 +155,10 @@ package org.openscales.core.control
 						var mapExtent:Bounds = this._map.extent;
 						if(mapExtent)
 						{
-							if( layer.originators[i].isCoveredArea(mapExtent, this._map.resolution))
+							if( originator.isCoveredArea(mapExtent, this._map.resolution))
 							{
 								// add the orignator (add new or increment layers count)
-								addOriginator(layer.originators[i]);
+								addOriginator(originator);
 							}
 						}	
 					}

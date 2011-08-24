@@ -5,6 +5,7 @@ package org.openscales.core.layer {
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.layer.originator.DataOriginator;
@@ -28,13 +29,14 @@ package org.openscales.core.layer {
 	public class Layer extends Sprite {
 		public static const DEFAULT_DPI:Number = 92;
 		
-		public static const DEFAULT_NOMINAL_RESOLUTION:Number = 1.40625;
+		public static const DEFAULT_NOMINAL_RESOLUTION:Resolution = new Resolution(1.40625);
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
+		public static const DEFAULT_PROJECTION:String = "EPSG:4326";
 		
 		
 		public static function get DEFAULT_MAXEXTENT():Bounds {
-			return new Bounds(-180, -90, 180, 90, Geometry.DEFAULT_SRS_CODE);
+			return new Bounds(-180, -90, 180, 90, Layer.DEFAULT_PROJECTION);
 		}
 		
 		private var _map:Map = null;
@@ -103,7 +105,7 @@ package org.openscales.core.layer {
 			this.name = name;
 			this.visible = true;
 			this.doubleClickEnabled = true;
-			this._projSrsCode = Geometry.DEFAULT_SRS_CODE;
+			this._projSrsCode = Layer.DEFAULT_PROJECTION;
 			this.generateResolutions();
 			
 			
@@ -117,17 +119,17 @@ package org.openscales.core.layer {
 		public function generateResolutions(numZoomLevels:uint=Layer.DEFAULT_NUM_ZOOM_LEVELS, nominalResolution:Number=NaN):void {
 			
 			if (isNaN(nominalResolution)) {
-				if (this.projSrsCode == Geometry.DEFAULT_SRS_CODE) {
-					nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION;
+				if (this.projSrsCode == Layer.DEFAULT_PROJECTION) {
+					nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION.value;
 				} else {
 					if(ProjProjection.getProjProjection(this.projSrsCode))
 					{
-						nominalResolution = Proj4as.unit_transform(Geometry.DEFAULT_SRS_CODE, this.projSrsCode, Layer.DEFAULT_NOMINAL_RESOLUTION);
+						nominalResolution = Proj4as.unit_transform(Layer.DEFAULT_PROJECTION, this.projSrsCode, Layer.DEFAULT_NOMINAL_RESOLUTION.value);
 					}
 					else
 					{
-						this.projSrsCode = Geometry.DEFAULT_SRS_CODE;
-						nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION;
+						this.projSrsCode = Layer.DEFAULT_PROJECTION;
+						nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION.value;
 					}
 				}
 			}
