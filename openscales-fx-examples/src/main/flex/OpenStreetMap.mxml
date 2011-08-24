@@ -6,7 +6,7 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 <s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
 		 creationComplete="initMap()" width="100%" height="100%">
 	
-	<Map id="fxMap" width="100%" height="100%" zoom="3" center="4.833,45.767" projection="EPSG:900913">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.3515625" center="4.833,45.767" projection="EPSG:900913">
 		
 		<Mapnik name="Mapnik" />
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
