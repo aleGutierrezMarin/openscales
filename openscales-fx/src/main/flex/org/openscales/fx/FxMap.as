@@ -50,7 +50,6 @@ package org.openscales.fx
 	public class FxMap extends Group
 	{
 		protected var _map:Map;
-		private var _zoom:Number = NaN;
 		private var _center:Location = null;
 		private var _creationHeight:Number = NaN;
 		private var _creationWidth:Number = NaN;
@@ -98,9 +97,17 @@ package org.openscales.fx
 				this._map.addLayer(l.nativeLayer);
 		}
 		
-		public function set resolution(value:Resolution):void
+		public function set resolution(value:*):void
 		{
-			this.map.resolution = value;
+			if(value is Resolution)
+				this.map.resolution = value as Resolution;
+			else if (value is String) {
+				var val:Array=(value as String).split(",");
+				if(val.length==2)
+					this.map.resolution = new Resolution(Number(val[0]),String(val[1]));
+				else if(val.length == 1)
+					this.map.resolution = new Resolution(Number(val[0]));
+			}
 		}
 		
 		public function get resolution():Resolution
@@ -303,14 +310,6 @@ package org.openscales.fx
 		 */
 		public function get map():Map {
 			return this._map;
-		}
-		
-		/**
-		 * Zoom MXML setter
-		 */
-		public function set zoom(value:Number):void {
-			//this._zoom = value;
-			//this._map.zoom = value;
 		}
 		
 		/**
