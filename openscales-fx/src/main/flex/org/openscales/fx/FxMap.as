@@ -103,10 +103,18 @@ package org.openscales.fx
 				this.map.resolution = value as Resolution;
 			else if (value is String) {
 				var val:Array=(value as String).split(",");
-				if(val.length==2)
-					this.map.resolution = new Resolution(Number(val[0]),String(val[1]));
+				if(val.length==2) {
+					var proj:String = String(val[1]).replace(/\s/g,"");
+					if(proj && proj!="")
+						this.map.resolution = new Resolution(Number(val[0]),proj);
+					else
+						this.map.resolution = new Resolution(Number(val[0]));
+				}
 				else if(val.length == 1)
 					this.map.resolution = new Resolution(Number(val[0]));
+			}
+			else if (value is Number) {
+				this.map.resolution = new Resolution(value as Number);
 			}
 		}
 		
