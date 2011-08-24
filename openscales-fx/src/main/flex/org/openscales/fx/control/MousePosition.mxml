@@ -334,8 +334,8 @@
 						}
 						else if(_displayMetricUnits == Unit.KILOMETER)
 						{
-							coord1 = String(Number(coord1)/100);
-							coord2 = String(Number(coord2)/100);
+							coord1 = String(Number(coord1)/1000);
+							coord2 = String(Number(coord2)/1000);
 						}
 					}
 					
