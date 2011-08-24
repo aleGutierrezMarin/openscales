@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Display KML placemarks with disabled tweenOnZoom effect -->
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%" height="100%" creationComplete="initMap()">
+	
+	<Map id="fxMap" width="100%" height="100%" zoom="11" center="2.338345,48.871692" projection="EPSG:900913">
+		
+		<Mapnik name="Mapnik" alpha="0.8"/>
+		
+		<KML id="kmlLayer" url="http://www.parisavelo.net/velib.kml" proxy="http://openscales.org/proxy.php?url="
+				numZoomLevels="20" style="{Style.getDefaultCircleStyle()}" tweenOnZoom="false" />
+		
+		<DragHandler/>
+		<WheelHandler/>
+		
+		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		
+		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
+		
+		<PanZoom id="panZoom" x="10" y="10" />
+		
+	</Map>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.popup.Anchored;
+			import org.openscales.core.style.Style;
+			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			/*private var popup:Anchored;*/
+			private var fxpopup:FxPopup;
+						
+			private function initMap():void {
+				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				// Optional: use clustering of POI (here the vector of geometries is automatically computed)
+				//(kmlLayer.layer as FeatureLayer).autoClustering = true;
+			}
+			
+			private function onFeatureClick(event:FeatureEvent):void {
+			
+				if(fxpopup){
+					fxpopup.destroy();
+				}
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+				
+				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				
+				fxpopup.feature = event.feature;
+				var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(event.feature.lonlat);
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+				fxpopup.position = px;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				fxpopupRenderer.content = event.feature.data.popupContentHTML;
+				
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
+			}
+		]]>
+	</fx:Script>
+	
+</s:Group>
