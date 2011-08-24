@@ -65,6 +65,15 @@ package org.openscales.core
 		 */
 		public static const DEFAULT_MAX_RESOLUTION:Resolution = new Resolution(1.5, DEFAULT_SRS_CODE);
 		/**
+		 * Default zoomIn factor
+		 */
+		public static const DEFAULT_ZOOM_IN_FACTOR:Number = 0.9;
+		/**
+		 * Default zoomIn factor
+		 */
+		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.1;
+
+		/**
 		 * Number of attempt for downloading an image tile
 		 */
 		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
@@ -103,8 +112,8 @@ package org.openscales.core
 		 * @default 1.5 in EPSG:4326
 		 */
 		private var _maxResolution:Resolution = DEFAULT_MAX_RESOLUTION;
-		private var _defaultZoomInFactor:Number = 0.9;
-		private var _defaultZoomOutFactor:Number = 1.1;
+		private var _defaultZoomInFactor:Number = DEFAULT_ZOOM_IN_FACTOR;
+		private var _defaultZoomOutFactor:Number = DEFAULT_ZOOM_OUT_FACTOR;
 		private var _targetZoomPixel:Pixel = null;
 		
 		private var _debug_max_extent:Boolean = false;
