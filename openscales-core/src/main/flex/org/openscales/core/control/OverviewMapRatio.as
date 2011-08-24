@@ -198,7 +198,6 @@ package org.openscales.core.control
 			var newCenter:Location = this._overviewMap.getLocationFromMapPx(mousePosition);
 			var oldCenter:Location = this._overviewMap.center;
 			
-			
 			var newMapCenter:Location = newCenter.reprojectTo(this.map.projection);	
 			
 			this.map.center = newMapCenter;
@@ -308,36 +307,35 @@ package org.openscales.core.control
 		}
 		
 		/**
-		 * The actual maxResolution of the map
-		 *//*
-		public function set maxResolution(value:Resolution):void
-		{
-		this._overviewMap.maxResolution = value;
-		}*/
-		
-		/**
-		 * @public
-		 *//*
+		 * The actual maxResolution of the overview map
+		 */
 		public function get maxResolution():Resolution
 		{
-		return this._overviewMap.maxResolution;
-		}*/
+			return this._overviewMap.maxResolution;
+		}
 		
 		/**
-		 * The actual minResolution of the map
-		 *//*
-		public function set minResolution(value:Resolution):void
+		 * @private
+		 */
+		public function set maxResolution(value:Resolution):void
 		{
-		this._overviewMap.minResolution = value;
+			this._overviewMap.maxResolution = value;
 		}
-		*/
+		
 		/**
-		 * @public
-		 *//*
+		 * The actual minResolution of the overview map
+		 */
 		public function get minResolution():Resolution
 		{
-		return this._overviewMap.minResolution;
+			return this._overviewMap.minResolution;
 		}
-		*/
+		
+		/**
+		 * @private
+		 */
+		public function set minResolution(value:Resolution):void
+		{
+			this._overviewMap.minResolution = value;
+		}
 	}
 }
