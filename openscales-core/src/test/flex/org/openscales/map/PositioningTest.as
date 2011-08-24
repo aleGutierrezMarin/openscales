@@ -100,7 +100,7 @@ package org.openscales.map {
 			_map.zoomIn();
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",0.17578125-_map.resolution.value < PRECISION);
+			assertTrue("Incorrect map resolution",(_map.resolution.value < _map.maxResolution.value) &&  (_map.resolution.value >= _map.minResolution.value));
 		}
 		
 		/**
@@ -119,7 +119,7 @@ package org.openscales.map {
 			_map.zoomOut();
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",(_map.resolution.value <= _map.maxResolution.value) &&  (_map.resolution.value >= _map.minResolution.value));
+			assertTrue("Incorrect map resolution",(_map.resolution.value <= _map.maxResolution.value) &&  (_map.resolution.value > _map.minResolution.value));
 		}
 		
 		[Test(async)]
