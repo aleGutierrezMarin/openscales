@@ -417,7 +417,6 @@ package org.openscales.core.control
 				}
 			}
 			Assert.assertTrue(containsOriginator2);
-			
-		}		
+		}
 	}
 }
