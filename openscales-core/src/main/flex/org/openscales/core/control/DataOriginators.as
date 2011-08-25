@@ -76,9 +76,9 @@ package org.openscales.core.control
 			this._map.removeEventListener(LayerEvent.LAYER_REMOVED, this.onLayerChanged);
 			this._map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.onLayerChanged);
 			this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORIGINATORS, this.onOriginatorListChange);
-			
-			// add listener on Map
-			this._map.removeEventListener(MapEvent.MOVE_END, this.onMapChanged);
+			this._map.removeEventListener(MapEvent.CENTER_CHANGED, this.onMapChanged);
+			this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.onMapChanged);
+			this._map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.onMapChanged);
 		}
 		
 
@@ -430,6 +430,9 @@ package org.openscales.core.control
 				this._map.removeEventListener(LayerEvent.LAYER_REMOVED, this.onLayerChanged);
 				this._map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.onLayerChanged);
 				this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORIGINATORS, this.onOriginatorListChange);
+				this._map.removeEventListener(MapEvent.CENTER_CHANGED, this.onMapChanged);
+				this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.onMapChanged);
+				this._map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.onMapChanged);
 			}
 			super._map = map;
 			if(map!=null) 
@@ -441,8 +444,9 @@ package org.openscales.core.control
 				this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORIGINATORS, this.onOriginatorListChange);
 				
 				// add listener on Map
-				this._map.addEventListener(MapEvent.MOVE_END, this.onMapChanged);
-				
+				this._map.addEventListener(MapEvent.CENTER_CHANGED, this.onMapChanged);
+				this._map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.onMapChanged);
+				this._map.addEventListener(MapEvent.PROJECTION_CHANGED, this.onMapChanged);
 				// generate the first list of originators :
 				generateOriginators();
 			}
