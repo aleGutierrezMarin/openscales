@@ -45,6 +45,12 @@ package org.openscales.core.control
 		private var _originatorsLayersCount:HashMap = null;
 		
 		/**
+		 * @private
+		 * list of layer added to the map
+		 */
+		private var _layers:Vector.<Layer> = null;
+		
+		/**
 		 * Constructor of the class DataOriginators.
 		 * 
 		 * The current layers on the map are use to create the fisrt list of originators
@@ -55,6 +61,7 @@ package org.openscales.core.control
 		{
 			super(position);
 			
+			_layers = new <Layer>[];
 			_originators = new Vector.<DataOriginator>();
 			_originatorsLayersCount = new HashMap();
 		}
@@ -66,19 +73,12 @@ package org.openscales.core.control
 		 */
 		override public function destroy():void 
 		{
-			super.destroy();
-			
+			this.removeListeners();
+			this.removeAll();
+			this._layers = null;
 			this._originators = null;
 			this._originatorsLayersCount = null;
-			
-			// remove listener
-			this._map.removeEventListener(LayerEvent.LAYER_ADDED, this.onLayerChanged);
-			this._map.removeEventListener(LayerEvent.LAYER_REMOVED, this.onLayerChanged);
-			this._map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.onLayerChanged);
-			this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORIGINATORS, this.onOriginatorListChange);
-			this._map.removeEventListener(MapEvent.CENTER_CHANGED, this.onMapChanged);
-			this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.onMapChanged);
-			this._map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.onMapChanged);
+			super.destroy();
 		}
 		
 		
@@ -222,39 +222,21 @@ package org.openscales.core.control
 		 */
 		public function removeAll():void
 		{
-			// remove all originators
-			while(this._originators.length > 0)
-			{
-				this._originators.pop();
+			var i:uint;
+			if(this._layers) {
+				i = this._layers.length;
+				for(;i>0;--i)
+					this._layers.pop();
 			}
 			
-			// remove all counter
+			if(this._originators) {
+				i = this._originators.length;
+				for(;i>0;--i)
+					this._originators.pop();
+			}
+
 			this._originatorsLayersCount.clear();
 			
-		}
-		
-		/**
-		 * Generate the list of originators using the current layers in the map.
-		 * Also store the number of layers which refer to a same originator
-		 */ 
-		public function generateOriginators():void
-		{
-			var layers:Vector.<Layer> = this._map.layers;
-			var i:uint = 0;
-			var j:uint = layers.length;
-			
-			// for each layer
-			for (; i<j; ++i) 
-			{
-				// for each originator of a layer
-				var n:uint = 0;
-				var m:uint = layers[i].originators.length;
-				
-				for (; n<m; ++n) 
-				{
-					addOriginators(layers[i]);
-				}
-			}
 		}
 		
 		/**
@@ -268,17 +250,17 @@ package org.openscales.core.control
 		{
 			this.removeAll();
 			
-			var layers:Vector.<Layer> = this._map.layers;
+			this._layers = this._map.layers;
 			var i:uint = 0;
-			var j:uint = layers.length;
+			var j:uint = this._layers.length;
 			
 			// for each layer in the current map
 			for (; i<j; ++i) 
 			{
-				addOriginators(layers[i]);
+				addOriginators(this._layers[i]);
 			}
 			
-		}	
+		}
 		
 		// Events
 		/**
@@ -296,9 +278,12 @@ package org.openscales.core.control
 		{
 			// a new layer has been added
 			if (event.type == LayerEvent.LAYER_ADDED) 
-			{		
+			{
+				if(this._layers.indexOf(event.layer)>-1)
+					return;
 				// add its originators
 				addOriginators(event.layer);
+				this._layers.push(event.layer);
 			}
 			
 			// a layer has been removed
@@ -306,11 +291,17 @@ package org.openscales.core.control
 			{
 				// remove all its originators
 				removeOriginators(event.layer);
+				
+				var i:int = this._layers.indexOf(event.layer);
+				if(i>-1)
+					this._layers.splice(i,1);
 			}
 			
 			// a layer has his visibility changed
 			if (event.type == LayerEvent.LAYER_VISIBLE_CHANGED) 
 			{
+				if(this._layers.indexOf(event.layer)==-1)
+					return;
 				// if layer become visible, add its originators :
 				if(event.layer.visible)
 				{
@@ -384,33 +375,43 @@ package org.openscales.core.control
 		 */
 		override public function set map(map:Map):void 
 		{
-			if(this._map!=null)
-			{
-				// remove actual listener
-				this._map.removeEventListener(LayerEvent.LAYER_ADDED, this.onLayerChanged);
-				this._map.removeEventListener(LayerEvent.LAYER_REMOVED, this.onLayerChanged);
-				this._map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.onLayerChanged);
-				this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORIGINATORS, this.onOriginatorListChange);
-				this._map.removeEventListener(MapEvent.CENTER_CHANGED, this.onMapChanged);
-				this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.onMapChanged);
-				this._map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.onMapChanged);
-			}
+			this.removeListeners();
 			super._map = map;
+			this.addListeners();
 			if(map!=null) 
-			{
-				// add listener on Layer
-				this._map.addEventListener(LayerEvent.LAYER_ADDED, this.onLayerChanged);
-				this._map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerChanged);
-				this._map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.onLayerChanged);
-				this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORIGINATORS, this.onOriginatorListChange);
-				
-				// add listener on Map
-				this._map.addEventListener(MapEvent.CENTER_CHANGED, this.onMapChanged);
-				this._map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.onMapChanged);
-				this._map.addEventListener(MapEvent.PROJECTION_CHANGED, this.onMapChanged);
-				// generate the first list of originators :
-				generateOriginators();
-			}
+				this.updateOriginators();
+		}
+		
+		/**
+		 * @private
+		 * add all needed listeners
+		 */
+		private function addListeners():void {
+			if(!this._map)
+				return;
+			this._map.addEventListener(LayerEvent.LAYER_ADDED, this.onLayerChanged);
+			this._map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerChanged);
+			this._map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.onLayerChanged);
+			this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORIGINATORS, this.onOriginatorListChange);
+			this._map.addEventListener(MapEvent.CENTER_CHANGED, this.onMapChanged);
+			this._map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.onMapChanged);
+			this._map.addEventListener(MapEvent.PROJECTION_CHANGED, this.onMapChanged);
+		}
+		
+		/**
+		 * @private
+		 * remove all listeners
+		 */
+		private function removeListeners():void {
+			if(!this._map)
+				return;
+			this._map.removeEventListener(LayerEvent.LAYER_ADDED, this.onLayerChanged);
+			this._map.removeEventListener(LayerEvent.LAYER_REMOVED, this.onLayerChanged);
+			this._map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.onLayerChanged);
+			this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORIGINATORS, this.onOriginatorListChange);
+			this._map.removeEventListener(MapEvent.CENTER_CHANGED, this.onMapChanged);
+			this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.onMapChanged);
+			this._map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.onMapChanged);
 		}
 		/**
 		 * Number of layers refering to a same originator.
