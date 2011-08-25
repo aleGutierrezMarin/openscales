@@ -2,13 +2,16 @@ package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
 	import flash.display.Shape;
+	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
 	import flash.sampler.getInvocationCount;
 	import flash.sampler.getMemberNames;
+	import flash.utils.Timer;
 	
 	import mx.olap.aggregators.MaxAggregator;
 	import mx.rpc.events.HeaderEvent;
 	
+	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
@@ -30,6 +33,9 @@ package org.openscales.core.layer
 	 */
 	public class Grid extends HTTPRequest
 	{
+		
+		private var _timer:Timer;
+		
 		private const DEFAULT_TILE_WIDTH:Number = 256;
 		
 		private const DEFAULT_TILE_HEIGHT:Number = 256;
@@ -220,10 +226,13 @@ package org.openscales.core.layer
 			{
 				if (!this.tiled) 
 				{
-					if (this._resolutionChanged)
+					if (this._resolutionChanged || this._centerChanged)
 					{
-						this.clear();
-						this.initSingleTile(bounds);
+						if (!this._timer.running)
+						{
+							this.clear();
+							this.initSingleTile(bounds);
+						}
 					}
 				} else 
 				{
@@ -277,6 +286,8 @@ package org.openscales.core.layer
 		
 		override protected function onMapCenterChanged(event:MapEvent):void
 		{
+			this._timer.reset();
+			this._timer.start();
 			if (!this._resolutionChanged)
 			{
 				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
@@ -291,6 +302,8 @@ package org.openscales.core.layer
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
 		{
+			this._timer.reset();
+			this._timer.start();
 			var px:Pixel = event.targetZoomPixel;
 			var ratio:Number = event.oldResolution.value / event.newResolution.value;
 			if (this.getSupportedResolution(event.oldResolution).value != this.getSupportedResolution(event.newResolution).value)
@@ -761,6 +774,12 @@ package org.openscales.core.layer
 			}
 		}
 		
+		private function onTimerEnd(event:TimerEvent):void
+		{
+			this._centerChanged = true;
+			this._resolutionChanged = true;
+		}
+		
 		//Getters and Setters
 		override public function get imageSize():Size {
 			if(this._imageSize == null)
@@ -837,6 +856,17 @@ package org.openscales.core.layer
 		public function get requestedResolution():Resolution
 		{
 			return this._requestedResolution;
+		}
+		
+		override public function set map(value:Map):void
+		{
+			super.map = value;
+			if(this._timer) {
+				this._timer.reset();
+			} else {
+				this._timer = new Timer(500,1);
+				this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			}
 		}
 	}
 }

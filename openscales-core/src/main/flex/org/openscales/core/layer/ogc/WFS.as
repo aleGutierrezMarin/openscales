@@ -313,11 +313,10 @@ package org.openscales.core.layer.ogc
 		
 		override protected function onMapCenterChanged(event:MapEvent):void
 		{
+			this._timer.reset();
+			this._timer.start();
 			if (!this._resolutionChanged)
 			{
-				this._timer.reset();
-				this._timer.start();
-				
 				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
 				var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
 				var deltaX:Number = deltaLon / this.map.resolution.value;
