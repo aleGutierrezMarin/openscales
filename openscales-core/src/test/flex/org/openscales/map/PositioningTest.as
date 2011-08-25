@@ -52,7 +52,7 @@ package org.openscales.map {
 			
 			// Then an event is dispatched advertising center change
 			_map.addEventListener(MapEvent.CENTER_CHANGED,Async.asyncHandler(this,function(event:MapEvent,obj:Object):void{
-			},100,null,function(event:Event):void{
+			},2000,null,function(event:Event):void{
 				fail("No event received for center change");
 			}));
 			
@@ -72,7 +72,7 @@ package org.openscales.map {
 			
 			// Then an event is dispatched advertising zoom change
 			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-			},100, null, function(event:Event):void{
+			},2000, null, function(event:Event):void{
 				
 				fail("No event received for zoom change");
 			}));
@@ -92,7 +92,7 @@ package org.openscales.map {
 			_map.resolution = _map.maxResolution;
 			// Then an event is dispatched advertising zoom change
 			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-			},100, null, function(event:Event):void{
+			},2000, null, function(event:Event):void{
 				
 				fail("No event received for zoom change");
 			}));
@@ -112,7 +112,7 @@ package org.openscales.map {
 			
 			// Then an event is dispatched advertising zoom change
 			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-			},100, null, function(event:Event):void{
+			},2000, null, function(event:Event):void{
 				fail("No event received for zoom change");
 			}));
 			
@@ -130,7 +130,7 @@ package org.openscales.map {
 			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
 				if(event.map.resolution.value < event.map.maxResolution.reprojectTo(event.map.resolution.projection).value)
 					fail("Event received for zoom change");
-			},100, null, function(event:Event):void{
+			},2000, null, function(event:Event):void{
 			}));
 			
 			_map.zoomOut();
@@ -148,7 +148,7 @@ package org.openscales.map {
 			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
 				if(event.map.resolution.value < event.map.minResolution.reprojectTo(event.map.resolution.projection).value)
 					fail("Event received for zoom change");
-			},100, null, function(event:Event):void{
+			},2000, null, function(event:Event):void{
 			}));
 			
 			_map.zoomIn();
