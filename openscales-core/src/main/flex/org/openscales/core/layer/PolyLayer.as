@@ -199,22 +199,6 @@ package org.openscales.core.layer
 			}
 		}
 		
-		override public function set maxZoomLevel(value:Number):void {
-			super.maxZoomLevel = value;
-			var numLayer:uint = this.layers.length;
-			for(var i:uint = 0;i<numLayer;++i) {
-				layers[i].maxZoomLevel = value;
-			}
-		}
-		
-		override public function set minZoomLevel(value:Number):void {
-			super.minZoomLevel = value;
-			var numLayer:uint = this.layers.length;
-			for(var i:uint = 0;i<numLayer;++i) {
-				layers[i].minZoomLevel = value;
-			}
-		}
-		
 		override public function set maxResolution(value:Number):void {
 			super.maxResolution = value;
 			var numLayer:uint = this.layers.length;
