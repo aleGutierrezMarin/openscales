@@ -157,7 +157,7 @@ package org.openscales.proj4as {
 			return ProjProjection.projProjections[srsCode];
 		}
 		
-		public static function getCompatibleProjection(srsCode:String):Vector.<String> {
+		public static function getEquivalentProjection(srsCode:String):Vector.<String> {
 			var compat:Vector.<String> = new <String>[];
 			var i:uint = ProjProjection.equivalentDefs.length;
 			var j:uint;
@@ -174,11 +174,11 @@ package org.openscales.proj4as {
 			return compat;
 		}
 		
-		public static function isCompatibleProjection(srsCode1:String,srsCode2:String): Boolean {
+		public static function isEquivalentProjection(srsCode1:String,srsCode2:String): Boolean {
 			if(ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=1
 				|| ProjProjection.equivalentDefs.indexOf(srsCode2+","+srsCode1)!=1)
 				return true;
-			return (ProjProjection.getCompatibleProjection(srsCode1).indexOf(srsCode2)!=-1);
+			return (ProjProjection.getEquivalentProjection(srsCode1).indexOf(srsCode2)!=-1);
 		}
 		
 		public function get srsCode():String {
