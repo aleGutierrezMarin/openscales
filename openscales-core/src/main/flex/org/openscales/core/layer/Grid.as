@@ -391,10 +391,12 @@ package org.openscales.core.layer
 		
 		public function getSupportedResolution(targetResolution:Resolution):Resolution
 		{	
+			if(!this.resolutions)
+				return new Resolution(0);
 			// Find the best resotion to fit the target resolution
 			var bestResolution:Number = 0;
 			var bestRatio:Number = Number.POSITIVE_INFINITY;
-			var i:int = 0
+			var i:int = 0;
 			var len:int = this.resolutions.length;
 			
 			for (i; i < len; ++i)

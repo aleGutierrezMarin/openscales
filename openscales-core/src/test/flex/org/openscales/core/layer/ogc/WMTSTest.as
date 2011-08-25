@@ -138,17 +138,14 @@ package org.openscales.core.layer.ogc {
 			this._wmts = new WMTS(NAME,URL,LAYER, MATRIX_SET_ID,tmshm);
 			this._wmts.buffer=0;
 			this._wmts.style="default";
-			this._map.addLayer(this._wmts);
 			
 			// Then request is sent according to the layer parameters
-			
 			this._handler = Async.asyncHandler(this,assertGenerateCorrectQueriesWithMinimumParams,
 				1000,null,noRequestSend);
 			
 			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			
-			// When layer is redrawn
-			this._wmts.redraw();
+			this._map.addLayer(this._wmts);
 			
 		}
 		
