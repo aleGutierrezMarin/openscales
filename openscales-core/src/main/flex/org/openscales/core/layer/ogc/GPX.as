@@ -41,7 +41,7 @@ package org.openscales.core.layer.ogc
 		private var _version:String;
 		
 		public function GPX(name:String, 
-							version:String,
+							version:String=null,
 							url:String = null,
 							data:XML = null,
 							style:Style = null)

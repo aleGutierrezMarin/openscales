@@ -38,7 +38,6 @@ package
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			
-			
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		

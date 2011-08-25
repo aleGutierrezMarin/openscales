@@ -43,7 +43,7 @@
 				fxMap.zoom = 7;
 				Trace.debug("Mapnik projection: " + mapnik.projection);
 				Trace.debug("GeoRssLayer projection: " + rsslayer.projection);
-				
+	
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onFeatureClick);
 			}
 			
