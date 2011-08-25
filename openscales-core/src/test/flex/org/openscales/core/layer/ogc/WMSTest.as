@@ -139,6 +139,7 @@ package org.openscales.core.layer.ogc
 			var rows:int = currentGrid.length;
 			var cols:int = 0;
 			
+			_wms.map.resolution = new Resolution(1.40625,"EPSG:4326");
 			var tileOrigin:Location = _wms.tileOrigin;
 			var resolution:Resolution = _wms.map.resolution;
 			var tileHeight:Number = _wms.tileHeight;
@@ -185,6 +186,7 @@ package org.openscales.core.layer.ogc
 			_map = new Map();
 			_map.size = new Size(200,200);
 			_map.center = new Location(0,0);
+			_map.resolution = new Resolution(1.40625,"EPSG:4326");
 			
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
 			_wms.maxExtent = MAXEXTENT;
@@ -261,19 +263,11 @@ package org.openscales.core.layer.ogc
 			_map.size = new Size(200,200);
 			_map.center = new Location(5, 2);
 			
-			// this is a dummy BaseLayer added to force the map to have her how maxExtent. 
-			// while refactoring openscales to remove the base layer just set the maxExtent of the map
-			// instead of setting a baseLayer : _map.maxExtent = new Bounds(-50, -40, 10, 10, "EPSG:4326");
-			var _dummyMaxExtent:WMS = new WMS(NAME, URL, LAYERS, "", FORMAT);
-			_dummyMaxExtent.maxExtent = new Bounds(-50, -40, 10, 10, "EPSG:4326");
-			_map.addLayer(_dummyMaxExtent);
-			
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
 			_wms.maxExtent = new Bounds(-10, -10, 50, 40, "EPSG:4326");
 			_wms.version = VERSION;
 			_wms.tiled = false;
-			_map.addLayer(_wms);
-			
+
 			_map.zoomToExtent(new Bounds(-180, -90, 180, 90, "EPSG:4326"));
 			
 			// When the tile is requested, the map extent is greater and contains the map maxExtent and the layer maxExtent
@@ -289,7 +283,7 @@ package org.openscales.core.layer.ogc
 				Assert.fail("No request sent");
 			}));
 			
-			_wms.redraw();
+			_map.addLayer(_wms);
 		}
 		
 		/**
@@ -315,7 +309,7 @@ package org.openscales.core.layer.ogc
 			_wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
 			_wms.version = VERSION;
 			_wms.tiled = false;
-			_map.addLayer(_wms);
+			
 			
 			_map.zoomToExtent(new Bounds(-40, -50, 40, 50, "EPSG:4326"));
 			
@@ -332,8 +326,7 @@ package org.openscales.core.layer.ogc
 				
 				Assert.fail("No request sent");
 			}));
-			
-			_wms.redraw();
+			_map.addLayer(_wms);
 		}
 	}
 }

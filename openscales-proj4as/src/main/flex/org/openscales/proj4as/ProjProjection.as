@@ -175,7 +175,8 @@ package org.openscales.proj4as {
 		}
 		
 		public static function isEquivalentProjection(srsCode1:String,srsCode2:String): Boolean {
-			if(ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=1
+			if(srsCode1==srsCode2
+				|| ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=1
 				|| ProjProjection.equivalentDefs.indexOf(srsCode2+","+srsCode1)!=1)
 				return true;
 			return (ProjProjection.getEquivalentProjection(srsCode1).indexOf(srsCode2)!=-1);
