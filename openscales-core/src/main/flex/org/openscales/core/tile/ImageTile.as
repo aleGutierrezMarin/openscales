@@ -147,7 +147,7 @@ package org.openscales.core.tile
 		}
 		
 		public function onTileLoadError(event:IOErrorEvent):void {
-			if ((! this.layer) || (! this.layer.map) || (++this._attempt <= this.layer.map.IMAGE_RELOAD_ATTEMPTS)) {
+			if (this.layer && this.layer.map && ++this._attempt <= this.layer.map.IMAGE_RELOAD_ATTEMPTS) {
 				// Retry loading
 				Trace.log("ImageTile - onTileLoadError: Error while loading tile " + this.url+" ; retry #" + this._attempt);
 				this.draw();
