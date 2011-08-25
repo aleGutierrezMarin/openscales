@@ -15,7 +15,7 @@ package org.openscales.core.layer
 			var layer:Layer = new Layer("test");
 			
 			Assert.assertEquals(Layer.DEFAULT_NUM_ZOOM_LEVELS, layer.resolutions.length);
-			Assert.assertEquals(Layer.DEFAULT_NOMINAL_RESOLUTION, layer.resolutions[0]);
+			Assert.assertEquals(Layer.DEFAULT_NOMINAL_RESOLUTION.value, layer.resolutions[0]);
 		}
 		
 		[Test]

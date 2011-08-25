@@ -199,22 +199,22 @@ package org.openscales.geometry.basetypes
 				tmpThis = this;
 			}
 			
-				var inBottom:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
-					true : (((tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top)) ||
-						((tmpThis.bottom > tmpBounds.bottom) && (tmpThis.bottom < tmpBounds.top)));
-				var inTop:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
-					true : (((tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top)) ||
-						((tmpThis.top > tmpBounds.bottom) && (tmpThis.top < tmpBounds.top)));
-				var inRight:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
-					true : (((tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right)) ||
-						((tmpThis.right > tmpBounds.left) && (tmpThis.right < tmpBounds.right)));
-				var inLeft:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
-					true : (((tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right)) ||
-						((tmpThis.left > tmpBounds.left) && (tmpThis.left < tmpBounds.right)));
+			var inBottom:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
+				true : (((tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top)) ||
+					((tmpThis.bottom > tmpBounds.bottom) && (tmpThis.bottom < tmpBounds.top)));
+			var inTop:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
+				true : (((tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top)) ||
+					((tmpThis.top > tmpBounds.bottom) && (tmpThis.top < tmpBounds.top)));
+			var inRight:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
+				true : (((tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right)) ||
+					((tmpThis.right > tmpBounds.left) && (tmpThis.right < tmpBounds.right)));
+			var inLeft:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
+				true : (((tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right)) ||
+					((tmpThis.left > tmpBounds.left) && (tmpThis.left < tmpBounds.right)));
 			
-				return (tmpThis.containsBounds(tmpBounds, true, inclusive) ||
-					tmpBounds.containsBounds(tmpThis, true, inclusive) ||
-					((inTop || inBottom ) && (inLeft || inRight )));
+			return (tmpThis.containsBounds(tmpBounds, true, inclusive) ||
+				tmpBounds.containsBounds(tmpThis, true, inclusive) ||
+				((inTop || inBottom ) && (inLeft || inRight )));
 		}
 		
 		/**
@@ -282,7 +282,7 @@ package org.openscales.geometry.basetypes
 					Math.abs(fright - right) < precision && 
 					Math.abs(ftop - top) < precision)
 				{
-						return new Bounds(left, bottom, right, top, dest);
+					return new Bounds(left, bottom, right, top, dest);
 				}
 				left = fleft;
 				bottom = fbottom;
@@ -515,7 +515,7 @@ package org.openscales.geometry.basetypes
 		 * projection of the two bounds if they are in the same projection. 
 		 */
 		public function getIntersection(bounds:Bounds):Bounds{
-
+			
 			// Variable used of a reprojection is needed
 			var thisBounds:Bounds = this;
 			if (thisBounds.projSrsCode != bounds.projSrsCode)
