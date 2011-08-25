@@ -59,7 +59,7 @@ package org.openscales.core
 		/**
 		 * Default Min Resolution of the map. The projection of the min resolution is the DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_MIN_RESOLUTION:Resolution = new Resolution(0.001, DEFAULT_SRS_CODE);
+		public static const DEFAULT_MIN_RESOLUTION:Resolution = new Resolution(0.0000000001, DEFAULT_SRS_CODE);
 		/**
 		 * Default Max Resolution of the map. The projection of the max resolution is the DEFAULT_SRS_CODE
 		 */
