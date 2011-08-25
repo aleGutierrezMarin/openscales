@@ -78,7 +78,7 @@ package org.openscales.core.layer.ogc
 		/**
 		 * @inheritDoc
 		 */
-		override public function redraw(fullRedraw:Boolean=true):void {
+		override public function redraw(fullRedraw:Boolean=false):void {
 			
 			if (this.map == null)
 				return;
