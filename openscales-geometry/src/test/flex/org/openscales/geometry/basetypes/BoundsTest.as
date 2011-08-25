@@ -240,8 +240,8 @@ package org.openscales.geometry.basetypes
 			var secondBounds:Bounds = new Bounds(409600, 6265600, 614400, 6470400, "IGNF:LAMB93");
 			
 			// When you reproject these bounds in EPSG:4326
-			var firstBoundsReproj:Bounds = firstBounds.preciseReprojectBounds(firstBounds,"IGNF:LAMB93","EPSG:4326");
-			var secondBoundsReproj:Bounds = secondBounds.preciseReprojectBounds(secondBounds,"IGNF:LAMB93","EPSG:4326");
+			var firstBoundsReproj:Bounds = firstBounds.preciseReprojectBounds("EPSG:4326");
+			var secondBoundsReproj:Bounds = secondBounds.preciseReprojectBounds("EPSG:4326");
 			
 			// Then the bounds are still intersected
 			assertEquals("Incorrect bounds intersection", firstBounds.intersectsBounds(secondBounds), firstBoundsReproj.intersectsBounds(secondBoundsReproj));

@@ -190,8 +190,8 @@ package org.openscales.geometry.basetypes
 			
 			if(this.projSrsCode != bounds.projSrsCode)
 			{
-				tmpThis = this.preciseReprojectBounds(this, this.projSrsCode, DEFAULT_PROJ_SRS_CODE);
-				tmpBounds = this.preciseReprojectBounds(bounds, bounds.projSrsCode, DEFAULT_PROJ_SRS_CODE);
+				tmpThis = this.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
+				tmpBounds = bounds.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
 			}
 			else
 			{
@@ -226,7 +226,7 @@ package org.openscales.geometry.basetypes
 		 * 
 		 * @return The reprojected bounds
 		 */
-		public function preciseReprojectBounds(bounds:Bounds, source:String, dest:String):Bounds {
+		public function preciseReprojectBounds(dest:String):Bounds {
 			
 			// Precise reprojection
 			// --------------------
@@ -243,8 +243,8 @@ package org.openscales.geometry.basetypes
 			
 			for(var i:uint = 0; i < 7; i++) {
 				
-				var dx:Number = (bounds._right - bounds._left)/(1.0 * step);
-				var dy:Number = (bounds._top - bounds._bottom)/(1.0 * step);
+				var dx:Number = (this._right - this._left)/(1.0 * step);
+				var dy:Number = (this._top - this._bottom)/(1.0 * step);
 				var fleft:Number = NaN;
 				var fright:Number = NaN;
 				var ftop:Number = NaN;
@@ -253,14 +253,14 @@ package org.openscales.geometry.basetypes
 				var npts:uint = 0;
 				for(var j:uint = 0; j < step; j++) {
 					
-					pts[npts] = new ProjPoint(bounds._left + j*dx, bounds._bottom);
-					Proj4as.transform(source, dest, pts[npts++]);
-					pts[npts] = new ProjPoint(bounds._right, bounds._bottom + j*dy);
-					Proj4as.transform(source, dest, pts[npts++]);
-					pts[npts] = new ProjPoint(bounds._right - j*dx, bounds._top);
-					Proj4as.transform(source, dest, pts[npts++]);
-					pts[npts] = new ProjPoint(bounds._left, bounds._top - j*dy);
-					Proj4as.transform(source, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(this._left + j*dx, this._bottom);
+					Proj4as.transform(this.projSrsCode, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(this._right, this._bottom + j*dy);
+					Proj4as.transform(this.projSrsCode, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(this._right - j*dx, this._top);
+					Proj4as.transform(this.projSrsCode, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(this._left, this._top - j*dy);
+					Proj4as.transform(this.projSrsCode, dest, pts[npts++]);
 				}
 				fleft = fright = pts[0].x;
 				fbottom = ftop = pts[0].y;
@@ -309,8 +309,8 @@ package org.openscales.geometry.basetypes
 			
 			if(this.projSrsCode != bounds.projSrsCode)
 			{
-				tmpThis = this.preciseReprojectBounds(this, this.projSrsCode, DEFAULT_PROJ_SRS_CODE);
-				tmpBounds = this.preciseReprojectBounds(bounds, bounds.projSrsCode, DEFAULT_PROJ_SRS_CODE);
+				tmpThis = this.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
+				tmpBounds = bounds.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
 			}
 			else
 			{
