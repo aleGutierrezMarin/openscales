@@ -31,15 +31,17 @@ package org.openscales.core.format
 	/**
 	 * Read KML 2.0 and 2.2 file format.
 	 */
+	
 	public class KMLFormat extends Format
 	{
+		[Embed(source="/assets/images/marker-blue.png")]
+		private var _defaultImage:Class;
+		
 		private namespace opengis="http://www.opengis.net/kml/2.2";
 		private namespace google="http://earth.google.com/kml/2.0";
 		private var _proxy:String;
 		private var _externalImages:Object = {};
 		private var _images:Object = {};
-		[Embed(source="/assets/images/marker-blue.png")]
-		private var _defaultImage:Class;
 		
 		// features
 		private var iconsfeatures:Vector.<Feature> = new Vector.<Feature>();
@@ -50,12 +52,9 @@ package org.openscales.core.format
 		private var pointStyles:Object = new Object();
 		private var polygonStyles:Object = new Object();
 		
-		public function KMLFormat() {
-		}
+		private var _userDefinedStyle:Style = null;
 		
-		public function set proxy(value:String):void {
-			this._proxy = value;
-		}
+		public function KMLFormat() {}
 		
 		/**
 		 * return the RGB color of a kml:color
@@ -104,6 +103,9 @@ package org.openscales.core.format
 		
 		/**
 		 * load styles
+		 * This function is called only if the user does not set the userDefinedStyle attribute
+		 * @calls KMLColorsToRGB
+		 * @calls KMLColorsToAlpha
 		 */
 		private function loadStyles(styles:XMLList):void {
 			
@@ -210,6 +212,7 @@ package org.openscales.core.format
 		}
 		
 		private function _loadPolygon(_Pdata:String):LinearRing {
+			
 			_Pdata = _Pdata.replace("\n"," ");
 			_Pdata = _Pdata.replace(/^\s*(.*?)\s*$/g, "$1");
 			var coordinates:Array = _Pdata.split(" ");
@@ -217,23 +220,26 @@ package org.openscales.core.format
 			var Pcoords:String;
 			var _Pcoords:Array;
 			var point:Point;
-			for each(Pcoords in coordinates) {
+			for each(Pcoords in coordinates) 
+			{
 				_Pcoords = Pcoords.split(",");
 				if(_Pcoords.length<2)
 					continue;
-				point = new Point(_Pcoords[0].toString(),
-					_Pcoords[1].toString());
-				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+				point = new Point(_Pcoords[0].toString(),_Pcoords[1].toString());
+				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
+				{
 					point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
 				}
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
 			}
-
 			return new LinearRing(Ppoints);
 		}
+		
 		/**
 		 * load placemarks
+		 * @param a list of placemarks
+		 * @call _loadPolygon
 		 */
 		private function loadPlacemarks(placemarks:XMLList):void {
 			
@@ -246,29 +252,35 @@ package org.openscales.core.format
 				var htmlContent:String = "";
 				var attributes:Object = new Object();
 				
-				if(placemark.name != undefined) {
+				if(placemark.name != undefined) 
+				{
 					attributes["name"] = placemark.name.text();
 					htmlContent = htmlContent + "<b>" + placemark.name.text() + "</b><br />";   
 				}
-				
-				if(placemark.description != undefined) {
+				if(placemark.description != undefined) 
+				{
 					attributes["description"] = placemark.description.text();
 					htmlContent = htmlContent + placemark.description.text() + "<br />";
 				}
-				
-				for each(var extendedData:XML in placemark.ExtendedData.Data) {
+				for each(var extendedData:XML in placemark.ExtendedData.Data) 
+				{
 					if(extendedData.value)
 						attributes[extendedData.@name] = extendedData.value.text();
 					htmlContent = htmlContent + "<b>" + extendedData.@name + "</b> : " + extendedData.value.text() + "<br />";
 				}		
-				attributes["popupContentHTML"] = htmlContent;
-				
+				attributes["popupContentHTML"] = htmlContent;	
 				var _id:String;
 				
 				// LineStrings
 				if(placemark.LineString != undefined)
 				{
-					var _Lstyle:Style = Style.getDefaultLineStyle();
+					var _Lstyle:Style = null;
+					if(this.userDefinedStyle)
+					{
+						_Lstyle = this.userDefinedStyle;	
+					}
+					else
+						_Lstyle = Style.getDefaultLineStyle();
 					if(placemark.styleUrl != undefined)
 					{
 						_id = placemark.styleUrl.text();
@@ -281,13 +293,15 @@ package org.openscales.core.format
 					coordinates = _Ldata.split(" ");
 					var points:Vector.<Number> = new Vector.<Number>();
 					var coords:String;
-					for each(coords in coordinates) {
+					for each(coords in coordinates)
+					{
 						var _coords:Array = coords.split(",");
 						if(_coords.length<2)
 							continue;
 						point = new Point(_coords[0].toString(),
 							_coords[1].toString());
-						if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+						if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
+						{
 							point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
 						}
 						points.push(point.x);
@@ -298,22 +312,31 @@ package org.openscales.core.format
 				}
 				
 				// Polygons
-				if(placemark.Polygon != undefined) {
-					var _Pstyle:Style = Style.getDefaultSurfaceStyle();
+				if(placemark.Polygon != undefined) 
+				{
+					var _Pstyle:Style = null;
+					if(this.userDefinedStyle){
+						_Pstyle = this.userDefinedStyle;
+					}
+					else
+						_Pstyle = Style.getDefaultSurfaceStyle();
 					if(placemark.styleUrl != undefined)
 					{
 						_id = placemark.styleUrl.text();
 						if(polygonStyles[_id] != undefined)
 							_Pstyle = polygonStyles[_id];
 					}
+					//extract exterior ring
 					var lines:Vector.<Geometry> = new Vector.<Geometry>(1);
 					lines[0] = this._loadPolygon(placemark.Polygon.outerBoundaryIs.LinearRing.coordinates.text());
-					
-					if(placemark.Polygon.innerBoundaryIs != undefined) {
-						try {
+					//interior ring
+					if(placemark.Polygon.innerBoundaryIs != undefined) 
+					{
+						try 
+						{
 							lines.push(this._loadPolygon(placemark.Polygon.innerBoundaryIs.LinearRing.coordinates.text()));
-						} catch(e:Error) {
-						}
+						} 
+						catch(e:Error) {}
 					}
 					polygonsfeatures.push(new PolygonFeature(new Polygon(lines),attributes,_Pstyle));
 				}
@@ -324,29 +347,36 @@ package org.openscales.core.format
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
 					point = new Point(coordinates[0], coordinates[1]);
-					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
+					{
 						point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
 					}
 					var loc:Location;
-					if(placemark.styleUrl != undefined) {
+					if(placemark.styleUrl != undefined) 
+					{
 						_id = placemark.styleUrl.text();
-						if(pointStyles[_id] != undefined) { // style
-							if(pointStyles[_id]["icon"]!=null) { // icon
+						if(pointStyles[_id] != undefined) 
+						{ // style
+							if(pointStyles[_id]["icon"]!=null) 
+							{ // icon
 								var _icon:String = pointStyles[_id]["icon"];
 								var customMarker:CustomMarker;
-								if(_images[_icon]!=null) { // image not loaded so we will wait for it
+								if(_images[_icon]!=null) 
+								{ // image not loaded so we will wait for it
 									var _img:Sprite = new Sprite();
 									_images[_icon].push(_img);
 									loc = new Location(point.x,point.y);
 									customMarker = CustomMarker.createDisplayObjectMarker(_img,loc,attributes,0,0);
 								}
-								else if(_externalImages[_icon]!=null) { // image allready loaded, we copy the loader content
+								else if(_externalImages[_icon]!=null) 
+								{ // image allready loaded, we copy the loader content
 									var Image:Bitmap = new Bitmap(new Bitmap(_externalImages[_icon].loader.content).bitmapData.clone());
 									Image.y = -Image.height;
 									Image.x = -Image.width/2;
 									customMarker = CustomMarker.createDisplayObjectMarker(Image,new Location(point.x,point.y),attributes,0,0);
 								}
-								else { // image failed to load
+								else 
+								{ // image failed to load
 									var _marker:Bitmap = new _defaultImage();
 									_marker.y = -_marker.height;
 									_marker.x = -_marker.width/2;
@@ -354,8 +384,16 @@ package org.openscales.core.format
 								}
 								iconsfeatures.push(customMarker);
 							}
-							else { // style without icon
-								var _style:Style = Style.getDefaultPointStyle()
+							else 
+							{ // style without icon
+								var _style:Style;
+								if(this.userDefinedStyle)
+								{
+									_style = this.userDefinedStyle;
+								}
+								else
+									_style = Style.getDefaultPointStyle();
+								
 								if(pointStyles[_id]["color"] != undefined)
 								{
 									var _fill:SolidFill = new SolidFill(pointStyles[_id]["color"], pointStyles[_id]["alpha"]);
@@ -385,9 +423,10 @@ package org.openscales.core.format
 		/**
 		 * Read data
 		 *
-		 * @param data data to read/parse.
-		 *
-		 * @return array of features.
+		 * @param data data to read/parse
+		 * @return array of features (polygons, lines and points)
+		 * @call loadStyles (only if the user does not set a style)
+		 * @call loadPlacemarks (to extract the geometries)
 		 */
 		override public function read(data:Object):Object {
 			var dataXML:XML = data as XML;
@@ -395,8 +434,12 @@ package org.openscales.core.format
 			use namespace google;
 			use namespace opengis;
 			
-			var styles:XMLList = dataXML..Style;
-			loadStyles(styles.copy());
+			if(!this.userDefinedStyle)
+			{
+				var styles:XMLList = dataXML..Style;
+				loadStyles(styles.copy());
+			}
+			
 			var placemarks:XMLList = dataXML..Placemark;
 			loadPlacemarks(placemarks);
 			
@@ -405,6 +448,29 @@ package org.openscales.core.format
 			return _features;
 		}
 		
+		/**
+		 * Getters and Setters
+		 */ 
+		public function get proxy():String
+		{
+			return _proxy;
+		}
+		
+		public function set proxy(value:String):void
+		{
+			_proxy = value;
+		}
+		
+		
+		public function get userDefinedStyle():Style
+		{
+			return _userDefinedStyle;
+		}
+		
+		public function set userDefinedStyle(value:Style):void
+		{
+			_userDefinedStyle = value;
+		}
 	}
 }
 
