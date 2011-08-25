@@ -207,16 +207,18 @@ package org.openscales.core.layer.ogc
 			var widthRatio:Number = currentGrid[0][0].bounds.right - currentGrid[0][0].bounds.left;
 			var heightRatio:Number = currentGrid[0][0].bounds.top - currentGrid[0][0].bounds.bottom;
 			
-			var offsetcol:Number = (currentGrid[0][0].bounds.left - _wms.tileOrigin.lon) / widthRatio;
-			var offsetrow:Number = (currentGrid[0][0].bounds.top - _wms.tileOrigin.lat) / heightRatio;
+			var tileOrigin:Location = _wms.tileOrigin;
+			
+			var offsetcol:Number = (currentGrid[0][0].bounds.left - tileOrigin.lon) / widthRatio;
+			var offsetrow:Number = (currentGrid[0][0].bounds.top - tileOrigin.lat) / heightRatio;
 			
 			var i:int = 0;
 			var j:int = 0;
 			var rows:int = currentGrid.length;
 			var cols:int = 0;
 			
-			var tileOrigin:Location = _wms.tileOrigin;
-			var resolution:Resolution = _wms.map.resolution;
+			
+			var resolution:Resolution = _wms.getSupportedResolution(_wms.map.resolution);
 			var tileHeight:Number = _wms.tileHeight;
 			var tileWidth:Number = _wms.tileWidth;
 			
@@ -256,9 +258,9 @@ package org.openscales.core.layer.ogc
 			_map = new Map();
 			_map.size = new Size(200,200);
 			_map.center = new Location(5, 2);
-			
+			_map.maxExtent = new Bounds(-180, -90, 10, 10, "EPSG:4326");
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
-			_wms.maxExtent = new Bounds(-10, -10, 50, 40, "EPSG:4326");
+			_wms.maxExtent = new Bounds(-10, -10, 180, 90, "EPSG:4326");
 			_wms.version = VERSION;
 			_wms.tiled = false;
 
@@ -272,7 +274,7 @@ package org.openscales.core.layer.ogc
 				
 				// Then the extent requested is smaller and limited by the layer and the map maxExtent
 				assertTrue("BBox is not the proper intersection of extends", url.match('BBOX='+intersectionExtent.toString()));
-			},100,null,function(event:Event):void{
+			},1000,null,function(event:Event):void{
 				
 				Assert.fail("No request sent");
 			}));
