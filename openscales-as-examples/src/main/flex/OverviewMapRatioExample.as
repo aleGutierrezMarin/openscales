@@ -35,8 +35,6 @@ package
 			IGN.projection = "IGNF:GEOPORTALFXX";
 			var resoArray:Array = new Array(39135.75,19567.875,9783.9375,4891.96875,2445.984375,2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125,0.0625);
 			IGN.resolutions = resoArray;
-			IGN.minZoomLevel = 5;
-			IGN.maxZoomLevel = 17;
 			IGN.method = "POST";
 			IGN.version ="1.1.1";
 			
