@@ -22,6 +22,7 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Base class for layers that use a lattice of tiles.
@@ -171,7 +172,7 @@ package org.openscales.core.layer
 		
 		override public function get available():Boolean
 		{
-			return (this.projSrsCode == this.map.projection && super.available);
+			return (super.available && ProjProjection.isCompatibleProjection(this.projSrsCode,this.map.projection));
 		}
 		
 		/**
