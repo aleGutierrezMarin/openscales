@@ -172,7 +172,7 @@ package org.openscales.core.layer
 		
 		override public function get available():Boolean
 		{
-			return (super.available && ProjProjection.isCompatibleProjection(this.projSrsCode,this.map.projection));
+			return (super.available && ProjProjection.isEquivalentProjection(this.projSrsCode,this.map.projection));
 		}
 		
 		/**
