@@ -208,6 +208,8 @@ package org.openscales.fx.layer
 			{
 				var length:Number = (value.split(",")).length;
 				
+				var newExtent:Bounds;
+				
 				if(length == 4)
 				{
 					if(this._layer)
@@ -217,7 +219,13 @@ package org.openscales.fx.layer
 				}
 					
 				else
+				{
 					this._maxExtent = Bounds.getBoundsFromString(value);
+					
+					if(this._layer)
+						this._layer.maxExtent = this._maxExtent;
+				}
+					
 			}
 		}
 		

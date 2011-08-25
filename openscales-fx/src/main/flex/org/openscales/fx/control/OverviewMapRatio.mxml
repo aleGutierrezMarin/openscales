@@ -10,6 +10,7 @@
 			import mx.core.IVisualElement;
 			
 			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.control.OverviewMapRatio;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.layer.FxLayer;
@@ -159,35 +160,35 @@
 			
 			/**
 			 * The actual maxResolution of the map
-			 *//*
+			 */
 			public function set maxResolution(value:Resolution):void
 			{
-			this._overviewmap.maxResolution = value;
-			}*/
+				this._overviewmap.maxResolution = value;
+			}
 			
 			/**
 			 * @public
-			 *//*
+			 */
 			public function get maxResolution():Resolution
 			{
-			return this._overviewmap.maxResolution;
-			}*/
+				return this._overviewmap.maxResolution;
+			}
 			
 			/**
 			 * The actual minResolution of the map
-			 *//*
+			 */
 			public function set minResolution(value:Resolution):void
 			{
-			this._overviewmap.minResolution = value;
-			}*/
+				this._overviewmap.minResolution = value;
+			}
 			
 			/**
 			 * @public
-			 *//*
+			 */
 			public function get minResolution():Resolution
 			{
-			return this._overviewmap.minResolution;
-			}*/
+				return this._overviewmap.minResolution;
+			}
 			
 		]]>
 	</fx:Script>
