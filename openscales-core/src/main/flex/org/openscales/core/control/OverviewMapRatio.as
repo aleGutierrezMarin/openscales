@@ -99,9 +99,9 @@ package org.openscales.core.control
 		
 		/**
 		 * @private
-		 * Compute the zoom level of the overviewMap according to the ratio setted
+		 * Compute the resolution level of the overviewMap according to the ratio setted
 		 */
-		private function computeZoomLevel():void
+		private function computeResolutionLevel():void
 		{
 			if (this.map != null)
 			{
@@ -164,15 +164,17 @@ package org.openscales.core.control
 		{
 			if (this.map != null)
 			{
-				this.map.removeEventListener(MapEvent.MOVE_END, mapChanged);
-				this.map.removeEventListener(MapEvent.DRAG_END, mapChanged);
+				this.map.removeEventListener(MapEvent.CENTER_CHANGED, mapChanged);
+				this.map.removeEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
+				this.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
 				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			}
 			super.map = map;	
 			if (map != null)
 			{	
-				this.map.addEventListener(MapEvent.MOVE_END, mapChanged);
-				this.map.addEventListener(MapEvent.DRAG_END, mapChanged);
+				this.map.addEventListener(MapEvent.CENTER_CHANGED, mapChanged);
+				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
+				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
 			}
 		}
@@ -183,7 +185,7 @@ package org.openscales.core.control
 		 */
 		private function mapChanged(event:Event = null):void
 		{
-			computeZoomLevel();
+			computeResolutionLevel();
 			this.drawCenter();	
 		}
 		
