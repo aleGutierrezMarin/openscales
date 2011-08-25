@@ -69,6 +69,7 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Trace;
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.MultiPolygonFeature;
 			import org.openscales.core.feature.PointFeature;
@@ -85,7 +86,8 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 				// Specific initialize for this example
 				var layer:VectorLayer = SampleLayers.features();
 				// Usefull to test selection when a layer is not displayed
-				layer.minZoomLevel = 10;
+				//layer.minZoomLevel = 10;
+				layer.minResolution = 0.001373291015625;
 				
 				(selectFeaturesHandler.handler as SelectFeaturesHandler).unselectableFeatures = new <Feature>[ layer.getChildAt(4) as PolygonFeature ];
 				fxMap.map.addLayer(layer);
