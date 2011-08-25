@@ -223,18 +223,15 @@ package org.openscales.core.layer
 			
 			
 			
-			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
+			if (this._centerChanged || this._projectionChanged || this._resolutionChanged || forceReTile)
 			{
 				if (!this.tiled) 
 				{
-					if (this._resolutionChanged || this._centerChanged)
-					{
 						if (!this._timer.running)
 						{
 							this.clear();
 							this.initSingleTile(bounds);
 						}
-					}
 				} else 
 				{
 					if (resolution != this._resquestResolution)
