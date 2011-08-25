@@ -16,6 +16,8 @@ package org.openscales.core.layer.osm
 		
 		public static const DEFAULT_MAX_RESOLUTION:Number = 156543.0339;
 		
+		private static const OSM_ORIGINATOR:DataOriginator = new DataOriginator("OpenStreetMap","http://www.openstreetmap.org","http://www.openstreetmap.org/images/osm_logo.png");
+		
 		public function OSM(name:String,
 							url:String) {
 
@@ -24,7 +26,7 @@ package org.openscales.core.layer.osm
 			// Use the projection to access to the unit
 			/* this.units = Unit.METER; */
 			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projSrsCode);
-			this.originators.push(new DataOriginator("OpenStreetMap","http://www.openstreetmap.org","http://www.openstreetmap.org/images/osm_logo.png"));
+			this.originators.push(OSM_ORIGINATOR);
 		}
 
 		override public function getURL(bounds:Bounds):String

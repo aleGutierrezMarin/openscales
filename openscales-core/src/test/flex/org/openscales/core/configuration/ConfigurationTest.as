@@ -58,7 +58,7 @@ package org.openscales.core.configuration
 			conf.configure();
 			
 			Assert.assertEquals(String(Layer.DEFAULT_NUM_ZOOM_LEVELS), map.getLayerByName("Metacarta").resolutions.length);
-			Assert.assertEquals(String(Layer.DEFAULT_NOMINAL_RESOLUTION), map.getLayerByName("Metacarta").resolutions[0]);			
+			Assert.assertEquals(String(Layer.DEFAULT_NOMINAL_RESOLUTION.value), map.getLayerByName("Metacarta").resolutions[0]);			
 		}
 		
 		

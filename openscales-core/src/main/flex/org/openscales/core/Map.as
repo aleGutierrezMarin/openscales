@@ -59,7 +59,7 @@ package org.openscales.core
 		/**
 		 * Default Min Resolution of the map. The projection of the min resolution is the DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_MIN_RESOLUTION:Resolution = new Resolution(0.001, DEFAULT_SRS_CODE);
+		public static const DEFAULT_MIN_RESOLUTION:Resolution = new Resolution(0.0000000001, DEFAULT_SRS_CODE);
 		/**
 		 * Default Max Resolution of the map. The projection of the max resolution is the DEFAULT_SRS_CODE
 		 */
@@ -469,6 +469,7 @@ package org.openscales.core
 			
 			if( newBounds )
 			{
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
 				if(newBounds.projSrsCode != this.projection)
 					newBounds = newBounds.reprojectTo(this.projection);
 				
@@ -482,6 +483,8 @@ package org.openscales.core
 				// choose max resolution to be sure that all the extent is include in the current map
 				var resolution:Number = (resolutionX > resolutionY) ? resolutionX : resolutionY;
 				this.resolution = new Resolution(resolution, this.projection);
+				
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
 			}
 		}
 		
