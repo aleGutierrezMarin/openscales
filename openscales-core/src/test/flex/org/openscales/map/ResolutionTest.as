@@ -124,9 +124,9 @@ package org.openscales.map
 		{
 			// Given a map with a resolution and a maxResolution
 			var _map:Map = new Map(600, 400, "EPSG:4326");
-			_map.resolution = new Resolution(10, "EPSG:4326");
 			_map.maxResolution = new Resolution(12, "EPSG:4326");
 			
+			_map.resolution = new Resolution(11,"EPSG:4326");
 			// When I zoom with a factor that will set the resolution above the maxResolution
 			_map.zoom(1.3);
 			
