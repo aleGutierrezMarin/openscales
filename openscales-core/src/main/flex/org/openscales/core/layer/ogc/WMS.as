@@ -265,6 +265,7 @@ package org.openscales.core.layer.ogc
 			if(this._tileProvider != null){
 				this._tileProvider.transparent=transparent;
 			}
+			this.redraw(true);
 		}
 		
 		/**
