@@ -4,6 +4,7 @@ package org.openscales.core.layer.ogc
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.Grid;
@@ -320,10 +321,9 @@ package org.openscales.core.layer.ogc
 			if(this._tileProvider.tileMatrixSets!=null
 				&& this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet)) {
 				var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(this._tileProvider.tileMatrixSet) as TileMatrixSet;
-				var zoom:Number = this.getZoomForResolution(this.map.resolution.value);
-				var resolution:Number = this.resolutions[zoom] as Number;
-				if(tms.tileMatrices.containsKey(resolution))
-					return (tms.tileMatrices.getValue(resolution) as TileMatrix);
+				var resolution:Resolution = this.getSupportedResolution(this.map.resolution);
+				if(tms.tileMatrices.containsKey(resolution.value))
+					return (tms.tileMatrices.getValue(resolution.value) as TileMatrix);
 			}
 			return null;
 		}

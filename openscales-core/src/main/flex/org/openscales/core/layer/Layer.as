@@ -11,7 +11,6 @@ package org.openscales.core.layer {
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.security.events.SecurityEvent;
-	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -291,37 +290,6 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * Return the closest zoom level match the extent passed as parameter
-		 */
-		public function getZoomForExtent(extent:Bounds):Number {
-			var viewSize:Size = this.map.size;
-			var idealResolution:Number = Math.max(extent.width / viewSize.w, extent.height / viewSize.h);
-			return this.getZoomForResolution(idealResolution);
-		}
-		
-		/**
-		 * Return The index of the zoomLevel (entry in the resolutions array)
-		 * that corresponds to the best fit resolution given the passed in
-		 * value and the 'closest' specification.
-		 */
-		public function getZoomForResolution(resolution:Number):Number {
-			if(resolution > this.resolutions[0]) {
-				return 0;
-			}
-			if(resolution < this.resolutions[this.resolutions.length - 1]) {
-				return this.resolutions.length - 1;
-			}
-			var i:int = 1;
-			var j:int = this.resolutions.length;
-			for (i; i < j; ++i) {
-				if ((this.resolutions[i] < resolution) && (Math.abs(this.resolutions[i] - resolution) > RESOLUTION_TOLERANCE)) {
-					break;
-				}
-			}
-			return i - 1;
-		}
-		
-		/**
 		 * Return a LonLat which is the passed-in map Pixel, translated into
 		 * lon/lat by the layer.
 		 */
@@ -578,43 +546,6 @@ package org.openscales.core.layer {
 		
 		public function set maxResolution(value:Number):void {
 			this._maxResolution = value;
-		}
-		
-		/**
-		 * Return the minimum zoom level allowed, based on map max resolution
-		 */
-		public function get minZoomLevel():Number {
-			if(isNaN(this._maxResolution))
-				return 0;
-			else
-				return getZoomForResolution(this._maxResolution);
-		}
-		
-		public function set minZoomLevel(value:Number):void {
-			if ((value >= 0) && (value < this.resolutions.length)) {
-				this._maxResolution = this.resolutions[value];
-			} else {
-				Trace.error("Layer: invalid maxZoomLevel for the layer " + this.name + ": " + value + " is not in [0;" + (this.resolutions.length - 1) + "]");
-			}
-		}
-		
-		/**
-		 * Return the mamximum zoom level allowed, based on map min resolution
-		 */
-		public function get maxZoomLevel():Number {
-			if (isNaN(this._minResolution)) {
-				return this.resolutions.length - 1;
-			} else {
-				return getZoomForResolution(this._minResolution);
-			}
-		}
-		
-		public function set maxZoomLevel(value:Number):void {
-			if ((value >= 0) && (value < this.resolutions.length)) {
-				this._minResolution = this.resolutions[value];
-			} else {
-				Trace.error("Layer: invalid maxZoomLevel for the layer " + this.name + ": " + value + " is not in [0;" + (this.resolutions.length - 1) + "]");
-			}
 		}
 		
 		/**

@@ -62,6 +62,28 @@ package org.openscales.core.layer
 				this._tileOrigin = new Location(this.map.maxExtent.left, this.map.maxExtent.bottom);
 			}
 		}
+		
+		/**
+		 * Return The index of the zoomLevel (entry in the resolutions array)
+		 * that corresponds to the best fit resolution given the passed in
+		 * value and the 'closest' specification.
+		 */
+		public function getZoomForResolution(resolution:Number):Number {
+			if(resolution > this.resolutions[0]) {
+				return 0;
+			}
+			if(resolution < this.resolutions[this.resolutions.length - 1]) {
+				return this.resolutions.length - 1;
+			}
+			var i:int = 1;
+			var j:int = this.resolutions.length;
+			for (i; i < j; ++i) {
+				if ((this.resolutions[i] < resolution) && (Math.abs(this.resolutions[i] - resolution) > RESOLUTION_TOLERANCE)) {
+					break;
+				}
+			}
+			return i - 1;
+		}
 
 		/**
 		 * setter for tile image format
