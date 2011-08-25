@@ -128,6 +128,7 @@ package org.openscales.core.layer.ogc {
 			// Given a map of 256x256px, centered on 0,12000000
 			this._map = new Map();
 			this._map.size = new Size(256,256);
+			this._map.projection = "IGNF:LAMB93";
 			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
 			
 			// And a WMTS layer on this map
