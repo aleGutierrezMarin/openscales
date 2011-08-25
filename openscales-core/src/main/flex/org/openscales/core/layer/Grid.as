@@ -202,7 +202,7 @@ package org.openscales.core.layer
 			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 			var bounds:Bounds = this.map.getExtentForResolution(new Resolution(resolution, this.map.resolution.projection)).clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
-			var forceReTile:Boolean = !this._grid || !this._grid.length || fullRedraw || !tilesBounds;
+			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
 			if (!_initialized)
 			{
 				if (!this.tiled) 
@@ -227,14 +227,11 @@ package org.openscales.core.layer
 			{
 				if (!this.tiled) 
 				{
-					if (this._resolutionChanged || this._centerChanged)
-					{
 						if (!this._timer.running)
 						{
 							this.clear();
 							this.initSingleTile(bounds);
 						}
-					}
 				} else {
 					if (resolution != this._resquestResolution || forceReTile)
 					{
