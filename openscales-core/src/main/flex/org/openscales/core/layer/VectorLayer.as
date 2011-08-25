@@ -71,6 +71,11 @@ package org.openscales.core.layer
 		override public function redraw(fullRedraw:Boolean = true):void {
 			if (this.map == null)
 				return;
+			
+			this.clear();
+			if(this.displayed){
+				this.draw();
+			}
 		}
 		
 		// Clear layer and children graphics
