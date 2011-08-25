@@ -143,7 +143,7 @@ package org.openscales.core.layer.ogc {
 			// Then request is sent according to the layer parameters
 			
 			this._handler = Async.asyncHandler(this,assertGenerateCorrectQueriesWithMinimumParams,
-				100,null,noRequestSend);
+				1000,null,noRequestSend);
 			
 			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			
@@ -244,14 +244,13 @@ package org.openscales.core.layer.ogc {
 			this._wms = new WMS("wms", "http://openscales.org/geoserver/wms", "pg:ign_geopla_dep", null, "image/jpeg");
 			this._wms.version =  "1.3.0";
 			
-			this._map.addLayer(this._wmts);
-			this._map.addLayer(this._wms);
-			
 			// When the WMTS is loaded
 			this._handler = assertDisplayLayersCorrectlyWithAWMTSBaselayerAndWMSWithLambert93Projection;
 			this._handlerFail = noRequestSend;
 			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this._handlerFail);
+			this._map.addLayer(this._wmts);
+			this._map.addLayer(this._wms);
 			this._timer.start();
 		}
 		

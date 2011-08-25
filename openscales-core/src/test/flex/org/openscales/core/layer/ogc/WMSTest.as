@@ -45,6 +45,8 @@ package org.openscales.core.layer.ogc
 		public function tearDown():void
 		{
 			this._timer.stop();
+			_map.removeAllLayers();
+			_wms.destroy();
 			_wms = null;
 			_map = null;
 		}
@@ -116,15 +118,7 @@ package org.openscales.core.layer.ogc
 			
 			// When the WMS layer is added to the map
 			_map.addLayer(_wms);
-
-			var handler:Function = Async.asyncHandler(this,this.onTimer,1200,[
-				[this.assertInitialiseTheGirdWithCorrectTileOrigin]] );
 			
-			this._timer.addEventListener(TimerEvent.TIMER,handler);
-		}
-		
-		private function assertInitialiseTheGirdWithCorrectTileOrigin():void
-		{
 			// Then the tiles bounds in the grid should be calculated according to the default tileOrigin
 			var currentGrid:Vector.<Vector.<ImageTile>> = _wms.grid;
 			
