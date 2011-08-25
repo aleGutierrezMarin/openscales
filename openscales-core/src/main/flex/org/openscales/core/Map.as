@@ -197,7 +197,7 @@ package org.openscales.core
 		 * @param layer The layer to add.
 		 * @return true if the layer have been added, false if it has not.
 		 */
-		public function addLayer(layer:Layer, isBaseLayer:Boolean = false, redraw:Boolean = true):Boolean {
+		public function addLayer(layer:Layer, redraw:Boolean = true):Boolean {
 			if(this._layers.indexOf(layer)!=-1)
 				return false;
 			
@@ -1208,11 +1208,11 @@ package org.openscales.core
 			{
 				value = value.reprojectTo(this.projection);
 			}
-			if (value > this.maxResolution)
+			if (value.value > this.maxResolution.value)
 			{
 				value = maxResolution;
 			}
-			if (value < this.minResolution)
+			if (value.value < this.minResolution.value)
 			{
 				value = minResolution;
 			}

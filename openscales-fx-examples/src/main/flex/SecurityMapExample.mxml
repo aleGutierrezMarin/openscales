@@ -8,7 +8,7 @@
 	<Map id="fxMap"
 		 width="100%"
 		 height="100%"
-		 zoom="6"
+		 resolution="0.043945313"
 		 center="4.833,45.767">
 		
 		<IGNGeoRMSecurity key="1905042184761803857"
