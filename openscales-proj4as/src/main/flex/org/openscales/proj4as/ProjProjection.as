@@ -17,6 +17,8 @@ package org.openscales.proj4as {
 		 */
 		public var projParams:ProjParams=new ProjParams();
 		
+		static public const equivalentDefs:Vector.<String> = new <String>["WGS84,EPSG:4326,CRS:84","IGNF:LAMB96,EPSG:2154"];
+		
 		static public const defs:Object={
 			'EPSG:900913': "+title=Google Mercator EPSG:900913 +proj=merc +ellps=WGS84 +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs",
 			'WGS84': "+title=long/lat:WGS84 +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees",
@@ -153,6 +155,30 @@ package org.openscales.proj4as {
 			}
 			ProjProjection.projProjections[srsCode] = new ProjProjection(srsCode);
 			return ProjProjection.projProjections[srsCode];
+		}
+		
+		public static function getCompatibleProjection(srsCode:String):Vector.<String> {
+			var compat:Vector.<String> = new <String>[];
+			var i:uint = ProjProjection.equivalentDefs.length;
+			var j:uint;
+			var arr:Array = null;
+			for(;i>0;--i) {
+				arr = equivalentDefs[i-1].split(",");
+				if(arr.indexOf(srsCode)!=-1) {
+					j = arr.length;
+					for(;j>0;--j)
+						if(arr[j-1] != "")
+							compat.push(arr[j-1]);
+				}
+			}
+			return compat;
+		}
+		
+		public static function isCompatibleProjection(srsCode1:String,srsCode2:String): Boolean {
+			if(ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=1
+				|| ProjProjection.equivalentDefs.indexOf(srsCode2+","+srsCode1)!=1)
+				return true;
+			return (ProjProjection.getCompatibleProjection(srsCode1).indexOf(srsCode2)!=-1);
 		}
 		
 		public function get srsCode():String {
