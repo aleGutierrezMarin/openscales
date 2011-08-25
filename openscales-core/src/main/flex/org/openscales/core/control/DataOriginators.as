@@ -81,7 +81,7 @@ package org.openscales.core.control
 			this._map.removeEventListener(MapEvent.MOVE_END, this.onMapChanged);
 		}
 		
-
+		
 		/**
 		 * Add an originator in the list
 		 * If the originator exist : increment its layers count
@@ -139,30 +139,20 @@ package org.openscales.core.control
 				var i:uint = 0;
 				var j:uint = layer.originators.length;
 				var originator:DataOriginator = null;
+				// if originator cover the current area :
+				var mapExtent:Bounds = this._map.extent;
+				
 				// for each originators of this layer :
 				for (; i<j; ++i) 
 				{
 					originator = layer.originators[i];
 					// if no contraint : display
 					if(originator.constraints.length == 0)
-					{
 						addOriginator(originator);
-					}
 					// else check if the current extent fit with  the originator constraint
-					else
-					{
-						// if originator cover the current area :
-						var mapExtent:Bounds = this._map.extent;
-						if(mapExtent)
-						{
-							if( originator.isCoveredArea(mapExtent, this._map.resolution))
-							{
-								// add the orignator (add new or increment layers count)
-								addOriginator(originator);
-							}
-						}	
-					}
-				}	
+					else if(mapExtent &&  originator.isCoveredArea(mapExtent, this._map.resolution))
+						addOriginator(originator);
+				}
 			}
 		}
 		
@@ -223,16 +213,10 @@ package org.openscales.core.control
 			// for each originators of this layer :
 			for (; i<j; ++i) 
 			{
-				// if originator covered the current area :
-				if( layer.originators[i].constraints.length == 0 
-					|| layer.originators[i].isCoveredArea(this._map.extent, this._map.resolution))
-				{
-					// remove the orignator (drecrement counter or remove the originator)
-					removeOriginator(layer.originators[i]);
-				}
+				removeOriginator(layer.originators[i]);
 			}	
 		}
-
+		
 		/**
 		 * Remove all the originators.
 		 */
@@ -274,29 +258,16 @@ package org.openscales.core.control
 		}
 		
 		/**
-		 * Reset all the current layers count to zero
-		 */
-		public function resetOriginatorsLayersCount():void
-		{
-			var values:Array = this._originatorsLayersCount.getKeys();
-			for each (var key:String in values) 
-			{
-				this._originatorsLayersCount.put(key, 0);
-			}
-		}	
-		
-		/**
 		 * Update the current list of originators according to the current layers in the map.
 		 * Reset the layers counters to zero.
 		 * Remove originator if no layer refer to it anymore.
 		 * Add an originator if a layer refer to one which is not in the list.
-		   or increment the number of layers for the existing originator.
+		 or increment the number of layers for the existing originator.
 		 */
 		public function updateOriginators():void
 		{
-			// reset counters 
-			resetOriginatorsLayersCount();
-
+			this.removeAll();
+			
 			var layers:Vector.<Layer> = this._map.layers;
 			var i:uint = 0;
 			var j:uint = layers.length;
@@ -305,17 +276,6 @@ package org.openscales.core.control
 			for (; i<j; ++i) 
 			{
 				addOriginators(layers[i]);
-			}
-			
-			// Now check the counter list :
-			var values:Array = this._originatorsLayersCount.getKeys();
-			for each (var key:String in values) 
-			{
-				// if an originator count is set to 0 : remove it :
-				if( this._originatorsLayersCount.getValue(key) == 0 )
-				{
-					removeOriginator(findOriginatorByKey(key));
-				}
 			}
 			
 		}	
@@ -364,7 +324,7 @@ package org.openscales.core.control
 				}
 			}
 		}
-			
+		
 		/**
 		 * Call when a MapEvent occur
 		 * MapEvent handled :
@@ -393,7 +353,7 @@ package org.openscales.core.control
 			// update the current list in DataOriginators control
 			updateOriginators();
 		}
-	
+		
 		/**
 		 * Find an originator in the originators list by its key.
 		 * 
@@ -416,7 +376,7 @@ package org.openscales.core.control
 			}			
 			return null;
 		}
-
+		
 		// getters / setters
 		/**
 		 * Set the map linked to this DataOriginators control
@@ -479,6 +439,6 @@ package org.openscales.core.control
 		{
 			this._originatorsLayersCount = originatorsLayersCount;
 		}
-			
+		
 	}
 }
