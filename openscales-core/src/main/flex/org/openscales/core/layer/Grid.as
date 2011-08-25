@@ -232,9 +232,8 @@ package org.openscales.core.layer
 							this.clear();
 							this.initSingleTile(bounds);
 						}
-				} else 
-				{
-					if (resolution != this._resquestResolution)
+				} else {
+					if (resolution != this._resquestResolution || forceReTile)
 					{
 						this.initGriddedTiles(bounds, true);
 						ratio = resolution/this.map.resolution.value;
@@ -390,7 +389,7 @@ package org.openscales.core.layer
 			this._tileToRemove.destroy();
 		}
 		
-		protected function getSupportedResolution(targetResolution:Resolution):Resolution
+		public function getSupportedResolution(targetResolution:Resolution):Resolution
 		{	
 			// Find the best resotion to fit the target resolution
 			var bestResolution:Number = 0;
@@ -443,18 +442,18 @@ package org.openscales.core.layer
 			var tilelat:Number = _resquestResolution * this.tileHeight;
 			
 			// Longitude
-			var offsetlon:Number = bounds.left - this._tileOrigin.lon;
+			var offsetlon:Number = bounds.left - projectedTileOrigin.lon;
 			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
 			var tilecolremain:Number = offsetlon/tilelon - tilecol;
 			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
-			var tileoffsetlon:Number = this._tileOrigin.lon + tilecol * tilelon;
+			var tileoffsetlon:Number = projectedTileOrigin.lon + tilecol * tilelon;
 			
 			// Latitude
-			var offsetlat:Number = bounds.top - (this._tileOrigin.lat + tilelat);  
+			var offsetlat:Number = bounds.top - (projectedTileOrigin.lat + tilelat);  
 			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
 			var tilerowremain:Number = tilerow - offsetlat/tilelat;
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
-			var tileoffsetlat:Number = this._tileOrigin.lat + tilerow * tilelat;
+			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
 			
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
 			
@@ -837,6 +836,7 @@ package org.openscales.core.layer
 		public function set tileOrigin(value:Location):void
 		{
 			this._tileOrigin = value;
+			this.redraw(true);
 		}
 		
 		public function getMapPxRescalesFromLayerPx(layerPx:Pixel):Pixel

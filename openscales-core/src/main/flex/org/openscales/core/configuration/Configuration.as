@@ -423,12 +423,12 @@ package org.openscales.core.configuration
 					}
 				}
 				
-				if (String(xmlNode.@minZoomLevel) != "" ) {
+				/*if (String(xmlNode.@minR) != "" ) {
 					wfsLayer.minZoomLevel = Number(xmlNode.@minZoomLevel);
 				}
 				if (String(xmlNode.@maxZoomLevel) != "") {
 					wfsLayer.maxZoomLevel = Number(xmlNode.@maxZoomLevel);
-				}
+				}*/
 				wfsLayer.version = capabilitiesVersion;
 				layer=wfsLayer;
 			}

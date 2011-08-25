@@ -46,54 +46,6 @@ package org.openscales.core.layer
 		}
 		
 		[Test]
-		public function testMinZoomLevel():void {
-			var layer:Layer = new Layer("test");
-			layer.resolutions = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-			layer.minZoomLevel = 2;
-			
-			Assert.assertEquals(layer.minZoomLevel, 2);
-			Assert.assertEquals(layer.minResolution, 0);
-			Assert.assertEquals(layer.maxResolution, 7);
-		}
-		
-		[Test]
-		public function testMaxZoomLevel():void {
-			var layer:Layer = new Layer("test");
-			layer.resolutions = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-			layer.maxZoomLevel = 8;
-			
-			Assert.assertEquals(layer.maxZoomLevel, 8);
-			Assert.assertEquals(layer.minResolution, 1);
-			Assert.assertEquals(layer.maxResolution, 9);
-		}
-		
-		[Test]
-		public function testInvalidMaxZoomLevel():void {
-			var layer:Layer = new Layer("test");
-			layer.resolutions = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-			
-			// Define valid maxZoomLevel
-			layer.maxZoomLevel = 5;
-			// Now invalid one
-			layer.maxZoomLevel = 11;
-						
-			Assert.assertEquals(layer.maxZoomLevel, 5);
-		}
-		
-		[Test]
-		public function testInvalidMinZoomLevel():void {
-			var layer:Layer = new Layer("test");
-			layer.resolutions = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-			
-			// Define valid maxZoomLevel
-			layer.minZoomLevel = 5;
-			// Now invalid one
-			layer.minZoomLevel = -1;
-			
-			Assert.assertEquals(layer.minZoomLevel, 5);
-		}
-		
-		[Test]
 		public function testOriginators():void 
 		{
 			var layer:Layer = new Layer("test");
