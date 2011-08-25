@@ -35,7 +35,7 @@ package org.openscales.map
 			this._map = new Map(600, 400, "EPSG:2154");
 			
 			
-			this._map.addEventListener(MapEvent.PROJECTION_CHANGED,Async.asyncHandler(this,this.assertProjectionEventDispatched,1000,null,this.onTimeOut));
+			this._map.addEventListener(MapEvent.PROJECTION_CHANGED,Async.asyncHandler(this,this.assertProjectionEventDispatched,2000,null,this.onTimeOut));
 			
 			// When you set a new projection
 			this._map.projection = "EPSG:4326";
@@ -62,7 +62,7 @@ package org.openscales.map
 			this._map.resolution = new Resolution(12000,"EPSG:2154");
 			this._map.center = new Location(0, 43, "EPSG:2154");
 			
-			this._map.addEventListener(MapEvent.PROJECTION_CHANGED, Async.asyncHandler(this, this.assertMapVariablesProjectionChanged, 1000, this._map, this.onTimeOut));
+			this._map.addEventListener(MapEvent.PROJECTION_CHANGED, Async.asyncHandler(this, this.assertMapVariablesProjectionChanged, 2000, this._map, this.onTimeOut));
 			
 			// When you set a new projection
 			this._map.projection = "EPSG:4326";

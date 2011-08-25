@@ -85,7 +85,7 @@ package org.openscales.core.layer.ogc
 				}
 				
 				f.apply(this,args);
-				var handler:Function = Async.asyncHandler(this,this.onTimer,800,steps);
+				var handler:Function = Async.asyncHandler(this,this.onTimer,2000,steps);
 				this._timer.addEventListener(TimerEvent.TIMER,handler);
 			}
 			else{
@@ -192,7 +192,7 @@ package org.openscales.core.layer.ogc
 			// When the tileOrigin is set
 			_wms.tileOrigin = new Location(4,56,_wms.map.projection);
 			
-			var handler:Function = Async.asyncHandler(this,this.onTimer,1200,[
+			var handler:Function = Async.asyncHandler(this,this.onTimer,2000,[
 				[this.assertChangeGridWithCorrectTileOriginOnTileOriginValueChange]] );
 			
 			this._timer.addEventListener(TimerEvent.TIMER,handler);
@@ -274,7 +274,7 @@ package org.openscales.core.layer.ogc
 				
 				// Then the extent requested is smaller and limited by the layer and the map maxExtent
 				assertTrue("BBox is not the proper intersection of extends", url.match('BBOX='+intersectionExtent.toString()));
-			},1000,null,function(event:Event):void{
+			},2000,null,function(event:Event):void{
 				
 				Assert.fail("No request sent");
 			}));
@@ -318,7 +318,7 @@ package org.openscales.core.layer.ogc
 				
 				// Then the extent resquested is the extent of the map
 				assertTrue("BBox is not the proper extends", url.match('BBOX='+intersectionExtent.toString()));
-			},100,null,function(event:Event):void{
+			},2000,null,function(event:Event):void{
 				
 				Assert.fail("No request sent");
 			}));
