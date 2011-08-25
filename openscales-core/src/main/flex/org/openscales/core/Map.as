@@ -1205,11 +1205,11 @@ package org.openscales.core
 			{
 				value = value.reprojectTo(this.projection);
 			}
-			if (value > this.maxResolution)
+			if (value.value > this.maxResolution.value)
 			{
 				value = maxResolution;
 			}
-			if (value < this.minResolution)
+			if (value.value < this.minResolution.value)
 			{
 				value = minResolution;
 			}
