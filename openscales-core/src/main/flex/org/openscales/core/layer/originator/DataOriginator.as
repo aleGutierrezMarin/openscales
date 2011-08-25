@@ -156,7 +156,7 @@ package org.openscales.core.layer.originator
 				maxRes = constraint.maxResolution.reprojectTo(resolution.projection);
 				
 				// if extent and resolution contain given extent and resolution : covered
-				if( constraint.extent.intersectsBounds(extent) &&
+				if( constraint.extent.intersectsBounds(extent,false) &&
 					minRes.value <= resolution.value &&
 					maxRes.value >= resolution.value)
 				{
