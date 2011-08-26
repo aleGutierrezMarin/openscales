@@ -61,7 +61,8 @@
 				// add listener to the map
 				if(this._map)
 				{
-					this._map.addEventListener(MapEvent.MOVE_END,this.updateScale);
+					this._map.addEventListener(MapEvent.PROJECTION_CHANGED,this.updateScale);
+					this._map.addEventListener(MapEvent.CENTER_CHANGED,this.updateScale);
 					this._map.addEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
 					this._map.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,this.updateScale);
 				}
@@ -77,7 +78,8 @@
 				// add listener to the map
 				if(this._map)
 				{
-					this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
+					this._map.removeEventListener(MapEvent.PROJECTION_CHANGED,this.updateScale);
+					this._map.removeEventListener(MapEvent.CENTER_CHANGED,this.updateScale);
 					this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
 					this._map.removeEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,this.updateScale);
 				}
