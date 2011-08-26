@@ -216,7 +216,7 @@
 			 */
 			public function shallDisplayLayer(layer:Layer):Boolean{
 				
-				return layer.displayInLayerManager;	
+				return layer.displayInLayerManager;
 			}
 			
 			/**
