@@ -127,9 +127,9 @@ package org.openscales.core.layer
 				this.updateCurrentProjection();
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, this.updateCurrentProjection);
 				// Ugly trick due to the fact we can't set the size of and empty Sprite
-				this.graphics.drawRect(0,0,map.width,map.height);
-				this.width = map.width;
-				this.height = map.height;
+				this.graphics.drawRect(0,0,map.size.w,map.size.h);
+				this.width = map.size.w;
+				this.height = map.size.h;
 			}
 		}
 		

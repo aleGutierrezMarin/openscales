@@ -212,7 +212,7 @@ package org.openscales.core.layer
 				{
 					this.initGriddedTiles(bounds);
 					ratio = resolution/this.map.resolution.value;
-					this.scaleLayer(ratio, new Pixel(this.map.width/2, this.map.height/2));
+					this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 					this._centerChanged = false;
 					this._projectionChanged = false;
 					this._resolutionChanged = false;
@@ -237,7 +237,7 @@ package org.openscales.core.layer
 					{
 						this.initGriddedTiles(bounds, true);
 						ratio = resolution/this.map.resolution.value;
-						this.scaleLayer(ratio, new Pixel(this.map.width/2, this.map.height/2));
+						this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 					} else 
 					{
 						this.moveGriddedTiles(bounds);
@@ -303,10 +303,6 @@ package org.openscales.core.layer
 			this._timer.start();
 			var px:Pixel = event.targetZoomPixel;
 			var ratio:Number = event.oldResolution.value / event.newResolution.value;
-			if (this.getSupportedResolution(event.oldResolution).value != this.getSupportedResolution(event.newResolution).value)
-			{
-				this._scaleOnZoomRatiochanged = ratio;
-			}
 			this.scaleLayer(ratio, px);
 			super.onMapResolutionChanged(event);
 		}

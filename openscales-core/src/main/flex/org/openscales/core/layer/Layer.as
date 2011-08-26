@@ -172,9 +172,7 @@ package org.openscales.core.layer {
 		}
 		
 		protected function onMapResize(e:MapEvent):void {
-			if(this.visible) {
-				this.redraw();
-			}
+				this.redraw(true);
 		}
 		
 		/**

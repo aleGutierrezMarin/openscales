@@ -113,8 +113,8 @@ package org.openscales.core.handler.mouse
             var point:Point = this.map.globalToLocal(new Point(p.x,p.y)); 
             infoParams.x = point.x; 
             infoParams.y = point.y;
-            infoParams.height = this.map.height;
-            infoParams.width = this.map.width;
+            infoParams.height = this.map.size.h;
+            infoParams.width = this.map.size.w;
 			
 			// request data
 			if(_request) {

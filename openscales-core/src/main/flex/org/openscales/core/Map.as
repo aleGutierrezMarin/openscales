@@ -902,14 +902,14 @@ package org.openscales.core
 		public function set size(value:Size):void {
 			if (value) {
 				_size = value;
+				
 				this.graphics.clear();
 				this.graphics.beginFill(0xFFFFFF);
 				this.graphics.drawRect(0,0,this.size.w,this.size.h);
 				this.graphics.endFill();
 				this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
-				
 				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
-				this.center = this.center;
+				
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
 			}
