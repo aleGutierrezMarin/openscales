@@ -182,7 +182,7 @@ package org.openscales.core.layer.ogc
 			if (this.map == null)
 				return;
 			
-			if (!this.available)
+			if (!this.available || !this.visible)
 			{
 				this.clear();
 				this._initialized = false;
@@ -221,7 +221,7 @@ package org.openscales.core.layer.ogc
 					}
 					this._centerChanged = false;
 				}
-				if (this._resolutionChanged)
+				if (this._resolutionChanged || this._projectionChanged)
 				{
 					if (!this._timer.running)
 					{

@@ -73,7 +73,7 @@ package org.openscales.core.layer
 				return;
 			
 			this.clear();
-			if(this.displayed){
+			if(this.available || !this.visible){
 				this.draw();
 			}
 		}
