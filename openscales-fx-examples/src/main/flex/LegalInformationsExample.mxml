@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Display a copyright component on the map. -->
+<s:Group xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%" height="100%"
+		 creationComplete="configure()">
+
+	<Map id="fxMap" width="100%" height="100%" resolution="0.703125" center="4.833,45.767" projection="EPSG:900913">
+		
+		<Mapnik id="mapnikLayer" name="Mapnik" />
+		
+		<WFS id="wfs" name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+			 typename="topp:states" projection="EPSG:900913" version="1.0.0"
+			 style="{Style.getDefaultSurfaceStyle()}" 
+			 maxExtent = "-40037508.34,-10037508.34,10037508.34,10037508.34" />
+		
+		<WheelHandler />
+		<DragHandler/>
+		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>	
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		<ScaleLine x="{width-100-10}" y="{height-80}" />
+		
+		<DataOriginatorsDisplay x="700" y="{height-80}" />
+		<TermsOfService x="500" y="{height-20}" url="http://openscales.org/index.html" />
+		<Copyright id="copyright" x="400" y="{height-20}" />
+
+		<LayerManager right="10" width="215">
+			<rendererOptions>
+				<fx:Object
+					displayZoomToExtent="true" />
+			</rendererOptions> 
+		</LayerManager>
+	</Map>
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.basetypes.Resolution;
+			import org.openscales.core.layer.originator.ConstraintOriginator;
+			import org.openscales.core.layer.originator.DataOriginator;
+			import org.openscales.fx.layer.osm.FxMapnik;
+			import org.openscales.geometry.basetypes.Bounds;
+			
+			private var visibility:Boolean = true;
+			
+			public function configure():void
+			{
+				// originator and constraint for the mapnikLayer
+				var originatorCC:DataOriginator = new DataOriginator("Creative Commons", "http://creativecommons.org/licenses/by-sa/2.0/", "http://wiki.april.org/skins/common/images/icons/cc-by-sa.png");
+				var originatorOSM:DataOriginator = new DataOriginator("OSM", "http://www.openstreetmap.org/", "http://syvolc.free.fr/pictures/logo-osm.jpg");
+				var originatorList:Vector.<DataOriginator> = new Vector.<DataOriginator>();
+						
+				var constraint:ConstraintOriginator = new ConstraintOriginator(mapnikLayer.nativeLayer.map.maxExtent, mapnikLayer.nativeLayer.minResolution, mapnikLayer.nativeLayer.maxResolution);
+				
+				originatorOSM.addConstraint(constraint);
+				
+				originatorList.push(originatorCC);
+				originatorList.push(originatorOSM);
+
+				mapnikLayer.nativeLayer.originators = originatorList;
+			
+				// originator and constraint for the WMS
+				var originatorPlanet:DataOriginator = new DataOriginator("Planet observer", "http://www.planetobserver.com/", "http://www.toulousespaceshow.eu/tss08/logos/logo_planetobserver.jpg");
+				var originatorIGN:DataOriginator = new DataOriginator("IGN", "http://www.ign.fr/", "http://www.ign.fr/imgs/logo.gif");
+				
+				var originatorListWMS:Vector.<DataOriginator> = new Vector.<DataOriginator>();
+				
+				originatorPlanet.addConstraint(constraint);
+				originatorIGN.addConstraint(constraint);
+				
+				originatorListWMS.push(originatorPlanet);
+				originatorListWMS.push(originatorIGN);
+				
+				wfs.nativeLayer.originators = originatorListWMS;
+			}
+			
+		]]>
+
+	</fx:Script>
+</s:Group>
