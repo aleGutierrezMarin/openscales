@@ -521,5 +521,72 @@ package org.openscales.fx
 			(this._map as Map).projection = value;
 		}
 		
+		/**
+		 * The minimum resolution of the map.
+		 * You cannot reach a resolution lower than this resolution
+		 * If you try to reach a resolution behind the minResolution nothing will be done
+		 */
+		public function get minResolution():Resolution
+		{
+			return (this._map as Map).minResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set minResolution(value:*):void
+		{
+			if(value is Resolution)
+				(this._map as Map).minResolution = value as Resolution;
+			else if (value is String) {
+				var val:Array=(value as String).split(",");
+				if(val.length==2) {
+					var proj:String = String(val[1]).replace(/\s/g,"");
+					if(proj && proj!="")
+						(this._map as Map).minResolution = new Resolution(Number(val[0]),proj);
+					else
+						(this._map as Map).minResolution = new Resolution(Number(val[0]));
+				}
+				else if(val.length == 1)
+					(this._map as Map).minResolution = new Resolution(Number(val[0]));
+			}
+			else if (value is Number) {
+				(this._map as Map).minResolution = new Resolution(value as Number);
+			}
+		}
+		
+		/**
+		 * The maximum resolution of the map.
+		 * You cannot reach a resolution higher than this resolution
+		 * If you try to reach a resolution above the maxResolution nothing will be done
+		 */
+		public function get maxResolution():Resolution
+		{
+			return (this._map as Map).maxResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set maxResolution(value:*):void
+		{
+			if(value is Resolution)
+				(this._map as Map).maxResolution = value as Resolution;
+			else if (value is String) {
+				var val:Array=(value as String).split(",");
+				if(val.length==2) {
+					var proj:String = String(val[1]).replace(/\s/g,"");
+					if(proj && proj!="")
+						(this._map as Map).maxResolution = new Resolution(Number(val[0]),proj);
+					else
+						(this._map as Map).maxResolution = new Resolution(Number(val[0]));
+				}
+				else if(val.length == 1)
+					(this._map as Map).maxResolution = new Resolution(Number(val[0]));
+			}
+			else if (value is Number) {
+				(this._map as Map).maxResolution = new Resolution(value as Number);
+			}
+		}
 	}
 }

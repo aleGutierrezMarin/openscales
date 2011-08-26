@@ -1,6 +1,7 @@
 package org.openscales.fx.layer
 {	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.fx.FxMap;
@@ -17,9 +18,9 @@ package org.openscales.fx.layer
 		
 		protected var _dpi:Number = NaN;
 		
-		protected var _minResolution:Number = NaN;
+		protected var _minResolution:Resolution = null;
 		
-		protected var _maxResolution:Number = NaN;
+		protected var _maxResolution:Resolution = null;
 		
 		protected var _numZoomLevels:Number = NaN;
 		
@@ -68,10 +69,10 @@ package org.openscales.fx.layer
 			if(this._resolutions)
 				this._layer.resolutions = this._resolutions;
 			
-			if(!isNaN(this.minResolution))
+			if(!isNaN(this.minResolution.value))
 				this._layer.minResolution = this.minResolution;
 			
-			if(!isNaN(this.maxResolution))
+			if(!isNaN(this.maxResolution.value))
 				this._layer.maxResolution = this.maxResolution;
 			
 			if(this._maxExtent) {
@@ -96,10 +97,10 @@ package org.openscales.fx.layer
 				return;
 			
 			if(!isNaN(this.numZoomLevels)) {
-				this._layer.generateResolutions(this.numZoomLevels, this.maxResolution);
+				this._layer.generateResolutions(this.numZoomLevels, this.maxResolution.value);
 			}else{
-				if(!isNaN(this.maxResolution)) {
-					this._layer.generateResolutions(Layer.DEFAULT_NUM_ZOOM_LEVELS, this.maxResolution);
+				if(!isNaN(this.maxResolution.value)) {
+					this._layer.generateResolutions(Layer.DEFAULT_NUM_ZOOM_LEVELS, this.maxResolution.value);
 				}
 			}
 		}
@@ -262,7 +263,7 @@ package org.openscales.fx.layer
 		/**
 		 * Indicates the layer maxResolution
 		 */
-		public function get minResolution():Number {
+		public function get minResolution():Resolution {
 			if(this._layer)
 				return this._layer.minResolution;
 			return this._minResolution;
@@ -270,17 +271,39 @@ package org.openscales.fx.layer
 		/**
 		 * @Private
 		 */
-		public function set minResolution(value:Number):void {
-			this._minResolution = value;
+		public function set minResolution(value:*):void {
+			
+			var newResolution:Resolution;
+			
+			if(value is Resolution)
+				newResolution = value as Resolution;
+			else if (value is String) {
+				var val:Array=(value as String).split(",");
+				if(val.length==2) {
+					var proj:String = String(val[1]).replace(/\s/g,"");
+					if(proj && proj!="")
+						newResolution = new Resolution(Number(val[0]),proj);
+					else
+						newResolution = new Resolution(Number(val[0]));
+				}
+				else if(val.length == 1)
+					newResolution = new Resolution(Number(val[0]));
+			}
+			else if (value is Number) {
+				newResolution = new Resolution(value as Number);
+			}
+			
+			this._minResolution = newResolution;
 			if(this._layer)
-				this._layer.minResolution = value;
+				this._layer.minResolution = newResolution;
+			
 			this.generateResolutions();
 		}
 		
 		/**
 		 * Indicates the layer maxResolution
 		 */
-		public function get maxResolution():Number {
+		public function get maxResolution():Resolution {
 			if(this._layer)
 				return this._layer.maxResolution;
 			return this._maxResolution;
@@ -288,10 +311,31 @@ package org.openscales.fx.layer
 		/**
 		 * @Private
 		 */
-		public function set maxResolution(value:Number):void {
-			this._maxResolution = value;
+		public function set maxResolution(value:*):void {
+			var newResolution:Resolution;
+			
+			if(value is Resolution)
+				newResolution = value as Resolution;
+			else if (value is String) {
+				var val:Array=(value as String).split(",");
+				if(val.length==2) {
+					var proj:String = String(val[1]).replace(/\s/g,"");
+					if(proj && proj!="")
+						newResolution = new Resolution(Number(val[0]),proj);
+					else
+						newResolution = new Resolution(Number(val[0]));
+				}
+				else if(val.length == 1)
+					newResolution = new Resolution(Number(val[0]));
+			}
+			else if (value is Number) {
+				newResolution = new Resolution(value as Number);
+			}
+			
+			this._maxResolution = newResolution;
 			if(this._layer)
-				this._layer.maxResolution = value;
+				this._layer.maxResolution = newResolution;
+			
 			this.generateResolutions();
 		}
 		

@@ -43,8 +43,8 @@ package org.openscales.core.layer {
 		private var _dpi:Number = Layer.DEFAULT_DPI;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
-		private var _minResolution:Number = NaN;
-		private var _maxResolution:Number = NaN;
+		private var _minResolution:Resolution = null;
+		private var _maxResolution:Resolution = null;
 		private var _proxy:String = null;
 		private var _isFixed:Boolean = false;		
 		private var _security:ISecurity = null;
@@ -72,8 +72,8 @@ package org.openscales.core.layer {
 		public function get available():Boolean
 		{
 			return (this.maxExtent.getIntersection(this.map.extent) != null
-				&& (this.map.resolution.value <= this.maxResolution)
-				&& (this.map.resolution.value >= this.minResolution));
+				&& (this.map.resolution.value <= this.maxResolution.value)
+				&& (this.map.resolution.value >= this.minResolution.value));
 		}
 		
 		/**
@@ -416,11 +416,12 @@ package org.openscales.core.layer {
 		public  function get inRange():Boolean {
 			var inRange:Boolean = false;
 			if (this.map) {
-				var resolutionProjected:Number = this.map.resolution.value;
+				var resolutionProjected:Resolution = this.map.resolution;
+				
 				if (this.projSrsCode != this.map.projection) {
-					resolutionProjected = this.map.resolution.reprojectTo(this.projSrsCode).value;
+					resolutionProjected = this.map.resolution.reprojectTo(this.projSrsCode);
 				}
-				inRange = ((resolutionProjected >= this.minResolution) && (resolutionProjected <= this.maxResolution));
+				inRange = ((resolutionProjected.value >= this.minResolution.value) && (resolutionProjected.value <= this.maxResolution.value));
 			}
 			return inRange;
 		}
@@ -473,53 +474,57 @@ package org.openscales.core.layer {
 		/**
 		 * Minimal valid resolution for this layer
 		 */
-		public function get minResolution():Number {
+		public function get minResolution():Resolution {
 			
-			var minRes:Number = this._minResolution;
+			var minRes:Resolution = this._minResolution;
 			
-			if(isNaN(this._minResolution) || !isFinite(this._minResolution))
+			if(!this._minResolution || isNaN(this._minResolution.value) || !isFinite(this._minResolution.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
-					minRes = this.resolutions[this.resolutions.length - 1];
+					minRes = new Resolution(this.resolutions[this.resolutions.length - 1], this.projSrsCode);
 					this._minResolution = minRes;
 				}
 			}
 			else
 			{
 				// if is valide
-				var i:int = 0;
-				var j:int = this.resolutions.length;
-				for(; i<j; ++i)
+				for(var i:int=this.resolutions.length; i>-1; --i)
 				{
-					if( this.resolutions[i] == this._minResolution)
-						return this._minResolution;
+					if( this.resolutions[i] >= this._minResolution.value)
+						return new Resolution(this.resolutions[i],this.projSrsCode);
 				}
 				
 				if (this.resolutions && (this.resolutions.length > 0)) {
-					minRes = this.resolutions[this.resolutions.length - 1];
+					minRes = new Resolution(this.resolutions[this.resolutions.length - 1],this.projSrsCode);
 					this._minResolution = minRes;
 				}
 				
 			}
 			
-			return minRes;
+			return this._minResolution;
 		}
 		
-		public function set minResolution(value:Number):void {
+		public function set minResolution(value:*):void {
+			
+			value = (value as Resolution);
+			
+			if(value.projection!=this.projSrsCode)
+				value = value.reprojectTo(this.projSrsCode);
+			
 			this._minResolution = value;
 		}
 		
 		/**
 		 * Maximal valid resolution for this layer
 		 */
-		public function get maxResolution():Number {
+		public function get maxResolution():Resolution {
 			
-			var maxRes:Number = this._maxResolution;
+			var maxRes:Resolution = this._maxResolution;
 			
-			if(isNaN(this._maxResolution) || !isFinite(this._maxResolution))
+			if(!this._maxResolution || isNaN(this._maxResolution.value) || !isFinite(this._maxResolution.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
-					maxRes = this.resolutions[0];
+					maxRes = new Resolution(this.resolutions[0], this.projSrsCode);
 					this._maxResolution = maxRes;
 				}
 			}
@@ -528,23 +533,32 @@ package org.openscales.core.layer {
 				// if is valide
 				var i:int = 0;
 				var j:int = this.resolutions.length;
+				
+				maxRes = this._maxResolution;
+				
 				for(; i<j; ++i)
 				{
-					if( this.resolutions[i] == this._maxResolution)
-						return this._maxResolution;
+					if(this.resolutions[i] <= maxRes.value )
+						return new Resolution(this.resolutions[i],this.projSrsCode);
 				}
 				
 				if (this.resolutions && (this.resolutions.length > 0)) {
-					maxRes = this.resolutions[0];
+					maxRes = new Resolution(this.resolutions[0],this.projSrsCode);
 					this._maxResolution = maxRes;
 				}
 				
 			}
 			
-			return maxRes;
+			return this._maxResolution;
 		}
 		
-		public function set maxResolution(value:Number):void {
+		public function set maxResolution(value:*):void {
+			
+			value = (value as Resolution);
+			
+			if(value.projection!=this.projSrsCode)
+				value = value.reprojectTo(this.projSrsCode);
+			
 			this._maxResolution = value;
 		}
 		
