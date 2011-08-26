@@ -1,8 +1,10 @@
 package org.openscales.core.layer
 {
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.geometry.basetypes.Bounds;
+
     /**
      *this class allow to have a layer with two layer inside , one layer is displayed according to scale 
      */
@@ -85,7 +87,7 @@ package org.openscales.core.layer
 			}
 		}
 		
-		override public function get minResolution():Number {
+		override public function get minResolution():Resolution {
 			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 			  return this._firstLayer.minResolution;
 			} else {
@@ -94,7 +96,7 @@ package org.openscales.core.layer
 			
 		}
 		
-		override public function get maxResolution():Number {
+		override public function get maxResolution():Resolution {
 			if(this.map.resolution.reprojectTo(this.projSrsCode).value > this._resolutionToSwitch) {
 			  return this._firstLayer.maxResolution;
 			} else {

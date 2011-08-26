@@ -49,7 +49,7 @@
 				var originatorOSM:DataOriginator = new DataOriginator("OSM", "http://www.openstreetmap.org/", "http://syvolc.free.fr/pictures/logo-osm.jpg");
 				var originatorList:Vector.<DataOriginator> = new Vector.<DataOriginator>();
 						
-				var constraint:ConstraintOriginator = new ConstraintOriginator(mapnikLayer.nativeLayer.map.maxExtent, new Resolution(mapnikLayer.nativeLayer.minResolution, "EPSG:900913"), new Resolution(mapnikLayer.nativeLayer.maxResolution, "EPSG:900913"));
+				var constraint:ConstraintOriginator = new ConstraintOriginator(mapnikLayer.nativeLayer.map.maxExtent, mapnikLayer.nativeLayer.minResolution, mapnikLayer.nativeLayer.maxResolution);
 				
 				originatorOSM.addConstraint(constraint);
 				

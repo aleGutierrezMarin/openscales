@@ -3,6 +3,7 @@ package org.openscales.core.layer
 	import flash.display.DisplayObject;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -199,7 +200,7 @@ package org.openscales.core.layer
 			}
 		}
 		
-		override public function set maxResolution(value:Number):void {
+		override public function set maxResolution(value:*):void {
 			super.maxResolution = value;
 			var numLayer:uint = this.layers.length;
 			for(var i:uint = 0;i<numLayer;++i) {
@@ -207,7 +208,7 @@ package org.openscales.core.layer
 			}
 		}
 		
-		override public function set minResolution(value:Number):void {
+		override public function set minResolution(value:*):void {
 			super.minResolution = value;
 			var numLayer:uint = this.layers.length;
 			for(var i:uint = 0;i<numLayer;++i) {

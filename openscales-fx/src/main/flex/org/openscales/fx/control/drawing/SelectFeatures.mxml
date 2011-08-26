@@ -91,7 +91,7 @@
 			 */
 			public function get target():VectorLayer{
 				
-				return _handler.layers[0];
+				return _handler.layers[0] as VectorLayer;
 			}
 			public function set target(value:VectorLayer):void{
 				

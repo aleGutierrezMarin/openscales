@@ -6,6 +6,7 @@ package org.openscales.core.layer
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -47,8 +48,8 @@ package org.openscales.core.layer
 			this.selectedFeatures = new Vector.<String>();
 			
 			// By default no range defined for feature layers
-			this.minResolution = 0;
-			this.maxResolution = Infinity;
+			this.minResolution = new Resolution(0,this.projSrsCode);
+			this.maxResolution = new Resolution(Infinity,this.projSrsCode);
 			
 			// Make drag smooth even with a lot of points
 			this.cacheAsBitmap = true;
