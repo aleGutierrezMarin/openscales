@@ -103,7 +103,7 @@ package org.openscales.core.layer
 			this.graphics.clear();
 		}
 		
-		private function updateCurrentProjection(evt:LayerEvent = null):void {
+		private function updateCurrentProjection(evt:MapEvent = null):void {
 			if ((this.map) && (this._displayProjSrsCode != this.map.projection)) {
 				if (this.features.length > 0) {	
 					for each (var f:Feature in this.features) {

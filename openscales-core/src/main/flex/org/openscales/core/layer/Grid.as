@@ -350,6 +350,11 @@ package org.openscales.core.layer
 			bounds = this.maxExtent.getIntersection(bounds);
 			bounds = this.map.maxExtent.getIntersection(bounds);
 			
+			if (bounds == null)
+			{
+				Trace.debug("Singletile requested extent is null, no intersection");
+				return;
+			}
 			if(bounds.projSrsCode!=this.projSrsCode)
 				bounds = bounds.reprojectTo(this.projSrsCode);
 			
