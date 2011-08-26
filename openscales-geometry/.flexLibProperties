@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="false" version="1">
+  <includeClasses>
+    <classEntry path="org.openscales.geometry.Collection"/>
+    <classEntry path="org.openscales.geometry.Geometry"/>
+    <classEntry path="org.openscales.geometry.ICollection"/>
+    <classEntry path="org.openscales.geometry.LineString"/>
+    <classEntry path="org.openscales.geometry.LinearRing"/>
+    <classEntry path="org.openscales.geometry.MultiLineString"/>
+    <classEntry path="org.openscales.geometry.MultiPoint"/>
+    <classEntry path="org.openscales.geometry.MultiPolygon"/>
+    <classEntry path="org.openscales.geometry.Point"/>
+    <classEntry path="org.openscales.geometry.basetypes.Bounds"/>
+    <classEntry path="org.openscales.geometry.basetypes.Location"/>
+    <classEntry path="org.openscales.geometry.basetypes.Pixel"/>
+    <classEntry path="org.openscales.geometry.basetypes.Size"/>
+    <classEntry path="org.openscales.geometry.basetypes.Unit"/>
+    <classEntry path="org.openscales.geometry.utils.StringUtils"/>
+    <classEntry path="org.openscales.geometry.utils.UtilGeometry"/>
+    <classEntry path="org.openscales.geometry.ContainsPointTest"/>
+    <classEntry path="org.openscales.geometry.GeometryTest"/>
+    <classEntry path="org.openscales.geometry.PointTest"/>
+    <classEntry path="org.openscales.geometry.basetypes.BoundsTest"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
