@@ -46,7 +46,7 @@ package org.openscales.core.layer.ogc
 		private var _timerOn:Boolean = false;
 		
 		public function GeoRss(name:String, 
-							   url:String = null,
+							   url:String,
 							   refreshDelay:int = 300000,
 							   style:Style = null)
 		{
