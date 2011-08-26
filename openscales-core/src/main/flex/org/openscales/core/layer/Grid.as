@@ -190,7 +190,7 @@ package org.openscales.core.layer
 			if (this.map == null)
 				return;
 			
-			if (!available) 
+			if (!available || !this.visible) 
 			{
 				this.clear();
 				this._initialized = false;
