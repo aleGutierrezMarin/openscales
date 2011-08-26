@@ -92,5 +92,17 @@ package org.openscales.core.layer
 			return this.url;
 		}
 		
+		/**
+		 * Getters and Setters
+		 */ 
+		public function get projection():String
+		{
+			return this._projSrsCode;	
+		}
+		
+		public function set projection(value:String):void
+		{
+			this._projSrsCode = value;
+		}
 	}
 }
