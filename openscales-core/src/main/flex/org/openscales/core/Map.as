@@ -948,7 +948,7 @@ package org.openscales.core
 		public function set maxExtent(value:Bounds):void {
 			if (value.projSrsCode != this.projection)
 			{
-				value = value.reprojectTo(this.projection);
+				value = value.preciseReprojectBounds(this.projection);
 			}
 			this._maxExtent = value;
 		}
@@ -1184,7 +1184,7 @@ package org.openscales.core
 			event.newProjection = value;
 			this._projection = value;
 			this._resolution = this._resolution.reprojectTo(event.newProjection);
-			this._maxExtent =  this._maxExtent.reprojectTo(event.newProjection);
+			this._maxExtent =  this._maxExtent.preciseReprojectBounds(event.newProjection);
 			this._center = this.center.reprojectTo(event.newProjection);
 			this._maxResolution = this._maxResolution.reprojectTo(event.newProjection);
 			this._minResolution = this._minResolution.reprojectTo(event.newProjection);
