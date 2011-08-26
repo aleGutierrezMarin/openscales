@@ -575,11 +575,18 @@ package org.openscales.core.layer {
 		}
 		
 		public function set maxExtent(value:*):void {
-			if (value.projSrsCode != this.projSrsCode)
-			{
-				value = (value as Bounds).reprojectTo(this.projSrsCode);
+			var bounds:Bounds = null;
+			if(value is String) {
+				bounds = Bounds.getBoundsFromString(value as String);
+			} else if (value is Bounds) {
+				bounds = value as Bounds;
+				if (bounds.projSrsCode != this.projSrsCode)
+				{
+					bounds = bounds.reprojectTo(this.projSrsCode);
+				}
 			}
-			this._maxExtent = (value as Bounds);
+			if(bounds)
+				this._maxExtent = bounds;
 		}
 		
 		/**
