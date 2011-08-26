@@ -212,7 +212,7 @@ package org.openscales.core
 			
 			layer.map = this;
 			if (redraw){
-				layer.redraw();	
+				layer.redraw(redraw);	
 			}
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_ADDED, layer));

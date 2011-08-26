@@ -69,12 +69,12 @@ package org.openscales.core.layer
 			this.featuresBbox = null;
 		}
 		
-		override public function redraw(fullRedraw:Boolean = true):void {
+		override public function redraw(fullRedraw:Boolean = false	):void {
 			if (this.map == null)
 				return;
 			
 			this.clear();
-			if(this.available || !this.visible){
+			if(this.available && this.visible){
 				this.draw();
 			}
 		}
@@ -365,6 +365,7 @@ package org.openscales.core.layer
 		
 		public function set style(value:Style):void {
 			this._style = value;
+			this.redraw(true);
 		}
 		
 		public function get geometryType():String {
