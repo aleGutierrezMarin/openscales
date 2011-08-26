@@ -369,7 +369,7 @@ package org.openscales.core.format
 									customMarker = CustomMarker.createDisplayObjectMarker(_img,loc,attributes,0,0);
 								}
 								else if(_externalImages[_icon]!=null) 
-								{ // image allready loaded, we copy the loader content
+								{ // image already loaded, we copy the loader content
 									var Image:Bitmap = new Bitmap(new Bitmap(_externalImages[_icon].loader.content).bitmapData.clone());
 									Image.y = -Image.height;
 									Image.x = -Image.width/2;

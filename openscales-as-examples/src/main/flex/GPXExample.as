@@ -64,7 +64,7 @@ package
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 			
-			//Set map size and zoom level
+			//Set map center and zoom level
 			_map.zoom=6;
 			_map.center = new Location(2.4,46.9,"EPSG:4326");
 			this.addChild(_map);

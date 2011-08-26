@@ -59,7 +59,7 @@ package
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 			
-			//Set map size and zoom level
+			//Set map center and zoom level
 			_map.zoom=10;
 			_map.center = new Location(-103.6,44.5,"WGS84");
 			this.addChild(_map);
