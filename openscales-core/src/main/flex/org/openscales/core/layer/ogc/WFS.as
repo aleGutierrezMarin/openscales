@@ -177,7 +177,7 @@ package org.openscales.core.layer.ogc
 		/**
 		 * @inheritDoc
 		 */
-		override public function redraw(fullRedraw:Boolean = true):void {
+		override public function redraw(fullRedraw:Boolean = false):void {
 			
 			if (this.map == null)
 				return;
@@ -189,7 +189,12 @@ package org.openscales.core.layer.ogc
 				return;
 			}
 			
-			if (!this._initialized)
+			if (fullRedraw)
+			{
+				this.clear();
+			}
+			
+			if (!this._initialized || fullRedraw)
 			{
 				this.featuresBbox = this.defineBounds();
 				this.loadFeatures(this.getFullRequestString());
@@ -375,7 +380,7 @@ package org.openscales.core.layer.ogc
 			if ((this._capabilities != null) && (this.projSrsCode == null || this.useCapabilities)) {
 				this.projSrsCode = this._capabilities.getValue("SRS");
 				if(this.map)
-					this.redraw();
+					this.redraw(true);
 			}
 		}
 		

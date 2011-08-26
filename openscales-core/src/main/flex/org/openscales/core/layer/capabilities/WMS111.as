@@ -80,7 +80,7 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.LatLonBoundingBox.@maxx.toXMLString());
 				top = new Number(layer.LatLonBoundingBox.@maxy.toXMLString());;
 
-				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top,csSrsList));
+				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top,"EPSG:4326"));
 
 				left = new Number(layer.BoundingBox.@minx.toXMLString());
 				bottom = new Number(layer.BoundingBox.@miny.toXMLString());

@@ -577,6 +577,10 @@ package org.openscales.core.layer {
 		}
 		
 		public function set maxExtent(value:*):void {
+			if (value.projSrsCode != this.projSrsCode)
+			{
+				value = (value as Bounds).reprojectTo(this.projSrsCode);
+			}
 			this._maxExtent = (value as Bounds);
 		}
 		
@@ -612,6 +616,10 @@ package org.openscales.core.layer {
 			var event:LayerEvent = null;
 			if(value != null){
 				this._projSrsCode = value.toUpperCase();
+				if (this.maxExtent)
+				{
+					this._maxExtent = this.maxExtent.preciseReprojectBounds(this._projSrsCode);
+				}				
 				event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
 			}
 			
