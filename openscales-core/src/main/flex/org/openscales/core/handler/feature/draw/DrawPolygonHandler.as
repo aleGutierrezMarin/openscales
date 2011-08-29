@@ -8,7 +8,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.mouse.ClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
@@ -75,7 +75,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param active determine if the handler is active or not
 		 * @param drawLayer The layer on which we'll draw
 		 */
-		public function DrawPolygonHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.FeatureLayer=null)
+		public function DrawPolygonHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.VectorLayer=null)
 		{
 			super(map, active, drawLayer);
 		}
@@ -98,7 +98,9 @@ package org.openscales.core.handler.feature.draw
 		protected function mouseClick(event:MouseEvent):void {
 
 			if (drawLayer != null) {
-
+				drawLayer.scaleX=1;
+				drawLayer.scaleY=1;
+				
 				var name:String = "polygon."+id.toString(); id++;
 				_drawContainer.graphics.clear();
 				//we determine the point where the user clicked
@@ -178,7 +180,7 @@ package org.openscales.core.handler.feature.draw
 			if(this._polygonFeature!=null){
 				//the user just drew one point, it's not a real polygon so we delete it 
 				
-				(drawLayer as FeatureLayer).removeFeature(this._firstPointFeature);
+				(drawLayer as VectorLayer).removeFeature(this._firstPointFeature);
 				//Check if the polygon (in fact, the linearRing) contains at least 3 points (if not, it's not a polygon)
 				if((this._polygonFeature.polygon.componentByIndex(0) as LinearRing).componentsLength>2){
 					//Apply the "finished" style

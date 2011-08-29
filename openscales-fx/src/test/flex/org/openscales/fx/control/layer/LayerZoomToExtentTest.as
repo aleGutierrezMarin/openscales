@@ -33,7 +33,7 @@ package org.openscales.fx.control.layer
 		[Before]
 		public function setUp():void
 		{
-			_map = new Map(200,100);
+			_map = new Map(200,200);
 			_layer1 = new Layer("layer1");
 			_map.addLayer(_layer1);
 			_layer2 = new Layer("layer2");
@@ -46,12 +46,8 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function shouldZoomToExtentOnClick():void
 		{
-			var maxExtent:Bounds = new Bounds(-(200 * RESOLUTION)/2,-(100 * RESOLUTION)/2,(200 * RESOLUTION)/2,(100 * RESOLUTION)/2);
 			_zoom.setLayerExtent(new MouseEvent(MouseEvent.CLICK));
-			Assert.assertTrue("bound left invalid", (maxExtent.left - _map.extent.left)<PRECISION);
-			Assert.assertTrue("bound bottom invalid", (maxExtent.bottom - _map.extent.bottom)<PRECISION);
-			Assert.assertTrue("bound right invalid", (maxExtent.right - _map.extent.right)<PRECISION);
-			Assert.assertTrue("bound height invalid", (maxExtent.height - _map.extent.height)<PRECISION);
+			Assert.assertTrue("map extent should be equal to layer maxextent",_layer2.maxExtent.equals(_map.extent));
 		}
 	}
 }

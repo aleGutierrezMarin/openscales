@@ -106,15 +106,15 @@ package org.openscales.core.handler.mouse
 			var infoParams:WMSGetFeatureInfoParams = new WMSGetFeatureInfoParams(layerNames, _format, layerStyles);
 			infoParams.bbox = this.map.extent.toString();
 			if (_srs == null)
-				infoParams.srs = this.map.baseLayer.projSrsCode;
+				infoParams.srs = this.map.projection;
 			else
 				infoParams.srs = _srs;
             infoParams.maxFeatures = _maxFeatures;
             var point:Point = this.map.globalToLocal(new Point(p.x,p.y)); 
             infoParams.x = point.x; 
             infoParams.y = point.y;
-            infoParams.height = this.map.height;
-            infoParams.width = this.map.width;
+            infoParams.height = this.map.size.h;
+            infoParams.width = this.map.size.w;
 			
 			// request data
 			if(_request) {

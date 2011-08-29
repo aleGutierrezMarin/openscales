@@ -3,7 +3,7 @@ package org.openscales.fx.routing
 	import mx.core.UIComponent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.routing.AbstractRouting;
 	import org.openscales.core.routing.IRouting;
 	
@@ -13,7 +13,7 @@ package org.openscales.fx.routing
 	public class FxAbstractRouting extends UIComponent
 	{
 		protected var _routingHandler:IRouting;
-		public function FxAbstractRouting(map:Map=null,active:Boolean=true,resultsLayer:FeatureLayer=null) 
+		public function FxAbstractRouting(map:Map=null,active:Boolean=true,resultsLayer:VectorLayer=null) 
 		{
 			if(_routingHandler!=null){
 				this.map=map;
@@ -53,14 +53,14 @@ package org.openscales.fx.routing
 		/**
 		 * The layer which contains the results of the request
 		 **/
-		public function get resultsLayer():FeatureLayer{
+		public function get resultsLayer():VectorLayer{
 		if(_routingHandler) return (_routingHandler as AbstractRouting).resultsLayer;
 		return null;
 		}
 		/**
 		 * @private
 		 **/
-		public function set resultsLayer(value:FeatureLayer):void{
+		public function set resultsLayer(value:VectorLayer):void{
 			if(_routingHandler) (_routingHandler as AbstractRouting).resultsLayer=value;
 			
 		}

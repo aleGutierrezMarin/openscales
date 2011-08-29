@@ -75,7 +75,6 @@ package org.openscales.core.control
 			this.map.removeEventListener(LayerEvent.LAYER_ADDED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_CHANGED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_REMOVED, this.layerUpdated);
-			this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_OPACITY_CHANGED, this.layerUpdated);
 			this.map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.layerUpdated);
@@ -115,7 +114,6 @@ package org.openscales.core.control
 			this.map.addEventListener(LayerEvent.LAYER_ADDED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_CHANGED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_REMOVED, this.layerUpdated);
-			this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_OPACITY_CHANGED, this.layerUpdated);
 			this.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, this.layerUpdated);
@@ -161,7 +159,7 @@ package org.openscales.core.control
 				var blCount:Number = 0;
 				for(var i:int=0;i<this.map.layers.length;i++) {
 					var layer:Layer = this.map.layers[i] as Layer;
-					if(layer.isBaseLayer && !layer.isFixed) {
+					if(!layer.isFixed) {
 						blCount++;
 					}
 				}
@@ -184,7 +182,7 @@ package org.openscales.core.control
 				// Display baselayers
 				for(i=0;i<this.map.layers.length;i++) {
 					layer = this.map.layers[i] as Layer;
-					if(layer.isBaseLayer && !layer.isFixed && layer.displayInLayerManager) 
+					if(!layer.isFixed && layer.displayInLayerManager) 
 					{
 						var radioButton:RadioButton;
 						if(i == 0)
@@ -258,7 +256,7 @@ package org.openscales.core.control
 				i=layerArray.length-1;
 				for(i;i>=0;--i) {
 					layer = layerArray[i];
-					if(!layer.isBaseLayer && !layer.isFixed) {
+					if(!layer.isFixed) {
 						oCount++;
 					}
 				}
@@ -277,7 +275,7 @@ package org.openscales.core.control
 				i=layerArray.length-1;
 				for(i;i>=0;--i) {
 					layer = layerArray[i];
-					if(!layer.isBaseLayer && !layer.isFixed && layer.displayInLayerManager) {
+					if(!layer.isFixed && layer.displayInLayerManager) {
 						if(_firstOverlays)
 						{
 							y+=this._textOffset-15;
@@ -436,8 +434,9 @@ package org.openscales.core.control
 			var eventLayer:Layer = this.map.getLayerByName((event.target as RadioButton).layerName);
 			if(!(event.target as RadioButton).status)
 			{
+				// TODO : Did not understant the usage of the baseLayer but commented 
 				// Hide current baselayer
-				this.map.baseLayer.visible = false;
+				//this.map.baseLayer.visible = false;
 
 				// Reset other radio buttons
 				for(i=0; i < this.numChildren; i++) {
@@ -446,7 +445,7 @@ package org.openscales.core.control
 						(child as RadioButton).status = false; 
 				}
 
-				this.map.baseLayer = eventLayer;
+				//this.map.baseLayer = eventLayer;
 				eventLayer.visible = true;
 				(event.target as RadioButton).status = true;
 
@@ -563,7 +562,7 @@ package org.openscales.core.control
 			for(var i:int=0;i<this.map.layers.length;i++)
 			{
 				var layerLength:Layer = this.map.layers[i] as Layer;
-				if(!layerLength.isBaseLayer) numLayersOverlays++;
+				numLayersOverlays++;
 			}
 
 			var numBaseLayer:int = this.map.layers.length - numLayersOverlays;

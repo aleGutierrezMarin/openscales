@@ -9,7 +9,7 @@
 		]]>
 	</fx:Script>
 	
-	<Map id="fxMap" width="100%" height="100%" zoom="13" center="-74.011,40.710">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.000343323" center="-74.011,40.710">
 		
 		<Mapnik name="Mapnik" />
 		

@@ -5,15 +5,16 @@ package
 	import flash.filesystem.File;
 	import flash.net.FileFilter;
 	
-	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.KML;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.popup.Anchored;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	
 	public class KmlViewer extends Sprite
 	{
@@ -37,7 +38,7 @@ package
 			
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			_map.zoom=5;
+			_map.resolution = new Resolution(mapnik.resolutions[5],mapnik.projSrsCode);
 			
 			this.addChild(_map);
 			

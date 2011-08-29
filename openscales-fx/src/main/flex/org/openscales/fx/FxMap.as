@@ -13,6 +13,7 @@ package org.openscales.fx
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
@@ -49,7 +50,6 @@ package org.openscales.fx
 	public class FxMap extends Group
 	{
 		protected var _map:Map;
-		private var _zoom:Number = NaN;
 		private var _center:Location = null;
 		private var _creationHeight:Number = NaN;
 		private var _creationWidth:Number = NaN;
@@ -95,6 +95,32 @@ package org.openscales.fx
 			l.configureLayer();
 			if(l.nativeLayer)
 				this._map.addLayer(l.nativeLayer);
+		}
+		
+		public function set resolution(value:*):void
+		{
+			if(value is Resolution)
+				this.map.resolution = value as Resolution;
+			else if (value is String) {
+				var val:Array=(value as String).split(",");
+				if(val.length==2) {
+					var proj:String = String(val[1]).replace(/\s/g,"");
+					if(proj && proj!="")
+						this.map.resolution = new Resolution(Number(val[0]),proj);
+					else
+						this.map.resolution = new Resolution(Number(val[0]));
+				}
+				else if(val.length == 1)
+					this.map.resolution = new Resolution(Number(val[0]));
+			}
+			else if (value is Number) {
+				this.map.resolution = new Resolution(value as Number);
+			}
+		}
+		
+		public function get resolution():Resolution
+		{
+			return this.map.resolution;
 		}
 		
 		private function onMoveStart(event:MapEvent):void{
@@ -231,11 +257,9 @@ package org.openscales.fx
 			
 			// Set both center and zoom to avoid invalid request set when we define both separately
 			var mapCenter:Location = this._center;
-			if (mapCenter && this._map.baseLayer) {
-				mapCenter = mapCenter.reprojectTo(this._map.baseLayer.projSrsCode);
-			}
-			if (mapCenter || (! isNaN(this._zoom))) {
-				this._map.moveTo(mapCenter, this._zoom);
+			if (mapCenter) {
+				//this._map.moveTo(mapCenter, this._zoom);
+				this._map.center = mapCenter;
 			}
 			
 			var extentDefined:Boolean = false;
@@ -297,14 +321,6 @@ package org.openscales.fx
 		}
 		
 		/**
-		 * Zoom MXML setter
-		 */
-		public function set zoom(value:Number):void {
-			this._zoom = value;
-			this._map.zoom = value;
-		}
-		
-		/**
 		 * Set the center of the map using its longitude and its latitude.
 		 * 
 		 * @param value a string of two coordinates separated by a coma, in
@@ -360,7 +376,10 @@ package org.openscales.fx
 		 * MaxExtent MXML setter
 		 */
 		public function set maxExtent(value:String):void {
-			this._maxExtent = Bounds.getBoundsFromString(value,Geometry.DEFAULT_SRS_CODE);
+			var newBounds:Bounds = Bounds.getBoundsFromString(value);
+			this._maxExtent = newBounds;
+			if(this._map)
+				this.map.maxExtent = newBounds;
 		}
 		
 		public function get flexOverlay():Group{
@@ -483,6 +502,90 @@ package org.openscales.fx
 					this.removeElement(control as IVisualElement);
 				}
 				this._map.removeControl(control);
+			}
+		}
+		
+		/** 
+		 * Current projection system used in the map.
+		 */
+		public function get projection():String
+		{
+			return (this._map as Map).projection;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set projection(value:String):void
+		{
+			(this._map as Map).projection = value;
+		}
+		
+		/**
+		 * The minimum resolution of the map.
+		 * You cannot reach a resolution lower than this resolution
+		 * If you try to reach a resolution behind the minResolution nothing will be done
+		 */
+		public function get minResolution():Resolution
+		{
+			return (this._map as Map).minResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set minResolution(value:*):void
+		{
+			if(value is Resolution)
+				(this._map as Map).minResolution = value as Resolution;
+			else if (value is String) {
+				var val:Array=(value as String).split(",");
+				if(val.length==2) {
+					var proj:String = String(val[1]).replace(/\s/g,"");
+					if(proj && proj!="")
+						(this._map as Map).minResolution = new Resolution(Number(val[0]),proj);
+					else
+						(this._map as Map).minResolution = new Resolution(Number(val[0]));
+				}
+				else if(val.length == 1)
+					(this._map as Map).minResolution = new Resolution(Number(val[0]));
+			}
+			else if (value is Number) {
+				(this._map as Map).minResolution = new Resolution(value as Number);
+			}
+		}
+		
+		/**
+		 * The maximum resolution of the map.
+		 * You cannot reach a resolution higher than this resolution
+		 * If you try to reach a resolution above the maxResolution nothing will be done
+		 */
+		public function get maxResolution():Resolution
+		{
+			return (this._map as Map).maxResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set maxResolution(value:*):void
+		{
+			if(value is Resolution)
+				(this._map as Map).maxResolution = value as Resolution;
+			else if (value is String) {
+				var val:Array=(value as String).split(",");
+				if(val.length==2) {
+					var proj:String = String(val[1]).replace(/\s/g,"");
+					if(proj && proj!="")
+						(this._map as Map).maxResolution = new Resolution(Number(val[0]),proj);
+					else
+						(this._map as Map).maxResolution = new Resolution(Number(val[0]));
+				}
+				else if(val.length == 1)
+					(this._map as Map).maxResolution = new Resolution(Number(val[0]));
+			}
+			else if (value is Number) {
+				(this._map as Map).maxResolution = new Resolution(value as Number);
 			}
 		}
 	}

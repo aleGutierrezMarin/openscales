@@ -1,7 +1,6 @@
 package org.openscales.geometry.basetypes
 {
 	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.Point;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
 	

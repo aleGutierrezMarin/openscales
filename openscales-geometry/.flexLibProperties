@@ -10,7 +10,6 @@
     <classEntry path="org.openscales.geometry.MultiPoint"/>
     <classEntry path="org.openscales.geometry.MultiPolygon"/>
     <classEntry path="org.openscales.geometry.Point"/>
-    <classEntry path="org.openscales.geometry.Polygon"/>
     <classEntry path="org.openscales.geometry.basetypes.Bounds"/>
     <classEntry path="org.openscales.geometry.basetypes.Location"/>
     <classEntry path="org.openscales.geometry.basetypes.Pixel"/>
@@ -19,7 +18,9 @@
     <classEntry path="org.openscales.geometry.utils.StringUtils"/>
     <classEntry path="org.openscales.geometry.utils.UtilGeometry"/>
     <classEntry path="org.openscales.geometry.ContainsPointTest"/>
+    <classEntry path="org.openscales.geometry.GeometryTest"/>
     <classEntry path="org.openscales.geometry.PointTest"/>
+    <classEntry path="org.openscales.geometry.basetypes.BoundsTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

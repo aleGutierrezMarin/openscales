@@ -13,7 +13,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
@@ -60,7 +60,7 @@ package org.openscales.core.handler.feature.draw
 	 	* don't use it use EditPathHandler if you want to edit a LineString or a MultiLineString
 	 	* or EditPolygon 
 	 	* */
-		public function AbstractEditCollectionHandler(map:Map=null, active:Boolean=false, layerToEdit:FeatureLayer=null, featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function AbstractEditCollectionHandler(map:Map=null, active:Boolean=false, layerToEdit:VectorLayer=null, featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
 		{
 			super(map, active, layerToEdit, featureClickHandler,drawContainer,isUsedAlone);
 			this.featureClickHandler=featureClickHandler;
@@ -135,7 +135,7 @@ package org.openscales.core.handler.feature.draw
 					this._layerToEdit.removeFeature(vectorfeature);
 					this._featureClickHandler.removeControledFeature(vectorfeature);
 		 			if(parentGeometry!=null){
-		 				var lonlat:Location=this.map.getLocationFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
+		 				var lonlat:Location=this.map.getLocationFromMapPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY)); //this.map.getLocationFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
 		 				var newVertice:Point=new Point(lonlat.lon,lonlat.lat);
 		 				//if it's a real vertice of the feature
 		 				if(vectorfeature!=AbstractEditCollectionHandler._pointUnderTheMouse)
@@ -259,7 +259,7 @@ package org.openscales.core.handler.feature.draw
 					/*for(var i:int=0;i<_editionFeatureArray.length;i++){
 						var feature:Feature=_editionFeatureArray[i][0] as Feature;
 						if(feature!=null && feature!=AbstractEditCollectionHandler._pointUnderTheMouse &&  vectorfeature==_editionFeatureArray[i][1]){
-							var tmpPx:Pixel=this.map.getLayerPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
+							var tmpPx:Pixel=this.map.getMapPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
 							if(Math.abs(tmpPx.x-px.x)<this._ToleranceVirtualReal && Math.abs(tmpPx.y-px.y)<this._ToleranceVirtualReal)
 							{
 								drawing=false;
@@ -269,7 +269,7 @@ package org.openscales.core.handler.feature.draw
 					}*/
 					if(drawing){
 						layerToEdit.map.buttonMode=true;
-						var lonlat:Location=this.map.getLocationFromLayerPx(px);
+						var lonlat:Location=this.map.getLocationFromMapPx(px); //this.map.getLocationFromLayerPx(px);
 						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);	
 						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
 							//AbstractEditCollectionHandler._pointUnderTheMouse.geometry = (PointGeomUnderTheMouse as Geometry);

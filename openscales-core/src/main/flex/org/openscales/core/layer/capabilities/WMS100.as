@@ -82,7 +82,7 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.BoundingBox.@maxx.toXMLString());
 				top = new Number(layer.BoundingBox.@maxy.toXMLString());;
 						
-				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,srsCode));
+				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,"EPSG:4326"));
 			
                 if (name != "")
                 {

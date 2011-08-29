@@ -92,7 +92,7 @@ package org.openscales.core.popup
 		public function draw(px:Pixel = null):void {
 			if (px == null) {
 				if ((this.lonlat != null) && (this.map != null)) {
-					px = this.map.getLayerPxFromLocation(this.lonlat);
+					px = this.map.getMapPxFromLocation(this.lonlat);
 				}
 			}
 			

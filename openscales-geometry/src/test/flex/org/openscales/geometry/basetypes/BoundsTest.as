@@ -3,6 +3,7 @@ package org.openscales.geometry.basetypes
 	import org.flexunit.Assert;
 	import org.flexunit.assertThat;
 	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertNull;
 	import org.flexunit.asserts.assertTrue;
 
 	/**
@@ -144,7 +145,7 @@ package org.openscales.geometry.basetypes
 			var intersectionBounds:Bounds = firstBounds.getIntersection(secondBounds);
 			
 			// Then the result is an empty bounds
-			assertTrue("The intersect bounds is not empty", intersectionBounds.equals(new Bounds(0, 0, 0, 0, "EPSG:4326")));
+			assertNull("The intersect bounds is not empty", intersectionBounds);
 		}
 		
 		/**
@@ -197,11 +198,11 @@ package org.openscales.geometry.basetypes
 		public function shouldReturnBoundsWithGivenProjection():void
 		{
 			// Given : a string (left,bottom,right,top) and a projection
-			var string:String = "1,2,3,4";
+			var string:String = "1,2,3,4,EPSG:2154";
 			var projection:String = "EPSG:2154";
 			
 			// When the function is called with the string and projection
-			var bounds:Bounds = Bounds.getBoundsFromString(string, projection);
+			var bounds:Bounds = Bounds.getBoundsFromString(string);
 			
 			// Then the bounds retun is in with the given projection :
 			assertEquals("Incorrect left value", 1, bounds.left);
@@ -239,72 +240,11 @@ package org.openscales.geometry.basetypes
 			var secondBounds:Bounds = new Bounds(409600, 6265600, 614400, 6470400, "IGNF:LAMB93");
 			
 			// When you reproject these bounds in EPSG:4326
-			var firstBoundsReproj:Bounds = firstBounds.preciseReprojectBounds(firstBounds,"IGNF:LAMB93","EPSG:4326");
-			var secondBoundsReproj:Bounds = secondBounds.preciseReprojectBounds(secondBounds,"IGNF:LAMB93","EPSG:4326");
+			var firstBoundsReproj:Bounds = firstBounds.preciseReprojectBounds("EPSG:4326");
+			var secondBoundsReproj:Bounds = secondBounds.preciseReprojectBounds("EPSG:4326");
 			
 			// Then the bounds are still intersected
 			assertEquals("Incorrect bounds intersection", firstBounds.intersectsBounds(secondBounds), firstBoundsReproj.intersectsBounds(secondBoundsReproj));
-		}
-		
-		/**
-		 * Validates that return a bounds correct according to a given string with 4 params
-		 */
-		[Test]
-		public function shouldReturnBoundsWithDefaultProjection():void
-		{
-			// Given : a string (left,bottom,right,top)
-			var string:String = "1,2,3,4";
-			
-			// When the function is called
-			var bounds:Bounds = Bounds.getBoundsFromString(string);
-			
-			// Then the bounds retun is in default projection :
-			assertEquals("Incorrect left value", 1, bounds.left);
-			assertEquals("Incorrect bottom value", 2, bounds.bottom);
-			assertEquals("Incorrect right value", 3, bounds.right);
-			assertEquals("Incorrect top value", 4, bounds.top);
-			assertEquals("Incorrect projection", "EPSG:4326", bounds.projSrsCode);
-		}
-		
-		/**
-		 * Validates that return a bounds correct according to a given string with 4 params and a given projection
-		 */
-		[Test]
-		public function shouldReturnBoundsWithGivenProjection():void
-		{
-			// Given : a string (left,bottom,right,top) and a projection
-			var string:String = "1,2,3,4";
-			var projection:String = "EPSG:2154";
-			
-			// When the function is called with the string and projection
-			var bounds:Bounds = Bounds.getBoundsFromString(string, projection);
-			
-			// Then the bounds retun is in with the given projection :
-			assertEquals("Incorrect left value", 1, bounds.left);
-			assertEquals("Incorrect bottom value", 2, bounds.bottom);
-			assertEquals("Incorrect right value", 3, bounds.right);
-			assertEquals("Incorrect top value", 4, bounds.top);
-			assertEquals("Incorrect projection", projection, bounds.projSrsCode);
-		}
-		
-		/**
-		 * Validates that return a bounds correct according to a given string with 5 params
-		 */
-		[Test]
-		public function shouldReturnBoundsWith5ParamsString():void
-		{
-			// Given : a string (left,bottom,right,top,projection)
-			var string:String = "1,2,3,4,EPSG:2154";
-			
-			// When the function is called with the string and projection
-			var bounds:Bounds = Bounds.getBoundsFromString(string);
-			
-			// Then the bounds retun is in with the given projection :
-			assertEquals("Incorrect left value", 1, bounds.left);
-			assertEquals("Incorrect bottom value", 2, bounds.bottom);
-			assertEquals("Incorrect right value", 3, bounds.right);
-			assertEquals("Incorrect top value", 4, bounds.top);
-			assertEquals("Incorrect projection", "EPSG:2154", bounds.projSrsCode);
 		}
 	}
 }
