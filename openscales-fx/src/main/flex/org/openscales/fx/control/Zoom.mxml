@@ -7,19 +7,12 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.events.DragEvent;
-			import mx.events.StateChangeEvent;
-			
 			import org.openscales.core.Map;
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.control.ZoomData;
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
-			import org.openscales.fx.control.skin.PanSkin;
-			import org.openscales.fx.control.skin.ZoomSkin;
-			import org.openscales.fx.control.skin.ZoomThumbSkin;
 			
 			import spark.components.supportClasses.SliderBase;
 			import spark.events.TrackBaseEvent;
@@ -62,7 +55,7 @@
 			 * Indicates the minimum value for the slider
 			 * @default 0
 			 */
-			private var _minSlider:Number = 0;
+			private var _minSlider:Number = 1;
 			
 			/**
 			 * @private
@@ -71,6 +64,17 @@
 			 */
 			private var _maxSlider:Number = 100;
 			
+			/**
+			 * @private
+			 * The number of intervals between min and max resolution
+			 */
+			private var _intervals:Number = 0;
+			
+			/**
+			 * @private
+			 * The step between two value in the slider
+			 */
+			private var _step:Number = 0;
 			
 			/**
 			 * The current zoom value
@@ -148,6 +152,7 @@
 				if(this._map)
 				{
 					super.map.addEventListener(MapEvent.PROJECTION_CHANGED, this.initializeZoomLevels);
+					super.map.addEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.initializeZoomLevels);
 					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					super.map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.updateZoomLevels);	
 				}
@@ -164,6 +169,7 @@
 				if(this._map)
 				{
 					super.map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.initializeZoomLevels);
+					super.map.removeEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.initializeZoomLevels);
 					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
 					super.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.updateZoomLevels);
 				}
@@ -252,6 +258,9 @@
 				if(!this._map)
 					return;
 				
+				this._intervals = Math.log(this._map.maxResolution.value/this._map.minResolution.value) / Math.log(2);
+				this._step = (this._maxSlider - this._minSlider) / this._intervals;
+				
 				this.currentSliderValue = this.getSliderValueFromResolution(this.map.resolution.value);
 				
 				// initialise the label value
@@ -324,18 +333,17 @@
 			
 			private function getSliderValueFromResolution(value:Number):Number
 			{
-				// sliderValues and resolution are inverted so 1 - ratio
-				var ratio:Number = 1 - (value/(this.map.maxResolution.value+this.map.minResolution.value));
-				var value:Number = this.minSlider + (this.maxSlider-this.minSlider) * ratio;
+				var intervalResolution:Number = Math.log(value / this.map.minResolution.value) / Math.log(2);
+				var sliderValue:Number = Math.floor(this.maxSlider - (this._step * intervalResolution));
 				
-				return value;
+				return sliderValue;
 			}
 			
 			private function getResolutionFromSliderValue(value:Number):Number
 			{
-				// sliderValues and resolution are inverted so 1 - ratio
-				var ratio:Number = 1 - (value/(this.maxSlider+this.minSlider));
-				var resolution:Number = this.map.minResolution.value + (this.map.maxResolution.value - this.map.minResolution.value) * ratio;
+				var intervalResolution:Number = value / this._step;
+				var resolution:Number =  this.map.minResolution.value*Math.pow(2, (this._intervals - intervalResolution));
+				
 				return resolution;
 			}
 			
