@@ -13,7 +13,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.format.Format;
 	import org.openscales.core.format.gml.GMLFormat;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -41,7 +41,7 @@ package org.openscales.core.layer.ogc
 	 */
 	
 	
-	public class GML extends FeatureLayer
+	public class GML extends VectorLayer
 	{	
 		private var _gmlFormat:GMLFormat = null;
 		private var _gmlData:XML = null;

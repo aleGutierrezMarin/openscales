@@ -6,7 +6,7 @@ package org.openscales.fx.layer
 	 * <p>KML Flex wrapper.</p>
 	 * <p>To use it, declare a &lt;KML /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
-	public class FxKML extends FxFeatureLayer
+	public class FxKML extends FxVectorLayer
 	{
 		public function FxKML()
 		{

@@ -7,18 +7,16 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.events.DragEvent;
-			import mx.events.StateChangeEvent;
+			import mx.effects.effectClasses.PropertyChanges;
+			import mx.events.FlexEvent;
 			
 			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.control.ZoomData;
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
-			import org.openscales.fx.control.skin.PanSkin;
-			import org.openscales.fx.control.skin.ZoomSkin;
-			import org.openscales.fx.control.skin.ZoomThumbSkin;
 			
 			import spark.components.supportClasses.SliderBase;
 			import spark.events.TrackBaseEvent;
@@ -61,21 +59,32 @@
 			 * Indicates the minimum value for the slider
 			 * @default 0
 			 */
-			private var _minSlider:Number = 0;
+			private var _minSlider:Number = 1;
 			
 			/**
 			 * @private
 			 * Indicates the maximum value for the slider
-			 * @default 20
+			 * @default 100
 			 */
-			private var _maxSlider:Number = 20;
+			private var _maxSlider:Number = 100;
 			
+			/**
+			 * @private
+			 * The number of intervals between min and max resolution
+			 */
+			private var _intervals:Number = 0;
+			
+			/**
+			 * @private
+			 * The step between two value in the slider
+			 */
+			private var _step:Number = 0;
 			
 			/**
 			 * The current zoom value
 			 */
 			[Bindable]
-			public var currentZoom:Number = 150;
+			public var currentSliderValue:Number = 50;
 			
 			/**
 			 * @private
@@ -111,7 +120,7 @@
 					this._scalesLabels = new Vector.<ZoomData>();
 				}
 				
-				this.updateScalesNameLabel();
+				this.updateZoomLevels();
 			}
 			
 			/**
@@ -125,21 +134,6 @@
 			}
 			
 			/**
-			 * Update the min/maxSlider when the map.maxResolution and minResolution can have changed
-			 * Call on 
-			 * 
-			 * @param event The MapEvent received or null otherwise
-			 */
-			public function updateMinMaxSliderChanged(event:MapEvent = null):void
-			{
-				if(this.map.baseLayer)
-				{
-					this.minSlider = this.map.baseLayer.getZoomForResolution(this.map.maxResolution);
-					this.maxSlider = (this.map.baseLayer.getZoomForResolution(this.map.minResolution));
-				}
-			}
-			
-			/**
 			 * @inherit
 			 */
 			override public function set map(value:Map):void 
@@ -147,10 +141,7 @@
 				super.map = value;
 				
 				if(value)
-				{
-					this.updateMinMaxSliderChanged();
 					this.initializeZoomLevels();
-				}
 			}
 			
 			/**
@@ -163,10 +154,10 @@
 				// add listener to the map
 				if(this._map)
 				{
-					super.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.addEventListener(MapEvent.PROJECTION_CHANGED, this.initializeZoomLevels);
+					super.map.addEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.initializeZoomLevels);
 					super.map.addEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
-					super.map.addEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);	
-					super.map.addEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.updateMinMaxSliderChanged);
+					super.map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.updateZoomLevels);	
 				}
 			}
 			
@@ -180,10 +171,10 @@
 				// remove listener to the map
 				if(this._map)
 				{
-					super.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED, this.initializeZoomLevels);
+					super.map.removeEventListener(MapEvent.PROJECTION_CHANGED, this.initializeZoomLevels);
+					super.map.removeEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.initializeZoomLevels);
 					super.map.removeEventListener(MapEvent.MOVE_END, this.updateZoomLevels);
-					super.map.removeEventListener(MapEvent.ZOOM_CHANGED, this.updateZoomLevels);
-					super.map.removeEventListener(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this.updateMinMaxSliderChanged);
+					super.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, this.updateZoomLevels);
 				}
 			}
 			
@@ -198,7 +189,7 @@
 				if(this._map && this._map.resolution)
 				{
 					// update the value
-					this.currentLabel = this.getLabelFromResolution(this._map.resolution);
+					this.currentLabel = this.getLabelFromResolution(this._map.resolution.value);
 					this.updateScalesNameLabel();
 				}
 			}
@@ -212,21 +203,13 @@
 			{
 				if(zoomSlider)
 					if(zoomSlider.thumb)
+					{
 						this.scaleNameY = zoomSlider.thumb.y;
+						dispatchEvent(new Event('scaleNameYChanged'));
+					}
+						
 			}
 			
-			/**
-			 * Return the label associated to the given zoom (converted in resolution)
-			 * 
-			 * @param zoom  The zoom given
-			 * @return The string value of the label corresponding to the resolution
-			 */
-			public function getLabelFromZoom(zoom:Number):String
-			{
-				// get the resolution for the current zoom
-				var resolution:Number = this._map.baseLayer.resolutions[zoom];
-				return this.getLabelFromResolution(resolution);
-			}
 			
 			/**
 			 * Return the label associated to the given resolution 
@@ -260,7 +243,7 @@
 			 */
 			public function onZoomIn(event:MouseEvent):void
 			{
-				this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+				this.map.zoomIn();
 			}
 			
 			/**
@@ -271,30 +254,36 @@
 			 */
 			public function onZoomOut(event:MouseEvent):void
 			{
-				this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+				this.map.zoomOut();
 			}
 			
 			/**
+			 * @private
 			 * Initialise the zoomSlider according to current map zoomLevels
 			 */
 			private function initializeZoomLevels(event:Event = null):void {
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
-				this.currentZoom = map.zoom;
+				this._intervals = Math.log(this._map.maxResolution.value/this._map.minResolution.value) / Math.log(2);
+				this._step = (this._maxSlider - this._minSlider) / this._intervals;
+				
+				this.currentSliderValue = this.getSliderValueFromResolution(this.map.resolution.value);
 				
 				// initialise the label value
 				this.updateCurrentLabel();
 			}
 			
-			
+			/**
+			 * @private
+			 * Update zoomLevels when the map resolution change
+			 */
 			
 			private function updateZoomLevels(e:MapEvent = null):void {
-				this.updateScalesNameLabel();
 				
-				if(e.zoomChanged)
+				if(this._map)
 				{
-					this.currentZoom = map.zoom;
+					this.currentSliderValue = this.getSliderValueFromResolution(this.map.resolution.value);
 					this.updateCurrentLabel();
 				}
 			}
@@ -313,11 +302,16 @@
 			 */
 			public function onThumbRelease(event:TrackBaseEvent):void
 			{
-				this.updateScalesNameLabel();
-				var currentSlider:SliderBase= event.target as SliderBase;
-				this.currentZoom = currentSlider.value;
+				var currentSlider:SliderBase = event.target as SliderBase;
+				this.currentSliderValue = currentSlider.value;
 				this._onDrag = false;
-				this.map.moveTo(this.map.center, this.currentZoom, false, true);
+				
+				var resolution:Number = this.getResolutionFromSliderValue(this.currentSliderValue);
+				var newResolution:Resolution = new Resolution(resolution, this.map.projection);
+
+				this.map.resolution = newResolution;
+				
+				this.updateScalesNameLabel();
 			}
 			
 			/**
@@ -327,22 +321,46 @@
 			 */
 			public function onZoomSliderChange(event:Event):void {
 				
-				var currentSlider:SliderBase= event.target as SliderBase;
-				
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
+				var currentSlider:SliderBase = event.target as SliderBase;
+				
 				// update the display label
-				this.currentLabel = getLabelFromZoom(currentSlider.value);
+				var resolution:Number = this.getResolutionFromSliderValue(currentSlider.value);
+				this.currentLabel = this.getLabelFromResolution(resolution);
 				
 				// if not onDrag really update the zoom
 				if(!this._onDrag)
 				{
-					this.currentZoom = currentSlider.value;
-					this.map.moveTo(this.map.center, this.currentZoom, false, true);
+					this.currentSliderValue = currentSlider.value;
+					var newResolution:Resolution = new Resolution(resolution, this.map.projection);
+					this.map.resolution = newResolution;
 				}
 				
 			}
+			
+			private function getSliderValueFromResolution(value:Number):Number
+			{
+				var intervalResolution:Number = Math.log(value / this.map.minResolution.value) / Math.log(2);
+				var sliderValue:Number = Math.floor(this.maxSlider - (this._step * intervalResolution));
+				
+				return sliderValue;
+			}
+			
+			private function getResolutionFromSliderValue(value:Number):Number
+			{
+				var intervalResolution:Number = value / this._step;
+				var resolution:Number =  this.map.minResolution.value*Math.pow(2, (this._intervals - intervalResolution));
+				
+				return resolution;
+			}
+			
+			private function onZoomSliderUpdateComplete(e:Event):void
+			{
+				this.updateScalesNameLabel();
+			}
+			
 			
 			override public function destroy():void {
 				this.active = false;
@@ -473,10 +491,10 @@
 		]]>
 	</fx:Script>
 	
-	<s:VSlider id="zoomSlider" x="80" y="10"
+	<s:VSlider id="zoomSlider" x="80"
 			   minimum="{this.minSlider}"
 			   maximum="{this.maxSlider}"
-			   value="{this.currentZoom}"
+			   value="{this.currentSliderValue}"
 			   snapInterval="1"
 			   useHandCursor="true"
 			   buttonMode="true"
@@ -485,7 +503,8 @@
 			   showDataTip="false"
 			   thumbDrag="onThumbDrag(event)"
 			   thumbRelease="onThumbRelease(event)"
-			   change="onZoomSliderChange(event)" />
+			   change="onZoomSliderChange(event)" 
+			   updateComplete="onZoomSliderUpdateComplete(event)"/>
 	
 	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{this.toolTipZoomOut}"
 			  click="onZoomOut(event)"
@@ -494,7 +513,9 @@
 			  click="onZoomIn(event)"
 			  width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
 	
-	<s:Label id="scalesNameLabel" x="90" y="{this.scaleNameY}"
-			 backgroundColor="0xDDDDDD" text="{this.currentLabel}"/>
+	<s:Label id="scalesNameLabel" x="95" y="{this.scaleNameY}"
+			 backgroundColor="0xDDDDDD" text="{this.currentLabel}" />
+	
+
 </Control>
 

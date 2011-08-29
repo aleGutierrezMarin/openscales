@@ -3,6 +3,7 @@ package
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoomBar;
@@ -33,7 +34,7 @@ package
 			//Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			
+			_map.projection = "EPSG:4326";
 			
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
@@ -65,7 +66,7 @@ package
 			_map.addControl(new DragHandler());
 			
 			//Set map size and zoom level
-			_map.zoom=6;
+			_map.resolution = new Resolution(1.40625, "EPSG:4326");
 			_map.center = new Location(2.4,46.9,"EPSG:4326");
 			this.addChild(_map);
 			

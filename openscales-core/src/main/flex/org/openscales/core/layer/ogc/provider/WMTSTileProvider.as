@@ -2,7 +2,9 @@ package org.openscales.core.layer.ogc.provider
 {
 	import org.openscales.core.Trace;
 	import org.openscales.core.UID;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.layer.ogc.provider.OGCTileProvider;
@@ -161,7 +163,7 @@ package org.openscales.core.layer.ogc.provider
 		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
-			if(this._tileMatrixSets==null || layer == null || layer.map == null)
+			if(this._tileMatrixSets==null || layer == null || !(layer is WMTS) || layer.map == null)
 				return imageTile;
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
 				return imageTile;
@@ -173,21 +175,17 @@ package org.openscales.core.layer.ogc.provider
 				bounds = bounds.reprojectTo(tileMatrixSet.supportedCRS);
 			}
 			
-			var mapResolution:Number = layer.map.resolution;
-			var mapUnit:String = ProjProjection.getProjProjection(layer.map.baseLayer.projSrsCode).projParams.units;
-			
 			//tileMatrix are referenced by their resolutions
-			var zoom:Number = layer.getZoomForResolution(mapResolution);
-			var resolution:Number = (layer.resolutions[zoom] as Number);
-			var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
+			var resolution:Resolution = (layer as Grid).getSupportedResolution(layer.map.resolution);
+			var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution.value);
 			
 			var tileWidth:Number = tileMatrix.tileWidth;
 			var tileHeight:Number = tileMatrix.tileHeight;
 			
 			imageTile.size = new Size(tileWidth,tileHeight);
 			
-			var tileSpanX:Number = tileWidth * resolution;
-			var tileSpanY:Number = tileHeight * resolution;
+			var tileSpanX:Number = tileWidth * resolution.value;
+			var tileSpanY:Number = tileHeight * resolution.value;
 			
 			var location:Location = bounds.center;
 			var tileOrigin:Location = tileMatrix.topLeftCorner;

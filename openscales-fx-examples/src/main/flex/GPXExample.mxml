@@ -25,6 +25,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.basetypes.Resolution;
 			
 			[Embed(source="/assets/gpx11Sample.xml",mimeType="application/octet-stream")]
 			private const GPXSAMPLE:Class;
@@ -38,7 +39,7 @@
 				//gpxLayer.url = "http://openscales.org/assets/simple_dep.gpx"; 
 				
 				fxMap.center = "7.27,48.39,EPSG:4326";
-				fxMap.zoom = 13;
+				fxMap.resolution = new Resolution(0.000343323, "EPSG:4326");
 			}
 			
 		]]>

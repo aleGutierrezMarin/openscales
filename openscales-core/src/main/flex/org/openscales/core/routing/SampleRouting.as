@@ -2,11 +2,11 @@ package org.openscales.core.routing
 {
 	import org.openscales.core.Map;
 	import org.openscales.geometry.Point;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 
 	public class SampleRouting extends AbstractRouting
 	{
-		public function SampleRouting(map:Map=null,active:Boolean=false, resultsLayer:FeatureLayer=null)
+		public function SampleRouting(map:Map=null,active:Boolean=false, resultsLayer:VectorLayer=null)
 		{
 			super(map,active,resultsLayer);
 		}

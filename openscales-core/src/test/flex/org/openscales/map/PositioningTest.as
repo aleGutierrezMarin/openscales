@@ -5,6 +5,7 @@ package org.openscales.map {
 	import org.flexunit.asserts.*;
 	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.basetypes.Location;
@@ -19,7 +20,7 @@ package org.openscales.map {
 		/**
 		 * Initial resolution of the map
 		 */
-		private const INITIAL_RESOLUTION:Number = 0.3515625;
+		private const INITIAL_RESOLUTION:Resolution = new Resolution(0.3515625, "EPSG:4326");
 		
 		private var _map:Map;
 		
@@ -38,6 +39,8 @@ package org.openscales.map {
 			_map.addLayer(layer);
 			
 			// And that map is displayed at a resolution of 0.3515625°/px
+			_map.maxResolution = Map.DEFAULT_MAX_RESOLUTION;
+			_map.minResolution = Map.DEFAULT_MIN_RESOLUTION;
 			_map.resolution = INITIAL_RESOLUTION;
 		}
 		
@@ -49,7 +52,7 @@ package org.openscales.map {
 			
 			// Then an event is dispatched advertising center change
 			_map.addEventListener(MapEvent.CENTER_CHANGED,Async.asyncHandler(this,function(event:MapEvent,obj:Object):void{
-			},100,null,function(event:Event):void{
+			},2000,null,function(event:Event):void{
 				fail("No event received for center change");
 			}));
 			
@@ -68,17 +71,17 @@ package org.openscales.map {
 		public function shouldUpdateMapResolution():void{
 			
 			// Then an event is dispatched advertising zoom change
-			_map.addEventListener(MapEvent.ZOOM_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-			},100, null, function(event:Event):void{
+			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
+			},2000, null, function(event:Event):void{
 				
 				fail("No event received for zoom change");
 			}));
 			
 			// When map resolution is setted
-			_map.resolution = 0.703125;
+			_map.resolution = new Resolution(0.703125, "EPSG:4326");
 			
 			// And resolution is set to this value
-			assertTrue('Incorrect resolution', 0.703125 - _map.resolution < PRECISION);
+			assertTrue('Incorrect resolution', 0.703125 - _map.resolution.value < PRECISION);
 		}
 		
 		/**
@@ -86,19 +89,18 @@ package org.openscales.map {
 		 */
 		[Test(async)]
 		public function shouldZoomTheMapIn():void{
-			
+			_map.resolution = _map.maxResolution;
 			// Then an event is dispatched advertising zoom change
-			_map.addEventListener(MapEvent.ZOOM_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-			},100, null, function(event:Event):void{
+			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
+			},2000, null, function(event:Event):void{
 				
 				fail("No event received for zoom change");
 			}));
 			
-			// When map is zoomed in
-			_map.zoom++;
+			_map.zoomIn();
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",0.17578125-_map.resolution < PRECISION);
+			assertTrue("Incorrect map resolution",(_map.resolution.value < _map.maxResolution.value) &&  (_map.resolution.value >= _map.minResolution.value));
 		}
 		
 		/**
@@ -106,59 +108,53 @@ package org.openscales.map {
 		 */
 		[Test(async)]
 		public function shouldZoomTheMapOut():void{
+			_map.resolution = _map.minResolution;
 			
 			// Then an event is dispatched advertising zoom change
-			_map.addEventListener(MapEvent.ZOOM_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-			},100, null, function(event:Event):void{
-				
+			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
+			},2000, null, function(event:Event):void{
 				fail("No event received for zoom change");
 			}));
 			
-			// When map is zoomed in
-			_map.zoom--;
+			_map.zoomOut();
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",0.703125-_map.resolution < PRECISION);
+			assertTrue("Incorrect map resolution",(_map.resolution.value <= _map.maxResolution.value) &&  (_map.resolution.value > _map.minResolution.value));
 		}
 		
 		[Test(async)]
-		public function shouldNotZoomInIfMaxResolutionIsReached():void{
-			
-			// Given the map has a maxResolution
-			_map.maxResolution = 0.4;
+		public function shouldNotZoomOutIfMaxResolutionIsReached():void{
+			_map.resolution = _map.maxResolution;
 			
 			// Then no event is dispatched advertising zoom change
-			_map.addEventListener(MapEvent.ZOOM_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-				
-				fail("Event received for zoom change");
-			},100, null, function(event:Event):void{
+			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
+				if(event.map.resolution.value < event.map.maxResolution.reprojectTo(event.map.resolution.projection).value)
+					fail("Event received for zoom change");
+			},2000, null, function(event:Event):void{
 			}));
 			
-			// When map is zoomed out
-			_map.zoom--;
+			_map.zoomOut();
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION-_map.resolution < PRECISION);
+			assertTrue("Incorrect map resolution",_map.maxResolution.value - _map.resolution.value < PRECISION);
 		}
 		
 		[Test(async)]
-		public function shouldNotZoomOutIfMinResolutionIsReached():void{
-			
+		public function shouldNotZoomInIfMinResolutionIsReached():void{
 			// Given the map has a minResolution
-			_map.minResolution = 0.2;
+			_map.resolution = _map.minResolution;
 			
 			// Then no event is dispatched advertising zoom change
-			_map.addEventListener(MapEvent.ZOOM_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
-				
-				fail("Event received for zoom change");
-			},100, null, function(event:Event):void{
+			_map.addEventListener(MapEvent.RESOLUTION_CHANGED, Async.asyncHandler(this, function(event:MapEvent,obj:Object):void{
+				if(event.map.resolution.value < event.map.minResolution.reprojectTo(event.map.resolution.projection).value)
+					fail("Event received for zoom change");
+			},2000, null, function(event:Event):void{
 			}));
 			
-			// When map is zoomed in
-			_map.zoom++;
+			_map.zoomIn();
 			
 			// And the map resolution is changed
-			assertTrue("Incorrect map resolution",INITIAL_RESOLUTION-_map.resolution < PRECISION);
+			assertTrue("Incorrect map resolution",_map.minResolution.value - _map.resolution.value < PRECISION);
 		}
 	}
 }
