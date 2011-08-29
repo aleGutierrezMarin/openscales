@@ -633,9 +633,9 @@ package org.openscales.core.layer {
 			}
 			
 			if (event)
-				this.dispatchEvent(event);
+				this.dispatchEvent(event.clone());
 			if(this.map && event)
-				this.map.dispatchEvent(event);
+				this.map.dispatchEvent(event.clone());
 		}
 		
 		/**
