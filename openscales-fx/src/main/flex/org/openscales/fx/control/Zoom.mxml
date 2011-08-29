@@ -2,7 +2,7 @@
 <!--- Zoom control with zoomLabels --> 
 <Control xmlns="org.openscales.fx.control.*" 
 		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" >
+		 xmlns:s="library://ns.adobe.com/flex/spark">
 	
 	
 	<fx:Script>
@@ -79,8 +79,7 @@
 			/**
 			 * The current zoom value
 			 */
-			[Bindable]
-			public var currentSliderValue:Number = 50;
+			private var _currentSliderValue:Number = 50;
 			
 			/**
 			 * @private
@@ -99,9 +98,7 @@
 			/**
 			 * The current y for the label that display scaleName
 			 */
-			[Bindable]
-			public var scaleNameY:Number = 0;
-			
+			private var _scaleNameY:Number = 0;
 			
 			/**
 			 * Configure the listener for the pan and the zoom
@@ -200,7 +197,11 @@
 			{
 				if(zoomSlider)
 					if(zoomSlider.thumb)
+					{
 						this.scaleNameY = zoomSlider.thumb.y;
+						dispatchEvent(new Event('scaleNameYChanged'));
+					}
+						
 			}
 			
 			
@@ -273,11 +274,14 @@
 			 */
 			
 			private function updateZoomLevels(e:MapEvent = null):void {
-				this.updateScalesNameLabel();
 				
-				this.currentSliderValue = this.getSliderValueFromResolution(this.map.resolution.value);
-				this.updateCurrentLabel();
-			
+				if(this._map)
+				{
+					this.currentSliderValue = this.getSliderValueFromResolution(this.map.resolution.value);
+					
+					this.updateScalesNameLabel();
+					this.updateCurrentLabel();
+				}
 			}
 			
 			/**
@@ -294,7 +298,7 @@
 			 */
 			public function onThumbRelease(event:TrackBaseEvent):void
 			{
-				this.updateScalesNameLabel();
+				
 				var currentSlider:SliderBase = event.target as SliderBase;
 				this.currentSliderValue = currentSlider.value;
 				this._onDrag = false;
@@ -303,6 +307,8 @@
 				var newResolution:Resolution = new Resolution(resolution, this.map.projection);
 
 				this.map.resolution = newResolution;
+				
+				this.updateScalesNameLabel();
 			}
 			
 			/**
@@ -474,10 +480,36 @@
 				this._maxSlider = value;
 			}
 			
+			[Bindable(event='currentSliderChanged')]
+			public function get currentSliderValue():Number
+			{
+				return this._currentSliderValue;
+			}
+			
+			public function set currentSliderValue(value:Number):void
+			{
+				this._currentSliderValue = value;
+				dispatchEvent(new Event('currentSliderChanged'));
+				
+				this.updateScalesNameLabel();
+			}
+			
+			[Bindable(event='scaleNameYChanged')]
+			public function get scaleNameY():Number
+			{
+				return this._scaleNameY;
+			}
+			
+			public function set scaleNameY(value:Number):void
+			{
+				this._scaleNameY = value;
+				dispatchEvent(new Event('scaleNameYChanged'));
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:VSlider id="zoomSlider" x="80" y="10"
+	<s:VSlider id="zoomSlider" x="80"
 			   minimum="{this.minSlider}"
 			   maximum="{this.maxSlider}"
 			   value="{this.currentSliderValue}"
@@ -500,5 +532,7 @@
 	
 	<s:Label id="scalesNameLabel" x="90" y="{this.scaleNameY}"
 			 backgroundColor="0xDDDDDD" text="{this.currentLabel}"/>
+	
+
 </Control>
 
