@@ -12,6 +12,7 @@ package org.openscales.core.layer.ogc {
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.WMTS100;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
 	
@@ -129,6 +130,7 @@ package org.openscales.core.layer.ogc {
 			this._map = new Map();
 			this._map.size = new Size(256,256);
 			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
+			this._map.maxExtent = new Bounds(-8.38, 38.14, 14.11, 55.92, "EPSG:4326");
 			
 			// And a WMTS layer on this map
 			var cap:WMTS100 = new WMTS100();
@@ -143,7 +145,7 @@ package org.openscales.core.layer.ogc {
 			// Then request is sent according to the layer parameters
 			
 			this._handler = Async.asyncHandler(this,assertGenerateCorrectQueriesWithMinimumParams,
-				100,null,noRequestSend);
+				2000,null,noRequestSend);
 			
 			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			
