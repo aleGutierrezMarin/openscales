@@ -43,9 +43,9 @@ package org.openscales.core.feature
 		override public function draw():void{
 			var x:Number;
 			var y:Number;
-			var resolution:Number = this.layer.map.resolution;
-			var dX:int = -int(this.layer.map.layerContainer.x) + this.left;
-			var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
+			var resolution:Number = this.layer.map.resolution.value;
+			var dX:int = -int(this.layer.map.x) + this.left;
+			var dY:int = -int(this.layer.map.y) + this.top;
 			x = dX + labelPoint.x / resolution;
 			y = dY - labelPoint.y / resolution;
 			this.labelPoint.label.x = x - this.labelPoint.label.width / 2;

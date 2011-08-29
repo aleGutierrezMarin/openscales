@@ -26,7 +26,7 @@ package org.openscales.geometry
 			super();
 			this._x = x;
 			this._y = y;
-			this._label.selectable = false;
+			this._label.selectable = true;
 			this._label.autoSize = flash.text.TextFieldAutoSize.CENTER;
 			this._label.text = text;
 		}
