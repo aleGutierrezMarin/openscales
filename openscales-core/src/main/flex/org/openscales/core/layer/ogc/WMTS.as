@@ -71,9 +71,10 @@ package org.openscales.core.layer.ogc
 			// building the tile provider
 			this._tileProvider = new WMTSTileProvider(url,format,tileMatrixSet,layer,tileMatrixSets);
 			
-			this.tileMatrixSet = tileMatrixSet;
 			this.format = WMTS.WMTS_DEFAULT_FORMAT;
+			
 			super(name, url);
+			this.tileMatrixSet = tileMatrixSet;
 		}
 		
 		/**
