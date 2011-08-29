@@ -14,9 +14,11 @@ package org.openscales.core.format
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
@@ -169,7 +171,7 @@ package org.openscales.core.format
 					Lrule.name = id;
 					Lrule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
 					Lrule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
-					lineStyles[id] = new Style();
+			 		lineStyles[id] = new Style();
 					lineStyles[id].name = id;
 					lineStyles[id].rules.push(Lrule);
 				}
@@ -184,18 +186,23 @@ package org.openscales.core.format
 					var Pstroke:Stroke = new Stroke();
 					Pstroke.width = 1;
 					if(style.PolyStyle.color != undefined) {
+						//the style of the polygon itself
 						Pcolor = KMLColorsToRGB(style.PolyStyle.color.text());
 						Palpha = KMLColorsToAlpha(style.PolyStyle.color.text());
 						Pfill = new SolidFill();
 						Pfill.color = Pcolor;
 						Pfill.opacity = Palpha;
-						Pstroke.color = Pcolor;
+						Pstroke.color = Pcolor;//the color of the outline is the color of the polygon
 					}
+					//if the polygon shouldn't be filled
 					if(style.PolyStyle.fill != undefined && style.PolyStyle.fill.text() == "0") {
 						Pfill = null;
 					}
+					//the style of the outline (the contour of the polygon)
 					if( lineStyles[id]!=undefined &&
-						(style.PolyStyle.outline == undefined || style.PolyStyle.outline.text() == "1") ) {
+						(style.PolyStyle.outline == undefined || style.PolyStyle.outline.text() == "1") ) 
+					{
+						//change the color of the polygon outline
 						Pstroke.color = Lcolor;
 						Pstroke.width = Lwidth;
 					}
@@ -242,7 +249,7 @@ package org.openscales.core.format
 		 * @call _loadPolygon
 		 */
 		private function loadPlacemarks(placemarks:XMLList):void {
-			
+			// todo  Multigeometry tag
 			use namespace google;
 			use namespace opengis;
 			
@@ -262,6 +269,7 @@ package org.openscales.core.format
 					attributes["description"] = placemark.description.text();
 					htmlContent = htmlContent + placemark.description.text() + "<br />";
 				}
+				
 				for each(var extendedData:XML in placemark.ExtendedData.Data) 
 				{
 					if(extendedData.value)
@@ -447,6 +455,137 @@ package org.openscales.core.format
 			
 			return _features;
 		}
+		
+		/**
+		 * Write data
+		 *
+		 * @param features the features to build into a KML file
+		 * @return the KML file (xml format)
+		 * @call buildStyleNode
+		 */
+		
+		override public function write(features:Object):Object
+		{
+			var i:uint;
+			var kmlns:Namespace = new Namespace("kml","http://www.opengis.net/kml/2.2");
+			var kmlFile:XML = new XML("<kml></kml>");
+			kmlFile.addNamespace(kmlns);
+			
+			var doc:XML = new XML("<Document></Document>"); 
+			kmlFile.appendChild(doc);
+			
+			var listOfFeatures:Vector.<Feature> = features as Vector.<Feature>;
+			var numberOfFeat:uint = listOfFeatures.length;
+			
+			//build the style nodes first
+			for(i =0; i < numberOfFeat; i++)
+			{
+				if(listOfFeatures[i].style)
+				{
+					doc.appendChild(this.buildStyleNode(listOfFeatures[i],i));
+				}
+			}
+			//build the placemarks
+			
+			return kmlFile; 
+		}
+		
+		private function buildStyleNode(feature:Feature,i:uint):XML
+		{
+			var color:uint;
+			var opacity:Number;
+			var width:Number;
+			var stroke:Stroke;
+			var rules:Vector.<Rule> = feature.style.rules;
+			var symbolizers:Vector.<Symbolizer>;
+			if(rules.length > 0)
+			{
+				symbolizers = rules[0].symbolizers;
+			}
+		
+			//global style; can contain multiple Style types (Poly, Line, Icon)
+			var placemarkStyle:XML = new XML("<Style></Style>");
+			
+			//this way, the feature and its style will have the same ID
+			placemarkStyle.@id = "feature"+i.toString();
+			feature.name = "feature"+i.toString();
+			
+			var styleNode:XML = null;
+			if(feature is LineStringFeature)
+			{
+				//for lines, we will not store the outline style (the contour of the line)				
+				var lineF:LineStringFeature = feature as LineStringFeature;
+				styleNode = new XML("<LineStyle></LineStyle>");
+				if(symbolizers.length > 0)
+				{
+					var lSym:LineSymbolizer = symbolizers[0] as LineSymbolizer;
+					stroke = lSym.stroke;
+					color = stroke.color;
+					opacity = stroke.opacity;
+					width = stroke.width;
+					styleNode.appendChild(this.buildColorNode(color,opacity));
+					styleNode.colorMode = "normal";
+					styleNode.width = width;
+					placemarkStyle.appendChild(styleNode);				
+				}
+			}
+			else if(feature is PolygonFeature)
+			{
+				//for polygons, we can store both the polygon style and the outline 
+				var polyF:PolygonFeature = feature as PolygonFeature;
+				styleNode = new XML("<PolyStyle></PolyStyle>");
+				
+				if(symbolizers.length > 0)
+				{
+					//symbolizers[0] is the polygon style (fill and color)
+					var polySym:PolygonSymbolizer = symbolizers[0] as PolygonSymbolizer;
+					var fill:Fill = polySym.fill;
+					stroke = polySym.stroke;
+					color = stroke.color;
+					opacity = stroke.opacity;
+					styleNode.appendChild(this.buildColorNode(color,opacity));
+					styleNode.colorMode = "normal";
+					if(fill is SolidFill)
+						styleNode.fill = "1";
+					else 
+						styleNode.fill = "0";
+					placemarkStyle.appendChild(styleNode);	
+					
+					if(symbolizers.length > 1)
+					{
+						//symbolizers[1] is the outline style (fill - null and color of the outline)
+						styleNode.outline = "1";
+						var styleNode2:XML = new XML("<LineStyle></LineStyle>");
+						var polySym2:PolygonSymbolizer = symbolizers[1] as PolygonSymbolizer;
+						var stroke2:Stroke = polySym2.stroke;
+						color = stroke2.color;
+						opacity = stroke2.opacity;
+						styleNode2.appendChild(this.buildColorNode(color,opacity));
+						placemarkStyle.appendChild(styleNode2);	
+					}
+					
+						
+				}			
+			}
+			
+			return placemarkStyle;
+		}
+		
+		
+		/**
+		 * build kml color tag
+		 * opacity of 1 in OpenScales means 255 in KML
+		 */ 
+		private function buildColorNode(color:uint,opacity:Number):XML
+		{
+			var colorNode:XML = new XML("<color></color>");
+			
+			var stringColor:String = color.toString(16);
+			var KMLcolor:String = opacity.toString(16) + stringColor.substr(4,2)
+				+ stringColor.substr(2,2)+stringColor.substr(0,2);
+			colorNode.appendChild(KMLcolor);
+			return colorNode;
+		} 
 		
 		/**
 		 * Getters and Setters
