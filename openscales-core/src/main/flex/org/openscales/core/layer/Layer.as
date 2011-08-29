@@ -632,6 +632,8 @@ package org.openscales.core.layer {
 				this.generateResolutions();
 			}
 			
+			if (event)
+				this.dispatchEvent(event);
 			if(this.map && event)
 				this.map.dispatchEvent(event);
 		}
