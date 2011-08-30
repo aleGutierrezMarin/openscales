@@ -45,7 +45,14 @@
 			 */
 			public function set layer(value:Layer):void
 			{
+				if(this._layer && this._layer.map) {
+					this._layer.map.removeEventListener(LayerEvent.LAYER_OPACITY_CHANGED,layerChangeOpacity);
+				}
 				this._layer = value;
+				
+				if(!value)
+					return;
+				
 				this._alpha=this._layer.alpha*100;
 				this._alphaLabel=Math.round(this._alpha)+" %";
 				

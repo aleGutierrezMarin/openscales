@@ -51,8 +51,6 @@ package {
 			_ign.projection = "IGNF:GEOPORTALFXX";
 			var resoArray:Array = new Array(39135.75,19567.875,9783.9375,4891.96875,2445.984375,2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125,0.0625);
 			_ign.resolutions = resoArray;
-			_ign.minZoomLevel = 0;
-			_ign.maxZoomLevel = 21;
 			_ign.method = "POST";
 			_ign.version ="1.1.1";
 			
@@ -85,7 +83,7 @@ package {
 			
 			// Set the map center
 			_map.center=new Location(538850.47459,5740916.1243,_ign.projection);
-			_map.zoom=5;
+			//_map.zoom=5;
 			
 			this.addChild(_map);
 			

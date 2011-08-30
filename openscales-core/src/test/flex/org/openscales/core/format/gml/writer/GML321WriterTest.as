@@ -139,7 +139,7 @@ package org.openscales.core.format.gml.writer
 		var xmlNode:XML = writer.write(featureCol, ns, featureType, geometryName);
 		var xmlEnvelopeNode:XML = xmlNode..*::Envelope[0];
 		Assert.assertEquals("The lower corner coordinates are incorrect", "-442.145 19.099", xmlEnvelopeNode.children()[0].toString());
-		Assert.assertEquals("The upper corner coordinates are incorrect", "24 122", xmlEnvelopeNode.children()[1].toString());
+		Assert.assertEquals("The upper corner coordinates are incorrect", "-102 22", xmlEnvelopeNode.children()[1].toString());
 		var lineStringNode:XMLList = xmlNode..*::LineString;
 		Assert.assertEquals("This feature should contain 2 LineStrings", 2, lineStringNode.length());	
 		Assert.assertTrue("The content of the first LineString member is incorrect",lineStringNode[0].toString().match("<gml:posList>-102 22 -442.145 19.099</gml:posList>"));

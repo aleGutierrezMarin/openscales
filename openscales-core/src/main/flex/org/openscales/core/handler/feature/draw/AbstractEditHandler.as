@@ -11,7 +11,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
@@ -29,7 +29,7 @@ package org.openscales.core.handler.feature.draw
 		 * the layer concerned by the edition
 		 * @protected
 		 * */
-		protected var _layerToEdit:FeatureLayer=null;
+		protected var _layerToEdit:VectorLayer=null;
 		/**
 		 *This handler is used for differenciation of mouse actions(drag drop clikc double click) 
 		 * during the edition .
@@ -69,7 +69,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param drawContainer This sprite is used to draw temporaries features during dragging
 		 * @protected
 		 * */
-		public function AbstractEditHandler(map:Map = null, active:Boolean = false,layerToEdit:FeatureLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function AbstractEditHandler(map:Map = null, active:Boolean = false,layerToEdit:VectorLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
 		{
 			
 			if(_featureClickHandler!=null){
@@ -292,10 +292,10 @@ package org.openscales.core.handler.feature.draw
 			return null;
 		}
 		 //getters & setters
-		 public function set layerToEdit(value:FeatureLayer):void{
+		 public function set layerToEdit(value:VectorLayer):void{
 		 	this._layerToEdit=value;
 		 }
-		 public function get layerToEdit():FeatureLayer{
+		 public function get layerToEdit():VectorLayer{
 		 	return this._layerToEdit;
 		 }
 		 

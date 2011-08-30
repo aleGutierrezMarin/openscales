@@ -9,7 +9,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.mouse.ClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -70,7 +70,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param active
 		 * @param drawLayer The layer on which we'll draw
 		 */
-		public function DrawPathHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.FeatureLayer=null)
+		public function DrawPathHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.VectorLayer=null)
 		{
 			super(map, active, drawLayer);
 		}
@@ -120,14 +120,17 @@ package org.openscales.core.handler.feature.draw
 		
 		protected function drawLine(event:MouseEvent=null):void{
 			
+			drawLayer.scaleX=1;
+			drawLayer.scaleY=1;
 			//we determine the point where the user clicked
-			var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
-			var lonlat:Location = this.map.getLocationFromLayerPx(pixel);
+			//var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
+			var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
+			var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 			//manage the case where the layer projection is different from the map projection
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line
 			_startPoint = this.map.getMapPxFromLocation(lonlat);
-			trace("draw line : " + _startPoint.x + " " + _startPoint.y);
+			//trace("draw line : " + _startPoint.x + " " + _startPoint.y);
 			
 			//The user click for the first time
 			if(newFeature){

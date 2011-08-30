@@ -1,9 +1,11 @@
 package org.openscales.core.layer
 {
 	import org.flexunit.Assert;
+	import org.flexunit.asserts.assertEquals;
 	import org.openscales.core.Map;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.layer.originator.DataOriginator;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	public class LayerTest
 	{
@@ -13,7 +15,7 @@ package org.openscales.core.layer
 			var layer:Layer = new Layer("test");
 			
 			Assert.assertEquals(Layer.DEFAULT_NUM_ZOOM_LEVELS, layer.resolutions.length);
-			Assert.assertEquals(Layer.DEFAULT_NOMINAL_RESOLUTION, layer.resolutions[0]);
+			Assert.assertEquals(Layer.DEFAULT_NOMINAL_RESOLUTION.value, layer.resolutions[0]);
 		}
 		
 		[Test]
@@ -41,54 +43,6 @@ package org.openscales.core.layer
 			Assert.assertEquals(0.5, layer.resolutions[2]);
 			Assert.assertEquals(0.25, layer.resolutions[3]);
 			Assert.assertEquals(0.125, layer.resolutions[4]);
-		}
-		
-		[Test]
-		public function testMinZoomLevel():void {
-			var layer:Layer = new Layer("test");
-			layer.resolutions = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-			layer.minZoomLevel = 2;
-			
-			Assert.assertEquals(layer.minZoomLevel, 2);
-			Assert.assertEquals(layer.minResolution, 0);
-			Assert.assertEquals(layer.maxResolution, 7);
-		}
-		
-		[Test]
-		public function testMaxZoomLevel():void {
-			var layer:Layer = new Layer("test");
-			layer.resolutions = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-			layer.maxZoomLevel = 8;
-			
-			Assert.assertEquals(layer.maxZoomLevel, 8);
-			Assert.assertEquals(layer.minResolution, 1);
-			Assert.assertEquals(layer.maxResolution, 9);
-		}
-		
-		[Test]
-		public function testInvalidMaxZoomLevel():void {
-			var layer:Layer = new Layer("test");
-			layer.resolutions = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-			
-			// Define valid maxZoomLevel
-			layer.maxZoomLevel = 5;
-			// Now invalid one
-			layer.maxZoomLevel = 11;
-						
-			Assert.assertEquals(layer.maxZoomLevel, 5);
-		}
-		
-		[Test]
-		public function testInvalidMinZoomLevel():void {
-			var layer:Layer = new Layer("test");
-			layer.resolutions = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-			
-			// Define valid maxZoomLevel
-			layer.minZoomLevel = 5;
-			// Now invalid one
-			layer.minZoomLevel = -1;
-			
-			Assert.assertEquals(layer.minZoomLevel, 5);
 		}
 		
 		[Test]
@@ -192,5 +146,26 @@ package org.openscales.core.layer
 			
 		}
 		
+		/**
+		 * Validates that when you ask to convert a mapPixel into a layer pixel it simply add
+		 * the origin offset of the layer to the map Pixel.
+		 */
+		[Test]
+		public function shouldReturnLayerPixelAsMapPixelWithOriginOffset():void
+		{
+			// Given a map, and a layer with an offset
+			var _map:Map = new Map();
+			var _layer:Layer = new Layer("testLayer");
+			_map.addLayer(_layer);
+			_layer.x = -100;
+			_layer.y = -50;
+			
+			// When I ask for a map pixel into a layer pixel
+			var _returnedPixel:Pixel = _layer.getLayerPxFromMapPx(new Pixel(300, 200));
+				
+			// Then the returned pixel is properly computed
+			assertEquals("The getLayerPxFromMapPx return a wrong value for the X coordinate of the layer pixel", 400, _returnedPixel.x); 
+			assertEquals("The getLayerPxFromMapPx return a wrong value for the Y coordinate of the layer pixel", 250, _returnedPixel.y); 
+		}
 	}
 }

@@ -12,6 +12,7 @@ package org.openscales.core.layer.ogc {
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.WMTS100;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
 	
@@ -128,7 +129,10 @@ package org.openscales.core.layer.ogc {
 			// Given a map of 256x256px, centered on 0,12000000
 			this._map = new Map();
 			this._map.size = new Size(256,256);
+			this._map.projection = "IGNF:LAMB93";
+			//this._map.projection = "EPSG:4326";
 			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
+			this._map.maxExtent = new Bounds(-8.38, 38.14, 14.11, 55.92, "EPSG:4326");
 			
 			// And a WMTS layer on this map
 			var cap:WMTS100 = new WMTS100();
@@ -138,17 +142,14 @@ package org.openscales.core.layer.ogc {
 			this._wmts = new WMTS(NAME,URL,LAYER, MATRIX_SET_ID,tmshm);
 			this._wmts.buffer=0;
 			this._wmts.style="default";
-			this._map.addLayer(this._wmts);
 			
 			// Then request is sent according to the layer parameters
-			
 			this._handler = Async.asyncHandler(this,assertGenerateCorrectQueriesWithMinimumParams,
-				100,null,noRequestSend);
+				2000,null,noRequestSend);
 			
 			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			
-			// When layer is redrawn
-			this._wmts.redraw();
+			this._map.addLayer(this._wmts);
 			
 		}
 		
@@ -244,14 +245,13 @@ package org.openscales.core.layer.ogc {
 			this._wms = new WMS("wms", "http://openscales.org/geoserver/wms", "pg:ign_geopla_dep", null, "image/jpeg");
 			this._wms.version =  "1.3.0";
 			
-			this._map.addLayer(this._wmts);
-			this._map.addLayer(this._wms);
-			
 			// When the WMTS is loaded
 			this._handler = assertDisplayLayersCorrectlyWithAWMTSBaselayerAndWMSWithLambert93Projection;
 			this._handlerFail = noRequestSend;
 			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this._handlerFail);
+			this._map.addLayer(this._wmts);
+			this._map.addLayer(this._wms);
 			this._timer.start();
 		}
 		
@@ -267,7 +267,6 @@ package org.openscales.core.layer.ogc {
 			
 			// Then the map contains the two layers and both are displayed
 			assertEquals("Incorrect number of layers in the map", 2, this._map.layers.length);
-			assertNotNull("Inccorect baselayer type", (this._map.baseLayer as WMTS)); 
 			
 			assertNotNull("Inccorect layer 0 should be WMTS", (this._map.layers[0] as WMTS)); 
 			assertNotNull("Inccorect layer 1 should be WMS", (this._map.layers[1]  as WMS)); 
@@ -282,7 +281,8 @@ package org.openscales.core.layer.ogc {
 				this._wmts.removeEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			
 			this._timer.stop();
-			this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handlerFail);
+			if(this._handlerFail!=null)
+				this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE, this._handlerFail);
 			
 			Assert.fail("No request sent");
 		}

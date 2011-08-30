@@ -25,6 +25,7 @@ package org.openscales.core.layer.capabilities
 			this._title = "Title";
 			this._srs = "SRS";
 			this._abstract = "Abstract";
+			this._keywordList = "KeywordList";
 			this._latLonBoundingBox = "LatLonBoundingBox";
 		}
 
@@ -66,6 +67,9 @@ package org.openscales.core.layer.capabilities
 				value = layer.Abstract;
 				layerCapabilities.put("Abstract", value);
 
+				value = layer.KeywordList;
+				layerCapabilities.put("KeywordList", value);
+				
 				left = new Number(layer.LatLonBoundingBox.@minx.toXMLString());
 				bottom = new Number(layer.LatLonBoundingBox.@miny.toXMLString());
 				right = new Number(layer.LatLonBoundingBox.@maxx.toXMLString());
@@ -78,7 +82,7 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.BoundingBox.@maxx.toXMLString());
 				top = new Number(layer.BoundingBox.@maxy.toXMLString());;
 						
-				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,srsCode));
+				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,"EPSG:4326"));
 			
                 if (name != "")
                 {

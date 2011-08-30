@@ -11,7 +11,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.format.GeoRssFormat;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -32,8 +32,7 @@ package org.openscales.core.layer.ogc
 	 * The srs code of the layer projection is "WGS84"
 	 * 
 	 */
-	
-	public class GeoRss extends FeatureLayer
+	public class GeoRss extends VectorLayer
 	{
 		
 		private var _featureVector:Vector.<Feature> = null;
@@ -83,6 +82,10 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
+			
+			if (this.map == null)
+				return;
+			
 			//if the user chooses not to display this layer, stop timer to save ressources
 			if (!displayed) {
 				this.clear();

@@ -4,6 +4,7 @@ package
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoomBar;
@@ -69,7 +70,7 @@ package
 			_map.addControl(new DragHandler());
 			
 			//Set map center and zoom level
-			_map.zoom=12;
+			_map.resolution = new Resolution(0.00034332275390625,"EPSG:4326");
 			_map.center = new Location(2.418611,48.842222,"EPSG:4326");
 			this.addChild(_map);
 			

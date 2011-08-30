@@ -60,9 +60,9 @@ package org.openscales.core.feature {
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 			var x:Number;
 			var y:Number;
-			var resolution:Number = this.layer.map.resolution;
-			var dX:int = -int(this.layer.map.layerContainer.x) + this.left;
-			var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
+			var resolution:Number = this.layer.map.resolution.value;
+			var dX:int = -int(this.layer.map.x) + this.left;
+			var dY:int = -int(this.layer.map.y) + this.top;
 			x = dX + point.x / resolution;
 			y = dY - point.y / resolution;
 			this.graphics.drawRect(x, y, 5, 5);
@@ -149,15 +149,15 @@ package org.openscales.core.feature {
 				var pointA:Point = (arrayResult[i][0] as LineString).componentByIndex(0) as Point;
 				var pointB:Point = (arrayResult[i][0] as LineString).componentByIndex(1) as Point;
 
-				var pointPx:Pixel = this.layer.map.getLayerPxFromLocation(new Location(point.x, point.y));
+				var pointPx:Pixel = this.layer.map.getMapPxFromLocation(new Location(point.x, point.y));
 
-				var pointPxA:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointA.x, pointA.y));
+				var pointPxA:Pixel = this.layer.map.getMapPxFromLocation(new Location(pointA.x, pointA.y));
 
-				var pointPxB:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointB.x, pointB.y));
+				var pointPxB:Pixel = this.layer.map.getMapPxFromLocation(new Location(pointB.x, pointB.y));
 
-				pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
-				pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
-				pointPxB = this.layer.map.getMapPxFromLayerPx(pointPxB);
+				//pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
+				//pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
+				//pointPxB = this.layer.map.getMapPxFromLayerPx(pointPxB);
 
 
 

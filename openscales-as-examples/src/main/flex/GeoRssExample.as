@@ -3,6 +3,7 @@ package
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoomBar;
@@ -10,6 +11,7 @@ package
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.ogc.GeoRss;
+	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -30,13 +32,13 @@ package
 			//Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
+			_map.projection = "EPSG:4326";
 			
 			
 			// Add a base layer to the map
 			var mapnik:Mapnik=new Mapnik("Mapnik");
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
-			
 			
 			//add the GeoRss layer; fetch data from url
 			var georssLayer:GeoRss = new GeoRss("Archeological Sites", this.url);
@@ -60,8 +62,8 @@ package
 			_map.addControl(new DragHandler());
 			
 			//Set map center and zoom level
-			_map.zoom=10;
-			_map.center = new Location(-103.6,44.5,"WGS84");
+			_map.resolution= new Resolution(38.21851413574219, "EPSG:4326");
+			_map.center = new Location(-103.6,44.5);
 			this.addChild(_map);
 	
 		}

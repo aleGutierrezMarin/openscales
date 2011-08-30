@@ -2,9 +2,9 @@ package org.openscales.core.handler.mouse {
 	
 	import flash.events.MouseEvent;
 	
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.Map;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	/**
 	 * Handler use to zoom in and zoom out the map thanks to the mouse wheel.
@@ -29,9 +29,17 @@ package org.openscales.core.handler.mouse {
 		
 		private function onMouseWheel(event:MouseEvent):void {
 			if (this.map) {
-				this.map.zoomToMousePosition((event.delta > 0));
+				var mousePx:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
+				if (event.delta > 0)
+				{
+					//this.map.zoomIn();
+					this.map.zoomIn(mousePx);
+				}else
+				{
+					this.map.zoomOut(mousePx);
+					//this.map.zoomOut(mousePx);
+				}
 			}
-		}
-		
+		}		
 	}
 }

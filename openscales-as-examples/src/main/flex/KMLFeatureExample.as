@@ -62,7 +62,7 @@ package
 			_map.addControl(new DragHandler());
 			
 			//Set map center and zoom level
-			_map.zoom=7;
+			//_map.zoom=7;
 			_map.center = new Location(-116.953,37.267,"EPSG:4326");
 			this.addChild(_map);
 			

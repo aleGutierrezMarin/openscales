@@ -1,12 +1,19 @@
 package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
+	import flash.display.Shape;
+	import flash.events.TimerEvent;
+	import flash.geom.Matrix;
 	import flash.sampler.getInvocationCount;
 	import flash.sampler.getMemberNames;
+	import flash.utils.Timer;
 	
 	import mx.olap.aggregators.MaxAggregator;
+	import mx.rpc.events.HeaderEvent;
 	
+	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
 	import org.openscales.core.basetypes.linkedlist.LinkedList;
 	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
@@ -18,6 +25,7 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Base class for layers that use a lattice of tiles.
@@ -26,6 +34,9 @@ package org.openscales.core.layer
 	 */
 	public class Grid extends HTTPRequest
 	{
+		
+		private var _timer:Timer;
+		
 		private const DEFAULT_TILE_WIDTH:Number = 256;
 		
 		private const DEFAULT_TILE_HEIGHT:Number = 256;
@@ -54,6 +65,16 @@ package org.openscales.core.layer
 		
 		private var _tileToRemove:ImageTile;
 		
+		private var _defaultMatrixTranform:Matrix
+		
+		private var _resquestResolution:Number = 0;
+
+		private var _initialized:Boolean = false;
+		
+		private var _scaleOnZoomRatiochanged:Number = 1;
+		
+		private var _requestedResolution:Resolution;
+		
 		/**
 		 * Create a new grid layer
 		 *
@@ -74,7 +95,7 @@ package org.openscales.core.layer
 			
 			
 			this.buffer = 0;
-			
+			this._defaultMatrixTranform = this.transform.matrix;
 			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
 			this.addEventListener(TileEvent.TILE_LOAD_START,tileLoadHandler);
 		}
@@ -155,32 +176,91 @@ package org.openscales.core.layer
 			return null;
 		}
 		
-		override public function redraw(fullRedraw:Boolean = true):void 
+		override public function get available():Boolean
 		{
-			if (!displayed) {
+			return (super.available && ProjProjection.isEquivalentProjection(this.projSrsCode,this.map.projection));
+		}
+		
+		/**
+		 * Override the redraw method for raster data. Check the informations of the map
+		 * to define the available parameter for raster data.
+		 */
+		override public function redraw(fullRedraw:Boolean = false):void 
+		{
+			if (this.map == null)
+				return;
+			
+			if (!available || !this.visible) 
+			{
 				this.clear();
+				this._initialized = false;
 				return;
 			}
 			
-			var bounds:Bounds = this.map.extent.clone();
+			var ratio:Number;
 			
+			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
+			var bounds:Bounds = this.map.getExtentForResolution(new Resolution(resolution, this.map.resolution.projection)).clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
-			
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
-			
-			if (!this.tiled) {
-				if(fullRedraw)
-					this.clear();
-				if ( forceReTile || !tilesBounds.containsBounds(bounds)) {
-					this.clear();
+			if (!_initialized)
+			{
+				if (!this.tiled) 
+				{
 					this.initSingleTile(bounds);
-				}
-			} else {
-				if (forceReTile || !tilesBounds.containsBounds(bounds, true)) {
+				} else 
+				{
 					this.initGriddedTiles(bounds);
-				} else {
-					this.moveGriddedTiles(bounds);
+					ratio = resolution/this.map.resolution.value;
+					this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
+					this._centerChanged = false;
+					this._projectionChanged = false;
+					this._resolutionChanged = false;
 				}
+				
+				_initialized = true;
+			}
+			
+			
+			
+			if (this._centerChanged || this._projectionChanged || this._resolutionChanged || forceReTile)
+			{
+				if (!this.tiled) 
+				{
+						if (!this._timer.running)
+						{
+							this.clear();
+							this.initSingleTile(bounds);
+						}
+				} else {
+					if (resolution != this._resquestResolution || forceReTile)
+					{
+						this.initGriddedTiles(bounds, true);
+						ratio = resolution/this.map.resolution.value;
+						this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
+					} else 
+					{
+						this.moveGriddedTiles(bounds);
+					}
+				}
+				this._centerChanged = false;
+				this._projectionChanged = false;
+				this._resolutionChanged = false;
+			}
+		}
+		
+		/**
+		 * Method that will scale the layer sprite with the given scale at the given pixel
+		 */
+		private function scaleLayer(scale:Number, targetPx:Pixel):void
+		{
+			
+			if (this.grid != null)
+			{
+				this.x -= (targetPx.x - this.x) * (scale - 1);
+				this.y -= (targetPx.y - this.y) * (scale - 1);
+				this.scaleX = this.scaleX * scale;
+				this.scaleY = this.scaleY * scale;
 			}
 		}
 		
@@ -201,6 +281,31 @@ package org.openscales.core.layer
 		}	
 		
 		
+		override protected function onMapCenterChanged(event:MapEvent):void
+		{
+			this._timer.reset();
+			this._timer.start();
+			if (!this._resolutionChanged)
+			{
+				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
+				var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
+				var deltaX:Number = deltaLon/this.map.resolution.value;
+				var deltaY:Number = deltaLat/this.map.resolution.value;
+				this.x -= deltaX;
+				this.y += deltaY;
+			}
+			super.onMapCenterChanged(event);
+		}
+		
+		override protected function onMapResolutionChanged(event:MapEvent):void
+		{
+			this._timer.reset();
+			this._timer.start();
+			var px:Pixel = event.targetZoomPixel;
+			var ratio:Number = event.oldResolution.value / event.newResolution.value;
+			this.scaleLayer(ratio, px);
+			super.onMapResolutionChanged(event);
+		}
 		/**
 		 * Return the bounds of the tile grid.
 		 *
@@ -232,6 +337,8 @@ package org.openscales.core.layer
 		 * @param bounds
 		 */
 		public function initSingleTile(bounds:Bounds):void {
+			this.transform.matrix = this._defaultMatrixTranform.clone();
+			this._requestedResolution = this.getSupportedResolution(this.map.resolution);
 			var center:Location;
 			var geoTileWidth:Number;
 			var geoTileHeight:Number;
@@ -239,6 +346,11 @@ package org.openscales.core.layer
 			bounds = this.maxExtent.getIntersection(bounds);
 			bounds = this.map.maxExtent.getIntersection(bounds);
 			
+			if (bounds == null)
+			{
+				Trace.debug("Singletile requested extent is null, no intersection");
+				return;
+			}
 			if(bounds.projSrsCode!=this.projSrsCode)
 				bounds = bounds.reprojectTo(this.projSrsCode);
 			
@@ -247,10 +359,10 @@ package org.openscales.core.layer
 			geoTileHeight = bounds.height;
 			var topLeftCorner:Location = new Location(bounds.left, bounds.top);
 			var bottomRightCorner:Location = new Location(bounds.right, bounds.bottom);
-			this.tileWidth = Math.round(geoTileWidth/this.map.resolution);
-			this.tileHeight = Math.round(geoTileHeight/this.map.resolution);
+			this.tileWidth = Math.round(geoTileWidth/this.map.resolution.value);
+			this.tileHeight = Math.round(geoTileHeight/this.map.resolution.value);
 			var ul:Location = new Location(bounds.left, bounds.top, bounds.projSrsCode);
-			var px:Pixel = this.map.getLayerPxFromLocation(ul);
+			var px:Pixel = this.map.getMapPxFromLocation(ul);
 			
 			if(this._grid==null) {
 				this._grid = new Vector.<Vector.<ImageTile>>(1);
@@ -278,6 +390,35 @@ package org.openscales.core.layer
 			this._tileToRemove.destroy();
 		}
 		
+		public function getSupportedResolution(targetResolution:Resolution):Resolution
+		{	
+			if(!this.resolutions)
+				return new Resolution(0);
+			// Find the best resotion to fit the target resolution
+			var bestResolution:Number = 0;
+			var bestRatio:Number = Number.POSITIVE_INFINITY;
+			var i:int = 0;
+			var len:int = this.resolutions.length;
+			
+			for (i; i < len; ++i)
+			{
+				if (this.resolutions[i] >= targetResolution.value)
+				{
+					var ratioSeeker:Number = this.resolutions[i]-targetResolution.value;
+				}
+				
+				if ( ratioSeeker < bestRatio){
+					bestRatio = ratioSeeker;
+					bestResolution = this.resolutions[i];
+				}
+				if (bestResolution == 0)
+				{
+					bestResolution = resolutions[0];
+				}
+			}
+			return new Resolution(bestResolution, targetResolution.projection);
+		}
+		
 		/**
 		 * Ititialize gridded tiles
 		 * 
@@ -289,8 +430,7 @@ package org.openscales.core.layer
 		 * no white flash, but there is some problems if used for something else than modifying map extent
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
-			
-			
+			this.transform.matrix = this._defaultMatrixTranform.clone();
 			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projSrsCode);
 			
 			var viewSize:Size = this.map.size;
@@ -299,27 +439,24 @@ package org.openscales.core.layer
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
 				Math.max(1, 2 * this.buffer);
 			
-			var resolution:Number = this.map.resolution;
-			
-			var tilelon:Number = resolution * this.tileWidth;
-			var tilelat:Number = resolution * this.tileHeight;
+			this.requestedResolution = this.getSupportedResolution(this.map.resolution);
+			_resquestResolution = this.requestedResolution.value;
+			var tilelon:Number = _resquestResolution * this.tileWidth;
+			var tilelat:Number = _resquestResolution * this.tileHeight;
 			
 			// Longitude
-			var offsetlon:Number = bounds.left - this._tileOrigin.lon;
+			var offsetlon:Number = bounds.left - projectedTileOrigin.lon;
 			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
 			var tilecolremain:Number = offsetlon/tilelon - tilecol;
 			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
-			var tileoffsetlon:Number = this._tileOrigin.lon + tilecol * tilelon;
+			var tileoffsetlon:Number = projectedTileOrigin.lon + tilecol * tilelon;
 			
 			// Latitude
-			var offsetlat:Number = bounds.top - (this._tileOrigin.lat + tilelat);  
+			var offsetlat:Number = bounds.top - (projectedTileOrigin.lat + tilelat);  
 			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
 			var tilerowremain:Number = tilerow - offsetlat/tilelat;
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
-			var tileoffsetlat:Number = this._tileOrigin.lat + tilerow * tilelat;
-			
-			tileoffsetx = Math.round(tileoffsetx);
-			tileoffsety = Math.round(tileoffsety);
+			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
 			
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
 			
@@ -350,10 +487,8 @@ package org.openscales.core.layer
 						tileoffsetlat + tilelat,
 						this.projSrsCode);
 					var x:Number = tileoffsetx;
-					x -= int(this.map.layerContainer.x);
 					
 					var y:Number = tileoffsety;
-					y -= int(this.map.layerContainer.y);
 					
 					var px:Pixel = new Pixel(x, y);
 					var tile:ImageTile;
@@ -470,10 +605,10 @@ package org.openscales.core.layer
 		 */
 		public function moveGriddedTiles(bounds:Bounds):void {
 			var buffer:Number = this.buffer || 1;
+			
 			while (true) {
 				var tlLayer:Pixel = this.grid[0][0].position;
-				var tlViewPort:Pixel = 
-					this.map.getMapPxFromLayerPx(tlLayer);
+				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x/this.transform.matrix.a, tlLayer.y + this.y/this.transform.matrix.d);
 				if (tlViewPort.x > -this.tileWidth * (buffer - 1)) {
 					this.shiftColumn(true);
 				} else if (tlViewPort.x < -this.tileWidth * buffer) {
@@ -512,7 +647,7 @@ package org.openscales.core.layer
 		private function shiftRow(prepend:Boolean):void {
 			var modelRowIndex:int = (prepend) ? 0 : (this._grid.length - 1);
 			var modelRow:Vector.<ImageTile> = this._grid[modelRowIndex];
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 			var deltaY:Number = (prepend) ? -this.tileHeight : this.tileHeight;
 			var deltaLat:Number = resolution * -deltaY;
 			var row:Vector.<ImageTile> = (prepend) ? this._grid.pop() : this._grid.shift();
@@ -543,7 +678,7 @@ package org.openscales.core.layer
 		 */
 		private function shiftColumn(prepend:Boolean):void {
 			var deltaX:Number = (prepend) ? -this.tileWidth : this.tileWidth;
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.requestedResolution.value;
 			var deltaLon:Number = resolution * deltaX;
 			
 			var j:uint = this._grid.length;
@@ -591,7 +726,6 @@ package org.openscales.core.layer
 					tile.destroy();
 				}
 			}
-			
 		}
 		
 		/**
@@ -603,7 +737,7 @@ package org.openscales.core.layer
 		 */
 		public function getTileBounds(viewPortPx:Pixel):Bounds {
 			var maxExtent:Bounds = this.maxExtent;
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.map.resolution.value;
 			var tileMapWidth:Number = resolution * this.tileWidth;
 			var tileMapHeight:Number = resolution * this.tileHeight;
 			var mapPoint:Location = this.getLocationFromMapPx(viewPortPx);
@@ -638,6 +772,12 @@ package org.openscales.core.layer
 					break;
 				}
 			}
+		}
+		
+		private function onTimerEnd(event:TimerEvent):void
+		{
+			this._centerChanged = true;
+			this._resolutionChanged = true;
 		}
 		
 		//Getters and Setters
@@ -699,7 +839,35 @@ package org.openscales.core.layer
 		public function set tileOrigin(value:Location):void
 		{
 			this._tileOrigin = value;
-			this.initGriddedTiles(this.map.extent, true);
+			this.redraw(true);
+		}
+		
+		public function getMapPxRescalesFromLayerPx(layerPx:Pixel):Pixel
+		{
+			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
+			var ratio:Number = resolution/this.map.resolution.value;
+			return new Pixel(layerPx.x + this.x / ratio, layerPx.y + this.y / ratio);
+		}
+		
+		public function set requestedResolution(value:Resolution):void
+		{
+			this._requestedResolution = value;
+		}
+		
+		public function get requestedResolution():Resolution
+		{
+			return this._requestedResolution;
+		}
+		
+		override public function set map(value:Map):void
+		{
+			super.map = value;
+			if(this._timer) {
+				this._timer.reset();
+			} else {
+				this._timer = new Timer(500,1);
+				this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			}
 		}
 	}
 }

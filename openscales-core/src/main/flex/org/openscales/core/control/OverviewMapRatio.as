@@ -5,17 +5,9 @@ package org.openscales.core.control
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
-	import org.openscales.core.feature.PointFeature;
-	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.core.style.Rule;
-	import org.openscales.core.style.Style;
-	import org.openscales.core.style.fill.SolidFill;
-	import org.openscales.core.style.marker.WellKnownMarker;
-	import org.openscales.core.style.stroke.Stroke;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
-	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
@@ -77,8 +69,6 @@ package org.openscales.core.control
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
 			this.mapChanged();
 			this.draw();
-			
-			
 		}
 		
 		/**
@@ -109,31 +99,37 @@ package org.openscales.core.control
 		
 		/**
 		 * @private
-		 * Compute the zoom level of the overviewMap according to the ratio setted
+		 * Compute the resolution level of the overviewMap according to the ratio setted
 		 */
-		private function computeZoomLevel():void
+		private function computeResolutionLevel():void
 		{
-			if (this.map != null && this._overviewMap.baseLayer != null)
+			if (this.map != null)
 			{
 				// Compute the size ratio between the map and the voerview map
 				var mapsRatio:Number =(this.map.size.w / this._overviewMap.size.w); 
 				
 				// Compute the reprojection factor for the resolution
-				var unityReproj:Location = new Location(1, 1, this.map.baseLayer.projSrsCode);
-				unityReproj = unityReproj.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+				var unityReproj:Location = new Location(1, 1, this.map.projection);
+				unityReproj = unityReproj.reprojectTo(this._overviewMap.projection);
 				
 				// Reproject and multiply by the maps ratio the resolution
-				var targetResolution:Number = this.map.resolution * unityReproj.x* mapsRatio;
+				var targetResolution:Number = this.map.resolution.value * unityReproj.x* mapsRatio;
 				
+				if(targetResolution > this._overviewMap.maxResolution.value)
+					targetResolution = this._overviewMap.maxResolution.value;
 				
-				// Find the best zoom to fit the resolutions ratio
+				if(targetResolution < this._overviewMap.minResolution.value)
+					targetResolution = this._overviewMap.minResolution.value;
+				
+				// Find the best resolution to fit the resolution ratio :
 				var bestZoomLevel:int = 0;
 				var bestRatio:Number = 0;
-				var i:int = Math.max(0, this._overviewMap.baseLayer.minZoomLevel);
-				var len:int = Math.min(this._overviewMap.baseLayer.resolutions.length, this._overviewMap.baseLayer.maxZoomLevel+1);
+				
+				var i:int = 0;
+				var len:int = this._overviewMap.layers[0].resolutions.length;
 				for (i; i < len; ++i)
 				{
-					var ratioSeeker:Number = this._overviewMap.baseLayer.resolutions[i] / targetResolution;
+					var ratioSeeker:Number = this._overviewMap.layers[0].resolutions[i] / targetResolution;
 					if ( ratioSeeker > _ratio){
 						ratioSeeker = _ratio/ratioSeeker;
 					}
@@ -143,8 +139,10 @@ package org.openscales.core.control
 					}
 				}
 				
-				this._overviewMap.zoom = bestZoomLevel;
-				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+				targetResolution = this.overviewMap.layers[0].resolutions[bestZoomLevel];
+				
+				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.projection);
+				this._overviewMap.resolution = new Resolution(targetResolution, _overviewMap.projection);
 			}
 		}
 		
@@ -166,25 +164,20 @@ package org.openscales.core.control
 		{
 			if (this.map != null)
 			{
-				this.map.removeEventListener(MapEvent.MOVE_END,
-					mapChanged);
-				this.map.removeEventListener(MapEvent.LOAD_END,
-					mapChanged);
-				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN,
-					onMouseDown);
+				this.map.removeEventListener(MapEvent.CENTER_CHANGED, mapChanged);
+				this.map.removeEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
+				this.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
+				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			}
 			super.map = map;	
 			if (map != null)
 			{	
-				this.map.addEventListener(MapEvent.MOVE_END,
-					mapChanged);
-				this.map.addEventListener(MapEvent.LOAD_END,
-					mapChanged);
-				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN,
-					onMouseDown,true);
+				this.map.addEventListener(MapEvent.CENTER_CHANGED, mapChanged);
+				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
+				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
+				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
 			}
 		}
-		
 		/**
 		 * @private
 		 * Callback to recompute the zoom level of the overview when the zoom level of the map
@@ -192,7 +185,7 @@ package org.openscales.core.control
 		 */
 		private function mapChanged(event:Event = null):void
 		{
-			computeZoomLevel();
+			computeResolutionLevel();
 			this.drawCenter();	
 		}
 		
@@ -207,12 +200,14 @@ package org.openscales.core.control
 			var newCenter:Location = this._overviewMap.getLocationFromMapPx(mousePosition);
 			var oldCenter:Location = this._overviewMap.center;
 			
-			this.map.center = newCenter.reprojectTo(this.map.baseLayer.projSrsCode);	
+			var newMapCenter:Location = newCenter.reprojectTo(this.map.projection);	
+			
+			this.map.center = newMapCenter;
 			//If the new center is valid change the center of the overview
-			if (this.map.center == newCenter.reprojectTo(this.map.baseLayer.projSrsCode))
-				{
-					this._overviewMap.center = newCenter;
-				}
+			if (this.map.center == newMapCenter)
+			{
+				this._overviewMap.center = newCenter;
+			}
 		}
 		
 		/**
@@ -226,8 +221,10 @@ package org.openscales.core.control
 			if (layer != null)
 			{
 				_overviewMap.removeAllLayers();
-				_overviewMap.baseLayer = layer;
-				_overviewMap.addLayer(layer, true, true);
+				_overviewMap.addLayer(layer, true);
+				
+				_overviewMap.projection = layer.projSrsCode;
+				_overviewMap.maxExtent = layer.maxExtent;
 			}
 		}
 		
@@ -237,7 +234,7 @@ package org.openscales.core.control
 		 */
 		public function get layer():Layer
 		{
-			return _overviewMap.baseLayer;
+			return _overviewMap.layers[0];
 		}
 		
 		/**
@@ -264,7 +261,7 @@ package org.openscales.core.control
 		/**
 		 * The overview map resolution
 		 */
-		public function get resolution():Number
+		public function get resolution():Resolution
 		{
 			return _overviewMap.resolution;
 		}
@@ -293,6 +290,54 @@ package org.openscales.core.control
 		
 		override public function get height():Number{
 			return _overviewMap.size.h;
+		}
+		
+		/**
+		 * The actual projection of the map. The default value is EPSG:4326
+		 */
+		public function set projection(value:String):void
+		{
+			this._overviewMap.projection = value;
+		}
+		
+		/**
+		 * @public
+		 */
+		public function get projection():String
+		{
+			return this._overviewMap.projection;
+		}
+		
+		/**
+		 * The actual maxResolution of the overview map
+		 */
+		public function get maxResolution():Resolution
+		{
+			return this._overviewMap.maxResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set maxResolution(value:Resolution):void
+		{
+			this._overviewMap.maxResolution = value;
+		}
+		
+		/**
+		 * The actual minResolution of the overview map
+		 */
+		public function get minResolution():Resolution
+		{
+			return this._overviewMap.minResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set minResolution(value:Resolution):void
+		{
+			this._overviewMap.minResolution = value;
 		}
 	}
 }
