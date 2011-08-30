@@ -149,6 +149,10 @@ package org.openscales.geometry
 			if (geom is Point) {
 				return this.containsPoint(geom as Point);
 			}
+			else if (geom is LabelPoint) {
+				var pt:Point = new Point((geom as LabelPoint).x, (geom as LabelPoint).y);
+				return this.containsPoint(pt);
+			}
 			else if ((geom is LinearRing) || (geom is LineString)) {
 				// LinearRing should be tested before LineString if a different
 				//   action should be made for each case..

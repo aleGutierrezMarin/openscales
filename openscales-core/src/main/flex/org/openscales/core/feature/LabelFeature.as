@@ -1,11 +1,21 @@
 package org.openscales.core.feature
 {
+	import flash.display.DisplayObject;
+	import flash.text.TextFormat;
+	
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.basetypes.Location;
 	
 	public class LabelFeature extends Feature
 	{
+		private var _font:String = "Arial";
+		private var _size:Number = 12;
+		private var _bold:Boolean = false;
+		private var _italic:Boolean = false;
+		
 		/**
 		 * Constructor class
 		 * 
@@ -17,6 +27,10 @@ package org.openscales.core.feature
 		public function LabelFeature(geom:LabelPoint=null, data:Object=null, style:Style=null, isEditable:Boolean=false)
 		{
 			super(geom, data, style, isEditable);
+			if (!style){
+				this.style = new Style();
+				this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+			}
 		}
 		
 		/**
@@ -49,7 +63,8 @@ package org.openscales.core.feature
 			x = dX + labelPoint.x / resolution;
 			y = dY - labelPoint.y / resolution;
 			this.labelPoint.label.x = x - this.labelPoint.label.width / 2;
-			this.labelPoint.label.y = y;
+			this.labelPoint.label.y = y - this.labelPoint.label.height / 2;
+			this.labelPoint.label.setTextFormat(this.style.textFormat);
 			this.addChild(this.labelPoint.label);
 		}
 		
@@ -58,6 +73,50 @@ package org.openscales.core.feature
 		 */
 		public function get labelPoint():LabelPoint{
 			return this.geometry as LabelPoint;
+		}
+		
+		/**
+		 * The font of the label
+		 */
+		public function get font():String{
+			return this._font;
+		}
+		public function set font(value:String):void{
+			this._font = value;
+			this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+		}
+		
+		/**
+		 * The size of the label
+		 */
+		public function get size():Number{
+			return this._size;
+		}
+		public function set size(value:Number):void{
+			this._size = value;
+			this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+		}
+		
+		/**
+		 * To define if the label is bold or not
+		 */
+		public function get bold():Boolean{
+			return this._bold;
+		}
+		public function set bold(value:Boolean):void{
+			this._bold = value;
+			this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+		}
+		
+		/**
+		 * To define if the label is italic or not
+		 */
+		public function get italic():Boolean{
+			return this._italic;
+		}
+		public function set italic(value:Boolean):void{
+			this._italic = value;
+			this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
 		}
 	}
 }
