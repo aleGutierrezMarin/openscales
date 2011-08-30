@@ -123,8 +123,8 @@ package org.openscales.core.layer.ogc
 				return maxExtent;
 			}
 			// fix me
-			if (this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-				maxExtent = maxExtent.reprojectTo(this.map.baseLayer.projSrsCode);
+			if (this.reproject == true && this.projSrsCode != this.map.projection) {
+				maxExtent = maxExtent.reprojectTo(this.map.projection);
 			}
 			return maxExtent;
 		}
@@ -159,7 +159,9 @@ package org.openscales.core.layer.ogc
 		 * Override method used to update the wms tile displayed when using the zoom control
 		 * 
 		 */
-		override public function redraw(fullRedraw:Boolean = true):void {
+		override public function redraw(fullRedraw:Boolean = false):void {
+			if (this.map == null)
+				return;
 			(_tileProvider as WMSTileProvider).width = this.tileWidth;
 			(_tileProvider as WMSTileProvider).height = this.tileHeight;
 			super.redraw(fullRedraw);
@@ -263,6 +265,7 @@ package org.openscales.core.layer.ogc
 			if(this._tileProvider != null){
 				this._tileProvider.transparent=transparent;
 			}
+			this.redraw(true);
 		}
 		
 		/**

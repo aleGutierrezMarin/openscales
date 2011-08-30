@@ -39,6 +39,7 @@ For example, to present the list of layers available in an application.
 				for each(var layer:Layer in this._layers){
 					this._filteredLayers.addItem(layer);
 				}
+				
 			}
 			
 			/**

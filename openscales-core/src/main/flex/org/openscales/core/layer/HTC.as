@@ -80,10 +80,12 @@ package org.openscales.core.layer
 		 */
 		override public function getURL(bounds:Bounds):String
 		{
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.map.resolution.value;
+			
+			// TODO : Refactor zoom
 			// htc has reverse zoom 
-			var zoom:int = _zoom_max - this.map.zoom ;
-			var zoomString:String = String(zoom);
+			var zoom:int = 0 // _zoom_max - this.map.zoom ;
+			var zoomString:String = "" //String(zoom);
 
 			// compute the number of the tile
 			var numX:Number = Math.floor(bounds.center.x / (this.tileWidth * resolution));

@@ -6,6 +6,7 @@ package org.openscales.core.tile
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
+	import flash.display.PixelSnapping;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.net.URLRequestMethod;
@@ -59,18 +60,7 @@ package org.openscales.core.tile
 		 * @return Always returns true.
 		 */
 		override public function draw():Boolean {
-			if(!this.layer || !this.layer.map)
-				return false;
-			
-			if (this.layer != this.layer.map.baseLayer) {
-				if(_drawPosition != null) {
-					this.bounds = this.getBoundsFromBaseLayer(_drawPosition);
-				} else {
-					this.bounds = this.getBoundsFromBaseLayer(position);
-				}
-			}
-
-			if(! withinMapBounds()) {
+			if(!super.draw()) {
 				return false;    
 			}
 			if (this.url == null) {
@@ -112,7 +102,7 @@ package org.openscales.core.tile
 		public function onTileLoadEnd(event:Event):void {
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
-			var bitmap:Bitmap = Bitmap(loader.content);
+			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
 			drawLoader(loader.name, bitmap, false);
 		}
 
@@ -157,7 +147,7 @@ package org.openscales.core.tile
 		}
 		
 		public function onTileLoadError(event:IOErrorEvent):void {
-			if ((! this.layer) || (! this.layer.map) || (++this._attempt <= this.layer.map.IMAGE_RELOAD_ATTEMPTS)) {
+			if (this.layer && this.layer.map && ++this._attempt <= this.layer.map.IMAGE_RELOAD_ATTEMPTS) {
 				// Retry loading
 				Trace.log("ImageTile - onTileLoadError: Error while loading tile " + this.url+" ; retry #" + this._attempt);
 				this.draw();

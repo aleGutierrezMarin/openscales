@@ -118,29 +118,38 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Extends the current instance of Bounds from a location.
+		 * Extends the current instance of Bounds from a location and return the result
 		 *
 		 * @param lonlat The LonLat which will extend the bounds.
 		 */
-		public function extendFromLocation(location:Location):void {
-			this.extendFromBounds(new Bounds(location.lon, location.lat, location.lon, location.lat, location.projSrsCode));
+		public function extendFromLocation(location:Location):Bounds {
+			var tmpBounds:Bounds = this.extendFromBounds(new Bounds(location.lon, location.lat, location.lon, location.lat, location.projSrsCode));
+			if (tmpBounds.projSrsCode != location.projSrsCode)
+			{
+				tmpBounds = tmpBounds.reprojectTo(location.projSrsCode);
+			}
+			return tmpBounds;
 		}
 		
 		/**
-		 * Extends the current instance of Bounds from bounds.
-		 *
+		 * Extends the current instance of Bounds from bounds and return the result
+		 * if the two bounds are not in the same projection, the return bounds will
+		 * be in "EPSG:4326". Do not forget to reproject it with the reprojectTo method
+		 * 
 		 * @param bounds The bounds which will extend the current bounds.
 		 */
-		public function extendFromBounds(bounds:Bounds):void {
+		public function extendFromBounds(bounds:Bounds):Bounds {
 			var tmpBounds:Bounds = bounds;
 			if(this.projSrsCode!=tmpBounds.projSrsCode) {
 				tmpBounds = tmpBounds.reprojectTo(this.projSrsCode);
 			}
 			// TODO: check the equality of the projSrsCode of the two bounds ?!
-			this.left = (tmpBounds.left < this.left) ? tmpBounds.left : this.left;
-			this.bottom = (tmpBounds.bottom < this.bottom) ? tmpBounds.bottom : this.bottom;
-			this.right = (tmpBounds.right > this.right) ? tmpBounds.right : this.right;
-			this.top = (tmpBounds.top > this.top) ? tmpBounds.top : this.top;
+			var newLeft:Number = (tmpBounds.left < this.left) ? tmpBounds.left : this.left;
+			var newBottom:Number = (tmpBounds.bottom < this.bottom) ? tmpBounds.bottom : this.bottom;
+			var newRight:Number = (tmpBounds.right > this.right) ? tmpBounds.right : this.right;
+			var newTop:Number = (tmpBounds.top > this.top) ? tmpBounds.top : this.top
+				;
+			return new Bounds(newLeft,newBottom,newRight, newTop, this.projSrsCode);
 		}
 		
 		/**
@@ -181,8 +190,8 @@ package org.openscales.geometry.basetypes
 			
 			if(this.projSrsCode != bounds.projSrsCode)
 			{
-				tmpThis = this.preciseReprojectBounds(this, this.projSrsCode, DEFAULT_PROJ_SRS_CODE);
-				tmpBounds = this.preciseReprojectBounds(bounds, bounds.projSrsCode, DEFAULT_PROJ_SRS_CODE);
+				tmpThis = this.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
+				tmpBounds = bounds.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
 			}
 			else
 			{
@@ -190,22 +199,22 @@ package org.openscales.geometry.basetypes
 				tmpThis = this;
 			}
 			
-				var inBottom:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
-					true : (((tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top)) ||
-						((tmpThis.bottom > tmpBounds.bottom) && (tmpThis.bottom < tmpBounds.top)));
-				var inTop:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
-					true : (((tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top)) ||
-						((tmpThis.top > tmpBounds.bottom) && (tmpThis.top < tmpBounds.top)));
-				var inRight:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
-					true : (((tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right)) ||
-						((tmpThis.right > tmpBounds.left) && (tmpThis.right < tmpBounds.right)));
-				var inLeft:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
-					true : (((tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right)) ||
-						((tmpThis.left > tmpBounds.left) && (tmpThis.left < tmpBounds.right)));
+			var inBottom:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
+				true : (((tmpBounds.bottom > tmpThis.bottom) && (tmpBounds.bottom < tmpThis.top)) ||
+					((tmpThis.bottom > tmpBounds.bottom) && (tmpThis.bottom < tmpBounds.top)));
+			var inTop:Boolean = (tmpBounds.bottom == tmpThis.bottom && tmpBounds.top == tmpThis.top) ?
+				true : (((tmpBounds.top > tmpThis.bottom) && (tmpBounds.top < tmpThis.top)) ||
+					((tmpThis.top > tmpBounds.bottom) && (tmpThis.top < tmpBounds.top)));
+			var inRight:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
+				true : (((tmpBounds.right > tmpThis.left) && (tmpBounds.right < tmpThis.right)) ||
+					((tmpThis.right > tmpBounds.left) && (tmpThis.right < tmpBounds.right)));
+			var inLeft:Boolean = (tmpBounds.right == tmpThis.right && tmpBounds.left == tmpThis.left) ?
+				true : (((tmpBounds.left > tmpThis.left) && (tmpBounds.left < tmpThis.right)) ||
+					((tmpThis.left > tmpBounds.left) && (tmpThis.left < tmpBounds.right)));
 			
-				return (tmpThis.containsBounds(tmpBounds, true, inclusive) ||
-					tmpBounds.containsBounds(tmpThis, true, inclusive) ||
-					((inTop || inBottom ) && (inLeft || inRight )));
+			return (tmpThis.containsBounds(tmpBounds, true, inclusive) ||
+				tmpBounds.containsBounds(tmpThis, true, inclusive) ||
+				((inTop || inBottom ) && (inLeft || inRight )));
 		}
 		
 		/**
@@ -217,7 +226,7 @@ package org.openscales.geometry.basetypes
 		 * 
 		 * @return The reprojected bounds
 		 */
-		public function preciseReprojectBounds(bounds:Bounds, source:String, dest:String):Bounds {
+		public function preciseReprojectBounds(dest:String):Bounds {
 			
 			// Precise reprojection
 			// --------------------
@@ -234,8 +243,8 @@ package org.openscales.geometry.basetypes
 			
 			for(var i:uint = 0; i < 7; i++) {
 				
-				var dx:Number = (bounds._right - bounds._left)/(1.0 * step);
-				var dy:Number = (bounds._top - bounds._bottom)/(1.0 * step);
+				var dx:Number = (this._right - this._left)/(1.0 * step);
+				var dy:Number = (this._top - this._bottom)/(1.0 * step);
 				var fleft:Number = NaN;
 				var fright:Number = NaN;
 				var ftop:Number = NaN;
@@ -244,14 +253,14 @@ package org.openscales.geometry.basetypes
 				var npts:uint = 0;
 				for(var j:uint = 0; j < step; j++) {
 					
-					pts[npts] = new ProjPoint(bounds._left + j*dx, bounds._bottom);
-					Proj4as.transform(source, dest, pts[npts++]);
-					pts[npts] = new ProjPoint(bounds._right, bounds._bottom + j*dy);
-					Proj4as.transform(source, dest, pts[npts++]);
-					pts[npts] = new ProjPoint(bounds._right - j*dx, bounds._top);
-					Proj4as.transform(source, dest, pts[npts++]);
-					pts[npts] = new ProjPoint(bounds._left, bounds._top - j*dy);
-					Proj4as.transform(source, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(this._left + j*dx, this._bottom);
+					Proj4as.transform(this.projSrsCode, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(this._right, this._bottom + j*dy);
+					Proj4as.transform(this.projSrsCode, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(this._right - j*dx, this._top);
+					Proj4as.transform(this.projSrsCode, dest, pts[npts++]);
+					pts[npts] = new ProjPoint(this._left, this._top - j*dy);
+					Proj4as.transform(this.projSrsCode, dest, pts[npts++]);
 				}
 				fleft = fright = pts[0].x;
 				fbottom = ftop = pts[0].y;
@@ -273,7 +282,7 @@ package org.openscales.geometry.basetypes
 					Math.abs(fright - right) < precision && 
 					Math.abs(ftop - top) < precision)
 				{
-						return new Bounds(left, bottom, right, top, dest);
+					return new Bounds(left, bottom, right, top, dest);
 				}
 				left = fleft;
 				bottom = fbottom;
@@ -300,8 +309,8 @@ package org.openscales.geometry.basetypes
 			
 			if(this.projSrsCode != bounds.projSrsCode)
 			{
-				tmpThis = this.preciseReprojectBounds(this, this.projSrsCode, DEFAULT_PROJ_SRS_CODE);
-				tmpBounds = this.preciseReprojectBounds(bounds, bounds.projSrsCode, DEFAULT_PROJ_SRS_CODE);
+				tmpThis = this.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
+				tmpBounds = bounds.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
 			}
 			else
 			{
@@ -363,19 +372,18 @@ package org.openscales.geometry.basetypes
 		
 		/**
 		 * Returns a bounds instance from a string following this format: "left,bottom,right,top" or  "left,bottom,right,top,projection".
-		 *
+		 * If no projection is setted the default value will be EPSG:4326
 		 * @param str The string from which we want create a bounds instance.
-		 * @param srsCode The code defining the projection
 		 * 
 		 * @throw an Argument error if the string contains other that 4 or 5 elements
 		 * 
 		 * @return An instance of bounds.
 		 */
-		public static function getBoundsFromString(str:String,srsCode:String = "EPSG:4326"):Bounds {
+		public static function getBoundsFromString(str:String):Bounds {
 			var bounds:Array = str.split(",");
 			
 			if(bounds.length == 4)
-				return Bounds.getBoundsFromArray(bounds,srsCode);
+				return Bounds.getBoundsFromArray(bounds,"EPSG:4326");
 			
 			if(bounds.length == 5)
 			{
@@ -502,13 +510,12 @@ package org.openscales.geometry.basetypes
 		 * </p>
 		 * 
 		 * @return The Bounds representing the intersection between thosesBounds and the
-		 * given ones. If the intersection is empty, the retuned Bounds will be empty with
-		 * EPSG:4326 projection if the two bounds are not in the same projection, or the
+		 * given ones. If the intersection is empty, the retuned Bounds will be null,
+		 * if the two bounds are not in the same projection, or the
 		 * projection of the two bounds if they are in the same projection. 
 		 */
 		public function getIntersection(bounds:Bounds):Bounds{
 			
-
 			// Variable used of a reprojection is needed
 			var thisBounds:Bounds = this;
 			if (thisBounds.projSrsCode != bounds.projSrsCode)
@@ -519,7 +526,7 @@ package org.openscales.geometry.basetypes
 			
 			if (!(this.intersectsBounds(bounds)))
 			{
-				return new Bounds(0,0,0,0, thisBounds.projSrsCode);
+				return null;
 			}
 			
 			// Init the values with on of the bounds

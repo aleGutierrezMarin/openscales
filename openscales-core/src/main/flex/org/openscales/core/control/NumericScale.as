@@ -64,11 +64,12 @@ package org.openscales.core.control
 		 */
 		public function update():void
 		{
-			this._value = Unit.getScaleFromResolution(this._map.resolution,
-				ProjProjection.getProjProjection(this._map.baseLayer.projSrsCode).projParams.units,
+			// TODO : Where can I Take the DPI now that no base layer exists
+			/*this._value = Unit.getScaleFromResolution(this._map.resolution.resolutionValue,
+				ProjProjection.getProjProjection(this._map.projection).projParams.units,
 				this._map.baseLayer.dpi);
 			
-			this._textField.text = "1 / "+this._value.toFixed(NumericScale.DEFAULT_FIXED_ROUND);
+			this._textField.text = "1 / "+this._value.toFixed(NumericScale.DEFAULT_FIXED_ROUND);*/
 		}	
 		
 		/**
@@ -90,7 +91,6 @@ package org.openscales.core.control
 			if(this._map!=null)
 			{
 				this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
-				this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
 			}
 			
 			this._textField = null;
@@ -120,13 +120,11 @@ package org.openscales.core.control
 			if (this._map != null) 
 			{
 				this._map.removeEventListener(MapEvent.MOVE_END,this.updateScale);
-				this._map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
 			}
 			super._map = value;
 			if(value!=null) 
 			{
 				this._map.addEventListener(MapEvent.MOVE_END,this.updateScale);
-				this._map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,this.updateScale);
 			}
 		}
 	

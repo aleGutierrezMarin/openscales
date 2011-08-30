@@ -75,10 +75,10 @@ package org.openscales.core.layer
 		override protected function draw():void  {
 			if(numChildren != 0) {
 				var image:DisplayObject = this.getChildAt(0);
-				image.width = this.maxExtent.width/this.map.resolution;
-				image.height = this.maxExtent.height/this.map.resolution;
+				image.width = this.maxExtent.width/this.map.resolution.value;
+				image.height = this.maxExtent.height/this.map.resolution.value;
 				var ul:Location = new Location(this.maxExtent.left, this.maxExtent.top);
-				var ulPx:Pixel = this.map.getLayerPxFromLocation(ul);
+				var ulPx:Pixel = this.map.getMapPxFromLocation(ul);
 				image.x = ulPx.x;
 				image.y = ulPx.y;
 			}

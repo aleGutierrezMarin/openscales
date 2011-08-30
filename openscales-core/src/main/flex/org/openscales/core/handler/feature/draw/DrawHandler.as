@@ -12,7 +12,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
@@ -40,7 +40,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * Layer of drawing, which contains all drawing features
 		 */
-		private var _drawLayer:FeatureLayer = null;
+		private var _drawLayer:VectorLayer = null;
 
 		public var dragHandler:DragHandler;
 
@@ -78,13 +78,13 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public var selectFeaturesHandler:SelectFeaturesHandler; //to select features
 		
-		public function DrawHandler(map:Map=null, active:Boolean=false, drawLayer:FeatureLayer=null)
+		public function DrawHandler(map:Map=null, active:Boolean=false, drawLayer:VectorLayer=null)
 		{
 
 			if(drawLayer) {
 				this.drawLayer = drawLayer;
 			} else {
-				this.drawLayer = new FeatureLayer("Drawings");
+				this.drawLayer = new VectorLayer("Drawings");
 			}
 			super(map, active);
 		}
@@ -142,7 +142,7 @@ package org.openscales.core.handler.feature.draw
 				this.selectFeaturesHandler.onSelectionUpdated = this.onSelectionUpdated;
 				this.map.addLayer(drawLayer);
 				
-				this.selectFeaturesHandler.layers = new Vector.<FeatureLayer>();
+				this.selectFeaturesHandler.layers = new Vector.<VectorLayer>();
 				this.selectFeaturesHandler.layers.push(drawLayer);
 				
 				//Properties of MultiHandler
@@ -336,7 +336,7 @@ package org.openscales.core.handler.feature.draw
 				drawLayer.redraw();
 			}
 			
-			public function set drawLayer(value:FeatureLayer):void {
+			public function set drawLayer(value:VectorLayer):void {
 				this._drawLayer = value;
 				this.pointHandler.drawLayer = value;
 				this.polygonHandler.drawLayer = value;
@@ -345,7 +345,7 @@ package org.openscales.core.handler.feature.draw
 				this.multiFeaturesHandler.drawLayer = value;
 			}
 			
-			public function get drawLayer():FeatureLayer {
+			public function get drawLayer():VectorLayer {
 				return this._drawLayer;
 			}
 	}

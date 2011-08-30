@@ -1,5 +1,6 @@
 package org.openscales.core.layer.originator
 {
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.geometry.basetypes.Bounds;
 	
 	/**
@@ -25,14 +26,14 @@ package org.openscales.core.layer.originator
 		 * @default NaN
 		 * The minimum resolution covered by the originator.
 		 */
-		private var _minResolution:Number = NaN;
+		private var _minResolution:Resolution = null;
 		
 		/**
 		 * @private
 		 * @default NaN
 		 * The maximum resolution covered by the originator.
 		 */
-		private var _maxResolution:Number = NaN;
+		private var _maxResolution:Resolution = null;
 		
 		/**
 		 * Constructor of the class ConstraintOriginator.
@@ -41,7 +42,7 @@ package org.openscales.core.layer.originator
 		 * @param minResolution The minimum resolution of the provided data (mandatory)
 		 * @param maxResolution The maximum resolution of the provided data (mandatory)
 		 */ 
-		public function ConstraintOriginator(extent:Bounds, minResolution:Number, maxResolution:Number)
+		public function ConstraintOriginator(extent:Bounds, minResolution:Resolution, maxResolution:Resolution)
 		{
 			this._extent = extent;
 			this._minResolution = minResolution;
@@ -85,14 +86,14 @@ package org.openscales.core.layer.originator
 		/**
 		 * The minimum resolution covered by the originator.
 		 */
-		public function get minResolution():Number
+		public function get minResolution():Resolution
 		{
 			return this._minResolution;
 		}
 		/**
 		 * @private
 		 */
-		public function set minResolution(minResolution:Number):void 
+		public function set minResolution(minResolution:Resolution):void 
 		{
 			this._minResolution = minResolution;
 		}
@@ -100,14 +101,14 @@ package org.openscales.core.layer.originator
 		/**
 		 * The maximum resolution covered by the originator.
 		 */
-		public function get maxResolution():Number
+		public function get maxResolution():Resolution
 		{
 			return this._maxResolution;
 		}
 		/**
 		 * @private
 		 */
-		public function set maxResolution(maxResolution:Number):void 
+		public function set maxResolution(maxResolution:Resolution):void 
 		{
 			this._maxResolution = maxResolution;
 		}

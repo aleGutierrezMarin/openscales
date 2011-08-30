@@ -5,9 +5,10 @@
 <fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
-			import org.openscales.core.layer.FeatureLayer;
+			
 			import org.openscales.core.Map;
-			[Bindable] public var resultsLayer:FeatureLayer;
+			import org.openscales.core.layer.VectorLayer;
+			[Bindable] public var resultsLayer:VectorLayer;
 		    [Embed(source="/assets/images/marker-green.png")]
 		    [Bindable] private var _startPointclass:Class;
 		    [Embed(source="/assets/images/marker-gold.png")]

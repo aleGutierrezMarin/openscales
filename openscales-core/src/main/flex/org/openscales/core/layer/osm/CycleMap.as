@@ -12,10 +12,10 @@ package org.openscales.core.layer.osm
 	{
 		public function CycleMap(name:String)
 		{
-			var url:String = "http://a.andy.sandbox.cloudmade.com/tiles/cycle/";
+			var url:String = "http://a.tile.opencyclemap.org/cycle/";
 
-			var alturls:Array = ["http://b.andy.sandbox.cloudmade.com/tiles/cycle/",
-								 "http://c.andy.sandbox.cloudmade.com/tiles/cycle/"];
+			var alturls:Array = ["http://b.tile.opencyclemap.org/cycle/",
+								 "http://c.tile.opencyclemap.org/cycle/"];
 
 			super(name, url);
 
