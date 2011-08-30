@@ -1,30 +1,37 @@
 package org.openscales.core.layer.ogc
 {
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.net.URLLoader;
+	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.Format;
 	import org.openscales.core.format.gml.GMLFormat;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.params.ogc.WFSParams;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.proj4as.ProjProjection;
+	import org.osmf.events.TimeEvent;
 	
 	/**
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
 	 * It supports 1.0.0, 1.1.0 and 2.0.0 versions of WFS standard.
 	 */
-	public class WFS extends FeatureLayer
+	public class WFS extends VectorLayer
 	{
+		private var _timer:Timer;
 		private var _writer:Format = null;
+		
 		/**
 		 * @private
 		 * An HashMap containing the capabilities of the layer.
@@ -65,6 +72,12 @@ package org.openscales.core.layer.ogc
 		
 		protected var _gmlFormat:GMLFormat = null;
 		
+		private var _currentScale:uint = 0;
+		
+		private var _initialized:Boolean = false;
+		
+		private const  _MAX_NUMBER_OF_SCALES:uint = 5;
+		
 		/**
 		 * @private
 		 * Hashmap containing id of features that have allready been drawn
@@ -104,8 +117,8 @@ package org.openscales.core.layer.ogc
 			
 			var requestString:String = this.url;
 			
-			if (this.projSrsCode != null || this.map.baseLayer.projSrsCode != null) {
-				this.params.srs = (this.projSrsCode == null) ? this.map.baseLayer.projSrsCode : this.projSrsCode;
+			if (this.projSrsCode != null || this.map.projection != null) {
+				this.params.srs = (this.projSrsCode == null) ? this.map.projection : this.projSrsCode;
 			}
 			
 			var lastServerChar:String = url.charAt(url.length - 1);
@@ -148,7 +161,12 @@ package org.openscales.core.layer.ogc
 		 */
 		override public function set map(map:Map):void {
 			super.map = map;
-			
+			if(this._timer) {
+				this._timer.reset();
+			} else {
+				this._timer = new Timer(500,1);
+				this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			}
 			// GetCapabilities request made here in order to have the proxy set 
 			if (url != null && url != "" && this.capabilities == null && useCapabilities == true) {
 				var getCap:GetCapabilities = new GetCapabilities("wfs", url, this.capabilitiesGetter,
@@ -159,61 +177,170 @@ package org.openscales.core.layer.ogc
 		/**
 		 * @inheritDoc
 		 */
-		override public function redraw(fullRedraw:Boolean = true):void {
-			this.clear();
+		override public function redraw(fullRedraw:Boolean = false):void {
 			
-			if (!displayed) {
+			if (this.map == null)
+				return;
+			
+			if (!this.available || !this.visible)
+			{
+				this.clear();
+				this._initialized = false;
 				return;
 			}
 			
-			if(this.useCapabilities && !this.projSrsCode)
-				return;
-			
-			var projectedBounds:Bounds = this.map.extent.clone();
-			var projectedMaxExtent:Bounds = this.maxExtent;
-			
-			if (this.projSrsCode != projectedBounds.projSrsCode) {
-				projectedBounds = projectedBounds.reprojectTo(this.projSrsCode);
-				projectedMaxExtent = projectedMaxExtent.reprojectTo(this.projSrsCode);
+			if (fullRedraw)
+			{
+				this.clear();
 			}
 			
-			var center:Location = projectedBounds.center;
-			
-			if (projectedBounds.containsBounds(projectedMaxExtent)) {
-				projectedBounds = projectedMaxExtent.clone();
-			}
-			
-			var previousFeatureBbox:Bounds = this.featuresBbox; 
-			if(previousFeatureBbox!=null)
-				previousFeatureBbox = previousFeatureBbox.clone();
-			//bbox are mutually exclusive with filter and featurid
-			if(this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode]!=ProjProjection.AXIS_ORDER_EN)
-				this.params.bbox = projectedBounds.toString(-1,false);
-			else
-				this.params.bbox = projectedBounds.toString();
-			
-			if (this._firstRendering) {
-				this.featuresBbox = projectedBounds;
+			if (!this._initialized || fullRedraw)
+			{
+				this.featuresBbox = this.defineBounds();
 				this.loadFeatures(this.getFullRequestString());
-				this._firstRendering = false;
+				this._currentScale = 0;
+				this.x = 0;
+				this.y = 0;
+				this.scaleX = 1;
+				this.scaleY = 1;
+				this.resetFeaturesPosition();
 				this.draw();
-			} else {
-				// Use GetCapabilities to know if all features have already been retreived.
-				// If they are, we don't request data again
-				if (fullRedraw || (!previousFeatureBbox.containsBounds(projectedBounds)
-					&& ((this.capabilities == null) || (this.capabilities != null && !this.featuresBbox.containsBounds(this.capabilities.getValue("Extent")))))){
-					if(fullRedraw && this.features.length>0) {
-						this._fullRedraw = true;
+				this._initialized = true;
+				return;
+			}
+			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
+			{
+				var previousFeatureBbox:Bounds;
+				
+				if (this._centerChanged)
+				{
+					if (!this._timer.running)
+					{
+						previousFeatureBbox = this.featuresBbox;
+						this.featuresBbox = this.defineBounds();
+						
+						if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+						{
+							this.loadFeatures(this.getFullRequestString());
+						}
 					}
-					this.featuresBbox = projectedBounds;
-					this.loadFeatures(this.getFullRequestString());
-					this.draw();
-				}else {
-					this.loading = true;
-					this.draw();
-					this.loading = false;
+					this._centerChanged = false;
+				}
+				if (this._resolutionChanged || this._projectionChanged)
+				{
+					if (!this._timer.running)
+					{
+						previousFeatureBbox = this.featuresBbox;
+						this.featuresBbox = this.defineBounds();
+						
+						if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+						{
+							this.loadFeatures(this.getFullRequestString());
+						}
+						this._currentScale = 0;
+						this.x = 0;
+						this.y = 0;
+						this.scaleX = 1;
+						this.scaleY = 1;
+						this.resetFeaturesPosition();
+						this.draw();
+					}
+					this._resolutionChanged = false;
+				}
+				if (this._projectionChanged)
+				{
+					this._projectionChanged = false;
 				}
 			}
+		}
+		
+		private function onTimerEnd(event:TimerEvent):void
+		{
+			this._centerChanged = true;
+			this._resolutionChanged = true;
+		}
+		
+		override protected function onMapResolutionChanged(event:MapEvent):void
+		{
+			this._timer.reset();
+			this._timer.start();
+			
+			var px:Pixel = event.targetZoomPixel;
+			var ratio:Number = event.oldResolution.value / event.newResolution.value;
+			this.x -= (px.x - this.x) * (ratio - 1);
+			this.y -= (px.y - this.y) * (ratio - 1);
+			this.scaleX = this.scaleX * ratio;
+			this.scaleY = this.scaleY * ratio;
+			this._currentScale++;
+			this._resolutionChanged = true;
+		}
+		
+		private function defineBounds():Bounds
+		{
+			var layerMaxExtent:Bounds;
+			var mapExtent:Bounds;
+			var layerExtent:Bounds;
+			
+			// Define the maxExtent of the layer
+			if (this.capabilities != null)
+			{
+				layerMaxExtent = this.capabilities.getValue("Extent");
+			}
+			else
+				layerMaxExtent = this.maxExtent;
+			
+			// Intersect with the extent of the map
+			mapExtent = this.map.extent.clone();
+			
+			if (this.projSrsCode != mapExtent.projSrsCode)
+			{
+				mapExtent = mapExtent.preciseReprojectBounds(this.projSrsCode);
+				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(this.projSrsCode);
+			}
+			
+			if (!(mapExtent.width == 0 || mapExtent.height == 0))
+				layerExtent = mapExtent.getIntersection(layerMaxExtent);
+			else
+				layerExtent = layerMaxExtent.clone();
+			
+			// Update the bbox
+			if (layerExtent != null)
+			{
+				if (this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
+					this.params.bbox = layerExtent.toString(-1, false);
+				else
+					this.params.bbox = layerExtent.toString();
+			}
+			
+			// Return the bounds
+			return layerExtent;
+		}
+		
+		override protected function onMapCenterChanged(event:MapEvent):void
+		{
+			this._timer.reset();
+			this._timer.start();
+			if (!this._resolutionChanged)
+			{
+				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
+				var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
+				var deltaX:Number = deltaLon / this.map.resolution.value;
+				var deltaY:Number = deltaLat / this.map.resolution.value;
+				this.x -= deltaX;
+				this.y += deltaY;
+				this._centerChanged = true;
+			}
+		}
+		
+		override public function get available():Boolean
+		{
+			if (this.useCapabilities && !this.projSrsCode)
+				return false;
+			
+			if (!this.defineBounds())
+				return false;
+			
+			return true;
 		}
 		
 		/**
@@ -253,7 +380,7 @@ package org.openscales.core.layer.ogc
 			if ((this._capabilities != null) && (this.projSrsCode == null || this.useCapabilities)) {
 				this.projSrsCode = this._capabilities.getValue("SRS");
 				if(this.map)
-					this.redraw();
+					this.redraw(true);
 			}
 		}
 		
@@ -307,7 +434,7 @@ package org.openscales.core.layer.ogc
 		 */
 		public function parseResponse(wfsResponse:String):void{
 			this._gmlFormat.externalProjSrsCode = this.projSrsCode;
-			this._gmlFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
+			this._gmlFormat.internalProjSrsCode = this.map.projection;
 			this._gmlFormat.read(wfsResponse);
 			//this._wfsFormat.read(wfsResponse);
 		}

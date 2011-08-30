@@ -9,7 +9,7 @@
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
-	<Map id="fxmap" width="100%" height="100%" zoom="4" center="-74.011,40.710">
+	<Map id="fxmap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710" projection="EPSG:4326">
 		<DragHandler />
 		<WheelHandler />
 		<LayerManager right="0"/>
@@ -26,6 +26,8 @@
 			private function initMap():void {
 				var pl:PolyLayer = new PolyLayer("PolyLayer");
 				var wms:WMS = new WMS("wms","http://openscales.org/geoserver/wms", "topp:states");
+				wms.transparent = true;
+				wms.format = "image/png";
 				pl.addLayer(wms);
 				
 				var kml:KML = new KML("kml", "http://code.google.com/intl/fr/apis/kml/documentation/KML_Samples.kml");

@@ -278,6 +278,20 @@ package org.openscales.core
 			r= q*Math.sqrt(1.0+r*r);
 			return r;
 		}
+		
+		/**
+		 * Truncate a given Number to the given precision
+		 * 
+		 * @param value The number to truncate
+		 * @param truncateCount The number of digit after the coma
+		 * 
+		 */ 	
+		public static function truncate(value:Number, truncateCount:Number):String
+		{
+			var toString:String = value.toPrecision(truncateCount+1);
+			return toString.substr(0,toString.length-1);
+		}
+		
 
 	}
 

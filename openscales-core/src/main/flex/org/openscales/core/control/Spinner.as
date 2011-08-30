@@ -100,7 +100,7 @@ package org.openscales.core.control {
 			this.map.addEventListener(MapEvent.LOAD_END,mapEventHandler);
 			
 			// check if map is already loading.
-			if (!this.map.loadComplete)			 
+			if (!this.map.loading)			 
 				this.start();
 		}
 		

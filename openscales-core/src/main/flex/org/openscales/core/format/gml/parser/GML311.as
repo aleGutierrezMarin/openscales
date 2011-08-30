@@ -147,7 +147,14 @@ package org.openscales.core.format.gml.parser
 			}
 			
 			if (feature) {
-				feature.name = data..@id;
+				var attrs:XMLList = data.attributes();
+				for each(var attr:XML in attrs) {
+					if(attr.localName()=="id") {
+						feature.name = attr.toString();
+						break;
+					}
+				}
+				//feature.name = data..@id;
 				
 				if (this.parseExtractAttributes) {
 					feature.attributes = this.parseAttributes(data);

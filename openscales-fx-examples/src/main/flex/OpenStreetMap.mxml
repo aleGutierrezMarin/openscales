@@ -6,7 +6,7 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 <s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
 		 creationComplete="initMap()" width="100%" height="100%">
 	
-	<Map id="fxMap" width="100%" height="100%" zoom="3" center="4.833,45.767">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.3515625" center="4.833,45.767" projection="EPSG:900913">
 		
 		<Mapnik name="Mapnik" />
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
@@ -26,7 +26,7 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 		<![CDATA[
 			import org.openscales.core.feature.Marker;
 			import org.openscales.core.feature.PointFeature;
-			import org.openscales.core.layer.FeatureLayer;
+			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.popup.FxPopup;
@@ -43,7 +43,7 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 				//We create a lonlat over Lyon (France) with EPSG:27700 projection
 				var lonlat:Location = new Location(932115.8764378761, -437484.6802551435, "EPSG:27700");
 				
-				var markers:FeatureLayer = new FeatureLayer("Markers");
+				var markers:VectorLayer = new VectorLayer("Markers");
 				markers.projSrsCode = "EPSG:27700";
 				markers.generateResolutions(18);
 				markers.style = Style.getDefaultPointStyle();
@@ -53,7 +53,7 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 				fxMap.map.addLayer(markers);
 				
 				
-				var vect:FeatureLayer = new FeatureLayer("Reprojected vector");
+				var vect:VectorLayer = new VectorLayer("Reprojected vector");
 				vect.projSrsCode = "EPSG:27700";
 				vect.style = Style.getDefaultPointStyle();
 				var p:org.openscales.geometry.Point = new org.openscales.geometry.Point(lonlat.lon, lonlat.lat);

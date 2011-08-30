@@ -4,6 +4,7 @@ package org.openscales.core.layer.ogc
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.Grid;
@@ -70,20 +71,24 @@ package org.openscales.core.layer.ogc
 			// building the tile provider
 			this._tileProvider = new WMTSTileProvider(url,format,tileMatrixSet,layer,tileMatrixSets);
 			
-			this.tileMatrixSet = tileMatrixSet;
 			this.format = WMTS.WMTS_DEFAULT_FORMAT;
+			
 			super(name, url);
+			this.tileMatrixSet = tileMatrixSet;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function redraw(fullRedraw:Boolean=true):void {
+		override public function redraw(fullRedraw:Boolean=false):void {
+			
+			if (this.map == null)
+				return;
+			
 			if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
 				this.getCapabilities();
 			} else {
-				var zoom:Number = this.getZoomForResolution(this.map.resolution);
-				var resolution:Number = (this.resolutions[zoom] as Number);
+				var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 				var tms:HashMap = this.tileMatrixSets;
 				if(!tms.containsKey(this.tileMatrixSet)) {
 					this.clear();
@@ -91,7 +96,7 @@ package org.openscales.core.layer.ogc
 				}
 				var tileMatrixSet:TileMatrixSet = tms.getValue(this.tileMatrixSet);
 				var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
-				this.tileOrigin = tileMatrix.topLeftCorner.clone();
+				this._tileOrigin = tileMatrix.topLeftCorner.clone();
 				super.redraw(fullRedraw);
 			}
 		}
@@ -148,12 +153,12 @@ package org.openscales.core.layer.ogc
 			
 			this._loadingCapabilities = false;
 			
-			if(this.map)
+		/*	if(this.map)
 			{
 				this.clear();
 				this.redraw(true);
 				this.map.redrawLayers();
-			}
+			}*/
 		}
 		
 		/**
@@ -315,10 +320,9 @@ package org.openscales.core.layer.ogc
 			if(this._tileProvider.tileMatrixSets!=null
 				&& this._tileProvider.tileMatrixSets.containsKey(this._tileProvider.tileMatrixSet)) {
 				var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(this._tileProvider.tileMatrixSet) as TileMatrixSet;
-				var zoom:Number = this.getZoomForResolution(this.map.resolution);
-				var resolution:Number = this.resolutions[zoom] as Number;
-				if(tms.tileMatrices.containsKey(resolution))
-					return (tms.tileMatrices.getValue(resolution) as TileMatrix);
+				var resolution:Resolution = this.getSupportedResolution(this.map.resolution);
+				if(tms.tileMatrices.containsKey(resolution.value))
+					return (tms.tileMatrices.getValue(resolution.value) as TileMatrix);
 			}
 			return null;
 		}

@@ -9,8 +9,8 @@ package org.openscales.core.control
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -33,7 +33,7 @@ package org.openscales.core.control
 		private var _newExtentColor:uint = 0x0000FF;
 		
 		private var _startDrag:Pixel = null;
-		private var _extentLayer:FeatureLayer;
+		private var _extentLayer:VectorLayer;
 		private var _extentFeature:PolygonFeature = null;
 		private var _newExtentFeature:PolygonFeature = null;
 		private var _extentStyle:Style;
@@ -44,7 +44,7 @@ package org.openscales.core.control
 			super(position);
 			this._overviewMap = new Map();
 			this._overviewMap.size = new Size(100,100);
-			this._extentLayer = new FeatureLayer("extentLayer");
+			this._extentLayer = new VectorLayer("extentLayer");
 			addEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
 		}
 		
@@ -66,8 +66,6 @@ package org.openscales.core.control
 			if (this.map != null) {
 				this.map.removeEventListener(MapEvent.MOVE_END,
 					_drawExtent);
-				this.map.removeEventListener(LayerEvent.BASE_LAYER_CHANGED,
-					_drawExtent);
 				this.removeEventListener(MouseEvent.MOUSE_WHEEL, forwardMouseWheelToMap);
 				this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 				this.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -75,8 +73,6 @@ package org.openscales.core.control
 			super.map = value;
 			if(value!=null) {
 				this.map.addEventListener(MapEvent.MOVE_END,
-					_drawExtent);
-				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,
 					_drawExtent);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_WHEEL,
 					forwardMouseWheelToMap);
@@ -93,7 +89,8 @@ package org.openscales.core.control
 		 * @param event the event to forward to the map
 		 */
 		private function forwardMouseWheelToMap(event:MouseEvent):void {
-			var zoom:Number = this.map.zoom;
+			// TODO : Change behaviour now that there is no zoom level
+			/*var zoom:Number = this.map.zoom;
 			if(event.delta > 0) {
 				zoom++;
 				if(zoom > this.map.baseLayer.maxZoomLevel)
@@ -103,7 +100,7 @@ package org.openscales.core.control
 				if(zoom < this.map.baseLayer.minZoomLevel)
 					return;
 			}
-			this.map.moveTo(this.map.center,zoom,false,false);
+			this.map.moveTo(this.map.center,zoom,false,false);*/
 		}
 		
 		private function onMouseDown(event:MouseEvent):void {
@@ -140,7 +137,7 @@ package org.openscales.core.control
 				bottom,
 				right,
 				top,
-				this._overviewMap.baseLayer.projSrsCode);
+				this._overviewMap.projection);
 			return bounds;
 		}
 		
@@ -153,11 +150,11 @@ package org.openscales.core.control
 			
 			if(px.equals(this._startDrag)) {
 				var loc:Location = this._overviewMap.getLocationFromMapPx(px);
-				this.map.moveTo(loc.reprojectTo(this.map.baseLayer.projSrsCode));
+				this.map.center = loc.reprojectTo(this.map.projection);
 			} else {
 				var bounds:Bounds = pxToBound(px,this._startDrag);
-				if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
-					bounds = bounds.reprojectTo(this.map.baseLayer.projSrsCode);
+				if (this.map.projection != this._overviewMap.projection) {
+					bounds = bounds.reprojectTo(this.map.projection);
 				}
 				this.map.zoomToExtent(bounds);
 			}
@@ -239,11 +236,16 @@ package org.openscales.core.control
 			this._overviewMap.size = value;
 		}
 		
+		public function addLayer(value:Layer):void
+		{
+			this._overviewMap.addLayer(value);
+		}
+		
 		/**
 		 * change the baselayer
 		 * @param layer:Layer the new baselayer of the overview
 		 */
-		public function set baselayer(layer:Layer):void {
+		/*public function set baselayer(layer:Layer):void {
 			if(this._overviewMap.baseLayer != layer) {
 				if(this._overviewMap.baseLayer!=null) {
 					this._overviewMap.removeLayer(this._extentLayer);
@@ -253,11 +255,11 @@ package org.openscales.core.control
 				this._overviewMap.zoomToExtent(layer.maxExtent);
 				this._overviewMap.addLayer(this._extentLayer);
 			}
-		}
+		}*/
 		
-		public function get baselayer():Layer {
+		/*public function get baselayer():Layer {
 			return this._overviewMap.baseLayer;
-		}
+		}*/
 		
 		private function onAddedToStage(event:Event):void {
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
@@ -267,12 +269,12 @@ package org.openscales.core.control
 		override public function draw():void {
 			this.addChild(this._overviewMap);
 			// by default it uses a mapnik baselayer 
-			if(this._overviewMap.baseLayer == null) {
-				var layer:Layer = new Mapnik("defaultbaselayer");
-				this._overviewMap.addLayer(layer,true);
-				this._overviewMap.zoomToExtent(layer.maxExtent);
-				this._overviewMap.addLayer(this._extentLayer);
-			}
+			var layer:Layer = new Mapnik("defaultbaselayer");
+			this._overviewMap.projection="EPSG:900913";
+			this._overviewMap.addLayer(layer,true);
+			this._overviewMap.zoomToExtent(layer.maxExtent);
+			this._overviewMap.addLayer(this._extentLayer);
+			
 			if(this._extentStyle == null) {
 				this._extentStyle = new Style();
 				this._extentStyle.rules[0] = new Rule();
@@ -283,16 +285,16 @@ package org.openscales.core.control
 		}
 		
 		private function _drawExtent(event:Event=null):void {
-			if(!this.map || !this.map.baseLayer || !this._overviewMap.baseLayer)
+			if(!this.map)
 				return;
 			
 			var _extent:Bounds = this.map.extent;
 			
-			if (this.map.baseLayer.projSrsCode != this._overviewMap.baseLayer.projSrsCode) {
-				_extent = _extent.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+			if (this.map.projection != this._overviewMap.projection) {
+				_extent = _extent.reprojectTo(this._overviewMap.projection);
 			}
 			
-			this._extentLayer.projSrsCode = this._overviewMap.baseLayer.projSrsCode;
+			this._extentLayer.projSrsCode = this._overviewMap.projection;
 			if (this._extentFeature == null) {
 				this._extentFeature = new PolygonFeature(_extent.toGeometry(),
 					null,
@@ -304,6 +306,22 @@ package org.openscales.core.control
 				this._extentFeature.geometry = _extent.toGeometry();
 				this._extentFeature.draw();
 			}
+		}
+		
+		/**
+		 * The Actual projection of the overviewMap, the default value is EPSG:4326
+		 */
+		public function set projection(value:String):void
+		{
+			this._overviewMap.projection = value;
+		}
+		
+		/**
+		 * Private
+		 */
+		public function get projection():String
+		{
+			return this._overviewMap.projection;
 		}
 	}
 }

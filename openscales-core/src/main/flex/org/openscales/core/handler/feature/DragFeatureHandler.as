@@ -1,19 +1,16 @@
 package org.openscales.core.handler.feature
 {
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.mouse.DragHandler;
-	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.core.style.Style;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
@@ -33,7 +30,7 @@ package org.openscales.core.handler.feature
 		private var _featuresToMove:Vector.<Feature>;
 		private var _startPixel:Pixel;
 		private var _stopPixel:Pixel;
-		private var _layerToMove:FeatureLayer;
+		private var _layerToMove:VectorLayer;
 		/**
 		* The feature currently dragged
 		* */
@@ -100,7 +97,7 @@ package org.openscales.core.handler.feature
 		public function addUndraggableFeature(feature:Feature):void{
 			var addFeature:Boolean=false;
 			if(feature!=null){
-				for each(var featureLayer:FeatureLayer in _draggableLayers){
+				for each(var featureLayer:VectorLayer in _draggableLayers){
 					//The feature belongs to a draggable layers
 					if(featureLayer.features.indexOf(feature)!=-1){
 						addFeature=true;	
@@ -121,15 +118,15 @@ package org.openscales.core.handler.feature
 		public function addDraggableLayers(layers:Vector.<Layer>):void {
 			var layer:Layer;
 			for each(layer in layers) {
-				if(layer is FeatureLayer)
-					addDraggableLayer(layer as FeatureLayer);
+				if(layer is VectorLayer)
+					addDraggableLayer(layer as VectorLayer);
 			}
 		}
 		/**
 		 * This function add a layers as draggabble layer
 		 * @param layer:FeatureLayer the layer to add
 		 * */
-		public function addDraggableLayer(layer:FeatureLayer):void{
+		public function addDraggableLayer(layer:VectorLayer):void{
 			if(layer!=null && _draggableLayers.indexOf(layer)==-1){
 				_draggableLayers.push(layer);
 			}
@@ -148,10 +145,10 @@ package org.openscales.core.handler.feature
 		/**
 		 * The layer
 		 */
-		public function get layerToMove():FeatureLayer{
+		public function get layerToMove():VectorLayer{
 			return this._layerToMove;
 		}
-		public function set layerToMove(value:FeatureLayer):void{
+		public function set layerToMove(value:VectorLayer):void{
 			this._layerToMove = value;
 		}
 		
@@ -182,7 +179,8 @@ package org.openscales.core.handler.feature
 			if(feature is PointFeature){
 				for each(targetFeature in this.featuresToMove){
 					if(targetFeature == feature){
-						loc = this.map.getLocationFromLayerPx(_stopPixel);
+						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
+						loc = this.map.getLocationFromMapPx(_stopPixel);
 						targetFeature.geometry = new Point(loc.lon,loc.lat);
 						targetFeature.x = 0;
 						targetFeature.y = 0;
@@ -196,8 +194,10 @@ package org.openscales.core.handler.feature
 						var tpIC:ICollection = targetFeature.geometry as ICollection;
 						for(i=0; i<tpIC.componentsLength; i++){
 							pt = tpIC.componentByIndex(i) as Point;
-							px = this.map.getLayerPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
-							loc = this.map.getLocationFromLayerPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
+							// TODO getMapPxFromLocation
+							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
+							// TODO getLocationFromMapPx?
+							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
 							pt = new Point(loc.lon,loc.lat);
 							if(i == 0)
 								lineString = new LineString(new <Number>[pt.x,pt.y]);
@@ -219,8 +219,10 @@ package org.openscales.core.handler.feature
 						var tpLR:LinearRing = (targetFeature.geometry as Polygon).componentByIndex(0) as LinearRing;
 						for(i=0; i<tpLR.componentsLength; i++){
 							pt = tpLR.componentByIndex(i) as Point;
-							px = this.map.getLayerPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
-							loc = this.map.getLocationFromLayerPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
+							// TODO : getMapPxFromLocation?
+							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
+							// TODO : getLocationFromMapPx
+							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
 							pt = new Point(loc.lon,loc.lat);
 							if(i == 0){
 								linearRing = new LinearRing(new <Number>[pt.x,pt.y]);

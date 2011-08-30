@@ -1,5 +1,7 @@
 package org.openscales.core.events
 {
+	import flash.events.Event;
+	
 	import org.openscales.core.layer.Layer;
 	
 	/**
@@ -36,12 +38,6 @@ package org.openscales.core.events
 		 * Event type dispatched when a layer has been updated (FIXME : need to be confirmed).
 		 */
 		public static const LAYER_CHANGED:String="openscales.changelayer";
-		
-		/**
-		 * Event type dispatched when the base layer of the map has changed
-		 */	
-		public static const BASE_LAYER_CHANGED:String="openscales.changebaselayer";
-		
 		
 		/**
 		 * Event type dispatched when the current map resolution is within the layer's min/max range.
@@ -171,7 +167,12 @@ package org.openscales.core.events
 			this._newOpacity = value;
 		}
 		
-		
+		override public function clone():Event {
+			var evt:LayerEvent = new LayerEvent(this.type,this.layer,this.bubbles,this.cancelable);
+			evt.oldOpacity = this.oldOpacity;
+			evt.newOpacity = this.newOpacity;
+			return evt;
+		}
 		
 	}
 }
