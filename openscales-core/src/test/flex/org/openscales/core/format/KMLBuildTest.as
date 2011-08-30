@@ -7,11 +7,14 @@ package org.openscales.core.format
 		private var format:KMLFormat;
 		private var url:String;
 		
-		[Embed(source="/assets/kml/sample3.kml",mimeType="application/octet-stream")]
-		private const KMLFILE:Class;
+		[Embed(source="/assets/kml/PointsSample.xml",mimeType="application/octet-stream")]
+		private const KMLPOINTS:Class;
 		
-		[Embed(source="/assets/kml/KMLBuildSample.xml",mimeType="application/octet-stream")]
-		private const KMLFILE2:Class;
+		[Embed(source="/assets/kml/LinesSample.xml",mimeType="application/octet-stream")]
+		private const KMLLINES:Class;
+		
+		[Embed(source="/assets/kml/PolySample.xml",mimeType="application/octet-stream")]
+		private const KMLPOLY:Class;
 		
 		public function KMLBuildTest(){}
 		
@@ -30,9 +33,28 @@ package org.openscales.core.format
 		}
 		
 		[Test]
-		public function testBuildKMLFile():void
+		public function testBuildLines():void
 		{			
-			var file:XML = new XML(new KMLFILE());
+			var file:XML = new XML(new KMLLINES());
+			var features:Vector.<Feature> = this.format.read(file) as Vector.<Feature>;
+			var buildedFile:XML = this.format.write(features) as XML;
+			
+		}
+		
+		[Test]
+		public function testBuildPoly():void
+		{			
+			var file:XML = new XML(new KMLPOLY());
+			var features:Vector.<Feature> = this.format.read(file) as Vector.<Feature>;
+			var buildedFile:XML = this.format.write(features) as XML;
+			
+		}
+		
+		[Test]
+		public function testBuildPoints():void
+		{			
+			//make this test with a real pointFeature that you create here
+			var file:XML = new XML(new KMLPOINTS());
 			var features:Vector.<Feature> = this.format.read(file) as Vector.<Feature>;
 			var buildedFile:XML = this.format.write(features) as XML;
 			

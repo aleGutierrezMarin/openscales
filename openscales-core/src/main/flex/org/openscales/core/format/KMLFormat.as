@@ -5,7 +5,8 @@ package org.openscales.core.format
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
-		
+	
+	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -15,14 +16,13 @@ package org.openscales.core.format
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
-	import org.openscales.core.style.marker.WellKnownMarker;
-	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.style.marker.Marker;
+	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
-	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
@@ -121,8 +121,9 @@ package org.openscales.core.format
 					continue;
 				id = "#"+style.@id.toString();
 				
+				//useless, there are no colors outside a LineStyle or PolyStyle or IconStyle
 				var color:Number;
-				var alpha:Number=1;
+				var alpha:Number = 1;
 				if(style.color != undefined) {
 					color = KMLColorsToRGB(style.color.text());
 					alpha = KMLColorsToAlpha(style.color.text())
@@ -158,8 +159,8 @@ package org.openscales.core.format
 				}
 				
 				if(style.LineStyle != undefined) {
-					var Lcolor:Number = color;
-					var Lalpha:Number = alpha;
+					var Lcolor:Number = 0x96A621;
+					var Lalpha:Number = 1;
 					var Lwidth:Number = 1;
 					if(style.LineStyle.color != undefined) {
 						Lcolor = KMLColorsToRGB(style.LineStyle.color.text());
@@ -186,15 +187,22 @@ package org.openscales.core.format
 					var Prule:Rule;
 					var Pstroke:Stroke = new Stroke();
 					Pstroke.width = 1;
-					if(style.PolyStyle.color != undefined) {
+					Pstroke.color = Pcolor;
+					
+					if(style.PolyStyle.color != undefined) 
+					{
 						//the style of the polygon itself
 						Pcolor = KMLColorsToRGB(style.PolyStyle.color.text());
 						Palpha = KMLColorsToAlpha(style.PolyStyle.color.text());
 						Pfill = new SolidFill();
 						Pfill.color = Pcolor;
 						Pfill.opacity = Palpha;
-						Pstroke.color = Pcolor;//the color of the outline is the color of the polygon
+						Pstroke.color = Pcolor;
 					}
+					
+					var Pps1:PolygonSymbolizer;
+					var Pps2:PolygonSymbolizer;
+					
 					//if the polygon shouldn't be filled
 					if(style.PolyStyle.fill != undefined && style.PolyStyle.fill.text() == "0") {
 						Pfill = null;
@@ -204,14 +212,21 @@ package org.openscales.core.format
 						(style.PolyStyle.outline == undefined || style.PolyStyle.outline.text() == "1") ) 
 					{
 						//change the color of the polygon outline
-						Pstroke.color = Lcolor;
-						Pstroke.width = Lwidth;
+						var outlineStroke:Stroke = new Stroke();
+						outlineStroke.color = Lcolor;
+						outlineStroke.width = Lwidth;
+						Pps2 = new PolygonSymbolizer(null, outlineStroke);
 					}
-					var Pps:PolygonSymbolizer = new PolygonSymbolizer(Pfill, Pstroke);
+					else
+					{
+						Pps2 = new PolygonSymbolizer(null, Pstroke);
+					}
+					
+					Pps1 = new PolygonSymbolizer(Pfill, Pstroke);
 					Prule = new Rule();
 					Prule.name = id;
-					Prule.symbolizers.push(Pps);
-					Prule.symbolizers.push(Pps);
+					Prule.symbolizers.push(Pps1);
+					Prule.symbolizers.push(Pps2);
 					polygonStyles[id] = new Style();
 					polygonStyles[id].rules.push(Prule);
 					polygonStyles[id].name = id;
@@ -241,7 +256,6 @@ package org.openscales.core.format
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
 			}
-
 			return new LinearRing(Ppoints);
 		}
 		
@@ -437,6 +451,9 @@ package org.openscales.core.format
 		 * @return array of features (polygons, lines and points)
 		 * @call loadStyles (only if the user does not set a style)
 		 * @call loadPlacemarks (to extract the geometries)
+		 * 
+		 * if there is no style defined in the KML file, the feature created will have a default Open Scales style
+		 * @see Style.as
 		 */
 		override public function read(data:Object):Object {
 			var dataXML:XML = data as XML;
@@ -480,7 +497,7 @@ package org.openscales.core.format
 			var numberOfFeat:uint = listOfFeatures.length;
 			
 			//build the style nodes first
-			for(i =0; i < numberOfFeat; i++)
+			for(i = 0; i < numberOfFeat; i++)
 			{
 				if(listOfFeatures[i].style)
 				{
@@ -488,8 +505,19 @@ package org.openscales.core.format
 				}
 			}
 			//build the placemarks
-			
+			for (i = 0; i < numberOfFeat; i++)
+			{
+				doc.appendChild(this.buildPlacemarkNode(listOfFeatures[i],i));
+			}
 			return kmlFile; 
+		}
+		
+		private function buildPlacemarkNode(feature:Feature,i:uint):XML
+		{
+			//todo the name tag will be the atrribute[name] if it exists 
+			var placemark:XML = new XML("<Placemark></Placemark>");
+			
+			return placemark;
 		}
 		
 		private function buildStyleNode(feature:Feature,i:uint):XML
@@ -537,6 +565,20 @@ package org.openscales.core.format
 				var polyF:PolygonFeature = feature as PolygonFeature;
 				styleNode = new XML("<PolyStyle></PolyStyle>");
 				
+				if(symbolizers.length > 1)
+				{
+					//symbolizers[1] is the outline style (fill - null and color of the outline)
+					styleNode.outline = "1";
+					var styleNode2:XML = new XML("<LineStyle></LineStyle>");
+					var polySym2:PolygonSymbolizer = symbolizers[1] as PolygonSymbolizer;
+					var stroke2:Stroke = polySym2.stroke;
+					color = stroke2.color;
+					opacity = stroke2.opacity;
+					styleNode2.appendChild(this.buildColorNode(color,opacity));
+					styleNode2.width = stroke2.width;
+					placemarkStyle.appendChild(styleNode2);	
+				}		
+				
 				if(symbolizers.length > 0)
 				{
 					//symbolizers[0] is the polygon style (fill and color)
@@ -544,33 +586,25 @@ package org.openscales.core.format
 					var fill:Fill = polySym.fill;
 					stroke = polySym.stroke;
 					color = stroke.color;
-					opacity = stroke.opacity;
-					styleNode.appendChild(this.buildColorNode(color,opacity));
-					styleNode.colorMode = "normal";
 					if(fill is SolidFill)
-						styleNode.fill = "1";
-					else 
-						styleNode.fill = "0";
-					placemarkStyle.appendChild(styleNode);	
-					
-					if(symbolizers.length > 1)
 					{
-						//symbolizers[1] is the outline style (fill - null and color of the outline)
-						styleNode.outline = "1";
-						var styleNode2:XML = new XML("<LineStyle></LineStyle>");
-						var polySym2:PolygonSymbolizer = symbolizers[1] as PolygonSymbolizer;
-						var stroke2:Stroke = polySym2.stroke;
-						color = stroke2.color;
-						opacity = stroke2.opacity;
-						styleNode2.appendChild(this.buildColorNode(color,opacity));
-						placemarkStyle.appendChild(styleNode2);	
+						styleNode.fill = "1";
+						opacity = (fill as SolidFill).opacity;						
 					}
-					
 						
+					else
+					{
+						styleNode.fill = "0";
+						opacity = 0;
+					}
+					styleNode.appendChild(this.buildColorNode(color,opacity));
+					styleNode.colorMode = "normal";	
+					placemarkStyle.appendChild(styleNode);		
 				}			
 			}
 			else if(feature is PointFeature)
 			//the style with icon is not implemented yet. Should it be?	
+			//build the PointFeatures but not the CustomMarkers
 			{
 				var pointFeat:PointFeature = feature as PointFeature;
 				styleNode = new XML("<IconStyle></IconStyle>");
@@ -588,7 +622,6 @@ package org.openscales.core.format
 				}
 				placemarkStyle.appendChild(styleNode);	
 			}
-			
 			return placemarkStyle;
 		}
 		
@@ -599,10 +632,23 @@ package org.openscales.core.format
 		 */ 
 		private function buildColorNode(color:uint,opacity:Number):XML
 		{
-			var colorNode:XML = new XML("<color></color>");
-			
+			var i:uint;
+			var spareStringColor:String = "";
+			var colorNode:XML = new XML("<color></color>");	
 			var stringColor:String = color.toString(16);
-			var KMLcolor:String = opacity.toString(16) + stringColor.substr(4,2)
+			
+			for (i = 0; i < (6 - stringColor.length); i++)
+			{
+				spareStringColor += "0";				
+			}
+			
+			spareStringColor += stringColor;
+			
+			if(stringColor.length < 6)
+				stringColor = spareStringColor;
+			
+			//if features created in OpenScales, the opacity is between 0 and 1
+			var KMLcolor:String = (opacity*255).toString(16) + stringColor.substr(4,2)
 				+ stringColor.substr(2,2)+stringColor.substr(0,2);
 			colorNode.appendChild(KMLcolor);
 			return colorNode;
