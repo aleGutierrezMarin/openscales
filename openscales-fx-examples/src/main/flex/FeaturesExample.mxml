@@ -8,7 +8,7 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 <s:Group xmlns="http://openscales.org" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 width="100%" height="100%" creationComplete="initMap();" xmlns:mx="library://ns.adobe.com/flex/mx">
 	
-	<Map id="fxMap" width="100%" height="100%" zoom="11" center="4.833,45.767">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.001373291" center="4.833,45.767" projection="EPSG:900913" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34">
 		
 		<Mapnik name="Mapnik" />
 		
@@ -69,12 +69,13 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Trace;
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.MultiPolygonFeature;
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.feature.PolygonFeature;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
-			import org.openscales.core.layer.FeatureLayer;
+			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.geometry.Collection;
 			import org.openscales.geometry.Geometry;
 			import org.openscales.geometry.LinearRing;
@@ -83,9 +84,10 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 			
 			private function initMap():void {
 				// Specific initialize for this example
-				var layer:FeatureLayer = SampleLayers.features();
+				var layer:VectorLayer = SampleLayers.features();
 				// Usefull to test selection when a layer is not displayed
-				layer.minZoomLevel = 10;
+				//layer.minZoomLevel = 10;
+				layer.minResolution = new Resolution(0.001373291015625,layer.projSrsCode);
 				
 				(selectFeaturesHandler.handler as SelectFeaturesHandler).unselectableFeatures = new <Feature>[ layer.getChildAt(4) as PolygonFeature ];
 				fxMap.map.addLayer(layer);
@@ -96,7 +98,7 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 			/**
 			 * Test all the containsPoint functions for the relevant géometries.
 			 */
-			public function testContainsPoint(layer:FeatureLayer):void {
+			public function testContainsPoint(layer:VectorLayer):void {
 				// Useful variables for the tests
 				var geom1:Geometry, geom2:Geometry;
 				var testResult:Boolean, testExpectedResult:Boolean;
@@ -162,7 +164,7 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 			/**
 			 * Test all the intersects functions for the relevant geometries.
 			 */
-			public function testIntersects(layer:FeatureLayer):void {
+			public function testIntersects(layer:VectorLayer):void {
 				// Useful variables for the tests
 				var geom1:Geometry, geom2:Geometry;
 				var testResult:Boolean, testExpectedResult:Boolean;

@@ -164,7 +164,7 @@
 			<s:VerticalLayout gap="0" verticalAlign="middle" />
 		</s:layout>
 		<os:IconButton id="layerSwitcherArrowUp"
-					toolTip="{this.tooltipMoveBack}"
+					toolTip="{this.tooltipMoveFront}"
 					click="upLayer(event)"
 					icon="{new UpArrowUp()}"
 					iconOver="{new UpArrowOver()}"

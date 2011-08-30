@@ -5,8 +5,7 @@ package org.openscales.core.format
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	
-	import org.openscales.core.feature.CustomMarker;
+		
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -17,6 +16,8 @@ package org.openscales.core.format
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.feature.CustomMarker;
+	import org.openscales.core.style.marker.Marker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -240,6 +241,7 @@ package org.openscales.core.format
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
 			}
+
 			return new LinearRing(Ppoints);
 		}
 		
@@ -406,7 +408,7 @@ package org.openscales.core.format
 								{
 									var _fill:SolidFill = new SolidFill(pointStyles[_id]["color"], pointStyles[_id]["alpha"]);
 									var _stroke:Stroke = new Stroke(pointStyles[_id]["color"], pointStyles[_id]["alpha"]);
-									var _mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, _fill, _stroke);
+									var _mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, _fill, _stroke);//the color of its stroke is the kml color
 									var _symbolizer:PointSymbolizer = new PointSymbolizer();
 									_symbolizer.graphic = _mark;
 									var _rule:Rule = new Rule();
@@ -568,9 +570,23 @@ package org.openscales.core.format
 				}			
 			}
 			else if(feature is PointFeature)
-			//the style with icon is not implemented here. Should it be?	
+			//the style with icon is not implemented yet. Should it be?	
 			{
-				
+				var pointFeat:PointFeature = feature as PointFeature;
+				styleNode = new XML("<IconStyle></IconStyle>");
+				if(symbolizers.length > 0)
+				{
+					var pointSym:PointSymbolizer = symbolizers[0] as PointSymbolizer;
+					var graphic:Marker = pointSym.graphic;
+					if(graphic is WellKnownMarker)
+					{//we can build the color node
+						var wkm:WellKnownMarker = graphic as WellKnownMarker;
+						stroke = wkm.stroke;
+						styleNode.appendChild(this.buildColorNode(stroke.color, stroke.opacity));
+						styleNode.colorMode = "normal";
+					}
+				}
+				placemarkStyle.appendChild(styleNode);	
 			}
 			
 			return placemarkStyle;

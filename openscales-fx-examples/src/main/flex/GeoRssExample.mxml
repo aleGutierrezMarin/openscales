@@ -40,7 +40,7 @@
 			private function initMap():void
 			{	
 				fxMap.center = "4.32972,48.56215,WGS84";
-				fxMap.zoom = 7;
+				fxMap.resolution = "0.010986328125,WGS84";
 				Trace.debug("Mapnik projection: " + mapnik.projection);
 				Trace.debug("GeoRssLayer projection: " + rsslayer.projection);
 	

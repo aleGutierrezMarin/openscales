@@ -17,9 +17,9 @@ package org.openscales.core.filter {
 			if ((this.geometry==null) || (this.projSrsCode==null) || (feature==null)) {
 				return false;
 			}
-			if (this.projSrsCode != feature.layer.map.baseLayer.projSrsCode) {
-				this.geometry.transform(this.projSrsCode, feature.layer.map.baseLayer.projSrsCode);
-				this.projSrsCode = feature.layer.map.baseLayer.projSrsCode;
+			if (this.projSrsCode != feature.layer.map.projection) {
+				this.geometry.transform(this.projSrsCode, feature.layer.map.projection);
+				this.projSrsCode = feature.layer.map.projection;
 			}
 			return this.geometry.intersects(feature.geometry);
 		}

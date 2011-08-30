@@ -23,6 +23,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+		import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.fx.popup.FxPopup;
 			import org.openscales.fx.popup.renderer.FxPopupRenderer;
@@ -42,7 +43,7 @@
 				//gpxLayer.url = "http://openscales.org/assets/simple_dep.gpx"; 
 				
 				fxMap.center = "7.27,48.39,EPSG:4326";
-				fxMap.zoom = 13;
+				fxMap.resolution = new Resolution(0.000343323, "EPSG:4326");
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onFeatureClick);
 			}
 			

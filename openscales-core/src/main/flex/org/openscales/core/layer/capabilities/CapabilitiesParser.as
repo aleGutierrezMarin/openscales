@@ -21,7 +21,8 @@ package org.openscales.core.layer.capabilities
 		protected var _title:String = null;
 		protected var _name:String = null;
 		protected var _abstract:String = null;
-
+		protected var _keywordList:String = null;
+		
 		public function CapabilitiesParser()
 		{
 			_capabilities = new HashMap(false);

@@ -3,7 +3,7 @@ package org.openscales.fx.layer
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.layer.ogc.GeoRss;
 
-	public class FxGeoRss extends FxFeatureLayer
+	public class FxGeoRss extends FxVectorLayer
 	{
 		private var _url:String;
 		

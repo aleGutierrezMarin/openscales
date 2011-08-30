@@ -6,6 +6,7 @@ package org.openscales.core.control
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -80,7 +81,6 @@ package org.openscales.core.control
 			if(value != null) {
 				this._map=value;	      	
 				this.map.addEventListener(MapEvent.MOVE_END,updateScaleLineOnMove);
-				this.map.addEventListener(LayerEvent.BASE_LAYER_CHANGED,updateScaleLineOnBaseLayerChanged);
 			}
 		}
 
@@ -142,18 +142,18 @@ package org.openscales.core.control
 		 private function updateScale():void
 		{
 			// Get the resolution of the map
-			var mapResolution:Number = this.map.resolution;
+			var mapResolution:Resolution = this.map.resolution;
 			
 			// Map has no resolution, return.
 			if (!mapResolution) {return;}
 
 			// get the current units of the map
 			/* var currentBaseLayerUnits:String = this.map.units; */
-			var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.baseLayer.projSrsCode).projParams.units;
+			var currentBaseLayerUnits:String = ProjProjection.getProjProjection(this.map.projection).projParams.units;
 
 			// convert the scaleMaxWidth to map units
 			// The result is the max distance IN MAP UNIT, represent in the scaleline
-			var maxSizeData:Number = this._scaleMaxWidth * mapResolution * Unit.getInchesPerUnit(currentBaseLayerUnits);
+			var maxSizeData:Number = this._scaleMaxWidth * mapResolution.value * Unit.getInchesPerUnit(currentBaseLayerUnits);
 
 			// decide whether to use large or small scale units. it's independent of the map unit    
 			var topUnits:String;		
@@ -180,8 +180,8 @@ package org.openscales.core.control
 			bottomMax = bottomRounded / Unit.getInchesPerUnit(currentBaseLayerUnits) * Unit.getInchesPerUnit(bottomUnits);
 	
 			// and to pixel units
-			_topPx = topMax / mapResolution;
-			var bottomPx:Number = bottomMax / mapResolution;
+			_topPx = topMax / mapResolution.value;
+			var bottomPx:Number = bottomMax / mapResolution.value;
 			
 			this.graphics.clear();
 			this.graphics.beginFill(this._color);

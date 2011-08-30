@@ -3,7 +3,7 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.ogc.GPX;
 	import org.openscales.core.style.Style;
 
-	public class FxGPX extends FxFeatureLayer
+	public class FxGPX extends FxVectorLayer
 	{
 		//private var _xmlData:XML;
 		

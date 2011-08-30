@@ -10,6 +10,9 @@ package org.openscales.core.format
 		[Embed(source="/assets/kml/sample3.kml",mimeType="application/octet-stream")]
 		private const KMLFILE:Class;
 		
+		[Embed(source="/assets/kml/KMLBuildSample.xml",mimeType="application/octet-stream")]
+		private const KMLFILE2:Class;
+		
 		public function KMLBuildTest(){}
 		
 		[Before]

@@ -14,7 +14,7 @@ package org.openscales.core.layer
 	/**
 	 * KML layer, most useful features of KML 2.0 and 2.2 specifications are supported
 	 */
-	public class KML extends FeatureLayer
+	public class KML extends VectorLayer
 	{
 		private var _request:XMLRequest = null;
 		private var _kmlFormat:KMLFormat = null;
@@ -42,10 +42,9 @@ package org.openscales.core.layer
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
-			if (!displayed) {
-				this.clear();
+			
+			if (this.map == null)
 				return;
-			}
 			
 			if (! this._request) {
 				this.loading = true;
@@ -67,9 +66,9 @@ package org.openscales.core.layer
 			// To avoid errors if the server is dead
 			try {
 				this._xml = new XML(loader.data);
-				if (this.map.baseLayer.projSrsCode != null && this.projSrsCode != null && this.projSrsCode != this.map.baseLayer.projSrsCode) {
+				if (this.map.projection != null && this.projSrsCode != null && this.projSrsCode != this.map.projection) {
 					this._kmlFormat.externalProjSrsCode = this.projSrsCode;
-					this._kmlFormat.internalProjSrsCode = this.map.baseLayer.projSrsCode;
+					this._kmlFormat.internalProjSrsCode = this.map.projection;
 				}
 				this._kmlFormat.proxy = this.proxy;
 				var features:Vector.<Feature> = this._kmlFormat.read(this._xml) as Vector.<Feature>;

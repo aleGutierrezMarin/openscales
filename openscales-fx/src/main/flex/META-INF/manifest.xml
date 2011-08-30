@@ -6,7 +6,7 @@
 	
 	<component id="Style" class="org.openscales.fx.feature.FxStyle" />
 	
-	<component id="FeatureLayer" class="org.openscales.fx.layer.FxFeatureLayer" />
+	<component id="VectorLayer" class="org.openscales.fx.layer.FxVectorLayer" />
 	<component id="ImageLayer" class="org.openscales.fx.layer.FxImageLayer" />
 	<component id="WMS" class="org.openscales.fx.layer.FxWMS" />
 	<component id="WMSC" class="org.openscales.fx.layer.FxWMSC" />
@@ -34,6 +34,8 @@
 	
 	<component id="DragFeatureHandler" class="org.openscales.fx.handler.feature.FxDragFeatureHandler" />
 	<component id="SelectFeaturesHandler" class="org.openscales.fx.handler.feature.FxSelectFeaturesHandler" />
+	
+	<component id="KeyBoardHandler" class="org.openscales.fx.handler.FxKeyboardHandler" />
 	
 	<component id="Copyright" class="org.openscales.fx.control.Copyright" />
 	<component id="DataOriginatorsDisplay" class="org.openscales.fx.control.DataOriginatorsDisplay" />

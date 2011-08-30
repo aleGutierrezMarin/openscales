@@ -4,6 +4,7 @@ package org.openscales.core.configuration
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.control.Control;
 	import org.openscales.core.control.LayerManager;
@@ -18,7 +19,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WFST;
@@ -146,7 +147,7 @@ package org.openscales.core.configuration
 				map.y = Number(config.@y);
 			
 			if (String(config.@maxExtent) != "") {
-				map.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent), Geometry.DEFAULT_SRS_CODE);
+				map.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+Geometry.DEFAULT_SRS_CODE);
 			}
 			
 		}
@@ -184,15 +185,13 @@ package org.openscales.core.configuration
 		}
 		
 		protected function endConfigureMap():void {
-			if(String(config.@zoom) != ""){
-				map.zoom = Number(config.@zoom);
+			if(String(config.@resolution) != ""){
+				// TODO : DEFAULT SRS CODE USED Changed Config to complete resolution difinition
+				map.resolution = new Resolution(Number(config.@resolution), "EPSG:4326");
 			}
 			if(String(config.@center) != ""){
 				var location:Array = String(config.@center).split(",");
-				if (this.map.baseLayer != null)
-					map.center = new Location(Number(location[0]), Number(location[1]), this.map.baseLayer.projSrsCode);
-				else
-					map.center = new Location(Number(location[0]), Number(location[1]));
+				map.center = new Location(Number(location[0]), Number(location[1]), this.map.projection);
 			}
 		}
 		
@@ -282,7 +281,7 @@ package org.openscales.core.configuration
 			else{visible = true;}
 			
 			var name:String=xmlNode.@name;
-			var projSrsCode:String = Geometry.DEFAULT_SRS_CODE;
+			var projSrsCode:String = Layer.DEFAULT_PROJECTION;
 			if (String(xmlNode.@projection) != "") {
 				projSrsCode = String(xmlNode.@projection);
 			}
@@ -334,7 +333,7 @@ package org.openscales.core.configuration
 						wmscLayer.visible=visible;
 						wmscLayer.projSrsCode = projSrsCode;
 						if (String(config.@maxExtent) != "")
-							wmscLayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent),wmscLayer.projSrsCode);
+							wmscLayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projSrsCode);
 						wmscLayer.params = paramsWms;
 						layer = wmscLayer;
 						if (method!=null) {
@@ -350,7 +349,7 @@ package org.openscales.core.configuration
 						wmslayer.visible = visible;
 						wmslayer.projSrsCode = projSrsCode;  
 						if (String(config.@maxExtent) != "")
-							wmslayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent),wmslayer.projSrsCode);
+							wmslayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projSrsCode);
 						wmslayer.params = paramsWms;
 						layer=wmslayer;
 						break;
@@ -424,12 +423,12 @@ package org.openscales.core.configuration
 					}
 				}
 				
-				if (String(xmlNode.@minZoomLevel) != "" ) {
+				/*if (String(xmlNode.@minR) != "" ) {
 					wfsLayer.minZoomLevel = Number(xmlNode.@minZoomLevel);
 				}
 				if (String(xmlNode.@maxZoomLevel) != "") {
 					wfsLayer.maxZoomLevel = Number(xmlNode.@maxZoomLevel);
-				}
+				}*/
 				wfsLayer.version = capabilitiesVersion;
 				layer=wfsLayer;
 			}
@@ -438,7 +437,7 @@ package org.openscales.core.configuration
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					mapnik.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent),mapnik.projSrsCode);
+					mapnik.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+mapnik.projSrsCode);
 				layer=mapnik;
 			}
 			else if(xmlNode.name() == "CycleMap"){
@@ -446,7 +445,7 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var cycleMap:CycleMap=new CycleMap(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					cycleMap.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent),cycleMap.projSrsCode);
+					cycleMap.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projSrsCode);
 				layer=cycleMap;
 			}
 			else if(type == "Maplint"){
@@ -454,12 +453,12 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var maplint:Maplint=new Maplint(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					maplint.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent),maplint.projSrsCode);
+					maplint.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+maplint.projSrsCode);
 				layer=maplint;
 			}
 			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
-				var featurelayer:FeatureLayer = new FeatureLayer(name);
+				var featurelayer:VectorLayer = new VectorLayer(name);
 				featurelayer.projSrsCode = projSrsCode;
 				layer = featurelayer;
 			} else {

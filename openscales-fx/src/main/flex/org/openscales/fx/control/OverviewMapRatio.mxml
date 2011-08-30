@@ -10,6 +10,7 @@
 			import mx.core.IVisualElement;
 			
 			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.control.OverviewMapRatio;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.layer.FxLayer;
@@ -18,7 +19,6 @@
 			import spark.core.SpriteVisualElement;
 			
 			
-
 			/**
 			 * @private
 			 * ActionScript object of the overviewMapRatio
@@ -142,6 +142,53 @@
 				return _overviewmap.map;
 			}
 			
+			/**
+			 * The actual projection of the map, the default vaglue is EPSG:4326
+			 */
+			public function set projection(value:String):void
+			{
+				this._overviewmap.projection = value;
+			}
+			
+			/**
+			 * @public
+			 */
+			public function get projection():String
+			{
+				return this._overviewmap.projection;
+			}
+			
+			/**
+			 * The actual maxResolution of the map
+			 */
+			public function set maxResolution(value:Resolution):void
+			{
+				this._overviewmap.maxResolution = value;
+			}
+			
+			/**
+			 * @public
+			 */
+			public function get maxResolution():Resolution
+			{
+				return this._overviewmap.maxResolution;
+			}
+			
+			/**
+			 * The actual minResolution of the map
+			 */
+			public function set minResolution(value:Resolution):void
+			{
+				this._overviewmap.minResolution = value;
+			}
+			
+			/**
+			 * @public
+			 */
+			public function get minResolution():Resolution
+			{
+				return this._overviewmap.minResolution;
+			}
 			
 		]]>
 	</fx:Script>

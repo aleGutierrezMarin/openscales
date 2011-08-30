@@ -32,13 +32,15 @@ package org.openscales.core.layer.capabilities
 			assertTrue(layerCapabilities.containsKey("TileMatrixSets"));
 			assertTrue(layerCapabilities.containsKey("Formats"));
 			assertTrue(layerCapabilities.containsKey("Styles"));
-			assertEquals(layerCapabilities.size(),3);
+			assertTrue(layerCapabilities.containsKey("Identifier"));
+			assertTrue(layerCapabilities.containsKey("Title"));
+			assertEquals(5,layerCapabilities.size());
 			
 			//Getting tile matrix sets hashmap
 			var tileMatrixSets:HashMap = layerCapabilities.getValue("TileMatrixSets");
 			// Returned value should be non null
 			assertNotNull(tileMatrixSets);
-			// Returned value shoudl be a 2 element hashmap
+			// Returned value should be a 2 element hashmap
 			assertEquals(tileMatrixSets.size(), 2);
 			// Getting a tile matrix set
 			var tileMatrixSet:TileMatrixSet = tileMatrixSets.getValue("EPSG:4326");
