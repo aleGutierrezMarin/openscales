@@ -366,7 +366,7 @@ package org.openscales.core.format
 						if(pointStyles[_id] != undefined) 
 						{ // style
 							if(pointStyles[_id]["icon"]!=null) 
-							{ // icon
+							{ // style with icon
 								var _icon:String = pointStyles[_id]["icon"];
 								var customMarker:CustomMarker;
 								if(_images[_icon]!=null) 
@@ -566,6 +566,11 @@ package org.openscales.core.format
 					
 						
 				}			
+			}
+			else if(feature is PointFeature)
+			//the style with icon is not implemented here. Should it be?	
+			{
+				
 			}
 			
 			return placemarkStyle;
