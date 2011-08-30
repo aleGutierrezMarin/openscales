@@ -45,6 +45,14 @@ package org.openscales.core.feature
 		}
 		
 		/**
+		 * 
+		 */
+		public function set lonlat(value:Location):void{
+			this.labelPoint.x = value.x;
+			this.labelPoint.y = value.y;
+		}
+		
+		/**
 		 * @inherits
 		 */
 		override public function destroy():void{
