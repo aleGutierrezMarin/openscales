@@ -58,6 +58,38 @@ package org.openscales.core.format
 		private var _userDefinedStyle:Style = null;
 		
 		public function KMLFormat() {}
+			
+		/**
+		 * Read data
+		 *
+		 * @param data data to read/parse
+		 * @return array of features (polygons, lines and points)
+		 * @call loadStyles (only if the user does not set a style)
+		 * @call loadPlacemarks (to extract the geometries)
+		 * 
+		 * if there is no style defined in the KML file, the feature created will have a default Open Scales style
+		 * @see Style.as
+		 */
+		override public function read(data:Object):Object {
+			var dataXML:XML = data as XML;
+			
+			use namespace google;
+			use namespace opengis;
+			
+			if(!this.userDefinedStyle)
+			{
+				var styles:XMLList = dataXML..Style;
+				loadStyles(styles.copy());
+			}
+			
+			var placemarks:XMLList = dataXML..Placemark;
+			loadPlacemarks(placemarks);
+			
+			var _features:Vector.<Feature> = polygonsfeatures.concat(linesfeatures, iconsfeatures);
+			
+			return _features;
+		}
+			
 		
 		/**
 		 * return the RGB color of a kml:color
@@ -256,6 +288,8 @@ package org.openscales.core.format
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
 			}
+import org.openscales.core.feature.PointFeature;
+
 			return new LinearRing(Ppoints);
 		}
 		
@@ -444,36 +478,6 @@ package org.openscales.core.format
 			}
 		}
 		
-		/**
-		 * Read data
-		 *
-		 * @param data data to read/parse
-		 * @return array of features (polygons, lines and points)
-		 * @call loadStyles (only if the user does not set a style)
-		 * @call loadPlacemarks (to extract the geometries)
-		 * 
-		 * if there is no style defined in the KML file, the feature created will have a default Open Scales style
-		 * @see Style.as
-		 */
-		override public function read(data:Object):Object {
-			var dataXML:XML = data as XML;
-			
-			use namespace google;
-			use namespace opengis;
-			
-			if(!this.userDefinedStyle)
-			{
-				var styles:XMLList = dataXML..Style;
-				loadStyles(styles.copy());
-			}
-			
-			var placemarks:XMLList = dataXML..Placemark;
-			loadPlacemarks(placemarks);
-			
-			var _features:Vector.<Feature> = polygonsfeatures.concat(linesfeatures, iconsfeatures);
-			
-			return _features;
-		}
 		
 		/**
 		 * Write data
@@ -481,6 +485,8 @@ package org.openscales.core.format
 		 * @param features the features to build into a KML file
 		 * @return the KML file (xml format)
 		 * @call buildStyleNode
+		 * @call buildPlacemarkNode
+		 * the supported features are pointFeatures, lineFeatures and polygonFeatures
 		 */
 		
 		override public function write(features:Object):Object
@@ -512,13 +518,116 @@ package org.openscales.core.format
 			return kmlFile; 
 		}
 		
+		/**
+		 * @return a kml placemark
+		 * @call buildPolygonNode
+		 * @call buildCoordsAsString 
+		 */
 		private function buildPlacemarkNode(feature:Feature,i:uint):XML
 		{
-			//todo the name tag will be the atrribute[name] if it exists 
 			var placemark:XML = new XML("<Placemark></Placemark>");
+			var att:Object = feature.attributes;
+			if (att.hasOwnProperty("name"))
+				placemark.appendChild(new XML("<name>" + att["name"] + "</name>"));
+			else
+				//since we build the styles first, the feature will have an id for sure
+				placemark.appendChild(new XML("<name>" + feature.name + "</name>"));
+			
+			placemark.appendChild(new XML("<styleUrl>#" + feature.name + "</styleUrl>"));
+			
+			var coords:String;
+			if(feature is LineStringFeature)
+			{
+				var lineNode:XML = new XML("<LineString></LineString>");
+				var line:LineString = (feature as LineStringFeature).lineString;
+				coords = this.buildCoordsAsString(line.getcomponentsClone());
+				if(coords.length != 0)
+					lineNode.appendChild(new XML("<coordinates>" + coords + "</coordinates>"));
+				placemark.appendChild(lineNode);
+			}
+			else if(feature is PolygonFeature)
+			{
+				var poly:Polygon = (feature as PolygonFeature).polygon;
+				placemark.appendChild(this.buildPolygonNode(poly));
+			}
+			else if(feature is PointFeature)
+			{
+				var pointNode:XML = new XML("<Point></Point>");
+				var point:Point = (feature as PointFeature).point;
+				pointNode.appendChild(new XML("<coordinates>" + point.x + "," + point.y + "</coordinates>"));
+				placemark.appendChild(pointNode);
+			}
 			
 			return placemark;
 		}
+		
+		/**
+		 * @return a polygon node
+		 * the first ring is the outerBoundary; the others, if they exist, are innerBoundaries
+		 */ 
+		
+		public function buildPolygonNode(poly:Polygon):XML
+		{
+			var coords:String;
+			var polyNode:XML = new XML("<Polygon></Polygon>");
+			var outerBoundary:XML = new XML("<outerBoundaryIs></outerBoundaryIs>");
+			var extRingNode:XML = new XML("<LinearRing></LinearRing>");
+			outerBoundary.appendChild(extRingNode);
+			polyNode.appendChild(outerBoundary);
+			
+			var ringList:Vector.<Geometry> = poly.getcomponentsClone();
+			var extRing:LinearRing = ringList[0] as LinearRing;
+			coords = this.buildCoordsAsString(extRing.getcomponentsClone());
+			if(coords.length != 0)
+				extRingNode.appendChild(new XML("<coordinates>" + coords + "</coordinates>"));
+			
+			if(ringList.length > 1)
+			{
+				var l:uint = ringList.length;
+				var i:uint;
+				for(i = 1; i < l; i++)
+				{
+					var intRing:LinearRing = ringList[i] as LinearRing;
+					var innerBoundary:XML = new XML("<innerBoundaryIs></innerBoundaryIs>");
+					var intRingNode:XML = new XML("<LinearRing></LinearRing>");
+					innerBoundary.appendChild(intRingNode);
+					polyNode.appendChild(innerBoundary);
+					
+					coords = this.buildCoordsAsString(intRing.getcomponentsClone());
+					if(coords.length != 0)
+						extRingNode.appendChild(new XML("<coordinates>" + coords + "</coordinates>"));
+				}
+			}
+			
+			return polyNode;
+		}
+		
+		/**
+		 * @param the vector of coordinates of the geometry
+		 * @return the coordinates as a string
+		 * in kml coordinates are tuples consisting of longitude, latitude and altitude (optional)
+		 * there is a space between tuples and commas inside the tuple
+		 * the geometries must be in 2D; the altitude is not supported    	
+		 */
+		
+		public function buildCoordsAsString(coords:Vector.<Number>):String
+		{
+			var i:uint;
+			var stringCoords:String = "";
+			var numberOfPoints:uint = coords.length;
+			for(i = 0; i < numberOfPoints; i += 2){
+				stringCoords += String(coords[i])+",";
+				stringCoords += String(coords[i+1]);
+				if( i != (numberOfPoints -2))
+					stringCoords += " ";
+			}
+			return stringCoords;
+		}
+		
+		/**
+		 * @param the feature and its index in the list of features to build (useful for the style ID)
+		 * @return the xml style node
+		 */ 
 		
 		private function buildStyleNode(feature:Feature,i:uint):XML
 		{
@@ -589,7 +698,8 @@ package org.openscales.core.format
 					if(fill is SolidFill)
 					{
 						styleNode.fill = "1";
-						opacity = (fill as SolidFill).opacity;						
+						opacity = (fill as SolidFill).opacity;	
+						color = (fill as SolidFill).color as uint;
 					}
 						
 					else
@@ -615,8 +725,8 @@ package org.openscales.core.format
 					if(graphic is WellKnownMarker)
 					{//we can build the color node
 						var wkm:WellKnownMarker = graphic as WellKnownMarker;
-						stroke = wkm.stroke;
-						styleNode.appendChild(this.buildColorNode(stroke.color, stroke.opacity));
+						var solidFill:SolidFill = wkm.fill;
+						styleNode.appendChild(this.buildColorNode(solidFill.color as uint, solidFill.opacity));
 						styleNode.colorMode = "normal";
 					}
 				}
@@ -627,7 +737,7 @@ package org.openscales.core.format
 		
 		
 		/**
-		 * build kml color tag
+		 * Build kml color tag
 		 * opacity of 1 in OpenScales means 255 in KML
 		 */ 
 		private function buildColorNode(color:uint,opacity:Number):XML
