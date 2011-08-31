@@ -30,7 +30,7 @@ package org.openscales.core.popup
 		/**
 		 * Constructor
 		 */
-		public function LabelPopup(map:Map, onClose:Function)
+		public function LabelPopup(map:Map, onClose:Function, text:String=null)
 		{
 			var vg:VGroup = new VGroup();
 			var hg1:HGroup = new HGroup();
@@ -48,6 +48,8 @@ package org.openscales.core.popup
 			cancelButton.label = "Cancel";
 			vg.verticalCenter = 2;
 			vg.horizontalCenter = 3;
+			if(text != null)
+				this._text.text = text;
 			
 			this.addElement(vg);
 			vg.addElement(hg1);
