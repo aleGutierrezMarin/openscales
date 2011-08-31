@@ -41,7 +41,7 @@
 				//gpxLayer.url = "http://openscales.org/assets/simple_dep.gpx"; 
 				
 				fxMap.center = "2, 46, EPSG:4326";
-				fxMap.zoom = 6;
+				fxMap.resolution = "0.02197265625";
 			}
 			
 		]]>

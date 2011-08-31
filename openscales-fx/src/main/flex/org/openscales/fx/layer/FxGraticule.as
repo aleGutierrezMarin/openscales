@@ -3,7 +3,7 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.Graticule;
 	import org.openscales.core.style.Style;
 	
-	public class FxGraticule extends FxFeatureLayer
+	public class FxGraticule extends FxVectorLayer
 	{
 		/**
 		 * Default constructor.

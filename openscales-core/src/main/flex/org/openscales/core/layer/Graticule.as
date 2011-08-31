@@ -22,7 +22,7 @@ package org.openscales.core.layer
 	 * The graticule layer appears in the layer switcher.
 	 * @author xlaprete
 	 */
-	public class Graticule extends FeatureLayer
+	public class Graticule extends VectorLayer
 	{
 		/**
 		 * @private
