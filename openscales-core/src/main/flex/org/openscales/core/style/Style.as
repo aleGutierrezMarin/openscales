@@ -1,6 +1,7 @@
 package org.openscales.core.style {
-
+	
 	import flash.geom.Point;
+	import flash.text.TextFormat;
 	
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
@@ -15,19 +16,19 @@ package org.openscales.core.style {
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Polygon;
-
+	
 	/**
 	 * Style describe graphical attributes used to render vectors.
 	 */
 	public class Style {
-
+		
 		private var _name:String = "Default";
-
+		
 		/**
 		 * The list of rules of the style
 		 */
 		private var _rules:Vector.<Rule> = new Vector.<Rule>();
-
+		
 		private var _fillColor:uint;
 		private var _fillOpacity:Number;
 		private var _strokeColor:uint;
@@ -41,54 +42,55 @@ package org.openscales.core.style {
 		private var _hoverStrokeOpacity:Number;
 		private var _hoverStrokeWidth:Number;
 		private var _hoverPointRadius:Number;
-
+		private var _textFormat:TextFormat;
+		
 		private var _isFilled:Boolean;
 		private var _isStroked:Boolean;
-
+		
 		public static function getDefaultPointStyle():Style {
-
+			
 			var style:Style = new Style();
 			style.name = "Default point style";
 			style.rules.push(getPointRule());
 			return style;
 		}
-
+		
 		public static function getDefaultCircleStyle():Style {
-
+			
 			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
 			var stroke:Stroke = new Stroke(0xA6430A, 1);
-
+			
 			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_CIRCLE, fill, stroke);
-
+			
 			var symbolizer:PointSymbolizer = new PointSymbolizer();
 			symbolizer.graphic = mark;
-
+			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(symbolizer);
-
+			
 			var style:Style = new Style();
 			style.name = "Default circle style";
 			style.rules.push(rule);
 			return style;
 		}
-
+		
 		public static function getDrawLineStyle():Style {
-
+			
 			var stroke:Stroke = new Stroke(0x60D980, 1);
 			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
-
+			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(symbolizer);
-
+			
 			var style:Style = new Style();
 			style.name = "Draw linear style";
 			style.rules.push(rule);
-
+			
 			return style;
 		}
-
+		
 		public static function getDefaultGraticuleStyle():Style {
 			var style:Style = new Style();
 			style.name = "Default graticule style";
@@ -97,25 +99,25 @@ package org.openscales.core.style {
 		}
 		
 		public static function getDefaultLineStyle():Style {
-
+			
 			var style:Style = new Style();
 			style.name = "Default line style";
 			style.rules.push(getLineRule());
 			return style;
 		}
-
+		
 		public static function getDrawSurfaceStyle():Style {
-
+			
 			var fill:SolidFill = new SolidFill(0xE4EDF2, 0.4);
 			var stroke:Stroke = new Stroke(0xE7FF33, 3);
-
+			
 			var rule:Rule = new Rule();
 			rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
-
+			
 			var style:Style = new Style();
 			style.name = "Draw surface style";
 			style.rules.push(rule);
-
+			
 			return style;
 		}
 		
@@ -138,7 +140,7 @@ package org.openscales.core.style {
 			var style:Style = new Style();
 			style.rules.push(rule);
 			style.name = "Surface Style";
-
+			
 			return style;
 		}
 		
@@ -225,7 +227,7 @@ package org.openscales.core.style {
 			
 			return style;			
 		}
-
+		
 		/**
 		 * <p>Class constructor.</p>
 		 *
@@ -248,9 +250,9 @@ package org.openscales.core.style {
 			_hoverPointRadius = 1;
 			_isFilled = true;
 			_isStroked = true;
-
+			_textFormat = new TextFormat("Arial",12,0x000000,false,false);
 		}
-
+		
 		public function clone():Style {
 			var clonedStyle:Style = new Style();
 			clonedStyle._fillColor = this._fillColor;
@@ -270,116 +272,124 @@ package org.openscales.core.style {
 			clonedStyle._isStroked = this._isStroked;
 			
 			if(this._rules != null){
-			  var lenghtRules:uint = this._rules.length;
-			  var rulesClone:Vector.<Rule> = new Vector.<Rule>();
-			  for(var i:uint=0; i < lenghtRules; i++){
-				rulesClone[i] = this._rules[i].clone();
-			  }
-			  clonedStyle.rules = rulesClone;
+				var lenghtRules:uint = this._rules.length;
+				var rulesClone:Vector.<Rule> = new Vector.<Rule>();
+				for(var i:uint=0; i < lenghtRules; i++){
+					rulesClone[i] = this._rules[i].clone();
+				}
+				clonedStyle.rules = rulesClone;
 			}
 			clonedStyle._name = this._name;
 			
 			return clonedStyle;
 		}
-
-		/* Getters & setters */ /**
+		
+		 /* Getters & setters */ /**
 		 * A name for the style
 		 */
 		public function get name():String {
-
+			
 			return this._name;
 		}
-
+		
 		public function set name(value:String):void {
-
+			
 			this._name = value;
 		}
-
+		
 		/**
 		 * The list of the rules defining the style
 		 */
 		public function get rules():Vector.<Rule> {
-
+			
 			return this._rules;
 		}
-
+		
 		public function set rules(value:Vector.<Rule>):void {
 			this._rules = value;
 		}
-
-	/*
-	   public function get fillColor():uint {
-	   return _fillColor;
-	   }
-
-	   public function set fillColor(fillColor:uint):void {
-	   _fillColor = fillColor;
-	   }
-
-	   public function get fillOpacity():Number {
-	   return _fillOpacity;
-	   }
-
-	   public function set fillOpacity(fillOpacity:Number):void {
-	   _fillOpacity = fillOpacity;
-	   }
-
-	   public function get strokeColor():uint {
-	   return _strokeColor;
-	   }
-
-	   public function set strokeColor(strokeColor:uint):void {
-	   _strokeColor = strokeColor;
-	   }
-
-	   public function get strokeOpacity():Number {
-	   return _strokeOpacity;
-	   }
-
-	   public function set strokeOpacity(strokeOpacity:Number):void {
-	   _strokeOpacity = strokeOpacity;
-	   }
-
-	   public function get strokeWidth():Number {
-	   return _strokeWidth;
-	   }
-
-	   public function set strokeWidth(strokeWidth:Number):void {
-	   _strokeWidth = strokeWidth;
-	   }
-
-	   public function get strokeLinecap():String {
-	   return _strokeLinecap;
-	   }
-
-	   public function set strokeLinecap(strokeLinecap:String):void {
-	   _strokeLinecap = strokeLinecap;
-	   }
-
-	   public function get pointRadius():Number {
-	   return _pointRadius;
-	   }
-
-	   public function set pointRadius(pointRadius:Number):void {
-	   _pointRadius = pointRadius;
-	   }
-
-	   public function get isFilled():Boolean {
-	   return _isFilled;
-	   }
-
-	   public function set isFilled(value:Boolean):void {
-	   _isFilled = value;
-	   }
-
-	   public function get isStroked():Boolean {
-	   return _isStroked;
-	   }
-
-	   public function set isStroked(value:Boolean):void {
-	   _isStroked = value;
-	 }*/
-
+		
+		//label
+		public function get textFormat():TextFormat{
+			return this._textFormat;
+		}
+		public function set textFormat(value:TextFormat):void{
+			this._textFormat = value;
+		}
+		
+		/*
+		public function get fillColor():uint {
+		return _fillColor;
+		}
+		
+		public function set fillColor(fillColor:uint):void {
+		_fillColor = fillColor;
+		}
+		
+		public function get fillOpacity():Number {
+		return _fillOpacity;
+		}
+		
+		public function set fillOpacity(fillOpacity:Number):void {
+		_fillOpacity = fillOpacity;
+		}
+		
+		public function get strokeColor():uint {
+		return _strokeColor;
+		}
+		
+		public function set strokeColor(strokeColor:uint):void {
+		_strokeColor = strokeColor;
+		}
+		
+		public function get strokeOpacity():Number {
+		return _strokeOpacity;
+		}
+		
+		public function set strokeOpacity(strokeOpacity:Number):void {
+		_strokeOpacity = strokeOpacity;
+		}
+		
+		public function get strokeWidth():Number {
+		return _strokeWidth;
+		}
+		
+		public function set strokeWidth(strokeWidth:Number):void {
+		_strokeWidth = strokeWidth;
+		}
+		
+		public function get strokeLinecap():String {
+		return _strokeLinecap;
+		}
+		
+		public function set strokeLinecap(strokeLinecap:String):void {
+		_strokeLinecap = strokeLinecap;
+		}
+		
+		public function get pointRadius():Number {
+		return _pointRadius;
+		}
+		
+		public function set pointRadius(pointRadius:Number):void {
+		_pointRadius = pointRadius;
+		}
+		
+		public function get isFilled():Boolean {
+		return _isFilled;
+		}
+		
+		public function set isFilled(value:Boolean):void {
+		_isFilled = value;
+		}
+		
+		public function get isStroked():Boolean {
+		return _isStroked;
+		}
+		
+		public function set isStroked(value:Boolean):void {
+		_isStroked = value;
+		}*/
+		
 	}
 }
 

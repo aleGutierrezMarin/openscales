@@ -69,6 +69,7 @@
     <classEntry path="org.openscales.core.feature.CustomMarker"/>
     <classEntry path="org.openscales.core.feature.DescribeFeature"/>
     <classEntry path="org.openscales.core.feature.Feature"/>
+    <classEntry path="org.openscales.core.feature.LabelFeature"/>
     <classEntry path="org.openscales.core.feature.LineStringFeature"/>
     <classEntry path="org.openscales.core.feature.Marker"/>
     <classEntry path="org.openscales.core.feature.MultiLineStringFeature"/>
@@ -241,6 +242,8 @@
     <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.map.ResolutionTest"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawLabelHandler"/>
+    <classEntry path="org.openscales.core.popup.LabelPopup"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
