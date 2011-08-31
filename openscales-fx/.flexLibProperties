@@ -119,6 +119,7 @@
     <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
     <classEntry path="org.openscales.fx.handler.FxKeyboardHandler"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawLabel"/>
+    <classEntry path="org.openscales.fx.control.drawing.DisactivateDrawingTools"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
