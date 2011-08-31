@@ -238,6 +238,7 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.map.ControlManagementTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
+    <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.map.ResolutionTest"/>
   </includeClasses>

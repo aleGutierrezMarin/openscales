@@ -89,6 +89,13 @@ package org.openscales.core.style {
 			return style;
 		}
 
+		public static function getDefaultGraticuleStyle():Style {
+			var style:Style = new Style();
+			style.name = "Default graticule style";
+			style.rules.push(getGraticuleRule());
+			return style;
+		}
+		
 		public static function getDefaultLineStyle():Style {
 
 			var style:Style = new Style();
@@ -148,6 +155,15 @@ package org.openscales.core.style {
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(symbolizer);
+			
+			return rule;
+		}
+		
+		protected static function getGraticuleRule():Rule{
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default graticule rule";
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0xc9c9c9, 1)));
 			
 			return rule;
 		}
