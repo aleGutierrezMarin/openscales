@@ -45,7 +45,9 @@ package org.openscales.core.handler.feature.draw
 		override public function featureClick(event:FeatureEvent):void
 		{
 			this._labelFeature = (event.feature as LabelFeature);
-			var labelPopup:LabelPopup = new LabelPopup(this.map,this.updateLabel);
+			var labelPopup:LabelPopup = new LabelPopup(this.map,this.updateLabel,this._labelFeature.labelPoint.label.text);
+			//test
+			event.feature.stopDrag();
 		}
 		
 		/**
