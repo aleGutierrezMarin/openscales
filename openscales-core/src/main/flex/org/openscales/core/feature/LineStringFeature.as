@@ -51,7 +51,8 @@ package org.openscales.core.feature
 			{
 				var size:uint = coords.length;
 				for(var k:uint = 0; k + 2 < size; k = k + 2){
-					this.dottedTo(new Pixel(coords[k],coords[k+1]), new Pixel(coords[k+2],coords[k+3]),10,20);
+					this.dottedTo(new Pixel(coords[k],coords[k+1]), new Pixel(coords[k+2],coords[k+3]),
+						lineSym.stroke.pWhiteSize,lineSym.stroke.pDottedSize);
 				}
 			}
 			else
