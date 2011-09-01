@@ -172,7 +172,7 @@ package org.openscales.core.layer
 				if(fullRedraw)
 					this.clear();
 				if ( forceReTile || !tilesBounds.containsBounds(bounds)) {
-					this.clear();
+//					this.clear();
 					this.initSingleTile(bounds);
 				}
 			} else {
