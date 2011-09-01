@@ -9,6 +9,9 @@ package org.openscales.core.format
 	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.MultiLineStringFeature;
+	import org.openscales.core.feature.MultiPointFeature;
+	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.request.DataRequest;
@@ -26,6 +29,9 @@ package org.openscales.core.format
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.MultiLineString;
+	import org.openscales.geometry.MultiPoint;
+	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
@@ -266,40 +272,14 @@ package org.openscales.core.format
 			}
 		}
 		
-		private function _loadPolygon(_Pdata:String):LinearRing {
-			
-			_Pdata = _Pdata.replace("\n"," ");
-			_Pdata = _Pdata.replace(/^\s*(.*?)\s*$/g, "$1");
-			var coordinates:Array = _Pdata.split(" ");
-			var Ppoints:Vector.<Number> = new Vector.<Number>();
-			var Pcoords:String;
-			var _Pcoords:Array;
-			var point:Point;
-			for each(Pcoords in coordinates) 
-			{
-				_Pcoords = Pcoords.split(",");
-				if(_Pcoords.length<2)
-					continue;
-				point = new Point(_Pcoords[0].toString(),_Pcoords[1].toString());
-				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
-				{
-					point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
-				}
-				Ppoints.push(point.x);
-				Ppoints.push(point.y);
-			}
-import org.openscales.core.feature.PointFeature;
-
-			return new LinearRing(Ppoints);
-		}
-		
 		/**
-		 * load placemarks
+		 * Load placemarks
 		 * @param a list of placemarks
-		 * @call _loadPolygon
+		 * @call loadLineString
+		 * @call loadPolygon
 		 */
-		private function loadPlacemarks(placemarks:XMLList):void {
-			// todo  Multigeometry tag
+		private function loadPlacemarks(placemarks:XMLList):void 
+		{
 			use namespace google;
 			use namespace opengis;
 			
@@ -345,28 +325,8 @@ import org.openscales.core.feature.PointFeature;
 						if(lineStyles[_id] != undefined)
 							_Lstyle = lineStyles[_id];
 					}
-					var _Ldata:String = placemark.LineString.coordinates.text();
-					_Ldata = _Ldata.replace("\n"," ");
-					_Ldata = _Ldata.replace(/^\s*(.*?)\s*$/g, "$1");
-					coordinates = _Ldata.split(" ");
-					var points:Vector.<Number> = new Vector.<Number>();
-					var coords:String;
-					for each(coords in coordinates)
-					{
-						var _coords:Array = coords.split(",");
-						if(_coords.length<2)
-							continue;
-						point = new Point(_coords[0].toString(),
-							_coords[1].toString());
-						if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
-						{
-							point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
-						}
-						points.push(point.x);
-						points.push(point.y);
-					}
-					var line:LineString = new LineString(points);
-					linesfeatures.push(new LineStringFeature(line,attributes,_Lstyle));
+							
+					linesfeatures.push(new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle));
 				}
 				
 				// Polygons
@@ -384,21 +344,106 @@ import org.openscales.core.feature.PointFeature;
 						if(polygonStyles[_id] != undefined)
 							_Pstyle = polygonStyles[_id];
 					}
-					//extract exterior ring
-					var lines:Vector.<Geometry> = new Vector.<Geometry>(1);
-					lines[0] = this._loadPolygon(placemark.Polygon.outerBoundaryIs.LinearRing.coordinates.text());
-					//interior ring
-					if(placemark.Polygon.innerBoundaryIs != undefined) 
-					{
-						try 
-						{
-							lines.push(this._loadPolygon(placemark.Polygon.innerBoundaryIs.LinearRing.coordinates.text()));
-						} 
-						catch(e:Error) {}
-					}
-					polygonsfeatures.push(new PolygonFeature(new Polygon(lines),attributes,_Pstyle));
+			
+					polygonsfeatures.push(new PolygonFeature(this.loadPolygon(placemark),attributes,_Pstyle));
 				}
 				
+				//MultiGeometry  
+				if (placemark.MultiGeometry != undefined)
+				{
+					var numberOfGeom:uint;
+					var i:uint;
+					var components:Vector.<Geometry>;
+					var geomStyle:Style = null; 
+					
+					var multiG:XML = placemark..*::MultiGeometry[0];
+					var lines:XMLList = multiG..*::LineString;
+					var polygons:XMLList = multiG..*::Polygon;
+					var points:XMLList = multiG..*::Point;
+					
+					//multiLineString
+					if(lines.length() > 0)
+					{
+						numberOfGeom = lines.length();
+						components = new Vector.<Geometry>;
+						for(i = 0; i < numberOfGeom; i++)
+						{
+							var LineCont:XML = new XML("<container></container>");
+							LineCont.appendChild(lines[i]);
+							components.push(this.loadLineString(LineCont));	
+						}
+						if(this.userDefinedStyle)
+						{
+							geomStyle = this.userDefinedStyle;	
+						}
+						else
+							geomStyle = Style.getDefaultLineStyle();
+						if(placemark.styleUrl != undefined)
+						{
+							_id = placemark.styleUrl.text();
+							if(lineStyles[_id] != undefined)
+								geomStyle = lineStyles[_id];
+						}
+						
+						linesfeatures.push(new MultiLineStringFeature(new MultiLineString(components),
+						attributes,geomStyle));
+					}
+
+					//multiPolygon
+					if(polygons.length() > 0)	
+					{
+						numberOfGeom = polygons.length();
+						components = new Vector.<Geometry>;
+						for(i = 0; i < numberOfGeom; i++)
+						{
+							var PolyCont:XML = new XML("<container></container>");
+							PolyCont.appendChild(polygons[i]);
+							components.push(this.loadPolygon(PolyCont));	
+						}
+						if(this.userDefinedStyle)
+						{
+							geomStyle = this.userDefinedStyle;	
+						}
+						else
+							geomStyle = Style.getDefaultSurfaceStyle();
+						if(placemark.styleUrl != undefined)
+						{
+							_id = placemark.styleUrl.text();
+							if(lineStyles[_id] != undefined)
+								geomStyle = lineStyles[_id];
+						}
+						
+						polygonsfeatures.push(new MultiPolygonFeature(new MultiPolygon(components),
+						attributes,geomStyle));
+					}
+					//multiPoint
+					//only one icon can be referenced in an IconStyle so icons are not supported for multipoints
+					if(points.length() > 0)
+					{
+						var pointCoords:Vector.<Number> = new Vector.<Number>;
+						numberOfGeom = points.length();
+						for(i = 0; i < numberOfGeom; i++)
+						{
+							coordinates = points[i]..*::coordinates.toString().split(",");
+							pointCoords.push(Number(coordinates[0]));
+							pointCoords.push(Number(coordinates[1]));
+						}
+						if(this.userDefinedStyle)
+						{
+							geomStyle = this.userDefinedStyle;
+						}
+						else if(placemark.styleUrl != undefined) 
+						{
+							_id = placemark.styleUrl.text();
+							geomStyle = this.loadPointStyleWithoutIcon(_id);
+						}
+						else
+							geomStyle = Style.getDefaultPointStyle();
+						
+						iconsfeatures.push(new MultiPointFeature(new MultiPoint(pointCoords),attributes,geomStyle));
+							
+					}
+				}
 				//Points
 				// rotation is not supported yet
 				if(placemark.Point != undefined)
@@ -444,29 +489,13 @@ import org.openscales.core.feature.PointFeature;
 							}
 							else 
 							{ // style without icon
-								var _style:Style;
 								if(this.userDefinedStyle)
 								{
-									_style = this.userDefinedStyle;
+									iconsfeatures.push(new PointFeature(point, attributes,this.userDefinedStyle));
 								}
 								else
-									_style = Style.getDefaultPointStyle();
-								
-								if(pointStyles[_id]["color"] != undefined)
-								{
-									var _fill:SolidFill = new SolidFill(pointStyles[_id]["color"], pointStyles[_id]["alpha"]);
-									var _stroke:Stroke = new Stroke(pointStyles[_id]["color"], pointStyles[_id]["alpha"]);
-									var _mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, _fill, _stroke);//the color of its stroke is the kml color
-									var _symbolizer:PointSymbolizer = new PointSymbolizer();
-									_symbolizer.graphic = _mark;
-									var _rule:Rule = new Rule();
-									_rule.name = _id;
-									_rule.symbolizers.push(_symbolizer);
-									_style = new Style();
-									_style.name = _id;
-									_style.rules.push(_rule);
-								}
-								iconsfeatures.push(new PointFeature(point, attributes, _style));
+									iconsfeatures.push(new PointFeature(point, attributes, 
+									this.loadPointStyleWithoutIcon(_id)));
 							}
 						}
 						else // no matching style
@@ -478,6 +507,127 @@ import org.openscales.core.feature.PointFeature;
 			}
 		}
 		
+		/**
+		 * Load point style without icon
+		 * @param the id of the style element
+		 */ 
+		
+		private function loadPointStyleWithoutIcon(id:String):Style
+		{
+			var pointStyle:Style;
+			pointStyle = Style.getDefaultPointStyle();
+			
+			if(pointStyles[id]["color"] != undefined)
+			{
+				var _fill:SolidFill = new SolidFill(pointStyles[id]["color"], pointStyles[id]["alpha"]);
+				var _stroke:Stroke = new Stroke(pointStyles[id]["color"], pointStyles[id]["alpha"]);
+				var _mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, _fill, _stroke);//the color of its stroke is the kml color
+				var _symbolizer:PointSymbolizer = new PointSymbolizer();
+				_symbolizer.graphic = _mark;
+				var _rule:Rule = new Rule();
+				_rule.name = id;
+				_rule.symbolizers.push(_symbolizer);
+				pointStyle = new Style();
+				pointStyle.name = id;
+				pointStyle.rules.push(_rule);
+			}
+			return pointStyle;
+		}
+		
+		/**
+		 * Parse LineStrings
+		 */ 
+		
+		private function loadLineString(placemark:XML):LineString
+		{
+			var coordinates:Array;
+			var point:Point;
+			
+			var lineNode:XML= placemark..*::LineString[0];
+			var lineData:String = lineNode..*::coordinates[0].toString();
+			
+			lineData = lineData.replace("\n"," ");
+			lineData = lineData.replace(/^\s*(.*?)\s*$/g, "$1");
+			coordinates = lineData.split(" ");
+			
+			var points:Vector.<Number> = new Vector.<Number>();
+			var coords:String;
+			for each(coords in coordinates)
+			{
+				var _coords:Array = coords.split(",");
+				if(_coords.length<2)
+					continue;
+				point = new Point(_coords[0].toString(),
+					_coords[1].toString());
+				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
+				{
+					point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+				}
+				points.push(point.x);
+				points.push(point.y);
+			}
+			var line:LineString = new LineString(points);	
+			return line;
+		}
+		
+		/**
+		 * Parse Polygons
+		 * @call loadPolygonData to parse the coordinates
+		 */ 
+		private function loadPolygon(placemark:XML):Polygon
+		{
+			var polygon:XML = placemark..*::Polygon[0];
+			
+			//extract exterior ring
+			var outerBoundary:XML = polygon..*::outerBoundaryIs[0];
+			var ring:XML = outerBoundary..*::LinearRing[0];
+			
+			var lines:Vector.<Geometry> = new Vector.<Geometry>(1);
+			lines[0] = this.loadPolygonData(ring..*::coordinates.toString());
+			
+			//interior ring
+			var innerBoundary:XML = polygon..*::innerBoundaryIs[0];
+			if(innerBoundary) 
+			{
+				ring = innerBoundary..*::LinearRing[0];
+				try 
+				{
+					lines.push(this.loadPolygonData(ring..*::coordinates.toString()));
+				} 
+				catch(e:Error) {}
+			}
+			
+			return new Polygon(lines);
+		}
+		
+		/**
+		 * Parse polygon coordinates
+		 */ 
+		private function loadPolygonData(_Pdata:String):LinearRing
+		{
+			_Pdata = _Pdata.replace("\n"," ");
+			_Pdata = _Pdata.replace(/^\s*(.*?)\s*$/g, "$1");
+			var coordinates:Array = _Pdata.split(" ");
+			var Ppoints:Vector.<Number> = new Vector.<Number>();
+			var Pcoords:String;
+			var _Pcoords:Array;
+			var point:Point;
+			for each(Pcoords in coordinates) 
+			{
+				_Pcoords = Pcoords.split(",");
+				if(_Pcoords.length<2)
+					continue;
+				point = new Point(_Pcoords[0].toString(),_Pcoords[1].toString());
+				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
+				{
+					point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+				}
+				Ppoints.push(point.x);
+				Ppoints.push(point.y);
+			}
+			
+			return new LinearRing(Ppoints);
+		}
 		
 		/**
 		 * Write data
@@ -491,6 +641,7 @@ import org.openscales.core.feature.PointFeature;
 		
 		override public function write(features:Object):Object
 		{
+			//todo write multigeometries
 			var i:uint;
 			var kmlns:Namespace = new Namespace("kml","http://www.opengis.net/kml/2.2");
 			var kmlFile:XML = new XML("<kml></kml>");
@@ -676,7 +827,7 @@ import org.openscales.core.feature.PointFeature;
 				
 				if(symbolizers.length > 1)
 				{
-					//symbolizers[1] is the outline style (fill - null and color of the outline)
+					//the second symbolizer is the outline style (fill - null and color of the outline)
 					styleNode.outline = "1";
 					var styleNode2:XML = new XML("<LineStyle></LineStyle>");
 					var polySym2:PolygonSymbolizer = symbolizers[1] as PolygonSymbolizer;
@@ -690,7 +841,7 @@ import org.openscales.core.feature.PointFeature;
 				
 				if(symbolizers.length > 0)
 				{
-					//symbolizers[0] is the polygon style (fill and color)
+					//the first symbolizer is the polygon style (fill and color)
 					var polySym:PolygonSymbolizer = symbolizers[0] as PolygonSymbolizer;
 					var fill:Fill = polySym.fill;
 					stroke = polySym.stroke;
@@ -713,8 +864,7 @@ import org.openscales.core.feature.PointFeature;
 				}			
 			}
 			else if(feature is PointFeature)
-			//the style with icon is not implemented yet. Should it be?	
-			//build the PointFeatures but not the CustomMarkers
+			//the style with icon is not implemented meaning the .kmz format is not supported	
 			{
 				var pointFeat:PointFeature = feature as PointFeature;
 				styleNode = new XML("<IconStyle></IconStyle>");
@@ -738,7 +888,6 @@ import org.openscales.core.feature.PointFeature;
 		
 		/**
 		 * Build kml color tag
-		 * opacity of 1 in OpenScales means 255 in KML
 		 */ 
 		private function buildColorNode(color:uint,opacity:Number):XML
 		{
@@ -757,7 +906,7 @@ import org.openscales.core.feature.PointFeature;
 			if(stringColor.length < 6)
 				stringColor = spareStringColor;
 			
-			//if features created in OpenScales, the opacity is between 0 and 1
+			//in OpenScales, the feature opacity is between 0 and 1 (1 means 255 in KML)
 			var KMLcolor:String = (opacity*255).toString(16) + stringColor.substr(4,2)
 				+ stringColor.substr(2,2)+stringColor.substr(0,2);
 			colorNode.appendChild(KMLcolor);

@@ -55,7 +55,8 @@
 				fxpopup = null;
 				fxpopup = new FxPopup();
 				fxpopup.fxmap = fxMap;
-				
+				//fxpopup.HEIGHT
+				//fxpopup.WIDTH
 				var content:String="";
 				
 				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
