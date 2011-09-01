@@ -29,8 +29,7 @@ package org.openscales.core.feature
 		{
 			super(geom, data, style, isEditable);
 			if (!style){
-				this.style = new Style();
-				this.style.textFormat = new TextFormat(this._font,this._size,this._color,this._bold,this._italic);
+				this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 			}
 		}
 		
@@ -92,7 +91,7 @@ package org.openscales.core.feature
 		}
 		public function set font(value:String):void{
 			this._font = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,this._color,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 		
 		/**
@@ -103,7 +102,7 @@ package org.openscales.core.feature
 		}
 		public function set size(value:Number):void{
 			this._size = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,this._color,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 		
 		/**
@@ -114,7 +113,7 @@ package org.openscales.core.feature
 		}
 		public function set bold(value:Boolean):void{
 			this._bold = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,this._color,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 		
 		/**
@@ -125,7 +124,7 @@ package org.openscales.core.feature
 		}
 		public function set italic(value:Boolean):void{
 			this._italic = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,this._color,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 		
 		/**
@@ -136,7 +135,7 @@ package org.openscales.core.feature
 		}
 		public function set color(value:uint):void{
 			this._color = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,this._color,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 	}
 }
