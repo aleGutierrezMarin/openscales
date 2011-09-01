@@ -107,16 +107,19 @@ package org.openscales.core.layer
 				// loop till xmax is reached
 				var currentX:Number = firstX;
 				while (currentX<xmax) {	
+					// lines
 					var points:Vector.<Number> = new Vector.<Number>();
 					points.push(currentX, ymin, currentX, ymax);
 					var line:LineString = new LineString(points);
 					var lineFeature:LineStringFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
+					// labels
 					var degreeLabel:String = currentX.toPrecision(3) + " °"; 
-					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+offset, ymin+offset);
+					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+2*offset, ymin+offset);
 					var labelFeature:LabelFeature = new LabelFeature(labelPoint);
 					labelFeature.style.textFormat = new TextFormat("Arial",12,0xc9c9c9); 
 					this.addFeature(labelFeature);
+					// iterates
 					currentX = currentX+interval;
 				}
 				
@@ -130,16 +133,19 @@ package org.openscales.core.layer
 				// loop till ymax is reached
 				var currentY:Number = firstY;
 				while (currentY<ymax) {	
+					// lines
 					points = new Vector.<Number>();
 					points.push(xmin, currentY, xmax, currentY);
 					line = new LineString(points);
 					lineFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
+					// labels
 					degreeLabel = currentY.toPrecision(3) + " °";
-					labelPoint = new LabelPoint(degreeLabel, xmin+offset, currentY+offset);
+					labelPoint = new LabelPoint(degreeLabel, xmin+2*offset, currentY+offset);
 					labelFeature = new LabelFeature(labelPoint);
 					labelFeature.style.textFormat = new TextFormat("Arial",12,0xc9c9c9); 
 					this.addFeature(labelFeature);
+					// iterates
 					currentY = currentY+interval;
 				}
 			}
@@ -174,7 +180,7 @@ package org.openscales.core.layer
 		 * @return The first coordinate to use for the graticule line.
 		 */
 		os_internal function getFirstCoordinateForGraticule(firstCoordinateOfMap:Number, interval:Number):Number {
-			var firstCoordinate:Number = interval*Math.floor(firstCoordinateOfMap/interval);
+			var firstCoordinate:Number = interval*Math.floor(firstCoordinateOfMap/interval)+interval;
 			return firstCoordinate;
 		}
 		

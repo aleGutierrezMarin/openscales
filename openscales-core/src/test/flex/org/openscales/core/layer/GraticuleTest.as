@@ -26,11 +26,11 @@ package org.openscales.core.layer
 		public function testFirstCoordinateForGraticule():void {
 			var graticule:Graticule = new Graticule("test", null);
 			var firstCoordinate:Number = graticule.getFirstCoordinateForGraticule(69, 10);
-			Assert.assertEquals("testFirstCoordinateForGraticule 1", 60, firstCoordinate); 
+			Assert.assertEquals("testFirstCoordinateForGraticule 1", 70, firstCoordinate); 
 			firstCoordinate = graticule.getFirstCoordinateForGraticule(71, 10);
-			Assert.assertEquals("testFirstCoordinateForGraticule 2", 70, firstCoordinate);
+			Assert.assertEquals("testFirstCoordinateForGraticule 2", 80, firstCoordinate);
 			firstCoordinate = graticule.getFirstCoordinateForGraticule(69.7, 0.2);
-			Assert.assertTrue("testFirstCoordinateForGraticule 3", firstCoordinate <= 69.6000001 && firstCoordinate >= 69.5999999);
+			Assert.assertTrue("testFirstCoordinateForGraticule 3", firstCoordinate <= 69.8000001 && firstCoordinate >= 69.7999999);
 		}
 		
 		[Test]
