@@ -13,6 +13,7 @@ package org.openscales.core.handler.multitouch {
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.geometry.basetypes.Location;
@@ -50,6 +51,8 @@ package org.openscales.core.handler.multitouch {
 		private var _mouseOffsetLayerContainerCenter:Pixel = new Pixel();	
 		private var _firstDrag:Boolean = true;	
 		private var _dragging:Boolean = false;
+		
+		private var _originalMatrix:Matrix = null;
 		
 		/**
 		 * Used to store the center when we reach the limit of the max extend.
@@ -113,7 +116,8 @@ package org.openscales.core.handler.multitouch {
 				
 				_touchPoint = this.map.baseLayer.getLocationFromMapPx(new Pixel(event.stageX, event.stageY));
 				
-				Trace.debug("touch x: "+_touchPoint.lon+" y:"+_touchPoint.lat);
+				this._originalMatrix = this.map.layerContainer.transform.matrix;
+				
 				
 			} else if (event.phase==GesturePhase.UPDATE) {
 				
@@ -174,15 +178,27 @@ package org.openscales.core.handler.multitouch {
 					this._touchPoint.lat - deltaPx.y * this.map.baseLayer.resolutions[idZoom],
 					this._touchPoint.projSrsCode);
 				
+				/*
+				var pinchMatrixInv:Matrix = this.map.layerContainer.transform.matrix;
+				var pinchPointInv:Point =
+					pinchMatrix.transformPoint(
+						new Point(event.stageX, event.stageY));
+				pinchMatrixInv.translate(-pinchPointInv.x, -pinchPointInv.y);
+				pinchMatrixInv.scale(1/this.cummulativeScaleX, 1/this.cummulativeScaleY);
+				pinchMatrixInv.translate(pinchPointInv.x, pinchPointInv.y);
+				this.map.layerContainer.transform.matrix = pinchMatrixInv
+				*/	
+				this.map.layerContainer.transform.matrix = this._originalMatrix;
+				
 				if(zoom!=0 && this.map.maxExtent.containsLocation(newPosition))
 				{
-					this.map.layerContainer.transform.matrix = pinchMatrix;
-					
-					this.map.layerContainer.scaleX = 1;
-					this.map.layerContainer.scaleY = 1;
-					
 					this.map.moveTo(newPosition, (this.map.zoom +(sign*zoom)), false, true);
+					Trace.debug("Zoom to new position (valid)");
 				}	
+				else
+				{
+					this.map.moveTo(this._startCenter, (this.map.zoom +(sign*zoom)), false, true);
+				}
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 			}
 		}
