@@ -46,15 +46,13 @@ package org.openscales.core.handler.feature.draw
 		{
 			this._labelFeature = (event.feature as LabelFeature);
 			var labelPopup:LabelPopup = new LabelPopup(this.map,this.updateLabel,this._labelFeature.labelPoint.label.text);
-			//test
-			event.feature.stopDrag();
 		}
 		
 		/**
 		 * Call on starting a selected label drag
 		 */
-		public function dragLabelStart(feature:Feature):void{
-			
+		public function dragLabelStart(feature:Feature):void
+		{
 			feature.startDrag();
 			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,feature));
 		}
@@ -62,8 +60,8 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * Call on stopping a selected label drag
 		 */
-		public function dragLabelStop(feature:Feature):void{
-			
+		public function dragLabelStop(feature:Feature):void
+		{
 			feature.stopDrag();
 			var px:Pixel = new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
 			var lonlat:Location = this.map.getLocationFromMapPx(px);
