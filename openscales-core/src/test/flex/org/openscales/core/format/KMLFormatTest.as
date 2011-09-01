@@ -23,6 +23,10 @@ package org.openscales.core.format
 		[Embed(source="/assets/kml/sample3.kml", mimeType="application/octet-stream")]
 		protected const Sample3KML:Class;
 		
+		// sample with multiGeometry
+		[Embed(source="/assets/kml/MultiGeomSample.xml", mimeType="application/octet-stream")]
+		protected const Sample4KML:Class;
+		
 		public function KMLFormatTest() {}
 		
 		protected function sample1KML():XML {
@@ -84,6 +88,14 @@ package org.openscales.core.format
 			Assert.assertEquals("LineStringTests", firstFeature.attributes["name"]);
 		}
 		
+		[Test]
+		public function testReadSample4KML( ) : void {
+			var kmlFormat:KMLFormat = new KMLFormat();
+			var file:XML = new XML(new Sample4KML());
+			
+			var features:Vector.<Feature> = kmlFormat.read(file) as Vector.<Feature>;
+			
+		}
 	}
 
 }
