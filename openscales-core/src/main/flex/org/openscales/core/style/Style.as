@@ -98,11 +98,24 @@ package org.openscales.core.style {
 			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
 			
 			var rule:Rule = new Rule();
-			rule.name = "Defined rule";
 			rule.symbolizers.push(symbolizer);
 			
 			var style:Style = new Style();
 			style.name = "Defined line style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		public static function getDefinedSurfaceStyle(color:uint, opacity:Number):Style
+		{
+			var fill:SolidFill = new SolidFill(color, opacity);
+			var stroke:Stroke = new Stroke(0xE7FF33, 3);
+			
+			var rule:Rule = new Rule();
+			rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
+			
+			var style:Style = new Style();
+			style.name = "Defined surface style";
 			style.rules.push(rule);
 			
 			return style;
@@ -114,6 +127,22 @@ package org.openscales.core.style {
 			style._textFormat = new TextFormat(font,size,color,bold,italic);
 			return style;
 		}
+		public static function getDefinedPointStyle(marker:String, rotation:Number):Style
+		{
+			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
+			var stroke:Stroke = new Stroke(0xA6430A, 1);
+			var mark:WellKnownMarker = new WellKnownMarker(marker, fill, stroke, 6, 1, rotation);
+			
+			var rule:Rule = new Rule();
+			rule.symbolizers.push(new PointSymbolizer(mark));
+			
+			var style:Style = new Style();
+			style.name = "Defined point style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		//end add
 		
 		public static function getDefaultLineStyle():Style {
 			

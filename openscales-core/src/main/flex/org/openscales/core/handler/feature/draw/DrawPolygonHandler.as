@@ -172,7 +172,8 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function drawFinalPoly():void{
 			//Change style of finished polygon
-			var style:Style = Style.getDefaultSurfaceStyle();
+			//var style:Style = Style.getDefaultSurfaceStyle();
+			var style:Style = Style.getDefinedSurfaceStyle(0x00FFFF,0.2);
 			_drawContainer.graphics.clear();
 			//We finalize the last feature (of course, it's a polygon)
 			//var feature:Feature = drawLayer.features[drawLayer.features.length - 1];
