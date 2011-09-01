@@ -91,6 +91,30 @@ package org.openscales.core.style {
 			return style;
 		}
 		
+		//add
+		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, whiteSize:uint, dottedSize:uint):Style
+		{
+			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,whiteSize,dottedSize);
+			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
+			
+			var rule:Rule = new Rule();
+			rule.name = "Defined rule";
+			rule.symbolizers.push(symbolizer);
+			
+			var style:Style = new Style();
+			style.name = "Defined line style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		public static function getDefinedLabelStyle(font:String, size:Number, color:uint, bold:Boolean, italic:Boolean):Style{
+			
+			var style:Style = new Style();
+			style.name = "Defined label style";
+			style._textFormat = new TextFormat(font,size,color,bold,italic);
+			return style;
+		}
+		
 		public static function getDefaultLineStyle():Style {
 			
 			var style:Style = new Style();
@@ -293,87 +317,8 @@ package org.openscales.core.style {
 			this._rules = value;
 		}
 		
-		//label
 		public function get textFormat():TextFormat{
 			return this._textFormat;
 		}
-		public function set textFormat(value:TextFormat):void{
-			this._textFormat = value;
-		}
-		
-		/*
-		public function get fillColor():uint {
-		return _fillColor;
-		}
-		
-		public function set fillColor(fillColor:uint):void {
-		_fillColor = fillColor;
-		}
-		
-		public function get fillOpacity():Number {
-		return _fillOpacity;
-		}
-		
-		public function set fillOpacity(fillOpacity:Number):void {
-		_fillOpacity = fillOpacity;
-		}
-		
-		public function get strokeColor():uint {
-		return _strokeColor;
-		}
-		
-		public function set strokeColor(strokeColor:uint):void {
-		_strokeColor = strokeColor;
-		}
-		
-		public function get strokeOpacity():Number {
-		return _strokeOpacity;
-		}
-		
-		public function set strokeOpacity(strokeOpacity:Number):void {
-		_strokeOpacity = strokeOpacity;
-		}
-		
-		public function get strokeWidth():Number {
-		return _strokeWidth;
-		}
-		
-		public function set strokeWidth(strokeWidth:Number):void {
-		_strokeWidth = strokeWidth;
-		}
-		
-		public function get strokeLinecap():String {
-		return _strokeLinecap;
-		}
-		
-		public function set strokeLinecap(strokeLinecap:String):void {
-		_strokeLinecap = strokeLinecap;
-		}
-		
-		public function get pointRadius():Number {
-		return _pointRadius;
-		}
-		
-		public function set pointRadius(pointRadius:Number):void {
-		_pointRadius = pointRadius;
-		}
-		
-		public function get isFilled():Boolean {
-		return _isFilled;
-		}
-		
-		public function set isFilled(value:Boolean):void {
-		_isFilled = value;
-		}
-		
-		public function get isStroked():Boolean {
-		return _isStroked;
-		}
-		
-		public function set isStroked(value:Boolean):void {
-		_isStroked = value;
-		}*/
-		
 	}
 }
-
