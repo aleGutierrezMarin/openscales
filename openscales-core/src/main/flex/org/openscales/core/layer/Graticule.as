@@ -1,13 +1,17 @@
 package org.openscales.core.layer
 {
+	import flash.text.TextFormat;
+	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
+	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -65,7 +69,8 @@ package org.openscales.core.layer
 		 * @inheritDoc
 		 */
 		override protected function draw():void {
-			
+			if(this.features)
+				this.removeFeatures(this.features);
 			// gets bounds of the map, in geographical coordinates
 			var extent:Bounds = this.map.extent.reprojectTo("EPSG:4326");
 			var xmin:Number = extent.left;
@@ -89,6 +94,9 @@ package org.openscales.core.layer
 			// verifies interval has been found
 			if (interval) {
 				
+				// offset for labels
+				var offset:Number = interval/10;
+				
 				//
 				// draw vertical lines
 				//
@@ -104,7 +112,11 @@ package org.openscales.core.layer
 					var line:LineString = new LineString(points);
 					var lineFeature:LineStringFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
-					// TODO: display label in degrees
+					var degreeLabel:String = currentX.toPrecision(3) + " °"; 
+					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+offset, ymin+offset);
+					var labelFeature:LabelFeature = new LabelFeature(labelPoint);
+					labelFeature.style.textFormat = new TextFormat("Arial",12,0xc9c9c9); 
+					this.addFeature(labelFeature);
 					currentX = currentX+interval;
 				}
 				
@@ -123,7 +135,11 @@ package org.openscales.core.layer
 					line = new LineString(points);
 					lineFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
-					// TODO: display label in degrees
+					degreeLabel = currentY.toPrecision(3) + " °";
+					labelPoint = new LabelPoint(degreeLabel, xmin+offset, currentY+offset);
+					labelFeature = new LabelFeature(labelPoint);
+					labelFeature.style.textFormat = new TextFormat("Arial",12,0xc9c9c9); 
+					this.addFeature(labelFeature);
 					currentY = currentY+interval;
 				}
 			}
