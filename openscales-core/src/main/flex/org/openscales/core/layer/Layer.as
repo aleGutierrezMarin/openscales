@@ -184,7 +184,7 @@ package org.openscales.core.layer {
 				removeEventListenerFromMap();
 			}
 			
-			this._map = map;		
+			this._map = map;	
 			if (this.map) {
 				if (_projSrsCode == null)
 				{
