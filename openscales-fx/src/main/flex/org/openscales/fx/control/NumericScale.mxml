@@ -64,7 +64,6 @@
 					this._map.addEventListener(MapEvent.PROJECTION_CHANGED,this.updateScale);
 					this._map.addEventListener(MapEvent.CENTER_CHANGED,this.updateScale);
 					this._map.addEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
-					this._map.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,this.updateScale);
 				}
 			}
 			
@@ -81,7 +80,6 @@
 					this._map.removeEventListener(MapEvent.PROJECTION_CHANGED,this.updateScale);
 					this._map.removeEventListener(MapEvent.CENTER_CHANGED,this.updateScale);
 					this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
-					this._map.removeEventListener(LayerEvent.LAYER_PROJECTION_CHANGED,this.updateScale);
 				}
 			}
 			
@@ -92,7 +90,7 @@
 			 * @param event The event received if the function is called 
 			 * when a zoom occur or when the baselayer is changed.
 			 */
-			public function updateScale(event:Event=null):void
+			public function updateScale(MapEvent:Event=null):void
 			{
 				if(this._map == null)
 					return;

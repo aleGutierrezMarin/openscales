@@ -1,5 +1,7 @@
 package org.openscales.core.events
 {
+	import flash.events.Event;
+	
 	import org.openscales.core.layer.Layer;
 	
 	/**
@@ -165,7 +167,12 @@ package org.openscales.core.events
 			this._newOpacity = value;
 		}
 		
-		
+		override public function clone():Event {
+			var evt:LayerEvent = new LayerEvent(this.type,this.layer,this.bubbles,this.cancelable);
+			evt.oldOpacity = this.oldOpacity;
+			evt.newOpacity = this.newOpacity;
+			return evt;
+		}
 		
 	}
 }

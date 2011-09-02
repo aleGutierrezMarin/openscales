@@ -184,7 +184,7 @@ package org.openscales.core.layer {
 				removeEventListenerFromMap();
 			}
 			
-			this._map = map;		
+			this._map = map;	
 			if (this.map) {
 				if (_projSrsCode == null)
 				{
@@ -632,8 +632,10 @@ package org.openscales.core.layer {
 				this.generateResolutions();
 			}
 			
+			if (event)
+				this.dispatchEvent(event.clone());
 			if(this.map && event)
-				this.map.dispatchEvent(event);
+				this.map.dispatchEvent(event.clone());
 		}
 		
 		/**
