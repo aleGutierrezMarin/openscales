@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<componentPackage>
+	<component id="Map" class="org.openscales.fx.FxMap" />
+	<component id="Extent" class="org.openscales.fx.FxExtent" />
+	<component id="MaxExtent" class="org.openscales.fx.FxMaxExtent" />
+	
+	<component id="Style" class="org.openscales.fx.feature.FxStyle" />
+	
+	<component id="VectorLayer" class="org.openscales.fx.layer.FxVectorLayer" />
+	<component id="ImageLayer" class="org.openscales.fx.layer.FxImageLayer" />
+	<component id="WMS" class="org.openscales.fx.layer.FxWMS" />
+	<component id="WMSC" class="org.openscales.fx.layer.FxWMSC" />
+	<component id="WMTS" class="org.openscales.fx.layer.FxWMTS" />
+	<component id="WFS" class="org.openscales.fx.layer.FxWFS" />
+	<component id="KML" class="org.openscales.fx.layer.FxKML" />
+	<component id="HTC" class="org.openscales.fx.layer.FxHTC" />
+	<component id="TMS" class="org.openscales.fx.layer.FxTMS" />
+	<component id="GPX" class="org.openscales.fx.layer.FxGPX" />
+	<component id="GeoRss" class="org.openscales.fx.layer.FxGeoRss" />
+	<component id="Graticule" class="org.openscales.fx.layer.FxGraticule" />
+	
+	<component id="Mapnik" class="org.openscales.fx.layer.osm.FxMapnik" />
+	<component id="CycleMap" class="org.openscales.fx.layer.osm.FxCycleMap" />
+	<component id="Maplint" class="org.openscales.fx.layer.osm.FxMaplint" />
+	<component id="Osmarender" class="org.openscales.fx.layer.osm.FxOsmarender" />
+	
+	<component id="CorePanZoom" class="org.openscales.fx.control.FxCorePanZoom" />
+	<component id="CorePanZoomBar" class="org.openscales.fx.control.FxCorePanZoomBar" />
+	
+	<component id="BorderPanHandler" class="org.openscales.fx.handler.mouse.FxBorderPanHandler" />
+	<component id="ClickHandler" class="org.openscales.fx.handler.mouse.FxClickHandler" />
+	<component id="DragHandler" class="org.openscales.fx.handler.mouse.FxDragHandler" />
+	<component id="WheelHandler" class="org.openscales.fx.handler.mouse.FxWheelHandler" />
+	<component id="WMSGetFeatureInfo" class="org.openscales.fx.handler.mouse.FxWMSGetFeatureInfo" />
+	
+	<component id="DragFeatureHandler" class="org.openscales.fx.handler.feature.FxDragFeatureHandler" />
+	<component id="SelectFeaturesHandler" class="org.openscales.fx.handler.feature.FxSelectFeaturesHandler" />
+	
+	<component id="KeyBoardHandler" class="org.openscales.fx.handler.FxKeyboardHandler" />
+	
+	<component id="Copyright" class="org.openscales.fx.control.Copyright" />
+	<component id="DataOriginatorsDisplay" class="org.openscales.fx.control.DataOriginatorsDisplay" />
+	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
+	
+	<!-- LayerManager -->
+	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
+	<component id="DefaultLayerManagerItemRenderer" class="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer" />
+	<component id="LayerLegend" class="org.openscales.fx.control.layer.LayerLegend" />
+	<component id="LayerMetadatas" class="org.openscales.fx.control.layer.LayerMetadatas" />
+	<component id="ChangeLayerOpacity" class="org.openscales.fx.control.layer.ChangeLayerOpacity" />
+	<component id="ChangeLayerPosition" class="org.openscales.fx.control.layer.ChangeLayerPosition" />
+	<component id="ChangeLayerVisibility" class="org.openscales.fx.control.layer.ChangeLayerVisibility" />
+	<component id="DeleteLayer" class="org.openscales.fx.control.layer.DeleteLayer" />
+	<component id="LayerZoomToExtent" class="org.openscales.fx.control.layer.LayerZoomToExtent" />
+	
+	<component id="MousePosition" class="org.openscales.fx.control.MousePosition" />
+	<component id="Pan" class="org.openscales.fx.control.Pan" />
+	<component id="PanZoom" class="org.openscales.fx.control.PanZoom" />
+	<component id="Zoom" class="org.openscales.fx.control.Zoom" />
+	<component id="ZoomBox" class="org.openscales.fx.control.ZoomBox" />
+	
+	<component id="OverviewMap" class="org.openscales.fx.control.FxOverviewMap" />
+	<component id="OverviewMapRatio" class="org.openscales.fx.control.OverviewMapRatio" />
+	<component id="Capabilities" class="org.openscales.fx.control.Capabilities" />
+	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
+	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
+	<component id="YahooSearch" class="org.openscales.fx.control.search.YahooSearch" />
+	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
+	<component id="ScaleLine" class="org.openscales.fx.control.ScaleLine" />
+	<component id="NumericScale" class="org.openscales.fx.control.NumericScale" />
+	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
+	<component id="LanguageSwitcher" class="org.openscales.fx.control.LanguageSwitcher" />
+	
+	<component id="SampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
+	<component id="SampleRoutingControl" class="org.openscales.fx.control.routing.SampleRoutingControl"/>
+	
+	<component id="ControlPanel" class="org.openscales.fx.ControlPanel"/>
+	
+	<component id="IGNGeoRMSecurity" class="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
+		
+	<component id="Control" class="org.openscales.fx.control.Control" />
+	<component id="IconButton" class="org.openscales.fx.control.IconButton" />
+	<component id="Popup" class="org.openscales.fx.popup.FxPopup" />
+	<component id="PopupRenderer" class="org.openscales.fx.popup.renderer.FxPopupRenderer" />
+	
+	<component id="LayerCatalog" class="org.openscales.fx.control.LayerCatalog" />
+	<component id="AddLayerButton" class="org.openscales.fx.control.layer.AddLayerButton" />
+	<component id="RemoveLayerButton" class="org.openscales.fx.control.layer.RemoveLayerButton" />
+	
+	<!-- Drawing tools -->
+	<component id="DrawLabel" class="org.openscales.fx.control.drawing.DrawLabel" />
+	<component id="DrawPoint" class="org.openscales.fx.control.drawing.DrawPoint" />
+	<component id="DrawPath" class="org.openscales.fx.control.drawing.DrawPath" />
+	<component id="DrawPolygon" class="org.openscales.fx.control.drawing.DrawPolygon" />
+	<component id="SelectFeatures" class="org.openscales.fx.control.drawing.SelectFeatures" />
+	<component id="EditFeatures" class="org.openscales.fx.control.drawing.EditFeatures" />
+	<component id="MoveFeatures" class="org.openscales.fx.control.drawing.MoveFeatures" />
+	<component id="DisactivateDrawingTools" class="org.openscales.fx.control.drawing.DisactivateDrawingTools" />
+	
+</componentPackage>
