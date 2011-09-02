@@ -878,8 +878,7 @@ package org.openscales.core.handler.feature
 				selectedStyle = Style.getDefaultSurfaceStyle();
 				symbolizer = new LineSymbolizer(new Stroke(color, borderThin));
 			} else if (feature is LabelFeature) {
-				selectedStyle = new Style();
-				selectedStyle.textFormat = new TextFormat(feature.style.textFormat.font,feature.style.textFormat.size,
+				selectedStyle = Style.getDefinedLabelStyle(feature.style.textFormat.font,(feature.style.textFormat.size as Number),
 					0xFFFF00,feature.style.textFormat.bold,feature.style.textFormat.italic);
 			} else { //if (feature is PolygonFeature || feature is MultiPolygonFeature) {
 				selectedStyle = Style.getDefaultSurfaceStyle();

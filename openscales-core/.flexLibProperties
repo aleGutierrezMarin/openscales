@@ -244,6 +244,7 @@
     <classEntry path="org.openscales.map.ResolutionTest"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawLabelHandler"/>
     <classEntry path="org.openscales.core.popup.LabelPopup"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
