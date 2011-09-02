@@ -5,13 +5,14 @@ package org.openscales.core.layer
 	import flash.net.URLRequestMethod;
 	
 	import org.openscales.core.Trace;
-	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.KMLFormat;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.style.Style;
+	import org.openscales.geometry.basetypes.Bounds;
 	
 	/**
-	 * KML layer, most useful feature of KML 2.2 specifications are supported
+	 * KML layer, most useful features of KML 2.0 and 2.2 specifications are supported
 	 */
 	public class KML extends VectorLayer
 	{
@@ -21,12 +22,14 @@ package org.openscales.core.layer
 		
 		public function KML(name:String,
 							url:String,
-							bounds:Bounds = null) {
+							style:Style = null,
+							bounds:Bounds = null) 
+		{
+			super(name);
 			this.url = url;
 			this.maxExtent = bounds;
-			
-			super(name);
 			this._kmlFormat = new KMLFormat();
+			this._kmlFormat.userDefinedStyle = style;
 		}
 		
 		override public function destroy():void {
@@ -88,5 +91,17 @@ package org.openscales.core.layer
 			return this.url;
 		}
 		
+		/**
+		 * Getters and Setters
+		 */ 
+		public function get projection():String
+		{
+			return this._projSrsCode;	
+		}
+		
+		public function set projection(value:String):void
+		{
+			this._projSrsCode = value;
+		}
 	}
 }
