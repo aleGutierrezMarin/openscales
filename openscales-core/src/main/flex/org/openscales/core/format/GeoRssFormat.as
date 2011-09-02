@@ -94,6 +94,7 @@ package org.openscales.core.format
 		 * 
 		 * @call parseCoords
 		 * @call parseFeature for exterior GML data (@see GML311.as)
+		 * @call parseHTMLAttributes for the decription element
 		 * 
 		 */ 
 		public function parseItem(item:XML):Feature{
@@ -148,9 +149,13 @@ package org.openscales.core.format
 					var gmlFormat:GML311 = new GML311();
 					feature = gmlFormat.parseFeature(children[i], false);			
 				}
+				else if(elementType.toLowerCase() == "description") {
+					if((children[i].children().length()) > 0)//OK; false if the node doesn't contain any value
+						att["description"] = parseHTMLAttributes(children[i].toString());
+				}
 				//parse attributes
 				else {
-					if((children[i].children().length()) > 0)//OK; false if the node doesn't contain any value
+					if((children[i].children().length()) > 0)
 					att[elementType] = children[i].toString();
 				}
 			}	
@@ -161,6 +166,15 @@ package org.openscales.core.format
 				}		
 			}	
 			return feature;
+		}
+
+		private function parseHTMLAttributes(str:String):String {
+			var reg:RegExp = /\<br\/\>/g;
+			str = str.replace(reg,"<br>");
+			reg = /\<li\>/g;
+			str = str.replace(reg,"<br>");
+			reg = /\<\/li\>/g;
+			return str.replace(reg,"");
 		}
 		
 		/**

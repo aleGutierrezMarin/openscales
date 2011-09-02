@@ -3,6 +3,7 @@ package
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
@@ -10,41 +11,48 @@ package
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
-	import org.openscales.core.layer.ogc.GeoRss;
+	import org.openscales.core.layer.KML;
+	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WMS;
+	import org.openscales.core.layer.ogc.WMSC;
 	import org.openscales.core.layer.osm.Mapnik;
+	import org.openscales.core.style.Style;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
 	
-	
 	[SWF(width='1200',height='700')]
-	public class GeoRssExample extends Sprite
+	public class KMLExample extends Sprite
 	{
 		protected var _map:Map;
 		private var url:String;
+		private var url2:String;
 		
-		public function GeoRssExample()
+		public function KMLExample()
 		{
 			super();
-			this.url = "http://openscales.org:80/geoserver/sf/wms?height=332&bbox=589851.4376666048%2C4914490.882968263%2C608346.4603107043%2C4926501.8980334345&width=512&layers=sf%3Aarchsites&request=GetMap&service=wms&styles=point&srs=EPSG%3A26713&format=application%2Frss+xml&transparent=false&version=1.1.1";
+			this.url = "http://www.parisavelo.net/velib.kml";
 			
 			//Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			_map.projection = "EPSG:4326";
 			
 			
 			// Add a base layer to the map
-			var mapnik:Mapnik=new Mapnik("Mapnik");
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
-			_map.addLayer(mapnik);
 			
-			//add the GeoRss layer; fetch data from url
-			var georssLayer:GeoRss = new GeoRss("Archeological Sites", this.url);
-			this._map.addLayer(georssLayer);
+			var wmsLayer:WMS = new WMS("Scan","http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4");
+			wmsLayer.version = "1.3.0";
+			wmsLayer.layers = "SCANDEP_PNG_IGNF_LAMB93";
+			wmsLayer.projection = "EPSG:4326";
+			this._map.addLayer(wmsLayer);
 			
-	
+				
+			//add the KML layer; fetch data from url
+			var kmlLayer:KML = new KML("Stations Vélib Paris", this.url);
+			this._map.addLayer(kmlLayer);
+			Trace.debug("kmlLayer projection :"+kmlLayer.projSrsCode);
+			
+			
 			// Add Controls to map
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerManager());
@@ -62,10 +70,10 @@ package
 			_map.addControl(new DragHandler());
 			
 			//Set map center and zoom level
-			_map.resolution= new Resolution(38.21851413574219, "EPSG:4326");
-			_map.center = new Location(-103.6,44.5);
+			_map.resolution = new Resolution(0.00034332275390625,"EPSG:4326");
+			_map.center = new Location(2.418611,48.842222,"EPSG:4326");
 			this.addChild(_map);
-	
+			
 		}
 	}
 }

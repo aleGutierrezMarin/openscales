@@ -1,6 +1,7 @@
 package org.openscales.fx.layer
 {
 	import org.openscales.core.layer.ogc.GPX;
+	import org.openscales.core.style.Style;
 
 	public class FxGPX extends FxVectorLayer
 	{
@@ -42,16 +43,27 @@ package org.openscales.fx.layer
 				(this._layer as GPX).version = value;
 		}
 		
-		public function set xmlData(value:XML):void{
-			if(this._layer != null)
-				(this._layer as GPX).gpxData = value;
-		}
-		
 		public function get xmlData():XML{
 			if(this._layer != null)
 				return (this._layer as GPX).gpxData;
 			return null;
 		}
 		
+		public function set xmlData(value:XML):void{
+			if(this._layer != null)
+				(this._layer as GPX).gpxData = value;
+		}
+		
+		override public function get style():Style{
+			if(this._layer != null)
+				return (this._layer as GPX).style;
+			return null;
+		}
+		
+		override public function set style(value:Style):void{
+			if(this._layer != null)
+				(this._layer as GPX).style = value;
+		}	
+
 	}
 }

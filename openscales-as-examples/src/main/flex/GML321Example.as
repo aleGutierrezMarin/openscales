@@ -39,7 +39,6 @@ package
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
-			
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
@@ -88,7 +87,7 @@ package
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 			
-			//Set map size and zoom level
+			//Set map center and zoom level
 			_map.resolution = new Resolution(1.40625, "EPSG:4326");
 			_map.center = new Location(-34.6,17.2, "EPSG:4326");
 			this.addChild(_map);
