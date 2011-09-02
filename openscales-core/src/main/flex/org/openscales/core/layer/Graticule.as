@@ -120,7 +120,7 @@ package org.openscales.core.layer
 					var degreeLabel:String = currentX.toPrecision(3) + " °"; 
 					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+2*offset, ymin+offset);
 					var labelFeature:LabelFeature = new LabelFeature(labelPoint);
-					labelFeature.style.textFormat = new TextFormat("Arial",12,0xc9c9c9); 
+					labelFeature.style = Style.getDefinedLabelStyle("Arial",12,0xc9c9c9,false,false);
 					this.addFeature(labelFeature);
 					// iterates
 					currentX = currentX+interval;
@@ -146,7 +146,7 @@ package org.openscales.core.layer
 					degreeLabel = currentY.toPrecision(3) + " °";
 					labelPoint = new LabelPoint(degreeLabel, xmin+2*offset, currentY+offset);
 					labelFeature = new LabelFeature(labelPoint);
-					labelFeature.style.textFormat = new TextFormat("Arial",12,0xc9c9c9); 
+					labelFeature.style = Style.getDefinedLabelStyle("Arial",12,0xc9c9c9,false,false);
 					this.addFeature(labelFeature);
 					// iterates
 					currentY = currentY+interval;

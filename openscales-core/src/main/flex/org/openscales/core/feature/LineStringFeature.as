@@ -2,10 +2,12 @@ package org.openscales.core.feature
 {
 	import org.openscales.core.Trace;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Feature used to draw a LineString geometry on FeatureLayer
@@ -42,8 +44,20 @@ package org.openscales.core.feature
 				} else {
 					commands.push(2); 
 				}
-			} 
-			this.graphics.drawPath(commands, coords);
+			}
+			
+			var lineSym:LineSymbolizer = (symbolizer as LineSymbolizer);
+			if(lineSym != null && lineSym.stroke.pWhiteSize != 0 && lineSym.stroke.pDottedSize != 0)
+			{
+				var size:uint = coords.length;
+				for(var k:uint = 0; k + 2 < size; k = k + 2){
+					this.dottedTo(new Pixel(coords[k],coords[k+1]), new Pixel(coords[k+2],coords[k+3]),
+						lineSym.stroke.pWhiteSize,lineSym.stroke.pDottedSize);
+				}
+			}
+			else
+				this.graphics.drawPath(commands, coords);
+			
 			this.graphics.endFill();
 			
 		}
@@ -59,7 +73,39 @@ package org.openscales.core.feature
 			var lineStringFeatureClone:LineStringFeature=new LineStringFeature(geometryClone as LineString,null,style,this.isEditable);
 			return lineStringFeatureClone;
 			
-		}		
+		}
+		
+		
+		//test
+		public function dottedTo(px1:Pixel, px2:Pixel, pWhiteSize:int, pDottedSize:int):void
+		{
+			var dx:Number = px2.x - px1.x;
+			var dy:Number = px2.y - px1.y;
+			var dist:Number = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+			var angle:Number = Math.atan2(dy, dx) * 180 / Math.PI;
+			
+			var tempPixel:Pixel = new Pixel(px1.x, px1.y);
+			this.graphics.moveTo(tempPixel.x, tempPixel.y);
+			var cos:Number = Math.cos(angle / 180 * Math.PI);
+			var sin:Number = Math.sin(angle / 180 * Math.PI);
+			while (dist > 0)
+			{
+				dist -= pDottedSize;
+				if (dist < 0){
+					tempPixel.x = px2.x;
+					tempPixel.y = px2.y;
+				}
+				else{
+					tempPixel.x = tempPixel.x + (pDottedSize * cos);
+					tempPixel.y = tempPixel.y + (pDottedSize * sin);
+				}
+				this.graphics.lineTo(tempPixel.x, tempPixel.y);
+				tempPixel.x = tempPixel.x + (pWhiteSize * cos);
+				tempPixel.y = tempPixel.y + (pWhiteSize * sin);
+				this.graphics.moveTo(tempPixel.x, tempPixel.y);
+				dist -= pWhiteSize;
+			}
+		}
 	}
 }
 

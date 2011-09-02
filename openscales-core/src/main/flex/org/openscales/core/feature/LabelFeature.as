@@ -15,6 +15,7 @@ package org.openscales.core.feature
 		private var _size:Number = 12;
 		private var _bold:Boolean = false;
 		private var _italic:Boolean = false;
+		private var _color:uint = 0x000000;
 		
 		/**
 		 * Constructor class
@@ -28,8 +29,7 @@ package org.openscales.core.feature
 		{
 			super(geom, data, style, isEditable);
 			if (!style){
-				this.style = new Style();
-				this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+				this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 			}
 		}
 		
@@ -42,6 +42,14 @@ package org.openscales.core.feature
 				value = new Location(this.labelPoint.x, this.labelPoint.y, this.labelPoint.projSrsCode);
 			}
 			return value;
+		}
+		
+		/**
+		 * 
+		 */
+		public function set lonlat(value:Location):void{
+			this.labelPoint.x = value.x;
+			this.labelPoint.y = value.y;
 		}
 		
 		/**
@@ -83,7 +91,7 @@ package org.openscales.core.feature
 		}
 		public function set font(value:String):void{
 			this._font = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 		
 		/**
@@ -94,7 +102,7 @@ package org.openscales.core.feature
 		}
 		public function set size(value:Number):void{
 			this._size = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 		
 		/**
@@ -105,7 +113,7 @@ package org.openscales.core.feature
 		}
 		public function set bold(value:Boolean):void{
 			this._bold = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 		
 		/**
@@ -116,7 +124,18 @@ package org.openscales.core.feature
 		}
 		public function set italic(value:Boolean):void{
 			this._italic = value;
-			this.style.textFormat = new TextFormat(this._font,this._size,0x000000,this._bold,this._italic);
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
+		}
+		
+		/**
+		 * To define the color of the label
+		 */
+		public function get color():uint{
+			return this._color;
+		}
+		public function set color(value:uint):void{
+			this._color = value;
+			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
 		}
 	}
 }
