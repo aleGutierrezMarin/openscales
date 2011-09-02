@@ -6,6 +6,8 @@ package org.openscales.core.format
 	import org.flexunit.Assert;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.MultiPointFeature;
+	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 
 	/**
@@ -22,6 +24,10 @@ package org.openscales.core.format
 		// sample with linestring
 		[Embed(source="/assets/kml/sample3.kml", mimeType="application/octet-stream")]
 		protected const Sample3KML:Class;
+		
+		// sample with multiGeometry
+		[Embed(source="/assets/kml/MultiGeomSample.xml", mimeType="application/octet-stream")]
+		protected const Sample4KML:Class;
 		
 		public function KMLFormatTest() {}
 		
@@ -84,6 +90,26 @@ package org.openscales.core.format
 			Assert.assertEquals("LineStringTests", firstFeature.attributes["name"]);
 		}
 		
+		[Test]
+		public function testParseMultiGeometry( ) : void {
+			var kmlFormat:KMLFormat = new KMLFormat();
+			var file:XML = new XML(new Sample4KML());
+			var i:uint;
+			//7 multipolygons and 7 multipoints inside this file because multiPoly parsed first
+			
+			var features:Vector.<Feature> = kmlFormat.read(file) as Vector.<Feature>;
+			Assert.assertEquals("There should be 14 features inside this list",14,features.length);
+			for (i = 0; i < 7; i++)
+			{
+				Assert.assertTrue("This feature should be a multiPolygonFeature", features[i] is MultiPolygonFeature);
+			}
+			
+			for (i = 7; i < 14; i++)
+			{
+				Assert.assertTrue("This feature should be a multiPointFeature", features[i] is MultiPointFeature);
+			}
+			
+		}
 	}
 
 }

@@ -16,7 +16,7 @@ package org.openscales.core.style.symbolizer {
 		}
 
 		/**
-		 * Defines how the polygon line are rendered
+		 * Defines how the polygon lines are rendered
 		 */
 		public function get stroke():Stroke {
 
