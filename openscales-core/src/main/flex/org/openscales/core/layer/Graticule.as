@@ -63,6 +63,9 @@ package org.openscales.core.layer
 			
 			// puts layer in geographical coordinates
 			this._projSrsCode = "EPSG:4326";
+			
+			// hides layer in LayerManager
+			this.displayInLayerManager = false;
 		}
 		
 		/**
