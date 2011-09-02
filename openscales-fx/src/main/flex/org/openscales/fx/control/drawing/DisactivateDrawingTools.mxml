@@ -27,7 +27,7 @@
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			[Bindable]
-			[Embed(source="/assets/images/icons/Icons-01.png")]
+			[Embed(source="/assets/images/icons/Icons-12.png")]
 			private var _btnDisactivate:Class;
 			private var _active:Boolean = true;
 			private var _dragHandler:DragHandler = null;

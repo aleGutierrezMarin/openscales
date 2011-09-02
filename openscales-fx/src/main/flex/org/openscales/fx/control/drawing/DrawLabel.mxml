@@ -29,7 +29,7 @@
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			[Bindable]
-			[Embed(source="/assets/images/icons/Icons-07.png")]
+			[Embed(source="/assets/images/icons/Icons-11.png")]
 			private var _btnLabel:Class;
 			private var _active:Boolean = true;
 			private var _handler:AbstractDrawHandler= new DrawLabelHandler();
