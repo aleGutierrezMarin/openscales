@@ -7,6 +7,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.MultiPolygonFeature;
@@ -27,6 +28,9 @@ package org.openscales.core.handler.feature.draw
 	{
 		//add
 		private var _featuresToEdit:Vector.<Feature>;
+		private var iEditLabel:IEditFeature=null;
+		private var _editLabel:Boolean;
+		
 		/**
 		 *Layer to edit
 		 * @private 
@@ -61,7 +65,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param editPath to know if the edition of path is allowed
 		 * @param editPolygon to know if the edition of polygon is allowed
 		 * */
-		public function FeatureLayerEditionHandler(map:Map = null,layer:VectorLayer = null,active:Boolean = false,editPoint:Boolean = true,editPath:Boolean = true,editPolygon:Boolean = true)
+		public function FeatureLayerEditionHandler(map:Map = null,layer:VectorLayer = null,active:Boolean = false,editPoint:Boolean = true,editPath:Boolean = true,editPolygon:Boolean = true,editLabel:Boolean = true)
 		{
 			// Handler click management
 			this._featureClickHandler = new FeatureClickHandler(map,active);
@@ -74,6 +78,7 @@ package org.openscales.core.handler.feature.draw
 			this._editPoint = editPoint;
 			this._editPath = editPath;
 			this._editPolygon = editPolygon;
+			this._editLabel = editLabel;
 			
 			this.layerToEdit = layer;
 			
@@ -85,37 +90,45 @@ package org.openscales.core.handler.feature.draw
 		 */
 		private function dragVerticeStart(event:FeatureEvent):void{
 			
-			var vectorfeature:PointFeature = (event.feature) as PointFeature;
+			var dragAlreadyStart:Boolean = false;
+			var vectorfeature:PointFeature = null;
 			
-			if(vectorfeature != null){
-				
-				var dragAlreadyStart:Boolean = false;
-				if(!dragAlreadyStart && iEditPolygon != null){
-					if(isSelectedFeature(iEditPolygon.findVirtualVerticeParent(vectorfeature))){
-						iEditPolygon.dragVerticeStart(vectorfeature);
-						_featureEditedType = 2;
-						dragAlreadyStart = true;
-					}
+			if(!(event.feature is LabelFeature))
+				vectorfeature = (event.feature) as PointFeature;
+			
+			if(!dragAlreadyStart && iEditPolygon != null && vectorfeature != null){
+				if(isSelectedFeature(iEditPolygon.findVirtualVerticeParent(vectorfeature))){
+					iEditPolygon.dragVerticeStart(vectorfeature);
+					_featureEditedType = 2;
+					dragAlreadyStart = true;
 				}
-				if(!dragAlreadyStart && iEditPath != null){
-					if(isSelectedFeature(iEditPath.findVirtualVerticeParent(vectorfeature))){
-						iEditPath.dragVerticeStart(vectorfeature);
-						_featureEditedType = 1;
-						dragAlreadyStart = true;
-					}
-				}
-				if(!dragAlreadyStart && iEditPoint != null){
-					if(isSelectedFeature(event.feature)){
-						_featureEditedType = 0;
-						iEditPoint.dragVerticeStart(vectorfeature);
-					}
-				}
-				
-				// events management
-				this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-				this.map.removeEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.EDITION_POINT_FEATURE_DRAG_START,vectorfeature));
 			}
+			if(!dragAlreadyStart && iEditPath != null && vectorfeature != null){
+				if(isSelectedFeature(iEditPath.findVirtualVerticeParent(vectorfeature))){
+					iEditPath.dragVerticeStart(vectorfeature);
+					_featureEditedType = 1;
+					dragAlreadyStart = true;
+				}
+			}
+			if(!dragAlreadyStart && iEditPoint != null && vectorfeature != null){
+				if(isSelectedFeature(event.feature)){
+					iEditPoint.dragVerticeStart(vectorfeature);
+					_featureEditedType = 0;
+					dragAlreadyStart = true;
+				}
+			}
+			if(!dragAlreadyStart && iEditLabel != null && vectorfeature == null){
+				if(isSelectedFeature(event.feature)){
+					(iEditLabel as EditLabelHandler).dragLabelStart(event.feature);
+					_featureEditedType = 3;
+				}
+			}
+			
+			// events management
+			this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			this.map.removeEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			if(vectorfeature != null)
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.EDITION_POINT_FEATURE_DRAG_START,vectorfeature));
 		}
 		
 		/**
@@ -123,28 +136,36 @@ package org.openscales.core.handler.feature.draw
 		 */
 		private function dragVerticeStop(event:FeatureEvent):void{
 			
-			var vectorfeature:PointFeature = (event.feature) as PointFeature;
-			if(vectorfeature != null){
-				
-				switch(_featureEditedType){
-					case 0:
-						if(isSelectedFeature(vectorfeature))
-							iEditPoint.dragVerticeStop(vectorfeature);
-						break;
-					case 1:
-						if(isSelectedFeature(iEditPath.findVirtualVerticeParent(vectorfeature)))
-							iEditPath.dragVerticeStop(vectorfeature);
-						break;
-					case 2:
-						if(isSelectedFeature(iEditPolygon.findVirtualVerticeParent(vectorfeature)))
-							iEditPolygon.dragVerticeStop(vectorfeature);
-						break;
-					default:
-						break;
-				}
+			var vectorfeature:PointFeature = null;
+			if(!(event.feature is LabelFeature)){
+				vectorfeature = (event.feature) as PointFeature;
+				if(!vectorfeature)
+					return;
+			}
+			
+			switch(_featureEditedType){
+				case 0:
+					if(isSelectedFeature(vectorfeature))
+						iEditPoint.dragVerticeStop(vectorfeature);
+					break;
+				case 1:
+					if(isSelectedFeature(iEditPath.findVirtualVerticeParent(vectorfeature)))
+						iEditPath.dragVerticeStop(vectorfeature);
+					break;
+				case 2:
+					if(isSelectedFeature(iEditPolygon.findVirtualVerticeParent(vectorfeature)))
+						iEditPolygon.dragVerticeStop(vectorfeature);
+					break;
+				case 3:
+					if(isSelectedFeature(event.feature))
+						(iEditLabel as EditLabelHandler).dragLabelStop(event.feature);
+					break;
+				default:
+					break;
 			}
 			
 			_featureEditedType = -1;
+			
 			// events management
 			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
@@ -154,64 +175,80 @@ package org.openscales.core.handler.feature.draw
 		 * feature click function
 		 */
 		private function featureClick(event:FeatureEvent):void{
-			var vectorfeature:PointFeature = (event.feature) as PointFeature;
-			if(vectorfeature != null){
-				var clickAlreadyStart:Boolean = false;
-				
-				if(iEditPolygon != null){
-					if(iEditPolygon.findVirtualVerticeParent(vectorfeature) != null){
-						iEditPolygon.featureClick(event);
-						clickAlreadyStart = true;
-					}
+			
+			var clickAlreadyStart:Boolean = false;
+			var vectorfeature:PointFeature = null;
+			
+			if(!(event.feature is LabelFeature))
+				vectorfeature = (event.feature) as PointFeature;
+			
+			if(iEditPolygon != null && vectorfeature != null){
+				if(iEditPolygon.findVirtualVerticeParent(vectorfeature) != null){
+					iEditPolygon.featureClick(event);
+					clickAlreadyStart = true;
 				}
-				if(!clickAlreadyStart && iEditPath != null){
-					if(iEditPath.findVirtualVerticeParent(vectorfeature) != null){
-						iEditPath.featureClick(event);
-						clickAlreadyStart = true;
-					}
-				}
-				if(!clickAlreadyStart && iEditPoint != null){
-					if(isSelectedFeature(vectorfeature)){
-						iEditPoint.featureClick(event);
-					}
-				}
-				
-				// events management
-				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 			}
+			if(!clickAlreadyStart && iEditPath != null && vectorfeature != null){
+				if(iEditPath.findVirtualVerticeParent(vectorfeature) != null){
+					iEditPath.featureClick(event);
+					clickAlreadyStart = true;
+				}
+			}
+			if(!clickAlreadyStart && iEditPoint != null && vectorfeature != null){
+				if(isSelectedFeature(vectorfeature)){
+					iEditPoint.featureClick(event);
+					clickAlreadyStart = true;
+				}
+			}
+			if(!clickAlreadyStart && iEditLabel != null && vectorfeature == null){
+				if(isSelectedFeature(event.feature)){
+					iEditLabel.featureClick(event);
+				}
+			}
+			
+			// events management
+			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
 		/**
 		 * feature double click
 		 */
 		private function featureDoubleClick(event:FeatureEvent):void{
-			var vectorfeature:PointFeature = (event.feature) as PointFeature;
-			if(vectorfeature != null){
-				var dblclickAlreadyStart:Boolean = false;
-				
-				if(iEditPolygon != null){
-					if(iEditPolygon.findVirtualVerticeParent(vectorfeature) != null){
-						iEditPolygon.featureDoubleClick(event);
-						dblclickAlreadyStart = true;
-					}
+			
+			var dblclickAlreadyStart:Boolean = false;
+			var vectorfeature:PointFeature = null;
+			
+			if(!(event.feature is LabelFeature))
+				vectorfeature = (event.feature) as PointFeature;
+			
+			if(iEditPolygon != null && vectorfeature != null){
+				if(iEditPolygon.findVirtualVerticeParent(vectorfeature) != null){
+					iEditPolygon.featureDoubleClick(event);
+					dblclickAlreadyStart = true;
 				}
-				if(!dblclickAlreadyStart && iEditPath != null){
-					if(iEditPath.findVirtualVerticeParent(vectorfeature) != null){
-						iEditPath.featureDoubleClick(event);
-						dblclickAlreadyStart = true;
-					}
-				}
-				if(!dblclickAlreadyStart && iEditPoint != null){
-					if(isSelectedFeature(vectorfeature)){
-						iEditPoint.featureDoubleClick(event);
-					}
-				}
-				
-				// events management
-				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 			}
+			if(!dblclickAlreadyStart && iEditPath != null && vectorfeature != null){
+				if(iEditPath.findVirtualVerticeParent(vectorfeature) != null){
+					iEditPath.featureDoubleClick(event);
+					dblclickAlreadyStart = true;
+				}
+			}
+			if(!dblclickAlreadyStart && iEditPoint != null && vectorfeature != null){
+				if(isSelectedFeature(vectorfeature)){
+					iEditPoint.featureDoubleClick(event);
+					dblclickAlreadyStart = true;
+				}
+			}
+			if(!dblclickAlreadyStart && iEditLabel != null && vectorfeature == null){
+				if(isSelectedFeature(event.feature)){
+					iEditLabel.featureDoubleClick(event);
+				}
+			}
+			
+			// events management
+			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
 		/**
@@ -363,6 +400,8 @@ package org.openscales.core.handler.feature.draw
 					iEditPath = new EditPathHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit);
 				if(this._editPolygon)
 					iEditPolygon = new EditPolygonHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit);
+				if(this._editLabel)
+					iEditLabel = new EditLabelHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit);
 			}
 		}
 		/**
@@ -374,6 +413,7 @@ package org.openscales.core.handler.feature.draw
 				if(iEditPoint!=null)(this.iEditPoint as AbstractEditHandler).map=this.map;
 				if(iEditPath!=null)(this.iEditPath as AbstractEditHandler).map=this.map;
 				if(iEditPolygon!=null)(this.iEditPolygon as AbstractEditHandler).map=this.map;
+				if(iEditLabel!=null)(this.iEditLabel as AbstractEditHandler).map=this.map;
 				this._featureClickHandler.map=value;
 				this.map.addChild(_drawContainer);
 			}
@@ -389,6 +429,7 @@ package org.openscales.core.handler.feature.draw
 				if(iEditPoint!=null)  (this.iEditPoint as AbstractEditHandler).active=value;
 				if(iEditPath!=null)(this.iEditPath as AbstractEditHandler).active=value;	
 				if(iEditPolygon!=null)(this.iEditPolygon as AbstractEditHandler).active=value;
+				if(iEditLabel!=null)(this.iEditLabel as AbstractEditHandler).active=value;
 				this._featureClickHandler.active=value;
 				editionModeStart();
 				
@@ -397,6 +438,7 @@ package org.openscales.core.handler.feature.draw
 				if(iEditPoint!=null)  (this.iEditPoint as AbstractEditHandler).active=value;
 				if(iEditPath!=null)(this.iEditPath as AbstractEditHandler).active=value;	
 				if(iEditPolygon!=null)(this.iEditPolygon as AbstractEditHandler).active=value;
+				if(iEditLabel!=null)(this.iEditLabel as AbstractEditHandler).active=value;
 				this._featureClickHandler.active=value;
 				editionModeStop();
 			}
@@ -427,6 +469,8 @@ package org.openscales.core.handler.feature.draw
 					iEditPath = new EditPathHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value);
 				if(this._editPolygon)
 					iEditPolygon = new EditPolygonHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value);
+				if(this._editLabel)
+					iEditLabel = new EditLabelHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value);
 			}
 		}
 	}

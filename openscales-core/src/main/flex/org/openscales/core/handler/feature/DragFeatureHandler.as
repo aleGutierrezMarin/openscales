@@ -1,10 +1,12 @@
 package org.openscales.core.handler.feature
 {
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
@@ -13,6 +15,7 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
+	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
@@ -58,8 +61,15 @@ package org.openscales.core.handler.feature
 		 * This function is launched when the Mouse is down
 		 */
 		override  protected function onMouseDown(event:MouseEvent):void{
-			var feature:Feature = event.target as Feature;
-			if(feature != null && isSelectedFeature(feature)){
+			
+			var feature:Feature;
+			if (event.target is TextField){
+				feature = (event.target as TextField).parent as Feature;
+			}
+			else
+				feature = event.target as Feature;
+			
+			if (feature != null && isSelectedFeature(feature)){
 				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.startDrag();
 				_featureCurrentlyDragged = feature;
@@ -70,8 +80,15 @@ package org.openscales.core.handler.feature
 		 * This function is launched when the Mouse is up
 		 */
 		override protected function onMouseUp(event:MouseEvent):void{
-		 	var feature:Feature = event.target as Feature;
-		 	if(feature != null && _featureCurrentlyDragged == feature){
+			
+		 	var feature:Feature;
+			if (event.target is TextField){
+				feature = (event.target as TextField).parent as Feature;
+			}
+			else
+				feature = event.target as Feature;
+			
+		 	if (feature != null && _featureCurrentlyDragged == feature){
 				_stopPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.stopDrag();
 				_featureCurrentlyDragged = null;
@@ -81,6 +98,7 @@ package org.openscales.core.handler.feature
 				this._layerToMove.redraw();
 			}
 		 }
+		
 		 /**
 		 * This function is used to add an array of undraggable feature which belong to a draggable layer
 		 * @param features:Array Array of feature to make undraggable
@@ -182,6 +200,16 @@ package org.openscales.core.handler.feature
 						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
 						loc = this.map.getLocationFromMapPx(_stopPixel);
 						targetFeature.geometry = new Point(loc.lon,loc.lat);
+						targetFeature.x = 0;
+						targetFeature.y = 0;
+					}
+				}
+			}
+			else if (feature is LabelFeature){
+				for each(targetFeature in this.featuresToMove){
+					if (targetFeature == feature){
+						loc = this.map.getLocationFromMapPx(_stopPixel);
+						(targetFeature as LabelFeature).lonlat = loc;
 						targetFeature.x = 0;
 						targetFeature.y = 0;
 					}

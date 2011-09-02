@@ -34,13 +34,18 @@ package org.openscales.core.style.stroke
 		
 		private var _linejoin:String;
 		
-		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND)
+		private var _pWhiteSize:uint = 0;
+		private var _pDottedSize:uint = 0;
+		
+		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, pWhiteSize:uint = 0, pDottedSize:uint = 0)
 		{
 			this._color = color;
 			this._width = width;
 			this._opacity = opacity;
 			this._linecap = linecap;
 			this._linejoin = linejoin;
+			this._pWhiteSize = pWhiteSize;
+			this._pDottedSize = pDottedSize;
 		}
 		
 		/**
@@ -100,6 +105,30 @@ package org.openscales.core.style.stroke
 		public function set linejoin(value:String):void{
 			
 			this._linejoin = value;
+		}
+		
+		/**
+		 * The size of the space between dots
+		 */
+		public function get pWhiteSize():uint{
+			
+			return this._pWhiteSize;
+		}
+		public function set pWhiteSize(value:uint):void{
+			
+			this._pWhiteSize = value;
+		}
+		
+		/**
+		 * The size of the dots
+		 */
+		public function get pDottedSize():uint{
+			
+			return this._pDottedSize;
+		}
+		public function set pDottedSize(value:uint):void{
+			
+			this._pDottedSize = value;
 		}
 		
 		public function configureGraphics(graphics:Graphics):void{
