@@ -225,7 +225,7 @@ package org.openscales.core.format
 					
 					var scaleStyle:XMLList = styleList[i]..*::scale;
 					if(scaleStyle.length() > 0)
-						obj["scale"] = Number(headingStyle[0].toString());
+						obj["scale"] = Number(scaleStyle[0].toString());
 					
 					var headingStyle:XMLList = styleList[i]..*::heading;
 					if(headingStyle.length() > 0) //0 to 360°
@@ -234,10 +234,6 @@ package org.openscales.core.format
 					
 					_styles.put("IconStyle",obj);
 				}
-import org.openscales.core.feature.MultiLineStringFeature;
-import org.openscales.core.feature.MultiPointFeature;
-import org.openscales.core.feature.MultiPolygonFeature;
-import org.openscales.geometry.Point;
 				
 				if(styleList[i].localName() == "LineStyle") 
 				{
@@ -767,6 +763,9 @@ import org.openscales.geometry.Point;
 		 */
 		private function buildPlacemarkNode(feature:Feature,i:uint):XML
 		{
+			var lineNode:XML;
+			var pointNode:XML;
+			
 			var placemark:XML = new XML("<Placemark></Placemark>");
 			var att:Object = feature.attributes;
 			if (att.hasOwnProperty("name"))
@@ -780,7 +779,7 @@ import org.openscales.geometry.Point;
 			var coords:String;
 			if(feature is LineStringFeature)
 			{
-				var lineNode:XML = new XML("<LineString></LineString>");
+				lineNode = new XML("<LineString></LineString>");
 				var line:LineString = (feature as LineStringFeature).lineString;
 				coords = this.buildCoordsAsString(line.getcomponentsClone());
 				if(coords.length != 0)
@@ -794,7 +793,7 @@ import org.openscales.geometry.Point;
 			}
 			else if(feature is PointFeature)
 			{
-				var pointNode:XML = new XML("<Point></Point>");
+				pointNode = new XML("<Point></Point>");
 				var point:Point = (feature as PointFeature).point;
 				pointNode.appendChild(new XML("<coordinates>" + point.x + "," + point.y + "</coordinates>"));
 				placemark.appendChild(pointNode);
@@ -808,9 +807,31 @@ import org.openscales.geometry.Point;
 					var numberOfPoints:uint = points.length;
 					for(i = 0; i < numberOfPoints; i++)
 					{
+						pointNode =	new XML("<Point></Point>");
+						pointNode.appendChild(new XML("<coordinates>" + point.x + "," + point.y + "</coordinates>"));
+						multiGNode.appendChild(pointNode);
 						
 					}
 				}
+				else if (feature is MultiLineStringFeature)
+				{
+					var lines:Vector.<Geometry> = (feature as MultiLineStringFeature).lineStrings.getcomponentsClone();
+					var numberOfLines:uint = lines.length;
+					for(i = 0; i < numberOfLines; i++)
+					{
+						var Line:LineString = lines[i] as LineString;
+						coords = this.buildCoordsAsString(Line.getcomponentsClone());
+						lineNode =	new XML("<LineString></LineString>");
+						lineNode.appendChild(new XML("<coordinates>" + coords + "</coordinates>"));
+						multiGNode.appendChild(lineNode);
+						
+					}	
+				}
+				else//multiPolygon
+				{
+					
+				}
+				placemark.appendChild(multiGNode);
 			}
 			
 			return placemark;
@@ -904,7 +925,7 @@ import org.openscales.geometry.Point;
 			feature.name = "feature"+i.toString();
 			
 			var styleNode:XML = null;
-			if(feature is LineStringFeature)
+			if(feature is LineStringFeature || feature is MultiLineStringFeature)
 			{
 				//for lines, we will not store the outline style (the contour of the line)				
 				var lineF:LineStringFeature = feature as LineStringFeature;
@@ -922,7 +943,7 @@ import org.openscales.geometry.Point;
 					placemarkStyle.appendChild(styleNode);				
 				}
 			}
-			else if(feature is PolygonFeature)
+			else if(feature is PolygonFeature || feature is MultiPolygonFeature)
 			{
 				//for polygons, we can store both the polygon style and the outline 
 				var polyF:PolygonFeature = feature as PolygonFeature;
@@ -966,7 +987,7 @@ import org.openscales.geometry.Point;
 					placemarkStyle.appendChild(styleNode);		
 				}			
 			}
-			else if(feature is PointFeature)
+			else if(feature is PointFeature || feature is MultiPointFeature)
 			//the style with icon is not implemented meaning the .kmz format is not supported	
 			{
 				var pointFeat:PointFeature = feature as PointFeature;
