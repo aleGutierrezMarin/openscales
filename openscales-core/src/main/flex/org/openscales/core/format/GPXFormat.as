@@ -19,11 +19,11 @@ package org.openscales.core.format
 	 * The purpose of this class is to parse or build GPX files
 	 * Supported versions 1.1 and 1.0
 	 * 
-	 * The element <extension/>(version 1.1) is not supported
+	 * The element extension(version 1.1) is not supported
 	 * 
 	 * @param featuresids HashMap containing the ids of the features
 	 * duplicate ids are not allowed
-	 * the id of the feature is fetched from the gpx tag <name/>
+	 * the id of the feature is fetched from the gpx tag name
 	 * 
 	 * @param version gpx version 1.1 by default
 	 * 

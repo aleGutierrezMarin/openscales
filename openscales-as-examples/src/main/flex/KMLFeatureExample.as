@@ -3,48 +3,48 @@ package
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.Trace;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoomBar;
 	import org.openscales.core.handler.feature.SelectFeaturesHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
-	import org.openscales.core.layer.ogc.GeoRss;
-	import org.openscales.core.layer.ogc.WMS;
-	import org.openscales.core.layer.osm.Mapnik;
-	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.core.layer.KML;
+	import org.openscales.core.layer.ogc.WMSC;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
-	
+
 	
 	[SWF(width='1200',height='700')]
-	public class GeoRssExample extends Sprite
+	public class KMLFeatureExample extends Sprite
 	{
 		protected var _map:Map;
 		private var url:String;
 		
-		public function GeoRssExample()
+		public function KMLFeatureExample()
 		{
 			super();
-			this.url = "http://openscales.org:80/geoserver/sf/wms?height=332&bbox=589851.4376666048%2C4914490.882968263%2C608346.4603107043%2C4926501.8980334345&width=512&layers=sf%3Aarchsites&request=GetMap&service=wms&styles=point&srs=EPSG%3A26713&format=application%2Frss+xml&transparent=false&version=1.1.1";
+			this.url = "http://code.google.com/intl/fr/apis/kml/documentation/KML_Samples.kml";
 			
 			//Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			_map.projection = "EPSG:4326";
 			
 			
 			// Add a base layer to the map
-			var mapnik:Mapnik=new Mapnik("Mapnik");
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
-			_map.addLayer(mapnik);
+			var wmsclayer:WMSC = new WMSC("nasa","http://openscales.org/geoserver/ows","bluemarble");
+			wmsclayer.projection = "EPSG:4326";
+			wmsclayer.format = "image/jpeg";
+			wmsclayer.version = "1.1.1";
+			this._map.addLayer(wmsclayer);
 			
-			//add the GeoRss layer; fetch data from url
-			var georssLayer:GeoRss = new GeoRss("Archeological Sites", this.url);
-			this._map.addLayer(georssLayer);
+			//add the KML layer; fetch data from url
+			var kmlLayer:KML = new KML("KML Features", this.url);
+			this._map.addLayer(kmlLayer);
+			Trace.debug("kmlLayer projection :"+kmlLayer.projSrsCode);
 			
-	
+			
 			// Add Controls to map
 			_map.addControl(new MousePosition());
 			_map.addControl(new LayerManager());
@@ -62,10 +62,10 @@ package
 			_map.addControl(new DragHandler());
 			
 			//Set map center and zoom level
-			_map.resolution= new Resolution(38.21851413574219, "EPSG:4326");
-			_map.center = new Location(-103.6,44.5);
+			//_map.zoom=7;
+			_map.center = new Location(-116.953,37.267,"EPSG:4326");
 			this.addChild(_map);
-	
+			
 		}
 	}
 }
