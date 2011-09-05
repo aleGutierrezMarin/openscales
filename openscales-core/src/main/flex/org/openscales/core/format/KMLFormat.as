@@ -233,8 +233,7 @@ package org.openscales.core.format
 					// TODO implement offset support + rotation effect
 					
 					_styles.put("IconStyle",obj);
-				}
-				
+				}	
 				if(styleList[i].localName() == "LineStyle") 
 				{
 					var Lcolor:Number = 0x96A621;
@@ -393,10 +392,12 @@ package org.openscales.core.format
 				else if(placemark.Polygon != undefined) 
 				{
 					var _Pstyle:Style = null;
-					if(this.userDefinedStyle){
+					if(this.userDefinedStyle)
+					{
 						_Pstyle = this.userDefinedStyle;
 					}
-					else {
+					else 
+					{
 						_Pstyle = Style.getDefaultSurfaceStyle();
 						if(hmLocalStyle.containsKey("PolyStyle")) {
 							_Pstyle = hmLocalStyle.getValue("PolyStyle");
@@ -497,23 +498,29 @@ package org.openscales.core.format
 							pointCoords.push(Number(coordinates[0]));
 							pointCoords.push(Number(coordinates[1]));
 						}
-
+						var multiPoint:MultiPoint = new MultiPoint(pointCoords);
+						
 						if(this.userDefinedStyle)
-							iconsfeatures.push(new PointFeature(point, attributes, this.userDefinedStyle));
-						else if(hmLocalStyle.containsKey("PointStyle")) {
-							iconsfeatures.push(getPointFeature(point,hmLocalStyle.getValue("PointStyle"),attributes));
+							iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,this.userDefinedStyle));
+						else if(hmLocalStyle.containsKey("PointStyle")) 
+						{	
+							//iconsfeatures.push(getPointFeature(point,hmLocalStyle.getValue("PointStyle"),attributes));
+							iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,hmLocalStyle.getValue("PointStyle")));
 						}
 						else if(placemark.styleUrl != undefined) 
 						{
 							_id = placemark.styleUrl.text();
-							if(pointStyles[_id]!=undefined) {
-								iconsfeatures.push(getPointFeature(point,pointStyles[_id],attributes));
-							} else {
-								iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
+							if(pointStyles[_id]!=undefined) 
+							{
+								//iconsfeatures.push(getPointFeature(point,pointStyles[_id],attributes));
+								iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,pointStyles[_id]));
+							} else 
+							{
+								iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));
 							}
 						}
 						else
-							iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));	
+							iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));	
 					}
 				}
 				//Points
@@ -532,9 +539,12 @@ package org.openscales.core.format
 					else if(placemark.styleUrl != undefined || hmLocalStyle.containsKey("PointStyle")) 
 					{
 						var objStyle:Object = null;
-						if(hmLocalStyle.containsKey("PointStyle")) {
+						if(hmLocalStyle.containsKey("PointStyle")) 
+						{
 							objStyle = hmLocalStyle.getValue("PointStyle");
-						} else {
+						} 
+						else 
+						{
 							_id = placemark.styleUrl.text();
 							if(pointStyles[_id]!=undefined)
 								objStyle = pointStyles[_id];
