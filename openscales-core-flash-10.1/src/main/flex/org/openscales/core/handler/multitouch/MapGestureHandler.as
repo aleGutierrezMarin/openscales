@@ -116,6 +116,22 @@ package org.openscales.core.handler.multitouch {
 				
 				_touchPoint = this.map.baseLayer.getLocationFromMapPx(new Pixel(event.stageX, event.stageY));
 				
+				var scaleX:Number = this.map.layerContainer.scaleX;
+				var scaleY:Number = this.map.layerContainer.scaleY;
+				
+				if(scaleX != 1 || scaleY !=1)
+				{
+					var initMatrix:Matrix = this.map.layerContainer.transform.matrix;
+					var centerPoint:Point =
+						initMatrix.transformPoint(
+							new Point(this.map.width/2, this.map.height/2));
+					initMatrix.translate(-centerPoint.x, -centerPoint.y);
+					initMatrix.scale(1/scaleX, 1/scaleY);
+					initMatrix.translate(centerPoint.x, centerPoint.y);
+					this.map.layerContainer.transform.matrix = initMatrix;
+				}
+				
+				
 				this._originalMatrix = this.map.layerContainer.transform.matrix;
 				
 				
