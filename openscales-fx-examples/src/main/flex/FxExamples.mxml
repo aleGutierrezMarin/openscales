@@ -105,6 +105,7 @@
 						break;
 					case "georss":
 						state = new GeoRssExample();
+						break;
 					case "graticule":
 						state = new GraticuleExample();
 						break;
