@@ -205,6 +205,12 @@ package org.openscales.core.layer
 				this._initialized = false;
 				return;
 			}
+			var centerChangedCache:Boolean = this._centerChanged;
+			var resolutionChangedCache:Boolean = this._resolutionChanged;
+			var projectionChangedCache:Boolean = this._projectionChanged;
+			this._centerChanged = false;
+			this._projectionChanged = false;
+			this._resolutionChanged = false;
 			
 			var ratio:Number;
 			
@@ -223,22 +229,19 @@ package org.openscales.core.layer
 					this.initGriddedTiles(bounds);
 					ratio = resolution/this.map.resolution.value;
 					this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
-					this._centerChanged = false;
-					this._projectionChanged = false;
-					this._resolutionChanged = false;
 				}
 				
 				_initialized = true;
 			}
 
-			if (this._resolutionChanged)
+			if (resolutionChangedCache)
 			{
 				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 				this._previousResolution = this.map.resolution;
 			}
 			
-			if (this._centerChanged)
+			if (centerChangedCache)
 			{
 				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
 				var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
@@ -250,7 +253,7 @@ package org.openscales.core.layer
 			}
 			
 			
-			if (this._centerChanged || this._projectionChanged || this._resolutionChanged || forceReTile)
+			if (centerChangedCache || projectionChangedCache || resolutionChangedCache || forceReTile)
 			{
 				if (!this.tiled) 
 				{
@@ -272,9 +275,6 @@ package org.openscales.core.layer
 						this.moveGriddedTiles(bounds);
 					}
 				}
-				this._centerChanged = false;
-				this._projectionChanged = false;
-				this._resolutionChanged = false;
 			}
 		}
 		
