@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Numeric scale display a scale ratio -->
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Unit;
+			import org.openscales.proj4as.ProjProjection;
+			
+			/**
+			 * The default fixed round for scale precision
+			 */
+			public static var DEFAULT_FIXED_ROUND:uint=0;
+			
+			
+			/**
+			 * The default dpi value to use
+			 */
+			public static const DEFAUL_DPI:Number = 101.6;
+			
+			/**
+			 * @private
+			 * The value of the current numeric scale
+			 * @default 1
+			 */
+			private var _value:Number = 1;
+			
+			
+			/**
+			 * @private
+			 * The dpi to use for the scale calculation
+			 */
+			private var _dpi:Number = DEFAUL_DPI;
+			/**
+			 * The current value of the scale Label
+			 * @default "1 / 1"
+			 */
+			[Bindable]
+			public var scaleLabel: String = "1 / 1";
+				
+			override public function set map(value:Map):void
+			{
+				super.map = value;
+				this.updateScale();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				// add listener to the map
+				if(this._map)
+				{
+					this._map.addEventListener(MapEvent.PROJECTION_CHANGED,this.updateScale);
+					this._map.addEventListener(MapEvent.CENTER_CHANGED,this.updateScale);
+					this._map.addEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				// add listener to the map
+				if(this._map)
+				{
+					this._map.removeEventListener(MapEvent.PROJECTION_CHANGED,this.updateScale);
+					this._map.removeEventListener(MapEvent.CENTER_CHANGED,this.updateScale);
+					this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
+				}
+			}
+			
+			/**
+			 * Update the value of the numeric scale.
+			 * The new numeric scale is obtain by Unit.getScaleFrom resolution with the current resolution and the current baseLayer unit.
+			 * 
+			 * @param event The event received if the function is called 
+			 * when a zoom occur or when the baselayer is changed.
+			 */
+			public function updateScale(MapEvent:Event=null):void
+			{
+				if(this._map == null)
+					return;
+				
+				// Calculate the scale according to the current center resolution
+				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
+				var resolutionAtCenter:Number = Unit.getResolutionOnCenter(this._map.resolution.value, this._map.center, projection);
+				
+				var unit:String = ProjProjection.getProjProjection(this._map.projection).projParams.units;
+				
+				if(projection.projName  == "longlat")
+					unit = Unit.METER;
+				
+				// screen dpi flash.system.Capabilities.screenDPI
+				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._dpi));
+				
+				// update the label :
+				this.scaleLabel = "1 / "+this._value;
+			}
+			
+			
+			/**
+			 * Given a number, round it down to the nearest 1,2,5 times a power of 10.
+			 * That seems a fairly useful set of number groups to use.
+			 *
+			 * @param maxLen the number we're rounding down from
+			 *
+			 * @return the rounded number (less than or equal to maxLen)
+			 */
+			private function getBarLen(maxLen:Number):Number 
+			{
+				// nearest power of 10 lower than maxLen
+				var digits:Number = int(Math.log(maxLen) / Math.log(10));
+				var pow10:Number = Math.pow(10, digits);
+				
+				// ok, find first character
+				var firstChar:Number = int(maxLen / pow10);
+				
+				// right, put it into the correct bracket
+				var barLen:Number;
+				if(firstChar > 5) {
+					barLen = 5;
+				} else if(firstChar > 2) {
+					barLen = 2;
+				} else {
+					barLen = 1;
+				}
+				
+				// scale it up the correct power of 10
+				return barLen * pow10;
+			}
+			
+			/**
+			 * The value of the current numeric scale
+			 */
+			public function get value():Number
+			{
+				return this._value;
+			}
+			
+			public function set value(value:Number):void
+			{
+				this._value = value;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Label id="numericScaleLabel"
+			  width="100%"
+			  height="25"
+			  backgroundColor="0xFFFFFF" 
+			  paddingTop="5" 
+			  paddingLeft="5" 
+			  paddingRight="5"
+			  text="{this.scaleLabel}"/>
+	
+</Control>
