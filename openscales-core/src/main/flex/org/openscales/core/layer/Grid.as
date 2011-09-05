@@ -1,9 +1,11 @@
 package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
+	import flash.net.LocalConnection;
 	import flash.sampler.getInvocationCount;
 	import flash.sampler.getMemberNames;
 	import flash.utils.Timer;
@@ -11,6 +13,7 @@ package org.openscales.core.layer
 	import mx.olap.aggregators.MaxAggregator;
 	import mx.rpc.events.HeaderEvent;
 	
+	import org.flexunit.internals.namespaces.classInternal;
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.Resolution;
@@ -74,6 +77,12 @@ package org.openscales.core.layer
 		private var _scaleOnZoomRatiochanged:Number = 1;
 		
 		private var _requestedResolution:Resolution;
+		
+		private var _backGrid:Bitmap = null;
+		
+		private var _previousCenter:Location = null;
+		
+		private var _previousResolution:Resolution = null;
 		
 		/**
 		 * Create a new grid layer
@@ -201,6 +210,7 @@ package org.openscales.core.layer
 			
 			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 			var bounds:Bounds = this.map.getExtentForResolution(new Resolution(resolution, this.map.resolution.projection)).clone();
+//			var bounds:Bounds = this.map.extent.clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
 			if (!_initialized)
@@ -220,7 +230,24 @@ package org.openscales.core.layer
 				
 				_initialized = true;
 			}
+
+			if (this._resolutionChanged)
+			{
+				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
+				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
+				this._previousResolution = this.map.resolution;
+			}
 			
+			if (this._centerChanged)
+			{
+				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
+				var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
+				var deltaX:Number = deltaLon/this.map.resolution.value;
+				var deltaY:Number = deltaLat/this.map.resolution.value;
+				this.x -= deltaX;
+				this.y += deltaY;
+				this._previousCenter = this.map.center.clone();
+			}
 			
 			
 			if (this._centerChanged || this._projectionChanged || this._resolutionChanged || forceReTile)
@@ -235,11 +262,13 @@ package org.openscales.core.layer
 				} else {
 					if (resolution != this._resquestResolution || forceReTile)
 					{
+//						var bounds2:Bounds = this.map.getExtentForResolution(new Resolution(resolution, this.map.resolution.projection)).clone();
 						this.initGriddedTiles(bounds, true);
 						ratio = resolution/this.map.resolution.value;
 						this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 					} else 
 					{
+						
 						this.moveGriddedTiles(bounds);
 					}
 				}
@@ -261,6 +290,17 @@ package org.openscales.core.layer
 				this.y -= (targetPx.y - this.y) * (scale - 1);
 				this.scaleX = this.scaleX * scale;
 				this.scaleY = this.scaleY * scale;
+				/*var lenx = this.grid.length;
+				var leny = this.grid[0].length;
+				for (var i=0; i<lenx; ++i)
+				{
+					for (var j =0; j<leny; ++j)
+					{
+						this.grid[i][j].x = Math.floor(this.grid[i][j].x);
+						this.grid[i][j].y = Math.floor(this.grid[i][j].y);
+					}
+					
+				}*/
 			}
 		}
 		
@@ -287,12 +327,12 @@ package org.openscales.core.layer
 			this._timer.start();
 			if (!this._resolutionChanged)
 			{
-				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
+				/*var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
 				var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
 				var deltaX:Number = deltaLon/this.map.resolution.value;
 				var deltaY:Number = deltaLat/this.map.resolution.value;
 				this.x -= deltaX;
-				this.y += deltaY;
+				this.y += deltaY;*/
 			}
 			super.onMapCenterChanged(event);
 		}
@@ -301,9 +341,9 @@ package org.openscales.core.layer
 		{
 			this._timer.reset();
 			this._timer.start();
-			var px:Pixel = event.targetZoomPixel;
+			/*var px:Pixel = event.targetZoomPixel;
 			var ratio:Number = event.oldResolution.value / event.newResolution.value;
-			this.scaleLayer(ratio, px);
+			this.scaleLayer(ratio, px);*/
 			super.onMapResolutionChanged(event);
 		}
 		/**
@@ -404,7 +444,7 @@ package org.openscales.core.layer
 			{
 				if (this.resolutions[i] >= targetResolution.value)
 				{
-					var ratioSeeker:Number = this.resolutions[i]-targetResolution.value;
+					var ratioSeeker:Number = this.resolutions[i] - targetResolution.value;
 				}
 				
 				if ( ratioSeeker < bestRatio){
@@ -862,6 +902,8 @@ package org.openscales.core.layer
 		override public function set map(value:Map):void
 		{
 			super.map = value;
+			_previousCenter = this.map.center.clone();
+			_previousResolution = this.map.resolution;
 			if(this._timer) {
 				this._timer.reset();
 			} else {
