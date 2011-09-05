@@ -63,6 +63,7 @@ package org.openscales.core.layer
 			
 			// puts layer in geographical coordinates
 			this._projSrsCode = "EPSG:4326";
+			this.maxExtent = new Bounds(-180,-90,180,90,"EPSG:4326");
 			
 			// hides layer in LayerManager
 			this.displayInLayerManager = false;
@@ -72,24 +73,17 @@ package org.openscales.core.layer
 		 * @inheritDoc
 		 */
 		override protected function draw():void {
+			// remove old features
 			if(this.features)
 				this.removeFeatures(this.features);
-			// gets bounds of the map, in geographical coordinates
-			var extent:Bounds = this.map.extent.reprojectTo("EPSG:4326");
-			var xmin:Number = extent.left;
-			var xmax:Number = extent.right;
-			var ymin:Number = extent.bottom;
-			var ymax:Number = extent.top;
-			var maxextent:Bounds = this.map.maxExtent.reprojectTo("EPSG:4326");
-			var xminextent:Number = maxextent.left;
-			var xmaxextent:Number = maxextent.right;
-			var yminextent:Number = maxextent.bottom;
-			var ymaxextent:Number = maxextent.top;
-			// merge bounds of map and maxExtent, not to draw outside maxExtent
-			xmin=Math.max(xmin, xminextent);
-			xmax=Math.min(xmax, xmaxextent);
-			ymin=Math.max(ymin, yminextent);
-			ymax=Math.min(ymax, ymaxextent);
+			
+			// gets bounds in geographical coordinates
+			var intersection:Bounds = this.map.maxExtent.getIntersection(this.map.extent);
+			intersection = intersection.reprojectTo("EPSG:4326");
+			var xmin:Number=intersection.left;
+			var xmax:Number=intersection.right;
+			var ymin:Number=intersection.bottom;
+			var ymax:Number=intersection.top;
 			
 			// calculates which interval to use
 			var interval:Number = getBestInterval(xmin, xmax, ymin, ymax);
@@ -99,6 +93,15 @@ package org.openscales.core.layer
 				
 				// offset for labels
 				var offset:Number = interval/10;
+				
+				// style for labels
+				var labelStyle:Style = Style.getDefaultGraticuleLabelStyle();
+				
+				// precision
+				var precision:uint = 4;
+				if (interval < 0.01) {
+					precision = 5;
+				}
 				
 				//
 				// draw vertical lines
@@ -117,10 +120,10 @@ package org.openscales.core.layer
 					var lineFeature:LineStringFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
 					// labels
-					var degreeLabel:String = currentX.toPrecision(3) + " °"; 
+					var degreeLabel:String = getFormattedLabel(currentX, precision);
 					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+2*offset, ymin+offset);
 					var labelFeature:LabelFeature = new LabelFeature(labelPoint);
-					labelFeature.style = Style.getDefinedLabelStyle("Arial",12,0xc9c9c9,false,false);
+					labelFeature.style = labelStyle;
 					this.addFeature(labelFeature);
 					// iterates
 					currentX = currentX+interval;
@@ -143,10 +146,10 @@ package org.openscales.core.layer
 					lineFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
 					// labels
-					degreeLabel = currentY.toPrecision(3) + " °";
+					degreeLabel = getFormattedLabel(currentY, precision);
 					labelPoint = new LabelPoint(degreeLabel, xmin+2*offset, currentY+offset);
 					labelFeature = new LabelFeature(labelPoint);
-					labelFeature.style = Style.getDefinedLabelStyle("Arial",12,0xc9c9c9,false,false);
+					labelFeature.style = labelStyle;
 					this.addFeature(labelFeature);
 					// iterates
 					currentY = currentY+interval;
@@ -185,6 +188,22 @@ package org.openscales.core.layer
 		os_internal function getFirstCoordinateForGraticule(firstCoordinateOfMap:Number, interval:Number):Number {
 			var firstCoordinate:Number = interval*Math.floor(firstCoordinateOfMap/interval)+interval;
 			return firstCoordinate;
+		}
+		
+		os_internal function getFormattedLabel(coordinate:Number, precision:uint):String {
+			var result:String = null;
+			if (coordinate > 10 || coordinate < -10) {
+				result = coordinate.toPrecision(precision) + " °";
+			}
+			else {
+				if (coordinate >= 1 || coordinate <= -1) {
+					result = coordinate.toPrecision(precision-1) + " °";
+				}
+				else {
+					result = coordinate.toPrecision(precision-2) + " °";
+				}
+			}
+			return result;
 		}
 		
 		/**
