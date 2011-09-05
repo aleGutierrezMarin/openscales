@@ -97,12 +97,6 @@ package org.openscales.core.layer
 				// style for labels
 				var labelStyle:Style = Style.getDefaultGraticuleLabelStyle();
 				
-				// precision
-				var precision:uint = 4;
-				if (interval < 0.01) {
-					precision = 5;
-				}
-				
 				//
 				// draw vertical lines
 				//
@@ -120,7 +114,7 @@ package org.openscales.core.layer
 					var lineFeature:LineStringFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
 					// labels
-					var degreeLabel:String = getFormattedLabel(currentX, precision);
+					var degreeLabel:String = getFormattedLabel(currentX, interval);
 					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+2*offset, ymin+offset);
 					var labelFeature:LabelFeature = new LabelFeature(labelPoint);
 					labelFeature.style = labelStyle;
@@ -146,7 +140,7 @@ package org.openscales.core.layer
 					lineFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
 					// labels
-					degreeLabel = getFormattedLabel(currentY, precision);
+					degreeLabel = getFormattedLabel(currentY, interval);
 					labelPoint = new LabelPoint(degreeLabel, xmin+2*offset, currentY+offset);
 					labelFeature = new LabelFeature(labelPoint);
 					labelFeature.style = labelStyle;
@@ -190,8 +184,18 @@ package org.openscales.core.layer
 			return firstCoordinate;
 		}
 		
-		os_internal function getFormattedLabel(coordinate:Number, precision:uint):String {
+		/**
+		 * Gets formatted label to display on the map.
+		 * @param coordinate coordinate to display.
+		 * @param interval Interval used for the graticule.
+		 * @return The formatted label to display on the map.
+		 */
+		os_internal function getFormattedLabel(coordinate:Number, interval:Number):String {
 			var result:String = null;
+			var precision:uint = 4;
+			if (interval < 0.01) {
+				precision = 5;
+			}
 			if (coordinate > 10 || coordinate < -10) {
 				result = coordinate.toPrecision(precision) + " °";
 			}
