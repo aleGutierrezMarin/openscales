@@ -210,6 +210,15 @@ package org.openscales.core.handler.feature
 					if (targetFeature == feature){
 						loc = this.map.getLocationFromMapPx(_stopPixel);
 						(targetFeature as LabelFeature).lonlat = loc;
+						var leftPixel:Pixel = new Pixel();
+						var rightPixel:Pixel = new Pixel();
+						leftPixel.x = _stopPixel.x - (targetFeature as LabelFeature).labelPoint.label.width / 2;
+						leftPixel.y = _stopPixel.y + (targetFeature as LabelFeature).labelPoint.label.height / 2;
+						rightPixel.x = _stopPixel.x + (targetFeature as LabelFeature).labelPoint.label.width / 2;
+						rightPixel.y = _stopPixel.y - (targetFeature as LabelFeature).labelPoint.label.height / 2;
+						var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
+						var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
+						(targetFeature as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
 						targetFeature.x = 0;
 						targetFeature.y = 0;
 					}
