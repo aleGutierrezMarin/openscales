@@ -96,6 +96,7 @@ package org.openscales.core.handler.mouse
 		 */
 		public function ClickHandler(map:Map=null, active:Boolean=false, doubleClickZoomOnMousePosition:Boolean = true) {
 			super(map, active);
+			this.doubleClickZoomOnMousePosition = doubleClickZoomOnMousePosition;
 		}
 		
 		/**

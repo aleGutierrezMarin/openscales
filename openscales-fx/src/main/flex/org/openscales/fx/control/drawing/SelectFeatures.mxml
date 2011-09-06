@@ -31,7 +31,7 @@
 			[Embed(source="/assets/images/icons/Icons-06.png")]
 			private var _btnSelect:Class;
 			private var _active:Boolean = true;
-			private var _handler:SelectFeaturesHandler = new SelectFeaturesHandler();
+			private var _handler:SelectFeaturesHandler = new SelectFeaturesHandler(null,false,true,false,false);
 			private var _dragHandler:DragHandler;
 			
 			/**
@@ -61,7 +61,7 @@
 			public function set map(value:Map):void{
 				
 				_handler.map = value;
-				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				//_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
 				
 				for each(var ih:IHandler in this.map.controls){
 					if(ih is DragHandler){
