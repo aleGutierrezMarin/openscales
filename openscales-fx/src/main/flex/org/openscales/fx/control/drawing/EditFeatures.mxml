@@ -148,7 +148,14 @@
 			 */
 			private function onFeatureUpdateSelection(evt:FeatureEvent):void{
 				
+				if(_handler.active)
+					_handler.editionModeStop();
+				
 				_handler.featuresToEdit = _selectFeaturesHandler.selectedFeatures;
+				
+				if(_handler.active && _handler.featuresToEdit != null){
+					_handler.editionModeStart();
+				}
 			}
 			
 			// to do
