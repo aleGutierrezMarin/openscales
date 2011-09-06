@@ -25,7 +25,6 @@ package org.openscales.fx.layer
 			if(this._layer != null)
 				return (this._layer as GeoRss).url;
 			return null;
-			this.id = "";
 		}
 		
 		public function set url(value:String):void {
@@ -43,6 +42,28 @@ package org.openscales.fx.layer
 			if(this._layer != null)
 				return (this._layer as GeoRss).georssData;
 			return null;
+		}
+		
+		public function get popUpWidth():Number{
+			if(this._layer != null)
+				return (this._layer as GeoRss).popUpWidth;
+			return NaN;
+		}
+		
+		public function set popUpWidth(value:Number):void {
+			if(this._layer != null)
+				(this._layer as GeoRss).popUpWidth = value;
+		}
+		
+		public function get popUpHeight():Number{
+			if(this._layer != null)
+				return (this._layer as GeoRss).popUpHeight;
+			return NaN;
+		}
+		
+		public function set popUpHeight(value:Number):void {
+			if(this._layer != null)
+				(this._layer as GeoRss).popUpHeight = value;
 		}
 		
 		public function get featureVector():Vector.<Feature>
