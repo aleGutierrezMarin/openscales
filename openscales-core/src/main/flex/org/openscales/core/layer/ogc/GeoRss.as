@@ -28,6 +28,8 @@ package org.openscales.core.layer.ogc
 	 * @param url The url of the file that contains the RSS data
 	 * @param refreshDelay The refresh time between two operations of reading the file at the given URL
 	 * @param style
+	 * @param width the width of the popup window 
+	 * @param height the height of the popup window
 	 * 
 	 * The srs code of the layer projection is "WGS84"
 	 * 
@@ -44,10 +46,15 @@ package org.openscales.core.layer.ogc
 		private var _timer:Timer;
 		private var _timerOn:Boolean = false;
 		
+		private var _popUpWidth:Number;
+		private var _popUpHeight:Number;
+		
 		public function GeoRss(name:String, 
 							   url:String,
 							   refreshDelay:int = 300000,
-							   style:Style = null)
+							   style:Style = null,
+							   width:Number = 300,
+							   height:Number = 300)
 		{
 			super(name);
 			this.url = url;	
@@ -59,6 +66,8 @@ package org.openscales.core.layer.ogc
 			else this.style = null;
 			this.georssFormat = new GeoRssFormat(new HashMap());	
 			this.refresh = refreshDelay;
+			this.popUpWidth = width;
+			this.popUpHeight = height;
 			
 			this.timer = new Timer(refreshDelay, 1);
 			this.timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onCompleteTimer,false,0,true);
@@ -239,6 +248,26 @@ package org.openscales.core.layer.ogc
 		public function set timer(value:Timer):void
 		{
 			_timer = value;
+		}
+
+		public function get popUpWidth():Number
+		{
+			return _popUpWidth;
+		}
+
+		public function set popUpWidth(value:Number):void
+		{
+			_popUpWidth = value;
+		}
+
+		public function get popUpHeight():Number
+		{
+			return _popUpHeight;
+		}
+
+		public function set popUpHeight(value:Number):void
+		{
+			_popUpHeight = value;
 		}
 
 

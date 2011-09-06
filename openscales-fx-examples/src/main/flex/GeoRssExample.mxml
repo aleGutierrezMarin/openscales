@@ -55,8 +55,8 @@
 				fxpopup = null;
 				fxpopup = new FxPopup();
 				fxpopup.fxmap = fxMap;
-				//fxpopup.HEIGHT
-				//fxpopup.WIDTH
+				fxpopup.HEIGHT = rsslayer.popUpHeight;
+				fxpopup.WIDTH = rsslayer.popUpWidth;
 				var content:String="";
 				
 				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
@@ -84,8 +84,7 @@
 				
 				fxpopupRenderer.content = content;
 				fxMap.addFxPopup(fxpopup,true);
-				fxpopup.visible = true;
-				
+				fxpopup.visible = true;	
 			}
 
 		]]>
