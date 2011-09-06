@@ -4,7 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:os="http://openscales.org"
 			   implements="org.openscales.core.control.IControl"
-			   toolTip="Move selected features"
+			   toolTip="Move features"
 			   icon="{_btnMove}"
 			   width="25"
 			   height="25"

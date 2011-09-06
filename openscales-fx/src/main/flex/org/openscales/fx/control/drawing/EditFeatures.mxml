@@ -4,7 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:os="http://openscales.org"
 			   implements="org.openscales.core.control.IControl"
-			   toolTip="Edit selected features"
+			   toolTip="Edit features"
 			   icon="{_btnEdit}"
 			   width="25"
 			   height="25"
