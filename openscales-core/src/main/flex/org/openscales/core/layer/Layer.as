@@ -71,9 +71,10 @@ package org.openscales.core.layer {
 		 */
 		public function get available():Boolean
 		{
+			var mapResolution:Number = this.map.resolution.reprojectTo(this.projSrsCode).value;
 			return (this.maxExtent.getIntersection(this.map.extent) != null
-				&& (this.map.resolution.value <= this.maxResolution.value)
-				&& (this.map.resolution.value >= this.minResolution.value));
+				&& (mapResolution <= this.maxResolution.value)
+				&& (mapResolution >= this.minResolution.value));
 		}
 		
 		/**
@@ -184,7 +185,7 @@ package org.openscales.core.layer {
 				removeEventListenerFromMap();
 			}
 			
-			this._map = map;		
+			this._map = map;	
 			if (this.map) {
 				if (_projSrsCode == null)
 				{

@@ -16,16 +16,20 @@
 		
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
-		
 		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
-		
 		<PanZoom id="panZoom" x="10" y="10" />
 		
 	</Map>
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.core.basetypes.Resolution;
+		import org.openscales.core.basetypes.Resolution;
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			private var fxpopup:FxPopup;
 			
 			[Embed(source="/assets/gpx11Sample.xml",mimeType="application/octet-stream")]
 			private const GPXSAMPLE:Class;
@@ -40,6 +44,43 @@
 				
 				fxMap.center = "7.27,48.39,EPSG:4326";
 				fxMap.resolution = new Resolution(0.000343323, "EPSG:4326");
+				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onFeatureClick);
+			}
+			
+			private function onFeatureClick(event:FeatureEvent):void
+			{
+				if(fxpopup){
+					fxpopup.destroy();
+				}
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+				
+				var content:String="";
+				
+				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				fxpopup.feature = event.feature;
+				
+				var pixel:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(event.feature.lonlat); 
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(pixel);
+				fxpopup.position = pixel;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				
+				
+				if(event.feature.name){
+					fxpopupRenderer.titleContent = event.feature.name;
+				}
+	
+				for(var attribute:String in event.feature.attributes) {
+					if((attribute != "name")) 
+						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
+				}
+				
+				fxpopupRenderer.content = content;
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
+				
 			}
 			
 		]]>

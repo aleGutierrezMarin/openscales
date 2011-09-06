@@ -14,6 +14,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.core.style.marker.WellKnownMarker;
 
 	/**
 	 * Handler to draw points.
@@ -58,7 +59,8 @@ package org.openscales.core.handler.feature.draw
 				drawLayer.scaleX=1;
 				drawLayer.scaleY=1;
 			  
-				var style:Style = Style.getDefaultPointStyle();
+				//var style:Style = Style.getDefaultPointStyle();
+				var style:Style = Style.getDefinedPointStyle(WellKnownMarker.WKN_TRIANGLE,0);
 			
 				//var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
 				var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );

@@ -130,6 +130,7 @@ package org.openscales.core.handler.feature
 				//if the mousedown point is close from the mouseUp point it's a click or a double click
 				if(Math.abs(tmppx.x-this._startPixel.x)<this._draggingTolerance && Math.abs(tmppx.y-this._startPixel.y)<this._draggingTolerance)
 				{
+					evt.feature.stopDrag();
 					_isdragging=false;
 				}
 			}
