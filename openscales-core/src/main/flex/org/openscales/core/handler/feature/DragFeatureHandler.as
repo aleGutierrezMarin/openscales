@@ -69,7 +69,7 @@ package org.openscales.core.handler.feature
 			else
 				feature = event.target as Feature;
 			
-			if (feature != null && isSelectedFeature(feature)){
+			if (feature != null){
 				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.startDrag();
 				_featureCurrentlyDragged = feature;
