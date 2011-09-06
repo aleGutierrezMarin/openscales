@@ -8,7 +8,11 @@
 	<Map id="fxMap" width="100%" height="100%">
 		
 		<Mapnik id="mapnik" name="Mapnik" alpha="0.7" />
-		<GeoRss id="rsslayer" name="French Regions" numZoomLevels="22" url="http://qlf-gpp3-api-ign-fr.aw.atosorigin.com/dataexample/georssdep.rss" />
+		<GeoRss id="rsslayer"
+				name="test"
+				numZoomLevels="22" 
+				useFeedTitle="true"
+				url="http://qlf-gpp3-api-ign-fr.aw.atosorigin.com/dataexample/georssdep.rss" />
 		
 		<!-- Handlers -->
 		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />

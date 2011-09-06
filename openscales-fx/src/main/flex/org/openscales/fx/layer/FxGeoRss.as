@@ -66,6 +66,17 @@ package org.openscales.fx.layer
 				(this._layer as GeoRss).popUpHeight = value;
 		}
 		
+		public function get useFeedTitle():Boolean{
+			if(this._layer != null)
+				return (this._layer as GeoRss).useFeedTitle;
+			return false;
+		}
+		
+		public function set useFeedTitle(value:Boolean):void {
+			if(this._layer != null)
+				(this._layer as GeoRss).useFeedTitle = value;
+		}
+		
 		public function get featureVector():Vector.<Feature>
 		{
 			if(this._layer != null)
