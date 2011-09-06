@@ -20,6 +20,18 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 
+	/**
+	 * Rss layer; version 2.0 is supported
+	 * GeoRss version 1.1 supported
+	 * 
+	 * @param name The name of the layer
+	 * @param url The url of the file that contains the RSS data
+	 * @param refreshDelay The refresh time between two operations of reading the file at the given URL
+	 * @param style
+	 * 
+	 * The srs code of the layer projection is "WGS84"
+	 * 
+	 */
 	public class GeoRss extends VectorLayer
 	{
 		
@@ -33,12 +45,13 @@ package org.openscales.core.layer.ogc
 		private var _timerOn:Boolean = false;
 		
 		public function GeoRss(name:String, 
-							   url:String = null,
-							   refreshDelay:int = 60000,
+							   url:String,
+							   refreshDelay:int = 300000,
 							   style:Style = null)
 		{
 			super(name);
 			this.url = url;	
+			this.projSrsCode = "WGS84";
 			if(style){
 				this.style = style;
 				this.style.rules.push(new Rule());
@@ -198,6 +211,16 @@ package org.openscales.core.layer.ogc
 			_georssFormat = value;
 		}
 
+		public function get projection():String
+		{
+			return this._projSrsCode;	
+		}
+		
+		public function set projection(value:String):void
+		{
+			this._projSrsCode = value;
+		}
+		
 		public function get refresh():int
 		{
 			return _refresh;

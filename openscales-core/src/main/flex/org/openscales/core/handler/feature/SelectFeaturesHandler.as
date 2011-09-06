@@ -3,6 +3,7 @@ package org.openscales.core.handler.feature
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
@@ -10,6 +11,7 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
@@ -875,6 +877,9 @@ package org.openscales.core.handler.feature
 			} else if (feature is LineStringFeature || feature is MultiLineStringFeature) {
 				selectedStyle = Style.getDefaultSurfaceStyle();
 				symbolizer = new LineSymbolizer(new Stroke(color, borderThin));
+			} else if (feature is LabelFeature) {
+				selectedStyle = Style.getDefinedLabelStyle(feature.style.textFormat.font,(feature.style.textFormat.size as Number),
+					0xFFFF00,feature.style.textFormat.bold,feature.style.textFormat.italic);
 			} else { //if (feature is PolygonFeature || feature is MultiPolygonFeature) {
 				selectedStyle = Style.getDefaultSurfaceStyle();
 				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));

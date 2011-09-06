@@ -11,6 +11,7 @@ package
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.ogc.GeoRss;
+	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -33,13 +34,13 @@ package
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
 			
-			// Add layers to map
-			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
+			
+			// Add a base layer to the map
+			var mapnik:Mapnik=new Mapnik("Mapnik");
 			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
 			_map.addLayer(mapnik);
 			
-			
-			//GeoRss layer; fetch data from url
+			//add the GeoRss layer; fetch data from url
 			var georssLayer:GeoRss = new GeoRss("Archeological Sites", this.url);
 			this._map.addLayer(georssLayer);
 			
@@ -60,9 +61,9 @@ package
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 			
-			//Set map size and zoom level
-			_map.resolution= new Resolution(1.40625, "EPSG:4326");
-			_map.center = new Location(-103.6,44.5,"WGS84");
+			//Set map center and zoom level
+			_map.resolution= new Resolution(38.21851413574219, "EPSG:4326");
+			_map.center = new Location(-103.6,44.5);
 			this.addChild(_map);
 	
 		}

@@ -6,6 +6,12 @@
     </metadata>
     <trk>
         <name>67_champ_du_feu_RP0005</name>
+        <ele>700.0</ele>
+      	<time>TIME</time>
+      	<magvar>0.29</magvar>
+     	<geoidheight>0.98</geoidheight>
+      	<cmt>CMT</cmt>
+      	<desc>default description</desc>
         <trkseg>
             <trkpt lat="48.387815387" lon="7.293226710">
                 <ele>764.655029</ele>
