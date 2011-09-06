@@ -119,7 +119,6 @@
     <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
     <classEntry path="org.openscales.fx.layer.FxGraticule"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawLabel"/>
-    <classEntry path="org.openscales.fx.control.drawing.DisactivateDrawingTools"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

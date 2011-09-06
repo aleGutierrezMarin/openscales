@@ -62,7 +62,8 @@
 			public function set map(value:Map):void{
 				
 				_handler.map = value;
-				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.MODIFY_HANDLER_ACTIVATED, onChangeActiveHandler);
 				
 				for each(var ih:IHandler in this.map.controls){
 					if(ih is DragHandler){
@@ -111,23 +112,22 @@
 			private function disactivate():void{
 				
 				_handler.active = false;
-				//if(_dragHandler)
-				//_dragHandler.active = true;
 			}
 			
 			/**
-			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
+			 * On button click, dispatch a DrawingEvent.DRAW_HANDLER_ACTIVATED event
 			 */
 			private function onClick():void{
 				
-				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DRAW_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				_handler.map.dispatchEvent(evt);
 				activate();
 			}
 			
 			/**
-			 * Check the handler when a DrawingEvent.CHANGE_ACTIVE_HANDLER event occured
+			 * Check the handler when a DrawingEvent.DRAW_HANDLER_ACTIVATED or
+			 * a DrawingEvent.MODIFY_HANDLER_ACTIVATED event occured
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
