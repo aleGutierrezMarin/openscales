@@ -195,7 +195,7 @@ package org.openscales.core.handler.feature
 			var i:uint;
 			
 			if(feature is PointFeature){
-				for each(targetFeature in this.featuresToMove){
+				for each(targetFeature in this.layerToMove.features){
 					if(targetFeature == feature){
 						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
 						loc = this.map.getLocationFromMapPx(_stopPixel);
@@ -206,7 +206,7 @@ package org.openscales.core.handler.feature
 				}
 			}
 			else if (feature is LabelFeature){
-				for each(targetFeature in this.featuresToMove){
+				for each(targetFeature in this.layerToMove.features){
 					if (targetFeature == feature){
 						loc = this.map.getLocationFromMapPx(_stopPixel);
 						(targetFeature as LabelFeature).lonlat = loc;
@@ -216,7 +216,7 @@ package org.openscales.core.handler.feature
 				}
 			}
 			else if(feature is LineStringFeature){
-				for each(targetFeature in this.featuresToMove){
+				for each(targetFeature in this.layerToMove.features){
 					if(targetFeature == feature){
 						var lineString:LineString;
 						var tpIC:ICollection = targetFeature.geometry as ICollection;
@@ -240,7 +240,7 @@ package org.openscales.core.handler.feature
 				}
 			}
 			else if(feature is PolygonFeature){
-				for each(targetFeature in this.featuresToMove){
+				for each(targetFeature in this.layerToMove.features){
 					if(targetFeature == feature){
 						var linearRing:LinearRing;
 						var polygon:Polygon;
