@@ -52,5 +52,7 @@
    "traceinfo.clearlabel": "Effacer",
    
    "addLayerButton.label": "Ajouter à la carte",
-   "removeLayerButton.label": "Retirer de la carte"
+   "removeLayerButton.label": "Retirer de la carte",
+   
+   "featureInfoDisplay.title": "Résultat - GetFeatureInfo"
  }

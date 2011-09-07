@@ -9,31 +9,39 @@
 		]]>
 	</fx:Script>
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.000343323" center="-74.011,40.710">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710">
 		
-		<Mapnik name="Mapnik" />
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
+			  layers="bluemarble" format="image/jpeg" 
+			  maxExtent="-180,-90,180,90" version="1.1.1"/>
 		
-		<DragHandler active="false" />
-		<WheelHandler />
-		<Spinner id="spinner" x = "{width / 2}" y = "{height / 2}"/>	
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
-		<ScaleLine x="{width-100-10}" y="{height-80}" />
+		<WMS name="Topp States" url="http://openscales.org/geoserver/wms"
+			 layers="topp:states" projection="EPSG:4326" version="1.1.1"
+			 maxExtent="-180,-90,180,90" transparent="true" format="image/png"/>
 		
-		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs"
-				typename="tiger:poi" projection="EPSG:4326" version="1.0.0" useCapabilities="true"
-				style="{Style.getDefaultPointStyle()}" numZoomLevels="18" />
-	
-		<WMSGetFeatureInfo url="http://openscales.org/geoserver/wms" layers="tiger:poi" />
+		<WMSGetFeatureInfo />
+		<FeatureInfoDisplay x="500" y="10"/>
+	 	
+		<KeyBoardHandler id="keyboardHandler" />
 		
-		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" />
+		<DragHandler id="dragHandler" />
+		<WheelHandler id="wheelHandler" />
+		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
 		
-		<TraceInfo id="traceInfo" x="{width-200}" y="0"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93" displayProjSrsCode="IGNF:LAMB93"/>
 		
-		<ControlPanel title="Informations about the last selected feature"  x="10" y="10">
-			<FeatureInfo id="featureInfoComponent"
-							creationComplete="{(selectFeaturesHandler.handler as SelectFeaturesHandler).onSelectedFeature = featureInfoComponent.showInfo;}" />
-		</ControlPanel>
-
+		<LanguageSwitcher x="300" y="10"/>
+		
+		<PanZoom id="panZoom" x="10" y="10" scalesLabels="World,0.3515625,1.40625;Country,0.0439453125,0.3515625;State,0.0054931640625,0.0439453125;Town,0.0006866455078125,0.0054931640625;Street,0.0000858306884765625,0.0006866455078125;House,0.000010728836059570313,0.0000858306884765625"/>
+		
+		<LayerManager x="{width - 225}" y="10" right="10">
+			<rendererOptions>
+				<fx:Object
+					displayZoomToExtent="true" />
+			</rendererOptions> 
+		</LayerManager>
+		
+		
 	</Map>
 		
 </s:Group>
