@@ -2,6 +2,7 @@ package org.openscales.core.events{
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
@@ -77,6 +78,16 @@ package org.openscales.core.events{
 		private var _componentIconified:Boolean = false;
 		
 		/**
+		 * old maxExtent of the map
+		 */
+		private var _oldMaxExtent:Bounds = null;
+		
+		/**
+		 * new maxExtent of the map
+		 */
+		private var _newMaxExtent:Bounds = null;
+		
+		/**
 		 * Event type dispatched before map move (drag or zoom).
 		 */
 		public static const MOVE_START:String="openscales.mapmovestart";
@@ -118,16 +129,14 @@ package org.openscales.core.events{
 		public static const RESIZE:String="openscales.mapresize";
 		
 		/**
-		 * Event type dispatched during map resize.
-		 * Cannot use namingconvention with dot "." here because name is used in mxml
+		 * Event type dispatched when layers start loading
 		 */
-		public static const LOAD_START:String="openscales.maploadstart";
+		public static const LAYERS_LOAD_START:String="openscales.layersloadstart";
 		
 		/**
-		 * Event type dispatched when map has been loaded completely.
-		 * Cannot use namingconvention with dot "." here because name is used in mxml
+		 * Event type dispatched when all map layers has dispatched load end
 		 */
-		public static const LOAD_END:String="openscales.maploadend";
+		public static const LAYERS_LOAD_END:String="openscales.layersloadend";
 		
 		/**
 		 * Event type dispatched when the center of the map has been changed.
@@ -148,6 +157,11 @@ package org.openscales.core.events{
 		 * Event type dispatched when the map LayerContainer visibility is set to true
 		 */
 		public static const LAYERCONTAINER_IS_VISIBLE:String="openscales.layercontainerIsVisible";
+		
+		/**
+		 * Event type dispatched when the map maxExtent is changed
+		 */
+		public static const MAX_EXTENT_CHANGED:String="openscales.maxextentchanged";
 		
 		/**
 		 * Instances of MapEvent are events dispatched by the Map
@@ -261,6 +275,26 @@ package org.openscales.core.events{
 		public function set targetZoomPixel(value:Pixel):void
 		{
 			_targetZoomPixel = value;
+		}
+		
+		public function get oldMaxExtent():Bounds
+		{
+			return this._oldMaxExtent;
+		}
+		
+		public function set oldMaxExtent(value:Bounds):void
+		{
+			_oldMaxExtent = value;
+		}
+		
+		public function get newMaxExtent():Bounds
+		{
+			return this._newMaxExtent;
+		}
+		
+		public function set newMaxExtent(value:Bounds):void
+		{
+			_newMaxExtent = value;
 		}
 		
 		public function get zoomChanged():Boolean {
