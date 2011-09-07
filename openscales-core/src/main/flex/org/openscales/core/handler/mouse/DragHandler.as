@@ -49,6 +49,8 @@ package org.openscales.core.handler.mouse
 		private var _onStart:Function=null;
 		private var _oncomplete:Function=null;
 		
+		private var _drawingEventSensitive:Boolean = true;
+		
 		/**
 		 * DragHandler constructor
 		 *
@@ -65,13 +67,18 @@ package org.openscales.core.handler.mouse
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
-				this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateHandler);
+				if (this._drawingEventSensitive) {
+					this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
+					this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateHandler);
+					this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateHandler);
+					this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateHandler);
+				}
 			}
 		}
 		
+		public function set drawingEventSensitive(value:Boolean):void{
+			this._drawingEventSensitive = value;
+		}
 		private function disactivateHandler(event:DrawingEvent):void{
 			this.active = false;
 		}

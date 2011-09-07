@@ -60,6 +60,9 @@
 				
 				_handler.map = value;
 				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 			}
 			
 			/**
@@ -113,12 +116,20 @@
 			}
 			
 			/**
-			 * Check the handler when a DrawingEvent.DRAW_HANDLER_ACTIVATED event occured
+			 * Check the handler when a DrawingEvent.DRAW_HANDLER_ACTIVATED or
+			 * DrawingEvent.EDIT_HANDLER_ACTIVATED or DrawingEvent.MOVE_HANDLER_ACTIVATED
+			 * or DrawingEvent.SELECT_HANDLER_ACTIVATED event occured
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(_handler.active && this.id != evt.activeHandler)
+				if(evt.type == DrawingEvent.EDIT_HANDLER_ACTIVATED || evt.type == DrawingEvent.SELECT_HANDLER_ACTIVATED){
+					_handler.clearSelection();
+					return;
+				}
+				if(_handler.active && this.id != evt.activeHandler){
+					_handler.clearSelection();
 					disactivate();
+				}
 			}
 			
 			// to do
