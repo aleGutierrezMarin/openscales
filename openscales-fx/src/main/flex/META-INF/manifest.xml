@@ -42,6 +42,8 @@
 	<component id="DataOriginatorsDisplay" class="org.openscales.fx.control.DataOriginatorsDisplay" />
 	<component id="TermsOfService" class="org.openscales.fx.control.TermsOfService" />
 	
+	<component id="FeatureInfoDisplay" class="org.openscales.fx.control.FeatureInfoDisplay" />
+	
 	<!-- LayerManager -->
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
 	<component id="DefaultLayerManagerItemRenderer" class="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer" />

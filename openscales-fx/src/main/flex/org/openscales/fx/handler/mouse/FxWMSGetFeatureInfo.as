@@ -16,25 +16,20 @@ package org.openscales.fx.handler.mouse
 			super();
 		}
 		
-		public function set url(url:String):void {
-			(this.handler as WMSGetFeatureInfo).url = url;
+		public function set maxFeatures(maxFeatures:Number):void {
+			(this.handler as WMSGetFeatureInfo).maxFeatures = maxFeatures;
+		}
+	
+		public function set drillDown(drillDown:Boolean):void{
+			(this.handler as WMSGetFeatureInfo).drillDown = drillDown;
+		}
+		
+		public function set format(infoFormat:String):void {
+			(this.handler as WMSGetFeatureInfo).infoFormat = infoFormat;
 		}
 		
 		public function set layers(layers:String):void {
 			(this.handler as WMSGetFeatureInfo).layers = layers;
 		}
-		
-		public function set srs(srs:String):void {
-			(this.handler as WMSGetFeatureInfo).srs = srs;
-		}
-		
-		public function set format(format:String):void {
-			(this.handler as WMSGetFeatureInfo).format = format;
-		}
-		
-		public function set maxFeatures(maxFeatures:Number):void {
-			(this.handler as WMSGetFeatureInfo).maxFeatures = maxFeatures;
-		}
-		
 	}
 }

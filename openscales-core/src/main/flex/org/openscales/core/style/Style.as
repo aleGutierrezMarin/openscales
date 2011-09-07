@@ -98,6 +98,14 @@ package org.openscales.core.style {
 			return style;
 		}
 		
+		public static function getDefaultGraticuleLabelStyle():Style{
+			
+			var style:Style = new Style();
+			style.name = "Default graticule label style";
+			style._textFormat = new TextFormat("Arial",12,0x000000,false,false);
+			return style;
+		}
+		
 		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, whiteSize:uint, dottedSize:uint):Style
 		{
 			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,whiteSize,dottedSize);
@@ -216,7 +224,7 @@ package org.openscales.core.style {
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default graticule rule";
-			rule.symbolizers.push(new LineSymbolizer(new Stroke(0xc9c9c9, 1)));
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x000000, 1)));
 			
 			return rule;
 		}

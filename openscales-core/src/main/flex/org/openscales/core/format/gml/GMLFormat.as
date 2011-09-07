@@ -146,8 +146,8 @@ package org.openscales.core.format.gml
 			this._gmlParser.internalProjSrsCode = this.internalProjSrsCode;
 			this._gmlParser.externalProjSrsCode = this.externalProjSrsCode;
 			this._gmlParser.parseExtractAttributes = this.extractAttributes;
-			
-			if(this._asyncLoading && this._version=="2.1.1") {
+			var retFeatures:Vector.<Feature> = null;
+			if(this._asyncLoading && this._version=="2.1.1" && this._onFeature!=null) {
 				this.xmlString = data as String;
 				data = null;
 				if(this.xmlString.indexOf(this._gmlParser.sFXML)!=-1){
@@ -159,12 +159,19 @@ package org.openscales.core.format.gml
 					this.xmlString = null;
 				}
 			} else {
+				retFeatures = new Vector.<Feature>();
+				var feature:Feature;
 				for each( dataXML in features) {
-					this._onFeature(this._gmlParser.parseFeature(dataXML,lonlat));
+					feature = this._gmlParser.parseFeature(dataXML,lonlat);
+					if(feature) {
+						retFeatures.push(feature);
+						if(this._onFeature!=null)
+							this._onFeature(feature);
+					}
 				}
 			}
 			
-			return null;
+			return retFeatures;
 		}
 		
 		
@@ -512,6 +519,16 @@ package org.openscales.core.format.gml
 		 */
 		public function set version(value:String):void {
 			this._version = value;
+		}
+		
+		public function get asyncLoading():Boolean
+		{
+			return _asyncLoading;
+		}
+		
+		public function set asyncLoading(value:Boolean):void
+		{
+			_asyncLoading = value;
 		}
 	}
 }
