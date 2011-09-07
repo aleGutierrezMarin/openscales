@@ -197,7 +197,8 @@ package org.openscales.fx
 			mapContainer.addChild(this._map);
 			
 			this._flexOverlay = new Group();
-			this.addElementAt(_flexOverlay,1);
+			//given the priority, the flexOverlay will be the highest layer (best visibility)
+			this.addElementAt(_flexOverlay,this.numElements - 1);
 			
 			if (this._proxy != "")
 				this._map.proxy = this._proxy;
