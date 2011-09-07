@@ -22,7 +22,6 @@
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
-			import org.openscales.core.handler.mouse.DragHandler;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
@@ -33,7 +32,6 @@
 			private var _btnPath:Class;
 			private var _active:Boolean = true;
 			private var _handler:AbstractDrawHandler= new DrawPathHandler();
-			private var _dragHandler:DragHandler;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -63,14 +61,9 @@
 				
 				_handler.map = value;
 				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.MODIFY_HANDLER_ACTIVATED, onChangeActiveHandler);
-				
-				for each(var ih:IHandler in this.map.controls){
-					if(ih is DragHandler){
-						_dragHandler = (ih as DragHandler);
-						_dragHandler.map = value;
-					}
-				}
+				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 			}
 			
 			/**
@@ -106,8 +99,6 @@
 			private function activate():void{
 				
 				_handler.active = true;
-				if(_dragHandler)
-					_dragHandler.active = false;
 			}
 			private function disactivate():void{
 				
@@ -127,7 +118,8 @@
 			
 			/**
 			 * Check the handler when a DrawingEvent.DRAW_HANDLER_ACTIVATED or
-			 * a DrawingEvent.MODIFY_HANDLER_ACTIVATED event occured
+			 * DrawingEvent.EDIT_HANDLER_ACTIVATED or DrawingEvent.MOVE_HANDLER_ACTIVATED
+			 * or DrawingEvent.SELECT_HANDLER_ACTIVATED event occured
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				

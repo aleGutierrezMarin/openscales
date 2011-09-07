@@ -8,6 +8,7 @@ package org.openscales.core.handler.mouse
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.events.DrawingEvent;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.Geometry;
@@ -97,6 +98,23 @@ package org.openscales.core.handler.mouse
 		public function ClickHandler(map:Map=null, active:Boolean=false, doubleClickZoomOnMousePosition:Boolean = true) {
 			super(map, active);
 			this.doubleClickZoomOnMousePosition = doubleClickZoomOnMousePosition;
+		}
+		
+		override public function set map(value:Map):void{
+			super.map = value;
+			if(value){
+				this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateZoomOnDoubleClick);
+				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateZoomOnDoubleClick);
+				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateZoomOnDoubleClick);
+				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateZoomOnDoubleClick);
+			}
+		}
+		
+		private function disactivateZoomOnDoubleClick(event:DrawingEvent):void{
+			this.doubleClickZoomOnMousePosition = false;
+		}
+		private function activateZoomOnDoubleClick(event:DrawingEvent):void{
+			this.doubleClickZoomOnMousePosition = true;
 		}
 		
 		/**
