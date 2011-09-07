@@ -6,6 +6,7 @@
     <classEntry path="org.openscales.core.Trace"/>
     <classEntry path="org.openscales.core.UID"/>
     <classEntry path="org.openscales.core.Util"/>
+    <classEntry path="org.openscales.core.basetypes.Resolution"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.AbstractLinkedListNode"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedList"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedListNode"/>
@@ -144,6 +145,7 @@
     <classEntry path="org.openscales.core.layer.capabilities.WMS100"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS110"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS111"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS130"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMTS100"/>
     <classEntry path="org.openscales.core.layer.grid.provider.HTTPTileProvider"/>
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>

@@ -27,18 +27,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
-			//[Embed(source="/assets/gpx11Sample.xml",mimeType="application/octet-stream")]
-			//private const GPXSAMPLE:Class;
-			
 			private function initMap():void {
-			
-				//var sample:XML = new XML(new GPXSAMPLE());
-				
-				//mutual exclusion between xmlData & URL
-				//gpxLayer.xmlData = sample;
-				//gpxLayer.url = "http://openscales.org/assets/simple_dep.gpx"; 
-				
 				fxMap.center = "2, 46, EPSG:4326";
 				fxMap.resolution = "0.02197265625";
 			}

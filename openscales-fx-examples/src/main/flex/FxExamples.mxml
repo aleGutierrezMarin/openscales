@@ -17,7 +17,7 @@
 			
 			private function init():void {
 				data['about'] = new AboutOpenScales();
-				example.addElement(getState('graticule'));
+				example.addElement(getState('basic'));
 			}
 			
 			private function idle():void
@@ -180,7 +180,7 @@
 				</s:layout>
 				<s:Button id="drawedit" label="Draw and edit features" click="changeState(event)" width="100%"/>
 				<s:Button id="testfeatures" label="Select and test features" click="changeState(event)" width="100%"/>
-				<s:Button id="getfeatureinfo" label="WFS GetFeatureInfo" click="changeState(event)" width="100%"/>
+				<s:Button id="getfeatureinfo" label="WMS GetFeatureInfo" click="changeState(event)" width="100%"/>
 				<s:Button id="reproject" label="Reproject and query" click="changeState(event)" width="100%"/>
 				<s:Button id="statistics" label="Display statistics" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>

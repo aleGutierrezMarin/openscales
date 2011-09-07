@@ -1,6 +1,7 @@
 package org.openscales.core.feature
 {
 	import flash.display.DisplayObject;
+	import flash.net.LocalConnection;
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.style.Style;
@@ -66,10 +67,12 @@ package org.openscales.core.feature
 			var x:Number;
 			var y:Number;
 			var resolution:Number = this.layer.map.resolution.value;
+			var pointLocation:Location = new Location(labelPoint.x, labelPoint.y, this.layer.projSrsCode);
+			pointLocation = pointLocation.reprojectTo(this.layer.map.projection);
 			var dX:int = -int(this.layer.map.x) + this.left;
 			var dY:int = -int(this.layer.map.y) + this.top;
-			x = dX + labelPoint.x / resolution;
-			y = dY - labelPoint.y / resolution;
+			x = dX + pointLocation.x / resolution;
+			y = dY - pointLocation.y / resolution;
 			this.labelPoint.label.x = x - this.labelPoint.label.width / 2;
 			this.labelPoint.label.y = y - this.labelPoint.label.height / 2;
 			this.labelPoint.label.setTextFormat(this.style.textFormat);

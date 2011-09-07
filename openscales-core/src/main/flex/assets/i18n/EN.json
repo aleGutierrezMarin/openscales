@@ -52,5 +52,7 @@
    "traceinfo.clearlabel": "Clear",
    
    "addLayerButton.label": "Add to map",
-   "removeLayerButton.label": "Remove from map"
+   "removeLayerButton.label": "Remove from map",
+   
+   "featureInfoDisplay.title": "Result - GetFeatureInfo"
  }
