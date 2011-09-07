@@ -120,6 +120,7 @@
     <classEntry path="org.openscales.fx.control.FeatureInfoDisplay"/>
     <classEntry path="org.openscales.fx.layer.FxGraticule"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawLabel"/>
+    <classEntry path="org.openscales.fx.control.drawing.ManageAttributes"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
