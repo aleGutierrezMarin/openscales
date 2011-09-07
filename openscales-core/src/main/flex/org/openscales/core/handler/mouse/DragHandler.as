@@ -6,6 +6,7 @@ package org.openscales.core.handler.mouse
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.Trace;
+	import org.openscales.core.events.DrawingEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.geometry.basetypes.Location;
@@ -64,7 +65,18 @@ package org.openscales.core.handler.mouse
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
+				this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
+				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateHandler);
+				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateHandler);
+				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateHandler);
 			}
+		}
+		
+		private function disactivateHandler(event:DrawingEvent):void{
+			this.active = false;
+		}
+		private function activateHandler(event:DrawingEvent):void{
+			this.active = true;
 		}
 		
 		override protected function unregisterListeners():void{
