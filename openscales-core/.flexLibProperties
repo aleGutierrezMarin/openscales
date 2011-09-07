@@ -239,7 +239,6 @@
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.core.layer.ogc.GeoRss"/>
     <classEntry path="org.openscales.core.layer.Graticule"/>
-    <classEntry path="org.openscales.core.format.KMLBuildTest"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawLabelHandler"/>
     <classEntry path="org.openscales.core.popup.LabelPopup"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>

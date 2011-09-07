@@ -69,7 +69,7 @@ package org.openscales.core.handler.feature
 			else
 				feature = event.target as Feature;
 			
-			if (feature != null && isSelectedFeature(feature)){
+			if (feature != null){
 				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.startDrag();
 				_featureCurrentlyDragged = feature;
@@ -195,7 +195,7 @@ package org.openscales.core.handler.feature
 			var i:uint;
 			
 			if(feature is PointFeature){
-				for each(targetFeature in this.featuresToMove){
+				for each(targetFeature in this.layerToMove.features){
 					if(targetFeature == feature){
 						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
 						loc = this.map.getLocationFromMapPx(_stopPixel);
@@ -206,17 +206,26 @@ package org.openscales.core.handler.feature
 				}
 			}
 			else if (feature is LabelFeature){
-				for each(targetFeature in this.featuresToMove){
+				for each(targetFeature in this.layerToMove.features){
 					if (targetFeature == feature){
 						loc = this.map.getLocationFromMapPx(_stopPixel);
 						(targetFeature as LabelFeature).lonlat = loc;
+						var leftPixel:Pixel = new Pixel();
+						var rightPixel:Pixel = new Pixel();
+						leftPixel.x = _stopPixel.x - (targetFeature as LabelFeature).labelPoint.label.width / 2;
+						leftPixel.y = _stopPixel.y + (targetFeature as LabelFeature).labelPoint.label.height / 2;
+						rightPixel.x = _stopPixel.x + (targetFeature as LabelFeature).labelPoint.label.width / 2;
+						rightPixel.y = _stopPixel.y - (targetFeature as LabelFeature).labelPoint.label.height / 2;
+						var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
+						var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
+						(targetFeature as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
 						targetFeature.x = 0;
 						targetFeature.y = 0;
 					}
 				}
 			}
 			else if(feature is LineStringFeature){
-				for each(targetFeature in this.featuresToMove){
+				for each(targetFeature in this.layerToMove.features){
 					if(targetFeature == feature){
 						var lineString:LineString;
 						var tpIC:ICollection = targetFeature.geometry as ICollection;
@@ -240,7 +249,7 @@ package org.openscales.core.handler.feature
 				}
 			}
 			else if(feature is PolygonFeature){
-				for each(targetFeature in this.featuresToMove){
+				for each(targetFeature in this.layerToMove.features){
 					if(targetFeature == feature){
 						var linearRing:LinearRing;
 						var polygon:Polygon;

@@ -66,6 +66,15 @@ package org.openscales.core.handler.feature.draw
 			var px:Pixel = new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
 			var lonlat:Location = this.map.getLocationFromMapPx(px);
 			(feature as LabelFeature).lonlat = lonlat;
+			var leftPixel:Pixel = new Pixel();
+			var rightPixel:Pixel = new Pixel();
+			leftPixel.x = px.x - (feature as LabelFeature).labelPoint.label.width / 2;
+			leftPixel.y = px.y + (feature as LabelFeature).labelPoint.label.height / 2;
+			rightPixel.x = px.x + (feature as LabelFeature).labelPoint.label.width / 2;
+			rightPixel.y = px.y - (feature as LabelFeature).labelPoint.label.height / 2;
+			var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
+			var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
+			(feature as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
 			feature.x = 0;
 			feature.y = 0;
 			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
