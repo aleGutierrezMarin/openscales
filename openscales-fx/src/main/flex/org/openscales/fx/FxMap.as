@@ -3,7 +3,6 @@ package org.openscales.fx
 	
 	import flash.display.DisplayObject;
 	import flash.events.Event;
-	import flash.utils.getQualifiedClassName;
 	
 	import mx.core.IVisualElement;
 	import mx.core.IVisualElementContainer;
@@ -20,7 +19,6 @@ package org.openscales.fx
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.fx.configuration.FxConfiguration;
-	import org.openscales.fx.control.Control;
 	import org.openscales.fx.control.FxControl;
 	import org.openscales.fx.control.FxOverviewMap;
 	import org.openscales.fx.handler.FxHandler;
@@ -55,6 +53,7 @@ package org.openscales.fx
 		private var _creationWidth:Number = NaN;
 		private var _proxy:String = "";
 		private var _maxExtent:Bounds = null;
+		private var _restrictedExtent:Bounds = null;
 		private var _flexOverlay:Group = null;
 		
 		/**
@@ -199,7 +198,7 @@ package org.openscales.fx
 			
 			this._flexOverlay = new Group();
 			this.addElementAt(_flexOverlay,1);
-
+			
 			if (this._proxy != "")
 				this._map.proxy = this._proxy;
 			
@@ -375,17 +374,60 @@ package org.openscales.fx
 		/**
 		 * MaxExtent MXML setter
 		 */
-		public function set maxExtent(value:String):void {
-			var newBounds:Bounds = Bounds.getBoundsFromString(value);
+		public function set maxExtent(value:*):void {
+			
+			var newBounds:Bounds = null;
+			
+			if( value is String )
+				newBounds = Bounds.getBoundsFromString(value);
+			
+			if( value is Bounds )
+				newBounds = value;
+			
 			this._maxExtent = newBounds;
 			if(this._map)
 				this.map.maxExtent = newBounds;
 		}
 		
+		public function get maxExtent():Bounds {
+			if(this._map)
+				return this.map.maxExtent;
+				
+			else
+				return this._maxExtent;
+		}
+		
+		/**
+		 * restrictedExtent MXML setter
+		 */
+		public function set restrictedExtent(value:*):void {
+			
+			var newBounds:Bounds = null;
+			
+			if( value is String )
+				newBounds = Bounds.getBoundsFromString(value);
+			
+			if( value is Bounds )
+				newBounds = value;
+
+			this._restrictedExtent = newBounds;
+			if(this._map)
+				this.map.restrictedExtent = newBounds;
+		}
+		
+		public function get restrictedExtent():Bounds {
+			if(this._map)
+				return this.map.restrictedExtent;
+				
+			else
+				return this._restrictedExtent;
+		}
+		
+		
 		public function get flexOverlay():Group{
 			return this._flexOverlay;
 		}
-
+		
 		
 		
 		/** 
@@ -418,7 +460,7 @@ package org.openscales.fx
 			
 			return this._map.layers;
 		}
-
+		
 		// --- Control and Handler management --- //
 		/**
 		 * List of the controls and handlers linked to the map

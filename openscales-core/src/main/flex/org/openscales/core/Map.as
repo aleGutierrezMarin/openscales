@@ -19,12 +19,15 @@ package org.openscales.core
 	import org.openscales.core.i18n.provider.I18nJSONProvider;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	
+	use namespace os_internal;
 	
 	/**
 	 * Instances of Map are interactive maps that can be embedded in a web pages or in
@@ -89,7 +92,10 @@ package org.openscales.core
 		private var _dragging:Boolean = false;
 		private var _loading:Boolean;
 		protected var _center:Location = DEFAULT_CENTER;
+		
 		private var _maxExtent:Bounds = DEFAULT_MAX_EXTENT;
+		private var _restrictedExtent:Bounds = null;
+		
 		private var _destroying:Boolean = false;
 		
 		private var _proxy:String = null;
@@ -119,6 +125,8 @@ package org.openscales.core
 		private var _debug_max_extent:Boolean = false;
 		
 		private var _extenTDebug:Shape;
+		
+		
 		
 		//we maintain a list of controls and layers
 		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
@@ -383,7 +391,8 @@ package org.openscales.core
 			}		
 			if(this.center) {
 				var newCenterLocation:Location = this.center.add(dx*this.resolution.value, -dy*this.resolution.value);
-				this.center = newCenterLocation;
+				if(isValidExtentWithRestrictedExtent(newCenterLocation, this.resolution))
+					this.center = newCenterLocation;
 			}
 		}
 		
@@ -794,7 +803,7 @@ package org.openscales.core
 			var resolutionChanged:Boolean = (this.isValidResolution(targetResolution) && (targetResolution.value != this._resolution.value));
 			
 			if (resolutionChanged) {
-				
+			
 				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
 				this.dispatchEvent(mapEvent);
 				
@@ -804,8 +813,9 @@ package org.openscales.core
 				var deltaLon:Number = deltaX*targetResolution.value;
 				var deltaLat:Number = deltaY*targetResolution.value;
 				var newCenter:Location = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projSrsCode);
+				
 				if (resolutionChanged) {
-					
+						
 					if(!this.maxExtent.containsLocation(zoomTargetLoc) || !this.maxExtent.containsLocation(newCenter)){
 						this._targetZoomPixel = new Pixel(this.width/2,this.height/2);
 					}
@@ -825,6 +835,7 @@ package org.openscales.core
 						this.center = newCenter;
 					}
 				}
+				
 				mapEvent = new MapEvent(MapEvent.MOVE_END, this);
 				this.dispatchEvent(mapEvent);
 			}
@@ -860,6 +871,79 @@ package org.openscales.core
 			return (lonlat!=null) && this.maxExtent.containsLocation(lonlat);
 		}
 		
+		/**
+		 * Check if the extent define around a Location is contains by the restrictedExtent
+		 * 
+		 * @param extent The center of the extent to check
+		 */
+		os_internal function isValidExtentWithRestrictedExtent(center:Location, resolution:Resolution):Boolean
+		{
+			if(!restrictedExtent)
+				return true;
+			
+			if (resolution.projection != this.projection)
+			{
+				resolution = resolution.reprojectTo(this.projection);
+				
+				if (resolution.value > this.maxResolution.value)
+				{
+					resolution = maxResolution;
+				}
+				if (resolution.value < this.minResolution.value)
+				{
+					resolution = minResolution;
+				}
+			}
+			
+			
+			var bounds:Bounds = new Bounds(center.lon-this.width/2*resolution.value,
+				center.lat-this.height/2*resolution.value,
+				center.lon+this.width/2*resolution.value,
+				center.lat+this.height/2*resolution.value,
+				this.projection);
+			
+			return restrictedExtent.containsBounds(bounds);
+		}
+		
+		/**
+		 * Change the map resolution and center to displayed all the available datas according to the restrictedExtent
+		 * 
+		 * If the restrictedExtent has different ratio than the current viewer, limit the extent at the minimum resolution
+		 */
+		os_internal function zoomToRestrictedExtent():void
+		{
+			if( restrictedExtent )
+			{
+				// remove restricted extent otherwise change center and resolution won't appear
+				var tmpExtent:Bounds = restrictedExtent.clone();
+				this._restrictedExtent = null;
+				
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
+				
+				if(tmpExtent.projSrsCode != this.projection)
+					tmpExtent = tmpExtent.reprojectTo(this.projection);
+				
+				var x:Number = (tmpExtent.left + tmpExtent.right)/2;
+				var y:Number = (tmpExtent.top + tmpExtent.bottom)/2;
+				
+				// change resolution first
+				var resolutionX:Number = (tmpExtent.right-tmpExtent.left) / this.width;
+				var resolutionY:Number = (tmpExtent.top-tmpExtent.bottom) / this.height;
+				
+				// choose min resolution to be sure that no allowed data are displayed
+				var resolution:Number = (resolutionX < resolutionY) ? resolutionX : resolutionY;
+				this.resolution = new Resolution(resolution, this.projection);
+				
+				// change the center				
+				this.center = new Location(x, y, this.projection);
+			
+				// Put back the restricted value :
+				this._restrictedExtent = tmpExtent.clone();
+				
+				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
+			}
+		}
+		
 		// getters and setters
 		/**
 		 * Map center coordinates
@@ -881,6 +965,11 @@ package org.openscales.core
 			if (newCenter.projSrsCode != this.projection)
 				newCenter = newCenter.reprojectTo(this.projection);
 			Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projSrsCode);
+			
+			// only change center according to restrictedExtent
+			if(!isValidExtentWithRestrictedExtent(newCenter, this.resolution))
+				return;
+			
 			if (this.maxExtent.containsLocation(newCenter))
 			{
 				this._center = newCenter;
@@ -938,19 +1027,63 @@ package org.openscales.core
 		
 		/**
 		 * The maximum extent for the map.
+		 * Datas out of maxEtent are not requested
 		 */
 		public function get maxExtent():Bounds {
+			
+			if(!restrictedExtent)
+				return this._maxExtent;
+			
+			if(this._maxExtent.containsBounds(this._restrictedExtent))
+				return this._restrictedExtent;
+			
 			return this._maxExtent;
 		}
 		/**
 		 * @private
 		 */
 		public function set maxExtent(value:Bounds):void {
-			if (value.projSrsCode != this.projection)
+			if(value)
 			{
-				value = value.preciseReprojectBounds(this.projection);
+				if (value.projSrsCode != this.projection)
+				{
+					value = value.preciseReprojectBounds(this.projection);
+				}
+				this._maxExtent = value;
 			}
-			this._maxExtent = value;
+		}
+		
+		/**
+		 * The RestrictedExtent to pan or zoom the map
+		 * If the asked resolution display more datas than the restrictedExtent bounds allowed, 
+		 * the map is center to the restrictedExtent
+		 * 
+		 * @default null no constraint
+		 */
+		public function get restrictedExtent():Bounds
+		{
+			return _restrictedExtent;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set restrictedExtent(value:Bounds):void
+		{
+			if(value)
+			{
+				if (value.projSrsCode != this.projection)
+				{
+					value = value.preciseReprojectBounds(this.projection);
+				}
+				_restrictedExtent = value;
+				
+				var current:Bounds = this.extent;
+				if(!restrictedExtent.containsBounds(current))
+					this.zoomToRestrictedExtent();
+			}
+			else
+				_restrictedExtent = null;
 		}
 		
 		/**
@@ -1216,6 +1349,14 @@ package org.openscales.core
 			{
 				value = minResolution;
 			}
+			
+			// only change resolution according to restrictedExtent
+			if(!isValidExtentWithRestrictedExtent(this.center, value))
+			{
+				this.zoomToRestrictedExtent();
+				return;
+			}	
+			
 			event.oldResolution = this._resolution;
 			event.newResolution = value;
 			event.newCenter = this.center;
