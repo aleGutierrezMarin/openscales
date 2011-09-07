@@ -244,6 +244,7 @@
     <classEntry path="org.openscales.core.popup.LabelPopup"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
     <classEntry path="org.openscales.map.ExtentTest"/>
+    <classEntry path="org.openscales.core.events.MapEventTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

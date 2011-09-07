@@ -168,12 +168,20 @@ package org.openscales.core.layer {
 				map.removeEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
 				map.removeEventListener(MapEvent.MOVE_END, onMapMove);
 				map.removeEventListener(MapEvent.RESIZE, onMapResize);
+				map.removeEventListener(MapEvent.MAX_EXTENT_CHANGED, onMaxExtentChanged);
 				map.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+				
 			}
 		}
 		
 		protected function onMapResize(e:MapEvent):void {
 				this.redraw(true);
+		}
+		
+		protected function onMaxExtentChanged(e:MapEvent):void
+		{
+			this.redraw();
+			Trace.log("Max extent changed ");
 		}
 		
 		/**
@@ -199,6 +207,7 @@ package org.openscales.core.layer {
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
 				this.map.addEventListener(MapEvent.MOVE_END, onMapMove);
 				this.map.addEventListener(MapEvent.RESIZE, onMapResize);
+				this.map.addEventListener(MapEvent.MAX_EXTENT_CHANGED, onMaxExtentChanged);
 				this.map.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;

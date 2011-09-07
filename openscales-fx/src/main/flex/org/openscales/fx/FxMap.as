@@ -141,8 +141,8 @@ package org.openscales.fx
 		public function addFxPopup(fxPopup:FxPopup, exclusive:Boolean = true):void{
 			_flexOverlay.visible = true;
 			map.addEventListener(MapEvent.DRAG_START,onMoveStart);
-			map.addEventListener(MapEvent.LOAD_START,onMoveStart);
-			map.addEventListener(MapEvent.LOAD_END,onMoveEnd);
+			map.addEventListener(MapEvent.LAYERS_LOAD_START,onMoveStart);
+			map.addEventListener(MapEvent.LAYERS_LOAD_END,onMoveEnd);
 			map.addEventListener(MapEvent.MOVE_START,onMoveStart);
 			map.addEventListener(MapEvent.MOVE_END,onMoveEnd);
 			map.addEventListener(MapEvent.MOVE_NO_MOVE,onMoveEnd);
