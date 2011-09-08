@@ -7,7 +7,8 @@
 			   icon="{_btnAttributes}"
 			   width="25"
 			   height="25"
-			   click="onClick()">
+			   click="onClick()"
+			   creationComplete="onCreationComplete()">
 	
 	<fx:Script>
 		<![CDATA[
@@ -20,6 +21,8 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.popup.EditAttributes;
+			import org.openscales.core.popup.ManageAttributes;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -29,13 +32,43 @@
 			private var _btnAttributes:Class;
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
+			private var _data:Array = new Array();
+			private var _attributes:Array = new Array("identifier","description");
+			
+			/**
+			 * 
+			 */
+			private function onCreationComplete():void{
+				
+				_data.push(_attributes);
+			}
+			
+			/**
+			 * 
+			 */
+			private function onFeatureAdded(event:FeatureEvent):void{
+				
+				var values:Array = new Array((_data[0] as Array).length);
+				values[0] = event.feature.name;
+				_data.push({identifier:event.feature.name, attributes:values});
+			}
 			
 			/**
 			 * 
 			 */
 			private function onClick():void{
 				
-				trace("popup attr");
+				new org.openscales.core.popup.ManageAttributes(this._map, this.onCloseManageAttributes);
+			}
+			
+			private function onCloseManageAttributes(value:String, add:Boolean):void{
+				
+				if(add){
+					//TODO : test si attribut existe déjà
+					(_data[0] as Array).push(value);
+					for(var i:uint = 1; i < _data.length; i++)
+						(_data[i].attributes as Array).push();
+				}
 			}
 			
 			/**
@@ -53,6 +86,7 @@
 				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(FeatureEvent.FEATURE_DRAWING_END, onFeatureAdded);
 			}
 			
 			/**
@@ -64,8 +98,21 @@
 					trace("popup mod");
 				}
 				else{
-					trace("popup non mod");
+					var index:uint = this.searchFeature(event.feature.name);
+					new EditAttributes(this._map, (this._data[0] as Array), (this._data[index].attributes as Array));
 				}
+			}
+			
+			/**
+			 * 
+			 */
+			private function searchFeature(value:String):uint{
+				
+				for(var i:uint = 1; i < _data.length; i++){
+					if(_data[i].identifier == value)
+						return i;
+				}
+				return null;
 			}
 			
 			/**

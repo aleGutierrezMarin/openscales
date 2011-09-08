@@ -125,7 +125,8 @@
 				
 				if(_handler.active && this.id != evt.activeHandler)
 				{
-					(_handler as DrawPathHandler).drawFinalPath();
+					if(!(_handler as DrawPathHandler).newFeature)
+						(_handler as DrawPathHandler).drawFinalPath();
 					disactivate();
 				}
 			}

@@ -125,7 +125,8 @@
 				
 				if(_handler.active && this.id != evt.activeHandler)
 				{
-					(_handler as DrawPolygonHandler).drawFinalPoly();
+					if(!(_handler as DrawPolygonHandler).newFeature)
+						(_handler as DrawPolygonHandler).drawFinalPoly();
 					disactivate();
 				}
 			}
