@@ -93,7 +93,7 @@ package org.openscales.core.handler.feature.draw
 				var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
 				labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
 				var feature:Feature = new LabelFeature(labelPoint);
-				feature.name = id.toString() + "L";
+				feature.name = "label." + id.toString();
 				id++;
 				drawLayer.addFeature(feature);
 				feature.draw();
