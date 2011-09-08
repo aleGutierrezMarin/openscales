@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- <p>The map displayed is OpenStreetMap Mapnik (EPSG:900913) and the center is defined in geographic coordinates (WGS84=EPSG:4326).</p>
+<p>Move the map using drag&amp;drop or with the N/S/E/W buttons.
+Zoom in/out using the mouse wheel, the scale slider, the +/- buttons above and below the slider or the zoom-box button (the coordinates displayed by the cursor are in pixels).
+The coordinates of the mouse cursor are displayed in geographic coordinates at the bottom-left corner.</p> -->
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		 creationComplete="initMap()" width="100%" height="100%">
+	
+	<Map id="fxMap" width="100%" height="100%" resolution="0.3515625" center="4.833,45.767" projection="EPSG:900913">
+		
+		<Mapnik name="Mapnik" />
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
+		
+		<DragHandler/>
+		<ClickHandler/>
+		<WheelHandler/>
+		
+		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
+
+		<PanZoom id="panZoom" x="10" y="10" />
+
+	</Map>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.feature.Marker;
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.popup.Anchored;
+			import org.openscales.core.style.Style;
+			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			public var markLyon:Marker;
+			private var fxpopup:FxPopup;
+			
+			private function initMap():void {
+				
+				//We create a lonlat over Lyon (France) with EPSG:27700 projection
+				var lonlat:Location = new Location(932115.8764378761, -437484.6802551435, "EPSG:27700");
+				
+				var markers:VectorLayer = new VectorLayer("Markers");
+				markers.projSrsCode = "EPSG:27700";
+				markers.generateResolutions(18);
+				markers.style = Style.getDefaultPointStyle();
+				markLyon = new Marker(new org.openscales.geometry.Point(lonlat.lon, lonlat.lat), {popupContentHTML: "This is a popup<br /><b>Bold text</b><br /><u>Link to <a href=\"http://openscales.org\" target=\"_new\">OpenScales</a></u>"});
+				markLyon.addEventListener(MouseEvent.CLICK, showPopup);
+				markers.addFeature(markLyon);
+				fxMap.map.addLayer(markers);
+				
+				
+				var vect:VectorLayer = new VectorLayer("Reprojected vector");
+				vect.projSrsCode = "EPSG:27700";
+				vect.style = Style.getDefaultPointStyle();
+				var p:org.openscales.geometry.Point = new org.openscales.geometry.Point(lonlat.lon, lonlat.lat);
+				vect.generateResolutions(18);
+				vect.addFeature(new PointFeature(p));
+				fxMap.map.addLayer(vect);
+			}
+			
+			private function showPopup(e:MouseEvent):void {
+				
+				if(fxpopup){
+					fxpopup.destroy();
+				}
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+
+				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				
+				fxpopup.feature = markLyon;
+				var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(markLyon.lonlat);
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+				fxpopup.position = px;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				fxpopupRenderer.content = markLyon.data.popupContentHTML;
+				
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
+				
+			}
+		]]>
+	</fx:Script>
+	
+</s:Group>

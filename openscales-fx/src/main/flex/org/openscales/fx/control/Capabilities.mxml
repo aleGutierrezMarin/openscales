@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Perform and display a GetCapabilities request to an OGC server, and allow to add
+     returned layer to the map -->
+<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.Trace;
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.layer.capabilities.GetCapabilities;
+			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.core.style.Style;
+			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.marker.WellKnownMarker;
+			import org.openscales.core.style.stroke.Stroke;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
+			
+			import spark.components.Label;
+			
+			/**
+			 * Array used as data provider for the list.
+			 */
+			private var listDataProvider:Array = null;
+			
+			/**
+			 * Hash map containing the capabilities of all layers available on the WFS server.
+			 */
+			private var capabilities:HashMap = null;
+			
+			/**
+			 * Hash map containing the capabilities of selected layer
+			 */
+			private var featureCap:HashMap = null;
+			
+			/**
+			 * Hash map in which we'll store the layers added to the map from the
+			 * capabilities retriever component.
+			 */
+			private var addedLayers:HashMap = new HashMap();
+			
+			/**
+			 * The WFS server url on which we will retrieve the capabilities.
+			 */
+			private var url:String = null;
+			
+			/**
+			 * Called when a LAYER_REMOVED event is dispatched.
+			 * It will remove the layer from the added layers.
+			 */
+			public function deleteLayer(event:LayerEvent):void
+			{
+				event.layer.destroy();
+				addedLayers.remove(event.layer.name);
+			}
+			
+			public function onButtonClick(event:MouseEvent):void{
+				var getCap:GetCapabilities = new GetCapabilities("wfs", this.txtUrl.text,this.capabilitiesGetter, "1.1.0", map.proxy);
+				url = this.txtUrl.text;
+			}
+			
+			/**
+			 * Method called when the user select an other list element (which is an available layer on server).
+			 * It will display the informations about the layer.
+			 */
+			public function onChangeListElement(event:Event):void {
+				// We show to user the informations about the layer
+				featureCap = capabilities.getValue(this.list.selectedItem);
+				var info:String = "Information about the selected layer: \n\n";
+				info += "Title: " + featureCap.getValue("Title") + "\n";
+				info += "Description: " + featureCap.getValue("Abstract") + "\n";
+				info += "SRS: " + featureCap.getValue("SRS");
+				
+				this.txtInfo.text = info;
+			}
+			
+			/**
+			 * <p>Double click handler on a list element.</p>
+			 * <p>It will add the layer at the map (and so in the layer switcher).</p>
+			 */
+			public function onDblClickListElement(event:MouseEvent):void {
+				if (! this.list.selectedItem) {
+					Trace.warn("Capabilities.onDblClickListElement WARNING: no item selected");
+					return;
+				}
+				//We add the layer to the map
+				if (!addedLayers.containsKey(this.list.selectedItem)) {
+					var typename:String= this.list.selectedItem as String;
+					var srs:String = capabilities.getValue(this.list.selectedItem).getValue("SRS");
+					var newLayer:WFS = new WFS(typename,this.url,typename);
+					newLayer.projSrsCode = srs;
+					newLayer.useCapabilities = true;
+					newLayer.capabilities = capabilities.getValue(this.list.selectedItem as String);
+					
+					var s:Style = Style.getDefaultSurfaceStyle();
+					s.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_CIRCLE,new SolidFill(0xFFFF00,0.5),new Stroke(0xFFFF00))));
+					newLayer.style = s;
+					this.map.addLayer(newLayer);
+					addedLayers.put(this.list.selectedItem,null);
+				}
+				
+			}
+			
+			/**
+			 * TODO: Refactor this to use events
+			 * 
+			 * Callback method to retrieve the capabilities from the GetCapabilities instance.
+			 * 
+			 * @param getCap The GetCapabilities instance that received the capabilities.
+			 */
+			public function capabilitiesGetter(getCap:GetCapabilities):void {
+				this.capabilities = getCap.getAllCapabilities();
+				lblFeatures.text = capabilities.size() + " layers available";
+				
+				this.list.dataProvider = new ArrayCollection(capabilities.getKeys().sort());      
+			}
+			
+			override public function set map(value:Map):void{
+				super.map = value;
+				if(this.map!=null){
+					this.map.addEventListener(LayerEvent.LAYER_REMOVED,deleteLayer);
+				}                 
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%">
+		<s:HGroup width="100%">
+			<s:Label text="WFS server URL:"/>
+			<s:Label id="lblFeatures"
+					 enabled="false"/>
+		</s:HGroup>
+		
+		<s:HGroup width="100%">
+			<s:TextInput width="100%"
+						 id="txtUrl"
+						 text="http://openscales.org/geoserver/wfs"
+						 displayAsPassword="false"
+						 editable="true"
+						 enabled="true"/>
+			<s:Button label="Go!"
+					  id="butGo"
+					  enabled="true"
+					  click="this.onButtonClick(event)"/>    
+		</s:HGroup>
+		
+		<s:List width="100%"
+				height="114"
+				allowMultipleSelection="false"
+				id="list"
+				doubleClickEnabled="true"
+				doubleClick="this.onDblClickListElement(event)"
+				change="this.onChangeListElement(event)"/>
+		<s:Label width="100%"
+				 height="108"
+				 id="txtInfo"
+				 visible="true"
+				 text="Information about the selected layer:"/>
+	</s:VGroup>
+	
+</Control>
