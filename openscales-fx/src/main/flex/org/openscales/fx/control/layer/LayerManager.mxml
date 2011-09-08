@@ -81,11 +81,17 @@
 				
 				var factory:ClassFactory = new ClassFactory(this._itemRenderer) 
 				
-				factory.properties = {
-					rendererOptions: this._rendererOptions,
-						layerManager: this
+				// only define params for itemRenderer taht are or inherit from DefaultLayerManagerItemRenderer
+				var instance:Object = new this._itemRenderer();
+					
+				if(instance is DefaultLayerManagerItemRenderer)
+				{
+					factory.properties = {
+						rendererOptions: this._rendererOptions,
+							layerManager: this
+					}
 				}
-				
+		
 				layerList.itemRenderer = factory;
 			}
 			
