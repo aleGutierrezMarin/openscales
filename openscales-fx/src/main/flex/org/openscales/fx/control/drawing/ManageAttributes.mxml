@@ -21,11 +21,14 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.popup.ChangeAttributes;
 			import org.openscales.core.popup.EditAttributes;
 			import org.openscales.core.popup.ManageAttributes;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
+			
+			import spark.components.TextInput;
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-04.png")]
@@ -34,45 +37,12 @@
 			private var _editHandlerActivated:Boolean = false;
 			private var _data:Array = new Array();
 			private var _attributes:Array = new Array("identifier","description");
+			private var _countPredefinedAttributes:uint;
+			private var _index:uint;
+			private var _vectorLayer:VectorLayer;
 			
 			/**
-			 * 
-			 */
-			private function onCreationComplete():void{
-				
-				_data.push(_attributes);
-			}
-			
-			/**
-			 * 
-			 */
-			private function onFeatureAdded(event:FeatureEvent):void{
-				
-				var values:Array = new Array((_data[0] as Array).length);
-				values[0] = event.feature.name;
-				_data.push({identifier:event.feature.name, attributes:values});
-			}
-			
-			/**
-			 * 
-			 */
-			private function onClick():void{
-				
-				new org.openscales.core.popup.ManageAttributes(this._map, this.onCloseManageAttributes);
-			}
-			
-			private function onCloseManageAttributes(value:String, add:Boolean):void{
-				
-				if(add){
-					//TODO : test si attribut existe déjà
-					(_data[0] as Array).push(value);
-					for(var i:uint = 1; i < _data.length; i++)
-						(_data[i].attributes as Array).push();
-				}
-			}
-			
-			/**
-			 * 
+			 * The Map associated to the component
 			 */
 			public function get map():Map{
 				
@@ -90,17 +60,97 @@
 			}
 			
 			/**
-			 * 
+			 * The VectorLayer associated to the component
 			 */
-			private function onSelectedFeature(event:FeatureEvent):void{
+			public function get target():VectorLayer{
 				
+				return this._vectorLayer;
+			}
+			public function set target(value:VectorLayer):void{
+				
+				this._vectorLayer = value;
+			}
+			
+			/**
+			 * This function is called on the component's creation complete
+			 */
+			private function onCreationComplete():void{
+				
+				// We store the initial number of predefined attributes
+				this._countPredefinedAttributes = this._attributes.length;
+			}
+			
+			/**
+			 * This function is called when a feature is added to the associated Map
+			 */
+			private function onFeatureAdded(event:FeatureEvent):void{
+				
+				// We check if the feature has been added to the associated VectorLayer
+				if(event.feature.layer == this.target){
+					var temp:Array = new Array(this._attributes.length);
+					temp[0] = event.feature.name;
+					_data.push({identifier:event.feature.name, values:temp});
+				}
+			}
+			
+			/**
+			 * This function is called when a feature is selected
+			 */
+			private function onSelectedFeature(event:FeatureEvent):void
+			{
 				if(this._editHandlerActivated){
-					trace("popup mod");
+					_index = this.searchFeature(event.feature.name);
+					new ChangeAttributes(this._map, this._attributes, (this._data[_index].values as Array), this.onChangeAttributes);
 				}
 				else{
-					var index:uint = this.searchFeature(event.feature.name);
-					new EditAttributes(this._map, (this._data[0] as Array), (this._data[index].attributes as Array));
+					_index = this.searchFeature(event.feature.name);
+					new EditAttributes(this._map, this._attributes, (this._data[_index].values as Array));
 				}
+			}
+			
+			/**
+			 * 
+			 */
+			private function onClick():void{
+				
+				new org.openscales.core.popup.ManageAttributes(this._map, this._attributes, this.onManageAttributes);
+			}
+			
+			private function onManageAttributes(value:String, add:Boolean):void{
+				
+				var i:uint;
+				var j:uint;
+				
+				if(add){
+					// Does this attribute already exist ?
+					for(i = 0; i < this._attributes.length; i++)
+						if(this._attributes[i] == value)
+							return;
+					
+					// If not, add it
+					this._attributes.push(value);
+					for(i = 0; i < _data.length; i++)
+						(_data[i].values as Array).push();
+				}
+				else
+				{
+					// You can't delete a predefined attribute
+					for(i = this._countPredefinedAttributes; i < this._attributes.length; i++){
+						if(this._attributes[i] == value){
+							this._attributes.splice(i,1);
+							for(j = 0; j < _data.length; j++)
+								(_data[j].values as Array).splice(i,1);
+						}
+					}
+				}
+			}
+			
+			
+			
+			private function onChangeAttributes(textInputArray:Array):void{
+				
+				for(var i:uint = 0; i < this._attributes.length; i++)
+					(this._data[_index].values as Array)[i] = (textInputArray[i] as TextInput).text;
 			}
 			
 			/**
@@ -108,7 +158,7 @@
 			 */
 			private function searchFeature(value:String):uint{
 				
-				for(var i:uint = 1; i < _data.length; i++){
+				for(var i:uint = 0; i < _data.length; i++){
 					if(_data[i].identifier == value)
 						return i;
 				}
