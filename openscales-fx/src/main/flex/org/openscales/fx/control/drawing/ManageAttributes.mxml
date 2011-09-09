@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:IconButton xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:os="http://openscales.org"
+			   toolTip="Manage attributes"
+			   icon="{_btnAttributes}"
+			   width="25"
+			   height="25"
+			   click="onClick()"
+			   creationComplete="onCreationComplete()">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.control.IControl;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.popup.EditAttributes;
+			import org.openscales.core.popup.ManageAttributes;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-04.png")]
+			private var _btnAttributes:Class;
+			private var _map:Map = null;
+			private var _editHandlerActivated:Boolean = false;
+			private var _data:Array = new Array();
+			private var _attributes:Array = new Array("identifier","description");
+			
+			/**
+			 * 
+			 */
+			private function onCreationComplete():void{
+				
+				_data.push(_attributes);
+			}
+			
+			/**
+			 * 
+			 */
+			private function onFeatureAdded(event:FeatureEvent):void{
+				
+				var values:Array = new Array((_data[0] as Array).length);
+				values[0] = event.feature.name;
+				_data.push({identifier:event.feature.name, attributes:values});
+			}
+			
+			/**
+			 * 
+			 */
+			private function onClick():void{
+				
+				new org.openscales.core.popup.ManageAttributes(this._map, this.onCloseManageAttributes);
+			}
+			
+			private function onCloseManageAttributes(value:String, add:Boolean):void{
+				
+				if(add){
+					//TODO : test si attribut existe déjà
+					(_data[0] as Array).push(value);
+					for(var i:uint = 1; i < _data.length; i++)
+						(_data[i].attributes as Array).push();
+				}
+			}
+			
+			/**
+			 * 
+			 */
+			public function get map():Map{
+				
+				return this._map;
+			}
+			public function set map(value:Map):void{
+				
+				this._map = value;
+				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onSelectedFeature);
+				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(FeatureEvent.FEATURE_DRAWING_END, onFeatureAdded);
+			}
+			
+			/**
+			 * 
+			 */
+			private function onSelectedFeature(event:FeatureEvent):void{
+				
+				if(this._editHandlerActivated){
+					trace("popup mod");
+				}
+				else{
+					var index:uint = this.searchFeature(event.feature.name);
+					new EditAttributes(this._map, (this._data[0] as Array), (this._data[index].attributes as Array));
+				}
+			}
+			
+			/**
+			 * 
+			 */
+			private function searchFeature(value:String):uint{
+				
+				for(var i:uint = 1; i < _data.length; i++){
+					if(_data[i].identifier == value)
+						return i;
+				}
+				return null;
+			}
+			
+			/**
+			 * 
+			 */
+			private function onChangeActiveHandler(event:DrawingEvent):void{
+				
+				if(event.type == DrawingEvent.EDIT_HANDLER_ACTIVATED)
+					this._editHandlerActivated = true;
+				else
+					this._editHandlerActivated = false;
+			}
+			
+		]]>
+	</fx:Script>			
+</os:IconButton>

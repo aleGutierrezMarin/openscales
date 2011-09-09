@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:openscales="http://openscales.org" 
+		 creationComplete="onCreationComplete(event)">
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="popup" />
+	</s:states>
+	
+	<s:Button label="{this.tooltipImport}" toolTip="{this.tooltipImport}" click="{this.importFeature(event)}" />
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.ogc.GML;
+			import org.openscales.core.layer.osm.OSM;
+			
+			import spark.components.DropDownList;
+			import spark.components.Label;
+			import spark.components.TextInput;
+			import spark.components.TitleWindow;
+			import spark.events.DropDownEvent;
+			import spark.layouts.VerticalLayout;
+			
+			/**
+			 * Tooltip that appears over Import button
+			 */
+			[Bindable]
+			public var tooltipImport:String = Catalog.getLocalizationForKey('drawing.import');
+			
+			/**
+			 * The label url value
+			 */
+			[Bindable]
+			public var urlLabelText:String = Catalog.getLocalizationForKey('drawing.url');
+			
+			/**
+			 * The label locale file value
+			 */
+			[Bindable]
+			public var localeLabelText:String = Catalog.getLocalizationForKey('drawing.locale');
+			
+			/**
+			 * The label format value
+			 */
+			[Bindable]
+			public var formatLabelText:String = Catalog.getLocalizationForKey('drawing.format');	
+			
+			/**
+			 * The current selected format
+			 * @default the first one : 0
+			 */
+			[Bindable]
+			public var selectedFormat:Number = 0;
+			
+			/**
+			 * Datas in the format dropdownlist
+			 */
+			[Bindable]
+			public var formatProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * Contains all the format supported
+			 */
+			[Bindable]
+			public var supportedFormat:Array = null;
+			
+			
+			/**
+			 * 
+			 */
+			public var myTitleWindow:TitleWindow = new TitleWindow();
+			
+			public function onCreationComplete(event:Event):void
+			{
+				if(!this.supportedFormat)
+				{
+					// init all available formats
+					this.supportedFormat = new Array();
+					this.supportedFormat[0] = "KML";
+					this.supportedFormat[1] = "GPX";
+					this.supportedFormat[2] = "GeoRSS";
+					this.supportedFormat[3] = "OSM";
+					this.supportedFormat[4] = "GML";
+				}
+				
+				// init formats :
+				for each(var format:String in supportedFormat)
+				{
+					this.formatProvider.addItem(format);
+				}
+			}
+			
+			/**
+			 * Change the text values on Map Language changed
+			 * @param event The I18N event received
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.tooltipImport = Catalog.getLocalizationForKey('drawing.import');
+				this.urlLabelText = Catalog.getLocalizationForKey('drawing.url');
+				this.localeLabelText = Catalog.getLocalizationForKey('drawing.locale');
+			}
+	
+			
+			/**
+			 * Called when the user validate the import
+			 * First check that locale file or url is not empty and then create a new Layer with the file data
+			 * 
+			 * @param event The MouseEvent received
+			 */
+			public function validateImportFeature(event:MouseEvent):void
+			{
+				//TODO : check empty field
+				var valide:Boolean = true;
+				
+				if(valide)
+				{
+					// close the pop up file
+					PopUpManager.removePopUp(myTitleWindow);
+					
+					var format:String = this.formatProvider.getItemAt(this.selectedFormat) as String;
+				/*	
+					switch(format)
+					{
+						case "KML":
+							
+							var osm:OSM = new OSM(name, url);
+							this.map.addLayer(osm);
+							
+							break;
+						
+						case "GPX":
+							
+							var kml:KML = new KML(name, url);
+							this.map.addLayer(kml);
+							
+							break;
+						
+						case "GeoRSS":
+							
+							var gpx:GPX = new GPX(name, version, url);
+							this.map.addLayer(gpx);
+							break;
+						
+						case "OSM":
+							
+							var osm:OSM = new OSM(name, url);
+							this.map.addLayer(osm);
+							break;
+						
+						case "GML":
+							
+							var gml:GML = new GML(name, null, null, url);
+							this.map.addLayer(osm);
+							break;
+						
+						default:
+							break;
+					}	*/
+				}
+				
+			}
+			
+			
+			/**
+			 * Call when a change event if dispatch by the dropdownlist linked to formats
+			 * Update the current format value according to the new selection
+			 * And then refresh the version list
+			 */
+			public function formatChange(event:Event):void
+			{
+				if(event)
+				{
+					var list:DropDownList = event.currentTarget as DropDownList
+					this.selectedFormat = list.selectedIndex;
+				}	
+			}
+			
+			// PopUp
+			/**
+			 * Called when the user click on the import button
+			 * Make the pop up visible
+			 * 
+			 * @param event The MouseEvent received
+			 */
+			public function importFeature(event:MouseEvent):void {
+				// Set the TitleWindow container properties.
+				myTitleWindow = new TitleWindow();
+				myTitleWindow.title = "My Window Title";
+				myTitleWindow.width= 220;
+				myTitleWindow.height= 150;
+				myTitleWindow.layout = new VerticalLayout();
+				// Call the method to add the Button control to the 
+				// TitleWindow container.
+				populateWindow();
+				// Use the PopUpManager to display the TitleWindow container.
+				PopUpManager.addPopUp(myTitleWindow, this, true);
+			}
+			
+			/**
+			 * Function that fill the popUp
+			 */
+			private function populateWindow():void 
+			{	
+				var label1:Label = new Label();
+				label1.id = "formatLabel";
+				label1.text = this.formatLabelText;
+				
+				myTitleWindow.addElement(label1); 
+				
+				var dropDownFormat:DropDownList = new DropDownList();
+				dropDownFormat.id = "listFormat";
+				dropDownFormat.addEventListener(DropDownEvent.CLOSE, this.formatChange);
+				dropDownFormat.dataProvider = this.formatProvider;
+				dropDownFormat.selectedIndex = this.selectedFormat;
+				
+				myTitleWindow.addElement(dropDownFormat); 
+				
+				var label2:Label = new Label();
+				label2.id = "urlLabel";
+				label2.text = this.urlLabelText;
+				
+				myTitleWindow.addElement(label2); 
+				
+				var textInput1:TextInput = new TextInput();
+				textInput1.id = "urlInput";
+				
+				myTitleWindow.addElement(textInput1); 
+				
+				var label3:Label = new Label();
+				label3.id = "localeLabel";
+				label3.text = this.localeLabelText;
+				
+				myTitleWindow.addElement(label3); 
+				
+				var textInput2:TextInput = new TextInput();
+				textInput2.id = "urlInput";
+					
+				myTitleWindow.addElement(textInput2); 
+				
+				var button:Button = new Button()
+				button.label = this.tooltipImport;
+				button.id = "validateImportButton";
+				button.addEventListener(MouseEvent.MOUSE_DOWN, this.validateImportFeature);
+				
+				myTitleWindow.addElement(button); 
+			}
+
+		]]>
+	</fx:Script>
+	
+</s:Group>
