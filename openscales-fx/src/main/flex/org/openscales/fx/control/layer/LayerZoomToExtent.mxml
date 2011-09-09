@@ -57,7 +57,9 @@
 			}
 			
 			/**
-			 * @inherit
+			 * Change the text values on Map Language changed
+			 * 
+			 * @param event The I18N event received
 			 */
 			public function onMapLanguageChange(event:I18NEvent):void 
 			{
