@@ -35,7 +35,7 @@
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
 			private var _data:Array = new Array();
-			private var _attributes:Array = new Array("identifier","description");
+			private var _attributes:Array = new Array("id","description");
 			private var _index:uint;
 			private var _vectorLayer:VectorLayer;
 			
