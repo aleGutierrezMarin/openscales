@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="org.openscales.fx.control.layer.*"
+		 xmlns:os="org.openscales.fx.control.*">
+	
+	
+	<s:Button label="{this.tooltipExport}" toolTip="{this.tooltipExport}" click="{this.exportFeature(event)}" />
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.effects.easing.Exponential;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.VectorLayer;
+			
+			import spark.components.TitleWindow;
+			
+			[Bindable]
+			public var tooltipExport:String = Catalog.getLocalizationForKey('drawing.export');
+			
+			/**
+			 * The valide import text
+			 */
+			[Bindable]
+			public var exportLabel:String = Catalog.getLocalizationForKey('drawing.export');
+			
+			/**
+			 * The title window (that display the form)
+			 */
+			public var myTitleWindow:TitleWindow = new TitleWindow();
+			
+			/**
+			 * The VectorLayer linked to this export button
+			 */
+			private var _target:VectorLayer = null;
+
+			/**
+			 * Change the text values on Map Language changed
+			 * @param event The I18N event received
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.tooltipExport = Catalog.getLocalizationForKey('drawing.export');
+			}
+			
+			/**
+			 * Close the PopUp window
+			 */
+			public function closePopUp(event:MouseEvent = null):void
+			{
+				// close the pop up file
+				PopUpManager.removePopUp(myTitleWindow);
+			}
+			
+			public function exportFeature(event:MouseEvent):void
+			{
+				// Set the TitleWindow container properties.
+				myTitleWindow = new TitleWindow();
+				myTitleWindow.title = Catalog.getLocalizationForKey('drawing.export');
+				myTitleWindow.addEventListener(FlexEvent.CREATION_COMPLETE, this.onPopUpCreationComplete);
+				
+				// Call the method to add the Button control to the 
+				// TitleWindow container.
+				populateWindow();
+				// Use the PopUpManager to display the TitleWindow container.
+				PopUpManager.addPopUp(myTitleWindow, this, true);
+			}
+			
+			private function onPopUpCreationComplete(e:Event):void
+			{
+				myTitleWindow.closeButton.addEventListener(MouseEvent.CLICK, this.closePopUp);
+			}
+			
+			/**
+			 * Function that fill the popUp
+			 */
+			private function populateWindow():void 
+			{	
+				var form:ExportFeatureForm = new ExportFeatureForm();
+				form.exportFeature = this;
+				myTitleWindow.addElement(form); 
+			}
+			
+			/**
+			 * Layer the features will be drawn on
+			 */
+			public function get target():VectorLayer
+			{
+				return _target;
+			}
+			public function set target(value:VectorLayer):void{
+				
+				_target = value;
+				if(_target)
+				{
+					_target.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+				}
+			}
+		]]>
+	</fx:Script>
+			  
+</s:Group>

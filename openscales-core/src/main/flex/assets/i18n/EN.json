@@ -3,6 +3,14 @@
    "locale.name": "English",
    "locale.localizedName": "English",
    
+   "drawing.import": "Import",
+   "drawing.export": "Export",
+   "drawing.url": "Url",
+   "drawing.locale": "File",
+   "drawing.format": "Format",
+   "drawing.name": "Name",
+   "drawing.version": "Version",
+   
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",
    "layercontrol.deletelayer": "Delete this layer",
