@@ -108,10 +108,12 @@
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractEditCollectionHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractEditHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawLabelHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawMultiHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPolygonHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPolygonHandler"/>
@@ -129,6 +131,7 @@
     <classEntry path="org.openscales.core.i18n.Locale"/>
     <classEntry path="org.openscales.core.i18n.provider.I18nJSONProvider"/>
     <classEntry path="org.openscales.core.i18n.provider.Ii18nProvider"/>
+    <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
     <classEntry path="org.openscales.core.layer.HTTPRequest"/>
@@ -138,6 +141,7 @@
     <classEntry path="org.openscales.core.layer.PolyLayer"/>
     <classEntry path="org.openscales.core.layer.SwitchLayers"/>
     <classEntry path="org.openscales.core.layer.TMS"/>
+    <classEntry path="org.openscales.core.layer.VectorLayer"/>
     <classEntry path="org.openscales.core.layer.capabilities.CapabilitiesParser"/>
     <classEntry path="org.openscales.core.layer.capabilities.GetCapabilities"/>
     <classEntry path="org.openscales.core.layer.capabilities.WFS100"/>
@@ -151,6 +155,7 @@
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.GML"/>
     <classEntry path="org.openscales.core.layer.ogc.GPX"/>
+    <classEntry path="org.openscales.core.layer.ogc.GeoRss"/>
     <classEntry path="org.openscales.core.layer.ogc.WFS"/>
     <classEntry path="org.openscales.core.layer.ogc.WFST.Transaction"/>
     <classEntry path="org.openscales.core.layer.ogc.WFST"/>
@@ -177,6 +182,7 @@
     <classEntry path="org.openscales.core.layer.params.ogc.WMSParams"/>
     <classEntry path="org.openscales.core.ns.os_internal"/>
     <classEntry path="org.openscales.core.popup.Anchored"/>
+    <classEntry path="org.openscales.core.popup.LabelPopup"/>
     <classEntry path="org.openscales.core.popup.Popup"/>
     <classEntry path="org.openscales.core.request.AbstractRequest"/>
     <classEntry path="org.openscales.core.request.DataRequest"/>
@@ -237,12 +243,6 @@
     <classEntry path="org.openscales.core.layer.originator.DataOriginatorTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
-    <classEntry path="org.openscales.core.layer.ogc.GeoRss"/>
-    <classEntry path="org.openscales.core.layer.Graticule"/>
-    <classEntry path="org.openscales.core.format.KMLBuildTest"/>
-    <classEntry path="org.openscales.core.handler.feature.draw.DrawLabelHandler"/>
-    <classEntry path="org.openscales.core.popup.LabelPopup"/>
-    <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
