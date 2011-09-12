@@ -71,11 +71,17 @@ package org.openscales.core.popup
 			PopUpManager.addPopUp(this, map, true);
 		}
 		
+		/**
+		 * This function is called when the close button is clicked
+		 */
 		private function closeClick(evt:Event):void
 		{
 			PopUpManager.removePopUp(this);
 		}
 		
+		/**
+		 * This function is called when the ok button is clicked
+		 */
 		private function okClick(evt:MouseEvent):void
 		{
 			this._callback(_textInputArray);
