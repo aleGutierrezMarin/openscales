@@ -121,6 +121,7 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
+    <classEntry path="org.openscales.fx.control.drawing.ImportFeatureForm"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

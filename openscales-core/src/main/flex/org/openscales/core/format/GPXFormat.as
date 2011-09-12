@@ -48,12 +48,15 @@ package org.openscales.core.format
 		private var _authorEmail:String;
 		private var _fileURL:String;
 		
-		public function GPXFormat(featuresids:HashMap,
+		public function GPXFormat(featuresids:HashMap = null,
 								  version:String = "1.1",
 								  extractAttributes:Boolean = true)
 		{
 			super();
 			this._extractAttributes = extractAttributes;
+			
+			if(!featuresids)
+				this._featuresids = new HashMap();
 			this._featuresids = featuresids;
 			this._version = version;
 			
