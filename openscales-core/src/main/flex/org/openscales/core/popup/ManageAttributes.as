@@ -3,8 +3,6 @@ package org.openscales.core.popup
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import flexunit.utils.ArrayList;
-	
 	import mx.collections.ArrayCollection;
 	import mx.events.CloseEvent;
 	import mx.managers.PopUpManager;
