@@ -9,6 +9,12 @@ package org.openscales.core.format
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.style.Rule;
+	import org.openscales.core.style.Style;
+	import org.openscales.core.style.fill.Fill;
+	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 
 	/**
 	 * Used some tips detailed on http://dispatchevent.org/roger/embed-almost-anything-in-your-swf/ to load XML
@@ -95,7 +101,7 @@ package org.openscales.core.format
 			var kmlFormat:KMLFormat = new KMLFormat();
 			var file:XML = new XML(new Sample4KML());
 			var i:uint;
-			//7 multipolygons and 7 multipoints inside this file because multiPoly parsed first
+			//7 multipolygons and 7 multipoints inside this file because multiPoly are parsed first
 			
 			var features:Vector.<Feature> = kmlFormat.read(file) as Vector.<Feature>;
 			Assert.assertEquals("There should be 14 features inside this list",14,features.length);
@@ -108,7 +114,14 @@ package org.openscales.core.format
 			{
 				Assert.assertTrue("This feature should be a multiPointFeature", features[i] is MultiPointFeature);
 			}
+			//check the style of the first polygon
 			
+			var style:Style = features[0].style;
+			var rule:Rule = style.rules[0];
+			//2 symbolyzers inside, the first for the fill of the poly
+			var polySym:Symbolizer = rule.symbolizers[0];
+			var fill:SolidFill = (polySym as PolygonSymbolizer).fill as SolidFill;
+			Assert.assertEquals("The color of the first polygon should be 4210880",4210880,fill.color);
 		}
 	}
 

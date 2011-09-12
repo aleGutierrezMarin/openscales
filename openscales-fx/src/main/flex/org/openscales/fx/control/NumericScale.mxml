@@ -32,12 +32,13 @@
 			 */
 			private var _value:Number = 1;
 			
-			
 			/**
 			 * @private
 			 * The dpi to use for the scale calculation
 			 */
 			private var _dpi:Number = DEFAUL_DPI;
+
+
 			/**
 			 * The current value of the scale Label
 			 * @default "1 / 1"
@@ -154,6 +155,22 @@
 			public function set value(value:Number):void
 			{
 				this._value = value;
+			}
+			
+			/**
+			 * The dpi to use for the scale calculation
+			 */
+			public function get dpi():Number
+			{
+				return _dpi;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set dpi(value:Number):void
+			{
+				_dpi = value;
 			}
 		]]>
 	</fx:Script>

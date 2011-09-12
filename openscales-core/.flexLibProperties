@@ -246,6 +246,8 @@
     <classEntry path="org.openscales.core.popup.EditAttributes"/>
     <classEntry path="org.openscales.core.popup.ManageAttributes"/>
     <classEntry path="org.openscales.core.popup.ChangeAttributes"/>
+    <classEntry path="org.openscales.map.ExtentTest"/>
+    <classEntry path="org.openscales.core.events.MapEventTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
