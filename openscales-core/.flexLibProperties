@@ -243,6 +243,9 @@
     <classEntry path="org.openscales.core.layer.originator.DataOriginatorTest"/>
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
+    <classEntry path="org.openscales.core.popup.EditAttributes"/>
+    <classEntry path="org.openscales.core.popup.ManageAttributes"/>
+    <classEntry path="org.openscales.core.popup.ChangeAttributes"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

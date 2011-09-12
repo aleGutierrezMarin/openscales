@@ -12,6 +12,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.popup.LabelPopup;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.geometry.LabelPoint;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
@@ -81,8 +82,18 @@ package org.openscales.core.handler.feature.draw
 				drawLayer.scaleX = 1;
 				drawLayer.scaleY = 1;
 				var labelPoint:LabelPoint = new LabelPoint(str,this._labelLocation.x, this._labelLocation.y);
+				var middlePixel:Pixel = this.map.getMapPxFromLocation(this._labelLocation);
+				var leftPixel:Pixel = new Pixel();
+				var rightPixel:Pixel = new Pixel();
+				leftPixel.x = middlePixel.x - labelPoint.label.width / 2;
+				leftPixel.y = middlePixel.y + labelPoint.label.height / 2;
+				rightPixel.x = middlePixel.x + labelPoint.label.width / 2;
+				rightPixel.y = middlePixel.y - labelPoint.label.height / 2;
+				var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
+				var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
+				labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
 				var feature:Feature = new LabelFeature(labelPoint);
-				feature.name = id.toString() + "L";
+				feature.name = "label." + id.toString();
 				id++;
 				drawLayer.addFeature(feature);
 				feature.draw();

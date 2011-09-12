@@ -33,7 +33,6 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 				<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
 									horizontalAlign="center" verticalAlign="middle"/>
 			</s:layout>
-			<DisactivateDrawingTools />
 			<DrawLabel id="drawLabel" target="{features.nativeLayer as VectorLayer}" />
 			<DrawPoint id="drawPoint" target="{features.nativeLayer as VectorLayer}" />
 			<DrawPath id="drawPath" target="{features.nativeLayer as VectorLayer}"  />
@@ -41,6 +40,7 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 			<SelectFeatures id="selectFeatures" target="{features.nativeLayer as VectorLayer}" />
 			<EditFeatures id="editFeatures" target="{features.nativeLayer as VectorLayer}" />
 			<MoveFeatures id="moveFeatures" target="{features.nativeLayer as VectorLayer}" />
+			<ManageAttributes map="{fxMap.map}" target="{features.nativeLayer as VectorLayer}" />
 		</s:Panel>
 		
 	</Map>
