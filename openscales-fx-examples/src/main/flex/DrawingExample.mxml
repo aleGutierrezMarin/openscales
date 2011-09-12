@@ -28,6 +28,8 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}"/>
 		
+		<LayerManager top="5" right="5"/>
+		
 		<s:Panel title="Drawing Tools" x="10" y="10" height="70" >
 			<s:layout>
 				<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"

@@ -36,12 +36,12 @@ package org.openscales.fx.layer
 		
 		public function set georssData(value:XML):void{
 			if(this._layer != null)
-				(this._layer as GeoRss).georssData = value;
+				(this._layer as GeoRss).data = value;
 		}
 		
 		public function get georssData():XML{
 			if(this._layer != null)
-				return (this._layer as GeoRss).georssData;
+				return (this._layer as GeoRss).data;
 			return null;
 		}
 		

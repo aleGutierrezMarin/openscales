@@ -6,9 +6,16 @@ package org.openscales.core.layer
 	
 	import org.openscales.core.Trace;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.format.KMLFormat;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.marker.Marker;
+	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.geometry.basetypes.Bounds;
 	
 	/**
@@ -18,6 +25,7 @@ package org.openscales.core.layer
 	{
 		private var _request:XMLRequest = null;
 		private var _kmlFormat:KMLFormat = null;
+		private var _featureVector:Vector.<Feature> = null;
 
 		private var _xml:XML = null;
 		
@@ -49,16 +57,53 @@ package org.openscales.core.layer
 			if (this.map == null)
 				return;
 			
-			if (! this._request) {
-				this.loading = true;
-				this._request = new XMLRequest(url, onSuccess, onFailure);
-				this._request.proxy = this.proxy;
-				this._request.security = this.security;
-				this._request.send();
-			} else {
+			if (url)
+			{
+				if (! this._request) {
+					this.loading = true;
+					this._request = new XMLRequest(url, onSuccess, onFailure);
+					this._request.proxy = this.proxy;
+					this._request.security = this.security;
+					this._request.send();
+				} else {
+					this.clear();
+					this.draw();
+				}
+			}
+			else if (this.data)
+			{	
+				this.drawFeatures();				
+			}
+			else
+			{
 				this.clear();
 				this.draw();
 			}
+			
+		}
+		
+		public function drawFeatures():void{
+			
+			if(this._featureVector == null) {
+				
+				if (this.map.projection != null && this.projSrsCode != null && this.projSrsCode != this.map.projection) {
+					this._kmlFormat.externalProjSrsCode = this.projSrsCode;
+					this._kmlFormat.internalProjSrsCode = this.map.projection;
+				}
+				this._kmlFormat.proxy = this.proxy;
+				
+				this._featureVector = this.kmlFormat.read(this.data) as Vector.<Feature>;
+				var i:uint;
+				var vectorLength:uint = this._featureVector.length;
+				for (i = 0; i < vectorLength; i++){
+				
+					this.addFeature(this._featureVector[i]);
+				}
+			}
+			else {
+				this.clear();
+				this.draw();
+			}			
 		}
 		
 		public function onSuccess(event:Event):void

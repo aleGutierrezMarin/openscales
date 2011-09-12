@@ -15,19 +15,34 @@
 	<s:Label id="layerName" text="{this.nameLabel}" width="40%" />
 	<s:TextInput id="inputName"  width="60%" />
 	
-	<s:Label id="formatLabel" text="{this.formatLabelText}" />
+	<s:Group>
+		
+		<s:layout>
+			<s:HorizontalLayout />
+		</s:layout>
+		
+		<s:Group id="formatGroup" >
+			<s:Label id="formatLabel" text="{this.formatLabelText}" />
+			
+			<s:DropDownList id="listFormat"
+							change="{this.formatChange(event)}"
+							dataProvider="{this.formatProvider}"
+							selectedIndex="{this.selectedFormat}" />
+		</s:Group>
+		
+		<s:Group id="versionGroup" visible="false">
+			
+			<s:Label id="version" text="{this.versionLabel}" width="40%" />
+			<s:DropDownList id="listVersion"
+							change="{this.versionChange(event)}"
+							dataProvider="{this.versionProvider}"
+							selectedIndex="{this.selectedVersion}" 
+							width="60%"/>
+		</s:Group>
+	</s:Group>
 	
-	<s:DropDownList id="listFormat"
-					change="{this.formatChange(event)}"
-					dataProvider="{this.formatProvider}"
-					selectedIndex="{this.selectedFormat}" />
 	
-	<s:Label id="version" text="{this.versionLabel}" width="40%" />
-	<s:DropDownList id="listVersion"
-					change="{this.versionChange(event)}"
-					dataProvider="{this.versionProvider}"
-					selectedIndex="{this.selectedVersion}" 
-					width="60%"/>
+	
 	
 	
 	<s:VGroup paddingLeft="10" paddingTop="10">
@@ -200,18 +215,16 @@
 					this.supportedFormat[0] = "KML";
 					this.supportedFormat[1] = "GPX";
 					this.supportedFormat[2] = "GeoRSS";
-					this.supportedFormat[3] = "OSM";
-					this.supportedFormat[4] = "GML";
+					this.supportedFormat[3] = "GML";
 				}
 				
 				if(!this.supportedVersion)
 				{
 					this.supportedVersion = new Array();
-					this.supportedVersion[0] = ["2.0.0","2.1.0"]; // KML
+					this.supportedVersion[0] = [""]; 
 					this.supportedVersion[1] = ["1.0.0","1.1.0"]; // GPX
-					this.supportedVersion[2] = [ "Simple","GML"]; // GeoRSS
-					this.supportedVersion[3] = [Catalog.getLocalizationForKey('externalLayers.noversion')]; // OSM
-					this.supportedVersion[4] = ["2.0.0", "2.1.0", "3.2.0", "3.2.1"]; // GML
+					this.supportedVersion[2] = [""]; 
+					this.supportedVersion[3] = ["2.0.0", "2.1.0", "3.2.0", "3.2.1"]; // GML
 				}
 				
 				// init formats :
@@ -268,6 +281,11 @@
 					this.versionProvider.addItem(version);
 				}
 				this.selectedVersion = 0;
+				
+				if(this.versionProvider.length > 1)
+					versionGroup.visible = true;
+				else
+					versionGroup.visible = false;
 			}
 			
 			/**
@@ -354,7 +372,7 @@
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
-								kml = new KML(name, url);
+								kml = new KML(name, null, xml);
 								this.importFeature.map.addLayer(kml);
 							}
 							
