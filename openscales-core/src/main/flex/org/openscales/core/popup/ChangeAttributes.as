@@ -29,8 +29,7 @@ package org.openscales.core.popup
 		public function ChangeAttributes(map:Map, attributes:Array, values:Array, callback:Function)
 		{
 			var hGroup:HGroup = new HGroup();
-			var vGroup1:VGroup = new VGroup();
-			var vGroup2:VGroup = new VGroup();
+			var vGroup:VGroup = new VGroup();
 			var okButton:Button = new Button();
 			var lb:Label;
 			var ti:TextInput;
@@ -39,28 +38,32 @@ package org.openscales.core.popup
 			this.x = map.width / 2;
 			this.y = map.height / 2;
 			this.height = 300;
-			this.width = 400;
+			this.width = 220;
 			this.title = "Change attributes";
 			hGroup.height = this.height;
 			hGroup.width = this.width;
+			hGroup.paddingTop = 5;
+			hGroup.paddingLeft = 5;
 			hGroup.clipAndEnableScrolling = true;
 			this.addElement(hGroup);
-			hGroup.addElement(vGroup1);
-			hGroup.addElement(vGroup2);
+			hGroup.addElement(vGroup);
 			
 			for(var i:uint = 0; i < attributes.length; i++){
 				
 				lb = new Label();
-				lb.text = attributes[i];
-				vGroup1.addElement(lb);
+				lb.text = attributes[i] + " : ";
+				vGroup.addElement(lb);
 				ti = new TextInput();
 				ti.text = values[i];
-				vGroup2.addElement(ti);
+				vGroup.addElement(ti);
 				_textInputArray.push(ti);
+				lb = new Label();
+				lb.text = "";
+				vGroup.addElement(lb);
 			}
 			
 			okButton.label = "OK";
-			vGroup1.addElement(okButton);
+			vGroup.addElement(okButton);
 			
 			// Register events
 			this.addEventListener(CloseEvent.CLOSE, closeClick);
