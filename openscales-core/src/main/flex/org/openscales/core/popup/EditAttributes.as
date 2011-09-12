@@ -18,36 +18,46 @@ package org.openscales.core.popup
 	
 	public class EditAttributes extends TitleWindow
 	{
-		
 		/**
 		 * Constructor
 		 */
 		public function EditAttributes(map:Map, attributes:Array, values:Array)
 		{
-			var vg:VGroup = new VGroup();
-			var textArea:TextArea = new TextArea();
+			var hGroup:HGroup = new HGroup();
+			var vGroup1:VGroup = new VGroup();
+			var vGroup2:VGroup = new VGroup();
+			var lb:Label;
 			
 			// Define the popup properties
 			this.x = map.width / 2;
 			this.y = map.height / 2;
 			this.height = 100;
 			this.width = 200;
-			this.title = "Attributes";
-			this.addElement(vg);
-			vg.addElement(textArea);
+			this.title = "Edit attributes";
+			this.addElement(hGroup);
+			hGroup.addElement(vGroup1);
+			hGroup.addElement(vGroup2);
+			
+			// Display the attributes
+			for(var i:uint = 0; i < attributes.length; i++){
+				lb = new Label();
+				lb.text = attributes[i] + " : ";
+				vGroup1.addElement(lb);
+				lb = new Label();
+				lb.text = values[i];
+				vGroup2.addElement(lb);
+			}
 			
 			// Register events
 			this.addEventListener(CloseEvent.CLOSE, closeClick);
-			
-			//
-			for(var i:uint = 0; i < attributes.length; i++){
-				textArea.text += attributes[i] + ":" + values[i] + "\n";
-			}
 			
 			// Display the popup
 			PopUpManager.addPopUp(this, map, true);
 		}
 		
+		/**
+		 * This function is called when the close button is clicked
+		 */
 		public function closeClick(evt:Event):void
 		{
 			PopUpManager.removePopUp(this);

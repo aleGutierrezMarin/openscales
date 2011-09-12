@@ -7,8 +7,7 @@
 			   icon="{_btnAttributes}"
 			   width="25"
 			   height="25"
-			   click="onClick()"
-			   creationComplete="onCreationComplete()">
+			   click="onClick()">
 	
 	<fx:Script>
 		<![CDATA[
@@ -31,13 +30,12 @@
 			import spark.components.TextInput;
 			
 			[Bindable]
-			[Embed(source="/assets/images/icons/Icons-04.png")]
+			[Embed(source="/assets/images/icons/Icons-13.jpg")]
 			private var _btnAttributes:Class;
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
 			private var _data:Array = new Array();
 			private var _attributes:Array = new Array("identifier","description");
-			private var _countPredefinedAttributes:uint;
 			private var _index:uint;
 			private var _vectorLayer:VectorLayer;
 			
@@ -72,15 +70,6 @@
 			}
 			
 			/**
-			 * This function is called on the component's creation complete
-			 */
-			private function onCreationComplete():void{
-				
-				// We store the initial number of predefined attributes
-				this._countPredefinedAttributes = this._attributes.length;
-			}
-			
-			/**
 			 * This function is called when a feature is added to the associated Map
 			 */
 			private function onFeatureAdded(event:FeatureEvent):void{
@@ -109,44 +98,8 @@
 			}
 			
 			/**
-			 * 
+			 * This function is called by the ChangeAttributes pop-up
 			 */
-			private function onClick():void{
-				
-				new org.openscales.core.popup.ManageAttributes(this._map, this._attributes, this.onManageAttributes);
-			}
-			
-			private function onManageAttributes(value:String, add:Boolean):void{
-				
-				var i:uint;
-				var j:uint;
-				
-				if(add){
-					// Does this attribute already exist ?
-					for(i = 0; i < this._attributes.length; i++)
-						if(this._attributes[i] == value)
-							return;
-					
-					// If not, add it
-					this._attributes.push(value);
-					for(i = 0; i < _data.length; i++)
-						(_data[i].values as Array).push();
-				}
-				else
-				{
-					// You can't delete a predefined attribute
-					for(i = this._countPredefinedAttributes; i < this._attributes.length; i++){
-						if(this._attributes[i] == value){
-							this._attributes.splice(i,1);
-							for(j = 0; j < _data.length; j++)
-								(_data[j].values as Array).splice(i,1);
-						}
-					}
-				}
-			}
-			
-			
-			
 			private function onChangeAttributes(textInputArray:Array):void{
 				
 				for(var i:uint = 0; i < this._attributes.length; i++)
@@ -154,7 +107,39 @@
 			}
 			
 			/**
-			 * 
+			 * This function is called when the icon button is clicked
+			 */
+			private function onClick():void{
+				
+				new org.openscales.core.popup.ManageAttributes(this._map, this._attributes, this.onManageAttributes);
+			}
+			
+			/**
+			 * This function is called by the ManageAttributes pop-up
+			 */
+			private function onManageAttributes(value:String, action:String):void
+			{
+				var i:uint;
+				var j:uint;
+				
+				if(action == "add")
+				{
+					for(i = 0; i < _data.length; i++)
+						(_data[i].values as Array).push();
+				}
+				else if(action == "delete")
+				{
+					for(i = 0; i < this._attributes.length; i++){
+						if(this._attributes[i] == value){
+							for(j = 0; j < _data.length; j++)
+								(_data[j].values as Array).splice(i,1);
+						}
+					}
+				}
+			}
+			
+			/**
+			 * This function returns the index of the feature
 			 */
 			private function searchFeature(value:String):uint{
 				
@@ -166,7 +151,7 @@
 			}
 			
 			/**
-			 * 
+			 * This function is called when a DrawingEvent occured
 			 */
 			private function onChangeActiveHandler(event:DrawingEvent):void{
 				
