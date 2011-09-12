@@ -8,6 +8,8 @@
    "drawing.url": "Url",
    "drawing.locale": "File",
    "drawing.format": "Format",
+   "drawing.name": "Name",
+   "drawing.version": "Version",
    
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",

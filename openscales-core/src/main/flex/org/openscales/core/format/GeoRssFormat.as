@@ -37,11 +37,16 @@ package org.openscales.core.format
 		private var _link:String;
 		private var geoRssNs:Namespace = new Namespace("georss", "http://www.georss.org/georss");
 
-		public function GeoRssFormat(featuresids:HashMap,
+		public function GeoRssFormat(featuresids:HashMap = null,
 									 extractAttributes:Boolean = true)
 		{
 			super();
+			
 			this._extractAttributes = extractAttributes;
+			
+			if(!featuresids)
+				this._featuresids = new HashMap();
+			
 			this._featuresids = featuresids;
 			
 			//use the setters to change these default values before calling the write function

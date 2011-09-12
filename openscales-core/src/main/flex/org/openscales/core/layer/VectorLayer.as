@@ -39,6 +39,11 @@ package org.openscales.core.layer
 		
 		private var _featuresID:Vector.<String> = new Vector.<String>();
 		
+		private var _data:XML = null;
+
+	
+
+		
 		public function VectorLayer(name:String)
 		{
 			super(name);
@@ -389,6 +394,19 @@ package org.openscales.core.layer
 			this._displayProjSrsCode = this.projSrsCode;
 			// TODO: Why changing the _displayProjSrsCode ? It is dependant on the baselayer's projection, not on the layer's projection.
 			// But if true, shouldn't we call this.updateCurrentProjection(); ?
+		}
+		
+		/**
+		 * If the VectorLayer is made from locale source : the XML data 
+		 */
+		public function get data():XML
+		{
+			return _data;
+		}
+		
+		public function set data(value:XML):void
+		{
+			_data = value;
 		}
 	}
 }

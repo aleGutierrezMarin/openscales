@@ -40,8 +40,8 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 			<SelectFeatures id="selectFeatures" target="{features.nativeLayer as VectorLayer}" />
 			<EditFeatures id="editFeatures" target="{features.nativeLayer as VectorLayer}" />
 			<MoveFeatures id="moveFeatures" target="{features.nativeLayer as VectorLayer}" />
-			<ImportFeature id="importFeature" />
-			<ExportFeature id="exportFeature"  />
+			<ImportFeature id="importFeature" map="{fxMap.map}"/>
+			<ExportFeature id="exportFeature" target="{features.nativeLayer as VectorLayer}" />
 			<ManageAttributes map="{fxMap.map}" />
 		</s:Panel>
 		

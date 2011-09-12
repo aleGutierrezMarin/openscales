@@ -18,15 +18,18 @@ package org.openscales.core.layer
 	{
 		private var _request:XMLRequest = null;
 		private var _kmlFormat:KMLFormat = null;
+
 		private var _xml:XML = null;
 		
 		public function KML(name:String,
-							url:String,
+							url:String = null,
+							data:XML = null,
 							style:Style = null,
 							bounds:Bounds = null) 
 		{
 			super(name);
 			this.url = url;
+			this.data = data;
 			this.maxExtent = bounds;
 			this._kmlFormat = new KMLFormat();
 			this._kmlFormat.userDefinedStyle = style;
@@ -102,6 +105,11 @@ package org.openscales.core.layer
 		public function set projection(value:String):void
 		{
 			this._projSrsCode = value;
+		}
+		
+		public function get kmlFormat():KMLFormat
+		{
+			return _kmlFormat;
 		}
 	}
 }

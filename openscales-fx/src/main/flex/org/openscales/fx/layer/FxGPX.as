@@ -45,13 +45,13 @@ package org.openscales.fx.layer
 		
 		public function get xmlData():XML{
 			if(this._layer != null)
-				return (this._layer as GPX).gpxData;
+				return (this._layer as GPX).data;
 			return null;
 		}
 		
 		public function set xmlData(value:XML):void{
 			if(this._layer != null)
-				(this._layer as GPX).gpxData = value;
+				(this._layer as GPX).data = value;
 		}
 		
 		override public function get style():Style{
