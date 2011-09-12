@@ -37,6 +37,9 @@ package org.openscales.core.format
 		private var _gpxFile:XML = null;
 		private var _featuresVector:Vector.<Feature> = null;
 		private var _extractAttributes:Boolean;
+		private var _extractWaypoints:Boolean;
+		private var _extractTracks:Boolean;
+		private var _extractRoutes:Boolean;
 		private var _featuresids:HashMap = null; 
 		
 		private var _version:String = "1.1";
@@ -50,10 +53,16 @@ package org.openscales.core.format
 		
 		public function GPXFormat(featuresids:HashMap,
 								  version:String = "1.1",
+								  extractWaypoints:Boolean = true,
+								  extractTracks:Boolean = true,
+								  extractRoutes:Boolean = true,
 								  extractAttributes:Boolean = true)
 		{
 			super();
 			this._extractAttributes = extractAttributes;
+			this._extractWaypoints = extractWaypoints;
+			this._extractTracks = extractTracks;
+			this._extractRoutes = extractRoutes;
 			this._featuresids = featuresids;
 			this._version = version;
 			
@@ -112,9 +121,7 @@ package org.openscales.core.format
 						j++;
 					}
 				}
-			}
-
-				
+			}	
 			for (i = j; i < listLength; i++){
 				var feature:Feature = this.parseFeature(membersList[i]);
 				if (feature){
@@ -149,12 +156,13 @@ package org.openscales.core.format
 			else
 			{	//before parsing the feature, check if its ID is already in the hashmap
 				//skip this check if the name is missing
-				if(featureName){
+				if(featureName)
+				{
 					if(this._featuresids && this._featuresids.containsKey(featureName.toString()))
 						return null; 
 				}
 
-				if (featureNode.localName() == "wpt")
+				if (featureNode.localName() == "wpt" && this._extractWaypoints)
 				{
 					coords = this.parsePointCoords(featureNode);
 					if (coords)
@@ -163,7 +171,7 @@ package org.openscales.core.format
 						
 					}
 				}
-				else if (featureNode.localName() == "rte")
+				else if (featureNode.localName() == "rte" && this._extractRoutes)
 				{					
 					var lineCoords:Vector.<Number> = this.parseLineStringCoords(featureNode);
 					if (lineCoords)
@@ -171,7 +179,7 @@ package org.openscales.core.format
 						feature = new LineStringFeature(new LineString(lineCoords));
 					}
 				}
-				else if (featureNode.localName() == "trk")
+				else if (featureNode.localName() == "trk" && this._extractTracks)
 				{
 					var trkSeg:XMLList = featureNode..*::trkseg;
 					var listLength:uint = trkSeg.length();
@@ -664,6 +672,47 @@ package org.openscales.core.format
 			_version = value;
 		}
 
+		public function get extractRoutes():Boolean
+		{
+			return _extractRoutes;
+		}
 		
+		public function set extractRoutes(value:Boolean):void
+		{
+			_extractRoutes = value;
+		}
+		
+		
+		public function get extractTracks():Boolean
+		{
+			return _extractTracks;
+		}
+		
+		public function set extractTracks(value:Boolean):void
+		{
+			_extractTracks = value;
+		}
+		
+		
+		public function get extractWaypoints():Boolean
+		{
+			return _extractWaypoints;
+		}
+		
+		public function set extractWaypoints(value:Boolean):void
+		{
+			_extractWaypoints = value;
+		}
+		
+		
+		public function get extractAttributes():Boolean
+		{
+			return _extractAttributes;
+		}
+		
+		public function set extractAttributes(value:Boolean):void
+		{
+			_extractAttributes = value;
+		}
 	}
 }
