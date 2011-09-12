@@ -9,7 +9,7 @@
 	</fx:Declarations>
 	
 	<s:layout>
-		<s:VerticalLayout />
+		<s:VerticalLayout paddingBottom="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
 	</s:layout>
 	
 	<s:Label id="formatLabel" text="{this.formatLabelText}" />

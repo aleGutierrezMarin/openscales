@@ -10,6 +10,7 @@
    "drawing.format": "Format",
    "drawing.name": "Name",
    "drawing.version": "Version",
+   "drawing.browse": "browse",
    
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",
