@@ -375,14 +375,14 @@
 							if(selectedSource == 1)
 							{
 								kml = new KML(name, url);
-								this.importFeature.map.addLayer(kml);
+								this.importFeature.layer.map.addLayer(kml);
 							}
 							
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								kml = new KML(name, null, xml);
-								this.importFeature.map.addLayer(kml);
+								this.importFeature.layer.map.addLayer(kml);
 							}
 							
 							
@@ -396,14 +396,14 @@
 							if(selectedSource == 1)
 							{
 								gpx = new GPX(name, version, url);
-								this.importFeature.map.addLayer(gpx);
+								this.importFeature.layer.map.addLayer(gpx);
 							}
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								
 								gpx = new GPX(name, version, null, xml);
-								this.importFeature.map.addLayer(gpx);
+								this.importFeature.layer.map.addLayer(gpx);
 							}
 						
 							
@@ -414,7 +414,7 @@
 							if(selectedSource == 1)
 							{
 								var geoRss:GeoRss = new GeoRss(name, url);
-								this.importFeature.map.addLayer(geoRss);
+								this.importFeature.layer.map.addLayer(geoRss);
 							}
 							else // locale file
 							{
@@ -429,7 +429,7 @@
 							if(selectedSource == 1)
 							{
 								var osm:OSM = new OSM(name, url);
-								this.importFeature.map.addLayer(osm);
+								this.importFeature.layer.map.addLayer(osm);
 							}
 							else // locale file
 							{
@@ -444,15 +444,15 @@
 							
 							if(selectedSource == 1)
 							{
-								gml = new GML(name, version, this.importFeature.map.projection, url);
-								this.importFeature.map.addLayer(gml);
+								gml = new GML(name, version, this.importFeature.layer.map.projection, url);
+								this.importFeature.layer.map.addLayer(gml);
 							}
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								
-								gml = new GML(name, version, this.importFeature.map.projection, null, xml);
-								this.importFeature.map.addLayer(gml);
+								gml = new GML(name, version, this.importFeature.layer.map.projection, null, xml);
+								this.importFeature.layer.map.addLayer(gml);
 							}
 							
 						break;
@@ -467,9 +467,9 @@
 			 */
 			private function validateName(value:String):Boolean
 			{
-				if(this.importFeature.map)
+				if(this.importFeature.layer.map)
 				{
-					if(this.importFeature.map.getLayerByName(value)==null)
+					if(this.importFeature.layer.map.getLayerByName(value)==null)
 						return true;
 				}
 				return false;
@@ -575,9 +575,9 @@
 			public function set importFeature(value:ImportFeature):void
 			{
 				_importFeature = value;
-				if(_importFeature.map)
+				if(_importFeature.layer.map)
 				{
-					this._importFeature.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+					this._importFeature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
 				}
 			}
 

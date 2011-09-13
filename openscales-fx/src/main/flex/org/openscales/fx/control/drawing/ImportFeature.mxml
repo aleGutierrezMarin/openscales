@@ -20,6 +20,7 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.layer.ogc.GML;
 			import org.openscales.core.layer.osm.OSM;
 			
@@ -31,7 +32,7 @@
 			[Bindable]
 			public var tooltipImport:String = Catalog.getLocalizationForKey('drawing.import');
 	
-			private var _map:Map = null;
+			private var _layer:VectorLayer = null;
 
 			/**
 			 * The title window (that display the form)
@@ -71,6 +72,11 @@
 				// Call the method to add the Button control to the 
 				// TitleWindow container.
 				populateWindow();
+				
+				// place at the center
+				myTitleWindow.x = (this.layer.map.width/2)-(this.width/2);
+				myTitleWindow.y = (this.layer.map.height/2)-(this.height/2);
+				
 				// Use the PopUpManager to display the TitleWindow container.
 				PopUpManager.addPopUp(myTitleWindow, this, true);
 			}
@@ -91,22 +97,22 @@
 			}
 			
 			/**
-			 * The map linked to the import button
+			 * The layer linked to the import button
 			 */
-			public function get map():Map
+			public function get layer():VectorLayer
 			{
-				return this._map;
+				return this._layer;
 			}
 			
 			/**
 			 * @private
 			 */
-			public function set map(value:Map):void
+			public function set layer(value:VectorLayer):void
 			{
-				this._map = value;
-				if(this._map)
+				this._layer = value;
+				if(this._layer.map)
 				{
-					this.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
 				}
 			}
 
