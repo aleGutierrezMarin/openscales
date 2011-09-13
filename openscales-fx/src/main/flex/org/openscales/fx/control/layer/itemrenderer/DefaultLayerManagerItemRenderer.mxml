@@ -80,14 +80,14 @@
 			 * Tootip for reduce maximize button
 			 */
 			[Bindable]
-			public var tooltipReduceMaximize:String = Catalog.getLocalizationForKey('layercontrol.reducemaximize')
+			public var tooltipReduceMaximize:String = Catalog.getLocalizationForKey('layercontrol.reducemaximize');
 			
 			/**
-			 * @private
 			 * To know if the current LayerRenderer display a minimize or maximize item
 			 * @default true
 			 */
-			protected var _isMinimized:Boolean = true;
+			[Bindable]
+			public var isMinimized:Boolean = true;
 			
 			/**
 			 * @private
@@ -95,6 +95,12 @@
 			 * @default false
 			 */
 			protected var _isDrawingLayer:Boolean = false;
+			
+			/**
+			 * Indicates if the drawingTools has to be displayed
+			 */
+			[Bindable]
+			public var isDisplayedDrawingTools:Boolean = false;
 			
 			/**
 			 * @private
@@ -208,6 +214,9 @@
 					_displayZoomToExtent = !!value['displayZoomToExtent'];
 					_displayLegend = !!value['displayLegend'];
 					_displayMetadatas = !!value['displayMetadatas'];
+					
+					if(_displayZoomToExtent || _displayLegend || _displayMetadatas)
+						_optionnalGroupDisplayed = true;
 				}
 			}
 						
@@ -228,23 +237,22 @@
 				
 				// according to the group displayed or not, set the position of the different group
 				this._groupPositionOptionnal = hgroup.height + layerSwitcherAdditionnalDisplay.height;
-				//this._groupPositionDraw = this._groupPositionOptionnal;
+				this._groupPositionDraw = this._groupPositionOptionnal;
 				
 				
 				if(this._optionnalGroupDisplayed == true)
 				{
 					this._maximizeGroupSize += layerSwitcherOptionnalDisplay.height;
-					// this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
+					this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
 				}
 				
-				/** TODO  work in progress
 				 if(this._isDrawingLayer)
 				 {
-				 this._maximizeGroupSize += layerSwitcherDrawingTools.height;
-				 }*/
+				 	this._maximizeGroupSize += layerSwitcherDrawingTools.height;
+				 }
 				
 				layerSwitcherOptionnalDisplay.y = this._groupPositionOptionnal;
-				// layerSwitcherDrawingTools.y = this._groupPositionDraw; // work in progress
+				layerSwitcherDrawingTools.y = this._groupPositionDraw; // work in progress
 			}
 			
 			protected function onCreationComplete():void{
@@ -263,11 +271,11 @@
 				
 				if((_maximizedLayers.getValue(_layerManager) as ArrayCollection).getItemIndex(_layer) < 0){
 					
-					this._isMinimized = true;
+					this.isMinimized = true;
 				}
 				else{
 					
-					this._isMinimized = false;
+					this.isMinimized = false;
 				}
 				
 				if((this._layer != null) )
@@ -279,11 +287,12 @@
 						
 					else
 						this._isDrawingLayer = false;
+					
+					this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer;
 				}
 				
 				this.setGroupSize();
 				
-				this.updateOptionnalDisplay();
 			}
 			
 			
@@ -293,11 +302,12 @@
 			public function reduceMaximizeLayerSwitcher(event:Event):void 
 			{
 				
-				this._isMinimized = !this._isMinimized;
+				this.isMinimized = !this.isMinimized;
+				this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer;
 				
-				this._btnReduceMaximize = this._isMinimized ?  BTN_MAXIMIZE : BTN_MINIMIZE;
+				this._btnReduceMaximize = this.isMinimized ?  BTN_MAXIMIZE : BTN_MINIMIZE;
 				
-				if(_isMinimized){
+				if(isMinimized){
 					var index:uint = (_maximizedLayers.getValue(_layerManager) as ArrayCollection).getItemIndex(_layer);
 					(_maximizedLayers.getValue(_layerManager) as ArrayCollection).removeItemAt(index);					
 				}
@@ -305,26 +315,9 @@
 					(_maximizedLayers.getValue(_layerManager) as ArrayCollection).addItem(_layer);
 				}
 				
-				this.updateOptionnalDisplay();
 			}
 			
-			/**
-			 * Display all the renderer or minimize version
-			 */
-			public function updateOptionnalDisplay():void
-			{
-				layerSwitcherAdditionnalDisplay.visible = !this._isMinimized;
-				layerSwitcherAdditionnalDisplay.includeInLayout = !this._isMinimized;
-				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
-				layerSwitcherOptionnalDisplay.includeInLayout = !this._isMinimized;
-				
-				
-				 if(this._isDrawingLayer)
-				 {
-				 	layerSwitcherDrawingTools.visible = !this._isMinimized;
-				 }
-				 
-			}
+			
 			
 			private function parentChange(event:PropertyChangeEvent):void
 			{
@@ -338,42 +331,46 @@
 		<s:VerticalLayout />
 	</s:layout>
 	
-	<s:SkinnableContainer width="100%"
+		<s:SkinnableContainer width="100%"
 						  height="25"
 						  id="hgroup" >
-			<s:layout>
-				<s:HorizontalLayout 
-					paddingLeft="2"
-					paddingBottom="2"
-					paddingRight="4"
-					paddingTop="2"
-					verticalAlign="middle" />
-			</s:layout>
-			
-			<ChangeLayerVisibility layer="{_layer}" />
-			
-			<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" />
-			
-			<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
-			
-			
-			<os:IconButton id="layerSwitcherReduceMaximize"
-						   width="16"
-						   height="16"
-						   click="reduceMaximizeLayerSwitcher(event)"
-						   icon="{this._btnReduceMaximize}"
-						   iconOver="{this._btnReduceMaximize}"
-						   iconDown="{this._btnReduceMaximize}"
-						   toolTip="{this.tooltipReduceMaximize}" />
-			<DeleteLayer id="layerSwitcherDeleteLayer" layer="{_layer}" />
-		</s:SkinnableContainer>
+		<s:layout>
+			<s:HorizontalLayout 
+				paddingLeft="2"
+				paddingBottom="2"
+				paddingRight="4"
+				paddingTop="2"
+				verticalAlign="middle" />
+		</s:layout>
+		
+		<ChangeLayerVisibility layer="{_layer}" />
+		
+		<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" />
+		
+		<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 		
 		
-		<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="false" includeInLayout="false">
-			<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
-		</s:SkinnableContainer>
-	
-	<s:SkinnableContainer id="layerSwitcherDrawingTools" height="20" visible="false" includeInLayout="false">
+		<os:IconButton id="layerSwitcherReduceMaximize"
+					   width="16"
+					   height="16"
+					   click="reduceMaximizeLayerSwitcher(event)"
+					   icon="{this._btnReduceMaximize}"
+					   iconOver="{this._btnReduceMaximize}"
+					   iconDown="{this._btnReduceMaximize}"
+					   toolTip="{this.tooltipReduceMaximize}" />
+		<DeleteLayer id="layerSwitcherDeleteLayer" layer="{_layer}" />
+	</s:SkinnableContainer>
+		
+		
+	<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}">
+		<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
+	</s:SkinnableContainer>
+
+	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
+		
+		<s:layout>
+			<s:HorizontalLayout />
+		</s:layout>
 		<openscales:DrawLabel id="drawLabel" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 		<openscales:DrawPoint id="drawPoint" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 		<openscales:DrawPath id="drawPath" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
@@ -383,11 +380,13 @@
 		<openscales:MoveFeatures id="moveFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 		<openscales:ManageAttributes id="manageAttributes" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 	</s:SkinnableContainer>
-		
-		<s:SkinnableContainer id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false"  height="20" >
-			<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
-			<LayerLegend x="20" id="layerControlLegend" visible="{_displayLegend}" />
-			<LayerMetadatas x="40" id="layerControlMetadatas" visible="{_displayMetadatas}" />
-		</s:SkinnableContainer>
+
+	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
+		<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
+		<LayerLegend x="20" id="layerControlLegend" visible="{_displayLegend}" />
+		<LayerMetadatas x="40" id="layerControlMetadatas" visible="{_displayMetadatas}" />
+	</s:SkinnableContainer>
+	
+	
 	
 </s:ItemRenderer>
