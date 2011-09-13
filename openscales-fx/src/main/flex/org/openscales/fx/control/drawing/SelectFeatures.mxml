@@ -63,12 +63,12 @@
 				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				
+				/*
 				for each(var ih:IHandler in value.controls){
-					if(ih is SelectFeaturesHandler){
+					if(ih is SelectFeaturesHandler && ih != this._handler){
 						this._handler = (ih as SelectFeaturesHandler);
 					}
-				}
+				}*/
 			}
 			
 			/**
