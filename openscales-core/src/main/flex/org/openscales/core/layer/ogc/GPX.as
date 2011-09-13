@@ -20,11 +20,10 @@ package org.openscales.core.layer.ogc
 	/**
 	 * GPX layer; versions 1.0 and 1.1 supported 
 	 * 
-	 * @param name: the name of the layer
+	 * @param name the name of the layer
 	 * @param version
-	 * @param url: the url of the file that contains the gpx data
-	 * @param data: the file that contains the gpx data
-	 * 
+	 * @param url the url of the file that contains the gpx data
+	 * @param data the file that contains the gpx data
 	 * The data and url params are not compatible with each other
 	 * The data projection for this layer is set to "EPSG:4326" by default (@see class Layer)
 	 * @see GPX 1.1 specification: all coordinates are relative to the WGS84 datum
@@ -39,11 +38,20 @@ package org.openscales.core.layer.ogc
 		private var _request:XMLRequest = null;
 		private var _version:String;
 		
+		private var _extractAttributes:Boolean;
+		private var _extractWaypoints:Boolean;
+		private var _extractTracks:Boolean;
+		private var _extractRoutes:Boolean;
+		
 		public function GPX(name:String, 
 							version:String=null,
 							url:String = null,
 							data:XML = null,
-							style:Style = null)
+							style:Style = null,
+							extractWaypoints:Boolean = true,
+							extractTracks:Boolean = true,
+							extractRoutes:Boolean = true,
+							extractAttributes:Boolean = true)
 		{
 			this._projSrsCode = "EPSG:4326";
 			this.version = version;
@@ -57,8 +65,7 @@ package org.openscales.core.layer.ogc
 			}
 			else this.style = null;
 			
-			this.gpxFormat = new GPXFormat(new HashMap());
-			
+			this.gpxFormat = new GPXFormat(new HashMap(),version,extractWaypoints,extractTracks,extractRoutes,extractAttributes);	
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
@@ -187,6 +194,47 @@ package org.openscales.core.layer.ogc
 		{
 			this._projSrsCode = value;
 		}
+
+		public function get extractAttributes():Boolean
+		{
+			return _extractAttributes;
+		}
+
+		public function set extractAttributes(value:Boolean):void
+		{
+			_extractAttributes = value;
+		}
+
+		public function get extractWaypoints():Boolean
+		{
+			return _extractWaypoints;
+		}
+
+		public function set extractWaypoints(value:Boolean):void
+		{
+			_extractWaypoints = value;
+		}
+
+		public function get extractTracks():Boolean
+		{
+			return _extractTracks;
+		}
+
+		public function set extractTracks(value:Boolean):void
+		{
+			_extractTracks = value;
+		}
+
+		public function get extractRoutes():Boolean
+		{
+			return _extractRoutes;
+		}
+
+		public function set extractRoutes(value:Boolean):void
+		{
+			_extractRoutes = value;
+		}
+
 		
 	}
 }

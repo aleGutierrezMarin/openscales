@@ -10,7 +10,7 @@
 		 xmlns:fxg="assets.fxg.*"
 		 autoDrawBackground="false"
 		 implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"
-		 creationComplete="onCreationComplete();">
+		 creationComplete="onCreationComplete();" xmlns:openscales="http://openscales.org">
 	
 	<fx:Script>
 		<![CDATA[
@@ -48,6 +48,7 @@
 			import org.openscales.core.layer.ogc.WMSC;
 			import org.openscales.fx.control.FeatureDrawing;
 			import org.openscales.fx.control.layer.LayerManager;
+			import org.openscales.fx.layer.FxVectorLayer;
 			import org.openscales.geometry.basetypes.Bounds;
 			
 			import spark.components.Button;
@@ -317,12 +318,12 @@
 				layerSwitcherOptionnalDisplay.visible = !this._isMinimized;
 				layerSwitcherOptionnalDisplay.includeInLayout = !this._isMinimized;
 				
-				/** TODO work in progress
+				
 				 if(this._isDrawingLayer)
 				 {
-				 layerSwitcherDrawingTools.visible = !this._isMinimized;
+				 	layerSwitcherDrawingTools.visible = !this._isMinimized;
 				 }
-				 */
+				 
 			}
 			
 			private function parentChange(event:PropertyChangeEvent):void
@@ -371,6 +372,17 @@
 		<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="false" includeInLayout="false">
 			<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
 		</s:SkinnableContainer>
+	
+	<s:SkinnableContainer id="layerSwitcherDrawingTools" height="20" visible="false" includeInLayout="false">
+		<openscales:DrawLabel id="drawLabel" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<openscales:DrawPoint id="drawPoint" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<openscales:DrawPath id="drawPath" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<openscales:DrawPolygon id="drawPolygon" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<openscales:SelectFeatures id="selectFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<openscales:EditFeatures id="editFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<openscales:MoveFeatures id="moveFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<openscales:ManageAttributes id="manageAttributes" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+	</s:SkinnableContainer>
 		
 		<s:SkinnableContainer id="layerSwitcherOptionnalDisplay" visible="false" includeInLayout="false"  height="20" >
 			<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />

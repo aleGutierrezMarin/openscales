@@ -49,6 +49,7 @@
     <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
+    <classEntry path="org.openscales.fx.control.drawing.EditFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.ManageAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
@@ -75,6 +76,7 @@
     <classEntry path="org.openscales.fx.control.skin.ZoomTrackSkin"/>
     <classEntry path="org.openscales.fx.feature.FxStyle"/>
     <classEntry path="org.openscales.fx.handler.FxHandler"/>
+    <classEntry path="org.openscales.fx.handler.FxKeyboardHandler"/>
     <classEntry path="org.openscales.fx.handler.feature.FxDragFeatureHandler"/>
     <classEntry path="org.openscales.fx.handler.feature.FxSelectFeaturesHandler"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxBorderPanHandler"/>
@@ -83,6 +85,7 @@
     <classEntry path="org.openscales.fx.handler.mouse.FxWMSGetFeatureInfo"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxWheelHandler"/>
     <classEntry path="org.openscales.fx.layer.FxGPX"/>
+    <classEntry path="org.openscales.fx.layer.FxGeoRss"/>
     <classEntry path="org.openscales.fx.layer.FxGraticule"/>
     <classEntry path="org.openscales.fx.layer.FxGrid"/>
     <classEntry path="org.openscales.fx.layer.FxHTC"/>
@@ -91,6 +94,7 @@
     <classEntry path="org.openscales.fx.layer.FxKML"/>
     <classEntry path="org.openscales.fx.layer.FxLayer"/>
     <classEntry path="org.openscales.fx.layer.FxTMS"/>
+    <classEntry path="org.openscales.fx.layer.FxVectorLayer"/>
     <classEntry path="org.openscales.fx.layer.FxWFS"/>
     <classEntry path="org.openscales.fx.layer.FxWMS"/>
     <classEntry path="org.openscales.fx.layer.FxWMSC"/>

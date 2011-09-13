@@ -31,9 +31,11 @@ package org.openscales.core.popup
 			// Define the popup properties
 			this.x = map.width / 2;
 			this.y = map.height / 2;
-			this.height = 100;
+			this.height = 150;
 			this.width = 200;
 			this.title = "Edit attributes";
+			hGroup.paddingTop = 5;
+			hGroup.paddingLeft = 5;
 			this.addElement(hGroup);
 			hGroup.addElement(vGroup1);
 			hGroup.addElement(vGroup2);
@@ -41,10 +43,13 @@ package org.openscales.core.popup
 			// Display the attributes
 			for(var i:uint = 0; i < attributes.length; i++){
 				lb = new Label();
-				lb.text = attributes[i] + " : ";
+				lb.text = attributes[i];
 				vGroup1.addElement(lb);
 				lb = new Label();
-				lb.text = values[i];
+				if(values[i])
+					lb.text = " : " + values[i];
+				else
+					lb.text = " : NOT FILLED IN";
 				vGroup2.addElement(lb);
 			}
 			

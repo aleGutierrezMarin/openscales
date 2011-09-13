@@ -175,9 +175,9 @@ package org.openscales.core.format
 
 		private function parseHTMLAttributes(str:String):String {
 			var reg:RegExp = /\<br\/\>/g;
-			str = str.replace(reg,"<br>");
+			str = str.replace(reg,"<br/>");
 			reg = /\<li\>/g;
-			str = str.replace(reg,"<br>");
+			str = str.replace(reg,"<br/>");
 			reg = /\<\/li\>/g;
 			return str.replace(reg,"");
 		}
