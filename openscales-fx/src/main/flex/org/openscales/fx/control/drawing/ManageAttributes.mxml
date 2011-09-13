@@ -89,10 +89,14 @@
 			{
 				if(this._editHandlerActivated){
 					_index = this.searchFeature(event.feature.name);
+					if(!_index)
+						return;
 					new ChangeAttributes(this._map, this._attributes, (this._data[_index].values as Array), this.onChangeAttributes);
 				}
 				else{
 					_index = this.searchFeature(event.feature.name);
+					if(!_index)
+						return;
 					new EditAttributes(this._map, this._attributes, (this._data[_index].values as Array));
 				}
 			}
