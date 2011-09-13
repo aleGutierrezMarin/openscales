@@ -36,7 +36,7 @@
 			private var _editHandlerActivated:Boolean = false;
 			private var _data:Array = new Array();
 			private var _attributes:Array = new Array("id","description");
-			private var _index:uint;
+			private var _index:int;
 			private var _vectorLayer:VectorLayer;
 			
 			/**
@@ -89,13 +89,13 @@
 			{
 				if(this._editHandlerActivated){
 					_index = this.searchFeature(event.feature.name);
-					if(!_index)
+					if(_index < 0)
 						return;
 					new ChangeAttributes(this._map, this._attributes, (this._data[_index].values as Array), this.onChangeAttributes);
 				}
 				else{
 					_index = this.searchFeature(event.feature.name);
-					if(!_index)
+					if(_index < 0)
 						return;
 					new EditAttributes(this._map, this._attributes, (this._data[_index].values as Array));
 				}
@@ -148,13 +148,13 @@
 			/**
 			 * This function returns the index of the feature
 			 */
-			private function searchFeature(value:String):uint{
+			private function searchFeature(value:String):int{
 				
 				for(var i:uint = 0; i < _data.length; i++){
 					if(_data[i].identifier == value)
 						return i;
 				}
-				return null;
+				return -1;
 			}
 			
 			/**
