@@ -50,6 +50,10 @@
     <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
     <classEntry path="org.openscales.fx.control.drawing.EditFeatures"/>
+    <classEntry path="org.openscales.fx.control.drawing.ExportFeature"/>
+    <classEntry path="org.openscales.fx.control.drawing.ExportFeatureForm"/>
+    <classEntry path="org.openscales.fx.control.drawing.ImportFeature"/>
+    <classEntry path="org.openscales.fx.control.drawing.ImportFeatureForm"/>
     <classEntry path="org.openscales.fx.control.drawing.ManageAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
@@ -115,6 +119,7 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
+    <classEntry path="OpenScalesTest"/>
     <classEntry path="org.openscales.fx.control.LayerCatalogTest"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButtonTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacityTest"/>
@@ -125,7 +130,6 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.control.drawing.ImportFeatureForm"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
