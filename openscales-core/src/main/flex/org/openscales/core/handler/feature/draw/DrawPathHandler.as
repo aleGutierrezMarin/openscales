@@ -114,7 +114,7 @@ package org.openscales.core.handler.feature.draw
 					//this._currentLineStringFeature.style=Style.getDefaultLineStyle();
 					this._currentLineStringFeature.style=Style.getDefinedLineStyle(0x184054,5,1,10,10)
 					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
-					drawLayer.redraw();
+					drawLayer.redraw(true);
 				}
 			}	
 		}
@@ -149,7 +149,7 @@ package org.openscales.core.handler.feature.draw
 			else {								
 				if(!point.equals(lastPoint)){
 					_lineString.addPoint(point.x,point.y);
-					drawLayer.redraw();
+					drawLayer.redraw(true);
 					lastPoint = point;
 				}								
 			}

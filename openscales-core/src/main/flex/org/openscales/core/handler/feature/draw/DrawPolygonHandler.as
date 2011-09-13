@@ -147,7 +147,7 @@ package org.openscales.core.handler.feature.draw
 					lring.addPoint(point.x,point.y);
 				}
 				//final redraw layer
-				drawLayer.redraw();
+				drawLayer.redraw(true);
 				
 			}		
 		}
@@ -193,7 +193,7 @@ package org.openscales.core.handler.feature.draw
 				else{
 					drawLayer.removeFeature(this._polygonFeature);
 				}
-				drawLayer.redraw();
+				drawLayer.redraw(true);
 			}
 			//the polygon is finished
 			newFeature = true;

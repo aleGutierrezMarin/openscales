@@ -37,9 +37,7 @@ package
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			
-			
-			// Add a base layer to the map
-			
+			// Add a base layer to the map	
 			var wmsLayer:WMS = new WMS("Scan","http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4");
 			wmsLayer.version = "1.3.0";
 			wmsLayer.layers = "SCANDEP_PNG_IGNF_LAMB93";
@@ -49,6 +47,7 @@ package
 				
 			//add the KML layer; fetch data from url
 			var kmlLayer:KML = new KML("Stations Vélib Paris", this.url);
+			kmlLayer.projection = "EPSG:4326";
 			this._map.addLayer(kmlLayer);
 			Trace.debug("kmlLayer projection :"+kmlLayer.projSrsCode);
 			

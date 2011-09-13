@@ -3,8 +3,6 @@ package org.openscales.core.popup
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import flexunit.utils.ArrayList;
-	
 	import mx.collections.ArrayCollection;
 	import mx.events.CloseEvent;
 	import mx.managers.PopUpManager;
@@ -32,28 +30,29 @@ package org.openscales.core.popup
 		public function ManageAttributes(map:Map, attributes:Array, callback:Function)
 		{
 			var hGroup:HGroup = new HGroup();
-			var vGroup1:VGroup = new VGroup();
-			var vGroup2:VGroup = new VGroup();
+			var vGroup:VGroup = new VGroup();
 			var addButton:Button = new Button();
 			var deleteButton:Button = new Button();
 			
 			// Define the popup properties
 			this.x = map.width / 2;
 			this.y = map.height / 2;
-			this.height = 180;
-			this.width = 220;
+			this.height = 260;
+			this.width = 180;
 			this.title = "Manage attributes";
 			hGroup.height = this.height;
 			hGroup.width = this.width;
+			hGroup.paddingTop = 5;
+			hGroup.paddingLeft = 5;
 			this.addElement(hGroup);
-			hGroup.addElement(vGroup1);
-			hGroup.addElement(vGroup2);
-			vGroup1.addElement(this._textInput);
-			vGroup1.addElement(this._list);
+			hGroup.addElement(vGroup);
+			vGroup.addElement(this._textInput);
 			addButton.label = "add";
+			vGroup.addElement(addButton);
+			vGroup.addElement(new Label());
+			vGroup.addElement(this._list);
 			deleteButton.label = "delete";
-			vGroup2.addElement(addButton);
-			vGroup2.addElement(deleteButton);
+			vGroup.addElement(deleteButton);
 			
 			this._list.dataProvider = new ArrayCollection();
 			for(var i:uint = 0; i < attributes.length; i++)

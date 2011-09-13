@@ -28,6 +28,7 @@ package org.openscales.core.events
 		public static const EDIT_HANDLER_ACTIVATED:String = "openscales.drawing.edit_handler_activated";
 		public static const MOVE_HANDLER_ACTIVATED:String = "openscales.drawing.move_handler_activated";
 		public static const SELECT_HANDLER_ACTIVATED:String = "openscales.drawing.select_handler_activated";
+		public static const ATTRIBUTES_HANDLER_ACTIVATED:String = "openscales.drawing.attributes_handler_activated";
 		
 		/**
 		 * 
