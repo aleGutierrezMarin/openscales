@@ -15,13 +15,18 @@
 	<s:Label id="layerName" text="{this.nameLabel}" width="40%" />
 	<s:TextInput id="inputName"  width="60%" />
 	
-	<s:Group>
+	<s:Group id="formatversionGroup">
 		
 		<s:layout>
 			<s:HorizontalLayout />
 		</s:layout>
 		
 		<s:Group id="formatGroup" >
+			
+			<s:layout>
+				<s:VerticalLayout />
+			</s:layout>
+			
 			<s:Label id="formatLabel" text="{this.formatLabelText}" />
 			
 			<s:DropDownList id="listFormat"
@@ -30,7 +35,11 @@
 							selectedIndex="{this.selectedFormat}" />
 		</s:Group>
 		
-		<s:Group id="versionGroup" visible="false">
+		<s:Group id="versionGroup" visible="false" >
+			
+			<s:layout>
+				<s:VerticalLayout />
+			</s:layout>
 			
 			<s:Label id="version" text="{this.versionLabel}" width="40%" />
 			<s:DropDownList id="listVersion"
