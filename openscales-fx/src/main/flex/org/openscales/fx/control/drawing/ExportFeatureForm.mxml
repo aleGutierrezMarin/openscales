@@ -152,19 +152,19 @@
 					case "KML":
 						
 						var writeKML:KMLFormat = new KMLFormat();
-						datas = writeKML.write(this.exportFeature.target.features);
+						datas = writeKML.write(this.exportFeature.layer.features);
 						break;
 					
 					case "GPX":
 						
 						var writeGPX:GPXFormat = new GPXFormat();
-						datas = writeGPX.write(this.exportFeature.target.features);
+						datas = writeGPX.write(this.exportFeature.layer.features);
 						break;
 					
 					case "GeoRss":
 						
 						var writeGeoRss:GeoRssFormat = new GeoRssFormat();
-						datas = writeGeoRss.write(this.exportFeature.target.features);
+						datas = writeGeoRss.write(this.exportFeature.layer.features);
 						break;
 					
 					case "OSM":
@@ -173,7 +173,7 @@
 					case "GML":
 						
 						var writeGML:GML321Writer = new GML321Writer();
-						//datas = writeGML.write(this.exportFeature.target.features);
+						//datas = writeGML.write(this.exportFeature.layer.features);
 						break;
 				}
 				
@@ -226,9 +226,9 @@
 			public function set exportFeature(value:ExportFeature):void
 			{
 				_exportFeature = value;
-				if(_exportFeature.target && _exportFeature.target.map)
+				if(_exportFeature.layer && _exportFeature.layer.map)
 				{
-					this._exportFeature.target.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+					this._exportFeature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
 				}
 			}
 

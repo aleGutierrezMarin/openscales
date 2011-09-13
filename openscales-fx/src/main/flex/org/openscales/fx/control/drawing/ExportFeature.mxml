@@ -38,7 +38,7 @@
 			/**
 			 * The VectorLayer linked to this export button
 			 */
-			private var _target:VectorLayer = null;
+			private var _layer:VectorLayer = null;
 
 			/**
 			 * Change the text values on Map Language changed
@@ -68,6 +68,11 @@
 				// Call the method to add the Button control to the 
 				// TitleWindow container.
 				populateWindow();
+				
+				// place at the center
+				myTitleWindow.x = (this.layer.map.width/2)-(this.width/2);
+				myTitleWindow.y = (this.layer.map.height/2)-(this.height/2);
+				
 				// Use the PopUpManager to display the TitleWindow container.
 				PopUpManager.addPopUp(myTitleWindow, this, true);
 			}
@@ -90,16 +95,16 @@
 			/**
 			 * Layer the features will be drawn on
 			 */
-			public function get target():VectorLayer
+			public function get layer():VectorLayer
 			{
-				return _target;
+				return _layer;
 			}
-			public function set target(value:VectorLayer):void{
+			public function set layer(value:VectorLayer):void{
 				
-				_target = value;
-				if(_target)
+				_layer = value;
+				if(_layer)
 				{
-					_target.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+					_layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
 				}
 			}
 		]]>
