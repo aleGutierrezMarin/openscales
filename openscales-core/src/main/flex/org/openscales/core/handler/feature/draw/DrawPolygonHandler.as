@@ -101,7 +101,7 @@ package org.openscales.core.handler.feature.draw
 				drawLayer.scaleX=1;
 				drawLayer.scaleY=1;
 				
-				var name:String = "polygon."+id.toString(); id++;
+				
 				_drawContainer.graphics.clear();
 				//we determine the point where the user clicked
 				var pixel:Pixel = new Pixel(map.mouseX ,map.mouseY);
@@ -111,7 +111,8 @@ package org.openscales.core.handler.feature.draw
 				var lring:LinearRing=null;
 				var polygon:Polygon=null;
 				//2 cases, and very different. If the user starts the polygon or if the user is drawing the polygon
-				if(newFeature) {					
+				if(newFeature) {
+					var name:String = "polygon."+id.toString(); id++;
 					 lring = new LinearRing(new <Number>[point.x,point.y]);
 					 polygon = new Polygon(new <Geometry>[lring]);
 					this._firstPointPixel= new Pixel(map.mouseX ,map.mouseY);
@@ -146,7 +147,7 @@ package org.openscales.core.handler.feature.draw
 					lring.addPoint(point.x,point.y);
 				}
 				//final redraw layer
-				drawLayer.redraw();
+				drawLayer.redraw(true);
 				
 			}		
 		}
@@ -192,7 +193,7 @@ package org.openscales.core.handler.feature.draw
 				else{
 					drawLayer.removeFeature(this._polygonFeature);
 				}
-				drawLayer.redraw();
+				drawLayer.redraw(true);
 			}
 			//the polygon is finished
 			newFeature = true;

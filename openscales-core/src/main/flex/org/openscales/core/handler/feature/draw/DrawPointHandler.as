@@ -55,7 +55,7 @@ package org.openscales.core.handler.feature.draw
 		protected function drawPoint(event:MouseEvent):void {
 			//We draw the point
 			if (drawLayer != null){
-				Trace.log("Drawing point");
+				
 				drawLayer.scaleX=1;
 				drawLayer.scaleY=1;
 			  
@@ -72,7 +72,7 @@ package org.openscales.core.handler.feature.draw
 				   var multiPoint:MultiPoint = new MultiPoint();
 				   multiPoint.addPoint(lonlat.lon,lonlat.lat);
 				   feature = new MultiPointFeature(multiPoint, null, style);
-				   feature.name = id.toString(); id++;
+				   feature.name = "point."+id.toString(); id++;
 				   drawLayer.addFeature(feature);
 				   //must be after adding map
 				   feature.draw();
@@ -80,7 +80,7 @@ package org.openscales.core.handler.feature.draw
 			   }else{
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
 				feature = new PointFeature(point, null, style);
-				feature.name = id.toString();
+				feature.name = "point."+id.toString();
 				id++;
 				//test
 				drawLayer.addFeature(feature);

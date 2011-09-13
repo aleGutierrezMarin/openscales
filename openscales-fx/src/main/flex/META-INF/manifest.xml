@@ -97,6 +97,8 @@
 	<component id="SelectFeatures" class="org.openscales.fx.control.drawing.SelectFeatures" />
 	<component id="EditFeatures" class="org.openscales.fx.control.drawing.EditFeatures" />
 	<component id="MoveFeatures" class="org.openscales.fx.control.drawing.MoveFeatures" />
-	<component id="DisactivateDrawingTools" class="org.openscales.fx.control.drawing.DisactivateDrawingTools" />
+	<component id="ManageAttributes" class="org.openscales.fx.control.drawing.ManageAttributes" />
+	<component id="ExportFeature" class="org.openscales.fx.control.drawing.ExportFeature" />
+	<component id="ImportFeature" class="org.openscales.fx.control.drawing.ImportFeature" />
 	
 </componentPackage>

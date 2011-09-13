@@ -90,7 +90,7 @@ package org.openscales.core
 		
 		private var _zooming:Boolean = false;
 		private var _dragging:Boolean = false;
-		private var _loading:Boolean;
+		private var _loading:Boolean = false;
 		protected var _center:Location = DEFAULT_CENTER;
 		
 		private var _maxExtent:Bounds = DEFAULT_MAX_EXTENT;
@@ -126,6 +126,7 @@ package org.openscales.core
 		
 		private var _extenTDebug:Shape;
 		
+		private var _loadingLayers:Vector.<Layer> = new Vector.<Layer>();
 		
 		
 		//we maintain a list of controls and layers
@@ -178,6 +179,9 @@ package org.openscales.core
 			
 			this.focusRect = false;// Needed to hide yellow rectangle around map when focused
 			this.addEventListener(MouseEvent.CLICK, onMouseClick); //Needed to prevent focus losing 
+			
+			this.addEventListener(LayerEvent.LAYER_LOAD_START, onLayerLoadStart);
+			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
 		}
 
 		/**
@@ -220,7 +224,7 @@ package org.openscales.core
 			
 			layer.map = this;
 			if (redraw){
-				layer.redraw(redraw);	
+				//layer.redraw(redraw);	
 			}
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_ADDED, layer));
@@ -269,10 +273,14 @@ package org.openscales.core
 		 */
 		public function removeLayer(layer:Layer):void {
 			var i:int = this._layers.indexOf(layer);
+			var j:int = this._loadingLayers.indexOf(layer);
 			if(i==-1)
 				return;
 			
 			this._layers.splice(i,1);
+			
+			if(j==-1)
+				this._loadingLayers.splice(j,1);
 			
 			layer.map = null;
 			this.removeChild(layer);
@@ -759,6 +767,35 @@ package org.openscales.core
 		{
 			this.stage.focus = this;
 		}
+		
+		protected function onLayerLoadStart(e:LayerEvent):void
+		{
+			// fisrt layer load : dispatch layers load
+			if(this._loadingLayers.length == 0)
+			{
+				this._loading = true;
+				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_START, this));
+			}
+
+			this._loadingLayers.push(e.layer);
+		}
+		
+		protected function onLayerLoadEnd(e:LayerEvent):void
+		{
+			var i:int = this._loadingLayers.indexOf(e.layer);
+			if(i==-1)
+				return;
+			
+			this._loadingLayers.splice(i,1);
+
+			if(this._loadingLayers.length == 0)
+			{
+				this._loading = false;
+				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_END, this));
+			}
+				
+		}
+		
 		private function onDraw(event:Event):void
 		{
 			if (_extenTDebug == null)
@@ -777,6 +814,7 @@ package org.openscales.core
 			_extenTDebug.graphics.endFill();
 			this.addChild(_extenTDebug);
 		}
+		
 		/**
 		 * @private
 		 * This method is the one that will execute the zoom.
@@ -1049,7 +1087,14 @@ package org.openscales.core
 				{
 					value = value.preciseReprojectBounds(this.projection);
 				}
+				
+				var event:MapEvent = new MapEvent(MapEvent.MAX_EXTENT_CHANGED, this);
+				event.oldMaxExtent = this._maxExtent;
+				event.newMaxExtent = value;
+				
 				this._maxExtent = value;
+				
+				this.dispatchEvent(event);
 			}
 		}
 		
@@ -1119,27 +1164,7 @@ package org.openscales.core
 			}
 			return layerArray.reverse();
 		}
-		
-		/**
-		 * Whether or not the map is loading data
-		 */
-		public function get loading():Boolean {
-			return !this._loading;
-		}
-		/**
-		 * @private
-		 */
-		protected function set loading(value:Boolean):void {
-			if (value == true && this._loading == false) {
-				this._loading = value;
-				dispatchEvent(new MapEvent(MapEvent.LOAD_START,this));
-			}
-			if (value == false && this._loading == true) {
-				this._loading = value;
-				dispatchEvent(new MapEvent(MapEvent.LOAD_END,this));
-			} 
-		}
-		
+
 		/**
 		 * List all feature layers (including layers that inherit FeatureLayer like WFS) of the map
 		 **/
@@ -1267,6 +1292,21 @@ package org.openscales.core
 		public function get dragging():Boolean
 		{
 			return this._dragging;
+		}
+		/**
+		 * @private
+		 */
+		public function set loading(value:Boolean):void
+		{
+			this._loading = value;
+		}
+		
+		/**
+		 * Indicates if the layers of the map are currently loading or not
+		 */
+		public function get loading():Boolean
+		{
+			return this._loading;
 		}
 		/**
 		 * @private

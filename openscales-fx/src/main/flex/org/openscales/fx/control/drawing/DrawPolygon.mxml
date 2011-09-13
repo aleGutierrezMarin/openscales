@@ -22,7 +22,6 @@
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPolygonHandler;
-			import org.openscales.core.handler.mouse.DragHandler;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
@@ -33,7 +32,6 @@
 			private var _btnPolygon:Class;
 			private var _active:Boolean = true;
 			private var _handler:AbstractDrawHandler= new DrawPolygonHandler();
-			private var _dragHandler:DragHandler;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -62,14 +60,10 @@
 			public function set map(value:Map):void{
 				
 				_handler.map = value;
-				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
-				
-				for each(var ih:IHandler in this.map.controls){
-					if(ih is DragHandler){
-						_dragHandler = (ih as DragHandler);
-						_dragHandler.map = value;
-					}
-				}
+				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 			}
 			
 			/**
@@ -105,35 +99,34 @@
 			private function activate():void{
 				
 				_handler.active = true;
-				if(_dragHandler)
-					_dragHandler.active = false;
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
-				//if(_dragHandler)
-					//_dragHandler.active = true;
 			}
 			
 			/**
-			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
+			 * On button click, dispatch a DrawingEvent.DRAW_HANDLER_ACTIVATED event
 			 */
 			private function onClick():void{
 				
-				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DRAW_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				_handler.map.dispatchEvent(evt);
 				activate();
 			}
 			
 			/**
-			 * Check the handler when a DrawingEvent.CHANGE_ACTIVE_HANDLER event occured
+			 * Check the handler when a DrawingEvent.DRAW_HANDLER_ACTIVATED or
+			 * DrawingEvent.EDIT_HANDLER_ACTIVATED or DrawingEvent.MOVE_HANDLER_ACTIVATED
+			 * or DrawingEvent.SELECT_HANDLER_ACTIVATED event occured
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
 				if(_handler.active && this.id != evt.activeHandler)
 				{
-					(_handler as DrawPolygonHandler).drawFinalPoly();
+					if(!(_handler as DrawPolygonHandler).newFeature)
+						(_handler as DrawPolygonHandler).drawFinalPoly();
 					disactivate();
 				}
 			}

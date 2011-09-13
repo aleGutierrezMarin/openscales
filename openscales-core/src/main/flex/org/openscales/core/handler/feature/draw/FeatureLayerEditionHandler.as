@@ -254,7 +254,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * Start the edition Mode
 		 * */
-		protected function editionModeStart():Boolean{
+		public function editionModeStart():Boolean{
 			if(_layerToEdit !=null)
 			{
 				//We refresh the edited feature just one time
@@ -289,7 +289,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * Stop the edition Mode
 		 * */
-		protected function editionModeStop():Boolean{
+		public function editionModeStop():Boolean{
 			if(_layerToEdit !=null)
 			{
 				
