@@ -54,5 +54,11 @@
    "addLayerButton.label": "Add to map",
    "removeLayerButton.label": "Remove from map",
    
-   "featureInfoDisplay.title": "Result - GetFeatureInfo"
+   "featureInfoDisplay.title": "Result - GetFeatureInfo",
+   
+   "MeasureBar.title": "Measure tools",
+   "MeasureBar.distancetooltip": "Measure distance",
+   "MeasureBar.azimuthtooltip": "Measure azimuth",
+   "MeasureBar.surfacetooltip": "Measure surface"
+   
  }

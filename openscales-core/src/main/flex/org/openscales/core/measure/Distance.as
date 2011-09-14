@@ -188,6 +188,16 @@ package org.openscales.core.measure
 			_displaySystem = value;
 		}
 
+		public function get accuracies():HashMap
+		{
+			return _accuracies;
+		}
+
+		public function set accuracies(value:HashMap):void
+		{
+			_accuracies = value;
+		}
+
 		
 	}
 }

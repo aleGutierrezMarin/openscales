@@ -12,6 +12,7 @@
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.MeasureEvent;
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.measure.Distance;
 			import org.openscales.fx.FxMap;
@@ -21,6 +22,9 @@
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-12.png")]
 			private var _btnPath:Class;
+			
+			[Bindable]
+			public var panelTitle:String = Catalog.getLocalizationForKey('MeasureBar.title');
 			
 			override public function set map(value:Map):void{
 				super.map = value;
@@ -85,7 +89,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:Panel title="Drawing Tools" x="10" y="10" height="70" >
+	<s:Panel title="{this.panelTitle}" x="10" y="10" height="70" >
 		<s:layout>
 			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
 								horizontalAlign="center" verticalAlign="middle"/>
