@@ -36,6 +36,11 @@
 	<component id="DragFeatureHandler" class="org.openscales.fx.handler.feature.FxDragFeatureHandler" />
 	<component id="SelectFeaturesHandler" class="org.openscales.fx.handler.feature.FxSelectFeaturesHandler" />
 	
+	<component id="MeasureBar" class="org.openscales.fx.control.measure.MeasureBar" />
+	<component id="MeasurePath" class="org.openscales.fx.control.measure.MeasurePath" />
+	<component id="MeasureAzimuth" class= "org.openscales.fx.control.measure.MeasureAzimuth" />
+	<component id="MeasureSurface" class="org.openscales.fx.control.measure.MeasureSurface" />
+	
 	<component id="KeyBoardHandler" class="org.openscales.fx.handler.FxKeyboardHandler" />
 	
 	<component id="Copyright" class="org.openscales.fx.control.Copyright" />

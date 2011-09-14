@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:IconButton xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:os="http://openscales.org"
+			   implements="org.openscales.core.control.IControl"
+			   toolTip="Draw a polygon"
+			   icon="{_btnPolygon}"
+			   width="25"
+			   height="25"
+			   click="onClick()">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.control.IControl;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
+			import org.openscales.core.handler.feature.draw.DrawPolygonHandler;
+			import org.openscales.core.handler.mouse.DragHandler;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.measure.Surface;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-02.png")]
+			private var _btnPolygon:Class;
+			private var _active:Boolean = true;
+			private var _handler:Surface = new Surface();
+			
+			/**
+			 * Flag for activating and deactivating the component
+			 * @default false;
+			 */
+			public function get active():Boolean{
+				return _active;
+			}
+			
+			public function set active(value:Boolean):void{
+				if(_active == value)
+					return;
+				_active = value;
+				_handler.active = value;
+			}
+			
+			
+			/**
+			 * Map controled by this control
+			 */
+			public function get map():Map{
+				return _handler.map;
+			}
+			public function set map(value:Map):void{
+				if(_handler.map) {
+					_handler.map.removeEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				}
+				_handler.map = value;
+				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+			}
+			
+			/**
+			 * Position (x,y) of the handler
+			 */
+			public function get position():Pixel{
+				
+				return new Pixel(x,y);
+			}
+			public function set position(value:Pixel):void{
+				
+				if(value){
+					x = value.x;
+					y = value.y;
+				}
+			}
+
+			
+			/**
+			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
+			 */
+			private function onClick():void{
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+				evt.activeHandler = this.id;
+				_handler.map.dispatchEvent(evt);
+				this.active = true;
+			}
+			
+			/**
+			 * Check the handler when a DrawingEvent.CHANGE_ACTIVE_HANDLER event occured
+			 */
+			private function onChangeActiveHandler(evt:DrawingEvent):void{
+				if(_active && this.id != evt.activeHandler)
+				{
+					this.active = false;
+				}
+			}
+			
+			// to do
+			public function onMapLanguageChange(event:I18NEvent):void{}
+			
+			public function draw():void{
+				this.invalidateDisplayList();
+			}
+			
+			public function destroy():void{}
+		]]>
+	</fx:Script>			
+</os:IconButton>
