@@ -16,6 +16,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -472,6 +473,27 @@ package org.openscales.core.handler.feature.draw
 				if(this._editLabel)
 					iEditLabel = new EditLabelHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value);
 			}
+		}
+		
+		public function set virtualStyle(value:Style):void{
+			
+			if(iEditPoint != null)(this.iEditPoint as AbstractEditHandler).virtualStyle = value;
+			if(iEditPath != null)(this.iEditPath as AbstractEditHandler).virtualStyle = value;
+			if(iEditPolygon != null)(this.iEditPolygon as AbstractEditHandler).virtualStyle = value;
+			if(iEditLabel != null)(this.iEditLabel as AbstractEditHandler).virtualStyle = value;
+		}
+		public function get virtualStyle():Style{
+			
+			if(iEditPoint != null)
+				return (this.iEditPoint as AbstractEditHandler).virtualStyle;
+			else if(iEditPath != null)
+				return (this.iEditPath as AbstractEditHandler).virtualStyle;
+			else if(iEditPolygon != null)
+				return (this.iEditPolygon as AbstractEditHandler).virtualStyle;
+			else if(iEditLabel != null)
+				return(this.iEditLabel as AbstractEditHandler).virtualStyle;
+			else
+				return null;
 		}
 	}
 }

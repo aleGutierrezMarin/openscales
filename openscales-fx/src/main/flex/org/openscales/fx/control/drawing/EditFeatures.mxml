@@ -24,6 +24,7 @@
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.style.Style;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -50,6 +51,18 @@
 				if(! _active){
 					_handler.active = false;
 				}
+			}
+			
+			/**
+			 * 
+			 */
+			public function get virtualStyle():Style{
+				
+				return (this._handler as FeatureLayerEditionHandler).virtualStyle;
+			}
+			public function set virtualStyle(value:Style):void{
+				
+				(this._handler as FeatureLayerEditionHandler).virtualStyle = value;
 			}
 			
 			/**
