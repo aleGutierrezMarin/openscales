@@ -298,6 +298,10 @@ package org.openscales.fx.layer
 		 */
 		public function set minZoomLevel(value:Number):void {
 			this._minZoomLevel = value;
+			
+			if(this._layer)
+				this._layer.minZoomLevel = value;
+			
 			this.generateResolutions();
 		}
 		
@@ -314,6 +318,8 @@ package org.openscales.fx.layer
 		 */
 		public function set maxZoomLevel(value:Number):void {
 			this._maxZoomLevel = value;
+			if(this._layer)
+				this._layer.maxZoomLevel = value;
 			this.generateResolutions();
 		}
 		
