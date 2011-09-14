@@ -173,6 +173,13 @@ package org.openscales.core.handler.feature
 				this.onOutFeature = null;
 			}
 		}
+		public function get enableOverSelection():Boolean{
+			
+			if(this.onOverFeature == null && this.onOutFeature == null)
+				return false;
+			else
+				return true;
+		}
 
 		/**
 		 * Layers array getter and setter

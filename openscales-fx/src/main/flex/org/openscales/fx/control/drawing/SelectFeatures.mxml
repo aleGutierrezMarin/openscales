@@ -50,6 +50,18 @@
 			}
 			
 			/**
+			 * 
+			 */
+			public function get hover():Boolean{
+				
+				return (this._handler as SelectFeaturesHandler).enableOverSelection;
+			}
+			public function set hover(value:Boolean):void{
+				
+				(this._handler as SelectFeaturesHandler).enableOverSelection = value;
+			}
+			
+			/**
 			 * Map controled by this control
 			 */
 			public function get map():Map{
