@@ -31,6 +31,12 @@ package org.openscales.core.handler.feature.draw
 		 * Single ID for point
 		 */		
 		private var id:Number = 0;
+		
+		/**
+		 * 
+		 */
+		private var _style:Style = Style.getDefaultPointStyle();
+		
 
 		public function DrawPointHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.VectorLayer=null)
 		{
@@ -60,7 +66,7 @@ package org.openscales.core.handler.feature.draw
 				drawLayer.scaleY=1;
 			  
 				//var style:Style = Style.getDefaultPointStyle();
-				var style:Style = Style.getDefinedPointStyle(WellKnownMarker.WKN_TRIANGLE,0);
+				//var style:Style = Style.getDefinedPointStyle(WellKnownMarker.WKN_TRIANGLE,0);
 			
 				//var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
 				var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
@@ -71,7 +77,7 @@ package org.openscales.core.handler.feature.draw
                if(drawLayer.geometryType == "org.openscales.geometry::MultiPoint"){
 				   var multiPoint:MultiPoint = new MultiPoint();
 				   multiPoint.addPoint(lonlat.lon,lonlat.lat);
-				   feature = new MultiPointFeature(multiPoint, null, style);
+				   feature = new MultiPointFeature(multiPoint, null, this._style);
 				   feature.name = "point."+id.toString(); id++;
 				   drawLayer.addFeature(feature);
 				   //must be after adding map
@@ -79,7 +85,7 @@ package org.openscales.core.handler.feature.draw
 				   
 			   }else{
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
-				feature = new PointFeature(point, null, style);
+				feature = new PointFeature(point, null, this._style);
 				feature.name = "point."+id.toString();
 				id++;
 				//test
@@ -89,6 +95,18 @@ package org.openscales.core.handler.feature.draw
 			   }
 			   this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,feature));
 			}
+		}
+		
+		/**
+		 * The style of the point
+		 */
+		public function get style():Style{
+			
+			return this._style;
+		}
+		public function set style(value:Style):void{
+			
+			this._style = value;
 		}
 	}
 }

@@ -11,6 +11,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.popup.LabelPopup;
 	import org.openscales.core.popup.Popup;
+	import org.openscales.core.style.Style;
 	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -33,6 +34,11 @@ package org.openscales.core.handler.feature.draw
 		 * 
 		 */
 		private var _labelLocation:Location;
+		
+		/**
+		 * 
+		 */
+		private var _style:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
 		
 		/**
 		 * Constructor
@@ -92,13 +98,25 @@ package org.openscales.core.handler.feature.draw
 				var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
 				var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
 				labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
-				var feature:Feature = new LabelFeature(labelPoint);
+				var feature:Feature = new LabelFeature(labelPoint,null,this._style);
 				feature.name = "label." + id.toString();
 				id++;
 				drawLayer.addFeature(feature);
 				feature.draw();
 			}
 			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,feature));
+		}
+		
+		/**
+		 * The style of the label
+		 */
+		public function get style():Style{
+			
+			return this._style;
+		}
+		public function set style(value:Style):void{
+			
+			this._style = value;
 		}
 	}
 }

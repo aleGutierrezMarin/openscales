@@ -209,6 +209,8 @@ package org.openscales.fx
 				this._map.maxExtent = this._maxExtent;
 			else {
 				var maxExtentDefined:Boolean = false;
+				//for(i=0; (!maxExtentDefined) && (i<this.numElements); i++) {
+					//element = this.getElementAt(i);
 				i = this.numElements;
 				for(i; (!maxExtentDefined) && (i>0); --i) {
 					element = this.getElementAt(i-1);
@@ -225,9 +227,11 @@ package org.openscales.fx
 			// We use an interlediate Array in order to avoid adding new component it the loop
 			// because it will modify numChildren
 			var componentToAdd:Array = new Array();
-			i = this.numElements;
-			for(i; i>0; --i) {
-				element = this.getElementAt(i-1);
+			for(i=0; i<this.numElements; i++) {
+				element = this.getElementAt(i);
+			//i = this.numElements;
+			//for(i; i>0; --i) {
+				//element = this.getElementAt(i-1);
 				if (element is FxLayer) {
 					this.addFxLayer(element as FxLayer);
 				} else if (element is FxControl) {
@@ -237,6 +241,8 @@ package org.openscales.fx
 				}
 			}
 			
+			//for(i=0; i<this.numElements; i++) {
+				//element = this.getElementAt(i);
 			i = this.numElements;
 			for(i; i>0; --i) {
 				element = this.getElementAt(i-1);
@@ -265,6 +271,8 @@ package org.openscales.fx
 			}
 			
 			var extentDefined:Boolean = false;
+			//for(i=0; (!extentDefined) && (i<this.numElements); i++) {
+				//element = this.getElementAt(i);
 			i = this.numElements;
 			for(i; (!extentDefined) && (i>0); --i) {
 				element = this.getElementAt(i-1);

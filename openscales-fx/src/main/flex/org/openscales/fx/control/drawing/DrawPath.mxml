@@ -23,6 +23,7 @@
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.style.Style;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -48,6 +49,18 @@
 				if(! _active){
 					_handler.active = false;
 				}
+			}
+			
+			/**
+			 * 
+			 */
+			public function get style():Style{
+				
+				return (this._handler as DrawPathHandler).style;
+			}
+			public function set style(value:Style):void{
+				
+				(this._handler as DrawPathHandler).style = value;
 			}
 			
 			/**
