@@ -16,7 +16,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
-
+	
 	/**
 	 * This handler manage the function draw of the polygon.
 	 * Active this handler to draw a polygon.
@@ -26,8 +26,8 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * polygon feature which is currently drawn
 		 * */
-		 
-		 private var _polygonFeature:PolygonFeature=null;
+		
+		protected var _polygonFeature:PolygonFeature=null;
 		
 		/**
 		 * @private
@@ -67,7 +67,7 @@ package org.openscales.core.handler.feature.draw
 		 * position of the last point drawn
 		 * */
 		private var _lastPointPixel:Pixel=null;
-
+		
 		/**
 		 * Constructor of the polygon handler
 		 * 
@@ -79,7 +79,7 @@ package org.openscales.core.handler.feature.draw
 		{
 			super(map, active, drawLayer);
 		}
-
+		
 		override protected function registerListeners():void{
 			this._dblClickHandler.active = true;
 			this._dblClickHandler.doubleClick = this.mouseDblClick;
@@ -87,7 +87,7 @@ package org.openscales.core.handler.feature.draw
 				this.map.addEventListener(MouseEvent.CLICK, this.mouseClick);	
 			}
 		}
-
+		
 		override protected function unregisterListeners():void{
 			this._dblClickHandler.active = false;
 			if (this.map) {
@@ -96,7 +96,7 @@ package org.openscales.core.handler.feature.draw
 		}
 		
 		protected function mouseClick(event:MouseEvent):void {
-
+			
 			if (drawLayer != null) {
 				drawLayer.scaleX=1;
 				drawLayer.scaleY=1;
@@ -107,22 +107,22 @@ package org.openscales.core.handler.feature.draw
 				var pixel:Pixel = new Pixel(map.mouseX ,map.mouseY);
 				this._lastPointPixel= new Pixel(map.mouseX ,map.mouseY);
 				var lonlat:Location = this.map.getLocationFromMapPx(pixel);
-                var point:Point = new Point(lonlat.lon,lonlat.lat);
+				var point:Point = new Point(lonlat.lon,lonlat.lat);
 				var lring:LinearRing=null;
 				var polygon:Polygon=null;
 				//2 cases, and very different. If the user starts the polygon or if the user is drawing the polygon
 				if(newFeature) {					
-					 lring = new LinearRing(new <Number>[point.x,point.y]);
-					 polygon = new Polygon(new <Geometry>[lring]);
+					lring = new LinearRing(new <Number>[point.x,point.y]);
+					polygon = new Polygon(new <Geometry>[lring]);
 					this._firstPointPixel= new Pixel(map.mouseX ,map.mouseY);
-				
+					
 					
 					this._polygonFeature=new PolygonFeature(polygon,null,null,true);
 					this._polygonFeature.name = name;
 					
 					//this._polygonFeature=new PolygonFeature(				
 					this._polygonFeature.style = Style.getDrawSurfaceStyle();
-
+					
 					// We create a point the first time to see were the user clicked
 					this._firstPointFeature=  new PointFeature(point,null,Style.getDefaultPointStyle());
 					
@@ -131,7 +131,7 @@ package org.openscales.core.handler.feature.draw
 					drawLayer.addFeature(this._polygonFeature);
 					this._polygonFeature.unregisterListeners();
 					this._firstPointFeature.unregisterListeners();
-
+					
 					newFeature = false;
 					
 					this.map.addEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryPolygon);
@@ -142,7 +142,7 @@ package org.openscales.core.handler.feature.draw
 						this._firstPointFeature=null;
 					}
 					//add the point to the linearRing
-					 lring=(this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing;
+					lring=(this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing;
 					lring.addPoint(point.x,point.y);
 				}
 				//final redraw layer
@@ -150,7 +150,7 @@ package org.openscales.core.handler.feature.draw
 				
 			}		
 		}
-
+		
 		public function mouseDblClick(LastPX:Pixel = null):void {
 			drawFinalPoly();
 		}
@@ -199,15 +199,15 @@ package org.openscales.core.handler.feature.draw
 			//remove listener for temporaries polygons
 			this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryPolygon); 
 		}
-
+		
 		override public function set map(value:Map):void {
 			super.map = value;
 			this._dblClickHandler.map = value;
 			if(map!=null) map.addChild(_drawContainer);
 		}
-
+		
 		//Getters and Setters
-
+		
 		/**
 		 * @private
 		 * */

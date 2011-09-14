@@ -29,10 +29,9 @@ package org.openscales.core.handler.feature.draw
 		override public function set map(value:Map):void{
 			if(value!=null){
 				super.map = value;
-				this.drawLayer.projSrsCode = this.map.projection;
-				
-				// TODO : Where can i find those resolutions
-				//this.drawLayer.resolutions = this.map.baseLayer.resolutions;
+				if(this.drawLayer) {
+					this.drawLayer = this.drawLayer;
+				}
 			}
 		}
 		//Getters and setters
@@ -48,6 +47,12 @@ package org.openscales.core.handler.feature.draw
 		 * */
 		public function set drawLayer(value:VectorLayer):void{
 			_drawLayer = value;
+			if(this.map) {
+				_drawLayer.projSrsCode = this.map.projection;
+				_drawLayer.minResolution = this.map.minResolution;
+				_drawLayer.maxResolution = this.map.maxResolution;
+				_drawLayer.maxExtent = this.map.maxExtent;
+			}
 		}
 	}
 }

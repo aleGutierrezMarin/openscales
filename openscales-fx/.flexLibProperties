@@ -122,6 +122,7 @@
     <classEntry path="org.openscales.fx.layer.FxGraticule"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawLabel"/>
     <classEntry path="org.openscales.fx.control.drawing.DisactivateDrawingTools"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasureBar"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

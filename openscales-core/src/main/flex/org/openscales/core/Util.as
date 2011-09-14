@@ -287,12 +287,33 @@ package org.openscales.core
 		 * 
 		 */ 	
 		public static function truncate(value:Number, truncateCount:Number):String
-		{
-			var toString:String = value.toPrecision(truncateCount+1);
-			return toString.substr(0,toString.length-1);
+		{			
+			value = value*Math.pow(10,truncateCount);
+			value = Math.floor(value);
+			value = value / Math.pow(10,truncateCount);
+			
+			return value.toString();
 		}
 		
 
+		/**
+		 * Convert degrees to radian
+		 *
+		 * @param val Value to convert 
+		 */
+		public static function degtoRad(val:Number):Number{
+			return val*Math.PI/180;
+		}
+		
+		/**
+		 * Convert radian to degrees
+		 *
+		 * @param val Value to convert 
+		 */
+		public static function radtoDeg(val:Number):Number{
+			return val*180/Math.PI;
+		}
+		
 	}
 
 }

@@ -37,7 +37,8 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * The LineStringfeature currently drawn
 		 * */
-		private var _currentLineStringFeature:LineStringFeature=null;
+		protected var _currentLineStringFeature:LineStringFeature=null;
+		
 		/**
 		 * The last point of the lineString. 
 		 */
@@ -97,7 +98,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param Lastpx: The position of the double click pixel
 		 * */
 		public function mouseDblClick(Lastpx:Pixel=null):void {
-			this.drawFinalPath();		
+			this.drawFinalPath();
 		} 
 		
 		/**
@@ -177,7 +178,7 @@ package org.openscales.core.handler.feature.draw
 			}
 		}
 		
-		private function updateZoom(evt:MapEvent):void{
+		protected function updateZoom(evt:MapEvent):void{
 			
 			if(evt.zoomChanged) {
 				_drawContainer.graphics.clear();
@@ -222,6 +223,20 @@ package org.openscales.core.handler.feature.draw
 		}
 		public function set startPoint(pix:Pixel):void{
 			_startPoint = pix;
+		}
+		
+		public function get lineString():LineString{
+			return _lineString;
+		}
+		public function set lineString(value:LineString):void{
+			_lineString = value;
+		}
+		
+		public function get currentLineStringFeature():LineStringFeature{
+			return _currentLineStringFeature;
+		}
+		public function set currentLineStringFeature(value:LineStringFeature):void{
+			_currentLineStringFeature = value;
 		}
 	}
 }

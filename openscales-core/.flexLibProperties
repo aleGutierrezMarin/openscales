@@ -245,7 +245,13 @@
     <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
     <classEntry path="org.openscales.map.ExtentTest"/>
     <classEntry path="org.openscales.core.events.MapEventTest"/>
-    <classEntry path="org.openscales.core.measure.Measure"/>
+    <classEntry path="org.openscales.core.measure.Distance"/>
+    <classEntry path="org.openscales.core.measure.IMeasure"/>
+    <classEntry path="org.openscales.core.measure.Surface"/>
+    <classEntry path="org.openscales.core.events.MeasureEvent"/>
+    <classEntry path="org.openscales.core.events.DisplayMeasureEvent"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawSegmentHandler"/>
+    <classEntry path="org.openscales.core.measure.Azimuth"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

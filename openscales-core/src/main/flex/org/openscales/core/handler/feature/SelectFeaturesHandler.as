@@ -144,6 +144,7 @@ package org.openscales.core.handler.feature
 			this.enableClickSelection = enableClickSelection;
 			this.enableBoxSelection = enableBoxSelection;
 			this.enableOverSelection = enableOverSelection;
+			this.doubleClickZoomOnMousePosition = false;
 
 		}
 
