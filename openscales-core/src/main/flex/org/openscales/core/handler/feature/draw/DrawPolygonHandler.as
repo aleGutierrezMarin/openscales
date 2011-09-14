@@ -67,6 +67,11 @@ package org.openscales.core.handler.feature.draw
 		 * position of the last point drawn
 		 * */
 		private var _lastPointPixel:Pixel=null;
+		
+		/**
+		 * 
+		 */
+		private var _style:Style = Style.getDefaultSurfaceStyle();
 
 		/**
 		 * Constructor of the polygon handler
@@ -174,7 +179,7 @@ package org.openscales.core.handler.feature.draw
 		public function drawFinalPoly():void{
 			//Change style of finished polygon
 			//var style:Style = Style.getDefaultSurfaceStyle();
-			var style:Style = Style.getDefinedSurfaceStyle(0x00FFFF,0.2);
+			//var style:Style = Style.getDefinedSurfaceStyle(0x00FFFF,0.2);
 			_drawContainer.graphics.clear();
 			//We finalize the last feature (of course, it's a polygon)
 			//var feature:Feature = drawLayer.features[drawLayer.features.length - 1];
@@ -186,7 +191,7 @@ package org.openscales.core.handler.feature.draw
 				//Check if the polygon (in fact, the linearRing) contains at least 3 points (if not, it's not a polygon)
 				if((this._polygonFeature.polygon.componentByIndex(0) as LinearRing).componentsLength>2){
 					//Apply the "finished" style
-					this._polygonFeature.style = style;	
+					this._polygonFeature.style = this._style;
 					this._polygonFeature.registerListeners();	
 					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._polygonFeature));
 				}
@@ -238,6 +243,18 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function get clickHandler():ClickHandler {
 			return _dblClickHandler;
+		}
+		
+		/**
+		 * The style of the path
+		 */
+		public function get style():Style{
+			
+			return this._style;
+		}
+		public function set style(value:Style):void{
+			
+			this._style = value;
 		}
 	}
 }
