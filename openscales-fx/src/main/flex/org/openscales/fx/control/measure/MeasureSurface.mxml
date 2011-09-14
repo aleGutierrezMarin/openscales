@@ -4,7 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:os="http://openscales.org"
 			   implements="org.openscales.core.control.IControl"
-			   toolTip="Draw a polygon"
+			   toolTip="{this.toolTitle}"
 			   icon="{_btnPolygon}"
 			   width="25"
 			   height="25"
@@ -20,9 +20,13 @@
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPolygonHandler;
 			import org.openscales.core.handler.mouse.DragHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.measure.Surface;
 			import org.openscales.geometry.basetypes.Pixel;
+			
+			[Bindable]
+			public var toolTitle:String = Catalog.getLocalizationForKey('MeasureBar.surfacetooltip');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-02.png")]

@@ -54,5 +54,10 @@
    "addLayerButton.label": "Ajouter à la carte",
    "removeLayerButton.label": "Retirer de la carte",
    
-   "featureInfoDisplay.title": "Résultat - GetFeatureInfo"
+   "featureInfoDisplay.title": "Résultat - GetFeatureInfo",
+   
+   "MeasureBar.title": "Outils de mesure",
+   "MeasureBar.distancetooltip": "Mesure de distance",
+   "MeasureBar.azimuthtooltip": "Mesure d'azimut",
+   "MeasureBar.surfacetooltip": "Mesure de surface"
  }
