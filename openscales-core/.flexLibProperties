@@ -248,6 +248,9 @@
     <classEntry path="org.openscales.core.popup.ChangeAttributes"/>
     <classEntry path="org.openscales.map.ExtentTest"/>
     <classEntry path="org.openscales.core.events.MapEventTest"/>
+    <classEntry path="org.openscales.core.format.WMCFormat"/>
+    <classEntry path="org.openscales.core.format.WMCFormatTest"/>
+    <classEntry path="org.openscales.core.format.wmcExtension.IWMCExtension"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
