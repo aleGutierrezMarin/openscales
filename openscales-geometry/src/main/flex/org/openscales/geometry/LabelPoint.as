@@ -46,6 +46,10 @@ package org.openscales.geometry
 			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projSrsCode);
 		}
 		
+		public function updateBounds(left:Number,bottom:Number,right:Number,top:Number,proj:String):void{
+			this._bounds = new Bounds(left,bottom,right,top,proj);
+		}
+		
 		/**
 		 * Coordinates getters and setters
 		 */

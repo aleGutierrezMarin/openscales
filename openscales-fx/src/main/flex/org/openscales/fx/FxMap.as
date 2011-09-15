@@ -209,8 +209,11 @@ package org.openscales.fx
 				this._map.maxExtent = this._maxExtent;
 			else {
 				var maxExtentDefined:Boolean = false;
-				for(i=0; (!maxExtentDefined) && (i<this.numElements); i++) {
-					element = this.getElementAt(i);
+				//for(i=0; (!maxExtentDefined) && (i<this.numElements); i++) {
+					//element = this.getElementAt(i);
+				i = this.numElements;
+				for(i; (!maxExtentDefined) && (i>0); --i) {
+					element = this.getElementAt(i-1);
 					if (element is FxMaxExtent) {
 						this._map.maxExtent = (element as FxMaxExtent).bounds;
 						maxExtentDefined = true;
@@ -224,9 +227,11 @@ package org.openscales.fx
 			// We use an interlediate Array in order to avoid adding new component it the loop
 			// because it will modify numChildren
 			var componentToAdd:Array = new Array();
-			
 			for(i=0; i<this.numElements; i++) {
 				element = this.getElementAt(i);
+			//i = this.numElements;
+			//for(i; i>0; --i) {
+				//element = this.getElementAt(i-1);
 				if (element is FxLayer) {
 					this.addFxLayer(element as FxLayer);
 				} else if (element is FxControl) {
@@ -236,8 +241,11 @@ package org.openscales.fx
 				}
 			}
 			
-			for(i=0; i<this.numElements; i++) {
-				element = this.getElementAt(i);
+			//for(i=0; i<this.numElements; i++) {
+				//element = this.getElementAt(i);
+			i = this.numElements;
+			for(i; i>0; --i) {
+				element = this.getElementAt(i-1);
 				
 				if (element is FxAbstractSecurity){
 					var fxSecurity:FxAbstractSecurity = (element as FxAbstractSecurity);
@@ -263,8 +271,11 @@ package org.openscales.fx
 			}
 			
 			var extentDefined:Boolean = false;
-			for(i=0; (!extentDefined) && (i<this.numElements); i++) {
-				element = this.getElementAt(i);
+			//for(i=0; (!extentDefined) && (i<this.numElements); i++) {
+				//element = this.getElementAt(i);
+			i = this.numElements;
+			for(i; (!extentDefined) && (i>0); --i) {
+				element = this.getElementAt(i-1);
 				if (element is FxExtent) {
 					this._map.zoomToExtent((element as FxExtent).bounds);
 					extentDefined = true;

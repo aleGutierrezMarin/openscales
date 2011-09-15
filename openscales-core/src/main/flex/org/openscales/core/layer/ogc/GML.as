@@ -44,7 +44,6 @@ package org.openscales.core.layer.ogc
 	public class GML extends VectorLayer
 	{	
 		private var _gmlFormat:GMLFormat = null;
-		private var _gmlData:XML = null;
 		private var _request:XMLRequest = null;
 		private var _version:String;
 		
@@ -78,7 +77,7 @@ package org.openscales.core.layer.ogc
 			}
 			else // load data from local file
 			{
-				this.gmlData = data;
+				this.data = data;
 				
 			}
 			
@@ -88,9 +87,9 @@ package org.openscales.core.layer.ogc
 		{
 			this.loading = true;
 			var loader:URLLoader = event.target as URLLoader;
-			this.gmlData = new XML(loader.data);
+			this.data = new XML(loader.data);
 			
-			if(this.gmlData)
+			if(this.data)
 				this.draw();
 		}
 		
@@ -100,9 +99,9 @@ package org.openscales.core.layer.ogc
 		}
 		
 		override protected function draw():void{
-			if(this.featuresID && this.featuresID.length == 0 && this.gmlData) {
+			if(this.featuresID && this.featuresID.length == 0 && this.data) {
 
-				this._gmlFormat.read(this.gmlData);
+				this._gmlFormat.read(this.data);
 				
 			} else {
 				super.draw();
@@ -136,17 +135,6 @@ package org.openscales.core.layer.ogc
 		/**
 		 * Getters and Setters
 		 */ 
-		
-		public function get gmlData():XML
-		{
-			return _gmlData;
-		}
-		
-		public function set gmlData(value:XML):void
-		{
-			_gmlData = value;
-		}
-		
 		public function get gmlFormat():GMLFormat
 		{
 			return _gmlFormat;

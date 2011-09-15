@@ -65,6 +65,11 @@ package org.openscales.core.handler.feature.draw
 		private var _dblClickHandler:ClickHandler = new ClickHandler();
 		
 		/**
+		 * 
+		 */
+		private var _style:Style = Style.getDefaultLineStyle();
+		
+		/**
 		 * DrawPathHandler constructor
 		 *
 		 * @param map
@@ -113,9 +118,9 @@ package org.openscales.core.handler.feature.draw
 				
 				if(this._currentLineStringFeature!=null){
 					//this._currentLineStringFeature.style=Style.getDefaultLineStyle();
-					this._currentLineStringFeature.style=Style.getDefinedLineStyle(0x184054,5,1,10,10)
+					this._currentLineStringFeature.style=this._style;
 					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
-					drawLayer.redraw();
+					drawLayer.redraw(true);
 				}
 			}	
 		}
@@ -150,7 +155,7 @@ package org.openscales.core.handler.feature.draw
 			else {								
 				if(!point.equals(lastPoint)){
 					_lineString.addPoint(point.x,point.y);
-					drawLayer.redraw();
+					drawLayer.redraw(true);
 					lastPoint = point;
 				}								
 			}
@@ -225,6 +230,17 @@ package org.openscales.core.handler.feature.draw
 			_startPoint = pix;
 		}
 		
+		/**
+		 * The style of the path
+		 */
+		public function get style():Style{
+			
+			return this._style;
+		}
+		public function set style(value:Style):void{
+			
+			this._style = value;
+		}
 		public function get lineString():LineString{
 			return _lineString;
 		}

@@ -17,24 +17,16 @@ package org.openscales.core.popup
 
 	public class LabelPopup extends TitleWindow
 	{
-		/**
-		 * 
-		 */
 		private var _text:TextInput = new TextInput();
-		
-		/**
-		 * 
-		 */
-		private var _onClose:Function = new Function();
+		private var _callback:Function = new Function();
 		
 		/**
 		 * Constructor
 		 */
-		public function LabelPopup(map:Map, onClose:Function, text:String=null)
+		public function LabelPopup(map:Map, callback:Function, text:String = null)
 		{
-			var vg:VGroup = new VGroup();
-			var hg1:HGroup = new HGroup();
-			var hg2:HGroup = new HGroup();
+			var hGroup:HGroup = new HGroup();
+			var vGroup:VGroup = new VGroup();
 			var okButton:Button = new Button();
 			var cancelButton:Button = new Button();
 			
@@ -44,38 +36,46 @@ package org.openscales.core.popup
 			this.height = 100;
 			this.width = 200;
 			this.title = "Your label :";
-			okButton.label = "OK";
-			cancelButton.label = "Cancel";
-			vg.verticalCenter = 2;
-			vg.horizontalCenter = 3;
+			vGroup.height = this.height;
+			vGroup.width = this.width;
+			vGroup.paddingTop = 5;
+			vGroup.paddingLeft = 5;
+			this.addElement(vGroup);
 			if(text != null)
 				this._text.text = text;
-			
-			this.addElement(vg);
-			vg.addElement(hg1);
-			vg.addElement(hg2);
-			hg1.addElement(this._text);
-			hg2.addElement(okButton);
-			hg2.addElement(cancelButton);
+			vGroup.addElement(this._text);
+			vGroup.addElement(hGroup);
+			okButton.label = "OK";
+			cancelButton.label = "Cancel";
+			hGroup.addElement(okButton);
+			hGroup.addElement(cancelButton);
 			
 			// Register events
 			okButton.addEventListener(MouseEvent.CLICK, okClick);
 			cancelButton.addEventListener(MouseEvent.CLICK, cancelClick);
 			this.addEventListener(CloseEvent.CLOSE,cancelClick);
-			this._onClose = onClose;
+			
+			// Store the callback
+			this._callback = callback;
 			
 			// Display the popup
 			PopUpManager.addPopUp(this, map, true);
 		}
 		
+		/**
+		 * This function is called when the cancel button or the close button is clicked
+		 */
 		public function cancelClick(evt:Event):void
 		{
 			PopUpManager.removePopUp(this);
 		}
 		
+		/**
+		 * This function is called when the ok button is clicked
+		 */
 		public function okClick(evt:MouseEvent):void
 		{
-			this._onClose(this._text.text);
+			this._callback(this._text.text);
 			PopUpManager.removePopUp(this);
 		}
 	}

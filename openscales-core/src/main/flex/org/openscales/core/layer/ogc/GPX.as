@@ -33,7 +33,6 @@ package org.openscales.core.layer.ogc
 	public class GPX extends VectorLayer
 	{
 		private var _featureVector:Vector.<Feature> = null;
-		private var _gpxData:XML = null;
 		private var _gpxFormat:GPXFormat;
 		
 		private var _request:XMLRequest = null;
@@ -57,7 +56,7 @@ package org.openscales.core.layer.ogc
 			this._projSrsCode = "EPSG:4326";
 			this.version = version;
 			this.url = url;	
-			this.gpxData = data;
+			this.data = data;
 			super(name);
 			
 			if(style){
@@ -91,7 +90,7 @@ package org.openscales.core.layer.ogc
 					this.draw();
 				}	
 			}
-			else if (this.gpxData)
+			else if (this.data)
 			{	
 				this.drawFeatures();				
 			}
@@ -106,8 +105,8 @@ package org.openscales.core.layer.ogc
 		{
 			this.loading = false;
 			var loader:URLLoader = event.target as URLLoader;
-			this.gpxData = new XML(loader.data);
-			if (this.gpxData)
+			this.data = new XML(loader.data);
+			if (this.data)
 				this.drawFeatures();	
 		}
 		
@@ -127,7 +126,7 @@ package org.openscales.core.layer.ogc
 				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
 				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
 				
-				this.featureVector = this.gpxFormat.read(this.gpxData) as Vector.<Feature>;
+				this.featureVector = this.gpxFormat.read(this.data) as Vector.<Feature>;
 				var i:uint;
 				var vectorLength:uint = this.featureVector.length;
 				for (i = 0; i < vectorLength; i++){
@@ -165,17 +164,7 @@ package org.openscales.core.layer.ogc
 		{
 			_featureVector = value;
 		}
-		
-		public function get gpxData():XML
-		{
-			return _gpxData;
-		}
-		
-		public function set gpxData(value:XML):void
-		{
-			_gpxData = value;
-		}
-		
+
 		public function get gpxFormat():GPXFormat
 		{
 			return _gpxFormat;

@@ -23,7 +23,7 @@ package org.openscales.core.handler.feature.draw
 	**/
 	public class AbstractEditHandler extends Handler implements IEditFeature
 	{
-		//add
+		protected var _virtualStyle:Style = Style.getDefaultCircleStyle();
 		protected var _featuresToEdit:Vector.<Feature> = null;
 		/**
 		 * the layer concerned by the edition
@@ -125,7 +125,7 @@ package org.openscales.core.handler.feature.draw
 					createEditionVertices(vectorfeature,geometry as ICollection,arrayToFill);
 				} else {
 					if (geometry is Point) {
-						var EditionVertice:PointFeature = new PointFeature(geometry as Point, null, Style.getDefaultCircleStyle());
+						var EditionVertice:PointFeature = new PointFeature(geometry as Point, null, this._virtualStyle);
 						//We fill the array with the virtual vertice
 						v = new Vector.<Feature>();
 						v[0]=EditionVertice;
@@ -304,6 +304,15 @@ package org.openscales.core.handler.feature.draw
 		 }
 		 public function get featuresToEdit():Vector.<Feature>{
 			 return this._featuresToEdit;
+		 }
+		 
+		 public function set virtualStyle(value:Style):void{
+			 
+			 this._virtualStyle = value;
+		 }
+		 public function get virtualStyle():Style{
+			 
+			 return this._virtualStyle;
 		 }
 	}
 }
