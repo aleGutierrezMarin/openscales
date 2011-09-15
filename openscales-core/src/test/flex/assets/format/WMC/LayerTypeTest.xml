@@ -1,0 +1,43 @@
+<ViewContext    xmlns="http://www.opengis.net/context" 
+                xmlns:xlink="http://www.w3.org/1999/xlink" 
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                xmlns:sld="http://www.opengis.net/sld" 
+                version="1.1.0" 
+                id="autoConf" 
+                xsi:schemaLocation="http://www.opengis.net/context context.xsd">
+    <General>
+        <Window width="500" height="300"/>
+        <BoundingBox SRS="EPSG:4326" minx="-180.000000" miny="-90.000000" maxx="180.000000" maxy="90.000000"/>
+    </General>
+    <LayerList>
+        <Layer queryable="1" hidden="0" order="1">
+            <Server service="OGC:WMS" version="1.1.1" title="The GLOBE Program Visualization Server">
+                <OnlineResource xlink:type="simple" xlink:href="http://openscales.org/geoserver/ows"/>
+            </Server>
+            <Name>bluemarble</Name>
+            <Title>bluemarble_I18N</Title>
+            <MinScaleDenominator> 1524 </MinScaleDenominator>
+            <MaxScaleDenominator> 18498 </MaxScaleDenominator>
+            <SRS>EPSG:4326</SRS>
+            <FormatList>
+                <Format current="1">image/gif</Format>
+                <Format>image/png</Format>
+            </FormatList>
+        </Layer>
+        
+        <Layer queryable="1" hidden="0" order="1">
+            <Server service="OGC:WMS" version="1.0.0" title="The GLOBE Program Visualization Server">
+                <OnlineResource xlink:type="simple" xlink:href="http://openscales.org/geoserver/ows"/>
+            </Server>
+            <Name>bluemarble</Name>
+            <Title>bluemarble_I18N</Title>
+            <MinScaleDenominator> 1524 </MinScaleDenominator>
+            <MaxScaleDenominator> 18498 </MaxScaleDenominator>
+            <SRS>EPSG:2154</SRS>
+            <FormatList>
+                <Format >image/gif</Format>
+                <Format current="1">image/png</Format>
+            </FormatList>
+        </Layer>
+    </LayerList>
+</ViewContext>
