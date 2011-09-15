@@ -136,7 +136,7 @@ package org.openscales.core.handler.feature
 		 * @param active boolean defining if the handler is active or not
 		 */
 		public function SelectFeaturesHandler(map:Map=null, active:Boolean=false, enableClickSelection:Boolean=true, enableBoxSelection:Boolean=true, enableOverSelection:Boolean=false) {
-			super(map, active);
+			super(map, active, false);
 			if (this.map) {
 				this.map.addChild(_drawContainer);
 			}
@@ -173,6 +173,13 @@ package org.openscales.core.handler.feature
 				this.onOverFeature = null;
 				this.onOutFeature = null;
 			}
+		}
+		public function get enableOverSelection():Boolean{
+			
+			if(this.onOverFeature == null && this.onOutFeature == null)
+				return false;
+			else
+				return true;
 		}
 
 		/**

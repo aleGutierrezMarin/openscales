@@ -39,7 +39,6 @@ package org.openscales.core.layer.ogc
 		
 		private var _featureVector:Vector.<Feature> = null;
 		private var _georssFormat:GeoRssFormat;
-		private var _georssData:XML = null;
 		
 		private var _request:XMLRequest = null;
 		private var _refresh:int;
@@ -51,7 +50,8 @@ package org.openscales.core.layer.ogc
 		private var _useFeedTitle:Boolean = false;
 		
 		public function GeoRss(name:String, 
-							   url:String,
+							   url:String = null,
+							   data:XML = null,
 							   refreshDelay:int = 300000,
 							   style:Style = null,
 							   width:Number = 300,
@@ -60,6 +60,7 @@ package org.openscales.core.layer.ogc
 		{
 			super(name);
 			this.url = url;	
+			this.data = data;
 			this.projSrsCode = "WGS84";
 			if(style){
 				this.style = style;
@@ -129,6 +130,10 @@ package org.openscales.core.layer.ogc
 					this.draw();
 				}	
 			}
+			else if (this.data)
+			{	
+				this.drawFeatures();				
+			}
 			else
 			{
 				this.clear();
@@ -139,8 +144,8 @@ package org.openscales.core.layer.ogc
 		{
 			this.loading = false;
 			var loader:URLLoader = event.target as URLLoader;
-			this.georssData = new XML(loader.data);
-			if (this.georssData)
+			this.data = new XML(loader.data);
+			if (this.data)
 				this.drawFeatures();	
 		}
 		
@@ -161,7 +166,7 @@ package org.openscales.core.layer.ogc
 				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
 				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
 				
-				this.featureVector = this.georssFormat.read(this.georssData) as Vector.<Feature>;
+				this.featureVector = this.georssFormat.read(this.data) as Vector.<Feature>;
 				if(this.useFeedTitle)
 					this.name = this.georssFormat.title;
 				
@@ -204,16 +209,6 @@ package org.openscales.core.layer.ogc
 		public function set featureVector(value:Vector.<Feature>):void
 		{
 			_featureVector = value;
-		}
-
-		public function get georssData():XML
-		{
-			return _georssData;
-		}
-
-		public function set georssData(value:XML):void
-		{
-			_georssData = value;
 		}
 
 		public function get georssFormat():GeoRssFormat

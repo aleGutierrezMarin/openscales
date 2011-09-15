@@ -3,6 +3,15 @@
    "locale.name": "French",
    "locale.localizedName": "Français",
    
+   "drawing.import": "Importer",
+   "drawing.export": "Exporter",
+   "drawing.url": "Url",
+   "drawing.locale": "Fichier local",
+   "drawing.format": "Format",
+   "drawing.name": "Nom",
+   "drawing.version": "Version",
+   "drawing.browse": "Parcourir",
+   
    "layercontrol.movefront": "Déplacer vers l'avant plan",
    "layercontrol.moveback": "Déplacer vers l'arrière plan",
    "layercontrol.deletelayer": "Supprimer la couche",

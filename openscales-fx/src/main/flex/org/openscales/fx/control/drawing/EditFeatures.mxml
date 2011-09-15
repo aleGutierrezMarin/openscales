@@ -4,7 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:os="http://openscales.org"
 			   implements="org.openscales.core.control.IControl"
-			   toolTip="Edit selected features"
+			   toolTip="Edit features"
 			   icon="{_btnEdit}"
 			   width="25"
 			   height="25"
@@ -23,8 +23,8 @@
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
-			import org.openscales.core.handler.mouse.DragHandler;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.style.Style;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -34,7 +34,6 @@
 			private var _btnEdit:Class;
 			private var _active:Boolean = true;
 			private var _handler:FeatureLayerEditionHandler = new FeatureLayerEditionHandler();
-			private var _dragHandler:DragHandler;
 			private var _selectFeaturesHandler:SelectFeaturesHandler;
 			
 			/**
@@ -55,6 +54,18 @@
 			}
 			
 			/**
+			 * 
+			 */
+			public function get virtualStyle():Style{
+				
+				return (this._handler as FeatureLayerEditionHandler).virtualStyle;
+			}
+			public function set virtualStyle(value:Style):void{
+				
+				(this._handler as FeatureLayerEditionHandler).virtualStyle = value;
+			}
+			
+			/**
 			 * Map controled by this control
 			 */
 			public function get map():Map{
@@ -64,19 +75,12 @@
 			public function set map(value:Map):void{
 				
 				_handler.map = value;
-				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
 				_handler.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
-				
-				for each(var ih:IHandler in this.map.controls){
-					if(ih is DragHandler){
-						_dragHandler = (ih as DragHandler);
-						_dragHandler.map = value;
-					}
-					if(ih is SelectFeaturesHandler){
-						_selectFeaturesHandler = (ih as SelectFeaturesHandler);
-					}
-				}
 			}
 			
 			/**
@@ -112,29 +116,34 @@
 			private function activate():void{
 				
 				_handler.active = true;
-				if(_dragHandler)
-					_dragHandler.active = false;
+				
+				for each(var ih:IHandler in this.map.controls){
+					if(ih is SelectFeaturesHandler){
+						_selectFeaturesHandler = (ih as SelectFeaturesHandler);
+						_selectFeaturesHandler.active = true;
+					}
+				}
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
-				//if(_dragHandler)
-					//_dragHandler.active = true;
 			}
 			
 			/**
-			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
+			 * On button click, dispatch a DrawingEvent.EDIT_HANDLER_ACTIVATED event
 			 */
 			private function onClick():void{
 				
-				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				_handler.map.dispatchEvent(evt);
 				activate();
 			}
 			
 			/**
-			 * Check the handler when a DrawingEvent.CHANGE_ACTIVE_HANDLER event occured
+			 * Check the handler when a DrawingEvent.DRAW_HANDLER_ACTIVATED or
+			 * DrawingEvent.EDIT_HANDLER_ACTIVATED or DrawingEvent.MOVE_HANDLER_ACTIVATED
+			 * or DrawingEvent.SELECT_HANDLER_ACTIVATED event occured
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
@@ -148,7 +157,14 @@
 			 */
 			private function onFeatureUpdateSelection(evt:FeatureEvent):void{
 				
-				_handler.featuresToEdit = _selectFeaturesHandler.selectedFeatures;
+				if(_handler.active)
+					_handler.editionModeStop();
+				
+				if(_selectFeaturesHandler)
+					_handler.featuresToEdit = _selectFeaturesHandler.selectedFeatures;
+				
+				if(_handler.active)
+					_handler.editionModeStart();
 			}
 			
 			// to do

@@ -14,6 +14,7 @@ package org.openscales.core.handler.mouse
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.core.events.DrawingEvent;
 	
 	/**
 	 * This handler allows user to zoom the map by drawing a rectangle with the mouse
@@ -81,8 +82,19 @@ package org.openscales.core.handler.mouse
 				}
 				this.map.addEventListener(MapEvent.DRAG_START, dragStart);
 				this.map.addEventListener(MapEvent.DRAG_END, dragEnd);
+				this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
+				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateHandler);
+				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateHandler);
+				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateHandler);
 				
 			}
+		}
+		
+		private function disactivateHandler(event:DrawingEvent):void{
+			this.active = false;
+		}
+		private function activateHandler(event:DrawingEvent):void{
+			this.active = true;
 		}
 		
 		private function registerMouseUp():void{

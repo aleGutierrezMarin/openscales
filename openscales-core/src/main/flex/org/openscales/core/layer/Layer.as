@@ -62,7 +62,6 @@ package org.openscales.core.layer {
 		protected var _projectionChanged:Boolean = false;
 		
 		
-		
 		/**
 		 * The boolean that say if the layer is drawn or not.
 		 * This is a readonly parameter.
@@ -180,8 +179,7 @@ package org.openscales.core.layer {
 		
 		protected function onMaxExtentChanged(e:MapEvent):void
 		{
-			this.redraw();
-			Trace.log("Max extent changed ");
+			this.redraw(true);
 		}
 		
 		/**
