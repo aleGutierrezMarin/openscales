@@ -11,6 +11,7 @@ package
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.ogc.GML;
+	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -39,10 +40,13 @@ package
 			_map=new Map();
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
-			// Add layers to map
-			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
-			_map.addLayer(mapnik);
+			
+			// Add a base layer to the map	
+			var wmsLayer:WMS = new WMS("Scan","http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4");
+			wmsLayer.version = "1.3.0";
+			wmsLayer.layers = "SCANDEP_PNG_IGNF_LAMB93";
+			wmsLayer.projection = "EPSG:4326";
+			this._map.addLayer(wmsLayer);
 			
 			// GML 3.2.1 layer; fetch data from url (polygons World Borders)
 			//if data is fetched from file (xml), change the projection to 2154

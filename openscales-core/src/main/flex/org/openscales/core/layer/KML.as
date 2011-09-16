@@ -84,7 +84,8 @@ package org.openscales.core.layer
 		
 		public function drawFeatures():void{
 			
-			if(this._featureVector == null) {
+			if(this._featureVector == null) 
+			{
 				
 				if (this.map.projection != null && this.projSrsCode != null && this.projSrsCode != this.map.projection) {
 					this._kmlFormat.externalProjSrsCode = this.projSrsCode;
@@ -97,7 +98,7 @@ package org.openscales.core.layer
 				var vectorLength:uint = this._featureVector.length;
 				for (i = 0; i < vectorLength; i++){
 				
-					this.addFeature(this._featureVector[i]);
+					this.addFeature(this._featureVector[i],true,false);
 				}
 			}
 			else {
@@ -141,15 +142,9 @@ package org.openscales.core.layer
 		
 		/**
 		 * Getters and Setters
-		 */ 
-		public function get projection():String
-		{
-			return this._projSrsCode;	
-		}
-		
-		public function set projection(value:String):void
-		{
-			this._projSrsCode = value;
+		 */
+		override public function set projSrsCode(value:String):void {
+			return;
 		}
 		
 		public function get kmlFormat():KMLFormat
