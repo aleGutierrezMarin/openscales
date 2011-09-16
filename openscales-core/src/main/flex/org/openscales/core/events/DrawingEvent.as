@@ -1,6 +1,7 @@
 package org.openscales.core.events
 {
 	import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
+	import org.openscales.core.layer.VectorLayer;
 
 	/**
 	 * Event related to the drawing action :
@@ -29,12 +30,16 @@ package org.openscales.core.events
 		public static const MOVE_HANDLER_ACTIVATED:String = "openscales.drawing.move_handler_activated";
 		public static const SELECT_HANDLER_ACTIVATED:String = "openscales.drawing.select_handler_activated";
 		public static const ATTRIBUTES_HANDLER_ACTIVATED:String = "openscales.drawing.attributes_handler_activated";
-		public static const CHANGE_ACTIVE_HANDLER:String="openscales.drawing.change_active_handler";
+		public static const ATTRIBUTES_UPDATED:String = "openscales.drawing.attributes_updated";
+		public static const CHANGE_ACTIVE_HANDLER:String = "openscales.drawing.change_active_handler";
 		
 		/**
 		 * 
 		 */
 		private var _activeHandler:String;
+		private var _data:Array;
+		private var _attributes:Array;
+		private var _layer:VectorLayer;
 		
 		
 		public function DrawingEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
@@ -47,6 +52,27 @@ package org.openscales.core.events
 		}
 		public function set activeHandler(value:String):void{
 			_activeHandler = value;
+		}
+		
+		public function get data():Array{
+			return this._data;
+		}
+		public function set data(value:Array):void{
+			this._data = value;
+		}
+		
+		public function get attributes():Array{
+			return this._attributes;
+		}
+		public function set attributes(value:Array):void{
+			this._attributes = value;
+		}
+		
+		public function get layer():VectorLayer{
+			return this._layer;
+		}
+		public function set layer(value:VectorLayer):void{
+			this._layer = value;
 		}
 	}
 }

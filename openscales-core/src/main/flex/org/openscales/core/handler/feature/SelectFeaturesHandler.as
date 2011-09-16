@@ -144,7 +144,6 @@ package org.openscales.core.handler.feature
 			this.enableClickSelection = enableClickSelection;
 			this.enableBoxSelection = enableBoxSelection;
 			this.enableOverSelection = enableOverSelection;
-			this.doubleClickZoomOnMousePosition = false;
 
 		}
 
@@ -428,6 +427,7 @@ package org.openscales.core.handler.feature
 				for(var i:* in this.layers) {
 					if(layers[i].name == evt.feature.layer.name){
 						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
+						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECT, evt.feature));
 						return;
 					}
 				}
@@ -719,6 +719,9 @@ package org.openscales.core.handler.feature
 			// Dispatch a FEATURE_SELECTED event for all the newly selected features
 			if (this.map && (featuresToSelect.length > 0)) {
 				fevt = new FeatureEvent(FeatureEvent.FEATURE_SELECTED, null, additiveMode);
+				fevt.features = featuresToSelect;
+				this.map.dispatchEvent(fevt);
+				fevt = new FeatureEvent(FeatureEvent.FEATURE_SELECT, null, additiveMode);
 				fevt.features = featuresToSelect;
 				this.map.dispatchEvent(fevt);
 			}

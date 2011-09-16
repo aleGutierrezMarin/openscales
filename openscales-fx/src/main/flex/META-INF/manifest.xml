@@ -105,5 +105,6 @@
 	<component id="ManageAttributes" class="org.openscales.fx.control.drawing.ManageAttributes" />
 	<component id="ExportFeature" class="org.openscales.fx.control.drawing.ExportFeature" />
 	<component id="ImportFeature" class="org.openscales.fx.control.drawing.ImportFeature" />
+	<component id="DrawingToolbar" class="org.openscales.fx.control.drawing.DrawingToolbar" />
 	
 </componentPackage>
