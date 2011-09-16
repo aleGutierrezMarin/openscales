@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:IconButton xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:os="http://openscales.org"
+			   toolTip="Manage attributes"
+			   icon="{_btnAttributes}"
+			   width="25"
+			   height="25"
+			   click="onClick()">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.control.IControl;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.popup.ChangeAttributes;
+			import org.openscales.core.popup.EditAttributes;
+			import org.openscales.core.popup.ManageAttributes;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			import spark.components.TextInput;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-13.jpg")]
+			private var _btnAttributes:Class;
+			private var _map:Map = null;
+			private var _editHandlerActivated:Boolean = false;
+			private var _data:Array = new Array();
+			private var _attributes:Array = new Array("id","description");
+			private var _index:int;
+			private var _vectorLayer:VectorLayer;
+			
+			/**
+			 * The Map associated to the component
+			 */
+			public function get map():Map{
+				
+				return this._map;
+			}
+			public function set map(value:Map):void{
+				
+				this._map = value;
+				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onSelectedFeature);
+				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(FeatureEvent.FEATURE_DRAWING_END, onFeatureAdded);
+			}
+			
+			/**
+			 * 
+			 */
+			public function set defaultAttributes(value:String):void{
+				
+				var result:Array = value.split(',');
+				this._attributes = new Array();
+				for(var i:uint = 0; i < result.length; i++)
+					this._attributes.push(result[i]);
+			}
+			public function get defaultAttributes():String{
+				
+				if(this._attributes.length > 0){
+					var result:String = this._attributes[0];
+					for(var i:uint = 1; i < this._attributes.length; i++)
+						result += "," + this._attributes[i];
+					return result;
+				}
+				else
+					return null;
+			}
+			
+			/**
+			 * The VectorLayer associated to the component
+			 */
+			public function get target():VectorLayer{
+				
+				return this._vectorLayer;
+			}
+			public function set target(value:VectorLayer):void{
+				
+				this._vectorLayer = value;
+			}
+			
+			/**
+			 * This function is called when a feature is added to the associated Map
+			 */
+			private function onFeatureAdded(event:FeatureEvent):void{
+				
+				// We check if the feature has been added to the associated VectorLayer
+				if(event.feature.layer == this.target){
+					var temp:Array = new Array(this._attributes.length);
+					temp[0] = event.feature.name;
+					_data.push({identifier:event.feature.name, values:temp});
+				}
+			}
+			
+			/**
+			 * This function is called when a feature is selected
+			 */
+			private function onSelectedFeature(event:FeatureEvent):void
+			{
+				if(this._editHandlerActivated){
+					_index = this.searchFeature(event.feature.name);
+					if(_index < 0)
+						return;
+					new ChangeAttributes(this._map, this._attributes, (this._data[_index].values as Array), this.onChangeAttributes);
+				}
+				else{
+					_index = this.searchFeature(event.feature.name);
+					if(_index < 0)
+						return;
+					new EditAttributes(this._map, this._attributes, (this._data[_index].values as Array));
+				}
+			}
+			
+			/**
+			 * This function is called by the ChangeAttributes pop-up
+			 */
+			private function onChangeAttributes(textInputArray:Array):void{
+				
+				for(var i:uint = 0; i < this._attributes.length; i++)
+					(this._data[_index].values as Array)[i] = (textInputArray[i] as TextInput).text;
+			}
+			
+			/**
+			 * This function is called when the icon button is clicked
+			 */
+			private function onClick():void{
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.ATTRIBUTES_HANDLER_ACTIVATED);
+				evt.activeHandler = this.id;
+				this.map.dispatchEvent(evt);
+				new org.openscales.core.popup.ManageAttributes(this._map, this._attributes, this.onManageAttributes);
+			}
+			
+			/**
+			 * This function is called by the ManageAttributes pop-up
+			 */
+			private function onManageAttributes(value:String, action:String):void
+			{
+				var i:uint;
+				var j:uint;
+				
+				if(action == "add")
+				{
+					for(i = 0; i < _data.length; i++)
+						(_data[i].values as Array).push();
+				}
+				else if(action == "delete")
+				{
+					for(i = 0; i < this._attributes.length; i++){
+						if(this._attributes[i] == value){
+							for(j = 0; j < _data.length; j++)
+								(_data[j].values as Array).splice(i,1);
+						}
+					}
+				}
+			}
+			
+			/**
+			 * This function returns the index of the feature
+			 */
+			private function searchFeature(value:String):int{
+				
+				for(var i:uint = 0; i < _data.length; i++){
+					if(_data[i].identifier == value)
+						return i;
+				}
+				return -1;
+			}
+			
+			/**
+			 * This function is called when a DrawingEvent occured
+			 */
+			private function onChangeActiveHandler(event:DrawingEvent):void{
+				
+				if(event.type == DrawingEvent.EDIT_HANDLER_ACTIVATED)
+					this._editHandlerActivated = true;
+				else
+					this._editHandlerActivated = false;
+			}
+			
+		]]>
+	</fx:Script>			
+</os:IconButton>
