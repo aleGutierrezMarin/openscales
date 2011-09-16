@@ -11,6 +11,8 @@ package org.openscales.core.format
 	import org.openscales.core.Trace;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
+	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.layer.Layer;
 
 	/**
 	 * This class read and write WMC files
@@ -86,8 +88,7 @@ package org.openscales.core.format
 						this._windowSize = new Size(window..@width[0], window..@height[0]);
 					}
 				}
-import org.openscales.core.basetypes.Resolution;
-import org.openscales.core.layer.Layer;
+
 
 
 				if(general..*::BoundingBox.length() > 0)
