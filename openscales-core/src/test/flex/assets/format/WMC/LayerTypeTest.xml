@@ -16,8 +16,8 @@
             </Server>
             <Name>bluemarble</Name>
             <Title>bluemarble_I18N</Title>
-            <MinScaleDenominator> 1524 </MinScaleDenominator>
-            <MaxScaleDenominator> 18498 </MaxScaleDenominator>
+            <MinScaleDenominator>1524</MinScaleDenominator>
+            <MaxScaleDenominator>18498</MaxScaleDenominator>
             <SRS>EPSG:4326</SRS>
             <FormatList>
                 <Format current="1">image/gif</Format>

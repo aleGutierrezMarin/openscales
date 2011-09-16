@@ -51,9 +51,16 @@ package org.openscales.core.format
 			assertEquals("wrong layer number", 2, layers.length);
 			var layer1:Layer = layers[0];
 			assertTrue("Wrong layer service parsing", (layer1 is WMS));
-			
+			assertEquals("Wrong layer version parsing", "1.1.1", (layer1 as WMS).version);
+			assertEquals("Wrong service url parsing", "http://openscales.org/geoserver/ows", (layer1 as WMS).url);
 			assertEquals("Wrong layer name parsing", "bluemarble", (layer1 as WMS).layers);
-			
+			assertEquals("Wrong layer title parsing", "bluemarble_I18N", (layer1 as WMS).name);
+			assertTrue("Wrong layer minScaleDenominator", (0.0006866 <(layer1 as WMS).minResolution.value) && (0.0006867 >(layer1 as WMS).minResolution.value))
+			assertEquals("Wrong layer minScaleDenominator projection", "EPSG:4326", (layer1 as WMS).minResolution.projection);
+			assertTrue("Wrong layer maxScaleDenominator", (0.00004291 <(layer1 as WMS).maxResolution.value) && (0.00004292 >(layer1 as WMS).maxResolution.value))
+			assertEquals("Wrong layer maxScaleDenominator projection", "EPSG:4326", (layer1 as WMS).maxResolution.projection);
+			assertEquals("Wrong layer srs parsing", "EPSG:4326", (layer1 as WMS).projection);
+			assertEquals("Wrong layer default format parsing", "image/gif", (layer1 as WMS).format);	
 		}
 	}
 }

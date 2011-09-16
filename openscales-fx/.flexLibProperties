@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
+    <classEntry path="FlexUnitApplication"/>
     <classEntry path="assets.fxg.ButtonCloseOver"/>
     <classEntry path="assets.fxg.ButtonCloseUp"/>
     <classEntry path="assets.fxg.ButtonOpacity"/>
@@ -115,6 +116,7 @@
     <classEntry path="org.openscales.fx.routing.FxSampleRouting"/>
     <classEntry path="org.openscales.fx.security.FxAbstractSecurity"/>
     <classEntry path="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
+    <classEntry path="OpenScalesTest"/>
     <classEntry path="org.openscales.fx.control.LayerCatalogTest"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButtonTest"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacityTest"/>
