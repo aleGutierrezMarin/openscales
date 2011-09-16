@@ -14,51 +14,17 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import assets.fxg.ButtonOpacity;
-			import assets.fxg.DownArrowDown;
-			import assets.fxg.DownArrowOver;
-			import assets.fxg.DownArrowUp;
-			import assets.fxg.LayerItemOver;
-			import assets.fxg.LayerItemUp;
-			
-			import mx.accessibility.ButtonAccImpl;
-			import mx.binding.utils.BindingUtils;
-			import mx.binding.utils.ChangeWatcher;
 			import mx.collections.ArrayCollection;
-			import mx.core.ButtonAsset;
-			import mx.core.IVisualElement;
-			import mx.events.DragEvent;
-			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
-			import mx.events.ScrollEvent;
-			import mx.events.SliderEvent;
-			import mx.skins.halo.ButtonSkin;
 			
-			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.events.LayerEvent;
-			import org.openscales.core.events.LayerManagerEvent;
 			import org.openscales.core.i18n.Catalog;
-			import org.openscales.core.layer.ImageLayer;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.VectorLayer;
-			import org.openscales.core.layer.ogc.WFS;
-			import org.openscales.core.layer.ogc.WMSC;
-			import org.openscales.fx.control.FeatureDrawing;
 			import org.openscales.fx.control.layer.LayerManager;
-			import org.openscales.fx.layer.FxVectorLayer;
-			import org.openscales.geometry.basetypes.Bounds;
 			
-			import spark.components.Button;
-			import spark.components.CheckBox;
 			import spark.components.Label;
-			import spark.components.List;
-			import spark.components.RadioButton;
-			import spark.components.RadioButtonGroup;
-			import spark.components.VSlider;
-			import spark.core.SpriteVisualElement;
 			
 			
 			[Embed(source="/assets/images/widgetHide.png")]

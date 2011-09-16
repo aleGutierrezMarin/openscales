@@ -185,14 +185,8 @@ package org.openscales.core.layer.ogc
 			_version = value;
 		}
 		
-		public function get projection():String
-		{
-			return this._projSrsCode;	
-		}
-		
-		public function set projection(value:String):void
-		{
-			this._projSrsCode = value;
+		override public function set projSrsCode(value:String):void {
+			return;
 		}
 
 		public function get extractAttributes():Boolean
