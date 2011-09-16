@@ -49,16 +49,27 @@
 			public function set map(value:Map):void{
 				
 				this._map = value;
-				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onSelectedFeature);
+				this._map.addEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
 				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(FeatureEvent.FEATURE_DRAWING_END, onFeatureAdded);
+				this._map.addEventListener(DrawingEvent.ATTRIBUTES_UPDATED, onAttributesUpdated);
 			}
 			
 			/**
-			 * 
+			 * This function is called when attributes are changed
+			 */
+			private function onAttributesUpdated(evt:DrawingEvent):void{
+				if(evt.layer == this.target){
+					this._data = evt.data;
+					this._attributes = evt.attributes;
+				}
+			}
+			
+			/**
+			 * The default attributes
 			 */
 			public function set defaultAttributes(value:String):void{
 				
@@ -113,12 +124,14 @@
 					_index = this.searchFeature(event.feature.name);
 					if(_index < 0)
 						return;
+					event.stopImmediatePropagation();
 					new ChangeAttributes(this._map, this._attributes, (this._data[_index].values as Array), this.onChangeAttributes);
 				}
 				else{
 					_index = this.searchFeature(event.feature.name);
 					if(_index < 0)
 						return;
+					event.stopImmediatePropagation();
 					new EditAttributes(this._map, this._attributes, (this._data[_index].values as Array));
 				}
 			}
@@ -130,6 +143,12 @@
 				
 				for(var i:uint = 0; i < this._attributes.length; i++)
 					(this._data[_index].values as Array)[i] = (textInputArray[i] as TextInput).text;
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.ATTRIBUTES_UPDATED);
+				evt.data = this._data;
+				evt.attributes = this._attributes;
+				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
 			}
 			
 			/**
@@ -165,6 +184,11 @@
 						}
 					}
 				}
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.ATTRIBUTES_UPDATED);
+				evt.data = this._data;
+				evt.attributes = this._attributes;
+				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
 			}
 			
 			/**

@@ -121,6 +121,7 @@ package org.openscales.core.events
 		  * Event type dispatched when a feature is finished to be edited
 		  */
 		 public static const FEATURE_EDITED_END:String="org.openscales.feature.editedend";
+		 public static const FEATURE_SELECT:String="org.openscales.feature_select";
 		
 		/**
 		 * FeatureEvent constructor
