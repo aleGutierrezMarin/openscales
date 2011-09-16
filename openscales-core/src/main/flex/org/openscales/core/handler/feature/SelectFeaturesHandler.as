@@ -129,6 +129,9 @@ package org.openscales.core.handler.feature
 		private var _enableClickSelection:Boolean;
 		private var _enableBoxSelection:Boolean;
 		private var _enableSelection:Boolean;
+		private var _enableMultipleSelection:Boolean = false;
+		private var _clickOut:Boolean = true;
+		private var _toggle:Boolean = true;
 
 		/**
 		 * Constructor of the handler.
@@ -603,7 +606,10 @@ package org.openscales.core.handler.feature
 			var sboxGeom:Geometry = (sbox) ? sbox.toGeometry() : null;
 
 			// Select the features that intersect the geometry
-			this.selectByGeometry(sboxGeom, this._ctrlKey, this._shiftKey);
+			if(this._enableMultipleSelection)
+				this.selectByGeometry(sboxGeom, this._ctrlKey, this._shiftKey);
+			else
+				this.selectByGeometry(sboxGeom,false,false);
 		}
 
 		/**
@@ -677,6 +683,9 @@ package org.openscales.core.handler.feature
 						if (found) {
 							// If this currently selected feature is reselected,
 							// keep it in the current selection
+							sf.push(feature);
+						}
+						else if (!found && featuresToSelect.length == 0 && !this._clickOut) {
 							sf.push(feature);
 						} else {
 							// Otherwise add it to the features to remove
@@ -900,7 +909,15 @@ package org.openscales.core.handler.feature
 			return selectedStyle;
 		}
 		
-		
+		/**
+		 * Unselect a feature by clicking out of it
+		 */
+		public function set clickOut(value:Boolean):void{
+			this._clickOut = value;
+		}
+		public function get clickOut():Boolean{
+			return this._clickOut;
+		}
 		
 		
 

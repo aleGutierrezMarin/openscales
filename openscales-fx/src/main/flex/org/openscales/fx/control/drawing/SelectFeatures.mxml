@@ -50,7 +50,21 @@
 			}
 			
 			/**
-			 * 
+			 * If true, a feature is unselected by clicking out of it
+			 * @default true;
+			 */
+			public function get clickout():Boolean{
+				
+				return (this._handler as SelectFeaturesHandler).clickOut;
+			}
+			public function set clickout(value:Boolean):void{
+				
+				(this._handler as SelectFeaturesHandler).clickOut = value;
+			}
+			
+			/**
+			 * If true, a feature is selected on mouseover
+			 * @default false;
 			 */
 			public function get hover():Boolean{
 				
