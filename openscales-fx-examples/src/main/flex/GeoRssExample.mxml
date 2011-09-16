@@ -15,15 +15,11 @@
 				url="http://qlf-gpp3-api-ign-fr.aw.atosorigin.com/dataexample/georssdep.rss" />
 		
 		<!-- Handlers -->
-		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
 		<LayerManager/>
-		
 		<DragHandler/>
-		<WheelHandler/>
-		
+		<WheelHandler/>	
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
-		
 		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
 	
 	</Map>
