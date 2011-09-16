@@ -25,10 +25,8 @@ package org.openscales.core.popup
 		 */
 		public function LabelPopup(map:Map, callback:Function, text:String = null)
 		{
-			var hGroup:HGroup = new HGroup();
 			var vGroup:VGroup = new VGroup();
 			var okButton:Button = new Button();
-			var cancelButton:Button = new Button();
 			
 			// Define the popup properties
 			this.x = map.width / 2;
@@ -44,28 +42,25 @@ package org.openscales.core.popup
 			if(text != null)
 				this._text.text = text;
 			vGroup.addElement(this._text);
-			vGroup.addElement(hGroup);
 			okButton.label = "OK";
-			cancelButton.label = "Cancel";
-			hGroup.addElement(okButton);
-			hGroup.addElement(cancelButton);
+			vGroup.addElement(okButton);
 			
 			// Register events
 			okButton.addEventListener(MouseEvent.CLICK, okClick);
-			cancelButton.addEventListener(MouseEvent.CLICK, cancelClick);
-			this.addEventListener(CloseEvent.CLOSE,cancelClick);
+			this.addEventListener(CloseEvent.CLOSE,closeClick);
 			
 			// Store the callback
 			this._callback = callback;
 			
 			// Display the popup
 			PopUpManager.addPopUp(this, map, true);
+			this._text.setFocus();
 		}
 		
 		/**
-		 * This function is called when the cancel button or the close button is clicked
+		 * This function is called when the close button is clicked
 		 */
-		public function cancelClick(evt:Event):void
+		public function closeClick(evt:Event):void
 		{
 			PopUpManager.removePopUp(this);
 		}
