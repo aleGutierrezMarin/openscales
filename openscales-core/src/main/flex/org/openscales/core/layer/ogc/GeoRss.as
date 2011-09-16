@@ -61,7 +61,7 @@ package org.openscales.core.layer.ogc
 			super(name);
 			this.url = url;	
 			this.data = data;
-			this.projSrsCode = "WGS84";
+			this._projSrsCode = "WGS84";
 			if(style){
 				this.style = style;
 				this.style.rules.push(new Rule());
@@ -220,15 +220,9 @@ package org.openscales.core.layer.ogc
 		{
 			_georssFormat = value;
 		}
-
-		public function get projection():String
-		{
-			return this._projSrsCode;	
-		}
 		
-		public function set projection(value:String):void
-		{
-			this._projSrsCode = value;
+		override public function set projSrsCode(value:String):void {
+			return;
 		}
 		
 		public function get refresh():int

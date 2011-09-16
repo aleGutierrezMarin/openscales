@@ -47,7 +47,6 @@ package
 				
 			//add the KML layer; fetch data from url
 			var kmlLayer:KML = new KML("Stations Vélib Paris", this.url);
-			kmlLayer.projection = "EPSG:4326";
 			this._map.addLayer(kmlLayer);
 			Trace.debug("kmlLayer projection :"+kmlLayer.projSrsCode);
 			
