@@ -100,7 +100,7 @@
     <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
     <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
     <classEntry path="org.openscales.core.format.gml.writer.GMLWriter"/>
-    <classEntry path="org.openscales.core.format.wmcExtension.IWMCExtension"/>
+    <classEntry path="org.openscales.core.format.wmcextension.IWMCExtension"/>
     <classEntry path="org.openscales.core.handler.Handler"/>
     <classEntry path="org.openscales.core.handler.IHandler"/>
     <classEntry path="org.openscales.core.handler.feature.DragFeatureHandler"/>
