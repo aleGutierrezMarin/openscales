@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 creationComplete="onCreationComplete(event)"
+		 initialize="init(event)"
 		 width="300" height="350">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
@@ -94,6 +94,9 @@
 			import org.openscales.core.layer.ogc.GeoRss;
 			import org.openscales.core.layer.osm.OSM;
 			
+			private const FORMAT_PROVIDER_CHANGED:String = "formatProviderChanged";
+			private const VERSION_PROVIDER_CHANGED:String = "versionProviderChanged";
+			
 			/**
 			 * Translation for label Name
 			 */
@@ -150,17 +153,16 @@
 			public var browseLabel:String = Catalog.getLocalizationForKey('drawing.browse');
 			
 			/**
+			 * Datas in the format dropdownlist
+			 */
+			private var _formatProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
 			 * The current selected format
 			 * @default the first one : 0
 			 */
 			[Bindable]
 			public var selectedFormat:Number = 0;
-			
-			/**
-			 * Datas in the format dropdownlist
-			 */
-			[Bindable]
-			public var formatProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * Contains all the format supported
@@ -178,7 +180,7 @@
 			 * Datas for the version dropdownList
 			 */
 			[Bindable]
-			public var versionProvider:ArrayCollection = new ArrayCollection();
+			private var _versionProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * The current selected version
@@ -215,7 +217,7 @@
 			 */
 			private var fileReference:FileReference;
 
-			public function onCreationComplete(event:Event):void
+			public function init(event:Event):void
 			{
 				if(!this.supportedFormat)
 				{
@@ -581,6 +583,42 @@
 				}
 			}
 
+			/**
+			 * The different formats available in the dropdownlist
+			 */
+			[Bindable(event=FORMAT_PROVIDER_CHANGED)]
+			public function get formatProvider():ArrayCollection
+			{
+				return this._formatProvider;
+			}
+			
+			public function set formatProvider(value:ArrayCollection):void
+			{
+				if(value)
+				{
+					this._formatProvider = value;
+					dispatchEvent(new Event(FORMAT_PROVIDER_CHANGED));	
+				}
+			}
+			
+			/**
+			 * The different versions available in the dropdownlist
+			 */
+			[Bindable(event=VERSION_PROVIDER_CHANGED)]
+			public function get versionProvider():ArrayCollection
+			{
+				return this._versionProvider;
+			}
+			
+			public function set versionProvider(value:ArrayCollection):void
+			{
+				if(value)
+				{
+					this._versionProvider = value;
+					dispatchEvent(new Event(VERSION_PROVIDER_CHANGED));	
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
