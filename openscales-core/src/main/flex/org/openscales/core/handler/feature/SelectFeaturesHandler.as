@@ -1,5 +1,6 @@
 package org.openscales.core.handler.feature
 {
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -401,7 +402,17 @@ package org.openscales.core.handler.feature
 			}
 			// Update the map associated to the handler
 			if (this.map) {
-				this.map.removeChild(_drawContainer);
+				
+				var i:int = 0;
+				var j:int = this.map.numChildren;
+				var child:DisplayObject;
+				for(; i<j; ++i)
+				{
+					child = this.map.getChildAt(i);
+					if(child == _drawContainer){
+						this.map.removeChild(_drawContainer);
+					}
+				}
 			}
 			super.map = value;
 			if (this.map) {
