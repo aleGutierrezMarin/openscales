@@ -204,7 +204,7 @@
 			/**
 			 * Allowed file types
 			 */
-			private static const FILE_TYPES:Array = [new FileFilter("Text File", "*.xml;*.kml,*.gml")];
+			private static const FILE_TYPES:Array = [new FileFilter("Text file","*.xml;*.kml;*.gml")];
 
 			/**
 			 * Selected source type

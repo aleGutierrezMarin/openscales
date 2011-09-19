@@ -27,6 +27,7 @@
 			import mx.collections.ArrayCollection;
 			
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
 			import org.openscales.core.format.GPXFormat;
 			import org.openscales.core.format.GeoRssFormat;
 			import org.openscales.core.format.KMLFormat;
@@ -154,6 +155,7 @@
 				// deselect features for export
 				
 				// search the select handler
+				var currentSelection:Vector.<Feature> = new Vector.<Feature>();
 				var select:SelectFeaturesHandler = null;
 				var i:int = 0;
 				var controls:Vector.<IHandler> = this.exportFeature.layer.map.controls;
@@ -164,9 +166,19 @@
 					if(controls[i] is SelectFeaturesHandler)
 					{
 						select = controls[i] as SelectFeaturesHandler;
+						currentSelection = select.selectedFeatures;
 					}
 				}
 				
+				// put back the original featuire style
+				i=0;
+				j=currentSelection.length;
+				for(; i<j; ++i)
+				{
+					currentSelection[i].style = currentSelection[i].originalStyle;
+				}
+				
+	
 				
 				switch(format)
 				{
@@ -208,6 +220,15 @@
 						break;
 				}
 				
+				// redraw selected style
+				// put back the original featuire style
+				i=0;
+				j=currentSelection.length;
+				for(; i<j; ++i)
+				{
+					currentSelection[i].style = (select.selectedStyle != null) ? select.selectedStyle(currentSelection[i]) : SelectFeaturesHandler.defaultSelectedStyle(currentSelection[i]);
+				}
+				
 				//open a native save file dialog, using the default file name
 				fileReference.save(datas, fileName);
 				
@@ -216,7 +237,7 @@
 			
 			
 			/**
-			 * called once the file has been saved
+			 * called once the fihg sle has been saved
 			 */
 			private function onFileSave(e:Event):void
 			{
