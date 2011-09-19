@@ -13,6 +13,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.core.style.Style;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
@@ -26,11 +27,15 @@ package org.openscales.core.handler.feature.draw
 	 * */
 	public class EditPolygonHandler extends AbstractEditCollectionHandler
 	{
-		public function EditPolygonHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null)
+		public function EditPolygonHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null,virtualStyle:Style = null)
 		{
 			this.featureClickHandler = featureClickHandler;
 			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
 			this.featuresToEdit = featuresToEdit;
+			if(virtualStyle == null)
+				this.virtualStyle = Style.getDefaultCircleStyle();
+			else
+				this.virtualStyle = virtualStyle;
 		}
 	
 		 /**

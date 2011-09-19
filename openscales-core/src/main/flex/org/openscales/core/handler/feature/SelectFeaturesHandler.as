@@ -170,7 +170,8 @@ package org.openscales.core.handler.feature
 		public function set enableOverSelection(value:Boolean):void {
 			if (value) {
 				this.onOverFeature = this.selectByOver;
-				this.onOutFeature = this.unselectByOut;
+				//this.onOutFeature = this.unselectByOut;
+				this.onOutFeature = null;
 			} else {
 				this.onOverFeature = null;
 				this.onOutFeature = null;
@@ -580,6 +581,11 @@ package org.openscales.core.handler.feature
 		}
 
 		private function selectByOver(feature:Feature):void {
+			for each(var selectFeature:Feature in this.selectedFeatures)
+			{
+				if(feature == selectFeature)
+					return;
+			}
 			this.unselect(this.selectedFeatures);
 			var v:Vector.<Feature> = new Vector.<Feature>();
 			v.push(feature);
@@ -645,6 +651,14 @@ package org.openscales.core.handler.feature
 					}
 				}
 			}
+			
+			// FIX ME : don't work if multiple selection is enabled
+			if (this.selectedFeatures.length > 0 && featuresToSelect.length > 0 &&
+				featuresToSelect[0] == this.selectedFeatures[0] && this._toggle){
+				this.unselect(featuresToSelect);
+				return;
+			}
+			
 			// Update the selection
 			if (substractiveMode && (!additiveMode)) {
 				this.unselect(featuresToSelect);
@@ -919,7 +933,15 @@ package org.openscales.core.handler.feature
 			return this._clickOut;
 		}
 		
-		
+		/**
+		 * Unselect a selected feature by clicking on it
+		 */
+		public function set toggle(value:Boolean):void{
+			this._toggle = value;
+		}
+		public function get toggle():Boolean{
+			return this._toggle;
+		}
 
 	}
 }

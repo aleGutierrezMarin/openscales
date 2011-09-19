@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
-    <classEntry path="FlexUnitApplication"/>
     <classEntry path="assets.fxg.ButtonCloseOver"/>
     <classEntry path="assets.fxg.ButtonCloseUp"/>
     <classEntry path="assets.fxg.ButtonOpacity"/>
@@ -50,6 +49,7 @@
     <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawingToolbar"/>
     <classEntry path="org.openscales.fx.control.drawing.EditFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeature"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeatureForm"/>
@@ -71,6 +71,10 @@
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer"/>
     <classEntry path="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasureAzimuth"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasureBar"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasurePath"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasureSurface"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
@@ -131,7 +135,6 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.control.measure.MeasureBar"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

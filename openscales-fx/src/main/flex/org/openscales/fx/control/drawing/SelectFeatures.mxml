@@ -76,6 +76,19 @@
 			}
 			
 			/**
+			 * If true, a selected feature is unselected by clicking on it
+			 * @default false;
+			 */
+			public function get toggle():Boolean{
+				
+				return (this._handler as SelectFeaturesHandler).toggle;
+			}
+			public function set toggle(value:Boolean):void{
+				
+				(this._handler as SelectFeaturesHandler).toggle = value;
+			}
+			
+			/**
 			 * Map controled by this control
 			 */
 			public function get map():Map{

@@ -35,6 +35,7 @@
 			private var _active:Boolean = true;
 			private var _handler:FeatureLayerEditionHandler = new FeatureLayerEditionHandler();
 			private var _selectFeaturesHandler:SelectFeaturesHandler;
+			private var _selectHandlerToOver:Boolean = false;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -121,12 +122,21 @@
 					if(ih is SelectFeaturesHandler){
 						_selectFeaturesHandler = (ih as SelectFeaturesHandler);
 						_selectFeaturesHandler.active = true;
+						if(_selectFeaturesHandler.enableOverSelection)
+						{
+							_selectFeaturesHandler.enableOverSelection = false;
+							this._selectHandlerToOver = true;
+						}
 					}
 				}
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
+				if(this._selectHandlerToOver){
+					_selectFeaturesHandler.enableOverSelection = true;
+					this._selectHandlerToOver = false;
+				}
 			}
 			
 			/**
