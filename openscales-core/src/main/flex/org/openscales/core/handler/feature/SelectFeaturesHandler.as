@@ -411,6 +411,7 @@ package org.openscales.core.handler.feature
 					child = this.map.getChildAt(i);
 					if(child == _drawContainer){
 						this.map.removeChild(_drawContainer);
+						j--;
 					}
 				}
 			}

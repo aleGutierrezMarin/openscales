@@ -19,10 +19,10 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 	
 	<Map id="fxMap" width="100%" height="100%" resolution="{res}" center="4.833,45.767">
 		
-		<WMS id="wmsLayer" name="myLayer" url="http://openscales.org/geoserver/wms"
+		<WMS id="wmsLayer" name="bluemarble layer" url="http://openscales.org/geoserver/wms"
 			 layers="bluemarble" format="image/jpeg" version="1.1.0" styles="" alpha="0.75"/>
 		
-		<VectorLayer id="features"/>
+		<VectorLayer id="features" name="drawing layer" />
 		<DragHandler />
 		<WheelHandler />
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
@@ -30,8 +30,8 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<ScaleLine x="{width-100-10}" y="{height-80}"/>
 		<LayerManager top="5" right="5"/>
 		<DrawingToolbar id="drawingToolbar" map="{fxMap.map}" layer="{features.nativeLayer as VectorLayer}"
-						pointStyle="{Style.getDefaultCircleStyle()}" clickout="false" hover="false"
-						defaultAttributes="id,desc,lay" virtualStyle="{Style.getDefaultPointStyle()}" />
+						pointStyle="{Style.getDefaultCircleStyle()}" clickout="true" hover="false" toggle="true"
+						defaultAttributes="id,description,other" virtualStyle="{Style.getDefaultPointStyle()}" />
 		
 	</Map>
 	

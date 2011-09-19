@@ -109,6 +109,7 @@
 			 */
 			public function set clickout(value:Boolean):void{
 				this._clickOut = value;
+				this._hover = !(value);
 			}
 			
 			/**
@@ -125,6 +126,7 @@
 			 */
 			public function set hover(value:Boolean):void{
 				this._hover = value;
+				this._clickOut = (!value);
 			}
 			
 			/**

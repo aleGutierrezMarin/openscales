@@ -35,7 +35,8 @@
 			private var _active:Boolean = true;
 			private var _handler:FeatureLayerEditionHandler = new FeatureLayerEditionHandler();
 			private var _selectFeaturesHandler:SelectFeaturesHandler;
-			private var _selectHandlerToOver:Boolean = false;
+			private var _selectHandlerHover:Boolean = false;
+			private var _selectHandlerToggle:Boolean = false;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -125,7 +126,12 @@
 						if(_selectFeaturesHandler.enableOverSelection)
 						{
 							_selectFeaturesHandler.enableOverSelection = false;
-							this._selectHandlerToOver = true;
+							this._selectHandlerHover = true;
+						}
+						if(_selectFeaturesHandler.toggle)
+						{
+							_selectFeaturesHandler.toggle = false;
+							this._selectHandlerToggle = true;
 						}
 					}
 				}
@@ -133,9 +139,13 @@
 			private function disactivate():void{
 				
 				_handler.active = false;
-				if(this._selectHandlerToOver){
+				if(this._selectHandlerHover){
 					_selectFeaturesHandler.enableOverSelection = true;
-					this._selectHandlerToOver = false;
+					this._selectHandlerHover = false;
+				}
+				if(this._selectHandlerToggle){
+					_selectFeaturesHandler.toggle = true;
+					this._selectHandlerToggle = false;
 				}
 			}
 			
