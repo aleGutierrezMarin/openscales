@@ -121,14 +121,14 @@
 			private function onSelectedFeature(event:FeatureEvent):void
 			{
 				if(this._editHandlerActivated){
-					_index = this.searchFeature(event.feature.name);
+					_index = this.searchFeature(event.feature);
 					if(_index < 0)
 						return;
 					event.stopImmediatePropagation();
 					new ChangeAttributes(this._map, this._attributes, (this._data[_index].values as Array), this.onChangeAttributes);
 				}
 				else{
-					_index = this.searchFeature(event.feature.name);
+					_index = this.searchFeature(event.feature);
 					if(_index < 0)
 						return;
 					event.stopImmediatePropagation();
@@ -194,10 +194,13 @@
 			/**
 			 * This function returns the index of the feature
 			 */
-			private function searchFeature(value:String):int{
+			private function searchFeature(feature:Feature):int{
+				
+				if(feature.layer != this.target)
+					return -1;
 				
 				for(var i:uint = 0; i < _data.length; i++){
-					if(_data[i].identifier == value)
+					if(_data[i].identifier == feature.name)
 						return i;
 				}
 				return -1;
