@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- LayerManager item renderer, design to render a layer in the LayerManager list -->
 <s:ItemRenderer xmlns="org.openscales.fx.control.layer.*"
+				xmlns:drawing="org.openscales.fx.control.drawing.*"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
@@ -10,7 +11,7 @@
 		 xmlns:fxg="assets.fxg.*"
 		 autoDrawBackground="false"
 		 implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"
-		 creationComplete="onCreationComplete();" xmlns:openscales="http://openscales.org">
+		 creationComplete="onCreationComplete();" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -337,14 +338,14 @@
 		<s:layout>
 			<s:HorizontalLayout />
 		</s:layout>
-		<openscales:DrawLabel id="drawLabel" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:DrawPoint id="drawPoint" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:DrawPath id="drawPath" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:DrawPolygon id="drawPolygon" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:SelectFeatures id="selectFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:EditFeatures id="editFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:MoveFeatures id="moveFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:ManageAttributes id="manageAttributes" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:DrawLabel id="drawLabel" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:DrawPoint id="drawPoint" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:DrawPath id="drawPath" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:DrawPolygon id="drawPolygon" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:SelectFeatures id="selectFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:EditFeatures id="editFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:MoveFeatures id="moveFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:ManageAttributes id="manageAttributes" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 	</s:SkinnableContainer>
 
 	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
