@@ -32,7 +32,7 @@
 			[Bindable]
 			public var tooltipImport:String = Catalog.getLocalizationForKey('drawing.import');
 	
-			private var _layer:VectorLayer = null;
+			private var _map:Map = null;
 
 			/**
 			 * The title window (that display the form)
@@ -74,8 +74,8 @@
 				populateWindow();
 				
 				// place at the center
-				myTitleWindow.x = (this.layer.map.width/2)-(this.width/2);
-				myTitleWindow.y = (this.layer.map.height/2)-(this.height/2);
+				myTitleWindow.x = (this.map.width/2)-(this.width/2);
+				myTitleWindow.y = (this.map.height/2)-(this.height/2);
 				
 				// Use the PopUpManager to display the TitleWindow container.
 				PopUpManager.addPopUp(myTitleWindow, this, true);
@@ -99,20 +99,20 @@
 			/**
 			 * The layer linked to the import button
 			 */
-			public function get layer():VectorLayer
+			public function get map():Map
 			{
-				return this._layer;
+				return this._map;
 			}
 			
 			/**
 			 * @private
 			 */
-			public function set layer(value:VectorLayer):void
+			public function set map(value:Map):void
 			{
-				this._layer = value;
-				if(this._layer.map)
+				this._map = value;
+				if(this._map)
 				{
-					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+					this._map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
 				}
 			}
 

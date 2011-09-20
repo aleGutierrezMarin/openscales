@@ -341,7 +341,7 @@
 		<openscales:DrawPoint id="drawPoint" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 		<openscales:DrawPath id="drawPath" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 		<openscales:DrawPolygon id="drawPolygon" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:SelectFeatures id="selectFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<openscales:SelectFeatures id="selectFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"/>
 		<openscales:EditFeatures id="editFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 		<openscales:MoveFeatures id="moveFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
 		<openscales:ManageAttributes id="manageAttributes" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
