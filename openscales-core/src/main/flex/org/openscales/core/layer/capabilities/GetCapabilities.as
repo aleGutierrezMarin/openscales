@@ -145,6 +145,15 @@ package org.openscales.core.layer.capabilities
 			}
 			
 			this._capabilities = this._parser.read(doc);
+			
+			// add auto version in result
+			var map:Array = this._capabilities.getKeys();
+			
+			for each(var item:Object in map)
+			{
+				this._capabilities.getValue(item).put("auto-version", this._version);
+			}
+
 			this._requested = true;
 
 			if (this._cbkFunc != null) {
