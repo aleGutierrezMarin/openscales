@@ -944,7 +944,6 @@ package org.openscales.core.handler.feature
 		public function get clickOut():Boolean{
 			return this._clickOut;
 		}
-		
 		/**
 		 * Unselect a selected feature by clicking on it
 		 */
@@ -954,6 +953,5 @@ package org.openscales.core.handler.feature
 		public function get toggle():Boolean{
 			return this._toggle;
 		}
-
 	}
 }

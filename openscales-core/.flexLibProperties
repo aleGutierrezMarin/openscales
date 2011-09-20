@@ -119,7 +119,6 @@
     <classEntry path="org.openscales.core.handler.feature.draw.EditPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPolygonHandler"/>
-    <classEntry path="org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.IEditFeature"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.BorderPanHandler"/>
