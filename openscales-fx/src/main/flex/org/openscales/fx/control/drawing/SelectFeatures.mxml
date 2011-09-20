@@ -30,7 +30,13 @@
 			[Embed(source="/assets/images/icons/Icons-06.png")]
 			private var _btnSelect:Class;
 			private var _active:Boolean = true;
-			private var _handler:SelectFeaturesHandler = new SelectFeaturesHandler(null,false,true,false,false);
+			private var _clickout:Boolean = true;
+			private var _hover:Boolean = false;
+			private var _toggle:Boolean = false;
+			private var _map:Map;
+			private var _target:VectorLayer;
+			private var _handler:SelectFeaturesHandler = null;
+			private var _previousSelectFeaturesHandler:SelectFeaturesHandler = null;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -44,7 +50,7 @@
 			public function set active(value:Boolean):void{
 				
 				_active = value;
-				if(! _active){
+				if(this._handler && !_active){
 					_handler.active = false;
 				}
 			}
@@ -55,11 +61,11 @@
 			 */
 			public function get clickout():Boolean{
 				
-				return (this._handler as SelectFeaturesHandler).clickOut;
+				return this._clickout;
 			}
 			public function set clickout(value:Boolean):void{
 				
-				(this._handler as SelectFeaturesHandler).clickOut = value;
+				this._clickout = value;
 			}
 			
 			/**
@@ -68,11 +74,11 @@
 			 */
 			public function get hover():Boolean{
 				
-				return (this._handler as SelectFeaturesHandler).enableOverSelection;
+				return this._hover;
 			}
 			public function set hover(value:Boolean):void{
 				
-				(this._handler as SelectFeaturesHandler).enableOverSelection = value;
+				this._hover = value;
 			}
 			
 			/**
@@ -81,11 +87,11 @@
 			 */
 			public function get toggle():Boolean{
 				
-				return (this._handler as SelectFeaturesHandler).toggle;
+				return this._toggle;
 			}
 			public function set toggle(value:Boolean):void{
 				
-				(this._handler as SelectFeaturesHandler).toggle = value;
+				this._toggle = value;
 			}
 			
 			/**
@@ -93,21 +99,15 @@
 			 */
 			public function get map():Map{
 				
-				return _handler.map;
+				return this._map;
 			}
 			public function set map(value:Map):void{
 				
-				_handler.map = value;
-				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				
-				for each(var ih:IHandler in value.controls){
-					if(ih is SelectFeaturesHandler && ih != this._handler){
-						this._handler = (ih as SelectFeaturesHandler);
-					}
-				}
+				this._map = value;
+				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 			}
 			
 			/**
@@ -126,29 +126,52 @@
 			}
 			
 			/**
-			 * The current layer linked to the selectHandler
+			 * Layer the features will be selected
 			 */
 			public function get target():VectorLayer{
 				
-				return _handler.layers[0] as VectorLayer;
+				return this._target;
 			}
 			public function set target(value:VectorLayer):void{
 				
-				if(this._handler.layers.length > 0)
-					_handler.layers.splice(0, this._handler.layers.length);
-				_handler.layers.push(value);
+				this._target = value;
 			}
 			
 			/**
 			 * To activate or disactivate the handler
 			 */
-			private function activate():void{
-				
-				_handler.active = true;
+			private function activate():void
+			{
+				for each(var ih:IHandler in this._map.controls)
+				{
+					if(ih is SelectFeaturesHandler && ih != this._handler)
+					{
+						// Store the existing SelectFeaturesHandler
+						this._previousSelectFeaturesHandler = (ih as SelectFeaturesHandler);
+						(ih as SelectFeaturesHandler).map = null;
+						this.map.removeControl(ih);
+					}
+				}
+				// Add a new SelectFeaturesHandler
+				if(this._hover)
+					this._handler = new SelectFeaturesHandler(this._map,true,true,false,true);
+				else
+					this._handler = new SelectFeaturesHandler(this._map,true,true,false,false);
+				this._handler.layers[0] = this._target;
+				this._handler.clickOut = this._clickout;
+				this._handler.toggle = this._toggle;
 			}
 			private function disactivate():void{
 				
-				_handler.active = false;
+				// Manage the new SelectFeaturesHandler
+				this._handler.clearSelection();
+				this._handler.active = false;
+				this._handler.map = null;
+				this.map.removeControl(this._handler);
+				
+				// Add the previous SelectFeaturesHandler
+				if(this._previousSelectFeaturesHandler)
+					this._previousSelectFeaturesHandler.map = this.map;
 			}
 			
 			/**
@@ -158,7 +181,8 @@
 				
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
-				_handler.map.dispatchEvent(evt);
+				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
 				activate();
 			}
 			
@@ -169,12 +193,7 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(evt.type == DrawingEvent.EDIT_HANDLER_ACTIVATED || evt.type == DrawingEvent.SELECT_HANDLER_ACTIVATED){
-					_handler.clearSelection();
-					return;
-				}
-				if(_handler.active && this.id != evt.activeHandler){
-					_handler.clearSelection();
+				if(this._handler && this._handler.active && (this.id != evt.activeHandler || this.target != evt.layer)){
 					disactivate();
 				}
 			}
