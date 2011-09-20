@@ -81,21 +81,34 @@ package org.openscales.core.handler.feature
 		 */
 		override protected function onMouseUp(event:MouseEvent):void{
 			
-		 	var feature:Feature;
+			var feature:Feature;
 			if (event.target is TextField){
 				feature = (event.target as TextField).parent as Feature;
 			}
 			else
 				feature = event.target as Feature;
 			
-		 	if (feature != null && _featureCurrentlyDragged == feature && feature.layer == this._layerToMove){
-				_stopPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
-				feature.stopDrag();
-				_featureCurrentlyDragged = null;
-				updateFeature(feature);
-				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,feature));
+			if(this.map.hitTestPoint(event.stageX,event.stageY))
+			{
+			 	if (feature != null && _featureCurrentlyDragged == feature && feature.layer == this._layerToMove){
+					_stopPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
+					feature.stopDrag();
+					_featureCurrentlyDragged = null;
+					updateFeature(feature);
+					this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
+					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,feature));
+					this._layerToMove.redraw();
+				}
+			}
+			else if(_featureCurrentlyDragged != null && _featureCurrentlyDragged.layer == this._layerToMove)
+			{
+				_stopPixel = _startPixel;
+				_featureCurrentlyDragged.stopDrag();
+				updateFeature(_featureCurrentlyDragged);
+				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,_featureCurrentlyDragged));
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,_featureCurrentlyDragged));
 				this._layerToMove.redraw();
+				_featureCurrentlyDragged = null;
 			}
 		 }
 		
