@@ -35,8 +35,7 @@
 			private var _active:Boolean = true;
 			private var _handler:FeatureLayerEditionHandler = new FeatureLayerEditionHandler();
 			private var _selectFeaturesHandler:SelectFeaturesHandler;
-			private var _selectHandlerHover:Boolean = false;
-			private var _selectHandlerToggle:Boolean = false;
+			private var _previousSelectFeaturesHandler:SelectFeaturesHandler = null;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -56,7 +55,7 @@
 			}
 			
 			/**
-			 * 
+			 * Drawing style of the virtual points
 			 */
 			public function get virtualStyle():Style{
 				
@@ -101,7 +100,7 @@
 			}
 			
 			/**
-			 * 
+			 * Layer the features will be edited 
 			 */
 			public function get target():VectorLayer{
 				
@@ -119,34 +118,34 @@
 				
 				_handler.active = true;
 				
-				for each(var ih:IHandler in this.map.controls){
-					if(ih is SelectFeaturesHandler){
-						_selectFeaturesHandler = (ih as SelectFeaturesHandler);
-						_selectFeaturesHandler.active = true;
-						if(_selectFeaturesHandler.enableOverSelection)
-						{
-							_selectFeaturesHandler.enableOverSelection = false;
-							this._selectHandlerHover = true;
-						}
-						if(_selectFeaturesHandler.toggle)
-						{
-							_selectFeaturesHandler.toggle = false;
-							this._selectHandlerToggle = true;
-						}
+				for each(var ih:IHandler in this.map.controls)
+				{
+					if(ih is SelectFeaturesHandler && ih != this._selectFeaturesHandler)
+					{
+						// Store the existing SelectFeaturesHandler
+						this._previousSelectFeaturesHandler = (ih as SelectFeaturesHandler);
+						(ih as SelectFeaturesHandler).map = null;
+						this.map.removeControl(ih);
 					}
 				}
+				// Add a new SelectFeaturesHandler
+				this._selectFeaturesHandler = new SelectFeaturesHandler(this.map,true,true,false,false);
+				this._selectFeaturesHandler.layers[0] = this.target;
+				this._selectFeaturesHandler.clickOut = false;
+				this._selectFeaturesHandler.toggle = false;
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
-				if(this._selectHandlerHover){
-					_selectFeaturesHandler.enableOverSelection = true;
-					this._selectHandlerHover = false;
-				}
-				if(this._selectHandlerToggle){
-					_selectFeaturesHandler.toggle = true;
-					this._selectHandlerToggle = false;
-				}
+				
+				// Manage the new SelectFeaturesHandler
+				this._selectFeaturesHandler.clearSelection();
+				this._selectFeaturesHandler.map = null;
+				this.map.removeControl(this._selectFeaturesHandler);
+				
+				// Add the previous SelectFeaturesHandler
+				if(this._previousSelectFeaturesHandler)
+					this._previousSelectFeaturesHandler.map = this.map;
 			}
 			
 			/**
@@ -156,6 +155,7 @@
 				
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
+				evt.layer = this.target;
 				_handler.map.dispatchEvent(evt);
 				activate();
 			}
@@ -167,7 +167,7 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(_handler.active && this.id != evt.activeHandler)
+				if(_handler.active && (this.id != evt.activeHandler || this.target != evt.layer))
 					disactivate();
 			}
 			
@@ -180,8 +180,8 @@
 				if(_handler.active)
 					_handler.editionModeStop();
 				
-				if(_selectFeaturesHandler)
-					_handler.featuresToEdit = _selectFeaturesHandler.selectedFeatures;
+				if(this._selectFeaturesHandler)
+					_handler.featuresToEdit = this._selectFeaturesHandler.selectedFeatures;
 				
 				if(_handler.active)
 					_handler.editionModeStart();
