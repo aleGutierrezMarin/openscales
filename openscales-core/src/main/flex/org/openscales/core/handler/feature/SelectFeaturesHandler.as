@@ -442,8 +442,8 @@ package org.openscales.core.handler.feature
 			if(evt && this.map && evt.feature && evt.feature.layer) {
 				for(var i:* in this.layers) {
 					if(layers[i].name == evt.feature.layer.name){
-						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
-						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECT, evt.feature));
+						//fix bug : must be changed
+						//this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
 						return;
 					}
 				}
@@ -593,6 +593,8 @@ package org.openscales.core.handler.feature
 		}
 
 		private function selectByOver(feature:Feature):void {
+			if(this.layers.length > 0 && feature.layer != this.layers[0])
+				return;
 			for each(var selectFeature:Feature in this.selectedFeatures)
 			{
 				if(feature == selectFeature)

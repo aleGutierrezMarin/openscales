@@ -83,7 +83,7 @@
 			}
 			
 			/**
-			 * List of layers ?
+			 * Layer the features will be moved
 			 */
 			public function get target():VectorLayer{
 				
@@ -113,6 +113,7 @@
 				
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.MOVE_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
+				evt.layer = this.target;
 				_handler.map.dispatchEvent(evt);
 				activate();
 			}
@@ -124,7 +125,7 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(_handler.active && this.id != evt.activeHandler)
+				if(_handler.active && (this.id != evt.activeHandler || this.target != evt.layer))
 					disactivate();
 			}
 			
