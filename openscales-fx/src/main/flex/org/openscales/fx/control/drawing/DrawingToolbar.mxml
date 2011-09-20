@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:Control xmlns:fx="http://ns.adobe.com/mxml/2009"
+			xmlns:s="library://ns.adobe.com/flex/spark"
+			xmlns:mx="library://ns.adobe.com/flex/mx"
+			xmlns:os="org.openscales.fx.control.*"
+			width="400" height="300" xmlns:openscales="http://openscales.org"
+			creationComplete="configure()">
+	
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.style.Style;
+			
+			[Bindable]
+			private var _layer:VectorLayer;
+			private var _labelStyle:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
+			private var _pointStyle:Style = Style.getDefaultPointStyle();
+			private var _pathStyle:Style = Style.getDefaultLineStyle();
+			private var _polygonStyle:Style = Style.getDefaultSurfaceStyle();
+			private var _clickOut:Boolean = true;
+			private var _toggle:Boolean = false;
+			private var _hover:Boolean = false;
+			private var _virtualStyle:Style = Style.getDefaultCircleStyle();
+			private var _defaultAttributes:String = "id,description";
+			
+			private function configure():void{
+				
+				// set the vector layer
+				drawLabel.target = this._layer;
+				drawPoint.target = this._layer;
+				drawPath.target = this._layer;
+				drawPolygon.target = this._layer;
+				selectFeatures.target = this._layer;
+				editFeatures.target = this._layer;
+				moveFeatures.target = this._layer;
+				manageAttributes.target = this._layer;
+				
+				// set the properties
+				drawLabel.style = this._labelStyle;
+				drawPoint.style = this._pointStyle;
+				drawPath.style = this._pathStyle;
+				drawPolygon.style = this._polygonStyle;
+				selectFeatures.clickout = this._clickOut;
+				selectFeatures.hover = this._hover;
+				selectFeatures.toggle = this._toggle;
+				editFeatures.virtualStyle = this._virtualStyle;
+				manageAttributes.defaultAttributes = this._defaultAttributes;
+			}
+			
+			/**
+			 * @inheritDoc
+			 */
+			override public function set map(value:Map):void{
+				
+				super.map = value;
+				drawLabel.map = value;
+				drawPoint.map = value;
+				drawPath.map = value;
+				drawPolygon.map = value;
+				selectFeatures.map = value;
+				editFeatures.map = value;
+				moveFeatures.map = value;
+				manageAttributes.map = value;
+			}
+			
+			/**
+			 * The layer the features will be drawn on
+			 */
+			public function set layer(value:VectorLayer):void{
+				this._layer = value;
+			}
+			
+			/**
+			 * The style of the drawing labels
+			 */
+			public function set labelStyle(value:Style):void{
+				this._labelStyle = value;
+			}
+			
+			/**
+			 * The style of the drawing points
+			 */
+			public function set pointStyle(value:Style):void{
+				this._pointStyle = value;
+			}
+			
+			/**
+			 * The style of the drawing paths
+			 */
+			public function set pathStyle(value:Style):void{
+				this._pathStyle = value;
+			}
+			
+			/**
+			 * The style of the drawing polygons
+			 */
+			public function set polygonStyle(value:Style):void{
+				this._polygonStyle = value;
+			}
+			
+			/**
+			 * If true, a feature is unselected by clicking out of it
+			 * @default true;
+			 */
+			public function set clickout(value:Boolean):void{
+				this._clickOut = value;
+				this._hover = !(value);
+			}
+			
+			/**
+			 * If true, a selected feature is unselected by clicking on it
+			 * @default false;
+			 */
+			public function set toggle(value:Boolean):void{
+				this._toggle = value;
+			}
+			
+			/**
+			 * If true, a feature is selected on mouseover
+			 * @default false;
+			 */
+			public function set hover(value:Boolean):void{
+				this._hover = value;
+				this._clickOut = (!value);
+			}
+			
+			/**
+			 * The style of the virtual points in editing mode
+			 */
+			public function set virtualStyle(value:Style):void{
+				this._virtualStyle = value;
+			}
+			
+			/**
+			 * The default attributes for each feature
+			 */
+			public function set defaultAttributes(value:String):void{
+				this._defaultAttributes = value;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Panel title="Drawing Toolbar" x="10" y="10" height="70">
+		<s:layout>
+			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
+								horizontalAlign="center" verticalAlign="middle" />
+		</s:layout>
+		<openscales:DrawLabel id="drawLabel" />
+		<openscales:DrawPoint id="drawPoint" />
+		<openscales:DrawPath id="drawPath" />
+		<openscales:DrawPolygon id="drawPolygon" />
+		<openscales:SelectFeatures id="selectFeatures" />
+		<openscales:EditFeatures id="editFeatures" />
+		<openscales:MoveFeatures id="moveFeatures" />
+		<openscales:ManageAttributes id="manageAttributes" />
+		<openscales:ImportFeature id="importFeature" layer="{this._layer}" />
+		<openscales:ExportFeature id="exportFeature" layer="{this._layer}" />
+	</s:Panel>
+</os:Control>
