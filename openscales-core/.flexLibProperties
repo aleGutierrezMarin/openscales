@@ -52,6 +52,7 @@
     <classEntry path="org.openscales.core.control.ui.SliderHorizontal"/>
     <classEntry path="org.openscales.core.control.ui.SliderVertical"/>
     <classEntry path="org.openscales.core.cursor.CrosshairCursor"/>
+    <classEntry path="org.openscales.core.events.DisplayMeasureEvent"/>
     <classEntry path="org.openscales.core.events.DrawingEvent"/>
     <classEntry path="org.openscales.core.events.FeatureEvent"/>
     <classEntry path="org.openscales.core.events.GetFeatureInfoEvent"/>
@@ -59,6 +60,7 @@
     <classEntry path="org.openscales.core.events.LayerEvent"/>
     <classEntry path="org.openscales.core.events.LayerManagerEvent"/>
     <classEntry path="org.openscales.core.events.MapEvent"/>
+    <classEntry path="org.openscales.core.events.MeasureEvent"/>
     <classEntry path="org.openscales.core.events.OpenScalesEvent"/>
     <classEntry path="org.openscales.core.events.OriginatorEvent"/>
     <classEntry path="org.openscales.core.events.TileEvent"/>
@@ -115,10 +117,12 @@
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPolygonHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawSegmentHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPolygonHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.IEditFeature"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.BorderPanHandler"/>
@@ -181,6 +185,10 @@
     <classEntry path="org.openscales.core.layer.params.ogc.WFSParams"/>
     <classEntry path="org.openscales.core.layer.params.ogc.WMSGetFeatureInfoParams"/>
     <classEntry path="org.openscales.core.layer.params.ogc.WMSParams"/>
+    <classEntry path="org.openscales.core.measure.Azimuth"/>
+    <classEntry path="org.openscales.core.measure.Distance"/>
+    <classEntry path="org.openscales.core.measure.IMeasure"/>
+    <classEntry path="org.openscales.core.measure.Surface"/>
     <classEntry path="org.openscales.core.ns.os_internal"/>
     <classEntry path="org.openscales.core.popup.Anchored"/>
     <classEntry path="org.openscales.core.popup.ChangeAttributes"/>
@@ -235,6 +243,7 @@
     <classEntry path="org.openscales.core.format.KMLBuildTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
+    <classEntry path="org.openscales.core.format.WMCFormatTest"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML321ParserTest"/>
     <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
@@ -256,13 +265,6 @@
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.map.ResolutionTest"/>
-    <classEntry path="org.openscales.core.measure.Distance"/>
-    <classEntry path="org.openscales.core.measure.IMeasure"/>
-    <classEntry path="org.openscales.core.measure.Surface"/>
-    <classEntry path="org.openscales.core.events.MeasureEvent"/>
-    <classEntry path="org.openscales.core.events.DisplayMeasureEvent"/>
-    <classEntry path="org.openscales.core.handler.feature.draw.DrawSegmentHandler"/>
-    <classEntry path="org.openscales.core.measure.Azimuth"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
