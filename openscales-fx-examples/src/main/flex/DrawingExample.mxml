@@ -34,6 +34,8 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 						pointStyle="{Style.getDefaultCircleStyle()}" clickout="true" hover="false" toggle="true"
 						defaultAttributes="id,description,other" virtualStyle="{Style.getDefaultPointStyle()}" />
 		
+		<ImportFeature map="{fxMap.map}"/>
+		
 	</Map>
 	
 </s:Group>
