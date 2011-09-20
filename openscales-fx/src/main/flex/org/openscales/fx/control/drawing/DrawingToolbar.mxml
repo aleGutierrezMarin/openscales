@@ -113,7 +113,7 @@
 		<openscales:EditFeatures id="editFeatures" />
 		<openscales:MoveFeatures id="moveFeatures" />
 		<openscales:ManageAttributes id="manageAttributes" />
-		<openscales:ImportFeature id="importFeature" layer="{this._layer}" />
+		<openscales:ImportFeature id="importFeature" map="{this.map}" />
 		<openscales:ExportFeature id="exportFeature" layer="{this._layer}" />
 	</s:Panel>
 </os:Control>

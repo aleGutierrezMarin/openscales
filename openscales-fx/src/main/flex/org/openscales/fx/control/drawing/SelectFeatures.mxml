@@ -113,7 +113,7 @@
 			}
 			
 			/**
-			 * List of layers ?
+			 * The current layer linked to the selectHandler
 			 */
 			public function get target():VectorLayer{
 				
@@ -121,6 +121,8 @@
 			}
 			public function set target(value:VectorLayer):void{
 				
+				if(this._handler.layers.length > 0)
+					_handler.layers.splice(0, this._handler.layers.length);
 				_handler.layers.push(value);
 			}
 			

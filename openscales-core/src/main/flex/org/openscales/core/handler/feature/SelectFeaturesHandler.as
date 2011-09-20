@@ -929,8 +929,5 @@ package org.openscales.core.handler.feature
 		public function get clickOut():Boolean{
 			return this._clickOut;
 		}
-		
-		
-
 	}
 }

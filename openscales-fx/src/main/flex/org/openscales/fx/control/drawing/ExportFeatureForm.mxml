@@ -34,6 +34,7 @@
 			import org.openscales.core.format.gml.writer.GML321Writer;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
+			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.KML;
 			
@@ -152,11 +153,12 @@
 				var datas:Object;
 				var fileName:String = DEFAULT_FILE_NAME;
 				
-				// deselect features for export
+				// deselect/don't edit features for export
 				
 				// search the select handler
 				var currentSelection:Vector.<Feature> = new Vector.<Feature>();
 				var select:SelectFeaturesHandler = null;
+				var edit:FeatureLayerEditionHandler = null;
 				var i:int = 0;
 				var controls:Vector.<IHandler> = this.exportFeature.layer.map.controls;
 				var j:int = controls.length;
@@ -168,9 +170,14 @@
 						select = controls[i] as SelectFeaturesHandler;
 						currentSelection = select.selectedFeatures;
 					}
+					if(controls[i] is FeatureLayerEditionHandler)
+					{
+						edit = controls[i] as FeatureLayerEditionHandler;
+						edit.editionModeStop();
+					}
 				}
 				
-				// put back the original featuire style
+				// put back the original featuire style (select or edit)
 				i=0;
 				j=currentSelection.length;
 				for(; i<j; ++i)
@@ -178,6 +185,10 @@
 					currentSelection[i].style = currentSelection[i].originalStyle;
 				}
 				
+				if(edit)
+				{
+					edit.editionModeStart();
+				}
 	
 				
 				switch(format)
