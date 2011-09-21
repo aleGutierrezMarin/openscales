@@ -3,6 +3,7 @@
    "locale.name": "English",
    "locale.localizedName": "English",
    
+   "drawing.add": "Add",
    "drawing.import": "Import",
    "drawing.export": "Export",
    "drawing.url": "Url",
@@ -11,6 +12,8 @@
    "drawing.name": "Name",
    "drawing.version": "Version",
    "drawing.browse": "browse",
+   "drawing.addvectorlayer": "Add a vector layer",
+   "drawing.nameerror: "Change name (can't be empty or equal to another layer)",
    
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",
