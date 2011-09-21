@@ -110,7 +110,8 @@
 				// We check if the feature has been added to the associated VectorLayer
 				if(event.feature.layer == this.target){
 					var temp:Array = new Array(this._attributes.length);
-					temp[0] = event.feature.name;
+					if(this._attributes[0] == "id")
+						temp[0] = event.feature.name + " / " + this.target.name;
 					_data.push({identifier:event.feature.name, values:temp});
 				}
 			}
