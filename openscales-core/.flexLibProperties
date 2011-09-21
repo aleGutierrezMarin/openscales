@@ -186,6 +186,7 @@
     <classEntry path="org.openscales.core.layer.params.ogc.WMSGetFeatureInfoParams"/>
     <classEntry path="org.openscales.core.layer.params.ogc.WMSParams"/>
     <classEntry path="org.openscales.core.measure.Azimuth"/>
+    <classEntry path="org.openscales.core.measure.Surface"/>
     <classEntry path="org.openscales.core.measure.Distance"/>
     <classEntry path="org.openscales.core.measure.IMeasure"/>
     <classEntry path="org.openscales.core.measure.Surface"/>
