@@ -338,14 +338,15 @@
 		<s:layout>
 			<s:HorizontalLayout />
 		</s:layout>
-		<drawing:DrawLabel id="drawLabel" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<drawing:DrawPoint id="drawPoint" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<drawing:DrawPath id="drawPath" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<drawing:DrawPolygon id="drawPolygon" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:DrawLabel id="drawLabel" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+		<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+		<drawing:DrawPath id="drawPath" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+		<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 		<drawing:SelectFeatures id="selectFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"/>
-		<drawing:EditFeatures id="editFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<drawing:MoveFeatures id="moveFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<drawing:ManageAttributes id="manageAttributes" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
+		<drawing:EditFeatures id="editFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+		<drawing:MoveFeatures id="moveFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+		<drawing:ManageAttributes id="manageAttributes" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+		<drawing:ExportFeature id="importFeature" layer="{this._layer as VectorLayer}" />
 	</s:SkinnableContainer>
 
 	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
