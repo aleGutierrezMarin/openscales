@@ -333,21 +333,37 @@
 		<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
 	</s:SkinnableContainer>
 
-	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
+	<s:SkinnableContainer height="60" width="100%" id="layerSwitcherDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
 		
 		<s:layout>
-			<s:HorizontalLayout />
+			<s:VerticalLayout />
 		</s:layout>
-		<drawing:DrawLabel id="drawLabel" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-		<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-		<drawing:DrawPath id="drawPath" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-		<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-		<drawing:SelectFeatures id="selectFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"/>
-		<drawing:EditFeatures id="editFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-		<drawing:MoveFeatures id="moveFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-		<drawing:ManageAttributes id="manageAttributes" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-		<drawing:ExportFeature id="importFeature" layer="{this._layer as VectorLayer}" />
-	</s:SkinnableContainer>
+		
+		
+		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">		
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<drawing:DrawLabel id="drawLabel" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPath id="drawPath" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+		</s:SkinnableContainer>
+	
+		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
+			
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<drawing:SelectFeatures id="selectFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"/>
+			<drawing:EditFeatures id="editFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:MoveFeatures id="moveFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:ManageAttributes id="manageAttributes" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:ExportFeature id="importFeature" layer="{this._layer as VectorLayer}" />
+			
+		</s:SkinnableContainer>
+		
+		</s:SkinnableContainer>
 
 	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
 		<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />

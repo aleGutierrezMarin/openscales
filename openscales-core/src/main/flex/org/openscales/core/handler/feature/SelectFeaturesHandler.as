@@ -103,7 +103,7 @@ package org.openscales.core.handler.feature
 		 * Sprite used to display the selection box.
 		 */
 		private var _drawContainer:Sprite = new Sprite();
-
+		
 		/**
 		 * Style of the selection area: border thin (default=2)
 		 */
@@ -388,6 +388,11 @@ package org.openscales.core.handler.feature
 		public function get selectedFeatures():Vector.<Feature> {
 			return this._selectedFeatures;
 		}
+		
+		public function set selectedFeatures(value:Vector.<Feature>):void {
+			this._selectedFeatures = value;
+		}
+
 
 		/**
 		 * Set the map associated to the handler.
@@ -955,5 +960,6 @@ package org.openscales.core.handler.feature
 		public function get toggle():Boolean{
 			return this._toggle;
 		}
+
 	}
 }
