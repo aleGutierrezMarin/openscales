@@ -13,7 +13,7 @@
    "drawing.version": "Version",
    "drawing.browse": "browse",
    "drawing.addvectorlayer": "Add a vector layer",
-   "drawing.nameerror: "Change name (can't be empty or equal to another layer)",
+   "drawing.nameerror": "Change name (can't be empty or equal to another layer)",
    
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",
