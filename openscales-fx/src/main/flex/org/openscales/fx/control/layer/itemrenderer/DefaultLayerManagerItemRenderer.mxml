@@ -23,6 +23,7 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.layer.ogc.WFS;
 			import org.openscales.fx.control.layer.LayerManager;
 			
 			import spark.components.Label;
@@ -153,6 +154,9 @@
 			
 			[Bindable]
 			private var _displayMetadatas:Boolean = false;
+			
+			[Bindable]
+			private var _displayDrawing:Boolean = false;
 						
 			/**
 			 * @inherit
@@ -181,6 +185,7 @@
 					_displayZoomToExtent = !!value['displayZoomToExtent'];
 					_displayLegend = !!value['displayLegend'];
 					_displayMetadatas = !!value['displayMetadatas'];
+					_displayDrawing = !!value['displayDrawing'];
 					
 					if(_displayZoomToExtent || _displayLegend || _displayMetadatas)
 						_optionnalGroupDisplayed = true;
@@ -213,7 +218,7 @@
 					this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
 				}
 				
-				 if(this._isDrawingLayer)
+				 if(this._isDrawingLayer && this._displayDrawing)
 				 {
 				 	this._maximizeGroupSize += layerSwitcherDrawingTools.height;
 				 }
@@ -249,7 +254,7 @@
 				{	
 					layerSwitcherLabel.text = this._layer.name;	
 					
-					if(this._layer is VectorLayer)
+					if(this._layer is VectorLayer && !(this._layer is WFS))
 						this._isDrawingLayer = true;
 						
 					else
