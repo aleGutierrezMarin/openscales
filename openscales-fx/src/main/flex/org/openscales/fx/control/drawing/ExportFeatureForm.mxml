@@ -198,7 +198,11 @@
 						currentSelection[i].style = currentSelection[i].originalStyle;
 					}
 				}
-					
+				
+				var export:Vector.<Feature> = new Vector.<Feature>();
+				for(var k:uint = 0; k < this.exportFeature.layer.features.length; k++){
+					export.push(this.exportFeature.layer.features[k].clone());
+				}
 				
 				switch(format)
 				{
@@ -207,7 +211,7 @@
 						fileName += ".kml";
 						
 						var writeKML:KMLFormat = new KMLFormat();
-						datas = writeKML.write(this.exportFeature.layer.features);
+						datas = writeKML.write(export);
 						break;
 					
 					case "GPX":
@@ -215,7 +219,7 @@
 						fileName += ".gpx";
 						
 						var writeGPX:GPXFormat = new GPXFormat();
-						datas = writeGPX.write(this.exportFeature.layer.features);
+						datas = writeGPX.write(export);
 						break;
 					
 					case "GeoRss":
@@ -223,7 +227,7 @@
 						fileName += ".xml";
 						
 						var writeGeoRss:GeoRssFormat = new GeoRssFormat();
-						datas = writeGeoRss.write(this.exportFeature.layer.features);
+						datas = writeGeoRss.write(export);
 						break;
 					
 					case "OSM":
