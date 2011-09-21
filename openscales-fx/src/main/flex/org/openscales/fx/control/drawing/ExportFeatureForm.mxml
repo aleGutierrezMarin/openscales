@@ -169,22 +169,24 @@
 					if(controls[i] is FeatureLayerEditionHandler && controls[i].active)
 					{
 						edit = controls[i] as FeatureLayerEditionHandler;
+						if(!(edit.layerToEdit == this.exportFeature.layer))
+							edit = null;
 					}
 					
 					if(controls[i] is SelectFeaturesHandler && controls[i].active)
 					{
 						select = controls[i] as SelectFeaturesHandler;
-						currentSelection = select.selectedFeatures;
+						if(!(select.layers[0] == this.exportFeature.layer))
+							select = null;
+						else
+							currentSelection = select.selectedFeatures;
 					}
 				}
-				
 				
 				if(edit)
 				{
 					edit.editionModeStop();
-					edit.active = false;
 				}
-					
 				
 				if(select)
 				{
@@ -254,7 +256,6 @@
 				{
 					edit.featuresToEdit = currentSelection;
 					edit.editionModeStart();
-					edit.active = true;
 				}
 				
 				//open a native save file dialog, using the default file name

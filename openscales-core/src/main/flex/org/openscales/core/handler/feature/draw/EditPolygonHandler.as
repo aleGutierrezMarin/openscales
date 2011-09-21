@@ -67,7 +67,8 @@ package org.openscales.core.handler.feature.draw
 
 		 	if(_layerToEdit!=null && !_isUsedAlone){
 		 		for each(var feature:Feature in this.featuresToEdit){	
-					if(feature.isEditable && (feature.geometry is Polygon || feature.geometry is MultiPolygon)){			
+					//if(feature.isEditable && (feature.geometry is Polygon || feature.geometry is MultiPolygon)){
+					if((feature.geometry is Polygon || feature.geometry is MultiPolygon)){
 						//We display on the layer concerned by the operation the virtual vertices used for edition
 						displayVisibleVirtualVertice(feature);
 					}

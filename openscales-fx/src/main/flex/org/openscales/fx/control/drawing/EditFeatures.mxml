@@ -33,9 +33,13 @@
 			[Embed(source="/assets/images/icons/Icons-08.png")]
 			private var _btnEdit:Class;
 			private var _active:Boolean = true;
-			private var _handler:FeatureLayerEditionHandler = new FeatureLayerEditionHandler();
+			private var _handler:FeatureLayerEditionHandler = null;
+			private var _previousHandler:FeatureLayerEditionHandler = null;
 			private var _selectFeaturesHandler:SelectFeaturesHandler;
 			private var _previousSelectFeaturesHandler:SelectFeaturesHandler = null;
+			private var _virtualStyle:Style;
+			private var _map:Map;
+			private var _target:VectorLayer;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -49,7 +53,7 @@
 			public function set active(value:Boolean):void{
 				
 				_active = value;
-				if(! _active){
+				if(this._handler && !_active){
 					_handler.active = false;
 				}
 			}
@@ -59,11 +63,11 @@
 			 */
 			public function get virtualStyle():Style{
 				
-				return (this._handler as FeatureLayerEditionHandler).virtualStyle;
+				return this._virtualStyle;
 			}
 			public function set virtualStyle(value:Style):void{
 				
-				(this._handler as FeatureLayerEditionHandler).virtualStyle = value;
+				this._virtualStyle = value;
 			}
 			
 			/**
@@ -71,17 +75,17 @@
 			 */
 			public function get map():Map{
 				
-				return _handler.map;
+				return this._map;
 			}
 			public function set map(value:Map):void{
 				
-				_handler.map = value;
-				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
-				_handler.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
+				this._map = value;
+				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
+				this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
 			}
 			
 			/**
@@ -104,19 +108,17 @@
 			 */
 			public function get target():VectorLayer{
 				
-				return _handler.layerToEdit;
+				return this._target;
 			}
 			public function set target(value:VectorLayer):void{
 				
-				_handler.layerToEdit = value;
+				this._target = value;
 			}
 			
 			/**
 			 * To activate or disactivate the handler
 			 */
 			private function activate():void{
-				
-				_handler.active = true;
 				
 				for each(var ih:IHandler in this.map.controls)
 				{
@@ -127,16 +129,34 @@
 						(ih as SelectFeaturesHandler).map = null;
 						this.map.removeControl(ih);
 					}
+					if(ih is FeatureLayerEditionHandler)
+					{
+						// Store the existing FeatureLayerEditionHandler
+						this._previousHandler = (ih as FeatureLayerEditionHandler);
+						(ih as FeatureLayerEditionHandler).map = null;
+						this.map.removeControl(ih);
+					}
 				}
 				// Add a new SelectFeaturesHandler
 				this._selectFeaturesHandler = new SelectFeaturesHandler(this.map,true,true,false,false);
 				this._selectFeaturesHandler.layers[0] = this.target;
 				this._selectFeaturesHandler.clickOut = false;
 				this._selectFeaturesHandler.toggle = false;
+				
+				// Add a new FeatureLayerEditionHandler
+				this._handler = new FeatureLayerEditionHandler(this.map,this.target,true);
+				this._handler.virtualStyle = this._virtualStyle;
 			}
 			private function disactivate():void{
 				
+				// Manage the new FeatureLayerEditionHandler
 				_handler.active = false;
+				this._handler.map = null;
+				this.map.removeControl(this._handler);
+				
+				// Add the previous FeatureLayerEditionHandler
+				if(this._previousHandler)
+					this._previousHandler.map = this.map;
 				
 				// Manage the new SelectFeaturesHandler
 				this._selectFeaturesHandler.clearSelection();
@@ -156,7 +176,7 @@
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				evt.layer = this.target;
-				_handler.map.dispatchEvent(evt);
+				this.map.dispatchEvent(evt);
 				activate();
 			}
 			
@@ -167,7 +187,7 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(_handler.active && (this.id != evt.activeHandler || this.target != evt.layer))
+				if(this._handler && this._handler.active && (this.id != evt.activeHandler || this.target != evt.layer))
 					disactivate();
 			}
 			
@@ -177,13 +197,13 @@
 			 */
 			private function onFeatureUpdateSelection(evt:FeatureEvent):void{
 				
-				if(_handler.active)
+				if(this._handler && this._handler.active)
 					_handler.editionModeStop();
 				
 				if(this._selectFeaturesHandler)
 					_handler.featuresToEdit = this._selectFeaturesHandler.selectedFeatures;
 				
-				if(_handler.active)
+				if(this._handler && this._handler.active)
 					_handler.editionModeStart();
 			}
 			

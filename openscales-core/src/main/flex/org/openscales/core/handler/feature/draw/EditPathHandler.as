@@ -69,7 +69,7 @@ package org.openscales.core.handler.feature.draw
 			
 		 	if(_layerToEdit != null && !_isUsedAlone){
 				for each(var feature:Feature in this.featuresToEdit){
-					if(feature.isEditable && (feature.geometry is LineString || feature.geometry is MultiLineString)){
+					if((feature.geometry is LineString || feature.geometry is MultiLineString)){
 						// We display on the layer concerned by the operation the virtual vertices used for edition
 						// If the virtual vertices have to be displayed we displayed them
 						if(displayedVirtualVertices)
