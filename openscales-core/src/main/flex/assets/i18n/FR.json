@@ -3,6 +3,7 @@
    "locale.name": "French",
    "locale.localizedName": "Français",
    
+   "drawing.add": "Ajouter",
    "drawing.import": "Importer",
    "drawing.export": "Exporter",
    "drawing.url": "Url",
@@ -11,6 +12,8 @@
    "drawing.name": "Nom",
    "drawing.version": "Version",
    "drawing.browse": "Parcourir",
+   "drawing.addvectorlayer": "Ajout d'une couche croquis",
+   "drawing.nameerror": "Modifier le nom (non vide et non identique à un autre nom de couche)",
    
    "layercontrol.movefront": "Déplacer vers l'avant plan",
    "layercontrol.moveback": "Déplacer vers l'arrière plan",
