@@ -100,6 +100,28 @@
 			public function set target(value:VectorLayer):void{
 				
 				this._vectorLayer = value;
+				
+				if(this._vectorLayer)
+				{
+					// initialize datas if necessary
+					(this._data.length != this._vectorLayer.features.length)
+					{
+						var i:int = 0;
+						var j:int = this._vectorLayer.features.length;
+						var temp:Array;
+
+						this._data = new Array();
+						
+						for(; i<j; ++i)
+						{
+							temp = new Array(this._attributes.length);
+							if(this._attributes[0] == "id")
+								temp[0] = this._vectorLayer.features[i].name + " / " + this._vectorLayer.name;
+							
+							this._data.push({identifier:this._vectorLayer.features[i].name, values:temp});
+						}
+					}
+				}
 			}
 			
 			/**
