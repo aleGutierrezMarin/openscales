@@ -45,6 +45,8 @@ package org.openscales.core.layer
 		private var _idPath:uint = 0;
 		private var _idPolygon:uint = 0;
 		private var _idLabel:uint = 0;
+		private var _attributesVal:Array = new Array();
+		private var _attributesId:Array = new Array();
 
 		public function VectorLayer(name:String)
 		{
@@ -449,6 +451,19 @@ package org.openscales.core.layer
 		}
 		public function set idLabel(value:uint):void{
 			this._idLabel = value;
+		}
+		
+		public function get attributesId():Array{
+			return this._attributesId;
+		}
+		public function set attributesId(value:Array):void{
+			this._attributesId = value;
+		}
+		public function get attributesVal():Array{
+			return this._attributesVal;
+		}
+		public function set attributesVal(value:Array):void{
+			this._attributesVal = value;
 		}
 	}
 }

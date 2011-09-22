@@ -79,6 +79,7 @@
 				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 			}
 			
 			/**
@@ -125,19 +126,8 @@
 			 */
 			private function onClick():void{
 				
-				if(this.parentDocument is DrawingToolbar){
-					for(var i:uint = 0; i < this.map.controls.length; i++){
-						if(this.map.controls[i] is LayerManager){
-							for(var j:uint = 0; j < (this.map.controls[i] as LayerManager).layers.length; j++){
-								if((this.map.controls[i] as LayerManager).layers[j] is VectorLayer){
-									this.target = (this.map.controls[i] as LayerManager).layers[j] as VectorLayer;
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
+				if(!this.target)
+					return;
 				this._isClick = true;
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DRAW_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
@@ -161,6 +151,20 @@
 				}
 				else
 					this._isClick = false;
+			}
+			
+			private function onChangeActiveLayer(evt:DrawingEvent):void{
+				
+				if(this.parentDocument is DrawingToolbar)
+				{
+					if(this._handler.active)
+					{
+						if(!(this._handler as DrawPathHandler).newFeature)
+							(this._handler as DrawPathHandler).drawFinalPath();
+						disactivate();
+					}
+					this.target = evt.layer;
+				}
 			}
 			
 			// to do

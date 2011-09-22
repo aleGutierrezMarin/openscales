@@ -30,9 +30,9 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}"/>
 		<LayerManager top="5" right="5"/>
-		<!--<DrawingToolbar id="drawingToolbar" map="{fxMap.map}" layer="{features.nativeLayer as VectorLayer}"
-						pointStyle="{Style.getDefaultCircleStyle()}" clickout="true" hover="true" toggle="true"
-						defaultAttributes="id,description,other" virtualStyle="{Style.getDefaultPointStyle()}" />-->
+		<DrawingToolbar id="drawingToolbar" map="{fxMap.map}" pointStyle="{Style.getDefaultCircleStyle()}"
+						clickout="true" hover="true" toggle="true" defaultAttributes="id,description,other"
+						virtualStyle="{Style.getDefaultPointStyle()}" />
 		
 		<ImportFeature map="{fxMap.map}"/>
 		

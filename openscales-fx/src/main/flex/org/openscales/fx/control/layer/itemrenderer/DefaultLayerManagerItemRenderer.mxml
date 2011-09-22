@@ -19,6 +19,7 @@
 			import mx.events.PropertyChangeEvent;
 			
 			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
@@ -103,6 +104,9 @@
 			 */
 			[Bindable]
 			protected var _layer:Layer;
+			
+			[Bindable]
+			protected var _color:uint;
 			
 			[Bindable]
 			protected var _layerManager:LayerManager;
@@ -231,6 +235,23 @@
 				
 				this.parent.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
 				this.layerSwitcherLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
+				this.layerSwitcherLabel.addEventListener(MouseEvent.CLICK, this.onThisLabelClick);
+				this._layer.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onOtherLabelClick);
+			}
+			//add
+			private function onThisLabelClick(evt:MouseEvent):void{
+				
+				if(this._layer is VectorLayer){
+					var event:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+					event.layer = this._layer as VectorLayer;
+					this._layer.map.dispatchEvent(event);
+					this._color = 0xff0000;
+				}
+			}
+			private function onOtherLabelClick(evt:DrawingEvent):void{
+				
+				if(!(evt.layer is VectorLayer) || (evt.layer as VectorLayer) != this._layer)
+					this._color = 0;
 			}
 			
 			/**
@@ -317,7 +338,7 @@
 		
 		<ChangeLayerVisibility layer="{_layer}" />
 		
-		<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" />
+		<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" color="{_color}" />
 		
 		<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 		
