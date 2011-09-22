@@ -22,6 +22,7 @@
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -37,6 +38,7 @@
 			private var _target:VectorLayer;
 			private var _handler:SelectFeaturesHandler = null;
 			private var _previousSelectFeaturesHandler:SelectFeaturesHandler = null;
+			private var _isClick:Boolean = false;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -108,6 +110,7 @@
 				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 			}
 			
 			/**
@@ -138,7 +141,7 @@
 			}
 			
 			/**
-			 * To activate or disactivate the handler
+			 * To activate the handler
 			 */
 			private function activate():void
 			{
@@ -161,6 +164,10 @@
 				this._handler.clickOut = this._clickout;
 				this._handler.toggle = this._toggle;
 			}
+			
+			/**
+			 * To disactivate the handler
+			 */
 			private function disactivate():void{
 				
 				// Manage the new SelectFeaturesHandler
@@ -179,6 +186,9 @@
 			 */
 			private function onClick():void{
 				
+				if(!this.target)
+					return;
+				this._isClick = true;
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				evt.layer = this.target;
@@ -193,8 +203,20 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(this._handler && this._handler.active && (this.id != evt.activeHandler || this.target != evt.layer)){
+				if(this._handler && this._handler.active && !this._isClick)
 					disactivate();
+				else
+					this._isClick = false;
+			}
+			
+			private function onChangeActiveLayer(evt:DrawingEvent):void{
+				
+				if(this.parentDocument is DrawingToolbar)
+				{
+					if(this._handler.active)
+						disactivate();
+					
+					this.target = evt.layer;
 				}
 			}
 			

@@ -31,6 +31,7 @@
 			private function configure():void{
 				
 				// set the vector layer
+				/*
 				drawLabel.target = this._layer;
 				drawPoint.target = this._layer;
 				drawPath.target = this._layer;
@@ -39,6 +40,7 @@
 				editFeatures.target = this._layer;
 				moveFeatures.target = this._layer;
 				manageAttributes.target = this._layer;
+				*/
 				
 				// set the properties
 				drawLabel.style = this._labelStyle;
@@ -49,7 +51,7 @@
 				selectFeatures.hover = this._hover;
 				selectFeatures.toggle = this._toggle;
 				editFeatures.virtualStyle = this._virtualStyle;
-				manageAttributes.defaultAttributes = this._defaultAttributes;
+				//manageAttributes.defaultAttributes = this._defaultAttributes;
 			}
 			
 			/**
