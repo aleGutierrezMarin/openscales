@@ -121,7 +121,8 @@ package org.openscales.core.handler.feature.draw
 				var polygon:Polygon=null;
 				//2 cases, and very different. If the user starts the polygon or if the user is drawing the polygon
 				if(newFeature) {
-					var name:String = "polygon."+id.toString(); id++;
+					var name:String = "polygon." + drawLayer.idPolygon.toString();
+					drawLayer.idPolygon++;
 					lring = new LinearRing(new <Number>[point.x,point.y]);
 					polygon = new Polygon(new <Geometry>[lring]);
 					this._firstPointPixel= new Pixel(map.mouseX ,map.mouseY);
