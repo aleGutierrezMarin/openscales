@@ -24,6 +24,7 @@
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
+			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -33,6 +34,7 @@
 			private var _btnPath:Class;
 			private var _active:Boolean = true;
 			private var _handler:AbstractDrawHandler= new DrawPathHandler();
+			private var _isClick:Boolean = false;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -123,6 +125,20 @@
 			 */
 			private function onClick():void{
 				
+				if(this.parentDocument is DrawingToolbar){
+					for(var i:uint = 0; i < this.map.controls.length; i++){
+						if(this.map.controls[i] is LayerManager){
+							for(var j:uint = 0; j < (this.map.controls[i] as LayerManager).layers.length; j++){
+								if((this.map.controls[i] as LayerManager).layers[j] is VectorLayer){
+									this.target = (this.map.controls[i] as LayerManager).layers[j] as VectorLayer;
+									break;
+								}
+							}
+							break;
+						}
+					}
+				}
+				this._isClick = true;
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DRAW_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				evt.layer = this.target;
@@ -137,12 +153,14 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(_handler.active && (this.id != evt.activeHandler || this.target != evt.layer))
+				if(this._handler.active && !this._isClick)
 				{
-					if(!(_handler as DrawPathHandler).newFeature)
-						(_handler as DrawPathHandler).drawFinalPath();
+					if(!(this._handler as DrawPathHandler).newFeature)
+						(this._handler as DrawPathHandler).drawFinalPath();
 					disactivate();
 				}
+				else
+					this._isClick = false;
 			}
 			
 			// to do
