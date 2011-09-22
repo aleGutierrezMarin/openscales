@@ -207,7 +207,7 @@
 				
 				if(this.parentDocument is DrawingToolbar)
 				{
-					if(this._handler.active)
+					if(this._handler && this._handler.active)
 						disactivate();
 					
 					this.target = evt.layer;
