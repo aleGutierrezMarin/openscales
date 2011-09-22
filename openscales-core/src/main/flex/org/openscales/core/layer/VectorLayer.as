@@ -40,10 +40,12 @@ package org.openscales.core.layer
 		private var _featuresID:Vector.<String> = new Vector.<String>();
 		
 		private var _data:XML = null;
-
-	
-
 		
+		private var _idPoint:uint = 0;
+		private var _idPath:uint = 0;
+		private var _idPolygon:uint = 0;
+		private var _idLabel:uint = 0;
+
 		public function VectorLayer(name:String)
 		{
 			super(name);
@@ -407,6 +409,46 @@ package org.openscales.core.layer
 		public function set data(value:XML):void
 		{
 			_data = value;
+		}
+		
+		/**
+		 * 
+		 */
+		public function get idPoint():uint{
+			return this._idPoint;
+		}
+		public function set idPoint(value:uint):void{
+			this._idPoint = value;
+		}
+		
+		/**
+		 * 
+		 */
+		public function get idPath():uint{
+			return this._idPath;
+		}
+		public function set idPath(value:uint):void{
+			this._idPath = value;
+		}
+		
+		/**
+		 * 
+		 */
+		public function get idPolygon():uint{
+			return this._idPolygon;
+		}
+		public function set idPolygon(value:uint):void{
+			this._idPolygon = value;
+		}
+		
+		/**
+		 * 
+		 */
+		public function get idLabel():uint{
+			return this._idLabel;
+		}
+		public function set idLabel(value:uint):void{
+			this._idLabel = value;
 		}
 	}
 }
