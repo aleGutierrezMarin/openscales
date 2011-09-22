@@ -88,7 +88,7 @@
 				if(this._vectorLayer)
 				{
 					// define the attributesVal array if necessary
-					(this._vectorLayer.attributesVal.length != this._vectorLayer.features.length)
+					if(this._vectorLayer.attributesVal.length != this._vectorLayer.features.length)
 					{
 						var i:int = 0;
 						var j:int = this._vectorLayer.features.length;
