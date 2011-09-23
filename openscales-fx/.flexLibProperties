@@ -46,10 +46,12 @@
     <classEntry path="org.openscales.fx.control.TraceInfo"/>
     <classEntry path="org.openscales.fx.control.Zoom"/>
     <classEntry path="org.openscales.fx.control.ZoomBox"/>
+    <classEntry path="org.openscales.fx.control.drawing.AddVectorLayer"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawLabel"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawingToolbar"/>
     <classEntry path="org.openscales.fx.control.drawing.EditFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeature"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeatureForm"/>
@@ -71,6 +73,10 @@
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer"/>
     <classEntry path="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasureAzimuth"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasureBar"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasurePath"/>
+    <classEntry path="org.openscales.fx.control.measure.MeasureSurface"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
@@ -131,7 +137,6 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.control.measure.MeasureBar"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

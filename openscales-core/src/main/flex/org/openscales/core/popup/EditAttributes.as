@@ -29,10 +29,10 @@ package org.openscales.core.popup
 			var lb:Label;
 			
 			// Define the popup properties
-			this.x = map.width / 2;
-			this.y = map.height / 2;
+			var x:uint = map.width / 2;
+			var y:uint = map.height / 2;
 			this.height = 150;
-			this.width = 200;
+			this.width = 250;
 			this.title = "Edit attributes";
 			hGroup.paddingTop = 5;
 			hGroup.paddingLeft = 5;
@@ -58,6 +58,8 @@ package org.openscales.core.popup
 			
 			// Display the popup
 			PopUpManager.addPopUp(this, map, true);
+			this.x = x;
+			this.y = y;
 		}
 		
 		/**

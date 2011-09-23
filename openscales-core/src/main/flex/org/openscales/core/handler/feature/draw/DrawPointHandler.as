@@ -78,7 +78,8 @@ package org.openscales.core.handler.feature.draw
 				   var multiPoint:MultiPoint = new MultiPoint();
 				   multiPoint.addPoint(lonlat.lon,lonlat.lat);
 				   feature = new MultiPointFeature(multiPoint, null, this._style);
-				   feature.name = "point."+id.toString(); id++;
+				   feature.name = "point." + drawLayer.idPoint.toString();
+				   drawLayer.idPoint++;
 				   drawLayer.addFeature(feature);
 				   //must be after adding map
 				   feature.draw();
@@ -86,9 +87,8 @@ package org.openscales.core.handler.feature.draw
 			   }else{
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
 				feature = new PointFeature(point, null, this._style);
-				feature.name = "point."+id.toString();
-				id++;
-				//test
+				feature.name = "point." + drawLayer.idPoint.toString();
+				drawLayer.idPoint++;
 				drawLayer.addFeature(feature);
 				//must be after adding map
 				feature.draw();

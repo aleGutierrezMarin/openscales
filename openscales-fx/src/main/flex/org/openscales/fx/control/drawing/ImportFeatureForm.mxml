@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 creationComplete="onCreationComplete(event)"
+		 initialize="init(event)"
 		 width="300" height="350">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
@@ -94,6 +94,9 @@
 			import org.openscales.core.layer.ogc.GeoRss;
 			import org.openscales.core.layer.osm.OSM;
 			
+			private const FORMAT_PROVIDER_CHANGED:String = "formatProviderChanged";
+			private const VERSION_PROVIDER_CHANGED:String = "versionProviderChanged";
+			
 			/**
 			 * Translation for label Name
 			 */
@@ -150,17 +153,16 @@
 			public var browseLabel:String = Catalog.getLocalizationForKey('drawing.browse');
 			
 			/**
+			 * Datas in the format dropdownlist
+			 */
+			private var _formatProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
 			 * The current selected format
 			 * @default the first one : 0
 			 */
 			[Bindable]
 			public var selectedFormat:Number = 0;
-			
-			/**
-			 * Datas in the format dropdownlist
-			 */
-			[Bindable]
-			public var formatProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * Contains all the format supported
@@ -178,7 +180,7 @@
 			 * Datas for the version dropdownList
 			 */
 			[Bindable]
-			public var versionProvider:ArrayCollection = new ArrayCollection();
+			private var _versionProvider:ArrayCollection = new ArrayCollection();
 			
 			/**
 			 * The current selected version
@@ -202,7 +204,7 @@
 			/**
 			 * Allowed file types
 			 */
-			private static const FILE_TYPES:Array = [new FileFilter("Text File", "*.xml;*.kml,*.gml")];
+			private static const FILE_TYPES:Array = [new FileFilter("Text file","*.xml;*.kml;*.gml")];
 
 			/**
 			 * Selected source type
@@ -215,7 +217,7 @@
 			 */
 			private var fileReference:FileReference;
 
-			public function onCreationComplete(event:Event):void
+			public function init(event:Event):void
 			{
 				if(!this.supportedFormat)
 				{
@@ -375,14 +377,14 @@
 							if(selectedSource == 1)
 							{
 								kml = new KML(name, url);
-								this.importFeature.layer.map.addLayer(kml);
+								this.importFeature.map.addLayer(kml);
 							}
 							
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								kml = new KML(name, null, xml);
-								this.importFeature.layer.map.addLayer(kml);
+								this.importFeature.map.addLayer(kml);
 							}
 							
 							
@@ -396,14 +398,14 @@
 							if(selectedSource == 1)
 							{
 								gpx = new GPX(name, version, url);
-								this.importFeature.layer.map.addLayer(gpx);
+								this.importFeature.map.addLayer(gpx);
 							}
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								
 								gpx = new GPX(name, version, null, xml);
-								this.importFeature.layer.map.addLayer(gpx);
+								this.importFeature.map.addLayer(gpx);
 							}
 						
 							
@@ -414,7 +416,7 @@
 							if(selectedSource == 1)
 							{
 								var geoRss:GeoRss = new GeoRss(name, url);
-								this.importFeature.layer.map.addLayer(geoRss);
+								this.importFeature.map.addLayer(geoRss);
 							}
 							else // locale file
 							{
@@ -429,7 +431,7 @@
 							if(selectedSource == 1)
 							{
 								var osm:OSM = new OSM(name, url);
-								this.importFeature.layer.map.addLayer(osm);
+								this.importFeature.map.addLayer(osm);
 							}
 							else // locale file
 							{
@@ -444,15 +446,15 @@
 							
 							if(selectedSource == 1)
 							{
-								gml = new GML(name, version, this.importFeature.layer.map.projection, url);
-								this.importFeature.layer.map.addLayer(gml);
+								gml = new GML(name, version, this.importFeature.map.projection, url);
+								this.importFeature.map.addLayer(gml);
 							}
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								
-								gml = new GML(name, version, this.importFeature.layer.map.projection, null, xml);
-								this.importFeature.layer.map.addLayer(gml);
+								gml = new GML(name, version, this.importFeature.map.projection, null, xml);
+								this.importFeature.map.addLayer(gml);
 							}
 							
 						break;
@@ -467,9 +469,9 @@
 			 */
 			private function validateName(value:String):Boolean
 			{
-				if(this.importFeature.layer.map)
+				if(this.importFeature.map)
 				{
-					if(this.importFeature.layer.map.getLayerByName(value)==null)
+					if(this.importFeature.map.getLayerByName(value)==null)
 						return true;
 				}
 				return false;
@@ -575,12 +577,48 @@
 			public function set importFeature(value:ImportFeature):void
 			{
 				_importFeature = value;
-				if(_importFeature.layer.map)
+				if(_importFeature.map)
 				{
-					this._importFeature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+					this._importFeature.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
 				}
 			}
 
+			/**
+			 * The different formats available in the dropdownlist
+			 */
+			[Bindable(event=FORMAT_PROVIDER_CHANGED)]
+			public function get formatProvider():ArrayCollection
+			{
+				return this._formatProvider;
+			}
+			
+			public function set formatProvider(value:ArrayCollection):void
+			{
+				if(value)
+				{
+					this._formatProvider = value;
+					dispatchEvent(new Event(FORMAT_PROVIDER_CHANGED));	
+				}
+			}
+			
+			/**
+			 * The different versions available in the dropdownlist
+			 */
+			[Bindable(event=VERSION_PROVIDER_CHANGED)]
+			public function get versionProvider():ArrayCollection
+			{
+				return this._versionProvider;
+			}
+			
+			public function set versionProvider(value:ArrayCollection):void
+			{
+				if(value)
+				{
+					this._versionProvider = value;
+					dispatchEvent(new Event(VERSION_PROVIDER_CHANGED));	
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	

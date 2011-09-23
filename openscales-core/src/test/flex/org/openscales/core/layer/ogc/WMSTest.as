@@ -104,7 +104,7 @@ package org.openscales.core.layer.ogc
 		 * 
 		 */
 		[Test(async)] 
-		public function shouldInitialiseTheGirdWithCorrectTileOrigin():void
+		public function shouldInitialiseTheGridWithCorrectTileOrigin():void
 		{
 			// Given a Map and a WMS layer with tiled=true and a default tileOrigin
 			_map = new Map();

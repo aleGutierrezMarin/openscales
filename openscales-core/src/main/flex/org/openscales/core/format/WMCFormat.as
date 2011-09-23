@@ -1,7 +1,6 @@
 package org.openscales.core.format
 {
 	import org.openscales.core.Trace;
-	import org.openscales.core.format.wmcextension.IWMCExtension;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Size;
@@ -83,6 +82,7 @@ package org.openscales.core.format
 						this._windowSize = new Size(window..@width[0], window..@height[0]);
 					}
 				}
+import org.openscales.core.layer.ogc.WMTS;
 
 				if(general..*::BoundingBox.length() > 0)
 				{
@@ -218,6 +218,7 @@ package org.openscales.core.format
 						wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
 						wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
 					}
+					wmts.format = format;
 					layerToAdd = wmts;
 					break;
 				default:

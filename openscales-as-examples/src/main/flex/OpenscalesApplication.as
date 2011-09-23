@@ -68,7 +68,7 @@ package {
 					regions.style = Style.getDefaultSurfaceStyle();
 					//_map.addLayer(regions);
 					
-					var communes:WFS = new WFS("communes","http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/geoserver/sde/wfs","sde:commune");
+					var communes:WFS = new WFS("communes","http://pp-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/geoserver/sde/wfs","sde:commune");
 					communes.projSrsCode = "EPSG:4326";
 					communes.useCapabilities = true;
 					communes.style = Style.getDefaultSurfaceStyle();

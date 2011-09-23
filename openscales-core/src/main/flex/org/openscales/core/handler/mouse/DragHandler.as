@@ -65,7 +65,8 @@ package org.openscales.core.handler.mouse
 		override protected function registerListeners():void{
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				//this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.stage.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 				if (this._drawingEventSensitive) {
 					this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
@@ -89,7 +90,8 @@ package org.openscales.core.handler.mouse
 		override protected function unregisterListeners():void{
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				//this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.stage.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.removeEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 			}
 		}

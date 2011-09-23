@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- LayerManager item renderer, design to render a layer in the LayerManager list -->
 <s:ItemRenderer xmlns="org.openscales.fx.control.layer.*"
+				xmlns:drawing="org.openscales.fx.control.drawing.*"
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
@@ -10,7 +11,7 @@
 		 xmlns:fxg="assets.fxg.*"
 		 autoDrawBackground="false"
 		 implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"
-		 creationComplete="onCreationComplete();" xmlns:openscales="http://openscales.org">
+		 creationComplete="onCreationComplete();" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -18,10 +19,12 @@
 			import mx.events.PropertyChangeEvent;
 			
 			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.layer.ogc.WFS;
 			import org.openscales.fx.control.layer.LayerManager;
 			
 			import spark.components.Label;
@@ -103,6 +106,9 @@
 			protected var _layer:Layer;
 			
 			[Bindable]
+			protected var _color:uint;
+			
+			[Bindable]
 			protected var _layerManager:LayerManager;
 			
 			[Bindable]
@@ -152,6 +158,9 @@
 			
 			[Bindable]
 			private var _displayMetadatas:Boolean = false;
+			
+			[Bindable]
+			private var _displayDrawing:Boolean = false;
 						
 			/**
 			 * @inherit
@@ -180,6 +189,7 @@
 					_displayZoomToExtent = !!value['displayZoomToExtent'];
 					_displayLegend = !!value['displayLegend'];
 					_displayMetadatas = !!value['displayMetadatas'];
+					_displayDrawing = !!value['displayDrawing'];
 					
 					if(_displayZoomToExtent || _displayLegend || _displayMetadatas)
 						_optionnalGroupDisplayed = true;
@@ -212,7 +222,7 @@
 					this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
 				}
 				
-				 if(this._isDrawingLayer)
+				 if(this._isDrawingLayer && this._displayDrawing)
 				 {
 				 	this._maximizeGroupSize += layerSwitcherDrawingTools.height;
 				 }
@@ -225,6 +235,23 @@
 				
 				this.parent.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
 				this.layerSwitcherLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
+				this.layerSwitcherLabel.addEventListener(MouseEvent.CLICK, this.onThisLabelClick);
+				this._layer.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onOtherLabelClick);
+			}
+			//add
+			private function onThisLabelClick(evt:MouseEvent):void{
+				
+				if(this._layer is VectorLayer){
+					var event:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+					event.layer = this._layer as VectorLayer;
+					this._layer.map.dispatchEvent(event);
+					this._color = 0xff0000;
+				}
+			}
+			private function onOtherLabelClick(evt:DrawingEvent):void{
+				
+				if(!(evt.layer is VectorLayer) || (evt.layer as VectorLayer) != this._layer)
+					this._color = 0;
 			}
 			
 			/**
@@ -248,7 +275,7 @@
 				{	
 					layerSwitcherLabel.text = this._layer.name;	
 					
-					if(this._layer is VectorLayer)
+					if(this._layer is VectorLayer && !(this._layer is WFS))
 						this._isDrawingLayer = true;
 						
 					else
@@ -311,7 +338,7 @@
 		
 		<ChangeLayerVisibility layer="{_layer}" />
 		
-		<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" />
+		<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" color="{_color}" />
 		
 		<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 		
@@ -332,20 +359,37 @@
 		<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
 	</s:SkinnableContainer>
 
-	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
+	<s:SkinnableContainer height="60" width="100%" id="layerSwitcherDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
 		
 		<s:layout>
-			<s:HorizontalLayout />
+			<s:VerticalLayout />
 		</s:layout>
-		<openscales:DrawLabel id="drawLabel" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:DrawPoint id="drawPoint" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:DrawPath id="drawPath" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:DrawPolygon id="drawPolygon" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:SelectFeatures id="selectFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:EditFeatures id="editFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:MoveFeatures id="moveFeatures" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-		<openscales:ManageAttributes id="manageAttributes" target="{this._layer as VectorLayer}" map="{this._layer.map}" />
-	</s:SkinnableContainer>
+		
+		
+		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">		
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<drawing:DrawLabel id="drawLabel" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPath id="drawPath" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+		</s:SkinnableContainer>
+	
+		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
+			
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<drawing:SelectFeatures id="selectFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"/>
+			<drawing:EditFeatures id="editFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:MoveFeatures id="moveFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:ManageAttributes id="manageAttributes" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:ExportFeature id="importFeature" layer="{this._layer as VectorLayer}" />
+			
+		</s:SkinnableContainer>
+		
+		</s:SkinnableContainer>
 
 	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
 		<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />

@@ -4,7 +4,7 @@
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 width="250" height="200"      
-		 creationComplete="configure()">
+		 creationComplete="configure()" xmlns:drawing="org.openscales.fx.control.drawing.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -51,6 +51,9 @@
 			[Bindable]
 			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.title');
 			
+			/**
+			 * Indicates if the drawing tools should be shown
+			 */
 			
 			/**
 			 * The dataProvider use for the list.
@@ -73,6 +76,10 @@
 			 */
 			private var _itemRenderer:Class = DefaultLayerManagerItemRenderer;
 			
+			
+			[Bindable]
+			private var _displayDrawing:Boolean = false;
+			
 			/**
 			 * Configure the object
 			 */
@@ -90,6 +97,9 @@
 						rendererOptions: this._rendererOptions,
 							layerManager: this
 					}
+						
+					if(this._rendererOptions)
+						this._displayDrawing = !!this._rendererOptions['displayDrawing'];
 				}
 		
 				layerList.itemRenderer = factory;
@@ -339,22 +349,33 @@
 	
 	
 	<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" > 
-		<s:List id="layerList" 
-				dropEnabled="false"
-				dragEnabled="false"
-				dragMoveEnabled="false"
-				dataProvider="{this.layers}"
-				width="100%"
-				height="{(this.height-35)}"
-				x="0"
-				y="0"
-				borderVisible="false">
+		<s:Group height="{this.height-35}" width="{this.width}" >
 			<s:layout>
-				<s:VerticalLayout horizontalAlign="justify"
-								  variableRowHeight="true"
-								  requestedRowCount="4" />
-			</s:layout>
-		</s:List>
+				<s:VerticalLayout />
+			</s:layout>	
+				<s:Group visible="{this._displayDrawing}" includeInLayout="{this._displayDrawing}">
+					<drawing:AddVectorLayer map="{this.map}" />
+					<drawing:ImportFeature map="{this.map}" x="150" />
+				</s:Group>
+				<s:List id="layerList" 
+						dropEnabled="false"
+						dragEnabled="false"
+						dragMoveEnabled="false"
+						dataProvider="{this.layers}"
+						width="{this.width-5}"
+						height="100%"
+						x="0"
+						y="0"
+						borderVisible="false">
+					<s:layout>
+						<s:VerticalLayout horizontalAlign="justify"
+										  variableRowHeight="true"
+										  requestedRowCount="4" />
+					</s:layout>
+				</s:List>
+				
+			
+		</s:Group>
 	</s:Panel>
 	
 </Control>

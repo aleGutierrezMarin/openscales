@@ -2,7 +2,7 @@
 <os:IconButton xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   xmlns:os="http://openscales.org"
+			   xmlns:os="org.openscales.fx.control.*"
 			   implements="org.openscales.core.control.IControl"
 			   toolTip="Edit features"
 			   icon="{_btnEdit}"
@@ -25,6 +25,7 @@
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
+			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -33,8 +34,14 @@
 			[Embed(source="/assets/images/icons/Icons-08.png")]
 			private var _btnEdit:Class;
 			private var _active:Boolean = true;
-			private var _handler:FeatureLayerEditionHandler = new FeatureLayerEditionHandler();
+			private var _handler:FeatureLayerEditionHandler = null;
+			private var _previousHandler:FeatureLayerEditionHandler = null;
 			private var _selectFeaturesHandler:SelectFeaturesHandler;
+			private var _previousSelectFeaturesHandler:SelectFeaturesHandler = null;
+			private var _virtualStyle:Style;
+			private var _map:Map;
+			private var _target:VectorLayer;
+			private var _isClick:Boolean = false;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -48,21 +55,21 @@
 			public function set active(value:Boolean):void{
 				
 				_active = value;
-				if(! _active){
+				if(this._handler && !_active){
 					_handler.active = false;
 				}
 			}
 			
 			/**
-			 * 
+			 * Drawing style of the virtual points
 			 */
 			public function get virtualStyle():Style{
 				
-				return (this._handler as FeatureLayerEditionHandler).virtualStyle;
+				return this._virtualStyle;
 			}
 			public function set virtualStyle(value:Style):void{
 				
-				(this._handler as FeatureLayerEditionHandler).virtualStyle = value;
+				this._virtualStyle = value;
 			}
 			
 			/**
@@ -70,17 +77,18 @@
 			 */
 			public function get map():Map{
 				
-				return _handler.map;
+				return this._map;
 			}
 			public function set map(value:Map):void{
 				
-				_handler.map = value;
-				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
-				_handler.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
+				this._map = value;
+				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
+				this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
+				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 			}
 			
 			/**
@@ -99,34 +107,72 @@
 			}
 			
 			/**
-			 * 
+			 * Layer the features will be edited 
 			 */
 			public function get target():VectorLayer{
 				
-				return _handler.layerToEdit;
+				return this._target;
 			}
 			public function set target(value:VectorLayer):void{
 				
-				_handler.layerToEdit = value;
+				this._target = value;
 			}
 			
 			/**
-			 * To activate or disactivate the handler
+			 * To activate the handler
 			 */
 			private function activate():void{
 				
-				_handler.active = true;
-				
-				for each(var ih:IHandler in this.map.controls){
-					if(ih is SelectFeaturesHandler){
-						_selectFeaturesHandler = (ih as SelectFeaturesHandler);
-						_selectFeaturesHandler.active = true;
+				for each(var ih:IHandler in this.map.controls)
+				{
+					if(ih is SelectFeaturesHandler && ih != this._selectFeaturesHandler)
+					{
+						// Store the existing SelectFeaturesHandler
+						this._previousSelectFeaturesHandler = (ih as SelectFeaturesHandler);
+						(ih as SelectFeaturesHandler).map = null;
+						this.map.removeControl(ih);
+					}
+					if(ih is FeatureLayerEditionHandler)
+					{
+						// Store the existing FeatureLayerEditionHandler
+						this._previousHandler = (ih as FeatureLayerEditionHandler);
+						(ih as FeatureLayerEditionHandler).map = null;
+						this.map.removeControl(ih);
 					}
 				}
+				// Add a new SelectFeaturesHandler
+				this._selectFeaturesHandler = new SelectFeaturesHandler(this.map,true,true,false,false);
+				this._selectFeaturesHandler.layers[0] = this.target;
+				this._selectFeaturesHandler.clickOut = false;
+				this._selectFeaturesHandler.toggle = false;
+				
+				// Add a new FeatureLayerEditionHandler
+				this._handler = new FeatureLayerEditionHandler(this.map,this.target,true);
+				this._handler.virtualStyle = this._virtualStyle;
 			}
+			
+			/**
+			 * To disactivate the handler
+			 */
 			private function disactivate():void{
 				
+				// Manage the new FeatureLayerEditionHandler
 				_handler.active = false;
+				this._handler.map = null;
+				this.map.removeControl(this._handler);
+				
+				// Add the previous FeatureLayerEditionHandler
+				if(this._previousHandler)
+					this._previousHandler.map = this.map;
+				
+				// Manage the new SelectFeaturesHandler
+				this._selectFeaturesHandler.clearSelection();
+				this._selectFeaturesHandler.map = null;
+				this.map.removeControl(this._selectFeaturesHandler);
+				
+				// Add the previous SelectFeaturesHandler
+				if(this._previousSelectFeaturesHandler)
+					this._previousSelectFeaturesHandler.map = this.map;
 			}
 			
 			/**
@@ -134,9 +180,13 @@
 			 */
 			private function onClick():void{
 				
+				if(!this.target)
+					return;
+				this._isClick = true;
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
-				_handler.map.dispatchEvent(evt);
+				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
 				activate();
 			}
 			
@@ -147,8 +197,21 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(_handler.active && this.id != evt.activeHandler)
+				if(this._handler && this._handler.active && !this._isClick)
 					disactivate();
+				else
+					this._isClick = false;
+			}
+			
+			private function onChangeActiveLayer(evt:DrawingEvent):void{
+				
+				if(this.parentDocument is DrawingToolbar)
+				{
+					if(this._handler && this._handler.active)
+						disactivate();
+					
+					this.target = evt.layer;
+				}
 			}
 			
 			/**
@@ -157,13 +220,13 @@
 			 */
 			private function onFeatureUpdateSelection(evt:FeatureEvent):void{
 				
-				if(_handler.active)
+				if(this._handler && this._handler.active)
 					_handler.editionModeStop();
 				
-				if(_selectFeaturesHandler)
-					_handler.featuresToEdit = _selectFeaturesHandler.selectedFeatures;
+				if(this._selectFeaturesHandler)
+					_handler.featuresToEdit = this._selectFeaturesHandler.selectedFeatures;
 				
-				if(_handler.active)
+				if(this._handler && this._handler.active)
 					_handler.editionModeStart();
 			}
 			

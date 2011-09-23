@@ -32,6 +32,7 @@ package org.openscales.core.events
 		public static const ATTRIBUTES_HANDLER_ACTIVATED:String = "openscales.drawing.attributes_handler_activated";
 		public static const ATTRIBUTES_UPDATED:String = "openscales.drawing.attributes_updated";
 		public static const CHANGE_ACTIVE_HANDLER:String = "openscales.drawing.change_active_handler";
+		public static const CHANGE_ACTIVE_LAYER:String = "openscales.drawing.change_active_layer";
 		
 		/**
 		 * 

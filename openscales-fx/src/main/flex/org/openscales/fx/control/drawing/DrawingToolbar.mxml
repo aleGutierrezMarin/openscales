@@ -16,15 +16,22 @@
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
 			
+			[Bindable]
 			private var _layer:VectorLayer;
 			private var _labelStyle:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
 			private var _pointStyle:Style = Style.getDefaultPointStyle();
 			private var _pathStyle:Style = Style.getDefaultLineStyle();
 			private var _polygonStyle:Style = Style.getDefaultSurfaceStyle();
+			private var _clickOut:Boolean = true;
+			private var _toggle:Boolean = false;
+			private var _hover:Boolean = false;
+			private var _virtualStyle:Style = Style.getDefaultCircleStyle();
+			private var _defaultAttributes:String = "id,description";
 			
 			private function configure():void{
 				
 				// set the vector layer
+				/*
 				drawLabel.target = this._layer;
 				drawPoint.target = this._layer;
 				drawPath.target = this._layer;
@@ -33,14 +40,18 @@
 				editFeatures.target = this._layer;
 				moveFeatures.target = this._layer;
 				manageAttributes.target = this._layer;
-				//importFeature.layer = this._layer;
-				//exportFeature.layer = this._layer;
+				*/
 				
-				// set the styles
+				// set the properties
 				drawLabel.style = this._labelStyle;
 				drawPoint.style = this._pointStyle;
 				drawPath.style = this._pathStyle;
 				drawPolygon.style = this._polygonStyle;
+				selectFeatures.clickout = this._clickOut;
+				selectFeatures.hover = this._hover;
+				selectFeatures.toggle = this._toggle;
+				editFeatures.virtualStyle = this._virtualStyle;
+				//manageAttributes.defaultAttributes = this._defaultAttributes;
 			}
 			
 			/**
@@ -53,7 +64,7 @@
 				drawPoint.map = value;
 				drawPath.map = value;
 				drawPolygon.map = value;
-				selectFeatures.map = value;;
+				selectFeatures.map = value;
 				editFeatures.map = value;
 				moveFeatures.map = value;
 				manageAttributes.map = value;
@@ -64,8 +75,6 @@
 			 */
 			public function set layer(value:VectorLayer):void{
 				this._layer = value;
-				//importFeature.layer = value;
-				//exportFeature.layer = value;
 			}
 			
 			/**
@@ -96,6 +105,46 @@
 				this._polygonStyle = value;
 			}
 			
+			/**
+			 * If true, a feature is unselected by clicking out of it
+			 * @default true;
+			 */
+			public function set clickout(value:Boolean):void{
+				this._clickOut = value;
+				this._hover = !(value);
+			}
+			
+			/**
+			 * If true, a selected feature is unselected by clicking on it
+			 * @default false;
+			 */
+			public function set toggle(value:Boolean):void{
+				this._toggle = value;
+			}
+			
+			/**
+			 * If true, a feature is selected on mouseover
+			 * @default false;
+			 */
+			public function set hover(value:Boolean):void{
+				this._hover = value;
+				this._clickOut = (!value);
+			}
+			
+			/**
+			 * The style of the virtual points in editing mode
+			 */
+			public function set virtualStyle(value:Style):void{
+				this._virtualStyle = value;
+			}
+			
+			/**
+			 * The default attributes for each feature
+			 */
+			public function set defaultAttributes(value:String):void{
+				this._defaultAttributes = value;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -112,7 +161,7 @@
 		<openscales:EditFeatures id="editFeatures" />
 		<openscales:MoveFeatures id="moveFeatures" />
 		<openscales:ManageAttributes id="manageAttributes" />
-		<openscales:ImportFeature id="importFeature" layer="{this._layer}" />
+		<openscales:ImportFeature id="importFeature" map="{this.map}" />
 		<openscales:ExportFeature id="exportFeature" layer="{this._layer}" />
 	</s:Panel>
 </os:Control>
