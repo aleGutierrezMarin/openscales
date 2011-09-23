@@ -195,7 +195,7 @@
 			 */
 			private function searchFeature(feature:Feature):int{
 				
-				if(feature.layer != null && feature.layer != this.target)
+				if(feature.layer == null || feature.layer != this.target)
 					return -1;
 				
 				for(var i:uint = 0; i < this.target.attributesVal.length; i++){
