@@ -22,7 +22,6 @@
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.popup.ChangeAttributes;
 			import org.openscales.core.popup.EditAttributes;
-			import org.openscales.core.popup.ManageAttributes;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
