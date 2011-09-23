@@ -60,6 +60,7 @@ package org.openscales.core.handler.feature.draw
 		 * @private
 		 * */
 		private var _displayedvirtualvertice:Boolean=true;
+		private var _virtualStyle:Style;
 		/**
 		 * Handler of edition mode 
 		 * @param editPoint to know if the edition of point is allowed
@@ -398,9 +399,9 @@ package org.openscales.core.handler.feature.draw
 				if(this._editPoint)//change
 					iEditPoint = new EditPointHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit);
 				if(this._editPath)
-					iEditPath = new EditPathHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit);
+					iEditPath = new EditPathHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit,this._virtualStyle);
 				if(this._editPolygon)
-					iEditPolygon = new EditPolygonHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit);
+					iEditPolygon = new EditPolygonHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit,this._virtualStyle);
 				if(this._editLabel)
 					iEditLabel = new EditLabelHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit);
 			}
@@ -467,9 +468,9 @@ package org.openscales.core.handler.feature.draw
 				if(this._editPoint)
 					iEditPoint = new EditPointHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value);
 				if(this._editPath)
-					iEditPath = new EditPathHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value);
+					iEditPath = new EditPathHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value,this._virtualStyle);
 				if(this._editPolygon)
-					iEditPolygon = new EditPolygonHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value);
+					iEditPolygon = new EditPolygonHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value,this._virtualStyle);
 				if(this._editLabel)
 					iEditLabel = new EditLabelHandler(map,active,_layerToEdit,_featureClickHandler,_drawContainer,false,value);
 			}
@@ -477,6 +478,7 @@ package org.openscales.core.handler.feature.draw
 		
 		public function set virtualStyle(value:Style):void{
 			
+			this._virtualStyle = value;
 			if(iEditPoint != null)(this.iEditPoint as AbstractEditHandler).virtualStyle = value;
 			if(iEditPath != null)(this.iEditPath as AbstractEditHandler).virtualStyle = value;
 			if(iEditPolygon != null)(this.iEditPolygon as AbstractEditHandler).virtualStyle = value;
@@ -484,16 +486,7 @@ package org.openscales.core.handler.feature.draw
 		}
 		public function get virtualStyle():Style{
 			
-			if(iEditPoint != null)
-				return (this.iEditPoint as AbstractEditHandler).virtualStyle;
-			else if(iEditPath != null)
-				return (this.iEditPath as AbstractEditHandler).virtualStyle;
-			else if(iEditPolygon != null)
-				return (this.iEditPolygon as AbstractEditHandler).virtualStyle;
-			else if(iEditLabel != null)
-				return(this.iEditLabel as AbstractEditHandler).virtualStyle;
-			else
-				return null;
+			return this._virtualStyle;
 		}
 	}
 }

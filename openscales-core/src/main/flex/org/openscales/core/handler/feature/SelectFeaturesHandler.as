@@ -1,5 +1,6 @@
 package org.openscales.core.handler.feature
 {
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
@@ -102,7 +103,7 @@ package org.openscales.core.handler.feature
 		 * Sprite used to display the selection box.
 		 */
 		private var _drawContainer:Sprite = new Sprite();
-
+		
 		/**
 		 * Style of the selection area: border thin (default=2)
 		 */
@@ -170,7 +171,8 @@ package org.openscales.core.handler.feature
 		public function set enableOverSelection(value:Boolean):void {
 			if (value) {
 				this.onOverFeature = this.selectByOver;
-				this.onOutFeature = this.unselectByOut;
+				//this.onOutFeature = this.unselectByOut;
+				this.onOutFeature = null;
 			} else {
 				this.onOverFeature = null;
 				this.onOutFeature = null;
@@ -386,6 +388,11 @@ package org.openscales.core.handler.feature
 		public function get selectedFeatures():Vector.<Feature> {
 			return this._selectedFeatures;
 		}
+		
+		public function set selectedFeatures(value:Vector.<Feature>):void {
+			this._selectedFeatures = value;
+		}
+
 
 		/**
 		 * Set the map associated to the handler.
@@ -400,7 +407,18 @@ package org.openscales.core.handler.feature
 			}
 			// Update the map associated to the handler
 			if (this.map) {
-				this.map.removeChild(_drawContainer);
+				
+				var i:int = 0;
+				var j:int = this.map.numChildren;
+				var child:DisplayObject;
+				for(; i<j; ++i)
+				{
+					child = this.map.getChildAt(i);
+					if(child == _drawContainer){
+						this.map.removeChild(_drawContainer);
+						j--;
+					}
+				}
 			}
 			super.map = value;
 			if (this.map) {
@@ -429,8 +447,8 @@ package org.openscales.core.handler.feature
 			if(evt && this.map && evt.feature && evt.feature.layer) {
 				for(var i:* in this.layers) {
 					if(layers[i].name == evt.feature.layer.name){
-						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
-						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECT, evt.feature));
+						//fix bug : must be changed
+						//this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
 						return;
 					}
 				}
@@ -580,6 +598,13 @@ package org.openscales.core.handler.feature
 		}
 
 		private function selectByOver(feature:Feature):void {
+			if(this.layers.length > 0 && feature.layer != this.layers[0])
+				return;
+			for each(var selectFeature:Feature in this.selectedFeatures)
+			{
+				if(feature == selectFeature)
+					return;
+			}
 			this.unselect(this.selectedFeatures);
 			var v:Vector.<Feature> = new Vector.<Feature>();
 			v.push(feature);
@@ -645,6 +670,14 @@ package org.openscales.core.handler.feature
 					}
 				}
 			}
+			
+			// FIX ME : don't work if multiple selection is enabled
+			if (this.selectedFeatures.length > 0 && featuresToSelect.length > 0 &&
+				featuresToSelect[0] == this.selectedFeatures[0] && this._toggle){
+				this.unselect(featuresToSelect);
+				return;
+			}
+			
 			// Update the selection
 			if (substractiveMode && (!additiveMode)) {
 				this.unselect(featuresToSelect);
@@ -918,8 +951,15 @@ package org.openscales.core.handler.feature
 		public function get clickOut():Boolean{
 			return this._clickOut;
 		}
-		
-		
+		/**
+		 * Unselect a selected feature by clicking on it
+		 */
+		public function set toggle(value:Boolean):void{
+			this._toggle = value;
+		}
+		public function get toggle():Boolean{
+			return this._toggle;
+		}
 
 	}
 }

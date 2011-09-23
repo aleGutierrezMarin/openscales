@@ -69,6 +69,10 @@ package org.openscales.core.handler.feature.draw
 		private var _lastPointPixel:Pixel=null;
 		
 		/**
+		 * The last point of the polygon. 
+		 */
+		private var _lastPoint:Point = null; 
+		/**
 		 * 
 		 */
 		private var _style:Style = Style.getDefaultSurfaceStyle();
@@ -117,11 +121,12 @@ package org.openscales.core.handler.feature.draw
 				var polygon:Polygon=null;
 				//2 cases, and very different. If the user starts the polygon or if the user is drawing the polygon
 				if(newFeature) {
-					var name:String = "polygon."+id.toString(); id++;
+					var name:String = "polygon." + drawLayer.idPolygon.toString();
+					drawLayer.idPolygon++;
 					lring = new LinearRing(new <Number>[point.x,point.y]);
 					polygon = new Polygon(new <Geometry>[lring]);
 					this._firstPointPixel= new Pixel(map.mouseX ,map.mouseY);
-					
+					lastPoint = point;
 					
 					this._polygonFeature=new PolygonFeature(polygon,null,null,true);
 					this._polygonFeature.name = name;
@@ -142,7 +147,7 @@ package org.openscales.core.handler.feature.draw
 					
 					this.map.addEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryPolygon);
 				}
-				else {
+				else if(!point.equals(lastPoint)) {
 					if(this._firstPointFeature!=null){
 						drawLayer.removeFeature(this._firstPointFeature);
 						this._firstPointFeature=null;
@@ -150,6 +155,7 @@ package org.openscales.core.handler.feature.draw
 					//add the point to the linearRing
 					lring=(this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing;
 					lring.addPoint(point.x,point.y);
+					lastPoint = point;
 				}
 				//final redraw layer
 				drawLayer.redraw(true);
@@ -218,6 +224,9 @@ package org.openscales.core.handler.feature.draw
 		 * @private
 		 * */
 		public function set newFeature(value:Boolean):void {
+			if(value) {
+				lastPoint = null;
+			}
 			_newFeature = value;
 		}
 		/**
@@ -255,6 +264,13 @@ package org.openscales.core.handler.feature.draw
 		public function set style(value:Style):void{
 			
 			this._style = value;
+		}
+		
+		public function get lastPoint():Point {
+			return _lastPoint;
+		}
+		public function set lastPoint(value:Point):void {
+			_lastPoint = value;
 		}
 	}
 }

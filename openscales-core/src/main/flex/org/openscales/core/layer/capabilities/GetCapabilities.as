@@ -33,7 +33,7 @@ package org.openscales.core.layer.capabilities
 		/**
 		 * Class contructor
 		 */
-		public function GetCapabilities(service:String, url:String, cbkFunc:Function=null, version:String="1.1.0", proxy:String = null)
+		public function GetCapabilities(service:String, url:String, cbkFunc:Function=null, version:String=null, proxy:String = null)
 		{			
 			this._service = service.toUpperCase();
 			this._url = url;
@@ -77,15 +77,6 @@ package org.openscales.core.layer.capabilities
 				return false;
 			}
 			
-			var parser:Class = _parsers.getValue(this._service + " " + version);
-            this._parser = new parser;
-
-			if (this._parser == null) 
-			{
-				Trace.error("GetCapabilities: Not found server compatible version");
-				return false;
-			}
-			
 			var urlRequest:String = this.buildRequestUrl(); 
 
 			var _req:XMLRequest = new XMLRequest(urlRequest, this.parseResult, this.onFailure);
@@ -109,7 +100,8 @@ package org.openscales.core.layer.capabilities
 			}
 
 			url += "REQUEST=" + this._request;
-			url += "&VERSION=" + this._version;
+			if(this._version)
+				url += "&VERSION=" + this._version;
 			url += "&SERVICE=" + this._service;
 
 			return url;
@@ -136,8 +128,32 @@ package org.openscales.core.layer.capabilities
 			//if (doc.@version != this._version) {
 			//	this.requestCapabilities(doc.@version);
 			//}
+			
+			if(!this._version)
+				this._version = doc.@version;
 
+			if(!this._version)
+				this._version = "1.0.0";
+			
+			
+			var parser:Class = _parsers.getValue(this._service + " " + this._version);
+			this._parser = new parser;
+			
+			if (this._parser == null) 
+			{
+				Trace.error("GetCapabilities: Not found server compatible version");
+			}
+			
 			this._capabilities = this._parser.read(doc);
+			
+			// add auto version in result
+			var map:Array = this._capabilities.getKeys();
+			
+			for each(var item:Object in map)
+			{
+				this._capabilities.getValue(item).put("auto-version", this._version);
+			}
+
 			this._requested = true;
 
 			if (this._cbkFunc != null) {

@@ -145,7 +145,8 @@ package org.openscales.core.handler.feature.draw
 				lastPoint = point;
 				//the current drawn linestringfeature
 				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDrawLineStyle(),true);
-				this._currentLineStringFeature.name="path." + id.toString(); ++id;
+				this._currentLineStringFeature.name = "path." + drawLayer.idPath.toString();
+				drawLayer.idPath++;
 				drawLayer.addFeature(_currentLineStringFeature);
 				
 				newFeature = false;

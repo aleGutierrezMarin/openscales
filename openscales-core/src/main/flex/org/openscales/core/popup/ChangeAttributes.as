@@ -35,8 +35,8 @@ package org.openscales.core.popup
 			var ti:TextInput;
 			
 			// Define the popup properties
-			this.x = map.width / 2;
-			this.y = map.height / 2;
+			var x:uint = map.width / 2;
+			var y:uint = map.height / 2;
 			this.height = 300;
 			this.width = 220;
 			this.title = "Change attributes";
@@ -54,6 +54,7 @@ package org.openscales.core.popup
 				lb.text = attributes[i] + " : ";
 				vGroup.addElement(lb);
 				ti = new TextInput();
+				ti.width = 200;
 				ti.text = values[i];
 				vGroup.addElement(ti);
 				_textInputArray.push(ti);
@@ -72,6 +73,8 @@ package org.openscales.core.popup
 			
 			// Display the popup
 			PopUpManager.addPopUp(this, map, true);
+			this.x = x;
+			this.y = y;
 		}
 		
 		/**

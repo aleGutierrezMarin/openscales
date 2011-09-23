@@ -69,7 +69,7 @@ package org.openscales.core.handler.feature
 			else
 				feature = event.target as Feature;
 			
-			if (feature != null){
+			if (feature != null && feature.layer == this._layerToMove){
 				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.startDrag();
 				_featureCurrentlyDragged = feature;
@@ -81,21 +81,22 @@ package org.openscales.core.handler.feature
 		 */
 		override protected function onMouseUp(event:MouseEvent):void{
 			
-		 	var feature:Feature;
-			if (event.target is TextField){
-				feature = (event.target as TextField).parent as Feature;
+			if(this.map.hitTestPoint(event.stageX,event.stageY))
+			{
+				_stopPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 			}
 			else
-				feature = event.target as Feature;
-			
-		 	if (feature != null && _featureCurrentlyDragged == feature){
-				_stopPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
-				feature.stopDrag();
-				_featureCurrentlyDragged = null;
-				updateFeature(feature);
-				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,feature));
+			{
+				_stopPixel = _startPixel;
+			}
+			if(_featureCurrentlyDragged != null && _featureCurrentlyDragged.layer == this._layerToMove)
+			{
+				_featureCurrentlyDragged.stopDrag();
+				updateFeature(_featureCurrentlyDragged);
+				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,_featureCurrentlyDragged));
+				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,_featureCurrentlyDragged));
 				this._layerToMove.redraw();
+				_featureCurrentlyDragged = null;
 			}
 		 }
 		

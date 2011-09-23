@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 creationComplete="onCreationComplete()"
+		 initialize="init()"
 		 width="300" height="350">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
@@ -26,15 +26,27 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			
+			import org.openscales.core.Trace;
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
 			import org.openscales.core.format.GPXFormat;
 			import org.openscales.core.format.GeoRssFormat;
 			import org.openscales.core.format.KMLFormat;
 			import org.openscales.core.format.gml.writer.GML321Writer;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.handler.feature.SelectFeaturesHandler;
+			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.KML;
 			
 			private var _exportFeature:ExportFeature = null;
+			
+			/**
+			 * The current selected format
+			 * @default the first one : 0
+			 */
+			[Bindable]
+			public var selectedFormat:Number = 0;
 			
 			/**
 			 * Datas in the format dropdownlist
@@ -59,27 +71,19 @@
 			 */
 			[Bindable]
 			public var exportLabel:String = Catalog.getLocalizationForKey('drawing.export');
-			
-			
-			/**
-			 * The current selected format
-			 * @default the first one : 0
-			 */
-			[Bindable]
-			public var selectedFormat:Number = 0;
-			
+
 			
 			/**
 			 * The file reference
 			 */
 			private var fileReference:FileReference;
 			
-			private static const DEFAULT_FILE_NAME:String = "export.xml";
+			private static const DEFAULT_FILE_NAME:String = "export";
 			
 			/**
 			 * Initialise the component onCreationComplete
 			 */
-			public function onCreationComplete():void
+			public function init():void
 			{
 				if(!this.supportedFormat)
 				{
@@ -92,6 +96,8 @@
 					this.supportedFormat[3] = "OSM";
 					this.supportedFormat[4] = "GML";
 					*/
+					
+					this.selectedFormat = 0;
 				}
 				
 				// init formats :
@@ -146,50 +152,129 @@
 				fileReference.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 
 				var datas:Object;
+				var fileName:String = DEFAULT_FILE_NAME;
+				
+				// deselect/don't edit features for export
+				
+				// search the select handler
+				var currentSelection:Vector.<Feature> = new Vector.<Feature>();
+				var select:SelectFeaturesHandler = null;
+				var edit:FeatureLayerEditionHandler = null;
+				var i:int = 0;
+				var controls:Vector.<IHandler> = this.exportFeature.layer.map.controls;
+				var j:int = controls.length;
+				
+				for(; i<j; ++i)
+				{
+					if(controls[i] is FeatureLayerEditionHandler && controls[i].active)
+					{
+						edit = controls[i] as FeatureLayerEditionHandler;
+						if(!(edit.layerToEdit == this.exportFeature.layer))
+							edit = null;
+					}
+					
+					if(controls[i] is SelectFeaturesHandler && controls[i].active)
+					{
+						select = controls[i] as SelectFeaturesHandler;
+						if(!(select.layers[0] == this.exportFeature.layer))
+							select = null;
+						else
+							currentSelection = select.selectedFeatures;
+					}
+				}
+				
+				if(edit)
+				{
+					edit.editionModeStop();
+				}
+				
+				if(select)
+				{
+					// put back the original feature style (select or edit)
+					i=0;
+					j=currentSelection.length;
+					for(; i<j; ++i)
+					{
+						currentSelection[i].style = currentSelection[i].originalStyle;
+					}
+				}
+				
+				var export:Vector.<Feature> = new Vector.<Feature>();
+				for(var k:uint = 0; k < this.exportFeature.layer.features.length; k++){
+					export.push(this.exportFeature.layer.features[k].clone());
+				}
 				
 				switch(format)
 				{
 					case "KML":
 						
+						fileName += ".kml";
+						
 						var writeKML:KMLFormat = new KMLFormat();
-						datas = writeKML.write(this.exportFeature.layer.features);
+						datas = writeKML.write(export);
 						break;
 					
 					case "GPX":
 						
+						fileName += ".gpx";
+						
 						var writeGPX:GPXFormat = new GPXFormat();
-						datas = writeGPX.write(this.exportFeature.layer.features);
+						datas = writeGPX.write(export);
 						break;
 					
 					case "GeoRss":
 						
+						fileName += ".xml";
+						
 						var writeGeoRss:GeoRssFormat = new GeoRssFormat();
-						datas = writeGeoRss.write(this.exportFeature.layer.features);
+						datas = writeGeoRss.write(export);
 						break;
 					
 					case "OSM":
+						
+						fileName += ".osm";
 						break;
 					
 					case "GML":
+						
+						fileName += ".gml";
 						
 						var writeGML:GML321Writer = new GML321Writer();
 						//datas = writeGML.write(this.exportFeature.layer.features);
 						break;
 				}
 				
+				// redraw selected style
+				// put back the original feature style
+				if(select)
+				{
+					i=0;
+					j=currentSelection.length;
+					for(; i<j; ++i)
+					{
+						currentSelection[i].style = (select.selectedStyle != null) ? select.selectedStyle(currentSelection[i]) : SelectFeaturesHandler.defaultSelectedStyle(currentSelection[i]);
+					}
+				}
+				
+				if(edit)
+				{
+					edit.featuresToEdit = currentSelection;
+					edit.editionModeStart();
+				}
+				
 				//open a native save file dialog, using the default file name
-				fileReference.save(datas, DEFAULT_FILE_NAME);
+				fileReference.save(datas, fileName);
 				
 				this.exportFeature.closePopUp();
 			}
 			
 			
 			/**
-			 * called once the file has been saved
+			 * called once the fihg sle has been saved
 			 */
 			private function onFileSave(e:Event):void
 			{
-				trace("File Saved");
+				Trace.info("File Saved");
 				fileReference = null;
 			}
 			
@@ -198,7 +283,7 @@
 			 */
 			private function onCancel(e:Event):void
 			{
-				trace("File save select canceled.");
+				Trace.info("File save select canceled.");
 				fileReference = null;
 			}
 			
@@ -207,7 +292,7 @@
 			 */
 			private function onSaveError(e:IOErrorEvent):void
 			{
-				trace("Error Saving File : " + e.text);
+				Trace.info("Error Saving File : " + e.text);
 				fileReference = null;
 			}
 			

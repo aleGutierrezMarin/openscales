@@ -13,6 +13,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Collection;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
@@ -27,11 +28,15 @@ package org.openscales.core.handler.feature.draw
 	 * */
 	public class EditPathHandler extends AbstractEditCollectionHandler
 	{
-		public function EditPathHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null)
+		public function EditPathHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null,virtualStyle:Style = null)
 		{
 			this.featureClickHandler = featureClickHandler;
 			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
 			this.featuresToEdit = featuresToEdit;
+			if(virtualStyle == null)
+				this.virtualStyle = Style.getDefaultCircleStyle();
+			else
+				this.virtualStyle = virtualStyle;
 		}
 		
 		 /**
@@ -64,7 +69,7 @@ package org.openscales.core.handler.feature.draw
 			
 		 	if(_layerToEdit != null && !_isUsedAlone){
 				for each(var feature:Feature in this.featuresToEdit){
-					if(feature.isEditable && (feature.geometry is LineString || feature.geometry is MultiLineString)){
+					if((feature.geometry is LineString || feature.geometry is MultiLineString)){
 						// We display on the layer concerned by the operation the virtual vertices used for edition
 						// If the virtual vertices have to be displayed we displayed them
 						if(displayedVirtualVertices)
