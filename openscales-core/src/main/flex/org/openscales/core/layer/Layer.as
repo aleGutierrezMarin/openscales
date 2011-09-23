@@ -53,6 +53,7 @@ package org.openscales.core.layer {
 		protected var _imageSize:Size = null;
 		private var _tweenOnZoom:Boolean = true;
 		private var _tweenOnLoad:Boolean = true;
+		public var _color:uint = 0xffffff;
 		//GAB
 		private var _editable:Boolean = false;
 		private var _metaData:Object;

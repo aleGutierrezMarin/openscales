@@ -25,6 +25,7 @@
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.fx.control.drawing.DrawingToolbar;
 			import org.openscales.fx.control.layer.LayerManager;
 			
 			import spark.components.Label;
@@ -106,7 +107,7 @@
 			protected var _layer:Layer;
 			
 			[Bindable]
-			protected var _color:uint;
+			protected var _color:uint = 0xffffff;
 			
 			[Bindable]
 			protected var _layerManager:LayerManager;
@@ -241,17 +242,23 @@
 			//add
 			private function onThisLabelClick(evt:MouseEvent):void{
 				
-				if(this._layer is VectorLayer){
+				var displayDrawingToolbar:Boolean = true;
+				for(var k:uint = 0; k < this.layer.map.controls.length; k++){
+					if(this.layer.map.controls[k] is DrawingToolbar)
+						if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
+							displayDrawingToolbar = false;
+				}
+				if(this._layer is VectorLayer && !displayDrawingToolbar){
 					var event:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
 					event.layer = this._layer as VectorLayer;
 					this._layer.map.dispatchEvent(event);
-					this._color = 0xff0000;
+					this._layer._color = 0xd0d0d0;
 				}
 			}
 			private function onOtherLabelClick(evt:DrawingEvent):void{
 				
 				if(!(evt.layer is VectorLayer) || (evt.layer as VectorLayer) != this._layer)
-					this._color = 0;
+					this._layer._color = 0xffffff;
 			}
 			
 			/**
@@ -273,7 +280,8 @@
 				
 				if((this._layer != null) )
 				{	
-					layerSwitcherLabel.text = this._layer.name;	
+					layerSwitcherLabel.text = this._layer.name;
+					_color = this._layer._color;
 					
 					if(this._layer is VectorLayer && !(this._layer is WFS))
 						this._isDrawingLayer = true;
@@ -281,7 +289,13 @@
 					else
 						this._isDrawingLayer = false;
 					
-					this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer;
+					var displayDrawingToolbar:Boolean = true;
+					for(var k:uint = 0; k < this.layer.map.controls.length; k++){
+						if(this.layer.map.controls[k] is DrawingToolbar)
+							if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
+								displayDrawingToolbar = false;
+					}
+					this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer && displayDrawingToolbar;
 				}
 				
 				this.setGroupSize();
@@ -296,7 +310,14 @@
 			{
 				
 				this.isMinimized = !this.isMinimized;
-				this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer;
+				
+				var displayDrawingToolbar:Boolean = true;
+				for(var k:uint = 0; k < this.layer.map.controls.length; k++){
+					if(this.layer.map.controls[k] is DrawingToolbar)
+						if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
+							displayDrawingToolbar = false;
+				}
+				this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer && displayDrawingToolbar;
 				
 				this._btnReduceMaximize = this.isMinimized ?  BTN_MAXIMIZE : BTN_MINIMIZE;
 				
@@ -326,7 +347,7 @@
 	
 		<s:SkinnableContainer width="100%"
 						  height="25"
-						  id="hgroup" >
+						  id="hgroup" backgroundColor="{_color}" >
 		<s:layout>
 			<s:HorizontalLayout 
 				paddingLeft="2"
@@ -338,7 +359,7 @@
 		
 		<ChangeLayerVisibility layer="{_layer}" />
 		
-		<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" color="{_color}" />
+		<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" />
 		
 		<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 		
