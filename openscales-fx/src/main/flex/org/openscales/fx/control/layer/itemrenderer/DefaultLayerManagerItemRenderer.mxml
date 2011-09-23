@@ -246,13 +246,13 @@
 					var event:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
 					event.layer = this._layer as VectorLayer;
 					this._layer.map.dispatchEvent(event);
-					this._color = 0xd0d0d0;
+					this._layer._color = 0xd0d0d0;
 				}
 			}
 			private function onOtherLabelClick(evt:DrawingEvent):void{
 				
 				if(!(evt.layer is VectorLayer) || (evt.layer as VectorLayer) != this._layer)
-					this._color = 0xffffff;
+					this._layer._color = 0xffffff;
 			}
 			
 			/**
@@ -274,7 +274,8 @@
 				
 				if((this._layer != null) )
 				{	
-					layerSwitcherLabel.text = this._layer.name;	
+					layerSwitcherLabel.text = this._layer.name;
+					_color = this._layer._color;
 					
 					if(this._layer is VectorLayer && !(this._layer is WFS))
 						this._isDrawingLayer = true;
@@ -340,7 +341,7 @@
 	
 		<s:SkinnableContainer width="100%"
 						  height="25"
-						  id="hgroup" backgroundColor="{_color}">
+						  id="hgroup" backgroundColor="{_color}" >
 		<s:layout>
 			<s:HorizontalLayout 
 				paddingLeft="2"
