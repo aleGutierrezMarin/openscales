@@ -11,6 +11,9 @@ package org.openscales.core.format
 	import org.openscales.core.Trace;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
+	import org.openscales.core.layer.ogc.WFS;
+	import org.openscales.core.layer.ogc.WMTS;
+	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.layer.Layer;
 
@@ -81,9 +84,6 @@ package org.openscales.core.format
 					}
 				}
 
-
-
-
 				if(general..*::BoundingBox.length() > 0)
 				{
 					var bbox:XML = general..*::BoundingBox[0];
@@ -92,8 +92,11 @@ package org.openscales.core.format
 						this._generalBbox = new Bounds(bbox..@minx, bbox..@miny, bbox..@maxx, bbox..@maxy, bbox..@SRS);
 					}
 				}
+				if(general..*::Extension.length() > 0)
+				{
+					this.parseGeneralExtension(general..*::Extension[0]);
+				}
 				
-				this.parseGeneralExtension(general);
 			}
 			if(this.wmcFile..*::LayerList.length() > 0)
 			{
@@ -196,30 +199,45 @@ package org.openscales.core.format
 					var wms:WMS = new WMS(title,url,name,"",format);
 					wms.version = version;
 					wms.projection = srs;
-					wms.minResolution = new Resolution(1/minScaleDenominator, srs);
-					wms.maxResolution = new Resolution(1/maxScaleDenominator, srs);
+					wms.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
+					wms.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
 					layerToAdd = wms;
 					break;
 				case "OGC:WFS":
-					
+					var wfs:WFS = new WFS(title,url,name,version);
+					wfs.projSrsCode = srs;
+					wfs.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
+					wfs.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
+					layerToAdd = wfs;
 					break;
 				case "OGC:WMTS":
-					
+					var wmts:WMTS = new WMTS(title,url,name,"");
+					if (srs != "")
+					{
+						wmts.projSrsCode = srs;
+						wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
+						wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
+					}
+					layerToAdd = wmts;
 					break;
 				default:
 					Trace.debug("Service layer : "+service+" not supported");
 					break;
 			}
-			layerToAdd = this.parseLayerExtension(layer, layerToAdd);
+			if(layer..*::Extension.length() > 0)
+			{
+				layerToAdd = this.parseLayerExtension(layer..*::Extension[0], layerToAdd, service);
+			}
 			return layerToAdd;
 		}
 		
-		public function parseGeneralExtension(GeneralData:XML):void
+
+		public function parseGeneralExtension(extensionData:XML):void
 		{
 			
 		}
 		
-		public function parseLayerExtension(LayerData:XML, layer:Layer):Layer
+		public function parseLayerExtension(extensionData:XML, layer:Layer, service:String):Layer
 		{
 			return layer;
 		}
