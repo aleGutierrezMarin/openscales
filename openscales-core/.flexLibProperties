@@ -242,6 +242,7 @@
     <classEntry path="org.openscales.core.format.KMLBuildTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
+    <classEntry path="org.openscales.core.format.WMCFormatTest"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML321ParserTest"/>
     <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
