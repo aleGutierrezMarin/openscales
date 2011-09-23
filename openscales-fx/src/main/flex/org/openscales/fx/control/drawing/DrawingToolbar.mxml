@@ -176,6 +176,7 @@
 		<openscales:EditFeatures id="editFeatures" />
 		<openscales:MoveFeatures id="moveFeatures" />
 		<openscales:ManageAttributes id="manageAttributes" />
+		<openscales:AddVectorLayer map="{this.map}" />
 		<openscales:ImportFeature id="importFeature" map="{this.map}" />
 		<openscales:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" />
 	</s:Panel>
