@@ -242,7 +242,13 @@
 			//add
 			private function onThisLabelClick(evt:MouseEvent):void{
 				
-				if(this._layer is VectorLayer){
+				var displayDrawingToolbar:Boolean = true;
+				for(var k:uint = 0; k < this.layer.map.controls.length; k++){
+					if(this.layer.map.controls[k] is DrawingToolbar)
+						if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
+							displayDrawingToolbar = false;
+				}
+				if(this._layer is VectorLayer && !displayDrawingToolbar){
 					var event:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
 					event.layer = this._layer as VectorLayer;
 					this._layer.map.dispatchEvent(event);
