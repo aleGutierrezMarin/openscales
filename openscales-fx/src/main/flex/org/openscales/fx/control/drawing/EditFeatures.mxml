@@ -180,7 +180,7 @@
 			 */
 			private function onClick():void{
 				
-				if(!this.target)
+				if(!this.target || (this._handler && this._handler.active))
 					return;
 				this._isClick = true;
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_ACTIVATED);

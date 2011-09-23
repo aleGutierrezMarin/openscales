@@ -15,6 +15,8 @@
 			import mx.events.FlexEvent;
 			import mx.managers.PopUpManager;
 			
+			import org.openscales.core.Map;
+			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
@@ -39,6 +41,8 @@
 			 * The VectorLayer linked to this export button
 			 */
 			private var _layer:VectorLayer = null;
+			
+			private var _map:Map = null;
 
 			/**
 			 * Change the text values on Map Language changed
@@ -60,6 +64,9 @@
 			
 			public function exportFeature(event:MouseEvent):void
 			{
+				if(this._layer == null)
+					return;
+				
 				// Set the TitleWindow container properties.
 				myTitleWindow = new TitleWindow();
 				myTitleWindow.title = Catalog.getLocalizationForKey('drawing.export');
@@ -75,6 +82,23 @@
 				
 				// Use the PopUpManager to display the TitleWindow container.
 				PopUpManager.addPopUp(myTitleWindow, this, true);
+			}
+			
+			private function onChangeActiveLayer(event:DrawingEvent):void{
+				
+				if(this.parentDocument is DrawingToolbar)
+				{
+					this.layer = event.layer;
+				}
+			}
+			
+			public function set map(value:Map):void{
+				this._map = value;
+				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onChangeActiveLayer);
+				
+			}
+			public function get map():Map{
+				return this._map;
 			}
 			
 			private function onPopUpCreationComplete(e:Event):void
