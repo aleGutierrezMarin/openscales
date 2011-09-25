@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
-    <classEntry path="FlexUnitApplication"/>
     <classEntry path="assets.fxg.ButtonCloseOver"/>
     <classEntry path="assets.fxg.ButtonCloseUp"/>
     <classEntry path="assets.fxg.ButtonOpacity"/>
