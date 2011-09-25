@@ -591,7 +591,7 @@ package org.openscales.core.layer {
 				bounds = value as Bounds;
 				if (bounds.projSrsCode != this.projSrsCode)
 				{
-					bounds = bounds.reprojectTo(this.projSrsCode);
+					bounds = bounds.preciseReprojectBounds(this.projSrsCode);
 				}
 			}
 			if(bounds)
