@@ -47,7 +47,7 @@ package org.openscales.core.handler.feature.draw
 		 * */
 		public function set drawLayer(value:VectorLayer):void{
 			_drawLayer = value;
-			if(this.map) {
+			if(this.map && value) {
 				_drawLayer.projSrsCode = this.map.projection;
 				_drawLayer.minResolution = this.map.minResolution;
 				_drawLayer.maxResolution = this.map.maxResolution;

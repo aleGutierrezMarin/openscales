@@ -8,7 +8,7 @@
 	
 	<os:IconButton icon="{_btnExport}" toolTip="{this.tooltipExport}" click="{this.exportFeature(event)}"
 				   width="22"
-				   height="22" />
+				   height="22" alpha="{_alpha}" />
 	
 	<fx:Script>
 		<![CDATA[
@@ -26,11 +26,14 @@
 			import spark.components.TitleWindow;
 			
 			[Bindable]
+			private var _alpha:Number = 0.3;
+			
+			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-15.png")]
 			private var _btnExport:Class;
 			
 			[Bindable]
-			public var tooltipExport:String = Catalog.getLocalizationForKey('drawing.export');
+			private var tooltipExport:String = Catalog.getLocalizationForKey('drawing.export');
 			
 			/**
 			 * The valide import text

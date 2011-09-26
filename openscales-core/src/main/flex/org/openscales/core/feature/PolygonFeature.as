@@ -24,7 +24,7 @@ package org.openscales.core.feature {
 			if (symbolizer is PointSymbolizer) {
 
 				this.renderPointSymbolizer(symbolizer as PointSymbolizer);
-			} else {
+			} else if(this.layer.map) {
 				// Variable declaration before for loop to improve performances
 				var p:Point = null;
 				var x:Number;

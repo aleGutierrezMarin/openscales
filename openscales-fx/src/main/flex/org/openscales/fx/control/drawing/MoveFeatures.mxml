@@ -6,6 +6,7 @@
 			   implements="org.openscales.core.control.IControl"
 			   toolTip="{this.tooltip}"
 			   icon="{_btnMove}"
+			   alpha="{_alpha}"
 			   width="25"
 			   height="25"
 			   click="onClick()"
@@ -31,7 +32,10 @@
 			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
-			public var tooltip:String = Catalog.getLocalizationForKey('drawing.move');
+			private var _alpha:Number = 0.3;
+			
+			[Bindable]
+			private var tooltip:String = Catalog.getLocalizationForKey('drawing.move');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-10.png")]
@@ -109,10 +113,12 @@
 			private function activate():void{
 				
 				_handler.active = true;
+				_alpha = 1;
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
+				_alpha = 0.3;
 			}
 			
 			/**

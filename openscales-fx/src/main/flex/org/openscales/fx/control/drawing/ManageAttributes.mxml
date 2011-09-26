@@ -5,6 +5,7 @@
 			   xmlns:os="org.openscales.fx.control.*"
 			   toolTip="{this.tooltip}"
 			   icon="{_btnAttributes}"
+			   alpha="{_alpha}"
 			   width="25"
 			   height="25"
 			   click="onClick()">
@@ -30,7 +31,10 @@
 			import spark.components.TextInput;
 			
 			[Bindable]
-			public var tooltip:String = Catalog.getLocalizationForKey('drawing.attributes');
+			private var _alpha:Number = 0.3;
+			
+			[Bindable]
+			private var tooltip:String = Catalog.getLocalizationForKey('drawing.attributes');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-13.jpg")]
@@ -83,6 +87,8 @@
 			public function set target(value:VectorLayer):void{
 				
 				this._vectorLayer = value;
+				if(!value)
+					return;
 				
 				// set the default attributes if no attributes are defined
 				if(this._vectorLayer.attributesId.length == 0)

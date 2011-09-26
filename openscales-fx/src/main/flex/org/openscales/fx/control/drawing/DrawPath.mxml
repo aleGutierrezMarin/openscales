@@ -6,6 +6,7 @@
 			   implements="org.openscales.core.control.IControl"
 			   toolTip="{this.tooltip}"
 			   icon="{_btnPath}"
+			   alpha="{_alpha}"
 			   width="25"
 			   height="25"
 			   click="onClick()"
@@ -22,17 +23,19 @@
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
-			public var tooltip:String = Catalog.getLocalizationForKey('drawing.path');
+			private var _alpha:Number = 0.3;
+			
+			[Bindable]
+			private var tooltip:String = Catalog.getLocalizationForKey('drawing.path');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-04.png")]
@@ -121,10 +124,12 @@
 			private function activate():void{
 				
 				_handler.active = true;
+				_alpha = 1;
 			}
 			private function disactivate():void{
 				
 				_handler.active = false;
+				_alpha = 0.3;
 			}
 			
 			/**

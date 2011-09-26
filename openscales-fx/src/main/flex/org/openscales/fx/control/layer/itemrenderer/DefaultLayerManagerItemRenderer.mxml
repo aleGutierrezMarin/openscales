@@ -21,6 +21,7 @@
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.VectorLayer;
@@ -107,7 +108,7 @@
 			protected var _layer:Layer;
 			
 			[Bindable]
-			protected var _color:uint = 0xffffff;
+			protected var _color:uint;
 			
 			[Bindable]
 			protected var _layerManager:LayerManager;
@@ -238,8 +239,24 @@
 				this.layerSwitcherLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
 				this.layerSwitcherLabel.addEventListener(MouseEvent.CLICK, this.onThisLabelClick);
 				this._layer.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onOtherLabelClick);
+				this._layer.map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerRemoved);
 			}
-			//add
+			
+			/**
+			 * Called when a layer is removed
+			 */
+			private function onLayerRemoved(event:LayerEvent):void{
+				if(event.layer.selected && this._layer.map){
+					event.layer.selected = false;
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+					evt.layer = null;
+					this._layer.map.dispatchEvent(evt);
+				}
+			}
+			
+			/**
+			 * Update the layer on its label click
+			 */
 			private function onThisLabelClick(evt:MouseEvent):void{
 				
 				var displayDrawingToolbar:Boolean = true;
@@ -252,13 +269,18 @@
 					var event:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
 					event.layer = this._layer as VectorLayer;
 					this._layer.map.dispatchEvent(event);
-					this._layer._color = 0xd0d0d0;
+					this._layer.selected = true;
 				}
 			}
+			
+			/**
+			 * Update the layer on other label click
+			 */
 			private function onOtherLabelClick(evt:DrawingEvent):void{
 				
-				if(!(evt.layer is VectorLayer) || (evt.layer as VectorLayer) != this._layer)
-					this._layer._color = 0xffffff;
+				if(!(evt.layer is VectorLayer) || (evt.layer as VectorLayer) != this._layer){
+					this._layer.selected = false;
+				}
 			}
 			
 			/**
@@ -281,7 +303,7 @@
 				if((this._layer != null) )
 				{	
 					layerSwitcherLabel.text = this._layer.name;
-					_color = this._layer._color;
+					_color = this._layer.selected ? 0xd0d0d0 : 0xffffff;
 					
 					if(this._layer is VectorLayer && !(this._layer is WFS))
 						this._isDrawingLayer = true;

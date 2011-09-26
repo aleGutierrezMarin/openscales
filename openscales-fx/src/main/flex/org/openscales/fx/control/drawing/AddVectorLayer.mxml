@@ -6,7 +6,7 @@
 	
 	<os:IconButton icon="{_btnAddVector}" click="onClick()" toolTip="{this.labelAddVector}"
 				   width="22"
-				   height="22" />
+				   height="22" alpha="{_alpha}" />
 	
 	<fx:Script>
 		<![CDATA[
@@ -25,7 +25,9 @@
 			import spark.layouts.HorizontalAlign;
 			import spark.layouts.HorizontalLayout;
 			import spark.layouts.VerticalLayout;
-
+			
+			[Bindable]
+			private var _alpha:Number = 0.3;
 			/**
 			 * Translation for label button
 			 */

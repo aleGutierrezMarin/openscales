@@ -53,7 +53,7 @@ package org.openscales.core.layer {
 		protected var _imageSize:Size = null;
 		private var _tweenOnZoom:Boolean = true;
 		private var _tweenOnLoad:Boolean = true;
-		public var _color:uint = 0xffffff;
+		private var _selected:Boolean = false;
 		//GAB
 		private var _editable:Boolean = false;
 		private var _metaData:Object;
@@ -771,6 +771,13 @@ package org.openscales.core.layer {
 		} 
 		
 		//GAB
+		public function get selected():Boolean{
+			return _selected;
+		}
+		public function set selected(value:Boolean):void{
+			_selected = value;
+		}
+		
 		public function get editable():Boolean{
 			return _editable;
 		}

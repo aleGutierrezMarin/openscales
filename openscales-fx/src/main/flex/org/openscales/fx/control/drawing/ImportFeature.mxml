@@ -12,7 +12,7 @@
 	
 	<os:IconButton icon="{_btnImport}" toolTip="{this.tooltipImport}" click="{this.importFeature(event)}"
 				   width="22"
-				   height="22" />
+				   height="22" alpha="{_alpha}" />
 	
 	<fx:Script>
 		<![CDATA[
@@ -30,6 +30,9 @@
 			import spark.components.TitleWindow;
 			
 			[Bindable]
+			private var _alpha:Number = 0.3;
+			
+			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-13.png")]
 			private var _btnImport:Class;
 			
@@ -37,7 +40,7 @@
 			 * Tooltip that appears over Import button
 			 */
 			[Bindable]
-			public var tooltipImport:String = Catalog.getLocalizationForKey('drawing.import');
+			private var tooltipImport:String = Catalog.getLocalizationForKey('drawing.import');
 	
 			private var _map:Map = null;
 

@@ -6,6 +6,7 @@
 			   implements="org.openscales.core.control.IControl"
 			   toolTip="{this.tooltip}"
 			   icon="{_btnEdit}"
+			   alpha="{_alpha}"
 			   width="25"
 			   height="25"
 			   click="onClick()"
@@ -33,7 +34,10 @@
 			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
-			public var tooltip:String = Catalog.getLocalizationForKey('drawing.edit');
+			private var _alpha:Number = 0.3;
+			
+			[Bindable]
+			private var tooltip:String = Catalog.getLocalizationForKey('drawing.edit');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-08.png")]
@@ -155,6 +159,8 @@
 				// Add a new FeatureLayerEditionHandler
 				this._handler = new FeatureLayerEditionHandler(this.map,this.target,true);
 				this._handler.virtualStyle = this._virtualStyle;
+				
+				_alpha = 1;
 			}
 			
 			/**
@@ -179,6 +185,8 @@
 				// Add the previous SelectFeaturesHandler
 				if(this._previousSelectFeaturesHandler)
 					this._previousSelectFeaturesHandler.map = this.map;
+				
+				_alpha = 0.3;
 			}
 			
 			/**
