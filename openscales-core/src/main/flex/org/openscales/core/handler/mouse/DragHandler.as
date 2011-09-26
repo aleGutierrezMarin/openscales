@@ -66,7 +66,8 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				//this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
-				this.map.stage.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				if(this.map.stage)
+					this.map.stage.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 				if (this._drawingEventSensitive) {
 					this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
