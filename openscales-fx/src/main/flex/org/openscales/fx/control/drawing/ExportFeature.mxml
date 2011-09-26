@@ -6,7 +6,9 @@
 		 xmlns:os="org.openscales.fx.control.*">
 	
 	
-	<s:Button label="{this.tooltipExport}" toolTip="{this.tooltipExport}" click="{this.exportFeature(event)}" />
+	<os:IconButton icon="{_btnExport}" toolTip="{this.tooltipExport}" click="{this.exportFeature(event)}"
+				   width="22"
+				   height="22" />
 	
 	<fx:Script>
 		<![CDATA[
@@ -22,6 +24,10 @@
 			import org.openscales.core.layer.VectorLayer;
 			
 			import spark.components.TitleWindow;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-15.png")]
+			private var _btnExport:Class;
 			
 			[Bindable]
 			public var tooltipExport:String = Catalog.getLocalizationForKey('drawing.export');

@@ -2,14 +2,17 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:openscales="http://openscales.org" >
+		 xmlns:openscales="http://openscales.org"
+		 xmlns:os="org.openscales.fx.control.*">
 	
 	<s:states>
 		<s:State name="normal" />
 		<s:State name="popup" />
 	</s:states>
 	
-	<s:Button label="{this.tooltipImport}" toolTip="{this.tooltipImport}" click="{this.importFeature(event)}" />
+	<os:IconButton icon="{_btnImport}" toolTip="{this.tooltipImport}" click="{this.importFeature(event)}"
+				   width="22"
+				   height="22" />
 	
 	<fx:Script>
 		<![CDATA[
@@ -25,6 +28,10 @@
 			import org.openscales.core.layer.osm.OSM;
 			
 			import spark.components.TitleWindow;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-13.png")]
+			private var _btnImport:Class;
 			
 			/**
 			 * Tooltip that appears over Import button
