@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:os="org.openscales.fx.control.*"
-			   toolTip="Manage attributes"
+			   toolTip="{this.tooltip}"
 			   icon="{_btnAttributes}"
 			   width="25"
 			   height="25"
@@ -26,12 +26,16 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-			
+			import org.openscales.core.i18n.Catalog;
 			import spark.components.TextInput;
+			
+			[Bindable]
+			public var tooltip:String = Catalog.getLocalizationForKey('drawing.attributes');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-13.jpg")]
 			private var _btnAttributes:Class;
+			
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
 			private var _defaultAttributes:Array = new Array("id","desc");
@@ -225,6 +229,13 @@
 				}
 			}
 			
+			/**
+			 * Update texts on map language changed
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void{
+				
+				this.tooltip = Catalog.getLocalizationForKey('drawing.attributes');
+			}
 		]]>
 	</fx:Script>			
 </os:IconButton>

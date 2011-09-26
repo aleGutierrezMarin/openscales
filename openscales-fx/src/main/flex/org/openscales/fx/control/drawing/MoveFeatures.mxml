@@ -4,7 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:os="org.openscales.fx.control.*"
 			   implements="org.openscales.core.control.IControl"
-			   toolTip="Move features"
+			   toolTip="{this.tooltip}"
 			   icon="{_btnMove}"
 			   width="25"
 			   height="25"
@@ -27,10 +27,16 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			[Bindable]
+			public var tooltip:String = Catalog.getLocalizationForKey('drawing.move');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-10.png")]
 			private var _btnMove:Class;
+			
 			private var _active:Boolean = true;
 			private var _handler:DragFeatureHandler = new DragFeatureHandler();
 			private var _isClick:Boolean = false;
@@ -137,6 +143,9 @@
 					this._isClick = false;
 			}
 			
+			/**
+			 * Update the target on active layer changed
+			 */
 			private function onChangeActiveLayer(evt:DrawingEvent):void{
 				
 				if(this.parentDocument is DrawingToolbar)
@@ -148,8 +157,15 @@
 				}
 			}
 			
-			// to do
-			public function onMapLanguageChange(event:I18NEvent):void{}
+			/**
+			 * Update texts on map language changed
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void{
+				
+				this.tooltip = Catalog.getLocalizationForKey('drawing.move');
+			}
+			
+			// Unused functions
 			public function draw():void{
 				
 				this.invalidateDisplayList();
