@@ -24,6 +24,10 @@ package org.openscales.core.feature
 		}
 
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
+			
+			if(!this.layer.map)
+				return;
+			
 			// Regardless to the style, a LineString is never filled
 			this.graphics.endFill();
 			

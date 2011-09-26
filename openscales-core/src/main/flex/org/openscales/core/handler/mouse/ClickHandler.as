@@ -107,6 +107,7 @@ package org.openscales.core.handler.mouse
 				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateZoomOnDoubleClick);
 				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateZoomOnDoubleClick);
 				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateZoomOnDoubleClick);
+				this.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, activateZoomOnDoubleClick);
 			}
 		}
 		

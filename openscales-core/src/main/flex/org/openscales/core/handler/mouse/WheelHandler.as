@@ -23,6 +23,7 @@ package org.openscales.core.handler.mouse {
 				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateHandler);
 				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateHandler);
 				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateHandler);
+				this.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, activateHandler);
 			}
 		}
 		
