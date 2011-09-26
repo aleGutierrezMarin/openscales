@@ -663,19 +663,23 @@ package org.openscales.core.handler.feature
 				layersToTest = layersTmp;
 				// 
 				for each (layer in layersToTest) {
-					for each (var feature:Feature in layer.features) {
-						if (geom.intersects(feature.geometry)) {
-							featuresToSelect.push(feature);
+					for(var i:uint = layer.features.length; i > 0; i--){
+						if (geom.intersects(layer.features[i-1].geometry)) {
+							featuresToSelect.push(layer.features[i-1]);
+							if(!this._enableMultipleSelection)
+								break;
 						}
 					}
 				}
 			}
 			
 			// FIX ME : don't work if multiple selection is enabled
-			if (this.selectedFeatures.length > 0 && featuresToSelect.length > 0 &&
-				featuresToSelect[0] == this.selectedFeatures[0] && this._toggle){
-				this.unselect(featuresToSelect);
-				return;
+			if(!this._enableMultipleSelection){
+				if (this.selectedFeatures.length > 0 && featuresToSelect.length > 0 &&
+					featuresToSelect[0] == this.selectedFeatures[0] && this._toggle){
+					this.unselect(featuresToSelect);
+					return;
+				}
 			}
 			
 			// Update the selection
