@@ -60,7 +60,7 @@ package org.openscales.core.feature {
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 			var x:Number;
 			var y:Number;
-			if(!this.layer)
+			if(!this.layer || !this.layer.map)
 				return;
 			var resolution:Number = this.layer.map.resolution.value;
 			var dX:int = -int(this.layer.map.x) + this.left;
