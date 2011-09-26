@@ -4,8 +4,9 @@
 		   xmlns:mx="library://ns.adobe.com/flex/mx"
 		   xmlns:os="org.openscales.fx.control.*">
 	
-	<s:Button  label="{labelAddVector}"
-			   click="onClick()" />
+	<os:IconButton icon="{_btnAddVector}" click="onClick()" toolTip="{this.labelAddVector}"
+				   width="22"
+				   height="22" />
 	
 	<fx:Script>
 		<![CDATA[
@@ -17,6 +18,7 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			
+			import spark.components.Button;
 			import spark.components.Label;
 			import spark.components.TextInput;
 			import spark.components.TitleWindow;
@@ -27,6 +29,9 @@
 			/**
 			 * Translation for label button
 			 */
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-14.png")]
+			private var _btnAddVector:Class;
 			
 			[Bindable]
 			public var labelAddVector:String = Catalog.getLocalizationForKey('drawing.addvectorlayer');
@@ -116,7 +121,7 @@
 				group.addElement(nameGroup);
 				
 				
-				var button:Button = new Button()
+				var button:Button = new Button();
 				button.label = this.validateLabel;
 				button.addEventListener(MouseEvent.CLICK, addVectorLayer);
 				
