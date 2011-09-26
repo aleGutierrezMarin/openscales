@@ -4,7 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:os="org.openscales.fx.control.*"
 			   implements="org.openscales.core.control.IControl"
-			   toolTip="Draw a path"
+			   toolTip="{this.tooltip}"
 			   icon="{_btnPath}"
 			   width="25"
 			   height="25"
@@ -28,10 +28,16 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			[Bindable]
+			public var tooltip:String = Catalog.getLocalizationForKey('drawing.path');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-04.png")]
 			private var _btnPath:Class;
+			
 			private var _active:Boolean = true;
 			private var _handler:AbstractDrawHandler= new DrawPathHandler();
 			private var _isClick:Boolean = false;
@@ -153,6 +159,9 @@
 					this._isClick = false;
 			}
 			
+			/**
+			 * Update the target on active layer changed
+			 */
 			private function onChangeActiveLayer(evt:DrawingEvent):void{
 				
 				if(this.parentDocument is DrawingToolbar)
@@ -167,8 +176,15 @@
 				}
 			}
 			
-			// to do
-			public function onMapLanguageChange(event:I18NEvent):void{}
+			/**
+			 * Update texts on map language changed
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void{
+				
+				this.tooltip = Catalog.getLocalizationForKey('drawing.path');
+			}
+			
+			// Unused functions
 			public function draw():void{
 				
 				this.invalidateDisplayList();
