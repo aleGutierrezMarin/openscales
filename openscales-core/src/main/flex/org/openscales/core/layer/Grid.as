@@ -236,6 +236,36 @@ package org.openscales.core.layer
 				_initialized = true;
 			}
 
+			
+			if (centerChangedCache || projectionChangedCache || resolutionChangedCache || forceReTile)
+			{
+				if (!this.tiled) 
+				{
+						if (!this._timer.running)
+						{
+							this.clear();
+							this.initSingleTile(bounds);
+						}
+				} else {
+					if (resolution != this._resquestResolution || forceReTile)
+					{
+//						var bounds2:Bounds = this.map.getExtentForResolution(new Resolution(resolution, this.map.resolution.projection)).clone();
+						this.initGriddedTiles(bounds, true);
+						ratio = resolution/this.map.resolution.value;
+						this.scaleX = this.scaleX * ratio;
+						this.scaleY = this.scaleY * ratio;
+						//this.scaleLayer(ratio, new Pixel(0, 0));
+						this._previousResolution = this.map.resolution;
+						//resolutionChangedCache = false;
+						centerChangedCache = false;
+						this._previousCenter = this.map.center.clone();
+					} else 
+					{
+						this.moveGriddedTiles(bounds);
+					}
+				} 
+			}
+			
 			if (resolutionChangedCache)
 			{
 				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
@@ -254,30 +284,6 @@ package org.openscales.core.layer
 				this._previousCenter = this.map.center.clone();
 			}
 			
-			
-			if (centerChangedCache || projectionChangedCache || resolutionChangedCache || forceReTile)
-			{
-				if (!this.tiled) 
-				{
-						if (!this._timer.running)
-						{
-							this.clear();
-							this.initSingleTile(bounds);
-						}
-				} else {
-					if (resolution != this._resquestResolution || forceReTile)
-					{
-//						var bounds2:Bounds = this.map.getExtentForResolution(new Resolution(resolution, this.map.resolution.projection)).clone();
-						this.initGriddedTiles(bounds, true);
-						ratio = resolution/this.map.resolution.value;
-						this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
-					} else 
-					{
-						
-						this.moveGriddedTiles(bounds);
-					}
-				}
-			}
 		}
 		
 		/**
@@ -478,27 +484,27 @@ package org.openscales.core.layer
 			_resquestResolution = this.requestedResolution.value;
 			var ratio = this.requestedResolution.value / this.map.resolution.value;
 			var viewSize:Size = this.map.size;
-			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight*ratio) + 
+			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
 				Math.max(1, 2 * this.buffer);
-			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth*ratio) +
+			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
 				Math.max(1, 2 * this.buffer);
 			
 			
-			var tilelon:Number = _resquestResolution * this.tileWidth*ratio;
-			var tilelat:Number = _resquestResolution * this.tileHeight*ratio;
+			var tilelon:Number = _resquestResolution * this.tileWidth;
+			var tilelat:Number = _resquestResolution * this.tileHeight;
 			
 			// Longitude
 			var offsetlon:Number = bounds.left - projectedTileOrigin.lon;
 			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
 			var tilecolremain:Number = offsetlon/tilelon - tilecol;
-			var tileoffsetx:Number = -tilecolremain * this.tileWidth*ratio;
+			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
 			var tileoffsetlon:Number = projectedTileOrigin.lon + tilecol * tilelon;
 			
 			// Latitude
 			var offsetlat:Number = bounds.top - (projectedTileOrigin.lat + tilelat);  
 			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
 			var tilerowremain:Number = tilerow - offsetlat/tilelat;
-			var tileoffsety:Number = -tilerowremain * this.tileHeight*ratio;
+			var tileoffsety:Number = -tilerowremain * this.tileHeight;
 			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
 			
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
@@ -651,15 +657,15 @@ package org.openscales.core.layer
 			
 			while (true) {
 				var tlLayer:Pixel = this.grid[0][0].position;
-				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x/this.transform.matrix.a, tlLayer.y + this.y/this.transform.matrix.d);
 				var ratio:Number = this.getSupportedResolution(this.map.resolution).value / this.map.resolution.value; 
-				if (tlViewPort.x > -this.tileWidth  * (buffer - 1)) {
+				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x, tlLayer.y + this.y); 
+				if (tlViewPort.x > -this.tileWidth * (buffer - 1)) {
 					this.shiftColumn(true);
-				} else if (tlViewPort.x < -this.tileWidth  * buffer) {
+				} else if (tlViewPort.x < -this.tileWidth * buffer) {
 					this.shiftColumn(false);
-				} else if (tlViewPort.y > -this.tileHeight  * (buffer - 1)) {
+				} else if (tlViewPort.y > -this.tileHeight * (buffer - 1)) {
 					this.shiftRow(true);
-				} else if (tlViewPort.y < -this.tileHeight  * buffer) {
+				} else if (tlViewPort.y < -this.tileHeight * buffer) {
 					this.shiftRow(false);
 				} else {
 					break;
