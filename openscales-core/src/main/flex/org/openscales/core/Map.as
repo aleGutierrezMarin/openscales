@@ -122,7 +122,7 @@ package org.openscales.core
 		private var _defaultZoomOutFactor:Number = DEFAULT_ZOOM_OUT_FACTOR;
 		private var _targetZoomPixel:Pixel = null;
 		
-		private var _debug_max_extent:Boolean = false;
+		private var _debug_max_extent:Boolean = true;
 		
 		private var _extenTDebug:Shape;
 		
