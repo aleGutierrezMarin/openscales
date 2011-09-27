@@ -85,13 +85,16 @@
     <classEntry path="org.openscales.core.filter.expression.IExpression"/>
     <classEntry path="org.openscales.core.format.FilterEncodingFormat"/>
     <classEntry path="org.openscales.core.format.Format"/>
+    <classEntry path="org.openscales.core.format.GPXFormat"/>
     <classEntry path="org.openscales.core.format.GeoRssFormat"/>
     <classEntry path="org.openscales.core.format.KMLFormat"/>
     <classEntry path="org.openscales.core.format.WFSFormat"/>
     <classEntry path="org.openscales.core.format.WKTFormat"/>
+    <classEntry path="org.openscales.core.format.WMCFormat"/>
     <classEntry path="org.openscales.core.format.gml.GMLFormat"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML2"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML311"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML321"/>
     <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
     <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
     <classEntry path="org.openscales.core.format.gml.writer.GMLWriter"/>
@@ -109,6 +112,7 @@
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPolygonHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawSegmentHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPointHandler"/>
@@ -127,6 +131,7 @@
     <classEntry path="org.openscales.core.i18n.Locale"/>
     <classEntry path="org.openscales.core.i18n.provider.I18nJSONProvider"/>
     <classEntry path="org.openscales.core.i18n.provider.Ii18nProvider"/>
+    <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
     <classEntry path="org.openscales.core.layer.HTTPRequest"/>
@@ -136,6 +141,7 @@
     <classEntry path="org.openscales.core.layer.PolyLayer"/>
     <classEntry path="org.openscales.core.layer.SwitchLayers"/>
     <classEntry path="org.openscales.core.layer.TMS"/>
+    <classEntry path="org.openscales.core.layer.VectorLayer"/>
     <classEntry path="org.openscales.core.layer.capabilities.CapabilitiesParser"/>
     <classEntry path="org.openscales.core.layer.capabilities.GetCapabilities"/>
     <classEntry path="org.openscales.core.layer.capabilities.WFS100"/>
