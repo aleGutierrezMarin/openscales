@@ -93,6 +93,7 @@
 			import org.openscales.core.layer.ogc.GPX;
 			import org.openscales.core.layer.ogc.GeoRss;
 			import org.openscales.core.layer.osm.OSM;
+			import org.openscales.core.events.DrawingEvent;
 			
 			private const FORMAT_PROVIDER_CHANGED:String = "formatProviderChanged";
 			private const VERSION_PROVIDER_CHANGED:String = "versionProviderChanged";
@@ -365,6 +366,7 @@
 				sourceError.visible = false;
 				
 				var xml:XML = null;
+				var evt:DrawingEvent;
 				
 				if(valide)
 				{
@@ -377,6 +379,7 @@
 							if(selectedSource == 1)
 							{
 								kml = new KML(name, url);
+								kml.selected = true;
 								this.importFeature.map.addLayer(kml);
 							}
 							
@@ -384,12 +387,14 @@
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								kml = new KML(name, null, xml);
+								kml.selected = true;
 								this.importFeature.map.addLayer(kml);
 							}
+							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+							evt.layer = kml;
+							this.importFeature.map.dispatchEvent(evt);
 							
-							
-						
-						break;
+							break;
 						
 						case "GPX":
 						
@@ -398,39 +403,46 @@
 							if(selectedSource == 1)
 							{
 								gpx = new GPX(name, version, url);
+								gpx.selected = true;
 								this.importFeature.map.addLayer(gpx);
 							}
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
-								
 								gpx = new GPX(name, version, null, xml);
+								gpx.selected = true;
 								this.importFeature.map.addLayer(gpx);
 							}
-						
+							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+							evt.layer = gpx;
+							this.importFeature.map.dispatchEvent(evt);
 							
-						break;
+							break;
 						
 						case "GeoRSS":
 							
 							if(selectedSource == 1)
 							{
 								var geoRss:GeoRss = new GeoRss(name, url);
+								geoRss.selected = true;
 								this.importFeature.map.addLayer(geoRss);
 							}
 							else // locale file
 							{
 								
 							}
+							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+							evt.layer = geoRss;
+							this.importFeature.map.dispatchEvent(evt);
 							
-							
-						break;
+							break;
 						
 						case "OSM":
 						
 							if(selectedSource == 1)
 							{
 								var osm:OSM = new OSM(name, url);
+								osm.selected = true;
 								this.importFeature.map.addLayer(osm);
 							}
 							else // locale file
@@ -438,7 +450,7 @@
 								
 							}
 							
-						break;
+							break;
 						
 						case "GML":
 						
@@ -447,18 +459,21 @@
 							if(selectedSource == 1)
 							{
 								gml = new GML(name, version, this.importFeature.map.projection, url);
+								gml.selected = true;
 								this.importFeature.map.addLayer(gml);
 							}
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
-								
 								gml = new GML(name, version, this.importFeature.map.projection, null, xml);
+								gml.selected = true;
 								this.importFeature.map.addLayer(gml);
 							}
+							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+							evt.layer = gml;
+							this.importFeature.map.dispatchEvent(evt);
 							
-						break;
-						
+							break;
 					}	
 					this.importFeature.closePopUp();
 				}

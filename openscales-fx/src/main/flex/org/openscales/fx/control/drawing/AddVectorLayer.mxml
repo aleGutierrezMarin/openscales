@@ -14,6 +14,7 @@
 			import mx.managers.PopUpManager;
 			
 			import org.openscales.core.Map;
+			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
@@ -159,7 +160,12 @@
 				this._errorLabel.visible = this.displayNameError;
 				
 				var layer:VectorLayer = new VectorLayer(value);
+				layer.selected = true;
 				this.map.addLayer(layer);	
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+				evt.layer = layer;
+				this.map.dispatchEvent(evt);
 				
 				this.closePopUp();
 			}
