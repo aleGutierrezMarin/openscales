@@ -265,11 +265,12 @@
 						if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
 							displayDrawingToolbar = false;
 				}
-				if(this._layer is VectorLayer && !displayDrawingToolbar){
+				if(this._layer.hasOwnProperty("features") && !displayDrawingToolbar){
 					var event:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
 					event.layer = this._layer as VectorLayer;
-					this._layer.map.dispatchEvent(event);
 					this._layer.selected = true;
+					_color = this._layer.selected ? 0xd0d0d0 : 0xffffff;
+					this._layer.map.dispatchEvent(event);
 				}
 			}
 			
@@ -278,8 +279,11 @@
 			 */
 			private function onOtherLabelClick(evt:DrawingEvent):void{
 				
-				if(!(evt.layer is VectorLayer) || (evt.layer as VectorLayer) != this._layer){
+				if(!evt.layer)
+					return;
+				if(!(evt.layer.hasOwnProperty("features")) || evt.layer != this._layer){
 					this._layer.selected = false;
+					_color = this._layer.selected ? 0xd0d0d0 : 0xffffff;
 				}
 			}
 			
@@ -303,9 +307,8 @@
 				if((this._layer != null) )
 				{	
 					layerSwitcherLabel.text = this._layer.name;
-					_color = this._layer.selected ? 0xd0d0d0 : 0xffffff;
 					
-					if(this._layer is VectorLayer && !(this._layer is WFS))
+					if(this._layer.hasOwnProperty("features") && !(this._layer is WFS))
 						this._isDrawingLayer = true;
 						
 					else
@@ -317,6 +320,7 @@
 							if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
 								displayDrawingToolbar = false;
 					}
+					_color = (this._layer.selected && !displayDrawingToolbar) ? 0xd0d0d0 : 0xffffff;
 					this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer && displayDrawingToolbar;
 				}
 				

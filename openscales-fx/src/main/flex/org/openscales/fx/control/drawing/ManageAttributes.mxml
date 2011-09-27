@@ -71,6 +71,8 @@
 			public function set defaultAttributes(value:Array):void{
 				
 				this._defaultAttributes = value;
+				if(this._vectorLayer)
+					this._vectorLayer.attributesId = this._defaultAttributes;
 			}
 			public function get defaultAttributes():Array{
 				
@@ -90,8 +92,12 @@
 				if(!value)
 					return;
 				
-				// set the default attributes if no attributes are defined
-				if(this._vectorLayer.attributesId.length == 0)
+				// set the default attributes if this is the first selection of the layer
+				if(this._vectorLayer.firstSelection && this.parentDocument is DrawingToolbar){
+					this._vectorLayer.attributesId = this._defaultAttributes;
+					this._vectorLayer.firstSelection = false;
+				}
+				else if(this._vectorLayer.firstSelection)
 					this._vectorLayer.attributesId = this._defaultAttributes;
 				
 				if(this._vectorLayer)
