@@ -41,7 +41,7 @@ package
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
 			
-			// Add a base layer to the map	
+			// Add a base layer to the map  
 			var wmsLayer:WMS = new WMS("Scan","http://pp-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4");
 			wmsLayer.version = "1.3.0";
 			wmsLayer.layers = "SCANDEP_PNG_IGNF_LAMB93";
@@ -56,7 +56,7 @@ package
 				"http://openscales.org/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:world_borders&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
 				xml,null);
 			_map.addLayer(GMLlayer);
-				
+			
 			// GML 3.2.1 layer; fetch data from url or file; (points in New York)
 			var xml3:XML = new XML(new XMLCONTENTPOINTS());
 			var style3:Style = Style.getDefaultPointStyle();

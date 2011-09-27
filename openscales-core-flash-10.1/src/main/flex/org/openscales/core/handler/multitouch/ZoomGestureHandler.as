@@ -3,6 +3,7 @@ package org.openscales.core.handler.multitouch {
 	
 	import flash.events.GestureEvent;
 	import flash.events.GesturePhase;
+	import flash.events.MouseEvent;
 	import flash.events.TransformGestureEvent;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
@@ -29,6 +30,7 @@ package org.openscales.core.handler.multitouch {
 					Multitouch.inputMode = MultitouchInputMode.GESTURE;
 				this.map.addEventListener(TransformGestureEvent.GESTURE_ZOOM,this.onGestureZoom);
 				this.map.addEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
+				this.map.addEventListener(MouseEvent.DOUBLE_CLICK,this.onDoubleClick);
 			}
 		}
 		
@@ -36,6 +38,7 @@ package org.openscales.core.handler.multitouch {
 			if (this.map) {
 				this.map.removeEventListener(TransformGestureEvent.GESTURE_ZOOM,this.onGestureZoom);
 				this.map.removeEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP,this.onTwoFingerTap);
+				this.map.removeEventListener(MouseEvent.DOUBLE_CLICK,this.onDoubleClick);
 			}
 		}
 		
@@ -46,17 +49,22 @@ package org.openscales.core.handler.multitouch {
 				this.cummulativeScaleY = 1;
 			} else if (event.phase==GesturePhase.UPDATE) {
 				this.cummulativeScaleX = this.cummulativeScaleX * event.scaleX;
-				this.cummulativeScaleY = this.cummulativeScaleY * event.scaleY;
-			} if (event.phase==GesturePhase.END) {
-				
+				this.cummulativeScaleY = this.cummulativeScaleY * event.scaleY;		
+			} if (event.phase==GesturePhase.END) {		
 				if(cummulativeScaleX*cummulativeScaleY > 1)
 					this.map.zoomIn();
+					
 				else
 					this.map.zoomOut();
+					
 			}
 		}
 		
 		private function onTwoFingerTap(event:GestureEvent):void {
+			this.map.zoomIn();
+		}
+		
+		private function onDoubleClick(event:MouseEvent):void {
 			this.map.zoomIn();
 		}
 		
