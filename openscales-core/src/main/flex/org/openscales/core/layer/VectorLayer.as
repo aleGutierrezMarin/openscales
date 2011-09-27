@@ -47,6 +47,7 @@ package org.openscales.core.layer
 		private var _idLabel:uint = 0;
 		private var _attributesVal:Array = new Array();
 		private var _attributesId:Array = new Array();
+		private var _firstSelection:Boolean = true;
 
 		public function VectorLayer(name:String)
 		{
@@ -464,6 +465,13 @@ package org.openscales.core.layer
 		}
 		public function set attributesVal(value:Array):void{
 			this._attributesVal = value;
+		}
+		
+		public function get firstSelection():Boolean{
+			return this._firstSelection;
+		}
+		public function set firstSelection(value:Boolean):void{
+			this._firstSelection = value;
 		}
 	}
 }
