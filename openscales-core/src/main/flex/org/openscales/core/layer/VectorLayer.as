@@ -47,7 +47,8 @@ package org.openscales.core.layer
 		private var _idLabel:uint = 0;
 		private var _attributesVal:Array = new Array();
 		private var _attributesId:Array = new Array();
-		private var _firstSelection:Boolean = true;
+		private var _initInDrawingToolbar:Boolean = false;
+		private var _initOutDrawingToolbar:Boolean = false;
 
 		public function VectorLayer(name:String)
 		{
@@ -467,11 +468,17 @@ package org.openscales.core.layer
 			this._attributesVal = value;
 		}
 		
-		public function get firstSelection():Boolean{
-			return this._firstSelection;
+		public function get initInDrawingToolbar():Boolean{
+			return this._initInDrawingToolbar;
 		}
-		public function set firstSelection(value:Boolean):void{
-			this._firstSelection = value;
+		public function set initInDrawingToolbar(value:Boolean):void{
+			this._initInDrawingToolbar = value;
+		}
+		public function get initOutDrawingToolbar():Boolean{
+			return this._initOutDrawingToolbar;
+		}
+		public function set initOutDrawingToolbar(value:Boolean):void{
+			this._initOutDrawingToolbar = value;
 		}
 	}
 }

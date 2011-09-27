@@ -99,18 +99,19 @@
 				
 				// set the default attributes if this is the first selection of the layer
 				var k:uint;
-				if(this._vectorLayer.firstSelection && this.parentDocument is DrawingToolbar){
+				if(this.parentDocument is DrawingToolbar && !this._vectorLayer.initInDrawingToolbar){
 					this._vectorLayer.attributesId = new Array();
 					for(k = 0; k < this._defaultAttributes.length; k++){
 						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
 					}
-					this._vectorLayer.firstSelection = false;
+					this._vectorLayer.initInDrawingToolbar = true;
 				}
-				else if(this._vectorLayer.firstSelection){
+				else if(!(this.parentDocument is DrawingToolbar) && !this._vectorLayer.initInDrawingToolbar && !this._vectorLayer.initOutDrawingToolbar){
 					this._vectorLayer.attributesId = new Array();
 					for(k = 0; k < this._defaultAttributes.length; k++){
 						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
 					}
+					this._vectorLayer.initOutDrawingToolbar = true;
 				}
 				
 				if(this._vectorLayer)

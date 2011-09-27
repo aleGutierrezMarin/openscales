@@ -262,7 +262,7 @@
 				var displayDrawingToolbar:Boolean = true;
 				for(var k:uint = 0; k < this.layer.map.controls.length; k++){
 					if(this.layer.map.controls[k] is DrawingToolbar)
-						if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
+						if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple")
 							displayDrawingToolbar = false;
 				}
 				if(this._layer.hasOwnProperty("features") && !displayDrawingToolbar){
@@ -317,7 +317,7 @@
 					var displayDrawingToolbar:Boolean = true;
 					for(var k:uint = 0; k < this.layer.map.controls.length; k++){
 						if(this.layer.map.controls[k] is DrawingToolbar)
-							if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
+							if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple")
 								displayDrawingToolbar = false;
 					}
 					_color = (this._layer.selected && !displayDrawingToolbar) ? 0xd0d0d0 : 0xffffff;
@@ -340,7 +340,7 @@
 				var displayDrawingToolbar:Boolean = true;
 				for(var k:uint = 0; k < this.layer.map.controls.length; k++){
 					if(this.layer.map.controls[k] is DrawingToolbar)
-						if((this.layer.map.controls[k] as DrawingToolbar).mode != "mini")
+						if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple")
 							displayDrawingToolbar = false;
 				}
 				this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer && displayDrawingToolbar;
