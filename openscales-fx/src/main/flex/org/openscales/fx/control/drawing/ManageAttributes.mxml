@@ -20,6 +20,7 @@
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.popup.ChangeAttributes;
 			import org.openscales.core.popup.EditAttributes;
@@ -27,7 +28,7 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-			import org.openscales.core.i18n.Catalog;
+			
 			import spark.components.TextInput;
 			
 			[Bindable]
@@ -42,7 +43,7 @@
 			
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
-			private var _defaultAttributes:Array = new Array("id","desc");
+			private var _defaultAttributes:Array = new Array("id","description");
 			private var _index:int;
 			private var _vectorLayer:VectorLayer;
 			
@@ -71,8 +72,12 @@
 			public function set defaultAttributes(value:Array):void{
 				
 				this._defaultAttributes = value;
-				if(this._vectorLayer)
-					this._vectorLayer.attributesId = this._defaultAttributes;
+				if(this._vectorLayer){
+					this._vectorLayer.attributesId = new Array();
+					for(var i:uint = 0; i < this._defaultAttributes.length; i++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[i]);
+					}
+				}
 			}
 			public function get defaultAttributes():Array{
 				
@@ -93,12 +98,20 @@
 					return;
 				
 				// set the default attributes if this is the first selection of the layer
+				var k:uint;
 				if(this._vectorLayer.firstSelection && this.parentDocument is DrawingToolbar){
-					this._vectorLayer.attributesId = this._defaultAttributes;
+					this._vectorLayer.attributesId = new Array();
+					for(k = 0; k < this._defaultAttributes.length; k++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
+					}
 					this._vectorLayer.firstSelection = false;
 				}
-				else if(this._vectorLayer.firstSelection)
-					this._vectorLayer.attributesId = this._defaultAttributes;
+				else if(this._vectorLayer.firstSelection){
+					this._vectorLayer.attributesId = new Array();
+					for(k = 0; k < this._defaultAttributes.length; k++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
+					}
+				}
 				
 				if(this._vectorLayer)
 				{
