@@ -3,7 +3,7 @@ package org.openscales.core.layer.originator
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.geometry.basetypes.Bounds;

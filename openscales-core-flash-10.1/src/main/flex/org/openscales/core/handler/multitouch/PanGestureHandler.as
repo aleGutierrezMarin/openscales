@@ -7,7 +7,7 @@ package org.openscales.core.handler.multitouch {
 	import flash.ui.MultitouchInputMode;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.geometry.basetypes.Location;

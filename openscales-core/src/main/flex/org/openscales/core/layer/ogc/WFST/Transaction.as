@@ -1,6 +1,6 @@
 package org.openscales.core.layer.ogc.WFST
 {
-	import org.openscales.core.UID;
+	import org.openscales.core.utils.UID;
 	import org.openscales.core.feature.Feature;
 
 	public class Transaction

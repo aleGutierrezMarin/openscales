@@ -8,7 +8,7 @@ package org.openscales.core.security.ign
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.security.AbstractSecurity;

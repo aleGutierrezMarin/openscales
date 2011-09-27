@@ -5,7 +5,7 @@ package org.openscales.core.control
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.PolygonFeature;

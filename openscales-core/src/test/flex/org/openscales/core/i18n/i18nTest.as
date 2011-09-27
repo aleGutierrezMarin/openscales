@@ -12,7 +12,7 @@ package org.openscales.core.i18n
 	import org.flexunit.asserts.fail;
 	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;

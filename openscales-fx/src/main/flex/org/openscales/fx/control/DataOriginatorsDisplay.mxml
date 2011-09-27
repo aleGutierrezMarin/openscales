@@ -16,7 +16,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.core.control.DataOriginators;
 			import org.openscales.core.events.OriginatorEvent;
 			import org.openscales.core.layer.originator.DataOriginator;

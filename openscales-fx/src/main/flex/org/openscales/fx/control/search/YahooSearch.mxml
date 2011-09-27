@@ -15,7 +15,7 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.geometry.basetypes.Location;
 			
 			private static const YAHOO_MAPS_NAMESPACE:Namespace=new Namespace('','urn:yahoo:maps');

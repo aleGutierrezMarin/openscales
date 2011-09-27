@@ -3,7 +3,7 @@ package org.openscales.core.configuration
 	import flash.geom.Point;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.control.Control;

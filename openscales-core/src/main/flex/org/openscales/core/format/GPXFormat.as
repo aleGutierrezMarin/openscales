@@ -2,7 +2,7 @@ package org.openscales.core.format
 {
 	import flash.utils.getQualifiedClassName;
 	
-	import org.openscales.core.Util;
+	import org.openscales.core.utils.Util;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;

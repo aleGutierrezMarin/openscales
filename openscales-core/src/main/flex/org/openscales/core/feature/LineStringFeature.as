@@ -1,6 +1,6 @@
 package org.openscales.core.feature
 {
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;

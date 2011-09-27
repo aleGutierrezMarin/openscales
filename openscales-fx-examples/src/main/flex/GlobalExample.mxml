@@ -41,7 +41,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.style.Style;

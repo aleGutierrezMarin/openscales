@@ -12,7 +12,7 @@ package org.openscales.core.tile
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;

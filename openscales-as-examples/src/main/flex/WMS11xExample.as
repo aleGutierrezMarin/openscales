@@ -2,7 +2,7 @@ package {
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;

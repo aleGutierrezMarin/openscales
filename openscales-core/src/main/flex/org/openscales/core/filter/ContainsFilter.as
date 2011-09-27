@@ -1,5 +1,5 @@
 package org.openscales.core.filter {
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.geometry.Geometry;
 

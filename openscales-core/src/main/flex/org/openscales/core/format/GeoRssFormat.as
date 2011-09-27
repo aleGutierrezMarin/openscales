@@ -1,6 +1,6 @@
 package org.openscales.core.format
 {
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;

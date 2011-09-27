@@ -1,7 +1,7 @@
 package org.openscales.core.handler.mouse
 {
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.handler.Handler;
 
 	/**

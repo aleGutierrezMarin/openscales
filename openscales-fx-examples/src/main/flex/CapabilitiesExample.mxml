@@ -30,7 +30,7 @@ The layers manager is automatically updated.</p> -->
 		<![CDATA[
 			import mx.managers.PopUpManager;
 			
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.layer.ogc.WFS;
 			import org.openscales.core.style.Style;

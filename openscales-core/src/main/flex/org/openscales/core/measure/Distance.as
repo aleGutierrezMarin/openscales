@@ -3,7 +3,7 @@ package org.openscales.core.measure
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Util;
+	import org.openscales.core.utils.Util;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.MeasureEvent;
 	import org.openscales.core.handler.IHandler;

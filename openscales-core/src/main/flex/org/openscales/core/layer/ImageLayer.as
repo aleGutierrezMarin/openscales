@@ -11,7 +11,7 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.request.DataRequest;
 	
