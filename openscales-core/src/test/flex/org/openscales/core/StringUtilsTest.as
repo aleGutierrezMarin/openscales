@@ -1,6 +1,7 @@
 package org.openscales.core
 {
 	import org.flexunit.Assert;
+	import org.openscales.core.utils.StringUtils;
 
 	/**
 	 * Test fr.ign.StringUtils static functions.

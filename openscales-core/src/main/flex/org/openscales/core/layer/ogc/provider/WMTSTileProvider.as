@@ -1,7 +1,7 @@
 package org.openscales.core.layer.ogc.provider
 {
-	import org.openscales.core.Trace;
-	import org.openscales.core.UID;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Grid;

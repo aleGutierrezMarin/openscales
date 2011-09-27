@@ -4,7 +4,7 @@ package org.openscales.core.layer {
 	import flash.events.Event;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;

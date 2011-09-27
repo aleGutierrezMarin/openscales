@@ -17,7 +17,7 @@ It will retrieve the language information and display the availlable languages.
 			import mx.collections.ArrayCollection;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.core.control.LanguageSwitcher;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;

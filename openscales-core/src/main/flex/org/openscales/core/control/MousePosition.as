@@ -5,7 +5,7 @@ package org.openscales.core.control
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Util;
+	import org.openscales.core.utils.Util;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Location;

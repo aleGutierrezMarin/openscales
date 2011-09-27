@@ -14,8 +14,8 @@ package org.openscales.core.request
 	
 	import mx.controls.Alert;
 	
-	import org.openscales.core.Trace;
-	import org.openscales.core.UID;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.security.ISecurity;
 

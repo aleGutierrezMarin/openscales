@@ -5,7 +5,7 @@ package org.openscales.core.layer.capabilities
 	import flash.net.URLLoader;
 	import flash.net.URLRequestMethod;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.request.XMLRequest;
 

@@ -1,4 +1,4 @@
-package org.openscales.core
+package org.openscales.core.utils
 {
 	/**
 	 * allow creation of unique ID string.

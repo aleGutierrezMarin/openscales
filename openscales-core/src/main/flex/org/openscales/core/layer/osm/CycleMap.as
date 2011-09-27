@@ -1,6 +1,6 @@
 package org.openscales.core.layer.osm
 {
-	import org.openscales.core.Util;
+	import org.openscales.core.utils.Util;
 
 	/**
 	 * CycleMap OpenStreetMap layer

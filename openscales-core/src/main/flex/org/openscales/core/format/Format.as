@@ -1,6 +1,6 @@
 package org.openscales.core.format
 {
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 
 	/**
 	 * Base class for format reading/writing a variety of formats.

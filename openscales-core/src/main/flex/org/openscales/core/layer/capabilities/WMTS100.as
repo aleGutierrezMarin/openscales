@@ -1,7 +1,7 @@
 package org.openscales.core.layer.capabilities
 {
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.format.Format;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;

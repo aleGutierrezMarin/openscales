@@ -47,7 +47,7 @@ Use the top-right button to switch the style of the rendering. -->
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.geometry.basetypes.Bounds;
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.core.filter.ContainsFilter;
 			import org.openscales.core.filter.ElseFilter;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;

@@ -3,7 +3,7 @@ package org.openscales.core.i18n.provider
 	import com.adobe.serialization.json.JSON;
 	import com.adobe.serialization.json.JSONDecoder;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
 

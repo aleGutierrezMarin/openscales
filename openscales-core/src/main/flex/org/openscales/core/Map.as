@@ -26,6 +26,7 @@ package org.openscales.core
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.core.utils.Trace;
 	
 	use namespace os_internal;
 	

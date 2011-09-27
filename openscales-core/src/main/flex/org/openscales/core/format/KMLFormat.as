@@ -6,7 +6,7 @@ package org.openscales.core.format
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;

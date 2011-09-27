@@ -5,7 +5,7 @@ package org.openscales.core.layer.ogc
 	import flash.net.URLLoader;
 	import flash.utils.Timer;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;

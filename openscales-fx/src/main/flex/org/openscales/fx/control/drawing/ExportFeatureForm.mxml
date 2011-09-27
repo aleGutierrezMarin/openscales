@@ -26,7 +26,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.format.GPXFormat;
