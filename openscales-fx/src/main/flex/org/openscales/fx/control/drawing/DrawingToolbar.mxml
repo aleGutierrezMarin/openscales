@@ -28,7 +28,7 @@
 			private var _hover:Boolean = false;
 			private var _virtualStyle:Style = Style.getDefaultCircleStyle();
 			private var _defaultAttributes:String = "id,description";
-			private var _mode:String = "mini";
+			private var _mode:String = "multiple";
 			
 			private function configure():void{
 				
@@ -45,7 +45,7 @@
 				manageAttributes.defaultAttributes = attributes;
 				
 				// remove elements if mode = "mini"
-				if(this._mode == "mini")
+				if(this._mode == "multiple")
 				{
 					this.drawingToolbar.removeElement(this.drawLabel);
 					this.drawingToolbar.removeElement(this.drawPoint);
