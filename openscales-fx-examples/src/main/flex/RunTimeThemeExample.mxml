@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- This example shows WMS-C layer, WFS layer, layer manager, PanZoom control, SelectFeature handler and popup used together -->
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()" xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<Map id="fxMap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710">
+		
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms"
+				 layers="bluemarble" format="image/jpeg" maxExtent="-180,-90,180,90" version="1.1.1"/>
+		
+		<DragHandler id="dragHandler" />
+		<WheelHandler id="wheelHandler" />
+		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
+		
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93" displayProjSrsCode="IGNF:LAMB93"/>
+		
+		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+				typename="topp:states" projection="EPSG:4326" version="1.0.0"
+				style="{Style.getDefaultSurfaceStyle()}" />
+		
+		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
+				projection="EPSG:4326" version="1.0.0" useCapabilities="true" 
+				style="{Style.getDefaultPointStyle()}" />
+
+		<PanZoom id="panZoom" x="10" y="10" scalesLabels="World,0.3515625,1.40625;Country,0.0439453125,0.3515625;State,0.0054931640625,0.0439453125;Town,0.0006866455078125,0.0054931640625;Street,0.0000858306884765625,0.0006866455078125;House,0.000010728836059570313,0.0000858306884765625"/>
+
+		<LayerManager />
+		
+		<!-- Change theme -->
+		<s:Panel id="theme" title="Themes" width="250" height="100" x="300" y="0">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			
+			<s:ComboBox dataProvider="{themes}" id="themeCombo" width="100" 
+						selectedIndex="0"
+						change="changeTheme(event);" x="308" y="205"/>
+		</s:Panel>
+		
+	</Map>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import org.openscales.core.utils.Trace;
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.popup.Anchored;
+			import org.openscales.core.style.Style;
+			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			//private var popup:Anchored
+			private var fxpopup:FxPopup;
+			
+			Trace.useFireBugConsole = true;
+			
+			/**
+			 *  Data values for theme combobox
+			 */
+			[Bindable]
+			public var themes:ArrayCollection = new ArrayCollection(
+				[ {label:"Openscales theme", data:0},
+					{label:"Custom theme", data:1} ]);
+			
+			
+			
+			private function initMap():void {			
+				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				
+				fxMap.theme = "geoportal-api-fx-theme-swf.swf";
+			}
+			
+			private function onFeatureClick(event:FeatureEvent):void {
+				if(fxpopup){
+					fxpopup.destroy();
+				}
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+				
+				var content:String="";
+				
+				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				
+				fxpopup.feature = event.feature;
+				var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(event.feature.lonlat);
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+				fxpopup.position = px;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				if(event.feature.attributes["STATE_NAME"]){
+					fxpopupRenderer.titleContent = event.feature.attributes["STATE_NAME"] + " (" + event.feature.attributes["STATE_ABBR"] + ")";
+				}
+				for(var attribute:String in event.feature.attributes) {
+					if((attribute != "STATE_NAME") && (attribute != "STATE_ABBR") && (attribute != "coordinates")) 
+						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
+				}
+				fxpopupRenderer.content = content;
+				
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
+				
+				
+			}
+			
+			/**
+			 * Change the current theme 
+			 */
+			private function changeTheme(event:Event):void
+			{
+				if(event.target.selectedItem.data == 0){
+					fxMap.theme = "";
+				}
+				
+				if(event.target.selectedItem.data == 1){
+					fxMap.theme = "geoportal-api-fx-theme-swf.swf";
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>
