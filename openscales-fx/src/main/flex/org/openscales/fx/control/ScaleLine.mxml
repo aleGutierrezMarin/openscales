@@ -281,6 +281,7 @@
 			/**
 			 * Maximum width of the scale line in pixels. 
 			 */
+			[Bindable]
 			public function get scaleMaxWidth():Number {
 				return this._scaleMaxWidth;
 			}
