@@ -86,6 +86,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			
+			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.KML;
@@ -93,7 +94,6 @@
 			import org.openscales.core.layer.ogc.GPX;
 			import org.openscales.core.layer.ogc.GeoRss;
 			import org.openscales.core.layer.osm.OSM;
-			import org.openscales.core.events.DrawingEvent;
 			
 			private const FORMAT_PROVIDER_CHANGED:String = "formatProviderChanged";
 			private const VERSION_PROVIDER_CHANGED:String = "versionProviderChanged";
@@ -217,9 +217,13 @@
 			 * The file reference
 			 */
 			private var fileReference:FileReference;
+			private var _alreadyInit:Boolean = false;
 
 			public function init(event:Event):void
 			{
+				if(this._alreadyInit)
+					return;
+				
 				if(!this.supportedFormat)
 				{
 					// init all available formats
@@ -250,6 +254,8 @@
 				{
 					this.versionProvider.addItem(version);
 				}
+				
+				this._alreadyInit = true;
 			}
 			
 			/**
