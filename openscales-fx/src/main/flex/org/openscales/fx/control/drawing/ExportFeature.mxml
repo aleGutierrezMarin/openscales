@@ -26,7 +26,7 @@
 			import spark.components.TitleWindow;
 			
 			[Bindable]
-			private var _alpha:Number = 0.3;
+			private var _alpha:Number = 1;
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-15.png")]
