@@ -99,6 +99,7 @@
 				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
 				this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 			}
 			
 			/**
