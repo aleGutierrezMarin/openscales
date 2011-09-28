@@ -32,7 +32,7 @@
 			import spark.components.TextInput;
 			
 			[Bindable]
-			private var _alpha:Number = 0.3;
+			private var _alpha:Number = 1;
 			
 			[Bindable]
 			private var tooltip:String = Catalog.getLocalizationForKey('drawing.attributes');

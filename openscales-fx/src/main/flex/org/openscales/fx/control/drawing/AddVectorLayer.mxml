@@ -28,7 +28,7 @@
 			import spark.layouts.VerticalLayout;
 			
 			[Bindable]
-			private var _alpha:Number = 0.3;
+			private var _alpha:Number = 1;
 			/**
 			 * Translation for label button
 			 */
