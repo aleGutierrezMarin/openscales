@@ -69,9 +69,9 @@
 	
 
 	<s:TextInput id="urlInput" visible="false" />
-	<s:Button id="localeButton" visible="false" label="{this.browseLabel}"
-			  click="{this.browseFiles()}"/>
-	<s:Label id="selectedLocaleFile" visible="false" />
+	<s:Button id="localeButton" visible="false" label="{this.browseLabel}" click="{this.browseFiles()}"/>
+	
+	<s:Label id="selectedLocaleFile" visible="false" width="250" />
 	
 	<s:Label visible="false" id="nameError" 
 			 text="{this.nameLabelError}" width="{this.width*0.7}" bottom="0" />
@@ -201,11 +201,6 @@
 			 * The ImportFeature linked to the current pop up
 			 */
 			private var _importFeature:ImportFeature = null;
-			
-			/**
-			 * Allowed file types
-			 */
-			private static const FILE_TYPES:Array = [new FileFilter("Text file","*.xml;*.kml;*.gml")];
 
 			/**
 			 * Selected source type
@@ -516,7 +511,7 @@
 			{
 				selectedSource = 2;
 				urlInput.visible = false;
-				selectedLocaleFile.visible = false;
+				selectedLocaleFile.visible = true;
 				localeButton.visible = true;
 			}
 			
@@ -535,7 +530,7 @@
 				fileReference.addEventListener(Event.CANCEL,onCancel);
 				
 				//open a native browse dialog that filters for text files
-				fileReference.browse(FILE_TYPES);
+				fileReference.browse();
 			}
 			
 			/**
