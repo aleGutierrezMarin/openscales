@@ -56,7 +56,7 @@ package org.openscales.core.popup
 			PopUpManager.addPopUp(this, map, true);
 			this.x = x;
 			this.y = y;
-			this._text.setFocus();
+			//this._text.setFocus();
 		}
 		
 		/**
