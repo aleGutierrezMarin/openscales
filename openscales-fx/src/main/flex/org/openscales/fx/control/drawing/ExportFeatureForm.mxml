@@ -71,7 +71,7 @@
 			 */
 			[Bindable]
 			public var exportLabel:String = Catalog.getLocalizationForKey('drawing.export');
-
+	
 			
 			/**
 			 * The file reference
@@ -79,12 +79,16 @@
 			private var fileReference:FileReference;
 			
 			private static const DEFAULT_FILE_NAME:String = "export";
+			private var _alreadyInit:Boolean = false;
 			
 			/**
 			 * Initialise the component onCreationComplete
 			 */
 			public function init():void
 			{
+				if(this._alreadyInit)
+					return;
+				
 				if(!this.supportedFormat)
 				{
 					// init all available formats
@@ -105,6 +109,8 @@
 				{
 					this.formatProvider.addItem(format);
 				}
+				
+				this._alreadyInit = true;
 			}
 			
 			
