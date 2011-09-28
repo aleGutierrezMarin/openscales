@@ -64,6 +64,7 @@
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(FeatureEvent.FEATURE_DRAWING_END, onFeatureAdded);
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 			}
 			
 			/**
