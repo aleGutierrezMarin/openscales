@@ -17,6 +17,7 @@ package org.openscales.core.control
 
 		protected var _map:Map = null;
 		protected var _active:Boolean = false;
+		[Bindable]
 		protected var _isReduced:Boolean = false;
 
 		public function Control(position:Pixel = null) {
