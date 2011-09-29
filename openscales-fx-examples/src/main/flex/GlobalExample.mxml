@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--- This example shows WMS-C layer, WFS layer, layer manager, PanZoom control, SelectFeature handler and popup used together -->
+<!--- resolution="0.17578125"  This example shows WMS-C layer, WFS layer, layer manager, PanZoom control, SelectFeature handler and popup used together -->
 <s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()">
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.1" center="-74.011,40.710">
 		
 		<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
 				 layers="bluemarble" format="image/jpeg" 

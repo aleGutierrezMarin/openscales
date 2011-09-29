@@ -35,7 +35,7 @@ package org.openscales.core.tile
 			this.url = url;
 			this.size = size;       
 		}
-		
+	
 		public function destroy():void {
 			this.layer = null;
 			this.bounds = null;
