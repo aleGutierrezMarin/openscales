@@ -91,6 +91,11 @@ package org.openscales.core.control
 			
 		}
 		
+		/**
+		 * Indicates if the control display is normal or reduced
+		 * @default false : normal display
+		 */
+		[Bindable]
 		public function get isReduced():Boolean
 		{
 			return this._isReduced;
