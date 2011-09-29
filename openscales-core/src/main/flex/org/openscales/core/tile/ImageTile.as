@@ -102,7 +102,7 @@ package org.openscales.core.tile
 		public function onTileLoadEnd(event:Event):void {
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
-			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
+			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.AUTO,true);
 			drawLoader(loader.name, bitmap, false);
 		}
 
