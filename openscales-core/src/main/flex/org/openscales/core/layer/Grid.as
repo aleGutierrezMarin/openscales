@@ -4,7 +4,7 @@ package org.openscales.core.layer
 	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
 	import flash.utils.Timer;
-
+	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
@@ -1061,6 +1061,32 @@ package org.openscales.core.layer
 					this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 				}
 			}
+		}
+		
+		override public function get minResolution():Resolution {
+			var minRes:Resolution = super.minResolution;
+			
+			if(!minRes || isNaN(minRes.value) || !isFinite(minRes.value))
+			{
+				if (this.resolutions && (this.resolutions.length > 0)) {
+					minRes = new Resolution(this.resolutions[this.resolutions.length - 1], this.projSrsCode);
+				}
+			}
+			else
+			{
+				// if is valide
+				for(var i:int=this.resolutions.length; i>-1; --i)
+				{
+					if( this.resolutions[i] >= minRes.value)
+						return new Resolution(this.resolutions[i],this.projSrsCode);
+				}
+				
+				if (this.resolutions && (this.resolutions.length > 0)) {
+					minRes = new Resolution(this.resolutions[this.resolutions.length - 1],this.projSrsCode);
+				}
+			}
+			
+			return minRes;
 		}
 	}
 }

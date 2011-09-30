@@ -1,8 +1,9 @@
 package org.openscales.geometry
 {
 
-	import org.openscales.geometry.utils.UtilGeometry;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.geometry.utils.UtilGeometry;
 		
 	/**
 	 * A Linear Ring is a special LineString which is closed. 
@@ -13,6 +14,19 @@ package org.openscales.geometry
 	 */
 	public class LinearRing extends LineString
 	{
+		private var _units:String;
+
+		public function get units():String
+		{
+			return _units;
+		}
+
+		public function set units(value:String):void
+		{
+			_units = value;
+		}
+
+		
 		public function LinearRing(points:Vector.<Number> = null) {
 			super(points);
 		}
@@ -131,7 +145,29 @@ package org.openscales.geometry
 		 * The auto-intersection of edges of the LinearRing is not managed yet.
 		 */
 		override public function get area():Number {
-			return 0.0;  // TODO, FixMe
+			var area:Number = 0;
+			if ( this.components && (this.components.length > 4)) {
+				var sum:Number = 0;
+				var len:Number = len=this.components.length;
+				for (var i:Number=0; i<len - 3; i+=2) {
+					var bx:Number = this.components[i];
+					var by:Number = this.components[i+1];
+					var cx:Number = this.components[i+2];
+					var cy:Number = this.components[i+3];
+					sum += (bx + cx) * (cy - by);
+				}
+				
+				bx = cx;
+				by = cy;
+				sum += (bx + cx) * (cy - by);
+				
+				cx = this.components[0];
+				cy = this.components[1];
+				sum += (bx + cx) * (cy - by);
+				
+				area = - sum / 2;
+			}
+			return area;
 		}
 		
 		/**

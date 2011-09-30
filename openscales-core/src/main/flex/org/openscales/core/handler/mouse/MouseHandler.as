@@ -42,7 +42,29 @@ package org.openscales.core.handler.mouse
 		public static const ZOOM_BOX_HANDLER:String = "zoomBoxHandler";
 		
 		private var _clickHandler:ClickHandler = null;
+
+		public function get clickHandler():ClickHandler
+		{
+			return _clickHandler;
+		}
+
+		public function set clickHandler(value:ClickHandler):void
+		{
+			_clickHandler = value;
+		}
+
 		private var _dragHandler:DragHandler = null;
+
+		public function get dragHandler():DragHandler
+		{
+			return _dragHandler;
+		}
+
+		public function set dragHandler(value:DragHandler):void
+		{
+			_dragHandler = value;
+		}
+
 		private var _wheelHandler:WheelHandler = null;
 		private var _zoomBoxHandler:ZoomBoxHandler = null;
 		

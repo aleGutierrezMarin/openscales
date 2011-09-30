@@ -6,15 +6,17 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.handler.mouse.MouseHandler;
 			import org.openscales.core.measure.Distance;
 			public function init():void {
-				//var dist:Distance = new Distance(this.fxMap.map);
-				//dist.active = true;
+				var mh:MouseHandler = new MouseHandler(this.fxMap.map, true);
+				this.fxMap.map.addControl(mh);
 			}
 		]]>
 	</fx:Script>
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710"
+		 minResolution="0.000010728836059570312,EPSG:4326" maxResolution="1.40625,EPSG:4326">
 		
 		<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
 			  layers="bluemarble" format="image/jpeg" 

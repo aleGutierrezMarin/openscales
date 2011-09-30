@@ -10,6 +10,7 @@
 		<![CDATA[
 			import org.openscales.core.Map;
 			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.MeasureEvent;
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
 			import org.openscales.core.i18n.Catalog;
@@ -24,7 +25,10 @@
 			private var _btnPath:Class;
 			
 			[Bindable]
-			public var panelTitle:String = Catalog.getLocalizationForKey('MeasureBar.title');
+			private var panelTitle:String = Catalog.getLocalizationForKey('MeasureBar.title');
+			
+			[Bindable]
+			private var _exitToolTip:String = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
 			
 			override public function set map(value:Map):void{
 				super.map = value;
@@ -86,6 +90,14 @@
 			private function onChangeActiveHandler(event:DrawingEvent):void {
 				lblResult.text = "N/A";
 			}
+			
+			override public function onMapLanguageChange(event:I18NEvent):void{
+				panelTitle = Catalog.getLocalizationForKey('MeasureBar.title');
+				pathMeasure.toolTitle = Catalog.getLocalizationForKey('MeasureBar.distancetooltip');
+				azimuthMeasure.toolTitle = Catalog.getLocalizationForKey('MeasureBar.azimuthtooltip');
+				surfaceMeasure.toolTitle = Catalog.getLocalizationForKey('MeasureBar.surfacetooltip');
+				//exitButton.toolTip = _exitToolTip = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
+			}
 		]]>
 	</fx:Script>
 	
@@ -99,9 +111,7 @@
 		<MeasurePath id="pathMeasure" />
 		<measure:MeasureAzimuth id="azimuthMeasure" />
 		<MeasureSurface id="surfaceMeasure" />
-		<!-- <s:Button id="altimetricMeasure" label="Altitude"/> -->
-		<!-- <s:Button id="profileMeasure" label="Profile "/> -->
-		<IconButton icon="{_btnPath}" id="exit" click="exitMeasureMode()" width="25" height="25" toolTip="Disactivate measure tools"/>
+		<!--<IconButton icon="{_btnPath}" id="exitButton" click="exitMeasureMode()" width="25" height="25" toolTip="{_exitToolTip}"/>-->
 		
 		<s:Label id="lblResult" text="N/A" />
 	</s:Panel>

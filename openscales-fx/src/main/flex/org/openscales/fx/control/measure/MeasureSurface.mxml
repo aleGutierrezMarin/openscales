@@ -6,6 +6,7 @@
 			   implements="org.openscales.core.control.IControl"
 			   toolTip="{this.toolTitle}"
 			   icon="{_btnPolygon}"
+			   alpha="{_alpha}"
 			   width="25"
 			   height="25"
 			   click="onClick()">
@@ -29,9 +30,12 @@
 			public var toolTitle:String = Catalog.getLocalizationForKey('MeasureBar.surfacetooltip');
 			
 			[Bindable]
+			private var _alpha:Number=0.3;
+			
+			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-02.png")]
 			private var _btnPolygon:Class;
-			private var _active:Boolean = true;
+			private var _active:Boolean = false;
 			private var _handler:Surface = new Surface();
 			
 			/**
@@ -84,10 +88,24 @@
 			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
 			 */
 			private function onClick():void{
-				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
-				evt.activeHandler = this.id;
-				_handler.map.dispatchEvent(evt);
-				this.active = true;
+				if(!this._active){
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+					evt.activeHandler = this.id;
+					_handler.map.dispatchEvent(evt);
+					
+					evt = new DrawingEvent(DrawingEvent.DRAW_HANDLER_ACTIVATED);
+					evt.activeHandler = null;
+					_handler.map.dispatchEvent(evt);
+					
+					this.active = true;
+					this.activate();
+				}else{
+					evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+					evt.activeHandler = null;
+					_handler.map.dispatchEvent(evt);
+					this.active = false;
+					this.disactivate();
+				}
 			}
 			
 			/**
@@ -98,16 +116,34 @@
 				{
 					this.active = false;
 				}
+				this.disactivate();
 			}
 			
-			// to do
-			public function onMapLanguageChange(event:I18NEvent):void{}
+			
+			public function onMapLanguageChange(event:I18NEvent):void{
+				this.toolTitle=Catalog.getLocalizationForKey("MeasureBar.surfacetooltip");
+			}
 			
 			public function draw():void{
 				this.invalidateDisplayList();
 			}
 			
 			public function destroy():void{}
+			
+			
+			/**
+			 * To activate or disactivate the handler
+			 */
+			private function activate():void{
+				
+				_handler.active = true;
+				_alpha = 1;
+			}
+			private function disactivate():void{
+				
+				_handler.active = false;
+				_alpha = 0.3;
+			}
 		]]>
 	</fx:Script>			
 </os:IconButton>

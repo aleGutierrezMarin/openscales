@@ -1,16 +1,18 @@
 package org.openscales.core.measure
 {
 	import flash.events.MouseEvent;
+	import flash.ui.Mouse;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Util;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.MeasureEvent;
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.handler.feature.draw.DrawPathHandler;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
+	import org.openscales.core.handler.mouse.MouseHandler;
 	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -21,6 +23,7 @@ package org.openscales.core.measure
 	{
 		private var _mapClickHandler:ClickHandler = null;
 		private var _mapDragHandler:DragHandler = null;
+		private var _mapMouseHandler:MouseHandler = null;
 		
 		private var _supportedUnitSystem:Object = {
 			'geographic': ["dd"],
@@ -63,6 +66,8 @@ package org.openscales.core.measure
 			super.active = value;
 			if(this.map) {
 				if(value) {
+					this.drawLayer.minResolution = this.map.minResolution;
+					this.drawLayer.maxResolution = this.map.maxResolution;
 					this.map.addLayer(this.drawLayer);
 					var controls:Vector.<IHandler> = this.map.controls;
 					var control:IHandler;
@@ -71,6 +76,10 @@ package org.openscales.core.measure
 							_mapClickHandler = (control as ClickHandler);
 							_mapClickHandler.doubleClickZoomOnMousePosition = false;
 							//break;
+						}else if(control is MouseHandler && (control as MouseHandler).clickHandler.doubleClickZoomOnMousePosition) {
+							this._mapMouseHandler = (control as MouseHandler);
+							this._mapMouseHandler.clickHandler.doubleClickZoomOnMousePosition=false;
+							this._mapMouseHandler.dragHandler.active=false;
 						} else if(control is DragHandler && control.active == true) {
 							_mapDragHandler = (control as DragHandler);
 							_mapDragHandler.active = false;
@@ -83,6 +92,11 @@ package org.openscales.core.measure
 					if(_mapClickHandler) {
 						_mapClickHandler.doubleClickZoomOnMousePosition = true;
 						_mapClickHandler = null;
+					}
+					if(this._mapMouseHandler){
+						this._mapMouseHandler.clickHandler.doubleClickZoomOnMousePosition=true;
+						this._mapMouseHandler.dragHandler.active=true;
+						this._mapMouseHandler=null;
 					}
 					if(_mapDragHandler) {
 						_mapDragHandler.active = true;

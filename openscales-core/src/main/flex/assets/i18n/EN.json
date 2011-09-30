@@ -81,6 +81,7 @@
    "featureInfoDisplay.title": "Result - GetFeatureInfo",
    
    "MeasureBar.title": "Measure tools",
+   "MeasureBar.exittooltip": "Disactivate measure tools",
    "MeasureBar.distancetooltip": "Measure distance",
    "MeasureBar.azimuthtooltip": "Measure azimuth",
    "MeasureBar.surfacetooltip": "Measure surface"
