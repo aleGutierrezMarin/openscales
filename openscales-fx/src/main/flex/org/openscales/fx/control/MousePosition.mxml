@@ -10,11 +10,11 @@
 			import mx.collections.ArrayList;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.utils.Trace;
-			import org.openscales.core.utils.Util;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.core.utils.Util;
 			import org.openscales.geometry.Geometry;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -62,6 +62,9 @@
 			 * Text after coordinates in the label, which doesn't change.
 			 */
 			private var _suffix:String = "";
+			
+			private var _longitude:String = "";
+			private var _latitude:String = "";
 			
 			/**
 			 * Number of digits for the displayed values
@@ -309,40 +312,40 @@
 						lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
 					}
 					
-					var coord1:String, coord2:String;
+					
 					if(_srsUnits == "dd" || _srsUnits == Unit.DEGREE)
 					{
 						if (this._useDMS) {
 							_displayMetricUnits == Unit.SEXAGESIMAL;
-							coord1 = (lonLat.lon < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lon,"lon")) + " " + this.localNSEW.charAt(3)) : (Util.degToDMS(this.roundCoordinates(lonLat.lon,"lon")) + " " + this.localNSEW.charAt(2));
-							coord2 = (lonLat.lat < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lat,"lat")) + " " + this.localNSEW.charAt(1)) : (Util.degToDMS(this.roundCoordinates(lonLat.lat,"lat")) + " " + this.localNSEW.charAt(0));
+							this.longitude = (lonLat.lon < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lon,"lon")) + " " + this.localNSEW.charAt(3)) : (Util.degToDMS(this.roundCoordinates(lonLat.lon,"lon")) + " " + this.localNSEW.charAt(2));
+							this.latitude = (lonLat.lat < 0) ? (Util.degToDMS(this.roundCoordinates(-lonLat.lat,"lat")) + " " + this.localNSEW.charAt(1)) : (Util.degToDMS(this.roundCoordinates(lonLat.lat,"lat")) + " " + this.localNSEW.charAt(0));
 						} else {
 							_displayMetricUnits == Unit.DEGREE;
-							coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
-							coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
+							this.longitude = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
+							this.latitude = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
 						}
 					}
 					else if(_srsUnits == "m")
 					{
-						coord1 = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
-						coord2 = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
+						this.longitude = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
+						this.latitude = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
 						
 						if(_displayMetricUnits == Unit.CENTIMETER)
 						{
-							coord1 = String(Number(coord1)*100);
-							coord2 = String(Number(coord2)*100);
+							this.longitude = String(Number(this.longitude)*100);
+							this.latitude = String(Number(this.latitude)*100);
 						}
 						else if(_displayMetricUnits == Unit.KILOMETER)
 						{
-							coord1 = String(Number(coord1)/1000);
-							coord2 = String(Number(coord2)/1000);
+							this.longitude = String(Number(this.longitude)/1000);
+							this.latitude = String(Number(this.latitude)/1000);
 						}
 					}
 					
 					this.mousePositionLabel = this.prefix
-						+ coord1
+						+ this.longitude
 						+ this.separator
-						+ coord2
+						+ this.latitude
 						+ this.suffix;
 				}
 			}
@@ -473,6 +476,28 @@
 			}
 			public function set suffix(value:String):void {
 				_suffix = value;
+			}
+			
+			/**
+			 * The longitude value to display
+			 */
+			[Bindable]
+			public function get longitude():String {
+				return _longitude;
+			}
+			public function set longitude(value:String):void {
+				_longitude = value;
+			}
+			
+			/**
+			 * The latitude value to display
+			 */ 
+			[Bindable]
+			public function get latitude():String {
+				return _latitude;
+			}
+			public function set latitude(value:String):void {
+				_latitude = value;
 			}
 			
 			public function get granularity():int {

@@ -363,13 +363,13 @@
 			/**
 			 * 
 			 */
-			override public function toggleDisplay():void{
+			override public function toggleDisplay(event:Event=null):void{
 				
 				super.toggleDisplay();
-				var event:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
-				event.componentName = "LayerSwitcher";
-				event.componentIconified = this._isReduced;
-				this._map.dispatchEvent(event);
+				var newEvent:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				newEvent.componentName = "LayerSwitcher";
+				newEvent.componentIconified = this._isReduced;
+				this._map.dispatchEvent(newEvent);
 			}
 		]]>
 	</fx:Script>

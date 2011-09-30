@@ -16,9 +16,10 @@ For example, to present the list of layers available in an application.
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
-			import org.openscales.core.i18n.Catalog;
-			import org.openscales.core.events.MapEvent;
+			
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			
 			private var _layers:Vector.<Layer>;
@@ -73,13 +74,13 @@ For example, to present the list of layers available in an application.
 			/**
 			 * 
 			 */
-			override public function toggleDisplay():void{
-				
+			override public function toggleDisplay(event:Event=null):void
+			{				
 				super.toggleDisplay();
-				var event:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
-				event.componentName = "LayerCatalog";
-				event.componentIconified = this._isReduced;
-				this._map.dispatchEvent(event);
+				var newEvent:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				newEvent.componentName = "LayerCatalog";
+				newEvent.componentIconified = this._isReduced;
+				this._map.dispatchEvent(newEvent);
 			}
 			
 			/**
