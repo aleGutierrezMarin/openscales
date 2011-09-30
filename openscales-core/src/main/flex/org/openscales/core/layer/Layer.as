@@ -62,7 +62,6 @@ package org.openscales.core.layer {
 		protected var _centerChanged:Boolean = false;
 		protected var _projectionChanged:Boolean = false;
 		
-		
 		/**
 		 * The boolean that say if the layer is drawn or not.
 		 * This is a readonly parameter.
@@ -221,7 +220,7 @@ package org.openscales.core.layer {
 		
 		protected function onEnterFrame(event:Event):void
 		{
-			this.redraw();
+				this.redraw();
 		}
 		/**
 		 * Return a reference to the map where belong this layer
