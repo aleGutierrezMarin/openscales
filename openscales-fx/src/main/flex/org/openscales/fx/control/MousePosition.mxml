@@ -185,10 +185,13 @@
 			 * 
 			 * function called when selected item in srs combo box has changed
 			 */ 
-			public function crsChanged(event:IndexChangeEvent):void
+			public function crsChanged(event:IndexChangeEvent = null):void
 			{
-				var list:DropDownList = event.currentTarget as DropDownList
-				this.selectedIndexCrs = list.selectedIndex;
+				if(event)
+				{
+					var list:DropDownList = event.currentTarget as DropDownList
+					this.selectedIndexCrs = list.selectedIndex;
+				}
 				
 				// Getting the value
 				_displayProjSrsCode = this.crsDataProvider.getItemAt(this.selectedIndexCrs).toString();
@@ -204,7 +207,7 @@
 			 * 
 			 * function called when selected item in units combo box has changed
 			 */ 
-			public function unitsChanged(event:Event):void
+			public function unitsChanged(event:Event = null):void
 			{
 				
 				if(event)
@@ -623,6 +626,7 @@
 			public function set selectedIndexCrs(value:Number):void
 			{
 				this._selectedIndexCrs = value;
+				this.crsChanged();
 				dispatchEvent(new Event('selectedIndexCrsChanged'));
 			}
 			
@@ -639,6 +643,7 @@
 			public function set selectedIndexUnit(value:Number):void
 			{
 				this._selectedIndexUnit = value;
+				this.unitsChanged();
 				dispatchEvent(new Event('selectedIndexUnitChanged'));
 			}
 			
