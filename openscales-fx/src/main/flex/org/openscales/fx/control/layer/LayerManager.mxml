@@ -89,10 +89,10 @@
 			private var _btnPlus:Class;
 			
 			[Bindable]
-			public var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
 			
 			[Bindable]
-			public var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
 			
 			/**
 			 * Configure the object
@@ -377,37 +377,46 @@
 	<s:Group visible="{this._isReduced}" includeInLayout="{this._isReduced}">
 		<IconButton icon="{this._btnPlus}" click="{this.toggleDisplay()}" toolTip="{this._toggle}" />
 	</s:Group>
-	<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}"
-			 visible="{!this._isReduced}" includeInLayout="{!this._isReduced}" > 
+	<s:Group visible="{!this._isReduced}" includeInLayout="{!this._isReduced}">
+		<s:layout>
+			<s:HorizontalLayout gap="-35" />
+		</s:layout>
 		
-		<s:Group height="{this.height-35}" width="{this.width}" >
-			<s:layout>
-				<s:VerticalLayout />
-			</s:layout>	
-			<s:Group visible="{this._displayDrawing}" includeInLayout="{this._displayDrawing}">
-				<drawing:AddVectorLayer map="{this.map}" />
-				<drawing:ImportFeature map="{this.map}" x="150" />
-			</s:Group>
-			<s:List id="layerList" 
-					dropEnabled="false"
-					dragEnabled="false"
-					dragMoveEnabled="false"
-					dataProvider="{this.layers}"
-					width="{this.width-5}"
-					height="100%"
-					x="0"
-					y="0"
-					borderVisible="false">
+		<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}"> 
+			
+			<s:Group height="{this.height-35}" width="{this.width}" >
 				<s:layout>
-					<s:VerticalLayout horizontalAlign="justify"
-									  variableRowHeight="true"
-									  requestedRowCount="4" />
-				</s:layout>
-			</s:List>
-			<IconButton icon="{this._btnMinus}" click="{this.toggleDisplay()}" toolTip="{this._iconify}" />
+					<s:VerticalLayout />
+				</s:layout>	
+				<s:Group visible="{this._displayDrawing}" includeInLayout="{this._displayDrawing}">
+					<drawing:AddVectorLayer map="{this.map}" />
+					<drawing:ImportFeature map="{this.map}" x="150" />
+				</s:Group>
+				<s:List id="layerList" 
+						dropEnabled="false"
+						dragEnabled="false"
+						dragMoveEnabled="false"
+						dataProvider="{this.layers}"
+						width="{this.width-5}"
+						height="100%"
+						x="0"
+						y="0"
+						borderVisible="false">
+					<s:layout>
+						<s:VerticalLayout horizontalAlign="justify"
+										  variableRowHeight="true"
+										  requestedRowCount="4" />
+					</s:layout>
+				</s:List>
+			</s:Group>
+			
+		</s:Panel>
+		<s:Group>
+			<IconButton icon="{this._btnMinus}" click="{this.toggleDisplay()}" toolTip="{this._iconify}"
+						width="20" height="20" y="6" />
 		</s:Group>
-		
-	</s:Panel>
+	</s:Group>
+	
 	
 </Control>
 
