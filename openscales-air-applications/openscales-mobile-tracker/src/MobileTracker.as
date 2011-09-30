@@ -48,7 +48,6 @@ package {
 			var markers:VectorLayer = new VectorLayer("markers");
 			markers.projSrsCode = "EPSG:4326";
 			markers.style = Style.getDefaultPointStyle();
-			markers.tweenOnZoom = false;
 					
 			_map.addLayer(markers);
 			

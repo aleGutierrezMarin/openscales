@@ -1,6 +1,5 @@
 package org.openscales.core.tile
 {
-	import com.gskinner.motion.GTween;
 	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
@@ -125,9 +124,7 @@ package org.openscales.core.tile
 				if (! this.layer.contains(this)) {
 					this.layer.addChild(this);
 				}
-				if(this.layer.tweenOnLoad)
-					var tw:GTween = new GTween(this, 0.3, {alpha:1});
-
+				
 				this.drawn = true;
 				this.loading = false;
 			}
@@ -151,10 +148,6 @@ package org.openscales.core.tile
 		 */
 		override public function clear():void {
 			super.clear();
-			
-			if(this.layer)
-				if(this.layer.tweenOnLoad)
-					this.alpha = 0;
 
 			if(this._request) {
 				_request.destroy();

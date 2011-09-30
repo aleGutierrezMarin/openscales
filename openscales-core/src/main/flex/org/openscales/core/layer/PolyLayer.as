@@ -38,8 +38,6 @@ package org.openscales.core.layer
 			layer.maxZoomLevel = this.maxZoomLevel;
 			layer.minResolution = this.minResolution;
 			layer.maxResolution = this.maxResolution;*/
-			layer.tweenOnLoad = this.tweenOnLoad;
-			layer.tweenOnZoom = this.tweenOnZoom;
 			layer.alpha = this.alpha;
 			layer.editable = this.editable;
 			layer.isFixed = this.isFixed;
@@ -237,22 +235,6 @@ package org.openscales.core.layer
 			var numLayer:uint = this.layers.length;
 			for(var i:uint = 0;i<numLayer;++i) {
 				layers[i].isFixed = value;
-			}
-		}
-		
-		override public function set tweenOnZoom(value:Boolean):void {
-			super.tweenOnZoom = value;
-			var numLayer:uint = this.layers.length;
-			for(var i:uint = 0;i<numLayer;++i) {
-				layers[i].tweenOnZoom = value;
-			}
-		}
-		
-		override public function set tweenOnLoad(value:Boolean):void {
-			super.tweenOnLoad = value;
-			var numLayer:uint = this.layers.length;
-			for(var i:uint = 0;i<numLayer;++i) {
-				layers[i].tweenOnLoad = value;
 			}
 		}
 		
