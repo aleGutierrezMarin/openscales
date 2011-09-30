@@ -185,9 +185,9 @@ package org.openscales.fx.control
 			this._isReduced = value;
 		}
 		
-		public function toggleDisplay():void
+		public function toggleDisplay(event:Event = null):void
 		{	
-			this._isReduced = !this._isReduced;
+			this.isReduced = !this._isReduced;
 		}
 	}
 }
