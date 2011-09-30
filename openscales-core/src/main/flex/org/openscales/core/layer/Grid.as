@@ -232,31 +232,31 @@ package org.openscales.core.layer
 			
 			if (centerChangedCache || projectionChangedCache || resolutionChangedCache || forceReTile || !_initialized)
 			{
-				if (!this.tiled) 
+				if (!this._timer.running)
 				{
-						if (!this._timer.running)
+					if (!this.tiled) 
+					{
+								this.clear();
+								this._lastScale = 1;
+								this.initSingleTile(bounds);
+					} else {
+						if ((resolution != this._resquestResolution) || forceReTile)
 						{
-							this.clear();
+							this.initGriddedTiles(bounds, true);
 							this._lastScale = 1;
-							this.initSingleTile(bounds);
+							ratio = this._requestedResolution.value/this.map.resolution.value;
+							this.scaleLayer(ratio, new Pixel(this.x - this._origin.x, this.y - this._origin.y));
+							resolutionChangedCache = false;
+							this._previousResolution = this.map.resolution;
+							centerChangedCache = false;
+							this._previousCenter = this.map.center.clone();
+						} else 
+						{
+							this.moveGriddedTiles(bounds);
 						}
-				} else {
-					if ((resolution != this._resquestResolution) || forceReTile)
-					{
-						this.initGriddedTiles(bounds, true);
-						this._lastScale = 1;
-						ratio = this._requestedResolution.value/this.map.resolution.value;
-						this.scaleLayer(ratio, new Pixel(this.x - this._origin.x, this.y - this._origin.y));
-						resolutionChangedCache = false;
-						this._previousResolution = this.map.resolution;
-						centerChangedCache = false;
-						this._previousCenter = this.map.center.clone();
-					} else 
-					{
-						this.moveGriddedTiles(bounds);
-					}
-				} 
-				_initialized = true;
+					} 
+					_initialized = true;
+				}
 			}
 			
 			if (resolutionChangedCache)
@@ -264,8 +264,9 @@ package org.openscales.core.layer
 				ratio = this._previousResolution.value / this.map.resolution.value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 				this._previousResolution = this.map.resolution;
-				this.actualizeGridSize(bounds);
+				//this.actualizeGridSize(bounds);
 				resolutionChangedCache = false
+				this.actualizeGridSize(bounds);
 			}
 			
 			if (centerChangedCache)
@@ -308,6 +309,10 @@ package org.openscales.core.layer
 		 */
 		public function actualizeGridSize(bounds:Bounds):void
 		{
+			if (this._grid == null)
+			{
+				return;
+			}
 			var tileLon:Number;
 			var tileLat:Number;
 			var nbTileToAdd:Number;
@@ -320,9 +325,9 @@ package org.openscales.core.layer
 			var tile:ImageTile;
 			var tlLayer:Pixel = this.grid[0][0].position;
 			var ratio:Number = this.getSupportedResolution(this.map.resolution).value / this.map.resolution.value; 
-			var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x, tlLayer.y + this.y); 
+			var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x/ratio, tlLayer.y + this.y/ratio); 
 			// Add Columns
-			if(bounds.width / this.map.resolution.value > this._grid[0].length * this.tileWidth * ratio + tlViewPort.x * ratio)
+			if(bounds.width / this.map.resolution.value > (this._grid[0].length - buffer) * this.tileWidth * ratio + tlViewPort.x * ratio)
 			{	
 				var gridRowLength:Number = this._grid[0].length;
 				var gridRightBound:Number = this.grid[0][gridRowLength-1].bounds.right;
@@ -330,6 +335,7 @@ package org.openscales.core.layer
 				tileLon = this.tileWidth * this.requestedResolution.value;
 				tileLat = this.tileHeight * this.requestedResolution.value;
 				nbTileToAdd = deltaLon / tileLon;
+				nbTileToAdd = Math.abs(nbTileToAdd);
 				if (nbTileToAdd > 0)
 				{
 					var rowLength:Number = this._grid.length;
@@ -357,7 +363,7 @@ package org.openscales.core.layer
 			}
 			
 			// Add rows
-			if(bounds.height / this.map.resolution.value > this._grid.length * this.tileHeight * ratio + tlViewPort.y * ratio)
+			if(bounds.height / this.map.resolution.value > (this._grid.length - buffer) * this.tileHeight * ratio + tlViewPort.y * ratio)
 			{
 				var gridColLength:Number = this._grid.length;
 				var gridBottomBound:Number = this.grid[gridColLength-1][0].bounds.bottom;
@@ -365,6 +371,7 @@ package org.openscales.core.layer
 				tileLon = this.tileWidth * this.requestedResolution.value;
 				tileLat = this.tileHeight * this.requestedResolution.value;
 				nbTileToAdd = deltaLat / tileLat;
+				nbTileToAdd = Math.abs(nbTileToAdd);
 				if (nbTileToAdd > 0)
 				{
 				var colLength:Number = this._grid[0].length;
@@ -389,6 +396,19 @@ package org.openscales.core.layer
 							row.push(tile);
 						}
 						this._grid.push(row);
+					}
+				}
+			}
+			var rl:int = this._grid.length;
+			var cl:int;
+			for (var r:int=0; r<rl; r++) {
+				var row:Vector.<ImageTile> = this._grid[r];
+				cl = row.length;
+				for (var c:int=0; c<cl; ++c) {
+					var tile:ImageTile = row[c];
+					if (!tile.drawn && 
+						tile.bounds.intersectsBounds(bounds, false)) {
+						tile.draw();
 					}
 				}
 			}
@@ -813,7 +833,7 @@ package org.openscales.core.layer
 			while (true) {
 				var tlLayer:Pixel = this.grid[0][0].position;
 				var ratio:Number = this.getSupportedResolution(this.map.resolution).value / this.map.resolution.value; 
-				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x, tlLayer.y + this.y); 
+				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x/ratio, tlLayer.y + this.y/ratio); 
 				if (tlViewPort.x > -this.tileWidth * (buffer - 1)) {
 					this.shiftColumn(true);
 				} else if (tlViewPort.x < -this.tileWidth * buffer) {
@@ -826,6 +846,7 @@ package org.openscales.core.layer
 					break;
 				}
 			};
+			
 			if (this.buffer == 0) {
 				var rl:int = this._grid.length;
 				var cl:int;
