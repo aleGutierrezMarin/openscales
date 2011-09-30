@@ -11,12 +11,7 @@ package org.openscales.core.layer
 	import flash.sampler.getInvocationCount;
 	import flash.sampler.getMemberNames;
 	import flash.utils.Timer;
-	
-	import mx.olap.aggregators.MaxAggregator;
-	import mx.rpc.events.HeaderEvent;
-	
-	import org.flexunit.internals.namespaces.classInternal;
-	import org.hamcrest.core.both;
+
 	import org.openscales.core.Map;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
