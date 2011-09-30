@@ -4,7 +4,7 @@
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 width="250" height="200"      
-		 creationComplete="configure()" xmlns:drawing="org.openscales.fx.control.drawing.*">
+		 creationComplete="configure()" xmlns:drawing="org.openscales.fx.control.drawing.*" xmlns:openscales="http://openscales.org">
 	
 	<fx:Script>
 		<![CDATA[
@@ -25,7 +25,6 @@
 			import mx.events.SliderEvent;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.utils.Trace;
 			import org.openscales.core.control.LayerManager;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
@@ -35,6 +34,7 @@
 			import org.openscales.core.handler.mouse.ClickHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.fx.control.IconButton;
 			import org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer;
 			
@@ -79,6 +79,20 @@
 			
 			[Bindable]
 			private var _displayDrawing:Boolean = false;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icon-minus.gif")]
+			private var _btnMinus:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icon-plus.gif")]
+			private var _btnPlus:Class;
+			
+			[Bindable]
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			
+			[Bindable]
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
 			
 			/**
 			 * Configure the object
@@ -142,6 +156,8 @@
 			override public function onMapLanguageChange(event:I18NEvent):void 
 			{
 				panelTitle = Catalog.getLocalizationForKey('layerswitcher.title');
+				_iconify = Catalog.getLocalizationForKey('component.iconify');
+				_toggle = Catalog.getLocalizationForKey('component.toggle');
 			}
 			
 			/**
@@ -343,16 +359,35 @@
 				
 				this.configure();
 			}
+			
+			/**
+			 * 
+			 */
+			override public function toggleDisplay():void{
+				
+				super.toggleDisplay();
+				var event:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				event.componentName = "LayerSwitcher";
+				event.componentIconified = this._isReduced;
+				this._map.dispatchEvent(event);
+			}
 		]]>
 	</fx:Script>
 	
-	
-	
-	<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" > 
-		<s:Group height="{this.height-35}" width="{this.width}" >
-			<s:layout>
-				<s:VerticalLayout />
-			</s:layout>	
+	<s:Group visible="{this._isReduced}" includeInLayout="{this._isReduced}">
+		<s:Button label="+" click="{this.toggleDisplay()}" toolTip="{this._toggle}" width="30" />
+	</s:Group>
+	<s:Group visible="{!this._isReduced}" includeInLayout="{!this._isReduced}">
+		<s:layout>
+			<s:HorizontalLayout gap="-35" />
+		</s:layout>
+		
+		<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}"> 
+			
+			<s:Group height="{this.height-35}" width="{this.width}" >
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>	
 				<s:Group visible="{this._displayDrawing}" includeInLayout="{this._displayDrawing}">
 					<drawing:AddVectorLayer map="{this.map}" />
 					<drawing:ImportFeature map="{this.map}" x="150" />
@@ -373,10 +408,14 @@
 										  requestedRowCount="4" />
 					</s:layout>
 				</s:List>
-				
+			</s:Group>
 			
+		</s:Panel>
+		<s:Group>
+			<s:Button label="-" click="{this.toggleDisplay()}" toolTip="{this._iconify}"
+					  width="30" y="5" />
 		</s:Group>
-	</s:Panel>
+	</s:Group>
 	
 </Control>
 
