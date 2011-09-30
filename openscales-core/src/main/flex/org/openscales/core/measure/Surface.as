@@ -27,8 +27,30 @@ package org.openscales.core.measure
 		private var _lastUnit:String = null;
 		
 		private var _displaySystem:String = "metric";
+
+		public function get displaySystem():String
+		{
+			return _displaySystem;
+		}
+
+		public function set displaySystem(value:String):void
+		{
+			_displaySystem = value;
+		}
+
 		
 		private var _accuracies:HashMap = null;
+
+		public function get accuracies():HashMap
+		{
+			return _accuracies;
+		}
+
+		public function set accuracies(value:HashMap):void
+		{
+			_accuracies = value;
+		}
+
 		
 		private var _supportedUnitSystem:Object = {
 			'metric': ["km"]
