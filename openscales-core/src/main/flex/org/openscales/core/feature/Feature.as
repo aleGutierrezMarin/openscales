@@ -3,8 +3,8 @@ package org.openscales.core.feature {
 	import flash.events.MouseEvent;
 	import flash.utils.getQualifiedClassName;
 	
-	import org.openscales.core.Trace;
-	import org.openscales.core.Util;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.filter.ElseFilter;

@@ -11,7 +11,7 @@ package org.openscales.fx
 	import mx.events.ResizeEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.MapEvent;

@@ -1,6 +1,6 @@
 package org.openscales.fx.layer
 {
-	import org.openscales.core.Util;
+	import org.openscales.core.utils.Util;
 	import org.openscales.core.layer.HTTPRequest;
 
 	/**

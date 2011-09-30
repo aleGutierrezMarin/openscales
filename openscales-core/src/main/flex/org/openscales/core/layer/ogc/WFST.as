@@ -4,7 +4,7 @@ package org.openscales.core.layer.ogc
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.events.WFSTLayerEvent;

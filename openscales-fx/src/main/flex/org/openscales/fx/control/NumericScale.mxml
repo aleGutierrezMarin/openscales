@@ -44,7 +44,7 @@
 			 * @default "1 / 1"
 			 */
 			[Bindable]
-			public var scaleLabel: String = "1 : 1";
+			public var scaleLabel: String = "1 / 1";
 				
 			override public function set map(value:Map):void
 			{
@@ -106,10 +106,10 @@
 					unit = Unit.METER;
 				
 				// screen dpi flash.system.Capabilities.screenDPI
-				this._value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._dpi));
+				this.value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._dpi));
 				
 				// update the label :
-				this.scaleLabel = "1 : "+this._value;
+				this.scaleLabel = "1 / "+this._value;
 			}
 			
 			
@@ -147,6 +147,7 @@
 			/**
 			 * The value of the current numeric scale
 			 */
+			[Bindable]
 			public function get value():Number
 			{
 				return this._value;

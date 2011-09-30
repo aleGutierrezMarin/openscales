@@ -4,8 +4,8 @@ package org.openscales.core.format
 	
 	import mx.messaging.management.Attribute;
 	
-	import org.openscales.core.Trace;
-	import org.openscales.core.UID;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.DescribeFeature;
 	import org.openscales.core.feature.Feature;

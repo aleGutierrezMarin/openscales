@@ -1,7 +1,7 @@
 package org.openscales.core.format
 {
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.geometry.basetypes.Bounds;

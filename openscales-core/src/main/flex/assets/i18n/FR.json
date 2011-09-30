@@ -3,6 +3,7 @@
    "locale.name": "French",
    "locale.localizedName": "Français",
    
+   "drawing.toolbar": "Outils de croquis",
    "drawing.add": "Ajouter",
    "drawing.import": "Importer",
    "drawing.export": "Exporter",

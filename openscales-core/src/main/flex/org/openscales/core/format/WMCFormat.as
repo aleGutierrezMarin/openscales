@@ -1,13 +1,13 @@
 package org.openscales.core.format
 {
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.ogc.WFS;

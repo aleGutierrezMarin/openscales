@@ -25,7 +25,7 @@
 			import mx.events.SliderEvent;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.core.control.LayerManager;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;

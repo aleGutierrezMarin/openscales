@@ -2,7 +2,7 @@ package org.openscales.core.basetypes.linkedlist
 {
 	import flash.display.Bitmap;
 	
-	import org.openscales.core.UID;
+	import org.openscales.core.utils.UID;
 
 	/**
 	 * LinkedListBitmapNode interface

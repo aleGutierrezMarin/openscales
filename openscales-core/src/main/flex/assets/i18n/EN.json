@@ -3,6 +3,7 @@
    "locale.name": "English",
    "locale.localizedName": "English",
    
+   "drawing.toolbar": "Drawing tools",
    "drawing.add": "Add",
    "drawing.import": "Import",
    "drawing.export": "Export",

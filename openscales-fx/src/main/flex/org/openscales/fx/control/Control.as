@@ -22,6 +22,7 @@ package org.openscales.fx.control
 		protected var _map:Map = null;
 		protected var _fxMap:FxMap = null;
 		protected var _active:Boolean = false;
+		protected var _isReduced:Boolean = false;
 		
 		/**
 		 * Store if this control have been initialized (Event.COMPLETE has been thrown)  
@@ -167,6 +168,26 @@ package org.openscales.fx.control
 		 */
 		public function onMapLanguageChange(event:I18NEvent):void {
 			
+		}
+		
+		/**
+		 * Indicates if the control display is normal or reduced
+		 * @default false : normal display
+		 */
+		[Bindable]
+		public function get isReduced():Boolean
+		{
+			return this._isReduced;
+		}
+		
+		public function set isReduced(value:Boolean):void
+		{
+			this._isReduced = value;
+		}
+		
+		public function toggleDisplay():void
+		{	
+			this._isReduced = !this._isReduced;
 		}
 	}
 }

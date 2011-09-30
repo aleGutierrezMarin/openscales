@@ -8,7 +8,7 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.LineString;
 	import org.openscales.core.feature.MultiLineStringFeature;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -16,7 +16,7 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;
-	import org.openscales.core.Util;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
 
