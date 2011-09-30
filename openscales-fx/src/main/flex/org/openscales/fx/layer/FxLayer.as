@@ -80,8 +80,6 @@ package org.openscales.fx.layer
 				this._maxExtent = null;
 			}
 			
-			this._layer.tweenOnZoom = this._tweenOnZoom;
-			
 			this._layer.alpha = super.alpha;
 			this._layer.visible = super.visible;
 			
@@ -409,23 +407,6 @@ package org.openscales.fx.layer
 			super.alpha = value;
 			if(_layer)
 				this._layer.alpha = value;
-		}
-		
-		/**
-		 * Indicates if the layer should be tweened on zoom
-		 */
-		public function get tweenOnZoom():Boolean {
-			if(this._layer)
-				return this._layer.tweenOnZoom;
-			return this._tweenOnZoom;
-		}
-		/**
-		 * @Private
-		 */
-		public function set tweenOnZoom(value:Boolean):void {
-			this._tweenOnZoom = value;
-			if(this._layer)
-				this._layer.tweenOnZoom;
 		}
 		
 		/**
