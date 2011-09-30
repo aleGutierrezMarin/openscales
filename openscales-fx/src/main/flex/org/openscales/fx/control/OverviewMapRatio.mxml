@@ -12,10 +12,12 @@
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
 			import mx.events.PropertyChangeEventKind;
+			import mx.states.OverrideBase;
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.control.OverviewMapRatio;
+			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.layer.FxLayer;
 			import org.openscales.geometry.basetypes.Size;
@@ -99,6 +101,17 @@
 					this._overviewmap.size = new Size(this.width,this.height);
 			}
 			
+			/**
+			 * @inherit
+			 */
+			override public function toggleDisplay(event:Event=null):void{
+				
+				super.toggleDisplay();
+				var newEvent:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				newEvent.componentName = "OverviewMap";
+				newEvent.componentIconified = this._isReduced;
+				this._map.dispatchEvent(newEvent);
+			}
 			
 			/**
 			 * Ratio between the overview resolution and the map resolution
