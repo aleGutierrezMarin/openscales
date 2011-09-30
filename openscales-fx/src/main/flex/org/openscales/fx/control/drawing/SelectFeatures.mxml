@@ -201,12 +201,24 @@
 			 */
 			private function onClick():void{
 				
-				if(!this.target || (this._handler && this._handler.active))
+				if(!this.target)
 					return;
+				
+				var evt:DrawingEvent;
+				if(this._handler && this._handler.active){
+					disactivate();
+					evt = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
+					this.map.dispatchEvent(evt);
+					return;
+				}
+				
 				this._isClick = true;
-				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
+				evt = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
+				evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+				evt.activeHandler = null;
 				this.map.dispatchEvent(evt);
 				activate();
 			}

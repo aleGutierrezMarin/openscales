@@ -129,10 +129,22 @@
 				
 				if(!this.target)
 					return;
+				
+				var evt:DrawingEvent;
+				if(this._handler.active){
+					disactivate();
+					evt = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
+					this._handler.map.dispatchEvent(evt);
+					return;
+				}
+				
 				this._isClick = true;
-				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.MOVE_HANDLER_ACTIVATED);
+				evt = new DrawingEvent(DrawingEvent.MOVE_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				evt.layer = this.target;
+				_handler.map.dispatchEvent(evt);
+				evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+				evt.activeHandler = null;
 				_handler.map.dispatchEvent(evt);
 				activate();
 			}
