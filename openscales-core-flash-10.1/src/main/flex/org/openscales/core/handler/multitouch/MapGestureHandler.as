@@ -16,6 +16,7 @@ package org.openscales.core.handler.multitouch {
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.mouse.DragHandler;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
@@ -139,6 +140,7 @@ package org.openscales.core.handler.multitouch {
 				
 				this.cummulativeScaleX = this.cummulativeScaleX * event.scaleX;
 				this.cummulativeScaleY = this.cummulativeScaleY * event.scaleY;
+				Trace.debug("EVENT SCALE : " + event.scaleX + " Y : " + event.scaleY);
 				
 				this.map.zoom(1/(this.cummulativeScaleX*this.cummulativeScaleY),new Pixel(event.stageX, event.stageY));
 				//Trace.debug("CUMULATIVE SCALE : " + 1/(this.cummulativeScaleX*this.cummulativeScaleY));
