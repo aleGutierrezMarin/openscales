@@ -1,32 +1,17 @@
 package org.openscales.core.layer
 {
-	import com.adobe.utils.StringUtil;
-	
 	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display.Shape;
 	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
-	import flash.net.LocalConnection;
-	import flash.sampler.getInvocationCount;
-	import flash.sampler.getMemberNames;
 	import flash.utils.Timer;
 	
-	import mx.olap.aggregators.MaxAggregator;
-	import mx.rpc.events.HeaderEvent;
-	
-	import org.flexunit.internals.namespaces.classInternal;
-	import org.hamcrest.core.both;
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
-	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
-	import org.openscales.core.basetypes.linkedlist.LinkedList;
-	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.tile.ImageTile;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
