@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:IconButton xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:os="org.openscales.fx.control.*"
+			   toolTip="{this.tooltip}"
+			   icon="{_btnAttributes}"
+			   alpha="{_alpha}"
+			   width="25"
+			   height="25"
+			   click="onClick()">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.control.IControl;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.popup.ChangeAttributes;
+			import org.openscales.core.popup.EditAttributes;
+			import org.openscales.fx.control.layer.LayerManager;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			import spark.components.TextInput;
+			
+			[Bindable]
+			private var _alpha:Number = 1;
+			
+			[Bindable]
+			private var tooltip:String = Catalog.getLocalizationForKey('drawing.attributes');
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-13.jpg")]
+			private var _btnAttributes:Class;
+			
+			private var _map:Map = null;
+			private var _editHandlerActivated:Boolean = false;
+			private var _defaultAttributes:Array = new Array("id","description");
+			private var _index:int;
+			private var _vectorLayer:VectorLayer;
+			
+			/**
+			 * The Map associated to the component
+			 */
+			public function get map():Map{
+				
+				return this._map;
+			}
+			public function set map(value:Map):void{
+				
+				this._map = value;
+				this._map.addEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
+				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(FeatureEvent.FEATURE_DRAWING_END, onFeatureAdded);
+				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+			}
+			
+			/**
+			 * The default attributes
+			 */
+			public function set defaultAttributes(value:Array):void{
+				
+				this._defaultAttributes = value;
+				if(this._vectorLayer){
+					this._vectorLayer.attributesId = new Array();
+					for(var i:uint = 0; i < this._defaultAttributes.length; i++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[i]);
+					}
+				}
+			}
+			public function get defaultAttributes():Array{
+				
+				return this._defaultAttributes;
+			}
+			
+			/**
+			 * The VectorLayer associated to the component
+			 */
+			public function get target():VectorLayer{
+				
+				return this._vectorLayer;
+			}
+			public function set target(value:VectorLayer):void{
+				
+				this._vectorLayer = value;
+				if(!value)
+					return;
+				
+				// set the default attributes if this is the first selection of the layer
+				var k:uint;
+				if(this.parentDocument is DrawingToolbar && !this._vectorLayer.initInDrawingToolbar){
+					this._vectorLayer.attributesId = new Array();
+					for(k = 0; k < this._defaultAttributes.length; k++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
+					}
+					this._vectorLayer.initInDrawingToolbar = true;
+				}
+				else if(!(this.parentDocument is DrawingToolbar) && !this._vectorLayer.initInDrawingToolbar && !this._vectorLayer.initOutDrawingToolbar){
+					this._vectorLayer.attributesId = new Array();
+					for(k = 0; k < this._defaultAttributes.length; k++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
+					}
+					this._vectorLayer.initOutDrawingToolbar = true;
+				}
+				
+				if(this._vectorLayer)
+				{
+					// define the attributesVal array if necessary
+					if(this._vectorLayer.attributesVal.length != this._vectorLayer.features.length)
+					{
+						var i:int = 0;
+						var j:int = this._vectorLayer.features.length;
+						var temp:Array;
+						
+						this._vectorLayer.attributesVal = new Array();
+						
+						for(; i<j; ++i)
+						{
+							temp = new Array(this._vectorLayer.attributesId.length);
+							if(this._vectorLayer.attributesId[0] == "id")
+								temp[0] = this._vectorLayer.features[i].name + " / " + this._vectorLayer.name;
+							
+							this._vectorLayer.attributesVal.push({identifier:this._vectorLayer.features[i].name, values:temp});
+						}
+					}
+				}
+			}
+			
+			/**
+			 * This function is called when a feature is added to the associated Map
+			 */
+			private function onFeatureAdded(event:FeatureEvent):void{
+				
+				if(event.feature.layer == this.target && this.target != null)
+				{
+					var temp:Array = new Array(this.target.attributesId.length);
+					if(this.target.attributesId[0] == "id")
+						temp[0] = event.feature.name + " / " + this.target.name;
+					this.target.attributesVal.push({identifier:event.feature.name, values:temp});
+					event.stopImmediatePropagation();
+				}
+			}
+			
+			/**
+			 * This function is called when a feature is selected
+			 */
+			private function onSelectedFeature(event:FeatureEvent):void
+			{
+				if(this._editHandlerActivated && this.target != null){
+					_index = this.searchFeature(event.feature);
+					if(_index < 0)
+						return;
+					event.stopImmediatePropagation();
+					new ChangeAttributes(this._map, this.target.attributesId, (this.target.attributesVal[_index].values as Array), this.onChangeAttributes);
+				}
+				else{
+					_index = this.searchFeature(event.feature);
+					if(_index < 0)
+						return;
+					event.stopImmediatePropagation();
+					new EditAttributes(this._map, this.target.attributesId, (this.target.attributesVal[_index].values as Array));
+				}
+			}
+			
+			/**
+			 * This function is called by the ChangeAttributes pop-up
+			 */
+			private function onChangeAttributes(textInputArray:Array):void{
+				
+				for(var i:uint = 0; i < this.target.attributesId.length; i++)
+					(this.target.attributesVal[_index].values as Array)[i] = (textInputArray[i] as TextInput).text;
+			}
+			
+			/**
+			 * This function is called when the icon button is clicked
+			 */
+			private function onClick():void{
+				
+				if(!this.target)
+					return;
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.ATTRIBUTES_HANDLER_ACTIVATED);
+				evt.activeHandler = this.id;
+				this.map.dispatchEvent(evt);
+				new org.openscales.core.popup.ManageAttributes(this._map, this.target.attributesId, this.onManageAttributes);
+			}
+			
+			/**
+			 * This function is called by the ManageAttributes pop-up
+			 */
+			private function onManageAttributes(value:String, action:String):void
+			{
+				var i:uint;
+				var j:uint;
+				
+				if(action == "add")
+				{
+					for(i = 0; i < this.target.attributesVal.length; i++)
+						(this.target.attributesVal[i].values as Array).push();
+				}
+				else if(action == "delete")
+				{
+					for(i = 0; i < this.target.attributesId.length; i++){
+						if(this.target.attributesId[i] == value){
+							for(j = 0; j < this.target.attributesVal.length; j++)
+								(this.target.attributesVal[j].values as Array).splice(i,1);
+						}
+					}
+				}
+			}
+			
+			/**
+			 * This function returns the index of the feature
+			 */
+			private function searchFeature(feature:Feature):int{
+				
+				if(feature.layer == null || feature.layer != this.target)
+					return -1;
+				
+				for(var i:uint = 0; i < this.target.attributesVal.length; i++){
+					if(this.target.attributesVal[i].identifier == feature.name)
+						return i;
+				}
+				return -1;
+			}
+			
+			/**
+			 * This function is called when a DrawingEvent occured
+			 */
+			private function onChangeActiveHandler(event:DrawingEvent):void{
+				
+				if(event.type == DrawingEvent.EDIT_HANDLER_ACTIVATED)
+					this._editHandlerActivated = true;
+				else
+					this._editHandlerActivated = false;
+			}
+			
+			/**
+			 * This function is called when the active layer changed
+			 */
+			private function onChangeActiveLayer(evt:DrawingEvent):void{
+				
+				if(this.parentDocument is DrawingToolbar){
+					this.target = evt.layer;
+				}
+			}
+			
+			/**
+			 * Update texts on map language changed
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void{
+				
+				this.tooltip = Catalog.getLocalizationForKey('drawing.attributes');
+			}
+		]]>
+	</fx:Script>			
+</os:IconButton>
