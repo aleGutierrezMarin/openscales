@@ -3,6 +3,9 @@
    "locale.name": "English",
    "locale.localizedName": "English",
    
+   "component.iconify": "Iconify",
+    "component.toggle": "Toggle",
+   
    "drawing.toolbar": "Drawing tools",
    "drawing.add": "Add",
    "drawing.import": "Import",

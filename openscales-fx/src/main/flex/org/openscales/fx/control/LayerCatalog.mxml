@@ -16,13 +16,18 @@ For example, to present the list of layers available in an application.
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
-			
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.layer.Layer;
 			
 			private var _layers:Vector.<Layer>;
 						
 			[Bindable]
 			protected var _filteredLayers:ArrayCollection = new ArrayCollection();
+			
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
 			
 			/**
 			 * The list of layers to be displayed in the catalog
@@ -64,10 +69,30 @@ For example, to present the list of layers available in an application.
 				this._filteredLayers.filterFunction = value;
 				this._filteredLayers.refresh();
 			}
+			
+			/**
+			 * 
+			 */
+			override public function toggleDisplay():void{
+				
+				super.toggleDisplay();
+				var event:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				event.componentName = "LayerCatalog";
+				event.componentIconified = this._isReduced;
+				this._map.dispatchEvent(event);
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				_iconify = Catalog.getLocalizationForKey('component.iconify');
+				_toggle = Catalog.getLocalizationForKey('component.toggle');
+			}
 		]]>
 	</fx:Script>
 	
-	<s:List id="layerList" dataProvider="{this._filteredLayers}">
-		
-	</s:List>
+	<s:List id="layerList" dataProvider="{this._filteredLayers}" />
+	
 </os:Control>

@@ -3,6 +3,9 @@
    "locale.name": "French",
    "locale.localizedName": "Français",
    
+   "component.iconify": "Iconifier",
+   "component.toggle": "Agrandir",
+   
    "drawing.toolbar": "Outils de croquis",
    "drawing.add": "Ajouter",
    "drawing.import": "Importer",

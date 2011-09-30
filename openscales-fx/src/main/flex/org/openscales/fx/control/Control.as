@@ -22,6 +22,7 @@ package org.openscales.fx.control
 		protected var _map:Map = null;
 		protected var _fxMap:FxMap = null;
 		protected var _active:Boolean = false;
+		[Bindable]
 		protected var _isReduced:Boolean = false;
 		
 		/**

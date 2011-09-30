@@ -4,7 +4,7 @@ package org.openscales.core.layer
 	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
 	import flash.utils.Timer;
-	
+
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
