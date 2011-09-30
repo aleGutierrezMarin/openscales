@@ -215,6 +215,7 @@ package org.openscales.core.layer
 						} else 
 						{
 							this.moveGriddedTiles(bounds);
+							this.actualizeGridSize(bounds);
 						}
 					} 
 					_initialized = true;
@@ -228,7 +229,7 @@ package org.openscales.core.layer
 				this._previousResolution = this.map.resolution;
 				//this.actualizeGridSize(bounds);
 				resolutionChangedCache = false
-				this.actualizeGridSize(bounds);
+
 			}
 			
 			if (centerChangedCache)
