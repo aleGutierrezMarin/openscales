@@ -2,6 +2,7 @@ package org.openscales.core.control
 {
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.core.Map;
@@ -107,9 +108,9 @@ package org.openscales.core.control
 			this._isReduced = value;
 		}
 		
-		public function toggleDisplay():void
+		public function toggleDisplay(event:Event = null):void
 		{	
-			this._isReduced = !this._isReduced;
+			this.isReduced = !this._isReduced;
 		}
 	}
 }
