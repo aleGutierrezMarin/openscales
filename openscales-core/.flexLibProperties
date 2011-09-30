@@ -2,10 +2,6 @@
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
     <classEntry path="org.openscales.core.Map"/>
-    <classEntry path="org.openscales.core.StringUtils"/>
-    <classEntry path="org.openscales.core.Trace"/>
-    <classEntry path="org.openscales.core.UID"/>
-    <classEntry path="org.openscales.core.Util"/>
     <classEntry path="org.openscales.core.basetypes.Resolution"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.AbstractLinkedListNode"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedList"/>
@@ -33,6 +29,7 @@
     <classEntry path="org.openscales.core.control.LayerManager"/>
     <classEntry path="org.openscales.core.control.LogoRotator"/>
     <classEntry path="org.openscales.core.control.MousePosition"/>
+    <classEntry path="org.openscales.core.control.MouseWheelEnabler"/>
     <classEntry path="org.openscales.core.control.NumericScale"/>
     <classEntry path="org.openscales.core.control.OverviewMap"/>
     <classEntry path="org.openscales.core.control.OverviewMapRatio"/>
@@ -224,6 +221,11 @@
     <classEntry path="org.openscales.core.style.symbolizer.Symbolizer"/>
     <classEntry path="org.openscales.core.tile.ImageTile"/>
     <classEntry path="org.openscales.core.tile.Tile"/>
+    <classEntry path="org.openscales.core.utils.BrowserInfo"/>
+    <classEntry path="org.openscales.core.utils.StringUtils"/>
+    <classEntry path="org.openscales.core.utils.Trace"/>
+    <classEntry path="org.openscales.core.utils.UID"/>
+    <classEntry path="org.openscales.core.utils.Util"/>
     <classEntry path="org.openscales.core.MapTest"/>
     <classEntry path="org.openscales.core.StringUtilsTest"/>
     <classEntry path="org.openscales.core.basetypes.ResolutionTest"/>

@@ -1,7 +1,7 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;

@@ -2,7 +2,7 @@ package org.openscales.core.request
 {
 	import com.adobe.serialization.json.JSON;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	
 	/**
 	 * OpenLSRequest

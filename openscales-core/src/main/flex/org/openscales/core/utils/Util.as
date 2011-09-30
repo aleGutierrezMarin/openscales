@@ -1,4 +1,4 @@
-package org.openscales.core
+package org.openscales.core.utils
 {
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;

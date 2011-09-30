@@ -12,7 +12,7 @@ package org.openscales.core.layer
 	import mx.rpc.events.HeaderEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.linkedlist.ILinkedListNode;
 	import org.openscales.core.basetypes.linkedlist.LinkedList;

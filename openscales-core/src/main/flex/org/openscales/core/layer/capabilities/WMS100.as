@@ -22,6 +22,7 @@ package org.openscales.core.layer.capabilities
 
 			this._layerNode = "Layer";
 			this._name = "Name";
+			this._format = "Format";
 			this._title = "Title";
 			this._srs = "SRS";
 			this._abstract = "Abstract";
@@ -46,11 +47,28 @@ package org.openscales.core.layer.capabilities
 			var left:Number, bottom:Number, right:Number, top:Number;
 
 			var layerNodes:XMLList = doc..*::Layer;
+			var getMapNodes:XMLList = doc..*::GetMap;
 						
 			this.removeNamespaces(doc);
 
+			for each (var getMap:XML in getMapNodes){
+				var fomatNodes:XMLList = getMap.Format;
+				this._format = "";
+				for each (var fmt:XML in fomatNodes)
+				{
+					value = fmt.toString();
+					if (this._format != "")
+						this._format = this._format + "," + value;
+					else
+						this._format = value;
+				}
+			}
+			
 			var srsCode:String = null;
 			for each (var layer:XML in layerNodes){
+				
+				layerCapabilities.put("Format", this._format);
+				
 				name = layer.Name;
 				layerCapabilities.put("Name", name);
 
@@ -61,6 +79,9 @@ package org.openscales.core.layer.capabilities
 				while (value.search(" ") > 0) {
 					value = value.replace(" ",",");
 				}
+				
+				
+				
 				layerCapabilities.put("SRS", value);
 				srsCode = value;
 

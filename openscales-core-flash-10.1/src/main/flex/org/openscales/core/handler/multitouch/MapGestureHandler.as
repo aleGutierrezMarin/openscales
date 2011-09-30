@@ -11,7 +11,6 @@ package org.openscales.core.handler.multitouch {
 	import flash.ui.MultitouchInputMode;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.filter.ElseFilter;
@@ -142,7 +141,7 @@ package org.openscales.core.handler.multitouch {
 				this.cummulativeScaleY = this.cummulativeScaleY * event.scaleY;
 				
 				this.map.zoom(1/(this.cummulativeScaleX*this.cummulativeScaleY),new Pixel(event.stageX, event.stageY));
-				Trace.debug("CUMULATIVE SCALE : " + 1/(this.cummulativeScaleX*this.cummulativeScaleY));
+				//Trace.debug("CUMULATIVE SCALE : " + 1/(this.cummulativeScaleX*this.cummulativeScaleY));
 				this.cummulativeScaleX = 1;
 				this.cummulativeScaleY = 1;
 				

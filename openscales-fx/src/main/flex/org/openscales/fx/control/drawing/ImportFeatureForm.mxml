@@ -69,9 +69,9 @@
 	
 
 	<s:TextInput id="urlInput" visible="false" />
-	<s:Button id="localeButton" visible="false" label="{this.browseLabel}"
-			  click="{this.browseFiles()}"/>
-	<s:Label id="selectedLocaleFile" visible="false" />
+	<s:Button id="localeButton" visible="false" label="{this.browseLabel}" click="{this.browseFiles()}"/>
+	
+	<s:Label id="selectedLocaleFile" visible="false" width="250" />
 	
 	<s:Label visible="false" id="nameError" 
 			 text="{this.nameLabelError}" width="{this.width*0.7}" bottom="0" />
@@ -86,6 +86,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			
+			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.KML;
@@ -200,11 +201,6 @@
 			 * The ImportFeature linked to the current pop up
 			 */
 			private var _importFeature:ImportFeature = null;
-			
-			/**
-			 * Allowed file types
-			 */
-			private static const FILE_TYPES:Array = [new FileFilter("Text file","*.xml;*.kml;*.gml")];
 
 			/**
 			 * Selected source type
@@ -216,9 +212,13 @@
 			 * The file reference
 			 */
 			private var fileReference:FileReference;
+			private var _alreadyInit:Boolean = false;
 
 			public function init(event:Event):void
 			{
+				if(this._alreadyInit)
+					return;
+				
 				if(!this.supportedFormat)
 				{
 					// init all available formats
@@ -249,6 +249,8 @@
 				{
 					this.versionProvider.addItem(version);
 				}
+				
+				this._alreadyInit = true;
 			}
 			
 			/**
@@ -365,6 +367,7 @@
 				sourceError.visible = false;
 				
 				var xml:XML = null;
+				var evt:DrawingEvent;
 				
 				if(valide)
 				{
@@ -377,6 +380,7 @@
 							if(selectedSource == 1)
 							{
 								kml = new KML(name, url);
+								kml.selected = true;
 								this.importFeature.map.addLayer(kml);
 							}
 							
@@ -384,12 +388,14 @@
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								kml = new KML(name, null, xml);
+								kml.selected = true;
 								this.importFeature.map.addLayer(kml);
 							}
+							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+							evt.layer = kml;
+							this.importFeature.map.dispatchEvent(evt);
 							
-							
-						
-						break;
+							break;
 						
 						case "GPX":
 						
@@ -398,39 +404,46 @@
 							if(selectedSource == 1)
 							{
 								gpx = new GPX(name, version, url);
+								gpx.selected = true;
 								this.importFeature.map.addLayer(gpx);
 							}
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
-								
 								gpx = new GPX(name, version, null, xml);
+								gpx.selected = true;
 								this.importFeature.map.addLayer(gpx);
 							}
-						
+							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+							evt.layer = gpx;
+							this.importFeature.map.dispatchEvent(evt);
 							
-						break;
+							break;
 						
 						case "GeoRSS":
 							
 							if(selectedSource == 1)
 							{
 								var geoRss:GeoRss = new GeoRss(name, url);
+								geoRss.selected = true;
 								this.importFeature.map.addLayer(geoRss);
 							}
 							else // locale file
 							{
 								
 							}
+							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+							evt.layer = geoRss;
+							this.importFeature.map.dispatchEvent(evt);
 							
-							
-						break;
+							break;
 						
 						case "OSM":
 						
 							if(selectedSource == 1)
 							{
 								var osm:OSM = new OSM(name, url);
+								osm.selected = true;
 								this.importFeature.map.addLayer(osm);
 							}
 							else // locale file
@@ -438,7 +451,7 @@
 								
 							}
 							
-						break;
+							break;
 						
 						case "GML":
 						
@@ -447,18 +460,21 @@
 							if(selectedSource == 1)
 							{
 								gml = new GML(name, version, this.importFeature.map.projection, url);
+								gml.selected = true;
 								this.importFeature.map.addLayer(gml);
 							}
 							else // locale file
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
-								
 								gml = new GML(name, version, this.importFeature.map.projection, null, xml);
+								gml.selected = true;
 								this.importFeature.map.addLayer(gml);
 							}
+							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+							evt.layer = gml;
+							this.importFeature.map.dispatchEvent(evt);
 							
-						break;
-						
+							break;
 					}	
 					this.importFeature.closePopUp();
 				}
@@ -495,7 +511,7 @@
 			{
 				selectedSource = 2;
 				urlInput.visible = false;
-				selectedLocaleFile.visible = false;
+				selectedLocaleFile.visible = true;
 				localeButton.visible = true;
 			}
 			
@@ -514,7 +530,7 @@
 				fileReference.addEventListener(Event.CANCEL,onCancel);
 				
 				//open a native browse dialog that filters for text files
-				fileReference.browse(FILE_TYPES);
+				fileReference.browse();
 			}
 			
 			/**

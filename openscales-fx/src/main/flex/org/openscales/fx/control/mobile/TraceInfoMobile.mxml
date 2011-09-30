@@ -14,7 +14,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
+			//import org.openscales.core.Trace;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.TraceEvent;
 			import org.openscales.core.i18n.Catalog;
@@ -55,7 +55,7 @@
 				if(this.map) {
 					if(e)
 						this.map.removeEventListener(Event.ADDED_TO_STAGE,addListeners);
-					Trace.stage = this.map.stage;
+					//Trace.stage = this.map.stage;
 					this.map.stage.addEventListener(TraceEvent.LOG, displayLog);
 					this.map.stage.addEventListener(TraceEvent.INFO, displayLog);
 					this.map.stage.addEventListener(TraceEvent.WARNING, displayLog);

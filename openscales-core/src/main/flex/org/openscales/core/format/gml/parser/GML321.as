@@ -1,7 +1,7 @@
 package org.openscales.core.format.gml.parser
 {
-	import org.openscales.core.Trace;
-	import org.openscales.core.Util;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.Util;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;

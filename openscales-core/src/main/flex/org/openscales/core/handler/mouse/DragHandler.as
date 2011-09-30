@@ -5,7 +5,7 @@ package org.openscales.core.handler.mouse
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.DrawingEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;

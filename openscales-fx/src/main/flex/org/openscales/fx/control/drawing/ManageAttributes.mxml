@@ -20,6 +20,7 @@
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.popup.ChangeAttributes;
 			import org.openscales.core.popup.EditAttributes;
@@ -27,11 +28,11 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-			import org.openscales.core.i18n.Catalog;
+			
 			import spark.components.TextInput;
 			
 			[Bindable]
-			private var _alpha:Number = 0.3;
+			private var _alpha:Number = 1;
 			
 			[Bindable]
 			private var tooltip:String = Catalog.getLocalizationForKey('drawing.attributes');
@@ -42,7 +43,7 @@
 			
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
-			private var _defaultAttributes:Array = new Array("id","desc");
+			private var _defaultAttributes:Array = new Array("id","description");
 			private var _index:int;
 			private var _vectorLayer:VectorLayer;
 			
@@ -63,6 +64,7 @@
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(FeatureEvent.FEATURE_DRAWING_END, onFeatureAdded);
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 			}
 			
 			/**
@@ -71,6 +73,12 @@
 			public function set defaultAttributes(value:Array):void{
 				
 				this._defaultAttributes = value;
+				if(this._vectorLayer){
+					this._vectorLayer.attributesId = new Array();
+					for(var i:uint = 0; i < this._defaultAttributes.length; i++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[i]);
+					}
+				}
 			}
 			public function get defaultAttributes():Array{
 				
@@ -90,9 +98,22 @@
 				if(!value)
 					return;
 				
-				// set the default attributes if no attributes are defined
-				if(this._vectorLayer.attributesId.length == 0)
-					this._vectorLayer.attributesId = this._defaultAttributes;
+				// set the default attributes if this is the first selection of the layer
+				var k:uint;
+				if(this.parentDocument is DrawingToolbar && !this._vectorLayer.initInDrawingToolbar){
+					this._vectorLayer.attributesId = new Array();
+					for(k = 0; k < this._defaultAttributes.length; k++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
+					}
+					this._vectorLayer.initInDrawingToolbar = true;
+				}
+				else if(!(this.parentDocument is DrawingToolbar) && !this._vectorLayer.initInDrawingToolbar && !this._vectorLayer.initOutDrawingToolbar){
+					this._vectorLayer.attributesId = new Array();
+					for(k = 0; k < this._defaultAttributes.length; k++){
+						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
+					}
+					this._vectorLayer.initOutDrawingToolbar = true;
+				}
 				
 				if(this._vectorLayer)
 				{

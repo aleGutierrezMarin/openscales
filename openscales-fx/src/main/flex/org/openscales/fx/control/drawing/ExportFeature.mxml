@@ -26,7 +26,7 @@
 			import spark.components.TitleWindow;
 			
 			[Bindable]
-			private var _alpha:Number = 0.3;
+			private var _alpha:Number = 1;
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-15.png")]
@@ -104,6 +104,7 @@
 			public function set map(value:Map):void{
 				this._map = value;
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onChangeActiveLayer);
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
 				
 			}
 			public function get map():Map{

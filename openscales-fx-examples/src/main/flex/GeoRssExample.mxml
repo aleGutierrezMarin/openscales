@@ -29,7 +29,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.core.Trace;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.fx.popup.FxPopup;
 			import org.openscales.fx.popup.renderer.FxPopupRenderer;

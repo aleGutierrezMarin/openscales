@@ -6,7 +6,7 @@ package org.openscales.core.layer.ogc
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;

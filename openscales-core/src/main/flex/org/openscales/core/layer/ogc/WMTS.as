@@ -3,7 +3,7 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
