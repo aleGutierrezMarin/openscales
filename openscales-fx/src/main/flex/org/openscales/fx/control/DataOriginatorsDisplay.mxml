@@ -270,8 +270,11 @@
 						i = 0;		
 						for (; i<j; ++i) 
 						{
-							this._originator.addItem(this._dataOriginators.originators[this._currentOriginator]);
-							this._currentOriginator = getFollowing(this._currentOriginator);
+							if(this._dataOriginators.originators.length > this._currentOriginator)
+							{
+								this._originator.addItem(this._dataOriginators.originators[this._currentOriginator]);
+								this._currentOriginator = getFollowing(this._currentOriginator);
+							}
 						}
 					}	
 				}
