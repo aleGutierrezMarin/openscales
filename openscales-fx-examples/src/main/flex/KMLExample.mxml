@@ -19,8 +19,8 @@
 		<!-- Add the KML layer -->
 		<KML id="kmlLayer" url="http://www.parisavelo.net/velib.kml" 
 			 proxy="http://openscales.org/proxy.php?url="
-			 numZoomLevels="20" style="{Style.getDefaultPointStyle()}" 
-			 tweenOnZoom="false" srs = "EPSG:4326" />
+			 numZoomLevels="20" style="{Style.getDefaultPointStyle()}"
+			 srs = "EPSG:4326" />
 		
 		<DragHandler/>
 		<WheelHandler/>

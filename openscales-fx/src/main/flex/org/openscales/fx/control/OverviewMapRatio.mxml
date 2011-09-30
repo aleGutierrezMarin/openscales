@@ -4,6 +4,9 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 creationComplete="this.onCreationComplete(event);">
+	<s:Label>
+		ploàp
+	</s:Label>
 	
 	<fx:Script>
 		<![CDATA[

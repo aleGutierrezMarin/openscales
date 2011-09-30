@@ -17,6 +17,7 @@ package org.openscales.core.layer.capabilities
 		protected var _layerNode:String = null;
 		protected var _capabilitiesPrefix:String = null;
 		protected var _srs:String = null;
+		protected var _format:String = null;
 		protected var _latLonBoundingBox:String = null;
 		protected var _title:String = null;
 		protected var _name:String = null;

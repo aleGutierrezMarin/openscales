@@ -283,7 +283,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Validate that if the map extent is smaller than the layer maxExtent and the map maxExtent,
+		 * Validate that if the map extent is smaller than the layer maxExtent and the layer maxExtent,
 		 * then the extent requested is the map extent in not tiled mode.
 		 */
 		[Test(async)]
@@ -297,9 +297,10 @@ package org.openscales.core.layer.ogc
 			// this is a dummy BaseLayer added to force the map to have her how maxExtent. 
 			// while refactoring openscales to remove the base layer just set the maxExtent of the map
 			// instead of setting a baseLayer : _map.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
-			var _dummyMaxExtent:WMS = new WMS(NAME, URL, LAYERS, "", FORMAT);
+			_map.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			/*var _dummyMaxExtent:WMS = new WMS(NAME, URL, LAYERS, "", FORMAT);
 			_dummyMaxExtent.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
-			_map.addLayer(_dummyMaxExtent);
+			_map.addLayer(_dummyMaxExtent);*/
 			
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
 			_wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
@@ -314,7 +315,7 @@ package org.openscales.core.layer.ogc
 			_wms.addEventListener(TileEvent.TILE_LOAD_START,Async.asyncHandler(this,function(event:TileEvent,obj:Object):void{
 				
 				var url:String = event.tile.url;
-				var intersectionExtent:Bounds = new Bounds(-70.3125,-70.3125,70.3125,70.3125, "EPSG:4326");
+				var intersectionExtent:Bounds = new Bounds(-50,-50,50,50, "EPSG:4326");
 				
 				// Then the extent resquested is the extent of the map
 				assertTrue("BBox is not the proper extends", url.match('BBOX='+intersectionExtent.toString()));

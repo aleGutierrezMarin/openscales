@@ -1,6 +1,5 @@
 package org.openscales.core.tile
 {
-	import com.gskinner.motion.GTween;
 	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
@@ -73,28 +72,21 @@ package org.openscales.core.tile
 				}
 				return false;
 			}
-
-			var cachedBitmap:Bitmap;
-			if ((this.layer is Grid) && ((cachedBitmap=(this.layer as Grid).getTileCache(this.url)) != null)) {
-				this.loading = true;
-				drawLoader(this.url,cachedBitmap,true);
-			}else {
-				if (_request) {
-					_request.destroy();
-				}
-				this.loading = true;		     
-				_request = new DataRequest(this.url, onTileLoadEnd, onTileLoadError,method);
-				if(_request.method == URLRequestMethod.POST){
-					_request.postContent = new URLVariables(this.url);
-				}
-				
-				_request.security = this.layer.security;
-				_request.proxy = this.layer.proxy;
-				if(this.layer.security==null) {
-					_request.send();
-				} else {
-					this.layer.security.addWaitingRequest(_request);
-				}
+			if (_request) {
+				_request.destroy();
+			}
+			this.loading = true;		     
+			_request = new DataRequest(this.url, onTileLoadEnd, onTileLoadError,method);
+			if(_request.method == URLRequestMethod.POST){
+				_request.postContent = new URLVariables(this.url);
+			}
+			
+			_request.security = this.layer.security;
+			_request.proxy = this.layer.proxy;
+			if(this.layer.security==null) {
+				_request.send();
+			} else {
+				this.layer.security.addWaitingRequest(_request);
 			}
 			return true;
 		}
@@ -102,8 +94,8 @@ package org.openscales.core.tile
 		public function onTileLoadEnd(event:Event):void {
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
-			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
-			drawLoader(loader.name, bitmap, false);
+			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.AUTO,true);
+			drawLoader(loader.name, bitmap);
 		}
 
 		/**
@@ -113,7 +105,7 @@ package org.openscales.core.tile
 		 * @param bitmap The bitmap to draw
 		 * @param cached Cached loader or not
 		 */
-		private function drawLoader(url:String, bitmap:Bitmap, cached:Boolean):void {
+		private function drawLoader(url:String, bitmap:Bitmap):void {
 			if (this.layer) {		
 				if (_drawPosition != null) {
 					this.position = _drawPosition;					
@@ -132,17 +124,9 @@ package org.openscales.core.tile
 				if (! this.layer.contains(this)) {
 					this.layer.addChild(this);
 				}
-				if(this.layer.tweenOnLoad)
-					var tw:GTween = new GTween(this, 0.3, {alpha:1});
-
+				
 				this.drawn = true;
 				this.loading = false;
-				
-				// We put the loader into the cache if it's a recently loaded
-				if ((this.layer is Grid) && (! cached)) {
-					var node:LinkedListBitmapNode = new LinkedListBitmapNode(bitmap,url);
-					(this.layer as Grid).addTileCache(node);
-				}
 			}
 		}
 		
@@ -164,10 +148,6 @@ package org.openscales.core.tile
 		 */
 		override public function clear():void {
 			super.clear();
-			
-			if(this.layer)
-				if(this.layer.tweenOnLoad)
-					this.alpha = 0;
 
 			if(this._request) {
 				_request.destroy();
