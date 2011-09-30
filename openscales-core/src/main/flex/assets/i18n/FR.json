@@ -1,0 +1,87 @@
+ {
+   "locale.key": "FR",
+   "locale.name": "French",
+   "locale.localizedName": "Français",
+   
+   "component.iconify": "Iconifier",
+   "component.toggle": "Agrandir",
+   
+   "drawing.toolbar": "Outils de croquis",
+   "drawing.add": "Ajouter",
+   "drawing.import": "Importer",
+   "drawing.export": "Exporter",
+   "drawing.label": "Ajouter un libellé",
+   "drawing.point": "Ajouter un point",
+   "drawing.path": "Dessiner une ligne",
+   "drawing.polygon": "Dessiner un polygone",
+   "drawing.select": "Sélectionner",
+   "drawing.edit": "Editer",
+   "drawing.move": "Déplacer",
+   "drawing.attributes": "Gérer les attributs",
+   "drawing.url": "Url",
+   "drawing.locale": "Fichier local",
+   "drawing.format": "Format",
+   "drawing.name": "Nom",
+   "drawing.version": "Version",
+   "drawing.browse": "Parcourir",
+   "drawing.addvectorlayer": "Ajouter une couche de croquis",
+   "drawing.nameerror": "Modifier le nom (non vide et non identique à un autre nom de couche)",
+   
+   "layercontrol.movefront": "Déplacer vers l'avant plan",
+   "layercontrol.moveback": "Déplacer vers l'arrière plan",
+   "layercontrol.deletelayer": "Supprimer la couche",
+   "layercontrol.metadatas": "Afficher les métadonnées",
+   "layercontrol.changevisibility": "Changer la visibilité de la couche",
+   "layercontrol.reducemaximize": "Reduire ou agrandir l'élément",
+   "layercontrol.legend": "Afficher la légende",
+   "layercontrol.zoomToExtent": "Zoomer sur l'emprise de la couche",
+   
+   "layerswitcher.title": "Couches",
+
+   "tos.label": "Conditions d'utilisation",
+   
+   "zoombar.world": "Monde",
+   "zoombar.country": "Pays",
+   "zoombar.state": "Région",
+   "zoombar.town": "Ville",
+   "zoombar.street": "Rue",
+   "zoombar.house": "Maison",
+   
+   "mouseposition.kilometers": "kilomètres",
+   "mouseposition.meters": "mètres",
+   "mouseposition.centimeters": "centimètres",
+   "mouseposition.decimaldegrees":"degrés décimaux",
+   "mouseposition.dms": "degrés sexagécimaux",
+   
+   "pan.N": "N",
+   "pan.S": "S",
+   "pan.E": "E",
+   "pan.W": "O",
+   "pan.pannorth": "Se déplacer vers le nord",
+   "pan.pansouth": "Se déplacer vers le sud",
+   "pan.paneast": "Se déplacer vers l'est",
+   "pan.panwest": "Se déplacer vers l'ouest",
+   
+   "scaleline.km": "km",
+   "scaleline.m": "m",
+   "scaleline.mi": "mi",
+   "scaleline.ft": "ft",
+   
+   "copyright.copyright": "Copyright",
+   
+   "zoombox.tooltip": "Dessinez la zone sur laquelle zoomer",
+   "zoom.zoomin": "Zoomer",
+   "zoom.zoomout": "Dézoomer",
+   
+   "traceinfo.clearlabel": "Effacer",
+   
+   "addLayerButton.label": "Ajouter à la carte",
+   "removeLayerButton.label": "Retirer de la carte",
+   
+   "featureInfoDisplay.title": "Résultat - GetFeatureInfo",
+   
+   "MeasureBar.title": "Outils de mesure",
+   "MeasureBar.distancetooltip": "Mesure de distance",
+   "MeasureBar.azimuthtooltip": "Mesure d'azimut",
+   "MeasureBar.surfacetooltip": "Mesure de surface"
+ }

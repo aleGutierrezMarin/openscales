@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Drawing controls. Currently, drawing handlers are too much tighly coupled with controls, this should be refactor
+     to make drawing integration much simpler. A skin should be used instead of inline icons, in order
+	 to allow better Flex 4 integration -->
+<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.handler.feature.draw.DrawHandler;
+			import org.openscales.core.layer.VectorLayer;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-10.png")]
+			private var _btnPan:Class;
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-06.png")]
+			private var _btnMouvement:Class;
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-03.png")]
+			private var _btnPoint:Class;
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-04.png")]
+			private var _btnPath:Class;
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-02.png")]
+			private var _btnPolygon:Class;
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-08.png")]
+			private var _editFeature:Class;
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-07.png")]
+			private var _btnDeleteLast:Class;
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-09.png")]
+			private var _btnDeleteAll:Class;
+			
+			/**
+			 * Index of the tab Drawing, default : -1
+			 */
+			private var _indexTabDrawing:Number = -1;
+			
+			public var drawLayer:VectorLayer = new VectorLayer("Drawings");
+			
+			private var _drawHandler:DrawHandler = new DrawHandler(null, true, drawLayer);;
+			
+			/**
+			 * Allow you to merge different selected feature in one.
+			 * You can't merge a polygon and a point (for example), All features must be the same geometry
+			 */
+			private function onMergeClick(event:MouseEvent):void {
+				if (this._drawHandler.multiFeaturesHandler.multiPolygonForbidden) {
+					Alert.show("For the moment, you can't merge MultiPolygon", "Information", Alert.OK | Alert.NONMODAL);
+				}
+			}
+
+			/**
+			 * Show a warning message when you delete selected feature. User can cancel if it's a mistake
+			 */
+			public function onDeleteSelectedClick(event:Event):void {
+				Alert.show("You want to delete selected feature(s). \nAre you sure ?", "Warning", Alert.YES | Alert.NO, null, alertClickHandler);
+			}
+
+			/**
+			 * Check the user's answer
+			 * (Called by onDeleteSelectedClick method)
+			 */
+			private function alertClickHandler(event:CloseEvent):void {
+				// User click on "YES", he wants to apply changes
+				if (event.detail == Alert.YES) {
+					this._drawHandler.deleteSelectedFeatures();
+				}
+			}
+
+			/**
+			 * User clicks on delete all button
+			 */
+			private function onDeleteAllClick(event:Event):void {
+				Alert.show("You want to delete all features. \nAre you sure ?", "Warning", Alert.YES | Alert.NO, null, alertDeleteHandler);
+			}
+
+			private function alertDeleteHandler(event:CloseEvent):void {
+				// User click on "YES", he wants to delete all
+				if (event.detail == Alert.YES) {
+					drawLayer.reset();
+				}
+			}
+			
+			override public function set map(value:Map):void {
+				super.map = value;
+				if (this.map != null) {
+					this._drawHandler.map = this.map;
+				}
+			}
+
+			/**
+			 * Click on the togglebarbutton. Index button starts from 0.
+			 */
+			private function clickHandler(event:MouseEvent):void {
+				if(event.currentTarget == this.btnPan) {
+					this._drawHandler.mode = DrawHandler.DRAG_MODE;
+				} else if(event.currentTarget == this.btnMouvement) {
+					this._drawHandler.mode = DrawHandler.SELECT_MODE;
+				} else if(event.currentTarget == this.btnPoint) {
+					this._drawHandler.mode = DrawHandler.DRAW_POINT_MODE;
+				} else if(event.currentTarget == this.btnPath) {
+					this._drawHandler.mode = DrawHandler.DRAW_PATH_MODE;
+				} else if(event.currentTarget == this.btnPolygon) {
+					this._drawHandler.mode = DrawHandler.DRAW_POLYGON_MODE;
+				} else if(event.currentTarget == this.editFeature) {
+					this._drawHandler.mode = DrawHandler.EDIT_MODE;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+
+	<s:SkinnableContainer >
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center" />
+		</s:layout>
+		
+		<s:SkinnableContainer id="tgBar" width="100%">
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			
+			<IconButton id="btnPan"
+								width="25"
+								height="25"
+								toolTip="Pan Map"
+								icon="{_btnPan}"
+								click="this.clickHandler(event)" />
+			<s:Rect width="6" />
+			<IconButton id="btnMouvement"
+								width="25"
+								height="25"
+								toolTip="Select Features"
+								icon="{_btnMouvement}"
+								click="this.clickHandler(event)" />
+			<s:Rect width="6" />
+			<IconButton id="btnPoint"
+								width="25"
+								height="25"
+								toolTip="Draw a point"
+								icon="{_btnPoint}"
+								click="this.clickHandler(event)" />
+			<s:Rect width="6" />
+			<IconButton id="btnPath"
+								width="25"
+								height="25"
+								toolTip="Draw a path"
+								icon="{_btnPath}"
+								click="this.clickHandler(event)" />
+			<s:Rect width="6" />
+			<IconButton id="btnPolygon"
+								width="25"
+								height="25"
+								toolTip="Draw a polygon"
+								icon="{_btnPolygon}"
+								click="this.clickHandler(event)" />
+			<s:Rect width="6" />
+			<IconButton id="editFeature"
+								width="25"
+								height="25"
+								toolTip="Edit Feature on draw Layer"
+								icon="{_editFeature}"
+								click="this.clickHandler(event)" />
+		</s:SkinnableContainer>
+		
+		<s:SkinnableContainer >
+			<s:layout> 
+				<s:HorizontalLayout gap="6" />
+			</s:layout>
+			<IconButton id="btnDeleteLast"
+								width="25"
+								height="25"
+								toolTip="Delete the last drawing vertex"
+								icon="{_btnDeleteLast}"
+								click="this._drawHandler.onDeleteLastClick(event)" />
+			<s:Rect width="6" />
+			<IconButton id="btnDeleteAll"
+								width="25"
+								height="25"
+								toolTip="Delete all the drawn features"
+								icon="{_btnDeleteAll}"
+								click="onDeleteAllClick(event)" />
+		</s:SkinnableContainer>
+		
+	</s:SkinnableContainer>
+
+</Control>
