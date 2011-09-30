@@ -31,14 +31,7 @@ package org.openscales.core.request
 		 * can manage the number of simultaneous connections and
 		 * prevent browser's "saturation"
 		 */
-		public static const DEFAULT_MAX_CONN:uint = 10; // number of parallel requests
 		private static const DEFAULT_MAX_ACTIVE_TIME:uint = 0; // 5000 for a timeout of 5s by request
-		private static var _maxConn:uint = DEFAULT_MAX_CONN;
-		private static var _pendingRequests:Vector.<AbstractRequest> = new Vector.<AbstractRequest>();
-		private static var _activeConn:HashMap = new HashMap();
-		
-		private var _duration:Number = DEFAULT_MAX_ACTIVE_TIME;
-		private var _timer:Timer = null;
 
 		public static const PUT:String = "put";
 		public static const DELETE:String = "delete";
@@ -107,18 +100,6 @@ package org.openscales.core.request
 			} catch(e:Error) {
 				// Empty catch is evil, but here it's fair.
 			}
-			if (AbstractRequest._activeConn.containsKey(uid)) {
-				AbstractRequest._activeConn.remove(uid);
-				AbstractRequest._runPending();
-			} else {
-				var i:int = AbstractRequest._pendingRequests.indexOf(this);
-				if (i!=-1) {
-					AbstractRequest._pendingRequests.splice(i, 1);
-				}
-			}
-			if (this._timer) {
-				this._timer = null;
-			}
 			//this._loader = null; // FixMe
 		}
 		
@@ -176,9 +157,6 @@ package org.openscales.core.request
 		 * We don't care about whitch one it is because it just means that a connection have been released.
 		 */
 		private function _loadEnd(event:Event=null):void {
-			if (this._timer) {
-				this._timer.stop();
-			}
 			if (event==null || (event.type == TimerEvent.TIMER)) {
 				if (this._onFailure != null) {
 					this._onFailure(new IOErrorEvent(IOErrorEvent.IO_ERROR));
@@ -196,20 +174,6 @@ package org.openscales.core.request
 							break;
 					}
 				}
-			}
-			AbstractRequest._activeConn.remove(uid);
-			AbstractRequest._runPending();
-		}
-		
-		/**
-		 * Run pending connections if there is at least one
-		 */
-		static private function _runPending():void {
-			var i:int = (AbstractRequest.maxConn==0) ? AbstractRequest._pendingRequests.length : (AbstractRequest.maxConn - AbstractRequest._activeConn.size());
-			while ((i > 0) && (AbstractRequest._pendingRequests.length > 0)) {
-				var pending:AbstractRequest = AbstractRequest._pendingRequests.shift();
-				pending.execute();
-				i--;
 			}
 		}
 		
@@ -380,18 +344,13 @@ package org.openscales.core.request
 				this.security.initialize();
 				return;
 			}
-			if ((AbstractRequest.maxConn == 0) || (AbstractRequest._activeConn.size() < AbstractRequest.maxConn)) {
-				this.execute();
-			} else {
-				AbstractRequest._pendingRequests.push(this);
-			}
+			this.execute();
 		}
 
 		/**
 		 * Execute the request
 		 */
 		private function execute():void {
-			AbstractRequest._activeConn.put(uid, null);
 			try {
 				// Define the urlRequest
 				var _finalUrl:String = this.finalUrl;
@@ -407,11 +366,6 @@ package org.openscales.core.request
 					urlRequest.contentType = this.postContentType;
 					urlRequest.data = this.postContent;
 				}
-				if (this.duration > 0) {
-					this._timer = new Timer(this.duration, 1);
-					this._timer.addEventListener(TimerEvent.TIMER, this._loadEnd);
-					this._timer.start();
-				} // else there is no timeout for the request
 				if (this.loader is Loader) {
 					this.loader.name = this.url; // Needed, see KMLFormat.updateImages for instance
 					// Define the context for the loading of the SWF or Image
@@ -427,49 +381,6 @@ package org.openscales.core.request
 				Trace.error("Request - send: " + e.message);
 				this._loadEnd(null);
 			}
-		}
-
-		/**
-		 * Setter for the maximum running connections
-		 * If the value is zero, all the pending requests will be sent and the
-		 * future requests will be sent immediately.
-		 * 
-		 * @param value:uint the number of connections allowed
-		 */
-		static public function set maxConn(value:uint):void {
-			AbstractRequest._maxConn = value;
-			AbstractRequest._runPending();
-		}
-
-		/**
-		 * getter for the maximum running connections
-		 * 
-		 * @return uint the allowed number of running connection
-		 */
-		static public function get maxConn():uint {
-			return AbstractRequest._maxConn;
-		}
-
-		/**
-		 * Setter for the delay before forcing an active connexion to close.
-		 * If the value is zero (default), no timeout will be used.
-		 * 
-		 * @param Number value delay in milliseconds
-		 */ 
-		public function set duration(value:Number):void {
-			if (this.isSent) {
-				return;
-			}
-			this._duration = value;
-		}
-
-		/**
-		 * getter for the delay before forcing an active connexion to close
-		 * 
-		 * @return Number duration in milliseconds
-		 */
-		public function get duration():Number {
-			return this._duration;
 		}
 		
 		/**

@@ -58,11 +58,6 @@ package org.openscales.core.layer
 		
 		private var _buffer:Number;
 		
-		protected var CACHE_SIZE:int = 0;
-		
-		private var tileCache:LinkedList = new LinkedList();
-		private var cptCached:int = 0;
-		
 		protected var _tileWidth:Number = DEFAULT_TILE_WIDTH;
 		
 		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
@@ -139,7 +134,6 @@ package org.openscales.core.layer
 		
 		override public function destroy():void {
 			this.clear();
-			tileCache.clear();
 			this.grid = null;
 			super.destroy();
 		}
@@ -166,33 +160,6 @@ package org.openscales.core.layer
 					this.removeChildAt(0);
 				this.grid = null;
 			}
-		}
-		
-		/**
-		 * cache a tile
-		 */
-		public function addTileCache(node:ILinkedListNode):void {
-			if(!tileCache.moveTail(node.uid)) {
-				tileCache.insertTail(node);
-				cptCached++;
-				if(cptCached==CACHE_SIZE+1){
-					tileCache.removeHead();
-					cptCached--;
-				}
-			}
-		}
-		/**
-		 * get a cached tile
-		 */
-		public function getTileCache(url:String):Bitmap {
-			var node:ILinkedListNode = tileCache.getUID(url);
-			if(node == null){
-				return null;
-			}else if(node is LinkedListBitmapNode) {
-				this.addTileCache(node);
-				return (node as LinkedListBitmapNode).bitmap;
-			}
-			return null;
 		}
 		
 		override public function get available():Boolean
@@ -339,24 +306,24 @@ package org.openscales.core.layer
 				if (nbTileToAdd > 0)
 				{
 					var rowLength:Number = this._grid.length;
-					for(var r:int = 0; r < rowLength; ++r)
+					for(var _r:int = 0; _r < rowLength; ++_r)
 					{
 						for (var i:int = 0; i < nbTileToAdd; ++i)
 						{
-							tileoffsetlon = this._grid[r][gridRowLength - 1 + i].bounds.right;
-							tileoffsetlat = this._grid[r][gridRowLength - 1 + i].bounds.bottom;
+							tileoffsetlon = this._grid[_r][gridRowLength - 1 + i].bounds.right;
+							tileoffsetlat = this._grid[_r][gridRowLength - 1 + i].bounds.bottom;
 							tileBounds = new Bounds(tileoffsetlon, 
 								tileoffsetlat, 
 								tileoffsetlon + tileLon,
 								tileoffsetlat + tileLat,
 								this.projSrsCode);
-							x = this._grid[r][gridRowLength - 1 + i].x + this.tileWidth;
+							x = this._grid[_r][gridRowLength - 1 + i].x + this.tileWidth;
 							
-							y = this._grid[r][gridRowLength - 1 + i].y;
+							y = this._grid[_r][gridRowLength - 1 + i].y;
 							
 							px = new Pixel(x, y);
 							tile = this.addTile(tileBounds, px);
-							this._grid[r].push(tile);
+							this._grid[_r].push(tile);
 						}
 					}
 				}
@@ -402,13 +369,13 @@ package org.openscales.core.layer
 			var rl:int = this._grid.length;
 			var cl:int;
 			for (var r:int=0; r<rl; r++) {
-				var row:Vector.<ImageTile> = this._grid[r];
-				cl = row.length;
-				for (var c:int=0; c<cl; ++c) {
-					var tile:ImageTile = row[c];
-					if (!tile.drawn && 
-						tile.bounds.intersectsBounds(bounds, false)) {
-						tile.draw();
+				var _row:Vector.<ImageTile> = this._grid[r];
+				cl = _row.length;
+				for (var col:int=0; col<cl; ++col) {
+					var _tile:ImageTile = _row[col];
+					if (!_tile.drawn && 
+						_tile.bounds.intersectsBounds(bounds, false)) {
+						_tile.draw();
 					}
 				}
 			}
@@ -541,22 +508,27 @@ package org.openscales.core.layer
 		}
 		
 		public function getSupportedResolution(targetResolution:Resolution, finest:Boolean = true):Resolution
-		{	
+		{
+			var bestResolution:Number;
+			var bestRatio:Number;
+			var i:int;
+			var len:int;
+			var ratioSeeker:Number;
 			if (finest)
 			{
 				if(!this.resolutions)
 					return new Resolution(0);
 				// Find the best resotion to fit the target resolution
-				var bestResolution:Number = 0;
-				var bestRatio:Number = Number.POSITIVE_INFINITY;
-				var i:int = 0;
-				var len:int = this.resolutions.length;
+				bestResolution = 0;
+				bestRatio = Number.POSITIVE_INFINITY;
+				i = 0;
+				len = this.resolutions.length;
 				
 				for (i; i < len; ++i)
 				{
 					if (this.resolutions[i] <= targetResolution.value)
 					{
-						var ratioSeeker:Number =  targetResolution.value -this.resolutions[i];
+						ratioSeeker =  targetResolution.value -this.resolutions[i];
 					}
 					
 					if ( ratioSeeker < bestRatio){
@@ -574,16 +546,16 @@ package org.openscales.core.layer
 				if(!this.resolutions)
 					return new Resolution(0);
 				// Find the best resotion to fit the target resolution
-				var bestResolution:Number = 0;
-				var bestRatio:Number = Number.POSITIVE_INFINITY;
-				var i:int = 0;
-				var len:int = this.resolutions.length;
+				bestResolution = 0;
+				bestRatio = Number.POSITIVE_INFINITY;
+				i = 0;
+				len = this.resolutions.length;
 				
 				for (i; i < len; ++i)
 				{
 					if (this.resolutions[i] >= targetResolution.value)
 					{
-						var ratioSeeker:Number = this.resolutions[i]-targetResolution.value;
+						ratioSeeker = this.resolutions[i]-targetResolution.value;
 					}
 					
 					if ( ratioSeeker < bestRatio){

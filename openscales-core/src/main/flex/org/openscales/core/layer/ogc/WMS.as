@@ -106,7 +106,6 @@ package org.openscales.core.layer.ogc
 			
 			// In WMS we must be in single tile mode
 			this.tiled = false;
-			CACHE_SIZE = 32;
 			
 			// Call the tile provider to generate the request and get the tile requested
 			this._tileProvider = new WMSTileProvider(url, this._version, layers, this.projSrsCode, style, format);
