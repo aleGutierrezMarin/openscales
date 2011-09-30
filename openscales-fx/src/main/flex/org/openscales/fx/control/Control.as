@@ -171,7 +171,11 @@ package org.openscales.fx.control
 			
 		}
 		
-		
+		/**
+		 * Indicates if the control display is normal or reduced
+		 * @default false : normal display
+		 */
+		[Bindable]
 		public function get isReduced():Boolean
 		{
 			return this._isReduced;

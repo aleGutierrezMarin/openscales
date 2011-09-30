@@ -1,6 +1,5 @@
 package org.openscales.core.format.gml.parser
 {
-	import com.gskinner.motion.easing.Linear;
 	
 	import flash.xml.XMLNode;
 	
