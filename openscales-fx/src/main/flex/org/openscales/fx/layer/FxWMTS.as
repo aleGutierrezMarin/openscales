@@ -39,7 +39,7 @@ package org.openscales.fx.layer
 				this._layer.proxy = this.proxy;
 			if(this.dpi)
 				this._layer.dpi = this.dpi;
-			this._layer.tweenOnZoom = this.tweenOnZoom;
+
 			this._layer.alpha = super.alpha;
 			this._layer.visible = super.visible;
 			

@@ -51,8 +51,6 @@ package org.openscales.core.layer {
 		private var _loading:Boolean = false;
 		protected var _autoResolution:Boolean = true;
 		protected var _imageSize:Size = null;
-		private var _tweenOnZoom:Boolean = true;
-		private var _tweenOnLoad:Boolean = true;
 		private var _selected:Boolean = false;
 		//GAB
 		private var _editable:Boolean = false;
@@ -61,7 +59,6 @@ package org.openscales.core.layer {
 		protected var _resolutionChanged:Boolean = false;
 		protected var _centerChanged:Boolean = false;
 		protected var _projectionChanged:Boolean = false;
-		
 		
 		/**
 		 * The boolean that say if the layer is drawn or not.
@@ -221,7 +218,7 @@ package org.openscales.core.layer {
 		
 		protected function onEnterFrame(event:Event):void
 		{
-			this.redraw();
+				this.redraw();
 		}
 		/**
 		 * Return a reference to the map where belong this layer
@@ -724,30 +721,6 @@ package org.openscales.core.layer {
 				_loading = value;
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this));
 			}
-		}
-		
-		/**
-		 * Define if the layer is displayed during tween zoom effect. This can be used to hide Point
-		 * layers if order to avoid bad looking effects when zooming a layer with a lot of points.
-		 */
-		public function get tweenOnZoom():Boolean {
-			return _tweenOnZoom;
-		}
-		
-		public function set tweenOnZoom(value:Boolean):void {
-			_tweenOnZoom = value;
-		}
-		
-		/**
-		 * Define if a tween effect should be used when loading a new data.
-		 * Currently, only implemented for image tile, but may be used widely in the future
-		 */
-		public function get tweenOnLoad():Boolean {
-			return _tweenOnLoad;
-		}
-		
-		public function set tweenOnLoad(value:Boolean):void {
-			_tweenOnLoad = value;
 		}
 		
 		/**

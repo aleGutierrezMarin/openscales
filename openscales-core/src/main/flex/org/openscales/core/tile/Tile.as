@@ -35,7 +35,7 @@ package org.openscales.core.tile
 			this.url = url;
 			this.size = size;       
 		}
-		
+	
 		public function destroy():void {
 			this.layer = null;
 			this.bounds = null;
@@ -65,7 +65,8 @@ package org.openscales.core.tile
 			if(!this.bounds.intersectsBounds(this.layer.map.maxExtent, false))
 				return false;
 			if((this.layer as Grid).buffer == 0
-				&& !this.bounds.intersectsBounds(this.layer.map.getExtentForResolution((this.layer as Grid).requestedResolution), false))
+				//&& !this.bounds.intersectsBounds(this.layer.map.getExtentForResolution((this.layer as Grid).requestedResolution), false))
+				&& !this.bounds.intersectsBounds(this.layer.map.extent, false))
 				return false;
 
 			return true;
