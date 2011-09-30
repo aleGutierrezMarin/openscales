@@ -6,6 +6,7 @@
 			   implements="org.openscales.core.control.IControl"
 			   toolTip="{this.toolTitle}"
 			   icon="{_btnPath}"
+			   alpha="{_alpha}"
 			   width="25"
 			   height="25"
 			   click="onClick()"
@@ -17,19 +18,8 @@
 			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.feature.Feature;
-			import org.openscales.core.feature.PointFeature;
-			import org.openscales.core.handler.IHandler;
-			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
-			import org.openscales.core.handler.feature.draw.DrawPathHandler;
-			import org.openscales.core.handler.mouse.ClickHandler;
-			import org.openscales.core.handler.mouse.DragHandler;
 			import org.openscales.core.i18n.Catalog;
-			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.measure.Azimuth;
-			import org.openscales.core.measure.Distance;
-			import org.openscales.geometry.Point;
-			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			[Bindable]
@@ -38,6 +28,9 @@
 			
 			[Bindable]
 			public var toolTitle:String = Catalog.getLocalizationForKey('MeasureBar.azimuthtooltip');
+			
+			[Bindable]
+			private var _alpha:Number = 0.3;
 			
 			private var _active:Boolean = false;
 			private var _handler:Azimuth= new Azimuth();
@@ -91,10 +84,24 @@
 			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
 			 */
 			private function onClick():void{
-				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
-				evt.activeHandler = this.id;
-				_handler.map.dispatchEvent(evt);
-				this.active = true;
+				if(!this._active){
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+					evt.activeHandler = this.id;
+					_handler.map.dispatchEvent(evt);
+					
+					evt = new DrawingEvent(DrawingEvent.DRAW_HANDLER_ACTIVATED);
+					evt.activeHandler = null;
+					_handler.map.dispatchEvent(evt);
+					
+					this.active = true;
+					this.activate();
+				}else{
+					evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+					evt.activeHandler = null;
+					_handler.map.dispatchEvent(evt);
+					this.active = false;
+					this.disactivate();
+				}
 			}
 			
 			/**
@@ -105,6 +112,7 @@
 				{
 					this.active = false;
 				}
+				this.disactivate();
 			}
 			
 			// to do
@@ -114,6 +122,20 @@
 				this.invalidateDisplayList();
 			}
 			public function destroy():void{}
+			
+			/**
+			 * To activate or disactivate the handler
+			 */
+			private function activate():void{
+				
+				_handler.active = true;
+				_alpha = 1;
+			}
+			private function disactivate():void{
+				
+				_handler.active = false;
+				_alpha = 0.3;
+			}
 		]]>
 	</fx:Script>			
 </os:IconButton>

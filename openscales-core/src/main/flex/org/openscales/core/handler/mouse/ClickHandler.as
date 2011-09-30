@@ -7,10 +7,10 @@ package org.openscales.core.handler.mouse
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.DrawingEvent;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -122,10 +122,12 @@ package org.openscales.core.handler.mouse
 		 * Click function getter and setter
 		 */
 		public function get click():Function {
+			Trace.debug(this.map.mouseX + " " + this.map.mouseY);
 			return this._click;
 		}
 		public function set click(value:Function):void {
 			this._click = value;
+			Trace.debug(this.map.mouseX + " " + this.map.mouseY);
 		}
 		
 		/**

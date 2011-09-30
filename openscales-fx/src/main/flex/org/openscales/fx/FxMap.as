@@ -18,6 +18,7 @@ package org.openscales.fx
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.security.ISecurity;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.fx.configuration.FxConfiguration;
 	import org.openscales.fx.control.FxControl;
 	import org.openscales.fx.control.FxOverviewMap;
