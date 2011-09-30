@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:IconButton xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:os="org.openscales.fx.control.*"
+			   implements="org.openscales.core.control.IControl"
+			   toolTip="{this.tooltip}"
+			   icon="{_btnSelect}"
+			   alpha="{_alpha}"
+			   width="25"
+			   height="25"
+			   click="onClick()"
+			   enabled="{active}">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.control.IControl;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.handler.IHandler;
+			import org.openscales.core.handler.feature.SelectFeaturesHandler;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.fx.control.layer.LayerManager;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			[Bindable]
+			private var _alpha:Number = 0.3;
+			
+			[Bindable]
+			private var tooltip:String = Catalog.getLocalizationForKey('drawing.select');
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-06.png")]
+			private var _btnSelect:Class;
+			
+			private var _active:Boolean = true;
+			private var _clickout:Boolean = true;
+			private var _hover:Boolean = false;
+			private var _toggle:Boolean = false;
+			private var _map:Map;
+			private var _target:VectorLayer;
+			private var _handler:SelectFeaturesHandler = null;
+			private var _previousSelectFeaturesHandler:SelectFeaturesHandler = null;
+			private var _isClick:Boolean = false;
+			
+			/**
+			 * Flag for activating and deactivating the component
+			 * @default true;
+			 */
+			[Bindable]
+			public function get active():Boolean{
+				
+				return _active;
+			}
+			public function set active(value:Boolean):void{
+				
+				_active = value;
+				if(this._handler && !_active){
+					_handler.active = false;
+				}
+			}
+			
+			/**
+			 * If true, a feature is unselected by clicking out of it
+			 * @default true;
+			 */
+			public function get clickout():Boolean{
+				
+				return this._clickout;
+			}
+			public function set clickout(value:Boolean):void{
+				
+				this._clickout = value;
+			}
+			
+			/**
+			 * If true, a feature is selected on mouseover
+			 * @default false;
+			 */
+			public function get hover():Boolean{
+				
+				return this._hover;
+			}
+			public function set hover(value:Boolean):void{
+				
+				this._hover = value;
+			}
+			
+			/**
+			 * If true, a selected feature is unselected by clicking on it
+			 * @default false;
+			 */
+			public function get toggle():Boolean{
+				
+				return this._toggle;
+			}
+			public function set toggle(value:Boolean):void{
+				
+				this._toggle = value;
+			}
+			
+			/**
+			 * Map controled by this control
+			 */
+			public function get map():Map{
+				
+				return this._map;
+			}
+			public function set map(value:Map):void{
+				
+				this._map = value;
+				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+			}
+			
+			/**
+			 * Position (x,y) of the handler
+			 */
+			public function get position():Pixel{
+				
+				return new Pixel(x,y);
+			}
+			public function set position(value:Pixel):void{
+				
+				if(value){
+					x = value.x;
+					y = value.y;
+				}
+			}
+			
+			/**
+			 * Layer the features will be selected
+			 */
+			public function get target():VectorLayer{
+				
+				return this._target;
+			}
+			public function set target(value:VectorLayer):void{
+				
+				this._target = value;
+			}
+			
+			/**
+			 * To activate the handler
+			 */
+			private function activate():void
+			{
+				for each(var ih:IHandler in this._map.controls)
+				{
+					if(ih is SelectFeaturesHandler && ih != this._handler)
+					{
+						// Store the existing SelectFeaturesHandler
+						this._previousSelectFeaturesHandler = (ih as SelectFeaturesHandler);
+						(ih as SelectFeaturesHandler).map = null;
+						this.map.removeControl(ih);
+					}
+				}
+				// Add a new SelectFeaturesHandler
+				if(this._hover)
+					this._handler = new SelectFeaturesHandler(this._map,true,true,false,true);
+				else
+					this._handler = new SelectFeaturesHandler(this._map,true,true,false,false);
+				this._handler.layers[0] = this._target;
+				this._handler.clickOut = this._clickout;
+				this._handler.toggle = this._toggle;
+				
+				_alpha = 1;
+			}
+			
+			/**
+			 * To disactivate the handler
+			 */
+			private function disactivate():void{
+				
+				// Manage the new SelectFeaturesHandler
+				this._handler.clearSelection();
+				this._handler.active = false;
+				this._handler.map = null;
+				this.map.removeControl(this._handler);
+				
+				// Add the previous SelectFeaturesHandler
+				if(this._previousSelectFeaturesHandler)
+					this._previousSelectFeaturesHandler.map = this.map;
+				
+				_alpha = 0.3;
+			}
+			
+			/**
+			 * On button click, dispatch a DrawingEvent.SELECT_HANDLER_ACTIVATED event
+			 */
+			private function onClick():void{
+				
+				if(!this.target || (this._handler && this._handler.active))
+					return;
+				this._isClick = true;
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
+				evt.activeHandler = this.id;
+				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
+				activate();
+			}
+			
+			/**
+			 * Check the handler when a DrawingEvent.DRAW_HANDLER_ACTIVATED or
+			 * DrawingEvent.EDIT_HANDLER_ACTIVATED or DrawingEvent.MOVE_HANDLER_ACTIVATED
+			 * or DrawingEvent.SELECT_HANDLER_ACTIVATED event occured
+			 */
+			private function onChangeActiveHandler(evt:DrawingEvent):void{
+				
+				if(this._handler && this._handler.active && !this._isClick)
+					disactivate();
+				else
+					this._isClick = false;
+			}
+			
+			/**
+			 * Update the target on active layer changed
+			 */
+			private function onChangeActiveLayer(evt:DrawingEvent):void{
+				
+				if(this.parentDocument is DrawingToolbar)
+				{
+					if(this._handler && this._handler.active)
+						disactivate();
+					
+					this.target = evt.layer;
+				}
+			}
+			
+			/**
+			 * Update texts on map language changed
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void{
+				
+				this.tooltip = Catalog.getLocalizationForKey('drawing.select');
+			}
+			
+			// Unused functions
+			public function draw():void{
+				
+				this.invalidateDisplayList();
+			}
+			public function destroy():void{}
+		]]>
+	</fx:Script>			
+</os:IconButton>
