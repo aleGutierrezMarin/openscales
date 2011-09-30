@@ -375,7 +375,7 @@
 	</fx:Script>
 	
 	<s:Group visible="{this._isReduced}" includeInLayout="{this._isReduced}">
-		<IconButton icon="{this._btnPlus}" click="{this.toggleDisplay()}" toolTip="{this._toggle}" />
+		<s:Button label="+" click="{this.toggleDisplay()}" toolTip="{this._toggle}" width="30" />
 	</s:Group>
 	<s:Group visible="{!this._isReduced}" includeInLayout="{!this._isReduced}">
 		<s:layout>
@@ -412,11 +412,10 @@
 			
 		</s:Panel>
 		<s:Group>
-			<IconButton icon="{this._btnMinus}" click="{this.toggleDisplay()}" toolTip="{this._iconify}"
-						width="20" height="20" y="6" />
+			<s:Button label="-" click="{this.toggleDisplay()}" toolTip="{this._iconify}"
+					  width="30" y="5" />
 		</s:Group>
 	</s:Group>
-	
 	
 </Control>
 
