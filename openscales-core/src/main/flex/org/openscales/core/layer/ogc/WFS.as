@@ -7,6 +7,7 @@ package org.openscales.core.layer.ogc
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -77,6 +78,10 @@ package org.openscales.core.layer.ogc
 		private var _initialized:Boolean = false;
 		
 		private const  _MAX_NUMBER_OF_SCALES:uint = 5;
+		
+		private var _previousCenter:Location = null;
+		
+		private var _previousResolution:Resolution = null;
 		
 		/**
 		 * @private
@@ -189,6 +194,13 @@ package org.openscales.core.layer.ogc
 				return;
 			}
 			
+			var centerChangedCache:Boolean = this._centerChanged;
+			var resolutionChangedCache:Boolean = this._resolutionChanged;
+			var projectionChangedCache:Boolean = this._projectionChanged;
+			this._centerChanged = false;
+			this._projectionChanged = false;
+			this._resolutionChanged = false;
+			
 			if (fullRedraw)
 			{
 				this.clear();
@@ -205,14 +217,16 @@ package org.openscales.core.layer.ogc
 				this.scaleY = 1;
 				this.resetFeaturesPosition();
 				this.draw();
+				this._previousResolution = this.map.resolution;
+				this._previousCenter = this.map.center.clone();
 				this._initialized = true;
 				return;
 			}
-			if (this._centerChanged || this._projectionChanged || this._resolutionChanged)
+			if (centerChangedCache || projectionChangedCache || resolutionChangedCache)
 			{
 				var previousFeatureBbox:Bounds;
 				
-				if (this._centerChanged)
+				if (centerChangedCache)
 				{
 					if (!this._timer.running)
 					{
@@ -224,9 +238,8 @@ package org.openscales.core.layer.ogc
 							this.loadFeatures(this.getFullRequestString());
 						}
 					}
-					this._centerChanged = false;
 				}
-				if (this._resolutionChanged || this._projectionChanged)
+				if (resolutionChangedCache || projectionChangedCache)
 				{
 					if (!this._timer.running)
 					{
@@ -245,13 +258,59 @@ package org.openscales.core.layer.ogc
 						this.resetFeaturesPosition();
 						this.draw();
 					}
-					this._resolutionChanged = false;
 				}
-				if (this._projectionChanged)
+				
+				if (resolutionChangedCache)
 				{
-					this._projectionChanged = false;
+					var ratio:Number = this._previousResolution.value / this.map.resolution.value;
+					this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
+					this._previousResolution = this.map.resolution;
+					//this.actualizeGridSize(bounds);
+					resolutionChangedCache = false
+						
+					/*var px:Pixel = event.targetZoomPixel;
+					var ratio:Number = event.oldResolution.value / event.newResolution.value;
+					this.x -= (px.x - this.x) * (ratio - 1);
+					this.y -= (px.y - this.y) * (ratio - 1);
+					this.scaleX = this.scaleX * ratio;
+					this.scaleY = this.scaleY * ratio;
+					this._currentScale++;*/
 				}
+				
+				if (centerChangedCache)
+				{
+					var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
+					var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
+					var deltaX:Number = deltaLon/this.map.resolution.value;
+					var deltaY:Number = deltaLat/this.map.resolution.value;
+					
+					this.x = this.x - deltaX;
+					this.y = this.y + deltaY;
+					this._previousCenter = this.map.center.clone();
+					centerChangedCache = false;
+					
+					
+					/*var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
+					var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
+					var deltaX:Number = deltaLon / this.map.resolution.value;
+					var deltaY:Number = deltaLat / this.map.resolution.value;
+					this.x -= deltaX;
+					this.y += deltaY;*/
+				}
+				
 			}
+		}
+		
+		private function scaleLayer(scale:Number, offSet:Pixel = null):void
+		{
+			if (offSet == null)
+			{
+				offSet = new Pixel(0, 0);
+			}
+			var temporaryScale:Number = this.scaleX * scale;
+			this.scaleX = this.scaleY = temporaryScale;
+			this.x -= (offSet.x - this.x) * (scale - 1);
+			this.y -= (offSet.y - this.y) * (scale - 1);
 		}
 		
 		private function onTimerEnd(event:TimerEvent):void
@@ -264,15 +323,10 @@ package org.openscales.core.layer.ogc
 		{
 			this._timer.reset();
 			this._timer.start();
-			
-			var px:Pixel = event.targetZoomPixel;
-			var ratio:Number = event.oldResolution.value / event.newResolution.value;
-			this.x -= (px.x - this.x) * (ratio - 1);
-			this.y -= (px.y - this.y) * (ratio - 1);
-			this.scaleX = this.scaleX * ratio;
-			this.scaleY = this.scaleY * ratio;
-			this._currentScale++;
 			this._resolutionChanged = true;
+			
+
+			
 		}
 		
 		private function defineBounds():Bounds
@@ -319,17 +373,9 @@ package org.openscales.core.layer.ogc
 		override protected function onMapCenterChanged(event:MapEvent):void
 		{
 			this._timer.reset();
-			this._timer.start();
-			if (!this._resolutionChanged)
-			{
-				var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
-				var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
-				var deltaX:Number = deltaLon / this.map.resolution.value;
-				var deltaY:Number = deltaLat / this.map.resolution.value;
-				this.x -= deltaX;
-				this.y += deltaY;
-				this._centerChanged = true;
-			}
+			this._timer.start();	
+			this._centerChanged = true;
+
 		}
 		
 		override public function get available():Boolean
