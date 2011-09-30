@@ -3,11 +3,9 @@
 		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 creationComplete="onCreationComplete(event)">
-	<s:Label>
-		ploàp
-	</s:Label>
-
+		 creationComplete="onCreationComplete(event)" >
+	
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.core.IVisualElement;
@@ -33,9 +31,12 @@
 			 */
 			private var _overviewmap:org.openscales.core.control.OverviewMapRatio = new org.openscales.core.control.OverviewMapRatio();
 			
-			public var reduced_group:Group;
-			public var normal_group:Group;
-
+			public var reduced_group:Group = new Group();
+			public var normal_group:Group = new Group();
+			
+			public var minimize:Button = new Button();
+			public var maximize:Button = new Button();
+			
 			override protected function onCreationComplete(event:Event):void{
 				super.onCreationComplete(event);
 				
@@ -64,8 +65,8 @@
 			
 			private function addToggleButton():void
 			{
-				reduced_group = new Group();
-				var maximize:Button = new Button();
+				reduced_group.id = "reduced_group";
+				maximize.id = "maximize_button";
 				maximize.width = 30;
 				maximize.label = "+";
 				maximize.addEventListener(MouseEvent.CLICK, this.toggleDisplay);
@@ -73,8 +74,8 @@
 				
 				reduced_group.visible = this.isReduced;
 				
-				normal_group = new Group();
-				var minimize:Button = new Button();
+				normal_group.id = "normal_group";
+				minimize.id = "minimize_button";
 				minimize.width = 30;
 				minimize.label = "-";
 				minimize.right = 0;
