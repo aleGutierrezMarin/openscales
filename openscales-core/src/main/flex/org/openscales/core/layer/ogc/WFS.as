@@ -48,7 +48,7 @@ package org.openscales.core.layer.ogc
 		 * @private
 		 * WFS version
 		 */
-		private var _version:String = "1.0.0";
+		private var _version:String = "2.0.0";
 		/**
 		 * @private
 		 * WFS params
@@ -100,7 +100,7 @@ package org.openscales.core.layer.ogc
 		public function WFS(name:String,
 							url:String,
 							typename:String,
-							version:String = "1.0.0")
+							version:String = "2.0.0")
 		{
 			super(name);
 			
@@ -360,7 +360,7 @@ package org.openscales.core.layer.ogc
 			// Update the bbox
 			if (layerExtent != null)
 			{
-				if (this.params.version == "1.1.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
+				if (this.params.version != "1.0.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
 					this.params.bbox = layerExtent.toString(-1, false);
 				else
 					this.params.bbox = layerExtent.toString();
@@ -589,6 +589,8 @@ package org.openscales.core.layer.ogc
 					this._gmlFormat.version = "3.1.1";
 					break;
 				case "2.0":
+				case "2.0.0":
+					this._version = "2.0.0";
 					this._gmlFormat.version = "3.2.1";
 					break;
 				default:

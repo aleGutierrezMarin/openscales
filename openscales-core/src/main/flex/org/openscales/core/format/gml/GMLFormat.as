@@ -162,7 +162,13 @@ package org.openscales.core.format.gml
 				retFeatures = new Vector.<Feature>();
 				var feature:Feature;
 				for each( dataXML in features) {
-					feature = this._gmlParser.parseFeature(dataXML,lonlat);
+					// XLA: if a supprimer
+					if (this._version=="3.2.1") {
+						feature = this._gmlParser.parseFeature(dataXML,true); // trick WFS 2.0						
+					}
+					else {
+						feature = this._gmlParser.parseFeature(dataXML,lonlat); // code normal						
+					}
 					if(feature) {
 						retFeatures.push(feature);
 						if(this._onFeature!=null)

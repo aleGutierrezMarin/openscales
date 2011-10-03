@@ -43,6 +43,7 @@ package org.openscales.core.layer.capabilities
 
 			_parsers.put("WFS 1.0.0",WFS100);
 		    _parsers.put("WFS 1.1.0",WFS110);
+			_parsers.put("WFS 2.0.0",WFS200);
 		    _parsers.put("WMS 1.0.0",WMS100);
 		    _parsers.put("WMS 1.1.0",WMS110);
 		    _parsers.put("WMS 1.1.1",WMS111);

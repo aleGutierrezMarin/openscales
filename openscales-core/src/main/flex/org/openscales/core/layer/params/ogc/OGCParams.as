@@ -43,8 +43,12 @@ package org.openscales.core.layer.params.ogc
 			if (this._request != null)
 				str += "REQUEST=" + this._request + "&";
 
-			if (this._srs != null && this._version != "2.0.0")
-				str += "SRS=" + this._srs + "&";
+			if (this._srs != null) {
+				if( this._version != "2.0.0" )//only WFS has a 2.0.0 version and uses SRSNAME
+					str += "SRS=" + this._srs + "&";
+				else
+					str += "SRSNAME=" + this._srs + "&";
+			}
 
 			var keys:Array = _additionalParams.getKeys();
 			var n:uint = keys.length;

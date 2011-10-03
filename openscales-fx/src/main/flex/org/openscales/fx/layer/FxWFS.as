@@ -18,7 +18,7 @@ package org.openscales.fx.layer
 		
 		private var _typename:String;
 		
-		private var _version:String = "1.0.0";
+		private var _version:String = "2.0.0";
 		
 		private var _useCapabilities:Boolean = true;
 		
@@ -101,7 +101,6 @@ package org.openscales.fx.layer
 		public override function set projection(value:String):void
 		{
 			super.projection = value;
-			//super.maxExtent = super.maxExtent;
 			super.configureLayer();
 		}
 		

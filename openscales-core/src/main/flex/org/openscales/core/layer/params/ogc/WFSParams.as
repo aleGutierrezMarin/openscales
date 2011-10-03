@@ -14,7 +14,7 @@ package org.openscales.core.layer.params.ogc
 		private var _handle:String;
 		
 		// Constructor
-		public function WFSParams(typename:String, version:String = "1.0.0")
+		public function WFSParams(typename:String, version:String = "2.0.0")
 		{
 			super("WFS", version, "GetFeature");
 			
@@ -29,9 +29,7 @@ package org.openscales.core.layer.params.ogc
 			
 			if (this.bbox != null)
 			{
-				(this.srs != null && this.version != "1.0.0" && this.version != "1.1.0" && this.version != "2.0.0")?
-					str += "BBOX=" + this.bbox + "," + this.srs + "&SRSNAME=" + this.srs + "&":
-					str += "BBOX=" + this.bbox + "&";
+				str += "BBOX=" + this.bbox + "&";
 			}
 			if (this._typename != null)
 				if(version != "2.0.0"){
