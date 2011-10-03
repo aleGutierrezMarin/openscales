@@ -15,6 +15,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
@@ -35,6 +36,36 @@
 			private var _active:Boolean = false;
 			private var _handler:Azimuth= new Azimuth();
 			
+			public function get displaySystem():String
+			{
+				if(this._handler){
+					return this._handler.displaySystem;
+				}
+				else{
+					return null;
+				}
+			}
+			
+			public function set displaySystem(value:String):void
+			{
+				if(this._handler)
+					this._handler.displaySystem = value;
+			}
+			
+			public function get accuracies():HashMap
+			{
+				if(this._handler){
+					return this._handler.accuracies;
+				}else{
+					return null;
+				}
+			}
+			
+			public function set accuracies(value:HashMap):void
+			{
+				if(this._handler)
+					this._handler.accuracies = value;
+			}
 			
 			/**
 			 * Flag for activating and deactivating the component

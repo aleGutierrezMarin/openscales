@@ -22,7 +22,7 @@
 			  layers="bluemarble" format="image/jpeg" 
 			  maxExtent="-180,-90,180,90" version="1.1.1"/>
 		
-		<MeasureBar x="500" y="{height-100}"/>
+		<MeasureBar x="500" y="{height-100}" />
 		
 		<KeyBoardHandler id="keyboardHandler" />
 		
