@@ -35,9 +35,16 @@ package org.openscales.core.measure
 
 		public function set displaySystem(value:String):void
 		{
-			_displaySystem = value;
+			if(this._supportedUnitSystem){
+				for (var name:String in _supportedUnitSystem) 
+				{ 
+					if(name == value){
+						_displaySystem = value;
+					}
+				} 
+				
+			}
 		}
-
 		
 		private var _accuracies:HashMap = null;
 

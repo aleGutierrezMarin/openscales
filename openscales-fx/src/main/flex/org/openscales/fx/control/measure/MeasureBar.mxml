@@ -3,12 +3,14 @@
 <Control xmlns="http://openscales.org"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 width="250" height="200" xmlns:measure="org.openscales.fx.control.measure.*">
+		 width="250" height="200" xmlns:measure="org.openscales.fx.control.measure.*"
+		 creationComplete="configure()">
 	
 	
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.MeasureEvent;
@@ -29,6 +31,45 @@
 			
 			[Bindable]
 			private var _exitToolTip:String = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
+			
+			private var _accuracies:HashMap=null;
+
+			public function get accuracies():HashMap
+			{
+				return _accuracies;
+			}
+
+			public function set accuracies(value:HashMap):void
+			{
+				_accuracies = value;
+			}
+
+			
+			private var _displaySystem:String=null;
+
+			public function get displaySystem():String
+			{
+				return _displaySystem;
+			}
+
+			public function set displaySystem(value:String):void
+			{
+				_displaySystem = value;
+			}
+			
+			private function configure():void{
+				if(this._accuracies){
+					this.pathMeasure.accuracies=this._accuracies;
+					this.azimuthMeasure.accuracies = this._accuracies;
+					this.surfaceMeasure.accuracies = this._accuracies;
+				}
+				if(this._displaySystem){
+					this.pathMeasure.displaySystem=this._displaySystem;
+					this.azimuthMeasure.displaySystem = this.displaySystem;
+					this.surfaceMeasure.displaySystem = this.displaySystem;
+				}
+			}
+
 			
 			override public function set map(value:Map):void{
 				super.map = value;
@@ -98,6 +139,8 @@
 				surfaceMeasure.toolTitle = Catalog.getLocalizationForKey('MeasureBar.surfacetooltip');
 				//exitButton.toolTip = _exitToolTip = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
 			}
+			
+			
 		]]>
 	</fx:Script>
 	

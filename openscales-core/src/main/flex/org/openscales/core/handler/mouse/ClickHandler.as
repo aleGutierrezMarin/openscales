@@ -122,12 +122,12 @@ package org.openscales.core.handler.mouse
 		 * Click function getter and setter
 		 */
 		public function get click():Function {
-			Trace.debug(this.map.mouseX + " " + this.map.mouseY);
+			//Trace.debug(this.map.mouseX + " " + this.map.mouseY);
 			return this._click;
 		}
 		public function set click(value:Function):void {
 			this._click = value;
-			Trace.debug(this.map.mouseX + " " + this.map.mouseY);
+			//Trace.debug(this.map.mouseX + " " + this.map.mouseY);
 		}
 		
 		/**
