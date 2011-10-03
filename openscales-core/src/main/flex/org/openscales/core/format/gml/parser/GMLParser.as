@@ -73,9 +73,9 @@ package org.openscales.core.format.gml.parser
 							y = Number(nums[i]);
 						}
 						var p:Point = new Point(x, y);
-						if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
+						/*if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
 							p.transform(this.externalProjSrsCode, this.internalProjSrsCode);
-						}
+						}*/
 						points.push(p.x);
 						points.push(p.y);
 					}

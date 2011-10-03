@@ -3,7 +3,9 @@ package org.openscales.core.layer
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
+	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.events.MapEventTest;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.ns.os_internal;
@@ -11,6 +13,7 @@ package org.openscales.core.layer
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
@@ -67,6 +70,26 @@ package org.openscales.core.layer
 			
 			// hides layer in LayerManager
 			this.displayInLayerManager = false;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function set map(map:Map):void {
+			if (this.map != null) {
+				this.map.removeEventListener(LayerEvent.LAYER_ADDED, this.putGraticuleOnTop);
+			}
+			super.map = map;
+			if (this.map != null) {
+				this.map.addEventListener(LayerEvent.LAYER_ADDED, this.putGraticuleOnTop);
+			}
+		}
+		
+		/**
+		 * Method called when a layer is added, so that graticule is always on top.
+		 */
+		public function putGraticuleOnTop(event:LayerEvent):void {
+			this.map.changeLayerIndex(this, this.map.layers.length-1);
 		}
 		
 		/**
