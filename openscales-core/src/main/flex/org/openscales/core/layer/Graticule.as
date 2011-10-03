@@ -5,7 +5,6 @@ package org.openscales.core.layer
 	import org.openscales.core.Map;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
-	import org.openscales.core.events.MapEventTest;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.ns.os_internal;
