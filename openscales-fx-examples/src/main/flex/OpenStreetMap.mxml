@@ -44,7 +44,7 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 				var lonlat:Location = new Location(932115.8764378761, -437484.6802551435, "EPSG:27700");
 				
 				var markers:VectorLayer = new VectorLayer("Markers");
-				markers.projSrsCode = "EPSG:27700";
+				markers.projection = "EPSG:27700";
 				markers.generateResolutions(18);
 				markers.style = Style.getDefaultPointStyle();
 				markLyon = new Marker(new org.openscales.geometry.Point(lonlat.lon, lonlat.lat), {popupContentHTML: "This is a popup<br /><b>Bold text</b><br /><u>Link to <a href=\"http://openscales.org\" target=\"_new\">OpenScales</a></u>"});
@@ -54,7 +54,7 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 				
 				
 				var vect:VectorLayer = new VectorLayer("Reprojected vector");
-				vect.projSrsCode = "EPSG:27700";
+				vect.projection = "EPSG:27700";
 				vect.style = Style.getDefaultPointStyle();
 				var p:org.openscales.geometry.Point = new org.openscales.geometry.Point(lonlat.lon, lonlat.lat);
 				vect.generateResolutions(18);

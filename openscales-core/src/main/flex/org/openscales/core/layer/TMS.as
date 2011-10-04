@@ -46,7 +46,7 @@ package org.openscales.core.layer
 			
 			var x:Number = Math.round((bounds.left - this._tileOrigin.lon) / (res * this.tileWidth));
 			var y:Number = Math.round((bounds.bottom - this._tileOrigin.lat) / ( res* this.tileHeight));
-			var z:Number = this.getZoomForResolution(this.map.resolution.reprojectTo(this.projSrsCode).value);
+			var z:Number = this.getZoomForResolution(this.map.resolution.reprojectTo(this.projection).value);
 			
 			var url:String = this.url + this._serviceVersion +"/" + this.layerName + "/" + z + "/" + x + "/" + y+"."+this._format;
 			return url ;

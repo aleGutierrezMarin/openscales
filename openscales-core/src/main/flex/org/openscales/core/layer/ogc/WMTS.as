@@ -264,7 +264,7 @@ package org.openscales.core.layer.ogc
 					var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(value) as TileMatrixSet;
 					
 					if(tms) {
-						this.projSrsCode = tms.supportedCRS;
+						this.projection = tms.supportedCRS;
 						event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
 					}
 				}

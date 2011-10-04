@@ -31,7 +31,7 @@ package org.openscales.fx.layer
 			this._layer = new WFS("", "", "");
 			this._layer.visible=true
 			if(this._projection != null)
-				this._layer.projSrsCode = this._projection;
+				this._layer.projection = this._projection;
 			(this._layer as WFS).useCapabilities=_useCapabilities;
 		}
 		

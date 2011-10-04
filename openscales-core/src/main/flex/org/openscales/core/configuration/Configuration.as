@@ -3,7 +3,6 @@ package org.openscales.core.configuration
 	import flash.geom.Point;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.control.Control;
@@ -19,8 +18,8 @@ package org.openscales.core.configuration
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
-	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WFST;
 	import org.openscales.core.layer.ogc.WMS;
@@ -40,6 +39,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -331,9 +331,9 @@ package org.openscales.core.configuration
 						// We create the WMSC Layer with all params
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
 						wmscLayer.visible=visible;
-						wmscLayer.projSrsCode = projSrsCode;
+						wmscLayer.projection = projSrsCode;
 						if (String(config.@maxExtent) != "")
-							wmscLayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projSrsCode);
+							wmscLayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projection);
 						wmscLayer.params = paramsWms;
 						layer = wmscLayer;
 						if (method!=null) {
@@ -347,9 +347,9 @@ package org.openscales.core.configuration
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
 						wmslayer.visible = visible;
-						wmslayer.projSrsCode = projSrsCode;  
+						wmslayer.projection = projSrsCode;  
 						if (String(config.@maxExtent) != "")
-							wmslayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projSrsCode);
+							wmslayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projection);
 						wmslayer.params = paramsWms;
 						layer=wmslayer;
 						break;
@@ -396,7 +396,7 @@ package org.openscales.core.configuration
 				wfsLayer.visible = visible;
 				wfsLayer.useCapabilities = useCapabilities;
 				wfsLayer.capabilities = capabilities;
-				wfsLayer.projSrsCode = projSrsCode;
+				wfsLayer.projection = projSrsCode;
 				
 				if(String(xmlNode.@style) !="")
 				{
@@ -437,7 +437,7 @@ package org.openscales.core.configuration
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					mapnik.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+mapnik.projSrsCode);
+					mapnik.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+mapnik.projection);
 				layer=mapnik;
 			}
 			else if(xmlNode.name() == "CycleMap"){
@@ -445,7 +445,7 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var cycleMap:CycleMap=new CycleMap(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					cycleMap.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projSrsCode);
+					cycleMap.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projection);
 				layer=cycleMap;
 			}
 			else if(type == "Maplint"){
@@ -453,13 +453,13 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var maplint:Maplint=new Maplint(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					maplint.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+maplint.projSrsCode);
+					maplint.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+maplint.projection);
 				layer=maplint;
 			}
 			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
 				var featurelayer:VectorLayer = new VectorLayer(name);
-				featurelayer.projSrsCode = projSrsCode;
+				featurelayer.projection = projSrsCode;
 				layer = featurelayer;
 			} else {
 				// Case when the layer is unknown
@@ -484,8 +484,8 @@ package org.openscales.core.configuration
 					layer.alpha = Number(xmlNode.@alpha);
 				}
 				//editable?
-				if (String(xmlNode.@editable) == "true"){
-					layer.editable = Boolean(xmlNode.@editable);
+				if (String(xmlNode.@editable) == "true" && (layer is VectorLayer)){
+					(layer as VectorLayer).editable = Boolean(xmlNode.@editable);
 				}
 			}
 			

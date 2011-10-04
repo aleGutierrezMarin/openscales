@@ -26,7 +26,6 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			
-			import org.openscales.core.utils.Trace;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.format.GPXFormat;
@@ -38,6 +37,7 @@
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.KML;
+			import org.openscales.core.utils.Trace;
 			
 			private var _exportFeature:ExportFeature = null;
 			
@@ -206,8 +206,10 @@
 				}
 				
 				var export:Vector.<Feature> = new Vector.<Feature>();
-				for(var k:uint = 0; k < this.exportFeature.layer.features.length; k++){
-					export.push(this.exportFeature.layer.features[k].clone());
+				i=0;
+				j=this.exportFeature.layer.features.length
+				for(; i < j; ++i){
+					export.push(this.exportFeature.layer.features[i].clone());
 				}
 				
 				switch(format)
@@ -217,7 +219,7 @@
 						fileName += ".kml";
 						
 						var writeKML:KMLFormat = new KMLFormat();
-						datas = writeKML.write(export);
+						datas = writeKML.write(reprojectTo(export,this.exportFeature.map.projection,"EPSG:4326"));
 						break;
 					
 					case "GPX":
@@ -225,7 +227,7 @@
 						fileName += ".gpx";
 						
 						var writeGPX:GPXFormat = new GPXFormat();
-						datas = writeGPX.write(export);
+						datas = writeGPX.write(reprojectTo(export,this.exportFeature.map.projection,"EPSG:4326"));
 						break;
 					
 					case "GeoRss":
@@ -233,7 +235,7 @@
 						fileName += ".xml";
 						
 						var writeGeoRss:GeoRssFormat = new GeoRssFormat();
-						datas = writeGeoRss.write(export);
+						datas = writeGeoRss.write(reprojectTo(export,this.exportFeature.map.projection,"EPSG:4326"));
 						break;
 					
 					case "OSM":
@@ -301,6 +303,21 @@
 				Trace.info("Error Saving File : " + e.text);
 				fileReference = null;
 			}
+			
+			/**
+			 * reproject features
+			 */
+			private function reprojectTo(features:Vector.<Feature>,srcproj:String,destproj:String):Vector.<Feature> {
+				if(srcproj==destproj)
+					return features;
+				var i:uint = 0;
+				var j:uint = features.length;
+				for(; i < j; ++i){
+					features[i].geometry.transform(srcproj, destproj);
+				}
+				return features;
+			}
+				
 			
 			/**
 			 * Return the importFeature linked to theb current form

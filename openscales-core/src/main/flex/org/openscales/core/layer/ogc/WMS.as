@@ -108,7 +108,7 @@ package org.openscales.core.layer.ogc
 			this.tiled = false;
 			
 			// Call the tile provider to generate the request and get the tile requested
-			this._tileProvider = new WMSTileProvider(url, this._version, layers, this.projSrsCode, style, format);
+			this._tileProvider = new WMSTileProvider(url, this._version, layers, this.projection, style, format);
 		}
 		
 		//
@@ -122,7 +122,7 @@ package org.openscales.core.layer.ogc
 				return maxExtent;
 			}
 			// fix me
-			if (this.reproject == true && this.projSrsCode != this.map.projection) {
+			if (this.reproject == true && this.projection != this.map.projection) {
 				maxExtent = maxExtent.reprojectTo(this.map.projection);
 			}
 			return maxExtent;
@@ -349,29 +349,16 @@ package org.openscales.core.layer.ogc
 		}
 		
 		
-		public function get projection():String
+		override public function get projection():String
 		{
-			return _projSrsCode;
+			return _projection;
 		}
 		/**
 		 * @private
 		 */
-		public function set projection (value:String):void
+		override public function set projection (value:String):void
 		{
-			this.projSrsCode = value;
-			
-			// Update the tileProvider projection at the same time
-			if(this._tileProvider != null){
-				this._tileProvider.projection = value;
-			}
-		}
-		
-		/**
-		 * @Private
-		 */
-		override public function set projSrsCode(value:String):void
-		{
-			super.projSrsCode = value;
+			super.projection = value;
 			
 			// Update the tileProvider projection at the same time
 			if(this._tileProvider != null){

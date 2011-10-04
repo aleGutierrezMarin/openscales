@@ -39,7 +39,6 @@ package org.openscales.core.layer
 			layer.minResolution = this.minResolution;
 			layer.maxResolution = this.maxResolution;*/
 			layer.alpha = this.alpha;
-			layer.editable = this.editable;
 			layer.isFixed = this.isFixed;
 			/*if(!this._autoResolution)
 				layer.resolutions = this.resolutions;
@@ -222,11 +221,11 @@ package org.openscales.core.layer
 			}
 		}
 		
-		override public function set projSrsCode(value:String):void {
-			super.projSrsCode = value;
+		override public function set projection(value:String):void {
+			super.projection = value;
 			var numLayer:uint = this.layers.length;
 			for(var i:uint = 0;i<numLayer;++i) {
-				layers[i].projSrsCode = value;
+				layers[i].projection = value;
 			}
 		}
 		
@@ -235,14 +234,6 @@ package org.openscales.core.layer
 			var numLayer:uint = this.layers.length;
 			for(var i:uint = 0;i<numLayer;++i) {
 				layers[i].isFixed = value;
-			}
-		}
-		
-		override public function set editable(value:Boolean):void{
-			super.editable = value;
-			var numLayer:uint = this.layers.length;
-			for(var i:uint = 0;i<numLayer;++i) {
-				layers[i].editable = value;
 			}
 		}
 	}

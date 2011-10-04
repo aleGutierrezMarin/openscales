@@ -87,8 +87,8 @@ package org.openscales.core.layer
 			if(this._featureVector == null) 
 			{
 				
-				if (this.map.projection != null && this.projSrsCode != null && this.projSrsCode != this.map.projection) {
-					this._kmlFormat.externalProjSrsCode = this.projSrsCode;
+				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
+					this._kmlFormat.externalProjSrsCode = this.projection;
 					this._kmlFormat.internalProjSrsCode = this.map.projection;
 				}
 				this._kmlFormat.proxy = this.proxy;
@@ -115,8 +115,8 @@ package org.openscales.core.layer
 			// To avoid errors if the server is dead
 			try {
 				this._xml = new XML(loader.data);
-				if (this.map.projection != null && this.projSrsCode != null && this.projSrsCode != this.map.projection) {
-					this._kmlFormat.externalProjSrsCode = this.projSrsCode;
+				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
+					this._kmlFormat.externalProjSrsCode = this.projection;
 					this._kmlFormat.internalProjSrsCode = this.map.projection;
 				}
 				this._kmlFormat.proxy = this.proxy;
@@ -143,8 +143,9 @@ package org.openscales.core.layer
 		/**
 		 * Getters and Setters
 		 */
-		override public function set projSrsCode(value:String):void {
-			return;
+		override public function set projection(value:String):void {
+			// SRS code cannot be overriden. Graticule is always built in EPSG:4326
+			// and then reprojected to the projection of the map.
 		}
 		
 		public function get kmlFormat():KMLFormat

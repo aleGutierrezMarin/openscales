@@ -48,7 +48,7 @@ package
 			//add the KML layer; fetch data from url
 			var kmlLayer:KML = new KML("Stations Vélib Paris", this.url);
 			this._map.addLayer(kmlLayer);
-			Trace.debug("kmlLayer projection :"+kmlLayer.projSrsCode);
+			Trace.debug("kmlLayer projection :"+kmlLayer.projection);
 			
 			
 			// Add Controls to map

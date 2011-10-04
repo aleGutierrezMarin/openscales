@@ -174,7 +174,8 @@
 			 *			&lt;fx:Object
 			 *				displayLegend="true/false"
 			 *				displayZoomToExtent="true/false"
-			 *				displayMetadatas="true/false" /&gt;
+			 *				displayMetadatas="true/false"
+			 *              displayDrawing="true/false" /&gt;
 			 *		&lt;/rendererOptions&gt;
 			 * &lt;/LayerSwitcher&gt;
 			 */
@@ -188,12 +189,16 @@
 				_rendererOptions = value;
 				
 				if(value){
-					_displayZoomToExtent = !!value['displayZoomToExtent'];
-					_displayLegend = !!value['displayLegend'];
-					_displayMetadatas = !!value['displayMetadatas'];
-					_displayDrawing = !!value['displayDrawing'];
+					if(value['displayZoomToExtent'])
+						_displayZoomToExtent = true;
+					if(value['displayLegend'])
+						_displayLegend = true;
+					if(value['displayMetadatas'])
+						_displayMetadatas = true;
+					if(value['displayDrawing'])
+						_displayDrawing = true;
 					
-					if(_displayZoomToExtent || _displayLegend || _displayMetadatas)
+					if(_displayZoomToExtent || _displayLegend || _displayMetadatas || _displayDrawing)
 						_optionnalGroupDisplayed = true;
 				}
 			}
@@ -304,13 +309,13 @@
 					this.isMinimized = false;
 				}
 				
+				this._isDrawingLayer = false;
 				if((this._layer != null) )
 				{	
 					layerSwitcherLabel.text = this._layer.name;
 					
-					if(this._layer.hasOwnProperty("features") && !(this._layer is WFS))
+					if((this._layer is VectorLayer) && (this._layer as VectorLayer).editable)
 						this._isDrawingLayer = true;
-						
 					else
 						this._isDrawingLayer = false;
 					

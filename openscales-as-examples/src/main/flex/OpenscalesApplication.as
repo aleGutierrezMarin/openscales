@@ -47,7 +47,7 @@ package {
 			wmts.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
 			_map.addLayer(wmts);*/
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
+			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);		
 			_map.addLayer(mapnik);
 
 			
@@ -57,19 +57,19 @@ package {
 			
 			
 					var states:WFS = new WFS("states","http://openscales.org/geoserver/wfs","topp:states","1.1.0");
-					states.projSrsCode = "EPSG:4326";
+					states.projection = "EPSG:4326";
 					states.useCapabilities = true;
 					states.style = Style.getDefaultSurfaceStyle();
 					//_map.addLayer(states);
 					
 					var regions:WFS = new WFS("regions","http://openscales.org/geoserver/wfs","pg:ign_geopla_region","1.0.0");
-					regions.projSrsCode = "EPSG:2154";
+					regions.projection = "EPSG:2154";
 					regions.useCapabilities = true;
 					regions.style = Style.getDefaultSurfaceStyle();
 					//_map.addLayer(regions);
 					
 					var communes:WFS = new WFS("communes","http://pp-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/geoserver/sde/wfs","sde:commune");
-					communes.projSrsCode = "EPSG:4326";
+					communes.projection = "EPSG:4326";
 					communes.useCapabilities = true;
 					communes.style = Style.getDefaultSurfaceStyle();
 					//_map.addLayer(communes);

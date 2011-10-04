@@ -43,7 +43,7 @@ package org.openscales.geometry
 		 * @inherits
 		 */
 		override public function calculateBounds():void{
-			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projSrsCode);
+			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projection);
 		}
 		
 		public function updateBounds(left:Number,bottom:Number,right:Number,top:Number,proj:String):void{

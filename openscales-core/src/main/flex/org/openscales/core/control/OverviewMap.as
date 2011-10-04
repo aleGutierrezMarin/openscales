@@ -294,7 +294,7 @@ package org.openscales.core.control
 				_extent = _extent.reprojectTo(this._overviewMap.projection);
 			}
 			
-			this._extentLayer.projSrsCode = this._overviewMap.projection;
+			this._extentLayer.projection = this._overviewMap.projection;
 			if (this._extentFeature == null) {
 				this._extentFeature = new PolygonFeature(_extent.toGeometry(),
 					null,

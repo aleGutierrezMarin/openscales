@@ -25,10 +25,10 @@ package org.openscales.core.layer.osm
 
 			super(name, url);
 
-			this.projSrsCode = "EPSG:900913";
+			this.projection = "EPSG:900913";
 			// Use the projection to access to the unit
 			/* this.units = Unit.METER; */
-			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projSrsCode);
+			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projection);
 			this.originators.push(OSM_ORIGINATOR);
 		}
 
@@ -37,7 +37,7 @@ package org.openscales.core.layer.osm
 			var res:Resolution = this.getSupportedResolution(this.map.resolution);
 			var x:Number = Math.round((bounds.left - this.maxExtent.left) / (res.value * this.tileWidth));
 			var y:Number = Math.round((this.maxExtent.top - bounds.top) / (res.value * this.tileHeight));
-			var z:Number = this.getZoomForResolution(res.reprojectTo(this.projSrsCode).value);
+			var z:Number = this.getZoomForResolution(res.reprojectTo(this.projection).value);
 			var limit:Number = Math.pow(2, z);
 
 			if (y < 0 || y >= limit ||x < 0 || x >= limit) {

@@ -35,7 +35,7 @@ package org.openscales.core.handler.keyboard
 			_map= new Map(600,400);
 			_map.addControl(new KeyboardHandler(_map,true));
 			_layer = new Layer("sampleLayer");
-			_layer.projSrsCode="EPSG:900913";
+			_layer.projection="EPSG:900913";
 			_map.addLayer(_layer, true);
 			_oldX = _map.center.x;
 			_oldY = _map.center.y;

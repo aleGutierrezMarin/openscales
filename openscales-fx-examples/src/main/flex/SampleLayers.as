@@ -51,7 +51,7 @@ package {
 		static public function features():VectorLayer {
 			// Create the drawings layer and some useful variables
 			var layer:VectorLayer = new VectorLayer("Drawing samples");
-			layer.projSrsCode = "EPSG:4326";
+			layer.projection = "EPSG:4326";
 			var style:Style;
 			var rule:Rule;
 			var arrayComponents:Vector.<Number>;

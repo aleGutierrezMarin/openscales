@@ -54,7 +54,7 @@ package org.openscales.fx.layer
 		public function configureLayer():Layer {
 			
 			if(this._projection)
-				this._layer.projSrsCode = this._projection;
+				this._layer.projection = this._projection;
 			
 			this.generateResolutions();
 			
@@ -208,7 +208,7 @@ package org.openscales.fx.layer
 				if(length == 4)
 				{
 					if(this._layer)
-						this._layer.maxExtent = Bounds.getBoundsFromString(value+","+this._layer.projSrsCode);
+						this._layer.maxExtent = Bounds.getBoundsFromString(value+","+this._layer.projection);
 					else if(this._projection)
 						this._maxExtent = Bounds.getBoundsFromString(value+","+this._projection);
 				}
@@ -378,7 +378,7 @@ package org.openscales.fx.layer
 		 */
 		public function get projection():String {
 			if(this._layer)
-				return this._layer.projSrsCode;
+				return this._layer.projection;
 			return this._projection;
 		}
 		/**
@@ -388,7 +388,7 @@ package org.openscales.fx.layer
 			
 			this._projection = value;
 			if(this._layer) {
-				this._layer.projSrsCode = this._projection;
+				this._layer.projection = this._projection;
 			}
 		}
 		

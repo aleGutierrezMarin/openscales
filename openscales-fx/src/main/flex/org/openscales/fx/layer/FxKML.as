@@ -48,7 +48,7 @@ package org.openscales.fx.layer
 
 		public function set srs(value:String):void {
 			if (this._layer != null) {
-				this._layer.projSrsCode = value;
+				this._layer.projection = value;
 			}
 		}
 		

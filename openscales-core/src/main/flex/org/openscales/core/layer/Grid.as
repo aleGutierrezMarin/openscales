@@ -149,7 +149,7 @@ package org.openscales.core.layer
 		
 		override public function get available():Boolean
 		{
-			return (super.available && ProjProjection.isEquivalentProjection(this.projSrsCode,this.map.projection));
+			return (super.available && ProjProjection.isEquivalentProjection(this.projection,this.map.projection));
 		}
 		
 		/**
@@ -303,7 +303,7 @@ package org.openscales.core.layer
 								tileoffsetlat, 
 								tileoffsetlon + tileLon,
 								tileoffsetlat + tileLat,
-								this.projSrsCode);
+								this.projection);
 							x = this._grid[_r][gridRowLength - 1 + i].x + this.tileWidth;
 							
 							y = this._grid[_r][gridRowLength - 1 + i].y;
@@ -340,7 +340,7 @@ package org.openscales.core.layer
 								tileoffsetlat - tileLat, 
 								tileoffsetlon + tileLon,
 								tileoffsetlat,
-								this.projSrsCode);
+								this.projection);
 							x = this._grid[gridColLength - 1 + j][c].x;
 							
 							y = this._grid[gridColLength - 1 + j][c].y + this.tileHeight;
@@ -417,7 +417,7 @@ package org.openscales.core.layer
 					bottomLeftTile.bounds.bottom,
 					topRightTile.bounds.right, 
 					topRightTile.bounds.top,
-					this.projSrsCode);
+					this.projection);
 			}
 			return null;
 		}
@@ -443,8 +443,8 @@ package org.openscales.core.layer
 				Trace.debug("Singletile requested extent is null, no intersection");
 				return;
 			}
-			if(bounds.projSrsCode!=this.projSrsCode)
-				bounds = bounds.reprojectTo(this.projSrsCode);
+			if(bounds.projection!=this.projection)
+				bounds = bounds.reprojectTo(this.projection);
 			
 			center= bounds.center;
 			geoTileWidth = bounds.width;
@@ -453,7 +453,7 @@ package org.openscales.core.layer
 			var bottomRightCorner:Location = new Location(bounds.right, bounds.bottom);
 			this.tileWidth = Math.round(geoTileWidth/this.map.resolution.value);
 			this.tileHeight = Math.round(geoTileHeight/this.map.resolution.value);
-			var ul:Location = new Location(bounds.left, bounds.top, bounds.projSrsCode);
+			var ul:Location = new Location(bounds.left, bounds.top, bounds.projection);
 			var px:Pixel = this.map.getMapPxFromLocation(ul);
 			
 			if(this._grid==null) {
@@ -570,7 +570,7 @@ package org.openscales.core.layer
 					}
 				}
 			}*/
-			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projSrsCode);
+			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projection);
 			this.requestedResolution = this.getSupportedResolution(this.map.resolution);
 			_resquestResolution = this.requestedResolution.value;
 			var viewSize:Size = this.map.size;
@@ -630,7 +630,7 @@ package org.openscales.core.layer
 						tileoffsetlat, 
 						tileoffsetlon + tilelon,
 						tileoffsetlat + tilelat,
-						this.projSrsCode);
+						this.projection);
 					var x:Number = tileoffsetx;
 					
 					var y:Number = tileoffsety;
@@ -920,7 +920,7 @@ package org.openscales.core.layer
 				tileBottom,
 				tileLeft + tileMapWidth,
 				tileBottom + tileMapHeight,
-				this.projSrsCode);
+				this.projection);
 		}
 		
 		private function tileLoadHandler(event:TileEvent):void	{
@@ -1058,7 +1058,7 @@ package org.openscales.core.layer
 			if(!minRes || isNaN(minRes.value) || !isFinite(minRes.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
-					minRes = new Resolution(this.resolutions[this.resolutions.length - 1], this.projSrsCode);
+					minRes = new Resolution(this.resolutions[this.resolutions.length - 1], this.projection);
 				}
 			}
 			else
@@ -1067,11 +1067,11 @@ package org.openscales.core.layer
 				for(var i:int=this.resolutions.length; i>-1; --i)
 				{
 					if( this.resolutions[i] >= minRes.value)
-						return new Resolution(this.resolutions[i],this.projSrsCode);
+						return new Resolution(this.resolutions[i],this.projection);
 				}
 				
 				if (this.resolutions && (this.resolutions.length > 0)) {
-					minRes = new Resolution(this.resolutions[this.resolutions.length - 1],this.projSrsCode);
+					minRes = new Resolution(this.resolutions[this.resolutions.length - 1],this.projection);
 				}
 			}
 			

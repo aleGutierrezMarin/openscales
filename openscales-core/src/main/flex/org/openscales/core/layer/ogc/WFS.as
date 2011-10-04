@@ -122,8 +122,8 @@ package org.openscales.core.layer.ogc
 			
 			var requestString:String = this.url;
 			
-			if (this.projSrsCode != null || this.map.projection != null) {
-				this.params.srs = (this.projSrsCode == null) ? this.map.projection : this.projSrsCode;
+			if (this.projection != null || this.map.projection != null) {
+				this.params.srs = (this.projection == null) ? this.map.projection : this.projection;
 			}
 			
 			var lastServerChar:String = url.charAt(url.length - 1);
@@ -346,10 +346,10 @@ package org.openscales.core.layer.ogc
 			// Intersect with the extent of the map
 			mapExtent = this.map.extent.clone();
 			
-			if (this.projSrsCode != mapExtent.projSrsCode)
+			if (this.projection != mapExtent.projection)
 			{
-				mapExtent = mapExtent.preciseReprojectBounds(this.projSrsCode);
-				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(this.projSrsCode);
+				mapExtent = mapExtent.preciseReprojectBounds(this.projection);
+				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(this.projection);
 			}
 			
 			if (!(mapExtent.width == 0 || mapExtent.height == 0))
@@ -360,7 +360,7 @@ package org.openscales.core.layer.ogc
 			// Update the bbox
 			if (layerExtent != null)
 			{
-				if (this.params.version != "1.0.0" && ProjProjection.projAxisOrder[this.projSrsCode] != ProjProjection.AXIS_ORDER_EN)
+				if (this.params.version != "1.0.0" && ProjProjection.projAxisOrder[this.projection] != ProjProjection.AXIS_ORDER_EN)
 					this.params.bbox = layerExtent.toString(-1, false);
 				else
 					this.params.bbox = layerExtent.toString();
@@ -380,7 +380,7 @@ package org.openscales.core.layer.ogc
 		
 		override public function get available():Boolean
 		{
-			if (this.useCapabilities && !this.projSrsCode)
+			if (this.useCapabilities && !this.projection)
 				return false;
 			
 			if (!this.defineBounds())
@@ -423,8 +423,8 @@ package org.openscales.core.layer.ogc
 			if (this.params != null) {
 				this._capabilities = caller.getLayerCapabilities(this.params.typename);
 			}
-			if ((this._capabilities != null) && (this.projSrsCode == null || this.useCapabilities)) {
-				this.projSrsCode = this._capabilities.getValue("SRS");
+			if ((this._capabilities != null) && (this.projection == null || this.useCapabilities)) {
+				this.projection = this._capabilities.getValue("SRS");
 				if(this.map)
 					this.redraw(true);
 			}
@@ -479,7 +479,7 @@ package org.openscales.core.layer.ogc
 		 * @param the xml corresponding to the wfs response
 		 */
 		public function parseResponse(wfsResponse:String):void{
-			this._gmlFormat.externalProjSrsCode = this.projSrsCode;
+			this._gmlFormat.externalProjSrsCode = this.projection;
 			this._gmlFormat.internalProjSrsCode = this.map.projection;
 			this._gmlFormat.read(wfsResponse);
 			//this._wfsFormat.read(wfsResponse);
@@ -564,7 +564,7 @@ package org.openscales.core.layer.ogc
 		public function set useCapabilities(value:Boolean):void {
 			this._useCapabilities = value;
 			if (value)
-				this.projSrsCode = null;
+				this.projection = null;
 		}
 		
 		/**

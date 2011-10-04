@@ -35,7 +35,7 @@ package org.openscales.map {
 			
 			// And that map has a layer (mandatory for correct pan behaviour)
 			var layer:Layer = new Layer('Some layer');
-			layer.projSrsCode = 'EPSG:4326';
+			layer.projection = 'EPSG:4326';
 			_map.addLayer(layer);
 			
 			// And that map is displayed at a resolution of 0.3515625°/px

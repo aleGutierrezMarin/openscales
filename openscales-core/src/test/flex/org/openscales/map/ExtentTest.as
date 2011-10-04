@@ -66,7 +66,7 @@ package org.openscales.map
 			Assert.assertTrue("Incorrect right value",Math.abs(this._bounds.right-this._map.restrictedExtent.right)<EPSILON);
 			Assert.assertTrue("Incorrect top value", Math.abs(this._bounds.top-this._map.restrictedExtent.top)<EPSILON);
 			Assert.assertTrue("Incorrect bottom value", Math.abs(this._bounds.bottom-this._map.restrictedExtent.bottom)<EPSILON);
-			Assert.assertEquals("Incorrect projection value", this._bounds.projSrsCode, this._map.restrictedExtent.projSrsCode);
+			Assert.assertEquals("Incorrect projection value", this._bounds.projection, this._map.restrictedExtent.projection);
 		}
 		
 		/**
@@ -95,7 +95,7 @@ package org.openscales.map
 			Assert.assertTrue("Incorrect right value",Math.abs(restricted.right-this._map.maxExtent.right)<EPSILON);
 			Assert.assertTrue("Incorrect top value", Math.abs(restricted.top-this._map.maxExtent.top)<EPSILON);
 			Assert.assertTrue("Incorrect bottom value", Math.abs(restricted.bottom-this._map.maxExtent.bottom)<EPSILON);
-			Assert.assertEquals("Incorrect projection value", restricted.projSrsCode, this._map.maxExtent.projSrsCode);
+			Assert.assertEquals("Incorrect projection value", restricted.projection, this._map.maxExtent.projection);
 		}
 		
 		/**
@@ -124,7 +124,7 @@ package org.openscales.map
 			Assert.assertTrue("Incorrect right value",Math.abs(max.right-this._map.maxExtent.right)<EPSILON);
 			Assert.assertTrue("Incorrect top value", Math.abs(max.top-this._map.maxExtent.top)<EPSILON);
 			Assert.assertTrue("Incorrect bottom value", Math.abs(max.bottom-this._map.maxExtent.bottom)<EPSILON);
-			Assert.assertEquals("Incorrect projection value", max.projSrsCode, this._map.maxExtent.projSrsCode);
+			Assert.assertEquals("Incorrect projection value", max.projection, this._map.maxExtent.projection);
 			
 		}
 		
@@ -156,7 +156,7 @@ package org.openscales.map
 			Assert.assertTrue("Incorrect right value",Math.abs(bounds.right-this._map.restrictedExtent.right)<EPSILON);
 			Assert.assertTrue("Incorrect top value", Math.abs(bounds.top-this._map.restrictedExtent.top)<EPSILON);
 			Assert.assertTrue("Incorrect bottom value", Math.abs(bounds.bottom-this._map.restrictedExtent.bottom)<EPSILON);
-			Assert.assertEquals("Incorrect projection value", bounds.projSrsCode, this._map.restrictedExtent.projSrsCode);
+			Assert.assertEquals("Incorrect projection value", bounds.projection, this._map.restrictedExtent.projection);
 			
 		}
 		
@@ -194,7 +194,7 @@ package org.openscales.map
 				this._map.restrictedExtent.bottom + 1,
 				this._map.restrictedExtent.right - 1,
 				this._map.restrictedExtent.top - 1,
-				this._map.restrictedExtent.projSrsCode);
+				this._map.restrictedExtent.projection);
 			
 			var center:Location = new Location(bounds.left+((bounds.right-bounds.left)/2), bounds.bottom+((bounds.top-bounds.bottom)/2), this._map.projection);
 			var value:Number = (bounds.right-bounds.left) / this._map.width;
@@ -223,9 +223,9 @@ package org.openscales.map
 				this._map.restrictedExtent.bottom - 10,
 				this._map.restrictedExtent.right + 10,
 				this._map.restrictedExtent.top + 10,
-				this._map.restrictedExtent.projSrsCode);
+				this._map.restrictedExtent.projection);
 			
-			var center:Location = new Location((bounds.right-bounds.left)/2, (bounds.top-bounds.bottom)/2, this._map.restrictedExtent.projSrsCode);
+			var center:Location = new Location((bounds.right-bounds.left)/2, (bounds.top-bounds.bottom)/2, this._map.restrictedExtent.projection);
 			var resolution:Resolution = new Resolution((bounds.right-bounds.left) / this._map.width, this._map.projection);
 			
 			// When the isValidExtentWithRestrictedExtent function is called with a the center and resolution NOT contained by the restrictedExtent
@@ -268,7 +268,7 @@ package org.openscales.map
 			Assert.assertTrue("Incorrect right value",Math.abs(this._bounds.right-this._map.extent.right)<EPSILON);
 			Assert.assertTrue("Incorrect top value", Math.abs(this._bounds.top-this._map.extent.top)<EPSILON);
 			Assert.assertTrue("Incorrect bottom value", Math.abs(this._bounds.bottom-this._map.extent.bottom)<EPSILON);
-			Assert.assertEquals("Incorrect projection value",this._bounds.projSrsCode, this._map.extent.projSrsCode);
+			Assert.assertEquals("Incorrect projection value",this._bounds.projection, this._map.extent.projection);
 			
 		}
 		
@@ -340,7 +340,7 @@ package org.openscales.map
 			Assert.assertTrue("Incorrect right value",Math.abs(this._bounds.right-this._map.extent.right)<EPSILON);
 			Assert.assertTrue("Incorrect top value", Math.abs(this._bounds.top-this._map.extent.top)<EPSILON);
 			Assert.assertTrue("Incorrect bottom value", Math.abs(this._bounds.bottom-this._map.extent.bottom)<EPSILON);
-			Assert.assertEquals("Incorrect projection value",this._bounds.projSrsCode, this._map.extent.projSrsCode);
+			Assert.assertEquals("Incorrect projection value",this._bounds.projection, this._map.extent.projection);
 		}
 		
 		/**

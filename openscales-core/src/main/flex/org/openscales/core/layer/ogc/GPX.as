@@ -53,7 +53,7 @@ package org.openscales.core.layer.ogc
 							extractRoutes:Boolean = true,
 							extractAttributes:Boolean = true)
 		{
-			this._projSrsCode = "EPSG:4326";
+			this._projection = "EPSG:4326";
 			this.version = version;
 			this.url = url;	
 			this.data = data;
@@ -185,8 +185,9 @@ package org.openscales.core.layer.ogc
 			_version = value;
 		}
 		
-		override public function set projSrsCode(value:String):void {
-			return;
+		override public function set projection(value:String):void {
+			// SRS code cannot be overriden. Graticule is always built in WGS84
+			// and then reprojected to the projection of the map.
 		}
 
 		public function get extractAttributes():Boolean

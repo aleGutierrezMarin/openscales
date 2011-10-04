@@ -112,7 +112,7 @@ package org.openscales.core
 			Assert.assertTrue("Incorrect right extent value", (Math.abs(newExtent.right-oldBounds.right)<EPSILON));
 			Assert.assertTrue("Incorrect top extent value", (Math.abs(newExtent.top-oldBounds.top)<EPSILON));
 			Assert.assertTrue("Incorrect bottom extent value", (Math.abs(newExtent.bottom-oldBounds.bottom)<EPSILON));
-			Assert.assertEquals("Incorrect projection value", oldBounds.projSrsCode, newExtent.projSrsCode);
+			Assert.assertEquals("Incorrect projection value", oldBounds.projection, newExtent.projection);
 			
 		}
 

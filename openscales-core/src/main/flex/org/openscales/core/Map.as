@@ -489,7 +489,7 @@ package org.openscales.core
 			if( newBounds )
 			{
 				this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
-				if(newBounds.projSrsCode != this.projection)
+				if(newBounds.projection != this.projection)
 					newBounds = newBounds.reprojectTo(this.projection);
 				
 				var x:Number = (newBounds.left + newBounds.right)/2;
@@ -630,7 +630,7 @@ package org.openscales.core
 			
 			if (this.center != null) {
 				var center:Location;
-				if(this.center.projSrsCode.toUpperCase() != this.projection.toUpperCase())
+				if(this.center.projection.toUpperCase() != this.projection.toUpperCase())
 					center = this.center.reprojectTo(this.projection.toUpperCase());
 				else
 					center = this.center;
@@ -641,7 +641,7 @@ package org.openscales.core
 					center.lat - h_deg / 2,
 					center.lon + w_deg / 2,
 					center.lat + h_deg / 2,
-					center.projSrsCode);
+					center.projection);
 			} 
 			
 			return extent;
@@ -852,7 +852,7 @@ package org.openscales.core
 				var deltaY:Number = zoomTarget.y - this.height/2;
 				var deltaLon:Number = deltaX*targetResolution.value;
 				var deltaLat:Number = deltaY*targetResolution.value;
-				var newCenter:Location = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projSrsCode);
+				var newCenter:Location = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projection);
 				
 				if (resolutionChanged) {
 						
@@ -869,7 +869,7 @@ package org.openscales.core
 				if (! zoomTargetLoc.equals(this.center))
 				{
 					if(!this.maxExtent.containsLocation(zoomTargetLoc) || !this.maxExtent.containsLocation(newCenter)){
-						this.center = new Location(this.width/2,this.height/2,this.center.projSrsCode);
+						this.center = new Location(this.width/2,this.height/2,this.center.projection);
 					}
 					else{
 						this.center = newCenter;
@@ -960,7 +960,7 @@ package org.openscales.core
 				
 				this.dispatchEvent(new MapEvent(MapEvent.MOVE_START, this));
 				
-				if(tmpExtent.projSrsCode != this.projection)
+				if(tmpExtent.projection != this.projection)
 					tmpExtent = tmpExtent.reprojectTo(this.projection);
 				
 				var x:Number = (tmpExtent.left + tmpExtent.right)/2;
@@ -1002,9 +1002,9 @@ package org.openscales.core
 			event.newCenter = newCenter;
 			event.oldResolution = this.resolution;
 			event.newResolution = this.resolution;
-			if (newCenter.projSrsCode != this.projection)
+			if (newCenter.projection != this.projection)
 				newCenter = newCenter.reprojectTo(this.projection);
-			Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projSrsCode);
+			Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projection);
 			
 			// only change center according to restrictedExtent
 			if(!isValidExtentWithRestrictedExtent(newCenter, this.resolution))
@@ -1085,7 +1085,7 @@ package org.openscales.core
 		public function set maxExtent(value:Bounds):void {
 			if(value)
 			{
-				if (value.projSrsCode != this.projection)
+				if (value.projection != this.projection)
 				{
 					value = value.preciseReprojectBounds(this.projection);
 				}
@@ -1119,7 +1119,7 @@ package org.openscales.core
 		{
 			if(value)
 			{
-				if (value.projSrsCode != this.projection)
+				if (value.projection != this.projection)
 				{
 					value = value.preciseReprojectBounds(this.projection);
 				}
@@ -1140,7 +1140,7 @@ package org.openscales.core
 			var extent:Bounds = null;
 			if ((this.center != null) && (this.resolution != null)) {
 				var center:Location;
-				if(this.center.projSrsCode.toUpperCase() != this.projection.toUpperCase())
+				if(this.center.projection.toUpperCase() != this.projection.toUpperCase())
 					center = this.center.reprojectTo(this.projection.toUpperCase());
 				else
 					center = this.center;
@@ -1150,7 +1150,7 @@ package org.openscales.core
 					center.lat - h_deg / 2,
 					center.lon + w_deg / 2,
 					center.lat + h_deg / 2,
-					center.projSrsCode);
+					center.projection);
 			} 
 			return extent;
 			

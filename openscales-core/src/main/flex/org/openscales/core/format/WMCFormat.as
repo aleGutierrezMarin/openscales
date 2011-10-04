@@ -205,7 +205,7 @@ import org.openscales.core.layer.ogc.WMTS;
 					break;
 				case "OGC:WFS":
 					var wfs:WFS = new WFS(title,url,name,version);
-					wfs.projSrsCode = srs;
+					wfs.projection = srs;
 					wfs.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
 					wfs.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
 					layerToAdd = wfs;
@@ -214,7 +214,7 @@ import org.openscales.core.layer.ogc.WMTS;
 					var wmts:WMTS = new WMTS(title,url,name,"");
 					if (srs != "")
 					{
-						wmts.projSrsCode = srs;
+						wmts.projection = srs;
 						wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
 						wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
 					}

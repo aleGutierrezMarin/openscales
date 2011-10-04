@@ -30,15 +30,15 @@ package
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
 			mapnik.proxy = "http://openscales.org/proxy.php?url=";
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
+			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);		
 			_map.addLayer(mapnik);
 			
 			_map.addControl(new DragHandler());
 			_map.addControl(new WheelHandler());
 			
 			// Set the map center
-			_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			_map.resolution = new Resolution(mapnik.resolutions[5],mapnik.projSrsCode);
+			_map.center=new Location(538850.47459,5740916.1243,mapnik.projection);
+			_map.resolution = new Resolution(mapnik.resolutions[5],mapnik.projection);
 			
 			this.addChild(_map);
 			

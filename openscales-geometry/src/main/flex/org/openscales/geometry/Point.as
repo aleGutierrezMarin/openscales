@@ -37,7 +37,7 @@ package org.openscales.geometry
 		}
 		
 		override public function calculateBounds():void {
-			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projSrsCode);
+			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projection);
 		}
 
 		override public function distanceTo(point:Geometry, options:Object=null):Number{
@@ -88,7 +88,7 @@ package org.openscales.geometry
 		 */
 		override public function transform(sourceSrs:String, destSrs:String):void {
 			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
+			this.projection = destSrs;
 			// Update the geometry
 			var p:ProjPoint = new ProjPoint(this._x, this._y);
 			Proj4as.transform(sourceSrs, destSrs, p);

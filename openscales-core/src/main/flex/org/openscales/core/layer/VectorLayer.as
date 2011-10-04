@@ -49,18 +49,19 @@ package org.openscales.core.layer
 		private var _attributesId:Array = new Array();
 		private var _initInDrawingToolbar:Boolean = false;
 		private var _initOutDrawingToolbar:Boolean = false;
+		private var _editable:Boolean = false;
 
 		public function VectorLayer(name:String)
 		{
 			super(name);
-			this._displayProjSrsCode = this.projSrsCode;
+			this._displayProjSrsCode = this.projection;
 			this.style = new Style();
 			this.geometryType = null;
 			this.selectedFeatures = new Vector.<String>();
 			
 			// By default no range defined for feature layers
-			this.minResolution = new Resolution(0,this.projSrsCode);
-			this.maxResolution = new Resolution(Infinity,this.projSrsCode);
+			this.minResolution = new Resolution(0,this.projection);
+			this.maxResolution = new Resolution(Infinity,this.projection);
 			
 			// Make drag smooth even with a lot of points
 			this.cacheAsBitmap = true;
@@ -200,8 +201,8 @@ package org.openscales.core.layer
 			}
 			
 			// Reprojection if needed
-			if (reproject && (this.map) && (this.projSrsCode != this._displayProjSrsCode)) {
-				feature.geometry.transform(this.projSrsCode, this._displayProjSrsCode);
+			if (reproject && (this.map) && (this.projection != this._displayProjSrsCode)) {
+				feature.geometry.transform(this.projection, this._displayProjSrsCode);
 			}
 			
 			// Add the feature to the layer
@@ -343,9 +344,9 @@ package org.openscales.core.layer
 			this._featuresBbox = features[0].geometry.bounds.clone();
 			for(var j:uint=1; j<i; ++j) {
 				var tmpBounds:Bounds = this._featuresBbox.extendFromBounds(features[j].geometry.bounds.clone());
-				if (tmpBounds.projSrsCode != this._featuresBbox.projSrsCode)
+				if (tmpBounds.projection != this._featuresBbox.projection)
 				{
-					tmpBounds = tmpBounds.reprojectTo(this._featuresBbox.projSrsCode);
+					tmpBounds = tmpBounds.reprojectTo(this._featuresBbox.projection);
 				}
 				this._featuresBbox = tmpBounds; 
 			}
@@ -395,11 +396,8 @@ package org.openscales.core.layer
 			this._isInEditionMode = value;
 		}
 		
-		override public function set projSrsCode(value:String):void {
-			super.projSrsCode = value;
-			this._displayProjSrsCode = this.projSrsCode;
-			// TODO: Why changing the _displayProjSrsCode ? It is dependant on the baselayer's projection, not on the layer's projection.
-			// But if true, shouldn't we call this.updateCurrentProjection(); ?
+		override public function set projection(value:String):void {
+			super.projection = value;
 		}
 		
 		/**
@@ -479,6 +477,13 @@ package org.openscales.core.layer
 		}
 		public function set initOutDrawingToolbar(value:Boolean):void{
 			this._initOutDrawingToolbar = value;
+		}
+		public function get editable():Boolean{
+			return _editable;
+		}
+		
+		public function set editable(value:Boolean):void{
+			_editable = value;
 		}
 	}
 }

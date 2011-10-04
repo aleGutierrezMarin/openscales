@@ -170,7 +170,7 @@ package org.openscales.core.handler.mouse
 							Math.min(endCoordinates.lat,_startCoordinates.lat),
 							Math.max(_startCoordinates.lon,endCoordinates.lon),
 							Math.max(endCoordinates.lat,_startCoordinates.lat),
-							endCoordinates.projSrsCode));
+							endCoordinates.projection));
 					}
 				}
 				this._startCoordinates = null;

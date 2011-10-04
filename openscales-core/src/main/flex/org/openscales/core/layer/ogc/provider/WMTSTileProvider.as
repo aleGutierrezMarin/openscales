@@ -171,7 +171,7 @@ package org.openscales.core.layer.ogc.provider
 			if(tileMatrixSet==null)
 				return imageTile;
 			
-			if(tileMatrixSet.supportedCRS.toUpperCase() != bounds.projSrsCode.toUpperCase()) {
+			if(tileMatrixSet.supportedCRS.toUpperCase() != bounds.projection.toUpperCase()) {
 				bounds = bounds.reprojectTo(tileMatrixSet.supportedCRS);
 			}
 			
@@ -189,8 +189,8 @@ package org.openscales.core.layer.ogc.provider
 			
 			var location:Location = bounds.center;
 			var tileOrigin:Location = tileMatrix.topLeftCorner;
-			if(location.projSrsCode.toUpperCase()!=tileOrigin.projSrsCode.toUpperCase())
-				location = location.reprojectTo(tileOrigin.projSrsCode.toUpperCase());
+			if(location.projection.toUpperCase()!=tileOrigin.projection.toUpperCase())
+				location = location.reprojectTo(tileOrigin.projection.toUpperCase());
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
 			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
 			

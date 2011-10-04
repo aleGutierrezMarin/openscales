@@ -92,7 +92,7 @@
 					var typename:String= this.list.selectedItem as String;
 					var srs:String = capabilities.getValue(this.list.selectedItem).getValue("SRS");
 					var newLayer:WFS = new WFS(typename,this.url,typename);
-					newLayer.projSrsCode = srs;
+					newLayer.projection = srs;
 					newLayer.useCapabilities = true;
 					newLayer.capabilities = capabilities.getValue(this.list.selectedItem as String);
 					

@@ -14,7 +14,7 @@ package org.openscales.geometry.basetypes
 	 */
 	public class Location
 	{
-		private var _projSrsCode:String = null;
+		private var _projection:String = null;
 		private var _x:Number;
 		private var _y:Number;
 		
@@ -25,11 +25,11 @@ package org.openscales.geometry.basetypes
 		 * @param y:Number the Y coordinate of the location
 		 * @param srsCode:String the SRS code defining the projection of the coordinates, default is Geometry.DEFAULT_SRS_CODE
 		 */
-		public function Location(x:Number,y:Number,srsCode:String=null)
+		public function Location(x:Number,y:Number,projection:String=null)
 		{
 			this._x = x;
 			this._y = y;
-			this._projSrsCode = (srsCode==null) ? Geometry.DEFAULT_SRS_CODE : srsCode;
+			this._projection = (projection==null) ? Geometry.DEFAULT_SRS_CODE : projection;
 		}
 		
 		/**
@@ -38,7 +38,7 @@ package org.openscales.geometry.basetypes
 		 * @return IProjectable a clone of the current location
 		 */
 		public function clone():Location {
-			return new Location(this._x,this._y,this._projSrsCode);
+			return new Location(this._x,this._y,this._projection);
 		}
 		
 		/**
@@ -58,8 +58,8 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Indicates the SRS code defining projection of the Location
 		 */
-		public function get projSrsCode():String {
-			return this._projSrsCode;
+		public function get projection():String {
+			return this._projection;
 		}
 		
 		/**
@@ -82,13 +82,13 @@ package org.openscales.geometry.basetypes
 		 * @param newSrsCode:String SRS code of the target projection
 		 * @return Location the equivalent Location of this location in the new projection
 		 */
-		public function reprojectTo(newSrsCode:String):Location {
-			if (newSrsCode == this._projSrsCode) {
+		public function reprojectTo(newProjection:String):Location {
+			if (newProjection == this._projection) {
 				return this;
 			}
 			var p:ProjPoint = new ProjPoint(this._x, this._y);
-			Proj4as.transform(this._projSrsCode, newSrsCode, p);
-			return new Location(p.x,p.y,newSrsCode);
+			Proj4as.transform(this._projection, newProjection, p);
+			return new Location(p.x,p.y,newProjection);
 		}
 		
 		/**
@@ -118,7 +118,7 @@ package org.openscales.geometry.basetypes
 		 * @return Location the new Location
 		 */
 		public function add(x:Number, y:Number):Location {
-			return new Location(this._x + x, this._y + y, this._projSrsCode);
+			return new Location(this._x + x, this._y + y, this._projection);
 		}
 		
 		/**
@@ -133,7 +133,7 @@ package org.openscales.geometry.basetypes
 			if (loc != null) {
 				equals = this._x == loc.x
 					&& this._y == loc.y
-					&& this._projSrsCode == loc.projSrsCode;
+					&& this._projection == loc.projection;
 			}
 			return equals;
 		}

@@ -108,8 +108,8 @@ package org.openscales.core.layer.ogc
 				this._wfsFormat.reset();
 			
 			
-			if (this.map.projection != null && this.projSrsCode != null && this.projSrsCode != this.map.projection) {
-				this._wfsFormat.externalProjSrsCode = this.projSrsCode;
+			if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
+				this._wfsFormat.externalProjSrsCode = this.projection;
 				this._wfsFormat.internalProjSrsCode = this.map.projection;
 			}
 			super.onSuccess(event);

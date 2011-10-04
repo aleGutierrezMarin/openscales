@@ -26,7 +26,7 @@ package org.openscales.core.control
 
 			// add layers
 			var mapnik:Mapnik = new Mapnik("Mapnik"); // a base layer
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);		
+			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);		
 			_map.addLayer(mapnik);
 			
 			// new originator for mapnik
@@ -44,7 +44,7 @@ package org.openscales.core.control
 			cycle.addOriginator(originator2);
 			
 			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
-			regions.projSrsCode = "EPSG:2154";
+			regions.projection = "EPSG:2154";
 			regions.style = Style.getDefaultSurfaceStyle();
 			_map.addLayer(regions);
 			

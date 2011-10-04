@@ -161,6 +161,8 @@
 				
 				var layer:VectorLayer = new VectorLayer(value);
 				layer.selected = true;
+				layer.editable = true;
+				layer.projection = this.map.projection;
 				this.map.addLayer(layer);	
 				
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);

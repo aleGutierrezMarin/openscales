@@ -233,7 +233,7 @@ package org.openscales.core.handler.feature
 						for(i=0; i<tpIC.componentsLength; i++){
 							pt = tpIC.componentByIndex(i) as Point;
 							// TODO getMapPxFromLocation
-							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
+							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projection));
 							// TODO getLocationFromMapPx?
 							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
 							pt = new Point(loc.lon,loc.lat);
@@ -258,7 +258,7 @@ package org.openscales.core.handler.feature
 						for(i=0; i<tpLR.componentsLength; i++){
 							pt = tpLR.componentByIndex(i) as Point;
 							// TODO : getMapPxFromLocation?
-							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projSrsCode));
+							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projection));
 							// TODO : getLocationFromMapPx
 							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
 							pt = new Point(loc.lon,loc.lat);

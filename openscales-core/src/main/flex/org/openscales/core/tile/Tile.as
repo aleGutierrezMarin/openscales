@@ -129,9 +129,9 @@ package org.openscales.core.tile
 			var bottomRight:Location = this.layer.map.getLocationFromMapPx(bottomRightPx, (this.layer as Grid).requestedResolution)// this.layer.map.getLocationFromLayerPx(bottomRightPx); 
 			if (topLeft.lon > bottomRight.lon) {
 				if (topLeft.lon < 0) {
-					topLeft = new Location(-180 - (topLeft.lon+180), topLeft.x, topLeft.projSrsCode);
+					topLeft = new Location(-180 - (topLeft.lon+180), topLeft.x, topLeft.projection);
 				} else {
-					bottomRight = new Location(180+bottomRight.lon+180, bottomRight.y, bottomRight.projSrsCode);
+					bottomRight = new Location(180+bottomRight.lon+180, bottomRight.y, bottomRight.projection);
 				}        
 			}
 			bounds = new Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat, this.layer.map.projection);  

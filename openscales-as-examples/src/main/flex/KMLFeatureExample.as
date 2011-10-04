@@ -42,7 +42,7 @@ package
 			//add the KML layer; fetch data from url
 			var kmlLayer:KML = new KML("KML Features", this.url);
 			this._map.addLayer(kmlLayer);
-			Trace.debug("kmlLayer projection :"+kmlLayer.projSrsCode);
+			Trace.debug("kmlLayer projection :"+kmlLayer.projection);
 			
 			
 			// Add Controls to map

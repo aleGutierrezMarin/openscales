@@ -223,7 +223,7 @@ package org.openscales.core.control
 				_overviewMap.removeAllLayers();
 				_overviewMap.addLayer(layer, true);
 				
-				_overviewMap.projection = layer.projSrsCode;
+				_overviewMap.projection = layer.projection;
 				_overviewMap.maxExtent = layer.maxExtent;
 			}
 		}

@@ -61,7 +61,7 @@ package org.openscales.core.layer.ogc
 			super(name);
 			this.url = url;	
 			this.data = data;
-			this._projSrsCode = "WGS84";
+			this._projection = "WGS84";
 			if(style){
 				this.style = style;
 				this.style.rules.push(new Rule());
@@ -221,8 +221,9 @@ package org.openscales.core.layer.ogc
 			_georssFormat = value;
 		}
 		
-		override public function set projSrsCode(value:String):void {
-			return;
+		override public function set projection(value:String):void {
+			// SRS code cannot be overriden. Graticule is always built in WGS84
+			// and then reprojected to the projection of the map.
 		}
 		
 		public function get refresh():int

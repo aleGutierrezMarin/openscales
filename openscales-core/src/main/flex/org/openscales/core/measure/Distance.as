@@ -138,7 +138,7 @@ package org.openscales.core.measure
 			if(_currentLineStringFeature && (_currentLineStringFeature.geometry as MultiPoint).components.length>1) {
 				tmpDist = (_currentLineStringFeature.geometry as LineString).length;
 				
-				tmpDist *= Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projSrsCode).projParams.units);
+				tmpDist *= Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 				switch (_displaySystem.toLowerCase()) {
 					case "metric":
 						tmpDist/=Unit.getInchesPerUnit(Unit.METER);

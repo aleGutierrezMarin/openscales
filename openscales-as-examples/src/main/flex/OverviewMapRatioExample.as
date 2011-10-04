@@ -47,7 +47,7 @@ package
 			// Overview map Creation
 			var mapnik:Mapnik=new Mapnik("Mapnik");
 			mapnik.proxy = "http://openscales.org/proxy.php?url=";
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projSrsCode);
+			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);
 			
 			var position:Pixel = new Pixel(100, 100);
 			var overview:OverviewMapRatio = new OverviewMapRatio(position, mapnik);
@@ -70,7 +70,7 @@ package
 			_map.addControl(new DragHandler());
 			
 			//_map.zoom = 6;
-			_map.center = new Location(-0.14908,46.99964, IGN.projSrsCode);
+			_map.center = new Location(-0.14908,46.99964, IGN.projection);
 			
 			this.addChild(_map);
 			

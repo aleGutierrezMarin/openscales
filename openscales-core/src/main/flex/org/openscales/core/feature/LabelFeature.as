@@ -40,7 +40,7 @@ package org.openscales.core.feature
 		override public function get lonlat():Location{
 			var value:Location = null;
 			if(this.labelPoint != null){
-				value = new Location(this.labelPoint.x, this.labelPoint.y, this.labelPoint.projSrsCode);
+				value = new Location(this.labelPoint.x, this.labelPoint.y, this.labelPoint.projection);
 			}
 			return value;
 		}
@@ -67,7 +67,7 @@ package org.openscales.core.feature
 			var x:Number;
 			var y:Number;
 			var resolution:Number = this.layer.map.resolution.value;
-			var pointLocation:Location = new Location(labelPoint.x, labelPoint.y, this.layer.projSrsCode);
+			var pointLocation:Location = new Location(labelPoint.x, labelPoint.y, this.layer.projection);
 			pointLocation = pointLocation.reprojectTo(this.layer.map.projection);
 			var dX:int = -int(this.layer.map.x) + this.left;
 			var dY:int = -int(this.layer.map.y) + this.top;

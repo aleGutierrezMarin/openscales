@@ -223,7 +223,7 @@ package org.openscales.core.format.gml
 				
 				feature = this._gmlParser.parseFeature(xmlNode);
 				if (feature) {
-					this._onFeature(feature, true, false);
+					this._onFeature(feature);
 				}
 			}
 			

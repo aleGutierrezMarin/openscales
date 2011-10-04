@@ -173,9 +173,9 @@ package org.openscales.geometry
 				this._bounds = newBounds;
 			} else {
 				var tmpBounds:Bounds = this._bounds.extendFromBounds(newBounds);
-				if (this._bounds.projSrsCode != tmpBounds.projSrsCode)
+				if (this._bounds.projection != tmpBounds.projection)
 				{
-					this._bounds = tmpBounds.reprojectTo(this._bounds.projSrsCode);
+					this._bounds = tmpBounds.reprojectTo(this._bounds.projection);
 				}
 			}
 		}
@@ -306,7 +306,7 @@ package org.openscales.geometry
 		 */
 		override public function transform(sourceSrs:String, destSrs:String):void {
 			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
+			this.projection = destSrs;
 			// Update the geometry
 			for(var i:int=0; i<this.componentsLength; ++i) {
 				this._components[i].transform(sourceSrs, destSrs);

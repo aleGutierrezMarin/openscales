@@ -155,7 +155,7 @@ package org.openscales.core.measure
 				case "metric":
 					var inPerDisplayUnit:Number = Unit.getInchesPerUnit("km");
 					if(inPerDisplayUnit) {
-						var inPerMapUnit:Number = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projSrsCode).projParams.units);
+						var inPerMapUnit:Number = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
 						_lastUnit = "km²";
 						this._result= Util.truncate(area,_accuracies.getValue("km"));
@@ -175,7 +175,7 @@ package org.openscales.core.measure
 			if(_polygonFeature && (this._polygonFeature.geometry as Polygon).componentsLength == 1
 			&& ((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).componentsLength>2){
 				
-				((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).units = ProjProjection.getProjProjection(drawLayer.projSrsCode).projParams.units;
+				((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).units = ProjProjection.getProjProjection(drawLayer.projection).projParams.units;
 				
 				area = ((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).area;
 				area = Math.abs(area);

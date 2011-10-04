@@ -40,7 +40,7 @@ package org.openscales.core.format
 			assertEquals("Wrong bbox bottom parsing", -90, this.format.generalBbox.bottom);
 			assertEquals("Wrong bbox right parsing", 180, this.format.generalBbox.right);
 			assertEquals("Wrong bbox top parsing", 90, this.format.generalBbox.top);
-			assertEquals("Wrong bbox SRS parsing", "EPSG:4326", this.format.generalBbox.projSrsCode);
+			assertEquals("Wrong bbox SRS parsing", "EPSG:4326", this.format.generalBbox.projection);
 		}
 		
 		[Test]

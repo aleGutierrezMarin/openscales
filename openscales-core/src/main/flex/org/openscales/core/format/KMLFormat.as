@@ -16,6 +16,7 @@ package org.openscales.core.format
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -233,7 +234,8 @@ package org.openscales.core.format
 					// TODO implement offset support + rotation effect
 					
 					_styles.put("IconStyle",obj);
-				}	
+				}
+
 				if(styleList[i].localName() == "LineStyle") 
 				{
 					var Lcolor:Number = 0x96A621;
@@ -753,7 +755,7 @@ package org.openscales.core.format
 			//build the style nodes first
 			for(i = 0; i < numberOfFeat; i++)
 			{
-				if(listOfFeatures[i].style)
+				if(!(listOfFeatures[i] is LabelFeature) && listOfFeatures[i].style)
 				{
 					doc.appendChild(this.buildStyleNode(listOfFeatures[i],i));
 				}
@@ -761,7 +763,8 @@ package org.openscales.core.format
 			//build the placemarks
 			for (i = 0; i < numberOfFeat; i++)
 			{
-				doc.appendChild(this.buildPlacemarkNode(listOfFeatures[i],i));
+				if(!(listOfFeatures[i] is LabelFeature))
+					doc.appendChild(this.buildPlacemarkNode(listOfFeatures[i],i));
 			}
 			return kmlFile; 
 		}

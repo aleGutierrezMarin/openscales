@@ -87,7 +87,7 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 				var layer:VectorLayer = SampleLayers.features();
 				// Usefull to test selection when a layer is not displayed
 				//layer.minZoomLevel = 10;
-				layer.minResolution = new Resolution(0.001373291015625,layer.projSrsCode);
+				layer.minResolution = new Resolution(0.001373291015625,layer.projection);
 				
 				(selectFeaturesHandler.handler as SelectFeaturesHandler).unselectableFeatures = new <Feature>[ layer.getChildAt(4) as PolygonFeature ];
 				fxMap.map.addLayer(layer);

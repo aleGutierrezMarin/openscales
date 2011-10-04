@@ -178,7 +178,7 @@ package org.openscales.geometry
 					bottom = (bottom < tempNumber) ? bottom : tempNumber;
 					top = (top > tempNumber) ?top : tempNumber;
 				}
-				this._bounds = new Bounds(left,bottom,right,top,this.projSrsCode);
+				this._bounds = new Bounds(left,bottom,right,top,this.projection);
 			}
 		}
 		
@@ -357,7 +357,7 @@ package org.openscales.geometry
 		 */
 		override public function transform(sourceSrs:String, destSrs:String):void {
 			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
+			this.projection = destSrs;
 			// Update the geometry
 			var p:ProjPoint;
 			for(var i:int=0; i<this._components.length; i+=2) {

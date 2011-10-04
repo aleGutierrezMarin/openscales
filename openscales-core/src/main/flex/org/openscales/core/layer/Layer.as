@@ -39,7 +39,7 @@ package org.openscales.core.layer {
 		}
 		
 		private var _map:Map = null;
-		protected var _projSrsCode:String = null;
+		protected var _projection:String = null;
 		private var _dpi:Number = Layer.DEFAULT_DPI;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
@@ -52,8 +52,6 @@ package org.openscales.core.layer {
 		protected var _autoResolution:Boolean = true;
 		protected var _imageSize:Size = null;
 		private var _selected:Boolean = false;
-		//GAB
-		private var _editable:Boolean = false;
 		private var _metaData:Object;
 		
 		protected var _resolutionChanged:Boolean = false;
@@ -68,7 +66,7 @@ package org.openscales.core.layer {
 		 */
 		public function get available():Boolean
 		{
-			var mapResolution:Number = this.map.resolution.reprojectTo(this.projSrsCode).value;
+			var mapResolution:Number = this.map.resolution.reprojectTo(this.projection).value;
 			return (this.maxExtent.getIntersection(this.map.extent) != null
 				&& (mapResolution <= this.maxResolution.value)
 				&& (mapResolution >= this.minResolution.value));
@@ -102,7 +100,7 @@ package org.openscales.core.layer {
 			this.name = name;
 			this.visible = true;
 			this.doubleClickEnabled = true;
-			this._projSrsCode = Layer.DEFAULT_PROJECTION;
+			this._projection = Layer.DEFAULT_PROJECTION;
 			this.generateResolutions();
 			
 			
@@ -116,16 +114,16 @@ package org.openscales.core.layer {
 		public function generateResolutions(numZoomLevels:uint=Layer.DEFAULT_NUM_ZOOM_LEVELS, nominalResolution:Number=NaN):void {
 			
 			if (isNaN(nominalResolution)) {
-				if (this.projSrsCode == Layer.DEFAULT_PROJECTION) {
+				if (this.projection == Layer.DEFAULT_PROJECTION) {
 					nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION.value;
 				} else {
-					if(ProjProjection.getProjProjection(this.projSrsCode))
+					if(ProjProjection.getProjProjection(this.projection))
 					{
-						nominalResolution = Proj4as.unit_transform(Layer.DEFAULT_PROJECTION, this.projSrsCode, Layer.DEFAULT_NOMINAL_RESOLUTION.value);
+						nominalResolution = Proj4as.unit_transform(Layer.DEFAULT_PROJECTION, this.projection, Layer.DEFAULT_NOMINAL_RESOLUTION.value);
 					}
 					else
 					{
-						this.projSrsCode = Layer.DEFAULT_PROJECTION;
+						this.projection = Layer.DEFAULT_PROJECTION;
 						nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION.value;
 					}
 				}
@@ -191,9 +189,9 @@ package org.openscales.core.layer {
 			
 			this._map = map;	
 			if (this.map) {
-				if (_projSrsCode == null)
+				if (_projection == null)
 				{
-					this._projSrsCode = this._map.projection;
+					this._projection = this._map.projection;
 					this.generateResolutions();
 				}
 				
@@ -208,7 +206,7 @@ package org.openscales.core.layer {
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;
 				}
-				if (this._projSrsCode == _map.projection)
+				if (this._projection == _map.projection)
 				{
 					this.visible = true;
 				}
@@ -308,7 +306,7 @@ package org.openscales.core.layer {
 					var delta_x:Number = viewPortPx.x - (size.w / 2);
 					var delta_y:Number = viewPortPx.y - (size.h / 2);
 					
-					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res, this.projSrsCode);
+					lonlat = new Location(center.lon + delta_x * res, center.lat - delta_y * res, this.projection);
 				}
 			}
 			return lonlat;
@@ -422,8 +420,8 @@ package org.openscales.core.layer {
 			if (this.map) {
 				var resolutionProjected:Resolution = this.map.resolution;
 				
-				if (this.projSrsCode != this.map.projection) {
-					resolutionProjected = this.map.resolution.reprojectTo(this.projSrsCode);
+				if (this.projection != this.map.projection) {
+					resolutionProjected = this.map.resolution.reprojectTo(this.projection);
 				}
 				inRange = ((resolutionProjected.value >= this.minResolution.value) && (resolutionProjected.value <= this.maxResolution.value));
 			}
@@ -487,8 +485,8 @@ package org.openscales.core.layer {
 			
 			value = (value as Resolution);
 			
-			if(value.projection!=this.projSrsCode)
-				value = value.reprojectTo(this.projSrsCode);
+			if(value.projection!=this.projection)
+				value = value.reprojectTo(this.projection);
 			
 			this._minResolution = value;
 		}
@@ -503,7 +501,7 @@ package org.openscales.core.layer {
 			if(!this._maxResolution || isNaN(this._maxResolution.value) || !isFinite(this._maxResolution.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
-					maxRes = new Resolution(this.resolutions[0], this.projSrsCode);
+					maxRes = new Resolution(this.resolutions[0], this.projection);
 					this._maxResolution = maxRes;
 				}
 			}
@@ -518,11 +516,11 @@ package org.openscales.core.layer {
 				for(; i<j; ++i)
 				{
 					if(this.resolutions[i] <= maxRes.value )
-						return new Resolution(this.resolutions[i],this.projSrsCode);
+						return new Resolution(this.resolutions[i],this.projection);
 				}
 				
 				if (this.resolutions && (this.resolutions.length > 0)) {
-					maxRes = new Resolution(this.resolutions[0],this.projSrsCode);
+					maxRes = new Resolution(this.resolutions[0],this.projection);
 					this._maxResolution = maxRes;
 				}
 				
@@ -535,8 +533,8 @@ package org.openscales.core.layer {
 			
 			value = (value as Resolution);
 			
-			if(value.projection!=this.projSrsCode)
-				value = value.reprojectTo(this.projSrsCode);
+			if(value.projection!=this.projection)
+				value = value.reprojectTo(this.projection);
 			
 			this._maxResolution = value;
 		}
@@ -561,9 +559,9 @@ package org.openscales.core.layer {
 				bounds = Bounds.getBoundsFromString(value as String);
 			} else if (value is Bounds) {
 				bounds = value as Bounds;
-				if (bounds.projSrsCode != this.projSrsCode)
+				if (bounds.projection != this.projection)
 				{
-					bounds = bounds.preciseReprojectBounds(this.projSrsCode);
+					bounds = bounds.preciseReprojectBounds(this.projection);
 				}
 			}
 			if(bounds)
@@ -594,17 +592,17 @@ package org.openscales.core.layer {
 		 * When this layer is the baselayer, the associated projection is used as the map display projection.
 		 * When this layer is not the baselayer, it is used to perform the right repojection algorithm.
 		 */
-		public function get projSrsCode():String {
-			return this._projSrsCode;
+		public function get projection():String {
+			return this._projection;
 		}
 		
-		public function set projSrsCode(value:String):void {
+		public function set projection(value:String):void {
 			var event:LayerEvent = null;
 			if(value != null){
-				this._projSrsCode = value.toUpperCase();
+				this._projection = value.toUpperCase();
 				if (this.maxExtent)
 				{
-					this._maxExtent = this.maxExtent.preciseReprojectBounds(this._projSrsCode);
+					this._maxExtent = this.maxExtent.preciseReprojectBounds(this._projection);
 				}				
 				event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
 			}
@@ -724,14 +722,6 @@ package org.openscales.core.layer {
 		}
 		public function set selected(value:Boolean):void{
 			_selected = value;
-		}
-		
-		public function get editable():Boolean{
-			return _editable;
-		}
-		
-		public function set editable(value:Boolean):void{
-			_editable = value;
 		}
 		
 		/**

@@ -55,7 +55,7 @@ package org.openscales.core.layer.ogc
 							style:Style = null)
 		{
 			super(name);
-			this.projSrsCode = projection;
+			this.projection = projection;
 			this.version = version;
 			this.gmlFormat = new GMLFormat(this.addFeature,null);
 			this.gmlFormat.version = version;

@@ -104,7 +104,7 @@ package org.openscales.core.control
 			}
 			
 			var coord1:String, coord2:String;
-			if (this.useDMS && (lonLat.projSrsCode == "EPSG:4326")) {
+			if (this.useDMS && (lonLat.projection == "EPSG:4326")) {
 				coord1 = (lonLat.lon < 0) ? (Util.degToDMS(-lonLat.lon)+" "+this.localNSEW.charAt(3)) : (Util.degToDMS(lonLat.lon)+" "+this.localNSEW.charAt(2));
 				coord2 = (lonLat.lat < 0) ? (Util.degToDMS(-lonLat.lat)+" "+this.localNSEW.charAt(1)) : (Util.degToDMS(lonLat.lat)+" "+this.localNSEW.charAt(0));
 			} else {
