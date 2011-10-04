@@ -205,6 +205,7 @@ package org.openscales.core.layer
 							this._previousResolution = this.map.resolution;
 							centerChangedCache = false;
 							this._previousCenter = this.map.center.clone();
+							this.actualizeGridSize(bounds);
 						} else 
 						{
 							this.moveGriddedTiles(bounds);
