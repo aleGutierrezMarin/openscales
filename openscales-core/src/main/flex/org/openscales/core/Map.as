@@ -184,6 +184,7 @@ package org.openscales.core
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START, onLayerLoadStart);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
+			this._initialized = true;
 		}
 
 		/**
