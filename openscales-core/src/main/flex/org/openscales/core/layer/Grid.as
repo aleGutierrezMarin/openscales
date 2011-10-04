@@ -1049,6 +1049,7 @@ package org.openscales.core.layer
 					this._timer = new Timer(500,1);
 					this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 				}
+				this._initialized = false;
 			}
 		}
 		
