@@ -43,7 +43,7 @@ package org.openscales.core.layer.capabilities
 			var featureCapabilities:HashMap = new HashMap();
 			var value:String = null;
 			var name:String = null;
-			var srsCode:String = null;
+			var projection:String = null;
 			var latLon:Bounds = null;
 			var lowerCorner:String; var upperCorner:String; var bounds:String;
 
@@ -58,9 +58,9 @@ package org.openscales.core.layer.capabilities
 				value = feature.Title;
 				featureCapabilities.put("Title", value);
 
-				srsCode = feature.DefaultSRS;
-				srsCode = srsCode.substr(srsCode.indexOf("EPSG"));
-				featureCapabilities.put("SRS", srsCode);
+				projection = feature.DefaultSRS;
+				projection = projection.substr(projection.indexOf("EPSG"));
+				featureCapabilities.put("SRS", projection);
 
 				value = feature.Abstract;
 				featureCapabilities.put("Abstract", value);

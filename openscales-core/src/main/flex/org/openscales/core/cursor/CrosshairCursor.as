@@ -77,8 +77,8 @@ package org.openscales.core.cursor
 				}
 				if (mousePosition) {
 					mapCoordinatesNumDigits = mousePosition.numdigits;
-					if (mousePosition.displayProjSrsCode != map.projection) {
-						lonLat = lonLat.reprojectTo(mousePosition.displayProjSrsCode);
+					if (mousePosition.displayProjection != map.projection) {
+						lonLat = lonLat.reprojectTo(mousePosition.displayProjection);
 					}
 				}
 				xValue.text = lonLat.lon.toFixed(mapCoordinatesNumDigits);

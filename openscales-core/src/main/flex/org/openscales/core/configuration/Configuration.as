@@ -281,9 +281,9 @@ package org.openscales.core.configuration
 			else{visible = true;}
 			
 			var name:String=xmlNode.@name;
-			var projSrsCode:String = Layer.DEFAULT_PROJECTION;
+			var projection:String = Layer.DEFAULT_PROJECTION;
 			if (String(xmlNode.@projection) != "") {
-				projSrsCode = String(xmlNode.@projection);
+				projection = String(xmlNode.@projection);
 			}
 			
 			var resolution:Array=null;
@@ -331,7 +331,7 @@ package org.openscales.core.configuration
 						// We create the WMSC Layer with all params
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
 						wmscLayer.visible=visible;
-						wmscLayer.projection = projSrsCode;
+						wmscLayer.projection = projection;
 						if (String(config.@maxExtent) != "")
 							wmscLayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projection);
 						wmscLayer.params = paramsWms;
@@ -347,7 +347,7 @@ package org.openscales.core.configuration
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
 						wmslayer.visible = visible;
-						wmslayer.projection = projSrsCode;  
+						wmslayer.projection = projection;  
 						if (String(config.@maxExtent) != "")
 							wmslayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projection);
 						wmslayer.params = paramsWms;
@@ -396,7 +396,7 @@ package org.openscales.core.configuration
 				wfsLayer.visible = visible;
 				wfsLayer.useCapabilities = useCapabilities;
 				wfsLayer.capabilities = capabilities;
-				wfsLayer.projection = projSrsCode;
+				wfsLayer.projection = projection;
 				
 				if(String(xmlNode.@style) !="")
 				{
@@ -459,7 +459,7 @@ package org.openscales.core.configuration
 			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
 				var featurelayer:VectorLayer = new VectorLayer(name);
-				featurelayer.projection = projSrsCode;
+				featurelayer.projection = projection;
 				layer = featurelayer;
 			} else {
 				// Case when the layer is unknown
@@ -679,7 +679,7 @@ package org.openscales.core.configuration
 			else if(xmlNode.name() == "MousePosition"){
 				var mousePosition:MousePosition = new MousePosition();
 				mousePosition.name = xmlNode.@id;
-				mousePosition.displayProjSrsCode = String(xmlNode.@displayProjection);
+				mousePosition.displayProjection = String(xmlNode.@displayProjection);
 				control = mousePosition;
 			}
 			return control;         

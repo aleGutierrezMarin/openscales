@@ -47,7 +47,7 @@ package org.openscales.core.layer.capabilities
 			var featureNodes:XMLList = doc..*::FeatureType;
 			this.removeNamespaces(doc);
 
-			var srsCode:String = null;
+			var projection:String = null;
 			for each (var feature:XML in featureNodes){
 
 				name = feature.Name;
@@ -58,7 +58,7 @@ package org.openscales.core.layer.capabilities
 
 				value = feature.SRS;
 				featureCapabilities.put("SRS", value);
-				srsCode = value;
+				projection = value;
 
 				value = feature.Abstract;
 				featureCapabilities.put("Abstract", value);

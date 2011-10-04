@@ -12,7 +12,7 @@
 		<WheelHandler id="wheelHandler" />
 		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
 		
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93" displayProjSrsCode="IGNF:LAMB93"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93" displayProjection="IGNF:LAMB93"/>
 		
 		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
 				typename="topp:states" projection="EPSG:4326" version="1.0.0"

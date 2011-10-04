@@ -9,7 +9,7 @@
 		<WheelHandler/>
 
 		<Spinner x="{width / 2}" y="{height / 2}"/>
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
 
 		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
 				typename="topp:states" projection="EPSG:4326" version="1.0.0"

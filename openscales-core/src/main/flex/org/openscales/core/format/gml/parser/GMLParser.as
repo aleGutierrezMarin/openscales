@@ -5,9 +5,6 @@ package org.openscales.core.format.gml.parser
 	
 	public class GMLParser
 	{
-		protected var _internalProjSrsCode:String = null;
-		protected var _externalProjSrsCode:String = null;
-		
 		protected var _eXML:String    = "";// it must not have reference at wfs in sthis class
 		protected var _eFXML:String   = "";
 		protected var _sFXML:String   = "";
@@ -73,9 +70,6 @@ package org.openscales.core.format.gml.parser
 							y = Number(nums[i]);
 						}
 						var p:Point = new Point(x, y);
-						/*if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) {
-							p.transform(this.externalProjSrsCode, this.internalProjSrsCode);
-						}*/
 						points.push(p.x);
 						points.push(p.y);
 					}
@@ -128,22 +122,6 @@ package org.openscales.core.format.gml.parser
 		
 		public function get gml():Namespace {
 			return null;	
-		}
-		
-		public function get internalProjSrsCode():String {
-			return this._internalProjSrsCode;
-		}
-		
-		public function set internalProjSrsCode(value:String):void {
-			this._internalProjSrsCode = value;
-		}
-		
-		public function get externalProjSrsCode():String {
-			return this._externalProjSrsCode;
-		}
-		
-		public function set externalProjSrsCode(value:String):void {
-			this._externalProjSrsCode = value;
 		}
 	}
 }

@@ -23,7 +23,7 @@ package org.openscales.geometry.basetypes
 		 * 
 		 * @param x:Number the X coordinate of the location
 		 * @param y:Number the Y coordinate of the location
-		 * @param srsCode:String the SRS code defining the projection of the coordinates, default is Geometry.DEFAULT_SRS_CODE
+		 * @param projection:String the SRS code defining the projection of the coordinates, default is Geometry.DEFAULT_SRS_CODE
 		 */
 		public function Location(x:Number,y:Number,projection:String=null)
 		{
@@ -79,7 +79,7 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Reprojects the current location in another projection
 		 * 
-		 * @param newSrsCode:String SRS code of the target projection
+		 * @param newProjection:String SRS code of the target projection
 		 * @return Location the equivalent Location of this location in the new projection
 		 */
 		public function reprojectTo(newProjection:String):Location {
@@ -141,13 +141,13 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Creates a Location from a string
 		 * @param str:String the string representing the coordinates
-		 * @param srsCode:String the SRS code defining the projection of the coordinate
+		 * @param projection:String the SRS code defining the projection of the coordinate
 		 * 
 		 * @return Location the location.
 		 */
-		public static function getLocationFromString(str:String,srsCode:String=null):Location {
+		public static function getLocationFromString(str:String,projection:String=null):Location {
 			var pair:Array = str.split(",");
-			return new Location(Number(pair[0]), Number(pair[1]), srsCode);
+			return new Location(Number(pair[0]), Number(pair[1]), projection);
 		}
 		
 	}

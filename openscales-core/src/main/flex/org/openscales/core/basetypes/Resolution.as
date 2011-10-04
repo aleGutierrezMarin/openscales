@@ -21,15 +21,15 @@ package org.openscales.core.basetypes
 		/**
 		 * Reproject the resolution to the given projection and return the result
 		 */
-		public function reprojectTo(newSrsCode:String):Resolution
+		public function reprojectTo(newProjection:String):Resolution
 		{
 			var resolution:Number = this._value;
 			
-			if (this._projection != newSrsCode)
+			if (this._projection != newProjection)
 			{
-				resolution = Proj4as.unit_transform(this._projection, newSrsCode, resolution);
+				resolution = Proj4as.unit_transform(this._projection, newProjection, resolution);
 			}
-			return new Resolution(resolution, newSrsCode);
+			return new Resolution(resolution, newProjection);
 		}
 		
 		/**

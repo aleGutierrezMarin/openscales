@@ -9,8 +9,8 @@ package org.openscales.core.format
 	public class Format
 	{
 		
-		protected var _internalProjSrsCode:String = null;
-		protected var _externalProjSrsCode:String = null;
+		protected var _internalProjection:String = null;
+		protected var _externalProjection:String = null;
 		
 		public function Format() {
 			// Nothing to do
@@ -26,20 +26,20 @@ package org.openscales.core.format
 			return null;
 		}
 		
-		public function get internalProjSrsCode():String {
-			return this._internalProjSrsCode;
+		public function get internalProjection():String {
+			return this._internalProjection;
 		}
 		
-		public function set internalProjSrsCode(value:String):void {
-			this._internalProjSrsCode = value;
+		public function set internalProjection(value:String):void {
+			this._internalProjection = value;
 		}
 		
-		public function get externalProjSrsCode():String {
-			return this._externalProjSrsCode;
+		public function get externalProjection():String {
+			return this._externalProjection;
 		}
 		
-		public function set externalProjSrsCode(value:String):void {
-			this._externalProjSrsCode = value;
+		public function set externalProjection(value:String):void {
+			this._externalProjection = value;
 		}
 		
 	}

@@ -71,7 +71,6 @@ package org.openscales.core.layer.capabilities
 				}
 			}
 			
-			var srsCode:String = null;
 			for each (var layer:XML in layerNodes){
 
 				layerCapabilities.put("Format", this._format);

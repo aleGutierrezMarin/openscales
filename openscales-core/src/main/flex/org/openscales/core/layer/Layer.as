@@ -21,7 +21,7 @@ package org.openscales.core.layer {
 	/**
 	 * A Layer displays raster (image) of vector datas on the map, usually loaded from a remote datasource.
 	 * Unit of the baseLayer is managed by the projection.
-	 * To access : ProjProjection.getProjProjection(layer.projSrsCode).projParams.units
+	 * To access : ProjProjection.getProjProjection(layer.projection).projParams.units
 	 *
 	 * @author Bouiaw
 	 */

@@ -116,8 +116,8 @@ package org.openscales.core.format.gml
 					//featureMember
 					break;
 				case "3.1.1":
-					if(ProjProjection.projAxisOrder[this.externalProjSrsCode]
-						&& ProjProjection.projAxisOrder[this.externalProjSrsCode]==ProjProjection.AXIS_ORDER_NE)
+					if(ProjProjection.projAxisOrder[this.externalProjection]
+						&& ProjProjection.projAxisOrder[this.externalProjection]==ProjProjection.AXIS_ORDER_NE)
 						lonlat = false;
 					if(!this._gmlParser || !(this._gmlParser is GML311))
 						this._gmlParser = new GML311();
@@ -129,8 +129,8 @@ package org.openscales.core.format.gml
 					//}
 					break;
 				case "3.2.1":
-					if(ProjProjection.projAxisOrder[this.externalProjSrsCode]
-						&& ProjProjection.projAxisOrder[this.externalProjSrsCode]==ProjProjection.AXIS_ORDER_NE)
+					if(ProjProjection.projAxisOrder[this.externalProjection]
+						&& ProjProjection.projAxisOrder[this.externalProjection]==ProjProjection.AXIS_ORDER_NE)
 						lonlat = false;
 					if(!this._gmlParser || !(this._gmlParser is GML321))
 						this._gmlParser = new GML321();
@@ -142,9 +142,7 @@ package org.openscales.core.format.gml
 				default:
 					return null;
 			}
-			
-			this._gmlParser.internalProjSrsCode = this.internalProjSrsCode;
-			this._gmlParser.externalProjSrsCode = this.externalProjSrsCode;
+
 			this._gmlParser.parseExtractAttributes = this.extractAttributes;
 			var retFeatures:Vector.<Feature> = null;
 			if(this._asyncLoading && this._version=="2.1.1" && this._onFeature!=null) {
@@ -254,7 +252,7 @@ package org.openscales.core.format.gml
 			var coodinateNode:XML = new XML("<" + this._gmlprefix + ":coordinates xmlns:" + this._gmlprefix + "=\"" + this._gmlns + "\" >" +
 				"</" + this._gmlprefix +":coordinates>");
 			
-			coodinateNode.appendChild(this.buildCoordinatesWithoutProjSrsCode(new <Number>[bound.left,bound.bottom,bound.right,bound.top]));			
+			coodinateNode.appendChild(this.buildCoordinatesWithoutProjection(new <Number>[bound.left,bound.bottom,bound.right,bound.top]));			
 			boxNode.appendChild(coodinateNode); 
 			return boxNode;
 		}
@@ -427,9 +425,9 @@ package org.openscales.core.format.gml
 			
 			if(geometry is Point){
 				
-				if (this._internalProjSrsCode != null && this._externalProjSrsCode != null) {
+				if (this._internalProjection != null && this._externalProjection != null) {
 					var p:ProjPoint = new ProjPoint(geometry.x, geometry.y);
-					Proj4as.transform(_internalProjSrsCode, _externalProjSrsCode, p);
+					Proj4as.transform(_internalProjection, _externalProjection, p);
 					geometry.x = p.x;
 					geometry.y = p.y;
 				}
@@ -446,9 +444,9 @@ package org.openscales.core.format.gml
 				if (points) {
 					path = buildCoordinatesNodeFromVector(points);
 					if(geometry is LinearRing){
-						if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
+						if (this._internalProjection != null && this._externalProjection != null){
 							var pointTemp:Point = new Point(points[0],points[1]);
-							pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
+							pointTemp.transform(this._internalProjection, this._externalProjection);
 							path += pointTemp.x + "," + pointTemp.y + " ";
 						}else{
 							path += points[0] + "," + points[1] + " ";
@@ -469,10 +467,10 @@ package org.openscales.core.format.gml
 			var pointTemp:Point;
 			var path:String = "";
 			for (i = 0; i < j; i=i+2) {
-				if (this._internalProjSrsCode != null && this._externalProjSrsCode != null){
+				if (this._internalProjection != null && this._externalProjection != null){
 					
 					pointTemp = new Point(points[i],points[i+1]);
-					pointTemp.transform(this._internalProjSrsCode, this._externalProjSrsCode);
+					pointTemp.transform(this._internalProjection, this._externalProjection);
 					path += pointTemp.x + "," + pointTemp.y + " ";
 					
 				}else{
@@ -483,7 +481,7 @@ package org.openscales.core.format.gml
 			return path;
 		}
 		
-		public function buildCoordinatesWithoutProjSrsCode(points:Vector.<Number>):String {
+		public function buildCoordinatesWithoutProjection(points:Vector.<Number>):String {
 			
 			var j:int = points.length -1;
 			var i:int;

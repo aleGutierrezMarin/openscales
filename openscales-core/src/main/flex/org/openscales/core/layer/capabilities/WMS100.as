@@ -64,7 +64,7 @@ package org.openscales.core.layer.capabilities
 				}
 			}
 			
-			var srsCode:String = null;
+			var projection:String = null;
 			for each (var layer:XML in layerNodes){
 				
 				layerCapabilities.put("Format", this._format);
@@ -83,7 +83,7 @@ package org.openscales.core.layer.capabilities
 				
 				
 				layerCapabilities.put("SRS", value);
-				srsCode = value;
+				projection = value;
 
 				value = layer.Abstract;
 				layerCapabilities.put("Abstract", value);
@@ -96,7 +96,7 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.LatLonBoundingBox.@maxx.toXMLString());
 				top = new Number(layer.LatLonBoundingBox.@maxy.toXMLString());;
 
-				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top,srsCode));
+				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top,projection));
 
 				left = new Number(layer.BoundingBox.@minx.toXMLString());
 				bottom = new Number(layer.BoundingBox.@miny.toXMLString());

@@ -50,12 +50,6 @@ package org.openscales.core.handler.feature.draw
 			if(!value || value.editable)
 				return;
 			_drawLayer = value;
-			/*if(this.map && value) {
-				_drawLayer.projSrsCode = this.map.projection;
-				_drawLayer.minResolution = this.map.minResolution;
-				_drawLayer.maxResolution = this.map.maxResolution;
-				_drawLayer.maxExtent = this.map.maxExtent;
-			}*/
 		}
 	}
 }

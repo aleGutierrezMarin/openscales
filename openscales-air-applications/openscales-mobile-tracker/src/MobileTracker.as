@@ -53,7 +53,7 @@ package {
 			
 			// Add Controls to map
 			var mousePosition:MousePosition = new MousePosition();
-			mousePosition.displayProjSrsCode = "EPSG:4326";
+			mousePosition.displayProjection = "EPSG:4326";
 			_map.addControl(mousePosition);			
 			
 			
