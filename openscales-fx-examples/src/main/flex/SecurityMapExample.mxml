@@ -26,7 +26,7 @@
 		<DragHandler/>
 		<WheelHandler/>
 		<Spinner x="{width / 2}" y="{height / 2}"/>
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913,IGNF:GEOPORTALFXX" displayProjSrsCode="IGNF:GEOPORTALFXX"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913,IGNF:GEOPORTALFXX" displayProjection="IGNF:GEOPORTALFXX"/>
 		
 		<PanZoom id="panZoom" x="10" y="10" />
 		

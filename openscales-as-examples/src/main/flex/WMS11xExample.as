@@ -38,27 +38,9 @@ package {
 			layerWMS111.tiled = true;
 			
 			this._map.addLayer(layerWMS111);
-			
-			
-			// Add Controls to map
-			//_map.addControl(new MousePosition());
-			//_map.addControl(new LayerManager());
-			//_map.addControl(new PanZoomBar());
-			
-			
-		/*	var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
-			selectHandler.enableClickSelection = false;
-			selectHandler.enableBoxSelection = false;
-			selectHandler.enableOverSelection = true;
-			selectHandler.active = true;
-			
-			_map.addControl(selectHandler);*/
+
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
-			
-			// Set the map center
-			//_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			//_map.zoom=5;
 			
 			this.addChild(_map);
 		}

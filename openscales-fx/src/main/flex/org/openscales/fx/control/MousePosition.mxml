@@ -30,7 +30,7 @@
 			 * The projection displayed. If null, the display projection used is the projection of the base layer.
 			 * By default, the display projection is "EPSG:4326" 
 			 */
-			private var _displayProjSrsCode:String = DEFAULT_PROJECTION_CODE;
+			private var _displayProjection:String = DEFAULT_PROJECTION_CODE;
 			
 			/**
 			 * @private 
@@ -44,7 +44,7 @@
 			/**
 			 * @private
 			 * 
-			 * Units of the _displayProjSrsCode
+			 * Units of the _displayProjection
 			 */ 
 			private var _srsUnits:String;
 			
@@ -153,28 +153,27 @@
 				var lgth:uint = tmp.length;
 				var i:uint = 0;
 				var selectedIndex:uint = 0;
-				var displayProjSrsCodeInList:Boolean = false;
+				var displayProjectionInList:Boolean = false;
 
 				for(i;i<lgth;i++)
 				{
 					this.crsDataProvider.addItem(tmp[i]);
-					if(_displayProjSrsCode == (tmp[i] as String)) 
+					if(_displayProjection == (tmp[i] as String)) 
 					{
 						selectedIndex = i;
-						displayProjSrsCodeInList = true;
+						displayProjectionInList = true;
 					}
 				}
 				
-				if(!displayProjSrsCodeInList)
+				if(!displayProjectionInList)
 				{
-					this.crsDataProvider.addItem(_displayProjSrsCode);
+					this.crsDataProvider.addItem(_displayProjection);
 					selectedIndex = 0;
 				}
 				
 				this.selectedIndexCrs = selectedIndex;
-				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
-				
-				// this boolean is used in the displayProjSrsCode setter
+				_srsUnits = ProjProjection.getProjProjection(_displayProjection).projParams.units;
+
 				this._init = true;
 				
 				feedUnitsComboBox();
@@ -194,9 +193,9 @@
 				}
 				
 				// Getting the value
-				_displayProjSrsCode = this.crsDataProvider.getItemAt(this.selectedIndexCrs).toString();
+				_displayProjection = this.crsDataProvider.getItemAt(this.selectedIndexCrs).toString();
 				// Getting units for this SRS
-				_srsUnits = ProjProjection.getProjProjection(_displayProjSrsCode).projParams.units;
+				_srsUnits = ProjProjection.getProjProjection(_displayProjection).projParams.units;
 				
 				// Feeding units combo box
 				feedUnitsComboBox();
@@ -311,8 +310,8 @@
 						lonLat = new Location(0,0,this.map.projection);
 					}
 					
-					if (this._displayProjSrsCode) {
-						lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
+					if (this._displayProjection) {
+						lonLat = lonLat.reprojectTo(this._displayProjection);
 					}
 					
 					
@@ -373,9 +372,9 @@
 				if(loc1 == null || loc2 == null)
 					return roundedCoord;
 				
-				if(this._displayProjSrsCode) {
-					loc1 = loc1.reprojectTo(this._displayProjSrsCode);
-					loc2 = loc2.reprojectTo(this._displayProjSrsCode);
+				if(this._displayProjection) {
+					loc1 = loc1.reprojectTo(this._displayProjection);
+					loc2 = loc2.reprojectTo(this._displayProjection);
 				}
 				
 				// Calculate the differences
@@ -528,41 +527,41 @@
 			/**
 			 * The projection displayed. Must be an existing value of availableProjSrsList.
 			 */
-			public function get displayProjSrsCode():String {
-				return this._displayProjSrsCode;
+			public function get displayProjection():String {
+				return this._displayProjection;
 			}
 			
 			/**
 			 * @private
 			 */ 
-			public function set displayProjSrsCode(value:String):void
+			public function set displayProjection(value:String):void
 			{
 				if(this._init)
 				{
-					if(this._displayProjSrsCode == value)
+					if(this._displayProjection == value)
 						return;
 					
 					var tmp:Array = this.crsDataProvider.toArray();
 					var i:uint = 0;
-					var displayProjSrsCodeInList:Boolean = false;
+					var displayProjectionInList:Boolean = false;
 					
 					for(i; i<tmp.length; i++)
 					{
 						if(value == (tmp[i] as String))
 						{
-							this._displayProjSrsCode = value;
-							this._srsUnits = ProjProjection.getProjProjection(this.displayProjSrsCode).projParams.units;
+							this._displayProjection = value;
+							this._srsUnits = ProjProjection.getProjProjection(this.displayProjection).projParams.units;
 							this.selectedIndexCrs = i;
 							this.feedUnitsComboBox();
-							displayProjSrsCodeInList = true;
+							displayProjectionInList = true;
 							break;
 						}
 					}
-					if(!displayProjSrsCodeInList)
-						trace("The ProjSrsCode to display isn't valid");
+					if(!displayProjectionInList)
+						trace("The Projection to display isn't valid");
 				}
 				else
-					this._displayProjSrsCode = value;	
+					this._displayProjection = value;	
 			}
 			
 			/**

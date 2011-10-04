@@ -397,13 +397,13 @@ package org.openscales.geometry.basetypes
 		 * Returns a bounds instance from an array following this format: [left,bottom,right,top].
 		 *
 		 * @param bbox The array from which we want create a bounds instance.
-		 * @param srsCode The code defining the projection
+		 * @param projection The code defining the projection
 		 *
 		 * @return An instance of bounds.
 		 */
-		public static function getBoundsFromArray(bbox:Array,srsCode:String):Bounds {
+		public static function getBoundsFromArray(bbox:Array,projection:String):Bounds {
 			if(bbox.length != 4) throw(new ArgumentError("the array must contains 4 numbers for bbox"));
-			return new Bounds(Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]), srsCode);
+			return new Bounds(Number(bbox[0]), Number(bbox[1]), Number(bbox[2]), Number(bbox[3]), projection);
 		}
 		
 		/**
@@ -467,7 +467,7 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Reproject the current bounds in another projection
 		 * 
-		 * @param newSrsCode:String SRS code of the target projection
+		 * @param newProjection:String SRS code of the target projection
 		 * @return the reprojected bounds
 		 */
 		public function reprojectTo(newProjection:String):Bounds {

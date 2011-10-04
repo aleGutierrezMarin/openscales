@@ -88,8 +88,8 @@ package org.openscales.core.layer
 			{
 				
 				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
-					this._kmlFormat.externalProjSrsCode = this.projection;
-					this._kmlFormat.internalProjSrsCode = this.map.projection;
+					this._kmlFormat.externalProjection = this.projection;
+					this._kmlFormat.internalProjection = this.map.projection;
 				}
 				this._kmlFormat.proxy = this.proxy;
 				
@@ -116,8 +116,8 @@ package org.openscales.core.layer
 			try {
 				this._xml = new XML(loader.data);
 				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
-					this._kmlFormat.externalProjSrsCode = this.projection;
-					this._kmlFormat.internalProjSrsCode = this.map.projection;
+					this._kmlFormat.externalProjection = this.projection;
+					this._kmlFormat.internalProjection = this.map.projection;
 				}
 				this._kmlFormat.proxy = this.proxy;
 				var features:Vector.<Feature> = this._kmlFormat.read(this._xml) as Vector.<Feature>;

@@ -20,12 +20,12 @@ package org.openscales.core.layer
 	public class VectorLayer extends Layer
 	{
 		/**
-		 * The display projection defined by displayProjSrsCode is the
+		 * The display projection defined by displayProjection is the
 		 * projection of the features on the map.
 		 * For performance reasons, the features of the layer are reprojected
 		 * when they are added to the layer and not only for the display. 
 		 */
-		private var _displayProjSrsCode:String = null;
+		private var _displayProjection:String = null;
 		
 		private var _featuresBbox:Bounds = null;
 		
@@ -54,7 +54,7 @@ package org.openscales.core.layer
 		public function VectorLayer(name:String)
 		{
 			super(name);
-			this._displayProjSrsCode = this.projection;
+			this._displayProjection = this.projection;
 			this.style = new Style();
 			this.geometryType = null;
 			this.selectedFeatures = new Vector.<String>();
@@ -74,7 +74,7 @@ package org.openscales.core.layer
 		override public function destroy():void {
 			super.destroy();  
 			this.reset();
-			this._displayProjSrsCode = null;
+			this._displayProjection = null;
 			this.style = null;
 			this.geometryType = null;
 			this.selectedFeatures = null;
@@ -117,15 +117,15 @@ package org.openscales.core.layer
 		}
 		
 		private function updateCurrentProjection(evt:MapEvent = null):void {
-			if ((this.map) && (this._displayProjSrsCode != this.map.projection)) {
+			if ((this.map) && (this._displayProjection != this.map.projection)) {
 				if (this.features.length > 0) {	
 					for each (var f:Feature in this.features) {
-						f.geometry.transform(this._displayProjSrsCode, this.map.projection);
+						f.geometry.transform(this._displayProjection, this.map.projection);
 					}
-					this._displayProjSrsCode = this.map.projection;
+					this._displayProjection = this.map.projection;
 					this.redraw();
 				} else {
-					this._displayProjSrsCode = this.map.projection;
+					this._displayProjection = this.map.projection;
 				}
 			}
 		}
@@ -201,8 +201,8 @@ package org.openscales.core.layer
 			}
 			
 			// Reprojection if needed
-			if (reproject && (this.map) && (this.projection != this._displayProjSrsCode)) {
-				feature.geometry.transform(this.projection, this._displayProjSrsCode);
+			if (reproject && (this.map) && (this.projection != this._displayProjection)) {
+				feature.geometry.transform(this.projection, this._displayProjection);
 			}
 			
 			// Add the feature to the layer

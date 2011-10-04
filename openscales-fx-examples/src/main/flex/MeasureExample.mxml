@@ -29,7 +29,7 @@
 		<DragHandler id="dragHandler" />
 		<WheelHandler id="wheelHandler" />
 		
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93" displayProjSrsCode="IGNF:LAMB93"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93" displayProjection="IGNF:LAMB93"/>
 		
 		<LanguageSwitcher x="300" y="10"/>
 		

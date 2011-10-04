@@ -50,7 +50,7 @@ package org.openscales.core.control
 		 * The projection display in the label
 		 */
 		[Bindable]
-		private var _displayProjSrsCode:String = "EPSG:4326";
+		private var _displayProjection:String = "EPSG:4326";
 		
 		/**
 		 * MousePosition Constructor
@@ -99,8 +99,8 @@ package org.openscales.core.control
 				lonLat = new Location(0,0,this.map.projection);
 			}
 			
-			if (this._displayProjSrsCode) {
-				lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
+			if (this._displayProjection) {
+				lonLat = lonLat.reprojectTo(this._displayProjection);
 			}
 			
 			var coord1:String, coord2:String;
@@ -225,11 +225,11 @@ package org.openscales.core.control
 		 * If null, the display projection used is the projection of the base layer.
 		 * By default, the display projection is "EPSG:4326" 
 		 */
-		public function get displayProjSrsCode():String {
-			return this._displayProjSrsCode;
+		public function get displayProjection():String {
+			return this._displayProjection;
 		}
-		public function set displayProjSrsCode(value:String):void {
-			this._displayProjSrsCode = value;
+		public function set displayProjection(value:String):void {
+			this._displayProjection = value;
 		}
 		
 		public function get label():TextField {

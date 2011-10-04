@@ -56,11 +56,6 @@ package {
 			_map.addControl(new WheelHandler());
 			_map.addControl(new DragHandler());
 			
-			// Set the map center
-			//_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			
-			
-			
 			this.addChild(_map);
 		}
 	}

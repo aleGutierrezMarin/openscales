@@ -12,7 +12,7 @@ Otherwise, double-click on one of the results to center the map. -->
 		<DragHandler />
 		<WheelHandler />
 		<Spinner x="{width / 2}" y="{height / 2}"/>	
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}" />
 		
 		<TraceInfo x="{width-200}" y="0" />

@@ -31,19 +31,9 @@ package org.openscales.core.layer
 			if(!layer || layers.indexOf(layer)!=-1)
 				return false;
 			layers.push(layer);
-			
-			/*layer.projSrsCode = this.projSrsCode;
-			layer.maxExtent = this.maxExtent;
-			layer.minZoomLevel = this.minZoomLevel;
-			layer.maxZoomLevel = this.maxZoomLevel;
-			layer.minResolution = this.minResolution;
-			layer.maxResolution = this.maxResolution;*/
+
 			layer.alpha = this.alpha;
 			layer.isFixed = this.isFixed;
-			/*if(!this._autoResolution)
-				layer.resolutions = this.resolutions;
-			else
-				layer.generateResolutions(this.numZoomLevels);*/
 			
 			if (this.map){
 				this.addChild(layer);

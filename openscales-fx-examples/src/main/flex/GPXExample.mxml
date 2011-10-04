@@ -16,7 +16,7 @@
 		<DragHandler/>
 		<WheelHandler/>
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
 		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
 		<PanZoom id="panZoom" x="10" y="10" />
 		

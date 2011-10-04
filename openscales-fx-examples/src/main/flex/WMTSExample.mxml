@@ -15,7 +15,7 @@
 		 resolution="{new Resolution(0.010504117369350007,'EPSG:4326')}"
 		 minResolution="0.000010728836059570312,EPSG:4326"
 		 maxResolution="1.40625,EPSG:4326" >
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
 		<DragHandler/>
 		<WheelHandler/>
 		<PanZoom id="panZoom" x="10" y="10" />

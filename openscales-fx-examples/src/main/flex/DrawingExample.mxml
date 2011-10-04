@@ -27,7 +27,7 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<DragHandler />
 		<WheelHandler />
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjSrsCode="EPSG:4326"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
 		<ScaleLine x="{width-100-10}" y="{height-80}"/>
 		<LayerManager top="5" right="5"/>
 		<DrawingToolbar id="drawingToolbar" map="{fxMap.map}" pointStyle="{Style.getDefaultCircleStyle()}"

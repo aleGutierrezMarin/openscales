@@ -204,15 +204,7 @@ package org.openscales.core.layer.ogc
 		override public function getURL(bounds:Bounds):String {
 			return this._tileProvider.getTile(bounds,null,this).url;
 		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		/*
-		override public function get projSrsCode():String {
-		return _projection;
-		}
-		*/
+
 		/**
 		 * Indicates tile mimetype
 		 */

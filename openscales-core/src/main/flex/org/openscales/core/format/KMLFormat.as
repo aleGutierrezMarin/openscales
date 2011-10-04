@@ -531,9 +531,9 @@ package org.openscales.core.format
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
 					point = new Point(coordinates[0], coordinates[1]);
-					if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
+					if (this.internalProjection != null, this.externalProjection != null) 
 					{
-						point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+						point.transform(this.externalProjection, this.internalProjection);
 					}
 					if(this.userDefinedStyle) {
 						iconsfeatures.push(new PointFeature(point, attributes, this.userDefinedStyle));
@@ -658,9 +658,9 @@ package org.openscales.core.format
 					continue;
 				point = new Point(_coords[0].toString(),
 					_coords[1].toString());
-				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
+				if (this.internalProjection != null, this.externalProjection != null) 
 				{
-					point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+					point.transform(this.externalProjection, this.internalProjection);
 				}
 				points.push(point.x);
 				points.push(point.y);
@@ -717,9 +717,9 @@ package org.openscales.core.format
 				if(_Pcoords.length<2)
 					continue;
 				point = new Point(_Pcoords[0].toString(),_Pcoords[1].toString());
-				if (this.internalProjSrsCode != null, this.externalProjSrsCode != null) 
+				if (this.internalProjection != null, this.externalProjection != null) 
 				{
-					point.transform(this.externalProjSrsCode, this.internalProjSrsCode);
+					point.transform(this.externalProjection, this.internalProjection);
 				}
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);
