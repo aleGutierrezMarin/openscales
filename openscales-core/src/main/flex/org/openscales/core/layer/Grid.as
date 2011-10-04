@@ -64,10 +64,8 @@ package org.openscales.core.layer
 		private var _backGrid:Bitmap = null;
 		
 		private var _previousCenter:Location = null;
-		private var _newCenter:Location = null;
 		
 		private var _previousResolution:Resolution = null;
-		private var _newResolution:Resolution = null;
 		
 		private var _cumulatedRoundedValueX:Number = 0;
 		
@@ -219,22 +217,22 @@ package org.openscales.core.layer
 			
 			if (resolutionChangedCache)
 			{
-				ratio = this._previousResolution.value / this._newResolution.value;
+				ratio = this._previousResolution.value / this.map.resolution.value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
-				this._previousResolution = this._newResolution;
+				this._previousResolution = this.map.resolution;
 				resolutionChangedCache = false
 			}
 			
 			if (centerChangedCache)
 			{
-				var deltaLon:Number = this._newCenter.lon - this._previousCenter.lon;
-				var deltaLat:Number = this._newCenter.lat - this._previousCenter.lat;
-				var deltaX:Number = deltaLon/this._previousResolution.value;
-				var deltaY:Number = deltaLat/this._previousResolution.value;
+				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
+				var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
+				var deltaX:Number = deltaLon/this.map.resolution.value;
+				var deltaY:Number = deltaLat/this.map.resolution.value;
 				
 				this.x = this.x - deltaX;
 				this.y = this.y + deltaY;
-				this._previousCenter = this._newCenter;
+				this._previousCenter = this.map.center;
 				centerChangedCache = false;
 			}
 		}
@@ -391,7 +389,6 @@ package org.openscales.core.layer
 		{
 			this._timer.reset();
 			this._timer.start();
-			this._newCenter = this.map.center;
 			super.onMapCenterChanged(event);
 		}
 		
@@ -399,7 +396,6 @@ package org.openscales.core.layer
 		{
 			this._timer.reset();
 			this._timer.start();
-			this._newResolution = this.map.resolution;
 			super.onMapResolutionChanged(event);
 		}
 		/**
