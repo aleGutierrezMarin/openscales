@@ -11,7 +11,6 @@ package org.openscales.fx
 	import mx.events.ResizeEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.MapEvent;
@@ -286,6 +285,14 @@ package org.openscales.fx
 			setMapRecursively(this);
 			
 			this.addEventListener(ResizeEvent.RESIZE, this.onResize);
+			this.mapReady();
+		}
+		
+		protected function mapReady():void
+		{
+			var event:MapEvent = new MapEvent(MapEvent.MAP_LOADED, this.map);
+			this.map.mapInitialized = true;
+			this.dispatchEvent(event);
 		}
 		
 		/**
@@ -642,6 +649,14 @@ package org.openscales.fx
 			else if (value is Number) {
 				(this._map as Map).maxResolution = new Resolution(value as Number);
 			}
+		}
+		
+		/**
+		 * The state of the map. True if the map initialization is complete.
+		 */
+		public function get mapIntialized():Boolean
+		{
+			return this.map.mapInitialized;
 		}
 	}
 }
