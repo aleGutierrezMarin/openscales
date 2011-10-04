@@ -93,6 +93,11 @@ package org.openscales.core.events{
 		public static const MOVE_START:String="openscales.mapmovestart";
 		
 		/**
+		 * Event type dispatched after map creation complete.
+		 */
+		public static const MAP_LOADED:String="openscales.maploaded";
+		
+		/**
 		 * Event type dispatched after map move if the center and/or zoom has changed.
 		 * There is no DRAG_END since a MOVE_END event is emitted if the center has finally changed
 		 */

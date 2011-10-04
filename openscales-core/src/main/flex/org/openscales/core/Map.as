@@ -22,11 +22,11 @@ package org.openscales.core
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.security.ISecurity;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
-	import org.openscales.core.utils.Trace;
 	
 	use namespace os_internal;
 	
@@ -106,6 +106,7 @@ package org.openscales.core
 		
 		private var _projection:String = DEFAULT_SRS_CODE;
 		private var _resolution:Resolution = DEFAULT_RESOLUTION;
+		private var _initialized:Boolean = false;
 		
 		/**
 		 * @private
@@ -1477,6 +1478,22 @@ package org.openscales.core
 		public function set debug_max_extent(value:Boolean):void
 		{
 			_debug_max_extent = value;
+		}
+		
+		/**
+		 * The state of the map. True if the map initialization is complete.
+		 */
+		public function get mapInitialized():Boolean
+		{
+			return this._initialized;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set mapInitialized(value:Boolean):void
+		{
+			this._initialized = value;
 		}
 	}
 }
