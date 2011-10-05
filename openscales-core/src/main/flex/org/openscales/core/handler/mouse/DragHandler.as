@@ -93,7 +93,8 @@ package org.openscales.core.handler.mouse
 			if (this.map) {
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				//this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
-				this.map.stage.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				if(this.map.stage)
+					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.map.removeEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 			}
 		}
