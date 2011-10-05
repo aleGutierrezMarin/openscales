@@ -113,8 +113,8 @@ package org.openscales.core.feature
 			var resolution:Number = this.layer.map.resolution.value;
 			var dX:int = -int(this.layer.map.x) + this.left;
 			var dY:int = -int(this.layer.map.y) + this.top;
-			x = dX - (this._clip.width/2) + _xOffset + point.x / resolution;
-			y = dY - (this._clip.height/2) + _yOffset - point.y / resolution;
+			x = dX /*- (this._clip.width/2)*/ + _xOffset + point.x / resolution;
+			y = dY + (this._clip.height/2) +_yOffset - point.y / resolution;
 			_clip.x = x;
 			_clip.y = y;
 		}
