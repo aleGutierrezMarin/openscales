@@ -187,10 +187,6 @@
     <classEntry path="org.openscales.core.measure.Surface"/>
     <classEntry path="org.openscales.core.ns.os_internal"/>
     <classEntry path="org.openscales.core.popup.Anchored"/>
-    <classEntry path="org.openscales.core.popup.ChangeAttributes"/>
-    <classEntry path="org.openscales.core.popup.EditAttributes"/>
-    <classEntry path="org.openscales.core.popup.LabelPopup"/>
-    <classEntry path="org.openscales.core.popup.ManageAttributes"/>
     <classEntry path="org.openscales.core.popup.Popup"/>
     <classEntry path="org.openscales.core.request.AbstractRequest"/>
     <classEntry path="org.openscales.core.request.DataRequest"/>

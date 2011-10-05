@@ -22,8 +22,8 @@
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
-			import org.openscales.core.popup.ChangeAttributes;
-			import org.openscales.core.popup.EditAttributes;
+			import org.openscales.fx.control.drawing.popup.ChangeAttributes;
+			import org.openscales.fx.control.drawing.popup.ViewFeatureAttributes;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
@@ -114,28 +114,6 @@
 					}
 					this._vectorLayer.initOutDrawingToolbar = true;
 				}
-				
-				if(this._vectorLayer)
-				{
-					// define the attributesVal array if necessary
-					if(this._vectorLayer.attributesVal.length != this._vectorLayer.features.length)
-					{
-						var i:int = 0;
-						var j:int = this._vectorLayer.features.length;
-						var temp:Array;
-						
-						this._vectorLayer.attributesVal = new Array();
-						
-						for(; i<j; ++i)
-						{
-							temp = new Array(this._vectorLayer.attributesId.length);
-							if(this._vectorLayer.attributesId[0] == "id")
-								temp[0] = this._vectorLayer.features[i].name + " / " + this._vectorLayer.name;
-							
-							this._vectorLayer.attributesVal.push({identifier:this._vectorLayer.features[i].name, values:temp});
-						}
-					}
-				}
 			}
 			
 			/**
@@ -146,9 +124,16 @@
 				if(event.feature.layer == this.target && this.target != null)
 				{
 					var temp:Array = new Array(this.target.attributesId.length);
-					if(this.target.attributesId[0] == "id")
-						temp[0] = event.feature.name + " / " + this.target.name;
-					this.target.attributesVal.push({identifier:event.feature.name, values:temp});
+					if(!event.feature.attributes)
+						event.feature.attributes = new Object();
+					for(var i:uint = this.target.attributesId.length;i>0;--i) {
+						if(!event.feature.attributes[this.target.attributesId[i-1]]) {
+							if(this.target.attributesId[i-1]!="id")
+								event.feature.attributes[this.target.attributesId[i-1]]=null;
+							else
+								event.feature.name = event.feature.name + " / " + this.target.name;
+						}
+					}
 					event.stopImmediatePropagation();
 				}
 			}
@@ -163,14 +148,11 @@
 					if(_index < 0)
 						return;
 					event.stopImmediatePropagation();
-					new ChangeAttributes(this._map, this.target.attributesId, (this.target.attributesVal[_index].values as Array), this.onChangeAttributes);
+					new ChangeAttributes(this._map, this.target.attributesId, event.feature, this.onChangeAttributes);
 				}
 				else{
-					_index = this.searchFeature(event.feature);
-					if(_index < 0)
-						return;
 					event.stopImmediatePropagation();
-					new EditAttributes(this._map, this.target.attributesId, (this.target.attributesVal[_index].values as Array));
+					new ViewFeatureAttributes().feature = event.feature;
 				}
 			}
 			
@@ -178,9 +160,10 @@
 			 * This function is called by the ChangeAttributes pop-up
 			 */
 			private function onChangeAttributes(textInputArray:Array):void{
-				
+				/*
 				for(var i:uint = 0; i < this.target.attributesId.length; i++)
 					(this.target.attributesVal[_index].values as Array)[i] = (textInputArray[i] as TextInput).text;
+				*/
 			}
 			
 			/**
@@ -193,7 +176,7 @@
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.ATTRIBUTES_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				this.map.dispatchEvent(evt);
-				new org.openscales.core.popup.ManageAttributes(this._map, this.target.attributesId, this.onManageAttributes);
+				new org.openscales.fx.control.drawing.popup.ManageAttributes(this._map, this.target.attributesId, this.onManageAttributes);
 			}
 			
 			/**
@@ -204,17 +187,26 @@
 				var i:uint;
 				var j:uint;
 				
+				var features:Vector.<Feature> = this.target.features;
+				
 				if(action == "add")
 				{
-					for(i = 0; i < this.target.attributesVal.length; i++)
-						(this.target.attributesVal[i].values as Array).push();
+					if(this.target.attributesId.indexOf(value)!=-1)
+						return;
+					this.target.attributesId.push(value);
+					if(features) {
+						for(i=features.length;i>0;--i) {
+							if(!features[i-1].attributes[value])
+								features[i-1].attributes[value]="";
+						}
+					}
 				}
 				else if(action == "delete")
 				{
-					for(i = 0; i < this.target.attributesId.length; i++){
-						if(this.target.attributesId[i] == value){
-							for(j = 0; j < this.target.attributesVal.length; j++)
-								(this.target.attributesVal[j].values as Array).splice(i,1);
+					if(features) {
+						for(i=features.length;i>0;--i) {
+							if(features[i-1].attributes[value])
+								delete features[i-1].attributes[value];
 						}
 					}
 				}
@@ -227,11 +219,11 @@
 				
 				if(feature.layer == null || feature.layer != this.target)
 					return -1;
-				
+				/*
 				for(var i:uint = 0; i < this.target.attributesVal.length; i++){
 					if(this.target.attributesVal[i].identifier == feature.name)
 						return i;
-				}
+				}*/
 				return -1;
 			}
 			
