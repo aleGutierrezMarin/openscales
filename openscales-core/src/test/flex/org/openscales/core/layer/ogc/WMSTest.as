@@ -110,7 +110,7 @@ package org.openscales.core.layer.ogc
 			_map = new Map();
 			_map.size = new Size(200,200);
 			_map.center = new Location(0,0);
-	
+			_map.resolution =  new Resolution(1.40625,"EPSG:4326");
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
 			_wms.maxExtent = MAXEXTENT;
 			_wms.version = VERSION;
@@ -133,7 +133,7 @@ package org.openscales.core.layer.ogc
 			var rows:int = currentGrid.length;
 			var cols:int = 0;
 			
-			_wms.map.resolution = new Resolution(1.40625,"EPSG:4326");
+			//_wms.map.resolution = new Resolution(1.40625,"EPSG:4326");
 			var tileOrigin:Location = _wms.tileOrigin;
 			var resolution:Resolution = _wms.map.resolution;
 			var tileHeight:Number = _wms.tileHeight;
@@ -149,10 +149,10 @@ package org.openscales.core.layer.ogc
 					var y:int = offsetrow - i;
 					
 					// The bounds values for the curent tile checked
-					var left:Number = tileOrigin.lon + (tileWidth*resolution.value*x);
-					var right:Number = tileOrigin.lon + (tileWidth*resolution.value*(x+1));
-					var top:Number = tileOrigin.lat + (tileHeight*resolution.value*(y));
-					var bottom:Number = tileOrigin.lat + (tileHeight*resolution.value*(y-1));
+					var left:Number = tileOrigin.lon + (tileWidth*_wms.getSupportedResolution(resolution).value*x);
+					var right:Number = tileOrigin.lon + (tileWidth*_wms.getSupportedResolution(resolution).value*(x+1));
+					var top:Number = tileOrigin.lat + (tileHeight*_wms.getSupportedResolution(resolution).value*(y));
+					var bottom:Number = tileOrigin.lat + (tileHeight*_wms.getSupportedResolution(resolution).value*(y-1));
 					
 					Assert.assertEquals("Incorrect value for tile left bounds "+j+","+i, left, currentGrid[i][j].bounds.left);
 					Assert.assertEquals("Incorrect value for tile right bounds "+j+","+i, right, currentGrid[i][j].bounds.right);
