@@ -3,6 +3,7 @@
 			xmlns:s="library://ns.adobe.com/flex/spark"
 			xmlns:mx="library://ns.adobe.com/flex/mx"
 			xmlns:os="org.openscales.fx.control.*"
+			xmlns:osDraw="org.openscales.fx.control.drawing.*"
 			width="400" height="300" xmlns:openscales="http://openscales.org"
 			creationComplete="configure()">
 	
@@ -182,16 +183,16 @@
 			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
 								horizontalAlign="center" verticalAlign="middle" />
 		</s:layout>
-		<openscales:DrawLabel id="drawLabel" />
-		<openscales:DrawPoint id="drawPoint" />
-		<openscales:DrawPath id="drawPath" />
-		<openscales:DrawPolygon id="drawPolygon" />
-		<openscales:SelectFeatures id="selectFeatures" />
-		<openscales:EditFeatures id="editFeatures" />
-		<openscales:MoveFeatures id="moveFeatures" />
-		<openscales:ManageAttributes id="manageAttributes" />
-		<openscales:AddVectorLayer map="{this.map}" />
-		<openscales:ImportFeature id="importFeature" map="{this.map}" />
-		<openscales:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" />
+		<osDraw:DrawLabel id="drawLabel" />
+		<osDraw:DrawPoint id="drawPoint" />
+		<osDraw:DrawPath id="drawPath" />
+		<osDraw:DrawPolygon id="drawPolygon" />
+		<osDraw:SelectFeatures id="selectFeatures" />
+		<osDraw:EditFeatures id="editFeatures" />
+		<osDraw:MoveFeatures id="moveFeatures" />
+		<osDraw:ManageAttributes id="manageAttributes" />
+		<osDraw:AddVectorLayer map="{this.map}" />
+		<osDraw:ImportFeature id="importFeature" map="{this.map}" />
+		<osDraw:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" />
 	</s:Panel>
 </os:Control>
