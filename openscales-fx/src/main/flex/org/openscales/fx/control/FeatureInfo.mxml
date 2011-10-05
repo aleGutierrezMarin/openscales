@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Display selected feature informations -->
+<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	     xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="282" height="168" >	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.getQualifiedClassName;
+			
+			import mx.collections.ArrayCollection;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.geometry.LinearRing;
+			import org.openscales.geometry.LineString;
+			import org.openscales.geometry.MultiLineString;
+			import org.openscales.geometry.Polygon;
+			
+			/**
+			 * Attributes of the selected feature
+			 */
+			private var attributes:ArrayCollection;
+			
+			/**
+			 * Params
+			 * currentPoint : keep the current point in Path or polygon
+			 * lastP : To prevent to show the same point twice (because of LineString)
+			 */
+			public var currentPoint:org.openscales.geometry.Point;
+			public var lastP:org.openscales.geometry.Point;		
+			
+			/**
+			 * Method which display the feature properties. We differenciate information with the feature : 
+			 * with a point, we only have to show its name and Lon/Lat.
+			 * with path, its name and all coordinates of each point in the path
+			 * with polygon, same as path
+			 */				
+			public function showInfo(feature:Feature):void {
+				//Properties
+				var properties:Array = [];
+				var name:Object;
+				var pointNum:Number = 1; //indicate the number of the point (because point.id is too long)
+				var first:Boolean = true; //indicate if it's the first point
+				
+				//point informations
+				if(getQualifiedClassName(feature.geometry) == "org.openscales.core.geometry::Point"){
+					name = {};
+					name.Name = "Name";
+					
+					//we separate Lon and Lat only with point feature
+					var coordinateLon:Object = {};
+					var coordinateLat:Object = {};
+									
+					name.Value = "Point_" + feature.name;
+									
+					coordinateLon.Name = "Lon";
+					coordinateLon.Value = feature.lonlat.lon;
+					coordinateLat.Name = "Lat";
+					coordinateLat.Value = feature.lonlat.lat;
+					
+					//Add properties to array
+					properties.push(name,coordinateLon,coordinateLat);				
+				}
+				
+				//path informations
+				else if(getQualifiedClassName(feature.geometry) == "org.openscales.core.geometry::MultiLineString"){					
+					//Add the property NAME
+						name = {};
+						name.Name = "Name";					
+						name.Value = feature.name;
+						properties.push(name);							
+
+					//MultiLineString = several LineString and LineString = 2 points					
+					var multiLineString:MultiLineString = feature.geometry as MultiLineString;
+					for(var i:int=0; i<multiLineString.componentsLength; i++) {
+						var lineString:LineString = multiLineString.componentByIndex(i) as LineString;
+						for(var j:int=0; j<lineString.componentsLength; j++) {
+							currentPoint = lineString.componentByIndex(j) as org.openscales.geometry.Point;
+							//To prevent the same point twice
+							var pointPath:Object = {};	//We use pointPath as object to put properties correctly
+							if(first){
+								lastP = currentPoint;
+								first = false;
+								pointPath.Name = "Point_" + pointNum; 
+								pointPath.Value = currentPoint.x + ";" + currentPoint.y;
+								properties.push(pointPath);
+								pointNum++;
+							}
+							else if(lastP != currentPoint){							
+								pointPath.Name = "Point_" + pointNum;
+								pointPath.Value = currentPoint.x + ";" + currentPoint.y;
+								properties.push(pointPath);
+								lastP = currentPoint;
+								pointNum++;
+							}
+						}	
+					}
+					pointNum=1;		
+				}
+				//polygon informations
+				else if(getQualifiedClassName(feature.geometry) == "org.openscales.core.geometry::Polygon"){
+					name = {};
+					name.Name = "Name";
+					name.Value = feature.name;
+					properties.push(name);
+					
+					var polygon:Polygon = feature.geometry as Polygon;
+					for(i=0; i<polygon.componentsLength; i++) {
+						var linearRing:LinearRing = polygon.componentByIndex(i) as LinearRing;
+						for(j=0; j<linearRing.componentsLength; j++) {
+							currentPoint = linearRing.componentByIndex(j) as org.openscales.geometry.Point;
+							var pointPoly:Object = {};
+							pointPoly.Name = "Point_" + pointNum;
+							pointPoly.Value = currentPoint.x + ";" + currentPoint.y;
+							pointNum++;
+							properties.push(pointPoly);
+						}
+					}
+					pointNum = 1; 	 									
+				}
+				else{
+					// Only for WFS features (for the moment)
+					for (var key:String in feature.attributes) {	
+						var property:Object = {};
+						property.Name = key;
+						property.Value = feature.attributes[key];
+						properties.push(property);				
+					}
+				}												
+				attributes = new ArrayCollection(properties); 
+				this.dgFeatureInfo.dataProvider = attributes;
+				this.dgFeatureInfo.columns.sort();
+			}
+			
+			/**
+			 * Map setter 
+			 * @param value The map
+			 */
+			override public function set map(value:Map):void {
+				if (value != null) {
+					super.map = value;	
+					this.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, clearInformations);
+					this.map.addEventListener(FeatureEvent.FEATURE_SHOW_INFORMATIONS, showInfo);
+				}
+			}
+			
+			/**
+			 * Update the tab when there is no more selected features
+			 * @param event
+			 */			
+			private function clearInformations(event:FeatureEvent):void{
+				this.dgFeatureInfo.dataProvider=null;
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:DataGrid x="10" y="10" width="262" height="148" id="dgFeatureInfo" editable="false">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Property" dataField="Name" sortDescending="true" width="90"/>
+			<mx:DataGridColumn headerText="Value" dataField="Value"/>
+		</mx:columns>
+	</mx:DataGrid>
+</Control>
