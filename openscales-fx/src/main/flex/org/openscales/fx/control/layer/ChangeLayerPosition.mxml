@@ -32,24 +32,6 @@
 			[Bindable]
 			public var tooltipMoveBack:String = Catalog.getLocalizationForKey('layercontrol.moveback');
 			
-			/**
-			 * Indicates if the arrow up has to be displayed (if true) or not otherwise.
-			 * This value is bind to the layerSwitcherArrowUp enable attribute
-			 * 
-			 * @default true
-			 */
-			[Bindable]
-			public var _arrowUpVisibility:Boolean = true;
-
-			/**
-			 * Indicates if the arrow down has to be displayed (if true) or not otherwise.
-			 * This value is bind to the layerSwitcherArrowDown enable attribute
-			 * 
-			 * @default true
-			 */
-			[Bindable]
-			public var _arrowDownVisibility:Boolean = true;
-			
 			private var _layer:Layer;
 			
 			private var _layerManager:LayerManager;
@@ -108,25 +90,25 @@
 					switch(_layerManager.layers.getItemIndex(_layer)){
 						// the layer is at the bottom of the list, we hide the arrowDown						
 						case  _layerManager.layers.length-1:{
-							this._arrowUpVisibility = true;
-							this._arrowDownVisibility = false;
+							this.layerSwitcherArrowUp.enabled = true;
+							this.layerSwitcherArrowDown.enabled = false;
 							break;
 						}
 						case 0:{
-							this._arrowUpVisibility = false;
-							this._arrowDownVisibility = true;
+							this.layerSwitcherArrowUp.enabled = false;
+							this.layerSwitcherArrowDown.enabled = true;
 							break;
 						}
 						default:{
-							this._arrowUpVisibility = true;
-							this._arrowDownVisibility = true;
+							this.layerSwitcherArrowUp.enabled = true;
+							this.layerSwitcherArrowDown.enabled = true;
 						}
 					
 					}
 				}
 				else{
-					this._arrowUpVisibility = false;
-					this._arrowDownVisibility = false;
+					this.layerSwitcherArrowUp.enabled = false;
+					this.layerSwitcherArrowDown.enabled = false;
 				}
 				
 			}
@@ -171,7 +153,7 @@
 					iconDown="{new UpArrowDown()}"
 					width="10"
 					height="10" 
-					enabled="{this._arrowUpVisibility}"/>
+					enabled="false"/>
 		
 		<os:IconButton id="layerSwitcherArrowDown"
 					toolTip="{this.tooltipMoveBack}"
@@ -181,6 +163,6 @@
 					iconDown="{new DownArrowDown()}"
 					width="10"
 					height="10"
-					enabled="{this._arrowDownVisibility}"/>
+					enabled="false"/>
 	</s:SkinnableContainer>
 </s:Group>

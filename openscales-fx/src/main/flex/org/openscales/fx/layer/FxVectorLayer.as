@@ -27,5 +27,14 @@ package org.openscales.fx.layer
 			}
 		}
 		
+		public function get editable():Boolean{
+			return (this._layer as VectorLayer).editable;
+		}
+		public function set editable(value:Boolean):void {
+			if (this._layer) {
+				(this._layer as VectorLayer).editable = value; 
+			}
+		}
+		
 	}		
 }

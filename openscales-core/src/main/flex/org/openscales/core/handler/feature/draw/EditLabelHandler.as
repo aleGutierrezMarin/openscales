@@ -8,7 +8,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.VectorLayer;
-	import org.openscales.core.popup.LabelPopup;
+	//import org.openscales.fx.control.drawing.popup.LabelPopup;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
@@ -45,7 +45,7 @@ package org.openscales.core.handler.feature.draw
 		override public function featureClick(event:FeatureEvent):void
 		{
 			this._labelFeature = (event.feature as LabelFeature);
-			var labelPopup:LabelPopup = new LabelPopup(this.map,this.updateLabel,this._labelFeature.labelPoint.label.text);
+			//var labelPopup:LabelPopup = new LabelPopup(this.map,this.updateLabel,this._labelFeature.labelPoint.label.text);
 		}
 		
 		/**

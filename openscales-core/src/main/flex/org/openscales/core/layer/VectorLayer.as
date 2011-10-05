@@ -45,7 +45,6 @@ package org.openscales.core.layer
 		private var _idPath:uint = 0;
 		private var _idPolygon:uint = 0;
 		private var _idLabel:uint = 0;
-		private var _attributesVal:Array = new Array();
 		private var _attributesId:Array = new Array();
 		private var _initInDrawingToolbar:Boolean = false;
 		private var _initOutDrawingToolbar:Boolean = false;
@@ -185,11 +184,10 @@ package org.openscales.core.layer
 			this._featuresID.push(feature.name);
 			
 			// Check if the feature may be added to this layer
-			var vectorfeature:Feature = feature;
 			
 			if (this.geometryType &&
-				(getQualifiedClassName(vectorfeature.geometry) != this.geometryType)) {
-				var throwStr:String = "addFeatures : component should be an " + this.geometryType +"and it is : " + getQualifiedClassName(vectorfeature.geometry);
+				(getQualifiedClassName(feature.geometry) != this.geometryType)) {
+				var throwStr:String = "addFeatures : component should be an " + this.geometryType +"and it is : " + getQualifiedClassName(feature.geometry);
 				throw throwStr;
 			}
 			
@@ -213,6 +211,18 @@ package org.openscales.core.layer
 			this.addChild(feature);
 			// Reset the BBOX of the features
 			this._featuresBbox = null;
+			
+			
+			if(feature.attributes) {
+				for (var key:String in feature.attributes) {
+					var found:Boolean = false;
+					for(var i:uint = this.attributesId.length; (i>0 && !found); --i)
+						if(this.attributesId[i-1]==key)
+							found = true;
+					if(!found)
+						this.attributesId.push(key);
+				}
+			}
 			
 			// Render the feature
 			if (this.map) {
@@ -458,12 +468,6 @@ package org.openscales.core.layer
 		}
 		public function set attributesId(value:Array):void{
 			this._attributesId = value;
-		}
-		public function get attributesVal():Array{
-			return this._attributesVal;
-		}
-		public function set attributesVal(value:Array):void{
-			this._attributesVal = value;
 		}
 		
 		public function get initInDrawingToolbar():Boolean{

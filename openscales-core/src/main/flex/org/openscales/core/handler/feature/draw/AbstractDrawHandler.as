@@ -47,7 +47,7 @@ package org.openscales.core.handler.feature.draw
 		 * */
 		public function set drawLayer(value:VectorLayer):void{
 			_drawLayer = null;
-			if(!value || value.editable)
+			if(!value || !value.editable)
 				return;
 			_drawLayer = value;
 		}
