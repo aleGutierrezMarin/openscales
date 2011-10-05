@@ -18,6 +18,11 @@ package org.openscales.core.events{
 		private var _map:Map = null;
 		
 		/**
+		 * old size of the map
+		 */
+		private var _oldSize:Size = null;
+		
+		/**
 		 * new size of the map
 		 */
 		private var _newSize:Size = null;
@@ -194,6 +199,18 @@ package org.openscales.core.events{
 		public function set newSize(value:Size):void
 		{
 			_newSize = value;
+		}
+		
+		/**
+		 * oldSize getter and setter
+		 */
+		public function get oldSize():Size
+		{
+			return _oldSize;
+		}
+		public function set oldSize(value:Size):void
+		{
+			_oldSize = value;
 		}
 		
 		public function get oldZoom():Number {

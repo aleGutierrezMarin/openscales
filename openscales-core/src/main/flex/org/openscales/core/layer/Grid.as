@@ -1054,6 +1054,15 @@ package org.openscales.core.layer
 			}
 		}
 		
+		override protected function onMapResize(event:MapEvent):void
+		{
+			var deltaW:Number = event.newSize.w - event.oldSize.w;
+			var deltaH:Number = event.newSize.h - event.oldSize.h;
+			this.x += deltaW/2;
+			this.y += deltaH/2;
+			this.moveGriddedTiles(this.map.extent);
+			this.actualizeGridSize(this.map.extent);
+		}
 		override public function get minResolution():Resolution {
 			var minRes:Resolution = super.minResolution;
 			

@@ -1031,6 +1031,9 @@ package org.openscales.core
 		 */
 		public function set size(value:Size):void {
 			if (value) {
+				var event:MapEvent = new MapEvent(MapEvent.RESIZE, this);
+				event.oldSize = _size;
+				event.newSize = value;
 				_size = value;
 				
 				this.graphics.clear();
@@ -1038,7 +1041,7 @@ package org.openscales.core
 				this.graphics.drawRect(0,0,this.size.w,this.size.h);
 				this.graphics.endFill();
 				this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
-				this.dispatchEvent(new MapEvent(MapEvent.RESIZE, this));
+				this.dispatchEvent(event);
 				
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
