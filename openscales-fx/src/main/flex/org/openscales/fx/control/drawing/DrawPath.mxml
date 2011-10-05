@@ -115,7 +115,7 @@
 				return _handler.drawLayer;
 			}
 			public function set target(value:VectorLayer):void{
-				
+				this.disactivate();
 				_handler.drawLayer = value;
 			}
 			

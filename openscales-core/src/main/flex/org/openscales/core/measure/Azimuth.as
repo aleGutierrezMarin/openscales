@@ -48,8 +48,10 @@ package org.openscales.core.measure
 		public function Azimuth(map:Map=null)
 		{
 			super(map);
-			this.drawLayer = new VectorLayer("MeasureLayer");
-			this.drawLayer.displayInLayerManager = false;
+			var layer:VectorLayer = new VectorLayer("MeasureLayer");
+			layer.editable = true;
+			layer.displayInLayerManager = false;
+			this.drawLayer = layer;
 			
 			this._accuracies = new HashMap();
 			this._accuracies.put("dd",2);
@@ -69,6 +71,7 @@ package org.openscales.core.measure
 			super.active = value;
 			if(this.map) {
 				if(value) {
+					this.drawLayer.projection = map.projection;
 					this.drawLayer.minResolution = this.map.minResolution;
 					this.drawLayer.maxResolution = this.map.maxResolution;
 					this.map.addLayer(this.drawLayer);

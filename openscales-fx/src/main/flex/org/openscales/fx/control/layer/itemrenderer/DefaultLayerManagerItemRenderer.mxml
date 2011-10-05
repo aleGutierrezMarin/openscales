@@ -2,16 +2,16 @@
 <!--- LayerManager item renderer, design to render a layer in the LayerManager list -->
 <s:ItemRenderer xmlns="org.openscales.fx.control.layer.*"
 				xmlns:drawing="org.openscales.fx.control.drawing.*"
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 xmlns:d="http://ns.adobe.com/fxg/2008/dt"
-		 xmlns:os="org.openscales.fx.control.*"
-		 width="100%"
-		 xmlns:fxg="assets.fxg.*"
-		 autoDrawBackground="false"
-		 implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"
-		 creationComplete="onCreationComplete();" >
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:d="http://ns.adobe.com/fxg/2008/dt"
+				xmlns:os="org.openscales.fx.control.*"
+				width="100%"
+				xmlns:fxg="assets.fxg.*"
+				autoDrawBackground="false"
+				implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"
+				creationComplete="onCreationComplete();" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -163,7 +163,7 @@
 			
 			[Bindable]
 			private var _displayDrawing:Boolean = false;
-						
+			
 			/**
 			 * @inherit
 			 * 
@@ -180,7 +180,7 @@
 			 * &lt;/LayerSwitcher&gt;
 			 */
 			public function get rendererOptions():Object{
-			
+				
 				return _rendererOptions;
 			}
 			
@@ -202,7 +202,7 @@
 						_optionnalGroupDisplayed = true;
 				}
 			}
-						
+			
 			/**
 			 * @inherit
 			 */
@@ -229,10 +229,10 @@
 					this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
 				}
 				
-				 if(this._isDrawingLayer && this._displayDrawing)
-				 {
-				 	this._maximizeGroupSize += layerSwitcherDrawingTools.height;
-				 }
+				if(this._isDrawingLayer && this._displayDrawing)
+				{
+					this._maximizeGroupSize += layerSwitcherDrawingTools.height;
+				}
 				
 				layerSwitcherOptionnalDisplay.y = this._groupPositionOptionnal;
 				layerSwitcherDrawingTools.y = this._groupPositionDraw; // work in progress
@@ -308,7 +308,7 @@
 					
 					this.isMinimized = false;
 				}
-				
+				this.manageToogle();
 				this._isDrawingLayer = false;
 				if((this._layer != null) )
 				{	
@@ -333,33 +333,45 @@
 				
 			}
 			
+			private function manageToogle():void {
+				if(!this.layer || !this.layer.map) {
+					this.isDisplayedDrawingTools = false;
+					this._btnReduceMaximize = BTN_MAXIMIZE;
+					return;
+				}
+				var displayDrawingToolbar:Boolean = true;
+				for(var k:uint = 0; k < this.layer.map.controls.length; k++){
+					if(this.layer.map.controls[k] is DrawingToolbar) {
+						if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple") {
+							displayDrawingToolbar = false;
+							break;
+						}
+					}
+				}
+				this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer && displayDrawingToolbar;
+				
+				this._btnReduceMaximize = this.isMinimized ?  BTN_MAXIMIZE : BTN_MINIMIZE;
+				
+				var index:int;
+				if(isMinimized){
+					index = (_maximizedLayers.getValue(_layerManager) as ArrayCollection).getItemIndex(_layer);
+					if(index!=-1)
+						(_maximizedLayers.getValue(_layerManager) as ArrayCollection).removeItemAt(index);					
+				}
+				else{
+					index = (_maximizedLayers.getValue(_layerManager) as ArrayCollection).getItemIndex(_layer);
+					if(index==-1)
+						(_maximizedLayers.getValue(_layerManager) as ArrayCollection).addItem(_layer);
+				}
+			}
 			
 			/**
 			 * Reduce or maximize the current LayerManager
 			 */
 			public function reduceMaximizeLayerSwitcher(event:Event):void 
 			{
-				
 				this.isMinimized = !this.isMinimized;
-				
-				var displayDrawingToolbar:Boolean = true;
-				for(var k:uint = 0; k < this.layer.map.controls.length; k++){
-					if(this.layer.map.controls[k] is DrawingToolbar)
-						if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple")
-							displayDrawingToolbar = false;
-				}
-				this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer && displayDrawingToolbar;
-				
-				this._btnReduceMaximize = this.isMinimized ?  BTN_MAXIMIZE : BTN_MINIMIZE;
-				
-				if(isMinimized){
-					var index:uint = (_maximizedLayers.getValue(_layerManager) as ArrayCollection).getItemIndex(_layer);
-					(_maximizedLayers.getValue(_layerManager) as ArrayCollection).removeItemAt(index);					
-				}
-				else{
-					(_maximizedLayers.getValue(_layerManager) as ArrayCollection).addItem(_layer);
-				}
-				
+				this.manageToogle();
 			}
 			
 			
@@ -376,7 +388,7 @@
 		<s:VerticalLayout />
 	</s:layout>
 	
-		<s:SkinnableContainer width="100%"
+	<s:SkinnableContainer width="100%"
 						  height="25"
 						  id="hgroup" backgroundColor="{_color}" >
 		<s:layout>
@@ -405,12 +417,12 @@
 					   toolTip="{this.tooltipReduceMaximize}" />
 		<DeleteLayer id="layerSwitcherDeleteLayer" layer="{_layer}" />
 	</s:SkinnableContainer>
-		
-		
+	
+	
 	<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}">
 		<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
 	</s:SkinnableContainer>
-
+	
 	<s:SkinnableContainer height="60" width="100%" id="layerSwitcherDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
 		
 		<s:layout>
@@ -427,7 +439,7 @@
 			<drawing:DrawPath id="drawPath" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 		</s:SkinnableContainer>
-	
+		
 		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
 			
 			<s:layout>
@@ -441,8 +453,8 @@
 			
 		</s:SkinnableContainer>
 		
-		</s:SkinnableContainer>
-
+	</s:SkinnableContainer>
+	
 	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
 		<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
 		<LayerLegend x="20" id="layerControlLegend" visible="{_displayLegend}" />

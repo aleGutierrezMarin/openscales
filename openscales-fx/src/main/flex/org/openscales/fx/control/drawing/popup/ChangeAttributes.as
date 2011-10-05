@@ -1,4 +1,4 @@
-package org.openscales.core.popup
+package org.openscales.fx.control.drawing.popup
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -8,6 +8,8 @@ package org.openscales.core.popup
 	import mx.managers.PopUpManager;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.feature.Feature;
+	import org.openscales.fx.control.skin.ScrollableContainerSkin;
 	
 	import spark.components.Button;
 	import spark.components.HGroup;
@@ -26,7 +28,7 @@ package org.openscales.core.popup
 		/**
 		 * Constructor
 		 */
-		public function ChangeAttributes(map:Map, attributes:Array, values:Array, callback:Function)
+		public function ChangeAttributes(map:Map, attributes:Array, feature:Feature, callback:Function)
 		{
 			var hGroup:HGroup = new HGroup();
 			var vGroup:VGroup = new VGroup();
@@ -55,7 +57,10 @@ package org.openscales.core.popup
 				vGroup.addElement(lb);
 				ti = new TextInput();
 				ti.width = 200;
-				ti.text = values[i];
+				if(feature.attributes[attributes[i]])
+					ti.text = feature.attributes[attributes[i]];
+				else
+					ti.text = "";
 				vGroup.addElement(ti);
 				_textInputArray.push(ti);
 				lb = new Label();
