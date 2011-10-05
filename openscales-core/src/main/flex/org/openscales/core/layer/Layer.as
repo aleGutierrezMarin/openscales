@@ -477,7 +477,16 @@ package org.openscales.core.layer {
 		 * Minimal valid resolution for this layer
 		 */
 		public function get minResolution():Resolution {
-
+			
+			var minRes:Resolution = this._minResolution;
+			
+			if(!this._minResolution || isNaN(this._minResolution.value) || !isFinite(this._minResolution.value))
+			{
+				if (this.resolutions && (this.resolutions.length > 0)) {
+					minRes = new Resolution(this.resolutions[this.resolutions.length-1], this.projection);
+					this._minResolution = minRes;
+				}
+			}
 			return this._minResolution;
 		}
 		
