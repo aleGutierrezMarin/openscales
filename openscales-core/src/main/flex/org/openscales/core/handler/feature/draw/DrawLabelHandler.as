@@ -9,7 +9,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.layer.VectorLayer;
-	import org.openscales.core.popup.LabelPopup;
+	//import org.openscales.fx.control.drawing.popup.LabelPopup;
 	import org.openscales.core.popup.Popup;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.LabelPoint;
@@ -74,7 +74,7 @@ package org.openscales.core.handler.feature.draw
 			{
 				var pixel:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
 				this._labelLocation = this.map.getLocationFromMapPx(pixel);
-				var labelPopup:LabelPopup = new LabelPopup(this.map,this.drawLabel);
+				//var labelPopup:LabelPopup = new LabelPopup(this.map,this.drawLabel);
 			}
 		}
 		

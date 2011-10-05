@@ -22,8 +22,8 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<WMS id="wmsLayer" name="bluemarble layer" url="http://openscales.org/geoserver/wms"
 			 layers="bluemarble" format="image/jpeg" version="1.1.0" styles="" alpha="0.75"/>
 		
-		<VectorLayer id="features" name="drawing layer 1" />
-		<VectorLayer id="vectorLayer" name="drawing layer 2" />
+		<VectorLayer id="features" name="drawing layer 1" editable="true" />
+		<VectorLayer id="vectorLayer" name="drawing layer 2" editable="true" />
 		<DragHandler />
 		<WheelHandler />
 		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>

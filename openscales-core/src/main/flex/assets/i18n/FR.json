@@ -84,5 +84,7 @@
    "MeasureBar.exittooltip": "Désactiver les outils de mesure",
    "MeasureBar.distancetooltip": "Mesure de distance",
    "MeasureBar.azimuthtooltip": "Mesure d'azimut",
-   "MeasureBar.surfacetooltip": "Mesure de surface"
+   "MeasureBar.surfacetooltip": "Mesure de surface",
+   
+   "viewfeatureattributes.title": "Attributs de l'objet"
  }
