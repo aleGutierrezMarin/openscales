@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Move or zoom the map tand see the modification on the overview map.
+Click on the overview to change the center of the main map.
+Draw a rectangle on the overview to define a new extent for the main map.-->
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="resizeMap()"
+		 width="100%" height="100%" resize="resizeMap()">
+	
+	<Map id="fxMap" width="100%" height="100%" center="4.833,45.767" 
+		 resolution="{new Resolution(0.01)}" projection="EPSG:4326">
+		
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms" layers="bluemarble"
+			  format="image/jpeg" maxExtent="-180,-90,180,90" version="1.1.1"/>
+		
+		<DragHandler/>
+		<WheelHandler/>
+		<Spinner x="{width / 2}" y="{height / 2}"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
+		
+		<TraceInfo x="{width-200}" y="0" />
+		
+		<OverviewMapRatio bottom="10" right="10" ratio ="4" id="miniMap" 
+						  width="200" height="200" projection="EPSG:900913">
+			<Mapnik name="mapnik overwiew" proxy="http://openscales.org/proxy.php?url="
+					maxExtent="-2000000,-2000000,8000000,8000000,EPSG:900913"
+					maxResolution="5000000" />
+		</OverviewMapRatio>		
+		
+		<PanZoom id="panZoom" x="10" y="10" />
+		
+		
+	</Map>	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.basetypes.Resolution;
+			
+			private function resizeMap():void {
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:Group>
