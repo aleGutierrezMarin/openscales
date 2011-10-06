@@ -203,7 +203,7 @@
 					case DrawingEvent.EDIT_HANDLER_DISACTIVATED:
 						if(this._editHandlerActivated) {
 							this._map.removeEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
-							this._editHandlerActivated = true;
+							this._editHandlerActivated = false;
 						}
 						break;
 					default:
