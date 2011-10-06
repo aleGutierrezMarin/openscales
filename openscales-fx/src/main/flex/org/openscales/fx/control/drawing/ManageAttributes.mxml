@@ -20,6 +20,7 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.fx.control.drawing.popup.EditFeatureAttributes;
+			import org.openscales.fx.control.drawing.popup.ManageLayerAttributes;
 			import org.openscales.fx.control.drawing.popup.ViewFeatureAttributes;
 			
 			[Bindable]
@@ -34,7 +35,7 @@
 			
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
-			private var _defaultAttributes:Array = new Array("id","description");
+			private var _defaultAttributes:Vector.<String> = new <String>["id","description"];
 			private var _index:int;
 			private var _vectorLayer:VectorLayer;
 			
@@ -61,19 +62,50 @@
 			/**
 			 * The default attributes
 			 */
-			public function set defaultAttributes(value:Array):void{
+			public function set defaultAttributes(value:Vector.<String>):void{
 				
 				this._defaultAttributes = value;
-				if(this._vectorLayer){
-					this._vectorLayer.attributesId = new Array();
-					for(var i:uint = 0; i < this._defaultAttributes.length; i++){
-						this._vectorLayer.attributesId.push(this._defaultAttributes[i]);
-					}
-				}
+				this.applyDefaultAttributes();
 			}
-			public function get defaultAttributes():Array{
+			
+			public function get defaultAttributes():Vector.<String>{
 				
 				return this._defaultAttributes;
+			}
+			
+			private function applyDefaultAttributes():void {
+				if(this._defaultAttributes && this._vectorLayer){
+					var i:uint = 0;
+					var j:uint = this._defaultAttributes.length;
+					if(!this._vectorLayer.attributesId) {
+						this._vectorLayer.attributesId = new Vector.<String>();
+						for(;i<j;++i)
+							this._vectorLayer.attributesId.push(this._defaultAttributes[i]);
+						return;
+					}
+					var l:uint = this._vectorLayer.attributesId.length;
+					var k:uint;
+					var found:Boolean;
+					var features:Vector.<Feature> = this._vectorLayer.features;
+					var nbF:uint = 0;
+					var key:String = null;
+					if(features)
+						nbF = features.length; 
+					for(; i < j; ++i){
+						found = false;
+						key = this._defaultAttributes[i];
+						for(k=0;(k<l &&!found);++k)
+							if(this._vectorLayer.attributesId[k]==key)
+								found = true;
+						if(!found) {
+							this._vectorLayer.attributesId.push(key);
+							for(k=0;(k<nbF);++k) {
+								if(!features[k].attributes[key])
+									features[k].attributes[key]="";
+							}
+						}
+					}
+				}
 			}
 			
 			/**
@@ -89,22 +121,7 @@
 				if(!value)
 					return;
 				
-				// set the default attributes if this is the first selection of the layer
-				var k:uint;
-				if(this.parentDocument is DrawingToolbar && !this._vectorLayer.initInDrawingToolbar){
-					this._vectorLayer.attributesId = new Array();
-					for(k = 0; k < this._defaultAttributes.length; k++){
-						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
-					}
-					this._vectorLayer.initInDrawingToolbar = true;
-				}
-				else if(!(this.parentDocument is DrawingToolbar) && !this._vectorLayer.initInDrawingToolbar && !this._vectorLayer.initOutDrawingToolbar){
-					this._vectorLayer.attributesId = new Array();
-					for(k = 0; k < this._defaultAttributes.length; k++){
-						this._vectorLayer.attributesId.push(this._defaultAttributes[k]);
-					}
-					this._vectorLayer.initOutDrawingToolbar = true;
-				}
+				this.applyDefaultAttributes();
 			}
 			
 			/**
@@ -145,16 +162,6 @@
 			}
 			
 			/**
-			 * This function is called by the ChangeAttributes pop-up
-			 */
-			private function onChangeAttributes(textInputArray:Array):void{
-				/*
-				for(var i:uint = 0; i < this.target.attributesId.length; i++)
-					(this.target.attributesVal[_index].values as Array)[i] = (textInputArray[i] as TextInput).text;
-				*/
-			}
-			
-			/**
 			 * This function is called when the icon button is clicked
 			 */
 			private function onClick():void{
@@ -164,40 +171,7 @@
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.ATTRIBUTES_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				this.map.dispatchEvent(evt);
-				new org.openscales.fx.control.drawing.popup.ManageAttributes(this._map, this.target.attributesId, this.onManageAttributes);
-			}
-			
-			/**
-			 * This function is called by the ManageAttributes pop-up
-			 */
-			private function onManageAttributes(value:String, action:String):void
-			{
-				var i:uint;
-				var j:uint;
-				
-				var features:Vector.<Feature> = this.target.features;
-				
-				if(action == "add")
-				{
-					if(this.target.attributesId.indexOf(value)!=-1)
-						return;
-					this.target.attributesId.push(value);
-					if(features) {
-						for(i=features.length;i>0;--i) {
-							if(!features[i-1].attributes[value])
-								features[i-1].attributes[value]="";
-						}
-					}
-				}
-				else if(action == "delete")
-				{
-					if(features) {
-						for(i=features.length;i>0;--i) {
-							if(features[i-1].attributes[value])
-								delete features[i-1].attributes[value];
-						}
-					}
-				}
+				new ManageLayerAttributes().layer = this.target;
 			}
 			
 			/**

@@ -45,7 +45,7 @@ package org.openscales.core.layer
 		private var _idPath:uint = 0;
 		private var _idPolygon:uint = 0;
 		private var _idLabel:uint = 0;
-		private var _attributesId:Array = new Array();
+		private var _attributesId:Vector.<String> = new Vector.<String>();
 		private var _initInDrawingToolbar:Boolean = false;
 		private var _initOutDrawingToolbar:Boolean = false;
 		private var _editable:Boolean = false;
@@ -463,10 +463,10 @@ package org.openscales.core.layer
 			this._idLabel = value;
 		}
 		
-		public function get attributesId():Array{
+		public function get attributesId():Vector.<String>{
 			return this._attributesId;
 		}
-		public function set attributesId(value:Array):void{
+		public function set attributesId(value:Vector.<String>):void{
 			this._attributesId = value;
 		}
 		
