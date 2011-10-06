@@ -29,9 +29,6 @@ package org.openscales.core.handler.feature.draw
 		override public function set map(value:Map):void{
 			if(value!=null){
 				super.map = value;
-				/*if(this.drawLayer) {
-					this.drawLayer = this.drawLayer;
-				}*/
 			}
 		}
 		//Getters and setters
