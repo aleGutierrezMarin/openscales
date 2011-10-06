@@ -68,6 +68,13 @@
 				if(this._handler && !_active){
 					_handler.active = false;
 				}
+				if(this.map) {
+					if(_active) {
+						
+					} else {
+						
+					}
+				}
 			}
 			
 			/**
@@ -90,16 +97,27 @@
 				return this._map;
 			}
 			public function set map(value:Map):void{
-				
+				if(this._map) {
+					this._map.removeEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.removeEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.removeEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
+					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
+					this._map.removeEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
+					this._map.removeEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				}
 				this._map = value;
-				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
-				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
-				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
-				this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
-				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
-				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				if(this._map) {
+					this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
+					this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
+					this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
+					this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				}
 			}
 			
 			/**
@@ -201,6 +219,8 @@
 				var evt:DrawingEvent;
 				if(this._handler && this._handler.active){
 					disactivate();
+					evt = new DrawingEvent(DrawingEvent.EDIT_HANDLER_DISACTIVATED);
+					this.map.dispatchEvent(evt);
 					evt = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
 					this.map.dispatchEvent(evt);
 					return;
