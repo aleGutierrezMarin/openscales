@@ -174,6 +174,16 @@ package org.openscales.core.events{
 		public static const MAX_EXTENT_CHANGED:String="openscales.maxextentchanged";
 		
 		/**
+		 * Event type dispatched when the map is redrawn
+		 */
+		public static const ACTIVATE_HANDLER:String="openscales.activateHandler";
+		
+		/**
+		 * Event type dispatched when the map resolution changed
+		 */
+		public static const DISACTIVATE_HANDLER:String="openscales.disactivateHandler";
+		
+		/**
 		 * Instances of MapEvent are events dispatched by the Map
 		 */
 		public function MapEvent(type:String, map:Map, bubbles:Boolean = false, cancelable:Boolean = false){

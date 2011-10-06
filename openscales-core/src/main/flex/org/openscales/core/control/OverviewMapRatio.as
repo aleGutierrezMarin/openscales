@@ -67,7 +67,7 @@ package org.openscales.core.control
 		private function onAddedToStage(event:Event):void
 		{
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
-			this.mapChanged();
+			//this.mapChanged();
 			this.draw();
 		}
 		
@@ -96,56 +96,6 @@ package org.openscales.core.control
 			this._overviewMap.addChild(_centerPoint);
 		}
 		
-		
-		/**
-		 * @private
-		 * Compute the resolution level of the overviewMap according to the ratio setted
-		 */
-		private function computeResolutionLevel():void
-		{
-			if (this.map != null)
-			{
-				// Compute the size ratio between the map and the voerview map
-				var mapsRatio:Number =(this.map.size.w / this._overviewMap.size.w); 
-				
-				// Compute the reprojection factor for the resolution
-				var unityReproj:Location = new Location(1, 1, this.map.projection);
-				unityReproj = unityReproj.reprojectTo(this._overviewMap.projection);
-				
-				// Reproject and multiply by the maps ratio the resolution
-				var targetResolution:Number = this.map.resolution.value * unityReproj.x* mapsRatio;
-				
-				if(targetResolution > this._overviewMap.maxResolution.value)
-					targetResolution = this._overviewMap.maxResolution.value;
-				
-				if(targetResolution < this._overviewMap.minResolution.value)
-					targetResolution = this._overviewMap.minResolution.value;
-				
-				// Find the best resolution to fit the resolution ratio :
-				var bestZoomLevel:int = 0;
-				var bestRatio:Number = 0;
-				
-				var i:int = 0;
-				var len:int = this._overviewMap.layers[0].resolutions.length;
-				for (i; i < len; ++i)
-				{
-					var ratioSeeker:Number = this._overviewMap.layers[0].resolutions[i] / targetResolution;
-					if ( ratioSeeker > _ratio){
-						ratioSeeker = _ratio/ratioSeeker;
-					}
-					if ( ratioSeeker > bestRatio){
-						bestRatio = ratioSeeker;
-						bestZoomLevel = i;
-					}
-				}
-				
-				targetResolution = this.overviewMap.layers[0].resolutions[bestZoomLevel];
-				
-				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.projection);
-				this._overviewMap.resolution = new Resolution(targetResolution, _overviewMap.projection);
-			}
-		}
-		
 		/**
 		 * The size of the overview map
 		 */
@@ -153,7 +103,7 @@ package org.openscales.core.control
 			if(!value)
 				return;
 			this._overviewMap.size = value;
-			mapChanged();
+			//mapChanged();
 		}
 		
 		/**
@@ -176,6 +126,8 @@ package org.openscales.core.control
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
+				this._overviewMap.maxExtent = this._map.maxExtent.preciseReprojectBounds(this.overviewMap.projection);
+				this.mapChanged();
 			}
 		}
 		/**
@@ -185,7 +137,24 @@ package org.openscales.core.control
 		 */
 		private function mapChanged(event:Event = null):void
 		{
-			computeResolutionLevel();
+			//computeResolutionLevel();
+			if (this.map != null)
+			{
+				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.projection);
+				var mapRes:Resolution = this._map.resolution;
+				mapRes = mapRes.reprojectTo(this.overviewMap.projection);
+				var mapsRatio:Number =(this.map.size.w / this._overviewMap.size.w); 
+				var newRes:Resolution =  new Resolution(mapRes.value*ratio*mapsRatio, mapRes.projection);
+				if (newRes.value > this._overviewMap.maxResolution.value)
+				{
+					newRes = this._overviewMap.maxResolution;
+				}
+				if (newRes.value < this._overviewMap.minResolution.value)
+				{
+					newRes = this._overviewMap.minResolution;
+				}
+				this._overviewMap.resolution = newRes
+			}
 			this.drawCenter();	
 		}
 		
@@ -225,6 +194,8 @@ package org.openscales.core.control
 				
 				_overviewMap.projection = layer.projection;
 				_overviewMap.maxExtent = layer.maxExtent;
+				_overviewMap.minResolution = layer.minResolution;
+				_overviewMap.maxResolution = layer.maxResolution;
 			}
 		}
 		
@@ -276,7 +247,7 @@ package org.openscales.core.control
 		
 		override public function set width(value:Number):void{
 			_overviewMap.size = new Size(value, _overviewMap.size.h);
-			mapChanged();
+			//mapChanged();
 		}
 		
 		override public function get width():Number{
@@ -285,7 +256,7 @@ package org.openscales.core.control
 		
 		override public function set height(value:Number):void{
 			_overviewMap.size = new Size(_overviewMap.size.w, value);
-			mapChanged();
+			//mapChanged();
 		}
 		
 		override public function get height():Number{

@@ -147,6 +147,7 @@
     <classEntry path="org.openscales.core.layer.capabilities.GetCapabilities"/>
     <classEntry path="org.openscales.core.layer.capabilities.WFS100"/>
     <classEntry path="org.openscales.core.layer.capabilities.WFS110"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WFS200"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS100"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS110"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMS111"/>
