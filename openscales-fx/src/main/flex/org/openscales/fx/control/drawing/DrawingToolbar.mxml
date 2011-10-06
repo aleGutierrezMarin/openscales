@@ -30,13 +30,16 @@
 			private var _toggle:Boolean = false;
 			private var _hover:Boolean = false;
 			private var _virtualStyle:Style = Style.getDefaultCircleStyle();
-			private var _defaultAttributes:String = "id,description";
+			private var _defaultAttributes:Vector.<String> = new <String> ["id","description"];
 			private var _mode:String = "multiple";
+			private var _configured:Boolean = false;
+			
 			[Bindable]
 			private var title:String = Catalog.getLocalizationForKey('drawing.toolbar');
 			
+			
 			private function configure():void{
-				
+				_configured = true;
 				// set the properties
 				drawLabel.style = this._labelStyle;
 				drawPoint.style = this._pointStyle;
@@ -46,11 +49,7 @@
 				selectFeatures.hover = this._hover;
 				selectFeatures.toggle = this._toggle;
 				editFeatures.virtualStyle = this._virtualStyle;
-				var attributes:Array = this._defaultAttributes.split(",");
-				manageAttributes.defaultAttributes = new Vector.<String>();
-				for each (var key:String in attributes){
-					manageAttributes.defaultAttributes.push(key);
-				}
+				manageAttributes.defaultAttributes = this._defaultAttributes;
 				
 				// remove elements if mode = "mini"
 				if(this._mode == "multiple")
@@ -96,15 +95,25 @@
 			/**
 			 * The mode of the drawing toolbar
 			 */
-			public function set mode(value:String):void{
-				this._mode = value;
-			}
 			public function get mode():String{
 				return this._mode;
 			}
+			/**
+			 * @private
+			 */
+			public function set mode(value:String):void{
+				this._mode = value;
+			}
+			
 			
 			/**
 			 * The layer the features will be drawn on
+			 */
+			public function get layer():VectorLayer {
+				return this._layer;
+			}
+			/**
+			 * @private
 			 */
 			public function set layer(value:VectorLayer):void{
 				this._layer = value;
@@ -113,12 +122,24 @@
 			/**
 			 * The style of the drawing labels
 			 */
+			public function get labelStyle():Style {
+				return this._labelStyle;
+			}
+			/**
+			 * @private
+			 */
 			public function set labelStyle(value:Style):void{
 				this._labelStyle = value;
 			}
 			
 			/**
 			 * The style of the drawing points
+			 */
+			public function get pointStyle():Style {
+				return this._pointStyle;
+			}
+			/**
+			 * @private
 			 */
 			public function set pointStyle(value:Style):void{
 				this._pointStyle = value;
@@ -127,12 +148,24 @@
 			/**
 			 * The style of the drawing paths
 			 */
+			public function get pathStyle():Style {
+				return this._pathStyle;
+			}
+			/**
+			 * @private
+			 */
 			public function set pathStyle(value:Style):void{
 				this._pathStyle = value;
 			}
 			
 			/**
 			 * The style of the drawing polygons
+			 */
+			public function get polygonStyle():Style {
+				return this._polygonStyle;
+			}
+			/**
+			 * @private
 			 */
 			public function set polygonStyle(value:Style):void{
 				this._polygonStyle = value;
@@ -141,6 +174,12 @@
 			/**
 			 * If true, a feature is unselected by clicking out of it
 			 * @default true;
+			 */
+			public function get clickout():Boolean {
+				return this._clickOut;
+			}
+			/**
+			 * @private
 			 */
 			public function set clickout(value:Boolean):void{
 				this._clickOut = value;
@@ -151,6 +190,12 @@
 			 * If true, a selected feature is unselected by clicking on it
 			 * @default false;
 			 */
+			public function get toggle():Boolean {
+				return this._toggle;
+			}
+			/**
+			 * @private
+			 */
 			public function set toggle(value:Boolean):void{
 				this._toggle = value;
 			}
@@ -158,6 +203,12 @@
 			/**
 			 * If true, a feature is selected on mouseover
 			 * @default false;
+			 */
+			public function get hover():Boolean {
+				return this._hover;
+			}
+			/**
+			 * @private
 			 */
 			public function set hover(value:Boolean):void{
 				this._hover = value;
@@ -167,6 +218,12 @@
 			/**
 			 * The style of the virtual points in editing mode
 			 */
+			public function get virtualStyle():Style {
+				return this._virtualStyle;
+			}
+			/**
+			 * @private
+			 */
 			public function set virtualStyle(value:Style):void{
 				this._virtualStyle = value;
 			}
@@ -174,8 +231,30 @@
 			/**
 			 * The default attributes for each feature
 			 */
-			public function set defaultAttributes(value:String):void{
-				this._defaultAttributes = value;
+			public function get defaultAttributes():Vector.<String> {
+				return this._defaultAttributes;
+			}
+			/**
+			 * @private
+			 */
+			public function set defaultAttributes(value:*):void{
+				var attributes:Array = null;
+				this._defaultAttributes = new Vector.<String>();
+				
+				if(value is Vector.<String>)
+					this._defaultAttributes = value as Vector.<String>;
+				else if(value is String) {
+					attributes = (value as String).split(",");
+				} else if(value is Array) {
+					attributes = value as Array;
+				}
+				if(attributes) {
+					for each (var key:String in attributes){
+						this._defaultAttributes.push(key);
+					}
+				}
+				if(_configured)
+					manageAttributes.defaultAttributes = this._defaultAttributes;
 			}
 			
 		]]>
