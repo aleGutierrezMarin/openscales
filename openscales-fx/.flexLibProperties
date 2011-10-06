@@ -138,8 +138,6 @@
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
-    <classEntry path="org.openscales.fx.control.drawing.popup.EditFeatureAttributes"/>
-    <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

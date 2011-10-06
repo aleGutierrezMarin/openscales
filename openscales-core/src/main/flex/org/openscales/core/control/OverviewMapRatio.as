@@ -67,7 +67,7 @@ package org.openscales.core.control
 		private function onAddedToStage(event:Event):void
 		{
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
-			this.mapChanged();
+			//this.mapChanged();
 			this.draw();
 		}
 		
@@ -153,7 +153,7 @@ package org.openscales.core.control
 			if(!value)
 				return;
 			this._overviewMap.size = value;
-			mapChanged();
+			//mapChanged();
 		}
 		
 		/**
@@ -176,6 +176,8 @@ package org.openscales.core.control
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
+				this._overviewMap.maxExtent = this._map.maxExtent.preciseReprojectBounds(this.overviewMap.projection);
+				this.mapChanged();
 			}
 		}
 		/**
@@ -185,7 +187,24 @@ package org.openscales.core.control
 		 */
 		private function mapChanged(event:Event = null):void
 		{
-			computeResolutionLevel();
+			//computeResolutionLevel();
+			if (this.map != null)
+			{
+				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.projection);
+				var mapRes:Resolution = this._map.resolution;
+				mapRes = mapRes.reprojectTo(this.overviewMap.projection);
+				var mapsRatio:Number =(this.map.size.w / this._overviewMap.size.w); 
+				var newRes:Resolution =  new Resolution(mapRes.value*ratio*mapsRatio, mapRes.projection);
+				if (newRes.value > this._overviewMap.maxResolution.value)
+				{
+					newRes = this._overviewMap.maxResolution;
+				}
+				if (newRes.value < this._overviewMap.minResolution.value)
+				{
+					newRes = this._overviewMap.minResolution;
+				}
+				this._overviewMap.resolution = newRes
+			}
 			this.drawCenter();	
 		}
 		
@@ -225,6 +244,8 @@ package org.openscales.core.control
 				
 				_overviewMap.projection = layer.projection;
 				_overviewMap.maxExtent = layer.maxExtent;
+				_overviewMap.minResolution = layer.minResolution;
+				_overviewMap.maxResolution = layer.maxResolution;
 			}
 		}
 		
@@ -276,7 +297,7 @@ package org.openscales.core.control
 		
 		override public function set width(value:Number):void{
 			_overviewMap.size = new Size(value, _overviewMap.size.h);
-			mapChanged();
+			//mapChanged();
 		}
 		
 		override public function get width():Number{
@@ -285,7 +306,7 @@ package org.openscales.core.control
 		
 		override public function set height(value:Number):void{
 			_overviewMap.size = new Size(_overviewMap.size.w, value);
-			mapChanged();
+			//mapChanged();
 		}
 		
 		override public function get height():Number{
