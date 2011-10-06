@@ -17,7 +17,7 @@
    "drawing.select": "Select",
    "drawing.edit": "Edit",
    "drawing.move": "Move",
-   "drawing.attributes": "Manage attributes",
+   "drawing.attributes": "Manage layer attributes",
    "drawing.url": "Url",
    "drawing.locale": "File",
    "drawing.format": "Format",
@@ -89,6 +89,9 @@
    "viewfeatureattributes.title": "Feature attributes",
    "editfeatureattributes.title": "Edit feature attributes",
    "editfeatureattributes.valid": "save",
-   "editfeatureattributes.discard": "cancel"
+   "editfeatureattributes.discard": "cancel",
+   "managelayerattributes.title": "Layer attributes",
+   "managelayerattributes.addlabel": "add",
+   "managelayerattributes.dellabel": "delete"
    
  }
