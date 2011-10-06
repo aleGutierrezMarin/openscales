@@ -28,9 +28,9 @@
 			
 			private var _init:Boolean = false;
 			private var _feature:Feature = null;
-			private var _vgroup:VGroup = null;
+			protected var _vgroup:VGroup = null;
 			
-			private static var DEFAULT_W:Number = 250;
+			private static var DEFAULT_W:Number = 300;
 			private static var DEFAULT_H:Number = 200;
 			
 			/**
@@ -57,40 +57,49 @@
 				if(this._feature) {
 					PopUpManager.addPopUp(this, (FlexGlobals.topLevelApplication as Application), true);
 					if(this._init) {
-						if(this._feature.layer && this._feature.layer.map)
+						if(this._feature.layer && this._feature.layer.map && this._feature.layer.attributesId.length>0)
 							this._feature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
-						if(this._feature.layer.attributesId.length > 0) {
-							for(var i:uint = this._feature.layer.attributesId.length;i>0;--i) {
-								if(!_vgroup) {
-									_vgroup = new VGroup();
-									_vgroup.gap = 10;
-									_vgroup.top = 5;
-									container.addElement(_vgroup);
-								}
-								var key:String = this._feature.layer.attributesId[i-1];
-								var group:HGroup = new HGroup();
-								group.gap = 10;
-								_vgroup.addElement(group);
-								var lb:Label = new Label();
-								lb.width = 100;
-								lb.text = key;
-								group.addElement(lb);
-								lb = new Label();
-								lb.width = 90;
-								if(this._feature.attributes[key])
-									lb.text = this._feature.attributes[key];
-								else
-									lb.text = "";
-								group.addElement(lb);
-								_vgroup.addElement(group);
-							}
+						else
+							return;
+						if(!_vgroup) {
+							_vgroup = new VGroup();
+							_vgroup.gap = 10;
+							_vgroup.top = 5;
+							container.addElement(_vgroup);
 						}
+						this.drawContent();
 						this.localize();
 					}
 				}
 			}
 			
-			private function init():void {
+			protected function drawContent():void {
+				var j:uint = this._feature.layer.attributesId.length;
+				for(var i:uint = 0;i<j;++i) {
+					var key:String = this._feature.layer.attributesId[i];
+					var group:HGroup = new HGroup();
+					group.gap = 10;
+					_vgroup.addElement(group);
+					var lb:Label = new Label();
+					lb.width = 100;
+					lb.text = key;
+					group.addElement(lb);
+					lb = new Label();
+					lb.width = 120;
+					if(this._feature.attributes[key])
+						lb.text = this._feature.attributes[key];
+					else
+						lb.text = "";
+					group.addElement(lb);
+					_vgroup.addElement(group);
+				}
+			}
+			
+			protected function localize(e:I18NEvent=null):void {
+				this.title = Catalog.getLocalizationForKey("viewfeatureattributes.title");
+			}
+			
+			protected function init():void {
 				this.x = (parent.width-this.width)/2;
 				this.y = (parent.height-this.height)/2;
 				this.resize(null);
@@ -100,6 +109,13 @@
 					this.feature = this.feature;
 				}
 			}
+			
+			protected function destroy():void {
+				if(parent)
+					parent.removeEventListener(Event.RESIZE,this.resize);
+				this.feature = null;
+			}
+			
 			private function resize(e:Event):void {
 				this.x = (parent.width-this.width)/2;
 				this.y = (parent.height-this.height)/2;
@@ -111,15 +127,6 @@
 				if(this.height > parent.height) {
 					this.height = parent.height;
 				}
-			}
-			private function destroy():void {
-				if(parent)
-					parent.removeEventListener(Event.RESIZE,this.resize);
-				this.feature = null;
-			}
-			
-			private function localize(e:I18NEvent=null):void {
-				this.title = Catalog.getLocalizationForKey("viewfeatureattributes.title");
 			}
 			
 			private function close():void
