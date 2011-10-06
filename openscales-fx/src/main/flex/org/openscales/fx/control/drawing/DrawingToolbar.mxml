@@ -16,9 +16,9 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
-			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			private var _layer:VectorLayer;
@@ -47,7 +47,10 @@
 				selectFeatures.toggle = this._toggle;
 				editFeatures.virtualStyle = this._virtualStyle;
 				var attributes:Array = this._defaultAttributes.split(",");
-				manageAttributes.defaultAttributes = attributes;
+				manageAttributes.defaultAttributes = new Vector.<String>();
+				for each (var key:String in attributes){
+					manageAttributes.defaultAttributes.push(key);
+				}
 				
 				// remove elements if mode = "mini"
 				if(this._mode == "multiple")

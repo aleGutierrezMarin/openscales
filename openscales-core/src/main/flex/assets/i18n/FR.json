@@ -15,9 +15,9 @@
    "drawing.path": "Dessiner une ligne",
    "drawing.polygon": "Dessiner un polygone",
    "drawing.select": "Sélectionner",
-   "drawing.edit": "Editer",
+   "drawing.edit": "Modifier",
    "drawing.move": "Déplacer",
-   "drawing.attributes": "Gérer les attributs",
+   "drawing.attributes": "Gérer les attributs de la couche",
    "drawing.url": "Url",
    "drawing.locale": "Fichier local",
    "drawing.format": "Format",
@@ -86,5 +86,11 @@
    "MeasureBar.azimuthtooltip": "Mesure d'azimut",
    "MeasureBar.surfacetooltip": "Mesure de surface",
    
-   "viewfeatureattributes.title": "Attributs de l'objet"
+   "viewfeatureattributes.title": "Attributs de l'objet",
+   "editfeatureattributes.title": "Modifier les attributs de l'objet",
+   "editfeatureattributes.valid": "Enregistrer",
+   "editfeatureattributes.discard": "Annuler",
+   "managelayerattributes.title": "Attributs de la couche",
+   "managelayerattributes.addlabel": "Ajouter",
+   "managelayerattributes.dellabel": "Supprimer"
  }
