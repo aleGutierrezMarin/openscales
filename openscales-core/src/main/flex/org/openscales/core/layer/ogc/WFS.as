@@ -6,7 +6,6 @@ package org.openscales.core.layer.ogc
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
@@ -18,6 +17,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.params.ogc.WFSParams;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -315,12 +315,20 @@ package org.openscales.core.layer.ogc
 		
 		private function onTimerEnd(event:TimerEvent):void
 		{
+			// To activate (if needed) SelectFeaturesHandler
+			var evt:MapEvent = new MapEvent(MapEvent.ACTIVATE_HANDLER, this.map);
+			this.map.dispatchEvent(evt);
+			
 			this._centerChanged = true;
 			this._resolutionChanged = true;
 		}
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
 		{
+			// To disactivate (if needed) SelectFeaturesHandler
+			var evt:MapEvent = new MapEvent(MapEvent.DISACTIVATE_HANDLER, this.map);
+			this.map.dispatchEvent(evt);
+			
 			this._timer.reset();
 			this._timer.start();
 			this._resolutionChanged = true;

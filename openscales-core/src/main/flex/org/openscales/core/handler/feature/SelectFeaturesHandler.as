@@ -7,7 +7,6 @@ package org.openscales.core.handler.feature
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -29,6 +28,7 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -133,6 +133,8 @@ package org.openscales.core.handler.feature
 		private var _enableMultipleSelection:Boolean = false;
 		private var _clickOut:Boolean = true;
 		private var _toggle:Boolean = true;
+		private var _overSelectionState:Boolean;
+		private var _changeState:Boolean = false;
 
 		/**
 		 * Constructor of the handler.
@@ -148,7 +150,7 @@ package org.openscales.core.handler.feature
 			this.enableClickSelection = enableClickSelection;
 			this.enableBoxSelection = enableBoxSelection;
 			this.enableOverSelection = enableOverSelection;
-
+			this._overSelectionState = enableOverSelection;
 		}
 
 		public function set enableClickSelection(value:Boolean):void {
@@ -440,6 +442,30 @@ package org.openscales.core.handler.feature
 				this.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
 				this.map.addEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
+				this.map.addEventListener(MapEvent.ACTIVATE_HANDLER, this.onActivateHandler);
+				this.map.addEventListener(MapEvent.DISACTIVATE_HANDLER, this.onDisactivateHandler);
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		private function onActivateHandler(event:MapEvent):void{
+			
+			if(this._changeState){
+				this.enableOverSelection = this._overSelectionState;
+				this._changeState = false;
+			}
+		}
+		/**
+		 * @private
+		 */
+		private function onDisactivateHandler(event:MapEvent):void{
+			
+			if(!this._changeState){
+				this._overSelectionState = this.enableOverSelection;
+				this.enableOverSelection = false;
+				this._changeState = true;
 			}
 		}
 
@@ -467,6 +493,8 @@ package org.openscales.core.handler.feature
 				this.map.removeEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
 				this.map.removeEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
+				this.map.removeEventListener(MapEvent.ACTIVATE_HANDLER, this.onActivateHandler);
+				this.map.removeEventListener(MapEvent.DISACTIVATE_HANDLER, this.onDisactivateHandler);
 			}
 			// Listeners of the super class
 			super.unregisterListeners();
