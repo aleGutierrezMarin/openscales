@@ -86,5 +86,8 @@
    "MeasureBar.azimuthtooltip": "Mesure d'azimut",
    "MeasureBar.surfacetooltip": "Mesure de surface",
    
-   "viewfeatureattributes.title": "Attributs de l'objet"
+   "viewfeatureattributes.title": "Attributs de l'objet",
+   "editfeatureattributes.title": "Edit feature attributes",
+   "editfeatureattributes.valid": "Enregistrer",
+   "editfeatureattributes.discard": "Annuler"
  }

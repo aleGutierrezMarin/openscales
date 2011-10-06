@@ -13,23 +13,14 @@
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
-			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
-			import org.openscales.core.feature.PointFeature;
-			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
-			import org.openscales.fx.control.drawing.popup.ChangeAttributes;
+			import org.openscales.fx.control.drawing.popup.EditFeatureAttributes;
 			import org.openscales.fx.control.drawing.popup.ViewFeatureAttributes;
-			import org.openscales.fx.control.layer.LayerManager;
-			import org.openscales.geometry.Point;
-			import org.openscales.geometry.basetypes.Location;
-			import org.openscales.geometry.basetypes.Pixel;
-			
-			import spark.components.TextInput;
 			
 			[Bindable]
 			private var _alpha:Number = 1;
@@ -129,7 +120,7 @@
 					for(var i:uint = this.target.attributesId.length;i>0;--i) {
 						if(!event.feature.attributes[this.target.attributesId[i-1]]) {
 							if(this.target.attributesId[i-1]!="id")
-								event.feature.attributes[this.target.attributesId[i-1]]=null;
+								event.feature.attributes[this.target.attributesId[i-1]]="";
 							else
 								event.feature.name = event.feature.name + " / " + this.target.name;
 						}
@@ -144,11 +135,8 @@
 			private function onSelectedFeature(event:FeatureEvent):void
 			{
 				if(this._editHandlerActivated && this.target != null){
-					_index = this.searchFeature(event.feature);
-					if(_index < 0)
-						return;
 					event.stopImmediatePropagation();
-					new ChangeAttributes(this._map, this.target.attributesId, event.feature, this.onChangeAttributes);
+					new EditFeatureAttributes().feature = event.feature;
 				}
 				else{
 					event.stopImmediatePropagation();
@@ -210,21 +198,6 @@
 						}
 					}
 				}
-			}
-			
-			/**
-			 * This function returns the index of the feature
-			 */
-			private function searchFeature(feature:Feature):int{
-				
-				if(feature.layer == null || feature.layer != this.target)
-					return -1;
-				/*
-				for(var i:uint = 0; i < this.target.attributesVal.length; i++){
-					if(this.target.attributesVal[i].identifier == feature.name)
-						return i;
-				}*/
-				return -1;
 			}
 			
 			/**

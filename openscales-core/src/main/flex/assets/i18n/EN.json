@@ -86,6 +86,9 @@
    "MeasureBar.azimuthtooltip": "Measure azimuth",
    "MeasureBar.surfacetooltip": "Measure surface",
    
-   "viewfeatureattributes.title": "Feature attributes"
+   "viewfeatureattributes.title": "Feature attributes",
+   "editfeatureattributes.title": "Edit feature attributes",
+   "editfeatureattributes.valid": "save",
+   "editfeatureattributes.discard": "cancel"
    
  }
