@@ -36,6 +36,7 @@
 			
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
+			private var _selectHandlerActivated:Boolean = false;
 			private var _defaultAttributes:Vector.<String> = new <String>["id","description"];
 			private var _index:int;
 			private var _vectorLayer:VectorLayer;
@@ -54,17 +55,22 @@
 					this._map.removeEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 					this._map.removeEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 					this._map.removeEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
-					this._map.removeEventListener(DrawingEvent.EDIT_HANDLER_DISACTIVATED, onChangeActiveHandler);
-					if(_editHandlerActivated)
+					this._map.removeEventListener(DrawingEvent.EDIT_HANDLER_DESACTIVATED, onChangeActiveHandler);
+					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_DESACTIVATED, onChangeActiveHandler);
+					if(_editHandlerActivated || _selectHandlerActivated)
 						this._map.removeEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
+						
 				}
 				this._map = value;
 				if(this._map) {
 					this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 					this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 					this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
-					this._map.addEventListener(DrawingEvent.EDIT_HANDLER_DISACTIVATED, onChangeActiveHandler);
-					if(_editHandlerActivated)
+					this._map.addEventListener(DrawingEvent.EDIT_HANDLER_DESACTIVATED, onChangeActiveHandler);
+					this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.addEventListener(DrawingEvent.SELECT_HANDLER_DESACTIVATED, onChangeActiveHandler);
+					if(_editHandlerActivated || _selectHandlerActivated)
 						this._map.addEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
 						
 				}
@@ -200,10 +206,24 @@
 							this._editHandlerActivated = true;
 						}
 						break;
-					case DrawingEvent.EDIT_HANDLER_DISACTIVATED:
+					case DrawingEvent.EDIT_HANDLER_DESACTIVATED:
 						if(this._editHandlerActivated) {
-							this._map.removeEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
+							if(!this._selectHandlerActivated)
+								this._map.removeEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
 							this._editHandlerActivated = false;
+						}
+						break;
+					case DrawingEvent.SELECT_HANDLER_ACTIVATED:
+						if(!this._selectHandlerActivated) {
+							this._map.addEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
+							this._selectHandlerActivated = true;
+						}
+						break;
+					case DrawingEvent.SELECT_HANDLER_DESACTIVATED:
+						if(this._selectHandlerActivated) {
+							if(!this._editHandlerActivated)
+								this._map.removeEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
+							this._selectHandlerActivated = false;
 						}
 						break;
 					default:
