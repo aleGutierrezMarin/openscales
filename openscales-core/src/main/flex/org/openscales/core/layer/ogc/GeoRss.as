@@ -5,8 +5,8 @@ package org.openscales.core.layer.ogc
 	import flash.net.URLLoader;
 	import flash.utils.Timer;
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -19,6 +19,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.utils.Trace;
 
 	/**
 	 * Rss layer; version 2.0 is supported
@@ -190,6 +191,8 @@ package org.openscales.core.layer.ogc
 					}
 					this.addFeature(this.featureVector[i]);
 				}
+				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_CHANGED, this);
+				this.map.dispatchEvent(evt);
 			}
 			else {
 				this.clear();
