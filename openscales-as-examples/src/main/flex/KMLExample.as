@@ -38,7 +38,7 @@ package
 			_map.size=new Size(1200, 700);
 			
 			// Add a base layer to the map	
-			var wmsLayer:WMS = new WMS("Scan","http://pp-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4");
+			var wmsLayer:WMS = new WMS("Scan","http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4");
 			wmsLayer.version = "1.3.0";
 			wmsLayer.layers = "SCANDEP_PNG_IGNF_LAMB93";
 			wmsLayer.projection = "EPSG:4326";

@@ -61,6 +61,8 @@
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
@@ -83,6 +85,7 @@
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanSkin"/>
+    <classEntry path="org.openscales.fx.control.skin.ScrollableContainerSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomThumbSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomTrackSkin"/>

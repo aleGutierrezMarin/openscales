@@ -15,7 +15,6 @@
     <sourceAttachmentPath/>
   </compiler>
   <applications>
-    <application path="FlexUnitApplication.mxml"/>
     <application path="FxExamples.mxml"/>
   </applications>
   <modules/>

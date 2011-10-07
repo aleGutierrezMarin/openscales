@@ -12,7 +12,7 @@
 				name="test"
 				numZoomLevels="22" 
 				useFeedTitle="true"
-				url="http://pp-gpp3-api-ign-fr.aw.atosorigin.com/dataexample/georssdep.rss" />
+				url="http://qlf-gpp3-api-ign-fr.aw.atosorigin.com/dataexample/georssdep.rss" />
 		
 		<!-- Handlers -->
 		<LayerManager/>
