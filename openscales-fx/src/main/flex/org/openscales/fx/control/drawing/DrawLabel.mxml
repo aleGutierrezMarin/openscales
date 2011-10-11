@@ -19,14 +19,15 @@
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
-			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
-			import org.openscales.core.handler.feature.draw.DrawLabelHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
+			import org.openscales.fx.control.drawing.popup.EditLabel;
 			import org.openscales.fx.control.layer.LayerManager;
+			import org.openscales.geometry.LabelPoint;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -42,8 +43,10 @@
 			private var _btnLabel:Class;
 			
 			private var _active:Boolean = true;
-			private var _handler:AbstractDrawHandler= new DrawLabelHandler();
 			private var _isClick:Boolean = false;
+			private var _style:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
+			private var _map:Map;
+			private var _target:VectorLayer;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -57,9 +60,6 @@
 			public function set active(value:Boolean):void{
 				
 				_active = value;
-				if(! _active){
-					_handler.active = false;
-				}
 			}
 			
 			/**
@@ -67,11 +67,11 @@
 			 */
 			public function get style():Style{
 				
-				return (this._handler as DrawLabelHandler).style;
+				return this._style;
 			}
 			public function set style(value:Style):void{
 				
-				(this._handler as DrawLabelHandler).style = value;
+				this._style = value;
 			}
 			
 			/**
@@ -79,17 +79,33 @@
 			 */
 			public function get map():Map{
 				
-				return _handler.map;
+				return this._map;
 			}
 			public function set map(value:Map):void{
 				
-				_handler.map = value;
-				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
-				_handler.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				this._map = value;
+				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
+				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				this._map.addEventListener(MouseEvent.CLICK, this.createLabel);
+			}
+			
+			/**
+			 * To create a LabelFeature
+			 */
+			private function createLabel(event:MouseEvent):void{
+				
+				if(this._active)
+				{
+					var pixel:Pixel = new Pixel(this._map.mouseX, this._map.mouseY);
+					var labelLocation:Location = this._map.getLocationFromMapPx(pixel);
+					var feature:LabelFeature = new LabelFeature(new LabelPoint(null, labelLocation.x, labelLocation.y));
+					feature.layer = this.target;
+					new EditLabel().feature = feature;
+				}
 			}
 			
 			/**
@@ -112,11 +128,11 @@
 			 */
 			public function get target():VectorLayer{
 				
-				return _handler.drawLayer;
+				return this._target;
 			}
 			public function set target(value:VectorLayer):void{
 				this.disactivate();
-				_handler.drawLayer = value;
+				this._target = value;
 			}
 			
 			/**
@@ -124,12 +140,12 @@
 			 */
 			private function activate():void{
 				
-				_handler.active = true;
+				this._active = true;
 				_alpha = 1;
 			}
 			private function disactivate():void{
 				
-				_handler.active = false;
+				this._active = false;
 				_alpha = 0.3;
 			}
 			
@@ -142,10 +158,10 @@
 					return;
 				
 				var evt:DrawingEvent;
-				if(this._handler.active){
+				if(this._active){
 					disactivate();
 					evt = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
-					this._handler.map.dispatchEvent(evt);
+					this._map.dispatchEvent(evt);
 					return;
 				}
 				
@@ -153,10 +169,10 @@
 				evt = new DrawingEvent(DrawingEvent.DRAW_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				evt.layer = this.target;
-				_handler.map.dispatchEvent(evt);
+				this._map.dispatchEvent(evt);
 				evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
 				evt.activeHandler = null;
-				_handler.map.dispatchEvent(evt);
+				this._map.dispatchEvent(evt);
 				activate();
 			}
 			
@@ -167,7 +183,7 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(this._handler.active && !this._isClick)
+				if(this._active && !this._isClick)
 					disactivate();
 				else
 					this._isClick = false;
@@ -180,7 +196,7 @@
 				
 				if(this.parentDocument is DrawingToolbar)
 				{
-					if(this._handler.active)
+					if(this._active)
 						disactivate();
 					
 					this.target = evt.layer;

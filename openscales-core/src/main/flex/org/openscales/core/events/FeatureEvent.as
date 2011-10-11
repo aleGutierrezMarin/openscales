@@ -45,6 +45,7 @@ package org.openscales.core.events
 		 * Event type dispatched when a click occur on a feature. 
 		 */
 		public static const FEATURE_CLICK:String="openscales.feature.click";
+		public static const FEATURE_SIMPLECLICK:String="openscales.feature.simpleclick";
 		
 		/**
 		 * Event type dispatched when a double click occur on a feature. 

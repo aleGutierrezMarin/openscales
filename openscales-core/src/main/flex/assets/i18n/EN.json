@@ -92,6 +92,7 @@
    "editfeatureattributes.discard": "cancel",
    "managelayerattributes.title": "Layer attributes",
    "managelayerattributes.addlabel": "add",
-   "managelayerattributes.dellabel": "delete"
-   
+   "managelayerattributes.dellabel": "delete",
+   "editlabel.label": "Label",
+   "editlabel.title": "Enter the label"
  }
