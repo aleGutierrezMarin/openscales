@@ -56,6 +56,7 @@
 					this._layer.map.addEventListener(LayerEvent.LAYER_ADDED, updateArrowsDisplay);
 					this._layer.map.addEventListener(LayerEvent.LAYER_CHANGED, updateArrowsDisplay);
 					this._layer.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, updateArrowsDisplay);
+					this._layer.map.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, updateArrowsDisplay);
 					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 				}
 			}
