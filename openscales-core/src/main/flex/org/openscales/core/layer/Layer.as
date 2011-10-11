@@ -480,13 +480,13 @@ package org.openscales.core.layer {
 			
 			var minRes:Resolution = this._minResolution;
 			
-			if(!this._minResolution || isNaN(this._minResolution.value) || !isFinite(this._minResolution.value))
+			/*if(!this._minResolution || isNaN(this._minResolution.value) || isFinite(this._minResolution.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
 					minRes = new Resolution(this.resolutions[this.resolutions.length-1], this.projection);
 					this._minResolution = minRes;
 				}
-			}
+			}*/
 			return this._minResolution;
 		}
 		
@@ -494,8 +494,11 @@ package org.openscales.core.layer {
 			
 			value = (value as Resolution);
 			
-			if(value.projection!=this.projection)
-				value = value.reprojectTo(this.projection);
+			if (this.projection != null)
+			{
+				if(value.projection!=this.projection)
+					value = value.reprojectTo(this.projection);
+			}
 			
 			this._minResolution = value;
 		}
@@ -507,14 +510,14 @@ package org.openscales.core.layer {
 			
 			var maxRes:Resolution = this._maxResolution;
 			
-			if(!this._maxResolution || isNaN(this._maxResolution.value) || !isFinite(this._maxResolution.value))
+			if(!this._maxResolution || isNaN(this._maxResolution.value) || isFinite(this._maxResolution.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
 					maxRes = new Resolution(this.resolutions[0], this.projection);
 					this._maxResolution = maxRes;
 				}
 			}
-			else
+			/*else
 			{
 				// if is valide
 				var i:int = 0;
@@ -533,7 +536,7 @@ package org.openscales.core.layer {
 					this._maxResolution = maxRes;
 				}
 				
-			}
+			}*/
 			
 			return this._maxResolution;
 		}
@@ -542,9 +545,11 @@ package org.openscales.core.layer {
 			
 			value = (value as Resolution);
 			
-			if(value.projection!=this.projection)
-				value = value.reprojectTo(this.projection);
-			
+			if (this.projection != null)
+			{
+				if(value.projection!=this.projection)
+					value = value.reprojectTo(this.projection);
+			}
 			this._maxResolution = value;
 		}
 		
