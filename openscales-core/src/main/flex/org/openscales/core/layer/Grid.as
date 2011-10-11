@@ -1066,10 +1066,10 @@ package org.openscales.core.layer
 				this.actualizeGridSize(this.map.extent);
 			}
 		}
-		override public function get minResolution():Resolution {
+		/*override public function get minResolution():Resolution {
 			var minRes:Resolution = super.minResolution;
 			
-			if(!minRes || isNaN(minRes.value) || !isFinite(minRes.value))
+			if(!minRes || isNaN(minRes.value) || isFinite(minRes.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
 					minRes = new Resolution(this.resolutions[this.resolutions.length - 1], this.projection);
@@ -1090,7 +1090,7 @@ package org.openscales.core.layer
 			}
 			
 			return minRes;
-		}
+		}*/
 	}
 }
 
