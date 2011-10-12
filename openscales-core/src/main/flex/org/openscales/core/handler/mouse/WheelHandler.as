@@ -4,6 +4,7 @@ package org.openscales.core.handler.mouse {
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.DrawingEvent;
 	
@@ -19,40 +20,32 @@ package org.openscales.core.handler.mouse {
 		override protected function registerListeners():void {
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_WHEEL,this.onMouseWheel);
-				this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateHandler);
-				this.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, activateHandler);
 			}
 		}
 		
-		private function disactivateHandler(event:DrawingEvent):void{
-			this.active = false;
-		}
-		private function activateHandler(event:DrawingEvent):void{
-			this.active = true;
-		}
-		
+		/**
+		 * @private
+		 */
 		override protected function unregisterListeners():void {
 			if (this.map) {
-				this.map.removeEventListener(MouseEvent.MOUSE_WHEEL,this.onMouseWheel);
+				this.map.removeEventListener(MouseEvent.MOUSE_WHEEL, this.onMouseWheel);
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		private function onMouseWheel(event:MouseEvent):void {
-			if (this.map) {
+			if(this.map && this.map.mouseNavigationEnabled)
+			{
 				var mousePx:Pixel = new Pixel(this.map.mouseX, this.map.mouseY);
-				if (event.delta > 0)
-				{
-					//this.map.zoomIn();
+				if(event.delta > 0) {
 					this.map.zoomIn(mousePx);
-				}else
-				{
+				}
+				else {
 					this.map.zoomOut(mousePx);
-					//this.map.zoomOut(mousePx);
 				}
 			}
-		}		
+		}
 	}
 }

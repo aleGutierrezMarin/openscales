@@ -74,29 +74,19 @@ package org.openscales.core.handler.mouse
 		 * @inheritDoc
 		 */ 
 		override protected function registerListeners():void{
-			if (this.map) {
-				this.map.addEventListener(MouseEvent.MOUSE_DOWN,startBox);
-				if (this.map.stage)
-				{
+			if (this.map){
+				this.map.addEventListener(MouseEvent.MOUSE_DOWN, startBox);
+				if (this.map.stage){
 					this.registerMouseUp();
 				}
 				this.map.addEventListener(MapEvent.DRAG_START, dragStart);
 				this.map.addEventListener(MapEvent.DRAG_END, dragEnd);
-				this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateHandler);
-				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateHandler);
-				this.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, activateHandler);
 			}
 		}
 		
-		private function disactivateHandler(event:DrawingEvent):void{
-			this.active = false;
-		}
-		private function activateHandler(event:DrawingEvent):void{
-			this.active = true;
-		}
-		
+		/**
+		 * @private
+		 */
 		private function registerMouseUp():void{
 			this.map.stage.addEventListener(MouseEvent.MOUSE_UP,endBox);
 		}
@@ -105,16 +95,14 @@ package org.openscales.core.handler.mouse
 		 * @inheritDoc
 		 */ 
 		override protected function unregisterListeners():void{
-			if (this.map) {
-				this.map.removeEventListener(MouseEvent.MOUSE_DOWN,startBox);
-				if(this.map.stage)
-				{
-					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP,endBox);
-					this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+			if (this.map){
+				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, startBox);
+				if(this.map.stage){
+					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP, endBox);
+					this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE, expandArea);
 				}
 				this.map.removeEventListener(MapEvent.DRAG_START, dragStart);
 				this.map.removeEventListener(MapEvent.DRAG_END, dragEnd);
-				//this.map.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 			}
 		}
 		
@@ -135,7 +123,7 @@ package org.openscales.core.handler.mouse
 		private function startBox(e:MouseEvent) : void {
 			
 			
-			if(!_shiftMode || !e.shiftKey || _dragging) return;
+			if(!_shiftMode || !e.shiftKey || _dragging || !this.map.mouseNavigationEnabled) return;
 			
 			//this.map.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 			this.registerMouseUp();

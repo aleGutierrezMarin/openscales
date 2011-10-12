@@ -5,10 +5,10 @@ package org.openscales.core.handler.mouse
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.DrawingEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
@@ -24,19 +24,14 @@ package org.openscales.core.handler.mouse
 		/**
 		 * @private 
 		 */ 
-		
 		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
 		private var _offset:Pixel = null;
 		private var _layerContainerPositionBeforeDrag:Pixel =null;
-		
 		private var _mouseOffsetLayerContainerCenter:Pixel = new Pixel();
-		
 		private var _firstDrag:Boolean = true;
-		
 		private var _dragging:Boolean = false;
-		
-		private var _previousMapPosition:Pixel = new Pixel(0, 0);
+		private var _previousMapPosition:Pixel = new Pixel(0,0);
 		
 		/**
 		 * Used to store the center when we reach the limit of the max extend.
@@ -44,12 +39,10 @@ package org.openscales.core.handler.mouse
 		private var _lastValidCenter:Location = null;
 		
 		/**
-		 *Callbacks function
+		 * Callbacks function
 		 */
 		private var _onStart:Function=null;
 		private var _oncomplete:Function=null;
-		
-		private var _drawingEventSensitive:Boolean = true;
 		
 		/**
 		 * DragHandler constructor
@@ -62,40 +55,25 @@ package org.openscales.core.handler.mouse
 			super(map,active);
 		}
 		
-		override protected function registerListeners():void{
-			if (this.map) {
+		override protected function registerListeners():void
+		{
+			if(this.map)
+			{
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-				//this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 				if(this.map.stage)
 					this.map.stage.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
-				this.map.addEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
-				if (this._drawingEventSensitive) {
-					this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateHandler);
-					this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateHandler);
-					this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateHandler);
-					this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateHandler);
-					this.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, activateHandler);
-				}
 			}
 		}
 		
-		public function set drawingEventSensitive(value:Boolean):void{
-			this._drawingEventSensitive = value;
-		}
-		private function disactivateHandler(event:DrawingEvent):void{
-			this.active = false;
-		}
-		private function activateHandler(event:DrawingEvent):void{
-			this.active = true;
-		}
-		
-		override protected function unregisterListeners():void{
-			if (this.map) {
+		override protected function unregisterListeners():void
+		{
+			if(this.map)
+			{
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-				//this.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.map.removeEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 				if(this.map.stage)
 					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
-				this.map.removeEventListener(MapEvent.LAYERCONTAINER_IS_VISIBLE, this.onLayerContainerVisible);
 			}
 		}
 		
@@ -105,10 +83,11 @@ package org.openscales.core.handler.mouse
 		protected function onMouseDown(event:MouseEvent):void
 		{
 			if(event.shiftKey) return;
+			if(!this.map.mouseNavigationEnabled) return;
 			
 			this.startDrag();
 			
-			if(this.onstart!=null && event)
+			if(this.onstart != null && event)
 				this.onstart(event as MouseEvent);
 		}
 		
