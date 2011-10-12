@@ -43,6 +43,7 @@
 			private var _btnLabel:Class;
 			
 			private var _active:Boolean = true;
+			private var _drawingActivated:Boolean = false;
 			private var _isClick:Boolean = false;
 			private var _style:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
 			private var _map:Map;
@@ -98,7 +99,7 @@
 			 */
 			private function createLabel(event:MouseEvent):void{
 				
-				if(this._active)
+				if(this._drawingActivated)
 				{
 					var pixel:Pixel = new Pixel(this._map.mouseX, this._map.mouseY);
 					var labelLocation:Location = this._map.getLocationFromMapPx(pixel);
@@ -140,12 +141,12 @@
 			 */
 			private function activate():void{
 				
-				this._active = true;
+				this._drawingActivated = true;
 				_alpha = 1;
 			}
 			private function disactivate():void{
 				
-				this._active = false;
+				this._drawingActivated = false;
 				_alpha = 0.3;
 			}
 			
@@ -158,7 +159,7 @@
 					return;
 				
 				var evt:DrawingEvent;
-				if(this._active){
+				if(this._drawingActivated){
 					disactivate();
 					evt = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
 					this._map.dispatchEvent(evt);
@@ -183,7 +184,7 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(this._active && !this._isClick)
+				if(this._drawingActivated && !this._isClick)
 					disactivate();
 				else
 					this._isClick = false;
@@ -196,7 +197,7 @@
 				
 				if(this.parentDocument is DrawingToolbar)
 				{
-					if(this._active)
+					if(this._drawingActivated)
 						disactivate();
 					
 					this.target = evt.layer;
