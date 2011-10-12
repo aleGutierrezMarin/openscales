@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- LayerManager Flex control, used to change layer order or visbility -->
+<Control xmlns="org.openscales.fx.control.*"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="250" height="200"      
+		 creationComplete="configure()" xmlns:drawing="org.openscales.fx.control.drawing.*" xmlns:openscales="http://openscales.org">
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.fxg.ButtonCloseOver;
+			import assets.fxg.ButtonCloseUp;
+			
+			import flashx.textLayout.formats.BackgroundColor;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
+			import mx.controls.RadioButton;
+			import mx.core.Application;
+			import mx.core.IFactory;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ScrollEvent;
+			import mx.events.SliderEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.control.LayerManager;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.LayerManagerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.events.OpenScalesEvent;
+			import org.openscales.core.handler.mouse.ClickHandler;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.Layer;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.fx.control.IconButton;
+			import org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer;
+			
+			import spark.components.Group;
+			import spark.components.HSlider;
+			import spark.components.Label;
+			import spark.components.VSlider;
+			import spark.components.supportClasses.ItemRenderer;
+			import spark.primitives.Rect;
+			
+			/**
+			 * Title value for the Panel
+			 */
+			[Bindable]
+			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.title');
+			
+			/**
+			 * Indicates if the drawing tools should be shown
+			 */
+			
+			/**
+			 * The dataProvider use for the list.
+			 */
+			protected var _layers:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * @private
+			 * Options for the LayerManager renderer (for additionnal controls to display like Metadatas, legend...)
+			 * @default null
+			 */
+			[Bindable]
+			private var _rendererOptions:Object = null;
+			
+			
+			/**
+			 * @private
+			 * The itemRenderer class for display item of the LayerMananger list
+			 * @default DefaultLayerRenderer
+			 */
+			private var _itemRenderer:Class = DefaultLayerManagerItemRenderer;
+			
+			
+			[Bindable]
+			private var _displayDrawing:Boolean = false;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icon-minus.gif")]
+			private var _btnMinus:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icon-plus.gif")]
+			private var _btnPlus:Class;
+			
+			[Bindable]
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			
+			[Bindable]
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
+			
+			/**
+			 * Configure the object
+			 */
+			public function configure():void
+			{
+				
+				var factory:ClassFactory = new ClassFactory(this._itemRenderer) 
+				
+				// only define params for itemRenderer taht are or inherit from DefaultLayerManagerItemRenderer
+				var instance:Object = new this._itemRenderer();
+					
+				if(instance is DefaultLayerManagerItemRenderer)
+				{
+					factory.properties = {
+						rendererOptions: this._rendererOptions,
+							layerManager: this
+					}
+						
+					if(this._rendererOptions && this._rendererOptions['displayDrawing'])
+						this._displayDrawing = true;
+				}
+		
+				layerList.itemRenderer = factory;
+			}
+			
+			
+			
+			/**
+			 * Set the map
+			 * @param value
+			 */	 
+			override public function set map(value:Map):void {
+				
+				super.map = value;
+				
+				if(this._map != null) 
+				{
+					//stock layer by type : baselayer and overlays
+					var overlayArray:Vector.<Layer>  = this.map.layers;
+					var ac:ArrayCollection = new ArrayCollection();
+					var i:int = overlayArray.length;
+					for(i;i>0;--i)
+						ac.addItem(overlayArray[i-1]);
+					this.layers = ac;
+					
+					_layers.sort = new MapSyncSort(_map);
+					_layers.filterFunction = shallDisplayLayer;
+					_layers.refresh();
+				}
+				
+				if(this.active){
+					
+					this.activate();
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				panelTitle = Catalog.getLocalizationForKey('layerswitcher.title');
+				_iconify = Catalog.getLocalizationForKey('component.iconify');
+				_toggle = Catalog.getLocalizationForKey('component.toggle');
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				if(this._map)
+				{
+					//Listening of layer event
+					this._map.addEventListener(LayerEvent.LAYER_ADDED,onLayerAdded);
+				//	this._map.addEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
+					this._map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+					this._map.addEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{	
+				super.desactivate();
+				
+				if(this._map)
+				{
+					this._map.removeEventListener(LayerEvent.LAYER_ADDED,onLayerAdded);
+				//	this._map.removeEventListener(LayerEvent.LAYER_CHANGED,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_REMOVED,onLayerRemoved);
+					this._map.removeEventListener(LayerEvent.LAYER_CHANGED_ORDER,this.refresh);
+					this._map.removeEventListener(LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED,onLayerDisplayInLayerManagerChange);
+				}
+			}
+			
+			/**
+			 * Refresh the LayerSwitcher when a layer is add, delete or update
+			 * @param event Layer event
+			 */
+			public function refresh(event:Event = null):void {	
+				
+				_layers.refresh();
+			//	this.invalidateDisplayList();
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+				
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				
+				// Redraws all the layers
+				if(this.layerList){
+					var rendererBackup:IFactory = this.layerList.itemRenderer;
+					this.layerList.itemRenderer = null;
+					this.layerList.itemRenderer = rendererBackup;
+				}
+			}
+			
+			protected function onLayerAdded(event:LayerEvent):void{
+				
+				this._layers.addItemAt(event.layer,0);
+				this.refresh();
+			}
+			
+			protected function onLayerRemoved(event:LayerEvent):void{
+				
+				var layer:Layer = event.layer as Layer;
+				_layers.filterFunction = null;
+				_layers.sort = null;
+				_layers.refresh();
+				var index:int = _layers.getItemIndex(layer);
+				if(index != -1){
+					_layers.removeItemAt(index);
+				}
+				_layers.filterFunction = shallDisplayLayer;
+				_layers.sort = new MapSyncSort(_map);
+				_layers.refresh();
+			}
+			
+			protected function onLayerDisplayInLayerManagerChange(event:LayerEvent):void{
+				
+				this.refresh();
+			}
+			
+			/**
+			 * Checks if the layer shall be displayed in the LayerManager
+			 */
+			public function shallDisplayLayer(layer:Layer):Boolean{
+				
+				return layer.displayInLayerManager;
+			}
+			
+			/**
+			 * Moves given layer closer to the user, 
+			 * unless it is already on top of all the other layers 
+			 */
+			public function moveForward(layer:Layer):void{
+				
+				var index:uint = _layers.getItemIndex(layer);
+				
+				if(index > 0){
+					
+					var nextLayer:Layer = _layers.getItemAt(index-1) as Layer;
+					var nextLayerPositionInMap:int = _map.layers.indexOf(nextLayer);
+					
+					_map.changeLayerIndex(layer,nextLayerPositionInMap);	
+				}
+			}
+			
+			/**
+			 * Moves back the layer,
+			 * unless it is already behing all the other layers 
+			 */
+			public function moveBack(layer:Layer):void{
+				
+				var index:uint = _layers.getItemIndex(layer);
+				
+				if(index < _layers.length -1){
+					
+					var nextLayer:Layer = _layers.getItemAt(index+1) as Layer;
+					var nextLayerPositionInMap:int = _map.layers.indexOf(nextLayer);
+					
+					_map.changeLayerIndex(layer,nextLayerPositionInMap);	
+				}
+			}
+			
+			/**
+			 * Moves layer at given index
+			 */
+			public function moveLayerAtIndex(layer:Layer,index:uint):void{
+				
+				if( index < 0 && index > _layers.length-1 ){
+					return;
+				}
+				
+				var layerAtIndex:Layer = _layers.getItemAt(index) as Layer;
+				var mapIndex:int = _map.layers.indexOf(layerAtIndex);
+				_map.changeLayerIndex(layer,mapIndex);
+			}
+			
+			/**
+			 * Update layers order when a user change it
+			 * @param event Drag event
+			 */
+			public function changeLayerOrder(event:DragEvent):void{
+				var layer:Layer = layerList.selectedItem as Layer;
+				this.map.changeLayerIndex(layer,layerList.selectedIndex);
+			}
+			
+			// getter / setter
+			/**
+			 * The list of layers displayed in the LayerSwitcher
+			 */
+			[Bindable]
+			public function get layers():ArrayCollection
+			{
+				return this._layers;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set layers(value:ArrayCollection):void
+			{
+				this._layers=value;
+			}
+			
+			/**
+			 * Options for the LayerManager renderer (for additionnal controls to display like Metadatas, legend...)
+			 */
+			public function get rendererOptions():Object
+			{
+				return this._rendererOptions;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set rendererOptions(value:Object):void
+			{
+				this._rendererOptions=value;
+			}
+			
+			/**
+			 * The itemRenderer for the list contains by the LayerSwitcher
+			 */
+			public function get itemRenderer():Class
+			{
+				return this._itemRenderer;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set itemRenderer(value:Class):void
+			{
+				this._itemRenderer=value;
+				
+				this.configure();
+			}
+			
+			/**
+			 * 
+			 */
+			override public function toggleDisplay(event:Event=null):void{
+				
+				super.toggleDisplay();
+				var newEvent:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				newEvent.componentName = "LayerSwitcher";
+				newEvent.componentIconified = this._isReduced;
+				this._map.dispatchEvent(newEvent);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Group visible="{this._isReduced}" includeInLayout="{this._isReduced}">
+		<s:Button label="+" click="{this.toggleDisplay()}" toolTip="{this._toggle}" width="30" />
+	</s:Group>
+	<s:Group visible="{!this._isReduced}" includeInLayout="{!this._isReduced}">
+		<s:layout>
+			<s:HorizontalLayout gap="-35" />
+		</s:layout>
+		
+		<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}"> 
+			
+			<s:Group height="{this.height-35}" width="{this.width}" >
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>	
+				<s:Group visible="{this._displayDrawing}" includeInLayout="{this._displayDrawing}">
+					<drawing:AddVectorLayer map="{this.map}" />
+					<drawing:ImportFeature map="{this.map}" x="150" />
+				</s:Group>
+				<s:List id="layerList" 
+						dropEnabled="false"
+						dragEnabled="false"
+						dragMoveEnabled="false"
+						dataProvider="{this.layers}"
+						width="{this.width-5}"
+						height="100%"
+						x="0"
+						y="0"
+						borderVisible="false">
+					<s:layout>
+						<s:VerticalLayout horizontalAlign="justify"
+										  variableRowHeight="true"
+										  requestedRowCount="4" />
+					</s:layout>
+				</s:List>
+			</s:Group>
+			
+		</s:Panel>
+		<s:Group>
+			<s:Button label="-" click="{this.toggleDisplay()}" toolTip="{this._iconify}"
+					  width="30" y="5" />
+		</s:Group>
+	</s:Group>
+	
+</Control>
+
