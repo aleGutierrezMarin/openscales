@@ -67,6 +67,9 @@ package org.openscales.core.handler.mouse
 		 * @param active Boolean defining if the handler is active or not (default=true)
 		 */ 
 		public function ZoomBoxHandler(shiftMode:Boolean=true, map:Map=null, active:Boolean=true):void{
+			if (!shiftMode) {
+				// Désactiver mouse navigation sur la map
+			}
 			super(map, active);
 		}
 		
@@ -112,8 +115,10 @@ package org.openscales.core.handler.mouse
 					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP,endBox);
 					this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
 				}
-				this.map.removeEventListener(MapEvent.DRAG_START, dragStart);
-				this.map.removeEventListener(MapEvent.DRAG_END, dragEnd);
+				if (shiftMode) {
+					this.map.removeEventListener(MapEvent.DRAG_START, dragStart);
+					this.map.removeEventListener(MapEvent.DRAG_END, dragEnd);
+				}
 				//this.map.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 			}
 		}
@@ -130,12 +135,17 @@ package org.openscales.core.handler.mouse
 		 * @private
 		 * 
 		 * Method called on MOUSE_DOWN event
-		 *  It create a selectio nrecantgle and add MOUSE_MOVE event handling to the map
+		 *  It create a selection recantgle and add MOUSE_MOVE event handling to the map
 		 */ 
 		private function startBox(e:MouseEvent) : void {
 			
-			
-			if(!_shiftMode || !e.shiftKey || _dragging) return;
+			//if(!_shiftMode || !e.shiftKey || _dragging) return;
+			if (shiftMode) {
+				if (!e.shiftKey || _dragging) return;
+			}
+			else {
+				if (_dragging) return;
+			}
 			
 			//this.map.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 			this.registerMouseUp();
@@ -210,6 +220,9 @@ package org.openscales.core.handler.mouse
 		 */
 		public function set shiftMode(value:Boolean):void
 		{
+			if (!value) {
+				// Désactiver mouse navigation sur la map
+			}
 			_shiftMode = value;
 		}
 		

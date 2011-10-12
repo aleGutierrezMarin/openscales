@@ -52,6 +52,7 @@
    "mouseposition.centimeters": "centimètres",
    "mouseposition.decimaldegrees":"degrés décimaux",
    "mouseposition.dms": "degrés sexagécimaux",
+   "mouseposition.NSEW": "NSEO",
    
    "pan.N": "N",
    "pan.S": "S",

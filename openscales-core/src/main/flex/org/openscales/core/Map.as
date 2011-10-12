@@ -15,6 +15,7 @@ package org.openscales.core
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
+	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
 	import org.openscales.core.i18n.provider.I18nJSONProvider;
 	import org.openscales.core.layer.Layer;
@@ -162,6 +163,7 @@ package org.openscales.core
 			I18nJSONProvider.addTranslation(ENLocale);
 			I18nJSONProvider.addTranslation(FRLocale);
 			
+			Catalog.catalog.addEventListener(I18NEvent.LOCALE_CHANGED, this.localeChanged);
 			this._projection = projection;
 			this.size = new Size(width, height);
 			// It is necessary to draw something before to define the size...
@@ -186,7 +188,13 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
 			this._initialized = true;
 		}
-
+		
+		private function localeChanged(event:I18NEvent):void {
+			if(event.locale == Locale.activeLocale) {
+				this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,Locale.activeLocale));
+			}
+		}
+		
 		/**
 		 * Reset all layers, handlers and controls
 		 */

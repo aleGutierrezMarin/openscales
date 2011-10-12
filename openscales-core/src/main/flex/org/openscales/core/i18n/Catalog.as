@@ -40,10 +40,9 @@ package org.openscales.core.i18n
 			else{ // the language doesn't exist, create it and put the key value
 				hmTmp = new HashMap();
 				_hmCatalog.put(locale.localeKey, hmTmp);
+				Catalog.catalog.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_ADDED, locale));
 			}
 			hmTmp.put(key,translation);
-			
-			Catalog.catalog.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_ADDED, locale));
 		}
 		
 		

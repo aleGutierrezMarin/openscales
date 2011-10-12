@@ -72,6 +72,7 @@
 	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
 	<component id="YahooSearch" class="org.openscales.fx.control.search.YahooSearch" />
+	<component id="OpenLSSearch" class="org.openscales.fx.control.search.OpenLSSearch" />
 	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
 	<component id="ScaleLine" class="org.openscales.fx.control.ScaleLine" />
 	<component id="NumericScale" class="org.openscales.fx.control.NumericScale" />

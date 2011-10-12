@@ -61,6 +61,9 @@
 					case "yahoo":
 						state = new YahooSearchExample();
 						break;
+					case "openLS":
+						state = new OpenLSSearchExample();
+						break;
 					case "drawedit":
 						state = new DrawingExample();
 						break;
@@ -176,6 +179,7 @@
 				<s:Button id="overview" label="Overview map" click="changeState(event)" width="100%"/>
 				<s:Button id="overviewRatio" label="Overview ratio map" click="changeState(event)" width="100%"/>
 				<s:Button id="yahoo" label="with Yahoo geocoder" click="changeState(event)" width="100%"/>
+				<s:Button id="openLS" label="with OpenLS" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Features handling" width="100%" height="100%">
 				<s:layout>
