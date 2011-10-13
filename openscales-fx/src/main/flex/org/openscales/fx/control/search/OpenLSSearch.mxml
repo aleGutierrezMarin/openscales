@@ -2,7 +2,7 @@
 <!--- Control used to request OpenLS service -->
 <Control xmlns="http://openscales.org"  xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"  xmlns:mx="library://ns.adobe.com/flex/mx"
-		 minWidth="300" minHeight="100" initialize="init();" creationComplete="queryInput.setFocus();" >
+		 minWidth="300" minHeight="100" initialize="init();" creationComplete="queryInput.setFocus();" xmlns:autocomplete="org.openscales.fx.autocomplete.*" >
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
@@ -13,12 +13,20 @@
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.basetypes.Resolution;
+			import org.openscales.core.feature.CustomMarker;
 			import org.openscales.core.feature.Marker;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.request.OpenLSRequest;
+			import org.openscales.core.style.marker.DisplayObjectMarker;
 			import org.openscales.core.utils.Trace;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
+			
+			[Embed(source="/assets/images/marker-blue.png")]
+			private var _markerIcon:Class;
+			
+			private var _xOffset:Number = 0;
+			private var _yOffset:Number = -12.5;
 			
 			private var SERVICE_URL:String='http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/ols/openls/openLsServlet';
 			
@@ -43,10 +51,27 @@
 			}
 			
 			/**
+			 * Getter and setter of marker
+			 */
+			public function get markerIcon():Class {
+				return this._markerIcon;
+			}			
+			public function set markerIcon(value:Class):void {				
+				this._markerIcon = (value) ? value : null;
+				this._xOffset = 0;
+				this._yOffset = 0;
+			}
+			
+			public function setMarkerIconOffsets(x:Number, y:Number): void {
+				this._xOffset = x;
+				this._yOffset = y;
+			}
+			
+			/**
 			 * Getter and setter of service url
 			 */
 			public function get serviceUrl():String {
-				return this._requestId;
+				return this.SERVICE_URL;
 			}			
 			
 			public function set serviceUrl(value:String):void {		
@@ -139,20 +164,50 @@
 					this.map.center = pos;
 					this.map.resolution = new Resolution(resolution);
 					this.map.addLayer(this._resultLayer);
-					this._resultLayer.addFeature(new Marker(new org.openscales.geometry.Point(pos.x, pos.y)), true, false);
+					var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _markerIcon(), pos, null, _xOffset, _yOffset); 
+					this._resultLayer.addFeature(marker, true, false);
 				}
 			}
+			
+			protected function onKeyUp(keyboardEvent:KeyboardEvent):void {
+				// Do nothing if not overrided
+				switch (keyboardEvent.keyCode){
+					case Keyboard.UP:
+					case Keyboard.DOWN:
+					case Keyboard.END:
+					case Keyboard.HOME:
+					case Keyboard.PAGE_UP:
+					case Keyboard.PAGE_DOWN:
+					case Keyboard.ENTER:
+					case Keyboard.TAB:
+					case Keyboard.ESCAPE:
+						break;
+					default:
+						onKeyUpIfNotSpecialKey(keyboardEvent);
+				}
+			}
+			
+			protected function onKeyUpIfNotSpecialKey(keyboardEvent:KeyboardEvent):void {
+				// Do nothing if not overrided
+			}
+			
 		]]>
 	</fx:Script>
-	
-	<s:VGroup width="100%" height="100%">
+	<s:Panel id="panel" title="OpenLS Search" width="100%" height="100%">
+	<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
+		<s:layout>
+			<s:VerticalLayout gap="5" />
+		</s:layout>
 		<mx:Form width="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
-			<s:HGroup width="100%">
+			<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="simpleSearch"  >
+				<s:layout>
+					<s:HorizontalLayout />
+				</s:layout>
 				<mx:FormItem label="Simple search" defaultButton="{button}" width="100%">
-					<s:TextInput id="queryInput" width="100%" text="" />
+					<autocomplete:AutoComplete id="queryInput" width="100%" text="" keyUp="onKeyUp(event)" />
 				</mx:FormItem>
 				<s:Button id="button" label="OK" click="search(event)" />
-			</s:HGroup>
+			</s:SkinnableContainer>
 		</mx:Form>
 		<mx:Label id="nbResults" text="Number of results: " visible="false"/>
 		<mx:Label id="result" text="Result: " visible="false"/>
@@ -167,6 +222,7 @@
 				<mx:DataGridColumn dataField="countryCode" headerText="Country"/>
 			</mx:columns>
 		</mx:DataGrid> 
-	</s:VGroup>
+	</s:SkinnableContainer>
+	</s:Panel>
 	
 </Control>

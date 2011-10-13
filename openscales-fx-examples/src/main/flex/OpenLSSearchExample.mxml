@@ -17,9 +17,7 @@ Otherwise, click on one of the results to center the map. -->
 		
 		<TraceInfo x="{width-200}" y="0" />
 		
-		<ControlPanel title="Geolocate with OpenLS" x="10" y="10">
-			<OpenLSSearch/>
-		</ControlPanel>
+		<OpenLSSearch x="10" y="10"/>
 		
 	</Map>
 
