@@ -69,6 +69,7 @@ package org.openscales.core.handler.mouse
 		public function ZoomBoxHandler(shiftMode:Boolean=true, map:Map=null, active:Boolean=true):void{
 			if (!shiftMode) {
 				// Désactiver mouse navigation sur la map
+				//map.mouseNavigationEnabled = false;
 			}
 			super(map, active);
 		}
