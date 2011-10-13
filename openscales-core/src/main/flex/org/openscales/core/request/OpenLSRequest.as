@@ -170,12 +170,11 @@ package org.openscales.core.request
 			if (!this.id || this.id=="") {
 				this.id = UID.gen_uid(); 
 			}
-			//Trace.debug("OpenLSRequest - requestId : " + this.id);
 			var request:String = '';
 			request += '<?xml version="1.0" encoding="UTF-8"?>';
-			request += '<XLS version="1.2" xmlns="http://www.opengis.net/xls" xmlns:xls="http://www.opengis.net/xls" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/xls">';
-			request += '<xls:RequestHeader srsName="epsg:4326"/>';
-			request += '<xls:Request maximumResponses="5" methodName="GeocodeRequest" requestID="'+this.id+'" version="1.0">';
+			request += '<XLS xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/xls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2"  xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.2/olsAll.xsd">';
+			request += '<RequestHeader srsName="epsg:4326"/>';
+			request += '<Request maximumResponses="5" methodName="GeocodeRequest" requestID="'+this.id+'" version="1.0">';
 			request += '<GeocodeRequest>';
 			
 			if (this.freeFormAddress) {
@@ -194,7 +193,7 @@ package org.openscales.core.request
 				request += '</Address>';				
 			}
 			request += '</GeocodeRequest>';
-			request += '</xls:Request>';
+			request += '</Request>';
 			request += '</XLS>';
 			return request;
 		}

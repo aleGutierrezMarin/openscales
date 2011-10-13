@@ -209,7 +209,7 @@ package org.openscales.fx.autocomplete
 		{
 			if (item == null) return "";
 			
-			if (labelFunction)
+			if (labelFunction != null)
 				return labelFunction(item);
 			else if (labelField && item[labelField])
 				return item[labelField];
