@@ -132,6 +132,7 @@
 					_handler.map.dispatchEvent(evt);
 					this.active = false;
 					this.disactivate();
+					_handler.map.mouseNavigationEnabled = true;
 				}
 			}
 			
@@ -161,6 +162,7 @@
 				
 				_handler.active = true;
 				_alpha = 1;
+				_handler.map.mouseNavigationEnabled = false;
 			}
 			private function disactivate():void{
 				
