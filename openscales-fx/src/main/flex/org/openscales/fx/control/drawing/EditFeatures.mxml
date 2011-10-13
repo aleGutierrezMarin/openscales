@@ -194,7 +194,11 @@
 			 * To disactivate the handler
 			 */
 			private function disactivate():void{
-				this.map.dispatchEvent(new DrawingEvent(DrawingEvent.EDIT_HANDLER_DESACTIVATED));
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_DESACTIVATED);
+				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
+				
 				// Manage the new FeatureLayerEditionHandler
 				_handler.active = false;
 				this._handler.map = null;
