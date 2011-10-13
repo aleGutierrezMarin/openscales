@@ -67,11 +67,8 @@ package org.openscales.core.handler.mouse
 		 * @param active Boolean defining if the handler is active or not (default=true)
 		 */ 
 		public function ZoomBoxHandler(shiftMode:Boolean=true, map:Map=null, active:Boolean=true):void{
-			if (!shiftMode) {
-				// Désactiver mouse navigation sur la map
-				//map.mouseNavigationEnabled = false;
-			}
 			super(map, active);
+			this.shiftMode = shiftMode;
 		}
 		
 		/**
@@ -128,7 +125,8 @@ package org.openscales.core.handler.mouse
 		 */ 
 		private function startBox(e:MouseEvent) : void {
 			
-			if(!_shiftMode || !e.shiftKey || _dragging || !this.map.mouseNavigationEnabled) return;
+			if ((_shiftMode && !e.shiftKey) || _dragging || !this.map.mouseNavigationEnabled) 
+				return; 
 			
 			//this.map.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 			this.registerMouseUp();
@@ -203,9 +201,6 @@ package org.openscales.core.handler.mouse
 		 */
 		public function set shiftMode(value:Boolean):void
 		{
-			if (!value) {
-				// Désactiver mouse navigation sur la map
-			}
 			_shiftMode = value;
 		}
 		
