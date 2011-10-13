@@ -2,6 +2,7 @@ package org.openscales.core.layer {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
@@ -480,13 +481,13 @@ package org.openscales.core.layer {
 			
 			var minRes:Resolution = this._minResolution;
 			
-			/*if(!this._minResolution || isNaN(this._minResolution.value) || isFinite(this._minResolution.value))
+			if(!this._minResolution || isNaN(this._minResolution.value) || !isFinite(this._minResolution.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
 					minRes = new Resolution(this.resolutions[this.resolutions.length-1], this.projection);
-					this._minResolution = minRes;
+					return minRes;
 				}
-			}*/
+			}
 			return this._minResolution;
 		}
 		
@@ -510,11 +511,11 @@ package org.openscales.core.layer {
 			
 			var maxRes:Resolution = this._maxResolution;
 			
-			if(!this._maxResolution || isNaN(this._maxResolution.value) || isFinite(this._maxResolution.value))
+			if(!this._maxResolution || isNaN(this._maxResolution.value) || !isFinite(this._maxResolution.value))
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
 					maxRes = new Resolution(this.resolutions[0], this.projection);
-					this._maxResolution = maxRes;
+					return maxRes;
 				}
 			}
 			/*else
