@@ -128,13 +128,7 @@ package org.openscales.core.handler.mouse
 		 */ 
 		private function startBox(e:MouseEvent) : void {
 			
-			//if(!_shiftMode || !e.shiftKey || _dragging) return;
 			if(!_shiftMode || !e.shiftKey || _dragging || !this.map.mouseNavigationEnabled) return;
-				if (!e.shiftKey || _dragging) return;
-			}
-			else {
-				if (_dragging) return;
-			}
 			
 			//this.map.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 			this.registerMouseUp();
