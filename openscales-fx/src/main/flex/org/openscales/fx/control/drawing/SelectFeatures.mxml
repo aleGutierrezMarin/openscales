@@ -183,7 +183,11 @@
 			 * To disactivate the handler
 			 */
 			private function disactivate():void{
-				this.map.dispatchEvent(new DrawingEvent(DrawingEvent.SELECT_HANDLER_DESACTIVATED));
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.SELECT_HANDLER_DESACTIVATED);
+				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
+				
 				// Manage the new SelectFeaturesHandler
 				this._handler.clearSelection();
 				this._handler.active = false;
