@@ -8,6 +8,7 @@ package org.openscales.core.handler.mouse
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.events.DrawingEvent;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.utils.Trace;
@@ -97,37 +98,17 @@ package org.openscales.core.handler.mouse
 		 */
 		public function ClickHandler(map:Map=null, active:Boolean=false, doubleClickZoomOnMousePosition:Boolean = true) {
 			super(map, active);
-			this.doubleClickZoomOnMousePosition = doubleClickZoomOnMousePosition;
-		}
-		
-		override public function set map(value:Map):void{
-			super.map = value;
-			if(value){
-				this.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, disactivateZoomOnDoubleClick);
-				this.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, disactivateZoomOnDoubleClick);
-				this.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, disactivateZoomOnDoubleClick);
-				this.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, activateZoomOnDoubleClick);
-				this.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, activateZoomOnDoubleClick);
-			}
-		}
-		
-		private function disactivateZoomOnDoubleClick(event:DrawingEvent):void{
-			this.doubleClickZoomOnMousePosition = false;
-		}
-		private function activateZoomOnDoubleClick(event:DrawingEvent):void{
-			this.doubleClickZoomOnMousePosition = true;
+			this._doubleClickZoomOnMousePosition = doubleClickZoomOnMousePosition;
 		}
 		
 		/**
 		 * Click function getter and setter
 		 */
 		public function get click():Function {
-			//Trace.debug(this.map.mouseX + " " + this.map.mouseY);
 			return this._click;
 		}
 		public function set click(value:Function):void {
 			this._click = value;
-			//Trace.debug(this.map.mouseX + " " + this.map.mouseY);
 		}
 		
 		/**
@@ -331,7 +312,7 @@ package org.openscales.core.handler.mouse
 		{
 			// TODO refactor double click
 			// If the handler is configured to zoom on mouse position
-			if(this.doubleClickZoomOnMousePosition){
+			if(this.doubleClickZoomOnMousePosition && this.map.mouseNavigationEnabled){
 				this.map.zoomIn(new Pixel(this.map.mouseX, this.map.mouseY));
 				//this.map.zoomToMousePosition(true);	
 			}else // Otherwise, zooming to current center

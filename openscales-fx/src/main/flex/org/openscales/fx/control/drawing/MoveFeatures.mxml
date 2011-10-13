@@ -78,7 +78,6 @@
 				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				_handler.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
-				_handler.drawingEventSensitive = false;
 			}
 			
 			/**
@@ -115,6 +114,7 @@
 				
 				_handler.active = true;
 				_alpha = 1;
+				_handler.map.mouseNavigationEnabled = false;
 			}
 			private function disactivate():void{
 				
@@ -130,22 +130,27 @@
 				if(!this.target)
 					return;
 				
+				// Disactive this component
 				var evt:DrawingEvent;
 				if(this._handler.active){
 					disactivate();
-					evt = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
-					this._handler.map.dispatchEvent(evt);
+					_handler.map.mouseNavigationEnabled = true;
 					return;
 				}
 				
+				// Disactive others drawing tools components
 				this._isClick = true;
 				evt = new DrawingEvent(DrawingEvent.MOVE_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				evt.layer = this.target;
 				_handler.map.dispatchEvent(evt);
+				
+				// Disactive mesure tools components
 				evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
 				evt.activeHandler = null;
 				_handler.map.dispatchEvent(evt);
+				
+				// Active this component
 				activate();
 			}
 			
@@ -169,9 +174,10 @@
 				
 				if(this.parentDocument is DrawingToolbar)
 				{
-					if(this._handler.active)
+					if(this._handler.active){
 						disactivate();
-					
+						_handler.map.mouseNavigationEnabled = true;
+					}
 					this.target = evt.layer;
 				}
 			}
