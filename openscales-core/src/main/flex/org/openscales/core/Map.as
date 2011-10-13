@@ -136,6 +136,8 @@ package org.openscales.core
 		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _layers:Vector.<Layer> = new Vector.<Layer>();
 		
+		private var _mouseNavigationEnabled:Boolean = true;
+		
 		/** 
 		 * @private
 		 * Url to the theme used to custom the components of the current map
@@ -1507,5 +1509,21 @@ package org.openscales.core
 		{
 			this._initialized = value;
 		}
+
+		/**
+		 * To enabled/disabled mouse navigation
+		 */
+		public function get mouseNavigationEnabled():Boolean
+		{
+			return _mouseNavigationEnabled;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set mouseNavigationEnabled(value:Boolean):void
+		{
+			_mouseNavigationEnabled = value;
+		}		
 	}
 }
