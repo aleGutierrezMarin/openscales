@@ -52,15 +52,14 @@
 			public function set map(value:Map):void{
 				_editHandlerActivated = false;
 				if(this._map) {
-					this._map.removeEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 					this._map.removeEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+					this._map.removeEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 					this._map.removeEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.EDIT_HANDLER_DESACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_DESACTIVATED, onChangeActiveHandler);
 					if(_editHandlerActivated || _selectHandlerActivated)
 						this._map.removeEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
-						
 				}
 				this._map = value;
 				if(this._map) {
@@ -72,7 +71,6 @@
 					this._map.addEventListener(DrawingEvent.SELECT_HANDLER_DESACTIVATED, onChangeActiveHandler);
 					if(_editHandlerActivated || _selectHandlerActivated)
 						this._map.addEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
-						
 				}
 			}
 			
@@ -201,33 +199,33 @@
 			private function onChangeActiveHandler(event:DrawingEvent):void{
 				switch(event.type) {
 					case DrawingEvent.EDIT_HANDLER_ACTIVATED:
-						if(!this._editHandlerActivated) {
+						if(!this._editHandlerActivated && event.layer == this.target) {
 							this._map.addEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
 							this._editHandlerActivated = true;
 						}
 						break;
 					case DrawingEvent.EDIT_HANDLER_DESACTIVATED:
-						if(this._editHandlerActivated) {
+						if(this._editHandlerActivated && event.layer == this.target) {
 							if(!this._selectHandlerActivated)
 								this._map.removeEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
 							this._editHandlerActivated = false;
 						}
 						break;
 					case DrawingEvent.SELECT_HANDLER_ACTIVATED:
-						if(!this._selectHandlerActivated) {
+						if(!this._selectHandlerActivated && event.layer == this.target) {
 							this._map.addEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
 							this._selectHandlerActivated = true;
 						}
 						break;
 					case DrawingEvent.SELECT_HANDLER_DESACTIVATED:
-						if(this._selectHandlerActivated) {
+						if(this._selectHandlerActivated && event.layer == this.target) {
 							if(!this._editHandlerActivated)
 								this._map.removeEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
 							this._selectHandlerActivated = false;
 						}
 						break;
 					default:
-						Trace.debug("This event is not suported");
+						Trace.debug("This event is not supported");
 				}
 			}
 			

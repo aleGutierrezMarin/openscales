@@ -28,8 +28,8 @@ package org.openscales.core.feature
 		public static function createDisplayObjectMarker(dispObj:DisplayObject,
 														 point:Location,
 														 data:Object=null,
-														 xOffset:Number=0,
-														 yOffset:Number=0):CustomMarker {
+														 xOffset:Number=NaN,
+														 yOffset:Number=NaN):CustomMarker {
 			var ret:CustomMarker = new CustomMarker();
 			ret.geometry = new Point(point.x,point.y);
 			ret.data = data;
@@ -113,8 +113,12 @@ package org.openscales.core.feature
 			var resolution:Number = this.layer.map.resolution.value;
 			var dX:int = -int(this.layer.map.x) + this.left;
 			var dY:int = -int(this.layer.map.y) + this.top;
-			x = dX /*- (this._clip.width/2)*/ + _xOffset + point.x / resolution;
-			y = dY + (this._clip.height/2) +_yOffset - point.y / resolution;
+			x = dX - (this._clip.width/2) + point.x / resolution;
+			if(_xOffset)
+				x+= _xOffset;
+			y = dY - (this._clip.height/2)- point.y / resolution;
+			if(_yOffset)
+				y+=_yOffset;
 			_clip.x = x;
 			_clip.y = y;
 		}

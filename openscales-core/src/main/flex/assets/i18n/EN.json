@@ -52,6 +52,7 @@
    "mouseposition.centimeters": "centimeters",
    "mouseposition.decimaldegrees":"decimal degrees",
    "mouseposition.dms": "Degrees, Minutes, Seconds",
+   "mouseposition.NSEW": "NSEW",
    
    "pan.N": "N",
    "pan.S": "S",
@@ -92,6 +93,7 @@
    "editfeatureattributes.discard": "cancel",
    "managelayerattributes.title": "Layer attributes",
    "managelayerattributes.addlabel": "add",
-   "managelayerattributes.dellabel": "delete"
-   
+   "managelayerattributes.dellabel": "delete",
+   "editlabel.label": "Label",
+   "editlabel.title": "Enter the label"
  }
