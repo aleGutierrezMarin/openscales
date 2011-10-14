@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Control used to request OpenLS service -->
+<Control xmlns="http://openscales.org"  xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"  xmlns:mx="library://ns.adobe.com/flex/mx"
+		 minWidth="300" minHeight="100" initialize="init();" creationComplete="queryInput.setFocus();" xmlns:autocomplete="org.openscales.fx.autocomplete.*" >
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.controls.dataGridClasses.DataGridItemRenderer;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.Resolution;
+			import org.openscales.core.feature.CustomMarker;
+			import org.openscales.core.feature.Marker;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.request.OpenLSRequest;
+			import org.openscales.core.style.marker.DisplayObjectMarker;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			
+			[Embed(source="/assets/images/marker-blue.png")]
+			private var _markerIcon:Class;
+			
+			private var _xOffset:Number = 0;
+			private var _yOffset:Number = -12.5;
+			
+			private var SERVICE_URL:String='http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/ols/openls/openLsServlet';
+			
+			private var streetResolution:Number = 0.0000107288360595703;
+			
+			private var cityResolution:Number = 0.0000858306884765625;
+			
+			private var _requestId:String = "";
+			
+			private var _request:OpenLSRequest = null;
+			
+			private var _resultLayer:VectorLayer = new VectorLayer("openLSSearchResult");
+			
+			/**
+			 * Getter and setter of request id
+			 */
+			public function get requestId():String {
+				return this._requestId;
+			}			
+			public function set requestId(value:String):void {				
+				this._requestId = (value) ? value : "";
+			}
+			
+			/**
+			 * Getter and setter of marker
+			 */
+			public function get markerIcon():Class {
+				return this._markerIcon;
+			}			
+			public function set markerIcon(value:Class):void {				
+				this._markerIcon = (value) ? value : null;
+				this._xOffset = 0;
+				this._yOffset = 0;
+			}
+			
+			public function setMarkerIconOffsets(x:Number, y:Number): void {
+				this._xOffset = x;
+				this._yOffset = y;
+			}
+			
+			/**
+			 * Getter and setter of service url
+			 */
+			public function get serviceUrl():String {
+				return this.SERVICE_URL;
+			}			
+			
+			public function set serviceUrl(value:String):void {		
+				if (value && value!="") {
+					this.SERVICE_URL = value;
+				}
+			}
+			
+			private function init(): void{
+				this._resultLayer.displayInLayerManager = false;
+			}
+			
+			private function search(event:MouseEvent):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.nbResults.visible = false;
+				this.result.visible = false;
+				this.searchResult.visible = false;
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(SERVICE_URL, onServiceResult, onServiceFault);
+				if (this.map != null) {
+					_request.define(requestId, queryInput.text, "", "", "", "", "");
+					_request.send();
+				}
+			}
+			
+			private function onServiceFault(event:Event):void {
+				Trace.error("OpenLS ERROR: request fault");
+			}
+			
+			private function onServiceResult(event:Event):void {
+				var xmlString:String = (event.target as URLLoader).data as String;
+				Trace.debug("OpenLS result : " + xmlString);
+				var xml:XML = new XML(xmlString);
+				var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml));
+				this.nbResults.text = "Number of results: "+results.length; 
+				this.nbResults.visible = true;
+				searchResult.dataProvider = new ArrayCollection(results);
+				if (searchResult.dataProvider.length == 1) {
+					this.result.text = searchResult.dataProvider[0].number+" "+searchResult.dataProvider[0].street+" "+searchResult.dataProvider[0].postalCode+" "+searchResult.dataProvider[0].city;
+					this.result.visible = true;
+					var latitude:Number = parseFloat(searchResult.dataProvider[0].lat);
+					var longitude:Number = parseFloat(searchResult.dataProvider[0].lon);
+					var resolution:Number = cityResolution;
+					if (searchResult.dataProvider[0].street && searchResult.dataProvider[0].street!="") {
+						resolution = streetResolution;
+					}
+					this.centerAtLocation(latitude, longitude, resolution);
+					
+				}
+				else {
+					this.searchResult.visible = true;
+				}
+			}
+			
+			private function onSearchResultsClick(event:Event):void {
+				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
+					Trace.warn("OpenLS WARNING: selection of a void item");
+					return;
+				}
+				
+				try {
+					this._resultLayer.removeFeatures(this._resultLayer.features);
+					this.map.removeLayer(this._resultLayer);
+					var latitude:Number = parseFloat(event.target.data.lat);
+					var longitude:Number = parseFloat(event.target.data.lon);
+					var resolution:Number = cityResolution;
+					if (event.target.data.street && event.target.data.street!="") {
+						resolution = streetResolution;
+					}
+					this.centerAtLocation(latitude, longitude, resolution);
+				} catch(e:Error) {
+					Trace.info("No result to use to change position of the map");
+				}
+			}		
+			
+			private function centerAtLocation(latitude:Number, longitude:Number, resolution:Number): void {
+				if (! (isNaN(latitude) || isNaN(longitude)) ) {
+					var pos:Location = new Location(longitude,latitude);
+					Trace.log("OpenLS center at "+pos.toShortString());
+					if (map.projection != "") {
+						pos = pos.reprojectTo(map.projection);
+					}
+					this.map.center = pos;
+					this.map.resolution = new Resolution(resolution);
+					this.map.addLayer(this._resultLayer);
+					var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _markerIcon(), pos, null, _xOffset, _yOffset); 
+					this._resultLayer.addFeature(marker, true, false);
+				}
+			}
+			
+			protected function onKeyUp(keyboardEvent:KeyboardEvent):void {
+				// Do nothing if not overrided
+				switch (keyboardEvent.keyCode){
+					case Keyboard.UP:
+					case Keyboard.DOWN:
+					case Keyboard.END:
+					case Keyboard.HOME:
+					case Keyboard.PAGE_UP:
+					case Keyboard.PAGE_DOWN:
+					case Keyboard.ENTER:
+					case Keyboard.TAB:
+					case Keyboard.ESCAPE:
+						break;
+					default:
+						onKeyUpIfNotSpecialKey(keyboardEvent);
+				}
+			}
+			
+			protected function onKeyUpIfNotSpecialKey(keyboardEvent:KeyboardEvent):void {
+				// Do nothing if not overrided
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Panel id="panel" title="OpenLS Search" width="100%" height="100%">
+	<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
+		<s:layout>
+			<s:VerticalLayout gap="5" />
+		</s:layout>
+		<mx:Form width="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+			<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="simpleSearch"  >
+				<s:layout>
+					<s:HorizontalLayout />
+				</s:layout>
+				<mx:FormItem label="Simple search" defaultButton="{button}" width="100%">
+					<autocomplete:AutoComplete id="queryInput" width="100%" text="" keyUp="onKeyUp(event)" />
+				</mx:FormItem>
+				<s:Button id="button" label="OK" click="search(event)" />
+			</s:SkinnableContainer>
+		</mx:Form>
+		<mx:Label id="nbResults" text="Number of results: " visible="false"/>
+		<mx:Label id="result" text="Result: " visible="false"/>
+		<mx:DataGrid id="searchResult" width="100%" visible="false"
+					 click="onSearchResultsClick(event)" height="100%"
+					 toolTip="Click to center at location...">
+			<mx:columns >  
+				<mx:DataGridColumn dataField="number" headerText="Number"/>  
+				<mx:DataGridColumn dataField="street" headerText="Street"/>
+				<mx:DataGridColumn dataField="postalCode" headerText="Postal code"/>
+				<mx:DataGridColumn dataField="city" headerText="City"/>
+				<mx:DataGridColumn dataField="countryCode" headerText="Country"/>
+			</mx:columns>
+		</mx:DataGrid> 
+	</s:SkinnableContainer>
+	</s:Panel>
+	
+</Control>

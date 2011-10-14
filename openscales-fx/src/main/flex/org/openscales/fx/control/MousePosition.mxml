@@ -138,6 +138,7 @@
 			
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
+				this._localNSEW=Catalog.getLocalizationForKey("mouseposition.NSEW");
 				this.feedUnitsComboBox();
 			}
 			
@@ -175,6 +176,8 @@
 				_srsUnits = ProjProjection.getProjProjection(_displayProjection).projParams.units;
 
 				this._init = true;
+				
+				this._localNSEW=Catalog.getLocalizationForKey("mouseposition.NSEW");
 				
 				feedUnitsComboBox();
 			}
@@ -271,7 +274,6 @@
 						this.selectedIndexUnit = 0;
 						break;
 				}
-				
 				unitsChanged(null);
 			}
 			

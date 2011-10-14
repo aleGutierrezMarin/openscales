@@ -108,7 +108,6 @@
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractEditCollectionHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractEditHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawHandler"/>
-    <classEntry path="org.openscales.core.handler.feature.draw.DrawLabelHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawMultiHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPointHandler"/>

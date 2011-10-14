@@ -176,13 +176,18 @@
 				this._handler.toggle = this._toggle;
 				
 				_alpha = 1;
+				this._map.mouseNavigationEnabled = true;
 			}
 			
 			/**
 			 * To disactivate the handler
 			 */
 			private function disactivate():void{
-				this.map.dispatchEvent(new DrawingEvent(DrawingEvent.SELECT_HANDLER_DESACTIVATED));
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.SELECT_HANDLER_DESACTIVATED);
+				evt.layer = this.target;
+				this.map.dispatchEvent(evt);
+				
 				// Manage the new SelectFeaturesHandler
 				this._handler.clearSelection();
 				this._handler.active = false;
@@ -204,20 +209,27 @@
 				if(!this.target)
 					return;
 				
+				// Disactive this component
 				var evt:DrawingEvent;
 				if(this._handler && this._handler.active){
 					disactivate();
+					this._map.mouseNavigationEnabled = true;
 					return;
 				}
 				
+				// Disactive others drawing tools components
 				this._isClick = true;
 				evt = new DrawingEvent(DrawingEvent.SELECT_HANDLER_ACTIVATED);
 				evt.activeHandler = this.id;
 				evt.layer = this.target;
 				this.map.dispatchEvent(evt);
+				
+				// Disactive mesure tools components
 				evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
 				evt.activeHandler = null;
 				this.map.dispatchEvent(evt);
+				
+				// Active this component
 				activate();
 			}
 			
@@ -241,8 +253,10 @@
 				
 				if(this.parentDocument is DrawingToolbar)
 				{
-					if(this._handler && this._handler.active)
+					if(this._handler && this._handler.active){
 						disactivate();
+						this._map.mouseNavigationEnabled = true;
+					}
 					
 					this.target = evt.layer;
 				}

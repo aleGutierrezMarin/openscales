@@ -3,17 +3,21 @@ package org.openscales.core.request
 	import com.adobe.serialization.json.JSON;
 	
 	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 	
 	/**
 	 * OpenLSRequest
 	 */
 	public class OpenLSRequest extends XMLRequest
 	{
-		private var _dataFile:String = "";
-		private var _streetOrPOI:String = "";
+		private var _id:String = "";
+		private var _freeFormAddress:String = "";
+		private var _number:String = "";
+		private var _street:String = "";
 		private var _postalCode:String = "";
 		private var _city:String = "";
-		
+		private var _countryCode:String = "";
+				
 		private var _isValidPostalCode:Function = null;
 		
 		/**
@@ -21,7 +25,7 @@ package org.openscales.core.request
 		 * 
 		 * For the onComplete function, the result of the OpenLS request is
 		 * obtained like this:
-		 * var result:XML = new XML((event.target as URLLoader).data);
+		 * var xmlString:String = (event.target as URLLoader).data as String;
 		 */
 		public function OpenLSRequest(url:String, onComplete:Function, onFailure:Function=null) {
 			super(url, onComplete, onFailure);
@@ -29,26 +33,53 @@ package org.openscales.core.request
 		}
 		
 		/**
-		 * Getter and setter of the data file to use for the request.
+		 * Getter and setter of the id of the request.
+		 * Default value is "".
 		 */
-		public function get dataFile():String {
-			return this._dataFile;
+		public function get id():String {
+			return this._id;
 		}
-		public function set dataFile(value:String):void {
-			this._dataFile = value;
+		public function set id(value:String):void {
+			this._id = (value) ? value : "";
 			// Update the content of the request
 			this.postContent = this.createContent();
 		}
 		
 		/**
-		 * Getter and setter of the street (number and name) or the POI (name) of the request.
+		 * Getter and setter of the free form address of the request (for simple search).
 		 * Default value is "".
 		 */
-		public function get streetOrPOI():String {
-			return this._streetOrPOI;
+		public function get freeFormAddress():String {
+			return this._freeFormAddress;
 		}
-		public function set streetOrPOI(value:String):void {
-			this._streetOrPOI = (value) ? value : "";
+		public function set freeFormAddress(value:String):void {
+			this._freeFormAddress = (value) ? value : "";
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
+		 * Getter and setter of the number of the request.
+		 * Default value is "".
+		 */
+		public function get number():String {
+			return this._number;
+		}
+		public function set number(value:String):void {
+			this._number = (value) ? value : "";
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
+		 * Getter and setter of the street of the request.
+		 * Default value is "".
+		 */
+		public function get street():String {
+			return this._street;
+		}
+		public function set street(value:String):void {
+			this._street = (value) ? value : "";
 			// Update the content of the request
 			this.postContent = this.createContent();
 		}
@@ -74,7 +105,18 @@ package org.openscales.core.request
 		}
 		
 		/**
-		 * Getter and setter of the city (name) of the request.
+		 * Getter and setter of the function that check if a postal code is
+		 * valid or not.
+		 */
+		public function get isValidPostalCode():Function {
+			return this._isValidPostalCode;
+		}
+		public function set isValidPostalCode(value:Function):void {
+			this._isValidPostalCode = value;
+		}
+		
+		/**
+		 * Getter and setter of the city of the request.
 		 * Default value is "".
 		 */
 		public function get city():String {
@@ -87,28 +129,35 @@ package org.openscales.core.request
 		}
 		
 		/**
-		 * Getter and setter of the function that check if a postal code is
-		 * valid or not.
+		 * Getter and setter of the country code of the request.
 		 */
-		public function get isValidPostalCode():Function {
-			return this._isValidPostalCode;
+		public function get countryCode():String {
+			return this._countryCode;
 		}
-		public function set isValidPostalCode(value:Function):void {
-			this._isValidPostalCode = value;
+		public function set countryCode(value:String):void {
+			this._countryCode = value;
+			// Update the content of the request
+			this.postContent = this.createContent();
 		}
 		
 		/**
 		 * Define quickly all the fields of an OpenLS request.
-		 * @param dataFile
-		 * @param streetOrPOI
+		 * @param id
+		 * @freeFormAddress
+		 * @param number
+		 * @param street
 		 * @param postalCode
 		 * @param city
+		 * @param countryCode
 		 */
-		public function define(dataFile:String, streetOrPOI:String, postalCode:String, city:String):void {
-			this.dataFile = dataFile;
-			this.streetOrPOI = streetOrPOI;
+		public function define(id:String, freeFormAddress:String, number:String, street:String, postalCode:String, city:String, countryCode:String):void {
+			this.id = id;
+			this.freeFormAddress =freeFormAddress;
+			this.number = number;
+			this.street = street;
 			this.postalCode = postalCode;
 			this.city = city;
+			this.countryCode = countryCode;
 			// Update the content of the request
 			this.postContent = this.createContent();
 		}
@@ -118,18 +167,31 @@ package org.openscales.core.request
 		 * @return a String describing the content of the request.
 		 */
 		private function createContent():String {
+			if (!this.id || this.id=="") {
+				this.id = UID.gen_uid(); 
+			}
 			var request:String = '';
-			request += '<XLS xmlns="http://www.opengis.net/xls" xmlns:xls="http://www.opengis.net/xls" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/xls" version="1.0">';
-			request += '<RequestHeader/>';
-			request += '<Request requestID="1" version="" methodName="LocationUtilityService">';
+			request += '<?xml version="1.0" encoding="UTF-8"?>';
+			request += '<XLS xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/xls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2"  xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.2/olsAll.xsd">';
+			request += '<RequestHeader srsName="epsg:4326"/>';
+			request += '<Request maximumResponses="5" methodName="GeocodeRequest" requestID="'+this.id+'" version="1.0">';
 			request += '<GeocodeRequest>';
-			request += '<Address countryCode="' + this.dataFile + '">';
-			request += '<StreetAddress>';
-			request += '<Street>' + this.streetOrPOI + '</Street>';
-			request += '</StreetAddress>';
-			request += '<Place type="Municipality">' + this.city + '</Place>';
-			request += '<PostalCode>' + this.postalCode + '</PostalCode>';
-			request += '</Address>';
+			
+			if (this.freeFormAddress) {
+				request += '<Address countryCode="FR">';
+				request += '<freeFormAddress>' + this.freeFormAddress + '</freeFormAddress>';
+				request += '</Address>';
+			}
+			else {
+				request += '<Address countryCode="' + this.countryCode + '">';
+				request += '<StreetAddress>';
+				request += '<Building number="' + this.number  + '"/>'; 
+				request += '<Street>' + this.street + '</Street>';
+				request += '</StreetAddress>';
+				request += '<Place type="Municipality">' + this.city + '</Place>';
+				request += '<PostalCode>' + this.postalCode + '</PostalCode>';
+				request += '</Address>';				
+			}
 			request += '</GeocodeRequest>';
 			request += '</Request>';
 			request += '</XLS>';
@@ -162,24 +224,49 @@ package org.openscales.core.request
 		 * @param resultsList XML document describing the results of a geocoding
 		 * @return a JSON string
 		 */
-		static public function resultsListtoJSON(resultsList:XMLList):String {
+		static public function resultsListtoArray(resultsList:XMLList):Array {
 			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
 			var gml:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
-			var jsonResults:Array = new Array(), jsonResult:Object, position:Array;
+			var results:Array = new Array(), result:Object, position:Array;
 			for each (var gr:XML in resultsList.xls::GeocodedAddress) {
-				jsonResult = new Object();
-				jsonResult.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
-				jsonResult.city = gr.xls::Address.xls::Place.toString();
+				result = new Object();
 				position = gr.gml::Point.gml::pos.toString().split(' ');
 				if (position.length == 2) {
-					jsonResult.lat = Number(position[0]);
-					jsonResult.lon = Number(position[1]);
+					result.lat = Number(position[0]);
+					result.lon = Number(position[1]);
 				}
-				jsonResult.postalCode = gr.xls::Address.xls::PostalCode.toString();
-				jsonResult.streetOrPOI = gr.xls::Address.xls::StreetAddress.xls::Street.toString();
-				jsonResults.push(jsonResult);
+				result.countryCode = gr.xls::Address.@countryCode.toString();
+				result.number = gr.xls::Address.xls::StreetAddress.xls::Building.@number.toString();
+				result.street = gr.xls::Address.xls::StreetAddress.xls::Street.toString();
+				var places:XMLList = gr.xls::Address..xls::Place;
+				for each (var node:XML in places) {
+					if(node.@type=="Municipality") {
+						result.city = node.toString();
+						break;
+					}
+				}
+				//result.city = gr.xls::Address.xls::Place.toString();
+				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
+				result.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
+				results.push(result);
 			}
-			return JSON.encode(jsonResults);
+			return results;
+		}
+		
+		/**
+		 * Transform a list of results of a geocoding into a JSON formatted
+		 * String describing which geocoded address by its "accuracy",
+		 * "city", "lat", "lon", "postalCode" and "streetOrPOI".
+		 * @param resultsList XML document describing the results of a geocoding
+		 * @return a JSON string
+		 */
+		static public function resultsListtoJSON(resultsList:XMLList):String {
+			return JSON.encode(OpenLSRequest.resultsListtoArray(resultsList));
+		}
+		
+		override public function send():void {
+			super.send();
+			this.id = "";
 		}
 		
 	}

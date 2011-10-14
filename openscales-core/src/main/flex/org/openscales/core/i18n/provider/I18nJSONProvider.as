@@ -3,9 +3,10 @@ package org.openscales.core.i18n.provider
 	import com.adobe.serialization.json.JSON;
 	import com.adobe.serialization.json.JSONDecoder;
 	
-	import org.openscales.core.utils.Trace;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
+	import org.openscales.core.utils.Trace;
 
 	public class I18nJSONProvider implements Ii18nProvider
 	{
@@ -40,10 +41,13 @@ package org.openscales.core.i18n.provider
 				for (var key:String in obj) {
 					value = obj[key];
 					if(value
-					   && value != "locale.key"
-					   && value != "locale.name"
-					   && value != "locale.localizedName")
+					   && key != "locale.key"
+					   && key != "locale.name"
+					   && key != "locale.localizedName")
 						Catalog.setLocalizationForKey(locale,key,value);
+				}
+				if(Locale.activeLocale == locale) {
+					Catalog.catalog.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED, locale));
 				}
 			} catch (e:Error) {
 				Trace.debug("invalid json");

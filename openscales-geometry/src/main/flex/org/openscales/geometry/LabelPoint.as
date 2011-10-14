@@ -29,7 +29,10 @@ package org.openscales.geometry
 			this._label.selectable = true;
 			this._label.mouseEnabled = false;
 			this._label.autoSize = flash.text.TextFieldAutoSize.CENTER;
-			this._label.text = text;
+			if(text)
+				this._label.text = text;
+			else
+				this._label.text = "";
 		}
 		
 		/**
