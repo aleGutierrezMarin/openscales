@@ -78,7 +78,7 @@
 			
 			
 			[Bindable]
-			private var _displayDrawing:Boolean = false;
+			protected var _displayDrawing:Boolean = false;
 			
 			[Bindable]
 			[Embed(source="/assets/images/icon-minus.gif")]

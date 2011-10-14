@@ -2,6 +2,7 @@ package org.openscales.core.layer {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
@@ -484,7 +485,7 @@ package org.openscales.core.layer {
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
 					minRes = new Resolution(this.resolutions[this.resolutions.length-1], this.projection);
-					this._minResolution = minRes;
+					return minRes;
 				}
 			}
 			return this._minResolution;
@@ -494,8 +495,11 @@ package org.openscales.core.layer {
 			
 			value = (value as Resolution);
 			
-			if(value.projection!=this.projection)
-				value = value.reprojectTo(this.projection);
+			if (this.projection != null)
+			{
+				if(value.projection!=this.projection)
+					value = value.reprojectTo(this.projection);
+			}
 			
 			this._minResolution = value;
 		}
@@ -511,10 +515,10 @@ package org.openscales.core.layer {
 			{
 				if (this.resolutions && (this.resolutions.length > 0)) {
 					maxRes = new Resolution(this.resolutions[0], this.projection);
-					this._maxResolution = maxRes;
+					return maxRes;
 				}
 			}
-			else
+			/*else
 			{
 				// if is valide
 				var i:int = 0;
@@ -533,7 +537,7 @@ package org.openscales.core.layer {
 					this._maxResolution = maxRes;
 				}
 				
-			}
+			}*/
 			
 			return this._maxResolution;
 		}
@@ -542,9 +546,11 @@ package org.openscales.core.layer {
 			
 			value = (value as Resolution);
 			
-			if(value.projection!=this.projection)
-				value = value.reprojectTo(this.projection);
-			
+			if (this.projection != null)
+			{
+				if(value.projection!=this.projection)
+					value = value.reprojectTo(this.projection);
+			}
 			this._maxResolution = value;
 		}
 		
