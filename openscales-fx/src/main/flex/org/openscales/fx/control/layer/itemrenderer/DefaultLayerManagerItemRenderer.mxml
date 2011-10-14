@@ -153,16 +153,14 @@
 			}
 			
 			[Bindable]
-			private var _displayZoomToExtent:Boolean = false;
+			protected var _displayZoomToExtent:Boolean = false;
+			
 			
 			[Bindable]
-			private var _displayLegend:Boolean = false;
+			protected var _displayMetadatas:Boolean = false;
 			
 			[Bindable]
-			private var _displayMetadatas:Boolean = false;
-			
-			[Bindable]
-			private var _displayDrawing:Boolean = false;
+			protected var _displayDrawing:Boolean = false;
 			
 			/**
 			 * @inherit
@@ -191,14 +189,12 @@
 				if(value){
 					if(value['displayZoomToExtent'])
 						_displayZoomToExtent = true;
-					if(value['displayLegend'])
-						_displayLegend = true;
 					if(value['displayMetadatas'])
 						_displayMetadatas = true;
 					if(value['displayDrawing'])
 						_displayDrawing = true;
 					
-					if(_displayZoomToExtent || _displayLegend || _displayMetadatas || _displayDrawing)
+					if(_displayZoomToExtent || _displayMetadatas || _displayDrawing)
 						_optionnalGroupDisplayed = true;
 				}
 			}
@@ -457,7 +453,6 @@
 	
 	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
 		<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
-		<LayerLegend x="20" id="layerControlLegend" visible="{_displayLegend}" />
 		<LayerMetadatas x="40" id="layerControlMetadatas" visible="{_displayMetadatas}" />
 	</s:SkinnableContainer>
 	
