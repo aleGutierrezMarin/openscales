@@ -17,7 +17,7 @@ Otherwise, click on one of the results to center the map. -->
 		
 		<TraceInfo x="{width-200}" y="0" />
 		
-		<OpenLSSearch x="10" y="10"/>
+		<OpenLSSearch x="10" y="10" serviceUrl="http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/ols/openls/openLsServlet"/>
 		
 	</Map>
 

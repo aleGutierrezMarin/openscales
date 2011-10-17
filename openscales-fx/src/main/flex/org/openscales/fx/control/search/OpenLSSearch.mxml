@@ -2,7 +2,8 @@
 <!--- Control used to request OpenLS service -->
 <Control xmlns="http://openscales.org"  xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"  xmlns:mx="library://ns.adobe.com/flex/mx"
-		 minWidth="300" minHeight="100" initialize="init();" creationComplete="queryInput.setFocus();" xmlns:autocomplete="org.openscales.fx.autocomplete.*" >
+		 initialize="init();" creationComplete="queryInput.setFocus();" xmlns:autocomplete="org.openscales.fx.autocomplete.*" xmlns:skin="org.openscales.fx.control.skin.*" >
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
@@ -25,10 +26,18 @@
 			[Embed(source="/assets/images/marker-blue.png")]
 			private var _markerIcon:Class;
 			
+			[Bindable]
+			[Embed(source="/assets/images/close.gif")]
+			private var _closeIcon:Class;
+			
 			private var _xOffset:Number = 0;
 			private var _yOffset:Number = -12.5;
 			
-			private var SERVICE_URL:String='http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/ols/openls/openLsServlet';
+			private var _defaultCountryCode:String = "FR";
+			private var _defaultSrsName:String = "epsg:4326";
+			private var _maximumGeocodeResponses:uint = 10;
+			
+			private var _geocodeServiceUrl:String=null;
 			
 			private var streetResolution:Number = 0.0000107288360595703;
 			
@@ -62,6 +71,9 @@
 				this._yOffset = 0;
 			}
 			
+			/**
+			 * Offsets in pixels for marker icon
+			 */
 			public function setMarkerIconOffsets(x:Number, y:Number): void {
 				this._xOffset = x;
 				this._yOffset = y;
@@ -70,14 +82,50 @@
 			/**
 			 * Getter and setter of service url
 			 */
-			public function get serviceUrl():String {
-				return this.SERVICE_URL;
+			public function get geocodeServiceUrl():String {
+				return this._geocodeServiceUrl;
 			}			
 			
-			public function set serviceUrl(value:String):void {		
+			public function set geocodeServiceUrl(value:String):void {		
 				if (value && value!="") {
-					this.SERVICE_URL = value;
+					this._geocodeServiceUrl = value;
 				}
+			}
+			
+			/**
+			 * Getter and setter of default country code
+			 */
+			public function get defaultCountryCode():String {
+				return this._defaultCountryCode;
+			}			
+			
+			public function set defaultCountryCode(value:String):void {		
+				if (value && value!="") {
+					this._defaultCountryCode = value;
+				}
+			}
+			
+			/**
+			 * Getter and setter of default SRS name
+			 */
+			public function get defaultSrsName():String {
+				return this._defaultSrsName;
+			}			
+			
+			public function set defaultSrsName(value:String):void {		
+				if (value && value!="") {
+					this._defaultSrsName = value;
+				}
+			}
+			
+			/**
+			 * Getter and setter of maximum number of responses.
+			 */
+			public function get maximumGeocodeResponses():uint {
+			return this._maximumGeocodeResponses;
+			}			
+			public function set maximumGeocodeResponses(value:uint):void {				
+			this._maximumGeocodeResponses = value;
 			}
 			
 			private function init(): void{
@@ -91,15 +139,20 @@
 				this._resultLayer.removeFeatures(this._resultLayer.features);
 				this.map.removeLayer(this._resultLayer);
 				
-				this.nbResults.visible = false;
-				this.result.visible = false;
-				this.searchResult.visible = false;
+				this.hideResults();
 				
 				if(_request)
 					_request.destroy();
-				_request = new OpenLSRequest(SERVICE_URL, onServiceResult, onServiceFault);
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault);
 				if (this.map != null) {
-					_request.define(requestId, queryInput.text, "", "", "", "", "");
+					var cc:String = this.countryCode.text;
+					if (cc == null || cc =="") cc = defaultCountryCode;
+					if (event.currentTarget == this.simpleSearchButton) {
+						_request.defineSimpleSearch(requestId, queryInput.text, cc, this.defaultSrsName, this.maximumGeocodeResponses);
+					}
+					else {
+						_request.defineAdvancedSearch(requestId, this.number.text, this.street.text, this.postalCode.text, this.city.text, cc, this.defaultSrsName, this.maximumGeocodeResponses);
+					}
 					_request.send();
 				}
 			}
@@ -113,12 +166,8 @@
 				Trace.debug("OpenLS result : " + xmlString);
 				var xml:XML = new XML(xmlString);
 				var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml));
-				this.nbResults.text = "Number of results: "+results.length; 
-				this.nbResults.visible = true;
 				searchResult.dataProvider = new ArrayCollection(results);
 				if (searchResult.dataProvider.length == 1) {
-					this.result.text = searchResult.dataProvider[0].number+" "+searchResult.dataProvider[0].street+" "+searchResult.dataProvider[0].postalCode+" "+searchResult.dataProvider[0].city;
-					this.result.visible = true;
 					var latitude:Number = parseFloat(searchResult.dataProvider[0].lat);
 					var longitude:Number = parseFloat(searchResult.dataProvider[0].lon);
 					var resolution:Number = cityResolution;
@@ -128,8 +177,11 @@
 					this.centerAtLocation(latitude, longitude, resolution);
 					
 				}
-				else {
-					this.searchResult.visible = true;
+				if (searchResult.dataProvider.length > 1) {
+					this.nbResults.text = searchResult.dataProvider.length + " results:";
+					this.searchResult.rowCount = searchResult.dataProvider.length;
+					this.results.visible = true;
+					this.results.percentHeight = 100;
 				}
 			}
 			
@@ -170,7 +222,6 @@
 			}
 			
 			protected function onKeyUp(keyboardEvent:KeyboardEvent):void {
-				// Do nothing if not overrided
 				switch (keyboardEvent.keyCode){
 					case Keyboard.UP:
 					case Keyboard.DOWN:
@@ -191,38 +242,129 @@
 				// Do nothing if not overrided
 			}
 			
+			private function onSimpleSearchClick():void {
+				this.simpleSearch.visible = true;
+				this.simpleSearch.height = 35; 
+				this.advancedSearch.visible = false;
+				this.advancedSearch.height = 0;
+				this.hideResults();
+			}
+			
+			private function onAdvancedSearchClick():void {
+				this.simpleSearch.visible = false;
+				this.simpleSearch.height = 0;
+				this.advancedSearch.visible = true;
+				this.advancedSearch.height = 155;
+				this.hideResults();
+			}
+			
+			private function hideResults():void {
+				this.results.visible = false;
+				this.results.height= 0;
+			}
+			
 		]]>
 	</fx:Script>
-	<s:Panel id="panel" title="OpenLS Search" width="100%" height="100%">
-	<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
-		<s:layout>
-			<s:VerticalLayout gap="5" />
-		</s:layout>
-		<mx:Form width="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
-			<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="simpleSearch"  >
-				<s:layout>
-					<s:HorizontalLayout />
-				</s:layout>
-				<mx:FormItem label="Simple search" defaultButton="{button}" width="100%">
-					<autocomplete:AutoComplete id="queryInput" width="100%" text="" keyUp="onKeyUp(event)" />
-				</mx:FormItem>
-				<s:Button id="button" label="OK" click="search(event)" />
-			</s:SkinnableContainer>
-		</mx:Form>
-		<mx:Label id="nbResults" text="Number of results: " visible="false"/>
-		<mx:Label id="result" text="Result: " visible="false"/>
-		<mx:DataGrid id="searchResult" width="100%" visible="false"
-					 click="onSearchResultsClick(event)" height="100%"
-					 toolTip="Click to center at location...">
-			<mx:columns >  
-				<mx:DataGridColumn dataField="number" headerText="Number"/>  
-				<mx:DataGridColumn dataField="street" headerText="Street"/>
-				<mx:DataGridColumn dataField="postalCode" headerText="Postal code"/>
-				<mx:DataGridColumn dataField="city" headerText="City"/>
-				<mx:DataGridColumn dataField="countryCode" headerText="Country"/>
-			</mx:columns>
-		</mx:DataGrid> 
-	</s:SkinnableContainer>
+	
+	<s:Panel id="panel" title="OpenLS Search" minHeight="55" width="100%" height="100%">
+		<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+			
+			<!-- SEARCH MODE -->
+			<mx:Form width="100%" height="22" paddingTop="0" paddingBottom="0">
+				<s:SkinnableContainer width="100%" height="100%" styleName="horizontalLayout" id="searchType">
+					<s:layout>
+						<s:HorizontalLayout />
+					</s:layout>
+					<mx:RadioButton label="Simple search" selected="true" click="onSimpleSearchClick()"/>
+					<mx:RadioButton label="Advanced search" selected="false" click="onAdvancedSearchClick()"/>
+				</s:SkinnableContainer>
+			</mx:Form>
+			
+			<!-- SIMPLE SEARCH -->
+			<mx:Form id="simpleSearch" width="100%" height="35" paddingTop="5" paddingBottom="0" visible="true">
+				<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+					<s:layout>
+						<s:HorizontalLayout/>
+					</s:layout>
+					<mx:FormItem label="" defaultButton="{simpleSearchButton}" width="100%">
+						<autocomplete:AutoComplete id="queryInput" width="100%" text="" keyUp="onKeyUp(event)" />
+						<!--s:TextInput id="queryInput" width="100%" text=""/-->
+					</mx:FormItem>
+					<s:Button id="simpleSearchButton" label="OK" click="search(event)"/>
+				</s:SkinnableContainer>
+			</mx:Form>
+			
+			<!-- ADVANCED SEARCH -->
+			<mx:Form id="advancedSearch" width="100%" height="0" paddingTop="0" paddingBottom="0" visible="false">
+				<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+					<s:layout>
+						<s:HorizontalLayout />
+					</s:layout>
+					<s:SkinnableContainer styleName="verticalLayout"  width="30%" height="100%">
+						<s:layout>
+							<s:VerticalLayout gap="5"/>
+						</s:layout>
+						<mx:Label text="Number"/>
+						<mx:Label text="Street"/>
+						<mx:Label text="Postal code"/>
+						<mx:Label text="City"/>
+						<mx:Label text="Country"/>
+						<s:Button id="advancedSearchButton" label="OK" click="search(event)" />
+					</s:SkinnableContainer>
+					<s:SkinnableContainer styleName="verticalLayout"  width="70%" height="100%">
+						<s:layout>
+							<s:VerticalLayout gap="5"/>
+						</s:layout>
+						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+							<s:TextInput id="number" width="40" text="" />
+						</mx:FormItem>
+						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+							<s:TextInput id="street" width="100%" text="" />
+						</mx:FormItem>
+						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+							<s:TextInput id="postalCode" width="50" text="" />
+						</mx:FormItem>
+						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+							<s:TextInput id="city" width="100%" text="" />
+						</mx:FormItem>
+						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+							<s:TextInput id="countryCode" width="100%" text="" />
+						</mx:FormItem>
+					</s:SkinnableContainer>
+				</s:SkinnableContainer>
+			</mx:Form>
+			
+			<!-- RESULTS -->
+			<mx:Form id="results" width="100%" height="0" paddingTop="0" paddingBottom="5" visible="false">
+				<s:SkinnableContainer styleName="verticalLayout"  width="100%" height="100%">
+					<s:layout>
+						<s:VerticalLayout gap="0"/>
+					</s:layout>
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="19">
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						<mx:Label id="nbResults" text="" width="477"/>
+						<mx:Button id="closeButton" icon="{_closeIcon}" width="17" click="hideResults()"/>
+					</s:SkinnableContainer>
+					<mx:DataGrid id="searchResult"
+								 width="500" height="100%"
+								 click="onSearchResultsClick(event)"
+								 toolTip="Click to center at location...">
+						<mx:columns >  
+							<mx:DataGridColumn dataField="number" headerText="Number" width="15"/>  
+							<mx:DataGridColumn dataField="street" headerText="Street" width="30"/>
+							<mx:DataGridColumn dataField="postalCode" headerText="Postal code" width="20"/>
+							<mx:DataGridColumn dataField="city" headerText="City" width="25"/>
+							<mx:DataGridColumn dataField="countryCode" headerText="Country" width="10"/>
+						</mx:columns>
+					</mx:DataGrid> 
+				</s:SkinnableContainer>
+			</mx:Form>
+		</s:SkinnableContainer>
 	</s:Panel>
 	
 </Control>

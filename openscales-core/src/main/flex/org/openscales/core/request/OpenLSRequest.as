@@ -11,6 +11,8 @@ package org.openscales.core.request
 	public class OpenLSRequest extends XMLRequest
 	{
 		private var _id:String = "";
+		private var _srsName:String = null;
+		private var _maximumResponses:uint = 10;
 		private var _freeFormAddress:String = "";
 		private var _number:String = "";
 		private var _street:String = "";
@@ -46,7 +48,31 @@ package org.openscales.core.request
 		}
 		
 		/**
-		 * Getter and setter of the free form address of the request (for simple search).
+		 * Getter and setter of the SRS name.
+		 */
+		public function get srsName():String {
+			return this._srsName;
+		}
+		public function set srsName(value:String):void {
+			this._srsName = (value) ? value : "";
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
+		 * Getter and setter of the maximum number of responses.
+		 */
+		public function get maximumResponses():uint {
+			return this._maximumResponses;
+		}
+		public function set maximumResponses(value:uint):void {
+			this._maximumResponses = value;
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
+		 * Getter and setter of the free form address of the request.
 		 * Default value is "".
 		 */
 		public function get freeFormAddress():String {
@@ -59,7 +85,7 @@ package org.openscales.core.request
 		}
 		
 		/**
-		 * Getter and setter of the number of the request.
+		 * Getter and setter of the building number of the request.
 		 * Default value is "".
 		 */
 		public function get number():String {
@@ -105,7 +131,7 @@ package org.openscales.core.request
 		}
 		
 		/**
-		 * Getter and setter of the function that check if a postal code is
+		 * Getter and setter of the function that checks if a postal code is
 		 * valid or not.
 		 */
 		public function get isValidPostalCode():Function {
@@ -143,14 +169,16 @@ package org.openscales.core.request
 		/**
 		 * Define quickly all the fields of an OpenLS request.
 		 * @param id
-		 * @freeFormAddress
+		 * @param freeFormAddress
 		 * @param number
 		 * @param street
 		 * @param postalCode
 		 * @param city
 		 * @param countryCode
+		 * @param srsName
+		 * @param maximumResponses
 		 */
-		public function define(id:String, freeFormAddress:String, number:String, street:String, postalCode:String, city:String, countryCode:String):void {
+		public function defineSearch(id:String, freeFormAddress:String, number:String, street:String, postalCode:String, city:String, countryCode:String, srsName:String, maximumResponses:uint):void {
 			this.id = id;
 			this.freeFormAddress =freeFormAddress;
 			this.number = number;
@@ -158,6 +186,51 @@ package org.openscales.core.request
 			this.postalCode = postalCode;
 			this.city = city;
 			this.countryCode = countryCode;
+			this.srsName = srsName;
+			this.maximumResponses = maximumResponses;
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
+		 * Define quickly the fields of a simple OpenLS request.
+		 * @param id
+		 * @param freeFormAddress
+		 * @param countryCode
+		 * @param srsName
+		 * @param maximumResponses
+		 */
+		public function defineSimpleSearch(id:String, freeFormAddress:String, countryCode:String, srsName:String, maximumResponses:uint):void {
+			this.id = id;
+			this.freeFormAddress =freeFormAddress;
+			this.countryCode = countryCode;
+			this.srsName = srsName;
+			this.maximumResponses = maximumResponses;
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
+		 * Define quickly the fields of an advanced OpenLS request.
+		 * @param id
+		 * @param freeFormAddress
+		 * @param number
+		 * @param street
+		 * @param postalCode
+		 * @param city
+		 * @param countryCode
+		 * @param srsName
+		 * @param maximumResponses
+		 */
+		public function defineAdvancedSearch(id:String, number:String, street:String, postalCode:String, city:String, countryCode:String, srsName:String, maximumResponses:uint):void {
+			this.id = id;
+			this.number = number;
+			this.street = street;
+			this.postalCode = postalCode;
+			this.city = city;
+			this.countryCode = countryCode;
+			this.srsName = srsName;
+			this.maximumResponses = maximumResponses;
 			// Update the content of the request
 			this.postContent = this.createContent();
 		}
@@ -173,12 +246,17 @@ package org.openscales.core.request
 			var request:String = '';
 			request += '<?xml version="1.0" encoding="UTF-8"?>';
 			request += '<XLS xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/xls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2"  xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.2/olsAll.xsd">';
-			request += '<RequestHeader srsName="epsg:4326"/>';
-			request += '<Request maximumResponses="5" methodName="GeocodeRequest" requestID="'+this.id+'" version="1.0">';
+			if (srsName && srsName != "") {
+				request += '<RequestHeader srsName="'+this.srsName+'"/>';
+			}
+			else {
+				request += '<RequestHeader/>';
+			}
+			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="GeocodeRequest" requestID="'+this.id+'" version="1.0">';
 			request += '<GeocodeRequest>';
 			
 			if (this.freeFormAddress) {
-				request += '<Address countryCode="FR">';
+				request += '<Address countryCode="' + this.countryCode + '">';
 				request += '<freeFormAddress>' + this.freeFormAddress + '</freeFormAddress>';
 				request += '</Address>';
 			}
@@ -218,11 +296,11 @@ package org.openscales.core.request
 		}
 		
 		/**
-		 * Transform a list of results of a geocoding into a JSON formatted
-		 * String describing which geocoded address by its "accuracy",
-		 * "city", "lat", "lon", "postalCode" and "streetOrPOI".
+		 * Transform a list of results of a geocoding into an Array
+		 * describing which geocoded address by its "accuracy",
+		 * "lat", "lon", "numuber", "street", "postalCode", "city" and "countryCode".
 		 * @param resultsList XML document describing the results of a geocoding
-		 * @return a JSON string
+		 * @return a Array of String
 		 */
 		static public function resultsListtoArray(resultsList:XMLList):Array {
 			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
@@ -245,7 +323,6 @@ package org.openscales.core.request
 						break;
 					}
 				}
-				//result.city = gr.xls::Address.xls::Place.toString();
 				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
 				result.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
 				results.push(result);
@@ -256,7 +333,7 @@ package org.openscales.core.request
 		/**
 		 * Transform a list of results of a geocoding into a JSON formatted
 		 * String describing which geocoded address by its "accuracy",
-		 * "city", "lat", "lon", "postalCode" and "streetOrPOI".
+		 * "lat", "lon", "numuber", "street", "postalCode", "city" and "countryCode".
 		 * @param resultsList XML document describing the results of a geocoding
 		 * @return a JSON string
 		 */
@@ -264,6 +341,9 @@ package org.openscales.core.request
 			return JSON.encode(OpenLSRequest.resultsListtoArray(resultsList));
 		}
 		
+		/**
+		 * Sends request to OpenLS service
+		 */
 		override public function send():void {
 			super.send();
 			this.id = "";
