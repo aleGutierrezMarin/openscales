@@ -283,7 +283,14 @@ package org.openscales.core.request
 		 */
 		static public function resultsList(response:XML):XMLList {
 			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
-			return response.xls::Response.xls::GeocodeResponse.xls::GeocodeResponseList;
+			var result:XMLList = new XMLList();
+			try {
+				result = response.xls::Response.xls::GeocodeResponse.xls::GeocodeResponseList; 
+			}
+			catch (e:Error) {
+				Trace.error("OpenLSRequest - Error while reading XML response");
+			}
+			return result;
 		}
 		
 		/**
@@ -306,26 +313,31 @@ package org.openscales.core.request
 			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
 			var gml:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
 			var results:Array = new Array(), result:Object, position:Array;
-			for each (var gr:XML in resultsList.xls::GeocodedAddress) {
-				result = new Object();
-				position = gr.gml::Point.gml::pos.toString().split(' ');
-				if (position.length == 2) {
-					result.lat = Number(position[0]);
-					result.lon = Number(position[1]);
-				}
-				result.countryCode = gr.xls::Address.@countryCode.toString();
-				result.number = gr.xls::Address.xls::StreetAddress.xls::Building.@number.toString();
-				result.street = gr.xls::Address.xls::StreetAddress.xls::Street.toString();
-				var places:XMLList = gr.xls::Address..xls::Place;
-				for each (var node:XML in places) {
-					if(node.@type=="Municipality") {
-						result.city = node.toString();
-						break;
+			try {
+				for each (var gr:XML in resultsList.xls::GeocodedAddress) {
+					result = new Object();
+					position = gr.gml::Point.gml::pos.toString().split(' ');
+					if (position.length == 2) {
+						result.lat = Number(position[0]);
+						result.lon = Number(position[1]);
 					}
+					result.countryCode = gr.xls::Address.@countryCode.toString();
+					result.number = gr.xls::Address.xls::StreetAddress.xls::Building.@number.toString();
+					result.street = gr.xls::Address.xls::StreetAddress.xls::Street.toString();
+					var places:XMLList = gr.xls::Address..xls::Place;
+					for each (var node:XML in places) {
+						if(node.@type=="Municipality") {
+							result.city = node.toString();
+							break;
+						}
+					}
+					result.postalCode = gr.xls::Address.xls::PostalCode.toString();
+					result.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
+					results.push(result);
 				}
-				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
-				result.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
-				results.push(result);
+			}
+			catch (e:Error) {
+				Trace.error("OpenLSRequest - Error while reading XMLList response");
 			}
 			return results;
 		}
