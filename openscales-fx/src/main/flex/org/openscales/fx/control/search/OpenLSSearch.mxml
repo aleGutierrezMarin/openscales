@@ -14,6 +14,7 @@
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.basetypes.Resolution;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.CustomMarker;
 			import org.openscales.core.feature.Marker;
 			import org.openscales.core.layer.VectorLayer;
@@ -178,7 +179,7 @@
 					
 				}
 				if (searchResult.dataProvider.length > 1) {
-					this.nbResults.text = searchResult.dataProvider.length + " results:";
+					this.nbResults.text = searchResult.dataProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
 					this.searchResult.rowCount = searchResult.dataProvider.length;
 					this.results.visible = true;
 					this.results.percentHeight = 100;
@@ -263,10 +264,35 @@
 				this.results.height= 0;
 			}
 			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this.panel.title = Catalog.getLocalizationForKey("openLSSearch.title");
+				this.simpleSearchSelectionButton.label = Catalog.getLocalizationForKey("openLSSearch.simpleSearch");
+				this.advancedSearchSelectionButton.label = Catalog.getLocalizationForKey("openLSSearch.advancedSearch");
+				this.numberLabel.text = Catalog.getLocalizationForKey("openLSSearch.number");
+				this.streetLabel.text = Catalog.getLocalizationForKey("openLSSearch.street");
+				this.postalCodeLabel.text = Catalog.getLocalizationForKey("openLSSearch.postalCode");
+				this.cityLabel.text = Catalog.getLocalizationForKey("openLSSearch.city");
+				this.countryCodeLabel.text = Catalog.getLocalizationForKey("openLSSearch.countryCode");
+				this.numberResult.headerText = Catalog.getLocalizationForKey("openLSSearch.numberHeader");
+				this.streetResult.headerText = Catalog.getLocalizationForKey("openLSSearch.streetHeader");
+				this.postalCodeResult.headerText = Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader");
+				this.cityResult.headerText = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
+				this.countryCodeResult.headerText = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+				this.simpleSearchButton.label = Catalog.getLocalizationForKey("openLSSearch.ok");
+				this.advancedSearchButton.label = Catalog.getLocalizationForKey("openLSSearch.ok");
+				if (searchResult && searchResult.dataProvider)
+					this.nbResults.text = searchResult.dataProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:Panel id="panel" title="OpenLS Search" minHeight="55" width="100%" height="100%">
+	<s:Panel id="panel" title='{Catalog.getLocalizationForKey("openLSSearch.title")}' minHeight="55" width="100%" height="100%">
+		<fx:Script>
+			<![CDATA[
+				import org.openscales.core.i18n.Catalog;
+			]]>
+		</fx:Script>
 		<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
 			<s:layout>
 				<s:VerticalLayout gap="0"/>
@@ -278,8 +304,8 @@
 					<s:layout>
 						<s:HorizontalLayout />
 					</s:layout>
-					<mx:RadioButton label="Simple search" selected="true" click="onSimpleSearchClick()"/>
-					<mx:RadioButton label="Advanced search" selected="false" click="onAdvancedSearchClick()"/>
+					<mx:RadioButton id="simpleSearchSelectionButton" label='{Catalog.getLocalizationForKey("openLSSearch.simpleSearch")}' selected="true" click="onSimpleSearchClick()"/>
+					<mx:RadioButton id="advancedSearchSelectionButton" label='{Catalog.getLocalizationForKey("openLSSearch.advancedSearch")}' selected="false" click="onAdvancedSearchClick()"/>
 				</s:SkinnableContainer>
 			</mx:Form>
 			
@@ -293,7 +319,7 @@
 						<autocomplete:AutoComplete id="queryInput" width="100%" text="" keyUp="onKeyUp(event)" />
 						<!--s:TextInput id="queryInput" width="100%" text=""/-->
 					</mx:FormItem>
-					<s:Button id="simpleSearchButton" label="OK" click="search(event)"/>
+					<s:Button id="simpleSearchButton" label='{Catalog.getLocalizationForKey("openLSSearch.ok")}' click="search(event)"/>
 				</s:SkinnableContainer>
 			</mx:Form>
 			
@@ -307,12 +333,12 @@
 						<s:layout>
 							<s:VerticalLayout gap="5"/>
 						</s:layout>
-						<mx:Label text="Number"/>
-						<mx:Label text="Street"/>
-						<mx:Label text="Postal code"/>
-						<mx:Label text="City"/>
-						<mx:Label text="Country"/>
-						<s:Button id="advancedSearchButton" label="OK" click="search(event)" />
+						<mx:Label id="numberLabel" text='{Catalog.getLocalizationForKey("openLSSearch.number")}'/>
+						<mx:Label id="streetLabel" text='{Catalog.getLocalizationForKey("openLSSearch.street")}'/>
+						<mx:Label id="postalCodeLabel" text='{Catalog.getLocalizationForKey("openLSSearch.postalCode")}'/>
+						<mx:Label id="cityLabel" text='{Catalog.getLocalizationForKey("openLSSearch.city")}'/>
+						<mx:Label id="countryCodeLabel" text='{Catalog.getLocalizationForKey("openLSSearch.countryCode")}'/>
+						<s:Button id="advancedSearchButton" label='{Catalog.getLocalizationForKey("openLSSearch.ok")}' click="search(event)" x="20"/>
 					</s:SkinnableContainer>
 					<s:SkinnableContainer styleName="verticalLayout"  width="70%" height="100%">
 						<s:layout>
@@ -353,13 +379,13 @@
 					<mx:DataGrid id="searchResult"
 								 width="500" height="100%"
 								 click="onSearchResultsClick(event)"
-								 toolTip="Click to center at location...">
+								 toolTip='{Catalog.getLocalizationForKey("openLSSearch.tooltip")}'>
 						<mx:columns >  
-							<mx:DataGridColumn dataField="number" headerText="Number" width="15"/>  
-							<mx:DataGridColumn dataField="street" headerText="Street" width="30"/>
-							<mx:DataGridColumn dataField="postalCode" headerText="Postal code" width="20"/>
-							<mx:DataGridColumn dataField="city" headerText="City" width="25"/>
-							<mx:DataGridColumn dataField="countryCode" headerText="Country" width="10"/>
+							<mx:DataGridColumn id="numberResult" dataField="number" headerText='{Catalog.getLocalizationForKey("openLSSearch.numberHeader")}' width="15"/>  
+							<mx:DataGridColumn id="streetResult" dataField="street" headerText='{Catalog.getLocalizationForKey("openLSSearch.streetHeader")}' width="30"/>
+							<mx:DataGridColumn id="postalCodeResult" dataField="postalCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader")}' width="20"/>
+							<mx:DataGridColumn id="cityResult" dataField="city" headerText='{Catalog.getLocalizationForKey("openLSSearch.cityHeader")}' width="25"/>
+							<mx:DataGridColumn id="countryCodeResult" dataField="countryCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader")}' width="10"/>
 						</mx:columns>
 					</mx:DataGrid> 
 				</s:SkinnableContainer>

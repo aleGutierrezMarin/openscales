@@ -4,7 +4,7 @@
    "locale.localizedName": "English",
    
    "component.iconify": "Iconify",
-    "component.toggle": "Toggle",
+   "component.toggle": "Toggle",
    
    "drawing.toolbar": "Drawing tools",
    "drawing.add": "Add",
@@ -95,5 +95,22 @@
    "managelayerattributes.addlabel": "add",
    "managelayerattributes.dellabel": "delete",
    "editlabel.label": "Label",
-   "editlabel.title": "Enter the label"
+   "editlabel.title": "Enter the label",
+   
+   "openLSSearch.title": "Open LS Search",
+   "openLSSearch.simpleSearch": "Simple search",
+   "openLSSearch.advancedSearch": "Advanced search",
+   "openLSSearch.number": "Number",
+   "openLSSearch.street": "Street",
+   "openLSSearch.postalCode": "Postal code",
+   "openLSSearch.city": "City",
+   "openLSSearch.countryCode": "Country code",
+   "openLSSearch.numberHeader": "Number",
+   "openLSSearch.streetHeader": "Street",
+   "openLSSearch.postalCodeHeader": "Postal code",
+   "openLSSearch.cityHeader": "City",
+   "openLSSearch.countryCodeHeader": "Country",
+   "openLSSearch.ok": "OK",
+   "openLSSearch.tooltip": "Click to center at location...",
+   "openLSSearch.results": "results"
  }
