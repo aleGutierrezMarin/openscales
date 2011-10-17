@@ -15,6 +15,7 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.feature.CustomMarker;
 			import org.openscales.core.feature.Marker;
 			import org.openscales.core.layer.VectorLayer;
@@ -49,6 +50,12 @@
 			private var _request:OpenLSRequest = null;
 			
 			private var _resultLayer:VectorLayer = new VectorLayer("openLSSearchResult");
+			
+			[Bindable]
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			
+			[Bindable]
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
 			
 			/**
 			 * Getter and setter of request id
@@ -282,115 +289,141 @@
 				this.advancedSearchButton.label = Catalog.getLocalizationForKey("openLSSearch.ok");
 				if (searchResult && searchResult.dataProvider)
 					this.nbResults.text = searchResult.dataProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+				
+				_iconify = Catalog.getLocalizationForKey('component.iconify');
+				_toggle = Catalog.getLocalizationForKey('component.toggle');
+			}
+			
+			/**
+			 * 
+			 */
+			override public function toggleDisplay(event:Event=null):void
+			{				
+				super.toggleDisplay();
+				var newEvent:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				newEvent.componentName = "OpenLSSearch";
+				newEvent.componentIconified = this._isReduced;
+				this._map.dispatchEvent(newEvent);
 			}
 			
 		]]>
 	</fx:Script>
 	
-	<s:Panel id="panel" title='{Catalog.getLocalizationForKey("openLSSearch.title")}' minHeight="55" width="100%" height="100%">
-		<fx:Script>
-			<![CDATA[
-				import org.openscales.core.i18n.Catalog;
-			]]>
-		</fx:Script>
-		<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
-			<s:layout>
-				<s:VerticalLayout gap="0"/>
-			</s:layout>
-			
-			<!-- SEARCH MODE -->
-			<mx:Form width="100%" height="22" paddingTop="0" paddingBottom="0">
-				<s:SkinnableContainer width="100%" height="100%" styleName="horizontalLayout" id="searchType">
-					<s:layout>
-						<s:HorizontalLayout />
-					</s:layout>
-					<mx:RadioButton id="simpleSearchSelectionButton" label='{Catalog.getLocalizationForKey("openLSSearch.simpleSearch")}' selected="true" click="onSimpleSearchClick()"/>
-					<mx:RadioButton id="advancedSearchSelectionButton" label='{Catalog.getLocalizationForKey("openLSSearch.advancedSearch")}' selected="false" click="onAdvancedSearchClick()"/>
-				</s:SkinnableContainer>
-			</mx:Form>
-			
-			<!-- SIMPLE SEARCH -->
-			<mx:Form id="simpleSearch" width="100%" height="35" paddingTop="5" paddingBottom="0" visible="true">
-				<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
-					<s:layout>
-						<s:HorizontalLayout/>
-					</s:layout>
-					<mx:FormItem label="" defaultButton="{simpleSearchButton}" width="100%">
-						<autocomplete:AutoComplete id="queryInput" width="100%" text="" keyUp="onKeyUp(event)" />
-						<!--s:TextInput id="queryInput" width="100%" text=""/-->
-					</mx:FormItem>
-					<s:Button id="simpleSearchButton" label='{Catalog.getLocalizationForKey("openLSSearch.ok")}' click="search(event)"/>
-				</s:SkinnableContainer>
-			</mx:Form>
-			
-			<!-- ADVANCED SEARCH -->
-			<mx:Form id="advancedSearch" width="100%" height="0" paddingTop="0" paddingBottom="0" visible="false">
-				<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
-					<s:layout>
-						<s:HorizontalLayout />
-					</s:layout>
-					<s:SkinnableContainer styleName="verticalLayout"  width="30%" height="100%">
+	<s:Group visible="{this._isReduced}" includeInLayout="{this._isReduced}">
+		<s:Button label="+" click="{this.toggleDisplay()}" toolTip="{this._toggle}" width="30" />
+	</s:Group>
+	<s:Group visible="{!this._isReduced}" includeInLayout="{!this._isReduced}">
+		<s:layout>
+			<s:HorizontalLayout gap="-35" />
+		</s:layout>
+		<s:Panel id="panel" title='{Catalog.getLocalizationForKey("openLSSearch.title")}' minHeight="55" width="100%" height="100%">
+			<fx:Script>
+				<![CDATA[
+					import org.openscales.core.i18n.Catalog;
+				]]>
+			</fx:Script>
+			<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				
+				<!-- SEARCH MODE -->
+				<mx:Form width="100%" height="22" paddingTop="0" paddingBottom="0">
+					<s:SkinnableContainer width="100%" height="100%" styleName="horizontalLayout" id="searchType">
 						<s:layout>
-							<s:VerticalLayout gap="5"/>
+							<s:HorizontalLayout />
 						</s:layout>
-						<mx:Label id="numberLabel" text='{Catalog.getLocalizationForKey("openLSSearch.number")}'/>
-						<mx:Label id="streetLabel" text='{Catalog.getLocalizationForKey("openLSSearch.street")}'/>
-						<mx:Label id="postalCodeLabel" text='{Catalog.getLocalizationForKey("openLSSearch.postalCode")}'/>
-						<mx:Label id="cityLabel" text='{Catalog.getLocalizationForKey("openLSSearch.city")}'/>
-						<mx:Label id="countryCodeLabel" text='{Catalog.getLocalizationForKey("openLSSearch.countryCode")}'/>
-						<s:Button id="advancedSearchButton" label='{Catalog.getLocalizationForKey("openLSSearch.ok")}' click="search(event)" x="20"/>
+						<mx:RadioButton id="simpleSearchSelectionButton" label='{Catalog.getLocalizationForKey("openLSSearch.simpleSearch")}' selected="true" click="onSimpleSearchClick()"/>
+						<mx:RadioButton id="advancedSearchSelectionButton" label='{Catalog.getLocalizationForKey("openLSSearch.advancedSearch")}' selected="false" click="onAdvancedSearchClick()"/>
 					</s:SkinnableContainer>
-					<s:SkinnableContainer styleName="verticalLayout"  width="70%" height="100%">
-						<s:layout>
-							<s:VerticalLayout gap="5"/>
-						</s:layout>
-						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
-							<s:TextInput id="number" width="40" text="" />
-						</mx:FormItem>
-						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
-							<s:TextInput id="street" width="100%" text="" />
-						</mx:FormItem>
-						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
-							<s:TextInput id="postalCode" width="50" text="" />
-						</mx:FormItem>
-						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
-							<s:TextInput id="city" width="100%" text="" />
-						</mx:FormItem>
-						<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
-							<s:TextInput id="countryCode" width="100%" text="" />
-						</mx:FormItem>
-					</s:SkinnableContainer>
-				</s:SkinnableContainer>
-			</mx:Form>
-			
-			<!-- RESULTS -->
-			<mx:Form id="results" width="100%" height="0" paddingTop="0" paddingBottom="5" visible="false">
-				<s:SkinnableContainer styleName="verticalLayout"  width="100%" height="100%">
-					<s:layout>
-						<s:VerticalLayout gap="0"/>
-					</s:layout>
-					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="19">
+				</mx:Form>
+				
+				<!-- SIMPLE SEARCH -->
+				<mx:Form id="simpleSearch" width="100%" height="35" paddingTop="5" paddingBottom="0" visible="true">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
-						<mx:Label id="nbResults" text="" width="477"/>
-						<mx:Button id="closeButton" icon="{_closeIcon}" width="17" click="hideResults()"/>
+						<mx:FormItem label="" defaultButton="{simpleSearchButton}" width="100%">
+							<autocomplete:AutoComplete id="queryInput" width="100%" text="" keyUp="onKeyUp(event)" />
+							<!--s:TextInput id="queryInput" width="100%" text=""/-->
+						</mx:FormItem>
+						<s:Button id="simpleSearchButton" label='{Catalog.getLocalizationForKey("openLSSearch.ok")}' click="search(event)"/>
 					</s:SkinnableContainer>
-					<mx:DataGrid id="searchResult"
-								 width="500" height="100%"
-								 click="onSearchResultsClick(event)"
-								 toolTip='{Catalog.getLocalizationForKey("openLSSearch.tooltip")}'>
-						<mx:columns >  
-							<mx:DataGridColumn id="numberResult" dataField="number" headerText='{Catalog.getLocalizationForKey("openLSSearch.numberHeader")}' width="15"/>  
-							<mx:DataGridColumn id="streetResult" dataField="street" headerText='{Catalog.getLocalizationForKey("openLSSearch.streetHeader")}' width="30"/>
-							<mx:DataGridColumn id="postalCodeResult" dataField="postalCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader")}' width="20"/>
-							<mx:DataGridColumn id="cityResult" dataField="city" headerText='{Catalog.getLocalizationForKey("openLSSearch.cityHeader")}' width="25"/>
-							<mx:DataGridColumn id="countryCodeResult" dataField="countryCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader")}' width="10"/>
-						</mx:columns>
-					</mx:DataGrid> 
-				</s:SkinnableContainer>
-			</mx:Form>
-		</s:SkinnableContainer>
-	</s:Panel>
-	
+				</mx:Form>
+				
+				<!-- ADVANCED SEARCH -->
+				<mx:Form id="advancedSearch" width="100%" height="0" paddingTop="0" paddingBottom="0" visible="false">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<s:SkinnableContainer styleName="verticalLayout"  width="30%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:Label id="numberLabel" text='{Catalog.getLocalizationForKey("openLSSearch.number")}'/>
+							<mx:Label id="streetLabel" text='{Catalog.getLocalizationForKey("openLSSearch.street")}'/>
+							<mx:Label id="postalCodeLabel" text='{Catalog.getLocalizationForKey("openLSSearch.postalCode")}'/>
+							<mx:Label id="cityLabel" text='{Catalog.getLocalizationForKey("openLSSearch.city")}'/>
+							<mx:Label id="countryCodeLabel" text='{Catalog.getLocalizationForKey("openLSSearch.countryCode")}'/>
+							<s:Button id="advancedSearchButton" label='{Catalog.getLocalizationForKey("openLSSearch.ok")}' click="search(event)" x="20"/>
+						</s:SkinnableContainer>
+						<s:SkinnableContainer styleName="verticalLayout"  width="70%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="number" width="40" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="street" width="100%" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="postalCode" width="50" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="city" width="100%" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="countryCode" width="100%" text="" />
+							</mx:FormItem>
+						</s:SkinnableContainer>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<!-- RESULTS -->
+				<mx:Form id="results" width="100%" height="0" paddingTop="0" paddingBottom="5" visible="false">
+					<s:SkinnableContainer styleName="verticalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:VerticalLayout gap="0"/>
+						</s:layout>
+						<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="19">
+							<s:layout>
+								<s:HorizontalLayout/>
+							</s:layout>
+							<mx:Label id="nbResults" text="" width="477"/>
+							<mx:Button id="closeButton" icon="{_closeIcon}" width="17" click="hideResults()"/>
+						</s:SkinnableContainer>
+						<mx:DataGrid id="searchResult"
+									 width="500" height="100%"
+									 click="onSearchResultsClick(event)"
+									 toolTip='{Catalog.getLocalizationForKey("openLSSearch.tooltip")}'>
+							<mx:columns >  
+								<mx:DataGridColumn id="numberResult" dataField="number" headerText='{Catalog.getLocalizationForKey("openLSSearch.numberHeader")}' width="15"/>  
+								<mx:DataGridColumn id="streetResult" dataField="street" headerText='{Catalog.getLocalizationForKey("openLSSearch.streetHeader")}' width="30"/>
+								<mx:DataGridColumn id="postalCodeResult" dataField="postalCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader")}' width="20"/>
+								<mx:DataGridColumn id="cityResult" dataField="city" headerText='{Catalog.getLocalizationForKey("openLSSearch.cityHeader")}' width="25"/>
+								<mx:DataGridColumn id="countryCodeResult" dataField="countryCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader")}' width="10"/>
+							</mx:columns>
+						</mx:DataGrid> 
+					</s:SkinnableContainer>
+				</mx:Form>
+			</s:SkinnableContainer>
+		</s:Panel>
+		<s:Group>
+			<s:Button label="-" click="{this.toggleDisplay()}" toolTip="{this._iconify}"
+					  width="30" y="5" />
+		</s:Group>
+	</s:Group>
 </Control>
