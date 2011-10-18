@@ -23,7 +23,7 @@ package org.openscales.core.i18n
 		/**
 		 * Default locale to use
 		 */
-		static public var DEFAULT_LOCALE_CODE:String = "EN";
+		static public var DEFAULT_LOCALE_CODE:String = "en";
 
 		
 		static private var KNOWNLOCALES:HashMap = new HashMap();
@@ -39,26 +39,26 @@ package org.openscales.core.i18n
 		 * Known supported flash locales
 		 */
 		static private var _flashLocales:Object = {
-			"EN":new Array("English","English"),
-			"ES":new Array("Spanish","Español"),
-			"FR":new Array("French","Français"),
-			"DE":new Array("German","Deutsch"),
-			"PT":new Array("Portuguese","Português"),
-			"NL":new Array("Dutch","Nederlandse"),
-			"CS":new Array("Czech","České"),
-			"DA":new Array("Danish","Danske"),
-			"FI":new Array("Finnish","Suomalainen"),
-			"HU":new Array("Hungarian","Magyar"),
-			"IT":new Array("Italian","Italiano"),
-			"JA":new Array("Japanese","Japanese"),
-			"KO":new Array("Korean","Korean"),
-			"NO":new Array("Norwegian","Norske"),
-			"PL":new Array("Polish","Polska"),
-			"RU":new Array("Russian","Россию"),
-			"ZH-CN":new Array("Chinese","Chinese"),
-			"SV":new Array("Swedish","Svenska"),
-			"ZH-TW": new Array("Chinese","Chinese"),
-			"TR": new Array("Turkish","Türk")
+			"en":new Array("English","English"),
+			"es":new Array("Spanish","Español"),
+			"fr":new Array("French","Français"),
+			"de":new Array("German","Deutsch"),
+			"pt":new Array("Portuguese","Português"),
+			"nl":new Array("Dutch","Nederlandse"),
+			"cs":new Array("Czech","České"),
+			"da":new Array("Danish","Danske"),
+			"fi":new Array("Finnish","Suomalainen"),
+			"hu":new Array("Hungarian","Magyar"),
+			"it":new Array("Italian","Italiano"),
+			"ja":new Array("Japanese","Japanese"),
+			"ko":new Array("Korean","Korean"),
+			"no":new Array("Norwegian","Norske"),
+			"pl":new Array("Polish","Polska"),
+			"ru":new Array("Russian","Россию"),
+			"zh-cn":new Array("Chinese","Chinese"),
+			"sv":new Array("Swedish","Svenska"),
+			"zh-tw": new Array("Chinese","Chinese"),
+			"tr": new Array("Turkish","Türk")
 		};
 		
 		/**
@@ -68,7 +68,7 @@ package org.openscales.core.i18n
 		 */
 		public function Locale(localeKey:String, localeName:String, localizedName:String)
 		{
-			this._localeKey=localeKey.toUpperCase();
+			this._localeKey=localeKey.toLowerCase();
 			this._localeName=localeName;
 			this._localizedName=localizedName;
 			if(!Locale.KNOWNLOCALES.containsKey(localeKey))
@@ -89,9 +89,9 @@ package org.openscales.core.i18n
 			if(!localeKey || localeKey=="")
 				return null;
 			
-			var locale:Locale = Locale.KNOWNLOCALES.getValue(localeKey.toUpperCase()) as Locale;
+			var locale:Locale = Locale.KNOWNLOCALES.getValue(localeKey.toLowerCase()) as Locale;
 			if(!locale){
-				locale = new Locale(localeKey.toUpperCase(),localeName,localizedName);
+				locale = new Locale(localeKey.toLowerCase(),localeName,localizedName);
 				Locale.KNOWNLOCALES.put(locale.localeKey,locale);
 			}
 			
@@ -108,11 +108,11 @@ package org.openscales.core.i18n
 		static public function getLocaleByKey(localeKey:String):Locale {
 			if(!localeKey)
 				return null;
-			var locale:Locale = Locale.KNOWNLOCALES.getValue(localeKey.toUpperCase()) as Locale;
-			if(!locale && Locale._flashLocales[localeKey.toUpperCase()])
-				locale = Locale.genLocale(localeKey.toUpperCase(),
-					Locale._flashLocales[localeKey.toUpperCase()][0],
-					Locale._flashLocales[localeKey.toUpperCase()][1]);
+			var locale:Locale = Locale.KNOWNLOCALES.getValue(localeKey.toLowerCase()) as Locale;
+			if(!locale && Locale._flashLocales[localeKey.toLowerCase()])
+				locale = Locale.genLocale(localeKey.toLowerCase(),
+					Locale._flashLocales[localeKey.toLowerCase()][0],
+					Locale._flashLocales[localeKey.toLowerCase()][1]);
 			return locale;
 		}
 		
@@ -143,7 +143,7 @@ package org.openscales.core.i18n
 		 */
 		static public function get systemLocale():Locale {
 			if(!Locale._systemLocale){
-				var localeKey:String = Capabilities.language.toUpperCase();
+				var localeKey:String = Capabilities.language.toLowerCase();
 				var locale:Locale = Locale.getLocaleByKey(localeKey);
 				if(!locale)
 					locale = Locale.getLocaleByKey(Locale.DEFAULT_LOCALE_CODE);
