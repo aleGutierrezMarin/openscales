@@ -35,8 +35,8 @@ package org.openscales.core.i18n
 		private var _existingKey:String = "zoombar.state";
 		private var _notExistingKey:String = "notexisting";
 		
-		private var _locale:Locale = Locale.getLocaleByKey("EN");
-		private var _frenchLocale:Locale = Locale.getLocaleByKey("FR");
+		private var _locale:Locale = Locale.getLocaleByKey("en");
+		private var _frenchLocale:Locale = Locale.getLocaleByKey("fr");
 		
 		private var _timer:Timer = null;
 		private const THICK_TIME:uint = 5000;
