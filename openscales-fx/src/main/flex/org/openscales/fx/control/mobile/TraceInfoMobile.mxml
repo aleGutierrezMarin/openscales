@@ -14,7 +14,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.utils.Trace;
+			//import org.openscales.core.Trace;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.TraceEvent;
 			import org.openscales.core.i18n.Catalog;
@@ -55,7 +55,7 @@
 				if(this.map) {
 					if(e)
 						this.map.removeEventListener(Event.ADDED_TO_STAGE,addListeners);
-					Trace.stage = this.map.stage;
+					//Trace.stage = this.map.stage;
 					this.map.stage.addEventListener(TraceEvent.LOG, displayLog);
 					this.map.stage.addEventListener(TraceEvent.INFO, displayLog);
 					this.map.stage.addEventListener(TraceEvent.WARNING, displayLog);
@@ -71,30 +71,21 @@
 			
 			private function clearTrace():void {
 				
-				if(textArea)
-				{
-					if(textArea.textFlow)
-					{
-						for (var i:int=textArea.textFlow.numChildren-1; i>=0; i--) {
-							textArea.textFlow.removeChildAt(i);
-						}
-					}
-				}
+				textArea.text = "Output Console";
 				
-				textArea.textFlow = TextConverter.importToFlow("Output Console", TextConverter.TEXT_FIELD_HTML_FORMAT);
-
+				/// textArea.textFlow = TextConverter.importToFlow("Output Console", TextConverter.TEXT_FIELD_HTML_FORMAT);
+				
 			}
 			
 			private function displayLog(event:TraceEvent):void {
 				
 				
-				var oldText:String = TextConverter.export(textArea.textFlow, TextConverter.TEXT_FIELD_HTML_FORMAT, ConversionType.STRING_TYPE) as String;
 				
 				/*
 				var pe:ParagraphElement = new ParagraphElement();
 				var se:SpanElement = new SpanElement();
 				var separator:SpanElement = new SpanElement();
-
+				
 				se.text = event.text;
 				se.lineBreak = "toFit";
 				se.setStyle("color", );
@@ -106,22 +97,13 @@
 				textArea.textFlow.addChild(pe);
 				*/
 				
-				var text:String = event.text;
-				if (event.type == TraceEvent.WARNING) {
-					text = "<span style='color:#08088A'>"+text+"</p>";
-					
-				} else if (event.type == TraceEvent.ERROR) {
-					text = "<span style='color:#FF0000'>"+text+"</p>";
-				} else if (event.type == TraceEvent.DEBUG) {
-					text = "<span style='color:#FFBF00'>"+text+"</p>";
-				}
+				// textArea.textFlow = TextConverter.importToFlow((oldText + text), TextConverter.TEXT_FIELD_HTML_FORMAT);
 				
-				textArea.textFlow = TextConverter.importToFlow((oldText + text), TextConverter.TEXT_FIELD_HTML_FORMAT);
+				textArea.text = event.text;
 				
-				textArea.validateNow();	
-				textArea.scroller.verticalScrollBar.value = textArea.scroller.verticalScrollBar.maximum;
+				
 			}
-
+			
 		]]>
 	</fx:Script>
 	
