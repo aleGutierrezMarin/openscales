@@ -112,5 +112,6 @@
    "openLSSearch.countryCodeHeader": "Pays",
    "openLSSearch.ok": "OK",
    "openLSSearch.tooltip": "Cliquez pour centrer sur le lieu...",
-   "openLSSearch.results": "résultats"
+   "openLSSearch.results": "résultats",
+   "openLSSearch.noResult": "Aucun résultat ne correspond à votre recherche"
  }
