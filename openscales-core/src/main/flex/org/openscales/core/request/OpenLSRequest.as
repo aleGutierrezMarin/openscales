@@ -4,6 +4,7 @@ package org.openscales.core.request
 	
 	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.UID;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * OpenLSRequest
@@ -19,7 +20,8 @@ package org.openscales.core.request
 		private var _postalCode:String = "";
 		private var _city:String = "";
 		private var _countryCode:String = "";
-				
+		private var _version:String = "1.2";
+
 		private var _isValidPostalCode:Function = null;
 		
 		/**
@@ -33,7 +35,20 @@ package org.openscales.core.request
 			super(url, onComplete, onFailure);
 			this.postContentType = "text/plain";
 		}
-		
+		/**
+		 * OpenLS version
+		 */
+		public function get version():String
+		{
+			return _version;
+		}
+		/**
+		 * @private
+		 */
+		public function set version(value:String):void
+		{
+			_version = value;
+		}
 		/**
 		 * Getter and setter of the id of the request.
 		 * Default value is "".
@@ -177,8 +192,9 @@ package org.openscales.core.request
 		 * @param countryCode
 		 * @param srsName
 		 * @param maximumResponses
+		 * @param version
 		 */
-		public function defineSearch(id:String, freeFormAddress:String, number:String, street:String, postalCode:String, city:String, countryCode:String, srsName:String, maximumResponses:uint):void {
+		public function defineSearch(id:String, freeFormAddress:String, number:String, street:String, postalCode:String, city:String, countryCode:String, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
 			this.freeFormAddress =freeFormAddress;
 			this.number = number;
@@ -188,6 +204,7 @@ package org.openscales.core.request
 			this.countryCode = countryCode;
 			this.srsName = srsName;
 			this.maximumResponses = maximumResponses;
+			this.version = version;
 			// Update the content of the request
 			this.postContent = this.createContent();
 		}
@@ -199,13 +216,15 @@ package org.openscales.core.request
 		 * @param countryCode
 		 * @param srsName
 		 * @param maximumResponses
+		 * @param version
 		 */
-		public function defineSimpleSearch(id:String, freeFormAddress:String, countryCode:String, srsName:String, maximumResponses:uint):void {
+		public function defineSimpleSearch(id:String, freeFormAddress:String, countryCode:String, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
 			this.freeFormAddress =freeFormAddress;
 			this.countryCode = countryCode;
 			this.srsName = srsName;
 			this.maximumResponses = maximumResponses;
+			this.version = version;
 			// Update the content of the request
 			this.postContent = this.createContent();
 		}
@@ -221,8 +240,9 @@ package org.openscales.core.request
 		 * @param countryCode
 		 * @param srsName
 		 * @param maximumResponses
+		 * @param version
 		 */
-		public function defineAdvancedSearch(id:String, number:String, street:String, postalCode:String, city:String, countryCode:String, srsName:String, maximumResponses:uint):void {
+		public function defineAdvancedSearch(id:String, number:String, street:String, postalCode:String, city:String, countryCode:String, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
 			this.number = number;
 			this.street = street;
@@ -231,6 +251,7 @@ package org.openscales.core.request
 			this.countryCode = countryCode;
 			this.srsName = srsName;
 			this.maximumResponses = maximumResponses;
+			this.version = version;
 			// Update the content of the request
 			this.postContent = this.createContent();
 		}
@@ -245,14 +266,14 @@ package org.openscales.core.request
 			}
 			var request:String = '';
 			request += '<?xml version="1.0" encoding="UTF-8"?>';
-			request += '<XLS xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/xls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2"  xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.2/olsAll.xsd">';
+			request += '<XLS xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/xls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="'+this._version+'"  xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.2/olsAll.xsd">';
 			if (srsName && srsName != "") {
 				request += '<RequestHeader srsName="'+this.srsName+'"/>';
 			}
 			else {
 				request += '<RequestHeader/>';
 			}
-			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="GeocodeRequest" requestID="'+this.id+'" version="1.0">';
+			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="GeocodeRequest" requestID="'+this.id+'" version="'+this._version+'">';
 			request += '<GeocodeRequest>';
 			
 			if (this.freeFormAddress) {
@@ -309,7 +330,7 @@ package org.openscales.core.request
 		 * @param resultsList XML document describing the results of a geocoding
 		 * @return a Array of String
 		 */
-		static public function resultsListtoArray(resultsList:XMLList):Array {
+		static public function resultsListtoArray(resultsList:XMLList, version:String = "1.2"):Array {
 			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
 			var gml:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
 			var results:Array = new Array(), result:Object, position:Array;
@@ -317,9 +338,23 @@ package org.openscales.core.request
 				for each (var gr:XML in resultsList.xls::GeocodedAddress) {
 					result = new Object();
 					position = gr.gml::Point.gml::pos.toString().split(' ');
+					var srsName:String = "EPSG:4326";
+					if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
+						srsName = gr.gml::Point.gml::pos.@srsName.toString().toUpperCase();
+					}
+					var latlon:Boolean = false;
+					if(version == "1.2") {
+						if(ProjProjection.projAxisOrder[srsName] && ProjProjection.projAxisOrder[srsName]==ProjProjection.AXIS_ORDER_NE)
+							latlon=true;
+					}
 					if (position.length == 2) {
-						result.lat = Number(position[0]);
-						result.lon = Number(position[1]);
+						if(latlon) {
+							result.lat = Number(position[0]);
+							result.lon = Number(position[1]);
+						} else {
+							result.lat = Number(position[1]);
+							result.lon = Number(position[0]);
+						}
 					}
 					result.countryCode = gr.xls::Address.@countryCode.toString();
 					result.number = gr.xls::Address.xls::StreetAddress.xls::Building.@number.toString();
@@ -349,8 +384,8 @@ package org.openscales.core.request
 		 * @param resultsList XML document describing the results of a geocoding
 		 * @return a JSON string
 		 */
-		static public function resultsListtoJSON(resultsList:XMLList):String {
-			return JSON.encode(OpenLSRequest.resultsListtoArray(resultsList));
+		static public function resultsListtoJSON(resultsList:XMLList, version:String = "1.2"):String {
+			return JSON.encode(OpenLSRequest.resultsListtoArray(resultsList, version));
 		}
 		
 		/**
