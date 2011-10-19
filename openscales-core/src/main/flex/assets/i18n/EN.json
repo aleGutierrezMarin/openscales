@@ -1,5 +1,5 @@
  {
-   "locale.key": "EN",
+   "locale.key": "en",
    "locale.name": "English",
    "locale.localizedName": "English",
    
@@ -112,5 +112,6 @@
    "openLSSearch.countryCodeHeader": "Country",
    "openLSSearch.ok": "OK",
    "openLSSearch.tooltip": "Click to center at location...",
-   "openLSSearch.results": "results"
+   "openLSSearch.results": "results",
+   "openLSSearch.noResult": "No result matches your search"
  }

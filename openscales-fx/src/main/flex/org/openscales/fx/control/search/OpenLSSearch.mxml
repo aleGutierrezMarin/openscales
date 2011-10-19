@@ -175,21 +175,30 @@
 				var xml:XML = new XML(xmlString);
 				var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml));
 				searchResult.dataProvider = new ArrayCollection(results);
-				if (searchResult.dataProvider.length == 1) {
-					var latitude:Number = parseFloat(searchResult.dataProvider[0].lat);
-					var longitude:Number = parseFloat(searchResult.dataProvider[0].lon);
-					var resolution:Number = cityResolution;
-					if (searchResult.dataProvider[0].street && searchResult.dataProvider[0].street!="") {
-						resolution = streetResolution;
-					}
-					this.centerAtLocation(latitude, longitude, resolution);
-					
+				if (searchResult.dataProvider.length == 0) {
+					// no result
+					this.noResult.visible = true;
+					this.noResult.percentHeight = 100;
 				}
-				if (searchResult.dataProvider.length > 1) {
-					this.nbResults.text = searchResult.dataProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
-					this.searchResult.rowCount = searchResult.dataProvider.length;
-					this.results.visible = true;
-					this.results.percentHeight = 100;
+				else {
+					if (searchResult.dataProvider.length == 1) {
+						// only one result, so center at location automatically
+						var latitude:Number = parseFloat(searchResult.dataProvider[0].lat);
+						var longitude:Number = parseFloat(searchResult.dataProvider[0].lon);
+						var resolution:Number = cityResolution;
+						if (searchResult.dataProvider[0].street && searchResult.dataProvider[0].street!="") {
+							resolution = streetResolution;
+						}
+						this.centerAtLocation(latitude, longitude, resolution);
+						
+					}
+					else {
+						// Several results, so display list
+						this.nbResults.text = searchResult.dataProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+						this.searchResult.rowCount = searchResult.dataProvider.length;
+						this.results.visible = true;
+						this.results.percentHeight = 100;
+					}
 				}
 			}
 			
@@ -269,6 +278,8 @@
 			private function hideResults():void {
 				this.results.visible = false;
 				this.results.height= 0;
+				this.noResult.visible = false;
+				this.noResult.height = 0;
 			}
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
@@ -289,6 +300,7 @@
 				this.advancedSearchButton.label = Catalog.getLocalizationForKey("openLSSearch.ok");
 				if (searchResult && searchResult.dataProvider)
 					this.nbResults.text = searchResult.dataProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+				this.noResultMsg.text = Catalog.getLocalizationForKey("openLSSearch.noResult");
 				
 				_iconify = Catalog.getLocalizationForKey('component.iconify');
 				_toggle = Catalog.getLocalizationForKey('component.toggle');
@@ -417,6 +429,16 @@
 								<mx:DataGridColumn id="countryCodeResult" dataField="countryCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader")}' width="10"/>
 							</mx:columns>
 						</mx:DataGrid> 
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<!-- NO RESULT -->
+				<mx:Form id="noResult" width="100%" height="0" paddingTop="0" paddingBottom="5" visible="false">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout gap="0"/>
+						</s:layout>
+						<mx:Label id="noResultMsg" text='{Catalog.getLocalizationForKey("openLSSearch.noResult")}'/>
 					</s:SkinnableContainer>
 				</mx:Form>
 			</s:SkinnableContainer>
