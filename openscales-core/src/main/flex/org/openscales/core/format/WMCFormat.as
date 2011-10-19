@@ -82,7 +82,7 @@ package org.openscales.core.format
 						this._windowSize = new Size(window..@width[0], window..@height[0]);
 					}
 				}
-import org.openscales.core.layer.ogc.WMTS;
+
 
 				if(general..*::BoundingBox.length() > 0)
 				{

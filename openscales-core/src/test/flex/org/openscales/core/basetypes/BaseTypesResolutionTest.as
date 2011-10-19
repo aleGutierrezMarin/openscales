@@ -3,12 +3,12 @@ package org.openscales.core.basetypes
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertTrue;
 
-	public class ResolutionTest
+	public class BaseTypesResolutionTest
 	{
 		
 		private var _resolution:Resolution;
 		
-		public function ResolutionTest()
+		public function BaseTypesResolutionTest()
 		{
 		}
 		

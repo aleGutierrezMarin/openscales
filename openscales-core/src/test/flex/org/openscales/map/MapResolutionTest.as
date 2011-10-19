@@ -5,9 +5,9 @@ package org.openscales.map
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 
-	public class ResolutionTest
+	public class MapResolutionTest
 	{
-		public function ResolutionTest()
+		public function MapResolutionTest()
 		{
 		}
 		
