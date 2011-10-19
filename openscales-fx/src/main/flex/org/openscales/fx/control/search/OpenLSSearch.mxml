@@ -35,15 +35,17 @@
 			private var _xOffset:Number = 0;
 			private var _yOffset:Number = -12.5;
 			
+			[Bindable]
 			private var _defaultCountryCode:String = "FR";
-			private var _defaultSrsName:String = "epsg:4326";
+			private var _projection:String = "epsg:4326";
 			private var _maximumGeocodeResponses:uint = 10;
+			private var _version:String = "1.2";
 			
 			private var _geocodeServiceUrl:String=null;
 			
-			private var streetResolution:Number = 0.0000107288360595703;
+			private var _streetResolution:Number = 0.0000107288360595703;
 			
-			private var cityResolution:Number = 0.0000858306884765625;
+			private var _cityResolution:Number = 0.0000858306884765625;
 			
 			private var _requestId:String = "";
 			
@@ -56,6 +58,18 @@
 			
 			[Bindable]
 			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
+			
+			/**
+			 * Getter and setter of OpenLS version
+			 */
+			public function get version():String {
+				return this._version;
+			}			
+			public function set version(value:String):void {	
+				if (value && value!="") {
+					this._version = value;
+				}
+			}
 			
 			/**
 			 * Getter and setter of request id
@@ -114,15 +128,15 @@
 			}
 			
 			/**
-			 * Getter and setter of default SRS name
+			 * Getter and setter of projection
 			 */
-			public function get defaultSrsName():String {
-				return this._defaultSrsName;
+			public function get projection():String {
+				return this._projection;
 			}			
 			
-			public function set defaultSrsName(value:String):void {		
+			public function set projection(value:String):void {		
 				if (value && value!="") {
-					this._defaultSrsName = value;
+					this._projection = value;
 				}
 			}
 			
@@ -153,13 +167,13 @@
 					_request.destroy();
 				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault);
 				if (this.map != null) {
-					var cc:String = this.countryCode.text;
-					if (cc == null || cc =="") cc = defaultCountryCode;
 					if (event.currentTarget == this.simpleSearchButton) {
-						_request.defineSimpleSearch(requestId, queryInput.text, cc, this.defaultSrsName, this.maximumGeocodeResponses);
+						_request.defineSimpleSearch(requestId, queryInput.text, this.defaultCountryCode, this.projection, this.maximumGeocodeResponses, this.version);
 					}
 					else {
-						_request.defineAdvancedSearch(requestId, this.number.text, this.street.text, this.postalCode.text, this.city.text, cc, this.defaultSrsName, this.maximumGeocodeResponses);
+						if (!this.countryCode.text || this.countryCode.text=="")
+							this.countryCode.text=this.defaultCountryCode;
+						_request.defineAdvancedSearch(requestId, this.number.text, this.street.text, this.postalCode.text, this.city.text, this.countryCode.text, this.projection, this.maximumGeocodeResponses, this.version);
 					}
 					_request.send();
 				}
@@ -173,7 +187,7 @@
 				var xmlString:String = (event.target as URLLoader).data as String;
 				Trace.debug("OpenLS result : " + xmlString);
 				var xml:XML = new XML(xmlString);
-				var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml));
+				var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml), this.version);
 				searchResult.dataProvider = new ArrayCollection(results);
 				if (searchResult.dataProvider.length == 0) {
 					// no result
@@ -185,11 +199,11 @@
 						// only one result, so center at location automatically
 						var latitude:Number = parseFloat(searchResult.dataProvider[0].lat);
 						var longitude:Number = parseFloat(searchResult.dataProvider[0].lon);
-						var resolution:Number = cityResolution;
+						var resolution:Number = _cityResolution;
 						if (searchResult.dataProvider[0].street && searchResult.dataProvider[0].street!="") {
-							resolution = streetResolution;
+							resolution = _streetResolution;
 						}
-						this.centerAtLocation(latitude, longitude, resolution);
+						this.centerAtLocation(latitude, longitude, this.projection, resolution);
 						
 					}
 					else {
@@ -213,28 +227,26 @@
 					this.map.removeLayer(this._resultLayer);
 					var latitude:Number = parseFloat(event.target.data.lat);
 					var longitude:Number = parseFloat(event.target.data.lon);
-					var resolution:Number = cityResolution;
+					var resolution:Number = _cityResolution;
 					if (event.target.data.street && event.target.data.street!="") {
-						resolution = streetResolution;
+						resolution = _streetResolution;
 					}
-					this.centerAtLocation(latitude, longitude, resolution);
+					this.centerAtLocation(latitude, longitude, this.projection, resolution);
 				} catch(e:Error) {
 					Trace.info("No result to use to change position of the map");
 				}
 			}		
 			
-			private function centerAtLocation(latitude:Number, longitude:Number, resolution:Number): void {
+			private function centerAtLocation(latitude:Number, longitude:Number, projection:String, resolution:Number): void {
 				if (! (isNaN(latitude) || isNaN(longitude)) ) {
-					var pos:Location = new Location(longitude,latitude);
-					Trace.log("OpenLS center at "+pos.toShortString());
-					if (map.projection != "") {
-						pos = pos.reprojectTo(map.projection);
-					}
+					var pos:Location = new Location(longitude,latitude,projection);
+					if(this.map.projection!=pos.projection)
+						pos=pos.reprojectTo(this.map.projection);
 					this.map.center = pos;
 					this.map.resolution = new Resolution(resolution);
 					this.map.addLayer(this._resultLayer);
 					var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _markerIcon(), pos, null, _xOffset, _yOffset); 
-					this._resultLayer.addFeature(marker, true, false);
+					this._resultLayer.addFeature(marker,true,false);
 				}
 			}
 			
@@ -398,7 +410,7 @@
 								<s:TextInput id="city" width="100%" text="" />
 							</mx:FormItem>
 							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
-								<s:TextInput id="countryCode" width="100%" text="" />
+								<s:TextInput id="countryCode" width="100%" text="{this._defaultCountryCode}" />
 							</mx:FormItem>
 						</s:SkinnableContainer>
 					</s:SkinnableContainer>
