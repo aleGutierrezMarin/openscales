@@ -17,7 +17,7 @@
 			
 			private function init():void {
 				data['about'] = new AboutOpenScales();
-				example.addElement(getState('basic'));
+				example.addElement(getState('overview'));
 			}
 			
 			private function idle():void

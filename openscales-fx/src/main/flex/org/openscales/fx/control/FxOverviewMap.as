@@ -55,9 +55,14 @@ package org.openscales.fx.control
 		override protected function onCreationComplete(event:Event):void {
 			var i:uint;
 			var element:IVisualElement;
+			var layerFound:Boolean = false;
 			for(i=0; i<this.numElements; i++) {
 				element = this.getElementAt(i);
 				if (element is FxLayer) {
+					if(!layerFound) {
+						this._overviewmap.removeAllLayers();
+						layerFound = true;
+					}
 					this.addFxLayer(element as FxLayer);
 				}
 			}
