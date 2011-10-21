@@ -434,6 +434,7 @@
 			<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:DrawPath id="drawPath" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawShape id="drawShape" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 		</s:SkinnableContainer>
 		
 		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">

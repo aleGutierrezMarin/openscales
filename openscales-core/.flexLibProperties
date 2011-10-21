@@ -113,6 +113,7 @@
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPolygonHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawSegmentHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawShapeHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPointHandler"/>
@@ -224,7 +225,6 @@
     <classEntry path="org.openscales.core.utils.Util"/>
     <classEntry path="org.openscales.core.MapTest"/>
     <classEntry path="org.openscales.core.StringUtilsTest"/>
-    <classEntry path="org.openscales.core.basetypes.BaseTypesResolutionTest"/>
     <classEntry path="org.openscales.core.basetypes.TreeTest"/>
     <classEntry path="org.openscales.core.configuration.ConfigurationTest"/>
     <classEntry path="org.openscales.core.control.CopyrightTest"/>
@@ -261,7 +261,6 @@
     <classEntry path="org.openscales.map.ExtentTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.map.MapResolutionTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

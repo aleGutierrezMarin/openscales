@@ -22,6 +22,7 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
+			import org.openscales.core.handler.feature.draw.DrawShapeHandler;
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
@@ -35,14 +36,14 @@
 			private var _alpha:Number = 0.3;
 			
 			[Bindable]
-			private var tooltip:String = Catalog.getLocalizationForKey('drawing.path');
+			private var tooltip:String = Catalog.getLocalizationForKey('drawing.shape');
 			
 			[Bindable]
-			[Embed(source="/assets/images/icons/Icons-04.png")]
+			[Embed(source="/assets/images/icons/Icons-16.png")]
 			private var _btnPath:Class;
 			
 			private var _active:Boolean = true;
-			private var _handler:AbstractDrawHandler= new DrawPathHandler();
+			private var _handler:AbstractDrawHandler = new DrawShapeHandler();
 			private var _isClick:Boolean = false;
 			
 			/**
@@ -67,11 +68,11 @@
 			 */
 			public function get style():Style{
 				
-				return (this._handler as DrawPathHandler).style;
+				return (this._handler as DrawShapeHandler).style;
 			}
 			public function set style(value:Style):void{
 				
-				(this._handler as DrawPathHandler).style = value;
+				(this._handler as DrawShapeHandler).style = value;
 			}
 			
 			/**
@@ -81,7 +82,6 @@
 				
 				return _handler.map;
 			}
-			
 			public function set map(value:Map):void{
 				
 				_handler.map = value;
@@ -146,8 +146,8 @@
 				// Disactive this component
 				var evt:DrawingEvent;
 				if(this._handler.active){
-					if(!(this._handler as DrawPathHandler).newFeature)
-						(this._handler as DrawPathHandler).drawFinalPath();
+					if(!(this._handler as DrawShapeHandler).newFeature)
+						(this._handler as DrawShapeHandler).endShape();
 					disactivate();
 					_handler.map.mouseNavigationEnabled = true;
 					return;
@@ -178,8 +178,8 @@
 				
 				if(this._handler.active && !this._isClick)
 				{
-					if(!(this._handler as DrawPathHandler).newFeature)
-						(this._handler as DrawPathHandler).drawFinalPath();
+					if(!(this._handler as DrawShapeHandler).newFeature)
+						(this._handler as DrawShapeHandler).endShape();
 					disactivate();
 				}
 				else
@@ -195,8 +195,8 @@
 				{
 					if(this._handler.active)
 					{
-						if(!(this._handler as DrawPathHandler).newFeature)
-							(this._handler as DrawPathHandler).drawFinalPath();
+						if(!(this._handler as DrawShapeHandler).newFeature)
+							(this._handler as DrawShapeHandler).endShape();
 						disactivate();
 						_handler.map.mouseNavigationEnabled = true;
 					}

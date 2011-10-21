@@ -12,6 +12,7 @@
    "drawing.export": "Exporter",
    "drawing.label": "Ajouter un libellé",
    "drawing.point": "Ajouter un point",
+   "drawing.shape": "Dessiner une forme",
    "drawing.path": "Dessiner une ligne",
    "drawing.polygon": "Dessiner un polygone",
    "drawing.select": "Sélectionner",

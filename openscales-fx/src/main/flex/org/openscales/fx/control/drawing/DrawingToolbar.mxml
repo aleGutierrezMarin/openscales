@@ -25,6 +25,7 @@
 			private var _labelStyle:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
 			private var _pointStyle:Style = Style.getDefaultPointStyle();
 			private var _pathStyle:Style = Style.getDefaultLineStyle();
+			private var _shapeStyle:Style = Style.getDefaultLineStyle();
 			private var _polygonStyle:Style = Style.getDefaultSurfaceStyle();
 			private var _clickOut:Boolean = true;
 			private var _toggle:Boolean = false;
@@ -43,6 +44,7 @@
 				// set the properties
 				drawLabel.style = this._labelStyle;
 				drawPoint.style = this._pointStyle;
+				drawShape.style = this._shapeStyle;
 				drawPath.style = this._pathStyle;
 				drawPolygon.style = this._polygonStyle;
 				selectFeatures.clickout = this._clickOut;
@@ -63,6 +65,7 @@
 					this.drawingToolbar.removeElement(this.moveFeatures);
 					this.drawingToolbar.removeElement(this.manageAttributes);
 					this.drawingToolbar.removeElement(this.exportFeature);
+					this.drawingToolbar.removeElement(this.drawShape);
 				}
 				
 				this.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
@@ -84,6 +87,7 @@
 				super.map = value;
 				drawLabel.map = value;
 				drawPoint.map = value;
+				drawShape.map = value;
 				drawPath.map = value;
 				drawPolygon.map = value;
 				selectFeatures.map = value;
@@ -267,6 +271,7 @@
 		</s:layout>
 		<osDraw:DrawLabel id="drawLabel" />
 		<osDraw:DrawPoint id="drawPoint" />
+		<osDraw:DrawShape id="drawShape" />
 		<osDraw:DrawPath id="drawPath" />
 		<osDraw:DrawPolygon id="drawPolygon" />
 		<osDraw:SelectFeatures id="selectFeatures" />

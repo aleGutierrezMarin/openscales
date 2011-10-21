@@ -381,6 +381,7 @@
 							{
 								kml = new KML(name, url);
 								kml.selected = true;
+								kml.editable = true;
 								this.importFeature.map.addLayer(kml);
 							}
 							
@@ -389,6 +390,7 @@
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								kml = new KML(name, null, xml);
 								kml.selected = true;
+								kml.editable = true;
 								this.importFeature.map.addLayer(kml);
 							}
 							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
@@ -405,6 +407,7 @@
 							{
 								gpx = new GPX(name, version, url);
 								gpx.selected = true;
+								gpx.editable = true;
 								this.importFeature.map.addLayer(gpx);
 							}
 							else // locale file
@@ -412,6 +415,7 @@
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								gpx = new GPX(name, version, null, xml);
 								gpx.selected = true;
+								gpx.editable = true;
 								this.importFeature.map.addLayer(gpx);
 							}
 							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
@@ -426,6 +430,7 @@
 							{
 								var geoRss:GeoRss = new GeoRss(name, url);
 								geoRss.selected = true;
+								geoRss.editable = true;
 								this.importFeature.map.addLayer(geoRss);
 							}
 							else // locale file
@@ -461,6 +466,7 @@
 							{
 								gml = new GML(name, version, this.importFeature.map.projection, url);
 								gml.selected = true;
+								gml.editable = true;
 								this.importFeature.map.addLayer(gml);
 							}
 							else // locale file
@@ -468,6 +474,7 @@
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								gml = new GML(name, version, this.importFeature.map.projection, null, xml);
 								gml.selected = true;
+								gml.editable = true;
 								this.importFeature.map.addLayer(gml);
 							}
 							evt = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
