@@ -100,14 +100,18 @@ package org.openscales.core.control {
 			this.map.addEventListener(MapEvent.LAYERS_LOAD_END,mapEventHandler);
 			
 			// check if map is already loading.
-			if (!this.map.loading)			 
+			if (this.map.loading && this.map.layers.length>0)			 
 				this.start();
+			else
+				this.visible = false;
 		}
 		
 		private function mapEventHandler(event:MapEvent):void
 		{
 			switch (event.type) 	{
 				case MapEvent.LAYERS_LOAD_START:
+					if(this.map.layers.length==0)
+						return;
 					this.start();
 				break;
 				case MapEvent.LAYERS_LOAD_END:
