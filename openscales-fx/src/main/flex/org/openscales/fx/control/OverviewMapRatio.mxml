@@ -61,7 +61,7 @@
 					this.addToggleButton();
 					this.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, onPropertyChanged);
 				}else{
-					this.addElement(normal_group);
+					this.addElement(normal_group);// Just adding the group which will contain the minimap
 				}
 			}
 			
