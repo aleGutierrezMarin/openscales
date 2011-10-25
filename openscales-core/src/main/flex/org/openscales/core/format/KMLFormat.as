@@ -6,17 +6,16 @@ package org.openscales.core.format
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
@@ -29,6 +28,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
@@ -38,8 +38,9 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.core.basetypes.maps.HashMap;
-	
+	import org.openscales.geometry.LabelPoint;
+	import org.openscales.core.feature.LabelFeature;
+	import org.openscales.geometry.LabelPoint;
 	
 	/**
 	 * Read KML 2.0 and 2.2 file format.
@@ -59,6 +60,7 @@ package org.openscales.core.format
 		// features
 		private var iconsfeatures:Vector.<Feature> = new Vector.<Feature>();
 		private var linesfeatures:Vector.<Feature> = new Vector.<Feature>();
+		private var labelfeatures:Vector.<Feature> = new Vector.<Feature>();
 		private var polygonsfeatures:Vector.<Feature> = new Vector.<Feature>();
 		// styles
 		private var lineStyles:Object = new Object();
@@ -66,6 +68,9 @@ package org.openscales.core.format
 		private var polygonStyles:Object = new Object();
 		
 		private var _userDefinedStyle:Style = null;
+		
+		//items to exclude from extendedData
+		private var _excludeFromExtendedData:Array = new Array("id", "name", "description", "popupContentHTML", "label");
 		
 		public function KMLFormat() {}
 			
@@ -92,8 +97,7 @@ package org.openscales.core.format
 			var placemarks:XMLList = dataXML..Placemark;
 			loadPlacemarks(placemarks);
 			
-			var _features:Vector.<Feature> = polygonsfeatures.concat(linesfeatures, iconsfeatures);
-			
+			var _features:Vector.<Feature> = polygonsfeatures.concat(linesfeatures, iconsfeatures, labelfeatures);
 			return _features;
 		}
 			
@@ -343,6 +347,7 @@ package org.openscales.core.format
 				var attributes:Object = new Object();
 				var hmLocalStyle:HashMap = new HashMap();
 				var localStyles:XMLList = placemark..*::Style;
+				var attributeName:String = "";
 				
 				//there can be a Style defined inside the Placemark element
 				//in this case, there is no styleUrl element and the Style element doesn't have an ID
@@ -361,11 +366,27 @@ package org.openscales.core.format
 					htmlContent = htmlContent + placemark.description.text() + "<br />";
 				}
 				
-				for each(var extendedData:XML in placemark.ExtendedData.Data) 
+				if(placemark.id != undefined) 
 				{
-					if(extendedData.value)
-						attributes[extendedData.@name] = extendedData.value.text();
-					htmlContent = htmlContent + "<b>" + extendedData.@name + "</b> : " + extendedData.value.text() + "<br />";
+					attributes["id"] = placemark.id.text();
+					htmlContent = htmlContent + placemark.description.text() + "<br />";
+				}
+				
+				for each(var extendedData:XML in placemark.ExtendedData.Data) 
+				{	
+					if(extendedData.displayName.text() != undefined) {
+						attributeName = extendedData.displayName.text();
+						if(excludeFromExtendedData.indexOf(attributeName) < 0) {
+							attributes[attributeName] = extendedData.value.text();
+						}
+					} else {
+						attributeName = extendedData.@name;
+						if(excludeFromExtendedData.indexOf(attributeName) < 0) {
+							attributes[attributeName] = extendedData.value.text();
+						}
+					}
+					
+					htmlContent = htmlContent + "<b>" + attributeName + "</b> : " + extendedData.value.text() + "<br />";
 				}		
 				attributes["popupContentHTML"] = htmlContent;	
 				var _id:String;
@@ -392,7 +413,6 @@ package org.openscales.core.format
 					
 					linesfeatures.push(new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle));
 				}
-				
 				// Polygons
 				else if(placemark.Polygon != undefined) 
 				{
@@ -533,37 +553,54 @@ package org.openscales.core.format
 				else if(placemark.Point != undefined)
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
-					point = new Point(coordinates[0], coordinates[1]);
-					if (this.internalProjection != null, this.externalProjection != null) 
-					{
-						point.transform(this.externalProjection, this.internalProjection);
+					
+					//Maybe it is a label
+					var isLabel:Boolean = false;
+					var textLabel:String = "";
+					for each(var extData:XML in placemark.ExtendedData.Data) 
+					{	
+						if(extData.@name == "label") {
+							isLabel = true
+							textLabel = extData.value.text();
+						}
 					}
-					if(this.userDefinedStyle) {
-						iconsfeatures.push(new PointFeature(point, attributes, this.userDefinedStyle));
-					} 
-					else if(placemark.styleUrl != undefined || hmLocalStyle.containsKey("PointStyle")) 
-					{
-						var objStyle:Object = null;
-						if(hmLocalStyle.containsKey("PointStyle")) 
+					
+					if(isLabel) {
+						var l:LabelPoint = new LabelPoint(textLabel,coordinates[0], coordinates[1]);
+						labelfeatures.push(new LabelFeature(l,attributes));
+					} else {
+						point = new Point(coordinates[0], coordinates[1]);
+						if (this.internalProjection != null, this.externalProjection != null) 
 						{
-							objStyle = hmLocalStyle.getValue("PointStyle");
+							point.transform(this.externalProjection, this.internalProjection);
+						}
+						if(this.userDefinedStyle) {
+							iconsfeatures.push(new PointFeature(point, attributes, this.userDefinedStyle));
 						} 
-						else 
+						else if(placemark.styleUrl != undefined || hmLocalStyle.containsKey("PointStyle")) 
 						{
-							_id = placemark.styleUrl.text();
-							if(pointStyles[_id]!=undefined)
-								objStyle = pointStyles[_id];
+							var objStyle:Object = null;
+							if(hmLocalStyle.containsKey("PointStyle")) 
+							{
+								objStyle = hmLocalStyle.getValue("PointStyle");
+							} 
+							else 
+							{
+								_id = placemark.styleUrl.text();
+								if(pointStyles[_id]!=undefined)
+									objStyle = pointStyles[_id];
+							}
+							
+							if(objStyle) 
+							{ // style
+								iconsfeatures.push(getPointFeature(point,objStyle,attributes));
+							}
+							else // no matching style
+								iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
 						}
-						
-						if(objStyle) 
-						{ // style
-							iconsfeatures.push(getPointFeature(point,objStyle,attributes));
-						}
-						else // no matching style
+						else // no style
 							iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
 					}
-					else // no style
-						iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
 				}
 				else
 					Trace.debug("UnsupportedGeometryType");
@@ -758,7 +795,7 @@ package org.openscales.core.format
 			//build the style nodes first
 			for(i = 0; i < numberOfFeat; i++)
 			{
-				if(!(listOfFeatures[i] is LabelFeature) && listOfFeatures[i].style)
+				if(listOfFeatures[i].style)
 				{
 					doc.appendChild(this.buildStyleNode(listOfFeatures[i],i));
 				}
@@ -766,8 +803,7 @@ package org.openscales.core.format
 			//build the placemarks
 			for (i = 0; i < numberOfFeat; i++)
 			{
-				if(!(listOfFeatures[i] is LabelFeature))
-					doc.appendChild(this.buildPlacemarkNode(listOfFeatures[i],i));
+				doc.appendChild(this.buildPlacemarkNode(listOfFeatures[i],i));
 			}
 			return kmlFile; 
 		}
@@ -781,16 +817,24 @@ package org.openscales.core.format
 		{
 			var lineNode:XML;
 			var pointNode:XML;
+			var extendedData:XML;
 			
 			var placemark:XML = new XML("<Placemark></Placemark>");
 			var att:Object = feature.attributes;
-			if (att.hasOwnProperty("name"))
+			
+			placemark.appendChild(new XML("<id>" + feature.name + "</id>"));
+			if (att.hasOwnProperty("name")) {
 				placemark.appendChild(new XML("<name>" + att["name"] + "</name>"));
-			else
+			}
+			else {
 				//since we build the styles first, the feature will have an id for sure
 				placemark.appendChild(new XML("<name>" + feature.name + "</name>"));
+			}
 			
 			placemark.appendChild(new XML("<styleUrl>#" + feature.name + "</styleUrl>"));
+			
+			if (att.hasOwnProperty("description"))
+				placemark.appendChild(new XML("<description>" + att["description"] + "</description>"));
 			
 			var coords:String;
 			if(feature is LineStringFeature)
@@ -812,6 +856,13 @@ package org.openscales.core.format
 				pointNode = new XML("<Point></Point>");
 				var point:Point = (feature as PointFeature).point;
 				pointNode.appendChild(new XML("<coordinates>" + point.x + "," + point.y + "</coordinates>"));
+				placemark.appendChild(pointNode);
+			}
+			else if(feature is LabelFeature)
+			{
+				pointNode = new XML("<Point></Point>");
+				var label:LabelPoint = (feature as LabelFeature).labelPoint;
+				pointNode.appendChild(new XML("<coordinates>" + label.x + "," + label.y + "</coordinates>"));
 				placemark.appendChild(pointNode);
 			}
 			else if(feature is MultiPointFeature || feature is MultiLineStringFeature || feature is MultiPolygonFeature)
@@ -848,7 +899,43 @@ package org.openscales.core.format
 					
 				}
 				placemark.appendChild(multiGNode);
+				
+				
 			}
+			
+			//Donnees attributaires
+			Trace.useFireBugConsole = true;
+			var data:XML;
+			var displayName:XML;
+			var value:XML;
+			var j:uint = feature.layer.attributesId.length;
+			if(j>0) {
+				extendedData =	new XML("<ExtendedData></ExtendedData>");
+				
+				//if feature is a Label, register the value
+				if(feature is LabelFeature) {
+					var l:LabelPoint = (feature as LabelFeature).labelPoint;
+					data = new XML("<Data name=\"label\"></Data>");
+					value = new XML("<value>" + l.label.text + "</value>");
+					data.appendChild(value);
+					extendedData.appendChild(data);
+				}
+				
+				for(var i:uint = 0 ;i<j;++i) {
+					var key:String = feature.layer.attributesId[i];
+					//everything except name and description
+					if(excludeFromExtendedData.indexOf(key) <0 ) {
+						data = new XML("<Data name=\"attribute" + i + "\"></Data>");
+						displayName = new XML("<displayName>" + key + "</displayName>");
+						value = new XML("<value>" + att[key] + "</value>");
+						data.appendChild(displayName);
+						data.appendChild(value);
+						extendedData.appendChild(data);
+					}
+				}
+			}
+			
+			placemark.appendChild(extendedData);
 			
 			return placemark;
 		}
@@ -959,6 +1046,14 @@ package org.openscales.core.format
 					placemarkStyle.appendChild(styleNode);				
 				}
 			}
+			else if(feature is LabelFeature)
+			{	
+				styleNode = new XML("<LabelStyle></LabelStyle>");
+				styleNode.color = "000000";
+				styleNode.colorMode = "normal";
+				styleNode.scale = "1";
+				placemarkStyle.appendChild(styleNode);
+			}
 			else if(feature is PolygonFeature || feature is MultiPolygonFeature)
 			{
 				//for polygons, we can store both the polygon style and the outline 
@@ -1059,6 +1154,11 @@ package org.openscales.core.format
 		public function get proxy():String
 		{
 			return _proxy;
+		}
+		
+		public function get excludeFromExtendedData():Array
+		{
+			return _excludeFromExtendedData;
 		}
 		
 		public function set proxy(value:String):void

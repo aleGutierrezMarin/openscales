@@ -209,7 +209,7 @@
 				i=0;
 				j=this.exportFeature.layer.features.length
 				for(; i < j; ++i){
-					export.push(this.exportFeature.layer.features[i].clone());
+					export.push(this.exportFeature.layer.features[i]);
 				}
 				
 				switch(format)

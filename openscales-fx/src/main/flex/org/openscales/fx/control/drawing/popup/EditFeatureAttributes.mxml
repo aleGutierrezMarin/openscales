@@ -44,6 +44,12 @@
 						input.text = this.feature.attributes[key];
 					else
 						input.text = "";
+					
+					//If key is id, make it un-editable
+					if(key == "id") {
+						input.editable = false;	
+					}
+					
 					group.addElement(input);
 					_attrInput.push(input);
 					_vgroup.addElement(group);
