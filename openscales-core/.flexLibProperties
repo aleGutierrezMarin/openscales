@@ -261,6 +261,8 @@
     <classEntry path="org.openscales.map.ExtentTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.layer.Constraint"/>
+    <classEntry path="org.openscales.core.layer.MultiBoundingBoxConstraint"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
