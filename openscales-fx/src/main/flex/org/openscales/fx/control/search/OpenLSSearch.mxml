@@ -250,6 +250,9 @@
 				}
 			}
 			
+			/**
+			 * Method called when any keyboard key is pressed
+			 */
 			protected function onKeyUp(keyboardEvent:KeyboardEvent):void {
 				switch (keyboardEvent.keyCode){
 					case Keyboard.UP:
@@ -267,6 +270,19 @@
 				}
 			}
 			
+			/**
+			 * Method called when any keyboard key is pressed
+			 * excepted following keys:
+			 * Keyboard.UP
+			 * Keyboard.DOWN
+			 * Keyboard.END
+			 * Keyboard.HOME
+			 * Keyboard.PAGE_UP
+			 * Keyboard.PAGE_DOWN
+			 * Keyboard.ENTER
+			 * Keyboard.TAB
+			 * Keyboard.ESCAPE
+			 */
 			protected function onKeyUpIfNotSpecialKey(keyboardEvent:KeyboardEvent):void {
 				// Do nothing if not overrided
 			}
