@@ -200,10 +200,13 @@ package org.openscales.core.layer.ogc
 			this._centerChanged = false;
 			this._projectionChanged = false;
 			this._resolutionChanged = false;
-			
 			if (fullRedraw)
 			{
 				this.clear();
+			}
+			
+			if(!fullRedraw && (centerChangedCache || projectionChangedCache || resolutionChangedCache)) {
+				fullRedraw = true;
 			}
 			
 			if (!this._initialized || fullRedraw)
@@ -222,7 +225,7 @@ package org.openscales.core.layer.ogc
 				this._initialized = true;
 				return;
 			}
-			if (centerChangedCache || projectionChangedCache || resolutionChangedCache)
+			if (this._initialized && fullRedraw)
 			{
 				var previousFeatureBbox:Bounds;
 				
@@ -265,16 +268,7 @@ package org.openscales.core.layer.ogc
 					var ratio:Number = this._previousResolution.value / this.map.resolution.value;
 					this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 					this._previousResolution = this.map.resolution;
-					//this.actualizeGridSize(bounds);
-					resolutionChangedCache = false
-						
-					/*var px:Pixel = event.targetZoomPixel;
-					var ratio:Number = event.oldResolution.value / event.newResolution.value;
-					this.x -= (px.x - this.x) * (ratio - 1);
-					this.y -= (px.y - this.y) * (ratio - 1);
-					this.scaleX = this.scaleX * ratio;
-					this.scaleY = this.scaleY * ratio;
-					this._currentScale++;*/
+					resolutionChangedCache = false;
 				}
 				
 				if (centerChangedCache)
@@ -288,14 +282,6 @@ package org.openscales.core.layer.ogc
 					this.y = this.y + deltaY;
 					this._previousCenter = this.map.center.clone();
 					centerChangedCache = false;
-					
-					
-					/*var deltaLon:Number = event.newCenter.lon - event.oldCenter.lon;
-					var deltaLat:Number = event.newCenter.lat - event.oldCenter.lat;
-					var deltaX:Number = deltaLon / this.map.resolution.value;
-					var deltaY:Number = deltaLat / this.map.resolution.value;
-					this.x -= deltaX;
-					this.y += deltaY;*/
 				}
 				
 			}
@@ -321,6 +307,7 @@ package org.openscales.core.layer.ogc
 			
 			this._centerChanged = true;
 			this._resolutionChanged = true;
+			this.redraw(true);
 		}
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
@@ -332,9 +319,6 @@ package org.openscales.core.layer.ogc
 			this._timer.reset();
 			this._timer.start();
 			this._resolutionChanged = true;
-			
-
-			
 		}
 		
 		private function defineBounds():Bounds
@@ -383,7 +367,6 @@ package org.openscales.core.layer.ogc
 			this._timer.reset();
 			this._timer.start();	
 			this._centerChanged = true;
-
 		}
 		
 		override public function get available():Boolean

@@ -2,12 +2,19 @@
 <!--- Image layer allow to display a layer with the single geolocalized picture. -->
 <s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
 		 width="100%" height="100%" >
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+		]]>
+	</fx:Script>
 	
 	<Map id="fxMap" width="100%" height="100%" resolution="0.703125" center="4.833,45.767">
 		
-		<ImageLayer name="City Lights" url="http://openscales.org/4_m_citylights_lg.gif"
-					   bounds="-180,-88.759,180,88.759" 
-					   minResolution="0.0439453125" maxResolution="0.703125"/>
+		<ImageLayer name="City Lights" url="http://openscales.org/assets/world.200402.3x2000x1000.jpg"
+					   bounds="-180,-90,180,90"
+					   minResolution="{Map.DEFAULT_MIN_RESOLUTION}"
+					   maxResolution="{Map.DEFAULT_MAX_RESOLUTION}" />
+		
 		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
 			 typename="topp:states" projection="EPSG:4326" version="1.0.0"
 			 style="{Style.getDefaultSurfaceStyle()}" />

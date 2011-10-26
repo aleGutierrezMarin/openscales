@@ -217,7 +217,12 @@ package org.openscales.core.layer {
 		
 		protected function onEnterFrame(event:Event):void
 		{
+			if(this._resolutionChanged || this._centerChanged || this._projectionChanged) {
 				this.redraw();
+				this._resolutionChanged = false;
+				this._centerChanged = false;
+				this._projectionChanged = false;
+			}
 		}
 		/**
 		 * Return a reference to the map where belong this layer
@@ -518,26 +523,6 @@ package org.openscales.core.layer {
 					return maxRes;
 				}
 			}
-			/*else
-			{
-				// if is valide
-				var i:int = 0;
-				var j:int = this.resolutions.length;
-				
-				maxRes = this._maxResolution;
-				
-				for(; i<j; ++i)
-				{
-					if(this.resolutions[i] <= maxRes.value )
-						return new Resolution(this.resolutions[i],this.projection);
-				}
-				
-				if (this.resolutions && (this.resolutions.length > 0)) {
-					maxRes = new Resolution(this.resolutions[0],this.projection);
-					this._maxResolution = maxRes;
-				}
-				
-			}*/
 			
 			return this._maxResolution;
 		}
