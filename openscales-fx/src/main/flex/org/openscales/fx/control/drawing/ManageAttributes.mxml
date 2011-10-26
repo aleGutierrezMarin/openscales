@@ -37,7 +37,7 @@
 			private var _map:Map = null;
 			private var _editHandlerActivated:Boolean = false;
 			private var _selectHandlerActivated:Boolean = false;
-			private var _defaultAttributes:Vector.<String> = new <String>["id","description"];
+			private var _defaultAttributes:Vector.<String> = new <String>["id","name","description"];
 			private var _index:int;
 			private var _vectorLayer:VectorLayer;
 			private var _active:Boolean = false;
