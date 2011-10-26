@@ -53,7 +53,8 @@ package org.openscales.core.layer {
 		protected var _autoResolution:Boolean = true;
 		protected var _imageSize:Size = null;
 		private var _selected:Boolean = false;
-		private var _metaData:Object;
+		private var _metaData:Object = null;
+		private var _constraints:Vector.<Constraint> = null;
 		
 		protected var _resolutionChanged:Boolean = false;
 		protected var _centerChanged:Boolean = false;
@@ -166,7 +167,6 @@ package org.openscales.core.layer {
 				map.removeEventListener(MapEvent.RESIZE, onMapResize);
 				map.removeEventListener(MapEvent.MAX_EXTENT_CHANGED, onMaxExtentChanged);
 				map.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-				
 			}
 		}
 		
@@ -213,7 +213,6 @@ package org.openscales.core.layer {
 				}
 			}
 		}
-		
 		
 		protected function onEnterFrame(event:Event):void
 		{
@@ -799,6 +798,23 @@ package org.openscales.core.layer {
 				}
 			}
 		}
+
+		/**
+		 * A list of constraints for the layer
+		 */
+		public function get constraints():Vector.<Constraint>
+		{
+			return _constraints;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set constraints(value:Vector.<Constraint>):void
+		{
+			_constraints = value;
+		}
+
 	}
 }
 
