@@ -65,6 +65,11 @@ package org.openscales.core.handler.feature.draw
 		private var _style:Style = Style.getDefaultLineStyle();
 		
 		/**
+		 * Handler which manage the doubleClick, to finalize the lineString
+		 */
+		private var _dblClickHandler:ClickHandler = new ClickHandler();
+		
+		/**
 		 * DrawPathHandler constructor
 		 *
 		 * @param map
@@ -77,20 +82,23 @@ package org.openscales.core.handler.feature.draw
 		}
 		
 		override protected function registerListeners():void{
+			this._dblClickHandler.active = true;
+			this._dblClickHandler.doubleClick = this.mouseDblClick;
 			if (this.map) {
-				this.map.addEventListener(MouseEvent.CLICK, this.initOrEndShape);
+				this.map.addEventListener(MouseEvent.CLICK, this.initShape);
 				this.map.addEventListener(MapEvent.MOVE_END, this.updateZoom);
 			} 
 		}
 		
 		override protected function unregisterListeners():void{
+			this._dblClickHandler.active = false;
 			if (this.map) {
-				this.map.removeEventListener(MouseEvent.CLICK, this.initOrEndShape);
+				this.map.removeEventListener(MouseEvent.CLICK, this.initShape);
 				this.map.removeEventListener(MapEvent.MOVE_END, this.updateZoom);
 			}
 		}
 		
-		public function initOrEndShape(event:MouseEvent=null):void{
+		public function initShape(event:MouseEvent=null):void{
 			//Init shape
 			if(newFeature) {
 				newFeature = false;
@@ -116,23 +124,33 @@ package org.openscales.core.handler.feature.draw
 				
 				//draw the shape, update each time the mouse moves		
 				this.map.addEventListener(MouseEvent.MOUSE_MOVE,drawShape);	
-			} else {//End shape
-				endShape();
 			}
-			
 		}
 		
+		/**
+		 * This function occured when a double click occured
+		 * during the drawing operation
+		 * @param Lastpx: The position of the double click pixel
+		 * */
+		public function mouseDblClick(Lastpx:Pixel=null):void {
+			this.endShape();
+		} 
+		
 		public function endShape():void{
-			this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawShape);
 			
-			if(this._currentLineStringFeature!=null){
-				//this._currentLineStringFeature.style=Style.getDefaultLineStyle();
-				this._currentLineStringFeature.style=this._style;
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
-				drawLayer.redraw(true);
+			//If we are actually drawing
+			if(newFeature == false) {
+				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawShape);
+				
+				if(this._currentLineStringFeature!=null){
+					//this._currentLineStringFeature.style=Style.getDefaultLineStyle();
+					this._currentLineStringFeature.style=this._style;
+					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
+					drawLayer.redraw(true);
+				}
+				
+				newFeature = true;
 			}
-			
-			newFeature = true;
 		}
 		
 		/**
@@ -154,77 +172,11 @@ package org.openscales.core.handler.feature.draw
 		}
 		
 		/**
-		 * Finish the LineString
-		 */
-		/*public function drawFinalPath():void{			
-			if(!newFeature){
-				newFeature = true;
-				//clear the temporary line
-				_drawContainer.graphics.clear();
-				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,temporaryLine);
-				
-				if(this._currentLineStringFeature!=null){
-					//this._currentLineStringFeature.style=Style.getDefaultLineStyle();
-					this._currentLineStringFeature.style=this._style;
-					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
-					drawLayer.redraw(true);
-				}
-			}	
-		}*/
-		
-		/*protected function drawLine(event:MouseEvent=null):void{
-			
-			drawLayer.scaleX=1;
-			drawLayer.scaleY=1;
-			//we determine the point where the user clicked
-			//var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
-			var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
-			var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
-			//manage the case where the layer projection is different from the map projection
-			var point:Point = new Point(lonlat.lon,lonlat.lat);
-			//initialize the temporary line
-			_startPoint = this.map.getMapPxFromLocation(lonlat);
-			//trace("draw line : " + _startPoint.x + " " + _startPoint.y);
-			
-			//The user click for the first time
-			if(newFeature){
-				_lineString = new LineString(new <Number>[point.x,point.y]);
-				lastPoint = point;
-				//the current drawn linestringfeature
-				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDrawLineStyle(),true);
-				this._currentLineStringFeature.name = "path." + drawLayer.idPath.toString();
-				drawLayer.idPath++;
-				drawLayer.addFeature(_currentLineStringFeature);
-				
-				newFeature = false;
-				//draw the temporary line, update each time the mouse moves		
-				this.map.addEventListener(MouseEvent.MOUSE_MOVE,temporaryLine);	
-			}
-			else {								
-				if(!point.equals(lastPoint)){
-					_lineString.addPoint(point.x,point.y);
-					drawLayer.redraw(true);
-					lastPoint = point;
-				}								
-			}
-		}*/
-		
-		/**
-		 * Update the temporary line
-		 */
-		/*public function temporaryLine(evt:MouseEvent):void{
-			_drawContainer.graphics.clear();
-			_drawContainer.graphics.lineStyle(2, 0x00ff00);
-			_drawContainer.graphics.moveTo(_startPoint.x, _startPoint.y);
-			_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
-			_drawContainer.graphics.endFill();
-		}*/
-		
-		/**
 		 * @inherited
 		 */
 		override public function set map(value:Map):void{
 			super.map = value;
+			this._dblClickHandler.map = value;
 			if(map != null){
 				map.addChild(_drawContainer);
 			}

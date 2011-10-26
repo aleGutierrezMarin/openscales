@@ -28,31 +28,34 @@
 				var j:uint = this.feature.layer.attributesId.length;
 				for(var i:uint = 0 ;i<j;++i) {
 					var key:String = this.feature.layer.attributesId[i];
-					group = new HGroup();
-					group.verticalAlign = "middle";
-					group.gap = 10;
-					group.paddingLeft = 5;
-					group.paddingRight = 5;
-					_vgroup.addElement(group);
-					var lb:Label = new Label();
-					lb.width = 100;
-					lb.text = key;
-					group.addElement(lb);
-					var input:TextInput = new TextInput();
-					input.id = key;
-					if(this.feature.attributes[key])
-						input.text = this.feature.attributes[key];
-					else
-						input.text = "";
-					
-					//If key is id, make it un-editable
-					if(key == "id") {
-						input.editable = false;	
+					//If key is popupContentHTML, don't show it
+					if(key != "popupContentHTML") {
+						group = new HGroup();
+						group.verticalAlign = "middle";
+						group.gap = 10;
+						group.paddingLeft = 5;
+						group.paddingRight = 5;
+						_vgroup.addElement(group);
+						var lb:Label = new Label();
+						lb.width = 100;
+						lb.text = key;
+						group.addElement(lb);
+						var input:TextInput = new TextInput();
+						input.id = key;
+						if(this.feature.attributes[key])
+							input.text = this.feature.attributes[key];
+						else
+							input.text = "";
+						
+						//If key is id, make it un-editable
+						if(key == "id") {
+							input.editable = false;	
+						}
+						
+						group.addElement(input);
+						_attrInput.push(input);
+						_vgroup.addElement(group);
 					}
-					
-					group.addElement(input);
-					_attrInput.push(input);
-					_vgroup.addElement(group);
 				}
 				
 				group = new HGroup();
