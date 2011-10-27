@@ -20,12 +20,14 @@
 			private var _btnValid:Button = null;
 			private var _btnDiscard:Button = null;
 			private var _attrInput:Vector.<TextInput> = null;
+			private var _firstTextInput:TextInput;
 			
 			override protected function drawContent():void {
 				if(!this._attrInput)
 					this._attrInput = new Vector.<TextInput>();
 				var group:HGroup;
 				var j:uint = this.feature.layer.attributesId.length;
+				var isSetFirstTextInput:Boolean = false;
 				for(var i:uint = 0 ;i<j;++i) {
 					var key:String = this.feature.layer.attributesId[i];
 					//If key is popupContentHTML, don't show it
@@ -50,6 +52,12 @@
 						//If key is id, make it un-editable
 						if(key == "id") {
 							input.editable = false;	
+						} else {
+							//We set the fistTextInput if not already set
+							if(!isSetFirstTextInput) {
+								_firstTextInput = input;
+								isSetFirstTextInput = true;
+							}
 						}
 						
 						group.addElement(input);
@@ -62,6 +70,15 @@
 				group.gap = 10;
 				group.horizontalAlign = "right";
 				_vgroup.addElement(group);
+				
+				if(!this._btnValid) {
+					this._btnValid = new Button();
+					this._btnValid.addEventListener(MouseEvent.CLICK, valid);
+				}
+				if(!this._btnDiscard) {
+					this._btnDiscard = new Button();
+					this._btnDiscard.addEventListener(MouseEvent.CLICK, closeClick);
+				}
 				
 				group.addElement(this._btnValid);
 				group.addElement(this._btnDiscard);
@@ -80,15 +97,9 @@
 			}
 			
 			override protected function init():void {
-				if(!this._btnValid) {
-					this._btnValid = new Button();
-					this._btnValid.addEventListener(MouseEvent.CLICK, valid);
-				}
-				if(!this._btnDiscard) {
-					this._btnDiscard = new Button();
-					this._btnDiscard.addEventListener(MouseEvent.CLICK, closeClick);
-				}
 				super.init();
+				
+				_firstTextInput.setFocus();
 			}
 			
 			private function clearAttrInputVector():void {
@@ -97,7 +108,7 @@
 			}
 			
 			private function closeClick(e:Event):void {
-				this.feature = null;
+				this.discardPopup();
 			}
 			private function valid(e:Event):void {
 				if(_attrInput && _attrInput.length>0) {
@@ -105,7 +116,7 @@
 					while(ti = _attrInput.pop())
 						this.feature.attributes[ti.id] = ti.text;
 				}
-				this.feature = null;
+				this.discardPopup();
 			}
 			
 		]]>
