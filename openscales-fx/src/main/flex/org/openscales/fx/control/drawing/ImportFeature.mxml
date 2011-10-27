@@ -36,6 +36,7 @@
 			[Embed(source="/assets/images/icons/Icons-13.png")]
 			private var _btnImport:Class;
 			
+			private var form:ImportFeatureForm;
 			/**
 			 * Tooltip that appears over Import button
 			 */
@@ -94,6 +95,7 @@
 			private function onPopUpCreationComplete(e:Event):void
 			{
 				myTitleWindow.closeButton.addEventListener(MouseEvent.CLICK, this.closePopUp);
+				form.inputName.setFocus();
 			}
 			
 			/**
@@ -101,7 +103,7 @@
 			 */
 			private function populateWindow():void 
 			{	
-				var form:ImportFeatureForm = new ImportFeatureForm();
+				form = new ImportFeatureForm();
 				form.importFeature = this;
 				myTitleWindow.addElement(form); 
 			}

@@ -23,12 +23,14 @@
 			import spark.components.Application;
 			import spark.components.HGroup;
 			import spark.components.Label;
+			import spark.components.Scroller;
 			import spark.components.VGroup;
 			import spark.layouts.HorizontalLayout;
 			
 			private var _init:Boolean = false;
 			private var _feature:Feature = null;
 			protected var _vgroup:VGroup = null;
+			private var scroller:Scroller;
 			
 			private static var DEFAULT_W:Number = 300;
 			private static var DEFAULT_H:Number = 200;
@@ -45,31 +47,30 @@
 			 */
 			public function set feature(value:Feature):void
 			{
-				if(this._feature) {
-					if(this._feature.layer && this._feature.layer.map)
-						this._feature.layer.map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
-					if(_vgroup)
-						_vgroup.removeAllElements();
-					if(this._init)
-						PopUpManager.removePopUp(this);
-				}
 				_feature = value;
 				if(this._feature) {
-					PopUpManager.addPopUp(this, (FlexGlobals.topLevelApplication as Application), true);
-					if(this._init) {
-						if(this._feature.layer && this._feature.layer.map && this._feature.layer.attributesId.length>0)
-							this._feature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
-						else
-							return;
-						if(!_vgroup) {
-							_vgroup = new VGroup();
-							_vgroup.gap = 10;
-							_vgroup.top = 5;
-							container.addElement(_vgroup);
-						}
-						this.drawContent();
-						this.localize();
+					if(!_vgroup) {
+						_vgroup = new VGroup();
+						_vgroup.gap = 10;
+						_vgroup.top = 5;
+						//_vgroup.width = DEFAULT_W;
+						//minus 33 because of title bar size
+						_vgroup.height = DEFAULT_H - 33;
+						this.addElement(_vgroup);
 					}
+					
+					if(this._feature.layer && this._feature.layer.map && this._feature.layer.attributesId.length>0)
+						this._feature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+					
+					this.drawContent();
+					this.localize();
+					
+					scroller = new Scroller();
+					scroller.percentWidth = 100;
+					scroller.viewport = _vgroup;
+					this.addElement(scroller);
+					
+					PopUpManager.addPopUp(this, (FlexGlobals.topLevelApplication as Application), true);
 				}
 			}
 			
@@ -104,16 +105,24 @@
 				this.y = (parent.height-this.height)/2;
 				this.resize(null);
 				parent.addEventListener(Event.RESIZE,this.resize);
-				if(!this._init) {
-					this._init = true;
-					this.feature = this.feature;
-				}
+				this._init = true;
+				
+			}
+			
+			public function discardPopup():void {
+				if(this._feature.layer && this._feature.layer.map)
+					this._feature.layer.map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+				if(_vgroup)
+					_vgroup.removeAllElements();
+				if(this._init)
+					PopUpManager.removePopUp(this);
 			}
 			
 			protected function destroy():void {
 				if(parent)
 					parent.removeEventListener(Event.RESIZE,this.resize);
-				this.feature = null;
+				
+				this.discardPopup();
 			}
 			
 			private function resize(e:Event):void {
@@ -131,13 +140,9 @@
 			
 			private function close():void
 			{
-				this.feature = null;
+				this.discardPopup();
 			}
 			
 		]]>
 	</fx:Script>
-	<s:Scroller width="100%" height="100%">
-		<s:Group id="container" width="100%" height="100%">
-		</s:Group>
-	</s:Scroller>
 </s:TitleWindow>
