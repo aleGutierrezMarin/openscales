@@ -6,15 +6,10 @@
 	<Map id="fxMap" width="100%" height="100%" 
 		 resolution="0.0003141649318726586" 
 		 center="2.3312020959660567, 48.88200346568459, EPSG:4326" 
-		 projection="EPSG:4326" >
+		 projection="EPSG:900913" >
 		
 		<!-- Add a base layer to the map -->
-		<WMS name="Scan"
-			 id="WmsLayer"
-			 version="1.3.0"
-			 url="http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4"
-			 layers="SCANDEP_PNG_IGNF_LAMB93"						
-			 singleTile="false" />
+		<Mapnik name="OpenStreetMap" />
 		
 		<!-- Add the KML layer -->
 		<KML id="kmlLayer" url="http://www.parisavelo.net/velib.kml" 
