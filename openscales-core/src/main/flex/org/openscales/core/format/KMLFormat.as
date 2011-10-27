@@ -834,7 +834,7 @@ package org.openscales.core.format
 			placemark.appendChild(new XML("<styleUrl>#" + feature.name + "</styleUrl>"));
 			
 			if (att.hasOwnProperty("description"))
-				placemark.appendChild(new XML("<description>" + att["description"] + "</description>"));
+				placemark.appendChild(new XML("<description><![CDATA[" + att["description"] + "]]></description>"));
 			
 			var coords:String;
 			if(feature is LineStringFeature)
