@@ -27,6 +27,8 @@ package org.openscales.core.format
 		[Embed(source="/assets/format/GPX/Gpx10Example.xml",mimeType="application/octet-stream")]
 		private const GPX10FILE:Class;
 		
+		public function GPXFormatTest(){};
+		
 		[Before]
 		public function setUp():void
 		{
