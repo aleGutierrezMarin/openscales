@@ -153,12 +153,12 @@ package org.openscales.core.layer.ogc
 			
 			this._loadingCapabilities = false;
 			
-		/*	if(this.map)
+			if(this.map)
 			{
 				this.clear();
 				this.redraw(true);
-				this.map.redrawLayers();
-			}*/
+				//this.map.redrawLayers();
+			}
 		}
 		
 		/**

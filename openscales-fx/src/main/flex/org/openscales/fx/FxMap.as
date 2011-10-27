@@ -292,7 +292,7 @@ package org.openscales.fx
 		{
 			var event:MapEvent = new MapEvent(MapEvent.MAP_LOADED, this.map);
 			this.map.mapInitialized = true;
-			this.dispatchEvent(event);
+			this.map.dispatchEvent(event);
 		}
 		
 		/**
@@ -333,7 +333,7 @@ package org.openscales.fx
 		
 		/**
 		 * Get the "real" map instance from the Flex wrapper. Often used to configure more
-		 * in details a map thnaks to ActionScript API
+		 * in details a map thanks to ActionScript API
 		 */
 		public function get map():Map {
 			return this._map;

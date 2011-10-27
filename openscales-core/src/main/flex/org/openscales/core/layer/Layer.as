@@ -160,6 +160,7 @@ package org.openscales.core.layer {
 		public function removeEventListenerFromMap():void {
 			if (this.map != null) {
 				map.removeEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
+				map.removeEventListener(MapEvent.MAP_LOADED, onMapLoaded);
 				map.removeEventListener(MapEvent.PROJECTION_CHANGED, onMapProjectionChanged);
 				map.removeEventListener(MapEvent.CENTER_CHANGED, onMapCenterChanged);
 				map.removeEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
@@ -197,6 +198,7 @@ package org.openscales.core.layer {
 				}
 				
 				this.map.addEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
+				this.map.addEventListener(MapEvent.MAP_LOADED, onMapLoaded);
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED,onMapProjectionChanged);
 				this.map.addEventListener(MapEvent.CENTER_CHANGED, onMapCenterChanged);
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
@@ -228,6 +230,16 @@ package org.openscales.core.layer {
 		 */
 		public function get map():Map {
 			return this._map;
+		}
+		
+		/**
+		 * This function is call when the MapEvent.MAP_LOADED
+		 * Call the redraw function to check if the layer can be displayed. 
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the map is loaded
+		 */
+		protected function onMapLoaded(event:MapEvent):void {
+			this.redraw(true);
 		}
 		
 		/**
