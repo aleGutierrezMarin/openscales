@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Control used to display OpenScales logging message, useful for debugging your apppliation -->
+<Control xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="200" height="300"
+		 creationComplete="finalizeTraceInfo();">
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.text.engine.FontWeight;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.BreakElement;
+			import flashx.textLayout.elements.ParagraphElement;
+			import flashx.textLayout.elements.SpanElement;
+			import flashx.textLayout.elements.TextFlow;
+			
+			import mx.events.FlexEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.TraceEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.skins.spark.ButtonSkin;
+			import spark.utils.TextFlowUtil;
+			
+			[Bindable] public var _clearButton:Boolean = true;
+			[Bindable] public var _clearLabel:String = Catalog.getLocalizationForKey("traceinfo.clearlabel");
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				this._clearLabel = Catalog.getLocalizationForKey("traceinfo.clearlabel");
+			}
+			
+			public function get clearButton():Boolean {
+				return _clearButton;
+			}
+			
+			public function set clearButton(value:Boolean):void {
+				_clearButton = value;
+				if (clearLogsButton) {
+					clearLogsButton.visible = _clearButton;
+				}
+			}
+			
+			override public function set map(value:Map):void {
+				if(value) {
+					super.map = value;
+					if(map.stage) {
+						this.addListeners();
+					} else {
+						this.map.addEventListener(Event.ADDED_TO_STAGE,addListeners);
+					}
+				}
+			}
+			
+			private function addListeners(e:Event=null):void {
+				if(this.map) {
+					if(e)
+						this.map.removeEventListener(Event.ADDED_TO_STAGE,addListeners);
+					Trace.stage = this.map.stage;
+					this.map.stage.addEventListener(TraceEvent.LOG, displayLog);
+					this.map.stage.addEventListener(TraceEvent.INFO, displayLog);
+					this.map.stage.addEventListener(TraceEvent.WARNING, displayLog);
+					this.map.stage.addEventListener(TraceEvent.ERROR, displayLog);
+					this.map.stage.addEventListener(TraceEvent.DEBUG, displayLog);
+				}
+			}
+			
+			private function finalizeTraceInfo():void {
+				clearLogsButton.visible = clearButton;
+				clearTrace();
+			}
+			
+			private function clearTrace():void {
+				
+				if(textArea)
+				{
+					if(textArea.textFlow)
+					{
+						for (var i:int=textArea.textFlow.numChildren-1; i>=0; i--) {
+							textArea.textFlow.removeChildAt(i);
+						}
+						var pe:ParagraphElement = new ParagraphElement();
+						textArea.textFlow.addChild(pe);
+					}
+				}
+				
+				var se:SpanElement = new SpanElement();
+				se.text = "Output Console";
+				se.fontWeight = FontWeight.BOLD;
+				pe.addChild(se);
+				pe.addChild(new BreakElement());
+			}
+			
+			private function displayLog(event:TraceEvent):void {
+				var pe:ParagraphElement = new ParagraphElement();
+				var se:SpanElement = new SpanElement();
+				var separator:SpanElement = new SpanElement();
+
+				se.text = event.text;
+				se.lineBreak = "toFit";
+				se.setStyle("color", 0x000066);
+				if (event.type == TraceEvent.WARNING) {
+					se.setStyle("color", 0xFFCC00);
+				} else if (event.type == TraceEvent.ERROR) {
+					se.setStyle("color", 0xFF0000);
+				} else if (event.type == TraceEvent.DEBUG) {
+					se.setStyle("color", 0xFFCC00);
+				}
+				pe.addChild(se);
+				pe.addChild(new BreakElement());
+				separator.text="--------------------";
+				pe.addChild(separator);
+				textArea.textFlow.addChild(pe);
+				
+				textArea.validateNow();	
+				textArea.scroller.verticalScrollBar.value = textArea.scroller.verticalScrollBar.maximum;
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:SkinnableContainer width="100%" height="100%">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center" />
+		</s:layout>
+		<s:TextArea id="textArea"
+					width="100%"
+					height="100%" 
+					editable="false"/>
+		<s:Button id="clearLogsButton"
+				  label="{this._clearLabel}"
+				  click="clearTrace()"/>
+	</s:SkinnableContainer>
+</Control>
+
