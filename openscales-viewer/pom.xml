@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openscales</groupId>
+	<artifactId>openscales-viewer</artifactId>
+	<version>2.0.0-W43</version>
+	<packaging>swf</packaging>
+	<name>Viewer</name>
+	<description />
+	
+	<parent>
+		<groupId>org.openscales</groupId>
+		<artifactId>openscales</artifactId>
+		<version>2.0.0-W43</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	
+	<build>
+                <plugins>
+                        <plugin>
+                                <groupId>org.sonatype.flexmojos</groupId>
+                                <artifactId>flexmojos-maven-plugin</artifactId>
+                                <version>${flexmojos.version}</version>
+                                <extensions>true</extensions>
+                                <configuration>
+                                        <sourceFile>Viewer.mxml</sourceFile>
+                                </configuration>
+                        </plugin>
+                </plugins>
+        </build>
+        
+        <dependencies>
+		  	<dependency>
+				<groupId>org.openscales</groupId>
+				<artifactId>openscales-fx</artifactId>
+				<version>${project.version}</version>
+				<type>swc</type>
+			</dependency>
+		</dependencies>
+</project>
