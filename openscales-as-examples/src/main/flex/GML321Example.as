@@ -41,12 +41,9 @@ package
 			_map.size=new Size(1200, 700);
 			_map.projection = "EPSG:4326";
 			
+			this._map.projection="EPSG:900913";
 			// Add a base layer to the map	
-			var wmsLayer:WMS = new WMS("Scan","http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4");
-			wmsLayer.version = "1.3.0";
-			wmsLayer.layers = "SCANDEP_PNG_IGNF_LAMB93";
-			wmsLayer.projection = "EPSG:4326";
-			this._map.addLayer(wmsLayer);
+			this._map.addLayer(new Mapnik("OpenStreetMap"));
 			
 			// GML 3.2.1 layer; fetch data from url (polygons World Borders)
 			//if data is fetched from file (xml), change the projection to 2154

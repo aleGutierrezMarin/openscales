@@ -3,7 +3,6 @@ package
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
@@ -17,6 +16,7 @@ package
 	import org.openscales.core.layer.ogc.WMSC;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
@@ -36,13 +36,9 @@ package
 			//Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			
+			this._map.projection="EPSG:900913";
 			// Add a base layer to the map	
-			var wmsLayer:WMS = new WMS("Scan","http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/rok4");
-			wmsLayer.version = "1.3.0";
-			wmsLayer.layers = "SCANDEP_PNG_IGNF_LAMB93";
-			wmsLayer.projection = "EPSG:4326";
-			this._map.addLayer(wmsLayer);
+			this._map.addLayer(new Mapnik("OpenStreetMap"));
 			
 				
 			//add the KML layer; fetch data from url
