@@ -61,17 +61,54 @@ package org.openscales.core.layer {
 		protected var _projectionChanged:Boolean = false;
 		
 		/**
-		 * The boolean that say if the layer is drawn or not.
+		 * This method tells if the layer is available for the specified bounds and resolution
+		 * @param Bounds Bounds to intersect the layers bboxes with
+		 * @param Resolution Resolution to interstec the layer max et min extent with
+		 */ 
+		public function isAvailableForBounds(bounds:Bounds, resolution:Resolution):Boolean{
+			
+			var reprojectedResolution:Number = resolution.reprojectTo(this.projection).value;
+			
+			if(!hasMultiBBoxes()){
+				return (this.maxExtent.getIntersection(bounds) != null
+					&& (reprojectedResolution <= this.maxResolution.value)
+					&& (reprojectedResolution >= this.minResolution.value));
+			}else{
+				var constraint:Constraint;
+				var multiBBoxConstraint:MultiBoundingBoxConstraint;
+				var bbox:Bounds;
+				var WGS84Resolution:Number = resolution.reprojectTo("WGS84").value;
+				var multiBboxMaxRes:Resolution;
+				var multiBboxMinRes:Resolution;
+				for each(constraint in this.constraints){
+					if(!constraint is MultiBoundingBoxConstraint) continue;
+					multiBBoxConstraint = constraint as MultiBoundingBoxConstraint;
+					multiBboxMaxRes = multiBBoxConstraint.maxResolution;
+					multiBboxMinRes = multiBBoxConstraint.minResolution;
+					if(multiBboxMaxRes.projection!="WGS84")multiBboxMaxRes.reprojectTo("WGS84");
+					if(multiBboxMinRes.projection!="WGS84")multiBboxMinRes.reprojectTo("WGS84");
+					
+					for each(bbox in multiBBoxConstraint.bboxes){
+						if(bbox.getIntersection(bounds) !=null 
+							&& (WGS84Resolution <= multiBboxMaxRes.value)
+							&& (WGS84Resolution >= multiBboxMinRes.value)) return true;
+					}
+				}
+				
+				return false;
+			}
+		}
+		
+		/**
+		 * The boolean that say if the layer is available or not (according to map)
 		 * This is a readonly parameter.
+		 * 
 		 * Override this method and check what you need to check and return if your layer
 		 * is available or not.
 		 */
 		public function get available():Boolean
 		{
-			var mapResolution:Number = this.map.resolution.reprojectTo(this.projection).value;
-			return (this.maxExtent.getIntersection(this.map.extent) != null
-				&& (mapResolution <= this.maxResolution.value)
-				&& (mapResolution >= this.minResolution.value));
+			return isAvailableForBounds(this._map.extent, this._map.resolution);	
 		}
 		
 		/**
@@ -216,7 +253,7 @@ package org.openscales.core.layer {
 		
 		protected function onEnterFrame(event:Event):void
 		{
-				this.redraw();
+				//this.redraw();
 		}
 		/**
 		 * Return a reference to the map where belong this layer
@@ -410,7 +447,22 @@ package org.openscales.core.layer {
 			return new Pixel(layerPx.x + this.x, layerPx.y + this.y);
 		}
 		
-		
+		/**
+		 * Tells whether this layer defines multiple bounding boxes
+		 * 
+		 * @return Boolean True if the layer has multiple bboxes, false otherwise
+		 */ 
+		public function hasMultiBBoxes():Boolean{
+			if(!this.constraints || this.constraints.length == 0 ) return false;
+			
+			var constraint:Constraint = null;
+			
+			for each(constraint in this.constraints){
+				if(constraint is MultiBoundingBoxConstraint) return true;
+			}
+			
+			return false;
+		}
 		
 		/**
 		 * Is this layer currently in range, based on its min and max resolutions
@@ -828,8 +880,7 @@ package org.openscales.core.layer {
 		public function set constraints(value:Vector.<Constraint>):void
 		{
 			_constraints = value;
-		}
-
+		}		
 	}
 }
 
