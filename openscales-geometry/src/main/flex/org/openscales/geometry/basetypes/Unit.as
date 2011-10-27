@@ -14,6 +14,8 @@ package org.openscales.geometry.basetypes
 	{
 		public static var SEXAGESIMAL:String = "dms";
 		public static var DEGREE:String = "degrees";
+		
+		[Bindable]
 		public static var METER:String = "m";
 		public static var KILOMETER:String = "km";
 		public static var CENTIMETER:String = "cm";
