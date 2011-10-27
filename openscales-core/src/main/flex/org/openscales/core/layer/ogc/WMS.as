@@ -47,7 +47,7 @@ package org.openscales.core.layer.ogc
 		 * @private
 		 * MIME type for the requested layer
 		 */
-		protected var _format:String ="image/jpeg";
+		protected var _format:String ="image/png";
 		
 		/**
 		 * @private 
@@ -93,7 +93,7 @@ package org.openscales.core.layer.ogc
 							url:String = "",
 							layers:String = "",
 							style:String = "",
-							format:String = "image/jpeg")
+							format:String = "image/png")
 		{
 			super(name, url);
 			
@@ -286,7 +286,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * MIME type for the requested layer (default : image/jpeg)
+		 * MIME type for the requested layer (default : image/png)
 		 */
 		public function get format():String
 		{
