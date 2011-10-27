@@ -31,6 +31,7 @@
 						</fileset>
 					</filesets>
 				</configuration>
+                <version>2.4.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
@@ -41,7 +42,7 @@
 					<namespaces>
 						<namespace>
 							<uri>http://openscales.org</uri>
-							<manifest>${build.sourceDirectory}/META-INF/manifest.xml</manifest>
+							<manifest>${project.build.sourceDirectory}/META-INF/manifest.xml</manifest>
 						</namespace>
 					</namespaces>
 					<includeNamespaces>

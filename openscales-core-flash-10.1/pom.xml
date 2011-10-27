@@ -56,6 +56,7 @@
 						</fileset>
 					</filesets>
 				</configuration>
+                <version>2.4.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>

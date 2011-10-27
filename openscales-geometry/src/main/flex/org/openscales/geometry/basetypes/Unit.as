@@ -27,6 +27,8 @@ package org.openscales.geometry.basetypes
 		
 		public static var DOTS_PER_INCH:Number = Capabilities.screenDPI;
 		
+		public function Unit(){}
+		
 		/**
 		 * Returns the number of inches per unit
 		 * 
