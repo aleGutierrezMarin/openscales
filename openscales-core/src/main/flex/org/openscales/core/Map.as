@@ -3,9 +3,14 @@ package org.openscales.core
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.ContextMenuEvent;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
+	import flash.ui.ContextMenu;
+	import flash.ui.ContextMenuItem;
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.core.basetypes.Resolution;
@@ -161,6 +166,17 @@ package org.openscales.core
 		public function Map(width:Number=600, height:Number=400, projection:String="EPSG:4326") {
 			super();
 			
+			/**
+			 * Contextual informations
+			 */
+			var menu:ContextMenu = new ContextMenu();
+			menu.hideBuiltInItems();
+			var notice:ContextMenuItem = new ContextMenuItem("Powered by OpenScales");
+			notice.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openLink);
+			menu.customItems.push(notice);
+			contextMenu = menu;
+			
+			
 			//load i18n module
 			I18nJSONProvider.addTranslation(ENLocale);
 			I18nJSONProvider.addTranslation(FRLocale);
@@ -190,7 +206,9 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
 			this._initialized = true;
 		}
-		
+		private function openLink(e:ContextMenuEvent):void{
+			navigateToURL(new URLRequest("http://www.openscales.org"));
+		}
 		private function localeChanged(event:I18NEvent):void {
 			if(event.locale == Locale.activeLocale) {
 				this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,Locale.activeLocale));
