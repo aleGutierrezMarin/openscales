@@ -2,10 +2,16 @@ package org.openscales.core.layer
 {
 	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertEquals;
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertTrue;
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.layer.originator.DataOriginator;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Unit;
 
 	public class LayerTest
 	{
@@ -72,6 +78,53 @@ package org.openscales.core.layer
 			
 		}
 		
+		[Test]
+		public function shouldTellIfLayerHasMultiBBoxes():void{
+			var layer:Layer = new Layer("test");
+			assertFalse("Null constraints should tell no multi bboxes", layer.hasMultiBBoxes());
+			var csts:Vector.<Constraint> = new Vector.<Constraint>();
+			layer.constraints = csts;
+			assertFalse("Empty constraints should tell no multi bboxes", layer.hasMultiBBoxes());
+			csts.push(new Constraint(null,null));
+			layer.constraints = csts;
+			assertFalse("Constraints with no MultiBoundingBoxConstraint should tell no multi bboxes", layer.hasMultiBBoxes());
+			csts = new Vector.<Constraint>();
+			csts.push(new MultiBoundingBoxConstraint(null,null,null));
+			layer.constraints = csts;
+			assertTrue("Constraints with at least one MultiBoundingBoxConstraint should tell yes", layer.hasMultiBBoxes());
+		}
+		
+		[Test]
+		public function shouldTellAvailableOrNotForMultiBBoxLayer():void{
+			var map:Map = new Map(600,400,"WGS84");
+			var layer:Layer = new Layer("test");
+			
+			var csts:Vector.<Constraint> = new Vector.<Constraint>();
+			var bboxes:Vector.<Bounds> = new Vector.<Bounds>();
+			bboxes.push(new Bounds(-6.0, 55.0, 39.0, 71.0, "WGS84")); // Norway bbox
+			bboxes.push(new Bounds(-8.38, 38.14, 14.11, 55.92, "WGS84")); // Metropolitan France bbox
+			csts.push(new MultiBoundingBoxConstraint(
+					new Resolution(Unit.getResolutionFromScaleDenominator(200,Unit.DEGREE), "WGS84"),
+					new Resolution(Unit.getResolutionFromScaleDenominator(18316743,Unit.DEGREE), "WGS84"), 
+					bboxes));
+			layer.constraints = csts;
+			map.resolution = new Resolution(Unit.getResolutionFromScaleDenominator(30000, Unit.DEGREE), "WGS84");
+			map.center = new Location(5,45,"WGS84");
+			map.addLayer(layer);
+			assertTrue("Layer should be available when map is contained in at least one bbox",layer.available);
+			
+			map.zoomToExtent(new Bounds(-65,42,-48,54,"WGS84"));
+			
+			assertTrue("Layer should not be available when map is outside every bbox", !layer.available);
+			
+			map.zoomToExtent(new Bounds(18,67,35,73,"WGS84"));
+				
+			assertTrue("Layer should be available when map intersect at least one bbox", layer.available);	
+			
+			map.zoomToExtent(new Bounds(-25,32,54,70,"WGS84"));
+			
+			assertTrue("Layer should not be available when map is out of all constraints resolution range", !layer.available);
+		}
 		
 		/**
 		 * Validates that the layer alpha is correctly set

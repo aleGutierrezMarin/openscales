@@ -30,6 +30,8 @@ package org.openscales.core.format.gml.parser
 	{
 		private var format:GML321;
 		
+		public function GML321ParserTest(){}
+		
 		[Before]
 		public function setUp():void
 		{
