@@ -21,6 +21,7 @@
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.fx.control.drawing.DrawLabel;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
 			
@@ -38,7 +39,7 @@
 			private var _btnValid:Button = null;
 			private var _btnDiscard:Button = null;
 			private var _textInput:TextInput;
-			
+			private var _containerPopup:DrawLabel;
 			private static var DEFAULT_W:Number = 300;
 			private static var DEFAULT_H:Number = 100;
 			
@@ -54,34 +55,30 @@
 			 */
 			public function set feature(value:Feature):void
 			{
-				if(this._feature) {
-					if(this._feature.layer && this._feature.layer.map)
-						this._feature.layer.map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
-					if(_vgroup)
-						_vgroup.removeAllElements();
-					if(this._init)
-						PopUpManager.removePopUp(this);
-				}
 				_feature = value;
 				if(this._feature) {
-					PopUpManager.addPopUp(this, (FlexGlobals.topLevelApplication as Application), true);
-					if(this._init) {
-						if(this._feature.layer && this._feature.layer.map)
-							this._feature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
-						else
-							return;
-						if(!_vgroup) {
-							_vgroup = new VGroup();
-							_vgroup.gap = 10;
-							_vgroup.top = 5;
-							container.addElement(_vgroup);
-						}
-						this.drawContent();
-						this.localize();
+					if(!_vgroup) {
+						_vgroup = new VGroup();
+						_vgroup.gap = 10;
+						_vgroup.top = 5;
+						this.addElement(_vgroup);
 					}
+					
+					if(this._feature.layer && this._feature.layer.map)
+						this._feature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+					else
+						return;
+					
+					this.drawContent();
+					this.localize();
+					PopUpManager.addPopUp(this, (FlexGlobals.topLevelApplication as Application), true);
 				}
 			}
 			
+			public function set containerPopup(value:DrawLabel):void
+			{
+				_containerPopup = value;
+			}
 			/**
 			 * @private
 			 */
@@ -102,11 +99,21 @@
 					_textInput.text = (this.feature as LabelFeature).labelPoint.label.text;
 				group.addElement(_textInput);
 				_vgroup.addElement(group);
-				
 				group = new HGroup();
 				group.gap = 10;
 				group.paddingLeft = 5;
 				group.paddingRight = 5;
+				
+				if(!this._btnValid) {
+					this._btnValid = new Button();
+					this._btnValid.addEventListener(MouseEvent.CLICK, valid);
+				}
+				
+				if(!this._btnDiscard) {
+					this._btnDiscard = new Button();
+					this._btnDiscard.addEventListener(MouseEvent.CLICK, closeClick);
+				}
+				
 				group.addElement(this._btnValid);
 				group.addElement(this._btnDiscard);
 				_vgroup.addElement(group);
@@ -125,22 +132,14 @@
 			 * @private
 			 */
 			protected function init():void {
-				if(!this._btnValid) {
-					this._btnValid = new Button();
-					this._btnValid.addEventListener(MouseEvent.CLICK, valid);
-				}
-				if(!this._btnDiscard) {
-					this._btnDiscard = new Button();
-					this._btnDiscard.addEventListener(MouseEvent.CLICK, closeClick);
-				}
 				this.x = (parent.width-this.width)/2;
 				this.y = (parent.height-this.height)/2;
 				this.resize(null);
 				parent.addEventListener(Event.RESIZE,this.resize);
-				if(!this._init) {
-					this._init = true;
-					this.feature = this.feature;
-				}
+
+				this._init = true;
+				
+				_textInput.setFocus();
 			}
 			
 			/**
@@ -149,7 +148,17 @@
 			protected function destroy():void {
 				if(parent)
 					parent.removeEventListener(Event.RESIZE,this.resize);
-				this.feature = null;
+				
+				this.discardPopup();
+			}
+			
+			private function discardPopup():void {
+				if(this._feature.layer && this._feature.layer.map)
+					this._feature.layer.map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+				if(_vgroup)
+					_vgroup.removeAllElements();
+				if(this._init)
+					PopUpManager.removePopUp(this);
 			}
 			
 			/**
@@ -192,7 +201,7 @@
 					this.feature.draw();
 				}
 				this.feature.layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,feature));
-				this.feature = null;
+				this.discardPopup();
 			}
 			
 			/**
@@ -200,7 +209,7 @@
 			 */
 			private function closeClick(event:MouseEvent):void {
 				
-				this.feature = null;
+				this.discardPopup();
 			}
 			
 			/**
@@ -208,13 +217,9 @@
 			 */
 			private function close():void
 			{
-				this.feature = null;
+				this.discardPopup();
 			}
 			
 		]]>
 	</fx:Script>
-	<s:Scroller width="100%" height="100%">
-		<s:Group id="container" width="100%" height="100%">
-		</s:Group>
-	</s:Scroller>
 </s:TitleWindow>

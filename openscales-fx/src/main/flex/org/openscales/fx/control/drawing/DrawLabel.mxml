@@ -14,9 +14,13 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
 			import org.openscales.core.Map;
 			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
@@ -31,6 +35,12 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
+			
+			import spark.components.Button;
+			import spark.components.HGroup;
+			import spark.components.Label;
+			import spark.components.TextInput;
+			import spark.components.TitleWindow;
 			
 			[Bindable]
 			private var _alpha:Number = 0.3;
@@ -48,6 +58,9 @@
 			private var _style:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
 			private var _map:Map;
 			private var _target:VectorLayer;
+			
+
+			private var feature:LabelFeature;
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -103,9 +116,12 @@
 				{
 					var pixel:Pixel = new Pixel(this._map.mouseX, this._map.mouseY);
 					var labelLocation:Location = this._map.getLocationFromMapPx(pixel);
-					var feature:LabelFeature = new LabelFeature(new LabelPoint(null, labelLocation.x, labelLocation.y));
+					feature = new LabelFeature(new LabelPoint(null, labelLocation.x, labelLocation.y));
 					feature.layer = this.target;
-					new EditLabel().feature = feature;
+					
+					var editLabel:EditLabel = new EditLabel();
+					editLabel.containerPopup = this;
+					editLabel.feature= feature; 
 				}
 			}
 			
