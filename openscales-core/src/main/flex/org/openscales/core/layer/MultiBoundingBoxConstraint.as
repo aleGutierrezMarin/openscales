@@ -6,7 +6,9 @@ package org.openscales.core.layer
 	/**
 	 * Defines a constraint for layer that have multibbox.
 	 * 
-	 * A constraint is defined by a range of resolutions (minResolution, maxResolution) and a list of bounding boxes 
+	 * A constraint is defined by a range of resolutions (minResolution, maxResolution) and a list of bounding boxes
+	 * 
+	 * NB: All values in those instance should be projected in WGS84 
 	 */ 
 	public class MultiBoundingBoxConstraint extends Constraint
 	{

@@ -24,6 +24,8 @@ package org.openscales.core.control
 		private var originator2:DataOriginator = new DataOriginator("originator 2", "url_originator2", "url_picture_originator2");
 		private var originator3:DataOriginator = new DataOriginator("originator 3", "url_originator3", "url_picture_originator3");
 		
+		public function DataOriginatorsTest(){}
+		
 		[Test]
 		public function testAddOriginator():void 
 		{

@@ -31,7 +31,7 @@ package org.openscales.map
 		private static const CENTER:Location = new Location(2.81,45.52,"EPSG:4326");
 		private static const RESOLUTION:Resolution = new Resolution(0.01,"EPSG:4326");
 		
-		
+		public function ExtentTest(){}
 		
 		[Before]
 		public function setUp():void

@@ -25,6 +25,8 @@ package org.openscales.core.events
 		
 		private var _handler:Function = null;
 		
+		public function MapEventTest(){}
+		
 		[Before]
 		public function setUp():void
 		{
