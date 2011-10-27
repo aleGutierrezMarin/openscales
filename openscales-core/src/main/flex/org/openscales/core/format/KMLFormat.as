@@ -834,7 +834,7 @@ package org.openscales.core.format
 			placemark.appendChild(new XML("<styleUrl>#" + feature.name + "</styleUrl>"));
 			
 			if (att.hasOwnProperty("description"))
-				placemark.appendChild(new XML("<description>" + att["description"] + "</description>"));
+				placemark.appendChild(new XML("<description><![CDATA[" + att["description"] + "]]></description>"));
 			
 			var coords:String;
 			if(feature is LineStringFeature)
@@ -908,29 +908,31 @@ package org.openscales.core.format
 			var data:XML;
 			var displayName:XML;
 			var value:XML;
-			var j:uint = feature.layer.attributesId.length;
-			if(j>0) {
-				extendedData =	new XML("<ExtendedData></ExtendedData>");
-				
-				//if feature is a Label, register the value
-				if(feature is LabelFeature) {
-					var l:LabelPoint = (feature as LabelFeature).labelPoint;
-					data = new XML("<Data name=\"label\"></Data>");
-					value = new XML("<value>" + l.label.text + "</value>");
-					data.appendChild(value);
-					extendedData.appendChild(data);
-				}
-				
-				for(var i:uint = 0 ;i<j;++i) {
-					var key:String = feature.layer.attributesId[i];
-					//everything except name and description
-					if(excludeFromExtendedData.indexOf(key) <0 ) {
-						data = new XML("<Data name=\"attribute" + i + "\"></Data>");
-						displayName = new XML("<displayName>" + key + "</displayName>");
-						value = new XML("<value>" + att[key] + "</value>");
-						data.appendChild(displayName);
+			if(feature.layer) {
+				var j:uint = feature.layer.attributesId.length;
+				if(j>0) {
+					extendedData =	new XML("<ExtendedData></ExtendedData>");
+					
+					//if feature is a Label, register the value
+					if(feature is LabelFeature) {
+						var l:LabelPoint = (feature as LabelFeature).labelPoint;
+						data = new XML("<Data name=\"label\"></Data>");
+						value = new XML("<value>" + l.label.text + "</value>");
 						data.appendChild(value);
 						extendedData.appendChild(data);
+					}
+					
+					for(var i:uint = 0 ;i<j;++i) {
+						var key:String = feature.layer.attributesId[i];
+						//everything except name and description
+						if(excludeFromExtendedData.indexOf(key) <0 ) {
+							data = new XML("<Data name=\"attribute" + i + "\"></Data>");
+							displayName = new XML("<displayName>" + key + "</displayName>");
+							value = new XML("<value>" + att[key] + "</value>");
+							data.appendChild(displayName);
+							data.appendChild(value);
+							extendedData.appendChild(data);
+						}
 					}
 				}
 			}
