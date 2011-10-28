@@ -256,6 +256,7 @@ package org.openscales.core.layer {
 		protected function onEnterFrame(event:Event):void
 		{
 			if(this._resolutionChanged || this._centerChanged || this._projectionChanged) {
+				this.redraw();
 				this._resolutionChanged = false;
 				this._centerChanged = false;
 				this._projectionChanged = false;
