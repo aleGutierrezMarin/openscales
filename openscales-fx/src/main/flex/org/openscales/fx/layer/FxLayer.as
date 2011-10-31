@@ -2,6 +2,7 @@ package org.openscales.fx.layer
 {	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.layer.Constraint;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.fx.FxMap;
@@ -149,6 +150,19 @@ package org.openscales.fx.layer
 				this._layer.dpi = value;
 			else
 				this._dpi = value;
+		}
+		
+		public function get constraints():Vector.<Constraint>{
+			if(this._layer){
+				return this._layer.constraints;
+			}
+			return null;
+		}
+		
+		public function set constraints(value:Vector.<Constraint>):void{
+			if(this._layer){
+				this._layer.constraints = value;
+			}
 		}
 		
 		/**

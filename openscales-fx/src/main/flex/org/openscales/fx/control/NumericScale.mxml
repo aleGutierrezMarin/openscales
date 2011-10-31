@@ -107,6 +107,7 @@
 				
 				// screen dpi flash.system.Capabilities.screenDPI
 				this.value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._dpi));
+				//this.value = Math.round(Unit.getScaleDenominatorFromResolution(resolutionAtCenter,unit));
 				
 				// update the label :
 				this.scaleLabel = "1 / "+this._value;
