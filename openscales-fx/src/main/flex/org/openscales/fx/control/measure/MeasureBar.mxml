@@ -73,9 +73,12 @@
 			
 			override public function set map(value:Map):void{
 				super.map = value;
-				pathMeasure.map = this.map;
-				azimuthMeasure.map = this.map;
-				surfaceMeasure.map = this.map;
+				if (this.pathMeasure)
+					this.pathMeasure.map = this.map;
+				if (this.azimuthMeasure)
+					this.azimuthMeasure.map = this.map;
+				if (this.surfaceMeasure)
+					this.surfaceMeasure.map = this.map;
 			}
 			
 			private function exitMeasureMode():void {
@@ -152,7 +155,7 @@
 		</s:layout>
 		
 		<MeasurePath id="pathMeasure" />
-		<measure:MeasureAzimuth id="azimuthMeasure" />
+		<MeasureAzimuth id="azimuthMeasure" />
 		<MeasureSurface id="surfaceMeasure" />
 		<!--<IconButton icon="{_btnPath}" id="exitButton" click="exitMeasureMode()" width="25" height="25" toolTip="{_exitToolTip}"/>-->
 		
