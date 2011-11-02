@@ -83,15 +83,11 @@ package org.openscales.core.layer {
 				for each(constraint in this.constraints){
 					if(!constraint is MultiBoundingBoxConstraint) continue;
 					multiBBoxConstraint = constraint as MultiBoundingBoxConstraint;
-					multiBboxMaxRes = multiBBoxConstraint.maxResolution;
-					multiBboxMinRes = multiBBoxConstraint.minResolution;
-					if(multiBboxMaxRes.projection!="WGS84")multiBboxMaxRes.reprojectTo("WGS84");
-					if(multiBboxMinRes.projection!="WGS84")multiBboxMinRes.reprojectTo("WGS84");
 					
 					for each(bbox in multiBBoxConstraint.bboxes){
 						if(bbox.getIntersection(bounds) !=null 
-							&& (WGS84Resolution <= multiBboxMaxRes.value)
-							&& (WGS84Resolution >= multiBboxMinRes.value)) return true;
+							&& (WGS84Resolution <= multiBBoxConstraint.maxResolution.value)
+							&& (WGS84Resolution >= multiBBoxConstraint.minResolution.value)) return true;
 					}
 				}
 				
@@ -487,12 +483,29 @@ package org.openscales.core.layer {
 		public  function get inRange():Boolean {
 			var inRange:Boolean = false;
 			if (this.map) {
-				var resolutionProjected:Resolution = this.map.resolution;
-				
-				if (this.projection != this.map.projection) {
-					resolutionProjected = this.map.resolution.reprojectTo(this.projection);
+				if(!hasMultiBBoxes()){
+					var resolutionProjected:Resolution = this.map.resolution;
+					
+					if (this.projection != this.map.projection) {
+						resolutionProjected = this.map.resolution.reprojectTo(this.projection);
+					}
+					inRange = ((resolutionProjected.value >= this.minResolution.value) && (resolutionProjected.value <= this.maxResolution.value));
+				}else{
+					var WGS84MapRes:Resolution = this.map.resolution.reprojectTo("WGS84");
+					var constraint:Constraint=null;
+					var multiBBoxConstraint:MultiBoundingBoxConstraint=null;
+					var bbox:Bounds=null;
+					for each(constraint in this.constraints){
+						if(!constraint is MultiBoundingBoxConstraint) continue;
+						multiBBoxConstraint = constraint as MultiBoundingBoxConstraint;						
+						for each(bbox in multiBBoxConstraint.bboxes){
+							if((WGS84MapRes.value <= multiBBoxConstraint.maxResolution.value)
+								&& (WGS84MapRes.value >= multiBBoxConstraint.minResolution.value)) {
+								return true;
+							}
+						}
+					}
 				}
-				inRange = ((resolutionProjected.value >= this.minResolution.value) && (resolutionProjected.value <= this.maxResolution.value));
 			}
 			return inRange;
 		}

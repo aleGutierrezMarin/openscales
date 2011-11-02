@@ -371,13 +371,17 @@ package org.openscales.core.layer.ogc
 		
 		override public function get available():Boolean
 		{
+			return (super.available && this.defineBounds() && (!this.useCapabilities || this.projection))
+			
+			/*
+			//Those lines of code did not call super.available which is a mistake
 			if (this.useCapabilities && !this.projection)
 				return false;
 			
 			if (!this.defineBounds())
 				return false;
 			
-			return true;
+			return true;*/
 		}
 		
 		/**
