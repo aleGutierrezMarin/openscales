@@ -520,8 +520,8 @@ package org.openscales.geometry.basetypes
 			var thisBounds:Bounds = this;
 			if (thisBounds.projection != bounds.projection)
 			{
-				thisBounds = thisBounds.reprojectTo("EPSG:4326");
-				bounds = bounds.reprojectTo("EPSG:4326");
+				thisBounds = thisBounds.preciseReprojectBounds("EPSG:4326");
+				bounds = bounds.preciseReprojectBounds("EPSG:4326");
 			}
 			
 			if (!(this.intersectsBounds(bounds)))
