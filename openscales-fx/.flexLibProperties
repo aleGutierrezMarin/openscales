@@ -50,7 +50,6 @@
     <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
-    <classEntry path="org.openscales.fx.control.drawing.DrawingToolbar"/>
     <classEntry path="org.openscales.fx.control.drawing.EditFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeature"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeatureForm"/>
