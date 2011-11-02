@@ -63,7 +63,7 @@ package org.openscales.core.layer {
 		/**
 		 * This method tells if the layer is available for the specified bounds and resolution
 		 * @param Bounds Bounds to intersect the layers bboxes with
-		 * @param Resolution Resolution to interstec the layer max et min extent with
+		 * @param Resolution Resolution to intersect the layer max et min extent with
 		 */ 
 		public function isAvailableForBounds(bounds:Bounds, resolution:Resolution):Boolean{
 			
