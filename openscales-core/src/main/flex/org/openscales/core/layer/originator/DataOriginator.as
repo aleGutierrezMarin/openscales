@@ -102,7 +102,7 @@ package org.openscales.core.layer.originator
 			// If the constraint is a new constraint, add it
 			if (i == j) 
 			{
-				Trace.debug("DataOriginator.addConstraint: add a new constraint");
+				//Trace.debug("DataOriginator.addConstraint: add a new constraint");
 				this._constraints.push(constraint);
 			}
 		}
