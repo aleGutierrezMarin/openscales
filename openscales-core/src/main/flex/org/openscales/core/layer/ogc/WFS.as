@@ -205,10 +205,6 @@ package org.openscales.core.layer.ogc
 				this.clear();
 			}
 			
-			if(!fullRedraw && (centerChangedCache || projectionChangedCache || resolutionChangedCache)) {
-				fullRedraw = true;
-			}
-			
 			if (!this._initialized || fullRedraw)
 			{
 				this.featuresBbox = this.defineBounds();
@@ -225,7 +221,7 @@ package org.openscales.core.layer.ogc
 				this._initialized = true;
 				return;
 			}
-			if (this._initialized && fullRedraw)
+			if (centerChangedCache || projectionChangedCache || resolutionChangedCache)
 			{
 				var previousFeatureBbox:Bounds;
 				
@@ -307,7 +303,6 @@ package org.openscales.core.layer.ogc
 			
 			this._centerChanged = true;
 			this._resolutionChanged = true;
-			this.redraw(true);
 		}
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
