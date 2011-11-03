@@ -141,6 +141,7 @@
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.control.search.OpenLSSearch"/>
     <classEntry path="org.openscales.fx.autocomplete.AutoComplete"/>
+    <classEntry path="org.openscales.fx.layer.FxAggregate"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

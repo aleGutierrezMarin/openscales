@@ -60,6 +60,21 @@ package org.openscales.core.layer {
 		protected var _centerChanged:Boolean = false;
 		protected var _projectionChanged:Boolean = false;
 		
+				
+		/**
+		 * Layer constructor
+		 */
+		public function Layer(name:String) {
+			this.name = name;
+			this.visible = true;
+			this.doubleClickEnabled = true;
+			this._projection = Layer.DEFAULT_PROJECTION;
+			this.generateResolutions();
+			
+			
+			this._originators = new Vector.<DataOriginator>();
+		}
+		
 		/**
 		 * This method tells if the layer is available for the specified bounds and resolution
 		 * @param Bounds Bounds to intersect the layers bboxes with
@@ -128,19 +143,7 @@ package org.openscales.core.layer {
 		 */
 		protected var _displayInLayerManager:Boolean = true;
 		
-		/**
-		 * Layer constructor
-		 */
-		public function Layer(name:String) {
-			this.name = name;
-			this.visible = true;
-			this.doubleClickEnabled = true;
-			this._projection = Layer.DEFAULT_PROJECTION;
-			this.generateResolutions();
-			
-			
-			this._originators = new Vector.<DataOriginator>();
-		}
+		
 		
 		/**
 		 * Generate resolutions array for a nominal resolution (higher one) and a number of zoom levels. 

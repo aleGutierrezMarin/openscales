@@ -6,6 +6,7 @@
 	
 	<component id="Style" class="org.openscales.fx.feature.FxStyle" />
 	
+	<component id="Aggregate" class="org.openscales.fx.layer.FxAggregate" />
 	<component id="VectorLayer" class="org.openscales.fx.layer.FxVectorLayer" />
 	<component id="ImageLayer" class="org.openscales.fx.layer.FxImageLayer" />
 	<component id="WMS" class="org.openscales.fx.layer.FxWMS" />
