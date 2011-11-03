@@ -263,6 +263,8 @@
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.core.layer.Constraint"/>
     <classEntry path="org.openscales.core.layer.MultiBoundingBoxConstraint"/>
+    <classEntry path="org.openscales.core.layer.Aggregate"/>
+    <classEntry path="org.openscales.core.layer.AggregateTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
