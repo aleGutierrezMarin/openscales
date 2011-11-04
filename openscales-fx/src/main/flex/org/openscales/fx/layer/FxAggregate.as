@@ -1,6 +1,7 @@
 package org.openscales.fx.layer
 {
 	import mx.core.IVisualElement;
+	import mx.events.FlexEvent;
 	
 	import org.openscales.core.layer.Aggregate;
 
@@ -12,6 +13,10 @@ package org.openscales.fx.layer
 		override public function init():void {
 			this._layer = new Aggregate(this.name);
 			
+			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
+		}
+		
+		protected function onCreationComplete(event:FlexEvent):void{
 			// We use an interlediate Array in order to avoid adding new component it the loop
 			// because it will modify numChildren
 			var componentToAdd:Array = new Array();

@@ -80,5 +80,15 @@ package org.openscales.core.layer
 			return false;
 		}
 
+		override public function set alpha(value:Number):void{
+			super.alpha = value;
+			var layer:Layer;
+			if(this._layers){
+				for each(layer in _layers){
+					layer.alpha = value;
+				}
+			}
+			
+		}
 	}
 }
