@@ -6,11 +6,23 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.handler.mouse.MouseHandler;
 			import org.openscales.core.measure.Distance;
+			import org.openscales.geometry.basetypes.Unit;
 			public function init():void {
 				var mh:MouseHandler = new MouseHandler(this.fxMap.map, true);
 				this.fxMap.map.addControl(mh);
+				
+				//configure displaySystem of the different tools
+				mbar.pathMeasure.displaySystem=MeasureBar.METER;
+				
+				var hmAccuraciesPath:HashMap = mbar.pathMeasure.accuracies;
+				hmAccuraciesPath.put(MeasureBar.METER,1);
+				mbar.pathMeasure.accuracies=hmAccuraciesPath;
+				
+				mbar.azimuthMeasure.displaySystem=MeasureBar.SEXAGESIMAL;
+				mbar.surfaceMeasure.displaySystem=MeasureBar.METER;
 			}
 		]]>
 	</fx:Script>
@@ -22,7 +34,7 @@
 			  layers="bluemarble" format="image/jpeg" 
 			  maxExtent="-180,-90,180,90" version="1.1.1"/>
 		
-		<MeasureBar x="500" y="{height-100}" />
+		<MeasureBar id="mbar" x="500" y="{height-100}"  />
 		
 		<KeyBoardHandler id="keyboardHandler" />
 		

@@ -31,7 +31,7 @@ package org.openscales.core.measure
 		
 		private var _accuracies:HashMap=null;
 		
-		private var _displaySystem:String = "metric";
+		private var _displaySystem:String = "m";
 		
 		private var _result:String = "";
 		private var _lastUnit:String = null;
@@ -50,10 +50,12 @@ package org.openscales.core.measure
 			this._accuracies = new HashMap();
 			this._accuracies.put("dd",2);
 			this._accuracies.put("rad",4);
-			this._accuracies.put("gon",2);
+			this._accuracies.put("dms",2);
+			
 			this._accuracies.put("mi",3);
 			this._accuracies.put("ft",2);
 			this._accuracies.put("in",1);
+			
 			this._accuracies.put("km",3);
 			this._accuracies.put("m",0);
 		}
@@ -109,41 +111,64 @@ package org.openscales.core.measure
 			if(_currentLineStringFeature && (_currentLineStringFeature.geometry as MultiPoint).components.length>1) {
 				tmpDist = (_currentLineStringFeature.geometry as LineString).length;
 				
+				
+				
+				this._accuracies.put("dd",2);
+				this._accuracies.put("gon",2);
+				this._accuracies.put("mi",3);
+				this._accuracies.put("ft",2);
+				this._accuracies.put("in",1);
+
+				
+				
 				tmpDist *= Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
-				switch (_displaySystem.toLowerCase()) {
-					case "metric":
+				switch (_displaySystem.toLowerCase()) {					
+					case "m":
 						tmpDist/=Unit.getInchesPerUnit(Unit.METER);
-						_result= Util.truncate(tmpDist,_accuracies.getValue("m"));
+						_result= this.trunc(tmpDist,_accuracies.getValue("m"));
 						_lastUnit = "m";
-						if(tmpDist>1000) {
-							tmpDist/=1000;
-							_lastUnit = "km";
-							_result= Util.truncate(tmpDist,_accuracies.getValue("km"));
-						}
 						break;
-					case "geographic":
+					
+					case "km":
+						tmpDist/=Unit.getInchesPerUnit(Unit.KILOMETER);
+						_result= this.trunc(tmpDist,_accuracies.getValue("km"));
+						_lastUnit = "km";
+						break;
+					
+					case "dd":
 						tmpDist/=Unit.getInchesPerUnit(Unit.DEGREE);
 						_lastUnit = "°";
-						_result= Util.truncate(tmpDist,_accuracies.getValue("dd"));
+						_result= this.trunc(tmpDist,_accuracies.getValue("dd"));
 						break;
-					case "english":
+					
+					case "dms":
+						tmpDist/=Unit.getInchesPerUnit(Unit.DEGREE);
+						_lastUnit = "";
+						var acc:Number=this._accuracies.getValue("dms");
+						if(!acc){
+							acc=2;
+						}
+						_result= Util.degToDMS(tmpDist,null,acc);
+						break;
+					
+					case "ft":
 						tmpDist/=Unit.getInchesPerUnit(Unit.FOOT);
 						_lastUnit = "ft";
-						_result= Util.truncate(tmpDist,_accuracies.getValue("ft"));
-						
-						if(tmpDist<1) {
-							tmpDist*=12;
-							_lastUnit = "in";
-							_result= Util.truncate(tmpDist,_accuracies.getValue("in"));
-						}
-						
-						if(tmpDist>5280) {
-							tmpDist/=5280;
-							_lastUnit = "mi";
-							_result= Util.truncate(tmpDist,_accuracies.getValue("mi"));
-						}
-						
+						_result= this.trunc(tmpDist,_accuracies.getValue("ft"));
 						break;
+					
+					case "in":
+						tmpDist/=Unit.getInchesPerUnit(Unit.INCH);
+						_lastUnit = "in";
+						_result= this.trunc(tmpDist,_accuracies.getValue("in"));
+						break;
+					
+					case "mi":
+						tmpDist/=Unit.getInchesPerUnit(Unit.MILE);
+						_lastUnit = "mi";
+						_result= this.trunc(tmpDist,_accuracies.getValue("mi"));
+						break;
+					
 					default:
 						_lastUnit = null;
 						_result="0";
@@ -155,6 +180,14 @@ package org.openscales.core.measure
 				_lastUnit = null;
 			}
 			return _result;
+		}
+		
+		private function trunc(val:Number,unit:Number):String{
+			var acc:Number=this._accuracies.getValue(unit);
+			if(!acc){
+				acc=2;
+			}
+			return Util.truncate(val,acc);
 		}
 		
 		public function getUnits():String {
