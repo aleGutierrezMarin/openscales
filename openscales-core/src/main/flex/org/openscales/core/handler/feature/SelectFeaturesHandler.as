@@ -173,8 +173,8 @@ package org.openscales.core.handler.feature
 		public function set enableOverSelection(value:Boolean):void {
 			if (value) {
 				this.onOverFeature = this.selectByOver;
-				//this.onOutFeature = this.unselectByOut;
-				this.onOutFeature = null;
+				this.onOutFeature = this.unselectByOut;
+				//this.onOutFeature = null;
 			} else {
 				this.onOverFeature = null;
 				this.onOutFeature = null;
