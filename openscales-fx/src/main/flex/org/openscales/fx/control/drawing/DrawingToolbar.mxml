@@ -41,17 +41,6 @@
 			
 			private function configure():void{
 				_configured = true;
-				// set the properties
-				drawLabel.style = this._labelStyle;
-				drawPoint.style = this._pointStyle;
-				drawShape.style = this._shapeStyle;
-				drawPath.style = this._pathStyle;
-				drawPolygon.style = this._polygonStyle;
-				selectFeatures.clickout = this._clickOut;
-				selectFeatures.hover = this._hover;
-				selectFeatures.toggle = this._toggle;
-				editFeatures.virtualStyle = this._virtualStyle;
-				manageAttributes.defaultAttributes = this._defaultAttributes;
 				
 				// remove elements if mode = "mini"
 				if(this._mode == "multiple")
@@ -85,15 +74,6 @@
 			override public function set map(value:Map):void{
 				
 				super.map = value;
-				drawLabel.map = value;
-				drawPoint.map = value;
-				drawShape.map = value;
-				drawPath.map = value;
-				drawPolygon.map = value;
-				selectFeatures.map = value;
-				editFeatures.map = value;
-				moveFeatures.map = value;
-				manageAttributes.map = value;
 			}
 			
 			/**
@@ -126,6 +106,7 @@
 			/**
 			 * The style of the drawing labels
 			 */
+			[Bindable]
 			public function get labelStyle():Style {
 				return this._labelStyle;
 			}
@@ -139,6 +120,7 @@
 			/**
 			 * The style of the drawing points
 			 */
+			[Bindable]
 			public function get pointStyle():Style {
 				return this._pointStyle;
 			}
@@ -152,9 +134,11 @@
 			/**
 			 * The style of the drawing paths
 			 */
+			[Bindable]
 			public function get pathStyle():Style {
 				return this._pathStyle;
 			}
+			
 			/**
 			 * @private
 			 */
@@ -163,8 +147,24 @@
 			}
 			
 			/**
+			 * The style of the drawing shapes
+			 */
+			[Bindable]
+			public function get shapeStyle():Style {
+				return this._shapeStyle;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set shapeStyle(value:Style):void{
+				this._shapeStyle = value;
+			}
+			
+			/**
 			 * The style of the drawing polygons
 			 */
+			[Bindable]
 			public function get polygonStyle():Style {
 				return this._polygonStyle;
 			}
@@ -179,6 +179,7 @@
 			 * If true, a feature is unselected by clicking out of it
 			 * @default true;
 			 */
+			[Bindable]
 			public function get clickout():Boolean {
 				return this._clickOut;
 			}
@@ -194,6 +195,7 @@
 			 * If true, a selected feature is unselected by clicking on it
 			 * @default false;
 			 */
+			[Bindable]
 			public function get toggle():Boolean {
 				return this._toggle;
 			}
@@ -208,6 +210,7 @@
 			 * If true, a feature is selected on mouseover
 			 * @default false;
 			 */
+			[Bindable]
 			public function get hover():Boolean {
 				return this._hover;
 			}
@@ -222,6 +225,7 @@
 			/**
 			 * The style of the virtual points in editing mode
 			 */
+			[Bindable]
 			public function get virtualStyle():Style {
 				return this._virtualStyle;
 			}
@@ -235,6 +239,7 @@
 			/**
 			 * The default attributes for each feature
 			 */
+			[Bindable]
 			public function get defaultAttributes():Vector.<String> {
 				return this._defaultAttributes;
 			}
@@ -269,15 +274,15 @@
 			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
 								horizontalAlign="center" verticalAlign="middle" />
 		</s:layout>
-		<osDraw:DrawLabel id="drawLabel" />
-		<osDraw:DrawPoint id="drawPoint" />
-		<osDraw:DrawShape id="drawShape" />
-		<osDraw:DrawPath id="drawPath" />
-		<osDraw:DrawPolygon id="drawPolygon" />
-		<osDraw:SelectFeatures id="selectFeatures" />
-		<osDraw:EditFeatures id="editFeatures" />
-		<osDraw:MoveFeatures id="moveFeatures" />
-		<osDraw:ManageAttributes id="manageAttributes" />
+		<osDraw:DrawLabel style="{this.labelStyle}" map="{this.map}" id="drawLabel" />
+		<osDraw:DrawPoint style="{this.pointStyle}" map="{this.map}" id="drawPoint" />
+		<osDraw:DrawShape style="{this.shapeStyle}" map="{this.map}" id="drawShape" />
+		<osDraw:DrawPath style="{this.pathStyle}" map="{this.map}" id="drawPath" />
+		<osDraw:DrawPolygon style="{this.polygonStyle}" map="{this.map}" id="drawPolygon" />
+		<osDraw:SelectFeatures map="{this.map}" clickout="{this.clickout}" hover="{this.hover}" toggle="{this.toggle}" id="selectFeatures" />
+		<osDraw:EditFeatures virtualStyle="{this.virtualStyle}" map="{this.map}" id="editFeatures" />
+		<osDraw:MoveFeatures map="{this.map}" id="moveFeatures" />
+		<osDraw:ManageAttributes defaultAttributes="{this.defaultAttributes}" map="{this.map}" id="manageAttributes" />
 		<osDraw:AddVectorLayer map="{this.map}" />
 		<osDraw:ImportFeature id="importFeature" map="{this.map}" />
 		<osDraw:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" />

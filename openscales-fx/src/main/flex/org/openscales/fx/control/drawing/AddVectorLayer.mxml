@@ -88,6 +88,7 @@
 			private function onPopUpCreationComplete(e:Event):void
 			{
 				myTitleWindow.closeButton.addEventListener(MouseEvent.CLICK, this.closePopUp);
+				this._input.setFocus();
 			}
 			
 			/**
