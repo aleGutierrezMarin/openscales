@@ -1,6 +1,8 @@
 package org.openscales.core.layer
 {	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
 	 * The Aggregate class defines a Layer container. 
@@ -27,8 +29,7 @@ package org.openscales.core.layer
 			if(!layer) return false;
 			if(layer is Aggregate) return false;
 			if(_layers.indexOf(layer)>0) return false;
-			layer.displayInLayerManager = false;
-			layer.visible = this.visible;
+			prepareLayer(layer);			
 			this._layers.push(layer);
 			if(this.map)
 			{
@@ -41,8 +42,45 @@ package org.openscales.core.layer
 			if(!layers) return;
 			var layer:Layer;
 			for each (layer in layers){
-				this.addLayer(layer);
+				this.addLayer(layer);	
 			}
+		}
+		
+		override public function isAvailableForBounds(bounds:Bounds, resolution:Resolution):Boolean{
+			if(this._layers){
+				var ok:Boolean = false;
+				var layer:Layer;
+				for each(layer in this._layers){
+					ok = ok || layer.isAvailableForBounds(bounds,resolution);
+					if(ok) return ok;
+				}
+			}
+			return false;
+		} 
+		
+		override public function destroy():void{
+			if(this._layers){
+				var layer:Layer;
+				for each(layer in this._layers){
+					layer.destroy();
+				}
+			}
+			super.destroy();
+		}
+		
+		override public function removeEventListenerFromMap():void {
+			if(this._layers){
+				var layer:Layer;
+				for each(layer in this._layers){
+					layer.removeEventListenerFromMap();
+				}
+			}
+			super.removeEventListenerFromMap();
+		}
+		
+		protected function prepareLayer(layer:Layer):void{
+			layer.displayInLayerManager = false;
+			layer.visible = this.visible;
 		}
 		
 		/**
@@ -59,13 +97,24 @@ package org.openscales.core.layer
 		 * @param map The map to which the Aggergate (and its layers) will be attached
 		 */ 
 		override public function set map(value:Map):void{
-			super.map = value;
 			if(this._layers){
 				var layer:Layer;
-				for each(layer in this._layers){
-					map.addLayer(layer, false);// Add missing layers to map
+				if(value){
+					super.map = value;
+					for each(layer in this._layers){
+						prepareLayer(layer);
+						map.addLayer(layer, false);// Add missing layers to map
+					}
+				}else{//Map is null (removal)
+					if(this.map){
+						for each(layer in this._layers){
+							map.removeLayer(layer); 
+						}
+						super.map = value;
+					}
 				}
 			}
+			
 		}
 		
 		override public function get available():Boolean{
@@ -88,7 +137,28 @@ package org.openscales.core.layer
 					layer.alpha = value;
 				}
 			}
-			
+		}
+		
+		override public function get visible():Boolean{
+			if(this._layers){
+				var ok:Boolean = false;
+				var layer:Layer;
+				for each(layer in this._layers){
+					ok = ok || layer.visible;
+					if(ok) return ok;
+				}
+			}
+			return false;
+		}
+		
+		override public function set visible(value:Boolean):void{
+			super.visible = value;
+			var layer:Layer;
+			if(this._layers){
+				for each(layer in this._layers){
+					layer.visible = value;
+				}
+			}
 		}
 	}
 }
