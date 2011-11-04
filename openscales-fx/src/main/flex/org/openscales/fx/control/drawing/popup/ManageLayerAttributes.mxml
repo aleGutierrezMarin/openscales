@@ -83,20 +83,23 @@
 				var btn:Button;
 				for(var i:uint = 0;i<j;++i) {
 					var key:String = this._layer.attributesId[i];
-					group = new HGroup();
-					group.gap = 10;
-					group.paddingTop = 5;
-					group.paddingLeft = 5;
-					_vgroup.addElement(group);
-					lb = new Label();
-					lb.width = 100;
-					lb.text = key;
-					group.addElement(lb);
-					btn = new Button();
-					btn.id = key;
-					btn.label = Catalog.getLocalizationForKey("managelayerattributes.dellabel");
-					btn.addEventListener(MouseEvent.CLICK, remove);
-					group.addElement(btn);
+					
+					if(key != "id") {
+						group = new HGroup();
+						group.gap = 10;
+						group.paddingTop = 5;
+						group.paddingLeft = 5;
+						_vgroup.addElement(group);
+						lb = new Label();
+						lb.width = 100;
+						lb.text = key;
+						group.addElement(lb);
+						btn = new Button();
+						btn.id = key;
+						btn.label = Catalog.getLocalizationForKey("managelayerattributes.dellabel");
+						btn.addEventListener(MouseEvent.CLICK, remove);
+						group.addElement(btn);
+					}
 				}
 				group = new HGroup();
 				group.gap = 10;

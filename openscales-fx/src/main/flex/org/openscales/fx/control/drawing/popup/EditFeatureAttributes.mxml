@@ -31,7 +31,7 @@
 				for(var i:uint = 0 ;i<j;++i) {
 					var key:String = this.feature.layer.attributesId[i];
 					//If key is popupContentHTML, don't show it
-					if(key != "popupContentHTML") {
+					if(key != "popupContentHTML" && key != "id") {
 						group = new HGroup();
 						group.verticalAlign = "middle";
 						group.gap = 10;
@@ -49,15 +49,10 @@
 						else
 							input.text = "";
 						
-						//If key is id, make it un-editable
-						if(key == "id") {
-							input.editable = false;	
-						} else {
-							//We set the fistTextInput if not already set
-							if(!isSetFirstTextInput) {
-								_firstTextInput = input;
-								isSetFirstTextInput = true;
-							}
+						//We set the fistTextInput if not already set
+						if(!isSetFirstTextInput) {
+							_firstTextInput = input;
+							isSetFirstTextInput = true;
 						}
 						
 						group.addElement(input);
