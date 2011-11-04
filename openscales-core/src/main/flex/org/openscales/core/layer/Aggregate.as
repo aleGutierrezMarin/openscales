@@ -59,7 +59,7 @@ package org.openscales.core.layer
 		 * @param map The map to which the Aggergate (and its layers) will be attached
 		 */ 
 		override public function set map(value:Map):void{
-			super.map = map;
+			super.map = value;
 			if(this._layers){
 				var layer:Layer;
 				for each(layer in this._layers){
