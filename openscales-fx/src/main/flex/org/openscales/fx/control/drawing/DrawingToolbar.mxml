@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<os:Control xmlns:fx="http://ns.adobe.com/mxml/2009"
+			xmlns:s="library://ns.adobe.com/flex/spark"
+			xmlns:mx="library://ns.adobe.com/flex/mx"
+			xmlns:os="org.openscales.fx.control.*"
+			xmlns:osDraw="org.openscales.fx.control.drawing.*"
+			width="400" height="300" xmlns:openscales="http://openscales.org"
+			creationComplete="configure()">
+	
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.style.Style;
+			
+			[Bindable]
+			private var _layer:VectorLayer;
+			private var _labelStyle:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
+			private var _pointStyle:Style = Style.getDefaultPointStyle();
+			private var _pathStyle:Style = Style.getDefaultLineStyle();
+			private var _shapeStyle:Style = Style.getDefaultLineStyle();
+			private var _polygonStyle:Style = Style.getDefaultSurfaceStyle();
+			private var _clickOut:Boolean = true;
+			private var _toggle:Boolean = false;
+			private var _hover:Boolean = false;
+			private var _virtualStyle:Style = Style.getDefaultCircleStyle();
+			private var _defaultAttributes:Vector.<String> = new <String> ["id","description"];
+			private var _mode:String = "multiple";
+			private var _configured:Boolean = false;
+			
+			[Bindable]
+			private var title:String = Catalog.getLocalizationForKey('drawing.toolbar');
+			
+			
+			private function configure():void{
+				_configured = true;
+				
+				// remove elements if mode = "mini"
+				if(this._mode == "multiple")
+				{
+					this.drawingToolbar.removeElement(this.drawLabel);
+					this.drawingToolbar.removeElement(this.drawPoint);
+					this.drawingToolbar.removeElement(this.drawPath);
+					this.drawingToolbar.removeElement(this.drawPolygon);
+					this.drawingToolbar.removeElement(this.selectFeatures);
+					this.drawingToolbar.removeElement(this.editFeatures);
+					this.drawingToolbar.removeElement(this.moveFeatures);
+					this.drawingToolbar.removeElement(this.manageAttributes);
+					this.drawingToolbar.removeElement(this.exportFeature);
+					this.drawingToolbar.removeElement(this.drawShape);
+				}
+				
+				this.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+			}
+			
+			/**
+			 * Update texts on map language changed
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void{
+				
+				this.title = Catalog.getLocalizationForKey('drawing.toolbar');
+			}
+			
+			/**
+			 * @inheritDoc
+			 */
+			override public function set map(value:Map):void{
+				
+				super.map = value;
+			}
+			
+			/**
+			 * The mode of the drawing toolbar
+			 */
+			public function get mode():String{
+				return this._mode;
+			}
+			/**
+			 * @private
+			 */
+			public function set mode(value:String):void{
+				this._mode = value;
+			}
+			
+			
+			/**
+			 * The layer the features will be drawn on
+			 */
+			public function get layer():VectorLayer {
+				return this._layer;
+			}
+			/**
+			 * @private
+			 */
+			public function set layer(value:VectorLayer):void{
+				this._layer = value;
+			}
+			
+			/**
+			 * The style of the drawing labels
+			 */
+			[Bindable]
+			public function get labelStyle():Style {
+				return this._labelStyle;
+			}
+			/**
+			 * @private
+			 */
+			public function set labelStyle(value:Style):void{
+				this._labelStyle = value;
+			}
+			
+			/**
+			 * The style of the drawing points
+			 */
+			[Bindable]
+			public function get pointStyle():Style {
+				return this._pointStyle;
+			}
+			/**
+			 * @private
+			 */
+			public function set pointStyle(value:Style):void{
+				this._pointStyle = value;
+			}
+			
+			/**
+			 * The style of the drawing paths
+			 */
+			[Bindable]
+			public function get pathStyle():Style {
+				return this._pathStyle;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set pathStyle(value:Style):void{
+				this._pathStyle = value;
+			}
+			
+			/**
+			 * The style of the drawing shapes
+			 */
+			[Bindable]
+			public function get shapeStyle():Style {
+				return this._shapeStyle;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set shapeStyle(value:Style):void{
+				this._shapeStyle = value;
+			}
+			
+			/**
+			 * The style of the drawing polygons
+			 */
+			[Bindable]
+			public function get polygonStyle():Style {
+				return this._polygonStyle;
+			}
+			/**
+			 * @private
+			 */
+			public function set polygonStyle(value:Style):void{
+				this._polygonStyle = value;
+			}
+			
+			/**
+			 * If true, a feature is unselected by clicking out of it
+			 * @default true;
+			 */
+			[Bindable]
+			public function get clickout():Boolean {
+				return this._clickOut;
+			}
+			/**
+			 * @private
+			 */
+			public function set clickout(value:Boolean):void{
+				this._clickOut = value;
+				this._hover = !(value);
+			}
+			
+			/**
+			 * If true, a selected feature is unselected by clicking on it
+			 * @default false;
+			 */
+			[Bindable]
+			public function get toggle():Boolean {
+				return this._toggle;
+			}
+			/**
+			 * @private
+			 */
+			public function set toggle(value:Boolean):void{
+				this._toggle = value;
+			}
+			
+			/**
+			 * If true, a feature is selected on mouseover
+			 * @default false;
+			 */
+			[Bindable]
+			public function get hover():Boolean {
+				return this._hover;
+			}
+			/**
+			 * @private
+			 */
+			public function set hover(value:Boolean):void{
+				this._hover = value;
+				this._clickOut = (!value);
+			}
+			
+			/**
+			 * The style of the virtual points in editing mode
+			 */
+			[Bindable]
+			public function get virtualStyle():Style {
+				return this._virtualStyle;
+			}
+			/**
+			 * @private
+			 */
+			public function set virtualStyle(value:Style):void{
+				this._virtualStyle = value;
+			}
+			
+			/**
+			 * The default attributes for each feature
+			 */
+			[Bindable]
+			public function get defaultAttributes():Vector.<String> {
+				return this._defaultAttributes;
+			}
+			/**
+			 * @private
+			 */
+			public function set defaultAttributes(value:*):void{
+				var attributes:Array = null;
+				this._defaultAttributes = new Vector.<String>();
+				
+				if(value is Vector.<String>)
+					this._defaultAttributes = value as Vector.<String>;
+				else if(value is String) {
+					attributes = (value as String).split(",");
+				} else if(value is Array) {
+					attributes = value as Array;
+				}
+				if(attributes) {
+					for each (var key:String in attributes){
+						this._defaultAttributes.push(key);
+					}
+				}
+				if(_configured)
+					manageAttributes.defaultAttributes = this._defaultAttributes;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Panel id="drawingToolbar" title="{this.title}" x="10" y="10" height="70">
+		<s:layout>
+			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
+								horizontalAlign="center" verticalAlign="middle" />
+		</s:layout>
+		<osDraw:DrawLabel style="{this.labelStyle}" map="{this.map}" id="drawLabel" />
+		<osDraw:DrawPoint style="{this.pointStyle}" map="{this.map}" id="drawPoint" />
+		<osDraw:DrawShape style="{this.shapeStyle}" map="{this.map}" id="drawShape" />
+		<osDraw:DrawPath style="{this.pathStyle}" map="{this.map}" id="drawPath" />
+		<osDraw:DrawPolygon style="{this.polygonStyle}" map="{this.map}" id="drawPolygon" />
+		<osDraw:SelectFeatures map="{this.map}" clickout="{this.clickout}" hover="{this.hover}" toggle="{this.toggle}" id="selectFeatures" />
+		<osDraw:EditFeatures virtualStyle="{this.virtualStyle}" map="{this.map}" id="editFeatures" />
+		<osDraw:MoveFeatures map="{this.map}" id="moveFeatures" />
+		<osDraw:ManageAttributes defaultAttributes="{this.defaultAttributes}" map="{this.map}" id="manageAttributes" />
+		<osDraw:AddVectorLayer map="{this.map}" />
+		<osDraw:ImportFeature id="importFeature" map="{this.map}" />
+		<osDraw:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" />
+	</s:Panel>
+</os:Control>
