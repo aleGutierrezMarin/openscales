@@ -9,10 +9,10 @@ package org.openscales.core.format
 	public class WMCFormatTest
 	{
 		
-		[Embed(source="/assets/format/wmc/GeneralTest.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/format/WMC/GeneralTest.xml",mimeType="application/octet-stream")]
 		private const WMCGeneralType:Class;
 		
-		[Embed(source="/assets/format/wmc/LayerTypeTest.xml",mimeType="application/octet-stream")]
+		[Embed(source="/assets/format/WMC/LayerTypeTest.xml",mimeType="application/octet-stream")]
 		private const WMCLayerType:Class;
 		
 		private var format:WMCFormat;
