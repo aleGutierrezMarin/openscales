@@ -128,7 +128,7 @@
 			/**
 			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
 			 */
-			private function onClick():void{
+			public function onClick():void{
 				var evt:DrawingEvent = null;
 				if(!this._active){
 					evt= new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);

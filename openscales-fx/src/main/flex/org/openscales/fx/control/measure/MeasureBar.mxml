@@ -42,6 +42,9 @@
 			[Bindable]
 			private var _exitToolTip:String = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
 			
+			[Bindable]
+			public var _result:String = "N/A";
+			
 			override public function set map(value:Map):void{
 				super.map = value;
 				if (this.pathMeasure)
@@ -91,19 +94,19 @@
 			private function onMeasure(event:MeasureEvent):void{
 				if(event.type == MeasureEvent.MEASURE_AVAILABLE) {
 					if(event.tool.getUnits()){
-						lblResult.text = event.tool.getMeasure()+" "+event.tool.getUnits();
+						this._result = event.tool.getMeasure()+" "+event.tool.getUnits();
 					}else
 					{
-						lblResult.text = event.tool.getMeasure();
+						this._result = event.tool.getMeasure();
 					}
 					
 				} else if(event.type == MeasureEvent.MEASURE_UNAVAILABLE) {
-					lblResult.text = "N/A";
+					this._result = "N/A";
 				}
 			}
 			
 			private function onChangeActiveHandler(event:DrawingEvent):void {
-				lblResult.text = "N/A";
+				this._result = "N/A";
 			}
 			
 			override public function onMapLanguageChange(event:I18NEvent):void{
@@ -130,7 +133,7 @@
 		<MeasureSurface id="surfaceMeasure" />
 		<!--<IconButton icon="{_btnPath}" id="exitButton" click="exitMeasureMode()" width="25" height="25" toolTip="{_exitToolTip}"/>-->
 		
-		<s:Label id="lblResult" text="N/A" />
+		<s:Label id="lblResult" text="{this._result}" />
 	</s:Panel>
 	
 </Control>
