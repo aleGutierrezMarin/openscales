@@ -490,7 +490,7 @@ package org.openscales.core
 		 * You can give a pixel to specify the pixel where to zoom. The default value is the center of the 
 		 * map
 		 */
-		public function zoom(factor:Number, targetPixel:Pixel = null):void
+		public function zoomBy(factor:Number, targetPixel:Pixel = null):void
 		{
 			if (factor < 0)
 				throw(new ArgumentError);

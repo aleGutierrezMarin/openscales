@@ -109,7 +109,7 @@ package org.openscales.map
 			_map.resolution = new Resolution(10, "EPSG:4326");
 			
 			// When I zoom with a factor as parameter
-			_map.zoom(1.2);
+			_map.zoomBy(1.2);
 
 			// Then the resolution is multiplied by the given factor
 			assertEquals("The resolution has not been properly changed by the zoom", 12, _map.resolution.value);
@@ -128,7 +128,7 @@ package org.openscales.map
 			
 			_map.resolution = new Resolution(11,"EPSG:4326");
 			// When I zoom with a factor that will set the resolution above the maxResolution
-			_map.zoom(1.3);
+			_map.zoomBy(1.3);
 			
 			// Then the resolution is setted to maxResolution
 			assertEquals("The resolution has not been set to maxResolution", 12, _map.resolution.value);
@@ -148,7 +148,7 @@ package org.openscales.map
 			_map.resolution = new Resolution(10, "EPSG:4326");
 			
 			// When I zoom with a factor that will set the resolution below the minResolution
-			_map.zoom(0.7);
+			_map.zoomBy(0.7);
 			
 			// Then the resolution is setted to minResolution
 			assertEquals("The resolution has not been set to minResolution", 8, _map.resolution.value);
