@@ -9,6 +9,7 @@ package org.openscales.core.layer
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.osmf.layout.AbsoluteLayoutFacet;
 	
 	/**
 	 * Tests the Aggregate class
@@ -52,10 +53,22 @@ package org.openscales.core.layer
 		 * Checks that map has reference only to aggregate and not to contained layers
 		 */
 		[Test]
-		public function shouldOnlyBeReferencedInMapAndNotContainedLayers():void{
+		public function shouldBeReferencedInMapAlongWithContainedLayers():void{
 			_map.addLayer(_instance);
 			assertTrue("Map does not reference aggregate", _map.layers.indexOf(_instance)>=0);
-			assertTrue("Map references contained layers", _map.layers.indexOf(_l1)<0 && _map.layers.indexOf(_l2)<=0);
+			assertTrue("Map does not references contained layers", _map.layers.indexOf(_l1)>=0 && _map.layers.indexOf(_l2)>=0);
+		}
+		
+		/**
+		 * Checks that contained layers have displayInLayerManager attribute set to true
+		 */
+		[Test]
+		public function shouldHaveContainedLayersNotDisplayedInLayerManager():void{
+			_map.addLayer(_instance);
+			var layer:Layer ;
+			for each (layer in _instance.layers){
+				assertTrue("Contained layer is visible in layerSwitcher", !layer.displayInLayerManager);
+			}
 		}
 		
 		/**
@@ -91,13 +104,14 @@ package org.openscales.core.layer
 		 * Checks that when the aggergate is removed from map, contained layers are affected
 		 */ 
 		[Test]
-		public function shouldPassRemovalFromMapToContainedLayers():void{
+		public function shouldPassMapRemovalToContainedLayers():void{
 			_map.addLayer(_instance);
 			assertTrue("Contained layers does not reference map", _l1.map==_map && _l2.map==_map);
-			assertTrue("Map does not referenc aggregate", _map.layers.indexOf(_instance)>=0);
+			assertTrue("Map does not reference aggregate", _map.layers.indexOf(_instance)>=0);
 			_map.removeLayer(_instance);
-			assertFalse("Map still contains aggregate after removal", _map.layers.indexOf(_instance)>=0);
-			assertFalse("Contained layers still reference map after removal", _l1.map == _map || _l2.map == _map);
+			assertFalse("Map still references aggregate after removal", _map.layers.indexOf(_instance)>=0);
+			assertFalse("Map still references contained layers after aggregate removal", _map.layers.indexOf(_l1)>=0 || _map.layers.indexOf(_l2)>=0);
+			assertTrue("Contained layers still reference map after removal", _l1.map == null && _l2.map == null);
 		}
 		
 		/**
@@ -127,9 +141,9 @@ package org.openscales.core.layer
 		public function shouldReturnVisibilityAsDisjonctionOfContainedLayersVisibilty():void{
 			_l1.visible = false;
 			_l2.visible = false;
-			assertFalse("Aggregate visibility is not a disjonction of contained layers", _instance.visible);
+			assertFalse("Aggregate visibility is not a disjonction of contained layers (case 1)", _instance.visible);
 			_l2.visible = true;
-			assertTrue("Aggregate visibility is not a disjonction of contained layers", _instance.visible);
+			assertTrue("Aggregate visibility is not a disjonction of contained layers (case 2)", _instance.visible);
 			
 		}
 		
@@ -179,6 +193,13 @@ package org.openscales.core.layer
 			fail("Not yet implemented");
 		}
 		
-		
+		/**
+		 * 
+		 */ 
+		[Test]
+		public function shouldPassDestroyToContainedLayers():void{
+			_map.addLayer(_instance);
+			_instance.destroy();	
+		}
 	}
 }
