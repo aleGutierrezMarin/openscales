@@ -3,8 +3,7 @@
 <Control xmlns="http://openscales.org"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 width="250" height="200" xmlns:measure="org.openscales.fx.control.measure.*"
-		 creationComplete="configure()">
+		 width="250" height="200" xmlns:measure="org.openscales.fx.control.measure.*">
 	
 	
 	<fx:Script>
@@ -22,6 +21,17 @@
 			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.geometry.basetypes.Unit;
 			
+			public static var SEXAGESIMAL:String = "dms";
+			public static var DEGREE:String = "deg";
+			public static var RADIAN:String = "rad";
+			
+			public static var METER:String = "m";
+			public static var KILOMETER:String = "km";
+			
+			public static var FOOT:String = "ft";
+			public static var MILE:String = "mi";
+			public static var INCH:String = "in";
+			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-12.png")]
 			private var _btnPath:Class;
@@ -31,45 +41,6 @@
 			
 			[Bindable]
 			private var _exitToolTip:String = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
-			
-			private var _accuracies:HashMap=null;
-
-			public function get accuracies():HashMap
-			{
-				return _accuracies;
-			}
-
-			public function set accuracies(value:HashMap):void
-			{
-				_accuracies = value;
-			}
-
-			
-			private var _displaySystem:String=null;
-
-			public function get displaySystem():String
-			{
-				return _displaySystem;
-			}
-
-			public function set displaySystem(value:String):void
-			{
-				_displaySystem = value;
-			}
-			
-			private function configure():void{
-				if(this._accuracies){
-					this.pathMeasure.accuracies=this._accuracies;
-					this.azimuthMeasure.accuracies = this._accuracies;
-					this.surfaceMeasure.accuracies = this._accuracies;
-				}
-				if(this._displaySystem){
-					this.pathMeasure.displaySystem=this._displaySystem;
-					this.azimuthMeasure.displaySystem = this.displaySystem;
-					this.surfaceMeasure.displaySystem = this.displaySystem;
-				}
-			}
-
 			
 			override public function set map(value:Map):void{
 				super.map = value;

@@ -52,7 +52,7 @@ package org.openscales.core.measure
 			this._accuracies = new HashMap();
 			this._accuracies.put("dd",2);
 			this._accuracies.put("rad",4);
-			this._accuracies.put("gon",2);
+			this._accuracies.put("dms",2);
 			this._accuracies.put("mi",3);
 			this._accuracies.put("ft",2);
 			this._accuracies.put("in",1);
@@ -137,17 +137,21 @@ package org.openscales.core.measure
 				
 				switch(_displaySystem.toLowerCase()) {
 					case 'rad':
-						_result= Util.truncate(azimuth,this._accuracies.getValue("rad"));
+						_result= this.trunc(azimuth,this._accuracies.getValue("rad"));
 						break;
 					case 'dms':
-						_result= Util.degToDMS(Util.radtoDeg(azimuth),null,1);
+						var acc:Number=this._accuracies.getValue("dms");
+						if(!acc){
+							acc=2;
+						}
+						_result= Util.degToDMS(Util.radtoDeg(azimuth),null,acc);
 						break;
 					case 'dd':
-						_result= Util.truncate(Util.radtoDeg(azimuth),this._accuracies.getValue("dd"));
+						_result= this.trunc(Util.radtoDeg(azimuth),this._accuracies.getValue("dd"));
 						_lastUnit="°";
 						break;
 					default:
-						_result= Util.truncate(Util.radtoDeg(azimuth),this._accuracies.getValue("dd"));
+						_result= this.trunc(Util.radtoDeg(azimuth),this._accuracies.getValue("dd"));
 						_lastUnit="°";
 						break;
 				}
@@ -164,6 +168,14 @@ package org.openscales.core.measure
 				_result="N/A";
 				return "N/A";
 			}
+		}
+		
+		private function trunc(val:Number,unit:Number):String{
+			var acc:Number=this._accuracies.getValue(unit);
+			if(!acc){
+				acc=2;
+			}
+			return Util.truncate(val,acc);
 		}
 		
 		public function getUnits():String {

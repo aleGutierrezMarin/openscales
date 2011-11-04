@@ -22,7 +22,7 @@ package org.openscales.core.measure
 		private var _result:String = "";
 		private var _lastUnit:String = null;
 		
-		private var _displaySystem:String = "metric";
+		private var _displaySystem:String = "km";
 
 		public function get displaySystem():String
 		{
@@ -31,15 +31,7 @@ package org.openscales.core.measure
 
 		public function set displaySystem(value:String):void
 		{
-			if(this._supportedUnitSystem){
-				for (var name:String in _supportedUnitSystem) 
-				{ 
-					if(name == value){
-						_displaySystem = value;
-					}
-				} 
-				
-			}
+			_displaySystem = value;
 		}
 		
 		private var _accuracies:HashMap = null;
@@ -56,7 +48,7 @@ package org.openscales.core.measure
 
 		
 		private var _supportedUnitSystem:Object = {
-			'metric': ["km"]
+			'metric': ["km", "m"]
 		};
 		
 		public function Surface(map:Map=null)
@@ -70,6 +62,7 @@ package org.openscales.core.measure
 			
 			this._accuracies = new HashMap();
 			this._accuracies.put("km",3);
+			this._accuracies.put("m",2);
 		}
 		
 		override public function set active(value:Boolean):void {
@@ -121,16 +114,30 @@ package org.openscales.core.measure
 			var area:Number = 0;
 			area = this.getArea();
 			
+			var inPerDisplayUnit:Number;
+			var inPerMapUnit:Number;
+			
 			switch (_displaySystem.toLowerCase()) {
-				case "metric":
-					var inPerDisplayUnit:Number = Unit.getInchesPerUnit("km");
+				case "km":
+					inPerDisplayUnit = Unit.getInchesPerUnit(Unit.KILOMETER)
 					if(inPerDisplayUnit) {
-						var inPerMapUnit:Number = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
+						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
 						_lastUnit = "km²";
 						this._result= Util.truncate(area,_accuracies.getValue("km"));
 					}
 					break;
+				
+				case "m" :
+					inPerDisplayUnit = Unit.getInchesPerUnit(Unit.METER);
+					if(inPerDisplayUnit) {
+						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
+						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+						_lastUnit = "m²";
+						this._result= Util.truncate(area,_accuracies.getValue("m"));
+					}
+					break;
+				
 				default:
 					_lastUnit = null;
 					_result="0";
