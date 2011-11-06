@@ -57,7 +57,8 @@
 					this.drawingToolbar.removeElement(this.drawShape);
 				}
 				
-				this.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				if (this.map)
+					this.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 			}
 			
 			/**
