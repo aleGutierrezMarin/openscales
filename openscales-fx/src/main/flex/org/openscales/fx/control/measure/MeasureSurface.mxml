@@ -74,6 +74,7 @@
 			 * Flag for activating and deactivating the component
 			 * @default false;
 			 */
+			[Bindable]
 			public function get active():Boolean{
 				return _active;
 			}
