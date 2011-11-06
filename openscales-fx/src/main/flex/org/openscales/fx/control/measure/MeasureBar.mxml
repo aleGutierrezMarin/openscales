@@ -55,7 +55,7 @@
 					this.surfaceMeasure.map = this.map;
 			}
 			
-			private function exitMeasureMode():void {
+			public function exitMeasureMode():void {
 				if(this.map) {
 					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
 					evt.activeHandler = null;
