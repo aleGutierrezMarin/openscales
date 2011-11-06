@@ -155,13 +155,13 @@
 			/**
 			 * To activate or disactivate the handler
 			 */
-			private function activate():void{
+			public function activate():void{
 				
 				this._drawingActivated = true;
 				_alpha = 1;
 				this._map.mouseNavigationEnabled = false;
 			}
-			private function disactivate():void{
+			public function disactivate():void{
 				
 				this._drawingActivated = false;
 				_alpha = 0.3;
