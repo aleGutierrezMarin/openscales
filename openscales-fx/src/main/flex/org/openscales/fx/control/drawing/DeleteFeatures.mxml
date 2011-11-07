@@ -86,12 +86,6 @@
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 				this._map.addEventListener(FeatureEvent.FEATURE_SELECT, onSelectedFeature);
-				
-				// Add a new SelectFeaturesHandler
-				this._handler = new SelectFeaturesHandler(this._map,true,true,false,false);
-				this._handler.clickOut = false;
-				this._handler.toggle = false;
-				this._handler.redrawFeatureOnSelection = false;
 			}
 			
 			/**
@@ -120,7 +114,6 @@
 			public function set target(value:VectorLayer):void{
 				
 				_target = value;
-				this._handler.layers[0] = _target;
 			}
 			
 			/**
@@ -135,6 +128,7 @@
 			private function disactivate():void{
 				
 				_handler.active = false;
+				_handler = null;
 				_alpha = 0.3;
 			}
 			
@@ -147,7 +141,7 @@
 					return;
 				if(event.feature.layer != this.target)
 					return;
-				if(this._handler.active){
+				if(this._handler && this._handler.active){
 					this.target.removeFeature(event.feature, true);
 				}
 			}
@@ -156,16 +150,22 @@
 			 * On button click, dispatch a DrawingEvent.EDIT_HANDLER_ACTIVATED event
 			 */
 			private function onClick():void{
-				
 				if(!this.target)
 					return;
 				
 				// Disactive this component
 				var evt:DrawingEvent;
-				if(this._handler.active){
+				if(this._handler){
 					disactivate();
 					this._map.mouseNavigationEnabled = true;
 					return;
+				} else {
+					// Add a new SelectFeaturesHandler
+					this._handler = new SelectFeaturesHandler(this._map,true,true,false,false);
+					this._handler.clickOut = false;
+					this._handler.toggle = false;
+					this._handler.redrawFeatureOnSelection = false;
+					this._handler.layers[0] = _target;
 				}
 				
 				// Disactive others drawing tools components
@@ -191,7 +191,7 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(this._handler.active && !this._isClick)
+				if(this._handler && !this._isClick)
 					disactivate();
 				else
 					this._isClick = false;
@@ -204,7 +204,7 @@
 				
 				if(this.parentDocument is DrawingToolbar)
 				{
-					if(this._handler.active){
+					if(this._handler){
 						disactivate();
 						this._map.mouseNavigationEnabled = true;
 					}
