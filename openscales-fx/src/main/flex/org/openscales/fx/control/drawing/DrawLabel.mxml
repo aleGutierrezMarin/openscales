@@ -101,6 +101,7 @@
 				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				this._map.addEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
@@ -170,7 +171,7 @@
 			/**
 			 * On button click, dispatch a DrawingEvent.DRAW_HANDLER_ACTIVATED event
 			 */
-			private function onClick():void{
+			public function onClick():void{
 				
 				if(!this.target)
 					return;

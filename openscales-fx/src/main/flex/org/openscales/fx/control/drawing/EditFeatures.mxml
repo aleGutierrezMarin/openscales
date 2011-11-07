@@ -95,6 +95,7 @@
 					this._map.removeEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.removeEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
 					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
@@ -106,6 +107,7 @@
 				if(this._map) {
 					this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.addEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
@@ -178,7 +180,7 @@
 				}
 				// Add a new SelectFeaturesHandler
 				this._selectFeaturesHandler = new SelectFeaturesHandler(this.map,true,true,false,false);
-				this._selectFeaturesHandler.layers[0] = new Vector.<VectorLayer>().push(this.target);
+				this._selectFeaturesHandler.layers[0] = this.target;
 				this._selectFeaturesHandler.clickOut = false;
 				this._selectFeaturesHandler.toggle = false;
 				

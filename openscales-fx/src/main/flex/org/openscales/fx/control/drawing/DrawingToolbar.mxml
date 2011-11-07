@@ -55,6 +55,7 @@
 					this.drawingToolbar.removeElement(this.manageAttributes);
 					this.drawingToolbar.removeElement(this.exportFeature);
 					this.drawingToolbar.removeElement(this.drawShape);
+					this.drawingToolbar.removeElement(this.deleteFeatures);
 				}
 				
 				if (this.map)
@@ -281,6 +282,7 @@
 		<osDraw:DrawPath style="{this.pathStyle}" map="{this.map}" id="drawPath" />
 		<osDraw:DrawPolygon style="{this.polygonStyle}" map="{this.map}" id="drawPolygon" />
 		<osDraw:SelectFeatures map="{this.map}" clickout="{this.clickout}" hover="{this.hover}" toggle="{this.toggle}" id="selectFeatures" />
+		<osDraw:DeleteFeatures map="{this.map}" id="deleteFeatures" />
 		<osDraw:EditFeatures virtualStyle="{this.virtualStyle}" map="{this.map}" id="editFeatures" />
 		<osDraw:MoveFeatures map="{this.map}" id="moveFeatures" />
 		<osDraw:ManageAttributes defaultAttributes="{this.defaultAttributes}" map="{this.map}" id="manageAttributes" />
