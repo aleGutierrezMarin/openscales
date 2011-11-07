@@ -123,13 +123,13 @@
 			/**
 			 * To activate or disactivate the handler
 			 */
-			private function activate():void{
+			public function activate():void{
 				
 				_handler.active = true;
 				_alpha = 1;
 				_handler.map.mouseNavigationEnabled = false;
 			}
-			private function disactivate():void{
+			public function disactivate():void{
 				
 				_handler.active = false;
 				_alpha = 0.3;
