@@ -8,9 +8,14 @@ package org.openscales.core.layer
 	 * The Aggregate class defines a Layer container. 
 	 * 
 	 * <p>
-	 * 	It extends the Layer class itslef. Thus, it inherits every methods and attributes of that class and also it can be added to a Map.
+	 * 	It extends the Layer class itslef. Thus, it inherits every methods and attributes of that class and also can be added to a Map.
 	 * </p> 
-	 * <p>Adding an Aggregate to a Map results in giving a reference to the map to each contained Layer. The Map has only a reference to the Aggregate. Consequently, the LayerSwitcher will display the Aggregate but the Map will display every contained Layer.</p>
+	 * <p>
+	 * Each contained layer lives indpendently of its Aggregate. Though, if a property is set on an Aggregate, it will be passed on its contained layers. 
+	 * </p>
+	 * <p>
+	 * 	By default, contained layers have displayInLayerManager set to false.
+	 * </p>
 	 */ 
 	public class Aggregate extends Layer
 	{
@@ -78,9 +83,11 @@ package org.openscales.core.layer
 			super.removeEventListenerFromMap();
 		}
 		
+		/**
+		 * That method is called before a layer is added to the Aggregate. By default, it sets layers's displayInLayerManager property to false
+		 */ 
 		protected function prepareLayer(layer:Layer):void{
 			layer.displayInLayerManager = false;
-			layer.visible = this.visible;
 		}
 		
 		/**
