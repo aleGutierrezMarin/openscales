@@ -114,14 +114,22 @@
 					addbtn = new Button();
 					addbtn.addEventListener(MouseEvent.CLICK, valid);
 				}
+				
+				if(!this._btnValid) {
+					this._btnValid = new Button();
+					this._btnValid.addEventListener(MouseEvent.CLICK, terminate);
+				}
+				
 				ti.text = "";
 				group.addElement(ti);
 				addbtn.label = Catalog.getLocalizationForKey("managelayerattributes.addlabel");
 				group.addElement(addbtn);
+				_vgroup.addElement(this._btnValid);
 			}
 			
 			protected function localize(e:I18NEvent=null):void {
 				this.title = Catalog.getLocalizationForKey("managelayerattributes.title");
+				this._btnValid.label = Catalog.getLocalizationForKey("managelayerattributes.valid");
 			}
 			
 			protected function init():void {
@@ -213,6 +221,11 @@
 			}
 			
 			private function close():void
+			{
+				this.discardPopup();
+			}
+			
+			private function terminate(e:Event):void
 			{
 				this.discardPopup();
 			}
