@@ -178,7 +178,7 @@
 				}
 				// Add a new SelectFeaturesHandler
 				this._selectFeaturesHandler = new SelectFeaturesHandler(this.map,true,true,false,false);
-				this._selectFeaturesHandler.layers[0] = new Vector.<VectorLayer>().push(this.target);
+				this._selectFeaturesHandler.layers[0] = this.target;
 				this._selectFeaturesHandler.clickOut = false;
 				this._selectFeaturesHandler.toggle = false;
 				
