@@ -177,8 +177,6 @@ package org.openscales.core.tile
 			this._method = value;
 			
 		}
-
-		
 	}
 }
 

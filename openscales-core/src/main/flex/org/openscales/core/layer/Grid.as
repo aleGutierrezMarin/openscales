@@ -1,6 +1,7 @@
 package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
+	import flash.display.Sprite;
 	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
 	import flash.utils.Timer;
@@ -35,6 +36,9 @@ package org.openscales.core.layer
 		/** The grid array contains tiles **/		
 		private var _grid:Vector.<Vector.<ImageTile>> = null;
 		
+		private var _backGridContainer:Sprite = new Sprite();
+		private var _backGrid:Vector.<Vector.<Sprite>> = null;
+		
 		protected var _tiled:Boolean = true;
 		
 		private var _numLoadingTiles:int = 0;
@@ -60,8 +64,6 @@ package org.openscales.core.layer
 		private var _scaleOnZoomRatiochanged:Number = 1;
 		
 		private var _requestedResolution:Resolution;
-		
-		private var _backGrid:Bitmap = null;
 		
 		private var _previousCenter:Location = null;
 		
@@ -92,7 +94,7 @@ package org.openscales.core.layer
 			//TODO delete url and params after osmparams work
 			super(name, url, params);
 			
-			
+			this.addChild(_backGridContainer);
 			this.buffer = 0;
 			this._defaultMatrixTranform = this.transform.matrix;
 			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
@@ -183,7 +185,10 @@ package org.openscales.core.layer
 			var bounds:Bounds = this.map.extent.clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
-
+			if (this.loadComplete)
+			{
+				this._backGrid = null;
+			}
 			
 			if (centerChangedCache || projectionChangedCache || resolutionChangedCache || forceReTile || !_initialized)
 			{
@@ -191,9 +196,26 @@ package org.openscales.core.layer
 				{
 					if (!this.tiled) 
 					{
-								this.clear();
-								this._lastScale = 1;
-								this.initSingleTile(bounds);
+						if (this.loadComplete)
+						{
+							if (this._grid != null)
+							{
+								if(this._backGrid==null) {
+									this._backGrid = new Vector.<Vector.<Sprite>>(1);
+									this._backGrid[0] = new Vector.<Sprite>(1);
+									this._backGrid[0][0] = null;
+									this._backGrid[0][0] = new Sprite();
+									this._backGridContainer.addChild(this._backGrid[0][0]);
+								}
+								if (this._grid[0][0].getChildAt(0) != null)
+								{
+									this._backGrid[0][0].addChildAt(this._grid[0][0].getChildAt(0), 0);
+								}
+							}
+						}
+						this.clear();
+						this._lastScale = 1;
+						this.initSingleTile(bounds);
 					} else {
 						if ((resolution != this._resquestResolution) || forceReTile)
 						{
@@ -254,6 +276,7 @@ package org.openscales.core.layer
 			var roundedWidth:Number = Math.round(temporaryWidth);
 			temporaryScale = roundedWidth / this.tileWidth;
 			this.scaleX = this.scaleY = temporaryScale;
+			this._backGridContainer.scaleX = this._backGridContainer.scaleY = temporaryScale;
 			this.x -= (offSet.x - this.x) * (scale - 1);
 			this.y -= (offSet.y - this.y) * (scale - 1);
 		}
@@ -395,6 +418,7 @@ package org.openscales.core.layer
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
 		{
+			
 			this._timer.reset();
 			this._timer.start();
 			super.onMapResolutionChanged(event);
@@ -1066,6 +1090,27 @@ package org.openscales.core.layer
 				this.actualizeGridSize(this.map.extent);
 			}
 		}
+		
+		/**
+		 * Return if the layer is loading data
+		 */
+		/*public function get loading():Boolean
+		{
+			if (!this.grid)
+				return false;
+			
+			var gridRowLength:int = this.grid.length;
+			var gridColLength:int = this.grid[0].length;
+			for (var i:int=0; i<gridRowLength; ++i)
+			{
+				for(var j:int=0; j<gridColLength; ++j)
+				{
+					if (this.grid[i][j].loadComplete)
+							return true;
+				}
+			}
+			return false;
+		}*/
 		/*override public function get minResolution():Resolution {
 			var minRes:Resolution = super.minResolution;
 			
