@@ -13,6 +13,7 @@ package org.openscales.core.layer
 	public class MultiBoundingBoxConstraint extends Constraint
 	{
 		private var _bboxes:Vector.<Bounds> = null;
+		private var _exclusive:Boolean = false;
 		
 		public function MultiBoundingBoxConstraint(minResolution:Resolution, maxResolution:Resolution, bboxes:Vector.<Bounds>)
 		{
@@ -35,6 +36,17 @@ package org.openscales.core.layer
 		{
 			_bboxes = value;
 		}
+
+		public function get exclusive():Boolean
+		{
+			return _exclusive;
+		}
+
+		public function set exclusive(value:Boolean):void
+		{
+			_exclusive = value;
+		}
+
 
 	}
 }
