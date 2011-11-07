@@ -35,7 +35,7 @@
 			private var _alpha:Number = 0.3;
 			
 			[Bindable]
-			private var tooltip:String = Catalog.getLocalizationForKey('drawing.move');
+			private var tooltip:String = Catalog.getLocalizationForKey('drawing.delete');
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-17.png")]
@@ -217,7 +217,7 @@
 			 */
 			public function onMapLanguageChange(event:I18NEvent):void{
 				
-				this.tooltip = Catalog.getLocalizationForKey('drawing.move');
+				this.tooltip = Catalog.getLocalizationForKey('drawing.delete');
 			}
 			
 			// Unused functions
