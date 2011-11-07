@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<popup:ViewFeatureAttributes xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							 xmlns:s="library://ns.adobe.com/flex/spark" 
+							 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:popup="org.openscales.fx.control.drawing.popup.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.components.Button;
+			import spark.components.HGroup;
+			import spark.components.Label;
+			import spark.components.TextInput;
+			
+			private var _btnValid:Button = null;
+			private var _btnDiscard:Button = null;
+			private var _attrInput:Vector.<TextInput> = null;
+			private var _firstTextInput:TextInput;
+			
+			override protected function drawContent():void {
+				if(!this._attrInput)
+					this._attrInput = new Vector.<TextInput>();
+				var group:HGroup;
+				var j:uint = this.feature.layer.attributesId.length;
+				var isSetFirstTextInput:Boolean = false;
+				for(var i:uint = 0 ;i<j;++i) {
+					var key:String = this.feature.layer.attributesId[i];
+					//If key is popupContentHTML, don't show it
+					if(key != "popupContentHTML" && key != "id") {
+						group = new HGroup();
+						group.verticalAlign = "middle";
+						group.gap = 10;
+						group.paddingLeft = 5;
+						group.paddingRight = 5;
+						_vgroup.addElement(group);
+						var lb:Label = new Label();
+						lb.width = 100;
+						lb.text = key;
+						group.addElement(lb);
+						var input:TextInput = new TextInput();
+						input.id = key;
+						if(this.feature.attributes[key])
+							input.text = this.feature.attributes[key];
+						else
+							input.text = "";
+						
+						//We set the fistTextInput if not already set
+						if(!isSetFirstTextInput) {
+							_firstTextInput = input;
+							isSetFirstTextInput = true;
+						}
+						
+						group.addElement(input);
+						_attrInput.push(input);
+						_vgroup.addElement(group);
+					}
+				}
+				
+				group = new HGroup();
+				group.gap = 10;
+				group.horizontalAlign = "right";
+				_vgroup.addElement(group);
+				
+				if(!this._btnValid) {
+					this._btnValid = new Button();
+					this._btnValid.addEventListener(MouseEvent.CLICK, valid);
+				}
+				if(!this._btnDiscard) {
+					this._btnDiscard = new Button();
+					this._btnDiscard.addEventListener(MouseEvent.CLICK, closeClick);
+				}
+				
+				group.addElement(this._btnValid);
+				group.addElement(this._btnDiscard);
+			}
+			
+			override protected function localize(e:I18NEvent=null):void {
+				this.title = Catalog.getLocalizationForKey("editfeatureattributes.title");
+				this._btnValid.label = Catalog.getLocalizationForKey("editfeatureattributes.valid");
+				this._btnDiscard.label = Catalog.getLocalizationForKey("editfeatureattributes.discard");
+			}
+			
+			override protected function destroy():void {
+				this.clearAttrInputVector();
+				this._attrInput = null;
+				super.destroy();
+			}
+			
+			override protected function init():void {
+				super.init();
+				
+				_firstTextInput.setFocus();
+			}
+			
+			private function clearAttrInputVector():void {
+				if(_attrInput)
+					while(_attrInput.pop()) {}
+			}
+			
+			private function closeClick(e:Event):void {
+				this.discardPopup();
+			}
+			private function valid(e:Event):void {
+				if(_attrInput && _attrInput.length>0) {
+					var ti:TextInput;
+					while(ti = _attrInput.pop())
+						this.feature.attributes[ti.id] = ti.text;
+				}
+				this.discardPopup();
+			}
+			
+		]]>
+	</fx:Script>
+</popup:ViewFeatureAttributes>

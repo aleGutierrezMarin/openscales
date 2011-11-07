@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- FeatureInfoDisplay Flex control, used to change layer order or visbility -->
+<Control xmlns="http://openscales.org"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="250" height="200" xmlns:measure="org.openscales.fx.control.measure.*">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MeasureEvent;
+			import org.openscales.core.handler.feature.draw.DrawPathHandler;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.measure.Distance;
+			import org.openscales.fx.FxMap;
+			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.geometry.basetypes.Unit;
+			
+			public static var SEXAGESIMAL:String = "dms";
+			public static var DEGREE:String = "deg";
+			public static var RADIAN:String = "rad";
+			
+			public static var METER:String = "m";
+			public static var KILOMETER:String = "km";
+			
+			public static var FOOT:String = "ft";
+			public static var MILE:String = "mi";
+			public static var INCH:String = "in";
+			
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-12.png")]
+			private var _btnPath:Class;
+			
+			[Bindable]
+			private var panelTitle:String = Catalog.getLocalizationForKey('MeasureBar.title');
+			
+			[Bindable]
+			private var _exitToolTip:String = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
+			
+			[Bindable]
+			public var _result:String = "N/A";
+			
+			override public function set map(value:Map):void{
+				super.map = value;
+				if (this.pathMeasure)
+					this.pathMeasure.map = this.map;
+				if (this.azimuthMeasure)
+					this.azimuthMeasure.map = this.map;
+				if (this.surfaceMeasure)
+					this.surfaceMeasure.map = this.map;
+			}
+			
+			public function exitMeasureMode():void {
+				if(this.map) {
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_HANDLER);
+					evt.activeHandler = null;
+					this.map.dispatchEvent(evt);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				if(this._map)
+				{
+					this.map.addEventListener(MeasureEvent.MEASURE_AVAILABLE,onMeasure);
+					this.map.addEventListener(MeasureEvent.MEASURE_UNAVAILABLE,onMeasure);
+					this.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{	
+				super.desactivate();
+				if(this._map)
+				{
+					this.map.removeEventListener(MeasureEvent.MEASURE_AVAILABLE,onMeasure);
+					this.map.removeEventListener(MeasureEvent.MEASURE_UNAVAILABLE,onMeasure);
+					this.map.removeEventListener(DrawingEvent.CHANGE_ACTIVE_HANDLER, onChangeActiveHandler);
+				}
+			}
+			
+			private function onMeasure(event:MeasureEvent):void{
+				if(event.type == MeasureEvent.MEASURE_AVAILABLE) {
+					if(event.tool.getUnits()){
+						this._result = event.tool.getMeasure()+" "+event.tool.getUnits();
+					}else
+					{
+						this._result = event.tool.getMeasure();
+					}
+					
+				} else if(event.type == MeasureEvent.MEASURE_UNAVAILABLE) {
+					this._result = "N/A";
+				}
+			}
+			
+			private function onChangeActiveHandler(event:DrawingEvent):void {
+				this._result = "N/A";
+			}
+			
+			override public function onMapLanguageChange(event:I18NEvent):void{
+				panelTitle = Catalog.getLocalizationForKey('MeasureBar.title');
+				pathMeasure.toolTitle = Catalog.getLocalizationForKey('MeasureBar.distancetooltip');
+				azimuthMeasure.toolTitle = Catalog.getLocalizationForKey('MeasureBar.azimuthtooltip');
+				surfaceMeasure.toolTitle = Catalog.getLocalizationForKey('MeasureBar.surfacetooltip');
+				//exitButton.toolTip = _exitToolTip = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:Panel title="{this.panelTitle}" x="10" y="10" height="70" >
+		<s:layout>
+			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
+								horizontalAlign="center" verticalAlign="middle"/>
+			
+		</s:layout>
+		
+		<MeasurePath id="pathMeasure" />
+		<MeasureAzimuth id="azimuthMeasure" />
+		<MeasureSurface id="surfaceMeasure" />
+		<!--<IconButton icon="{_btnPath}" id="exitButton" click="exitMeasureMode()" width="25" height="25" toolTip="{_exitToolTip}"/>-->
+		
+		<s:Label id="lblResult" text="{this._result}" />
+	</s:Panel>
+	
+</Control>
