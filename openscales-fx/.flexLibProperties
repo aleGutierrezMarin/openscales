@@ -17,6 +17,11 @@
     <classEntry path="org.openscales.fx.FxExtent"/>
     <classEntry path="org.openscales.fx.FxMap"/>
     <classEntry path="org.openscales.fx.FxMaxExtent"/>
+    <classEntry path="org.openscales.fx.autocomplete.AutoComplete"/>
+    <classEntry path="org.openscales.fx.autocomplete.AutoCompleteSkin"/>
+    <classEntry path="org.openscales.fx.autocomplete.ListAutoComplete"/>
+    <classEntry path="org.openscales.fx.autocomplete.event.AutoCompleteEvent"/>
+    <classEntry path="org.openscales.fx.autocomplete.renderer.SearchItem"/>
     <classEntry path="org.openscales.fx.basetypes.FxBounds"/>
     <classEntry path="org.openscales.fx.configuration.FxConfiguration"/>
     <classEntry path="org.openscales.fx.control.Capabilities"/>
@@ -46,10 +51,13 @@
     <classEntry path="org.openscales.fx.control.Zoom"/>
     <classEntry path="org.openscales.fx.control.ZoomBox"/>
     <classEntry path="org.openscales.fx.control.drawing.AddVectorLayer"/>
+    <classEntry path="org.openscales.fx.control.drawing.DeleteFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawLabel"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawShape"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawingToolbar"/>
     <classEntry path="org.openscales.fx.control.drawing.EditFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeature"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeatureForm"/>
@@ -58,9 +66,11 @@
     <classEntry path="org.openscales.fx.control.drawing.ManageAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.EditFeatureAttributes"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.EditLabel"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
-    <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
@@ -79,6 +89,7 @@
     <classEntry path="org.openscales.fx.control.measure.MeasurePath"/>
     <classEntry path="org.openscales.fx.control.measure.MeasureSurface"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
+    <classEntry path="org.openscales.fx.control.search.OpenLSSearch"/>
     <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
@@ -97,6 +108,7 @@
     <classEntry path="org.openscales.fx.handler.mouse.FxDragHandler"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxWMSGetFeatureInfo"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxWheelHandler"/>
+    <classEntry path="org.openscales.fx.layer.FxAggregate"/>
     <classEntry path="org.openscales.fx.layer.FxGPX"/>
     <classEntry path="org.openscales.fx.layer.FxGeoRss"/>
     <classEntry path="org.openscales.fx.layer.FxGraticule"/>
@@ -139,9 +151,6 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.control.search.OpenLSSearch"/>
-    <classEntry path="org.openscales.fx.autocomplete.AutoComplete"/>
-    <classEntry path="org.openscales.fx.layer.FxAggregate"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

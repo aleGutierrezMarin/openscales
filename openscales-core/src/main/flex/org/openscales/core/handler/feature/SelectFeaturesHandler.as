@@ -135,6 +135,7 @@ package org.openscales.core.handler.feature
 		private var _toggle:Boolean = true;
 		private var _overSelectionState:Boolean;
 		private var _changeState:Boolean = false;
+		private var _redrawFeatureOnSelection:Boolean = true;
 
 		/**
 		 * Constructor of the handler.
@@ -563,7 +564,9 @@ package org.openscales.core.handler.feature
 		 */
 		private function onSelected(evt:FeatureEvent):void {
 			if ((this.setSelectedStyle != null) || (this.onSelectedFeature != null)) {
-				this.onSomething(evt, this.setSelectedStyle, this.onSelectedFeature);
+				if(this._redrawFeatureOnSelection) {
+					this.onSomething(evt, this.setSelectedStyle, this.onSelectedFeature);
+				}
 			}
 		}
 
@@ -576,7 +579,9 @@ package org.openscales.core.handler.feature
 		 */
 		private function onUnselected(evt:FeatureEvent):void {
 			if ((this.setSelectedStyle != null) || (this.onUnselectedFeature != null)) {
-				this.onSomething(evt, this.resetStyle, this.onUnselectedFeature);
+				if(this._redrawFeatureOnSelection) {
+					this.onSomething(evt, this.resetStyle, this.onUnselectedFeature);
+				}
 			}
 		}
 
@@ -992,6 +997,17 @@ package org.openscales.core.handler.feature
 		public function get toggle():Boolean{
 			return this._toggle;
 		}
+		
+		/**
+		 * Redraw the feature when feature is selected
+		 */
+		public function set redrawFeatureOnSelection(value:Boolean):void{
+			this._redrawFeatureOnSelection = value;
+		}
+		public function get redrawFeatureOnSelection():Boolean{
+			return this._redrawFeatureOnSelection;
+		}
+		
 
 	}
 }

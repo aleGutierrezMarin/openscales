@@ -88,6 +88,7 @@
 				_handler.map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+				_handler.map.addEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				_handler.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
@@ -123,13 +124,13 @@
 			/**
 			 * To activate or disactivate the handler
 			 */
-			private function activate():void{
+			public function activate():void{
 				
 				_handler.active = true;
 				_alpha = 1;
 				_handler.map.mouseNavigationEnabled = false;
 			}
-			private function disactivate():void{
+			public function disactivate():void{
 				
 				_handler.active = false;
 				_alpha = 0.3;
