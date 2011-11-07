@@ -103,6 +103,7 @@
 	<component id="DrawPolygon" class="org.openscales.fx.control.drawing.DrawPolygon" />
 	<component id="SelectFeatures" class="org.openscales.fx.control.drawing.SelectFeatures" />
 	<component id="EditFeatures" class="org.openscales.fx.control.drawing.EditFeatures" />
+	<component id="DeleteFeatures" class="org.openscales.fx.control.drawing.DeleteFeatures" />
 	<component id="MoveFeatures" class="org.openscales.fx.control.drawing.MoveFeatures" />
 	<component id="ManageAttributes" class="org.openscales.fx.control.drawing.ManageAttributes" />
 	<component id="ExportFeature" class="org.openscales.fx.control.drawing.ExportFeature" />

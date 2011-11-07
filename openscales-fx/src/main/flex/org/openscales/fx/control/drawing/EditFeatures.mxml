@@ -95,6 +95,7 @@
 					this._map.removeEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.removeEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
 					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
@@ -106,6 +107,7 @@
 				if(this._map) {
 					this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
+					this._map.addEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
