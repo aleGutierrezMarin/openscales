@@ -96,6 +96,7 @@
    "managelayerattributes.title": "Layer attributes",
    "managelayerattributes.addlabel": "add",
    "managelayerattributes.dellabel": "delete",
+   "managelayerattributes.valid": "Close",
    "editlabel.label": "Label",
    "editlabel.title": "Enter the label",
    
