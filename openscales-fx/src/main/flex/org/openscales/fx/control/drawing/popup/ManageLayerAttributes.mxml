@@ -34,6 +34,7 @@
 			private var _layer:VectorLayer = null;
 			private var ti:TextInput = null;
 			private var addbtn:Button = null;
+			private var _btnValid:Button = null;
 			protected var _vgroup:VGroup = null;
 			private var scroller:Scroller;
 			private static var DEFAULT_W:Number = 300;

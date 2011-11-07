@@ -17,6 +17,7 @@
    "drawing.polygon": "Draw a polygon",
    "drawing.select": "Select",
    "drawing.edit": "Edit",
+   "drawing.delete": "Delete",
    "drawing.move": "Move",
    "drawing.attributes": "Manage layer attributes",
    "drawing.url": "Url",
