@@ -195,6 +195,8 @@
 				
 				_alpha = 1;
 				this._map.mouseNavigationEnabled = false;
+				this._map.panNavigationEnabled = false;
+				this._map.zoomNavigationEnabled = false;
 			}
 			
 			/**
@@ -240,6 +242,8 @@
 				if(this._handler && this._handler.active){
 					disactivate();
 					this._map.mouseNavigationEnabled = true;
+					this._map.panNavigationEnabled = true;
+					this._map.zoomNavigationEnabled = true;
 					return;
 				}
 				
@@ -282,6 +286,8 @@
 					if(this._handler && this._handler.active){
 						disactivate();
 						this._map.mouseNavigationEnabled = true;
+						this._map.panNavigationEnabled = true;
+						this._map.zoomNavigationEnabled = true;
 					}
 					this.target = evt.layer;
 				}

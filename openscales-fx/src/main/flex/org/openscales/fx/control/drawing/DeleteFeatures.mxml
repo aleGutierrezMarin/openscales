@@ -123,7 +123,6 @@
 				
 				_handler.active = true;
 				_alpha = 1;
-				this._map.mouseNavigationEnabled = false;
 			}
 			private function disactivate():void{
 				
@@ -157,7 +156,6 @@
 				var evt:DrawingEvent;
 				if(this._handler){
 					disactivate();
-					this._map.mouseNavigationEnabled = true;
 					return;
 				} else {
 					// Add a new SelectFeaturesHandler
@@ -206,7 +204,6 @@
 				{
 					if(this._handler){
 						disactivate();
-						this._map.mouseNavigationEnabled = true;
 					}
 					this.target = evt.layer;
 				}

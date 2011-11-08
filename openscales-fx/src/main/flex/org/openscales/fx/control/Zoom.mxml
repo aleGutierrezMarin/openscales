@@ -243,6 +243,9 @@
 			 */
 			public function onZoomIn(event:MouseEvent):void
 			{
+				if(!this._map.zoomNavigationEnabled)
+					return;
+				
 				this.map.zoomIn();
 			}
 			
@@ -254,6 +257,9 @@
 			 */
 			public function onZoomOut(event:MouseEvent):void
 			{
+				if(!this._map.zoomNavigationEnabled)
+					return;
+				
 				this.map.zoomOut();
 			}
 			
@@ -293,6 +299,9 @@
 			 */
 			public function onThumbDrag(event:TrackBaseEvent):void
 			{
+				if(!this._map.zoomNavigationEnabled)
+					return;
+				
 				this.updateScalesNameLabel();
 				this._onDrag = true;
 			}
@@ -302,6 +311,9 @@
 			 */
 			public function onThumbRelease(event:TrackBaseEvent):void
 			{
+				if(!this._map.zoomNavigationEnabled)
+					return;
+				
 				var currentSlider:SliderBase = event.target as SliderBase;
 				this.currentSliderValue = currentSlider.value;
 				this._onDrag = false;
@@ -322,6 +334,9 @@
 			public function onZoomSliderChange(event:Event):void {
 				
 				if(!this._map)
+					return;
+				
+				if(!this._map.zoomNavigationEnabled)
 					return;
 				
 				var currentSlider:SliderBase = event.target as SliderBase;

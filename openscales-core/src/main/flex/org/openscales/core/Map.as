@@ -142,6 +142,8 @@ package org.openscales.core
 		private var _layers:Vector.<Layer> = new Vector.<Layer>();
 		
 		private var _mouseNavigationEnabled:Boolean = true;
+		private var _zoomNavigationEnabled:Boolean = true;
+		private var _panNavigationEnabled:Boolean = true;
 		
 		/** 
 		 * @private
@@ -1542,6 +1544,38 @@ package org.openscales.core
 		public function set mouseNavigationEnabled(value:Boolean):void
 		{
 			_mouseNavigationEnabled = value;
-		}		
+		}
+		
+		/**
+		 * To enabled/disabled pan navigation
+		 */
+		public function get panNavigationEnabled():Boolean
+		{
+			return _panNavigationEnabled;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set panNavigationEnabled(value:Boolean):void
+		{
+			_panNavigationEnabled = value;
+		}
+		
+		/**
+		 * To enabled/disabled zoom navigation
+		 */
+		public function get zoomNavigationEnabled():Boolean
+		{
+			return _zoomNavigationEnabled;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set zoomNavigationEnabled(value:Boolean):void
+		{
+			_zoomNavigationEnabled = value;
+		}
 	}
 }

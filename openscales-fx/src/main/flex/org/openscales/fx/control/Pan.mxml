@@ -103,6 +103,9 @@
 				if(!this._map)
 					return;
 				
+				if(!this._map.panNavigationEnabled)
+					return;
+				
 				this.map.pan(0, -this.DELTA_PX);
 			}
 			
@@ -115,6 +118,9 @@
 			public function onPanSouth(event:MouseEvent):void
 			{
 				if(!this._map)
+					return;
+				
+				if(!this._map.panNavigationEnabled)
 					return;
 				
 				this.map.pan(0, this.DELTA_PX);
@@ -131,6 +137,9 @@
 				if(!this._map)
 					return;
 				
+				if(!this._map.panNavigationEnabled)
+					return;
+				
 				this.map.pan(this.DELTA_PX, 0);
 			}
 			
@@ -143,6 +152,9 @@
 			public function onPanWest(event:MouseEvent):void
 			{
 				if(!this._map)
+					return;
+				
+				if(!this._map.panNavigationEnabled)
 					return;
 				
 				this.map.pan(-this.DELTA_PX, 0);

@@ -129,6 +129,8 @@
 				_handler.active = true;
 				_alpha = 1;
 				_handler.map.mouseNavigationEnabled = false;
+				_handler.map.panNavigationEnabled = false;
+				_handler.map.zoomNavigationEnabled = false;
 			}
 			public function disactivate():void{
 				
@@ -151,6 +153,8 @@
 						(this._handler as DrawShapeHandler).endShape();
 					disactivate();
 					_handler.map.mouseNavigationEnabled = true;
+					_handler.map.panNavigationEnabled = true;
+					_handler.map.zoomNavigationEnabled = true;
 					return;
 				}
 				
@@ -200,6 +204,8 @@
 							(this._handler as DrawShapeHandler).endShape();
 						disactivate();
 						_handler.map.mouseNavigationEnabled = true;
+						_handler.map.panNavigationEnabled = true;
+						_handler.map.zoomNavigationEnabled = true;
 					}
 					this.target = evt.layer;
 				}
