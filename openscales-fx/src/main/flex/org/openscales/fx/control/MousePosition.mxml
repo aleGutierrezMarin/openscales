@@ -273,6 +273,7 @@
 						this.unitDataProvider = items;
 						this.selectedIndexUnit = 0;
 						break;
+					default: return;
 				}
 				unitsChanged(null);
 			}
