@@ -33,7 +33,7 @@
 			private var _alpha:Number = 1;
 			
 			[Bindable]
-			[Embed(source="/assets/images/icons/Icons-13.png")]
+			[Embed(source="/assets/images/icons/Icons-19.png")]
 			private var _btnImport:Class;
 			
 			private var form:ImportFeatureForm;

@@ -24,10 +24,12 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
+			import org.openscales.core.handler.feature.draw.EditFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
+			import org.openscales.fx.control.drawing.popup.EditFeatureAttributes;
 			import org.openscales.fx.control.drawing.popup.EditLabel;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
@@ -47,7 +49,7 @@
 			private var _active:Boolean = true;
 			private var _handler:FeatureLayerEditionHandler = null;
 			private var _previousHandler:FeatureLayerEditionHandler = null;
-			private var _selectFeaturesHandler:SelectFeaturesHandler;
+			private var _editFeaturesHandler:EditFeaturesHandler;
 			private var _previousSelectFeaturesHandler:SelectFeaturesHandler = null;
 			private var _virtualStyle:Style;
 			private var _map:Map;
@@ -97,11 +99,12 @@
 					this._map.removeEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-					this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
-					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
+					this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
+					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
 					this._map.removeEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 					this._map.removeEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 					this._map.removeEventListener(FeatureEvent.FEATURE_SIMPLECLICK, onFeatureClick);
+					this._map.removeEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
 				}
 				this._map = value;
 				if(this._map) {
@@ -110,11 +113,12 @@
 					this._map.addEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-					this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureUpdateSelection);
-					this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUpdateSelection);
+					this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
+					this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
 					this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 					this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 					this._map.addEventListener(FeatureEvent.FEATURE_SIMPLECLICK, onFeatureClick);
+					this._map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
 				}
 			}
 			
@@ -123,10 +127,11 @@
 			 */
 			private function onFeatureClick(event:FeatureEvent):void {
 				
-				if(event.feature is LabelFeature && this._handler && this._handler.active && event.feature.layer == this.target)
+				/*if(event.feature is LabelFeature && this._handler && this._handler.active && event.feature.layer == this.target)
 				{
 					new EditLabel().feature = (event.feature as LabelFeature);
-				}
+					return;
+				}*/
 			}
 			
 			/**
@@ -163,7 +168,7 @@
 				
 				for each(var ih:IHandler in this.map.controls)
 				{
-					if(ih is SelectFeaturesHandler && ih != this._selectFeaturesHandler)
+					if(ih is SelectFeaturesHandler && ih != this._editFeaturesHandler)
 					{
 						// Store the existing SelectFeaturesHandler
 						this._previousSelectFeaturesHandler = (ih as SelectFeaturesHandler);
@@ -179,10 +184,10 @@
 					}
 				}
 				// Add a new SelectFeaturesHandler
-				this._selectFeaturesHandler = new SelectFeaturesHandler(this.map,true,true,false,false);
-				this._selectFeaturesHandler.layers[0] = this.target;
-				this._selectFeaturesHandler.clickOut = false;
-				this._selectFeaturesHandler.toggle = false;
+				this._editFeaturesHandler = new EditFeaturesHandler(this.map,true,true,false,false);
+				this._editFeaturesHandler.layers[0] = this.target;
+				this._editFeaturesHandler.clickOut = false;
+				this._editFeaturesHandler.toggle = false;
 				
 				// Add a new FeatureLayerEditionHandler
 				this._handler = new FeatureLayerEditionHandler(this.map,this.target,true);
@@ -211,9 +216,9 @@
 					this._previousHandler.map = this.map;
 				
 				// Manage the new SelectFeaturesHandler
-				this._selectFeaturesHandler.clearSelection();
-				this._selectFeaturesHandler.map = null;
-				this.map.removeControl(this._selectFeaturesHandler);
+				this._editFeaturesHandler.clearSelection();
+				this._editFeaturesHandler.map = null;
+				this.map.removeControl(this._editFeaturesHandler);
 				
 				// Add the previous SelectFeaturesHandler
 				if(this._previousSelectFeaturesHandler)
@@ -283,16 +288,37 @@
 			}
 			
 			/**
-			 * Update the features to edit when a FeatureEvent.FEATURE_SELECTED or
-			 * FeatureEvent.FEATURE_UNSELECTED event occured
+			 * Update the features to edit when a FeatureEvent.FEATURE_SELECTED 
+			 * event occured
 			 */
-			private function onFeatureUpdateSelection(evt:FeatureEvent):void{
+			private function onFeatureSelected(evt:FeatureEvent):void{
 				
 				if(this._handler && this._handler.active)
 					_handler.editionModeStop();
 				
-				if(this._selectFeaturesHandler)
-					_handler.featuresToEdit = this._selectFeaturesHandler.selectedFeatures;
+				if(this._editFeaturesHandler)
+					_handler.featuresToEdit = this._editFeaturesHandler.selectedFeatures;
+				
+				if(this._handler && this._handler.active)
+					_handler.editionModeStart();
+				
+				if(this._handler && this._handler.active && evt.feature.layer == this.target)
+				{
+					new EditFeatureAttributes().feature = evt.feature;
+				}
+			}
+			
+			/**
+			 * Update the features to edit when a
+			 * FeatureEvent.FEATURE_UNSELECTED event occured
+			 */
+			private function onFeatureUnselected(evt:FeatureEvent):void{
+				
+				if(this._handler && this._handler.active)
+					_handler.editionModeStop();
+				
+				if(this._editFeaturesHandler)
+					_handler.featuresToEdit = this._editFeaturesHandler.selectedFeatures;
 				
 				if(this._handler && this._handler.active)
 					_handler.editionModeStart();
