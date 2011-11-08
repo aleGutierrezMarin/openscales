@@ -142,6 +142,7 @@ package org.openscales.core
 		private var _layers:Vector.<Layer> = new Vector.<Layer>();
 		
 		private var _mouseNavigationEnabled:Boolean = true;
+		private var _backGround:Shape;
 		
 		/** 
 		 * @private
@@ -191,6 +192,10 @@ package org.openscales.core
 			// ... and then the size may be defined.
 			this.width = this.size.w;
 			this.height = this.size.h;
+			
+			
+
+			
 			
 			if (_debug_max_extent)
 			{
@@ -1064,11 +1069,15 @@ package org.openscales.core
 				event.newSize = value;
 				_size = value;
 				
+				
+				
 				this.graphics.clear();
 				this.graphics.beginFill(0xFFFFFF);
 				this.graphics.drawRect(0,0,this.size.w,this.size.h);
 				this.graphics.endFill();
 				this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
+				
+				
 				this.dispatchEvent(event);
 				
 			} else {
