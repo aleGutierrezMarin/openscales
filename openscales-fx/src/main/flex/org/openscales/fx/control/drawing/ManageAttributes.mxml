@@ -170,11 +170,7 @@
 					return;
 				if(event.feature.layer != this.target)
 					return;
-				if(this._editHandlerActivated){
-					event.stopImmediatePropagation();
-					new EditFeatureAttributes().feature = event.feature;
-				}
-				else{
+				if(this._selectHandlerActivated){
 					event.stopImmediatePropagation();
 					new ViewFeatureAttributes().feature = event.feature;
 				}

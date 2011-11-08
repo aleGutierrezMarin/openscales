@@ -33,7 +33,7 @@
 			 * Translation for label button
 			 */
 			[Bindable]
-			[Embed(source="/assets/images/icons/Icons-14.png")]
+			[Embed(source="/assets/images/icons/Icons-20.png")]
 			private var _btnAddVector:Class;
 			
 			[Bindable]

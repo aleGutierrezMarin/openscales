@@ -265,6 +265,7 @@
     <classEntry path="org.openscales.core.layer.MultiBoundingBoxConstraint"/>
     <classEntry path="org.openscales.core.layer.Aggregate"/>
     <classEntry path="org.openscales.core.layer.AggregateTest"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditFeaturesHandler"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

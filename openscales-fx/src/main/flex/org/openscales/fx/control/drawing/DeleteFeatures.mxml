@@ -38,7 +38,7 @@
 			private var tooltip:String = Catalog.getLocalizationForKey('drawing.delete');
 			
 			[Bindable]
-			[Embed(source="/assets/images/icons/Icons-17.png")]
+			[Embed(source="/assets/images/icons/Icons-21.png")]
 			private var _btnDelete:Class;
 			
 			private var _target:VectorLayer;
