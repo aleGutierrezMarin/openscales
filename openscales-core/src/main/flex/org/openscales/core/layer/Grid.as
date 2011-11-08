@@ -245,6 +245,42 @@ package org.openscales.core.layer
 					} else {
 						if ((resolution != this._resquestResolution) || forceReTile)
 						{
+							
+							var bmpBounds:Bounds;
+							if(this._backGrid == null)
+							{
+								this._backGrid = new Vector.<Vector.<Bitmap>>(1);
+								this._backGrid[0] = new Vector.<Bitmap>(1);
+								this._backGrid[0][0] = null;
+							}
+							if(this._initialized)
+							{
+								var NewLayerBounds:Bounds = this.maxExtent.getIntersection(bounds);
+								NewLayerBounds = this.map.maxExtent.getIntersection(NewLayerBounds);
+								bmpBounds = this.grid[0][0].bounds;
+								var scale:Number = this.scaleX;
+								var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
+								/*if (intersectBounds != null)
+								{*/
+									var matrix:Matrix = new Matrix;
+									matrix.scale(scale, scale);
+									var BMD:BitmapData = new BitmapData(this.map.width , this.map.height , true, 0x000000);
+									BMD.draw(this, matrix, null, null, null, true);
+									_backGrid[0][0] = new Bitmap(BMD);
+									
+									//_backGrid[0][0].scaleX *= scale
+									//_backGrid[0][0].scaleY *= scale;
+									//this.addChild(_backGrid[0][0]);
+									//_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
+									//_backGrid[0][0].x = this.x;
+									//_backGrid[0][0].y = this.y;
+								/*}else*/
+								/*{
+									_backGrid[0][0] = null;
+								}*/
+								
+							}
+							
 							this.initGriddedTiles(bounds, true);
 							this._lastScale = 1;
 							ratio = this._requestedResolution.value/this.map.resolution.value;
@@ -254,6 +290,15 @@ package org.openscales.core.layer
 							centerChangedCache = false;
 							this._previousCenter = this.map.center.clone();
 							this.actualizeGridSize(bounds);
+							if(_backGrid[0][0])
+							{
+								//_backGrid[0][0].x -= this.grid[0][0].x;
+								//_backGrid[0][0].y -= this.grid[0][0].y;
+								_backGrid[0][0].scaleX = _backGrid[0][0].scaleY *= 1/this.scaleX;
+								this.grid[0][0].addChildAt(_backGrid[0][0], 0);
+								//this.addChildAt(_backGrid[0][0], 0);
+								//this.addChild(this.grid[0][0]);
+							}
 						} else 
 						{
 							this.moveGriddedTiles(bounds);
