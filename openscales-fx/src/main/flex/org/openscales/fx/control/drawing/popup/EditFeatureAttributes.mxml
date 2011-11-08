@@ -44,6 +44,7 @@
 						group.gap = 10;
 						group.paddingLeft = 5;
 						group.paddingRight = 5;
+						group.paddingTop = 5;
 						_vgroup.addElement(group);
 						var lb:Label = new Label();
 						lb.width = 100;

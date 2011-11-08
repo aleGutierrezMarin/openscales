@@ -122,6 +122,9 @@
 			private function activate():void{
 				
 				_handler.active = true;
+				_handler.map.mouseNavigationEnabled = true;
+				_handler.map.panNavigationEnabled = true;
+				_handler.map.zoomNavigationEnabled = true;
 				_alpha = 1;
 			}
 			private function disactivate():void{
