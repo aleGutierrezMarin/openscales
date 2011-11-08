@@ -1,9 +1,14 @@
 package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.PixelSnapping;
 	import flash.display.Sprite;
 	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.net.LocalConnection;
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
@@ -36,8 +41,8 @@ package org.openscales.core.layer
 		/** The grid array contains tiles **/		
 		private var _grid:Vector.<Vector.<ImageTile>> = null;
 		
-		private var _backGridContainer:Sprite = new Sprite();
-		private var _backGrid:Vector.<Vector.<Sprite>> = null;
+		//private var _backGridContainer:Sprite = new Sprite();
+		private var _backGrid:Vector.<Vector.<Bitmap>> = null;
 		
 		protected var _tiled:Boolean = true;
 		
@@ -94,7 +99,8 @@ package org.openscales.core.layer
 			//TODO delete url and params after osmparams work
 			super(name, url, params);
 			
-			this.addChild(_backGridContainer);
+			//this.addChild(_backGridContainer);
+			//this._backGridContainer.add
 			this.buffer = 0;
 			this._defaultMatrixTranform = this.transform.matrix;
 			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
@@ -196,26 +202,46 @@ package org.openscales.core.layer
 				{
 					if (!this.tiled) 
 					{
-						if (this.loadComplete)
+						/*if (this.loadComplete)
+						{*/
+						var bmpBounds:Bounds;
+						if(this._backGrid == null)
 						{
-							if (this._grid != null)
+							this._backGrid = new Vector.<Vector.<Bitmap>>(1);
+							this._backGrid[0] = new Vector.<Bitmap>(1);
+							this._backGrid[0][0] = null;
+						}
+						if(this._initialized)
+						{
+							var NewLayerBounds:Bounds = this.maxExtent.getIntersection(bounds);
+							NewLayerBounds = this.map.maxExtent.getIntersection(NewLayerBounds);
+							bmpBounds = this.grid[0][0].bounds;
+							var scale:Number = this.scaleX;
+							var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
+							if (intersectBounds != null)
 							{
-								if(this._backGrid==null) {
-									this._backGrid = new Vector.<Vector.<Sprite>>(1);
-									this._backGrid[0] = new Vector.<Sprite>(1);
-									this._backGrid[0][0] = null;
-									this._backGrid[0][0] = new Sprite();
-									this._backGridContainer.addChild(this._backGrid[0][0]);
-								}
-								if (this._grid[0][0].getChildAt(0) != null)
-								{
-									this._backGrid[0][0].addChildAt(this._grid[0][0].getChildAt(0), 0);
-								}
+								var BMD:BitmapData = new BitmapData(this.map.width , this.map.height , true, 0x000000);
+								BMD.draw(this, null, null, null, null, true);
+								_backGrid[0][0] = new Bitmap(BMD);
+								_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
+								_backGrid[0][0].x = this.x;
+								_backGrid[0][0].y = this.y;
+							}else
+							{
+								_backGrid[0][0] = null;
 							}
+							
 						}
 						this.clear();
 						this._lastScale = 1;
 						this.initSingleTile(bounds);
+						if(_backGrid[0][0])
+						{
+							_backGrid[0][0].x -= this.grid[0][0].x;
+							_backGrid[0][0].y -= this.grid[0][0].y;
+							this.grid[0][0].addChildAt(_backGrid[0][0], 0);
+							this.addChild(this.grid[0][0]);
+						}
 					} else {
 						if ((resolution != this._resquestResolution) || forceReTile)
 						{
@@ -276,7 +302,6 @@ package org.openscales.core.layer
 			var roundedWidth:Number = Math.round(temporaryWidth);
 			temporaryScale = roundedWidth / this.tileWidth;
 			this.scaleX = this.scaleY = temporaryScale;
-			this._backGridContainer.scaleX = this._backGridContainer.scaleY = temporaryScale;
 			this.x -= (offSet.x - this.x) * (scale - 1);
 			this.y -= (offSet.y - this.y) * (scale - 1);
 		}
