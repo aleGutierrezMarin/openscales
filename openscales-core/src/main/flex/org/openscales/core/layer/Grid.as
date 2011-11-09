@@ -128,6 +128,9 @@ package org.openscales.core.layer
 		 *    destroy() on each of them to kill circular references
 		 */
 		override public function clear():void {
+			this._centerChanged = false;
+			this._resolutionChanged = false;
+			this._projectionChanged = false;
 			if (this._grid && this._grid.length>0) {
 				var i:uint = this._grid.length;
 				var j:uint = this._grid[0].length;
@@ -951,6 +954,7 @@ package org.openscales.core.layer
 		{
 			/*if(!this.tiled)
 			{*/
+				this._timer.stop();
 				this._centerChanged = true;
 				this._resolutionChanged = true;
 			/*}*/

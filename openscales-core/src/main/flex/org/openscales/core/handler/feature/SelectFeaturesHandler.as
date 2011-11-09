@@ -689,7 +689,7 @@ package org.openscales.core.handler.feature
 				var layer:VectorLayer, layersTmp:Vector.<VectorLayer> = new Vector.<VectorLayer>();
 				// Remove invisible layers from the list of selectable layers
 				for each (layer in layersToTest) {
-					if (layer.displayed) {
+					if (layer && layer.displayed) {
 						layersTmp.push(layer);
 					}
 				}

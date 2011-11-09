@@ -84,7 +84,11 @@ package org.openscales.core.layer.ogc
 			
 			if (this.map == null)
 				return;
+
 			
+			if (!(this._centerChanged || this._resolutionChanged || this._projectionChanged) && !this)
+				return;
+				
 			if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
 				this.getCapabilities();
 			} else {
@@ -152,6 +156,12 @@ package org.openscales.core.layer.ogc
 			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
 			
 			this._loadingCapabilities = false;
+			
+			if(this.map)
+			{
+				this.clear();
+				this.redraw(true);
+			}
 			
 		}
 		

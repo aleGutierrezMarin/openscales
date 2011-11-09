@@ -33,6 +33,31 @@ package org.openscales.core.basetypes
 		}
 		
 		/**
+		 * 
+		 * 
+		 * 
+		 */		
+		
+		public function equals(projToCompare:Resolution):Number{
+			var valToCompare:Number;
+			valToCompare  = projToCompare.value;
+			
+			if(this.projection != projToCompare.projection){
+				valToCompare = Proj4as.unit_transform(projToCompare.projection, this.projection, projToCompare.value);
+			}
+			
+			if(this.value>valToCompare){
+				return 1;
+			}else if(this.value==valToCompare){
+				return 0;
+			}else{
+				return -1;
+			}
+			
+			
+		}
+		
+		/**
 		 * Current projection of the resolution. This parameter is readOnly. To modify it
 		 * use the reprojectTo method that will return a new object Resolution.
 		 */
