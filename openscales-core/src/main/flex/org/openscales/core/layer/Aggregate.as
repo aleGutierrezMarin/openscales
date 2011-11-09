@@ -39,7 +39,7 @@ package org.openscales.core.layer
 		 * <ul>
 		 * 	<li>layer is within the aggregate</li>
 		 * 	<li>the aggregate is visible</li>
-		 *  <li>the given resolution is within the aggregate maxRes/minRes range 
+		 *  <li>the given resolution is within the aggregate maxRes/minRes range</li>
 		 *  <li>the layer intersect the aggregate maxExtent</li>
 		 * </ul>
 		 */ 
