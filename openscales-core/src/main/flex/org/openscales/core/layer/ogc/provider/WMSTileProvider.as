@@ -57,7 +57,7 @@ package org.openscales.core.layer.ogc.provider
 		 * @private 
 		 * Indicates if the tile should be transparent or not
 		 */
-		private var _transparent:Boolean=false;
+		private var _transparent:Boolean=true;
 		
 		/**
 		 * @private

@@ -2,6 +2,7 @@ package org.openscales.core.basetypes
 {
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.Proj4as;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * This class is used to carry the resolution and the associated projection.
@@ -25,7 +26,7 @@ package org.openscales.core.basetypes
 		{
 			var resolution:Number = this._value;
 			
-			if (this._projection != newProjection)
+			if (!ProjProjection.isEquivalentProjection(this._projection, newProjection))
 			{
 				resolution = Proj4as.unit_transform(this._projection, newProjection, resolution);
 			}
