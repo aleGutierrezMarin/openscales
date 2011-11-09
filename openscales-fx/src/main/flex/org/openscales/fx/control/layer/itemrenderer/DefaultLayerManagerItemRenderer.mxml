@@ -22,6 +22,7 @@
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.core.layer.VectorLayer;
@@ -39,6 +40,8 @@
 			protected const BTN_MAXIMIZE:Class;
 			
 			private static var _maximizedLayers:HashMap = new HashMap();
+			
+			private var _timer:Timer;
 			
 			/**
 			 * The current source to the button to display reduce or maximize
@@ -236,11 +239,32 @@
 			
 			protected function onCreationComplete():void{
 				
+				if(this._timer) {
+					this._timer.reset();
+				} else {
+					this._timer = new Timer(500,1);
+					this._timer.addEventListener(TimerEvent.TIMER, this.updateItemEnability);
+				}
+				
 				this.parent.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
 				this.layerSwitcherLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
 				this.layerSwitcherLabel.addEventListener(MouseEvent.CLICK, this.onThisLabelClick);
 				this._layer.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onOtherLabelClick);
 				this._layer.map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerRemoved);
+				this._layer.map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.resetTimer);
+				this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, this.resetTimer);	
+			}
+			
+			private function resetTimer(event:MapEvent):void{
+				this._timer.reset();
+				this._timer.start();
+			} 
+			
+			private function updateItemEnability(event:Event=null):void{
+				if(this._layer && this.layer.map){
+					this.enabled = this._layer.available;
+					//Trace.debug("LayerSwitcherItemRenderer for "+this._layer.name+": Timer expired, checking availability: "+ok);
+				}
 			}
 			
 			/**

@@ -158,8 +158,7 @@ package org.openscales.core.layer
 		 */
 		override public function redraw(fullRedraw:Boolean = false):void 
 		{
-			if (this.map == null)
-				return;
+			super.redraw(fullRedraw);
 			
 			if (!this.map.mapInitialized)
 				return;

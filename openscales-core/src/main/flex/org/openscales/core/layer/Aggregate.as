@@ -1,9 +1,11 @@
 package org.openscales.core.layer
 {	
+	import org.flexunit.runner.notification.StoppedByUserException;
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
-
+	
 	/**
 	 * The Aggregate class defines a Layer container. 
 	 * 
@@ -20,22 +22,42 @@ package org.openscales.core.layer
 	public class Aggregate extends Layer
 	{
 		private var _layers:Vector.<Layer>;
-		
+		private var _stopPropagating:Boolean = true;
 		/**
 		 * Constructor
 		 */ 
 		public function Aggregate(name:String){
 			super(name);
 			this._layers = new Vector.<Layer>();
+			this._stopPropagating = false;
 		}
 		
+		public function shouldIRedraw(layer:Layer, resolution:Resolution):Boolean{
+			if(this._layers.indexOf(layer)<0)return false;
+			if(!layer)return false;
+			if(!this.map)return false;
+			if(!this.visible)return false;
+			if(this.minResolution && resolution.value<this.minResolution.value)return false;
+			if(this.maxResolution && resolution.value>this.maxResolution.value)return false;
+			if(!layer.isAvailableForBounds(this.maxExtent,resolution))return false;		
+			return true;
+		}
 		
+		/**
+		 * Add a layer to the list of layers
+		 * 
+		 * @param layer The layer to add, should not be an Aggregate itself
+		 * 
+		 * @return True except when layer is null or layer already belong to an Aggregate or layer is an Aggregate or layer is already in the list or the map refused to add the layer.
+		 */ 
 		public function addLayer(layer:Layer):Boolean{
 			if(!layer) return false;
 			if(layer is Aggregate) return false;
 			if(_layers.indexOf(layer)>0) return false;
+			if(layer.aggregate)return false
 			prepareLayer(layer);			
 			this._layers.push(layer);
+			layer.aggregate=this;
 			if(this.map)
 			{
 				return this.map.addLayer(layer,false);
@@ -43,6 +65,13 @@ package org.openscales.core.layer
 			return true;
 		}
 		
+		/**
+		 * Add several layers.
+		 * 
+		 * Call addLayer for each layer in layers
+		 * 
+		 * @param layers a vector of layers
+		 */ 
 		public function addLayers(layers:Vector.<Layer>):void{
 			if(!layers) return;
 			var layer:Layer;
@@ -51,17 +80,7 @@ package org.openscales.core.layer
 			}
 		}
 		
-		override public function isAvailableForBounds(bounds:Bounds, resolution:Resolution):Boolean{
-			if(this._layers){
-				var ok:Boolean = false;
-				var layer:Layer;
-				for each(layer in this._layers){
-					ok = ok || layer.isAvailableForBounds(bounds,resolution);
-					if(ok) return ok;
-				}
-			}
-			return false;
-		} 
+	
 		
 		override public function destroy():void{
 			if(this._layers){
@@ -112,7 +131,7 @@ package org.openscales.core.layer
 						prepareLayer(layer);
 						map.addLayer(layer, false);// Add missing layers to map
 					}
-				}else{//Map is null (removal)
+				}else{ // Given map is null (removal)
 					if(this.map){
 						for each(layer in this._layers){
 							map.removeLayer(layer); 
@@ -120,10 +139,12 @@ package org.openscales.core.layer
 						super.map = value;
 					}
 				}
+			}else{
+				super.map=value;
 			}
 			
 		}
-		
+		/*
 		override public function get available():Boolean{
 			if(this._layers){
 				var ok:Boolean = false;
@@ -134,10 +155,13 @@ package org.openscales.core.layer
 				}
 			}
 			return false;
-		}
+		}*/
 
 		override public function set alpha(value:Number):void{
 			super.alpha = value;
+			
+			if(this._stopPropagating) return;
+			
 			var layer:Layer;
 			if(this._layers){
 				for each(layer in _layers){
@@ -146,6 +170,7 @@ package org.openscales.core.layer
 			}
 		}
 		
+		/*
 		override public function get visible():Boolean{
 			if(this._layers){
 				var ok:Boolean = false;
@@ -156,10 +181,13 @@ package org.openscales.core.layer
 				}
 			}
 			return false;
-		}
+		}*/
 		
 		override public function set visible(value:Boolean):void{
 			super.visible = value;
+			
+			if(this._stopPropagating)return;
+			
 			var layer:Layer;
 			if(this._layers){
 				for each(layer in this._layers){

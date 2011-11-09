@@ -55,6 +55,7 @@ package org.openscales.core.layer {
 		private var _selected:Boolean = false;
 		private var _metaData:Object = null;
 		private var _constraints:Vector.<Constraint> = null;
+		private var _aggregate:Aggregate = null;
 		
 		protected var _resolutionChanged:Boolean = false;
 		protected var _centerChanged:Boolean = false;
@@ -119,6 +120,7 @@ package org.openscales.core.layer {
 		 */
 		public function get available():Boolean
 		{
+			if(!this._map)return false;
 			return isAvailableForBounds(this._map.extent, this._map.resolution);	
 		}
 		
@@ -398,6 +400,9 @@ package org.openscales.core.layer {
 		public function redraw(fullRedraw:Boolean = false):void {
 			if (this.map == null)
 				return;
+			if(this._aggregate){
+				this.visible = this._aggregate.shouldIRedraw(this, this.map.resolution);
+			}
 		}
 		
 		/**
@@ -878,6 +883,23 @@ package org.openscales.core.layer {
 		{
 			_constraints = value;
 		}		
+
+		/**
+		 * The aggregate which contains this layer, null most of the time.
+		 */
+		public function get aggregate():Aggregate
+		{
+			return _aggregate;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set aggregate(value:Aggregate):void
+		{
+			_aggregate = value;
+		}
+
 	}
 }
 
