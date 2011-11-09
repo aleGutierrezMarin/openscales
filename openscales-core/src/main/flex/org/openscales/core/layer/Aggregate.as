@@ -1,6 +1,5 @@
 package org.openscales.core.layer
 {	
-	import org.flexunit.runner.notification.StoppedByUserException;
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.utils.Trace;
