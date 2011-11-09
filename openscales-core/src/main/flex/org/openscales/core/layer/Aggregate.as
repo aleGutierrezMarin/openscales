@@ -13,7 +13,7 @@ package org.openscales.core.layer
 	 * 	It extends the Layer class itslef. Thus, it inherits every methods and attributes of that class and also can be added to a Map.
 	 * </p> 
 	 * <p>
-	 * Each contained layer lives indpendently of its Aggregate. Though, if a property is set on an Aggregate, it will be passed on its contained layers. 
+	 * Each contained layer lives indpendently of its Aggregate. Though, properties of the aggregate will have priority to contained layers properties.
 	 * </p>
 	 * <p>
 	 * 	By default, contained layers have displayInLayerManager set to false.
@@ -32,7 +32,19 @@ package org.openscales.core.layer
 			this._stopPropagating = false;
 		}
 		
-		public function shouldIRedraw(layer:Layer, resolution:Resolution):Boolean{
+		/**
+		 * Tells if the specified layer should be visible at the given resolution.
+		 * 
+		 * this method will check if:
+		 * 
+		 * <ul>
+		 * 	<li>layer is within the aggregate</li>
+		 * 	<li>the aggregate is visible</li>
+		 *  <li>the given resolution is within the aggregate maxRes/minRes range 
+		 *  <li>the layer intersect the aggregate maxExtent</li>
+		 * </ul>
+		 */ 
+		public function shouldIBeVisible(layer:Layer, resolution:Resolution):Boolean{
 			if(this._layers.indexOf(layer)<0)return false;
 			if(!layer)return false;
 			if(!this.map)return false;
@@ -79,8 +91,6 @@ package org.openscales.core.layer
 				this.addLayer(layer);	
 			}
 		}
-		
-	
 		
 		override public function destroy():void{
 			if(this._layers){
@@ -144,18 +154,6 @@ package org.openscales.core.layer
 			}
 			
 		}
-		/*
-		override public function get available():Boolean{
-			if(this._layers){
-				var ok:Boolean = false;
-				var layer:Layer;
-				for each(layer in this._layers){
-					ok = ok || layer.available;
-					if(ok) return ok;
-				}
-			}
-			return false;
-		}*/
 
 		override public function set alpha(value:Number):void{
 			super.alpha = value;

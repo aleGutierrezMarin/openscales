@@ -188,7 +188,7 @@ package org.openscales.core.layer.ogc
 				return;
 			
 			if(this.aggregate){
-				this.visible = this.aggregate.shouldIRedraw(this,this.map.resolution);
+				this.visible = this.aggregate.shouldIBeVisible(this,this.map.resolution);
 			}
 			
 			
