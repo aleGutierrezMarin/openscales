@@ -187,6 +187,11 @@ package org.openscales.core.layer.ogc
 			if (this.map == null)
 				return;
 			
+			if(this.aggregate){
+				this.visible = this.aggregate.shouldIRedraw(this,this.map.resolution);
+			}
+			
+			
 			if (!this.available || !this.visible)
 			{
 				this.clear();

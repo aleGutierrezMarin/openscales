@@ -80,9 +80,8 @@ package org.openscales.core.layer
 			this.featuresBbox = null;
 		}
 		
-		override public function redraw(fullRedraw:Boolean = false	):void {
-			if (this.map == null)
-				return;
+		override public function redraw(fullRedraw:Boolean = false):void {
+			super.redraw(fullRedraw);
 			
 			this.clear();
 			if(this.available && this.visible){
