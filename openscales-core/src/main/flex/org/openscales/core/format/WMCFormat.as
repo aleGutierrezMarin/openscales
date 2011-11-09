@@ -199,6 +199,7 @@ package org.openscales.core.format
 					var wms:WMS = new WMS(title,url,name,"",format);
 					wms.version = version;
 					wms.projection = srs;
+					wms.transparent = true;
 					wms.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
 					wms.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
 					layerToAdd = wms;

@@ -359,10 +359,6 @@ package org.openscales.core.layer.ogc
 		override public function set url(value:String):void {
 			super.url = value;
 			this._tileProvider.url = value;
-			
-			if(this._useCapabilities && this._url) {
-				this.getCapabilities();
-			}
 		}
 		
 	}

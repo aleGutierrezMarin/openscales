@@ -188,7 +188,7 @@ package org.openscales.geometry.basetypes
 			var tmpBounds:Bounds = null;
 			var tmpThis:Bounds = null;
 			
-			if(this.projection != bounds.projection)
+			if(!(ProjProjection.isEquivalentProjection(this.projection, bounds.projection)))
 			{
 				tmpThis = this.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
 				tmpBounds = bounds.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
@@ -307,7 +307,7 @@ package org.openscales.geometry.basetypes
 			var tmpBounds:Bounds = null;
 			var tmpThis:Bounds = null;
 			
-			if(this.projection != bounds.projection)
+			if(!(ProjProjection.isEquivalentProjection(this.projection, bounds.projection)))
 			{
 				tmpThis = this.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
 				tmpBounds = bounds.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
@@ -518,7 +518,7 @@ package org.openscales.geometry.basetypes
 			
 			// Variable used of a reprojection is needed
 			var thisBounds:Bounds = this;
-			if (thisBounds.projection != bounds.projection)
+			if (!(ProjProjection.isEquivalentProjection(thisBounds.projection,bounds.projection)))
 			{
 				thisBounds = thisBounds.preciseReprojectBounds("EPSG:4326");
 				bounds = bounds.preciseReprojectBounds("EPSG:4326");

@@ -245,7 +245,7 @@ package org.openscales.core.layer {
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;
 				}
-				if (this._projection == _map.projection)
+				if (ProjProjection.isEquivalentProjection(this._projection, _map.projection))
 				{
 					this.visible = true;
 				}
@@ -629,7 +629,10 @@ package org.openscales.core.layer {
 				bounds = value as Bounds;
 				if (bounds.projection != this.projection)
 				{
-					bounds = bounds.preciseReprojectBounds(this.projection);
+					if (this.projection == "EPSG:2154" || this.projection == "IGNF:LAMB93")
+						bounds = bounds.reprojectTo(this.projection);
+					else
+						bounds = bounds.preciseReprojectBounds(this.projection);
 				}
 			}
 			if(bounds)
