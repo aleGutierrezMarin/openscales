@@ -138,59 +138,14 @@ package org.openscales.core.layer
 		 * Checks that visibility (when read) is calculated as logical disjonction of contaied layers visibility
 		 */ 
 		[Test]
-		public function shouldReturnVisibilityAsDisjonctionOfContainedLayersVisibilty():void{
+		public function shouldOverrideContainedLayerVisibility():void{
 			_l1.visible = false;
 			_l2.visible = false;
-			assertFalse("Aggregate visibility is not a disjonction of contained layers (case 1)", _instance.visible);
-			_l2.visible = true;
-			assertTrue("Aggregate visibility is not a disjonction of contained layers (case 2)", _instance.visible);
+			_instance.visible=true;
+			assertTrue("Aggregate don't override visibility of contained layers ", _l1.visible && _l2.visible);
+			_l2.visible = false;
+			assertTrue("Contained layers visibilty can't be set independantly", !_l2.visible);
 			
-		}
-		
-		/**
-		 * Checks that minimum resolution is passed along to contained layers 
-		 */ 
-		[Test]
-		public function shouldPassMinResolutionToContainedLayers():void{
-			_l1.minResolution = new Resolution(5.0);
-			_l2.minResolution = new Resolution(4.0);	
-			_instance.minResolution = new Resolution(6.0);
-			assertTrue("Aggregate min resolution is not passed on contained layers", _l1.minResolution.value == _instance.minResolution.value == _l2.minResolution.value == 6.0);
-		}
-		
-		/**
-		 * Checks that maximum resolution is passed along to contained layers
-		 */
-		[Test]
-		public function shouldPassMaxResolutionToContainedLayers():void{		
-			_l1.maxResolution = new Resolution(7.0);
-			_l2.maxResolution = new Resolution(8.0);
-			_instance.maxResolution = new Resolution(6.0);
-			assertTrue("Aggregate max resolution is not passed on contained layers", _l1.maxResolution.value == _instance.maxResolution.value == _l2.maxResolution.value == 6.0);
-		}
-		
-		/**
-		 * Checks that maxExtent is passed along to contained layers.  
-		 */ 
-		[Test]
-		public function shouldPassMaxExtentToContainedLayers():void{
-			var l1MaxExtent:Bounds = new Bounds(-5,-30,10,40,_l1.projection);
-			var l2MaxExtent:Bounds = new Bounds(-7,-35,12,45,_l1.projection);
-			var insMaxExtent:Bounds = new Bounds(-4,25,15,53, _l1.projection)
-			
-			_l1.maxExtent = l1MaxExtent;
-			_l2.maxExtent = l2MaxExtent;
-			_instance.maxExtent = insMaxExtent;
-			
-			assertTrue("Max extent is not passed along to contained layers");
-		}
-		
-		/**
-		 * Checks that originators are passed along to contained layers
-		 */ 
-		[Test]
-		public function shouldPassOriginatorsToContainedLayers():void{
-			fail("Not yet implemented");
 		}
 		
 		/**

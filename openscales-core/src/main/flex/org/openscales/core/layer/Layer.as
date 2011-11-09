@@ -401,7 +401,7 @@ package org.openscales.core.layer {
 			if (this.map == null)
 				return;
 			if(this._aggregate){
-				this.visible = this._aggregate.shouldIRedraw(this, this.map.resolution);
+				this.visible = this._aggregate.shouldIBeVisible(this, this.map.resolution);
 			}
 		}
 		

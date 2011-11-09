@@ -114,6 +114,7 @@
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPolygonHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawSegmentHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawShapeHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditFeaturesHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPointHandler"/>
@@ -132,6 +133,8 @@
     <classEntry path="org.openscales.core.i18n.Locale"/>
     <classEntry path="org.openscales.core.i18n.provider.I18nJSONProvider"/>
     <classEntry path="org.openscales.core.i18n.provider.Ii18nProvider"/>
+    <classEntry path="org.openscales.core.layer.Aggregate"/>
+    <classEntry path="org.openscales.core.layer.Constraint"/>
     <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
@@ -139,6 +142,7 @@
     <classEntry path="org.openscales.core.layer.ImageLayer"/>
     <classEntry path="org.openscales.core.layer.KML"/>
     <classEntry path="org.openscales.core.layer.Layer"/>
+    <classEntry path="org.openscales.core.layer.MultiBoundingBoxConstraint"/>
     <classEntry path="org.openscales.core.layer.PolyLayer"/>
     <classEntry path="org.openscales.core.layer.SwitchLayers"/>
     <classEntry path="org.openscales.core.layer.TMS"/>
@@ -245,6 +249,7 @@
     <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
     <classEntry path="org.openscales.core.i18n.i18nTest"/>
+    <classEntry path="org.openscales.core.layer.AggregateTest"/>
     <classEntry path="org.openscales.core.layer.GraticuleTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
@@ -261,11 +266,6 @@
     <classEntry path="org.openscales.map.ExtentTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.layer.Constraint"/>
-    <classEntry path="org.openscales.core.layer.MultiBoundingBoxConstraint"/>
-    <classEntry path="org.openscales.core.layer.Aggregate"/>
-    <classEntry path="org.openscales.core.layer.AggregateTest"/>
-    <classEntry path="org.openscales.core.handler.feature.draw.EditFeaturesHandler"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
