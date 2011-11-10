@@ -301,11 +301,11 @@ package org.openscales.core.layer
 								
 								var BMD:BitmapData = new BitmapData(drawnWidth, drawnHeight, false, 0x000000);
 								BMD.draw(this, null, null, null, null, true);
-								var fullBitmap:Bitmap = new Bitmap(BMD);
+								var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
 								
 								
 								var bmpRequestedResolution:Number = this.requestedResolution.value;
-								var fullBmpBounds:Bounds = new Bounds(TopLeftCorner.x, BottomRightCorner.y, BottomRightCorner.x, TopLeftCorner.y);/*TopLeftCorner.y - (BMD.height*this.requestedResolution.value),TopLeftCorner.x + (BMD.width*this.requestedResolution.value),TopLeftCorner.y,this.projection);*/
+								var fullBmpBounds:Bounds = new Bounds(TopLeftCorner.x, BottomRightCorner.y, BottomRightCorner.x, TopLeftCorner.y, this.projection);/*TopLeftCorner.y - (BMD.height*this.requestedResolution.value),TopLeftCorner.x + (BMD.width*this.requestedResolution.value),TopLeftCorner.y,this.projection);*/
 								
 								
 								
@@ -360,8 +360,8 @@ package org.openscales.core.layer
 											var tiletopLeftcorner:Location = new Location(bufferTileBound.left, bufferTileBound.top, this.projection);
 											var deltaX:Number = (tiletopLeftcorner.x - TopLeftCorner.x)/bmpRequestedResolution;
 											var deltaY:Number = -(tiletopLeftcorner.y - TopLeftCorner.y)/bmpRequestedResolution;
-											var recWidth:Number = this.grid[i][j].bounds.width / bmpRequestedResolution;
-											var recHeight:Number = this.grid[i][j].bounds.height / bmpRequestedResolution;
+											var recWidth:Number = Math.round(this.grid[i][j].bounds.width / bmpRequestedResolution);
+											var recHeight:Number = Math.round(this.grid[i][j].bounds.height / bmpRequestedResolution);
 											var bmpRatio:Number = this.requestedResolution.value/bmpRequestedResolution;
 											if (recWidth > BMD.width)
 											{
@@ -374,7 +374,7 @@ package org.openscales.core.layer
 											var region:Rectangle = new Rectangle(deltaX, deltaY, recWidth, recHeight);
 											var tile:BitmapData = new BitmapData(recWidth, recHeight);
 											tile.copyPixels(BMD, region, new Point());
-											_backGrid[i][j] = new Bitmap(tile);
+											_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
 										}
 									}
 								}
@@ -387,6 +387,7 @@ package org.openscales.core.layer
 											_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= (bmpRequestedResolution/this.requestedResolution.value);
 											//_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= 1/this.scaleX;
 											this.grid[i][j].addChildAt(_backGrid[i][j], 0);
+											this.grid[i][j].drawn = true;
 										}
 									}
 								}
