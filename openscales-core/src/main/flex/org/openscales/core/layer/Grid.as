@@ -360,9 +360,19 @@ package org.openscales.core.layer
 											var tiletopLeftcorner:Location = new Location(bufferTileBound.left, bufferTileBound.top, this.projection);
 											var deltaX:Number = (tiletopLeftcorner.x - TopLeftCorner.x)/bmpRequestedResolution;
 											var deltaY:Number = -(tiletopLeftcorner.y - TopLeftCorner.y)/bmpRequestedResolution;
+											var recWidth:Number = this.grid[i][j].bounds.width / bmpRequestedResolution;
+											var recHeight:Number = this.grid[i][j].bounds.height / bmpRequestedResolution;
 											var bmpRatio:Number = this.requestedResolution.value/bmpRequestedResolution;
-											var region:Rectangle = new Rectangle(deltaX, deltaY, this.tileWidth/bmpRatio, this.tileHeight/bmpRatio);
-											var tile:BitmapData = new BitmapData(this.tileWidth, this.tileHeight);
+											if (recWidth > BMD.width)
+											{
+												recWidth = BMD.width;
+											}
+											if (recHeight > BMD.width)
+											{
+												recHeight = BMD.height;
+											}
+											var region:Rectangle = new Rectangle(deltaX, deltaY, recWidth, recHeight);
+											var tile:BitmapData = new BitmapData(recWidth, recHeight);
 											tile.copyPixels(BMD, region, new Point());
 											_backGrid[i][j] = new Bitmap(tile);
 										}
