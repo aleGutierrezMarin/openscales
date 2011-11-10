@@ -24,6 +24,7 @@
 			public static var SEXAGESIMAL:String = "dms";
 			public static var DEGREE:String = "deg";
 			public static var RADIAN:String = "rad";
+			public static var METRIC:String = "metric";
 			
 			public static var METER:String = "m";
 			public static var KILOMETER:String = "km";
@@ -31,6 +32,7 @@
 			public static var FOOT:String = "ft";
 			public static var MILE:String = "mi";
 			public static var INCH:String = "in";
+			public static var ENGLISH:String = "english";
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-12.png")]
