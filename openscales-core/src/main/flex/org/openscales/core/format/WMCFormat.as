@@ -117,7 +117,7 @@ package org.openscales.core.format
 					}
 				}
 			}
-			return null
+			return null;
 		}
 		
 		public function parseLayer(layer:XML):Layer
