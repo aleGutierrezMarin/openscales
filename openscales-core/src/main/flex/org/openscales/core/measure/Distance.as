@@ -135,6 +135,19 @@ package org.openscales.core.measure
 						_lastUnit = "km";
 						break;
 					
+					case "metric":			
+						tmpDist/=Unit.getInchesPerUnit(Unit.METER);
+						_result= Util.truncate(tmpDist,_accuracies.getValue("m"));
+						_result= this.trunc(tmpDist,_accuracies.getValue("m"));
+						_lastUnit = "m";
+						
+						if(tmpDist>1000) {
+							tmpDist/=1000;
+							_lastUnit = "km";
+							_result= Util.truncate(tmpDist,_accuracies.getValue("km"));
+						}
+						break;
+					
 					case "dd":
 						tmpDist/=Unit.getInchesPerUnit(Unit.DEGREE);
 						_lastUnit = "°";
@@ -167,6 +180,23 @@ package org.openscales.core.measure
 						tmpDist/=Unit.getInchesPerUnit(Unit.MILE);
 						_lastUnit = "mi";
 						_result= this.trunc(tmpDist,_accuracies.getValue("mi"));
+						break;
+					
+					case "english":
+						tmpDist/=Unit.getInchesPerUnit(Unit.FOOT);
+						_lastUnit = "ft";
+						_result= Util.truncate(tmpDist,_accuracies.getValue("ft"));
+						
+						if(tmpDist<1) {
+							tmpDist*=12;
+							_lastUnit = "in";
+							_result= Util.truncate(tmpDist,_accuracies.getValue("in"));
+							}
+						if(tmpDist>5280) {
+							tmpDist/=5280;
+							_lastUnit = "mi";
+							_result= Util.truncate(tmpDist,_accuracies.getValue("mi"));
+						}
 						break;
 					
 					default:

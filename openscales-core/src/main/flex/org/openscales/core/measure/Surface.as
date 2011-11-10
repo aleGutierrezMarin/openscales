@@ -138,6 +138,23 @@ package org.openscales.core.measure
 					}
 					break;
 				
+				case "metric":
+					inPerDisplayUnit = Unit.getInchesPerUnit(Unit.KILOMETER)
+					if(inPerDisplayUnit) {
+						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
+						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+						_lastUnit = "km²";
+						this._result= Util.truncate(area,_accuracies.getValue("km"));
+						
+						if(area<1){
+							area=area*1000000;
+							_lastUnit = "m²";
+							this._result= Util.truncate(area,_accuracies.getValue("m"));
+						}
+					}
+					
+					break;
+				
 				default:
 					_lastUnit = null;
 					_result="0";
