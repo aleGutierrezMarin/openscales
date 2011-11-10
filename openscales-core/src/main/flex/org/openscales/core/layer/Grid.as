@@ -202,8 +202,6 @@ package org.openscales.core.layer
 				{
 					if (!this.tiled) 
 					{
-						/*if (this.loadComplete)
-						{*/
 						var bmpBounds:Bounds;
 						if(this._backGrid == null)
 						{
@@ -230,7 +228,6 @@ package org.openscales.core.layer
 							{
 								_backGrid[0][0] = null;
 							}
-							
 						}
 						this.clear();
 						this._lastScale = 1;
@@ -258,42 +255,12 @@ package org.openscales.core.layer
 								var BottomRightCorner:Location = new Location(this.grid[gridRowLength - 1][gridColLength - 1].bounds.right, this.grid[gridRowLength - 1][gridColLength - 1].bounds.bottom);
 								var firstDrawnTileIndex:Point;
 								var lastDrawnTileIndex:Point;
-								/*outerLoop: for (var i:int = 0; i< gridRowLength; ++i)
-								{
-									for (var j:int = 0; j < gridColLength; ++j)
-									{
-										if (this.grid[i][j].drawn)
-										{
-											var gridbounds:Bounds = grid[i][j].bounds;
-											TopLeftCorner = new Location(gridbounds.left, gridbounds.top, this.projection);
-											firstDrawnTileIndex = new Point(i, j);
-											break outerLoop;
-										}
-									}
-								}
-								
-								outerLoop2: for (var i:int = gridRowLength - 1; i > 0; --i)
-								{
-									for (var j:int = gridColLength - 1 ; j > 0 ; --j)
-									{
-										if (this.grid[i][j].drawn)
-										{
-											var gridbounds:Bounds = grid[i][j].bounds;
-											BottomRightCorner = new Location(gridbounds.right, gridbounds.bottom, this.projection);
-											lastDrawnTileIndex = new Point(i, j);
-											break outerLoop2;
-										}
-									}
-								}*/
-								
 								
 								var NewLayerBounds:Bounds = this.maxExtent.getIntersection(bounds);
 								NewLayerBounds = this.map.maxExtent.getIntersection(NewLayerBounds);
 								bmpBounds = this.grid[0][0].bounds;
 								var scale:Number = this.scaleX;
 								var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
-								/*if (intersectBounds != null)
-								{*/
 								var matrix:Matrix = new Matrix;
 								matrix.scale(scale, scale);
 								var drawnWidth:Number = (BottomRightCorner.x - TopLeftCorner.x) / this.requestedResolution.value;
@@ -306,21 +273,6 @@ package org.openscales.core.layer
 								
 								var bmpRequestedResolution:Number = this.requestedResolution.value;
 								var fullBmpBounds:Bounds = new Bounds(TopLeftCorner.x, BottomRightCorner.y, BottomRightCorner.x, TopLeftCorner.y, this.projection);/*TopLeftCorner.y - (BMD.height*this.requestedResolution.value),TopLeftCorner.x + (BMD.width*this.requestedResolution.value),TopLeftCorner.y,this.projection);*/
-								
-								
-								
-								//_backGrid[0][0] = new Bitmap(BMD);
-								
-								//_backGrid[0][0].scaleX *= scale
-								//_backGrid[0][0].scaleY *= scale;
-								//this.addChild(_backGrid[0][0]);
-								//_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
-								//_backGrid[0][0].x = this.x;
-								//_backGrid[0][0].y = this.y;
-								/*}else*/
-								/*{
-									_backGrid[0][0] = null;
-								}*/
 							}
 							
 							this.initGriddedTiles(bounds, true);
@@ -392,27 +344,10 @@ package org.openscales.core.layer
 									}
 								}
 							}
-								
-							/*if(_backGrid[0][0])
-							{
-								//_backGrid[0][0].x -= this.grid[0][0].x;
-								//_backGrid[0][0].y -= this.grid[0][0].y;
-								_backGrid[0][0].scaleX = _backGrid[0][0].scaleY *= 1/this.scaleX;
-								this.grid[0][0].addChildAt(_backGrid[0][0], 0);
-								//this.addChildAt(_backGrid[0][0], 0);
-								//this.addChild(this.grid[0][0]);
-							}*/
 						} else 
 						{
 							this.moveGriddedTiles(bounds);
 							this.actualizeGridSize(bounds);
-							if (_backGrid)
-							{
-								if (_backGrid[0][0])
-								{
-									//this.grid[0][0].addChildAt(_backGrid[0][0], 0);
-								}
-							}
 						}
 					} 
 					_initialized = true;
@@ -763,18 +698,6 @@ package org.openscales.core.layer
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
 			this.transform.matrix = this._defaultMatrixTranform.clone();
-			/*if (this._grid != null)
-			{
-				var rowlength:Number = this._grid.length;
-				for (var i:int = 0; i<rowlength; ++i)
-				{
-					var colLength:Number = this._grid[i].length;
-					for (var j:int = 0; j<colLength; ++j)
-					{
-						this._grid[i][j].transform.matrix = this._defaultMatrixTranform.clone();
-					}
-				}
-			}*/
 			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projection);
 			this.requestedResolution = this.getSupportedResolution(this.map.resolution);
 			_resquestResolution = this.requestedResolution.value;
