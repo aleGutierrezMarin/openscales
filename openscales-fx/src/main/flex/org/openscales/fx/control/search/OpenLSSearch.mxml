@@ -2,7 +2,7 @@
 <!--- Control used to request OpenLS service -->
 <Control xmlns="http://openscales.org"  xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"  xmlns:mx="library://ns.adobe.com/flex/mx"
-		 initialize="init();" creationComplete="queryInput.setFocus();" xmlns:autocomplete="org.openscales.fx.autocomplete.*" xmlns:skin="org.openscales.fx.control.skin.*" >
+		 initialize="init();" xmlns:autocomplete="org.openscales.fx.autocomplete.*" xmlns:skin="org.openscales.fx.control.skin.*" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -18,6 +18,7 @@
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.feature.CustomMarker;
 			import org.openscales.core.feature.Marker;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.request.OpenLSRequest;
 			import org.openscales.core.style.marker.DisplayObjectMarker;
@@ -58,6 +59,78 @@
 			
 			[Bindable]
 			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
+			
+			public static const MODE_SIMPLE:uint = 1;
+			public static const MODE_ADVANCED:uint = 2;
+			public static const MODE_REVERSE:uint = 3;
+			[Bindable]
+			private var _currentMode:uint = MODE_SIMPLE;
+			[Bindable]
+			private var _showResults:Boolean = false;
+			[Bindable]
+			private var _showNoResultMsg:Boolean = false;
+			
+			[Bindable]
+			private var _resultsProvider:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var _completionProvider:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var _nbResultsText:String = "";
+			[Bindable]
+			private var _noResultText:String = Catalog.getLocalizationForKey("openLSSearch.noResult");
+			
+			[Bindable]
+			private var _panelTitle:String = Catalog.getLocalizationForKey("openLSSearch.title");
+			[Bindable]
+			private var _simpleSearchLabel:String = Catalog.getLocalizationForKey("openLSSearch.simpleSearch");
+			[Bindable]
+			private var _advancedSearchLabel:String = Catalog.getLocalizationForKey("openLSSearch.advancedSearch");
+			[Bindable]
+			private var _simpleSearchButtonLabel:String = Catalog.getLocalizationForKey("openLSSearch.ok");
+			[Bindable]
+			private var _advancedSearchButtonLabel:String = Catalog.getLocalizationForKey("openLSSearch.ok");
+			[Bindable]
+			private var _numberLabel:String = Catalog.getLocalizationForKey("openLSSearch.number");
+			[Bindable]
+			private var _streetLabel:String = Catalog.getLocalizationForKey("openLSSearch.street");
+			[Bindable]
+			private var _postalCodeLabel:String = Catalog.getLocalizationForKey("openLSSearch.postalCode");
+			[Bindable]
+			private var _cityLabel:String = Catalog.getLocalizationForKey("openLSSearch.city");
+			[Bindable]
+			private var _countryCodeLabel:String = Catalog.getLocalizationForKey("openLSSearch.countryCode");
+			[Bindable]
+			private var _numberHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.numberHeader");
+			[Bindable]
+			private var _streetHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.streetHeader");
+			[Bindable]
+			private var _postalCodeHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader");
+			[Bindable]
+			private var _cityHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
+			[Bindable]
+			private var _countryCodeHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+			
+			/**
+			 * Getter and setter of search mode
+			 */
+			public function get currentMode():uint {
+				return this._currentMode;
+			}			
+			public function set currentMode(value:uint):void {	
+				this._currentMode = value;
+			}
+			
+		public function getCompletionResults():ArrayCollection {
+			return this._completionProvider;
+		}
+			
+		protected function setCompletionResults(results:ArrayCollection):void {
+			this._completionProvider = results;
+		}
+			
+		public function getSearchResults():ArrayCollection {
+			return this._resultsProvider;
+		}
 			
 			/**
 			 * Getter and setter of OpenLS version
@@ -154,7 +227,7 @@
 				this._resultLayer.displayInLayerManager = false;
 			}
 			
-			private function search(event:MouseEvent):void {
+			public function simpleSearch(query:String):void {
 				if(!this.map)
 					return;
 				
@@ -167,14 +240,27 @@
 					_request.destroy();
 				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault);
 				if (this.map != null) {
-					if (event.currentTarget == this.simpleSearchButton) {
-						_request.defineSimpleSearch(requestId, queryInput.text, this.defaultCountryCode, this.projection, this.maximumGeocodeResponses, this.version);
-					}
-					else {
-						if (!this.countryCode.text || this.countryCode.text=="")
-							this.countryCode.text=this.defaultCountryCode;
-						_request.defineAdvancedSearch(requestId, this.number.text, this.street.text, this.postalCode.text, this.city.text, this.countryCode.text, this.projection, this.maximumGeocodeResponses, this.version);
-					}
+					_request.defineSimpleSearch(requestId, query, this.defaultCountryCode, this.projection, this.maximumGeocodeResponses, this.version);
+					_request.send();
+				}
+			}
+			
+			public function advancedSearch(numberQuery:String, streetQuery:String, postalCodeQuery:String, cityQuery:String, countryCodeQuery:String):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault);
+				if (this.map != null) {
+					if (!countryCodeQuery || countryCodeQuery=="")
+						countryCodeQuery=this.defaultCountryCode;
+					_request.defineAdvancedSearch(requestId, numberQuery, streetQuery, postalCodeQuery, cityQuery, countryCodeQuery, this.projection, this.maximumGeocodeResponses, this.version);
 					_request.send();
 				}
 			}
@@ -188,19 +274,18 @@
 				Trace.debug("OpenLS result : " + xmlString);
 				var xml:XML = new XML(xmlString);
 				var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml), this.version);
-				searchResult.dataProvider = new ArrayCollection(results);
-				if (searchResult.dataProvider.length == 0) {
+				_resultsProvider = new ArrayCollection(results);
+				if (_resultsProvider.length == 0) {
 					// no result
-					this.noResult.visible = true;
-					this.noResult.percentHeight = 100;
+					this._showNoResultMsg = true;
 				}
 				else {
-					if (searchResult.dataProvider.length == 1) {
+					if (_resultsProvider.length == 1) {
 						// only one result, so center at location automatically
-						var latitude:Number = parseFloat(searchResult.dataProvider[0].lat);
-						var longitude:Number = parseFloat(searchResult.dataProvider[0].lon);
+						var latitude:Number = parseFloat(_resultsProvider[0].lat);
+						var longitude:Number = parseFloat(_resultsProvider[0].lon);
 						var resolution:Number = _cityResolution;
-						if (searchResult.dataProvider[0].street && searchResult.dataProvider[0].street!="") {
+						if (_resultsProvider[0].street && _resultsProvider[0].street!="") {
 							resolution = _streetResolution;
 						}
 						this.centerAtLocation(latitude, longitude, this.projection, resolution);
@@ -208,10 +293,8 @@
 					}
 					else {
 						// Several results, so display list
-						this.nbResults.text = searchResult.dataProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
-						this.searchResult.rowCount = searchResult.dataProvider.length;
-						this.results.visible = true;
-						this.results.percentHeight = 100;
+						this._nbResultsText = _resultsProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+						this._showResults = true;
 					}
 				}
 			}
@@ -253,7 +336,7 @@
 			/**
 			 * Method called when any keyboard key is pressed
 			 */
-			protected function onKeyUp(keyboardEvent:KeyboardEvent):void {
+			public function onKeyUp(keyboardEvent:KeyboardEvent, value:String):void {
 				switch (keyboardEvent.keyCode){
 					case Keyboard.UP:
 					case Keyboard.DOWN:
@@ -266,7 +349,7 @@
 					case Keyboard.ESCAPE:
 						break;
 					default:
-						onKeyUpIfNotSpecialKey(keyboardEvent);
+						onKeyUpIfNotSpecialKey(keyboardEvent, value);
 				}
 			}
 			
@@ -283,52 +366,44 @@
 			 * Keyboard.TAB
 			 * Keyboard.ESCAPE
 			 */
-			protected function onKeyUpIfNotSpecialKey(keyboardEvent:KeyboardEvent):void {
+			public function onKeyUpIfNotSpecialKey(keyboardEvent:KeyboardEvent, value:String):void {
 				// Do nothing if not overrided
 			}
 			
 			private function onSimpleSearchClick():void {
-				this.simpleSearch.visible = true;
-				this.simpleSearch.height = 35; 
-				this.advancedSearch.visible = false;
-				this.advancedSearch.height = 0;
+				this._currentMode = MODE_SIMPLE;
 				this.hideResults();
 			}
 			
 			private function onAdvancedSearchClick():void {
-				this.simpleSearch.visible = false;
-				this.simpleSearch.height = 0;
-				this.advancedSearch.visible = true;
-				this.advancedSearch.height = 155;
+				this._currentMode = MODE_ADVANCED;
 				this.hideResults();
 			}
 			
 			private function hideResults():void {
-				this.results.visible = false;
-				this.results.height= 0;
-				this.noResult.visible = false;
-				this.noResult.height = 0;
+				this._showResults = false;
+				this._showNoResultMsg = false;
 			}
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
-				this.panel.title = Catalog.getLocalizationForKey("openLSSearch.title");
-				this.simpleSearchSelectionButton.label = Catalog.getLocalizationForKey("openLSSearch.simpleSearch");
-				this.advancedSearchSelectionButton.label = Catalog.getLocalizationForKey("openLSSearch.advancedSearch");
-				this.numberLabel.text = Catalog.getLocalizationForKey("openLSSearch.number");
-				this.streetLabel.text = Catalog.getLocalizationForKey("openLSSearch.street");
-				this.postalCodeLabel.text = Catalog.getLocalizationForKey("openLSSearch.postalCode");
-				this.cityLabel.text = Catalog.getLocalizationForKey("openLSSearch.city");
-				this.countryCodeLabel.text = Catalog.getLocalizationForKey("openLSSearch.countryCode");
-				this.numberResult.headerText = Catalog.getLocalizationForKey("openLSSearch.numberHeader");
-				this.streetResult.headerText = Catalog.getLocalizationForKey("openLSSearch.streetHeader");
-				this.postalCodeResult.headerText = Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader");
-				this.cityResult.headerText = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
-				this.countryCodeResult.headerText = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
-				this.simpleSearchButton.label = Catalog.getLocalizationForKey("openLSSearch.ok");
-				this.advancedSearchButton.label = Catalog.getLocalizationForKey("openLSSearch.ok");
-				if (searchResult && searchResult.dataProvider)
-					this.nbResults.text = searchResult.dataProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
-				this.noResultMsg.text = Catalog.getLocalizationForKey("openLSSearch.noResult");
+				_panelTitle = Catalog.getLocalizationForKey("openLSSearch.title");
+				_simpleSearchLabel = Catalog.getLocalizationForKey("openLSSearch.simpleSearch");
+				_advancedSearchLabel = Catalog.getLocalizationForKey("openLSSearch.advancedSearch");
+				_numberLabel = Catalog.getLocalizationForKey("openLSSearch.number");
+				_streetLabel = Catalog.getLocalizationForKey("openLSSearch.street");
+				_postalCodeLabel = Catalog.getLocalizationForKey("openLSSearch.postalCode");
+				_cityLabel = Catalog.getLocalizationForKey("openLSSearch.city");
+				_countryCodeLabel = Catalog.getLocalizationForKey("openLSSearch.countryCode");
+				_numberHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.numberHeader");
+				_streetHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.streetHeader");
+				_postalCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader");
+				_cityHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
+				_countryCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+				_simpleSearchButtonLabel = Catalog.getLocalizationForKey("openLSSearch.ok");
+				_advancedSearchButtonLabel = Catalog.getLocalizationForKey("openLSSearch.ok");
+				if (_resultsProvider && _resultsProvider.length>1)
+					this._nbResultsText = _resultsProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+				_noResultText = Catalog.getLocalizationForKey("openLSSearch.noResult");
 				
 				_iconify = Catalog.getLocalizationForKey('component.iconify');
 				_toggle = Catalog.getLocalizationForKey('component.toggle');
@@ -356,44 +431,35 @@
 		<s:layout>
 			<s:HorizontalLayout gap="-35" />
 		</s:layout>
-		<s:Panel id="panel" title='{Catalog.getLocalizationForKey("openLSSearch.title")}' minHeight="55" width="100%" height="100%">
-			<fx:Script>
-				<![CDATA[
-					import org.openscales.core.i18n.Catalog;
-				]]>
-			</fx:Script>
+		<s:Panel id="panel" title="{this._panelTitle}" minHeight="55" width="100%" height="100%">
 			<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
 				
-				<!-- SEARCH MODE -->
-				<mx:Form width="100%" height="22" paddingTop="0" paddingBottom="0">
-					<s:SkinnableContainer width="100%" height="100%" styleName="horizontalLayout" id="searchType">
+				<mx:Form id="searchType" width="100%" height="22" paddingTop="0" paddingBottom="0">
+					<s:SkinnableContainer width="100%" height="100%" styleName="horizontalLayout">
 						<s:layout>
 							<s:HorizontalLayout />
 						</s:layout>
-						<mx:RadioButton id="simpleSearchSelectionButton" label='{Catalog.getLocalizationForKey("openLSSearch.simpleSearch")}' selected="true" click="onSimpleSearchClick()"/>
-						<mx:RadioButton id="advancedSearchSelectionButton" label='{Catalog.getLocalizationForKey("openLSSearch.advancedSearch")}' selected="false" click="onAdvancedSearchClick()"/>
+						<mx:RadioButton id="simpleSearchSelectionButton" label="{this._simpleSearchLabel}" selected="true" click="onSimpleSearchClick()"/>
+						<mx:RadioButton id="advancedSearchSelectionButton" label="{this._advancedSearchLabel}" selected="false" click="onAdvancedSearchClick()"/>
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<!-- SIMPLE SEARCH -->
-				<mx:Form id="simpleSearch" width="100%" height="35" paddingTop="5" paddingBottom="0" visible="true">
+				<mx:Form id="simpleSearchForm" width="100%" height="{_currentMode==MODE_SIMPLE?35:0}" paddingTop="5" paddingBottom="0" visible="{_currentMode==MODE_SIMPLE}">
 					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
 						<mx:FormItem label="" defaultButton="{simpleSearchButton}" width="100%">
-							<autocomplete:AutoComplete id="queryInput" width="100%" text="" keyUp="onKeyUp(event)" />
-							<!--s:TextInput id="queryInput" width="100%" text=""/-->
+							<autocomplete:AutoComplete id="queryInput" dataProvider="{this._completionProvider}" width="100%" text="" keyUp="onKeyUp(event, queryInput.text)" />
 						</mx:FormItem>
-						<s:Button id="simpleSearchButton" label='{Catalog.getLocalizationForKey("openLSSearch.ok")}' click="search(event)"/>
+						<s:Button id="simpleSearchButton" label="{this._simpleSearchButtonLabel}" click="simpleSearch(queryInput.text)"/>
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<!-- ADVANCED SEARCH -->
-				<mx:Form id="advancedSearch" width="100%" height="0" paddingTop="0" paddingBottom="0" visible="false">
+				<mx:Form id="advancedSearchForm" width="100%" height="{_currentMode==MODE_ADVANCED?155:0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED}">
 					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout />
@@ -402,12 +468,12 @@
 							<s:layout>
 								<s:VerticalLayout gap="5"/>
 							</s:layout>
-							<mx:Label id="numberLabel" text='{Catalog.getLocalizationForKey("openLSSearch.number")}'/>
-							<mx:Label id="streetLabel" text='{Catalog.getLocalizationForKey("openLSSearch.street")}'/>
-							<mx:Label id="postalCodeLabel" text='{Catalog.getLocalizationForKey("openLSSearch.postalCode")}'/>
-							<mx:Label id="cityLabel" text='{Catalog.getLocalizationForKey("openLSSearch.city")}'/>
-							<mx:Label id="countryCodeLabel" text='{Catalog.getLocalizationForKey("openLSSearch.countryCode")}'/>
-							<s:Button id="advancedSearchButton" label='{Catalog.getLocalizationForKey("openLSSearch.ok")}' click="search(event)" x="20"/>
+							<mx:Label id="numberLabel" text="{this._numberLabel}"/>
+							<mx:Label id="streetLabel" text="{this._streetLabel}"/>
+							<mx:Label id="postalCodeLabel" text="{this._postalCodeLabel}"/>
+							<mx:Label id="cityLabel" text="{this._cityLabel}"/>
+							<mx:Label id="countryCodeLabel" text="{this._countryCodeLabel}"/>
+							<s:Button id="advancedSearchButton" label="{this._advancedSearchButtonLabel}" click="advancedSearch(number.text, street.text, postalCode.text, city.text, countryCode.text)" x="20"/>
 						</s:SkinnableContainer>
 						<s:SkinnableContainer styleName="verticalLayout"  width="70%" height="100%">
 							<s:layout>
@@ -432,8 +498,7 @@
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<!-- RESULTS -->
-				<mx:Form id="results" width="100%" height="0" paddingTop="0" paddingBottom="5" visible="false">
+				<mx:Form id="results" width="100%" height="{this._showResults?55+25*this.searchResult.rowCount:0}" paddingTop="0" paddingBottom="5" visible="{this._showResults}">
 					<s:SkinnableContainer styleName="verticalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:VerticalLayout gap="0"/>
@@ -442,31 +507,32 @@
 							<s:layout>
 								<s:HorizontalLayout/>
 							</s:layout>
-							<mx:Label id="nbResults" text="" width="477"/>
+							<mx:Label id="nbResults" text="{this._nbResultsText}" width="477"/>
 							<mx:Button id="closeButton" icon="{_closeIcon}" width="17" click="hideResults()"/>
 						</s:SkinnableContainer>
 						<mx:DataGrid id="searchResult"
+									 dataProvider="{this._resultsProvider}"
+								     rowCount="{this._resultsProvider.length}"
 									 width="500" height="100%"
 									 click="onSearchResultsClick(event)"
 									 toolTip='{Catalog.getLocalizationForKey("openLSSearch.tooltip")}'>
 							<mx:columns >  
-								<mx:DataGridColumn id="numberResult" dataField="number" headerText='{Catalog.getLocalizationForKey("openLSSearch.numberHeader")}' width="15"/>  
-								<mx:DataGridColumn id="streetResult" dataField="street" headerText='{Catalog.getLocalizationForKey("openLSSearch.streetHeader")}' width="30"/>
-								<mx:DataGridColumn id="postalCodeResult" dataField="postalCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader")}' width="20"/>
-								<mx:DataGridColumn id="cityResult" dataField="city" headerText='{Catalog.getLocalizationForKey("openLSSearch.cityHeader")}' width="25"/>
-								<mx:DataGridColumn id="countryCodeResult" dataField="countryCode" headerText='{Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader")}' width="10"/>
+								<mx:DataGridColumn id="numberResult" dataField="number" headerText="{this._numberHeaderLabel}" width="15"/>  
+								<mx:DataGridColumn id="streetResult" dataField="street" headerText="{this._streetHeaderLabel}" width="30"/>
+								<mx:DataGridColumn id="postalCodeResult" dataField="postalCode" headerText="{this._postalCodeHeaderLabel}" width="20"/>
+								<mx:DataGridColumn id="cityResult" dataField="city" headerText="{this._cityHeaderLabel}" width="25"/>
+								<mx:DataGridColumn id="countryCodeResult" dataField="countryCode" headerText="{this._countryCodeHeaderLabel}" width="10"/>
 							</mx:columns>
 						</mx:DataGrid> 
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<!-- NO RESULT -->
-				<mx:Form id="noResult" width="100%" height="0" paddingTop="0" paddingBottom="5" visible="false">
+				<mx:Form id="noResult" width="100%" height="{_showNoResultMsg?30:0}" paddingTop="0" paddingBottom="5" visible="{this._showNoResultMsg}">
 					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout gap="0"/>
 						</s:layout>
-						<mx:Label id="noResultMsg" text='{Catalog.getLocalizationForKey("openLSSearch.noResult")}'/>
+						<mx:Label id="noResultMsg" text="{this._noResultText}"/>
 					</s:SkinnableContainer>
 				</mx:Form>
 			</s:SkinnableContainer>
