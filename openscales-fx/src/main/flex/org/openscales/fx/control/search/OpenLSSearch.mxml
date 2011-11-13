@@ -16,6 +16,7 @@
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.events.SearchEvent;
 			import org.openscales.core.feature.CustomMarker;
 			import org.openscales.core.feature.Marker;
 			import org.openscales.core.i18n.Catalog;
@@ -120,12 +121,38 @@
 				this._currentMode = value;
 			}
 			
+			[Bindable]
+			public function get hasSeveralResults():Boolean {
+				return this._showResults;
+			}
+			
+			public function set hasSeveralResults(value:Boolean):void {
+				this._showResults=value;
+			}
+			
+			[Bindable]
+			public function get hasNoResult():Boolean {
+				return this._showNoResultMsg;
+			}
+			
+			public function set hasNoResult(value:Boolean):void {
+				this._showNoResultMsg=value;
+			}
+			
+			public function get numberOfResults():uint {
+				if (_resultsProvider)
+					return this._resultsProvider.length;
+				else
+					return 0;
+			}
+			
 		public function getCompletionResults():ArrayCollection {
 			return this._completionProvider;
 		}
 			
 		protected function setCompletionResults(results:ArrayCollection):void {
 			this._completionProvider = results;
+			this.dispatchEvent(new SearchEvent(SearchEvent.AUTOCOMPLETE_END));
 		}
 			
 		public function getSearchResults():ArrayCollection {
@@ -297,9 +324,10 @@
 						this._showResults = true;
 					}
 				}
+				this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
 			}
 			
-			private function onSearchResultsClick(event:Event):void {
+			public function onSearchResultsClick(event:Event):void {
 				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
 					Trace.warn("OpenLS WARNING: selection of a void item");
 					return;
