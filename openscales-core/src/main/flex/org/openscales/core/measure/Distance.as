@@ -31,7 +31,7 @@ package org.openscales.core.measure
 		
 		private var _accuracies:HashMap=null;
 		
-		private var _displaySystem:String = "m";
+		private var _displaySystem:String = "metric";
 		
 		private var _result:String = "";
 		private var _lastUnit:String = null;
