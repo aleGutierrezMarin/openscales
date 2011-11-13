@@ -60,6 +60,7 @@
     <classEntry path="org.openscales.core.events.MeasureEvent"/>
     <classEntry path="org.openscales.core.events.OpenScalesEvent"/>
     <classEntry path="org.openscales.core.events.OriginatorEvent"/>
+    <classEntry path="org.openscales.core.events.SearchEvent"/>
     <classEntry path="org.openscales.core.events.TileEvent"/>
     <classEntry path="org.openscales.core.events.TraceEvent"/>
     <classEntry path="org.openscales.core.events.WFSTFeatureEvent"/>
