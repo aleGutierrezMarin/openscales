@@ -22,7 +22,7 @@ package org.openscales.core.measure
 		private var _result:String = "";
 		private var _lastUnit:String = null;
 		
-		private var _displaySystem:String = "km";
+		private var _displaySystem:String = "metric";
 
 		public function get displaySystem():String
 		{
