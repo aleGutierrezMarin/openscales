@@ -98,25 +98,9 @@ package org.openscales.core.format
 				}
 				
 			}
-			if(this.wmcFile..*::LayerList.length() > 0)
-			{
-				var layerList:XML = wmcFile..*::LayerList[0];
-				if(layerList..*::Layer.length() > 0)
-				{
-					if (layerList..*::Layer.length() > 0)
-					{
-						var listOfLayers:XMLList = layerList..*::Layer;
-						var listLength:Number = listOfLayers.length();
-						this._layerList = new Vector.<Layer>();
-						for (var i:int = 0; i<listLength; ++i)
-						{
-							var layer:XML = listOfLayers[i];
-							var layerToAdd:Layer = this.parseLayer(layer);
-							this._layerList.push(layerToAdd);
-						}
-					}
-				}
-			}
+			
+			this._layerList = parseLayerListSection(this.wmcFile);
+			
 			return null;
 		}
 		
@@ -233,7 +217,33 @@ package org.openscales.core.format
 			return layerToAdd;
 		}
 		
-
+		public function parseLayerListSection(xml:XML):Vector.<Layer>{
+			
+			var layers:Vector.<Layer>;
+			
+			if(xml..*::LayerList.length() > 0)
+			{
+				var layerList:XML = xml..*::LayerList[0];
+				if(layerList..*::Layer.length() > 0)
+				{
+					if (layerList..*::Layer.length() > 0)
+					{
+						var listOfLayers:XMLList = layerList..*::Layer;
+						var listLength:Number = listOfLayers.length();
+						layers = new Vector.<Layer>();
+						for (var i:int = 0; i<listLength; ++i)
+						{
+							var layer:XML = listOfLayers[i];
+							var layerToAdd:Layer = this.parseLayer(layer);
+							layers.push(layerToAdd);
+						}
+					}
+				}
+			}
+			
+			return layers;
+		}
+		
 		public function parseGeneralExtension(extensionData:XML):void
 		{
 			
