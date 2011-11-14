@@ -35,7 +35,7 @@ package org.openscales.core.handler.feature.draw
 	
 	
 	/**
-	 * Select Features by clicking, by drawing a selection box or by drawing a
+	 * Edit Features by clicking, by drawing a selection box or by drawing a
 	 * freehand selection area.
 	 * If the CTRL key is pressed, the previous selection is not cleared and the
 	 * new selection is added.
@@ -685,6 +685,8 @@ package org.openscales.core.handler.feature.draw
 			// Look for all the features that intersect the selection geometry
 			var featuresToSelect:Vector.<Feature> = new Vector.<Feature>();
 			if (geom) {
+				//var geom2:Geometry = geom.clone();
+				//geom2.transform(geom.projection,"EPSG:4326");
 				var layersToTest:Vector.<VectorLayer> = (this.layers.length > 0) ? this.layers : this.map.featureLayers;
 				var layer:VectorLayer, layersTmp:Vector.<VectorLayer> = new Vector.<VectorLayer>();
 				// Remove invisible layers from the list of selectable layers
@@ -694,9 +696,13 @@ package org.openscales.core.handler.feature.draw
 					}
 				}
 				layersToTest = layersTmp;
-				// 
+				 
+				//var geom3:Geometry;
 				for each (layer in layersToTest) {
 					for(var i:uint = 0; i < layer.features.length; i++){
+						//geom3 = layer.features[i].geometry.clone();
+						//geom3.transform(geom3.projection,"EPSG:4326");
+						//if (geom2.intersects(geom3)) {
 						if (geom.intersects(layer.features[i].geometry)) {
 							featuresToSelect.push(layer.features[i]);
 							if(!this._enableMultipleSelection)
