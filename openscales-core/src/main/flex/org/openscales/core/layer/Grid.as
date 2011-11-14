@@ -282,6 +282,7 @@ package org.openscales.core.layer
 							this._previousResolution = this.map.resolution;
 							centerChangedCache = false;
 							this._previousCenter = this.map.center.clone();
+							this.moveGriddedTiles(bounds);
 							this.actualizeGridSize(bounds);
 
 							if (fullBmpBounds != null)
@@ -315,24 +316,42 @@ package org.openscales.core.layer
 												var deltaY:Number = -(tiletopLeftcorner.y - TopLeftCorner.y)/bmpRequestedResolution;
 												var recWidth:Number = Math.round(this.grid[i][j].bounds.width / bmpRequestedResolution);
 												var recHeight:Number = Math.round(this.grid[i][j].bounds.height / bmpRequestedResolution);
+												if (recWidth == 0)
+												{
+													recWidth = 1;
+												}
+												if (recHeight == 0)
+												{
+													recHeight = 1;
+												}
 												var region:Rectangle = new Rectangle(deltaX, deltaY, recWidth, recHeight);
 												var tile:BitmapData = new BitmapData(recWidth, recHeight);
 												tile.copyPixels(BMD, region, new Point());
 												_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
 											}else
 											{
-												/*var tilePartBounds:Bounds = fullBmpBounds.getIntersection(this.grid[i][j].bounds);
+												var tilePartBounds:Bounds = fullBmpBounds.getIntersection(this.grid[i][j].bounds);
+												var bufferTileBound:Bounds = this.grid[i][j].bounds.getIntersection(fullBmpBounds);
+												var tiletopLeftcorner:Location = new Location(bufferTileBound.left, bufferTileBound.top, this.projection);
 												var deltaX:Number = (tiletopLeftcorner.x - TopLeftCorner.x)/bmpRequestedResolution;
 												var deltaY:Number = -(tiletopLeftcorner.y - TopLeftCorner.y)/bmpRequestedResolution;
 												var finalDeltaX:Number = (tilePartBounds.left - this.grid[i][j].bounds.left)/bmpRequestedResolution;
 												var finalDeltaY:Number = -(tilePartBounds.top - this.grid[i][j].bounds.top)/bmpRequestedResolution;
 												var recWidth:Number = Math.round(tilePartBounds.width / bmpRequestedResolution);
 												var recHeight:Number  = Math.round(tilePartBounds.height / bmpRequestedResolution);
+												if (recHeight == 0)
+												{
+													recHeight = 1;
+												}
+												if (recWidth == 0)
+												{
+													recWidth = 1;
+												}
 												var region:Rectangle = new Rectangle(deltaX, deltaY, recWidth, recHeight);
 												var tile:BitmapData = new BitmapData(recWidth, recHeight);
 												tile.copyPixels(BMD, region, new Point(finalDeltaX, finalDeltaY));
 												_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
-												*/
+												
 											}
 										}
 									}
