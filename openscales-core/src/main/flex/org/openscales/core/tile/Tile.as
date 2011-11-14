@@ -17,7 +17,6 @@ package org.openscales.core.tile
 	 */
 	public class Tile extends Sprite
 	{
-		
 		private var _layer:Layer = null;
 		private var _url:String = null;
 		private var _bounds:Bounds = null;
@@ -41,7 +40,6 @@ package org.openscales.core.tile
 			this.bounds = null;
 			this.size = null;
 			this.position = null;
-			
 		}
 		
 		
