@@ -264,16 +264,19 @@ package org.openscales.core.layer
 								matrix.scale(scale, scale);
 								var drawnWidth:Number = (BottomRightCorner.x - TopLeftCorner.x) / this.requestedResolution.value;
 								var drawnHeight:Number = -(BottomRightCorner.y - TopLeftCorner.y) / this.requestedResolution.value;
-								
-								var BMD:BitmapData = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
-								BMD.draw(this, null, null, null, null, true);
-								var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
-								
-								
-								var bmpRequestedResolution:Number = this.requestedResolution.value;
-								var fullBmpBounds:Bounds = new Bounds(TopLeftCorner.x, BottomRightCorner.y, BottomRightCorner.x, TopLeftCorner.y, this.projection);/*TopLeftCorner.y - (BMD.height*this.requestedResolution.value),TopLeftCorner.x + (BMD.width*this.requestedResolution.value),TopLeftCorner.y,this.projection);*/
-							}
+								var fullBmpBounds:Bounds = null;
+								if (drawnWidth * drawnHeight <= 16777215)
+								{
+									var BMD:BitmapData = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
+									BMD.draw(this, null, null, null, null, true);
+									var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
+									
+									
+									var bmpRequestedResolution:Number = this.requestedResolution.value;
+									fullBmpBounds = new Bounds(TopLeftCorner.x, BottomRightCorner.y, BottomRightCorner.x, TopLeftCorner.y, this.projection);/*TopLeftCorner.y - (BMD.height*this.requestedResolution.value),TopLeftCorner.x + (BMD.width*this.requestedResolution.value),TopLeftCorner.y,this.projection);*/
 							
+								}
+							}
 							this.initGriddedTiles(bounds, true);
 							this._lastScale = 1;
 							ratio = this._requestedResolution.value/this.map.resolution.value;
