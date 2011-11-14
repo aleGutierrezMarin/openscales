@@ -20,7 +20,7 @@ package org.openscales.core.layer
 	 */ 
 	public class Aggregate extends Layer
 	{
-		private var _layers:Vector.<Layer>;
+		protected var _layers:Vector.<Layer>;
 		private var _stopPropagating:Boolean = true;
 		/**
 		 * Constructor
@@ -109,6 +109,21 @@ package org.openscales.core.layer
 				}
 			}
 			super.removeEventListenerFromMap();
+		}
+		
+		public function removeLayer(layer:Layer):void{
+			var i:uint = this._layers.indexOf(layer);
+			if(i<0)return;
+			if(!this.map) return;
+			this.map.removeLayer(layer);
+			this._layers.splice(i,1);
+		}
+		
+		public function removeAllLayers():void{
+			var layer:Layer;
+			for each(layer in this._layers){
+				this.removeLayer(layer);
+			}
 		}
 		
 		/**
