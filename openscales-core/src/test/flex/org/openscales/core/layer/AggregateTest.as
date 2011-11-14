@@ -5,7 +5,6 @@ package org.openscales.core.layer
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.asserts.fail;
-	import org.flexunit.internals.RealSystem;
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.geometry.basetypes.Bounds;
