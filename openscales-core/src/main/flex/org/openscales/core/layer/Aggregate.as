@@ -115,14 +115,16 @@ package org.openscales.core.layer
 			var i:uint = this._layers.indexOf(layer);
 			if(i<0)return;
 			if(!this.map) return;
+			layer.aggregate = null;
 			this.map.removeLayer(layer);
 			this._layers.splice(i,1);
 		}
 		
 		public function removeAllLayers():void{
 			var layer:Layer;
-			for each(layer in this._layers){
-				this.removeLayer(layer);
+			var i:uint = this._layers.length;
+			for(;i>0;--i){
+				this.removeLayer(this._layers[i-1]);
 			}
 		}
 		
