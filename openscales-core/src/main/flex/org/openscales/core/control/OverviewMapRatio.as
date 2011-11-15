@@ -117,6 +117,7 @@ package org.openscales.core.control
 				this.map.removeEventListener(MapEvent.CENTER_CHANGED, mapChanged);
 				this.map.removeEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
 				this.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
+				this.map.removeEventListener(MapEvent.RESIZE, mapChanged);
 				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			}
 			super.map = map;	
@@ -125,6 +126,7 @@ package org.openscales.core.control
 				this.map.addEventListener(MapEvent.CENTER_CHANGED, mapChanged);
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
+				this.map.addEventListener(MapEvent.RESIZE, mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
 				this._overviewMap.maxExtent = this._map.maxExtent.preciseReprojectBounds(this.overviewMap.projection);
 				this.mapChanged();
@@ -218,6 +220,7 @@ package org.openscales.core.control
 		public function set ratio(ratio:Number):void
 		{
 			this._ratio = ratio;
+			this.mapChanged();
 		}
 		
 		/**
