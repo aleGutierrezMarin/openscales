@@ -80,6 +80,7 @@ package org.openscales.core.layer
 		
 		private var _lastScale:Number = 1;
 		private var _lastRoundedScale:Number = 1;
+		private var _lastStableScale:Number = 1;
 		
 		/**
 		 * Create a new grid layer
@@ -198,13 +199,15 @@ package org.openscales.core.layer
 				this._backGrid = null;
 			}
 			
+			var bmpBounds:Bounds;
+			var scale:Number;
+			var BMD:BitmapData;
 			if (centerChangedCache || projectionChangedCache || resolutionChangedCache || forceReTile || !_initialized)
 			{
 				if (!this._timer.running)
 				{
 					if (!this.tiled) 
 					{
-						var bmpBounds:Bounds;
 						if(this._backGrid == null)
 						{
 							this._backGrid = new Vector.<Vector.<Bitmap>>(1);
@@ -216,13 +219,13 @@ package org.openscales.core.layer
 							var NewLayerBounds:Bounds = this.maxExtent.getIntersection(bounds);
 							NewLayerBounds = this.map.maxExtent.getIntersection(NewLayerBounds);
 							bmpBounds = this.grid[0][0].bounds;
-							var scale:Number = this.scaleX;
+							scale = this.scaleX;
 							var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
 							if (intersectBounds != null)
 							{
-								var BMD:BitmapData = new BitmapData(this.map.width , this.map.height , true, 0x000000);
+								BMD = new BitmapData(this.map.width , this.map.height , true, 0x000000);
 								BMD.draw(this, null, null, null, null, true);
-								_backGrid[0][0] = new Bitmap(BMD);
+								_backGrid[0][0] = new Bitmap(BMD, PixelSnapping.NEVER, true);
 								_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
 								_backGrid[0][0].x = this.x;
 								_backGrid[0][0].y = this.y;
@@ -244,22 +247,24 @@ package org.openscales.core.layer
 					} else {
 						if ((resolution != this._resquestResolution) || forceReTile)
 						{
-							
-							var bmpBounds:Bounds;
-							
+							var i:int;
+							var j:int;
+							var gridColLength:int;
+							var gridRowLength:int;
+							var TopLeftCorner:Location;
 							if(this._initialized)
 							{
-								var gridRowLength:int = this.grid.length;
-								var gridColLength:int = this.grid[0].length;
+								gridRowLength = this.grid.length;
+								gridColLength = this.grid[0].length;
 								
 								// Compute the bitmapBounds
-								var TopLeftCorner:Location = new Location(this.grid[0][0].bounds.left, this.grid[0][0].bounds.top, this.projection);
+								TopLeftCorner = new Location(this.grid[0][0].bounds.left, this.grid[0][0].bounds.top, this.projection);
 								var BottomRightCorner:Location = new Location(this.grid[gridRowLength - 1][gridColLength - 1].bounds.right, this.grid[gridRowLength - 1][gridColLength - 1].bounds.bottom);
 								var firstDrawnTileIndex:Point;
 								var lastDrawnTileIndex:Point;
 								
 								bmpBounds = this.grid[0][0].bounds;
-								var scale:Number = this.scaleX;
+								scale = this.scaleX;
 								var matrix:Matrix = new Matrix;
 								matrix.scale(scale, scale);
 								var drawnWidth:Number = (BottomRightCorner.x - TopLeftCorner.x) / this.requestedResolution.value;
@@ -267,7 +272,7 @@ package org.openscales.core.layer
 								var fullBmpBounds:Bounds = null;
 								if (drawnWidth * drawnHeight <= 16777215)
 								{
-									var BMD:BitmapData = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
+									BMD = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
 									BMD.draw(this, null, null, null, null, true);
 									var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
 									
@@ -295,30 +300,38 @@ package org.openscales.core.layer
 								
 								this._backGrid = new Vector.<Vector.<Bitmap>>(1);
 								this._backGrid[0] = new Vector.<Bitmap>(1);
-								for (var i:int = 0; i< gridRowLength; ++i)
+								for (i = 0; i< gridRowLength; ++i)
 								{
 									this._backGrid[i] = new Vector.<Bitmap>(1);
-									for (var j:int = 0; j< gridColLength; ++j)
+									for (j = 0; j< gridColLength; ++j)
 									{
 										this._backGrid[i][j] = new Bitmap();
 									}
 								}
 								
 								
-								for (var i:int = 0; i< gridRowLength; ++i)
+								for (i = 0; i< gridRowLength; ++i)
 								{
-									for (var j:int = 0; j < gridColLength; ++j)
+									for (j = 0; j < gridColLength; ++j)
 									{
 										if (this.grid[i][j].bounds.intersectsBounds(fullBmpBounds, false))
 										{
+											var bufferTileBound:Bounds;
+											var tiletopLeftcorner:Location;
+											var deltaX:Number;
+											var deltaY:Number;
+											var recWidth:Number;
+											var recHeight:Number;
+											var region:Rectangle;
+											var tile:BitmapData;
 											if (fullBmpBounds.containsBounds(this.grid[i][j].bounds))
 											{
-												var bufferTileBound:Bounds = this.grid[i][j].bounds.getIntersection(fullBmpBounds);
-												var tiletopLeftcorner:Location = new Location(bufferTileBound.left, bufferTileBound.top, this.projection);
-												var deltaX:Number = (tiletopLeftcorner.x - TopLeftCorner.x)/bmpRequestedResolution;
-												var deltaY:Number = -(tiletopLeftcorner.y - TopLeftCorner.y)/bmpRequestedResolution;
-												var recWidth:Number = Math.round(this.grid[i][j].bounds.width / bmpRequestedResolution);
-												var recHeight:Number = Math.round(this.grid[i][j].bounds.height / bmpRequestedResolution);
+												bufferTileBound = this.grid[i][j].bounds.getIntersection(fullBmpBounds);
+												tiletopLeftcorner = new Location(bufferTileBound.left, bufferTileBound.top, this.projection);
+												deltaX = (tiletopLeftcorner.x - TopLeftCorner.x)/bmpRequestedResolution;
+												deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/bmpRequestedResolution;
+												recWidth = Math.round(this.grid[i][j].bounds.width / bmpRequestedResolution);
+												recHeight = Math.round(this.grid[i][j].bounds.height / bmpRequestedResolution);
 												if (recWidth == 0)
 												{
 													recWidth = 1;
@@ -327,21 +340,21 @@ package org.openscales.core.layer
 												{
 													recHeight = 1;
 												}
-												var region:Rectangle = new Rectangle(deltaX, deltaY, recWidth, recHeight);
-												var tile:BitmapData = new BitmapData(recWidth, recHeight);
+												region = new Rectangle(deltaX, deltaY, recWidth, recHeight);
+												tile = new BitmapData(recWidth, recHeight);
 												tile.copyPixels(BMD, region, new Point());
 												_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
 											}else
 											{
 												var tilePartBounds:Bounds = fullBmpBounds.getIntersection(this.grid[i][j].bounds);
-												var bufferTileBound:Bounds = this.grid[i][j].bounds.getIntersection(fullBmpBounds);
-												var tiletopLeftcorner:Location = new Location(bufferTileBound.left, bufferTileBound.top, this.projection);
-												var deltaX:Number = (tiletopLeftcorner.x - TopLeftCorner.x)/bmpRequestedResolution;
-												var deltaY:Number = -(tiletopLeftcorner.y - TopLeftCorner.y)/bmpRequestedResolution;
+												tiletopLeftcorner = new Location(tilePartBounds.left, tilePartBounds.top, this.projection);
+												var bmpRequestedResolutionScaled:Number = bmpRequestedResolution/this.scaleX;
+												deltaX = (tiletopLeftcorner.x - TopLeftCorner.x)/bmpRequestedResolution;
+												deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/bmpRequestedResolution;
 												var finalDeltaX:Number = (tilePartBounds.left - this.grid[i][j].bounds.left)/bmpRequestedResolution;
 												var finalDeltaY:Number = -(tilePartBounds.top - this.grid[i][j].bounds.top)/bmpRequestedResolution;
-												var recWidth:Number = Math.round(tilePartBounds.width / bmpRequestedResolution);
-												var recHeight:Number  = Math.round(tilePartBounds.height / bmpRequestedResolution);
+												recWidth = Math.floor(tilePartBounds.width / bmpRequestedResolutionScaled * 1/scale);
+												recHeight  = Math.floor(tilePartBounds.height / bmpRequestedResolutionScaled * 1/scale);
 												if (recHeight == 0)
 												{
 													recHeight = 1;
@@ -350,8 +363,12 @@ package org.openscales.core.layer
 												{
 													recWidth = 1;
 												}
-												var region:Rectangle = new Rectangle(deltaX, deltaY, recWidth, recHeight);
-												var tile:BitmapData = new BitmapData(recWidth, recHeight);
+												if (recHeight * recWidth > 16777216)
+												{
+													recHeight = recWidth = 4095;
+												}
+												region = new Rectangle(deltaX, deltaY, recWidth, recHeight);
+												tile = new BitmapData(recWidth, recHeight);
 												tile.copyPixels(BMD, region, new Point(finalDeltaX, finalDeltaY));
 												_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
 												
@@ -359,15 +376,13 @@ package org.openscales.core.layer
 										}
 									}
 								}
-								for (var i:int = 0; i< gridRowLength; ++i)
+								for (i = 0; i< gridRowLength; ++i)
 								{
-									for (var j:int = 0; j < gridColLength; ++j)
+									for (j = 0; j < gridColLength; ++j)
 									{
 										if (_backGrid[i][j] && this.grid[i][j])
 										{
 											_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= (bmpRequestedResolution/this.requestedResolution.value);
-											
-											//_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= 1/this.scaleX;
 											this.grid[i][j].addChildAt(_backGrid[i][j], 0);
 											this.grid[i][j].drawn = true;
 										}
@@ -379,7 +394,9 @@ package org.openscales.core.layer
 							this.moveGriddedTiles(bounds);
 							this.actualizeGridSize(bounds);
 						}
+						
 					} 
+					_lastStableScale = this.scaleX;
 					_initialized = true;
 				}
 			}
@@ -396,11 +413,11 @@ package org.openscales.core.layer
 			{
 				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
 				var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
-				var deltaX:Number = deltaLon/this.map.resolution.value;
-				var deltaY:Number = deltaLat/this.map.resolution.value;
+				var deltaXCenter:Number = deltaLon/this.map.resolution.value;
+				var deltaYCenter:Number = deltaLat/this.map.resolution.value;
 				
-				this.x = this.x - deltaX;
-				this.y = this.y + deltaY;
+				this.x = this.x - deltaXCenter;
+				this.y = this.y + deltaYCenter;
 				this._previousCenter = this.map.center;
 				centerChangedCache = false;
 			}
