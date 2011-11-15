@@ -49,7 +49,7 @@ package org.openscales.fx.layer
 		}
 			
 		override public function set visible(value:Boolean):void {
-			super.visible;
+			super.visible = value;
 			this._bufferedVisible = value ? 1 : 0; 
 		} 		
 		/**
