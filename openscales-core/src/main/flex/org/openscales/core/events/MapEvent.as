@@ -108,6 +108,13 @@ package org.openscales.core.events{
 		 */
 		public static const MOVE_END:String="openscales.mapmoveend";
 		
+		
+		/**
+		 *  Event type dispatched after map has finished moving and the timer ends to ask for
+		 *  avery component to actualize himself
+		 */
+		public static const RELOAD:String="openscales.mapreload"; 
+		
 		/**
 		 * Event type dispatched when the map didn't move after a move_start or a drag_start
 		 */

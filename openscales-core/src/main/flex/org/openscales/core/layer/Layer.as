@@ -60,6 +60,7 @@ package org.openscales.core.layer {
 		protected var _resolutionChanged:Boolean = false;
 		protected var _centerChanged:Boolean = false;
 		protected var _projectionChanged:Boolean = false;
+		protected var _mapReload:Boolean = false;
 		
 				
 		/**
@@ -203,6 +204,7 @@ package org.openscales.core.layer {
 				map.removeEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
 				map.removeEventListener(MapEvent.MOVE_END, onMapMove);
 				map.removeEventListener(MapEvent.RESIZE, onMapResize);
+				map.removeEventListener(MapEvent.RELOAD, onMapReload);
 				map.removeEventListener(MapEvent.MAX_EXTENT_CHANGED, onMaxExtentChanged);
 				map.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 			}
@@ -239,6 +241,7 @@ package org.openscales.core.layer {
 				this.map.addEventListener(MapEvent.CENTER_CHANGED, onMapCenterChanged);
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, onMapResolutionChanged);
 				this.map.addEventListener(MapEvent.MOVE_END, onMapMove);
+				this.map.addEventListener(MapEvent.RELOAD, onMapReload);
 				this.map.addEventListener(MapEvent.RESIZE, onMapResize);
 				this.map.addEventListener(MapEvent.MAX_EXTENT_CHANGED, onMaxExtentChanged);
 				this.map.addEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -284,6 +287,12 @@ package org.openscales.core.layer {
 		protected function onMapResolutionChanged(event:MapEvent):void
 		{
 			this._resolutionChanged = true;
+		}
+		
+		protected function onMapReload(event:MapEvent):void
+		{
+			this._mapReload = true;
+				
 		}
 		
 		/**
@@ -870,6 +879,7 @@ package org.openscales.core.layer {
 				}
 			}
 		}
+		
 
 		/**
 		 * A list of constraints for the layer

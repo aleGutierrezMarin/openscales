@@ -6,11 +6,13 @@ package org.openscales.core
 	import flash.events.ContextMenuEvent;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
+	import flash.utils.Timer;
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.core.basetypes.Resolution;
@@ -113,6 +115,7 @@ package org.openscales.core
 		private var _projection:String = DEFAULT_SRS_CODE;
 		private var _resolution:Resolution = DEFAULT_RESOLUTION;
 		private var _initialized:Boolean = false;
+		private var _timer:Timer;
 		
 		/**
 		 * @private
@@ -194,6 +197,9 @@ package org.openscales.core
 			// ... and then the size may be defined.
 			this.width = this.size.w;
 			this.height = this.size.h;
+			
+			this._timer = new Timer(500,1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			
 			
 
@@ -1049,6 +1055,8 @@ package org.openscales.core
 			if (this.maxExtent.containsLocation(newCenter))
 			{
 				this._center = newCenter;
+				this._timer.reset();
+				this._timer.start();
 				this.dispatchEvent(event);
 			}
 			else
@@ -1454,6 +1462,8 @@ package org.openscales.core
 			this._targetZoomPixel = null;
 			this._resolution = value;
 			this.dispatchEvent(event);
+			this._timer.reset();
+			this._timer.start();
 			Trace.log("Changing resolution"+ event.newResolution.value);
 		}
 		/**
@@ -1585,6 +1595,13 @@ package org.openscales.core
 		public function set zoomNavigationEnabled(value:Boolean):void
 		{
 			_zoomNavigationEnabled = value;
+		}
+		
+		private function onTimerEnd(event:TimerEvent):void
+		{
+			this._timer.stop();
+			var mapevent:MapEvent = new MapEvent(MapEvent.RELOAD, this);
+			this.dispatchEvent(mapevent);
 		}
 	}
 }
