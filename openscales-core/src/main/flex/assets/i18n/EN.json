@@ -103,6 +103,7 @@
    "openLSSearch.title": "Open LS Search",
    "openLSSearch.simpleSearch": "Simple search",
    "openLSSearch.advancedSearch": "Advanced search",
+   "openLSSearch.reverseSearch": "Reverse search",
    "openLSSearch.number": "Number",
    "openLSSearch.street": "Street",
    "openLSSearch.postalCode": "Postal code",
