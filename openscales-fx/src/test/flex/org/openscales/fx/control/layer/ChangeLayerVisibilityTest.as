@@ -44,9 +44,12 @@ package org.openscales.fx.control.layer
 		override public function tearDown():void
 		{
 			super.tearDown();
-			//_visibility.layer = null;
-			this._container.removeElement(_visibility);
-			//_visibility = null;
+			if(_visibility) {
+				_visibility.layer = null;
+				this._container.removeElement(_visibility);
+				_visibility = null;
+			}
+			
 			_map.removeAllLayers();
 			_layer1.destroy();
 			_layer1 = null;
