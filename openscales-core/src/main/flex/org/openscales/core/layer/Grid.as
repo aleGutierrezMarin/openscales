@@ -309,6 +309,14 @@ package org.openscales.core.layer
 						var drawnWidth:Number = (BottomRightCorner.x - TopLeftCorner.x) / this.requestedResolution.value;
 						var drawnHeight:Number = -(BottomRightCorner.y - TopLeftCorner.y) / this.requestedResolution.value;
 						var fullBmpBounds:Bounds = null;
+						if (drawnWidth == 0)
+						{
+							drawnWidth = 1;
+						}
+						if (drawnHeight == 0)
+						{
+							drawnHeight = 1;
+						}
 						if (drawnWidth * drawnHeight < 16777215)
 						{
 							BMD = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
