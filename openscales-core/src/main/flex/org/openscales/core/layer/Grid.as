@@ -250,6 +250,18 @@ package org.openscales.core.layer
 					bmpBounds = this.grid[0][0].bounds;
 					scale = this.scaleX;
 					var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
+					if (this.map.width * this.map.height >= 16777216)
+					{
+						this.map.width = this.map.height = 4095;
+					}
+					if(this.map.width == 0)
+					{
+						this.map.width = 1;
+					}
+					if (this.map.height == 0)
+					{
+						this.map.height = 1;
+					}
 					if (intersectBounds != null)
 					{
 						BMD = new BitmapData(this.map.width , this.map.height , true, 0x000000);
