@@ -62,7 +62,7 @@ package org.openscales.core.format
 			var styleNodes:XMLList = buildedFile..*::Style;
 			var placemarks:XMLList = buildedFile..*::Placemark;
 			var lineNodes:XMLList = buildedFile..*::LineString;
-			Assert.assertTrue("There should be 3 style nodes in this file",styleNodes.length() == 3);
+			Assert.assertTrue("There should be 2 style nodes in this file",styleNodes.length() == 3);
 			Assert.assertTrue("There should be 3 placemark nodes in this file",placemarks.length() == 3);
 			Assert.assertTrue("There should be 3 LineString nodes in this file",lineNodes.length() == 3);
 
