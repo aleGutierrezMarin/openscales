@@ -350,6 +350,9 @@ package org.openscales.core.layer
 									var recHeight:Number;
 									var region:Rectangle;
 									var tile:BitmapData;
+									
+									// If : the gridBound is fullcontained in the bitmap
+									// else : the gridBound is partially contained in the bitmap
 									if (fullBmpBounds.containsBounds(this.grid[i][j].bounds))
 									{
 										bufferTileBound = this.grid[i][j].bounds.getIntersection(fullBmpBounds);
@@ -379,8 +382,10 @@ package org.openscales.core.layer
 										deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/this.map.resolution.value;
 										var finalDeltaX:Number = (tilePartBounds.left - this.grid[i][j].bounds.left)/this.map.resolution.value;
 										var finalDeltaY:Number = -(tilePartBounds.top - this.grid[i][j].bounds.top)/this.map.resolution.value;
-										recWidth = Math.floor(tilePartBounds.width / this.map.resolution.value);
-										recHeight  = Math.floor(tilePartBounds.height / this.map.resolution.value);
+										var recCutWidth:Number = Math.round(tilePartBounds.width / this.map.resolution.value);
+										var recCutHeight:Number  = Math.round(tilePartBounds.height / this.map.resolution.value);
+										recWidth = Math.round(this.grid[i][j].bounds.width / this.map.resolution.value);
+										recHeight = Math.round(this.grid[i][j].bounds.height / this.map.resolution.value);
 										if (recHeight == 0)
 										{
 											recHeight = 1;
@@ -393,7 +398,7 @@ package org.openscales.core.layer
 										{
 											recHeight = recWidth = 4095;
 										}
-										region = new Rectangle(deltaX, deltaY, recWidth, recHeight);
+										region = new Rectangle(deltaX, deltaY, recCutWidth, recCutHeight);
 										tile = new BitmapData(recWidth, recHeight);
 										tile.copyPixels(BMD, region, new Point(finalDeltaX, finalDeltaY));
 										_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
