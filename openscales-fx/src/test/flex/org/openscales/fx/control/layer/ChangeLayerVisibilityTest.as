@@ -18,9 +18,9 @@ package org.openscales.fx.control.layer
 		/**
 		 * Basic controls for testing
 		 */
-		private var _map:Map = null;
-		private var _layer1:Layer = null;
-		private var _visibility:ChangeLayerVisibility = null;
+		private var _map:Map;
+		private var _layer1:Layer;
+		private var _visibility:ChangeLayerVisibility;
 		
 		public function ChangeLayerVisibilityTest() {}
 		
@@ -29,38 +29,38 @@ package org.openscales.fx.control.layer
 		{
 			super.setUp();
 			
-			_map = new Map();
-			_layer1 = new Layer("layer");
+			this._map = new Map();
+			this._layer1 = new Layer("layer");
 		
-			_map.addLayer(_layer1);
+			this._map.addLayer(this._layer1);
 			
-			_visibility = new ChangeLayerVisibility();
-			_visibility.layer = _layer1;
+			this._visibility = new ChangeLayerVisibility();
+			this._visibility.layer = this._layer1;
 			
-			this._container.addElement(_visibility);
+			this._container.addElement(this._visibility);
 		}
 		
 		[After]
 		override public function tearDown():void
 		{
 			super.tearDown();
-			if(_visibility) {
-				_visibility.layer = null;
-				this._container.removeElement(_visibility);
-				_visibility = null;
+			if(this._visibility) {
+				this._visibility.layer = null;
+				this._container.removeElement(this._visibility);
+				this._visibility = null;
 			}
 			
-			if(_map) {
-				_map.removeAllLayers();
+			if(this._map) {
+				this._map.removeAllLayers();
 			}
 			
-			if(_layer1) {
-				_layer1.destroy();
-				_layer1 = null;
+			if(this._layer1) {
+				this._layer1.destroy();
+				this._layer1 = null;
 			}
 			
-			if(_map) {
-				_map = null;
+			if(this._map) {
+				this._map = null;
 			}
 		}
 		
@@ -70,10 +70,10 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function hideLayerTest():void
 		{
-			_layer1.visible = true;
-			_visibility.layerVisible(new MouseEvent(MouseEvent.CLICK));
+			this._layer1.visible = true;
+			this._visibility.layerVisible(new MouseEvent(MouseEvent.CLICK));
 			
-			Assert.assertFalse(_layer1.visible);
+			Assert.assertFalse(this._layer1.visible);
 		}
 		
 		/**
@@ -82,10 +82,10 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function showLayerTest():void
 		{
-			_layer1.visible = false;
-			_visibility.layerVisible(new MouseEvent(MouseEvent.CLICK));
+			this._layer1.visible = false;
+			this._visibility.layerVisible(new MouseEvent(MouseEvent.CLICK));
 			
-			Assert.assertTrue(_layer1.visible);
+			Assert.assertTrue(this._layer1.visible);
 		}
 		
 		/**
@@ -94,9 +94,9 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function hiddenLayerEvent():void
 		{
-			_layer1.visible = false;
+			this._layer1.visible = false;
 			
-			Assert.assertFalse(_visibility.layerSwitcherCheckBox.selected);
+			Assert.assertFalse(this._visibility.layerSwitcherCheckBox.selected);
 		}
 		
 		/**
@@ -105,9 +105,9 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function showLayerEvent():void
 		{
-			_layer1.visible = true;
+			this._layer1.visible = true;
 			
-			Assert.assertTrue(_visibility.layerSwitcherCheckBox.selected);
+			Assert.assertTrue(this._visibility.layerSwitcherCheckBox.selected);
 		}
 	}
 }
