@@ -95,7 +95,7 @@ package org.openscales.core.handler.feature.draw
 		
 		/**
 		 * Callback function selectedStyle(feature:Feature):Style
-		 * The default style function used is SelectFeaturesHandler.defaultSelectedStyle
+		 * The default style function used is EditFeaturesHandler.defaultSelectedStyle
 		 */
 		private var _selectedStyle:Function = EditFeaturesHandler.defaultSelectedStyle;
 		
