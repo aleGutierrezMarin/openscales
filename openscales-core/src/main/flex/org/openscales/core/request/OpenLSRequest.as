@@ -4,6 +4,8 @@ package org.openscales.core.request
 	
 	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.UID;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -21,6 +23,11 @@ package org.openscales.core.request
 		private var _city:String = "";
 		private var _countryCode:String = "";
 		private var _version:String = "1.2";
+		private var _location:Location = null;
+		private var _circleCenter:Location = null;
+		private var _circleRadius:Number = 0;
+		private var _bounds:Bounds = null;
+		private var _reverseMode:String = "point";
 
 		private var _isValidPostalCode:Function = null;
 		
@@ -182,6 +189,69 @@ package org.openscales.core.request
 		}
 		
 		/**
+		 * Getter and setter of reverse mode.
+		 */
+		public function get reverseMode():String {
+			return this._reverseMode;
+		}
+		public function set reverseMode(value:String):void {
+			this._reverseMode = value;
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
+		 * Getter and setter of location.
+		 */
+		public function get location():Location {
+			return this._location;
+		}
+		public function set location(value:Location):void {
+			this._location = value;
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
+		 * Getter and setter of circle center.
+		 */
+		public function get circleCenter():Location {
+			return this._circleCenter;
+		}
+		public function set circleCenter(value:Location):void {
+			this._circleCenter = value;
+			this._reverseMode = "circle";
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
+		 * Getter and setter of circle radius.
+		 */
+		public function get circleRadius():Number {
+			return this._circleRadius;
+		}
+		public function set circleRadius(value:Number):void {
+			this._circleRadius = value;
+			this._reverseMode = "circle";
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
+		 * Getter and setter of bounds.
+		 */
+		public function get bounds():Bounds {
+			return this._bounds;
+		}
+		public function set bounds(value:Bounds):void {
+			this._bounds = value;
+			this._reverseMode = "bounds";
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
 		 * Define quickly all the fields of an OpenLS request.
 		 * @param id
 		 * @param freeFormAddress
@@ -257,6 +327,66 @@ package org.openscales.core.request
 		}
 		
 		/**
+		 * Define quickly the fields of a reverse OpenLS request.
+		 * @param id
+		 * @param location
+		 * @param srsName
+		 * @param maximumResponses
+		 * @param version
+		 */
+		public function defineReverseSearch(id:String, location:Location, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
+			this.id = id;
+			this.location = location;
+			this.srsName = srsName;
+			this.maximumResponses = maximumResponses;
+			this.version = version;
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
+		 * Define quickly the fields of a reverse OpenLS request, with a circle constraint.
+		 * @param id
+		 * @param location
+		 * @param circleCenter
+		 * @param circleRadius
+		 * @param srsName
+		 * @param maximumResponses
+		 * @param version
+		 */
+		public function defineReverseSearchInCircle(id:String, location:Location, circleCenter:Location, circleRadius:Number, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
+			this.id = id;
+			this.location = location;
+			this.circleCenter = circleCenter;
+			this.circleRadius = circleRadius;
+			this.srsName = srsName;
+			this.maximumResponses = maximumResponses;
+			this.version = version;
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
+		 * Define quickly the fields of a reverse OpenLS request, with a bounds constraint.
+		 * @param id
+		 * @param location
+		 * @param bounds
+		 * @param srsName
+		 * @param maximumResponses
+		 * @param version
+		 */
+		public function defineReverseSearchInBounds(id:String, location:Location, bounds:Bounds, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
+			this.id = id;
+			this.location = location;
+			this.bounds = bounds;
+			this.srsName = srsName;
+			this.maximumResponses = maximumResponses;
+			this.version = version;
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
 		 * Create the content of the request using the specified fields.
 		 * @return a String describing the content of the request.
 		 */
@@ -264,15 +394,7 @@ package org.openscales.core.request
 			if (!this.id || this.id=="") {
 				this.id = UID.gen_uid(); 
 			}
-			var request:String = '';
-			request += '<?xml version="1.0" encoding="UTF-8"?>';
-			request += '<XLS xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/xls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="'+this._version+'"  xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.2/olsAll.xsd">';
-			if (srsName && srsName != "") {
-				request += '<RequestHeader srsName="'+this.srsName+'"/>';
-			}
-			else {
-				request += '<RequestHeader/>';
-			}
+			var request:String = this.createRequestHeader();
 			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="GeocodeRequest" requestID="'+this.id+'" version="'+this._version+'">';
 			request += '<GeocodeRequest>';
 			
@@ -283,18 +405,63 @@ package org.openscales.core.request
 			}
 			else {
 				request += '<Address countryCode="' + this.countryCode + '">';
-				request += '<StreetAddress>';
-				request += '<Building number="' + this.number  + '"/>'; 
-				request += '<Street>' + this.street + '</Street>';
-				request += '</StreetAddress>';
+				request += '<StreetAddress><Building number="' + this.number  + '"/>'; 
+				request += '<Street>' + this.street + '</Street></StreetAddress>';
 				request += '<Place type="Municipality">' + this.city + '</Place>';
-				request += '<PostalCode>' + this.postalCode + '</PostalCode>';
-				request += '</Address>';				
+				request += '<PostalCode>' + this.postalCode + '</PostalCode></Address>';				
 			}
-			request += '</GeocodeRequest>';
-			request += '</Request>';
-			request += '</XLS>';
+			request += '</GeocodeRequest></Request></XLS>';
 			return request;
+		}
+		
+		/**
+		 * Create the content of the reverse request using the specified fields.
+		 * @return a String describing the content of the reverse request.
+		 */
+		private function createReverseContent():String {
+			if (!this.id || this.id=="") {
+				this.id = UID.gen_uid(); 
+			}
+			var request:String = this.createRequestHeader();
+			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="ReverseGeocodeRequest" requestID="'+this.id+'" version="'+this._version+'">';
+			request += '<ReverseGeocodeRequest><ReverseGeocodePreference>StreetAddress</ReverseGeocodePreference>';
+			request += '<Position><gml:Point><gml:pos>'+this._location.lon+' '+this._location.lat+'</gml:pos></gml:Point>';
+			
+			switch (this._reverseMode) {
+				case "point":
+					break;
+				case "circle":
+					request += '<gml:CircleByCenterPoint>';
+					request += '<gml:pos>'+this._circleCenter.lon+' '+this._circleCenter.lat+'</gml:pos>';
+					request += '<gml:radius>'+this._circleRadius+'</gml:radius>';
+				    request += '</gml:CircleByCenterPoint>';
+					break;
+				case "bounds":
+					request += '<gml:Polygon><gml:exterior><gml:LinearRing>';
+					request += '<gml:pos>'+this._bounds.left+' '+this._bounds.bottom+'</gml:pos>';
+					request += '<gml:pos>'+this._bounds.right+' '+this._bounds.bottom+'</gml:pos>';
+					request += '<gml:pos>'+this._bounds.right+' '+this._bounds.top+'</gml:pos>';
+					request += '<gml:pos>'+this._bounds.left+' '+this._bounds.top+'</gml:pos>';
+					request += '</gml:LinearRing></gml:exterior></gml:Polygon>';
+					break;
+				default:
+					break;
+			}
+			request += '</Position></ReverseGeocodeRequest></Request></XLS>';
+			return request;
+		}
+		
+		private function createRequestHeader():String {
+			var header:String = '';
+			header += '<?xml version="1.0" encoding="UTF-8"?>';
+			header += '<XLS xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/xls" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="'+this._version+'"  xsi:schemaLocation="http://www.opengis.net/xls http://schemas.opengis.net/ols/1.2/olsAll.xsd">';
+			if (srsName && srsName != "") {
+				header += '<RequestHeader srsName="'+this.srsName+'"/>';
+			}
+			else {
+				header += '<RequestHeader/>';
+			}
+			return header;
 		}
 		
 		/**
@@ -306,7 +473,11 @@ package org.openscales.core.request
 			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
 			var result:XMLList = new XMLList();
 			try {
-				result = response.xls::Response.xls::GeocodeResponse.xls::GeocodeResponseList; 
+				if (response.xls::Response.xls::ReverseGeocodeResponse.length()>0)
+					result = response.xls::Response.xls::ReverseGeocodeResponse;
+				else
+					if (response.xls::Response.xls::GeocodeResponse.xls::GeocodeResponseList.length()>0)
+						result = response.xls::Response.xls::GeocodeResponse.xls::GeocodeResponseList; 
 			}
 			catch (e:Error) {
 				Trace.error("OpenLSRequest - Error while reading XML response");
@@ -320,55 +491,40 @@ package org.openscales.core.request
 		 * @return the number of geocoded addresses
 		 */
 		static public function resultsNumber(response:XML):Number {
-			return OpenLSRequest.resultsList(response).@numberOfGeocodedAddresses.toString() as Number;
+			
+			var result:Number = 0;
+			try {
+				// TODO: vérifier le bon fonctionnement du if
+				if (OpenLSRequest.resultsList(response).hasOwnProperty("numberOfGeocodedAddresses"))
+					result = OpenLSRequest.resultsList(response).@numberOfGeocodedAddresses.toString() as Number;
+				else
+					result = OpenLSRequest.resultsList(response).length();
+			}
+			catch (e:Error) {
+				Trace.error("OpenLSRequest - Error while reading XML response");
+			}
+			return result;
 		}
 		
 		/**
 		 * Transform a list of results of a geocoding into an Array
 		 * describing which geocoded address by its "accuracy",
-		 * "lat", "lon", "numuber", "street", "postalCode", "city" and "countryCode".
+		 * "lat", "lon", "number", "street", "postalCode", "city" and "countryCode".
 		 * @param resultsList XML document describing the results of a geocoding
 		 * @return a Array of String
 		 */
 		static public function resultsListtoArray(resultsList:XMLList, version:String = "1.2"):Array {
-			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
-			var gml:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
-			var results:Array = new Array(), result:Object, position:Array;
+			var results:Array = new Array();
 			try {
-				for each (var gr:XML in resultsList.xls::GeocodedAddress) {
-					result = new Object();
-					position = gr.gml::Point.gml::pos.toString().split(' ');
-					var srsName:String = "EPSG:4326";
-					if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
-						srsName = gr.gml::Point.gml::pos.@srsName.toString().toUpperCase();
-					}
-					var latlon:Boolean = false;
-					if(version == "1.2") {
-						if(ProjProjection.projAxisOrder[srsName] && ProjProjection.projAxisOrder[srsName]==ProjProjection.AXIS_ORDER_NE)
-							latlon=true;
-					}
-					if (position.length == 2) {
-						if(latlon) {
-							result.lat = Number(position[0]);
-							result.lon = Number(position[1]);
-						} else {
-							result.lat = Number(position[1]);
-							result.lon = Number(position[0]);
-						}
-					}
-					result.countryCode = gr.xls::Address.@countryCode.toString();
-					result.number = gr.xls::Address.xls::StreetAddress.xls::Building.@number.toString();
-					result.street = gr.xls::Address.xls::StreetAddress.xls::Street.toString();
-					var places:XMLList = gr.xls::Address..xls::Place;
-					for each (var node:XML in places) {
-						if(node.@type=="Municipality") {
-							result.city = node.toString();
-							break;
-						}
-					}
-					result.postalCode = gr.xls::Address.xls::PostalCode.toString();
-					result.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
-					results.push(result);
+				switch (resultsList.localName()) {
+					case "GeocodeResponseList":
+						results = parseGeocodeResponse(resultsList, version);
+						break;
+					case "ReverseGeocodeResponse":
+						results = parseReverseGeocodeResponse(resultsList, version);
+						break;
+					default:
+						break;
 				}
 			}
 			catch (e:Error) {
@@ -377,10 +533,102 @@ package org.openscales.core.request
 			return results;
 		}
 		
+		static private function parseGeocodeResponse(resultsList:XMLList, version:String = "1.2"): Array {
+			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
+			var gml:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
+			var results:Array = new Array(), result:Object, position:Array;
+			
+			for each (var gr:XML in resultsList.xls::GeocodedAddress) {
+				result = new Object();
+				position = gr.gml::Point.gml::pos.toString().split(' ');
+				var srsName:String = "EPSG:4326";
+				if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
+					srsName = gr.gml::Point.gml::pos.@srsName.toString().toUpperCase();
+				}
+				var latlon:Boolean = false;
+				if(version == "1.2") {
+					if(ProjProjection.projAxisOrder[srsName] && ProjProjection.projAxisOrder[srsName]==ProjProjection.AXIS_ORDER_NE)
+						latlon=true;
+				}
+				if (position.length == 2) {
+					if(latlon) {
+						result.lat = Number(position[0]);
+						result.lon = Number(position[1]);
+					} else {
+						result.lat = Number(position[1]);
+						result.lon = Number(position[0]);
+					}
+				}
+				result.countryCode = gr.xls::Address.@countryCode.toString();
+				result.number = gr.xls::Address.xls::StreetAddress.xls::Building.@number.toString();
+				result.street = gr.xls::Address.xls::StreetAddress.xls::Street.toString();
+				var places:XMLList = gr.xls::Address..xls::Place;
+				for each (var node:XML in places) {
+					if(node.@type=="Municipality") {
+						result.city = node.toString();
+						break;
+					}
+				}
+				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
+				result.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
+				results.push(result);
+			}
+			
+			return results;
+		}
+		
+		static private function parseReverseGeocodeResponse(resultsList:XMLList, version:String = "1.2"): Array {
+			var xls:Namespace = new Namespace("xls", "http://www.opengis.net/xls");
+			var gml:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
+			var results:Array = new Array(), result:Object, position:Array;
+			
+			var index:uint = 0;
+			for each (var gr:XML in resultsList.xls::ReverseGeocodedLocation) {
+				result = new Object();
+				result.index = index;
+				position = gr.gml::Point.gml::pos.toString().split(' ');
+				var srsName:String = "EPSG:4326";
+				if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
+					srsName = gr.gml::Point.gml::pos.@srsName.toString().toUpperCase();
+				}
+				var latlon:Boolean = false;
+				if(version == "1.2") {
+					if(ProjProjection.projAxisOrder[srsName] && ProjProjection.projAxisOrder[srsName]==ProjProjection.AXIS_ORDER_NE)
+						latlon=true;
+				}
+				if (position.length == 2) {
+					if(latlon) {
+						result.lat = Number(position[0]);
+						result.lon = Number(position[1]);
+					} else {
+						result.lat = Number(position[1]);
+						result.lon = Number(position[0]);
+					}
+				}
+				result.countryCode = gr.xls::Address.@countryCode.toString();
+				result.number = gr.xls::Address.xls::StreetAddress.xls::Building.@number.toString();
+				result.street = gr.xls::Address.xls::StreetAddress.xls::Street.toString();
+				var places:XMLList = gr.xls::Address..xls::Place;
+				for each (var node:XML in places) {
+					if(node.@type=="Municipality") {
+						result.city = node.toString();
+						break;
+					}
+				}
+				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
+				result.distance = Number(gr.xls::SearchCentreDistance.@value.toString());
+				result.matchCode = gr.xls::ExtendedGeocodeMatchCode.toString();
+				index++;
+				results.push(result);
+			}
+			
+			return results;
+		}
+		
 		/**
 		 * Transform a list of results of a geocoding into a JSON formatted
 		 * String describing which geocoded address by its "accuracy",
-		 * "lat", "lon", "numuber", "street", "postalCode", "city" and "countryCode".
+		 * "lat", "lon", "number", "street", "postalCode", "city" and "countryCode".
 		 * @param resultsList XML document describing the results of a geocoding
 		 * @return a JSON string
 		 */
