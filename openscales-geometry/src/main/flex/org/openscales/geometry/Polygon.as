@@ -174,7 +174,7 @@ package org.openscales.geometry
 				return this.containsPoint((geom as LineString).componentByIndex(0) as Point)
 					|| ((geom is LinearRing) && (geom as LinearRing).containsPoint((this._components[0] as LinearRing).componentByIndex(0) as Point));
 			}
-			else if (getQualifiedClassName(geom) == "org.openscales.geometry::Polygon") {
+			else if (geom is Polygon) {
 				// Two holed polygons intersect if and only if one of them
 				//  intersects with the outer LinearRing of the other polygon
 				//  without being fully included in one of its holes.

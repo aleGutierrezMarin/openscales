@@ -935,9 +935,8 @@ package org.openscales.core.format
 						}
 					}
 				}
+				placemark.appendChild(extendedData);
 			}
-			
-			placemark.appendChild(extendedData);
 			
 			return placemark;
 		}
