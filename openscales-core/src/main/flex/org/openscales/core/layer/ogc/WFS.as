@@ -30,7 +30,6 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WFS extends VectorLayer
 	{
-		private var _timer:Timer;
 		private var _writer:Format = null;
 		
 		/**
@@ -166,12 +165,6 @@ package org.openscales.core.layer.ogc
 		 */
 		override public function set map(map:Map):void {
 			super.map = map;
-			if(this._timer) {
-				this._timer.reset();
-			} else {
-				this._timer = new Timer(500,1);
-				this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
-			}
 			// GetCapabilities request made here in order to have the proxy set 
 			if (url != null && url != "" && this.capabilities == null && useCapabilities == true) {
 				var getCap:GetCapabilities = new GetCapabilities("wfs", url, this.capabilitiesGetter,
@@ -202,9 +195,11 @@ package org.openscales.core.layer.ogc
 			var centerChangedCache:Boolean = this._centerChanged;
 			var resolutionChangedCache:Boolean = this._resolutionChanged;
 			var projectionChangedCache:Boolean = this._projectionChanged;
+			var mapReloadCache:Boolean = this._mapReload;
 			this._centerChanged = false;
 			this._projectionChanged = false;
 			this._resolutionChanged = false;
+			this._mapReload = false;
 			if (fullRedraw)
 			{
 				this.clear();
@@ -226,66 +221,58 @@ package org.openscales.core.layer.ogc
 				this._initialized = true;
 				return;
 			}
-			if (centerChangedCache || projectionChangedCache || resolutionChangedCache)
+			if (mapReloadCache)
 			{
-				var previousFeatureBbox:Bounds;
-				
-				if (centerChangedCache)
-				{
-					if (!this._timer.running)
-					{
-						previousFeatureBbox = this.featuresBbox;
-						this.featuresBbox = this.defineBounds();
-						
-						if (!previousFeatureBbox.containsBounds(this.featuresBbox))
-						{
-							this.loadFeatures(this.getFullRequestString());
-						}
-					}
-				}
-				if (resolutionChangedCache || projectionChangedCache)
-				{
-					if (!this._timer.running)
-					{
-						previousFeatureBbox = this.featuresBbox;
-						this.featuresBbox = this.defineBounds();
-						
-						if (!previousFeatureBbox.containsBounds(this.featuresBbox))
-						{
-							this.loadFeatures(this.getFullRequestString());
-						}
-						this._currentScale = 0;
-						this.x = 0;
-						this.y = 0;
-						this.scaleX = 1;
-						this.scaleY = 1;
-						this.resetFeaturesPosition();
-						this.draw();
-					}
-				}
-				
-				if (resolutionChangedCache)
-				{
-					var ratio:Number = this._previousResolution.value / this.map.resolution.value;
-					this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
-					this._previousResolution = this.map.resolution;
-					resolutionChangedCache = false;
-				}
-				
-				if (centerChangedCache)
-				{
-					var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
-					var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
-					var deltaX:Number = deltaLon/this.map.resolution.value;
-					var deltaY:Number = deltaLat/this.map.resolution.value;
-					
-					this.x = this.x - deltaX;
-					this.y = this.y + deltaY;
-					this._previousCenter = this.map.center.clone();
-					centerChangedCache = false;
-				}
-				
+				this.actualizeFeatures();
 			}
+			if (resolutionChangedCache)
+			{
+				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
+				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
+				this._previousResolution = this.map.resolution;
+				resolutionChangedCache = false;
+			}
+			
+			if (centerChangedCache)
+			{
+				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
+				var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
+				var deltaX:Number = deltaLon/this.map.resolution.value;
+				var deltaY:Number = deltaLat/this.map.resolution.value;
+				
+				this.x = this.x - deltaX;
+				this.y = this.y + deltaY;
+				this._previousCenter = this.map.center.clone();
+				centerChangedCache = false;
+			}
+		}
+		
+		private function actualizeFeatures():void
+		{
+			var previousFeatureBbox:Bounds;
+			previousFeatureBbox = this.featuresBbox;
+			this.featuresBbox = this.defineBounds();
+			
+			if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+			{
+				this.loadFeatures(this.getFullRequestString());
+			}
+			previousFeatureBbox = this.featuresBbox;
+			this.featuresBbox = this.defineBounds();
+			
+			/*if (!previousFeatureBbox.containsBounds(this.featuresBbox))
+			{
+				this.loadFeatures(this.getFullRequestString());
+			}*/
+			this._currentScale = 0;
+			this.x = 0;
+			this.y = 0;
+			this.scaleX = 1;
+			this.scaleY = 1;
+			this.resetFeaturesPosition();
+			this.draw();
+			var evt:MapEvent = new MapEvent(MapEvent.ACTIVATE_HANDLER, this.map);
+			this.map.dispatchEvent(evt);
 		}
 		
 		private function scaleLayer(scale:Number, offSet:Pixel = null):void
@@ -303,8 +290,7 @@ package org.openscales.core.layer.ogc
 		private function onTimerEnd(event:TimerEvent):void
 		{
 			// To activate (if needed) SelectFeaturesHandler
-			var evt:MapEvent = new MapEvent(MapEvent.ACTIVATE_HANDLER, this.map);
-			this.map.dispatchEvent(evt);
+
 			
 			this._centerChanged = true;
 			this._resolutionChanged = true;
@@ -315,10 +301,7 @@ package org.openscales.core.layer.ogc
 			// To disactivate (if needed) SelectFeaturesHandler
 			var evt:MapEvent = new MapEvent(MapEvent.DISACTIVATE_HANDLER, this.map);
 			this.map.dispatchEvent(evt);
-			
-			this._timer.reset();
-			this._timer.start();
-			this._resolutionChanged = true;
+			super.onMapResolutionChanged(event);
 		}
 		
 		private function defineBounds():Bounds
@@ -360,13 +343,6 @@ package org.openscales.core.layer.ogc
 			
 			// Return the bounds
 			return layerExtent;
-		}
-		
-		override protected function onMapCenterChanged(event:MapEvent):void
-		{
-			this._timer.reset();
-			this._timer.start();	
-			this._centerChanged = true;
 		}
 		
 		override public function get available():Boolean
