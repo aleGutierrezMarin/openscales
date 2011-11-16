@@ -123,7 +123,7 @@
 					_layerManager.moveForward(_layer);
 				}
 				else{
-					this._layer.map.changeLayerIndexByStep(this._layer,+1);
+					this._layer.map.changeLayerIndexByDelta(this._layer,+1);
 				}
 			}
 			
@@ -136,7 +136,7 @@
 					_layerManager.moveBack(_layer);
 				}
 				else{
-					this._layer.map.changeLayerIndexByStep(this._layer,-1);
+					this._layer.map.changeLayerIndexByDelta(this._layer,-1);
 				}
 			}
 		]]>

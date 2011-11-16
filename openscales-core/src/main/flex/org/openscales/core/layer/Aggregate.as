@@ -2,6 +2,7 @@ package org.openscales.core.layer
 {	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	
@@ -149,6 +150,10 @@ package org.openscales.core.layer
 		 * @param map The map to which the Aggergate (and its layers) will be attached
 		 */ 
 		override public function set map(value:Map):void{
+			if(this.map){
+				this.map.removeEventListener(LayerEvent.LAYER_MOVED_DOWN, makeMyLayersFollowMe);
+				this.map.removeEventListener(LayerEvent.LAYER_MOVED_UP, makeMyLayersFollowMe);
+			}
 			if(this._layers){
 				var layer:Layer;
 				if(value){
@@ -168,9 +173,41 @@ package org.openscales.core.layer
 			}else{
 				super.map=value;
 			}
+			if(this.map){
+				this.map.addEventListener(LayerEvent.LAYER_MOVED_DOWN, makeMyLayersFollowMe);
+				this.map.addEventListener(LayerEvent.LAYER_MOVED_UP, makeMyLayersFollowMe);
+			}
+			
 			
 		}
 
+		/**
+		 * @private
+		 * 
+		 * When an layer is moved (typically in layer manager), we need to ensure that this aggregate and its contained layers are sticking together (in map.layers)
+		 */ 
+		protected function makeMyLayersFollowMe(event:LayerEvent):void{
+			var currentIndex:uint;
+			var containedLayerNewIndex:uint;
+			var containedLayer:Layer;
+			var mapLayersLength:uint;
+			
+			if(!event)return;
+			if(!this.layers || !this.map || (this.layers.length<=0))return;
+			if(this.layers.indexOf(event.layer)>=0)return; //If we process contained layers, we will enter in a infinite loop
+			
+			currentIndex=this.map.layers.indexOf(this);
+			if(currentIndex<0)return;
+			mapLayersLength = this.map.layers.length;
+			containedLayerNewIndex = currentIndex+1;
+			for each(containedLayer in this.layers){
+				containedLayerNewIndex = Math.min(mapLayersLength-1,containedLayerNewIndex);
+				this.map.changeLayerIndex(containedLayer,containedLayerNewIndex);
+				++containedLayerNewIndex;
+			}
+			
+		}
+		
 		override public function set alpha(value:Number):void{
 			super.alpha = value;
 			
