@@ -3,7 +3,6 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
@@ -16,6 +15,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.tile.ImageTile;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -80,15 +80,8 @@ package org.openscales.core.layer.ogc
 		/**
 		 * @inheritDoc
 		 */
-		override public function redraw(fullRedraw:Boolean=false):void {
-			
-			if (this.map == null)
-				return;
-
-			
-			if (!(this._centerChanged || this._resolutionChanged || this._projectionChanged) && !this)
-				return;
-				
+		override protected function actualizeGrid(bounds:Bounds, forceReTile:Boolean):void
+		{
 			if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
 				this.getCapabilities();
 			} else {
@@ -101,8 +94,29 @@ package org.openscales.core.layer.ogc
 				var tileMatrixSet:TileMatrixSet = tms.getValue(this.tileMatrixSet);
 				var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
 				this._tileOrigin = tileMatrix.topLeftCorner.clone();
-				super.redraw(fullRedraw);
+				super.actualizeGrid(bounds, forceReTile);
 			}
+		}
+		
+		override public function redraw(fullRedraw:Boolean=false):void
+		{
+			if (!this._initialized)
+			{
+				if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
+					this.getCapabilities();
+				} else {
+					var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
+					var tms:HashMap = this.tileMatrixSets;
+					if(!tms.containsKey(this.tileMatrixSet)) {
+						this.clear();
+						return;
+					}
+					var tileMatrixSet:TileMatrixSet = tms.getValue(this.tileMatrixSet);
+					var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
+					this._tileOrigin = tileMatrix.topLeftCorner.clone();
+				}
+			}
+			super.redraw(fullRedraw);
 		}
 		
 		/**

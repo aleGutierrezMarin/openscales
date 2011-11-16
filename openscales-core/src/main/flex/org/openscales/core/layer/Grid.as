@@ -1,8 +1,14 @@
 package org.openscales.core.layer
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.PixelSnapping;
+	import flash.display.Sprite;
 	import flash.events.TimerEvent;
 	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.net.LocalConnection;
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
@@ -26,14 +32,15 @@ package org.openscales.core.layer
 	public class Grid extends HTTPRequest
 	{
 		
-		private var _timer:Timer;
-		
 		private const DEFAULT_TILE_WIDTH:Number = 256;
 		
 		private const DEFAULT_TILE_HEIGHT:Number = 256;
 		
 		/** The grid array contains tiles **/		
 		private var _grid:Vector.<Vector.<ImageTile>> = null;
+		
+		//private var _backGridContainer:Sprite = new Sprite();
+		private var _backGrid:Vector.<Vector.<Bitmap>> = null;
 		
 		protected var _tiled:Boolean = true;
 		
@@ -55,13 +62,11 @@ package org.openscales.core.layer
 		
 		private var _resquestResolution:Number = 0;
 
-		private var _initialized:Boolean = false;
+		protected var _initialized:Boolean = false;
 		
 		private var _scaleOnZoomRatiochanged:Number = 1;
 		
 		private var _requestedResolution:Resolution;
-		
-		private var _backGrid:Bitmap = null;
 		
 		private var _previousCenter:Location = null;
 		
@@ -73,6 +78,7 @@ package org.openscales.core.layer
 		
 		private var _lastScale:Number = 1;
 		private var _lastRoundedScale:Number = 1;
+		private var _lastStableScale:Number = 1;
 		
 		/**
 		 * Create a new grid layer
@@ -92,7 +98,8 @@ package org.openscales.core.layer
 			//TODO delete url and params after osmparams work
 			super(name, url, params);
 			
-			
+			//this.addChild(_backGridContainer);
+			//this._backGridContainer.add
 			this.buffer = 0;
 			this._defaultMatrixTranform = this.transform.matrix;
 			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
@@ -175,47 +182,28 @@ package org.openscales.core.layer
 			var centerChangedCache:Boolean = this._centerChanged;
 			var resolutionChangedCache:Boolean = this._resolutionChanged;
 			var projectionChangedCache:Boolean = this._projectionChanged;
+			var mapReloadCache:Boolean = this._mapReload;
 			this._centerChanged = false;
 			this._projectionChanged = false;
 			this._resolutionChanged = false;
+			this._mapReload = false;
 			
 			var ratio:Number;
 			
-			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
 			var bounds:Bounds = this.map.extent.clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
-
-			
-			if (centerChangedCache || projectionChangedCache || resolutionChangedCache || forceReTile || !_initialized)
+			if (this.loadComplete)
 			{
-				if (!this._timer.running)
-				{
-					if (!this.tiled) 
-					{
-								this.clear();
-								this._lastScale = 1;
-								this.initSingleTile(bounds);
-					} else {
-						if ((resolution != this._resquestResolution) || forceReTile)
-						{
-							this.initGriddedTiles(bounds, true);
-							this._lastScale = 1;
-							ratio = this._requestedResolution.value/this.map.resolution.value;
-							this.scaleLayer(ratio, new Pixel(this.x - this._origin.x, this.y - this._origin.y));
-							resolutionChangedCache = false;
-							this._previousResolution = this.map.resolution;
-							centerChangedCache = false;
-							this._previousCenter = this.map.center.clone();
-							this.actualizeGridSize(bounds);
-						} else 
-						{
-							this.moveGriddedTiles(bounds);
-							this.actualizeGridSize(bounds);
-						}
-					} 
-					_initialized = true;
-				}
+				this._backGrid = null;
+			}
+			
+			
+			if (mapReloadCache || forceReTile || !_initialized)
+			{
+				actualizeGrid(bounds, forceReTile);
+				resolutionChangedCache = false;
+				centerChangedCache = false;
 			}
 			
 			if (resolutionChangedCache)
@@ -230,15 +218,223 @@ package org.openscales.core.layer
 			{
 				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
 				var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
-				var deltaX:Number = deltaLon/this.map.resolution.value;
-				var deltaY:Number = deltaLat/this.map.resolution.value;
+				var deltaXCenter:Number = deltaLon/this.map.resolution.value;
+				var deltaYCenter:Number = deltaLat/this.map.resolution.value;
 				
-				this.x = this.x - deltaX;
-				this.y = this.y + deltaY;
+				this.x = this.x - deltaXCenter;
+				this.y = this.y + deltaYCenter;
 				this._previousCenter = this.map.center;
 				centerChangedCache = false;
 			}
 		}
+		
+		protected function actualizeGrid(bounds:Bounds, forceReTile:Boolean):void
+		{
+			var bmpBounds:Bounds;
+			var scale:Number;
+			var BMD:BitmapData;
+			var ratio:Number;
+			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
+			if (!this.tiled) 
+			{
+				if(this._backGrid == null)
+				{
+					this._backGrid = new Vector.<Vector.<Bitmap>>(1);
+					this._backGrid[0] = new Vector.<Bitmap>(1);
+					this._backGrid[0][0] = null;
+				}
+				if(this._initialized)
+				{
+					var NewLayerBounds:Bounds = this.maxExtent.getIntersection(bounds);
+					NewLayerBounds = this.map.maxExtent.getIntersection(NewLayerBounds);
+					bmpBounds = this.grid[0][0].bounds;
+					scale = this.scaleX;
+					var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
+					if (intersectBounds != null)
+					{
+						BMD = new BitmapData(this.map.width , this.map.height , true, 0x000000);
+						BMD.draw(this, null, null, null, null, true);
+						_backGrid[0][0] = new Bitmap(BMD, PixelSnapping.NEVER, true);
+						_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
+						_backGrid[0][0].x = this.x;
+						_backGrid[0][0].y = this.y;
+					}else
+					{
+						_backGrid[0][0] = null;
+					}
+				}
+				this.clear();
+				this._lastScale = 1;
+				this.initSingleTile(bounds);
+				if(_backGrid[0][0])
+				{
+					_backGrid[0][0].x -= this.grid[0][0].x;
+					_backGrid[0][0].y -= this.grid[0][0].y;
+					this.grid[0][0].addChildAt(_backGrid[0][0], 0);
+					this.addChild(this.grid[0][0]);
+				}
+			} else {
+				if ((resolution != this._resquestResolution) || forceReTile)
+				{
+					var i:int;
+					var j:int;
+					var gridColLength:int;
+					var gridRowLength:int;
+					var TopLeftCorner:Location;
+					if(this._initialized)
+					{
+						gridRowLength = this.grid.length;
+						gridColLength = this.grid[0].length;
+						
+						// Compute the bitmapBounds
+						TopLeftCorner = new Location(this.grid[0][0].bounds.left, this.grid[0][0].bounds.top, this.projection);
+						var BottomRightCorner:Location = new Location(this.grid[gridRowLength - 1][gridColLength - 1].bounds.right, this.grid[gridRowLength - 1][gridColLength - 1].bounds.bottom);
+						var firstDrawnTileIndex:Point;
+						var lastDrawnTileIndex:Point;
+						
+						bmpBounds = this.grid[0][0].bounds;
+						scale = this.scaleX;
+						var drawnWidth:Number = (BottomRightCorner.x - TopLeftCorner.x) / this.requestedResolution.value;
+						var drawnHeight:Number = -(BottomRightCorner.y - TopLeftCorner.y) / this.requestedResolution.value;
+						var fullBmpBounds:Bounds = null;
+						if (drawnWidth * drawnHeight < 16777215)
+						{
+							BMD = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
+							BMD.draw(this, this.transform.matrix, null, null, null, true);
+							var debugBitmap:Bitmap = new Bitmap(BMD);
+							debugBitmap.alpha = 0.5;
+							//this.map.addChild(debugBitmap);
+							var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
+							
+							
+							var bmpRequestedResolution:Number = this.requestedResolution.value;
+							fullBmpBounds = this.map.extent.clone(); //new Bounds(TopLeftCorner.x, BottomRightCorner.y, BottomRightCorner.x, TopLeftCorner.y, this.projection);/*TopLeftCorner.y - (BMD.height*this.requestedResolution.value),TopLeftCorner.x + (BMD.width*this.requestedResolution.value),TopLeftCorner.y,this.projection);*/
+							TopLeftCorner = new Location(fullBmpBounds.left, fullBmpBounds.top, this.projection);
+						}
+					}
+					this.initGriddedTiles(bounds, true);
+					this._lastScale = 1;
+					ratio = this._requestedResolution.value/this.map.resolution.value;
+					this.scaleLayer(ratio, new Pixel(this.x - this._origin.x, this.y - this._origin.y));
+					this._previousResolution = this.map.resolution;
+					this._previousCenter = this.map.center.clone();
+					this.moveGriddedTiles(bounds);
+					this.actualizeGridSize(bounds);
+					
+					if (fullBmpBounds != null)
+					{
+						gridRowLength = this.grid.length;
+						gridColLength = this.grid[0].length;
+						
+						this._backGrid = new Vector.<Vector.<Bitmap>>(1);
+						this._backGrid[0] = new Vector.<Bitmap>(1);
+						for (i = 0; i< gridRowLength; ++i)
+						{
+							this._backGrid[i] = new Vector.<Bitmap>(1);
+							for (j = 0; j< gridColLength; ++j)
+							{
+								this._backGrid[i][j] = new Bitmap();
+							}
+						}
+						
+						
+						for (i = 0; i< gridRowLength; ++i)
+						{
+							for (j = 0; j < gridColLength; ++j)
+							{
+								if (this.grid[i][j].bounds.intersectsBounds(fullBmpBounds, false))
+								{
+									var bufferTileBound:Bounds;
+									var tiletopLeftcorner:Location;
+									var deltaX:Number;
+									var deltaY:Number;
+									var recWidth:Number;
+									var recHeight:Number;
+									var region:Rectangle;
+									var tile:BitmapData;
+									
+									// If : the gridBound is fullcontained in the bitmap
+									// else : the gridBound is partially contained in the bitmap
+									if (fullBmpBounds.containsBounds(this.grid[i][j].bounds))
+									{
+										bufferTileBound = this.grid[i][j].bounds.getIntersection(fullBmpBounds);
+										tiletopLeftcorner = new Location(bufferTileBound.left, bufferTileBound.top, this.projection);
+										deltaX = (tiletopLeftcorner.x - TopLeftCorner.x)/this.map.resolution.value;
+										deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/this.map.resolution.value;
+										recWidth = Math.round(this.grid[i][j].bounds.width / this.map.resolution.value);
+										recHeight = Math.round(this.grid[i][j].bounds.height / this.map.resolution.value);
+										if (recWidth == 0)
+										{
+											recWidth = 1;
+										}
+										if (recHeight == 0)
+										{
+											recHeight = 1;
+										}
+										region = new Rectangle(deltaX, deltaY, recWidth, recHeight);
+										tile = new BitmapData(recWidth, recHeight);
+										tile.copyPixels(BMD, region, new Point());
+										_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
+									}else
+									{
+										var tilePartBounds:Bounds = fullBmpBounds.getIntersection(this.grid[i][j].bounds);
+										tiletopLeftcorner = new Location(tilePartBounds.left, tilePartBounds.top, this.projection);
+										var bmpRequestedResolutionScaled:Number = bmpRequestedResolution/this.scaleX;
+										deltaX = (tiletopLeftcorner.x - TopLeftCorner.x)/this.map.resolution.value;
+										deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/this.map.resolution.value;
+										var finalDeltaX:Number = (tilePartBounds.left - this.grid[i][j].bounds.left)/this.map.resolution.value;
+										var finalDeltaY:Number = -(tilePartBounds.top - this.grid[i][j].bounds.top)/this.map.resolution.value;
+										var recCutWidth:Number = Math.round(tilePartBounds.width / this.map.resolution.value + 3);
+										var recCutHeight:Number  = Math.round(tilePartBounds.height / this.map.resolution.value + 3);
+										recWidth = Math.round(this.grid[i][j].bounds.width / this.map.resolution.value);
+										recHeight = Math.round(this.grid[i][j].bounds.height / this.map.resolution.value);
+										if (recHeight == 0)
+										{
+											recHeight = 1;
+										}
+										if (recWidth == 0)
+										{
+											recWidth = 1;
+										}
+										if (recHeight * recWidth > 16777216)
+										{
+											recHeight = recWidth = 4095;
+										}
+										region = new Rectangle(deltaX, deltaY, recCutWidth, recCutHeight);
+										tile = new BitmapData(recWidth, recHeight);
+										tile.copyPixels(BMD, region, new Point(finalDeltaX, finalDeltaY));
+										_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
+										
+									}
+								}
+							}
+						}
+						for (i = 0; i< gridRowLength; ++i)
+						{
+							for (j = 0; j < gridColLength; ++j)
+							{
+								if (_backGrid[i][j] && this.grid[i][j])
+								{
+									_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= 1/this.scaleX;//(bmpRequestedResolution/this.requestedResolution.value);						
+									this.grid[i][j].addChildAt(_backGrid[i][j], 0);
+									this.grid[i][j].drawn = true;
+									this.addChild(grid[i][j]);
+								}
+							}
+						}
+					}
+				} else 
+				{
+					this.moveGriddedTiles(bounds);
+					this.actualizeGridSize(bounds);
+				}
+				
+			} 
+			_lastStableScale = this.scaleX;
+			_initialized = true;
+		}
+		
+
 		
 		/**
 		 * Method that will scale the layer sprite with the given scale at the given pixel
@@ -390,15 +586,11 @@ package org.openscales.core.layer
 		
 		override protected function onMapCenterChanged(event:MapEvent):void
 		{
-			this._timer.reset();
-			this._timer.start();
 			super.onMapCenterChanged(event);
 		}
 		
 		override protected function onMapResolutionChanged(event:MapEvent):void
 		{
-			this._timer.reset();
-			this._timer.start();
 			super.onMapResolutionChanged(event);
 		}
 		/**
@@ -561,18 +753,6 @@ package org.openscales.core.layer
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
 			this.transform.matrix = this._defaultMatrixTranform.clone();
-			/*if (this._grid != null)
-			{
-				var rowlength:Number = this._grid.length;
-				for (var i:int = 0; i<rowlength; ++i)
-				{
-					var colLength:Number = this._grid[i].length;
-					for (var j:int = 0; j<colLength; ++j)
-					{
-						this._grid[i][j].transform.matrix = this._defaultMatrixTranform.clone();
-					}
-				}
-			}*/
 			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projection);
 			this.requestedResolution = this.getSupportedResolution(this.map.resolution);
 			_resquestResolution = this.requestedResolution.value;
@@ -950,16 +1130,6 @@ package org.openscales.core.layer
 			}
 		}
 		
-		private function onTimerEnd(event:TimerEvent):void
-		{
-			/*if(!this.tiled)
-			{*/
-				this._timer.stop();
-				this._centerChanged = true;
-				this._resolutionChanged = true;
-			/*}*/
-		}
-		
 		//Getters and Setters
 		override public function get imageSize():Size {
 			if(this._imageSize == null)
@@ -1047,12 +1217,6 @@ package org.openscales.core.layer
 			{
 				_previousCenter = this.map.center.clone();
 				_previousResolution = this.map.resolution;
-				if(this._timer) {
-					this._timer.reset();
-				} else {
-					this._timer = new Timer(500,1);
-					this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
-				}
 				this._initialized = false;
 			}
 		}
@@ -1069,6 +1233,27 @@ package org.openscales.core.layer
 				this.actualizeGridSize(this.map.extent);
 			}
 		}
+		
+		/**
+		 * Return if the layer is loading data
+		 */
+		/*public function get loading():Boolean
+		{
+			if (!this.grid)
+				return false;
+			
+			var gridRowLength:int = this.grid.length;
+			var gridColLength:int = this.grid[0].length;
+			for (var i:int=0; i<gridRowLength; ++i)
+			{
+				for(var j:int=0; j<gridColLength; ++j)
+				{
+					if (this.grid[i][j].loadComplete)
+							return true;
+				}
+			}
+			return false;
+		}*/
 		/*override public function get minResolution():Resolution {
 			var minRes:Resolution = super.minResolution;
 			
