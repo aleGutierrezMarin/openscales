@@ -50,10 +50,18 @@ package org.openscales.fx.control.layer
 				_visibility = null;
 			}
 			
-			_map.removeAllLayers();
-			_layer1.destroy();
-			_layer1 = null;
-			_map = null;
+			if(_map) {
+				_map.removeAllLayers();
+			}
+			
+			if(_layer1) {
+				_layer1.destroy();
+				_layer1 = null;
+			}
+			
+			if(_map) {
+				_map = null;
+			}
 		}
 		
 		/**
