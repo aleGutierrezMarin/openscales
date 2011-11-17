@@ -29,7 +29,7 @@ package org.openscales.fx.control.layer
 		
 		public function ChangeLayerVisibilityTest() {}
 		
-		[Before]
+		/*[Before]
 		public function setUp():void
 		{
 			this._container = new Group();
@@ -45,7 +45,7 @@ package org.openscales.fx.control.layer
 			this._visibility.layer = this._layer1;
 			
 			this._container.addElement(this._visibility);
-		}
+		}*/
 		
 		/*[After]
 		public function tearDown():void
@@ -79,6 +79,21 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function hideLayerTest():void
 		{
+			//setUp
+			this._container = new Group();
+			
+			(FlexGlobals.topLevelApplication as Application).addElement(this._container);
+			
+			this._map = new Map();
+			this._layer1 = new Layer("layer");
+			
+			this._map.addLayer(this._layer1);
+			
+			this._visibility = new ChangeLayerVisibility();
+			this._visibility.layer = this._layer1;
+			
+			this._container.addElement(this._visibility);
+			
 			this._layer1.visible = true;
 			this._visibility.layerVisible(new MouseEvent(MouseEvent.CLICK));
 			
@@ -91,6 +106,21 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function showLayerTest():void
 		{
+			//setUp
+			this._container = new Group();
+			
+			(FlexGlobals.topLevelApplication as Application).addElement(this._container);
+			
+			this._map = new Map();
+			this._layer1 = new Layer("layer");
+			
+			this._map.addLayer(this._layer1);
+			
+			this._visibility = new ChangeLayerVisibility();
+			this._visibility.layer = this._layer1;
+			
+			this._container.addElement(this._visibility);
+			
 			this._layer1.visible = false;
 			this._visibility.layerVisible(new MouseEvent(MouseEvent.CLICK));
 			
@@ -103,6 +133,21 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function hiddenLayerEvent():void
 		{
+			//setUp
+			this._container = new Group();
+			
+			(FlexGlobals.topLevelApplication as Application).addElement(this._container);
+			
+			this._map = new Map();
+			this._layer1 = new Layer("layer");
+			
+			this._map.addLayer(this._layer1);
+			
+			this._visibility = new ChangeLayerVisibility();
+			this._visibility.layer = this._layer1;
+			
+			this._container.addElement(this._visibility);
+			
 			this._layer1.visible = false;
 			
 			Assert.assertFalse(this._visibility.layerSwitcherCheckBox.selected);
@@ -114,6 +159,21 @@ package org.openscales.fx.control.layer
 		[Test]
 		public function showLayerEvent():void
 		{
+			//setUp
+			this._container = new Group();
+			
+			(FlexGlobals.topLevelApplication as Application).addElement(this._container);
+			
+			this._map = new Map();
+			this._layer1 = new Layer("layer");
+			
+			this._map.addLayer(this._layer1);
+			
+			this._visibility = new ChangeLayerVisibility();
+			this._visibility.layer = this._layer1;
+			
+			this._container.addElement(this._visibility);
+			
 			this._layer1.visible = true;
 			
 			Assert.assertTrue(this._visibility.layerSwitcherCheckBox.selected);
