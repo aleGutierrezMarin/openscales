@@ -997,7 +997,7 @@ package org.openscales.core.layer
 			var buffer:Number = this.buffer || 1;
 			var _outTimer:Timer = new Timer(3000);
 			_outTimer.start();
-			while (true) {
+			while (_outTimer.running) {
 				var tlLayer:Pixel = this.grid[0][0].position;
 				var ratio:Number = this.getSupportedResolution(this.map.resolution).value / this.map.resolution.value; 
 				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x/ratio, tlLayer.y + this.y/ratio); 
@@ -1012,8 +1012,6 @@ package org.openscales.core.layer
 				} else {
 					break;
 				}
-				if (!_outTimer.running)
-					break;
 			};
 			
 			if (this.buffer == 0) {
