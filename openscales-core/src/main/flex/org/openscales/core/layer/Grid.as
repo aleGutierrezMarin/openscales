@@ -317,6 +317,14 @@ package org.openscales.core.layer
 						{
 							drawnHeight = 1;
 						}
+						if (drawnHeight > 8191)
+						{
+							drawnHeight = 8191;
+						}
+						if (drawnWidth > 8191)
+						{
+							drawnWidth = 8191;
+						}
 						if (drawnWidth * drawnHeight < 16777215)
 						{
 							BMD = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
@@ -415,6 +423,14 @@ package org.openscales.core.layer
 										if (recWidth == 0)
 										{
 											recWidth = 1;
+										}
+										if (recWidth > 8191)
+										{
+											recWidth = 8191;
+										}
+										if (recHeight > 8191)
+										{
+											recHeight = 8191;
 										}
 										if (recHeight * recWidth > 16777216)
 										{
