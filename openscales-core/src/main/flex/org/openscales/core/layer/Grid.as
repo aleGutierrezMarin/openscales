@@ -250,21 +250,24 @@ package org.openscales.core.layer
 					bmpBounds = this.grid[0][0].bounds;
 					scale = this.scaleX;
 					var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
-					if (this.map.width * this.map.height >= 16777216)
+					var mapWidth:Number = this.map.width;
+					var mapHeight:Number = this.map.height;
+					
+					if (mapWidth * mapHeight >= 16777216)
 					{
-						this.map.width = this.map.height = 4095;
+						mapWidth = mapHeight = 4095;
 					}
-					if(this.map.width == 0)
+					if(mapWidth == 0)
 					{
-						this.map.width = 1;
+						mapWidth = 1;
 					}
-					if (this.map.height == 0)
+					if (mapHeight == 0)
 					{
-						this.map.height = 1;
+						mapHeight = 1;
 					}
 					if (intersectBounds != null)
 					{
-						BMD = new BitmapData(this.map.width , this.map.height , true, 0x000000);
+						BMD = new BitmapData(mapWidth , mapHeight , true, 0x000000);
 						BMD.draw(this, null, null, null, null, true);
 						_backGrid[0][0] = new Bitmap(BMD, PixelSnapping.NEVER, true);
 						_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
@@ -995,9 +998,7 @@ package org.openscales.core.layer
 		 */
 		public function moveGriddedTiles(bounds:Bounds):void {
 			var buffer:Number = this.buffer || 1;
-			var _outTimer:Timer = new Timer(3000);
-			_outTimer.start();
-			while (_outTimer.running) {
+			while (true) {
 				var tlLayer:Pixel = this.grid[0][0].position;
 				var ratio:Number = this.getSupportedResolution(this.map.resolution).value / this.map.resolution.value; 
 				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x/ratio, tlLayer.y + this.y/ratio); 
