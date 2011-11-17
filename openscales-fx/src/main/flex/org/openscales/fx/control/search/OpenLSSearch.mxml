@@ -32,6 +32,9 @@
 			[Embed(source="/assets/images/marker-blue.png")]
 			private var _markerIcon:Class;
 			
+			[Embed(source="/assets/images/marker-blue.png")]
+			private var _reverseMarkerIcon:Class;
+			
 			[Embed(source="/assets/images/marker-gold.png")]
 			private var _selectedMarkerIcon:Class;
 			
@@ -43,6 +46,8 @@
 			private var _yOffset:Number = -12.5;
 			private var _xSelectedOffset:Number = 0;
 			private var _ySelectedOffset:Number = -12.5;
+			private var _xReverseOffset:Number = 0;
+			private var _yReverseOffset:Number = -12.5;
 			
 			[Bindable]
 			private var _defaultCountryCode:String = "FR";
@@ -230,6 +235,18 @@
 			}
 			
 			/**
+			 * Getter and setter of reverse marker
+			 */
+			public function get reverseMarkerIcon():Class {
+				return this._reverseMarkerIcon;
+			}			
+			public function set reverseMarkerIcon(value:Class):void {				
+				this._reverseMarkerIcon = (value) ? value : null;
+				this._xReverseOffset = 0;
+				this._yReverseOffset = 0;
+			}
+			
+			/**
 			 * Offsets in pixels for marker icon
 			 */
 			public function setMarkerIconOffsets(x:Number, y:Number): void {
@@ -243,6 +260,14 @@
 			public function setSelectedMarkerIconOffsets(x:Number, y:Number): void {
 				this._xSelectedOffset = x;
 				this._ySelectedOffset = y;
+			}
+			
+			/**
+			 * Offsets in pixels for reverse marker icon
+			 */
+			public function setReverseMarkerIconOffsets(x:Number, y:Number): void {
+				this._xReverseOffset = x;
+				this._yReverseOffset = y;
 			}
 			
 			/**
@@ -420,16 +445,23 @@
 				var xmlString:String = (event.target as URLLoader).data as String;
 				Trace.debug("OpenLS result : " + xmlString);
 				var xml:XML = new XML(xmlString);
-				var xmlList:XMLList = OpenLSRequest.resultsList(xml); 
-				switch (xmlList.localName()) {
-					case "GeocodeResponseList":
-						displayGeocodeResults(xmlList);
-						break;
-					case "ReverseGeocodeResponse":
-						displayReverseGeocodeResults(xmlList);
-						break;
-					default:
-						break;
+				var xmlList:XMLList = OpenLSRequest.resultsList(xml);
+				if (!xmlList || xmlList.toString()=="") {
+					_resultsProvider = new ArrayCollection();
+					this._showNoResultMsg = true;
+					this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
+				}
+				else {
+					switch (xmlList.localName()) {
+						case "GeocodeResponseList":
+							displayGeocodeResults(xmlList);
+							break;
+						case "ReverseGeocodeResponse":
+							displayReverseGeocodeResults(xmlList);
+							break;
+						default:
+							break;
+					}
 				}
 			}
 			
@@ -571,7 +603,7 @@
 			}
 			
 			private function addReverseMarker(pos:Location, index:uint):void {
-				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _markerIcon(), pos, null, _xOffset, _yOffset); 
+				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _reverseMarkerIcon(), pos, null, _xOffset, _yOffset); 
 				this._resultsProvider[index].feature = marker;
 				this._resultsProvider[index].selected = false;
 				this._resultLayer.addFeature(marker,true,false);
