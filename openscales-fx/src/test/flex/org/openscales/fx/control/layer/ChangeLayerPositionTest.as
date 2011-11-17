@@ -24,7 +24,7 @@ package org.openscales.fx.control.layer
 		
 		public function ChangeLayerPositionTest() {}
 		
-		[Before]
+		[Before(ui)]
 		override public function setUp():void
 		{
 			super.setUp();
@@ -80,7 +80,7 @@ package org.openscales.fx.control.layer
 		/**
 		 * Test if the index of the layer in the containerChild of map change when the layer is moveUp
 		 */
-		[Test]
+		[Test(ui)]
 		public function moveLayerUp():void
 		{
 			var current:uint = this._map.layers.indexOf(this._layer2);
@@ -91,7 +91,7 @@ package org.openscales.fx.control.layer
 		/**
 		 * Test if the index of the layer in the containerChild of map change when the layer is moveDown
 		 */
-		[Test]
+		[Test(ui)]
 		public function moveLayerDown():void
 		{
 			var current:uint = this._map.layers.indexOf(this._layer2);		

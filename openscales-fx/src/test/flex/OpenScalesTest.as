@@ -5,6 +5,7 @@ package
 	import mx.core.FlexGlobals;
 	
 	import org.flexunit.asserts.assertTrue;
+	import org.fluint.uiImpersonation.UIImpersonator;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.IHandler;
@@ -36,9 +37,9 @@ package
 		/**
 		 * This function will be executed before each test.
 		 */
-		 [Before]
+		 [Before(ui)]
 		 public function setUp():void{
-			 (FlexGlobals.topLevelApplication as Application).addElement(this._container);
+			 UIImpersonator.addChild(this._container);
 		 }
 		 
 		 /**
@@ -46,8 +47,9 @@ package
 		  */
 		 [After]
 		 public function tearDown():void{
-			 if(FlexGlobals && FlexGlobals.topLevelApplication && (FlexGlobals.topLevelApplication is Application))
-			 	(FlexGlobals.topLevelApplication as Application).removeElement(this._container);
+			 try {
+				 UIImpersonator.removeChild(this._container);
+			 } catch(e:Error) {}
 		 }
 		
 		 /**
