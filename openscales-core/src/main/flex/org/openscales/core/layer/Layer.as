@@ -636,13 +636,13 @@ package org.openscales.core.layer {
 				bounds = Bounds.getBoundsFromString(value as String);
 			} else if (value is Bounds) {
 				bounds = value as Bounds;
-				if (bounds.projection != this.projection)
-				{
-					if (this.projection == "EPSG:2154" || this.projection == "IGNF:LAMB93")
-						bounds = bounds.reprojectTo(this.projection);
-					else
-						bounds = bounds.preciseReprojectBounds(this.projection);
-				}
+			}else return;
+			if (bounds.projection != this.projection)
+			{
+				if (this.projection == "EPSG:2154" || this.projection == "IGNF:LAMB93")
+					bounds = bounds.reprojectTo(this.projection);
+				else
+					bounds = bounds.preciseReprojectBounds(this.projection);
 			}
 			if(bounds)
 				this._maxExtent = bounds;
