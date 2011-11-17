@@ -26,7 +26,7 @@ package org.openscales.fx.control.layer
 		
 		public function ChangeLayerOpacityTest() {}
 		
-		[Before]
+		[Before(ui)]
 		override public function setUp():void
 		{
 			super.setUp();
@@ -63,7 +63,7 @@ package org.openscales.fx.control.layer
 			}
 		}
 		
-		[Test]
+		[Test(ui)]
 		public function testSliderOpacityChange():void
 		{
 			this._opacity.layerControlOpacity.value = 50;
@@ -72,7 +72,7 @@ package org.openscales.fx.control.layer
 		}
 		
 		
-		[Test]
+		[Test(ui)]
 		public function testLayerOpacityChange():void
 		{
 			this._layer1.alpha = 0.5;
