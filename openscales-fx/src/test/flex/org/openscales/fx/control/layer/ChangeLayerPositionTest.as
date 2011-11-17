@@ -49,8 +49,11 @@ package org.openscales.fx.control.layer
 		
 		[After]
 		override public function tearDown():void {
+			super.tearDown();
 			if(this._position) {
-				this._container.removeElement(this._position);
+				if(this._container.contains(this._position)) {
+					this._container.removeElement(this._position);
+				}
 				this._position.layer = null;
 				this._position = null;
 			}
@@ -74,8 +77,6 @@ package org.openscales.fx.control.layer
 				this._layer3.destroy();
 				this._layer3 = null;
 			}
-			
-			super.tearDown();
 		}
 		
 		/**
