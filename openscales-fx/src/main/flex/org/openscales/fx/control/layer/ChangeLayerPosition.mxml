@@ -85,33 +85,34 @@
 			 */
 			public function updateArrowsDisplay(event:LayerEvent = null):void
 			{
-				if(_layerManager && _layer && _layerManager.layers.length > 1){
-
-					
-					switch(_layerManager.layers.getItemIndex(_layer)){
-						// the layer is at the bottom of the list, we hide the arrowDown						
-						case  _layerManager.layers.length-1:{
-							this.layerSwitcherArrowUp.enabled = true;
-							this.layerSwitcherArrowDown.enabled = false;
-							break;
+				if(layerSwitcherArrowUp && layerSwitcherArrowDown) {
+					if(_layerManager && _layer && _layerManager.layers.length > 1){
+	
+						
+						switch(_layerManager.layers.getItemIndex(_layer)){
+							// the layer is at the bottom of the list, we hide the arrowDown						
+							case  _layerManager.layers.length-1:{
+								this.layerSwitcherArrowUp.enabled = true;
+								this.layerSwitcherArrowDown.enabled = false;
+								break;
+							}
+							case 0:{
+								this.layerSwitcherArrowUp.enabled = false;
+								this.layerSwitcherArrowDown.enabled = true;
+								break;
+							}
+							default:{
+								this.layerSwitcherArrowUp.enabled = true;
+								this.layerSwitcherArrowDown.enabled = true;
+							}
+						
 						}
-						case 0:{
-							this.layerSwitcherArrowUp.enabled = false;
-							this.layerSwitcherArrowDown.enabled = true;
-							break;
-						}
-						default:{
-							this.layerSwitcherArrowUp.enabled = true;
-							this.layerSwitcherArrowDown.enabled = true;
-						}
-					
+					}
+					else{
+						this.layerSwitcherArrowUp.enabled = false;
+						this.layerSwitcherArrowDown.enabled = false;
 					}
 				}
-				else{
-					this.layerSwitcherArrowUp.enabled = false;
-					this.layerSwitcherArrowDown.enabled = false;
-				}
-				
 			}
 
 			/**
