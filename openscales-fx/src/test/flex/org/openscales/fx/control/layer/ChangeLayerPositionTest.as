@@ -3,9 +3,12 @@ package org.openscales.fx.control.layer
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import mx.events.FlexEvent;
+	
 	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.fail;
+	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.control.layer.ChangeLayerPosition;
@@ -40,10 +43,10 @@ package org.openscales.fx.control.layer
 			this._map.addLayer(this._layer2);
 			this._map.addLayer(this._layer3);
 			
-			// change position control
+			//change position control
 			this._position = new ChangeLayerPosition();
-			this._position.layer = this._layer2;
 			
+			this._position.layer = this._layer2;
 			this._container.addElement(this._position);
 		}
 		
