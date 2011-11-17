@@ -995,7 +995,8 @@ package org.openscales.core.layer
 		 */
 		public function moveGriddedTiles(bounds:Bounds):void {
 			var buffer:Number = this.buffer || 1;
-			
+			var _outTimer:Timer = new Timer(3000);
+			_outTimer.start();
 			while (true) {
 				var tlLayer:Pixel = this.grid[0][0].position;
 				var ratio:Number = this.getSupportedResolution(this.map.resolution).value / this.map.resolution.value; 
@@ -1011,6 +1012,8 @@ package org.openscales.core.layer
 				} else {
 					break;
 				}
+				if (!_outTimer.running)
+					break;
 			};
 			
 			if (this.buffer == 0) {
