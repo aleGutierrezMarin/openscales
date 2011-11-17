@@ -6,6 +6,7 @@ package org.openscales.fx.control {
 	
 	import org.flexunit.asserts.*;
 	import org.flexunit.async.Async;
+	import org.fluint.uiImpersonation.UIImpersonator;
 	import org.openscales.core.layer.Layer;
 	
 	import spark.components.Application;
@@ -13,19 +14,18 @@ package org.openscales.fx.control {
 	public class LayerCatalogTest {
 		
 		public function LayerCatalogTest(){
-			this._catalog = new LayerCatalog();
 		}
 		
 		private var _catalog:LayerCatalog;
 		
 		private var _layers:Vector.<Layer>;
 		
-		[Before(async)]
+		[Before(async,ui)]
 		public function createLayerCatalog():void{
 			// Given a layer catalog
-			
+			this._catalog = new LayerCatalog();
 			Async.proceedOnEvent(this,this._catalog,FlexEvent.CREATION_COMPLETE);
-			(FlexGlobals.topLevelApplication as Application).addElement(this._catalog);
+			UIImpersonator.addChild(this._catalog);
 			
 			// And this catalog has 3 layers
 			this._layers = new Vector.<Layer>();
@@ -37,8 +37,10 @@ package org.openscales.fx.control {
 		
 		[After]
 		public function removeCatalog():void{
-			if(FlexGlobals && FlexGlobals.topLevelApplication && (FlexGlobals.topLevelApplication is Application))
-				(FlexGlobals.topLevelApplication as Application).removeElement(this._catalog);
+			try {
+				UIImpersonator.removeChild(this._catalog);
+			} catch(e:Error) {}
+			this._catalog = null;
 		}
 		
 		/**
@@ -48,7 +50,7 @@ package org.openscales.fx.control {
 		 *  And this catalog has 3 layers
 		 *  Then all three layers are displayed
 		 */
-		[Test]
+		[Test(async,ui)]
 		public function shouldDisplayEveryLayerWhenNoFilterIsDefined():void{
 			
 			
@@ -76,7 +78,7 @@ package org.openscales.fx.control {
 		 *  When a filter is applied to the catalog
 		 *  Then only layers matching the filter are displayed
 		 */
-		[Test]
+		[Test(async,ui)]
 		public function shouldFilterDisplayedLayersWhenFilterIsSet():void{
 			
 			// When a filter is applied to the catalog
@@ -99,7 +101,7 @@ package org.openscales.fx.control {
 		 *  When a new list of layers is set
 		 *  Then only layers matching the filter are displayed
 		 */
-		[Test]
+		[Test(async,ui)]
 		public function shouldFilterDisplayedLayersWhenLayersAreSet():void{
 			
 			// And a filter is applied to the catalog
