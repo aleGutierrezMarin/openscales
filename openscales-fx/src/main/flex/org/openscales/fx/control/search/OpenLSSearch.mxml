@@ -129,6 +129,30 @@
 			private var _cityHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
 			[Bindable]
 			private var _countryCodeHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+			[Bindable]
+			private var _reverseSearchTypeLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseSearchType");
+			[Bindable]
+			private var _reverseSearchPointLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseTypePoint");
+			[Bindable]
+			private var _reverseSearchCircleLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseTypeCircle");
+			[Bindable]
+			private var _reverseSearchBoundsLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseTypeBounds");
+			[Bindable]
+			private var _longitudeLabel:String = Catalog.getLocalizationForKey("openLSSearch.longitude");
+			[Bindable]
+			private var _latitudeLabel:String = Catalog.getLocalizationForKey("openLSSearch.latitude");
+			[Bindable]
+			private var _circleCenterLabel:String = Catalog.getLocalizationForKey("openLSSearch.circleCenter");
+			[Bindable]
+			private var _circleRadiusLabel:String = Catalog.getLocalizationForKey("openLSSearch.circleRadius");
+			[Bindable]
+			private var _topLabel:String = Catalog.getLocalizationForKey("openLSSearch.top");
+			[Bindable]
+			private var _bottomLabel:String = Catalog.getLocalizationForKey("openLSSearch.bottom");
+			[Bindable]
+			private var _leftLabel:String = Catalog.getLocalizationForKey("openLSSearch.left");
+			[Bindable]
+			private var _rightLabel:String = Catalog.getLocalizationForKey("openLSSearch.right");
 			
 			/**
 			 * Getter and setter of search mode
@@ -688,6 +712,20 @@
 				_postalCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader");
 				_cityHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
 				_countryCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+				_reverseSearchTypeLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearchType");
+				var myType:int = reverseSearchChoice.selectedIndex;
+				_reverseSearchPointLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypePoint");
+				_reverseSearchCircleLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypeCircle");
+				_reverseSearchBoundsLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypeBounds");
+				reverseSearchChoice.selectedIndex = myType;
+				_longitudeLabel = Catalog.getLocalizationForKey("openLSSearch.longitude");
+				_latitudeLabel = Catalog.getLocalizationForKey("openLSSearch.latitude");
+				_circleCenterLabel = Catalog.getLocalizationForKey("openLSSearch.circleCenter");
+				_circleRadiusLabel = Catalog.getLocalizationForKey("openLSSearch.circleRadius");
+				_topLabel = Catalog.getLocalizationForKey("openLSSearch.top");
+				_bottomLabel = Catalog.getLocalizationForKey("openLSSearch.bottom");
+				_leftLabel = Catalog.getLocalizationForKey("openLSSearch.left");
+				_rightLabel = Catalog.getLocalizationForKey("openLSSearch.right");
 				_simpleSearchButtonLabel = Catalog.getLocalizationForKey("openLSSearch.ok");
 				_advancedSearchButtonLabel = Catalog.getLocalizationForKey("openLSSearch.ok");
 				_reverseSearchButtonLabel = Catalog.getLocalizationForKey("openLSSearch.ok");
@@ -697,6 +735,7 @@
 				
 				_iconify = Catalog.getLocalizationForKey('component.iconify');
 				_toggle = Catalog.getLocalizationForKey('component.toggle');
+				
 			}
 			
 			/**
@@ -798,12 +837,12 @@
 						<s:layout>
 							<s:VerticalLayout/>
 						</s:layout>
-						<mx:FormItem label="Type de recherche inversée:">
+						<mx:FormItem label="{this._reverseSearchTypeLabel}">
 							<mx:ComboBox id="reverseSearchChoice" change="reverseSearchChanged(event)">
 								<mx:ArrayCollection>
-									<fx:Object label="A proximité d'un point" data="point"/>
-									<fx:Object label="A l'intérieur d'un cercle" data="circle"/>
-									<fx:Object label="A l'intérieur d'une emprise" data="bounds"/>
+									<fx:Object label="{this._reverseSearchPointLabel}" data="point"/>
+									<fx:Object label="{this._reverseSearchCircleLabel}" data="circle"/>
+									<fx:Object label="{this._reverseSearchBoundsLabel}" data="bounds"/>
 								</mx:ArrayCollection>
 							</mx:ComboBox>
 						</mx:FormItem>
@@ -820,10 +859,10 @@
 						<s:layout>
 							<s:HorizontalLayout />
 						</s:layout>
-						<mx:FormItem label="Longitude" defaultButton="{reverseSearchPointButton}" width="100%">
+						<mx:FormItem label="{this._longitudeLabel}" defaultButton="{reverseSearchPointButton}" width="100%">
 							<s:TextInput id="pointLon" width="100" text="" />
 						</mx:FormItem>
-						<mx:FormItem label="Latitude" defaultButton="{reverseSearchPointButton}" width="100%">
+						<mx:FormItem label="{this._latitudeLabel}" defaultButton="{reverseSearchPointButton}" width="100%">
 							<s:TextInput id="pointLat" width="100" text="" />
 						</mx:FormItem>
 						<s:Button id="reverseSearchPointButton" label="{this._reverseSearchButtonLabel}" click="reversePointSearch(pointLon.text, pointLat.text)" x="20"/>
@@ -839,18 +878,18 @@
 							<s:layout>
 								<s:VerticalLayout gap="5"/>
 							</s:layout>
-							<mx:Label text="Centre du cercle:"/>
-							<mx:Label text="Rayon (mètres):"/>
+							<mx:Label text="{this._circleCenterLabel}"/>
+							<mx:Label text="{this._circleRadiusLabel}"/>
 						</s:SkinnableContainer>
 						<s:SkinnableContainer styleName="verticalLayout"  width="80%" height="100%">
 							<s:layout>
 								<s:VerticalLayout gap="5"/>
 							</s:layout>
 							<s:HGroup>
-								<mx:FormItem label="Longitude" defaultButton="{reverseSearchCircleButton}" width="100%">
+								<mx:FormItem label="{this._longitudeLabel}" defaultButton="{reverseSearchCircleButton}" width="100%">
 									<s:TextInput id="circleLon" width="100" text="" />
 								</mx:FormItem>
-								<mx:FormItem label="Latitude" defaultButton="{reverseSearchCircleButton}" width="100%">
+								<mx:FormItem label="{this._latitudeLabel}" defaultButton="{reverseSearchCircleButton}" width="100%">
 									<s:TextInput id="circleLat" width="100" text="" />
 								</mx:FormItem>
 							</s:HGroup>
@@ -874,7 +913,7 @@
 								<s:VerticalLayout gap="5"/>
 							</s:layout>
 							<mx:Label text=""/>
-							<mx:FormItem label="Gauche" defaultButton="{reverseSearchBoundsButton}" width="100%">
+							<mx:FormItem label="{this._leftLabel}" defaultButton="{reverseSearchBoundsButton}" width="100%">
 								<s:TextInput id="leftBound" width="80" text="" />
 							</mx:FormItem>
 							<mx:Label text=""/>
@@ -883,11 +922,11 @@
 							<s:layout>
 								<s:VerticalLayout gap="5"/>
 							</s:layout>
-							<mx:FormItem label="Haut" defaultButton="{reverseSearchBoundsButton}" width="100%">
+							<mx:FormItem label="{this._topLabel}" defaultButton="{reverseSearchBoundsButton}" width="100%">
 								<s:TextInput id="topBound" width="80" text="" />
 							</mx:FormItem>
 							<mx:Label text=""/>
-							<mx:FormItem label="Bas" defaultButton="{reverseSearchBoundsButton}" width="100%">
+							<mx:FormItem label="{this._bottomLabel}" defaultButton="{reverseSearchBoundsButton}" width="100%">
 								<s:TextInput id="bottomBound" width="80" text="" />
 							</mx:FormItem>
 						</s:SkinnableContainer>
@@ -896,7 +935,7 @@
 								<s:VerticalLayout gap="5"/>
 							</s:layout>
 							<mx:Label text=""/>
-							<mx:FormItem label="Droite" defaultButton="{reverseSearchBoundsButton}" width="100%">
+							<mx:FormItem label="{this._rightLabel}" defaultButton="{reverseSearchBoundsButton}" width="100%">
 								<s:TextInput id="rightBound" width="80" text="" />
 							</mx:FormItem>
 							<s:HGroup gap="43">
