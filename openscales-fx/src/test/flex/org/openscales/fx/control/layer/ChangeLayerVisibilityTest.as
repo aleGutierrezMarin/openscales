@@ -3,6 +3,7 @@ package org.openscales.fx.control.layer
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import mx.core.FlexGlobals;
 	import mx.events.SliderEvent;
 	
 	import org.flexunit.Assert;
@@ -13,7 +14,10 @@ package org.openscales.fx.control.layer
 	import org.openscales.fx.control.layer.ChangeLayerVisibility;
 	import org.openscales.fx.control.layer.LayerManager;
 	
-	public class ChangeLayerVisibilityTest extends OpenScalesTest
+	import spark.components.Application;
+	import spark.components.Group;
+	
+	public class ChangeLayerVisibilityTest
 	{		
 		/**
 		 * Basic controls for testing
@@ -21,13 +25,16 @@ package org.openscales.fx.control.layer
 		private var _map:Map;
 		private var _layer1:Layer;
 		private var _visibility:ChangeLayerVisibility;
+		private var _container:Group;
 		
 		public function ChangeLayerVisibilityTest() {}
 		
 		[Before]
-		override public function setUp():void
+		public function setUp():void
 		{
-			super.setUp();
+			this._container = new Group();
+			
+			(FlexGlobals.topLevelApplication as Application).addElement(this._container);
 			
 			this._map = new Map();
 			this._layer1 = new Layer("layer");
@@ -41,9 +48,8 @@ package org.openscales.fx.control.layer
 		}
 		
 		[After]
-		override public function tearDown():void
+		public function tearDown():void
 		{
-			super.tearDown();
 			if(this._visibility) {
 				this._visibility.layer = null;
 				this._container.removeElement(this._visibility);
@@ -62,6 +68,9 @@ package org.openscales.fx.control.layer
 			if(this._map) {
 				this._map = null;
 			}
+			
+			if(FlexGlobals && FlexGlobals.topLevelApplication && (FlexGlobals.topLevelApplication is Application))
+				(FlexGlobals.topLevelApplication as Application).removeElement(this._container);
 		}
 		
 		/**
