@@ -821,10 +821,10 @@
 							<s:HorizontalLayout />
 						</s:layout>
 						<mx:FormItem label="Longitude" defaultButton="{reverseSearchPointButton}" width="100%">
-							<s:TextInput id="pointLon" width="100" text="48.88189" />
+							<s:TextInput id="pointLon" width="100" text="" />
 						</mx:FormItem>
 						<mx:FormItem label="Latitude" defaultButton="{reverseSearchPointButton}" width="100%">
-							<s:TextInput id="pointLat" width="100" text="2.33401" />
+							<s:TextInput id="pointLat" width="100" text="" />
 						</mx:FormItem>
 						<s:Button id="reverseSearchPointButton" label="{this._reverseSearchButtonLabel}" click="reversePointSearch(pointLon.text, pointLat.text)" x="20"/>
 					</s:SkinnableContainer>
@@ -840,7 +840,7 @@
 								<s:VerticalLayout gap="5"/>
 							</s:layout>
 							<mx:Label text="Centre du cercle:"/>
-							<mx:Label text="Rayon du cercle (m):"/>
+							<mx:Label text="Rayon (mètres):"/>
 						</s:SkinnableContainer>
 						<s:SkinnableContainer styleName="verticalLayout"  width="80%" height="100%">
 							<s:layout>
@@ -848,15 +848,15 @@
 							</s:layout>
 							<s:HGroup>
 								<mx:FormItem label="Longitude" defaultButton="{reverseSearchCircleButton}" width="100%">
-									<s:TextInput id="circleLon" width="100" text="48.88189" />
+									<s:TextInput id="circleLon" width="100" text="" />
 								</mx:FormItem>
 								<mx:FormItem label="Latitude" defaultButton="{reverseSearchCircleButton}" width="100%">
-									<s:TextInput id="circleLat" width="100" text="2.33401" />
+									<s:TextInput id="circleLat" width="100" text="" />
 								</mx:FormItem>
 							</s:HGroup>
 							<s:HGroup gap="159">
 								<mx:FormItem label="" defaultButton="{reverseSearchCircleButton}" width="100%">
-									<s:TextInput id="radius" width="100" text="10" />
+									<s:TextInput id="radius" width="100" text="" />
 								</mx:FormItem>
 								<s:Button id="reverseSearchCircleButton" label="{this._reverseSearchButtonLabel}" click="reverseCircleSearch(circleLon.text, circleLat.text, radius.text)" x="20"/>
 							</s:HGroup>
@@ -875,7 +875,7 @@
 							</s:layout>
 							<mx:Label text=""/>
 							<mx:FormItem label="Gauche" defaultButton="{reverseSearchBoundsButton}" width="100%">
-								<s:TextInput id="leftBound" width="80" text="48.88169" />
+								<s:TextInput id="leftBound" width="80" text="" />
 							</mx:FormItem>
 							<mx:Label text=""/>
 						</s:SkinnableContainer>
@@ -884,11 +884,11 @@
 								<s:VerticalLayout gap="5"/>
 							</s:layout>
 							<mx:FormItem label="Haut" defaultButton="{reverseSearchBoundsButton}" width="100%">
-								<s:TextInput id="topBound" width="80" text="2.33421" />
+								<s:TextInput id="topBound" width="80" text="" />
 							</mx:FormItem>
 							<mx:Label text=""/>
 							<mx:FormItem label="Bas" defaultButton="{reverseSearchBoundsButton}" width="100%">
-								<s:TextInput id="bottomBound" width="80" text="2.33381" />
+								<s:TextInput id="bottomBound" width="80" text="" />
 							</mx:FormItem>
 						</s:SkinnableContainer>
 						<s:SkinnableContainer styleName="verticalLayout"  width="33%" height="100%">
@@ -897,7 +897,7 @@
 							</s:layout>
 							<mx:Label text=""/>
 							<mx:FormItem label="Droite" defaultButton="{reverseSearchBoundsButton}" width="100%">
-								<s:TextInput id="rightBound" width="80" text="48.88209" />
+								<s:TextInput id="rightBound" width="80" text="" />
 							</mx:FormItem>
 							<s:HGroup gap="43">
 								<mx:Label text=""/>
