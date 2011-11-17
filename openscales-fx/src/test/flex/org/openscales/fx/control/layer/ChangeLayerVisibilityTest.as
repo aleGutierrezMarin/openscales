@@ -47,7 +47,7 @@ package org.openscales.fx.control.layer
 			this._container.addElement(this._visibility);
 		}
 		
-		[After]
+		/*[After]
 		public function tearDown():void
 		{
 			if(this._visibility) {
@@ -71,7 +71,7 @@ package org.openscales.fx.control.layer
 			
 			if(FlexGlobals && FlexGlobals.topLevelApplication && (FlexGlobals.topLevelApplication is Application))
 				(FlexGlobals.topLevelApplication as Application).removeElement(this._container);
-		}
+		}*/
 		
 		/**
 		 * Test if the layer visibility is set to false when the checkbox is unchecked
