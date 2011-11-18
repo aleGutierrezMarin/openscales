@@ -50,7 +50,7 @@ package org.openscales.core.events
 		/**
 		 * Validates that when the LAYERS_LOAD_START is dispatched at least one layer of the map is currently loading
 		 */
-		[Test(async)]
+		[Test(async,ui)]
 		public function shouldDispatchLayersLoadStartWhenALayerStartLoading():void
 		{
 			// Given a map
@@ -105,7 +105,7 @@ package org.openscales.core.events
 		/**
 		 * Validates that when the LAYERS_LOAD_END is dispatched when no layer of the map is currently loading
 		 */
-		[Test(async)]
+		[Test(async,ui)]
 		public function shouldDispatchLayersLoadEndWhenLayersStopLoading():void
 		{
 			// Given a map
