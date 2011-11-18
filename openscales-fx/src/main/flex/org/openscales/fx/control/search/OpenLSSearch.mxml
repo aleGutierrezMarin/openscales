@@ -713,11 +713,13 @@
 				_cityHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
 				_countryCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
 				_reverseSearchTypeLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearchType");
-				var myType:int = reverseSearchChoice.selectedIndex;
+				if (reverseSearchChoice)
+					var myType:int = reverseSearchChoice.selectedIndex;
 				_reverseSearchPointLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypePoint");
 				_reverseSearchCircleLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypeCircle");
 				_reverseSearchBoundsLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypeBounds");
-				reverseSearchChoice.selectedIndex = myType;
+				if (reverseSearchChoice)
+					reverseSearchChoice.selectedIndex = myType;
 				_longitudeLabel = Catalog.getLocalizationForKey("openLSSearch.longitude");
 				_latitudeLabel = Catalog.getLocalizationForKey("openLSSearch.latitude");
 				_circleCenterLabel = Catalog.getLocalizationForKey("openLSSearch.circleCenter");
