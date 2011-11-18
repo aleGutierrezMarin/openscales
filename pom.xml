@@ -21,6 +21,7 @@
         <sonar.language>flex</sonar.language>
         <sonar.dynamicanalysis>reuseReports</sonar.dynamicanalysis>
         <sonar.surefire.reportspath>target\surefire-reports</sonar.surefire.reportspath>
+        <sonar.skippedModules>openscales-core-flash-10.1,openscales-as-examples,openscales-fx-examples,openscales-viewer</sonar.skippedModules>
 		<env>local</env>
 	</properties>
 	<profiles>
@@ -263,6 +264,12 @@
 				</dependencies>
 
 				<configuration>
+                    <coverage>true</coverage>
+                    <coverageOutputDirectory>target\site\cobertura</coverageOutputDirectory>
+                    <coverageReportFormat>
+                        <param>xml</param>
+					</coverageReportFormat>
+                    <testFailureIgnore>true</testFailureIgnore>
 					<targetPlayer>${flex.player.version.major}.${flex.player.version.minor}.${flex.player.version.revision}</targetPlayer>
 					<outputDirectory>${project.build.directory}/site/asdoc</outputDirectory>
 					<testTimeout>200000</testTimeout>
