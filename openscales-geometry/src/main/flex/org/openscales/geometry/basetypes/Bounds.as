@@ -228,6 +228,10 @@ package org.openscales.geometry.basetypes
 		 */
 		public function preciseReprojectBounds(dest:String):Bounds {
 			
+			//We do not need to reproject
+			if (this.projection == dest)
+				return this;
+			
 			// Precise reprojection
 			// --------------------
 			// We considerer that just reprojecting the extent is really not accurate :
