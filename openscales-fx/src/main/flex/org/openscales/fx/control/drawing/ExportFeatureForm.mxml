@@ -34,6 +34,7 @@
 			import org.openscales.core.format.gml.writer.GML321Writer;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
+			import org.openscales.core.handler.feature.draw.EditFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.KML;
@@ -164,7 +165,7 @@
 				
 				// search the select handler
 				var currentSelection:Vector.<Feature> = new Vector.<Feature>();
-				var select:SelectFeaturesHandler = null;
+				var select:EditFeaturesHandler = null;
 				var edit:FeatureLayerEditionHandler = null;
 				var i:int = 0;
 				var controls:Vector.<IHandler> = this.exportFeature.layer.map.controls;
@@ -179,9 +180,9 @@
 							edit = null;
 					}
 					
-					if(controls[i] is SelectFeaturesHandler && controls[i].active)
+					if(controls[i] is EditFeaturesHandler && controls[i].active)
 					{
-						select = controls[i] as SelectFeaturesHandler;
+						select = controls[i] as EditFeaturesHandler;
 						if(!(select.layers[0].name == this.exportFeature.layer.name))
 							select = null;
 						else
