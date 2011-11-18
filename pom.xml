@@ -18,6 +18,9 @@
 		<flex.player.version.minor>0</flex.player.version.minor>
 		<flex.player.version.revision>0</flex.player.version.revision>
 		<flexpmd.version>1.2</flexpmd.version>
+        <sonar.language>flex</sonar.language>
+        <sonar.dynamicanalysis>reuseReports</sonar.dynamicanalysis>
+        <sonar.surefire.reportspath>target\surefire-reports</sonar.surefire.reportspath>
 		<env>local</env>
 	</properties>
 	<profiles>

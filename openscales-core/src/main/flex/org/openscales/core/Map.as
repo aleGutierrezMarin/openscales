@@ -805,7 +805,7 @@ package org.openscales.core
 				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_START, this));
 			}
 
-			this._loadingLayers.push(e.layer);
+			if(this._loadingLayers.indexOf(e.layer)<0) this._loadingLayers.push(e.layer);
 		}
 		
 		protected function onLayerLoadEnd(e:LayerEvent):void
