@@ -8,6 +8,7 @@ package org.openscales.core
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.ui.ContextMenu;
@@ -21,6 +22,7 @@ package org.openscales.core
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
@@ -29,6 +31,7 @@ package org.openscales.core
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.popup.Popup;
+	import org.openscales.core.request.OpenLSRequest;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -117,6 +120,23 @@ package org.openscales.core
 		private var _initialized:Boolean = false;
 		private var _timer:Timer;
 		
+		// Layer used for OpenLS search and for geolocation
+		private var _resultLayer:VectorLayer = new VectorLayer("Search results");
+		// Request for OpenLS search
+		private var _openlsRequest:OpenLSRequest = null;
+		private var _geocodeServiceUrl:String=null;
+		// Default resolutions for OpenLS search and geolocation
+		private var _streetResolution:Number = 0.0000107288360595703;
+		private var _cityResolution:Number = 0.0000858306884765625;
+		// Marker for OpenLS search
+		[Embed(source="/assets/images/marker-blue.png")]
+		private var _placeIcon:Class;
+		private var _xOffset:Number = 0;
+		private var _yOffset:Number = -12.5;
+		// Marker for Geolocation
+		[Embed(source="/assets/images/picto_localize.png")]
+		private var _geolocationIcon:Class;
+		
 		/**
 		 * @private
 		 * The minimum resolution of the map
@@ -201,9 +221,7 @@ package org.openscales.core
 			this._timer = new Timer(500,1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			
-			
-
-			
+			this._resultLayer.displayInLayerManager = false;
 			
 			if (_debug_max_extent)
 			{
@@ -219,6 +237,28 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
 			this._initialized = true;
 		}
+		
+		/**
+		 * Default layer used for search results
+		 */
+		public function get resultLayer():VectorLayer
+		{
+			return _resultLayer;
+		}
+
+		/**
+		 *  URL of geocode service used for OpenLS requests
+		 */
+		public function get geocodeServiceUrl():String
+		{
+			return _geocodeServiceUrl;
+		}
+
+		public function set geocodeServiceUrl(value:String):void
+		{
+			_geocodeServiceUrl = value;
+		}
+
 		private function openLink(e:ContextMenuEvent):void{
 			navigateToURL(new URLRequest("http://www.openscales.org"));
 		}
@@ -1045,6 +1085,115 @@ package org.openscales.core
 			}
 			else
 				Trace.debug("Center out of maxExtent so do nothing");
+		}
+		
+		/**
+		 * Getter and setter of place icon
+		 */
+		public function get placeIcon():Class {
+			return this._placeIcon;
+		}			
+		public function set placeIcon(value:Class):void {				
+			this._placeIcon = (value) ? value : null;
+			this._xOffset = 0;
+			this._yOffset = 0;
+		}
+		
+		/**
+		 * Offsets in pixels for place icon
+		 */
+		public function setPlaceIconOffsets(x:Number, y:Number): void {
+			this._xOffset = x;
+			this._yOffset = y;
+		}
+		
+		/**
+		 * Change the center of the map to the location which adress or name is given as parameter.
+		 * If the name or adress match with severals possibilities the first one is choosed
+		 * If there is no result the center is not changed	
+		 * To use this functionnality your api keys need to allow geocoding
+		 * If your api keys not allow geocoding the center is not changed
+		 */
+		public function setCenterAtLocation(location:String):void{
+			this._resultLayer.removeFeatures(this._resultLayer.features);
+			this.removeLayer(this._resultLayer);
+			if(_openlsRequest)
+				_openlsRequest.destroy();
+			_openlsRequest = new OpenLSRequest(this._geocodeServiceUrl, onOpenLSServiceResult, onOpenLSServiceFault);
+			_openlsRequest.defineSimpleSearch(null, location, "FR", "epsg:4326", 1, "1.2");
+			_openlsRequest.send();
+		}
+		
+		private function onOpenLSServiceFault(event:Event):void {
+			Trace.error("OpenLS ERROR: request fault");
+		}
+		
+		private function onOpenLSServiceResult(event:Event):void {
+			var xmlString:String = (event.target as URLLoader).data as String;
+			Trace.debug("OpenLS result : " + xmlString);
+			var xml:XML = new XML(xmlString);
+			var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml), "1.2");
+			if (results.length == 0) {
+				// no result, do nothing
+			}
+			else {
+				// takes first result (there should be only one)
+				var latitude:Number = parseFloat(results[0].lat);
+				var longitude:Number = parseFloat(results[0].lon);
+				var resolution:Number = _cityResolution;
+				if (results[0].street && results[0].street!="") {
+					resolution = _streetResolution;
+				}
+				this.centerAtLocation(latitude, longitude, "EPSG:4326", resolution);
+			}
+		}
+		
+		private function centerAtLocation(latitude:Number, longitude:Number, projection:String, resolution:Number): void {
+			if (! (isNaN(latitude) || isNaN(longitude)) ) {
+				var pos:Location = new Location(longitude,latitude,projection);
+				if(this.projection!=pos.projection)
+					pos=pos.reprojectTo(this.projection);
+				this.center = pos;
+				this.resolution = new Resolution(resolution);
+				this.addLayer(this._resultLayer);
+				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _placeIcon(), pos, null, _xOffset, _yOffset);
+				marker.useHandCursor = false;
+				this._resultLayer.addFeature(marker,true,false);
+			}
+		}
+		
+		/**
+		 * Change the center of the map to the location of the user.
+		 * The user browser must support geolocation, if not the center is not changed
+		 * 
+		 * @param latitude
+		 * @param longitude
+		 * @param accuracy
+		 * @param projection
+		 * 
+		 */
+		public function setCenterFromGeolocation(latitude:Number, longitude:Number, accuracy:Number = NaN, projection:String=null):void{
+			this._resultLayer.removeFeatures(this._resultLayer.features);
+			this.removeLayer(this._resultLayer);
+			if (! (isNaN(latitude) || isNaN(longitude)) ) {
+				if(!projection)
+					projection="EPSG:4326";
+				var pos:Location = new Location(longitude,latitude,projection);
+				if(this.projection!=pos.projection)
+					pos=pos.reprojectTo(this.projection);
+				this.center = pos;
+				if(accuracy) {
+					if(accuracy<20000)
+						this.resolution = new Resolution(this._streetResolution);
+					else
+						this.resolution = new Resolution(this._cityResolution);
+				}
+				this.addLayer(this._resultLayer);
+				//var point:PointFeature = new PointFeature(new Point(pos.x,pos.y),null,Style.getDefaultCircleStyle());
+				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _geolocationIcon(), pos, null, 0, 0);
+				marker.useHandCursor = false;
+				this._resultLayer.addFeature(marker,true,false);
+			}
 		}
 		
 		/**
