@@ -102,7 +102,7 @@ package org.openscales.core.style {
 			
 			var style:Style = new Style();
 			style.name = "Default graticule label style";
-			style._textFormat = new TextFormat("Arial",12,0x000000,false,false);
+			style._textFormat = new TextFormat("Arial",12,0xFFFFFF,true,false);
 			return style;
 		}
 		
@@ -224,7 +224,8 @@ package org.openscales.core.style {
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default graticule rule";
-			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x000000, 1)));
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x000000, 3)));
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0xFFFFFF, 1)));
 			
 			return rule;
 		}
