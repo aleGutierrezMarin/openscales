@@ -186,6 +186,16 @@
 						_handler.map.zoomNavigationEnabled = true;
 					}
 					this.target = evt.layer;
+					
+					if(!evt.layer.editable) {
+						this.buttonMode = false;
+						this.useHandCursor = false;
+						this.toolTip = Catalog.getLocalizationForKey('drawing.selectDrawingLayer');
+					} else {
+						this.buttonMode = true;
+						this.useHandCursor = true;
+						this.toolTip = Catalog.getLocalizationForKey('drawing.move');
+					}
 				}
 			}
 			

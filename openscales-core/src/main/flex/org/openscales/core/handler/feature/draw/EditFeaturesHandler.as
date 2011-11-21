@@ -61,7 +61,7 @@ package org.openscales.core.handler.feature.draw
 		 * Size in pixels of the selection buffer (default=2 so a point is a
 		 * 5-side square)
 		 */
-		private var _selectionBuffer:Number = 2;
+		private var _selectionBuffer:Number = 5;
 		
 		/**
 		 * Array of the selected features.

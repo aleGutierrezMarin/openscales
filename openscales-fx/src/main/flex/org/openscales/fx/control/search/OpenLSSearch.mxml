@@ -2,7 +2,7 @@
 <!--- Control used to request OpenLS service -->
 <Control xmlns="http://openscales.org"  xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"  xmlns:mx="library://ns.adobe.com/flex/mx"
-		 initialize="init();" xmlns:autocomplete="org.openscales.fx.autocomplete.*" xmlns:skin="org.openscales.fx.control.skin.*" >
+		 xmlns:autocomplete="org.openscales.fx.autocomplete.*" xmlns:skin="org.openscales.fx.control.skin.*" >
 	
 	<fx:Script>
 		<![CDATA[
@@ -66,7 +66,7 @@
 			
 			private var _request:OpenLSRequest = null;
 			
-			private var _resultLayer:VectorLayer = new VectorLayer("openLSSearchResult");
+			private var _resultLayer:VectorLayer = null;
 			
 			[Bindable]
 			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
@@ -356,14 +356,11 @@
 			this._maximumGeocodeResponses = value;
 			}
 			
-			private function init(): void{
-				this._resultLayer.displayInLayerManager = false;
-			}
-			
 			public function simpleSearch(query:String):void {
 				if(!this.map)
 					return;
 				
+				this._resultLayer = this.map.resultLayer;
 				this._resultLayer.removeFeatures(this._resultLayer.features);
 				this.map.removeLayer(this._resultLayer);
 				
@@ -382,6 +379,7 @@
 				if(!this.map)
 					return;
 				
+				this._resultLayer = this.map.resultLayer;
 				this._resultLayer.removeFeatures(this._resultLayer.features);
 				this.map.removeLayer(this._resultLayer);
 				
@@ -407,6 +405,7 @@
 				if(!this.map)
 					return;
 				
+				this._resultLayer = this.map.resultLayer;
 				this._resultLayer.removeFeatures(this._resultLayer.features);
 				this.map.removeLayer(this._resultLayer);
 				
@@ -426,6 +425,7 @@
 				if(!this.map)
 					return;
 				
+				this._resultLayer = this.map.resultLayer;
 				this._resultLayer.removeFeatures(this._resultLayer.features);
 				this.map.removeLayer(this._resultLayer);
 				
@@ -445,6 +445,7 @@
 				if(!this.map)
 					return;
 				
+				this._resultLayer = this.map.resultLayer;
 				this._resultLayer.removeFeatures(this._resultLayer.features);
 				this.map.removeLayer(this._resultLayer);
 				
@@ -713,11 +714,13 @@
 				_cityHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
 				_countryCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
 				_reverseSearchTypeLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearchType");
-				var myType:int = reverseSearchChoice.selectedIndex;
+				if (reverseSearchChoice)
+					var myType:int = reverseSearchChoice.selectedIndex;
 				_reverseSearchPointLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypePoint");
 				_reverseSearchCircleLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypeCircle");
 				_reverseSearchBoundsLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypeBounds");
-				reverseSearchChoice.selectedIndex = myType;
+				if (reverseSearchChoice)
+					reverseSearchChoice.selectedIndex = myType;
 				_longitudeLabel = Catalog.getLocalizationForKey("openLSSearch.longitude");
 				_latitudeLabel = Catalog.getLocalizationForKey("openLSSearch.latitude");
 				_circleCenterLabel = Catalog.getLocalizationForKey("openLSSearch.circleCenter");

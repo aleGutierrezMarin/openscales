@@ -81,7 +81,9 @@ package org.openscales.core.handler.keyboard
 		 */
 		private function onMouseOver(event:MouseEvent):void
 		{
-			this.map.stage.focus = this.map;
+			if(this.map.keyboardNavigationEnabled) {
+				this.map.stage.focus = this.map;
+			}
 		}
 		
 		/**
@@ -91,48 +93,50 @@ package org.openscales.core.handler.keyboard
 		 */ 
 		private function onKeyDown(event:KeyboardEvent):void
 		{			
-			switch(event.keyCode)
-			{
-				case _panWestKeyCode:
-					if(event.shiftKey)
-						this.map.pan(-_panStepShiftkey,0);
-					else
-						this.map.pan(-_panStep,0);
-					break;
-				case _panNorthKeyCode:
-					if(event.shiftKey)
-						this.map.pan(0,-_panStepShiftkey);
-					else
-						this.map.pan(0,-_panStep);
-					break;
-				case _panEastKeyCode:
-					if(event.shiftKey)
-						this.map.pan(_panStepShiftkey,0);
-					else
-						this.map.pan(_panStep,0);
-					break;
-				case _panSouthKeyCode:
-					if(event.shiftKey)
-						this.map.pan(0,_panStepShiftkey);
-					else
-						this.map.pan(0,_panStep);
-					break;
-				case _zoomInKeyCode:
-					this.map.zoomIn();
-					break;
-				case _zoomInKeyCode2:
-					if(event.shiftKey)
+			if(this.map.keyboardNavigationEnabled) {
+				switch(event.keyCode)
+				{
+					case _panWestKeyCode:
+						if(event.shiftKey)
+							this.map.pan(-_panStepShiftkey,0);
+						else
+							this.map.pan(-_panStep,0);
+						break;
+					case _panNorthKeyCode:
+						if(event.shiftKey)
+							this.map.pan(0,-_panStepShiftkey);
+						else
+							this.map.pan(0,-_panStep);
+						break;
+					case _panEastKeyCode:
+						if(event.shiftKey)
+							this.map.pan(_panStepShiftkey,0);
+						else
+							this.map.pan(_panStep,0);
+						break;
+					case _panSouthKeyCode:
+						if(event.shiftKey)
+							this.map.pan(0,_panStepShiftkey);
+						else
+							this.map.pan(0,_panStep);
+						break;
+					case _zoomInKeyCode:
 						this.map.zoomIn();
-					break;
-				case _zoomOutKeyCode:
-					this.map.zoomOut();
-					break;
-				case _zoomOutKeyCode2:
-					if(!event.shiftKey)
+						break;
+					case _zoomInKeyCode2:
+						if(event.shiftKey)
+							this.map.zoomIn();
+						break;
+					case _zoomOutKeyCode:
 						this.map.zoomOut();
-					break;
-				default:
-					return;
+						break;
+					case _zoomOutKeyCode2:
+						if(!event.shiftKey)
+							this.map.zoomOut();
+						break;
+					default:
+						return;
+				}
 			}
 		}
 		
