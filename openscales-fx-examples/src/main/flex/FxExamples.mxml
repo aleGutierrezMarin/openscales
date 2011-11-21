@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- 
+	Main Flex example application
+-->
+<s:Application xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
+			   creationComplete="init();"
+			   enterFrame="idle()">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			private var data:Object = {};
+			
+			[Bindable]
+			public var framerate:Number;
+			
+			private function init():void {
+				data['about'] = new AboutOpenScales();
+				example.addElement(getState('basic'));
+			}
+			
+			private function idle():void
+			{
+				if(stage)
+					framerate = stage.frameRate;
+			}
+			
+			private function getState(id:String):IVisualElement {
+				if(data[id])
+					return data[id] as IVisualElement;
+				var state:IVisualElement = null;
+				switch(id) {
+					case "basic":
+						state = new GlobalExample();
+						break;
+					case "aggregate":
+						state = new AggregateExample();
+						break;
+					case "legalInformations":
+						state = new LegalInformationsExample();
+						break;
+					case "osm":
+						state = new PanZoomExample();
+						break;
+					case "managelayers":
+						state = new LayersManagerExample();
+						break;
+					case "polylayer":
+						state = new PolyLayerExample();
+						break;
+					case "addlayers":
+						state = new CapabilitiesExample();
+						break;
+					case "stylevectors":
+						state = new StyleExample();
+						break;
+					case "external":
+						state = new ExternalConfigurationExample();
+						break;
+					case "overview":
+						state = new OverviewExample();
+						break;
+					case "yahoo":
+						state = new YahooSearchExample();
+						break;
+					case "openLS":
+						state = new OpenLSSearchExample();
+						break;
+					case "drawedit":
+						state = new DrawingExample();
+						break;
+					case "testfeatures":
+						state = new FeaturesExample();
+						break;
+					case "getfeatureinfo":
+						state = new InfoExample();
+						break;
+					case "reproject":
+						state = new OpenStreetMap();
+						break;
+					case "statistics":
+						state = new StatisticsExample();
+						break;
+					case "wfsbaselayer":
+						state = new WFSBaseLayerExample();
+						break;
+					case "nasa":
+						state = new WMSCExample();
+						break;
+					case "germany":
+						state = new WMSExample();
+						break;
+					case "wms130":
+						state= new WMS130Example();
+						break;
+					case "wmts100":
+						state= new WMTSExample();
+						break;
+					case "imagelayer":
+						state = new ImageLayerExample();
+						break;
+					case "simplekml":
+						state = new KMLExample();
+						break;
+					case "fullkml":
+						state = new KMLFeaturesExample();
+						break;
+					case "gpx":
+						state = new GPXExample();
+						break;
+					case "georss":
+						state = new GeoRssExample();
+						break;
+					case "graticule":
+						state = new GraticuleExample();
+						break;
+					case "tms":
+						state = new TmsExample();
+						break;
+					case "ign":
+						state = new SecurityMapExample();
+						break;
+					case "overviewRatio":
+						state = new OverviewRatioExample();
+						break;
+					case "runtimetheme":
+						state = new RunTimeThemeExample();
+						break;
+					case "measuretools":
+						state = new MeasureExample();
+						break;
+					default:
+						state = data['basic'];
+						break;
+				}
+				data[id] = state;
+				return state;
+			}
+			
+			private function changeState(event:Event):void {
+				example.removeAllElements();
+				example.addElement(getState((event.target as Button).id));
+			}
+		]]>
+	</fx:Script>
+	
+	<s:HGroup id="app" width="100%" height="100%">
+		<fx:Script>
+			<![CDATA[
+				import mx.managers.SystemManager;
+			]]>
+		</fx:Script>
+		<mx:Accordion width="200" height="100%">
+			
+			<s:NavigatorContent label="Global examples" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Label text="{framerate}"/>
+				<s:Button id="about" label="About OpenScales" click="changeState(event)" width="100%"/>
+				<s:Button id="basic" label="Basic example" click="changeState(event)" width="100%"/>
+				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
+				<s:Button id="runtimetheme" label="Changing theme on runtime" click="changeState(event)" width="100%"/>
+				<s:Button id="osm" label="OpenStreetMap" click="changeState(event)" width="100%"/>
+				<s:Button id="polylayer" label="Poly Layer" click="changeState(event)" width="100%"/>
+				<s:Button id="graticule" label="Graticule" click="changeState(event)" width="100%"/>
+				<s:Button id="aggregate" label="Aggregate" click="changeState(event)" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Map configuration" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button id="managelayers" label="Manage the layers" click="changeState(event)" width="100%"/>
+				<s:Button id="addlayers" label="Add layers dynamically" click="changeState(event)" width="100%"/>
+				<s:Button id="stylevectors" label="Style vector layers" click="changeState(event)" width="100%"/>
+				<s:Button id="external" label="Configure with external XML" click="changeState(event)" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Localize" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button id="overview" label="Overview map" click="changeState(event)" width="100%"/>
+				<s:Button id="overviewRatio" label="Overview ratio map" click="changeState(event)" width="100%"/>
+				<s:Button id="yahoo" label="with Yahoo geocoder" click="changeState(event)" width="100%"/>
+				<s:Button id="openLS" label="with OpenLS" click="changeState(event)" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Features handling" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button id="drawedit" label="Draw and edit features" click="changeState(event)" width="100%"/>
+				<s:Button id="testfeatures" label="Select and test features" click="changeState(event)" width="100%"/>
+				<s:Button id="getfeatureinfo" label="WMS GetFeatureInfo" click="changeState(event)" width="100%"/>
+				<s:Button id="reproject" label="Reproject and query" click="changeState(event)" width="100%"/>
+				<s:Button id="statistics" label="Display statistics" click="changeState(event)" width="100%"/>
+				<s:Button id="measuretools" label="Measure tools" click="changeState(event)" width="100%" />
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Protocols" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button id="wfsbaselayer" label="WFS as a base layer" click="changeState(event)" width="100%"/>
+				<s:Button id="nasa" label="NASA WMS-C" click="changeState(event)" width="100%"/>
+				<s:Button id="germany" label="WMS 1.1.x" click="changeState(event)" width="100%"/>
+				<s:Button id="wms130" label="WMS 1.3.0" click="changeState(event)" width="100%"/>
+				<s:Button id="wmts100" label="WMTS 1.0.0" click="changeState(event)" width="100%"/>
+				<s:Button id="imagelayer" label="Image Layer" click="changeState(event)" width="100%"/>
+				<s:Button id="simplekml" label="Simple KML layer" click="changeState(event)" width="100%"/>
+				<s:Button id="fullkml" label="Advanced KML layer" click="changeState(event)" width="100%"/>
+				<s:Button id="gpx" label="GPX Layer" click="changeState(event)" width="100%"/>
+				<s:Button id="georss" label="GeoRss Layer" click="changeState(event)" width="100%"/>
+				<s:Button id="tms" label="TMS example" click="changeState(event)" width="100%"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Security" width="100%" height="100%">
+				<s:layout>
+					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
+				</s:layout>
+				<s:Button id="ign" label="IGN's GeoRM support" click="changeState(event)" width="100%"/>
+			</s:NavigatorContent>
+		</mx:Accordion>
+		
+		<s:Group id="example" width="100%" height="100%">
+			
+		</s:Group>
+	</s:HGroup>
+	
+</s:Application>
