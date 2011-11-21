@@ -17,18 +17,24 @@
 			import org.openscales.core.Map;
 			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
+			import org.openscales.core.handler.feature.draw.EditFeaturesHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.fx.FxMap;
+			import org.openscales.fx.control.drawing.popup.EditFeatureAttributes;
+			import org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer;
 			import org.openscales.fx.control.layer.LayerManager;
+			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			private var _alpha:Number = 0.3;
@@ -45,11 +51,12 @@
 			private var _hover:Boolean = false;
 			private var _toggle:Boolean = false;
 			private var _map:Map;
+			private var _fxMap:FxMap;
 			private var _target:VectorLayer;
-			private var _handler:SelectFeaturesHandler = null;
+			private var _handler:EditFeaturesHandler = null;
 			private var _previousSelectFeaturesHandler:SelectFeaturesHandler = null;
 			private var _isClick:Boolean = false;
-			
+			private var _fxpopup:FxPopup;
 			/**
 			 * Flag for activating and deactivating the component
 			 * @default true;
@@ -106,6 +113,15 @@
 				this._toggle = value;
 			}
 			
+			public function get fxpopup():FxPopup{
+				
+				return this._fxpopup;
+			}
+			public function set fxpopup(value:FxPopup):void{
+				
+				this._fxpopup = value;
+			}
+			
 			/**
 			 * Map controled by this control
 			 */
@@ -113,8 +129,8 @@
 				
 				return this._map;
 			}
+			
 			public function set map(value:Map):void{
-				
 				this._map = value;
 				this._map.addEventListener(DrawingEvent.DRAW_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.EDIT_HANDLER_ACTIVATED, onChangeActiveHandler);
@@ -123,6 +139,19 @@
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				
+			}
+			
+			/**
+			 * FxMap controled by this control
+			 */
+			public function get fxMap():FxMap{
+				
+				return this._fxMap;
+			}
+			
+			public function set fxMap(value:FxMap):void{
+				this._fxMap = value;
 			}
 			
 			/**
@@ -153,10 +182,44 @@
 			}
 			
 			/**
+			 * Update the features to edit when a FeatureEvent.FEATURE_SELECTED 
+			 * event occured
+			 */
+			private function onFeatureSelected(evt:FeatureEvent):void
+			{
+				if(evt.feature.layer == this.target)
+				{
+					if(fxpopup){
+						fxpopup.destroy();
+					}
+					fxpopup = null;
+					fxpopup = new FxPopup();
+					fxpopup.fxmap = fxMap;
+					
+					var fxpopupRenderer:EditFeaturesPopupRenderer = new EditFeaturesPopupRenderer();
+					fxpopup.popupRenderer = fxpopupRenderer;
+					
+					fxpopup.feature = evt.feature;
+					var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(evt.feature.lonlat);
+					fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+					fxpopup.position = px;
+					fxpopup.setCurrentState(fxpopup.relativePosition,false);
+					fxpopupRenderer.titleContent = Catalog.getLocalizationForKey("editfeatureattributes.title");
+					
+					fxMap.addFxPopup(fxpopup,true);
+					fxpopup.visible = true;
+				}
+			}
+			
+			/**
 			 * To activate the handler
 			 */
 			private function activate():void
 			{
+				if(this.map) {
+					this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
+				}
+				
 				for each(var ih:IHandler in this._map.controls)
 				{
 					if(ih is SelectFeaturesHandler && ih != this._handler)
@@ -169,17 +232,18 @@
 				}
 				// Add a new SelectFeaturesHandler
 				if(this._hover)
-					this._handler = new SelectFeaturesHandler(this._map,true,true,false,true);
+					this._handler = new EditFeaturesHandler(this._map,true,true,false,true);
 				else
-					this._handler = new SelectFeaturesHandler(this._map,true,true,false,false);
+					this._handler = new EditFeaturesHandler(this._map,true,true,false,false);
 				this._handler.layers[0] = this._target;
 				this._handler.clickOut = this._clickout;
 				this._handler.toggle = this._toggle;
 				
 				_alpha = 1;
-				this._map.mouseNavigationEnabled = true;
-				this._map.panNavigationEnabled = true;
-				this._map.zoomNavigationEnabled = true;
+				this._map.mouseNavigationEnabled = false;
+				this._map.panNavigationEnabled = false;
+				this._map.zoomNavigationEnabled = false;
+				this._map.keyboardNavigationEnabled = false;
 			}
 			
 			/**
@@ -202,6 +266,14 @@
 					this._previousSelectFeaturesHandler.map = this.map;
 				
 				_alpha = 0.3;
+				
+				if(this.map) {
+					this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
+				}
+				
+				if(fxpopup){
+					fxpopup.destroy();
+				}
 			}
 			
 			/**
@@ -219,6 +291,7 @@
 					this._map.mouseNavigationEnabled = true;
 					this._map.panNavigationEnabled = true;
 					this._map.zoomNavigationEnabled = true;
+					this._map.keyboardNavigationEnabled = true;
 					return;
 				}
 				
@@ -245,8 +318,10 @@
 			 */
 			private function onChangeActiveHandler(evt:DrawingEvent):void{
 				
-				if(this._handler && this._handler.active && !this._isClick)
+				if(this._handler && this._handler.active && !this._isClick) {
 					disactivate();
+					this._map.keyboardNavigationEnabled = true;
+				}
 				else
 					this._isClick = false;
 			}
@@ -263,9 +338,20 @@
 						this._map.mouseNavigationEnabled = true;
 						this._map.panNavigationEnabled = true;
 						this._map.zoomNavigationEnabled = true;
+						this._map.keyboardNavigationEnabled = true;
 					}
 					
 					this.target = evt.layer;
+					
+					if(!evt.layer.editable) {
+						this.buttonMode = false;
+						this.useHandCursor = false;
+						this.toolTip = Catalog.getLocalizationForKey('drawing.selectDrawingLayer');
+					} else {
+						this.buttonMode = true;
+						this.useHandCursor = true;
+						this.toolTip = Catalog.getLocalizationForKey('drawing.select');
+					}
 				}
 			}
 			

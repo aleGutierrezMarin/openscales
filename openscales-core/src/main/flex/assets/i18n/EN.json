@@ -6,6 +6,7 @@
    "component.iconify": "Iconify",
    "component.toggle": "Toggle",
    
+   "drawing.selectDrawingLayer": "Select a drawing layer to use this tool",
    "drawing.toolbar": "Drawing tools",
    "drawing.add": "Add",
    "drawing.import": "Import",
