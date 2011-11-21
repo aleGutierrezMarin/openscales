@@ -180,6 +180,7 @@
 				this._map.mouseNavigationEnabled = false;
 				this._map.panNavigationEnabled = false;
 				this._map.zoomNavigationEnabled = false;
+				this._map.keyboardNavigationEnabled = false;
 			}
 			
 			/**
@@ -227,6 +228,7 @@
 					this._map.mouseNavigationEnabled = true;
 					this._map.panNavigationEnabled = true;
 					this._map.zoomNavigationEnabled = true;
+					this._map.keyboardNavigationEnabled = true;
 					return;
 				}
 				
@@ -271,6 +273,7 @@
 						this._map.mouseNavigationEnabled = true;
 						this._map.panNavigationEnabled = true;
 						this._map.zoomNavigationEnabled = true;
+						this._map.keyboardNavigationEnabled = true;
 					}
 					this.target = evt.layer;
 					

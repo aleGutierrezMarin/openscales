@@ -125,6 +125,7 @@
 				_handler.map.mouseNavigationEnabled = true;
 				_handler.map.panNavigationEnabled = true;
 				_handler.map.zoomNavigationEnabled = true;
+				_handler.map.keyboardNavigationEnabled = true;
 				_alpha = 1;
 			}
 			private function disactivate():void{
