@@ -58,7 +58,7 @@ package org.openscales.proj4as.proj {
 
 			var x:Number, y:Number;
 			if (Math.abs(Math.abs(lat) - ProjConstants.HALF_PI) <= ProjConstants.EPSLN) {
-				trace("merc:forward: ll2mAtPoles");
+				//trace("merc:forward: ll2mAtPoles");
 				return null;
 			} else {
 				if (this.sphere) {
