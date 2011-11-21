@@ -8,6 +8,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.format.GPXFormat;
+	import org.openscales.core.layer.IFileUser;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.style.Rule;
@@ -31,8 +32,10 @@ package org.openscales.core.layer.ogc
 	 * 
 	 */
 	
-	public class GPX extends VectorLayer
+	public class GPX extends VectorLayer implements IFileUser
 	{
+		private static const ACCEPTED_FILE_EXTENSIONS:Vector.<String> = new <String>["xml","gpx"];
+		
 		private var _featureVector:Vector.<Feature> = null;
 		private var _gpxFormat:GPXFormat;
 		
@@ -264,6 +267,13 @@ package org.openscales.core.layer.ogc
 			_extractRoutes = value;
 		}
 
-		
+		/**
+		 * List of accepted file extensions for GPX files ("gpx" and "xml")
+		 */ 
+		public function get acceptedFileExtensions():Vector.<String>
+		{
+			return ACCEPTED_FILE_EXTENSIONS;
+		}
+
 	}
 }

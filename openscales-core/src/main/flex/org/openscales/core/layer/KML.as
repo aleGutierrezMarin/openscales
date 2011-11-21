@@ -24,8 +24,10 @@ package org.openscales.core.layer
 	/**
 	 * KML layer, most useful features of KML 2.0 and 2.2 specifications are supported
 	 */
-	public class KML extends VectorLayer
+	public class KML extends VectorLayer implements IFileUser
 	{
+		private static const ACCEPTED_FILE_EXTENSIONS:Vector.<String> = new <String>["xml","kml"];
+		
 		private var _request:XMLRequest = null;
 		private var _kmlFormat:KMLFormat = null;
 		private var _featureVector:Vector.<Feature> = null;
@@ -167,6 +169,10 @@ package org.openscales.core.layer
 		public function get kmlFormat():KMLFormat
 		{
 			return _kmlFormat;
+		}
+		
+		public function get acceptedFileExtensions():Vector.<String>{
+			return ACCEPTED_FILE_EXTENSIONS;
 		}
 	}
 }
