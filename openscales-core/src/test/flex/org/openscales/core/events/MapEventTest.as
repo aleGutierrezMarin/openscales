@@ -50,7 +50,7 @@ package org.openscales.core.events
 		/**
 		 * Validates that when the LAYERS_LOAD_START is dispatched at least one layer of the map is currently loading
 		 */
-		[Test(async)]
+		[Test(async,ui)]
 		public function shouldDispatchLayersLoadStartWhenALayerStartLoading():void
 		{
 			// Given a map
@@ -105,7 +105,7 @@ package org.openscales.core.events
 		/**
 		 * Validates that when the LAYERS_LOAD_END is dispatched when no layer of the map is currently loading
 		 */
-		[Test(async)]
+		[Test(async,ui)]
 		public function shouldDispatchLayersLoadEndWhenLayersStopLoading():void
 		{
 			// Given a map
@@ -116,7 +116,7 @@ package org.openscales.core.events
 			_layer3 = new WMS("Layer 3", URL, LAYERS, "", FORMAT);
 			
 			this._handler = Async.asyncHandler(this,assertDispatchLayersLoadEndWhenLayersStopLoading,
-				2000,null,noEventReceived);
+				15000,null,noEventReceived);
 			
 			// When the LAYERS_LOAD_START is dispatched
 			this._map.addEventListener(MapEvent.LAYERS_LOAD_END,this._handler);
@@ -124,7 +124,6 @@ package org.openscales.core.events
 			this._map.addLayer(_layer1);
 			this._map.addLayer(_layer2);
 			this._map.addLayer(_layer3);
-			this._map.center = new Location(2,48,"EPSG:4326");
 		}
 		
 		private function assertDispatchLayersLoadEndWhenLayersStopLoading(event:MapEvent,obj:Object):void

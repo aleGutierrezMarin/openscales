@@ -34,6 +34,10 @@
 			public static var INCH:String = "in";
 			public static var ENGLISH:String = "english";
 			
+			public static var DISTANCEMEASURE:String="distance";
+			public static var AZIMUTHMEASURE:String="azimuth";
+			public static var SURFACEMEASURE:String="surface";
+			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-12.png")]
 			private var _btnPath:Class;
@@ -119,11 +123,63 @@
 				//exitButton.toolTip = _exitToolTip = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
 			}
 			
+			/**
+			 * This function hide a component of the measure bar if it was display.
+			 *  Otherwise, it has no action
+			 * 
+			 * @param component Component to hide (constants available in the MeasureBar class)
+			 */
+			public function hideComponent(component:String):void{
+				
+				if(component==DISTANCEMEASURE){
+					if(this.measurebar.contains(this.pathMeasure)){
+						if(this.pathMeasure.active){
+							this.pathMeasure.onClick();
+						}
+						this.measurebar.removeElement(this.pathMeasure);
+					}
+				}
+				if(component==AZIMUTHMEASURE){
+					if(!this.measurebar.contains(this.azimuthMeasure)){
+						this.measurebar.removeElement(this.azimuthMeasure);
+					}
+				}
+				if(component==SURFACEMEASURE){
+					if(!this.measurebar.contains(this.surfaceMeasure)){
+						this.measurebar.removeElement(this.surfaceMeasure);
+					}
+				}
+			}
+			
+			/**
+			 * This function display a component of the measure bar if it was hidden. Otherwise, it has no action
+			 * 
+			 * @param component Component to show (constants available in the MeasureBar class)
+			 */
+			public function showComponent(component:String):void{
+				
+				if(component==DISTANCEMEASURE){
+					if(!this.measurebar.contains(this.pathMeasure)){
+						this.measurebar.addElementAt(this.pathMeasure,0);
+					}
+				}
+				if(component==AZIMUTHMEASURE){
+					if(!this.measurebar.contains(this.azimuthMeasure)){
+						this.measurebar.addElementAt(this.azimuthMeasure,0);
+					}
+				}
+				if(component==SURFACEMEASURE){
+					if(!this.measurebar.contains(this.surfaceMeasure)){
+						this.measurebar.addElementAt(this.surfaceMeasure,0);
+					}
+				}
+			}
+			
 			
 		]]>
 	</fx:Script>
 	
-	<s:Panel title="{this.panelTitle}" x="10" y="10" height="70" >
+	<s:Panel id="measurebar" title="{this.panelTitle}" x="10" y="10" height="70" >
 		<s:layout>
 			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
 								horizontalAlign="center" verticalAlign="middle"/>
