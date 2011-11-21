@@ -18,7 +18,7 @@ package org.openscales.core.layer
 	 * Layer that display features stored as child element
 	 */
 	public class VectorLayer extends Layer
-	{
+	{		
 		/**
 		 * The display projection defined by displayProjection is the
 		 * projection of the features on the map.
@@ -54,9 +54,9 @@ package org.openscales.core.layer
 		{
 			super(name);
 			this._displayProjection = this.projection;
-			this.style = new Style();
-			this.geometryType = null;
-			this.selectedFeatures = new Vector.<String>();
+			this._style = new Style();
+			this._geometryType = null;
+			this._selectedFeatures = new Vector.<String>();
 			
 			// By default no range defined for feature layers
 			this.minResolution = new Resolution(0,this.projection);
@@ -488,5 +488,7 @@ package org.openscales.core.layer
 		public function set editable(value:Boolean):void{
 			_editable = value;
 		}
+
+		
 	}
 }
