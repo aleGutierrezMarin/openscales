@@ -48,6 +48,7 @@ package org.openscales.fx.control
 			}
 		}    
 		
+		[Bindable]
 		public function get fxMap():FxMap
 		{
 			return this._fxMap;

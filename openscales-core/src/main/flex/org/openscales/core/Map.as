@@ -148,6 +148,7 @@ package org.openscales.core
 		private var _backGround:Shape;
 		private var _panNavigationEnabled:Boolean = true;
 		private var _zoomNavigationEnabled:Boolean = true;
+		private var _keyboardNavigationEnabled:Boolean = true;
 		
 		/** 
 		 * @private
@@ -1579,6 +1580,22 @@ package org.openscales.core
 		public function set zoomNavigationEnabled(value:Boolean):void
 		{
 			_zoomNavigationEnabled = value;
+		}
+		
+		/**
+		 * To enabled/disabled keyboard navigation
+		 */
+		public function get keyboardNavigationEnabled():Boolean
+		{
+			return _keyboardNavigationEnabled;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set keyboardNavigationEnabled(value:Boolean):void
+		{
+			_keyboardNavigationEnabled = value;
 		}
 		
 		private function onTimerEnd(event:TimerEvent):void

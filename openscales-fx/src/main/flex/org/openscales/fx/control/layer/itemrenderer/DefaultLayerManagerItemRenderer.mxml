@@ -119,6 +119,9 @@
 			[Bindable]
 			protected var _rendererOptions:Object;
 			
+			[Bindable]
+			protected var _drawingToolbar:DrawingToolbar;
+			
 			/**
 			 * The Layer rendered by this itemrenderer
 			 */
@@ -287,8 +290,12 @@
 				var displayDrawingToolbar:Boolean = true;
 				for(var k:uint = 0; k < this.layer.map.controls.length; k++){
 					if(this.layer.map.controls[k] is DrawingToolbar)
-						if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple")
+						if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple") {
 							displayDrawingToolbar = false;
+						} else {
+							this._drawingToolbar = (this.layer.map.controls[k] as DrawingToolbar);
+						}
+				
 				}
 				if(this._layer.hasOwnProperty("features") && !displayDrawingToolbar){
 					var event:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
@@ -342,8 +349,11 @@
 					var displayDrawingToolbar:Boolean = true;
 					for(var k:uint = 0; k < this.layer.map.controls.length; k++){
 						if(this.layer.map.controls[k] is DrawingToolbar)
-							if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple")
+							if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple") {
 								displayDrawingToolbar = false;
+							} else {
+								this._drawingToolbar = (this.layer.map.controls[k] as DrawingToolbar);
+							}
 					}
 					_color = (this._layer.selected && !displayDrawingToolbar) ? 0xd0d0d0 : 0xffffff;
 					this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer && displayDrawingToolbar;
@@ -365,6 +375,8 @@
 						if((this.layer.map.controls[k] as DrawingToolbar).mode != "multiple") {
 							displayDrawingToolbar = false;
 							break;
+						} else {
+							this._drawingToolbar = (this.layer.map.controls[k] as DrawingToolbar);
 						}
 					}
 				}
@@ -466,7 +478,7 @@
 			<s:layout>
 				<s:HorizontalLayout />
 			</s:layout>
-			<drawing:SelectFeatures id="selectFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"/>
+			<drawing:SelectFeatures id="selectFeatures" fxMap="{this._drawingToolbar.fxMap}" map="{this._layer.map}" target="{this._layer as VectorLayer}"/>
 			<drawing:DeleteFeatures id="deleteFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}" />
 			<drawing:EditFeatures id="editFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:MoveFeatures id="moveFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
