@@ -121,6 +121,24 @@
 			}
 			
 			/**
+			 * @private
+			 * Icon that will be displayed at the center of the overview map
+			 * to show the location
+			 */
+			public function get centerIcon():Class
+			{
+				return _overviewmap.centerIcon;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set centerIcon(value:Class):void
+			{
+				_overviewmap.centerIcon = value;
+			}
+			
+			/**
 			 * Ratio between the overview resolution and the map resolution
 			 * The ratio is MapResolution/OverviewMapResolution
 			 * While setting a new ratio the oveview zoom level will be recomputed

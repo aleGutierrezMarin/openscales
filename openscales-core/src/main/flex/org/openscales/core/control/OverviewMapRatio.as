@@ -1,8 +1,12 @@
 package org.openscales.core.control
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	
+	import mx.controls.Image;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
@@ -39,11 +43,17 @@ package org.openscales.core.control
 		
 		/**
 		 * @private
-		 * Shape that will be displayed at the center of the overview map
+		 * Icon that will be displayed at the center of the overview map
 		 * to show the location
 		 */
-		private var _centerPoint:Shape;
+		private var _centerIcon:Class = null;
 		
+		/**
+		 * @private
+		 * Shape that will be displayed at the center of the overview map
+		 * to show the location if no icon is given
+		 */
+		private var _centerPoint:Shape;
 		
 		/**
 		 * Constructor of the overview map
@@ -62,12 +72,30 @@ package org.openscales.core.control
 		
 		/**
 		 * @private
+		 * Icon that will be displayed at the center of the overview map
+		 * to show the location
+		 */
+		public function get centerIcon():Class
+		{
+			return _centerIcon;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set centerIcon(value:Class):void
+		{
+			_centerIcon = value;
+		}
+
+		/**
+		 * @private
 		 * Draw the overview map when added to the map 
 		 */
 		private function onAddedToStage(event:Event):void
 		{
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
-			//this.mapChanged();
+			this.mapChanged();
 			this.draw();
 		}
 		
@@ -83,17 +111,31 @@ package org.openscales.core.control
 		 */
 		private function drawCenter():void
 		{
-			if (this._centerPoint == null)
-			{
-				_centerPoint = new Shape();
+			if (this._centerIcon) {
+				// Use icon
+				if (this._centerPoint) {
+					this._overviewMap.removeChild(this._centerPoint);
+					this._centerPoint = null;
+				}
+				var bitmap:Bitmap = new _centerIcon;
+				bitmap.x = this.width/2 - bitmap.width/2;
+				bitmap.y = this.height/2 - bitmap.height/2;
+				this._overviewMap.addChild(bitmap);
 			}
-			_centerPoint.graphics.clear();
-			_centerPoint.graphics.lineStyle(1, 0xFF0000);
-			_centerPoint.graphics.moveTo(this.width/2 - 5, this.height/2);
-			_centerPoint.graphics.lineTo(this.width/2 + 5, this.height/2);
-			_centerPoint.graphics.moveTo(this.width/2, this.height/2 - 5);
-			_centerPoint.graphics.lineTo(this.width/2, this.height/2 + 5);
-			this._overviewMap.addChild(_centerPoint);
+			else {
+				// Draw cross shape
+				if (this._centerPoint == null)
+				{
+					_centerPoint = new Shape();
+				}
+				_centerPoint.graphics.clear();
+				_centerPoint.graphics.lineStyle(1, 0xFF0000);
+				_centerPoint.graphics.moveTo(this.width/2 - 5, this.height/2);
+				_centerPoint.graphics.lineTo(this.width/2 + 5, this.height/2);
+				_centerPoint.graphics.moveTo(this.width/2, this.height/2 - 5);
+				_centerPoint.graphics.lineTo(this.width/2, this.height/2 + 5);
+				this._overviewMap.addChild(_centerPoint);
+			}
 		}
 		
 		/**
@@ -118,6 +160,7 @@ package org.openscales.core.control
 				this.map.removeEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
 				this.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
 				this.map.removeEventListener(MapEvent.RESIZE, mapChanged);
+				this.map.removeEventListener(MapEvent.MAP_LOADED, mapChanged);
 				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			}
 			super.map = map;	
@@ -127,6 +170,7 @@ package org.openscales.core.control
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
 				this.map.addEventListener(MapEvent.RESIZE, mapChanged);
+				this.map.addEventListener(MapEvent.MAP_LOADED, mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
 				this._overviewMap.maxExtent = this._map.maxExtent.preciseReprojectBounds(this.overviewMap.projection);
 				this.mapChanged();
@@ -220,7 +264,7 @@ package org.openscales.core.control
 		public function set ratio(ratio:Number):void
 		{
 			this._ratio = ratio;
-			this.mapChanged();
+			//this.mapChanged();
 		}
 		
 		/**
