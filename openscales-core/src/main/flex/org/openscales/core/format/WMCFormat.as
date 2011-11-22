@@ -71,30 +71,30 @@ package org.openscales.core.format
 		
 		override public function read(data:Object):Object{
 			this.wmcFile = new XML(data);
-			if(this.wmcFile..*::General.length() > 0)
+			if(this.wmcFile.*::General.length() > 0)
 			{
-				var general:XML = this.wmcFile..*::General[0];
-				if(general..*::Window.length() > 0)
+				var general:XML = this.wmcFile.*::General[0];
+				if(general.*::Window.length() > 0)
 				{
-					var window:XML = general..*::Window[0];
-					if(window..@height.length()> 0 && window..@width.length() > 0)
+					var window:XML = general.*::Window[0];
+					if(window.@height.length()> 0 && window.@width.length() > 0)
 					{
-						this._windowSize = new Size(window..@width[0], window..@height[0]);
+						this._windowSize = new Size(window.@width[0], window.@height[0]);
 					}
 				}
 
 
-				if(general..*::BoundingBox.length() > 0)
+				if(general.*::BoundingBox.length() > 0)
 				{
-					var bbox:XML = general..*::BoundingBox[0];
-					if(bbox..@SRS.length() > 0 && bbox..@minx.length() > 0 && bbox..@miny.length() > 0 && bbox..@maxx.length() > 0 && bbox..@maxy.length() > 0)
+					var bbox:XML = general.*::BoundingBox[0];
+					if(bbox.@SRS.length() > 0 && bbox.@minx.length() > 0 && bbox.@miny.length() > 0 && bbox.@maxx.length() > 0 && bbox.@maxy.length() > 0)
 					{
-						this._generalBbox = new Bounds(bbox..@minx, bbox..@miny, bbox..@maxx, bbox..@maxy, bbox..@SRS);
+						this._generalBbox = new Bounds(bbox.@minx, bbox.@miny, bbox.@maxx, bbox.@maxy, bbox.@SRS);
 					}
 				}
-				if(general..*::Extension.length() > 0)
+				if(general.*::Extension.length() > 0)
 				{
-					this.parseGeneralExtension(general..*::Extension[0]);
+					this.parseGeneralExtension(general.*::Extension[0]);
 				}
 				
 			}
@@ -109,20 +109,20 @@ package org.openscales.core.format
 			var service:String = "";
 			var version:String = "";
 			var url:String = "";
-			if (layer..*::Server.length() > 0)
+			if (layer.*::Server.length() > 0)
 			{
-				var server:XML = layer..*::Server[0];
-				if(server..@service.length() > 0)
+				var server:XML = layer.*::Server[0];
+				if(server.@service.length() > 0)
 				{
-					service = server..@service;
+					service = server.@service;
 				}
-				if(server..@version.length() > 0)
+				if(server.@version.length() > 0)
 				{
-					version = server..@version;
+					version = server.@version;
 				}
-				if(server..*::OnlineResource.length() > 0)
+				if(server.*::OnlineResource.length() > 0)
 				{
-					var onlineRessource:XML = server..*::OnlineResource[0];
+					var onlineRessource:XML = server.*::OnlineResource[0];
 					var xlinkNS:Namespace = new Namespace("xlink", "http://www.w3.org/1999/xlink");
 					onlineRessource.addNamespace(xlinkNS);
 					if (onlineRessource.@xlinkNS::href.length() > 0)
@@ -138,38 +138,38 @@ package org.openscales.core.format
 			var srs:String = "";
 			//var formatList:Vector.<String> = new Vector.<String>();
 			var format:String = "";
-			if(layer..*::Name.length() > 0)
+			if(layer.*::Name.length() > 0)
 			{
-				name = layer..*::Name[0];
+				name = layer.*::Name[0];
 			}
-			if(layer..*::Title.length() > 0)
+			if(layer.*::Title.length() > 0)
 			{
-				title = layer..*::Title[0];
+				title = layer.*::Title[0];
 			}
-			if(layer..*::MinScaleDenominator.length() > 0)
+			if(layer.*::MinScaleDenominator.length() > 0)
 			{
-				minScaleDenominator = layer..*::MinScaleDenominator[0];
+				minScaleDenominator = layer.*::MinScaleDenominator[0];
 			}
-			if(layer..*::MaxScaleDenominator.length() > 0)
+			if(layer.*::MaxScaleDenominator.length() > 0)
 			{
-				maxScaleDenominator = layer..*::MaxScaleDenominator[0];
+				maxScaleDenominator = layer.*::MaxScaleDenominator[0];
 			}
-			if (layer..*::SRS.length() > 0)
+			if (layer.*::SRS.length() > 0)
 			{
-				srs = layer..*::SRS[0];
+				srs = layer.*::SRS[0];
 			}
-			if (layer..*::FormatList.length() > 0)
+			if (layer.*::FormatList.length() > 0)
 			{
-				var formats:XMLList = layer..*::FormatList;
-				if(formats..*::Format.length() > 0)
+				var formats:XMLList = layer.*::FormatList;
+				if(formats.*::Format.length() > 0)
 				{
-					var currentFormat:XMLList = formats..*::Format;
+					var currentFormat:XMLList = formats.*::Format;
 					var formatLength:Number = currentFormat.length();
 					for (var j:int = 0; j < formatLength; ++j)
 					{
-						if(currentFormat[j]..@current.length() > 0)
+						if(currentFormat[j].@current.length() > 0)
 						{
-							if (currentFormat[j]..@current == 1)
+							if (currentFormat[j].@current == 1)
 							{
 								format = currentFormat[j];
 							}
@@ -210,9 +210,9 @@ package org.openscales.core.format
 					Trace.debug("Service layer : "+service+" not supported");
 					break;
 			}
-			if(layer..*::Extension.length() > 0)
+			if(layer.*::Extension.length() > 0)
 			{
-				layerToAdd = this.parseLayerExtension(layer..*::Extension[0], layerToAdd, service);
+				layerToAdd = this.parseLayerExtension(layer.*::Extension[0], layerToAdd, service);
 			}
 			return layerToAdd;
 		}
@@ -221,14 +221,14 @@ package org.openscales.core.format
 			
 			var layers:Vector.<Layer>;
 			
-			if(xml..*::LayerList.length() > 0)
+			if(xml.*::LayerList.length() > 0)
 			{
-				var layerList:XML = xml..*::LayerList[0];
-				if(layerList..*::Layer.length() > 0)
+				var layerList:XML = xml.*::LayerList[0];
+				if(layerList.*::Layer.length() > 0)
 				{
-					if (layerList..*::Layer.length() > 0)
+					if (layerList.*::Layer.length() > 0)
 					{
-						var listOfLayers:XMLList = layerList..*::Layer;
+						var listOfLayers:XMLList = layerList.*::Layer;
 						var listLength:Number = listOfLayers.length();
 						layers = new Vector.<Layer>();
 						for (var i:int = 0; i<listLength; ++i)
