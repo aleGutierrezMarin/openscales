@@ -3,9 +3,9 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.format.GPXFormat;
 	import org.openscales.core.layer.VectorLayer;
@@ -16,6 +16,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.utils.Trace;
 	
 	/**
 	 * GPX layer; versions 1.0 and 1.1 supported 
@@ -121,10 +122,14 @@ package org.openscales.core.layer.ogc
 				
 				var pointStyle:Style = Style.getDefaultPointStyle();
 				var lineStyle:Style = Style.getDefaultLineStyle();
+				
+				var lineStringFeatureVector:Vector.<Feature>= new Vector.<Feature>(); 
+				var pointFeatureVector:Vector.<Feature> = new Vector.<Feature>();
+				
 				pointStyle.rules.push(new Rule());
 				lineStyle.rules.push(new Rule());
 				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
-				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
+				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,1,1,Stroke.LINECAP_BUTT)));
 				
 				this.featureVector = this.gpxFormat.read(this.data) as Vector.<Feature>;
 				var i:uint;
@@ -138,19 +143,24 @@ package org.openscales.core.layer.ogc
 					{
 						if(this.featureVector[i] is PointFeature) {
 							this.featureVector[i].style = pointStyle;
+							pointFeatureVector.push(this.featureVector[i]);
 						}
-						else // feature is linestring or multilinestring
+						else{ // feature is linestring or multilinestring
 							this.featureVector[i].style = lineStyle;
+							lineStringFeatureVector.push(this.featureVector[i]);
+						}
 					}
-					this.addFeature(this.featureVector[i]);
 				}
+				this.addFeatures(lineStringFeatureVector);
+				this.addFeatures(pointFeatureVector);
+				
 			}
 			else {
 				this.clear();
 				this.draw();
 			}			
 		}
-		
+				
 		/**
 		 * Getters and Setters
 		 */
@@ -190,41 +200,65 @@ package org.openscales.core.layer.ogc
 			// and then reprojected to the projection of the map.
 		}
 
+		/**
+		 * Defines if attribut objects should be extracted from the GPX source file.
+		 * Default: true.
+		 */
 		public function get extractAttributes():Boolean
 		{
 			return _extractAttributes;
 		}
-
+		/**
+		 * @private
+		 */
 		public function set extractAttributes(value:Boolean):void
 		{
 			_extractAttributes = value;
 		}
 
+		/**
+		 * Defines if waypoint objects should be extracted from the GPX source file.
+		 * Default: true.
+		 */
 		public function get extractWaypoints():Boolean
 		{
 			return _extractWaypoints;
 		}
-
+		/**
+		 * @private
+		 */
 		public function set extractWaypoints(value:Boolean):void
 		{
 			_extractWaypoints = value;
 		}
 
+		/**
+		 * Defines if tracks objects should be extracted from the GPX source file.
+		 * Default: true.
+		 */
 		public function get extractTracks():Boolean
 		{
 			return _extractTracks;
 		}
-
+		/**
+		 * @private
+		 */
 		public function set extractTracks(value:Boolean):void
 		{
 			_extractTracks = value;
 		}
 
+		/**
+		 * Defines if routes objects should be extracted from the GPX source file.
+		 * Default: true.
+		 */
 		public function get extractRoutes():Boolean
 		{
 			return _extractRoutes;
 		}
-
+		/**
+		 * @private 
+		 */
 		public function set extractRoutes(value:Boolean):void
 		{
 			_extractRoutes = value;

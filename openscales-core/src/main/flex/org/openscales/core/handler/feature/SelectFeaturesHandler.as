@@ -949,6 +949,7 @@ package org.openscales.core.handler.feature
 		static public function defaultSelectedStyle(feature:Feature):Style {
 			var selectedStyle:Style;
 			var symbolizer:Symbolizer;
+			var symbolizerBorder:Symbolizer;
 			var color:uint = 0xFFFF00;
 			var opacity:Number = 0.5;
 			var borderThin:int = 2;
@@ -966,7 +967,9 @@ package org.openscales.core.handler.feature
 				symbolizer = new PointSymbolizer(new WellKnownMarker(markType, new SolidFill(color, opacity), new Stroke(color, borderThin), markSize));
 			} else if (feature is LineStringFeature || feature is MultiLineStringFeature) {
 				selectedStyle = Style.getDefaultSurfaceStyle();
-				symbolizer = new LineSymbolizer(new Stroke(color, borderThin));
+				symbolizerBorder = new LineSymbolizer(new Stroke(0xD87529, 7));
+				symbolizer = new LineSymbolizer(new Stroke(color,1,1,Stroke.LINECAP_BUTT))
+
 			} else if (feature is LabelFeature) {
 				selectedStyle = Style.getDefinedLabelStyle(feature.style.textFormat.font,(feature.style.textFormat.size as Number),
 					0xFFFF00,feature.style.textFormat.bold,feature.style.textFormat.italic);
@@ -975,6 +978,9 @@ package org.openscales.core.handler.feature
 				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));
 			}
 			selectedStyle.rules[0] = new Rule();
+			if(symbolizerBorder){
+				selectedStyle.rules[0].symbolizers.push(symbolizerBorder);
+			}
 			selectedStyle.rules[0].symbolizers.push(symbolizer);
 			return selectedStyle;
 		}
