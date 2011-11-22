@@ -823,7 +823,7 @@ package org.openscales.core.format
 			var att:Object = feature.attributes;
 			
 			placemark.appendChild(new XML("<id>" + feature.name + "</id>"));
-			if (att.hasOwnProperty("name")) {
+			if (att.hasOwnProperty("name") && att["name"] != "") {
 				placemark.appendChild(new XML("<name>" + att["name"] + "</name>"));
 			}
 			else {
