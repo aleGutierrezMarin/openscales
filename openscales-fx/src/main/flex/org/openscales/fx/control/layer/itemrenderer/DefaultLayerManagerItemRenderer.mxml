@@ -263,7 +263,7 @@
 				this._timer.start();
 			} 
 			
-			private function updateItemEnability(event:Event=null):void{
+			protected function updateItemEnability(event:Event=null):void{
 				if(this._layer && this.layer.map){
 					this.enabled = this._layer.available;
 					//Trace.debug("LayerSwitcherItemRenderer for "+this._layer.name+": Timer expired, checking availability: "+ok);
@@ -273,7 +273,7 @@
 			/**
 			 * Called when a layer is removed
 			 */
-			private function onLayerRemoved(event:LayerEvent):void{
+			protected function onLayerRemoved(event:LayerEvent):void{
 				if(event.layer.selected && this._layer.map){
 					event.layer.selected = false;
 					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
