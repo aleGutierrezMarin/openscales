@@ -37,9 +37,19 @@
 					this.layerSwitcherCheckBox.selected = this._layer.displayed;
 					
 					if(this._layer.map)
-					{					
+					{
+						this._layer.map.removeEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 						this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+						
+						this._layer.map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, onLayerVisibilityChange);
+						this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, onLayerVisibilityChange);
 					}
+				}
+			}
+			
+			public function onLayerVisibilityChange(event:LayerEvent):void{
+				if(this._layer && this._layer == event.layer){
+					this.layerSwitcherCheckBox.selected = this._layer.displayed;
 				}
 			}
 			
@@ -55,7 +65,7 @@
 			* Change the layer visibility
 			* @param event Change event
 			*/
-			public function layerVisible(event:MouseEvent):void{
+			public function changeLayerVisibility(event:MouseEvent):void{
 				this._layer.visible = !this._layer.visible;
 				// If the layer was uncheck from the beggining, he hadn't load yet so we need
 				// to redraw it to load it.
@@ -67,5 +77,5 @@
 	</fx:Script>
 	
 
-		<s:CheckBox id="layerSwitcherCheckBox" click="layerVisible(event)" toolTip="{this.tooltipChangeVisibility}" />
+		<s:CheckBox id="layerSwitcherCheckBox" click="changeLayerVisibility(event)" toolTip="{this.tooltipChangeVisibility}" />
 </s:Group>
