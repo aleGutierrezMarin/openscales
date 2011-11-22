@@ -1,32 +1,31 @@
 package org.openscales.core.format
 {
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.format.gml.parser.GML311;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 
+	/** This class reads and writes RSS files with GeoRss content.
+	 * 
+	 * Supported GeoRss version 1.1 
+	 * @see GeoRss Schema at http://www.georss.org/xml/1.1/georss.xsd 
+	 * 
+	 * Suported Rss version 2.0
+	 * @see Rss Schema at http://cyber.law.harvard.edu/rss/rss
+	 * 
+	 * @attribute rssFile: the GeoRss data 
+	 * @attribute featureVector
+	 */
 	public class GeoRssFormat extends Format
 	{
-		/** This class reads and writes RSS files with GeoRss content.
-		 * 
-		 * Supported GeoRss version 1.1 
-		 * @see GeoRss Schema at http://www.georss.org/xml/1.1/georss.xsd 
-		 * 
-		 * Suported Rss version 2.0
-		 * @see Rss Schema at http://cyber.law.harvard.edu/rss/rss
-		 * 
-		 * @attribute rssFile: the GeoRss data 
-		 * @attribute featureVector
-		 */
-	
 		private var _rssFile:XML;
 		private var _featureVector:Vector.<Feature>;
 		private var _extractAttributes:Boolean;
@@ -44,15 +43,13 @@ package org.openscales.core.format
 			
 			this._extractAttributes = extractAttributes;
 			
-			if(!featuresids)
-				this._featuresids = new HashMap();
-			
-			this._featuresids = featuresids;
+			if(!featuresids) this._featuresids = new HashMap();
+			else this._featuresids = featuresids;
 			
 			//use the setters to change these default values before calling the write function
-			this.title = "default title";
-			this.link = "default link";
-			this.description = "default description";
+			this._title = "default title";
+			this._link = "default link";
+			this._description = "default description";
 		
 		}
 
@@ -67,30 +64,36 @@ package org.openscales.core.format
 		 * The external GML geometry is supported only inside the where element
 		 * 
 		 */
-		
 		override public function read(data:Object):Object{
 			
-			this.featureVector = new Vector.<Feature>();
-			this.rssFile = new XML(data);
+			var channel:XML;
 			
-			this.title = this.rssFile..*::title[0].toString();
-			this.description = this.rssFile..*::description[0].toString();
-			this.link = this.rssFile..*::link[0].toString();
-				
-			var items:XMLList = this.rssFile..*::item;
-			var itemNumber:uint = items.length();
-			var i:uint;
+			this._featureVector = new Vector.<Feature>();
+			this._rssFile = new XML(data);
 			
-			for(i = 0; i < itemNumber; i++){
+			if(this._rssFile.*::channel.length()>0){
 				
-				var feature:Feature = this.parseItem(items[i]);
-				if(feature){
-					this.featureVector.push(feature);
-					if(feature.name)
-						this._featuresids.put(feature.name, feature);
+				channel = this._rssFile.*::channel[0];
+				
+				this._title = channel.*::title[0].toString();
+				this._description = channel.*::description[0].toString();
+				this._link = channel.*::link[0].toString();
+				
+				var items:XMLList = channel.*::item;
+				var itemNumber:uint = items.length();
+				var i:uint;
+				
+				for(i = 0; i < itemNumber; i++){
+					
+					var feature:Feature = this.parseItem(items[i]);
+					if(feature){
+						this._featureVector.push(feature);
+						if(feature.name)
+							this._featuresids.put(feature.name, feature);
+					}
 				}
 			}
-			return this.featureVector;
+			return this._featureVector;
 		}
 		
 		/**
@@ -213,8 +216,8 @@ package org.openscales.core.format
 			var i:uint;
 			var rssFile:XML = new XML("<rss></rss>");
 			var channel:XML = new XML("<channel></channel>");
-			channel.appendChild(new XML("<title>" + this.title + "</title>"));
-			channel.appendChild(new XML("<link>" + this.link + "</link>"));
+			channel.appendChild(new XML("<title>" + this._title + "</title>"));
+			channel.appendChild(new XML("<link>" + this._link + "</link>"));
 			channel.appendChild(new XML("<description>" + this._description + "</description>"));
 			rssFile.appendChild(channel);
 			rssFile.addNamespace(this.geoRssNs);
@@ -302,7 +305,7 @@ package org.openscales.core.format
 		/**
 		 * Setters and getters
 		 */ 
-			
+		
 		public function get featureVector():Vector.<Feature>
 		{
 			return _featureVector;
