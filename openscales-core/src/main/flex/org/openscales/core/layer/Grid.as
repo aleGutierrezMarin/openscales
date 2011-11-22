@@ -214,7 +214,7 @@ package org.openscales.core.layer
 				resolutionChangedCache = false;
 				if (centerChangedCache)
 				{
-					littleDeltaDueToScale = ratio/this.scaleX;
+					littleDeltaDueToScale = 1-ratio/this.scaleX;
 				}
 			}
 			
@@ -225,8 +225,8 @@ package org.openscales.core.layer
 				var deltaXCenter:Number = deltaLon/this.map.resolution.value;
 				var deltaYCenter:Number = deltaLat/this.map.resolution.value;
 				
-				this.x = this.x - deltaXCenter*littleDeltaDueToScale;
-				this.y = this.y + deltaYCenter*littleDeltaDueToScale;
+				this.x = this.x - deltaXCenter - deltaXCenter*littleDeltaDueToScale;
+				this.y = this.y + deltaYCenter + deltaYCenter*littleDeltaDueToScale;
 				this._previousCenter = this.map.center;
 				centerChangedCache = false;
 			}
