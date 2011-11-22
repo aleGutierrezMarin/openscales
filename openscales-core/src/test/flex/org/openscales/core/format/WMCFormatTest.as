@@ -1,9 +1,12 @@
 package org.openscales.core.format
 {
+	import flash.utils.Timer;
+	
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertTrue;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Size;
 
 	public class WMCFormatTest
@@ -33,7 +36,15 @@ package org.openscales.core.format
 		public function shouldWMCParseGeneralType():void
 		{
 			var wmcFile:XML = new XML(new WMCGeneralType());
+			var begin:Number = new Date().time;
+			var end:Number;		
+			
 			this.format.read(wmcFile);
+			
+			end = new Date().time;
+			var elapsed:Number = end-begin;
+			Trace.debug("shouldWMCParseGeneralType - Elapsed time for parsing : "+elapsed);
+			
 			assertEquals("Wrong window width parsing", 500, this.format.windowSize.w);
 			assertEquals("Wrong window height parsing", 300, this.format.windowSize.h);
 			assertEquals("Wrong bbox left parsing", -180, this.format.generalBbox.left);
@@ -47,7 +58,16 @@ package org.openscales.core.format
 		public function shouldWMCParseLayerType():void
 		{
 			var wmcFile:XML = new XML(new WMCLayerType());
+			
+			var begin:Number = new Date().time;
+			var end:Number;		
+			
 			this.format.read(wmcFile);
+			
+			end = new Date().time;
+			var elapsed:Number = end-begin;
+			Trace.debug("shouldWMCParseLayerType - Elapsed time for parsing : "+elapsed);
+			
 			var layers:Vector.<Layer> = this.format.layerList;
 			assertEquals("wrong layer number", 2, layers.length);
 			var layer1:Layer = layers[0];
