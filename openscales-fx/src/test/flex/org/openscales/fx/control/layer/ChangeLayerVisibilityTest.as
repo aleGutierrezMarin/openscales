@@ -81,7 +81,7 @@ package org.openscales.fx.control.layer
 		public function hideLayerTest():void
 		{
 			this._layer1.visible = true;
-			this._visibility.layerVisible(new MouseEvent(MouseEvent.CLICK));
+			this._visibility.changeLayerVisibility(new MouseEvent(MouseEvent.CLICK));
 			
 			Assert.assertFalse(this._layer1.visible);
 		}
@@ -93,7 +93,7 @@ package org.openscales.fx.control.layer
 		public function showLayerTest():void
 		{
 			this._layer1.visible = false;
-			this._visibility.layerVisible(new MouseEvent(MouseEvent.CLICK));
+			this._visibility.changeLayerVisibility(new MouseEvent(MouseEvent.CLICK));
 			
 			Assert.assertTrue(this._layer1.visible);
 		}
