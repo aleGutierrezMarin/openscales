@@ -532,19 +532,7 @@ package org.openscales.core.layer {
 		{
 			super.name = value;
 		}
-		
-		/**
-		 * For layers with a gutter, the image is larger than
-		 * the tile by twice the gutter in each dimension.
-		 */
-		public function get imageSize():Size {
-			return this._imageSize;
-		}
-		
-		public function set imageSize(value:Size):void {
-			this._imageSize = value;
-		}
-		
+
 		/**
 		 * Current layer position in the display list
 		 */
