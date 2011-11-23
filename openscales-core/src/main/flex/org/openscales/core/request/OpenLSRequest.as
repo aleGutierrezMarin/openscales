@@ -425,23 +425,23 @@ package org.openscales.core.request
 			var request:String = this.createRequestHeader();
 			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="ReverseGeocodeRequest" requestID="'+this.id+'" version="'+this._version+'">';
 			request += '<ReverseGeocodeRequest><ReverseGeocodePreference>StreetAddress</ReverseGeocodePreference>';
-			request += '<Position><gml:Point><gml:pos>'+this._location.lon+' '+this._location.lat+'</gml:pos></gml:Point>';
+			request += '<Position><gml:Point><gml:pos>'+this._location.lat+' '+this._location.lon+'</gml:pos></gml:Point>';
 			
 			switch (this._reverseMode) {
 				case "point":
 					break;
 				case "circle":
 					request += '<gml:CircleByCenterPoint>';
-					request += '<gml:pos>'+this._circleCenter.lon+' '+this._circleCenter.lat+'</gml:pos>';
+					request += '<gml:pos>'+this._circleCenter.lat+' '+this._circleCenter.lon+'</gml:pos>';
 					request += '<gml:radius>'+this._circleRadius+'</gml:radius>';
 				    request += '</gml:CircleByCenterPoint>';
 					break;
 				case "bounds":
 					request += '<gml:Polygon><gml:exterior><gml:LinearRing>';
-					request += '<gml:pos>'+this._bounds.left+' '+this._bounds.bottom+'</gml:pos>';
-					request += '<gml:pos>'+this._bounds.right+' '+this._bounds.bottom+'</gml:pos>';
-					request += '<gml:pos>'+this._bounds.right+' '+this._bounds.top+'</gml:pos>';
-					request += '<gml:pos>'+this._bounds.left+' '+this._bounds.top+'</gml:pos>';
+					request += '<gml:pos>'+this._bounds.bottom+' '+this._bounds.left+'</gml:pos>';
+					request += '<gml:pos>'+this._bounds.bottom+' '+this._bounds.right+'</gml:pos>';
+					request += '<gml:pos>'+this._bounds.top+' '+this._bounds.right+'</gml:pos>';
+					request += '<gml:pos>'+this._bounds.top+' '+this._bounds.left+'</gml:pos>';
 					request += '</gml:LinearRing></gml:exterior></gml:Polygon>';
 					break;
 				default:
