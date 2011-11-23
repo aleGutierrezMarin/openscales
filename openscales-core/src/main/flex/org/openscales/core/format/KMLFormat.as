@@ -387,7 +387,17 @@ package org.openscales.core.format
 					}
 					
 					htmlContent = htmlContent + "<b>" + attributeName + "</b> : " + extendedData.value.text() + "<br />";
-				}		
+				}
+				
+				for each(var simpleExtendedData:XML in placemark.ExtendedData.SchemaData.SimpleData) 
+				{	
+					attributeName = simpleExtendedData.@name;
+					if(excludeFromExtendedData.indexOf(attributeName) < 0) {
+						attributes[attributeName] = simpleExtendedData.text();
+					}
+					
+					htmlContent = htmlContent + "<b>" + attributeName + "</b> : " + simpleExtendedData.text() + "<br />";
+				}
 				attributes["popupContentHTML"] = htmlContent;	
 				var _id:String;
 				
