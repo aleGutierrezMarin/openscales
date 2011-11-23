@@ -19,7 +19,6 @@
 			import mx.core.UIComponent;
 			import mx.events.PropertyChangeEvent;
 			
-			import org.flexunit.internals.runners.model.MultipleFailureException;
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
