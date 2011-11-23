@@ -44,6 +44,22 @@
 			private var _active:Boolean = true;
 			private var _handler:DragFeatureHandler = new DragFeatureHandler();
 			private var _isClick:Boolean = false;
+			private var _drawingMode:String;
+			
+			/**
+			 * Indicates for Drawing mode
+			 * multiple : tools are in the LayerSwitcher
+			 * unique : tools are in the DrawingToolbar
+			 */
+			[Bindable]
+			public function get drawingMode():String{
+				
+				return _drawingMode;
+			}
+			
+			public function set drawingMode(value:String):void{
+				_drawingMode = value;
+			}
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -179,7 +195,7 @@
 			 */
 			private function onChangeActiveLayer(evt:DrawingEvent):void{
 				
-				if(this.parentDocument is DrawingToolbar)
+				if(this.drawingMode == 'unique')
 				{
 					if(this._handler.active){
 						disactivate();

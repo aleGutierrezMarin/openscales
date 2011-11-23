@@ -16,8 +16,10 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.core.UIComponent;
 			import mx.events.PropertyChangeEvent;
 			
+			import org.flexunit.internals.runners.model.MultipleFailureException;
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
@@ -32,6 +34,19 @@
 			
 			import spark.components.Label;
 			
+			public static var DRAWLABEL:String="label";
+			public static var DRAWPOINT:String="point";
+			public static var DRAWSHAPE:String="shape";
+			public static var DRAWPATH:String="path";
+			public static var DRAWPOLYGON:String="polygon";
+			public static var DRAWSELECT:String="select";
+			public static var DRAWDELETE:String="delete";
+			public static var DRAWEDIT:String="edit";
+			public static var DRAWMOVE:String="move";
+			public static var DRAWMANAGE:String="manage";
+			public static var DRAWADD:String="add";
+			public static var DRAWIMPORT:String="import";
+			public static var DRAWEXPORT:String="export";
 			
 			[Embed(source="/assets/images/widgetHide.png")]
 			protected const BTN_MINIMIZE:Class;
@@ -258,6 +273,36 @@
 				this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, this.resetTimer);	
 			}
 			
+			private function getComponentFromString(value:String):UIComponent{
+				var myComponent:UIComponent = null;
+				switch(value) {
+					case DRAWLABEL:
+						myComponent = this.drawLabel;break;
+					case DRAWPOINT:
+						myComponent = this.drawPoint;break;
+					case DRAWSHAPE:
+						myComponent = this.drawShape;break;
+					case DRAWPATH:
+						myComponent = this.drawPath;break;
+					case DRAWPOLYGON:
+						myComponent = this.drawPolygon;break;
+					case DRAWSELECT:
+						myComponent = this.selectFeatures;break;
+					case DRAWDELETE:
+						myComponent = this.deleteFeatures;break;
+					case DRAWEDIT:
+						myComponent = this.editFeatures;break;
+					case DRAWMOVE:
+						myComponent = this.moveFeatures;break;
+					case DRAWMANAGE:
+						myComponent = this.manageAttributes;break;
+					case DRAWEXPORT:
+						myComponent = this.exportFeature;break;
+				}
+				
+				return myComponent;
+			}
+			
 			private function resetTimer(event:MapEvent):void{
 				this._timer.reset();
 				this._timer.start();
@@ -353,6 +398,17 @@
 								displayDrawingToolbar = false;
 							} else {
 								this._drawingToolbar = (this.layer.map.controls[k] as DrawingToolbar);
+								
+								//Need to show/hide components from toolbar
+								for(var i:uint = 0 ; i < this._drawingToolbar.multipleModeInitTools.length ; i++) {
+									if(this._drawingToolbar.multipleModeDisplayTools.indexOf(this._drawingToolbar.multipleModeInitTools[i]) < 0) {
+										//this.removeElement(this.getComponentFromString(this._drawingToolbar.multipleModeInitTools[i]));
+										this.getComponentFromString(this._drawingToolbar.multipleModeInitTools[i]).visible = false;
+										this.getComponentFromString(this._drawingToolbar.multipleModeInitTools[i]).width = 0;
+										this.getComponentFromString(this._drawingToolbar.multipleModeInitTools[i]).height = 0;
+									}
+								}
+								
 							}
 					}
 					_color = (this._layer.selected && !displayDrawingToolbar) ? 0xd0d0d0 : 0xffffff;
@@ -464,7 +520,7 @@
 		
 		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">		
 			<s:layout>
-				<s:HorizontalLayout />
+				<s:HorizontalLayout gap="0"/>
 			</s:layout>
 			<drawing:DrawLabel id="drawLabel" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
@@ -476,14 +532,14 @@
 		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
 			
 			<s:layout>
-				<s:HorizontalLayout />
+				<s:HorizontalLayout gap="0"/>
 			</s:layout>
 			<drawing:SelectFeatures id="selectFeatures" fxMap="{this._drawingToolbar.fxMap}" map="{this._layer.map}" target="{this._layer as VectorLayer}"/>
 			<drawing:DeleteFeatures id="deleteFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}" />
 			<drawing:EditFeatures id="editFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:MoveFeatures id="moveFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:ManageAttributes id="manageAttributes" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:ExportFeature id="importFeature" layer="{this._layer as VectorLayer}" />
+			<drawing:ExportFeature id="exportFeature" layer="{this._layer as VectorLayer}" />
 			
 		</s:SkinnableContainer>
 		

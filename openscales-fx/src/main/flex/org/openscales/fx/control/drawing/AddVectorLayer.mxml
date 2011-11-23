@@ -63,6 +63,23 @@
 			 */
 			public var myTitleWindow:TitleWindow = new TitleWindow();
 			
+			private var _drawingMode:String;
+			
+			/**
+			 * Indicates for Drawing mode
+			 * multiple : tools are in the LayerSwitcher
+			 * unique : tools are in the DrawingToolbar
+			 */
+			[Bindable]
+			public function get drawingMode():String{
+				
+				return _drawingMode;
+			}
+			
+			public function set drawingMode(value:String):void{
+				_drawingMode = value;
+			}
+			
 			public function onClick():void
 			{
 				// Set the TitleWindow container properties.

@@ -52,7 +52,24 @@
 			private var _layer:VectorLayer = null;
 			
 			private var _map:Map = null;
-
+			
+			private var _drawingMode:String;
+			
+			/**
+			 * Indicates for Drawing mode
+			 * multiple : tools are in the LayerSwitcher
+			 * unique : tools are in the DrawingToolbar
+			 */
+			[Bindable]
+			public function get drawingMode():String{
+				
+				return _drawingMode;
+			}
+			
+			public function set drawingMode(value:String):void{
+				_drawingMode = value;
+			}
+			
 			/**
 			 * Change the text values on Map Language changed
 			 * @param event The I18N event received
@@ -95,7 +112,7 @@
 			
 			private function onChangeActiveLayer(event:DrawingEvent):void{
 				
-				if(this.parentDocument is DrawingToolbar)
+				if(this.drawingMode == 'unique')
 				{
 					this.layer = event.layer;
 				}
