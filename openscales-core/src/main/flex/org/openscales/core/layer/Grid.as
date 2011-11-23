@@ -33,51 +33,24 @@ package org.openscales.core.layer
 	{
 		
 		private const DEFAULT_TILE_WIDTH:Number = 256;
-		
-		private const DEFAULT_TILE_HEIGHT:Number = 256;
-		
-		/** The grid array contains tiles **/		
+		private const DEFAULT_TILE_HEIGHT:Number = 256;		
 		private var _grid:Vector.<Vector.<ImageTile>> = null;
-		
-		//private var _backGridContainer:Sprite = new Sprite();
 		private var _backGrid:Vector.<Vector.<Bitmap>> = null;
-		
 		protected var _tiled:Boolean = true;
-		
-		private var _numLoadingTiles:int = 0;
-		
 		private var _origin:Pixel = null;
-		
 		private var _buffer:Number;
-		
 		protected var _tileWidth:Number = DEFAULT_TILE_WIDTH;
-		
 		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
-		
 		protected var _tileOrigin:Location = new Location(0,0,"EPSG:4326");
-		
-		private var _tileToRemove:ImageTile;
-		
-		private var _defaultMatrixTranform:Matrix
-		
+		private var _defaultMatrixTranform:Matrix;
 		private var _resquestResolution:Number = 0;
-
 		protected var _initialized:Boolean = false;
-		
-		private var _scaleOnZoomRatiochanged:Number = 1;
-		
 		private var _requestedResolution:Resolution;
-		
 		private var _previousCenter:Location = null;
-		
 		private var _previousResolution:Resolution = null;
-		
 		private var _cumulatedRoundedValueX:Number = 0;
-		
 		private var _cumulatedRoundedValueY:Number = 0;
-		
 		private var _tileWidthErrorPerPixel:Number = 0;
-		private var _lastRoundedScale:Number = 1;
 		
 		/**
 		 * Create a new grid layer
@@ -97,32 +70,15 @@ package org.openscales.core.layer
 			//TODO delete url and params after osmparams work
 			super(name, url, params);
 			
-			//this.addChild(_backGridContainer);
-			//this._backGridContainer.add
 			this.buffer = 0;
 			this._defaultMatrixTranform = this.transform.matrix;
 			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
 			this.addEventListener(TileEvent.TILE_LOAD_START,tileLoadHandler);
 		}
 		
-		override protected function onMapMove(e:MapEvent):void {
-			// Clear pending requests after zooming in order to avoid to add
-			// too many tile requests  when the user is zooming step by step
-			if(e.zoomChanged) {
-				var j:uint;
-				for each(var array:Vector.<ImageTile> in this._grid)	{
-					j = array.length;
-					for (var i:Number = 0;i<j;i++)	{
-						var tile:ImageTile = array[i];
-						if (tile != null && !tile.loadComplete) {
-							tile.clear();
-						}
-					}
-				}
-			}
-			super.onMapMove(e);
-		}
-		
+		/**
+		 * @inherited
+		 */
 		override public function destroy():void {
 			this.clear();
 			this.grid = null;
@@ -146,7 +102,6 @@ package org.openscales.core.layer
 					var row:Vector.<ImageTile> = this._grid.pop();
 					for(iCol=0; iCol < j; ++iCol) {
 						var tile:ImageTile = row.pop();
-						this.removeTileMonitoringHooks(tile);
 						tile.destroy();						
 					}
 				}
@@ -156,10 +111,7 @@ package org.openscales.core.layer
 			}
 		}
 		
-		override public function get available():Boolean
-		{
-			return (super.available && ProjProjection.isEquivalentProjection(this.projection,this.map.projection));
-		}
+
 		
 		/**
 		 * Override the redraw method for raster data. Check the informations of the map
@@ -232,6 +184,15 @@ package org.openscales.core.layer
 			}
 		}
 		
+		
+		/**
+		 * Actualize the grid, 
+		 * If we do not need to request another resolution, if needed, we only move rows and columns or
+		 * add rows and column to fill the given bounds.
+		 * 
+		 * If another resolution is requested or the foreReTile flag is setted to true, the grid will be
+		 * completly recomputed with transition tiles toa void white flash wile reloading
+		 */
 		protected function actualizeGrid(bounds:Bounds, forceReTile:Boolean):void
 		{
 			var bmpBounds:Bounds;
@@ -337,9 +298,8 @@ package org.openscales.core.layer
 						{
 							BMD = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
 							BMD.draw(this, this.transform.matrix, null, null, null, true);
+							
 							var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
-							
-							
 							var bmpRequestedResolution:Number = this.requestedResolution.value;
 							fullBmpBounds = this.map.extent.clone();
 							TopLeftCorner = new Location(fullBmpBounds.left, fullBmpBounds.top, this.projection);
@@ -371,8 +331,6 @@ package org.openscales.core.layer
 								this._backGrid[i][j] = new Bitmap();
 							}
 						}
-						
-						
 						for (i = 0; i< gridRowLength; ++i)
 						{
 							for (j = 0; j < gridColLength; ++j)
@@ -471,7 +429,6 @@ package org.openscales.core.layer
 					this.moveGriddedTiles(bounds);
 					this.actualizeGridSize(bounds);
 				}
-				
 			} 
 			_initialized = true;
 		}
@@ -614,32 +571,8 @@ package org.openscales.core.layer
 			}
 		}
 		
-		public function set tileWidth(value:Number):void {
-			this._tileWidth = value;	
-		}
+
 		
-		public function get tileWidth():Number {
-			return this._tileWidth;
-		}
-		
-		public function set tileHeight(value:Number):void {
-			this._tileHeight= value;	
-		}
-		
-		public function get tileHeight():Number {
-			return this._tileHeight;
-		}	
-		
-		
-		override protected function onMapCenterChanged(event:MapEvent):void
-		{
-			super.onMapCenterChanged(event);
-		}
-		
-		override protected function onMapResolutionChanged(event:MapEvent):void
-		{
-			super.onMapResolutionChanged(event);
-		}
 		/**
 		 * Return the bounds of the tile grid.
 		 *
@@ -705,24 +638,14 @@ package org.openscales.core.layer
 			
 			var tile:ImageTile = this.addTile(bounds, px);
 			tile.draw();
-			if ( this._grid[0][0] != null)
-			{
-				this._tileToRemove = this._grid[0][0];
-				tile.layer.addEventListener(TileEvent.TILE_LOAD_END,this.removeTransitionTile);
-				
-			}
 			this._grid[0][0] = tile;         
 			this.removeExcessTiles(1,1);
 		}
 		
 		/**
-		 * 
+		 * Return the closest requestable resolution to the targetResolution given as parameter.
+		 * The parameter finest says if we always return the smaller resolution
 		 */
-		private function removeTransitionTile(event:TileEvent):void
-		{
-			this._tileToRemove.destroy();
-		}
-		
 		public function getSupportedResolution(targetResolution:Resolution, finest:Boolean = true):Resolution
 		{
 			var bestResolution:Number;
@@ -802,12 +725,8 @@ package org.openscales.core.layer
 			this.requestedResolution = this.getSupportedResolution(this.map.resolution);
 			_resquestResolution = this.requestedResolution.value;
 			var viewSize:Size = this.map.size;
-			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + 
-				Math.max(1, 2 * this.buffer);
-			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) +
-				Math.max(1, 2 * this.buffer);
-			
-			
+			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + Math.max(1, 2 * this.buffer);
+			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) + Math.max(1, 2 * this.buffer);
 			var tilelon:Number = _resquestResolution * this.tileWidth;
 			var tilelat:Number = _resquestResolution * this.tileHeight;
 			
@@ -824,15 +743,11 @@ package org.openscales.core.layer
 			var tilerowremain:Number = tilerow - offsetlat/tilelat;
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
 			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
-			//tileoffsetx= Math.round(tileoffsetx);
-			//tileoffsety= Math.round(tileoffsety)
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
 			this.x += tileoffsetx;
 			this.y += tileoffsety;
 			tileoffsetx = 0;
 			tileoffsety = 0;
-			//tileoffsetx = Math.round(tileoffsetx);
-			//tileoffsety = Math.round(tileoffsety);
 			var startX:Number = tileoffsetx; 
 			var startLon:Number = tileoffsetlon;
 			var rowidx:int = 0;
@@ -840,6 +755,8 @@ package org.openscales.core.layer
 			if(this._grid == null) {
 				this._grid = new Vector.<Vector.<ImageTile>>();
 			}
+			
+			// Build the tiles
 			do {
 				var row:Vector.<ImageTile>;
 				if(this._grid.length==rowidx) {
@@ -859,10 +776,9 @@ package org.openscales.core.layer
 						tileoffsetlon + tilelon,
 						tileoffsetlat + tilelat,
 						this.projection);
+					
 					var x:Number = tileoffsetx;
-					
 					var y:Number = tileoffsety;
-					
 					var px:Pixel = new Pixel(x, y);
 					var tile:ImageTile;
 					if(row.length==colidx) {
@@ -891,6 +807,7 @@ package org.openscales.core.layer
 			//now actually draw the tiles
 			this.spiralTileLoad();
 		}
+		
 		/**
 		 *   Starts at the top right corner of the grid and proceeds in a spiral
 		 *    towards the center, adding tiles one at a time to the beginning of a
@@ -930,7 +847,6 @@ package org.openscales.core.layer
 				} 
 				
 				var gridx:int = this._grid.length;
-				
 				if(testRow>=0 && testRow < this._grid.length && this._grid[testRow])
 					var gridy:int = this._grid[testRow].length;
 				
@@ -966,43 +882,20 @@ package org.openscales.core.layer
 			}
 		}
 		
+		/**
+		 * Method to add a tile.
+		 * Each layer format need to override this method and return the imageTile associated to the 
+		 * bounds and place it at the given position
+		 */
 		public function addTile(bounds:Bounds, position:Pixel):ImageTile {
 			return null;
 		}
 		
-		override public function set x(value:Number):void
-		{
-			value += (value - this.x)*this._tileWidthErrorPerPixel;
-			var epsilon:Number = value - Math.round(value);
-			this._cumulatedRoundedValueX += epsilon;
-			super.x = Math.round(value);
-			if (this._cumulatedRoundedValueX >= 1 || this._cumulatedRoundedValueX <= -1)
-			{
-				var roundedCumulatedValue:Number = Math.round(_cumulatedRoundedValueX);
-				super.x = super.x + roundedCumulatedValue;
-				this._cumulatedRoundedValueX -= roundedCumulatedValue;
-			}
-		}
-		
-		override public function set y(value:Number):void
-		{
-			value += (value - this.y)*this._tileWidthErrorPerPixel;
-			var epsilon:Number = value - Math.round(value);
-			this._cumulatedRoundedValueY += epsilon;
-			super.y = Math.round(value);
-			if (this._cumulatedRoundedValueY >= 1 || this._cumulatedRoundedValueY <= -1)
-			{
-				var roundedCumulatedValue:Number = Math.round(_cumulatedRoundedValueY);
-				super.y = super.y + roundedCumulatedValue;
-				this._cumulatedRoundedValueY -= roundedCumulatedValue;
-			}
-		}
-		
-		
-		public function removeTileMonitoringHooks(tile:ImageTile):void {
-		}
 		/**
-		 * This mOonly when mapEvent.MOVE_END is thrown
+		 * While panning the map, the layer will move as well. The rows and the columns of the grid
+		 * may need to be shifted.
+		 * this method takes a bounds as parameter and check if the gridd need to add/remove rows or
+		 * columns to fill the bounds
 		 */
 		public function moveGriddedTiles(bounds:Bounds):void {
 			var buffer:Number = this.buffer || 1;
@@ -1115,7 +1008,6 @@ package org.openscales.core.layer
 				var row:Vector.<ImageTile> = this._grid.pop();
 				for (var i:int=0, l:int=row.length; i<l; i++) {
 					var tile:ImageTile = row[i];
-					this.removeTileMonitoringHooks(tile)
 					tile.destroy();
 				}
 			}
@@ -1124,9 +1016,53 @@ package org.openscales.core.layer
 				row = this._grid[i];
 				while (row.length > columns) {
 					tile = row.pop();
-					this.removeTileMonitoringHooks(tile);
 					tile.destroy();
 				}
+			}
+		}
+		
+		
+		/**
+		 * Set the x coordinate of the layer. this method is overided to have only
+		 * rounded value of the coordinate, But the différence is stored and will be added
+		 * when the cumulated value is more that 1 pixel. 
+		 * 
+		 * This allow us to keep integer values to avoid white seams between tiles and
+		 * keep precision.
+		 */
+		override public function set x(value:Number):void
+		{
+			value += (value - this.x)*this._tileWidthErrorPerPixel;
+			var epsilon:Number = value - Math.round(value);
+			this._cumulatedRoundedValueX += epsilon;
+			super.x = Math.round(value);
+			if (this._cumulatedRoundedValueX >= 1 || this._cumulatedRoundedValueX <= -1)
+			{
+				var roundedCumulatedValue:Number = Math.round(_cumulatedRoundedValueX);
+				super.x = super.x + roundedCumulatedValue;
+				this._cumulatedRoundedValueX -= roundedCumulatedValue;
+			}
+		}
+		
+		/**
+		 * Set the y coordinate of the layer. this method is overided to have only
+		 * rounded value of the coordinate, But the différence is stored and will be added
+		 * when the cumulated value is more that 1 pixel. 
+		 * 
+		 * This allow us to keep integer values to avoid white seams between tiles and
+		 * keep precision.
+		 */
+		override public function set y(value:Number):void
+		{
+			value += (value - this.y)*this._tileWidthErrorPerPixel;
+			var epsilon:Number = value - Math.round(value);
+			this._cumulatedRoundedValueY += epsilon;
+			super.y = Math.round(value);
+			if (this._cumulatedRoundedValueY >= 1 || this._cumulatedRoundedValueY <= -1)
+			{
+				var roundedCumulatedValue:Number = Math.round(_cumulatedRoundedValueY);
+				super.y = super.y + roundedCumulatedValue;
+				this._cumulatedRoundedValueY -= roundedCumulatedValue;
 			}
 		}
 		
@@ -1152,6 +1088,176 @@ package org.openscales.core.layer
 				this.projection);
 		}
 		
+		
+		//Getters and Setters
+		/**
+		 * The container of the image tiles of the Layer.
+		 */
+		public function get grid():Vector.<Vector.<ImageTile>> {
+			return this._grid;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set grid(value:Vector.<Vector.<ImageTile>>):void {
+			this._grid = value;
+		}
+		
+		/**
+		 * Boolean that define if the layer will be tiled or not.
+		 * If it's tiled the requested tiles size will be this.tileWidth*this.tileHeight.
+		 * Else it will be a single tile of the same size as the map size 
+		 */
+		public function get tiled():Boolean {
+			return this._tiled;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set tiled(value:Boolean):void {
+			this._tiled = value;
+		}
+		
+		/**
+		 * Used only when in gridded mode, this specifies the number of
+		 * extra rows and colums of tiles on each side which will
+		 * surround the minimum grid tiles to cover the map.
+		 */
+		public function get buffer():Number {
+			return this._buffer; 
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set buffer(value:Number):void {
+			this._buffer = value; 
+		}
+		
+		/**
+		 * The tileOrigin to define the grid
+		 * @default 0,0
+		 */
+		public function get tileOrigin():Location
+		{
+			return this._tileOrigin;
+		}	
+		
+		/**
+		 * @private
+		 */
+		public function set tileOrigin(value:Location):void
+		{
+			this._tileOrigin = value;
+			this.redraw(true);
+		}
+		
+		/**
+		 * Get the mapPx corresponding to the given layer pixel while in freeZoom
+		 */
+		public function getMapPxRescalesFromLayerPx(layerPx:Pixel):Pixel
+		{
+			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
+			var ratio:Number = resolution/this.map.resolution.value;
+			return new Pixel(layerPx.x + this.x / ratio, layerPx.y + this.y / ratio);
+		}
+		
+		
+		/**
+		 * The resolution in which the tile are requested to the server.
+		 * This is the resolution of the tile without scaling due to freeZoom
+		 */
+		public function set requestedResolution(value:Resolution):void
+		{
+			this._requestedResolution = value;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get requestedResolution():Resolution
+		{
+			return this._requestedResolution;
+		}
+		
+		
+		/**
+		 * @inherited
+		 */
+		override public function set map(value:Map):void
+		{
+			
+			super.map = value;
+			if (this.map != null)
+			{
+				_previousCenter = this.map.center.clone();
+				_previousResolution = this.map.resolution;
+				this._initialized = false;
+			}
+		}
+		
+		/**
+		 * The default tile width to use while requesting in tiled mode
+		 */
+		public function set tileWidth(value:Number):void {
+			this._tileWidth = value;	
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get tileWidth():Number {
+			return this._tileWidth;
+		}
+		
+		/**
+		 * The default tile height to use while requesting in tiled mode
+		 */
+		public function set tileHeight(value:Number):void {
+			this._tileHeight= value;	
+		}
+		
+		/**
+		 * @private
+		 */
+		public function get tileHeight():Number {
+			return this._tileHeight;
+		}	
+		
+		/**
+		 * Return true if the layer is available with the map configuration. This mean that it can be drawn
+		 * You need to check also the flash visible boolean to know if the layer will be drawn. 
+		 */
+		override public function get available():Boolean
+		{
+			return (super.available && ProjProjection.isEquivalentProjection(this.projection,this.map.projection));
+		}
+		
+		// Callbacks
+		
+		/**
+		 * Actualize the grid size when the map size has changed.
+		 * We focus on keeping the center of the grid at the center of the map
+		 */
+		override protected function onMapResize(event:MapEvent):void
+		{
+			var deltaW:Number = event.newSize.w - event.oldSize.w;
+			var deltaH:Number = event.newSize.h - event.oldSize.h;
+			this.x += deltaW/2;
+			this.y += deltaH/2;
+			if (this._grid != null)
+			{
+				this.moveGriddedTiles(this.map.extent);
+				this.actualizeGridSize(this.map.extent);
+			}
+		}
+		
+		/**
+		 * Calback to handle TILE_LOAD_START ans TILE_LOAD_END events and set the loading state of the layer
+		 * according to tiles status.
+		 */
 		private function tileLoadHandler(event:TileEvent):void	{
 			switch(event.type)	{
 				case TileEvent.TILE_LOAD_START:	{
@@ -1175,156 +1281,6 @@ package org.openscales.core.layer
 				}
 			}
 		}
-		
-		//Getters and Setters
-		override public function get imageSize():Size {
-			if(this._imageSize == null)
-				this._imageSize = new Size(this.tileWidth, this.tileHeight);
-			return new Size(this.tileWidth, this.tileHeight); 
-		}
-		
-		public function get grid():Vector.<Vector.<ImageTile>> {
-			return this._grid;
-		}
-		
-		public function set grid(value:Vector.<Vector.<ImageTile>>):void {
-			this._grid = value;
-		}
-		
-		public function get tiled():Boolean {
-			return this._tiled;
-		}
-		
-		public function set tiled(value:Boolean):void {
-			this._tiled = value;
-		}
-		
-		public function get numLoadingTiles():int {
-			return this._numLoadingTiles;
-		}
-		
-		public function set numLoadingTiles(value:int):void {
-			this._numLoadingTiles = value;
-		}
-		
-		/**
-		 * Used only when in gridded mode, this specifies the number of
-		 * extra rows and colums of tiles on each side which will
-		 * surround the minimum grid tiles to cover the map.
-		 */
-		public function get buffer():Number {
-			return this._buffer; 
-		}
-		
-		public function set buffer(value:Number):void {
-			this._buffer = value; 
-		}
-		
-		/**
-		 * The tileOrigin to define the grid
-		 * @default 0,0
-		 */
-		public function get tileOrigin():Location
-		{
-			return this._tileOrigin;
-		}	
-		
-		/**
-		 * @private
-		 */
-		public function set tileOrigin(value:Location):void
-		{
-			this._tileOrigin = value;
-			this.redraw(true);
-		}
-		
-		public function getMapPxRescalesFromLayerPx(layerPx:Pixel):Pixel
-		{
-			var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
-			var ratio:Number = resolution/this.map.resolution.value;
-			return new Pixel(layerPx.x + this.x / ratio, layerPx.y + this.y / ratio);
-		}
-		
-		public function set requestedResolution(value:Resolution):void
-		{
-			this._requestedResolution = value;
-		}
-		
-		public function get requestedResolution():Resolution
-		{
-			return this._requestedResolution;
-		}
-		
-		override public function set map(value:Map):void
-		{
-			
-			super.map = value;
-			if (this.map != null)
-			{
-				_previousCenter = this.map.center.clone();
-				_previousResolution = this.map.resolution;
-				this._initialized = false;
-			}
-		}
-		
-		override protected function onMapResize(event:MapEvent):void
-		{
-			var deltaW:Number = event.newSize.w - event.oldSize.w;
-			var deltaH:Number = event.newSize.h - event.oldSize.h;
-			this.x += deltaW/2;
-			this.y += deltaH/2;
-			if (this._grid != null)
-			{
-				this.moveGriddedTiles(this.map.extent);
-				this.actualizeGridSize(this.map.extent);
-			}
-		}
-		
-		/**
-		 * Return if the layer is loading data
-		 */
-		/*public function get loading():Boolean
-		{
-			if (!this.grid)
-				return false;
-			
-			var gridRowLength:int = this.grid.length;
-			var gridColLength:int = this.grid[0].length;
-			for (var i:int=0; i<gridRowLength; ++i)
-			{
-				for(var j:int=0; j<gridColLength; ++j)
-				{
-					if (this.grid[i][j].loadComplete)
-							return true;
-				}
-			}
-			return false;
-		}*/
-		/*override public function get minResolution():Resolution {
-			var minRes:Resolution = super.minResolution;
-			
-			if(!minRes || isNaN(minRes.value) || isFinite(minRes.value))
-			{
-				if (this.resolutions && (this.resolutions.length > 0)) {
-					minRes = new Resolution(this.resolutions[this.resolutions.length - 1], this.projection);
-				}
-			}
-			else
-			{
-				// if is valide
-				for(var i:int=this.resolutions.length; i>-1; --i)
-				{
-					if( this.resolutions[i] >= minRes.value)
-						return new Resolution(this.resolutions[i],this.projection);
-				}
-				
-				if (this.resolutions && (this.resolutions.length > 0)) {
-					minRes = new Resolution(this.resolutions[this.resolutions.length - 1],this.projection);
-				}
-			}
-			
-			return minRes;
-		}*/
 	}
 }
 
