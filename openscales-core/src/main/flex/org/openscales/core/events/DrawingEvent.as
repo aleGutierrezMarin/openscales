@@ -45,7 +45,6 @@ package org.openscales.core.events
 		private var _attributes:Array;
 		private var _layer:VectorLayer;
 		
-		
 		public function DrawingEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);

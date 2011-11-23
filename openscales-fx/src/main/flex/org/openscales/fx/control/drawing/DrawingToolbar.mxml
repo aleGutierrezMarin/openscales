@@ -13,6 +13,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.core.UIComponent;
+			
 			import org.openscales.core.Map;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
@@ -35,6 +37,23 @@
 			private var _defaultAttributes:Vector.<String> = new <String> ["id","description"];
 			private var _mode:String = "multiple";
 			private var _configured:Boolean = false;
+			private var _multipleModeDisplayTools:Vector.<String>=new Vector.<String>();
+			private var _multipleModeInitTools:Vector.<String>=new Vector.<String>();
+			
+			public static var DRAWLABEL:String="label";
+			public static var DRAWPOINT:String="point";
+			public static var DRAWSHAPE:String="shape";
+			public static var DRAWPATH:String="path";
+			public static var DRAWPOLYGON:String="polygon";
+			public static var DRAWSELECT:String="select";
+			public static var DRAWDELETE:String="delete";
+			public static var DRAWEDIT:String="edit";
+			public static var DRAWMOVE:String="move";
+			public static var DRAWMANAGE:String="manage";
+			public static var DRAWADD:String="add";
+			public static var DRAWIMPORT:String="import";
+			public static var DRAWEXPORT:String="export";
+			
 			
 			[Bindable]
 			private var title:String = Catalog.getLocalizationForKey('drawing.toolbar');
@@ -46,17 +65,24 @@
 				// remove elements if mode = "mini"
 				if(this._mode == "multiple")
 				{
-					this.drawingToolbar.removeElement(this.drawLabel);
-					this.drawingToolbar.removeElement(this.drawPoint);
-					this.drawingToolbar.removeElement(this.drawPath);
-					this.drawingToolbar.removeElement(this.drawPolygon);
-					this.drawingToolbar.removeElement(this.selectFeatures);
-					this.drawingToolbar.removeElement(this.editFeatures);
-					this.drawingToolbar.removeElement(this.moveFeatures);
-					this.drawingToolbar.removeElement(this.manageAttributes);
-					this.drawingToolbar.removeElement(this.exportFeature);
-					this.drawingToolbar.removeElement(this.drawShape);
-					this.drawingToolbar.removeElement(this.deleteFeatures);
+					this._multipleModeDisplayTools.push(DRAWLABEL);
+					this._multipleModeDisplayTools.push(DRAWPOINT);
+					this._multipleModeDisplayTools.push(DRAWPATH);
+					this._multipleModeDisplayTools.push(DRAWPOLYGON);
+					this._multipleModeDisplayTools.push(DRAWSELECT);
+					this._multipleModeDisplayTools.push(DRAWEDIT);
+					this._multipleModeDisplayTools.push(DRAWMOVE);
+					this._multipleModeDisplayTools.push(DRAWMANAGE);
+					this._multipleModeDisplayTools.push(DRAWEXPORT);
+					this._multipleModeDisplayTools.push(DRAWSHAPE);
+					this._multipleModeDisplayTools.push(DRAWDELETE);
+
+					//this.multipleModeInitTools = this._multipleModeDisplayTools.;
+					
+					for(var i:uint = 0 ; i < _multipleModeDisplayTools.length ; i++) {
+						this.multipleModeInitTools.push(_multipleModeDisplayTools[i]);
+						this.drawingToolbar.removeElement(this.getComponentFromString(_multipleModeDisplayTools[i]));
+					}
 				} else {
 					//By default, buttons are not enabled
 					this.drawLabel.buttonMode = false;
@@ -105,6 +131,77 @@
 			}
 			
 			/**
+			 * This function hide a component of the drawing toolbar if it was display.
+			 *  Otherwise, it has no action
+			 * 
+			 * @param component Component to hide (constants available in the DrawingToolbar class)
+			 */
+			public function hideComponent(component:String):void{
+				if(this.mode == 'multiple') {
+					var index:int = this._multipleModeDisplayTools.indexOf(component);
+					if(index >=0) {
+						this._multipleModeDisplayTools.splice(index,1);
+					}
+				} else {
+					if(this.drawingToolbar.contains(this.getComponentFromString(component)))
+						this.drawingToolbar.removeElement(this.getComponentFromString(component));
+				}
+			}
+			
+			/**
+			 * This function show a component of the drawing toolbar if it was display.
+			 *  Otherwise, it has no action
+			 * 
+			 * @param component Component to show (constants available in the DrawingToolbar class)
+			 */
+			public function showComponent(component:String):void{
+				if(this.mode == 'multiple') {
+					var index:int = this._multipleModeDisplayTools.indexOf(component);
+					//item is not found in the displayed tools
+					if(index <0) {
+						this._multipleModeDisplayTools.push(component);
+					}
+				} else {
+					if(!this.drawingToolbar.contains(this.getComponentFromString(component)))
+						this.drawingToolbar.addElementAt(this.getComponentFromString(component),0);	
+				}
+			}
+			
+			private function getComponentFromString(value:String):UIComponent{
+				var myComponent:UIComponent = null;
+				switch(value) {
+					case DRAWLABEL:
+						myComponent = this.drawLabel;break;
+					case DRAWPOINT:
+						myComponent = this.drawPoint;break;
+					case DRAWSHAPE:
+						myComponent = this.drawShape;break;
+					case DRAWPATH:
+						myComponent = this.drawPath;break;
+					case DRAWPOLYGON:
+						myComponent = this.drawPolygon;break;
+					case DRAWSELECT:
+						myComponent = this.selectFeatures;break;
+					case DRAWDELETE:
+						myComponent = this.deleteFeatures;break;
+					case DRAWEDIT:
+						myComponent = this.editFeatures;break;
+					case DRAWMOVE:
+						myComponent = this.moveFeatures;break;
+					case DRAWMANAGE:
+						myComponent = this.manageAttributes;break;
+					case DRAWADD:
+						myComponent = this.addFeatures;break;
+					case DRAWIMPORT:
+						myComponent = this.importFeature;break;
+					case DRAWEXPORT:
+						myComponent = this.exportFeature;break;
+				}
+				
+				return myComponent;
+			}
+			
+			/**
 			 * Update texts on map language changed
 			 */
 			override public function onMapLanguageChange(event:I18NEvent):void{
@@ -131,6 +228,7 @@
 			/**
 			 * The mode of the drawing toolbar
 			 */
+			[Bindable]
 			public function get mode():String{
 				return this._mode;
 			}
@@ -289,6 +387,34 @@
 			}
 			
 			/**
+			 * Tools to display in multiple mode
+			 */
+			[Bindable]
+			public function get multipleModeDisplayTools():Vector.<String> {
+				return this._multipleModeDisplayTools;
+			}
+			/**
+			 * @private
+			 */
+			public function set multipleModeDisplayTools(value:Vector.<String>):void{
+				this._multipleModeDisplayTools = value;
+			}
+			
+			/**
+			 * Basic tools displayed at initialization in multiple mode
+			 */
+			[Bindable]
+			public function get multipleModeInitTools():Vector.<String> {
+				return this._multipleModeInitTools;
+			}
+			/**
+			 * @private
+			 */
+			public function set multipleModeInitTools(value:Vector.<String>):void{
+				this._multipleModeInitTools = value;
+			}
+			
+			/**
 			 * The default attributes for each feature
 			 */
 			[Bindable]
@@ -326,18 +452,18 @@
 			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
 								horizontalAlign="center" verticalAlign="middle" />
 		</s:layout>
-		<osDraw:DrawLabel style="{this.labelStyle}" map="{this.map}" id="drawLabel" />
-		<osDraw:DrawPoint style="{this.pointStyle}" map="{this.map}" id="drawPoint" />
-		<osDraw:DrawShape style="{this.shapeStyle}" map="{this.map}" id="drawShape" />
-		<osDraw:DrawPath style="{this.pathStyle}" map="{this.map}" id="drawPath" />
-		<osDraw:DrawPolygon style="{this.polygonStyle}" map="{this.map}" id="drawPolygon" />
-		<osDraw:SelectFeatures fxMap="{this.fxMap}" map="{this.map}" clickout="{this.clickout}" hover="{this.hover}" toggle="{this.toggle}" id="selectFeatures" />
-		<osDraw:DeleteFeatures map="{this.map}" id="deleteFeatures" />
-		<osDraw:EditFeatures virtualStyle="{this.virtualStyle}" map="{this.map}" id="editFeatures" />
-		<osDraw:MoveFeatures map="{this.map}" id="moveFeatures" />
-		<osDraw:ManageAttributes defaultAttributes="{this.defaultAttributes}" map="{this.map}" id="manageAttributes" />
-		<osDraw:AddVectorLayer map="{this.map}" />
-		<osDraw:ImportFeature id="importFeature" map="{this.map}" />
-		<osDraw:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" />
+		<osDraw:DrawLabel style="{this.labelStyle}" map="{this.map}" id="drawLabel" drawingMode="{this.mode}"/>
+		<osDraw:DrawPoint style="{this.pointStyle}" map="{this.map}" id="drawPoint" drawingMode="{this.mode}"/>
+		<osDraw:DrawShape style="{this.shapeStyle}" map="{this.map}" id="drawShape" drawingMode="{this.mode}"/>
+		<osDraw:DrawPath style="{this.pathStyle}" map="{this.map}" id="drawPath" drawingMode="{this.mode}"/>
+		<osDraw:DrawPolygon style="{this.polygonStyle}" map="{this.map}" id="drawPolygon" drawingMode="{this.mode}"/>
+		<osDraw:SelectFeatures fxMap="{this.fxMap}" map="{this.map}" clickout="{this.clickout}" hover="{this.hover}" toggle="{this.toggle}" id="selectFeatures" drawingMode="{this.mode}"/>
+		<osDraw:DeleteFeatures map="{this.map}" id="deleteFeatures" drawingMode="{this.mode}"/>
+		<osDraw:EditFeatures virtualStyle="{this.virtualStyle}" map="{this.map}" id="editFeatures" drawingMode="{this.mode}"/>
+		<osDraw:MoveFeatures map="{this.map}" id="moveFeatures" drawingMode="{this.mode}"/>
+		<osDraw:ManageAttributes defaultAttributes="{this.defaultAttributes}" map="{this.map}" id="manageAttributes" drawingMode="{this.mode}"/>
+		<osDraw:AddVectorLayer map="{this.map}" id="addFeatures" drawingMode="{this.mode}"/>
+		<osDraw:ImportFeature id="importFeature" map="{this.map}" drawingMode="{this.mode}"/>
+		<osDraw:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" drawingMode="{this.mode}"/>
 	</s:Panel>
 </os:Control>

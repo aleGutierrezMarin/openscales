@@ -23,14 +23,13 @@
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPolygonHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			private var _alpha:Number = 0.3;
@@ -45,6 +44,22 @@
 			private var _active:Boolean = true;
 			private var _handler:AbstractDrawHandler= new DrawPolygonHandler();
 			private var _isClick:Boolean = false;
+			private var _drawingMode:String;
+			
+			/**
+			 * Indicates for Drawing mode
+			 * multiple : tools are in the LayerSwitcher
+			 * unique : tools are in the DrawingToolbar
+			 */
+			[Bindable]
+			public function get drawingMode():String{
+				
+				return _drawingMode;
+			}
+			
+			public function set drawingMode(value:String):void{
+				_drawingMode = value;
+			}
 			
 			/**
 			 * Flag for activating and deactivating the component
@@ -198,7 +213,7 @@
 			 */
 			private function onChangeActiveLayer(evt:DrawingEvent):void{
 				
-				if(this.parentDocument is DrawingToolbar)
+				if(this.drawingMode == 'unique')
 				{
 					if(this._handler.active)
 					{
