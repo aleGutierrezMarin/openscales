@@ -129,8 +129,8 @@ package org.openscales.core.format
 				var _bmd:BitmapData = _bm.bitmapData;
 				for each(var _img:Sprite in _imgs) {
 					var _image:Bitmap = new Bitmap(_bmd.clone());
-					_image.x = -_image.width/2;
-					_image.y = -_image.height;
+					//_image.x = -_image.width/2;
+					//_image.y = -_image.height;
 					_img.addChild(_image);
 				}
 			}
