@@ -2,7 +2,12 @@ package org.openscales.core.layer
 {
 	import flexunit.framework.Test;
 	
+	import mx.effects.easing.Bounce;
+	
+	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertNotNull;
+	import org.flexunit.asserts.assertNull;
 	import org.flexunit.asserts.assertTrue;
 	import org.flexunit.asserts.fail;
 	import org.openscales.core.Map;
@@ -29,6 +34,76 @@ package org.openscales.core.layer
 			_l2 = new Layer("myLayer2");
 			_instance.layers.push(_l1,_l2);
 			_map = new Map();
+		}
+		
+		[Test] 
+		public function shouldTakeFirstLayerMaxExtentAsOwnMaxExtent():void{
+			_instance = new Aggregate("test");
+			_instance.projection = "EPSG:4326";
+			_l1 = new Layer("myLayer1");
+			_l1.maxExtent = new Bounds(-40, 0,40,50, "EPSG:4326");
+			
+			assertNull("At init, maxExtent should be null", _instance.maxExtent);
+			_instance.addLayer(_l1);
+			
+			_map.addLayer(_instance);
+			
+			assertNotNull("After adding first layer, max extent should be not null",_instance.maxExtent);
+			assertEquals("Aggregate max extent left value is not correct",-40,_instance.maxExtent.left);
+			assertEquals("Aggregate max extent bottom value is not correct",0,_instance.maxExtent.bottom);
+			assertEquals("Aggregate max extent right value is not correct",40,_instance.maxExtent.right);
+			assertEquals("Aggregate max extent top value is not correct",50,_instance.maxExtent.top);
+		}
+		
+		[Test] 
+		public function shouldExtendMaxExtentWhenLayersAreAdded():void{
+			_instance = new Aggregate("test");
+			_instance.projection = "EPSG:4326";
+			_l1 = new Layer("myLayer1");
+			_l1.maxExtent = new Bounds(-40, 0,40,50, "EPSG:4326");
+			_l2 = new Layer("myLayer2");
+			_l2.maxExtent = new Bounds(-45,10,10,55, "EPSG:4326");
+			
+			
+			assertNull("At init, maxExtent should be null", _instance.maxExtent);
+			_instance.addLayer(_l1);
+			_instance.addLayer(_l2);
+			
+			_map.addLayer(_instance);
+			
+			assertNotNull("After adding first layer, max extent should be not null",_instance.maxExtent);
+			assertEquals("Aggregate max extent left value is not correct",-45,_instance.maxExtent.left);
+			assertEquals("Aggregate max extent bottom value is not correct",0,_instance.maxExtent.bottom);
+			assertEquals("Aggregate max extent right value is not correct",40,_instance.maxExtent.right);
+			assertEquals("Aggregate max extent top value is not correct",55,_instance.maxExtent.top);
+		}
+		
+		[Test]
+		public function shouldReduceMaxExtentWhenLayersAreRemoved():void{
+			_instance = new Aggregate("test");
+			_instance.projection = "EPSG:4326";
+			_l1 = new Layer("myLayer1");
+			_l1.maxExtent = new Bounds(-40, 0,40,50, "EPSG:4326");
+			_l2 = new Layer("myLayer2");
+			_l2.maxExtent = new Bounds(-45,10,10,55, "EPSG:4326");
+			var l3:Layer = new Layer("myLayer3");
+			l3.maxExtent = new Bounds(-30,5,45,30, "ESPG:4326");
+			
+			assertNull("At init, maxExtent should be null", _instance.maxExtent);
+			_instance.addLayer(_l1);
+			_instance.addLayer(_l2);
+			_instance.addLayer(l3);
+			
+			_map.addLayer(_instance);
+			
+			_instance.removeLayer(_l2);
+			
+			assertNotNull("After adding first layer, max extent should be not null",_instance.maxExtent);
+			assertEquals("Aggregate max extent left value is not correct",-40,_instance.maxExtent.left);
+			assertEquals("Aggregate max extent bottom value is not correct",0,_instance.maxExtent.bottom);
+			assertEquals("Aggregate max extent right value is not correct",45,_instance.maxExtent.right);
+			assertEquals("Aggregate max extent top value is not correct",50,_instance.maxExtent.top);
+			
 		}
 		
 		/**

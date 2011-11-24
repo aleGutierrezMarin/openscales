@@ -70,9 +70,13 @@ package org.openscales.core.layer
 			prepareLayer(layer);			
 			this._layers.push(layer);
 			layer.aggregate=this;
-			if(this.map)
-			{
-				return this.map.addLayer(layer,false);
+			if(this.map){
+				this.map.addLayer(layer,false);
+			}
+			if(this._layers.length==1){
+				this.maxExtent = layer.maxExtent;// Taking layer maxExtent as base for aggregate maxExtent
+			}else if(this.maxExtent){
+				this.maxExtent = this.maxExtent.extendFromBounds(layer.maxExtent);
 			}
 			return true;
 		}
@@ -113,12 +117,22 @@ package org.openscales.core.layer
 		}
 		
 		public function removeLayer(layer:Layer):void{
-			var i:uint = this._layers.indexOf(layer);
-			if(i<0)return;
-			if(!this.map) return;
+			var index:uint = this._layers.indexOf(layer);
+			if(index<0)return;
 			layer.aggregate = null;
-			this.map.removeLayer(layer);
-			this._layers.splice(i,1);
+			if(this.map) this.map.removeLayer(layer);
+			this._layers.splice(index,1);
+			
+			if(this._layers.length>0){
+				this.maxExtent = this._layers[0].maxExtent;
+				var lgth:Number = this._layers.length;
+				var i:int = 1;
+				for(i; i<lgth;++i){
+					if(!this.maxExtent) this.maxExtent = this._layers[i].maxExtent;
+					else this.maxExtent = this.maxExtent.extendFromBounds(this._layers[i].maxExtent);	
+				}			
+			}
+			
 		}
 		
 		public function removeAllLayers():void{
