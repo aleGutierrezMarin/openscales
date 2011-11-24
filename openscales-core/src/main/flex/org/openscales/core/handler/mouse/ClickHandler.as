@@ -313,7 +313,8 @@ package org.openscales.core.handler.mouse
 			// TODO refactor double click
 			// If the handler is configured to zoom on mouse position
 			if(this.doubleClickZoomOnMousePosition && this.map.mouseNavigationEnabled){
-				this.map.zoomIn(new Pixel(this.map.mouseX, this.map.mouseY));
+				this.map.zoomBy(0.5, new Pixel(this.map.mouseX, this.map.mouseY));
+				//this.map.zoomIn(new Pixel(this.map.mouseX, this.map.mouseY));
 				//this.map.zoomToMousePosition(true);	
 			}else // Otherwise, zooming to current center
 			{
