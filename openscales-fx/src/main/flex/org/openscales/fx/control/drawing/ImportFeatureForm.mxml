@@ -310,11 +310,6 @@
 				this.importLabel = Catalog.getLocalizationForKey('drawing.import');
 				this.urlLabelText = Catalog.getLocalizationForKey('drawing.url');
 				this.localeLabelText = Catalog.getLocalizationForKey('drawing.locale');
-				
-				this.localeLabelText = Catalog.getLocalizationForKey('drawing.name');
-				this.localeLabelText = Catalog.getLocalizationForKey('drawing.format');
-				this.localeLabelText = Catalog.getLocalizationForKey('drawing.version');
-				
 			}
 			
 			/**
