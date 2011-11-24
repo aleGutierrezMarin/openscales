@@ -248,10 +248,6 @@ package org.openscales.core.layer {
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;
 				}
-				if (ProjProjection.isEquivalentProjection(this._projection, _map.projection))
-				{
-					this.visible = true;
-				}
 			}
 		}
 		
