@@ -198,7 +198,7 @@ package org.openscales.core.layer
 			
 			
 			// for tile Stretching we need to reproject the resolution tu be sure that the native grid is correctly initilized
-			if (!ProjProjection.isEquivalentProjection(this.projection, this.map.projection))
+			if (!ProjProjection.isEquivalentProjection(this.projection, this.map.projection) && ProjProjection.isStretchable(this.projection, this.map.projection))
 			{
 				//resolution = resolution.reprojectTo(this.projection);
 				bounds = bounds.reprojectTo(this.projection);
@@ -333,8 +333,8 @@ package org.openscales.core.layer
 							for (j = 0; j< gridColLength; ++j)
 							{
 								this._backGrid[i][j] = new Bitmap();
-								this._backGrid[i][j].scaleX = this._grid[i][j].scaleX;
-								this._backGrid[i][j].scaleY = this._grid[i][j].scaleY;
+								//this._backGrid[i][j].scaleX = this._grid[i][j].scaleX;
+								//this._backGrid[i][j].scaleY = this._grid[i][j].scaleY;
 							}
 						}
 						for (i = 0; i< gridRowLength; ++i)
@@ -411,8 +411,8 @@ package org.openscales.core.layer
 										tile = new BitmapData(recWidth, recHeight);
 										tile.copyPixels(BMD, region, new Point(finalDeltaX, finalDeltaY));
 										var transitiontile:Bitmap = new Bitmap(tile, PixelSnapping.NEVER, true);
-										transitiontile.scaleX = _backGrid[i][j].scaleX;
-										transitiontile.scaleY = _backGrid[i][j].scaleY;
+										//transitiontile.scaleX = _backGrid[i][j].scaleX;
+										//transitiontile.scaleY = _backGrid[i][j].scaleY;
 										_backGrid[i][j] = transitiontile;
 										
 									}
@@ -425,8 +425,7 @@ package org.openscales.core.layer
 							{
 								if (_backGrid[i][j] && this.grid[i][j])
 								{
-									_backGrid[i][j].scaleX *= 1/this.scaleX;//(bmpRequestedResolution/this.requestedResolution.value);						
-									_backGrid[i][j].scaleY *= 1/this.scaleY;
+									_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= 1/this.scaleX;//(bmpRequestedResolution/this.requestedResolution.value);						
 									this.grid[i][j].addChildAt(_backGrid[i][j], 0);
 									this.grid[i][j].drawn = true;
 									this.addChild(grid[i][j]);
