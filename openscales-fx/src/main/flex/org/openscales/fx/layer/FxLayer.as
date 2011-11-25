@@ -222,9 +222,9 @@ package org.openscales.fx.layer
 				if(length == 4)
 				{
 					if(this._layer)
-						this._layer.maxExtent = Bounds.getBoundsFromString(value+","+this._layer.projection);
+						this._layer.maxExtent = Bounds.getBoundsFromString(value+",EPSG:4326");
 					else if(this._projection)
-						this._maxExtent = Bounds.getBoundsFromString(value+","+this._projection);
+						this._maxExtent = Bounds.getBoundsFromString(value+",EPSG:4326");
 				}
 					
 				else

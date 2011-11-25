@@ -112,12 +112,12 @@ package org.openscales.core.layer.ogc
 		}
 		
 		//
-	    override public function get maxExtent():Bounds {
-			if (! super.maxExtent) {
+	    /*override public function get maxExtent():Bounds {
+			/*if (! super.maxExtent) {
 				return null;
-			}
+			}*/
 
-			var maxExtent:Bounds =  super.maxExtent.clone();
+			/*var maxExtent:Bounds =  super.maxExtent.clone();
 			if(this.map == null){
 				return maxExtent;
 			}
@@ -125,8 +125,8 @@ package org.openscales.core.layer.ogc
 			if (this.reproject == true && this.projection != this.map.projection) {
 				maxExtent = maxExtent.reprojectTo(this.map.projection);
 			}
-			return maxExtent;
-		}
+			return super.maxExtent;
+		}*/
 		
 		/**
 		 * Generate the tile corresponding to the bounds given as parameter
