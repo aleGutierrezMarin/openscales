@@ -5,8 +5,10 @@ package org.openscales.core.request
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
+	import flash.external.ExternalInterface;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.system.LoaderContext;
@@ -14,10 +16,10 @@ package org.openscales.core.request
 	
 	import mx.controls.Alert;
 	
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.utils.UID;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.security.ISecurity;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 
 	/**
 	 * Request wapper in order to make data or XML request easier to use (proxy, timeout, etc.)
@@ -47,6 +49,7 @@ package org.openscales.core.request
 		private var _onFailure:Function = null;
 		private var _isSent:Boolean = false;
 		private var _isCompleted:Boolean = false;
+		private var _sendCustomReferer:Boolean = false;
 		private var _loader:Object = null;
 		
 		private var _uid:String;
@@ -366,6 +369,16 @@ package org.openscales.core.request
 					urlRequest.contentType = this.postContentType;
 					urlRequest.data = this.postContent;
 				}
+				
+				if(this._sendCustomReferer) {
+					try 
+					{
+						urlRequest.requestHeaders.push(new URLRequestHeader("FlashReferer", ExternalInterface.call("window.location.href.toString")));
+					} catch(e:Error) { 
+						Trace.error("Some error occured. ExternalInterface doesn't work in Standalone player."); 
+					}
+				}
+				
 				if (this.loader is Loader) {
 					this.loader.name = this.url; // Needed, see KMLFormat.updateImages for instance
 					// Define the context for the loading of the SWF or Image
@@ -399,6 +412,25 @@ package org.openscales.core.request
 		 */
 		public function get cache():Boolean{
 			return this._cache;
+		}
+		
+		/**
+		 * Setter for "sendCustomReferer" property
+		 * If sendCustomReferer is true, the request will send a Custom Header "FlashReferer" containing the request's referer
+		 * 
+		 * @param value Boolean
+		 */
+		public function set sendCustomReferer(value:Boolean):void{
+			this._sendCustomReferer = value;
+		}
+		
+		/**
+		 * getter for "sendCustomReferer" property
+		 * 
+		 * @return Boolean
+		 */
+		public function get sendCustomReferer():Boolean{
+			return this._sendCustomReferer;
 		}
 		
 	}
