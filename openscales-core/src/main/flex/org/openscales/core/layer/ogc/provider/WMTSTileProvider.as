@@ -176,7 +176,7 @@ package org.openscales.core.layer.ogc.provider
 			}
 			
 			//tileMatrix are referenced by their resolutions
-			var resolution:Resolution = (layer as Grid).getSupportedResolution(layer.map.resolution);
+			var resolution:Resolution = (layer as Grid).getSupportedResolution(layer.map.resolution.reprojectTo(layer.projection));
 			var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution.value);
 			
 			var tileWidth:Number = tileMatrix.tileWidth;

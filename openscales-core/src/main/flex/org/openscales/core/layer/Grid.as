@@ -44,7 +44,6 @@ package org.openscales.core.layer
 		protected var _initialized:Boolean = false;
 		private var _requestedResolution:Resolution;
 		private var _previousCenter:Location = null;
-		private var _previousResolution:Resolution = null;
 		private var _cumulatedRoundedValueX:Number = 0;
 		private var _cumulatedRoundedValueY:Number = 0;
 		private var _tileWidthErrorPerPixel:Number = 0;
@@ -159,7 +158,6 @@ package org.openscales.core.layer
 			{
 				ratio = this.requestedResolution.value / this.map.resolution.reprojectTo(this.projection).value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
-				this._previousResolution = this.map.resolution.reprojectTo(this.projection);
 				resolutionChangedCache = false;
 				if (centerChangedCache)
 				{
@@ -204,6 +202,7 @@ package org.openscales.core.layer
 			{
 				//resolution = resolution.reprojectTo(this.projection);
 				bounds = bounds.reprojectTo(this.projection);
+				forceReTile = true;
 			}
 			if (!this.tiled) 
 			{
@@ -317,7 +316,6 @@ package org.openscales.core.layer
 					this.scaleLayer(ratio, new Pixel(0,0));
 					this.x += this._origin.x * ratio;
 					this.y += this._origin.y * ratio;
-					this._previousResolution = this.map.resolution.reprojectTo(this.projection);
 					this._previousCenter = this.map.center.clone();
 					this.moveGriddedTiles(bounds);
 					this.actualizeGridSize(bounds);
@@ -461,7 +459,7 @@ package org.openscales.core.layer
 			var temporaryWidth:Number = this.tileWidth * temporaryScale;
 			var roundedWidth:Number = Math.round(temporaryWidth);
 			temporaryScale = roundedWidth / this.tileWidth;
-			this._tileWidthErrorPerPixel = ((temporaryWidth - roundedWidth)/this.tileWidth/scale);
+			//this._tileWidthErrorPerPixel = ((temporaryWidth - roundedWidth)/this.tileWidth/scale);
 			
 			var newTransMatrix:Matrix = this.transform.matrix;
 			newTransMatrix.tx -= (offSet.x);
@@ -769,8 +767,14 @@ package org.openscales.core.layer
 			{
 				this.requestedResolution = this.requestedResolution.reprojectTo(this.projection);
 			}*/
+			var reprojectedBoundWidth:Number = Math.round(bounds.reprojectTo(this.map.projection).width/requestedResolution.reprojectTo(this.map.projection).value);
+			var reprojectedBoundHeight:Number = Math.round(bounds.reprojectTo(this.map.projection).height/requestedResolution.reprojectTo(this.map.projection).value);
+			var nativeBoundWidth:Number = Math.round(bounds.width/requestedResolution.value);
+			var nativeBoundHeight:Number = Math.round(bounds.height/requestedResolution.value);
+			
+			
 			_resquestResolution = this.requestedResolution.value;
-			var viewSize:Size = this.map.size;
+			var viewSize:Size = new Size(nativeBoundWidth, nativeBoundHeight);//this.map.size;
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + Math.max(1, 2 * this.buffer);
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) + Math.max(1, 2 * this.buffer);
 			var tilelon:Number = _resquestResolution * this.tileWidth;
@@ -790,6 +794,19 @@ package org.openscales.core.layer
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
 			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
 			
+			
+			var upRigth:Location = new Location(tileoffsetlon + tilelon, tileoffsetlat + tilelat, this.projection);
+			upRigth = upRigth.reprojectTo(this.map.projection);
+			
+			var bottomLeft:Location = new Location(tileoffsetlon, tileoffsetlat, this.projection);
+			bottomLeft = bottomLeft.reprojectTo(this.map.projection);
+			
+			var stretchedHeight:Number = Math.round((upRigth.lat - bottomLeft.lat) / this.requestedResolution.reprojectTo(this.map.projection).value);
+			var stretchedWidth:Number = Math.round((upRigth.lon-bottomLeft.lon) / this.requestedResolution.reprojectTo(this.map.projection).value);
+			
+			tileoffsetx *= stretchedWidth/this.tileWidth;
+			tileoffsety *= stretchedHeight/this.tileHeight;
+			
 			// Offset stretching 
 			/*var unityReproject:Location = new Location(1,1,this.projection);
 			unityReproject = unityReproject.reprojectTo(this.map.projection);
@@ -806,11 +823,6 @@ package org.openscales.core.layer
 			var startX:Number = tileoffsetx; 
 			var startLon:Number = tileoffsetlon;
 			var rowidx:int = 0;
-			
-			var stretchedWidth:Number;
-			var stretchedHeight:Number;
-			var upRigth:Location;
-			var bottomLeft:Location;
 			
 			if(this._grid == null) {
 				this._grid = new Vector.<Vector.<ImageTile>>();
@@ -850,19 +862,19 @@ package org.openscales.core.layer
 					bottomLeft = bottomLeft.reprojectTo(this.map.projection);
 					
 					
-					stretchedWidth = Math.round((upRigth.lon-bottomLeft.lon)/this.requestedResolution.reprojectTo(this.map.projection).value);
-					stretchedHeight = Math.round((upRigth.lat-bottomLeft.lat)/this.requestedResolution.reprojectTo(this.map.projection).value);
+					stretchedWidth = (upRigth.lon-bottomLeft.lon)/this.requestedResolution.reprojectTo(this.map.projection).value;
+					stretchedHeight = (upRigth.lat-bottomLeft.lat)/this.requestedResolution.reprojectTo(this.map.projection).value;
 					var stretchingScaleX:Number = stretchedWidth/this.tileWidth;
 					var stretchingScaleY:Number = stretchedHeight/this.tileHeight;
 					
-					var roundedWidth:Number = Math.round(stretchedWidth);
+				/*	var roundedWidth:Number = Math.round(stretchedWidth);
 					var roundedHeight:Number = Math.round(stretchedHeight);
 					
 					stretchingScaleX = roundedWidth / this.tileWidth;
 					stretchingScaleY = roundedHeight / this.tileHeight;
 					
 					stretchedWidth = roundedWidth;
-					stretchedHeight = roundedHeight;
+					stretchedHeight = roundedHeight;*/
 					
 					if(row.length==colidx) {
 						tile = this.addTile(tileBounds, px);
@@ -1282,7 +1294,6 @@ package org.openscales.core.layer
 			if (this.map != null)
 			{
 				_previousCenter = this.map.center.clone();
-				_previousResolution = this.map.resolution.reprojectTo(this.projection);
 				this._initialized = false;
 			}
 		}
@@ -1321,7 +1332,7 @@ package org.openscales.core.layer
 		 */
 		override public function get available():Boolean
 		{
-			return (super.available && (ProjProjection.isEquivalentProjection(this.projection,this.map.projection) || (this.projection == "EPSG:4326" && this.map.projection == "EPSG:3857") || (this.projection == "EPSG:3857" && this.map.projection == "EPSG:4326")));
+			return (super.available && (ProjProjection.isEquivalentProjection(this.projection,this.map.projection) || ProjProjection.isStretchable(this.projection, this.map.projection)));
 		}
 		
 		// Callbacks

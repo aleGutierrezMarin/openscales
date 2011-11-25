@@ -18,6 +18,7 @@ package org.openscales.proj4as {
 		public var projParams:ProjParams=new ProjParams();
 		
 		static public const equivalentDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84","IGNF:LAMB93,EPSG:2154"];
+		static public const stretchableDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84,EPSG:900913,EPSG:3857"]; 
 		
 		static public const defs:Object={
 			'EPSG:900913': "+title=Google Mercator EPSG:900913 +proj=merc +ellps=WGS84 +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs",
@@ -174,10 +175,35 @@ package org.openscales.proj4as {
 			return compat;
 		}
 		
-		public static function isEquivalentProjection(srsCode1:String,srsCode2:String): Boolean {
+		public static function getStretchableProjection(srsCode:String):Vector.<String> {
+			var compat:Vector.<String> = new <String>[];
+			var i:uint = ProjProjection.stretchableDefs.length;
+			var j:uint;
+			var arr:Array = null;
+			for(;i>0;--i) {
+				arr = stretchableDefs[i-1].split(",");
+				if(arr.indexOf(srsCode)!=-1) {
+					j = arr.length;
+					for(;j>0;--j)
+						if(arr[j-1] != "")
+							compat.push(arr[j-1]);
+				}
+			}
+			return compat;
+		}
+		
+		public static function isStretchable(srsCode1:String,srsCode2:String): Boolean {
 			if(srsCode1==srsCode2
 				|| ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=-1
 				|| ProjProjection.equivalentDefs.indexOf(srsCode2+","+srsCode1)!=-1)
+				return true;
+			return (ProjProjection.getStretchableProjection(srsCode1).indexOf(srsCode2)!=-1);
+		}
+		
+		public static function isEquivalentProjection(srsCode1:String,srsCode2:String): Boolean {
+			if(srsCode1==srsCode2
+				|| ProjProjection.stretchableDefs.indexOf(srsCode1+","+srsCode2)!=-1
+				|| ProjProjection.stretchableDefs.indexOf(srsCode2+","+srsCode1)!=-1)
 				return true;
 			return (ProjProjection.getEquivalentProjection(srsCode1).indexOf(srsCode2)!=-1);
 		}
