@@ -137,7 +137,7 @@ package org.openscales.core.layer
 					this.addFeature(lineFeature);
 					// labels
 					var degreeLabel:String = getFormattedLabel(currentX, interval);
-					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+2*offset, ymin+offset);
+					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+2*offset, ymin+2*offset);
 					var labelFeature:LabelFeature = new LabelFeature(labelPoint);
 					labelFeature.style = labelStyle;
 					this.addFeature(labelFeature);
@@ -163,7 +163,7 @@ package org.openscales.core.layer
 					this.addFeature(lineFeature);
 					// labels
 					degreeLabel = getFormattedLabel(currentY, interval);
-					labelPoint = new LabelPoint(degreeLabel, xmin+2*offset, currentY+offset);
+					labelPoint = new LabelPoint(degreeLabel, xmin+3*offset, currentY+offset);
 					labelFeature = new LabelFeature(labelPoint);
 					labelFeature.style = labelStyle;
 					this.addFeature(labelFeature);
