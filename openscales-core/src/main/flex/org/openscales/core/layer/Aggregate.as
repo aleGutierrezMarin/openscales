@@ -159,9 +159,8 @@ package org.openscales.core.layer
 		}
 		
 		/**
-		 * Set the map to aggregated layers
-		 * 
-		 * @param map The map to which the Aggergate (and its layers) will be attached
+		 * The map which the aggregate is attached to. All aggregated layers are also attached to that map.
+		 *
 		 */ 
 		override public function set map(value:Map):void{
 			if(this.map){
