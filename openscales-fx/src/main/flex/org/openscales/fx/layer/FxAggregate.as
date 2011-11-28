@@ -6,7 +6,9 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.Aggregate;
 	import org.openscales.core.layer.Layer;
 
-	
+	/**
+	 * Mapping class for Aggregate
+	 */	
 	public class FxAggregate extends FxLayer
 	{
 		private var _bufferedAlpha:Number=NaN;
@@ -42,12 +44,17 @@ package org.openscales.fx.layer
 			}
 		}
 		
-		
+		/**
+		 * Set the alpha of the aggregate and all its aggregated layers
+		 */ 
 		override public function set alpha(value:Number):void {
 			super.alpha = value;
 			this._bufferedAlpha = value;
 		}
 			
+		/**
+		 * Set the visibilty of the aggregate and all its aggregated layers
+		 */ 
 		override public function set visible(value:Boolean):void {
 			super.visible = value;
 			this._bufferedVisible = value ? 1 : 0; 

@@ -200,7 +200,7 @@ package org.openscales.fx.layer
 		}
 		
 		/**
-		 * Indicates the max extent as a string in the layer projection
+		 * Indicates the max extent in the layer's projection (can be set as a Bounds of as a string: "x1,y1,x2,y2,projection")
 		 */
 		public function get maxExtent():Bounds {
 			if(this._layer)
