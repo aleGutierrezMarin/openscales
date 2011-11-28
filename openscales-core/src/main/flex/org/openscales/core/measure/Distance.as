@@ -185,17 +185,17 @@ package org.openscales.core.measure
 					case "english":
 						tmpDist/=Unit.getInchesPerUnit(Unit.FOOT);
 						_lastUnit = "ft";
-						_result= Util.truncate(tmpDist,_accuracies.getValue("ft"));
+						_result= this.trunc(tmpDist,_accuracies.getValue("ft"));
 						
 						if(tmpDist<1) {
 							tmpDist*=12;
 							_lastUnit = "in";
-							_result= Util.truncate(tmpDist,_accuracies.getValue("in"));
+							_result= this.trunc(tmpDist,_accuracies.getValue("in"));
 							}
 						if(tmpDist>5280) {
 							tmpDist/=5280;
 							_lastUnit = "mi";
-							_result= Util.truncate(tmpDist,_accuracies.getValue("mi"));
+							_result= this.trunc(tmpDist,_accuracies.getValue("mi"));
 						}
 						break;
 					
@@ -213,11 +213,10 @@ package org.openscales.core.measure
 		}
 		
 		private function trunc(val:Number,unit:Number):String{
-			var acc:Number=this._accuracies.getValue(unit);
-			if(!acc){
-				acc=2;
+			if(!unit){
+				unit=2;
 			}
-			return Util.truncate(val,acc);
+			return Util.truncate(val,unit);
 		}
 		
 		public function getUnits():String {

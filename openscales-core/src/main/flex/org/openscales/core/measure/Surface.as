@@ -124,7 +124,7 @@ package org.openscales.core.measure
 						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
 						_lastUnit = "km²";
-						this._result= Util.truncate(area,_accuracies.getValue("km"));
+						this._result= this.trunc(area,_accuracies.getValue("km"));
 					}
 					break;
 				
@@ -134,7 +134,7 @@ package org.openscales.core.measure
 						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
 						_lastUnit = "m²";
-						this._result= Util.truncate(area,_accuracies.getValue("m"));
+						this._result= this.trunc(area,_accuracies.getValue("m"));
 					}
 					break;
 				
@@ -144,12 +144,12 @@ package org.openscales.core.measure
 						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
 						_lastUnit = "km²";
-						this._result= Util.truncate(area,_accuracies.getValue("km"));
+						this._result= this.trunc(area,_accuracies.getValue("km"));
 						
 						if(area<1){
 							area=area*1000000;
 							_lastUnit = "m²";
-							this._result= Util.truncate(area,_accuracies.getValue("m"));
+							this._result= this.trunc(area,_accuracies.getValue("m"));
 						}
 					}
 					
@@ -161,6 +161,13 @@ package org.openscales.core.measure
 					break;
 			}
 			return this._result;
+		}
+		
+		private function trunc(val:Number,unit:Number):String{
+			if(!unit){
+				unit=2;
+			}
+			return Util.truncate(val,unit);
 		}
 		
 		private function getArea():Number{

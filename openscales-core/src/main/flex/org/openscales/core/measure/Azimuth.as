@@ -171,11 +171,10 @@ package org.openscales.core.measure
 		}
 		
 		private function trunc(val:Number,unit:Number):String{
-			var acc:Number=this._accuracies.getValue(unit);
-			if(!acc){
-				acc=2;
+			if(!unit){
+				unit=2;
 			}
-			return Util.truncate(val,acc);
+			return Util.truncate(val,unit);
 		}
 		
 		public function getUnits():String {
