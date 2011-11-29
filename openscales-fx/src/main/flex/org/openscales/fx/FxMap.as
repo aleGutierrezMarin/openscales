@@ -12,6 +12,7 @@ package org.openscales.fx
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
@@ -88,13 +89,13 @@ package org.openscales.fx
 		/**
 		 * Add a Flex wrapper layer to the map
 		 */
-		private function addFxLayer(l:FxLayer):void {
+		/*private function addFxLayer(l:FxLayer):void {
 			// Add the layer to the map
 			l.fxmap = this;
 			l.configureLayer();
 			if(l.nativeLayer)
 				this._map.addLayer(l.nativeLayer);
-		}
+		}*/
 		
 		public function set resolution(value:*):void
 		{
@@ -227,22 +228,27 @@ package org.openscales.fx
 			// We use an interlediate Array in order to avoid adding new component it the loop
 			// because it will modify numChildren
 			var componentToAdd:Array = new Array();
+			
+			//This hashMap contains the layers to add in the Map
+			//First, we initialize the layers to add
+			var layersToAdd:HashMap = new HashMap();
 			for(i=0; i<this.numElements; i++) {
 				element = this.getElementAt(i);
 			//i = this.numElements;
 			//for(i; i>0; --i) {
 				//element = this.getElementAt(i-1);
 				if (element is FxLayer) {
-					this.addFxLayer(element as FxLayer);
+					//this.addFxLayer(element as FxLayer);
+					(element as FxLayer).fxmap = this;
+					(element as FxLayer).configureLayer();
+					layersToAdd.put((element as FxLayer).name, (element as FxLayer).nativeLayer);
 				} else if (element is FxControl) {
 					this._map.addControl((element as FxControl).control);
 				} else if (element is IControl) {
 					this._map.addControl(element as IControl, false);
 				}
 			}
-			
-			//for(i=0; i<this.numElements; i++) {
-				//element = this.getElementAt(i);
+
 			i = this.numElements;
 			for(i; i>0; --i) {
 				element = this.getElementAt(i-1);
@@ -253,14 +259,19 @@ package org.openscales.fx
 					var security:ISecurity = fxSecurity.security;
 					var layers:Array = fxSecurity.layers.split(",");
 					var layer:Layer = null;
+					//For each layer which needs a security we add it in the HashMap
 					for each (var name:String in layers) {
-						layer = map.getLayerByName(name);
-						if(layer) {
+						if((layersToAdd.getValue(name) as Layer)) {
 							(element as FxAbstractSecurity).map = this._map;
-							layer.security = security;
+							(layersToAdd.getValue(name) as Layer).security = security;
 						}
 					}
 				}
+			}
+			
+			//Finally, we add the layers in the Map
+			for( var z:uint = 0 ; z < layersToAdd.getValues().length ; z++) {
+					this._map.addLayer((layersToAdd.getValues()[z] as Layer));
 			}
 			
 			// Set both center and zoom to avoid invalid request set when we define both separately

@@ -86,7 +86,9 @@
 	<component id="ControlPanel" class="org.openscales.fx.ControlPanel"/>
 	
 	<component id="IGNGeoRMSecurity" class="org.openscales.fx.security.ign.FxIGNGeoRMSecurity"/>
-		
+	<component id="AuthBasicSecurity" class="org.openscales.fx.security.FxAuthBasicSecurity"/>
+	<component id="RefererSecurity" class="org.openscales.fx.security.FxRefererSecurity"/>
+	
 	<component id="Control" class="org.openscales.fx.control.Control" />
 	<component id="IconButton" class="org.openscales.fx.control.IconButton" />
 	<component id="Popup" class="org.openscales.fx.popup.FxPopup" />

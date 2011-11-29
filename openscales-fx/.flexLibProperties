@@ -67,6 +67,7 @@
     <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeatureAttributes"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditLabel"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
@@ -151,7 +152,8 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer"/>
+    <classEntry path="org.openscales.fx.security.FxAuthBasicSecurity"/>
+    <classEntry path="org.openscales.fx.security.FxRefererSecurity"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
