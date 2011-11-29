@@ -271,6 +271,8 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
+    <classEntry path="org.openscales.core.security.RefererSecurity"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

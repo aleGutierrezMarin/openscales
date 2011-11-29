@@ -23,6 +23,7 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.request.OpenLSRequest;
+			import org.openscales.core.security.ISecurity;
 			import org.openscales.core.style.marker.DisplayObjectMarker;
 			import org.openscales.core.utils.Trace;
 			import org.openscales.geometry.Point;
@@ -57,6 +58,9 @@
 			
 			private var _geocodeServiceUrl:String=null;
 			private var _reverseGeocodeServiceUrl:String=null;
+			
+			private var _geocodeServiceSecurity:ISecurity = null;
+			private var _reverseGeocodeServiceSecurity:ISecurity = null;
 			
 			private var _streetResolution:Number = 0.0000107288360595703;
 			
@@ -356,6 +360,20 @@
 			this._maximumGeocodeResponses = value;
 			}
 			
+			public function get geocodeServiceSecurity():ISecurity {
+				return this._geocodeServiceSecurity;
+			}			
+			public function set geocodeServiceSecurity(value:ISecurity):void {				
+				this._geocodeServiceSecurity = value;
+			}
+			
+			public function get reverseGeocodeServiceSecurity():ISecurity {
+				return this._reverseGeocodeServiceSecurity;
+			}			
+			public function set reverseGeocodeServiceSecurity(value:ISecurity):void {				
+				this._reverseGeocodeServiceSecurity = value;
+			}
+			
 			public function simpleSearch(query:String):void {
 				if(!this.map)
 					return;
@@ -368,7 +386,7 @@
 				
 				if(_request)
 					_request.destroy();
-				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault);
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault,this.geocodeServiceSecurity);
 				if (this.map != null) {
 					_request.defineSimpleSearch(requestId, query, this.defaultCountryCode, this.projection, this.maximumGeocodeResponses, this.version);
 					_request.send();
@@ -387,7 +405,7 @@
 				
 				if(_request)
 					_request.destroy();
-				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault);
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault, this.geocodeServiceSecurity);
 				if (this.map != null) {
 					if (!countryCodeQuery || countryCodeQuery=="")
 						countryCodeQuery=this.defaultCountryCode;
@@ -413,7 +431,7 @@
 				
 				if(_request)
 					_request.destroy();
-				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault);
+				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault, this.reverseGeocodeServiceSecurity);
 				if (this.map != null) {
 					var location:Location = new Location(new Number(lon), new Number(lat));
 					_request.defineReverseSearch(requestId, location, this.projection, this.maximumGeocodeResponses, this.version);
@@ -433,7 +451,7 @@
 				
 				if(_request)
 					_request.destroy();
-				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault);
+				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault, this.reverseGeocodeServiceSecurity);
 				if (this.map != null) {
 					var location:Location = new Location(new Number(lon), new Number(lat));
 					_request.defineReverseSearchInCircle(requestId, location, location, new Number(radius), this.projection, this.maximumGeocodeResponses, this.version);
@@ -453,7 +471,7 @@
 				
 				if(_request)
 					_request.destroy();
-				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault);
+				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault, this.reverseGeocodeServiceSecurity);
 				if (this.map != null) {
 					var bounds:Bounds = new Bounds(new Number(leftB), new Number(bottomB), new Number(rightB), new Number(topB));
 					var location:Location = bounds.center;
