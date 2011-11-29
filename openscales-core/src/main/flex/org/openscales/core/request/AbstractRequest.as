@@ -49,7 +49,6 @@ package org.openscales.core.request
 		private var _onFailure:Function = null;
 		private var _isSent:Boolean = false;
 		private var _isCompleted:Boolean = false;
-		private var _sendCustomReferer:Boolean = false;
 		private var _loader:Object = null;
 		
 		private var _uid:String;
@@ -312,10 +311,8 @@ package org.openscales.core.request
 					Trace.log("Security not initialized so cancel request");
 					return null;
 				}
-				_finalUrl += (_finalUrl.indexOf("?") == -1) ? "?" : "&"; // If there is no "?" in the url, we will have to add it, else we will have to add "&"
-				var token:String = this.security.securityParameter;
-				if(token!=null)
-					_finalUrl += this.security.securityParameter;
+				
+				_finalUrl = this.security.getFinalUrl(_finalUrl);
 			}
 
 			if ((this.proxy != null)) {
@@ -370,13 +367,13 @@ package org.openscales.core.request
 					urlRequest.data = this.postContent;
 				}
 				
-				if(this._sendCustomReferer) {
-					try 
-					{
-						urlRequest.requestHeaders.push(new URLRequestHeader("FlashReferer", ExternalInterface.call("window.location.href.toString")));
-					} catch(e:Error) { 
-						Trace.error("Some error occured. ExternalInterface doesn't work in Standalone player."); 
+				if (this.security != null) {
+					if (! this.security.initialized) {
+						Trace.log("Security not initialized so cancel request");
+						return;
 					}
+					
+					urlRequest = this.security.addCustomHeaders(urlRequest);
 				}
 				
 				if (this.loader is Loader) {
@@ -413,26 +410,6 @@ package org.openscales.core.request
 		public function get cache():Boolean{
 			return this._cache;
 		}
-		
-		/**
-		 * Setter for "sendCustomReferer" property
-		 * If sendCustomReferer is true, the request will send a Custom Header "FlashReferer" containing the request's referer
-		 * 
-		 * @param value Boolean
-		 */
-		public function set sendCustomReferer(value:Boolean):void{
-			this._sendCustomReferer = value;
-		}
-		
-		/**
-		 * getter for "sendCustomReferer" property
-		 * 
-		 * @return Boolean
-		 */
-		public function get sendCustomReferer():Boolean{
-			return this._sendCustomReferer;
-		}
-		
 	}
 	
 }
