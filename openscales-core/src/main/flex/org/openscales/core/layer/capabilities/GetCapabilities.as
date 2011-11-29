@@ -5,9 +5,10 @@ package org.openscales.core.layer.capabilities
 	import flash.net.URLLoader;
 	import flash.net.URLRequestMethod;
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.security.ISecurity;
+	import org.openscales.core.utils.Trace;
 
 	/**
 	 * Class to request Capabilities to a given server.
@@ -21,7 +22,7 @@ package org.openscales.core.layer.capabilities
 		private var _request:String = null;
 		private var _url:String = null;
 		private var _proxy:String = null;
-
+		private var _security:ISecurity = null;
 		private var _parser:CapabilitiesParser = null;
 		
 		private var _capabilities:HashMap = null;
@@ -33,14 +34,15 @@ package org.openscales.core.layer.capabilities
 		/**
 		 * Class contructor
 		 */
-		public function GetCapabilities(service:String, url:String, cbkFunc:Function=null, version:String=null, proxy:String = null)
+		public function GetCapabilities(service:String, url:String, cbkFunc:Function=null, version:String=null, proxy:String = null, security:ISecurity=null)
 		{			
 			this._service = service.toUpperCase();
 			this._url = url;
 			this._request = "GetCapabilities";
 			this._capabilities = new HashMap(false)
 			this._parsers = new HashMap();
-
+			this._security = security;
+			
 			_parsers.put("WFS 1.0.0",WFS100);
 		    _parsers.put("WFS 1.1.0",WFS110);
 			_parsers.put("WFS 2.0.0",WFS200);
@@ -81,6 +83,7 @@ package org.openscales.core.layer.capabilities
 			var urlRequest:String = this.buildRequestUrl(); 
 
 			var _req:XMLRequest = new XMLRequest(urlRequest, this.parseResult, this.onFailure);
+			_req.security = this._security;
 			_req.proxy = this._proxy;
 			//_req.security = null; //FixMe: should the security be managed here ?
 			_req.send();

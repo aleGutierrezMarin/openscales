@@ -2,6 +2,7 @@ package org.openscales.core.request
 {
 	import com.adobe.serialization.json.JSON;
 	
+	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.UID;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -38,9 +39,10 @@ package org.openscales.core.request
 		 * obtained like this:
 		 * var xmlString:String = (event.target as URLLoader).data as String;
 		 */
-		public function OpenLSRequest(url:String, onComplete:Function, onFailure:Function=null) {
+		public function OpenLSRequest(url:String, onComplete:Function, onFailure:Function=null, security:ISecurity=null) {
 			super(url, onComplete, onFailure);
 			this.postContentType = "text/plain";
+			this.security = security;
 		}
 		/**
 		 * OpenLS version

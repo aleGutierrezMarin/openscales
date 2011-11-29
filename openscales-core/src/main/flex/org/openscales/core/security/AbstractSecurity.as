@@ -1,5 +1,7 @@
 package org.openscales.core.security
 {
+	import flash.net.URLRequest;
+	
 	import org.openscales.core.Map;
 	import org.openscales.core.request.AbstractRequest;
 	import org.openscales.core.security.events.SecurityEvent;
@@ -119,6 +121,19 @@ package org.openscales.core.security
 				return;
 			request.proxy=null;
 			this._waitingRequests.splice(i,1);
+		}
+		
+		public function getFinalUrl(baseUrl:String):String {
+			var _finalUrl:String = baseUrl;
+			_finalUrl += (_finalUrl.indexOf("?") == -1) ? "?" : "&"; // If there is no "?" in the url, we will have to add it, else we will have to add "&"
+			if(this.securityParameter!=null)
+				_finalUrl += this.securityParameter;
+			
+			return _finalUrl;
+		}
+		
+		public function addCustomHeaders(urlRequest:URLRequest):URLRequest {
+			return urlRequest;
 		}
 	}
 }

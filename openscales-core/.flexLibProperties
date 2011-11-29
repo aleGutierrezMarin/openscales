@@ -140,6 +140,7 @@
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
     <classEntry path="org.openscales.core.layer.HTTPRequest"/>
+    <classEntry path="org.openscales.core.layer.IFileUser"/>
     <classEntry path="org.openscales.core.layer.ImageLayer"/>
     <classEntry path="org.openscales.core.layer.KML"/>
     <classEntry path="org.openscales.core.layer.Layer"/>
@@ -224,6 +225,7 @@
     <classEntry path="org.openscales.core.tile.ImageTile"/>
     <classEntry path="org.openscales.core.tile.Tile"/>
     <classEntry path="org.openscales.core.utils.BrowserInfo"/>
+    <classEntry path="org.openscales.core.utils.Chronometer"/>
     <classEntry path="org.openscales.core.utils.StringUtils"/>
     <classEntry path="org.openscales.core.utils.Trace"/>
     <classEntry path="org.openscales.core.utils.UID"/>
@@ -267,8 +269,8 @@
     <classEntry path="org.openscales.map.ExtentTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.layer.IFileUser"/>
-    <classEntry path="org.openscales.core.utils.Chronometer"/>
+    <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
+    <classEntry path="org.openscales.core.security.RefererSecurity"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
