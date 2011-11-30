@@ -34,7 +34,7 @@ package org.openscales.core.layer.osm
 
 		override public function getURL(bounds:Bounds):String
 		{
-			var res:Resolution = this.getSupportedResolution(this.map.resolution);
+			var res:Resolution = this.getSupportedResolution(this.map.resolution.reprojectTo(this.projection));
 			var x:Number = Math.round((bounds.left - this.maxExtent.left) / (res.value * this.tileWidth));
 			var y:Number = Math.round((this.maxExtent.top - bounds.top) / (res.value * this.tileHeight));
 			var z:Number = this.getZoomForResolution(res.reprojectTo(this.projection).value);
