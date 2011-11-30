@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Control used to request OpenLS service -->
+<Control xmlns="http://openscales.org"  xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"  xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:autocomplete="org.openscales.fx.autocomplete.*" xmlns:skin="org.openscales.fx.control.skin.*" >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.controls.dataGridClasses.DataGridItemRenderer;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.Resolution;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.events.SearchEvent;
+			import org.openscales.core.feature.CustomMarker;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.Marker;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.core.request.OpenLSRequest;
+			import org.openscales.core.security.ISecurity;
+			import org.openscales.core.style.marker.DisplayObjectMarker;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Location;
+			
+			[Embed(source="/assets/images/marker-blue.png")]
+			private var _markerIcon:Class;
+			
+			[Embed(source="/assets/images/marker-blue.png")]
+			private var _reverseMarkerIcon:Class;
+			
+			[Embed(source="/assets/images/marker-gold.png")]
+			private var _selectedMarkerIcon:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/close.gif")]
+			private var _closeIcon:Class;
+			
+			private var _xOffset:Number = 0;
+			private var _yOffset:Number = -12.5;
+			private var _xSelectedOffset:Number = 0;
+			private var _ySelectedOffset:Number = -12.5;
+			private var _xReverseOffset:Number = 0;
+			private var _yReverseOffset:Number = -12.5;
+			
+			[Bindable]
+			private var _defaultCountryCode:String = "FR";
+			private var _projection:String = "epsg:4326";
+			private var _maximumGeocodeResponses:uint = 10;
+			private var _version:String = "1.2";
+			
+			private var _geocodeServiceUrl:String=null;
+			private var _reverseGeocodeServiceUrl:String=null;
+			
+			private var _geocodeServiceSecurity:ISecurity = null;
+			private var _reverseGeocodeServiceSecurity:ISecurity = null;
+			
+			private var _streetResolution:Number = 0.0000107288360595703;
+			
+			private var _cityResolution:Number = 0.0000858306884765625;
+			
+			private var _requestId:String = "";
+			
+			private var _request:OpenLSRequest = null;
+			
+			private var _resultLayer:VectorLayer = null;
+			
+			[Bindable]
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			
+			[Bindable]
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
+			
+			public static const MODE_SIMPLE:uint = 1;
+			public static const MODE_ADVANCED:uint = 2;
+			public static const MODE_REVERSE:uint = 3;
+			[Bindable]
+			private var _currentMode:uint = MODE_SIMPLE;
+			[Bindable]
+			private var _reverseMode:String = "point";
+			[Bindable]
+			private var _showResults:Boolean = false;
+			[Bindable]
+			private var _showNoResultMsg:Boolean = false;
+			
+			[Bindable]
+			private var _resultsProvider:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var _completionProvider:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var _nbResultsText:String = "";
+			[Bindable]
+			private var _noResultText:String = Catalog.getLocalizationForKey("openLSSearch.noResult");
+			
+			[Bindable]
+			private var _panelTitle:String = Catalog.getLocalizationForKey("openLSSearch.title");
+			[Bindable]
+			private var _simpleSearchLabel:String = Catalog.getLocalizationForKey("openLSSearch.simpleSearch");
+			[Bindable]
+			private var _advancedSearchLabel:String = Catalog.getLocalizationForKey("openLSSearch.advancedSearch");
+			[Bindable]
+			private var _reverseSearchLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseSearch");
+			[Bindable]
+			private var _simpleSearchButtonLabel:String = Catalog.getLocalizationForKey("openLSSearch.ok");
+			[Bindable]
+			private var _advancedSearchButtonLabel:String = Catalog.getLocalizationForKey("openLSSearch.ok");
+			[Bindable]
+			private var _reverseSearchButtonLabel:String = Catalog.getLocalizationForKey("openLSSearch.ok");
+			[Bindable]
+			private var _numberLabel:String = Catalog.getLocalizationForKey("openLSSearch.number");
+			[Bindable]
+			private var _streetLabel:String = Catalog.getLocalizationForKey("openLSSearch.street");
+			[Bindable]
+			private var _postalCodeLabel:String = Catalog.getLocalizationForKey("openLSSearch.postalCode");
+			[Bindable]
+			private var _cityLabel:String = Catalog.getLocalizationForKey("openLSSearch.city");
+			[Bindable]
+			private var _countryCodeLabel:String = Catalog.getLocalizationForKey("openLSSearch.countryCode");
+			[Bindable]
+			private var _numberHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.numberHeader");
+			[Bindable]
+			private var _streetHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.streetHeader");
+			[Bindable]
+			private var _postalCodeHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader");
+			[Bindable]
+			private var _cityHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
+			[Bindable]
+			private var _countryCodeHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+			[Bindable]
+			private var _reverseSearchTypeLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseSearchType");
+			[Bindable]
+			private var _reverseSearchPointLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseTypePoint");
+			[Bindable]
+			private var _reverseSearchCircleLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseTypeCircle");
+			[Bindable]
+			private var _reverseSearchBoundsLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseTypeBounds");
+			[Bindable]
+			private var _longitudeLabel:String = Catalog.getLocalizationForKey("openLSSearch.longitude");
+			[Bindable]
+			private var _latitudeLabel:String = Catalog.getLocalizationForKey("openLSSearch.latitude");
+			[Bindable]
+			private var _circleCenterLabel:String = Catalog.getLocalizationForKey("openLSSearch.circleCenter");
+			[Bindable]
+			private var _circleRadiusLabel:String = Catalog.getLocalizationForKey("openLSSearch.circleRadius");
+			[Bindable]
+			private var _topLabel:String = Catalog.getLocalizationForKey("openLSSearch.top");
+			[Bindable]
+			private var _bottomLabel:String = Catalog.getLocalizationForKey("openLSSearch.bottom");
+			[Bindable]
+			private var _leftLabel:String = Catalog.getLocalizationForKey("openLSSearch.left");
+			[Bindable]
+			private var _rightLabel:String = Catalog.getLocalizationForKey("openLSSearch.right");
+			
+			/**
+			 * Getter and setter of search mode
+			 */
+			public function get currentMode():uint {
+				return this._currentMode;
+			}			
+			public function set currentMode(value:uint):void {	
+				this._currentMode = value;
+			}
+			
+			/**
+			 * Getter and setter of reverse mode
+			 */
+			public function get reverseMode():String {
+				return this._reverseMode;
+			}			
+			public function set reverseMode(value:String):void {	
+				this._reverseMode = value;
+			}
+			
+			[Bindable]
+			public function get hasSeveralResults():Boolean {
+				return this._showResults;
+			}
+			
+			public function set hasSeveralResults(value:Boolean):void {
+				this._showResults=value;
+			}
+			
+			[Bindable]
+			public function get hasNoResult():Boolean {
+				return this._showNoResultMsg;
+			}
+			
+			public function set hasNoResult(value:Boolean):void {
+				this._showNoResultMsg=value;
+			}
+			
+			public function get numberOfResults():uint {
+				if (_resultsProvider)
+					return this._resultsProvider.length;
+				else
+					return 0;
+			}
+			
+			public function getCompletionResults():ArrayCollection {
+				return this._completionProvider;
+			}
+				
+			protected function setCompletionResults(results:ArrayCollection):void {
+				this._completionProvider = results;
+				this.dispatchEvent(new SearchEvent(SearchEvent.AUTOCOMPLETE_END));
+			}
+				
+			public function getSearchResults():ArrayCollection {
+				return this._resultsProvider;
+			}
+			
+			/**
+			 * Getter and setter of OpenLS version
+			 */
+			public function get version():String {
+				return this._version;
+			}			
+			public function set version(value:String):void {	
+				if (value && value!="") {
+					this._version = value;
+				}
+			}
+			
+			/**
+			 * Getter and setter of request id
+			 */
+			public function get requestId():String {
+				return this._requestId;
+			}			
+			public function set requestId(value:String):void {				
+				this._requestId = (value) ? value : "";
+			}
+			
+			/**
+			 * Getter and setter of marker
+			 */
+			public function get markerIcon():Class {
+				return this._markerIcon;
+			}			
+			public function set markerIcon(value:Class):void {				
+				this._markerIcon = (value) ? value : null;
+				this._xOffset = 0;
+				this._yOffset = 0;
+			}
+			
+			/**
+			 * Getter and setter of selected marker
+			 */
+			public function get selectedMarkerIcon():Class {
+				return this._selectedMarkerIcon;
+			}			
+			public function set selectedMarkerIcon(value:Class):void {				
+				this._selectedMarkerIcon = (value) ? value : null;
+				this._xSelectedOffset = 0;
+				this._ySelectedOffset = 0;
+			}
+			
+			/**
+			 * Getter and setter of reverse marker
+			 */
+			public function get reverseMarkerIcon():Class {
+				return this._reverseMarkerIcon;
+			}			
+			public function set reverseMarkerIcon(value:Class):void {				
+				this._reverseMarkerIcon = (value) ? value : null;
+				this._xReverseOffset = 0;
+				this._yReverseOffset = 0;
+			}
+			
+			/**
+			 * Offsets in pixels for marker icon
+			 */
+			public function setMarkerIconOffsets(x:Number, y:Number): void {
+				this._xOffset = x;
+				this._yOffset = y;
+			}
+			
+			/**
+			 * Offsets in pixels for selected marker icon
+			 */
+			public function setSelectedMarkerIconOffsets(x:Number, y:Number): void {
+				this._xSelectedOffset = x;
+				this._ySelectedOffset = y;
+			}
+			
+			/**
+			 * Offsets in pixels for reverse marker icon
+			 */
+			public function setReverseMarkerIconOffsets(x:Number, y:Number): void {
+				this._xReverseOffset = x;
+				this._yReverseOffset = y;
+			}
+			
+			/**
+			 * Getter and setter of service url
+			 */
+			public function get geocodeServiceUrl():String {
+				return this._geocodeServiceUrl;
+			}			
+			
+			public function set geocodeServiceUrl(value:String):void {		
+				if (value && value!="") {
+					this._geocodeServiceUrl = value;
+				}
+			}
+			
+			/**
+			 * Getter and setter of reverse service url
+			 */
+			public function get reverseGeocodeServiceUrl():String {
+				return this._reverseGeocodeServiceUrl;
+			}			
+			
+			public function set reverseGeocodeServiceUrl(value:String):void {		
+				if (value && value!="") {
+					this._reverseGeocodeServiceUrl = value;
+				}
+			}
+			
+			/**
+			 * Getter and setter of default country code
+			 */
+			public function get defaultCountryCode():String {
+				return this._defaultCountryCode;
+			}			
+			
+			public function set defaultCountryCode(value:String):void {		
+				if (value && value!="") {
+					this._defaultCountryCode = value;
+				}
+			}
+			
+			/**
+			 * Getter and setter of projection
+			 */
+			public function get projection():String {
+				return this._projection;
+			}			
+			
+			public function set projection(value:String):void {		
+				if (value && value!="") {
+					this._projection = value;
+				}
+			}
+			
+			/**
+			 * Getter and setter of maximum number of responses.
+			 */
+			public function get maximumGeocodeResponses():uint {
+			return this._maximumGeocodeResponses;
+			}			
+			public function set maximumGeocodeResponses(value:uint):void {				
+			this._maximumGeocodeResponses = value;
+			}
+			
+			public function get geocodeServiceSecurity():ISecurity {
+				return this._geocodeServiceSecurity;
+			}			
+			public function set geocodeServiceSecurity(value:ISecurity):void {				
+				this._geocodeServiceSecurity = value;
+			}
+			
+			public function get reverseGeocodeServiceSecurity():ISecurity {
+				return this._reverseGeocodeServiceSecurity;
+			}			
+			public function set reverseGeocodeServiceSecurity(value:ISecurity):void {				
+				this._reverseGeocodeServiceSecurity = value;
+			}
+			
+			public function simpleSearch(query:String):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault,this.geocodeServiceSecurity);
+				if (this.map != null) {
+					_request.defineSimpleSearch(requestId, query, this.defaultCountryCode, this.projection, this.maximumGeocodeResponses, this.version);
+					_request.send();
+				}
+			}
+			
+			public function advancedSearch(numberQuery:String, streetQuery:String, postalCodeQuery:String, cityQuery:String, countryCodeQuery:String):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault, this.geocodeServiceSecurity);
+				if (this.map != null) {
+					if (!countryCodeQuery || countryCodeQuery=="")
+						countryCodeQuery=this.defaultCountryCode;
+					_request.defineAdvancedSearch(requestId, numberQuery, streetQuery, postalCodeQuery, cityQuery, countryCodeQuery, this.projection, this.maximumGeocodeResponses, this.version);
+					_request.send();
+				}
+			}
+			
+			private function reverseSearchChanged(event:Event):void {
+				this.hideResults();
+				this.reverseMode = event.currentTarget.selectedItem.data;
+			}
+			
+			public function reversePointSearch(lon:String, lat:String):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault, this.reverseGeocodeServiceSecurity);
+				if (this.map != null) {
+					var location:Location = new Location(new Number(lon), new Number(lat));
+					_request.defineReverseSearch(requestId, location, this.projection, this.maximumGeocodeResponses, this.version);
+					_request.send();
+				}
+			}
+			
+			public function reverseCircleSearch(lon:String, lat:String, radius:String):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault, this.reverseGeocodeServiceSecurity);
+				if (this.map != null) {
+					var location:Location = new Location(new Number(lon), new Number(lat));
+					_request.defineReverseSearchInCircle(requestId, location, location, new Number(radius), this.projection, this.maximumGeocodeResponses, this.version);
+					_request.send();
+				}
+			}
+			
+			public function reverseBoundsSearch(leftB:String, bottomB:String, rightB:String, topB:String):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault, this.reverseGeocodeServiceSecurity);
+				if (this.map != null) {
+					var bounds:Bounds = new Bounds(new Number(leftB), new Number(bottomB), new Number(rightB), new Number(topB));
+					var location:Location = bounds.center;
+					_request.defineReverseSearchInBounds(requestId, location, bounds, this.projection, this.maximumGeocodeResponses, this.version);
+					_request.send();
+				}
+			}
+			
+			private function onServiceFault(event:Event):void {
+				Trace.error("OpenLS ERROR: request fault");
+			}
+			
+			private function onServiceResult(event:Event):void {
+				var xmlString:String = (event.target as URLLoader).data as String;
+				Trace.debug("OpenLS result : " + xmlString);
+				var xml:XML = new XML(xmlString);
+				var xmlList:XMLList = OpenLSRequest.resultsList(xml);
+				if (!xmlList || xmlList.toString()=="") {
+					_resultsProvider = new ArrayCollection();
+					this._showNoResultMsg = true;
+					this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
+				}
+				else {
+					switch (xmlList.localName()) {
+						case "GeocodeResponseList":
+							displayGeocodeResults(xmlList);
+							break;
+						case "ReverseGeocodeResponse":
+							displayReverseGeocodeResults(xmlList);
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			
+			private function displayGeocodeResults(xmlList:XMLList):void {
+				var results:Array = OpenLSRequest.resultsListtoArray(xmlList, this.version);
+				_resultsProvider = new ArrayCollection(results);
+				if (_resultsProvider.length == 0) {
+					// no result
+					this._showNoResultMsg = true;
+				}
+				else {
+					if (_resultsProvider.length == 1) {
+						// only one result, so center at location automatically
+						var latitude:Number = parseFloat(_resultsProvider[0].lat);
+						var longitude:Number = parseFloat(_resultsProvider[0].lon);
+						var resolution:Number = _cityResolution;
+						if (_resultsProvider[0].street && _resultsProvider[0].street!="") {
+							resolution = _streetResolution;
+						}
+						this.centerAtLocation(latitude, longitude, this.projection, resolution);
+					}
+					else {
+						// Several results, so display list
+						this._nbResultsText = _resultsProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+						this._showResults = true;
+					}
+				}
+				this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
+			}
+			
+			private function displayReverseGeocodeResults(xmlList:XMLList):void {
+				var results:Array = OpenLSRequest.resultsListtoArray(xmlList, this.version);
+				_resultsProvider = new ArrayCollection(results);
+				if (_resultsProvider.length == 0) {
+					// no result
+					this._showNoResultMsg = true;
+				}
+				else {
+					// add marker for each result and centers on first result
+					this.map.addLayer(this._resultLayer);
+					var i:int = _resultsProvider.length-1;
+					for (i; i>=0; --i) {
+						var latitude:Number = parseFloat(_resultsProvider[i].lat);
+						var longitude:Number = parseFloat(_resultsProvider[i].lon);
+						var pos:Location = new Location(longitude,latitude,projection);
+						if(this.map.projection!=pos.projection)
+							pos=pos.reprojectTo(this.map.projection);
+						if (i==0) {
+							var resolution:Number = _cityResolution;
+							if (_resultsProvider[i].street && _resultsProvider[i].street!="") {
+								resolution = _streetResolution;
+							}
+							this.map.center = pos;
+							this.map.resolution = new Resolution(resolution);
+							this.addSelectedMarker(pos, i);
+						}
+						else {
+							this.addReverseMarker(pos, i);
+						}
+					}
+					this._nbResultsText = _resultsProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+					this._showResults = true;
+				}
+				this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
+			}
+			
+			public function onSearchResultsClick(event:Event):void {
+				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
+					Trace.warn("OpenLS WARNING: selection of a void item");
+					return;
+				}
+				
+				try {
+					this._resultLayer.removeFeatures(this._resultLayer.features);
+					this.map.removeLayer(this._resultLayer);
+					var latitude:Number = parseFloat(event.target.data.lat);
+					var longitude:Number = parseFloat(event.target.data.lon);
+					var resolution:Number = _cityResolution;
+					if (event.target.data.street && event.target.data.street!="") {
+						resolution = _streetResolution;
+					}
+					this.centerAtLocation(latitude, longitude, this.projection, resolution);
+				} catch(e:Error) {
+					Trace.info("No result to use to change position of the map");
+				}
+			}
+			
+			public function onReverseSearchResultsClick(event:Event):void {
+				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
+					Trace.warn("OpenLS WARNING: selection of a void item");
+					return;
+				}
+				
+				try {
+					var i:uint = 0;
+					for (i; i<this._resultsProvider.length; i++) {
+						if (this._resultsProvider[i].selected) {
+							var oldFeature:Feature = _resultsProvider[i].feature;
+							this._resultLayer.removeFeature(oldFeature);
+							var latitude:Number = parseFloat(_resultsProvider[i].lat);
+							var longitude:Number = parseFloat(_resultsProvider[i].lon);
+							var pos:Location = new Location(longitude,latitude,projection);
+							if(this.map.projection!=pos.projection)
+								pos=pos.reprojectTo(this.map.projection);
+							this.addReverseMarker(pos, i);
+							break;
+						}
+					}
+					var newFeature:Feature = event.target.data.feature;
+					this._resultLayer.removeFeature(newFeature);
+					latitude = parseFloat(event.target.data.lat);
+					longitude = parseFloat(event.target.data.lon);
+					pos = new Location(longitude,latitude,projection);
+					if(this.map.projection!=pos.projection)
+						pos=pos.reprojectTo(this.map.projection);
+					var index:uint = event.target.data.index;
+					this.addSelectedMarker(pos, index);
+				} catch(e:Error) {
+					Trace.info("No result to use to change position of the map");
+				}
+			}
+			
+			private function centerAtLocation(latitude:Number, longitude:Number, projection:String, resolution:Number): void {
+				if (! (isNaN(latitude) || isNaN(longitude)) ) {
+					var pos:Location = new Location(longitude,latitude,projection);
+					if(this.map.projection!=pos.projection)
+						pos=pos.reprojectTo(this.map.projection);
+					this.map.center = pos;
+					this.map.resolution = new Resolution(resolution);
+					this.map.addLayer(this._resultLayer);
+					this.addMarker(pos);
+				}
+			}
+			
+			private function addMarker(pos:Location):void {
+				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _markerIcon(), pos, null, _xOffset, _yOffset);
+				marker.useHandCursor = false;
+				this._resultLayer.addFeature(marker,true,false);
+			}
+			
+			private function addReverseMarker(pos:Location, index:uint):void {
+				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _reverseMarkerIcon(), pos, null, _xOffset, _yOffset); 
+				this._resultsProvider[index].feature = marker;
+				this._resultsProvider[index].selected = false;
+				this._resultLayer.addFeature(marker,true,false);
+			}
+			
+			private function addSelectedMarker(pos:Location, index:uint):void {
+				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _selectedMarkerIcon(), pos, null, _xSelectedOffset, _ySelectedOffset); 
+				this._resultsProvider[index].feature = marker;
+				this._resultsProvider[index].selected = true;
+				this._resultLayer.addFeature(marker,true,false);
+			}
+			
+			/**
+			 * Method called when any keyboard key is pressed
+			 */
+			public function onKeyUp(keyboardEvent:KeyboardEvent, value:String):void {
+				switch (keyboardEvent.keyCode){
+					case Keyboard.UP:
+					case Keyboard.DOWN:
+					case Keyboard.END:
+					case Keyboard.HOME:
+					case Keyboard.PAGE_UP:
+					case Keyboard.PAGE_DOWN:
+					case Keyboard.ENTER:
+					case Keyboard.TAB:
+					case Keyboard.ESCAPE:
+						break;
+					default:
+						onKeyUpIfNotSpecialKey(keyboardEvent, value);
+				}
+			}
+			
+			/**
+			 * Method called when any keyboard key is pressed
+			 * excepted following keys:
+			 * Keyboard.UP
+			 * Keyboard.DOWN
+			 * Keyboard.END
+			 * Keyboard.HOME
+			 * Keyboard.PAGE_UP
+			 * Keyboard.PAGE_DOWN
+			 * Keyboard.ENTER
+			 * Keyboard.TAB
+			 * Keyboard.ESCAPE
+			 */
+			public function onKeyUpIfNotSpecialKey(keyboardEvent:KeyboardEvent, value:String):void {
+				// Do nothing if not overrided
+			}
+			
+			private function onSimpleSearchClick():void {
+				this._currentMode = MODE_SIMPLE;
+				this.hideResults();
+			}
+			
+			private function onAdvancedSearchClick():void {
+				this._currentMode = MODE_ADVANCED;
+				this.hideResults();
+			}
+			
+			private function onReverseSearchClick():void {
+				this._currentMode = MODE_REVERSE;
+				this.hideResults();
+			}
+			
+			private function hideResults():void {
+				this._showResults = false;
+				this._showNoResultMsg = false;
+			}
+			
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				_panelTitle = Catalog.getLocalizationForKey("openLSSearch.title");
+				_simpleSearchLabel = Catalog.getLocalizationForKey("openLSSearch.simpleSearch");
+				_advancedSearchLabel = Catalog.getLocalizationForKey("openLSSearch.advancedSearch");
+				_reverseSearchLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearch");
+				_numberLabel = Catalog.getLocalizationForKey("openLSSearch.number");
+				_streetLabel = Catalog.getLocalizationForKey("openLSSearch.street");
+				_postalCodeLabel = Catalog.getLocalizationForKey("openLSSearch.postalCode");
+				_cityLabel = Catalog.getLocalizationForKey("openLSSearch.city");
+				_countryCodeLabel = Catalog.getLocalizationForKey("openLSSearch.countryCode");
+				_numberHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.numberHeader");
+				_streetHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.streetHeader");
+				_postalCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader");
+				_cityHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
+				_countryCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+				_reverseSearchTypeLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearchType");
+				if (reverseSearchChoice)
+					var myType:int = reverseSearchChoice.selectedIndex;
+				_reverseSearchPointLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypePoint");
+				_reverseSearchCircleLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypeCircle");
+				_reverseSearchBoundsLabel = Catalog.getLocalizationForKey("openLSSearch.reverseTypeBounds");
+				if (reverseSearchChoice)
+					reverseSearchChoice.selectedIndex = myType;
+				_longitudeLabel = Catalog.getLocalizationForKey("openLSSearch.longitude");
+				_latitudeLabel = Catalog.getLocalizationForKey("openLSSearch.latitude");
+				_circleCenterLabel = Catalog.getLocalizationForKey("openLSSearch.circleCenter");
+				_circleRadiusLabel = Catalog.getLocalizationForKey("openLSSearch.circleRadius");
+				_topLabel = Catalog.getLocalizationForKey("openLSSearch.top");
+				_bottomLabel = Catalog.getLocalizationForKey("openLSSearch.bottom");
+				_leftLabel = Catalog.getLocalizationForKey("openLSSearch.left");
+				_rightLabel = Catalog.getLocalizationForKey("openLSSearch.right");
+				_simpleSearchButtonLabel = Catalog.getLocalizationForKey("openLSSearch.ok");
+				_advancedSearchButtonLabel = Catalog.getLocalizationForKey("openLSSearch.ok");
+				_reverseSearchButtonLabel = Catalog.getLocalizationForKey("openLSSearch.ok");
+				if (_resultsProvider && _resultsProvider.length>1)
+					this._nbResultsText = _resultsProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
+				_noResultText = Catalog.getLocalizationForKey("openLSSearch.noResult");
+				
+				_iconify = Catalog.getLocalizationForKey('component.iconify');
+				_toggle = Catalog.getLocalizationForKey('component.toggle');
+				
+			}
+			
+			/**
+			 * 
+			 */
+			override public function toggleDisplay(event:Event=null):void
+			{				
+				super.toggleDisplay();
+				var newEvent:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				newEvent.componentName = "OpenLSSearch";
+				newEvent.componentIconified = this._isReduced;
+				this._map.dispatchEvent(newEvent);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group visible="{this._isReduced}" includeInLayout="{this._isReduced}">
+		<s:Button label="+" click="{this.toggleDisplay()}" toolTip="{this._toggle}" width="30" />
+	</s:Group>
+	<s:Group visible="{!this._isReduced}" includeInLayout="{!this._isReduced}">
+		<s:layout>
+			<s:HorizontalLayout gap="-35" />
+		</s:layout>
+		<s:Panel id="panel" title="{this._panelTitle}" minHeight="55" width="100%" height="100%">
+			<s:SkinnableContainer width="100%" height="100%" styleName="verticalLayout" id="openLSSearch"  >
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+				
+				<mx:Form id="searchType" width="100%" height="22" paddingTop="0" paddingBottom="0">
+					<s:SkinnableContainer width="100%" height="100%" styleName="horizontalLayout">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<mx:RadioButton id="simpleSearchSelectionButton" label="{this._simpleSearchLabel}" selected="true" click="onSimpleSearchClick()"/>
+						<mx:RadioButton id="advancedSearchSelectionButton" label="{this._advancedSearchLabel}" selected="false" click="onAdvancedSearchClick()"/>
+						<mx:RadioButton id="reverseSearchSelectionButton" label="{this._reverseSearchLabel}" selected="false" click="onReverseSearchClick()"/>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="simpleSearchForm" width="100%" height="{_currentMode==MODE_SIMPLE?35:0}" paddingTop="5" paddingBottom="0" visible="{_currentMode==MODE_SIMPLE}">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						<mx:FormItem label="" defaultButton="{simpleSearchButton}" width="100%">
+							<autocomplete:AutoComplete id="queryInput" dataProvider="{this._completionProvider}" width="100%" text="" keyUp="onKeyUp(event, queryInput.text)" />
+						</mx:FormItem>
+						<s:Button id="simpleSearchButton" label="{this._simpleSearchButtonLabel}" click="simpleSearch(queryInput.text)"/>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="advancedSearchForm" width="100%" height="{_currentMode==MODE_ADVANCED?160:0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED}">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<s:SkinnableContainer styleName="verticalLayout"  width="30%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="7"/>
+							</s:layout>
+							<mx:Label id="numberLabel" text="{this._numberLabel}"/>
+							<mx:Label id="streetLabel" text="{this._streetLabel}"/>
+							<mx:Label id="postalCodeLabel" text="{this._postalCodeLabel}"/>
+							<mx:Label id="cityLabel" text="{this._cityLabel}"/>
+							<mx:Label id="countryCodeLabel" text="{this._countryCodeLabel}"/>
+							<mx:Label text=""/>
+						</s:SkinnableContainer>
+						<s:SkinnableContainer styleName="verticalLayout"  width="70%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="number" width="40" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="street" width="100%" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="postalCode" width="50" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="city" width="100%" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
+								<s:TextInput id="countryCode" width="100%" text="{this._defaultCountryCode}" />
+							</mx:FormItem>
+							<s:HGroup gap="252">
+								<mx:Label text=""/>
+								<s:Button id="advancedSearchButton" label="{this._advancedSearchButtonLabel}" click="advancedSearch(number.text, street.text, postalCode.text, city.text, countryCode.text)"/>
+							</s:HGroup>
+						</s:SkinnableContainer>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="reverseSearchType" width="100%" height="{_currentMode==MODE_REVERSE?35:0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE}">
+					<s:SkinnableContainer styleName="verticalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:VerticalLayout/>
+						</s:layout>
+						<mx:FormItem label="{this._reverseSearchTypeLabel}">
+							<mx:ComboBox id="reverseSearchChoice" change="reverseSearchChanged(event)">
+								<mx:ArrayCollection>
+									<fx:Object label="{this._reverseSearchPointLabel}" data="point"/>
+									<fx:Object label="{this._reverseSearchCircleLabel}" data="circle"/>
+									<fx:Object label="{this._reverseSearchBoundsLabel}" data="bounds"/>
+								</mx:ArrayCollection>
+							</mx:ComboBox>
+						</mx:FormItem>
+						<s:Line xFrom="5" xTo="498" yFrom="5" yTo="5">
+							<s:stroke>
+								<s:SolidColorStroke color="0x000000" weight="1" caps="square"/>
+							</s:stroke>
+						</s:Line>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="reversePointSearchForm" width="100%" height="{_currentMode==MODE_REVERSE?(_reverseMode=='point'?30:0):0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='point'?true:false):false}">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<mx:FormItem label="{this._longitudeLabel}" defaultButton="{reverseSearchPointButton}" width="100%">
+							<s:TextInput id="pointLon" width="100" text="" />
+						</mx:FormItem>
+						<mx:FormItem label="{this._latitudeLabel}" defaultButton="{reverseSearchPointButton}" width="100%">
+							<s:TextInput id="pointLat" width="100" text="" />
+						</mx:FormItem>
+						<s:Button id="reverseSearchPointButton" label="{this._reverseSearchButtonLabel}" click="reversePointSearch(pointLon.text, pointLat.text)" x="20"/>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="reverseCircleSearchForm" width="100%" height="{_currentMode==MODE_REVERSE?(_reverseMode=='circle'?55:0):0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='circle'?true:false):false}">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<s:SkinnableContainer styleName="verticalLayout"  width="20%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:Label text="{this._circleCenterLabel}"/>
+							<mx:Label text="{this._circleRadiusLabel}"/>
+						</s:SkinnableContainer>
+						<s:SkinnableContainer styleName="verticalLayout"  width="80%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<s:HGroup>
+								<mx:FormItem label="{this._longitudeLabel}" defaultButton="{reverseSearchCircleButton}" width="100%">
+									<s:TextInput id="circleLon" width="100" text="" />
+								</mx:FormItem>
+								<mx:FormItem label="{this._latitudeLabel}" defaultButton="{reverseSearchCircleButton}" width="100%">
+									<s:TextInput id="circleLat" width="100" text="" />
+								</mx:FormItem>
+							</s:HGroup>
+							<s:HGroup gap="159">
+								<mx:FormItem label="" defaultButton="{reverseSearchCircleButton}" width="100%">
+									<s:TextInput id="radius" width="100" text="" />
+								</mx:FormItem>
+								<s:Button id="reverseSearchCircleButton" label="{this._reverseSearchButtonLabel}" click="reverseCircleSearch(circleLon.text, circleLat.text, radius.text)" x="20"/>
+							</s:HGroup>
+						</s:SkinnableContainer>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="reverseBoundsSearchForm" width="100%" height="{_currentMode==MODE_REVERSE?(_reverseMode=='bounds'?80:0):0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='bounds'?true:false):false}">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<s:SkinnableContainer styleName="verticalLayout"  width="33%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:Label text=""/>
+							<mx:FormItem label="{this._leftLabel}" defaultButton="{reverseSearchBoundsButton}" width="100%">
+								<s:TextInput id="leftBound" width="80" text="" />
+							</mx:FormItem>
+							<mx:Label text=""/>
+						</s:SkinnableContainer>
+						<s:SkinnableContainer styleName="verticalLayout"  width="34%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:FormItem label="{this._topLabel}" defaultButton="{reverseSearchBoundsButton}" width="100%">
+								<s:TextInput id="topBound" width="80" text="" />
+							</mx:FormItem>
+							<mx:Label text=""/>
+							<mx:FormItem label="{this._bottomLabel}" defaultButton="{reverseSearchBoundsButton}" width="100%">
+								<s:TextInput id="bottomBound" width="80" text="" />
+							</mx:FormItem>
+						</s:SkinnableContainer>
+						<s:SkinnableContainer styleName="verticalLayout"  width="33%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:Label text=""/>
+							<mx:FormItem label="{this._rightLabel}" defaultButton="{reverseSearchBoundsButton}" width="100%">
+								<s:TextInput id="rightBound" width="80" text="" />
+							</mx:FormItem>
+							<s:HGroup gap="43">
+								<mx:Label text=""/>
+								<s:Button id="reverseSearchBoundsButton" label="{this._reverseSearchButtonLabel}" click="reverseBoundsSearch(leftBound.text, bottomBound.text, rightBound.text, topBound.text)" x="20"/>
+							</s:HGroup>
+						</s:SkinnableContainer>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="results" width="100%" height="{this._showResults?55+25*this.searchResult.rowCount:0}" paddingTop="0" paddingBottom="5" visible="{this._showResults}">
+					<s:SkinnableContainer styleName="verticalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:VerticalLayout gap="0"/>
+						</s:layout>
+						<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="19">
+							<s:layout>
+								<s:HorizontalLayout/>
+							</s:layout>
+							<mx:Label id="nbResults" text="{this._nbResultsText}" width="477"/>
+							<mx:Button id="closeButton" icon="{_closeIcon}" width="17" click="hideResults()"/>
+						</s:SkinnableContainer>
+						<mx:DataGrid id="searchResult"
+									 dataProvider="{this._resultsProvider}"
+								     rowCount="{this._resultsProvider.length}"
+									 width="500" height="100%"
+									 click="{_currentMode==MODE_REVERSE?onReverseSearchResultsClick(event):onSearchResultsClick(event)}"
+									 toolTip='{_currentMode==MODE_REVERSE?"":Catalog.getLocalizationForKey("openLSSearch.tooltip")}'>
+							<mx:columns >  
+								<mx:DataGridColumn id="numberResult" dataField="number" headerText="{this._numberHeaderLabel}" width="15"/>  
+								<mx:DataGridColumn id="streetResult" dataField="street" headerText="{this._streetHeaderLabel}" width="30"/>
+								<mx:DataGridColumn id="postalCodeResult" dataField="postalCode" headerText="{this._postalCodeHeaderLabel}" width="20"/>
+								<mx:DataGridColumn id="cityResult" dataField="city" headerText="{this._cityHeaderLabel}" width="25"/>
+								<mx:DataGridColumn id="countryCodeResult" dataField="countryCode" headerText="{this._countryCodeHeaderLabel}" width="10"/>
+							</mx:columns>
+						</mx:DataGrid> 
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="noResult" width="100%" height="{_showNoResultMsg?30:0}" paddingTop="0" paddingBottom="5" visible="{this._showNoResultMsg}">
+					<s:SkinnableContainer styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout gap="0"/>
+						</s:layout>
+						<mx:Label id="noResultMsg" text="{this._noResultText}"/>
+					</s:SkinnableContainer>
+				</mx:Form>
+			</s:SkinnableContainer>
+		</s:Panel>
+		<s:Group>
+			<s:Button label="-" click="{this.toggleDisplay()}" toolTip="{this._iconify}"
+					  width="30" y="5" />
+		</s:Group>
+	</s:Group>
+</Control>
