@@ -2,7 +2,6 @@ package org.openscales.core.layer {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
@@ -29,7 +28,7 @@ package org.openscales.core.layer {
 	public class Layer extends Sprite {
 		public static const DEFAULT_DPI:Number = 92;
 		
-		public static const DEFAULT_NOMINAL_RESOLUTION:Resolution = new Resolution(1.40625);
+		public static const DEFAULT_NOMINAL_RESOLUTION:Resolution = new Resolution(1.40625, "EPSG:4326");
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
 		public static const DEFAULT_PROJECTION:String = "EPSG:4326";
@@ -51,7 +50,6 @@ package org.openscales.core.layer {
 		private var _security:ISecurity = null;
 		private var _loading:Boolean = false;
 		protected var _autoResolution:Boolean = true;
-		protected var _imageSize:Size = null;
 		private var _selected:Boolean = false;
 		private var _metaData:Object = null;
 		private var _constraints:Vector.<Constraint> = null;
@@ -210,10 +208,22 @@ package org.openscales.core.layer {
 			}
 		}
 		
+		/**
+		 * This function is call when the MapEvent.RESIZE
+		 * Call the redraw method to fully actualize the layer
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the size of the map is changed
+		 */
 		protected function onMapResize(e:MapEvent):void {
 				this.redraw(true);
 		}
 		
+		/**
+		 * This function is call when the MapEvent.MAX_EXTENT_CHANGED
+		 * Call the redraw method to fully actualize the layer
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the MaxExtent of the map is changed
+		 */
 		protected function onMaxExtentChanged(e:MapEvent):void
 		{
 			this.redraw(true);
@@ -235,7 +245,6 @@ package org.openscales.core.layer {
 					this._projection = this._map.projection;
 					this.generateResolutions();
 				}
-				
 				this.map.addEventListener(SecurityEvent.SECURITY_INITIALIZED, onSecurityInitialized);
 				this.map.addEventListener(MapEvent.PROJECTION_CHANGED,onMapProjectionChanged);
 				this.map.addEventListener(MapEvent.CENTER_CHANGED, onMapCenterChanged);
@@ -251,6 +260,9 @@ package org.openscales.core.layer {
 			}
 		}
 		
+		/**
+		 * Bind the redraw of the layers on the flash onEnterFrame
+		 */
 		protected function onEnterFrame(event:Event):void
 		{
 			this.redraw();
@@ -265,7 +277,6 @@ package org.openscales.core.layer {
 		
 		/**
 		 * This function is call when the MapEvent.PROJECTION_CHANGED
-		 * Call the redraw function to check if the layer can be displayed. 
 		 * Override this method if you want a specific behaviour in your layer
 		 * when the projection of the map is changed
 		 */
@@ -276,7 +287,6 @@ package org.openscales.core.layer {
 		
 		/**
 		 * This function is call when the MapEvent.RESOLUTION_CHANGED
-		 * Call the redraw function to check if the layer can be displayed
 		 * Override this method if you want a specific behaviour in your layer
 		 * when the resolution of the map is changed
 		 */
@@ -285,6 +295,12 @@ package org.openscales.core.layer {
 			this._resolutionChanged = true;
 		}
 		
+		
+		/**
+		 * This function is call when the MapEvent.RELOAD
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the map ask for a reload.
+		 */
 		protected function onMapReload(event:MapEvent):void
 		{
 			this._mapReload = true;
@@ -528,19 +544,7 @@ package org.openscales.core.layer {
 		{
 			super.name = value;
 		}
-		
-		/**
-		 * For layers with a gutter, the image is larger than
-		 * the tile by twice the gutter in each dimension.
-		 */
-		public function get imageSize():Size {
-			return this._imageSize;
-		}
-		
-		public function set imageSize(value:Size):void {
-			this._imageSize = value;
-		}
-		
+
 		/**
 		 * Current layer position in the display list
 		 */

@@ -520,6 +520,8 @@ package org.openscales.geometry.basetypes
 		 */
 		public function getIntersection(bounds:Bounds):Bounds{
 			
+			if (!bounds)
+				return null;
 			// Variable used of a reprojection is needed
 			var thisBounds:Bounds = this;
 			if (!(ProjProjection.isEquivalentProjection(thisBounds.projection,bounds.projection)))
