@@ -135,6 +135,10 @@ package org.openscales.core.layer
 			this._resolutionChanged = false;
 			this._mapReload = false;
 			
+			if (projectionChangedCache)
+			{
+				fullRedraw = true;
+			}
 			var ratio:Number;
 			
 			var bounds:Bounds = this.map.extent.clone();
@@ -153,16 +157,11 @@ package org.openscales.core.layer
 				centerChangedCache = false;
 			}
 			
-			var littleDeltaDueToScale:Number = 0;
 			if (resolutionChangedCache)
 			{
 				ratio = this.requestedResolution.value / this.map.resolution.reprojectTo(this.projection).value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 				resolutionChangedCache = false;
-				if (centerChangedCache)
-				{
-					littleDeltaDueToScale = 1-ratio/this.scaleX;
-				}
 			}
 			
 			if (centerChangedCache)
@@ -172,8 +171,8 @@ package org.openscales.core.layer
 				var deltaXCenter:Number = deltaLon/this.map.resolution.value;
 				var deltaYCenter:Number = deltaLat/this.map.resolution.value;
 				
-				this.x = this.x - deltaXCenter - deltaXCenter*littleDeltaDueToScale;
-				this.y = this.y + deltaYCenter + deltaYCenter*littleDeltaDueToScale;
+				this.x = this.x - deltaXCenter
+				this.y = this.y + deltaYCenter
 				this._previousCenter = this.map.center;
 				centerChangedCache = false;
 			}
@@ -195,17 +194,17 @@ package org.openscales.core.layer
 			var BMD:BitmapData;
 			var ratio:Number;
 			var resolution:Resolution = this.getSupportedResolution(this.map.resolution.reprojectTo(this.projection));
-			
+			var enableBackGrid:Boolean = (this.map.projection == this.projection);
 			
 			// for tile Stretching we need to reproject the resolution tu be sure that the native grid is correctly initilized
 			if (!ProjProjection.isEquivalentProjection(this.projection, this.map.projection) && ProjProjection.isStretchable(this.projection, this.map.projection))
 			{
-				//resolution = resolution.reprojectTo(this.projection);
 				bounds = bounds.reprojectTo(this.projection);
 				forceReTile = true;
 			}
 			if (!this.tiled) 
 			{
+				// Initialize the backGrid
 				if(this._backGrid == null)
 				{
 					this._backGrid = new Vector.<Vector.<Bitmap>>(1);
@@ -214,6 +213,7 @@ package org.openscales.core.layer
 				}
 				if(this._initialized)
 				{
+					// Save the bitmap before zoom
 					var NewLayerBounds:Bounds = this.maxExtent.getIntersection(bounds);
 					NewLayerBounds = this.map.maxExtent.getIntersection(NewLayerBounds);
 					bmpBounds = this.grid[0][0].bounds;
@@ -235,7 +235,7 @@ package org.openscales.core.layer
 					{
 						mapHeight = 1;
 					}
-					if (intersectBounds != null)
+					if (intersectBounds != null && enableBackGrid)
 					{
 						BMD = new BitmapData(mapWidth , mapHeight , true, 0x000000);
 						BMD.draw(this, null, null, null, null, true);
@@ -252,6 +252,8 @@ package org.openscales.core.layer
 				this.initSingleTile(bounds, resolution);
 				this.requestedResolution = this.map.resolution.reprojectTo(this.projection);
 				this.transform.matrix = this._defaultMatrixTranform.clone();
+				
+				// Apply the savec bitmap as preloaded data in the grid
 				if(_backGrid[0][0])
 				{
 					_backGrid[0][0].x -= this.grid[0][0].x;
@@ -310,6 +312,9 @@ package org.openscales.core.layer
 							TopLeftCorner = new Location(fullBmpBounds.left, fullBmpBounds.top, this.projection);
 						}
 					}
+					this._cumulatedRoundedValueX = 0;
+					this._cumulatedRoundedValueY = 0;
+					this._tileWidthErrorPerPixel = 0;
 					this.initGriddedTiles(bounds, true);
 					this.transform.matrix = this._defaultMatrixTranform.clone();
 					ratio = this._requestedResolution.value/this.map.resolution.reprojectTo(this.projection).value;
@@ -320,7 +325,7 @@ package org.openscales.core.layer
 					this.moveGriddedTiles(bounds);
 					this.actualizeGridSize(bounds);
 					
-					if (fullBmpBounds != null)
+					if (fullBmpBounds != null && enableBackGrid)
 					{
 						gridRowLength = this.grid.length;
 						gridColLength = this.grid[0].length;
@@ -333,8 +338,6 @@ package org.openscales.core.layer
 							for (j = 0; j< gridColLength; ++j)
 							{
 								this._backGrid[i][j] = new Bitmap();
-								//this._backGrid[i][j].scaleX = this._grid[i][j].scaleX;
-								//this._backGrid[i][j].scaleY = this._grid[i][j].scaleY;
 							}
 						}
 						for (i = 0; i< gridRowLength; ++i)
@@ -411,14 +414,13 @@ package org.openscales.core.layer
 										tile = new BitmapData(recWidth, recHeight);
 										tile.copyPixels(BMD, region, new Point(finalDeltaX, finalDeltaY));
 										var transitiontile:Bitmap = new Bitmap(tile, PixelSnapping.NEVER, true);
-										//transitiontile.scaleX = _backGrid[i][j].scaleX;
-										//transitiontile.scaleY = _backGrid[i][j].scaleY;
 										_backGrid[i][j] = transitiontile;
 										
 									}
 								}
 							}
 						}
+						// Preload bitmap in the new grid
 						for (i = 0; i< gridRowLength; ++i)
 						{
 							for (j = 0; j < gridColLength; ++j)
@@ -458,7 +460,8 @@ package org.openscales.core.layer
 			var temporaryWidth:Number = this.tileWidth * temporaryScale;
 			var roundedWidth:Number = Math.round(temporaryWidth);
 			temporaryScale = roundedWidth / this.tileWidth;
-			//this._tileWidthErrorPerPixel = ((temporaryWidth - roundedWidth)/this.tileWidth/scale);
+			var ratio:Number = this.map.resolution.reprojectTo(this.projection).value/this.requestedResolution.value;
+			this._tileWidthErrorPerPixel = ((temporaryWidth - roundedWidth)/this.tileWidth)/scale;
 			
 			var newTransMatrix:Matrix = this.transform.matrix;
 			newTransMatrix.tx -= (offSet.x);
@@ -538,11 +541,6 @@ package org.openscales.core.layer
 					}
 				}
 			}
-			
-			// Compute grid Row size
-			//var rowSize:int = this._grid.length;
-			//for (var int:i; i)
-			
 			// Add rows
 			if(bounds.height / this.map.resolution.reprojectTo(this.projection).value > (this._grid.length - buffer) * this.tileHeight * ratio + tlViewPort.y * ratio)
 			{
@@ -753,19 +751,9 @@ package org.openscales.core.layer
 		 * no white flash, but there is some problems if used for something else than modifying map extent
 		 */
 		public function initGriddedTiles(bounds:Bounds, clearTiles:Boolean=true):void {
-			/*var mapBoundsWidth:Number = bounds.reprojectTo(this.map.projection).width;
-			var mapBoundsHeight:Number = bounds.reprojectTo(this.map.projection).height;
-			
-			this.tileWidth = Math.round(bounds.reprojectTo(this.map.projection).width/this.map.resolution.value);
-			this.tileHeight = Math.round(bounds.reprojectTo(this.map.projection).height/this.map.resolution.value);
-			*/
 			
 			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projection);
 			this.requestedResolution = this.getSupportedResolution(this.map.resolution.reprojectTo(this.projection));
-			/*if (!ProjProjection.isEquivalentProjection(this.map.projection,this.projection))
-			{
-				this.requestedResolution = this.requestedResolution.reprojectTo(this.projection);
-			}*/
 			var reprojectedBoundWidth:Number = Math.round(bounds.reprojectTo(this.map.projection).width/requestedResolution.reprojectTo(this.map.projection).value);
 			var reprojectedBoundHeight:Number = Math.round(bounds.reprojectTo(this.map.projection).height/requestedResolution.reprojectTo(this.map.projection).value);
 			var nativeBoundWidth:Number = Math.round(bounds.width/requestedResolution.value);
@@ -773,7 +761,7 @@ package org.openscales.core.layer
 			
 			
 			_resquestResolution = this.requestedResolution.value;
-			var viewSize:Size = new Size(nativeBoundWidth, nativeBoundHeight);//this.map.size;
+			var viewSize:Size = new Size(nativeBoundWidth, nativeBoundHeight);
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + Math.max(1, 2 * this.buffer);
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) + Math.max(1, 2 * this.buffer);
 			var tilelon:Number = _resquestResolution * this.tileWidth;
@@ -793,7 +781,7 @@ package org.openscales.core.layer
 			var tileoffsety:Number = -tilerowremain * this.tileHeight;
 			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
 			
-			
+			// Offset stretching 
 			var upRigth:Location = new Location(tileoffsetlon + tilelon, tileoffsetlat + tilelat, this.projection);
 			upRigth = upRigth.reprojectTo(this.map.projection);
 			
@@ -805,14 +793,6 @@ package org.openscales.core.layer
 			
 			tileoffsetx *= stretchedWidth/this.tileWidth;
 			tileoffsety *= stretchedHeight/this.tileHeight;
-			
-			// Offset stretching 
-			/*var unityReproject:Location = new Location(1,1,this.projection);
-			unityReproject = unityReproject.reprojectTo(this.map.projection);
-			var offsetStretchingCoefX:Number = this.requestedResolution.value / this.requestedResolution.reprojectTo(this.projection).value;
-			var offsetStretchingCoefY:Number = this.requestedResolution.value / this.requestedResolution.reprojectTo(this.projection).value;
-			//tileoffsetx *= offsetStretchingCoefX;
-			tileoffsety *= offsetStretchingCoefY;*/
 			
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
 			this.x += tileoffsetx;
@@ -848,32 +828,29 @@ package org.openscales.core.layer
 						tileoffsetlat + tilelat,
 						this.projection);
 					
-					var x:Number = tileoffsetx;
-					var y:Number = tileoffsety;
+					var x:Number = Math.round(tileoffsetx);
+					var y:Number = Math.round(tileoffsety);
 					var px:Pixel = new Pixel(x, y);
 					var tile:ImageTile;
 					
 					
+					// Stretch the tile
 					upRigth = new Location(tileBounds.right, tileBounds.top, tileBounds.projection);
 					upRigth = upRigth.reprojectTo(this.map.projection);
-					
 					bottomLeft = new Location(tileBounds.left, tileBounds.bottom, tileBounds.projection);
 					bottomLeft = bottomLeft.reprojectTo(this.map.projection);
-					
-					
 					stretchedWidth = (upRigth.lon-bottomLeft.lon)/this.requestedResolution.reprojectTo(this.map.projection).value;
 					stretchedHeight = (upRigth.lat-bottomLeft.lat)/this.requestedResolution.reprojectTo(this.map.projection).value;
+					
 					var stretchingScaleX:Number = stretchedWidth/this.tileWidth;
 					var stretchingScaleY:Number = stretchedHeight/this.tileHeight;
-					
-				/*	var roundedWidth:Number = Math.round(stretchedWidth);
+					var roundedWidth:Number = Math.round(stretchedWidth);
 					var roundedHeight:Number = Math.round(stretchedHeight);
 					
 					stretchingScaleX = roundedWidth / this.tileWidth;
 					stretchingScaleY = roundedHeight / this.tileHeight;
-					
 					stretchedWidth = roundedWidth;
-					stretchedHeight = roundedHeight;*/
+					stretchedHeight = roundedHeight;
 					
 					if(row.length==colidx) {
 						tile = this.addTile(tileBounds, px);
@@ -1134,7 +1111,7 @@ package org.openscales.core.layer
 		 */
 		override public function set x(value:Number):void
 		{
-			value += (value - this.x)*this._tileWidthErrorPerPixel;
+			value -= (value - this.x)*this._tileWidthErrorPerPixel;
 			var epsilon:Number = value - Math.round(value);
 			this._cumulatedRoundedValueX += epsilon;
 			super.x = Math.round(value);
@@ -1156,7 +1133,7 @@ package org.openscales.core.layer
 		 */
 		override public function set y(value:Number):void
 		{
-			value += (value - this.y)*this._tileWidthErrorPerPixel;
+			value -= (value - this.y)*this._tileWidthErrorPerPixel;
 			var epsilon:Number = value - Math.round(value);
 			this._cumulatedRoundedValueY += epsilon;
 			super.y = Math.round(value);
