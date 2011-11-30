@@ -269,7 +269,7 @@ package org.openscales.core.layer
 					var gridColLength:int;
 					var gridRowLength:int;
 					var TopLeftCorner:Location;
-					if(this._initialized)
+					if(this._initialized && enableBackGrid)
 					{
 						gridRowLength = this.grid.length;
 						gridColLength = this.grid[0].length;
