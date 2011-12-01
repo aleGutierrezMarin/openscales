@@ -8,7 +8,6 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
-			import mx.controls.dataGridClasses.DataGridItemRenderer;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
@@ -29,6 +28,8 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.geometry.basetypes.Location;
+			
+			import spark.layouts.RowAlign;
 			
 			[Embed(source="/assets/images/marker-blue.png")]
 			private var _markerIcon:Class;
@@ -571,8 +572,8 @@
 				this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
 			}
 			
-			public function onSearchResultsClick(event:Event):void {
-				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
+			public function onSearchResultsClick(index:int):void {
+				if (index < 0) {
 					Trace.warn("OpenLS WARNING: selection of a void item");
 					return;
 				}
@@ -580,10 +581,10 @@
 				try {
 					this._resultLayer.removeFeatures(this._resultLayer.features);
 					this.map.removeLayer(this._resultLayer);
-					var latitude:Number = parseFloat(event.target.data.lat);
-					var longitude:Number = parseFloat(event.target.data.lon);
+					var latitude:Number = parseFloat(_resultsProvider[index].lat);
+					var longitude:Number = parseFloat(_resultsProvider[index].lon);
 					var resolution:Number = _cityResolution;
-					if (event.target.data.street && event.target.data.street!="") {
+					if (_resultsProvider[index].street && _resultsProvider[index].street!="") {
 						resolution = _streetResolution;
 					}
 					this.centerAtLocation(latitude, longitude, this.projection, resolution);
@@ -592,14 +593,15 @@
 				}
 			}
 			
-			public function onReverseSearchResultsClick(event:Event):void {
-				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
+			public function onReverseSearchResultsClick(index:int):void {
+				if (index < 0) {
 					Trace.warn("OpenLS WARNING: selection of a void item");
 					return;
 				}
 				
 				try {
 					var i:uint = 0;
+					// replace old selected marker by normal marker
 					for (i; i<this._resultsProvider.length; i++) {
 						if (this._resultsProvider[i].selected) {
 							var oldFeature:Feature = _resultsProvider[i].feature;
@@ -613,14 +615,15 @@
 							break;
 						}
 					}
-					var newFeature:Feature = event.target.data.feature;
+					// replace normal marker by selected marker for selected result
+					var newFeature:Feature = _resultsProvider[index].feature;
 					this._resultLayer.removeFeature(newFeature);
-					latitude = parseFloat(event.target.data.lat);
-					longitude = parseFloat(event.target.data.lon);
+					latitude = parseFloat(_resultsProvider[index].lat);
+					longitude = parseFloat(_resultsProvider[index].lon);
 					pos = new Location(longitude,latitude,projection);
 					if(this.map.projection!=pos.projection)
 						pos=pos.reprojectTo(this.map.projection);
-					var index:uint = event.target.data.index;
+					//var index:uint = event.target.data.index;
 					this.addSelectedMarker(pos, index);
 				} catch(e:Error) {
 					Trace.info("No result to use to change position of the map");
@@ -983,7 +986,7 @@
 									 dataProvider="{this._resultsProvider}"
 								     rowCount="{this._resultsProvider.length}"
 									 width="500" height="100%"
-									 click="{_currentMode==MODE_REVERSE?onReverseSearchResultsClick(event):onSearchResultsClick(event)}"
+									 click="{_currentMode==MODE_REVERSE?onReverseSearchResultsClick(this.searchResult.selectedIndex):onSearchResultsClick(this.searchResult.selectedIndex)}"
 									 toolTip='{_currentMode==MODE_REVERSE?"":Catalog.getLocalizationForKey("openLSSearch.tooltip")}'>
 							<mx:columns >  
 								<mx:DataGridColumn id="numberResult" dataField="number" headerText="{this._numberHeaderLabel}" width="15"/>  
