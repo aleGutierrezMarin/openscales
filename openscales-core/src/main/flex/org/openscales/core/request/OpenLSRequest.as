@@ -584,10 +584,8 @@ package org.openscales.core.request
 			var gml:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
 			var results:Array = new Array(), result:Object, position:Array;
 			
-			var index:uint = 0;
 			for each (var gr:XML in resultsList.xls::ReverseGeocodedLocation) {
 				result = new Object();
-				result.index = index;
 				position = gr.gml::Point.gml::pos.toString().split(' ');
 				var srsName:String = "EPSG:4326";
 				if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
@@ -620,7 +618,6 @@ package org.openscales.core.request
 				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
 				result.distance = Number(gr.xls::SearchCentreDistance.@value.toString());
 				result.matchCode = gr.xls::ExtendedGeocodeMatchCode.toString();
-				index++;
 				results.push(result);
 			}
 			
