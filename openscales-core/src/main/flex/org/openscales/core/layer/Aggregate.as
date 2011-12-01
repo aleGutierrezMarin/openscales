@@ -96,6 +96,9 @@ package org.openscales.core.layer
 			}
 		}
 		
+		/**
+		 * @inheritDoc
+		 */ 
 		override public function destroy():void{
 			if(this._layers){
 				var layer:Layer;
@@ -106,6 +109,9 @@ package org.openscales.core.layer
 			super.destroy();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */ 
 		override public function removeEventListenerFromMap():void {
 			if(this._layers){
 				var layer:Layer;
@@ -116,6 +122,9 @@ package org.openscales.core.layer
 			super.removeEventListenerFromMap();
 		}
 		
+		/**
+		 * Remove the specified layer
+		 */ 
 		public function removeLayer(layer:Layer):void{
 			var index:uint = this._layers.indexOf(layer);
 			if(index<0)return;
@@ -234,18 +243,55 @@ package org.openscales.core.layer
 			}
 		}
 		
-		/*
-		override public function get visible():Boolean{
-			if(this._layers){
-				var ok:Boolean = false;
-				var layer:Layer;
-				for each(layer in this._layers){
-					ok = ok || layer.visible;
-					if(ok) return ok;
-				}
-			}
-			return false;
-		}*/
+		/**
+		 * Minimun resolution of the aggregate. This property defines a bound for aggregated layers min resolution.
+		 * <p>E.g.: If you set that property to 0.5, any aggregated layer won't be displayed when the map resolution is below 0.5 (regardless of the layer own min resolution). </p>
+		 */
+		override public function get minResolution():Resolution 
+		{		
+			return super.minResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		override public function set minResolution(value:*):void 
+		{
+			super.minResolution = value;
+		}
+		
+		/**
+		 * Maximum resolution of the aggregate. This property defines a bound for aggregated layers max resolution.
+		 * <p>E.g.: If you set that property to 0.5, any aggregated layer won't be displayed when the map resolution is greater than 0.5 (regardless of the layer own max resolution). </p>
+		 */
+		override public function get maxResolution():Resolution 
+		{		
+			return super.maxResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		override public function set maxResolution(value:*):void 
+		{
+			super.maxResolution = value;
+		}
+		
+		/**
+		 * The max extent of the aggregate. By default it will be the bounding box including every aggregated layer max extent.
+		 */
+		override public function get maxExtent():Bounds
+		{		
+			return super.maxExtent;
+		}
+		
+		/**
+		 * @private
+		 */
+		override public function set maxExtent(value:*):void 
+		{
+			super.maxExtent = value;
+		}
 		
 		override public function set visible(value:Boolean):void{
 			super.visible = value;
