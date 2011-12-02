@@ -34,7 +34,8 @@ package org.openscales.core.layer.capabilities
 			assertTrue(layerCapabilities.containsKey("Styles"));
 			assertTrue(layerCapabilities.containsKey("Identifier"));
 			assertTrue(layerCapabilities.containsKey("Title"));
-			assertEquals(5,layerCapabilities.size());
+			assertTrue(layerCapabilities.containsKey("DefaultStyle"));
+			assertEquals(6,layerCapabilities.size());
 			
 			//Getting tile matrix sets hashmap
 			var tileMatrixSets:HashMap = layerCapabilities.getValue("TileMatrixSets");
