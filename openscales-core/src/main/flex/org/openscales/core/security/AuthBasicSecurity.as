@@ -33,7 +33,8 @@ package org.openscales.core.security
 		
 		override public function getFinalUrl(baseUrl:String):String {
 			//No need to change URL for an AuthBasic Security
-			return baseUrl;
+			var _finalUrl:String = baseUrl;
+			return _finalUrl;
 		}
 		
 		override public function addCustomHeaders(urlRequest:URLRequest):URLRequest {
