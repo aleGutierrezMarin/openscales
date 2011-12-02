@@ -1,11 +1,11 @@
 package org.openscales.core.layer.capabilities
 {
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.format.Format;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Unit;
@@ -211,6 +211,7 @@ package org.openscales.core.layer.capabilities
 			var layerIdentifier:String; // Identifier of the layer
 			var tileMatrixSetId:String; // Identifier of a tilematrixSet
 			var style:String;
+			var defaultStyle:String;
 			var format:String;
 			
 			for each (node in layersNodes){
@@ -256,11 +257,17 @@ package org.openscales.core.layer.capabilities
 					// Parsing Style tags
 					for each(var XMLStyle:XML in node.Style)
 					{
+						
 						style = XMLStyle._owsns::Identifier;	
+						if (XMLStyle.@isDefault == "true")
+						{
+							defaultStyle = style;
+						}
 						styles.push(style);
 					}
 					
 					layerCapabilities.put("Styles", styles);
+					layerCapabilities.put("DefaultStyle", defaultStyle);
 					
 				}
 				

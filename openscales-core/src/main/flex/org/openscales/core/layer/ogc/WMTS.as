@@ -168,7 +168,7 @@ package org.openscales.core.layer.ogc
 				return;
 			
 			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
-			
+			this.style = layer.getValue("DefaultStyle") as String;
 			this._loadingCapabilities = false;
 			
 			if(this.map)
