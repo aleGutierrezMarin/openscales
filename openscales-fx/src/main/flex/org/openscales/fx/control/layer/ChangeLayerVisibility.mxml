@@ -34,7 +34,7 @@
 			{
 				this._layer = value;
 				if(_layer){
-					this.layerSwitcherCheckBox.selected = this._layer.displayed;
+					this.layerSwitcherCheckBox.selected = this._layer.visible;
 					
 					if(this._layer.map)
 					{
@@ -49,7 +49,7 @@
 			
 			public function onLayerVisibilityChange(event:LayerEvent):void{
 				if(this._layer && this._layer == event.layer){
-					this.layerSwitcherCheckBox.selected = this._layer.displayed;
+					this.layerSwitcherCheckBox.selected = this._layer.visible;
 				}
 			}
 			
