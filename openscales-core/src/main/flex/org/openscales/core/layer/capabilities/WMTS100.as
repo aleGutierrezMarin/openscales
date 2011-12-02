@@ -64,6 +64,9 @@ package org.openscales.core.layer.capabilities
 		 * "TileMatrixSets" ==> HashMap(String ==> TileMatrixSet)<br/>
 		 * "Formats" ==> Array(String)
 		 * "Styles" ==> Array(String)
+		 * "Identifier" ==> String
+		 * "Title" ==> String
+		 * "DefaultStyle" ==> String
 		 * </p> 
 		 */
 		public override function read(doc:XML):HashMap {
