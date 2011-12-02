@@ -231,7 +231,7 @@ package org.openscales.fx
 			
 			//This hashMap contains the layers to add in the Map
 			//First, we initialize the layers to add
-			var layersToAdd:HashMap = new HashMap();
+			var layersToAdd:Vector.<FxLayer> = new Vector.<FxLayer>();
 			for(i=0; i<this.numElements; i++) {
 				element = this.getElementAt(i);
 			//i = this.numElements;
@@ -241,7 +241,7 @@ package org.openscales.fx
 					//this.addFxLayer(element as FxLayer);
 					(element as FxLayer).fxmap = this;
 					(element as FxLayer).configureLayer();
-					layersToAdd.put((element as FxLayer).name, (element as FxLayer).nativeLayer);
+					layersToAdd.push((element as FxLayer));
 				} else if (element is FxControl) {
 					this._map.addControl((element as FxControl).control);
 				} else if (element is IControl) {
@@ -258,20 +258,20 @@ package org.openscales.fx
 					fxSecurity.map = this._map;
 					var security:ISecurity = fxSecurity.security;
 					var layers:Array = fxSecurity.layers.split(",");
-					var layer:Layer = null;
 					//For each layer which needs a security we add it in the HashMap
 					for each (var name:String in layers) {
-						if((layersToAdd.getValue(name) as Layer)) {
-							(element as FxAbstractSecurity).map = this._map;
-							(layersToAdd.getValue(name) as Layer).security = security;
+						for each(var l:FxLayer in layersToAdd) {
+							if(l.name == name) {
+								l.nativeLayer.security = security;
+							}
 						}
 					}
 				}
 			}
 			
 			//Finally, we add the layers in the Map
-			for( var z:uint = 0 ; z < layersToAdd.getValues().length ; z++) {
-					this._map.addLayer((layersToAdd.getValues()[z] as Layer));
+			for each(var l2:FxLayer in layersToAdd) {
+				this._map.addLayer(l2.nativeLayer);
 			}
 			
 			// Set both center and zoom to avoid invalid request set when we define both separately
