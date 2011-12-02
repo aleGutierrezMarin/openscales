@@ -118,6 +118,7 @@ package org.openscales.core
 		private var _projection:String = DEFAULT_SRS_CODE;
 		private var _resolution:Resolution = DEFAULT_RESOLUTION;
 		private var _initialized:Boolean = false;
+		private var _backTileColor:uint = 0xFFFFFF;
 		private var _timer:Timer;
 		
 		// Layer used for OpenLS search and for geolocation
@@ -212,7 +213,7 @@ package org.openscales.core
 			this._projection = projection;
 			this.size = new Size(width, height);
 			// It is necessary to draw something before to define the size...
-			this.graphics.beginFill(0xFFFFFF,0);
+			this.graphics.beginFill(_backTileColor,0);
 			this.graphics.drawRect(0,0,this.size.w,this.size.h);
 			this.graphics.endFill();
 			// ... and then the size may be defined.
@@ -1216,7 +1217,7 @@ package org.openscales.core
 				
 				
 				this.graphics.clear();
-				this.graphics.beginFill(0xFFFFFF);
+				this.graphics.beginFill(_backTileColor);
 				this.graphics.drawRect(0,0,this.size.w,this.size.h);
 				this.graphics.endFill();
 				this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
@@ -1227,6 +1228,20 @@ package org.openscales.core
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
 			}
+		}
+		
+		public function set backTileColor(value:uint):void
+		{
+			this._backTileColor = value;
+			this.graphics.clear();
+			this.graphics.beginFill(_backTileColor);
+			this.graphics.drawRect(0,0,this.size.w,this.size.h);
+			this.graphics.endFill();
+		}
+		
+		public function get backTileColor():uint
+		{
+			return this._backTileColor;
 		}
 		
 		/**
