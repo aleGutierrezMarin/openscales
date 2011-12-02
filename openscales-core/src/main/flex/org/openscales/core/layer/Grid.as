@@ -137,7 +137,7 @@ package org.openscales.core.layer
 			
 			if (projectionChangedCache)
 			{
-				fullRedraw = true;
+				_initialized = false;
 			}
 			var ratio:Number;
 			
@@ -219,6 +219,9 @@ package org.openscales.core.layer
 					bmpBounds = this.grid[0][0].bounds;
 					scale = this.scaleX;
 					var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
+					if (intersectBounds == null)
+							return;
+					
 					intersectBounds.reprojectTo(this.projection);
 					var mapWidth:Number = this.map.width;
 					var mapHeight:Number = this.map.height;
@@ -273,6 +276,15 @@ package org.openscales.core.layer
 					{
 						gridRowLength = this.grid.length;
 						gridColLength = this.grid[0].length;
+						
+						for (i = 0; i< gridRowLength; ++i)
+						{
+							for (j = 0; j< gridColLength; ++j)
+							{
+								this._grid[i][j].scaleX = 1;
+								this._grid[i][j].scaleY = 1;
+							}
+						}
 						
 						// Compute the bitmapBounds
 						TopLeftCorner = new Location(this.grid[0][0].bounds.left, this.grid[0][0].bounds.top, this.projection);
@@ -428,6 +440,7 @@ package org.openscales.core.layer
 								if (_backGrid[i][j] && this.grid[i][j])
 								{
 									_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= 1/this.scaleX;//(bmpRequestedResolution/this.requestedResolution.value);						
+									//_backGrid[i][j].scaleY  *= 1/this.grid[i][j].scaleY;
 									this.grid[i][j].addChildAt(_backGrid[i][j], 0);
 									this.grid[i][j].drawn = true;
 									this.addChild(grid[i][j]);
