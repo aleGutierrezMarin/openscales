@@ -5,10 +5,11 @@ package org.openscales.core.handler.feature
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	/**
 	 * Depracated, should be removed in favor of SelectFeaturesHandler
@@ -116,7 +117,9 @@ package org.openscales.core.handler.feature
 			//and the drop function is not launched
 			this.map.addEventListener(MouseEvent.MOUSE_UP,this.dropMouseUp);
 			
-			this.dragfeatureStart(evt);
+			if(evt.feature is PointFeature) {
+				this.dragfeatureStart(evt);
+			}
 			
 		}
 		
