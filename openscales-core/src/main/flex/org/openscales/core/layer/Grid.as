@@ -257,7 +257,7 @@ package org.openscales.core.layer
 				this.transform.matrix = this._defaultMatrixTranform.clone();
 				
 				// Apply the savec bitmap as preloaded data in the grid
-				if(_backGrid[0][0])
+				if(_backGrid[0][0] && !this.grid[0][0].loadComplete)
 				{
 					_backGrid[0][0].x -= this.grid[0][0].x;
 					_backGrid[0][0].y -= this.grid[0][0].y;
@@ -439,11 +439,14 @@ package org.openscales.core.layer
 							{
 								if (_backGrid[i][j] && this.grid[i][j])
 								{
+									if (!this.grid[i][j].loadComplete)
+									{
 									_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= 1/this.scaleX;//(bmpRequestedResolution/this.requestedResolution.value);						
 									//_backGrid[i][j].scaleY  *= 1/this.grid[i][j].scaleY;
 									this.grid[i][j].addChildAt(_backGrid[i][j], 0);
 									this.grid[i][j].drawn = true;
 									this.addChild(grid[i][j]);
+									}
 								}
 							}
 						}
