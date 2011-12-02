@@ -200,13 +200,13 @@ package org.openscales.core.format
 						{
 							var currentStyle:XMLList = styles.*::Style;
 							var styleLength:Number = currentStyle.length();
-							for (var j:int = 0; j < styleLength; ++j)
+							for (var k:int = 0; k < styleLength; ++k)
 							{
-								if(currentStyle[j].@current.length() > 0)
+								if(currentStyle[k].@current.length() > 0)
 								{
-									if (currentStyle[j].@current == 1)
+									if (currentStyle[k].@current == 1)
 									{
-										style = currentStyle[j].*::Name;
+										style = currentStyle[k].*::Name;
 									}
 								}
 							}
