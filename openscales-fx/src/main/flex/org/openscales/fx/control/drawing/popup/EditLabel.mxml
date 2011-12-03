@@ -4,7 +4,8 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   creationComplete="init();"
 			   removedFromStage="destroy();"
-			   close="close();">
+			   close="close();"
+			   dropShadowVisible="false">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
