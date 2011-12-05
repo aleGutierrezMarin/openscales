@@ -94,5 +94,20 @@ package org.openscales.fx.layer
 				return (this._layer as GeoRss).name;
 			return null;
 		}
+		
+		/**
+		 * Delay in milliseconds after which the GeoRSS data will be refreshed
+		 * @default 300000
+		 */ 
+		public function get refreshDelay():int{
+			return (this._layer as GeoRss).refreshDelay;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		public function set refreshDelay(value:int):void{
+			(this._layer as GeoRss).refreshDelay = value;
+		}
 	}
 }
