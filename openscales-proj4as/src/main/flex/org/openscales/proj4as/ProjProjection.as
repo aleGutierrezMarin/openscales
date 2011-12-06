@@ -17,13 +17,13 @@ package org.openscales.proj4as {
 		 */
 		public var projParams:ProjParams=new ProjParams();
 		
-		static public const equivalentDefs:Vector.<String> = new <String>["WGS84,EPSG:4326,CRS:84","IGNF:LAMB93,EPSG:2154"];
+		static public const equivalentDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84","IGNF:LAMB93,EPSG:2154"];
 		static public const stretchableDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84,EPSG:900913,EPSG:3857"]; 
 		
 		static public const defs:Object={
 			'EPSG:900913': "+title=Google Mercator EPSG:900913 +proj=merc +ellps=WGS84 +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs",
 			'WGS84': "+title=long/lat:WGS84 +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees",
-			'IGNF:WGS84G': "+title=World Geodetic System 1984 +proj=longlat +towgs84=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.000000 +a=6378137.0000 +rf=298.2572221010000 +units=m +no_defs",
+			'IGNF:WGS84G': "+title=World Geodetic System 1984 +proj=longlat +towgs84=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.000000 +a=6378137.0000 +rf=298.2572221010000 +units=degrees +no_defs",
 			'EPSG:4326': "+title=long/lat:WGS84 +proj=longlat +a=6378137.0 +b=6356752.31424518 +ellps=WGS84 +datum=WGS84 +units=degrees",
 			'EPSG:4269': "+title=long/lat:NAD83 +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees",
 			'EPSG:27700': "+title=OSGB36/British National Grid +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs",
