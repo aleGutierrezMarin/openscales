@@ -17,7 +17,7 @@ package org.openscales.proj4as {
 		 */
 		public var projParams:ProjParams=new ProjParams();
 		
-		static public const equivalentDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84","IGNF:LAMB93,EPSG:2154"];
+		static public const equivalentDefs:Vector.<String> = new <String>["WGS84,EPSG:4326,CRS:84","IGNF:LAMB93,EPSG:2154"];
 		static public const stretchableDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84,EPSG:900913,EPSG:3857"]; 
 		
 		static public const defs:Object={
@@ -82,6 +82,7 @@ package org.openscales.proj4as {
 		static public const projAxisOrder:Object={
 			'EPSG:900913': ProjProjection.AXIS_ORDER_EN,
 			'WGS84': ProjProjection.AXIS_ORDER_NE,
+			'IGNF:WGS84G': ProjProjection.AXIS_ORDER_NE,
 			'EPSG:4326': ProjProjection.AXIS_ORDER_NE,
 			'EPSG:4269': ProjProjection.AXIS_ORDER_NE,
 			'EPSG:27700': ProjProjection.AXIS_ORDER_EN,

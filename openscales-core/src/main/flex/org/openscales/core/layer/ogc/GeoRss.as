@@ -81,7 +81,7 @@ package org.openscales.core.layer.ogc
 			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onCompleteTimer,false,0,true);
 			this._timer.start();	
 			this._timerOn = true;
-			Trace.debug("Sart timer");
+			Trace.debug("Start timer");
 				
 		}
 		
