@@ -18,8 +18,10 @@ package org.openscales.core.format
 	 * Supported GeoRss version 1.1 
 	 * @see GeoRss Schema at http://www.georss.org/xml/1.1/georss.xsd 
 	 * 
-	 * Suported Rss version 2.0
+	 * Suported Rss version 2.0 (read and write)
 	 * @see Rss Schema at http://cyber.law.harvard.edu/rss/rss
+	 * 
+	 * Supported Rss version 1.0 (read)
 	 * 
 	 * @attribute rssFile: the GeoRss data 
 	 * @attribute featureVector
@@ -54,13 +56,11 @@ package org.openscales.core.format
 		}
 
 		/**
-		 * @calls parseItem to create the features and add them to featureVector
+		 * Parse GeoRSS xml data (RSS 2.0 or 1.0) and return a list of features
 		 * 
-		 * @param data to parse (a GeoRss file)
+		 * @param data to parse ( GeoRss data)
 		 * @return Object (a vector of features)
-		 * 
-		 * @see RSS 2.0 specification the rss element has a single child, channel, with 3 required elements
-		 * 
+		 *  
 		 * The external GML geometry is supported only inside the where element
 		 * 
 		 */
@@ -71,28 +71,29 @@ package org.openscales.core.format
 			this._featureVector = new Vector.<Feature>();
 			this._rssFile = new XML(data);
 			
-			if(this._rssFile.*::channel.length()>0){
+			if(this._rssFile..*::channel.length()>0){
 				
 				channel = this._rssFile.*::channel[0];
 				
 				this._title = channel.*::title[0].toString();
 				this._description = channel.*::description[0].toString();
 				this._link = channel.*::link[0].toString();
+			}
+			
+			var items:XMLList = _rssFile..*::item;
+			var itemNumber:uint = items.length();
+			var i:uint;
+			
+			for(i = 0; i < itemNumber; i++){
 				
-				var items:XMLList = channel.*::item;
-				var itemNumber:uint = items.length();
-				var i:uint;
-				
-				for(i = 0; i < itemNumber; i++){
-					
-					var feature:Feature = this.parseItem(items[i]);
-					if(feature){
-						this._featureVector.push(feature);
-						if(feature.name)
-							this._featuresids.put(feature.name, feature);
-					}
+				var feature:Feature = this.parseItem(items[i]);
+				if(feature){
+					this._featureVector.push(feature);
+					if(feature.name)
+						this._featuresids.put(feature.name, feature);
 				}
 			}
+			
 			return this._featureVector;
 		}
 		
@@ -103,7 +104,6 @@ package org.openscales.core.format
 		 * @call parseCoords
 		 * @call parseFeature for exterior GML data (@see GML311.as)
 		 * @call parseHTMLAttributes for the decription element
-		 * 
 		 */ 
 		public function parseItem(item:XML):Feature{
 			
