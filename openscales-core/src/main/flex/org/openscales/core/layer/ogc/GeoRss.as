@@ -23,7 +23,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.utils.Trace;
 
 	/**
-	 * Rss layer; version 2.0 is supported
+	 * Rss layer; version 2.0 and 1.0 is supported
 	 * GeoRss version 1.1 supported
 	 * 
 	 * @param name The name of the layer
@@ -80,14 +80,11 @@ package org.openscales.core.layer.ogc
 			this._timer = new Timer(this._refreshDelay, 1);
 			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onCompleteTimer,false,0,true);
 			this._timer.start();	
-			this._timerOn = true;
-			Trace.debug("Sart timer");
-				
+			this._timerOn = true;				
 		}
 		
 		public function onCompleteTimer(event:TimerEvent):void{
 			this._timer.start();
-			Trace.debug("Restart timer on timer expiration");
 			this.redraw();	
 		}
 		
@@ -171,8 +168,8 @@ package org.openscales.core.layer.ogc
 				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
 				
 				this.featureVector = this.georssFormat.read(this.data) as Vector.<Feature>;
-				if(this.useFeedTitle)
-					this.name = this.georssFormat.title;
+				if(this._useFeedTitle)
+					this.name = this._georssFormat.title;
 				
 				var i:uint;
 				var vectorLength:uint = this.featureVector.length;
@@ -271,12 +268,17 @@ package org.openscales.core.layer.ogc
 			_popUpHeight = value;
 		}
 
-
+		/**
+		 * If true, the feed title will be used as a name
+		 */ 
 		public function get useFeedTitle():Boolean
 		{
 			return _useFeedTitle;
 		}
 
+		/**
+		 * @private
+		 */ 
 		public function set useFeedTitle(value:Boolean):void
 		{
 			_useFeedTitle = value;
