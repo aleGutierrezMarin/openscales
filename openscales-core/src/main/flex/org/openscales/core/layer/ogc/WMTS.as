@@ -199,11 +199,13 @@ package org.openscales.core.layer.ogc
 		{
 			//Parse the tileMatrixSets of the layer and try to find if one is in the projection map
 			if(!ProjProjection.isEquivalentProjection(this.projection,this.map.projection)) {
-				var arr:Array = this.tileMatrixSets.getKeys();
-				for(var i:uint = 0 ; i < arr.length ; i++) {
-					var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
-					if(ProjProjection.isEquivalentProjection(tms.supportedCRS,this.map.projection)) {
-						this.tileMatrixSet = tms.identifier;
+				if(this.tileMatrixSets) {
+					var arr:Array = this.tileMatrixSets.getKeys();
+					for(var i:uint = 0 ; i < arr.length ; i++) {
+						var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
+						if(ProjProjection.isEquivalentProjection(tms.supportedCRS,this.map.projection)) {
+							this.tileMatrixSet = tms.identifier;
+						}
 					}
 				}
 			}

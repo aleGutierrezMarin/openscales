@@ -132,6 +132,7 @@ package org.openscales.core.format
 			var minScaleDenominator:Number = NaN;
 			var maxScaleDenominator:Number = NaN;
 			var srs:String = "";
+			var availableProjections:Vector.<String> = new Vector.<String>();
 			//var formatList:Vector.<String> = new Vector.<String>();
 			var format:String = "";
 			if(layer.*::Name.length() > 0)
@@ -153,6 +154,7 @@ package org.openscales.core.format
 			if (layer.*::SRS.length() > 0)
 			{
 				srs = layer.*::SRS[0];
+				availableProjections.push(srs);
 			}
 			if (layer.*::FormatList.length() > 0)
 			{
@@ -179,6 +181,7 @@ package org.openscales.core.format
 					var wms:WMS = new WMS(title,url,name,"",format);
 					wms.version = version;
 					wms.projection = srs;
+					wms.availableProjections = availableProjections;
 					wms.transparent = true;
 					wms.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
 					wms.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
@@ -187,6 +190,7 @@ package org.openscales.core.format
 				case "OGC:WFS":
 					var wfs:WFS = new WFS(title,url,name,version);
 					wfs.projection = srs;
+					wfs.availableProjections = availableProjections;
 					wfs.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
 					wfs.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
 					layerToAdd = wfs;

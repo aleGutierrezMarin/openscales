@@ -53,7 +53,7 @@ package org.openscales.core.layer.capabilities
 
 			featureCap = capabilities.getValue("topp:water_shorelines");
 			Assert.assertFalse(featureCap == null);
-			Assert.assertEquals(5,featureCap.size());
+			Assert.assertEquals(6,featureCap.size());
 			Assert.assertTrue(featureCap.getValue("SRS") == "EPSG:4326");
 			var b:Bounds = null;
 			b = featureCap.getValue("Extent");
