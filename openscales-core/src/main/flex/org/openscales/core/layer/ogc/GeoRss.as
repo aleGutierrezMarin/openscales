@@ -45,7 +45,7 @@ package org.openscales.core.layer.ogc
 		private var _georssFormat:GeoRssFormat;
 		
 		private var _request:XMLRequest = null;
-		private var _refresh:int;
+		private var _refreshDelay:int;
 		private var _timer:Timer;
 		private var _timerOn:Boolean = false;
 		
@@ -63,7 +63,7 @@ package org.openscales.core.layer.ogc
 							   useFeedTitle:Boolean = false)
 		{
 			super(name);
-			this.url = url;	
+			this._url = url;	
 			this.data = data;
 			this._projection = "WGS84";
 			if(style){
@@ -71,31 +71,31 @@ package org.openscales.core.layer.ogc
 				this.style.rules.push(new Rule());
 			}
 			else this.style = null;
-			this.georssFormat = new GeoRssFormat(new HashMap());	
-			this.refresh = refreshDelay;
-			this.popUpWidth = width;
-			this.popUpHeight = height;
-			this.useFeedTitle = useFeedTitle;
+			this._georssFormat = new GeoRssFormat(new HashMap());	
+			this._refreshDelay = refreshDelay;
+			this._popUpWidth = width;
+			this._popUpHeight = height;
+			this._useFeedTitle = useFeedTitle;
 			
-			this.timer = new Timer(refreshDelay, 1);
-			this.timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onCompleteTimer,false,0,true);
-			this.timer.start();	
+			this._timer = new Timer(this._refreshDelay, 1);
+			this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onCompleteTimer,false,0,true);
+			this._timer.start();	
 			this._timerOn = true;
-			Trace.debug("Sart timer");
+			Trace.debug("Start timer");
 				
 		}
 		
 		public function onCompleteTimer(event:TimerEvent):void{
-			this.timer.start();
+			this._timer.start();
 			Trace.debug("Restart timer on timer expiration");
 			this.redraw();	
 		}
 		
 		override public function destroy():void
 		{
-			this.timer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onCompleteTimer);
-			this.timer.stop();
-			Trace.debug("Stop timer when destroying layer");
+			this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onCompleteTimer);
+			this._timer.stop();
+			//Trace.debug("Stop timer when destroying layer");
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
@@ -107,8 +107,8 @@ package org.openscales.core.layer.ogc
 			if (!displayed) {
 				this.clear();
 				if(this._timerOn){
-					this.timer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onCompleteTimer);
-					this.timer.stop();
+					this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onCompleteTimer);
+					this._timer.stop();
 					this._timerOn = false;
 					Trace.debug("Stop timer if layer is not displayed");
 				}
@@ -116,8 +116,8 @@ package org.openscales.core.layer.ogc
 			}
 			else{
 				if(!this._timerOn){
-					this.timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onCompleteTimer,false,0,true);
-					this.timer.start();	
+					this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onCompleteTimer,false,0,true);
+					this._timer.start();	
 					this._timerOn = true;
 					Trace.debug("Restart timer if layer is displayed again");
 				}		
@@ -232,24 +232,23 @@ package org.openscales.core.layer.ogc
 			// and then reprojected to the projection of the map.
 		}
 		
-		public function get refresh():int
+		/**
+		 * Delay after which GeoRSS data will be refreshed (in milliseconds)
+		 * 
+		 * @default 300000
+		 */ 
+		public function get refreshDelay():int
 		{
-			return _refresh;
+			return _refreshDelay;
 		}
 
-		public function set refresh(value:int):void
+		/**
+		 * @private
+		 */ 
+		public function set refreshDelay(value:int):void
 		{
-			_refresh = value;
-		}
-
-		public function get timer():Timer
-		{
-			return _timer;
-		}
-
-		public function set timer(value:Timer):void
-		{
-			_timer = value;
+			_refreshDelay = value;
+			this._timer.delay=_refreshDelay;
 		}
 
 		public function get popUpWidth():Number

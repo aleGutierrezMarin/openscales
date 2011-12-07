@@ -240,7 +240,7 @@ package org.openscales.core.layer
 					}
 					if (intersectBounds != null && enableBackGrid)
 					{
-						BMD = new BitmapData(mapWidth , mapHeight , true, 0x000000);
+						BMD = new BitmapData(mapWidth , mapHeight , true, this.map.backTileColor);
 						BMD.draw(this, null, null, null, null, true);
 						_backGrid[0][0] = new Bitmap(BMD, PixelSnapping.NEVER, true);
 						_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
@@ -315,7 +315,7 @@ package org.openscales.core.layer
 						}
 						if (drawnWidth * drawnHeight < 16777215)
 						{
-							BMD = new BitmapData(drawnWidth, drawnHeight, false, 0xffffff);
+							BMD = new BitmapData(drawnWidth, drawnHeight, false, this.map.backTileColor);
 							BMD.draw(this, this.transform.matrix, null, null, null, true);
 							
 							var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
