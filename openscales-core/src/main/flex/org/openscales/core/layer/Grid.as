@@ -1324,7 +1324,38 @@ package org.openscales.core.layer
 		 */
 		override public function get available():Boolean
 		{
-			return (super.available && (ProjProjection.isEquivalentProjection(this.projection,this.map.projection) || ProjProjection.isStretchable(this.projection, this.map.projection)));
+			if(!super.available) {
+				return false;
+			}
+			//Parsing available projections for the layer
+			if(this.availableProjections) {
+				for each(var proj:String in this.availableProjections) {
+					if(ProjProjection.isEquivalentProjection(proj,this.map.projection)) {
+						if(!ProjProjection.isEquivalentProjection(this.projection, proj)) {
+							//Changing layer projection
+							this.projection = proj;
+							return true;
+						} else {
+							//Layer projection is already Map projection
+							return true;
+						}
+					}
+				}
+			} else {
+				//Available projections is not set for this layer
+				//try simple comparison
+				if(ProjProjection.isEquivalentProjection(this.projection,this.map.projection)) {
+					return true;
+				}
+			}
+			
+			//Otherwise, try to stretch the layer
+			if(ProjProjection.isStretchable(this.projection, this.map.projection)) {
+				return true;
+			}
+			
+			//Otherwise return false
+			return false;
 		}
 		
 		// Callbacks

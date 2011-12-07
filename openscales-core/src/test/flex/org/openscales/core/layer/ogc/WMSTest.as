@@ -247,6 +247,35 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
+		 * Validate that the layer is available if map projection is in the available projections for the layer.
+		 * Validate also that layer projection is changet to fit the map projection
+		 */
+		[Test]
+		public function shouldBeAvailableWhenMapProjectionIsInAvailableProjections():void{
+			// Given a Map with a WMS layer with tiled=true
+			_map = new Map();
+			_map.size = new Size(200,200);
+			_map.center = new Location(0,0);
+			_map.resolution = new Resolution(1.40625,"EPSG:4326");
+			
+			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
+			_wms.maxExtent = MAXEXTENT;
+			_wms.version = VERSION;
+			_wms.tiled = true;
+			_wms.projection = "EPSG:3857";
+			
+			var aProj:Vector.<String> = new Vector.<String>();
+			aProj.push("EPSG:3857");
+			aProj.push("EPSG:4326");
+			_wms.availableProjections = aProj;
+			
+			_map.addLayer(_wms);
+			
+			Assert.assertTrue("Layer should be available when map projection is in available projections", _wms.available);
+			Assert.assertEquals("Layer should be in map projection", _wms.projection, _map.projection);
+		}
+		
+		/**
 		 * Validate that if the map extent is greater than the layer maxExtent and the map maxExtent,
 		 * then, the extent requested is limited by the layer maxExtent and the map maxExtent in not
 		 * tiled mode

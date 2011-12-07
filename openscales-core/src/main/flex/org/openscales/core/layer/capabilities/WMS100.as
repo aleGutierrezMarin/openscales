@@ -80,8 +80,6 @@ package org.openscales.core.layer.capabilities
 					value = value.replace(" ",",");
 				}
 				
-				
-				
 				layerCapabilities.put("SRS", value);
 				projection = value;
 

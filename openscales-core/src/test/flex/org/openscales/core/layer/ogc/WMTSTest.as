@@ -33,6 +33,8 @@ package org.openscales.core.layer.ogc {
 		private const MATRIX_SET_ID:String = "LAMB93_2.5m";
 		private const REAL_MATRIX_SET_ID:String = "EPSG:900913";
 		
+		private const MATRIX_SET_ID_PM:String = "PM";
+		
 		private const STYLE:String = "default";
 		
 		private const FORMAT:String = "image/jpeg";
@@ -50,6 +52,9 @@ package org.openscales.core.layer.ogc {
 		
 		[Embed(source="/assets/layer/capabilities/wmtscapabilities.xml",mimeType="application/octet-stream")]
 		private const SIMPLECAPABILITIES:Class;
+		
+		[Embed(source="/assets/layer/capabilities/extendedwmtscapabilities.xml",mimeType="application/octet-stream")]
+		private const EXTENDEDCAPABILITIES:Class;
 		
 		public function WMTSTest() {}
 		
@@ -275,6 +280,52 @@ package org.openscales.core.layer.ogc {
 			assertTrue("Incorrect display value for the WMS layer", this._map.layers[1].displayed);
 		}
 		
+		/**
+		 * 
+		 * Given a map of 200x200px, centered on 0,0
+		 * And a WMTS layer on this map with multiple TileMatrixSets
+		 * When layer default projection is not in the map's projection
+		 * Then layer projection is changed according to available tileMatrixSets
+		 */
+		[Test(async)] 
+		public function shouldChangeLayerTileMatrixSetIfNotCompatibleWithMapProjection():void
+		{
+			// Given a map of 256x256px, centered on 0,12000000
+			this._map = new Map();
+			this._map.size = new Size(256,256);
+			this._map.projection = "IGNF:LAMB93";
+			//this._map.projection = "EPSG:4326";
+			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
+			this._map.maxExtent = new Bounds(-8.38, 38.14, 14.11, 55.92, "EPSG:4326");
+			
+			// And a WMTS layer on this map
+			var cap:WMTS100 = new WMTS100();
+			var layers:HashMap = cap.read(new XML(new EXTENDEDCAPABILITIES()));
+			var tmshm:HashMap = (layers.getValue(LAYER) as HashMap).getValue("TileMatrixSets") as HashMap;
+			
+			this._wmts = new WMTS(NAME,URL,LAYER, MATRIX_SET_ID_PM,tmshm);
+			this._wmts.buffer=0;
+			this._wmts.style="default";
+			
+			// Then request is sent according to the layer parameters
+			this._handler = Async.asyncHandler(this,assertChangeLayerTileMatrixSetIfNotCompatibleWithMapProjection,
+				2000,null,noRequestSend);
+			
+			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
+			
+			this._map.addLayer(this._wmts);
+			
+		}
+		
+		private function assertChangeLayerTileMatrixSetIfNotCompatibleWithMapProjection(event:TileEvent,obj:Object):void
+		{
+			this._wmts.removeEventListener(TileEvent.TILE_LOAD_START,this._handler);
+			
+			assertTrue("Layer should be available", this._wmts.available);
+			assertEquals("Layers projection should be in map projection", this._wmts.projection, this._map.projection);
+			assertEquals("Layer TileMatrixSet should be LAMB93_2.5m", this._wmts.tileMatrixSet, MATRIX_SET_ID);
+		}
+		
 		private function noRequestSend(event:TimerEvent):void
 		{
 			if(this._handler!=null && this._wmts)
@@ -286,6 +337,7 @@ package org.openscales.core.layer.ogc {
 			
 			Assert.fail("No request sent");
 		}
+		
 		
 	}
 }

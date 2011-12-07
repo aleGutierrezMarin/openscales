@@ -396,6 +396,17 @@ package org.openscales.core.layer.ogc
 			}
 			if ((this._capabilities != null) && (this.projection == null || this.useCapabilities)) {
 				this.projection = this._capabilities.getValue("SRS");
+				//Setting availableProjections
+				var aProj:Vector.<String> = new Vector.<String>();
+				aProj.push(this._capabilities.getValue("SRS"));
+				var otherSRS:Vector.<String> = (this._capabilities.getValue("OtherSRS") as Vector.<String>);
+				for each(var oSrs:String in otherSRS) {
+					if(aProj.indexOf(oSrs) < 0) {
+						aProj.push(oSrs);
+					}
+				}
+				this.availableProjections = aProj;
+				
 				if(this.map)
 					this.redraw(true);
 			}
