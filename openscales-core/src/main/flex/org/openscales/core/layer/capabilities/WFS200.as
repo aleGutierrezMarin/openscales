@@ -62,6 +62,18 @@ package org.openscales.core.layer.capabilities
 				projection = projection.substr(projection.indexOf("EPSG"));
 				featureCapabilities.put("SRS", projection);
 
+				var otherSRSNodes:XMLList = feature.OtherCRS;
+				var otherSRS:Vector.<String> = new Vector.<String>();
+				for each (var srs:XML in otherSRSNodes)
+				{
+					value = srs.toString();
+					value = value.substr(value.indexOf("EPSG"));
+					if (value != "")
+						otherSRS.push(srs.toString());
+				}
+				
+				featureCapabilities.put("OtherSRS", otherSRS);
+				
 				value = feature.Abstract;
 				featureCapabilities.put("Abstract", value);
 

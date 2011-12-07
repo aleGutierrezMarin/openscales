@@ -40,6 +40,7 @@ package org.openscales.core.layer {
 		
 		private var _map:Map = null;
 		protected var _projection:String = null;
+		private var _availableProjections:Vector.<String> = null;
 		private var _dpi:Number = Layer.DEFAULT_DPI;
 		private var _resolutions:Array = null;
 		private var _maxExtent:Bounds = null;
@@ -696,6 +697,36 @@ package org.openscales.core.layer {
 			if(this.map && event)
 				this.map.dispatchEvent(event.clone());
 		}
+		
+		/**
+		 * Define the layer available projections by its SRS codes.
+		 */
+		public function get availableProjections():Vector.<String> {
+			return this._availableProjections;
+		}
+		
+		public function set availableProjections(value:*):void {
+			var projections:Vector.<String> = new Vector.<String>();
+			
+			if( value is Vector.<String>){
+				var vector:Vector.<String> = value as Vector.<String>;
+				var lght:int = vector.length;
+				for(var i:uint = 0; i<lght;++i){
+					if(vector[i]!="") projections.push((vector[i] as String).toUpperCase());
+				}
+				
+			}else if( value is String ) {
+				
+				var array:Array = (value as String).split(",");
+				for (var j:uint = 0 ; j < array.length ; j++) {
+					if(array[j]!="")projections.push((array[j] as String).toUpperCase()
+					);
+				}
+			}
+			
+			this._availableProjections = projections;
+		}
+		
 		
 		/**
 		 * Whether or not the layer is a fixed layer.

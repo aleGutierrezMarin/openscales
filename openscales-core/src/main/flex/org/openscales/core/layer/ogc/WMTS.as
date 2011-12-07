@@ -21,6 +21,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Instances of the WMTS class allow viewing of tiles from a service that 
@@ -169,6 +170,19 @@ package org.openscales.core.layer.ogc
 			
 			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
 			
+			//Setting available projections
+			//Not really needed for WMTS as different projections are in the tileMatrixSets
+			/*if(!this.availableProjections) {
+				var aProj:Vector.<String> = new Vector.<String>();
+				var arr:Array = this.tileMatrixSets.getKeys();
+				
+				for(var i:uint = 0 ; i < arr.length ; i++) {
+					var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
+					aProj.push(tms.supportedCRS);
+				}
+				this.availableProjections = aProj;
+			}*/
+			
 			this._loadingCapabilities = false;
 			
 			if(this.map)
@@ -177,6 +191,22 @@ package org.openscales.core.layer.ogc
 				this.redraw(true);
 			}
 			
+		}
+		
+		override public function get available():Boolean
+		{
+			//Parse the tileMatrixSets of the layer and try to find if one is in the projection map
+			if(!ProjProjection.isEquivalentProjection(this.projection,this.map.projection)) {
+				var arr:Array = this.tileMatrixSets.getKeys();
+				for(var i:uint = 0 ; i < arr.length ; i++) {
+					var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
+					if(ProjProjection.isEquivalentProjection(tms.supportedCRS,this.map.projection)) {
+						this.tileMatrixSet = tms.identifier;
+					}
+				}
+			}
+			
+			return super.available;
 		}
 		
 		/**
