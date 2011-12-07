@@ -217,6 +217,10 @@
 				return this._resultsProvider;
 			}
 			
+			public function isDisplayingResults():Boolean {
+				return (this._showResults || this._showNoResultMsg);
+			}
+			
 			/**
 			 * Getter and setter of OpenLS version
 			 */
@@ -714,7 +718,7 @@
 				this.hideResults();
 			}
 			
-			private function hideResults():void {
+			public function hideResults():void {
 				this._showResults = false;
 				this._showNoResultMsg = false;
 			}

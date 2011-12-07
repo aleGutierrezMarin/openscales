@@ -43,11 +43,6 @@ package org.openscales.core.handler.mouse
 		 */
 		private var _startCoordinates:Location = null;
 		
-		/**
-		 * @private 
-		 * 
-		 * Color of the rectangle
-		 */
 		private var _fillColor:uint = 0xFF0000;
 		
 		/**
@@ -224,6 +219,23 @@ package org.openscales.core.handler.mouse
 			if(event.target!=this.map)
 				return;
 			this.endBox(null);
+		}
+
+		/**
+		 * Color of the rectangle
+		 * @default 0xFF0000
+		 */
+		public function get fillColor():uint
+		{
+			return _fillColor;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set fillColor(value:uint):void
+		{
+			_fillColor = value;
 		}
 
 

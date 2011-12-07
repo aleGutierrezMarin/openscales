@@ -1,20 +1,16 @@
 package org.openscales.core.format
 {
-	import org.openscales.core.utils.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WFS;
+	import org.openscales.core.layer.ogc.WMS;
+	import org.openscales.core.layer.ogc.WMTS;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.layer.Layer;
-	import org.openscales.core.layer.ogc.WMS;
-	import org.openscales.core.layer.ogc.WFS;
-	import org.openscales.core.layer.ogc.WMTS;
-	import org.openscales.geometry.basetypes.Unit;
-	import org.openscales.core.basetypes.Resolution;
-	import org.openscales.core.layer.Layer;
 
 	/**
 	 * This class read and write WMC files
@@ -196,7 +192,28 @@ package org.openscales.core.format
 					layerToAdd = wfs;
 					break;
 				case "OGC:WMTS":
+					var style:String;
+					if (layer.*::StyleList.length() > 0)
+					{
+						var styles:XMLList = layer.*::StyleList;
+						if(styles.*::Style.length() > 0)
+						{
+							var currentStyle:XMLList = styles.*::Style;
+							var styleLength:Number = currentStyle.length();
+							for (var k:int = 0; k < styleLength; ++k)
+							{
+								if(currentStyle[k].@current.length() > 0)
+								{
+									if (currentStyle[k].@current == 1)
+									{
+										style = currentStyle[k].*::Name;
+									}
+								}
+							}
+						}
+					}
 					var wmts:WMTS = new WMTS(title,url,name,"");
+					wmts.style = style;
 					if (srs != "")
 					{
 						wmts.projection = srs;

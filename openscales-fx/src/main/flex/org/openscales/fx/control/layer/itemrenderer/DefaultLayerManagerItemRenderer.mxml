@@ -412,6 +412,7 @@
 					}
 					_color = (this._layer.selected && !displayDrawingToolbar) ? 0xd0d0d0 : 0xffffff;
 					this.isDisplayedDrawingTools = !this.isMinimized && this._isDrawingLayer && displayDrawingToolbar;
+					this.updateItemEnability(null);
 				}
 				
 				this.setGroupSize();

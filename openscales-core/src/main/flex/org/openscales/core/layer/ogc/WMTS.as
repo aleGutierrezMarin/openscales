@@ -169,7 +169,9 @@ package org.openscales.core.layer.ogc
 				return;
 			
 			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
-			
+			if (this.style == null)
+				this.style = layer.getValue("DefaultStyle") as String;
+				
 			//Setting available projections
 			//Not really needed for WMTS as different projections are in the tileMatrixSets
 			/*if(!this.availableProjections) {

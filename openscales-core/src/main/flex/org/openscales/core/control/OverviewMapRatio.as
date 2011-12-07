@@ -173,6 +173,7 @@ package org.openscales.core.control
 				this.map.addEventListener(MapEvent.MAP_LOADED, mapChanged);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
 				this._overviewMap.maxExtent = this._map.maxExtent.preciseReprojectBounds(this.overviewMap.projection);
+				this._overviewMap.backTileColor = this._map.backTileColor;
 				this.mapChanged();
 			}
 		}
