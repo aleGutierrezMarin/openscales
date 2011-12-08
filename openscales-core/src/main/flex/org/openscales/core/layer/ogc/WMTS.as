@@ -198,19 +198,43 @@ package org.openscales.core.layer.ogc
 		override public function get available():Boolean
 		{
 			//Parse the tileMatrixSets of the layer and try to find if one is in the projection map
-			if(!ProjProjection.isEquivalentProjection(this.projection,this.map.projection)) {
-				if(this.tileMatrixSets) {
-					var arr:Array = this.tileMatrixSets.getKeys();
-					for(var i:uint = 0 ; i < arr.length ; i++) {
-						var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
-						if(ProjProjection.isEquivalentProjection(tms.supportedCRS,this.map.projection)) {
-							this.tileMatrixSet = tms.identifier;
+			if(this.projection && this.map && this.map.projection) {
+				if(!ProjProjection.isEquivalentProjection(this.projection,this.map.projection)) {
+					if(this.tileMatrixSets) {
+						var arr:Array = this.tileMatrixSets.getKeys();
+						for(var i:uint = 0 ; i < arr.length ; i++) {
+							var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
+							if(ProjProjection.isEquivalentProjection(tms.supportedCRS,this.map.projection)) {
+								this.tileMatrixSet = tms.identifier;
+							}
 						}
 					}
 				}
 			}
 			
 			return super.available;
+		}
+		
+		override public function supportsProjection(compareProj:String):Boolean
+		{
+			//Parse the tileMatrixSets of the layer and try to find if one is in the projection map
+			if(!ProjProjection.isEquivalentProjection(this.projection,compareProj)) {
+				if(this.tileMatrixSets) {
+					var arr:Array = this.tileMatrixSets.getKeys();
+					for(var i:uint = 0 ; i < arr.length ; i++) {
+						var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
+						if(ProjProjection.isEquivalentProjection(tms.supportedCRS,compareProj)) {
+							this.tileMatrixSet = tms.identifier;
+							return true;
+						}
+					}
+				}
+			} else {
+				//Projections are equals
+				return true;
+			}
+			
+			return false;
 		}
 		
 		/**

@@ -125,6 +125,36 @@ package org.openscales.core.layer {
 		}
 		
 		/**
+		 * This method tells if the layer supports a projection given in parameter according to the availableProjections
+		 * set for this layer.
+		 */ 
+		public function supportsProjection(compareProj:String):Boolean {
+			//Parsing available projections for the layer
+			if(this.availableProjections) {
+				for each(var proj:String in this.availableProjections) {
+					if(ProjProjection.isEquivalentProjection(proj,compareProj)) {
+						if(!ProjProjection.isEquivalentProjection(this.projection, compareProj)) {
+							//Changing layer projection
+							this.projection = proj;
+							return true;
+						} else {
+							//Layer projection is already Map projection
+							return true;
+						}
+					}
+				}
+			} else {
+				//Available projections is not set for this layer
+				//try simple comparison
+				if(ProjProjection.isEquivalentProjection(this.projection,compareProj)) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		/**
 		 * @private
 		 * The url use for the layer request if necessary.
 		 * @default null

@@ -70,6 +70,12 @@ package org.openscales.core.layer
 			return super.available;
 		}
 		
+		override public function supportsProjection(compareProj:String):Boolean
+		{
+			//A Vector Layer is able to be reprojected in any projection. So, it supports all projections
+			return true;
+		}
+		
 		override public function destroy():void {
 			super.destroy();  
 			this.reset();
