@@ -21,6 +21,7 @@
   </compiler>
   <applications>
     <application path="core.as"/>
+    <application path="org/openscales/core/layer/capabilities/scen3WMS.mxml"/>
   </applications>
   <modules/>
   <buildCSSFiles/>

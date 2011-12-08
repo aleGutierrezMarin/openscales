@@ -33,6 +33,12 @@ package org.openscales.core.layer.capabilities
 
 		/**
 		 * Class contructor
+		 * 
+		 * cbkFunc must have this signature :
+		 * public function cbkFunc(getCap:GetCapabilities):void {
+		 * }
+		 * 
+		 * It takes the GetCapabilites object as parameter in order to access the variables set by the Getcapabilities request.
 		 */
 		public function GetCapabilities(service:String, url:String, cbkFunc:Function=null, version:String=null, proxy:String = null, security:ISecurity=null)
 		{			
