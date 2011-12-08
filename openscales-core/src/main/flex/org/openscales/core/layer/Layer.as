@@ -706,12 +706,14 @@ package org.openscales.core.layer {
 		}
 		
 		public function set availableProjections(value:*):void {
+			
 			var projections:Vector.<String> = new Vector.<String>();
 			
 			if( value is Vector.<String>){
 				var vector:Vector.<String> = value as Vector.<String>;
 				var lght:int = vector.length;
 				for(var i:uint = 0; i<lght;++i){
+					if(!vector[i])continue;
 					if(vector[i]!="") projections.push((vector[i] as String).toUpperCase());
 				}
 				
