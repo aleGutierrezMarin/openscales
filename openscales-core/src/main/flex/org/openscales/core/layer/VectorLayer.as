@@ -80,10 +80,10 @@ package org.openscales.core.layer
 			super.destroy();  
 			this.reset();
 			this._displayProjection = null;
-			this.style = null;
-			this.geometryType = null;
-			this.selectedFeatures = null;
-			this.featuresBbox = null;
+			this._style = null;
+			this._geometryType = null;
+			this._selectedFeatures = null;
+			this._featuresBbox = null;
 		}
 		
 		override public function redraw(fullRedraw:Boolean = false):void {
