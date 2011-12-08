@@ -77,10 +77,10 @@ package org.openscales.fx.layer
 				(this._layer as GeoRss).useFeedTitle = value;
 		}
 		
-		public function get featureVector():Vector.<Feature>
+		public function get features():Vector.<Feature>
 		{
 			if(this._layer != null)
-				return (this._layer as GeoRss).featureVector;
+				return (this._layer as GeoRss).features;
 			return null;
 		}
 		
