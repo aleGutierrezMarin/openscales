@@ -72,7 +72,6 @@ package org.openscales.core.layer {
 			this._projection = Layer.DEFAULT_PROJECTION;
 			this.generateResolutions();
 			
-			
 			this._originators = new Vector.<DataOriginator>();
 		}
 		
