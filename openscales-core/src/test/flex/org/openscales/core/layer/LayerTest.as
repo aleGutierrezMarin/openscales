@@ -220,5 +220,18 @@ package org.openscales.core.layer
 			assertEquals("The getLayerPxFromMapPx return a wrong value for the X coordinate of the layer pixel", 400, _returnedPixel.x); 
 			assertEquals("The getLayerPxFromMapPx return a wrong value for the Y coordinate of the layer pixel", 250, _returnedPixel.y); 
 		}
+		
+		[Test]
+		public function shouldNotAddNullSRSInAvailableProjWhileUsingAVector():void{
+			var availableProj:Vector.<String> = new Vector.<String>();
+			availableProj.push("ESPG:4326");
+			availableProj.push(null);
+			var l:Layer=new Layer("test");
+			l.availableProjections = availableProj;
+			
+			assertEquals("Should contain one projection",1, l.availableProjections.length);
+			assertEquals("Should contain one projection","ESPG:4326", l.availableProjections[0]);
+			
+		}
 	}
 }
