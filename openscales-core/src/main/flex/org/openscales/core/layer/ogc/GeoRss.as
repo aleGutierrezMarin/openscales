@@ -157,7 +157,7 @@ package org.openscales.core.layer.ogc
 		
 		public function drawFeatures():void{
 			
-			if(this.featureVector == null) {
+			if(this._featureVector == null) {
 				
 				var pointStyle:Style = Style.getDefaultPointStyle();
 				var lineStyle:Style = Style.getDefaultLineStyle();
@@ -167,29 +167,29 @@ package org.openscales.core.layer.ogc
 				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
 				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
 				
-				this.featureVector = this.georssFormat.read(this.data) as Vector.<Feature>;
+				this._featureVector = this.georssFormat.read(this.data) as Vector.<Feature>;
 				if(this._useFeedTitle)
 					this.name = this._georssFormat.title;
 				
 				var i:uint;
-				var vectorLength:uint = this.featureVector.length;
+				var vectorLength:uint = this._featureVector.length;
 				for (i = 0; i < vectorLength; i++){
 					
 					if(this.style){
-						this.featureVector[i].style = this.style;
+						this._featureVector[i].style = this.style;
 					}
 					else//default style
 					{
-						if(this.featureVector[i] is PointFeature) {
-							this.featureVector[i].style = pointStyle;
+						if(this._featureVector[i] is PointFeature) {
+							this._featureVector[i].style = pointStyle;
 						}
-						else if(this.featureVector[i] is LineStringFeature){
-							this.featureVector[i].style = lineStyle;
+						else if(this._featureVector[i] is LineStringFeature){
+							this._featureVector[i].style = lineStyle;
 						} 
 						else// feature is polygon
-							this.featureVector[i].style = surfStyle;
+							this._featureVector[i].style = surfStyle;
 					}
-					this.addFeature(this.featureVector[i]);
+					this.addFeature(this._featureVector[i]);
 				}
 				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_CHANGED, this);
 				this.map.dispatchEvent(evt);
@@ -200,16 +200,19 @@ package org.openscales.core.layer.ogc
 			}			
 		}
 		
-		/**
+		/*
 		 * Setters and getters
 		 */ 
 		
-		public function get featureVector():Vector.<Feature>
+		/**
+		 * The list of features read from data
+		 */ 
+		override public function get features():Vector.<Feature>
 		{
 			return _featureVector;
 		}
 
-		public function set featureVector(value:Vector.<Feature>):void
+		public function set features(value:Vector.<Feature>):void
 		{
 			_featureVector = value;
 		}
