@@ -1036,13 +1036,13 @@ package org.openscales.core.layer
 			var buffer:Number = this.buffer || 1;
 			while (true) {
 				var tlLayer:Pixel = this.grid[0][0].position;
-				var ratio:Number = this.getSupportedResolution(this.map.resolution.reprojectTo(this.projection)).value / this.map.resolution.reprojectTo(this.projection).value; 
-				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.x/ratio, tlLayer.y + this.y/ratio); 
-				if (tlViewPort.x > -this.tileWidth * (buffer - 1)) {
+				var ratio:Number = this.requestedResolution.value / this.map.resolution.reprojectTo(this.projection).value; 
+				var tlViewPort:Pixel =  new Pixel(tlLayer.x + this.transform.matrix.tx/this.transform.matrix.a, tlLayer.y + this.transform.matrix.ty/this.transform.matrix.d); 
+				/*if (tlViewPort.x > -this.tileWidth * (buffer - 1)) {
 					this.shiftColumn(true);
 				} else if (tlViewPort.x < -this.tileWidth * buffer) {
 					this.shiftColumn(false);
-				} else if (tlViewPort.y > -this.tileHeight * (buffer - 1)) {
+				} else */if (tlViewPort.y > -this.tileHeight * (buffer - 1)) {
 					this.shiftRow(true);
 				} else if (tlViewPort.y < -this.tileHeight * buffer) {
 					this.shiftRow(false);
@@ -1110,6 +1110,7 @@ package org.openscales.core.layer
 
 				position.y = position.y + deltaY * multiplicator;
 				row[i].clearAndMoveTo(bounds, position);
+				row[i].scaleY = multiplicator;
 			}
 			
 			if (prepend) {
