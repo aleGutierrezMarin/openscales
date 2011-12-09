@@ -143,11 +143,10 @@ package org.openscales.core.handler.mouse
 				{
 					mapLayers= this.map.layers;
 					mapLayersLength = mapLayers.length;
-					i= 0;
+					i= mapLayersLength - 1 ;
 					var found:Boolean = false;
-					
-					while(i<mapLayersLength && !found){
-						if (mapLayers[i].visible){ //the request is made for the first visible wms layer
+					while(i >= 0 && !found){
+						if (mapLayers[i].visible){ //the request is made for the top visible wms layer
 							if(mapLayers[i] is WMS){
 								//put the found layer in a vector to generate the request
 								layerVecTmp = new Vector.<WMS>();
@@ -158,8 +157,8 @@ package org.openscales.core.handler.mouse
 								found=true;
 							}
 						}
-						i++;
-					}	
+						i--;
+					}
 				}
 			}
 			
