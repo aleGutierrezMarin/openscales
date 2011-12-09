@@ -57,7 +57,7 @@ package org.openscales.proj4as {
 			}
 
 			// Transform source points to long/lat, if they aren't already.
-			if (source.projName == "longlat") {
+			if (source.projName == "longlat" && source.projParams.units == "degrees") {
 				point.x *= ProjConstants.D2R; // convert degrees to radians
 				point.y *= ProjConstants.D2R;
 			} else {
@@ -81,12 +81,12 @@ package org.openscales.proj4as {
 				point.x -= dest.from_greenwich;
 			}
 
-			if (dest.projName == "longlat") {
+			if (dest.projName == "longlat" && dest.projParams.units == "degrees") {
 				// convert radians to decimal degrees
 				point.x *= ProjConstants.R2D;
 				point.y *= ProjConstants.R2D;
 			} else { // else project
-				dest.forward(point);
+				point = dest.forward(point);
 				if (dest.to_meter) {
 					point.x /= dest.to_meter;
 					point.y /= dest.to_meter;

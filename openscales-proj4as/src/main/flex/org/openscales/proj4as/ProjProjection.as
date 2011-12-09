@@ -17,7 +17,7 @@ package org.openscales.proj4as {
 		 */
 		public var projParams:ProjParams=new ProjParams();
 		
-		static public const equivalentDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84","IGNF:LAMB93,EPSG:2154"];
+		static public const equivalentDefs:Vector.<String> = new <String>["WGS84,EPSG:4326,CRS:84,IGNF:WGS84G","IGNF:LAMB93,EPSG:2154"];
 		static public const stretchableDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84,EPSG:900913,EPSG:3857"]; 
 		
 		static public const defs:Object={
