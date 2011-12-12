@@ -75,7 +75,7 @@ package org.openscales.core.layer
 			//TODO delete url and params after osmparams work
 			super(name, url, params);
 			
-			//this.blendMode = BlendMode.LAYER;
+			this.blendMode = BlendMode.LAYER;
 			this.buffer = 0;
 			this._defaultMatrixTranform = this.transform.matrix;
 			this.addEventListener(TileEvent.TILE_LOAD_END,tileLoadHandler);
@@ -289,14 +289,14 @@ package org.openscales.core.layer
 						gridRowLength = this.grid.length;
 						gridColLength = this.grid[0].length;
 						
-						for (i = 0; i< gridRowLength; ++i)
+						/*for (i = 0; i< gridRowLength; ++i)
 						{
 							for (j = 0; j< gridColLength; ++j)
 							{
-								this._grid[i][j].scaleX = 1;
-								this._grid[i][j].scaleY = 1;
+								//this._grid[i][j].scaleX = 1;
+								//this._grid[i][j].scaleY = 1;
 							}
-						}
+						}*/
 						
 						// Compute the bitmapBounds
 						TopLeftCorner = new Location(this.grid[0][0].bounds.left, this.grid[0][0].bounds.top, this.projection);
@@ -330,6 +330,7 @@ package org.openscales.core.layer
 							BMD = new BitmapData(drawnWidth, drawnHeight, false, this.map.backTileColor);
 							BMD.draw(this, this.transform.matrix, null, null, null, true);
 							var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
+							//this.map.addChild(fullBitmap);
 							var deltaMatrix:Matrix = this._defaultMatrixTranform.clone();
 							var bmpRequestedResolution:Number = this.requestedResolution.value;
 							fullBmpBounds = this.map.extent.clone().reprojectTo(this.projection);
@@ -382,32 +383,43 @@ package org.openscales.core.layer
 									{
 										bufferTileBound = this.grid[i][j].bounds.getIntersection(fullBmpBounds);
 										tiletopLeftcorner = new Location(bufferTileBound.left, bufferTileBound.top, this.projection);
-										deltaX = (tiletopLeftcorner.x - TopLeftCorner.x)/this.map.resolution.reprojectTo(this.projection).value ;
-										deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/this.map.resolution.reprojectTo(this.projection).value ;
-										recWidth = (this.grid[i][j].bounds.width / this.map.resolution.reprojectTo(this.projection).value) +1;
-										recHeight = (this.grid[i][j].bounds.height / this.map.resolution.reprojectTo(this.projection).value) +1;
+										
+										// Reproject everything into the map projection for tileStretching
+										tiletopLeftcorner = tiletopLeftcorner.reprojectTo(this.map.projection);
+										TopLeftCorner = TopLeftCorner.reprojectTo(this.map.projection);
+										
+										deltaX = (tiletopLeftcorner.x - TopLeftCorner.x)/this.map.resolution.value ;
+										deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/this.map.resolution.value;
+										recWidth = (this.grid[i][j].bounds.reprojectTo(this.map.projection).width / this.map.resolution.value) +1;
+										recHeight = (this.grid[i][j].bounds.reprojectTo(this.map.projection).height / this.map.resolution.value) +1;
 										if (recWidth == 0 || recHeight == 0)
 										{
 											recWidth = 1;
 											recHeight = 1;
 										}
 										region = new Rectangle(deltaX, deltaY, recWidth, recHeight);
-										tile = new BitmapData(recWidth, recHeight);
+										tile = new BitmapData(recWidth, recHeight, true, this.map.backTileColor);
 										tile.copyPixels(BMD, region, new Point(0,0));
 										_backGrid[i][j] = new Bitmap(tile, PixelSnapping.NEVER, true);
+										//_backGrid[i][j] -=
 									}else
 									{
 										var tilePartBounds:Bounds = fullBmpBounds.getIntersection(this.grid[i][j].bounds);
 										tiletopLeftcorner = new Location(tilePartBounds.left, tilePartBounds.top, this.projection);
-										var bmpRequestedResolutionScaled:Number = bmpRequestedResolution/this.scaleX;
-										deltaX = (tiletopLeftcorner.x - TopLeftCorner.x)/this.map.resolution.reprojectTo(this.projection).value;
-										deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/this.map.resolution.reprojectTo(this.projection).value;
-										var finalDeltaX:Number = (tilePartBounds.left - this.grid[i][j].bounds.left)/this.map.resolution.reprojectTo(this.projection).value;
-										var finalDeltaY:Number = -(tilePartBounds.top - this.grid[i][j].bounds.top)/this.map.resolution.reprojectTo(this.projection).value;
-										var recCutWidth:Number = (tilePartBounds.width / this.map.resolution.reprojectTo(this.projection).value )+1;
-										var recCutHeight:Number  = (tilePartBounds.height / this.map.resolution.reprojectTo(this.projection).value )+1;
-										recWidth = (this.grid[i][j].bounds.width / this.map.resolution.reprojectTo(this.projection).value);
-										recHeight = (this.grid[i][j].bounds.height / this.map.resolution.reprojectTo(this.projection).value);
+										
+										// Reproject everything into the map projection for tileStretching
+										tiletopLeftcorner = tiletopLeftcorner.reprojectTo(this.map.projection);
+										TopLeftCorner = TopLeftCorner.reprojectTo(this.map.projection);
+										tilePartBounds = tilePartBounds.reprojectTo(this.map.projection);
+										
+										deltaX = (tiletopLeftcorner.x - TopLeftCorner.x)/this.map.resolution.value;
+										deltaY = -(tiletopLeftcorner.y - TopLeftCorner.y)/this.map.resolution.value;
+										var finalDeltaX:Number = (tilePartBounds.left - this.grid[i][j].bounds.reprojectTo(this.map.projection).left)/this.map.resolution.value;
+										var finalDeltaY:Number = -(tilePartBounds.top - this.grid[i][j].bounds.reprojectTo(this.map.projection).top)/this.map.resolution.value ;
+										var recCutWidth:Number = (tilePartBounds.width / this.map.resolution.value )+1;
+										var recCutHeight:Number  = (tilePartBounds.height / this.map.resolution.value )+1;
+										recWidth = (this.grid[i][j].bounds.reprojectTo(this.map.projection).width / this.map.resolution.value) +1;
+										recHeight = (this.grid[i][j].bounds.reprojectTo(this.map.projection).height / this.map.resolution.value) +1;
 										if (recHeight == 0 || recWidth == 0)
 										{
 											recHeight = 1;
@@ -426,7 +438,7 @@ package org.openscales.core.layer
 											recHeight = recWidth = 4095;
 										}
 										region = new Rectangle(deltaX, deltaY, recCutWidth, recCutHeight);
-										tile = new BitmapData(recWidth, recHeight);
+										tile = new BitmapData(recWidth, recHeight, true, this.map.backTileColor);
 										tile.copyPixels(BMD, region, new Point(finalDeltaX, finalDeltaY));
 										var transitiontile:Bitmap = new Bitmap(tile, PixelSnapping.NEVER, true);
 										_backGrid[i][j] = transitiontile;
@@ -453,7 +465,8 @@ package org.openscales.core.layer
 								{
 									if (!this.grid[i][j].loadComplete)
 									{
-									_backGrid[i][j].scaleX = _backGrid[i][j].scaleY *= 1/this.scaleX;			
+									_backGrid[i][j].scaleY *= 1/(this.scaleY * this.grid[i][j].scaleY);
+									_backGrid[i][j].scaleX *= 1/this.scaleX;
 									this.grid[i][j].addChildAt(_backGrid[i][j], 0);
 									this.grid[i][j].drawn = true;
 									this.addChild(grid[i][j]);
@@ -491,7 +504,7 @@ package org.openscales.core.layer
 				// Round the scale value tu avoid white seams between tiles
 				var temporaryScale:Number = scale;
 				var temporaryWidth:Number = this.tileWidth * temporaryScale;
-				var roundedWidth:Number = Math.floor(temporaryWidth);
+				var roundedWidth:Number = Math.ceil(temporaryWidth);
 				temporaryScale = roundedWidth / this.tileWidth;
 				this._tileWidthErrorPerPixel = ((temporaryWidth - roundedWidth)/this.tileWidth)/scale;
 			
@@ -607,6 +620,7 @@ package org.openscales.core.layer
 				var gridColLength:Number = this._grid.length;
 				var gridBottomBound:Number = this.grid[gridColLength-1][0].bounds.bottom;
 				var deltaLat:Number = bounds.bottom - gridBottomBound;
+				var stretchingScaleY:Number = 1;
 				tileLon = this.tileWidth * this.requestedResolution.value;
 				tileLat = this.tileHeight * this.requestedResolution.value;
 				nbTileToAdd = deltaLat / tileLat;
@@ -629,16 +643,16 @@ package org.openscales.core.layer
 								tileoffsetlat,
 								this.projection);
 							
+							if (this._isStretched)
+							{
 							upRigth = new Location(tileBounds.right, tileBounds.top, tileBounds.projection);
 							upRigth = upRigth.reprojectTo(this.map.projection);
 							bottomLeft = new Location(tileBounds.left, tileBounds.bottom, tileBounds.projection);
 							bottomLeft = bottomLeft.reprojectTo(this.map.projection);
 							stretchedWidth = (upRigth.lon-bottomLeft.lon)/this.requestedResolution.reprojectTo(this.map.projection).value;
 							stretchedHeight = (upRigth.lat-bottomLeft.lat)/this.requestedResolution.reprojectTo(this.map.projection).value;
-							
-							var stretchingScaleX:Number = stretchedWidth/this.tileWidth;
-							var stretchingScaleY:Number = stretchedHeight/this.tileHeight;
-							
+							stretchingScaleY = stretchedHeight/this.tileHeight;
+							}
 							x = this._grid[gridColLength - 1 + j][c].x;
 							
 							y = this._grid[gridColLength - 1 + j][c].y + this.tileHeight * this._grid[gridColLength - 2 + j][c].scaleY;
@@ -1117,7 +1131,7 @@ package org.openscales.core.layer
 					bottomLeft = new Location(bounds.left, bounds.bottom, bounds.projection);
 					bottomLeft = bottomLeft.reprojectTo(this.map.projection);
 					stretchedHeight = (upRigth.lat-bottomLeft.lat)/this.requestedResolution.reprojectTo(this.map.projection).value;;
-					stretchedHeight = Math.round(stretchedHeight);
+					stretchedHeight = Math.ceil(stretchedHeight);
 					heightMultiplicator = stretchedHeight/this.tileHeight;
 					if (prepend)
 					{
