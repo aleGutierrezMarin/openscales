@@ -122,7 +122,7 @@ package org.openscales.core.layer
 		
 		private function updateCurrentProjection(evt:MapEvent = null):void {
 			if ((this.map) && (this._displayProjection != this.map.projection)) {
-				if (this.features.length > 0) {	
+				if (this.features && this.features.length > 0) {	
 					for each (var f:Feature in this.features) {
 						f.geometry.transform(this._displayProjection, this.map.projection);
 					}
