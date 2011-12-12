@@ -268,8 +268,7 @@
 				this.layerSwitcherLabel.addEventListener(MouseEvent.CLICK, this.onThisLabelClick);
 				this._layer.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onOtherLabelClick);
 				this._layer.map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerRemoved);
-				this._layer.map.addEventListener(MapEvent.RESOLUTION_CHANGED, this.resetTimer);
-				this._layer.map.addEventListener(MapEvent.CENTER_CHANGED, this.resetTimer);	
+				this._layer.map.addEventListener(MapEvent.RELOAD, this.resetTimer);
 			}
 			
 			private function getComponentFromString(value:String):UIComponent{
