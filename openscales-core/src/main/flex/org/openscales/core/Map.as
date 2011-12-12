@@ -86,7 +86,7 @@ package org.openscales.core
 		/**
 		 * Default zoomIn factor
 		 */
-		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.1;
+		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.11;
 
 		/**
 		 * Number of attempt for downloading an image tile
@@ -611,12 +611,16 @@ package org.openscales.core
 		 * Return a Pixel which is the passed-in Location, translated into map
 		 * pixels by the current base layer
 		 */
-		public function getMapPxFromLocation(lonlat:Location):Pixel {
+		public function getMapPxFromLocation(lonlat:Location, res:Resolution = null):Pixel {
+			if (!res)
+			{
+				res = this.resolution;
+			}
 			var px:Pixel = null;
-			var b:Bounds = this.extent;
+			var b:Bounds = this.getExtentForResolution(res);
 			if (lonlat != null && b) {
-				var resolution:Number = this.resolution.value;
-				px = new Pixel(Math.round((lonlat.lon - b.left) / resolution), Math.round((b.top - lonlat.lat) / resolution));
+
+				px = new Pixel((lonlat.lon - b.left) / res.value, (b.top - lonlat.lat) / res.value);
 			}	
 			return px;
 		}
@@ -1563,6 +1567,8 @@ package org.openscales.core
 			this._center = this.center.reprojectTo(event.newProjection);
 			this._maxResolution = this._maxResolution.reprojectTo(event.newProjection);
 			this._minResolution = this._minResolution.reprojectTo(event.newProjection);
+			this._timer.reset();
+			this._timer.start();
 			this.dispatchEvent(event);
 		}
 		/**
