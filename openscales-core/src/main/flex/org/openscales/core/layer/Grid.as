@@ -147,7 +147,9 @@ package org.openscales.core.layer
 			
 			if (projectionChangedCache)
 			{
+				this.clear();
 				_initialized = false;
+				fullRedraw = true;
 			}
 			var ratio:Number;
 			
@@ -330,7 +332,6 @@ package org.openscales.core.layer
 							BMD = new BitmapData(drawnWidth, drawnHeight, false, this.map.backTileColor);
 							BMD.draw(this, this.transform.matrix, null, null, null, true);
 							var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
-							//this.map.addChild(fullBitmap);
 							var deltaMatrix:Matrix = this._defaultMatrixTranform.clone();
 							var bmpRequestedResolution:Number = this.requestedResolution.value;
 							fullBmpBounds = this.map.extent.clone().reprojectTo(this.projection);
