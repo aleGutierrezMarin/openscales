@@ -337,7 +337,7 @@ package org.openscales.core.layer
 		
 		// Getters and setters
 		/**
-		 * The features list calculated from the display list
+		 * The list of features contained by this layer
 		 */ 
 		public function get features():Vector.<Feature> {
 			var _features:Vector.<Feature> = new Vector.<Feature>();

@@ -86,17 +86,10 @@ package org.openscales.fx
 			this.addElementAt(mapContainer, 0);
 			mapContainer.addChild(this._map);
 		}
-		/**
-		 * Add a Flex wrapper layer to the map
-		 */
-		/*private function addFxLayer(l:FxLayer):void {
-			// Add the layer to the map
-			l.fxmap = this;
-			l.configureLayer();
-			if(l.nativeLayer)
-				this._map.addLayer(l.nativeLayer);
-		}*/
 		
+		/**
+		 * @private
+		 */
 		public function set resolution(value:*):void
 		{
 			if(value is Resolution)
@@ -118,6 +111,9 @@ package org.openscales.fx
 			}
 		}
 		
+		/**
+		 * Resolution of the map
+		 */ 
 		public function get resolution():Resolution
 		{
 			return this.map.resolution;

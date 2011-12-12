@@ -77,13 +77,6 @@ package org.openscales.fx.layer
 				(this._layer as GeoRss).useFeedTitle = value;
 		}
 		
-		public function get features():Vector.<Feature>
-		{
-			if(this._layer != null)
-				return (this._layer as GeoRss).features;
-			return null;
-		}
-		
 		override public function set name(value:String):void{
 			if(this._layer != null)
 				(this._layer as GeoRss).name = value;

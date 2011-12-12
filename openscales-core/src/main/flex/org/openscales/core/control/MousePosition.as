@@ -53,9 +53,9 @@ package org.openscales.core.control
 		private var _displayProjection:String = "EPSG:4326";
 		
 		/**
-		 * MousePosition Constructor
+		 * MousePosition constructor
 		 * 
-		 * @param position
+		 * @param position. If null, position will be (0,0)
 		 */
 		public function MousePosition(position:Pixel = null) {
 			super(position);

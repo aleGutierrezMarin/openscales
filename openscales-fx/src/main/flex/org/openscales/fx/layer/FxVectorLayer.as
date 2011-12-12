@@ -1,5 +1,6 @@
 package org.openscales.fx.layer
 {
+	import org.openscales.core.feature.Feature;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	
@@ -25,6 +26,13 @@ package org.openscales.fx.layer
 			if (this._layer) {
 				(this._layer as VectorLayer).style = value; 
 			}
+		}
+		
+		public function get features():Vector.<Feature>
+		{
+			if(this._layer != null)
+				return (this._layer as VectorLayer).features;
+			return null;
 		}
 		
 		public function get editable():Boolean{

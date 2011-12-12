@@ -31,7 +31,6 @@ package org.openscales.core.layer.ogc
 	 * @see GPX 1.1 specification: all coordinates are relative to the WGS84 datum
 	 * 
 	 */
-	
 	public class GPX extends VectorLayer implements IFileUser
 	{
 		private static const ACCEPTED_FILE_EXTENSIONS:Vector.<String> = new <String>["xml","gpx"];
