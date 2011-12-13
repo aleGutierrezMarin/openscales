@@ -200,7 +200,7 @@ package org.openscales.fx.layer
 		}
 		
 		/**
-		 * Indicates the max extent in the layer's projection (can be set as a Bounds of as a string: "x1,y1,x2,y2,projection")
+		 * Indicates the max extent in the layer's projection (can be set as a Bounds or as a string: "x1,y1,x2,y2,projection")
 		 */
 		public function get maxExtent():Bounds {
 			if(this._layer)
@@ -215,26 +215,28 @@ package org.openscales.fx.layer
 		public function set maxExtent(value:*):void {
 			if(value)
 			{
-				var length:Number = (value.split(",")).length;
-				
-				var newExtent:Bounds;
-				
-				if(length == 4)
-				{
-					if(this._layer)
-						this._layer.maxExtent = Bounds.getBoundsFromString(value+",EPSG:4326");
-					else if(this._projection)
-						this._maxExtent = Bounds.getBoundsFromString(value+",EPSG:4326");
-				}
-					
-				else
-				{
-					this._maxExtent = Bounds.getBoundsFromString(value);
-					
+				if(value is Bounds) {
+					this._maxExtent = value as Bounds;
 					if(this._layer)
 						this._layer.maxExtent = this._maxExtent;
+				} else if (value is String) {
+					var length:Number = (value.split(",")).length;
+					var newExtent:Bounds;
+					if(length == 4)
+					{
+						if(this._layer)
+							this._layer.maxExtent = Bounds.getBoundsFromString(value+",EPSG:4326");
+						else if(this._projection)
+							this._maxExtent = Bounds.getBoundsFromString(value+",EPSG:4326");
+					}
+					else
+					{
+						this._maxExtent = Bounds.getBoundsFromString(value);
+						
+						if(this._layer)
+							this._layer.maxExtent = this._maxExtent;
+					}
 				}
-					
 			}
 		}
 		

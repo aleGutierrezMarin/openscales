@@ -4,6 +4,7 @@ package org.openscales.core.layer.ogc
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -155,6 +156,8 @@ package org.openscales.core.layer.ogc
 				}
 				this.addFeatures(lineStringFeatureVector);
 				this.addFeatures(pointFeatureVector);
+				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_CHANGED, this);
+				this.map.dispatchEvent(evt);
 				
 			}
 			else {
