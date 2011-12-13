@@ -26,7 +26,7 @@ package org.openscales.fx.layer
 		public function set styles(value:String):void {
 			if(this._layer != null)
 				//((this.layer as WMS).params as WMSParams).styles = value;
-				(this._layer as WMS).style=value;
+				(this._layer as WMS).styles=value;
 		}
 
 		public function set format(value:String):void {
