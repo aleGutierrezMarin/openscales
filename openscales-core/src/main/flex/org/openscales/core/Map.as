@@ -38,6 +38,7 @@ package org.openscales.core
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	use namespace os_internal;
 	
@@ -624,6 +625,11 @@ package org.openscales.core
 			{
 				res = this.resolution;
 			}
+			
+			if(!ProjProjection.isEquivalentProjection(lonlat.projection, this.projection)) {
+				lonlat.reprojectTo(this.projection);
+			}
+			
 			var px:Pixel = null;
 			var b:Bounds = this.getExtentForResolution(res);
 			if (lonlat != null && b) {
