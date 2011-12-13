@@ -41,7 +41,7 @@ package org.openscales.core.layer.ogc
 		 * @private
 		 * Style of the layers to display
 		 */
-		protected var _style:String="";
+		protected var _styles:String="";
 		
 		/**
 		 * @private
@@ -86,13 +86,13 @@ package org.openscales.core.layer.ogc
 		 * 
 		 * @param name Name of the layers to display
 		 * @param url URL of the service to request
-		 * @param style Styles of the layers to display
+		 * @param styles Styles of the layers to display
 		 * 
 		 */
 		public function WMS(name:String = "",
 							url:String = "",
 							layers:String = "",
-							style:String = "",
+							styles:String = "",
 							format:String = "image/png")
 		{
 			super(name, url);
@@ -101,14 +101,14 @@ package org.openscales.core.layer.ogc
 			this._layerName = name;
 			super.url = url;
 			this._layers = layers;
-			this._style = style;
+			this._styles = styles;
 			this._format = format;
 			
 			// In WMS we must be in single tile mode
 			this.tiled = false;
 			
 			// Call the tile provider to generate the request and get the tile requested
-			this._tileProvider = new WMSTileProvider(url, this._version, layers, this.projection, style, format);
+			this._tileProvider = new WMSTileProvider(url, this._version, layers, this.projection, styles, format);
 		}
 		
 		//
@@ -195,18 +195,18 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Get and set the style of the WMS protocol
+		 * Get and set the styles of the WMS protocol
 		 */
-		public function get style():String
+		public function get styles():String
 		{
-			return _style;
+			return _styles;
 		}
 		/**
 		 * @private
 		 */
-		public function set style(value:String):void
+		public function set styles(value:String):void
 		{
-			_style = value;
+			_styles = value;
 			
 			// Update the tileProvider style at the same time
 			if(this._tileProvider != null){
