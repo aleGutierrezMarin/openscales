@@ -691,11 +691,14 @@ package org.openscales.core.format
 		{
 			var coordinates:Array;
 			var point:Point;
-			
+			 
 			var lineNode:XML= placemark..*::LineString[0];
+			XML.ignoreWhitespace = true;
 			var lineData:String = lineNode..*::coordinates[0].toString();
 			
-			lineData = lineData.replace("\n"," ");
+			lineData = lineData.split("\n").join("");
+			lineData = lineData.split("\t").join("");
+			
 			lineData = lineData.replace(/^\s*(.*?)\s*$/g, "$1");
 			coordinates = lineData.split(" ");
 			
@@ -754,7 +757,7 @@ package org.openscales.core.format
 		 */ 
 		private function loadPolygonData(_Pdata:String):LinearRing
 		{
-			_Pdata = _Pdata.replace("\n"," ");
+			_Pdata = _Pdata.split("\n").join("");
 			_Pdata = _Pdata.replace(/^\s*(.*?)\s*$/g, "$1");
 			var coordinates:Array = _Pdata.split(" ");
 			var Ppoints:Vector.<Number> = new Vector.<Number>();

@@ -23,6 +23,20 @@
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.FxMap;
 			
+			public static const DRAWLABEL:String="label";
+			public static const DRAWPOINT:String="point";
+			public static const DRAWSHAPE:String="shape";
+			public static const DRAWPATH:String="path";
+			public static const DRAWPOLYGON:String="polygon";
+			public static const DRAWSELECT:String="select";
+			public static const DRAWDELETE:String="delete";
+			public static const DRAWEDIT:String="edit";
+			public static const DRAWMOVE:String="move";
+			public static const DRAWMANAGE:String="manage";
+			public static const DRAWADD:String="add";
+			public static const DRAWIMPORT:String="import";
+			public static const DRAWEXPORT:String="export";
+			
 			[Bindable]
 			private var _layer:VectorLayer;
 			private var _labelStyle:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
@@ -40,19 +54,7 @@
 			private var _multipleModeDisplayTools:Vector.<String>=new Vector.<String>();
 			private var _multipleModeInitTools:Vector.<String>=new Vector.<String>();
 			
-			public static var DRAWLABEL:String="label";
-			public static var DRAWPOINT:String="point";
-			public static var DRAWSHAPE:String="shape";
-			public static var DRAWPATH:String="path";
-			public static var DRAWPOLYGON:String="polygon";
-			public static var DRAWSELECT:String="select";
-			public static var DRAWDELETE:String="delete";
-			public static var DRAWEDIT:String="edit";
-			public static var DRAWMOVE:String="move";
-			public static var DRAWMANAGE:String="manage";
-			public static var DRAWADD:String="add";
-			public static var DRAWIMPORT:String="import";
-			public static var DRAWEXPORT:String="export";
+		
 			
 			
 			[Bindable]
