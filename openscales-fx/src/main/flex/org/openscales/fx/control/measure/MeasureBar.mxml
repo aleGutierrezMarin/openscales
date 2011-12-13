@@ -21,22 +21,22 @@
 			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.geometry.basetypes.Unit;
 			
-			public static var SEXAGESIMAL:String = "dms";
-			public static var DEGREE:String = "deg";
-			public static var RADIAN:String = "rad";
-			public static var METRIC:String = "metric";
+			public static const SEXAGESIMAL:String = "dms";
+			public static const DEGREE:String = "deg";
+			public static const RADIAN:String = "rad";
+			public static const METRIC:String = "metric";
 			
-			public static var METER:String = "m";
-			public static var KILOMETER:String = "km";
+			public static const METER:String = "m";
+			public static const KILOMETER:String = "km";
 			
-			public static var FOOT:String = "ft";
-			public static var MILE:String = "mi";
-			public static var INCH:String = "in";
-			public static var ENGLISH:String = "english";
+			public static const FOOT:String = "ft";
+			public static const MILE:String = "mi";
+			public static const INCH:String = "in";
+			public static const ENGLISH:String = "english";
 			
-			public static var DISTANCEMEASURE:String="distance";
-			public static var AZIMUTHMEASURE:String="azimuth";
-			public static var SURFACEMEASURE:String="surface";
+			public static const DISTANCEMEASURE:String="distance";
+			public static const AZIMUTHMEASURE:String="azimuth";
+			public static const SURFACEMEASURE:String="surface";
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-12.png")]
