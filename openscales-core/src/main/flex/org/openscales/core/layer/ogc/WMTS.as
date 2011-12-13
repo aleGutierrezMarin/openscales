@@ -50,6 +50,7 @@ package org.openscales.core.layer.ogc
 		private var _useCapabilities:Boolean = false;
 		private var _loadingCapabilities:Boolean = false;
 		private var _req:XMLRequest = null;
+		private var _formatSetted:Boolean = false;
 		/**
 		 * Constructor
 		 * 
@@ -72,7 +73,7 @@ package org.openscales.core.layer.ogc
 			// building the tile provider
 			this._tileProvider = new WMTSTileProvider(url,format,tileMatrixSet,layer,tileMatrixSets);
 			
-			this.format = WMTS.WMTS_DEFAULT_FORMAT;
+			//this.format = WMTS.WMTS_DEFAULT_FORMAT;
 			
 			super(name, url);
 			this.tileMatrixSet = tileMatrixSet;
@@ -171,6 +172,9 @@ package org.openscales.core.layer.ogc
 			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
 			if (this.style == null)
 				this.style = layer.getValue("DefaultStyle") as String;
+			
+			if (!_formatSetted)
+			this.format = (layer.getValue("Formats") as Array)[0];
 				
 			//Setting available projections
 			//Not really needed for WMTS as different projections are in the tileMatrixSets
@@ -294,6 +298,7 @@ package org.openscales.core.layer.ogc
 		 */
 		public function set format(value:String):void {
 			this._tileProvider.format = value;
+			this._formatSetted = true;
 		}
 		
 		/**
