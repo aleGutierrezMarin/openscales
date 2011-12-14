@@ -646,17 +646,20 @@ package org.openscales.core.layer
 							
 							if (this._isStretched)
 							{
-							upRigth = new Location(tileBounds.right, tileBounds.top, tileBounds.projection);
-							upRigth = upRigth.reprojectTo(this.map.projection);
-							bottomLeft = new Location(tileBounds.left, tileBounds.bottom, tileBounds.projection);
-							bottomLeft = bottomLeft.reprojectTo(this.map.projection);
-							stretchedWidth = (upRigth.lon-bottomLeft.lon)/this.requestedResolution.reprojectTo(this.map.projection).value;
-							stretchedHeight = (upRigth.lat-bottomLeft.lat)/this.requestedResolution.reprojectTo(this.map.projection).value;
-							stretchingScaleY = stretchedHeight/this.tileHeight;
+								upRigth = new Location(tileBounds.right, tileBounds.top, tileBounds.projection);
+								upRigth = upRigth.reprojectTo(this.map.projection);
+								bottomLeft = new Location(tileBounds.left, tileBounds.bottom, tileBounds.projection);
+								bottomLeft = bottomLeft.reprojectTo(this.map.projection);
+								stretchedWidth = (upRigth.lon-bottomLeft.lon)/this.requestedResolution.reprojectTo(this.map.projection).value;
+								stretchedHeight = (upRigth.lat-bottomLeft.lat)/this.requestedResolution.reprojectTo(this.map.projection).value;
+								stretchingScaleY = stretchedHeight/this.tileHeight;
 							}
 							x = this._grid[gridColLength - 1 + j][c].x;
 							
-							y = this._grid[gridColLength - 1 + j][c].y + this.tileHeight * this._grid[gridColLength - 2 + j][c].scaleY;
+							if (gridColLength > 1)
+								y = this._grid[gridColLength - 1 + j][c].y + this.tileHeight * this._grid[gridColLength - 2 + j][c].scaleY;
+							else
+								y = this._grid[gridColLength - 1 + j][c].y + this.tileHeight * this._grid[gridColLength - 1 + j][c].scaleY;
 							
 							px = new Pixel(x, y);
 							tile = this.addTile(tileBounds, px);
