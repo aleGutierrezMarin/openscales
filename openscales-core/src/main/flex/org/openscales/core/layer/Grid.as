@@ -1068,7 +1068,14 @@ package org.openscales.core.layer
 				bounds = bounds.reprojectTo(this.projection);
 			}
 			var buffer:Number = this.buffer || 1;
+			var counter:Number = 0;
 			while (true) {
+				counter++;
+				if (counter > 500)
+				{
+					this._initialized = false;
+					break;
+				}
 				var tlLayer:Pixel = this.grid[0][0].position;
 				var tileScaleY:Number = this.grid[0][0].scaleY;
 				var tileScaleX:Number = this.grid[0][0].scaleX;

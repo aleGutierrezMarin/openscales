@@ -23,6 +23,7 @@ package org.openscales.core.control
 			// create map
 			var _map:Map = new Map();
 			_map.size = new Size(1200, 700);
+			_map.projection = "EPSG:900913";
 
 			// add layers
 			var mapnik:Mapnik = new Mapnik("Mapnik"); // a base layer
