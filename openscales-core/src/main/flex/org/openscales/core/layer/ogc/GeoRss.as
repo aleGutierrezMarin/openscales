@@ -119,7 +119,7 @@ package org.openscales.core.layer.ogc
 					Trace.debug("Restart timer if layer is displayed again");
 				}		
 			}
-			if (url){
+			if (url && url != ""){
 				if (! this._request) {
 					this.loading = true;
 					this._request = new XMLRequest(url, onSuccess, onFailure);

@@ -81,7 +81,7 @@ package org.openscales.core.layer.ogc
 				this.clear();
 				return;
 			}
-			if (url)
+			if (url && url != "")
 			{
 				if (! this._request) {
 					this.loading = true;
