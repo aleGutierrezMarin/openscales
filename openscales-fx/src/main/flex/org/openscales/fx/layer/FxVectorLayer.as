@@ -35,6 +35,14 @@ package org.openscales.fx.layer
 			return null;
 		}
 		
+		public function get data():XML{
+			return (this._layer as VectorLayer).data;
+		}
+		
+		public function set data(value:XML):void{
+			(this._layer as VectorLayer).data = value;
+		}
+		
 		public function get editable():Boolean{
 			return (this._layer as VectorLayer).editable;
 		}
