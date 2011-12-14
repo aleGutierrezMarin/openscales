@@ -48,19 +48,13 @@
 			 */ 
 			private var _srsUnits:String;
 			
-			/**
-			 * Text before coordinates in the label, which doesn't change.
-			 */
+		
 			private var _prefix:String = "";
 			
-			/**
-			 * the caracter between the lon and the lat
-			 */
+			
 			private var _separator:String = ", ";
 			
-			/**
-			 * Text after coordinates in the label, which doesn't change.
-			 */
+			
 			private var _suffix:String = "";
 			
 			private var _longitude:String = "";
@@ -460,11 +454,17 @@
 			}
 			
 			/**
-			 * Getters &amp; setters
+			 * Text before coordinates in the label, which doesn't change.
+			 * 
+			 * @default empty string
 			 */
 			public function get prefix():String {
 				return _prefix;
 			}
+			
+			/**
+			 * @private
+			 */ 
 			public function set prefix(value:String):void {
 				_prefix = value;
 			}
@@ -476,9 +476,18 @@
 				_separator = value;
 			}
 			
+			/**
+			 * Text after coordinates in the label, which doesn't change.
+			 *
+			 * @default empty string
+			 */
 			public function get suffix():String {
 				return _suffix;
 			}
+			
+			/**
+			 * @private
+			 */ 
 			public function set suffix(value:String):void {
 				_suffix = value;
 			}
@@ -584,7 +593,6 @@
 			}
 			
 			/**
-			 * displayMetricUnits getter
 			 * Contains the metric units currently displayed.
 			 * <p>Values can be Unit.METER, Unit.KILOMETER, Unit.CENTIMETER, Unit.DEGREE, Unit.SEXAGESIMAL</p>
 			 */ 
@@ -593,7 +601,7 @@
 			} 
 			
 			/**
-			 * displayMetricUnits setter
+			 * @private
 			 */ 
 			public function set displayMetricUnits(value:String):void
 			{
