@@ -354,6 +354,12 @@ package org.openscales.core.layer
 		
 		private function computeFeaturesBbox():void {
 			var features:Vector.<Feature> = this.features;
+			if (!features)
+			{
+				this._featuresBbox=null;
+				return;
+			}
+				
 			var i:uint = features.length;
 			if (i==0) {
 				this._featuresBbox=null;
