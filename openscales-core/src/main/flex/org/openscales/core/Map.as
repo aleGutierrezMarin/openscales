@@ -42,6 +42,14 @@ package org.openscales.core
 	use namespace os_internal;
 	
 	/**
+	 * This event is dispatched when the locale has changed
+	 *
+	 *  @eventType org.openscales.core.events.I18NEvent.LOCALE_CHANGED
+	 *  
+	 */
+	[Event(name="openscales.localeChanged", type="org.openscales.core.events.I18NEvent")]
+	
+	/**
 	 * Instances of Map are interactive maps that can be embedded in a web pages or in
 	 * Flex or AIR applications.
 	 *

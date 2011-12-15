@@ -258,6 +258,8 @@ package org.openscales.core.layer
 		
 		/**
 		 * Minimum number of lines to display for the graticule.
+		 * 
+		 * @default 3
 		 */
 		public function get minNumberOfLines():uint
 		{
