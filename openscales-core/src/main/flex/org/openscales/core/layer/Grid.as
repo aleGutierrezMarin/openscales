@@ -50,6 +50,7 @@ package org.openscales.core.layer
 		private var _cumulatedRoundedValueX:Number = 0;
 		private var _cumulatedRoundedValueY:Number = 0;
 		private var _tileWidthErrorPerPixel:Number = 0;
+		private var _tileHeightErrorPerPixel:Number = 0;
 		private var _isStretched:Boolean = false;
 
 		
@@ -331,6 +332,7 @@ package org.openscales.core.layer
 					this._cumulatedRoundedValueX = 0;
 					this._cumulatedRoundedValueY = 0;
 					this._tileWidthErrorPerPixel = 0;
+					this._tileHeightErrorPerPixel = 0;
 					this.transform.matrix = this._defaultMatrixTranform.clone();
 					this._realMatrixTranform = this.transform.matrix.clone();
 					this._initialRoundedMatrixTransform = this.transform.matrix.clone();
@@ -489,14 +491,19 @@ package org.openscales.core.layer
 				var deltaX:Number = this.transform.matrix.tx -  this._initialRoundedMatrixTransform.tx;
 				var deltaY:Number = this.transform.matrix.ty -  this._initialRoundedMatrixTransform.ty;
 				_realMatrixTranform.tx += deltaX + (_tileWidthErrorPerPixel*deltaX);
-				_realMatrixTranform.ty += deltaY + (_tileWidthErrorPerPixel*deltaY);
+				_realMatrixTranform.ty += deltaY + (_tileHeightErrorPerPixel*deltaY);
 				
 				// Round the scale value tu avoid white seams between tiles
-				var temporaryScale:Number = scale;
-				var temporaryWidth:Number = this.tileWidth * temporaryScale * this.grid[0][0].scaleY;
+				var temporaryScaleX:Number = scale;
+				var temporaryScaleY:Number = scale;
+				var temporaryWidth:Number = this.tileWidth * temporaryScaleX * this.grid[0][0].scaleX;
+				var temporaryHeigth:Number = this.tileHeight * temporaryScaleY * this.grid[0][0].scaleY;
 				var roundedWidth:Number = Math.round(temporaryWidth);
-				temporaryScale = roundedWidth / this.tileWidth / this.grid[0][0].scaleY ;
+				var roundedHeigth:Number = Math.round(temporaryHeigth);
+				temporaryScaleX = roundedWidth / this.tileWidth / this.grid[0][0].scaleX ;
+				temporaryScaleY = roundedHeigth / this.tileHeight / this.grid[0][0].scaleY ;
 				this._tileWidthErrorPerPixel = ((temporaryWidth - roundedWidth)/this.tileWidth)/scale;
+				this._tileHeightErrorPerPixel = ((temporaryHeigth - roundedHeigth)/this.tileHeight)/scale;
 			
 				// Apply the accurate transform matrix to avoid error accumulation due to scale rounding 
 				this.transform.matrix = this._realMatrixTranform.clone();
@@ -505,7 +512,7 @@ package org.openscales.core.layer
 				newTransMatrix = this.transform.matrix.clone();
 				newTransMatrix.tx -= (offSet.x);
 				newTransMatrix.ty -= (offSet.y);
-				newTransMatrix.scale(temporaryScale/this.scaleX, temporaryScale/this.scaleX);
+				newTransMatrix.scale(temporaryScaleX/this.scaleX, temporaryScaleY/this.scaleY);
 				newTransMatrix.tx += (offSet.x );
 				newTransMatrix.ty += (offSet.y );
 				
@@ -513,7 +520,7 @@ package org.openscales.core.layer
 				var unroundedTransMatrix:Matrix = this.transform.matrix.clone();
 				unroundedTransMatrix.tx -= (offSet.x);
 				unroundedTransMatrix.ty -= (offSet.y);
-				unroundedTransMatrix.scale(scale/this.scaleX, scale/this.scaleX);
+				unroundedTransMatrix.scale(scale/this.scaleY, scale/this.scaleY);
 				unroundedTransMatrix.tx += (offSet.x );
 				unroundedTransMatrix.ty += (offSet.y );
 				
@@ -526,7 +533,7 @@ package org.openscales.core.layer
 				newTransMatrix = this.transform.matrix.clone();
 				newTransMatrix.tx -= (offSet.x);
 				newTransMatrix.ty -= (offSet.y);
-				newTransMatrix.scale(scale/this.scaleX, scale/this.scaleX);
+				newTransMatrix.scale(scale/this.scaleX, scale/this.scaleY);
 				newTransMatrix.tx += (offSet.x );
 				newTransMatrix.ty += (offSet.y );
 				this.transform.matrix = newTransMatrix.clone();
@@ -1251,7 +1258,7 @@ package org.openscales.core.layer
 		 */
 		override public function set y(value:Number):void
 		{
-			value -= (value - this.transform.matrix.ty)*this._tileWidthErrorPerPixel;
+			value -= (value - this.transform.matrix.ty)*this._tileHeightErrorPerPixel;
 			var epsilon:Number = value - Math.round(value);
 			this._cumulatedRoundedValueY += epsilon;
 			super.y = Math.round(value);
