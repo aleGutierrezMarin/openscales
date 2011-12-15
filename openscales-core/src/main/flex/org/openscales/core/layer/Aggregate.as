@@ -23,6 +23,7 @@ package org.openscales.core.layer
 	{
 		protected var _layers:Vector.<Layer>;
 		private var _stopPropagating:Boolean = true;
+		
 		/**
 		 * Constructor
 		 */ 

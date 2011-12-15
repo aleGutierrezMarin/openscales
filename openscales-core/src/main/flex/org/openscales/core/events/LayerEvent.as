@@ -3,6 +3,7 @@ package org.openscales.core.events
 	import flash.events.Event;
 	
 	import org.openscales.core.layer.Layer;
+	import mx.controls.Button;
 	
 	/**
 	 * Event related to a layer.
@@ -26,16 +27,22 @@ package org.openscales.core.events
 		
 		/**
 		 * Event type dispatched when a layer is added to the map.
+		 * 
+		 * @eventType openscales.addlayer
 		 */ 
 		public static const LAYER_ADDED:String="openscales.addlayer";
 		
 		/**
 		 * Event type dispatched when a layer is removed form the map.
+		 * 
+		 * @eventType openscales.removelayer
 		 */
 		public static const LAYER_REMOVED:String="openscales.removelayer";
 		
 		/**
 		 * Event type dispatched when a layer has been updated (FIXME : need to be confirmed).
+		 * 
+		 * @eventType openscales.changelayer
 		 */
 		public static const LAYER_CHANGED:String="openscales.changelayer";
 		
