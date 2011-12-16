@@ -264,8 +264,8 @@
 				}
 				
 				this.parent.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
-				this.layerSwitcherLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
-				this.layerSwitcherLabel.addEventListener(MouseEvent.CLICK, this.onThisLabelClick);
+				this.layerLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
+				this.layerLabel.addEventListener(MouseEvent.CLICK, this.onThisLabelClick);
 				this._layer.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onOtherLabelClick);
 				this._layer.map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerRemoved);
 				this._layer.map.addEventListener(MapEvent.RELOAD, this.resetTimer);
@@ -382,7 +382,7 @@
 				this._isDrawingLayer = false;
 				if((this._layer != null) )
 				{	
-					layerSwitcherLabel.text = this._layer.name;
+					layerLabel.text = this._layer.name;
 					
 					if((this._layer is VectorLayer) && (this._layer as VectorLayer).editable)
 						this._isDrawingLayer = true;
@@ -489,7 +489,7 @@
 		
 		<ChangeLayerVisibility layer="{_layer}" />
 		
-		<s:Label id="layerSwitcherLabel" width="100%" text="{_layer.name}" />
+		<s:Label id="layerLabel" width="100%" text="{_layer.name}" />
 		
 		<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 		
