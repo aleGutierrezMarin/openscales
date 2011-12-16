@@ -4,12 +4,12 @@ package org.openscales.fx.layer
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.WMTS100;
 	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.fx.FxMap;
 	import org.openscales.fx.layer.FxGrid;
 	
@@ -17,16 +17,19 @@ package org.openscales.fx.layer
 	{
 		private var _url:String = null;
 		private var _useCapabilities:Boolean = true;
+		private var _tmssProvided:Boolean = false;
+		private var _styleProvided:Boolean = false;
 		private var _WMTSlayer:String = null;
 		private var _tileMatrixSet:String = null;
 		private var _tileMatrixSets:HashMap = null;
 		private var _isConfigured:Boolean = false;
 		private var _format:String = "image/jpg";
+		private var _style:String = null;
 		
 		public function FxWMTS()
 		{
 			super();
-			this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets);
+			this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets, this._style);
 		}
 
 		override public function configureLayer():Layer {
@@ -43,13 +46,20 @@ package org.openscales.fx.layer
 			this._layer.alpha = super.alpha;
 			this._layer.visible = super.visible;
 			
-			
 			if(!this._useCapabilities)
 			{
 				(this._layer as WMTS).layer = this._WMTSlayer;
 				(this._layer as WMTS).tileMatrixSets = this._tileMatrixSets;
 				(this._layer as WMTS).tileMatrixSet = this._tileMatrixSet;
+				(this._layer as WMTS).style = this._style;
 				(this._layer as WMTS).format = this._format;	
+			}else
+			{
+				if (this._styleProvided)
+					(this._layer as WMTS).style = this._style;
+				
+				if (this._tmssProvided)
+					(this._layer as WMTS).tileMatrixSets = this._tileMatrixSets;
 			}
 			
 			return this._layer;
@@ -82,6 +92,12 @@ package org.openscales.fx.layer
 		}
 		
 		public function get style():String {
+			
+			this._styleProvided = true;
+			
+			if (this._tmssProvided && this._styleProvided)
+				this._useCapabilities = false;
+			
 			return (this._layer as WMTS).style;
 		}
 		public function set style(value:String):void {
@@ -107,8 +123,10 @@ package org.openscales.fx.layer
 		public function set tileMatrixSets(value:HashMap):void
 		{
 			this._tileMatrixSets = value;
+			this._tmssProvided = true;
 			
-			this._useCapabilities = false;
+			if (this._tmssProvided && this._styleProvided)
+				this._useCapabilities = false;
 			
 			if(this._layer)
 				(this._layer as WMTS).tileMatrixSets = value;

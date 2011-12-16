@@ -46,8 +46,9 @@ package org.openscales.core.layer.ogc
 		 * A tile provider for this layer.
 		 */ 
 		private var _tileProvider:WMTSTileProvider = null;
-		//	private var _projection:String = Geometry.DEFAULT_SRS_CODE;
 		private var _useCapabilities:Boolean = false;
+		private var _tmssProvided:Boolean = false;
+		private var _styleProvided:Boolean = false;
 		private var _loadingCapabilities:Boolean = false;
 		private var _req:XMLRequest = null;
 		private var _formatSetted:Boolean = false;
@@ -58,21 +59,34 @@ package org.openscales.core.layer.ogc
 		 * @param url String The url where is located the WMTS service that will be queried by the instance
 		 * @param layer String The desired layer identifier. It must be a valid identifier (ie it must be in getCapablities)
 		 * @param tileMatrixSet String The desired matrix set identifier. It must be a valid identifier (ie it must be in getCapablities)
-		 * @param format String The Mime type defining the format for returned tiles (see getCapablities for supported format)
+		 * @param tileMatrixSets HashMap A HashMap containing all the tileMatrixSets description
 		 * @param style String the desired style identifier for returned tiles (see getCapablities for supported format)
-		 * @param matrixIds Object An object containing for each matrix (of the matrix set) its identifier an its scaleDenominator
 		 */ 
 		public function WMTS(name:String, 
 							 url:String, 
 							 layer:String,
 							 tileMatrixSet:String,
-							 tileMatrixSets:HashMap = null)
+							 tileMatrixSets:HashMap = null,
+							 style:String = null)
 		{
+			
+			_styleProvided = true;
+			_tmssProvided = true;
 			if(!tileMatrixSets)
+			{
 				_useCapabilities = true;
+				_tmssProvided = false;
+			}
+			
+			if (!style)
+			{
+				_useCapabilities = true;
+				_styleProvided = false;
+			}
+			
 			// building the tile provider
 			this._tileProvider = new WMTSTileProvider(url,format,tileMatrixSet,layer,tileMatrixSets);
-			
+			this._tileProvider.style = style;
 			//this.format = WMTS.WMTS_DEFAULT_FORMAT;
 			
 			super(name, url);
@@ -169,8 +183,10 @@ package org.openscales.core.layer.ogc
 			if(!layer.containsKey("TileMatrixSets"))
 				return;
 			
-			this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
-			if (this.style == null)
+			if (!this._tmssProvided)
+				this.tileMatrixSets = layer.getValue("TileMatrixSets") as HashMap;
+			
+			if (!this._styleProvided)
 				this.style = layer.getValue("DefaultStyle") as String;
 			
 			if (!_formatSetted)
@@ -359,6 +375,12 @@ package org.openscales.core.layer.ogc
 		 */
 		public function set style(value:String):void
 		{
+			if(value && this._tmssProvided)
+				this._useCapabilities = false;
+			else
+				this._useCapabilities = true;
+			
+			this._styleProvided = true;
 			this._tileProvider.style = value;
 		}
 		
@@ -374,13 +396,14 @@ package org.openscales.core.layer.ogc
 		 */
 		public function set tileMatrixSets(value:HashMap):void
 		{
-			if(value)
+			if(value && this._styleProvided)
 				this._useCapabilities = false;
 			else
 				this._useCapabilities = true;
 			
 			this._tileProvider.tileMatrixSets = value;
 			this.tileMatrixSet = this.tileMatrixSet;
+			this._tmssProvided = true;
 		}
 		
 		/**
