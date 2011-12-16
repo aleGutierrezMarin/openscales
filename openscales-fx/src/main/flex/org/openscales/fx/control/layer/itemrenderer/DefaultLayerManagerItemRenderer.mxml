@@ -546,7 +546,7 @@
 	
 	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
 		<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
-		<LayerMetadatas x="40" id="layerControlMetadatas" visible="{_displayMetadatas}" />
+		<LayerMetadata x="40" id="layerControlMetadatas" visible="{_displayMetadatas}" />
 	</s:SkinnableContainer>
 	
 	
