@@ -4,7 +4,7 @@
 		   xmlns:mx="library://ns.adobe.com/flex/mx"
 		   xmlns:os="org.openscales.fx.control.*">
 	
-	<os:IconButton icon="{_btnAddVector}" click="onClick()" toolTip="{this.labelAddVector}"
+	<os:IconButton icon="{_btnAddVector}" id="iconButton" click="onClick()" toolTip="{this.labelAddVector}"
 				   width="22"
 				   height="22" alpha="{_alpha}" />
 	
