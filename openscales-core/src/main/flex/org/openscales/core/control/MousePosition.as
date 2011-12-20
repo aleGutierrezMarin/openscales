@@ -5,11 +5,12 @@ package org.openscales.core.control
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Util;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Control displaying the coordinates (Lon, Lat) of the current mouse position.
@@ -50,7 +51,7 @@ package org.openscales.core.control
 		 * The projection display in the label
 		 */
 		[Bindable]
-		private var _displayProjection:String = "EPSG:4326";
+		private var _displayProjection:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 		
 		/**
 		 * MousePosition constructor
@@ -104,7 +105,7 @@ package org.openscales.core.control
 			}
 			
 			var coord1:String, coord2:String;
-			if (this.useDMS && (lonLat.projection == "EPSG:4326")) {
+			if (this.useDMS && (lonLat.projection == ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE))) {
 				coord1 = (lonLat.lon < 0) ? (Util.degToDMS(-lonLat.lon)+" "+this.localNSEW.charAt(3)) : (Util.degToDMS(lonLat.lon)+" "+this.localNSEW.charAt(2));
 				coord2 = (lonLat.lat < 0) ? (Util.degToDMS(-lonLat.lat)+" "+this.localNSEW.charAt(1)) : (Util.degToDMS(lonLat.lat)+" "+this.localNSEW.charAt(0));
 			} else {
@@ -223,13 +224,13 @@ package org.openscales.core.control
 		
 		/**
 		 * If null, the display projection used is the projection of the base layer.
-		 * By default, the display projection is "EPSG:4326" 
+		 * By default, the display projection is Geometry.DEFAULT_SRS_CODE
 		 */
-		public function get displayProjection():String {
+		public function get displayProjection():ProjProjection {
 			return this._displayProjection;
 		}
-		public function set displayProjection(value:String):void {
-			this._displayProjection = value;
+		public function set displayProjection(value:*):void {
+			this._displayProjection = ProjProjection.getProjProjection(value);
 		}
 		
 		public function get label():TextField {

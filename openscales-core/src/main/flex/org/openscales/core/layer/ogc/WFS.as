@@ -122,7 +122,7 @@ package org.openscales.core.layer.ogc
 			var requestString:String = this.url;
 			
 			if (this.projection != null || this.map.projection != null) {
-				this.params.srs = (this.projection == null) ? this.map.projection : this.projection;
+				this.params.srs = (this.projection == null) ? this.map.projection.srsCode : this.projection.srsCode;
 			}
 			
 			var lastServerChar:String = url.charAt(url.length - 1);

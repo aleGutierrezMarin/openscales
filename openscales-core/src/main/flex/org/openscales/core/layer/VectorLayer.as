@@ -13,6 +13,7 @@ package org.openscales.core.layer
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Layer that display features stored as child element
@@ -25,7 +26,7 @@ package org.openscales.core.layer
 		 * For performance reasons, the features of the layer are reprojected
 		 * when they are added to the layer and not only for the display. 
 		 */
-		private var _displayProjection:String = null;
+		private var _displayProjection:ProjProjection = null;
 		
 		private var _featuresBbox:Bounds = null;
 		
@@ -70,7 +71,7 @@ package org.openscales.core.layer
 			return super.available;
 		}
 		
-		override public function supportsProjection(compareProj:String):Boolean
+		override public function supportsProjection(compareProj:*):Boolean
 		{
 			//A Vector Layer is able to be reprojected in any projection. So, it supports all projections
 			return true;
@@ -124,7 +125,8 @@ package org.openscales.core.layer
 			if ((this.map) && (this._displayProjection != this.map.projection)) {
 				if (this.features && this.features.length > 0) {	
 					for each (var f:Feature in this.features) {
-						f.geometry.transform(this._displayProjection, this.map.projection);
+						f.geometry.projection = this._displayProjection;
+						f.geometry.transform(this.map.projection);
 					}
 					this._displayProjection = this.map.projection;
 					this.redraw();
@@ -205,7 +207,8 @@ package org.openscales.core.layer
 			
 			// Reprojection if needed
 			if (reproject && (this.map) && (this.projection != this._displayProjection)) {
-				feature.geometry.transform(this.projection, this._displayProjection);
+				feature.geometry.projection = this.projection;
+				feature.geometry.transform(this._displayProjection);
 			}
 			
 			// Add the feature to the layer
@@ -420,9 +423,6 @@ package org.openscales.core.layer
 			this._isInEditionMode = value;
 		}
 		
-		override public function set projection(value:String):void {
-			super.projection = value;
-		}
 		
 		/**
 		 * If the VectorLayer is made from locale source : the XML data 

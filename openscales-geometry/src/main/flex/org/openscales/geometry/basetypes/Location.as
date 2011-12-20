@@ -3,6 +3,7 @@ package org.openscales.geometry.basetypes
 	import org.openscales.geometry.Geometry;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * This class represents a location defined by:
@@ -14,7 +15,7 @@ package org.openscales.geometry.basetypes
 	 */
 	public class Location
 	{
-		private var _projection:String = null;
+		private var _projection:ProjProjection = null;
 		private var _x:Number;
 		private var _y:Number;
 		
@@ -23,13 +24,19 @@ package org.openscales.geometry.basetypes
 		 * 
 		 * @param x:Number the X coordinate of the location
 		 * @param y:Number the Y coordinate of the location
-		 * @param projection:String the SRS code defining the projection of the coordinates, default is Geometry.DEFAULT_SRS_CODE
+		 * @param projection the ProjProjection or the SRS code defining the projection of the coordinates, default is Geometry.DEFAULT_SRS_CODE
 		 */
-		public function Location(x:Number,y:Number,projection:String=null)
+		public function Location(x:Number,y:Number,projection:*=null)
 		{
 			this._x = x;
 			this._y = y;
-			this._projection = (projection==null) ? Geometry.DEFAULT_SRS_CODE : projection;
+			
+			if(projection is ProjProjection)
+				this._projection = projection as ProjProjection;
+			else if(projection is String)
+				this._projection = ProjProjection.getProjProjection(projection as String);
+			if(this._projection == null)
+				this._projection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 		}
 		
 		/**
@@ -56,9 +63,9 @@ package org.openscales.geometry.basetypes
 		}
 		
 		/**
-		 * Indicates the SRS code defining projection of the Location
+		 * Indicates the projection defining projection of the Location
 		 */
-		public function get projection():String {
+		public function get projection():ProjProjection {
 			return this._projection;
 		}
 		
@@ -79,10 +86,10 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Reprojects the current location in another projection
 		 * 
-		 * @param newProjection:String SRS code of the target projection
+		 * @param newProjection:ProjProjection projection of the target projection
 		 * @return Location the equivalent Location of this location in the new projection
 		 */
-		public function reprojectTo(newProjection:String):Location {
+		public function reprojectTo(newProjection:ProjProjection):Location {
 			if (newProjection == this._projection) {
 				return this;
 			}

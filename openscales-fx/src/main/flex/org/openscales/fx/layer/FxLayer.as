@@ -7,6 +7,7 @@ package org.openscales.fx.layer
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.fx.FxMap;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.proj4as.ProjProjection;
 	
 	import spark.components.Group;
 	
@@ -29,7 +30,7 @@ package org.openscales.fx.layer
 		
 		protected var _resolutions:Array = null;
 		
-		protected var _projection:String = null;
+		protected var _projection:ProjProjection = null;
 		
 		protected var _tweenOnZoom:Boolean = true;
 		
@@ -392,7 +393,7 @@ package org.openscales.fx.layer
 		/**
 		 * Indicates teh projection of the layer
 		 */
-		public function get projection():String {
+		public function get projection():ProjProjection {
 			if(this._layer)
 				return this._layer.projection;
 			return this._projection;
@@ -400,9 +401,9 @@ package org.openscales.fx.layer
 		/**
 		 * @Private
 		 */
-		public function set projection(value:String):void {
+		public function set projection(value:*):void {
 			
-			this._projection = value;
+			this._projection = ProjProjection.getProjProjection(value);
 			if(this._layer) {
 				this._layer.projection = this._projection;
 			}

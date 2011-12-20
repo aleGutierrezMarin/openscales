@@ -2,10 +2,12 @@ package org.openscales.core.events{
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Event related to a map.
@@ -40,12 +42,12 @@ package org.openscales.core.events{
 		/**
 		 * old projection of the map
 		 */
-		private var _oldProjection:String = null;
+		private var _oldProjection:ProjProjection = null;
 		
 		/**
 		 * new projection of the map
 		 */
-		private var _newProjection:String = null;
+		private var _newProjection:ProjProjection = null;
 		
 		/**
 		 * old center of the map
@@ -60,12 +62,12 @@ package org.openscales.core.events{
 		/**
 		 * old resolution of the map
 		 */
-		private var _oldResolution:Resolution = new Resolution(0, "EPSG:4326");
+		private var _oldResolution:Resolution = new Resolution(0, Geometry.DEFAULT_SRS_CODE);
 		
 		/**
 		 * new resolution of the map
 		 */
-		private var _newResolution:Resolution = new Resolution(0, "EPSG:4326");
+		private var _newResolution:Resolution = new Resolution(0, Geometry.DEFAULT_SRS_CODE);
 		
 		/**
 		 * Target pixel to zoom
@@ -246,22 +248,22 @@ package org.openscales.core.events{
 			this._newZoom = value;	
 		}
 		
-		public function set oldProjection(value:String):void
+		public function set oldProjection(value:ProjProjection):void
 		{
 			this._oldProjection = value;
 		}
 		
-		public function get oldProjection():String
+		public function get oldProjection():ProjProjection
 		{
 			return this._oldProjection;
 		}
 		
-		public function set newProjection(value:String):void
+		public function set newProjection(value:ProjProjection):void
 		{
 			this._newProjection = value;
 		}
 		
-		public function get newProjection():String
+		public function get newProjection():ProjProjection
 		{
 			return this._newProjection;
 		}

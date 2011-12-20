@@ -20,9 +20,7 @@ package org.openscales.geometry.basetypes
 		private var _bottom:Number = 0.0;
 		private var _right:Number = 0.0;
 		private var _top:Number = 0.0;
-		private var _projection:String;
-		
-		public static var DEFAULT_PROJ_SRS_CODE:String = "EPSG:4326";
+		private var _projection:ProjProjection;
 		
 		/**
 		 * Class constructor
@@ -31,8 +29,9 @@ package org.openscales.geometry.basetypes
 		 * @param bottom Bottom bound of Bounds instance
 		 * @param right Right bound of Bounds instance
 		 * @param top Top bound of Bounds instance
+		 * @param projection Projection of the bound
 		 */
-		public function Bounds(left:Number, bottom:Number, right:Number, top:Number, projection:String = "EPSG:4326")
+		public function Bounds(left:Number, bottom:Number, right:Number, top:Number, projection:* = null)
 		{
 			if (!isNaN(left)) {
 				this.left = left;
@@ -47,9 +46,9 @@ package org.openscales.geometry.basetypes
 				this.top = top;
 			}
 			if (projection) {
-				this._projection = projection;
+				this.projection = projection;
 			} else {
-				this._projection = Geometry.DEFAULT_SRS_CODE;
+				this.projection = Geometry.DEFAULT_SRS_CODE;
 			}
 		}
 		
@@ -134,7 +133,7 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Extends the current instance of Bounds from bounds and return the result
 		 * if the two bounds are not in the same projection, the return bounds will
-		 * be in "EPSG:4326". Do not forget to reproject it with the reprojectTo method
+		 * be in Geometry.DEFAULT_SRS_CODE. Do not forget to reproject it with the reprojectTo method
 		 * 
 		 * @param bounds The bounds which will extend the current bounds.
 		 */
@@ -190,8 +189,8 @@ package org.openscales.geometry.basetypes
 			
 			if(!(ProjProjection.isEquivalentProjection(this.projection, bounds.projection)))
 			{
-				tmpThis = this.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
-				tmpBounds = bounds.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
+				tmpThis = this.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
+				tmpBounds = bounds.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 			}
 			else
 			{
@@ -226,7 +225,7 @@ package org.openscales.geometry.basetypes
 		 * 
 		 * @return The reprojected bounds
 		 */
-		public function preciseReprojectBounds(dest:String):Bounds {
+		public function preciseReprojectBounds(dest:ProjProjection):Bounds {
 			
 			//We do not need to reproject
 			if (this.projection == dest)
@@ -313,8 +312,8 @@ package org.openscales.geometry.basetypes
 			
 			if(!(ProjProjection.isEquivalentProjection(this.projection, bounds.projection)))
 			{
-				tmpThis = this.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
-				tmpBounds = bounds.preciseReprojectBounds(DEFAULT_PROJ_SRS_CODE);
+				tmpThis = this.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
+				tmpBounds = bounds.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 			}
 			else
 			{
@@ -376,7 +375,7 @@ package org.openscales.geometry.basetypes
 		
 		/**
 		 * Returns a bounds instance from a string following this format: "left,bottom,right,top" or  "left,bottom,right,top,projection".
-		 * If no projection is setted the default value will be EPSG:4326
+		 * If no projection is setted the default value will be Geometry.DEFAULT_SRS_CODE
 		 * @param str The string from which we want create a bounds instance.
 		 * 
 		 * @throw an Argument error if the string contains other that 4 or 5 elements
@@ -387,7 +386,7 @@ package org.openscales.geometry.basetypes
 			var bounds:Array = str.split(",");
 			
 			if(bounds.length == 4)
-				return Bounds.getBoundsFromArray(bounds,"EPSG:4326");
+				return Bounds.getBoundsFromArray(bounds,Geometry.DEFAULT_SRS_CODE);
 			
 			if(bounds.length == 5)
 			{
@@ -474,7 +473,7 @@ package org.openscales.geometry.basetypes
 		 * @param newProjection:String SRS code of the target projection
 		 * @return the reprojected bounds
 		 */
-		public function reprojectTo(newProjection:String):Bounds {
+		public function reprojectTo(newProjection:ProjProjection):Bounds {
 			if (newProjection == this._projection) {
 				return this;
 			}
@@ -509,8 +508,8 @@ package org.openscales.geometry.basetypes
 		 * empty intersections.
 		 * <p>
 		 * If the two Bounds are not in the same projection, they will be converted in
-		 * EPSG:4326 and the returned Bounds will be in EPSG:4326 too, don't forget to
-		 * reproject it with reprojectTo if you are not working with this projection.
+		 * Geometry.DEFAULT_SRS_CODE and the returned Bounds will be in Geometry.DEFAULT_SRS_CODE
+		 * too, don't forget to reproject it with reprojectTo if you are not working with this projection.
 		 * </p>
 		 * 
 		 * @return The Bounds representing the intersection between thosesBounds and the
@@ -526,8 +525,8 @@ package org.openscales.geometry.basetypes
 			var thisBounds:Bounds = this;
 			if (!(ProjProjection.isEquivalentProjection(thisBounds.projection,bounds.projection)))
 			{
-				thisBounds = thisBounds.preciseReprojectBounds("EPSG:4326");
-				bounds = bounds.preciseReprojectBounds("EPSG:4326");
+				thisBounds = thisBounds.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
+				bounds = bounds.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 			}
 			
 			if (!(this.intersectsBounds(bounds)))
@@ -572,14 +571,16 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Indicates the projection code.
 		 */
-		public function get projection():String {
+		public function get projection():ProjProjection {
 			return this._projection;
 		}
 		/** 
 		 * @private 
 		 */ 
-		public function set projection(value:String):void {
-			this._projection = value;
+		public function set projection(value:*):void {
+			this._projection = ProjProjection.getProjProjection(value as String);
+			if(this._projection == null)
+				this._projection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 		}
 		
 		/**

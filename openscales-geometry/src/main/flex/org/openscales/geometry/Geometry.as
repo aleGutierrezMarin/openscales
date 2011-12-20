@@ -2,6 +2,7 @@ package org.openscales.geometry
 {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.proj4as.ProjProjection;
 
 
 	/**
@@ -22,7 +23,7 @@ package org.openscales.geometry
 		/**
 		 * projection of the geometry 
 		 */
-		protected var _projection:String = DEFAULT_SRS_CODE;
+		protected var _projection:ProjProjection = ProjProjection.getProjProjection(DEFAULT_SRS_CODE);
 		
 		public function Geometry() {
 			super();
@@ -47,12 +48,11 @@ package org.openscales.geometry
 		}
 		/**
 		 * Method to convert the coordinates of the geometry from a projection system to an other one.
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
+		 * @param dest the destination projection, can be both a String or a ProjProjection
 		 */
-		public function transform(sourceSrs:String, destSrs:String):void {
+		public function transform( dest:*):void {
 			// Update the pojection associated to the geometry
-			this.projection = destSrs;
+			this.projection = dest;
 			// Update the geometry
 			// Noting to do for this generic class
 		}
@@ -180,13 +180,14 @@ package org.openscales.geometry
 			return false;
 		}
 		
-		public function get projection():String {
+		public function get projection():ProjProjection {
 			return this._projection;
 		}
 		
-		public function set projection(value:String):void {
-			this._projection = value;
-			if (value == null) {
+		public function set projection(value:*):void {
+			this._projection = ProjProjection.getProjProjection(value);
+			
+			if (this._projection == null) {
 				this.clearBounds();
 			} else {
 				if (this._bounds != null) { // the private variable is tested to avoid to create the bounds if it doesn't exist

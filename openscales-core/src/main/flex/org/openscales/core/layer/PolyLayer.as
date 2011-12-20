@@ -211,11 +211,11 @@ package org.openscales.core.layer
 			}
 		}
 		
-		override public function set projection(value:String):void {
+		override public function set projection(value:*):void {
 			super.projection = value;
 			var numLayer:uint = this.layers.length;
 			for(var i:uint = 0;i<numLayer;++i) {
-				layers[i].projection = value;
+				layers[i].projection = this.projection;
 			}
 		}
 		

@@ -427,6 +427,7 @@ package org.openscales.core.format.gml
 				
 				if (this._internalProjection != null && this._externalProjection != null) {
 					var p:ProjPoint = new ProjPoint(geometry.x, geometry.y);
+					
 					Proj4as.transform(_internalProjection, _externalProjection, p);
 					geometry.x = p.x;
 					geometry.y = p.y;
@@ -446,7 +447,8 @@ package org.openscales.core.format.gml
 					if(geometry is LinearRing){
 						if (this._internalProjection != null && this._externalProjection != null){
 							var pointTemp:Point = new Point(points[0],points[1]);
-							pointTemp.transform(this._internalProjection, this._externalProjection);
+							pointTemp.projection = this._internalProjection;
+							pointTemp.transform(this._externalProjection);
 							path += pointTemp.x + "," + pointTemp.y + " ";
 						}else{
 							path += points[0] + "," + points[1] + " ";
@@ -470,7 +472,8 @@ package org.openscales.core.format.gml
 				if (this._internalProjection != null && this._externalProjection != null){
 					
 					pointTemp = new Point(points[i],points[i+1]);
-					pointTemp.transform(this._internalProjection, this._externalProjection);
+					pointTemp.projection = this._internalProjection;
+					pointTemp.transform(this._externalProjection);
 					path += pointTemp.x + "," + pointTemp.y + " ";
 					
 				}else{
