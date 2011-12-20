@@ -21,6 +21,7 @@
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.layer.FxLayer;
 			import org.openscales.geometry.basetypes.Size;
+			import org.openscales.proj4as.ProjProjection;
 			
 			import spark.components.Button;
 			import spark.components.Group;
@@ -231,17 +232,17 @@
 			}
 			
 			/**
-			 * The actual projection of the map, the default vaglue is EPSG:4326
+			 * @private
 			 */
-			public function set projection(value:String):void
+			public function set projection(value:*):void
 			{
 				this._overviewmap.projection = value;
 			}
 			
 			/**
-			 * @public
+			 * The actual projection of the map, the default vaglue is EPSG:4326
 			 */
-			public function get projection():String
+			public function get projection():ProjProjection
 			{
 				return this._overviewmap.projection;
 			}

@@ -9,6 +9,7 @@ package org.openscales.fx.control
 	import org.openscales.core.control.OverviewMap;
 	import org.openscales.fx.layer.FxLayer;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	import spark.core.SpriteVisualElement;
 	
@@ -67,32 +68,30 @@ package org.openscales.fx.control
 				}
 			}
 		}
+		
 		private function addFxLayer(l:FxLayer):void {
 			l.configureLayer();
 			_overviewmap.addLayer(l.nativeLayer);
-			/*if(_overviewmap.baselayer == null) {
-				_overviewmap.baselayer = l.nativeLayer;
-			} else {
-			}*/
 		}
+		
 		public function get overviewMap():OverviewMap {
 			return this._overviewmap;
 		}
 		
 		/**
-		 * The actual projection of the overview map, default value is EPSG:4326
+		 * The projection of the overview map, default value is EPSG:4326
 		 */
-		public function set projection(value:String):void
+		public function get projection():ProjProjection
 		{
-			this._overviewmap.projection = value;
+			return this._overviewmap.projection;
 		}
 		
 		/**
 		 * @private
 		 */
-		public function get projection():String
+		public function set projection(value:*):void
 		{
-			return this._overviewmap.projection;
+			this._overviewmap.projection = value;
 		}
 	}
 }

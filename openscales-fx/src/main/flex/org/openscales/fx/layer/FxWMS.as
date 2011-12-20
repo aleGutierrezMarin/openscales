@@ -35,11 +35,11 @@ package org.openscales.fx.layer
 				(this._layer as WMS).format=value;
 		}
 
-		override public function set projection(value:String):void {
+		override public function set projection(value:*):void {
 			super.projection = value;
 			if(this._layer != null) {
 				//((this.layer as WMS).params as WMSParams).srs = value;
-				(this._layer as WMS).projection=value;
+				(this._layer as WMS).projection=this.projection;
 			}
 		}
 

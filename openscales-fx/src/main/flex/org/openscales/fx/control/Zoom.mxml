@@ -11,12 +11,14 @@
 			import mx.events.FlexEvent;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.utils.Trace;
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.control.ZoomData;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.geometry.Geometry;
+			import org.openscales.proj4as.ProjProjection;
 			
 			import spark.components.supportClasses.SliderBase;
 			import spark.events.TrackBaseEvent;
@@ -24,6 +26,7 @@
 			
 			public var DELTA_PX:Number = 100;
 			
+			private var _projection:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 			
 			/**
 			 * @private
@@ -107,23 +110,6 @@
 			public var scaleNameY:Number = 0;
 			
 			/**
-			 * Configure the listener for the pan and the zoom
-			 * Configure the list of zoom label once the component is created 
-			 * and set the first zoomLabel text value.
-			 */
-			override protected function onCreationComplete(event:Event):void
-			{ 
-				super.onCreationComplete(event);
-			
-				if(this._scalesLabels == null)
-				{
-					this._scalesLabels = new Vector.<ZoomData>();
-				}
-				
-				this.updateZoomLevels();
-			}
-			
-			/**
 			 * @inherit
 			 */
 			override public function onMapLanguageChange(event:I18NEvent):void 
@@ -189,25 +175,9 @@
 				if(this._map && this._map.resolution)
 				{
 					// update the value
-					this.currentLabel = this.getLabelFromResolution(this._map.resolution.value);
+					this.currentLabel = this.getLabelFromResolution(this._map.resolution);
 					this.updateScalesNameLabel();
 				}
-			}
-			
-			/**
-			 * 
-			 * @private
-			 * Update the label y when the thumb slider y change
-			 */
-			private function updateScalesNameLabel():void
-			{
-				if(zoomSlider)
-					if(zoomSlider.thumb)
-					{
-						this.scaleNameY = zoomSlider.thumb.y;
-						dispatchEvent(new Event('scaleNameYChanged'));
-					}
-						
 			}
 			
 			
@@ -217,16 +187,17 @@
 			 * @param resolution The resolution 
 			 * @return The string value of the label corresponding to the resolution
 			 */
-			public function getLabelFromResolution(resolution:Number):String
+			public function getLabelFromResolution(resolution:Resolution):String
 			{
 				if(this._scalesLabels)
 				{
+					resolution = resolution.reprojectTo(this._projection);
 					var i:uint = 0;
 					var j:uint = this._scalesLabels.length;
 					for (; i<j; ++i) 
 					{
-						if( resolution>=this._scalesLabels[i].minResolution
-							&& resolution<=this._scalesLabels[i].maxResolution )
+						if( resolution.value>=this._scalesLabels[i].minResolution
+							&& resolution.value<=this._scalesLabels[i].maxResolution )
 						{
 							return Catalog.getLocalizationForKey(this._scalesLabels[i].label);
 						}
@@ -264,6 +235,97 @@
 			}
 			
 			/**
+			 * Function called when the thumb slider start drag event
+			 */
+			public function onThumbDrag(event:TrackBaseEvent):void
+			{
+				if(!this._map.zoomNavigationEnabled)
+					return;
+				
+				this.updateScalesNameLabel();
+				this._onDrag = true;
+			}
+			
+			/**
+			 * Function called when the thumb slider start drag  complete (when the thumb is released)
+			 */
+			public function onThumbRelease(event:TrackBaseEvent):void
+			{
+				if(!this._map.zoomNavigationEnabled)
+					return;
+				
+				var currentSlider:SliderBase = event.target as SliderBase;
+				this.currentSliderValue = currentSlider.value;
+				this._onDrag = false;
+
+				this.map.resolution = this.getResolutionFromSliderValue(this.currentSliderValue);
+				
+				this.updateScalesNameLabel();
+			}
+			
+			/**
+			 * When the slider value is changed : update label
+			 * 
+			 * @param event The event received
+			 */
+			public function onZoomSliderChange(event:Event):void {
+				
+				if(!this._map)
+					return;
+				
+				if(!this._map.zoomNavigationEnabled)
+					return;
+				
+				var currentSlider:SliderBase = event.target as SliderBase;
+				
+				// update the display label
+				var resolution:Resolution = this.getResolutionFromSliderValue(currentSlider.value);
+				this.currentLabel = this.getLabelFromResolution(resolution);
+				
+				// if not onDrag really update the zoom
+				if(!this._onDrag)
+				{
+					this.currentSliderValue = currentSlider.value;
+					this.map.resolution = resolution;
+				}
+				
+			}
+			
+			/**
+			* Configure the listener for the pan and the zoom
+			* Configure the list of zoom label once the component is created 
+			* and set the first zoomLabel text value.
+			*/
+			override protected function onCreationComplete(event:Event):void
+			{ 
+				super.onCreationComplete(event);
+				
+				if(this._scalesLabels == null)
+				{
+					this.scalesName = "zoombar.world,0.3515625,1.40625;zoombar.country,0.0439453125,0.3515625;zoombar.state,0.0054931640625,0.0439453125;zoombar.town,0.0006866455078125,0.0054931640625;zoombar.street,0.0000858306884765625,0.0006866455078125;zoombar.house,0.000010728836059570313,0.0000858306884765625";
+					this._scalesLabels = new Vector.<ZoomData>();
+				}
+				
+				this.updateZoomLevels();
+			}
+			
+			/**
+			 * 
+			 * @private
+			 * Update the label y when the thumb slider y change
+			 */
+			private function updateScalesNameLabel():void
+			{
+				if(zoomSlider)
+					if(zoomSlider.thumb)
+					{
+						this.scaleNameY = zoomSlider.thumb.y;
+						dispatchEvent(new Event('scaleNameYChanged'));
+					}
+				
+			}
+			
+			/**
 			 * @private
 			 * Initialise the zoomSlider according to current map zoomLevels
 			 */
@@ -293,68 +355,6 @@
 					this.updateCurrentLabel();
 				}
 			}
-			
-			/**
-			 * Function called when the thumb slider start drag event
-			 */
-			public function onThumbDrag(event:TrackBaseEvent):void
-			{
-				if(!this._map.zoomNavigationEnabled)
-					return;
-				
-				this.updateScalesNameLabel();
-				this._onDrag = true;
-			}
-			
-			/**
-			 * Function called when the thumb slider start drag  complete (when the thumb is released)
-			 */
-			public function onThumbRelease(event:TrackBaseEvent):void
-			{
-				if(!this._map.zoomNavigationEnabled)
-					return;
-				
-				var currentSlider:SliderBase = event.target as SliderBase;
-				this.currentSliderValue = currentSlider.value;
-				this._onDrag = false;
-				
-				var resolution:Number = this.getResolutionFromSliderValue(this.currentSliderValue);
-				var newResolution:Resolution = new Resolution(resolution, this.map.projection);
-
-				this.map.resolution = newResolution;
-				
-				this.updateScalesNameLabel();
-			}
-			
-			/**
-			 * When the slider value is changed : update label
-			 * 
-			 * @param event The event received
-			 */
-			public function onZoomSliderChange(event:Event):void {
-				
-				if(!this._map)
-					return;
-				
-				if(!this._map.zoomNavigationEnabled)
-					return;
-				
-				var currentSlider:SliderBase = event.target as SliderBase;
-				
-				// update the display label
-				var resolution:Number = this.getResolutionFromSliderValue(currentSlider.value);
-				this.currentLabel = this.getLabelFromResolution(resolution);
-				
-				// if not onDrag really update the zoom
-				if(!this._onDrag)
-				{
-					this.currentSliderValue = currentSlider.value;
-					var newResolution:Resolution = new Resolution(resolution, this.map.projection);
-					this.map.resolution = newResolution;
-				}
-				
-			}
-			
 			private function getSliderValueFromResolution(value:Number):Number
 			{
 				var intervalResolution:Number = Math.log(value / this.map.minResolution.value) / Math.log(2);
@@ -363,12 +363,11 @@
 				return sliderValue;
 			}
 			
-			private function getResolutionFromSliderValue(value:Number):Number
+			private function getResolutionFromSliderValue(value:Number):Resolution
 			{
 				var intervalResolution:Number = value / this._step;
-				var resolution:Number =  this.map.minResolution.value*Math.pow(2, (this._intervals - intervalResolution));
-				
-				return resolution;
+				var value:Number =  this.map.minResolution.value*Math.pow(2, (this._intervals - intervalResolution));
+				return new Resolution(value,this.map.projection);
 			}
 			
 			private function onZoomSliderUpdateComplete(e:Event):void
@@ -383,20 +382,35 @@
 			}
 			
 			/**
+			 * The projection used to define scalesLabels resolutions
+			 * @default Geometry.DEFAULT_SRS_CODE
+			 */
+			public function get projection():ProjProjection {
+				return this._projection;
+			}
+			/**
+			 * @private
+			 */
+			public function set projection(value:*):void {
+				var proj:ProjProjection = ProjProjection.getProjProjection(value);
+				if(proj)
+					this._projection = proj;
+			}
+			
+			/**
 			 * The list of labels for the different resolution.
+			 */
+			public function get scalesLabels():Vector.<ZoomData>
+			{
+				return this._scalesLabels;				
+			}
+			/**
+			 * @private
 			 */
 			public function set scalesLabels(value:Vector.<ZoomData>):void
 			{
 				this._scalesLabels = value;
 				this.updateCurrentLabel();
-			}
-			
-			/**
-			 * @private
-			 */
-			public function get scalesLabels():Vector.<ZoomData>
-			{
-				return this._scalesLabels;				
 			}
 			
 			/**
@@ -406,29 +420,27 @@
 			{
 				return this._scalesName;
 			}
-			
 			/**
 			 * @private
 			 */
 			public function set scalesName(value:String):void
 			{
+				if(!value)
+					return;
 				this._scalesName = value;
 				
 				// parse the data
-				if( value != null )
-				{
-					var scales:Vector.<ZoomData>  = new Vector.<ZoomData>();
+				var scales:Vector.<ZoomData>  = new Vector.<ZoomData>();
+				
+				var zoomDataString:String = null;
+				
+				for each (zoomDataString in value.split(";")) {
+					var values:Array = zoomDataString.split(",");
+					var zoomData:ZoomData = new ZoomData(values[0], Number(values[1]), Number(values[2]));
 					
-					var zoomDataString:String = null;
-					
-					for each (zoomDataString in value.split(";")) {
-						var values:Array = zoomDataString.split(",");
-						var zoomData:ZoomData = new ZoomData(values[0], Number(values[1]), Number(values[2]));
-						
-						scales.push(zoomData);
-					}
-					this._scalesLabels = scales;
+					scales.push(zoomData);
 				}
+				this._scalesLabels = scales;
 				this.updateCurrentLabel();
 			}	
 			
@@ -441,7 +453,6 @@
 			{
 				return this._currentLabel;
 			}
-			
 			/**
 			 * @private
 			 */
@@ -493,8 +504,7 @@
 			public function get maxSlider():Number
 			{
 				return this._maxSlider;
-			}	
-			
+			}
 			/**
 			 * @private
 			 */

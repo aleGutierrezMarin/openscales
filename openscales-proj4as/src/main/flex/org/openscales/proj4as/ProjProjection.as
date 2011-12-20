@@ -144,11 +144,17 @@ package org.openscales.proj4as {
 		 * @param srsCode:String the srsCode
 		 * @return ProjProjection the ProjProjection
 		 */
-		public static function getProjProjection(srsCode:String):ProjProjection {
-			if(srsCode==null)
+		public static function getProjProjection(proj:*):ProjProjection {
+			if(proj==null)
 				return null;
 			
-			srsCode = srsCode.toUpperCase();
+			if(proj is ProjProjection)
+				return proj as ProjProjection;
+			
+			var srsCode:String;
+			if(proj is String)
+				srsCode = (proj as String).toUpperCase();
+			
 			if (!ProjProjection.defs[srsCode]) {
 				return null;
 			}
@@ -159,14 +165,14 @@ package org.openscales.proj4as {
 			return ProjProjection.projProjections[srsCode];
 		}
 		
-		public static function getEquivalentProjection(srsCode:String):Vector.<String> {
+		public static function getEquivalentProjection(srs:ProjProjection):Vector.<String> {
 			var compat:Vector.<String> = new <String>[];
 			var i:uint = ProjProjection.equivalentDefs.length;
 			var j:uint;
 			var arr:Array = null;
 			for(;i>0;--i) {
 				arr = equivalentDefs[i-1].split(",");
-				if(arr.indexOf(srsCode)!=-1) {
+				if(arr.indexOf(srs.srsCode)!=-1) {
 					j = arr.length;
 					for(;j>0;--j)
 						if(arr[j-1] != "")
@@ -176,14 +182,14 @@ package org.openscales.proj4as {
 			return compat;
 		}
 		
-		public static function getStretchableProjection(srsCode:String):Vector.<String> {
+		public static function getStretchableProjection(srsCode:ProjProjection):Vector.<String> {
 			var compat:Vector.<String> = new <String>[];
 			var i:uint = ProjProjection.stretchableDefs.length;
 			var j:uint;
 			var arr:Array = null;
 			for(;i>0;--i) {
 				arr = stretchableDefs[i-1].split(",");
-				if(arr.indexOf(srsCode)!=-1) {
+				if(arr.indexOf(srsCode.srsCode)!=-1) {
 					j = arr.length;
 					for(;j>0;--j)
 						if(arr[j-1] != "")
@@ -193,7 +199,7 @@ package org.openscales.proj4as {
 			return compat;
 		}
 		
-		public static function isStretchable(srsCode1:String,srsCode2:String): Boolean {
+		public static function isStretchable(srsCode1:ProjProjection,srsCode2:ProjProjection): Boolean {
 			if(srsCode1==srsCode2
 				|| ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=-1
 				|| ProjProjection.equivalentDefs.indexOf(srsCode2+","+srsCode1)!=-1)
@@ -201,12 +207,14 @@ package org.openscales.proj4as {
 			return (ProjProjection.getStretchableProjection(srsCode1).indexOf(srsCode2)!=-1);
 		}
 		
-		public static function isEquivalentProjection(srsCode1:String,srsCode2:String): Boolean {
-			if(srsCode1==srsCode2
-				|| ProjProjection.stretchableDefs.indexOf(srsCode1+","+srsCode2)!=-1
-				|| ProjProjection.stretchableDefs.indexOf(srsCode2+","+srsCode1)!=-1)
+		public static function isEquivalentProjection(srs1:ProjProjection,srs2:ProjProjection): Boolean {
+			if(!srs1||!srs2)
+				return false;
+			if(srs1==srs2
+				|| ProjProjection.stretchableDefs.indexOf(srs1.srsCode+","+srs2.srsCode)!=-1
+				|| ProjProjection.stretchableDefs.indexOf(srs2.srsCode+","+srs1.srsCode)!=-1)
 				return true;
-			return (ProjProjection.getEquivalentProjection(srsCode1).indexOf(srsCode2)!=-1);
+			return (ProjProjection.getEquivalentProjection(srs1).indexOf(srs2.srsCode)!=-1);
 		}
 		
 		public function get srsCode():String {

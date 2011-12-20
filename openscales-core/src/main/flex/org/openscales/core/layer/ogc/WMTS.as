@@ -222,9 +222,11 @@ package org.openscales.core.layer.ogc
 				if(!ProjProjection.isEquivalentProjection(this.projection,this.map.projection)) {
 					if(this.tileMatrixSets) {
 						var arr:Array = this.tileMatrixSets.getKeys();
+						var proj:ProjProjection;
 						for(var i:uint = 0 ; i < arr.length ; i++) {
 							var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
-							if(ProjProjection.isEquivalentProjection(tms.supportedCRS,this.map.projection)) {
+							proj = ProjProjection.getProjProjection(tms.supportedCRS);
+							if(ProjProjection.isEquivalentProjection(proj,this.map.projection)) {
 								this.tileMatrixSet = tms.identifier;
 							}
 						}
@@ -235,15 +237,20 @@ package org.openscales.core.layer.ogc
 			return super.available;
 		}
 		
-		override public function supportsProjection(compareProj:String):Boolean
+		override public function supportsProjection(compareProj:*):Boolean
 		{
+			var proj:ProjProjection = ProjProjection.getProjProjection(compareProj);
+			if(!proj)
+				return false;
 			//Parse the tileMatrixSets of the layer and try to find if one is in the projection map
-			if(!ProjProjection.isEquivalentProjection(this.projection,compareProj)) {
+			if(!ProjProjection.isEquivalentProjection(this.projection,proj)) {
 				if(this.tileMatrixSets) {
 					var arr:Array = this.tileMatrixSets.getKeys();
+					var proj2:ProjProjection;
 					for(var i:uint = 0 ; i < arr.length ; i++) {
 						var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
-						if(ProjProjection.isEquivalentProjection(tms.supportedCRS,compareProj)) {
+						proj2 = ProjProjection.getProjProjection(tms.supportedCRS);
+						if(ProjProjection.isEquivalentProjection(proj2,proj)) {
 							this.tileMatrixSet = tms.identifier;
 							return true;
 						}

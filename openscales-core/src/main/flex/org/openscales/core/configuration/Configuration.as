@@ -187,7 +187,7 @@ package org.openscales.core.configuration
 		protected function endConfigureMap():void {
 			if(String(config.@resolution) != ""){
 				// TODO : DEFAULT SRS CODE USED Changed Config to complete resolution difinition
-				map.resolution = new Resolution(Number(config.@resolution), "EPSG:4326");
+				map.resolution = new Resolution(Number(config.@resolution), Geometry.DEFAULT_SRS_CODE);
 			}
 			if(String(config.@center) != ""){
 				var location:Array = String(config.@center).split(",");
@@ -281,7 +281,7 @@ package org.openscales.core.configuration
 			else{visible = true;}
 			
 			var name:String=xmlNode.@name;
-			var projection:String = Layer.DEFAULT_PROJECTION;
+			var projection:String = Layer.DEFAULT_PROJECTION.srsCode;
 			if (String(xmlNode.@projection) != "") {
 				projection = String(xmlNode.@projection);
 			}

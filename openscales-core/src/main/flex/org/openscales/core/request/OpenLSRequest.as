@@ -5,6 +5,7 @@ package org.openscales.core.request
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.UID;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
@@ -543,7 +544,7 @@ package org.openscales.core.request
 			for each (var gr:XML in resultsList.xls::GeocodedAddress) {
 				result = new Object();
 				position = gr.gml::Point.gml::pos.toString().split(' ');
-				var srsName:String = "EPSG:4326";
+				var srsName:String = Geometry.DEFAULT_SRS_CODE;
 				if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
 					srsName = gr.gml::Point.gml::pos.@srsName.toString().toUpperCase();
 				}
@@ -587,7 +588,7 @@ package org.openscales.core.request
 			for each (var gr:XML in resultsList.xls::ReverseGeocodedLocation) {
 				result = new Object();
 				position = gr.gml::Point.gml::pos.toString().split(' ');
-				var srsName:String = "EPSG:4326";
+				var srsName:String = Geometry.DEFAULT_SRS_CODE;
 				if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
 					srsName = gr.gml::Point.gml::pos.@srsName.toString().toUpperCase();
 				}
