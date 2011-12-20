@@ -166,10 +166,9 @@ package org.openscales.fx.autocomplete
 			
 			collection.filterFunction = filterFunction;
 			var customSort:Sort = new Sort();
-			customSort.compareFunction = sortFunction
-			collection.sort = customSort	
-			collection.refresh()
-			
+			customSort.compareFunction = sortFunction;
+			collection.sort = customSort;
+			collection.refresh();
 			if ((text=="" || collection.length==0) && !forceOpen ){
 				popUp.displayPopUp = false
 			}
@@ -182,8 +181,7 @@ package org.openscales.fx.autocomplete
 				list.dataGroup.verticalScrollPosition = 0
 				list.dataGroup.horizontalScrollPosition = 0
 				list.height = Math.min(maxRows, collection.length) * 22 + 2 ;
-				list.validateNow()
-				popUp.width = inputTxt.width
+				list.validateNow();
 			}
 		}
 		
