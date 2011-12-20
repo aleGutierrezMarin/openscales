@@ -44,33 +44,14 @@
 			
 			public function configure():void
 			{
-				// originator and constraint for the mapnikLayer
-				var originatorCC:DataOriginator = new DataOriginator("Creative Commons", "http://creativecommons.org/licenses/by-sa/2.0/", "http://wiki.april.org/skins/common/images/icons/cc-by-sa.png");
-				var originatorOSM:DataOriginator = new DataOriginator("OSM", "http://www.openstreetmap.org/", "http://syvolc.free.fr/pictures/logo-osm.jpg");
-				var originatorList:Vector.<DataOriginator> = new Vector.<DataOriginator>();
-						
-				var constraint:ConstraintOriginator = new ConstraintOriginator(mapnikLayer.nativeLayer.map.maxExtent, mapnikLayer.nativeLayer.minResolution, mapnikLayer.nativeLayer.maxResolution);
+				// originator and constraint for the WFS
+				var originator:DataOriginator = new DataOriginator("Open Plans", "http://openplans.org/topp", "http://openplans.org/wp-content/uploads/2011/05/openplans-logo-143x40.png");
 				
-				originatorOSM.addConstraint(constraint);
+				var originators:Vector.<DataOriginator> = new Vector.<DataOriginator>();
 				
-				originatorList.push(originatorCC);
-				originatorList.push(originatorOSM);
-
-				mapnikLayer.nativeLayer.originators = originatorList;
-			
-				// originator and constraint for the WMS
-				var originatorPlanet:DataOriginator = new DataOriginator("Planet observer", "http://www.planetobserver.com/", "http://www.toulousespaceshow.eu/tss08/logos/logo_planetobserver.jpg");
-				var originatorIGN:DataOriginator = new DataOriginator("IGN", "http://www.ign.fr/", "http://www.ign.fr/imgs/logo.gif");
+				originators.push(originator);
 				
-				var originatorListWMS:Vector.<DataOriginator> = new Vector.<DataOriginator>();
-				
-				originatorPlanet.addConstraint(constraint);
-				originatorIGN.addConstraint(constraint);
-				
-				originatorListWMS.push(originatorPlanet);
-				originatorListWMS.push(originatorIGN);
-				
-				wfs.nativeLayer.originators = originatorListWMS;
+				wfs.nativeLayer.originators = originators;
 			}
 			
 		]]>

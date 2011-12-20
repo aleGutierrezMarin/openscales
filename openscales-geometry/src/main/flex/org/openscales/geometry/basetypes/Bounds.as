@@ -138,6 +138,8 @@ package org.openscales.geometry.basetypes
 		 * @param bounds The bounds which will extend the current bounds.
 		 */
 		public function extendFromBounds(bounds:Bounds):Bounds {
+			if(!bounds)
+				return this;
 			var tmpBounds:Bounds = bounds;
 			if(this.projection!=tmpBounds.projection) {
 				tmpBounds = tmpBounds.reprojectTo(this.projection);
@@ -578,7 +580,7 @@ package org.openscales.geometry.basetypes
 		 * @private 
 		 */ 
 		public function set projection(value:*):void {
-			this._projection = ProjProjection.getProjProjection(value as String);
+			this._projection = ProjProjection.getProjProjection(value);
 			if(this._projection == null)
 				this._projection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 		}

@@ -2,6 +2,7 @@ package org.openscales.core.layer.osm
 {
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.layer.TMS;
+	import org.openscales.core.layer.originator.ConstraintOriginator;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.geometry.basetypes.Bounds;
 
@@ -16,8 +17,8 @@ package org.openscales.core.layer.osm
 		
 		public static const DEFAULT_MAX_RESOLUTION:Number = 156543.0339;
 		
-		private static const OSM_ORIGINATOR:DataOriginator = new DataOriginator("OpenStreetMap","http://www.openstreetmap.org","http://www.openstreetmap.org/images/osm_logo.png");
-
+		private static const OSM_ORIGINATOR:DataOriginator = new DataOriginator("OpenStreetMap","http://www.openstreetmap.org","http://www.openstreetmap.org/assets/osm_logo-9b6498da08de0514dfcb996c32e84dbd.png");
+		private static const CREATIVE_BY_CA:DataOriginator = new DataOriginator("Creative Commons", "http://creativecommons.org/licenses/by-sa/2.0/", "http://wiki.april.org/skins/common/images/icons/cc-by-sa.png");
 		
 		public function OSM(name:String,
 							url:String = null,
@@ -29,7 +30,11 @@ package org.openscales.core.layer.osm
 			// Use the projection to access to the unit
 			/* this.units = Unit.METER; */
 			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projection);
+			var constraint:ConstraintOriginator = new ConstraintOriginator(this.maxExtent, this.minResolution, this.maxResolution);
+			OSM_ORIGINATOR.constraints.push(constraint);
+			CREATIVE_BY_CA.constraints.push(constraint);
 			this.originators.push(OSM_ORIGINATOR);
+			this.originators.push(CREATIVE_BY_CA);
 		}
 
 		override public function getURL(bounds:Bounds):String
