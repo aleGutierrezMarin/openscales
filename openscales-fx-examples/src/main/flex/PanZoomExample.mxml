@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Simple PanZoom + OpenStreetMap example -->
+<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%">
+	
+	<Map id="fxMap" width="100%" height="100%" resolution="0.000686646" center="4.833,45.767" projection="EPSG:900913" maxExtent="-20037508.34,-20037508.34,20037508.34,20037508.34,EPSG:900913">
+		
+		<Mapnik name="Mapnik" />
+		
+		<DragHandler/>
+		<WheelHandler/>
+		
+		<Spinner x="{width / 2}" y="{height / 2}"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
+		<ScaleLine x="{width-100-10}" y="{height-80}"/>
+		<NumericScale x="{width-250}" y="{height-40}"/>
+		
+		<TraceInfo x="{width-200}" y="0" />
+		
+		<ControlPanel x="10" y="10" width="140" title="Navigation" visible="false">
+			<Pan />
+			<s:HGroup width="100%">
+				<Zoom />
+				<s:VGroup width="100%" horizontalAlign="right" verticalAlign="top">
+					<ZoomBox />
+				</s:VGroup>
+			</s:HGroup>
+		</ControlPanel>
+		
+	</Map>
+	
+</s:Group>

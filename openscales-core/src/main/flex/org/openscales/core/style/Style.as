@@ -1,0 +1,376 @@
+package org.openscales.core.style {
+	
+	import flash.geom.Point;
+	import flash.text.TextFormat;
+	
+	import org.openscales.core.filter.ElseFilter;
+	import org.openscales.core.filter.GeometryTypeFilter;
+	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.MultiLineString;
+	import org.openscales.geometry.MultiPoint;
+	import org.openscales.geometry.MultiPolygon;
+	import org.openscales.geometry.Polygon;
+	
+	/**
+	 * Style describe graphical attributes used to render vectors.
+	 */
+	public class Style {
+		
+		private var _name:String = "Default";
+		
+		/**
+		 * The list of rules of the style
+		 */
+		private var _rules:Vector.<Rule> = new Vector.<Rule>();
+		
+		private var _fillColor:uint;
+		private var _fillOpacity:Number;
+		private var _strokeColor:uint;
+		private var _strokeOpacity:Number;
+		private var _strokeWidth:Number;
+		private var _strokeLinecap:String;
+		private var _pointRadius:Number;
+		private var _hoverFillColor:uint;
+		private var _hoverFillOpacity:Number;
+		private var _hoverStrokeColor:uint;
+		private var _hoverStrokeOpacity:Number;
+		private var _hoverStrokeWidth:Number;
+		private var _hoverPointRadius:Number;
+		private var _textFormat:TextFormat;
+		
+		private var _isFilled:Boolean;
+		private var _isStroked:Boolean;
+		
+		public static function getDefaultPointStyle():Style {
+			
+			var style:Style = new Style();
+			style.name = "Default point style";
+			style.rules.push(getPointRule());
+			return style;
+		}
+		
+		public static function getDefaultCircleStyle():Style {
+			
+			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
+			var stroke:Stroke = new Stroke(0xA6430A, 1);
+			
+			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_CIRCLE, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = mark;
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(symbolizer);
+			
+			var style:Style = new Style();
+			style.name = "Default circle style";
+			style.rules.push(rule);
+			return style;
+		}
+		
+		public static function getDrawLineStyle():Style {
+			
+			var stroke:Stroke = new Stroke(0x60D980, 1);
+			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(symbolizer);
+			
+			var style:Style = new Style();
+			style.name = "Draw linear style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		
+		public static function getDefaultGraticuleStyle():Style {
+			var style:Style = new Style();
+			style.name = "Default graticule style";
+			style.rules.push(getGraticuleRule());
+			return style;
+		}
+		
+		public static function getDefaultGraticuleLabelStyle():Style{
+			
+			var style:Style = new Style();
+			style.name = "Default graticule label style";
+			style._textFormat = new TextFormat("Arial",12,0xFFFFFF,true,false);
+			return style;
+		}
+		
+		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, whiteSize:uint, dottedSize:uint):Style
+		{
+			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,whiteSize,dottedSize);
+			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
+			
+			var rule:Rule = new Rule();
+			rule.symbolizers.push(symbolizer);
+			
+			var style:Style = new Style();
+			style.name = "Defined line style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		public static function getDefinedSurfaceStyle(color:uint, opacity:Number):Style
+		{
+			var fill:SolidFill = new SolidFill(color, opacity);
+			var stroke:Stroke = new Stroke(0xE7FF33, 3);
+			
+			var rule:Rule = new Rule();
+			rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
+			
+			var style:Style = new Style();
+			style.name = "Defined surface style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		public static function getDefinedLabelStyle(font:String, size:Number, color:uint, bold:Boolean, italic:Boolean):Style{
+			
+			var style:Style = new Style();
+			style.name = "Defined label style";
+			style._textFormat = new TextFormat(font,size,color,bold,italic);
+			return style;
+		}
+		public static function getDefinedPointStyle(marker:String, rotation:Number):Style
+		{
+			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
+			var stroke:Stroke = new Stroke(0xA6430A, 1);
+			var mark:WellKnownMarker = new WellKnownMarker(marker, fill, stroke, 6, 1, rotation);
+			
+			var rule:Rule = new Rule();
+			rule.symbolizers.push(new PointSymbolizer(mark));
+			
+			var style:Style = new Style();
+			style.name = "Defined point style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		
+		public static function getDefaultLineStyle():Style {
+			
+			var style:Style = new Style();
+			style.name = "Default line style";
+			style.rules.push(getLineRule());
+			return style;
+		}
+		
+		public static function getDrawSurfaceStyle():Style {
+			
+			var fill:SolidFill = new SolidFill(0xE4EDF2, 0.4);
+			var stroke:Stroke = new Stroke(0xE7FF33, 3);
+			
+			var rule:Rule = new Rule();
+			rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
+			
+			var style:Style = new Style();
+			style.name = "Draw surface style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		
+		public static function getDefaultSurfaceStyle():Style {
+			var fill1:SolidFill = new SolidFill();
+			fill1.color = 0x99D0F2;
+			fill1.opacity = 0.4;
+			var stroke1:Stroke = new Stroke();
+			stroke1.width = 1;
+			stroke1.color = 0x96A621;
+			var stroke2:Stroke = new Stroke();
+			stroke2.width = 4;
+			stroke2.color = 0xffffff;
+			var ps1:PolygonSymbolizer = new PolygonSymbolizer(fill1, stroke2);
+			var ps2:PolygonSymbolizer = new PolygonSymbolizer(null, stroke1);
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(ps1);
+			rule.symbolizers.push(ps2);
+			var style:Style = new Style();
+			style.rules.push(rule);
+			style.name = "Surface Style";
+			
+			return style;
+		}
+		
+		protected static function getPointRule():Rule{
+			
+			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
+			var stroke:Stroke = new Stroke(0xA6430A, 1);
+			
+			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = mark;
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(symbolizer);
+			
+			return rule;
+		}
+		
+		protected static function getGraticuleRule():Rule{
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default graticule rule";
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x000000, 3)));
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0xFFFFFF, 1)));
+			
+			return rule;
+		}
+		
+		protected static function getLineRule():Rule{
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x184054, 7)));
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x40A6D9, 1)));
+			
+			return rule;
+		}
+		
+		protected static function getPolygonRule():Rule{ 
+			
+			var fill1:SolidFill = new SolidFill();
+			fill1.color = 0x99D0F2;
+			fill1.opacity = 0.4;
+			
+			var stroke1:Stroke = new Stroke();
+			stroke1.width = 1;
+			stroke1.color = 0x96A621;
+			
+			var stroke2:Stroke = new Stroke();
+			stroke2.width = 4;
+			stroke2.color = 0xffffff;
+			
+			var ps1:PolygonSymbolizer = new PolygonSymbolizer(fill1, stroke2);
+			var ps2:PolygonSymbolizer = new PolygonSymbolizer(null, stroke1);
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default polygon rule";
+			rule.symbolizers.push(ps1);
+			rule.symbolizers.push(ps2);
+			
+			return rule; 
+		}
+		
+		public static function getDefaultStyle():Style{
+			
+			var style:Style = new Style();
+			style.name = "OpenScales default style";
+			
+			// Style for Polygon and Multipolygon
+			var polygonRule:Rule = getPolygonRule();
+			polygonRule.filter = new GeometryTypeFilter(new <Class>[Polygon,MultiPolygon]);
+			style.rules.push(polygonRule);
+			
+			// Style for LineString and MultilineString
+			var lineRule:Rule = getLineRule();
+			lineRule.filter = new GeometryTypeFilter(new <Class>[LineString,MultiLineString]);
+			style.rules.push(lineRule);
+			
+			// Default rule for other types
+			var pointRule:Rule = getPointRule();
+			pointRule.filter =  new GeometryTypeFilter(new <Class>[Point,MultiPoint]);
+			style.rules.push(pointRule);
+			
+			return style;			
+		}
+		
+		/**
+		 * <p>Class constructor.</p>
+		 *
+		 * <p>It defines default values for the attributes.</p>
+		 */
+		public function Style() {
+			//Default values
+			_fillColor = 0x00ff00;
+			_fillOpacity = 0.4;
+			_strokeColor = 0x00ff00;
+			_strokeOpacity = 1;
+			_strokeWidth = 2;
+			_strokeLinecap = "round";
+			_pointRadius = 6;
+			_hoverFillColor = 0xffffff;
+			_hoverFillOpacity = 0.2;
+			_hoverStrokeColor = 0xff0000;
+			_hoverStrokeOpacity = 1;
+			_hoverStrokeWidth = 0.2;
+			_hoverPointRadius = 1;
+			_isFilled = true;
+			_isStroked = true;
+			_textFormat = new TextFormat("Arial",12,0x000000,false,false);
+		}
+		
+		public function clone():Style {
+			var clonedStyle:Style = new Style();
+			clonedStyle._fillColor = this._fillColor;
+			clonedStyle._fillOpacity = this._fillOpacity;
+			clonedStyle._strokeColor = this._strokeColor;
+			clonedStyle._strokeOpacity = this._strokeOpacity;
+			clonedStyle._strokeWidth = this._strokeWidth;
+			clonedStyle._strokeLinecap = this._strokeLinecap;
+			clonedStyle._pointRadius = this._pointRadius;
+			clonedStyle._hoverFillColor = this._hoverFillColor;
+			clonedStyle._hoverFillOpacity = this._hoverFillOpacity;
+			clonedStyle._hoverStrokeColor = this._hoverStrokeColor;
+			clonedStyle._hoverStrokeOpacity = this._hoverStrokeOpacity;
+			clonedStyle._hoverStrokeWidth = this._hoverStrokeWidth;
+			clonedStyle._hoverPointRadius = this._hoverPointRadius;
+			clonedStyle._isFilled = this._isFilled;
+			clonedStyle._isStroked = this._isStroked;
+			
+			if(this._rules != null){
+				var lenghtRules:uint = this._rules.length;
+				var rulesClone:Vector.<Rule> = new Vector.<Rule>();
+				for(var i:uint=0; i < lenghtRules; i++){
+					rulesClone[i] = this._rules[i].clone();
+				}
+				clonedStyle.rules = rulesClone;
+			}
+			clonedStyle._name = this._name;
+			
+			return clonedStyle;
+		}
+		
+		 /* Getters & setters */ /**
+		 * A name for the style
+		 */
+		public function get name():String {
+			
+			return this._name;
+		}
+		
+		public function set name(value:String):void {
+			
+			this._name = value;
+		}
+		
+		/**
+		 * The list of the rules defining the style
+		 */
+		public function get rules():Vector.<Rule> {
+			
+			return this._rules;
+		}
+		
+		public function set rules(value:Vector.<Rule>):void {
+			this._rules = value;
+		}
+		
+		public function get textFormat():TextFormat{
+			return this._textFormat;
+		}
+	}
+}
