@@ -98,7 +98,7 @@ package org.openscales.core.layer.ogc
 		 */
 		override protected function actualizeGrid(bounds:Bounds, forceReTile:Boolean):void
 		{
-			if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
+			if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && (!this._tileProvider.tileMatrixSets || !this.style)) {
 				this.getCapabilities();
 			} else {
 				var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
@@ -118,7 +118,7 @@ package org.openscales.core.layer.ogc
 		{
 			if (!this._initialized)
 			{
-				if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && !this._tileProvider.tileMatrixSets) {
+				if(this._useCapabilities && this.layer && this._tileProvider.tileMatrixSet && (!this._tileProvider.tileMatrixSets || !this.style)) {
 					this.getCapabilities();
 				} else {
 					var resolution:Number = this.getSupportedResolution(this.map.resolution).value;
@@ -141,7 +141,7 @@ package org.openscales.core.layer.ogc
 		 * Get the WMTS Capabilities to configure its tileMatrixSets
 		 */
 		private function getCapabilities():void {
-			if(!this.tileMatrixSets && !this._loadingCapabilities)
+			if((!this.tileMatrixSets || !this.style) && !this._loadingCapabilities)
 			{
 				if(_req) {
 					_req.destroy();
