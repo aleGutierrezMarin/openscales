@@ -67,7 +67,7 @@ package org.openscales.geometry.basetypes
 		public static function getMetersPerUnit(unit:String):Number {
 			switch(unit){
 				case Unit.DEGREE:
-					return 111195.0;
+					return 111319.4908;
 				case Unit.METER:
 					return 1;
 				case Unit.FOOT:
