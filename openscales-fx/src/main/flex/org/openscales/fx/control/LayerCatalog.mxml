@@ -8,9 +8,6 @@ For example, to present the list of layers available in an application.
 					  xmlns:mx="library://ns.adobe.com/flex/mx"
 					  xmlns:os="org.openscales.fx.control.*"
 					  width="400" height="300">
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
@@ -58,7 +55,7 @@ For example, to present the list of layers available in an application.
 			
 			/**
 			 * The function that will be used to filter the layers.
-			 * This function must take a layer as parameter and return a Boolean
+			 * This function must take a <code>Layer</code> as parameter and return a <code>Boolean</code>
 			 */
 			public function get filter():Function{
 				
