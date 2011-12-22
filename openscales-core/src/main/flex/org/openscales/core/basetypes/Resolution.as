@@ -34,7 +34,7 @@ package org.openscales.core.basetypes
 			
 			if (!ProjProjection.isEquivalentProjection(this._projection, proj))
 			{
-				resolution = Proj4as.unit_transform(this._projection, newProjection, resolution);
+				resolution = Proj4as.unit_transform(this._projection, proj, resolution);
 			}
 			return new Resolution(resolution, newProjection);
 		}
