@@ -41,7 +41,7 @@
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
 			
-			import statisticsexample.CircleSizeExpression;
+			import manageLayer.statisticsexample.CircleSizeExpression;
 			
 			[Bindable]
 			private var styles:Array = [];
