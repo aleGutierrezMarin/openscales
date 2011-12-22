@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns="http://openscales.org"
+		 width="99%" height="30">
+	<s:Rect top="0" right="0" bottom="0" left="0">
+		<s:stroke> 
+			<s:LinearGradientStroke rotation="90" weight="1"> 
+				<s:GradientEntry color="0x000000" alpha="0.5625" /> 
+				<s:GradientEntry color="0x000000" alpha="0.75" /> 
+			</s:LinearGradientStroke> 
+		</s:stroke>
+	</s:Rect>
+	<MousePosition id="mousePosition"
+				   availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93"
+				   displayProjection="IGNF:LAMB93"
+				   left="20"
+				   top="5" />
+	<LanguageSwitcher id="languageSwitcher"
+					  height="21"
+					  right="20"
+					  top="5" />
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.fx.FxMap;
+			
+			public function get fxMap():FxMap {
+				return mousePosition.fxMap;
+			}
+			
+			public function set fxMap(value:FxMap):void {
+				mousePosition.fxMap=value;
+				languageSwitcher.fxMap=value;
+			}
+		]]>
+	</fx:Script>
+</s:Group>

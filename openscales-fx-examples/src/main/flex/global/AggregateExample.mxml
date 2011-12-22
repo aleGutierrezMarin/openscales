@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--- resolution="0.17578125"  This example shows WMS-C layer, WFS layer, layer manager, PanZoom control, SelectFeature handler and popup used together -->
-<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()">
+<!--- This example shows an aggregate of a WMSC layer and a WFS -->
+<s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()" xmlns:components="components.*">
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.3515625" maxExtent="-180,-90,180,90" projection="EPSG:4326" center="0,0">
-		<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
-				 layers="bluemarble" format="image/jpeg" 
-				 maxExtent="-180,-90,180,90" version="1.1.1"/>
-		<WFS id="bluemarble" name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
-				typename="topp:states" projection="EPSG:4326" version="1.1.0"
-				style="{Style.getDefaultSurfaceStyle()}" />
-		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
-				projection="EPSG:4326" version="1.1.0" useCapabilities="true" 
-				style="{Style.getDefaultPointStyle()}" />
+	<Map id="fxMap" width="100%" height="100%" resolution="0.1" center="-74.011,40.710">
 		
-		<!--<WFS id="communes" name="Communes (WFS)" url="http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/geoserver/wfs"
-						version="2.0.0" typename="sde:arrondissement" alpha=".5"
-						style="{Style.getDefaultSurfaceStyle()}" />-->
-
+		<Aggregate name="BlueMarble+Topp States">
+			<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
+				  layers="bluemarble" format="image/jpeg" 
+				  maxExtent="-180,-90,180,90" version="1.1.1"/>
+			<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+				 typename="topp:states" projection="EPSG:4326" version="1.0.0"
+				 style="{Style.getDefaultSurfaceStyle()}" alpha="0.3" maxResolution="0.1"/>
+		</Aggregate>
+		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
+			 projection="EPSG:4326" version="1.0.0" useCapabilities="true" 
+			 style="{Style.getDefaultPointStyle()}" />
+		
+		
 		
 		<KeyBoardHandler id="keyboardHandler" />
+		
 		<DragHandler id="dragHandler" />
 		<WheelHandler id="wheelHandler" />
 		<SelectFeaturesHandler id="selectFeaturesHandler" active="true" enableClickSelection="false" enableBoxSelection="false" enableOverSelection="true" />
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93" displayProjection="IGNF:LAMB93"/>
 		
-		<LanguageSwitcher x="300" y="10"/>
-
-		<PanZoom id="panZoom" x="10" y="10" />
-
-		<LayerManager x="{width - 225}" y="10" right="10">
-			 	<rendererOptions>
-					<fx:Object
-						displayZoomToExtent="true" />
-				</rendererOptions> 
+		<LayerManager y="10" left="10">
+			<rendererOptions>
+				<fx:Object
+					displayZoomToExtent="true" />
+			</rendererOptions> 
 		</LayerManager>
+		<Zoom x="{fxMap.width-135}" y="10" />
 		
 	</Map>
+	<components:toolbar fxMap="{fxMap}" />
 	
 	<fx:Script>
 		<![CDATA[
@@ -93,4 +91,4 @@
 		]]>
 	</fx:Script>
 	
-</s:Group>
+</s:VGroup>

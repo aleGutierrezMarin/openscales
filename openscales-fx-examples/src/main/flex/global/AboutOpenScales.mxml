@@ -19,7 +19,7 @@
 		]]>
 	</fx:Script>
 	
-	<mx:Image source="@Embed('/assets/images/OpenScales-logo.png')"/>
+	<mx:Image source="@Embed('../assets/images/OpenScales-logo.png')"/>
 	<mx:RichTextEditor id="OSdescription"
 					   width="100%"
 					   height="100%"

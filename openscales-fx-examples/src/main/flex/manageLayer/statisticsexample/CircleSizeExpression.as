@@ -1,4 +1,4 @@
-package statisticsexample {
+package manageLayer.statisticsexample {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.filter.expression.IExpression;
 

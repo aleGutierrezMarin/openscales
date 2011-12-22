@@ -64,7 +64,7 @@ Use the top-right button to switch the style of the rendering. -->
 			import spark.components.VGroup;
 			import spark.core.SpriteVisualElement;
 			
-			import styleexample.CentroidYFilter;
+			import manageLayer.styleexample.CentroidYFilter;
 			
 			[Bindable]
 			private var styles:Array = [];
