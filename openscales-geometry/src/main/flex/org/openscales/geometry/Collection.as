@@ -5,6 +5,7 @@ package org.openscales.geometry
 	
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.proj4as.ProjProjection;
 
 
 	/**
@@ -301,15 +302,16 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the collection from a projection system to an other.
 		 *
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
+		 * @param dest the destination projection, can be both a String or a ProjProjection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
+		override public function transform(dest:*):void {
 			// Update the pojection associated to the geometry
-			this.projection = destSrs;
+			var source:ProjProjection = this.projection;
+			this.projection = dest;
 			// Update the geometry
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				this._components[i].transform(sourceSrs, destSrs);
+				this._components[i].projection = source;
+				this._components[i].transform(this.projection);
 			}
 		}
 		/**

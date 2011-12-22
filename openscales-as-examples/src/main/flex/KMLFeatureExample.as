@@ -3,7 +3,6 @@ package
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.PanZoomBar;
@@ -12,6 +11,7 @@ package
 	import org.openscales.core.handler.mouse.WheelHandler;
 	import org.openscales.core.layer.KML;
 	import org.openscales.core.layer.ogc.WMSC;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
 
@@ -25,6 +25,7 @@ package
 		public function KMLFeatureExample()
 		{
 			super();
+			Trace.useFireBugConsole = true;
 			this.url = "http://code.google.com/intl/fr/apis/kml/documentation/KML_Samples.kml";
 			
 			//Trace.useFireBugConsole = true;

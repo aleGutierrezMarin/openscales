@@ -136,8 +136,9 @@ package org.openscales.core.layer.capabilities
 					
 					if(supportedCRS=="")
 						continue;
-					supportedCRS = supportedCRS.toUpperCase();
-					
+					var proj:ProjProjection = ProjProjection.getProjProjection(supportedCRS);
+					if(!proj)
+						continue;
 					// For each tile matrix 
 					for each (var XMLTileMatrix:XML in node.TileMatrix)
 					{
@@ -149,17 +150,16 @@ package org.openscales.core.layer.capabilities
 						if(topLeftCornerString != null)
 						{
 							topLeftCornerArray = topLeftCornerString.split(" ");
-							if(ProjProjection.projAxisOrder[supportedCRS]
-								&& ProjProjection.projAxisOrder[supportedCRS] == ProjProjection.AXIS_ORDER_NE)
+							if(proj.lonlat)
 								topLeftCorner = new Location(
-														parseFloat(topLeftCornerArray[1]),
-														parseFloat(topLeftCornerArray[0]),
-														supportedCRS);
+									parseFloat(topLeftCornerArray[0]),
+									parseFloat(topLeftCornerArray[1]),
+									proj);
 							else
 								topLeftCorner = new Location(
-														parseFloat(topLeftCornerArray[0]),
 														parseFloat(topLeftCornerArray[1]),
-														supportedCRS);
+														parseFloat(topLeftCornerArray[0]),
+														proj);
 						}	
 						
 						tileWidth = XMLTileMatrix.TileWidth;
@@ -168,16 +168,9 @@ package org.openscales.core.layer.capabilities
 						matrixHeight = XMLTileMatrix.MatrixHeight;
 						
 						// If CRS is known (need to check or will throw an error)
-						if(ProjProjection.getProjProjection(supportedCRS) != null)
-						{
-							res = Unit.getResolutionFromScaleDenominator(
+						res = Unit.getResolutionFromScaleDenominator(
 								scaleDenominator, 
-								ProjProjection.getProjProjection(supportedCRS).projParams.units);
-						}
-						else
-						{
-							res = Unit.getResolutionFromScaleDenominator(scaleDenominator)
-						}
+								proj.projParams.units);
 						
 						// Adding the tile matrix to the hashmap
 						tileMatrices.put(res, new TileMatrix(
@@ -193,7 +186,7 @@ package org.openscales.core.layer.capabilities
 					
 					matrixSets.put(tileMatrixSetIdentifier, new TileMatrixSet(
 															tileMatrixSetIdentifier, 
-															supportedCRS, 
+															proj.srsCode, 
 															tileMatrices));
 				}
 			}

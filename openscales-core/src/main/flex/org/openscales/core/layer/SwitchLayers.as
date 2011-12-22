@@ -4,6 +4,7 @@ package org.openscales.core.layer
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.proj4as.ProjProjection;
 
     /**
      *this class allow to have a layer with two layer inside , one layer is displayed according to scale 
@@ -76,7 +77,7 @@ package org.openscales.core.layer
 		}
 		
 		
-		override public function get projection():String {
+		override public function get projection():ProjProjection {
 			if (this.map == null) {
 				  return this._firstLayer.projection;
 			}

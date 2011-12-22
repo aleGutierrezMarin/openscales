@@ -40,14 +40,6 @@ package {
 		/**
 		 * Returns a sample layer of drawn features
 		 */
-		static public function baseLayerOSM():Mapnik {
-			var layer:Mapnik = new Mapnik("Mapnik");
-			return layer;
-		}
-		
-		/**
-		 * Returns a sample layer of drawn features
-		 */
 		static public function features():VectorLayer {
 			// Create the drawings layer and some useful variables
 			var layer:VectorLayer = new VectorLayer("Drawing samples");
@@ -386,8 +378,7 @@ package {
 				45.77610);
 			arrayVertices.push(new LinearRing(arrayComponents));
 			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),null,style));
-			//(layer.features[layer.features.length-1] as Feature).id = "blackPolygon1";
-			//
+
 			arrayComponents = new Vector.<Number>();
 			arrayVertices = new Vector.<Geometry>();
 			arrayComponents.push(4.873535156161644,
@@ -400,8 +391,7 @@ package {
 				45.75218370397337);
 			arrayVertices.push(new LinearRing(arrayComponents));
 			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),null,style));
-			//(layer.features[layer.features.length-1] as Feature).id = "blackPolygon1";
-			
+
 			// return the vector layer
 			return layer;
 		}

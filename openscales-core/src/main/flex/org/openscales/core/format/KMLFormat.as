@@ -582,7 +582,8 @@ package org.openscales.core.format
 						point = new Point(coordinates[0], coordinates[1]);
 						if (this.internalProjection != null, this.externalProjection != null) 
 						{
-							point.transform(this.externalProjection, this.internalProjection);
+							point.projection = this.externalProjection;
+							point.transform(this.internalProjection);
 						}
 						if(this.userDefinedStyle) {
 							iconsfeatures.push(new PointFeature(point, attributes, this.userDefinedStyle));
@@ -713,7 +714,8 @@ package org.openscales.core.format
 					_coords[1].toString());
 				if (this.internalProjection != null, this.externalProjection != null) 
 				{
-					point.transform(this.externalProjection, this.internalProjection);
+					point.projection = this.externalProjection;
+					point.transform(this.internalProjection);
 				}
 				points.push(point.x);
 				points.push(point.y);
@@ -772,7 +774,8 @@ package org.openscales.core.format
 				point = new Point(_Pcoords[0].toString(),_Pcoords[1].toString());
 				if (this.internalProjection != null, this.externalProjection != null) 
 				{
-					point.transform(this.externalProjection, this.internalProjection);
+					point.projection = this.externalProjection;
+					point.transform(this.internalProjection);
 				}
 				Ppoints.push(point.x);
 				Ppoints.push(point.y);

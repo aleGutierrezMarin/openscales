@@ -18,6 +18,7 @@ package org.openscales.core.control
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Display an overview of the current map and position.
@@ -302,9 +303,9 @@ package org.openscales.core.control
 		}
 		
 		/**
-		 * The Actual projection of the overviewMap, the default value is EPSG:4326
+		 * The Actual projection of the overviewMap, the default value is Geometry.DEFAULT_SRS_CODE
 		 */
-		public function set projection(value:String):void
+		public function set projection(value:*):void
 		{
 			this._overviewMap.projection = value;
 		}
@@ -312,7 +313,7 @@ package org.openscales.core.control
 		/**
 		 * Private
 		 */
-		public function get projection():String
+		public function get projection():ProjProjection
 		{
 			return this._overviewMap.projection;
 		}
