@@ -29,7 +29,7 @@ package org.openscales.core.basetypes
 			var _theOtherOne:Resolution = _resolution.reprojectTo("EPSG:2154");
 			
 			// Then the returned resolution is in EPSG:2154
-			assertEquals("The projection has not changed", ProjProjection.getProjProjection("EPSG:2154"), _theOtherOne.projection);
+			assertEquals("The projection has not changed", ProjProjection.getProjProjection("EPSG:2154").srsCode, _theOtherOne.projection.srsCode);
 			assertTrue("The resolution value is wrong", _theOtherOne.value < 293042.5523);
 			assertTrue("The resolution value is wrong", _theOtherOne.value > 293042.5522);
 		}

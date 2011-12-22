@@ -119,7 +119,7 @@ package org.openscales.core.layer.ogc {
 			assertEquals("Incorrect default dpi",92,layer.dpi);
 			assertEquals("Incorrect default styles parameter",null,layer.style);
 			assertEquals("Incorrect default format parameter","image/png",layer.format);
-			assertEquals("Incorrect default projection",ProjProjection.getProjProjection("EPSG:4326"),layer.projection);
+			assertEquals("Incorrect default projection",ProjProjection.getProjProjection("EPSG:4326").srsCode,layer.projection.srsCode);
 		}
 		
 		/**

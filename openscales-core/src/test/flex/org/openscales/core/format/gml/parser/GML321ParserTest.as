@@ -102,7 +102,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			Assert.assertNotNull("Feature should not be null!",feature);
 			Assert.assertTrue("The feature should be a multi polygon feature",(feature is MultiPolygonFeature));
 			Assert.assertEquals("The id of the feature is incorrect","states.1",feature.name);
-			Assert.assertEquals("The projection of the feature should be epsg:4326",ProjProjection.getProjProjection("EPSG:4326"),feature.geometry.projection);
+			Assert.assertEquals("The projection of the feature should be epsg:4326",ProjProjection.getProjProjection("EPSG:4326").srsCode,feature.geometry.projection.srsCode);
 			var mp:MultiPolygon = (feature as MultiPolygonFeature).polygons;
 			Assert.assertEquals("There should be only one component in the multi polygon!", 1, mp.componentsLength);
 			Assert.assertTrue("The component should be a Polygon", (mp.getcomponentsClone()[0] is Polygon));
