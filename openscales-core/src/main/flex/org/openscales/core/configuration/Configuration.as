@@ -25,7 +25,6 @@ package org.openscales.core.configuration
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.ogc.WMSC;
 	import org.openscales.core.layer.osm.CycleMap;
-	import org.openscales.core.layer.osm.Maplint;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.core.security.AbstractSecurity;
@@ -447,14 +446,6 @@ package org.openscales.core.configuration
 				if (String(xmlNode.@maxExtent) != "")
 					cycleMap.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projection);
 				layer=cycleMap;
-			}
-			else if(type == "Maplint"){
-				Trace.log("Configuration - Find Maplint Layer : " + xmlNode.name());
-				// We create the CycleMap Layer with all params
-				var maplint:Maplint=new Maplint(xmlNode.name());
-				if (String(xmlNode.@maxExtent) != "")
-					maplint.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+maplint.projection);
-				layer=maplint;
 			}
 			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer

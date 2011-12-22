@@ -131,7 +131,6 @@
 				
 				if(this._map != null) 
 				{
-					//stock layer by type : baselayer and overlays
 					var overlayArray:Vector.<Layer>  = this.map.layers;
 					var ac:ArrayCollection = new ArrayCollection();
 					var i:int = overlayArray.length;

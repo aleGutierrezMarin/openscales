@@ -19,8 +19,6 @@
 		
 		<Extent west="5.60075" south="47.2441" east="15.425" north="55.0317" projection="EPSG:4326" />
 		
-		<TraceInfo x="{width-200}" y="0" />
-		
 		<PanZoom id="panZoom" x="10" y="10" />
 		
 		

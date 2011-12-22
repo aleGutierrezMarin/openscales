@@ -15,7 +15,8 @@ package org.openscales.core.layer.osm
 			var url:String = "http://a.tile.openstreetmap.org/";
 			super(name, url);
 
-			this.altUrls = [ "http://b.tile.openstreetmap.org/", "http://c.tile.openstreetmap.org/" ];
+			this.altUrls = [ "http://b.tile.openstreetmap.org/",
+							 "http://c.tile.openstreetmap.org/" ];
 			this.generateResolutions(18, OSM.DEFAULT_MAX_RESOLUTION);
 		}
 

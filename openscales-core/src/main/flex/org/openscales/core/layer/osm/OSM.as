@@ -19,6 +19,7 @@ package org.openscales.core.layer.osm
 		
 		private static const OSM_ORIGINATOR:DataOriginator = new DataOriginator("OpenStreetMap","http://www.openstreetmap.org","http://www.openstreetmap.org/assets/osm_logo-9b6498da08de0514dfcb996c32e84dbd.png");
 		private static const CREATIVE_BY_CA:DataOriginator = new DataOriginator("Creative Commons", "http://creativecommons.org/licenses/by-sa/2.0/", "http://wiki.april.org/skins/common/images/icons/cc-by-sa.png");
+
 		
 		public function OSM(name:String,
 							url:String = null,

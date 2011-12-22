@@ -21,8 +21,6 @@ Set the opacity of each layer (base layer or overlay) using its slider.</p> -->
 		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs" typename="topp:states"
 				projection="EPSG:4326" version="1.0.0" style="{Style.getDefaultSurfaceStyle()}" />
 		
-		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
-		
 		<LayerManager x="10" y="10" width="215" />
 		
 	</Map>

@@ -91,7 +91,7 @@ package org.openscales.geometry.basetypes
 			}
 			var mult:Number = Math.pow(10, decimal);
 			var bbox:String = "";
-			if(forceLatLon || ProjProjection.projAxisOrder[this.projection] == ProjProjection.AXIS_ORDER_EN) {
+			if(forceLatLon || this.projection.lonlat) {
 				bbox = Math.round(this.left * mult) / mult + "," +
 					Math.round(this.bottom * mult) / mult + "," +
 					Math.round(this.right * mult) / mult + "," +
