@@ -52,7 +52,7 @@ package org.openscales.core.layer.ogc
 		
 		public function GML(name:String, 
 							version:String,
-							projection:String,
+							projection:*,
 							url:String = null,
 							data:XML = null,
 							style:Style = null)

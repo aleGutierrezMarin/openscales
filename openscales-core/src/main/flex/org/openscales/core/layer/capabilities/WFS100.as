@@ -1,5 +1,6 @@
 package org.openscales.core.layer.capabilities
 {
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
@@ -67,7 +68,7 @@ package org.openscales.core.layer.capabilities
 				miny = feature.LatLongBoundingBox.@miny;
 				maxx = feature.LatLongBoundingBox.@maxx;
 				maxy = feature.LatLongBoundingBox.@maxy;
-				latLon = new Bounds(minx, miny, maxx, maxy, "EPSG:4326");
+				latLon = new Bounds(minx, miny, maxx, maxy, Geometry.DEFAULT_SRS_CODE);
 				featureCapabilities.put("Extent", latLon);
 
 				this._capabilities.put(name, featureCapabilities);

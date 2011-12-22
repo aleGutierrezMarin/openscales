@@ -34,6 +34,7 @@ package org.openscales.core
 	import org.openscales.core.request.OpenLSRequest;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -65,29 +66,25 @@ package org.openscales.core
 	public class Map extends Sprite
 	{
 		/**
-		 * Default SRS Code of the Map
+		 * Default Resolution of the map. The projection of the resolution is the Geometry.DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_SRS_CODE:String = "EPSG:4326";
+		public static const DEFAULT_RESOLUTION:Resolution = new Resolution(1, Geometry.DEFAULT_SRS_CODE);
 		/**
-		 * Default Resolution of the map. The projection of the resolution is the DEFAULT_SRS_CODE
+		 * Default MaxExtent of the map. The projection of the maxExtent is the Geometry.DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_RESOLUTION:Resolution = new Resolution(1, DEFAULT_SRS_CODE);
+		public static const DEFAULT_MAX_EXTENT:Bounds = new Bounds(-180, -90, 180, 90, Geometry.DEFAULT_SRS_CODE);
 		/**
-		 * Default MaxExtent of the map. The projection of the maxExtent is the DEFAULT_SRS_CODE
+		 * Default Center of the map. The projection of the center is the Geometry.DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_MAX_EXTENT:Bounds = new Bounds(-180, -90, 180, 90, DEFAULT_SRS_CODE);
+		public static const DEFAULT_CENTER:Location = new Location(0, 0, Geometry.DEFAULT_SRS_CODE);
 		/**
-		 * Default Center of the map. The projection of the center is the DEFAULT_SRS_CODE
+		 * Default Min Resolution of the map. The projection of the min resolution is the Geometry.DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_CENTER:Location = new Location(0, 0, DEFAULT_SRS_CODE);
+		public static const DEFAULT_MIN_RESOLUTION:Resolution = new Resolution(0.0000000001, Geometry.DEFAULT_SRS_CODE);
 		/**
-		 * Default Min Resolution of the map. The projection of the min resolution is the DEFAULT_SRS_CODE
+		 * Default Max Resolution of the map. The projection of the max resolution is the Geometry.DEFAULT_SRS_CODE
 		 */
-		public static const DEFAULT_MIN_RESOLUTION:Resolution = new Resolution(0.0000000001, DEFAULT_SRS_CODE);
-		/**
-		 * Default Max Resolution of the map. The projection of the max resolution is the DEFAULT_SRS_CODE
-		 */
-		public static const DEFAULT_MAX_RESOLUTION:Resolution = new Resolution(1.5, DEFAULT_SRS_CODE);
+		public static const DEFAULT_MAX_RESOLUTION:Resolution = new Resolution(1.5, Geometry.DEFAULT_SRS_CODE);
 		/**
 		 * Default zoomIn factor
 		 */
@@ -96,7 +93,7 @@ package org.openscales.core
 		 * Default zoomIn factor
 		 */
 		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.11;
-
+		
 		/**
 		 * Number of attempt for downloading an image tile
 		 */
@@ -124,7 +121,7 @@ package org.openscales.core
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
 		
-		private var _projection:String = DEFAULT_SRS_CODE;
+		private var _projection:ProjProjection = null;
 		private var _resolution:Resolution = DEFAULT_RESOLUTION;
 		private var _initialized:Boolean = false;
 		private var _backTileColor:uint = 0xFFFFFF;
@@ -150,13 +147,13 @@ package org.openscales.core
 		/**
 		 * @private
 		 * The minimum resolution of the map
-		 * @default 0 in EPSG:4326
+		 * @default 0 in Geometry.DEFAULT_SRS_CODE
 		 */
 		private var _minResolution:Resolution = DEFAULT_MIN_RESOLUTION;
 		/**
 		 * @private
 		 * The maximum resolution of the map
-		 * @default 1.5 in EPSG:4326
+		 * @default 1.5 in Geometry.DEFAULT_SRS_CODE
 		 */
 		private var _maxResolution:Resolution = DEFAULT_MAX_RESOLUTION;
 		private var _defaultZoomInFactor:Number = DEFAULT_ZOOM_IN_FACTOR;
@@ -200,7 +197,7 @@ package org.openscales.core
 		 * @param height the map's height in pixels
 		 * @param projection the map's projection
 		 */
-		public function Map(width:Number=600, height:Number=400, projection:String="EPSG:4326") {
+		public function Map(width:Number=600, height:Number=400, projection:*=null) {
 			super();
 			
 			/**
@@ -219,7 +216,9 @@ package org.openscales.core
 			I18nJSONProvider.addTranslation(FRLocale);
 			
 			Catalog.catalog.addEventListener(I18NEvent.LOCALE_CHANGED, this.localeChanged);
-			this._projection = projection;
+			this._timer = new Timer(500,1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			this.projection = projection;
 			this.size = new Size(width, height);
 			// It is necessary to draw something before to define the size...
 			this.graphics.beginFill(_backTileColor,0);
@@ -228,9 +227,6 @@ package org.openscales.core
 			// ... and then the size may be defined.
 			this.width = this.size.w;
 			this.height = this.size.h;
-			
-			this._timer = new Timer(500,1);
-			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			
 			this._resultLayer.displayInLayerManager = false;
 			
@@ -247,36 +243,6 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_START, onLayerLoadStart);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
 			this._initialized = true;
-		}
-		
-		/**
-		 * Default layer used for search results
-		 */
-		public function get resultLayer():VectorLayer
-		{
-			return _resultLayer;
-		}
-
-		/**
-		 *  URL of geocode service used for OpenLS requests
-		 */
-		public function get geocodeServiceUrl():String
-		{
-			return _geocodeServiceUrl;
-		}
-
-		public function set geocodeServiceUrl(value:String):void
-		{
-			_geocodeServiceUrl = value;
-		}
-
-		private function openLink(e:ContextMenuEvent):void{
-			navigateToURL(new URLRequest("http://www.openscales.org"));
-		}
-		private function localeChanged(event:I18NEvent):void {
-			if(event.locale == Locale.activeLocale) {
-				this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,Locale.activeLocale));
-			}
 		}
 		
 		/**
@@ -552,7 +518,7 @@ package org.openscales.core
 			this.zoomTo(new Resolution(_newResolution, this.resolution.projection), targetPixel);
 			
 		}
-
+		
 		/**
 		 * Zoom to the given extent
 		 * Change the map center and resolution to be at the exetnt given
@@ -633,7 +599,7 @@ package org.openscales.core
 			var px:Pixel = null;
 			var b:Bounds = this.getExtentForResolution(res);
 			if (lonlat != null && b) {
-
+				
 				px = new Pixel((lonlat.lon - b.left) / res.value, (b.top - lonlat.lat) / res.value);
 			}	
 			return px;
@@ -709,15 +675,15 @@ package org.openscales.core
 			this._securities.push(security);
 			return true;
 		}
-
+		
 		public function getExtentForResolution(resolution:Resolution):Bounds
 		{
 			var extent:Bounds = null;
 			
 			if (this.center != null) {
 				var center:Location;
-				if(this.center.projection.toUpperCase() != this.projection.toUpperCase())
-					center = this.center.reprojectTo(this.projection.toUpperCase());
+				if(this.center.projection != this.projection)
+					center = this.center.reprojectTo(this.projection);
 				else
 					center = this.center;
 				var w_deg:Number = this.size.w * resolution.value;
@@ -830,7 +796,101 @@ package org.openscales.core
 			}
 		}
 		
-		// private functions
+		/**
+		 * Offsets in pixels for place icon
+		 */
+		public function setPlaceIconOffsets(x:Number, y:Number): void {
+			this._xOffset = x;
+			this._yOffset = y;
+		}
+		
+		/**
+		 * Change the center of the map to the location which adress or name is given as parameter.
+		 * If the name or adress match with severals possibilities the first one is choosed
+		 * If there is no result the center is not changed	
+		 * To use this functionnality your api keys need to allow geocoding
+		 * If your api keys not allow geocoding the center is not changed
+		 */
+		public function setCenterAtLocation(location:String):void{
+			this._resultLayer.removeFeatures(this._resultLayer.features);
+			this.removeLayer(this._resultLayer);
+			if(_openlsRequest)
+				_openlsRequest.destroy();
+			_openlsRequest = new OpenLSRequest(this._geocodeServiceUrl, onOpenLSServiceResult, onOpenLSServiceFault);
+			_openlsRequest.defineSimpleSearch(null, location, "FR", Geometry.DEFAULT_SRS_CODE, 1, "1.2");
+			_openlsRequest.send();
+		}
+		
+		/**
+		 * Change the center of the map to the location of the user.
+		 * The user browser must support geolocation, if not the center is not changed
+		 * 
+		 * @param latitude
+		 * @param longitude
+		 * @param accuracy
+		 * @param projection
+		 * 
+		 */
+		public function setCenterFromGeolocation(latitude:Number, longitude:Number, accuracy:Number = NaN, projection:*=null):void{
+			this._resultLayer.removeFeatures(this._resultLayer.features);
+			this.removeLayer(this._resultLayer);
+			if (! (isNaN(latitude) || isNaN(longitude)) ) {
+				var proj:ProjProjection = ProjProjection.getProjProjection(projection);
+				if(!proj)
+					proj=ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
+				var pos:Location = new Location(longitude,latitude,proj);
+				if(this.projection!=pos.projection)
+					pos=pos.reprojectTo(this.projection);
+				this.center = pos;
+				if(accuracy) {
+					if(accuracy<20000)
+						this.resolution = new Resolution(this._streetResolution);
+					else
+						this.resolution = new Resolution(this._cityResolution);
+				}
+				this.addLayer(this._resultLayer);
+				//var point:PointFeature = new PointFeature(new Point(pos.x,pos.y),null,Style.getDefaultCircleStyle());
+				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _geolocationIcon(), pos, null, 0, 0);
+				marker.useHandCursor = false;
+				this._resultLayer.addFeature(marker,true,false);
+			}
+		}
+		protected function onLayerLoadStart(e:LayerEvent):void
+		{
+			// fisrt layer load : dispatch layers load
+			if(this._loadingLayers.length == 0)
+			{
+				this._loading = true;
+				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_START, this));
+			}
+			
+			if(this._loadingLayers.indexOf(e.layer)<0) this._loadingLayers.push(e.layer);
+		}
+		
+		protected function onLayerLoadEnd(e:LayerEvent):void
+		{
+			var i:int = this._loadingLayers.indexOf(e.layer);
+			if(i==-1)
+				return;
+			
+			this._loadingLayers.splice(i,1);
+			
+			if(this._loadingLayers.length == 0)
+			{
+				this._loading = false;
+				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_END, this));
+			}
+			
+		}
+		
+		private function openLink(e:ContextMenuEvent):void{
+			navigateToURL(new URLRequest("http://www.openscales.org"));
+		}
+		private function localeChanged(event:I18NEvent):void {
+			if(event.locale == Locale.activeLocale) {
+				this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,Locale.activeLocale));
+			}
+		}
 		/**
 		 * Change the resolution of the projection of all the variables in the map
 		 * when the resolution of the map is changed
@@ -855,35 +915,6 @@ package org.openscales.core
 		{
 			this.stage.focus = this;
 		}
-		
-		protected function onLayerLoadStart(e:LayerEvent):void
-		{
-			// fisrt layer load : dispatch layers load
-			if(this._loadingLayers.length == 0)
-			{
-				this._loading = true;
-				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_START, this));
-			}
-
-			if(this._loadingLayers.indexOf(e.layer)<0) this._loadingLayers.push(e.layer);
-		}
-		
-		protected function onLayerLoadEnd(e:LayerEvent):void
-		{
-			var i:int = this._loadingLayers.indexOf(e.layer);
-			if(i==-1)
-				return;
-			
-			this._loadingLayers.splice(i,1);
-
-			if(this._loadingLayers.length == 0)
-			{
-				this._loading = false;
-				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_END, this));
-			}
-				
-		}
-		
 		private function onDraw(event:Event):void
 		{
 			if (_extenTDebug == null)
@@ -929,7 +960,7 @@ package org.openscales.core
 			var resolutionChanged:Boolean = (this.isValidResolution(targetResolution) && (targetResolution.value != this._resolution.value));
 			
 			if (resolutionChanged) {
-			
+				
 				mapEvent = new MapEvent(MapEvent.MOVE_START, this);
 				this.dispatchEvent(mapEvent);
 				
@@ -941,7 +972,7 @@ package org.openscales.core
 				var newCenter:Location = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projection);
 				
 				if (resolutionChanged) {
-						
+					
 					if(!this.maxExtent.containsLocation(zoomTargetLoc) || !this.maxExtent.containsLocation(newCenter)){
 						this._targetZoomPixel = new Pixel(this.width/2,this.height/2);
 					}
@@ -1062,86 +1093,12 @@ package org.openscales.core
 				
 				// change the center				
 				this.center = new Location(x, y, this.projection);
-			
+				
 				// Put back the restricted value :
 				this._restrictedExtent = tmpExtent.clone();
 				
 				this.dispatchEvent(new MapEvent(MapEvent.MOVE_END, this));
 			}
-		}
-		
-		// getters and setters
-		/**
-		 * Map center coordinates
-		 */
-		public function get center():Location
-		{
-			return _center;
-		}
-		/**
-		 * @private
-		 */
-		public function set center(newCenter:Location):void
-		{
-			var event:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
-			event.oldCenter = this._center;
-			event.newCenter = newCenter;
-			event.oldResolution = this.resolution;
-			event.newResolution = this.resolution;
-			if (newCenter.projection != this.projection)
-				newCenter = newCenter.reprojectTo(this.projection);
-			Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projection);
-			
-			// only change center according to restrictedExtent
-			if(!isValidExtentWithRestrictedExtent(newCenter, this.resolution))
-				return;
-			
-			if (this.maxExtent.containsLocation(newCenter))
-			{
-				this._center = newCenter;
-				this._timer.reset();
-				this._timer.start();
-				this.dispatchEvent(event);
-			}
-			else
-				Trace.debug("Center out of maxExtent so do nothing");
-		}
-		
-		/**
-		 * Getter and setter of place icon
-		 */
-		public function get placeIcon():Class {
-			return this._placeIcon;
-		}			
-		public function set placeIcon(value:Class):void {				
-			this._placeIcon = (value) ? value : null;
-			this._xOffset = 0;
-			this._yOffset = 0;
-		}
-		
-		/**
-		 * Offsets in pixels for place icon
-		 */
-		public function setPlaceIconOffsets(x:Number, y:Number): void {
-			this._xOffset = x;
-			this._yOffset = y;
-		}
-		
-		/**
-		 * Change the center of the map to the location which adress or name is given as parameter.
-		 * If the name or adress match with severals possibilities the first one is choosed
-		 * If there is no result the center is not changed	
-		 * To use this functionnality your api keys need to allow geocoding
-		 * If your api keys not allow geocoding the center is not changed
-		 */
-		public function setCenterAtLocation(location:String):void{
-			this._resultLayer.removeFeatures(this._resultLayer.features);
-			this.removeLayer(this._resultLayer);
-			if(_openlsRequest)
-				_openlsRequest.destroy();
-			_openlsRequest = new OpenLSRequest(this._geocodeServiceUrl, onOpenLSServiceResult, onOpenLSServiceFault);
-			_openlsRequest.defineSimpleSearch(null, location, "FR", "epsg:4326", 1, "1.2");
-			_openlsRequest.send();
 		}
 		
 		private function onOpenLSServiceFault(event:Event):void {
@@ -1164,7 +1121,7 @@ package org.openscales.core
 				if (results[0].street && results[0].street!="") {
 					resolution = _streetResolution;
 				}
-				this.centerAtLocation(latitude, longitude, "EPSG:4326", resolution);
+				this.centerAtLocation(latitude, longitude, Geometry.DEFAULT_SRS_CODE, resolution);
 			}
 		}
 		
@@ -1183,39 +1140,63 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Change the center of the map to the location of the user.
-		 * The user browser must support geolocation, if not the center is not changed
-		 * 
-		 * @param latitude
-		 * @param longitude
-		 * @param accuracy
-		 * @param projection
-		 * 
+		 * Default layer used for search results
 		 */
-		public function setCenterFromGeolocation(latitude:Number, longitude:Number, accuracy:Number = NaN, projection:String=null):void{
-			this._resultLayer.removeFeatures(this._resultLayer.features);
-			this.removeLayer(this._resultLayer);
-			if (! (isNaN(latitude) || isNaN(longitude)) ) {
-				if(!projection)
-					projection="EPSG:4326";
-				var pos:Location = new Location(longitude,latitude,projection);
-				if(this.projection!=pos.projection)
-					pos=pos.reprojectTo(this.projection);
-				this.center = pos;
-				if(accuracy) {
-					if(accuracy<20000)
-						this.resolution = new Resolution(this._streetResolution);
-					else
-						this.resolution = new Resolution(this._cityResolution);
-				}
-				this.addLayer(this._resultLayer);
-				//var point:PointFeature = new PointFeature(new Point(pos.x,pos.y),null,Style.getDefaultCircleStyle());
-				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _geolocationIcon(), pos, null, 0, 0);
-				marker.useHandCursor = false;
-				this._resultLayer.addFeature(marker,true,false);
-			}
+		public function get resultLayer():VectorLayer
+		{
+			return _resultLayer;
 		}
 		
+		/**
+		 *  URL of geocode service used for OpenLS requests
+		 */
+		public function get geocodeServiceUrl():String
+		{
+			return _geocodeServiceUrl;
+		}
+		/**
+		 * @private
+		 */
+		public function set geocodeServiceUrl(value:String):void
+		{
+			_geocodeServiceUrl = value;
+		}
+		
+		/**
+		 * Map center coordinates
+		 */
+		public function get center():Location
+		{
+			return _center;
+		}
+		/**
+		 * @private
+		 */
+		public function set center(newCenter:Location):void
+		{
+			var event:MapEvent = new MapEvent(MapEvent.CENTER_CHANGED, this);
+			event.oldCenter = this._center;
+			event.newCenter = newCenter;
+			event.oldResolution = this.resolution;
+			event.newResolution = this.resolution;
+			if (newCenter.projection != this.projection)
+				newCenter = newCenter.reprojectTo(this.projection);
+			Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projection.srsCode);
+			
+			// only change center according to restrictedExtent
+			if(!isValidExtentWithRestrictedExtent(newCenter, this.resolution))
+				return;
+			
+			if (this.maxExtent.containsLocation(newCenter))
+			{
+				this._center = newCenter;
+				this._timer.reset();
+				this._timer.start();
+				this.dispatchEvent(event);
+			}
+			else
+				Trace.debug("Center out of maxExtent so do nothing");
+		}
 		/**
 		 * Map size in pixels.
 		 */
@@ -1247,7 +1228,27 @@ package org.openscales.core
 				Trace.error("Map - size not changed since the value is not valid");
 			}
 		}
-		
+		/**
+		 * Getter and setter of place icon
+		 */
+		public function get placeIcon():Class {
+			return this._placeIcon;
+		}			
+		public function set placeIcon(value:Class):void {				
+			this._placeIcon = (value) ? value : null;
+			this._xOffset = 0;
+			this._yOffset = 0;
+		}
+		/**
+		 * back tile color
+		 */
+		public function get backTileColor():uint
+		{
+			return this._backTileColor;
+		}
+		/**
+		 * @private
+		 */
 		public function set backTileColor(value:uint):void
 		{
 			this._backTileColor = value;
@@ -1255,11 +1256,6 @@ package org.openscales.core
 			this.graphics.beginFill(_backTileColor);
 			this.graphics.drawRect(0,0,this.size.w,this.size.h);
 			this.graphics.endFill();
-		}
-		
-		public function get backTileColor():uint
-		{
-			return this._backTileColor;
 		}
 		
 		/**
@@ -1358,8 +1354,8 @@ package org.openscales.core
 			var extent:Bounds = null;
 			if ((this.center != null) && (this.resolution != null)) {
 				var center:Location;
-				if(this.center.projection.toUpperCase() != this.projection.toUpperCase())
-					center = this.center.reprojectTo(this.projection.toUpperCase());
+				if(this.center.projection != this.projection)
+					center = this.center.reprojectTo(this.projection);
 				else
 					center = this.center;
 				var w_deg:Number = this.size.w * this.resolution.value;
@@ -1384,7 +1380,7 @@ package org.openscales.core
 			}
 			return layerArray.reverse();
 		}
-
+		
 		/**
 		 * List all feature layers (including layers that inherit FeatureLayer like WFS) of the map
 		 **/
@@ -1516,9 +1512,9 @@ package org.openscales.core
 		/**
 		 * @private
 		 */
-		public function set loading(value:Boolean):void
+		public function set dragging(value:Boolean):void
 		{
-			this._loading = value;
+			this._dragging = value;
 		}
 		
 		/**
@@ -1531,9 +1527,9 @@ package org.openscales.core
 		/**
 		 * @private
 		 */
-		public function set dragging(value:Boolean):void
+		public function set loading(value:Boolean):void
 		{
-			this._dragging = value;
+			this._loading = value;
 		}
 		
 		/**
@@ -1568,14 +1564,27 @@ package org.openscales.core
 		 * If a layer is not in the same projection as the projection of the map
 		 * he will not be displayed. 
 		 * 
-		 * @default EPSG:4326
+		 * @default Geometry.DEFAULT_SRS_CODE
 		 */
-		public function set projection(value:String):void
+		public function get projection():ProjProjection
 		{
+			return this._projection;
+		}
+		/**
+		 * @private
+		 */
+		public function set projection(value:*):void
+		{
+			var proj:ProjProjection = null;
+			proj = ProjProjection.getProjProjection(value);
+			if(proj == null)
+				proj = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
+			if(proj == this.projection)
+				return;
 			var event:MapEvent = new MapEvent(MapEvent.PROJECTION_CHANGED, this);
 			event.oldProjection = this._projection;
-			event.newProjection = value;
-			this._projection = value;
+			event.newProjection = proj;
+			this._projection = proj;
 			this._resolution = this._resolution.reprojectTo(event.newProjection);
 			this._maxExtent =  this._maxExtent.preciseReprojectBounds(event.newProjection);
 			this._center = this.center.reprojectTo(event.newProjection);
@@ -1585,16 +1594,15 @@ package org.openscales.core
 			this._timer.start();
 			this.dispatchEvent(event);
 		}
-		/**
-		 * @private
-		 */
-		public function get projection():String
-		{
-			return this._projection;
-		}
 		
 		/**
 		 * Current resolution (units per pixel) of the map with its related projection
+		 */
+		public function get resolution():Resolution {
+			return this._resolution;
+		}
+		/**
+		 * @private
 		 */
 		public function set resolution(value:Resolution):void
 		{		
@@ -1633,13 +1641,7 @@ package org.openscales.core
 			this.dispatchEvent(event);
 			this._timer.reset();
 			this._timer.start();
-			Trace.log("Changing resolution"+ event.newResolution.value);
-		}
-		/**
-		 * @private
-		 */
-		public function get resolution():Resolution {
-			return this._resolution;
+			Trace.log("Changing resolution: "+ event.newResolution.value);
 		}	
 		
 		/**
@@ -1647,6 +1649,13 @@ package org.openscales.core
 		 * This parameter must be between 0 and 1, if you try to set
 		 * a value that is not between 0 and 1, and argument error is
 		 * thrown
+		 */
+		public function get defaultZoomInFactor():Number
+		{
+			return this._defaultZoomInFactor;
+		}
+		/**
+		 * @private
 		 */
 		public function set defaultZoomInFactor(value:Number):void
 		{
@@ -1657,18 +1666,18 @@ package org.openscales.core
 			
 			this._defaultZoomInFactor = value;
 		}
-		/**
-		 * @private
-		 */
-		public function get defaultZoomInFactor():Number
-		{
-			return this._defaultZoomInFactor;
-		}
 		
 		/**
 		 * The default zoomOut factor that will be used by zoomOut().
 		 * This parameter must be between above 1, if you try to set
 		 * a value that is not above 1, and argument error is thrown
+		 */
+		public function get defaultZoomOutFactor():Number
+		{
+			return this._defaultZoomOutFactor;
+		}
+		/**
+		 * @private
 		 */
 		public function set defaultZoomOutFactor(value:Number):void
 		{
@@ -1678,13 +1687,6 @@ package org.openscales.core
 			}
 			
 			this._defaultZoomOutFactor = value;
-		}
-		/**
-		 * @private
-		 */
-		public function get defaultZoomOutFactor():Number
-		{
-			return this._defaultZoomOutFactor;
 		}
 		
 		/**
@@ -1709,7 +1711,6 @@ package org.openscales.core
 		{
 			return this._initialized;
 		}
-		
 		/**
 		 * @private
 		 */
@@ -1717,7 +1718,7 @@ package org.openscales.core
 		{
 			this._initialized = value;
 		}
-
+		
 		/**
 		 * To enabled/disabled mouse navigation
 		 */
@@ -1725,7 +1726,6 @@ package org.openscales.core
 		{
 			return _mouseNavigationEnabled;
 		}
-
 		/**
 		 * @private
 		 */
@@ -1741,7 +1741,6 @@ package org.openscales.core
 		{
 			return _panNavigationEnabled;
 		}
-		
 		/**
 		 * @private
 		 */
@@ -1757,7 +1756,6 @@ package org.openscales.core
 		{
 			return _zoomNavigationEnabled;
 		}
-		
 		/**
 		 * @private
 		 */
@@ -1773,7 +1771,6 @@ package org.openscales.core
 		{
 			return _keyboardNavigationEnabled;
 		}
-		
 		/**
 		 * @private
 		 */

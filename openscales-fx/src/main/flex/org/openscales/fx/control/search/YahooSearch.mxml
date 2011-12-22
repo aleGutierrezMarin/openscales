@@ -53,7 +53,7 @@
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
 						var pos:Location = new Location(longitude,latitude);
 						Trace.log("YahooSearch center at "+pos.toShortString());
-						if (map.projection != "") {
+						if (map.projection) {
 							pos = pos.reprojectTo(map.projection);
 						}
 						this.map.center = pos;
@@ -73,7 +73,7 @@
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
 						var pos:Location = new Location(longitude,latitude);
 						Trace.log("YahooSearch center at "+pos.toShortString());
-						if (map.projection != "") {
+						if (map.projection) {
 							pos = pos.reprojectTo(map.projection);
 						}
 						this.map.center = pos;

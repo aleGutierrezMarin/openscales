@@ -1,0 +1,965 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- The AddLayer control is use for adding layers easily (with just an url, format and version)  -->
+<Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" 
+					xmlns="http://openscales.org">
+
+	<states>
+		<s:State name="normal" enterState="onEnterState()" />
+		<s:State name="searching" enterState="onEnterState()" />
+		<s:State name="result" enterState="onEnterState()" />
+		<s:State name="noresult" enterState="onEnterState()" />
+	</states>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="radioButtonsGroup" selectedValue="{this._selectedSource}" itemClick="handleRadioButtonClick(event);"/>
+	</fx:Declarations>
+	
+	<s:Group visible="{this._isReduced}" includeInLayout="{this._isReduced}">
+		<s:Button label="+" click="{this.toggleDisplay()}" toolTip="{this._toggle}" width="30" />
+	</s:Group>
+	<s:Group visible="{!this._isReduced}" width="{this.width}" height="{this.height}">
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="0xFFFFFF" /></s:fill>
+		</s:Rect>
+		<s:Panel id="mainPanel" width="100%" height="100%" backgroundColor="0xFFFFFF">
+			<s:SkinnableContainer includeIn="normal" styleName="verticalLayout" id="normalContainer" >
+				<s:layout>
+					<s:VerticalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" />
+				</s:layout>
+				<s:SkinnableContainer styleName="horizontalLayout" id="layerNameContainer" width="{this.width-30}"> 	
+					<s:layout>
+						<s:HorizontalLayout paddingBottom="5" paddingTop="5" />
+					</s:layout>
+					<s:Label id="layerNameLabel" width="40%" />
+					<s:TextInput id="layerNameTextInput"  width="60%" />
+				</s:SkinnableContainer>
+				
+				<s:SkinnableContainer styleName="horizontalLayout" id="layerFormatContainer" width="{this.width-30}"> 
+					<s:layout>
+						<s:HorizontalLayout paddingBottom="5" paddingTop="5" />
+					</s:layout>
+					<s:Label id="layerFormatLabel" width="40%"/>
+					<s:DropDownList id="availableLayerFormatsDropDownList"
+									change="{this.formatChange(event)}"
+									dataProvider="{this._formatsProvider}"
+									selectedIndex="{this._selectedFormat}"
+									width="60%"/>
+				</s:SkinnableContainer>
+				
+				<s:SkinnableContainer styleName="horizontalLayout" id="layerVersionContainer" width="{this.width-30}"
+									  includeInLayout="{this._displayVersion}"
+									  visible="{this._displayVersion}" > 
+					<s:layout>
+						<s:HorizontalLayout paddingBottom="5" paddingTop="5" />
+					</s:layout>
+					<s:Label id="layerVersionLabel" width="40%" />
+					<s:DropDownList id="availableLayerVersionsDropDownList"
+									change="{this.versionChange(event)}"
+									dataProvider="{this._versionsProvider}"
+									selectedIndex="{this._selectedVersion}" 
+									width="60%"/>
+				</s:SkinnableContainer>
+				
+				<s:SkinnableContainer id="layerSourceContainer" width="{this.width-30}">
+					<s:layout>
+						<s:VerticalLayout paddingBottom="5"  paddingTop="5" />
+					</s:layout>
+					<s:VGroup paddingLeft="10" paddingTop="10">
+						<s:SkinnableContainer width="{this.width-30}">
+							<s:layout>
+								<s:HorizontalLayout paddingBottom="5"  paddingTop="5" />
+							</s:layout>
+							<s:RadioButton groupName="radioButtonsGroup" 
+										   id="layerUrlRadioButton"
+										   value="1"
+										   width="135"/>
+							<s:TextInput id="layerUrlTextInput" width="60%" visible="false" />
+						</s:SkinnableContainer>
+						<s:SkinnableContainer width="{this.width-30}">
+							<s:layout>
+								<s:HorizontalLayout paddingBottom="5"  paddingTop="5" />
+							</s:layout>
+							<s:RadioButton groupName="radioButtonsGroup" 
+										   id="layerLocalFileRadioButton"
+										   value="2"
+										   width="135" />
+							<s:Button id="chooseLocalFileButton" visible="false" click="{this.browseFiles()}"/>
+						</s:SkinnableContainer>
+					</s:VGroup>
+					
+					<s:Label id="selectedLocalFile" visible="false" width="250" />
+				</s:SkinnableContainer>
+				
+				
+				<s:Label visible="{this._displayNameError}" includeInLayout="{this._displayNameError}" id="layerNameErrorLabel" 
+						 width="{this.width-30}" bottom="0" />
+				<s:Label visible="{this._displayUrlError}" includeInLayout="{this._displayUrlError}" id="layerUrlErrorLabel" 
+						 width="{this.width-30}" bottom="0" />
+				<s:Label visible="{_displayFileExtensionError}" includeInLayout="{this._displayFileExtensionError}" id="fileExtensionErrorLabel" 
+						 width="{this.width-30}" bottom="0" />
+				<s:Label visible="{this._displayFileError}" includeInLayout="{this._displayFileError}" id="fileErrorLabel" 
+						 width="{this.width-30}" bottom="0" />
+				
+				<s:Button id="addLayerButton" click="{this.addLayerButtonClick(event)}"
+						  verticalCenter="1"/>
+			</s:SkinnableContainer>
+			
+			<s:SkinnableContainer includeIn="searching" styleName="verticalLayout" id="searchingContainer" width="{this.width}" height="{this.height}">
+				<s:layout>
+					<s:VerticalLayout paddingBottom="5" paddingTop="5" />
+				</s:layout>
+				<s:Label id="searchingLabel" text="searching" />
+				
+				<s:Button id="backFromSearchingToSearchButton" click="{this.backToSearch(event)}"
+						  verticalCenter="1"/>
+			</s:SkinnableContainer>
+			
+			<s:SkinnableContainer includeIn="noresult" styleName="verticalLayout" id="noResultContainer" width="{this.width}" height="{this.height}">
+				<s:layout>
+					<s:VerticalLayout paddingBottom="5" paddingTop="5" />
+				</s:layout>
+				<s:Label id="noResultLabel" text="{Catalog.getLocalizationForKey('externalLayers.noresult')}" />
+				<s:Button id="backFromNoResultToSearchButton" click="{this.backToSearch(event)}"/>
+			</s:SkinnableContainer>
+			
+			<s:SkinnableContainer includeIn="result" width="{this.width}" height="{this.height}" styleName="verticalLayout" id="resultsContainer"  >
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>
+				<s:List id="resultList" 
+						dropEnabled="false"
+						dragEnabled="false"
+						dragMoveEnabled="false"
+						dataProvider="{this._resultListProvider}"
+						itemRenderer="{this.CLASS_FACTORY}"
+						borderVisible="false" 
+						width="100%" 
+						height="{(this.height-70)}" />
+				<s:Button id="backFromResultToSearchButton" click="{this.backToSearch(event)}"
+						  verticalCenter="1"/>
+			</s:SkinnableContainer>
+		</s:Panel>
+		<s:Group right="10" y="5">
+			<s:Button label="-" click="{this.toggleDisplay()}"
+					  toolTip="{this._iconify}"
+					  width="30"/>
+		</s:Group>
+	</s:Group>
+	
+	<fx:Metadata>
+		<![CDATA[
+		/**
+		*  Normal state
+		*/
+		[SkinState("normal")]
+		
+		/**
+		*  State of the component when a search is proceeding 
+		*/
+		[SkinState("searching")]
+		
+		/**
+		*  State of the composent when search results are available
+		*/
+		[SkinState("result")]
+		
+		/**
+		*  State of the component when search has returned no result
+		*/
+		[SkinState("noresult")]
+		]]>
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.Sort;
+			import mx.events.ItemClickEvent;
+			import mx.managers.PopUpManager;
+			import mx.states.State;
+			
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.IFileUser;
+			import org.openscales.core.layer.KML;
+			import org.openscales.core.layer.Layer;
+			import org.openscales.core.layer.capabilities.GetCapabilities;
+			import org.openscales.core.layer.ogc.GPX;
+			import org.openscales.core.layer.ogc.GeoRss;
+			import org.openscales.core.layer.ogc.WFS;
+			import org.openscales.core.layer.ogc.WMS;
+			import org.openscales.core.layer.ogc.WMTS;
+			import org.openscales.core.layer.osm.OSM;
+			import org.openscales.core.ns.os_internal;
+			import org.openscales.core.popup.Popup;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.proj4as.ProjProjection;
+			
+			use namespace os_internal;
+			
+			private const CLASS_FACTORY:ClassFactory = new ClassFactory(FxDefaultCapabilitiesItemRenderer);
+			
+			private const FORMAT_PROVIDER_CHANGED:String = "formatProviderChanged";
+			private const VERSION_PROVIDER_CHANGED:String = "versionProviderChanged";
+			
+			/**
+			 * @private
+			 * Indicates if the version field should appear
+			 * @default true
+			 */
+			[Bindable]
+			private var _displayVersion:Boolean = true;
+			
+			/**
+			 * @private
+			 * The file reference
+			 */
+			private var fileReference:FileReference;
+			
+			/**
+			 * @private
+			 * Datas contains in the local file selected
+			 * @default null
+			 */
+			private var _datasFile:ByteArray = null;
+			
+			/**
+			 * Translation for the neutral version
+			 */
+			[Bindable]
+			private var _emptyVersionLabel:String = "";
+			
+			[Bindable]
+			private var _formatsProvider:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			private var _versionsProvider:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			private var _resultListProvider:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * The current selected format
+			 * @default the first one : 0
+			 */
+			[Bindable]
+			private var _selectedFormat:Number = 0;
+			
+			/**
+			 * Selected source type (1 means URL, 2 means local file)
+			 */
+			[Bindable]
+			private var _selectedSource:int = 1; 
+			
+			/**
+			 * The current selected version
+			 * @default the first one : 0
+			 */
+			[Bindable]
+			private var _selectedVersion:Number = 0;
+			
+			/**
+			 * The HashMap result when a getCapabilities is called
+			 */
+			private var _capabilities:HashMap = null;
+			
+			/**
+			 * Indicates that the label name error should be displayed or not
+			 * @default false
+			 */
+			[Bindable]
+			private var _displayNameError:Boolean = false;
+			
+			/**
+			 * Indicates that the label url error should be displayed or not
+			 * @default false
+			 */
+			[Bindable]
+			private var _displayUrlError:Boolean = false;
+			
+			/**
+			 * Indicates that the label file error should be displayed or not
+			 * @default false
+			 */
+			[Bindable]
+			private var _displayFileError:Boolean = false;
+			
+			/**
+			 * Indicates that label for file extension error should/should not be displayed
+			 * @default false
+			 */
+			[Bindable]
+			private var _displayFileExtensionError:Boolean = false;
+			
+			[Bindable]
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			
+			[Bindable]
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
+			
+			private var _supportedFormats:HashMap;
+			
+			/**
+			 * Function called on creation complete
+			 */ 
+			override protected function onCreationComplete(event:Event):void {
+				super.onCreationComplete(event);
+				
+				if(this.width == 0)
+					this.width = 400;
+				if(this.height==0)
+					this.height = 320;
+				
+				if(!this._supportedFormats){
+					this._supportedFormats = new HashMap();
+					this._supportedFormats.put("WMS",[this._emptyVersionLabel,"1.0.0", "1.1.0", "1.1.1", "1.3.0"]);
+					this._supportedFormats.put("WMTS",[this._emptyVersionLabel,"1.0.0"]);
+					this._supportedFormats.put("WFS",[this._emptyVersionLabel, "1.0.0","1.1.0","2.0.0"]);
+					this._supportedFormats.put("KML",["2.0","2.2"]);
+					this._supportedFormats.put("GPX",["1.0","1.1"]);
+					this._supportedFormats.put("GeoRSS",["1.1"]);
+				}
+				
+				updateDropDownLists();
+				
+				// init the owner in itemRenderer and give the format value
+				this.CLASS_FACTORY.properties = {externalLayers: this};
+				
+				handleRadioButtonClick();
+				
+				setLabels();
+				
+			}
+			
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void {	
+				setLabels();
+			}
+			
+			/**
+			 * Handler for "add layer" button
+			 */ 
+			internal function addLayerButtonClick(event:MouseEvent):void
+			{
+				// get the datas fields :
+				var name:String = String(this.layerNameTextInput.text).replace(/\s/g,"");
+				var format:String = this.availableLayerFormatsDropDownList.selectedItem as String;
+				var version:String = this.availableLayerVersionsDropDownList.selectedItem as String;
+				var extension:String;
+				
+				var layer:Layer;
+				if(this._selectedVersion == 0)
+					version = null;
+				var url:String = (this.layerUrlTextInput.text).replace(/\s/g,"");
+				
+				var validate:Boolean = true;
+				
+				_displayNameError = false;
+				_displayUrlError = false;
+				_displayFileError = false;
+				_displayFileExtensionError = false;
+				
+				if(!this.validateName(name,format))
+				{
+					_displayNameError = true;
+					validate = false;
+					return;
+				}
+				
+				if(_selectedSource == 1 && (!url || url==""))
+				{
+					_displayUrlError = true;
+					validate = false;
+					return;
+				}
+				
+				if(_selectedSource == 2 && !_datasFile)
+				{
+					_displayFileError = true;
+					validate = false;
+					return;
+				}
+				
+				var xml:XML = null;
+				
+				if(format == "WMS" || format == "WMTS" || format == "WFS"){
+					var getCapapbilities:GetCapabilities = new GetCapabilities(format, url, this.displayResult, version);
+					this.currentState = 'searching';
+				}else{
+					if(_selectedSource == 1) {
+						extension = url.substr(url.lastIndexOf(".")+1);
+					} else {
+						extension = selectedLocalFile.text.substr(selectedLocalFile.text.lastIndexOf(".")+1);
+						selectedLocalFile.text = "";
+					}
+					switch(format)
+					{
+						case "OSM":	
+							if(_selectedSource == 1) {
+								layer = new OSM(name, url);
+							} else {
+								
+							}
+							break;
+						
+						case "KML":
+							if(_selectedSource == 1) {
+								layer = new KML(name, url);
+							} else {
+								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
+								layer = new KML(name, null, xml);
+							}
+							break;
+						
+						case "GPX":
+							if(_selectedSource == 1) {
+								layer = new GPX(name, version, url);
+							} else {
+								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
+								layer = new GPX(name, version, null, xml);
+							}
+							break;
+						
+						case "GeoRSS":
+							if(_selectedSource == 1) {
+								layer = new GeoRss(name,url);
+							} else {
+							}
+							break;
+						
+						default:
+							break;
+					}
+					
+					var errorMsg:String ="";
+					
+					if(layer is IFileUser) errorMsg = checkExtension(layer as IFileUser, extension);
+					
+					if(errorMsg==""){
+						this.map.addLayer(layer);
+						_displayFileExtensionError = false;
+						this.reset();
+					}
+					else {
+						fileExtensionErrorLabel.text = Catalog.getLocalizationForKey('externalLayers.uncorrectExtension')+ errorMsg;
+						_displayFileExtensionError = true;
+					}
+				}	
+			}
+			
+			
+			/**
+			 * This function set labels
+			 */ 
+			protected function setLabels():void{
+				this._iconify = Catalog.getLocalizationForKey('component.iconify');
+				this._toggle = Catalog.getLocalizationForKey('component.toggle');
+				switch(this.currentState){
+					case "normal":
+						this.layerNameLabel.text = Catalog.getLocalizationForKey('externalLayers.name');	
+						this.layerFormatLabel.text = Catalog.getLocalizationForKey('externalLayers.format');	
+						this.layerVersionLabel.text = Catalog.getLocalizationForKey('externalLayers.version');	
+						this.layerUrlRadioButton.label = Catalog.getLocalizationForKey('externalLayers.url');	
+						this.addLayerButton.label = Catalog.getLocalizationForKey('externalLayers.add');
+						this.mainPanel.title = Catalog.getLocalizationForKey('externalLayers.externalLayers');
+						//this.supportedVersion[3] = Catalog.getLocalizationForKey('externalLayers.noversion');
+						this.layerNameErrorLabel.text = Catalog.getLocalizationForKey('externalLayers.nameerror');
+						this.layerUrlErrorLabel.text = Catalog.getLocalizationForKey('externalLayers.urlerror');
+						this.fileErrorLabel.text = Catalog.getLocalizationForKey('externalLayers.uncorrectFile');
+						this.fileExtensionErrorLabel.text = Catalog.getLocalizationForKey('externalLayers.uncorrectExtension');
+						this.chooseLocalFileButton.label = Catalog.getLocalizationForKey('drawing.browse');
+						this.layerLocalFileRadioButton.label = Catalog.getLocalizationForKey('drawing.locale');
+						break;
+					case "searching":
+						this.backFromSearchingToSearchButton.label = Catalog.getLocalizationForKey('externalLayers.back');
+						break;
+					case "result":
+						this.backFromResultToSearchButton.label = Catalog.getLocalizationForKey('externalLayers.back');
+						break;
+					case "noresult":
+						this.backFromNoResultToSearchButton.label = Catalog.getLocalizationForKey('externalLayers.back');
+						this.noResultLabel.text = Catalog.getLocalizationForKey('externalLayers.noresult');
+						break;
+				}
+			}
+			
+			/**
+			 * Called when the component state change
+			 */ 
+			protected function onEnterState():void{
+				setLabels();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function validateName(value:String, format:String = null):Boolean
+			{
+				if(format == "WMS" || format == "WFS" || format == "WMTS")
+				{
+					if(this.map.getLayerByName(value)==null)
+						return true;
+				}
+					
+				else if(value != "" && value!= null)
+				{
+					if(this.map.getLayerByName(value)==null)
+						return true;
+				}
+				
+				return false;
+			}
+			
+			
+			/**
+			 * Add a layer on the map with informations given by get Capabilities and actual datas (format, version, url, name)
+			 *
+			 * @param data An hash map as the one returned by the <code>CapabilitiesParser.read</code> method
+			 */
+			internal function addLayerOnMap(data:Object):void
+			{
+				var newLayer:Layer;
+				var name:String = this.layerNameTextInput.text;
+				var format:String = this.availableLayerFormatsDropDownList.selectedItem as String;
+				var version:String = this.availableLayerVersionsDropDownList.selectedItem as String;
+				if(this._selectedVersion == 0)
+					version = data.getValue("auto-version");
+				var url:String = this.layerUrlTextInput.text;
+				
+				var availableProjections:Array;
+				var newProjection:ProjProjection = null;
+				
+				if((format == "WMS" || format == "WFS" || format == "WMTS") && (name=="" || name==null))
+				{
+					name = data.getValue('Title');
+					
+					// don't add the same layer name twice
+					if(!validateName(name))
+						return
+				}
+				
+				switch(format)
+				{
+					case "WMS":
+						newLayer = new WMS(name, url, data.getValue("Name"));
+						(newLayer as WMS).version = version;
+						(newLayer as WMS).transparent = true;
+						
+						var _formats:String = (data.getValue("Format") as String);
+						if(_formats.indexOf("image/png")!=-1)
+							(newLayer as WMS).format = "image/png";
+						else if(_formats.indexOf("image/jpeg")!=-1)
+							(newLayer as WMS).format = "image/jpeg";
+						else if(_formats.indexOf("image/gif")!=-1)
+							(newLayer as WMS).format = "image/gif";
+						
+						// CRS for WMS 1.3.0 SRS otherwise
+						var projection:String = "SRS";
+						if(version == "1.3.0")
+							projection = "CRS";
+						var proj:Projection;
+						availableProjections = new Array();
+						for each(var srs:String in (data.getValue(projection) as String).split(",")) {
+							proj = ProjProjection.getProjProjection(srs);
+							if(proj)
+								availableProjections.push(proj);
+						}
+						
+						//Setting availableProjections for layer
+						(newLayer as WMS).availableProjections = (data.getValue(projection) as String);
+						
+						if(this.map.projection)
+						{
+							for each(var val:ProjProjection in availableProjections)
+							{
+								if(this.map.projection == val)
+								{
+									newProjection = val;
+									(newLayer as WMS).projection = val;
+									break;
+								}	
+							}
+						}
+						if(!newProjection)
+							(newLayer as WMS).projection = availableProjections[0];
+						
+						break;
+					
+					case "WMTS":
+						
+						var tilematrixSets:HashMap = data.getValue("TileMatrixSets");
+						var keys:Array = tilematrixSets.getKeys();
+						var tileMatrixSet:String = keys[0];
+						
+						newLayer = new WMTS(name, url, data.getValue("Identifier"), tileMatrixSet, tilematrixSets);	
+						(newLayer as WMTS).format = data.getValue("Formats")[0];
+						(newLayer as WMTS).style = data.getValue("DefaultStyle") as String;
+						break;
+					case "WFS":
+						newLayer = new WFS(name, url, data.getValue("Name"), version);
+						newLayer.maxExtent = data.getValue("Extent");
+						//Setting availableProjections for layer
+						var aProj:Vector.<String> = new Vector.<String>();
+						if(version == "1.0.0") {
+							aProj.push(data.getValue("SRS"));
+						} else {
+							aProj.push(data.getValue("SRS"));
+							var otherSRS:Vector.<String> = (data.getValue("OtherSRS") as Vector.<String>);
+							for each(var oSrs:String in otherSRS) {
+								if(aProj.indexOf(oSrs) < 0) {
+									aProj.push(oSrs);
+								}
+							}
+						}
+						
+						(newLayer as WFS).availableProjections = aProj;
+						break;
+				}
+				this.map.addLayer(newLayer);
+				
+				this.reset();
+			}
+			
+			/**
+			 * Cancel the search and go back to previous menu
+			 */
+			protected function backToSearch(event:MouseEvent):void
+			{
+				this.reset();
+			}
+			
+			/**
+			 * Reset data and display main Menu
+			 */
+			public function reset():void
+			{
+				this.currentState = 'normal';
+				
+				// reset fields
+				this.layerNameTextInput.text = "";
+				this._selectedFormat = 0;
+				this.updateVersion();
+				this._selectedVersion = 0;
+				this.layerUrlTextInput.text = "";
+				this.layerLocalFileRadioButton.visible = true;
+				
+				layerNameErrorLabel.visible = false;
+				
+				_resultListProvider.removeAll();
+			}	
+			
+			
+			/**
+			 * Called when a change event if dispatch by the dropdownlist linked to formats
+			 * Update the current format value according to the new selection
+			 * And then refresh the version list
+			 */
+			protected function formatChange(event:Event):void
+			{
+				if(event)
+				{
+					var list:DropDownList = event.currentTarget as DropDownList
+					this._selectedFormat = list.selectedIndex;
+					
+					//Show/Hide local file import
+					var format:String = this.availableLayerFormatsDropDownList.selectedItem as String;
+					
+					if(format == "WMS" || format == "WFS" || format == "WMTS") {
+						_selectedSource = 1;
+						this.layerLocalFileRadioButton.visible = false;
+						this.chooseLocalFileButton.visible = false;
+						this.layerUrlRadioButton.selected = true;
+						layerUrlTextInput.visible = true;
+					} else {
+						this.layerLocalFileRadioButton.visible = true;
+					}
+				}	
+				
+				this.updateVersion();
+			}
+			
+			/**
+			 * Called when a change event if dispatch by the dropdownlist linked to versions
+			 * Update the current version value according to the new selection
+			 */
+			protected function versionChange(event:Event):void
+			{
+				if(event)
+				{
+					var list:DropDownList = event.currentTarget as DropDownList
+					this._selectedVersion = list.selectedIndex;
+				}	
+			}
+			
+			protected function updateDropDownLists():void{
+				this._formatsProvider = new ArrayCollection(this._supportedFormats.getKeys().sort());
+				//this._selectedFormat = 0;
+				availableLayerFormatsDropDownList.selectedIndex=0;
+				this.updateVersion();
+			}
+			
+			/**
+			 * Change versions dropdown list value according to current format selection
+			 */
+			private function updateVersion():void
+			{
+				this._selectedVersion = -1;
+				if(this.availableLayerVersionsDropDownList) this._versionsProvider = new ArrayCollection(this._supportedFormats.getValue(this.availableLayerFormatsDropDownList.selectedItem as String));
+				this._selectedVersion = 0;
+			}
+			
+			/**
+			 * Display results once the getCapabilities is called
+			 */
+			protected function displayResult(getCapabilities:GetCapabilities):void
+			{
+				this._capabilities = getCapabilities.getAllCapabilities();
+				
+				if(this._capabilities.size()==0)
+				{
+					this.currentState = 'noresult';
+				}
+					
+				else
+				{
+					this.currentState = 'result';
+					
+					var layerArray:ArrayCollection = new ArrayCollection(_capabilities.getKeys().sort());
+					
+					for each(var item:Object in layerArray)
+					{
+						this._resultListProvider.addItem(_capabilities.getValue(item));
+					}
+				}
+			}
+			
+			private function checkExtension(layer:IFileUser, extension:String):String{
+				var msg:String = "";
+				
+				if(layer.acceptedFileExtensions.length>0 && layer.acceptedFileExtensions.indexOf(extension)<0){
+					var lgth:int = layer.acceptedFileExtensions.length;
+					for(var i:int=0;i<lgth;++i){
+						msg+=layer.acceptedFileExtensions[i]+", ";
+					}
+					msg=msg.substr(0,msg.length-2);
+				} 
+				
+				return msg;
+			}
+			
+			/**
+			 * Method called when one of the radio button has been clicked
+			 */ 
+			protected function handleRadioButtonClick(evt:ItemClickEvent=null):void{
+				this._selectedSource = this.radioButtonsGroup.selectedValue as int;
+				switch(this._selectedSource){
+					case 1:
+						layerUrlTextInput.visible = true;
+						chooseLocalFileButton.visible = false;
+						selectedLocalFile.visible = false;
+						break;
+					case 2:
+						layerUrlTextInput.visible = false;
+						selectedLocalFile.visible = true;
+						chooseLocalFileButton.visible = true;
+						break;
+				}
+			}
+			
+			/**
+			 * Browse FileSystem to select the locale file to import
+			 */
+			protected function browseFiles():void
+			{
+				//create the FileReference instance
+				fileReference = new FileReference();
+				
+				//listen for when they select a file
+				fileReference.addEventListener(Event.SELECT, onFileSelect);
+				
+				//listen for when then cancel out of the browse dialog
+				fileReference.addEventListener(Event.CANCEL,onCancel);
+				
+				//open a native browse dialog that filters for text files
+				fileReference.browse();
+			}
+			
+			/**
+			 * Called when a file is selected on 
+			 */
+			protected function onFileSelect(e:Event):void
+			{
+				//listen for when the file has loaded
+				fileReference.addEventListener(Event.COMPLETE, onLoadComplete);
+				
+				//listen for any errors reading the file
+				fileReference.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+				
+				//load the content of the file
+				fileReference.load();
+			}
+			
+			/**
+			 * Called when the user cancel the browse process
+			 */
+			protected function onCancel(e:Event):void				
+			{
+				trace("File Browse Canceled");
+				fileReference = null;
+			}
+			
+			/**
+			 * private
+			 * called when the file has completed loading
+			 */
+			private function onLoadComplete(e:Event):void
+			{
+				//get the data from the file as a ByteArray
+				_datasFile = fileReference.data;
+				
+				selectedLocalFile.text = fileReference.name;
+				
+				//clean up the FileReference instance
+				fileReference = null;
+			}
+			
+			//called if an error occurs while loading the file contents
+			private function onLoadError(e:IOErrorEvent):void
+			{
+				trace("Error loading file : " + e.text);
+			}
+			
+			override public function toggleDisplay(event:Event=null):void{
+				
+				super.toggleDisplay();
+				var newEvent:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				newEvent.componentName = "Capabilities";
+				newEvent.componentIconified = this._isReduced;
+				this._map.dispatchEvent(newEvent);
+			}
+			
+			/**
+			 * The different formats supported. The hash map is made as follow:
+			 * 
+			 * <ul>
+			 * <li>key:String The format name</li>
+			 * <li>value:Array.String Versions of the formats that are supported</li>
+			 * </ul>
+			 * 
+			 * @default
+			 * <p>
+			 * WMS:
+			 * </p>
+			 * <ul>
+			 * 	<li>1.0.0</li>
+			 *  <li>1.1.0</li>
+			 * 	<li>1.1.1</li>
+			 * 	<li>1.3.0</li>
+			 * </ul>
+			 * 
+			 * <p>WMTS</p>
+			 * <ul>
+			 * 	<li>1.0.0</li>
+			 * </ul>
+			 * 
+			 * <p>
+			 * WFS:
+			 * </p>
+			 * <ul>
+			 * 	<li>1.0.0</li>
+			 *  <li>1.1.0</li>
+			 * 	<li>2.0.0</li>
+			 * </ul>
+			 * 
+			 * <p>
+			 * KML:
+			 * </p>
+			 * <ul>
+			 * 	<li>2.0</li>
+			 *  <li>2.2</li>
+			 * </ul>
+			 * 
+			 * <p>
+			 * GPX:
+			 * </p>
+			 * <ul>
+			 * 	<li>1.0</li>
+			 *  <li>1.1</li>
+			 * </ul>
+			 * 
+			 * <p>
+			 * GeoRSS:
+			 * </p>
+			 * <ul>
+			 *  <li>1.1</li>
+			 * </ul>
+			 */
+			public function get supportedFormat():HashMap
+			{
+				return this._supportedFormats;
+			}
+			
+			/**
+			 * @private
+			 */ 
+			public function set supportedFormat(value:HashMap):void
+			{
+				if(value)
+				{
+					this._supportedFormats = value;
+					if(this._isInitialized)updateDropDownLists();
+				}
+			}
+			
+			/**
+			 * Indicates if the version field should appear
+			 * 
+			 * @default true
+			 */
+			public function get displayVersion():Boolean
+			{
+				return this._displayVersion;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set displayVersion(value:Boolean):void
+			{
+				this._displayVersion = value;
+			}
+			
+			os_internal function get displayNameError():Boolean{
+				return this._displayNameError;
+			}
+			
+			os_internal function get displayFileError():Boolean{
+				return this._displayFileError;
+			}
+			
+			os_internal function get displayFileExtensionError():Boolean{
+				return this._displayFileExtensionError;
+			}
+			
+			os_internal function get displayUrlError():Boolean{
+				return this._displayUrlError;
+			}
+			
+			os_internal function set selectedFormat(value:Number):void{
+				this._selectedFormat = value;
+			}
+			
+			os_internal function set selectedSource(value:Number):void{
+				this._selectedSource = value;
+			}
+		]]>
+	</fx:Script>
+	
+</Control>

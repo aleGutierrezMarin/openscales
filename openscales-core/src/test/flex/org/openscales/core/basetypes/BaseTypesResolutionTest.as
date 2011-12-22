@@ -2,6 +2,7 @@ package org.openscales.core.basetypes
 {
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertTrue;
+	import org.openscales.geometry.Geometry;
 
 	public class BaseTypesResolutionTest
 	{
@@ -20,7 +21,7 @@ package org.openscales.core.basetypes
 		public function shouldReprojectResolution():void
 		{
 			// Given a resolution in EPSG:4326
-			_resolution = new Resolution(2, "EPSG:4326");
+			_resolution = new Resolution(2, Geometry.DEFAULT_SRS_CODE);
 			
 				
 			// When I ask for a reprojection in EPSG:2154

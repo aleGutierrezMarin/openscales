@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- 
+This ItemRenderer is use for displaying the layers result after a GetCapabilities on a service
+It manages doubleClick on an item to add a layer on the map
+-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				height="100%" width="100%">
+	
+	
+	<s:Label text="{this.layerName}"  
+			 useHandCursor="true"
+			 buttonMode="true"
+			 click="onClick(event)" 
+			 width="100%"/>
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.utils.Trace;
+			
+			
+			/**
+			 * The externalLayers owner
+			 */
+			public var externalLayers:FxCapabilities;
+			
+			/**
+			 * The layer name in getCapabilities
+			 */
+			[Bindable]
+			public var layerName:String;
+			
+			/**
+			 * Add the layer selected on double click
+			 */
+			private function onClick(event:MouseEvent):void
+			{
+				externalLayers.addLayerOnMap(this.data);
+			}
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				this.layerName = this.data.getValue('Title');
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:ItemRenderer>
