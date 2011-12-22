@@ -166,7 +166,7 @@ package org.openscales.geometry.basetypes
 			var intersectionBounds:Bounds = firstBounds.getIntersection(secondBounds);
 
 			// Then the result is the intersection with EPSG:4326 projection
-			assertTrue("The projection should be EPSG:4326", "EPSG:4326", intersectionBounds.projection);
+			assertTrue("The projection should be EPSG:4326", ProjProjection.getProjProjection("EPSG:4326"), intersectionBounds.projection);
 			assertEquals("Left bound should be -50",-50,intersectionBounds.left);
 			assertTrue("Right bound should be near from 49.99999",(intersectionBounds.right>49.99999 && intersectionBounds.right<=50));
 			assertEquals("Bottom bound should be -40",-40,intersectionBounds.bottom);
@@ -190,7 +190,7 @@ package org.openscales.geometry.basetypes
 			assertEquals("Incorrect bottom value", 2, bounds.bottom);
 			assertEquals("Incorrect right value", 3, bounds.right);
 			assertEquals("Incorrect top value", 4, bounds.top);
-			assertEquals("Incorrect projection", "EPSG:4326", bounds.projection);
+			assertEquals("Incorrect projection", ProjProjection.getProjProjection("EPSG:4326"), bounds.projection);
 		}
 		
 		/**
@@ -211,7 +211,7 @@ package org.openscales.geometry.basetypes
 			assertEquals("Incorrect bottom value", 2, bounds.bottom);
 			assertEquals("Incorrect right value", 3, bounds.right);
 			assertEquals("Incorrect top value", 4, bounds.top);
-			assertEquals("Incorrect projection", projection, bounds.projection);
+			assertEquals("Incorrect projection", ProjProjection.getProjProjection(projection), bounds.projection);
 		}
 		
 		/**
@@ -231,7 +231,7 @@ package org.openscales.geometry.basetypes
 			assertEquals("Incorrect bottom value", 2, bounds.bottom);
 			assertEquals("Incorrect right value", 3, bounds.right);
 			assertEquals("Incorrect top value", 4, bounds.top);
-			assertEquals("Incorrect projection", "EPSG:2154", bounds.projection);
+			assertEquals("Incorrect projection", ProjProjection.getProjProjection("EPSG:4326"), bounds.projection);
 		}
 		
 		[Test]
