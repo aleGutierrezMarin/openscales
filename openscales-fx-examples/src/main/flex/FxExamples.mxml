@@ -5,7 +5,7 @@ Main Flex example application
 <s:Application xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 			   creationComplete="init();"
-			   >
+			    viewSourceURL="srcview/index.html">
 	
 	<fx:Script>
 		<![CDATA[
@@ -20,7 +20,6 @@ Main Flex example application
 			import global.GlobalExample;
 			import global.GraticuleExample;
 			import global.LegalInformationsExample;
-			import global.RunTimeThemeExample;
 			
 			import layerExamples.GPXExample;
 			import layerExamples.GeoRssExample;
@@ -116,9 +115,6 @@ Main Flex example application
 					case "overviewRatio":
 						state = new OverviewRatioExample();
 						break;
-					case "runtimetheme":
-						state = new RunTimeThemeExample();
-						break;
 					case "measuretools":
 						state = new MeasureExample();
 						break;
@@ -151,7 +147,6 @@ Main Flex example application
 				<s:Button id="about" label="About OpenScales" click="changeState(event)" width="100%"/>
 				<s:Button id="basic" label="Basic example" click="changeState(event)" width="100%"/>
 				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
-				<s:Button id="runtimetheme" label="Changing theme on runtime" click="changeState(event)" width="100%"/>
 				<s:Button id="graticule" label="Graticule" click="changeState(event)" width="100%"/>
 				<s:Button id="aggregate" label="Aggregate" click="changeState(event)" width="100%"/>
 				<s:Button id="measuretools" label="Measure tools" click="changeState(event)" width="100%" />
