@@ -25,6 +25,9 @@
 		<s:layout>
 			<s:HorizontalLayout gap="-35" />
 		</s:layout>
+		<s:Rect width="100%" height="100%">
+			<s:fill><s:SolidColor color="0xFFFFFF" /></s:fill>
+		</s:Rect>
 		<s:Panel id="mainPanel" width="{this.width}" height="{this.height}">
 			<s:SkinnableContainer includeIn="normal" styleName="verticalLayout" id="normalContainer" >
 				

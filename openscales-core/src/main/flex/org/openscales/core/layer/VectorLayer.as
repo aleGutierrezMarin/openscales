@@ -233,7 +233,7 @@ package org.openscales.core.layer
 			}
 			
 			// Render the feature
-			if (this.map) {
+			if (this.map && this.available) {
 				feature.draw();
 			}
 			
