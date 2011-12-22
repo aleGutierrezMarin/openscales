@@ -25,6 +25,7 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	public class GML321ParserTest
 	{
@@ -101,7 +102,7 @@ xmlns:wfs="http://www.opengis.net/wfs/2.0">
 			Assert.assertNotNull("Feature should not be null!",feature);
 			Assert.assertTrue("The feature should be a multi polygon feature",(feature is MultiPolygonFeature));
 			Assert.assertEquals("The id of the feature is incorrect","states.1",feature.name);
-			Assert.assertEquals("The projection of the feature should be epsg:4326","EPSG:4326",feature.geometry.projection);
+			Assert.assertEquals("The projection of the feature should be epsg:4326",ProjProjection.getProjProjection("EPSG:4326"),feature.geometry.projection);
 			var mp:MultiPolygon = (feature as MultiPolygonFeature).polygons;
 			Assert.assertEquals("There should be only one component in the multi polygon!", 1, mp.componentsLength);
 			Assert.assertTrue("The component should be a Polygon", (mp.getcomponentsClone()[0] is Polygon));

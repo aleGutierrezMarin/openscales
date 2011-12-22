@@ -26,7 +26,7 @@ package org.openscales.core.layer.ogc.provider
 			assertTrue('Mandatory parameter REQUEST is not present',url.match('REQUEST=GetMap'));
 			assertTrue('Mandatory parameter LAYERS is not present',url.match('LAYERS='+provider.layer));
 			assertTrue('Mandatory parameter STYLES is not present',url.match('STYLES='+provider.style));
-			assertTrue('Mandatory parameter SRS is not present',url.match('SRS='+provider.projection));
+			assertTrue('Mandatory parameter SRS is not present',url.match('SRS='+provider.projection.srsCode));
 			assertTrue('Mandatory parameter BBOX is not present',url.match('BBOX='+bbox));
 			assertTrue('Mandatory parameter WIDTH is not present',url.match('WIDTH='+provider.width));
 			assertTrue('Mandatory parameter HEIGHT is not present',url.match('HEIGHT='+provider.height));

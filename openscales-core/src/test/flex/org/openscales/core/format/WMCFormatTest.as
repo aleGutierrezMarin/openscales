@@ -8,6 +8,7 @@ package org.openscales.core.format
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 
 	public class WMCFormatTest
 	{
@@ -51,7 +52,7 @@ package org.openscales.core.format
 			assertEquals("Wrong bbox bottom parsing", -90, this.format.generalBbox.bottom);
 			assertEquals("Wrong bbox right parsing", 180, this.format.generalBbox.right);
 			assertEquals("Wrong bbox top parsing", 90, this.format.generalBbox.top);
-			assertEquals("Wrong bbox SRS parsing", "EPSG:4326", this.format.generalBbox.projection);
+			assertEquals("Wrong bbox SRS parsing", ProjProjection.getProjProjection("EPSG:4326"), this.format.generalBbox.projection);
 		}
 		
 		[Test]
@@ -77,9 +78,9 @@ package org.openscales.core.format
 			assertEquals("Wrong layer name parsing", "bluemarble", (layer1 as WMS).layers);
 			assertEquals("Wrong layer title parsing", "bluemarble_I18N", (layer1 as WMS).name);
 			assertTrue("Wrong layer minScaleDenominator", (0.000003832 <(layer1 as WMS).minResolution.value) && (0.000003834 >(layer1 as WMS).minResolution.value))
-			assertEquals("Wrong layer minScaleDenominator projection", "EPSG:4326", (layer1 as WMS).minResolution.projection);
+			assertEquals("Wrong layer minScaleDenominator projection", ProjProjection.getProjProjection("EPSG:4326"), (layer1 as WMS).minResolution.projection);
 			assertTrue("Wrong layer maxScaleDenominator", (0.00004651 <(layer1 as WMS).maxResolution.value) && (0.00004653 >(layer1 as WMS).maxResolution.value))
-			assertEquals("Wrong layer maxScaleDenominator projection", "EPSG:4326", (layer1 as WMS).maxResolution.projection);
+			assertEquals("Wrong layer maxScaleDenominator projection", ProjProjection.getProjProjection("EPSG:4326"), (layer1 as WMS).maxResolution.projection);
 			assertEquals("Wrong layer srs parsing", "EPSG:4326", (layer1 as WMS).projection);
 			assertEquals("Wrong layer default format parsing", "image/gif", (layer1 as WMS).format);	
 		}

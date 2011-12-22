@@ -10,6 +10,7 @@ package org.openscales.map
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.proj4as.ProjProjection;
 
 	public class ProjectionTest
 	{
@@ -45,8 +46,8 @@ package org.openscales.map
 		private function assertProjectionEventDispatched(event:MapEvent, passThroughtData:Object):void
 		{
 			// Then, an event is dispatched with the proper attributes
-			assertEquals("The oldProjection parameter is not good","EPSG:2154", event.oldProjection); 
-			assertEquals("The newProjection parameter is not good","EPSG:4326", event.newProjection); 
+			assertEquals("The oldProjection parameter is not good",ProjProjection.getProjProjection("EPSG:2154"), event.oldProjection); 
+			assertEquals("The newProjection parameter is not good",ProjProjection.getProjProjection("EPSG:4326"), event.newProjection); 
 		}
 		
 		/**
@@ -73,9 +74,9 @@ package org.openscales.map
 			var _theMap:Map = (passThroughtData as Map);
 			
 			// Then, the resolution, the maxExtent and the center are reprojected
-			assertEquals("The map resolution has not been reprojected", "EPSG:4326", _theMap.resolution.projection);
-			assertEquals("The map center has not been reprojected", "EPSG:4326", _theMap.center.projection);
-			assertEquals("The map maxExtent has not been reprojected", "EPSG:4326", _theMap.maxExtent.projection);
+			assertEquals("The map resolution has not been reprojected", ProjProjection.getProjProjection("EPSG:4326"), _theMap.resolution.projection);
+			assertEquals("The map center has not been reprojected", ProjProjection.getProjProjection("EPSG:4326"), _theMap.center.projection);
+			assertEquals("The map maxExtent has not been reprojected", ProjProjection.getProjProjection("EPSG:4326"), _theMap.maxExtent.projection);
 		}
 		
 		/**

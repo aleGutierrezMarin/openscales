@@ -32,7 +32,7 @@ package org.openscales.core.basetypes
 				return null;
 			var resolution:Number = this._value;
 			
-			if (!ProjProjection.isEquivalentProjection(this._projection, newProjection))
+			if (!ProjProjection.isEquivalentProjection(this._projection, proj))
 			{
 				resolution = Proj4as.unit_transform(this._projection, newProjection, resolution);
 			}

@@ -4,6 +4,7 @@ package org.openscales.map
 	import org.flexunit.asserts.fail;
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.proj4as.ProjProjection;
 
 	public class MapResolutionTest
 	{
@@ -27,9 +28,9 @@ package org.openscales.map
 			_map.minResolution = new Resolution(2, "EPSG:2154");
 			
 			// Then they are reprojected in EPSG:4326 when they are in the map
-			assertEquals("The resolution is not in the proper projection", "EPSG:4326", _map.resolution.projection);
-			assertEquals("The maxResolution is not in the proper projection", "EPSG:4326", _map.maxResolution.projection);
-			assertEquals("The minResolution is not in the proper projection", "EPSG:4326", _map.minResolution.projection);
+			assertEquals("The resolution is not in the proper projection", ProjProjection.getProjProjection("EPSG:4326"), _map.resolution.projection);
+			assertEquals("The maxResolution is not in the proper projection", ProjProjection.getProjProjection("EPSG:4326"), _map.maxResolution.projection);
+			assertEquals("The minResolution is not in the proper projection", ProjProjection.getProjProjection("EPSG:4326"), _map.minResolution.projection);
 		}
 		
 		/**
@@ -49,9 +50,9 @@ package org.openscales.map
 			_map.projection = "EPSG:2154"
 				
 			// Then the projection of resolution, maxResolution and minResolution is changed and their value are reprojected
-			assertEquals("The resolution is not in the proper projection", "EPSG:2154", _map.resolution.projection);
-			assertEquals("The maxResolution is not in the proper projection", "EPSG:2154", _map.maxResolution.projection);
-			assertEquals("The minResolution is not in the proper projection", "EPSG:2154", _map.minResolution.projection);
+			assertEquals("The resolution is not in the proper projection", ProjProjection.getProjProjection("EPSG:2154"), _map.resolution.projection);
+			assertEquals("The maxResolution is not in the proper projection", ProjProjection.getProjProjection("EPSG:2154"), _map.maxResolution.projection);
+			assertEquals("The minResolution is not in the proper projection", ProjProjection.getProjProjection("EPSG:2154"), _map.minResolution.projection);
 		}
 		
 		
