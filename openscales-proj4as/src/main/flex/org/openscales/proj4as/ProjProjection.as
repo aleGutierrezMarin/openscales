@@ -74,6 +74,30 @@ package org.openscales.proj4as {
 			'CRS:84': "+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=degrees"
 		};
 		
+		static public const urns:Object={
+			'WGS84': "urn:ogc:def:crs:EPSG::4326",
+			'IGNF:WGS84G': "urn:ogc:def:crs:OGC:1.3:CRS84",
+			
+			'IGNF:GEOPORTALANF': "urn:ogc:def:crs:EPSG::301642009814",
+			'IGNF:GEOPORTALASP': "urn:ogc:def:crs:EPSG::301642009813",
+			'IGNF:GEOPORTALCRZ': "urn:ogc:def:crs:EPSG::310642011",
+			'IGNF:GEOPORTALFXX': "urn:ogc:def:crs:EPSG::310024001",
+			'IGNF:GEOPORTALGUF': "urn:ogc:def:crs:EPSG::310486003",
+			'IGNF:GEOPORTALKER': "urn:ogc:def:crs:EPSG::310642010",
+			'IGNF:GEOPORTALMYT': "urn:ogc:def:crs:EPSG::310702005",
+			'IGNF:GEOPORTALNCL': "urn:ogc:def:crs:EPSG::310504007",
+			'IGNF:GEOPORTALPYF': "urn:ogc:def:crs:EPSG::310032009",
+			'IGNF:GEOPORTALREU': "urn:ogc:def:crs:EPSG::310700004",
+			//'IGNF:GEOPORTALSPA': "",
+			'IGNF:GEOPORTALSPM': "urn:ogc:def:crs:EPSG::310706006",
+			'IGNF:GEOPORTALWLF': "urn:ogc:def:crs:EPSG::310642008",
+
+			'IGNF:RGF93G': "urn:ogc:def:crs:EPSG::213024000",
+			'IGNF:LAMB93': "urn:ogc:def:crs:EPSG:6.11.2:2154",
+			
+			'CRS:84': "urn:ogc:def:crs:OGC:1.3:CRS84"
+		};
+		
 		//North/East ordering
 		static public const AXIS_ORDER_EN:String="EN";
 		//East/North ordering
@@ -139,16 +163,24 @@ package org.openscales.proj4as {
 		
 		protected var proj:IProjection;
 		
+		private var _lonlat:Boolean = true;
+
 		/**
 		 * Return the ProjProjection for a specific srsCode
 		 * @param srsCode:String the srsCode
 		 * @return ProjProjection the ProjProjection
 		 */
-		public static function getProjProjection(srsCode:String):ProjProjection {
-			if(srsCode==null)
+		public static function getProjProjection(proj:*):ProjProjection {
+			if(proj==null)
 				return null;
 			
-			srsCode = srsCode.toUpperCase();
+			if(proj is ProjProjection)
+				return proj as ProjProjection;
+			
+			var srsCode:String;
+			if(proj is String)
+				srsCode = (proj as String).toUpperCase();
+			
 			if (!ProjProjection.defs[srsCode]) {
 				return null;
 			}
@@ -159,14 +191,14 @@ package org.openscales.proj4as {
 			return ProjProjection.projProjections[srsCode];
 		}
 		
-		public static function getEquivalentProjection(srsCode:String):Vector.<String> {
+		public static function getEquivalentProjection(srs:ProjProjection):Vector.<String> {
 			var compat:Vector.<String> = new <String>[];
 			var i:uint = ProjProjection.equivalentDefs.length;
 			var j:uint;
 			var arr:Array = null;
 			for(;i>0;--i) {
 				arr = equivalentDefs[i-1].split(",");
-				if(arr.indexOf(srsCode)!=-1) {
+				if(arr.indexOf(srs.srsCode)!=-1) {
 					j = arr.length;
 					for(;j>0;--j)
 						if(arr[j-1] != "")
@@ -176,14 +208,14 @@ package org.openscales.proj4as {
 			return compat;
 		}
 		
-		public static function getStretchableProjection(srsCode:String):Vector.<String> {
+		public static function getStretchableProjection(srsCode:ProjProjection):Vector.<String> {
 			var compat:Vector.<String> = new <String>[];
 			var i:uint = ProjProjection.stretchableDefs.length;
 			var j:uint;
 			var arr:Array = null;
 			for(;i>0;--i) {
 				arr = stretchableDefs[i-1].split(",");
-				if(arr.indexOf(srsCode)!=-1) {
+				if(arr.indexOf(srsCode.srsCode)!=-1) {
 					j = arr.length;
 					for(;j>0;--j)
 						if(arr[j-1] != "")
@@ -193,7 +225,7 @@ package org.openscales.proj4as {
 			return compat;
 		}
 		
-		public static function isStretchable(srsCode1:String,srsCode2:String): Boolean {
+		public static function isStretchable(srsCode1:ProjProjection,srsCode2:ProjProjection): Boolean {
 			if(srsCode1==srsCode2
 				|| ProjProjection.stretchableDefs.indexOf(srsCode1+","+srsCode2)!=-1
 				|| ProjProjection.stretchableDefs.indexOf(srsCode2+","+srsCode1)!=-1)
@@ -201,12 +233,14 @@ package org.openscales.proj4as {
 			return (ProjProjection.getStretchableProjection(srsCode1).indexOf(srsCode2)!=-1);
 		}
 		
-		public static function isEquivalentProjection(srsCode1:String,srsCode2:String): Boolean {
-			if(srsCode1==srsCode2
-				|| ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=-1
-				|| ProjProjection.equivalentDefs.indexOf(srsCode2+","+srsCode1)!=-1)
+		public static function isEquivalentProjection(srs1:ProjProjection,srs2:ProjProjection): Boolean {
+			if(!srs1||!srs2)
+				return false;
+			if(srs1==srs2
+				|| ProjProjection.equivalentDefs.indexOf(srs1.srsCode+","+srs2.srsCode)!=-1
+				|| ProjProjection.equivalentDefs.indexOf(srs2.srsCode+","+srs1.srsCode)!=-1)
 				return true;
-			return (ProjProjection.getEquivalentProjection(srsCode1).indexOf(srsCode2)!=-1);
+			return (ProjProjection.getEquivalentProjection(srs1).indexOf(srs2.srsCode)!=-1);
 		}
 		
 		public function get srsCode():String {
@@ -257,6 +291,18 @@ package org.openscales.proj4as {
 			return projParams.datum_params;
 		}
 		
+		public function get lonlat():Boolean
+		{
+			return _lonlat;
+		}
+		
+		public function get urnCode():String {
+			if(!ProjProjection.urns[this.srsCode])
+				return "urn:ogc:def:crs:"+this.srsCode.toUpperCase().replace(":","::");
+			else
+				return ProjProjection.urns[this.srsCode];
+		}
+		
 		public function ProjProjection(srsCode:String) {
 			this.projParams.srsCode=srsCode.toUpperCase();
 			if (this.projParams.srsCode.indexOf("EPSG") == 0) {
@@ -275,6 +321,10 @@ package org.openscales.proj4as {
 				this.projParams.srsProjNumber=this.projParams.srsCode;
 			}
 			this.loadProjDefinition();
+			
+			if(ProjProjection.projAxisOrder[this.srsCode]
+				&& ProjProjection.projAxisOrder[this.srsCode] == ProjProjection.AXIS_ORDER_NE)
+				this._lonlat = false;
 		}
 		
 		private function loadProjDefinition():void {

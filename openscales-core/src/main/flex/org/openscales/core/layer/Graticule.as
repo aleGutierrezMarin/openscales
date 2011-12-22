@@ -13,11 +13,13 @@ package org.openscales.core.layer
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.proj4as.ProjProjection;
 	
 	use namespace os_internal;
 	
@@ -64,8 +66,8 @@ package org.openscales.core.layer
 			}
 			
 			// puts layer in geographical coordinates
-			this._projection = "EPSG:4326";
-			this.maxExtent = new Bounds(-180,-90,180,90,"EPSG:4326");
+			this._projection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
+			this.maxExtent = new Bounds(-180,-90,180,90,Geometry.DEFAULT_SRS_CODE);
 			
 			// hides layer in LayerManager
 			this.displayInLayerManager = false;
@@ -101,7 +103,7 @@ package org.openscales.core.layer
 			
 			// gets bounds in geographical coordinates
 			var intersection:Bounds = this.map.maxExtent.getIntersection(this.map.extent);
-			intersection = intersection.reprojectTo("EPSG:4326");
+			intersection = intersection.reprojectTo(this.projection);
 			var xmin:Number=intersection.left;
 			var xmax:Number=intersection.right;
 			var ymin:Number=intersection.bottom;
@@ -235,7 +237,7 @@ package org.openscales.core.layer
 		/**
 		 * @inheritDoc
 		 */
-		override public function set projection(value:String):void {
+		override public function set projection(value:*):void {
 			// SRS code cannot be overriden. Graticule is always built in EPSG:4326
 			// and then reprojected to the projection of the map.
 		}

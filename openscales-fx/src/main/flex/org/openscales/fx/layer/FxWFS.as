@@ -98,7 +98,7 @@ package org.openscales.fx.layer
 			return this._useCapabilities;
 		}
 		
-		public override function set projection(value:String):void
+		public override function set projection(value:*):void
 		{
 			super.projection = value;
 			super.configureLayer();

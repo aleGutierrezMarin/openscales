@@ -5,6 +5,8 @@ package org.openscales.geometry.basetypes
 	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNull;
 	import org.flexunit.asserts.assertTrue;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * Test class for the Bounds
@@ -62,7 +64,7 @@ package org.openscales.geometry.basetypes
 			// Given two bounds with different projection that are in intersection
 			var bounds1:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
 			var bounds2:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
-			bounds2.reprojectTo("EPSG:4326");
+			bounds2.reprojectTo(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 			
 			// When the intersectsBounds is called
 			var result:Boolean = bounds1.intersectsBounds(bounds2);
@@ -82,7 +84,7 @@ package org.openscales.geometry.basetypes
 			// Given two bounds with different projection that are not in intersection
 			var bounds1:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
 			var bounds2:Bounds = new Bounds(10,5,10,7,"EPSG:2154");
-			bounds2.reprojectTo("EPSG:4326");
+			bounds2.reprojectTo(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 			
 			// When the intersectsBounds is called
 			var result:Boolean = bounds1.intersectsBounds(bounds2);
@@ -102,7 +104,7 @@ package org.openscales.geometry.basetypes
 			// Given two bounds with different projection that are in contains one than another one
 			var bounds1:Bounds = new Bounds(1,2,10,10,"EPSG:2154");
 			var bounds2:Bounds = new Bounds(1,2,3,4,"EPSG:2154");
-			bounds2.reprojectTo("EPSG:4326");
+			bounds2.reprojectTo(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 			
 			// When the intersectsBounds is called
 			var result:Boolean = bounds1.containsBounds(bounds2);
@@ -240,8 +242,8 @@ package org.openscales.geometry.basetypes
 			var secondBounds:Bounds = new Bounds(409600, 6265600, 614400, 6470400, "IGNF:LAMB93");
 			
 			// When you reproject these bounds in EPSG:4326
-			var firstBoundsReproj:Bounds = firstBounds.preciseReprojectBounds("EPSG:4326");
-			var secondBoundsReproj:Bounds = secondBounds.preciseReprojectBounds("EPSG:4326");
+			var firstBoundsReproj:Bounds = firstBounds.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
+			var secondBoundsReproj:Bounds = secondBounds.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 			
 			// Then the bounds are still intersected
 			assertEquals("Incorrect bounds intersection", firstBounds.intersectsBounds(secondBounds), firstBoundsReproj.intersectsBounds(secondBoundsReproj));

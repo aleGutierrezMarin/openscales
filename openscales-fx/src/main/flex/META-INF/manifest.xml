@@ -22,8 +22,6 @@
 	
 	<component id="Mapnik" class="org.openscales.fx.layer.osm.FxMapnik" />
 	<component id="CycleMap" class="org.openscales.fx.layer.osm.FxCycleMap" />
-	<component id="Maplint" class="org.openscales.fx.layer.osm.FxMaplint" />
-	<component id="Osmarender" class="org.openscales.fx.layer.osm.FxOsmarender" />
 	
 	<component id="CorePanZoom" class="org.openscales.fx.control.FxCorePanZoom" />
 	<component id="CorePanZoomBar" class="org.openscales.fx.control.FxCorePanZoomBar" />
@@ -69,7 +67,7 @@
 	
 	<component id="OverviewMap" class="org.openscales.fx.control.FxOverviewMap" />
 	<component id="OverviewMapRatio" class="org.openscales.fx.control.OverviewMapRatio" />
-	<component id="Capabilities" class="org.openscales.fx.control.Capabilities" />
+	<component id="Capabilities" class="org.openscales.fx.control.FxCapabilities" />
 	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
 	<component id="YahooSearch" class="org.openscales.fx.control.search.YahooSearch" />

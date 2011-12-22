@@ -1,6 +1,7 @@
 // ActionScript file
 package org.openscales.core.layer.capabilities
 {
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
@@ -111,8 +112,8 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.BoundingBox.eastBoundLongitude);
 				top = new Number(layer.BoundingBox.northBoundLatitude);
 				
-				// in decimal degrees => EPSG:4326
-				layerCapabilities.put("EX_GeographicBoundingBox", new Bounds(left,bottom,right,top,"EPSG:4326"));
+				// in decimal degrees => Geometry.DEFAULT_SRS_CODE
+				layerCapabilities.put("EX_GeographicBoundingBox", new Bounds(left,bottom,right,top,Geometry.DEFAULT_SRS_CODE));
 				
 				left = new Number(layer.BoundingBox.@minx.toXMLString());
 				bottom = new Number(layer.BoundingBox.@miny.toXMLString());

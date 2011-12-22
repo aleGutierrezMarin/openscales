@@ -86,10 +86,10 @@
 			
 			/**
 			 * Update the value of the numeric scale.
-			 * The new numeric scale is obtain by Unit.getScaleFrom resolution with the current resolution and the current baseLayer unit.
+			 * The new numeric scale is obtain by Unit.getScaleFrom resolution with the current resolution and the current map projection unit.
 			 * 
 			 * @param event The event received if the function is called 
-			 * when a zoom occur or when the baselayer is changed.
+			 * when a zoom occur or when the map projection is changed.
 			 */
 			public function updateScale(MapEvent:Event=null):void
 			{

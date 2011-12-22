@@ -145,7 +145,6 @@
     <classEntry path="org.openscales.core.layer.KML"/>
     <classEntry path="org.openscales.core.layer.Layer"/>
     <classEntry path="org.openscales.core.layer.MultiBoundingBoxConstraint"/>
-    <classEntry path="org.openscales.core.layer.PolyLayer"/>
     <classEntry path="org.openscales.core.layer.SwitchLayers"/>
     <classEntry path="org.openscales.core.layer.TMS"/>
     <classEntry path="org.openscales.core.layer.VectorLayer"/>
@@ -178,10 +177,8 @@
     <classEntry path="org.openscales.core.layer.originator.ConstraintOriginator"/>
     <classEntry path="org.openscales.core.layer.originator.DataOriginator"/>
     <classEntry path="org.openscales.core.layer.osm.CycleMap"/>
-    <classEntry path="org.openscales.core.layer.osm.Maplint"/>
     <classEntry path="org.openscales.core.layer.osm.Mapnik"/>
     <classEntry path="org.openscales.core.layer.osm.OSM"/>
-    <classEntry path="org.openscales.core.layer.osm.Osmarender"/>
     <classEntry path="org.openscales.core.layer.params.AbstractParams"/>
     <classEntry path="org.openscales.core.layer.params.IHttpParams"/>
     <classEntry path="org.openscales.core.layer.params.ogc.OGCParams"/>

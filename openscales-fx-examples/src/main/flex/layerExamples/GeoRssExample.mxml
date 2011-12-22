@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns = "http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 creationComplete="initMap()">
+	
+	<Map id="fxMap" width="100%" height="100%">
+		
+		<Mapnik id="mapnik" name="Mapnik" alpha="0.7" />
+		<GeoRss id="rsslayer"
+				name="test"
+				numZoomLevels="22" 
+				useFeedTitle="true"
+				url="http://openscales.org/assets/georssdep.rss" />
+		
+		<!-- Handlers -->
+		<LayerManager/>
+		<DragHandler/>
+		<WheelHandler/>	
+		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
+		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
+	
+	</Map>
+	
+	<fx:Declarations>	
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.utils.Trace;
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			private var fxpopup:FxPopup;
+			
+			private function initMap():void
+			{	
+				fxMap.center = "4.32972,48.56215,WGS84";
+				fxMap.resolution = "0.010986328125,WGS84";
+				Trace.debug("Mapnik projection: " + mapnik.projection);
+				Trace.debug("GeoRssLayer projection: " + rsslayer.projection);
+	
+				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onFeatureClick);
+			}
+			
+			private function onFeatureClick(event:FeatureEvent):void
+			{
+				if(fxpopup){
+					fxpopup.destroy();
+				}
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+				fxpopup.HEIGHT = rsslayer.popUpHeight;
+				fxpopup.WIDTH = rsslayer.popUpWidth;
+				var content:String="";
+				
+				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				fxpopup.feature = event.feature;
+				
+				var pixel:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(event.feature.lonlat); 
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(pixel);
+				fxpopup.position = pixel;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				
+				
+				if(event.feature.attributes["title"]){
+					fxpopupRenderer.titleContent = event.feature.attributes["title"];
+				}
+				if(event.feature.attributes["link"]){
+			
+					content = content + "<b>link</b> : "+ event.feature.attributes["link"] + "<br />" + "<br />";
+				}
+				
+				for(var attribute:String in event.feature.attributes) {
+					if((attribute != "title") && (attribute != "link") ) 
+						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
+				}
+				
+				fxpopupRenderer.content = content;
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;	
+			}
+
+		]]>
+	</fx:Script>
+	
+</s:Group>

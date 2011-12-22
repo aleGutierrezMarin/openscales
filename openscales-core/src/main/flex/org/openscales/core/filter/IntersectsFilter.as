@@ -1,16 +1,17 @@
 package org.openscales.core.filter {
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
+	import org.openscales.proj4as.ProjProjection;
 
 	public class IntersectsFilter implements IFilter
 	{
 		private var _geom:Geometry;
-		private var _projection:String;
+		private var _projection:ProjProjection;
 		
-		public function IntersectsFilter(geom:Geometry, projection:String) {
+		public function IntersectsFilter(geom:Geometry, projection:*) {
 			this._geom = geom;
-			this._projection = projection;
+			this.projection = projection;
 		}
 		
 		/**
@@ -24,7 +25,8 @@ package org.openscales.core.filter {
 				return false;
 			}
 			if (this.projection != feature.layer.map.projection) {
-				this.geometry.transform(this.projection, feature.layer.map.projection);
+				this.geometry.projection = this.projection;
+				this.geometry.transform(feature.layer.map.projection);
 				this.projection = feature.layer.map.projection;
 			}
 			return this.geometry.intersects(feature.geometry);
@@ -46,14 +48,14 @@ package org.openscales.core.filter {
 		/**
 		 * Indicates the projection
 		 */
-		public function get projection():String {
+		public function get projection():ProjProjection {
 			return this._projection;
 		}
 		/**
 		 * @private
 		 */
-		public function set projection(value:String):void {
-			this._projection = value;
+		public function set projection(value:*):void {
+			this._projection = ProjProjection.getProjProjection(value);
 		}
 		
 		/**

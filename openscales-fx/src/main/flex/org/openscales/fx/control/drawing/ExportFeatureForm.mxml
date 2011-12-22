@@ -39,6 +39,8 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.KML;
 			import org.openscales.core.utils.Trace;
+			import org.openscales.geometry.Geometry;
+			import org.openscales.proj4as.ProjProjection;
 			
 			private var _exportFeature:ExportFeature = null;
 			
@@ -220,7 +222,7 @@
 						fileName += ".kml";
 						
 						var writeKML:KMLFormat = new KMLFormat();
-						datas = writeKML.write(reprojectTo(export,this.exportFeature.map.projection,"EPSG:4326"));
+						datas = writeKML.write(reprojectTo(export,this.exportFeature.map.projection,Geometry.DEFAULT_SRS_CODE));
 						break;
 					
 					case "GPX":
@@ -228,7 +230,7 @@
 						fileName += ".gpx";
 						
 						var writeGPX:GPXFormat = new GPXFormat();
-						datas = writeGPX.write(reprojectTo(export,this.exportFeature.map.projection,"EPSG:4326"));
+						datas = writeGPX.write(reprojectTo(export,this.exportFeature.map.projection,Geometry.DEFAULT_SRS_CODE));
 						break;
 					
 					case "GeoRss":
@@ -308,13 +310,16 @@
 			/**
 			 * reproject features
 			 */
-			private function reprojectTo(features:Vector.<Feature>,srcproj:String,destproj:String):Vector.<Feature> {
-				if(srcproj==destproj)
+			private function reprojectTo(features:Vector.<Feature>,srcproj:*,destproj:*):Vector.<Feature> {
+				var src:ProjProjection = ProjProjection.getProjProjection(srcproj);
+				var dest:ProjProjection = ProjProjection.getProjProjection(destproj);
+				if(src==dest)
 					return features;
 				var i:uint = 0;
 				var j:uint = features.length;
 				for(; i < j; ++i){
-					features[i].geometry.transform(srcproj, destproj);
+					features[i].geometry.projection = src;
+					features[i].geometry.transform(dest);
 				}
 				return features;
 			}

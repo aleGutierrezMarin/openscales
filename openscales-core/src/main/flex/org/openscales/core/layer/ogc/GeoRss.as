@@ -21,6 +21,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * Rss layer; version 2.0 and 1.0 is supported
@@ -65,7 +66,7 @@ package org.openscales.core.layer.ogc
 			super(name);
 			this._url = url;	
 			this.data = data;
-			this._projection = "WGS84";
+			this._projection = ProjProjection.getProjProjection("WGS84");
 			if(style){
 				this.style = style;
 				this.style.rules.push(new Rule());
@@ -227,7 +228,7 @@ package org.openscales.core.layer.ogc
 			_georssFormat = value;
 		}
 		
-		override public function set projection(value:String):void {
+		override public function set projection(value:*):void {
 			// SRS code cannot be overriden. Graticule is always built in WGS84
 			// and then reprojected to the projection of the map.
 		}

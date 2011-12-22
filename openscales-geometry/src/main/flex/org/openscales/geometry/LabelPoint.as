@@ -4,6 +4,7 @@ package org.openscales.geometry
 	import flash.text.TextFieldAutoSize;
 	
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Description of the class
@@ -49,7 +50,7 @@ package org.openscales.geometry
 			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projection);
 		}
 		
-		public function updateBounds(left:Number,bottom:Number,right:Number,top:Number,proj:String):void{
+		public function updateBounds(left:Number,bottom:Number,right:Number,top:Number,proj:ProjProjection):void{
 			this._bounds = new Bounds(left,bottom,right,top,proj);
 		}
 		
