@@ -195,16 +195,16 @@ package org.openscales.proj4as {
 		
 		public static function isStretchable(srsCode1:String,srsCode2:String): Boolean {
 			if(srsCode1==srsCode2
-				|| ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=-1
-				|| ProjProjection.equivalentDefs.indexOf(srsCode2+","+srsCode1)!=-1)
+				|| ProjProjection.stretchableDefs.indexOf(srsCode1+","+srsCode2)!=-1
+				|| ProjProjection.stretchableDefs.indexOf(srsCode2+","+srsCode1)!=-1)
 				return true;
 			return (ProjProjection.getStretchableProjection(srsCode1).indexOf(srsCode2)!=-1);
 		}
 		
 		public static function isEquivalentProjection(srsCode1:String,srsCode2:String): Boolean {
 			if(srsCode1==srsCode2
-				|| ProjProjection.stretchableDefs.indexOf(srsCode1+","+srsCode2)!=-1
-				|| ProjProjection.stretchableDefs.indexOf(srsCode2+","+srsCode1)!=-1)
+				|| ProjProjection.equivalentDefs.indexOf(srsCode1+","+srsCode2)!=-1
+				|| ProjProjection.equivalentDefs.indexOf(srsCode2+","+srsCode1)!=-1)
 				return true;
 			return (ProjProjection.getEquivalentProjection(srsCode1).indexOf(srsCode2)!=-1);
 		}

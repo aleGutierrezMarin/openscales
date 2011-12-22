@@ -713,12 +713,23 @@ package org.openscales.core.layer {
 				if (this.maxExtent)
 				{
 					this._maxExtent = this.maxExtent.preciseReprojectBounds(this._projection);
-				}				
+				}
+				
 				event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
 			}
 			
 			if(this._autoResolution){
 				this.generateResolutions();
+			}
+			
+			if(this.maxResolution) {
+				//Allows the maxResolution to be reprojected with the new layer projection
+				this.maxResolution = this.maxResolution;
+			}
+			
+			if(this.minResolution) {
+				//Allows the minResolution to be reprojected with the new layer projection
+				this.minResolution = this.minResolution;
 			}
 			
 			if (event)
