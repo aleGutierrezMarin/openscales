@@ -196,6 +196,7 @@
 				
 				// Feeding units combo box
 				feedUnitsComboBox();
+				this.mousePositionLabel = "";
 			}
 			
 			/**
@@ -235,6 +236,7 @@
 						break;
 				}
 				dispatchEvent(new Event('selectedIndexUnitChanged'));
+				this.mousePositionLabel = "";
 			}
 			
 			/**
@@ -340,12 +342,14 @@
 							this.latitude = String(Number(this.latitude)/1000);
 						}
 					}
-					
-					this.mousePositionLabel = this.prefix
-						+ this.longitude
-						+ this.separator
-						+ this.latitude
-						+ this.suffix;
+					if(this.longitude == "NaN" || this.latitude == "NaN")
+						this.mousePositionLabel = "";
+					else
+						this.mousePositionLabel = this.prefix
+							+ this.longitude
+							+ this.separator
+							+ this.latitude
+							+ this.suffix;
 				}
 			}
 			
@@ -662,22 +666,18 @@
 			
 		]]>
 	</fx:Script>
-	<s:SkinnableContainer styleName="verticalLayout" id="mousePositionMainGroup" width="100%">
+	<s:SkinnableContainer styleName="horizontalLayout" id="mousePositionMainGroup" width="100%">
 		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
 				 text="{this.mousePositionLabel}"
 				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
-		<s:SkinnableContainer styleName="horizontalLayout" id="mousePositionChoiceGroup" width="100%" top="20"> 
-			<s:DropDownList id="mousePositionCrsComboBox"  
-							change="crsChanged(event);"
-							dataProvider="{this.crsDataProvider}"
-							selectedIndex="{this.selectedIndexCrs}"/>
-			
-			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" left="120"
-							change="unitsChanged(event)" width="200"
-							dataProvider="{this.unitDataProvider}"
-							selectedIndex="{this.selectedIndexUnit}"/>
-			
-		</s:SkinnableContainer>
+		<s:DropDownList id="mousePositionCrsComboBox" left="140"
+						change="crsChanged(event);"
+						dataProvider="{this.crsDataProvider}"
+						selectedIndex="{this.selectedIndexCrs}"/>
+		<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" left="260"
+						change="unitsChanged(event)" width="100"
+						dataProvider="{this.unitDataProvider}"
+						selectedIndex="{this.selectedIndexUnit}"/>
 	</s:SkinnableContainer>
 </openscales:Control>

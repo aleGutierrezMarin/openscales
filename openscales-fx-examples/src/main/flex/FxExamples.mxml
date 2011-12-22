@@ -9,6 +9,17 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import locate.OverviewExample;
+			import locate.OverviewRatioExample;
+			import locate.YahooSearchExample;
+			import manageLayer.StyleExample;
+			import manageLayer.CapabilitiesExample;
+			import global.AggregateExample;
+			import global.GraticuleExample;
+			import global.AboutOpenScales;
+			import global.GlobalExample;
+			import global.LegalInformationsExample;
+			import global.RunTimeThemeExample;
 			import layerExamples.GPXExample;
 			import layerExamples.GeoRssExample;
 			import layerExamples.KMLExample;
@@ -41,12 +52,6 @@
 					case "legalInformations":
 						state = new LegalInformationsExample();
 						break;
-					case "osm":
-						state = new PanZoomExample();
-						break;
-					case "managelayers":
-						state = new LayersManagerExample();
-						break;
 					case "addlayers":
 						state = new CapabilitiesExample();
 						break;
@@ -62,9 +67,6 @@
 					case "yahoo":
 						state = new YahooSearchExample();
 						break;
-					case "openLS":
-						state = new OpenLSSearchExample();
-						break;
 					case "drawedit":
 						state = new DrawingExample();
 						break;
@@ -73,9 +75,6 @@
 						break;
 					case "getfeatureinfo":
 						state = new InfoExample();
-						break;
-					case "reproject":
-						state = new OpenStreetMap();
 						break;
 					case "statistics":
 						state = new StatisticsExample();
@@ -158,7 +157,6 @@
 				<s:Button id="basic" label="Basic example" click="changeState(event)" width="100%"/>
 				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
 				<s:Button id="runtimetheme" label="Changing theme on runtime" click="changeState(event)" width="100%"/>
-				<s:Button id="osm" label="OpenStreetMap" click="changeState(event)" width="100%"/>
 				<s:Button id="graticule" label="Graticule" click="changeState(event)" width="100%"/>
 				<s:Button id="aggregate" label="Aggregate" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
@@ -166,19 +164,17 @@
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
-				<s:Button id="managelayers" label="Manage the layers" click="changeState(event)" width="100%"/>
 				<s:Button id="addlayers" label="Add layers dynamically" click="changeState(event)" width="100%"/>
 				<s:Button id="stylevectors" label="Style vector layers" click="changeState(event)" width="100%"/>
 				<s:Button id="external" label="Configure with external XML" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
-			<s:NavigatorContent label="Localize" width="100%" height="100%">
+			<s:NavigatorContent label="Locate" width="100%" height="100%">
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
 				<s:Button id="overview" label="Overview map" click="changeState(event)" width="100%"/>
 				<s:Button id="overviewRatio" label="Overview ratio map" click="changeState(event)" width="100%"/>
 				<s:Button id="yahoo" label="with Yahoo geocoder" click="changeState(event)" width="100%"/>
-				<s:Button id="openLS" label="with OpenLS" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Features handling" width="100%" height="100%">
 				<s:layout>
@@ -187,7 +183,6 @@
 				<s:Button id="drawedit" label="Draw and edit features" click="changeState(event)" width="100%"/>
 				<s:Button id="testfeatures" label="Select and test features" click="changeState(event)" width="100%"/>
 				<s:Button id="getfeatureinfo" label="WMS GetFeatureInfo" click="changeState(event)" width="100%"/>
-				<s:Button id="reproject" label="Reproject and query" click="changeState(event)" width="100%"/>
 				<s:Button id="statistics" label="Display statistics" click="changeState(event)" width="100%"/>
 				<s:Button id="measuretools" label="Measure tools" click="changeState(event)" width="100%" />
 			</s:NavigatorContent>
@@ -219,5 +214,4 @@
 			
 		</s:Group>
 	</s:HGroup>
-	
 </s:Application>
