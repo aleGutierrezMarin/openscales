@@ -15,8 +15,6 @@ The coordinates of the mouse cursor are displayed in geographic coordinates at t
 		<DragHandler/>
 		<ClickHandler/>
 		<WheelHandler/>
-		
-		<TraceInfo id="traceInfo" x="{width-200}" y="0" />
 
 		<PanZoom id="panZoom" x="10" y="10" />
 

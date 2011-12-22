@@ -30,6 +30,7 @@ package org.openscales.fx
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	import spark.components.Group;
 	import spark.core.SpriteVisualElement;
@@ -577,7 +578,7 @@ package org.openscales.fx
 		/** 
 		 * Current projection system used in the map.
 		 */
-		public function get projection():String
+		public function get projection():ProjProjection
 		{
 			return (this._map as Map).projection;
 		}
@@ -585,7 +586,7 @@ package org.openscales.fx
 		/**
 		 * @private
 		 */
-		public function set projection(value:String):void
+		public function set projection(value:*):void
 		{
 			(this._map as Map).projection = value;
 		}

@@ -116,9 +116,7 @@ package org.openscales.core.format.gml
 					//featureMember
 					break;
 				case "3.1.1":
-					if(ProjProjection.projAxisOrder[this.externalProjection]
-						&& ProjProjection.projAxisOrder[this.externalProjection]==ProjProjection.AXIS_ORDER_NE)
-						lonlat = false;
+					lonlat = this.externalProjection.lonlat;
 					if(!this._gmlParser || !(this._gmlParser is GML311))
 						this._gmlParser = new GML311();
 					//featureMembers
@@ -129,9 +127,7 @@ package org.openscales.core.format.gml
 					//}
 					break;
 				case "3.2.1":
-					if(ProjProjection.projAxisOrder[this.externalProjection]
-						&& ProjProjection.projAxisOrder[this.externalProjection]==ProjProjection.AXIS_ORDER_NE)
-						lonlat = false;
+					lonlat = this.externalProjection.lonlat;
 					if(!this._gmlParser || !(this._gmlParser is GML321))
 						this._gmlParser = new GML321();
 					//members
@@ -160,13 +156,7 @@ package org.openscales.core.format.gml
 				retFeatures = new Vector.<Feature>();
 				var feature:Feature;
 				for each( dataXML in features) {
-					// XLA: if a supprimer
-					if (this._version=="3.2.1") {
-						feature = this._gmlParser.parseFeature(dataXML,true); // trick WFS 2.0						
-					}
-					else {
-						feature = this._gmlParser.parseFeature(dataXML,lonlat); // code normal						
-					}
+					feature = this._gmlParser.parseFeature(dataXML,lonlat);
 					if(feature) {
 						retFeatures.push(feature);
 						if(this._onFeature!=null)
@@ -427,6 +417,7 @@ package org.openscales.core.format.gml
 				
 				if (this._internalProjection != null && this._externalProjection != null) {
 					var p:ProjPoint = new ProjPoint(geometry.x, geometry.y);
+					
 					Proj4as.transform(_internalProjection, _externalProjection, p);
 					geometry.x = p.x;
 					geometry.y = p.y;
@@ -446,7 +437,8 @@ package org.openscales.core.format.gml
 					if(geometry is LinearRing){
 						if (this._internalProjection != null && this._externalProjection != null){
 							var pointTemp:Point = new Point(points[0],points[1]);
-							pointTemp.transform(this._internalProjection, this._externalProjection);
+							pointTemp.projection = this._internalProjection;
+							pointTemp.transform(this._externalProjection);
 							path += pointTemp.x + "," + pointTemp.y + " ";
 						}else{
 							path += points[0] + "," + points[1] + " ";
@@ -470,7 +462,8 @@ package org.openscales.core.format.gml
 				if (this._internalProjection != null && this._externalProjection != null){
 					
 					pointTemp = new Point(points[i],points[i+1]);
-					pointTemp.transform(this._internalProjection, this._externalProjection);
+					pointTemp.projection = this._internalProjection;
+					pointTemp.transform(this._externalProjection);
 					path += pointTemp.x + "," + pointTemp.y + " ";
 					
 				}else{

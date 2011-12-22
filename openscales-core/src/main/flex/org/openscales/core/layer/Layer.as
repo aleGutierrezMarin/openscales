@@ -11,6 +11,7 @@ package org.openscales.core.layer {
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.security.events.SecurityEvent;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -28,10 +29,10 @@ package org.openscales.core.layer {
 	public class Layer extends Sprite {
 		public static const DEFAULT_DPI:Number = 92;
 		
-		public static const DEFAULT_NOMINAL_RESOLUTION:Resolution = new Resolution(1.40625, "EPSG:4326");
+		public static const DEFAULT_NOMINAL_RESOLUTION:Resolution = new Resolution(1.40625, Geometry.DEFAULT_SRS_CODE);
 		public static const RESOLUTION_TOLERANCE:Number = 0.000001;
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
-		public static const DEFAULT_PROJECTION:String = "EPSG:4326";
+		public static const DEFAULT_PROJECTION:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 		
 		
 		public static function get DEFAULT_MAXEXTENT():Bounds {
@@ -39,7 +40,7 @@ package org.openscales.core.layer {
 		}
 		
 		private var _map:Map = null;
-		protected var _projection:String = null;
+		protected var _projection:ProjProjection = null;
 		private var _availableProjections:Vector.<String> = null;
 		private var _dpi:Number = Layer.DEFAULT_DPI;
 		private var _resolutions:Array = null;
@@ -127,14 +128,19 @@ package org.openscales.core.layer {
 		 * This method tells if the layer supports a projection given in parameter according to the availableProjections
 		 * set for this layer.
 		 */ 
-		public function supportsProjection(compareProj:String):Boolean {
+		public function supportsProjection(compareProj:*):Boolean {
+			var proj1:ProjProjection = ProjProjection.getProjProjection(compareProj);
+			if(!proj1)
+				return false;
 			//Parsing available projections for the layer
 			if(this.availableProjections) {
+				var proj2:ProjProjection;
 				for each(var proj:String in this.availableProjections) {
-					if(ProjProjection.isEquivalentProjection(proj,compareProj)) {
-						if(!ProjProjection.isEquivalentProjection(this.projection, compareProj)) {
+					proj2 = ProjProjection.getProjProjection(proj);
+					if(ProjProjection.isEquivalentProjection(proj1,proj2)) {
+						if(!ProjProjection.isEquivalentProjection(this.projection, proj1)) {
 							//Changing layer projection
-							this.projection = proj;
+							this.projection = proj2;
 							return true;
 						} else {
 							//Layer projection is already Map projection
@@ -669,7 +675,7 @@ package org.openscales.core.layer {
 			}else return;
 			if (bounds.projection != this.projection)
 			{
-				if (this.projection == "EPSG:2154" || this.projection == "IGNF:LAMB93")
+				if (this.projection.srsCode == "EPSG:2154" || this.projection.srsCode == "IGNF:LAMB93")
 					bounds = bounds.reprojectTo(this.projection);
 				else
 					bounds = bounds.preciseReprojectBounds(this.projection);
@@ -698,22 +704,32 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * Define the layer projection by its SRS code.
-		 * When this layer is the baselayer, the associated projection is used as the map display projection.
-		 * When this layer is not the baselayer, it is used to perform the right repojection algorithm.
+		 * The projection of the map. This is the display projection of the map
+		 * If a layer is not in the same projection as the projection of the map
+		 * he will not be displayed. 
+		 * 
+		 * @default Geometry.DEFAULT_SRS_CODE
 		 */
-		public function get projection():String {
+		public function get projection():ProjProjection {
 			return this._projection;
 		}
-		
-		public function set projection(value:String):void {
+		/**
+		 * @private
+		 */
+		public function set projection(value:*):void {
 			var event:LayerEvent = null;
 			if(value != null){
-				this._projection = value.toUpperCase();
+				var proj:ProjProjection = ProjProjection.getProjProjection(value);
+				if(!proj)
+					return;
+				
+				this._projection = proj;
+				
 				if (this.maxExtent)
 				{
 					this._maxExtent = this.maxExtent.preciseReprojectBounds(this._projection);
-				}				
+				}
+				
 				event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
 			}
 			

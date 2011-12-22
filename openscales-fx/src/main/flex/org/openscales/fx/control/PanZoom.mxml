@@ -8,16 +8,15 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import org.openscales.core.Map;
+			import org.openscales.geometry.Geometry;
+			import org.openscales.proj4as.ProjProjection;
 			
-			/**
-			 * @private
-			 * The list of labels for different resolutions.
-			 * @default null
-			 */
 			[Bindable]
-			public var scalesLabels:String = null;
+			private var _scalesLabels:String = "zoombar.world,0.3515625,1.40625;zoombar.country,0.0439453125,0.3515625;zoombar.state,0.0054931640625,0.0439453125;zoombar.town,0.0006866455078125,0.0054931640625;zoombar.street,0.0000858306884765625,0.0006866455078125;zoombar.house,0.000010728836059570313,0.0000858306884765625";
+			
+			[Bindable]
+			private var _projection:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 			
 			override public function set map(value:Map):void {
 				super.map = value;
@@ -26,11 +25,42 @@
 				panSkin.map = value;
 			}
 			
+			/**
+			 * The list of labels for different resolutions.
+			 * label,maxResolution,minResolution
+			 * 
+			 */
+			public function get scalesLabels():String {
+				return this._scalesLabels;
+			}
+			/**
+			 * @private
+			 */
+			public function set scalesLabels(value:*):void {
+				if(value is String)
+					this._scalesLabels = value;
+			}
+			
+			/**
+			 * The projection used to define scalesLabels resolutions
+			 * @default Geometry.DEFAULT_SRS_CODE
+			 */
+			public function get projection():ProjProjection {
+				return this._projection;
+			}
+			/**
+			 * @private
+			 */
+			public function set projection(value:*):void {
+				var proj:ProjProjection = ProjProjection.getProjProjection(value);
+				if(proj)
+					this._projection = proj;
+			}
 		]]>
 	</fx:Script>
 
 
-	<Zoom id="zoomSlider" scalesName="{this.scalesLabels}"/>
+	<Zoom id="zoomSlider" scalesName="{this._scalesLabels}" projection="{this._projection}"/>
 	<Pan id="panSkin" />
 	
 	

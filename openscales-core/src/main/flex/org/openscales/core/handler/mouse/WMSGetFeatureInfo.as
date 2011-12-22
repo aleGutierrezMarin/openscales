@@ -234,10 +234,10 @@ package org.openscales.core.handler.mouse
 					//mandatory map request part parameter
 					//some parameter of the map should be know -> bbox / width / height / projection
 					if(version == "1.3.0"){
-						request += "CRS=" + this.map.projection + "&";
+						request += "CRS=" + this.map.projection.srsCode + "&";
 					}
 					else{
-						request += "SRS=" + this.map.projection + "&";
+						request += "SRS=" + this.map.projection.srsCode + "&";
 					}
 					
 					request += "WIDTH=" + this.map.width + "&";
