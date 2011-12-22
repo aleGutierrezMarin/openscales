@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--- 
-	Main Flex example application
+Main Flex example application
 -->
 <s:Application xmlns:s="library://ns.adobe.com/flex/spark" xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
 			   creationComplete="init();"
-				>
+			   >
 	
 	<fx:Script>
 		<![CDATA[
-			import locate.OverviewExample;
-			import locate.OverviewRatioExample;
-			import locate.YahooSearchExample;
-			import manageLayer.StyleExample;
-			import manageLayer.CapabilitiesExample;
-			import global.AggregateExample;
-			import global.GraticuleExample;
+			import global.MeasureExample;
+			import features.StatisticsExample;
+			import features.InfoExample;
+			import features.FeaturesExample;
+			import features.DrawingExample;
+			
 			import global.AboutOpenScales;
+			import global.AggregateExample;
 			import global.GlobalExample;
+			import global.GraticuleExample;
 			import global.LegalInformationsExample;
 			import global.RunTimeThemeExample;
+			
 			import layerExamples.GPXExample;
 			import layerExamples.GeoRssExample;
-			import layerExamples.KMLExample;
 			import layerExamples.KMLFeaturesExample;
-			import layerExamples.TmsExample;
-			import layerExamples.WFSonlyExample;
 			import layerExamples.WMS130Example;
 			import layerExamples.WMSCExample;
 			import layerExamples.WMSExample;
 			import layerExamples.WMTSExample;
+			
+			import locate.OverviewExample;
+			import locate.OverviewRatioExample;
+			import locate.YahooSearchExample;
+			
+			import manageLayer.CapabilitiesExample;
+			import manageLayer.StyleExample;
+			
 			import mx.core.IVisualElement;
 			private var data:Object = {};
 			
@@ -58,9 +65,6 @@
 					case "stylevectors":
 						state = new StyleExample();
 						break;
-					case "external":
-						state = new ExternalConfigurationExample();
-						break;
 					case "overview":
 						state = new OverviewExample();
 						break;
@@ -79,10 +83,7 @@
 					case "statistics":
 						state = new StatisticsExample();
 						break;
-					case "wfsonly":
-						state = new WFSonlyExample();
-						break;
-					case "nasa":
+					case "wmsc":
 						state = new WMSCExample();
 						break;
 					case "germany":
@@ -97,9 +98,6 @@
 					case "imagelayer":
 						state = new ImageLayerExample();
 						break;
-					case "simplekml":
-						state = new KMLExample();
-						break;
 					case "fullkml":
 						state = new KMLFeaturesExample();
 						break;
@@ -111,9 +109,6 @@
 						break;
 					case "graticule":
 						state = new GraticuleExample();
-						break;
-					case "tms":
-						state = new TmsExample();
 						break;
 					case "ign":
 						state = new SecurityMapExample();
@@ -159,6 +154,7 @@
 				<s:Button id="runtimetheme" label="Changing theme on runtime" click="changeState(event)" width="100%"/>
 				<s:Button id="graticule" label="Graticule" click="changeState(event)" width="100%"/>
 				<s:Button id="aggregate" label="Aggregate" click="changeState(event)" width="100%"/>
+				<s:Button id="measuretools" label="Measure tools" click="changeState(event)" width="100%" />
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Map configuration" width="100%" height="100%">
 				<s:layout>
@@ -166,7 +162,6 @@
 				</s:layout>
 				<s:Button id="addlayers" label="Add layers dynamically" click="changeState(event)" width="100%"/>
 				<s:Button id="stylevectors" label="Style vector layers" click="changeState(event)" width="100%"/>
-				<s:Button id="external" label="Configure with external XML" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Locate" width="100%" height="100%">
 				<s:layout>
@@ -184,23 +179,19 @@
 				<s:Button id="testfeatures" label="Select and test features" click="changeState(event)" width="100%"/>
 				<s:Button id="getfeatureinfo" label="WMS GetFeatureInfo" click="changeState(event)" width="100%"/>
 				<s:Button id="statistics" label="Display statistics" click="changeState(event)" width="100%"/>
-				<s:Button id="measuretools" label="Measure tools" click="changeState(event)" width="100%" />
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Protocols" width="100%" height="100%">
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
-				<s:Button id="wfsonly" label="WFS only" click="changeState(event)" width="100%"/>
-				<s:Button id="nasa" label="NASA WMS-C" click="changeState(event)" width="100%"/>
+				<s:Button id="wmsc" label="WMS-C" click="changeState(event)" width="100%"/>
 				<s:Button id="germany" label="WMS 1.1.x" click="changeState(event)" width="100%"/>
 				<s:Button id="wms130" label="WMS 1.3.0" click="changeState(event)" width="100%"/>
 				<s:Button id="wmts100" label="WMTS 1.0.0" click="changeState(event)" width="100%"/>
 				<s:Button id="imagelayer" label="Image Layer" click="changeState(event)" width="100%"/>
-				<s:Button id="simplekml" label="Simple KML layer" click="changeState(event)" width="100%"/>
-				<s:Button id="fullkml" label="Advanced KML layer" click="changeState(event)" width="100%"/>
+				<s:Button id="fullkml" label="KML layer" click="changeState(event)" width="100%"/>
 				<s:Button id="gpx" label="GPX Layer" click="changeState(event)" width="100%"/>
 				<s:Button id="georss" label="GeoRss Layer" click="changeState(event)" width="100%"/>
-				<s:Button id="tms" label="TMS example" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Security" width="100%" height="100%">
 				<s:layout>
