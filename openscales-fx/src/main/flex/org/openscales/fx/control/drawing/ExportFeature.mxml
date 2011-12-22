@@ -51,6 +51,7 @@
 			 */
 			private var _layer:VectorLayer = null;
 			
+			[Bindable]
 			private var _map:Map = null;
 			
 			private var _drawingMode:String;
