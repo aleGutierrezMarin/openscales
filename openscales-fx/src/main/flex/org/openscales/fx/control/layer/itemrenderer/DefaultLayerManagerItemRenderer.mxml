@@ -538,7 +538,7 @@
 			<drawing:EditFeatures id="editFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:MoveFeatures id="moveFeatures" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
 			<drawing:ManageAttributes id="manageAttributes" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:ExportFeature id="exportFeature" layer="{this._layer as VectorLayer}" />
+			<drawing:ExportFeature id="exportFeature" map="{this._layer.map}" layer="{this._layer as VectorLayer}" />
 			
 		</s:SkinnableContainer>
 		
