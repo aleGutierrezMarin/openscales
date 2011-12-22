@@ -2,10 +2,10 @@
 <!--- Drag the map or draw some points, polylines or polygons using the buttons of the first line.
 Use click and CTRL+click to select features.
 Use the buttons of the second line to remove the last drawn vertex, to delete the selected features, to delete all the drawn features or to merge the selected features. -->
-<s:Group xmlns="http://openscales.org" 
+<s:VGroup xmlns="http://openscales.org" 
 		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 width="100%" height="100%">
+		 width="100%" height="100%" xmlns:components="components.*">
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.basetypes.Resolution;
@@ -26,13 +26,10 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<VectorLayer id="vectorLayer" name="drawing layer 2" editable="true" />
 		<DragHandler />
 		<WheelHandler />
-		<Spinner id="spinner" x="{width / 2}" y="{height / 2}"/>
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
-		<ScaleLine x="{width-100-10}" y="{height-80}"/>
-		<LayerManager top="5" right="5"/>
-		<DrawingToolbar id="drawingToolbar" fxMap="{fxMap}" map="{fxMap.map}" pointStyle="{Style.getDefaultCircleStyle()}"
-						clickout="true" hover="false" toggle="true" defaultAttributes="id,description,other"
-						virtualStyle="{Style.getDefaultPointStyle()}" />
+		<LayerManager y="10" left="10"/>
+		<Zoom x="{fxMap.width-135}" y="10" />
+		
 	</Map>
+	<components:toolbar fxMap="{fxMap}" />
 	
-</s:Group>
+</s:VGroup>

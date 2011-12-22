@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns="http://openscales.org"
-		 width="100%" height="100%">
+		 width="100%" height="100%" xmlns:components="components.*">
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.basetypes.Resolution;
@@ -15,7 +15,6 @@
 		 resolution="{new Resolution(0.010504117369350007,'EPSG:4326')}"
 		 minResolution="0.000010728836059570312,EPSG:4326"
 		 maxResolution="1.40625,EPSG:4326" >
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
 		<DragHandler/>
 		<WheelHandler/>
 		<PanZoom id="panZoom" x="10" y="10" />
@@ -25,5 +24,7 @@
 			  WMTSLayer="topp:world_borders"
 			  format="image/png" />	
 	
+		<Zoom x="{fxMap.width-135}" y="10" />
 	</Map>
-</s:Group>
+	<components:toolbar fxMap="{fxMap}" />
+</s:VGroup>
