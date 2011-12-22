@@ -5,6 +5,7 @@ package org.openscales.geometry
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * A MultiPoint is a geometry with multiple Point components
@@ -352,17 +353,17 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the collection from a projection system to an other.
 		 *
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
+		 * @param dest the destination projection, can be both a String or a ProjProjection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
+		override public function transform(dest:*):void {
 			// Update the pojection associated to the geometry
-			this.projection = destSrs;
+			var source:ProjProjection = this.projection;
+			this.projection = dest;
 			// Update the geometry
 			var p:ProjPoint;
 			for(var i:int=0; i<this._components.length; i+=2) {
 				p = new ProjPoint(this._components[i], this._components[i+1]);
-				Proj4as.transform(sourceSrs, destSrs, p);
+				Proj4as.transform(source, this.projection, p);
 				this._components[i] = p.x;
 				this._components[i+1] = p.y;
 			}

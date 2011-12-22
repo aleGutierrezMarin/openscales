@@ -18,8 +18,6 @@
 		
 		<SelectFeaturesHandler id="selectFeatureHandler" active="true"/>
 		
-		<TraceInfo x="{width-200}" y="0" />
-		
 		<PanZoom id="panZoom" x="10" y="10" />
 		
 		<s:Panel title="featureInfos" bottom="0" right="0">
@@ -43,7 +41,7 @@
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
 			
-			import statisticsexample.CircleSizeExpression;
+			import manageLayer.statisticsexample.CircleSizeExpression;
 			
 			[Bindable]
 			private var styles:Array = [];

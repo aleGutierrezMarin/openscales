@@ -130,5 +130,19 @@
    "openLSSearch.ok": "OK",
    "openLSSearch.tooltip": "Cliquez pour centrer sur le lieu...",
    "openLSSearch.results": "résultats",
-   "openLSSearch.noResult": "Aucun résultat ne correspond à votre recherche"
+   "openLSSearch.noResult": "Aucun résultat ne correspond à votre recherche",
+   
+   "externalLayers.name": "Nom",
+   "externalLayers.format": "Format",
+   "externalLayers.version": "Version",
+   "externalLayers.url": "Url",
+   "externalLayers.add": "Ajouter",
+   "externalLayers.back": "Retour",
+   "externalLayers.externalLayers": "Ajout de couches externes",
+   "externalLayers.noversion": "Aucune version",
+   "externalLayers.noresult": "Aucun résultat trouvé",
+   "externalLayers.nameerror": "Modifier le nom de la couche (il ne doit pas être vide ou égal à une autre couche)",
+   "externalLayers.urlerror": "Le champs url ne doit pas être vide",
+   "externalLayers.uncorrectExtension": "L'extension du fichier n'est pas reconnue, les extensions valides sont : ",
+   "externalLayers.uncorrectFile": "Fichier incorrect"
  }

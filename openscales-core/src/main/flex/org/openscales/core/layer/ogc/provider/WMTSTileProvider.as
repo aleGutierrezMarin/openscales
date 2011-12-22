@@ -1,7 +1,5 @@
 package org.openscales.core.layer.ogc.provider
 {
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.utils.UID;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Grid;
@@ -12,6 +10,8 @@ package org.openscales.core.layer.ogc.provider
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -170,9 +170,9 @@ package org.openscales.core.layer.ogc.provider
 			var tileMatrixSet:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
 			if(tileMatrixSet==null)
 				return imageTile;
-			
-			if(tileMatrixSet.supportedCRS.toUpperCase() != bounds.projection.toUpperCase()) {
-				bounds = bounds.reprojectTo(tileMatrixSet.supportedCRS);
+			var proj:ProjProjection = ProjProjection.getProjProjection(tileMatrixSet.supportedCRS);
+			if(proj != bounds.projection) {
+				bounds = bounds.reprojectTo(proj);
 			}
 			
 			//tileMatrix are referenced by their resolutions
@@ -189,8 +189,8 @@ package org.openscales.core.layer.ogc.provider
 			
 			var location:Location = bounds.center;
 			var tileOrigin:Location = tileMatrix.topLeftCorner;
-			if(location.projection.toUpperCase()!=tileOrigin.projection.toUpperCase())
-				location = location.reprojectTo(tileOrigin.projection.toUpperCase());
+			if(location.projection!=tileOrigin.projection)
+				location = location.reprojectTo(tileOrigin.projection);
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
 			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
 			

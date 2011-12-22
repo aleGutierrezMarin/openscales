@@ -111,23 +111,6 @@ package org.openscales.core.layer.ogc
 			this._tileProvider = new WMSTileProvider(url, this._version, layers, this.projection, styles, format);
 		}
 		
-		//
-	    /*override public function get maxExtent():Bounds {
-			/*if (! super.maxExtent) {
-				return null;
-			}*/
-
-			/*var maxExtent:Bounds =  super.maxExtent.clone();
-			if(this.map == null){
-				return maxExtent;
-			}
-			// fix me
-			if (this.reproject == true && this.projection != this.map.projection) {
-				maxExtent = maxExtent.reprojectTo(this.map.projection);
-			}
-			return super.maxExtent;
-		}*/
-		
 		/**
 		 * Generate the tile corresponding to the bounds given as parameter
 		 * 
@@ -347,16 +330,11 @@ package org.openscales.core.layer.ogc
 				this._tileProvider.layer = value;
 			}
 		}
-		
-		
-		override public function get projection():String
-		{
-			return _projection;
-		}
+
 		/**
 		 * @private
 		 */
-		override public function set projection (value:String):void
+		override public function set projection (value:*):void
 		{
 			super.projection = value;
 			

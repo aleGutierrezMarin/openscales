@@ -1,5 +1,6 @@
 package org.openscales.core.layer.capabilities
 {
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
@@ -101,7 +102,7 @@ package org.openscales.core.layer.capabilities
 				right = new Number(layer.BoundingBox.@maxx.toXMLString());
 				top = new Number(layer.BoundingBox.@maxy.toXMLString());;
 						
-				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,"EPSG:4326"));
+				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,Geometry.DEFAULT_SRS_CODE));
 			
                 if (name != "")
                 {

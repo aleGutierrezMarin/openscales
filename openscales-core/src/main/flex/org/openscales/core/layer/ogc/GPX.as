@@ -19,6 +19,8 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.geometry.Geometry;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * GPX layer; versions 1.0 and 1.1 supported 
@@ -57,7 +59,7 @@ package org.openscales.core.layer.ogc
 							extractRoutes:Boolean = true,
 							extractAttributes:Boolean = true)
 		{
-			this._projection = "EPSG:4326";
+			this._projection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 			this.version = version;
 			this.url = url;	
 			this.data = data;
@@ -203,7 +205,7 @@ package org.openscales.core.layer.ogc
 			_version = value;
 		}
 		
-		override public function set projection(value:String):void {
+		override public function set projection(value:*):void {
 			// SRS code cannot be overriden. Graticule is always built in WGS84
 			// and then reprojected to the projection of the map.
 		}
