@@ -15,9 +15,6 @@
 		<DragHandler/>
 		<WheelHandler/>
 		
-		
-		<TraceInfo x="{width-200}" y="0" />
-		
 		<PanZoom id="panZoom" x="10" y="10" />
 		
 		

@@ -1,5 +1,6 @@
 package org.openscales.core.basetypes
 {
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
@@ -10,20 +11,25 @@ package org.openscales.core.basetypes
 	public class Resolution
 	{
 		
-		private var _projection:String;
+		private var _projection:ProjProjection;
 		private var _value:Number; 
 			
-		public function Resolution(resolutionValue:Number, projection:String = "EPSG:4326")
+		public function Resolution(resolutionValue:Number, projection:* = null)
 		{
-			this._projection = projection;
+			this._projection = ProjProjection.getProjProjection(projection);
+			if(this._projection == null)
+				this._projection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 			this._value = resolutionValue;
 		}
 		
 		/**
 		 * Reproject the resolution to the given projection and return the result
 		 */
-		public function reprojectTo(newProjection:String):Resolution
+		public function reprojectTo(newProjection:*):Resolution
 		{
+			var proj:ProjProjection = ProjProjection.getProjProjection(newProjection);
+			if(proj == null)
+				return null;
 			var resolution:Number = this._value;
 			
 			if (!ProjProjection.isEquivalentProjection(this._projection, newProjection))
@@ -62,7 +68,7 @@ package org.openscales.core.basetypes
 		 * Current projection of the resolution. This parameter is readOnly. To modify it
 		 * use the reprojectTo method that will return a new object Resolution.
 		 */
-		public function get projection():String
+		public function get projection():ProjProjection
 		{
 			return this._projection;
 		}

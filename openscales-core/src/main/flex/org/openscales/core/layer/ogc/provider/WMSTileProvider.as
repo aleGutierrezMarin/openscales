@@ -45,7 +45,7 @@ package org.openscales.core.layer.ogc.provider
 		 * @private 
 		 * Projection system used
 		 */
-		private var _projection:String;
+		private var _projection:ProjProjection;
 		
 		/**
 		 * @private 
@@ -105,7 +105,7 @@ package org.openscales.core.layer.ogc.provider
 		public function WMSTileProvider(url:String,
 										version:String,
 										layer:String,
-										projection:String,
+										projection:*,
 										style:String = "",
 										format:String = "image/jpeg")
 		{
@@ -114,7 +114,7 @@ package org.openscales.core.layer.ogc.provider
 			
 			//Save WMS specific parameters
 			this._layer=layer;
-			this._projection=projection
+			this.projection=projection
 			this._style=style;
 			this._format=format;
 		}
@@ -158,15 +158,15 @@ package org.openscales.core.layer.ogc.provider
 			
 			// Mandatory CRS or SRS parameter
 			if(this.version=="1.3.0") {
-				str += "CRS=" + this._projection + "&";
+				str += "CRS=" + this._projection.srsCode + "&";
 			} else {
-				str += "SRS=" + this._projection + "&";
+				str += "SRS=" + this._projection.srsCode + "&";
 			}
 			
 			// Mandatory BBOX parameters
 			// Lon/Lat if less than 1.3.0 or if axis order of the projection is East/North, lat/lon otherwise
 			if(this.version=="1.3.0"
-					&& ProjProjection.projAxisOrder[this._projection.toUpperCase()] == ProjProjection.AXIS_ORDER_NE){
+					&& !this.projection.lonlat){
 				str += "BBOX=" + bounds.bottom+","+ bounds.left +","+ bounds.top +","+ bounds.right+"&";
 			}else {
 				str += "BBOX=" + bounds.left+","+ bounds.bottom +","+ bounds.right +","+ bounds.top+"&";
@@ -244,7 +244,7 @@ package org.openscales.core.layer.ogc.provider
 		/**
 		 * Projection system used
 		 */
-		public function get projection():String
+		public function get projection():ProjProjection
 		{
 			return _projection;
 		}
@@ -252,9 +252,9 @@ package org.openscales.core.layer.ogc.provider
 		/**
 		 * @private
 		 */
-		public function set projection(value:String):void
+		public function set projection(value:*):void
 		{
-			_projection = value;
+			_projection = ProjProjection.getProjProjection(value);
 		}
 		
 		/**

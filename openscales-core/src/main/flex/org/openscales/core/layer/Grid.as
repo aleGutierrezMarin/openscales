@@ -17,6 +17,7 @@ package org.openscales.core.layer
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -41,7 +42,7 @@ package org.openscales.core.layer
 		private var _buffer:Number;
 		protected var _tileWidth:Number = DEFAULT_TILE_WIDTH;
 		protected var _tileHeight:Number = DEFAULT_TILE_HEIGHT;
-		protected var _tileOrigin:Location = new Location(0,0,"EPSG:4326");
+		protected var _tileOrigin:Location = new Location(0,0,Geometry.DEFAULT_SRS_CODE);
 		private var _defaultMatrixTranform:Matrix;
 		private var _resquestResolution:Number = 0;
 		protected var _initialized:Boolean = false;
@@ -131,7 +132,7 @@ package org.openscales.core.layer
 			if (!this.map.mapInitialized)
 				return;
 
-			if (!available || !this.visible) 
+			if (!available || !this.visible)
 			{
 				this.clear();
 				this._initialized = false;
@@ -668,7 +669,7 @@ package org.openscales.core.layer
 			}
 			var rl:int = this._grid.length;
 			var cl:int;
-			for (var r:int=0; r<rl; r++) {
+			for (var r:int=0; r<rl; ++r) {
 				var _row:Vector.<ImageTile> = this._grid[r];
 				cl = _row.length;
 				for (var col:int=0; col<cl; ++col) {
@@ -1438,7 +1439,9 @@ package org.openscales.core.layer
 			}
 			//Parsing available projections for the layer
 			if(this.availableProjections) {
-				for each(var proj:String in this.availableProjections) {
+				var proj:ProjProjection;
+				for each(var projCode:String in this.availableProjections) {
+					proj=ProjProjection.getProjProjection(projCode);
 					if(ProjProjection.isEquivalentProjection(proj,this.map.projection)) {
 						if(!ProjProjection.isEquivalentProjection(this.projection, proj)) {
 							//Changing layer projection

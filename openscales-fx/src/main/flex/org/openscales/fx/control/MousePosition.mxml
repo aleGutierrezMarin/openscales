@@ -23,14 +23,12 @@
 			
 			import spark.events.IndexChangeEvent;
 			
-			public static var DEFAULT_PROJECTION_CODE:String = "EPSG:4326";
-			
 			/**
 			 * @private
 			 * The projection displayed. If null, the display projection used is the projection of the base layer.
-			 * By default, the display projection is "EPSG:4326" 
+			 * By default, the display projection is Geometry.DEFAULT_SRS_CODE
 			 */
-			private var _displayProjection:String = DEFAULT_PROJECTION_CODE;
+			private var _displayProjection:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 			
 			/**
 			 * @private 
@@ -86,7 +84,7 @@
 			private var _localNSEW:String = "NSEW";
 			
 			
-			private var _availableProjSrsList:String = DEFAULT_PROJECTION_CODE;
+			private var _availableProjSrsList:String = Geometry.DEFAULT_SRS_CODE;
 			
 			
 			/**
@@ -153,7 +151,7 @@
 				for(i;i<lgth;i++)
 				{
 					this.crsDataProvider.addItem(tmp[i]);
-					if(_displayProjection == (tmp[i] as String)) 
+					if(_displayProjection == ProjProjection.getProjProjection(tmp[i])) 
 					{
 						selectedIndex = i;
 						displayProjectionInList = true;
@@ -190,9 +188,11 @@
 				}
 				
 				// Getting the value
-				_displayProjection = this.crsDataProvider.getItemAt(this.selectedIndexCrs).toString();
+				_displayProjection = ProjProjection.getProjProjection(this.crsDataProvider.getItemAt(this.selectedIndexCrs).toString());
+				if(!_displayProjection)
+					_displayProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 				// Getting units for this SRS
-				_srsUnits = ProjProjection.getProjProjection(_displayProjection).projParams.units;
+				_srsUnits = _displayProjection.projParams.units;
 				
 				// Feeding units combo box
 				feedUnitsComboBox();
@@ -539,18 +539,21 @@
 			/**
 			 * The projection displayed. Must be an existing value of availableProjSrsList.
 			 */
-			public function get displayProjection():String {
+			public function get displayProjection():ProjProjection {
 				return this._displayProjection;
 			}
 			
 			/**
 			 * @private
 			 */ 
-			public function set displayProjection(value:String):void
+			public function set displayProjection(value:*):void
 			{
+				var proj:ProjProjection = ProjProjection.getProjProjection(value);
+				if(!proj)
+					return;
 				if(this._init)
 				{
-					if(this._displayProjection == value)
+					if(this._displayProjection == proj)
 						return;
 					
 					var tmp:Array = this.crsDataProvider.toArray();
@@ -561,8 +564,8 @@
 					{
 						if(value == (tmp[i] as String))
 						{
-							this._displayProjection = value;
-							this._srsUnits = ProjProjection.getProjProjection(this.displayProjection).projParams.units;
+							this._displayProjection = proj;
+							this._srsUnits = proj.projParams.units;
 							this.selectedIndexCrs = i;
 							this.feedUnitsComboBox();
 							displayProjectionInList = true;
@@ -573,7 +576,7 @@
 						trace("The Projection to display isn't valid");
 				}
 				else
-					this._displayProjection = value;	
+					this._displayProjection = proj;	
 			}
 			
 			/**

@@ -120,10 +120,12 @@ package org.openscales.core.measure
 					
 					if(p0 && p1){
 						
-						if (!ProjProjection.isEquivalentProjection(this.map.projection,"EPSG:4326"))
+						if (!ProjProjection.isEquivalentProjection(this.map.projection,ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE)))
 						{
-							p0.transform(this.map.projection, "EPSG:4326");
-							p1.transform(this.map.projection, "EPSG:4326");
+							p0.projection = this.map.projection;
+							p0.transform(Geometry.DEFAULT_SRS_CODE);
+							p1.projection = this.map.projection;
+							p1.transform(Geometry.DEFAULT_SRS_CODE);
 						}
 						var p0Rad:Point = new Point(Util.degtoRad(p0.x),Util.degtoRad(p0.y));
 						var p1Rad:Point = new Point(Util.degtoRad(p1.x),Util.degtoRad(p1.y));

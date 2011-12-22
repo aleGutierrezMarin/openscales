@@ -23,7 +23,6 @@ package org.openscales.core.layer.params.ogc
 		}
 		
 		override public function toGETString():String
-			//Creates request to fetch feature
 		{
 			var str:String = super.toGETString();
 			

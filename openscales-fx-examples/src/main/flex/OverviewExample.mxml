@@ -16,8 +16,6 @@ Draw a rectangle on the overview to define a new extent for the main map.-->
 		<Spinner x="{width / 2}" y="{height / 2}"/>
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
 		
-		<TraceInfo x="{width-200}" y="0" />
-		
 		<s:Panel id="miniMapPanel" title="Overview map" x="{width-miniMapPanel.width-10}" y="{height-miniMapPanel.height-10}">
 			<s:layout>
 				<s:HorizontalLayout/>

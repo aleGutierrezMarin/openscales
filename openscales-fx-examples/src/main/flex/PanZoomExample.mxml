@@ -15,8 +15,6 @@
 		<ScaleLine x="{width-100-10}" y="{height-80}"/>
 		<NumericScale x="{width-250}" y="{height-40}"/>
 		
-		<TraceInfo x="{width-200}" y="0" />
-		
 		<ControlPanel x="10" y="10" width="140" title="Navigation" visible="false">
 			<Pan />
 			<s:HGroup width="100%">
