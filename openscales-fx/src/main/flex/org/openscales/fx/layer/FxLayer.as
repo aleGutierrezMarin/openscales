@@ -409,6 +409,24 @@ package org.openscales.fx.layer
 		}
 		
 		/**
+		 * Indicates the available projections of the layer
+		 */
+		public function get availableProjections():Vector.<String> {
+			if(this._layer)
+				return this._layer.availableProjections;
+			return null;
+		}
+		/**
+		 * @Private
+		 */
+		public function set availableProjections(value:*):void {
+		
+			if(this._layer) {
+				this._layer.availableProjections = value;
+			}
+		}
+		
+		/**
 		 * Indicates the alpha of the layer
 		 */
 		override public function get alpha():Number {
