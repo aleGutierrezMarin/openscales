@@ -111,7 +111,7 @@ package org.openscales.core.format.gml.writer
 				var mpf:MultiPolygonFeature = feature as MultiPolygonFeature;
 				var mp:MultiPolygon = mpf.polygons;
 				var polygonVector:Vector.<Geometry> = mp.getcomponentsClone();
-				multiSurfaceNode.@srsName = mp.projection;
+				multiSurfaceNode.@srsName = mp.projection.srsCode;
 				
 				for(i=0; i<mp.componentsLength; i++){ // create a subnode for each Polygon inside the multiSurface tag 
 					var surfaceMemberNode:XML = new XML("<surfaceMember></surfaceMember>");
@@ -130,7 +130,7 @@ package org.openscales.core.format.gml.writer
 				var multiPoint:MultiPoint = multiPointFeature.points as MultiPoint;
 				var points:Vector.<Point> = multiPoint.toVertices();
 				
-				multiPointNode.@srsName = multiPoint.projection;
+				multiPointNode.@srsName = multiPoint.projection.srsCode;
 				for(i = 0; i < points.length; i++){
 					var pointMember:XML = new XML("<pointMember></pointMember>");
 					pointMember.setNamespace(this.gmlns);
@@ -154,7 +154,7 @@ package org.openscales.core.format.gml.writer
 				var mls:MultiLineString = mlsf.lineStrings as MultiLineString;
 				var lsVector:Vector.<Geometry> = mls.getcomponentsClone();
 				
-				mlsNode.@srsName = mls.projection;
+				mlsNode.@srsName = mls.projection.srsCode;
 				for(i = 0; i < mls.componentsLength; i++){
 					var lsMember:XML = new XML("<curveMember></curveMember>");
 					lsMember.setNamespace(this.gmlns);
@@ -182,7 +182,7 @@ package org.openscales.core.format.gml.writer
 			pointNode.pos = String(point.x)+" "+String(point.y);
 			pointNode.children().setNamespace(this.gmlns);
 			pointNode.@srsDimension = this.dim;
-			pointNode.@srsName = point.projection;
+			pointNode.@srsName = point.projection.srsCode;
 			return pointNode;
 		}
 		
@@ -209,7 +209,7 @@ package org.openscales.core.format.gml.writer
 			lineStringNode.posList=coordList;
 			lineStringNode.children().setNamespace(this.gmlns);
 			lineStringNode.@srsDimension = this.dim;
-			lineStringNode.@srsName = lineString.projection;
+			lineStringNode.@srsName = lineString.projection.srsCode;
 			return lineStringNode;
 		}
 		
@@ -281,7 +281,7 @@ package org.openscales.core.format.gml.writer
 			var envNode:XML = new XML("<Envelope></Envelope>");
 			envNode.setNamespace(this.gmlns);
 			envNode.@srsDimension = this.dim;
-			envNode.@srsName = bounds.projection;
+			envNode.@srsName = bounds.projection.srsCode;
 			var low:String = String(bounds.left) +" "+ String(bounds.bottom);
 			var up:String = String(bounds.right) +" "+ String(bounds.top);
 			envNode.lowerCorner = low;
