@@ -15,6 +15,7 @@ package org.openscales.core.layer.ogc {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	public class WMTSTest {
 		
@@ -118,7 +119,7 @@ package org.openscales.core.layer.ogc {
 			assertEquals("Incorrect default dpi",92,layer.dpi);
 			assertEquals("Incorrect default styles parameter",null,layer.style);
 			assertEquals("Incorrect default format parameter","image/png",layer.format);
-			assertEquals("Incorrect default projection","EPSG:4326",layer.projection);
+			assertEquals("Incorrect default projection",ProjProjection.getProjProjection("EPSG:4326"),layer.projection);
 		}
 		
 		/**

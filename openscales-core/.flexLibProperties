@@ -229,7 +229,6 @@
     <classEntry path="org.openscales.core.utils.Util"/>
     <classEntry path="org.openscales.core.MapTest"/>
     <classEntry path="org.openscales.core.StringUtilsTest"/>
-    <classEntry path="org.openscales.core.basetypes.BaseTypesResolutionTest"/>
     <classEntry path="org.openscales.core.basetypes.TreeTest"/>
     <classEntry path="org.openscales.core.configuration.ConfigurationTest"/>
     <classEntry path="org.openscales.core.control.CopyrightTest"/>
@@ -270,6 +269,7 @@
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
     <classEntry path="org.openscales.core.security.RefererSecurity"/>
+    <classEntry path="org.openscales.core.basetypes.BaseTypesResolutionTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
