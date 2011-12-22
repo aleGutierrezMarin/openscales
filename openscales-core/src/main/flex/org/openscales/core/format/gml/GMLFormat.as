@@ -116,9 +116,7 @@ package org.openscales.core.format.gml
 					//featureMember
 					break;
 				case "3.1.1":
-					if(ProjProjection.projAxisOrder[this.externalProjection]
-						&& ProjProjection.projAxisOrder[this.externalProjection]==ProjProjection.AXIS_ORDER_NE)
-						lonlat = false;
+					lonlat = this.externalProjection.lonlat;
 					if(!this._gmlParser || !(this._gmlParser is GML311))
 						this._gmlParser = new GML311();
 					//featureMembers
@@ -129,9 +127,7 @@ package org.openscales.core.format.gml
 					//}
 					break;
 				case "3.2.1":
-					if(ProjProjection.projAxisOrder[this.externalProjection]
-						&& ProjProjection.projAxisOrder[this.externalProjection]==ProjProjection.AXIS_ORDER_NE)
-						lonlat = false;
+					lonlat = this.externalProjection.lonlat;
 					if(!this._gmlParser || !(this._gmlParser is GML321))
 						this._gmlParser = new GML321();
 					//members
@@ -160,13 +156,7 @@ package org.openscales.core.format.gml
 				retFeatures = new Vector.<Feature>();
 				var feature:Feature;
 				for each( dataXML in features) {
-					// XLA: if a supprimer
-					if (this._version=="3.2.1") {
-						feature = this._gmlParser.parseFeature(dataXML,true); // trick WFS 2.0						
-					}
-					else {
-						feature = this._gmlParser.parseFeature(dataXML,lonlat); // code normal						
-					}
+					feature = this._gmlParser.parseFeature(dataXML,lonlat);
 					if(feature) {
 						retFeatures.push(feature);
 						if(this._onFeature!=null)

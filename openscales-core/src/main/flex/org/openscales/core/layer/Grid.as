@@ -132,7 +132,7 @@ package org.openscales.core.layer
 			if (!this.map.mapInitialized)
 				return;
 
-			if (!available || !this.visible) 
+			if (!available || !this.visible)
 			{
 				this.clear();
 				this._initialized = false;

@@ -548,10 +548,12 @@ package org.openscales.core.request
 				if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
 					srsName = gr.gml::Point.gml::pos.@srsName.toString().toUpperCase();
 				}
+				var proj:ProjProjection = ProjProjection.getProjProjection(srsName);
+				if(!proj)
+					return results;
 				var latlon:Boolean = false;
 				if(version == "1.2") {
-					if(ProjProjection.projAxisOrder[srsName] && ProjProjection.projAxisOrder[srsName]==ProjProjection.AXIS_ORDER_NE)
-						latlon=true;
+					latlon=proj.lonlat;
 				}
 				if (position.length == 2) {
 					if(latlon) {
@@ -592,10 +594,12 @@ package org.openscales.core.request
 				if (gr.gml::Point.gml::pos.@srsName && gr.gml::Point.gml::pos.@srsName.toString()!="") {
 					srsName = gr.gml::Point.gml::pos.@srsName.toString().toUpperCase();
 				}
+				var proj:ProjProjection = ProjProjection.getProjProjection(srsName);
+				if(!proj)
+					return results;
 				var latlon:Boolean = false;
 				if(version == "1.2") {
-					if(ProjProjection.projAxisOrder[srsName] && ProjProjection.projAxisOrder[srsName]==ProjProjection.AXIS_ORDER_NE)
-						latlon=true;
+					latlon=proj.lonlat;
 				}
 				if (position.length == 2) {
 					if(latlon) {

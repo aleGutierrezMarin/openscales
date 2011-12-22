@@ -20,9 +20,7 @@ The layers manager is automatically updated.</p> -->
 		
 		<LayerManager />
 		
-		<ControlPanel id="capabilitiesPanel" title="Add layers from capabilities"  x="{10}" y="{height-capabilitiesPanel.height-10}">
-			<Capabilities width="320" />
-		</ControlPanel>
+		<Capabilities right="0" />
 		
 	</Map>
 	

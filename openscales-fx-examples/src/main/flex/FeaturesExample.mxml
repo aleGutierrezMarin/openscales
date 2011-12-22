@@ -21,8 +21,6 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 		
 	</Map>
 	
-	<TraceInfo id="traceInfo"  x="{width-200}" y="0"/>
-	
 	<s:VGroup horizontalAlign="center" x="10" y="10">
 		<mx:ToggleButtonBar id="buttons" selectedIndex="0">
 			<mx:dataProvider>

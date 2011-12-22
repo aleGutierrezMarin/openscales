@@ -15,8 +15,6 @@
 				typename="topp:states" projection="EPSG:4326" version="1.0.0"
 				style="{Style.getDefaultSurfaceStyle()}" />
 		
-		<TraceInfo x="{width-200}" y="0" />
-		
 	</Map>
 	
 </s:Group>

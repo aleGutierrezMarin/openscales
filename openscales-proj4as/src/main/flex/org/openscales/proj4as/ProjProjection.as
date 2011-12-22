@@ -74,6 +74,30 @@ package org.openscales.proj4as {
 			'CRS:84': "+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=degrees"
 		};
 		
+		static public const urns:Object={
+			'WGS84': "urn:ogc:def:crs:EPSG::4326",
+			'IGNF:WGS84G': "urn:ogc:def:crs:OGC:1.3:CRS84",
+			
+			'IGNF:GEOPORTALANF': "urn:ogc:def:crs:EPSG::301642009814",
+			'IGNF:GEOPORTALASP': "urn:ogc:def:crs:EPSG::301642009813",
+			'IGNF:GEOPORTALCRZ': "urn:ogc:def:crs:EPSG::310642011",
+			'IGNF:GEOPORTALFXX': "urn:ogc:def:crs:EPSG::310024001",
+			'IGNF:GEOPORTALGUF': "urn:ogc:def:crs:EPSG::310486003",
+			'IGNF:GEOPORTALKER': "urn:ogc:def:crs:EPSG::310642010",
+			'IGNF:GEOPORTALMYT': "urn:ogc:def:crs:EPSG::310702005",
+			'IGNF:GEOPORTALNCL': "urn:ogc:def:crs:EPSG::310504007",
+			'IGNF:GEOPORTALPYF': "urn:ogc:def:crs:EPSG::310032009",
+			'IGNF:GEOPORTALREU': "urn:ogc:def:crs:EPSG::310700004",
+			//'IGNF:GEOPORTALSPA': "",
+			'IGNF:GEOPORTALSPM': "urn:ogc:def:crs:EPSG::310706006",
+			'IGNF:GEOPORTALWLF': "urn:ogc:def:crs:EPSG::310642008",
+
+			'IGNF:RGF93G': "urn:ogc:def:crs:EPSG::213024000",
+			'IGNF:LAMB93': "urn:ogc:def:crs:EPSG:6.11.2:2154",
+			
+			'CRS:84': "urn:ogc:def:crs:OGC:1.3:CRS84"
+		};
+		
 		//North/East ordering
 		static public const AXIS_ORDER_EN:String="EN";
 		//East/North ordering
@@ -139,6 +163,8 @@ package org.openscales.proj4as {
 		
 		protected var proj:IProjection;
 		
+		private var _lonlat:Boolean = true;
+
 		/**
 		 * Return the ProjProjection for a specific srsCode
 		 * @param srsCode:String the srsCode
@@ -265,6 +291,18 @@ package org.openscales.proj4as {
 			return projParams.datum_params;
 		}
 		
+		public function get lonlat():Boolean
+		{
+			return _lonlat;
+		}
+		
+		public function get urnCode():String {
+			if(!ProjProjection.urns[this.srsCode])
+				return "urn:ogc:def:crs:"+this.srsCode.toUpperCase().replace(":","::");
+			else
+				return ProjProjection.urns[this.srsCode];
+		}
+		
 		public function ProjProjection(srsCode:String) {
 			this.projParams.srsCode=srsCode.toUpperCase();
 			if (this.projParams.srsCode.indexOf("EPSG") == 0) {
@@ -283,6 +321,10 @@ package org.openscales.proj4as {
 				this.projParams.srsProjNumber=this.projParams.srsCode;
 			}
 			this.loadProjDefinition();
+			
+			if(ProjProjection.projAxisOrder[this.srsCode]
+				&& ProjProjection.projAxisOrder[this.srsCode] == ProjProjection.AXIS_ORDER_NE)
+				this._lonlat = false;
 		}
 		
 		private function loadProjDefinition():void {

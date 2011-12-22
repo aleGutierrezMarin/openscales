@@ -9,6 +9,16 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import layerExamples.GPXExample;
+			import layerExamples.GeoRssExample;
+			import layerExamples.KMLExample;
+			import layerExamples.KMLFeaturesExample;
+			import layerExamples.TmsExample;
+			import layerExamples.WFSonlyExample;
+			import layerExamples.WMS130Example;
+			import layerExamples.WMSCExample;
+			import layerExamples.WMSExample;
+			import layerExamples.WMTSExample;
 			import mx.core.IVisualElement;
 			private var data:Object = {};
 			
@@ -36,9 +46,6 @@
 						break;
 					case "managelayers":
 						state = new LayersManagerExample();
-						break;
-					case "polylayer":
-						state = new PolyLayerExample();
 						break;
 					case "addlayers":
 						state = new CapabilitiesExample();
@@ -73,8 +80,8 @@
 					case "statistics":
 						state = new StatisticsExample();
 						break;
-					case "wfsbaselayer":
-						state = new WFSBaseLayerExample();
+					case "wfsonly":
+						state = new WFSonlyExample();
 						break;
 					case "nasa":
 						state = new WMSCExample();
@@ -143,7 +150,6 @@
 			]]>
 		</fx:Script>
 		<mx:Accordion width="200" height="100%">
-			
 			<s:NavigatorContent label="Global examples" width="100%" height="100%">
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
@@ -153,7 +159,6 @@
 				<s:Button id="legalInformations" label="Legal informations example" click="changeState(event)" width="100%"/>
 				<s:Button id="runtimetheme" label="Changing theme on runtime" click="changeState(event)" width="100%"/>
 				<s:Button id="osm" label="OpenStreetMap" click="changeState(event)" width="100%"/>
-				<s:Button id="polylayer" label="Poly Layer" click="changeState(event)" width="100%"/>
 				<s:Button id="graticule" label="Graticule" click="changeState(event)" width="100%"/>
 				<s:Button id="aggregate" label="Aggregate" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
@@ -190,7 +195,7 @@
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
-				<s:Button id="wfsbaselayer" label="WFS as a base layer" click="changeState(event)" width="100%"/>
+				<s:Button id="wfsonly" label="WFS only" click="changeState(event)" width="100%"/>
 				<s:Button id="nasa" label="NASA WMS-C" click="changeState(event)" width="100%"/>
 				<s:Button id="germany" label="WMS 1.1.x" click="changeState(event)" width="100%"/>
 				<s:Button id="wms130" label="WMS 1.3.0" click="changeState(event)" width="100%"/>

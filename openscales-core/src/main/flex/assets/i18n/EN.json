@@ -130,5 +130,19 @@
    "openLSSearch.ok": "OK",
    "openLSSearch.tooltip": "Click to center at location...",
    "openLSSearch.results": "results",
-   "openLSSearch.noResult": "No result matches your search"
+   "openLSSearch.noResult": "No result matches your search",
+   
+   "externalLayers.name": "Name",
+   "externalLayers.format": "Format",
+   "externalLayers.version": "Version",
+   "externalLayers.url": "Url",
+   "externalLayers.add": "Add",
+   "externalLayers.back": "Back",
+   "externalLayers.externalLayers": "Add external layers",
+   "externalLayers.noversion": "No version",
+   "externalLayers.noresult": "No result found",
+   "externalLayers.nameerror": "Change layer name (shouldn't be empty or equals to another layer name)",
+   "externalLayers.urlerror": "Url field can't be empty",
+   "externalLayers.uncorrectExtension": "File extension is not valid, valid file extensions are : ",
+   "externalLayers.uncorrectFile": "UncorrectFile"
  }

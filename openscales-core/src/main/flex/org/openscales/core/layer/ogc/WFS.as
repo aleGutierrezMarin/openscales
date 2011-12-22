@@ -122,7 +122,10 @@ package org.openscales.core.layer.ogc
 			var requestString:String = this.url;
 			
 			if (this.projection != null || this.map.projection != null) {
-				this.params.srs = (this.projection == null) ? this.map.projection.srsCode : this.projection.srsCode;
+				if(this.version=="1.0.0")
+					this.params.srs = (this.projection == null) ? this.map.projection.srsCode : this.projection.srsCode;
+				else
+					this.params.srs = (this.projection == null) ? this.map.projection.urnCode : this.projection.urnCode;
 			}
 			
 			var lastServerChar:String = url.charAt(url.length - 1);
@@ -335,7 +338,7 @@ package org.openscales.core.layer.ogc
 			// Update the bbox
 			if (layerExtent != null)
 			{
-				if (this.params.version != "1.0.0" && ProjProjection.projAxisOrder[this.projection] != ProjProjection.AXIS_ORDER_EN)
+				if (this.params.version != "1.0.0" && !this.projection.lonlat)
 					this.params.bbox = layerExtent.toString(-1, false);
 				else
 					this.params.bbox = layerExtent.toString();
@@ -348,16 +351,6 @@ package org.openscales.core.layer.ogc
 		override public function get available():Boolean
 		{
 			return (super.available && this.defineBounds() && (!this.useCapabilities || this.projection))
-			
-			/*
-			//Those lines of code did not call super.available which is a mistake
-			if (this.useCapabilities && !this.projection)
-				return false;
-			
-			if (!this.defineBounds())
-				return false;
-			
-			return true;*/
 		}
 		
 		/**

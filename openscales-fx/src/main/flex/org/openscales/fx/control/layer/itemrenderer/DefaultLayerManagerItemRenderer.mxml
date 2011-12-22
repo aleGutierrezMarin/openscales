@@ -400,7 +400,6 @@
 								//Need to show/hide components from toolbar
 								for(var i:uint = 0 ; i < this._drawingToolbar.multipleModeInitTools.length ; i++) {
 									if(this._drawingToolbar.multipleModeDisplayTools.indexOf(this._drawingToolbar.multipleModeInitTools[i]) < 0) {
-										//this.removeElement(this.getComponentFromString(this._drawingToolbar.multipleModeInitTools[i]));
 										this.getComponentFromString(this._drawingToolbar.multipleModeInitTools[i]).visible = false;
 										this.getComponentFromString(this._drawingToolbar.multipleModeInitTools[i]).width = 0;
 										this.getComponentFromString(this._drawingToolbar.multipleModeInitTools[i]).height = 0;
@@ -492,7 +491,6 @@
 		<s:Label id="layerLabel" width="100%" text="{_layer.name}" />
 		
 		<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
-		
 		
 		<os:IconButton id="layerSwitcherReduceMaximize"
 					   width="16"

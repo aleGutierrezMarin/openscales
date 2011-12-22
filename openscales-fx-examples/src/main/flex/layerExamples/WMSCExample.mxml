@@ -17,8 +17,6 @@
 		
 		<PanZoom id="panZoom" x="10" y="10" />
 		
-		<TraceInfo x="{width-200}" y="0" />
-		
 	</Map>
 	
 </s:Group>

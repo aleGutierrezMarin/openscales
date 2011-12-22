@@ -115,7 +115,7 @@
 			public var translateBottomUnit:String = "";
 			
 			/**
-			 * Get the existing map and add event listener on event Zoom end and baseLayer change.
+			 * Get the existing map and add event listener on event Zoom end and map projection change.
 			 *
 			 * @param value The new map to set
 			 */
