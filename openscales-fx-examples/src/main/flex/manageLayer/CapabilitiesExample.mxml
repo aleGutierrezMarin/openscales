@@ -4,8 +4,8 @@ Select a layer name to have its description.</p>
 <p>Double-click to add the layer to the map ; for instance topp:states draws the United States (be patient, this will take few seconds).
 You can modify the style of the layer you add.
 The layers manager is automatically updated.</p> -->
-<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-		 creationComplete="initMap()" width="100%" height="100%">
+<s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		 creationComplete="initMap()" width="100%" height="100%" xmlns:components="components.*">
 	
 	<Map id="fxMap" width="100%" height="100%" resolution="0.087890625" center="4.833,45.767" projection="EPSG:900913">
 		
@@ -15,14 +15,20 @@ The layers manager is automatically updated.</p> -->
 		<DragHandler />
 		<WheelHandler />
 		
-		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:900913" displayProjection="EPSG:4326"/>
-		<ScaleLine x="{width-100-10}" y="{height-80}" />
+		<LayerManager y="10" left="10">
+			<rendererOptions>
+				<fx:Object
+					displayZoomToExtent="true" />
+			</rendererOptions> 
+		</LayerManager>
 		
-		<LayerManager />
+		<Zoom x="{fxMap.width-135}" y="10" />
 		
-		<Capabilities right="0" />
+		<Capabilities x="10" y="220" />
 		
+		<DataOriginatorsDisplay x="10" y="{height-90}" />
 	</Map>
+	<components:toolbar fxMap="{fxMap}" />
 	
 	<fx:Script>
 		<![CDATA[
@@ -55,4 +61,4 @@ The layers manager is automatically updated.</p> -->
 		]]>
 	</fx:Script>
 	
-</s:Group>
+</s:VGroup>

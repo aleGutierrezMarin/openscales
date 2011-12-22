@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--- This example shows an aggregate of a WMSC layer and a WFS -->
-<s:Group xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()">
+<!--- This example shows WMS-C layer, WFS layer, layer manager, PanZoom control, SelectFeature handler and popup used together -->
+<s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:components="components.*">
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.1" center="-74.011,40.710">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710">
 		
-		<Aggregate name="BlueMarble+Topp States">
-			<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
-				  layers="bluemarble" format="image/jpeg" 
-				  maxExtent="-180,-90,180,90" version="1.1.1"/>
-			<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
-				 typename="topp:states" projection="EPSG:4326" version="1.0.0"
-				 style="{Style.getDefaultSurfaceStyle()}" alpha="0.3" maxResolution="0.1"/>
-		</Aggregate>
-		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
-			 projection="EPSG:4326" version="1.0.0" useCapabilities="true" 
-			 style="{Style.getDefaultPointStyle()}" />
-		
-		
-		
-		<KeyBoardHandler id="keyboardHandler" />
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms"
+				 layers="bluemarble" format="image/jpeg" maxExtent="-180,-90,180,90" version="1.1.1"/>
 		
 		<DragHandler id="dragHandler" />
 		<WheelHandler id="wheelHandler" />
@@ -27,22 +14,36 @@
 		
 		<MousePosition id="mousePosition" x="10" y="{height-50}" availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93" displayProjection="IGNF:LAMB93"/>
 		
-		<LanguageSwitcher x="300" y="10"/>
+		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+				typename="topp:states" projection="EPSG:4326" version="1.0.0"
+				style="{Style.getDefaultSurfaceStyle()}" />
 		
+		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
+				projection="EPSG:4326" version="1.0.0" useCapabilities="true" 
+				style="{Style.getDefaultPointStyle()}" />
+
 		<PanZoom id="panZoom" x="10" y="10" />
 		
-		<LayerManager x="{width - 225}" y="10" right="10">
-			<rendererOptions>
-				<fx:Object
-					displayZoomToExtent="true" />
-			</rendererOptions> 
-		</LayerManager>
+		<!-- Change theme -->
+		<s:Panel id="theme" title="Themes" width="250" height="100" x="300" y="0">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<s:ComboBox dataProvider="{themes}" id="themeCombo" width="100" 
+						selectedIndex="0"
+						change="changeTheme(event);" x="308" y="205"/>
+		</s:Panel>
 		
+		<LayerManager y="10" left="10" />
+		<Zoom x="{fxMap.width-135}" y="10" />
 		
 	</Map>
+	<components:toolbar fxMap="{fxMap}" />
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
 			import org.openscales.core.utils.Trace;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.popup.Anchored;
@@ -56,8 +57,20 @@
 			
 			Trace.useFireBugConsole = true;
 			
+			/**
+			 *  Data values for theme combobox
+			 */
+			[Bindable]
+			public var themes:ArrayCollection = new ArrayCollection(
+				[ {label:"Openscales theme", data:0},
+					{label:"Custom theme", data:1} ]);
+			
+			
+			
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				
+				fxMap.theme = "geoportal-api-fx-theme-swf.swf";
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {
@@ -93,7 +106,21 @@
 				
 			}
 			
+			/**
+			 * Change the current theme 
+			 */
+			private function changeTheme(event:Event):void
+			{
+				if(event.target.selectedItem.data == 0){
+					fxMap.theme = "";
+				}
+				
+				if(event.target.selectedItem.data == 1){
+					fxMap.theme = "http://openscales.org/assets/theme-example.swf";
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
-</s:Group>
+</s:VGroup>

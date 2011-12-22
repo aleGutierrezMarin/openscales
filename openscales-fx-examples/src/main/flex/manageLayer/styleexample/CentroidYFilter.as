@@ -1,4 +1,4 @@
-package styleexample {
+package manageLayer.styleexample {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.filter.IFilter;
 	
