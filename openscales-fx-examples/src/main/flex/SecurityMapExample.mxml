@@ -22,7 +22,7 @@
 				 projection="IGNF:GEOPORTALFXX" 
 				 maxExtent="-1048576,3670016,2097152,6815744,IGNF:GEOPORTALFXX" exceptions="text/xml" method="POST"
 				 version="1.1.1"
-				 minResolution="0.5" maxResolution="2048" />
+				 minResolution="0.5,IGNF:GEOPORTALFXX" maxResolution="2048,IGNF:GEOPORTALFXX" />
 		
 		<DragHandler/>
 		<WheelHandler/>
