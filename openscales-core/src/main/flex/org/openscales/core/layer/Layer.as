@@ -673,7 +673,7 @@ package org.openscales.core.layer {
 			} else if (value is Bounds) {
 				bounds = value as Bounds;
 			}else return;
-			if (bounds.projection != this.projection)
+			if ((bounds.projection != this.projection) && (this.projection))
 			{
 				if (this.projection.srsCode == "EPSG:2154" || this.projection.srsCode == "IGNF:LAMB93")
 					bounds = bounds.reprojectTo(this.projection);
