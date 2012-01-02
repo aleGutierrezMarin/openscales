@@ -108,14 +108,14 @@ package org.openscales.core.control
 			
 		}
 		
-		private function pxToBound(px1:Pixel,px2:Pixel):Bounds {
+		private function pxToBound(firstpx:Pixel,secondpx:Pixel):Bounds {
 			var left:Number;
 			var right:Number;
 			var top:Number;
 			var bottom:Number;
 			
-			var loc1:Location = this._overviewMap.getLocationFromMapPx(px1);
-			var loc2:Location = this._overviewMap.getLocationFromMapPx(px2);
+			var loc1:Location = this._overviewMap.getLocationFromMapPx(firstpx);
+			var loc2:Location = this._overviewMap.getLocationFromMapPx(secondpx);
 			
 			if(loc1.x>loc2.x) {
 				left = loc2.x;

@@ -23,6 +23,8 @@
 	<component id="Mapnik" class="org.openscales.fx.layer.osm.FxMapnik" />
 	<component id="CycleMap" class="org.openscales.fx.layer.osm.FxCycleMap" />
 	
+	<component id="Bing" class="org.openscales.fx.layer.FxBing" />
+	
 	<component id="CorePanZoom" class="org.openscales.fx.control.FxCorePanZoom" />
 	<component id="CorePanZoomBar" class="org.openscales.fx.control.FxCorePanZoomBar" />
 	
