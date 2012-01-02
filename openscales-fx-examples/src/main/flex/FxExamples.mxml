@@ -31,6 +31,7 @@ Main Flex example application
 			
 			import locate.OverviewExample;
 			import locate.OverviewRatioExample;
+			import locate.OpenLSSearchExample;
 			import locate.YahooSearchExample;
 			
 			import manageLayer.CapabilitiesExample;
@@ -66,6 +67,9 @@ Main Flex example application
 						break;
 					case "overview":
 						state = new OverviewExample();
+						break;
+					case "openls":
+						state = new OpenLSSearchExample();
 						break;
 					case "yahoo":
 						state = new YahooSearchExample();
@@ -164,6 +168,7 @@ Main Flex example application
 				</s:layout>
 				<s:Button id="overview" label="Overview map" click="changeState(event)" width="100%"/>
 				<s:Button id="overviewRatio" label="Overview ratio map" click="changeState(event)" width="100%"/>
+				<s:Button id="openls" label="with OpenLS" click="changeState(event)" width="100%"/>
 				<s:Button id="yahoo" label="with Yahoo geocoder" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Features handling" width="100%" height="100%">
