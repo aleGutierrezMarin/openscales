@@ -35,8 +35,6 @@ package org.openscales.core.control
 
 		private var _maximizeButton:Button = null;
 
-		private var _oldMouseX:int = 0;
-
 		private var _slideHorizontalTemp:SliderHorizontal = null;
 
 		private var _slideVerticalTemp:SliderVertical = null;

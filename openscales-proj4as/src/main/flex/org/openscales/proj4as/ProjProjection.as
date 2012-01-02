@@ -387,9 +387,6 @@ package org.openscales.proj4as {
 				case "sinu":
 					this.proj=new ProjSinu(this.projParams);
 					break;
-				case "omerc":
-					this.proj=new ProjOmerc(this.projParams);
-					break;
 				case "stere":
 					this.proj=new ProjStere(this.projParams);
 					break;
@@ -405,6 +402,8 @@ package org.openscales.proj4as {
 				case "vandg":
 					this.proj=new ProjVandg(this.projParams);
 					break;
+				default:
+					this.proj=null;
 			}
 			if (this.proj != null) {
 				this.proj.init();

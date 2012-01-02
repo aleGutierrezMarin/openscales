@@ -27,8 +27,6 @@ package org.openscales.core.handler.mouse
 		private var _startCenter:Location = null;
 		private var _start:Pixel = null;
 		private var _offset:Pixel = null;
-		private var _layerContainerPositionBeforeDrag:Pixel =null;
-		private var _mouseOffsetLayerContainerCenter:Pixel = new Pixel();
 		private var _firstDrag:Boolean = true;
 		private var _dragging:Boolean = false;
 		private var _previousMapPosition:Pixel = new Pixel(0,0);
@@ -186,15 +184,6 @@ package org.openscales.core.handler.mouse
 			return this._oncomplete;
 		}
 		
-		/**
-		 * This function is used to recenter map after dragging
-		 */
-		private function done(xy:Pixel):void {
-			if (this.dragging) {
-				this.panMap(xy);
-				this.dragging = false;
-			}
-		}
 		public function panMap(xy:Pixel):void {
 			this.dragging = true;
 			var oldCenter:Location = this.map.center;

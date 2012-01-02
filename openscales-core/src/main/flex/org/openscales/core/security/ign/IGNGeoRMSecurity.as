@@ -158,19 +158,6 @@ package org.openscales.core.security.ign
 			this._timer.start();
 		}
 
-		/**
-		 * Config asynchronous response
-		 */
-		private function configResponse(e:Event):void {
-			var loader:URLLoader = e.target as URLLoader;
-			try {
-				var doc:XML =  new XML(loader.data);
-				Trace.log(doc.toString());
-			} catch (err:Error) {
-				 Trace.error("Error during parsing XML response : " + loader.data)
-			}
-		}
-
 		/** Return authentication URL, use random parameter to avoid caching **/
 		private function get authUrl():String {
 			return this.host + "/getToken?random=" + Math.random().toString() + "&";
@@ -178,16 +165,6 @@ package org.openscales.core.security.ign
 
 		/** Return parameters string for authentication URL **/
 		private function get authParams():String {
-			return "key=" + this.key + "&output=xml";
-		}
-
-		/** Return config URL, use random parameter to avoid caching  **/
-		private function get configUrl():String {
-			return this.host + "/getConfig?";
-		}
-
-		/** Return parameters string for config URL **/
-		private function get configParams():String {
 			return "key=" + this.key + "&output=xml";
 		}
 

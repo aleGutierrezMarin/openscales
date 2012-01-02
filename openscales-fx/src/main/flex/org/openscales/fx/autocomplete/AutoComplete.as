@@ -265,6 +265,8 @@ package org.openscales.fx.autocomplete
 					case Keyboard.ESCAPE:
 						popUp.displayPopUp = false
 						break;
+					default:
+						break;
 				}
 			}
 		}
