@@ -269,6 +269,7 @@
     <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
     <classEntry path="org.openscales.core.security.RefererSecurity"/>
     <classEntry path="org.openscales.core.basetypes.BaseTypesResolutionTest"/>
+    <classEntry path="org.openscales.core.layer.Bing"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

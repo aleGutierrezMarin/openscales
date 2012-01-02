@@ -45,7 +45,7 @@ package org.openscales.core.layer.osm
 			var y:Number = Math.round((this.maxExtent.top - bounds.top) / (res.value * this.tileHeight));
 			var z:Number = this.getZoomForResolution(res.reprojectTo(this.projection).value);
 			var limit:Number = Math.pow(2, z);
-
+			
 			if (y < 0 || y >= limit ||x < 0 || x >= limit) {
 				return OSM.MISSING_TILE_URL;
 			} else {
