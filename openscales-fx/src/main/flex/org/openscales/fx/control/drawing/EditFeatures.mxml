@@ -293,7 +293,7 @@
 					}
 					this.target = evt.layer;
 					
-					if(!evt.layer.editable) {
+					if(!evt.layer || !evt.layer.editable) {
 						this.buttonMode = false;
 						this.useHandCursor = false;
 						this.toolTip = Catalog.getLocalizationForKey('drawing.selectDrawingLayer');

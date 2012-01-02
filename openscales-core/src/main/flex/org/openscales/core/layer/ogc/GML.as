@@ -62,6 +62,7 @@ package org.openscales.core.layer.ogc
 			this.version = version;
 			this.gmlFormat = new GMLFormat(this.addFeature,null);
 			this.gmlFormat.version = version;
+			this.gmlFormat.externalProjection = this.projection;
 			if(style){
 				this.style = style;
 				this.style.rules.push(new Rule());
