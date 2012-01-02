@@ -101,6 +101,7 @@ package org.openscales.core.request
 				this.loader.close();
 			} catch(e:Error) {
 				// Empty catch is evil, but here it's fair.
+				Trace.debug(e.message);
 			}
 			//this._loader = null; // FixMe
 		}
