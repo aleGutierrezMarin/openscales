@@ -48,7 +48,6 @@ package org.openscales.core.layer.ogc.provider
 		protected var _format:String = null;
 		
 		private var _tileMatrixSets:HashMap = null;
-		private var _capabilitiesRequested:Boolean = false;
 		
 		private var _maxExtents:HashMap = null;
 		

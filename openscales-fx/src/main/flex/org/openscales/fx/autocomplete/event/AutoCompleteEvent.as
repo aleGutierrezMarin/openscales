@@ -16,5 +16,9 @@ package org.openscales.fx.autocomplete.event
 			data = mydata;
 		}
 		
+		override public function clone():Event {
+			return new AutoCompleteEvent(this.type, this.data, this.bubbles, this.cancelable);
+		}
+		
 	}
 }

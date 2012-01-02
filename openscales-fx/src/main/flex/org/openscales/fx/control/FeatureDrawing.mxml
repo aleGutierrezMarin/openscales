@@ -47,16 +47,6 @@
 			public var drawLayer:VectorLayer = new VectorLayer("Drawings");
 			
 			private var _drawHandler:DrawHandler = new DrawHandler(null, true, drawLayer);;
-			
-			/**
-			 * Allow you to merge different selected feature in one.
-			 * You can't merge a polygon and a point (for example), All features must be the same geometry
-			 */
-			private function onMergeClick(event:MouseEvent):void {
-				if (this._drawHandler.multiFeaturesHandler.multiPolygonForbidden) {
-					Alert.show("For the moment, you can't merge MultiPolygon", "Information", Alert.OK | Alert.NONMODAL);
-				}
-			}
 
 			/**
 			 * Show a warning message when you delete selected feature. User can cancel if it's a mistake

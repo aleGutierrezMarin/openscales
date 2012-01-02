@@ -11,6 +11,10 @@ package org.openscales.core.events
 		{
 			super(type, bubbles, cancelable);
 		}
+		
+		override public function clone():Event {
+			return super.clone();
+		}
 
 	}
 }
