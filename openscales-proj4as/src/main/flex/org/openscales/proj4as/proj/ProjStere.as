@@ -66,6 +66,8 @@ package org.openscales.proj4as.proj {
 						this.sinX1=Math.sin(X);
 						this.cosX1=Math.cos(X);
 						break;
+					default:
+						break;
 				}
 			} else {
 				switch (this.mode) {
@@ -78,6 +80,8 @@ package org.openscales.proj4as.proj {
 					case this.S_POLE:
 					case this.N_POLE:
 						this.akm1=Math.abs(this.phits - ProjConstants.HALF_PI) >= ProjConstants.EPSLN ? Math.cos(this.phits) / Math.tan(ProjConstants.FORTPI - .5 * this.phits) : 2. * this.k0;
+						break;
+					default:
 						break;
 				}
 			}
@@ -112,7 +116,6 @@ package org.openscales.proj4as.proj {
 						y=1. + this.sinph0 * sinphi + this.cosph0 * cosphi * coslam;
 						if (y <= ProjConstants.EPSLN) {
 							trace('ERROR');
-								//F_ERROR;
 						}
 						y=this.akm1 / y;
 						x=y * cosphi * sinlam;
@@ -130,6 +133,8 @@ package org.openscales.proj4as.proj {
 						y=this.akm1 * Math.tan(ProjConstants.FORTPI + .5 * lat)
 						x=sinlam * y;
 						y*=coslam;
+						break;
+					default:
 						break;
 				}
 			} else {
@@ -159,6 +164,8 @@ package org.openscales.proj4as.proj {
 					case this.N_POLE:
 						x=this.akm1 * ProjConstants.tsfnz(this.e, lat, sinphi);
 						y=-x * coslam;
+						break;
+					default:
 						break;
 				}
 				x=x * sinlam;
@@ -217,6 +224,8 @@ package org.openscales.proj4as.proj {
 						}
 						lon=(x == 0. && y == 0.) ? 0. : Math.atan2(x, y);
 						break;
+					default:
+						break;
 				}
 			} else {
 				rho=Math.sqrt(x * x + y * y);
@@ -245,6 +254,8 @@ package org.openscales.proj4as.proj {
 						phi_l=ProjConstants.HALF_PI - 2. * Math.atan(tp);
 						pi2=-ProjConstants.HALF_PI;
 						halfe=-.5 * this.e;
+						break;
+					default:
 						break;
 				}
 				for (i=this.NITER; i--; phi_l=lat) { //check this

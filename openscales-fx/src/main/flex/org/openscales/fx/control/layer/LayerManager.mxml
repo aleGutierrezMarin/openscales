@@ -114,6 +114,8 @@
 						
 					if(this._rendererOptions && this._rendererOptions['displayDrawing'])
 						this._displayDrawing = true;
+					else
+						this._displayDrawing = false;
 				}
 		
 				layerList.itemRenderer = factory;

@@ -214,12 +214,6 @@ package org.openscales.core.handler.mouse
 		private function dragEnd(event:MapEvent):void{
 			this._dragging = false;
 		}
-		
-		private function  onMouseOut(event:MouseEvent):void{
-			if(event.target!=this.map)
-				return;
-			this.endBox(null);
-		}
 
 		/**
 		 * Color of the rectangle

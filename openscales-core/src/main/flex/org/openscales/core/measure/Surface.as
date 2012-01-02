@@ -45,11 +45,6 @@ package org.openscales.core.measure
 		{
 			_accuracies = value;
 		}
-
-		
-		private var _supportedUnitSystem:Object = {
-			'metric': ["km", "m"]
-		};
 		
 		public function Surface(map:Map=null)
 		{

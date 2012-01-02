@@ -22,13 +22,6 @@ package org.openscales.core.measure
 	public class Distance extends DrawPathHandler implements IMeasure
 	{
 		
-		private var _supportedUnitSystem:Object = {
-			'geographic': ["dd"],
-			'english': ["mi", "ft", "in"],
-			'metric': ["km", "m"]
-			
-		};
-		
 		private var _accuracies:HashMap=null;
 		
 		private var _displaySystem:String = "metric";
@@ -91,10 +84,10 @@ package org.openscales.core.measure
 			var mEvent:MeasureEvent = null;
 			if(_currentLineStringFeature && (_currentLineStringFeature.geometry as MultiPoint).components.length>1) {
 				//dispatcher event de calcul
-				mEvent = new MeasureEvent(MeasureEvent.MEASURE_AVAILABLE,this);//,null,null);
+				mEvent = new MeasureEvent(MeasureEvent.MEASURE_AVAILABLE,this);
 				
 			} else {
-				mEvent = new MeasureEvent(MeasureEvent.MEASURE_UNAVAILABLE,this);//,null,null);
+				mEvent = new MeasureEvent(MeasureEvent.MEASURE_UNAVAILABLE,this);
 			}
 			_result = "";
 			_lastUnit = null;

@@ -5,7 +5,6 @@ package org.openscales.fx.layer
 
 	public class FxGeoRss extends FxVectorLayer
 	{
-		private var _url:String;
 		
 		public function FxGeoRss()
 		{
