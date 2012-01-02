@@ -235,7 +235,7 @@
 					this.supportedVersion[0] = [""]; 
 					this.supportedVersion[1] = ["1.0.0","1.1.0"]; // GPX
 					this.supportedVersion[2] = [""]; 
-					this.supportedVersion[3] = ["2.0.0", "2.1.0", "3.2.0", "3.2.1"]; // GML
+					this.supportedVersion[3] = ["2.0.0", "2.1.0" , "3.2.1"]; // GML
 				}
 				
 				// init formats :
