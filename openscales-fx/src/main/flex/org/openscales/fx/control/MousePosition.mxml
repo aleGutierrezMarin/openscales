@@ -234,6 +234,9 @@
 					case Unit.CENTIMETER:
 						_displayMetricUnits = Unit.CENTIMETER;
 						break;
+					default:
+						_displayMetricUnits = "";
+						break;
 				}
 				dispatchEvent(new Event('selectedIndexUnitChanged'));
 				this.mousePositionLabel = "";

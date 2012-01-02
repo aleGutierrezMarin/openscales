@@ -24,12 +24,6 @@ package org.openscales.core.measure
 	
 	public class Azimuth extends DrawSegmentHandler implements IMeasure
 	{
-		private var _supportedUnitSystem:Object = {
-			'geographic': ["dd"],
-			'english': ["mi", "ft", "in"],
-			'metric': ["km", "m"]
-			
-		};
 		
 		private var _displaySystem:String = "dd";
 		

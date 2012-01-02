@@ -28,10 +28,6 @@ package org.openscales.core.format
 		
 		private var _wfsprefix:String = "wfs";
 		
-		private var _ogcns:String = "http://www.opengis.net/ogc";
-		
-		private var _ogcprefix:String = "ogc";
-		
 		private var _featureNS:String = "http://www.openplans.org/topp";
 		
 		private var _featurePrefix:String = "topp"; 
@@ -41,8 +37,6 @@ package org.openscales.core.format
 		private var _layerName:String = "features";
 		
 		private var _geometryName:String = "geometry";
-		
-		private var _collectionName:String = "FeatureCollection";
 		
 		private var _version:String = "1.0.0";
 		

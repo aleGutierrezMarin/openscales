@@ -16,8 +16,6 @@ package org.openscales.core.layer.ogc.WFST
 		
 		private var _feature:Feature;
 		
-		private var _message:String;
-		
 		public static var SUCCESS:String = "sucess";
 		public static var FAIL:String = "fail";
 		public static var NOTSEND:String = "notsend";
