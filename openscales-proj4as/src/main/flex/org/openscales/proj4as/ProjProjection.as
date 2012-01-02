@@ -179,7 +179,7 @@ package org.openscales.proj4as {
 			
 			var srsCode:String;
 			if(proj is String)
-				srsCode = (proj as String).toUpperCase();
+				srsCode = (proj as String).toUpperCase().replace(" ", "");
 			
 			if (!ProjProjection.defs[srsCode]) {
 				return null;
