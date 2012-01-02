@@ -9,18 +9,19 @@ Main Flex example application
 	
 	<fx:Script>
 		<![CDATA[
-			import global.MeasureExample;
-			import features.StatisticsExample;
-			import features.InfoExample;
-			import features.FeaturesExample;
 			import features.DrawingExample;
+			import features.FeaturesExample;
+			import features.InfoExample;
+			import features.StatisticsExample;
 			
 			import global.AboutOpenScales;
 			import global.AggregateExample;
 			import global.GlobalExample;
 			import global.GraticuleExample;
 			import global.LegalInformationsExample;
+			import global.MeasureExample;
 			
+			import layerExamples.BingMapExample;
 			import layerExamples.GPXExample;
 			import layerExamples.GeoRssExample;
 			import layerExamples.KMLFeaturesExample;
@@ -69,6 +70,9 @@ Main Flex example application
 						break;
 					case "yahoo":
 						state = new YahooSearchExample();
+						break;
+					case "bing":
+						state = new BingMapExample();
 						break;
 					case "drawedit":
 						state = new DrawingExample();
@@ -179,6 +183,7 @@ Main Flex example application
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
+				<s:Button id="bing" label="Bing Map" click="changeState(event)" width="100%"/>
 				<s:Button id="wmsc" label="WMS-C" click="changeState(event)" width="100%"/>
 				<s:Button id="germany" label="WMS 1.1.x" click="changeState(event)" width="100%"/>
 				<s:Button id="wms130" label="WMS 1.3.0" click="changeState(event)" width="100%"/>
