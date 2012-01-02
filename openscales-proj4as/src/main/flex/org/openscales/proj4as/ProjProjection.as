@@ -98,9 +98,9 @@ package org.openscales.proj4as {
 			'CRS:84': "urn:ogc:def:crs:OGC:1.3:CRS84"
 		};
 		
-		//North/East ordering
+		//North/East ordering (lon/lat)
 		static public const AXIS_ORDER_EN:String="EN";
-		//East/North ordering
+		//East/North ordering (lat/lon)
 		static public const AXIS_ORDER_NE:String="NE";
 		
 		static public const projAxisOrder:Object={

@@ -553,7 +553,7 @@ package org.openscales.core.request
 					return results;
 				var latlon:Boolean = false;
 				if(version == "1.2") {
-					latlon=proj.lonlat;
+					latlon=!proj.lonlat;
 				}
 				if (position.length == 2) {
 					if(latlon) {
@@ -599,7 +599,7 @@ package org.openscales.core.request
 					return results;
 				var latlon:Boolean = false;
 				if(version == "1.2") {
-					latlon=proj.lonlat;
+					latlon=!proj.lonlat;
 				}
 				if (position.length == 2) {
 					if(latlon) {
