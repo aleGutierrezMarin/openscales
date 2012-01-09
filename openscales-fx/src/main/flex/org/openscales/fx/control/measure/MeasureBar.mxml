@@ -181,7 +181,7 @@
 	
 	<s:Panel id="measurebar" title="{this.panelTitle}" x="10" y="10" height="70" >
 		<s:layout>
-			<s:HorizontalLayout paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
+			<s:HorizontalLayout id="measureHorizontalLayout" paddingTop="1" paddingRight="1" paddingBottom="1" paddingLeft="1"
 								horizontalAlign="center" verticalAlign="middle"/>
 			
 		</s:layout>
