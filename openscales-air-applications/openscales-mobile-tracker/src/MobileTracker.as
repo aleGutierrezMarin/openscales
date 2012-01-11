@@ -146,7 +146,7 @@ package {
 		private function geolocationUpdateHandler(event:GeolocationEvent):void
 		{
 			t.text = "Latitude " + event.latitude + ", longitude " + event.longitude;
-			(_map.getLayerByName("markers") as VectorLayer).addFeature(PointFeature.createPointFeature(new Location(event.longitude, event.latitude)));
+			(_map.getLayerByIdentifier("markers") as VectorLayer).addFeature(PointFeature.createPointFeature(new Location(event.longitude, event.latitude)));
 			if(firstPass) {
 				firstPass = false;
 				this._map.center = new Location(event.longitude, event.latitude, "EPGS:4326");
