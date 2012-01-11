@@ -60,6 +60,7 @@ package org.openscales.core.layer
 		 */
 		public function HTC(name:String,
 							url:String,
+							displayedName:String=null,
 							maxResolution:Number=DEFAULT_MAX_RESOLUTION,
 							numZoomLevel:uint=DEFAULT_NUM_ZOOM_LEVELS,
 							zoom_max:uint=DEFAULT_ZOOM_MAX) {
@@ -67,7 +68,7 @@ package org.openscales.core.layer
 			// prevent malformed urls due to lack of slash sign
 			if(url.length>0 && url.substr(-1,1)!="/")
 				url+="/";
-			super(name,url);
+			super(name,url,displayedName);
 			this.projection = "EPSG:900913";
 			this._zoom_max = zoom_max;
 			this.generateResolutions(numZoomLevel, maxResolution);

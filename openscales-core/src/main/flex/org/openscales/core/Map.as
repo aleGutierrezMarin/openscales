@@ -306,16 +306,16 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Get a layer from its name.
-		 * @param name the layer name to find.
+		 * Get a layer from its identifier.
+		 * @param identifier the layer identifier to find.
 		 * @return the found layer. Null if no layer have been found.
 		 *
 		 */
-		public function getLayerByName(name:String):Layer {
+		public function getLayerByIdentifier(identifier:String):Layer {
 			var i:uint = this._layers.length;
 			if(i>0) {
 				for(;i>0;--i)
-					if(this._layers[i-1].name == name)
+					if(this._layers[i-1].identifier == identifier)
 						return this._layers[i-1];
 			}
 			return null;

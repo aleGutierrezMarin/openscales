@@ -49,7 +49,7 @@ package org.openscales.core.layer.ogc
 		private var _extractTracks:Boolean;
 		private var _extractRoutes:Boolean;
 		
-		public function GPX(name:String, 
+		public function GPX(identifier:String,
 							version:String=null,
 							url:String = null,
 							data:XML = null,
@@ -63,7 +63,7 @@ package org.openscales.core.layer.ogc
 			this.version = version;
 			this.url = url;	
 			this.data = data;
-			super(name);
+			super(identifier);
 			
 			if(style){
 				this.style = style;

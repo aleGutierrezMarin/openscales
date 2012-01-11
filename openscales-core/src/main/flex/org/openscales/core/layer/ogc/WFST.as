@@ -46,10 +46,10 @@ package org.openscales.core.layer.ogc
 		public var featureArray:Vector.<Feature> = new Vector.<Feature>;
 		
 		
-		public function WFST(name:String, url:String, typename:String,featureNSlocal:String = null)
+		public function WFST(identifier:String, url:String, typename:String,featureNSlocal:String = null, displayedName:String=null)
 		{
 			
-			super(name, url, typename);
+			super(identifier, url, typename, displayedName);
 			
 			this._wfsFormat = new WFSFormat(this);
 			

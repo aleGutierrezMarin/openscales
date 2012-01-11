@@ -18,10 +18,10 @@ package org.openscales.core.layer
 
 		private var _params:IHttpParams = null;
 
-		public function HTTPRequest(name:String,
+		public function HTTPRequest(identifier:String,
 									url:String,
 									params:IHttpParams = null) {
-			super(name);
+			super(identifier);
 			this.url = url;
 			this.params = params;
 		}

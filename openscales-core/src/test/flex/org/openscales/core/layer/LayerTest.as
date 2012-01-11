@@ -233,5 +233,22 @@ package org.openscales.core.layer
 			assertEquals("Should contain one projection","ESPG:4326", l.availableProjections[0]);
 			
 		}
+		
+		/**
+		 * This test asserts that identifier is used to set displayedName
+		 */ 
+		[Test]
+		public function shouldUseIdentifierAsDisplayedName():void{
+			var l:Layer = new Layer("myidentifier");
+			assertEquals("Uncorrect value for displayedName", "myidentifier", l.displayedName);
+		}
+		
+		[Test]
+		public function shouldSetDefaultIdentifierIfIdentifierIsEmpty():void{
+			var l:Layer = new Layer("");
+			assertTrue("Uncorrect value for identifier, should start with 'NewLayer_'", l.identifier.indexOf("NewLayer_")==0);
+			assertEquals("Uncorrect value", l.identifier, l.displayedName);
+		}
+
 	}
 }

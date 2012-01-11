@@ -309,7 +309,7 @@
 			protected function updateItemEnability(event:Event=null):void{
 				if(this._layer && this.layer.map){
 					this.enabled = this._layer.available;
-					//Trace.debug("LayerSwitcherItemRenderer for "+this._layer.name+": Timer expired, checking availability: "+ok);
+
 				}
 			}
 			
@@ -382,7 +382,7 @@
 				this._isDrawingLayer = false;
 				if((this._layer != null) )
 				{	
-					layerLabel.text = this._layer.name;
+					layerLabel.text = this._layer.displayedName;
 					
 					if((this._layer is VectorLayer) && (this._layer as VectorLayer).editable)
 						this._isDrawingLayer = true;
@@ -488,7 +488,7 @@
 		
 		<ChangeLayerVisibility layer="{_layer}" />
 		
-		<s:Label id="layerLabel" width="100%" text="{_layer.name}" />
+		<s:Label id="layerLabel" width="100%" text="{_layer.displayedName}" />
 		
 		<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 		

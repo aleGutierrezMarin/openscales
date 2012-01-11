@@ -25,7 +25,8 @@ package org.openscales.core.layer
 		
 	    public function ImageLayer(name:String,
 	    						  url:String,
-	    						  bounds:Bounds) {
+	    						  bounds:Bounds
+								  ) {
 	        this.url = url;
 	        this.maxExtent = bounds;
 						

@@ -489,7 +489,7 @@
 			{
 				if(this.importFeature.map)
 				{
-					if(this.importFeature.map.getLayerByName(value)==null)
+					if(this.importFeature.map.getLayerByIdentifier(value)==null)
 						return true;
 				}
 				return false;

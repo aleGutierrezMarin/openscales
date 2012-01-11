@@ -205,7 +205,7 @@ package org.openscales.fx.control.layer {
 			for(var i:uint = 0; i<nbLayers; i++){
 				
 				var layer:Layer = _map.layers[i]
-				assertEquals("Layer {"+layer.name+"} not in LayerManager",layer,_layerManager.layers.getItemAt(nbLayers-1-i));
+				assertEquals("Layer {"+layer.identifier+"} not in LayerManager",layer,_layerManager.layers.getItemAt(nbLayers-1-i));
 			}
 		}
 	}

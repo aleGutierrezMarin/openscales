@@ -54,7 +54,7 @@ package org.openscales.core.layer.ogc
 		private var _popUpHeight:Number;
 		private var _useFeedTitle:Boolean = false;
 		
-		public function GeoRss(name:String, 
+		public function GeoRss(identifier:String,
 							   url:String = null,
 							   data:XML = null,
 							   refreshDelay:int = 300000,
@@ -63,7 +63,7 @@ package org.openscales.core.layer.ogc
 							   height:Number = 300,
 							   useFeedTitle:Boolean = false)
 		{
-			super(name);
+			super(identifier);
 			this._url = url;	
 			this.data = data;
 			this._projection = ProjProjection.getProjProjection("WGS84");
@@ -170,7 +170,7 @@ package org.openscales.core.layer.ogc
 				
 				this._featureVector = this.georssFormat.read(this.data) as Vector.<Feature>;
 				if(this._useFeedTitle)
-					this.name = this._georssFormat.title;
+					this.displayedName = this._georssFormat.title;
 				
 				var i:uint;
 				var vectorLength:uint = this._featureVector.length;

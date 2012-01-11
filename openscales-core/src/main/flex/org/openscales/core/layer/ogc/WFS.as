@@ -99,6 +99,7 @@ package org.openscales.core.layer.ogc
 		public function WFS(name:String,
 							url:String,
 							typename:String,
+							
 							version:String = "2.0.0")
 		{
 			super(name);

@@ -76,7 +76,7 @@ package org.openscales.core.format
 			assertEquals("Wrong layer version parsing", "1.1.1", (layer1 as WMS).version);
 			assertEquals("Wrong service url parsing", "http://openscales.org/geoserver/ows", (layer1 as WMS).url);
 			assertEquals("Wrong layer name parsing", "bluemarble", (layer1 as WMS).layers);
-			assertEquals("Wrong layer title parsing", "bluemarble_I18N", (layer1 as WMS).name);
+			assertEquals("Wrong layer title parsing", "bluemarble_I18N", (layer1 as WMS).identifier);
 			assertTrue("Wrong layer minScaleDenominator", (0.000003832 <(layer1 as WMS).minResolution.value) && (0.000003834 >(layer1 as WMS).minResolution.value))
 			assertEquals("Wrong layer minScaleDenominator projection", ProjProjection.getProjProjection("EPSG:4326").srsCode, (layer1 as WMS).minResolution.projection.srsCode);
 			assertTrue("Wrong layer maxScaleDenominator", (0.00004651 <(layer1 as WMS).maxResolution.value) && (0.00004653 >(layer1 as WMS).maxResolution.value))

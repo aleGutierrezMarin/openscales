@@ -256,9 +256,9 @@ package org.openscales.fx
 					var security:ISecurity = fxSecurity.security;
 					var layers:Array = fxSecurity.layers.split(",");
 					//For each layer which needs a security we add it in the HashMap
-					for each (var name:String in layers) {
+					for each (var id:String in layers) {
 						for each(var l:FxLayer in layersToAdd) {
-							if(l.name == name) {
+							if(l.identifier == id) {
 								l.nativeLayer.security = security;
 							}
 						}

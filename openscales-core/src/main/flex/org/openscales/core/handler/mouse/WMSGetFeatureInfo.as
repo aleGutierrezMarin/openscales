@@ -73,7 +73,7 @@ package org.openscales.core.handler.mouse
 					if (mapLayers[i].visible){ //the request is made for the first visible wms layer
 						if(mapLayers[i] is WMS){
 							tmp = (mapLayers[i] as WMS);
-							if(_layers.indexOf(tmp.name) != -1){
+							if(_layers.indexOf(tmp.identifier) != -1){
 								//put the found layer in a vector to generate the request
 								layerVecTmp = new Vector.<WMS>();
 								layerVecTmp.push(tmp);

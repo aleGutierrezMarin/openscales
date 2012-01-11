@@ -197,7 +197,7 @@ package org.openscales.core.control
 							y+=this._textOffset+5;
 						}
 						layerTextField = new TextField();
-						layerTextField.text=layer.name;
+						layerTextField.text=layer.displayedName;
 						layerTextField.setTextFormat(contentFormat);
 						layerTextField.x = this.position.x - 170;
 						layerTextField.y = y;
@@ -212,8 +212,8 @@ package org.openscales.core.control
 						percentageTextField.height = 20;
 						percentageTextField.width = 50;
 
-						var slideHorizontalButtonO:SliderHorizontal = new SliderHorizontal("slide horizontal"+i,this.position.add(-130,y+23),layer.name);
-						var slideVerticalButtonO:SliderVertical = new SliderVertical("slide vertical"+i,this.position.add(-55,y+26),layer.name);
+						var slideHorizontalButtonO:SliderHorizontal = new SliderHorizontal("slide horizontal"+i,this.position.add(-130,y+23),layer.displayedName);
+						var slideVerticalButtonO:SliderVertical = new SliderVertical("slide vertical"+i,this.position.add(-55,y+26),layer.displayedName);
 
 						if(layer.alpha == 1)
 						{
@@ -234,7 +234,7 @@ package org.openscales.core.control
 						slideVerticalButtonO.addEventListener(MouseEvent.MOUSE_DOWN,SlideMouseClick);
 						slideHorizontalButtonO.addEventListener(MouseEvent.CLICK,SlideHorizontalClick);
 
-						var check:CheckBox = new CheckBox(this.position.add(-185,y+2),layer.name);
+						var check:CheckBox = new CheckBox(this.position.add(-185,y+2),layer.displayedName);
 						if(!layer.visible)
 						{							
 							check.status = false;					
@@ -243,8 +243,8 @@ package org.openscales.core.control
 						check.height=12;
 						check.addEventListener(MouseEvent.CLICK,CheckButtonClick);	
 
-						var arrowUpO:Arrow = new Arrow(this.position.add(-175,y+23),layer.name,"UP")
-						var arrowDownO:Arrow = new Arrow(this.position.add(-174,y+31),layer.name,"DOWN")
+						var arrowUpO:Arrow = new Arrow(this.position.add(-175,y+23),layer.displayedName,"UP")
+						var arrowDownO:Arrow = new Arrow(this.position.add(-174,y+31),layer.displayedName,"DOWN")
 						arrowUpO.height=7;
 						arrowDownO.height=7;
 						arrowUpO.addEventListener(MouseEvent.CLICK,ArrowClick);
@@ -319,7 +319,7 @@ package org.openscales.core.control
 		 */
 		private function CheckButtonClick(event:MouseEvent):void
 		{
-			var eventLayer:Layer = this.map.getLayerByName((event.target as CheckBox).layerName);
+			var eventLayer:Layer = this.map.getLayerByIdentifier((event.target as CheckBox).layerName);
 			if((event.target as CheckBox).status)
 			{
 				(event.target as CheckBox).status = false;
@@ -355,7 +355,7 @@ package org.openscales.core.control
 			//calulate the layer opacity
 			var resultAlpha:Number = (mouseX/(l-k)) - (k/(l-k))
 			var resultPercentage:int = resultAlpha*100;
-			var eventLayer:Layer = this.map.getLayerByName(_slideVerticalTemp.layerName);
+			var eventLayer:Layer = this.map.getLayerByIdentifier(_slideVerticalTemp.layerName);
 			eventLayer.alpha = resultAlpha;
 
 			_percentageTextFieldTemp = this.getChildByName("percentage"+childIndex) as TextField;
@@ -402,7 +402,7 @@ package org.openscales.core.control
 
 			var resultAlpha:Number = (mouseX/(l-k)) - (k/(l-k))
 			var resultPercentage:int = resultAlpha*100;
-			var eventLayer:Layer = this.map.getLayerByName(_slideVerticalTemp.layerName);
+			var eventLayer:Layer = this.map.getLayerByIdentifier(_slideVerticalTemp.layerName);
 			eventLayer.alpha = resultAlpha;
 
 			var childIndex:String = _slideVerticalTemp.name;
@@ -436,7 +436,7 @@ package org.openscales.core.control
 		 */
 		private function ArrowClick(event:MouseEvent):void
 		{
-			var layer:Layer = this.map.getLayerByName((event.target as Arrow).layerName);
+			var layer:Layer = this.map.getLayerByIdentifier((event.target as Arrow).layerName);
 			var numLayersOverlays:int = 0;
 
 			//count of layers

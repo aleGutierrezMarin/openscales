@@ -21,11 +21,12 @@ package org.openscales.core.layer.osm
 		private static const CREATIVE_BY_CA:DataOriginator = new DataOriginator("Creative Commons", "http://creativecommons.org/licenses/by-sa/2.0/", "http://wiki.april.org/skins/common/images/icons/cc-by-sa.png");
 
 		
-		public function OSM(name:String,
+		public function OSM(identifier:String,
+							displayedName:String=null,
 							url:String = null,
 							data:XML = null) {
 
-			super(name, url);
+			super(identifier, url,displayedName);
 
 			this.projection = "EPSG:900913";
 			// Use the projection to access to the unit

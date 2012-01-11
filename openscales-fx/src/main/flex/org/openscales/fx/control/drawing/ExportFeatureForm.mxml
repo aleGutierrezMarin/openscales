@@ -185,7 +185,7 @@
 					if(controls[i] is EditFeaturesHandler && controls[i].active)
 					{
 						select = controls[i] as EditFeaturesHandler;
-						if(!(select.layers[0].name == this.exportFeature.layer.name))
+						if(!(select.layers[0].identifier == this.exportFeature.layer.identifier))
 							select = null;
 						else
 							currentSelection = select.selectedFeatures;

@@ -218,7 +218,7 @@ package org.openscales.core.layer.ogc {
 			
 			assertNotNull("Incorrect layer musn't be null", wmts);
 			
-			assertEquals("Incorrect name", wmts.name,NAME);
+			assertEquals("Incorrect name", wmts.identifier,NAME);
 			assertEquals("Incorrect url", wmts.url, REAL_URL);
 			assertEquals("Incorrect layers", wmts.layer, REAL_LAYER);
 			assertEquals("Incorrect tilematrixset", wmts.tileMatrixSet, REAL_MATRIX_SET_ID);

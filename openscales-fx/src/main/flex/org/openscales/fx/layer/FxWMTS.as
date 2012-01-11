@@ -28,13 +28,13 @@ package org.openscales.fx.layer
 		public function FxWMTS()
 		{
 			super();
-			this._layer = new WMTS(this.name,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets, this._style);
+			this._layer = new WMTS(this.identifier,this._url,this._WMTSlayer,this._tileMatrixSet,this._tileMatrixSets, this._style);
 		}
 
 		override public function configureLayer():Layer {
 
 			
-			this._layer.name = this.name;
+			this._layer.identifier = this.identifier;
 			this._layer.url = this._url;
 			
 			if(this.proxy)

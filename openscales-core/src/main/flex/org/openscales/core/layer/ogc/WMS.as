@@ -89,13 +89,13 @@ package org.openscales.core.layer.ogc
 		 * @param styles Styles of the layers to display
 		 * 
 		 */
-		public function WMS(name:String = "",
+		public function WMS(identifier:String = "",
 							url:String = "",
 							layers:String = "",
 							styles:String = "",
-							format:String = "image/png")
-		{
-			super(name, url);
+							format:String = "image/png"){
+			
+			super(identifier, url);
 			
 			// Properties initialization
 			this._layerName = name;

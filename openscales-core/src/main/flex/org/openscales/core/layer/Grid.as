@@ -70,12 +70,13 @@ package org.openscales.core.layer
 		 * @param projection
 		 * @param proxy
 		 */
-		public function Grid(name:String,
+		public function Grid(identifier:String,
 							 url:String,
-							 params:IHttpParams = null) {
+							 params:IHttpParams = null
+							 ) {
 			
 			//TODO delete url and params after osmparams work
-			super(name, url, params);
+			super(identifier, url, params);
 			
 			this.blendMode = BlendMode.LAYER;
 			this.buffer = 0;

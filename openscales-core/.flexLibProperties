@@ -134,6 +134,7 @@
     <classEntry path="org.openscales.core.i18n.provider.I18nJSONProvider"/>
     <classEntry path="org.openscales.core.i18n.provider.Ii18nProvider"/>
     <classEntry path="org.openscales.core.layer.Aggregate"/>
+    <classEntry path="org.openscales.core.layer.Bing"/>
     <classEntry path="org.openscales.core.layer.Constraint"/>
     <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
@@ -200,7 +201,9 @@
     <classEntry path="org.openscales.core.routing.IRouting"/>
     <classEntry path="org.openscales.core.routing.SampleRouting"/>
     <classEntry path="org.openscales.core.security.AbstractSecurity"/>
+    <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
     <classEntry path="org.openscales.core.security.ISecurity"/>
+    <classEntry path="org.openscales.core.security.RefererSecurity"/>
     <classEntry path="org.openscales.core.security.events.SecurityEvent"/>
     <classEntry path="org.openscales.core.security.ign.IGNGeoRMSecurity"/>
     <classEntry path="org.openscales.core.style.Rule"/>
@@ -228,6 +231,7 @@
     <classEntry path="org.openscales.core.utils.Util"/>
     <classEntry path="org.openscales.core.MapTest"/>
     <classEntry path="org.openscales.core.StringUtilsTest"/>
+    <classEntry path="org.openscales.core.basetypes.BaseTypesResolutionTest"/>
     <classEntry path="org.openscales.core.basetypes.TreeTest"/>
     <classEntry path="org.openscales.core.configuration.ConfigurationTest"/>
     <classEntry path="org.openscales.core.control.CopyrightTest"/>
@@ -266,10 +270,6 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
-    <classEntry path="org.openscales.core.security.RefererSecurity"/>
-    <classEntry path="org.openscales.core.basetypes.BaseTypesResolutionTest"/>
-    <classEntry path="org.openscales.core.layer.Bing"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

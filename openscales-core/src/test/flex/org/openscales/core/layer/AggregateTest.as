@@ -161,7 +161,7 @@ package org.openscales.core.layer
 		 */ 
 		[Test]
 		public function shouldNotInterfereWithContainedLayersName():void{
-			assertTrue("Aggregate name is passed on to contained layers", _l1.name!=_instance.name);
+			assertTrue("Aggregate name is passed on to contained layers", _l1.identifier!=_instance.identifier);
 		}
 		
 		/**
