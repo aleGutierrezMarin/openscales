@@ -15,7 +15,8 @@ package org.openscales.core.layer.ogc
 	{
 		public function WMSC(name:String = "",
 							 url:String = "",
-							 layers:String = "")
+							 layers:String = ""
+							 )
 		{
 			super(name, url, layers);
 			this.tiled = true;

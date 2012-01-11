@@ -20,19 +20,7 @@ package org.openscales.fx.layer
 		/**
 		 * Getters and setters 
 		 */
-		
-		override public function get name():String
-		{
-			if(this._layer != null)
-				return this._layer.name;
-			return null;
-		}
-		
-		override public function set name(value:String):void
-		{
-			if(this._layer != null)
-				(this._layer as KML).name = value;
-		}
+	
 		
 		public function get url():String
 		{

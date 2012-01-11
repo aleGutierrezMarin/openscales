@@ -31,9 +31,9 @@ package org.openscales.core.layer
 		 */
 		private var _serverResolutions:Array = null;
 		
-		public function TMS(name:String,
+		public function TMS(identifier:String,
 							url:String, layerName:String="") {
-			super(name, url);
+			super(identifier, url);
 			this._layerName = layerName;
 			
 		}

@@ -76,17 +76,6 @@ package org.openscales.fx.layer
 				(this._layer as GeoRss).useFeedTitle = value;
 		}
 		
-		override public function set name(value:String):void{
-			if(this._layer != null)
-				(this._layer as GeoRss).name = value;
-		}
-		
-		override public function get name():String{
-			if(this._layer != null)
-				return (this._layer as GeoRss).name;
-			return null;
-		}
-		
 		/**
 		 * Delay in milliseconds after which the GeoRSS data will be refreshed
 		 * @default 300000

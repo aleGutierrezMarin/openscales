@@ -34,13 +34,13 @@ package org.openscales.core.layer
 
 		private var _xml:XML = null;
 		
-		public function KML(name:String,
+		public function KML(identifier:String,
 							url:String = null,
 							data:XML = null,
 							style:Style = null,
 							bounds:Bounds = null) 
 		{
-			super(name);
+			super(identifier);
 			this.url = url;
 			this.data = data;
 			this.maxExtent = bounds;

@@ -197,7 +197,7 @@
 			{
 				if(this.map)
 				{
-					if(this.map.getLayerByName(value)==null)
+					if(this.map.getLayerByIdentifier(value)==null)
 						return true;
 				}
 				return false;

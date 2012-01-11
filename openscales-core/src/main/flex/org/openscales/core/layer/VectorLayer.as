@@ -51,9 +51,9 @@ package org.openscales.core.layer
 		private var _initOutDrawingToolbar:Boolean = false;
 		private var _editable:Boolean = false;
 
-		public function VectorLayer(name:String)
+		public function VectorLayer(identifier:String)
 		{
-			super(name);
+			super(identifier);
 			this._displayProjection = this.projection;
 			this._style = new Style();
 			this._geometryType = null;

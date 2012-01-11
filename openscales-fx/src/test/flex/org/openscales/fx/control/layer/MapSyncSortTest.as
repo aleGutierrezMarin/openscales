@@ -32,7 +32,7 @@ package org.openscales.fx.control.layer{
 			// Then the layers are sorted in the opposite order of the map layers
 			for(var i:int=0;i<map.layers.length;i++){
 				
-				assertEquals("Layer "+map.layers[i].name+" in wrong position",map.layers[i],collection.getItemAt(map.layers.length-1-i));
+				assertEquals("Layer "+map.layers[i].identifier+" in wrong position",map.layers[i],collection.getItemAt(map.layers.length-1-i));
 			}
 			
 		}

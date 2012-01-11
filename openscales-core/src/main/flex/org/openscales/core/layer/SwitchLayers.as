@@ -110,7 +110,7 @@ package org.openscales.core.layer
 		  
 		private var _resolutionToSwitch:Number;
 		
-		public function SwitchLayers(name:String,
+		public function SwitchLayers(identifer:String,
 								   firstLayer:Layer,
 								   lastLayer:Layer,
 								   resolutionToSwitch:Number)
@@ -119,7 +119,7 @@ package org.openscales.core.layer
             this._firstLayer = firstLayer;
             this._lastLayer = lastLayer;	
             this._resolutionToSwitch = resolutionToSwitch;		
-			super(name);
+			super(identifer);
 		}
 		
 		override protected function onMapResize(e:MapEvent):void {

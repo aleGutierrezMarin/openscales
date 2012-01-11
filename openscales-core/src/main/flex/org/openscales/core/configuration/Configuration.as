@@ -175,8 +175,8 @@ package org.openscales.core.configuration
 				var security:AbstractSecurity=this.parseSecurity(xmlSecurity);
 				if(xmlSecurity.@layers!=null && map!=null){
 					var layers:Array = xmlSecurity.@layers.split(",");
-					for each (var name:String in layers) {
-						var layer:Layer=map.getLayerByName(name);
+					for each (var id:String in layers) {
+						var layer:Layer=map.getLayerByIdentifier(id);
 						if(layer!=null) layer.security=security;
 					}
 				}

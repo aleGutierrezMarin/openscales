@@ -27,8 +27,8 @@ package org.openscales.core.layer
 		/**
 		 * Constructor
 		 */ 
-		public function Aggregate(name:String){
-			super(name);
+		public function Aggregate(identifier:String){
+			super(identifier);
 			this._layers = new Vector.<Layer>();
 			this._stopPropagating = false;
 		}

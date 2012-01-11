@@ -62,12 +62,13 @@ package org.openscales.core.layer.ogc
 		 * @param tileMatrixSets HashMap A HashMap containing all the tileMatrixSets description
 		 * @param style String the desired style identifier for returned tiles (see getCapablities for supported format)
 		 */ 
-		public function WMTS(name:String, 
+		public function WMTS(identifier:String, 
 							 url:String, 
 							 layer:String,
 							 tileMatrixSet:String,
 							 tileMatrixSets:HashMap = null,
-							 style:String = null)
+							 style:String = null
+							 )
 		{
 			
 			_styleProvided = true;
@@ -89,7 +90,7 @@ package org.openscales.core.layer.ogc
 			this._tileProvider.style = style;
 			//this.format = WMTS.WMTS_DEFAULT_FORMAT;
 			
-			super(name, url);
+			super(identifier, url);
 			this.tileMatrixSet = tileMatrixSet;
 		}
 		

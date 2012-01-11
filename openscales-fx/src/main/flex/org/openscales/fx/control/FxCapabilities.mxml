@@ -504,13 +504,13 @@
 			{
 				if(format == "WMS" || format == "WFS" || format == "WMTS")
 				{
-					if(this.map.getLayerByName(value)==null)
+					if(this.map.getLayerByIdentifier(value)==null)
 						return true;
 				}
 					
 				else if(value != "" && value!= null)
 				{
-					if(this.map.getLayerByName(value)==null)
+					if(this.map.getLayerByIdentifier(value)==null)
 						return true;
 				}
 				

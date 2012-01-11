@@ -84,12 +84,12 @@ package org.openscales.fx.control {
 			// When a filter is applied to the catalog
 			this._catalog.filter = function(layer:Layer):Boolean{
 				
-				return layer.name == 'Layer 2';
+				return layer.identifier == 'Layer 2';
 			};
 			
 			// Then all three layers are displayed
 			assertEquals('Incorrect number of layers',1,this._catalog.layerList.dataProvider.length);
-			assertEquals('Incorrect layer name','Layer 2',(this._catalog.layerList.dataProvider.getItemAt(0) as Layer).name);
+			assertEquals('Incorrect layer name','Layer 2',(this._catalog.layerList.dataProvider.getItemAt(0) as Layer).identifier);
 		}
 		
 		/**
@@ -107,7 +107,7 @@ package org.openscales.fx.control {
 			// And a filter is applied to the catalog
 			this._catalog.filter = function(layer:Layer):Boolean{
 				
-				return layer.name == 'Some layer';
+				return layer.identifier == 'Some layer';
 			};
 			
 			// When a new list of layers is set
@@ -118,7 +118,7 @@ package org.openscales.fx.control {
 			
 			// Then only layers matching the filter are displayed
 			//assertEquals('Incorrect number of layers',1,this._catalog.layerList.dataProvider.length);
-			//assertEquals('Incorrect layer name','Some layer',(this._catalog.layerList.dataProvider.getItemAt(0) as Layer).name);
+			//assertEquals('Incorrect layer id','Some layer',(this._catalog.layerList.dataProvider.getItemAt(0) as Layer).identifier);
 		}
 	}
 }

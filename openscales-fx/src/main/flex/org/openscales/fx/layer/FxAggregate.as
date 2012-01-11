@@ -23,7 +23,7 @@ package org.openscales.fx.layer
 		 * @inheritDoc
 		 */ 
 		override public function init():void {
-			this._layer = new Aggregate(this.name);
+			this._layer = new Aggregate(this.identifier);
 			
 			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
 		}
@@ -32,7 +32,7 @@ package org.openscales.fx.layer
 		 * @inheritDoc
 		 */  
 		override public function configureLayer():Layer{
-			this._layer.name = this.name;
+			this._layer.identifier = this.identifier;
 			return this._layer;
 		}
 		

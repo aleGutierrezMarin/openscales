@@ -39,6 +39,8 @@ package org.openscales.core.layer {
 			return new Bounds(-180, -90, 180, 90, Layer.DEFAULT_PROJECTION);
 		}
 		
+		private var _identifier:String;
+		private var _displayedName:String;
 		private var _map:Map = null;
 		protected var _projection:ProjProjection = null;
 		private var _availableProjections:Vector.<String> = null;
@@ -65,9 +67,17 @@ package org.openscales.core.layer {
 				
 		/**
 		 * Layer constructor
+		 * 
+		 * @param identifier A unique identifier for this layer (if empty string or null, value will be 'NewLayer_'+new Date().time).
 		 */
-		public function Layer(name:String) {
-			this.name = name;
+		public function Layer(identifier:String) {
+			//this.name = identifier;
+			if(!identifier || identifier=="")this._identifier = "NewLayer_"+new Date().time;
+			else this._identifier = identifier;
+			
+			this._displayedName = this._identifier;
+			this.name = this._identifier;
+			
 			this.visible = true;
 			this.doubleClickEnabled = true;
 			this._projection = Layer.DEFAULT_PROJECTION;
@@ -565,21 +575,6 @@ package org.openscales.core.layer {
 		public function getURL(bounds:Bounds):String {
 			return null;
 		}
-		
-		
-		/**
-		 * The layer Name (appears in LayerManager for example)
-		 */
-		[Bindable]
-		override public function get name():String
-		{
-			return super.name;
-		}
-		
-		override public function set name(value:String):void
-		{
-			super.name = value;
-		}
 
 		/**
 		 * Current layer position in the display list
@@ -1000,6 +995,65 @@ package org.openscales.core.layer {
 		{
 			_aggregate = value;
 		}
+
+		/**
+		 * The identifier for the layer
+		 */ 
+		[Bindable]
+		public function get identifier():String
+		{
+			return _identifier;
+		}
+
+		/**
+		 * @private
+		 */ 
+		public function set identifier(value:String):void
+		{
+			_identifier = value;
+		}
+		
+		/**
+		 * Name and identifier of the layer.
+		 * 
+		 * @deprecated You shall not more use this to set layer's name. Use <code>identifier</code> and <code>displayedName</code> instead
+		 */ 
+		[Bindable]
+		override public function get name():String
+		{
+			return super.name;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		override public function set name(value:String):void
+		{
+			_identifier = value;
+			_displayedName = value;
+			super.name = value;
+		}
+
+
+		/**
+		 * The human readable name of the layer (could also be an i18n key)
+		 * 
+		 * @default value of identifier property
+		 */ 
+		[Bindable]
+		public function get displayedName():String
+		{
+			return _displayedName;
+		}
+
+		/**
+		 * @private
+		 */ 
+		public function set displayedName(value:String):void
+		{
+			_displayedName = value;
+		}
+
 
 	}
 }

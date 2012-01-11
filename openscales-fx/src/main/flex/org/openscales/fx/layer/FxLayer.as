@@ -60,7 +60,8 @@ package org.openscales.fx.layer
 			
 			this.generateResolutions();
 			
-			this._layer.name = this.name;
+			this._layer.identifier = this.identifier;
+			
 			
 			if(this._proxy)
 				this._layer.proxy = this._proxy;
@@ -167,20 +168,52 @@ package org.openscales.fx.layer
 		}
 		
 		/**
-		 * Indicates the layer name
-		 */
-		public override function get name():String {
-			if(this._layer)
-				return this._layer.name;
+		 * Identifier of the layer
+		 */ 
+		public function get identifier():String{
+			if(this._layer)return this._layer.identifier;
+			return null;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		public function set identifier(value:String):void{
+			if(this._layer) this._layer.identifier = value;
+			
+		}
+		
+		/**
+		 * Name and identifier of the layer.
+		 * 
+		 * @deprecated You shall not more use this to set layer's name. Use <code>identifier</code> and <code>displayedName</code> instead
+		 */ 
+		override public function get name():String{
+			if(this._layer)return this._layer.name
 			return super.name;
 		}
+		
 		/**
-		 * @Private
-		 */
-		public override function set name(value:String):void {
+		 * @private
+		 */ 
+		override public function set name(value:String):void{
 			super.name = value;
-			if(this._layer != null)
-				this._layer.name = value;
+			if(this._layer)this._layer.name = value;
+		}
+		
+		/**
+		 * Human readable name of the layer
+		 */ 
+		public function get displayedName():String{
+			if(this._layer)return this._layer.displayedName;
+			return null;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		public function set displayedName(value:String):void{
+			if(this._layer) this._layer.displayedName = value;
 		}
 		
 		/**
