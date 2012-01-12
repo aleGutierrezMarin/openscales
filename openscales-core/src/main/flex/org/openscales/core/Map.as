@@ -216,7 +216,7 @@ package org.openscales.core
 			I18nJSONProvider.addTranslation(FRLocale);
 			
 			Catalog.catalog.addEventListener(I18NEvent.LOCALE_CHANGED, this.localeChanged);
-			this._timer = new Timer(500,1);
+			this._timer = new Timer(200,1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this.projection = projection;
 			this.size = new Size(width, height);

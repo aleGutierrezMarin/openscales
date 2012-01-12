@@ -45,7 +45,6 @@ package org.openscales.core.layer
 		protected var _tileOrigin:Location = new Location(0,0,Geometry.DEFAULT_SRS_CODE);
 		private var _defaultMatrixTranform:Matrix;
 		private var _resquestResolution:Number = 0;
-		protected var _initialized:Boolean = false;
 		private var _requestedResolution:Resolution;
 		private var _previousCenter:Location = null;
 		private var _cumulatedRoundedValueX:Number = 0;

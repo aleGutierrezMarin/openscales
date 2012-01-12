@@ -28,6 +28,7 @@
 			
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
+			import org.openscales.core.format.Format;
 			import org.openscales.core.format.GPXFormat;
 			import org.openscales.core.format.GeoRssFormat;
 			import org.openscales.core.format.KMLFormat;
@@ -148,23 +149,9 @@
 			{
 				var format:String = this.formatProvider.getItemAt(this.selectedFormat) as String;
 				
-				//create the FileReference instance
-				fileReference = new FileReference();
-				
-				//listen for the file has been saved
-				fileReference.addEventListener(Event.COMPLETE, onFileSave);
-				
-				//listen for when then cancel out of the save dialog
-				fileReference.addEventListener(Event.CANCEL,onCancel);
-				
-				//listen for any errors that occur while writing the file
-				fileReference.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-
-				var datas:Object;
 				var fileName:String = DEFAULT_FILE_NAME;
 				
 				// deselect/don't edit features for export
-				
 				// search the select handler
 				var currentSelection:Vector.<Feature> = new Vector.<Feature>();
 				var select:EditFeaturesHandler = null;
@@ -208,51 +195,29 @@
 					}
 				}
 				
-				var export:Vector.<Feature> = new Vector.<Feature>();
-				i=0;
-				j=this.exportFeature.layer.features.length
-				for(; i < j; ++i){
-					export.push(this.exportFeature.layer.features[i]);
-				}
-				
+				var writeFormat:Format;
 				switch(format)
 				{
 					case "KML":
-						
 						fileName += ".kml";
-						
-						var writeKML:KMLFormat = new KMLFormat();
-						datas = writeKML.write(reprojectTo(export,this.exportFeature.map.projection,Geometry.DEFAULT_SRS_CODE));
+						writeFormat = new KMLFormat();
 						break;
 					
 					case "GPX":
-						
 						fileName += ".gpx";
-						
-						var writeGPX:GPXFormat = new GPXFormat();
-						datas = writeGPX.write(reprojectTo(export,this.exportFeature.map.projection,Geometry.DEFAULT_SRS_CODE));
+						writeFormat = new GPXFormat();
 						break;
 					
 					case "GeoRss":
-						
 						fileName += ".xml";
-						
-						var writeGeoRss:GeoRssFormat = new GeoRssFormat();
-						datas = writeGeoRss.write(reprojectTo(export,this.exportFeature.map.projection,"EPSG:4326"));
+						writeFormat = new GeoRssFormat();
 						break;
 					
-					case "OSM":
-						
-						fileName += ".osm";
-						break;
-					
-					case "GML":
-						
+					/*case "GML":
 						fileName += ".gml";
-						
 						var writeGML:GML321Writer = new GML321Writer();
 						//datas = writeGML.write(this.exportFeature.layer.features);
-						break;
+						break;*/
 				}
 				
 				// redraw selected style
@@ -274,7 +239,7 @@
 				}
 				
 				//open a native save file dialog, using the default file name
-				fileReference.save(datas, fileName);
+				this.exportFeature.layer.saveFormatExport(writeFormat, fileName, ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 				
 				this.exportFeature.closePopUp();
 			}
@@ -310,7 +275,7 @@
 			/**
 			 * reproject features
 			 */
-			private function reprojectTo(features:Vector.<Feature>,srcproj:*,destproj:*):Vector.<Feature> {
+			/*private function reprojectTo(features:Vector.<Feature>,srcproj:*,destproj:*):Vector.<Feature> {
 				var src:ProjProjection = ProjProjection.getProjProjection(srcproj);
 				var dest:ProjProjection = ProjProjection.getProjProjection(destproj);
 				if(src==dest)
@@ -322,7 +287,7 @@
 					features[i].geometry.transform(dest);
 				}
 				return features;
-			}
+			}*/
 				
 			
 			/**

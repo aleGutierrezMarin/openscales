@@ -3,6 +3,9 @@ package org.openscales.core.layer
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.net.FileReference;
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.core.Map;
@@ -11,7 +14,9 @@ package org.openscales.core.layer
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.format.Format;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.ProjProjection;
 	
@@ -50,6 +55,7 @@ package org.openscales.core.layer
 		private var _initInDrawingToolbar:Boolean = false;
 		private var _initOutDrawingToolbar:Boolean = false;
 		private var _editable:Boolean = false;
+		private var _edited:Boolean = false;
 
 		public function VectorLayer(identifier:String)
 		{
@@ -502,6 +508,102 @@ package org.openscales.core.layer
 		
 		public function set editable(value:Boolean):void{
 			_editable = value;
+		}
+		
+		
+		/**
+		 * Boolean that describe if the layer have been modified using the drawing tools.
+		 */
+		public function get edited():Boolean
+		{
+			return this._edited;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set edited(value:Boolean):void
+		{
+			this._edited = value;	
+		}
+		
+		
+		/**
+		 * Return the data of the layer in the specified format.
+		 * Use the write method of the given format to return data
+		 * The features will be exported in the given ProjProjection, 
+		 * if no projProjection is specified the features will be exported in the layer Projection
+		 */
+		public function getFormatExport(format:Format, exProj:ProjProjection = null):Object
+		{
+			if (!exProj || exProj == this.projection)
+			{
+				return format.write(this.features);
+			}
+			else
+			{
+				var featuresLength:Number = this.features.length;
+				var extFeatures:Vector.<Feature> = new Vector.<Feature>(featuresLength);
+				for(var i:int = 0; i<featuresLength; ++i)
+				{
+					extFeatures[i]=this.features[i].clone();
+					extFeatures[i].geometry.projection = this.projection;
+					extFeatures[i].geometry.transform(exProj);
+				}
+				return format.write(extFeatures);
+			}
+		}
+		
+		/**
+		 * Export the layer in the given Format and write it on the filesystem with the
+		 * specified file name.
+		 * Use the write method of the given format to write the file
+		 * The features will be exported in the given ProjProjection, 
+		 * if no projProjection is specified the features will be exported in the layer Projection
+		 */
+		public function saveFormatExport(format:Format, fileName:String, exProj:ProjProjection = null):void
+		{
+			var datas:Object = this.getFormatExport(format, exProj);
+
+			var fileReference:FileReference;
+			//create the FileReference instance
+			fileReference = new FileReference();
+			
+			//listen for the file has been saved
+			fileReference.addEventListener(Event.COMPLETE, onFileSave);
+			
+			//listen for when then cancel out of the save dialog
+			fileReference.addEventListener(Event.CANCEL,onCancel);
+			
+			//listen for any errors that occur while writing the file
+			fileReference.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
+			
+			//open a native save file dialog, using the default file name
+			fileReference.save(datas, fileName);
+		}
+		
+		/**
+		 * called once the fihg sle has been saved
+		 */
+		private function onFileSave(e:Event):void
+		{
+			Trace.info("File Saved");
+		}
+		
+		/**
+		 * called if the user cancels out of the file save dialog
+		 */
+		private function onCancel(e:Event):void
+		{
+			Trace.info("File save select canceled.");
+		}
+		
+		/**
+		 * called if an error occurs while saving the file
+		 */
+		private function onSaveError(e:IOErrorEvent):void
+		{
+			Trace.info("Error Saving File : " + e.text);
 		}
 
 		

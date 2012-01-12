@@ -19,6 +19,7 @@
 	<component id="GPX" class="org.openscales.fx.layer.FxGPX" />
 	<component id="GeoRss" class="org.openscales.fx.layer.FxGeoRss" />
 	<component id="Graticule" class="org.openscales.fx.layer.FxGraticule" />
+	<component id="DrawingsLayer" class="org.openscales.fx.layer.FxDrawingsLayer" />
 	
 	<component id="Mapnik" class="org.openscales.fx.layer.osm.FxMapnik" />
 	<component id="CycleMap" class="org.openscales.fx.layer.osm.FxCycleMap" />

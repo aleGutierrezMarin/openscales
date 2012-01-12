@@ -59,6 +59,7 @@ package org.openscales.core.layer.ogc
 							extractRoutes:Boolean = true,
 							extractAttributes:Boolean = true)
 		{
+			this.editable = true;
 			this._projection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 			this.version = version;
 			this.url = url;	
@@ -83,28 +84,41 @@ package org.openscales.core.layer.ogc
 				this.clear();
 				return;
 			}
-			if (url && url != "")
+			
+			if (!this._initialized)
 			{
-				if (! this._request) {
-					this.loading = true;
-					this._request = new XMLRequest(url, onSuccess, onFailure);
-					this._request.proxy = this.proxy;
-					this._request.security = this.security;
-					this._request.send();
-				} else {
+				if (url && url != "")
+				{
+					if (! this._request) {
+						this.loading = true;
+						this._request = new XMLRequest(url, onSuccess, onFailure);
+						this._request.proxy = this.proxy;
+						this._request.security = this.security;
+						this._request.send();
+					} else {
+						this.clear();
+						this.draw();
+					}	
+				}
+				else if (this.data)
+				{	
+					this.drawFeatures();				
+				}
+				else
+				{
 					this.clear();
 					this.draw();
-				}	
+				}
 			}
-			else if (this.data)
-			{	
-				this.drawFeatures();				
-			}
-			else
+		}
+		
+		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void
+		{
+			if (this._initialized)
 			{
-				this.clear();
-				this.draw();
+				this.edited = true;
 			}
+			super.addFeature(feature, dispatchFeatureEvent, reproject);
 		}
 		
 		public function onSuccess(event:Event):void
