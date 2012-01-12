@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- 			
+The language Switcher is a drop down list used to change the language of the application.
+This is a DropList UI component that show all the languages avaliables.
+You don't have to configure the LanguageSwitcher.
+It will retrieve the language information and display the availlable languages.
+
+@author Maxime Viry
+
+--> 
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100" height="100" >
+	<fx:Script>
+		<![CDATA[		
+			import mx.collections.ArrayCollection;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.core.control.LanguageSwitcher;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.i18n.Locale;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			import spark.components.DropDownList;
+			import spark.events.IndexChangeEvent;
+			
+			/**
+			 * Array collection containing the list of the languages to show in the droplist
+			 */
+			[Bindable]
+			public var languagesList:ArrayCollection;
+			
+			/**
+			 * @Private
+			 * List of supported locales
+			 */
+			private var _supportedLocales:Vector.<Locale>;
+			
+			/**
+			 * @private
+			 * The actionScript component that communicate with the map 
+			 */
+			private var _languageSwitcher:org.openscales.core.control.LanguageSwitcher;
+			
+			/**
+			 * The current language selected
+			 */
+			[Bindable]
+			public var currentLanguage:Locale = null;			
+			
+			/**
+			 * Initialize the Language swticher component
+			 */
+			public function configure():void
+			{
+				_languageSwitcher = new org.openscales.core.control.LanguageSwitcher();
+				_languageSwitcher.map = this.map;
+				
+				Catalog.catalog.addEventListener(I18NEvent.LOCALE_ADDED, this.updateLocale);
+				
+				actualizeLanguages();
+			}
+			
+			override public function set map(value:Map):void {
+				super.map = value;
+				configure();
+			}
+			
+			
+			/**
+			 * Update the locale list when a new locale is added
+			 */
+			private function updateLocale(event:I18NEvent):void
+			{
+				var locale:Locale = event.locale;
+				
+				this._supportedLocales = Catalog.getAvailableLocalizations();
+				
+				if(locale!=null && !languagesList.contains(locale))
+				{
+					languagesList.addItem(locale);
+				}
+				
+			}
+			
+			/**
+			 * Retrieve the language informations from the actionScript component 
+			 * and actualize the dropdown list
+			 */
+			public function actualizeLanguages():void
+			{
+				languagesList = new ArrayCollection();
+				_supportedLocales = Catalog.getAvailableLocalizations();
+				var length:int = _supportedLocales.length;
+				for (var i:int = 0; i < length; i++)
+				{
+					languagesList.addItem(_supportedLocales[i]);
+				}
+				this.currentLanguage = Locale.activeLocale;
+			}
+			
+			/**
+			 * Callback to change the map language when the dropBox selection is changed
+			 */
+			public function updateSelection(e:Event):void
+			{
+				var list:DropDownList = e.currentTarget as DropDownList
+				
+				this.currentLanguage = list.selectedItem as Locale;
+				
+				var locale:Locale = null;
+				var i:uint = _supportedLocales.length;
+				for(var j:uint = 0;j<i;++j) {
+					if(_supportedLocales[j] == this.currentLanguage) {
+						locale = _supportedLocales[j];
+						break;
+					}
+				}
+				this._languageSwitcher.language = locale.localeKey;
+			}
+			
+			override public function onMapLanguageChange(event:I18NEvent):void
+			{
+				if(event.locale == this.currentLanguage)
+					return;
+				
+				this.currentLanguage = event.locale;
+			}
+			
+			
+		
+		]]>
+	</fx:Script>
+	
+	<!-- DropDownList will call the updateSelection function when the
+	selectionChanged event is dispatched -->
+	<s:DropDownList id="languageDropList"
+					dataProvider="{languagesList}"
+					labelField="localizedName"
+					change="updateSelection(event);"
+					selectedItem="{this.currentLanguage}"/>
+</Control>

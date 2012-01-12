@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Control used to request Yahoo search web API -->
+<Control xmlns="http://openscales.org"  xmlns:s="library://ns.adobe.com/flex/spark"
+				 xmlns:fx="http://ns.adobe.com/mxml/2009"  xmlns:mx="library://ns.adobe.com/flex/mx"
+				 minWidth="300" minHeight="100" creationComplete="queryInput.setFocus()" >
+	<fx:Declarations> 
+		<s:HTTPService id="service" url="{SERVICE_URL}"
+					   result="onServiceResult(event)"
+					   fault="onServiceFault(event)" />
+	</fx:Declarations> 
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.dataGridClasses.DataGridItemRenderer;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.geometry.basetypes.Location;
+			
+			private static const YAHOO_MAPS_NAMESPACE:Namespace=new Namespace('','urn:yahoo:maps');
+			
+			private static const SERVICE_URL:String='http://local.yahooapis.com/MapsService/V1/geocode';
+			
+			private var request:Object={location:'',appid:'',output:'xml'};
+			
+			/**
+			 * Getter and setter of appId
+			 */
+			public function get appId():String {
+				return this.request.appid;
+			}			
+			public function set appId(value:String):void {				
+				this.request.appid = value;
+			}
+			
+			private function search(event:MouseEvent):void {
+				if (this.map != null) {					
+					request.location = queryInput.text;
+					this.service.send(request);
+				}
+			}
+			
+			private function onServiceFault(event:FaultEvent):void {
+				Trace.error("YahooSearch ERROR: request fault = "+event.fault.faultString);
+			}
+			
+			private function onServiceResult(event:ResultEvent):void {
+				searchResult.dataProvider = event.result.ResultSet.Result;
+				if (searchResult.dataProvider.length == 1) {
+					var latitude:Number = parseFloat(event.result.ResultSet.Result.Latitude);
+					var longitude:Number = parseFloat(event.result.ResultSet.Result.Longitude);
+					if (! (isNaN(latitude) || isNaN(longitude)) ) {
+						var pos:Location = new Location(longitude,latitude);
+						Trace.log("YahooSearch center at "+pos.toShortString());
+						if (map.projection) {
+							pos = pos.reprojectTo(map.projection);
+						}
+						this.map.center = pos;
+					} 
+				}
+			}
+			
+			private function onSearchResultsDoubleClick(event:Event):void {
+				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
+					Trace.warn("YahooSearch WARNING: selection of a void item");
+					return;
+				}
+				
+				try {
+					var latitude:Number = parseFloat(event.target.data.Latitude);
+					var longitude:Number = parseFloat(event.target.data.Longitude);
+					if (! (isNaN(latitude) || isNaN(longitude)) ) {
+						var pos:Location = new Location(longitude,latitude);
+						Trace.log("YahooSearch center at "+pos.toShortString());
+						if (map.projection) {
+							pos = pos.reprojectTo(map.projection);
+						}
+						this.map.center = pos;
+					}
+				} catch(e:Error) {
+					Trace.info("No result to use to change position of the map");
+				}
+			}			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%" height="100%">
+		<mx:Form width="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0">
+			<s:HGroup width="100%">
+				<mx:FormItem label="Location" defaultButton="{button}" width="100%">
+					<s:TextInput id="queryInput" width="100%" text="" />
+				</mx:FormItem>
+				<s:Button id="button" label="Search" click="search(event)" />
+			</s:HGroup>
+		</mx:Form>
+		<mx:DataGrid id="searchResult" width="100%"
+					 doubleClickEnabled="true" doubleClick="onSearchResultsDoubleClick(event)" height="100%"
+					 toolTip="Double click to visit...">
+			<mx:columns >  
+				<mx:DataGridColumn dataField="City" headerText="City"/>  
+				<mx:DataGridColumn dataField="Country" headerText="Country"/> 
+			</mx:columns>
+		</mx:DataGrid> 
+	</s:VGroup>
+	
+</Control>
