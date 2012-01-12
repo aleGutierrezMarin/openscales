@@ -40,6 +40,8 @@ package org.openscales.fx.layer
 		
 		protected var _displayInLayerManager:Boolean = true;
 		
+		protected var _layerIdentifier:String = null;
+		
 		public function FxLayer() {
 			super();
 			this.init();
@@ -179,7 +181,10 @@ package org.openscales.fx.layer
 		 * @private
 		 */ 
 		public function set identifier(value:String):void{
-			if(this._layer) this._layer.identifier = value;
+			if(this._layer) 
+				this._layer.identifier = value;
+			else
+				this._layerIdentifier = value;
 			
 		}
 		
