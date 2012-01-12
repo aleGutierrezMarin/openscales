@@ -20,9 +20,6 @@ package org.openscales.core.handler
 		 */
 		private var _active:Boolean;
 		
-		/**
-		 * Callback function toggleHandlerActivity(active:Boolean):void
-		 */
 		private var _toggleHandlerActivity:Function = null;
 		
 		/**
@@ -89,16 +86,7 @@ package org.openscales.core.handler
 			}
 		}
 		
-		/**
-		 * Getter and setter of the callback function used when the handler's
-		 * activity changes
-		 */
-		public function get toggleHandlerActivity():Function {
-			return this._toggleHandlerActivity;
-		}
-		public function set toggleHandlerActivity(value:Function):void {
-			this._toggleHandlerActivity = value;
-		}
+		
 		
 		/**
 		 * Add the listeners to the associated map
@@ -111,6 +99,23 @@ package org.openscales.core.handler
 		 */
 		protected function unregisterListeners():void {
 		}
+
+		/**
+		 * Callback function toggleHandlerActivity(active:Boolean):void
+		 */
+		public function get toggleHandlerActivity():Function
+		{
+			return _toggleHandlerActivity;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set toggleHandlerActivity(value:Function):void
+		{
+			_toggleHandlerActivity = value;
+		}
+
 		
 	}
 }

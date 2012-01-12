@@ -80,6 +80,8 @@ package org.openscales.core.format.gml
 		/**
 		 * GMLFormat constructor
 		 *
+		 * @param onFeature method called when after a feature has been parsed (signature: function onFeature(f:Feature):void)
+		 * @param featuresids
 		 * @param extractAttributes
 		 *
 		 */

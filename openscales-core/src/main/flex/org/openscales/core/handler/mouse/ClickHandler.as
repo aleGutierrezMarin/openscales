@@ -27,32 +27,12 @@ package org.openscales.core.handler.mouse
 	 */
 	public class ClickHandler extends Handler
 	{
-		/**
-		 * Callback function click(evt:MouseEvent):void
-		 * This function is called after a MouseUp event (in the case of a
-		 * simple click)
-		 */
 		private var _click:Function = null;
 		
-		/**
-		 * Callback function doubleClick(evt:MouseEvent):void
-		 * This function is called after a MouseUp event (in the case of a
-		 * double click)
-		 */
 		private var _doubleClick:Function = onDoubleClick;
 		
-		/**
-		 * Callback function drag(evt:MouseEvent):void
-		 * This function is called during a MouseMove event (in the case of a
-		 * drag&drop click) ; the function is not called at the MouseDown time.
-		 */
 		private var _drag:Function = null;
 		
-		/**
-		 * Callback function drop(evt:MouseEvent):void
-		 * This function is called after a MouseUp event (in the case of a
-		 * drag&drop click)
-		 */
 		private var _drop:Function = null;
 				
 		/**
@@ -100,46 +80,7 @@ package org.openscales.core.handler.mouse
 			super(map, active);
 			this._doubleClickZoomOnMousePosition = doubleClickZoomOnMousePosition;
 		}
-		
-		/**
-		 * Click function getter and setter
-		 */
-		public function get click():Function {
-			return this._click;
-		}
-		public function set click(value:Function):void {
-			this._click = value;
-		}
-		
-		/**
-		 * Double click function getter and setter
-		 */
-		public function get doubleClick():Function {
-			return this._doubleClick;
-		}
-		public function set doubleClick(value:Function):void {
-			this._doubleClick = value;
-		}
-		
-		/**
-		 * Drag function getter and setter
-		 */
-		public function get drag():Function {
-			return this._drag;
-		}
-		public function set drag(value:Function):void {
-			this._drag = value;
-		}
-		
-		/**
-		 * Drop function getter and setter
-		 */
-		public function get drop():Function {
-			return this._drop;
-		}
-		public function set drop(value:Function):void {
-			this._drop = value;
-		}
+
 				
 		/**
 		 * Map coordinates (in its baselayer's SRS) of the point clicked (at the
@@ -337,6 +278,78 @@ package org.openscales.core.handler.mouse
 		public function set doubleClickZoomOnMousePosition(value:Boolean):void
 		{
 			_doubleClickZoomOnMousePosition = value;
+		}
+
+		/**
+		 * Callback function click(evt:MouseEvent):void
+		 * This function is called after a MouseUp event (in the case of a
+		 * simple click)
+		 */
+		public function get click():Function
+		{
+			return _click;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set click(value:Function):void
+		{
+			_click = value;
+		}
+
+		/**
+		 * Callback function doubleClick(evt:MouseEvent):void
+		 * This function is called after a MouseUp event (in the case of a
+		 * double click)
+		 */
+		public function get doubleClick():Function
+		{
+			return _doubleClick;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set doubleClick(value:Function):void
+		{
+			_doubleClick = value;
+		}
+
+		/**
+		 * Callback function drag(evt:MouseEvent):void
+		 * This function is called during a MouseMove event (in the case of a
+		 * drag&drop click) the function is not called at the MouseDown time.
+		 */
+		public function get drag():Function
+		{
+			return _drag;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set drag(value:Function):void
+		{
+			_drag = value;
+		}
+
+		/**
+		 * Callback function drop(evt:MouseEvent):void
+		 * This function is called after a MouseUp event (in the case of a
+		 * drag&drop click)
+		 */
+		public function get drop():Function
+		{
+			return _drop;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set drop(value:Function):void
+		{
+			_drop = value;
 		}
 
 		
