@@ -41,6 +41,7 @@ package org.openscales.core.layer
 							bounds:Bounds = null) 
 		{
 			super(identifier);
+			this.editable = true;
 			this.url = url;
 			this.data = data;
 			this.maxExtent = bounds;
@@ -62,29 +63,32 @@ package org.openscales.core.layer
 			if (this.map == null)
 				return;
 			
-			if (url)
+			if (!this._initialized)
 			{
-				if (! this._request) {
-					this.loading = true;
-					this._request = new XMLRequest(url, onSuccess, onFailure);
-					this._request.proxy = this.proxy;
-					this._request.security = this.security;
-					this._request.send();
-				} else {
+				if (url)
+				{
+					if (! this._request) {
+						this.loading = true;
+						this._request = new XMLRequest(url, onSuccess, onFailure);
+						this._request.proxy = this.proxy;
+						this._request.security = this.security;
+						this._request.send();
+					} else {
+						this.clear();
+						this.draw();
+					}
+				}
+				else if (this.data)
+				{	
+					this.drawFeatures();
+				}
+				else
+				{
 					this.clear();
 					this.draw();
 				}
+				this._initialized = true;
 			}
-			else if (this.data)
-			{	
-				this.drawFeatures();				
-			}
-			else
-			{
-				this.clear();
-				this.draw();
-			}
-			
 		}
 		
 		public function drawFeatures():void{
@@ -140,7 +144,6 @@ package org.openscales.core.layer
 				this._kmlFormat.proxy = this.proxy;
 				var features:Vector.<Feature> = this._kmlFormat.read(this._xml) as Vector.<Feature>;
 				this.addFeatures(features);
-				
 				this.clear();
 				this.draw();
 			}
@@ -156,6 +159,15 @@ package org.openscales.core.layer
 
 		override public function getURL(bounds:Bounds):String {
 			return this.url;
+		}
+		
+		override public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void
+		{
+			if (this._initialized)
+			{
+				this.edited = true;
+			}
+			super.addFeature(feature, dispatchFeatureEvent, reproject);
 		}
 		
 		/**

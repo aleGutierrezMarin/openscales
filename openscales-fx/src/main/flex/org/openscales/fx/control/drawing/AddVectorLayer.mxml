@@ -17,6 +17,7 @@
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.DrawingsLayer;
 			import org.openscales.core.layer.VectorLayer;
 			
 			import spark.components.Button;
@@ -177,9 +178,9 @@
 				this._errorLabel.includeInLayout = this.displayNameError;
 				this._errorLabel.visible = this.displayNameError;
 				
-				var layer:VectorLayer = new VectorLayer(value);
+				var layer:DrawingsLayer = new DrawingsLayer();
+				
 				layer.selected = true;
-				layer.editable = true;
 				layer.projection = this.map.projection;
 				this.map.addLayer(layer);	
 				
