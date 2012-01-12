@@ -17,7 +17,7 @@ package org.openscales.fx.layer
 		}
 		
 		override public function init():void {
-			this._layer = new VectorLayer("");
+			this._layer = new VectorLayer(this._layerIdentifier);
 		}
 		
 		public function get style():Style{
