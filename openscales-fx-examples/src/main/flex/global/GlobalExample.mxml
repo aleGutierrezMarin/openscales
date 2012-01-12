@@ -12,9 +12,10 @@
 		<WMSC displayedName="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
 				 layers="bluemarble" format="image/jpeg" 
 				 maxExtent="-180,-90,180,90" version="1.1.1"/>
-		<WFS id="bluemarble" identifier="top_states" displayedName="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+		<WFS id="bluemarble" identifier="top_states"  url="http://openscales.org/geoserver/wfs"
 				typename="topp:states" projection="EPSG:4326" version="1.1.0"
 				style="{Style.getDefaultSurfaceStyle()}" />
+		<!-- name property is deprecated but still works (though, you should use identifier and displayedName) -->
 		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
 				projection="EPSG:4326" version="1.1.0" useCapabilities="true" 
 				style="{Style.getDefaultPointStyle()}" />

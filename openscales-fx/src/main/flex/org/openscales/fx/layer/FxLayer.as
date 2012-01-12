@@ -40,6 +40,10 @@ package org.openscales.fx.layer
 		
 		protected var _displayInLayerManager:Boolean = true;
 		
+		protected var _identifier:String;
+		
+		protected var _displayedName:String;
+		
 		public function FxLayer() {
 			super();
 			this.init();
@@ -60,7 +64,10 @@ package org.openscales.fx.layer
 			
 			this.generateResolutions();
 			
-			this._layer.identifier = this.identifier;
+			if(!_identifier || _identifier == "") this._identifier = this._layer.identifier; // If no identifer a been set to fxLayer, we take it from layer
+			else this._layer.identifier = this._identifier; // Otherwise fxLayer's identifier must be given to layer
+			if(!_displayedName || _displayedName=="") this._layer.displayedName = this._identifier; // If no displayedName a been set to fxLayer, we take the identifier as a displayName (to match Layer's behavior)
+			else this._layer.displayedName = this._displayedName; // Otherwise we use fxLayer's displayedName
 			
 			
 			if(this._proxy)
@@ -179,6 +186,7 @@ package org.openscales.fx.layer
 		 * @private
 		 */ 
 		public function set identifier(value:String):void{
+			this._identifier = value;
 			if(this._layer) this._layer.identifier = value;
 			
 		}
@@ -213,6 +221,7 @@ package org.openscales.fx.layer
 		 * @private
 		 */ 
 		public function set displayedName(value:String):void{
+			this._displayedName = value;
 			if(this._layer) this._layer.displayedName = value;
 		}
 		

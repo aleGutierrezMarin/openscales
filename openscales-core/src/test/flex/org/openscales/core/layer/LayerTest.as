@@ -243,11 +243,17 @@ package org.openscales.core.layer
 			assertEquals("Uncorrect value for displayedName", "myidentifier", l.displayedName);
 		}
 		
+		/**
+		 * This test assets that default identifier is generated if null or empty string is given to constrcutor
+		 */ 
 		[Test]
 		public function shouldSetDefaultIdentifierIfIdentifierIsEmpty():void{
 			var l:Layer = new Layer("");
-			assertTrue("Uncorrect value for identifier, should start with 'NewLayer_'", l.identifier.indexOf("NewLayer_")==0);
-			assertEquals("Uncorrect value", l.identifier, l.displayedName);
+			assertTrue("Uncorrect value for identifier when passing empty string to constructor, should start with 'NewLayer_'", l.identifier.indexOf("NewLayer_")==0);
+			
+			var l2:Layer = new Layer(null);
+			assertTrue("Uncorrect value for identifier when passing null to constructor, should start with 'NewLayer_'", l2.identifier.indexOf("NewLayer_")==0);
+			
 		}
 
 	}

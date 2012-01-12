@@ -12,6 +12,20 @@ package org.openscales.core.control
 	import org.openscales.geometry.basetypes.Pixel;
 	
 	
+	/** 
+	 * Dispatched when an originator is added
+	 * 
+	 * @eventType org.openscales.core.events.OriginatorEvent.ORIGINATOR_ADDED 
+	 */ 
+	[Event(name="openscales.addOriginator", type="org.openscales.core.events.OriginatorEvent")]
+	
+	/** 
+	 * Dispatched when an originator is removed
+	 * 
+	 * @eventType org.openscales.core.events.OriginatorEvent.ORIGINATOR_REMOVED 
+	 */ 
+	[Event(name="openscales.removeOriginator", type="org.openscales.core.events.OriginatorEvent")]
+	
 	/**
 	 * Instances of DataOriginators are used to keep the different originator informations (logo / copyright)
 	 * for all the layer of a map.
@@ -24,7 +38,6 @@ package org.openscales.core.control
 	 * 
 	 * @author ajard
 	 */ 
-	
 	public class DataOriginators extends Control
 	{
 		/**
