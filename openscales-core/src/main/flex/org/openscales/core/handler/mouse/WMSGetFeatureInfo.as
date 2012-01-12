@@ -18,6 +18,11 @@ package org.openscales.core.handler.mouse
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.osmf.utils.Version;
 
+	/** 
+	 * @eventType org.openscales.core.events.GetFeatureInfoEvent.GET_FEATURE_INFO_DATA
+	 */ 
+	[Event(name="openscales.getfeatureinfodata", type="org.openscales.core.events.GetFeatureInfoEvent")]
+	
 	/**
 	 * Handler allowing to get information about a WMS feature when we click on it.
 	 */

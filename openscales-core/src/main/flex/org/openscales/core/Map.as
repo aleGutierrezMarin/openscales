@@ -42,7 +42,95 @@ package org.openscales.core
 	import org.openscales.proj4as.ProjProjection;
 	
 	use namespace os_internal;
+
+	// LAYER EVENTS
 	
+	/**
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_ADDED  
+	 */
+	[Event(name="openscales.addlayer", type="org.openscales.core.events.LayerEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_REMOVED
+	 */
+	[Event(name="openscales.removelayer", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * Dispatched when a layer is moved up in the layer manager
+	 * 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_MOVED_UP 
+	 */ 
+	[Event(name="openscales.layerMovedUp", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * Dispatched when a layer is moved down in the layer manager
+	 * 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_MOVED_DOWN 
+	 */ 
+	[Event(name="openscales.layerMovedDown", type="org.openscales.core.events.LayerEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_CHANGED_ORDER
+	 */
+	[Event(name="openscales.layerChangeOrder", type="org.openscales.core.events.LayerEvent")]
+	
+	// MAP EVENTS
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.MOVE_START
+	 */
+	[Event(name="openscales.mapmovestart", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.MOVE_END
+	 */
+	[Event(name="openscales.mapmoveend", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.LAYERS_LOAD_START
+	 */
+	[Event(name="openscales.layersloadstart", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.LAYERS_LOAD_END
+	 */
+	[Event(name="openscales.layersloadend", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.CENTER_CHANGED
+	 */
+	[Event(name="openscales.mapcenterchanged", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.RESIZE
+	 */
+	[Event(name="openscales.mapresize", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.MAX_EXTENT_CHANGED
+	 */
+	[Event(name="openscales.maxextentchanged", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.MIN_MAX_RESOLUTION_CHANGED
+	 */
+	[Event(name="openscales.minMaxresolutionChanged", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.PROJECTION_CHANGED
+	 */
+	[Event(name="openscales.mapprojectionchanged", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.RESOLUTION_CHANGED
+	 */
+	[Event(name="openscales.mapresolutionchanged", type="org.openscales.core.events.MapEvent")]
+	
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.RELOAD
+	 */
+	[Event(name="openscales.mapreload", type="org.openscales.core.events.MapEvent")]
+	
+	// I18N EVENTS
 	/**
 	 * This event is dispatched when the locale has changed
 	 *
@@ -55,13 +143,20 @@ package org.openscales.core
 	 * Instances of Map are interactive maps that can be embedded in a web pages or in
 	 * Flex or AIR applications.
 	 *
+	 * <p>
 	 * Create a new map with the Map constructor.
-	 *
+	 * </p>
+	 * <p>
 	 * To extend a map, it's necessary to add controls (Control), handlers (Handler) and
 	 * layers (Layer) to the map.
-	 *
+	 * </p>
+	 * <p>	
+	 * Map is responsible for event dispatching. In component/layer/etc... documentation, listed events are dispatched by the map (expect when specified). 
+	 * </p>
+	 * <p>
 	 * Map is a pure ActionScript class. Flex wrapper and components can be found in the
 	 * openscales-fx module.
+	 * </p>
 	 */
 	public class Map extends Sprite
 	{

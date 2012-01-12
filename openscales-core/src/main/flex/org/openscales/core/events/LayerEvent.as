@@ -64,7 +64,7 @@ package org.openscales.core.events
 		/**
 		 * Event type dispatched when property visible of layer is changed
 		 */		
-		public static const LAYER_VISIBLE_CHANGED:String="openscales.visibilitychanged";
+		public static const LAYER_VISIBLE_CHANGED:String="openscales.layerVisibilityChanged";
 		
 		/**
 		 * Event type dispatched when loading is started

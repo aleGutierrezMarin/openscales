@@ -19,6 +19,17 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 
+	/** 
+	 * @eventType org.openscales.core.events.DrawingEvent.DISABLED
+	 */ 
+	[Event(name="openscales.drawing.disabled", type="org.openscales.core.events.DrawingEvent")]
+	
+	/**
+	 * 
+	 * @eventType org.openscales.core.events.DrawingEvent.ENABLED
+	 */ 
+	[Event(name="openscales.drawing.enabled", type="org.openscales.core.events.DrawingEvent")]
+	
 	public class DrawHandler extends Handler
 	{
 		

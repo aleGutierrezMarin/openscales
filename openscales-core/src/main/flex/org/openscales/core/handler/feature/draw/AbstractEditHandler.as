@@ -17,6 +17,12 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.Point;
 
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_EDITION_MODE_END
+	 */ 
+	[Event(name="openscales.layerEditionModeEnd", type="org.openscales.core.events.LayerEvent")]
+	
+	
 	/**
 	* Abstract edit handler never instanciate this class
 	 * This class is the based class for the edition handlers

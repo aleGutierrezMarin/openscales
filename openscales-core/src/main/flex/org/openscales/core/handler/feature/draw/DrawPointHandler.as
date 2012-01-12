@@ -16,6 +16,11 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.style.marker.WellKnownMarker;
 
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DRAWING_END
+	 */ 
+	[Event(name="org.openscales.feature.drawingend", type="org.openscales.core.events.FeatureEvent")]
+	
 	/**
 	 * Handler to draw points.
 	 */

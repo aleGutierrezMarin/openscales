@@ -12,7 +12,17 @@
 				autoDrawBackground="false"
 				implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"
 				creationComplete="onCreationComplete();" >
-	
+	<fx:Metadata>
+		<![CDATA[
+			
+		/** 
+		* @eventType org.openscales.core.events.DrawingEvent.CHANGE_ACTIVE_LAYER
+		*/ 
+		[Event(name="openscales.drawing.change_active_layer", type="org.openscales.core.events.LayerEvent")]
+		
+		]]>
+		
+	</fx:Metadata>
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;

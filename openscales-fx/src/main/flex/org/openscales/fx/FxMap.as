@@ -36,8 +36,10 @@ package org.openscales.fx
 	import spark.core.SpriteVisualElement;
 	
 	
-	[Event(name="openscalesmaploadstart", type="org.openscales.core.events.MapEvent")]
-	[Event(name="openscalesmaploadcomplete", type="org.openscales.core.events.MapEvent")]
+	/**
+	 * @eventType org.openscales.core.events.MapEvent.MAP_LOADED
+	 */
+	[Event(name="openscales.maploaded", type="org.openscales.core.events.MapEvent")]
 	
 	/**
 	 * <p>Map Flex wrapper, used to create OpenScales Flex 4 based applications.</p>

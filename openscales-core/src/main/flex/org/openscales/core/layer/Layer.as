@@ -19,6 +19,42 @@ package org.openscales.core.layer {
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
 	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_CHANGED_ORIGINATORS
+	 */ 
+	[Event(name="openscales.layerChangeOriginators", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_PROJECTION_CHANGED
+	 */ 
+	[Event(name="openscales.layerProjectionChanged", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_VISIBLE_CHANGED
+	 */ 
+	[Event(name="openscales.layerVisibilityChanged", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_OPACITY_CHANGED
+	 */ 
+	[Event(name="openscales.layerOpacityChanged", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_LOAD_START
+	 */ 
+	[Event(name="openscales.layerloadstart", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_LOAD_END
+	 */ 
+	[Event(name="openscales.layerloadend", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED
+	 */ 
+	[Event(name="openscales.displayInLayerManagerChanged", type="org.openscales.core.events.LayerEvent")]
+	
+	
 	/**
 	 * A Layer displays raster (image) of vector datas on the map, usually loaded from a remote datasource.
 	 * Unit of the baseLayer is managed by the projection.

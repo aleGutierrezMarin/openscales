@@ -113,7 +113,7 @@ package org.openscales.core.events{
 		
 		/**
 		 *  Event type dispatched after map has finished moving and the timer ends to ask for
-		 *  avery component to actualize himself
+		 *  every component to actualize himself
 		 */
 		public static const RELOAD:String="openscales.mapreload"; 
 		

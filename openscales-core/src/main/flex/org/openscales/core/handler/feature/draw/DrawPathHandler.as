@@ -17,6 +17,11 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DRAWING_END
+	 */ 
+	[Event(name="org.openscales.feature.drawingend", type="org.openscales.core.events.FeatureEvent")]
+	
 	/**
 	 * This handler manage the function draw of the LineString (path).
 	 * Active this handler to draw a path.
