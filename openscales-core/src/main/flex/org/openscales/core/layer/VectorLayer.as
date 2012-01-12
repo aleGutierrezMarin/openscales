@@ -20,6 +20,25 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.ProjProjection;
 	
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_PRE_INSERT
+	 */ 
+	[Event(name="openscales.feature.preinsert", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_INSERT
+	 */ 
+	[Event(name="openscales.feature.insert", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DELETING
+	 */ 
+	[Event(name="openscales.feature.deleting", type="org.openscales.core.events.FeatureEvent")]
+	
+	
+	
+	
 	/**
 	 * Layer that display features stored as child element
 	 */

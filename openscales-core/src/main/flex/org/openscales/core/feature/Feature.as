@@ -17,7 +17,36 @@ package org.openscales.core.feature {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 
-
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_OVER 
+	 */ 
+	[Event(name="openscales.feature.over", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_MOUSEMOVE 
+	 */ 
+	[Event(name="openscales.feature.mousemove", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_CLICK
+	 */ 
+	[Event(name="openscales.feature.click", type="org.openscales.core.events.FeatureEvent")]
+	
+	/**  
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DOUBLECLICK
+	 */ 
+	[Event(name="openscales.feature.doubleclick", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_MOUSEDOWN
+	 */ 
+	[Event(name="openscales.feature.mousedown", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_MOUSEUP
+	 */ 
+	[Event(name="openscales.feature.mouseup", type="org.openscales.core.events.FeatureEvent")]
+	
 	/**
 	 * Features is a geolocalized graphical element.
 	 * It is generally subclassed to customized how it is displayed.

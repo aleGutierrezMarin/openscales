@@ -17,8 +17,35 @@ package org.openscales.core.control
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.geometry.basetypes.Pixel;
-	
 
+	/** 
+	 * Dispatched when a layer is moved up in the layer manager
+	 * 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_MOVED_UP 
+	 */ 
+	[Event(name="openscales.layerMovedUp", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * Dispatched when a layer is moved down in the layer manager
+	 * 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_MOVED_DOWN 
+	 */ 
+	[Event(name="openscales.layerMovedDown", type="org.openscales.core.events.LayerEvent")]
+	
+	/** 
+	 * Distpacthed when minimized is set
+	 * 
+	 * <p>Properties:
+	 * </p>
+	 * <ul>
+	 * 	<li>componentName: "LayerManager"</li>
+	 *	<li>componentIconified: value of <code>minimized</code></li>
+	 * </ul>
+	 * 
+	 * @eventType org.openscales.core.events.MapEvent.COMPONENT_CHANGED
+	 */ 
+	[Event(name="openscales.componentChanged", type="org.openscales.core.events.MapEvent")] 
+	
 	/**
 	 * Create a layerSwitcher that display all the layer load on the map
 	 */

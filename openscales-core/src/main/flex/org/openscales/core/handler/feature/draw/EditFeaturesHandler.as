@@ -33,7 +33,22 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
 	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_UNSELECTED
+	 */ 
+	[Event(name="openscales.feature.unselected", type="org.openscales.core.events.FeatureEvent")]
 	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_SELECTED
+	 */ 
+	[Event(name="openscales.feature.selected", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_SELECT
+	 */ 
+	[Event(name="openscales.feature_select", type="org.openscales.core.events.FeatureEvent")]
+	
+
 	/**
 	 * Edit Features by clicking, by drawing a selection box or by drawing a
 	 * freehand selection area.

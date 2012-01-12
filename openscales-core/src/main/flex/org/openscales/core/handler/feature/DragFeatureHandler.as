@@ -23,6 +23,21 @@ package org.openscales.core.handler.feature
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DRAG_START
+	 */ 
+	[Event(name="openscales.feature.dragstart", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DRAG_STOP
+	 */ 
+	[Event(name="openscales.feature.dragstop", type="org.openscales.core.events.FeatureEvent")]
+	
+	/** 
+	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_EDITED_END
+	 */ 
+	[Event(name="openscales.feature.editedend", type="org.openscales.core.events.FeatureEvent")]
+	
 	/**
 	 * DragFeature is use to drag a feature
 	 * To use this handler, it's  necessary to add it to the map

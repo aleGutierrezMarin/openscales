@@ -95,34 +95,34 @@ package org.openscales.core.events
 		/**
 		 * Event type dispatched when one or more features are unselected. 
 		 */
-		public static const FEATURE_UNSELECTED:String="org.openscales.feature.unselected";
+		public static const FEATURE_UNSELECTED:String="openscales.feature.unselected";
 
 		/**
 		 * Event type dispatched when we start dragging of a temporary features
 		 * */
 		
-		public static const EDITION_POINT_FEATURE_DRAG_START:String="org.openscales.editionFeature.dragstart";	
+		public static const EDITION_POINT_FEATURE_DRAG_START:String="openscales.editionFeature.dragstart";	
 		/**
 		 * Event type dispatched when we stop dragging of a temporary features
 		 * */
 		
-		public static const EDITION_POINT_FEATURE_DRAG_STOP:String="org.openscales.editionFeature.dragstop";	
+		public static const EDITION_POINT_FEATURE_DRAG_STOP:String="openscales.editionFeature.dragstop";	
 		
 		/**
 		 * Event type dispatched when a feature is selected, and we want to update information in FeatureInfo component
 		 */
-		 public static const FEATURE_SHOW_INFORMATIONS:String="org.openscales.feature.showinformations";
+		 public static const FEATURE_SHOW_INFORMATIONS:String="openscales.feature.showinformations";
 		 
 		 /**
 		  * Event type dispatched when a feature is finished to be drawn
 		  */
-		 public static const FEATURE_DRAWING_END:String="org.openscales.feature.drawingend";
+		 public static const FEATURE_DRAWING_END:String="openscales.feature.drawingend";
 		 
 		 /**
 		  * Event type dispatched when a feature is finished to be edited
 		  */
-		 public static const FEATURE_EDITED_END:String="org.openscales.feature.editedend";
-		 public static const FEATURE_SELECT:String="org.openscales.feature_select";
+		 public static const FEATURE_EDITED_END:String="openscales.feature.editedend";
+		 public static const FEATURE_SELECT:String="openscales.feature_select";
 		
 		/**
 		 * FeatureEvent constructor

@@ -21,7 +21,11 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 
-
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_EDITION_MODE_START
+	 */ 
+	[Event(name="openscales.layerEditionModeStart", type="org.openscales.core.events.LayerEvent")]
+	
 	/**
 	 * This class is a handler used for Collection(Linestring Polygon MultiPolygon etc..) modification
 	 * don't use it use EditPathHandler if you want to edit a LineString or a MultiLineString

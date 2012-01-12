@@ -15,6 +15,10 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LOAD_END
+	 */ 
+	[Event(name="openscales.layerloadend", type="org.openscales.core.events.LayerEvent")]
 
 	public class ImageLayer extends Layer
 	{
