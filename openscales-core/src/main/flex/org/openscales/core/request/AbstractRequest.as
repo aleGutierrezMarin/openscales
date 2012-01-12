@@ -60,8 +60,8 @@ package org.openscales.core.request
 		 * 
 		 * @param SWForImage Boolean that defines if the request is a loading of a SWF object / an image or not
 		 * @param url URL to use for the request (for instance http://server/dir/image123.png to dowload an image)
-		 * @param onComplete Function called when the request is completed
-		 * @param onFailure Function called when an error occurs
+		 * @param onComplete Function called when the request is completed (param: evt:flash.events.Event)
+		 * @param onFailure Function called when an error occurs (param: evt:flash.events.Event)
 		 */
 		public function AbstractRequest(SWForImage:Boolean,
 										url:String,
