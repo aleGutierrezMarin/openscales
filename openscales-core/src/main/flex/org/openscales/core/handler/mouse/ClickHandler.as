@@ -317,9 +317,9 @@ package org.openscales.core.handler.mouse
 		}
 
 		/**
-		 * Callback function drag(evt:MouseEvent):void
+		 * Callback (with one param of type MouseEvent)
 		 * This function is called during a MouseMove event (in the case of a
-		 * drag&drop click) the function is not called at the MouseDown time.
+		 * drag and drop click) the function is not called at the MouseDown time.
 		 */
 		public function get drag():Function
 		{
@@ -337,7 +337,7 @@ package org.openscales.core.handler.mouse
 		/**
 		 * Callback function drop(evt:MouseEvent):void
 		 * This function is called after a MouseUp event (in the case of a
-		 * drag&drop click)
+		 * drag and drop click)
 		 */
 		public function get drop():Function
 		{
