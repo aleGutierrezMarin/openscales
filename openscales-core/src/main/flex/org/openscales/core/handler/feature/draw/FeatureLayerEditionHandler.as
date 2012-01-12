@@ -395,6 +395,7 @@ package org.openscales.core.handler.feature.draw
 		 * */
 		public function set layerToEdit(value:VectorLayer):void{
 			if(value!=null){
+				value.edited = true;
 				this._layerToEdit=value;
 				if(this._editPoint)//change
 					iEditPoint = new EditPointHandler(map,active,value,_featureClickHandler,_drawContainer,false,_featuresToEdit);

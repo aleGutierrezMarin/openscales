@@ -154,6 +154,7 @@
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.control.FxDefaultCapabilitiesItemRenderer"/>
     <classEntry path="org.openscales.fx.layer.FxBing"/>
+    <classEntry path="org.openscales.fx.layer.FxDrawingsLayer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

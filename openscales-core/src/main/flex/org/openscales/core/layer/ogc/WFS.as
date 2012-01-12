@@ -74,8 +74,6 @@ package org.openscales.core.layer.ogc
 		
 		private var _currentScale:uint = 0;
 		
-		private var _initialized:Boolean = false;
-		
 		private const  _MAX_NUMBER_OF_SCALES:uint = 5;
 		
 		private var _previousCenter:Location = null;
