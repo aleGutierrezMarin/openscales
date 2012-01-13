@@ -166,7 +166,7 @@
 			{
 				var value:String = this._input.text;
 				
-				if(!value || value=="" || !this.validateName(value))
+				if(!value || value=="")
 				{
 					this.displayNameError = true;
 					this._errorLabel.includeInLayout = this.displayNameError;
@@ -179,7 +179,7 @@
 				this._errorLabel.visible = this.displayNameError;
 				
 				var layer:DrawingsLayer = new DrawingsLayer();
-				
+				layer.displayedName = value;
 				layer.selected = true;
 				layer.projection = this.map.projection;
 				this.map.addLayer(layer);	
