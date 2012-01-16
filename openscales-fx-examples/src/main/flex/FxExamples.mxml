@@ -32,7 +32,6 @@ Main Flex example application
 			
 			import locate.OverviewExample;
 			import locate.OverviewRatioExample;
-			import locate.OpenLSSearchExample;
 			import locate.YahooSearchExample;
 			
 			import manageLayer.CapabilitiesExample;
@@ -68,9 +67,6 @@ Main Flex example application
 						break;
 					case "overview":
 						state = new OverviewExample();
-						break;
-					case "openls":
-						state = new OpenLSSearchExample();
 						break;
 					case "yahoo":
 						state = new YahooSearchExample();
