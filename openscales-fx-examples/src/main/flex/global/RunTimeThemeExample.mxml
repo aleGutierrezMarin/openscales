@@ -55,8 +55,6 @@
 			//private var popup:Anchored
 			private var fxpopup:FxPopup;
 			
-			Trace.useFireBugConsole = true;
-			
 			/**
 			 *  Data values for theme combobox
 			 */

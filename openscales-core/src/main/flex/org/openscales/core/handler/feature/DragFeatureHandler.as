@@ -5,6 +5,7 @@ package org.openscales.core.handler.feature
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -80,6 +81,9 @@ package org.openscales.core.handler.feature
 			var feature:Feature;
 			if (event.target is TextField){
 				feature = (event.target as TextField).parent as Feature;
+			}else if(event.target.parent is CustomMarker)
+			{
+				feature = event.target.parent as Feature;
 			}
 			else
 				feature = event.target as Feature;

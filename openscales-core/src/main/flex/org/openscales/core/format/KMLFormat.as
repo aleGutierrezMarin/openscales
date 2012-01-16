@@ -920,7 +920,6 @@ package org.openscales.core.format
 			}
 			
 			//Donnees attributaires
-			Trace.useFireBugConsole = true;
 			var data:XML;
 			var displayName:XML;
 			var value:XML;
