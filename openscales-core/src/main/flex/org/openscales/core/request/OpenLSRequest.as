@@ -551,7 +551,7 @@ package org.openscales.core.request
 				var proj:ProjProjection = ProjProjection.getProjProjection(srsName);
 				if(!proj)
 					return results;
-				var latlon:Boolean = false;
+				var latlon:Boolean = true;
 				if(version == "1.2") {
 					latlon=!proj.lonlat;
 				}
@@ -597,7 +597,7 @@ package org.openscales.core.request
 				var proj:ProjProjection = ProjProjection.getProjProjection(srsName);
 				if(!proj)
 					return results;
-				var latlon:Boolean = false;
+				var latlon:Boolean = true;
 				if(version == "1.2") {
 					latlon=!proj.lonlat;
 				}
