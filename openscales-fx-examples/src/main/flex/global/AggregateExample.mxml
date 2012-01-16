@@ -49,8 +49,6 @@
 			//private var popup:Anchored
 			private var fxpopup:FxPopup;
 			
-			Trace.useFireBugConsole = true;
-			
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
 			}

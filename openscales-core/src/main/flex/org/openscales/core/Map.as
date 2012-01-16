@@ -1276,7 +1276,7 @@ package org.openscales.core
 			event.newResolution = this.resolution;
 			if (newCenter.projection != this.projection)
 				newCenter = newCenter.reprojectTo(this.projection);
-			Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projection.srsCode);
+			//Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projection.srsCode);
 			
 			// only change center according to restrictedExtent
 			if(!isValidExtentWithRestrictedExtent(newCenter, this.resolution))
@@ -1289,8 +1289,8 @@ package org.openscales.core
 				this._timer.start();
 				this.dispatchEvent(event);
 			}
-			else
-				Trace.debug("Center out of maxExtent so do nothing");
+			//else
+				//Trace.debug("Center out of maxExtent so do nothing");
 		}
 		/**
 		 * Map size in pixels.
@@ -1736,7 +1736,7 @@ package org.openscales.core
 			this.dispatchEvent(event);
 			this._timer.reset();
 			this._timer.start();
-			Trace.log("Changing resolution: "+ event.newResolution.value);
+			//Trace.log("Changing resolution: "+ event.newResolution.value);
 		}	
 		
 		/**
@@ -1879,6 +1879,41 @@ package org.openscales.core
 			this._timer.stop();
 			var mapevent:MapEvent = new MapEvent(MapEvent.RELOAD, this);
 			this.dispatchEvent(mapevent);
+		}
+		
+		/**
+		 * Return the identifier list if the edited vector layers that are in the map
+		 * Edited layers are vector layer which have been modified by the drawing tools
+		 */
+		public function getEditedLayers():Vector.<String>
+		{
+			var identifierList:Vector.<String> = new Vector.<String>();
+			var length:int = this.layers.length;
+			for (var i:int = 0; i<length; ++i)
+			{
+				if (this.layers[i] is VectorLayer)
+				{
+					if ((this.layers[i] as VectorLayer).edited)
+					{
+						identifierList.push(this.layers[i].identifier)
+					}
+				}
+			}
+			return identifierList;
+		}
+		
+		/**
+		 * Return the indentifier list of the layers that are in the map
+		 */
+		public function getMapLayers():Vector.<String>
+		{
+			var identifierList:Vector.<String> = new Vector.<String>();
+			var length:int = this.layers.length;
+			for (var i:int = 0; i<length; ++i)
+			{
+				identifierList.push(this.layers[i].identifier)
+			}
+			return identifierList;
 		}
 	}
 }

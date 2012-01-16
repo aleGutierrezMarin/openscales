@@ -63,32 +63,34 @@ package org.openscales.core.layer
 			if (this.map == null)
 				return;
 			
-			if (!this._initialized)
+			if (fullRedraw)
 			{
-				if (url)
-				{
-					if (! this._request) {
-						this.loading = true;
-						this._request = new XMLRequest(url, onSuccess, onFailure);
-						this._request.proxy = this.proxy;
-						this._request.security = this.security;
-						this._request.send();
-					} else {
-						this.clear();
-						this.draw();
-					}
-				}
-				else if (this.data)
-				{	
-					this.drawFeatures();
-				}
-				else
-				{
+				this.clear();
+			}
+			
+			if (url)
+			{
+				if (! this._request) {
+					this.loading = true;
+					this._request = new XMLRequest(url, onSuccess, onFailure);
+					this._request.proxy = this.proxy;
+					this._request.security = this.security;
+					this._request.send();
+				} else {
 					this.clear();
 					this.draw();
 				}
-				this._initialized = true;
 			}
+			else if (this.data)
+			{	
+				this.drawFeatures();
+			}
+			else
+			{
+				this.clear();
+				this.draw();
+			}
+			this._initialized = true;
 		}
 		
 		public function drawFeatures():void{
