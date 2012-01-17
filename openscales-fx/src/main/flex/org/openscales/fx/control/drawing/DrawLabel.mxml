@@ -160,6 +160,7 @@
 			/**
 			 * Layer the features will be drawn on
 			 */
+			[Bindable]
 			public function get target():VectorLayer{
 				
 				return this._target;
