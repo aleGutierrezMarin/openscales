@@ -366,7 +366,7 @@
 				
 				if(!evt.layer)
 					return;
-				if(!(evt.layer.hasOwnProperty("features")) || evt.layer != this._layer){
+				if(!(evt.layer.hasOwnProperty("features")) || evt.layer != this._layer && this._layer){
 					this._layer.selected = false;
 					_color = this._layer.selected ? 0xd0d0d0 : 0xffffff;
 				}
