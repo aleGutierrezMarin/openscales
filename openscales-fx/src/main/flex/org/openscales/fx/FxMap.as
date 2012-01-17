@@ -352,24 +352,31 @@ package org.openscales.fx
 		/**
 		 * Set the center of the map using its longitude and its latitude.
 		 * 
-		 * @param value a string of two coordinates separated by a coma, in
+		 * @param value A Location or, a string of two coordinates separated by a coma, in
 		 * WGS84 = EPSG:4326 only (not in the SRS of the base layer) !
 		 */
-		public function set center(value:String):void {
+		public function set center(value:*):void {
 			
-			var centerStringArray:Array = value.split(",");
+			if(value is String){
+				var centerStringArray:Array = value.split(",");
+				
+				if ( centerStringArray.length == 2)
+				{
+					_map.center = new Location(centerStringArray[0], centerStringArray[1], Geometry.DEFAULT_SRS_CODE);
+				} else 
+					if ( centerStringArray.length == 3 )
+					{
+						_map.center = new Location(centerStringArray[0], centerStringArray[1], centerStringArray[2]);
+					} else
+					{
+						return;
+					}
+			}else if(value is Location){
+				_map.center = value;
+			}else{
+				return
+			}
 			
-			if ( centerStringArray.length == 2)
-			{
-				_map.center = new Location(centerStringArray[0], centerStringArray[1], Geometry.DEFAULT_SRS_CODE);
-			} else 
-				if ( centerStringArray.length == 3 )
-				{
-					_map.center = new Location(centerStringArray[0], centerStringArray[1], centerStringArray[2]);
-				} else
-				{
-					return;
-				}
 		}
 		
 		/**
