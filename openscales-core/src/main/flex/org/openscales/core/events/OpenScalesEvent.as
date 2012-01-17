@@ -1,0 +1,21 @@
+package org.openscales.core.events
+{
+	import flash.events.Event;
+
+	/**
+	 * Abstract base event for all OpenScales events
+	 */
+	public class OpenScalesEvent extends Event
+	{
+		public function OpenScalesEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		{
+			super(type, bubbles, cancelable);
+		}
+		
+		override public function clone():Event {
+			return super.clone();
+		}
+
+	}
+}
+

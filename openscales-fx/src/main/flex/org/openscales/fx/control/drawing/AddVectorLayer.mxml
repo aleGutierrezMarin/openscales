@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:os="org.openscales.fx.control.*">
+	
+	<os:IconButton icon="{_btnAddVector}" id="iconButton" click="onClick()" toolTip="{this.labelAddVector}"
+				   width="22"
+				   height="22" alpha="{_alpha}" />
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.events.DrawingEvent;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.DrawingsLayer;
+			import org.openscales.core.layer.VectorLayer;
+			
+			import spark.components.Button;
+			import spark.components.Label;
+			import spark.components.TextInput;
+			import spark.components.TitleWindow;
+			import spark.layouts.HorizontalAlign;
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalLayout;
+			
+			[Bindable]
+			private var _alpha:Number = 1;
+			/**
+			 * Translation for label button
+			 */
+			[Bindable]
+			[Embed(source="/assets/images/icons/Icons-20.png")]
+			private var _btnAddVector:Class;
+			
+			[Bindable]
+			public var labelAddVector:String = Catalog.getLocalizationForKey('drawing.addvectorlayer');
+			
+			[Bindable]
+			public var labelText:String = Catalog.getLocalizationForKey('drawing.name');
+			
+			[Bindable]
+			public var validateLabel:String = Catalog.getLocalizationForKey('drawing.add');
+			
+			/**
+			 * Translation for label Name error
+			 */
+			[Bindable]
+			public var nameLabelError:String = Catalog.getLocalizationForKey('drawing.nameerror');
+			
+			[Bindable]
+			public var displayNameError:Boolean = false;
+			
+			private var _map:Map = null;
+
+			private var _input:TextInput = null;
+			private var _errorLabel:Label = null;
+			/**
+			 * The title window (that display the form)
+			 */
+			public var myTitleWindow:TitleWindow = new TitleWindow();
+			
+			private var _drawingMode:String;
+			
+			/**
+			 * Indicates for Drawing mode
+			 * multiple : tools are in the LayerSwitcher
+			 * unique : tools are in the DrawingToolbar
+			 */
+			[Bindable]
+			public function get drawingMode():String{
+				
+				return _drawingMode;
+			}
+			
+			public function set drawingMode(value:String):void{
+				_drawingMode = value;
+			}
+			
+			public function onClick():void
+			{
+				// Set the TitleWindow container properties.
+				myTitleWindow = new TitleWindow();
+				myTitleWindow.title = Catalog.getLocalizationForKey('drawing.addvectorlayer');
+				myTitleWindow.addEventListener(FlexEvent.CREATION_COMPLETE, this.onPopUpCreationComplete);
+				
+				// Call the method to add the Button control to the 
+				// TitleWindow container.
+				populateWindow();
+				
+				myTitleWindow.width = 300;
+				myTitleWindow.height = 300;
+				
+				// place at the center
+				myTitleWindow.x = (this.map.width/2)-(myTitleWindow.width/2);
+				myTitleWindow.y = (this.map.height/2)-(myTitleWindow.height/2);
+				
+				// Use the PopUpManager to display the TitleWindow container.
+				PopUpManager.addPopUp(myTitleWindow, this, true);
+			}
+			
+			private function onPopUpCreationComplete(e:Event):void
+			{
+				myTitleWindow.closeButton.addEventListener(MouseEvent.CLICK, this.closePopUp);
+				this._input.setFocus();
+			}
+			
+			/**
+			 * Function that fill the popUp
+			 */
+			private function populateWindow():void 
+			{	
+				var group:Group = new Group();
+				var vertical:VerticalLayout = new VerticalLayout();
+				vertical.paddingBottom = 5;
+				vertical.paddingTop = 5;
+				vertical.paddingLeft = 5;
+				vertical.paddingRight = 5;
+				vertical.verticalAlign = "middle";
+				group.layout = vertical;
+				
+				var nameGroup:Group = new Group()
+				var horizontal:HorizontalLayout = new HorizontalLayout();
+				horizontal.paddingBottom = 5;
+				horizontal.paddingTop = 5;
+				horizontal.paddingLeft = 5;
+				horizontal.paddingRight = 5;
+				horizontal.horizontalAlign = "center";
+				horizontal.verticalAlign = "middle";
+				nameGroup.layout = new HorizontalLayout();
+				
+				var label:Label = new Label();
+				label.text = labelText;
+				nameGroup.addElement(label); 
+				
+				this._input = new TextInput();
+				nameGroup.addElement(this._input); 
+				
+				group.addElement(nameGroup);
+				
+				
+				var button:Button = new Button();
+				button.label = this.validateLabel;
+				button.addEventListener(MouseEvent.CLICK, addVectorLayer);
+				
+				group.addElement(button); 
+				
+				
+				this._errorLabel = new Label();
+				this._errorLabel.text = this.nameLabelError;
+				this._errorLabel.includeInLayout = this.displayNameError;
+				this._errorLabel.visible = this.displayNameError;
+				group.addElement(this._errorLabel);
+				
+				myTitleWindow.addElement(group);
+			}
+			
+			/**
+			 * Add a nex vector layer on the map
+			 */
+			public function addVectorLayer(event:MouseEvent):void
+			{
+				var value:String = this._input.text;
+				
+				if(!value || value=="")
+				{
+					this.displayNameError = true;
+					this._errorLabel.includeInLayout = this.displayNameError;
+					this._errorLabel.visible = this.displayNameError;
+					return;
+				}
+				
+				this.displayNameError = false;
+				this._errorLabel.includeInLayout = this.displayNameError;
+				this._errorLabel.visible = this.displayNameError;
+				
+				var layer:DrawingsLayer = new DrawingsLayer();
+				layer.displayedName = value;
+				layer.selected = true;
+				layer.projection = this.map.projection;
+				this.map.addLayer(layer);	
+				
+				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
+				evt.layer = layer;
+				this.map.dispatchEvent(evt);
+				
+				this.closePopUp();
+			}
+			
+			/**
+			 * @private
+			 */
+			private function validateName(value:String):Boolean
+			{
+				if(this.map)
+				{
+					if(this.map.getLayerByIdentifier(value)==null)
+						return true;
+				}
+				return false;
+			}
+			
+			/**
+			 * Change the text values on Map Language changed
+			 * @param event The I18N event received
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				labelAddVector = Catalog.getLocalizationForKey('drawing.addvectorlayer');
+				labelText = Catalog.getLocalizationForKey('drawing.name');
+				validateLabel = Catalog.getLocalizationForKey('drawing.add');
+				nameLabelError = Catalog.getLocalizationForKey('drawing.nameerror');
+			}
+			
+			/**
+			 * Close the PopUp window
+			 */
+			public function closePopUp(event:MouseEvent = null):void
+			{
+				// close the pop up file
+				PopUpManager.removePopUp(myTitleWindow);
+			}
+			
+			/**
+			 * The map linked to the add vector layer button
+			 */
+			public function get map():Map
+			{
+				return _map;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set map(value:Map):void
+			{
+				this._map = value;
+				if(this._map)
+				{
+					this._map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
+				}
+			}
+
+			
+			
+		]]>
+	</fx:Script>			
+</s:Group>
