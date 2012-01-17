@@ -2,8 +2,9 @@ package org.openscales.core.events
 {
 	import flash.events.Event;
 	
-	import org.openscales.core.layer.Layer;
 	import mx.controls.Button;
+	
+	import org.openscales.core.layer.Layer;
 	
 	/**
 	 * Event related to a layer.
@@ -24,6 +25,11 @@ package org.openscales.core.events
 		 * Opacity of the layer after the layer opacity change
 		 */
 		private var _newOpacity:Number;
+		
+		/**
+		 * Boolean saying if the layer is edited
+		 */
+		private var _isEdited:Boolean = false;
 		
 		/**
 		 * Event type dispatched when a layer is added to the map.
@@ -125,6 +131,10 @@ package org.openscales.core.events
 		 */ 
 		public static const LAYER_DISPLAY_IN_LAYERMANAGER_CHANGED:String="openscales.displayInLayerManagerChanged";
 		
+		/**
+		 * Event type dispatched when the layer is edited
+		 */ 
+		public static const LAYER_EDITED:String="openscales.layeredited";
 		
 		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
@@ -133,6 +143,7 @@ package org.openscales.core.events
 			super(type, bubbles, cancelable);
 			this._newOpacity = layer.alpha;
 		}
+		
 		
 		/**
 		 * Layer concerned by the event.
@@ -179,6 +190,22 @@ package org.openscales.core.events
 			evt.oldOpacity = this.oldOpacity;
 			evt.newOpacity = this.newOpacity;
 			return evt;
+		}
+		
+		/**
+		 * Boolean saying if the layer is edited
+		 */
+		public function get isEdited():Boolean
+		{
+			return this._isEdited;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set isEdited(value:Boolean):void
+		{
+			this._isEdited = value;
 		}
 		
 	}
