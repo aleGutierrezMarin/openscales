@@ -543,7 +543,14 @@ package org.openscales.core.layer
 		 */
 		public function set edited(value:Boolean):void
 		{
-			this._edited = value;	
+			var bufferedValue:Boolean = this._edited;
+			this._edited = value;
+			if (value != bufferedValue && this.map)
+			{
+				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_EDITED, this);
+				evt.isEdited = value;
+				this.map.dispatchEvent(evt);				
+			}
 		}
 		
 		
