@@ -127,6 +127,7 @@
 			/**
 			 * Layer the features will be drawn on
 			 */
+			[Bindable]
 			public function get target():VectorLayer{
 				
 				return _handler.drawLayer;
