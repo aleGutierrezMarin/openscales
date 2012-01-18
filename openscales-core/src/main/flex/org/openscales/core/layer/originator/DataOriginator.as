@@ -10,7 +10,7 @@ package org.openscales.core.layer.originator
 
 	/**
 	 * Instances of DataOriginator are used to keep the informations about the origintor/provider of a Layer 
-	 * (name, url, logo and extent and resolution constraint).
+	 * (name, attribution, url, logo and extent and resolution constraint).
 	 * 
 	 * This DataOriginator class represents informations about the originator of a Layer.
 	 * 
@@ -19,46 +19,22 @@ package org.openscales.core.layer.originator
 	
 	public class DataOriginator 
 	{
-		/**
-		 * @private
-		 * @default null
-		 * The originator name of a Layer.
-		 */
 		private var _name:String = null;
 		
-		/**
-		 * @private
-		 * @default null
-		 * The originator url.
-		 */
+		private var _attribution:String = null;
+		
 		private var _url:String = null
 			
-		/**
-		 * @private
-		 * @default null
-		 * The url of the originator logo picture.
-		 */
 		private var _pictureUrl:String = null;
 		
-		/**
-		 * @private
-		 * @default false
-		 * is the image loading
-		 */
 		private var _loading:Boolean = false;
 
 		/**
 		 * @Private
-		 * @default null
 		 * The callback called when image is retrieved
 		 */
 		private var _callback:Function = null;
 		
-		/**
-		 * @private
-		 * @default null
-		 * The constraint list of the originator.
-		 */
 		private var _constraints:Vector.<ConstraintOriginator> = null;
 		
 		/**
@@ -71,6 +47,7 @@ package org.openscales.core.layer.originator
 		public function DataOriginator(name:String, url:String, pictureUrl:String)
 		{
 			this._name = name;
+			this._attribution = name;
 			this._url = url;
 			this._pictureUrl = pictureUrl;	
 			this._constraints = new Vector.<ConstraintOriginator>();
@@ -197,80 +174,111 @@ package org.openscales.core.layer.originator
 		}
 		
 		// getters setters
-		
 		/**
-		 * The originator name of a Layer.
+		 * indicates the unique key of the originator
+		 */
+		public function get key():String {
+			return this._name+this._url+this._pictureUrl;
+		}
+
+		/**
+		 * The originator name of a Layer (eg.: "ign")
+		 * @default null
 		 */
 		public function get name():String
 		{
-			return this._name;
+			return _name;
 		}
+
 		/**
 		 * @private
 		 */
-		public function set name(name:String):void 
+		public function set name(value:String):void
 		{
-			this._name = name;
+			_name = value;
 		}
-		
+
 		/**
 		 * The originator url.
+		 * 
+		 * @default null
 		 */
 		public function get url():String
 		{
-			return this._url;
+			return _url;
 		}
+
 		/**
 		 * @private
 		 */
-		public function set url(url:String):void 
+		public function set url(value:String):void
 		{
-			this._url = url;
+			_url = value;
 		}
-		
+
 		/**
+		 * 
 		 * The url of the originator logo picture.
+		 * 
+		 * @default null
 		 */
 		public function get pictureUrl():String
 		{
-			return this._pictureUrl;
+			return _pictureUrl;
 		}
+
 		/**
 		 * @private
 		 */
-		public function set pictureUrl(pictureUrl:String):void 
+		public function set pictureUrl(value:String):void
 		{
-			this._pictureUrl = pictureUrl;
+			_pictureUrl = value;
 		}
-		
+
 		/**
-		 * The constraint list of the originator.
-		 */
-		public function get constraints():Vector.<ConstraintOriginator>
-		{
-			return this._constraints;
-		}
-		/**
-		 * @private
-		 */
-		public function set constraints(constraints:Vector.<ConstraintOriginator>):void 
-		{
-			this._constraints = constraints;
-		}
-		
-		/**
-		 * indicates if the image loading
+		 * Is the image loading
+		 * 
+		 * @default false
 		 */
 		public function get loading():Boolean
 		{
 			return _loading;
 		}
-		
+
 		/**
-		 * indicates the unique key of the originator
+		 * The constraint list of the originator.
+		 * @default null
 		 */
-		public function get key():String {
-			return this.name+this.url+this.pictureUrl;
+		public function get constraints():Vector.<ConstraintOriginator>
+		{
+			return _constraints;
 		}
+
+		/**
+		 * @private
+		 */
+		public function set constraints(value:Vector.<ConstraintOriginator>):void
+		{
+			_constraints = value;
+		}
+
+		/**
+		 * The entity this originator is attributed to (eg. "Institut National de l'Information géographique et forestière"). This is basically a human readable name, it also could be an i18n key.
+		 * @default The value of <code>name</code> property
+		 */
+		public function get attribution():String
+		{
+			return _attribution;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set attribution(value:String):void
+		{
+			_attribution = value;
+		}
+
+
 	}
 }

@@ -3,6 +3,7 @@ package org.openscales.core.control
 	import com.adobe.protocols.dict.Database;
 	
 	import org.flexunit.Assert;
+	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.fail;
 	import org.openscales.core.Map;
@@ -74,6 +75,19 @@ package org.openscales.core.control
 			
 			Assert.assertEquals(originator1,dataOriginatorsControl.findOriginatorByKey(originator1.key));
 			Assert.assertNull(dataOriginatorsControl.findOriginatorByKey("test"));
+		}
+		
+		[Test]
+		public function shouldSetAttributionToNameValue():void{
+			var orig:DataOriginator = new DataOriginator("orig","orig.com","org.com/logo.png");
+			assertEquals("Attribution should be equal to name by default", orig.name, orig.attribution);
+		}
+		
+		[Test]
+		public function shouldSetAttribution():void{
+			var orig:DataOriginator = new DataOriginator("orig","orig.com","org.com/logo.png");
+			orig.attribution = "My Originator";
+			assertEquals("Attribution should be set properly", "My Originator", orig.attribution);
 		}
 		
 		[Test]
