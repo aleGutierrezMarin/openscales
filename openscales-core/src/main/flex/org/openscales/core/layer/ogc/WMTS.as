@@ -216,7 +216,7 @@ package org.openscales.core.layer.ogc
 			
 		}
 		
-		override public function get available():Boolean
+		override protected function checkAvailability():Boolean
 		{
 			//Parse the tileMatrixSets of the layer and try to find if one is in the projection map
 			if(this.projection && this.map && this.map.projection) {
@@ -234,8 +234,7 @@ package org.openscales.core.layer.ogc
 					}
 				}
 			}
-			
-			return super.available;
+			return super.checkAvailability();
 		}
 		
 		override public function supportsProjection(compareProj:*):Boolean

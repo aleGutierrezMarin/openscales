@@ -1432,9 +1432,9 @@ package org.openscales.core.layer
 		 * Return true if the layer is available with the map configuration. This mean that it can be drawn
 		 * You need to check also the flash visible boolean to know if the layer will be drawn. 
 		 */
-		override public function get available():Boolean
+		override protected function checkAvailability():Boolean
 		{
-			if(!super.available) {
+			if(!super.checkAvailability()) {
 				return false;
 			}
 			//Parsing available projections for the layer

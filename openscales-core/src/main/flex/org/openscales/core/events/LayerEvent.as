@@ -136,6 +136,11 @@ package org.openscales.core.events
 		 */ 
 		public static const LAYER_EDITED:String="openscales.layeredited";
 		
+		/**
+		 * Event type dispatched when the layer availability has changed
+		 */ 
+		public static const LAYER_AVAILABILITY_CHANGED:String="openscales.layeravailabilitychanged";
+		
 		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{
