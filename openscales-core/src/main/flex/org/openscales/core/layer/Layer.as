@@ -100,6 +100,7 @@ package org.openscales.core.layer {
 		protected var _centerChanged:Boolean = false;
 		protected var _projectionChanged:Boolean = false;
 		protected var _mapReload:Boolean = false;
+		private var _available:Boolean = false;
 		
 				
 		/**
@@ -160,15 +161,39 @@ package org.openscales.core.layer {
 		
 		/**
 		 * The boolean that say if the layer is available or not (according to map)
-		 * This is a readonly parameter.
 		 * 
-		 * Override this method and check what you need to check and return if your layer
-		 * is available or not.
+		 * Computed by the checkAvailability method
+		 * The setter is for internal use, if you set it mannualy it may not be displayed properly
 		 */
 		public function get available():Boolean
 		{
-			if(!this._map)return false;
-			return isAvailableForBounds(this._map.extent, this._map.resolution);	
+			return this._available;	
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set available(value:Boolean):void
+		{
+			var oldAvailable:Boolean = this._available;
+			this._available = value;
+			if (value != oldAvailable && this.map)
+			{
+				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_AVAILABILITY_CHANGED, this);
+				this.map.dispatchEvent(evt);
+			}
+		}
+		
+		/**
+		 * This method return the new availability of the layer.
+		 * Override this method if you want to change the way the availability is conputed
+		 */
+		protected function checkAvailability():Boolean
+		{
+			if (map)
+				return isAvailableForBounds(this._map.extent, this._map.resolution);
+			else
+				return false;
 		}
 		
 		/**
@@ -288,6 +313,7 @@ package org.openscales.core.layer {
 				map.removeEventListener(MapEvent.RELOAD, onMapReload);
 				map.removeEventListener(MapEvent.MAX_EXTENT_CHANGED, onMaxExtentChanged);
 				map.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+				map.removeEventListener(MapEvent.MAX_EXTENT_CHANGED, onMapMaxExtentChanged);
 			}
 		}
 		
@@ -337,10 +363,12 @@ package org.openscales.core.layer {
 				this.map.addEventListener(MapEvent.RESIZE, onMapResize);
 				this.map.addEventListener(MapEvent.MAX_EXTENT_CHANGED, onMaxExtentChanged);
 				this.map.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+				this.map.addEventListener(MapEvent.MAX_EXTENT_CHANGED, onMapMaxExtentChanged);
 				if (! this.maxExtent) {
 					this.maxExtent = this.map.maxExtent;
 				}
 			}
+			this.available = this.checkAvailability();
 		}
 		
 		/**
@@ -369,7 +397,7 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * This function is call when the MapEvent.RESOLUTION_CHANGED
+		 * This function is called when the MapEvent.RESOLUTION_CHANGED is dispatched
 		 * Override this method if you want a specific behaviour in your layer
 		 * when the resolution of the map is changed
 		 */
@@ -378,20 +406,30 @@ package org.openscales.core.layer {
 			this._resolutionChanged = true;
 		}
 		
+		/**
+		 * This function is called when the MapEvent.MAX_EXTENT_CHANGED is dispatched
+		 * Override this method if you want a specific behaviour in your layer
+		 * when the map max extent changed.
+		 */
+		protected function onMapMaxExtentChanged(event:MapEvent):void
+		{
+			this.available = this.checkAvailability();
+		}
+		
 		
 		/**
-		 * This function is call when the MapEvent.RELOAD
+		 * This function is called when the MapEvent.RELOAD
 		 * Override this method if you want a specific behaviour in your layer
 		 * when the map ask for a reload.
 		 */
 		protected function onMapReload(event:MapEvent):void
 		{
+			this.available = this.checkAvailability();
 			this._mapReload = true;
-				
 		}
 		
 		/**
-		 * This function is call when the MapEvent.CENTER_CHANGED
+		 * This function is called when the MapEvent.CENTER_CHANGED is dispatched
 		 * Call the redraw function to check if the layer can be displayed
 		 * Override this method if you want a specific behaviour in your layer
 		 * when the center is changed
@@ -652,6 +690,7 @@ package org.openscales.core.layer {
 			}
 			
 			this._minResolution = value;
+			this.available = this.checkAvailability();
 		}
 		
 		/**
@@ -682,6 +721,7 @@ package org.openscales.core.layer {
 					value = value.reprojectTo(this.projection);
 			}
 			this._maxResolution = value;
+			this.available = this.checkAvailability();
 		}
 		
 		/**
@@ -714,6 +754,7 @@ package org.openscales.core.layer {
 			}
 			if(bounds)
 				this._maxExtent = bounds;
+			this.available = this.checkAvailability()
 		}
 		
 		/**
@@ -783,6 +824,8 @@ package org.openscales.core.layer {
 				this.dispatchEvent(event.clone());
 			if(this.map && event)
 				this.map.dispatchEvent(event.clone());
+			
+			this.available = this.checkAvailability();
 		}
 		
 		/**
