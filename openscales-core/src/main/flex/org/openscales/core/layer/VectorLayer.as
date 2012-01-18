@@ -92,10 +92,6 @@ package org.openscales.core.layer
 			this.cacheAsBitmap = true;
 		}
 		
-		override public function get available():Boolean {
-			return super.available;
-		}
-		
 		override public function supportsProjection(compareProj:*):Boolean
 		{
 			//A Vector Layer is able to be reprojected in any projection. So, it supports all projections

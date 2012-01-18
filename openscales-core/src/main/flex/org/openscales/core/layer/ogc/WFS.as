@@ -347,9 +347,9 @@ package org.openscales.core.layer.ogc
 			return layerExtent;
 		}
 		
-		override public function get available():Boolean
+		override protected function checkAvailability():Boolean
 		{
-			return (super.available && this.defineBounds() && (!this.useCapabilities || this.projection))
+			return (super.checkAvailability() && this.defineBounds() && (!this.useCapabilities || this.projection))
 		}
 		
 		/**
@@ -539,6 +539,7 @@ package org.openscales.core.layer.ogc
 			this._useCapabilities = value;
 			if (value)
 				this.projection = null;
+			this.available = this.checkAvailability();
 		}
 		
 		/**
