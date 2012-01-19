@@ -3,9 +3,7 @@ package org.openscales.core.layer
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
-	import flash.display.DisplayObject;
 	import flash.display.PixelSnapping;
-	import flash.display.Sprite;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -472,7 +470,7 @@ package org.openscales.core.layer
 				this.moveGriddedTiles(bounds);
 				this.actualizeGridSize(bounds);
 			} 
-			_initialized = true;
+			
 		}
 		
 		/**
@@ -759,6 +757,7 @@ package org.openscales.core.layer
 			tile.draw();
 			this._grid[0][0] = tile;         
 			this.removeExcessTiles(1,1);
+			_initialized = true;
 		}
 		
 		/**
@@ -968,6 +967,7 @@ package org.openscales.core.layer
 			
 			//now actually draw the tiles
 			this.spiralTileLoad();
+			_initialized = true;
 		}
 		
 		/**
