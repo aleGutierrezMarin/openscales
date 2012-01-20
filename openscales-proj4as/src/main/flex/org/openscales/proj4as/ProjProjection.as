@@ -180,6 +180,17 @@ package org.openscales.proj4as {
 			var srsCode:String;
 			if(proj is String)
 			{
+				if ((proj as String).match("http://www.opengis.net/gml/srs/epsg.xml") != null)
+				{
+					var splitArray:Array = (proj as String).split("#");
+					if (splitArray.length == 2)
+					{
+						proj = "EPSG:"+splitArray[1];
+					}else
+					{
+						proj = "EPSG:4326";
+					}
+				}
 				srsCode = (proj as String).toUpperCase();
 				while(srsCode.search(" ") != -1)
 				{

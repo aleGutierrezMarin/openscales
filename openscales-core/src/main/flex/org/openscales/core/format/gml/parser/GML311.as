@@ -18,6 +18,7 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
+	import org.openscales.proj4as.ProjProjection;
 
 	public class GML311 extends GMLParser
 	{
@@ -32,37 +33,44 @@ package org.openscales.core.format.gml.parser
 		
 		override public function parseFeature(data:XML, lonLat:Boolean=true):Feature {
 			use namespace gml;
-			
+			var proj:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
 			var geom:ICollection = null;
 			var p:Vector.<Number> = new Vector.<Number>();
 			
 			var feature:Feature = null;
+			var srsCode:String = "EPSG:4326";
 			
 			var i:int;
 			var j:int;
 			//multiSurface
 			if (data..*::MultiSurface.length() > 0) {
 				var multisurface:XML = data..*::MultiSurface[0];
-				
+				srsCode = multisurface.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
 				geom = new MultiPolygon();
+				(geom as MultiPolygon).projection = proj;
 				var surfaces:XMLList = multisurface..*::Polygon;
 				j = surfaces.length();
 				for (i = 0; i < j; i++) {
-					var surface:Polygon = this.parsePolygonNode(surfaces[i],lonLat);
+					var surface:Polygon = this.parsePolygonNode(surfaces[i], proj, lonLat);
 					if(surface)
 						geom.addComponent(surface);
 				}
 				feature = new MultiPolygonFeature(geom as MultiPolygon);
 			}
+
 			//MultiPolygon
 			else if (data..*::MultiPolygon.length() > 0) {
 				var multipolygon:XML = data..*::MultiPolygon[0];
 				
+				srsCode = multipolygon.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
 				geom = new MultiPolygon();
+				(geom as MultiPolygon).projection = proj;
 				var polygons:XMLList = multipolygon..*::Polygon;
 				j = polygons.length();
 				for (i = 0; i < j; i++) {
-					var polygon:Polygon = this.parsePolygonNode(polygons[i],lonLat);
+					var polygon:Polygon = this.parsePolygonNode(polygons[i], proj, lonLat);
 					if(polygon)
 						geom.addComponent(polygon);
 				}
@@ -71,12 +79,16 @@ package org.openscales.core.format.gml.parser
 			//multilinestring
 			else if (data..*::MultiLineString.length() > 0) {
 				var multilinestring:XML = data..*::MultiLineString[0];
+				
+				srsCode = multilinestring.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
 				geom = new MultiLineString();
+				(geom as MultiLineString).projection = proj;
 				var lineStrings:XMLList = multilinestring..*::LineString;
 				j = lineStrings.length();
 				
 				for (i = 0; i < j; ++i) {
-					p = this.parseCoords(lineStrings[i],lonLat);
+					p = this.parseCoords(lineStrings[i], lonLat);
 					if(p){
 						var lineString:LineString = new LineString(p);
 						if(lineString)
@@ -88,12 +100,16 @@ package org.openscales.core.format.gml.parser
 			// multiCurve
 			else if (data..*::MultiCurve.length() > 0) {
 				var multicurve:XML = data..*::MultiCurve[0];
+				
+				srsCode = multicurve.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
 				geom = new MultiLineString();
+				(geom as MultiLineString).projection = proj;
 				var curves:XMLList = multicurve..*::LineString;
 				j = curves.length();
 				
 				for (i = 0; i < j; ++i) {
-					p = this.parseCoords(curves[i],lonLat);
+					p = this.parseCoords(curves[i], lonLat);
 					if(p){
 						var curve:LineString = new LineString(p);
 						if(curve)
@@ -106,11 +122,14 @@ package org.openscales.core.format.gml.parser
 			else if (data..*::MultiPoint.length() > 0) {
 				var multiPoint:XML = data..*::MultiPoint[0];
 				
+				srsCode = multiPoint.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
 				geom = new MultiPoint();
+				(geom as MultiPoint).projection = proj;
 				
 				var points:XMLList = multiPoint..*::Point;
 				j = points.length();
-				p = this.parseCoords(points[i],lonLat);
+				p = this.parseCoords(points[i], lonLat);
 				if (p)
 					geom.addPoints(p);
 				feature = new MultiPointFeature(geom as MultiPoint);
@@ -118,7 +137,10 @@ package org.openscales.core.format.gml.parser
 			//Polygon
 			else if (data..*::Polygon.length() > 0) {
 				var polygon2:XML = data..*::Polygon[0];
-				geom = this.parsePolygonNode(polygon2,lonLat);
+				
+				srsCode = polygon2.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
+				geom = this.parsePolygonNode(polygon2,proj, lonLat);
 				if(geom)
 					feature = new PolygonFeature(geom as Polygon);
 			}
@@ -126,9 +148,13 @@ package org.openscales.core.format.gml.parser
 			else if (data..*::LineString.length() > 0) {
 				var lineString2:XML = data..*::LineString[0];
 				
-				p = this.parseCoords(lineString2,lonLat);
+				p = this.parseCoords(lineString2, lonLat);
 				if (p) {
+					
+					srsCode = lineString2.@srsName;
+					proj = ProjProjection.getProjProjection(srsCode);
 					geom = new LineString(p);
+					(geom as LineString).projection = proj;
 					feature = new LineStringFeature(geom as LineString);
 				}
 			}
@@ -136,9 +162,15 @@ package org.openscales.core.format.gml.parser
 			else if (data..*::Point.length() > 0) {
 				var point:XML = data..*::Point[0];
 				var pointObject:Point; 
-				p = this.parseCoords(point,lonLat);
+				
+
+				
+				p = this.parseCoords(point, lonLat);
 				if (p && p.length==2) {
 					pointObject = new Point(p[0],p[1]);
+					srsCode = point.@srsName;
+					proj = ProjProjection.getProjProjection(srsCode);
+					pointObject.projection = proj;
 					feature = new PointFeature(pointObject);
 				}
 			}else{
@@ -205,7 +237,7 @@ package org.openscales.core.format.gml.parser
 		 *
 		 * @return A polygon geometry.
 		 */
-		private function parsePolygonNode(polygonNode:Object, lonlat:Boolean):Polygon {
+		private function parsePolygonNode(polygonNode:Object, proj:ProjProjection, lonlat:Boolean):Polygon {
 			var exterior:XMLList = polygonNode..*::exterior;
 			if(exterior.length()!=1)
 				return null;
@@ -215,13 +247,15 @@ package org.openscales.core.format.gml.parser
 				return null;
 			
 			var rings:Vector.<Geometry> = new Vector.<Geometry>();
-			rings[0] = new LinearRing(this.parseCoords(poslist[0],lonlat));
+			rings[0] = new LinearRing(this.parseCoords(poslist[0], lonlat));
+			rings[0].projection = proj;
 			
 			var interior:XMLList = polygonNode..*::interior;
 			if(interior.length()==1) {
 				poslist = interior[0]..*::LinearRing;
 				if(poslist.length()==1)
-					rings[1] = new LinearRing(this.parseCoords(poslist[0],lonlat));
+					rings[1] = new LinearRing(this.parseCoords(poslist[0], lonlat));
+					rings[1].projection = proj;
 			}
 			
 			return new Polygon(rings);

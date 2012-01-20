@@ -176,6 +176,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var LinearRingClone:LinearRing=new LinearRing();
 			var component:Vector.<Number>=this.getcomponentsClone();
+			LinearRingClone.projection = this.projection;
 			LinearRingClone.addPoints(component);
 			return LinearRingClone;
 		}

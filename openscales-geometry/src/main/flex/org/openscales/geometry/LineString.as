@@ -175,6 +175,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var lineStringClone:LineString=new LineString(null);
 			var component:Vector.<Number>=this.getcomponentsClone();
+			lineStringClone.projection = this.projection;
 			lineStringClone.addPoints(component);
 			return lineStringClone;
 		}

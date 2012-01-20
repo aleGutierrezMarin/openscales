@@ -115,6 +115,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{		
 			var clone:MultiPoint=new MultiPoint(null);
 			var component:Vector.<Number>=this.getcomponentsClone();
+			clone.projection = this.projection;
 			clone.addPoints(component);
 			return clone;		
 		}

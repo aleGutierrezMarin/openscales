@@ -1,7 +1,5 @@
 package org.openscales.core.format.gml.parser
 {
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.utils.Util;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
@@ -9,6 +7,8 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
@@ -18,6 +18,7 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
+	import org.openscales.proj4as.ProjProjection;
 
 	public class GML321 extends GMLParser
 	{
@@ -60,6 +61,7 @@ package org.openscales.core.format.gml.parser
 		
 		override public function parseFeature(xmlNode:XML,lonLat:Boolean=true):Feature {
 
+			var proj:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
 			var geom:ICollection = null;
 			var p:Vector.<Number> = new Vector.<Number>();	
 			var feature:Feature = null;
@@ -109,7 +111,7 @@ package org.openscales.core.format.gml.parser
 				j = lineStrings.length();
 				
 				for (i = 0; i < j; ++i) {
-					p = this.parseCoords(lineStrings[i],lonLat);
+					p = this.parseCoords(lineStrings[i], lonLat);
 					if(p){
 						if(p.length != 0){
 							var lineString:LineString = new LineString(p);
@@ -132,7 +134,7 @@ package org.openscales.core.format.gml.parser
 				var points:XMLList = multiPoint..*::Point;
 				j = points.length();
 				for(i = 0; i < j; i++){
-					p = this.parseCoords(points[i],lonLat);
+					p = this.parseCoords(points[i], lonLat);
 					if (p)
 						if ( p.length != 0 ){
 							geom.addPoints(p);
@@ -157,7 +159,7 @@ package org.openscales.core.format.gml.parser
 					this.dim = Number(lineString2.@srsDimension);
 				}
 				
-				p = this.parseCoords(lineString2,lonLat);
+				p = this.parseCoords(lineString2, lonLat);
 				if (p) {
 					if (p.length != 0){
 						geom = new LineString(p);
@@ -174,7 +176,7 @@ package org.openscales.core.format.gml.parser
 				}
 				
 				var pointObject:Point; 
-				p = this.parseCoords(point,lonLat);
+				p = this.parseCoords(point, lonLat);
 				if (p) {
 					if (p.length != 0){
 						pointObject = new Point(p[0],p[1]);
@@ -245,7 +247,7 @@ package org.openscales.core.format.gml.parser
 		public function parsePolygonNode(polygonNode:Object, lonLat:Boolean):Polygon {
 			//exterior tag: only one LinearRing with its coordinates (posList)
 			//interior tag: 0..* LinearRings
-			
+			var proj:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
 			var exterior:XMLList = polygonNode..*::exterior;
 			var interior:XMLList = polygonNode..*::interior;
 			
@@ -253,14 +255,14 @@ package org.openscales.core.format.gml.parser
 			var rings:Vector.<Geometry> = new Vector.<Geometry>();
 			var i:uint = 0;
 			
-			var coords:Vector.<Number> = this.parseCoords(exterior[0]..*::LinearRing[0],lonLat);
+			var coords:Vector.<Number> = this.parseCoords(exterior[0]..*::LinearRing[0], lonLat);
 			if(coords == null || coords.length == 0)
 				return null;
 			rings[i++] = new LinearRing(coords); 
 			
 			if(j != 0 ){
 				for (var k:uint = 0; k < j; k++) {
-					coords = this.parseCoords(interior[k],lonLat);
+					coords = this.parseCoords(interior[k], lonLat);
 					if(coords == null || coords.length == 0)
 						continue;
 					rings[i++] = new LinearRing(coords);

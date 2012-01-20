@@ -15,6 +15,10 @@
 			 style="{Style.getDefaultSurfaceStyle()}" 
 			 maxExtent = "-40037508.34,-10037508.34,10037508.34,10037508.34" />
 		
+		<KML url="http://code.google.com/intl/fr/apis/kml/documentation/KML_Samples.kml"
+			 proxy="http://openscales.org/proxy.php?url=" numZoomLevels="20"
+			 style="{Style.getDefaultLineStyle()}"/>
+		
 		<WheelHandler />
 		<DragHandler/>
 		

@@ -3,8 +3,6 @@ package org.openscales.core.feature {
 	import flash.events.MouseEvent;
 	import flash.utils.getQualifiedClassName;
 	
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.utils.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.filter.ElseFilter;
@@ -12,10 +10,13 @@ package org.openscales.core.feature {
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.proj4as.ProjProjection;
 
 	/** 
 	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_OVER 
@@ -55,6 +56,7 @@ package org.openscales.core.feature {
 	public class Feature extends Sprite {
 
 		private var _geometry:Geometry = null;
+		private var _originGeometry:Geometry = null;
 		private var _state:String = null;
 		private var _style:Style = null;
 		private var _originalStyle:Style = null;
@@ -126,6 +128,7 @@ package org.openscales.core.feature {
 			//END GAB
 
 			this._geometry = geom;
+			this._originGeometry = geom;
 			this._state = null;
 			this._attributes = new Object();
 			if (data) {
@@ -200,6 +203,7 @@ package org.openscales.core.feature {
 			this._layer = null;
 			this._lonlat = null;
 			this._geometry = null;
+			this._originGeometry = null;
 			this.unregisterListeners();
 		}
 
@@ -208,6 +212,19 @@ package org.openscales.core.feature {
 		 * */
 		public function clone():Feature {
 			return null;
+		}
+		
+		
+		/**
+		 * Transform the feature in the dest ProjProjection
+		 */
+		public function reprojectTo(dest:ProjProjection):void
+		{
+			this._geometry = this._originGeometry.clone();
+			if (dest != this._originGeometry.projection)
+			{
+				this._geometry.transform(dest);
+			}
 		}
 
 		/**
@@ -344,6 +361,7 @@ package org.openscales.core.feature {
 
 		public function set geometry(value:Geometry):void {
 			this._geometry = value;
+			this._originGeometry = this._geometry.clone();
 		}
 
 		public function get state():String {
@@ -494,7 +512,24 @@ package org.openscales.core.feature {
 			}
 			return true;
 		}
-
+		
+		/**
+		 * The actual projection of the feature.
+		 * If you want to change it, use the transform method
+		 */
+		public function get projection():ProjProjection
+		{
+			return this._geometry.projection;
+		}
+		
+		/**
+		 * The original projection of the feature.
+		 * If you want to change it, use the transform method
+		 */
+		public function get originProjection():ProjProjection
+		{
+			return this._originGeometry.projection;
+		}
 	}
 }
 

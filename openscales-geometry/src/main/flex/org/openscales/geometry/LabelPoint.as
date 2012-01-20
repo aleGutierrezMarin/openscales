@@ -40,7 +40,9 @@ package org.openscales.geometry
 		 * @inherits
 		 */
 		override public function clone():Geometry{
-			return new LabelPoint(this._label.text, this._x, this._y);
+			var cloneLabelPoint:LabelPoint = new LabelPoint(this._label.text, this._x, this._y);
+			cloneLabelPoint.projection = this.projection;
+			return cloneLabelPoint;
 		}
 		
 		/**

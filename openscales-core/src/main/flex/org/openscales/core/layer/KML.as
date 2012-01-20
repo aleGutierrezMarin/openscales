@@ -20,6 +20,7 @@ package org.openscales.core.layer
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * KML layer, most useful features of KML 2.0 and 2.2 specifications are supported
@@ -99,8 +100,9 @@ package org.openscales.core.layer
 			{
 				
 				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
-					this._kmlFormat.externalProjection = this.projection;
-					this._kmlFormat.internalProjection = this.map.projection;
+					// KML reference documentation specify that format projection is EPSG:4326
+					this._kmlFormat.externalProjection = ProjProjection.getProjProjection("EPSG:4326");
+					this._kmlFormat.internalProjection = this.projection;
 				}
 				this._kmlFormat.proxy = this.proxy;
 				
@@ -122,7 +124,7 @@ package org.openscales.core.layer
 						(this._featureVector[i] as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
 					}
 					
-					this.addFeature(this._featureVector[i],true,false);
+					this.addFeature(this._featureVector[i],true,true);
 				}
 			}
 			else {
@@ -138,8 +140,9 @@ package org.openscales.core.layer
 			
 			// To avoid errors if the server is dead
 			try {
-				this._xml = new XML(loader.data);
-				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
+				this.data = new XML(loader.data);
+				this.drawFeatures();
+				/*if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
 					this._kmlFormat.externalProjection = this.projection;
 					this._kmlFormat.internalProjection = this.map.projection;
 				}
@@ -147,7 +150,7 @@ package org.openscales.core.layer
 				var features:Vector.<Feature> = this._kmlFormat.read(this._xml) as Vector.<Feature>;
 				this.addFeatures(features);
 				this.clear();
-				this.draw();
+				this.draw();*/
 			}
 			catch(error:Error) {
 				Trace.error(error.message);
@@ -176,8 +179,7 @@ package org.openscales.core.layer
 		 * Getters and Setters
 		 */
 		override public function set projection(value:*):void {
-			// SRS code cannot be overriden. Graticule is always built in EPSG:4326
-			// and then reprojected to the projection of the map.
+			// KML must be in PESG:4326
 		}
 		
 		public function get kmlFormat():KMLFormat

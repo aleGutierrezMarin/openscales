@@ -146,8 +146,7 @@ package org.openscales.core.layer
 			if ((this.map) && (this._displayProjection != this.map.projection)) {
 				if (this.features && this.features.length > 0) {	
 					for each (var f:Feature in this.features) {
-						f.geometry.projection = this._displayProjection;
-						f.geometry.transform(this.map.projection);
+						f.reprojectTo(this.map.projection);
 					}
 					this._displayProjection = this.map.projection;
 					this.redraw();
@@ -228,8 +227,7 @@ package org.openscales.core.layer
 			
 			// Reprojection if needed
 			if (reproject && (this.map) && (this.projection != this._displayProjection)) {
-				feature.geometry.projection = this.projection;
-				feature.geometry.transform(this._displayProjection);
+				feature.reprojectTo(this._displayProjection)
 			}
 			
 			// Add the feature to the layer

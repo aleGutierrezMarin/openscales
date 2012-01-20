@@ -63,6 +63,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var MultiLineStringClone:MultiLineString=new MultiLineString();
 			var component:Vector.<Geometry>=this.getcomponentsClone();
+			MultiLineStringClone.projection = this.projection;
 			MultiLineStringClone.addComponents(component);
 			return MultiLineStringClone;
 		}

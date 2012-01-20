@@ -159,6 +159,7 @@ package org.openscales.core.format.gml
 				var feature:Feature;
 				for each( dataXML in features) {
 					feature = this._gmlParser.parseFeature(dataXML,lonlat);
+					feature.geometry.projection = this.externalProjection;
 					if(feature) {
 						retFeatures.push(feature);
 						if(this._onFeature!=null)

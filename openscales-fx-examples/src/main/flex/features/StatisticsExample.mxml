@@ -22,6 +22,7 @@
 
 		<Zoom x="{fxMap.width-135}" y="10" />
 		<DataOriginatorsDisplay x="10" y="{height-90}" />
+		<LayerManager left="10" bottom="10"/>
 	</Map>
 	<components:toolbar fxMap="{fxMap}" />
 		

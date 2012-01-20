@@ -250,6 +250,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var PolygonClone:Polygon=new Polygon(null);
 			var component:Vector.<Geometry>=this.getcomponentsClone();
+			PolygonClone.projection = this.projection;
 			PolygonClone.addComponents(component);
 			return PolygonClone;
 		}

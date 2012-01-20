@@ -325,8 +325,8 @@ package org.openscales.core.layer.ogc
 			
 			if (this.projection != mapExtent.projection)
 			{
-				mapExtent = mapExtent.preciseReprojectBounds(this.projection);
-				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(this.projection);
+				mapExtent = mapExtent.preciseReprojectBounds(ProjProjection.getProjProjection("EPSG:4326"));
+				layerMaxExtent = layerMaxExtent.preciseReprojectBounds(ProjProjection.getProjProjection("EPSG:4326"));
 			}
 			
 			if (!(mapExtent.width == 0 || mapExtent.height == 0))
@@ -334,9 +334,11 @@ package org.openscales.core.layer.ogc
 			else
 				layerExtent = layerMaxExtent.clone();
 			
+			
 			// Update the bbox
 			if (layerExtent != null)
 			{
+				layerExtent = layerExtent.reprojectTo(this.projection)
 				if (this.params.version != "1.0.0" && !this.projection.lonlat)
 					this.params.bbox = layerExtent.toString(-1, false);
 				else
@@ -454,7 +456,7 @@ package org.openscales.core.layer.ogc
 		 */
 		public function parseResponse(wfsResponse:String):void{
 			this._gmlFormat.externalProjection = this.projection;
-			this._gmlFormat.internalProjection = this.map.projection;
+			this._gmlFormat.internalProjection = this.projection;
 			this._gmlFormat.read(wfsResponse);
 			//this._wfsFormat.read(wfsResponse);
 		}

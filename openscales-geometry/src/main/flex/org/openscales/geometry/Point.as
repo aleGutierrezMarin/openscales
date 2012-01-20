@@ -1,6 +1,8 @@
 package org.openscales.geometry
 {
 	
+	import flash.geom.Point;
+	
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
@@ -27,7 +29,9 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			return new Point(this._x,this._y);
+			var returnedValue:Point = new Point(this._x,this._y);
+			returnedValue.projection = this.projection;
+			return returnedValue;
 		}
 		
 		/**

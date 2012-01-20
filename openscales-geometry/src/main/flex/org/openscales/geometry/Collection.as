@@ -108,6 +108,7 @@ package org.openscales.geometry
 			//All collection
 			var Collectionclone:Collection=new Collection(null);
 			var component:Vector.<Geometry>=this.getcomponentsClone();
+			Collectionclone.projection = this.projection;
 			Collectionclone.addComponents(component);
 			return Collectionclone;		
 		}
@@ -310,8 +311,7 @@ package org.openscales.geometry
 			this.projection = dest;
 			// Update the geometry
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				this._components[i].projection = source;
-				this._components[i].transform(this.projection);
+				this._components[i].transform(dest);
 			}
 		}
 		/**

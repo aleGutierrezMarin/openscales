@@ -58,6 +58,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var MultiPolygonClone:MultiPolygon=new MultiPolygon();
 			var component:Vector.<Geometry>=this.getcomponentsClone();
+			MultiPolygonClone.projection = this.projection;
 			MultiPolygonClone.addComponents(component);
 			return MultiPolygonClone;
 		}
