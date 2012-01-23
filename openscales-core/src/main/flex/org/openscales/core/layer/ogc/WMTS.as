@@ -39,7 +39,7 @@ package org.openscales.core.layer.ogc
 	 */
 	public class WMTS extends Grid
 	{
-		public static const WMTS_DEFAULT_FORMAT:String = "image/png";
+		public static const WMTS_DEFAULT_FORMAT:String = "image/jpeg";
 		/**
 		 * @private
 		 *  
