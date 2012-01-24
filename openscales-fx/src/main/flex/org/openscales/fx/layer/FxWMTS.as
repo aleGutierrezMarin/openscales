@@ -22,7 +22,7 @@ package org.openscales.fx.layer
 		private var _WMTSlayer:String = null;
 		private var _tileMatrixSet:String = null;
 		private var _tileMatrixSets:HashMap = null;
-		private var _format:String = "image/jpg";
+		private var _format:String = WMTS.WMTS_DEFAULT_FORMAT;
 		private var _style:String = null;
 		
 		public function FxWMTS()

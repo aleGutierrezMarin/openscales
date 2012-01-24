@@ -101,7 +101,7 @@ package org.openscales.core.layer.ogc
 							version:String = "2.0.0")
 		{
 			super(name);
-			
+
 			this._params = new WFSParams(typename, version);
 			this.url = url;
 			
@@ -229,10 +229,12 @@ package org.openscales.core.layer.ogc
 			}
 			if (resolutionChangedCache)
 			{
+				this.cacheAsBitmap = false;
 				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 				this._previousResolution = this.map.resolution;
 				resolutionChangedCache = false;
+				this.cacheAsBitmap = true;
 			}
 			
 			if (centerChangedCache)
