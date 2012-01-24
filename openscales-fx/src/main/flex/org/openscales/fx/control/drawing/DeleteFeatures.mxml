@@ -168,7 +168,7 @@
 			/**
 			 * On button click, dispatch a DrawingEvent.EDIT_HANDLER_ACTIVATED event
 			 */
-			private function onClick():void{
+			public function onClick():void{
 				if(!this.target)
 					return;
 				

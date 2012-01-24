@@ -393,6 +393,7 @@ package org.openscales.core.layer {
 		 */
 		protected function onMapProjectionChanged(event:MapEvent):void
 		{
+			this.available = this.checkAvailability();
 			this._projectionChanged = true;
 		}
 		
