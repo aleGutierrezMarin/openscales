@@ -8,17 +8,18 @@
 		<Mapnik name="Mapnik" />
 		
 		<WheelHandler/>
+		<DragHandler/>
 
 		<WFS id="ignGeoplaRegion" name="IGN - Geopla (Départements)"
 				url="http://openscales.org/geoserver/wfs" typename="pg:simplif_dept" projection="EPSG:2154"
 				version="1.0.0"	style="{this.createStyleLatitude()}"/>
 		
-		<SelectFeaturesHandler id="selectFeatureHandler" active="true"/>
+		<!--SelectFeaturesHandler id="selectFeatureHandler" active="true"/-->
 		
-		<s:Panel title="featureInfos" bottom="10" right="10">
+		<!--s:Panel title="featureInfos" bottom="10" right="10">
 			<FeatureInfo id="featureInfoComponent"
 							creationComplete="(selectFeatureHandler.handler as SelectFeaturesHandler).onSelectedFeature = featureInfoComponent.showInfo"/>
-		</s:Panel>
+		</s:Panel-->
 
 		<Zoom x="{fxMap.width-135}" y="10" />
 		<DataOriginatorsDisplay x="10" y="{height-90}" />
