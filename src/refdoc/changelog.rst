@@ -1,6 +1,56 @@
 Changelog
 =========
 
+Changes between 2.0.0 and 2.0.1
+-------------------------------
+
+* WMTS default value is image/jpeg
+
+changes between 1.2.1 and 2.0.0
+-------------------------------
+* No more baselayer
+* Freezoom
+* Begining of tile stretching to use different projections for raster layers
+* Better rendering
+* Replacement of zoom level with resolutions
+* Usage of ProProjection instead of String
+* i18n
+* Restricted extents on layers
+* Support multi projection on layer
+* Layer legend support
+* Remove gteween dependency
+
+* WFS 2.0 support
+* WMS 1.3 support
+* WMTS 1.0.0 support
+* Basic WFTS support
+* GML 3.2.1 support
+* GPX 1.0 and 1.1 support
+* GeoRSS
+* better KML support
+* Add graticule layers
+* WMC parser
+
+
+* New capabilities component allowing easy import of WFS,WMS,WMTS,KML,GPX,GeoRss layers
+* New overviewmapratio (zooming the same way the map change)
+* New dataoriginator control to display logos related to layers originator
+* Numeric scale control
+* Language switcher control
+* Several minor components: Copyright, Term of services, permanent logo
+* Some controls can be iconified
+* Layer catalog control
+* New edition tools
+* Export feature layers (only KML for now)
+
+* Keyboard handler for keyboard navigation
+* Double click handler
+* Mouse handler
+
+* Fix lot of bugs
+
+* Xml configuration, no more maintained. You should use WMC parser now.
+
 Changes between 1.1.x and 1.2
 -----------------------------
 
