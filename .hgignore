@@ -9,3 +9,5 @@ syntax: glob
 */.FlexUnitSettings
 */Thumbs.db
 *FlexUnitApplication.mxml
+.idea
+*.iml
