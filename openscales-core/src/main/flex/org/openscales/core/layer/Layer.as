@@ -508,6 +508,9 @@ package org.openscales.core.layer {
 			return px;
 		}
 		
+		/**
+		 * Force the layer to compute his available boolean
+		 */
 		public function forceAvailabilityChecking():void
 		{
 			this.available = this.checkAvailability();
