@@ -3,17 +3,20 @@
 <s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" creationComplete="initMap()" xmlns:components="components.*">
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="2500,EPSG:900913" center="4.84479575848897,45.7531798723947" projection="EPSG:900913">
+	<Map id="fxMap" width="100%" height="100%" resolution="0.0027465" center="4.84479575848897,45.7531798723947" projection="EPSG:900913">
 		
 		<Mapnik name="Mapnik" />
 		
 		<WheelHandler/>
 		<DragHandler/>
 
-		<WFS id="ignGeoplaRegion" name="IGN - Geopla (Départements)"
-				url="http://openscales.org/geoserver/wfs" typename="pg:simplif_dept" projection="EPSG:2154"
-				version="1.0.0"	style="{this.createStyleLatitude()}"/>
+		<WFS id="ignGeoplaRegion" name="IGN - Geopla (Départements)" maxExtent="-142057.542842283,6038798.675807986,1512391.727425894,7306294.234914808,EPSG:2154"
+				url="http://openscales.org/geoserver/wfs" typename="pg:simplif_dept" projection="EPSG:4326"
+				version="1.1.0"	style="{this.createStyleLatitude()}"/>
 		
+		<!--WFS id="chef" name="Chefs lieux (WFS)" url="http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/geoportail/wfs/"
+						version="1.1.0" typename="sde:chef_lieu" alpha="0.9"
+						style="{Style.getDefaultPointStyle()}" /-->
 		<!--SelectFeaturesHandler id="selectFeatureHandler" active="true"/-->
 		
 		<!--s:Panel title="featureInfos" bottom="10" right="10">
@@ -29,6 +32,8 @@
 		
 	<fx:Script>
 		<![CDATA[
+			import manageLayer.statisticsexample.CircleSizeExpression;
+			
 			import org.openscales.core.filter.expression.IExpression;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.style.Rule;
@@ -40,8 +45,6 @@
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
-			
-			import manageLayer.statisticsexample.CircleSizeExpression;
 			
 			[Bindable]
 			private var styles:Array = [];

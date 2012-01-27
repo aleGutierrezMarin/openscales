@@ -120,6 +120,7 @@ package org.openscales.core.handler.feature.draw
 				_startPoint = this.map.getMapPxFromLocation(lonlat);
 				
 				_lineString = new LineString(new <Number>[point.x,point.y]);
+				_lineString.projection = this.map.projection;
 				lastPoint = point;
 				//the current drawn linestringfeature
 				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDrawLineStyle(),true);
@@ -171,6 +172,7 @@ package org.openscales.core.handler.feature.draw
 			
 			if(!point.equals(lastPoint)){
 				_lineString.addPoint(point.x,point.y);
+				this._currentLineStringFeature.geometry = _lineString;
 				drawLayer.redraw(true);
 				lastPoint = point;
 			}

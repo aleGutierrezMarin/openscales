@@ -36,6 +36,7 @@ package org.openscales.core.handler.feature.draw
 			//The user click for the first time
 			if(newFeature){
 				super.lineString = new LineString(new <Number>[point.x,point.y]);
+				lineString.projection = this.map.projection;
 				lastPoint = point;
 				//the current drawn linestringfeature
 				super.currentLineStringFeature= new LineStringFeature(super.lineString,null, Style.getDrawLineStyle(),true);

@@ -210,6 +210,7 @@ package org.openscales.core.layer.ogc
 			if (!this._initialized || fullRedraw)
 			{
 				this.featuresBbox = this.defineBounds();
+				var plop:Bounds = this.featuresBbox.reprojectTo(ProjProjection.getProjProjection("EPSG:4326"))
 				this.loadFeatures(this.getFullRequestString());
 				this._currentScale = 0;
 				this.x = 0;

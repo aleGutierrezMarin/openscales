@@ -12,7 +12,7 @@
 		</s:stroke>
 	</s:Rect>
 	<MousePosition id="mousePosition"
-				   availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93"
+				   availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93,EPSG:900913"
 				   displayProjection="IGNF:LAMB93"
 				   left="20"
 				   top="5" />

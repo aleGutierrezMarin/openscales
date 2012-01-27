@@ -493,13 +493,13 @@ package org.openscales.geometry.basetypes
 		 * @return A new polygon with the coordinates of this bounds.
 		 */
 		public function toGeometry():Polygon {
-			var geom:Polygon = new Polygon(new <Geometry>[
-				new LinearRing(new <Number>[
-					this.left, this.bottom,
-					this.right, this.bottom,
-					this.right, this.top,
-					this.left, this.top])
-			]);
+			var lring:LinearRing = new LinearRing(new <Number>[
+				this.left, this.bottom,
+				this.right, this.bottom,
+				this.right, this.top,
+				this.left, this.top]);
+			lring.projection = this.projection;
+			var geom:Polygon = new Polygon(new <Geometry>[lring]);
 			geom.projection = this.projection;
 			return geom;
 		}
@@ -531,7 +531,7 @@ package org.openscales.geometry.basetypes
 				bounds = bounds.preciseReprojectBounds(ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE));
 			}
 			
-			if (!(this.intersectsBounds(bounds)))
+			if (!(thisBounds.intersectsBounds(bounds)))
 			{
 				return null;
 			}

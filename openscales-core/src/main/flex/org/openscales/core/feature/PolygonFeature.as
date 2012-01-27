@@ -90,6 +90,7 @@ package org.openscales.core.feature {
 		override public function clone():Feature {
 			var geometryClone:Geometry = this.geometry.clone();
 			var PolygonFeatureClone:PolygonFeature = new PolygonFeature(geometryClone as Polygon, null, this.style, this.isEditable);
+			PolygonFeatureClone._originGeometry = this._originGeometry;
 			return PolygonFeatureClone;
 
 		}

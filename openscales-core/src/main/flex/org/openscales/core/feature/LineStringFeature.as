@@ -75,6 +75,7 @@ package org.openscales.core.feature
 				style  = this.style.clone();
 			}
 			var lineStringFeatureClone:LineStringFeature=new LineStringFeature(geometryClone as LineString,null,style,this.isEditable);
+			lineStringFeatureClone._originGeometry = this._originGeometry;
 			return lineStringFeatureClone;
 			
 		}

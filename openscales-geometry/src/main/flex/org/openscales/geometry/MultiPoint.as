@@ -61,7 +61,15 @@ package org.openscales.geometry
 		
 		public function componentByIndex(i:int):Geometry {
 			var j:uint = i * 2;
-			return ((j<0)||(j>=this._components.length)) ? null : new Point(this._components[j],this._components[j+1]);
+			if ((j<0)||(j>=this._components.length))
+			{
+				return null
+			}else
+			{
+				var pt:Point = new Point(this._components[j],this._components[j+1]);
+				pt.projection = this.projection;
+				return pt;
+			}
 		}
 		
 		/**

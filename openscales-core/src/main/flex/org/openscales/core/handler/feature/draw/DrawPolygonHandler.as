@@ -129,7 +129,9 @@ package org.openscales.core.handler.feature.draw
 					var name:String = "polygon." + drawLayer.idPolygon.toString();
 					drawLayer.idPolygon++;
 					lring = new LinearRing(new <Number>[point.x,point.y]);
+					lring.projection = this.map.projection;
 					polygon = new Polygon(new <Geometry>[lring]);
+					polygon.projection = this.map.projection;
 					this._firstPointPixel= new Pixel(map.mouseX ,map.mouseY);
 					lastPoint = point;
 					

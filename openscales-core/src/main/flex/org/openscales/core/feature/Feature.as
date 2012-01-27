@@ -56,7 +56,7 @@ package org.openscales.core.feature {
 	public class Feature extends Sprite {
 
 		private var _geometry:Geometry = null;
-		private var _originGeometry:Geometry = null;
+		protected var _originGeometry:Geometry = null;
 		private var _state:String = null;
 		private var _style:Style = null;
 		private var _originalStyle:Style = null;
@@ -355,14 +355,24 @@ package org.openscales.core.feature {
 			return atPoint;
 		}
 
+		/**
+		 * This is the geometry of the feature.
+		 * When you reproject the feature, it will keep an origin geometry to us it for reprojection.
+		 * If you set another geometry it will override the origin geometry too.
+		 */
 		public function get geometry():Geometry {
 			return this._geometry;
 		}
-
+		
+		/**
+		 * @private
+		 */
 		public function set geometry(value:Geometry):void {
 			this._geometry = value;
 			this._originGeometry = this._geometry.clone();
 		}
+		
+		
 
 		public function get state():String {
 			if(this._state ==  null){

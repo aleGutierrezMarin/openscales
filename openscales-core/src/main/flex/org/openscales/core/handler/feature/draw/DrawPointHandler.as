@@ -81,6 +81,7 @@ package org.openscales.core.handler.feature.draw
 				//todo change this bad way
                if(drawLayer.geometryType == "org.openscales.geometry::MultiPoint"){
 				   var multiPoint:MultiPoint = new MultiPoint();
+				   multiPoint.projection = this.map.projection;
 				   multiPoint.addPoint(lonlat.lon,lonlat.lat);
 				   feature = new MultiPointFeature(multiPoint, null, this._style);
 				   feature.name = "point." + drawLayer.idPoint.toString();
@@ -91,6 +92,7 @@ package org.openscales.core.handler.feature.draw
 				   
 			   }else{
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
+				point.projection = this.map.projection;
 				feature = new PointFeature(point, null, this._style);
 				feature.name = "point." + drawLayer.idPoint.toString();
 				drawLayer.idPoint++;

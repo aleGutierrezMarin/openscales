@@ -87,6 +87,7 @@ package org.openscales.core.feature {
 		override public function clone():Feature {
 			var geometryClone:Geometry = this.geometry.clone();
 			var PointFeatureClone:PointFeature = new PointFeature(geometryClone as Point, null, this.style);
+			PointFeatureClone._originGeometry = this._originGeometry;
 			return PointFeatureClone;
 		}
 
