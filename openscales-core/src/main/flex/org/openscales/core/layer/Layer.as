@@ -508,6 +508,11 @@ package org.openscales.core.layer {
 			return px;
 		}
 		
+		public function forceAvailabilityChecking():void
+		{
+			this.available = this.checkAvailability();
+		}
+		
 		/**
 		 * Clear the layer graphics
 		 */

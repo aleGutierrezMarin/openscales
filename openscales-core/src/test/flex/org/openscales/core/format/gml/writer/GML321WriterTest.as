@@ -12,6 +12,7 @@ package org.openscales.core.format.gml.writer
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.Point;
+	import org.openscales.proj4as.ProjProjection;
 
 	public class GML321WriterTest
 	{
@@ -30,11 +31,13 @@ package org.openscales.core.format.gml.writer
 		
 		public function GML321WriterTest()
 		{
+
 		}
 		
 		[Before]
 		public function setUp():void
 		{
+			ProjProjection.defs['EPSG:26713']="++title=projTest +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=degrees";
 			writer = new GML321Writer();
 			parser = new GML321();
 		}

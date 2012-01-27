@@ -114,14 +114,17 @@ package org.openscales.core.layer
 			assertTrue("Layer should be available when map is contained in at least one bbox",layer.available);
 			
 			map.zoomToExtent(new Bounds(-65,42,-48,54,"WGS84"));
+			layer.forceAvailabilityChecking();
 			
 			assertTrue("Layer should not be available when map is outside every bbox", !layer.available);
 			
 			map.zoomToExtent(new Bounds(18,67,35,73,"WGS84"));
-				
+			layer.forceAvailabilityChecking();
+			
 			assertTrue("Layer should be available when map intersect at least one bbox", layer.available);	
 			
 			map.zoomToExtent(new Bounds(-25,32,54,70,"WGS84"));
+			layer.forceAvailabilityChecking();
 			
 			assertTrue("Layer should not be available when map is out of all constraints resolution range", !layer.available);
 		}
