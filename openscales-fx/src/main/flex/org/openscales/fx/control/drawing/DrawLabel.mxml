@@ -133,7 +133,9 @@
 				{
 					var pixel:Pixel = new Pixel(this._map.mouseX, this._map.mouseY);
 					var labelLocation:Location = this._map.getLocationFromMapPx(pixel);
-					feature = new LabelFeature(new LabelPoint(null, labelLocation.x, labelLocation.y));
+					var pt:LabelPoint = new LabelPoint(null, labelLocation.x, labelLocation.y);
+					pt.projection = this.map.projection;
+					feature = new LabelFeature(pt);
 					feature.layer = this.target;
 					
 					var editLabel:EditLabel = new EditLabel();

@@ -147,6 +147,7 @@ package org.openscales.core.handler.feature.draw
 			//The user click for the first time
 			if(newFeature){
 				_lineString = new LineString(new <Number>[point.x,point.y]);
+				_lineString.projection = this.map.projection;
 				lastPoint = point;
 				//the current drawn linestringfeature
 				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDrawLineStyle(),true);
@@ -161,6 +162,7 @@ package org.openscales.core.handler.feature.draw
 			else {								
 				if(!point.equals(lastPoint)){
 					_lineString.addPoint(point.x,point.y);
+					_currentLineStringFeature.geometry = _lineString;
 					drawLayer.redraw(true);
 					lastPoint = point;
 				}								

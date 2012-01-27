@@ -25,7 +25,7 @@ package org.openscales.proj4as {
 		 */
 		public static function transform(source:ProjProjection, dest:ProjProjection, point:ProjPoint):ProjPoint {
 			if (source == null || dest == null || point == null) {
-				trace("Parameters not created!");
+				//trace("Parameters not created!");
 				return null;
 			}
 			if(source == dest)
@@ -162,7 +162,7 @@ package org.openscales.proj4as {
 		 */
 		public static function unit_transform(source:ProjProjection, dest:ProjProjection, value:Number):Number {
 			if (source == null || dest == null || isNaN(value)) {
-				trace("Parameters not created!");
+				//trace("Parameters not created!");
 				return NaN;
 			}
 

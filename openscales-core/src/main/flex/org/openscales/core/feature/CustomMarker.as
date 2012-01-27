@@ -62,6 +62,7 @@ package org.openscales.core.feature
 		override public function clone():Feature {
 			var ret:CustomMarker = new CustomMarker();
 			ret.geometry = this.point.clone();
+			ret._originGeometry = this._originGeometry;
 			ret.data = this.data;
 			ret.xOffset = this._xOffset;
 			ret.yOffset = this._yOffset;

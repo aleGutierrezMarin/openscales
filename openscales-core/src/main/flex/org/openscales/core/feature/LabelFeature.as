@@ -51,6 +51,7 @@ package org.openscales.core.feature
 		public function set lonlat(value:Location):void{
 			this.labelPoint.x = value.x;
 			this.labelPoint.y = value.y;
+			this.labelPoint.projection = value.projection;
 		}
 		
 		/**
@@ -67,7 +68,7 @@ package org.openscales.core.feature
 			var x:Number;
 			var y:Number;
 			var resolution:Number = this.layer.map.resolution.value;
-			var pointLocation:Location = new Location(labelPoint.x, labelPoint.y, this.layer.projection);
+			var pointLocation:Location = new Location(labelPoint.x, labelPoint.y, this.labelPoint.projection);
 			pointLocation = pointLocation.reprojectTo(this.layer.map.projection);
 			var dX:int = -int(this.layer.map.x) + this.left;
 			var dY:int = -int(this.layer.map.y) + this.top;

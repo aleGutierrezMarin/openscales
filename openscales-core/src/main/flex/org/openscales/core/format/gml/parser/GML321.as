@@ -65,6 +65,7 @@ package org.openscales.core.format.gml.parser
 			var geom:ICollection = null;
 			var p:Vector.<Number> = new Vector.<Number>();	
 			var feature:Feature = null;
+			var srsCode:String = "EPSG:4326";
 			
 			var i:int;
 			var j:int;
@@ -89,6 +90,9 @@ package org.openscales.core.format.gml.parser
 				
 				if (!dimensionError){
 					geom = new MultiPolygon();
+					srsCode = multiSurface.@srsName;
+					proj = ProjProjection.getProjProjection(srsCode); 
+					(geom as MultiPolygon).projection = proj;
 					var polygons:XMLList = multiSurface..*::Polygon; 
 					j = polygons.length();
 					for (i = 0; i < j; i++) {
@@ -96,8 +100,9 @@ package org.openscales.core.format.gml.parser
 						geom.addComponent(polygon);
 					}
 					feature = new MultiPolygonFeature(geom as MultiPolygon);
-					
+
 				}
+import org.openscales.geometry.Polygon;
 				
 			} else if (xmlNode..*::MultiCurve.length() > 0) { 
 				var multiCurve:XML = xmlNode..*::MultiCurve[0];
@@ -107,6 +112,9 @@ package org.openscales.core.format.gml.parser
 				}
 				
 				geom = new MultiLineString();
+				srsCode = multiCurve.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
+				(geom as MultiLineString).projection = proj;
 				var lineStrings:XMLList = multiCurve..*::LineString;
 				j = lineStrings.length();
 				
@@ -130,7 +138,9 @@ package org.openscales.core.format.gml.parser
 				}
 				
 				geom = new MultiPoint();
-				
+				srsCode = multiPoint.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
+				(geom as MultiPoint).projection = proj;
 				var points:XMLList = multiPoint..*::Point;
 				j = points.length();
 				for(i = 0; i < j; i++){
@@ -149,8 +159,11 @@ package org.openscales.core.format.gml.parser
 				{
 					this.dim = Number(polygon2.@srsDimension);
 				}
-				
-				feature = new PolygonFeature(this.parsePolygonNode(polygon2,lonLat));
+				geom = this.parsePolygonNode(polygon2,lonLat)
+				srsCode = polygon2.@srsName;
+				proj = ProjProjection.getProjProjection(srsCode);
+				(geom as Polygon).projection = proj;
+				feature = new PolygonFeature(geom as Polygon);
 				this.dim = _dim;
 			} else if (xmlNode..*::LineString.length() > 0) {
 				var lineString2:XML = xmlNode..*::LineString[0];
@@ -163,6 +176,9 @@ package org.openscales.core.format.gml.parser
 				if (p) {
 					if (p.length != 0){
 						geom = new LineString(p);
+						srsCode = lineString2.@srsName;
+						proj = ProjProjection.getProjProjection(srsCode);
+						(geom as LineString).projection = proj;
 					}
 					
 				}
@@ -180,6 +196,9 @@ package org.openscales.core.format.gml.parser
 				if (p) {
 					if (p.length != 0){
 						pointObject = new Point(p[0],p[1]);
+						srsCode = point.@srsName;
+						proj = ProjProjection.getProjProjection(srsCode);
+						pointObject.projection = proj;
 						feature = new PointFeature(pointObject);
 					}
 				}
@@ -247,7 +266,6 @@ package org.openscales.core.format.gml.parser
 		public function parsePolygonNode(polygonNode:Object, lonLat:Boolean):Polygon {
 			//exterior tag: only one LinearRing with its coordinates (posList)
 			//interior tag: 0..* LinearRings
-			var proj:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
 			var exterior:XMLList = polygonNode..*::exterior;
 			var interior:XMLList = polygonNode..*::interior;
 			
