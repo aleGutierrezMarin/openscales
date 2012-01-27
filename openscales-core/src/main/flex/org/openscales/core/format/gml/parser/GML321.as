@@ -102,7 +102,6 @@ package org.openscales.core.format.gml.parser
 					feature = new MultiPolygonFeature(geom as MultiPolygon);
 
 				}
-import org.openscales.geometry.Polygon;
 				
 			} else if (xmlNode..*::MultiCurve.length() > 0) { 
 				var multiCurve:XML = xmlNode..*::MultiCurve[0];

@@ -55,7 +55,7 @@ package org.openscales.core.format.gml.parser
 			var proj:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
 			var xmlCoords:Vector.<Number> = new <Number>[-88.071564, 37.51099000000001, -88.087883, 37.476273000000006, -88.311707, 37.442852, -56.311707, 22.442852];
 			format.dim = 2;
-			var coords:Vector.<Number> = format.parseCoords(xml, proj);
+			var coords:Vector.<Number> = format.parseCoords(xml);
 			Assert.assertEquals("There should be 8 coordinates", 8, coords.length);
 			
 			for (var i:uint = 0; i<8; ++i )
@@ -63,7 +63,7 @@ package org.openscales.core.format.gml.parser
 				Assert.assertEquals("The value should be "+xmlCoords[i],xmlCoords[i],coords[i]);
 			}
 			format.dim = 3;
-			coords = format.parseCoords(xml, proj);
+			coords = format.parseCoords(xml);
 			Assert.assertNull("The vector should be null",coords);
 			
 			
