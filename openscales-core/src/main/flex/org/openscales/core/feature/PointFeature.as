@@ -35,7 +35,7 @@ package org.openscales.core.feature {
 		override public function get lonlat():Location {
 			var value:Location = null;
 			if (this.point != null) {
-				value = new Location(this.point.x, this.point.y);
+				value = new Location(this.point.x, this.point.y, this.point.projection);
 			}
 			return value;
 		}

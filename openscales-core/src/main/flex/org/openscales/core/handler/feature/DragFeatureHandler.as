@@ -219,7 +219,9 @@ package org.openscales.core.handler.feature
 					if(targetFeature == feature){
 						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
 						loc = this.map.getLocationFromMapPx(_stopPixel);
+						loc.reprojectTo(feature.projection);
 						targetFeature.geometry = new Point(loc.lon,loc.lat);
+						targetFeature.geometry.projection = loc.projection;
 						targetFeature.x = 0;
 						targetFeature.y = 0;
 					}
@@ -229,6 +231,7 @@ package org.openscales.core.handler.feature
 				for each(targetFeature in this.layerToMove.features){
 					if (targetFeature == feature){
 						loc = this.map.getLocationFromMapPx(_stopPixel);
+						loc.reprojectTo(feature.projection);
 						(targetFeature as LabelFeature).lonlat = loc;
 						var leftPixel:Pixel = new Pixel();
 						var rightPixel:Pixel = new Pixel();
