@@ -556,7 +556,7 @@ package org.openscales.core.layer
 		 */
 		public function getFormatExport(format:Format, exProj:ProjProjection = null):Object
 		{
-			if (!exProj || exProj == this.projection)
+			if (!exProj)
 			{
 				return format.write(this.features);
 			}
@@ -566,9 +566,11 @@ package org.openscales.core.layer
 				var extFeatures:Vector.<Feature> = new Vector.<Feature>(featuresLength);
 				for(var i:int = 0; i<featuresLength; ++i)
 				{
+					
 					extFeatures[i]=this.features[i].clone();
-					extFeatures[i].geometry.projection = this.projection;
-					extFeatures[i].geometry.transform(exProj);
+					//extFeatures[i].geometry.projection = this.projection;
+					if (exProj != this.features[i].projection)
+						extFeatures[i].geometry.transform(exProj);
 				}
 				return format.write(extFeatures);
 			}
