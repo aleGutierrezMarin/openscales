@@ -25,7 +25,7 @@ package org.openscales.core.measure
 	public class Azimuth extends DrawSegmentHandler implements IMeasure
 	{
 		
-		private var _displaySystem:String = "dd";
+		private var _displaySystem:String = Unit.DEGREE;
 		
 		private var _result:String = "";
 		private var _lastUnit:String = null;
@@ -44,14 +44,14 @@ package org.openscales.core.measure
 			this.drawLayer = layer;
 			
 			this._accuracies = new HashMap();
-			this._accuracies.put("dd",2);
-			this._accuracies.put("rad",4);
-			this._accuracies.put("dms",2);
-			this._accuracies.put("mi",3);
-			this._accuracies.put("ft",2);
-			this._accuracies.put("in",1);
-			this._accuracies.put("km",3);
-			this._accuracies.put("m",0);
+			this._accuracies.put(Unit.DEGREE,2);
+			this._accuracies.put(Unit.RADIAN,4);
+			this._accuracies.put(Unit.SEXAGESIMAL,2);
+			this._accuracies.put(Unit.MILE,3);
+			this._accuracies.put(Unit.FOOT,2);
+			this._accuracies.put(Unit.INCH,1);
+			this._accuracies.put(Unit.KILOMETER,3);
+			this._accuracies.put(Unit.METER,0);
 		}
 		
 		override public function set active(value:Boolean):void {
@@ -132,22 +132,22 @@ package org.openscales.core.measure
 
 				
 				switch(_displaySystem.toLowerCase()) {
-					case 'rad':
-						_result= this.trunc(azimuth,this._accuracies.getValue("rad"));
+					case Unit.RADIAN:
+						_result= this.trunc(azimuth,this._accuracies.getValue(Unit.RADIAN));
 						break;
-					case 'dms':
-						var acc:Number=this._accuracies.getValue("dms");
+					case Unit.SEXAGESIMAL:
+						var acc:Number=this._accuracies.getValue(Unit.SEXAGESIMAL);
 						if(!acc){
 							acc=2;
 						}
 						_result= Util.degToDMS(Util.radtoDeg(azimuth),null,acc);
 						break;
-					case 'dd':
-						_result= this.trunc(Util.radtoDeg(azimuth),this._accuracies.getValue("dd"));
+					case Unit.DEGREE:
+						_result= this.trunc(Util.radtoDeg(azimuth),this._accuracies.getValue(Unit.DEGREE));
 						_lastUnit="°";
 						break;
 					default:
-						_result= this.trunc(Util.radtoDeg(azimuth),this._accuracies.getValue("dd"));
+						_result= this.trunc(Util.radtoDeg(azimuth),this._accuracies.getValue(Unit.DEGREE));
 						_lastUnit="°";
 						break;
 				}
