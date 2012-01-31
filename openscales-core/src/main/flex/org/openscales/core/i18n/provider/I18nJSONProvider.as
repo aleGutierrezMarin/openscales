@@ -34,7 +34,7 @@ package org.openscales.core.i18n.provider
 					|| obj["locale.localizedName"] == ''
 				)
 					return;
-				var locale:Locale = Locale.genLocale(obj["locale.key"] as String,
+				var locale:Locale = Locale.addLocale(obj["locale.key"] as String,
 													 obj["locale.name"] as String,
 													 obj["locale.localizedName"] as String);
 				var value:String = null;
