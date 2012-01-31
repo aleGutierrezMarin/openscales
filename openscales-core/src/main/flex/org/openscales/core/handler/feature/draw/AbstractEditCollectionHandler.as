@@ -260,7 +260,7 @@ package org.openscales.core.handler.feature.draw
 		 		var px:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
 				//drawing equals false if the mouse is too close from Virtual vertice
 				var drawing:Boolean=true;
-					/*for(var i:int=0;i<_editionFeatureArray.length;i++){
+					for(var i:int=0;i<_editionFeatureArray.length;i++){
 						var feature:Feature=_editionFeatureArray[i][0] as Feature;
 						if(feature!=null && feature!=AbstractEditCollectionHandler._pointUnderTheMouse &&  vectorfeature==_editionFeatureArray[i][1]){
 							var tmpPx:Pixel=this.map.getMapPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
@@ -270,11 +270,13 @@ package org.openscales.core.handler.feature.draw
 								break;
 							}
 						}
-					}*/
+					}
 					if(drawing){
 						layerToEdit.map.buttonMode=true;
-						var lonlat:Location=this.map.getLocationFromMapPx(px); //this.map.getLocationFromLayerPx(px);
-						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);	
+						var lonlat:Location=this.map.getLocationFromMapPx(px);
+						lonlat.reprojectTo(vectorfeature.projection);//this.map.getLocationFromLayerPx(px);
+						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);
+						PointGeomUnderTheMouse.projection = lonlat.projection;
 						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
 							//AbstractEditCollectionHandler._pointUnderTheMouse.geometry = (PointGeomUnderTheMouse as Geometry);
 							AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
