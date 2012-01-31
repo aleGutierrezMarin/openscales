@@ -76,7 +76,7 @@ package org.openscales.core.i18n
 		}
 		
 		/**
-		 * Generate a locale object
+		 * Add a locale object
 		 * 
 		 * @Param localeKey the locale key code
 		 * @Param localeName the locale name in english
@@ -84,7 +84,7 @@ package org.openscales.core.i18n
 		 * 
 		 * @Return a locale object if the localeKey is valid else null
 		 */
-		static public function genLocale(localeKey:String, localeName:String, localizedName:String):Locale {
+		static public function addLocale(localeKey:String, localeName:String, localizedName:String):Locale {
 			
 			if(!localeKey || localeKey=="")
 				return null;
@@ -110,7 +110,7 @@ package org.openscales.core.i18n
 				return null;
 			var locale:Locale = Locale.KNOWNLOCALES.getValue(localeKey.toLowerCase()) as Locale;
 			if(!locale && Locale._flashLocales[localeKey.toLowerCase()])
-				locale = Locale.genLocale(localeKey.toLowerCase(),
+				locale = Locale.addLocale(localeKey.toLowerCase(),
 					Locale._flashLocales[localeKey.toLowerCase()][0],
 					Locale._flashLocales[localeKey.toLowerCase()][1]);
 			return locale;
