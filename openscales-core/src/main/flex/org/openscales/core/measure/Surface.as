@@ -56,8 +56,8 @@ package org.openscales.core.measure
 			this.drawLayer = layer;
 			
 			this._accuracies = new HashMap();
-			this._accuracies.put("km",3);
-			this._accuracies.put("m",2);
+			this._accuracies.put(Unit.KILOMETER,3);
+			this._accuracies.put(Unit.METER,2);
 		}
 		
 		override public function set active(value:Boolean):void {
@@ -119,17 +119,17 @@ package org.openscales.core.measure
 						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
 						_lastUnit = "km²";
-						this._result= this.trunc(area,_accuracies.getValue("km"));
+						this._result= this.trunc(area,_accuracies.getValue(Unit.KILOMETER));
 					}
 					break;
 				
-				case "m" :
+				case Unit.METER :
 					inPerDisplayUnit = Unit.getInchesPerUnit(Unit.METER);
 					if(inPerDisplayUnit) {
 						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
 						_lastUnit = "m²";
-						this._result= this.trunc(area,_accuracies.getValue("m"));
+						this._result= this.trunc(area,_accuracies.getValue(Unit.METER));
 					}
 					break;
 				
@@ -139,12 +139,12 @@ package org.openscales.core.measure
 						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
 						_lastUnit = "km²";
-						this._result= this.trunc(area,_accuracies.getValue("km"));
+						this._result= this.trunc(area,_accuracies.getValue(Unit.KILOMETER));
 						
 						if(area<1){
 							area=area*1000000;
 							_lastUnit = "m²";
-							this._result= this.trunc(area,_accuracies.getValue("m"));
+							this._result= this.trunc(area,_accuracies.getValue(Unit.METER));
 						}
 					}
 					

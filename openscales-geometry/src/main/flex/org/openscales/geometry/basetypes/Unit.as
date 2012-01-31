@@ -20,6 +20,7 @@ package org.openscales.geometry.basetypes
 		public static var FOOT:String = "ft";
 		public static var MILE:String = "mi";
 		public static var INCH:String = "inch";
+		public static var RADIAN:String = "rad";
 		
 		public static var PIXEL_SIZE:Number = 0.00028;
 		

@@ -41,16 +41,16 @@ package org.openscales.core.measure
 			this.drawLayer = layer;
 			
 			this._accuracies = new HashMap();
-			this._accuracies.put("dd",2);
-			this._accuracies.put("rad",4);
-			this._accuracies.put("dms",2);
+			this._accuracies.put(Unit.DEGREE,2);
+			this._accuracies.put(Unit.RADIAN,4);
+			this._accuracies.put(Unit.SEXAGESIMAL,2);
 			
-			this._accuracies.put("mi",3);
-			this._accuracies.put("ft",2);
-			this._accuracies.put("in",1);
+			this._accuracies.put(Unit.MILE,3);
+			this._accuracies.put(Unit.FOOT,2);
+			this._accuracies.put(Unit.INCH,1);
 			
-			this._accuracies.put("km",3);
-			this._accuracies.put("m",0);
+			this._accuracies.put(Unit.KILOMETER,3);
+			this._accuracies.put(Unit.METER,0);
 		}
 		
 		override public function set active(value:Boolean):void {
@@ -106,89 +106,89 @@ package org.openscales.core.measure
 				
 				
 				
-				this._accuracies.put("dd",2);
+				this._accuracies.put(Unit.DEGREE,2);
 				this._accuracies.put("gon",2);
-				this._accuracies.put("mi",3);
-				this._accuracies.put("ft",2);
-				this._accuracies.put("in",1);
+				this._accuracies.put(Unit.MILE,3);
+				this._accuracies.put(Unit.FOOT,2);
+				this._accuracies.put(Unit.INCH,1);
 
 				
 				
 				tmpDist *= Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 				switch (_displaySystem.toLowerCase()) {					
-					case "m":
+					case Unit.METER:
 						tmpDist/=Unit.getInchesPerUnit(Unit.METER);
-						_result= this.trunc(tmpDist,_accuracies.getValue("m"));
-						_lastUnit = "m";
+						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.METER));
+						_lastUnit = Unit.METER;
 						break;
 					
-					case "km":
+					case Unit.KILOMETER:
 						tmpDist/=Unit.getInchesPerUnit(Unit.KILOMETER);
-						_result= this.trunc(tmpDist,_accuracies.getValue("km"));
-						_lastUnit = "km";
+						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.KILOMETER));
+						_lastUnit = Unit.KILOMETER;
 						break;
 					
 					case "metric":			
 						tmpDist/=Unit.getInchesPerUnit(Unit.METER);
-						_result= Util.truncate(tmpDist,_accuracies.getValue("m"));
-						_result= this.trunc(tmpDist,_accuracies.getValue("m"));
-						_lastUnit = "m";
+						_result= Util.truncate(tmpDist,_accuracies.getValue(Unit.METER));
+						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.METER));
+						_lastUnit = Unit.METER;
 						
 						if(tmpDist>1000) {
 							tmpDist/=1000;
-							_lastUnit = "km";
-							_result= Util.truncate(tmpDist,_accuracies.getValue("km"));
+							_lastUnit = Unit.KILOMETER;
+							_result= Util.truncate(tmpDist,_accuracies.getValue(Unit.KILOMETER));
 						}
 						break;
 					
-					case "dd":
+					case Unit.DEGREE:
 						tmpDist/=Unit.getInchesPerUnit(Unit.DEGREE);
-						_lastUnit = "°";
-						_result= this.trunc(tmpDist,_accuracies.getValue("dd"));
+						_lastUnit = Unit.DEGREE;
+						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.DEGREE));
 						break;
 					
-					case "dms":
+					case Unit.SEXAGESIMAL:
 						tmpDist/=Unit.getInchesPerUnit(Unit.DEGREE);
 						_lastUnit = "";
-						var acc:Number=this._accuracies.getValue("dms");
+						var acc:Number=this._accuracies.getValue(Unit.SEXAGESIMAL);
 						if(!acc){
 							acc=2;
 						}
 						_result= Util.degToDMS(tmpDist,null,acc);
 						break;
 					
-					case "ft":
+					case Unit.FOOT:
 						tmpDist/=Unit.getInchesPerUnit(Unit.FOOT);
-						_lastUnit = "ft";
+						_lastUnit = Unit.FOOT;
 						_result= this.trunc(tmpDist,_accuracies.getValue("ft"));
 						break;
 					
-					case "in":
+					case Unit.INCH:
 						tmpDist/=Unit.getInchesPerUnit(Unit.INCH);
-						_lastUnit = "in";
-						_result= this.trunc(tmpDist,_accuracies.getValue("in"));
+						_lastUnit = Unit.INCH;
+						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.INCH));
 						break;
 					
-					case "mi":
+					case Unit.MILE:
 						tmpDist/=Unit.getInchesPerUnit(Unit.MILE);
-						_lastUnit = "mi";
-						_result= this.trunc(tmpDist,_accuracies.getValue("mi"));
+						_lastUnit = Unit.MILE;
+						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.MILE));
 						break;
 					
 					case "english":
 						tmpDist/=Unit.getInchesPerUnit(Unit.FOOT);
-						_lastUnit = "ft";
-						_result= this.trunc(tmpDist,_accuracies.getValue("ft"));
+						_lastUnit = Unit.FOOT;
+						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.FOOT));
 						
 						if(tmpDist<1) {
 							tmpDist*=12;
-							_lastUnit = "in";
-							_result= this.trunc(tmpDist,_accuracies.getValue("in"));
+							_lastUnit = Unit.INCH;
+							_result= this.trunc(tmpDist,_accuracies.getValue(Unit.INCH));
 							}
 						if(tmpDist>5280) {
 							tmpDist/=5280;
-							_lastUnit = "mi";
-							_result= this.trunc(tmpDist,_accuracies.getValue("mi"));
+							_lastUnit = Unit.MILE;
+							_result= this.trunc(tmpDist,_accuracies.getValue(Unit.MILE));
 						}
 						break;
 					
