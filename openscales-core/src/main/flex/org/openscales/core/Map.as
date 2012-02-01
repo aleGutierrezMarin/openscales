@@ -1561,9 +1561,9 @@ package org.openscales.core
 			}
 			
 			this._maxResolution = value;
-			if(this._maxResolution.value < this.resolution.value)
+			if(this._maxResolution.value < this._resolution.value)
 			{
-				this.resolution = this._maxResolution;
+				this._resolution = this._maxResolution;
 			}
 			
 			this.dispatchEvent(new MapEvent(MapEvent.MIN_MAX_RESOLUTION_CHANGED, this));
