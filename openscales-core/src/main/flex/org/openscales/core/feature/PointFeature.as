@@ -1,8 +1,6 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
 	
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
@@ -11,6 +9,8 @@ package org.openscales.core.feature {
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Feature used to draw a Point geometry on FeatureLayer
@@ -29,7 +29,9 @@ package org.openscales.core.feature {
 		}
 
 		public static function createPointFeature(loc:Location, data:Object=null, style:Style=null ):PointFeature {
-			return new PointFeature(new Point(loc.lon,loc.lat), data, style);
+			var pt:Point = new Point(loc.lon,loc.lat);
+			pt.projection = loc.projection;
+			return new PointFeature(pt, data, style);
 		}
 		
 		override public function get lonlat():Location {
