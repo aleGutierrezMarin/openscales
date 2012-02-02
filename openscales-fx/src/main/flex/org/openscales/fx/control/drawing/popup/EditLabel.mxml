@@ -189,7 +189,12 @@
 				{
 					this.feature.layer.scaleX = 1;
 					this.feature.layer.scaleY = 1;
+					var tf:TextFormat = new TextFormat();
+					tf.size = 13;
+					(this.feature as LabelFeature).labelPoint.label.setTextFormat(tf);
 					(this.feature as LabelFeature).labelPoint.label.text = this._textInput.text;
+					(this.feature as LabelFeature).labelPoint.label.background = true;
+					(this.feature as LabelFeature).labelPoint.label.backgroundColor = 0xFFFFFF;
 					var middlePixel:Pixel = this.feature.layer.map.getMapPxFromLocation(new Location((this.feature as LabelFeature).labelPoint.x, (this.feature as LabelFeature).labelPoint.y, this.feature.layer.map.projection));
 					var leftPixel:Pixel = new Pixel();
 					var rightPixel:Pixel = new Pixel();
