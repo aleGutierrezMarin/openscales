@@ -258,9 +258,14 @@ package org.openscales.core.handler.feature
 							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projection));
 							// TODO getLocationFromMapPx?
 							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
+							loc.reprojectTo(feature.projection);
 							pt = new Point(loc.lon,loc.lat);
+							pt.projection = loc.projection;
 							if(i == 0)
+							{
 								lineString = new LineString(new <Number>[pt.x,pt.y]);
+								lineString.projection = pt.projection;
+							}
 							else{
 								lineString.addPoint(pt.x,pt.y);
 							}
