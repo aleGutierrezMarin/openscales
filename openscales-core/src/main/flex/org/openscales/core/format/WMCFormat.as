@@ -183,16 +183,16 @@ package org.openscales.core.format
 					wms.projection = srs;
 					wms.availableProjections = availableProjections;
 					wms.transparent = true;
-					wms.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
-					wms.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
+					wms.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
+					wms.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator),  ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd = wms;
 					break;
 				case "OGC:WFS":
 					var wfs:WFS = new WFS(title,url,name,version);
 					wfs.projection = srs;
 					wfs.availableProjections = availableProjections;
-					wfs.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
-					wfs.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
+					wfs.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
+					wfs.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd = wfs;
 					break;
 				case "OGC:WMTS":
@@ -221,8 +221,8 @@ package org.openscales.core.format
 					if (srs != "")
 					{
 						wmts.projection = srs;
-						wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), srs);
-						wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), srs);
+						wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
+						wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					}
 					wmts.format = format;
 					layerToAdd = wmts;
