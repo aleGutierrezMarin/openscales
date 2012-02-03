@@ -3,7 +3,11 @@ package org.openscales.geometry
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	
+	import mx.states.OverrideBase;
+	
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.proj4as.Proj4as;
+	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -43,6 +47,18 @@ package org.openscales.geometry
 			var cloneLabelPoint:LabelPoint = new LabelPoint(this._label.text, this._x, this._y);
 			cloneLabelPoint.projection = this.projection;
 			return cloneLabelPoint;
+		}
+		
+		override public function transform(dest:*):void
+		{
+			// Update the pojection associated to the geometry
+			var source:ProjProjection = this.projection;
+			this.projection = dest;
+			// Update the geometry
+			var p:ProjPoint = new ProjPoint(this._x, this._y);
+			Proj4as.transform(source, this.projection, p);
+			this._x = p.x;
+			this._y = p.y;
 		}
 		
 		/**
