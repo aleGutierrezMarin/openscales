@@ -7,6 +7,7 @@ package org.openscales.core.feature
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.basetypes.Location;
 	
@@ -140,6 +141,14 @@ package org.openscales.core.feature
 		public function set color(value:uint):void{
 			this._color = value;
 			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
+		}
+		
+		override public function clone():Feature
+		{
+			var geometryClone:Geometry = this.geometry.clone();
+			var LabelFeatureClone:LabelFeature = new LabelFeature(geometryClone as LabelPoint, this.data, this.style, this.isEditable);
+			LabelFeatureClone._originGeometry = this._originGeometry;
+			return LabelFeatureClone;
 		}
 	}
 }
