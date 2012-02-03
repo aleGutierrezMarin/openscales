@@ -2,7 +2,8 @@
 <openscales:Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
-					xmlns:openscales="http://openscales.org" 
+					xmlns:openscales="http://openscales.org"
+					width="200"
 					initialize="init()" >
 	<fx:Script>
 		<![CDATA[
@@ -669,18 +670,20 @@
 			
 		]]>
 	</fx:Script>
-	<s:SkinnableContainer styleName="horizontalLayout" id="mousePositionMainGroup" width="100%">
+	<s:SkinnableContainer styleName="verticalLayout" id="mousePositionMainGroup">
 		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
 				 text="{this.mousePositionLabel}"
 				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
-		<s:DropDownList id="mousePositionCrsComboBox" left="140"
-						change="crsChanged(event);"
-						dataProvider="{this.crsDataProvider}"
-						selectedIndex="{this.selectedIndexCrs}"/>
-		<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" left="260"
-						change="unitsChanged(event)" width="100"
-						dataProvider="{this.unitDataProvider}"
-						selectedIndex="{this.selectedIndexUnit}"/>
+		<s:SkinnableContainer styleName="horizontalLayout" id="mousePositionChoiceGroup" width="100%" top="25">
+			<s:DropDownList id="mousePositionCrsComboBox" 
+							change="crsChanged(event);"
+							dataProvider="{this.crsDataProvider}"
+							selectedIndex="{this.selectedIndexCrs}" />
+			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" 
+							change="unitsChanged(event)" 
+							dataProvider="{this.unitDataProvider}"
+							selectedIndex="{this.selectedIndexUnit}" left="120" width="200" />
+		</s:SkinnableContainer>
 	</s:SkinnableContainer>
 </openscales:Control>
