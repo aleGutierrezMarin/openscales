@@ -235,6 +235,14 @@
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
+		<developer>
+			<id>dlachiche</id>
+			<name>David LACHICHE</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+
 	</developers>
 	<scm>
 		<connection>scm:hg:https://bitbucket.org/gis/openscales</connection>
