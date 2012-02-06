@@ -2,7 +2,8 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark"
 		 xmlns="http://openscales.org"
-		 width="99%" height="30">
+		 width="99%" height="30"
+		 creationComplete="onCreationComplete(event)">
 	<s:Rect top="0" right="0" bottom="0" left="0">
 		<s:stroke> 
 			<s:LinearGradientStroke rotation="90" weight="1"> 
@@ -13,7 +14,7 @@
 	</s:Rect>
 	<MousePosition id="mousePosition"
 				   availableProjSrsList="EPSG:4326,EPSG:4269,IGNF:LAMB93,EPSG:900913"
-				   displayProjection="IGNF:LAMB93"
+				   displayProjection="EPSG:900913"
 				   left="20"
 				   top="5" />
 	<LanguageSwitcher id="languageSwitcher"
@@ -22,7 +23,11 @@
 					  top="5" />
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			
 			import org.openscales.fx.FxMap;
+			
+			import spark.layouts.HorizontalLayout;
 			
 			public function get fxMap():FxMap {
 				return mousePosition.fxMap;
@@ -32,6 +37,12 @@
 				mousePosition.fxMap=value;
 				languageSwitcher.fxMap=value;
 			}
+
+			protected function onCreationComplete(event:FlexEvent):void
+			{
+				mousePosition.mousePositionMainGroup.layout = new HorizontalLayout();
+			}
+
 		]]>
 	</fx:Script>
 </s:Group>

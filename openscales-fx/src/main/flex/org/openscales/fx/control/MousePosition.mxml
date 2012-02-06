@@ -673,6 +673,7 @@
 	<s:SkinnableContainer styleName="verticalLayout" id="mousePositionMainGroup">
 		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
 				 text="{this.mousePositionLabel}"
+				 width="200"
 				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
 		<s:SkinnableContainer styleName="horizontalLayout" id="mousePositionChoiceGroup" width="100%" top="25">
