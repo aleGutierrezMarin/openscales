@@ -170,6 +170,12 @@ package org.openscales.core.format
 							if (currentFormat[j].@current == 1)
 							{
 								format = currentFormat[j];
+								
+								// In flash we cannot display tiff so use jpeg instead
+								if (format == "image/tiff")
+								{
+									format = "image/jpeg"
+								}
 							}
 						}
 					}

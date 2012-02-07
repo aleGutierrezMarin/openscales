@@ -1,4 +1,4 @@
-package org.openscales.core.handler.feature
+ package org.openscales.core.handler.feature
 {
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
@@ -233,6 +233,7 @@ package org.openscales.core.handler.feature
 						loc = this.map.getLocationFromMapPx(_stopPixel);
 						loc.reprojectTo(feature.projection);
 						(targetFeature as LabelFeature).lonlat = loc;
+						(targetFeature as LabelFeature).projection = loc.projection;
 						var leftPixel:Pixel = new Pixel();
 						var rightPixel:Pixel = new Pixel();
 						leftPixel.x = _stopPixel.x - (targetFeature as LabelFeature).labelPoint.label.width / 2;
@@ -289,9 +290,12 @@ package org.openscales.core.handler.feature
 							// TODO : getLocationFromMapPx
 							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
 							pt = new Point(loc.lon,loc.lat);
+							pt.projection = loc.projection;
 							if(i == 0){
 								linearRing = new LinearRing(new <Number>[pt.x,pt.y]);
+								linearRing.projection = pt.projection;
 								polygon = new Polygon(new <Geometry>[linearRing]);
+								polygon.projection = pt.projection;
 							}
 							else{
 								linearRing.addPoint(pt.x,pt.y);
