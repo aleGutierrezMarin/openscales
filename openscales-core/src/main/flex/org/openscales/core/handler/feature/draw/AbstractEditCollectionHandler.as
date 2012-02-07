@@ -43,6 +43,11 @@ package org.openscales.core.handler.feature.draw
 		 * This singleton represents the point under the mouse during the dragging operation
 		 * */
 		public static var _pointUnderTheMouse:PointFeature=null;
+		
+		/**
+		 * The point that is created under the mouse in edition mode.
+		 */
+		private var _dummyPointOnTheMouse:Feature;
 		/**
 		 * This tolerance is used to manage the point on the segments
 		 * */
@@ -249,6 +254,12 @@ package org.openscales.core.handler.feature.draw
 		   if(AbstractEditCollectionHandler._pointUnderTheMouse!=null)	AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
 		 	_timer.stop();
 		 }
+		 
+		 private function filterCallbackOnPointUnderTheMouse(item:Vector.<Feature>, index:int, vector:Vector.<Vector.<Feature>>):Boolean {
+			 if (item[0] == this._dummyPointOnTheMouse)
+				 return false
+			return true;
+		 }
 		 /**
 		 * Create a virtual vertice under the mouse 
 		 * */
@@ -260,60 +271,66 @@ package org.openscales.core.handler.feature.draw
 		 		var px:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
 				//drawing equals false if the mouse is too close from Virtual vertice
 				var drawing:Boolean=true;
-					for(var i:int=0;i<_editionFeatureArray.length;i++){
-						var feature:Feature=_editionFeatureArray[i][0] as Feature;
-						if(feature!=null && feature!=AbstractEditCollectionHandler._pointUnderTheMouse &&  vectorfeature==_editionFeatureArray[i][1]){
-							var tmpPx:Pixel=this.map.getMapPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
-							if(Math.abs(tmpPx.x-px.x)<this._ToleranceVirtualReal && Math.abs(tmpPx.y-px.y)<this._ToleranceVirtualReal)
-							{
-								drawing=false;
-								break;
-							}
+				if (this._dummyPointOnTheMouse)
+				{
+					_editionFeatureArray = _editionFeatureArray.filter(this.filterCallbackOnPointUnderTheMouse);
+				}
+				for(var i:int=0;i<_editionFeatureArray.length;i++){
+					var feature:Feature=_editionFeatureArray[i][0] as Feature;
+
+					if(feature!=null && feature!=AbstractEditCollectionHandler._pointUnderTheMouse &&  vectorfeature==_editionFeatureArray[i][1]){
+						var tmpPx:Pixel=this.map.getMapPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
+						if(Math.abs(tmpPx.x-px.x)<this._ToleranceVirtualReal && Math.abs(tmpPx.y-px.y)<this._ToleranceVirtualReal)
+						{
+							drawing=false;
+							break;
 						}
 					}
-					if(drawing){
-						layerToEdit.map.buttonMode=true;
-						var lonlat:Location=this.map.getLocationFromMapPx(px);
-						lonlat.reprojectTo(vectorfeature.projection);//this.map.getLocationFromLayerPx(px);
-						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);
-						PointGeomUnderTheMouse.projection = lonlat.projection;
-						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-							//AbstractEditCollectionHandler._pointUnderTheMouse.geometry = (PointGeomUnderTheMouse as Geometry);
-							AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
-							//_timer.stop();
-							AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,this.virtualStyle);
-							this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-						}
-						else {
-							AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,this.virtualStyle);
-							this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-						}
-						
-						if(AbstractEditCollectionHandler._pointUnderTheMouse.layer==null) {
-							layerToEdit.addFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-							var v:Vector.<Feature> = new Vector.<Feature>();
-							v[0] = AbstractEditCollectionHandler._pointUnderTheMouse;
-							v[1] = vectorfeature;
-							 _editionFeatureArray.push(v);
-						}
-						
-					 	if(findIndexOfFeatureCurrentlyDrag(AbstractEditCollectionHandler._pointUnderTheMouse)!=-1){ 
-							AbstractEditCollectionHandler._pointUnderTheMouse.visible=true;
-						 } 
-						else
-							AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
-						
-						layerToEdit.redraw();
-						layerToEdit.map.buttonMode=false;
+				}
+				if(drawing){
+					layerToEdit.map.buttonMode=true;
+					var lonlat:Location=this.map.getLocationFromMapPx(px);
+					lonlat.reprojectTo(vectorfeature.projection);//this.map.getLocationFromLayerPx(px);
+					var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);
+					PointGeomUnderTheMouse.projection = lonlat.projection;
+					if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
+						//AbstractEditCollectionHandler._pointUnderTheMouse.geometry = (PointGeomUnderTheMouse as Geometry);
+						AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
+						//_timer.stop();
+						AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,this.virtualStyle);
+						this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 					}
 					else {
-						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null)
-						{
-							AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
-							layerToEdit.redraw();
-							layerToEdit.map.buttonMode=false;		
-						}		
+						AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,this.virtualStyle);
+						this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 					}
+					
+					if(AbstractEditCollectionHandler._pointUnderTheMouse.layer==null) {
+						layerToEdit.addFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
+						var v:Vector.<Feature> = new Vector.<Feature>();
+						v[0] = AbstractEditCollectionHandler._pointUnderTheMouse;
+						v[1] = vectorfeature;
+						 _editionFeatureArray.push(v);
+						 this._dummyPointOnTheMouse = AbstractEditCollectionHandler._pointUnderTheMouse;
+					}
+					
+				 	if(findIndexOfFeatureCurrentlyDrag(AbstractEditCollectionHandler._pointUnderTheMouse)!=-1){ 
+						AbstractEditCollectionHandler._pointUnderTheMouse.visible=true;
+					 } 
+					else
+						AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
+					
+					layerToEdit.redraw();
+					layerToEdit.map.buttonMode=false;
+				}
+				else {
+					if(AbstractEditCollectionHandler._pointUnderTheMouse!=null)
+					{
+						AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
+						layerToEdit.redraw();
+						layerToEdit.map.buttonMode=false;		
+					}		
+				}
 		 	}
 		 }
 		 /**
