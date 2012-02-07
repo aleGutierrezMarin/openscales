@@ -441,7 +441,7 @@ package org.openscales.core.layer {
 		}
 		
 		protected function onSecurityInitialized(e:SecurityEvent):void {
-			this.redraw();
+			this.redraw(true);
 		}
 		
 		protected function onMapMove(e:MapEvent):void {
