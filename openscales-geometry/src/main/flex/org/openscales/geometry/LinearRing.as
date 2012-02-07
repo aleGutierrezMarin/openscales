@@ -57,7 +57,7 @@ package org.openscales.geometry
 		override public function containsPoint(p:Point):Boolean {
 			// If the point is not inside the bounding box of the LinearRing, it
 			// can not be in the LinearRing.
-			if (! this.bounds.containsLocation(new Location(p.x, p.y))) {
+			if (! this.bounds.containsLocation(new Location(p.x, p.y, p.projection))) {
 				return false;
 			}
 			
