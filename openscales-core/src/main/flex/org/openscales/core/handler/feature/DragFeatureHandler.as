@@ -233,7 +233,6 @@
 						loc = this.map.getLocationFromMapPx(_stopPixel);
 						loc.reprojectTo(feature.projection);
 						(targetFeature as LabelFeature).lonlat = loc;
-						(targetFeature as LabelFeature).projection = loc.projection;
 						var leftPixel:Pixel = new Pixel();
 						var rightPixel:Pixel = new Pixel();
 						leftPixel.x = _stopPixel.x - (targetFeature as LabelFeature).labelPoint.label.width / 2;
