@@ -46,6 +46,9 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var cloneLabelPoint:LabelPoint = new LabelPoint(this._label.text, this._x, this._y);
 			cloneLabelPoint.projection = this.projection;
+			//cloneLabelPoint.label.setTextFormat(this.label.getTextFormat());
+			//cloneLabelPoint.label.background = this.label.background;
+			cloneLabelPoint.label = this.label;
 			return cloneLabelPoint;
 		}
 		
@@ -94,6 +97,11 @@ package org.openscales.geometry
 		 */
 		public function get label():TextField{
 			return this._label;
+		}
+		
+		public function set label(value:TextField):void
+		{
+			this._label = value;
 		}
 	}
 }
