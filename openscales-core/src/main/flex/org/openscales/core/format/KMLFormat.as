@@ -184,7 +184,7 @@ package org.openscales.core.format
 			}
 		}
 		
-		private function getStyle(style:XML):HashMap 
+		public function getStyle(style:XML):HashMap 
 		{
 			var _styles:HashMap = new HashMap();
 			if(style == null)
