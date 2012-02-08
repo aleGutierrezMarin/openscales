@@ -164,11 +164,12 @@ package org.openscales.fx.autocomplete
 			
 			if (!popUp) return;
 			
-			collection.filterFunction = filterFunction;
+			// Nothing to filter or sort: autocompletion service does it
+			/*collection.filterFunction = filterFunction;
 			var customSort:Sort = new Sort();
 			customSort.compareFunction = sortFunction;
 			collection.sort = customSort;
-			collection.refresh();
+			collection.refresh();*/
 			if ((text=="" || collection.length==0) && !forceOpen ){
 				popUp.displayPopUp = false
 			}
@@ -201,6 +202,7 @@ package org.openscales.fx.autocomplete
 				if (label.search(text.toLowerCase()) != -1) return true;
 			}
 			return false;
+			
 		}
 		
 		public function itemToLabel(item:Object):String
