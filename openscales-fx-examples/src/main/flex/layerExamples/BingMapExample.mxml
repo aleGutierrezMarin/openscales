@@ -26,7 +26,7 @@
 		
 		<DataOriginatorsDisplay x="10" y="{height-90}"/>
 		
-		<TermsOfService x="{width/2}" y="{height-20}" url="http://openscales.org/index.html" />
+		<TermsOfService x="{2*width/3}"  y="{height-20}" url="http://openscales.org/index.html" />
 	</Map>
 	<components:toolbar fxMap="{fxMap}" />
 
