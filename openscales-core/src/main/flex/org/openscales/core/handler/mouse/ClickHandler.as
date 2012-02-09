@@ -48,13 +48,23 @@ package org.openscales.core.handler.mouse
 		/**
 		 * Timer used to detect a double click without throwing a simple click
 		 */
-		private var _timer:Timer = new Timer(250,1);
+		private var _timer:Timer = new Timer(300,1);
 		
 		/**
 		 * Number of click since the beginning of the timer.
 		 * It is used to decide if the user has done a simple or a double click.
 		 */
 		private var _clickNum:Number = 0;
+		
+		/**
+		 * The position of the mouse for the first click of a double click
+		 */
+		private var _firstPointClick:Pixel = new Pixel(0,0);
+		
+		/**
+		 * The position of the mouse for the second click of a double click 
+		 */
+		private var _secondPointClick:Pixel = new Pixel(100,100);
 		
 		/**
 		 * CTRL is pressed ?
@@ -165,6 +175,9 @@ package org.openscales.core.handler.mouse
 			this._timer.removeEventListener(TimerEvent.TIMER, useRightCallback);
 			this._timer.stop();
 			this._clickNum = 0;
+			_firstPointClick = new Pixel(0,0);
+			_secondPointClick = new Pixel(100,100);
+			
 			// Listeners of the super class
 			super.unregisterListeners();
 		}
@@ -209,6 +222,13 @@ package org.openscales.core.handler.mouse
 					this._upPixel = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
 					this._ctrlKey = evt.ctrlKey;
 					this._shiftKey = evt.shiftKey;
+					if (_clickNum == 0)
+					{
+						this._firstPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
+					} else if (_clickNum == 1)
+					{
+						this._secondPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
+					}
 					this._clickNum++;
 					this._timer.start();
 				}
@@ -228,7 +248,7 @@ package org.openscales.core.handler.mouse
 					// Use the callback function for a drop click
 					this.drop(this._upPixel);
 				}	
-			} else if (this._clickNum == 1) {
+			} else if (this._clickNum == 1 || (Math.abs(this._firstPointClick.x - this._secondPointClick.x) > 2) && (Math.abs(this._firstPointClick.y - this._secondPointClick.y) > 2)) {
 				if (this.click != null) {
 					// Use the callback function for a simple click
 					this.click(this._upPixel);
@@ -253,7 +273,7 @@ package org.openscales.core.handler.mouse
 		{
 			// TODO refactor double click
 			// If the handler is configured to zoom on mouse position
-			if(this.doubleClickZoomOnMousePosition && this.map.mouseNavigationEnabled){
+			if(this.doubleClickZoomOnMousePosition && this.map.mouseNavigationEnabled && this.map.doubleclickZoomEnabled){
 				this.map.zoomBy(0.5, new Pixel(this.map.mouseX, this.map.mouseY));
 				//this.map.zoomIn(new Pixel(this.map.mouseX, this.map.mouseY));
 				//this.map.zoomToMousePosition(true);	

@@ -89,6 +89,11 @@
 				feature = event.target as Feature;
 			
 			if (feature != null && feature.layer == this._layerToMove){
+				this.map.mouseNavigationEnabled = false;
+				this.map.panNavigationEnabled = false;
+				this.map.zoomNavigationEnabled = false;
+				this.map.keyboardNavigationEnabled = false;
+				
 				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 				feature.startDrag();
 				_featureCurrentlyDragged = feature;
@@ -100,6 +105,10 @@
 		 */
 		override protected function onMouseUp(event:MouseEvent):void{
 			
+			this.map.mouseNavigationEnabled = true;
+			this.map.panNavigationEnabled = true;
+			this.map.zoomNavigationEnabled = true;
+			this.map.keyboardNavigationEnabled = true;
 			if(this.map.hitTestPoint(event.stageX,event.stageY))
 			{
 				_stopPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
