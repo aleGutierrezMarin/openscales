@@ -27,14 +27,14 @@ Use the top-right button to switch the style of the rendering. -->
 				
 		<PanZoom id="panZoom" x="10" y="10" />
 		
-		<s:Panel title="Legend" id="legends" bottom="0" >
+		<s:Panel title="Legend" id="legends" bottom="60" left="5" >
 			<s:layout>
 				<s:VerticalLayout paddingLeft="5" paddingRight="5"
 								  paddingTop="5" paddingBottom="5"/>
 			</s:layout>
 		</s:Panel>
 		
-		<s:Panel title="featureInfos" bottom="0" right="0">
+		<s:Panel title="featureInfos" bottom="5" right="5">
 			<FeatureInfo id="featureInfoComponent"
 							creationComplete="(selectFeatureHandler.handler as SelectFeaturesHandler).onSelectedFeature = featureInfoComponent.showInfo"/>
 		</s:Panel>

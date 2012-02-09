@@ -1289,8 +1289,8 @@ package org.openscales.core
 				this._timer.start();
 				this.dispatchEvent(event);
 			}
-			//else
-				//Trace.debug("Center out of maxExtent so do nothing");
+			
+
 		}
 		/**
 		 * Map size in pixels.
@@ -1733,6 +1733,7 @@ package org.openscales.core
 			event.targetZoomPixel = this._targetZoomPixel;
 			this._targetZoomPixel = null;
 			this._resolution = value;
+						
 			this.dispatchEvent(event);
 			this._timer.reset();
 			this._timer.start();
