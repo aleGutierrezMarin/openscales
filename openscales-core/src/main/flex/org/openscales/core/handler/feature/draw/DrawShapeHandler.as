@@ -97,7 +97,6 @@ package org.openscales.core.handler.feature.draw
 			this._dblClickHandler.doubleClick = this.mouseDblClick;
 			if (this.map) {
 				this.map.addEventListener(MapEvent.MOUSE_CLICK, this.initShape);
-				//this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.initShape);
 				this.map.addEventListener(MapEvent.MOVE_END, this.updateZoom);
 			} 
 		}
@@ -143,7 +142,6 @@ package org.openscales.core.handler.feature.draw
 				drawLayer.scaleX=1;
 				drawLayer.scaleY=1;
 				//we determine the point where the user clicked
-				//var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
 				var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
 				var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 				//manage the case where the layer projection is different from the map projection
@@ -186,7 +184,6 @@ package org.openscales.core.handler.feature.draw
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.stopDrawWhilePan);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.activateDrawAfterPan);
 				if(this._currentLineStringFeature!=null){
-					//this._currentLineStringFeature.style=Style.getDefaultLineStyle();
 					this._currentLineStringFeature.style=this._style;
 					_drawing = false;
 					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
@@ -202,7 +199,6 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function drawShape(evt:Event):void{
 			//we determine the point where the user clicked
-			//var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
 			var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
 			var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 			//manage the case where the layer projection is different from the map projection
@@ -230,7 +226,6 @@ package org.openscales.core.handler.feature.draw
 		protected function updateZoom(evt:MapEvent):void{
 			
 			if(evt.zoomChanged) {
-				//_drawContainer.graphics.clear();
 				//we update the pixel of the last point which has changed
 				var tempPoint:Point = _lineString.getLastPoint();
 				_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));

@@ -46,8 +46,6 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var cloneLabelPoint:LabelPoint = new LabelPoint(this._label.text, this._x, this._y);
 			cloneLabelPoint.projection = this.projection;
-			//cloneLabelPoint.label.setTextFormat(this.label.getTextFormat());
-			//cloneLabelPoint.label.background = this.label.background;
 			cloneLabelPoint.label = this.label;
 			return cloneLabelPoint;
 		}

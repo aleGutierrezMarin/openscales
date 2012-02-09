@@ -138,13 +138,11 @@ package org.openscales.core.handler.feature.draw
 			drawLayer.scaleX=1;
 			drawLayer.scaleY=1;
 			//we determine the point where the user clicked
-			//var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
 			var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
 			var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 			//manage the case where the layer projection is different from the map projection
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line
-			//_startPoint = this.map.getMapPxFromLocation(lonlat);
 			_startLocation = lonlat;
 			//trace("draw line : " + _startPoint.x + " " + _startPoint.y);
 			
@@ -181,7 +179,6 @@ package org.openscales.core.handler.feature.draw
 		public function temporaryLine(evt:Event):void{
 			_drawContainer.graphics.clear();
 			_drawContainer.graphics.lineStyle(2, 0x00ff00);
-			//_drawContainer.graphics.moveTo(_startPoint.x, _startPoint.y);
 			_drawContainer.graphics.moveTo(this.map.getMapPxFromLocation(_startLocation).x, this.map.getMapPxFromLocation(_startLocation).y);
 			_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
 			_drawContainer.graphics.endFill();
@@ -204,7 +201,6 @@ package org.openscales.core.handler.feature.draw
 				_drawContainer.graphics.clear();
 				//we update the pixel of the last point which has changed
 				var tempPoint:Point = _lineString.getLastPoint();
-				//_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));
 				_startLocation = new Location(tempPoint.x, tempPoint.y);
 			}
 		}

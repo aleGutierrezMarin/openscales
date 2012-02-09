@@ -151,7 +151,6 @@ package org.openscales.core.handler.feature.draw
 					this._firstPointFeature=  new PointFeature(point,null,Style.getDefaultPointStyle());
 					
 					//add the point feature to the drawLayer, and the polygon (which contains only one point for the moment)
-					//drawLayer.addFeature(this._firstPointFeature);
 					drawLayer.addFeature(this._polygonFeature);
 					this._polygonFeature.unregisterListeners();
 					this._firstPointFeature.unregisterListeners();
@@ -189,10 +188,8 @@ package org.openscales.core.handler.feature.draw
 			_drawContainer.graphics.beginFill(0x00ff00,0.5);
 			_drawContainer.graphics.lineStyle(2, 0x00ff00);		
 			_drawContainer.graphics.moveTo(map.mouseX, map.mouseY);
-			//_drawContainer.graphics.lineTo(this._firstPointPixel.x, this._firstPointPixel.y);
 			_drawContainer.graphics.lineTo(this.map.getMapPxFromLocation(this._firstPointLocation).x, this.map.getMapPxFromLocation(this._firstPointLocation).y);
 			_drawContainer.graphics.moveTo(map.mouseX, map.mouseY);
-			//_drawContainer.graphics.lineTo(this._lastPointPixel.x, this._lastPointPixel.y);	
 			_drawContainer.graphics.lineTo(this.map.getMapPxFromLocation(this._lastPointLocation).x, this.map.getMapPxFromLocation(this._lastPointLocation).y);	
 			_drawContainer.graphics.endFill();
 		}

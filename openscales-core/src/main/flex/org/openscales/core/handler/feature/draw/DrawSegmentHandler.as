@@ -25,14 +25,12 @@ package org.openscales.core.handler.feature.draw
 			drawLayer.scaleX=1;
 			drawLayer.scaleY=1;
 			//we determine the point where the user clicked
-			//var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
 			var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
 			var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 			//manage the case where the layer projection is different from the map projection
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line
 			super.startLocation = lonlat;
-			//trace("draw line : " + _startPoint.x + " " + _startPoint.y);
 			
 			//The user click for the first time
 			if(newFeature){

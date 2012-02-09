@@ -327,10 +327,6 @@ package org.openscales.core.handler.feature.draw
 							var lineRing:LinearRing = ((drawLayerFeatures[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing);
 							pointToDelete = lineRing.getLastPoint();
 							lineRing.removePoint(pointToDelete);
-							/*polygonHandler.lastPoint = lineRing.getLastPoint();
-							//update the starting point of the temporary line
-							var pix:Pixel = polygonHandler.map.getMapPxFromLocation(new Location(polygonHandler.lastPoint.x, polygonHandler.lastPoint.y));
-							polygonHandler.startPoint = pix;*/
 						} else {
 							drawLayer.removeFeature(drawLayerFeatures[last]);
 							polygonHandler.newFeature = true;

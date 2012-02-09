@@ -265,16 +265,14 @@ package org.openscales.core.handler.feature.draw
 					createEditionVertices(featureEdited,featureEdited.geometry as ICollection,tmpfeature);
 					var v:Vector.<Feature>;
 					for each(v in tmpfeature){
-						//if(this.map.extent.containsBounds(v[0].geometry.bounds)){
-							this._layerToEdit.addFeature(v[0]);
-		 					this._featureClickHandler.addControledFeature(v[0]);
-							feature = v[0];
-							v = new Vector.<Feature>();
-							v[0]=feature;
-							v[1]=featureEdited;
-		 					this._editionFeatureArray.push(v);
-							v=null;
-						//}
+						this._layerToEdit.addFeature(v[0]);
+	 					this._featureClickHandler.addControledFeature(v[0]);
+						feature = v[0];
+						v = new Vector.<Feature>();
+						v[0]=feature;
+						v[1]=featureEdited;
+	 					this._editionFeatureArray.push(v);
+						v=null;
 					}
 					//for garbage collector
 					tmpfeature=null;	

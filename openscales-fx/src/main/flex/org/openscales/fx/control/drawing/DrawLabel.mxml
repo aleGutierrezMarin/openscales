@@ -181,10 +181,6 @@
 				this._drawingActivated = true;
 				_alpha = 1;
 				this._map.doubleclickZoomEnabled = false;
-				/*this._map.mouseNavigationEnabled = false;
-				this._map.panNavigationEnabled = false;
-				this._map.zoomNavigationEnabled = false;
-				this._map.keyboardNavigationEnabled = false;*/
 			}
 			public function disactivate():void{
 				
@@ -205,10 +201,6 @@
 				if(this._drawingActivated){
 					disactivate();
 					this._map.doubleclickZoomEnabled = true;
-					/*this._map.mouseNavigationEnabled = true;
-					this._map.panNavigationEnabled = true;
-					this._map.zoomNavigationEnabled = true;
-					this._map.keyboardNavigationEnabled = true;*/
 					return;
 				}
 				

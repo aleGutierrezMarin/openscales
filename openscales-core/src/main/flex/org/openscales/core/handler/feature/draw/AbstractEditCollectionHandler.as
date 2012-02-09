@@ -199,10 +199,6 @@ package org.openscales.core.handler.feature.draw
 			if(_isUsedAlone)
 				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 		 	this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
-			/*this.map.mouseNavigationEnabled = true;
-			this.map.panNavigationEnabled = true;
-			this.map.zoomNavigationEnabled = true;
-			this.map.keyboardNavigationEnabled = true;*/
 		 	this._featureCurrentlyDrag=null;
 		 	//we remove it
 		 	if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
@@ -242,10 +238,6 @@ package org.openscales.core.handler.feature.draw
 			 	if(_isUsedAlone)
 					this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 			 	this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
-				/*this.map.mouseNavigationEnabled = true;
-				this.map.panNavigationEnabled = true;
-				this.map.zoomNavigationEnabled = true;
-				this.map.keyboardNavigationEnabled = true;*/
 			 	this._featureCurrentlyDrag=null;
 			 	if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
 		 			this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
@@ -309,9 +301,7 @@ package org.openscales.core.handler.feature.draw
 					var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);
 					PointGeomUnderTheMouse.projection = lonlat.projection;
 					if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-						//AbstractEditCollectionHandler._pointUnderTheMouse.geometry = (PointGeomUnderTheMouse as Geometry);
 						AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
-						//_timer.stop();
 						AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,this.virtualStyle);
 						this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 					}

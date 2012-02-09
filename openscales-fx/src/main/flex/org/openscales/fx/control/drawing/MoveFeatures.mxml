@@ -131,10 +131,6 @@
 				
 				_handler.active = true;
 				_alpha = 1;
-				/*_handler.map.mouseNavigationEnabled = false;
-				_handler.map.panNavigationEnabled = false;
-				_handler.map.zoomNavigationEnabled = false;
-				_handler.map.keyboardNavigationEnabled = false;*/
 			}
 			private function disactivate():void{
 				
@@ -154,10 +150,6 @@
 				var evt:DrawingEvent;
 				if(this._handler.active){
 					disactivate();
-					/*_handler.map.mouseNavigationEnabled = true;
-					_handler.map.panNavigationEnabled = true;
-					_handler.map.zoomNavigationEnabled = true;
-					_handler.map.keyboardNavigationEnabled = true;*/
 					return;
 				}
 				
