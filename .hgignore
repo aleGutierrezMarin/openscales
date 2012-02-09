@@ -12,3 +12,4 @@ target
 *FlexUnitApplication.mxml
 .idea
 *.iml
+*.versionsBackup
