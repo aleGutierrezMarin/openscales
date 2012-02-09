@@ -116,14 +116,14 @@
 			
 			/**
 			 * @private
-			 * The position of the layerSwitcherDrawingTools
+			 * The position of the layerManagerDrawingTools
 			 * @default 0
 			 */
 			protected var _groupPositionDraw:Number = 0;
 			
 			/**
 			 * @private
-			 * The position of the layerSwitcherOptionnalDisplay
+			 * The position of the layerManagerOptionnalDisplay
 			 * @defualt 0
 			 */
 			protected var _groupPositionOptionnal:Number = 0;
@@ -197,7 +197,7 @@
 			 * 
 			 * The options implemented by the DefaultLayerRenderer are 
 			 * 
-			 * &lt;LayerSwitcher&gt;
+			 * &lt;LayerManager&gt;
 			 *	 	&lt;rendererOptions&gt;
 			 *			&lt;fx:Object
 			 *				displayLegend="true/false"
@@ -205,7 +205,7 @@
 			 *				displayMetadatas="true/false"
 			 *              displayDrawing="true/false" /&gt;
 			 *		&lt;/rendererOptions&gt;
-			 * &lt;/LayerSwitcher&gt;
+			 * &lt;/LayerManager&gt;
 			 */
 			public function get rendererOptions():Object{
 				
@@ -242,26 +242,26 @@
 			 */
 			public function setGroupSize():void
 			{
-				this._maximizeGroupSize = hgroup.height+layerSwitcherAdditionnalDisplay.height;
+				this._maximizeGroupSize = hgroup.height+layerManagerAdditionnalDisplay.height;
 				
 				// according to the group displayed or not, set the position of the different group
-				this._groupPositionOptionnal = hgroup.height + layerSwitcherAdditionnalDisplay.height;
+				this._groupPositionOptionnal = hgroup.height + layerManagerAdditionnalDisplay.height;
 				this._groupPositionDraw = this._groupPositionOptionnal;
 				
 				
 				if(this._optionnalGroupDisplayed == true)
 				{
-					this._maximizeGroupSize += layerSwitcherOptionnalDisplay.height;
-					this._groupPositionDraw += layerSwitcherOptionnalDisplay.height;
+					this._maximizeGroupSize += layerManagerOptionnalDisplay.height;
+					this._groupPositionDraw += layerManagerOptionnalDisplay.height;
 				}
 				
 				if(this._isDrawingLayer && this._displayDrawing)
 				{
-					this._maximizeGroupSize += layerSwitcherDrawingTools.height;
+					this._maximizeGroupSize += layerManagerDrawingTools.height;
 				}
 				
-				layerSwitcherOptionnalDisplay.y = this._groupPositionOptionnal;
-				layerSwitcherDrawingTools.y = this._groupPositionDraw; // work in progress
+				layerManagerOptionnalDisplay.y = this._groupPositionOptionnal;
+				layerManagerDrawingTools.y = this._groupPositionDraw; // work in progress
 			}
 			
 			protected function onCreationComplete():void{
@@ -464,7 +464,7 @@
 			/**
 			 * Reduce or maximize the current LayerManager
 			 */
-			public function reduceMaximizeLayerSwitcher(event:Event):void 
+			public function reduceMaximizeLayerManager(event:Event):void 
 			{
 				this.isMinimized = !this.isMinimized;
 				this.manageToogle();
@@ -502,23 +502,23 @@
 		
 		<ChangeLayerPosition id="changeLayerPositionControl" layer="{_layer}" layerManager="{_layerManager}" />
 		
-		<os:IconButton id="layerSwitcherReduceMaximize"
+		<os:IconButton id="layerManagerReduceMaximize"
 					   width="16"
 					   height="16"
-					   click="reduceMaximizeLayerSwitcher(event)"
+					   click="reduceMaximizeLayerManager(event)"
 					   icon="{this._btnReduceMaximize}"
 					   iconOver="{this._btnReduceMaximize}"
 					   iconDown="{this._btnReduceMaximize}"
 					   toolTip="{this.tooltipReduceMaximize}" />
-		<DeleteLayer id="layerSwitcherDeleteLayer" layer="{_layer}" />
+		<DeleteLayer id="layerManagerDeleteLayer" layer="{_layer}" />
 	</s:SkinnableContainer>
 	
 	
-	<s:SkinnableContainer id="layerSwitcherAdditionnalDisplay" height="20" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}">
+	<s:SkinnableContainer id="layerManagerAdditionnalDisplay" height="20" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}">
 		<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
 	</s:SkinnableContainer>
 	
-	<s:SkinnableContainer height="60" width="100%" id="layerSwitcherDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
+	<s:SkinnableContainer height="60" width="100%" id="layerManagerDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
 		
 		<s:layout>
 			<s:VerticalLayout />
@@ -552,7 +552,7 @@
 		
 	</s:SkinnableContainer>
 	
-	<s:SkinnableContainer height="30" width="100%" id="layerSwitcherOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
+	<s:SkinnableContainer height="30" width="100%" id="layerManagerOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
 		<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
 		<LayerMetadata x="40" id="layerControlMetadatas" visible="{_displayMetadatas}" />
 	</s:SkinnableContainer>

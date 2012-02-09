@@ -184,7 +184,7 @@ package org.openscales.core.format
 			}
 		}
 		
-		private function getStyle(style:XML):HashMap 
+		public function getStyle(style:XML):HashMap 
 		{
 			var _styles:HashMap = new HashMap();
 			if(style == null)
@@ -933,6 +933,11 @@ package org.openscales.core.format
 						var l:LabelPoint = (feature as LabelFeature).labelPoint;
 						data = new XML("<Data name=\"label\"></Data>");
 						value = new XML("<value>" + l.label.text + "</value>");
+						data.appendChild(value);
+						extendedData.appendChild(data);
+						
+						data = new XML("<Data name=\"rotationZ\"></Data>");
+						value = new XML("<value>" + l.label.rotationZ + "</value>");
 						data.appendChild(value);
 						extendedData.appendChild(data);
 					}

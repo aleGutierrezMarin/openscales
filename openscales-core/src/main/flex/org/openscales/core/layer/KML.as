@@ -106,7 +106,7 @@ package org.openscales.core.layer
 				}
 				this._kmlFormat.proxy = this.proxy;
 				
-				this._featureVector = this.kmlFormat.read(this.data) as Vector.<Feature>;
+				this._featureVector = this._kmlFormat.read(this.data) as Vector.<Feature>;
 				var i:uint;
 				var vectorLength:uint = this._featureVector.length;
 				for (i = 0; i < vectorLength; i++){

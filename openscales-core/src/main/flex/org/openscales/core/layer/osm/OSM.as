@@ -22,7 +22,6 @@ package org.openscales.core.layer.osm
 
 		
 		public function OSM(identifier:String,
-							displayedName:String=null,
 							url:String = null,
 							data:XML = null) {
 

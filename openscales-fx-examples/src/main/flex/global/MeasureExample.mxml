@@ -27,8 +27,11 @@
 		]]>
 	</fx:Script>
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710"
-		 minResolution="0.000010728836059570312,EPSG:4326" maxResolution="1.40625,EPSG:4326">
+	<Map id="fxMap" width="100%" height="100%" 
+		 resolution="0.021328175893015344" 
+		 center="1.755532829482016,46.83827335258996"
+		 minResolution="0.000010728836059570312,EPSG:4326" 
+		 maxResolution="1.40625,EPSG:4326">
 		
 		<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
 			  layers="bluemarble" format="image/jpeg" 

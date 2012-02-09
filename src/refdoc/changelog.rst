@@ -5,6 +5,7 @@ Changes between 2.0.0 and 2.0.1
 -------------------------------
 
 * WMTS default value is image/jpeg
+* "name" attribute is separated in "identifier" and "displayedName" in Layer class
 
 changes between 1.2.1 and 2.0.0
 -------------------------------

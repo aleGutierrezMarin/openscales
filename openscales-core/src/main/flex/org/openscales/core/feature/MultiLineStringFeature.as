@@ -66,6 +66,7 @@ package org.openscales.core.feature
 			var geometryClone:Geometry=this.geometry.clone();
 			var MultilineStringFeatureClone:MultiLineStringFeature=new MultiLineStringFeature(geometryClone as MultiLineString,null,this.style,this.isEditable);
 			MultilineStringFeatureClone._originGeometry = this._originGeometry;
+			MultilineStringFeatureClone.layer = this.layer;
 			return MultilineStringFeatureClone;
 			
 		}			

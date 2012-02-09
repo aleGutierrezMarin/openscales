@@ -148,6 +148,7 @@ package org.openscales.core.feature
 			var geometryClone:Geometry = this.geometry.clone();
 			var LabelFeatureClone:LabelFeature = new LabelFeature(geometryClone as LabelPoint, this.data, this.style, this.isEditable);
 			LabelFeatureClone._originGeometry = this._originGeometry;
+			LabelFeatureClone.layer = this.layer;
 			return LabelFeatureClone;
 		}
 	}
