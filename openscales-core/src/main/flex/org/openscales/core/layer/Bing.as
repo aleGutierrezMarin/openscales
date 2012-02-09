@@ -187,7 +187,7 @@ package org.openscales.core.layer
 		/**
 		 * The layer Name (appears in LayerManager for example)
 		 */
-		override public function get name():String {
+		override public function get displayedName():String {
 			return "Bing "+this._imagerySet;
 		}
 
