@@ -302,8 +302,8 @@ package org.openscales.geometry.basetypes
 		 * Determines if the current bounds contains the bounds passed by parameter.
 		 *
 		 * @param bounds The bounds to check.
-		 * @param partial Partial containing shoulds return true ?
-		 * @param inclusive It will include the border's bounds ?
+		 * @param partial If true, method will return true for intersecting bounds
+		 * @param inclusive if true >= and <= will be used instead of < and > when comparing bounds coordinates
 		 *
 		 * @return If the bounds are contained or not by the current bounds.
 		 */
