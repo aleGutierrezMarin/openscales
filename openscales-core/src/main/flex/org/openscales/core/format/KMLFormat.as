@@ -935,6 +935,11 @@ package org.openscales.core.format
 						value = new XML("<value>" + l.label.text + "</value>");
 						data.appendChild(value);
 						extendedData.appendChild(data);
+						
+						data = new XML("<Data name=\"rotationZ\"></Data>");
+						value = new XML("<value>" + l.label.rotationZ + "</value>");
+						data.appendChild(value);
+						extendedData.appendChild(data);
 					}
 					
 					for(var i:uint = 0 ;i<j;++i) {

@@ -70,6 +70,7 @@ package org.openscales.core.feature
 			bitmap.bitmapData = new BitmapData(this._clip.width, this._clip.height, false, 0x000000);
 			bitmap.bitmapData.draw(this._clip, null, null, null, null);
 			ret.loadDisplayObject(bitmap);
+			ret.layer = this.layer;
 			return ret;
 		}
 		
