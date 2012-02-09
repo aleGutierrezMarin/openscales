@@ -175,7 +175,6 @@ package org.openscales.core.handler.feature
 			if (value) {
 				this.onOverFeature = this.selectByOver;
 				this.onOutFeature = this.unselectByOut;
-				//this.onOutFeature = null;
 			} else {
 				this.onOverFeature = null;
 				this.onOutFeature = null;
