@@ -270,7 +270,9 @@ package org.openscales.core
 		private var _backGround:Shape;
 		private var _panNavigationEnabled:Boolean = true;
 		private var _zoomNavigationEnabled:Boolean = true;
+		private var _doubleclickZoomEnabled:Boolean = true;
 		private var _keyboardNavigationEnabled:Boolean = true;
+		private var _clickedPoint:Pixel = new Pixel(0,0);
 		
 		/** 
 		 * @private
@@ -338,6 +340,26 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_START, onLayerLoadStart);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
 			this._initialized = true;
+			this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			
+			
+		}
+		
+		public function onMouseDown(evt:MouseEvent):void
+		{
+			this._clickedPoint = new Pixel(this.mouseX, this.mouseY);
+			this.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+		}
+		
+		public function onMouseUp(evt:MouseEvent):void
+		{
+			this.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			if ((Math.abs(this._clickedPoint.x - this.mouseX) < 2) && (Math.abs(this._clickedPoint.y - this.mouseY) < 2))
+			{
+				var clickEvent:MapEvent = new MapEvent(MapEvent.MOUSE_CLICK, this);
+				this.dispatchEvent(clickEvent);
+			}
+			
 		}
 		
 		/**
@@ -1827,6 +1849,23 @@ package org.openscales.core
 		public function set mouseNavigationEnabled(value:Boolean):void
 		{
 			_mouseNavigationEnabled = value;
+		}
+		
+		/**
+		 * To enabled/disabled the zoom on double click
+		 */
+		public function get doubleclickZoomEnabled():Boolean
+		{
+			return this._doubleclickZoomEnabled
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		public function set doubleclickZoomEnabled(value:Boolean):void
+		{
+			this._doubleclickZoomEnabled = value;
 		}
 		
 		/**

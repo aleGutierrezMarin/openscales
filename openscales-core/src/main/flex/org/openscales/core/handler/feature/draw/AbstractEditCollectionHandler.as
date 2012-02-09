@@ -59,7 +59,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * We use a timer to manage the mouse out of a feature
 		 */
-		private var _timer:Timer = new Timer(1000,1);
+		private var _timer:Timer = new Timer(500,1);
 		/**
 		 * To know if we displayed the virtual vertices of collection feature or not
 		 **/
@@ -122,6 +122,10 @@ package org.openscales.core.handler.feature.draw
 							this._featureCurrentlyDrag=null;
 						//we add the new mouseEvent move and remove the previous
 						_timer.stop();
+						this.map.mouseNavigationEnabled = false;
+						this.map.panNavigationEnabled = false;
+						this.map.zoomNavigationEnabled = false;
+						this.map.keyboardNavigationEnabled = false;
 						this.map.addEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
 					 	if(_isUsedAlone)
 							this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
@@ -152,15 +156,18 @@ package org.openscales.core.handler.feature.draw
 		 				else
 							parentGeometry.addComponent(newVertice,indexOfFeatureCurrentlyDrag);
 		 				if(displayedVirtualVertices)
-							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	
-						    
+							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	 
 		 			} 	
 		 		}
 		 	}
 		 	//we add the new mouseEvent move and remove the MouseEvent on the draw Temporary feature
 		 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);	
 		 	if(_isUsedAlone)this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-		 	this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
+			this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
+			this.map.mouseNavigationEnabled = true;
+			this.map.panNavigationEnabled = true;
+			this.map.zoomNavigationEnabled = true;
+			this.map.keyboardNavigationEnabled = true;
 		 	this._featureCurrentlyDrag=null;
 		 	//We remove the point under the mouse if it was dragged
 		 	if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
@@ -192,6 +199,10 @@ package org.openscales.core.handler.feature.draw
 			if(_isUsedAlone)
 				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 		 	this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
+			/*this.map.mouseNavigationEnabled = true;
+			this.map.panNavigationEnabled = true;
+			this.map.zoomNavigationEnabled = true;
+			this.map.keyboardNavigationEnabled = true;*/
 		 	this._featureCurrentlyDrag=null;
 		 	//we remove it
 		 	if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
@@ -231,6 +242,10 @@ package org.openscales.core.handler.feature.draw
 			 	if(_isUsedAlone)
 					this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 			 	this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
+				/*this.map.mouseNavigationEnabled = true;
+				this.map.panNavigationEnabled = true;
+				this.map.zoomNavigationEnabled = true;
+				this.map.keyboardNavigationEnabled = true;*/
 			 	this._featureCurrentlyDrag=null;
 			 	if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
 		 			this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);

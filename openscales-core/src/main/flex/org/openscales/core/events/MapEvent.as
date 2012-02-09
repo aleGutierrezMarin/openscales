@@ -100,6 +100,11 @@ package org.openscales.core.events{
 		public static const MOVE_START:String="openscales.mapmovestart";
 		
 		/**
+		 * Event type dispatched when the mouse is clicked, dispatched differently from MouseEvent.MOUSE_CLICK event
+		 */
+		public static const MOUSE_CLICK:String="openscales.mouseclick"
+		
+		/**
 		 * Event type dispatched after map creation complete.
 		 */
 		public static const MAP_LOADED:String="openscales.maploaded";

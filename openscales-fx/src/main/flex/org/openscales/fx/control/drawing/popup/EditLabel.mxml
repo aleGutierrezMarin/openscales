@@ -187,6 +187,7 @@
 				
 				if (this._textInput.text != null)
 				{
+					
 					this.feature.layer.scaleX = 1;
 					this.feature.layer.scaleY = 1;
 					var tf:TextFormat = new TextFormat();

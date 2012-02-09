@@ -1,6 +1,7 @@
 package org.openscales.core.handler.feature.draw
 {
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
@@ -75,6 +76,11 @@ package org.openscales.core.handler.feature.draw
 		private var _dblClickHandler:ClickHandler = new ClickHandler();
 		
 		/**
+		 * boolean that says if we are currently drawing
+		 */
+		private var _drawing:Boolean = false;
+		
+		/**
 		 * DrawPathHandler constructor
 		 *
 		 * @param map
@@ -90,20 +96,46 @@ package org.openscales.core.handler.feature.draw
 			this._dblClickHandler.active = true;
 			this._dblClickHandler.doubleClick = this.mouseDblClick;
 			if (this.map) {
-				this.map.addEventListener(MouseEvent.CLICK, this.initShape);
+				this.map.addEventListener(MapEvent.MOUSE_CLICK, this.initShape);
+				//this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.initShape);
 				this.map.addEventListener(MapEvent.MOVE_END, this.updateZoom);
 			} 
+		}
+		
+		/**
+		 * Callback that stop the draw if draging the map.
+		 */
+		public function stopDrawWhilePan(event:MouseEvent):void
+		{
+			if (_drawing)
+			{
+				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawShape);
+			}
+		}
+		
+		/**
+		 * Callback that restart the draw if draging the map.
+		 */
+		public function activateDrawAfterPan(event:MouseEvent):void
+		{
+			if (_drawing)
+			{
+				this.map.addEventListener(MouseEvent.MOUSE_MOVE,drawShape);
+			}
 		}
 		
 		override protected function unregisterListeners():void{
 			this._dblClickHandler.active = false;
 			if (this.map) {
-				this.map.removeEventListener(MouseEvent.CLICK, this.initShape);
+				this.map.removeEventListener(MapEvent.MOUSE_CLICK, this.initShape);
 				this.map.removeEventListener(MapEvent.MOVE_END, this.updateZoom);
+				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawShape);
+				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.stopDrawWhilePan);
+				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.activateDrawAfterPan);
 			}
 		}
 		
-		public function initShape(event:MouseEvent=null):void{
+		public function initShape(event:Event=null):void{
 			//Init shape
 			if(newFeature) {
 				newFeature = false;
@@ -128,8 +160,12 @@ package org.openscales.core.handler.feature.draw
 				drawLayer.idPath++;
 				drawLayer.addFeature(_currentLineStringFeature);
 				
-				//draw the shape, update each time the mouse moves		
+				_drawing = true;
+				//draw the shape, update each time the mouse moves
 				this.map.addEventListener(MouseEvent.MOUSE_MOVE,drawShape);	
+				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.stopDrawWhilePan);
+				this.map.addEventListener(MouseEvent.MOUSE_UP, this.activateDrawAfterPan);
+				
 			}
 		}
 		
@@ -147,10 +183,12 @@ package org.openscales.core.handler.feature.draw
 			//If we are actually drawing
 			if(newFeature == false) {
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawShape);
-				
+				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.stopDrawWhilePan);
+				this.map.removeEventListener(MouseEvent.MOUSE_UP, this.activateDrawAfterPan);
 				if(this._currentLineStringFeature!=null){
 					//this._currentLineStringFeature.style=Style.getDefaultLineStyle();
 					this._currentLineStringFeature.style=this._style;
+					_drawing = false;
 					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,this._currentLineStringFeature));
 					drawLayer.redraw(true);
 				}
@@ -162,7 +200,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * Draw the shape while moving mouse
 		 */
-		public function drawShape(evt:MouseEvent):void{
+		public function drawShape(evt:Event):void{
 			//we determine the point where the user clicked
 			//var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
 			var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );

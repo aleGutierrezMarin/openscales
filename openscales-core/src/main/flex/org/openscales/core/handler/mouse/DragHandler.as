@@ -90,6 +90,7 @@ package org.openscales.core.handler.mouse
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
+			if(!this.map.mouseNavigationEnabled) return;
 			var deltaX:Number = this.map.stage.mouseX - this._previousMapPosition.x;
 			var deltaY:Number = this.map.stage.mouseY - this._previousMapPosition.y;
 			this._previousMapPosition.x = this.map.stage.mouseX;

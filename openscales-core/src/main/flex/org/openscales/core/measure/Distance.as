@@ -5,6 +5,7 @@ package org.openscales.core.measure
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.MeasureEvent;
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.handler.feature.draw.DrawPathHandler;
@@ -78,7 +79,7 @@ package org.openscales.core.measure
 				_currentLineStringFeature = null;
 			}
 		}
-		override protected function drawLine(event:MouseEvent=null):void {
+		override protected function drawLine(event:MapEvent=null):void {
 			this.clearFeature();
 			super.drawLine(event);
 			var mEvent:MeasureEvent = null;
