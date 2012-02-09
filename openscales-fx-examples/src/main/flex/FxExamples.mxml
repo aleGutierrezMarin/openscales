@@ -29,6 +29,8 @@ Main Flex example application
 			import layerExamples.WMSCExample;
 			import layerExamples.WMSExample;
 			import layerExamples.WMTSExample;
+			import layerExamples.osm.CycleMapExample;
+			import layerExamples.osm.MapnikExample;
 			
 			import locate.OverviewExample;
 			import locate.OverviewRatioExample;
@@ -38,6 +40,8 @@ Main Flex example application
 			import manageLayer.StyleExample;
 			
 			import mx.core.IVisualElement;
+			
+			import org.openscales.core.utils.Trace;
 			private var data:Object = {};
 			
 			private function init():void {
@@ -73,6 +77,12 @@ Main Flex example application
 						break;
 					case "bing":
 						state = new BingMapExample();
+						break;
+					case "cyclemap":
+						state = new CycleMapExample();
+						break;
+					case "mapnik":
+						state = new MapnikExample();
 						break;
 					case "drawedit":
 						state = new DrawingExample();
@@ -162,14 +172,14 @@ Main Flex example application
 				<s:Button id="addlayers" label="Add layers dynamically" click="changeState(event)" width="100%"/>
 				<s:Button id="stylevectors" label="Style vector layers" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
-			<s:NavigatorContent label="Locate" width="100%" height="100%">
+			<s:NavigatorContent label="Overview map" width="100%" height="100%">
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
 				<s:Button id="overview" label="Overview map" click="changeState(event)" width="100%"/>
 				<s:Button id="overviewRatio" label="Overview ratio map" click="changeState(event)" width="100%"/>
-				<s:Button id="openls" label="with OpenLS" click="changeState(event)" width="100%"/>
-				<s:Button id="yahoo" label="with Yahoo geocoder" click="changeState(event)" width="100%"/>
+				<!--<s:Button id="openls" label="with OpenLS" click="changeState(event)" width="100%"/>-->
+				<!--<s:Button id="yahoo" label="with Yahoo geocoder" click="changeState(event)" width="100%"/>-->
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Features handling" width="100%" height="100%">
 				<s:layout>
@@ -180,10 +190,12 @@ Main Flex example application
 				<s:Button id="getfeatureinfo" label="WMS GetFeatureInfo" click="changeState(event)" width="100%"/>
 				<s:Button id="statistics" label="Display statistics" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
-			<s:NavigatorContent label="Protocols" width="100%" height="100%">
+			<s:NavigatorContent label="Layers" width="100%" height="100%">
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
+				<s:Button id="mapnik" label="Mapnik" click="changeState(event)" width="100%"/>
+				<s:Button id="cyclemap" label="Cyclemap" click="changeState(event)" width="100%"/>				
 				<s:Button id="bing" label="Bing Map" click="changeState(event)" width="100%"/>
 				<s:Button id="wmsc" label="WMS-C" click="changeState(event)" width="100%"/>
 				<s:Button id="germany" label="WMS 1.1.x" click="changeState(event)" width="100%"/>
