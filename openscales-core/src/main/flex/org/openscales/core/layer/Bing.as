@@ -11,6 +11,9 @@ package org.openscales.core.layer
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 
+	/**
+	 * This class is used to display BingMaps.
+	 */ 
 	public class Bing extends TMS
 	{
 		public static const resolutions:Array = new Array(156543.03390625,
