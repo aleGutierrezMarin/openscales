@@ -246,6 +246,10 @@ package org.openscales.core.handler.feature.draw
 			 	this._drawContainer.graphics.clear();
 			 	_timer.stop();
 		 		this._layerToEdit.redraw();
+				this.map.mouseNavigationEnabled = true;
+				this.map.panNavigationEnabled = true;
+				this.map.zoomNavigationEnabled = true;
+				this.map.keyboardNavigationEnabled = true;
 		 	}
 		 }
 		 
