@@ -114,6 +114,7 @@ package org.openscales.core.feature {
 			var geometryClone:Geometry = this.geometry.clone();
 			var MultiPolygonFeatureClone:MultiPolygonFeature = new MultiPolygonFeature(geometryClone as MultiPolygon, null, this.style, this.isEditable);
 			MultiPolygonFeatureClone._originGeometry = this._originGeometry;
+			MultiPolygonFeatureClone.layer = this.layer;
 			return MultiPolygonFeatureClone;
 		}
 

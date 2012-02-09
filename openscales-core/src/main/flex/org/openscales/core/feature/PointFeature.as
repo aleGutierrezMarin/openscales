@@ -90,6 +90,7 @@ package org.openscales.core.feature {
 			var geometryClone:Geometry = this.geometry.clone();
 			var PointFeatureClone:PointFeature = new PointFeature(geometryClone as Point, null, this.style);
 			PointFeatureClone._originGeometry = this._originGeometry;
+			PointFeatureClone.layer = this.layer;
 			return PointFeatureClone;
 		}
 
