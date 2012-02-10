@@ -93,16 +93,18 @@ package org.openscales.core.request
 			this._removeListeners();
 			if(!this._isSent && this.security!=null)
 				this.security.removeWaitingRequest(this);
-			this._isSent = true;
+			
 			try {
 				if (this._isCompleted && (this.loader is Loader)) {
 					(this.loader as Loader).unloadAndStop(true);
 				} // else ? // FixMe
-				this.loader.close();
+				if(this._isSent)
+					this.loader.close();
 			} catch(e:Error) {
 				// Empty catch is evil, but here it's fair.
-				Trace.debug(e.message);
+				//Trace.debug(e.message);
 			}
+			this._isSent = true;
 			//this._loader = null; // FixMe
 		}
 		
