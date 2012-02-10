@@ -5,28 +5,23 @@
 	
 	<Map id="fxMap" width="100%" height="100%" resolution="0.0027465" center="4.84479575848897,45.7531798723947" projection="EPSG:900913">
 		
-		<Mapnik name="Mapnik" />
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
 		
 		<WheelHandler/>
 		<DragHandler/>
 
-		<WFS id="ignGeoplaRegion" name="IGN - Geopla (Départements)" maxExtent="-142057.542842283,6038798.675807986,1512391.727425894,7306294.234914808,EPSG:2154"
-				url="http://openscales.org/geoserver/wfs" typename="pg:simplif_dept" projection="EPSG:4326"
-				version="1.1.0"	style="{this.createStyleLatitude()}"/>
-		
-		<!--WFS id="chef" name="Chefs lieux (WFS)" url="http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/cleok/geoportail/wfs/"
-						version="1.1.0" typename="sde:chef_lieu" alpha="0.9"
-						style="{Style.getDefaultPointStyle()}" /-->
-		<!--SelectFeaturesHandler id="selectFeatureHandler" active="true"/-->
-		
-		<!--s:Panel title="featureInfos" bottom="10" right="10">
-			<FeatureInfo id="featureInfoComponent"
-							creationComplete="(selectFeatureHandler.handler as SelectFeaturesHandler).onSelectedFeature = featureInfoComponent.showInfo"/>
-		</s:Panel-->
+		<WFS id="ignGeoplaRegion" name="IGN - Geopla (Départements)"
+			maxExtent="-142057.542842283,6038798.675807986,1512391.727425894,7306294.234914808,EPSG:2154"
+			url="http://openscales.org/geoserver/wfs"
+			typename="pg:simplif_dept"
+			projection="EPSG:4326"
+			version="1.1.0"
+			style="{this.createStyleLatitude()}"/>
+
 
 		<Zoom x="{fxMap.width-135}" y="10" />
 		<DataOriginatorsDisplay x="10" y="{height-90}" />
-		<LayerManager left="10" bottom="10"/>
+		<LayerManager left="10" bottom="60"/>
 	</Map>
 	<components:toolbar fxMap="{fxMap}" />
 		

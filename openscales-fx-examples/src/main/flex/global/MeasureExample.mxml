@@ -31,11 +31,10 @@
 		 resolution="0.021328175893015344" 
 		 center="1.755532829482016,46.83827335258996"
 		 minResolution="0.000010728836059570312,EPSG:4326" 
-		 maxResolution="1.40625,EPSG:4326">
+		 maxResolution="1.40625,EPSG:4326"
+		 projection="EPSG:900913">
 		
-		<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
-			  layers="bluemarble" format="image/jpeg" 
-			  maxExtent="-180,-90,180,90" version="1.1.1"/>
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
 		
 		<MeasureBar id="mbar" x="10" y="10"  />
 		

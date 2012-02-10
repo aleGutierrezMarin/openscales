@@ -5,9 +5,9 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
 		 creationComplete="initMap()" xmlns:components="components.*">
 	
-	<Map id="fxMap" width="100%" height="100%" projection="EPSG:900913">
+	<Map id="fxMap" width="100%" height="100%" projection="EPSG:900913" center="4.32972,48.56215" resolution="0.010986328125">
 		
-		<Mapnik id="mapnik" name="Mapnik" alpha="0.7" />
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
 		<GeoRss id="rsslayer"
 				name="test"
 				numZoomLevels="22" 
@@ -36,12 +36,7 @@
 			private var fxpopup:FxPopup;
 			
 			private function initMap():void
-			{	
-				fxMap.center = "4.32972,48.56215,WGS84";
-				fxMap.resolution = "0.010986328125,WGS84";
-				Trace.debug("Mapnik projection: " + mapnik.projection);
-				Trace.debug("GeoRssLayer projection: " + rsslayer.projection);
-	
+			{
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onFeatureClick);
 			}
 			
