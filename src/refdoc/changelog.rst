@@ -1,7 +1,14 @@
 Changelog
 =========
 
-Changes between 2.0.0 and 2.0.1
+Changes between 2.1.0 and 2.1.1
+-------------------------------
+* Allowing Pan and Zoom while drawin features
+* improving overall performances while requesting tiles
+* improving center changed performances
+* add FxOSM
+
+Changes between 2.0.0 and 2.1.0
 -------------------------------
 
 * BingMaps support
