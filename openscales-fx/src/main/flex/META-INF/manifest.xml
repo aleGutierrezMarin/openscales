@@ -21,6 +21,7 @@
 	<component id="Graticule" class="org.openscales.fx.layer.FxGraticule" />
 	<component id="DrawingsLayer" class="org.openscales.fx.layer.FxDrawingsLayer" />
 	
+	<component id="OSM" class="org.openscales.fx.layer.osm.FxOSM" />
 	<component id="Mapnik" class="org.openscales.fx.layer.osm.FxMapnik" />
 	<component id="CycleMap" class="org.openscales.fx.layer.osm.FxCycleMap" />
 	
