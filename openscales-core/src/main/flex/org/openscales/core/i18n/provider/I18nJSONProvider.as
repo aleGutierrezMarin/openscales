@@ -1,7 +1,6 @@
 package org.openscales.core.i18n.provider
 {
 	import com.adobe.serialization.json.JSON;
-	import com.adobe.serialization.json.JSONDecoder;
 	
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;

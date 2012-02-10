@@ -613,8 +613,6 @@ package org.openscales.core.format
 							iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
 					}
 				}
-				else
-					Trace.debug("UnsupportedGeometryType");
 			}
 		}
 		

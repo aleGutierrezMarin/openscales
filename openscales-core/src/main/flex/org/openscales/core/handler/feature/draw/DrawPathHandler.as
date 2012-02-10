@@ -8,11 +8,9 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.LineStringFeature;
-	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
-	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
@@ -144,7 +142,6 @@ package org.openscales.core.handler.feature.draw
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line
 			_startLocation = lonlat;
-			//trace("draw line : " + _startPoint.x + " " + _startPoint.y);
 			
 			//The user click for the first time
 			if(newFeature){

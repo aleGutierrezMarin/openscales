@@ -5,13 +5,10 @@ package org.openscales.core.layer.ogc.provider
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
-	import org.openscales.core.layer.ogc.provider.OGCTileProvider;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.tile.ImageTile;
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.utils.UID;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;

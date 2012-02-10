@@ -1,11 +1,9 @@
 package org.openscales.core.control
 {
-	import flash.events.Event;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;

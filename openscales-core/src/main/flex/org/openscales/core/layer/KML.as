@@ -2,20 +2,12 @@ package org.openscales.core.layer
 {
 	import flash.events.Event;
 	import flash.net.URLLoader;
-	import flash.net.URLRequestMethod;
 	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
-	import org.openscales.core.feature.LineStringFeature;
-	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.format.KMLFormat;
 	import org.openscales.core.request.XMLRequest;
-	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
-	import org.openscales.core.style.marker.Marker;
-	import org.openscales.core.style.stroke.Stroke;
-	import org.openscales.core.style.symbolizer.LineSymbolizer;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -153,7 +145,7 @@ package org.openscales.core.layer
 				this.draw();*/
 			}
 			catch(error:Error) {
-				Trace.error(error.message);
+				// Empty catch is evil, but here it's fair.
 			}
 		}
 		

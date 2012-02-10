@@ -9,7 +9,6 @@ package org.openscales.core.format
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.geometry.basetypes.Unit;
-	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjProjection;
 
 	/**

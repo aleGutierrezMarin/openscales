@@ -1,9 +1,6 @@
 package org.openscales.core.handler
 {
-	import flash.events.Event;
-	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 
 	/**
 	 * Handler base class

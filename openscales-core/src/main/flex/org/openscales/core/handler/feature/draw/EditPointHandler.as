@@ -3,13 +3,11 @@ package org.openscales.core.handler.feature.draw
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.PointFeature;
-	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.geometry.Point;

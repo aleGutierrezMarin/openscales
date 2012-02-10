@@ -32,14 +32,11 @@
 			import org.openscales.core.format.GPXFormat;
 			import org.openscales.core.format.GeoRssFormat;
 			import org.openscales.core.format.KMLFormat;
-			import org.openscales.core.format.gml.writer.GML321Writer;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.EditFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
-			import org.openscales.core.layer.KML;
-			import org.openscales.core.utils.Trace;
 			import org.openscales.geometry.Geometry;
 			import org.openscales.proj4as.ProjProjection;
 			
@@ -250,7 +247,6 @@
 			 */
 			private function onFileSave(e:Event):void
 			{
-				Trace.info("File Saved");
 				fileReference = null;
 			}
 			
@@ -259,7 +255,6 @@
 			 */
 			private function onCancel(e:Event):void
 			{
-				Trace.info("File save select canceled.");
 				fileReference = null;
 			}
 			
@@ -268,7 +263,6 @@
 			 */
 			private function onSaveError(e:IOErrorEvent):void
 			{
-				Trace.info("Error Saving File : " + e.text);
 				fileReference = null;
 			}
 			

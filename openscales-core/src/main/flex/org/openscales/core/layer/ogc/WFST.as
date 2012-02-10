@@ -4,7 +4,6 @@ package org.openscales.core.layer.ogc
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.WFSTFeatureEvent;
 	import org.openscales.core.events.WFSTLayerEvent;
@@ -16,6 +15,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.format.WFSFormat;
 	import org.openscales.core.layer.ogc.WFST.Transaction;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.utils.Trace;
 	
 	public class WFST extends WFS
 	{
@@ -85,8 +85,6 @@ package org.openscales.core.layer.ogc
 		override protected function loadFeatures(url:String):void {	
 			if (map) {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_START, this ));
-			} else {
-				Trace.warn("Warning : no LAYER_LOAD_START dispatched because map event dispatcher is not defined");
 			}
 			
 			if(_request)

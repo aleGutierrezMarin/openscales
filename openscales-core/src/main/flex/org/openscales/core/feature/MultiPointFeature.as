@@ -1,14 +1,12 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
 	
-	import org.openscales.core.utils.Trace;
+	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;
-	import org.openscales.core.style.Style;
-	import org.openscales.core.style.marker.WellKnownMarker;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
-	import org.openscales.core.style.symbolizer.Symbolizer;
 
 	/**
 	 * Feature used to draw a MultiPoint geometry on FeatureLayer

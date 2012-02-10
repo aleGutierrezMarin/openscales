@@ -7,12 +7,7 @@ package org.openscales.core.handler.mouse
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.events.DrawingEvent;
-	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
-	import org.openscales.core.layer.Layer;
-	import org.openscales.core.utils.Trace;
-	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;

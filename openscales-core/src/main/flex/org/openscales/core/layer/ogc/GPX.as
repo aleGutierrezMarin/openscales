@@ -6,7 +6,6 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
-	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.format.GPXFormat;
 	import org.openscales.core.layer.IFileUser;

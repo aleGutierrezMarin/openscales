@@ -1,6 +1,5 @@
 package org.openscales.core.layer.capabilities
 {
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 
 	/**
@@ -34,7 +33,6 @@ package org.openscales.core.layer.capabilities
 		 * @return An Hash containing capabilities
 		 */ 
 		public function read(doc:XML):HashMap {
-			Trace.warn("Not implemented method.");
 			return this._capabilities;
 		}
 

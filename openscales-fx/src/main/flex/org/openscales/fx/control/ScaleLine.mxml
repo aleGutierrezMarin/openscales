@@ -6,17 +6,10 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import flash.events.Event;
-			import flash.text.TextField;
-			import flash.text.TextFormat;
-			
 			import org.openscales.core.Map;
-			import org.openscales.core.utils.Trace;
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
-			import org.openscales.geometry.basetypes.Pixel;
 			import org.openscales.geometry.basetypes.Unit;
 			import org.openscales.proj4as.ProjProjection;
 			

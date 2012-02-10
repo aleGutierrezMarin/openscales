@@ -529,7 +529,6 @@ package org.openscales.core
 					child = this.getChildAt(i);
 					if(child is Popup){
 						if(child != popup) {
-							Trace.warn("Map.addPopup: popup already displayed so escape");
 							return;
 						}
 						this.removePopup(child as Popup);
@@ -832,7 +831,6 @@ package org.openscales.core
 		public function addControl(control:IHandler, attach:Boolean=true):void {
 			// Is the input control valid ?
 			if (!control) {
-				Trace.warn("Map.addControl: null control not added");
 				return;
 			}
 			
@@ -842,7 +840,6 @@ package org.openscales.core
 				if (!control.map) {
 					control.map = this;
 				} else if (control.map != this) {
-					Trace.error("Map.addControl: handler not added because it is associated to an other map");
 					return;
 				}
 			}
@@ -851,19 +848,15 @@ package org.openscales.core
 			var j:uint = this._controls.length;
 			for (; i<j; ++i) {
 				if (control == this._controls[i]) {
-					Trace.warn("Map.addControl: this control is already registered (" + getQualifiedClassName(control) + ")");
 					return;
 				}
 				// if control is an IHandler
-				if (!(control is IControl) && (getQualifiedClassName(control) == getQualifiedClassName(this._controls[i]))) {
-					Trace.warn("Map.addControl: an other handler is already registered for " + getQualifiedClassName(control));
-					return;
+				if (!(control is IControl) && (getQualifiedClassName(control) == getQualifiedClassName(this._controls[i]))) {					return;
 				}
 			}
 			
 			// If the control is a new control, register it
 			if (i == j) {
-				Trace.log("Map.addControl: add a new control " + getQualifiedClassName(control));
 				this._controls.push(control);
 				
 				if (control is IControl) {
@@ -1224,7 +1217,6 @@ package org.openscales.core
 		
 		private function onOpenLSServiceResult(event:Event):void {
 			var xmlString:String = (event.target as URLLoader).data as String;
-			Trace.debug("OpenLS result : " + xmlString);
 			var xml:XML = new XML(xmlString);
 			var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml), "1.2");
 			if (results.length == 0) {
@@ -1298,7 +1290,6 @@ package org.openscales.core
 			event.newResolution = this.resolution;
 			if (newCenter.projection != this.projection)
 				newCenter = newCenter.reprojectTo(this.projection);
-			//Trace.debug("Trying Center : "+newCenter.x+", "+newCenter.y+", "+ newCenter.projection.srsCode);
 			
 			// only change center according to restrictedExtent
 			if(!isValidExtentWithRestrictedExtent(newCenter, this.resolution))
@@ -1663,7 +1654,6 @@ package org.openscales.core
 				var locale:Locale = Locale.getLocaleByKey(value);
 				if(locale) {
 					Locale.activeLocale = locale;
-					Trace.info("Locale changed to: "+locale.localeKey);
 					this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,locale));
 				}
 			}
@@ -1759,7 +1749,6 @@ package org.openscales.core
 			this.dispatchEvent(event);
 			this._timer.reset();
 			this._timer.start();
-			//Trace.log("Changing resolution: "+ event.newResolution.value);
 		}	
 		
 		/**

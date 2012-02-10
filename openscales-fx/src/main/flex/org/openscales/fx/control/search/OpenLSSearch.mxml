@@ -7,29 +7,19 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import mx.collections.ArrayList;
-			import mx.rpc.events.FaultEvent;
-			import mx.rpc.events.ResultEvent;
 			
-			import org.openscales.core.Map;
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.events.SearchEvent;
 			import org.openscales.core.feature.CustomMarker;
 			import org.openscales.core.feature.Feature;
-			import org.openscales.core.feature.Marker;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.request.OpenLSRequest;
 			import org.openscales.core.security.ISecurity;
-			import org.openscales.core.style.marker.DisplayObjectMarker;
-			import org.openscales.core.utils.Trace;
-			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.geometry.basetypes.Location;
-			
-			import spark.layouts.RowAlign;
 			
 			[Embed(source="/assets/images/marker-blue.png")]
 			private var _markerIcon:Class;
@@ -486,12 +476,10 @@
 			}
 			
 			private function onServiceFault(event:Event):void {
-				Trace.error("OpenLS ERROR: request fault");
 			}
 			
 			private function onServiceResult(event:Event):void {
 				var xmlString:String = (event.target as URLLoader).data as String;
-				Trace.debug("OpenLS result : " + xmlString);
 				var xml:XML = new XML(xmlString);
 				var xmlList:XMLList = OpenLSRequest.resultsList(xml);
 				if (!xmlList || xmlList.toString()=="") {
@@ -578,7 +566,6 @@
 			
 			public function onSearchResultsClick(index:int):void {
 				if (index < 0) {
-					Trace.warn("OpenLS WARNING: selection of a void item");
 					return;
 				}
 				
@@ -593,13 +580,12 @@
 					}
 					this.centerAtLocation(latitude, longitude, this.projection, resolution);
 				} catch(e:Error) {
-					Trace.info("No result to use to change position of the map");
+					// Empty catch is evil, but here it's fair.
 				}
 			}
 			
 			public function onReverseSearchResultsClick(index:int):void {
 				if (index < 0) {
-					Trace.warn("OpenLS WARNING: selection of a void item");
 					return;
 				}
 				
@@ -630,7 +616,7 @@
 					//var index:uint = event.target.data.index;
 					this.addSelectedMarker(pos, index);
 				} catch(e:Error) {
-					Trace.info("No result to use to change position of the map");
+					// Empty catch is evil, but here it's fair.
 				}
 			}
 			
