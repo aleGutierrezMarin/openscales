@@ -41,7 +41,7 @@ package org.openscales.core.layer
 		override public function getURL(bounds:Bounds):String {
 			var res:Number = this.getSupportedResolution(this.map.resolution).value;
 			if(this._tileOrigin==null) {
-				this._tileOrigin = new Location(this.maxExtent.left,this.maxExtent.bottom);
+				this._tileOrigin = new Location(this.maxExtent.left,this.maxExtent.bottom, this.maxExtent.projection);
 			}
 			
 			var x:Number = Math.round((bounds.left - this._tileOrigin.lon) / (res * this.tileWidth));
