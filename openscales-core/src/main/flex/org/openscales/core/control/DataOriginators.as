@@ -1,7 +1,6 @@
 package org.openscales.core.control
 {
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -107,7 +106,6 @@ package org.openscales.core.control
 			// Is the input originator valid ?
 			if (!originator) 
 			{
-				Trace.debug("DataOriginators: null originator not added");
 				return;
 			}
 			
@@ -204,10 +202,6 @@ package org.openscales.core.control
 					// Event Originator_removed
 					this.dispatchEvent(new OriginatorEvent(OriginatorEvent.ORIGINATOR_REMOVED, originator, i));
 				}
-			}
-			else
-			{
-				Trace.debug("DataOriginators.removeOriginator : originator not in the list, can't be removed");
 			}
 		}
 		

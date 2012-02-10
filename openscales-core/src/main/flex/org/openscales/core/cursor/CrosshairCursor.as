@@ -8,7 +8,6 @@ package org.openscales.core.cursor
 	import flash.text.TextField;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.geometry.basetypes.Location;
 	

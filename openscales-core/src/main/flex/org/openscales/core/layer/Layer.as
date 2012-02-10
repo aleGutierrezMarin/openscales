@@ -10,7 +10,6 @@ package org.openscales.core.layer {
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.security.events.SecurityEvent;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -566,7 +565,6 @@ package org.openscales.core.layer {
 			// Is the input originator valid ?
 			if (! originator) 
 			{
-				Trace.debug("Layer.addOriginator: null originator not added");
 				return;
 			}
 			
@@ -576,14 +574,12 @@ package org.openscales.core.layer {
 			{
 				if (originator == this._originators[i]) 
 				{
-					Trace.debug("Layer.addOriginator: this originator is already registered");
 					return;
 				}
 			}
 			// If the constraint is a new constraint, register it
 			if (i == j) 
 			{
-				Trace.debug("Layer.addOriginator: add a new originator ");
 				this._originators.push(originator);
 			}
 			// Event Originator_list_changed

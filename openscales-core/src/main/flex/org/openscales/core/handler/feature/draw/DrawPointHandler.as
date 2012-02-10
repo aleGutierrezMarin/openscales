@@ -1,7 +1,6 @@
 package org.openscales.core.handler.feature.draw
 {
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
@@ -11,8 +10,6 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
-	import org.openscales.core.style.marker.WellKnownMarker;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;

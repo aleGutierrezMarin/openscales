@@ -10,10 +10,8 @@ package org.openscales.core.feature {
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.Symbolizer;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
@@ -471,7 +469,6 @@ package org.openscales.core.feature {
 		}
 
 		protected function executeDrawing(symbolizer:Symbolizer):void {
-			Trace.log("Feature.executeDrawing");
 		}
 
 		

@@ -8,7 +8,6 @@ package org.openscales.core.format.gml
 	import flash.utils.setInterval;
 	import flash.xml.XMLNode;
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.Util;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;

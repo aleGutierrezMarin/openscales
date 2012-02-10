@@ -1,12 +1,10 @@
 package org.openscales.core.feature
 {
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
-	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Pixel;
 
 	/**

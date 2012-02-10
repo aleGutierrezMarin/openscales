@@ -4,7 +4,6 @@ package org.openscales.core.handler.feature
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
-	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
@@ -28,7 +27,6 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -198,7 +196,6 @@ package org.openscales.core.handler.feature
 		public function set layers(value:Vector.<VectorLayer>):void {
 			// Assert that the input array is composed of not null FeatureLayers
 			if (value == null) {
-				Trace.error("SelectFeaturesHandler - invalid layers (null)");
 				return;
 			} else {
 				var len:int = value.length;
@@ -213,7 +210,6 @@ package org.openscales.core.handler.feature
 					value = filteredValue;
 					len = value.length;
 					if (len == 0) {
-						Trace.error("SelectFeaturesHandler - invalid layers (none FeatureLayer)");
 						return;
 					}
 				}
@@ -803,8 +799,6 @@ package org.openscales.core.handler.feature
 				fevt.features = featuresToSelect;
 				this.map.dispatchEvent(fevt);
 			}
-			// Log the selection modification
-			Trace.log("SelectFeaturesHandler: " + featuresToSelect.length + " new features selected with additive mode " + ((additiveMode) ? "ON" : "OFF") + " and " + noselectedFeatures.length + " rejected features => " + this.selectedFeatures.length + " features selected");
 			// if the selection has been updated, use the associated callback
 			if (selectionUpdated && (this.onSelectionUpdated != null)) {
 				this.onSelectionUpdated(this.selectedFeatures);
@@ -831,9 +825,6 @@ package org.openscales.core.handler.feature
 						selectionUpdated = true;
 					}
 				}
-				if (!found) {
-					Trace.warn("unselect warning: unselected feature, nothing to do");
-				}
 			}
 			// Dispatch a FEATURE_UNSELECTED event for all the unselected features
 			if (this.map && (removedFeatures.length > 0)) {
@@ -841,8 +832,6 @@ package org.openscales.core.handler.feature
 				fevt.features = removedFeatures;
 				this.map.dispatchEvent(fevt);
 			}
-			// Log the selection modification
-			Trace.log("SelectFeaturesHandler: " + removedFeatures.length + " features removed from the selection => " + this.selectedFeatures.length + " features selected");
 			// if the selection has been updated, use the associated callback
 			if (selectionUpdated && (this.onSelectionUpdated != null)) {
 				this.onSelectionUpdated(this.selectedFeatures);
@@ -867,8 +856,6 @@ package org.openscales.core.handler.feature
 				fevt.features = removedFeatures;
 				this.map.dispatchEvent(fevt);
 			}
-			// Log the selection modification
-			Trace.log("SelectFeaturesHandler: selection cleared of its " + removedFeatures.length + " features");
 			// if the selection has been updated, use the associated callback
 			if (selectionUpdated && (this.onSelectionUpdated != null)) {
 				this.onSelectionUpdated(this.selectedFeatures);

@@ -177,7 +177,7 @@ package org.openscales.core.layer
 				
 				this.redraw();
 			} catch (e:Error) {
-				Trace.debug("invalid json");
+				// Empty catch is evil, but here it's fair.
 			}
 		}
 		

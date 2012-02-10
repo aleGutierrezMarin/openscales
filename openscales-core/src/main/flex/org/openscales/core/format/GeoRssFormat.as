@@ -6,7 +6,6 @@ package org.openscales.core.format
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.format.gml.parser.GML311;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
@@ -282,7 +281,6 @@ package org.openscales.core.format
 				item.appendChild(poly);
 			}
 			else{
-				Trace.warn("This type of feature has no correspondent in the geoRss specification"); 
 				return null; 
 			}
 			return item;

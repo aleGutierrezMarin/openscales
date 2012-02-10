@@ -2,7 +2,6 @@ package org.openscales.core.tile
 {
 	
 	import flash.display.Bitmap;
-	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.display.PixelSnapping;
@@ -11,11 +10,9 @@ package org.openscales.core.tile
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
-	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.DataRequest;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;

@@ -17,15 +17,12 @@ It will retrieve the language information and display the availlable languages.
 			import mx.collections.ArrayCollection;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.utils.Trace;
 			import org.openscales.core.control.LanguageSwitcher;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.i18n.Locale;
-			import org.openscales.geometry.basetypes.Pixel;
 			
 			import spark.components.DropDownList;
-			import spark.events.IndexChangeEvent;
 			
 			/**
 			 * Array collection containing the list of the languages to show in the droplist

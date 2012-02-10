@@ -609,7 +609,7 @@ package org.openscales.core.layer
 		 */
 		private function onFileSave(e:Event):void
 		{
-			Trace.info("File Saved");
+
 		}
 		
 		/**
@@ -617,7 +617,6 @@ package org.openscales.core.layer
 		 */
 		private function onCancel(e:Event):void
 		{
-			Trace.info("File save select canceled.");
 		}
 		
 		/**

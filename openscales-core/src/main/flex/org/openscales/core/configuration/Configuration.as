@@ -602,7 +602,6 @@ package org.openscales.core.configuration
 				return Style.getDrawSurfaceStyle();
 			}
 			
-			Trace.error("you must define a style for feature layer");
 			return null;
 		}
 		

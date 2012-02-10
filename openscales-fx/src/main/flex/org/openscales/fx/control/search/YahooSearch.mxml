@@ -14,8 +14,6 @@
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			
-			import org.openscales.core.Map;
-			import org.openscales.core.utils.Trace;
 			import org.openscales.geometry.basetypes.Location;
 			
 			private static const YAHOO_MAPS_NAMESPACE:Namespace=new Namespace('','urn:yahoo:maps');
@@ -42,7 +40,6 @@
 			}
 			
 			private function onServiceFault(event:FaultEvent):void {
-				Trace.error("YahooSearch ERROR: request fault = "+event.fault.faultString);
 			}
 			
 			private function onServiceResult(event:ResultEvent):void {
@@ -52,7 +49,6 @@
 					var longitude:Number = parseFloat(event.result.ResultSet.Result.Longitude);
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
 						var pos:Location = new Location(longitude,latitude);
-						Trace.log("YahooSearch center at "+pos.toShortString());
 						if (map.projection) {
 							pos = pos.reprojectTo(map.projection);
 						}
@@ -63,7 +59,6 @@
 			
 			private function onSearchResultsDoubleClick(event:Event):void {
 				if ((event.target == null) || (! (event.target is DataGridItemRenderer))) {
-					Trace.warn("YahooSearch WARNING: selection of a void item");
 					return;
 				}
 				
@@ -72,14 +67,13 @@
 					var longitude:Number = parseFloat(event.target.data.Longitude);
 					if (! (isNaN(latitude) || isNaN(longitude)) ) {
 						var pos:Location = new Location(longitude,latitude);
-						Trace.log("YahooSearch center at "+pos.toShortString());
 						if (map.projection) {
 							pos = pos.reprojectTo(map.projection);
 						}
 						this.map.center = pos;
 					}
 				} catch(e:Error) {
-					Trace.info("No result to use to change position of the map");
+					// Empty catch is evil, but here it's fair.
 				}
 			}			
 		]]>

@@ -12,15 +12,10 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
-	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.tile.ImageTile;
-	import org.openscales.core.utils.Trace;
-	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**

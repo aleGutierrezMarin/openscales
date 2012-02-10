@@ -1,24 +1,15 @@
 package org.openscales.core.layer
 {
-	import flash.text.TextFormat;
-	
 	import org.openscales.core.Map;
 	import org.openscales.core.events.LayerEvent;
-	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.ns.os_internal;
-	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
-	import org.openscales.core.style.stroke.Stroke;
-	import org.openscales.core.style.symbolizer.LineSymbolizer;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
-	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Bounds;
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
 	
 	use namespace os_internal;

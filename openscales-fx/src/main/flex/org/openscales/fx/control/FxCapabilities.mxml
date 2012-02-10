@@ -175,10 +175,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
-			import mx.collections.Sort;
 			import mx.events.ItemClickEvent;
-			import mx.managers.PopUpManager;
-			import mx.states.State;
 			
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.I18NEvent;
@@ -195,8 +192,6 @@
 			import org.openscales.core.layer.ogc.WMTS;
 			import org.openscales.core.layer.osm.OSM;
 			import org.openscales.core.ns.os_internal;
-			import org.openscales.core.popup.Popup;
-			import org.openscales.core.utils.Trace;
 			import org.openscales.proj4as.ProjProjection;
 			
 			use namespace os_internal;
@@ -811,7 +806,6 @@
 			 */
 			protected function onCancel(e:Event):void				
 			{
-				trace("File Browse Canceled");
 				fileReference = null;
 			}
 			
@@ -833,7 +827,6 @@
 			//called if an error occurs while loading the file contents
 			private function onLoadError(e:IOErrorEvent):void
 			{
-				trace("Error loading file : " + e.text);
 			}
 			
 			override public function toggleDisplay(event:Event=null):void{
