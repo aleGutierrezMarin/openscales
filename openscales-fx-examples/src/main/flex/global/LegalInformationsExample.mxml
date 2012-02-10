@@ -11,7 +11,7 @@
 		 center="-11080204.792640321,5026167.808457494,EPSG:900913" 
 		 projection="EPSG:900913">
 		
-		<Mapnik id="mapnikLayer" name="Mapnik" />
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
 		
 		<WFS id="wfs" name="USA States (WFS)" url="http://openscales.org/geoserver/wfs"
 			 typename="topp:states" projection="EPSG:900913" version="1.0.0"

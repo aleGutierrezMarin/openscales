@@ -6,6 +6,7 @@ package org.openscales.core.layer
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.utils.Trace;
@@ -174,7 +175,8 @@ package org.openscales.core.layer
 				this.originators.push(new DataOriginator("Bing",
 					"http://www.bing.com/maps/",
 					_metadata["brandLogoUri"] as String));
-				
+				if(this.map)
+					this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
 				this.redraw();
 			} catch (e:Error) {
 				// Empty catch is evil, but here it's fair.
