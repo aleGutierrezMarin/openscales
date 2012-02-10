@@ -7,6 +7,7 @@ Changes between 2.1.0 and 2.1.1
 * improving overall performances while requesting tiles
 * improving center changed performances
 * add FxOSM
+* fix OSM layers shift
 
 Changes between 2.0.0 and 2.1.0
 -------------------------------
