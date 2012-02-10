@@ -155,6 +155,7 @@ package org.openscales.core.layer
 			var bounds:Bounds = this.map.extent.clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
+			
 			if (this.loadComplete)
 			{
 				this._backGrid = null;
@@ -182,7 +183,7 @@ package org.openscales.core.layer
 			
 			if (mapReloadCache || forceReTile || !_initialized)
 			{
-				actualizeGrid(bounds, forceReTile);
+				actualizeGrid(bounds, (forceReTile || !tilesBounds.intersectsBounds(bounds)));
 				resolutionChangedCache = false;
 				centerChangedCache = false;
 			}
