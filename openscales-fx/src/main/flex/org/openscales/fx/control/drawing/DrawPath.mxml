@@ -146,10 +146,6 @@
 				_handler.active = true;
 				_alpha = 1;
 				_handler.map.doubleclickZoomEnabled = false;
-				/*_handler.map.mouseNavigationEnabled = false;
-				_handler.map.panNavigationEnabled = false;
-				_handler.map.zoomNavigationEnabled = false;
-				_handler.map.keyboardNavigationEnabled = false;*/
 			}
 			public function disactivate():void{
 				
@@ -172,10 +168,6 @@
 						(this._handler as DrawPathHandler).drawFinalPath();
 					disactivate();
 					_handler.map.doubleclickZoomEnabled = true;
-					/*_handler.map.mouseNavigationEnabled = true;
-					_handler.map.panNavigationEnabled = true;
-					_handler.map.zoomNavigationEnabled = true;
-					_handler.map.keyboardNavigationEnabled = true;*/
 					return;
 				}
 				
