@@ -133,10 +133,7 @@
 					_handler.map.dispatchEvent(evt);
 					this.active = false;
 					this.disactivate();
-					_handler.map.mouseNavigationEnabled = true;
-					_handler.map.panNavigationEnabled = true;
-					_handler.map.zoomNavigationEnabled = true;
-					_handler.map.keyboardNavigationEnabled = true;
+					_handler.map.doubleclickZoomEnabled = true;
 				}
 			}
 			
@@ -166,10 +163,7 @@
 				
 				_handler.active = true;
 				_alpha = 1;
-				_handler.map.mouseNavigationEnabled = false;
-				_handler.map.panNavigationEnabled = false;
-				_handler.map.zoomNavigationEnabled = false;
-				_handler.map.keyboardNavigationEnabled = false;
+				_handler.map.doubleclickZoomEnabled = false;
 			}
 			private function disactivate():void{
 				
