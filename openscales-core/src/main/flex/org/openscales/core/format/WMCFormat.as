@@ -105,6 +105,11 @@ package org.openscales.core.format
 			var service:String = "";
 			var version:String = "";
 			var url:String = "";
+			var hidden:Boolean = false;
+			if(layer.@hidden.length() > 0 && layer.@hidden == "1")
+			{
+				hidden = true;
+			}
 			if (layer.*::Server.length() > 0)
 			{
 				var server:XML = layer.*::Server[0];
@@ -182,6 +187,7 @@ package org.openscales.core.format
 				}
 			}
 			var layerToAdd:Layer;
+			layerToAdd.visible = !hidden;
 			switch (service) {
 				case "OGC:WMS":
 					var wms:WMS = new WMS(title,url,name,"",format);
@@ -241,6 +247,7 @@ package org.openscales.core.format
 			{
 				layerToAdd = this.parseLayerExtension(layer.*::Extension[0], layerToAdd, service);
 			}
+			
 			return layerToAdd;
 		}
 		
