@@ -3,7 +3,6 @@
 					xmlns:s="library://ns.adobe.com/flex/spark" 
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
 					xmlns:openscales="http://openscales.org"
-					width="200"
 					initialize="init()" >
 	<fx:Script>
 		<![CDATA[
