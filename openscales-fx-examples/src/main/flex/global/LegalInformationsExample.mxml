@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Display a copyright component on the map. -->
+<s:VGroup xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%" height="100%"
+		 creationComplete="configure()" xmlns:components="components.*">
+
+	<Map id="fxMap" width="100%" height="100%" resolution="0.703125" center="4.833,45.767" projection="EPSG:900913">
+		
+		<Mapnik id="mapnikLayer" name="Mapnik" />
+		
+		<WFS id="wfs" name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
+			 typename="topp:states" projection="EPSG:900913" version="1.0.0"
+			 style="{Style.getDefaultSurfaceStyle()}" 
+			 maxExtent = "-40037508.34,-10037508.34,10037508.34,10037508.34" />
+		
+		<KML url="http://code.google.com/intl/fr/apis/kml/documentation/KML_Samples.kml"
+			 proxy="http://openscales.org/proxy.php?url=" numZoomLevels="20"
+			 style="{Style.getDefaultLineStyle()}"/>
+		
+		<WheelHandler />
+		<DragHandler/>
+		
+		<ScaleLine x="{width-110}" y="{height-80}" />
+
+		<LayerManager y="10" left="10">
+			<rendererOptions>
+				<fx:Object
+					displayZoomToExtent="true" />
+			</rendererOptions> 
+		</LayerManager>
+		<Zoom x="{fxMap.width-135}" y="10" />
+		
+		<DataOriginatorsDisplay x="10" y="{height-90}" />
+		
+		<TermsOfService x="{2*width/3}" y="{height-20}" url="http://openscales.org/index.html" />
+	</Map>
+	<components:toolbar fxMap="{fxMap}" />
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.layer.originator.DataOriginator;
+			
+			private var visibility:Boolean = true;
+			
+			public function configure():void
+			{
+				// originator and constraint for the WFS
+				var originator:DataOriginator = new DataOriginator("Open Plans", "http://openplans.org/topp", "http://openplans.org/wp-content/uploads/2011/05/openplans-logo-143x40.png");
+				
+				var originators:Vector.<DataOriginator> = new Vector.<DataOriginator>();
+				
+				originators.push(originator);
+				
+				wfs.nativeLayer.originators = originators;
+			}
+			
+		]]>
+
+	</fx:Script>
+</s:VGroup>
