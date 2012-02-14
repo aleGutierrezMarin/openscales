@@ -3,6 +3,7 @@ syntax: glob
 */bin-release
 */bin-debug
 */bin
+target
 */target
 *.DS_Store
 */_build
@@ -11,3 +12,4 @@ syntax: glob
 *FlexUnitApplication.mxml
 .idea
 *.iml
+*.versionsBackup

@@ -555,7 +555,6 @@
 			 */
 			public function onCancel(e:Event):void				
 			{
-				trace("File Browse Canceled");
 				fileReference = null;
 			}
 			

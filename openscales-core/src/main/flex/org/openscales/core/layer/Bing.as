@@ -6,11 +6,15 @@ package org.openscales.core.layer
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 
+	/**
+	 * This class is used to display BingMaps.
+	 */ 
 	public class Bing extends TMS
 	{
 		public static const resolutions:Array = new Array(156543.03390625,
@@ -171,10 +175,11 @@ package org.openscales.core.layer
 				this.originators.push(new DataOriginator("Bing",
 					"http://www.bing.com/maps/",
 					_metadata["brandLogoUri"] as String));
-				
+				if(this.map)
+					this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED_ORIGINATORS, this));
 				this.redraw();
 			} catch (e:Error) {
-				Trace.debug("invalid json");
+				// Empty catch is evil, but here it's fair.
 			}
 		}
 		
@@ -187,7 +192,7 @@ package org.openscales.core.layer
 		/**
 		 * The layer Name (appears in LayerManager for example)
 		 */
-		override public function get name():String {
+		override public function get displayedName():String {
 			return "Bing "+this._imagerySet;
 		}
 

@@ -93,7 +93,6 @@ package org.openscales.core.layer.ogc
 		{
 			this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onCompleteTimer);
 			this._timer.stop();
-			//Trace.debug("Stop timer when destroying layer");
 		}
 		
 		override public function redraw(fullRedraw:Boolean = true):void {
@@ -108,7 +107,6 @@ package org.openscales.core.layer.ogc
 					this._timer.removeEventListener(TimerEvent.TIMER_COMPLETE,this.onCompleteTimer);
 					this._timer.stop();
 					this._timerOn = false;
-					Trace.debug("Stop timer if layer is not displayed");
 				}
 				return;
 			}
@@ -117,7 +115,6 @@ package org.openscales.core.layer.ogc
 					this._timer.addEventListener(TimerEvent.TIMER_COMPLETE, this.onCompleteTimer,false,0,true);
 					this._timer.start();	
 					this._timerOn = true;
-					Trace.debug("Restart timer if layer is displayed again");
 				}		
 			}
 			if (url && url != ""){

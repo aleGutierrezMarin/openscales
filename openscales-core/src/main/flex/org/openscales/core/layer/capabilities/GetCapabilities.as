@@ -3,7 +3,6 @@ package org.openscales.core.layer.capabilities
 
 	import flash.events.Event;
 	import flash.net.URLLoader;
-	import flash.net.URLRequestMethod;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.request.XMLRequest;
@@ -77,12 +76,10 @@ package org.openscales.core.layer.capabilities
 		private function requestCapabilities(failedVersion:String = null):Boolean{
 
 			if (this._service != "WFS" && this._service != "WMS" && this._service != "WMTS"){
-				Trace.error("Bad service for GetCapabilities: " + this._service);
 				return false;
 			}
 
 			if (this._url == null) {
-				Trace.error("GetCapabilities: URL must not be null");
 				return false;
 			}
 			
@@ -129,7 +126,7 @@ package org.openscales.core.layer.capabilities
 			}
 			catch (error:Error) 
 			{
-			     Trace.debug("XML parse error");
+
 			     onFailure(event);
 			     return;
 			}

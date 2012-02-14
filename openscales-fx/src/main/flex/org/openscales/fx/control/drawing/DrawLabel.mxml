@@ -22,6 +22,7 @@
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.feature.PointFeature;
@@ -121,13 +122,13 @@
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
-				this._map.addEventListener(MouseEvent.CLICK, this.createLabel);
+				this._map.addEventListener(MapEvent.MOUSE_CLICK, this.createLabel);
 			}
 			
 			/**
 			 * To create a LabelFeature
 			 */
-			private function createLabel(event:MouseEvent):void{
+			private function createLabel(event:Event):void{
 				
 				if(this._drawingActivated)
 				{
@@ -179,10 +180,7 @@
 				
 				this._drawingActivated = true;
 				_alpha = 1;
-				this._map.mouseNavigationEnabled = false;
-				this._map.panNavigationEnabled = false;
-				this._map.zoomNavigationEnabled = false;
-				this._map.keyboardNavigationEnabled = false;
+				this._map.doubleclickZoomEnabled = false;
 			}
 			public function disactivate():void{
 				
@@ -202,10 +200,7 @@
 				var evt:DrawingEvent;
 				if(this._drawingActivated){
 					disactivate();
-					this._map.mouseNavigationEnabled = true;
-					this._map.panNavigationEnabled = true;
-					this._map.zoomNavigationEnabled = true;
-					this._map.keyboardNavigationEnabled = true;
+					this._map.doubleclickZoomEnabled = true;
 					return;
 				}
 				

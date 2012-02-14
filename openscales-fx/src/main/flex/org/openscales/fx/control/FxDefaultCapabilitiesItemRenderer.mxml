@@ -17,8 +17,7 @@ It manages doubleClick on an item to add a layer on the map
 			 width="100%"/>
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.core.basetypes.maps.HashMap;
-			import org.openscales.core.utils.Trace;
+			
 			
 			
 			/**

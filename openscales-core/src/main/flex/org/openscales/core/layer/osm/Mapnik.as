@@ -13,7 +13,7 @@ package org.openscales.core.layer.osm
 		public function Mapnik(identifier:String,displayedName:String=null)
 		{
 			var url:String = "http://a.tile.openstreetmap.org/";
-			super(identifier, displayedName, url);
+			super(identifier, url);
 
 			this.altUrls = [ "http://b.tile.openstreetmap.org/",
 							 "http://c.tile.openstreetmap.org/" ];

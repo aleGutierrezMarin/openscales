@@ -307,8 +307,8 @@ package org.openscales.core.handler.feature.draw
 							(drawLayerFeatures[last] as LineStringFeature).lineString.removePoint(pointToDelete);
 							pathHandler.lastPoint = (drawLayerFeatures[last] as LineStringFeature).lineString.getLastPoint();
 							//update the starting point of the temporary line
-							var pix:Pixel = pathHandler.map.getMapPxFromLocation(new Location(pathHandler.lastPoint.x, pathHandler.lastPoint.y));
-							pathHandler.startPoint = pix;
+							var loc:Location = new Location(pathHandler.lastPoint.x, pathHandler.lastPoint.y);
+							pathHandler.startLocation = loc;
 						} else {
 							drawLayer.removeFeature(drawLayerFeatures[last]);
 							pathHandler.newFeature = true;
@@ -327,10 +327,6 @@ package org.openscales.core.handler.feature.draw
 							var lineRing:LinearRing = ((drawLayerFeatures[last] as PolygonFeature).polygon.componentByIndex(0) as LinearRing);
 							pointToDelete = lineRing.getLastPoint();
 							lineRing.removePoint(pointToDelete);
-							/*polygonHandler.lastPoint = lineRing.getLastPoint();
-							//update the starting point of the temporary line
-							var pix:Pixel = polygonHandler.map.getMapPxFromLocation(new Location(polygonHandler.lastPoint.x, polygonHandler.lastPoint.y));
-							polygonHandler.startPoint = pix;*/
 						} else {
 							drawLayer.removeFeature(drawLayerFeatures[last]);
 							polygonHandler.newFeature = true;

@@ -1,14 +1,10 @@
 package org.openscales.core.handler.mouse
 {
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.events.DrawingEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
@@ -90,6 +86,7 @@ package org.openscales.core.handler.mouse
 		}
 		
 		protected function onMouseMove(event:MouseEvent):void  {
+			if(!this.map.mouseNavigationEnabled) return;
 			var deltaX:Number = this.map.stage.mouseX - this._previousMapPosition.x;
 			var deltaY:Number = this.map.stage.mouseY - this._previousMapPosition.y;
 			this._previousMapPosition.x = this.map.stage.mouseX;
@@ -200,7 +197,6 @@ package org.openscales.core.handler.mouse
 				event.oldResolution = this.map.resolution;
 				event.newResolution = this.map.resolution;
 				this.map.dispatchEvent(event);
-				//Trace.log("DragHandler.panMap INFO: new center = old center, nothing to do");
 				return;
 			}
 			// Try to set the new position as the center of the map

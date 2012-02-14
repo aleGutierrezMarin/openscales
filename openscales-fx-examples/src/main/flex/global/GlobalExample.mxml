@@ -8,15 +8,15 @@
 		  height="100%"
 		  creationComplete="initMap()" xmlns:components="components.*">
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.3515625" maxExtent="-180,-90,180,90" projection="EPSG:4326" center="0,0">
-		<WMSC displayedName="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
-				 layers="bluemarble" format="image/jpeg" 
-				 maxExtent="-180,-90,180,90" version="1.1.1"/>
-		<WFS id="bluemarble" identifier="top_states"  url="http://openscales.org/geoserver/wfs"
+	<Map id="fxMap" width="100%" height="100%" 
+		 resolution="0.0804262234744723" center="-97.18811511815088,41.07050388806316"
+		 maxExtent="-180,-90,180,90" projection="EPSG:900913">
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
+		<WFS id="bluemarble" identifier="top_states" displayedName="USA States" url="http://openscales.org/geoserver/wfs"
 				typename="topp:states" projection="EPSG:4326" version="1.1.0"
 				style="{Style.getDefaultSurfaceStyle()}" />
 		<!-- name property is deprecated but still works (though, you should use identifier and displayedName) -->
-		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
+		<WFS name="Tiger Points of Interest" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
 				projection="EPSG:4326" version="1.1.0" useCapabilities="true" 
 				style="{Style.getDefaultPointStyle()}" />
 		
@@ -32,6 +32,8 @@
 			</rendererOptions> 
 		</LayerManager>
 		<Zoom x="{fxMap.width-135}" y="10" />
+		
+		<DataOriginatorsDisplay x="10" y="{height-90}" />
 		
 	</Map>
 	<components:toolbar fxMap="{fxMap}" />

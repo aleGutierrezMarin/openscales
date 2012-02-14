@@ -144,10 +144,7 @@
 				
 				_handler.active = true;
 				_alpha = 1;
-				_handler.map.mouseNavigationEnabled = false;
-				_handler.map.panNavigationEnabled = false;
-				_handler.map.zoomNavigationEnabled = false;
-				_handler.map.keyboardNavigationEnabled = false;
+				_handler.map.doubleclickZoomEnabled = false;
 			}
 			public function disactivate():void{
 				
@@ -169,10 +166,7 @@
 					if(!(this._handler as DrawPolygonHandler).newFeature)
 						(this._handler as DrawPolygonHandler).drawFinalPoly();
 					disactivate();
-					_handler.map.mouseNavigationEnabled = true;
-					_handler.map.panNavigationEnabled = true;
-					_handler.map.zoomNavigationEnabled = true;
-					_handler.map.keyboardNavigationEnabled = true;
+					_handler.map.doubleclickZoomEnabled = true;
 					return;
 				}
 				

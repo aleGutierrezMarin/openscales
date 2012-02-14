@@ -3,9 +3,9 @@ package org.openscales.core.layer.originator
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.request.DataRequest;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
@@ -63,7 +63,6 @@ package org.openscales.core.layer.originator
 			// Is the input constraint valid ?
 			if (! constraint) 
 			{
-				Trace.debug("DataOriginator.addConstraint: null constraint not added");
 				return;
 			}
 			var i:uint = 0;
@@ -72,14 +71,12 @@ package org.openscales.core.layer.originator
 			{
 				if (constraint == this._constraints[i]) 
 				{
-					Trace.debug("DataOriginator.addConstraint: this constraint is already registered, not added ");
 					return;
 				}
 			}
 			// If the constraint is a new constraint, add it
 			if (i == j) 
 			{
-				//Trace.debug("DataOriginator.addConstraint: add a new constraint");
 				this._constraints.push(constraint);
 			}
 		}

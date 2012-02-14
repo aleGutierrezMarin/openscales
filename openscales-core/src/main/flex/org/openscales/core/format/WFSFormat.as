@@ -2,11 +2,6 @@ package org.openscales.core.format
 {
 	import flash.xml.XMLNode;
 	
-	import mx.messaging.management.Attribute;
-	
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.utils.UID;
-	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.DescribeFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.State;
@@ -176,8 +171,6 @@ package org.openscales.core.format
 		 * @param feature
 		 */
 		public function update(feature:Feature):XML {
-			if (!feature.name) { Trace.error("Can't update a feature for which there is no FID."); }
-			
 			var updateNode:XML = new XML("<wfs:Update xmlns:" + this._wfsprefix + "=\"" + this._wfsns + "\" ></wfs:Update>");
 			updateNode.@typeName = this._layer.typename;
 			updateNode.@handle = feature.name;
@@ -215,7 +208,6 @@ package org.openscales.core.format
 		public function remove(feature:Feature):XML {
 			//todo must be tested
 			if (!feature.attributes.fid) { 
-				Trace.error("Can't update a feature for which there is no FID."); 
 				return null; 
 			}
 			var deleteNode:XML = new XML("<wfs:Delete></wfs:Delete>");
@@ -260,6 +252,7 @@ package org.openscales.core.format
 				describeFeature.setGeometryTypeFromGMLFormat(geometryType);
 				
 			}
+
 			return describeFeature;
 		}
 		/**

@@ -5,18 +5,12 @@ package org.openscales.core.request
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
-	import flash.external.ExternalInterface;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.system.LoaderContext;
-	import flash.utils.Timer;
 	
-	import mx.controls.Alert;
-	
-	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.UID;
@@ -93,16 +87,17 @@ package org.openscales.core.request
 			this._removeListeners();
 			if(!this._isSent && this.security!=null)
 				this.security.removeWaitingRequest(this);
-			this._isSent = true;
+			
 			try {
 				if (this._isCompleted && (this.loader is Loader)) {
 					(this.loader as Loader).unloadAndStop(true);
 				} // else ? // FixMe
-				this.loader.close();
+				if(this._isSent)
+					this.loader.close();
 			} catch(e:Error) {
 				// Empty catch is evil, but here it's fair.
-				Trace.debug(e.message);
 			}
+			this._isSent = true;
 			//this._loader = null; // FixMe
 		}
 		
@@ -127,7 +122,7 @@ package org.openscales.core.request
 					this.loaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this._onFailure);
 				}
 			} catch (e:Error) {
-				Trace.error(e.message);
+				// Empty catch is evil, but here it's fair.
 			}
 		}
 		
@@ -149,7 +144,7 @@ package org.openscales.core.request
 					this.loaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this._onFailure);
 				}
 			} catch (e:Error) {
-				Trace.error(e.message);
+				// Empty catch is evil, but here it's fair.
 			}
 		}
 		
@@ -309,7 +304,6 @@ package org.openscales.core.request
 			if (this.security != null) {
 				if (! this.security.initialized) {
 					// A redraw will be called on the layer when a SecurityEvent.SECURITY_INITIALIZED will be dispatched
-					Trace.log("Security not initialized so cancel request");
 					return null;
 				}
 				
@@ -335,12 +329,10 @@ package org.openscales.core.request
 		 */
 		public function send():void {
 			if (this.isSent) {
-				Trace.warn("AbstractRequest - send: the request has already been sent");
 				return;
 			}
 			this._isSent = true;
 			if(this.security != null && !this.security.initialized) {
-				Trace.log("wait for security token");
 				this.security.addWaitingRequest(this);
 				this.security.initialize();
 				return;
@@ -370,7 +362,6 @@ package org.openscales.core.request
 				
 				if (this.security != null) {
 					if (! this.security.initialized) {
-						Trace.log("Security not initialized so cancel request");
 						return;
 					}
 					
@@ -389,7 +380,6 @@ package org.openscales.core.request
 					(this.loader as URLLoader).load(urlRequest);
 				}
 			} catch (e:Error) {
-				Trace.error("Request - send: " + e.message);
 				this._loadEnd(null);
 			}
 		}

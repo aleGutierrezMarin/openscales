@@ -1,17 +1,8 @@
 package org.openscales.fx.layer
 {
-	import flash.events.Event;
-	import flash.net.URLLoader;
-	
-	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.core.layer.capabilities.WMTS100;
 	import org.openscales.core.layer.ogc.WMTS;
-	import org.openscales.core.request.XMLRequest;
-	import org.openscales.core.utils.Trace;
-	import org.openscales.fx.FxMap;
-	import org.openscales.fx.layer.FxGrid;
 	
 	public class FxWMTS extends FxGrid
 	{

@@ -3,7 +3,6 @@ package org.openscales.core.handler.feature.draw
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -13,6 +12,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.Point;
@@ -199,7 +199,7 @@ package org.openscales.core.handler.feature.draw
 					this.map.addChild(_drawContainer);
 				}
 			}		 	
-		 	}
+		 }
 		 /**
 		 * This function is launched when you are dragging a vertice(Virtual or not)
 		 * 
@@ -265,16 +265,14 @@ package org.openscales.core.handler.feature.draw
 					createEditionVertices(featureEdited,featureEdited.geometry as ICollection,tmpfeature);
 					var v:Vector.<Feature>;
 					for each(v in tmpfeature){
-						if(this.map.extent.containsBounds(v[0].geometry.bounds)){
-							this._layerToEdit.addFeature(v[0]);
-		 					this._featureClickHandler.addControledFeature(v[0]);
-							feature = v[0];
-							v = new Vector.<Feature>();
-							v[0]=feature;
-							v[1]=featureEdited;
-		 					this._editionFeatureArray.push(v);
-							v=null;
-						}
+						this._layerToEdit.addFeature(v[0]);
+	 					this._featureClickHandler.addControledFeature(v[0]);
+						feature = v[0];
+						v = new Vector.<Feature>();
+						v[0]=feature;
+						v[1]=featureEdited;
+	 					this._editionFeatureArray.push(v);
+						v=null;
 					}
 					//for garbage collector
 					tmpfeature=null;	

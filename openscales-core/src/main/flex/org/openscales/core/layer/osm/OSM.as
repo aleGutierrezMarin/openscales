@@ -5,6 +5,7 @@ package org.openscales.core.layer.osm
 	import org.openscales.core.layer.originator.ConstraintOriginator;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 
 	/**
 	 * Base class for Open Street Map layers
@@ -22,7 +23,6 @@ package org.openscales.core.layer.osm
 
 		
 		public function OSM(identifier:String,
-							displayedName:String=null,
 							url:String = null,
 							data:XML = null) {
 
@@ -37,6 +37,7 @@ package org.openscales.core.layer.osm
 			CREATIVE_BY_CA.constraints.push(constraint);
 			this.originators.push(OSM_ORIGINATOR);
 			this.originators.push(CREATIVE_BY_CA);
+			this._tileOrigin = new Location(this.maxExtent.left,this.maxExtent.top,this.maxExtent.projection);
 		}
 
 		override public function getURL(bounds:Bounds):String

@@ -2,11 +2,8 @@ package org.openscales.core.layer.capabilities
 {
 	
 	import org.openscales.core.basetypes.maps.HashMap;
-	import org.openscales.core.format.Format;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
-	import org.openscales.core.utils.Trace;
-	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.ProjProjection;

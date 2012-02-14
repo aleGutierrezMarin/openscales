@@ -1,10 +1,10 @@
 package org.openscales.core.handler.feature.draw
 {
-	import flash.events.MouseEvent;
+	import flash.events.Event;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.events.FeatureEvent;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
@@ -14,7 +14,6 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
-	import org.openscales.core.style.marker.WellKnownMarker;
 
 	/** 
 	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DRAWING_END
@@ -50,20 +49,20 @@ package org.openscales.core.handler.feature.draw
 
 		override protected function registerListeners():void{
 			if (this.map) {
-				this.map.addEventListener(MouseEvent.CLICK, this.drawPoint);
+				this.map.addEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
 			}
 		}
 
 		override protected function unregisterListeners():void{
 			if (this.map) {
-				this.map.removeEventListener(MouseEvent.CLICK, this.drawPoint);
+				this.map.removeEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
 			}
 		}
 
 		/**
 		 * Create a point and draw it
 		 */		
-		protected function drawPoint(event:MouseEvent):void {
+		protected function drawPoint(event:Event):void {
 			//We draw the point
 			if (drawLayer != null){
 				

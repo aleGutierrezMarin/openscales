@@ -14,7 +14,6 @@ package org.openscales.core.layer
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.tile.ImageTile;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -156,6 +155,7 @@ package org.openscales.core.layer
 			var bounds:Bounds = this.map.extent.clone();
 			var tilesBounds:Bounds = this.getTilesBounds();  
 			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
+			
 			if (this.loadComplete)
 			{
 				this._backGrid = null;
@@ -183,7 +183,7 @@ package org.openscales.core.layer
 			
 			if (mapReloadCache || forceReTile || !_initialized)
 			{
-				actualizeGrid(bounds, forceReTile);
+				actualizeGrid(bounds, (forceReTile || !tilesBounds.intersectsBounds(bounds)));
 				resolutionChangedCache = false;
 				centerChangedCache = false;
 			}
@@ -722,7 +722,6 @@ package org.openscales.core.layer
 			
 			if (bounds == null)
 			{
-				Trace.debug("Singletile requested extent is null, no intersection");
 				return;
 			}
 			if(bounds.projection!=this.projection)

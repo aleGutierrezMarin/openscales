@@ -4,6 +4,7 @@ package org.openscales.core.measure
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.MeasureEvent;
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.handler.feature.draw.DrawPolygonHandler;
@@ -86,7 +87,7 @@ package org.openscales.core.measure
 			}
 		}
 		
-		override protected function mouseClick(event:MouseEvent):void {
+		override protected function mouseClick(event:MapEvent):void {
 			this.clearFeature();
 			super.mouseClick(event);
 			

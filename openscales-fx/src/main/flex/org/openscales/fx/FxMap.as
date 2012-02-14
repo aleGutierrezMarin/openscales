@@ -12,13 +12,11 @@ package org.openscales.fx
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
-	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.security.ISecurity;
-	import org.openscales.core.utils.Trace;
 	import org.openscales.fx.configuration.FxConfiguration;
 	import org.openscales.fx.control.FxControl;
 	import org.openscales.fx.control.FxOverviewMap;
@@ -153,7 +151,6 @@ package org.openscales.fx
 					element = this._flexOverlay.getElementAt(i);
 					if(element is FxPopup){
 						if(element != fxPopup) {
-							Trace.warn("Map.addFxPopup: fxPopup already displayed so escape");
 							return;
 						}
 						this.removeFxPopup(element as FxPopup);

@@ -27,7 +27,7 @@ package org.openscales.core.layer.ogc
 		/**
 		 * @private
 		 * Version of wms protocol used to request the server
-		 * Default version is 1.3.0
+		 * Default version is 1.1.1
 		 */
 		protected var _version:String="1.1.1";
 		
@@ -159,6 +159,7 @@ package org.openscales.core.layer.ogc
 		
 		/**
 		 * Get and set the version of the WMS protocol
+		 * Default version is 1.1.1
 		 */
 		public function get version():String
 		{

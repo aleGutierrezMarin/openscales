@@ -3,7 +3,6 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.net.URLLoader;
-	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
@@ -22,7 +21,6 @@ package org.openscales.core.layer.ogc
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.proj4as.ProjProjection;
-	import org.osmf.events.TimeEvent;
 	
 	/**
 	 * Instances of WFS are used to display data from OGC Web Feature Services.
@@ -418,8 +416,6 @@ package org.openscales.core.layer.ogc
 		protected function loadFeatures(url:String):void {		
 			if (map) {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_START, this ));
-			} else {
-				Trace.warn("Warning : no LAYER_LOAD_START dispatched because map event dispatcher is not defined");
 			}
 			
 			if(_request)
@@ -447,8 +443,6 @@ package org.openscales.core.layer.ogc
 			
 			if (map) {
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_LOAD_END, this ));
-			} else {
-				Trace.warn("Warning : no LAYER_LOAD_END dispatched because map event dispatcher is not defined"); 	
 			}
 		}
 		

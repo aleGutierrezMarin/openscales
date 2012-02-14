@@ -1,17 +1,16 @@
 package org.openscales.core.handler.feature.draw
 {
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.LineStringFeature;
-	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
-	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
@@ -62,7 +61,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * The start point of the temporary line
 		 */
-		private var _startPoint:Pixel=new Pixel();
+		private var _startLocation:Location=null;
 		
 		/**
 		 * Handler which manage the doubleClick, to finalize the lineString
@@ -90,7 +89,7 @@ package org.openscales.core.handler.feature.draw
 			this._dblClickHandler.active = true;
 			this._dblClickHandler.doubleClick = this.mouseDblClick;
 			if (this.map) {
-				this.map.addEventListener(MouseEvent.CLICK, this.drawLine);
+				this.map.addEventListener(MapEvent.MOUSE_CLICK, this.drawLine);
 				this.map.addEventListener(MapEvent.MOVE_END, this.updateZoom);
 			} 
 		}
@@ -98,7 +97,7 @@ package org.openscales.core.handler.feature.draw
 		override protected function unregisterListeners():void{
 			this._dblClickHandler.active = false;
 			if (this.map) {
-				this.map.removeEventListener(MouseEvent.CLICK, this.drawLine);
+				this.map.removeEventListener(MapEvent.MOUSE_CLICK, this.drawLine);
 				this.map.removeEventListener(MapEvent.MOVE_END, this.updateZoom);
 			}
 		}
@@ -120,6 +119,8 @@ package org.openscales.core.handler.feature.draw
 				//clear the temporary line
 				_drawContainer.graphics.clear();
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,temporaryLine);
+				this.map.removeEventListener(MapEvent.CENTER_CHANGED, temporaryLine);
+				this.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, temporaryLine);
 				
 				if(this._currentLineStringFeature!=null){
 					//this._currentLineStringFeature.style=Style.getDefaultLineStyle();
@@ -130,19 +131,17 @@ package org.openscales.core.handler.feature.draw
 			}	
 		}
 		
-		protected function drawLine(event:MouseEvent=null):void{
+		protected function drawLine(event:MapEvent=null):void{
 			
 			drawLayer.scaleX=1;
 			drawLayer.scaleY=1;
 			//we determine the point where the user clicked
-			//var pixel:Pixel = new Pixel(drawLayer.mouseX,drawLayer.mouseY );
 			var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
 			var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 			//manage the case where the layer projection is different from the map projection
 			var point:Point = new Point(lonlat.lon,lonlat.lat);
 			//initialize the temporary line
-			_startPoint = this.map.getMapPxFromLocation(lonlat);
-			//trace("draw line : " + _startPoint.x + " " + _startPoint.y);
+			_startLocation = lonlat;
 			
 			//The user click for the first time
 			if(newFeature){
@@ -158,6 +157,8 @@ package org.openscales.core.handler.feature.draw
 				newFeature = false;
 				//draw the temporary line, update each time the mouse moves		
 				this.map.addEventListener(MouseEvent.MOUSE_MOVE,temporaryLine);	
+				this.map.addEventListener(MapEvent.CENTER_CHANGED, temporaryLine);
+				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, temporaryLine);
 			}
 			else {								
 				if(!point.equals(lastPoint)){
@@ -172,10 +173,10 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * Update the temporary line
 		 */
-		public function temporaryLine(evt:MouseEvent):void{
+		public function temporaryLine(evt:Event):void{
 			_drawContainer.graphics.clear();
 			_drawContainer.graphics.lineStyle(2, 0x00ff00);
-			_drawContainer.graphics.moveTo(_startPoint.x, _startPoint.y);
+			_drawContainer.graphics.moveTo(this.map.getMapPxFromLocation(_startLocation).x, this.map.getMapPxFromLocation(_startLocation).y);
 			_drawContainer.graphics.lineTo(map.mouseX, map.mouseY);
 			_drawContainer.graphics.endFill();
 		}
@@ -197,7 +198,7 @@ package org.openscales.core.handler.feature.draw
 				_drawContainer.graphics.clear();
 				//we update the pixel of the last point which has changed
 				var tempPoint:Point = _lineString.getLastPoint();
-				_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));
+				_startLocation = new Location(tempPoint.x, tempPoint.y);
 			}
 		}
 		
@@ -231,11 +232,11 @@ package org.openscales.core.handler.feature.draw
 			return _drawContainer;
 		}
 		
-		public function get startPoint():Pixel{
-			return _startPoint;
+		public function get startLocation():Location{
+			return _startLocation;
 		}
-		public function set startPoint(pix:Pixel):void{
-			_startPoint = pix;
+		public function set startLocation(value:Location):void{
+			_startLocation = value;
 		}
 		
 		/**

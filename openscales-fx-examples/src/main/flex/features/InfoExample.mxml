@@ -3,18 +3,19 @@
 <s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" xmlns:components="components.*" >
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.17578125" center="-74.011,40.710">
+	<Map id="fxMap" width="100%" height="100%"
+		 center="-101.18542455449216,41.50520930156249"
+		 resolution="0.06810125783203128"
+		 projection="EPSG:900913">
 		
-		<WMSC name="Nasa" url="http://openscales.org/geoserver/ows" projection="EPSG:4326"
-			  layers="bluemarble" format="image/jpeg" 
-			  maxExtent="-180,-90,180,90" version="1.1.1"/>
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
 		
 		<WMS name="Topp States" url="http://openscales.org/geoserver/wms"
-			 layers="topp:states" projection="EPSG:4326" version="1.1.1"
+			 layers="topp:states" projection="EPSG:900913" version="1.1.1"
 			 maxExtent="-180,-90,180,90" transparent="true" format="image/png"/>
 		
 		
-		<FeatureInfoDisplay bottom="10" left="10"/>
+		<FeatureInfoDisplay bottom="70" left="10"/>
 	 	
 		<KeyBoardHandler id="keyboardHandler" />
 		
@@ -27,7 +28,8 @@
 		
 		<WMSGetFeatureInfo />
 		
-		<TermsOfService x="{width/2}" y="{height-20}" url="http://openscales.org/index.html" />
+		<TermsOfService x="{2*width/3}"  y="{height-20}" url="http://openscales.org/index.html" />
+		<DataOriginatorsDisplay x="10" y="{height-90}" />
 	</Map>
 	<components:toolbar fxMap="{fxMap}" />
 		

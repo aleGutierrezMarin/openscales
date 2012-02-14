@@ -1,11 +1,7 @@
 package org.openscales.fx.handler
 {
-	import flash.events.Event;
-	
 	import mx.core.UIComponent;
 	
-	import org.openscales.core.utils.Trace;
-	import org.openscales.core.control.IControl;
 	import org.openscales.core.handler.IHandler;
 
 	/**

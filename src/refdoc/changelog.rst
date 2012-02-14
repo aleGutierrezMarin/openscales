@@ -1,11 +1,25 @@
 Changelog
 =========
 
-Changes between 2.0.0 and 2.0.1
+Changes between 2.1.0 and 2.1.1
+-------------------------------
+* Allowing Pan and Zoom while drawin features
+* improving overall performances while requesting tiles
+* improving center changed performances
+* add FxOSM
+* fix OSM layers shift
+
+Changes between 2.0.0 and 2.1.0
 -------------------------------
 
+* BingMaps support
 * WMTS default value is image/jpeg
 * "name" attribute is separated in "identifier" and "displayedName" in Layer class
+* Improved label style for drawing tools
+* Renamed genLocale method to addLocale in Locale
+* Fix axis order management for openLS search
+* Features now holds 2 Geometry: one in original projection, another in map projection.
+
 
 changes between 1.2.1 and 2.0.0
 -------------------------------
