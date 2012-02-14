@@ -305,6 +305,7 @@ package org.openscales.core.handler.feature.draw
 					var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);
 					PointGeomUnderTheMouse.projection = lonlat.projection;
 					if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
+						layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 						AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
 						AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,this.virtualStyle);
 						this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
