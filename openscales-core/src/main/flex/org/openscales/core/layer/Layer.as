@@ -106,8 +106,9 @@ package org.openscales.core.layer {
 		 * Layer constructor
 		 * 
 		 * @param identifier A unique identifier for this layer (if empty string or null, value will be 'NewLayer_'+new Date().time).
+		 * @param visibility A boolean to indicate if the layer is set visible or not (if not passed, default value is true)
 		 */
-		public function Layer(identifier:String) {
+		public function Layer(identifier:String, visibility:Boolean = true) {
 			//this.name = identifier;
 			if(!identifier || identifier=="")this._identifier = "NewLayer_"+new Date().time;
 			else this._identifier = identifier;
@@ -115,7 +116,7 @@ package org.openscales.core.layer {
 			this._displayedName = this._identifier;
 			this.name = this._identifier;
 			
-			this.visible = true;
+			this.visible = visibility;
 			this.doubleClickEnabled = true;
 			this._projection = Layer.DEFAULT_PROJECTION;
 			this.generateResolutions();
