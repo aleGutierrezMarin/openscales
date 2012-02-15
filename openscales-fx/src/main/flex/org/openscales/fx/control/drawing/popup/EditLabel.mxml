@@ -1,234 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--- This popup is used to display and edit a <code>LabelPoint</code>'s <code>label</code> property. 
+<p>
+The label is holds by the <code>input</code> element.
+</p>
+-->
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
 			   xmlns:s="library://ns.adobe.com/flex/spark"
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   creationComplete="init();"
-			   removedFromStage="destroy();"
-			   close="close();"
+			   creationComplete="onCreationComplete();"
+			   close="discardPopup();"
 			   dropShadowVisible="false">
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	
+
 	<fx:Script>
 		<![CDATA[
-			import mx.core.FlexGlobals;
-			import mx.core.LayoutDirection;
-			import mx.events.FlexEvent;
 			import mx.managers.PopUpManager;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.feature.Feature;
-			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.i18n.Catalog;
-			import org.openscales.fx.control.drawing.DrawLabel;
-			import org.openscales.geometry.basetypes.Location;
-			import org.openscales.geometry.basetypes.Pixel;
 			
-			import spark.components.Application;
 			import spark.components.Button;
-			import spark.components.HGroup;
 			import spark.components.Label;
 			import spark.components.TextInput;
-			import spark.components.VGroup;
-			import spark.layouts.HorizontalLayout;
 			
-			private var _init:Boolean = false;
-			private var _feature:Feature = null;
-			protected var _vgroup:VGroup = null;
-			private var _btnValid:Button = null;
-			private var _btnDiscard:Button = null;
-			private var _textInput:TextInput;
-			private var _containerPopup:DrawLabel;
 			private static var DEFAULT_W:Number = 300;
 			private static var DEFAULT_H:Number = 100;
 			
-			/**
-			 * feature associated to the popup
-			 */
-			public function get feature():Feature
-			{
-				return _feature;
-			}
-			/**
-			 * @private
-			 */
-			public function set feature(value:Feature):void
-			{
-				_feature = value;
-				if(this._feature) {
-					if(!_vgroup) {
-						_vgroup = new VGroup();
-						_vgroup.gap = 10;
-						_vgroup.top = 5;
-						this.addElement(_vgroup);
-					}
-					
-					if(this._feature.layer && this._feature.layer.map)
-						this._feature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
-					else
-						return;
-					
-					this.drawContent();
-					this.localize();
-					PopUpManager.addPopUp(this, (FlexGlobals.topLevelApplication as Application), true);
-				}
-			}
-			
-			public function set containerPopup(value:DrawLabel):void
-			{
-				_containerPopup = value;
-			}
-			/**
-			 * @private
-			 */
-			protected function drawContent():void {
-				
-				var group:HGroup = new HGroup();
-				group.verticalAlign = "middle";
-				group.gap = 10;
-				group.paddingLeft = 5;
-				group.paddingRight = 5;
-				_vgroup.addElement(group);
-				var lb:Label = new Label();
-				lb.width = 100;
-				lb.text = Catalog.getLocalizationForKey("editlabel.label");
-				group.addElement(lb);
-				_textInput = new TextInput();
-				this._textInput.addEventListener(FlexEvent.ENTER, valid);
-				if((this.feature as LabelFeature).labelPoint.label.text)
-					_textInput.text = (this.feature as LabelFeature).labelPoint.label.text;
-				group.addElement(_textInput);
-				_vgroup.addElement(group);
-				group = new HGroup();
-				group.gap = 10;
-				group.paddingLeft = 5;
-				group.paddingRight = 5;
-				
-				if(!this._btnValid) {
-					this._btnValid = new Button();
-					this._btnValid.addEventListener(MouseEvent.CLICK, valid);
-				}
-				
-				if(!this._btnDiscard) {
-					this._btnDiscard = new Button();
-					this._btnDiscard.addEventListener(MouseEvent.CLICK, closeClick);
-				}
-				
-				group.addElement(this._btnValid);
-				group.addElement(this._btnDiscard);
-				_vgroup.addElement(group);
-			}
+			private var _map:Map;
 			
 			/**
 			 * @private
 			 */
 			protected function localize(e:I18NEvent=null):void {
 				this.title = Catalog.getLocalizationForKey("editlabel.title");
-				this._btnValid.label = Catalog.getLocalizationForKey("editfeatureattributes.valid");
-				this._btnDiscard.label = Catalog.getLocalizationForKey("editfeatureattributes.discard");
+				this.okButton.label = Catalog.getLocalizationForKey("editfeatureattributes.valid");
+				this.cancelButton.label = Catalog.getLocalizationForKey("editfeatureattributes.discard");
+				this.inputLabel.text=Catalog.getLocalizationForKey('editlabel.label');
 			}
 			
 			/**
 			 * @private
 			 */
-			protected function init():void {
+			protected function onCreationComplete():void {
 				this.x = (parent.width-this.width)/2;
 				this.y = (parent.height-this.height)/2;
-				this.resize(null);
-				parent.addEventListener(Event.RESIZE,this.resize);
-
-				this._init = true;
 				
-				_textInput.setFocus();
+				if(_map){
+					_map.removeEventListener(I18NEvent.LOCALE_CHANGED,localize);
+					_map.addEventListener(I18NEvent.LOCALE_CHANGED,localize);
+				}
+				localize();
+				input.setFocus();
 			}
 			
-			/**
-			 * @private
-			 */
-			protected function destroy():void {
-				if(parent)
-					parent.removeEventListener(Event.RESIZE,this.resize);
-				
-				this.discardPopup();
-			}
 			
 			private function discardPopup():void {
-				if(this._feature.layer && this._feature.layer.map)
-					this._feature.layer.map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
-				if(_vgroup)
-					_vgroup.removeAllElements();
-				if(this._init)
-					PopUpManager.removePopUp(this);
+				if(_map) _map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+				PopUpManager.removePopUp(this);
 			}
-			
+
+			/**
+			 * The map where this popup is displayed
+			 */ 
+			public function get map():Map
+			{
+				return _map;
+			}
+
 			/**
 			 * @private
-			 */
-			private function resize(e:Event):void {
-				this.x = (parent.width-this.width)/2;
-				this.y = (parent.height-this.height)/2;
-				this.width = DEFAULT_W;
-				this.height = DEFAULT_H;
-				if(this.width > parent.width) {
-					this.width = parent.width;
-				}
-				if(this.height > parent.height) {
-					this.height = parent.height;
-				}
+			 */ 
+			public function set map(value:Map):void
+			{
+				if(!value && _map)_map.removeEventListener(I18NEvent.LOCALE_CHANGED,localize);
+				_map = value;
+				if(_map)_map.addEventListener(I18NEvent.LOCALE_CHANGED,localize);
 			}
-			
+
 			/**
-			 * @private
-			 */
-			private function valid(event:Event):void {
-				
-				if (this._textInput.text != null)
-				{
-					
-					this.feature.layer.scaleX = 1;
-					this.feature.layer.scaleY = 1;
-					var tf:TextFormat = new TextFormat();
-					tf.size = 13;
-					(this.feature as LabelFeature).labelPoint.label.setTextFormat(tf);
-					(this.feature as LabelFeature).labelPoint.label.text = this._textInput.text;
-					(this.feature as LabelFeature).labelPoint.label.background = true;
-					(this.feature as LabelFeature).labelPoint.label.backgroundColor = 0xFFFFFF;
-					var middlePixel:Pixel = this.feature.layer.map.getMapPxFromLocation(new Location((this.feature as LabelFeature).labelPoint.x, (this.feature as LabelFeature).labelPoint.y, this.feature.layer.map.projection));
-					var leftPixel:Pixel = new Pixel();
-					var rightPixel:Pixel = new Pixel();
-					leftPixel.x = middlePixel.x - (this.feature as LabelFeature).labelPoint.label.width / 2;
-					leftPixel.y = middlePixel.y + (this.feature as LabelFeature).labelPoint.label.height / 2;
-					rightPixel.x = middlePixel.x + (this.feature as LabelFeature).labelPoint.label.width / 2;
-					rightPixel.y = middlePixel.y - (this.feature as LabelFeature).labelPoint.label.height / 2;
-					var rightLoc:Location = this.feature.layer.map.getLocationFromMapPx(rightPixel);
-					var leftLoc:Location = this.feature.layer.map.getLocationFromMapPx(leftPixel);
-					(this.feature as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.feature.layer.map.projection);
-					this.feature.layer.addFeature(feature);
-					this.feature.draw();
-				}
-				this.feature.layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,feature));
-				this.discardPopup();
-			}
-			
-			/**
-			 * @private
-			 */
-			private function closeClick(event:MouseEvent):void {
-				
-				this.discardPopup();
-			}
-			
-			/**
-			 * @private
-			 */
-			private function close():void
+			 * Call back method for <code>MouseEvent.CLICK</code> on <code>okButton</code>
+			 */ 
+			protected function onOkButtonClick(event:MouseEvent):void
 			{
 				this.discardPopup();
 			}
-			
+
 		]]>
 	</fx:Script>
+	
+	<!--- Main container of the component -->
+	<s:SkinnableContainer id="editLabelMainContainer" >
+		<s:layout>
+			<s:VerticalLayout paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" />
+		</s:layout>
+		<!--- Container that holds <code>inputLabel</code> and <code>input</code> elements -->
+		<s:SkinnableContainer id="editLabelInputContainer">
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<!--- Label displayed beside <code>input</code> -->
+			<s:Label id="inputLabel" width="100" />
+			<!--- Text input that holds user data, you access access through the element's <code>text</code> -->
+			<s:TextInput id="input"/>
+		</s:SkinnableContainer>
+		<!--- Container that holds <code>okButton</code> and <code>cancelButton</code> elements -->
+		<s:SkinnableContainer id="editLabelButtonsContainer">
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<!--- Button used to validate, you can listen to <code>MouseEvent.CLICK</code> on that button -->
+			<s:Button id="okButton" click="onOkButtonClick(event)"/>
+			<!--- Button used to close the popup --> 
+			<s:Button id="cancelButton" click="{this.discardPopup()}" />
+		</s:SkinnableContainer>
+	</s:SkinnableContainer>
+	
 </s:TitleWindow>
