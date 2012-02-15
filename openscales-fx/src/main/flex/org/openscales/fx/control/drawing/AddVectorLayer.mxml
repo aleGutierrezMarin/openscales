@@ -19,6 +19,7 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.DrawingsLayer;
 			import org.openscales.core.layer.VectorLayer;
+			import org.openscales.fx.control.drawing.popup.SingleInputPopup;
 			
 			import spark.components.Button;
 			import spark.components.Label;
@@ -66,6 +67,8 @@
 			
 			private var _drawingMode:String;
 			
+			private var _popup:SingleInputPopup;
+			
 			/**
 			 * Indicates for Drawing mode
 			 * multiple : tools are in the LayerSwitcher
@@ -82,101 +85,17 @@
 			}
 			
 			public function onClick():void
-			{
-				// Set the TitleWindow container properties.
-				myTitleWindow = new TitleWindow();
-				myTitleWindow.title = Catalog.getLocalizationForKey('drawing.addvectorlayer');
-				myTitleWindow.addEventListener(FlexEvent.CREATION_COMPLETE, this.onPopUpCreationComplete);
-				
-				// Call the method to add the Button control to the 
-				// TitleWindow container.
-				populateWindow();
-				
-				myTitleWindow.width = 300;
-				myTitleWindow.height = 300;
-				
-				// place at the center
-				myTitleWindow.x = (this.map.width/2)-(myTitleWindow.width/2);
-				myTitleWindow.y = (this.map.height/2)-(myTitleWindow.height/2);
-				
-				// Use the PopUpManager to display the TitleWindow container.
-				PopUpManager.addPopUp(myTitleWindow, this, true);
-			}
-			
-			private function onPopUpCreationComplete(e:Event):void
-			{
-				myTitleWindow.closeButton.addEventListener(MouseEvent.CLICK, this.closePopUp);
-				this._input.setFocus();
-			}
-			
-			/**
-			 * Function that fill the popUp
-			 */
-			private function populateWindow():void 
 			{	
-				var group:Group = new Group();
-				var vertical:VerticalLayout = new VerticalLayout();
-				vertical.paddingBottom = 5;
-				vertical.paddingTop = 5;
-				vertical.paddingLeft = 5;
-				vertical.paddingRight = 5;
-				vertical.verticalAlign = "middle";
-				group.layout = vertical;
-				
-				var nameGroup:Group = new Group()
-				var horizontal:HorizontalLayout = new HorizontalLayout();
-				horizontal.paddingBottom = 5;
-				horizontal.paddingTop = 5;
-				horizontal.paddingLeft = 5;
-				horizontal.paddingRight = 5;
-				horizontal.horizontalAlign = "center";
-				horizontal.verticalAlign = "middle";
-				nameGroup.layout = new HorizontalLayout();
-				
-				var label:Label = new Label();
-				label.text = labelText;
-				nameGroup.addElement(label); 
-				
-				this._input = new TextInput();
-				nameGroup.addElement(this._input); 
-				
-				group.addElement(nameGroup);
-				
-				
-				var button:Button = new Button();
-				button.label = this.validateLabel;
-				button.addEventListener(MouseEvent.CLICK, addVectorLayer);
-				
-				group.addElement(button); 
-				
-				
-				this._errorLabel = new Label();
-				this._errorLabel.text = this.nameLabelError;
-				this._errorLabel.includeInLayout = this.displayNameError;
-				this._errorLabel.visible = this.displayNameError;
-				group.addElement(this._errorLabel);
-				
-				myTitleWindow.addElement(group);
+				_popup = SingleInputPopup(PopUpManager.createPopUp(this,SingleInputPopup));
+				_popup.callback = addVectorLayer;
 			}
 			
 			/**
 			 * Add a nex vector layer on the map
 			 */
-			public function addVectorLayer(event:MouseEvent):void
+			public function addVectorLayer():void
 			{
-				var value:String = this._input.text;
-				
-				if(!value || value=="")
-				{
-					this.displayNameError = true;
-					this._errorLabel.includeInLayout = this.displayNameError;
-					this._errorLabel.visible = this.displayNameError;
-					return;
-				}
-				
-				this.displayNameError = false;
-				this._errorLabel.includeInLayout = this.displayNameError;
-				this._errorLabel.visible = this.displayNameError;
+				var value:String = _popup.input.text;
 				
 				var layer:DrawingsLayer = new DrawingsLayer();
 				layer.displayedName = value;

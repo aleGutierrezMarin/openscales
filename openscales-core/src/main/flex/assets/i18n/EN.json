@@ -3,6 +3,11 @@
    "locale.name": "English",
    "locale.localizedName": "English",
    
+   "ok":"OK",
+   "cancel":"Cancel",
+   "yes":"Yes",
+   "no":"No",
+   
    "component.iconify": "Iconify",
    "component.toggle": "Toggle",
    
@@ -28,6 +33,7 @@
    "drawing.version": "Version",
    "drawing.browse": "browse",
    "drawing.addvectorlayer": "Add a vector layer",
+   "drawing.addvectorlayer.input.errormessage": "Name must not be empty",
    "drawing.nameerror": "Change name (can't be empty or equal to another layer)",
    
    "layercontrol.movefront": "Move front",

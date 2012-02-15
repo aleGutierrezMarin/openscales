@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="onCreationComplete();"
+			   close="discardPopup();"
+			   dropShadowVisible="false">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.components.Button;
+			import spark.components.Label;
+			import spark.components.TextInput;
+			
+			private static var DEFAULT_W:Number = 300;
+			private static var DEFAULT_H:Number = 100;
+			
+			private var _map:Map;
+			
+			private var _callback:Function;
+			
+			[Bindable]
+			private var _inputErrorMessage:String = Catalog.getLocalizationForKey("drawing.addvectorlayer.input.errormessage");
+			
+			/**
+			 * @private
+			 */
+			protected function localize(e:I18NEvent=null):void {
+				this.title = Catalog.getLocalizationForKey('drawing.addvectorlayer');
+				this.okButton.label = Catalog.getLocalizationForKey("ok");
+				this.cancelButton.label = Catalog.getLocalizationForKey("cancel");
+				this.inputFormItem.label=Catalog.getLocalizationForKey('drawing.name');
+				_inputErrorMessage = Catalog.getLocalizationForKey('drawing.addvectorlayer.input.errormessage');
+			}
+			
+			/**
+			 * @private
+			 */
+			protected function onCreationComplete():void {
+				this.x = (parent.width-this.width)/2;
+				this.y = (parent.height-this.height)/2;
+				
+				if(_map){
+					_map.removeEventListener(I18NEvent.LOCALE_CHANGED,localize);
+					_map.addEventListener(I18NEvent.LOCALE_CHANGED,localize);
+				}
+				localize();
+				input.setFocus();
+			}
+			
+			
+			private function discardPopup():void {
+				if(_map) _map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+				PopUpManager.removePopUp(this);
+			}
+			
+			/**
+			 * @private
+			 */ 
+			protected function onOkButtonClick(event:MouseEvent):void
+			{
+				var vResult:ValidationResultEvent;	
+				vResult = inputFormValidator.validate();
+				if (vResult.type==ValidationResultEvent.INVALID) 
+					return;
+				else{
+					this.discardPopup();
+					if(_callback!=null)_callback();
+				}
+			}
+
+			/**
+			 * Callback function when form has been submitted and validated
+			 */ 
+			public function get callback():Function
+			{
+				return _callback;
+			}
+
+			/**
+			 * @private
+			 */ 
+			public function set callback(value:Function):void
+			{
+				_callback = value;
+			}
+
+			/**
+			 * The map where this popup is displayed
+			 */ 
+			public function get map():Map
+			{
+				return _map;
+			}
+			
+			/**
+			 * @private
+			 */ 
+			public function set map(value:Map):void
+			{
+				if(!value && _map)_map.removeEventListener(I18NEvent.LOCALE_CHANGED,localize);
+				_map = value;
+				if(_map)_map.addEventListener(I18NEvent.LOCALE_CHANGED,localize);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:StringValidator id="inputFormValidator" required="true" source="{input}" property="text" requiredFieldError="{_inputErrorMessage}" />
+	</fx:Declarations>
+	<!--- Main container of the component -->
+	<mx:Form defaultButton="{okButton}">
+		<mx:FormItem id="inputFormItem">
+			<!--- Text input that holds user data, you access access through the element's <code>text</code> -->
+			<s:TextInput id="input"/>
+		</mx:FormItem>
+		<s:SkinnableContainer>
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<!--- Button used to validate, you can listen to <code>MouseEvent.CLICK</code> on that button -->
+			<s:Button id="okButton" click="onOkButtonClick(event)"/>
+			<!--- Button used to close the popup --> 
+			<s:Button id="cancelButton" click="{this.discardPopup()}" />
+		</s:SkinnableContainer>	
+	</mx:Form>
+	
+</s:TitleWindow>
