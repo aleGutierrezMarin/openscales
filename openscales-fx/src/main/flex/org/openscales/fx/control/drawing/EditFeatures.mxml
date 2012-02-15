@@ -19,20 +19,12 @@
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.feature.Feature;
-			import org.openscales.core.feature.LabelFeature;
-			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
-			import org.openscales.fx.control.drawing.popup.EditFeatureAttributes;
-			import org.openscales.fx.control.drawing.popup.EditLabel;
-			import org.openscales.fx.control.layer.LayerManager;
-			import org.openscales.geometry.Point;
-			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			[Bindable]
