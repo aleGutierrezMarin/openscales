@@ -20,8 +20,10 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 		<!--VectorLayer id="vectorLayer" name="drawing layer 2" editable="true" /-->
 		<DragHandler />
 		<WheelHandler />
-		<LayerManager y="10" left="10"/>
+		<LayerManager top="10" left="10"/>
 		<Zoom x="{fxMap.width-135}" y="10" />
+		
+		<DrawingToolbar id="drawingToolbar" top="210" left="10" mode="multiple" fxMap="{fxMap}" map="{fxMap.map}" />
 		
 		<DataOriginatorsDisplay x="10" y="{height-90}" />
 	</Map>
