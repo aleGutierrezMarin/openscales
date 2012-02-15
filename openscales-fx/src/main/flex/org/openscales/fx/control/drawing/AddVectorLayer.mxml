@@ -87,6 +87,7 @@
 			public function onClick():void
 			{	
 				_popup = SingleInputPopup(PopUpManager.createPopUp(this,SingleInputPopup));
+				_popup.map = this.map;
 				_popup.callback = addVectorLayer;
 			}
 			

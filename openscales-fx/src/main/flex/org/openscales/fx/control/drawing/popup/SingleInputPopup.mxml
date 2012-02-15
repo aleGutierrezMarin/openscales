@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--- 
+This popup displays a input field and two buttons: Ok and Cancel.
+You can define <code>callback</code>, this method will be called when form is submitted and validated (validation rule: <code>input</code> must not be empty).
+
+@example This example show how to use the popup :
+ 
+<listing version="3.0"> 
+
+var popup:SingleInputPopup;
+
+
+public function showPopUp():void{
+	popup = SingleInputPopup(PopUpManager.createPopUp(this,SingleInputPopup));
+	popup.callback = processInput;
+}
+
+
+public function processInput():void{
+	trace(popup.input.text);
+}
+</listing> 
+
+-->
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
@@ -39,6 +62,7 @@
 				this.cancelButton.label = Catalog.getLocalizationForKey("cancel");
 				this.inputFormItem.label=Catalog.getLocalizationForKey('drawing.name');
 				_inputErrorMessage = Catalog.getLocalizationForKey('drawing.addvectorlayer.input.errormessage');
+				inputFormValidator.requiredFieldError = Catalog.getLocalizationForKey('drawing.addvectorlayer.input.errormessage');
 			}
 			
 			/**
@@ -56,7 +80,9 @@
 				input.setFocus();
 			}
 			
-			
+			/**
+			 * @private
+			 */ 
 			private function discardPopup():void {
 				if(_map) _map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
 				PopUpManager.removePopUp(this);
@@ -78,7 +104,7 @@
 			}
 
 			/**
-			 * Callback function when form has been submitted and validated
+			 * Callback function when form has been submitted and validated. It shall have no parameter.
 			 */ 
 			public function get callback():Function
 			{
@@ -94,7 +120,7 @@
 			}
 
 			/**
-			 * The map where this popup is displayed
+			 * The map where this popup is displayed. If null, localization won't work.
 			 */ 
 			public function get map():Map
 			{
@@ -113,15 +139,18 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
+		<!--- Validates that <code>input.text</code> is not empty -->
 		<mx:StringValidator id="inputFormValidator" required="true" source="{input}" property="text" requiredFieldError="{_inputErrorMessage}" />
 	</fx:Declarations>
-	<!--- Main container of the component -->
+	<!--- Form containing input field and buttons -->
 	<mx:Form defaultButton="{okButton}">
+		<!--- Form item that holds input field -->
 		<mx:FormItem id="inputFormItem">
-			<!--- Text input that holds user data, you access access through the element's <code>text</code> -->
+			<!--- Input field that holds user data, you access access through the element's <code>text</code> property -->
 			<s:TextInput id="input"/>
 		</mx:FormItem>
-		<s:SkinnableContainer>
+		<!--- Container that holds form buttons -->
+		<s:SkinnableContainer id="buttonsContainer">
 			<s:layout>
 				<s:HorizontalLayout />
 			</s:layout>
