@@ -1,6 +1,7 @@
 package org.openscales.geometry
 {
 	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * A LineString is a MultiPoint (2 vertices min), whose points are
@@ -12,9 +13,10 @@ package org.openscales.geometry
 		 * LineString constructor
 		 * 
 		 * @param vertices Array of two or more points
+		 * @param projection The projection to use for this LineString, default is EPSG:4326
 		 */
-		public function LineString(vertices:Vector.<Number>) {
-			super(vertices);
+		public function LineString(vertices:Vector.<Number>,projection:ProjProjection = null) {
+			super(vertices,projection);
 		}
 		
 		
@@ -176,6 +178,7 @@ package org.openscales.geometry
 			var lineStringClone:LineString=new LineString(null);
 			var component:Vector.<Number>=this.getcomponentsClone();
 			lineStringClone.projection = this.projection;
+			lineStringClone._bounds = this._bounds;
 			lineStringClone.addPoints(component);
 			return lineStringClone;
 		}
