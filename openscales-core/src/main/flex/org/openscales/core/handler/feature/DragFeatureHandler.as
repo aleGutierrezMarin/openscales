@@ -49,6 +49,7 @@
 		private var _featuresToMove:Vector.<Feature>;
 		private var _startPixel:Pixel;
 		private var _stopPixel:Pixel;
+		private var _offsetCenter:Pixel;
 		private var _layerToMove:VectorLayer;
 		/**
 		* The feature currently dragged
@@ -95,6 +96,8 @@
 				this.map.keyboardNavigationEnabled = false;
 				
 				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
+				var centerPixel:Pixel = this.map.getMapPxFromLocation(feature.lonlat);
+				_offsetCenter = new Pixel(centerPixel.x - _startPixel.x, centerPixel.y - _startPixel.y)
 				feature.startDrag();
 				_featureCurrentlyDragged = feature;
 				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,feature));
@@ -117,6 +120,7 @@
 			{
 				_stopPixel = _startPixel;
 			}
+			_stopPixel = new Pixel(_stopPixel.x + _offsetCenter.x, _stopPixel.y + _offsetCenter.y);
 			if(_featureCurrentlyDragged != null && _featureCurrentlyDragged.layer == this._layerToMove)
 			{
 				_featureCurrentlyDragged.stopDrag();

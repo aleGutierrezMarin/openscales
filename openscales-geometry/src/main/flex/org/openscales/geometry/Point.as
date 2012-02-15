@@ -32,8 +32,7 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			var returnedValue:Point = new Point(this._x,this._y);
-			returnedValue.projection = this.projection;
+			var returnedValue:Point = new Point(this._x,this._y, this.projection);
 			returnedValue._bounds = this._bounds;
 			return returnedValue;
 		}
