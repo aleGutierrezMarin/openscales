@@ -1,8 +1,6 @@
 package org.openscales.geometry
 {
 	
-	import flash.geom.Point;
-	
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
@@ -18,8 +16,13 @@ package org.openscales.geometry
 
 		private var _y:Number = NaN;
 
-		public function Point(x:Number = NaN, y:Number = NaN) {
-			super();
+		/**
+		 * @param x
+		 * @param y
+		 * @param projection The projection to use for this Point, default is EPSG:4326
+		 */ 
+		public function Point(x:Number = NaN, y:Number = NaN, projection:ProjProjection = null) {
+			super(projection);
 
 			this._x = x;
 			this._y = y;
@@ -31,6 +34,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var returnedValue:Point = new Point(this._x,this._y);
 			returnedValue.projection = this.projection;
+			returnedValue._bounds = this._bounds;
 			return returnedValue;
 		}
 		
