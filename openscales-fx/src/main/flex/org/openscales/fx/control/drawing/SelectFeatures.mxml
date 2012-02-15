@@ -211,7 +211,7 @@
 					}
 					fxpopup = null;
 					fxpopup = new FxPopup();
-					fxpopup.fxmap = fxMap;
+					fxpopup.fxmap = _fxMap;
 					
 					var fxpopupRenderer:EditFeaturesPopupRenderer = new EditFeaturesPopupRenderer();
 					fxpopup.popupRenderer = fxpopupRenderer;
