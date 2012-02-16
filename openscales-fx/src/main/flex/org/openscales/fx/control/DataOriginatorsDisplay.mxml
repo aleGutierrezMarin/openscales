@@ -103,6 +103,8 @@
 				{
 					this._dataOriginators = new DataOriginators();
 				}
+				
+				logoNumber = _dataOriginators.originators.length;
 			}
 			
 			/**
@@ -233,6 +235,7 @@
 			 */
 			private function changeDisplay(event:Event):void
 			{
+				logoNumber = _dataOriginators.originators.length;
 				var listSize:Number = this._dataOriginators.originators.length;
 				// remove current logo from the scene
 				this._originator.removeAll();
@@ -284,6 +287,8 @@
 			 */
 			private function onOriginatorRemoved(event:OriginatorEvent):void
 			{
+				logoNumber = _dataOriginators.originators.length;
+				
 				// the position of the originator removed in the previous list :
 				var id:Number = event.position;
 				
@@ -297,6 +302,7 @@
 					this._currentOriginator = 0; // back to the begining
 				}
 				this.changeDisplay(null);
+				
 			}
 			
 			// getter / setter :
@@ -449,7 +455,7 @@
 			<s:layout>
 				<s:HorizontalLayout 
 					id="originatorsHorizontalLayout" 
-					requestedColumnCount="{this.logoNumber}" 
+					requestedColumnCount="{this.logoNumber}"
 					gap="{this._spacing}"
 					paddingLeft="{this._spacing}"
 					paddingRight="{this._spacing}"

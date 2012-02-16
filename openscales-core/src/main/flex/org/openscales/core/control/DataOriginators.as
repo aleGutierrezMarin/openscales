@@ -27,8 +27,8 @@ package org.openscales.core.control
 	
 	/**
 	 * Instances of DataOriginators are used to keep the different originator informations (logo / copyright)
-	 * for all the layer of a map.
-	 * This orignators are keep on a list which is updated when layers are changed (add / remove / visibility change...)
+	 * for all the layers in the map.
+	 * Those orignators are kept on a list which is updated when layers are changed (add / remove / visibility change...)
 	 * This list is updated when the extent and the resolution of the map is changed
 	 * This list is also updated when an originator is add or change on the layer.
 	 * This list contains originators with no double.
