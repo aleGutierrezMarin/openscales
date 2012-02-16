@@ -22,6 +22,7 @@
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
@@ -56,6 +57,11 @@
 			// Property needed for LabelFeature edition
 			private var _popup:EditLabel; 
 			private var _labelFeature:LabelFeature;
+			
+			/**
+			 * Array of some features that may not be edited.
+			 */
+			private var _uneditableFeatures:Vector.<Feature> = new Vector.<Feature>();
 			
 			/**
 			 * Indicates for Drawing mode
@@ -99,6 +105,23 @@
 			public function set virtualStyle(value:Style):void{
 				
 				this._virtualStyle = value;
+			}
+			
+			/**
+			 * Add an unEditable feature.
+			 */
+			public function addUneditableFeature(feature:Feature):void
+			{
+				if(feature!=null){
+					if (this._selectFeaturesHandler)
+					{
+						_selectFeaturesHandler.addUnselectableFeature(feature);
+					}
+					if(_uneditableFeatures.indexOf(feature)==-1)
+					{
+						_uneditableFeatures.push(feature);
+					}
+				}
 			}
 			
 			/**

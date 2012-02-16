@@ -59,7 +59,7 @@
 		 * Array of features which are undraggabled and belongs to a
 		 * draggable layers 
 	 	* */	 
-		 private var _undraggableFeatures:Vector.<Layer> = new Vector.<Layer>();	
+		 private var _undraggableFeatures:Vector.<Feature> = new Vector.<Feature>();	
 		 /**
 		 * Array of layers which allow dragging
 		 * */
@@ -79,28 +79,33 @@
 		 */
 		override  protected function onMouseDown(event:MouseEvent):void{
 			
-			var feature:Feature;
-			if (event.target is TextField){
-				feature = (event.target as TextField).parent as Feature;
-			}else if(event.target.parent is CustomMarker)
-			{
-				feature = event.target.parent as Feature;
-			}
-			else
-				feature = event.target as Feature;
-			
-			if (feature != null && feature.layer == this._layerToMove){
-				this.map.mouseNavigationEnabled = false;
-				this.map.panNavigationEnabled = false;
-				this.map.zoomNavigationEnabled = false;
-				this.map.keyboardNavigationEnabled = false;
+			if(_undraggableFeatures.indexOf(event.target)==-1){
+				var feature:Feature;
+				if (event.target is TextField){
+					feature = (event.target as TextField).parent as Feature;
+				}else if(event.target.parent is CustomMarker)
+				{
+					feature = event.target.parent as Feature;
+				}
+				else
+					feature = event.target as Feature;
 				
-				_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
-				var centerPixel:Pixel = this.map.getMapPxFromLocation(feature.lonlat);
-				_offsetCenter = new Pixel(centerPixel.x - _startPixel.x, centerPixel.y - _startPixel.y)
-				feature.startDrag();
-				_featureCurrentlyDragged = feature;
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,feature));
+				if (feature != null && feature.layer == this._layerToMove){
+					this.map.mouseNavigationEnabled = false;
+					this.map.panNavigationEnabled = false;
+					this.map.zoomNavigationEnabled = false;
+					this.map.keyboardNavigationEnabled = false;
+					
+					_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
+					_offsetCenter = new Pixel(0,0);
+					if (feature is LabelFeature || feature is CustomMarker){
+						var centerPixel:Pixel = this.map.getMapPxFromLocation(feature.lonlat);
+						_offsetCenter = new Pixel(centerPixel.x - _startPixel.x, centerPixel.y - _startPixel.y)
+					}
+					feature.startDrag();
+					_featureCurrentlyDragged = feature;
+					this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,feature));
+				}
 			}
 		}
 		/**
@@ -120,9 +125,9 @@
 			{
 				_stopPixel = _startPixel;
 			}
-			_stopPixel = new Pixel(_stopPixel.x + _offsetCenter.x, _stopPixel.y + _offsetCenter.y);
 			if(_featureCurrentlyDragged != null && _featureCurrentlyDragged.layer == this._layerToMove)
 			{
+				_stopPixel = new Pixel(_stopPixel.x + _offsetCenter.x, _stopPixel.y + _offsetCenter.y);
 				_featureCurrentlyDragged.stopDrag();
 				updateFeature(_featureCurrentlyDragged);
 				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,_featureCurrentlyDragged));
@@ -148,20 +153,21 @@
 		public function addUndraggableFeature(feature:Feature):void{
 			var addFeature:Boolean=false;
 			if(feature!=null){
-				for each(var featureLayer:VectorLayer in _draggableLayers){
+				/*for each(var featureLayer:VectorLayer in _draggableLayers){
 					//The feature belongs to a draggable layers
 					if(featureLayer.features.indexOf(feature)!=-1){
 						addFeature=true;	
 						break;
 					}
-				}
-				if(addFeature){
+				}*/
+				//if(addFeature){
 					if(_undraggableFeatures.indexOf(feature)==-1){
 						_undraggableFeatures.push(feature);
 					}
-				}
+				//}
 			}
 		}
+		
 		/**
 		 * This function add an array of  layers as draggabble layer
 		 * @param layers: Array of  layer to add

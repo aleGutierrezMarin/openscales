@@ -54,7 +54,7 @@ The label is holds by the <code>input</code> element.
 			}
 			
 			
-			private function discardPopup():void {
+			public function discardPopup():void {
 				if(_map) _map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
 				PopUpManager.removePopUp(this);
 			}

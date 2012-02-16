@@ -48,9 +48,14 @@
 			private var _active:Boolean = true;
 			
 			[Bindable]
-			private var _handler:SelectFeaturesHandler;
+			private var _handler:SelectFeaturesHandler = new SelectFeaturesHandler();
 			private var _isClick:Boolean = false;
 			private var _drawingMode:String;
+			
+			/**
+			 * Array of some features that may not be deleted.
+			 */
+			private var _undeletableFeatures:Vector.<Feature> = new Vector.<Feature>();
 			
 			/**
 			 * Indicates for Drawing mode
@@ -65,6 +70,31 @@
 			
 			public function set drawingMode(value:String):void{
 				_drawingMode = value;
+			}
+			
+			/**
+			 * The drag feature Handler
+			 */
+			public function get handler():SelectFeaturesHandler
+			{
+				return this._handler;
+			}
+			
+			/**
+			 * Add an unselectable feature.
+			 */
+			public function addUndeletableFeature(feature:Feature):void
+			{
+				if(feature!=null){
+					if (this._handler)
+					{
+						_handler.addUnselectableFeature(feature);
+					}
+					if(_undeletableFeatures.indexOf(feature)==-1)
+					{
+						_undeletableFeatures.push(feature);
+					}
+				}
 			}
 			
 			/**
@@ -184,6 +214,7 @@
 					this._handler.toggle = false;
 					this._handler.redrawFeatureOnSelection = false;
 					this._handler.layers[0] = _target;
+					this._handler.unselectableFeatures = this._undeletableFeatures;
 				}
 				
 				// Disactive others drawing tools components
