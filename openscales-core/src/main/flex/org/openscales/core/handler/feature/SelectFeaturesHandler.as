@@ -233,6 +233,18 @@ package org.openscales.core.handler.feature
 			// Update the array of the layers to treat for the selection
 			this._layers = value;
 		}
+		
+		/**
+		 * Add an unselectable feature.
+		 */
+		public function addUnselectableFeature(feature:Feature):void
+		{
+			if(feature!=null){
+				if(_unselectableFeatures.indexOf(feature)==-1){
+					_unselectableFeatures.push(feature);
+				}
+			}
+		}
 
 		/**
 		 * unselectableFeatures array getter and setter
@@ -693,9 +705,11 @@ package org.openscales.core.handler.feature
 				for each (layer in layersToTest) {
 					for(var i:uint = layer.features.length; i > 0; i--){
 						if (geom.intersects(layer.features[i-1].geometry)) {
-							featuresToSelect.push(layer.features[i-1]);
-							if(!this._enableMultipleSelection)
-								break;
+							if(_unselectableFeatures.indexOf(layer.features[i-1])==-1){
+								featuresToSelect.push(layer.features[i-1]);
+								if(!this._enableMultipleSelection)
+									break;
+							}
 						}
 					}
 				}
