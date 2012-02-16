@@ -41,30 +41,9 @@
 			[Bindable]
 			public var labelAddVector:String = Catalog.getLocalizationForKey('drawing.addvectorlayer');
 			
-			[Bindable]
-			public var labelText:String = Catalog.getLocalizationForKey('drawing.name');
-			
-			[Bindable]
-			public var validateLabel:String = Catalog.getLocalizationForKey('drawing.add');
-			
-			/**
-			 * Translation for label Name error
-			 */
-			[Bindable]
-			public var nameLabelError:String = Catalog.getLocalizationForKey('drawing.nameerror');
-			
-			[Bindable]
-			public var displayNameError:Boolean = false;
 			
 			private var _map:Map = null;
 
-			private var _input:TextInput = null;
-			private var _errorLabel:Label = null;
-			/**
-			 * The title window (that display the form)
-			 */
-			public var myTitleWindow:TitleWindow = new TitleWindow();
-			
 			private var _drawingMode:String;
 			
 			private var _popup:SingleInputPopup;
@@ -107,8 +86,6 @@
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
 				evt.layer = layer;
 				this.map.dispatchEvent(evt);
-				
-				this.closePopUp();
 			}
 			
 			/**
@@ -131,18 +108,7 @@
 			public function onMapLanguageChange(event:I18NEvent):void 
 			{
 				labelAddVector = Catalog.getLocalizationForKey('drawing.addvectorlayer');
-				labelText = Catalog.getLocalizationForKey('drawing.name');
-				validateLabel = Catalog.getLocalizationForKey('drawing.add');
-				nameLabelError = Catalog.getLocalizationForKey('drawing.nameerror');
-			}
-			
-			/**
-			 * Close the PopUp window
-			 */
-			public function closePopUp(event:MouseEvent = null):void
-			{
-				// close the pop up file
-				PopUpManager.removePopUp(myTitleWindow);
+
 			}
 			
 			/**
