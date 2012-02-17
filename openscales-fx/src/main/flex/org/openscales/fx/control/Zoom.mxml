@@ -80,6 +80,12 @@
 			private var _step:Number = 0;
 			
 			/**
+			 * @private
+			 * The left margin of the slider
+			 */
+			private var _defaultMarginLeft:Number = 80;
+			
+			/**
 			 * The current zoom value
 			 */
 			[Bindable]
@@ -475,6 +481,23 @@
 			}	
 			
 			/**
+			 * Gives the left margin of the slider
+			 */
+			[Bindable]
+			public function get defaultMarginLeft():Number
+			{
+				return this._defaultMarginLeft;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set defaultMarginLeft(value:Number):void
+			{
+				this._defaultMarginLeft = value;
+			}
+			
+			/**
 			 * Indicates the minimum value for the slider
 			 * @default 0
 			 */
@@ -512,7 +535,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:VSlider id="zoomSlider" x="80"
+	<s:VSlider id="zoomSlider" x="{this.defaultMarginLeft}"
 			   minimum="{this.minSlider}"
 			   maximum="{this.maxSlider}"
 			   value="{this.currentSliderValue}"
@@ -529,12 +552,12 @@
 	
 	<s:Button id="zoomOut" name="zoomout" label="-" toolTip="{this.toolTipZoomOut}"
 			  click="onZoomOut(event)"
-			  width="30" x="95" y="90" useHandCursor="true" buttonMode="true" />
+			  width="30" x="{this.defaultMarginLeft + 15}" y="90" useHandCursor="true" buttonMode="true" />
 	<s:Button id="zoomIn" name="zoomin" label="+" toolTip="{this.toolTipZoomIn}"
 			  click="onZoomIn(event)"
-			  width="30" x="95" y="0" useHandCursor="true" buttonMode="true" />
+			  width="30" x="{this.defaultMarginLeft + 15}" y="0" useHandCursor="true" buttonMode="true" />
 	
-	<s:Label id="scalesNameLabel" x="95" y="{this.scaleNameY}"
+	<s:Label id="scalesNameLabel" x="{this.defaultMarginLeft + 15}" y="{this.scaleNameY}"
 			 backgroundColor="0xDDDDDD" text="{this.currentLabel}" />
 	
 
