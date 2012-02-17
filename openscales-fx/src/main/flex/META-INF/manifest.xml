@@ -57,7 +57,7 @@
 	<component id="DefaultLayerManagerItemRenderer" class="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer" />
 	<component id="LayerLegend" class="org.openscales.fx.control.layer.LayerLegend" />
 	<component id="LayerMetadata" class="org.openscales.fx.control.layer.LayerMetadata" />
-	<component id="ChangeLayerOpacity" class="org.openscales.fx.control.layer.ChangeLayerOpacity" />
+	<component id="ChangeLayerAlpha" class="org.openscales.fx.control.layer.ChangeLayerAlpha" />
 	<component id="ChangeLayerPosition" class="org.openscales.fx.control.layer.ChangeLayerPosition" />
 	<component id="ChangeLayerVisibility" class="org.openscales.fx.control.layer.ChangeLayerVisibility" />
 	<component id="DeleteLayer" class="org.openscales.fx.control.layer.DeleteLayer" />

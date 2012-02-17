@@ -73,7 +73,7 @@
     <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
-    <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerAlpha"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibility"/>
     <classEntry path="org.openscales.fx.control.layer.DeleteLayer"/>
