@@ -15,7 +15,7 @@ package org.openscales.core.search
 		/**
 		 * reverse geocode a location
 		 * 
-		 * @param callback the callback function to wall when search ends. It must take a Vector.<Address> in parameter
+		 * @param callback the callback function to wall when search ends. It must take a Vector.&lt;Address&gt; in parameter
 		 * @param loc the location
 		 */
 		public function reverseGeocode(callback:Function, loc:Location):void {
@@ -25,7 +25,7 @@ package org.openscales.core.search
 		/**
 		 * search with a querystring
 		 * 
-		 * @param callback the callback function to wall when search ends. It must take a Vector.<Address> in parameter
+		 * @param callback the callback function to wall when search ends. It must take a Vector.&lt;Address&gt; in parameter
 		 * @param queryString the queryString
 		 */
 		public function searchByQueryString(callback:Function, queryString:String):void {
