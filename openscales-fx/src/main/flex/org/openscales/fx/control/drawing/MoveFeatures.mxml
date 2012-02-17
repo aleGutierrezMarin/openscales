@@ -139,9 +139,12 @@
 				_handler.active = true;
 				_alpha = 1;
 			}
-			private function disactivate():void{
+			public function disactivate():void{
 				
-				_handler.active = false;
+				if (_handler)
+				{
+					_handler.active = false;
+				}
 				_alpha = 0.3;
 			}
 			

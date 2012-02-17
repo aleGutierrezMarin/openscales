@@ -90,8 +90,7 @@ package org.openscales.core.handler.feature.draw
 				   feature.draw();
 				   
 			   }else{
-				var point:Point = new Point(lonlat.lon,lonlat.lat);
-				point.projection = this.map.projection;
+				var point:Point = new Point(lonlat.lon,lonlat.lat, this.map.projection);
 				feature = new PointFeature(point, null, this._style);
 				feature.name = "point." + drawLayer.idPoint.toString();
 				drawLayer.idPoint++;
