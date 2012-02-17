@@ -213,25 +213,30 @@
 			/**
 			 * To disactivate the handler
 			 */
-			private function disactivate():void{
+			public function disactivate():void{
 				
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_DESACTIVATED);
 				evt.layer = this.target;
 				this.map.dispatchEvent(evt);
 				
 				// Manage the new FeatureLayerEditionHandler
-				_handler.active = false;
-				this._handler.map = null;
-				this.map.removeControl(this._handler);
-				
+				if (_handler)
+				{
+					_handler.active = false;
+					this._handler.map = null;
+					this.map.removeControl(this._handler);
+				}
 				// Add the previous FeatureLayerEditionHandler
 				if(this._previousHandler)
 					this._previousHandler.map = this.map;
 				
 				// Manage the new SelectFeaturesHandler
-				this._selectFeaturesHandler.clearSelection();
-				this._selectFeaturesHandler.map = null;
-				this.map.removeControl(this._selectFeaturesHandler);
+				if (this._selectFeaturesHandler)
+				{
+					this._selectFeaturesHandler.clearSelection();
+					this._selectFeaturesHandler.map = null;
+					this.map.removeControl(this._selectFeaturesHandler);
+				}
 				
 				// Add the previous SelectFeaturesHandler
 				if(this._previousSelectFeaturesHandler)
