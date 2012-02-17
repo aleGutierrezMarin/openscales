@@ -283,7 +283,6 @@
     <classEntry path="org.openscales.core.layer.KMLTest"/>
     <classEntry path="org.openscales.core.layer.ogc.GPXTest"/>
     <classEntry path="org.openscales.core.layer.ogc.GeoRSSTest"/>
-    <classEntry path="org.openscales.core.basetypes.ResolutionTest"/>
     <classEntry path="org.openscales.map.MapExtentTest"/>
     <classEntry path="org.openscales.map.LayerManagementTest"/>
   </includeClasses>
