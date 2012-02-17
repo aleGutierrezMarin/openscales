@@ -276,6 +276,17 @@
     <classEntry path="org.openscales.core.search.result.Address"/>
     <classEntry path="org.openscales.core.search.result.Confidence"/>
     <classEntry path="org.openscales.core.search.BingSearch"/>
+    <classEntry path="org.openscales.core.control.KeyboardHandlerTest"/>
+    <classEntry path="org.openscales.core.handler.mouse.MouseHandlerTest"/>
+    <classEntry path="org.openscales.core.i18n.LocaleTest"/>
+    <classEntry path="org.openscales.core.i18n.CatalogTest"/>
+    <classEntry path="org.openscales.core.i18n.provider.I18nJSONProviderTest"/>
+    <classEntry path="org.openscales.core.layer.KMLTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.GPXTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.GeoRSSTest"/>
+    <classEntry path="org.openscales.core.basetypes.ResolutionTest"/>
+    <classEntry path="org.openscales.map.MapExtentTest"/>
+    <classEntry path="org.openscales.map.LayerManagementTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
