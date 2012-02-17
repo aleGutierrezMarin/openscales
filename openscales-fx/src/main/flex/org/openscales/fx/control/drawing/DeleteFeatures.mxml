@@ -174,10 +174,13 @@
 				_handler.map.keyboardNavigationEnabled = true;
 				_alpha = 1;
 			}
-			private function disactivate():void{
+			public function disactivate():void{
 				
-				_handler.active = false;
-				_handler = null;
+				if (_handler)
+				{
+					_handler.active = false;
+					_handler = null;
+				}
 				_alpha = 0.3;
 			}
 			
