@@ -3,11 +3,21 @@ package org.openscales.core.search
 	import org.openscales.core.search.result.Address;
 	import org.openscales.geometry.basetypes.Location;
 
+	/**
+	 * Abstract search engine
+	 * This class defines the common methods that any SearchEngine should provide
+	 */
 	public class SearchEngine
 	{
-		
+		/**
+		 * @private
+		 * maximum number of resluts
+		 */
 		private var _maxResults:int = 5;
 		
+		/**
+		 * constructor
+		 */
 		public function SearchEngine()
 		{
 		}
@@ -33,7 +43,7 @@ package org.openscales.core.search
 		}
 
 		/**
-		 * maximum number of result
+		 * maximum number of results
 		 * @default 5
 		 */
 		public function get maxResults():int
