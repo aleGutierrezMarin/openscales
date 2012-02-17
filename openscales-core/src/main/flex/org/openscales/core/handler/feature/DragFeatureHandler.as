@@ -98,7 +98,7 @@
 					
 					_startPixel = new Pixel(this._layerToMove.mouseX,this._layerToMove.mouseY);
 					_offsetCenter = new Pixel(0,0);
-					if (feature is LabelFeature || feature is CustomMarker){
+					if (feature is LabelFeature || feature is CustomMarker || feature is PointFeature){
 						var centerPixel:Pixel = this.map.getMapPxFromLocation(feature.lonlat);
 						_offsetCenter = new Pixel(centerPixel.x - _startPixel.x, centerPixel.y - _startPixel.y)
 					}
@@ -108,6 +108,7 @@
 				}
 			}
 		}
+		
 		/**
 		 * This function is launched when the Mouse is up
 		 */
