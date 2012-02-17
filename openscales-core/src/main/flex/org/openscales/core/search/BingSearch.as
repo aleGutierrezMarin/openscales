@@ -23,22 +23,32 @@ package org.openscales.core.search
 		private var _request:XMLRequest = null;
 		private var _callBack:Function = null;
 		
+		/**
+		 * Constructor
+		 * @param key the bing api key
+		 */
 		public function BingSearch(key:String)
 		{
 			this._key = key;
 			super();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function searchByQueryString(callback:Function, queryString:String):void {
 			queryString = queryString.replace(/^\s+|\s+$/g, "");
 			if(queryString!="")
 				this.performRequest(callback,APIURL+"Locations/"+queryString+"?o=json&key="+this._key);
 		}
-		
+		/**
+		 * @inheritDoc
+		 */
 		override public function reverseGeocode(callback:Function, loc:Location):void {
 			loc = loc.reprojectTo(ProjProjection.getProjProjection("EPSG:4326"));
 			this.performRequest(callback,APIURL+"Locations/"+loc.lat+","+loc.lon+"?o=json&key="+this._key);
 		}
+		
 		/**
 		 * @private
 		 * perform request

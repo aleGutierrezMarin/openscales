@@ -17,7 +17,7 @@
 				<mx:DataGridColumn headerText="Pays" dataField="countryRegion"/>
 			</mx:columns>
 		</mx:DataGrid>
-		<s:ToggleButton x="239" y="-26" label="reverse" width="63" id="reverse" click="reverseActivate();"/>
+		<s:ToggleButton x="239" y="-26" label="reverse" width="63" id="reverse" click="reverseToggle();"/>
 	</s:Panel>
 	
 	<fx:Script>
@@ -29,34 +29,66 @@
 			import org.openscales.core.search.result.Address;
 			import org.openscales.geometry.basetypes.Pixel;
 			
+			/**
+			 * Arraycollection containing search results
+			 */
 			[Bindable]
 			public var searchResult:ArrayCollection = new ArrayCollection();
 			
 			private var _handler:ClickHandler = new ClickHandler(null,false);
 			
+			/**
+			 * @private
+			 * method called when user click on a result
+			 * 
+			 * @param e the ListEvent
+			 */
 			private function onItemClick( e:ListEvent ):void {
 				if((e.itemRenderer.data as Address).bbox)
 					this.hostComponent.map.zoomToExtent((e.itemRenderer.data as Address).bbox);
 				else if((e.itemRenderer.data as Address).location)
 					this.hostComponent.map.center = (e.itemRenderer.data as Address).location;
 			}
-			
-			private function reverseActivate():void {
+			/**
+			 * @private
+			 * 
+			 * Change activation status of reverse geocoding tool
+			 */
+			private function reverseToggle():void {
 				_handler.map = this.hostComponent.map;
 				_handler.active = reverse.selected;
 				searchResult.removeAll();
 				if(_handler.click==null)
 					_handler.click = this.reverseGeocode;
 			}
-			
+			/**
+			 * @private
+			 * 
+			 * Reverse geocode a map pixel
+			 * 
+			 * @param px the map pixel to geocode
+			 */
 			private function reverseGeocode(px:Pixel):void {
 				this.hostComponent.reverseGeocode( this.hostComponent.map.getLocationFromMapPx(px));
 			}
-			
-			private function handleDown(e:Event):void{
+			/**
+			 * @private
+			 * 
+			 * Enable draging
+			 * 
+			 * @param e the mouse event
+			 */
+			private function handleDown(e:MouseEvent):void{
 				this.startDrag();
 			}
-			private function handleUp(e:Event):void{
+			/**
+			 * @private
+			 * 
+			 * Disable draging
+			 * 
+			 * @param e the mouse event
+			 */
+			private function handleUp(e:MouseEvent):void{
 				this.stopDrag();
 			}
 		]]>

@@ -3,6 +3,10 @@ package org.openscales.core.search.result
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	
+	/**
+	 * This class define the way to represent an address result
+	 * provided by any search engine
+	 */
 	[Bindable]
 	public class Address
 	{
@@ -18,6 +22,9 @@ package org.openscales.core.search.result
 		private var _countryRegion:String = null;
 		private var _formattedAddress:String = null;
 		
+		/**
+		 * constructor
+		 */
 		public function Address()
 		{
 		}

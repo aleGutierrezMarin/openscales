@@ -17,11 +17,21 @@ package org.openscales.fx.control.search
 	import spark.components.TextInput;
 	import spark.components.supportClasses.SkinnableComponent;
 	
+	/**
+	 * Search control
+	 * Skinnable component, default skin is DefaultSearchSkin
+	 */
 	public class Search extends SkinnableComponent implements IHandler
 	{
+		/**
+		 * Input field where users enter his search query
+		 */
 		[SkinPart(required="true")]
 		public var searchText:TextInput;
 		
+		/**
+		 * Arraycollection containing search results
+		 */
 		[SkinPart(required="true")]
 		public var searchResult:ArrayCollection;
 		
@@ -31,12 +41,18 @@ package org.openscales.fx.control.search
 		
 		private var _active:Boolean = true;
 		
+		/**
+		 * constructor
+		 */
 		public function Search()
 		{
 			super();
 			setStyle("skinClass", DefaultSearchSkin);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function partAdded(partName:String, instance:Object) : void
 		{
 			super.partAdded(partName, instance);
@@ -45,7 +61,9 @@ package org.openscales.fx.control.search
 				searchText.addEventListener(KeyboardEvent.KEY_UP,this.autoComplete);
 			}
 		}
-		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function partRemoved(partName:String, instance:Object) : void
 		{
 			super.partRemoved(partName, instance);
@@ -53,12 +71,19 @@ package org.openscales.fx.control.search
 				searchText.removeEventListener(KeyboardEvent.KEY_UP,this.autoComplete);
 			}
 		}
-		
+		/**
+		 * Method called when user enter text in searchText field
+		 * 
+		 * @param event the keyboard event
+		 */
 		protected function autoComplete(event:KeyboardEvent):void {
 			if(this._searchEngine)
 				this._searchEngine.searchByQueryString(this.onSearchResult,searchText.text);
 		}
-		
+		/**
+		 * Method called when results are returned by the search engine
+		 * @param results vector of results
+		 */
 		protected function onSearchResult(results:Vector.<Address>):void {
 			var i:uint = 0;
 			var j:uint = results.length;
@@ -68,7 +93,9 @@ package org.openscales.fx.control.search
 			}
 		}
 		/**
-		 * reverse geocode
+		 * Method than can be used to reverse geocode a location
+		 * 
+		 * @param loc the location to reverse geocode
 		 */
 		public function reverseGeocode(loc:Location):void {
 			this._searchEngine.reverseGeocode(this.onSearchResult,loc);

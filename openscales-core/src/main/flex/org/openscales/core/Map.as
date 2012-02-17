@@ -655,8 +655,8 @@ package org.openscales.core
 				var y:Number = (newBounds.top + newBounds.bottom)/2;
 				this.center = new Location(x, y, this.projection);
 				
-				var resolutionX:Number = (newBounds.right-bounds.left) / this.width;
-				var resolutionY:Number = (newBounds.top-bounds.bottom) / this.height;
+				var resolutionX:Number = (newBounds.right-newBounds.left) / this.width;
+				var resolutionY:Number = (newBounds.top-newBounds.bottom) / this.height;
 				
 				// choose max resolution to be sure that all the extent is include in the current map
 				var resolution:Number = (resolutionX > resolutionY) ? resolutionX : resolutionY;
