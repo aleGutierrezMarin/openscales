@@ -276,7 +276,6 @@
     <classEntry path="org.openscales.core.search.result.Address"/>
     <classEntry path="org.openscales.core.search.result.Confidence"/>
     <classEntry path="org.openscales.core.search.BingSearch"/>
-    <classEntry path="org.openscales.core.control.KeyboardHandlerTest"/>
     <classEntry path="org.openscales.core.handler.mouse.MouseHandlerTest"/>
     <classEntry path="org.openscales.core.i18n.LocaleTest"/>
     <classEntry path="org.openscales.core.i18n.CatalogTest"/>
