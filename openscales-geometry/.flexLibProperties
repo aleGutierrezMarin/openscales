@@ -11,6 +11,7 @@
     <classEntry path="org.openscales.geometry.MultiPoint"/>
     <classEntry path="org.openscales.geometry.MultiPolygon"/>
     <classEntry path="org.openscales.geometry.Point"/>
+    <classEntry path="org.openscales.geometry.Polygon"/>
     <classEntry path="org.openscales.geometry.basetypes.Bounds"/>
     <classEntry path="org.openscales.geometry.basetypes.Location"/>
     <classEntry path="org.openscales.geometry.basetypes.Pixel"/>

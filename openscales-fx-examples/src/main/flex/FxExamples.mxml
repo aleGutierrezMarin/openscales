@@ -32,9 +32,10 @@ Main Flex example application
 			import layerExamples.osm.CycleMapExample;
 			import layerExamples.osm.MapnikExample;
 			
+			import locate.BingSearchExample;
 			import locate.OverviewExample;
 			import locate.OverviewRatioExample;
-			import locate.BingSearchExample;
+			import locate.YahooPlaceFinderSearchExample;
 			
 			import manageLayer.CapabilitiesExample;
 			import manageLayer.StyleExample;
@@ -74,6 +75,9 @@ Main Flex example application
 						break;
 					case "bingsearch":
 						state = new BingSearchExample();
+						break;
+					case "yahooplacefinder":
+						state = new YahooPlaceFinderSearchExample();
 						break;
 					case "bing":
 						state = new BingMapExample();
@@ -180,6 +184,7 @@ Main Flex example application
 				<s:Button id="overviewRatio" label="Overview ratio map" click="changeState(event)" width="100%"/>
 				<!--<s:Button id="openls" label="with OpenLS" click="changeState(event)" width="100%"/>-->
 				<s:Button id="bingsearch" label="with Bing location API" click="changeState(event)" width="100%"/>
+				<s:Button id="yahooplacefinder" label="with Yahoo PlaceFinder API" click="changeState(event)" width="100%"/>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Features handling" width="100%" height="100%">
 				<s:layout>
