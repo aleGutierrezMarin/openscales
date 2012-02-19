@@ -12,6 +12,11 @@ package org.openscales.core.search
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjProjection;
 
+	/**
+	 * This engine provide methods to interrogate Yahoo PlaceFinder API.
+	 * 
+	 * @see http://developer.yahoo.com/geo/placefinder/
+	*/
 	public class YahooPlaceFinder extends SearchEngine
 	{
 		private var _url:String = "http://where.yahooapis.com/geocode";
@@ -20,12 +25,21 @@ package org.openscales.core.search
 		private var _callBack:Function = null;
 		
 		
+		/**
+		 * @param appID Your Yahoo application ID touse with the PlaceFinder API
+		 */ 
 		public function YahooPlaceFinder(appID:String="")
 		{
 			super();
 			this._appID = appID;
 		}
 
+		/**
+		 * This method sends a query to the PlaceFinder API using the <code>location</code> parameter set to <code>queryString</code> value
+		 * 
+		 * @param callback A function to execute when research has returned
+		 * @param queryString The query to send
+		 */
 		override public function searchByQueryString(callback:Function, queryString:String):void{
 			queryString = queryString.replace(/^\s+|\s+$/g, "");//Removing trailing and beginning space
 			queryString = queryString.replace(/\s/g,'+');// Replacing every other space by + character
@@ -33,11 +47,22 @@ package org.openscales.core.search
 				this.performRequest(callback,_url+"?location="+queryString+"&flags=JX&appid="+this._appID);
 		}
 		
+		/**
+		 * This method sends a query to the PlaceFinder API using the <code>location</code> parameter set to <code>loc</code> lat/lon value
+		 * 
+		 * @param callback A function to execute when research has returned
+		 * @param loc The location to reverse
+		 */
 		override public function reverseGeocode(callback:Function, loc:Location):void{
 			loc = loc.reprojectTo(ProjProjection.getProjProjection("EPSG:4326"));
 			this.performRequest(callback,_url+"?location="+loc.lat.toString()+"+"+loc.lon.toString()+"&flags=JX&gflags=R&appid="+this._appID);
 		}
 		
+		/**
+		 * @private
+		 * 
+		 * Perfom an XML request
+		 */ 
 		private function performRequest(callback:Function, url:String):void {
 			this.clear();
 			this._callBack = callback;
@@ -136,21 +161,35 @@ package org.openscales.core.search
 			}
 		}
 		
+		/**
+		 * Yahoo application ID to use with the PlaceFinder API
+		 */ 
 		public function get appID():String
 		{
 			return _appID;
 		}
 
+		/**
+		 * @private
+		 */ 
 		public function set appID(value:String):void
 		{
 			_appID = value;
 		}
 
+		/**
+		 * The PlaceFinder API URL
+		 * 
+		 * @default http://where.yahooapis.com/geocode
+		 */ 
 		public function get url():String
 		{
 			return _url;
 		}
 
+		/**
+		 * @private
+		 */ 
 		public function set url(value:String):void
 		{
 			_url = value;
