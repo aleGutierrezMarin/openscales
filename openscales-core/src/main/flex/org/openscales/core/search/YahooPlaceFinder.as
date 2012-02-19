@@ -35,7 +35,7 @@ package org.openscales.core.search
 		
 		override public function reverseGeocode(callback:Function, loc:Location):void{
 			loc = loc.reprojectTo(ProjProjection.getProjProjection("EPSG:4326"));
-			//this.performRequest(callback,_url+"Locations/"+loc.lat+","+loc.lon+"?o=json&key="+this._key);
+			this.performRequest(callback,_url+"?location="+loc.lat.toString()+"+"+loc.lon.toString()+"&flags=JX&gflags=R&appid="+this._appID);
 		}
 		
 		private function performRequest(callback:Function, url:String):void {
