@@ -3,9 +3,15 @@
 If only one place is returned, the map is centerd to it automatically.
 Otherwise, double-click on one of the results to center the map. -->
 <s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-		   width="100%" height="100%" xmlns:components="components.*" creationComplete="init();">
+		   width="100%" height="100%" xmlns:components="components.*" creationComplete="init();"
+		  >
 	
-	<Map id="fxMap" width="100%" height="100%" resolution="0.021972656" center="4.833,45.767" projection="EPSG:900913">
+	<Map id="fxMap" width="100%" 
+		 height="100%" 
+		 resolution="0.021972656" 
+		 center="4.833,45.767" 
+		 projection="EPSG:900913"
+		 minResolution="1.279089053741418,EPSG:900913">
 		
 		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
 		
@@ -22,11 +28,20 @@ Otherwise, double-click on one of the results to center the map. -->
 
 	<fx:Script>
 		<![CDATA[
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.search.BingSearch;
 			import org.openscales.core.search.YahooPlaceFinder;
+			import org.openscales.core.utils.Trace;
+			
+			private var res:Resolution = new Resolution(0);
+			
 			private function init():void {
 				search.searchEngine = new YahooPlaceFinder();
+			
 			}
+
+			
+
 		]]>
 	</fx:Script>
 </s:VGroup>

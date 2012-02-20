@@ -8,7 +8,9 @@
 
 	<Map id="fxMap" width="100%" height="100%" 
 		 resolution="33693.744394707865,EPSG:900913" 
-		 center="1720902.1733555112,2219290.039070432,EPSG:900913" projection="EPSG:900913">
+		 center="1720902.1733555112,2219290.039070432,EPSG:900913"
+		 projection="EPSG:900913"
+		 minResolution="1.279089053741418,EPSG:900913">
 		
 		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
 		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" alpha="0.5" />
