@@ -362,8 +362,8 @@
 			private function getResolutionFromSliderValue(value:Number):Resolution
 			{
 				var intervalResolution:Number = value / this._step;
-				var value:Number =  this.map.minResolution.value*Math.pow(2, (this._intervals - intervalResolution));
-				return new Resolution(value,this.map.projection);
+				var res:Number =  this.map.minResolution.value*Math.pow(2, (this._intervals - intervalResolution));
+				return new Resolution(res,this.map.projection);
 			}
 			
 			private function onZoomSliderUpdateComplete(e:Event):void
