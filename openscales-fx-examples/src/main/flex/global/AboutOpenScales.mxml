@@ -7,7 +7,7 @@
 		<![CDATA[
 			private function init():void {
 				var text:String;
-				text = "\n<b>OpenScales.org 2.1.1</b>";
+				text = "\n<b>OpenScales.org 2.1.2</b>";
 				text += "\n\n\n";
 				text += "OpenScales is an open source (LGPL) mapping framework written in ActionScript 3 and Flex that enables developers to build Rich Internet Mapping Applications.";
 				text += "\n\n";

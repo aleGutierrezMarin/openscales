@@ -310,7 +310,7 @@ package org.openscales.core.layer.ogc {
 			
 			// Then request is sent according to the layer parameters
 			this._handler = Async.asyncHandler(this,assertChangeLayerTileMatrixSetIfNotCompatibleWithMapProjection,
-				2000,null,noRequestSend);
+				3000,null,noRequestSend);
 			
 			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
 			

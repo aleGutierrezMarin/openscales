@@ -3,6 +3,11 @@
    "locale.name": "French",
    "locale.localizedName": "Français",
    
+   "ok":"OK",
+   "cancel":"Annuler",
+   "yes":"Oui",
+   "no":"Non",
+   
    "component.iconify": "Iconifier",
    "component.toggle": "Agrandir",
    
@@ -28,6 +33,7 @@
    "drawing.version": "Version",
    "drawing.browse": "Parcourir",
    "drawing.addvectorlayer": "Ajouter une couche de croquis",
+   "drawing.addvectorlayer.input.errormessage":"Le nom ne doit pas être vide",
    "drawing.nameerror": "Modifier le nom (non vide et non identique à un autre nom de couche)",
    
    "layercontrol.movefront": "Déplacer vers l'avant plan",

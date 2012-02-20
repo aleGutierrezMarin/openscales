@@ -31,8 +31,7 @@ package org.openscales.core.feature
 														 xOffset:Number=NaN,
 														 yOffset:Number=NaN):CustomMarker {
 			var ret:CustomMarker = new CustomMarker();
-			ret.geometry = new Point(point.x,point.y);
-			ret.geometry.projection = point.projection;
+			ret.geometry = new Point(point.x,point.y,point.projection);
 			ret.data = data;
 			ret.xOffset = xOffset;
 			ret.yOffset = yOffset;
@@ -46,8 +45,7 @@ package org.openscales.core.feature
 													xOffset:Number=0,
 													yOffset:Number=0):CustomMarker {
 			var ret:CustomMarker = new CustomMarker();
-			ret.geometry = new Point(point.x,point.y);
-			ret.geometry.projection = point.projection;
+			ret.geometry = new Point(point.x,point.y, point.projection);
 			ret.data = data;
 			ret.xOffset = xOffset;
 			ret.yOffset = yOffset;

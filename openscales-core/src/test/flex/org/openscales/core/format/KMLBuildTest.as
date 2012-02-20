@@ -25,9 +25,6 @@ package org.openscales.core.format
 		private var format:KMLFormat;
 		private var url:String;
 		
-		[Embed(source="/assets/kml/GlobalSample.xml",mimeType="application/octet-stream")]
-		private const KMLGLOBAL:Class;
-		
 		[Embed(source="/assets/kml/LinesSample.xml",mimeType="application/octet-stream")]
 		private const KMLLINES:Class;
 		
@@ -146,32 +143,6 @@ package org.openscales.core.format
 			var colorNode:XML = iconStyle..*::color[0];
 			Assert.assertEquals("The color of this point should be 3A21A696",
 				"3A21A696", colorNode.toString().toUpperCase());
-			
-		}
-		
-		[Test]
-		public function testGlobalBuild():void
-		{	
-			//test only the number and type of features in the file
-			//9 polygon features, 2 point features, 2 CustomMarkers(without style) and 6 line Features, ergo 19 features and 17 styles
-			//the custom markers are not supported for the build,they are treated as points
-			
-			var file:XML = new XML(new KMLGLOBAL());
-			var features:Vector.<Feature> = this.format.read(file) as Vector.<Feature>;
-			var buildedFile:XML = this.format.write(features) as XML;
-			
-			var styleNodes:XMLList = buildedFile..*::Style;
-			var placemarks:XMLList = buildedFile..*::Placemark;
-			
-			var pointNodes:XMLList = buildedFile..*::Point;
-			var polyNodes:XMLList = buildedFile..*::Polygon;
-			var lineNodes:XMLList = buildedFile..*::LineString;
-			
-			Assert.assertEquals("There should be 17 style nodes in this file",styleNodes.length(),17);
-			Assert.assertEquals("There should be 19 placemark nodes in this file",placemarks.length(),19);
-			Assert.assertEquals("There should be 2 point nodes in this file",pointNodes.length(),4);
-			Assert.assertEquals("There should be 9 polygon nodes in this file",polyNodes.length(),9);
-			Assert.assertEquals("There should be 6 line nodes in this file",lineNodes.length(),6);
 			
 		}
 		

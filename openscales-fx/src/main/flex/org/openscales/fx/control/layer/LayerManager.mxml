@@ -379,7 +379,8 @@
 						height="100%"
 						x="0"
 						y="0"
-						borderVisible="false">
+						borderVisible="false"
+						useVirtualLayout="false">
 					<s:layout>
 						<s:VerticalLayout horizontalAlign="justify"
 										  variableRowHeight="true"

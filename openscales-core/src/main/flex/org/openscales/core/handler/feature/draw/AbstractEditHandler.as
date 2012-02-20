@@ -24,9 +24,9 @@ package org.openscales.core.handler.feature.draw
 	
 	
 	/**
-	* Abstract edit handler never instanciate this class
+	 * Abstract edit handler never instanciate this class
 	 * This class is the based class for the edition handlers
-	**/
+	 */
 	public class AbstractEditHandler extends Handler implements IEditFeature
 	{
 		protected var _virtualStyle:Style = Style.getDefaultCircleStyle();
