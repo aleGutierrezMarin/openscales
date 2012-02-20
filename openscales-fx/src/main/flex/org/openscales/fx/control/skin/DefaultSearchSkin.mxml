@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" width="314" height="200" contentBackgroundColor="#FFFFFF">
+		xmlns:mx="library://ns.adobe.com/flex/mx" width="314" height="200" contentBackgroundColor="#FFFFFF" creationComplete="init()">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("org.openscales.fx.control.search.Search")]
 	</fx:Metadata>
 	
-	<s:Panel x="0" y="0" width="100%" height="100%" title="Search" mouseDown="handleDown(event);" mouseUp="handleUp(event);">
+	<s:Panel id="panel" x="0" y="0" width="100%" height="100%" title="Search">
 		<s:TextInput id="searchText" x="10" y="10" width="294"/>
 		<mx:DataGrid x="10" y="40" height="113" width="294" dataProvider="{searchResult}" itemClick="onItemClick(event);">
 			<mx:columns>
@@ -36,6 +36,16 @@
 			public var searchResult:ArrayCollection = new ArrayCollection();
 			
 			private var _handler:ClickHandler = new ClickHandler(null,false);
+			
+			/**
+			 * @private
+			 * 
+			 * init component
+			 */
+			private function init():void {
+				panel.titleDisplay.addEventListener(MouseEvent.MOUSE_DOWN,this.handleDown);
+				panel.titleDisplay.addEventListener(MouseEvent.MOUSE_UP,this.handleUp);
+			}
 			
 			/**
 			 * @private
@@ -79,6 +89,7 @@
 			 * @param e the mouse event
 			 */
 			private function handleDown(e:MouseEvent):void{
+				e.stopPropagation();
 				this.startDrag();
 			}
 			/**
@@ -89,6 +100,7 @@
 			 * @param e the mouse event
 			 */
 			private function handleUp(e:MouseEvent):void{
+				e.stopPropagation();
 				this.stopDrag();
 			}
 		]]>

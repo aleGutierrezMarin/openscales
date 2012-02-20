@@ -15,37 +15,55 @@ package org.openscales.core.basetypes.linkedlist
 		public function AbstractLinkedListNode() {
 			// Nothing to do
 		}
-
+		/**
+		 * @inheritDoc
+		 */
 		public function get previousNode():ILinkedListNode {
 			return this._previous;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set previousNode(value:ILinkedListNode):void {
 			this._previous = value;
 			// TODO: ensure that value.nextNode == this
 		}
-		
+		/**
+		 * @inheritDoc
+		 */
 		public function get nextNode():ILinkedListNode {
 			return this._next;
 		}
-		
+		/**
+		 * @private
+		 */
 		public function set nextNode(value:ILinkedListNode):void {
 			this._next = value;
 			// TODO: ensure that value.previousNode == this
 		}
-		
+		/**
+		 * @inheritDoc
+		 */
+		public function get uid():String {
+			return this._uid;
+		}
+		/**
+		 * @private
+		 */
 		public function set uid(value:String):void {
 			this._uid = value;
 		}
 		
-		public function get uid():String {
-			return this._uid;
-		}
-		
+		/**
+		 * @inheritDoc
+		 */
 		public function equals(o:Object):Boolean {
 			return false;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		public function clear():void {
 			this._next = null;
 			this._previous = null;

@@ -199,9 +199,6 @@
     <classEntry path="org.openscales.core.request.IRequest"/>
     <classEntry path="org.openscales.core.request.OpenLSRequest"/>
     <classEntry path="org.openscales.core.request.XMLRequest"/>
-    <classEntry path="org.openscales.core.routing.AbstractRouting"/>
-    <classEntry path="org.openscales.core.routing.IRouting"/>
-    <classEntry path="org.openscales.core.routing.SampleRouting"/>
     <classEntry path="org.openscales.core.security.AbstractSecurity"/>
     <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
     <classEntry path="org.openscales.core.security.ISecurity"/>
@@ -285,6 +282,11 @@
     <classEntry path="org.openscales.core.layer.ogc.GeoRSSTest"/>
     <classEntry path="org.openscales.map.MapExtentTest"/>
     <classEntry path="org.openscales.map.LayerManagementTest"/>
+    <classEntry path="org.openscales.core.basetypes.linkedlist.LinkedListFeatureNode"/>
+    <classEntry path="org.openscales.core.routing.RoutingEngine"/>
+    <classEntry path="org.openscales.core.routing.result.RoutingResult"/>
+    <classEntry path="org.openscales.core.routing.result.ItineraryItem"/>
+    <classEntry path="org.openscales.core.routing.BingRouteEngine"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

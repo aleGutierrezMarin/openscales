@@ -12,7 +12,7 @@ package org.openscales.core.search
 	import org.openscales.proj4as.ProjProjection;
 
 	/**
-	 * Bing location api suuport
+	 * Bing locations V1 api support
 	 * based on http://msdn.microsoft.com/en-us/library/ff701715.aspx
 	 */
 	public class BingSearch extends SearchEngine

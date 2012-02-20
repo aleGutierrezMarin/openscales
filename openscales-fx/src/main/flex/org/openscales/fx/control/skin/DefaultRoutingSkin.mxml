@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		width="314" height="186">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.fx.control.routing.Routing")]
+	</fx:Metadata>
+	
+	<s:Panel id="panel" x="0" y="0" width="100%" height="100%" title="Routing">
+		<mx:DataGrid x="10" y="6" height="113" width="294" dataProvider="{routingResult}" itemClick="onItemClick(event);">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Distance" dataField="distance"/>
+				<mx:DataGridColumn headerText="Instruction" dataField="instruction"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:ToggleButton x="233" y="-26" label="activate" id="activeToggleBtn" click="activeToggle();"/>
+		<s:Button x="234" y="127" label="clear" id="clear" click="this.hostComponent.clear();"/>
+	</s:Panel>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
+			
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.handler.mouse.ClickHandler;
+			import org.openscales.core.style.Style;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.geometry.Point;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			/**
+			 * Arraycollection containing routing indications
+			 */
+			[Bindable]
+			public var routingResult:ArrayCollection = new ArrayCollection();
+			
+			private var _handler:ClickHandler = new ClickHandler(null,false);
+			
+			/**
+			 * @private
+			 * 
+			 * init component
+			 */
+			private function init():void {
+				panel.titleDisplay.addEventListener(MouseEvent.MOUSE_DOWN,this.handleDown);
+				panel.titleDisplay.addEventListener(MouseEvent.MOUSE_UP,this.handleUp);
+			}
+			/**
+			 * @private
+			 * 
+			 * Change activation status of reverse geocoding tool
+			 */
+			private function activeToggle():void {
+				_handler.map = this.hostComponent.map;
+				_handler.active = activeToggleBtn.selected;
+				if(_handler.click==null)
+					_handler.click = this.addPoint;
+			}
+			/**
+			 * @private
+			 * 
+			 * Add a destination
+			 * 
+			 * @param px the map pixel to geocode
+			 */
+			private function addPoint(px:Pixel):void {
+				var loc:Location = this.hostComponent.map.getLocationFromMapPx(px).reprojectTo("EPSG:4326");
+				this.hostComponent.addFeature(new PointFeature(new org.openscales.geometry.Point(loc.x,loc.y,loc.projection),null,Style.getDefaultCircleStyle()));
+			}
+			/**
+			 * @private
+			 * method called when user click on a result
+			 * 
+			 * @param e the ListEvent
+			 */
+			private function onItemClick( e:ListEvent ):void {
+				//if((e.itemRenderer.data as Address).bbox)
+					//this.hostComponent.map.zoomToExtent((e.itemRenderer.data as Address).bbox);
+			}
+			/**
+			 * @private
+			 * 
+			 * Enable draging
+			 * 
+			 * @param e the mouse event
+			 */
+			private function handleDown(e:MouseEvent):void{
+				Trace.useFireBugConsole = true;
+				Trace.debug("down");
+				e.stopPropagation();
+				this.startDrag();
+			}
+			/**
+			 * @private
+			 * 
+			 * Disable draging
+			 * 
+			 * @param e the mouse event
+			 */
+			private function handleUp(e:MouseEvent):void{
+				e.stopPropagation();
+				this.stopDrag();
+			}
+		]]>
+	</fx:Script>
+
+</s:Skin>
