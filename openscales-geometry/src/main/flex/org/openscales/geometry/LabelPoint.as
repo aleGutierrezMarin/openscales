@@ -25,10 +25,11 @@ package org.openscales.geometry
 		 * @param text
 		 * @param x
 		 * @param y
+		 * @param projection The projection to use for this LabelPoint, default is EPSG:4326
 		 */
-		public function LabelPoint(text:String=null, x:Number=NaN, y:Number=NaN)
+		public function LabelPoint(text:String=null, x:Number=NaN, y:Number=NaN,projection:ProjProjection = null)
 		{
-			super();
+			super(projection);
 			this._x = x;
 			this._y = y;
 			this._label.selectable = true;
@@ -47,6 +48,7 @@ package org.openscales.geometry
 			var cloneLabelPoint:LabelPoint = new LabelPoint(this._label.text, this._x, this._y);
 			cloneLabelPoint.projection = this.projection;
 			cloneLabelPoint.label = this.label;
+			cloneLabelPoint._bounds = this._bounds;
 			return cloneLabelPoint;
 		}
 		

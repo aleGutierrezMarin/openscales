@@ -23,13 +23,6 @@
             <range>700</range>
          </LookAt>
          <Style>
-            <IconStyle>
-               <color>00ffffff</color>
-               <scale>0.4</scale>
-               <Icon>
-                  <href>http://icons.opengeo.org/markers/icon-poly.1.png</href>
-               </Icon>
-            </IconStyle>
             <LabelStyle>
                <color>00ffffff</color>
             </LabelStyle>
@@ -76,13 +69,6 @@
             <range>700</range>
          </LookAt>
          <Style>
-            <IconStyle>
-               <color>00ffffff</color>
-               <scale>0.4</scale>
-               <Icon>
-                  <href>http://icons.opengeo.org/markers/icon-poly.1.png</href>
-               </Icon>
-            </IconStyle>
             <LabelStyle>
                <color>00ffffff</color>
             </LabelStyle>
@@ -129,13 +115,6 @@
             <range>700</range>
          </LookAt>
          <Style>
-            <IconStyle>
-               <color>00ffffff</color>
-               <scale>0.4</scale>
-               <Icon>
-                  <href>http://icons.opengeo.org/markers/icon-poly.1.png</href>
-               </Icon>
-            </IconStyle>
             <LabelStyle>
                <color>00ffffff</color>
             </LabelStyle>
@@ -182,13 +161,6 @@
             <range>700</range>
          </LookAt>
          <Style>
-            <IconStyle>
-               <color>00ffffff</color>
-               <scale>0.4</scale>
-               <Icon>
-                  <href>http://icons.opengeo.org/markers/icon-poly.1.png</href>
-               </Icon>
-            </IconStyle>
             <LabelStyle>
                <color>00ffffff</color>
             </LabelStyle>
@@ -235,13 +207,6 @@
             <range>700</range>
          </LookAt>
          <Style>
-            <IconStyle>
-               <color>00ffffff</color>
-               <scale>0.4</scale>
-               <Icon>
-                  <href>http://icons.opengeo.org/markers/icon-poly.1.png</href>
-               </Icon>
-            </IconStyle>
             <LabelStyle>
                <color>00ffffff</color>
             </LabelStyle>
@@ -288,13 +253,6 @@
             <range>700</range>
          </LookAt>
          <Style>
-            <IconStyle>
-               <color>00ffffff</color>
-               <scale>0.4</scale>
-               <Icon>
-                  <href>http://icons.opengeo.org/markers/icon-poly.1.png</href>
-               </Icon>
-            </IconStyle>
             <LabelStyle>
                <color>00ffffff</color>
             </LabelStyle>
@@ -341,13 +299,6 @@
             <range>700</range>
          </LookAt>
          <Style>
-            <IconStyle>
-               <color>00ffffff</color>
-               <scale>0.4</scale>
-               <Icon>
-                  <href>http://icons.opengeo.org/markers/icon-poly.1.png</href>
-               </Icon>
-            </IconStyle>
             <LabelStyle>
                <color>00ffffff</color>
             </LabelStyle>

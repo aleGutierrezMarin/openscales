@@ -30,6 +30,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiLineString;
@@ -38,9 +39,6 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.LabelPoint;
-	import org.openscales.core.feature.LabelFeature;
-	import org.openscales.geometry.LabelPoint;
 	
 	/**
 	 * Read KML 2.0 and 2.2 file format.
@@ -123,7 +121,12 @@ package org.openscales.core.format
 			var _url:String = e.target.loader.name;
 			var _imgs:Array = _images[_url];
 			_images[_url] = null;
-			var _bm:Bitmap = Bitmap(_externalImages[_url].loader.content); 
+			var _bm:Bitmap = null;
+			try {
+				_bm = Bitmap(_externalImages[_url].loader.content);
+			} catch (e:Error) {
+				_bm = null;
+			}
 			if (_bm != null)
 			{
 				var _bmd:BitmapData = _bm.bitmapData;
