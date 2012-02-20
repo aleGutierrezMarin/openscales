@@ -14,7 +14,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Label;
 			import mx.managers.PopUpManager;
 			
 			import org.openscales.core.Map;
