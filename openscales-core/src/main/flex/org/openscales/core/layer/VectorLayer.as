@@ -642,6 +642,7 @@ package org.openscales.core.layer
 				{
 					
 					extFeatures[i]=this.features[i].clone();
+					extFeatures[i].attributes = this.features[i].attributes;
 					//extFeatures[i].geometry.projection = this.projection;
 					if (exProj != this.features[i].projection)
 						extFeatures[i].geometry.transform(exProj);
