@@ -18,6 +18,8 @@ package org.openscales.core.layer
 	import org.openscales.core.style.Style;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.proj4as.ProjProjection;
 	
 	
@@ -75,6 +77,9 @@ package org.openscales.core.layer
 		private var _initOutDrawingToolbar:Boolean = false;
 		private var _editable:Boolean = false;
 		private var _edited:Boolean = false;
+		private var _previousCenter:Location = null;
+		
+		private var _previousResolution:Resolution = null;
 
 		public function VectorLayer(identifier:String)
 		{
@@ -109,12 +114,81 @@ package org.openscales.core.layer
 		}
 		
 		override public function redraw(fullRedraw:Boolean = false):void {
-			super.redraw(fullRedraw);
 			
-			this.clear();
-			if(this.available && this.visible){
-				this.draw();
+			if (this.map == null)
+				return;
+			
+			if(this.aggregate){
+				this.visible = this.aggregate.shouldIBeVisible(this,this.map.resolution);
 			}
+			
+			
+			if (!this.available || !this.visible)
+			{
+				this.clear();
+				this._initialized = false;
+				return;
+			}
+			
+			var centerChangedCache:Boolean = this._centerChanged;
+			var resolutionChangedCache:Boolean = this._resolutionChanged;
+			var projectionChangedCache:Boolean = this._projectionChanged;
+			var mapReloadCache:Boolean = this._mapReload;
+			this._centerChanged = false;
+			this._projectionChanged = false;
+			this._resolutionChanged = false;
+			this._mapReload = false;
+			if (fullRedraw || mapReloadCache)
+			{
+				this.clear();
+			}
+			if (!this._initialized || fullRedraw || mapReloadCache)
+			{
+				this.x = 0;
+				this.y = 0;
+				this.scaleX = 1;
+				this.scaleY = 1;
+				this.draw();
+				this._previousResolution = this.map.resolution;
+				this._previousCenter = this.map.center.clone();
+				this._initialized = true;
+				return;
+			}
+			
+			if (resolutionChangedCache)
+			{
+				this.cacheAsBitmap = false;
+				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
+				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
+				this._previousResolution = this.map.resolution;
+				resolutionChangedCache = false;
+				this.cacheAsBitmap = true;
+			}
+			
+			if (centerChangedCache)
+			{
+				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
+				var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
+				var deltaX:Number = deltaLon/this.map.resolution.value;
+				var deltaY:Number = deltaLat/this.map.resolution.value;
+				
+				this.x = this.x - deltaX;
+				this.y = this.y + deltaY;
+				this._previousCenter = this.map.center.clone();
+				centerChangedCache = false;
+			}
+		}
+		
+		private function scaleLayer(scale:Number, offSet:Pixel = null):void
+		{
+			if (offSet == null)
+			{
+				offSet = new Pixel(0, 0);
+			}
+			var temporaryScale:Number = this.scaleX * scale;
+			this.scaleX = this.scaleY = temporaryScale;
+			this.x -= (offSet.x - this.x) * (scale - 1);
+			this.y -= (offSet.y - this.y) * (scale - 1);
 		}
 		
 		// Clear layer and children graphics
