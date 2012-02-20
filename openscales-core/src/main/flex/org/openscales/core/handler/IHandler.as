@@ -11,14 +11,18 @@ package org.openscales.core.handler {
 		 * The map that is controlled by this handler
 		 */
 		function get map():Map;
-
+		/**
+		 * @private
+		 */
 		function set map(value:Map):void;
 
 		/**
 		 * Usually used to register or unregister event listeners
 		 */
 		function get active():Boolean;
-
+		/**
+		 * @private
+		 */
 		function set active(value:Boolean):void;
 	}
 }

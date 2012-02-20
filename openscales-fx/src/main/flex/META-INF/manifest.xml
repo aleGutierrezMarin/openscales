@@ -75,6 +75,7 @@
 	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
 	<component id="Search" class="org.openscales.fx.control.search.Search" />
+	<component id="Routing" class="org.openscales.fx.control.routing.Routing" />
 	<component id="BingSearch" class="org.openscales.fx.control.search.engine.FxBingSearch" />
 	<component id="OpenLSSearch" class="org.openscales.fx.control.search.OpenLSSearch" />
 	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
@@ -82,9 +83,6 @@
 	<component id="NumericScale" class="org.openscales.fx.control.NumericScale" />
 	<component id="Spinner" class="org.openscales.fx.control.FxSpinner" />
 	<component id="LanguageSwitcher" class="org.openscales.fx.control.LanguageSwitcher" />
-	
-	<component id="SampleRouting" class="org.openscales.fx.routing.FxSampleRouting" />
-	<component id="SampleRoutingControl" class="org.openscales.fx.control.routing.SampleRoutingControl"/>
 	
 	<component id="ControlPanel" class="org.openscales.fx.ControlPanel"/>
 	
