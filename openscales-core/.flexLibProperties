@@ -286,9 +286,12 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.request.csw.GetRecords"/>
-    <classEntry path="org.openscales.core.request.csw.getrecords.GetRecords202"/>
-    <classEntry path="org.openscales.core.request.csw.GetRecordsById"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecordsRequest"/>
+    <classEntry path="org.openscales.core.request.csw.getrecords.GetRecordsRequest202"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecordsByIdRequest"/>
+    <classEntry path="org.openscales.core.format.csw.CSWGetRecordsFormat"/>
+    <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordsParser202"/>
+    <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordParser"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

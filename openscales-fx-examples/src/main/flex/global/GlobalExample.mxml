@@ -40,10 +40,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.core.utils.Trace;
+			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.format.csw.CSWGetRecordsFormat;
 			import org.openscales.core.popup.Anchored;
+			import org.openscales.core.request.csw.GetRecordsRequest;
 			import org.openscales.core.style.Style;
+			import org.openscales.core.utils.Trace;
 			import org.openscales.fx.popup.FxPopup;
 			import org.openscales.fx.popup.renderer.FxPopupRenderer;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -54,6 +57,25 @@
 			
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				
+				var req:GetRecordsRequest = new GetRecordsRequest("http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/geoportail/csw",onOk, onNoOk);
+				req.startPosition = 1;
+				req.maxRecords = 10;
+				req.send();
+				
+			}
+			
+			public function onOk(evt:Event):void
+			{
+				var plop:int = 1;
+				var format:CSWGetRecordsFormat = new CSWGetRecordsFormat();
+				var loader:URLLoader = evt.target as URLLoader;
+				var data:HashMap = (format.read(loader.data) as HashMap);
+			}
+			
+			public function onNoOk(value:Event):void
+			{
+				var plop2:int = 1;
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {

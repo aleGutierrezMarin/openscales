@@ -4,7 +4,7 @@ package org.openscales.core.request.csw
 	
 	import org.openscales.core.format.FilterEncodingFormat;
 	import org.openscales.core.request.XMLRequest;
-	import org.openscales.core.request.csw.getrecords.GetRecords202;
+	import org.openscales.core.request.csw.getrecords.GetRecordsRequest202;
 	import org.openscales.core.utils.Trace;
 	
 	
@@ -13,7 +13,7 @@ package org.openscales.core.request.csw
 	 * Request class used to generate a CSW 2.0.2 GetRecords request
 	 * This request will be sent with POST method because of filter encoding
 	 */
-	public class GetRecords extends XMLRequest
+	public class GetRecordsRequest extends XMLRequest
 	{
 		
 		/**
@@ -50,12 +50,14 @@ package org.openscales.core.request.csw
 		/**
 		 * Element set of the request
 		 */
-		private var _elementSet:String;
+		private var _elementSet:String = "brief";
 		
 		
-		public function GetRecords(url:String, onComplete:Function, onFailure:Function=null, method:String=null)
+		public function GetRecordsRequest(url:String, onComplete:Function, onFailure:Function=null, method:String=null)
 		{
 			super(url, onComplete, onFailure, method);
+			this._oncomplete = onComplete;
+			this._onFailure = onFailure;
 		}
 		
 		/**
@@ -65,7 +67,7 @@ package org.openscales.core.request.csw
 		{
 			if (_version == "2.0.2")
 			{
-				var request:GetRecords202 = new GetRecords202(this.url, this._oncomplete, this._onFailure, URLRequestMethod.POST);
+				var request:GetRecordsRequest202 = new GetRecordsRequest202(this.url, this._oncomplete, this._onFailure, URLRequestMethod.POST);
 				request.security = this.security;
 				request.proxy = this.proxy;
 				request.buildQuery(this._filter, this._startPosition, this._maxRecords, _elementSet);
@@ -76,10 +78,32 @@ package org.openscales.core.request.csw
 			}
 		}
 		
+		
 		// getter setter
 		
 		/**
+		 * The element set name to request
+		 * Can be : brief, summary, full
+		 * @default "brief"
+		 */
+		public function get elementSetName():String
+		{
+			return this._elementSet;	
+		}
+		
+		/**
+		 * @private
+		 */ 
+		public function set elementSetName(value:String):void
+		{
+			this._elementSet = value;
+		}
+		/**
+		 * The max number records in the request
+		 * Use this parameter combined with startPosition parameter to choose wich records to return
+		 * default to 10.
 		 * 
+		 * example : startPosition = 10 and maxRecord = 5 will return record number 10 to record number 14
 		 */
 		public function get maxRecords():Number
 		{
@@ -97,7 +121,7 @@ package org.openscales.core.request.csw
 		/**
 		 * The start position of the first record return in the getRecord request
 		 * Use this parameter combined with maxRecord parameter to choose wich records to return
-		 * default to 0.
+		 * default to 1.
 		 * 
 		 * example : startPosition = 10 and maxRecord = 5 will return record number 10 to record number 14
 		 */
