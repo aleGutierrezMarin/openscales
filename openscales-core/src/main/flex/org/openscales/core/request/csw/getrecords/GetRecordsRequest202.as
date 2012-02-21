@@ -2,7 +2,7 @@ package org.openscales.core.request.csw.getrecords
 {
 	import org.openscales.core.request.XMLRequest;
 	
-	public class GetRecords202 extends XMLRequest
+	public class GetRecordsRequest202 extends XMLRequest
 	{
 		
 		/**
@@ -35,7 +35,7 @@ package org.openscales.core.request.csw.getrecords
 		 */
 		private var _filterEncodingVersion:String = "1.1.0";
 		
-		public function GetRecords202(url:String, onComplete:Function, onFailure:Function=null, method:String=null)
+		public function GetRecordsRequest202(url:String, onComplete:Function, onFailure:Function=null, method:String=null)
 		{
 			super(url, onComplete, onFailure, method);
 		}
@@ -44,9 +44,25 @@ package org.openscales.core.request.csw.getrecords
 		/**
 		 * Method that will build the post content according to the configuration
 		 */
-		public function buildQuery(filter:XML = null, startPosition:int = 0, maxRecords:int = 10, elementSet:String = "brief"):void
+		public function buildQuery(filter:XML = null, startPosition:Number = 1, maxRecords:Number = 10, elementSet:String = "brief"):void
 		{
-			var post:XML = new XML("<GetRecords></GetRecords");
+			var post:XML = new XML("<GetRecords></GetRecords>");
+			
+			var ogcns:Namespace = new Namespace("ogc","http://www.opengis.net/ogc");
+			var cswns:Namespace = new Namespace("csw","http://www.opengis.net/cat/csw/2.0.2");
+			var owsns:Namespace = new Namespace("ows","http://www.opengis");
+			var gmlns:Namespace = new Namespace("gml", "http://www.opengis.net/gml");
+			var dcns:Namespace = new Namespace("dc", "http://purl.org/dc/elements/1.1/");
+			var dctns:Namespace = new Namespace("dct", "http://purl.org/dc/terms/");
+			var xsins:Namespace = new Namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+			post.addNamespace(ogcns);
+			post.addNamespace(cswns);
+			post.addNamespace(owsns);
+			post.addNamespace(gmlns);
+			post.addNamespace(dcns);
+			post.addNamespace(dctns);
+			post.addNamespace(xsins);
+			
 			post.@service = _service;
 			post.@version = _version;
 			post.@maxRecords = maxRecords;

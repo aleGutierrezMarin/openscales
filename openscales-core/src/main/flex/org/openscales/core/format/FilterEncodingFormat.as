@@ -1,9 +1,9 @@
 package org.openscales.core.format
 {
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.layer.ogc.WFS;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	public class FilterEncodingFormat extends Format
 	{
@@ -28,10 +28,17 @@ package org.openscales.core.format
 			Trace.warn("Write not implemented.");
 			return null;
 		}
+		
+		public function getRootFilter():XML
+		{
+			var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
+				"<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Filter>");
+			return filterNode;
+		}
 	
-		 public function addComparisonFilter(PropertyType:String,PropertyName:String,LiteralValue:String):XML{
-			 var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
-				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Filter>");
+		 public function addComparisonFilter(parentNode:XML, PropertyType:String,PropertyName:String,LiteralValue:String):XML{
+			/* var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
+				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Filter>");*/
 			 var and:XML = new XML(
 				 "<" + this._ogcprefix + ":And xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":And>");
 			 switch (PropertyType) {
@@ -48,13 +55,13 @@ package org.openscales.core.format
 					 and.appendChild(this.greaterThan(PropertyName,LiteralValue));
 					 break;
 					 }
-			 filterNode.appendChild(and);
-			 return filterNode;
+			 parentNode.appendChild(and);
+			 return parentNode;
 		 }
 		 
 	     public function filterWithBbox(filter:XML,geom:String,bboxNodeGml:XML):XML{
 			var filterWith:XML = filter.copy();
-			filterWith.children()[0].appendChild(this.bbox(geom,bboxNodeGml));
+			filterWith.children()[0] = this.bbox(filterWith.children()[0], geom, bboxNodeGml);
 			 return  filterWith;
 		 }
 		 /**
@@ -87,18 +94,18 @@ package org.openscales.core.format
 			 return equalNode;
 		 }
 		 
-		 public function bbox(PropertyName:String,gml:XML):XML {
-			 var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
+		 public function bbox(parentNode:XML, PropertyName:String,gml:XML):XML {
+			/* var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
 				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">"+
-				 "</" + this._ogcprefix + ":Filter>");
+				 "</" + this._ogcprefix + ":Filter>");*/
 			 
 			 var equalNode:XML = new XML("<" + this._ogcprefix + ":BBOX xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
 				 "</" + this._ogcprefix + ":BBOX>");
 			 
 			 equalNode.appendChild(this.propertyName(PropertyName));
 			 equalNode.appendChild(gml);
-			 filterNode.appendChild(equalNode);
-			 return filterNode;
+			 parentNode.appendChild(equalNode);
+			 return parentNode;
 		 }
 		 
 		 /**
