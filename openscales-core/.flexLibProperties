@@ -286,6 +286,9 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecords"/>
+    <classEntry path="org.openscales.core.request.csw.getrecords.GetRecords202"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecordsById"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
