@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- This popup is used to display and edit a <code>LabelPoint</code>'s <code>label</code> property. 
+<p>
+The label is holds by the <code>input</code> element.
+</p>
+-->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="onCreationComplete();"
+			   close="discardPopup();"
+			   dropShadowVisible="false">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.components.Button;
+			import spark.components.Label;
+			import spark.components.TextInput;
+			
+			private static var DEFAULT_W:Number = 300;
+			private static var DEFAULT_H:Number = 100;
+			
+			private var _map:Map;
+			
+			/**
+			 * @private
+			 */
+			protected function localize(e:I18NEvent=null):void {
+				this.title = Catalog.getLocalizationForKey("editlabel.title");
+				this.okButton.label = Catalog.getLocalizationForKey("editfeatureattributes.valid");
+				this.cancelButton.label = Catalog.getLocalizationForKey("editfeatureattributes.discard");
+				this.inputLabel.text=Catalog.getLocalizationForKey('editlabel.label');
+			}
+			
+			/**
+			 * @private
+			 */
+			protected function onCreationComplete():void {
+				this.x = (parent.width-this.width)/2;
+				this.y = (parent.height-this.height)/2;
+				
+				if(_map){
+					_map.removeEventListener(I18NEvent.LOCALE_CHANGED,localize);
+					_map.addEventListener(I18NEvent.LOCALE_CHANGED,localize);
+				}
+				localize();
+				input.setFocus();
+			}
+			
+			
+			public function discardPopup():void {
+				if(_map) _map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+				PopUpManager.removePopUp(this);
+			}
+
+			/**
+			 * The map where this popup is displayed
+			 */ 
+			public function get map():Map
+			{
+				return _map;
+			}
+
+			/**
+			 * @private
+			 */ 
+			public function set map(value:Map):void
+			{
+				if(!value && _map)_map.removeEventListener(I18NEvent.LOCALE_CHANGED,localize);
+				_map = value;
+				if(_map)_map.addEventListener(I18NEvent.LOCALE_CHANGED,localize);
+			}
+
+			/**
+			 * Call back method for <code>MouseEvent.CLICK</code> on <code>okButton</code>
+			 */ 
+			protected function onOkButtonClick(event:MouseEvent):void
+			{
+				this.discardPopup();
+			}
+
+		]]>
+	</fx:Script>
+	
+	<!--- Main container of the component -->
+	<s:SkinnableContainer id="editLabelMainContainer" >
+		<s:layout>
+			<s:VerticalLayout paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" />
+		</s:layout>
+		<!--- Container that holds <code>inputLabel</code> and <code>input</code> elements -->
+		<s:SkinnableContainer id="editLabelInputContainer">
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<!--- Label displayed beside <code>input</code> -->
+			<s:Label id="inputLabel" width="100" />
+			<!--- Text input that holds user data, you access access through the element's <code>text</code> -->
+			<s:TextInput id="input"/>
+		</s:SkinnableContainer>
+		<!--- Container that holds <code>okButton</code> and <code>cancelButton</code> elements -->
+		<s:SkinnableContainer id="editLabelButtonsContainer">
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<!--- Button used to validate, you can listen to <code>MouseEvent.CLICK</code> on that button -->
+			<s:Button id="okButton" click="onOkButtonClick(event)"/>
+			<!--- Button used to close the popup --> 
+			<s:Button id="cancelButton" click="{this.discardPopup()}" />
+		</s:SkinnableContainer>
+	</s:SkinnableContainer>
+	
+</s:TitleWindow>
