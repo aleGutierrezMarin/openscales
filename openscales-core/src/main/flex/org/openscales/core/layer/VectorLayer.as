@@ -77,9 +77,9 @@ package org.openscales.core.layer
 		private var _initOutDrawingToolbar:Boolean = false;
 		private var _editable:Boolean = false;
 		private var _edited:Boolean = false;
-		private var _previousCenter:Location = null;
+		protected var _previousCenter:Location = null;
 		
-		private var _previousResolution:Resolution = null;
+		protected var _previousResolution:Resolution = null;
 
 		public function VectorLayer(identifier:String)
 		{
@@ -179,7 +179,15 @@ package org.openscales.core.layer
 			}
 		}
 		
-		private function scaleLayer(scale:Number, offSet:Pixel = null):void
+		/**
+		 * @private
+		 * 
+		 * Scales this layer.
+		 * 
+		 * @param scale Coefficient (reltive to current scale) to which the layer will be scaled 
+		 * @param offSet Pixel where the scaling should start ([0,0] by default)
+		 */ 
+		protected function scaleLayer(scale:Number, offSet:Pixel = null):void
 		{
 			if (offSet == null)
 			{
