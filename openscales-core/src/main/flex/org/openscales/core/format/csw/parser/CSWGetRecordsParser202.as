@@ -4,6 +4,9 @@ package org.openscales.core.format.csw.parser
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.ProjProjection;
 	
+	/**
+	 * Parser for CSW 2.0.2 GetRecords response, 
+	 */
 	public class CSWGetRecordsParser202
 	{
 		public function CSWGetRecordsParser202()
@@ -176,11 +179,166 @@ package org.openscales.core.format.csw.parser
 		 */
 		public function parseSummaryRecord(data:XML):HashMap
 		{
-			return null;
+			var record:HashMap = new HashMap();
+			var dcNS:Namespace = data.namespace("dc");
+			var dctNS:Namespace = data.namespace("dct");
+			
+			var identifiers:Vector.<String> = null ;
+			var titles:Vector.<String> = null;
+			var type:String = "";
+			var subjects:Vector.<String> = null;
+			var formats:Vector.<String> = null;
+			var relations:Vector.<String> = null;
+			var modifieds:Vector.<String> = null;
+			var abstracts:Vector.<String> = null;
+			var spatials:Vector.<String> = null;
+			var boundingBox:Vector.<Bounds> = null;
+			
+			// Parse identifier
+			var identifiersData:XMLList = data.dcNS::identifier;
+			if (identifiersData.length() > 0)
+			{
+				identifiers = new Vector.<String>();
+				var idData:XML;
+				
+				for each(idData in identifiersData)
+				{
+					identifiers.push(idData)	
+				}
+			}
+			
+			// Parse title
+			var titlesData:XMLList = data.dcNS::title;
+			if (titlesData.length() > 0)
+			{
+				titles = new Vector.<String>();
+				var titleData:XML;
+				
+				for each(titleData in titlesData)
+				{
+					titles.push(titleData);
+				}
+			}
+			
+			// Parse type
+			var typeData:XML = data.dcNS::type[0];
+			if (typeData)
+			{
+				type = typeData;
+			}
+			
+			// Parse subject
+			var subjectsData:XMLList = data.dcNS::subject;
+			if (subjectsData.length() > 0)
+			{
+				subjects = new Vector.<String>();
+				var subjectData:XML;
+				
+				for each(subjectData in subjectsData)
+				{
+					subjects.push(subjectData);
+				}
+			}
+			
+			// Parse format
+			var formatsData:XMLList = data.dcNS::format;
+			if (formatsData.length() > 0)
+			{
+				formats = new Vector.<String>();
+				var formatData:XML;
+				
+				for each(formatData in formatsData)
+				{
+					formats.push(formatData);
+				}
+			}
+			
+			// Parse relation
+			var relationsData:XMLList = data.dcNS::relation;
+			if (relationsData.length() > 0)
+			{
+				relations = new Vector.<String>();
+				var relationData:XML;
+				
+				for each (relationData in relationsData)
+				{
+					relations.push(relationsData);
+				}
+			}
+			
+			// Parse modified
+			var modifiedsData:XMLList = data.dctNS::modifier;
+			if (modifiedsData.length() > 0)
+			{
+				modifieds = new Vector.<String>();
+				var modifiedData:XML;
+				
+				for each (modifiedData in modifiedsData)
+				{
+					modifieds.push(modifiedData);
+				}
+			}
+			
+			// Parse abstract
+			var abstractsData:XMLList = data.dctNS::abstract;
+			if (abstractsData.length() > 0)
+			{
+				abstracts = new Vector.<String>();
+				var abstractData:XML;
+				
+				for each (abstractData in abstractsData)
+				{
+					abstracts.push(abstractData);
+				}
+			}
+			
+			// Parse spatial
+			var spatialsData:XMLList = data.dctNS::spatial;
+			if (spatialsData.length() > 0)
+			{
+				spatials = new Vector.<String>();
+				var spatialData:XML;
+				
+				for each (spatialData in spatialsData)
+				{
+					spatials.push(spatialData);
+				}
+					
+			}
+			
+			// Parse boundingBox
+			var owsNS:Namespace = data.namespace("ows");
+			var bboxsData:XMLList = data.owsNS::BoundingBox;
+			if (bboxsData.length() > 0)
+			{
+				boundingBox = new Vector.<Bounds>();
+				var bboxData:XML;
+				for each (bboxData in bboxsData)
+				{
+					var bbox:Bounds = this.parseBoundingBox(bboxData);
+					if (bbox)
+					{
+						boundingBox.push(bbox);
+					}
+				}
+			}
+			
+			record.put("indentifier",identifiers);
+			record.put("title", titles);
+			record.put("type",type);
+			record.put("subject", subjects);
+			record.put("format", formats);
+			record.put("relation", relations);
+			record.put("modified", modifieds);
+			record.put("abstract", abstracts);
+			record.put("spatial", spatials);
+			record.put("boundingBox",boundingBox);
+			return record;
 		}
 		
 		/**
 		 * Parse the data as full elementSetName and return a Hasmap
+		 * Override this class and implement your custom parser for "full" record here
 		 */
 		public function parseRecord(data:XML):HashMap
 		{
