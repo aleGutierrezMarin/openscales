@@ -40,10 +40,12 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.flexunit.internals.events.ExecutionCompleteEvent;
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.format.csw.CSWGetRecordsFormat;
 			import org.openscales.core.popup.Anchored;
+			import org.openscales.core.request.csw.GetRecordByIdRequest;
 			import org.openscales.core.request.csw.GetRecordsRequest;
 			import org.openscales.core.style.Style;
 			import org.openscales.core.utils.Trace;
@@ -63,6 +65,25 @@
 				req.maxRecords = 10;
 				req.send();
 				
+				var req2:GetRecordByIdRequest = new GetRecordByIdRequest("http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/inspire/csw", onOk2, onNoOk2);
+				req2.recordId = "IGNF_BDORTHOr_RVB_0M50_TIF_LAMB93_D75-2008.xml";
+				req2.elementSetName = "summary";
+				req2.send();
+				
+				
+			}
+			
+			public function onOk2(evt:Event):void
+			{
+				var plop:int =  1;
+				/*var format:CSWGetRecordsFormat = new CSWGetRecordsFormat();
+				var loader:URLLoader = evt.target as URLLoader;
+				var data:HashMap = (format.read(loader.data) as HashMap);*/
+			}
+			
+			public function onNoOk2(value:Event):void
+			{
+				var plop2:int = 1;
 			}
 			
 			public function onOk(evt:Event):void

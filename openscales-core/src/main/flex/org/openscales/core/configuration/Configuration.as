@@ -120,8 +120,7 @@ package org.openscales.core.configuration
 			}else{
 				return null;
 			}
-			
-			return filterFormat.addComparisonFilter(propertyType,propertyName,literalValue);
+			return filterFormat.addComparisonFilter(filterFormat.getRootFilter(), propertyType,propertyName,literalValue);
 		}
 		
 		protected function beginConfigureMap():void {

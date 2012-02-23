@@ -288,10 +288,15 @@
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.core.request.csw.GetRecordsRequest"/>
     <classEntry path="org.openscales.core.request.csw.getrecords.GetRecordsRequest202"/>
-    <classEntry path="org.openscales.core.request.csw.GetRecordsByIdRequest"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecordByIdRequest"/>
     <classEntry path="org.openscales.core.format.csw.CSWGetRecordsFormat"/>
     <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordsParser202"/>
-    <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordParser"/>
+    <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordsParser"/>
+    <classEntry path="org.openscales.core.request.csw.getrecordbyid.GetRecordByIdRequest202"/>
+    <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordByIdParser"/>
+    <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordByIdParser202"/>
+    <classEntry path="org.openscales.core.format.csw.CSWGetRecordByIdFormat"/>
+    <classEntry path="org.openscales.core.format.GMDFormat"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -2,7 +2,7 @@ package org.openscales.core.format.csw.parser
 {
 	import org.openscales.core.basetypes.maps.HashMap;
 
-	public interface ICSWGetRecordParser
+	public interface ICSWGetRecordsParser
 	{
 		/**
 		* read the XML data of the CSW GetRecords Request
