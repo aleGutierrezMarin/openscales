@@ -9,6 +9,7 @@ package org.openscales.geometry
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
 	import org.openscales.proj4as.ProjProjection;
+	import org.osmf.layout.AbsoluteLayoutFacet;
 	
 	/**
 	 * Description of the class

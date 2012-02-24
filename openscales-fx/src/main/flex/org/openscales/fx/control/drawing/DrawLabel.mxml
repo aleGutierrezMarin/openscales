@@ -163,6 +163,7 @@
 			
 			private function createFeature(event:MouseEvent):void{
 				var text:String = _popup.input.text;
+				var rotation:Number = _popup.sliderRotation.value;
 				if(_feature && text.length>0){
 					_feature.layer.scaleX = 1;
 					_feature.layer.scaleY = 1;
@@ -172,13 +173,40 @@
 					_feature.labelPoint.label.text = text;
 					_feature.labelPoint.label.background = true;
 					_feature.labelPoint.label.backgroundColor = 0xFFFFFF;
+					
+					_feature.labelPoint.label.rotationZ = rotation;
+					
 					var middlePixel:Pixel = _feature.layer.map.getMapPxFromLocation(new Location(_feature.labelPoint.x, _feature.labelPoint.y, _feature.layer.map.projection));
 					var leftPixel:Pixel = new Pixel();
 					var rightPixel:Pixel = new Pixel();
+					
+					
+					
 					leftPixel.x = middlePixel.x - _feature.labelPoint.label.width / 2;
 					leftPixel.y = middlePixel.y + _feature.labelPoint.label.height / 2;
 					rightPixel.x = middlePixel.x + _feature.labelPoint.label.width / 2;
 					rightPixel.y = middlePixel.y - _feature.labelPoint.label.height / 2;
+					
+					var a:Array = getLabelBarycenter(middlePixel.x, middlePixel.y);
+					var p2:Pixel = a.pop();
+					var p1:Pixel = a.pop();
+					
+					rightPixel = p1;
+					leftPixel = p2;
+					
+					
+					/*
+					x = dX + pointLocation.x / resolution;
+					y = dY - pointLocation.y / resolution;
+					var center:Pixel = getLabelBarycenter(x,y);
+					
+					var b:Bounds = this.labelPoint.bounds;
+					
+					this.labelPoint.label.x = x;
+					// - this.labelPoint.label.width / 2;
+					this.labelPoint.label.y = y;
+					// - this.labelPoint.label.height / 2;
+					*/
 					var rightLoc:Location = _feature.layer.map.getLocationFromMapPx(rightPixel);
 					var leftLoc:Location = _feature.layer.map.getLocationFromMapPx(leftPixel);
 					_feature.labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,_feature.layer.map.projection);
@@ -186,6 +214,103 @@
 					_feature.draw();
 				}
 				_feature.layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,_feature));
+			}
+			
+			public function getLabelBarycenter(x:Number, y:Number):Array
+			{
+				var angle:Number = (_feature.labelPoint.label.rotationZ * Math.PI) / 180;
+				var anglebis2:Number = 90 - _feature.labelPoint.label.rotationZ;
+				var angle2:Number = (anglebis2 * Math.PI) / 180;
+				
+				var width:Number = _feature.labelPoint.label.width;
+				var height:Number = _feature.labelPoint.label.height;
+				
+				
+				var p1:Pixel = new Pixel(x, y);
+				var p2:Pixel = new Pixel( p1.x + (Math.cos(angle)*width), 
+				p1.y + (Math.sin(angle) * width));
+				var p3:Pixel = new Pixel(p1.x + Math.cos((Math.PI/2) - angle)*height, 
+				p1.y + Math.sin((Math.PI/2)- angle) * height);
+				var p4:Pixel = new Pixel(p3.x + p2.x - p1.x, 
+				p3.y + p2.y - p1.y);
+				
+				/*
+				var p1:Pixel = new Pixel(x,y);
+				var p2:Pixel = new Pixel(p1.x + (width * Math.cos(angle)),
+					p1.y + (width * Math.sin(angle)));
+				var p3:Pixel = new Pixel(p2.x - (height * Math.cos(angle2)),
+					p2.y + (height * Math.sin(angle2)));
+				var p4:Pixel = new Pixel(p1.x - (height * Math.cos(angle2)),
+					p1.y + (height * Math.sin(angle2)));
+				*/
+				// On a besoin des points 2 et 4 pour créer la bounding box
+				// On a leurs coordonnées
+				// Il suffit donc d'appliquer le vecteur vect2 à chacun d'eux en sens inverse
+				
+				var xmin:Number = p1.x;
+				var xmax:Number = p1.x;
+				var ymin:Number = p1.y;
+				var ymax:Number = p1.y;
+				
+				/*
+				var vect:Pixel = new Pixel((p2.x - p1.x) / 2, (p2.y - p1.y) / 2);
+				var vect2:Pixel = new Pixel((p3.x - p2.x) / 2, (p3.y - p2.y) / 2);
+				
+				var center:Pixel = new Pixel(p1.x - vect.x - vect2.x, p1.y - vect.y - vect2.y);
+				
+				var p2n:Pixel = new Pixel(p2.x - vect.x - vect2.x, p2.y - vect.y - vect2.y);
+				var p4n:Pixel = new Pixel(p4.x - vect.x - vect2.x, p4.y - vect.y - vect2.y);
+				*/
+				if (p2.x > xmax) xmax = p2.x;
+				if (p2.x < xmin) xmin = p2.x;
+				if (p2.y > ymax) ymax = p2.y;
+				if (p2.y < ymin) ymin = p2.y;
+				
+				if (p3.x > xmax) xmax = p3.x;
+				if (p3.x < xmin) xmin = p3.x;
+				if (p3.y > ymax) ymax = p3.y;
+				if (p3.y < ymin) ymin = p3.y;
+				
+				if (p4.x > xmax) xmax = p4.x;
+				if (p4.x < xmin) xmin = p4.x;
+				if (p4.y > ymax) ymax = p4.y;
+				if (p4.y < ymin) ymin = p4.y;
+				
+				var p2n:Pixel = new Pixel(xmin, ymax);
+				var p4n:Pixel = new Pixel(xmax, ymin);
+				
+				var a:Array = new Array();
+				a.push(p2n);
+				a.push(p4n);
+				
+				
+				
+				//if (this.labelPoint.label.rotationZ != 0)
+				//{
+					//center.x = x;
+					//center.y = y;
+				//}
+				
+				
+				
+				/*
+				if (p2.x > xmax) xmax = p2.x;
+				if (p2.x < xmin) xmin = p2.x;
+				if (p2.y > ymax) ymax = p2.y;
+				if (p2.y < ymin) ymin = p2.y;
+				
+				if (p3.x > xmax) xmax = p3.x;
+				if (p3.x < xmin) xmin = p3.x;
+				if (p3.y > ymax) ymax = p3.y;
+				if (p3.y < ymin) ymin = p3.y;
+				
+				if (p4.x > xmax) xmax = p4.x;
+				if (p4.x < xmin) xmin = p4.x;
+				if (p4.y > ymax) ymax = p4.y;
+				if (p4.y < ymin) ymin = p4.y;
+				*/
+				
+				return a;
 			}
 			
 			/**
