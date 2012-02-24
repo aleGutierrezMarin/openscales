@@ -106,6 +106,7 @@
    "managelayerattributes.valid": "Terminer",
    "editlabel.label": "Libellé",
    "editlabel.title": "Saisie du libellé",
+   "editlabel.labelRotation": "Angle de rotation",
    
    "openLSSearch.title": "Recherche Open LS",
    "openLSSearch.simpleSearch": "Recherche simple",

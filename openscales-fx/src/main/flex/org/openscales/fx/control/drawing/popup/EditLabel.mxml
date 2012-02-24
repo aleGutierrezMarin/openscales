@@ -24,7 +24,7 @@ The label is holds by the <code>input</code> element.
 			import spark.components.TextInput;
 			
 			private static var DEFAULT_W:Number = 300;
-			private static var DEFAULT_H:Number = 100;
+			private static var DEFAULT_H:Number = 150;
 			
 			private var _map:Map;
 			
@@ -36,6 +36,7 @@ The label is holds by the <code>input</code> element.
 				this.okButton.label = Catalog.getLocalizationForKey("editfeatureattributes.valid");
 				this.cancelButton.label = Catalog.getLocalizationForKey("editfeatureattributes.discard");
 				this.inputLabel.text=Catalog.getLocalizationForKey('editlabel.label');
+				this.rotationLabel.text = Catalog.getLocalizationForKey("editlabel.labelRotation");
 			}
 			
 			/**
@@ -102,6 +103,16 @@ The label is holds by the <code>input</code> element.
 			<s:Label id="inputLabel" width="100" />
 			<!--- Text input that holds user data, you access access through the element's <code>text</code> -->
 			<s:TextInput id="input"/>
+		</s:SkinnableContainer>
+		<!--- Container that holds <code></code> and <code></code> elements -->
+		<s:SkinnableContainer id="editLabelInputRotationContainer">
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<!--- Label displayed beside <code></code> -->
+			<s:Label id="rotationLabel" width="100" />
+			<!--- Horizontal Slider that holds which rotation the user chose -->
+			<s:HSlider id="sliderRotation" minimum="0" maximum="360" />
 		</s:SkinnableContainer>
 		<!--- Container that holds <code>okButton</code> and <code>cancelButton</code> elements -->
 		<s:SkinnableContainer id="editLabelButtonsContainer">
