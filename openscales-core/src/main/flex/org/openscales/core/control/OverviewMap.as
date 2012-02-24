@@ -317,5 +317,26 @@ package org.openscales.core.control
 		{
 			return this._overviewMap.projection;
 		}
+		
+		/**
+		 * Get the maxExtent value from the overview map
+		 */
+		public function get maxExtent():Bounds{
+			return this._overviewMap.maxExtent;
+		}
+		
+		/**
+		 * Set the maxExtent value of the overview map
+		 */
+		public function set maxExtent(value:Bounds):void {
+			this._overviewMap.maxExtent = value;
+		}
+		
+		/**
+		 * Use the zoomToExtent function of the overview map
+		 */
+		public function zoomToExtent(value:Bounds):void {
+			return this._overviewMap.zoomToExtent(value);
+		}
 	}
 }
