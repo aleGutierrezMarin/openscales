@@ -21,8 +21,12 @@
 			override public function set map(value:Map):void {
 				super.map = value;
 				
-				zoomSlider.map = value;
-				panSkin.map = value;
+				if (zoomSlider) {
+					zoomSlider.map = value;
+				}
+				if (panSkin) {
+					panSkin.map = value;
+				}
 			}
 			
 			/**
