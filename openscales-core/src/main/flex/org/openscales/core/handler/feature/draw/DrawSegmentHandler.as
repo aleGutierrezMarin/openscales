@@ -45,6 +45,8 @@ package org.openscales.core.handler.feature.draw
 				newFeature = false;
 				//draw the temporary line, update each time the mouse moves		
 				this.map.addEventListener(MouseEvent.MOUSE_MOVE,temporaryLine);	
+				this.map.addEventListener(MapEvent.CENTER_CHANGED, temporaryLine);
+				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, temporaryLine);
 			}
 			else {								
 				if(!point.equals(lastPoint)){

@@ -14,6 +14,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.managers.PopUpManager;
+			
 			import org.openscales.core.Map;
 			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
@@ -21,18 +23,13 @@
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
-			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
-			import org.openscales.fx.control.drawing.popup.EditFeatureAttributes;
 			import org.openscales.fx.control.drawing.popup.EditLabel;
-			import org.openscales.fx.control.layer.LayerManager;
-			import org.openscales.geometry.Point;
-			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			[Bindable]
@@ -55,6 +52,15 @@
 			private var _target:VectorLayer;
 			private var _isClick:Boolean = false;
 			private var _drawingMode:String;
+			
+			// Property needed for LabelFeature edition
+			private var _popup:EditLabel; 
+			private var _labelFeature:LabelFeature;
+			
+			/**
+			 * Array of some features that may not be edited.
+			 */
+			private var _uneditableFeatures:Vector.<Feature> = new Vector.<Feature>();
 			
 			/**
 			 * Indicates for Drawing mode
@@ -101,6 +107,23 @@
 			}
 			
 			/**
+			 * Add an unEditable feature.
+			 */
+			public function addUneditableFeature(feature:Feature):void
+			{
+				if(feature!=null){
+					if (this._selectFeaturesHandler)
+					{
+						_selectFeaturesHandler.addUnselectableFeature(feature);
+					}
+					if(_uneditableFeatures.indexOf(feature)==-1)
+					{
+						_uneditableFeatures.push(feature);
+					}
+				}
+			}
+			
+			/**
 			 * Map controled by this control
 			 */
 			public function get map():Map{
@@ -114,8 +137,7 @@
 					this._map.removeEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.removeEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-					this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
-					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
+
 					this._map.removeEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 					this._map.removeEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 				}
@@ -126,8 +148,7 @@
 					this._map.addEventListener(DrawingEvent.DELETE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.MOVE_HANDLER_ACTIVATED, onChangeActiveHandler);
 					this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
-					this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
-					this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
+					
 					this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 					this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 				}
@@ -192,35 +213,46 @@
 				this._handler = new FeatureLayerEditionHandler(this.map,this.target,true);
 				this._handler.virtualStyle = this._virtualStyle;
 				
+				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
+				this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
+				
 				_alpha = 1;
 			}
 			
 			/**
 			 * To disactivate the handler
 			 */
-			private function disactivate():void{
+			public function disactivate():void{
 				
 				var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_DESACTIVATED);
 				evt.layer = this.target;
 				this.map.dispatchEvent(evt);
 				
 				// Manage the new FeatureLayerEditionHandler
-				_handler.active = false;
-				this._handler.map = null;
-				this.map.removeControl(this._handler);
-				
+				if (_handler)
+				{
+					_handler.active = false;
+					this._handler.map = null;
+					this.map.removeControl(this._handler);
+				}
 				// Add the previous FeatureLayerEditionHandler
 				if(this._previousHandler)
 					this._previousHandler.map = this.map;
 				
 				// Manage the new SelectFeaturesHandler
-				this._selectFeaturesHandler.clearSelection();
-				this._selectFeaturesHandler.map = null;
-				this.map.removeControl(this._selectFeaturesHandler);
+				if (this._selectFeaturesHandler)
+				{
+					this._selectFeaturesHandler.clearSelection();
+					this._selectFeaturesHandler.map = null;
+					this.map.removeControl(this._selectFeaturesHandler);
+				}
 				
 				// Add the previous SelectFeaturesHandler
 				if(this._previousSelectFeaturesHandler)
 					this._previousSelectFeaturesHandler.map = this.map;
+				
+				this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
+				this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
 				
 				_alpha = 0.3;
 			}
@@ -303,14 +335,34 @@
 			 */
 			private function onFeatureSelected(evt:FeatureEvent):void{
 				
-				if(this._handler && this._handler.active)
-					_handler.editionModeStop();
-				
-				if(this._selectFeaturesHandler)
-					_handler.featuresToEdit = this._selectFeaturesHandler.selectedFeatures;
-				
-				if(this._handler && this._handler.active)
-					_handler.editionModeStart();
+				if(evt.feature.layer == this.target && (evt.feature is LabelFeature)){
+					_labelFeature = evt.feature as LabelFeature;
+					_popup = EditLabel(PopUpManager.createPopUp(this, EditLabel));
+					_popup.input.text = _labelFeature.labelPoint.label.text;
+					_popup.map = this.map;
+					_popup.okButton.addEventListener(MouseEvent.CLICK,updateLabelFeature);
+				}else{
+					if(this._handler && this._handler.active)
+						_handler.editionModeStop();
+					
+					if(this._selectFeaturesHandler)
+						_handler.featuresToEdit = this._selectFeaturesHandler.selectedFeatures;
+					
+					if(this._handler && this._handler.active)
+						_handler.editionModeStart();
+				}
+			}
+			
+			/**
+			 * @private 
+			 * 
+			 * Callback method to EditLabel popup. It updates feature l
+			 */ 
+			private function updateLabelFeature(evt:MouseEvent):void{
+				if(_popup.input.text != _labelFeature.labelPoint.label.text){
+					_labelFeature.labelPoint.label.text = _popup.input.text;
+					_labelFeature.draw();
+				}
 			}
 			
 			/**

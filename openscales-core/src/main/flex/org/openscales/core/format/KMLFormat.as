@@ -30,6 +30,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
+	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiLineString;
@@ -38,9 +39,9 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.LabelPoint;
-	import org.openscales.core.feature.LabelFeature;
-	import org.openscales.geometry.LabelPoint;
+	import org.openscales.core.ns.os_internal;
+	
+	use namespace os_internal;
 	
 	/**
 	 * Read KML 2.0 and 2.2 file format.
@@ -63,9 +64,9 @@ package org.openscales.core.format
 		private var labelfeatures:Vector.<Feature> = new Vector.<Feature>();
 		private var polygonsfeatures:Vector.<Feature> = new Vector.<Feature>();
 		// styles
-		private var lineStyles:Object = new Object();
-		private var pointStyles:Object = new Object();
-		private var polygonStyles:Object = new Object();
+		private var _lineStyles:Object = new Object();
+		private var _pointStyles:Object = new Object();
+		private var _polygonStyles:Object = new Object();
 		
 		private var _userDefinedStyle:Style = null;
 		
@@ -95,10 +96,8 @@ package org.openscales.core.format
 			}
 			
 			var placemarks:XMLList = dataXML..Placemark;
-			loadPlacemarks(placemarks);
-			
-			var _features:Vector.<Feature> = polygonsfeatures.concat(linesfeatures, iconsfeatures, labelfeatures);
-			return _features;
+			return readPlacemarks(placemarks);
+	
 		}
 			
 		
@@ -123,7 +122,12 @@ package org.openscales.core.format
 			var _url:String = e.target.loader.name;
 			var _imgs:Array = _images[_url];
 			_images[_url] = null;
-			var _bm:Bitmap = Bitmap(_externalImages[_url].loader.content); 
+			var _bm:Bitmap = null;
+			try {
+				_bm = Bitmap(_externalImages[_url].loader.content);
+			} catch (e:Error) {
+				_bm = null;
+			}
 			if (_bm != null)
 			{
 				var _bmd:BitmapData = _bm.bitmapData;
@@ -156,7 +160,7 @@ package org.openscales.core.format
 		 * @calls KMLColorsToRGB
 		 * @calls KMLColorsToAlpha
 		 */
-		private function loadStyles(styles:XMLList):void {
+		public function loadStyles(styles:XMLList):void {
 			
 			use namespace google;
 			use namespace opengis;
@@ -169,16 +173,16 @@ package org.openscales.core.format
 
 				styleMap = getStyle(style);
 				if(styleMap.containsKey("IconStyle")) {
-					pointStyles[id] = styleMap.getValue("IconStyle");
-					pointStyles[id].name = id;
+					_pointStyles[id] = styleMap.getValue("IconStyle");
+					_pointStyles[id].name = id;
 				}
 				if(styleMap.containsKey("LineStyle")) {
-					lineStyles[id] = styleMap.getValue("LineStyle");
-					lineStyles[id].name = id;
+					_lineStyles[id] = styleMap.getValue("LineStyle");
+					_lineStyles[id].name = id;
 				}
 				if(styleMap.containsKey("PolyStyle")) {
-					polygonStyles[id] = styleMap.getValue("PolyStyle");
-					polygonStyles[id].name = id;
+					_polygonStyles[id] = styleMap.getValue("PolyStyle");
+					_polygonStyles[id].name = id;
 				}
 				
 			}
@@ -242,6 +246,7 @@ package org.openscales.core.format
 					
 					_styles.put("IconStyle",obj);
 				}
+
 
 				if(styleList[i].localName() == "LineStyle") 
 				{
@@ -330,12 +335,12 @@ package org.openscales.core.format
 		}
 		
 		/**
-		 * Load placemarks
-		 * @param a list of placemarks
-		 * @call loadLineString
-		 * @call loadPolygon
+		 * Reads a list of <code>Placemark</code>s KML tags and creates <code>Feature</code>s
+		 * 
+		 * @param placemarks A list of <code>Placemark</code>s KML tags
+		 * @return A vector of <code>Feature</code>s
 		 */
-		private function loadPlacemarks(placemarks:XMLList):void 
+		public function readPlacemarks(placemarks:XMLList):Vector.<Feature> 
 		{
 			use namespace google;
 			use namespace opengis;
@@ -417,8 +422,8 @@ package org.openscales.core.format
 					else if(placemark.styleUrl != undefined)
 					{
 						_id = placemark.styleUrl.text();
-						if(lineStyles[_id] != undefined)
-							_Lstyle = lineStyles[_id];
+						if(_lineStyles[_id] != undefined)
+							_Lstyle = _lineStyles[_id];
 					}
 					
 					linesfeatures.push(new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle));
@@ -439,9 +444,9 @@ package org.openscales.core.format
 						}
 						else if(placemark.styleUrl != undefined)
 						{
-							_id = placemark.styleUrl.text();
-							if(polygonStyles[_id] != undefined)
-								_Pstyle = polygonStyles[_id];
+							_id = readStyleUrlId(placemark.styleUrl);
+							if(_polygonStyles[_id] != undefined)
+								_Pstyle = _polygonStyles[_id];
 						}
 					}
 			
@@ -482,9 +487,9 @@ package org.openscales.core.format
 							}
 							else if(placemark.styleUrl != undefined)
 							{
-								_id = placemark.styleUrl.text();
-								if(lineStyles[_id] != undefined)
-									geomStyle = lineStyles[_id];
+								_id = readStyleUrlId(placemark.styleUrl);
+								if(_lineStyles[_id] != undefined)
+									geomStyle = _lineStyles[_id];
 							}
 						}
 						linesfeatures.push(new MultiLineStringFeature(new MultiLineString(components),
@@ -512,9 +517,9 @@ package org.openscales.core.format
 							}
 							else if(placemark.styleUrl != undefined)
 							{
-								_id = placemark.styleUrl.text();
-								if(lineStyles[_id] != undefined)
-									geomStyle = lineStyles[_id];
+								_id = readStyleUrlId(placemark.styleUrl);
+								if(_lineStyles[_id] != undefined)
+									geomStyle = _lineStyles[_id];
 							}
 						}
 						
@@ -544,11 +549,11 @@ package org.openscales.core.format
 						}
 						else if(placemark.styleUrl != undefined) 
 						{
-							_id = placemark.styleUrl.text();
-							if(pointStyles[_id]!=undefined) 
+							_id = readStyleUrlId(placemark.styleUrl);
+							if(_pointStyles[_id]!=undefined) 
 							{
 								//iconsfeatures.push(getPointFeature(point,pointStyles[_id],attributes));
-								iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,pointStyles[_id]));
+								iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,_pointStyles[_id]));
 							} else 
 							{
 								iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));
@@ -597,9 +602,9 @@ package org.openscales.core.format
 							} 
 							else 
 							{
-								_id = placemark.styleUrl.text();
-								if(pointStyles[_id]!=undefined)
-									objStyle = pointStyles[_id];
+								_id = readStyleUrlId(placemark.styleUrl);
+								if(_pointStyles[_id]!=undefined)
+									objStyle = _pointStyles[_id];
 							}
 							
 							if(objStyle) 
@@ -614,6 +619,8 @@ package org.openscales.core.format
 					}
 				}
 			}
+			
+			return polygonsfeatures.concat(linesfeatures, iconsfeatures, labelfeatures);
 		}
 		
 		private function getPointFeature(point:Point, objStyle:Object, attributes:Object):Feature {
@@ -657,6 +664,13 @@ package org.openscales.core.format
 			}
 		}
 		
+		private function readStyleUrlId(styleUrlXMLList:XMLList):String{
+			var id:String = styleUrlXMLList.text();
+			
+			id = id.substr(id.lastIndexOf("#"),id.length);
+			
+			return id;
+		}
 		
 		/**
 		 * Parse point styles without icon
@@ -802,9 +816,14 @@ package org.openscales.core.format
 			
 			var doc:XML = new XML("<Document></Document>"); 
 			kmlFile.appendChild(doc);
-			
+
 			var listOfFeatures:Vector.<Feature> = features as Vector.<Feature>;
 			var numberOfFeat:uint = listOfFeatures.length;
+			if (numberOfFeat > 0)
+			{
+				var name:XML = new XML("<Name>"+listOfFeatures[0].layer.displayedName+"</Name>");
+				doc.appendChild(name);
+			}
 			
 			//build the style nodes first
 			for(i = 0; i < numberOfFeat; i++)
@@ -1195,6 +1214,58 @@ package org.openscales.core.format
 		{
 			_userDefinedStyle = value;
 		}
+		
+		/**
+		 * @private
+		 * Polygon styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get polygonStyles():Object
+		{
+			return _polygonStyles;
+		}
+		
+		/**
+		 * @private
+		 * Point styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get pointStyles():Object
+		{
+			return _pointStyles;
+		}
+		
+		/**
+		 * @private
+		 * Line styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get lineStyles():Object
+		{
+			return _lineStyles;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set polygonStyles(value:Object):void
+		{
+			_polygonStyles = value;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set pointStyles(value:Object):void
+		{
+			_pointStyles = value;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set lineStyles(value:Object):void
+		{
+			_lineStyles = value;
+		}
+
 	}
 }
 

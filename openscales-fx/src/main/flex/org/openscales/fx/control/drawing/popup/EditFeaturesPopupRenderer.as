@@ -7,29 +7,21 @@ package org.openscales.fx.control.drawing.popup
 	import flash.events.MouseEvent;
 	import flash.text.engine.FontWeight;
 	
-	import flashx.textLayout.conversion.TextConverter;
-	
 	import mx.graphics.SolidColorStroke;
 	
-	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.I18NEvent;
-	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.fx.control.IconButton;
 	import org.openscales.fx.popup.FxPopup;
 	import org.openscales.fx.popup.renderer.IFxPopupRenderer;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	
 	import spark.components.Button;
 	import spark.components.HGroup;
 	import spark.components.Label;
 	import spark.components.RichText;
 	import spark.components.Scroller;
-	import spark.components.TextArea;
 	import spark.components.TextInput;
 	import spark.components.VGroup;
-	import spark.primitives.Line;
 	import spark.primitives.Path;
 
 	public class EditFeaturesPopupRenderer implements IFxPopupRenderer
@@ -171,43 +163,6 @@ package org.openscales.fx.control.drawing.popup
 			group.horizontalAlign = "right";
 			_vgroup.addElement(group);
 			
-			//If LabelFeature, add an Input to modify the Label text
-			if(this.fxpopup.feature is LabelFeature) {
-				group = new HGroup();
-				group.verticalAlign = "middle";
-				group.gap = 10;
-				group.paddingLeft = 5;
-				group.paddingRight = 5;
-				_vgroup.addElement(group);
-				
-				var lineStroke:SolidColorStroke = new SolidColorStroke();
-				lineStroke.color = 0x000000; // black
-				lineStroke.weight = 1;
-				lineStroke.alpha = 1; 
-				var line:Line = new Line();
-				line.xFrom = 5;
-				line.xTo = 260;
-				line.stroke = lineStroke;
-				group.addElement(line);
-				
-				group = new HGroup();
-				group.verticalAlign = "middle";
-				group.gap = 10;
-				group.paddingLeft = 5;
-				group.paddingRight = 5;
-				_vgroup.addElement(group);
-				
-				var lb2:Label = new Label();
-				lb2.width = 100;
-				lb2.text = Catalog.getLocalizationForKey("editlabel.label");
-				group.addElement(lb2);
-				_labelTextInput = new TextInput();
-				_labelTextInput.id = 'editLabelText';
-				if((this.fxpopup.feature as LabelFeature).labelPoint.label.text)
-					_labelTextInput.text = (this.fxpopup.feature as LabelFeature).labelPoint.label.text;
-				group.addElement(_labelTextInput);
-			}
-			
 			group = new HGroup();
 			group.gap = 10;
 			group.horizontalAlign = "right";
@@ -257,26 +212,6 @@ package org.openscales.fx.control.drawing.popup
 				var ti:TextInput;
 				while(ti = _attrInput.pop())
 					this.fxpopup.feature.attributes[ti.id] = ti.text;
-			}
-			
-			if (this._labelTextInput != null && this._labelTextInput.text != null)
-			{
-				this.fxpopup.feature.layer.scaleX = 1;
-				this.fxpopup.feature.layer.scaleY = 1;
-				(this.fxpopup.feature as LabelFeature).labelPoint.label.text = this._labelTextInput.text;
-				var middlePixel:Pixel = this.fxpopup.feature.layer.map.getMapPxFromLocation(new Location((this.fxpopup.feature as LabelFeature).labelPoint.x, (this.fxpopup.feature as LabelFeature).labelPoint.y, this.fxpopup.feature.layer.map.projection));
-				var leftPixel:Pixel = new Pixel();
-				var rightPixel:Pixel = new Pixel();
-				leftPixel.x = middlePixel.x - (this.fxpopup.feature as LabelFeature).labelPoint.label.width / 2;
-				leftPixel.y = middlePixel.y + (this.fxpopup.feature as LabelFeature).labelPoint.label.height / 2;
-				rightPixel.x = middlePixel.x + (this.fxpopup.feature as LabelFeature).labelPoint.label.width / 2;
-				rightPixel.y = middlePixel.y - (this.fxpopup.feature as LabelFeature).labelPoint.label.height / 2;
-				var rightLoc:Location = this.fxpopup.feature.layer.map.getLocationFromMapPx(rightPixel);
-				var leftLoc:Location = this.fxpopup.feature.layer.map.getLocationFromMapPx(leftPixel);
-				(this.fxpopup.feature as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.fxpopup.feature.layer.map.projection);
-				this.fxpopup.feature.layer.addFeature(fxpopup.feature);
-				this.fxpopup.feature.draw();
-				this.fxpopup.feature.layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,fxpopup.feature));
 			}
 			
 			this.close(null);

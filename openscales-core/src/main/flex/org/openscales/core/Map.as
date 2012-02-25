@@ -1911,7 +1911,7 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Return the identifier list if the edited vector layers that are in the map
+		 * Return the identifier list of the edited vector layers that are in the map
 		 * Edited layers are vector layer which have been modified by the drawing tools
 		 */
 		public function getEditedLayers():Vector.<String>
@@ -1929,6 +1929,27 @@ package org.openscales.core
 				}
 			}
 			return identifierList;
+		}
+		
+		/**
+		 * Return the list of the editable vector layers that are in the map
+		 * Editable layers are vector layer which can be modified by the drawing tools
+		 */
+		public function getEditableLayers():Vector.<VectorLayer>
+		{
+			var resultList:Vector.<VectorLayer> = new Vector.<VectorLayer>();
+			var length:int = this.layers.length;
+			for (var i:int = 0; i<length; ++i)
+			{
+				if (this.layers[i] is VectorLayer)
+				{
+					if ((this.layers[i] as VectorLayer).editable)
+					{
+						resultList.push(this.layers[i] as VectorLayer)
+					}
+				}
+			}
+			return resultList;
 		}
 		
 		/**

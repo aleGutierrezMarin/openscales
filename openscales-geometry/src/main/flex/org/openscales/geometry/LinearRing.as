@@ -4,6 +4,7 @@ package org.openscales.geometry
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.proj4as.ProjProjection;
 		
 	/**
 	 * A Linear Ring is a special LineString which is closed. 
@@ -26,9 +27,12 @@ package org.openscales.geometry
 			_units = value;
 		}
 
-		
-		public function LinearRing(points:Vector.<Number> = null) {
-			super(points);
+		/**
+		 * @param points
+		 * @param projection The projection to use for this LinearRing, default is EPSG:4326
+		 */ 
+		public function LinearRing(points:Vector.<Number> = null,projection:ProjProjection = null) {
+			super(points,projection);
 		}
 
 		override public function addComponent(point:Geometry, index:Number=NaN):Boolean {
@@ -177,6 +181,7 @@ package org.openscales.geometry
 			var LinearRingClone:LinearRing=new LinearRing();
 			var component:Vector.<Number>=this.getcomponentsClone();
 			LinearRingClone.projection = this.projection;
+			LinearRingClone._bounds = this._bounds;
 			LinearRingClone.addPoints(component);
 			return LinearRingClone;
 		}

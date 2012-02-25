@@ -25,8 +25,13 @@ package org.openscales.geometry
 		 */
 		protected var _projection:ProjProjection = ProjProjection.getProjProjection(DEFAULT_SRS_CODE);
 		
-		public function Geometry() {
-			super();
+		/**
+		 * Constructor
+		 * 
+		 * @param projection The projection to use for this geometry, default is EPSG:4326
+		 */ 
+		public function Geometry(projection:ProjProjection=null) {
+			if(projection)this._projection = projection; 
 		}
 		
 		/**

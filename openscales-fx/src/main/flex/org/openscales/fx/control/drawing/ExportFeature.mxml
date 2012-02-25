@@ -154,7 +154,7 @@
 			public function set layer(value:VectorLayer):void{
 				
 				_layer = value;
-				if(_layer)
+				if(_layer && _layer.map)
 				{
 					_layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, this.onMapLanguageChange);
 				}

@@ -127,7 +127,7 @@ package org.openscales.core.layer
 		
 		public function onSuccess(event:Event):void
 		{
-			this.loading = false;
+			
 			var loader:URLLoader = event.target as URLLoader;
 			
 			// To avoid errors if the server is dead
@@ -147,6 +147,7 @@ package org.openscales.core.layer
 			catch(error:Error) {
 				// Empty catch is evil, but here it's fair.
 			}
+			this.loading = false;
 		}
 		
 		protected function onFailure(event:Event):void {
