@@ -39,9 +39,10 @@ package org.openscales.geometry
      	 * Creates a Geometry Collection
      	 *
      	 * @param components
+		 * @param projection The projection to use for this Collection, default is EPSG:4326
      	 */
-		public function Collection(components:Vector.<Geometry>) {
-			super();
+		public function Collection(components:Vector.<Geometry>, projection:ProjProjection = null) {
+			super(projection);
 			this._components = new Vector.<Geometry>();
             if (components != null) {
 				this.addComponents(components);

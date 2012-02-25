@@ -68,12 +68,11 @@
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer"/>
-    <classEntry path="org.openscales.fx.control.drawing.popup.EditLabel"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
-    <classEntry path="org.openscales.fx.control.layer.ChangeLayerOpacity"/>
+    <classEntry path="org.openscales.fx.control.layer.ChangeLayerAlpha"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibility"/>
     <classEntry path="org.openscales.fx.control.layer.DeleteLayer"/>
@@ -91,7 +90,6 @@
     <classEntry path="org.openscales.fx.control.measure.MeasureSurface"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
     <classEntry path="org.openscales.fx.control.search.OpenLSSearch"/>
-    <classEntry path="org.openscales.fx.control.search.YahooSearch"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanSkin"/>

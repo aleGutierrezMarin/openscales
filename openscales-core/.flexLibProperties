@@ -99,6 +99,7 @@
     <classEntry path="org.openscales.core.format.gml.parser.GML321"/>
     <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
     <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
+    <classEntry path="org.openscales.core.format.gml.writer.IGMLWriter"/>
     <classEntry path="org.openscales.core.handler.Handler"/>
     <classEntry path="org.openscales.core.handler.IHandler"/>
     <classEntry path="org.openscales.core.handler.feature.DragFeatureHandler"/>
@@ -136,6 +137,7 @@
     <classEntry path="org.openscales.core.layer.Aggregate"/>
     <classEntry path="org.openscales.core.layer.Bing"/>
     <classEntry path="org.openscales.core.layer.Constraint"/>
+    <classEntry path="org.openscales.core.layer.DrawingsLayer"/>
     <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
@@ -200,6 +202,11 @@
     <classEntry path="org.openscales.core.routing.AbstractRouting"/>
     <classEntry path="org.openscales.core.routing.IRouting"/>
     <classEntry path="org.openscales.core.routing.SampleRouting"/>
+    <classEntry path="org.openscales.core.search.BingSearch"/>
+    <classEntry path="org.openscales.core.search.SearchEngine"/>
+    <classEntry path="org.openscales.core.search.YahooPlaceFinder"/>
+    <classEntry path="org.openscales.core.search.result.Address"/>
+    <classEntry path="org.openscales.core.search.result.Confidence"/>
     <classEntry path="org.openscales.core.security.AbstractSecurity"/>
     <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
     <classEntry path="org.openscales.core.security.ISecurity"/>
@@ -251,12 +258,19 @@
     <classEntry path="org.openscales.core.format.gml.parser.GML321ParserTest"/>
     <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
+    <classEntry path="org.openscales.core.handler.mouse.MouseHandlerTest"/>
+    <classEntry path="org.openscales.core.i18n.CatalogTest"/>
+    <classEntry path="org.openscales.core.i18n.LocaleTest"/>
     <classEntry path="org.openscales.core.i18n.i18nTest"/>
+    <classEntry path="org.openscales.core.i18n.provider.I18nJSONProviderTest"/>
     <classEntry path="org.openscales.core.layer.AggregateTest"/>
     <classEntry path="org.openscales.core.layer.GraticuleTest"/>
+    <classEntry path="org.openscales.core.layer.KMLTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.WMTS100Test"/>
+    <classEntry path="org.openscales.core.layer.ogc.GPXTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.GeoRSSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WFSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WMSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WMTSTest"/>
@@ -267,10 +281,11 @@
     <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
     <classEntry path="org.openscales.map.ControlManagementTest"/>
     <classEntry path="org.openscales.map.ExtentTest"/>
+    <classEntry path="org.openscales.map.LayerManagementTest"/>
+    <classEntry path="org.openscales.map.MapExtentTest"/>
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.layer.DrawingsLayer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

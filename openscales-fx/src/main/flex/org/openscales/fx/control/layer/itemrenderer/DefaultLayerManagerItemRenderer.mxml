@@ -515,7 +515,7 @@
 	
 	
 	<s:SkinnableContainer id="layerManagerAdditionnalDisplay" height="20" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}">
-		<ChangeLayerOpacity id="layerControlOpacity" layer="{_layer}" />
+		<ChangeLayerAlpha id="layerControlOpacity" layer="{_layer}" />
 	</s:SkinnableContainer>
 	
 	<s:SkinnableContainer height="60" width="100%" id="layerManagerDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">

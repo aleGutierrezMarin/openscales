@@ -49,8 +49,11 @@ package org.openscales.core.handler.feature.draw
 		 */
 		override public function dragVerticeStart(vectorfeature:PointFeature):void{
 			
-			vectorfeature.startDrag();
-			this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,vectorfeature));
+			if (this._editionFeatureArray.indexOf(vectorfeature) != -1)
+			{
+				vectorfeature.startDrag();
+				this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_START,vectorfeature));
+			}
 		}
 		
 		 /**
@@ -58,20 +61,23 @@ package org.openscales.core.handler.feature.draw
 		 */
 		override public function dragVerticeStop(vectorfeature:PointFeature):void{
 			
-			vectorfeature.stopDrag();
-			
-			// update vectorfeature ?
-			var px:Pixel = new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
-			// TODO : getLocationFromMapPx?
-			var lonlat:Location = this.map.getLocationFromMapPx(px);
-			var pt:Point =  new Point(lonlat.lon,lonlat.lat);
-			pt.projection = this.map.projection;
-			vectorfeature.geometry = pt
-			vectorfeature.x = 0;
-			vectorfeature.y = 0;
-			this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,vectorfeature));
-			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,vectorfeature));
-			this._layerToEdit.redraw();
+			if (this._editionFeatureArray.indexOf(vectorfeature) != -1)
+			{
+				vectorfeature.stopDrag();
+				
+				// update vectorfeature ?
+				var px:Pixel = new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
+				// TODO : getLocationFromMapPx?
+				var lonlat:Location = this.map.getLocationFromMapPx(px);
+				var pt:Point =  new Point(lonlat.lon,lonlat.lat);
+				pt.projection = this.map.projection;
+				vectorfeature.geometry = pt
+				vectorfeature.x = 0;
+				vectorfeature.y = 0;
+				this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,vectorfeature));
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,vectorfeature));
+				this._layerToEdit.redraw();
+			}
 		}
 		
 	    /**

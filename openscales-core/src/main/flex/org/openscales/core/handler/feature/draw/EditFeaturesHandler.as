@@ -974,7 +974,7 @@ package org.openscales.core.handler.feature.draw
 				symbolizer = new LineSymbolizer(new Stroke(color, borderThin));
 			} else if (feature is LabelFeature) {
 				selectedStyle = Style.getDefinedLabelStyle(feature.style.textFormat.font,(feature.style.textFormat.size as Number),
-					0xFFFF00,feature.style.textFormat.bold,feature.style.textFormat.italic);
+					0x0000FF,feature.style.textFormat.bold,feature.style.textFormat.italic);
 			} else { //if (feature is PolygonFeature || feature is MultiPolygonFeature) {
 				selectedStyle = Style.getDefaultSurfaceStyle();
 				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));

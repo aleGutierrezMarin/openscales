@@ -11,7 +11,7 @@ package org.openscales.fx.control.layer
 	import org.openscales.core.Map;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.fx.control.layer.ChangeLayerOpacity;
+	import org.openscales.fx.control.layer.ChangeLayerAlpha;
 	import org.openscales.fx.control.layer.LayerManager;
 	
 	public class ChangeLayerOpacityTest extends OpenScalesTest
@@ -22,7 +22,7 @@ package org.openscales.fx.control.layer
 		 */
 		private var _map:Map;
 		private var _layer1:Layer;
-		private var _opacity:ChangeLayerOpacity;
+		private var _opacity:ChangeLayerAlpha;
 		
 		public function ChangeLayerOpacityTest() {}
 		
@@ -36,7 +36,7 @@ package org.openscales.fx.control.layer
 			
 			this._map.addLayer(this._layer1);
 			
-			this._opacity = new ChangeLayerOpacity();
+			this._opacity = new ChangeLayerAlpha();
 			this._opacity.layer = this._layer1;
 			
 			this._container.addElement(this._opacity);

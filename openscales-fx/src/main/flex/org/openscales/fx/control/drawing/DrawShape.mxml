@@ -230,7 +230,7 @@
 					} else {
 						this.buttonMode = true;
 						this.useHandCursor = true;
-						this.toolTip = Catalog.getLocalizationForKey('drawing.path');
+						this.toolTip = Catalog.getLocalizationForKey('drawing.shape');
 					}
 				}
 				
@@ -242,7 +242,7 @@
 			 */
 			public function onMapLanguageChange(event:I18NEvent):void{
 				
-				this.tooltip = Catalog.getLocalizationForKey('drawing.path');
+				this.tooltip = Catalog.getLocalizationForKey('drawing.shape');
 			}
 			
 			// Unused functions

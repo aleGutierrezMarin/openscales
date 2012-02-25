@@ -73,11 +73,7 @@ package org.openscales.core.layer.ogc
 		private var _currentScale:uint = 0;
 		
 		private const  _MAX_NUMBER_OF_SCALES:uint = 5;
-		
-		private var _previousCenter:Location = null;
-		
-		private var _previousResolution:Resolution = null;
-		
+	
 		/**
 		 * @private
 		 * Hashmap containing id of features that have allready been drawn
@@ -228,12 +224,10 @@ package org.openscales.core.layer.ogc
 			}
 			if (resolutionChangedCache)
 			{
-				this.cacheAsBitmap = false;
 				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 				this._previousResolution = this.map.resolution;
 				resolutionChangedCache = false;
-				this.cacheAsBitmap = true;
 			}
 			
 			if (centerChangedCache)
@@ -276,18 +270,6 @@ package org.openscales.core.layer.ogc
 			this.draw();
 			var evt:MapEvent = new MapEvent(MapEvent.ACTIVATE_HANDLER, this.map);
 			this.map.dispatchEvent(evt);
-		}
-		
-		private function scaleLayer(scale:Number, offSet:Pixel = null):void
-		{
-			if (offSet == null)
-			{
-				offSet = new Pixel(0, 0);
-			}
-			var temporaryScale:Number = this.scaleX * scale;
-			this.scaleX = this.scaleY = temporaryScale;
-			this.x -= (offSet.x - this.x) * (scale - 1);
-			this.y -= (offSet.y - this.y) * (scale - 1);
 		}
 		
 		private function onTimerEnd(event:TimerEvent):void

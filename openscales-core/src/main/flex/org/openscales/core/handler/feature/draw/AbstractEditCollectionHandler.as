@@ -159,6 +159,7 @@ package org.openscales.core.handler.feature.draw
 							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	 
 		 			} 	
 		 		}
+				parentFeature.draw();
 		 	}
 		 	//we add the new mouseEvent move and remove the MouseEvent on the draw Temporary feature
 		 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);	
@@ -176,10 +177,11 @@ package org.openscales.core.handler.feature.draw
 		 		AbstractEditCollectionHandler._pointUnderTheMouse=null;
 		 	}
 		 	this._drawContainer.graphics.clear();
+			vectorfeature.draw();
 		 	vectorfeature=null;
 		   _timer.stop();
 		   //vectorfeature.editionFeatureParent.draw();
-		 	this._layerToEdit.redraw();
+		 	this._layerToEdit.redraw(true);
 		 }
 		 
 		 /**
@@ -195,6 +197,7 @@ package org.openscales.core.handler.feature.draw
 		 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 		 	this._layerToEdit.removeFeature(vectorfeature);
 		 	this._featureClickHandler.removeControledFeature(vectorfeature);
+			vectorfeature.draw();
 		 	vectorfeature=null;
 			if(_isUsedAlone)
 				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
@@ -245,6 +248,7 @@ package org.openscales.core.handler.feature.draw
 			 	}
 			 	this._drawContainer.graphics.clear();
 			 	_timer.stop();
+				vectorfeature.draw();
 		 		this._layerToEdit.redraw();
 				this.map.mouseNavigationEnabled = true;
 				this.map.panNavigationEnabled = true;
@@ -305,6 +309,7 @@ package org.openscales.core.handler.feature.draw
 					var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);
 					PointGeomUnderTheMouse.projection = lonlat.projection;
 					if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
+						layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 						AbstractEditCollectionHandler._pointUnderTheMouse.visible = false;
 						AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,this.virtualStyle);
 						this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
@@ -329,14 +334,16 @@ package org.openscales.core.handler.feature.draw
 					else
 						AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
 					
-					layerToEdit.redraw();
+					//vectorfeature.draw();
+					layerToEdit.redraw(true);
 					layerToEdit.map.buttonMode=false;
 				}
 				else {
 					if(AbstractEditCollectionHandler._pointUnderTheMouse!=null)
 					{
 						AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
-						layerToEdit.redraw();
+						//vectorfeature.draw();
+						layerToEdit.redraw(true);
 						layerToEdit.map.buttonMode=false;		
 					}		
 				}
@@ -355,7 +362,7 @@ package org.openscales.core.handler.feature.draw
 		 		this._featureClickHandler.removeControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
 		 		AbstractEditCollectionHandler._pointUnderTheMouse=null;
 		 	}
-		 	_layerToEdit.redraw();
+		 	//_layerToEdit.redraw(true);
 		 }
 		
 		/**

@@ -8,8 +8,12 @@ package org.openscales.geometry
 	public class MultiLineString extends Collection
 	{
 
-		public function MultiLineString(components:Vector.<Geometry> = null) {
-			super(components);
+		/**
+		 * @param components
+		 * @param projection The projection to use for this geometry, default is EPSG:4326
+		 */ 
+		public function MultiLineString(components:Vector.<Geometry> = null,projection:ProjProjection = null) {
+			super(components,projection);
 			this.componentTypes = new <String>["org.openscales.geometry::LineString"];
 		}
 		

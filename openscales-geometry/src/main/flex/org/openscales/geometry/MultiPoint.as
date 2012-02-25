@@ -38,9 +38,10 @@ package org.openscales.geometry
 		 * . 
 		 * 
 		 * @param components
+		 * @param projection The projection to use for this MultiPoint, default is EPSG:4326
 		 */
-		public function MultiPoint(points:Vector.<Number> = null) {
-			super();
+		public function MultiPoint(points:Vector.<Number> = null, projection:ProjProjection = null) {
+			super(projection);
 			if (points != null) {
 				this._components = points;
 			}

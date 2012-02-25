@@ -23,13 +23,12 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.DragFeatureHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			private var _alpha:Number = 0.3;
@@ -59,6 +58,14 @@
 			
 			public function set drawingMode(value:String):void{
 				_drawingMode = value;
+			}
+			
+			/**
+			 * The drag feature Handler
+			 */
+			public function get handler():DragFeatureHandler
+			{
+				return this._handler;
 			}
 			
 			/**
@@ -132,9 +139,12 @@
 				_handler.active = true;
 				_alpha = 1;
 			}
-			private function disactivate():void{
+			public function disactivate():void{
 				
-				_handler.active = false;
+				if (_handler)
+				{
+					_handler.active = false;
+				}
 				_alpha = 0.3;
 			}
 			

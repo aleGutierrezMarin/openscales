@@ -1,6 +1,9 @@
 package org.openscales.geometry
 {
 	import flash.utils.getQualifiedClassName;
+	
+	import org.openscales.proj4as.ProjProjection;
+
 	/**
 	 * A Polygon is a collection of Geometry LinearRings defining a Mathematical
 	 * Polygon (the first LinearRing) with holes (the potential others LinearRings).
@@ -13,8 +16,9 @@ package org.openscales.geometry
      	 * all subsequent rings (component[1..n]) are internal holes.
      	 *
      	 * @param rings the polygon and its holes
+		 * @param projection, the projection to use for this Polygon, default is EPSG:4326
      	*/
-    	public function Polygon(rings:Vector.<Geometry>) {
+    	public function Polygon(rings:Vector.<Geometry>, projection:ProjProjection = null) {
 			// Check if all the components to add are LinearRing
 			var validRings:Boolean = true;
 			if (rings) {
@@ -33,7 +37,7 @@ package org.openscales.geometry
 				}
 			}
 			// Initialize the object
-			super(rings);
+			super(rings,projection);
     		this.componentTypes = new <String>["org.openscales.geometry::LinearRing"];
 		}
 		
@@ -248,11 +252,12 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			var PolygonClone:Polygon=new Polygon(null);
+			var returnedPolygon:Polygon=new Polygon(null);
 			var component:Vector.<Geometry>=this.getcomponentsClone();
-			PolygonClone.projection = this.projection;
-			PolygonClone.addComponents(component);
-			return PolygonClone;
+			returnedPolygon.projection = this.projection;
+			returnedPolygon.addComponents(component);
+			returnedPolygon._bounds = this._bounds;
+			return returnedPolygon;
 		}
 	}
 }

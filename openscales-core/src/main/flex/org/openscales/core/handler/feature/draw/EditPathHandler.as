@@ -2,9 +2,9 @@ package org.openscales.core.handler.feature.draw
 {
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.sampler.NewObjectSample;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.utils.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
@@ -14,6 +14,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Collection;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
