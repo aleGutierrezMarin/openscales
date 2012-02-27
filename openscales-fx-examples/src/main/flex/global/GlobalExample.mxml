@@ -43,6 +43,7 @@
 			import org.flexunit.internals.events.ExecutionCompleteEvent;
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.format.DCFormat;
 			import org.openscales.core.format.csw.CSWGetRecordsFormat;
 			import org.openscales.core.popup.Anchored;
 			import org.openscales.core.request.csw.GetRecordByIdRequest;
@@ -90,6 +91,7 @@
 			{
 				var plop:int = 1;
 				var format:CSWGetRecordsFormat = new CSWGetRecordsFormat();
+				format.responseFormat = new DCFormat();
 				var loader:URLLoader = evt.target as URLLoader;
 				var data:HashMap = (format.read(loader.data) as HashMap);
 			}

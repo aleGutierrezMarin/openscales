@@ -13,6 +13,8 @@ package org.openscales.core.format.csw.parser
 		{
 		}
 		
+		
+		
 		public function read(data:Object):HashMap
 		{
 			if(!data)return null;
