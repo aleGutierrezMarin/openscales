@@ -89,19 +89,6 @@
 			}
 			
 			/**
-			 * @private
-			 */
-			private function validateName(value:String):Boolean
-			{
-				if(this.map)
-				{
-					if(this.map.getLayerByIdentifier(value)==null)
-						return true;
-				}
-				return false;
-			}
-			
-			/**
 			 * Change the text values on Map Language changed
 			 * @param event The I18N event received
 			 */
