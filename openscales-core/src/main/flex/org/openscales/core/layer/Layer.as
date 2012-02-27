@@ -186,7 +186,7 @@ package org.openscales.core.layer {
 		
 		/**
 		 * This method return the new availability of the layer.
-		 * Override this method if you want to change the way the availability is conputed
+		 * Override this method if you want to change the way the availability is computed
 		 */
 		protected function checkAvailability():Boolean
 		{
