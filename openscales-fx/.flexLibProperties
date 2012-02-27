@@ -24,7 +24,6 @@
     <classEntry path="org.openscales.fx.autocomplete.renderer.SearchItem"/>
     <classEntry path="org.openscales.fx.basetypes.FxBounds"/>
     <classEntry path="org.openscales.fx.configuration.FxConfiguration"/>
-    <classEntry path="org.openscales.fx.control.FxCapabilities"/>
     <classEntry path="org.openscales.fx.control.Control"/>
     <classEntry path="org.openscales.fx.control.Copyright"/>
     <classEntry path="org.openscales.fx.control.DataOriginatorsDisplay"/>
@@ -32,9 +31,11 @@
     <classEntry path="org.openscales.fx.control.FeatureDrawing"/>
     <classEntry path="org.openscales.fx.control.FeatureInfo"/>
     <classEntry path="org.openscales.fx.control.FeatureInfoDisplay"/>
+    <classEntry path="org.openscales.fx.control.FxCapabilities"/>
     <classEntry path="org.openscales.fx.control.FxControl"/>
     <classEntry path="org.openscales.fx.control.FxCorePanZoom"/>
     <classEntry path="org.openscales.fx.control.FxCorePanZoomBar"/>
+    <classEntry path="org.openscales.fx.control.FxDefaultCapabilitiesItemRenderer"/>
     <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.control.IconButton"/>
@@ -70,9 +71,9 @@
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.SingleInputPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
-    <classEntry path="org.openscales.fx.control.layer.ChangeLayerAlpha"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibility"/>
     <classEntry path="org.openscales.fx.control.layer.DeleteLayer"/>
@@ -108,6 +109,8 @@
     <classEntry path="org.openscales.fx.handler.mouse.FxWMSGetFeatureInfo"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxWheelHandler"/>
     <classEntry path="org.openscales.fx.layer.FxAggregate"/>
+    <classEntry path="org.openscales.fx.layer.FxBing"/>
+    <classEntry path="org.openscales.fx.layer.FxDrawingsLayer"/>
     <classEntry path="org.openscales.fx.layer.FxGPX"/>
     <classEntry path="org.openscales.fx.layer.FxGeoRss"/>
     <classEntry path="org.openscales.fx.layer.FxGraticule"/>
@@ -150,9 +153,6 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.control.FxDefaultCapabilitiesItemRenderer"/>
-    <classEntry path="org.openscales.fx.layer.FxBing"/>
-    <classEntry path="org.openscales.fx.layer.FxDrawingsLayer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
