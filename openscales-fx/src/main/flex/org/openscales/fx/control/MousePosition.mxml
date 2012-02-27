@@ -23,6 +23,9 @@
 			
 			import spark.events.IndexChangeEvent;
 			
+			public static const UNIT_CHANGED:String = 'selectedIndexUnitChanged';
+			public static const CRS_CHANGED:String = 'selectedIndexUnitChanged';
+			
 			/**
 			 * @private
 			 * The projection displayed. If null, the display projection used is the projection of the base layer.
@@ -141,17 +144,17 @@
 			 */ 
 			private function init():void {			
 				
-				var tmp:Array = _availableProjSrsList.split(",");
+				var crsArray:Array = _availableProjSrsList.split(",");
 				
-				var lgth:uint = tmp.length;
+				var lgth:uint = crsArray.length;
 				var i:uint = 0;
 				var selectedIndex:uint = 0;
 				var displayProjectionInList:Boolean = false;
 
 				for(i;i<lgth;i++)
 				{
-					this.crsDataProvider.addItem(tmp[i]);
-					if(_displayProjection == ProjProjection.getProjProjection(tmp[i])) 
+					this.crsDataProvider.addItem(crsArray[i]);
+					if(_displayProjection == ProjProjection.getProjProjection(crsArray[i])) 
 					{
 						selectedIndex = i;
 						displayProjectionInList = true;
@@ -238,7 +241,7 @@
 						_displayMetricUnits = "";
 						break;
 				}
-				dispatchEvent(new Event('selectedIndexUnitChanged'));
+				dispatchEvent(new Event(UNIT_CHANGED));
 				this.mousePositionLabel = "";
 			}
 			
@@ -288,15 +291,15 @@
 			/**
 			 * Display the coordinate where is the mouse
 			 *
-			 * @param evt
+			 * @param event
 			 */
-			public function redraw(evt:MouseEvent = null):void {
+			public function redraw(event:MouseEvent = null):void {
 				
 				if(this._active)
 				{
 					var lonLat:Location;
 					
-					if (evt != null) {
+					if (event != null) {
 						if (this._lastXy == null ||
 							Math.abs(map.mouseX - this._lastXy.x) > this._granularity ||
 							Math.abs(map.mouseY - this._lastXy.y) > this._granularity)
@@ -647,7 +650,7 @@
 			{
 				this._selectedIndexCrs = value;
 				this.crsChanged();
-				dispatchEvent(new Event('selectedIndexCrsChanged'));
+				dispatchEvent(new Event(CRS_CHANGED));
 			}
 			
 			/**
@@ -664,7 +667,7 @@
 			{
 				this._selectedIndexUnit = value;
 				this.unitsChanged();
-				dispatchEvent(new Event('selectedIndexUnitChanged'));
+				dispatchEvent(new Event(UNIT_CHANGED));
 			}
 			
 		]]>

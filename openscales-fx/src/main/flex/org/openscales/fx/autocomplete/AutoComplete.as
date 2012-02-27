@@ -68,7 +68,7 @@ package org.openscales.fx.autocomplete
 				inputTxt.addEventListener(FocusEvent.FOCUS_IN, _focusInHandler)
 				inputTxt.addEventListener(MouseEvent.CLICK, _focusInHandler)
 				inputTxt.addEventListener(TextOperationEvent.CHANGE, onChange);
-				inputTxt.addEventListener("keyDown", onKeyDown);
+				inputTxt.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 				inputTxt.addEventListener(FlexEvent.ENTER, enter)
 				inputTxt.text = _text;
 			}
