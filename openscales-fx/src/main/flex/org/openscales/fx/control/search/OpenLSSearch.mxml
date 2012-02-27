@@ -46,8 +46,8 @@
 			private var _projection:String = "epsg:4326";
 			private var _maximumGeocodeResponses:uint = 10;
 			private var _version:String = "1.2";
-			private var _adaptResolution = true;
-			private var _displayMarker = true;
+			private var _adaptResolution:Boolean = true;
+			private var _displayMarker:Boolean = true;
 			
 			private var _geocodeServiceUrl:String=null;
 			private var _reverseGeocodeServiceUrl:String=null;
@@ -151,22 +151,22 @@
 			[Bindable]
 			private var _rightLabel:String = Catalog.getLocalizationForKey("openLSSearch.right");
 			
-			public function get displayMarker()
+			public function get displayMarker():Boolean
 			{
 				return _displayMarker;
 			}
 
-			public function set displayMarker(value):void
+			public function set displayMarker(value:Boolean):void
 			{
 				_displayMarker = value;
 			}
 
-			public function get adaptResolution()
+			public function get adaptResolution():Boolean
 			{
 				return _adaptResolution;
 			}
 
-			public function set adaptResolution(value):void
+			public function set adaptResolution(value:Boolean):void
 			{
 				_adaptResolution = value;
 			}
