@@ -1,6 +1,7 @@
 package org.openscales.core.format.csw
 {
 	import org.openscales.core.format.Format;
+	import org.openscales.core.format.GMDFormat;
 	import org.openscales.core.format.csw.parser.CSWGetRecordByIdParser202;
 	import org.openscales.core.format.csw.parser.ICSWGetRecordByIdParser;
 	import org.openscales.core.utils.Trace;
@@ -16,6 +17,12 @@ package org.openscales.core.format.csw
 		 * Version of the CSW format
 		 */
 		private var _version:String = "2.0.2";
+		
+		/**
+		 * Response format
+		 * @default org.openscales.core.format.GMDFormat
+		 */
+		private var _responseFormat:Format = new GMDFormat();
 		
 		/**
 		 * custom parser to handle service specific information such as "full" elementSetName
@@ -84,6 +91,23 @@ package org.openscales.core.format.csw
 		public function set version(value:String):void
 		{
 			this._version = value;
+		}
+		
+		/**
+		 * The format class that will be used to read the CSW reponse.
+		 * @default org.openscales.core.format.GMDFormat
+		 */
+		public function get responseFormat():Format
+		{
+			return this._responseFormat;	
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set responseFormat(value:Format):void
+		{
+			this._responseFormat = value;
 		}
 		
 		

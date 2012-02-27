@@ -4,6 +4,7 @@ package org.openscales.core.format.csw
 	
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.format.Format;
+	import org.openscales.core.format.GMDFormat;
 	import org.openscales.core.format.csw.parser.CSWGetRecordsParser202;
 	import org.openscales.core.format.csw.parser.ICSWGetRecordsParser;
 	import org.openscales.core.request.csw.GetRecordByIdRequest;
@@ -27,6 +28,12 @@ package org.openscales.core.format.csw
 		 */
 		private var _customGetRecordsParser:ICSWGetRecordsParser;
 		
+		/**
+		 * Response format
+		 * @default org.openscales.core.format.GMDFormat
+		 */
+		private var _responseFormat:Format = new GMDFormat();
+		
 		public function CSWGetRecordsFormat()
 		{
 			super();
@@ -49,6 +56,7 @@ package org.openscales.core.format.csw
 			if (this._version == "2.0.2")
 			{
 				var parser:CSWGetRecordsParser202 = new CSWGetRecordsParser202();
+				parser.responseFormat = this._responseFormat;
 				return parser.read(data);
 			}else{
 				Trace.error("CSW GetRecords version : "+_version+" not supported");
@@ -91,6 +99,23 @@ package org.openscales.core.format.csw
 		public function set version(value:String):void
 		{
 			this._version = value;
+		}
+		
+		/**
+		 * The format class that will be used to read the CSW reponse.
+		 * @default org.openscales.core.format.GMDFormat
+		 */
+		public function get responseFormat():Format
+		{
+			return this._responseFormat;	
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set responseFormat(value:Format):void
+		{
+			this._responseFormat = value;
 		}
 		
 	}
