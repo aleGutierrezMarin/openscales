@@ -9,6 +9,7 @@
 		<![CDATA[
 			import mx.controls.Alert;
 			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.handler.feature.draw.DrawHandler;

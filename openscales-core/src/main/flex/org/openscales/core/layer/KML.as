@@ -24,8 +24,6 @@ package org.openscales.core.layer
 		private var _request:XMLRequest = null;
 		private var _kmlFormat:KMLFormat = null;
 		private var _featureVector:Vector.<Feature> = null;
-
-		private var _xml:XML = null;
 		
 		public function KML(identifier:String,
 							url:String = null,

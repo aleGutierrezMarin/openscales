@@ -43,14 +43,6 @@
 			}
 			
 			/**
-			 * Center the map on the layer
-			 * @param event Click event
-			 */
-			private function displayMetadatas(event:MouseEvent):void
-			{
-			}
-			
-			/**
 			 * @inherit
 			 */
 			public function onMapLanguageChange(event:I18NEvent):void 
@@ -65,7 +57,6 @@
 	<os:IconButton id="layerControlMetadatasIcon"
 				width="16"
 				height="16"
-				click="displayMetadatas(event)"
 				toolTip="{this.tooltipMetadatas}"
 				icon="{_btnMetadatas}" />
 	

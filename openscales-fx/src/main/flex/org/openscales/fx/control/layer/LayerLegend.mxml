@@ -40,14 +40,6 @@
 					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 				}
 			}
-				
-			/**
-			 * Center the map on the layer
-			 * @param event Click event
-			 */
-			private function displayLegend(event:MouseEvent):void
-			{
-			}
 			
 			/**
 			 * @inherit
@@ -62,7 +54,6 @@
 	<os:IconButton id="layerControlLegendIcon"
 				width="16"
 				height="16"
-				click="displayLegend(event)"
 				toolTip="{this.tooltipLegend}"
 				icon="{_btnLegend}" />
 	

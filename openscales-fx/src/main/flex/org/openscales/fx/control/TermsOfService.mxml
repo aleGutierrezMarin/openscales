@@ -7,11 +7,16 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.PropertyChangeEvent;
+			
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.i18n.Catalog;		
+			import org.openscales.core.i18n.Catalog;
+			
 			import spark.utils.TextFlowUtil;
 			
 
+			public static const LABEL_CHANGE:String = 'labelChanged';
+			
 			/**
 			 * @private
 			 * Label displayed for the Terms of service link.
@@ -34,7 +39,7 @@
 			 */
 			public function set label(value:String):void{
 				this._label = value;
-				dispatchEvent(new Event("labelChanged"));
+				dispatchEvent(new PropertyChangeEvent(LABEL_CHANGE));
 			}
 			
 			/**
@@ -53,7 +58,7 @@
 			 * @inherit
 			 */
 			override public function onMapLanguageChange(event:I18NEvent):void {
-				dispatchEvent(new Event("labelChanged"));
+				dispatchEvent(new Event(LABEL_CHANGE));
 			}
 			
 			/**

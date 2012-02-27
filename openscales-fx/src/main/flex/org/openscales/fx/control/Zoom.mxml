@@ -19,6 +19,7 @@
 			import spark.components.supportClasses.SliderBase;
 			import spark.events.TrackBaseEvent;
 			
+			public static const SCALE_NAME_LABELS_CHANGE:String = 'scaleNameYChanged';
 			
 			public var DELTA_PX:Number = 100;
 			
@@ -322,7 +323,7 @@
 					if(zoomSlider.thumb)
 					{
 						this.scaleNameY = zoomSlider.thumb.y;
-						dispatchEvent(new Event('scaleNameYChanged'));
+						dispatchEvent(new Event(SCALE_NAME_LABELS_CHANGE));
 					}
 				
 			}
