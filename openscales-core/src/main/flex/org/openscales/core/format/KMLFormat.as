@@ -819,7 +819,7 @@ package org.openscales.core.format
 
 			var listOfFeatures:Vector.<Feature> = features as Vector.<Feature>;
 			var numberOfFeat:uint = listOfFeatures.length;
-			if (numberOfFeat > 0)
+			if (numberOfFeat > 0 && listOfFeatures[0].layer)
 			{
 				var name:XML = new XML("<Name>"+listOfFeatures[0].layer.displayedName+"</Name>");
 				doc.appendChild(name);
