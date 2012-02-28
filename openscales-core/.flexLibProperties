@@ -286,6 +286,10 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.format.sld.SLDFormat"/>
+    <classEntry path="org.openscales.core.format.sld.SLDParser"/>
+    <classEntry path="org.openscales.core.format.sld.model.StyledLayerDescriptor"/>
+    <classEntry path="org.openscales.core.format.sld.model.NamedLayer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
