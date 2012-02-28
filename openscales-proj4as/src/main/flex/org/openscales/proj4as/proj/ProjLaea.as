@@ -39,8 +39,8 @@ package org.openscales.proj4as.proj {
 		/* Initialize the Lambert Azimuthal Equal Area projection
 		 ------------------------------------------------------*/
 		override public function init():void {
-			this.sin_lat_o=Math.sin(this.lat0);
-			this.cos_lat_o=Math.cos(this.lat0);
+			this.sin_lat_o=Math.sin(this.latZero);
+			this.cos_lat_o=Math.cos(this.latZero);
 		}
 
 		/* Lambert Azimuthal Equal Area forward equations--mapping lat,long to x,y
@@ -51,7 +51,7 @@ package org.openscales.proj4as.proj {
 			 -----------------*/
 			var lon:Number=p.x;
 			var lat:Number=p.y;
-			var delta_lon:Number=ProjConstants.adjust_lon(lon - this.long0);
+			var delta_lon:Number=ProjConstants.adjust_lon(lon - this.longZero);
 
 			//v 1.0
 			var sin_lat:Number=Math.sin(lat);
@@ -66,8 +66,8 @@ package org.openscales.proj4as.proj {
 				return null;
 			}
 			var ksp:Number=this.a * Math.sqrt(2.0 / (1.0 + g));
-			var x:Number=ksp * cos_lat * sin_delta_lon + this.x0;
-			var y:Number=ksp * (this.cos_lat_o * sin_lat - this.sin_lat_o * cos_lat * cos_delta_lon) + this.y0;
+			var x:Number=ksp * cos_lat * sin_delta_lon + this.xZero;
+			var y:Number=ksp * (this.cos_lat_o * sin_lat - this.sin_lat_o * cos_lat * cos_delta_lon) + this.yZero;
 			p.x=x;
 			p.y=y
 			return p;
@@ -76,8 +76,8 @@ package org.openscales.proj4as.proj {
 		/* Inverse equations
 		 -----------------*/
 		override public function inverse(p:ProjPoint):ProjPoint {
-			p.x-=this.x0;
-			p.y-=this.y0;
+			p.x-=this.xZero;
+			p.y-=this.yZero;
 
 			var Rh:Number=Math.sqrt(p.x * p.x + p.y * p.y);
 			var temp:Number=Rh / (2.0 * this.a);
@@ -91,21 +91,21 @@ package org.openscales.proj4as.proj {
 			var sin_z:Number=Math.sin(z);
 			var cos_z:Number=Math.cos(z);
 
-			var lon:Number=this.long0;
+			var lon:Number=this.longZero;
 			if (Math.abs(Rh) > ProjConstants.EPSLN) {
 				var lat:Number=ProjConstants.asinz(this.sin_lat_o * cos_z + this.cos_lat_o * sin_z * p.y / Rh);
-				temp=Math.abs(this.lat0) - ProjConstants.HALF_PI;
+				temp=Math.abs(this.latZero) - ProjConstants.HALF_PI;
 				if (Math.abs(temp) > ProjConstants.EPSLN) {
 					temp=cos_z - this.sin_lat_o * Math.sin(lat);
 					if (temp != 0.0)
-						lon=ProjConstants.adjust_lon(this.long0 + Math.atan2(p.x * sin_z * this.cos_lat_o, temp * Rh));
-				} else if (this.lat0 < 0.0) {
-					lon=ProjConstants.adjust_lon(this.long0 - Math.atan2(-p.x, p.y));
+						lon=ProjConstants.adjust_lon(this.longZero + Math.atan2(p.x * sin_z * this.cos_lat_o, temp * Rh));
+				} else if (this.latZero < 0.0) {
+					lon=ProjConstants.adjust_lon(this.longZero - Math.atan2(-p.x, p.y));
 				} else {
-					lon=ProjConstants.adjust_lon(this.long0 + Math.atan2(p.x, -p.y));
+					lon=ProjConstants.adjust_lon(this.longZero + Math.atan2(p.x, -p.y));
 				}
 			} else {
-				lat=this.lat0;
+				lat=this.latZero;
 			}
 			//return(OK);
 			p.x=lon;

@@ -48,9 +48,9 @@ package org.openscales.proj4as.proj {
 			var lat:Number=p.y;
 			/* Forward equations
 			 -----------------*/
-			delta_lon=ProjConstants.adjust_lon(lon - this.long0);
-			x=this.R * delta_lon * Math.cos(lat) + this.x0;
-			y=this.R * lat + this.y0;
+			delta_lon=ProjConstants.adjust_lon(lon - this.longZero);
+			x=this.R * delta_lon * Math.cos(lat) + this.xZero;
+			y=this.R * lat + this.yZero;
 
 			p.x=x;
 			p.y=y;
@@ -62,18 +62,18 @@ package org.openscales.proj4as.proj {
 
 			/* Inverse equations
 			 -----------------*/
-			p.x-=this.x0;
-			p.y-=this.y0;
+			p.x-=this.xZero;
+			p.y-=this.yZero;
 			lat=p.y / this.R;
 			if (Math.abs(lat) > ProjConstants.HALF_PI) {
 				trace("sinu:Inv:DataError");
 			}
 			temp=Math.abs(lat) - ProjConstants.HALF_PI;
 			if (Math.abs(temp) > ProjConstants.EPSLN) {
-				temp=this.long0 + p.x / (this.R * Math.cos(lat));
+				temp=this.longZero + p.x / (this.R * Math.cos(lat));
 				lon=ProjConstants.adjust_lon(temp);
 			} else {
-				lon=this.long0;
+				lon=this.longZero;
 			}
 
 			p.x=lon;

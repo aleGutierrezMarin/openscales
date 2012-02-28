@@ -10,39 +10,39 @@ package org.openscales.proj4as.proj {
 		}
 
 		override public function init():void {
-			if (Math.abs(this.lat1 + this.lat2) < ProjConstants.EPSLN) {
+			if (Math.abs(this.latOne + this.latTwo) < ProjConstants.EPSLN) {
 				trace("aeaInitEqualLatitudes");
 				return;
 			}
 			this.temp=this.b / this.a;
 			this.es=1.0 - Math.pow(this.temp, 2);
-			this.e3=Math.sqrt(this.es);
+			this.eThree=Math.sqrt(this.es);
 
-			this.sin_po=Math.sin(this.lat1);
-			this.cos_po=Math.cos(this.lat1);
-			this.t1=this.sin_po
+			this.sin_po=Math.sin(this.latOne);
+			this.cos_po=Math.cos(this.latOne);
+			this.tOne=this.sin_po
 			this.con=this.sin_po;
-			this.ms1=ProjConstants.msfnz(this.e3, this.sin_po, this.cos_po);
-			this.qs1=ProjConstants.qsfnz(this.e3, this.sin_po, this.cos_po);
+			this.msOne=ProjConstants.msfnz(this.eThree, this.sin_po, this.cos_po);
+			this.qsOne=ProjConstants.qsfnz(this.eThree, this.sin_po, this.cos_po);
 
-			this.sin_po=Math.sin(this.lat2);
-			this.cos_po=Math.cos(this.lat2);
-			this.t2=this.sin_po;
-			this.ms2=ProjConstants.msfnz(this.e3, this.sin_po, this.cos_po);
-			this.qs2=ProjConstants.qsfnz(this.e3, this.sin_po, this.cos_po);
+			this.sin_po=Math.sin(this.latTwo);
+			this.cos_po=Math.cos(this.latTwo);
+			this.tTwo=this.sin_po;
+			this.msTwo=ProjConstants.msfnz(this.eThree, this.sin_po, this.cos_po);
+			this.qsTwo=ProjConstants.qsfnz(this.eThree, this.sin_po, this.cos_po);
 
-			this.sin_po=Math.sin(this.lat0);
-			this.cos_po=Math.cos(this.lat0);
-			this.t3=this.sin_po;
-			this.qs0=ProjConstants.qsfnz(this.e3, this.sin_po, this.cos_po);
+			this.sin_po=Math.sin(this.latZero);
+			this.cos_po=Math.cos(this.latZero);
+			this.tThree=this.sin_po;
+			this.qsZero=ProjConstants.qsfnz(this.eThree, this.sin_po, this.cos_po);
 
-			if (Math.abs(this.lat1 - this.lat2) > ProjConstants.EPSLN) {
-				this.ns0=(this.ms1 * this.ms1 - this.ms2 * this.ms2) / (this.qs2 - this.qs1);
+			if (Math.abs(this.latOne - this.latTwo) > ProjConstants.EPSLN) {
+				this.nsZero=(this.msOne * this.msOne - this.msTwo * this.msTwo) / (this.qsTwo - this.qsOne);
 			} else {
-				this.ns0=this.con;
+				this.nsZero=this.con;
 			}
-			this.c=this.ms1 * this.ms1 + this.ns0 * this.qs1;
-			this.rh=this.a * Math.sqrt(this.c - this.ns0 * this.qs0) / this.ns0;
+			this.c=this.msOne * this.msOne + this.nsZero * this.qsOne;
+			this.rh=this.a * Math.sqrt(this.c - this.nsZero * this.qsZero) / this.nsZero;
 		}
 
 		/* Albers Conical Equal Area forward equations--mapping lat,long to x,y
@@ -54,11 +54,11 @@ package org.openscales.proj4as.proj {
 			this.sin_phi=Math.sin(lat);
 			this.cos_phi=Math.cos(lat);
 
-			var qs:Number=ProjConstants.qsfnz(this.e3, this.sin_phi, this.cos_phi);
-			var rh1:Number=this.a * Math.sqrt(this.c - this.ns0 * qs) / this.ns0;
-			var theta:Number=this.ns0 * ProjConstants.adjust_lon(lon - this.long0);
-			var x:Number=rh1 * Math.sin(theta) + this.x0;
-			var y:Number=this.rh - rh1 * Math.cos(theta) + this.y0;
+			var qs:Number=ProjConstants.qsfnz(this.eThree, this.sin_phi, this.cos_phi);
+			var rh1:Number=this.a * Math.sqrt(this.c - this.nsZero * qs) / this.nsZero;
+			var theta:Number=this.nsZero * ProjConstants.adjust_lon(lon - this.longZero);
+			var x:Number=rh1 * Math.sin(theta) + this.xZero;
+			var y:Number=this.rh - rh1 * Math.cos(theta) + this.yZero;
 
 			p.x=x;
 			p.y=y;
@@ -74,9 +74,9 @@ package org.openscales.proj4as.proj {
 			var lon:Number;
 			var lat:Number;
 
-			p.x-=this.x0;
-			p.y=this.rh - p.y + this.y0;
-			if (this.ns0 >= 0) {
+			p.x-=this.xZero;
+			p.y=this.rh - p.y + this.yZero;
+			if (this.nsZero >= 0) {
 				rh1=Math.sqrt(p.x * p.x + p.y * p.y);
 				con=1.0;
 			} else {
@@ -87,12 +87,12 @@ package org.openscales.proj4as.proj {
 			if (rh1 != 0.0) {
 				theta=Math.atan2(con * p.x, con * p.y);
 			}
-			con=rh1 * this.ns0 / this.a;
-			qs=(this.c - con * con) / this.ns0;
-			if (this.e3 >= 1e-10) {
-				con=1 - .5 * (1.0 - this.es) * Math.log((1.0 - this.e3) / (1.0 + this.e3)) / this.e3;
+			con=rh1 * this.nsZero / this.a;
+			qs=(this.c - con * con) / this.nsZero;
+			if (this.eThree >= 1e-10) {
+				con=1 - .5 * (1.0 - this.es) * Math.log((1.0 - this.eThree) / (1.0 + this.eThree)) / this.eThree;
 				if (Math.abs(Math.abs(con) - Math.abs(qs)) > .0000000001) {
-					lat=this.phi1z(this.e3, qs);
+					lat=this.phi1z(this.eThree, qs);
 				} else {
 					if (qs >= 0) {
 						lat=.5 * Math.PI;
@@ -101,10 +101,10 @@ package org.openscales.proj4as.proj {
 					}
 				}
 			} else {
-				lat=this.phi1z(e3, qs);
+				lat=this.phi1z(eThree, qs);
 			}
 
-			lon=ProjConstants.adjust_lon(theta / this.ns0 + this.long0);
+			lon=ProjConstants.adjust_lon(theta / this.nsZero + this.longZero);
 			p.x=lon;
 			p.y=lat;
 			return p;

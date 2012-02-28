@@ -6,7 +6,7 @@ package org.openscales.proj4as.proj {
 
 	public class ProjGauss extends AbstractProjProjection {
 
-		protected var phic0:Number;
+		protected var phicZero:Number;
 		protected var ratexp:Number;
 
 		public function ProjGauss(data:ProjParams) {
@@ -14,14 +14,14 @@ package org.openscales.proj4as.proj {
 		}
 
 		override public function init():void {
-			var sphi:Number=Math.sin(this.lat0);
-			var cphi:Number=Math.cos(this.lat0);
+			var sphi:Number=Math.sin(this.latZero);
+			var cphi:Number=Math.cos(this.latZero);
 			cphi*=cphi;
 			this.rc=Math.sqrt(1.0 - this.es) / (1.0 - this.es * sphi * sphi);
 			this.c=Math.sqrt(1.0 + this.es * cphi * cphi / (1.0 - this.es));
-			this.phic0=Math.asin(sphi / this.c);
+			this.phicZero=Math.asin(sphi / this.c);
 			this.ratexp=0.5 * this.c * this.e;
-			this.k=Math.tan(0.5 * this.phic0 + ProjConstants.FORTPI) / (Math.pow(Math.tan(0.5 * this.lat0 + ProjConstants.FORTPI), this.c) * ProjConstants.srat(this.e * sphi, this.ratexp));
+			this.k=Math.tan(0.5 * this.phicZero + ProjConstants.FORTPI) / (Math.pow(Math.tan(0.5 * this.latZero + ProjConstants.FORTPI), this.c) * ProjConstants.srat(this.e * sphi, this.ratexp));
 		}
 
 		override public function forward(p:ProjPoint):ProjPoint {

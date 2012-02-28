@@ -24,8 +24,8 @@ package org.openscales.proj4as.proj {
 	 **/
 	public class ProjOrtho extends AbstractProjProjection {
 
-		private var cos_p14:Number;
-		private var sin_p14:Number;
+		private var cos_pFourteen:Number;
+		private var sin_pFourteen:Number;
 
 		public function ProjOrtho(data:ProjParams) {
 			super(data);
@@ -37,8 +37,8 @@ package org.openscales.proj4as.proj {
 			/* Place parameters in static storage for common use
 			 -------------------------------------------------*/
 			;
-			this.sin_p14=Math.sin(this.lat0);
-			this.cos_p14=Math.cos(this.lat0);
+			this.sin_pFourteen=Math.sin(this.latZero);
+			this.cos_pFourteen=Math.cos(this.latZero);
 		}
 
 
@@ -55,17 +55,17 @@ package org.openscales.proj4as.proj {
 			var x:Number, y:Number;
 			/* Forward equations
 			 -----------------*/
-			dlon=ProjConstants.adjust_lon(lon - this.long0);
+			dlon=ProjConstants.adjust_lon(lon - this.longZero);
 
 			sinphi=Math.sin(lat);
 			cosphi=Math.cos(lat);
 
 			coslon=Math.cos(dlon);
-			g=this.sin_p14 * sinphi + this.cos_p14 * cosphi * coslon;
+			g=this.sin_pFourteen * sinphi + this.cos_pFourteen * cosphi * coslon;
 			ksp=1.0;
 			if ((g > 0) || (Math.abs(g) <= ProjConstants.EPSLN)) {
 				x=this.a * ksp * cosphi * Math.sin(dlon);
-				y=this.y0 + this.a * ksp * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon);
+				y=this.yZero + this.a * ksp * (this.cos_pFourteen * sinphi - this.sin_pFourteen * cosphi * coslon);
 			} else {
 				trace("orthoFwdPointError");
 			}
@@ -79,13 +79,12 @@ package org.openscales.proj4as.proj {
 			var rh:Number; /* height above ellipsoid			*/
 			var x:Number, y:Number, z:Number; /* angle					*/
 			var sinz:Number, cosz:Number, cosi:Number; /* sin of z and cos of z			*/
-			var temp:Number;
 			var con:Number;
 			var lon:Number, lat:Number;
 			/* Inverse equations
 			 -----------------*/
-			p.x-=this.x0;
-			p.y-=this.y0;
+			p.x-=this.xZero;
+			p.y-=this.yZero;
 			rh=Math.sqrt(p.x * p.x + p.y * p.y);
 			if (rh > this.a + .0000001) {
 				trace("orthoInvDataError");
@@ -95,22 +94,22 @@ package org.openscales.proj4as.proj {
 			sinz=Math.sin(z);
 			cosi=Math.cos(z);
 
-			lon=this.long0;
+			lon=this.longZero;
 			if (Math.abs(rh) <= ProjConstants.EPSLN) {
-				lat=this.lat0;
+				lat=this.latZero;
 			}
-			lat=ProjConstants.asinz(cosz * this.sin_p14 + (y * sinz * this.cos_p14) / rh);
-			con=Math.abs(lat0) - ProjConstants.HALF_PI;
+			lat=ProjConstants.asinz(cosz * this.sin_pFourteen + (y * sinz * this.cos_pFourteen) / rh);
+			con=Math.abs(latZero) - ProjConstants.HALF_PI;
 			if (Math.abs(con) <= ProjConstants.EPSLN) {
-				if (this.lat0 >= 0) {
-					lon=ProjConstants.adjust_lon(this.long0 + Math.atan2(p.x, -p.y));
+				if (this.latZero >= 0) {
+					lon=ProjConstants.adjust_lon(this.longZero + Math.atan2(p.x, -p.y));
 				} else {
-					lon=ProjConstants.adjust_lon(this.long0 - Math.atan2(-p.x, p.y));
+					lon=ProjConstants.adjust_lon(this.longZero - Math.atan2(-p.x, p.y));
 				}
 			}
-			con=cosz - this.sin_p14 * Math.sin(lat);
+			con=cosz - this.sin_pFourteen * Math.sin(lat);
 			if ((Math.abs(con) >= ProjConstants.EPSLN) || (Math.abs(x) >= ProjConstants.EPSLN)) {
-				lon=ProjConstants.adjust_lon(this.long0 + Math.atan2((p.x * sinz * this.cos_p14), (con * rh)));
+				lon=ProjConstants.adjust_lon(this.longZero + Math.atan2((p.x * sinz * this.cos_pFourteen), (con * rh)));
 			}
 			p.x=lon;
 			p.y=lat;

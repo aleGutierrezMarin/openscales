@@ -41,40 +41,40 @@ package org.openscales.proj4as.proj {
 			this.temp=this.b / this.a;
 			this.es=1.0 - Math.pow(this.temp, 2);
 			this.e=Math.sqrt(this.es);
-			this.e0=ProjConstants.e0fn(this.es);
-			this.e1=ProjConstants.e1fn(this.es);
-			this.e2=ProjConstants.e2fn(this.es);
-			this.e3=ProjConstants.e3fn(this.es);
+			this.eZero=ProjConstants.e0fn(this.es);
+			this.eOne=ProjConstants.e1fn(this.es);
+			this.eTwo=ProjConstants.e2fn(this.es);
+			this.eThree=ProjConstants.e3fn(this.es);
 
-			this.sinphi=Math.sin(this.lat1);
-			this.cosphi=Math.cos(this.lat1);
+			this.sinphi=Math.sin(this.latOne);
+			this.cosphi=Math.cos(this.latOne);
 
-			this.ms1=ProjConstants.msfnz(this.e, this.sinphi, this.cosphi);
-			this.ml1=ProjConstants.mlfn(this.e0, this.e1, this.e2, this.e3, this.lat1);
+			this.msOne=ProjConstants.msfnz(this.e, this.sinphi, this.cosphi);
+			this.mlOne=ProjConstants.mlfn(this.eZero, this.eOne, this.eTwo, this.eThree, this.latOne);
 
 			/* format B
 			 ---------*/
 			if (this.mode != 0) {
-				if (Math.abs(this.lat1 + this.lat2) < ProjConstants.EPSLN) {
+				if (Math.abs(this.latOne + this.latTwo) < ProjConstants.EPSLN) {
 					trace("eqdc:Init:EqualLatitudes");
 						//return(81);
 				}
-				this.sinphi=Math.sin(this.lat2);
-				this.cosphi=Math.cos(this.lat2);
+				this.sinphi=Math.sin(this.latTwo);
+				this.cosphi=Math.cos(this.latTwo);
 
-				this.ms2=ProjConstants.msfnz(this.e, this.sinphi, this.cosphi);
-				this.ml2=ProjConstants.mlfn(this.e0, this.e1, this.e2, this.e3, this.lat2);
-				if (Math.abs(this.lat1 - this.lat2) >= ProjConstants.EPSLN) {
-					this.ns=(this.ms1 - this.ms2) / (this.ml2 - this.ml1);
+				this.msTwo=ProjConstants.msfnz(this.e, this.sinphi, this.cosphi);
+				this.mlTwo=ProjConstants.mlfn(this.eZero, this.eOne, this.eTwo, this.eThree, this.latTwo);
+				if (Math.abs(this.latOne - this.latTwo) >= ProjConstants.EPSLN) {
+					this.ns=(this.msOne - this.msTwo) / (this.mlTwo - this.mlOne);
 				} else {
 					this.ns=this.sinphi;
 				}
 			} else {
 				this.ns=this.sinphi;
 			}
-			this.g=this.ml1 + this.ms1 / this.ns;
-			this.ml0=ProjConstants.mlfn(this.e0, this.e1, this.e2, this.e3, this.lat0);
-			this.rh=this.a * (this.g - this.ml0);
+			this.g=this.mlOne + this.msOne / this.ns;
+			this.mlZero=ProjConstants.mlfn(this.eZero, this.eOne, this.eTwo, this.eThree, this.latZero);
+			this.rh=this.a * (this.g - this.mlZero);
 		}
 
 
@@ -86,12 +86,12 @@ package org.openscales.proj4as.proj {
 
 			/* Forward equations
 			 -----------------*/
-			var ml:Number=ProjConstants.mlfn(this.e0, this.e1, this.e2, this.e3, lat);
+			var ml:Number=ProjConstants.mlfn(this.eZero, this.eOne, this.eTwo, this.eThree, lat);
 			var rh1:Number=this.a * (this.g - ml);
-			var theta:Number=this.ns * ProjConstants.adjust_lon(lon - this.long0);
+			var theta:Number=this.ns * ProjConstants.adjust_lon(lon - this.longZero);
 
-			var x:Number=this.x0 + rh1 * Math.sin(theta);
-			var y:Number=this.y0 + this.rh - rh1 * Math.cos(theta);
+			var x:Number=this.xZero + rh1 * Math.sin(theta);
+			var y:Number=this.yZero + this.rh - rh1 * Math.cos(theta);
 			p.x=x;
 			p.y=y;
 			return p;
@@ -100,8 +100,8 @@ package org.openscales.proj4as.proj {
 		/* Inverse equations
 		 -----------------*/
 		override public function inverse(p:ProjPoint):ProjPoint {
-			p.x-=this.x0;
-			p.y=this.rh - p.y + this.y0;
+			p.x-=this.xZero;
+			p.y=this.rh - p.y + this.yZero;
 			var con:Number;
 			var rh1:Number;
 			if (this.ns >= 0) {
@@ -115,8 +115,8 @@ package org.openscales.proj4as.proj {
 			if (rh1 != 0.0)
 				theta=Math.atan2(con * p.x, con * p.y);
 			var ml:Number=this.g - rh1 / this.a;
-			var lat:Number=this.phi3z(this.ml, this.e0, this.e1, this.e2, this.e3);
-			var lon:Number=ProjConstants.adjust_lon(this.long0 + theta / this.ns);
+			var lat:Number=this.phi3z(this.ml, this.eZero, this.eOne, this.eTwo, this.eThree);
+			var lon:Number=ProjConstants.adjust_lon(this.longZero + theta / this.ns);
 
 			p.x=lon;
 			p.y=lat;

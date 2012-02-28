@@ -64,8 +64,8 @@ package org.openscales.proj4as.proj {
 			}
 			if (!this.lon2)
 				this.lon2=0;
-			if (!this.lat2)
-				this.lat2=0;
+			if (!this.latTwo)
+				this.latTwo=0;
 
 			/* Place parameters in static storage for common use
 			 -------------------------------------------------*/
@@ -73,23 +73,23 @@ package org.openscales.proj4as.proj {
 			var es:Number=1.0 - Math.pow(temp, 2);
 			var e:Number=Math.sqrt(es);
 
-			this.sin_p20=Math.sin(this.lat0);
-			this.cos_p20=Math.cos(this.lat0);
+			this.sin_p20=Math.sin(this.latZero);
+			this.cos_p20=Math.cos(this.latZero);
 
 			this.con=1.0 - this.es * this.sin_p20 * this.sin_p20;
 			this.com=Math.sqrt(1.0 - es);
 			this.bl=Math.sqrt(1.0 + this.es * Math.pow(this.cos_p20, 4.0) / (1.0 - es));
-			this.al=this.a * this.bl * this.k0 * this.com / this.con;
-			if (Math.abs(this.lat0) < ProjConstants.EPSLN) {
+			this.al=this.a * this.bl * this.kZero * this.com / this.con;
+			if (Math.abs(this.latZero) < ProjConstants.EPSLN) {
 				this.ts=1.0;
 				this.d=1.0;
 				this.el=1.0;
 			} else {
-				this.ts=ProjConstants.tsfnz(this.e, this.lat0, this.sin_p20);
+				this.ts=ProjConstants.tsfnz(this.e, this.latZero, this.sin_p20);
 				this.con=Math.sqrt(this.con);
 				this.d=this.bl * this.com / (this.cos_p20 * this.con);
 				if ((this.d * this.d - 1.0) > 0.0) {
-					if (this.lat0 >= 0.0) {
+					if (this.latZero >= 0.0) {
 						this.f=this.d + Math.sqrt(this.d * this.d - 1.0);
 					} else {
 						this.f=this.d - Math.sqrt(this.d * this.d - 1.0);
@@ -113,7 +113,7 @@ package org.openscales.proj4as.proj {
 				//cenlon(lon_origin);
 				// cenlat(lat_origin);
 
-				this.con=Math.abs(this.lat0);
+				this.con=Math.abs(this.latZero);
 				if ((this.con > ProjConstants.EPSLN) && (Math.abs(this.con - ProjConstants.HALF_PI) > ProjConstants.EPSLN)) {
 					this.singam=Math.sin(this.gama);
 					this.cosgam=Math.cos(this.gama);
@@ -121,7 +121,7 @@ package org.openscales.proj4as.proj {
 					this.sinaz=Math.sin(this.alpha);
 					this.cosaz=Math.cos(this.alpha);
 
-					if (this.lat0 >= 0) {
+					if (this.latZero >= 0) {
 						this.u=(this.al / this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0) / this.cosaz);
 					} else {
 						this.u=-(this.al / this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0) / this.cosaz);
@@ -131,9 +131,9 @@ package org.openscales.proj4as.proj {
 				}
 			} else {
 				this.sinphi=Math.sin(this.at1);
-				this.ts1=ProjConstants.tsfnz(this.e, this.lat1, this.sinphi);
-				this.sinphi=Math.sin(this.lat2);
-				this.ts2=ProjConstants.tsfnz(this.e, this.lat2, this.sinphi);
+				this.ts1=ProjConstants.tsfnz(this.e, this.latOne, this.sinphi);
+				this.sinphi=Math.sin(this.latTwo);
+				this.ts2=ProjConstants.tsfnz(this.e, this.latTwo, this.sinphi);
 				this.h=Math.pow(this.ts1, this.bl);
 				this.l=Math.pow(this.ts2, this.bl);
 				this.f=this.el / this.h;
@@ -154,17 +154,17 @@ package org.openscales.proj4as.proj {
 				/* Report parameters common to format A
 				 -------------------------------------*/
 
-				if (Math.abs(this.lat1 - this.lat2) <= ProjConstants.EPSLN) {
+				if (Math.abs(this.latOne - this.latTwo) <= ProjConstants.EPSLN) {
 					trace("omercInitDataError");
 						//return(202);
 				} else {
-					this.con=Math.abs(this.lat1);
+					this.con=Math.abs(this.latOne);
 				}
 				if ((this.con <= ProjConstants.EPSLN) || (Math.abs(this.con - ProjConstants.HALF_PI) <= ProjConstants.EPSLN)) {
 					trace("omercInitDataError");
 						//return(202);
 				} else {
-					if (Math.abs(Math.abs(this.lat0) - ProjConstants.HALF_PI) <= ProjConstants.EPSLN) {
+					if (Math.abs(Math.abs(this.latZero) - ProjConstants.HALF_PI) <= ProjConstants.EPSLN) {
 						trace("omercInitDataError");
 							//return(202);
 					}
@@ -177,7 +177,7 @@ package org.openscales.proj4as.proj {
 				this.cosaz=Math.cos(this.alpha);
 
 
-				if (this.lat0 >= 0) {
+				if (this.latZero >= 0) {
 					this.u=(this.al / this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0) / this.cosaz);
 				} else {
 					this.u=-(this.al / this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0) / this.cosaz);
@@ -189,11 +189,9 @@ package org.openscales.proj4as.proj {
 		/* Oblique Mercator forward equations--mapping lat,long to x,y
 		 ----------------------------------------------------------*/
 		override public function forward(p:ProjPoint):ProjPoint {
-			var theta:Number; /* angle					*/
-			var sin_phi:Number, cos_phi:Number; /* sin and cos value				*/
-			var b:Number; /* temporary values				*/
-			var c:Number, t:Number, tq:Number; /* temporary values				*/
-			var con:Number, n:Number, ml:Number; /* cone constant, small m			*/
+			var sin_phi:Number; /* sin value				*/
+			var t:Number; /* temporary value				*/
+			var con:Number; /* cone constant, small m			*/
 			var q:Number, us:Number, vl:Number;
 			var ul:Number, vs:Number;
 			var s:Number;
@@ -236,8 +234,8 @@ package org.openscales.proj4as.proj {
 			}
 			vs=.5 * this.al * Math.log((1.0 - ul) / (1.0 + ul)) / this.bl;
 			us=us - this.u;
-			var x:Number=this.x0 + vs * this.cosaz + us * this.sinaz;
-			var y:Number=this.y0 + us * this.cosaz - vs * this.sinaz;
+			var x:Number=this.xZero + vs * this.cosaz + us * this.sinaz;
+			var y:Number=this.yZero + us * this.cosaz - vs * this.sinaz;
 
 			p.x=x;
 			p.y=y;
@@ -245,22 +243,17 @@ package org.openscales.proj4as.proj {
 		}
 
 		override public function inverse(p:ProjPoint):ProjPoint {
-			var delta_lon:Number; /* Delta longitude (Given longitude - center 	*/
 			var theta:Number; /* angle					*/
-			var delta_theta:Number; /* adjusted longitude				*/
-			var sin_phi:Number, cos_phi:Number; /* sin and cos value				*/
-			var b:Number; /* temporary values				*/
-			var c:Number, t:Number, tq:Number; /* temporary values				*/
-			var con:Number, n:Number, ml:Number; /* cone constant, small m			*/
+			var t:Number; /* temporary value				*/
+			var con:Number; /* cone constant, small m			*/
 			var vs:Number, us:Number, q:Number, s:Number, ts1:Number;
-			var vl:Number, ul:Number, bs:Number;
-			var dlon:Number;
+			var vl:Number, ul:Number;
 			var flag:Number;
 
 			/* Inverse equations
 			 -----------------*/
-			p.x-=this.x0;
-			p.y-=this.y0;
+			p.x-=this.xZero;
+			p.y-=this.yZero;
 			flag=0;
 			vs=p.x * this.cosaz - p.y * this.sinaz;
 			us=p.y * this.cosaz + p.x * this.sinaz;

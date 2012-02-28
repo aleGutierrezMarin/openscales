@@ -39,14 +39,14 @@ package org.openscales.proj4as.proj {
 			//double false_east;              /* x offset in meters                   */
 			//double false_north;             /* y offset in meters                   */
 
-			if (!this.lat2) {
-				this.lat2=this.lat0;
+			if (!this.latTwo) {
+				this.latTwo=this.latZero;
 			} //if lat2 is not defined
-			if (!this.k0)
-				this.k0=1.0;
+			if (!this.kZero)
+				this.kZero=1.0;
 
 			// Standard Parallels cannot be equal and on opposite sides of the equator
-			if (Math.abs(this.lat1 + this.lat2) < ProjConstants.EPSLN) {
+			if (Math.abs(this.latOne + this.latTwo) < ProjConstants.EPSLN) {
 				trace("lcc:init: Equal Latitudes");
 				return;
 			}
@@ -54,19 +54,19 @@ package org.openscales.proj4as.proj {
 			var temp:Number=this.b / this.a;
 			this.e=Math.sqrt(1.0 - temp * temp);
 
-			var sin1:Number=Math.sin(this.lat1);
-			var cos1:Number=Math.cos(this.lat1);
+			var sin1:Number=Math.sin(this.latOne);
+			var cos1:Number=Math.cos(this.latOne);
 			var ms1:Number=ProjConstants.msfnz(this.e, sin1, cos1);
-			var ts1:Number=ProjConstants.tsfnz(this.e, this.lat1, sin1);
+			var ts1:Number=ProjConstants.tsfnz(this.e, this.latOne, sin1);
 
-			var sin2:Number=Math.sin(this.lat2);
-			var cos2:Number=Math.cos(this.lat2);
+			var sin2:Number=Math.sin(this.latTwo);
+			var cos2:Number=Math.cos(this.latTwo);
 			var ms2:Number=ProjConstants.msfnz(this.e, sin2, cos2);
-			var ts2:Number=ProjConstants.tsfnz(this.e, this.lat2, sin2);
+			var ts2:Number=ProjConstants.tsfnz(this.e, this.latTwo, sin2);
 
-			var ts0:Number=ProjConstants.tsfnz(this.e, this.lat0, Math.sin(this.lat0));
+			var ts0:Number=ProjConstants.tsfnz(this.e, this.latZero, Math.sin(this.latZero));
 
-			if (Math.abs(this.lat1 - this.lat2) > ProjConstants.EPSLN) {
+			if (Math.abs(this.latOne - this.latTwo) > ProjConstants.EPSLN) {
 				this.ns=Math.log(ms1 / ms2) / Math.log(ts1 / ts2);
 			} else {
 				this.ns=sin1;
@@ -103,9 +103,9 @@ package org.openscales.proj4as.proj {
 				}
 				rh1=0;
 			}
-			var theta:Number=this.ns * ProjConstants.adjust_lon(lon - this.long0);
-			p.x=this.k0 * (rh1 * Math.sin(theta)) + this.x0;
-			p.y=this.k0 * (this.rh - rh1 * Math.cos(theta)) + this.y0;
+			var theta:Number=this.ns * ProjConstants.adjust_lon(lon - this.longZero);
+			p.x=this.kZero * (rh1 * Math.sin(theta)) + this.xZero;
+			p.y=this.kZero * (this.rh - rh1 * Math.cos(theta)) + this.yZero;
 
 			return p;
 		}
@@ -118,8 +118,8 @@ package org.openscales.proj4as.proj {
 			var ts:Number;
 			var lat:Number;
 			var lon:Number;
-			var x:Number=(p.x - this.x0) / this.k0;
-			var y:Number=(this.rh - (p.y - this.y0) / this.k0);
+			var x:Number=(p.x - this.xZero) / this.kZero;
+			var y:Number=(this.rh - (p.y - this.yZero) / this.kZero);
 			if (this.ns > 0) {
 				rh1=Math.sqrt(x * x + y * y);
 				con=1.0;
@@ -140,7 +140,7 @@ package org.openscales.proj4as.proj {
 			} else {
 				lat=-ProjConstants.HALF_PI;
 			}
-			lon=ProjConstants.adjust_lon(theta / this.ns + this.long0);
+			lon=ProjConstants.adjust_lon(theta / this.ns + this.longZero);
 
 			p.x=lon;
 			p.y=lat;

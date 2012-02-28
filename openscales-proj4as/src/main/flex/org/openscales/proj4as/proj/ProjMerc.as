@@ -36,9 +36,9 @@ package org.openscales.proj4as.proj {
 			//this.m1 = Math.cos(0.0) / (Math.sqrt( 1.0 - this.es * Math.sin(0.0) * Math.sin(0.0)));
 			if (this.lat_ts) {
 				if (this.sphere) {
-					this.k0=Math.cos(this.lat_ts);
+					this.kZero=Math.cos(this.lat_ts);
 				} else {
-					this.k0=ProjConstants.msfnz(this.es, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
+					this.kZero=ProjConstants.msfnz(this.es, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
 				}
 			}
 		}
@@ -62,13 +62,13 @@ package org.openscales.proj4as.proj {
 				return null;
 			} else {
 				if (this.sphere) {
-					x=this.x0 + this.a * this.k0 * ProjConstants.adjust_lon(lon - this.long0);
-					y=this.y0 + this.a * this.k0 * Math.log(Math.tan(ProjConstants.FORTPI + 0.5 * lat));
+					x=this.xZero + this.a * this.kZero * ProjConstants.adjust_lon(lon - this.longZero);
+					y=this.yZero + this.a * this.kZero * Math.log(Math.tan(ProjConstants.FORTPI + 0.5 * lat));
 				} else {
 					var sinphi:Number=Math.sin(lat);
 					var ts:Number=ProjConstants.tsfnz(this.e, lat, sinphi);
-					x=this.x0 + this.a * this.k0 * ProjConstants.adjust_lon(lon - this.long0);
-					y=this.y0 - this.a * this.k0 * Math.log(ts);
+					x=this.xZero + this.a * this.kZero * ProjConstants.adjust_lon(lon - this.longZero);
+					y=this.yZero - this.a * this.kZero * Math.log(ts);
 				}
 				p.x=x;
 				p.y=y;
@@ -80,21 +80,21 @@ package org.openscales.proj4as.proj {
 		/* Mercator inverse equations--mapping x,y to lat/long
 		 --------------------------------------------------*/
 		override public function inverse(p:ProjPoint):ProjPoint {
-			var x:Number=p.x - this.x0;
-			var y:Number=p.y - this.y0;
+			var x:Number=p.x - this.xZero;
+			var y:Number=p.y - this.yZero;
 			var lon:Number, lat:Number;
 
 			if (this.sphere) {
-				lat=ProjConstants.HALF_PI - 2.0 * Math.atan(Math.exp(-y / this.a * this.k0));
+				lat=ProjConstants.HALF_PI - 2.0 * Math.atan(Math.exp(-y / this.a * this.kZero));
 			} else {
-				var ts:Number=Math.exp(-y / (this.a * this.k0));
+				var ts:Number=Math.exp(-y / (this.a * this.kZero));
 				lat=ProjConstants.phi2z(this.e, ts);
 				if (lat == -9999) {
 					trace("merc:inverse: lat = -9999");
 					return null;
 				}
 			}
-			lon=ProjConstants.adjust_lon(this.long0 + x / (this.a * this.k0));
+			lon=ProjConstants.adjust_lon(this.longZero + x / (this.a * this.kZero));
 
 			p.x=lon;
 			p.y=lat;
