@@ -10,6 +10,8 @@
    
    "component.iconify": "Iconify",
    "component.toggle": "Toggle",
+   "overviewmap.iconify": "Close overview map",
+   "overviewmap.toggle": "Display overview map",
    
    "drawing.selectDrawingLayer": "Select a drawing layer to use this tool",
    "drawing.toolbar": "Drawing tools",
