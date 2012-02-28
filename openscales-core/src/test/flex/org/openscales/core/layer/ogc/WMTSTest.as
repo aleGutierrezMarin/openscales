@@ -9,6 +9,7 @@ package org.openscales.core.layer.ogc {
 	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.WMTS100;
@@ -312,7 +313,7 @@ package org.openscales.core.layer.ogc {
 			this._handler = Async.asyncHandler(this,assertChangeLayerTileMatrixSetIfNotCompatibleWithMapProjection,
 				3000,null,noRequestSend);
 			
-			this._wmts.addEventListener(TileEvent.TILE_LOAD_START,this._handler);
+			this._map.addEventListener(LayerEvent.LAYER_ADDED,this._handler);
 			
 			this._map.addLayer(this._wmts);
 			
@@ -320,7 +321,7 @@ package org.openscales.core.layer.ogc {
 		
 		private function assertChangeLayerTileMatrixSetIfNotCompatibleWithMapProjection(event:TileEvent,obj:Object):void
 		{
-			this._wmts.removeEventListener(TileEvent.TILE_LOAD_START,this._handler);
+			this._map.removeEventListener(LayerEvent.LAYER_ADDED,this._handler);
 			
 			assertTrue("Layer should be available", this._wmts.available);
 			assertEquals("Layers projection should be in map projection", this._wmts.projection, this._map.projection);
