@@ -91,7 +91,7 @@ package org.openscales.proj4as.projections
 		public function getProjectionTests():void {
 			var proj:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
 			Assert.assertNotNull("EPSG:4326 should be found",proj);
-			Assert.assertEquals("Sould be EPSG:4326","EPSG:4326",proj.projName);
+			Assert.assertEquals("Sould be EPSG:4326","EPSG:4326",proj.srsCode);
 			
 			proj = ProjProjection.getProjProjection("EPSG:TEST");
 			Assert.assertNull("EPSG:TEST should not be found",proj);
