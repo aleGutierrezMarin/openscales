@@ -327,7 +327,7 @@
 			 * Called when a layer is removed
 			 */
 			protected function onLayerRemoved(event:LayerEvent):void{
-				if(event.layer.selected && this._layer.map){
+				if(event.layer.selected && this._layer && this._layer.map){
 					event.layer.selected = false;
 					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.CHANGE_ACTIVE_LAYER);
 					evt.layer = null;
