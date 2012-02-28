@@ -319,7 +319,7 @@ package org.openscales.core.layer.ogc {
 			
 		}
 		
-		private function assertChangeLayerTileMatrixSetIfNotCompatibleWithMapProjection(event:TileEvent,obj:Object):void
+		private function assertChangeLayerTileMatrixSetIfNotCompatibleWithMapProjection(event:LayerEvent,obj:Object):void
 		{
 			this._map.removeEventListener(LayerEvent.LAYER_ADDED,this._handler);
 			
