@@ -10,6 +10,8 @@
    
    "component.iconify": "Iconifier",
    "component.toggle": "Agrandir",
+   "overviewmap.iconify": "Fermer la vue d'ensemble",
+   "overviewmap.toggle": "Afficher la vue d'ensemble",
    
    "drawing.selectDrawingLayer": "Sélectionnez une couche de croquis pour utiliser cet outil",
    "drawing.toolbar": "Outils de croquis",
