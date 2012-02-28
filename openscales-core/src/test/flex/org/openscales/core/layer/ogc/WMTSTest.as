@@ -12,7 +12,7 @@ package org.openscales.core.layer.ogc {
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.core.layer.capabilities.WMTS100;
+	import org.openscales.core.layer.capabilities.WMTS100Capabilities;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
@@ -142,7 +142,7 @@ package org.openscales.core.layer.ogc {
 			this._map.maxExtent = new Bounds(-8.38, 38.14, 14.11, 55.92, "EPSG:4326");
 			
 			// And a WMTS layer on this map
-			var cap:WMTS100 = new WMTS100();
+			var cap:WMTS100Capabilities = new WMTS100Capabilities();
 			var layers:HashMap = cap.read(new XML(new SIMPLECAPABILITIES()));
 			var tmshm:HashMap = (layers.getValue(LAYER) as HashMap).getValue("TileMatrixSets") as HashMap;
 			
@@ -301,7 +301,7 @@ package org.openscales.core.layer.ogc {
 			this._map.maxExtent = new Bounds(-8.38, 38.14, 14.11, 55.92, "EPSG:4326");
 			
 			// And a WMTS layer on this map
-			var cap:WMTS100 = new WMTS100();
+			var cap:WMTS100Capabilities = new WMTS100Capabilities();
 			var layers:HashMap = cap.read(new XML(new EXTENDEDCAPABILITIES()));
 			var tmshm:HashMap = (layers.getValue(LAYER) as HashMap).getValue("TileMatrixSets") as HashMap;
 			

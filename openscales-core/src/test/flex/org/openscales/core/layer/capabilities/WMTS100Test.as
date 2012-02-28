@@ -15,7 +15,7 @@ package org.openscales.core.layer.capabilities
 		public function testRead():void 
 		{
 			// Creating an instance of WMTS100
-			var instance:WMTS100 = new WMTS100();
+			var instance:WMTS100Capabilities = new WMTS100Capabilities();
 			
 			var WMTSLayers:HashMap = instance.read(xmlData);
 			

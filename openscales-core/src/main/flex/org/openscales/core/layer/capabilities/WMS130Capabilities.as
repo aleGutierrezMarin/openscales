@@ -1,34 +1,41 @@
+// ActionScript file
 package org.openscales.core.layer.capabilities
 {
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
-	 * WFS 1.1.0 capabilities parser
+	 * WFS 1.1.1 capabilities parser
 	 */
-	public class WMS110 extends CapabilitiesParser
+	public class WMS130Capabilities extends CapabilitiesParser
 	{
 		import org.openscales.core.basetypes.maps.HashMap;
 		private namespace _wmsns = "http://www.opengis.net/wms";
 
+		/**
+		 * @private
+		 * Minimum bounding rectangle in decimal degrees covered by the layer
+		 */
+		private var _exGeographicBoundingBox:String;
 
 		/**
-		 * WFS 1.1.0 capabilities parser
+		 * WFS 1.3.0 capabilities parser
 		 */
-		public function WMS110()
+		public function WMS130Capabilities()
 		{
 			super();
 
-			this._version = "1.1.0";
+			this._version = "1.3.0";
 			
 			this._layerNode = "Layer";
 			this._name = "Name";
 			this._format = "Format";
 			this._title = "Title";
-			this._srs = "SRS";
+			this._srs = "CRS";
 			this._abstract = "Abstract";
 			this._keywordList = "KeywordList";
 			this._latLonBoundingBox = "LatLonBoundingBox";
+			this._exGeographicBoundingBox = "EX_GeographicBoundingBox";
 		}
 
 		/**
@@ -65,7 +72,6 @@ package org.openscales.core.layer.capabilities
 				}
 			}
 			
-			var projection:String = null;
 			for each (var layer:XML in layerNodes){
 
 				layerCapabilities.put("Format", this._format);
@@ -83,35 +89,40 @@ package org.openscales.core.layer.capabilities
 				layerCapabilities.put("Format", value);
 				this._format = value;
 				
-				value = layer.SRS.toString();
-				while (value.search(" ") > 0) {
-					value = value.replace(" ",",");
+				var srsNodes:XMLList = layer.CRS;
+				var csSrsList:String = "";
+				for each (var srs:XML in srsNodes)
+				{
+					value = srs.toString();
+					if (csSrsList != "")
+						csSrsList = csSrsList + "," + value;
+					else
+						csSrsList = value;
 				}
-				layerCapabilities.put("SRS", value);
-				projection = value;
-
+				layerCapabilities.put("CRS", csSrsList);
+				
 				value = layer.Abstract;
 				layerCapabilities.put("Abstract", value);
-				
+
 				value = layer.KeywordList;
 				layerCapabilities.put("KeywordList", value);
-
-				left = new Number(layer.LatLonBoundingBox.@minx.toXMLString());
-				bottom = new Number(layer.LatLonBoundingBox.@miny.toXMLString());
-				right = new Number(layer.LatLonBoundingBox.@maxx.toXMLString());
-				top = new Number(layer.LatLonBoundingBox.@maxy.toXMLString());;
-
-				layerCapabilities.put("LatLonBoundingBox", new Bounds(left,bottom,right,top,Geometry.DEFAULT_SRS_CODE));
-
+				
+				left = new Number(layer.BoundingBox.westBoundLongitude);
+				bottom = new Number(layer.BoundingBox.southBoundLatitude);
+				right = new Number(layer.BoundingBox.eastBoundLongitude);
+				top = new Number(layer.BoundingBox.northBoundLatitude);
+				
+				// in decimal degrees => Geometry.DEFAULT_SRS_CODE
+				layerCapabilities.put("EX_GeographicBoundingBox", new Bounds(left,bottom,right,top,Geometry.DEFAULT_SRS_CODE));
+				
 				left = new Number(layer.BoundingBox.@minx.toXMLString());
 				bottom = new Number(layer.BoundingBox.@miny.toXMLString());
 				right = new Number(layer.BoundingBox.@maxx.toXMLString());
-				top = new Number(layer.BoundingBox.@maxy.toXMLString());;
-						
-				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,projection));
+				top = new Number(layer.BoundingBox.@maxy.toXMLString());
+    						
+				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,csSrsList));
 				
-				
-                if (name != "")
+				if (name != "")
 					this._capabilities.put(name, layerCapabilities);
 
 				//We cannot use clear() or reset() or we'll loose the datas

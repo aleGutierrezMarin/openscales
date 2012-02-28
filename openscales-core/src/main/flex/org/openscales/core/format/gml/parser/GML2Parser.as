@@ -20,9 +20,9 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.ProjProjection;
 
-	public class GML2 extends GMLParser
+	public class GML2Parser extends GMLParser
 	{
-		public function GML2()
+		public function GML2Parser()
 		{
 			this._eXML  = "</gml:featureMember></wfs:FeatureCollection>";
 			this._eFXML = "</gml:featureMember>";

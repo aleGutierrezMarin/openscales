@@ -20,7 +20,7 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.ProjProjection;
 
-	public class GML321 extends GMLParser
+	public class GML321Parser extends GMLParser
 	{
 		/**
 		 * The purpose of this class is to read gml data
@@ -28,7 +28,7 @@ package org.openscales.core.format.gml.parser
 		 * 
 		 */ 
 		
-		public function GML321()
+		public function GML321Parser()
 		{
 			super();
 		
