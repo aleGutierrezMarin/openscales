@@ -228,6 +228,8 @@ package org.openscales.core.layer
 					NewLayerBounds = this.map.maxExtent.getIntersection(NewLayerBounds);
 					bmpBounds = this.grid[0][0].bounds;
 					scale = this.scaleX;
+					if (NewLayerBounds == null)
+						return;
 					var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
 					if (intersectBounds == null)
 							return;
