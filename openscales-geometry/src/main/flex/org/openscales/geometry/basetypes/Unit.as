@@ -171,14 +171,14 @@ package org.openscales.geometry.basetypes
 				} else {
 					// approximation of a longitudinal degree at latitude phi :
 					var cosphi:Number = Math.cos(center.lat*0.0174532925199432958);
-					var cosphi2:Number = cosphi*cosphi;
+					var cosphiSquare:Number = cosphi*cosphi;
 					var sinphi:Number = Math.sin(center.lat*0.0174532925199432958);
-					var sinphi2:Number = sinphi*sinphi;
-					var a2:Number = a*a;
-					var a4:Number= a*a*a*a;
-					var b2:Number= b*b;
-					var b4:Number = b*b*b*b;
-					res*= 0.0174532925199432958*cosphi*Math.sqrt((a4*cosphi2+b4*sinphi2)/(a2*cosphi2+b2*sinphi2));
+					var sinphiSquare:Number = sinphi*sinphi;
+					var aSquare:Number = a*a;
+					var aQuad:Number= a*a*a*a;
+					var bSquare:Number= b*b;
+					var bQuad:Number = b*b*b*b;
+					res*= 0.0174532925199432958*cosphi*Math.sqrt((aQuad*cosphiSquare+bQuad*sinphiSquare)/(aSquare*cosphiSquare+bSquare*sinphiSquare));
 				}
 			}
 			
