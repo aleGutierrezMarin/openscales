@@ -38,12 +38,12 @@ package org.openscales.core.layer.capabilities
 	 * @author slopez
 	 * @author htulipe
 	 */
-	public class WMTS100 extends CapabilitiesParser
+	public class WMTS100Capabilities extends CapabilitiesParser
 	{
 		private namespace _wmtsns = "http://www.opengis.net/wmts/1.0";
 		private namespace _owsns = "http://www.opengis.net/ows/1.1"; 
 		
-		public function WMTS100()
+		public function WMTS100Capabilities()
 		{
 			super();
 			this._version = "1.0.0";

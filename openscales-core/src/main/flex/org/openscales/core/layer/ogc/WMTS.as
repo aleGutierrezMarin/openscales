@@ -8,7 +8,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.core.layer.capabilities.WMTS100;
+	import org.openscales.core.layer.capabilities.WMTS100Capabilities;
 	import org.openscales.core.layer.ogc.provider.WMTSTileProvider;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
@@ -167,7 +167,7 @@ package org.openscales.core.layer.ogc
 		 */
 		public function loadEnd(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
-			var cap:WMTS100 = new WMTS100();
+			var cap:WMTS100Capabilities = new WMTS100Capabilities();
 			var layers:HashMap = cap.read(new XML(loader.data as String));
 			if(!layers)
 				return;

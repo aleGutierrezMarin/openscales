@@ -48,14 +48,14 @@ package org.openscales.core.layer.capabilities
 			this._parsers = new HashMap();
 			this._security = security;
 			
-			_parsers.put("WFS 1.0.0",WFS100);
-		    _parsers.put("WFS 1.1.0",WFS110);
-			_parsers.put("WFS 2.0.0",WFS200);
-		    _parsers.put("WMS 1.0.0",WMS100);
-		    _parsers.put("WMS 1.1.0",WMS110);
-		    _parsers.put("WMS 1.1.1",WMS111);
-			_parsers.put("WMS 1.3.0",WMS130);
-			_parsers.put("WMTS 1.0.0",WMTS100);
+			_parsers.put("WFS 1.0.0",WFS100Capabilities);
+		    _parsers.put("WFS 1.1.0",WFS110Capabilities);
+			_parsers.put("WFS 2.0.0",WFS200Capabilities);
+		    _parsers.put("WMS 1.0.0",WMS100Capabilities);
+		    _parsers.put("WMS 1.1.0",WMS110Capabilities);
+		    _parsers.put("WMS 1.1.1",WMS111Capabilities);
+			_parsers.put("WMS 1.3.0",WMS130Capabilities);
+			_parsers.put("WMTS 1.0.0",WMTS100Capabilities);
 				
 			this._proxy = proxy;
 

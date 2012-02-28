@@ -5,7 +5,7 @@ package org.openscales.core.format
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
-	import org.openscales.core.format.gml.parser.GML311;
+	import org.openscales.core.format.gml.parser.GML311Parser;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
@@ -78,6 +78,7 @@ package org.openscales.core.format
 				this._description = channel.*::description[0].toString();
 				this._link = channel.*::link[0].toString();
 			}
+import org.openscales.core.format.gml.parser.GML311Parser;
 			
 			var items:XMLList = _rssFile..*::item;
 			var itemNumber:uint = items.length();
@@ -153,7 +154,7 @@ package org.openscales.core.format
 				
 				//if the where element contains more than one GML feature, only the first one will be parsed
 				else if(elementType == "where"){
-					var gmlFormat:GML311 = new GML311();
+					var gmlFormat:GML311Parser = new GML311Parser();
 					feature = gmlFormat.parseFeature(children[i], false);			
 				}
 				else if(elementType.toLowerCase() == "description") {

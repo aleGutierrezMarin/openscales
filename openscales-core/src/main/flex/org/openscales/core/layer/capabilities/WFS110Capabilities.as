@@ -6,7 +6,7 @@ package org.openscales.core.layer.capabilities
 	/**
 	 * WFS 1.1.0 capabilities parser
 	 */
-	public class WFS110 extends CapabilitiesParser
+	public class WFS110Capabilities extends CapabilitiesParser
 	{
 		import org.openscales.core.basetypes.maps.HashMap;
 		private namespace _wfsns = "http://www.opengis.net/wfs";
@@ -15,7 +15,7 @@ package org.openscales.core.layer.capabilities
 		/**
 		 * WFS 1.1.0 capabilities parser
 		 */
-		public function WFS110()
+		public function WFS110Capabilities()
 		{
 			super();
 

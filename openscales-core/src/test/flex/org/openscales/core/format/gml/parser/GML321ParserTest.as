@@ -29,14 +29,14 @@ package org.openscales.core.format.gml.parser
 	
 	public class GML321ParserTest
 	{
-		private var format:GML321;
+		private var format:GML321Parser;
 		
 		public function GML321ParserTest(){}
 		
 		[Before]
 		public function setUp():void
 		{
-			format = new GML321();
+			format = new GML321Parser();
 		}
 		
 		[After] 

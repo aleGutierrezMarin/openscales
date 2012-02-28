@@ -15,7 +15,7 @@ package org.openscales.core.layer.capabilities
 		[Test]
 		public function testWfs100():void {
 
-			var parser:WFS100 = new WFS100();
+			var parser:WFS100Capabilities = new WFS100Capabilities();
 			var capabilities:HashMap = parser.read(doc10);
 			var featureCap:HashMap = null;
 
@@ -41,7 +41,7 @@ package org.openscales.core.layer.capabilities
 		[Test]
 		public function testWfs110():void {
 
-			var parser:WFS110 = new WFS110();
+			var parser:WFS110Capabilities = new WFS110Capabilities();
 			var capabilities:HashMap = parser.read(doc11);
 			var featureCap:HashMap = null;
 

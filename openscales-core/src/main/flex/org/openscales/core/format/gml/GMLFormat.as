@@ -18,9 +18,9 @@ package org.openscales.core.format.gml
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.format.Format;
-	import org.openscales.core.format.gml.parser.GML2;
-	import org.openscales.core.format.gml.parser.GML311;
-	import org.openscales.core.format.gml.parser.GML321;
+	import org.openscales.core.format.gml.parser.GML2Parser;
+	import org.openscales.core.format.gml.parser.GML311Parser;
+	import org.openscales.core.format.gml.parser.GML321Parser;
 	import org.openscales.core.format.gml.parser.GMLParser;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
@@ -109,8 +109,8 @@ package org.openscales.core.format.gml
 			
 			switch (this._version) {
 				case "2.1.1":
-					if(!this._gmlParser || !(this._gmlParser is GML2))
-						this._gmlParser = new GML2();
+					if(!this._gmlParser || !(this._gmlParser is GML2Parser))
+						this._gmlParser = new GML2Parser();
 					if(!this._asyncLoading) {
 						features = dataXML..*::featureMember;
 					}
@@ -118,8 +118,8 @@ package org.openscales.core.format.gml
 					break;
 				case "3.1.1":
 					lonlat = this.externalProjection.lonlat;
-					if(!this._gmlParser || !(this._gmlParser is GML311))
-						this._gmlParser = new GML311();
+					if(!this._gmlParser || !(this._gmlParser is GML311Parser))
+						this._gmlParser = new GML311Parser();
 					//featureMembers
 					//if(!this._asyncLoading) {
 						features = dataXML..*::featureMembers;
@@ -129,8 +129,8 @@ package org.openscales.core.format.gml
 					break;
 				case "3.2.1":
 					lonlat = this.externalProjection.lonlat;
-					if(!this._gmlParser || !(this._gmlParser is GML321))
-						this._gmlParser = new GML321();
+					if(!this._gmlParser || !(this._gmlParser is GML321Parser))
+						this._gmlParser = new GML321Parser();
 					//members
 					//if(!this._asyncLoading) {
 					features = dataXML..*::member;

@@ -8,7 +8,7 @@ package org.openscales.core.format.gml.writer
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
-	import org.openscales.core.format.gml.parser.GML321;
+	import org.openscales.core.format.gml.parser.GML321Parser;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.Point;
@@ -26,7 +26,7 @@ package org.openscales.core.format.gml.writer
 		private const GMLFILE3:Class;
 		
 		private var writer:GML321Writer;
-		private var parser:GML321;
+		private var parser:GML321Parser;
 		private var featureCol:Vector.<Feature>;
 		
 		public function GML321WriterTest()
@@ -39,7 +39,7 @@ package org.openscales.core.format.gml.writer
 		{
 			ProjProjection.defs['EPSG:26713']="++title=projTest +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=degrees";
 			writer = new GML321Writer();
-			parser = new GML321();
+			parser = new GML321Parser();
 		}
 		
 		[After] 

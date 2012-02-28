@@ -20,10 +20,10 @@ package org.openscales.core.format.gml.parser
 	import org.openscales.geometry.Polygon;
 	import org.openscales.proj4as.ProjProjection;
 
-	public class GML311 extends GMLParser
+	public class GML311Parser extends GMLParser
 	{
 		
-		public function GML311()
+		public function GML311Parser()
 		{
 		}
 		
