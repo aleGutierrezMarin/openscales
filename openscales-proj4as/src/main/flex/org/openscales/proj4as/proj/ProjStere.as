@@ -33,9 +33,9 @@ package org.openscales.proj4as.proj {
 
 		override public function init():void {
 			this.phits=this.lat_ts ? this.lat_ts : ProjConstants.HALF_PI;
-			var t:Number=Math.abs(this.lat0);
+			var t:Number=Math.abs(this.latZero);
 			if ((Math.abs(t) - ProjConstants.HALF_PI) < ProjConstants.EPSLN) {
-				this.mode=this.lat0 < 0. ? this.S_POLE : this.N_POLE;
+				this.mode=this.latZero < 0. ? this.S_POLE : this.N_POLE;
 			} else {
 				this.mode=t > ProjConstants.EPSLN ? this.OBLIQ : this.EQUIT;
 			}
@@ -47,7 +47,7 @@ package org.openscales.proj4as.proj {
 					case this.N_POLE:
 					case this.S_POLE:
 						if (Math.abs(this.phits - ProjConstants.HALF_PI) < ProjConstants.EPSLN) {
-							this.akm1=2. * this.k0 / Math.sqrt(Math.pow(1 + this.e, 1 + this.e) * Math.pow(1 - this.e, 1 - this.e));
+							this.akm1=2. * this.kZero / Math.sqrt(Math.pow(1 + this.e, 1 + this.e) * Math.pow(1 - this.e, 1 - this.e));
 						} else {
 							t=Math.sin(this.phits);
 							this.akm1=Math.cos(this.phits) / ProjConstants.tsfnz(this.e, this.phits, t);
@@ -56,13 +56,13 @@ package org.openscales.proj4as.proj {
 						}
 						break;
 					case this.EQUIT:
-						this.akm1=2. * this.k0;
+						this.akm1=2. * this.kZero;
 						break;
 					case this.OBLIQ:
-						t=Math.sin(this.lat0);
-						X=2. * Math.atan(this.ssfn_(this.lat0, t, this.e)) - ProjConstants.HALF_PI;
+						t=Math.sin(this.latZero);
+						X=2. * Math.atan(this.ssfn_(this.latZero, t, this.e)) - ProjConstants.HALF_PI;
 						t*=this.e;
-						this.akm1=2. * this.k0 * Math.cos(this.lat0) / Math.sqrt(1. - t * t);
+						this.akm1=2. * this.kZero * Math.cos(this.latZero) / Math.sqrt(1. - t * t);
 						this.sinX1=Math.sin(X);
 						this.cosX1=Math.cos(X);
 						break;
@@ -72,14 +72,14 @@ package org.openscales.proj4as.proj {
 			} else {
 				switch (this.mode) {
 					case this.OBLIQ:
-						this.sinph0=Math.sin(this.lat0);
-						this.cosph0=Math.cos(this.lat0);
+						this.sinph0=Math.sin(this.latZero);
+						this.cosph0=Math.cos(this.latZero);
 					case this.EQUIT:
-						this.akm1=2. * this.k0;
+						this.akm1=2. * this.kZero;
 						break;
 					case this.S_POLE:
 					case this.N_POLE:
-						this.akm1=Math.abs(this.phits - ProjConstants.HALF_PI) >= ProjConstants.EPSLN ? Math.cos(this.phits) / Math.tan(ProjConstants.FORTPI - .5 * this.phits) : 2. * this.k0;
+						this.akm1=Math.abs(this.phits - ProjConstants.HALF_PI) >= ProjConstants.EPSLN ? Math.cos(this.phits) / Math.tan(ProjConstants.FORTPI - .5 * this.phits) : 2. * this.kZero;
 						break;
 					default:
 						break;
@@ -170,16 +170,16 @@ package org.openscales.proj4as.proj {
 				}
 				x=x * sinlam;
 			}
-			p.x=x * this.a + this.x0;
-			p.y=y * this.a + this.y0;
+			p.x=x * this.a + this.xZero;
+			p.y=y * this.a + this.yZero;
 			return p;
 		}
 
 
 		//* Stereographic inverse equations--mapping x,y to lat/long
 		override public function inverse(p:ProjPoint):ProjPoint {
-			var x:Number=(p.x - this.x0) / this.a; /* descale and de-offset */
-			var y:Number=(p.y - this.y0) / this.a;
+			var x:Number=(p.x - this.xZero) / this.a; /* descale and de-offset */
+			var y:Number=(p.y - this.yZero) / this.a;
 			var lon:Number, lat:Number;
 
 			var cosphi:Number, sinphi:Number, tp:Number=0.0, phi_l:Number=0.0, rho:Number, halfe:Number=0.0, pi2:Number=0.0;

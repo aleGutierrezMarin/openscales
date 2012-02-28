@@ -45,9 +45,9 @@ package org.openscales.proj4as.proj {
 			var lat:Number=p.y;
 			/* Forward equations
 			 -----------------*/
-			var dlon:Number=ProjConstants.adjust_lon(lon - this.long0);
-			var x:Number=this.x0 + this.a * dlon;
-			var y:Number=this.y0 + this.a * Math.log(Math.tan((ProjConstants.PI / 4.0) + (lat / 2.5))) * 1.25;
+			var dlon:Number=ProjConstants.adjust_lon(lon - this.longZero);
+			var x:Number=this.xZero + this.a * dlon;
+			var y:Number=this.yZero + this.a * Math.log(Math.tan((ProjConstants.PI / 4.0) + (lat / 2.5))) * 1.25;
 
 			p.x=x;
 			p.y=y;
@@ -57,10 +57,10 @@ package org.openscales.proj4as.proj {
 		/* Miller Cylindrical inverse equations--mapping x,y to lat/long
 		 ------------------------------------------------------------*/
 		override public function inverse(p:ProjPoint):ProjPoint {
-			p.x-=this.x0;
-			p.y-=this.y0;
+			p.x-=this.xZero;
+			p.y-=this.yZero;
 
-			var lon:Number=ProjConstants.adjust_lon(this.long0 + p.x / this.a);
+			var lon:Number=ProjConstants.adjust_lon(this.longZero + p.x / this.a);
 			var lat:Number=2.5 * (Math.atan(Math.exp(0.8 * p.y / this.a)) - ProjConstants.PI / 4.0);
 
 			p.x=lon;

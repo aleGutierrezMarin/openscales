@@ -39,7 +39,7 @@ package org.openscales.proj4as.proj {
 			var lon:Number=p.x;
 			var lat:Number=p.y;
 
-			var delta_lon:Number=ProjConstants.adjust_lon(lon - this.long0);
+			var delta_lon:Number=ProjConstants.adjust_lon(lon - this.longZero);
 			var theta:Number=lat;
 			var con:Number=ProjConstants.PI * Math.sin(lat);
 
@@ -62,8 +62,8 @@ package org.openscales.proj4as.proj {
 			 --------------------------------------------------------------------------*/
 			if (ProjConstants.PI / 2 - Math.abs(lat) < ProjConstants.EPSLN)
 				delta_lon=0;
-			var x:Number=0.900316316158 * this.a * delta_lon * Math.cos(theta) + this.x0;
-			var y:Number=1.4142135623731 * this.a * Math.sin(theta) + this.y0;
+			var x:Number=0.900316316158 * this.a * delta_lon * Math.cos(theta) + this.xZero;
+			var y:Number=1.4142135623731 * this.a * Math.sin(theta) + this.yZero;
 
 			p.x=x;
 			p.y=y;
@@ -76,7 +76,7 @@ package org.openscales.proj4as.proj {
 
 			/* Inverse equations
 			 -----------------*/
-			p.x-=this.x0;
+			p.x-=this.xZero;
 			//~ p.y -= this.y0;
 			arg=p.y / (1.4142135623731 * this.a);
 
@@ -86,7 +86,7 @@ package org.openscales.proj4as.proj {
 			if (Math.abs(arg) > 0.999999999999)
 				arg=0.999999999999;
 			theta=Math.asin(arg);
-			var lon:Number=ProjConstants.adjust_lon(this.long0 + (p.x / (0.900316316158 * this.a * Math.cos(theta))));
+			var lon:Number=ProjConstants.adjust_lon(this.longZero + (p.x / (0.900316316158 * this.a * Math.cos(theta))));
 			if (lon < (-ProjConstants.PI))
 				lon=-ProjConstants.PI;
 			if (lon > ProjConstants.PI)

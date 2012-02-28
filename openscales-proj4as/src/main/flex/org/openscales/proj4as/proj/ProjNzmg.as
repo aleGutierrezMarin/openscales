@@ -169,8 +169,8 @@ package org.openscales.proj4as.proj {
 			var lon:Number=p.x;
 			var lat:Number=p.y;
 
-			var delta_lat:Number=lat - this.lat0;
-			var delta_lon:Number=lon - this.long0;
+			var delta_lat:Number=lat - this.latZero;
+			var delta_lon:Number=lon - this.longZero;
 
 			// 1. Calculate d_phi and d_psi    ...                          // and d_lambda
 			// For this algorithm, delta_latitude is in seconds of arc x 10-5, so we need to scale to those units. Longitude is radians.
@@ -206,8 +206,8 @@ package org.openscales.proj4as.proj {
 			}
 
 			// 4. Calculate easting and northing
-			var x:Number=(z_im * this.a) + this.x0;
-			var y:Number=(z_re * this.a) + this.y0;
+			var x:Number=(z_im * this.a) + this.xZero;
+			var y:Number=(z_re * this.a) + this.yZero;
 
 			p.x=x;
 			p.y=y;
@@ -223,8 +223,8 @@ package org.openscales.proj4as.proj {
 			var x:Number=p.x;
 			var y:Number=p.y;
 
-			var delta_x:Number=x - this.x0;
-			var delta_y:Number=y - this.y0;
+			var delta_x:Number=x - this.xZero;
+			var delta_y:Number=y - this.yZero;
 
 			// 1. Calculate z
 			var z_re:Number=delta_y / this.a;
@@ -300,8 +300,8 @@ package org.openscales.proj4as.proj {
 
 			// 4. Calculate latitude and longitude
 			// d_phi is calcuated in second of arc * 10^-5, so we need to scale back to radians. d_lambda is in radians.
-			var lat:Number=this.lat0 + (d_phi * ProjConstants.SEC_TO_RAD * 1E5);
-			var lon:Number=this.long0 + d_lambda;
+			var lat:Number=this.latZero + (d_phi * ProjConstants.SEC_TO_RAD * 1E5);
+			var lon:Number=this.longZero + d_lambda;
 
 			p.x=lon;
 			p.y=lat;

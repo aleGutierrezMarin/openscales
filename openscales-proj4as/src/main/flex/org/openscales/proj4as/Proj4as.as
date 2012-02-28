@@ -89,7 +89,7 @@ package org.openscales.proj4as {
 			return point;
 		}
 
-		protected static function datum_transform(source:Datum, dest:Datum, point:ProjPoint):ProjPoint {
+		private static function datum_transform(source:Datum, dest:Datum, point:ProjPoint):ProjPoint {
 			// Short cut if the datums are identical.
 			if (source.compare_datums(dest)) {
 				return point; // in this case, zero is sucess,

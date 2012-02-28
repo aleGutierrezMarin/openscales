@@ -17,6 +17,10 @@ package org.openscales.proj4as {
 
 		public function Datum(proj:ProjProjection) {
 			this.datum_type=ProjConstants.PJD_WGS84; //default setting
+			this.init(proj);
+		}
+		
+		private function init(proj:ProjProjection):void {
 			if (proj.datumCode && proj.datumCode == 'none') {
 				this.datum_type=ProjConstants.PJD_NODATUM;
 			}
@@ -276,7 +280,7 @@ package org.openscales.proj4as {
 			} else {
 				Height=Z / Sin_p1 + Rn * (this.es - 1.0);
 			}
-			if (At_Pole == false) {
+			if (!At_Pole) {
 				Latitude=Math.atan(Sin_p1 / Cos_p1);
 			}
 

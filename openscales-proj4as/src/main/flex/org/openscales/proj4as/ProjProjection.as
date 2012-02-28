@@ -308,7 +308,7 @@ package org.openscales.proj4as {
 		}
 		
 		public function get ep2():Number {
-			return projParams.ep2;
+			return projParams.epTwo;
 		}
 		
 		public function get es():Number {
@@ -333,6 +333,12 @@ package org.openscales.proj4as {
 		
 		public function ProjProjection(srsCode:String) {
 			this.projParams.srsCode=srsCode.toUpperCase();
+			this.init();
+			this.loadProjDefinition();
+			this.setAxisOrder();
+		}
+		
+		private function init():void {
 			if (this.projParams.srsCode.indexOf("EPSG") == 0) {
 				this.projParams.srsAuth='epsg';
 				this.projParams.srsProjNumber=this.projParams.srsCode.substring(5);
@@ -348,8 +354,9 @@ package org.openscales.proj4as {
 				this.projParams.srsAuth='';
 				this.projParams.srsProjNumber=this.projParams.srsCode;
 			}
-			this.loadProjDefinition();
-			
+		}
+		
+		private function setAxisOrder():void {
 			if(ProjProjection.projAxisOrder[this.srsCode]
 				&& ProjProjection.projAxisOrder[this.srsCode] == ProjProjection.AXIS_ORDER_NE)
 				this._lonlat = false;
@@ -480,19 +487,19 @@ package org.openscales.proj4as {
 						this.projParams.rf=parseFloat(paramVal);
 						break; // inverse flattening rf= a/(a-b)
 					case "lat_0":
-						this.projParams.lat0=parseFloat(paramVal) * ProjConstants.D2R;
+						this.projParams.latZero=parseFloat(paramVal) * ProjConstants.D2R;
 						break; // phi0, central latitude
 					case "lat_1":
-						this.projParams.lat1=parseFloat(paramVal) * ProjConstants.D2R;
+						this.projParams.latOne=parseFloat(paramVal) * ProjConstants.D2R;
 						break; //standard parallel 1
 					case "lat_2":
-						this.projParams.lat2=parseFloat(paramVal) * ProjConstants.D2R;
+						this.projParams.latTwo=parseFloat(paramVal) * ProjConstants.D2R;
 						break; //standard parallel 2
 					case "lat_ts":
 						this.projParams.lat_ts=parseFloat(paramVal) * ProjConstants.D2R;
 						break; // used in merc and eqc
 					case "lon_0":
-						this.projParams.long0=parseFloat(paramVal) * ProjConstants.D2R;
+						this.projParams.longZero=parseFloat(paramVal) * ProjConstants.D2R;
 						break; // lam0, central longitude
 					case "alpha":
 						this.projParams.alpha=parseFloat(paramVal) * ProjConstants.D2R;
@@ -501,16 +508,16 @@ package org.openscales.proj4as {
 						this.projParams.longc=parseFloat(paramVal) * ProjConstants.D2R;
 						break; //for somerc projection
 					case "x_0":
-						this.projParams.x0=parseFloat(paramVal);
+						this.projParams.xZero=parseFloat(paramVal);
 						break; // false easting
 					case "y_0":
-						this.projParams.y0=parseFloat(paramVal);
+						this.projParams.yZero=parseFloat(paramVal);
 						break; // false northing
 					case "k_0":
-						this.projParams.k0=parseFloat(paramVal);
+						this.projParams.kZero=parseFloat(paramVal);
 						break; // projection scale factor
 					case "k":
-						this.projParams.k0=parseFloat(paramVal);
+						this.projParams.kZero=parseFloat(paramVal);
 						break; // both forms returned
 					case "r_a":
 						this.projParams.R_A=true;
@@ -569,19 +576,19 @@ package org.openscales.proj4as {
 				this.projParams.sphere=true;
 				this.projParams.b=this.projParams.a;
 			}
-			this.projParams.a2=this.projParams.a * this.projParams.a; // used in geocentric
-			this.projParams.b2=this.projParams.b * this.projParams.b; // used in geocentric
-			this.projParams.es=(this.projParams.a2 - this.projParams.b2) / this.projParams.a2; // e ^ 2
+			this.projParams.aTwo=this.projParams.a * this.projParams.a; // used in geocentric
+			this.projParams.bTwo=this.projParams.b * this.projParams.b; // used in geocentric
+			this.projParams.es=(this.projParams.aTwo - this.projParams.bTwo) / this.projParams.aTwo; // e ^ 2
 			this.projParams.e=Math.sqrt(this.projParams.es); // eccentricity
 			if (this.projParams.R_A) {
 				this.projParams.a*=1. - this.projParams.es * (ProjConstants.SIXTH + this.projParams.es * (ProjConstants.RA4 + this.projParams.es * ProjConstants.RA6));
-				this.projParams.a2=this.projParams.a * this.projParams.a;
-				this.projParams.b2=this.projParams.b * this.projParams.b;
+				this.projParams.aTwo=this.projParams.a * this.projParams.a;
+				this.projParams.bTwo=this.projParams.b * this.projParams.b;
 				this.projParams.es=0.;
 			}
-			this.projParams.ep2=(this.projParams.a2 - this.projParams.b2) / this.projParams.b2; // used in geocentric
-			if (!this.projParams.k0)
-				this.projParams.k0=1.0; //default value
+			this.projParams.epTwo=(this.projParams.aTwo - this.projParams.bTwo) / this.projParams.bTwo; // used in geocentric
+			if (!this.projParams.kZero)
+				this.projParams.kZero=1.0; //default value
 			
 			this.projParams.datum=new Datum(this);
 		}
