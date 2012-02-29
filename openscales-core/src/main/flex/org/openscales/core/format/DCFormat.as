@@ -152,7 +152,7 @@ package org.openscales.core.format
 				}
 			}
 			
-			record.put("indentifier",identifiers);
+			record.put("identifier",identifiers);
 			record.put("title", titles);
 			record.put("type",type);
 			record.put("boundingBox",boundingBox);

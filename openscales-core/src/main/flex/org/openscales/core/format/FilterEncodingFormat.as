@@ -108,6 +108,22 @@ package org.openscales.core.format
 			 return parentNode;
 		 }
 		 
+		 public function getBbox(bounds:Bounds):XML {
+			 
+			 var bboxNode:XML = new XML("<" + this._ogcprefix + ":BBOX xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
+				 "</" + this._ogcprefix + ":BBOX>");
+			 var propertyName:XML = new XML("<"+ this._ogcprefix +":PropertyName xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">"+"ows:BoundingBox"+"</"+this._ogcprefix+":PropertyName>");
+			 bboxNode.appendChild(propertyName);
+			 var envelope:XML = new XML("<gml:Envelope xmlns:gml=\"http://www.opengis.net/gml\"></gml:Envelope>") 
+			 bboxNode.appendChild(envelope);
+			 var lowercorner:XML = new XML("<gml:LowerCorner xmlns:gml=\"http://www.opengis.net/gml\">"+ bounds.left +" "+ bounds.bottom +"</gml:LowerCorner>");
+			 var upperCorner:XML = new XML("<gml:UpperCorner xmlns:gml=\"http://www.opengis.net/gml\">"+ bounds.right +" "+ bounds.top +"</gml:UpperCorner>");
+			 envelope.appendChild(lowercorner);
+			 envelope.appendChild(upperCorner);
+			 return bboxNode;
+		 }
+		 
+		 
 		 /**
 		  * Generate a propertyType @Comparison.NOT_EQUAL_TO xmlNode
 		  *
@@ -138,6 +154,40 @@ package org.openscales.core.format
 			 lessThanNode.appendChild(this.literalValue(LiteralValue));
 			 
 			 return lessThanNode;
+		 }
+		 
+		 /**
+		 * Generate a and node and return it
+		 */
+		 public function getAnd():XML
+		 {
+			 var and:XML = new XML(
+				 "<" + this._ogcprefix + ":And xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":And>");
+		 	return and;
+		 }
+		 
+		 /**
+		  * Generate a Or node and return it
+		  */
+		 public function getOr():XML
+		 {
+			 var or:XML = new XML(
+				 "<" + this._ogcprefix + ":Or xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Or>");
+			 return or;
+		 }
+		 
+		 /**
+		 * Generate a islike node with the propertyName and return it
+		 */
+		 public function getIslikeNode(propertyName:String, literalValue:String, wildCard:String ="%", singleChar:String="_", escapeChar:String="\\"):XML{
+			 var islike:XML = new XML("<" + this._ogcprefix + ":PropertyIsLike xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
+				 "</" + this._ogcprefix + ":PropertyIsLike>");
+			 islike.@wildCard = wildCard;
+			 islike.@singleChar = singleChar;
+			 islike.@escapeChar = escapeChar;
+			 islike.appendChild(this.propertyName(propertyName));
+			 islike.appendChild(this.literalValue(literalValue));
+			 return islike;
 		 }
 		 
 		 /**

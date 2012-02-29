@@ -40,12 +40,12 @@ package org.openscales.core.request.csw
 		/**
 		 * Start position of the records for the request
 		 */
-		private var _startPosition:Number;
+		private var _startPosition:Number = 1;
 		
 		/**
 		 * Number of records per request
 		 */
-		private var _maxRecords:Number;
+		private var _maxRecords:Number = 10;
 		
 		/**
 		 * Element set of the request
