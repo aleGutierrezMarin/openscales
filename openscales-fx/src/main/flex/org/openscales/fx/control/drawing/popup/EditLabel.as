@@ -37,7 +37,6 @@ package org.openscales.fx.control.drawing.popup
 		public function EditLabel()
 		{
 			super();
-			setStyle("skinClass", EditLabelSkin);
 			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
 		}
 		

@@ -47,7 +47,7 @@ package org.openscales.fx.control.search
 		public function Search()
 		{
 			super();
-			setStyle("skinClass", DefaultSearchSkin);
+			
 		}
 		
 		/**
