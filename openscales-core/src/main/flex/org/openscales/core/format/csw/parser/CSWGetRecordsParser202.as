@@ -31,7 +31,7 @@ package org.openscales.core.format.csw.parser
 		 * - numberOfRecordsReturned:Number
 		 * - nextRecord:Number
 		 * - recordType:String ="summary"
-		 * - records:Vector<Hasmap>
+		 * - records:Vector.[Hasmap]
 		 * 
 		 * for "full" recordType you need to extend a parser and give it as reponseFormat Format and override the method parseRecord 
 		 * to handle this record set.

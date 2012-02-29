@@ -17,24 +17,24 @@ package org.openscales.core.format
 		 * return a Vector of hashmap different for each elementSetName
 		 * 
 		 * for "brief" :
-		 * - records:Vector<Hasmap>
-		 * 		- identifiers:Vector.<String>
-		 * 		- titles:Vector.<String>
+		 * - records:Vector[Hasmap]
+		 * 		- identifiers:Vector.[String]
+		 * 		- titles:Vector.[String]
 		 * 		- type:String
-		 * 		- BoundingBox:Vector.<Bounds>
+		 * 		- BoundingBox:Vector.[Bounds]
 		 * 
 		 * for "summary" :
-		 * - records:Vector<Hasmap>
-		 * 		- identifiers:Vector.<String>
-		 * 		- titles:Vector.<String>
+		 * - records:Vector Hasmap 
+		 * 		- identifiers:Vector.[String]
+		 * 		- titles:Vector.[String]
 		 * 		- type:String
-		 * 		- subjects:Vector.<String>
-		 * 		- format:Vector.<String>
-		 * 		- relation: Vector.<String>
-		 * 		- modified: Vector.<String>
-		 * 		- abstract:Vector.<String>
-		 * 		- spatial:Vector.<String>
-		 * 		- BoundingBox:Vector.<Bounds>
+		 * 		- subjects:Vector.[String]
+		 * 		- format:Vector.[String]
+		 * 		- relation: Vector.[String]
+		 * 		- modified: Vector.[String]
+		 * 		- abstract:Vector.[String]
+		 * 		- spatial:Vector.[String]
+		 * 		- BoundingBox:Vector.[Bounds]
 		 * 
 		 * for "full" : 
 		 * return null, you need to extend this class  and override the method parseRecord 
