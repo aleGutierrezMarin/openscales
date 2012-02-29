@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openscales</groupId>
+	<artifactId>openscales-core-flash-10.1</artifactId>
+	<version>2.1.2-W09</version>
+	<packaging>swc</packaging>
+	<name>Core for flashplayer 10.1</name>
+	<description>Core module that contains OpenScales classes that depends on flash player 10.1 API</description>
+	
+	<parent>
+		<groupId>org.openscales</groupId>
+		<artifactId>openscales</artifactId>
+		<version>2.1.2-W09</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	
+	<properties>
+		<flex.player.version.minor>1</flex.player.version.minor>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.openscales</groupId>
+			<artifactId>openscales-core</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<exclusions> 
+				<exclusion> 
+					<groupId>com.adobe.flex.framework</groupId> 
+					<artifactId>playerglobal</artifactId> 
+				</exclusion> 
+			</exclusions>
+		</dependency>
+		<dependency> 
+			<groupId>com.adobe.flex.framework</groupId> 
+			<artifactId>playerglobal</artifactId> 
+			<version>${flex.sdk.version}</version>
+			<classifier>${flex.player.version.major}.${flex.player.version.minor}</classifier>
+			<type>swc</type> 
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/src/main/flex</directory>
+                            <includes>
+                                <include>FlexUnitApplication.mxml</include>
+                            </includes>
+						</fileset>
+					</filesets>
+				</configuration>
+                <version>2.4.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flexmojos.version}</version>
+				<extensions>true</extensions>
+				<dependencies>
+		  			<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex.sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+				<executions>
+                	<execution>
+						<id>source-asdoc</id>
+						<phase>site</phase>
+						<goals>
+							<goal>asdoc</goal>
+						</goals>
+                        <configuration>
+                        <docSources>
+							<docSource>${project.build.sourceDirectory}</docSource>
+							</docSources>
+							<output> ${project.build.directory}/${project.build.finalName}-asdoc.zip</output>
+                        </configuration>
+					</execution>
+				</executions>
+            </plugin>
+		</plugins>
+	</build>
+	
+	<reporting>
+        <plugins>
+            <plugin>
+                <groupId>com.adobe.ac</groupId>
+                <artifactId>flex-pmd-maven-plugin</artifactId>
+                <version>${flexpmd.version}</version>
+            </plugin>
+        </plugins>
+    </reporting>
+	
+</project>
