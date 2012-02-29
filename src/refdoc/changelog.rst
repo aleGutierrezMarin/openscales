@@ -8,6 +8,7 @@ Changes between 2.1.0 and 2.1.1
 * improving center changed performances
 * add FxOSM
 * fix OSM layers shift
+* Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
 
 Changes between 2.0.0 and 2.1.0
 -------------------------------
