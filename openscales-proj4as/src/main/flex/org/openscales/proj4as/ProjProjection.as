@@ -195,7 +195,10 @@ package org.openscales.proj4as {
 				else if ((proj as String).match("urn:x-ogc:def:crs:") != null)
 				{
 					splitArray = (proj as String).split(":");
-					if (splitArray.length >= 2)
+					if (splitArray.length == 7)
+					{
+						proj = splitArray[splitArray.length-3]+":"+splitArray[splitArray.length-1];
+					}else if (splitArray.length >= 2)
 					{
 						proj = splitArray[splitArray.length-2]+":"+splitArray[splitArray.length-1];
 					}

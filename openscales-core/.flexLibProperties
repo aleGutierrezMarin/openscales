@@ -94,9 +94,7 @@
     <classEntry path="org.openscales.core.format.WKTFormat"/>
     <classEntry path="org.openscales.core.format.WMCFormat"/>
     <classEntry path="org.openscales.core.format.gml.GMLFormat"/>
-    <classEntry path="org.openscales.core.format.gml.parser.GML2Parser"/>
-    <classEntry path="org.openscales.core.format.gml.parser.GML311Parser"/>
-    <classEntry path="org.openscales.core.format.gml.parser.GML321Parser"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML321"/>
     <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
     <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
     <classEntry path="org.openscales.core.format.gml.writer.IGMLWriter"/>
@@ -152,14 +150,13 @@
     <classEntry path="org.openscales.core.layer.VectorLayer"/>
     <classEntry path="org.openscales.core.layer.capabilities.CapabilitiesParser"/>
     <classEntry path="org.openscales.core.layer.capabilities.GetCapabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WFS100Capabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WFS110Capabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WFS200Capabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMS100Capabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMS110Capabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMS111Capabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMS130Capabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMTS100Capabilities"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WFS100"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WFS200"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS100"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS110"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS111"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS130"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMTS100"/>
     <classEntry path="org.openscales.core.layer.grid.provider.HTTPTileProvider"/>
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.GML"/>
@@ -286,6 +283,18 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecordsRequest"/>
+    <classEntry path="org.openscales.core.request.csw.getrecords.GetRecordsRequest202"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecordByIdRequest"/>
+    <classEntry path="org.openscales.core.format.csw.CSWGetRecordsFormat"/>
+    <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordsParser202"/>
+    <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordsParser"/>
+    <classEntry path="org.openscales.core.request.csw.getrecordbyid.GetRecordByIdRequest202"/>
+    <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordByIdParser"/>
+    <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordByIdParser202"/>
+    <classEntry path="org.openscales.core.format.csw.CSWGetRecordByIdFormat"/>
+    <classEntry path="org.openscales.core.format.GMDFormat"/>
+    <classEntry path="org.openscales.core.format.DCFormat"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
