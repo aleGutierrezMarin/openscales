@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" width="314" height="200" contentBackgroundColor="#FFFFFF">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.fx.control.search.Search")]
+	</fx:Metadata>
+	
+	<s:Panel x="0" y="0" width="100%" height="100%" title="Search" mouseDown="handleDown(event);" mouseUp="handleUp(event);">
+		<s:TextInput id="searchText" x="10" y="10" width="294"/>
+		<mx:DataGrid x="10" y="40" height="113" width="294" dataProvider="{searchResult}" itemClick="onItemClick(event);">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Adresse" dataField="formattedAddress"/>
+				<mx:DataGridColumn headerText="Code postal" dataField="postalCode"/>
+				<mx:DataGridColumn headerText="Ville" dataField="locality"/>
+				<mx:DataGridColumn headerText="Pays" dataField="countryRegion"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:ToggleButton x="239" y="-26" label="reverse" width="63" id="reverse" click="reverseToggle();"/>
+	</s:Panel>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
+			
+			import org.openscales.core.handler.mouse.ClickHandler;
+			import org.openscales.core.search.result.Address;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			/**
+			 * Arraycollection containing search results
+			 */
+			[Bindable]
+			public var searchResult:ArrayCollection = new ArrayCollection();
+			
+			private var _handler:ClickHandler = new ClickHandler(null,false);
+			
+			/**
+			 * @private
+			 * method called when user click on a result
+			 * 
+			 * @param e the ListEvent
+			 */
+			private function onItemClick( e:ListEvent ):void {
+				if((e.itemRenderer.data as Address).bbox)
+					this.hostComponent.map.zoomToExtent((e.itemRenderer.data as Address).bbox);
+				else if((e.itemRenderer.data as Address).location)
+					this.hostComponent.map.center = (e.itemRenderer.data as Address).location;
+			}
+			/**
+			 * @private
+			 * 
+			 * Change activation status of reverse geocoding tool
+			 */
+			private function reverseToggle():void {
+				_handler.map = this.hostComponent.map;
+				_handler.active = reverse.selected;
+				searchResult.removeAll();
+				if(_handler.click==null)
+					_handler.click = this.reverseGeocode;
+			}
+			/**
+			 * @private
+			 * 
+			 * Reverse geocode a map pixel
+			 * 
+			 * @param px the map pixel to geocode
+			 */
+			private function reverseGeocode(px:Pixel):void {
+				this.hostComponent.reverseGeocode( this.hostComponent.map.getLocationFromMapPx(px));
+			}
+			/**
+			 * @private
+			 * 
+			 * Enable draging
+			 * 
+			 * @param e the mouse event
+			 */
+			private function handleDown(e:MouseEvent):void{
+				this.startDrag();
+			}
+			/**
+			 * @private
+			 * 
+			 * Disable draging
+			 * 
+			 * @param e the mouse event
+			 */
+			private function handleUp(e:MouseEvent):void{
+				this.stopDrag();
+			}
+		]]>
+	</fx:Script>
+	
+</s:Skin>
