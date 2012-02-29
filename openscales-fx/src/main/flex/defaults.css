@@ -9,5 +9,5 @@ popup|EditLabel{
 }
 
 os|Search {
-	skin-class: ClassReference("org.openscales.fx.control.skin.DefaultSearchSkin");
+	skin-class: ClassReference("org.openscales.fx.control.skin.SearchDefaultSkin");
 }
