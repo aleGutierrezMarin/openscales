@@ -50,27 +50,30 @@ package org.openscales.core.format
 			if(!data)return null;
 			
 			var xml:XML = new XML(data);
+			var exception:XMLList = xml..*::Exception;
+			if (exception.length() > 0)
+				return null;
+			
 			var records:Vector.<HashMap> = new Vector.<HashMap>();
 			var record:HashMap = new HashMap();
 			
-			var gmdNS:Namespace = xml.namespace("gmd");
+			
 			var cswNS:Namespace = xml.namespace("csw");
+			var gmxNS:Namespace;
 			var gcoNS:Namespace;
 			
-			var searchResult:XML = xml.cswNS::SearchResults[0];
-			if (!searchResult)
-				return null;
-			
-			var dataRecords:XMLList = searchResult.gmdNS::MD_Metadata;
+			var dataRecords:XMLList = xml..*::MD_Metadata;
+			var gmdNS:Namespace = dataRecords.namespace("gmd");
 			var recordData:XML;
 			for each(recordData in dataRecords){
 				record = new HashMap();
 				
 				// Parse fileIdentifier
-				var fileIdentifierData:XMLList = data.gmdNS::fileIdentifier;
+				var fileIdentifierData:XMLList = recordData.gmdNS::fileIdentifier;
 				if (fileIdentifierData.length() > 0)
 				{
-					gcoNS = xml.namespace("gco");
+					gcoNS = fileIdentifierData.namespace("gco");
+					gmxNS = fileIdentifierData.namespace("gmx");
 					var characterString:XMLList = fileIdentifierData[0].gcoNS::CharacterString;
 					if (characterString.length() >  0)
 					{
@@ -79,7 +82,7 @@ package org.openscales.core.format
 				}
 				
 				// Parse language
-				var languageData:XMLList = data.gmdNS::language;
+				var languageData:XMLList = recordData.gmdNS::language;
 				if (languageData.length > 0)
 				{
 					var languageCodeData:XMLList = languageData[0].gmdNS::LanguageCode;
@@ -90,7 +93,7 @@ package org.openscales.core.format
 				}
 				
 				// Parse characterSet
-				var characterSetData:XMLList = data.gmdNS::characterSet;
+				var characterSetData:XMLList = recordData.gmdNS::characterSet;
 				if (characterSetData.length() > 0)
 				{
 					var characterSetCodeData:XMLList = characterSetData[0].gmdNS::MD_CharacterSetCode;
@@ -101,7 +104,7 @@ package org.openscales.core.format
 				}
 				
 				// Parse hierarchyLevel
-				var hierarchyLevelsData:XMLList = data.gmdNS::hierarchyLevel;
+				var hierarchyLevelsData:XMLList = recordData.gmdNS::hierarchyLevel;
 				if (hierarchyLevelsData.length() > 0)
 				{
 					var hierarchyLevels:Vector.<String> = new Vector.<String>();
@@ -118,14 +121,14 @@ package org.openscales.core.format
 				}
 				
 				// Parse hierarchyLevelName
-				var hierarchyLevelNamesData:XMLList = data.gmdNS::hierarchyLevelName;
+				var hierarchyLevelNamesData:XMLList = recordData.gmdNS::hierarchyLevelName;
 				if (hierarchyLevelNamesData.length() > 0)
 				{
 					var hierarchyLevelNames:Vector.<String> = new Vector.<String>();
 					var hierarchyLevelNameData:XML;
 					for each (hierarchyLevelNameData in hierarchyLevelNamesData)
 					{
-						gcoNS = xml.namespace("gco");
+						gcoNS = hierarchyLevelNameData.namespace("gco");
 						var characterStringForHierarchyLevelName:XMLList = hierarchyLevelNameData.gcoNS::CharacterString;
 						if (characterStringForHierarchyLevelName.length() > 0)
 						{
@@ -136,10 +139,10 @@ package org.openscales.core.format
 				}
 				
 				// Parse dateStamp
-				var dateStampData:XMLList = data.gmdNS::dateStamp;
+				var dateStampData:XMLList = recordData.gmdNS::dateStamp;
 				if (dateStampData.length() > 0)
 				{
-					gcoNS = xml.namespace("gco");
+					gcoNS = dateStampData.namespace("gco");
 					var dateData:XMLList = dateStampData[0].gcoNS::Date;
 					if (dateData.length() > 0)
 					{
@@ -148,10 +151,10 @@ package org.openscales.core.format
 				}
 				
 				// Parse metadataStandardName
-				var metadataStandardNameData:XMLList = data.gmdNS::metadataStandardName;
+				var metadataStandardNameData:XMLList = recordData.gmdNS::metadataStandardName;
 				if (metadataStandardNameData.length() > 0)
 				{
-					gcoNS = xml.namespace("gco");
+					gcoNS = metadataStandardNameData.namespace("gco");
 					var characterStringForMetadataStandardNameData:XMLList = metadataStandardNameData[0].gcoNS::CharacterString;
 					if (characterStringForMetadataStandardNameData.length() > 0)
 					{
@@ -160,10 +163,10 @@ package org.openscales.core.format
 				}
 				
 				// Parse metadataStandardVersion
-				var metadataStandardVersionData:XMLList = data.gmdNS::metadataStandardVersion;
+				var metadataStandardVersionData:XMLList = recordData.gmdNS::metadataStandardVersion;
 				if (metadataStandardVersionData.length() > 0)
 				{
-					gcoNS = xml.namespace("gco");
+					gcoNS = metadataStandardVersionData.namespace("gco");
 					var characterStringForMetadataStandardVersionData:XMLList = metadataStandardVersionData[0].gcoNS::CharacterString;
 					if (characterStringForMetadataStandardVersionData.length() > 0)
 					{
@@ -173,7 +176,7 @@ package org.openscales.core.format
 				
 				// Parse referenceSystemInfo
 				// only parse the "gmd:code" XML tag
-				var referenceSystemInfosData:XMLList = data.gmdNS::referenceSystemInfo;
+				var referenceSystemInfosData:XMLList = recordData.gmdNS::referenceSystemInfo;
 				if (referenceSystemInfosData.length() > 0)
 				{
 					var referenceSystemInfos:Vector.<Object> = new Vector.<Object>;
@@ -192,7 +195,6 @@ package org.openscales.core.format
 									var codeData:XMLList = rsIdentifierData[0].gmdNS::code;
 									if (codeData.length() > 0)
 									{
-										var gmxNS:Namespace = xml.namespace("gmx");
 										var anchorData:XMLList = codeData[0].gmxNS::Anchor;
 										if (anchorData.length() > 0)
 										{

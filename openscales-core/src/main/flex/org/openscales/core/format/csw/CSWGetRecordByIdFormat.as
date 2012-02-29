@@ -50,6 +50,7 @@ package org.openscales.core.format.csw
 			if (this._version == "2.0.2")
 			{
 				var parser:CSWGetRecordByIdParser202 = new CSWGetRecordByIdParser202();
+				parser.responseFormat = this._responseFormat;
 				return parser.read(data);
 			}else{
 				Trace.error("CSW GetRecordBuId version : "+_version+" not supported");

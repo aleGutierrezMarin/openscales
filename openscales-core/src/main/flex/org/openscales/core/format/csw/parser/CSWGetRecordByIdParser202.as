@@ -1,10 +1,19 @@
 package org.openscales.core.format.csw.parser
 {
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.format.Format;
+	import org.openscales.core.format.GMDFormat;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	public class CSWGetRecordByIdParser202 implements ICSWGetRecordByIdParser
 	{
+		
+		
+		/**
+		 * Response format
+		 * @default org.openscales.core.format.GMDFormat
+		 */
+		private var _responseFormat:Format = new GMDFormat();
 		
 		/**
 		 * Parser for CSW 2.0.2 GetRecordById response
@@ -15,16 +24,11 @@ package org.openscales.core.format.csw.parser
 		
 		
 		
-		public function read(data:Object):HashMap
+		public function read(data:Object):Object
 		{
 			if(!data)return null;
 			
-			var xml:XML = new XML(data);
-			var result:HashMap = new HashMap();
-			var records:Vector.<HashMap> = new Vector.<HashMap>();
-			var record:HashMap = new HashMap();
-			
-			return null;
+			return this._responseFormat.read(data);
 		}
 		
 		/**
@@ -50,6 +54,23 @@ package org.openscales.core.format.csw.parser
 		public function parseBoundingBox(data:XML):Bounds
 		{
 				return null;
+		}
+		
+		/**
+		 * The format class that will be used to read the CSW reponse.
+		 * @default org.openscales.core.format.GMDFormat
+		 */
+		public function get responseFormat():Format
+		{
+			return this._responseFormat;	
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set responseFormat(value:Format):void
+		{
+			this._responseFormat = value;
 		}
 	}
 }
