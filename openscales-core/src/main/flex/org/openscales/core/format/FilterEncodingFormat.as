@@ -1,9 +1,9 @@
 package org.openscales.core.format
 {
 	
-	import org.openscales.core.utils.Trace;
 	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.layer.ogc.WFS;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	public class FilterEncodingFormat extends Format
 	{
@@ -28,10 +28,17 @@ package org.openscales.core.format
 			Trace.warn("Write not implemented.");
 			return null;
 		}
+		
+		public function getRootFilter():XML
+		{
+			var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
+				"<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Filter>");
+			return filterNode;
+		}
 	
-		 public function addComparisonFilter(PropertyType:String,PropertyName:String,LiteralValue:String):XML{
-			 var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
-				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Filter>");
+		 public function addComparisonFilter(parentNode:XML, PropertyType:String,PropertyName:String,LiteralValue:String):XML{
+			/* var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
+				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Filter>");*/
 			 var and:XML = new XML(
 				 "<" + this._ogcprefix + ":And xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":And>");
 			 switch (PropertyType) {
@@ -48,13 +55,13 @@ package org.openscales.core.format
 					 and.appendChild(this.greaterThan(PropertyName,LiteralValue));
 					 break;
 					 }
-			 filterNode.appendChild(and);
-			 return filterNode;
+			 parentNode.appendChild(and);
+			 return parentNode;
 		 }
 		 
 	     public function filterWithBbox(filter:XML,geom:String,bboxNodeGml:XML):XML{
 			var filterWith:XML = filter.copy();
-			filterWith.children()[0].appendChild(this.bbox(geom,bboxNodeGml));
+			filterWith.children()[0] = this.bbox(filterWith.children()[0], geom, bboxNodeGml);
 			 return  filterWith;
 		 }
 		 /**
@@ -87,19 +94,35 @@ package org.openscales.core.format
 			 return equalNode;
 		 }
 		 
-		 public function bbox(PropertyName:String,gml:XML):XML {
-			 var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
+		 public function bbox(parentNode:XML, PropertyName:String,gml:XML):XML {
+			/* var filterNode:XML = new XML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"     +
 				 "<" + this._ogcprefix + ":Filter xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">"+
-				 "</" + this._ogcprefix + ":Filter>");
+				 "</" + this._ogcprefix + ":Filter>");*/
 			 
 			 var equalNode:XML = new XML("<" + this._ogcprefix + ":BBOX xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
 				 "</" + this._ogcprefix + ":BBOX>");
 			 
 			 equalNode.appendChild(this.propertyName(PropertyName));
 			 equalNode.appendChild(gml);
-			 filterNode.appendChild(equalNode);
-			 return filterNode;
+			 parentNode.appendChild(equalNode);
+			 return parentNode;
 		 }
+		 
+		 public function getBbox(bounds:Bounds):XML {
+			 
+			 var bboxNode:XML = new XML("<" + this._ogcprefix + ":BBOX xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
+				 "</" + this._ogcprefix + ":BBOX>");
+			 var propertyName:XML = new XML("<"+ this._ogcprefix +":PropertyName xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">"+"ows:BoundingBox"+"</"+this._ogcprefix+":PropertyName>");
+			 bboxNode.appendChild(propertyName);
+			 var envelope:XML = new XML("<gml:Envelope xmlns:gml=\"http://www.opengis.net/gml\"></gml:Envelope>") 
+			 bboxNode.appendChild(envelope);
+			 var lowercorner:XML = new XML("<gml:LowerCorner xmlns:gml=\"http://www.opengis.net/gml\">"+ bounds.left +" "+ bounds.bottom +"</gml:LowerCorner>");
+			 var upperCorner:XML = new XML("<gml:UpperCorner xmlns:gml=\"http://www.opengis.net/gml\">"+ bounds.right +" "+ bounds.top +"</gml:UpperCorner>");
+			 envelope.appendChild(lowercorner);
+			 envelope.appendChild(upperCorner);
+			 return bboxNode;
+		 }
+		 
 		 
 		 /**
 		  * Generate a propertyType @Comparison.NOT_EQUAL_TO xmlNode
@@ -131,6 +154,40 @@ package org.openscales.core.format
 			 lessThanNode.appendChild(this.literalValue(LiteralValue));
 			 
 			 return lessThanNode;
+		 }
+		 
+		 /**
+		 * Generate a and node and return it
+		 */
+		 public function getAnd():XML
+		 {
+			 var and:XML = new XML(
+				 "<" + this._ogcprefix + ":And xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":And>");
+		 	return and;
+		 }
+		 
+		 /**
+		  * Generate a Or node and return it
+		  */
+		 public function getOr():XML
+		 {
+			 var or:XML = new XML(
+				 "<" + this._ogcprefix + ":Or xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\"></" + this._ogcprefix + ":Or>");
+			 return or;
+		 }
+		 
+		 /**
+		 * Generate a islike node with the propertyName and return it
+		 */
+		 public function getIslikeNode(propertyName:String, literalValue:String, wildCard:String ="%", singleChar:String="_", escapeChar:String="\\"):XML{
+			 var islike:XML = new XML("<" + this._ogcprefix + ":PropertyIsLike xmlns:" + this._ogcprefix + "=\"" + this._ogcns + "\">" +				
+				 "</" + this._ogcprefix + ":PropertyIsLike>");
+			 islike.@wildCard = wildCard;
+			 islike.@singleChar = singleChar;
+			 islike.@escapeChar = escapeChar;
+			 islike.appendChild(this.propertyName(propertyName));
+			 islike.appendChild(this.literalValue(literalValue));
+			 return islike;
 		 }
 		 
 		 /**
