@@ -69,12 +69,10 @@
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer"/>
-    <classEntry path="org.openscales.fx.control.drawing.popup.EditLabel"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.SingleInputPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
-    <classEntry path="org.openscales.fx.control.drawing.popup.skin.EditLabelSkin"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerAlpha"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
@@ -97,7 +95,6 @@
     <classEntry path="org.openscales.fx.control.search.Search"/>
     <classEntry path="org.openscales.fx.control.search.engine.FxBingSearch"/>
     <classEntry path="org.openscales.fx.control.search.engine.FxSearchEngine"/>
-    <classEntry path="org.openscales.fx.control.skin.SearchDefaultSkin"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanSkin"/>
@@ -162,9 +159,7 @@
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
   </includeClasses>
-  <includeResources>
-    <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
-  </includeResources>
+  <includeResources/>
   <namespaceManifests>
     <namespaceManifestEntry manifest="META-INF/manifest.xml" namespace="http://openscales.org"/>
   </namespaceManifests>
