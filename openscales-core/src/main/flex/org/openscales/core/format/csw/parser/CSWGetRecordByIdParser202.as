@@ -23,7 +23,9 @@ package org.openscales.core.format.csw.parser
 		}
 		
 		
-		
+		/**
+		 * @inheritDoc
+		 */ 
 		public function read(data:Object):Object
 		{
 			if(!data)return null;
