@@ -127,7 +127,7 @@ package org.openscales.core.handler.feature.draw
 			}
 			
 			// events management
-			this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			//this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 			this.map.removeEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 			if(vectorfeature != null)
 				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.EDITION_POINT_FEATURE_DRAG_START,vectorfeature));
@@ -169,7 +169,7 @@ package org.openscales.core.handler.feature.draw
 			_featureEditedType = -1;
 			
 			// events management
-			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
@@ -209,7 +209,7 @@ package org.openscales.core.handler.feature.draw
 			}
 			
 			// events management
-			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
@@ -249,7 +249,7 @@ package org.openscales.core.handler.feature.draw
 			}
 			
 			// events management
-			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
@@ -331,13 +331,13 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * This function creates a virtual point under the mouse
 		 */
-		private function createPointUndertheMouse(evt:FeatureEvent):void{
+		/*private function createPointUndertheMouse(evt:FeatureEvent):void{
 			var vectorfeature:Feature = evt.feature;
 			if((vectorfeature is PolygonFeature || vectorfeature is MultiPolygonFeature) && iEditPolygon != null && isSelectedFeature(vectorfeature))
 				(iEditPolygon as AbstractEditCollectionHandler).createPointUndertheMouse(evt);
 			else if((vectorfeature is LineStringFeature || vectorfeature is MultiLineStringFeature) && iEditPath != null && isSelectedFeature(vectorfeature))
 				(iEditPath as AbstractEditCollectionHandler).createPointUndertheMouse(evt);
-		}
+		}*/
 		
 		
 		public  function refreshEditedfeatures(event:MapEvent=null):void{
@@ -369,7 +369,7 @@ package org.openscales.core.handler.feature.draw
 		override protected function registerListeners():void {
 			if(this.map){		
 				//this.map.addEventListener(MapEvent.RELOAD,refreshEditedfeatures);
-				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+				//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 			}
 		}
@@ -379,7 +379,7 @@ package org.openscales.core.handler.feature.draw
 		override protected function unregisterListeners():void {
 			if(this.map){	
 				//this.map.removeEventListener(MapEvent.RELOAD,refreshEditedfeatures);
-				this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+				//this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 			}	
 		}
