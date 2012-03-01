@@ -35,7 +35,7 @@ package org.openscales.core.handler.feature.draw
 			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
 			this.featuresToEdit = featuresToEdit;
 			if(virtualStyle == null)
-				this.virtualStyle = Style.getDefaultCircleStyle();
+				this.virtualStyle = Style.getDefaultPointStyle();
 			else
 				this.virtualStyle = virtualStyle;
 		}
@@ -105,18 +105,21 @@ package org.openscales.core.handler.feature.draw
 		 	var pointUnderTheMouse:Boolean=false;
 		 	var parentgeom:ICollection=null;
 		 	var parentFeature:Feature;
+			if (! _featureCurrentlyDrag)
+				return;
 		 	//the feature currently dragged is a real vertice
-		 	if(this._featureCurrentlyDrag!=null){
+		 	if(this._featureCurrentlyDrag!=null && this.isInbetweenVertice(_featureCurrentlyDrag as PointFeature) == -1){
 		 		parentFeature=findVirtualVerticeParent(this._featureCurrentlyDrag as PointFeature)
 		 		parentgeom=editionFeatureParentGeometry(this._featureCurrentlyDrag as PointFeature,parentFeature.geometry as ICollection);
 		 	}
 		 	//the feature currently dragged is a point under the mouse 	
 		 	else{
 		 		// parentgeom=AbstractEditCollectionHandler._pointUnderTheMouse.editionFeatureParentGeometry;
+				AbstractEditCollectionHandler._pointUnderTheMouse = _featureCurrentlyDrag as PointFeature;
 		 		parentFeature=findVirtualVerticeParent(AbstractEditCollectionHandler._pointUnderTheMouse)
 		 		parentgeom=editionFeatureParentGeometry(AbstractEditCollectionHandler._pointUnderTheMouse,parentFeature.geometry as ICollection);
 		 		pointUnderTheMouse=true;
-		 	}
+		 	}		
 		 	
 		 	//The  Mouse button is down
 		 	if(event.buttonDown){
@@ -125,29 +128,32 @@ package org.openscales.core.handler.feature.draw
 			var point1Px:Pixel=null;
 			var point2Px:Pixel=null;
 			//We take 2 points in the collection depends on the index of the feature currently dragged
+			
+		
+			//indexOfFeatureCurrentlyDrag = this._editionFeatureArray.indexOf(_featureCurrentlyDrag);
 		 	if(indexOfFeatureCurrentlyDrag==0){
 		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(0) as Point;
-		 			point2=parentgeom.componentByIndex(1) as Point;
+					point1=this._editionFeatureArray[0][0].geometry as Point;
+					point2=this._editionFeatureArray[2][0].geometry as Point;
 		 		}
-		 		else point1=parentgeom.componentByIndex(1) as Point;
+		 		else point1=this._editionFeatureArray[2][0].geometry as Point;
 		 	}
 
-		 	else if(indexOfFeatureCurrentlyDrag==parentgeom.componentsLength-1){
+		 	else if(indexOfFeatureCurrentlyDrag==(parentgeom.componentsLength + this._inbetweenEditionFeatureArray.length)-1){
 		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 			point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag) as Point;
+					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;
+					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag][0].geometry as Point;
 		 		}
-		 		else point1=parentgeom.componentByIndex(parentgeom.componentsLength-2) as Point;	 	
+		 		else point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;	
 		 	}	 	
 		 	else{
 		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 			point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag) as Point;
+					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-1][0].geometry as Point;
+					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag+1][0].geometry as Point;
 		 		}
-		 		else{ point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag+1) as Point;
-		 		 point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 		}
+				else{ point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag+2][0].geometry as Point;
+					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;
+				}
 		 	}
 		 	if(point1!=null)point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y));
 		 	
