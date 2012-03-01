@@ -273,8 +273,8 @@
 					this._timer.addEventListener(TimerEvent.TIMER, this.updateItemEnability);
 				}
 				
-				this.parent.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
-				this.layerLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.parentChange);
+				
+				this.layerLabel.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, this.propertyChange);
 				this.layerLabel.addEventListener(MouseEvent.CLICK, this.onThisLabelClick);
 				this._layer.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, this.onOtherLabelClick);
 				this._layer.map.addEventListener(LayerEvent.LAYER_REMOVED, this.onLayerRemoved);
@@ -472,7 +472,7 @@
 			
 			
 			
-			private function parentChange(event:PropertyChangeEvent):void
+			private function propertyChange(event:PropertyChangeEvent):void
 			{
 				this.invalidateDisplayList();
 			}    
