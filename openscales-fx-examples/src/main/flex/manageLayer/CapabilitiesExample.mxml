@@ -51,7 +51,7 @@ The layers manager is automatically updated.</p> -->
 			{
 				Trace.info('Layer added + '+event.layer);
 				if(event.layer is WFS) {
-					var s:Style = Style.getDefaultSurfaceStyle();
+					var s:Style = Style.getDefaultPolygonStyle();
 					s.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_CIRCLE,new SolidFill(0xFFFF00,0.5),new Stroke(0xFFFF00))));
 					(event.layer as WFS).style=s;
 					event.layer.redraw();

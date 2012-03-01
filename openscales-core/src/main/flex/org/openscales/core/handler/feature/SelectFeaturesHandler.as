@@ -59,7 +59,7 @@ package org.openscales.core.handler.feature
 		 * Size in pixels of the selection buffer (default=2 so a point is a
 		 * 5-side square)
 		 */
-		private var _selectionBuffer:Number = 2;
+		private var _selectionBuffer:Number = 3;
 
 		/**
 		 * Array of the selected features.
@@ -955,7 +955,7 @@ package org.openscales.core.handler.feature
 			var borderThin:int = 2;
 			if (feature is PointFeature || feature is MultiPointFeature) {
 				
-				var markType:String = WellKnownMarker.WKN_SQUARE;
+				/*var markType:String = WellKnownMarker.WKN_SQUARE;
 				var markSize:Number = 12;
 				var currentMarkSymbolizer:Symbolizer = null; //feature.style.rules[0].symbolizers[0];
 				if (currentMarkSymbolizer && (currentMarkSymbolizer is PointSymbolizer)) {
@@ -964,25 +964,29 @@ package org.openscales.core.handler.feature
 					markSize = currentMark.size as Number;
 				}
 				selectedStyle = Style.getDefaultPointStyle();
-				symbolizer = new PointSymbolizer(new WellKnownMarker(markType, new SolidFill(color, opacity), new Stroke(color, borderThin), markSize));
+				symbolizer = new PointSymbolizer(new WellKnownMarker(markType, new SolidFill(color, opacity), new Stroke(color, borderThin), markSize));*/
+				return Style.getDefaultSelectedPointStyle();
 			} else if (feature is LineStringFeature || feature is MultiLineStringFeature) {
-				selectedStyle = Style.getDefaultSurfaceStyle();
+				/*selectedStyle = Style.getDefaultPolygonStyle();
 				symbolizerBorder = new LineSymbolizer(new Stroke(0xD87529, 7));
-				symbolizer = new LineSymbolizer(new Stroke(color,1,1,Stroke.LINECAP_BUTT))
+				symbolizer = new LineSymbolizer(new Stroke(color,1,1,Stroke.LINECAP_BUTT))*/
+				return Style.getDefaultSelectedLineStyle();
 
 			} else if (feature is LabelFeature) {
 				selectedStyle = Style.getDefinedLabelStyle(feature.style.textFormat.font,(feature.style.textFormat.size as Number),
 					0x0000FF,feature.style.textFormat.bold,feature.style.textFormat.italic);
+				selectedStyle.rules[0] = new Rule();
+				if(symbolizerBorder){
+					selectedStyle.rules[0].symbolizers.push(symbolizerBorder);
+				}
+				selectedStyle.rules[0].symbolizers.push(symbolizer);
+				return selectedStyle;
 			} else { //if (feature is PolygonFeature || feature is MultiPolygonFeature) {
-				selectedStyle = Style.getDefaultSurfaceStyle();
-				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));
+				/*selectedStyle = Style.getDefaultPolygonStyle();
+				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));*/
+				
+				return Style.getDefaultSelectedPolygonStyle();
 			}
-			selectedStyle.rules[0] = new Rule();
-			if(symbolizerBorder){
-				selectedStyle.rules[0].symbolizers.push(symbolizerBorder);
-			}
-			selectedStyle.rules[0].symbolizers.push(symbolizer);
-			return selectedStyle;
 		}
 		
 		/**

@@ -15,7 +15,7 @@
 		
 		<WFS id="wfs" name="USA States (WFS)" url="http://openscales.org/geoserver/wfs"
 			 typename="topp:states" projection="EPSG:900913" version="1.0.0"
-			 style="{Style.getDefaultSurfaceStyle()}" 
+			 style="{Style.getDefaultPolygonStyle()}" 
 			 maxExtent = "-40037508.34,-10037508.34,10037508.34,10037508.34" />
 		
 		<KML displayedName="Points of Interest (KML)" url="http://code.google.com/intl/fr/apis/kml/documentation/KML_Samples.kml"

@@ -576,7 +576,8 @@ package org.openscales.core.handler.feature.draw
 		private function onSelected(evt:FeatureEvent):void {
 			if ((this.setSelectedStyle != null) || (this.onSelectedFeature != null)) {
 				if(this._redrawFeatureOnSelection) {
-					this.onSomething(evt, this.setSelectedStyle, this.onSelectedFeature);
+					//this.onSomething(evt, this.setSelectedStyle, this.onSelectedFeature);
+					this.onSomething(evt, null, this.onSelectedFeature);
 				}
 			}
 		}
@@ -925,7 +926,9 @@ package org.openscales.core.handler.feature.draw
 		 * @param feature the feature to update its style
 		 */
 		private function resetStyle(feature:Feature):void {
-			feature.style = feature.originalStyle;
+			if(feature.originalStyle != null) {
+				feature.style = feature.originalStyle;
+			}
 		}
 		
 		/**
@@ -970,13 +973,13 @@ package org.openscales.core.handler.feature.draw
 				selectedStyle = Style.getDefaultPointStyle();
 				symbolizer = new PointSymbolizer(new WellKnownMarker(markType, new SolidFill(color, opacity), new Stroke(color, borderThin), markSize));
 			} else if (feature is LineStringFeature || feature is MultiLineStringFeature) {
-				selectedStyle = Style.getDefaultSurfaceStyle();
+				selectedStyle = Style.getDefaultPolygonStyle();
 				symbolizer = new LineSymbolizer(new Stroke(color, borderThin));
 			} else if (feature is LabelFeature) {
 				selectedStyle = Style.getDefinedLabelStyle(feature.style.textFormat.font,(feature.style.textFormat.size as Number),
 					0x0000FF,feature.style.textFormat.bold,feature.style.textFormat.italic);
 			} else { //if (feature is PolygonFeature || feature is MultiPolygonFeature) {
-				selectedStyle = Style.getDefaultSurfaceStyle();
+				selectedStyle = Style.getDefaultPolygonStyle();
 				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));
 			}
 			selectedStyle.rules[0] = new Rule();
