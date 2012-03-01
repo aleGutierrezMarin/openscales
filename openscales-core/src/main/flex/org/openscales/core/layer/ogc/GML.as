@@ -108,7 +108,7 @@ package org.openscales.core.layer.ogc
 			
 			var pointStyle:Style = Style.getDefaultPointStyle();
 			var lineStyle:Style = Style.getDefaultLineStyle();
-			var surfaceStyle:Style = Style.getDefaultSurfaceStyle();
+			var surfaceStyle:Style = Style.getDefaultPolygonStyle();
 			
 			if(this.style){
 				feature.style = this.style;

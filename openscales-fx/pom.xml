@@ -52,6 +52,12 @@
 						<org.openscales.component.control>Contains native Flex components</org.openscales.component.control>
 						<org.openscales.fx>Contains wrapper around openscales-core pure AS3 components</org.openscales.fx>
 					</packageDescriptions>
+                    <includeStylesheets>
+                      <stylesheet>
+                        <name>defaults.css</name>
+                        <path>${basedir}/src/main/flex/defaults.css</path>
+                      </stylesheet>
+                   </includeStylesheets>
 				</configuration>
 				<executions>
                 	<execution>

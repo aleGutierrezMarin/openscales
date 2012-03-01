@@ -592,13 +592,13 @@ package org.openscales.core.configuration
 				return Style.getDefaultPointStyle();
 			}
 			if(defaultStyle == "DefaultSurfaceStyle"){
-				return Style.getDefaultSurfaceStyle();
+				return Style.getDefaultPolygonStyle();
 			}
 			if(defaultStyle == "DrawLineStyle"){
-				return Style.getDrawLineStyle();
+				return Style.getDefaultSelectedLineStyle();
 			}
 			if(defaultStyle == "DrawSurfaceStyle"){
-				return Style.getDrawSurfaceStyle();
+				return Style.getDefaultSelectedPolygonStyle();
 			}
 			
 			return null;

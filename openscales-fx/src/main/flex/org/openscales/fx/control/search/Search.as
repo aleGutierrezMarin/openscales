@@ -11,7 +11,7 @@ package org.openscales.fx.control.search
 	import org.openscales.core.search.SearchEngine;
 	import org.openscales.core.search.result.Address;
 	import org.openscales.fx.control.search.engine.FxSearchEngine;
-	import org.openscales.fx.control.skin.DefaultSearchSkin;
+	import org.openscales.fx.control.skin.SearchDefaultSkin;
 	import org.openscales.geometry.basetypes.Location;
 	
 	import spark.components.TextInput;
@@ -19,7 +19,7 @@ package org.openscales.fx.control.search
 	
 	/**
 	 * Search control
-	 * Skinnable component, default skin is DefaultSearchSkin
+	 * Skinnable component, default skin is SearchDefaultSkin
 	 */
 	public class Search extends SkinnableComponent implements IHandler
 	{
@@ -47,7 +47,7 @@ package org.openscales.fx.control.search
 		public function Search()
 		{
 			super();
-			setStyle("skinClass", DefaultSearchSkin);
+			
 		}
 		
 		/**

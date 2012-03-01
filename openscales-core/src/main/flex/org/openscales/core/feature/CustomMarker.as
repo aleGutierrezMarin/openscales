@@ -139,5 +139,15 @@ package org.openscales.core.feature
 			this._xOffset = 0;
 			this._yOffset = 0;
 		}
+		
+		public function get clip():DisplayObject
+		{
+			return this._clip;
+		}
+		
+		public function set clip(value:DisplayObject):void
+		{
+			this._clip = value;
+		}
 	}
 }

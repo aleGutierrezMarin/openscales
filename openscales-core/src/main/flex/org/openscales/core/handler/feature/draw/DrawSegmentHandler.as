@@ -38,7 +38,7 @@ package org.openscales.core.handler.feature.draw
 				lineString.projection = this.map.projection;
 				lastPoint = point;
 				//the current drawn linestringfeature
-				super.currentLineStringFeature= new LineStringFeature(super.lineString,null, Style.getDrawLineStyle(),true);
+				super.currentLineStringFeature= new LineStringFeature(super.lineString,null, Style.getDefaultSelectedLineStyle()(),true);
 				super.currentLineStringFeature.name="path." + id.toString(); ++id;
 				drawLayer.addFeature(super.currentLineStringFeature);
 				

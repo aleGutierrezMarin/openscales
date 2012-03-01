@@ -115,5 +115,6 @@
 	<component id="ImportFeature" class="org.openscales.fx.control.drawing.ImportFeature" />
 	<component id="DrawingToolbar" class="org.openscales.fx.control.drawing.DrawingToolbar" />
 	<component id="AddVectorLayer" class="org.openscales.fx.control.drawing.AddVectorLayer" />
+	<component id="EditLabel" class="org.openscales.fx.control.drawing.popup.EditLabel" />
 	
 </componentPackage>

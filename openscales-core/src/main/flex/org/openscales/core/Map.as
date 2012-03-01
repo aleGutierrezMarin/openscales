@@ -326,6 +326,7 @@ package org.openscales.core
 			this.height = this.size.h;
 			
 			this._resultLayer.displayInLayerManager = false;
+			this._resultLayer.editable = false;
 			
 			if (_debug_max_extent)
 			{
