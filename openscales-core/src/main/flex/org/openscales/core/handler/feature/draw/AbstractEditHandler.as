@@ -30,7 +30,8 @@ package org.openscales.core.handler.feature.draw
 	 */
 	public class AbstractEditHandler extends Handler implements IEditFeature
 	{
-		protected var _virtualStyle:Style = Style.getDefaultCircleStyle();
+		protected var _virtualStyle:Style = Style.getDefaultPointStyle();
+		protected var _inbetweenStyle:Style = Style.getDefaultCircleStyle();
 		protected var _featuresToEdit:Vector.<Feature> = null;
 		/**
 		 * the layer concerned by the edition
@@ -132,47 +133,65 @@ package org.openscales.core.handler.feature.draw
 			var j:uint = collection.componentsLength;
 			var v:Vector.<Feature>;
 			var i:int;
+			var firstPoint:Point;
 			for (i=0; i < j; ++i) {
 				var geometry:Geometry = collection.componentByIndex(i);
 				
-				// Display in between virtual vertices
-				if (collection is LineString)
-				{
-					var collectionLength:Number = collection.componentsLength;
-					if (collectionLength > 1)
-					{
-						var firstPoint:Point = (collection as LineString).componentByIndex(0) as Point;
-						for (var k:int = 1; k < collectionLength; ++k)
+				if (geometry is ICollection) {
+					createEditionVertices(vectorfeature,geometry as ICollection,arrayToFill);
+				} else {
+					if (geometry is Point) {
+						if (!firstPoint)
 						{
-							var xInBetween:Number = (firstPoint.x + ((collection as LineString).componentByIndex(k) as Point).x)/2;
-							var yInBetween:Number = (firstPoint.y + ((collection as LineString).componentByIndex(k) as Point).y)/2;
+							firstPoint = geometry as Point;
+						}else{
+							var xInBetween:Number = (firstPoint.x + (geometry as Point).x)/2;
+							var yInBetween:Number = (firstPoint.y + (geometry as Point).y)/2;
 							var inbetweenPoint:Point = new Point(xInBetween, yInBetween, firstPoint.projection);
-							var EditionVertice:PointFeature = new PointFeature(inbetweenPoint, null, this._virtualStyle);
+							var EditionVertice:PointFeature = new PointFeature(inbetweenPoint, null, this._inbetweenStyle);
 							//We fill the array with the virtual vertice
 							v = new Vector.<Feature>();
 							v[0]=EditionVertice;
 							v[1]=null;
 							_inbetweenEditionFeatureArray.push(v);
 							arrayToFill.push(v);
-							firstPoint = (collection as LineString).componentByIndex(k) as Point;
+							firstPoint = geometry as Point;
 						}
-					}
-				}
-				
-				if (geometry is ICollection) {
-					createEditionVertices(vectorfeature,geometry as ICollection,arrayToFill);
-				} else {
-					if (geometry is Point) {
+						
 						var EditionVertice:PointFeature = new PointFeature(geometry as Point, null, this._virtualStyle);
 						//We fill the array with the virtual vertice
 						v = new Vector.<Feature>();
 						v[0]=EditionVertice;
 						v[1]=null;
 						arrayToFill.push(v);
+						
 						/* EditionVertice.editionFeatureParent = vectorfeature; */
 					}
 				}
 			}
+			/*// Display in between virtual vertices
+			if (collection is LineString)
+			{
+				var collectionLength:Number = collection.componentsLength;
+				if (collectionLength > 1)
+				{
+					var firstPoint:Point = (collection as LineString).componentByIndex(0) as Point;
+					for (var k:int = 1; k < collectionLength; ++k)
+					{
+						var xInBetween:Number = (firstPoint.x + ((collection as LineString).componentByIndex(k) as Point).x)/2;
+						var yInBetween:Number = (firstPoint.y + ((collection as LineString).componentByIndex(k) as Point).y)/2;
+						var inbetweenPoint:Point = new Point(xInBetween, yInBetween, firstPoint.projection);
+						var EditionVertice:PointFeature = new PointFeature(inbetweenPoint, null, this._virtualStyle);
+						//We fill the array with the virtual vertice
+						v = new Vector.<Feature>();
+						v[0]=EditionVertice;
+						v[1]=null;
+						_inbetweenEditionFeatureArray.push(v);
+						arrayToFill.push(v);
+						firstPoint = (collection as LineString).componentByIndex(k) as Point;
+					}
+				}
+			}*/
 		}
 		
 		 /**
@@ -302,9 +321,15 @@ package org.openscales.core.handler.feature.draw
 						j = _editionFeatureArray.indexOf(tmpfeature[i]);
 						if(j!=-1)
 							_editionFeatureArray.splice(j,1);
+						
+						j = _inbetweenEditionFeatureArray.indexOf(tmpfeature[i]);
+						if(j!=-1)
+							_inbetweenEditionFeatureArray.splice(j,1);
 					}
 					 tmpfeature= new Vector.<Vector.<Feature>>();
+					 _inbetweenEditionFeatureArray = new Vector.<Vector.<Feature>>();
 				}
+
 				createEditionVertices(featureEdited,featureEdited.geometry as ICollection,tmpfeature);
 				var v:Vector.<Feature>;
 				for each(v in tmpfeature){

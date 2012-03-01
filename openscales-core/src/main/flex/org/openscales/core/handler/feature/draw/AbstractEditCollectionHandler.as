@@ -149,12 +149,12 @@ package org.openscales.core.handler.feature.draw
 					this._featureClickHandler.removeControledFeature(vectorfeature);
 		 			if(parentGeometry!=null){
 		 				var lonlat:Location=this.map.getLocationFromMapPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY)); //this.map.getLocationFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
-		 				var newVertice:Point=new Point(lonlat.lon,lonlat.lat);
+		 				var newVertice:Point=new Point(lonlat.lon,lonlat.lat,lonlat.projection);
 		 				//if it's a real vertice of the feature
 		 				if(vectorfeature!=AbstractEditCollectionHandler._pointUnderTheMouse)
-							parentGeometry.replaceComponent(indexOfFeatureCurrentlyDrag,newVertice);
+							parentGeometry.replaceComponent(indexOfFeatureCurrentlyDrag/2,newVertice);
 		 				else
-							parentGeometry.addComponent(newVertice,indexOfFeatureCurrentlyDrag);
+							parentGeometry.addComponent(newVertice,(indexOfFeatureCurrentlyDrag+1)/2);
 		 				if(displayedVirtualVertices)
 							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	 
 		 			} 	
@@ -249,7 +249,7 @@ package org.openscales.core.handler.feature.draw
 			 	this._drawContainer.graphics.clear();
 			 	_timer.stop();
 				vectorfeature.draw();
-		 		this._layerToEdit.redraw();
+		 		this._layerToEdit.redraw(true);
 				this.map.mouseNavigationEnabled = true;
 				this.map.panNavigationEnabled = true;
 				this.map.zoomNavigationEnabled = true;
@@ -370,7 +370,16 @@ package org.openscales.core.handler.feature.draw
 		 * @param vectorfeature:PointFeature the dragged feature
 		 */
 		public function findIndexOfFeatureCurrentlyDrag(vectorfeature:PointFeature):Number {
-			var parentFeature:Feature = findVirtualVerticeParent(vectorfeature);
+			
+			var virtualVLength:Number = this._editionFeatureArray.length;
+			for (var i:int=0; i < virtualVLength; ++i)
+			{
+				var editionfeaturegeom:Point=_editionFeatureArray[i][0].geometry as Point;
+				if((vectorfeature.geometry as Point).x==editionfeaturegeom.x && (vectorfeature.geometry as Point).y==editionfeaturegeom.y)
+					return i;
+			}
+			return -1;
+			/*var parentFeature:Feature = findVirtualVerticeParent(vectorfeature);
 			if (parentFeature && parentFeature.geometry && parentFeature.geometry is ICollection) {
 				var parentgeometry:ICollection = editionFeatureParentGeometry(vectorfeature, parentFeature.geometry as ICollection);
 				if (IsRealVertice(vectorfeature, parentgeometry) != -1) {
@@ -379,7 +388,7 @@ package org.openscales.core.handler.feature.draw
 					return vectorfeature.getSegmentsIntersection(parentgeometry);
 				}
 			}
-			return -1;
+			return -1;*/
 		}
 		
 		 /**
@@ -412,7 +421,7 @@ package org.openscales.core.handler.feature.draw
 			 var geom:Point=vectorfeature.geometry as Point;
 			 //for each components of the geometry we see if the point belong to it
 			 for(index=0;index<this._inbetweenEditionFeatureArray.length;index++){		
-				 var editionfeaturegeom:Point=this._inbetweenEditionFeatureArray[index] as Point;
+				 var editionfeaturegeom:Point=this._inbetweenEditionFeatureArray[index][0].geometry as Point;
 				 if((vectorfeature.geometry as Point).x==editionfeaturegeom.x && (vectorfeature.geometry as Point).y==editionfeaturegeom.y)
 					 break;
 			 }
