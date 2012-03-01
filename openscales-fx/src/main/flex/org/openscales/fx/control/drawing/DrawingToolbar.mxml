@@ -39,7 +39,7 @@
 			private var _pointStyle:Style = Style.getDefaultPointStyle();
 			private var _pathStyle:Style = Style.getDefaultLineStyle();
 			private var _shapeStyle:Style = Style.getDefaultLineStyle();
-			private var _polygonStyle:Style = Style.getDefaultSurfaceStyle();
+			private var _polygonStyle:Style = Style.getDefaultPolygonStyle();
 			private var _clickOut:Boolean = true;
 			private var _toggle:Boolean = false;
 			private var _hover:Boolean = false;

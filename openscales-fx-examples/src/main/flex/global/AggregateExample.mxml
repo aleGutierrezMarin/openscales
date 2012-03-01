@@ -11,7 +11,7 @@
 				  maxExtent="-180,-90,180,90" version="1.1.1"/>
 			<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
 				 typename="topp:states" projection="EPSG:4326" version="1.0.0"
-				 style="{Style.getDefaultSurfaceStyle()}" alpha="0.3" maxResolution="0.1"/>
+				 style="{Style.getDefaultPolygonStyle()}" alpha="0.3" maxResolution="0.1"/>
 		</Aggregate>
 		<WFS name="Tiger poi (WFS)" url="http://openscales.org/geoserver/wfs" typename="tiger:poi"
 			 projection="EPSG:4326" version="1.0.0" useCapabilities="true" 

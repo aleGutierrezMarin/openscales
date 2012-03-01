@@ -11,6 +11,7 @@ package org.openscales.core.style {
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.MultiPoint;
@@ -47,6 +48,16 @@ package org.openscales.core.style {
 		private var _isFilled:Boolean;
 		private var _isStroked:Boolean;
 		
+		
+		public static function getDefaultSelectedColor():uint {
+			return 0xFF7C4C;
+		}
+		
+		/*Points Styles*/
+		
+		/**
+		 * Returns the default style for a PointFeature
+		 */
 		public static function getDefaultPointStyle():Style {
 			
 			var style:Style = new Style();
@@ -55,92 +66,54 @@ package org.openscales.core.style {
 			return style;
 		}
 		
-		public static function getDefaultCircleStyle():Style {
+		/**
+		 * Returns the default style for a PointFeature when the feature is selected.
+		 */
+		public static function getDefaultSelectedPointStyle():Style {
 			
-			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
-			var stroke:Stroke = new Stroke(0xA6430A, 1);
+			var style:Style = new Style();
+			style.name = "Default selected point style";
+			style.rules.push(getSelectedPointRule());
+			return style;
+		}
+		
+		/**
+		 * Returns the rule to apply for the default PointFeature style
+		 */
+		protected static function getPointRule():Rule{
 			
-			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_CIRCLE, fill, stroke);
+			var fill:SolidFill = new SolidFill(0x0F6BFF, 0.7);
+			var stroke:Stroke = new Stroke(0x3F9FCD, 2);
 			
-			var symbolizer:PointSymbolizer = new PointSymbolizer();
-			symbolizer.graphic = mark;
+			var symbolizer:PointSymbolizer = new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke, 8));
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(symbolizer);
 			
-			var style:Style = new Style();
-			style.name = "Default circle style";
-			style.rules.push(rule);
-			return style;
+			return rule;
 		}
 		
-		public static function getDrawLineStyle():Style {
+		/**
+		 * Returns the rule to apply for the default selected PointFeature style
+		 */
+		protected static function getSelectedPointRule():Rule{
 			
-			var stroke:Stroke = new Stroke(0x60D980, 1);
-			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
+			var fill:SolidFill = new SolidFill(0xFF7C4C, 0.5);
+			var stroke:Stroke = new Stroke(0xFF7C4C, 2);
+			
+			var symbolizer:Symbolizer = new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke, 8));
 			
 			var rule:Rule = new Rule();
-			rule.name = "Default rule";
+			rule.name = "Default selected point rule";
 			rule.symbolizers.push(symbolizer);
 			
-			var style:Style = new Style();
-			style.name = "Draw linear style";
-			style.rules.push(rule);
-			
-			return style;
+			return rule;
 		}
 		
-		public static function getDefaultGraticuleStyle():Style {
-			var style:Style = new Style();
-			style.name = "Default graticule style";
-			style.rules.push(getGraticuleRule());
-			return style;
-		}
-		
-		public static function getDefaultGraticuleLabelStyle():Style{
-			
-			var style:Style = new Style();
-			style.name = "Default graticule label style";
-			style._textFormat = new TextFormat("Arial",12,0xFFFFFF,true,false);
-			return style;
-		}
-		
-		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, whiteSize:uint, dottedSize:uint):Style
-		{
-			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,whiteSize,dottedSize);
-			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
-			
-			var rule:Rule = new Rule();
-			rule.symbolizers.push(symbolizer);
-			
-			var style:Style = new Style();
-			style.name = "Defined line style";
-			style.rules.push(rule);
-			
-			return style;
-		}
-		public static function getDefinedSurfaceStyle(color:uint, opacity:Number):Style
-		{
-			var fill:SolidFill = new SolidFill(color, opacity);
-			var stroke:Stroke = new Stroke(0xE7FF33, 3);
-			
-			var rule:Rule = new Rule();
-			rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
-			
-			var style:Style = new Style();
-			style.name = "Defined surface style";
-			style.rules.push(rule);
-			
-			return style;
-		}
-		public static function getDefinedLabelStyle(font:String, size:Number, color:uint, bold:Boolean, italic:Boolean):Style{
-			
-			var style:Style = new Style();
-			style.name = "Defined label style";
-			style._textFormat = new TextFormat(font,size,color,bold,italic);
-			return style;
-		}
+		/**
+		 * This method allows to define a point style with custom parameters : marker and rotation
+		 */
 		public static function getDefinedPointStyle(marker:String, rotation:Number):Style
 		{
 			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
@@ -157,6 +130,11 @@ package org.openscales.core.style {
 			return style;
 		}
 		
+		/*Line Styles*/
+		
+		/**
+		 * Returns the default style for a LineStringFeature
+		 */
 		public static function getDefaultLineStyle():Style {
 			
 			var style:Style = new Style();
@@ -165,49 +143,150 @@ package org.openscales.core.style {
 			return style;
 		}
 		
-		public static function getDrawSurfaceStyle():Style {
+		/**
+		 * Returns the default style for a LineStringFeature when the feature is selected
+		 */
+		public static function getDefaultSelectedLineStyle():Style {
 			
-			var fill:SolidFill = new SolidFill(0xE4EDF2, 0.4);
+			var style:Style = new Style();
+			style.name = "Default selected line style";
+			style.rules.push(getSelectedLineRule());
+			return style;
+		}
+		
+		/**
+		 * Returns the rule to apply for the default LineStringFeature style
+		 */
+		protected static function getLineRule():Rule{
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x3F9FCD, 3)));
+			
+			return rule;
+		}
+		
+		/**
+		 * Returns the rule to apply for the default selected LineStringFeature style
+		 */
+		protected static function getSelectedLineRule():Rule{
+			var color:uint = 0xFF7C4C;
+			var borderThin:int = 3;
+			var rule:Rule = new Rule();
+			
+			rule.name = "Default selected line rule";
+			rule.symbolizers.push(new LineSymbolizer(new Stroke(color, borderThin)));
+			
+			return rule;
+		}
+		
+		/**
+		 * This method allows to define a style with custom parameters : color, width, whiteSize and dottedSize
+		 */
+		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, whiteSize:uint, dottedSize:uint):Style
+		{
+			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,whiteSize,dottedSize);
+			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
+			
+			var rule:Rule = new Rule();
+			rule.symbolizers.push(symbolizer);
+			
+			var style:Style = new Style();
+			style.name = "Defined line style";
+			style.rules.push(rule);
+			
+			return style;
+		}
+		
+		/*Surface Styles*/
+		
+		/**
+		 * Returns the default style for a PolygonFeature
+		 */
+		public static function getDefaultPolygonStyle():Style {
+			var style:Style = new Style();
+			style.name = "Surface Style";
+			style.rules.push(getDefaultPolygonRule());
+			return style;
+		}
+		
+		/**
+		 * Returns the default style for a PolygonFeature when the feature is selected
+		 */
+		public static function getDefaultSelectedPolygonStyle():Style {
+			
+			var style:Style = new Style();
+			style.name = "Default selected polygon style";
+			style.rules.push(getDefaultSelectedPolygonRule());
+			return style;
+		}
+		
+		/**
+		 * Returns the rule to apply for the default PolygonFeature style
+		 */
+		protected static function getDefaultPolygonRule():Rule{ 
+			
+			var fill1:SolidFill = new SolidFill();
+			fill1.color = 0x0F6BFF;
+			fill1.opacity = 0.4;
+			
+			var stroke1:Stroke = new Stroke();
+			stroke1.width = 2;
+			stroke1.color = 0x3F9FCD;
+			stroke1.opacity = 0.7;
+			
+			var ps1:PolygonSymbolizer = new PolygonSymbolizer(fill1, stroke1);
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default surface rule";
+			rule.symbolizers.push(ps1);
+			
+			return rule; 
+		}
+		
+		/**
+		 * Returns the rule to apply for the default selected PolygonFeature style
+		 */
+		protected static function getDefaultSelectedPolygonRule():Rule{
+			var color:uint = 0xFF7C4C;
+			var opacity:Number = 0.5;
+			var borderThin:int = 2;
+			var rule:Rule = new Rule();
+			
+			rule.name = "Default selected polygon rule";
+			rule.symbolizers.push(new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin)));
+			
+			return rule;
+		}
+		
+		/**
+		 * This method allows to define a style with custom color and opacity parameters
+		 */
+		public static function getDefinedPolygonStyle(color:uint, opacity:Number):Style
+		{
+			var fill:SolidFill = new SolidFill(color, opacity);
 			var stroke:Stroke = new Stroke(0xE7FF33, 3);
 			
 			var rule:Rule = new Rule();
 			rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
 			
 			var style:Style = new Style();
-			style.name = "Draw surface style";
+			style.name = "Defined surface style";
 			style.rules.push(rule);
 			
 			return style;
 		}
 		
-		public static function getDefaultSurfaceStyle():Style {
-			var fill1:SolidFill = new SolidFill();
-			fill1.color = 0x99D0F2;
-			fill1.opacity = 0.4;
-			var stroke1:Stroke = new Stroke();
-			stroke1.width = 1;
-			stroke1.color = 0x3F9FCD;
-			stroke1.opacity = 0.4;
-			var stroke2:Stroke = new Stroke();
-			stroke2.width = 1.5;
-			stroke2.color = 0xffffff;
-			var ps1:PolygonSymbolizer = new PolygonSymbolizer(fill1, stroke1);
-			var rule:Rule = new Rule();
-			rule.name = "Default rule";
-			rule.symbolizers.push(ps1);
-			var style:Style = new Style();
-			style.rules.push(rule);
-			style.name = "Surface Style";
+		/*Circle Styles*/
+		/**
+		 * Returns the default style for a PointFeature drawn with a circle
+		 */
+		public static function getDefaultCircleStyle():Style {
 			
-			return style;
-		}
-		
-		protected static function getPointRule():Rule{
+			var fill:SolidFill = new SolidFill(0xFF2819, 0.7);
+			var stroke:Stroke = new Stroke(0xFF2819, 1);
 			
-			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
-			var stroke:Stroke = new Stroke(0xA6430A, 1);
-			
-			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke);
+			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_CIRCLE, fill, stroke);
 			
 			var symbolizer:PointSymbolizer = new PointSymbolizer();
 			symbolizer.graphic = mark;
@@ -216,7 +295,26 @@ package org.openscales.core.style {
 			rule.name = "Default rule";
 			rule.symbolizers.push(symbolizer);
 			
-			return rule;
+			var style:Style = new Style();
+			style.name = "Default circle style";
+			style.rules.push(rule);
+			return style;
+		}
+		
+		/*Graticule Styles*/
+		public static function getDefaultGraticuleStyle():Style {
+			var style:Style = new Style();
+			style.name = "Default graticule style";
+			style.rules.push(getGraticuleRule());
+			return style;
+		}
+		
+		public static function getDefaultGraticuleLabelStyle():Style{
+			
+			var style:Style = new Style();
+			style.name = "Default graticule label style";
+			style._textFormat = new TextFormat("Arial",12,0xFFFFFF,true,false);
+			return style;
 		}
 		
 		protected static function getGraticuleRule():Rule{
@@ -229,48 +327,23 @@ package org.openscales.core.style {
 			return rule;
 		}
 		
-		protected static function getLineRule():Rule{
+		/*Label Styles*/
+		public static function getDefinedLabelStyle(font:String, size:Number, color:uint, bold:Boolean, italic:Boolean):Style{
 			
-			var rule:Rule = new Rule();
-			rule.name = "Default rule";
-			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x184054, 7)));
-			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x40A6D9, 1)));
-			
-			return rule;
+			var style:Style = new Style();
+			style.name = "Defined label style";
+			style._textFormat = new TextFormat(font,size,color,bold,italic);
+			return style;
 		}
 		
-		protected static function getPolygonRule():Rule{ 
-			
-			var fill1:SolidFill = new SolidFill();
-			fill1.color = 0x99D0F2;
-			fill1.opacity = 0.4;
-			
-			var stroke1:Stroke = new Stroke();
-			stroke1.width = 1;
-			stroke1.color = 0x96A621;
-			
-			var stroke2:Stroke = new Stroke();
-			stroke2.width = 4;
-			stroke2.color = 0xffffff;
-			
-			var ps1:PolygonSymbolizer = new PolygonSymbolizer(fill1, stroke2);
-			var ps2:PolygonSymbolizer = new PolygonSymbolizer(null, stroke1);
-			
-			var rule:Rule = new Rule();
-			rule.name = "Default polygon rule";
-			rule.symbolizers.push(ps1);
-			rule.symbolizers.push(ps2);
-			
-			return rule; 
-		}
-		
+		/*Default Styles*/
 		public static function getDefaultStyle():Style{
 			
 			var style:Style = new Style();
 			style.name = "OpenScales default style";
 			
 			// Style for Polygon and Multipolygon
-			var polygonRule:Rule = getPolygonRule();
+			var polygonRule:Rule = getDefaultPolygonRule();
 			polygonRule.filter = new GeometryTypeFilter(new <Class>[Polygon,MultiPolygon]);
 			style.rules.push(polygonRule);
 			

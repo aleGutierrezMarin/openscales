@@ -17,7 +17,7 @@
 		
 		<WFS name="Topp States (WFS)" url="http://openscales.org/geoserver/wfs"
 			 typename="topp:states" projection="EPSG:4326" version="1.0.0"
-			 style="{Style.getDefaultSurfaceStyle()}" />
+			 style="{Style.getDefaultPolygonStyle()}" />
 		
 		<DragHandler/>
 		<WheelHandler/>

@@ -159,7 +159,7 @@ package org.openscales.core.layer.ogc
 				
 				var pointStyle:Style = Style.getDefaultPointStyle();
 				var lineStyle:Style = Style.getDefaultLineStyle();
-				var surfStyle:Style = Style.getDefaultSurfaceStyle();
+				var surfStyle:Style = Style.getDefaultPolygonStyle();
 				pointStyle.rules.push(new Rule());
 				lineStyle.rules.push(new Rule());
 				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));

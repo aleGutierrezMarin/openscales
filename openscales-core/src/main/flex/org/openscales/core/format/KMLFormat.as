@@ -438,7 +438,7 @@ package org.openscales.core.format
 					}
 					else 
 					{
-						_Pstyle = Style.getDefaultSurfaceStyle();
+						_Pstyle = Style.getDefaultPolygonStyle();
 						if(hmLocalStyle.containsKey("PolyStyle")) {
 							_Pstyle = hmLocalStyle.getValue("PolyStyle");
 						}
@@ -511,7 +511,7 @@ package org.openscales.core.format
 						{
 							geomStyle = this.userDefinedStyle;	
 						} else {
-							geomStyle = Style.getDefaultSurfaceStyle();
+							geomStyle = Style.getDefaultPolygonStyle();
 							if(hmLocalStyle.containsKey("PolyStyle")) {
 								geomStyle = hmLocalStyle.getValue("PolyStyle");
 							}

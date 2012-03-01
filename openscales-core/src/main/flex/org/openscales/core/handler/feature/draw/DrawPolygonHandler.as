@@ -82,7 +82,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * 
 		 */
-		private var _style:Style = Style.getDefaultSurfaceStyle();
+		private var _style:Style = Style.getDefaultPolygonStyle();
 
 		/**
 		 * Constructor of the polygon handler
@@ -145,7 +145,7 @@ package org.openscales.core.handler.feature.draw
 					this._polygonFeature.name = name;
 					
 					//this._polygonFeature=new PolygonFeature(				
-					this._polygonFeature.style = Style.getDrawSurfaceStyle();
+					this._polygonFeature.style = Style.getDefaultSelectedPolygonStyle();
 					
 					// We create a point the first time to see were the user clicked
 					this._firstPointFeature=  new PointFeature(point,null,Style.getDefaultPointStyle());
@@ -185,8 +185,8 @@ package org.openscales.core.handler.feature.draw
 		public function drawTemporaryPolygon(event:Event=null):void{
 			//position of the last point drawn
 			_drawContainer.graphics.clear();
-			_drawContainer.graphics.beginFill(0x00ff00,0.5);
-			_drawContainer.graphics.lineStyle(2, 0x00ff00);		
+			//_drawContainer.graphics.beginFill(0x00ff00,0.5);
+			_drawContainer.graphics.lineStyle(2, Style.getDefaultSelectedColor());		
 			_drawContainer.graphics.moveTo(map.mouseX, map.mouseY);
 			_drawContainer.graphics.lineTo(this.map.getMapPxFromLocation(this._firstPointLocation).x, this.map.getMapPxFromLocation(this._firstPointLocation).y);
 			_drawContainer.graphics.moveTo(map.mouseX, map.mouseY);
@@ -198,8 +198,8 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function drawFinalPoly():void{
 			//Change style of finished polygon
-			//var style:Style = Style.getDefaultSurfaceStyle();
-			//var style:Style = Style.getDefinedSurfaceStyle(0x00FFFF,0.2);
+			//var style:Style = Style.getDefaultPolygonStyle();
+			//var style:Style = Style.getDefinedPolygonStyle(0x00FFFF,0.2);
 			_drawContainer.graphics.clear();
 			//We finalize the last feature (of course, it's a polygon)
 			//var feature:Feature = drawLayer.features[drawLayer.features.length - 1];

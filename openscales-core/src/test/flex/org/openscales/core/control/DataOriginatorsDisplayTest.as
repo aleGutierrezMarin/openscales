@@ -46,7 +46,7 @@ package org.openscales.core.control
 			
 			var regions:WFS = new WFS("IGN - Geopla (Region)", "http://openscales.org/geoserver/wfs","pg:ign_geopla_region");
 			regions.projection = "EPSG:2154";
-			regions.style = Style.getDefaultSurfaceStyle();
+			regions.style = Style.getDefaultPolygonStyle();
 			_map.addLayer(regions);
 			
 			// new originator for WFS

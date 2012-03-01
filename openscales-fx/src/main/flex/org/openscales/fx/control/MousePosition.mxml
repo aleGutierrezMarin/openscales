@@ -24,7 +24,7 @@
 			import spark.events.IndexChangeEvent;
 			
 			public static const UNIT_CHANGED:String = 'selectedIndexUnitChanged';
-			public static const CRS_CHANGED:String = 'selectedIndexUnitChanged';
+			public static const CRS_CHANGED:String = 'selectedIndexCrsChanged';
 			
 			/**
 			 * @private

@@ -69,10 +69,12 @@
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.EditLabel"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.SingleInputPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.skin.EditLabelSkin"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerAlpha"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
@@ -100,6 +102,7 @@
     <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ScrollableContainerSkin"/>
+    <classEntry path="org.openscales.fx.control.skin.SearchDefaultSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomThumbSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomTrackSkin"/>
@@ -160,7 +163,9 @@
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
   </includeClasses>
-  <includeResources/>
+  <includeResources>
+    <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
+  </includeResources>
   <namespaceManifests>
     <namespaceManifestEntry manifest="META-INF/manifest.xml" namespace="http://openscales.org"/>
   </namespaceManifests>

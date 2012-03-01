@@ -153,7 +153,7 @@ package org.openscales.core.handler.feature.draw
 				_lineString.projection = this.map.projection;
 				lastPoint = point;
 				//the current drawn linestringfeature
-				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDrawLineStyle(),true);
+				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDefaultSelectedLineStyle(),true);
 				this._currentLineStringFeature.name = "path." + drawLayer.idPath.toString();
 				drawLayer.idPath++;
 				drawLayer.addFeature(_currentLineStringFeature);

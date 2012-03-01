@@ -1,8 +1,12 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
 	
+	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
@@ -46,7 +50,22 @@ package org.openscales.core.feature {
 			this._editionFeatureParentGeometry = null;
 			super.destroy();
 		}
-
+		
+		/*override public function onMouseHover(pevt:MouseEvent):void {
+			super.onMouseHover(pevt);
+			
+			//Define Hover Style
+			this.style = Style.getDefaultSelectedPointStyle();
+			this.draw();
+			
+		}*/
+		
+		/*override public function onMouseOut(pevt:MouseEvent):void {
+			this.style = Style.getDefaultPointStyle();
+			super.onMouseOut(pevt);
+			this.draw();
+		}*/
+		
 		public function get point():Point {
 			return this.geometry as Point;
 		}
