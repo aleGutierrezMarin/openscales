@@ -21,6 +21,12 @@
 			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.geometry.basetypes.Location;
 			
+			import spark.effects.Animate;
+			import spark.effects.animation.Animation;
+			import spark.effects.animation.Keyframe;
+			import spark.effects.animation.MotionPath;
+			import spark.effects.interpolation.NumberInterpolator;
+			
 			[Embed(source="/assets/images/marker-blue.png")]
 			private var _markerIcon:Class;
 			
@@ -64,6 +70,8 @@
 			private var _request:OpenLSRequest = null;
 			
 			private var _resultLayer:VectorLayer = null;
+			
+			private var _blinkMarker:Boolean = false;
 			
 			[Bindable]
 			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
@@ -151,6 +159,21 @@
 			[Bindable]
 			private var _rightLabel:String = Catalog.getLocalizationForKey("openLSSearch.right");
 			
+			
+			/**
+			 * Boolean that specify if the marker will blink when marking the geocode response
+			 * @default false
+			 */
+			public function get blinkMarker():Boolean
+			{
+				return this._blinkMarker;
+			}
+			
+			public function set blinkMarker(value:Boolean):void
+			{
+				this._blinkMarker = value;
+			}
+				
 			public function get displayMarker():Boolean
 			{
 				return _displayMarker;
@@ -664,6 +687,26 @@
 				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _markerIcon(), pos, null, _xOffset, _yOffset);
 				marker.useHandCursor = false;
 				this._resultLayer.addFeature(marker,true,false);
+
+				if (_blinkMarker)
+				{
+					var animate:Animate = new Animate(marker);
+					animate.repeatCount = 10;
+					animate.repeatBehavior = "reverse";
+					animate.duration = 200;
+					var motion:MotionPath = new MotionPath("alpha");
+					var initAlpha:Number = marker.clip.alpha;
+					var keyframe1:Keyframe =  new Keyframe(0,initAlpha);
+					var keyframe2:Keyframe =  new Keyframe(100,0);
+					var keyFrames:Vector.<Keyframe> = new Vector.<Keyframe>();
+					keyFrames.push(keyframe1);
+					keyFrames.push(keyframe2);
+					motion.keyframes = keyFrames;
+					var motionPaths:Vector.<MotionPath> = new Vector.<MotionPath>();
+					motionPaths.push(motion);
+					animate.motionPaths = motionPaths;
+					animate.play();
+				}
 			}
 			
 			private function addReverseMarker(pos:Location, index:uint):void {
