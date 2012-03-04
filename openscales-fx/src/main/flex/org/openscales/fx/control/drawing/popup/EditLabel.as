@@ -9,12 +9,12 @@ package org.openscales.fx.control.drawing.popup
 	import org.openscales.core.Map;
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;
+	import org.openscales.fx.control.drawing.popup.skin.EditLabelSkin;
 	
 	import spark.components.Button;
 	import spark.components.Label;
 	import spark.components.TextInput;
 	import spark.components.TitleWindow;
-	import org.openscales.fx.control.drawing.popup.skin.EditLabelSkin;
 	
 	public class EditLabel extends TitleWindow
 	{

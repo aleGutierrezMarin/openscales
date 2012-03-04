@@ -49,7 +49,6 @@
 			private var _map:Map;
 			private var _target:VectorLayer;
 			private var _popup:EditLabel; 
-			
 
 			private var _feature:LabelFeature;
 			private var _drawingMode:String;
