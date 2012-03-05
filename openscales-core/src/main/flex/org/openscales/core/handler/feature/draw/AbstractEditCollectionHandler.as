@@ -350,7 +350,7 @@ package org.openscales.core.handler.feature.draw
 		 	}
 		 }*/
 		 /**
-		 * To draw the temporaries feature during drag Operation
+		  * To draw the temporaries feature during drag Operation
 		 * */
 		 protected function drawTemporaryFeature(event:MouseEvent):void{
 		 	

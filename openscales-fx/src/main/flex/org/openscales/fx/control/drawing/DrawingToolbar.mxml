@@ -43,7 +43,7 @@
 			private var _clickOut:Boolean = true;
 			private var _toggle:Boolean = false;
 			private var _hover:Boolean = false;
-			private var _virtualStyle:Style = Style.getDefaultCircleStyle();
+			private var _virtualStyle:Style = Style.getDefaultPointStyle();
 			private var _defaultAttributes:Vector.<String> = new <String> ["id","description"];
 			private var _mode:String = "multiple";
 			private var _configured:Boolean = false;

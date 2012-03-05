@@ -97,7 +97,6 @@
     <classEntry path="org.openscales.fx.control.search.Search"/>
     <classEntry path="org.openscales.fx.control.search.engine.FxBingSearch"/>
     <classEntry path="org.openscales.fx.control.search.engine.FxSearchEngine"/>
-    <classEntry path="org.openscales.fx.control.skin.DefaultSearchSkin"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanSkin"/>
