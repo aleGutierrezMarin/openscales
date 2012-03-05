@@ -219,6 +219,11 @@ package org.openscales.core.handler.feature.draw
 		 	
 		 	var vectorfeature:PointFeature=event.feature as PointFeature;
 		 	
+			//Avoid removing inbetween features
+			if (this.isInbetweenVertice(vectorfeature) != -1)
+			{
+				return;
+			}
 		 	var parentFeature:Feature=findVirtualVerticeParent(vectorfeature);
 		 	if(parentFeature && parentFeature.geometry is ICollection){
 			 	var parentGeometry:ICollection=editionFeatureParentGeometry(vectorfeature,parentFeature.geometry as ICollection);

@@ -400,7 +400,7 @@
 			 */
 			private function onFeatureUnselected(evt:FeatureEvent):void{
 				
-				if(this._featureSelected = evt.feature) {
+				if(this._featureSelected == evt.feature) {
 					this._featureSelected = null;
 				}
 				
