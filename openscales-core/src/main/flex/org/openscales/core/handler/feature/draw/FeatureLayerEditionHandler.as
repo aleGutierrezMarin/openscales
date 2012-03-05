@@ -128,7 +128,7 @@ package org.openscales.core.handler.feature.draw
 			
 			// events management
 			//this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-			this.map.removeEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			//this.map.removeEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 			if(vectorfeature != null)
 				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.EDITION_POINT_FEATURE_DRAG_START,vectorfeature));
 		}
@@ -170,7 +170,7 @@ package org.openscales.core.handler.feature.draw
 			
 			// events management
 			//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			//this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
 		/**
@@ -210,7 +210,7 @@ package org.openscales.core.handler.feature.draw
 			
 			// events management
 			//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			//this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
 		/**
@@ -250,7 +250,7 @@ package org.openscales.core.handler.feature.draw
 			
 			// events management
 			//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-			this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+			//this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
 		/**
@@ -264,11 +264,13 @@ package org.openscales.core.handler.feature.draw
 				
 				if(iEditPoint!=null) {
 					(this.iEditPoint as AbstractEditHandler).map=this.map;
+					(this.iEditPoint as AbstractEditHandler).editionModeStart()
 					iEditPoint.refreshEditedfeatures();
 					/* alreadystarted=true;  */
 				}
 				if(iEditPath!=null){
 					(this.iEditPath as AbstractEditHandler).map=this.map;
+					(this.iEditPath as AbstractEditHandler).editionModeStart()
 					/* 						if(!alreadystarted){ */
 					iEditPath.refreshEditedfeatures();				
 					/* 							alreadystarted=true;
@@ -276,6 +278,7 @@ package org.openscales.core.handler.feature.draw
 				}
 				if(iEditPolygon!=null){
 					(this.iEditPolygon as AbstractEditHandler).map=this.map;
+					(this.iEditPolygon as AbstractEditHandler).editionModeStart()
 					/* 						if(!alreadystarted){ */
 					iEditPolygon.refreshEditedfeatures();
 					/* 							alreadystarted=true;
@@ -320,13 +323,13 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * This function is used to manage the mouse when the mouse is out of the feature
 		 */
-		private function onFeatureOut(evt:FeatureEvent):void{
+		/*private function onFeatureOut(evt:FeatureEvent):void{
 			var vectorfeature:Feature = evt.feature;
 			if((vectorfeature is PolygonFeature || vectorfeature is MultiPolygonFeature) && iEditPolygon != null && isSelectedFeature(vectorfeature))
 				(iEditPolygon as AbstractEditCollectionHandler).onFeatureOut(evt);
 			else if((vectorfeature is LineStringFeature || vectorfeature is MultiLineStringFeature) && iEditPath != null && isSelectedFeature(vectorfeature))
 				(iEditPath as AbstractEditCollectionHandler).onFeatureOut(evt);
-		}
+		}*/
 		
 		/**
 		 * This function creates a virtual point under the mouse
@@ -370,7 +373,7 @@ package org.openscales.core.handler.feature.draw
 			if(this.map){		
 				//this.map.addEventListener(MapEvent.RELOAD,refreshEditedfeatures);
 				//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+				//this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 			}
 		}
 		/**
@@ -380,7 +383,7 @@ package org.openscales.core.handler.feature.draw
 			if(this.map){	
 				//this.map.removeEventListener(MapEvent.RELOAD,refreshEditedfeatures);
 				//this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-				this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
+				//this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 			}	
 		}
 		//getters && setters

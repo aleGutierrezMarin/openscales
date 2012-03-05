@@ -10,6 +10,10 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LabelFeature;
+	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.MultiLineStringFeature;
+	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
@@ -79,19 +83,25 @@ package org.openscales.core.handler.feature.draw
 		 * This function is used for Polygons edition mode starting
 		 * 
 		 * */
-		override public function editionModeStart():Boolean{
-		 	for each(var vectorFeature:Feature in this._layerToEdit.features){	
-					if(vectorFeature.isEditable && vectorFeature.geometry is ICollection){			
-						//Clone or not
-						if(displayedVirtualVertices)displayVisibleVirtualVertice(vectorFeature);
-					}
+		override public function editionModeStart():Boolean
+		{
+		 	/*for each(var vectorFeature:Feature in this._layerToEdit.features)
+			{	
+				if(vectorFeature.isEditable && vectorFeature.geometry is ICollection)
+				{			
+					//Clone or not
+					if(displayedVirtualVertices)displayVisibleVirtualVertice(vectorFeature);
 				}
-					if(_isUsedAlone){
-						this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_EDITION_MODE_START,this._layerToEdit));	
-						//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-					}			
-		 	return true;
-		 }
+			}
+			if(_isUsedAlone)
+			{
+				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_EDITION_MODE_START,this._layerToEdit));	
+				//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			}*/
+			this.map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
+			this.map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+ 			return true;
+		}
 		
 		 /**
 		 * @inheritDoc 
@@ -102,8 +112,61 @@ package org.openscales.core.handler.feature.draw
 		 	//this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 		 	this._timer.removeEventListener(TimerEvent.TIMER, deletepointUnderTheMouse);		 	
 		 	super.editionModeStop();
+			this.map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
+			this.map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
 		 	return true;
 		 } 
+		  
+		  private function onFeatureOver(evt:FeatureEvent):void
+		  {
+			  
+			  if(!(evt.feature == _featureCurrentlyDrag) && (evt.feature is PointFeature) &&(this.isVirtualVertice(evt.feature as PointFeature) != -1))
+			  {
+				  evt.feature.originalStyle = evt.feature.style;
+				  
+				  if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+					  evt.feature.style = Style.getDefaultSelectedPointStyle();
+				  } else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+					  evt.feature.style = Style.getDefaultSelectedLineStyle();
+				  } else if (evt.feature is LabelFeature) {
+					  //evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+					  //	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+				  } else {
+					  evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+				  }
+				  
+				  //set feature style as a selected style
+				  evt.feature.style.isSelectedStyle = true;
+				  
+				  evt.feature.draw();
+			  }
+		  }
+		  
+		  private function onFeatureOut(evt:FeatureEvent):void
+		  {
+			  if(!(evt.feature == _featureCurrentlyDrag) && (evt.feature is PointFeature) &&(this.isVirtualVertice(evt.feature as PointFeature) != -1))
+			  {	
+				  if(evt.feature.originalStyle != null) {
+					  evt.feature.style = evt.feature.originalStyle;
+				  } else {
+					  if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+						  evt.feature.style = Style.getDefaultPointStyle();
+					  } else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+						  evt.feature.style = Style.getDefaultLineStyle();
+					  } else if (evt.feature is LabelFeature) {
+						  //evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+						  //	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+					  } else {
+						  evt.feature.style = Style.getDefaultPolygonStyle();
+					  }
+				  }
+				  
+				  //set feature style as a normal style
+				  evt.feature.style.isSelectedStyle = false;
+				  
+				  evt.feature.draw();
+			  }
+		  }
 		 
 		 /**
 		 * @inheritDoc 
@@ -262,12 +325,7 @@ package org.openscales.core.handler.feature.draw
 		 	}
 		 }
 		 
-		 /**
-		 * This function is used to manage the mouse when the mouse is out of the feature
-		 * */
-		 public function onFeatureOut(evt:FeatureEvent):void{	 	
-		 	_timer.start();
-		 }
+
 		 private function deletepointUnderTheMouse(evt:TimerEvent):void{
 		 	//we hide the point under the mouse
 		 
@@ -418,7 +476,7 @@ package org.openscales.core.handler.feature.draw
 		 }
 		 
 		 /**
-		 * 
+		 * Return the index of the feature in the _inbetweenEditionFeatureArray Array or -1 otherwise
 		 */
 		public function isInbetweenVertice(vectorfeature:PointFeature):Number
 		 {
@@ -433,6 +491,23 @@ package org.openscales.core.handler.feature.draw
 			 if(index<this._inbetweenEditionFeatureArray.length) return index;
 			 return -1;
 		 }
+		
+		/**
+		 *  Return the index of the feature in the _editionFeatureArray Array or -1 otherwise
+		 */
+		public function isVirtualVertice(vectorfeature:PointFeature):Number
+		{
+			var index:Number=0;		
+			var geom:Point=vectorfeature.geometry as Point;
+			//for each components of the geometry we see if the point belong to it
+			for(index=0;index<this._editionFeatureArray.length;index++){		
+				var editionfeaturegeom:Point=this._editionFeatureArray[index][0].geometry as Point;
+				if((vectorfeature.geometry as Point).x==editionfeaturegeom.x && (vectorfeature.geometry as Point).y==editionfeaturegeom.y)
+					break;
+			}
+			if(index<this._editionFeatureArray.length) return index;
+			return -1;
+		}
 		
 		 /**
 		 * This function find a parent Geometry of an edition feature
