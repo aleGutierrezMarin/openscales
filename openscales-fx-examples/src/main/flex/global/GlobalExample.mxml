@@ -40,7 +40,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.flexunit.internals.events.ExecutionCompleteEvent;
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.format.DCFormat;
