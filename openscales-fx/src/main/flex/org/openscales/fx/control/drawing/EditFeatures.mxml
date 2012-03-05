@@ -57,6 +57,12 @@
 			private var _isClick:Boolean = false;
 			private var _drawingMode:String;
 			
+			//this Vector contains the real features of the layer without the temporary features drawn for modification.
+			//Used for FEATURE_OVER and FEATURE_OUT event
+			private var _realLayerFeatures:Vector.<Feature>;
+			//Stores the feature actually selected
+			private var _featureSelected:Feature;
+			
 			// Property needed for LabelFeature edition
 			private var _popup:EditLabel; 
 			private var _labelFeature:LabelFeature;
@@ -180,61 +186,10 @@
 				
 				return this._target;
 			}
+			
 			public function set target(value:VectorLayer):void{
 				
 				this._target = value;
-			}
-			
-			/**
-			 * Update the feature style when Mouse goes over the feature
-			 * event occured
-			 */
-			private function onFeatureOver(evt:FeatureEvent):void
-			{
-				if(evt.feature.layer == this.target)
-				{
-					evt.feature.originalStyle = evt.feature.style;
-					
-					if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-						evt.feature.style = Style.getDefaultSelectedPointStyle();
-					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
-						evt.feature.style = Style.getDefaultSelectedLineStyle();
-					} else if (evt.feature is LabelFeature) {
-						//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-						//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
-					} else {
-						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
-					}
-					
-					evt.feature.draw();
-				}
-			}
-			
-			/**
-			 * Update the feature style when mouse goes out the feature
-			 * event occured
-			 */
-			private function onFeatureOut(evt:FeatureEvent):void
-			{
-				if(evt.feature.layer == this.target)
-				{	
-					if(evt.feature.originalStyle != null) {
-						evt.feature.style = evt.feature.originalStyle;
-					} else {
-						if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-							evt.feature.style = Style.getDefaultPointStyle();
-						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
-							evt.feature.style = Style.getDefaultLineStyle();
-						} else if (evt.feature is LabelFeature) {
-							//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-							//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
-						} else {
-							evt.feature.style = Style.getDefaultPolygonStyle();
-						}
-					}
-					
-					evt.feature.draw();
-				}
 			}
 			
 			/**
@@ -269,10 +224,20 @@
 				this._handler = new FeatureLayerEditionHandler(this.map,this.target,true);
 				this._handler.virtualStyle = this._virtualStyle;
 				
+				
+				//Storing real features
+				if(_realLayerFeatures == null) {
+					_realLayerFeatures = new Vector.<Feature>();
+				}
+				
+				for each(var f:Feature in this.target.features) {
+					_realLayerFeatures.push(f);
+				}
+				
 				this._map.addEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
 				this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
-				//this._map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
-				//this._map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+				this._map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
+				this._map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
 				
 				_alpha = 1;
 			}
@@ -312,8 +277,8 @@
 				if(this.map) {
 					this._map.removeEventListener(FeatureEvent.FEATURE_SELECTED, onFeatureSelected);
 					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
-					//this._map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
-					//this._map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+					this._map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
+					this._map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
 				}
 				
 				_alpha = 0.3;
@@ -397,6 +362,7 @@
 			 */
 			private function onFeatureSelected(evt:FeatureEvent):void{
 				
+				this._featureSelected = evt.feature;
 				if(evt.feature.layer == this.target && (evt.feature is LabelFeature)){
 					_labelFeature = evt.feature as LabelFeature;
 					_popup = EditLabel(PopUpManager.createPopUp(this, EditLabel));
@@ -410,8 +376,9 @@
 					if(this._selectFeaturesHandler)
 						_handler.featuresToEdit = this._selectFeaturesHandler.selectedFeatures;
 					
-					if(this._handler && this._handler.active)
+					if(this._handler && this._handler.active) {
 						_handler.editionModeStart();
+					}
 				}
 			}
 			
@@ -433,8 +400,13 @@
 			 */
 			private function onFeatureUnselected(evt:FeatureEvent):void{
 				
-				if(this._handler && this._handler.active)
+				if(this._featureSelected = evt.feature) {
+					this._featureSelected = null;
+				}
+				
+				if(this._handler && this._handler.active) {
 					_handler.editionModeStop();
+				}
 				
 				if(this._selectFeaturesHandler)
 					_handler.featuresToEdit = this._selectFeaturesHandler.selectedFeatures;
@@ -442,6 +414,66 @@
 				if(this._handler && this._handler.active)
 					_handler.editionModeStart();
 			}
+			
+			/**
+			 * Update the feature style when Mouse goes over the feature
+			 * event occured
+			 */
+			private function onFeatureOver(evt:FeatureEvent):void
+			{
+				
+				if(this._realLayerFeatures.indexOf(evt.feature) != -1 && !(evt.feature == _featureSelected))
+				{
+					evt.feature.originalStyle = evt.feature.style;
+					
+					if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+						evt.feature.style = Style.getDefaultSelectedPointStyle();
+					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+						evt.feature.style = Style.getDefaultSelectedLineStyle();
+					} else if (evt.feature is LabelFeature) {
+						//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+						//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+					} else {
+						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+					}
+					
+					//set feature style as a selected style
+					evt.feature.style.isSelectedStyle = true;
+					
+					evt.feature.draw();
+				}
+			}
+			
+			/**
+			 * Update the feature style when mouse goes out the feature
+			 * event occured
+			 */
+			private function onFeatureOut(evt:FeatureEvent):void
+			{
+				if(this._realLayerFeatures.indexOf(evt.feature) != -1 && !(evt.feature == _featureSelected))
+				{	
+					if(evt.feature.originalStyle != null) {
+						evt.feature.style = evt.feature.originalStyle;
+					} else {
+						if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+							evt.feature.style = Style.getDefaultPointStyle();
+						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+							evt.feature.style = Style.getDefaultLineStyle();
+						} else if (evt.feature is LabelFeature) {
+							//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+							//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+						} else {
+							evt.feature.style = Style.getDefaultPolygonStyle();
+						}
+					}
+					
+					//set feature style as a normal style
+					evt.feature.style.isSelectedStyle = false;
+					
+					evt.feature.draw();
+				}
+			}
+			
 			
 			/**
 			 * Update texts on map language changed

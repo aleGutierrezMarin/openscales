@@ -17,6 +17,8 @@ Changes between 2.1.0 and 2.1.1
 * fix OSM layers shift
 * Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
 * Changing the way of editing path and polygon. Now add a virtual vertice inbetween two real vertice instead of a vertice under the mouse
+* Changing default styles for points, lines and polygones.
+* Changing style when a feature is overed.
 
 Changes between 2.0.0 and 2.1.0
 -------------------------------

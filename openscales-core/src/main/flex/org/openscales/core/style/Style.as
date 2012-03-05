@@ -47,8 +47,9 @@ package org.openscales.core.style {
 		
 		private var _isFilled:Boolean;
 		private var _isStroked:Boolean;
+		private var _isSelectedStyle:Boolean = false;
 		
-		
+
 		public static function getDefaultSelectedColor():uint {
 			return 0xFF7C4C;
 		}
@@ -443,6 +444,16 @@ package org.openscales.core.style {
 		
 		public function get textFormat():TextFormat{
 			return this._textFormat;
+		}
+		
+		public function get isSelectedStyle():Boolean
+		{
+			return _isSelectedStyle;
+		}
+		
+		public function set isSelectedStyle(value:Boolean):void
+		{
+			_isSelectedStyle = value;
 		}
 	}
 }

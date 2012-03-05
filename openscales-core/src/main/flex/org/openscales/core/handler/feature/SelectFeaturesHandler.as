@@ -911,7 +911,11 @@ package org.openscales.core.handler.feature
 		 * @param feature the feature to update its style
 		 */
 		private function setSelectedStyle(feature:Feature):void {
-			feature.originalStyle = feature.style;
+			//Redefine originalStyle only if the feature style is not a selected style
+			if(feature.style.isSelectedStyle == false) {
+				feature.originalStyle = feature.style;
+			}
+			
 			feature.style = (this.selectedStyle != null) ? this.selectedStyle(feature) : SelectFeaturesHandler.defaultSelectedStyle(feature);
 		}
 
