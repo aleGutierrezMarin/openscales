@@ -51,7 +51,7 @@ package org.openscales.core.style {
 		
 
 		public static function getDefaultSelectedColor():uint {
-			return 0xFF7C4C;
+			return 0xF1960A;
 		}
 		
 		/*Points Styles*/
@@ -100,8 +100,8 @@ package org.openscales.core.style {
 		 */
 		protected static function getSelectedPointRule():Rule{
 			
-			var fill:SolidFill = new SolidFill(0xFF7C4C, 0.5);
-			var stroke:Stroke = new Stroke(0xFF7C4C, 2);
+			var fill:SolidFill = new SolidFill(0xF1960A, 0.5);
+			var stroke:Stroke = new Stroke(0xF1960A, 2);
 			
 			var symbolizer:Symbolizer = new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke, 8));
 			
@@ -171,7 +171,7 @@ package org.openscales.core.style {
 		 * Returns the rule to apply for the default selected LineStringFeature style
 		 */
 		protected static function getSelectedLineRule():Rule{
-			var color:uint = 0xFF7C4C;
+			var color:uint = 0xF1960A;
 			var borderThin:int = 3;
 			var rule:Rule = new Rule();
 			
@@ -249,7 +249,7 @@ package org.openscales.core.style {
 		 * Returns the rule to apply for the default selected PolygonFeature style
 		 */
 		protected static function getDefaultSelectedPolygonRule():Rule{
-			var color:uint = 0xFF7C4C;
+			var color:uint = 0xF1960A;
 			var opacity:Number = 0.5;
 			var borderThin:int = 2;
 			var rule:Rule = new Rule();
