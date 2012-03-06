@@ -912,7 +912,7 @@ package org.openscales.core.handler.feature
 		 */
 		private function setSelectedStyle(feature:Feature):void {
 			//Redefine originalStyle only if the feature style is not a selected style
-			if(feature.style.isSelectedStyle == false) {
+			if((feature.style) && (feature.style.isSelectedStyle == false)) {
 				feature.originalStyle = feature.style;
 			}
 			
