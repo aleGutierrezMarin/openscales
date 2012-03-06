@@ -8,7 +8,6 @@ package org.openscales.core.layer
 	import flash.net.FileReference;
 	import flash.utils.getQualifiedClassName;
 	
-	import org.flexunit.internals.namespaces.classInternal;
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.FeatureEvent;
