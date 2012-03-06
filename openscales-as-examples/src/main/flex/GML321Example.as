@@ -48,7 +48,7 @@ package
 			// GML 3.2.1 layer; fetch data from url (polygons World Borders)
 			//if data is fetched from file (xml), change the projection to 2154
 			var xml:XML = new XML(new XMLCONTENT());
-			var style:Style = Style.getDefaultSurfaceStyle();
+			var style:Style = Style.getDefaultPolygonStyle();
 			var GMLlayer:GML = new GML("World Borders", "3.2.1","EPSG:4326",
 				"http://openscales.org/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:world_borders&maxFeatures=50&outputFormat=text/xml;%20subtype=gml/3.2",
 				xml,null);
