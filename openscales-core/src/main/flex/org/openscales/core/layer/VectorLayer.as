@@ -190,8 +190,16 @@ package org.openscales.core.layer
 		 */
 		public function getLayerPxForLastReloadedStateFromLocation(loc:Location):Pixel{
 			var extent:Bounds = null;
-			var lonlat:Location = this._lastReloadedCenter.clone();
-			var res:Resolution = this._lastReloadedResolution;
+			var lonlat:Location;
+			var res:Resolution;
+			if (this._lastReloadedCenter)
+				lonlat = this._lastReloadedCenter.clone();
+			else
+				lonlat = this.map.center.clone();
+			if (this._lastReloadedResolution)
+				res = this._lastReloadedResolution;
+			else
+				res = this.map.resolution;
 			if (lonlat != null) {
 				if(lonlat.projection != this.map.projection)
 					lonlat = lonlat.reprojectTo(this.map.projection);
