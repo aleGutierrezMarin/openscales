@@ -133,6 +133,7 @@ package org.openscales.core.format
 			}
 			var name:String = "";
 			var title:String = "";
+			var abstract:String = "";
 			var minScaleDenominator:Number = NaN;
 			var maxScaleDenominator:Number = NaN;
 			var srs:String = "";
@@ -154,6 +155,9 @@ package org.openscales.core.format
 			if(layer.*::MaxScaleDenominator.length() > 0)
 			{
 				maxScaleDenominator = layer.*::MaxScaleDenominator[0];
+			}
+			if(layer.*::Abstract.length() > 0){
+				abstract = layer.*::Abstract[0];
 			}
 			if (layer.*::SRS.length() > 0)
 			{
@@ -191,6 +195,7 @@ package org.openscales.core.format
 					var wms:WMS = new WMS(title,url,name,"",format);
 					wms.version = version;
 					wms.projection = srs;
+					wms.abstract = (abstract && abstract.length>0) ? abstract : null;
 					wms.availableProjections = availableProjections;
 					wms.transparent = true;
 					wms.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
@@ -200,6 +205,7 @@ package org.openscales.core.format
 				case "OGC:WFS":
 					var wfs:WFS = new WFS(title,url,name,version);
 					wfs.projection = srs;
+					wfs.abstract = (abstract && abstract.length>0) ? abstract : null;
 					wfs.availableProjections = availableProjections;
 					wfs.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					wfs.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
@@ -227,6 +233,7 @@ package org.openscales.core.format
 						}
 					}
 					var wmts:WMTS = new WMTS(title,url,name,"");
+					wmts.abstract = (abstract && abstract.length>0) ? abstract : null;
 					wmts.style = style;
 					if (srs != "")
 					{
