@@ -1,11 +1,14 @@
 package org.openscales.core.feature
 {
+	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.Point;
-	import org.openscales.core.style.Style;
-	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+
 	/**
 	 * Feature used to draw a MultiLineString geometry on FeatureLayer
 	 */
@@ -28,9 +31,8 @@ package org.openscales.core.feature
 			var p:Point = null;
 			var x:Number; 
             var y:Number;
-            var resolution:Number = this.layer.map.resolution.value; 
-            var dX:int = -int(this.layer.map.x) + this.left; 
-            var dY:int = -int(this.layer.map.y) + this.top;
+			this.x = 0;
+			this.y = 0;
 			var lineString:LineString = null;
 			var i:int;
 			var j:int = 0;
@@ -45,10 +47,9 @@ package org.openscales.core.feature
 				coords =lineString.getcomponentsClone();
 				commands= new Vector.<int>(lineString.componentsLength);
 				for (j = 0; j < l; j+=2){
-					
-					coords[j] = dX + coords[j] / resolution; 
-					coords[j+1] = dY - coords[j+1] / resolution;
-					
+					var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[j], coords[j+1], this.projection));
+					coords[j] = px.x; 
+					coords[j+1] = px.y;
 					if (j==0) {
 						commands.push(1);
 					} else {

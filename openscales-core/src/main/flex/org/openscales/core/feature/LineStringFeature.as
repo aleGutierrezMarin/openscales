@@ -5,6 +5,7 @@ package org.openscales.core.feature
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
@@ -29,18 +30,17 @@ package org.openscales.core.feature
 			// Regardless to the style, a LineString is never filled
 			this.graphics.endFill();
 			
+			this.x = 0;
+			this.y = 0;
 			// Variable declaration before for loop to improve performances
-            var resolution:Number = this.layer.map.resolution.value; 
-            var dX:int = -int(this.layer.map.x) + this.left; 
-            var dY:int = -int(this.layer.map.y) + this.top;
 			var j:uint = (this.lineString.componentsLength*2);
 			var coords:Vector.<Number> = this.lineString.getcomponentsClone();
 			var commands:Vector.<int> = new Vector.<int>();
 			for (var i:uint = 0; i < j; i+=2) {
+				var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[i], coords[i+1], this.projection));
+				coords[i] = px.x; 
+				coords[i+1] = px.y;
 				
-				coords[i] = dX + coords[i] / resolution; 
-				coords[i+1] = dY - coords[i+1] / resolution;
-                 
 				if (i==0) {
 					commands.push(1);
 				} else {

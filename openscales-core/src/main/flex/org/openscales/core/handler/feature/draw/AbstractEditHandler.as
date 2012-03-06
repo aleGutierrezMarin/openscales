@@ -134,6 +134,7 @@ package org.openscales.core.handler.feature.draw
 			var v:Vector.<Feature>;
 			var i:int;
 			var firstPoint:Point;
+			var EditionVertice:PointFeature;
 			for (i=0; i < j; ++i) {
 				var geometry:Geometry = collection.componentByIndex(i);
 				
@@ -148,7 +149,7 @@ package org.openscales.core.handler.feature.draw
 							var xInBetween:Number = (firstPoint.x + (geometry as Point).x)/2;
 							var yInBetween:Number = (firstPoint.y + (geometry as Point).y)/2;
 							var inbetweenPoint:Point = new Point(xInBetween, yInBetween, firstPoint.projection);
-							var EditionVertice:PointFeature = new PointFeature(inbetweenPoint, null, this._inbetweenStyle);
+							EditionVertice = new PointFeature(inbetweenPoint, null, this._inbetweenStyle);
 							//We fill the array with the virtual vertice
 							v = new Vector.<Feature>();
 							v[0]=EditionVertice;
@@ -158,40 +159,15 @@ package org.openscales.core.handler.feature.draw
 							firstPoint = geometry as Point;
 						}
 						
-						var EditionVertice:PointFeature = new PointFeature(geometry as Point, null, this._virtualStyle);
+						EditionVertice = new PointFeature(geometry as Point, null, this._virtualStyle);
 						//We fill the array with the virtual vertice
 						v = new Vector.<Feature>();
 						v[0]=EditionVertice;
 						v[1]=null;
 						arrayToFill.push(v);
-						
-						/* EditionVertice.editionFeatureParent = vectorfeature; */
 					}
 				}
 			}
-			/*// Display in between virtual vertices
-			if (collection is LineString)
-			{
-				var collectionLength:Number = collection.componentsLength;
-				if (collectionLength > 1)
-				{
-					var firstPoint:Point = (collection as LineString).componentByIndex(0) as Point;
-					for (var k:int = 1; k < collectionLength; ++k)
-					{
-						var xInBetween:Number = (firstPoint.x + ((collection as LineString).componentByIndex(k) as Point).x)/2;
-						var yInBetween:Number = (firstPoint.y + ((collection as LineString).componentByIndex(k) as Point).y)/2;
-						var inbetweenPoint:Point = new Point(xInBetween, yInBetween, firstPoint.projection);
-						var EditionVertice:PointFeature = new PointFeature(inbetweenPoint, null, this._virtualStyle);
-						//We fill the array with the virtual vertice
-						v = new Vector.<Feature>();
-						v[0]=EditionVertice;
-						v[1]=null;
-						_inbetweenEditionFeatureArray.push(v);
-						arrayToFill.push(v);
-						firstPoint = (collection as LineString).componentByIndex(k) as Point;
-					}
-				}
-			}*/
 		}
 		
 		 /**
@@ -221,11 +197,11 @@ package org.openscales.core.handler.feature.draw
 				}
 				
 				for(var j:int=0;j<_inbetweenEditionFeatureArray.length;j++){
-					var feature:Feature=_inbetweenEditionFeatureArray[j][0] as Feature;
+					var featureInBetween:Feature=_inbetweenEditionFeatureArray[j][0] as Feature;
 					//The edition feature are destroyed  in order to be elective for the Garbage Collector
-					if(feature!=null){	
-						feature.destroy();
-						feature=null;
+					if(featureInBetween!=null){	
+						featureInBetween.destroy();
+						featureInBetween=null;
 					}	
 				}
 				_inbetweenEditionFeatureArray=new Vector.<Vector.<Feature>>();

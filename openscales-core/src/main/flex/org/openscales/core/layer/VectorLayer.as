@@ -8,6 +8,7 @@ package org.openscales.core.layer
 	import flash.net.FileReference;
 	import flash.utils.getQualifiedClassName;
 	
+	import org.flexunit.internals.namespaces.classInternal;
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.FeatureEvent;
@@ -78,6 +79,8 @@ package org.openscales.core.layer
 		private var _editable:Boolean = false;
 		private var _edited:Boolean = false;
 		protected var _previousCenter:Location = null;
+		private var _lastReloadedCenter:Location;
+		private var _lastReloadedResolution:Resolution;
 		
 		protected var _previousResolution:Resolution = null;
 
@@ -148,6 +151,8 @@ package org.openscales.core.layer
 				this.y = 0;
 				this.scaleX = 1;
 				this.scaleY = 1;
+				this._lastReloadedCenter = this.map.center.clone();
+				this._lastReloadedResolution = this.map.resolution;
 				this.draw();
 				this._previousResolution = this.map.resolution;
 				this._previousCenter = this.map.center.clone();
@@ -177,6 +182,39 @@ package org.openscales.core.layer
 				this._previousCenter = this.map.center.clone();
 				centerChangedCache = false;
 			}
+		}
+		
+		
+		/**
+		 * Return a Pixel wich is the passed-in lonlat, translated into layer pixel.
+		 */
+		public function getLayerPxForLastReloadedStateFromLocation(loc:Location):Pixel{
+			var extent:Bounds = null;
+			var lonlat:Location = this._lastReloadedCenter.clone();
+			var res:Resolution = this._lastReloadedResolution;
+			if (lonlat != null) {
+				if(lonlat.projection != this.map.projection)
+					lonlat = lonlat.reprojectTo(this.map.projection);
+				if (res != null)
+				{
+					if (res.projection != this.map.projection)
+						res = res.reprojectTo(this.map.projection);
+					
+					var w_deg:Number = this.map.size.w * res.value;
+					var h_deg:Number = this.map.size.h * res.value;
+					
+					extent = new Bounds(lonlat.lon - w_deg / 2,
+						lonlat.lat - h_deg / 2,
+						lonlat.lon + w_deg / 2,
+						lonlat.lat + h_deg / 2,
+						lonlat.projection);
+				}
+			}			
+			var px:Pixel = null;
+			px = new Pixel((loc.lon - extent.left) / res.value, (extent.top - loc.lat) / res.value);	
+			return px;
+			
+			
 		}
 		
 		/**

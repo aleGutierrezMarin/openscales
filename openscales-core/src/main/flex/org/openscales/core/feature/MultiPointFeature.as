@@ -7,6 +7,8 @@ package org.openscales.core.feature {
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Feature used to draw a MultiPoint geometry on FeatureLayer
@@ -26,10 +28,8 @@ package org.openscales.core.feature {
 			var p:Point = null;
 			var x:Number; 
 			var y:Number;
-			var resolution:Number = this.layer.map.resolution.value; 
-			var dX:int = -int(this.layer.map.x) + this.left; 
-			var dY:int = -int(this.layer.map.y) + this.top;
-			
+			this.x = 0;
+			this.y = 0;
 			var point:Point = null;
 			var i:int;
 			var j:int = this.points.componentsLength;
@@ -38,9 +38,9 @@ package org.openscales.core.feature {
 				point = this.points.componentByIndex(i) as Point;
 				
 				if (symbolizer is PointSymbolizer) {
-					
-					x = dX + point.x / resolution;
-					y = dY - point.y / resolution;
+					var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(point.x, point.y, this.projection));
+					x = px.x;
+					y = px.y;
 					this.graphics.drawRect(x, y, 5, 5);
 					this.graphics.endFill();
 					

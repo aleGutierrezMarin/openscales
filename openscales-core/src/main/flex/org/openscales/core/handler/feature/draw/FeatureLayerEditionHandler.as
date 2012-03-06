@@ -311,10 +311,10 @@ package org.openscales.core.handler.feature.draw
 				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_EDITION_MODE_END,_layerToEdit));
 				
 			}
-			this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-			if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-				AbstractEditCollectionHandler._pointUnderTheMouse.destroy();
-				AbstractEditCollectionHandler._pointUnderTheMouse=null;
+			this._layerToEdit.removeFeature(AbstractEditCollectionHandler._inBetweenFeature);
+			if(AbstractEditCollectionHandler._inBetweenFeature!=null){
+				AbstractEditCollectionHandler._inBetweenFeature.destroy();
+				AbstractEditCollectionHandler._inBetweenFeature=null;
 			}
 			_layerToEdit.redraw();
 			return true;

@@ -102,7 +102,7 @@ package org.openscales.core.handler.feature.draw
 		 * @inheritDoc 
 		 * */
 		 override protected function drawTemporaryFeature(event:MouseEvent):void{
-		 	var pointUnderTheMouse:Boolean=false;
+		 	var inBetweenFeature:Boolean=false;
 		 	var parentgeom:ICollection=null;
 		 	var parentFeature:Feature;
 			if (! _featureCurrentlyDrag)
@@ -114,11 +114,10 @@ package org.openscales.core.handler.feature.draw
 		 	}
 		 	//the feature currently dragged is a point under the mouse 	
 		 	else{
-		 		// parentgeom=AbstractEditCollectionHandler._pointUnderTheMouse.editionFeatureParentGeometry;
-				AbstractEditCollectionHandler._pointUnderTheMouse = _featureCurrentlyDrag as PointFeature;
-		 		parentFeature=findVirtualVerticeParent(AbstractEditCollectionHandler._pointUnderTheMouse)
-		 		parentgeom=editionFeatureParentGeometry(AbstractEditCollectionHandler._pointUnderTheMouse,parentFeature.geometry as ICollection);
-		 		pointUnderTheMouse=true;
+				AbstractEditCollectionHandler._inBetweenFeature = _featureCurrentlyDrag as PointFeature;
+		 		parentFeature=findVirtualVerticeParent(AbstractEditCollectionHandler._inBetweenFeature)
+		 		parentgeom=editionFeatureParentGeometry(AbstractEditCollectionHandler._inBetweenFeature,parentFeature.geometry as ICollection);
+				inBetweenFeature=true;
 		 	}		
 		 	
 		 	//The  Mouse button is down
@@ -130,9 +129,8 @@ package org.openscales.core.handler.feature.draw
 			//We take 2 points in the collection depends on the index of the feature currently dragged
 			
 		
-			//indexOfFeatureCurrentlyDrag = this._editionFeatureArray.indexOf(_featureCurrentlyDrag);
 		 	if(indexOfFeatureCurrentlyDrag==0){
-		 		if(pointUnderTheMouse){
+		 		if(inBetweenFeature){
 					point1=this._editionFeatureArray[0][0].geometry as Point;
 					point2=this._editionFeatureArray[2][0].geometry as Point;
 		 		}
@@ -140,14 +138,14 @@ package org.openscales.core.handler.feature.draw
 		 	}
 
 		 	else if(indexOfFeatureCurrentlyDrag==(parentgeom.componentsLength + this._inbetweenEditionFeatureArray.length)-1){
-		 		if(pointUnderTheMouse){
+		 		if(inBetweenFeature){
 					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;
 					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag][0].geometry as Point;
 		 		}
 		 		else point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;	
 		 	}	 	
 		 	else{
-		 		if(pointUnderTheMouse){
+		 		if(inBetweenFeature){
 					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-1][0].geometry as Point;
 					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag+1][0].geometry as Point;
 		 		}

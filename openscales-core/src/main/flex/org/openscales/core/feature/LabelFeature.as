@@ -10,6 +10,7 @@ package org.openscales.core.feature
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	public class LabelFeature extends Feature
 	{
@@ -70,11 +71,13 @@ package org.openscales.core.feature
 			var y:Number;
 			var resolution:Number = this.layer.map.resolution.value;
 			var pointLocation:Location = new Location(labelPoint.x, labelPoint.y, this.labelPoint.projection);
-			pointLocation = pointLocation.reprojectTo(this.layer.map.projection);
-			var dX:int = -int(this.layer.map.x) + this.left;
-			var dY:int = -int(this.layer.map.y) + this.top;
-			x = dX + pointLocation.x / resolution;
-			y = dY - pointLocation.y / resolution;
+			//pointLocation = pointLocation.reprojectTo(this.layer.map.projection);
+			var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(pointLocation.x, pointLocation.y, pointLocation.projection));
+			x = px.x;
+			y = px.y;
+			this.x = 0;
+			this.y = 0;
+			
 			this.labelPoint.label.x = x - this.labelPoint.label.width / 2;
 			this.labelPoint.label.y = y - this.labelPoint.label.height / 2;
 			this.labelPoint.label.setTextFormat(this.style.textFormat);

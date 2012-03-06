@@ -123,7 +123,7 @@ package org.openscales.core.handler.feature.draw
 		 * @inheritDoc 
 		 * */
 		override protected function drawTemporaryFeature(event:MouseEvent):void{
-		 	var pointUnderTheMouse:Boolean=false;
+		 	var inBetweenFeature:Boolean=false;
 		 	var parentgeom:ICollection=null;
 		 	var parentFeature:Feature; 	
 			
@@ -142,11 +142,10 @@ package org.openscales.core.handler.feature.draw
 			}
 				//the feature currently dragged is a point under the mouse 	
 			else{
-				// parentgeom=AbstractEditCollectionHandler._pointUnderTheMouse.editionFeatureParentGeometry;
-				AbstractEditCollectionHandler._pointUnderTheMouse = _featureCurrentlyDrag as PointFeature;
-				parentFeature=findVirtualVerticeParent(AbstractEditCollectionHandler._pointUnderTheMouse)
-				parentgeom=editionFeatureParentGeometry(AbstractEditCollectionHandler._pointUnderTheMouse,parentFeature.geometry as ICollection);
-				pointUnderTheMouse=true;
+				AbstractEditCollectionHandler._inBetweenFeature = _featureCurrentlyDrag as PointFeature;
+				parentFeature=findVirtualVerticeParent(AbstractEditCollectionHandler._inBetweenFeature)
+				parentgeom=editionFeatureParentGeometry(AbstractEditCollectionHandler._inBetweenFeature,parentFeature.geometry as ICollection);
+				inBetweenFeature=true;
 			}
 			
 		 	//The mouse's button  is always down 
@@ -159,7 +158,7 @@ package org.openscales.core.handler.feature.draw
 			
 			//First vertice position 0
 			if(indexOfFeatureCurrentlyDrag==0){
-				if(pointUnderTheMouse){
+				if(inBetweenFeature){
 					point1=this._editionFeatureArray[0][0].geometry as Point;
 					point2=this._editionFeatureArray[2][0].geometry as Point;
 		 		}
@@ -170,7 +169,7 @@ package org.openscales.core.handler.feature.draw
 			}
 			//Last vertice treatment
 			else if(indexOfFeatureCurrentlyDrag==_editionFeatureArray.length-2){
-				if(pointUnderTheMouse){
+				if(inBetweenFeature){
 					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;
 					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag][0].geometry as Point;
 		 		}
@@ -181,14 +180,14 @@ package org.openscales.core.handler.feature.draw
 			}
 			//Last vertice +1  treatment only  for point under the mouse
 			else if(indexOfFeatureCurrentlyDrag==_editionFeatureArray.length-1){
-				if(pointUnderTheMouse){
+				if(inBetweenFeature){
 					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-1][0].geometry as Point;
 					point2=this._editionFeatureArray[0][0].geometry as Point;
 		 		}
 			}
 			//others treatments
 			else{
-				if(pointUnderTheMouse){
+				if(inBetweenFeature){
 					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-1][0].geometry as Point;
 					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag+1][0].geometry as Point;
 		 		}

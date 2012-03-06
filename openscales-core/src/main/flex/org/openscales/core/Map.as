@@ -703,7 +703,7 @@ package org.openscales.core
 		 * Return a Pixel which is the passed-in Location, translated into map
 		 * pixels by the current base layer
 		 */
-		public function getMapPxFromLocation(lonlat:Location, res:Resolution = null):Pixel {
+		public function getMapPxFromLocation(lonlat:Location, res:Resolution = null, extent:Bounds = null):Pixel {
 			if (!res)
 			{
 				res = this.resolution;
@@ -715,6 +715,9 @@ package org.openscales.core
 			
 			var px:Pixel = null;
 			var b:Bounds = this.getExtentForResolution(res);
+			if (extent)
+				b = extent;
+			
 			if (lonlat != null && b) {
 				
 				px = new Pixel((lonlat.lon - b.left) / res.value, (b.top - lonlat.lat) / res.value);

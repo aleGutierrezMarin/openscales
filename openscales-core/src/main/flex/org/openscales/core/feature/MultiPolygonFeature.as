@@ -43,11 +43,8 @@ package org.openscales.core.feature {
 				var n:int= this.polygons.componentsLength;
 				var count:int = 0;
 				var countFeature:int = 0;
-				var resolution:Number = this.layer.map.resolution.value;
-				var dX:int = -int(this.layer.map.x) + this.left;
-				var dY:int = -int(this.layer.map.y) + this.top;
-				//var dX:int = this.layer.getMapPxFromLocation( //-int(this.layer.map.x) + this.left;
-				//var dY:int = -int(this.layer.map.y) + this.top;
+				this.x = 0;
+				this.y = 0;
 				var x:Number;
 				var y:Number;
 				var coords:Vector.<Number>;
@@ -61,13 +58,9 @@ package org.openscales.core.feature {
 						coords =linearRing.getcomponentsClone();
 						commands= new Vector.<int>(linearRing.componentsLength);
 						for (j = 0; j < l; j+=2){
-							var theCoord:Location = new Location(coords[j], coords[j+1], this.geometry.projection);
-							var thePixel:Pixel = this.layer.map.getMapPxFromLocation(theCoord);
-							thePixel = this.layer.getLayerPxFromMapPx(thePixel);
-							//coords[j] = dX + coords[j] / resolution; 
-							//coords[j+1] = dY - coords[j+1] / resolution;
-							coords[j] = thePixel.x;
-							coords[j+1] = thePixel.y;
+							var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[j], coords[j+1], this.projection));
+							coords[j] = px.x; 
+							coords[j+1] = px.y;
 							
 							if (j==0) {
 								commands.push(1);

@@ -51,21 +51,6 @@ package org.openscales.core.feature {
 			super.destroy();
 		}
 		
-		/*override public function onMouseHover(pevt:MouseEvent):void {
-			super.onMouseHover(pevt);
-			
-			//Define Hover Style
-			this.style = Style.getDefaultSelectedPointStyle();
-			this.draw();
-			
-		}*/
-		
-		/*override public function onMouseOut(pevt:MouseEvent):void {
-			this.style = Style.getDefaultPointStyle();
-			super.onMouseOut(pevt);
-			this.draw();
-		}*/
-		
 		public function get point():Point {
 			return this.geometry as Point;
 		}
@@ -84,10 +69,11 @@ package org.openscales.core.feature {
 			if(!this.layer || !this.layer.map)
 				return;
 			var resolution:Number = this.layer.map.resolution.value;
-			var dX:int = -int(this.layer.map.x) + this.left;
-			var dY:int = -int(this.layer.map.y) + this.top;
-			x = dX + point.x / resolution;
-			y = dY - point.y / resolution;
+			this.x = 0;
+			this.y = 0;
+			var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(this.point.x, this.point.y, this.projection));
+			x = px.x;
+			y = px.y;
 			this.graphics.drawRect(x, y, 5, 5);
 			this.graphics.endFill();
 
@@ -179,12 +165,6 @@ package org.openscales.core.feature {
 				var pointPxA:Pixel = this.layer.map.getMapPxFromLocation(new Location(pointA.x, pointA.y));
 
 				var pointPxB:Pixel = this.layer.map.getMapPxFromLocation(new Location(pointB.x, pointB.y));
-
-				//pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
-				//pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
-				//pointPxB = this.layer.map.getMapPxFromLayerPx(pointPxB);
-
-
 
 				var scalarPointAPointBPower:Number = Math.pow((pointPxA.x - pointPxB.x), 2) + Math.pow((pointPxA.y - pointPxB.y), 2);
 
