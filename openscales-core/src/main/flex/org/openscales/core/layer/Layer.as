@@ -71,6 +71,7 @@ package org.openscales.core.layer {
 		
 		private var _identifier:String;
 		private var _displayedName:String;
+		private var _abstract:String;
 		private var _map:Map = null;
 		protected var _projection:ProjProjection = null;
 		private var _availableProjections:Vector.<String> = null;
@@ -1133,6 +1134,24 @@ package org.openscales.core.layer {
 		public function set displayedName(value:String):void
 		{
 			_displayedName = value;
+		}
+
+		/**
+		 * Description (in plain text) of this layer
+		 * 
+		 * @defaut null
+		 */
+		public function get abstract():String
+		{
+			return _abstract;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set abstract(value:String):void
+		{
+			_abstract = value;
 		}
 
 
