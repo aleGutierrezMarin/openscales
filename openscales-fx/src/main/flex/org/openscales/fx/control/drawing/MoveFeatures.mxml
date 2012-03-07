@@ -151,6 +151,7 @@
 						_handler.map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
 						_handler.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 						_handler.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+						_handler.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE, onFeatureOver);
 					}
 				}
 				_alpha = 1;
@@ -167,6 +168,7 @@
 						_handler.map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
 						_handler.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 						_handler.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+						_handler.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE, onFeatureOver);
 					}
 				}
 				_alpha = 0.3;
@@ -178,12 +180,14 @@
 			{
 				_handler.map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onFeatureOver);
 				_handler.map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onFeatureOut);
+				_handler.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE, onFeatureOver);
 			}
 			
 			public function onMouseUp(evt:MouseEvent):void
 			{
 				_handler.map.addEventListener(FeatureEvent.FEATURE_OVER, this.onFeatureOver);
 				_handler.map.addEventListener(FeatureEvent.FEATURE_OUT, this.onFeatureOut);
+				_handler.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE, onFeatureOver);
 			}
 			
 			/**
@@ -194,20 +198,23 @@
 			{
 				if(evt.feature.layer == this.target)
 				{
-					evt.feature.originalStyle = evt.feature.style;
-					
-					if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-						evt.feature.style = Style.getDefaultSelectedPointStyle();
-					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
-						evt.feature.style = Style.getDefaultSelectedLineStyle();
-					} else if (evt.feature is LabelFeature) {
-						//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-						//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
-					} else {
-						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+					if (!evt.feature.originalStyle || evt.feature.style == evt.feature.originalStyle)
+					{
+						evt.feature.originalStyle = evt.feature.style;
+						
+						if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+							evt.feature.style = Style.getDefaultSelectedPointStyle();
+						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+							evt.feature.style = Style.getDefaultSelectedLineStyle();
+						} else if (evt.feature is LabelFeature) {
+							//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+							//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+						} else {
+							evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+						}
+						
+						evt.feature.draw();
 					}
-					
-					evt.feature.draw();
 				}
 			}
 			
