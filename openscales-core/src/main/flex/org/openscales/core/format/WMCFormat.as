@@ -246,6 +246,13 @@ package org.openscales.core.format
 					break;
 				default:
 					Trace.debug("Service layer : "+service+" not supported");
+					layerToAdd = new Layer(name);
+					layerToAdd.displayedName = title;
+					layerToAdd.abstract = abstract;
+					layerToAdd.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
+					layerToAdd.maxResolution= new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
+					layerToAdd.projection = srs;
+					layerToAdd.availableProjections = availableProjections;
 					break;
 			}
 			
