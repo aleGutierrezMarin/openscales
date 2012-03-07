@@ -130,6 +130,8 @@
 			{
 				_stopPixel = new Pixel(_stopPixel.x + _offsetCenter.x, _stopPixel.y + _offsetCenter.y);
 				_featureCurrentlyDragged.stopDrag();
+				if (_featureCurrentlyDragged.originalStyle)
+					_featureCurrentlyDragged.style = _featureCurrentlyDragged.originalStyle;
 				updateFeature(_featureCurrentlyDragged);
 				_featureCurrentlyDragged.draw();
 				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,_featureCurrentlyDragged));
