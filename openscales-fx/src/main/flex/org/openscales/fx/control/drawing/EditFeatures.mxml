@@ -66,7 +66,7 @@
 			// Property needed for LabelFeature edition
 			private var _popup:EditLabel; 
 			private var _labelFeature:LabelFeature;
-			
+
 			/**
 			 * Array of some features that may not be edited.
 			 */
@@ -238,6 +238,8 @@
 				this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
 				this._map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
 				this._map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				
 				_alpha = 1;
 			}
@@ -279,9 +281,23 @@
 					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
 					this._map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
 					this._map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+					this._map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+					this._map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				}
 				
 				_alpha = 0.3;
+			}
+			
+			public function onMouseDown(evt:MouseEvent):void
+			{
+				this._map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onFeatureOver);
+				this._map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onFeatureOut);
+			}
+			
+			public function onMouseUp(evt:MouseEvent):void
+			{
+				this._map.addEventListener(FeatureEvent.FEATURE_OVER, this.onFeatureOver);
+				this._map.addEventListener(FeatureEvent.FEATURE_OUT, this.onFeatureOut);
 			}
 			
 			/**
