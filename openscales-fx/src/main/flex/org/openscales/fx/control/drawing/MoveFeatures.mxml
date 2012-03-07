@@ -49,6 +49,7 @@
 			private var _handler:DragFeatureHandler = new DragFeatureHandler();
 			private var _isClick:Boolean = false;
 			private var _drawingMode:String;
+
 			
 			/**
 			 * Indicates for Drawing mode
@@ -148,6 +149,8 @@
 					if(_handler.map) {
 						_handler.map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
 						_handler.map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+						_handler.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+						_handler.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 					}
 				}
 				_alpha = 1;
@@ -162,11 +165,25 @@
 					if(_handler.map) {
 						_handler.map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
 						_handler.map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+						_handler.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+						_handler.map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 					}
 				}
 				_alpha = 0.3;
 				
 				
+			}
+			
+			public function onMouseDown(evt:MouseEvent):void
+			{
+				_handler.map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onFeatureOver);
+				_handler.map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onFeatureOut);
+			}
+			
+			public function onMouseUp(evt:MouseEvent):void
+			{
+				_handler.map.addEventListener(FeatureEvent.FEATURE_OVER, this.onFeatureOver);
+				_handler.map.addEventListener(FeatureEvent.FEATURE_OUT, this.onFeatureOut);
 			}
 			
 			/**
