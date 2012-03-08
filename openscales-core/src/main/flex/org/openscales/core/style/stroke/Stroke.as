@@ -5,6 +5,8 @@ package org.openscales.core.style.stroke
 	import flash.display.JointStyle;
 	import flash.display.LineScaleMode;
 	
+	import mx.graphics.Stroke;
+	
 	/**
 	 * Class defining how a stroke is rendered
 	 */
@@ -158,7 +160,19 @@ package org.openscales.core.style.stroke
 				}
 
 				graphics.lineStyle(this.width, this.color, this.opacity, false, LineScaleMode.NORMAL, linecap, linejoin);
-			
+		}
+		
+		public function clone():Stroke
+		{
+			var cloneStroke = new Stroke();
+			cloneStroke.color = this._color;
+			cloneStroke.width = this._width;
+			cloneStroke.opacity = this._opacity;
+			cloneStroke.linecap = this._linecap;
+			cloneStroke.linejoin = this._linejoin;			
+			cloneStroke.pWhiteSize = this._pWhiteSize;
+			cloneStroke.pDottedSize = this._pDottedSize;
+			return cloneStroke;
 		}
 	}
 }

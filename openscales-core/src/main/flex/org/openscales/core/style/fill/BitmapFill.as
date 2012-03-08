@@ -2,13 +2,13 @@ package org.openscales.core.style.fill {
 	import flash.display.BitmapData;
 	import flash.display.Graphics;
 	import flash.geom.Matrix;
-
+	
 	import org.openscales.core.feature.Feature;
 
 	/**
 	 * Fill using a bitmap texture
 	 */
-	public class BitmapFill extends Fill {
+	public class BitmapFill implements Fill {
 		private var _bitmap:BitmapData;
 		private var _matrix:Matrix;
 		private var _repeat:Boolean;
@@ -75,10 +75,16 @@ package org.openscales.core.style.fill {
 			this._smooth = value;
 		}
 
-		override public function configureGraphics(graphics:Graphics, feature:Feature):void {
+		public function configureGraphics(graphics:Graphics, feature:Feature):void {
 
 			graphics.beginBitmapFill(this._bitmap, this._matrix, this._repeat, this._smooth);
 		}
 
+		public function clone():Fill
+		{
+			var bitmap:BitmapData = this._bitmap == null ? new BitmapData(0, 0) : this.bitmap.clone();
+			var matrix:Matrix = this._matrix == null ? null : this._matrix.clone();
+			return new BitmapFill(bitmap, matrix, this._repeat, this._smooth);
+		}
 	}
 }
