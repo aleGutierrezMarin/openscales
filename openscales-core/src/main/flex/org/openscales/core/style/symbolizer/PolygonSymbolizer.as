@@ -61,9 +61,11 @@ package org.openscales.core.style.symbolizer {
          }
 		
 		override public function clone():Symbolizer{
-			var polygonSymbolizer:PolygonSymbolizer = new PolygonSymbolizer(this._fill,this._stroke);
-			polygonSymbolizer.geometry = this.geometry;
-			return polygonSymbolizer;
+			var clonePolygonSymbolizer:PolygonSymbolizer = new PolygonSymbolizer();
+			clonePolygonSymbolizer.fill = this._fill == null ? null : this._fill.clone();
+			clonePolygonSymbolizer.stroke = this._stroke == null ? null : this._stroke.clone();
+			clonePolygonSymbolizer.geometry = this.geometry;
+			return clonePolygonSymbolizer;
 		}
 	}
 }
