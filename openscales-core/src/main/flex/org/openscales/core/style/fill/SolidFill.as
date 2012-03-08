@@ -1,13 +1,13 @@
 package org.openscales.core.style.fill {
 	import flash.display.Graphics;
-
+	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.filter.expression.IExpression;
 
 	/**
 	 * Class defining a solid fill, which is characterized by its color and opacity
 	 */
-	public class SolidFill extends Fill {
+	public class SolidFill implements Fill {
 		private var _color:Object;
 
 		private var _opacity:Number;
@@ -48,7 +48,7 @@ package org.openscales.core.style.fill {
 			this._opacity = value;
 		}
 
-		override public function configureGraphics(graphics:Graphics, feature:Feature):void {
+		public function configureGraphics(graphics:Graphics, feature:Feature):void {
 
 			var color:uint;
 			if (this._color is uint) {
@@ -62,5 +62,11 @@ package org.openscales.core.style.fill {
 			graphics.beginFill(color, this._opacity);
 		}
 
+		public function clone():Fill
+		{
+			var cloneSolidFill:SolidFill = new SolidFill(0xffffff, this._opacity);
+			cloneSolidFill.color = this._color;
+			return cloneSolidFill;
+		}
 	}
 }
