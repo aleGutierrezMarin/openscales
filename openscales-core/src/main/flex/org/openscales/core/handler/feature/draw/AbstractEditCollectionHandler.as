@@ -246,6 +246,9 @@ package org.openscales.core.handler.feature.draw
 		 * */
 		 override public function featureClick(event:FeatureEvent):void{
 		 	var vectorfeature:PointFeature=event.feature as PointFeature;
+			
+			if (this.isVirtualVertice(vectorfeature))
+				return;
 		 	//We remove listeners and tempoorary point
 		 	//This is a bug we redraw the layer with new vertices for the impacted feature
 		 	//The click is considered as a bug for the moment	 	

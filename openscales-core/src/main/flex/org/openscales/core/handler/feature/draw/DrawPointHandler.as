@@ -8,6 +8,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.MultiPoint;
@@ -36,6 +37,8 @@ package org.openscales.core.handler.feature.draw
 		 */		
 		private var id:Number = 0;
 		
+		private var _clickHandler:ClickHandler = new ClickHandler(null, true);
+		
 		/**
 		 * 
 		 */
@@ -50,12 +53,15 @@ package org.openscales.core.handler.feature.draw
 		override protected function registerListeners():void{
 			if (this.map) {
 				this.map.addEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
+				_clickHandler.map = this.map;
+				_clickHandler.active = true;
 			}
 		}
 
 		override protected function unregisterListeners():void{
 			if (this.map) {
 				this.map.removeEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
+				_clickHandler.active = false;
 			}
 		}
 

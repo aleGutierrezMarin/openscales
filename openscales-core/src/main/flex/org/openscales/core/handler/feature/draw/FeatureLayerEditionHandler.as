@@ -213,6 +213,23 @@ package org.openscales.core.handler.feature.draw
 			//this.map.addEventListener(FeatureEvent.FEATURE_OUT,onFeatureOut);
 		}
 		
+		
+		public function get editionVirtualVertices():Vector.<Vector.<Feature>>
+		{
+			if(iEditPolygon != null){
+				return iEditPolygon.getEditionVirtualVertices();
+			}
+			if(iEditPath != null){
+				return iEditPath.getEditionVirtualVertices();
+			}
+			if(iEditPoint != null){
+				return iEditPoint.getEditionVirtualVertices();
+			}
+			if(iEditLabel != null){
+				return iEditLabel.getEditionVirtualVertices();
+			}
+			return null;
+		}
 		/**
 		 * feature double click
 		 */

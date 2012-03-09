@@ -58,6 +58,7 @@ package org.openscales.core.feature {
 		private var _state:String = null;
 		private var _style:Style = null;
 		private var _originalStyle:Style = null;
+		private var _selectable:Boolean = true;
 		
 		//GAB
 		private var _dateCreation:String="";
@@ -136,6 +137,23 @@ package org.openscales.core.feature {
 
 			this._isEditable = isEditable;
 			this.cacheAsBitmap = true;
+		}
+		
+		
+		/**
+		 * Return if the feature is selectable or not
+		 */
+		public function get selectable():Boolean
+		{
+			return this._selectable;	
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set selectable(value:Boolean):void
+		{
+			this._selectable = value;
 		}
 
 		/**
