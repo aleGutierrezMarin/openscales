@@ -235,7 +235,7 @@ package org.openscales.core.handler.mouse
 						}	
 					}
 					// If it's a drag do nothing
-					if ((Math.abs(this._downPixel.x - this._upPixel.x) > 5) || (Math.abs(this._downPixel.y - this._upPixel.y) > 5))
+					if ((Math.abs(this._downPixel.x - this._upPixel.x) > 10) || (Math.abs(this._downPixel.y - this._upPixel.y) > 10))
 					{
 						Trace.debug("Drag");
 						return;
