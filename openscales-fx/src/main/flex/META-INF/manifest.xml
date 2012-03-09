@@ -106,6 +106,7 @@
 	<component id="DrawPoint" class="org.openscales.fx.control.drawing.DrawPoint" />
 	<component id="DrawPath" class="org.openscales.fx.control.drawing.DrawPath" />
 	<component id="DrawPolygon" class="org.openscales.fx.control.drawing.DrawPolygon" />
+	<component id="DrawRectangle" class="org.openscales.fx.control.drawing.DrawRectangle" />
 	<component id="SelectFeatures" class="org.openscales.fx.control.drawing.SelectFeatures" />
 	<component id="EditFeatures" class="org.openscales.fx.control.drawing.EditFeatures" />
 	<component id="DeleteFeatures" class="org.openscales.fx.control.drawing.DeleteFeatures" />

@@ -86,11 +86,13 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Reprojects the current location in another projection
 		 * 
-		 * @param newProjection:ProjProjection projection of the target projection
+		 * @param the target projection
 		 * @return Location the equivalent Location of this location in the new projection
 		 */
-		public function reprojectTo(newProjection:ProjProjection):Location {
-			if (newProjection == this._projection) {
+		public function reprojectTo(projection:*):Location {
+			var newProjection:ProjProjection = ProjProjection.getProjProjection(projection);
+
+			if (!newProjection || newProjection == this._projection) {
 				return this;
 			}
 			var p:ProjPoint = new ProjPoint(this._x, this._y);
