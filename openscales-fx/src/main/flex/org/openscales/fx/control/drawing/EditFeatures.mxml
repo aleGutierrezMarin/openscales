@@ -454,8 +454,8 @@
 					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 						evt.feature.style = Style.getDefaultSelectedLineStyle();
 					} else if (evt.feature is LabelFeature) {
-						//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-						//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+						evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+							0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
 					} else {
 						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
 					}
