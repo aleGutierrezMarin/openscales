@@ -34,7 +34,6 @@ if(typeof OpenScalesBinder == "undefined") {
         },
         dispatch:function(type, value, target) {
             var numOfListeners = 0;
-            console.debug(type);
             var event = {
                 type:type,
                 target:target,
