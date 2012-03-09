@@ -378,6 +378,7 @@
 			 */
 			private function onFeatureSelected(evt:FeatureEvent):void{
 				
+				this._selectFeaturesHandler.unselectableFeatures = null;
 				this._featureSelected = evt.feature;
 				if(evt.feature.layer == this.target && (evt.feature is LabelFeature)){
 					_labelFeature = evt.feature as LabelFeature;
@@ -396,6 +397,12 @@
 						_handler.editionModeStart();
 					}
 				}
+				var length:int = this._handler.editionVirtualVertices.length;
+				for (var i:int = 0; i< length; ++i)
+				{
+					this._selectFeaturesHandler.addUnselectableFeature(this._handler.editionVirtualVertices[i][0]);
+				}
+				
 			}
 			
 			/**
