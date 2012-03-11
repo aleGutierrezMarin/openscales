@@ -164,7 +164,7 @@ package org.openscales.core.style.stroke
 		
 		public function clone():Stroke
 		{
-			var cloneStroke = new Stroke();
+			var cloneStroke:Stroke = new Stroke();
 			cloneStroke.color = this._color;
 			cloneStroke.width = this._width;
 			cloneStroke.opacity = this._opacity;
