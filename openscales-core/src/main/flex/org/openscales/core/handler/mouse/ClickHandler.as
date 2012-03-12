@@ -9,7 +9,7 @@ package org.openscales.core.handler.mouse
 	import org.openscales.core.Map;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
-	import org.openscales.core.utils.Trace;
+
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -145,12 +145,10 @@ package org.openscales.core.handler.mouse
 			// Listeners of the super class
 			super.registerListeners();
 			// Listeners of the internal timer
-			//this._timer.addEventListener(TimerEvent.TIMER, useRightCallback);
 			// Listeners of the associated map
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN,this.mouseDown);
 				this.map.addEventListener(MouseEvent.MOUSE_UP,this.mouseUp);
-				this.map.addEventListener(MapEvent.MOUSE_CLICK, this.onMapMouseclick);
 			}
 		}
 		
@@ -163,7 +161,6 @@ package org.openscales.core.handler.mouse
 				this.map.removeEventListener(MouseEvent.MOUSE_DOWN,this.mouseDown);
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
 				this.map.removeEventListener(MouseEvent.MOUSE_UP,this.mouseUp);
-				this.map.removeEventListener(MapEvent.MOUSE_CLICK, this.onMapMouseclick);
 			}
 			this._downPixel = null;
 			this._upPixel = null;
@@ -171,7 +168,6 @@ package org.openscales.core.handler.mouse
 			this._shiftKey = false;
 			this._dragging = false;
 			// Listeners of the internal timer
-			//this._timer.removeEventListener(TimerEvent.TIMER, useRightCallback);
 			this._timer.stop();
 			this._clickNum = 0;
 			_firstPointClick = new Pixel(0,0);
@@ -189,13 +185,7 @@ package org.openscales.core.handler.mouse
 			if (evt) {
 				this._downPixel = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
 				this.map.addEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
-			
 			}
-		}
-		
-		public function onMapMouseclick(evt:MapEvent):void
-		{
-			
 		}
 		
 		/**
@@ -219,7 +209,6 @@ package org.openscales.core.handler.mouse
 		protected function mouseUp(evt:MouseEvent):void {
 			if (evt) {
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
-				Trace.useFireBugConsole = true;
 				if (this._downPixel != null) {
 					this._timer.removeEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
 					
@@ -237,7 +226,6 @@ package org.openscales.core.handler.mouse
 					// If it's a drag do nothing
 					if ((Math.abs(this._downPixel.x - this._upPixel.x) > 10) || (Math.abs(this._downPixel.y - this._upPixel.y) > 10))
 					{
-						Trace.debug("Drag");
 						return;
 					}
 					
@@ -245,10 +233,8 @@ package org.openscales.core.handler.mouse
 					if (_clickNum == 0)
 					{
 						this._firstPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
-						Trace.debug("1");
 					} else {
 						this._secondPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
-						Trace.debug("2");
 					}
 					
 					// If the click is too far away from the previous click
@@ -256,7 +242,6 @@ package org.openscales.core.handler.mouse
 					{
 						this._clickNum = 0;
 						this._firstPointClick = this._secondPointClick;
-						Trace.debug("Reset too far");
 					}
 					
 					this._clickNum++;
@@ -264,7 +249,6 @@ package org.openscales.core.handler.mouse
 						this._timer.reset();
 						this._timer.start();
 						this._timer.addEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
-						Trace.debug("Click");
 						var clickEvent:MapEvent = new MapEvent(MapEvent.MOUSE_CLICK, this.map);
 						this.map.dispatchEvent(clickEvent);
 						if (this.click != null) 
@@ -279,67 +263,6 @@ package org.openscales.core.handler.mouse
 							this.doubleClick(this._downPixel);
 						}
 					}
-					
-					
-					
-
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					// It was not a drag, but was it a simple or a double click ?
-					// Just wait for a timer duration to know and call the right function.
-				/*	this._upPixel = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
-					this._ctrlKey = evt.ctrlKey;
-					this._shiftKey = evt.shiftKey;
-					Trace.debug("click: ");
-					if (_clickNum == 0 && (Math.abs(this._downPixel.x - this._upPixel.x) > 5) && (Math.abs(this._downPixel.y - this._upPixel.y) > 5))
-					{
-						if (this.click != null) {
-							// Use the callback function for a simple click
-							this.click(this._upPixel);
-							Trace.debug("Click");
-						}
-					}
-					if (_clickNum%2 == 0)
-					{
-						Trace.useFireBugConsole = true;
-						Trace.debug("1" +_clickNum);
-						this._firstPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
-					} else if (_clickNum%2 == 1)
-					{
-						Trace.debug("2" + _clickNum);
-						this._secondPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
-					}
-					
-					} if (this._clickNum == 2 && (Math.abs(this._firstPointClick.x - this._secondPointClick.x) < 5) && (Math.abs(this._firstPointClick.y - this._secondPointClick.y) < 5)) {
-						if (this.doubleClick != null) {
-							this.doubleClick(this._downPixel);
-						}
-					} else {
-						_clickNum = 0;
-					}
-					this._clickNum++;
-					this._timer.start();
-					this._timer.addEventListener(TimerEvent.TIMER, useRightCallback);*/
 				}
 			}
 		}
@@ -353,42 +276,7 @@ package org.openscales.core.handler.mouse
 			this._timer.removeEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
 			this._clickNum = 0;
 			_firstPointClick = new Pixel(0,0);
-			Trace.debug("Reset timeout");
 			_secondPointClick = new Pixel(Number.NEGATIVE_INFINITY,Number.NEGATIVE_INFINITY);
-		}
-		
-		/**
-		 * Define if there was a double click or a simple click (drag&drop is
-		 * managed before if needed).
-		 * @param evt the TimerEvent (not used)
-		 */
-		private function useRightCallback(evt:TimerEvent):void {
-			
-			if(this._dragging) {
-				this._dragging = false;
-				if (this.drop != null) {
-					// Use the callback function for a drop click
-					this.drop(this._upPixel);
-				}	
-			} else if (this._clickNum == 1 || (Math.abs(this._firstPointClick.x - this._secondPointClick.x) > 2) && (Math.abs(this._firstPointClick.y - this._secondPointClick.y) > 2)) {
-				if (this.click != null) {
-					// Use the callback function for a simple click
-					this.click(this._upPixel);
-					//Trace.debug("Click");
-				}
-			} else if (this.doubleClick != null) {
-					// Use the callback function for a double click
-					this.doubleClick();
-					Trace.debug("Double Click");
-			}
-			
-			this._timer.stop();
-			Trace.debug("reset click");
-			this._clickNum = 0;
-			this._downPixel = null;
-			this._upPixel = null;
-			this._ctrlKey = false;
-			this._shiftKey = false;
 		}
 		
 		/**
@@ -400,12 +288,7 @@ package org.openscales.core.handler.mouse
 			// If the handler is configured to zoom on mouse position
 			if(this.doubleClickZoomOnMousePosition && this.map.mouseNavigationEnabled && this.map.doubleclickZoomEnabled){
 				this.map.zoomBy(0.5, new Pixel(this.map.mouseX, this.map.mouseY));
-				//this.map.zoomIn(new Pixel(this.map.mouseX, this.map.mouseY));
-				//this.map.zoomToMousePosition(true);	
-			}else // Otherwise, zooming to current center
-			{
-				//this.map.moveTo(map.center,map.zoom+1,false,true);
-			} 
+			}
 		}
 
 		/**
