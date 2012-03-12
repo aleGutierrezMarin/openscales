@@ -21,9 +21,9 @@ package org.openscales.core.layer
 	{
 		private static const ACCEPTED_FILE_EXTENSIONS:Vector.<String> = new <String>["xml","kml"];
 		
-		private var _request:XMLRequest = null;
-		private var _kmlFormat:KMLFormat = null;
-		private var _featureVector:Vector.<Feature> = null;
+		protected var _request:XMLRequest = null;
+		protected var _kmlFormat:KMLFormat = null;
+		protected var _featureVector:Vector.<Feature> = null;
 		
 		public function KML(identifier:String,
 							url:String = null,
