@@ -57,6 +57,12 @@ package org.openscales.core.control
 		private var _centerPoint:Shape;
 		
 		/**
+		 * @private
+		 * The bitmap of the center of the overviewMap
+		 */
+		private var _centerBitmap:Bitmap;
+		
+		/**
 		 * Constructor of the overview map
 		 * 
 		 * @param position Position of the overview map
@@ -115,13 +121,13 @@ package org.openscales.core.control
 			if (this._centerIcon) {
 				// Use icon
 				if (this._centerPoint) {
-					this._overviewMap.removeChild(this._centerPoint);
+					this.removeChild(this._centerPoint);
 					this._centerPoint = null;
 				}
-				var bitmap:Bitmap = new _centerIcon;
-				bitmap.x = this.width/2 - bitmap.width/2;
-				bitmap.y = this.height/2 - bitmap.height/2;
-				this._overviewMap.addChild(bitmap);
+				_centerBitmap = new _centerIcon;
+				_centerBitmap.x = this.width/2 - _centerBitmap.width/2;
+				_centerBitmap.y = this.height/2 - _centerBitmap.height/2;
+				this.addChild(_centerBitmap);
 			}
 			else {
 				// Draw cross shape

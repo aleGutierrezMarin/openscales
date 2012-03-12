@@ -468,8 +468,11 @@ package org.openscales.core.handler.feature.draw
 		{
 			if (this._eventRegistered)
 			{
-				this.map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
-				this.map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
+				if(this.map)
+				{
+					this.map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
+					this.map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
+				}
 			}
 		}
 		
@@ -477,8 +480,11 @@ package org.openscales.core.handler.feature.draw
 		{
 			if (this._eventRegistered)
 			{
-				this.map.addEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
-				this.map.addEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
+				if(this.map)
+				{
+					this.map.addEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
+					this.map.addEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
+				}
 			}
 		}
 		

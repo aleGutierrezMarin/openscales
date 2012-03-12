@@ -706,9 +706,12 @@ package org.openscales.core.handler.feature
 					for(var i:uint = layer.features.length; i > 0; i--){
 						if (geom.intersects(layer.features[i-1].geometry)) {
 							if(_unselectableFeatures.indexOf(layer.features[i-1])==-1){
-								featuresToSelect.push(layer.features[i-1]);
-								if(!this._enableMultipleSelection)
-									break;
+								if (layer.features[i-1].selectable)
+								{
+									featuresToSelect.push(layer.features[i-1]);
+									if(!this._enableMultipleSelection)
+										break;
+								}
 							}
 						}
 					}
