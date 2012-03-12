@@ -95,6 +95,13 @@ package org.openscales.core.handler.feature.draw
 			super(map,active);
 			this._drawContainer=drawContainer; 
 		}
+		
+		
+		public function getEditionVirtualVertices():Vector.<Vector.<Feature>>
+		{
+			return this._editionFeatureArray;
+		}
+		
 		/**
 		 *@inheritDoc 
 		 * */
@@ -150,6 +157,7 @@ package org.openscales.core.handler.feature.draw
 							var yInBetween:Number = (firstPoint.y + (geometry as Point).y)/2;
 							var inbetweenPoint:Point = new Point(xInBetween, yInBetween, firstPoint.projection);
 							EditionVertice = new PointFeature(inbetweenPoint, null, this._inbetweenStyle);
+							EditionVertice.selectable = false;
 							//We fill the array with the virtual vertice
 							v = new Vector.<Feature>();
 							v[0]=EditionVertice;
@@ -160,6 +168,7 @@ package org.openscales.core.handler.feature.draw
 						}
 						
 						EditionVertice = new PointFeature(geometry as Point, null, this._virtualStyle);
+						EditionVertice.selectable = false;
 						//We fill the array with the virtual vertice
 						v = new Vector.<Feature>();
 						v[0]=EditionVertice;

@@ -341,12 +341,12 @@ package org.openscales.core
 			this.addEventListener(LayerEvent.LAYER_LOAD_START, onLayerLoadStart);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
 			this._initialized = true;
-			this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			//this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			
 			
 		}
 		
-		public function onMouseDown(evt:MouseEvent):void
+		/*public function onMouseDown(evt:MouseEvent):void
 		{
 			this._clickedPoint = new Pixel(this.mouseX, this.mouseY);
 			this.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -361,7 +361,7 @@ package org.openscales.core
 				this.dispatchEvent(clickEvent);
 			}
 			
-		}
+		}*/
 		
 		/**
 		 * Reset all layers, handlers and controls

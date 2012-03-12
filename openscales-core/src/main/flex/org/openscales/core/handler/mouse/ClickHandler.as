@@ -7,7 +7,9 @@ package org.openscales.core.handler.mouse
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
+
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -24,7 +26,7 @@ package org.openscales.core.handler.mouse
 	{
 		private var _click:Function = null;
 		
-		private var _doubleClick:Function = onDoubleClick;
+		private var _doubleClick:Function = null;
 		
 		private var _drag:Function = null;
 		
@@ -43,7 +45,7 @@ package org.openscales.core.handler.mouse
 		/**
 		 * Timer used to detect a double click without throwing a simple click
 		 */
-		private var _timer:Timer = new Timer(300,1);
+		private var _timer:Timer = new Timer(1000,1);
 		
 		/**
 		 * Number of click since the beginning of the timer.
@@ -59,7 +61,7 @@ package org.openscales.core.handler.mouse
 		/**
 		 * The position of the mouse for the second click of a double click 
 		 */
-		private var _secondPointClick:Pixel = new Pixel(100,100);
+		private var _secondPointClick:Pixel = new Pixel(Number.NEGATIVE_INFINITY,Number.NEGATIVE_INFINITY);
 		
 		/**
 		 * CTRL is pressed ?
@@ -143,7 +145,6 @@ package org.openscales.core.handler.mouse
 			// Listeners of the super class
 			super.registerListeners();
 			// Listeners of the internal timer
-			this._timer.addEventListener(TimerEvent.TIMER, useRightCallback);
 			// Listeners of the associated map
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN,this.mouseDown);
@@ -167,7 +168,6 @@ package org.openscales.core.handler.mouse
 			this._shiftKey = false;
 			this._dragging = false;
 			// Listeners of the internal timer
-			this._timer.removeEventListener(TimerEvent.TIMER, useRightCallback);
 			this._timer.stop();
 			this._clickNum = 0;
 			_firstPointClick = new Pixel(0,0);
@@ -208,57 +208,75 @@ package org.openscales.core.handler.mouse
  		 */
 		protected function mouseUp(evt:MouseEvent):void {
 			if (evt) {
-				
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
-				
 				if (this._downPixel != null) {
-					// It was not a drag, but was it a simple or a double click ?
-					// Just wait for a timer duration to know and call the right function.
+					this._timer.removeEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
+					
 					this._upPixel = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
 					this._ctrlKey = evt.ctrlKey;
 					this._shiftKey = evt.shiftKey;
+					
+					if(this._dragging) {
+						this._dragging = false;
+						if (this.drop != null) {
+							// Use the callback function for a drop click
+							this.drop(this._upPixel);
+						}	
+					}
+					// If it's a drag do nothing
+					if ((Math.abs(this._downPixel.x - this._upPixel.x) > 10) || (Math.abs(this._downPixel.y - this._upPixel.y) > 10))
+					{
+						return;
+					}
+					
+					// Register coordinates
 					if (_clickNum == 0)
 					{
 						this._firstPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
-					} else if (_clickNum == 1)
-					{
+					} else {
 						this._secondPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
 					}
+					
+					// If the click is too far away from the previous click
+					if (this._clickNum != 0 && ((Math.abs(this._firstPointClick.x - this._secondPointClick.x) > 5) || (Math.abs(this._firstPointClick.y - this._secondPointClick.y) > 5)))
+					{
+						this._clickNum = 0;
+						this._firstPointClick = this._secondPointClick;
+					}
+					
 					this._clickNum++;
-					this._timer.start();
+					if (this._clickNum == 1) {
+						this._timer.reset();
+						this._timer.start();
+						this._timer.addEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
+						var clickEvent:MapEvent = new MapEvent(MapEvent.MOUSE_CLICK, this.map);
+						this.map.dispatchEvent(clickEvent);
+						if (this.click != null) 
+						{
+							this.click(this._downPixel);
+						}
+					}else {
+						this._clickNum = 0;
+						this._timer.stop();
+						if (this.doubleClick != null) 
+						{
+							this.doubleClick(this._downPixel);
+						}
+					}
 				}
 			}
 		}
-		
+	
 		/**
-		 * Define if there was a double click or a simple click (drag&drop is
-		 * managed before if needed).
-		 * @param evt the TimerEvent (not used)
+		 * reinit the 
 		 */
-		private function useRightCallback(evt:TimerEvent):void {
-			
-			if(this._dragging) {
-				this._dragging = false;
-				if (this.drop != null) {
-					// Use the callback function for a drop click
-					this.drop(this._upPixel);
-				}	
-			} else if (this._clickNum == 1 || (Math.abs(this._firstPointClick.x - this._secondPointClick.x) > 2) && (Math.abs(this._firstPointClick.y - this._secondPointClick.y) > 2)) {
-				if (this.click != null) {
-					// Use the callback function for a simple click
-					this.click(this._upPixel);
-				}
-			} else if (this.doubleClick != null) {
-					// Use the callback function for a double click
-					this.doubleClick();
-			}
-			
+		public function onDoubleClickTimerTimeout(event:TimerEvent):void
+		{
 			this._timer.stop();
+			this._timer.removeEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
 			this._clickNum = 0;
-			this._downPixel = null;
-			this._upPixel = null;
-			this._ctrlKey = false;
-			this._shiftKey = false;
+			_firstPointClick = new Pixel(0,0);
+			_secondPointClick = new Pixel(Number.NEGATIVE_INFINITY,Number.NEGATIVE_INFINITY);
 		}
 		
 		/**
@@ -270,12 +288,7 @@ package org.openscales.core.handler.mouse
 			// If the handler is configured to zoom on mouse position
 			if(this.doubleClickZoomOnMousePosition && this.map.mouseNavigationEnabled && this.map.doubleclickZoomEnabled){
 				this.map.zoomBy(0.5, new Pixel(this.map.mouseX, this.map.mouseY));
-				//this.map.zoomIn(new Pixel(this.map.mouseX, this.map.mouseY));
-				//this.map.zoomToMousePosition(true);	
-			}else // Otherwise, zooming to current center
-			{
-				//this.map.moveTo(map.center,map.zoom+1,false,true);
-			} 
+			}
 		}
 
 		/**

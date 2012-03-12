@@ -110,6 +110,8 @@ package org.openscales.core.handler.feature.draw
 		 	//the feature currently dragged is a real vertice
 		 	if(this._featureCurrentlyDrag!=null && this.isInbetweenVertice(_featureCurrentlyDrag as PointFeature) == -1){
 		 		parentFeature=findVirtualVerticeParent(this._featureCurrentlyDrag as PointFeature)
+				if (!parentFeature)
+					return;
 		 		parentgeom=editionFeatureParentGeometry(this._featureCurrentlyDrag as PointFeature,parentFeature.geometry as ICollection);
 		 	}
 		 	//the feature currently dragged is a point under the mouse 	

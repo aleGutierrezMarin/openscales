@@ -66,7 +66,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * Handler which manage the doubleClick, to finalize the lineString
 		 */
-		private var _dblClickHandler:ClickHandler = new ClickHandler();
+		protected var _dblClickHandler:ClickHandler = new ClickHandler();
 		
 		/**
 		 * 
