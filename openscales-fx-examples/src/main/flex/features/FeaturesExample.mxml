@@ -82,10 +82,10 @@ The big black rectangle is registered as an unselectable feature.</p>-->
 				layer.minResolution = fxMap.map.minResolution;
 				layer.maxResolution = fxMap.map.maxResolution;
 				
-				(selectFeaturesHandler.handler as SelectFeaturesHandler).unselectableFeatures = new <Feature>[ layer.getChildAt(4) as PolygonFeature ];
+				//(selectFeaturesHandler.handler as SelectFeaturesHandler).unselectableFeatures = new <Feature>[ layer.getChildAt(4) as PolygonFeature ];
 				fxMap.map.addLayer(layer);
-				testContainsPoint(layer);
-				testIntersects(layer);
+				//testContainsPoint(layer);
+				//testIntersects(layer);
 			}
 			
 			/**

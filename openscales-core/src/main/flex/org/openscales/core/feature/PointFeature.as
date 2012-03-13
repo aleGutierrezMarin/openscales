@@ -62,7 +62,21 @@ package org.openscales.core.feature {
 			}
 			super.draw();
 		}
+		
+		/**
+		 * @inheritdoc
+		 */
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is PointSymbolizer)
+				return true;
+			else
+				return false;
+		}
 
+		/**
+		 * @inheritdoc
+		 */
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 			var x:Number;
 			var y:Number;
