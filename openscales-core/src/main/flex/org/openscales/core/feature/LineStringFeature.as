@@ -22,6 +22,20 @@ package org.openscales.core.feature
 			return this.geometry as LineString;
 		}
 
+		/**
+		 * @inheritdoc
+		 */
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is LineSymbolizer)
+				return true;
+			else
+				return false
+		}
+		
+		/**
+		 * @inheritdoc
+		 */
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 			
 			if(!this.layer.map)
