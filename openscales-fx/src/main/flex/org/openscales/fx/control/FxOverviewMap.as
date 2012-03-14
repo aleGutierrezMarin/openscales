@@ -1,5 +1,7 @@
 package org.openscales.fx.control
 {
+	import flash.events.Event;
+	
 	import mx.core.IVisualElement;
 	import mx.events.FlexEvent;
 	
