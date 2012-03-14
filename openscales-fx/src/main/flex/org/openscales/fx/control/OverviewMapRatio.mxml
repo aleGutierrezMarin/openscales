@@ -11,8 +11,6 @@
 			import mx.core.IVisualElement;
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
-			import mx.events.PropertyChangeEventKind;
-			import mx.states.OverrideBase;
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.basetypes.Resolution;
@@ -42,7 +40,7 @@
 			
 			private var _minimizable:Boolean = true;
 			
-			override protected function onCreationComplete(event:Event):void{
+			override protected function onCreationComplete(event:FlexEvent):void{
 				super.onCreationComplete(event);
 				
 				var i:uint;
