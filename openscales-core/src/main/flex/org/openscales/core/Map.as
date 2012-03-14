@@ -18,6 +18,7 @@ package org.openscales.core
 	
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.configuration.IConfiguration;
+	import org.openscales.core.control.Control;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
@@ -969,6 +970,33 @@ package org.openscales.core
 				this._resultLayer.addFeature(marker,true,false);
 			}
 		}
+		
+		/**
+		 * This method will hide all visual controls of the map
+		 * 
+		 * <p>Control won't be desactivated, their <code>visible</code> property will only be set to false</p>
+		 * 
+		 * <p>To revert the method effect, use <code>showAllControls</code></p>
+		 */ 
+		public function hideAllControls():void{
+			for each(var handler:IHandler in this._controls){
+				if(handler is Control) 
+					(handler as Control).visible = false;
+			}
+		}
+		
+		/**
+		 * This method will show all visual controls of the map
+		 * 
+		 * <p>For each control, its <code>visible</code> property will be set to true</p>
+		 */ 
+		public function showAllControls():void{
+			for each(var handler:IHandler in this._controls){
+				if(handler is Control) 
+					(handler as Control).visible = true;
+			}
+		}
+		
 		protected function onLayerLoadStart(e:LayerEvent):void
 		{
 			// fisrt layer load : dispatch layers load
