@@ -51,7 +51,7 @@ package org.openscales.fx.control
 				this._overviewmap.size = new Size(this.width,this.height);
 		}
 		
-		override protected function onCreationComplete(event:FlexEvent):void {
+		override protected function onCreationComplete(event:Event):void {
 			var i:uint;
 			var element:IVisualElement;
 			var layerFound:Boolean = false;
