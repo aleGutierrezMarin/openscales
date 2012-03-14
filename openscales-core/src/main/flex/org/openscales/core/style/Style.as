@@ -1,6 +1,7 @@
 package org.openscales.core.style {
 	
 	import flash.geom.Point;
+	import flash.sampler.NewObjectSample;
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.filter.ElseFilter;
@@ -412,7 +413,7 @@ package org.openscales.core.style {
 				}
 				clonedStyle.rules = rulesClone;
 			}
-			clonedStyle._name = this._name;
+			clonedStyle._name = this._name+ new Date().date;
 			
 			return clonedStyle;
 		}
