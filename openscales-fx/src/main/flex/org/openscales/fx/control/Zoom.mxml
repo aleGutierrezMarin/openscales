@@ -7,6 +7,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			
 			import org.openscales.core.Map;
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.control.ZoomData;
@@ -299,7 +301,7 @@
 			* Configure the list of zoom label once the component is created 
 			* and set the first zoomLabel text value.
 			*/
-			override protected function onCreationComplete(event:Event):void
+			override protected function onCreationComplete(event:FlexEvent):void
 			{ 
 				super.onCreationComplete(event);
 				

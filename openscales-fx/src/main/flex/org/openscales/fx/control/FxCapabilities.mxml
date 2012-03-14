@@ -175,6 +175,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
 			import mx.events.ItemClickEvent;
 			
 			import org.openscales.core.basetypes.maps.HashMap;
@@ -301,7 +302,7 @@
 			/**
 			 * Function called on creation complete
 			 */ 
-			override protected function onCreationComplete(event:Event):void {
+			override protected function onCreationComplete(event:FlexEvent):void {
 				super.onCreationComplete(event);
 				
 				if(this.width == 0)
