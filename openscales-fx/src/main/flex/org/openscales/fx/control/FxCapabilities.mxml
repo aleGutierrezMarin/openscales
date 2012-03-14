@@ -302,7 +302,7 @@
 			/**
 			 * Function called on creation complete
 			 */ 
-			override protected function onCreationComplete(event:FlexEvent):void {
+			override protected function onCreationComplete(event:Event):void {
 				super.onCreationComplete(event);
 				
 				if(this.width == 0)

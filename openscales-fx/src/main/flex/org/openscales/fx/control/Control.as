@@ -40,7 +40,7 @@ package org.openscales.fx.control
 		/**
 		 * The Flex side of the control has been created, so activate the control if needed and if the map has been set
 		 */
-		protected function onCreationComplete(event:FlexEvent):void {
+		protected function onCreationComplete(event:Event):void {
 			this._isInitialized = true;
 			
 			if((this.map) && (this.active == false)) {  
