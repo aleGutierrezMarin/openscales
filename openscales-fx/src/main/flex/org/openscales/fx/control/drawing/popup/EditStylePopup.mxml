@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" title="Edition de style"
+			   close="close()">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+		<s:RadioButtonGroup id="pointPreviewMode" itemClick="this.changeMode()" />
+		<s:RadioButtonGroup id="linePreviewMode" itemClick="this.changeMode()" />
+		<s:RadioButtonGroup id="polygonPreviewMode" itemClick="this.changeMode()" />
+		<s:RadioButtonGroup id="labelPreviewMode" itemClick="this.changeMode()" />
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[  
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.LabelFeature;
+			import org.openscales.core.feature.LineStringFeature;
+			import org.openscales.core.feature.MultiLineStringFeature;
+			import org.openscales.core.feature.MultiPointFeature;
+			import org.openscales.core.feature.MultiPolygonFeature;
+			import org.openscales.core.feature.PointFeature;
+			import org.openscales.core.feature.PolygonFeature;
+			import org.openscales.core.handler.feature.draw.EditKMLStyleHandler;
+			
+			[Embed(source="/assets/images/defaut.png")]
+			private const Default:Class;
+			[Embed(source="/assets/images/annuler.png")]
+			private const Annuler:Class;
+			[Embed(source="/assets/images/pipette.png")]
+			private const Pipette:Class;
+			[Embed(source="/assets/images/pot_peinture.png")]
+			private const Pot:Class;
+			[Embed(source="/assets/images/line.png")]
+			private const Line:Class;
+			[Embed(source="/assets/images/icons/Icons-03.png")]
+			private const Point:Class;
+			[Bindable]
+			private var _fonts:ArrayCollection = new ArrayCollection ([{label:"Verdana", data:"0"},{label:"Tahoma", data:"1"}]);
+			[Bindable]
+			private var _fontStyles:ArrayCollection = new ArrayCollection ([{label:"Regular", data:"0"},{label:"Bold", data:"1"},{label:"Italic", data:"2"}]);	
+		
+			private var _targetFeature:Feature;
+			
+			[Bindable]
+			private var _isPoint:Boolean = false;
+			
+			[Bindable]
+			private var _isPolygon:Boolean = false;
+			
+			[Bindable]
+			private var _isLine:Boolean = false;
+			
+			[Bindable]
+			private var _isLabelPoint:Boolean = false;
+			
+			[Bindable]
+			private var _allMode:Boolean = false;
+			
+			[Bindable]
+			private var _selectedMode:Boolean = false;
+			
+			[Bindable]
+			private var _typeSelectedMode:Boolean = false;
+			
+			private var _editStyleHandler:EditKMLStyleHandler;
+			
+			
+			//Callback
+			
+			/**
+			 * Method to handle the preview mode
+			 */
+			private function changeMode():void
+			{
+				var mode:String= "";
+				if (this._allMode)
+				{
+					mode = "all";
+					
+				}
+				else if(this._selectedMode)
+				{
+					mode = "selected";
+				}
+				else if(this._typeSelectedMode)
+				{
+					mode ="typeselected"
+				}
+				this._editStyleHandler.changePreviewMode(mode)
+			}
+			
+			/**
+			 * Method to close the title window
+			 */
+			private function close():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			// Getter Setter
+			
+			/**
+			 * The editKMLStyleHandler that provide methods to manipulate style edition
+			 */
+			public function get editStyleHandler():EditKMLStyleHandler
+			{
+				return this._editStyleHandler;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set editStyleHandler(value:EditKMLStyleHandler):void
+			{
+				this._editStyleHandler = value;
+				if (this._editStyleHandler)
+				{
+					if (this._editStyleHandler.targetFeatures == "selected")
+					{
+						this._allMode = false;
+						this._typeSelectedMode = false;
+						this._selectedMode = true;
+					}
+					else if(this._editStyleHandler.targetFeatures == "all")
+					{
+						this._allMode = true;
+						this._typeSelectedMode = false;
+						this._selectedMode = false;
+					}
+					else if(this._editStyleHandler.targetFeatures == "typeselected")
+					{
+						this._allMode = false;
+						this._typeSelectedMode = true;
+						this._selectedMode = false;
+					}
+				}
+			}
+			
+			/**
+			 * Feature holding the style to edit
+			 */
+			public function get targetFeature():Feature
+			{
+				return this._targetFeature;
+				
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set targetFeature(value:Feature):void
+			{
+				this._targetFeature = value;
+				if(_targetFeature is LabelFeature)
+				{
+					this._isPoint = false;
+					this._isLabelPoint = true;
+					this._isPolygon = false;
+					this._isLine = false;
+				}
+				else if (_targetFeature is PointFeature || _targetFeature is MultiPointFeature)
+				{
+					// If labelSymbolizer?
+					this._isPoint = true;
+					this._isLabelPoint = false;
+					this._isPolygon = false;
+					this._isLine = false;
+				}
+				else if (_targetFeature is PolygonFeature || _targetFeature is MultiPolygonFeature)
+				{
+					this._isPoint = false;
+					this._isLabelPoint = false;
+					this._isPolygon = true;
+					this._isLine = false;
+				}
+				else if (_targetFeature is LineStringFeature || _targetFeature is MultiLineStringFeature)
+				{
+					this._isPoint = false;
+					this._isLabelPoint = false;
+					this._isPolygon = false;
+					this._isLine = true;
+				}
+			}
+		
+		]]>        
+	</fx:Script>
+		<s:Group id="global" width="100%" >
+			<s:layout >
+				<s:VerticalLayout paddingLeft="5" paddingTop="5" paddingBottom="5" paddingRight="5"/>
+			</s:layout>
+			
+			<!-- Barre d'outils-->
+			<s:Group  id="tools" width="106">
+				<s:layout >
+					<s:HorizontalLayout paddingLeft="40" paddingTop="10" gap="10"/>
+				</s:layout>
+				
+				<mx:Image source="{Annuler}"/>
+				<mx:Image source="{Default}"/>
+				<mx:Image source="{Pipette}"/>
+				<mx:Image source="{Pot}"/>
+			</s:Group>
+			
+			<!--Point-->
+			<s:Group visible="{this._isPoint}" includeInLayout="{this._isPoint}">
+				<s:layout >
+					<s:VerticalLayout/>
+				</s:layout>
+				
+				<s:Group width="175" >
+					<s:layout >
+						<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
+					</s:layout>
+						
+					<mx:Image left="5" source="{Line}"/>
+					<s:Group>
+						<s:Rect height="20" width="20">
+						<s:stroke>
+							<s:SolidColorStroke color="0x000000" weight="1"/>
+						</s:stroke>
+						</s:Rect>
+						<mx:Image top="1" left="1" source="{Point}"/>
+					</s:Group>
+					<mx:Image left="5" source="{Line}"/>
+				</s:Group>
+				<s:Group >
+					<s:layout >
+						<s:VerticalLayout paddingLeft="2"/>
+					</s:layout>
+					<s:Label text="Appliquer à : "/>
+					<s:RadioButton selected="@{this._allMode}" groupName="pointPreviewMode" label="Les points de même style"/>
+					<s:RadioButton selected="@{this._selectedMode}" groupName="pointPreviewMode" label="Ce point"/>
+					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="pointPreviewMode" label="Tous les points"/>
+				</s:Group>
+			</s:Group>
+			
+			
+			<!--Line-->
+			<s:Group visible="{this._isLine}" includeInLayout="{this._isLine}">
+				<s:layout >
+					<s:VerticalLayout/>
+				</s:layout>
+				
+				<s:Group width="156" >
+					<s:layout >
+						<s:VerticalLayout paddingLeft="5" paddingTop="10" gap="10"/>
+					</s:layout>
+					
+					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Remplissage" color="black"/>
+				</s:Group>
+				
+				<s:Group id="border" width="170" >
+					<s:layout >
+						<s:HorizontalLayout paddingLeft="5" gap="5"/>
+					</s:layout>
+					
+					<s:Graphic x="0" y="0">
+						<s:Rect height="15" width="15">
+							<s:stroke>
+								<s:SolidColorStroke color="0x000000" weight="1"/>
+							</s:stroke>
+							<s:fill>
+								<s:SolidColor color="0x800234" alpha="1"/>
+							</s:fill>
+						</s:Rect>
+					</s:Graphic>
+					<s:Group>
+						<s:layout >
+							<s:HorizontalLayout paddingTop="5"/>
+						</s:layout>
+						
+						<s:HSlider id="borderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+					</s:Group>
+					<s:TextInput left="5" height="20" width="20" text="5"/>
+					<s:Label paddingTop="5" text="px" color="black"/>
+				</s:Group>
+				<s:Group>
+					<s:layout >
+						<s:VerticalLayout paddingLeft="2"/>
+					</s:layout>
+					<mx:Image left="5" source="{Line}"/>
+					<s:RadioButton selected="@{this._allMode}" groupName="linePreviewMode" label="Les lignes de même style"/>
+					<s:RadioButton selected="@{this._selectedMode}" groupName="linePreviewMode" label="Cette ligne"/>
+					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="linePreviewMode" label="Toutes les lignes"/>
+				</s:Group>
+			</s:Group>
+			
+			<!--Polygon-->
+			<s:Group visible="{this._isPolygon}" includeInLayout="{this._isPolygon}">
+				<s:layout >
+					<s:VerticalLayout/>
+				</s:layout>
+					
+				<s:Group width="170">
+					<s:layout >
+						<s:VerticalLayout paddingLeft="5" paddingTop="10" gap="10"/>
+					</s:layout>
+					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Bordure" color="black"/>
+				</s:Group>
+				
+				<s:Group id="polygonBorder" width="170" >
+					<s:layout >
+						<s:HorizontalLayout paddingLeft="5" gap="5"/>
+					</s:layout>
+					
+					<s:Graphic x="0" y="0">
+						<s:Rect height="15" width="15">
+							<s:stroke>
+								<s:SolidColorStroke color="0x000000" weight="1"/>
+							</s:stroke>
+							<s:fill>
+								<s:SolidColor color="0x800234" alpha="1"/>
+							</s:fill>
+						</s:Rect>
+					</s:Graphic>
+					<s:Group>
+						<s:layout >
+							<s:HorizontalLayout paddingTop="5"/>
+						</s:layout>
+						
+						<s:HSlider id="polygonBorderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+					</s:Group>
+					<s:TextInput left="5" height="20" width="20" text="5"/>
+					<s:Label paddingTop="5" text="px" color="black"/>
+				</s:Group>
+				
+				<s:Group width="170">
+					<s:layout >
+						<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="5"/>
+					</s:layout>
+					
+					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Remplissage" color="black"/>
+				</s:Group>
+				<s:Group id="fill" width="170">
+					<s:layout >
+						<s:HorizontalLayout paddingLeft="5" gap="5"/>
+					</s:layout>
+					
+					<s:Graphic x="0" y="0">
+						<s:Rect height="15" width="15">
+							<s:stroke>
+								<s:SolidColorStroke color="0x000000" weight="1"/>
+							</s:stroke>
+							<s:fill>
+								<s:SolidColor color="0x006000" alpha="1"/>
+							</s:fill>
+						</s:Rect>
+					</s:Graphic>
+					<s:Group>
+						<s:layout >
+							<s:HorizontalLayout paddingTop="3"/>
+						</s:layout>
+						
+						<s:HSlider id="polygonFillControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+					</s:Group>
+				</s:Group>
+				<s:Group >
+					<s:layout >
+						<s:VerticalLayout paddingLeft="2"/>
+					</s:layout>
+					<mx:Image left="5" source="{Line}"/>
+					<s:RadioButton selected="@{this._allMode}" groupName="polygonPreviewMode" label="Les polygones de même style"/>
+					<s:RadioButton selected="@{this._selectedMode}" groupName="polygonPreviewMode" label="Ce polygone"/>
+					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="polygonPreviewMode" label="Tous les polygones"/>
+				</s:Group>
+			</s:Group>
+				
+			
+			
+			<!--Label-->
+			<s:Group visible="{this._isLabelPoint}" includeInLayout="{this._isLabelPoint}">
+				<s:layout >
+					<s:VerticalLayout/>
+				</s:layout>
+				
+				<s:Group width="170"  >
+					<s:layout >
+						<s:VerticalLayout paddingLeft="5" paddingTop="10" gap="10"/>
+					</s:layout>
+					
+					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Couleur" color="black"/>
+				</s:Group>
+				
+				<s:Group id="labelBorder" width="170" >
+					<s:layout >
+						<s:HorizontalLayout paddingLeft="5" gap="5"/>
+					</s:layout>
+					
+					<s:Graphic x="0" y="0">
+						<s:Rect height="15" width="15">
+							<s:stroke>
+								<s:SolidColorStroke color="0x000000" weight="1"/>
+							</s:stroke>
+							<s:fill>
+								<s:SolidColor color="0x800234" alpha="1"/>
+							</s:fill>
+						</s:Rect>
+					</s:Graphic>
+					<s:Group >
+						<s:layout >
+							<s:HorizontalLayout paddingTop="3"/>
+						</s:layout>
+						
+						<s:HSlider id="labelBorderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+					</s:Group>
+				</s:Group>
+				
+				<s:Group width="170" >
+					<s:layout >
+						<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="5"/>
+					</s:layout>
+					
+					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Fond" color="black"/>
+				</s:Group>
+				<s:Group id="labelFill" width="156" >
+					<s:layout >
+						<s:HorizontalLayout paddingLeft="5" gap="5"/>
+					</s:layout>
+					
+					<s:Graphic x="0" y="0">
+						<s:Rect height="15" width="15">
+							<s:stroke>
+								<s:SolidColorStroke color="0x000000" weight="1"/>
+							</s:stroke>
+							<s:fill>
+								<s:SolidColor color="0x006000" alpha="1"/>
+							</s:fill>
+						</s:Rect>
+					</s:Graphic>
+					<s:Group >
+						<s:layout >
+							<s:HorizontalLayout paddingTop="3"/>
+						</s:layout>
+						
+						<s:HSlider id="labelFillControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+					</s:Group>
+				</s:Group>
+				
+				<s:Group width="170" >
+					<s:layout >
+						<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
+					</s:layout>
+					
+					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Label" color="black"/>
+					<s:Group>
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						
+						<s:Label paddingTop="5" text="police" width="45" color="black"/>
+						<s:DropDownList width="90" id="fonts" dataProvider="{this._fonts}"/>
+					</s:Group>
+					<s:Group>
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						
+						<s:Label paddingTop="5" text="style" width="45" color="black"/>
+						<s:DropDownList width="90" id="fontStyles" dataProvider="{this._fontStyles}"/>
+					</s:Group>
+					<s:Group>
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						<s:Label paddingTop="5" text="taille" width="45" color="black"/><s:TextInput width="30" text="12"/>
+					</s:Group>
+				</s:Group>
+				
+				<s:Group>
+					<s:layout >
+						<s:VerticalLayout paddingLeft="2"/>
+					</s:layout>
+					<mx:Image left="5" source="{Line}"/>
+					<s:RadioButton selected="@{this._allMode}" groupName="labelPreviewMode" label="Les labels de même style"/>
+					<s:RadioButton selected="@{this._selectedMode}" groupName="labelPreviewMode" label="Ce label"/>
+					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="labelPreviewMode" label="Tous les labels"/>
+				</s:Group>
+			</s:Group>
+		</s:Group>
+</s:TitleWindow>
