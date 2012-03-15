@@ -30,7 +30,7 @@
 			 * @private
 			 * ActionScript object of the overviewMapRatio
 			 */
-			private var _overviewmap:org.openscales.core.control.OverviewMapRatio = new org.openscales.core.control.OverviewMapRatio();
+			protected var _overviewmap:org.openscales.core.control.OverviewMapRatio = new org.openscales.core.control.OverviewMapRatio();
 			
 			public var reduced_group:Group = new Group();
 			public var normal_group:Group = new Group();
