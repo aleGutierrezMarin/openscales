@@ -319,6 +319,8 @@ package org.openscales.fx
 						(element as FxControl).control.map = this._map;
 					} else if (element is IControl) {
 						(element as IControl).map = this._map;
+						if(element is org.openscales.fx.control.Control)
+							(element as org.openscales.fx.control.Control).fxMap = this;
 					} else if (element is FxHandler) {
 						(element as FxHandler).handler.map = this._map;
 					} else if (element is IHandler) {
@@ -534,6 +536,7 @@ package org.openscales.fx
 			else{
 				this._map.addControl(control,attach);
 			}
+			if(control is org.openscales.fx.control.Control)(control as org.openscales.fx.control.Control).fxMap = this;
 		}
 		
 		/**
