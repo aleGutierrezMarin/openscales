@@ -62,6 +62,7 @@
 		<module>openscales-fx-examples</module>
 		<module>openscales-fx</module>
 		<module>openscales-viewer</module>
+        <module>openscales-iipimage</module>
 	</modules>
 	<issueManagement>
 		<system>Bitbucket Issue management</system>
