@@ -25,6 +25,12 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.feature.PolygonFeature;
 			import org.openscales.core.handler.feature.draw.EditKMLStyleHandler;
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.Style;
+			import org.openscales.core.style.stroke.Stroke;
+			import org.openscales.core.style.symbolizer.LineSymbolizer;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
+			import org.openscales.core.style.symbolizer.Symbolizer;
 			
 			[Embed(source="/assets/images/defaut.png")]
 			private const Default:Class;
@@ -44,6 +50,8 @@
 			private var _fontStyles:ArrayCollection = new ArrayCollection ([{label:"Regular", data:"0"},{label:"Bold", data:"1"},{label:"Italic", data:"2"}]);	
 		
 			private var _targetFeature:Feature;
+			
+			private var _editedSymbolize:Symbolizer;
 			
 			[Bindable]
 			private var _isPoint:Boolean = false;
@@ -68,6 +76,14 @@
 			
 			private var _editStyleHandler:EditKMLStyleHandler;
 			
+			[Bindable]
+			private var _lineColor:uint = 0x000000;
+			
+			[Bindable]
+			private var _lineBorderOpacity:int = 100;
+			
+			[Bindable]
+			private var _lineWidth:String = "5";
 			
 			//Callback
 			
@@ -80,7 +96,6 @@
 				if (this._allMode)
 				{
 					mode = "all";
-					
 				}
 				else if(this._selectedMode)
 				{
@@ -90,7 +105,10 @@
 				{
 					mode ="typeselected"
 				}
-				this._editStyleHandler.changePreviewMode(mode)
+				if (mode != this._editStyleHandler.targetFeatures)
+				{
+					this._editStyleHandler.changePreviewMode(mode);
+				}
 			}
 			
 			/**
@@ -99,6 +117,43 @@
 			private function close():void
 			{
 				PopUpManager.removePopUp(this);
+			}
+			
+			/**
+			 * Function that handle the text displayed in the bubble when changing opacity
+			 */
+			private function percentageTipFunc(val:String):String {
+				return String(int(val))+"%";
+			}
+			
+			/**
+			 * calback to handle line color change
+			 */
+			private function onLineColorChanged():void
+			{
+				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
+				stroke.color = this._lineColor;
+				this._targetFeature.draw();
+			}
+			
+			/**
+			 * calback to handle line opacity change
+			 */
+			private function onLineOpacityChanged():void
+			{
+				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
+				stroke.opacity = this._lineBorderOpacity/100;
+				this._targetFeature.draw();
+			}
+			
+			/**
+			 * calback to handle line width change
+			 */
+			private function onLineWidthChanged():void
+			{
+				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
+				stroke.width = int(this._lineWidth);
+				this._targetFeature.draw();
 			}
 			
 			// Getter Setter
@@ -154,6 +209,9 @@
 			 */
 			public function set targetFeature(value:Feature):void
 			{
+				var i:int;
+				var rule:Rule;
+				var symbLength:Number;
 				this._targetFeature = value;
 				if(_targetFeature is LabelFeature)
 				{
@@ -169,6 +227,19 @@
 					this._isLabelPoint = false;
 					this._isPolygon = false;
 					this._isLine = false;
+					if (_targetFeature.style.rules)
+					{
+						rule = _targetFeature.style.rules[0];
+						symbLength = rule.symbolizers.length;
+						for (i = 0; i< symbLength; ++i)
+						{
+							if (rule.symbolizers[i] is PointSymbolizer)
+							{
+								
+							}
+							
+						}
+					}
 				}
 				else if (_targetFeature is PolygonFeature || _targetFeature is MultiPolygonFeature)
 				{
@@ -183,8 +254,27 @@
 					this._isLabelPoint = false;
 					this._isPolygon = false;
 					this._isLine = true;
+					
+					if (_targetFeature.style.rules)
+					{
+						rule = _targetFeature.style.rules[0];
+						symbLength = rule.symbolizers.length;
+						for (i = 0; i< symbLength; ++i)
+						{
+							if (rule.symbolizers[i] is LineSymbolizer)
+							{
+								var lineSymb:LineSymbolizer = rule.symbolizers[i] as LineSymbolizer;
+								this._lineColor = lineSymb.stroke.color;
+								this._lineBorderOpacity = lineSymb.stroke.opacity*100;
+								this._lineWidth = lineSymb.stroke.width.toString();
+								_editedSymbolize = lineSymb;
+							}
+						}
+					}
 				}
 			}
+			
+			
 		
 		]]>        
 	</fx:Script>
@@ -259,24 +349,15 @@
 						<s:HorizontalLayout paddingLeft="5" gap="5"/>
 					</s:layout>
 					
-					<s:Graphic x="0" y="0">
-						<s:Rect height="15" width="15">
-							<s:stroke>
-								<s:SolidColorStroke color="0x000000" weight="1"/>
-							</s:stroke>
-							<s:fill>
-								<s:SolidColor color="0x800234" alpha="1"/>
-							</s:fill>
-						</s:Rect>
-					</s:Graphic>
+					<mx:ColorPicker id="lineColorPicker" selectedColor="@{this._lineColor}" change="onLineColorChanged()"/>
 					<s:Group>
 						<s:layout >
 							<s:HorizontalLayout paddingTop="5"/>
 						</s:layout>
 						
-						<s:HSlider id="borderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+						<s:HSlider id="borderControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._lineBorderOpacity}" change="onLineOpacityChanged()"/>
 					</s:Group>
-					<s:TextInput left="5" height="20" width="20" text="5"/>
+					<s:TextInput id="lineWidth" left="5" height="20" width="20" text="@{this._lineWidth}" change="onLineWidthChanged()"/>
 					<s:Label paddingTop="5" text="px" color="black"/>
 				</s:Group>
 				<s:Group>
@@ -284,6 +365,7 @@
 						<s:VerticalLayout paddingLeft="2"/>
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Appliquer à : "/>
 					<s:RadioButton selected="@{this._allMode}" groupName="linePreviewMode" label="Les lignes de même style"/>
 					<s:RadioButton selected="@{this._selectedMode}" groupName="linePreviewMode" label="Cette ligne"/>
 					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="linePreviewMode" label="Toutes les lignes"/>
@@ -310,14 +392,7 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<s:Rect height="15" width="15">
-							<s:stroke>
-								<s:SolidColorStroke color="0x000000" weight="1"/>
-							</s:stroke>
-							<s:fill>
-								<s:SolidColor color="0x800234" alpha="1"/>
-							</s:fill>
-						</s:Rect>
+						<mx:ColorPicker id="polygonStrokeColorPicker" />
 					</s:Graphic>
 					<s:Group>
 						<s:layout >
@@ -344,14 +419,7 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<s:Rect height="15" width="15">
-							<s:stroke>
-								<s:SolidColorStroke color="0x000000" weight="1"/>
-							</s:stroke>
-							<s:fill>
-								<s:SolidColor color="0x006000" alpha="1"/>
-							</s:fill>
-						</s:Rect>
+						<mx:ColorPicker id="polygonFillColorPicker" />
 					</s:Graphic>
 					<s:Group>
 						<s:layout >
@@ -366,6 +434,7 @@
 						<s:VerticalLayout paddingLeft="2"/>
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Appliquer à : "/>
 					<s:RadioButton selected="@{this._allMode}" groupName="polygonPreviewMode" label="Les polygones de même style"/>
 					<s:RadioButton selected="@{this._selectedMode}" groupName="polygonPreviewMode" label="Ce polygone"/>
 					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="polygonPreviewMode" label="Tous les polygones"/>
@@ -395,14 +464,7 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<s:Rect height="15" width="15">
-							<s:stroke>
-								<s:SolidColorStroke color="0x000000" weight="1"/>
-							</s:stroke>
-							<s:fill>
-								<s:SolidColor color="0x800234" alpha="1"/>
-							</s:fill>
-						</s:Rect>
+						<mx:ColorPicker id="labelColorPicker" />
 					</s:Graphic>
 					<s:Group >
 						<s:layout >
@@ -427,14 +489,7 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<s:Rect height="15" width="15">
-							<s:stroke>
-								<s:SolidColorStroke color="0x000000" weight="1"/>
-							</s:stroke>
-							<s:fill>
-								<s:SolidColor color="0x006000" alpha="1"/>
-							</s:fill>
-						</s:Rect>
+						<mx:ColorPicker id="labelFillColorPicker" />
 					</s:Graphic>
 					<s:Group >
 						<s:layout >
@@ -481,6 +536,7 @@
 						<s:VerticalLayout paddingLeft="2"/>
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
+					<s:Label text="Appliquer à : "/>
 					<s:RadioButton selected="@{this._allMode}" groupName="labelPreviewMode" label="Les labels de même style"/>
 					<s:RadioButton selected="@{this._selectedMode}" groupName="labelPreviewMode" label="Ce label"/>
 					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="labelPreviewMode" label="Tous les labels"/>

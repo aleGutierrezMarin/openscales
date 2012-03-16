@@ -59,15 +59,17 @@
 			/**
 			 * To activate or disactivate the handler
 			 */
-			public function activate():void{
+			public function activate():void
+			{
 				
 				_handler.active = true;
 				_handler.styleSelectionCallback = this.popupCallback;
 				_alpha = 1;
 				_handler.map.doubleclickZoomEnabled = false;
 			}
-			public function disactivate():void{
-				
+			public function disactivate():void
+			{
+				PopUpManager.removePopUp(_popup);
 				_handler.active = false;
 				_alpha = 0.3;
 			}
@@ -258,7 +260,7 @@
 				
 				_active = value;
 				if(! _active){
-					// close popup
+					PopUpManager.removePopUp(_popup);
 				}
 			}
 			/**

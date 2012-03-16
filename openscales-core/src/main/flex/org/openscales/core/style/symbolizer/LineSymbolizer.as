@@ -31,7 +31,7 @@ package org.openscales.core.style.symbolizer {
 		}
 		
 		override public function clone():Symbolizer{
-			var lineSymbolizer:LineSymbolizer = new LineSymbolizer(this._stroke);
+			var lineSymbolizer:LineSymbolizer = new LineSymbolizer(this._stroke.clone());
 			lineSymbolizer.geometry = this.geometry;
 			return lineSymbolizer;
 		}
