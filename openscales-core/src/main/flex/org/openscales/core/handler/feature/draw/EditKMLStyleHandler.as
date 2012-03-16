@@ -43,7 +43,7 @@ package org.openscales.core.handler.feature.draw
 		 *  - "typeselected" : on all the feature of the same type than the selected feature (Point, Polygon, Line)
 		 * @default : all
 		 */
-		private var _targetFeatures:String = "all";
+		private var _targetFeatures:String = "selected";
 		
 		/**
 		 * Reference to the shared style
@@ -89,9 +89,25 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function changePreviewMode(targetFeatures:String):void
 		{
+			if (targetFeatures == this._targetFeatures)
+				return;
+			
 			if (targetFeatures == "all" || targetFeatures == "selected" || targetFeatures == "typeselected")
 			{
+				if (this._targetFeatures == "all")
+				{
+					if (targetFeatures == "selected")
+					{
+						this.enableSelectedMode();
+						
+					}
+					else if (targetFeatures == "typeselected")
+					{
+						this.enableTypeSelectedMode();
+					}
+				}
 				this._targetFeatures = targetFeatures;
+				this._feature.style = this._feature.style.clone();
 			}
 		}
 		
@@ -161,6 +177,59 @@ package org.openscales.core.handler.feature.draw
 			}
 		}
 		
+		private function enableSelectedMode():void
+		{
+			this._feature.style = this._feature.style.clone();
+		}
+		
+		private function enableTypeSelectedMode():void
+		{
+			var featureLength:Number;
+			var i:int;
+			this._featuresStyleStorage = new HashMap();
+			if (this._feature is PointFeature || this._feature is MultiPointFeature)
+			{
+				featureLength = this._drawLayer.features.length;
+				for ( i=0; i < featureLength; ++i)
+				{
+					if (this._drawLayer.features[i] is PointFeature || this._drawLayer.features[i] is MultiPointFeature)
+					{
+						this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
+						this._drawLayer.features[i].style = this._feature.style;
+					}
+				}
+			}
+			if (this._feature is LineStringFeature || this._feature is MultiLineStringFeature)
+			{
+				featureLength = this._drawLayer.features.length;
+				for ( i=0; i < featureLength; ++i)
+				{
+					if (this._drawLayer.features[i] is LineStringFeature || this._drawLayer.features[i] is MultiLineStringFeature)
+					{
+						this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
+						this._drawLayer.features[i].style = this._feature.style;
+					}
+				}
+			}
+			if (this._feature is PolygonFeature || this._feature is MultiPolygonFeature)
+			{
+				featureLength = this._drawLayer.features.length;
+				for ( i=0; i < featureLength; ++i)
+				{
+					if (this._drawLayer.features[i] is PolygonFeature || this._drawLayer.features[i] is MultiPolygonFeature)
+					{
+						this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
+						this._drawLayer.features[i].style = this._feature.style;
+					}
+				}
+			}
+		}
+		
+		private function enableAllMode():void
+		{
+			
+		}
+		
 		protected function onMouseUp(event:MouseEvent):void
 		{
 			if(event.target is Feature)
@@ -174,49 +243,11 @@ package org.openscales.core.handler.feature.draw
 				this._referenceToSharedStyle = this._feature.style;
 				if (this._targetFeatures == "selected")
 				{
-					this._feature.style = this._feature.style.clone();
+					this.enableSelectedMode();
 				}
 				else if(this._targetFeatures == "typeselected")
 				{
-					var featureLength:Number;
-					var i:int;
-					this._featuresStyleStorage = new HashMap();
-					if (this._feature is PointFeature || this._feature is MultiPointFeature)
-					{
-						featureLength = this._drawLayer.features.length;
-						for ( i=0; i < featureLength; ++i)
-						{
-							if (this._drawLayer.features[i] is PointFeature || this._drawLayer.features[i] is MultiPointFeature)
-							{
-								this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
-								this._drawLayer.features[i].style = this._feature.style;
-							}
-						}
-					}
-					if (this._feature is LineStringFeature || this._feature is MultiLineStringFeature)
-					{
-						featureLength = this._drawLayer.features.length;
-						for ( i=0; i < featureLength; ++i)
-						{
-							if (this._drawLayer.features[i] is LineStringFeature || this._drawLayer.features[i] is MultiLineStringFeature)
-							{
-								this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
-								this._drawLayer.features[i].style = this._feature.style;
-							}
-						}
-					}
-					if (this._feature is PolygonFeature || this._feature is MultiPolygonFeature)
-					{
-						featureLength = this._drawLayer.features.length;
-						for ( i=0; i < featureLength; ++i)
-						{
-							if (this._drawLayer.features[i] is PolygonFeature || this._drawLayer.features[i] is MultiPolygonFeature)
-							{
-								this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
-								this._drawLayer.features[i].style = this._feature.style;
-							}
-						}
-					}
+					this.enableTypeSelectedMode();
 				}
 				this.styleSelectionCallback(this._feature);
 			}
