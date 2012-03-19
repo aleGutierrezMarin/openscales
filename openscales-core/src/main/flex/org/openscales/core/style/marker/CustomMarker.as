@@ -125,6 +125,12 @@ package org.openscales.core.style.marker
 			return resultContainer;
 		}
 		
+		override public function clone():Marker
+		{
+			var cm:CustomMarker = new CustomMarker(this._url, this.opacity, this.xOffset, this.xUnit, this.yOffset, this.yUnit);
+			return cm;
+		}
+		
 		//Callback
 		/**
 		 * Callback on image request sucess

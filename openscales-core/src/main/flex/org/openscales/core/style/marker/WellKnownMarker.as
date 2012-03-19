@@ -1,7 +1,7 @@
 package org.openscales.core.style.marker {
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
-
+	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.stroke.Stroke;
@@ -105,6 +105,14 @@ package org.openscales.core.style.marker {
 
 		public function set wellKnownName(value:String):void {
 			this._wkn = value;
+		}
+		
+		override public function clone():Marker
+		{
+			var fillClone:SolidFill = this.fill.clone() as SolidFill;
+			var strokeClone:Stroke = this.stroke.clone();
+			var newWkm:WellKnownMarker = new WellKnownMarker(this._wkn, fillClone, strokeClone);
+			return newWkm;
 		}
 
 	}

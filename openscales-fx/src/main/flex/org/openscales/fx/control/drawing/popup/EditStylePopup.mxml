@@ -2,7 +2,7 @@
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" title="Edition de style"
-			   close="close()">
+			   close="close()" xmlns:openscales="http://openscales.org">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 		<s:RadioButtonGroup id="pointPreviewMode" itemClick="this.changeMode()" />
@@ -16,6 +16,8 @@
 			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
 			
+			import org.hamcrest.mxml.collection.Array;
+			import org.hamcrest.mxml.core.Not;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.feature.LineStringFeature;
@@ -27,10 +29,16 @@
 			import org.openscales.core.handler.feature.draw.EditKMLStyleHandler;
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.Style;
+			import org.openscales.core.style.fill.Fill;
+			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.marker.CustomMarker;
+			import org.openscales.core.style.marker.WellKnownMarker;
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.LineSymbolizer;
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
+			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin;
 			
 			[Embed(source="/assets/images/defaut.png")]
 			private const Default:Class;
@@ -85,6 +93,45 @@
 			[Bindable]
 			private var _lineWidth:String = "5";
 			
+			[Bindable]
+			private var _polygonLineColor:uint = 0x000000;
+			
+			[Bindable]
+			private var _polygonLineBorderOpacity:int = 100;
+			
+			[Bindable]
+			private var _polygonLineWidth:String = "5";
+			
+			[Bindable]
+			private var _polygonFillColor:uint = 0x000000;
+			
+			[Bindable]
+			private var _polygonFillOpacity:int = 100;
+			
+			[Bindable]
+			private var _pointColorMode:Boolean = false;
+			
+			[Bindable]
+			private var _pointIconMode:Boolean = true;
+			
+			[Bindable]
+			private var _pointColor:uint = 0x000000;
+			
+			[Bindable]
+			private var _pointOpacity:int = 100;
+			
+			[Bindable]
+			private var _iconSelectedIndex:int = -1;
+			
+			[Bindable]
+			private var _iconURLArray:ArrayCollection = new ArrayCollection(["http://www.newbies.fr/image/element_site/icones/icones/icone_inscription.png",
+				"http://jojaba.free.fr/faq-adb06-fr/images/adp06-icone.png",
+				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",
+				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",
+				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",
+				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",]);
+
+			
 			//Callback
 			
 			/**
@@ -109,6 +156,7 @@
 				{
 					this._editStyleHandler.changePreviewMode(mode);
 				}
+				this.targetFeature = this._editStyleHandler.selectedFeature;
 			}
 			
 			/**
@@ -116,6 +164,7 @@
 			 */
 			private function close():void
 			{
+				this._editStyleHandler.validateChanges();
 				PopUpManager.removePopUp(this);
 			}
 			
@@ -127,33 +176,153 @@
 			}
 			
 			/**
-			 * calback to handle line color change
+			 * callback to handle line color change
 			 */
 			private function onLineColorChanged():void
 			{
 				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
 				stroke.color = this._lineColor;
-				this._targetFeature.draw();
+				this.editStyleHandler.actualizeFeature();
 			}
 			
 			/**
-			 * calback to handle line opacity change
+			 * callback to handle line opacity change
 			 */
 			private function onLineOpacityChanged():void
 			{
 				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
 				stroke.opacity = this._lineBorderOpacity/100;
-				this._targetFeature.draw();
+				this.editStyleHandler.actualizeFeature();
 			}
 			
 			/**
-			 * calback to handle line width change
+			 * callback to handle line width change
 			 */
 			private function onLineWidthChanged():void
 			{
 				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
 				stroke.width = int(this._lineWidth);
-				this._targetFeature.draw();
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			/**
+			 * callback to handle polygon line color change
+			 */
+			private function onPolygonLineColorChanged():void
+			{
+				var stroke:Stroke = (this._editedSymbolize as PolygonSymbolizer).stroke;
+				stroke.color = this._polygonLineColor;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			/**
+			 * callback to handle polygon line opacity change
+			 */
+			private function onPolygonLineOpacityChanged():void
+			{
+				var stroke:Stroke = (this._editedSymbolize as PolygonSymbolizer).stroke;
+				stroke.opacity = this._polygonLineBorderOpacity/100;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			/**
+			 * callback to handle polygon line width change
+			 */
+			private function onPolygonLineWidthChanged():void
+			{
+				var stroke:Stroke = (this._editedSymbolize as PolygonSymbolizer).stroke;
+				stroke.width = int(this._polygonLineWidth);
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			/**
+			 * callback to handle polygon fill color change
+			 */
+			private function onPolygonFillColorChanged():void
+			{
+				var fill:SolidFill = (this._editedSymbolize as PolygonSymbolizer).fill as SolidFill;
+				fill.color = this._polygonFillColor
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			/**
+			 * callback to handle polygon fill opacity change
+			 */
+			private function onPolygonFillOpacityChanged():void
+			{
+				var fill:SolidFill = (this._editedSymbolize as PolygonSymbolizer).fill as SolidFill;
+				fill.opacity = this._polygonFillOpacity/100;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			/**
+			 * callback to handle point icon change
+			 */
+			private function onIconChanged():void
+			{
+				var customMarker:CustomMarker = new CustomMarker((this.iconDropDownList.selectedItem as String));
+				(this._editedSymbolize as PointSymbolizer).graphic = customMarker;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			private function onPointColorChanged():void
+			{
+				var fill:SolidFill = new SolidFill();
+				fill.color = this.pointColorPicker.selectedColor;
+				fill.opacity = this.pointFillOpacity.value/100;
+				var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
+				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
+				ptsym.graphic = wkm;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			private function onPointOpacityChanged():void
+			{
+				var fill:SolidFill = new SolidFill();
+				fill.color = this.pointColorPicker.selectedColor;
+				fill.opacity = this.pointFillOpacity.value/100;
+				var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
+				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
+				ptsym.graphic = wkm;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			/***
+			 * Cancel styles changes mades on the opened popup
+			 */
+			private function cancelChanges():void
+			{
+				this._editStyleHandler.cancelChanges();
+				this.targetFeature = this._targetFeature;
+			}
+			
+			/**
+			 * Apply the default style specified in  editKMLStyleHandler class to se selected preview mode
+			 */
+			private function applyDefaultStyle():void
+			{
+				if (this._editStyleHandler)
+				{
+					if (this._editStyleHandler.targetFeatures == "selected")
+					{
+						if (this._targetFeature is PointFeature || this._targetFeature is MultiPointFeature)
+							this._targetFeature.style = this._editStyleHandler.defaultPointStyle;
+						else if (this._targetFeature is LineStringFeature || this._targetFeature is MultiLineStringFeature)
+							this._targetFeature.style = this._editStyleHandler.defaultLineStyle;
+						else if (this._targetFeature is PolygonFeature || this._targetFeature is MultiPolygonFeature)
+							this._targetFeature.style = this._editStyleHandler.defaultPolygonStyle;
+					}
+					else if(this._editStyleHandler.targetFeatures == "all")
+					{
+
+					}
+					else if(this._editStyleHandler.targetFeatures == "typeselected")
+					{
+
+					}
+					this._editStyleHandler.actualizeFeature();
+				}
+				
 			}
 			
 			// Getter Setter
@@ -209,6 +378,9 @@
 			 */
 			public function set targetFeature(value:Feature):void
 			{
+				if (!value || !value.style)
+					return;
+				
 				var i:int;
 				var rule:Rule;
 				var symbLength:Number;
@@ -235,9 +407,34 @@
 						{
 							if (rule.symbolizers[i] is PointSymbolizer)
 							{
+								var ptSymb:PointSymbolizer = rule.symbolizers[i] as PointSymbolizer;
+								if (ptSymb.graphic is CustomMarker)
+								{
+									var cm:CustomMarker = ptSymb.graphic as CustomMarker;
+									if(this._iconURLArray.getItemIndex(cm.url) == -1)
+									{
+										this._iconURLArray.addItem(cm.url);
+									}
+									var itemIndex:int = this._iconURLArray.getItemIndex(cm.url);
+									this._iconSelectedIndex = itemIndex;
+									this._pointColorMode = false;
+									this._pointIconMode = true;
+								}
+								else if (ptSymb.graphic is WellKnownMarker)
+								{
+									var wkm:WellKnownMarker = ptSymb.graphic as WellKnownMarker;
+									this._pointColor = wkm.fill.color as uint;
+									this._pointOpacity = wkm.fill.opacity*100;
+									this._pointColorMode = true;
+									this._pointIconMode = false;
+								}
+								_editedSymbolize = ptSymb;
+								return;
+							} 
+							/*else if (rule.symbolizers[i] is LabelSymbolizer)
+							{
 								
-							}
-							
+							}*/
 						}
 					}
 				}
@@ -247,6 +444,25 @@
 					this._isLabelPoint = false;
 					this._isPolygon = true;
 					this._isLine = false;
+					if (_targetFeature.style.rules)
+					{
+						rule = _targetFeature.style.rules[0];
+						symbLength = rule.symbolizers.length;
+						for (i = 0; i< symbLength; ++i)
+						{
+							if (rule.symbolizers[i] is PolygonSymbolizer)
+							{
+								var polySymb:PolygonSymbolizer = rule.symbolizers[i] as PolygonSymbolizer;
+								this._polygonFillColor = (polySymb.fill as SolidFill).color as uint;
+								this._polygonFillOpacity = (polySymb.fill as SolidFill).opacity*100;
+								this._polygonLineBorderOpacity = polySymb.stroke.opacity*100;
+								this._polygonLineColor = polySymb.stroke.color;
+								this._polygonLineWidth = polySymb.stroke.width.toString();
+								_editedSymbolize = polySymb;
+								return;
+							}
+						}
+					}
 				}
 				else if (_targetFeature is LineStringFeature || _targetFeature is MultiLineStringFeature)
 				{
@@ -268,6 +484,7 @@
 								this._lineBorderOpacity = lineSymb.stroke.opacity*100;
 								this._lineWidth = lineSymb.stroke.width.toString();
 								_editedSymbolize = lineSymb;
+								return;
 							}
 						}
 					}
@@ -289,10 +506,10 @@
 					<s:HorizontalLayout paddingLeft="40" paddingTop="10" gap="10"/>
 				</s:layout>
 				
-				<mx:Image source="{Annuler}"/>
-				<mx:Image source="{Default}"/>
-				<mx:Image source="{Pipette}"/>
-				<mx:Image source="{Pot}"/>
+				<mx:Image source="{Annuler}" useHandCursor="true" click="{this.cancelChanges()}"/>
+				<mx:Image source="{Default}" useHandCursor="true" click="{this.applyDefaultStyle()}"/>
+				<mx:Image source="{Pipette}" useHandCursor="true"/>
+				<mx:Image source="{Pot}" useHandCursor="true"/>
 			</s:Group>
 			
 			<!--Point-->
@@ -308,12 +525,34 @@
 						
 					<mx:Image left="5" source="{Line}"/>
 					<s:Group>
-						<s:Rect height="20" width="20">
-						<s:stroke>
-							<s:SolidColorStroke color="0x000000" weight="1"/>
-						</s:stroke>
-						</s:Rect>
-						<mx:Image top="1" left="1" source="{Point}"/>
+						<s:layout >
+							<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
+						</s:layout>
+						
+						<s:Group>
+							<s:layout >
+								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
+							</s:layout>
+							<s:RadioButton selected="@{this._pointIconMode}" groupName="pointMode" label="Icone :"/>
+							<s:DropDownList enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this._iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1"/>
+						</s:Group>
+						
+						<s:Group>
+							<s:layout >
+								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
+							</s:layout>
+							<s:RadioButton selected="@{this._pointColorMode}" groupName="pointMode" label="Couleur :"/>
+							<s:Group>
+								<s:layout >
+									<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
+								</s:layout>
+								
+								<s:Graphic x="0" y="0">
+									<mx:ColorPicker id="pointColorPicker" enabled="{this._pointColorMode}" selectedColor="@{this._pointColor}" change="onPointColorChanged()"/>
+								</s:Graphic>
+								<s:HSlider id="pointFillOpacity" enabled="{this._pointColorMode}"  value="@{this._pointOpacity}" dataTipFormatFunction="percentageTipFunc" change="onPointOpacityChanged()" height="11" width="70" minimum="0" maximum="100"/>
+							</s:Group>
+						</s:Group>
 					</s:Group>
 					<mx:Image left="5" source="{Line}"/>
 				</s:Group>
@@ -392,16 +631,16 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="polygonStrokeColorPicker" />
+						<mx:ColorPicker id="polygonStrokeColorPicker" selectedColor="@{this._polygonLineColor}" change="onPolygonLineColorChanged()"/>
 					</s:Graphic>
 					<s:Group>
 						<s:layout >
 							<s:HorizontalLayout paddingTop="5"/>
 						</s:layout>
 						
-						<s:HSlider id="polygonBorderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+						<s:HSlider id="polygonBorderControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._polygonLineBorderOpacity}" change="onPolygonLineOpacityChanged()"/>
 					</s:Group>
-					<s:TextInput left="5" height="20" width="20" text="5"/>
+					<s:TextInput left="5" height="20" width="20" text="@{this._polygonLineWidth}" change="onPolygonLineWidthChanged()"/>
 					<s:Label paddingTop="5" text="px" color="black"/>
 				</s:Group>
 				
@@ -419,14 +658,14 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="polygonFillColorPicker" />
+						<mx:ColorPicker id="polygonFillColorPicker" selectedColor="@{this._polygonFillColor}" change="onPolygonFillColorChanged()"/>
 					</s:Graphic>
 					<s:Group>
 						<s:layout >
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="polygonFillControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+						<s:HSlider id="polygonFillControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._polygonFillOpacity}" change="onPolygonFillOpacityChanged()"/>
 					</s:Group>
 				</s:Group>
 				<s:Group >

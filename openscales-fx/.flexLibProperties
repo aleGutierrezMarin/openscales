@@ -163,6 +163,8 @@
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditStylePopup"/>
     <classEntry path="org.openscales.fx.control.drawing.EditStyle"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.IconListItemRenderer"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
