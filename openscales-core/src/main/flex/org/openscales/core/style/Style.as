@@ -413,7 +413,7 @@ package org.openscales.core.style {
 				}
 				clonedStyle.rules = rulesClone;
 			}
-			clonedStyle._name = this._name+ new Date().date;
+			clonedStyle._name = this._name+ new Date().time;
 			
 			return clonedStyle;
 		}

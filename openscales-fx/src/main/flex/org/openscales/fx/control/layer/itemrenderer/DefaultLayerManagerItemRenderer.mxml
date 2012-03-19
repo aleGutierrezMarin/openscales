@@ -532,11 +532,11 @@
 			<s:layout>
 				<s:HorizontalLayout gap="0"/>
 			</s:layout>
-			<drawing:DrawLabel id="drawLabel" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:DrawPath id="drawPath" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:DrawShape id="drawShape" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawLabel id="drawLabel" map="{this._layer.map}"  target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" style="{this._drawingToolbar.pointStyle}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPath id="drawPath" map="{this._layer.map}" style="{this._drawingToolbar.pathStyle}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" style="{this._drawingToolbar.polygonStyle}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawShape id="drawShape" map="{this._layer.map}" style="{this._drawingToolbar.shapeStyle}" target="{this._layer as VectorLayer}"  />
 			<drawing:EditStyle id="editStyle" map="{this._layer.map}" target="{this._layer as VectorLayer}" />
 		</s:SkinnableContainer>
 		

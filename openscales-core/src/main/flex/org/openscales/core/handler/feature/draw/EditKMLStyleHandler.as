@@ -43,7 +43,7 @@ package org.openscales.core.handler.feature.draw
 		 *  - "typeselected" : on all the feature of the same type than the selected feature (Point, Polygon, Line)
 		 * @default : all
 		 */
-		private var _targetFeatures:String = "selected";
+		private var _targetFeatures:String = "all";
 		
 		/**
 		 * Reference to the shared style
@@ -61,6 +61,26 @@ package org.openscales.core.handler.feature.draw
 		 * The feature clicked on 
 		 */
 		private var _feature:Feature;
+		
+		/**
+		 * Boolean that says if the style has been edited
+		 */
+		private var _styleChanged:Boolean = false;
+		
+		/**
+		 * The default point style to apply to the features
+		 */
+		private var _defaultPointStyle:Style = Style.getDefaultPointStyle();
+		
+		/**
+		 * The default line style to apply to the features
+		 */
+		private var _defaultLineStyle:Style = Style.getDefaultLineStyle();
+		
+		/**
+		 * The default polygon style to apply to the features
+		 */
+		private var _defaultPolygonStyle:Style = Style.getDefaultPolygonStyle();
 		
 		
 		// Constructor
@@ -91,25 +111,179 @@ package org.openscales.core.handler.feature.draw
 		{
 			if (targetFeatures == this._targetFeatures)
 				return;
-			
+			var cloneStyle:Style;
 			if (targetFeatures == "all" || targetFeatures == "selected" || targetFeatures == "typeselected")
 			{
 				if (this._targetFeatures == "all")
 				{
 					if (targetFeatures == "selected")
 					{
+						cloneStyle = this._feature.style.clone();
+						if (this._savedOriginStyle && this._savedOriginStyle.rules && this._savedOriginStyle.rules[0])
+						{
+							this._feature.style.rules[0] = this._savedOriginStyle.rules[0].clone();
+						}
+						this.actualizeFeature();
 						this.enableSelectedMode();
-						
+						this._feature.style = cloneStyle;
 					}
 					else if (targetFeatures == "typeselected")
 					{
 						this.enableTypeSelectedMode();
+						this.actualizeFeature();
+					}
+				}
+				if (this._targetFeatures == "selected")
+				{
+					if (targetFeatures == "all")
+					{
+						if (this._referenceToSharedStyle)
+						{
+							this._referenceToSharedStyle.rules[0] = this._feature.style.rules[0].clone();
+							this._feature.style = this._referenceToSharedStyle;
+						}
+						this.actualizeFeature();
+					}
+					else if (targetFeatures == "typeselected")
+					{
+						if (this._referenceToSharedStyle)
+						{
+							this._referenceToSharedStyle.rules[0] = this._feature.style.rules[0].clone();
+							this._feature.style = this._referenceToSharedStyle;
+						}
+						this.enableTypeSelectedMode();
+						this.actualizeFeature();
+						
+					}
+				}
+				if (this._targetFeatures == "typeselected")
+				{
+					if (targetFeatures == "selected")
+					{
+						this.restoreTypeSelectedMode();
+						cloneStyle = this._feature.style.clone();
+						if (this._savedOriginStyle && this._savedOriginStyle.rules && this._savedOriginStyle.rules[0])
+						{
+							this._feature.style.rules[0] = this._savedOriginStyle.rules[0].clone();
+						}
+						this.actualizeFeature();
+						this.enableSelectedMode();
+						this._feature.style = cloneStyle;					
+					}
+					else if (targetFeatures == "all")
+					{
+						cloneStyle = this._savedOriginStyle;
+						this.restoreTypeSelectedMode();
+						this.enableAllMode();
+						this._savedOriginStyle = cloneStyle;
+						this.actualizeFeature();
 					}
 				}
 				this._targetFeatures = targetFeatures;
-				this._feature.style = this._feature.style.clone();
+				this.actualizeFeature();
 			}
 		}
+		
+		/**
+		 * Validate the style change
+		 */
+		public function validateChanges():void
+		{
+			if (!this._feature)
+				return;
+			
+			if ((this._feature.style == this._defaultLineStyle||
+				this._feature.style == this._defaultPointStyle ||
+				this._feature.style == this._defaultPolygonStyle) && styleChanged)
+			{
+				var i:int;
+				var featureLength:Number;
+				var compStyle:Style = this._feature.style;
+				var clonedStyle:Style = this._feature.style.clone();
+				if (targetFeatures == "all")
+				{
+					featureLength = this.drawLayer.features.length;
+					for (i = 0; i < featureLength; ++i)
+					{
+						if (this.drawLayer.features[i].style == compStyle)
+						{
+							this.drawLayer.features[i].style = clonedStyle;
+						}
+					}
+				}
+				else if(targetFeatures == "typeSelected")
+				{
+					var array:Array = this._featuresStyleStorage.getKeys();
+					var arrayLength:Number = array.length;
+					
+					for (i = 0; i < arrayLength; ++i)
+					{
+						(array[i] as Feature).style= clonedStyle;
+					}
+				}
+			}
+		}
+		
+		/**
+		 * Redraw the features according to the previewMode
+		 */
+		public function actualizeFeature():void
+		{
+			var i:int;
+			var featureLength:Number;
+			this._styleChanged = true;
+			if (this._targetFeatures == "all")
+			{
+				featureLength = this.drawLayer.features.length;
+				for (i = 0; i < featureLength; ++i)
+				{
+					if (this.drawLayer.features[i].style == this._feature.style)
+					{
+						this.drawLayer.features[i].draw();
+					}
+				}
+			}
+			else if (targetFeatures == "selected")
+			{
+				this._feature.draw();
+				
+			}
+			else if (targetFeatures == "typeselected")
+			{
+				var array:Array = this._featuresStyleStorage.getKeys();
+				var arrayLength:Number = array.length;
+				
+				for (i = 0; i < arrayLength; ++i)
+				{
+					(array[i] as Feature).draw();
+				}
+			}
+		}
+		
+		/**
+		 * Revert all the changes made on the actual style
+		 */
+		public function cancelChanges():void
+		{
+			if (this._targetFeatures == "selected")
+			{
+				this._feature.style = _referenceToSharedStyle;
+				this._referenceToSharedStyle = null;
+			}
+			else if (this._targetFeatures == "all")
+			{
+				if(this._savedOriginStyle && this._savedOriginStyle.rules != null && this._savedOriginStyle.rules[0] != null){
+					this._feature.style.rules[0]  = this._savedOriginStyle.rules[0].clone();
+				}
+			}
+			else if (this._targetFeatures == "typeselected")
+			{
+				this.restoreTypeSelectedMode();
+			}
+			this.actualizeFeature();
+			this._styleChanged = false;
+		}
+		
 		
 		/**
 		 * @inheritdoc
@@ -118,7 +292,6 @@ package org.openscales.core.handler.feature.draw
 		{
 			if(this.map)
 			{
-				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				if(this.map.stage)
 					this.map.stage.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 			}
@@ -131,57 +304,36 @@ package org.openscales.core.handler.feature.draw
 		{
 			if(this.map)
 			{
-				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				if(this.map.stage)
 					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 			}
 		}
 		
-		
-		// Callback
+		/**
+		 * Restores the styles of each features ont the typeSelectedMode
+		 */
+		private function restoreTypeSelectedMode():void
+		{
+			var keysArray:Array = this._featuresStyleStorage.getKeys();
+			var keyArrayLength:Number = keysArray.length;
+			for (var i:int = 0; i < keyArrayLength; ++i)
+			{
+				(keysArray[i] as Feature).style = this._featuresStyleStorage.getValue(keysArray[i]) as Style;
+			}
+		}
 		
 		/**
-		 * Revert all the changes made on the actual style
+		 * Enable the selected Mode
 		 */
-		public function cancelChanges():void
-		{
-			if (this._targetFeatures == "selected")
-			{
-				this._feature.style = _referenceToSharedStyle;
-			}
-			else if (this._targetFeatures == "all")
-			{
-				if(this._savedOriginStyle.rules != null){
-					this._feature.style.rules  = this._savedOriginStyle.rules;
-				}
-			}
-			else if (this._targetFeatures == "typeselected")
-			{
-				var keysArray:Array = this._featuresStyleStorage.getKeys();
-				var keyArrayLength:Number = keysArray.length;
-				for (var i:int = 0; i < keyArrayLength; ++i)
-				{
-					(keysArray[i] as Feature).style = this._featuresStyleStorage.getValue(keysArray[i]) as Style;
-				}
-			}
-			this._referenceToSharedStyle = null;
-			this._savedOriginStyle = null;
-			this._featuresStyleStorage = new HashMap();
-		}
-		
-		protected function onMouseDown(event:MouseEvent):void
-		{
-			if(event.target is Feature)
-			{
-				
-			}
-		}
-		
 		private function enableSelectedMode():void
 		{
+			this._referenceToSharedStyle = this._feature.style;
 			this._feature.style = this._feature.style.clone();
 		}
 		
+		/**
+		 * Enable the type selected Mode
+		 */
 		private function enableTypeSelectedMode():void
 		{
 			var featureLength:Number;
@@ -225,22 +377,42 @@ package org.openscales.core.handler.feature.draw
 			}
 		}
 		
+		/**
+		 * Enable the all mode
+		 */
 		private function enableAllMode():void
 		{
-			
+			this._savedOriginStyle = this._feature.style.clone();
+			if (this._referenceToSharedStyle)
+			{
+				this._feature.style = this._referenceToSharedStyle;
+			}
 		}
+
+		// Callback
 		
+		/**
+		 * Callback for feature selection
+		 */
 		protected function onMouseUp(event:MouseEvent):void
 		{
-			if(event.target is Feature)
+			if(event.target is Feature || event.target.parent is Feature)
 			{
-				this._feature = event.target as Feature;
+				this.validateChanges();
+				if (event.target is Feature)
+				{
+					this._feature = event.target as Feature;
+				}
+				else
+				{
+					this._feature = event.target.parent as Feature;
+				}
 				
 				if (this._feature.layer != this._drawLayer)
 					return;
 				
-				this._savedOriginStyle = this._feature.style.clone();
-				this._referenceToSharedStyle = this._feature.style;
+				//this._savedOriginStyle = this._feature.style.clone();
+				
 				if (this._targetFeatures == "selected")
 				{
 					this.enableSelectedMode();
@@ -248,12 +420,27 @@ package org.openscales.core.handler.feature.draw
 				else if(this._targetFeatures == "typeselected")
 				{
 					this.enableTypeSelectedMode();
+				}else
+				{
+					this.enableAllMode();
 				}
 				this.styleSelectionCallback(this._feature);
+				this._styleChanged = false;
+				
 			}
 		}
 		
+		
+		
 		//Getter Setter
+		
+		/**
+		 * The selected feature
+		 */
+		public function get selectedFeature():Feature
+		{
+			return this._feature;
+		}
 		
 		/**
 		 * The preview mode. 
@@ -301,6 +488,68 @@ package org.openscales.core.handler.feature.draw
 			this._drawLayer = value;
 		}
 		
+		/**
+		 * Boolean that says if the style has been edited
+		 */
+		public function get styleChanged():Boolean
+		{
+			return this._styleChanged;
+		}
 		
+		/**
+		 * @private
+		 */
+		public function set styleChanged(value:Boolean):void
+		{
+			this._styleChanged = value;
+		}
+		
+		/**
+		 * The default point style to apply to the features
+		 */
+		public function get defaultPointStyle():Style
+		{
+			return this._defaultPointStyle;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set defaultPointStyle(value:Style):void
+		{
+			this._defaultPointStyle = value;
+		}
+		
+		/**
+		 * The default line style to apply to the features
+		 */
+		public function get defaultLineStyle():Style
+		{
+			return this._defaultLineStyle;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set defaultLineStyle(value:Style):void
+		{
+			this._defaultLineStyle = value;
+		}
+		
+		/**
+		 * The default polygon style to apply to the features
+		 */
+		public function get defaultPolygonStyle():Style
+		{
+			return this._defaultPolygonStyle;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set defaultPolygonStyle(value:Style):void
+		{
+			this._defaultPolygonStyle = value;
+		}
 	}
 }
