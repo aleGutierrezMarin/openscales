@@ -75,9 +75,9 @@ package org.openscales.core.feature {
 							commands.push(2);
 						}
 						this.graphics.drawPath(commands, coords);
-						this.graphics.endFill();
 					}
 				}
+				this.graphics.endFill();
 			}
 		}
 
