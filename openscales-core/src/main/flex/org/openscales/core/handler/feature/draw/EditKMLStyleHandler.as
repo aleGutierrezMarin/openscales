@@ -2,8 +2,11 @@ package org.openscales.core.handler.feature.draw
 {
 	import flash.events.MouseEvent;
 	
+	import mx.logging.targets.LineFormattedTarget;
+	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
@@ -15,6 +18,8 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.geometry.MultiLineString;
 	
 	public class EditKMLStyleHandler extends Handler
 	{
@@ -82,6 +87,16 @@ package org.openscales.core.handler.feature.draw
 		 */
 		private var _defaultPolygonStyle:Style = Style.getDefaultPolygonStyle();
 		
+		/**
+		 * Flag that says if color picking is activated
+		 */
+		private var _colorPickingActivated:Boolean = false;
+		
+		/**
+		 * Flag that says if color painting is activated
+		 */
+		private var _colorPaintingActivated:Boolean = false;
+		
 		
 		// Constructor
 		public function EditKMLStyleHandler(map:Map=null, active:Boolean=false)
@@ -98,6 +113,43 @@ package org.openscales.core.handler.feature.draw
 		{
 			
 		}
+
+		
+		/**
+		 * Disactivate style picking
+		 */
+		public function disactivateStylePicking():void
+		{
+			this._colorPickingActivated = false;
+			this.map.removeEventListener(FeatureEvent.FEATURE_CLICK, onStylePickingFeatureClick);
+		}
+		
+		/**
+		 * Activate style picking
+		 */
+		public function activateStylePicking():void
+		{
+			this._colorPickingActivated = true;
+			this.map.addEventListener(FeatureEvent.FEATURE_CLICK, onStylePickingFeatureClick);
+		}
+		
+		/**
+		 * Disactivate style painting
+		 */
+		public function disactivateStylePainting():void
+		{
+			this._colorPaintingActivated = false;
+			this.map.removeEventListener(FeatureEvent.FEATURE_CLICK, onStylePaintingFeatureClick);
+		}
+		
+		/**
+		 * Activate style painting
+		 */
+		public function activateStylePainting():void
+		{
+			this._colorPaintingActivated = true;
+			this.map.addEventListener(FeatureEvent.FEATURE_CLICK, onStylePaintingFeatureClick);
+		}
 		
 		/**
 		 * Change the preview mode. 
@@ -112,6 +164,7 @@ package org.openscales.core.handler.feature.draw
 			if (targetFeatures == this._targetFeatures)
 				return;
 			var cloneStyle:Style;
+			
 			if (targetFeatures == "all" || targetFeatures == "selected" || targetFeatures == "typeselected")
 			{
 				if (this._targetFeatures == "all")
@@ -284,6 +337,8 @@ package org.openscales.core.handler.feature.draw
 				compStyle.rules[0] = this._savedOriginStyle.rules[0].clone();
 			}
 			this.actualizeFeature();
+			this.disactivateStylePainting();
+			this.disactivateStylePicking();
 		}
 		
 		/**
@@ -327,24 +382,27 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function cancelChanges():void
 		{
-			if (this._targetFeatures == "selected")
+			if (this._styleChanged)
 			{
-				this._feature.style = _referenceToSharedStyle;
-				this._referenceToSharedStyle = null;
-			}
-			else if (this._targetFeatures == "all")
-			{
-				
-				if(this._savedOriginStyle && this._savedOriginStyle.rules != null && this._savedOriginStyle.rules[0] != null){
-					this._feature.style.rules[0]  = this._savedOriginStyle.rules[0].clone();
+				if (this._targetFeatures == "selected")
+				{
+					this._feature.style = _referenceToSharedStyle;
+					this._referenceToSharedStyle = null;
 				}
+				else if (this._targetFeatures == "all")
+				{
+					
+					if(this._savedOriginStyle && this._savedOriginStyle.rules != null && this._savedOriginStyle.rules[0] != null){
+						this._feature.style.rules[0]  = this._savedOriginStyle.rules[0].clone();
+					}
+				}
+				else if (this._targetFeatures == "typeselected")
+				{
+					this.restoreTypeSelectedMode();
+				}
+				this.actualizeFeature();
+				this._styleChanged = false;
 			}
-			else if (this._targetFeatures == "typeselected")
-			{
-				this.restoreTypeSelectedMode();
-			}
-			this.actualizeFeature();
-			this._styleChanged = false;
 		}
 		
 		
@@ -454,10 +512,113 @@ package org.openscales.core.handler.feature.draw
 		// Callback
 		
 		/**
+		 * Handle stylePicking Feature click event.
+		 */
+		protected function onStylePickingFeatureClick(event:FeatureEvent):void
+		{
+			if (event.feature is Feature)
+			{
+				if (this._feature is LineStringFeature || this._feature is MultiLineStringFeature)
+				{
+					if (event.feature is LineStringFeature || event.feature is MultiLineStringFeature)
+					{
+						this._feature.style = event.feature.style;	
+					}
+					else if (event.feature is PolygonFeature || event.feature is MultiPolygonFeature)
+					{
+						//NIY
+					}
+				}
+				else if (this._feature is PolygonFeature || this._feature is MultiPolygonFeature)
+				{
+					if (event.feature is LineStringFeature || event.feature is MultiLineStringFeature)
+					{
+						//NIY
+					}
+					else if (event.feature is PolygonFeature || event.feature is MultiPolygonFeature)
+					{
+						this._feature.style = event.feature.style;	
+					}
+				}
+				else if (this._feature is PointFeature || this._feature is MultiPointFeature)
+				{
+					if (event.feature is PointFeature || event.feature is MultiPointFeature)
+					{
+						this._feature.style = event.feature.style;	
+					}
+				}
+				
+				this._savedOriginStyle = this._feature.style.clone();
+				this._targetFeatures = "selected";
+				if (this._targetFeatures == "selected")
+				{
+					this.enableSelectedMode();
+				}
+				else if(this._targetFeatures == "typeselected")
+				{
+					this.enableTypeSelectedMode();
+				}else
+				{
+					this.enableAllMode();
+				}
+				this.disactivateStylePicking();
+				this.styleSelectionCallback(this._feature);
+				this._styleChanged = false;
+				this.actualizeFeature();
+				
+			}
+		}
+		
+		/**
+		 * Handle stylePainting Feature click event.
+		 */
+		protected function onStylePaintingFeatureClick(event:FeatureEvent):void
+		{
+			if (event.feature is Feature)
+			{
+				if (this._feature is LineStringFeature || this._feature is MultiLineStringFeature)
+				{
+					if (event.feature is LineStringFeature || event.feature is MultiLineStringFeature)
+					{
+						event.feature.style = this._feature.style;	
+					}
+					else if (event.feature is PolygonFeature || event.feature is MultiPolygonFeature)
+					{
+						//NIY
+					}
+				}
+				else if (this._feature is PolygonFeature || this._feature is MultiPolygonFeature)
+				{
+					if (event.feature is LineStringFeature || event.feature is MultiLineStringFeature)
+					{
+						//NIY
+					}
+					else if (event.feature is PolygonFeature || event.feature is MultiPolygonFeature)
+					{
+						event.feature.style = this._feature.style;	
+					}
+				}
+				else if (this._feature is PointFeature || this._feature is MultiPointFeature)
+				{
+					if (event.feature is PointFeature || event.feature is MultiPointFeature)
+					{
+						event.feature.style= this._feature.style ;	
+					}
+				}
+				event.feature.draw();
+				this.actualizeFeature();
+			}
+		}
+		
+		
+		/**
 		 * Callback for feature selection
 		 */
 		protected function onMouseUp(event:MouseEvent):void
 		{
+			if (this._colorPaintingActivated || this._colorPickingActivated)
+				return;
+			
 			if(event.target is Feature || event.target.parent is Feature)
 			{
 				var tmpFeature:Feature;
@@ -492,7 +653,6 @@ package org.openscales.core.handler.feature.draw
 				}
 				this.styleSelectionCallback(this._feature);
 				this._styleChanged = false;
-				
 			}
 		}
 		
@@ -617,5 +777,39 @@ package org.openscales.core.handler.feature.draw
 		{
 			this._defaultPolygonStyle = value;
 		}
+		
+		/**
+		 * Flag that says if color picking is activated
+		 */
+		public function get colorPickingActivated():Boolean
+		{
+			return this._colorPickingActivated;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set colorPickingActivated(value:Boolean):void
+		{
+			this._colorPickingActivated = value;
+		}
+	
+		/**
+		 * Flag that says if color painting is activated
+		 */
+		public function get colorPaintingActivated():Boolean
+		{
+			return this._colorPaintingActivated;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set colorPaintingActivated(value:Boolean):void
+		{
+			this._colorPaintingActivated = value;
+		}
+		
+		
 	}
 }

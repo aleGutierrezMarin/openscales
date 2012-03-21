@@ -6,6 +6,7 @@
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 		<s:RadioButtonGroup id="pointPreviewMode" itemClick="this.changeMode()" />
+		<s:RadioButtonGroup id="pointIconMode" itemClick="this.changePointMode()" />
 		<s:RadioButtonGroup id="linePreviewMode" itemClick="this.changeMode()" />
 		<s:RadioButtonGroup id="polygonPreviewMode" itemClick="this.changeMode()" />
 		<s:RadioButtonGroup id="labelPreviewMode" itemClick="this.changeMode()" />
@@ -18,6 +19,7 @@
 			
 			import org.hamcrest.mxml.collection.Array;
 			import org.hamcrest.mxml.core.Not;
+			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.feature.LineStringFeature;
@@ -132,9 +134,83 @@
 			private var _cancelPushed:Boolean = false;
 			
 			[Bindable]
-			private var _cancelAlpha:int = 1;
+			private var _pickingAlpha:Number = 1;
+			
+			[Bindable]
+			private var _paintingAlpha:Number = 1;
+			
+			
+			/**
+			 * Toggle style picking
+			 */
+			private function toggleStylePicking():void
+			{
+				if (this._editStyleHandler.colorPickingActivated)
+				{
+					this._editStyleHandler.disactivateStylePicking();
+					this._pickingAlpha = 1;  
+				}
+				else
+				{
+					if (this._editStyleHandler.colorPaintingActivated)
+					{
+						this._editStyleHandler.disactivateStylePainting();
+					}
+					this._editStyleHandler.activateStylePicking();
+					this._pickingAlpha = 0.3;  
+				}
+				
+			}
+			
+			/**
+			 * Toggle style picking
+			 */
+			private function toggleStylePainting():void
+			{
+				if (this._editStyleHandler.colorPaintingActivated)
+				{
+					this._editStyleHandler.disactivateStylePainting();
+					this._paintingAlpha = 1;  
+				}
+				else
+				{
+					if (this._editStyleHandler.colorPickingActivated)
+					{
+						this._editStyleHandler.disactivateStylePicking();
+					}
+					this._editStyleHandler.activateStylePainting();
+					this._paintingAlpha = 0.3;  
+				}
+				
+			}
+			
 			
 			//Callback
+			
+			
+			
+			/**
+			 * Method to handle the icon mode change on pointEdition
+			 */
+			private function changePointMode():void
+			{
+				if (this._pointIconMode)
+				{
+					var customMarker:CustomMarker = new CustomMarker((this.iconDropDownList.selectedItem as String));
+					(this._editedSymbolize as PointSymbolizer).graphic = customMarker;
+					this.editStyleHandler.actualizeFeature();
+				}
+				else
+				{
+					var fill:SolidFill = new SolidFill();
+					fill.color = this.pointColorPicker.selectedColor;
+					fill.opacity = this.pointFillOpacity.value/100;
+					var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
+					var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
+					ptsym.graphic = wkm;
+					this.editStyleHandler.actualizeFeature();
+				}
+			}
 			
 			/**
 			 * Method to handle the preview mode
@@ -376,6 +452,16 @@
 				if (!value || !value.style)
 					return;
 				
+				if (this._editStyleHandler.colorPickingActivated)
+					this._pickingAlpha = 0.3;
+				else
+					this._pickingAlpha = 1;
+				
+				if (this._editStyleHandler.colorPaintingActivated)
+					this._paintingAlpha = 0.3;
+				else
+					this._paintingAlpha = 1;
+				
 				var i:int;
 				var rule:Rule;
 				var symbLength:Number;
@@ -503,8 +589,8 @@
 				
 				<openscales:IconButton toolTip="Annuler" icon="{Annuler}" useHandCursor="true" click="{cancelChanges()}"/>
 				<openscales:IconButton toolTip="Default" icon="{Default}" useHandCursor="true" click="{applyDefaultStyle()}"/>
-				<openscales:IconButton toolTip="Pipette" icon="{Pipette}" useHandCursor="true" click="{cancelChanges()}"/>
-				<openscales:IconButton toolTip="Pot de Peinture" icon="{Pot}" alpha="{this._cancelAlpha}" useHandCursor="true" click="{cancelChanges()}"/>
+				<openscales:IconButton id="stylePicking" toolTip="Pipette" icon="{Pipette}"  alpha="@{this._pickingAlpha}" useHandCursor="true" click="{toggleStylePicking()}"/>
+				<openscales:IconButton id="stylePainting" toolTip="Pot de Peinture" icon="{Pot}" alpha="@{this._paintingAlpha}" useHandCursor="true" click="{toggleStylePainting()}"/>
 			</s:Group>
 			
 			<!--Point-->
@@ -528,7 +614,7 @@
 							<s:layout >
 								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 							</s:layout>
-							<s:RadioButton selected="@{this._pointIconMode}" groupName="pointMode" label="Icone :"/>
+							<s:RadioButton selected="@{this._pointIconMode}" groupName="pointIconMode" label="Icone :"/>
 							<s:DropDownList enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this._iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
 						</s:Group>
 						
@@ -536,7 +622,7 @@
 							<s:layout >
 								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 							</s:layout>
-							<s:RadioButton selected="@{this._pointColorMode}" groupName="pointMode" label="Couleur :"/>
+							<s:RadioButton selected="@{this._pointColorMode}" groupName="pointIconMode" label="Couleur :"/>
 							<s:Group>
 								<s:layout >
 									<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
