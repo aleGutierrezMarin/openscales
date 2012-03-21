@@ -515,7 +515,7 @@ package org.openscales.core.handler.feature.draw
 				for(var i:* in this.layers) {
 					if(layers[i].name == evt.feature.layer.name){
 						//fix bug : must be changed
-						//this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
+						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
 						return;
 					}
 				}
