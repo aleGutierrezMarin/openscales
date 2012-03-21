@@ -32,6 +32,7 @@
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
 			import org.openscales.core.style.symbolizer.LineSymbolizer;
+			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.fx.FxMap;
 			import org.openscales.fx.control.drawing.popup.EditFeatureAttributes;
 			import org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer;
@@ -254,6 +255,7 @@
 							0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
 					} else {
 						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+						(evt.feature.style.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width;
 					}
 					
 					evt.feature.draw();
