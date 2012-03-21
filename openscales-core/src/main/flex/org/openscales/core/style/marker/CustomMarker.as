@@ -4,6 +4,7 @@ package org.openscales.core.style.marker
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.request.DataRequest;
@@ -136,7 +137,12 @@ package org.openscales.core.style.marker
 		 * Callback on image request sucess
 		 */
 		private function onSuccess(e:Event):void {
+			if (this._clip)
+			{
+				this._clip.removeEventListener(MouseEvent.CLICK, onMarkerClick);
+			}
 			this._clip = Bitmap(this._req.loader.content);
+			this._clip.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			this._req.destroy();
 			this._req = null;
 			var markerLength:Number = this._givenTemporaryMarker.length;
@@ -170,9 +176,21 @@ package org.openscales.core.style.marker
 		/**
 		 * Callback on image request failure
 		 */
-		private function onFailure(e:Event):void {
+		private function onFailure(e:Event):void 
+		{
 			this._req.destroy();
 			this._req = null;
+		}
+		
+		/**
+		 * Callback to transfere the click event from the sprite to the feature
+		 */
+		private function onMarkerClick(event:MouseEvent):void
+		{
+			if (this.clip.parent && this.clip.parent is Feature)
+			{
+				(this.clip.parent as Feature).onMouseClick(event);
+			}
 		}
 		
 		//Getter Setter

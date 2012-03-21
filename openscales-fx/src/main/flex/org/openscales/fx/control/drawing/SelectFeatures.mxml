@@ -246,7 +246,7 @@
 					evt.feature.originalStyle = evt.feature.style;
 					
 					if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-						evt.feature.style = Style.getDefaultSelectedPointStyle();
+						//evt.feature.style = Style.getDefaultSelectedPointStyle();
 					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 						evt.feature.style = Style.getDefaultSelectedLineStyle();
 						(evt.feature.style.rules[0].symbolizers[0] as LineSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as LineSymbolizer).stroke.width;
@@ -274,7 +274,7 @@
 						evt.feature.style = evt.feature.originalStyle;
 					} else {
 						if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-							evt.feature.style = Style.getDefaultPointStyle();
+							//evt.feature.style = Style.getDefaultPointStyle();
 						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 							evt.feature.style = Style.getDefaultLineStyle();
 						} else if (evt.feature is LabelFeature) {
