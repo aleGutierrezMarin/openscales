@@ -18,14 +18,14 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 			
 			public function init():void
 			{
-				var style:Style = new Style();
+				/*var style:Style = new Style();
 				style.name = "Default point style";
 				var rule:Rule = new Rule();
 				rule.name = "Default rule";
 				var symbolizer:PointSymbolizer = new PointSymbolizer(new CustomMarker(""));
 				rule.symbolizers.push(symbolizer);
 				style.rules.push(rule);
-				this.drawingToolbar.pointStyle = style;
+				this.drawingToolbar.pointStyle = style;*/
 			}
 		]]>
 	</fx:Script>
