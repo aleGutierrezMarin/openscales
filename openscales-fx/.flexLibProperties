@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" version="1">
   <includeClasses>
-    <classEntry path="assets.fxg.ButtonCloseOver"/>
-    <classEntry path="assets.fxg.ButtonCloseUp"/>
-    <classEntry path="assets.fxg.ButtonOpacity"/>
-    <classEntry path="assets.fxg.DownArrowDown"/>
-    <classEntry path="assets.fxg.DownArrowOver"/>
-    <classEntry path="assets.fxg.DownArrowUp"/>
-    <classEntry path="assets.fxg.LayerItemOver"/>
-    <classEntry path="assets.fxg.LayerItemUp"/>
-    <classEntry path="assets.fxg.Popup"/>
-    <classEntry path="assets.fxg.UpArrowDown"/>
-    <classEntry path="assets.fxg.UpArrowOver"/>
-    <classEntry path="assets.fxg.UpArrowUp"/>
     <classEntry path="org.openscales.fx.ControlPanel"/>
     <classEntry path="org.openscales.fx.FxExtent"/>
     <classEntry path="org.openscales.fx.FxMap"/>

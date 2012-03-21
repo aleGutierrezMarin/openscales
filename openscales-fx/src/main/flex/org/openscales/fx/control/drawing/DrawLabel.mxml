@@ -113,17 +113,17 @@
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
-				this._map.addEventListener(MapEvent.MOUSE_CLICK, this.showPopUp);
+				//this._map.addEventListener(MapEvent.MOUSE_CLICK, this.showPopUp);
 			}
 			
 			/**
 			 * To create a LabelFeature
 			 */
-			private function showPopUp(event:Event):void{
+			private function showPopUp(px:Pixel):void{
 				
 				if(this._drawingActivated)
 				{
-					var pixel:Pixel = new Pixel(this._map.mouseX, this._map.mouseY);
+					var pixel:Pixel = px; //new Pixel(this._map.mouseX, this._map.mouseY);
 					var labelLocation:Location = this._map.getLocationFromMapPx(pixel);
 					var pt:LabelPoint = new LabelPoint(null, labelLocation.x, labelLocation.y);
 					pt.projection = this.map.projection;
@@ -212,7 +212,7 @@
 				
 				_clickHandler.map = this.map;
 				_clickHandler.active = true;
-				
+				_clickHandler.click = this.showPopUp;
 				this._drawingActivated = true;
 				_alpha = 1;
 				this._map.doubleclickZoomEnabled = false;
