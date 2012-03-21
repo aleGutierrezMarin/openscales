@@ -43,7 +43,7 @@ package org.openscales.core.handler.feature.draw
 		 *  - "typeselected" : on all the feature of the same type than the selected feature (Point, Polygon, Line)
 		 * @default : all
 		 */
-		private var _targetFeatures:String = "all";
+		private var _targetFeatures:String = "selected";
 		
 		/**
 		 * Reference to the shared style
@@ -249,7 +249,7 @@ package org.openscales.core.handler.feature.draw
 		 */
 		public function validateChanges():void
 		{
-			if (!this._feature)
+			if (!this._feature || !this._savedOriginStyle)
 				return;
 			
 			if ((this._feature.style == this._defaultLineStyle||
@@ -271,7 +271,7 @@ package org.openscales.core.handler.feature.draw
 						}
 					}
 				}
-				else if(targetFeatures == "typeSelected")
+				else if(targetFeatures == "typeselected")
 				{
 					var array:Array = this._featuresStyleStorage.getKeys();
 					var arrayLength:Number = array.length;
@@ -283,8 +283,7 @@ package org.openscales.core.handler.feature.draw
 				}
 				compStyle.rules[0] = this._savedOriginStyle.rules[0].clone();
 			}
-			this._referenceToSharedStyle = null;
-			this._savedOriginStyle = null;
+			this.actualizeFeature();
 		}
 		
 		/**
@@ -461,21 +460,25 @@ package org.openscales.core.handler.feature.draw
 		{
 			if(event.target is Feature || event.target.parent is Feature)
 			{
-				this.validateChanges();
+				var tmpFeature:Feature;
 				if (event.target is Feature)
 				{
-					this._feature = event.target as Feature;
+					tmpFeature = event.target as Feature;
 				}
 				else
 				{
-					this._feature = event.target.parent as Feature;
+					tmpFeature = event.target.parent as Feature;
 				}
 				
-				if (this._feature.layer != this._drawLayer)
+				if (tmpFeature.layer != this._drawLayer)
+				{
+					this._feature = null;
 					return;
-				
+				}
+				this.validateChanges();
+				this._feature = tmpFeature;
 				this._savedOriginStyle = this._feature.style.clone();
-				
+				this._targetFeatures = "selected";
 				if (this._targetFeatures == "selected")
 				{
 					this.enableSelectedMode();
