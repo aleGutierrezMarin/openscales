@@ -472,6 +472,6 @@
 		<osDraw:AddVectorLayer map="{this.map}" id="addFeatures" drawingMode="{this.mode}"/>
 		<osDraw:ImportFeature id="importFeature" map="{this.map}" drawingMode="{this.mode}"/>
 		<osDraw:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" drawingMode="{this.mode}"/>
-		<osDraw:EditStyle id="editFeatureStyle" map="{this.map}" target="{this._layer}" drawingMode="{this.mode}"/>
+		<osDraw:EditStyle id="editFeatureStyle" map="{this.map}" target="{this._layer}" drawingMode="{this.mode}" defaultLineStyle="{this.pathStyle}" defaultPointStyle="{this.pointStyle}" defaultPolygonStyle="{this.polygonStyle}"/>
 	</s:Panel>
 </os:Control>

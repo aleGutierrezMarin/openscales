@@ -126,11 +126,13 @@
 			[Bindable]
 			private var _iconURLArray:ArrayCollection = new ArrayCollection(["http://www.newbies.fr/image/element_site/icones/icones/icone_inscription.png",
 				"http://jojaba.free.fr/faq-adb06-fr/images/adp06-icone.png",
-				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",
-				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",
-				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",
 				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",]);
 
+			[Bindable]
+			private var _cancelPushed:Boolean = false;
+			
+			[Bindable]
+			private var _cancelAlpha:int = 1;
 			
 			//Callback
 			
@@ -296,33 +298,10 @@
 				this.targetFeature = this._targetFeature;
 			}
 			
-			/**
-			 * Apply the default style specified in  editKMLStyleHandler class to se selected preview mode
-			 */
 			private function applyDefaultStyle():void
 			{
-				if (this._editStyleHandler)
-				{
-					if (this._editStyleHandler.targetFeatures == "selected")
-					{
-						if (this._targetFeature is PointFeature || this._targetFeature is MultiPointFeature)
-							this._targetFeature.style = this._editStyleHandler.defaultPointStyle;
-						else if (this._targetFeature is LineStringFeature || this._targetFeature is MultiLineStringFeature)
-							this._targetFeature.style = this._editStyleHandler.defaultLineStyle;
-						else if (this._targetFeature is PolygonFeature || this._targetFeature is MultiPolygonFeature)
-							this._targetFeature.style = this._editStyleHandler.defaultPolygonStyle;
-					}
-					else if(this._editStyleHandler.targetFeatures == "all")
-					{
-
-					}
-					else if(this._editStyleHandler.targetFeatures == "typeselected")
-					{
-
-					}
-					this._editStyleHandler.actualizeFeature();
-				}
-				
+				this._editStyleHandler.applyDefaultStyle();
+				this.targetFeature = this._editStyleHandler.selectedFeature;
 			}
 			
 			// Getter Setter
@@ -362,6 +341,22 @@
 						this._selectedMode = false;
 					}
 				}
+			}
+			
+			/**
+			 * The ArrayCollection containing the urls to the icons that can be used to edit custom markers 
+			 */
+			public function get iconUrlArray():ArrayCollection
+			{
+				return this._iconURLArray;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set iconUrlArray(value:ArrayCollection):void
+			{
+				this._iconURLArray = value;
 			}
 			
 			/**
@@ -506,10 +501,10 @@
 					<s:HorizontalLayout paddingLeft="40" paddingTop="10" gap="10"/>
 				</s:layout>
 				
-				<mx:Image source="{Annuler}" useHandCursor="true" click="{this.cancelChanges()}"/>
-				<mx:Image source="{Default}" useHandCursor="true" click="{this.applyDefaultStyle()}"/>
-				<mx:Image source="{Pipette}" useHandCursor="true"/>
-				<mx:Image source="{Pot}" useHandCursor="true"/>
+				<openscales:IconButton toolTip="Annuler" icon="{Annuler}" useHandCursor="true" click="{cancelChanges()}"/>
+				<openscales:IconButton toolTip="Default" icon="{Default}" useHandCursor="true" click="{applyDefaultStyle()}"/>
+				<openscales:IconButton toolTip="Pipette" icon="{Pipette}" useHandCursor="true" click="{cancelChanges()}"/>
+				<openscales:IconButton toolTip="Pot de Peinture" icon="{Pot}" alpha="{this._cancelAlpha}" useHandCursor="true" click="{cancelChanges()}"/>
 			</s:Group>
 			
 			<!--Point-->
@@ -534,7 +529,7 @@
 								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 							</s:layout>
 							<s:RadioButton selected="@{this._pointIconMode}" groupName="pointMode" label="Icone :"/>
-							<s:DropDownList enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this._iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1"/>
+							<s:DropDownList enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this._iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
 						</s:Group>
 						
 						<s:Group>

@@ -185,6 +185,66 @@ package org.openscales.core.handler.feature.draw
 		}
 		
 		/**
+		 * Apply the default style specified in  editKMLStyleHandler class to se selected preview mode
+		 */
+		public function applyDefaultStyle():void
+		{
+			var i:int;
+			var featureLength:Number;
+			this.validateChanges();
+			if (this.targetFeatures == "selected")
+			{
+				if (this._feature is PointFeature || this._feature is MultiPointFeature)
+					this._feature.style = this.defaultPointStyle;
+				else if (this._feature is LineStringFeature || this._feature is MultiLineStringFeature)
+					this._feature.style = this.defaultLineStyle;
+				else if (this._feature is PolygonFeature || this._feature is MultiPolygonFeature)
+					this._feature.style = this.defaultPolygonStyle;
+				this._savedOriginStyle = this._feature.style.clone();
+				this.enableSelectedMode();
+			}
+			else if(this.targetFeatures == "all")
+			{
+				var compStyle:Style = this._feature.style;
+				featureLength = this.drawLayer.features.length;
+				for (i = 0; i < featureLength; ++i)
+				{
+					if (this.drawLayer.features[i].style == compStyle)
+					{
+						if (this.drawLayer.features[i] is PointFeature || this.drawLayer.features[i] is MultiPointFeature)
+							this.drawLayer.features[i].style = this.defaultPointStyle;
+						else if (this.drawLayer.features[i] is LineStringFeature || this.drawLayer.features[i] is MultiLineStringFeature)
+							this.drawLayer.features[i].style = this.defaultLineStyle;
+						else if (this.drawLayer.features[i] is PolygonFeature || this.drawLayer.features[i] is MultiPolygonFeature)
+							this.drawLayer.features[i].style = this.defaultPolygonStyle;
+					}
+				}
+				this._savedOriginStyle = this._feature.style.clone();
+				this.enableAllMode();
+			}
+			else if(this.targetFeatures == "typeselected")
+			{
+				var array:Array = this._featuresStyleStorage.getKeys();
+				var arrayLength:Number = array.length;
+				
+				for (i = 0; i < arrayLength; ++i)
+				{
+					if (array[i] is PointFeature || array[i] is MultiPointFeature)
+						(array[i] as Feature).style = this.defaultPointStyle;
+					else if (array[i] is LineStringFeature || array[i] is MultiLineStringFeature)
+						(array[i] as Feature).style = this.defaultLineStyle;
+					else if (array[i] is PolygonFeature || array[i] is MultiPolygonFeature)
+						(array[i] as Feature).style = this.defaultPolygonStyle;
+				}
+				this.enableTypeSelectedMode();
+			}
+			this.actualizeFeature();
+			this._styleChanged = false;
+			
+			
+		}
+		
+		/**
 		 * Validate the style change
 		 */
 		public function validateChanges():void
@@ -221,7 +281,10 @@ package org.openscales.core.handler.feature.draw
 						(array[i] as Feature).style= clonedStyle;
 					}
 				}
+				compStyle.rules[0] = this._savedOriginStyle.rules[0].clone();
 			}
+			this._referenceToSharedStyle = null;
+			this._savedOriginStyle = null;
 		}
 		
 		/**
@@ -272,6 +335,7 @@ package org.openscales.core.handler.feature.draw
 			}
 			else if (this._targetFeatures == "all")
 			{
+				
 				if(this._savedOriginStyle && this._savedOriginStyle.rules != null && this._savedOriginStyle.rules[0] != null){
 					this._feature.style.rules[0]  = this._savedOriginStyle.rules[0].clone();
 				}
@@ -382,7 +446,6 @@ package org.openscales.core.handler.feature.draw
 		 */
 		private function enableAllMode():void
 		{
-			this._savedOriginStyle = this._feature.style.clone();
 			if (this._referenceToSharedStyle)
 			{
 				this._feature.style = this._referenceToSharedStyle;
@@ -411,7 +474,7 @@ package org.openscales.core.handler.feature.draw
 				if (this._feature.layer != this._drawLayer)
 					return;
 				
-				//this._savedOriginStyle = this._feature.style.clone();
+				this._savedOriginStyle = this._feature.style.clone();
 				
 				if (this._targetFeatures == "selected")
 				{

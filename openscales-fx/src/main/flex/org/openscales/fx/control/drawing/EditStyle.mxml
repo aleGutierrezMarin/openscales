@@ -54,6 +54,21 @@
 			private var _handler:EditKMLStyleHandler = new EditKMLStyleHandler();
 			private var _popup:EditStylePopup = new EditStylePopup();
 			
+			/**
+			 * The default point style to apply to the features
+			 */
+			private var _defaultPointStyle:Style = Style.getDefaultPointStyle();
+			
+			/**
+			 * The default line style to apply to the features
+			 */
+			private var _defaultLineStyle:Style = Style.getDefaultLineStyle();
+			
+			/**
+			 * The default polygon style to apply to the features
+			 */
+			private var _defaultPolygonStyle:Style = Style.getDefaultPolygonStyle();
+			
 			
 			// Methods
 			/**
@@ -69,6 +84,7 @@
 			}
 			public function disactivate():void
 			{
+				this._handler.validateChanges();
 				PopUpManager.removePopUp(_popup);
 				_handler.active = false;
 				_alpha = 0.3;
@@ -311,6 +327,54 @@
 			public function set target(value:VectorLayer):void{
 				this.disactivate();
 				_handler.drawLayer = value;
+			}
+			
+			/**
+			 * The default point style to apply to the features
+			 */
+			public function get defaultPointStyle():Style
+			{
+				return (this._handler as EditKMLStyleHandler).defaultPointStyle;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set defaultPointStyle(value:Style):void
+			{
+				(this._handler as EditKMLStyleHandler).defaultPointStyle = value;
+			}
+			
+			/**
+			 * The default line style to apply to the features
+			 */
+			public function get defaultLineStyle():Style
+			{
+				return (this._handler as EditKMLStyleHandler).defaultLineStyle;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set defaultLineStyle(value:Style):void
+			{
+				(this._handler as EditKMLStyleHandler).defaultLineStyle = value;
+			}
+			
+			/**
+			 * The default polygon style to apply to the features
+			 */
+			public function get defaultPolygonStyle():Style
+			{
+				return (this._handler as EditKMLStyleHandler).defaultPolygonStyle;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set defaultPolygonStyle(value:Style):void
+			{
+				(this._handler as EditKMLStyleHandler).defaultPolygonStyle= value;
 			}
 		]]>
 	</fx:Script>			

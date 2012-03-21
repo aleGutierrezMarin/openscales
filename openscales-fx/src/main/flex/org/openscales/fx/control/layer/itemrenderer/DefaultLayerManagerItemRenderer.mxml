@@ -537,7 +537,7 @@
 			<drawing:DrawPath id="drawPath" map="{this._layer.map}" style="{this._drawingToolbar.pathStyle}" target="{this._layer as VectorLayer}"  />
 			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" style="{this._drawingToolbar.polygonStyle}" target="{this._layer as VectorLayer}"  />
 			<drawing:DrawShape id="drawShape" map="{this._layer.map}" style="{this._drawingToolbar.shapeStyle}" target="{this._layer as VectorLayer}"  />
-			<drawing:EditStyle id="editStyle" map="{this._layer.map}" target="{this._layer as VectorLayer}" />
+			<drawing:EditStyle id="editStyle" map="{this._layer.map}" defaultLineStyle="{this._drawingToolbar.pathStyle}" defaultPointStyle="{this._drawingToolbar.pointStyle}" defaultPolygonStyle="{this._drawingToolbar.polygonStyle}" target="{this._layer as VectorLayer}" />
 		</s:SkinnableContainer>
 		
 		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
