@@ -9,6 +9,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
@@ -643,6 +644,11 @@ package org.openscales.core.handler.feature.draw
 				if (tmpFeature.layer != this._drawLayer)
 				{
 					this._feature = null;
+					return;
+				}
+				
+				if (tmpFeature is LabelFeature)
+				{
 					return;
 				}
 				this.validateChanges();

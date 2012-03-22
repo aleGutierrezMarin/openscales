@@ -710,7 +710,7 @@
 						
 						<s:HSlider id="borderControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._lineBorderOpacity}" change="onLineOpacityChanged()"/>
 					</s:Group>
-					<s:TextInput id="lineWidth" left="5" height="20" width="20" text="@{this._lineWidth}" change="onLineWidthChanged()"/>
+					<s:TextInput id="lineWidth" restrict="0-9" maxChars="3" left="5" height="20" width="20" text="@{this._lineWidth}" change="onLineWidthChanged()" />
 					<s:Label paddingTop="5" text="px" color="black"/>
 				</s:Group>
 				<s:Group>
@@ -754,7 +754,7 @@
 						
 						<s:HSlider id="polygonBorderControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._polygonLineBorderOpacity}" change="onPolygonLineOpacityChanged()"/>
 					</s:Group>
-					<s:TextInput left="5" height="20" width="20" text="@{this._polygonLineWidth}" change="onPolygonLineWidthChanged()"/>
+					<s:TextInput left="5" height="20" width="20" restrict="0-9" maxChars="3" text="@{this._polygonLineWidth}" change="onPolygonLineWidthChanged()"/>
 					<s:Label paddingTop="5" text="px" color="black"/>
 				</s:Group>
 				
@@ -880,7 +880,7 @@
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
-						<s:Label paddingTop="5" text="taille" width="45" color="black"/><s:TextInput width="30" text="12"/>
+						<s:Label paddingTop="5" text="taille" width="45" color="black"/><s:TextInput width="30" text="12" restrict="0-9" maxChars="3"/>
 					</s:Group>
 				</s:Group>
 				
