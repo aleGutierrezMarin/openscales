@@ -7,6 +7,7 @@ package org.openscales.core.style {
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -84,14 +85,20 @@ package org.openscales.core.style {
 		 */
 		protected static function getPointRule():Rule{
 			
-			var fill:SolidFill = new SolidFill(0x0F6BFF, 0.7);
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			var symbolizer:PointSymbolizer = new PointSymbolizer(new CustomMarker("http://openscales.org/img/pictos/openscalesDefaultPicto.png"));
+			rule.symbolizers.push(symbolizer);
+			
+			/*var fill:SolidFill = new SolidFill(0x0F6BFF, 0.7);
 			var stroke:Stroke = new Stroke(0x3F9FCD, 2);
 			
 			var symbolizer:PointSymbolizer = new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke, 8));
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
-			rule.symbolizers.push(symbolizer);
+			rule.symbolizers.push(symbolizer);*/
 			
 			return rule;
 		}

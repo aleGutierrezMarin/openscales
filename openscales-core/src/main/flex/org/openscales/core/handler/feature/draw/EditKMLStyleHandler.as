@@ -101,10 +101,10 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * URLS of the defaults icons to use in the style editor 
 		 */
-		private var _iconURLArray:ArrayCollection = new ArrayCollection(["http://openscales.org/img/pictos/geoportalCirclePicto.png",
-			"http://openscales.org/img/pictos/geoportalCrossPicto.png",
-			"http://openscales.org/img/pictos/geoportalDefaultPicto.png",
-			"http://openscales.org/img/pictos/geoportalDiamondPicto.png"]);
+		private var _iconURLArray:ArrayCollection = new ArrayCollection(["http://openscales.org/img/pictos/openscalesCirclePicto.png",
+			"http://openscales.org/img/pictos/openscalesCrossPicto.png",
+			"http://openscales.org/img/pictos/openscalesDefaultPicto.png",
+			"http://openscales.org/img/pictos/openscalesDiamondPicto.png"]);
 		
 		
 		// Constructor
