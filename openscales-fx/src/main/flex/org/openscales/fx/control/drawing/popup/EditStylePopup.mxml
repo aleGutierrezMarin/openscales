@@ -18,9 +18,6 @@
 			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
 			
-			import org.hamcrest.mxml.collection.Array;
-			import org.hamcrest.mxml.core.Not;
-			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
@@ -33,8 +30,6 @@
 			import org.openscales.core.handler.feature.draw.EditKMLStyleHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.style.Rule;
-			import org.openscales.core.style.Style;
-			import org.openscales.core.style.fill.Fill;
 			import org.openscales.core.style.fill.SolidFill;
 			import org.openscales.core.style.marker.CustomMarker;
 			import org.openscales.core.style.marker.WellKnownMarker;
