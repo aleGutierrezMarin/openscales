@@ -170,7 +170,7 @@ package org.openscales.core.layer
 		 * Getters and Setters
 		 */
 		override public function set projection(value:*):void {
-			// KML must be in PESG:4326
+			// KML must be in EPSG:4326
 		}
 		
 		public function get kmlFormat():KMLFormat

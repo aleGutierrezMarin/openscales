@@ -1,6 +1,7 @@
 package org.openscales.core.feature {
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
@@ -20,7 +21,21 @@ package org.openscales.core.feature {
 		public function get polygon():Polygon {
 			return this.geometry as Polygon;
 		}
+		
+		/**
+		 * @inheritdoc
+		 */
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is PolygonSymbolizer)
+				return true;
+			else
+				return false;
+		}
 
+		/**
+		 * @inheritdoc
+		 */
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 
 			if (symbolizer is PointSymbolizer) {
@@ -63,8 +78,9 @@ package org.openscales.core.feature {
 						commands.push(2);
 					}
 					this.graphics.drawPath(commands, coords);
-					this.graphics.endFill();
+					
 				}
+				this.graphics.endFill();
 			}
 		}
 

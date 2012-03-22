@@ -30,6 +30,17 @@ Use the buttons of the second line to remove the last drawn vertex, to delete th
 	</fx:Script>
 	
 	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.Style;
+			import org.openscales.core.style.marker.CustomMarker;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
+		]]>
+	</fx:Script>
+	
+	
 	<Map id="fxMap" width="100%" height="100%" 
 		 resolution="0.018398940223618158" 
 		 center="2.0348771486450348,47.037382066308375"

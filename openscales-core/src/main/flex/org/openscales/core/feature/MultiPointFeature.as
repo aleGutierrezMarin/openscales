@@ -22,6 +22,20 @@ package org.openscales.core.feature {
 			return this.geometry as MultiPoint;
 		}
 
+		/**
+		 * @inheritdoc
+		 */
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is PointSymbolizer)
+				return true;
+			else
+				return false;
+		}
+		
+		/**
+		 * @inheritdoc
+		 */
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 			
 			// Variable declaration before for loop to improve performances
