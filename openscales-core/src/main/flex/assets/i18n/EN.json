@@ -37,6 +37,7 @@
    "drawing.addvectorlayer": "Add a vector layer",
    "drawing.addvectorlayer.input.errormessage": "Name must not be empty",
    "drawing.nameerror": "Change name (can't be empty or equal to another layer)",
+   "editskin.point" : "Style editor",
    
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",
@@ -152,5 +153,28 @@
    "externalLayers.nameerror": "Change layer name (shouldn't be empty or equals to another layer name)",
    "externalLayers.urlerror": "Url field can't be empty",
    "externalLayers.uncorrectExtension": "File extension is not valid, valid file extensions are : ",
-   "externalLayers.uncorrectFile": "UncorrectFile"
+   "externalLayers.uncorrectFile": "UncorrectFile",
+   
+   "editStyle.mainPanel.title" : "Style edition",
+   "editStyle.cancelButton.tooltip" : "Cancel",
+   "editStyle.defaultButton.tooltip" : "Default",
+   "editStyle.stylePicking.tooltip" : "Style picker",
+   "editStyle.stylePainting.tooltip" : "Style painter",
+   "editStyle.pointStyleEdition.dropDownMode" : "Icon :",
+   "editStyle.pointStyleEdition.colorMode" : "Color :",
+   "editStyle.pointStyleEdition.labelText" : "Apply to : ",
+   "editStyle.pointStyleEdition.previewModeAll" : "Points with same style",
+   "editStyle.pointStyleEdition.previewModeSelected" : "This point only",
+   "editStyle.pointStyleEdition.previewModeTypeSelected" : "All the points",
+   "editStyle.lineStyleEdition.fillLabelText" : "Fill",
+   "editStyle.lineStyleEdition.labelText" : "Apply to : ",
+   "editStyle.lineStyleEdition.previewModeAll" : "Lines with same style",
+   "editStyle.lineStyleEdition.previewModeSelected" : "This line only",
+   "editStyle.lineStyleEdition.previewModeTypeSelected" : "All the lines",
+   "editStyle.polyStyleEdition.strokeLabelText" : "Stroke",
+   "editStyle.polyStyleEdition.fillLabelText" : "Fill",
+   "editStyle.polyStyleEdition.labelText" : "Apply to : ",
+   "editStyle.polyStyleEdition.previewModeAll" : "Polygons with same style",
+   "editStyle.polyStyleEdition.previewModeSelected" : "This polygon only",
+   "editStyle.polyStyleEdition.previewModeTypeSelected" : "All the the polygons"
  }

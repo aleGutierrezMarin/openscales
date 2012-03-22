@@ -5,7 +5,7 @@
 			   xmlns:os="org.openscales.fx.control.*"
 			   implements="org.openscales.core.control.IControl"
 			   toolTip="{this.tooltip}"
-			   icon="{_btnPoint}"
+			   icon="{_btnStyle}"
 			   alpha="{_alpha}"
 			   width="25"
 			   height="25"
@@ -45,8 +45,8 @@
 			private var tooltip:String = Catalog.getLocalizationForKey('editskin.point');
 			
 			[Bindable]
-			[Embed(source="/assets/images/icons/Icons-03.png")]
-			private var _btnPoint:Class;
+			[Embed(source="/assets/images/icons/Icons-22.png")]
+			private var _btnStyle:Class;
 			
 			private var _active:Boolean = true;
 			private var _isClick:Boolean = false;

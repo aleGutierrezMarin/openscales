@@ -2,6 +2,7 @@ package org.openscales.core.handler.feature.draw
 {
 	import flash.events.MouseEvent;
 	
+	import mx.collections.ArrayCollection;
 	import mx.logging.targets.LineFormattedTarget;
 	
 	import org.openscales.core.Map;
@@ -96,6 +97,14 @@ package org.openscales.core.handler.feature.draw
 		 * Flag that says if color painting is activated
 		 */
 		private var _colorPaintingActivated:Boolean = false;
+		
+		/**
+		 * URLS of the defaults icons to use in the style editor 
+		 */
+		private var _iconURLArray:ArrayCollection = new ArrayCollection(["http://openscales.org/img/pictos/geoportalCirclePicto.png",
+			"http://openscales.org/img/pictos/geoportalCrossPicto.png",
+			"http://openscales.org/img/pictos/geoportalDefaultPicto.png",
+			"http://openscales.org/img/pictos/geoportalDiamondPicto.png"]);
 		
 		
 		// Constructor
@@ -810,6 +819,20 @@ package org.openscales.core.handler.feature.draw
 			this._colorPaintingActivated = value;
 		}
 		
+		/**
+		 * URLS of the defaults icons to use in the style editor 
+		 */
+		public function get iconURLArray():ArrayCollection
+		{
+			return this._iconURLArray;
+		}
 		
+		/**
+		 * @private
+		 */
+		public function set iconURLArray(value:ArrayCollection):void
+		{
+			this._iconURLArray = value;
+		}
 	}
 }

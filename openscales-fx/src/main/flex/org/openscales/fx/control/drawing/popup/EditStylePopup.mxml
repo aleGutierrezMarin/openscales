@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" title="Edition de style"
-			   close="close()" xmlns:openscales="http://openscales.org">
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="close()" xmlns:openscales="http://openscales.org"
+			   creationComplete="localize()">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 		<s:RadioButtonGroup id="pointPreviewMode" itemClick="this.changeMode()" />
@@ -20,6 +21,7 @@
 			import org.hamcrest.mxml.collection.Array;
 			import org.hamcrest.mxml.core.Not;
 			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.feature.LineStringFeature;
@@ -29,6 +31,7 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.feature.PolygonFeature;
 			import org.openscales.core.handler.feature.draw.EditKMLStyleHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.Style;
 			import org.openscales.core.style.fill.Fill;
@@ -124,11 +127,6 @@
 			
 			[Bindable]
 			private var _iconSelectedIndex:int = -1;
-			
-			[Bindable]
-			private var _iconURLArray:ArrayCollection = new ArrayCollection(["http://www.newbies.fr/image/element_site/icones/icones/icone_inscription.png",
-				"http://jojaba.free.fr/faq-adb06-fr/images/adp06-icone.png",
-				"http://www.360kmh.com/images/article/94/Banques_d_icones.gif",]);
 
 			[Bindable]
 			private var _cancelPushed:Boolean = false;
@@ -138,6 +136,8 @@
 			
 			[Bindable]
 			private var _paintingAlpha:Number = 1;
+			
+			
 			
 			
 			/**
@@ -380,6 +380,34 @@
 				this.targetFeature = this._editStyleHandler.selectedFeature;
 			}
 			
+			/**
+			 * @private
+			 */ 
+			protected function localize(event:I18NEvent=null):void{
+				this.title = Catalog.getLocalizationForKey("editStyle.mainPanel.title");
+				this.cancelButton.toolTip = Catalog.getLocalizationForKey("editStyle.cancelButton.tooltip");
+				this.setDefaultButton.toolTip = Catalog.getLocalizationForKey("editStyle.defaultButton.tooltip");
+				this.stylePicking.toolTip = Catalog.getLocalizationForKey("editStyle.stylePicking.tooltip");
+				this.stylePainting.toolTip = Catalog.getLocalizationForKey("editStyle.stylePainting.tooltip");
+				this.dropdownPointModeRB.label = Catalog.getLocalizationForKey("editStyle.pointStyleEdition.dropDownMode");	
+				this.colorPointModeRB.label = Catalog.getLocalizationForKey("editStyle.pointStyleEdition.colorMode");
+				this.pointApplyTo.text = Catalog.getLocalizationForKey("editStyle.pointStyleEdition.labelText");
+				this.pointPreviewModeAll.label = Catalog.getLocalizationForKey("editStyle.pointStyleEdition.previewModeAll");
+				this.pointPreviewModeSelected.label = Catalog.getLocalizationForKey("editStyle.pointStyleEdition.previewModeSelected");
+				this.pointPreviewModeTypeSelected.label = Catalog.getLocalizationForKey("editStyle.pointStyleEdition.previewModeTypeSelected");
+				this.lineFillLabel.text = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.fillLabelText");
+				this.lineApplyTo.text = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.labelText");
+				this.linePreviewModeAll.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.previewModeAll");
+				this.linePreviewModeSelected.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.previewModeSelected");
+				this.linePreviewModeTypeSelected.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.previewModeTypeSelected");
+				this.polyStrokeLabel.text = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.strokeLabelText");
+				this.polyFillLabel.text = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.fillLabelText");
+				this.polyApplyTo.text = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.labelText");
+				this.polyPreviewModeAll.label = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.previewModeAll");
+				this.polyPreviewModeSelected.label = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.previewModeSelected");
+				this.polyPreviewModeTypeSelected.label = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.previewModeTypeSelected");
+			}
+			
 			// Getter Setter
 			
 			/**
@@ -417,22 +445,27 @@
 						this._selectedMode = false;
 					}
 				}
+				if(this._editStyleHandler.map){
+					this._editStyleHandler.map.addEventListener(I18NEvent.LOCALE_CHANGED, localize);
+				}
 			}
 			
 			/**
 			 * The ArrayCollection containing the urls to the icons that can be used to edit custom markers 
 			 */
-			public function get iconUrlArray():ArrayCollection
+			[Bindable]
+			public function get iconURLArray():ArrayCollection
 			{
-				return this._iconURLArray;
+				return this._editStyleHandler.iconURLArray;
 			}
 			
+			
 			/**
-			 * @private
+			 * privqte
 			 */
-			public function set iconUrlArray(value:ArrayCollection):void
+			public function set iconURLArray(value:ArrayCollection):void
 			{
-				this._iconURLArray = value;
+				this._editStyleHandler.iconURLArray = value;
 			}
 			
 			/**
@@ -492,11 +525,11 @@
 								if (ptSymb.graphic is CustomMarker)
 								{
 									var cm:CustomMarker = ptSymb.graphic as CustomMarker;
-									if(this._iconURLArray.getItemIndex(cm.url) == -1)
+									if(this.iconURLArray.getItemIndex(cm.url) == -1)
 									{
-										this._iconURLArray.addItem(cm.url);
+										this.iconURLArray.addItem(cm.url);
 									}
-									var itemIndex:int = this._iconURLArray.getItemIndex(cm.url);
+									var itemIndex:int = this.iconURLArray.getItemIndex(cm.url);
 									this._iconSelectedIndex = itemIndex;
 									this._pointColorMode = false;
 									this._pointIconMode = true;
@@ -587,10 +620,10 @@
 					<s:HorizontalLayout paddingLeft="40" paddingTop="10" gap="10"/>
 				</s:layout>
 				
-				<openscales:IconButton toolTip="Annuler" icon="{Annuler}" useHandCursor="true" click="{cancelChanges()}"/>
-				<openscales:IconButton toolTip="Default" icon="{Default}" useHandCursor="true" click="{applyDefaultStyle()}"/>
-				<openscales:IconButton id="stylePicking" toolTip="Pipette" icon="{Pipette}"  alpha="@{this._pickingAlpha}" useHandCursor="true" click="{toggleStylePicking()}"/>
-				<openscales:IconButton id="stylePainting" toolTip="Pot de Peinture" icon="{Pot}" alpha="@{this._paintingAlpha}" useHandCursor="true" click="{toggleStylePainting()}"/>
+				<openscales:IconButton id="cancelButton" icon="{Annuler}" useHandCursor="true" click="{cancelChanges()}"/>
+				<openscales:IconButton id="setDefaultButton" icon="{Default}" useHandCursor="true" click="{applyDefaultStyle()}"/>
+				<openscales:IconButton id="stylePicking" icon="{Pipette}"  alpha="@{this._pickingAlpha}" useHandCursor="true" click="{toggleStylePicking()}"/>
+				<openscales:IconButton id="stylePainting" icon="{Pot}" alpha="@{this._paintingAlpha}" useHandCursor="true" click="{toggleStylePainting()}"/>
 			</s:Group>
 			
 			<!--Point-->
@@ -614,15 +647,15 @@
 							<s:layout >
 								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 							</s:layout>
-							<s:RadioButton selected="@{this._pointIconMode}" groupName="pointIconMode" label="Icone :"/>
-							<s:DropDownList enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this._iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
+							<s:RadioButton id="dropdownPointModeRB" selected="@{this._pointIconMode}" groupName="pointIconMode" />
+							<s:DropDownList enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
 						</s:Group>
 						
 						<s:Group>
 							<s:layout >
 								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 							</s:layout>
-							<s:RadioButton selected="@{this._pointColorMode}" groupName="pointIconMode" label="Couleur :"/>
+							<s:RadioButton id="colorPointModeRB" selected="@{this._pointColorMode}" groupName="pointIconMode" />
 							<s:Group>
 								<s:layout >
 									<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
@@ -641,10 +674,10 @@
 					<s:layout >
 						<s:VerticalLayout paddingLeft="2"/>
 					</s:layout>
-					<s:Label text="Appliquer à : "/>
-					<s:RadioButton selected="@{this._allMode}" groupName="pointPreviewMode" label="Les points de même style"/>
-					<s:RadioButton selected="@{this._selectedMode}" groupName="pointPreviewMode" label="Ce point"/>
-					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="pointPreviewMode" label="Tous les points"/>
+					<s:Label id="pointApplyTo" />
+					<s:RadioButton id="pointPreviewModeAll" selected="@{this._allMode}" groupName="pointPreviewMode"/>
+					<s:RadioButton id="pointPreviewModeSelected" selected="@{this._selectedMode}" groupName="pointPreviewMode"/>
+					<s:RadioButton id="pointPreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="pointPreviewMode"/>
 				</s:Group>
 			</s:Group>
 			
@@ -661,7 +694,7 @@
 					</s:layout>
 					
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Remplissage" color="black"/>
+					<s:Label id="lineFillLabel" color="black"/>
 				</s:Group>
 				
 				<s:Group id="border" width="170" >
@@ -685,10 +718,10 @@
 						<s:VerticalLayout paddingLeft="2"/>
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Appliquer à : "/>
-					<s:RadioButton selected="@{this._allMode}" groupName="linePreviewMode" label="Les lignes de même style"/>
-					<s:RadioButton selected="@{this._selectedMode}" groupName="linePreviewMode" label="Cette ligne"/>
-					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="linePreviewMode" label="Toutes les lignes"/>
+					<s:Label id="lineApplyTo"/>
+					<s:RadioButton id="linePreviewModeAll" selected="@{this._allMode}" groupName="linePreviewMode" />
+					<s:RadioButton id="linePreviewModeSelected" selected="@{this._selectedMode}" groupName="linePreviewMode" />
+					<s:RadioButton id="linePreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="linePreviewMode"/>
 				</s:Group>
 			</s:Group>
 			
@@ -703,7 +736,7 @@
 						<s:VerticalLayout paddingLeft="5" paddingTop="10" gap="10"/>
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Bordure" color="black"/>
+					<s:Label id="polyStrokeLabel" color="black"/>
 				</s:Group>
 				
 				<s:Group id="polygonBorder" width="170" >
@@ -731,7 +764,7 @@
 					</s:layout>
 					
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Remplissage" color="black"/>
+					<s:Label id="polyFillLabel" color="black"/>
 				</s:Group>
 				<s:Group id="fill" width="170">
 					<s:layout >
@@ -754,10 +787,10 @@
 						<s:VerticalLayout paddingLeft="2"/>
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Appliquer à : "/>
-					<s:RadioButton selected="@{this._allMode}" groupName="polygonPreviewMode" label="Les polygones de même style"/>
-					<s:RadioButton selected="@{this._selectedMode}" groupName="polygonPreviewMode" label="Ce polygone"/>
-					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="polygonPreviewMode" label="Tous les polygones"/>
+					<s:Label id="polyApplyTo"/>
+					<s:RadioButton id="polyPreviewModeAll" selected="@{this._allMode}" groupName="polygonPreviewMode"/>
+					<s:RadioButton id="polyPreviewModeSelected" selected="@{this._selectedMode}" groupName="polygonPreviewMode"/>
+					<s:RadioButton id="polyPreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="polygonPreviewMode"/>
 				</s:Group>
 			</s:Group>
 				
