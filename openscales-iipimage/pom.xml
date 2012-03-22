@@ -21,6 +21,17 @@
 				<artifactId>flexmojos-maven-plugin</artifactId>
 				<version>${flexmojos.version}</version>
 				<extensions>true</extensions>
+                <configuration>
+                    <namespaces>
+						<namespace>
+							<uri>http://openscales.org</uri>
+							<manifest>${project.build.sourceDirectory}/META-INF/manifest.xml</manifest>
+						</namespace>
+					</namespaces>
+                    <includeNamespaces>
+						<namespaces>http://openscales.org</namespaces>
+					</includeNamespaces>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>
