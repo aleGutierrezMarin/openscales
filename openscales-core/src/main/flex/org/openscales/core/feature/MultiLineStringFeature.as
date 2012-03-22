@@ -1,6 +1,7 @@
 package org.openscales.core.feature
 {
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -23,6 +24,20 @@ package org.openscales.core.feature
 			return this.geometry as MultiLineString;
 		}
 
+		/**
+		 * @inheritdoc 
+		 */
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is LineSymbolizer)
+				return true;
+			else
+				return false;
+		}
+		
+		/**
+		 * @inheritdoc
+		 */
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 			// Regardless to the style, a MultiLineString is never filled
 			this.graphics.endFill();
