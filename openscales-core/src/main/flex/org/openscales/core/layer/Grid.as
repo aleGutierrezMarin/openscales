@@ -697,11 +697,14 @@ package org.openscales.core.layer
 				var bottomLeftTile:ImageTile = this._grid[bottom][0];
 				var right:int = this._grid[0].length - 1; 
 				var topRightTile:ImageTile = this._grid[0][right];
-				return new Bounds(bottomLeftTile.bounds.left, 
-					bottomLeftTile.bounds.bottom,
-					topRightTile.bounds.right, 
-					topRightTile.bounds.top,
-					this.projection);
+				if (bottomLeftTile.bounds)
+				{
+					return new Bounds(bottomLeftTile.bounds.left, 
+						bottomLeftTile.bounds.bottom,
+						topRightTile.bounds.right, 
+						topRightTile.bounds.top,
+						this.projection);
+				}
 			}
 			return null;
 		}
