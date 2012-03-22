@@ -376,6 +376,22 @@
 			{
 				(this._handler as EditKMLStyleHandler).defaultPolygonStyle= value;
 			}
+			
+			/**
+			 * The EditKMLStyleHandler used to handle style edition
+			 */
+			public function get handler():EditKMLStyleHandler
+			{
+				return (this._handler as EditKMLStyleHandler);
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set handler(value:EditKMLStyleHandler):void
+			{
+				this._handler = value;
+			}
 		]]>
 	</fx:Script>			
 </os:IconButton>
