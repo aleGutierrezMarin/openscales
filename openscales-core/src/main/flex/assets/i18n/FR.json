@@ -158,7 +158,7 @@
    
    "editStyle.mainPanel.title" : "Edition de style",
    "editStyle.cancelButton.tooltip" : "Annuler",
-   "editStyle.defaultButton.tooltip" : "Default",
+   "editStyle.defaultButton.tooltip" : "Défaut",
    "editStyle.stylePicking.tooltip" : "Pipette",
    "editStyle.stylePainting.tooltip" : "Pot de Peinture",
    "editStyle.pointStyleEdition.dropDownMode" : "Icone :",
