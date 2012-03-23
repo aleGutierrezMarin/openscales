@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openscales</groupId>
+	<artifactId>openscales</artifactId>
+	<version>2.1.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>OpenScales</name>
+	<description>OpenScales is a RIA mapping framework natively designed to allow you to build mapping RIA (Rich Internet Applications) easily</description>
+	
+	<!-- Commented because of http://jira.codehaus.org/browse/MSITE-159
+	<url>http://openscales.org/</url>-->
+	
+	<properties>
+		<flex.sdk.version>4.1.0.16076</flex.sdk.version>
+		<flexmojos.version>4.0-RC2</flexmojos.version>
+		<flex.player.version.major>10</flex.player.version.major>
+		<flex.player.version.minor>0</flex.player.version.minor>
+		<flex.player.version.revision>0</flex.player.version.revision>
+		<flexpmd.version>1.2</flexpmd.version>
+        <sonar.language>flex</sonar.language>
+        <sonar.dynamicanalysis>reuseReports</sonar.dynamicanalysis>
+        <sonar.surefire.reportspath>target\surefire-reports</sonar.surefire.reportspath>
+        <sonar.skippedModules>openscales-core-flash-10.1,openscales-as-examples,openscales-fx-examples,openscales-viewer</sonar.skippedModules>
+		<env>local</env>
+	</properties>
+	<profiles>
+		<profile>
+			<id>env-local</id> 
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>env</name> 
+					<value>local</value>
+				</property>
+			</activation>
+			<properties>
+				<mvn.site>file:///tmp</mvn.site>
+				<openscales.host>openscales.org</openscales.host>
+			</properties>
+		</profile>
+		<profile>
+			<id>env-dev</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
+			<properties>
+				<mvn.site>file:///WEBS/pht/openscales.org/docs/mvn-site</mvn.site>
+				<openscales.host>localhost</openscales.host>
+			</properties>
+		</profile>
+	</profiles>
+	<modules>
+        <module>openscales-proj4as</module>
+		<module>openscales-geometry</module>
+		<module>openscales-core</module>
+		<module>openscales-core-flash-10.1</module>
+		<module>openscales-as-examples</module>
+		<module>openscales-fx-examples</module>
+		<module>openscales-fx</module>
+		<module>openscales-viewer</module>
+        <module>openscales-iipimage</module>
+	</modules>
+	<issueManagement>
+		<system>Bitbucket Issue management</system>
+		<url>http://bitbucket.org/gis/openscales/issues</url>
+	</issueManagement>
+	<inceptionYear>2009</inceptionYear>
+	<mailingLists>
+		<mailingList>
+			<name>OpenScales developer group</name>
+			<subscribe>openscales-dev@googlegroups.com</subscribe>
+			<unsubscribe>openscales-dev-unsubscribe@googlegroups.com</unsubscribe>
+			<post>openscales-dev@googlegroups.com</post>
+			<archive>http://groups.google.com/group/openscales-dev</archive>
+		</mailingList>
+	</mailingLists>
+	<developers>
+		<developer>
+			<id>bouiaw</id>
+			<name>Sébastien Deleuze</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>aba</id>
+			<name>Aurélien Barbier-Accary</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>romaric</id>
+			<name>Romaric Pascal</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>scottpez</id>
+			<name>Scott Pezanowski</name>
+			<organization>The GeoVISTA Center, Department of Geography, The Pennsylvania State University</organization>
+			<organizationUrl>http://www.geovista.psu.edu/</organizationUrl>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>mauri</id>
+			<name>Mauricio Miranda</name>
+			<organization>Xoomcode</organization>
+			<organizationUrl>http://www.xoomcode.com/</organizationUrl>
+			<timezone>-3</timezone>
+		</developer>
+		<developer>
+			<id>fpanettieri</id>
+			<name>Fabio Panettieri</name>
+			<organization>Xoomcode</organization>
+			<organizationUrl>http://www.xoomcode.com/</organizationUrl>
+			<timezone>-3</timezone>
+		</developer>
+		<developer>
+			<id>thibautm</id>
+			<name>Thibaut Muller</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>jeremiep</id>
+			<name>Jérémie Perera</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>fcellier</id>
+			<name>Fabien Cellier</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>cash</id>
+			<name>Lionel Manata</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>dgrichard</id>
+			<name>Didier Richard</name>
+			<organization>IGN</organization>
+			<organizationUrl>http://www.ign.fr/</organizationUrl>
+			<timezone>-3</timezone>
+		</developer>
+		<developer>
+			<id>damiennda</id>
+			<name>Damien N'da</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>tswiejkowski</id>
+			<name>Thomas Swiejkowski</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>lplauzier</id>
+			<name>Louis-Philippe Lauzier</name>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>icio</id>
+			<name>Paul Scott</name>
+		</developer>
+		<developer>
+			<id>kc7bfi</id>
+			<name>David Robison</name>
+		</developer>
+		<developer>
+			<id>sjoerd</id>
+			<name>Sjoerd Brandsma</name>
+		</developer>
+		<developer>
+			<id>tmpo0</id>
+			<name>Tantchonta M'PO</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>slopez</id>
+			<name>Simon Lopez</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>jsebak</id>
+			<name>Jean-Sebastien Baklouti</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>mjourdain</id>
+			<name>Marine Jourdain</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+        <developer>
+			<id>mviry</id>
+			<name>Maxime Viry</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>xlaprete</id>
+			<name>Xavier Laprêté</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>mchoffat</id>
+			<name>Maxime Choffat</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>dlachiche</id>
+			<name>David Lachiche</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>mchoffat</id>
+			<name>Maxime Choffat</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>dlachiche</id>
+			<name>David LACHICHE</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+
+	</developers>
+	<scm>
+		<connection>scm:hg:https://bitbucket.org/gis/openscales</connection>
+		<url>http://bitbucket.org/gis/openscales/src/</url>
+	</scm>
+	<ciManagement>
+		<system>hudson</system>
+		<url>http://openscales.org/jenkins/job/openscales-2.0/</url>
+	</ciManagement>
+	<licenses>
+	 	<license>
+			<name>LGPL with some exceptions / clarifications</name>
+			<url>http://openscales.org/license.html</url>
+			<distribution>repo</distribution>
+		</license>
+ 	</licenses>
+	
+	<build>
+		<sourceDirectory>src/main/flex</sourceDirectory>
+		<testSourceDirectory>src/test/flex</testSourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>${flexmojos.version}</version>
+				<extensions>true</extensions>
+				<dependencies>
+		  			<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex.sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+				</dependencies>
+
+				<configuration>
+                    <coverage>true</coverage>
+                    <coverageOutputDirectory>target\site\cobertura</coverageOutputDirectory>
+                    <coverageReportFormat>
+                        <param>xml</param>
+					</coverageReportFormat>
+                    <testFailureIgnore>true</testFailureIgnore>
+					<targetPlayer>${flex.player.version.major}.${flex.player.version.minor}.${flex.player.version.revision}</targetPlayer>
+					<outputDirectory>${project.build.directory}/site/asdoc</outputDirectory>
+					<testTimeout>200000</testTimeout>
+					<excludeTestFiles> 
+                        <param>OpenScalesTest.as</param> 
+                    </excludeTestFiles> 
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.3.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>2.0.1</version>
+				<configuration>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flex.sdk.version}</version>
+			<type>pom</type>
+			<exclusions> 
+				<exclusion> 
+					<groupId>com.adobe.flex.framework</groupId> 
+					<artifactId>playerglobal</artifactId> 
+				</exclusion> 
+			</exclusions>
+		</dependency>
+		
+		<dependency> 
+			<groupId>com.adobe.flex.framework</groupId> 
+			<artifactId>playerglobal</artifactId> 
+			<version>${flex.sdk.version}</version>
+			<classifier>${flex.player.version.major}.${flex.player.version.minor}</classifier>
+			<type>swc</type> 
+		</dependency> 
+
+		
+		<dependency>
+			<groupId>com.adobe.flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>4.0-rc-1</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.4.3</version>
+			</plugin>
+		</plugins>
+  	</reporting>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>http://${openscales.host}/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>snapshot</id>
+			<url>http://${openscales.host}/nexus/content/groups/public-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<url>http://${openscales.host}/nexus/content/groups/public</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>snapshot</id>
+			<url>http://${openscales.host}/nexus/content/groups/public-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	 <distributionManagement>
+			<repository>
+				<id>openscales-repo</id>
+				<name>OpenScales Release repository</name>
+				<url>http://${openscales.host}/nexus/content/repositories/releases</url>
+			</repository>
+			<snapshotRepository>
+				<id>openscales-repo-snapshot</id>
+				<name>OpenScales Snapshot Repository</name>
+				<url>http://${openscales.host}/nexus/content/repositories/snapshots</url>
+			</snapshotRepository>
+			<site>
+					<id>openscales.org</id>
+					<url>${mvn.site}</url>
+			</site>
+	</distributionManagement>
+</project>
