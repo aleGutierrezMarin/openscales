@@ -793,7 +793,9 @@ package org.openscales.core.format
 			var keyLength:Number = keysArray.length;
 			for(i = 0; i < keyLength; ++i)
 			{
-				doc.appendChild(this.buildStyleNode(styleHashMap.getValue(keysArray[i])))
+				var style:XML = this.buildStyleNode(styleHashMap.getValue(keysArray[i]));
+				if (style)
+					doc.appendChild(style);
 			}
 			
 			//build the placemarks
@@ -1026,6 +1028,9 @@ package org.openscales.core.format
 			
 			//Save the style id
 			placemarkStyle.@id = style.name;
+			
+			if(!symbolizers)
+				return null;
 			
 			var styleNode:XML = null;
 			var symbLength:Number =symbolizers.length;
