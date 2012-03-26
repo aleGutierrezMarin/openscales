@@ -63,6 +63,7 @@
 		<module>openscales-fx</module>
 		<module>openscales-viewer</module>
         <module>openscales-iipimage</module>
+		<module>openscales-binder</module>
 	</modules>
 	<issueManagement>
 		<system>Bitbucket Issue management</system>
@@ -80,13 +81,6 @@
 	</mailingLists>
 	<developers>
 		<developer>
-			<id>bouiaw</id>
-			<name>Sébastien Deleuze</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
 			<id>aba</id>
 			<name>Aurélien Barbier-Accary</name>
 			<organization>Atos Worldline</organization>
@@ -94,50 +88,15 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>romaric</id>
-			<name>Romaric Pascal</name>
+			<id>ajard</id>
+			<name>Aurore Jard</name>
 			<organization>Atos Worldline</organization>
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>scottpez</id>
-			<name>Scott Pezanowski</name>
-			<organization>The GeoVISTA Center, Department of Geography, The Pennsylvania State University</organization>
-			<organizationUrl>http://www.geovista.psu.edu/</organizationUrl>
-			<timezone>-5</timezone>
-		</developer>
-		<developer>
-			<id>mauri</id>
-			<name>Mauricio Miranda</name>
-			<organization>Xoomcode</organization>
-			<organizationUrl>http://www.xoomcode.com/</organizationUrl>
-			<timezone>-3</timezone>
-		</developer>
-		<developer>
-			<id>fpanettieri</id>
-			<name>Fabio Panettieri</name>
-			<organization>Xoomcode</organization>
-			<organizationUrl>http://www.xoomcode.com/</organizationUrl>
-			<timezone>-3</timezone>
-		</developer>
-		<developer>
-			<id>thibautm</id>
-			<name>Thibaut Muller</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>jeremiep</id>
-			<name>Jérémie Perera</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>fcellier</id>
-			<name>Fabien Cellier</name>
+			<id>bouiaw</id>
+			<name>Sébastien Deleuze</name>
 			<organization>Atos Worldline</organization>
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>
@@ -150,13 +109,6 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>dgrichard</id>
-			<name>Didier Richard</name>
-			<organization>IGN</organization>
-			<organizationUrl>http://www.ign.fr/</organizationUrl>
-			<timezone>-3</timezone>
-		</developer>
-		<developer>
 			<id>damiennda</id>
 			<name>Damien N'da</name>
 			<organization>Atos Worldline</organization>
@@ -164,8 +116,68 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>tswiejkowski</id>
-			<name>Thomas Swiejkowski</name>
+			<id>dgrichard</id>
+			<name>Didier Richard</name>
+			<organization>IGN</organization>
+			<organizationUrl>http://www.ign.fr/</organizationUrl>
+			<timezone>-3</timezone>
+		</developer>
+		<developer>
+			<id>dlachiche</id>
+			<name>David Lachiche</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>fcellier</id>
+			<name>Fabien Cellier</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>fpanettieri</id>
+			<name>Fabio Panettieri</name>
+			<organization>Xoomcode</organization>
+			<organizationUrl>http://www.xoomcode.com/</organizationUrl>
+			<timezone>-3</timezone>
+		</developer>
+		<developer>
+			<id>htulipe</id>
+			<name>Hadrien Tulipe</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>icio</id>
+			<name>Paul Scott</name>
+		</developer>
+		<developer>
+			<id>javocale</id>
+			<name>Jean-Arnaud Vocale</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>jeremiep</id>
+			<name>Jérémie Perera</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>jlegrand</id>
+			<name>Jérémie Legrand</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>jsebak</id>
+			<name>Jean-Sebastien Baklouti</name>
 			<organization>Atos Worldline</organization>
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>
@@ -176,34 +188,19 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
-			<id>icio</id>
-			<name>Paul Scott</name>
-		</developer>
-		<developer>
 			<id>kc7bfi</id>
 			<name>David Robison</name>
 		</developer>
 		<developer>
-			<id>sjoerd</id>
-			<name>Sjoerd Brandsma</name>
+			<id>mauri</id>
+			<name>Mauricio Miranda</name>
+			<organization>Xoomcode</organization>
+			<organizationUrl>http://www.xoomcode.com/</organizationUrl>
+			<timezone>-3</timezone>
 		</developer>
 		<developer>
-			<id>tmpo0</id>
-			<name>Tantchonta M'PO</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>slopez</id>
-			<name>Simon Lopez</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>jsebak</id>
-			<name>Jean-Sebastien Baklouti</name>
+			<id>mchoffat</id>
+			<name>Maxime Choffat</name>
 			<organization>Atos Worldline</organization>
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>
@@ -223,41 +220,58 @@
 			<timezone>+1</timezone>
 		</developer>
 		<developer>
+			<id>romaric</id>
+			<name>Romaric Pascal</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>scottpez</id>
+			<name>Scott Pezanowski</name>
+			<organization>The GeoVISTA Center, Department of Geography, The Pennsylvania State University</organization>
+			<organizationUrl>http://www.geovista.psu.edu/</organizationUrl>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<id>sjoerd</id>
+			<name>Sjoerd Brandsma</name>
+		</developer>
+		<developer>
+			<id>slopez</id>
+			<name>Simon Lopez</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>thibautm</id>
+			<name>Thibaut Muller</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>tmpo0</id>
+			<name>Tantchonta M'PO</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>tswiejkowski</id>
+			<name>Thomas Swiejkowski</name>
+			<organization>Atos Worldline</organization>
+			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
 			<id>xlaprete</id>
 			<name>Xavier Laprêté</name>
 			<organization>Atos Worldline</organization>
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
-		<developer>
-			<id>mchoffat</id>
-			<name>Maxime Choffat</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>dlachiche</id>
-			<name>David Lachiche</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>mchoffat</id>
-			<name>Maxime Choffat</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-		<developer>
-			<id>dlachiche</id>
-			<name>David LACHICHE</name>
-			<organization>Atos Worldline</organization>
-			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
-			<timezone>+1</timezone>
-		</developer>
-
 	</developers>
 	<scm>
 		<connection>scm:hg:https://bitbucket.org/gis/openscales</connection>
@@ -265,7 +279,7 @@
 	</scm>
 	<ciManagement>
 		<system>hudson</system>
-		<url>http://openscales.org/jenkins/job/openscales-2.0/</url>
+		<url>http://openscales.org/jenkins/job/openscales-develop/url>
 	</ciManagement>
 	<licenses>
 	 	<license>
