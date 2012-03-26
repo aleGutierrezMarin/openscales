@@ -278,7 +278,7 @@
 		<url>http://bitbucket.org/gis/openscales/src/</url>
 	</scm>
 	<ciManagement>
-		<system>hudson</system>
+		<system>jenkins</system>
 		<url>http://openscales.org/jenkins/job/openscales-develop</url>
 	</ciManagement>
 	<licenses>
