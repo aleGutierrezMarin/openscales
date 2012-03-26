@@ -279,7 +279,7 @@
 	</scm>
 	<ciManagement>
 		<system>hudson</system>
-		<url>http://openscales.org/jenkins/job/openscales-develop/url>
+		<url>http://openscales.org/jenkins/job/openscales-develop</url>
 	</ciManagement>
 	<licenses>
 	 	<license>
