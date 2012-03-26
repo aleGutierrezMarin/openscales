@@ -472,10 +472,11 @@ package org.openscales.geometry.basetypes
 		/**
 		 * Reproject the current bounds in another projection
 		 * 
-		 * @param newProjection:String SRS code of the target projection
+		 * @param the target projection
 		 * @return the reprojected bounds
 		 */
-		public function reprojectTo(newProjection:ProjProjection):Bounds {
+		public function reprojectTo(projection:*):Bounds {
+			var newProjection:ProjProjection = ProjProjection.getProjProjection(projection);
 			if (newProjection == this._projection) {
 				return this;
 			}
