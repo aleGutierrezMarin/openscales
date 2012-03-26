@@ -57,14 +57,6 @@ package org.openscales.fx.control
 		public function set fxMap(value:FxMap):void
 		{
 			this._fxMap = value;
-			this.fxMap.addEventListener(FlexEvent.CREATION_COMPLETE, onFxMapCreationComplete);
-		}
-		
-		/**
-		 * Flex Map wrapper initialization
-		 */
-		protected function onFxMapCreationComplete(event:Event):void {
-			this.map = this._fxMap.map;
 		}
 		
 		/**

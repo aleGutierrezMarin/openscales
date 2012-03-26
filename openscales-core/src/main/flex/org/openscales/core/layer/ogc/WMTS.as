@@ -450,6 +450,7 @@ package org.openscales.core.layer.ogc
 		 * @inheritDoc
 		 */
 		override public function get maxExtent():Bounds {
+			if(super.maxExtent)return super.maxExtent;
 			if(this._tileProvider != null) {
 				var _maxExtent:Bounds = this._tileProvider.maxExtent;
 				if(_maxExtent!=null)

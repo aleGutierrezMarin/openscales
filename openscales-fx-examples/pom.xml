@@ -47,6 +47,12 @@
 			<version>${project.version}</version>
 			<type>swc</type>
 		</dependency>
+        <dependency>
+			<groupId>org.openscales</groupId>
+			<artifactId>openscales-iipimage</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+		</dependency>
 	</dependencies>
 	
 </project>

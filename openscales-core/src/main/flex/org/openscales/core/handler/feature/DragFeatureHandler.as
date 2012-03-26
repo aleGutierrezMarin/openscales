@@ -83,7 +83,7 @@
 				var feature:Feature;
 				if (event.target is TextField){
 					feature = (event.target as TextField).parent as Feature;
-				}else if(event.target.parent is CustomMarker)
+				}else if(event.target.parent is CustomMarker || event.target.parent is PointFeature)
 				{
 					feature = event.target.parent as Feature;
 				}
@@ -130,6 +130,8 @@
 			{
 				_stopPixel = new Pixel(_stopPixel.x + _offsetCenter.x, _stopPixel.y + _offsetCenter.y);
 				_featureCurrentlyDragged.stopDrag();
+				if (_featureCurrentlyDragged.originalStyle && !(this._featureCurrentlyDragged is PointFeature))
+					_featureCurrentlyDragged.style = _featureCurrentlyDragged.originalStyle;
 				updateFeature(_featureCurrentlyDragged);
 				_featureCurrentlyDragged.draw();
 				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,_featureCurrentlyDragged));

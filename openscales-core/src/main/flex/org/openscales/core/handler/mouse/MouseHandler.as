@@ -2,6 +2,7 @@ package org.openscales.core.handler.mouse
 {
 	import org.openscales.core.Map;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * This handler encapsulates all handlers that are mouse related and add them to the map.
@@ -93,6 +94,20 @@ package org.openscales.core.handler.mouse
 			
 			_zoomWheelEnabled = active;
 			_zoomBoxEnabled = active;
+			_clickHandler.doubleClick = this.onDoubleClick;
+		}
+		
+		
+		/**
+		 * Call back method for doubleclick events
+		 */ 
+		private function onDoubleClick(pixel:Pixel):void
+		{
+			// TODO refactor double click
+			// If the handler is configured to zoom on mouse position
+			if(this.map.mouseNavigationEnabled && this.map.doubleclickZoomEnabled){
+				this.map.zoomBy(0.5, new Pixel(this.map.mouseX, this.map.mouseY));
+			}
 		}
 		
 		/**

@@ -137,6 +137,8 @@ package org.openscales.core.handler.feature.draw
 		 */
 		private var _selectionAreaFillOpacity:Number = 0.33;
 		
+		private var _eventRegistered:Boolean = false;
+		
 		/**
 		 * 
 		 */		
@@ -456,6 +458,33 @@ package org.openscales.core.handler.feature.draw
 				this.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
 				this.map.addEventListener(MapEvent.ACTIVATE_HANDLER, this.onActivateHandler);
 				this.map.addEventListener(MapEvent.DISACTIVATE_HANDLER, this.onDisactivateHandler);
+				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this._eventRegistered = true;
+			}
+		}
+		
+		public function onMouseDown(evt:MouseEvent):void
+		{
+			if (this._eventRegistered)
+			{
+				if(this.map)
+				{
+					this.map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
+					this.map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
+				}
+			}
+		}
+		
+		public function onMouseUp(evt:MouseEvent):void
+		{
+			if (this._eventRegistered)
+			{
+				if(this.map)
+				{
+					this.map.addEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
+					this.map.addEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
+				}
 			}
 		}
 		
@@ -486,7 +515,7 @@ package org.openscales.core.handler.feature.draw
 				for(var i:* in this.layers) {
 					if(layers[i].name == evt.feature.layer.name){
 						//fix bug : must be changed
-						//this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
+						this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
 						return;
 					}
 				}

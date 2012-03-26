@@ -56,6 +56,7 @@
 			public static var DRAWADD:String="add";
 			public static var DRAWIMPORT:String="import";
 			public static var DRAWEXPORT:String="export";
+			public static var EDITSTYLE:String="style";
 			
 			[Embed(source="/assets/images/widgetHide.png")]
 			protected const BTN_MINIMIZE:Class;
@@ -306,6 +307,8 @@
 						myComponent = this.manageAttributes;break;
 					case DRAWEXPORT:
 						myComponent = this.exportFeature;break;
+					case EDITSTYLE:
+						myComponent = this.editStyle;break;
 				}
 				
 				return myComponent;
@@ -529,11 +532,12 @@
 			<s:layout>
 				<s:HorizontalLayout gap="0"/>
 			</s:layout>
-			<drawing:DrawLabel id="drawLabel" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:DrawPath id="drawPath" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
-			<drawing:DrawShape id="drawShape" map="{this._layer.map}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawLabel id="drawLabel" map="{this._layer.map}"  target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPoint id="drawPoint" map="{this._layer.map}" style="{this._drawingToolbar.pointStyle}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPath id="drawPath" map="{this._layer.map}" style="{this._drawingToolbar.pathStyle}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawPolygon id="drawPolygon" map="{this._layer.map}" style="{this._drawingToolbar.polygonStyle}" target="{this._layer as VectorLayer}"  />
+			<drawing:DrawShape id="drawShape" map="{this._layer.map}" style="{this._drawingToolbar.shapeStyle}" target="{this._layer as VectorLayer}"  />
+			<drawing:EditStyle id="editStyle" map="{this._layer.map}" defaultLineStyle="{this._drawingToolbar.pathStyle}" defaultPointStyle="{this._drawingToolbar.pointStyle}" defaultPolygonStyle="{this._drawingToolbar.polygonStyle}" target="{this._layer as VectorLayer}" />
 		</s:SkinnableContainer>
 		
 		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">

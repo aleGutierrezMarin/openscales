@@ -12,12 +12,14 @@ package org.openscales.fx
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.control.Control;
 	import org.openscales.core.control.IControl;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.fx.configuration.FxConfiguration;
+	import org.openscales.fx.control.Control;
 	import org.openscales.fx.control.FxControl;
 	import org.openscales.fx.control.FxOverviewMap;
 	import org.openscales.fx.handler.FxHandler;
@@ -317,6 +319,8 @@ package org.openscales.fx
 						(element as FxControl).control.map = this._map;
 					} else if (element is IControl) {
 						(element as IControl).map = this._map;
+						if(element is org.openscales.fx.control.Control)
+							(element as org.openscales.fx.control.Control).fxMap = this;
 					} else if (element is FxHandler) {
 						(element as FxHandler).handler.map = this._map;
 					} else if (element is IHandler) {
@@ -532,6 +536,7 @@ package org.openscales.fx
 			else{
 				this._map.addControl(control,attach);
 			}
+			if(control is org.openscales.fx.control.Control)(control as org.openscales.fx.control.Control).fxMap = this;
 		}
 		
 		/**
@@ -578,6 +583,48 @@ package org.openscales.fx
 					this.removeElement(control as IVisualElement);
 				}
 				this._map.removeControl(control);
+			}
+		}
+		
+		/**
+		 * This method will hide all visual controls of the map
+		 * 
+		 * <p>Control won't be desactivated, their <code>visible</code> property will only be set to false</p>
+		 * 
+		 * <p>To revert the method effect, use <code>showAllControls</code></p>
+		 */ 
+		public function hideAllControls():void{
+			if(_map)_map.hideAllControls();
+			var i:int = this.numElements;
+			var elt:IVisualElement;
+			for(i;i>0;--i) {
+				elt = getElementAt(i-1);
+				if(elt is org.openscales.core.control.Control)
+					(elt as org.openscales.core.control.Control).visible = false;
+				else if(elt is FxControl)
+					(elt as FxControl).visible = false;
+				else if(elt is org.openscales.fx.control.Control)
+					(elt as org.openscales.fx.control.Control).visible = false;
+			}
+		}
+		
+		/**
+		 * This method will show all visual controls of the map
+		 * 
+		 * <p>For each control, its <code>visible</code> property will be set to true</p>
+		 */ 
+		public function showAllControls():void{
+			if(_map)_map.showAllControls();
+			var i:int = this.numElements;
+			var elt:IVisualElement;
+			for(i;i>0;--i) {
+				elt = getElementAt(i-1);
+				if(elt is org.openscales.core.control.Control)
+					(elt as org.openscales.core.control.Control).visible = true;
+				else if(elt is FxControl)
+					(elt as FxControl).visible = true;
+				else if(elt is org.openscales.fx.control.Control)
+					(elt as org.openscales.fx.control.Control).visible = true;
 			}
 		}
 		

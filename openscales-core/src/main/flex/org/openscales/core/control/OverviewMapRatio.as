@@ -33,7 +33,7 @@ package org.openscales.core.control
 		 * @private
 		 * Current map of the overvew
 		 */
-		private var _overviewMap:Map;
+		protected var _overviewMap:Map;
 		
 		/**
 		 * @private
@@ -47,14 +47,20 @@ package org.openscales.core.control
 		 * Icon that will be displayed at the center of the overview map
 		 * to show the location
 		 */
-		private var _centerIcon:Class = null;
+		protected var _centerIcon:Class = null;
 		
 		/**
 		 * @private
 		 * Shape that will be displayed at the center of the overview map
 		 * to show the location if no icon is given
 		 */
-		private var _centerPoint:Shape;
+		protected var _centerPoint:Shape;
+		
+		/**
+		 * @private
+		 * The bitmap of the center of the overviewMap
+		 */
+		protected var _centerBitmap:Bitmap;
 		
 		/**
 		 * Constructor of the overview map
@@ -110,18 +116,18 @@ package org.openscales.core.control
 		/**
 		 * Draw the center point
 		 */
-		private function drawCenter():void
+		protected function drawCenter():void
 		{
 			if (this._centerIcon) {
 				// Use icon
 				if (this._centerPoint) {
-					this._overviewMap.removeChild(this._centerPoint);
+					this.removeChild(this._centerPoint);
 					this._centerPoint = null;
 				}
-				var bitmap:Bitmap = new _centerIcon;
-				bitmap.x = this.width/2 - bitmap.width/2;
-				bitmap.y = this.height/2 - bitmap.height/2;
-				this._overviewMap.addChild(bitmap);
+				_centerBitmap = new _centerIcon;
+				_centerBitmap.x = this.width/2 - _centerBitmap.width/2;
+				_centerBitmap.y = this.height/2 - _centerBitmap.height/2;
+				this.addChild(_centerBitmap);
 			}
 			else {
 				// Draw cross shape
@@ -183,7 +189,7 @@ package org.openscales.core.control
 		 * Callback to recompute the zoom level of the overview when the zoom level of the map
 		 * has changed 
 		 */
-		private function mapChanged(event:Event = null):void
+		protected function mapChanged(event:Event = null):void
 		{
 			//computeResolutionLevel();
 			if (this.map != null)
@@ -212,7 +218,7 @@ package org.openscales.core.control
 		 * If the new center is out of the max extend of the base map the overview map center is not
 		 * changed
 		 */
-		private function onMouseDown(event:MouseEvent):void {
+		protected function onMouseDown(event:MouseEvent):void {
 			var mousePosition:Pixel =  new Pixel(this._overviewMap.mouseX, this._overviewMap.mouseY);
 			var newCenter:Location = this._overviewMap.getLocationFromMapPx(mousePosition);
 			var oldCenter:Location = this._overviewMap.center;

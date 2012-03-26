@@ -24,6 +24,7 @@
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.feature.LabelFeature;
+			import org.openscales.core.handler.mouse.ClickHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
@@ -52,6 +53,7 @@
 
 			private var _feature:LabelFeature;
 			private var _drawingMode:String;
+			private var _clickHandler:ClickHandler = new ClickHandler(null, true);
 			
 			/**
 			 * Indicates for Drawing mode
@@ -111,17 +113,17 @@
 				this._map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				this._map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				this._map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
-				this._map.addEventListener(MapEvent.MOUSE_CLICK, this.showPopUp);
+				//this._map.addEventListener(MapEvent.MOUSE_CLICK, this.showPopUp);
 			}
 			
 			/**
 			 * To create a LabelFeature
 			 */
-			private function showPopUp(event:Event):void{
+			private function showPopUp(px:Pixel):void{
 				
 				if(this._drawingActivated)
 				{
-					var pixel:Pixel = new Pixel(this._map.mouseX, this._map.mouseY);
+					var pixel:Pixel = px; //new Pixel(this._map.mouseX, this._map.mouseY);
 					var labelLocation:Location = this._map.getLocationFromMapPx(pixel);
 					var pt:LabelPoint = new LabelPoint(null, labelLocation.x, labelLocation.y);
 					pt.projection = this.map.projection;
@@ -208,6 +210,9 @@
 			 */
 			public function activate():void{
 				
+				_clickHandler.map = this.map;
+				_clickHandler.active = true;
+				_clickHandler.click = this.showPopUp;
 				this._drawingActivated = true;
 				_alpha = 1;
 				this._map.doubleclickZoomEnabled = false;
@@ -215,6 +220,7 @@
 			public function disactivate():void{
 				
 				this._drawingActivated = false;
+				_clickHandler.active = false;
 				_alpha = 0.3;
 			}
 			

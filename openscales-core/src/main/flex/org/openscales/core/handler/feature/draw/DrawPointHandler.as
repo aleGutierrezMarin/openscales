@@ -8,6 +8,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.MultiPoint;
@@ -36,6 +37,8 @@ package org.openscales.core.handler.feature.draw
 		 */		
 		private var id:Number = 0;
 		
+		private var _clickHandler:ClickHandler = new ClickHandler(null, true);
+		
 		/**
 		 * 
 		 */
@@ -49,20 +52,24 @@ package org.openscales.core.handler.feature.draw
 
 		override protected function registerListeners():void{
 			if (this.map) {
-				this.map.addEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
+				//this.map.addEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
+				_clickHandler.map = this.map;
+				_clickHandler.active = true;
+				_clickHandler.click = this.drawPoint;
 			}
 		}
 
 		override protected function unregisterListeners():void{
 			if (this.map) {
-				this.map.removeEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
+				//this.map.removeEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
+				_clickHandler.active = false;
 			}
 		}
 
 		/**
 		 * Create a point and draw it
 		 */		
-		protected function drawPoint(event:Event):void {
+		protected function drawPoint(px:Pixel = null):void {
 			//We draw the point
 			if (drawLayer != null){
 				
@@ -73,7 +80,7 @@ package org.openscales.core.handler.feature.draw
 				//var style:Style = Style.getDefinedPointStyle(WellKnownMarker.WKN_TRIANGLE,0);
 			
 				//var pixel:Pixel = new Pixel(drawLayer.mouseX ,drawLayer.mouseY);
-				var pixel:Pixel = new Pixel(this.map.mouseX,this.map.mouseY );
+				var pixel:Pixel = px;//new Pixel(this.map.mouseX,this.map.mouseY );
 				var lonlat:Location = this.map.getLocationFromMapPx(pixel); //this.map.getLocationFromLayerPx(pixel);
 				var feature:Feature;
 				

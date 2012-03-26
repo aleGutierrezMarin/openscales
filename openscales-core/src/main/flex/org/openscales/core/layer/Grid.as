@@ -231,36 +231,36 @@ package org.openscales.core.layer
 					if (NewLayerBounds == null)
 						return;
 					var intersectBounds:Bounds = NewLayerBounds.getIntersection(bmpBounds);
-					if (intersectBounds == null)
-							return;
-					
-					intersectBounds.reprojectTo(this.projection);
-					var mapWidth:Number = this.map.width;
-					var mapHeight:Number = this.map.height;
-					
-					if (mapWidth * mapHeight >= 16777216)
-					{
-						mapWidth = mapHeight = 4095;
-					}
-					if(mapWidth == 0)
-					{
-						mapWidth = 1;
-					}
-					if (mapHeight == 0)
-					{
-						mapHeight = 1;
-					}
 					if (intersectBounds != null)
 					{
-						BMD = new BitmapData(mapWidth , mapHeight , true, this.map.backTileColor);
-						BMD.draw(this, null, null, null, null, true);
-						_backGrid[0][0] = new Bitmap(BMD, PixelSnapping.NEVER, true);
-						_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
-						_backGrid[0][0].x = this.x;
-						_backGrid[0][0].y = this.y;
-					}else
-					{
-						_backGrid[0][0] = null;
+						intersectBounds.reprojectTo(this.projection);
+						var mapWidth:Number = this.map.width;
+						var mapHeight:Number = this.map.height;
+						
+						if (mapWidth * mapHeight >= 16777216)
+						{
+							mapWidth = mapHeight = 4095;
+						}
+						if(mapWidth == 0)
+						{
+							mapWidth = 1;
+						}
+						if (mapHeight == 0)
+						{
+							mapHeight = 1;
+						}
+						if (intersectBounds != null)
+						{
+							BMD = new BitmapData(mapWidth , mapHeight , true, this.map.backTileColor);
+							BMD.draw(this, null, null, null, null, true);
+							_backGrid[0][0] = new Bitmap(BMD, PixelSnapping.NEVER, true);
+							_backGrid[0][0].scaleX = _backGrid[0][0].scaleY = scale;
+							_backGrid[0][0].x = this.x;
+							_backGrid[0][0].y = this.y;
+						}else
+						{
+							_backGrid[0][0] = null;
+						}
 					}
 				}
 				this.clear();
@@ -697,11 +697,14 @@ package org.openscales.core.layer
 				var bottomLeftTile:ImageTile = this._grid[bottom][0];
 				var right:int = this._grid[0].length - 1; 
 				var topRightTile:ImageTile = this._grid[0][right];
-				return new Bounds(bottomLeftTile.bounds.left, 
-					bottomLeftTile.bounds.bottom,
-					topRightTile.bounds.right, 
-					topRightTile.bounds.top,
-					this.projection);
+				if (bottomLeftTile.bounds)
+				{
+					return new Bounds(bottomLeftTile.bounds.left, 
+						bottomLeftTile.bounds.bottom,
+						topRightTile.bounds.right, 
+						topRightTile.bounds.top,
+						this.projection);
+				}
 			}
 			return null;
 		}

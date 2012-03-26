@@ -1,6 +1,9 @@
 package org.openscales.core
 {
 	import org.flexunit.Assert;
+	import org.flexunit.asserts.assertFalse;
+	import org.flexunit.asserts.assertTrue;
+	import org.openscales.core.control.Control;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Size;
@@ -9,6 +12,48 @@ package org.openscales.core
 	public class MapTest
 	{
 		public static const EPSILON:Number = 0.01;
+		
+		/**
+		 * This test asserts that the hideAllControls method works properly
+		 */ 
+		[Test]
+		public function shouldHideAllControls():void{
+			var map:Map = new Map();
+			var ctrl1:Control = new Control();
+			var ctrl2:Control = new Control();
+			ctrl1.visible = true;
+			ctrl2.visible = true;
+			
+			map.addControl(ctrl1,true);// Test with attaching
+			map.addControl(ctrl2,false); // Test without attaching
+			
+			map.hideAllControls();
+			
+			assertFalse("Control 1 should not be visible", ctrl1.visible);
+			assertFalse("Control 2 should not be visible", ctrl2.visible);
+			
+		}
+		
+		/**
+		 * This test asserts that the showAllControls method works properly
+		 */
+		[Test]
+		public function shouldShowAllControls():void{
+			var map:Map = new Map();
+			var ctrl1:Control = new Control();
+			var ctrl2:Control = new Control();
+			ctrl1.visible = false;
+			ctrl2.visible = false;
+			
+			map.addControl(ctrl1,true);// Test with attaching
+			map.addControl(ctrl2,false);// Test without attaching
+			
+			map.showAllControls();
+			
+			assertTrue("Control 1 should be visible", ctrl1.visible);
+			assertTrue("Control 2 should be visible", ctrl2.visible);
+			
+		}
 		
 		[Test]
 		public function testEmptyNewMap( ) : void {
@@ -88,7 +133,7 @@ package org.openscales.core
 			
 			Assert.assertTrue("incorrect at least lon or lat should be at given extent", (isLon || isLat));
 			
-		}
+		}		
 		
 		/**
 		 * Should not zoom to a given extent that is not contain by the map max extent

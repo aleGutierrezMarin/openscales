@@ -69,13 +69,9 @@ package org.openscales.core.layer {
 		public static const DEFAULT_NUM_ZOOM_LEVELS:uint = 18;
 		public static const DEFAULT_PROJECTION:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 		
-		
-		public static function get DEFAULT_MAXEXTENT():Bounds {
-			return new Bounds(-180, -90, 180, 90, Layer.DEFAULT_PROJECTION);
-		}
-		
 		private var _identifier:String;
 		private var _displayedName:String;
+		private var _abstract:String;
 		private var _map:Map = null;
 		protected var _projection:ProjProjection = null;
 		private var _availableProjections:Vector.<String> = null;
@@ -751,7 +747,7 @@ package org.openscales.core.layer {
 			} else if (value is Bounds) {
 				bounds = value as Bounds;
 			}else return;
-			if ((bounds.projection != this.projection) && (this.projection))
+			if ((this.projection) && bounds.projection != this.projection)
 			{
 				/*if (this.projection.srsCode == "EPSG:2154" || this.projection.srsCode == "IGNF:LAMB93")
 					bounds = bounds.reprojectTo(this.projection);
@@ -1138,6 +1134,24 @@ package org.openscales.core.layer {
 		public function set displayedName(value:String):void
 		{
 			_displayedName = value;
+		}
+
+		/**
+		 * Description (in plain text) of this layer
+		 * 
+		 * @defaut null
+		 */
+		public function get abstract():String
+		{
+			return _abstract;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set abstract(value:String):void
+		{
+			_abstract = value;
 		}
 
 

@@ -58,6 +58,7 @@ package org.openscales.core.feature {
 		private var _state:String = null;
 		private var _style:Style = null;
 		private var _originalStyle:Style = null;
+		private var _selectable:Boolean = true;
 		
 		//GAB
 		private var _dateCreation:String="";
@@ -100,7 +101,19 @@ package org.openscales.core.feature {
 		 * Is this feature selected ?
 		 */
 		private var _selected:Boolean = false;
-
+		
+		static public function compatibleFeatures(features:Vector.<Feature>):Boolean {
+			if ((!features) || (features.length == 0) || (!features[0]) || (!(features[0] is Feature))) {
+				return false;
+			}
+			var firstFeatureClassName:String = getQualifiedClassName(features[0]);
+			for each (var feature:Feature in features) {
+				if ((!(feature is Feature)) || (getQualifiedClassName(feature) != firstFeatureClassName)) {
+					return false;
+				}
+			}
+			return true;
+		}
 
 		/**
 		 * Constructor class
@@ -139,23 +152,8 @@ package org.openscales.core.feature {
 		}
 
 		/**
-		 * Events Management
-		 *
+		 * Register all the events used in this class
 		 */
-		public function onMouseHover(pevt:MouseEvent):void {
-			this.buttonMode = true;
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_OVER, this));
-		}
-
-		public function onMouseMove(pevt:MouseEvent):void {
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEMOVE, this));
-		}
-
-		public function onMouseOut(pevt:MouseEvent):void {
-			this.buttonMode = false;
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_OUT, this));
-		}
-
 		public function registerListeners():void {
 			this.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseHover);
 			this.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
@@ -166,6 +164,9 @@ package org.openscales.core.feature {
 			this.addEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
 		}
 
+		/**
+		 * Unregister all the events used in this class
+		 */
 		public function unregisterListeners():void {
 			this.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseHover);
 			this.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
@@ -174,22 +175,6 @@ package org.openscales.core.feature {
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 			this.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 			this.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
-		}
-
-		public function get attributes():Object {
-			return this._attributes;
-		}
-
-		public function set attributes(value:Object):void {
-			this._attributes = value;
-		}
-
-		public function get data():Object {
-			return this._data;
-		}
-
-		public function set data(value:Object):void {
-			this._data = value;
 		}
 
 		/**
@@ -226,6 +211,7 @@ package org.openscales.core.feature {
 		}
 
 		/**
+		 * Draw the feature
 		 * The function allow to customize the display of this feature.
 		 * Inherited Feature classes usually override this function.
 		 */
@@ -268,42 +254,7 @@ package org.openscales.core.feature {
 				}
 			}
 		}
-
-		public function get layer():VectorLayer {
-			return this._layer;
-		}
-
-		public function set layer(value:VectorLayer):void {
-			this._layer = value;
-			if (this._layer != null) {
-				registerListeners();
-			}
-		}
-
-		public function get lonlat():Location {
-			var value:Location = null;
-			if (this._geometry != null) {
-				value = this._geometry.bounds.center;   
-			}
-			return value;
-		}
-
-		public function onMouseClick(pevt:MouseEvent):void {
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_CLICK, this, pevt.ctrlKey));
-		}
-
-		public function onMouseDoubleClick(pevt:MouseEvent):void {
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DOUBLECLICK, this));
-		}
-
-		public function onMouseDown(pevt:MouseEvent):void {
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEDOWN, this));
-		}
-
-		public function onMouseUp(pevt:MouseEvent):void {
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
-		}
-
+		
 		/**
 		 * Determines if the feature is visible on the screen
 		 */
@@ -315,29 +266,7 @@ package org.openscales.core.feature {
 			}
 			return onScreen;
 		}
-
-		public function get selected():Boolean {
-			return this._selected;
-		}
-
-		public function set selected(value:Boolean):void {
-			this._selected = value;
-		}
-
-		public function get top():Number {
-			if (this._layer)
-				return this._layer.extent.top / this._layer.map.resolution.value;
-			else
-				return NaN;
-		}
-
-		public function get left():Number {
-			if (this.layer)
-				return -this._layer.extent.left / this._layer.map.resolution.value;
-			else
-				return NaN;
-		}
-
+		
 		/**
 		 * Determines if the feature is placed at the given point with a certain tolerance (or not).
 		 *
@@ -351,6 +280,203 @@ package org.openscales.core.feature {
 				atPoint = this._geometry.atPoint(lonlat, toleranceLon, toleranceLat);
 			}
 			return atPoint;
+		}
+		
+		/**
+		 * Method that will check the rules of the associated style to check with ones must be rendered
+		 */
+		protected function renderRule(rule:Rule):void {
+			var symbolizer:Symbolizer;
+			var symbolizers:Array;
+			var j:uint;
+			var symbolizersCount:uint = rule.symbolizers.length;
+			for (j = 0; j < symbolizersCount; ++j) {
+				symbolizer = rule.symbolizers[j];
+				if (this.acceptSymbolizer(symbolizer)) {
+					symbolizer.configureGraphics(this.graphics, this);
+					this.executeDrawing(symbolizer);
+				}
+			}
+		}
+		
+		/**
+		 * This method return true if the given symbolizer is accepted for the current feature.
+		 * This method will be called while rendering the feature.
+		 * Override this method in your feature to specify wich symbolizer is supported 
+		 */
+		protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean {
+			return true;
+		}
+		
+		/**
+		 * This method is the method that will be called to draw your feature with the given symbolizer.
+		 * It will be called on time per symbolizer supported by the feature.
+		 * To determine supported symbolizer for a feature see acceptSymbolizer method
+		 */
+		protected function executeDrawing(symbolizer:Symbolizer):void {
+		}
+
+		
+		// Callbacks
+		
+		/**
+		 * Callback that dispatch the FEATURE_OVER event
+		 */
+		public function onMouseHover(pevt:MouseEvent):void {
+			this.buttonMode = true;
+			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_OVER, this));
+		}
+		
+		/**
+		 * Callback that dispatch the FEATURE_MOUSEMOVE event
+		 */
+		public function onMouseMove(pevt:MouseEvent):void {
+			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEMOVE, this));
+		}
+		
+		/**
+		 * Callback that dispatch the FEATURE_OUT event
+		 */
+		public function onMouseOut(pevt:MouseEvent):void {
+			this.buttonMode = false;
+			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_OUT, this));
+		}
+
+		/**
+		 * Callback that dispatch the FEATURE_CLICK event
+		 */
+		public function onMouseClick(pevt:MouseEvent):void {
+			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_CLICK, this, pevt.ctrlKey));
+		}
+
+		/**
+		 * Callback that dispatch the FEATURE_DOUBLECLICK event
+		 */
+		public function onMouseDoubleClick(pevt:MouseEvent):void {
+			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DOUBLECLICK, this));
+		}
+
+		/**
+		 * Callback that dispatch the FEATURE_MOUSEDOWN event
+		 */
+		public function onMouseDown(pevt:MouseEvent):void {
+			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEDOWN, this));
+		}
+
+		/**
+		 * Callback that dispatch the FEATURE_MOUSEUP event
+		 */
+		public function onMouseUp(pevt:MouseEvent):void {
+			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
+		}
+		
+		// Getter Setters
+		
+		/**
+		 * Return if the feature is selectable or not
+		 */
+		public function get selectable():Boolean
+		{
+			return this._selectable;	
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set selectable(value:Boolean):void
+		{
+			this._selectable = value;
+		}
+		
+		/**
+		 * Attributes usually generated from data parsing or user input
+		 */
+		public function get attributes():Object {
+			return this._attributes;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set attributes(value:Object):void {
+			this._attributes = value;
+		}
+		
+		/**
+		 * Raw data that represent this feature. For exemple, this could contains the
+		 * GML data for WFS features
+		 */
+		public function get data():Object {
+			return this._data;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set data(value:Object):void {
+			this._data = value;
+		}
+
+		/**
+		 * The layer that contain the feature
+		 */
+		public function get layer():VectorLayer {
+			return this._layer;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set layer(value:VectorLayer):void {
+			this._layer = value;
+			if (this._layer != null) {
+				registerListeners();
+			}
+		}
+		
+		/**
+		 * Return the Location at the center of the feature
+		 */
+		public function get lonlat():Location {
+			var value:Location = null;
+			if (this._geometry != null) {
+				value = this._geometry.bounds.center;   
+			}
+			return value;
+		}
+
+		/**
+		 * Boolean that says if the feature is currently selected
+		 */
+		public function get selected():Boolean {
+			return this._selected;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set selected(value:Boolean):void {
+			this._selected = value;
+		}
+
+		/**
+		 * The number of pixels between the feature and the top of it's container
+		 */
+		public function get top():Number {
+			if (this._layer)
+				return this._layer.extent.top / this._layer.map.resolution.value;
+			else
+				return NaN;
+		}
+
+		/**
+		 * The number of pixels between the feature and the left side of it's container
+		 */
+		public function get left():Number {
+			if (this.layer)
+				return -this._layer.extent.left / this._layer.map.resolution.value;
+			else
+				return NaN;
 		}
 
 		/**
@@ -370,8 +496,10 @@ package org.openscales.core.feature {
 			this._originGeometry = this._geometry.clone();
 		}
 		
-		
-
+		/**
+		 * The WFST state of the feature. 
+		 * Used for WFST layers.
+		 */
 		public function get state():String {
 			if(this._state ==  null){
 			  return State.UNKNOWN
@@ -379,6 +507,9 @@ package org.openscales.core.feature {
 			return this._state;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set state(value:String):void {
 			if (value == State.UPDATE) {
 				switch (this.state) {
@@ -394,9 +525,6 @@ package org.openscales.core.feature {
 					case State.INSERT:
 						break;
 				}
-				
-				
-				
 			} else if (value == State.INSERT) {
 				switch (this.state) {
 					case State.UNKNOWN:
@@ -409,7 +537,6 @@ package org.openscales.core.feature {
 						
 						break;
 				}
-				
 			} else if (value == State.DELETE) {
 				switch (this.state) {
 					case State.INSERT:
@@ -424,55 +551,44 @@ package org.openscales.core.feature {
 						}
 						break;
 				}
-				
-				
-				
 			} else if (value == State.UNKNOWN) {
 				this._state = value;
 			}
-			
-			
 		}
 
+		/**
+		 * The style that will be applied to the feature.
+		 * A style is a set of rules. 
+		 * A Rule is used to do conditional styling based on feature parameters
+		 * Each rule as several symbolizers.
+		 * A symbolizer is designed for a feature type eg : PointSymbolizer and says precisely 
+		 * how to draw the feature
+		 */
 		public function get style():Style {
 			return this._style;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set style(value:Style):void {
 			this._style = value;
 		}
 
+		/**
+		 * A bufferized style.
+		 * Used to handle select style a apply back to proper style
+		 */
 		public function get originalStyle():Style {
 			return this._originalStyle;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set originalStyle(value:Style):void {
 			this._originalStyle = value;
 		}
-
-		protected function renderRule(rule:Rule):void {
-			var symbolizer:Symbolizer;
-			var symbolizers:Array;
-			var j:uint;
-			var symbolizersCount:uint = rule.symbolizers.length;
-			for (j = 0; j < symbolizersCount; ++j) {
-				symbolizer = rule.symbolizers[j];
-				if (this.acceptSymbolizer(symbolizer)) {
-					symbolizer.configureGraphics(this.graphics, this);
-					this.executeDrawing(symbolizer);
-				}
-			}
-		}
-
-		protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean {
-			return true;
-		}
-
-		protected function executeDrawing(symbolizer:Symbolizer):void {
-		}
-
-		
-
 
 		/**
 		 * To know if the vector feature is editable when its
@@ -490,9 +606,9 @@ package org.openscales.core.feature {
 
 		}
 		
-		public function set dateCreation(value:String):void{
-			this._dateCreation = value;
-		}
+		/**
+		 * Creation date of the feature
+		 */
 		public function get dateCreation():String{
 			var _value:String;
 			if (this._dateCreation == ""){
@@ -506,18 +622,12 @@ package org.openscales.core.feature {
 			
 			return _value.replace("T", " ");
 		}
-
-		static public function compatibleFeatures(features:Vector.<Feature>):Boolean {
-			if ((!features) || (features.length == 0) || (!features[0]) || (!(features[0] is Feature))) {
-				return false;
-			}
-			var firstFeatureClassName:String = getQualifiedClassName(features[0]);
-			for each (var feature:Feature in features) {
-				if ((!(feature is Feature)) || (getQualifiedClassName(feature) != firstFeatureClassName)) {
-					return false;
-				}
-			}
-			return true;
+		
+		/**
+		 * @private
+		 */
+		public function set dateCreation(value:String):void{
+			this._dateCreation = value;
 		}
 		
 		/**
@@ -539,5 +649,3 @@ package org.openscales.core.feature {
 		}
 	}
 }
-
-

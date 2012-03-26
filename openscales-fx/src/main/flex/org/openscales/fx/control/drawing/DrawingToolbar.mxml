@@ -32,6 +32,7 @@
 			public static const DRAWADD:String="add";
 			public static const DRAWIMPORT:String="import";
 			public static const DRAWEXPORT:String="export";
+			public static const EDITSTYLE:String="style";
 			
 			[Bindable]
 			private var _layer:VectorLayer;
@@ -74,6 +75,7 @@
 					this._multipleModeDisplayTools.push(DRAWEXPORT);
 					this._multipleModeDisplayTools.push(DRAWSHAPE);
 					this._multipleModeDisplayTools.push(DRAWDELETE);
+					this._multipleModeDisplayTools.push(EDITSTYLE);
 
 					//this.multipleModeInitTools = this._multipleModeDisplayTools.;
 					
@@ -118,6 +120,11 @@
 					this.moveFeatures.buttonMode = false;
 					this.moveFeatures.useHandCursor = false;
 					this.moveFeatures.toolTip = Catalog.getLocalizationForKey('drawing.selectDrawingLayer');
+					
+					this.editFeatureStyle.buttonMode = false;
+					this.editFeatureStyle.useHandCursor = false;
+					this.editFeatureStyle.toolTip = Catalog.getLocalizationForKey('drawing.selectDrawingLayer');
+					
 					
 					this.manageAttributes.buttonMode = false;
 					this.manageAttributes.useHandCursor = false;
@@ -194,6 +201,8 @@
 						myComponent = this.importFeature;break;
 					case DRAWEXPORT:
 						myComponent = this.exportFeature;break;
+					case EDITSTYLE:
+						myComponent = this.editFeatureStyle;break;
 				}
 				
 				return myComponent;
@@ -463,5 +472,6 @@
 		<osDraw:AddVectorLayer map="{this.map}" id="addFeatures" drawingMode="{this.mode}"/>
 		<osDraw:ImportFeature id="importFeature" map="{this.map}" drawingMode="{this.mode}"/>
 		<osDraw:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" drawingMode="{this.mode}"/>
+		<osDraw:EditStyle id="editFeatureStyle" map="{this.map}" target="{this._layer}" drawingMode="{this.mode}" defaultLineStyle="{this.pathStyle}" defaultPointStyle="{this.pointStyle}" defaultPolygonStyle="{this.polygonStyle}"/>
 	</s:Panel>
 </os:Control>

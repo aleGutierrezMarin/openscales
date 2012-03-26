@@ -482,7 +482,13 @@ package org.openscales.core.handler.feature
 				for(var i:* in this.layers) {
 					if(layers[i].name == evt.feature.layer.name){
 						//fix bug : must be changed
-						//this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_SELECTED, evt.feature));
+						if (evt.feature.selectable)
+						{
+							var vec:Vector.<Feature> = new Vector.<Feature>();
+							vec.push(evt.feature);
+							this.unselect(vec);
+							this.select(vec);
+						}
 						return;
 					}
 				}
@@ -690,7 +696,7 @@ package org.openscales.core.handler.feature
 		 */
 		private function selectByGeometry(geom:Geometry, additiveMode:Boolean=false, substractiveMode:Boolean=false):void {
 			// Look for all the features that intersect the selection geometry
-			var featuresToSelect:Vector.<Feature> = new Vector.<Feature>();
+			/*var featuresToSelect:Vector.<Feature> = new Vector.<Feature>();
 			if (geom) {
 				var layersToTest:Vector.<VectorLayer> = (this.layers.length > 0) ? this.layers : this.map.featureLayers;
 				var layer:VectorLayer, layersTmp:Vector.<VectorLayer> = new Vector.<VectorLayer>();
@@ -706,9 +712,12 @@ package org.openscales.core.handler.feature
 					for(var i:uint = layer.features.length; i > 0; i--){
 						if (geom.intersects(layer.features[i-1].geometry)) {
 							if(_unselectableFeatures.indexOf(layer.features[i-1])==-1){
-								featuresToSelect.push(layer.features[i-1]);
-								if(!this._enableMultipleSelection)
-									break;
+								if (layer.features[i-1].selectable)
+								{
+									featuresToSelect.push(layer.features[i-1]);
+									if(!this._enableMultipleSelection)
+										break;
+								}
 							}
 						}
 					}
@@ -729,7 +738,7 @@ package org.openscales.core.handler.feature
 				this.unselect(featuresToSelect);
 			} else {
 				this.select(featuresToSelect, additiveMode);
-			}
+			}*/
 		}
 
 		/**

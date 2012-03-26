@@ -37,6 +37,7 @@
    "drawing.addvectorlayer": "Ajouter une couche de croquis",
    "drawing.addvectorlayer.input.errormessage":"Le nom ne doit pas être vide",
    "drawing.nameerror": "Modifier le nom (non vide et non identique à un autre nom de couche)",
+   "editskin.point" : "Editeur de style",
    
    "layercontrol.movefront": "Déplacer vers l'avant plan",
    "layercontrol.moveback": "Déplacer vers l'arrière plan",
@@ -152,5 +153,31 @@
    "externalLayers.nameerror": "Modifier le nom de la couche (il ne doit pas être vide ou égal à une autre couche)",
    "externalLayers.urlerror": "Le champs url ne doit pas être vide",
    "externalLayers.uncorrectExtension": "L'extension du fichier n'est pas reconnue, les extensions valides sont : ",
-   "externalLayers.uncorrectFile": "Fichier incorrect"
+   "externalLayers.uncorrectFile": "Fichier incorrect",
+   
+   
+   "editStyle.mainPanel.title" : "Edition de style",
+   "editStyle.cancelButton.tooltip" : "Annuler",
+   "editStyle.defaultButton.tooltip" : "Défaut",
+   "editStyle.stylePicking.tooltip" : "Pipette",
+   "editStyle.stylePainting.tooltip" : "Pot de Peinture",
+   "editStyle.pointStyleEdition.dropDownMode" : "Icone :",
+   "editStyle.pointStyleEdition.colorMode" : "Couleur :",
+   "editStyle.pointStyleEdition.labelText" : "Appliquer à : ",
+   "editStyle.pointStyleEdition.previewModeAll" : "Les points de même style",
+   "editStyle.pointStyleEdition.previewModeSelected" : "Ce point seulement",
+   "editStyle.pointStyleEdition.previewModeTypeSelected" : "Tous les points",
+   "editStyle.lineStyleEdition.fillLabelText" : "Remplissage",
+   "editStyle.lineStyleEdition.labelText" : "Appliquer à : ",
+   "editStyle.lineStyleEdition.previewModeAll" : "Les lignes de même style",
+   "editStyle.lineStyleEdition.previewModeSelected" : "Cette ligne seulement",
+   "editStyle.lineStyleEdition.previewModeTypeSelected" : "Toutes les lignes",
+   "editStyle.polyStyleEdition.strokeLabelText" : "Bordure",
+   "editStyle.polyStyleEdition.fillLabelText" : "Remplissage",
+   "editStyle.polyStyleEdition.labelText" : "Appliquer à : ",
+   "editStyle.polyStyleEdition.previewModeAll" : "Les polygones de même style",
+   "editStyle.polyStyleEdition.previewModeSelected" : "Ce polygone seulement",
+   "editStyle.polyStyleEdition.previewModeTypeSelected" : "Tous les polygones"
+   
+   
  }

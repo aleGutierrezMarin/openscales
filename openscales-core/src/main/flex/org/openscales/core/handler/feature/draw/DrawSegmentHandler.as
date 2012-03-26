@@ -21,7 +21,7 @@ package org.openscales.core.handler.feature.draw
 		
 		
 		override protected function drawLine(event:MapEvent=null):void{
-			
+			this._dblClickHandler.active = false;
 			drawLayer.scaleX=1;
 			drawLayer.scaleY=1;
 			//we determine the point where the user clicked
@@ -38,7 +38,7 @@ package org.openscales.core.handler.feature.draw
 				lineString.projection = this.map.projection;
 				lastPoint = point;
 				//the current drawn linestringfeature
-				super.currentLineStringFeature= new LineStringFeature(super.lineString,null, Style.getDefaultSelectedLineStyle()(),true);
+				super.currentLineStringFeature= new LineStringFeature(super.lineString,null, Style.getDefaultSelectedLineStyle(),true);
 				super.currentLineStringFeature.name="path." + id.toString(); ++id;
 				drawLayer.addFeature(super.currentLineStringFeature);
 				

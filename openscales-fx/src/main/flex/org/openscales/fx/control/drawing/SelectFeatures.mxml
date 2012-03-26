@@ -31,6 +31,8 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
+			import org.openscales.core.style.symbolizer.LineSymbolizer;
+			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.fx.FxMap;
 			import org.openscales.fx.control.drawing.popup.EditFeatureAttributes;
 			import org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer;
@@ -244,14 +246,16 @@
 					evt.feature.originalStyle = evt.feature.style;
 					
 					if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-						evt.feature.style = Style.getDefaultSelectedPointStyle();
+						//evt.feature.style = Style.getDefaultSelectedPointStyle();
 					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 						evt.feature.style = Style.getDefaultSelectedLineStyle();
+						(evt.feature.style.rules[0].symbolizers[0] as LineSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as LineSymbolizer).stroke.width;
 					} else if (evt.feature is LabelFeature) {
-						//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-						//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+						evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+							0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
 					} else {
 						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+						(evt.feature.style.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width;
 					}
 					
 					evt.feature.draw();
@@ -270,12 +274,12 @@
 						evt.feature.style = evt.feature.originalStyle;
 					} else {
 						if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-							evt.feature.style = Style.getDefaultPointStyle();
+							//evt.feature.style = Style.getDefaultPointStyle();
 						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 							evt.feature.style = Style.getDefaultLineStyle();
 						} else if (evt.feature is LabelFeature) {
-							//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-							//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+							evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+								0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
 						} else {
 							evt.feature.style = Style.getDefaultPolygonStyle();
 						}

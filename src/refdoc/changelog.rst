@@ -7,6 +7,8 @@ Changes between 2.1.1 and 2.1.2
 * Fix bug from Shane StClair (FxMap.zoomToExtent)
 * Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
 * Adding a blinkMarker parameter to activate a blink animation on the marker of OpenLSSearch component.
+* Add abstract property to Layer
+* Add IIPImage client (cf IIPImageViewer)
 
 Changes between 2.1.0 and 2.1.1
 -------------------------------
