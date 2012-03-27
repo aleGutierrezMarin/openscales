@@ -63,6 +63,10 @@ package org.openscales.core.format
 			var gcoNS:Namespace;
 			
 			var dataRecords:XMLList = xml..*::MD_Metadata;
+			
+			if (!(dataRecords.length() > 0))
+				return null;
+			
 			var gmdNS:Namespace = dataRecords.namespace("gmd");
 			var recordData:XML;
 			for each(recordData in dataRecords){
