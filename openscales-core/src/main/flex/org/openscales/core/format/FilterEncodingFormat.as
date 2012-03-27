@@ -116,8 +116,8 @@ package org.openscales.core.format
 			 bboxNode.appendChild(propertyName);
 			 var envelope:XML = new XML("<gml:Envelope xmlns:gml=\"http://www.opengis.net/gml\"></gml:Envelope>") 
 			 bboxNode.appendChild(envelope);
-			 var lowercorner:XML = new XML("<gml:LowerCorner xmlns:gml=\"http://www.opengis.net/gml\">"+ bounds.left +" "+ bounds.bottom +"</gml:LowerCorner>");
-			 var upperCorner:XML = new XML("<gml:UpperCorner xmlns:gml=\"http://www.opengis.net/gml\">"+ bounds.right +" "+ bounds.top +"</gml:UpperCorner>");
+			 var lowercorner:XML = new XML("<gml:lowerCorner xmlns:gml=\"http://www.opengis.net/gml\">"+ bounds.left +" "+ bounds.bottom +"</gml:lowerCorner>");
+			 var upperCorner:XML = new XML("<gml:upperCorner xmlns:gml=\"http://www.opengis.net/gml\">"+ bounds.right +" "+ bounds.top +"</gml:upperCorner>");
 			 envelope.appendChild(lowercorner);
 			 envelope.appendChild(upperCorner);
 			 return bboxNode;

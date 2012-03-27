@@ -46,7 +46,7 @@ package org.openscales.core.request.csw.getrecords
 		 */
 		public function buildQuery(filter:XML = null, startPosition:Number = 1, maxRecords:Number = 10, elementSet:String = "brief"):void
 		{
-			var post:XML = new XML("<GetRecords></GetRecords>");
+			var post:XML = new XML("<GetRecords xmlns=\"http://www.opengis.net/cat/csw/2.0.2\"></GetRecords>");
 			
 			var ogcns:Namespace = new Namespace("ogc","http://www.opengis.net/ogc");
 			var cswns:Namespace = new Namespace("csw","http://www.opengis.net/cat/csw/2.0.2");
@@ -55,6 +55,8 @@ package org.openscales.core.request.csw.getrecords
 			var dcns:Namespace = new Namespace("dc", "http://purl.org/dc/elements/1.1/");
 			var dctns:Namespace = new Namespace("dct", "http://purl.org/dc/terms/");
 			var xsins:Namespace = new Namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+			var localNS:Namespace = new Namespace(null, "http://www.opengis.net/cat/csw/2.0.2");
+
 			post.addNamespace(ogcns);
 			post.addNamespace(cswns);
 			post.addNamespace(owsns);
@@ -62,6 +64,7 @@ package org.openscales.core.request.csw.getrecords
 			post.addNamespace(dcns);
 			post.addNamespace(dctns);
 			post.addNamespace(xsins);
+			post.setNamespace(cswns);
 			
 			post.@service = _service;
 			post.@version = _version;

@@ -15,6 +15,12 @@ package org.openscales.core.request.csw.getrecordbyid
 		 */
 		private var _version:String = "2.0.2";
 		
+		/**
+		 * The output schema 
+		 */
+		private var _outputSchema:String = "http://www.isotc211.org/2005/gmd";
+
+		
 		public function GetRecordByIdRequest202(url:String, onComplete:Function, onFailure:Function=null, method:String=null)
 		{
 			super(url, onComplete, onFailure, method);
@@ -26,7 +32,7 @@ package org.openscales.core.request.csw.getrecordbyid
 		 */
 		public function buildQuery(recordId:String, elementSet:String = "brief"):void
 		{
-			this.url = this.url +"?service="+this._service+"&version="+this._version+"&request=GetRecordById&Id="+recordId+"&ElementSetName="+elementSet;
+			this.url = this.url +"?service="+this._service+"&version="+this._version+"&request=GetRecordById&Id="+recordId+"&ElementSetName="+elementSet+"&outputSchema="+this._outputSchema;
 		}
 	}
 }
