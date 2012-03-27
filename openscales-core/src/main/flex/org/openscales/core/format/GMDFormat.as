@@ -195,17 +195,20 @@ package org.openscales.core.format
 									var codeData:XMLList = rsIdentifierData[0].gmdNS::code;
 									if (codeData.length() > 0)
 									{
-										var anchorData:XMLList = codeData[0].gmxNS::Anchor;
-										if (anchorData.length() > 0)
+										if (gmxNS)
 										{
-											var xlinkNS:Namespace = xml.namespace("xlink");
-											var anchor:HashMap = new HashMap;
-											anchor.put("href", anchorData[0].xlinkNS.@href);
-											anchor.put("name", anchorData[0].toString());
-											referenceSystemInfos.push(anchor);
-										}else
-										{
-											referenceSystemInfos.push(codeData[0].toString());
+											var anchorData:XMLList = codeData[0].gmxNS::Anchor;
+											if (anchorData.length() > 0)
+											{
+												var xlinkNS:Namespace = xml.namespace("xlink");
+												var anchor:HashMap = new HashMap;
+												anchor.put("href", anchorData[0].xlinkNS.@href);
+												anchor.put("name", anchorData[0].toString());
+												referenceSystemInfos.push(anchor);
+											}else
+											{
+												referenceSystemInfos.push(codeData[0].toString());
+											}
 										}
 									}
 								}
