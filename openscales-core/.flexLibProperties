@@ -301,6 +301,7 @@
     <classEntry path="org.openscales.core.handler.feature.draw.DrawRectangleHandler"/>
     <classEntry path="org.openscales.core.style.marker.CustomMarker"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditKMLStyleHandler"/>
+    <classEntry path="org.openscales.core.style.symbolizer.ArrowSymbolizer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

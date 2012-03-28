@@ -1,6 +1,9 @@
 package org.openscales.core.feature
 {
+	import flash.display.DisplayObject;
+	
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.Geometry;
@@ -50,6 +53,46 @@ package org.openscales.core.feature
 			var j:uint = (this.lineString.componentsLength*2);
 			var coords:Vector.<Number> = this.lineString.getcomponentsClone();
 			var commands:Vector.<int> = new Vector.<int>();
+			var arrowSymb:Boolean = false;
+			if (symbolizer is ArrowSymbolizer)
+			{
+				var px1:Pixel;
+				var px2:Pixel;
+				var alpha:Number;
+				var dispObject:DisplayObject;
+				if ((symbolizer as ArrowSymbolizer).leftMarker)
+				{
+					px1 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[0], coords[1], this.projection));
+					px2 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[2], coords[3], this.projection));
+					alpha = Math.atan(Math.abs(px2.x - px1.x)/Math.abs(px2.y - px1.y));
+					alpha = -alpha*180/Math.PI;
+					if (px2.y - px1.y < 0)
+						alpha = alpha - 90;
+					dispObject = (symbolizer as ArrowSymbolizer).leftMarker.getDisplayObject(this);
+					dispObject.rotation = -alpha*180/Math.PI;
+					dispObject.x = px1.x;
+					dispObject.y = px1.y;
+					this.addChild(dispObject);
+				}
+				if ((symbolizer as ArrowSymbolizer).rightMarker)
+				{
+					var coordSize:uint = coords.length;
+					px1 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[coordSize-4], coords[coordSize-3], this.projection));
+					px2 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[coordSize-2], coords[coordSize-1], this.projection));
+					alpha = Math.atan((px2.x - px1.x)/(px2.y - px1.y));
+					alpha = 180-alpha*180/Math.PI + 180;
+					if ((px1.x - px2.x) < 0)
+						alpha += 180;
+					//else if ((px1.y - px2.y) < 0)
+					//	alpha += 180;
+					
+					dispObject = (symbolizer as ArrowSymbolizer).leftMarker.getDisplayObject(this);
+					dispObject.rotation = alpha;
+					dispObject.x = px2.x;
+					dispObject.y = px2.y;
+					this.addChild(dispObject);
+				}
+			}
 			for (var i:uint = 0; i < j; i+=2) {
 				var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[i], coords[i+1], this.projection));
 				coords[i] = px.x; 

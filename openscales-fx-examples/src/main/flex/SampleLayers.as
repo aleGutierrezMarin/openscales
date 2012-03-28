@@ -13,6 +13,7 @@ package {
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
@@ -55,7 +56,8 @@ package {
 			blackStyle.rules.push(new Rule());
 			blackStyle.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0x000000,2),12)));
 			blackStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),new Stroke(0x000000,2)));
-			blackStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x000000,2)));
+			var wnmk:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12);
+			blackStyle.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),wnmk,wnmk));
 
 			var markerStyle:Style = new Style();
 			markerStyle.rules.push(new Rule());
@@ -74,7 +76,7 @@ package {
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPoint1";
 			// A point outside of the MultiPolygon but inside an excessive hole
 			// of its third polygon.
-			/*point = new org.openscales.geometry.Point(4.63114929194725, 45.692262077956364);
+			point = new org.openscales.geometry.Point(4.63114929194725, 45.692262077956364);
 			layer.addFeature(new PointFeature(point,null,blackStyle));
 			
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPoint2";
@@ -98,7 +100,7 @@ package {
 			
 			//(layer.features[layer.features.length-1] as Feature).id = "blackLineString";
 			// A Polygon intersecting all the other objects.
-			arrayComponents = new Vector.<Number>(8);
+		/*	arrayComponents = new Vector.<Number>(8);
 			arrayVertices = new Vector.<Geometry>(1);
 			arrayComponents[0]=4.5727844237936415;
 			arrayComponents[1]=45.713361819965364;
@@ -159,7 +161,7 @@ package {
 			layer.addFeature(new MultiPointFeature(new MultiPoint(arrayComponents),null,multiColorStyle));
 			//(layer.features[layer.features.length-1] as Feature).id = "MultiPoint";
 			
-			
+			*/
 			// Add a LineString.
 			//style = new Style();
 			//style.rules.push(new Rule());
@@ -186,10 +188,10 @@ package {
 				45.77182400046717,
 				4.9483795164998,
 				45.790499817491956);
-			layer.addFeature(new LineStringFeature(new LineString(arrayComponents),null,multiColorStyle));
+			layer.addFeature(new LineStringFeature(new LineString(arrayComponents),null,blackStyle));
 			//(layer.features[layer.features.length-1] as Feature).id = "LineString";
 			
-			// Add a MultiLineString.
+			/*// Add a MultiLineString.
 			var biColorStyle:Style = new Style();
 			biColorStyle.rules.push(new Rule());
 			(biColorStyle.rules[0] as Rule).symbolizers.push(new LineSymbolizer(new Stroke(0xFF3300,5)));
