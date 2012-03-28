@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection timeStamp="2011-07-27T15:43:41.661+02:00" xsi:schemaLocation="http://www.openplans.org/topp http://openscales.org:80/geoserver/topp/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=topp%3Atasmania_cities http://www.opengis.net/wfs http://openscales.org:80/geoserver/schemas/wfs/1.1.0/wfs.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:topp="http://www.openplans.org/topp" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:wfs="http://www.opengis.net/wfs/2.0">
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.1">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.2910004483 -42.851001816890005</gml:lowerCorner>
+<gml:upperCorner>147.2910004483 -42.851001816890005</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.2910004483 -42.851001816890005</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>Hobart</topp:CITY_NAME>
+<topp:ADMIN_NAME>Tasmania</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>Australia</topp:CNTRY_NAME>
+<topp:STATUS>Provincial capital</topp:STATUS>
+<topp:POP_CLASS>100,000 to 250,000</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.2">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.617773828125 -41.6182861328125</gml:lowerCorner>
+<gml:upperCorner>147.617773828125 -41.6182861328125</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.617773828125 -41.6182861328125</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.3">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.8265140625 -41.0909423828125</gml:lowerCorner>
+<gml:upperCorner>147.8265140625 -41.0909423828125</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.8265140625 -41.0909423828125</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.4">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>148.386816796875 -41.7611083984375</gml:lowerCorner>
+<gml:upperCorner>148.386816796875 -41.7611083984375</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>148.386816796875 -41.7611083984375</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.5">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.815527734375 -41.64300537109375</gml:lowerCorner>
+<gml:upperCorner>147.815527734375 -41.64300537109375</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.815527734375 -41.64300537109375</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.6">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.7001712890625 -41.51666259765625</gml:lowerCorner>
+<gml:upperCorner>147.7001712890625 -41.51666259765625</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.7001712890625 -41.51666259765625</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.7">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.815527734375 -41.51666259765625</gml:lowerCorner>
+<gml:upperCorner>147.815527734375 -41.51666259765625</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.815527734375 -41.51666259765625</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.8">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.9308841796875 -41.64849853515625</gml:lowerCorner>
+<gml:upperCorner>147.9308841796875 -41.64849853515625</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.9308841796875 -41.64849853515625</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.9">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>148.057226953125 -41.51666259765625</gml:lowerCorner>
+<gml:upperCorner>148.057226953125 -41.51666259765625</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>148.057226953125 -41.51666259765625</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.10">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.9144046875 -41.82977294921875</gml:lowerCorner>
+<gml:upperCorner>147.9144046875 -41.82977294921875</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.9144046875 -41.82977294921875</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.11">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>148.07095986328125 -41.68145751953125</gml:lowerCorner>
+<gml:upperCorner>148.07095986328125 -41.68145751953125</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>148.07095986328125 -41.68145751953125</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.12">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>147.7551029296875 -41.8050537109375</gml:lowerCorner>
+<gml:upperCorner>147.7551029296875 -41.8050537109375</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>147.7551029296875 -41.8050537109375</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+<wfs:member>
+<topp:tasmania_cities gml:id="tasmania_cities.13">
+<gml:boundedBy>
+<gml:Envelope srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:lowerCorner>146.0687015625 -41.6182861328125</gml:lowerCorner>
+<gml:upperCorner>146.0687015625 -41.6182861328125</gml:upperCorner>
+</gml:Envelope>
+</gml:boundedBy>
+<topp:the_geom>
+	<gml:MultiPoint srsDimension="2" srsName="http://www.opengis.net/gml/srs/epsg.xml#4326">
+<gml:pointMember>
+<gml:Point>
+<gml:pos>146.0687015625 -41.6182861328125</gml:pos>
+</gml:Point>
+</gml:pointMember>
+	</gml:MultiPoint>
+</topp:the_geom>
+<topp:CITY_NAME>
+</topp:CITY_NAME>
+<topp:ADMIN_NAME>
+</topp:ADMIN_NAME>
+<topp:CNTRY_NAME>
+</topp:CNTRY_NAME>
+<topp:STATUS>
+</topp:STATUS>
+<topp:POP_CLASS>
+</topp:POP_CLASS>
+</topp:tasmania_cities>
+</wfs:member>
+</wfs:FeatureCollection>

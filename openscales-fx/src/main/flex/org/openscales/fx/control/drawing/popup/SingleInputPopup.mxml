@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- 
+This popup displays a input field and two buttons: Ok and Cancel.
+You can define <code>callback</code>, this method will be called when form is submitted and validated (validation rule: <code>input</code> must not be empty).
+
+@example This example show how to use the popup :
+ 
+<listing version="3.0"> 
+
+var popup:SingleInputPopup;
+
+
+public function showPopUp():void{
+	popup = SingleInputPopup(PopUpManager.createPopUp(this,SingleInputPopup));
+	popup.callback = processInput;
+}
+
+
+public function processInput():void{
+	trace(popup.input.text);
+}
+</listing> 
+
+-->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="onCreationComplete();"
+			   close="discardPopup();"
+			   dropShadowVisible="false">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.binding.utils.BindingUtils;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.components.Button;
+			import spark.components.Label;
+			import spark.components.TextInput;
+			
+			private static var DEFAULT_W:Number = 300;
+			private static var DEFAULT_H:Number = 100;
+			
+			private var _map:Map;
+			
+			private var _callback:Function;
+			
+			[Bindable]
+			private var _inputErrorMessage:String = Catalog.getLocalizationForKey("drawing.addvectorlayer.input.errormessage");
+			
+			/**
+			 * @private
+			 */
+			protected function localize(e:I18NEvent=null):void {
+				this.title = Catalog.getLocalizationForKey('drawing.addvectorlayer');
+				this.okButton.label = Catalog.getLocalizationForKey("ok");
+				this.cancelButton.label = Catalog.getLocalizationForKey("cancel");
+				this.inputFormItem.label=Catalog.getLocalizationForKey('drawing.name');
+				_inputErrorMessage = Catalog.getLocalizationForKey('drawing.addvectorlayer.input.errormessage');
+				inputFormValidator.requiredFieldError = Catalog.getLocalizationForKey('drawing.addvectorlayer.input.errormessage');
+			}
+			
+			/**
+			 * @private
+			 */
+			protected function onCreationComplete():void {
+				this.x = (parent.width-this.width)/2;
+				this.y = (parent.height-this.height)/2;
+				
+				if(_map){
+					_map.removeEventListener(I18NEvent.LOCALE_CHANGED,localize);
+					_map.addEventListener(I18NEvent.LOCALE_CHANGED,localize);
+				}
+				localize();
+				input.setFocus();
+			}
+			
+			/**
+			 * @private
+			 */ 
+			private function discardPopup():void {
+				if(_map) _map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+				PopUpManager.removePopUp(this);
+			}
+			
+			/**
+			 * @private
+			 */ 
+			protected function onOkButtonClick(event:MouseEvent):void
+			{
+				var vResult:ValidationResultEvent;	
+				vResult = inputFormValidator.validate();
+				if (vResult.type==ValidationResultEvent.INVALID) 
+					return;
+				else{
+					this.discardPopup();
+					if(_callback!=null)_callback();
+				}
+			}
+
+			/**
+			 * Callback function when form has been submitted and validated. It shall have no parameter.
+			 */ 
+			public function get callback():Function
+			{
+				return _callback;
+			}
+
+			/**
+			 * @private
+			 */ 
+			public function set callback(value:Function):void
+			{
+				_callback = value;
+			}
+
+			/**
+			 * The map where this popup is displayed. If null, localization won't work.
+			 */ 
+			public function get map():Map
+			{
+				return _map;
+			}
+			
+			/**
+			 * @private
+			 */ 
+			public function set map(value:Map):void
+			{
+				if(!value && _map)_map.removeEventListener(I18NEvent.LOCALE_CHANGED,localize);
+				_map = value;
+				if(_map)_map.addEventListener(I18NEvent.LOCALE_CHANGED,localize);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!--- Validates that <code>input.text</code> is not empty -->
+		<mx:StringValidator id="inputFormValidator" required="true" source="{input}" property="text" requiredFieldError="{_inputErrorMessage}" />
+	</fx:Declarations>
+	<!--- Form containing input field and buttons -->
+	<mx:Form defaultButton="{okButton}">
+		<!--- Form item that holds input field -->
+		<mx:FormItem id="inputFormItem">
+			<!--- Input field that holds user data, you access access through the element's <code>text</code> property -->
+			<s:TextInput id="input"/>
+		</mx:FormItem>
+		<!--- Container that holds form buttons -->
+		<s:SkinnableContainer id="buttonsContainer">
+			<s:layout>
+				<s:HorizontalLayout />
+			</s:layout>
+			<!--- Button used to validate, you can listen to <code>MouseEvent.CLICK</code> on that button -->
+			<s:Button id="okButton" click="onOkButtonClick(event)"/>
+			<!--- Button used to close the popup --> 
+			<s:Button id="cancelButton" click="{this.discardPopup()}" />
+		</s:SkinnableContainer>	
+	</mx:Form>
+	
+</s:TitleWindow>
