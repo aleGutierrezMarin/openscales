@@ -50,6 +50,10 @@ package org.openscales.core.format
 			var record:HashMap = new HashMap();
 			
 			var cswNS:Namespace = xml.namespace("csw");
+			
+			if (!cswNS)
+				return null;
+			
 			var getRecordsResponse:XML = xml.cswNS::GetRecordsResponse[0];
 			
 			var searchResult:XML = xml.cswNS::SearchResults[0];
