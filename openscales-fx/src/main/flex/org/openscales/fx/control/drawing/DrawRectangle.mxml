@@ -84,11 +84,11 @@
 			 */
 			public function get style():Style{
 				
-				return (this._handler as DrawPointHandler).style;
+				return (this._handler as DrawRectangleHandler).style;
 			}
 			public function set style(value:Style):void{
 				
-				(this._handler as DrawPointHandler).style = value;
+				(this._handler as DrawRectangleHandler).style = value;
 			}
 			
 			/**
