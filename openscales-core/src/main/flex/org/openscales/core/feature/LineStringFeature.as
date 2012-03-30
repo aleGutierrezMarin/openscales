@@ -62,30 +62,41 @@ package org.openscales.core.feature
 				var dispObject:DisplayObject;
 				if ((symbolizer as ArrowSymbolizer).leftMarker)
 				{
+					if (coords.length <4)
+						return;
+					
 					px1 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[0], coords[1], this.projection));
 					px2 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[2], coords[3], this.projection));
-					alpha = Math.atan(Math.abs(px2.x - px1.x)/Math.abs(px2.y - px1.y));
-					alpha = -alpha*180/Math.PI;
-					if (px2.y - px1.y < 0)
-						alpha = alpha - 90;
+					alpha = Math.atan((px1.x - px2.x)/(px1.y - px2.y));
+					alpha = -alpha*180/Math.PI +90;
+					/*if ((px1.x - px2.x) < 0)
+						alpha -= 90;
+					else 
+						alpha -= 90;*/
+					if ((px1.y - px2.y) < 0)
+						alpha -= 90;
+					else 
+						alpha += 90;
 					dispObject = (symbolizer as ArrowSymbolizer).leftMarker.getDisplayObject(this);
-					dispObject.rotation = -alpha*180/Math.PI;
+					dispObject.rotation = alpha;
 					dispObject.x = px1.x;
 					dispObject.y = px1.y;
 					this.addChild(dispObject);
 				}
 				if ((symbolizer as ArrowSymbolizer).rightMarker)
 				{
+					if (coords.length <4)
+						return;
+					
 					var coordSize:uint = coords.length;
 					px1 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[coordSize-4], coords[coordSize-3], this.projection));
 					px2 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[coordSize-2], coords[coordSize-1], this.projection));
 					alpha = Math.atan((px2.x - px1.x)/(px2.y - px1.y));
-					alpha = 180-alpha*180/Math.PI + 180;
-					if ((px1.x - px2.x) < 0)
-						alpha += 180;
-					//else if ((px1.y - px2.y) < 0)
-					//	alpha += 180;
-					
+					alpha = -alpha*180/Math.PI +90;
+					if ((px1.y - px2.y) < 0)
+						alpha += 90;
+					else 
+						alpha -= 90;
 					dispObject = (symbolizer as ArrowSymbolizer).leftMarker.getDisplayObject(this);
 					dispObject.rotation = alpha;
 					dispObject.x = px2.x;
