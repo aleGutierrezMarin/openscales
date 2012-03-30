@@ -25,6 +25,8 @@ package org.openscales.core.style.symbolizer
 		
 		/**
 		 * The marker that will be drawn at the left side of the line
+		 * If you want your arrow in the continuity of the line be sure that 
+		 * the marker has the sharp part of the arrow oriented to the top
 		 */
 		public function get leftMarker():Marker
 		{
@@ -41,6 +43,8 @@ package org.openscales.core.style.symbolizer
 		
 		/**
 		 * The marker that will be drawn at the right side of the line
+		 * If you want your arrow in the continuity of the line be sure that 
+		 * the marker has the sharp part of the arrow oriented to the top
 		 */
 		public function get rightMarker(): Marker
 		{

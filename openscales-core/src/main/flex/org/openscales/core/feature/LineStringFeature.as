@@ -60,6 +60,8 @@ package org.openscales.core.feature
 				var px2:Pixel;
 				var alpha:Number;
 				var dispObject:DisplayObject;
+				
+				// Draw arrows
 				if ((symbolizer as ArrowSymbolizer).leftMarker)
 				{
 					if (coords.length <4)
@@ -69,10 +71,6 @@ package org.openscales.core.feature
 					px2 = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[2], coords[3], this.projection));
 					alpha = Math.atan((px1.x - px2.x)/(px1.y - px2.y));
 					alpha = -alpha*180/Math.PI +90;
-					/*if ((px1.x - px2.x) < 0)
-						alpha -= 90;
-					else 
-						alpha -= 90;*/
 					if ((px1.y - px2.y) < 0)
 						alpha -= 90;
 					else 
