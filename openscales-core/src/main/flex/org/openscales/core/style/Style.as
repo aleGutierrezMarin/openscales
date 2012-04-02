@@ -7,6 +7,7 @@ package org.openscales.core.style {
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
@@ -149,12 +150,25 @@ package org.openscales.core.style {
 			
 			var style:Style = new Style();
 			style.name = "Default line style";
-			style.rules.push(getLineRule());
-			
-			var wnmk:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12);
-			style.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),wnmk,wnmk));
+			//style.rules.push(getLineRule());
+			style.rules.push(getArrowRule());
 			return style;
 		}
+		
+		/**
+		 * Returns the default style for a arrowed LineStringFeature
+		 */
+		public static function getDefaultArrowStyle():Style {
+			
+			var style:Style = new Style();
+			style.name = "Default arrow style";
+			style.rules.push(getLineRule());
+			
+			var am:ArrowMarker = new ArrowMarker(ArrowMarker.AM_NARROW_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12)
+			style.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),am,am));
+			return style;
+		}
+		
 		
 		/**
 		 * Returns the default style for a LineStringFeature when the feature is selected
@@ -175,6 +189,19 @@ package org.openscales.core.style {
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x3F9FCD, 3)));
+			
+			return rule;
+		}
+		
+		/**
+		 * Returns the rule to apply for the default arrow LineStringFeature style
+		 */
+		protected static function getArrowRule():Rule{
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			var am:ArrowMarker = new ArrowMarker(ArrowMarker.AM_THIN	,new SolidFill(0x3F9FCD,0.5),new Stroke(0x3F9FCD,3),12)
+			rule.symbolizers.push(new ArrowSymbolizer(new Stroke(0x3F9FCD, 3), am, am));
 			
 			return rule;
 		}
