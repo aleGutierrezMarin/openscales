@@ -90,6 +90,11 @@ package org.openscales.core.handler.feature.draw
 		private var _defaultPolygonStyle:Style = Style.getDefaultPolygonStyle();
 		
 		/**
+		 * The default arrow style to apply to features
+		 */
+		private var _defaultArrowStyle:Style = Style.getDefaultArrowStyle();
+		
+		/**
 		 * Flag that says if color picking is activated
 		 */
 		private var _colorPickingActivated:Boolean = false;
@@ -316,6 +321,7 @@ package org.openscales.core.handler.feature.draw
 				return;
 			
 			if ((this._feature.style == this._defaultLineStyle||
+				this._feature.style == this._defaultArrowStyle ||
 				this._feature.style == this._defaultPointStyle ||
 				this._feature.style == this._defaultPolygonStyle) && styleChanged)
 			{

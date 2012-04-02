@@ -58,5 +58,11 @@ package org.openscales.core.style.symbolizer
 		{
 			this._rightMarker = value;
 		}
+		
+		override public function clone():Symbolizer{
+			var arrowSymb:ArrowSymbolizer = new ArrowSymbolizer(this.stroke.clone(), this.leftMarker.clone(), this.rightMarker.clone());
+			arrowSymb.geometry = this.geometry;
+			return arrowSymb;
+		}
 	}
 }
