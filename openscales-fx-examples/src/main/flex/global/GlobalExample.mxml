@@ -60,44 +60,8 @@
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
 				
-				var req:GetRecordsRequest = new GetRecordsRequest("http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/geoportail/csw",onOk, onNoOk);
-				req.startPosition = 1;
-				req.maxRecords = 10;
-				req.send();
-				
-				var req2:GetRecordByIdRequest = new GetRecordByIdRequest("http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/inspire/csw", onOk2, onNoOk2);
-				req2.recordId = "IGNF_BDORTHOr_RVB_0M50_TIF_LAMB93_D75-2008.xml";
-				req2.elementSetName = "summary";
-				req2.send();
 				
 				
-			}
-			
-			public function onOk2(evt:Event):void
-			{
-				var plop:int =  1;
-				/*var format:CSWGetRecordsFormat = new CSWGetRecordsFormat();
-				var loader:URLLoader = evt.target as URLLoader;
-				var data:HashMap = (format.read(loader.data) as HashMap);*/
-			}
-			
-			public function onNoOk2(value:Event):void
-			{
-				var plop2:int = 1;
-			}
-			
-			public function onOk(evt:Event):void
-			{
-				var plop:int = 1;
-				var format:CSWGetRecordsFormat = new CSWGetRecordsFormat();
-				format.responseFormat = new DCFormat();
-				var loader:URLLoader = evt.target as URLLoader;
-				var data:HashMap = (format.read(loader.data) as HashMap);
-			}
-			
-			public function onNoOk(value:Event):void
-			{
-				var plop2:int = 1;
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {
