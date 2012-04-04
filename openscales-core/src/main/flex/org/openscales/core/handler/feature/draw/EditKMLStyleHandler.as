@@ -653,10 +653,10 @@ package org.openscales.core.handler.feature.draw
 					return;
 				}
 				
-				if (tmpFeature is LabelFeature)
+				/*if (tmpFeature is LabelFeature)
 				{
 					return;
-				}
+				}*/
 				this.validateChanges();
 				this._feature = tmpFeature;
 				this._savedOriginStyle = this._feature.style.clone();
