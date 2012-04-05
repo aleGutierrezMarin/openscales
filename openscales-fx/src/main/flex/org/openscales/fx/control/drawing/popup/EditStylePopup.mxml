@@ -137,6 +137,12 @@
 			[Bindable]
 			private var _paintingAlpha:Number = 1;
 			
+			[Bindable]
+			private var _arrowChoice:ArrayCollection = new ArrayCollection([new ArrowMarker(ArrowMarker.AM_NARROW_TRIANGLE,new SolidFill(0x000000,0.5),new Stroke(0x000000,2),12),
+				new ArrowMarker(ArrowMarker.AM_NARROW_THIN,new SolidFill(0x000000,0.5),new Stroke(0x000000,2),12),
+				new ArrowMarker(ArrowMarker.AM_THIN,new SolidFill(0x000000,0.5),new Stroke(0x000000,2),12),
+				new ArrowMarker(ArrowMarker.AM_TRIANGLE,new SolidFill(0x000000,0.5),new Stroke(0x000000,2),12)]);
+			
 			
 			
 			
@@ -657,9 +663,23 @@
 								this._lineColor = lineSymb.stroke.color;
 								this._lineBorderOpacity = lineSymb.stroke.opacity*100;
 								this._lineWidth = lineSymb.stroke.width.toString();
+								this.rightArrowDropDownList.selectedIndex = -1;
+								this.leftArrowDropDownList.selectedIndex = -1;
 								if (_isArrow)
 								{
-									this._isArrow = true;
+									var arrowMarker:ArrowMarker;
+									var arrowlength:Number = this._arrowChoice.length;
+									for (var j:int=0; j<arrowlength; ++j)
+									{
+										if ((this._arrowChoice[j] as ArrowMarker).arrowMarker == ((rule.symbolizers[i] as ArrowSymbolizer).leftMarker as ArrowMarker).arrowMarker)
+										{
+											this.leftArrowDropDownList.selectedIndex = j;
+										}
+										if ((this._arrowChoice[j] as ArrowMarker).arrowMarker == ((rule.symbolizers[i] as ArrowSymbolizer).rightMarker as ArrowMarker).arrowMarker)
+										{
+											this.rightArrowDropDownList.selectedIndex = j;
+										}
+									}
 								}
 								_editedSymbolize = lineSymb;
 								return;
@@ -800,7 +820,7 @@
 						</s:layout>
 						
 						<s:Label id="lineArrowLeftLabel" color="black"/>
-						<s:DropDownList enabled="{this._pointIconMode}" id="leftArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
+						<s:DropDownList id="leftArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer" dataProvider="{this._arrowChoice}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
 
 					</s:Group>
 					
@@ -810,7 +830,7 @@
 						</s:layout>
 						
 						<s:Label id="lineArrowRightLabel" color="black"/>
-						<s:DropDownList enabled="{this._pointIconMode}" id="rightArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
+						<s:DropDownList  id="rightArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer" dataProvider="{this._arrowChoice}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
 					</s:Group>
 				</s:Group>
 				
