@@ -141,12 +141,6 @@
 			private var _arrowMarkerType:String = ArrowMarker.AM_THIN;
 			
 			[Bindable]
-			private var _arrowChoice:ArrayCollection = new ArrayCollection([new ArrowMarker(ArrowMarker.AM_NARROW_TRIANGLE,new SolidFill(0x000000,0.5),new Stroke(0x000000,2),12),
-				new ArrowMarker(ArrowMarker.AM_NARROW_THIN,new SolidFill(0x000000,0.5),new Stroke(0x000000,2),12),
-				new ArrowMarker(ArrowMarker.AM_THIN,new SolidFill(0x000000,0.5),new Stroke(0x000000,2),12),
-				new ArrowMarker(ArrowMarker.AM_TRIANGLE,new SolidFill(0x000000,0.5),new Stroke(0x000000,2),12)]);
-			
-			[Bindable]
 			private var _leftArrowActivated:Boolean = false;
 			
 			[Bindable]
@@ -220,7 +214,12 @@
 					{
 						(this._editedSymbolize as ArrowSymbolizer).leftMarker = am;
 					}else{
-						// create arrow
+						if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
+							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
+						else
+							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
+						
+						arrowSymb = new ArrowSymbolizer((this._editedSymbolize as LineSymbolizer).stroke, am, null);
 					}
 				}else{
 					if (this._rightArrowActivated)
@@ -229,7 +228,7 @@
 					}else{
 						var linSymb:LineSymbolizer = new LineSymbolizer((this._editedSymbolize as ArrowSymbolizer).stroke);
 						this._editedSymbolize = linSymb;
-						this.targetFeature.style.rules[0].symbolizers[0] = linSymb;
+						this.editStyleHandler.replaceSymbolizer(linSymb);
 					}
 				}
 				this.editStyleHandler.actualizeFeature();
@@ -740,17 +739,13 @@
 								this._leftArrowActivated = false;
 								if (_isArrow)
 								{
-									var arrowlength:Number = this._arrowChoice.length;
-									for (var j:int=0; j<arrowlength; ++j)
+									if ((rule.symbolizers[0] as ArrowSymbolizer).leftMarker)
 									{
-										if ((rule.symbolizers[i] as ArrowSymbolizer).leftMarker)
-										{
-											this._rightArrowActivated = true;
-										}
-										if ((rule.symbolizers[i] as ArrowSymbolizer).rightMarker)
-										{
-											this._leftArrowActivated = true;
-										}
+										this._rightArrowActivated = true;
+									}
+									if ((rule.symbolizers[0] as ArrowSymbolizer).rightMarker)
+									{
+										this._leftArrowActivated = true;
 									}
 								}
 								_editedSymbolize = lineSymb;
