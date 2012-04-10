@@ -256,15 +256,10 @@ public class IIPZoom extends Sprite
      */
     private function configureControllers(image:MultiScaleImage):void
     {
-        var keyboardController:KeyboardController = new KeyboardController()
         var mouseController:MouseController = new MouseController()
 
-        var contextMenuController:ContextMenuController
-        contextMenuController = new ContextMenuController()
 
-        image.controllers = [mouseController,
-                             keyboardController,
-                             contextMenuController]
+        image.controllers = [mouseController]
     }
 
     /**

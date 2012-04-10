@@ -149,9 +149,9 @@ package org.openscales.core.style.marker
 			for (var i:int = 0; i < markerLength; ++i)
 			{
 				var sprite:Sprite = this._givenTemporaryMarker[i] as Sprite;
+				
 				sprite.removeChildAt(0);
 				var result:DisplayObject;
-				result = new Bitmap(_clip.bitmapData);
 				result = new Bitmap(_clip.bitmapData);
 				if (_xUnit == "fraction")
 				{
@@ -169,6 +169,7 @@ package org.openscales.core.style.marker
 					result.y += -_yOffset
 				}
 				sprite.addChild(result);
+				result.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			}
 			this._givenTemporaryMarker = new Vector.<DisplayObject>();
 		}
