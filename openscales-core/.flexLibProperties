@@ -232,6 +232,7 @@
     <classEntry path="org.openscales.core.style.fill.BitmapFill"/>
     <classEntry path="org.openscales.core.style.fill.Fill"/>
     <classEntry path="org.openscales.core.style.fill.SolidFill"/>
+    <classEntry path="org.openscales.core.style.marker.ArrowMarker"/>
     <classEntry path="org.openscales.core.style.marker.CustomMarker"/>
     <classEntry path="org.openscales.core.style.marker.DisplayObjectMarker"/>
     <classEntry path="org.openscales.core.style.marker.Marker"/>
@@ -302,7 +303,6 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.style.marker.ArrowMarker"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

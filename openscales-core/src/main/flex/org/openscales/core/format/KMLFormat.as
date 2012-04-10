@@ -21,10 +21,12 @@ package org.openscales.core.format
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.Marker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
@@ -39,14 +41,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
-	import org.openscales.core.basetypes.maps.HashMap;
-	import org.openscales.core.feature.Feature;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.symbolizer.LineSymbolizer;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
-	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-	import org.openscales.core.style.symbolizer.Symbolizer;
 	
 	use namespace os_internal;
 	
@@ -241,8 +236,46 @@ package org.openscales.core.format
 					{
 						Lwidth = parseInt(lineWidth[0].toString());
 					}
-					currentRule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
-					outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					
+					
+					var extensionLine:XMLList = styleList[i]..*::ListStyleSimpleExtensionGroup;
+					var leftArrowMarker:String;
+					var rightArrowMarker:String;
+					var isArrow:Boolean = false;
+					if (extensionLine.length() > 0)
+					{
+						leftArrowMarker = extensionLine[0].@leftArrow;
+						rightArrowMarker = extensionLine[0].@rightArrow;
+						isArrow = true;
+					}
+					
+					if (isArrow)
+					{
+						currentRule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
+						var leftMarker:ArrowMarker;
+						var rightMarker:ArrowMarker;
+						
+						if (leftArrowMarker != "none")
+						{
+							if (Lwidth < 3)
+								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							else
+								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+						}
+						
+						if (rightArrowMarker != "none")
+						{
+							if (Lwidth < 3)
+								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							else
+								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+						}
+						currentRule.symbolizers.push(new ArrowSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha), leftMarker, rightMarker));
+						outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					}else{
+						currentRule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
+						outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					}
 				}
 				
 				if(styleList[i].localName() == "PolyStyle") 
@@ -517,8 +550,6 @@ package org.openscales.core.format
 							iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));	
 					}
 				}
-				//Points
-				// rotation is not supported yet
 				else if(placemark.Point != undefined)
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
@@ -1056,6 +1087,24 @@ package org.openscales.core.format
 						styleNode.width = width;
 						placemarkStyle.appendChild(styleNode);
 						strokeExported = true;
+						
+						if (symb is ArrowSymbolizer)
+						{
+							var extensionNode:XML = new XML("<ListStyleSimpleExtensionGroup></ListStyleSimpleExtensionGroup>");
+							if ((symb as ArrowSymbolizer).leftMarker)
+							{
+								extensionNode.@leftArrow = ((symb as ArrowSymbolizer).leftMarker as ArrowMarker).arrowMarker;
+							}else{
+								extensionNode.@leftArrow = "none"
+							}
+							if ((symb as ArrowSymbolizer).rightMarker)
+							{
+								extensionNode.@rightArrow = ((symb as ArrowSymbolizer).rightMarker as ArrowMarker).arrowMarker;
+							}else{
+								extensionNode.@rightArrow = "none"
+							}
+							styleNode.appendChild(extensionNode);
+						}
 					}
 				}else if (symb is PolygonSymbolizer)
 				{
