@@ -137,15 +137,15 @@ package org.openscales.core.handler.feature.draw
 		{
 			if (this._targetFeatures == "selected")
 			{
-				
+				this._feature.style.rules[0].symbolizers[0] = newSymb;
 			}
 			else if (this._targetFeatures == "typeselected")
 			{
-				
+				this._feature.style.rules[0].symbolizers[0] = newSymb;
 			}
 			else if (this._targetFeatures == "all")
 			{
-				
+				this._feature.style.rules[0].symbolizers[0] = newSymb;
 			}
 		}
 

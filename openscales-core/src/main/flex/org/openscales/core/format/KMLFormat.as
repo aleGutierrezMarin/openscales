@@ -251,7 +251,7 @@ package org.openscales.core.format
 					
 					if (isArrow)
 					{
-						currentRule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
+						
 						var leftMarker:ArrowMarker;
 						var rightMarker:ArrowMarker;
 						
