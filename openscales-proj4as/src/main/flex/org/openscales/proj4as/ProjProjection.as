@@ -235,16 +235,16 @@ package org.openscales.proj4as {
 				s = ProjProjection.equivalentDefs[i-1];
 				arr = s.split(",");
 				
-				if(arr.indexOf(srsCode1.srsCode)!=-1) {
+				if(arr.indexOf(srsCode1)!=-1) {
 					
-					if(arr.indexOf(srsCode2.srsCode)!=-1) {
+					if(arr.indexOf(srsCode2)!=-1) {
 						return;
 					}
 					
 					ProjProjection.equivalentDefs[i-1]=s+","+srsCode2;
 					return;
 					
-				} else if(arr.indexOf(srsCode2.srsCode)!=-1) {
+				} else if(arr.indexOf(srsCode2)!=-1) {
 					
 					ProjProjection.equivalentDefs[i-1]=s+","+srsCode1;
 					return;
@@ -292,16 +292,16 @@ package org.openscales.proj4as {
 				s = ProjProjection.stretchableDefs[i-1];
 				arr = s.split(",");
 				
-				if(arr.indexOf(srsCode1.srsCode)!=-1) {
+				if(arr.indexOf(srsCode1)!=-1) {
 					
-					if(arr.indexOf(srsCode2.srsCode)!=-1) {
+					if(arr.indexOf(srsCode2)!=-1) {
 						return;
 					}
 					
 					ProjProjection.stretchableDefs[i-1]=s+","+srsCode2;
 					return;
 					
-				} else if(arr.indexOf(srsCode2.srsCode)!=-1) {
+				} else if(arr.indexOf(srsCode2)!=-1) {
 					
 					ProjProjection.stretchableDefs[i-1]=s+","+srsCode1;
 					return;
