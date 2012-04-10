@@ -1,5 +1,6 @@
 package org.openscales.core.style.symbolizer
 {
+	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.Marker;
 	import org.openscales.core.style.stroke.Stroke;
 	
@@ -60,7 +61,17 @@ package org.openscales.core.style.symbolizer
 		}
 		
 		override public function clone():Symbolizer{
-			var arrowSymb:ArrowSymbolizer = new ArrowSymbolizer(this.stroke.clone(), this.leftMarker.clone(), this.rightMarker.clone());
+			var leftMarker:ArrowMarker;
+			var rightMarker:ArrowMarker;
+			if (this.leftMarker)
+			{
+				leftMarker = this.leftMarker.clone() as ArrowMarker;	
+			}
+			if (this.rightMarker)
+			{
+				rightMarker = this.rightMarker.clone() as ArrowMarker;
+			}
+			var arrowSymb:ArrowSymbolizer = new ArrowSymbolizer(this.stroke.clone(), leftMarker,rightMarker);
 			arrowSymb.geometry = this.geometry;
 			return arrowSymb;
 		}

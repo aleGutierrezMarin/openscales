@@ -18,6 +18,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
 			
+			import org.openscales.core.control.ui.Arrow;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
@@ -137,6 +138,13 @@
 			[Bindable]
 			private var _paintingAlpha:Number = 1;
 			
+			private var _arrowMarkerType:String = ArrowMarker.AM_THIN;
+			
+			[Bindable]
+			private var _leftArrowActivated:Boolean = false;
+			
+			[Bindable]
+			private var _rightArrowActivated:Boolean = false;
 			
 			
 			
@@ -187,7 +195,77 @@
 			
 			//Callback
 			
+			/**
+			 *  Method to handle the left arrow checkbox on line style edition
+			 */
+			private function onLeftArrowChange():void
+			{
+				var am:ArrowMarker;
+				if (this._leftArrowActivated)
+				{
+					var arrowSymb:ArrowSymbolizer = this._editedSymbolize as ArrowSymbolizer
+					if (arrowSymb.stroke.width < 3)
+						am = new ArrowMarker(this._arrowMarkerType, null, arrowSymb.stroke, 12);
+					else
+						am = new ArrowMarker(this._arrowMarkerType, null, arrowSymb.stroke, arrowSymb.stroke.width*4);
+					
+					
+					if (this._editedSymbolize is ArrowSymbolizer)
+					{
+						(this._editedSymbolize as ArrowSymbolizer).leftMarker = am;
+					}else{
+						if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
+							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
+						else
+							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
+						
+						arrowSymb = new ArrowSymbolizer((this._editedSymbolize as LineSymbolizer).stroke, am, null);
+					}
+				}else{
+					if (this._rightArrowActivated)
+					{
+						(this._editedSymbolize as ArrowSymbolizer).leftMarker = null;
+					}else{
+						var linSymb:LineSymbolizer = new LineSymbolizer((this._editedSymbolize as ArrowSymbolizer).stroke);
+						this._editedSymbolize = linSymb;
+						this.editStyleHandler.replaceSymbolizer(linSymb);
+					}
+				}
+				this.editStyleHandler.actualizeFeature();
+			}
 			
+			/**
+			 *  Method to handle the right arrow checkbox on line style edition
+			 */
+			private function onRightArrowChange():void
+			{
+				var am:ArrowMarker;
+				if (this._rightArrowActivated)
+				{
+					var arrowSymb:ArrowSymbolizer = this._editedSymbolize as ArrowSymbolizer
+					if (arrowSymb.stroke.width < 3)
+						am = new ArrowMarker(this._arrowMarkerType, null, arrowSymb.stroke, 12);
+					else
+						am = new ArrowMarker(this._arrowMarkerType, null, arrowSymb.stroke, arrowSymb.stroke.width*4);
+					
+					if (this._editedSymbolize is ArrowSymbolizer)
+					{
+						(this._editedSymbolize as ArrowSymbolizer).rightMarker = am;
+					}else{
+						// create arrow
+					}	
+				}else{
+					if (this._leftArrowActivated)
+					{
+						(this._editedSymbolize as ArrowSymbolizer).rightMarker = null;
+					}else{
+						var linSymb:LineSymbolizer = new LineSymbolizer((this._editedSymbolize as ArrowSymbolizer).stroke);
+						this._editedSymbolize = linSymb;
+						this.targetFeature.style.rules[0].symbolizers[0] = linSymb;
+					}
+				}
+				this.editStyleHandler.actualizeFeature();
+			}
 			
 			/**
 			 * Method to handle the icon mode change on pointEdition
@@ -455,8 +533,8 @@
 				this.polyPreviewModeSelected.label = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.previewModeSelected");
 				this.polyPreviewModeTypeSelected.label = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.previewModeTypeSelected");
 				this.lineArrowLabel.text = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowLabel");
-				this.lineArrowLeftLabel.text = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowLeftLabel");
-				this.lineArrowRightLabel.text = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowRightLabel");
+				this.leftArrowCheckBox.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowLeftLabel");
+				this.rightArrowCheckBox.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowRightLabel");
 			}
 			
 			// Getter Setter
@@ -657,9 +735,18 @@
 								this._lineColor = lineSymb.stroke.color;
 								this._lineBorderOpacity = lineSymb.stroke.opacity*100;
 								this._lineWidth = lineSymb.stroke.width.toString();
+								this._rightArrowActivated = false;
+								this._leftArrowActivated = false;
 								if (_isArrow)
 								{
-									this._isArrow = true;
+									if ((rule.symbolizers[0] as ArrowSymbolizer).leftMarker)
+									{
+										this._rightArrowActivated = true;
+									}
+									if ((rule.symbolizers[0] as ArrowSymbolizer).rightMarker)
+									{
+										this._leftArrowActivated = true;
+									}
 								}
 								_editedSymbolize = lineSymb;
 								return;
@@ -796,21 +883,24 @@
 				
 					<s:Group width="50%">
 						<s:layout >
-							<s:VerticalLayout paddingLeft="5" paddingTop="10" gap="10"/>
+							<s:HorizontalLayout />
 						</s:layout>
 						
-						<s:Label id="lineArrowLeftLabel" color="black"/>
-						<s:DropDownList enabled="{this._pointIconMode}" id="leftArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
+						<s:Label id="lineArrowLeftLabel" color="black" />
+						<s:CheckBox id="leftArrowCheckBox" selected="@{this._leftArrowActivated}" change="this.onLeftArrowChange()"/>
+						<!--s:DropDownList id="leftArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer" dataProvider="{this._arrowChoice}"  selectedIndex="@{this._leftArrowIndex}" change="onIconChanged()" top="1" left="1" width="40"/-->
 
 					</s:Group>
 					
 					<s:Group width="50%">
 						<s:layout >
-							<s:VerticalLayout paddingLeft="5" paddingTop="10" gap="10"/>
+							<s:HorizontalLayout/>
 						</s:layout>
 						
-						<s:Label id="lineArrowRightLabel" color="black"/>
-						<s:DropDownList enabled="{this._pointIconMode}" id="rightArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
+						<s:Label id="lineArrowRightLabel" color="black" />
+						<s:CheckBox id="rightArrowCheckBox" selected="@{this._rightArrowActivated}" change="this.onRightArrowChange()"/>
+
+						<!--s:DropDownList  id="rightArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer" dataProvider="{this._arrowChoice}"  selectedIndex="@{this._rightArrowIndex}" change="onIconChanged()" top="1" left="1" width="40"/-->
 					</s:Group>
 				</s:Group>
 				

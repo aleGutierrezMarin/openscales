@@ -21,6 +21,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.MultiLineString;
 	
 	public class EditKMLStyleHandler extends Handler
@@ -127,6 +128,25 @@ package org.openscales.core.handler.feature.draw
 		public function applyNewStyle():void
 		{
 			
+		}
+		
+		/**
+		 *Replace the current style symbolizer with the given one according to the feature edition mode selected
+		 */
+		public function replaceSymbolizer(newSymb:Symbolizer):void
+		{
+			if (this._targetFeatures == "selected")
+			{
+				
+			}
+			else if (this._targetFeatures == "typeselected")
+			{
+				
+			}
+			else if (this._targetFeatures == "all")
+			{
+				
+			}
 		}
 
 		
