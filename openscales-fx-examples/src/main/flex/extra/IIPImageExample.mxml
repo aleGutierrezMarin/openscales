@@ -18,8 +18,8 @@
 		<DragHandler id="dragHandler" />
 		<WheelHandler id="wheelHandler" />
 		<IIPImageViewer id="gwi"
-								   server="http://merovingio.c2rmf.cnrs.fr/fcgi-bin/iipsrv.fcgi"
-								   image="hs-2007-16-a-full_tif.tif"
+								   server="http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/iipsrv/"
+								   image="92PHQ3021/test_2.jp2"
 								   right="50" bottom="50" 
 								   width="500" height="400">
 			<s:Group id="control" bottom="10">

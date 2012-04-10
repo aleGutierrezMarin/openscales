@@ -150,8 +150,7 @@ package org.openscales.core.style {
 			
 			var style:Style = new Style();
 			style.name = "Default line style";
-			//style.rules.push(getLineRule());
-			style.rules.push(getArrowRule());
+			style.rules.push(getLineRule());
 			return style;
 		}
 		
