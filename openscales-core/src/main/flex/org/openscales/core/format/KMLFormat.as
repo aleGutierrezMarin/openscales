@@ -74,6 +74,23 @@ package org.openscales.core.format
 		private var _excludeFromExtendedData:Array = new Array("id", "name", "description", "popupContentHTML", "label");
 		
 		public function KMLFormat() {}
+		
+		/**
+		 * Read name
+		 *
+		 * @param data data to read/parse
+		 * @return name of KML layer
+		 */
+		public function readName(data:Object):String {
+			var dataXML:XML = data as XML;
+			
+			use namespace google;
+			use namespace opengis;
+			
+			var name:String = dataXML..Name.toString();
+			return name;
+			
+		}
 			
 		/**
 		 * Read data

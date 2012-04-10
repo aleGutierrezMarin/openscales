@@ -530,7 +530,7 @@
 				if (!xmlList || xmlList.toString()=="") {
 					_resultsProvider = new ArrayCollection();
 					this._showNoResultMsg = true;
-					this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
+					this.map.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
 				}
 				else {
 					switch (xmlList.localName()) {
@@ -570,7 +570,7 @@
 						this._showResults = true;
 					}
 				}
-				this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
+				this.map.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
 			}
 			
 			private function displayReverseGeocodeResults(xmlList:XMLList):void {
@@ -606,7 +606,7 @@
 					this._nbResultsText = _resultsProvider.length + " " + Catalog.getLocalizationForKey("openLSSearch.results") + " :";
 					this._showResults = true;
 				}
-				this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
+				this.map.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
 			}
 			
 			public function onSearchResultsClick(index:int):void {
