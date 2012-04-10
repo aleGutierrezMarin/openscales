@@ -4,6 +4,7 @@ package org.openscales.core.feature {
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;
@@ -27,7 +28,7 @@ package org.openscales.core.feature {
 		 */
 		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
 		{
-			if (symbolizer is PointSymbolizer)
+			if (symbolizer is PointSymbolizer || symbolizer is TextSymbolizer)
 				return true;
 			else
 				return false;

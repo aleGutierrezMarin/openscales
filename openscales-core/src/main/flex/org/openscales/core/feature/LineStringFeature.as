@@ -2,11 +2,15 @@ package org.openscales.core.feature
 {
 	import flash.display.BlendMode;
 	import flash.display.DisplayObject;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.basetypes.Location;
@@ -31,7 +35,7 @@ package org.openscales.core.feature
 		 */
 		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
 		{
-			if (symbolizer is LineSymbolizer)
+			if (symbolizer is LineSymbolizer || symbolizer is TextSymbolizer)
 				return true;
 			else
 				return false
@@ -101,6 +105,8 @@ package org.openscales.core.feature
 					dispObject.y = px2.y;
 					this.addChild(dispObject);
 				}
+			} else if (symbolizer is TextSymbolizer) {
+				(symbolizer as TextSymbolizer).drawTextField(this);
 			}
 			for (var i:uint = 0; i < j; i+=2) {
 				var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[i], coords[i+1], this.projection));

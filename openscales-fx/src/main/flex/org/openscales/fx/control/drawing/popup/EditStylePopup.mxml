@@ -32,6 +32,7 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.font.Font;
 			import org.openscales.core.style.marker.ArrowMarker;
 			import org.openscales.core.style.marker.CustomMarker;
 			import org.openscales.core.style.marker.WellKnownMarker;
@@ -41,6 +42,7 @@
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.core.style.symbolizer.TextSymbolizer;
 			import org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin;
 			
 			[Embed(source="/assets/images/defaut.png")]
@@ -146,7 +148,17 @@
 			[Bindable]
 			private var _rightArrowActivated:Boolean = false;
 			
+			[Bindable]
+			private var _fontWeight:String = null;
 			
+			[Bindable]
+			private var _fontSize:String = "10";
+			
+			[Bindable]
+			private var _fontOpacity:Number = 100;
+			
+			[Bindable]
+			private var _fontColor:Number = 0x000000;
 			
 			/**
 			 * Toggle style picking
@@ -504,6 +516,30 @@
 				this.editStyleHandler.actualizeFeature();
 			}
 			
+			private function onLabelOpacityChange():void {
+				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s.font)
+					s.font = new org.openscales.core.style.font.Font();
+				s.font.opacity = labelFillControlOpacity.value/100;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			private function onLabelFontChange():void {
+				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s.font)
+					s.font = new org.openscales.core.style.font.Font();
+				s.font.family = _fonts[labelFonts.selectedIndex].label;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			private function onLabelSizeChange():void {
+				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s.font)
+					s.font = new org.openscales.core.style.font.Font();
+				s.font.size = Number(labelFontSize.text);
+				this.editStyleHandler.actualizeFeature();
+			}
+			
 			/***
 			 * Cancel styles changes mades on the opened popup
 			 */
@@ -739,13 +775,24 @@
 						symbLength = rule.symbolizers.length;
 						for (i = 0; i< symbLength; ++i)
 						{
-							if (rule.symbolizers[i] is LineSymbolizer)
+							if (rule.symbolizers[i] is TextSymbolizer) {
+								var textSymb:TextSymbolizer = rule.symbolizers[i] as TextSymbolizer;
+								if(textSymb.font) {
+									this._fontColor = textSymb.font.color;
+									this._fontOpacity = textSymb.font.opacity*100;
+									this._fontWeight = textSymb.font.weight;
+									this._fontSize = textSymb.font.size.toString();
+								}
+								_editedSymbolize = textSymb;
+								return;
+							}
+							else if (rule.symbolizers[i] is LineSymbolizer)
 							{
 								
 								if (rule.symbolizers[i] is ArrowSymbolizer)
 								{
 									this._isArrow = true;
-								}else{
+								} else{
 									this._isArrow = false;
 								}
 								var lineSymb:LineSymbolizer = rule.symbolizers[i] as LineSymbolizer;
@@ -1057,7 +1104,7 @@
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="labelFillControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+						<s:HSlider id="labelFillControlOpacity" height="11" width="100" minimum="0" maximum="100" value="@{this._fontOpacity}" change="onLabelOpacityChange();"/>
 					</s:Group>
 				</s:Group>
 				
@@ -1074,7 +1121,7 @@
 						</s:layout>
 						
 						<s:Label paddingTop="5" text="police" width="45" color="black"/>
-						<s:DropDownList width="90" id="fonts" dataProvider="{this._fonts}"/>
+						<s:DropDownList width="90" id="labelFonts" dataProvider="{this._fonts}" change="onLabelFontChange();"/>
 					</s:Group>
 					<s:Group>
 						<s:layout>
@@ -1088,7 +1135,7 @@
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
-						<s:Label paddingTop="5" text="taille" width="45" color="black"/><s:TextInput width="30" text="12" restrict="0-9" maxChars="3"/>
+						<s:Label paddingTop="5" text="taille" width="45" color="black"/><s:TextInput id="labelFontSize" width="30" text="@{this._fontSize}" restrict="0-9" maxChars="2" change="onLabelSizeChange();"/>
 					</s:Group>
 				</s:Group>
 				

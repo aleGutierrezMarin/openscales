@@ -303,6 +303,8 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.style.symbolizer.TextSymbolizer"/>
+    <classEntry path="org.openscales.core.style.font.Font"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

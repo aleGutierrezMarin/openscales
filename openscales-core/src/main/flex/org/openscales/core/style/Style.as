@@ -7,6 +7,7 @@ package org.openscales.core.style {
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.WellKnownMarker;
@@ -16,6 +17,7 @@ package org.openscales.core.style {
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.MultiPoint;
