@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- resolution="0.17578125"  This example shows WMS-C layer, WFS layer, layer manager, PanZoom control, SelectFeature handler and popup used together -->
+<s:VGroup xmlns="http://openscales.org"
+		  xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="100%"
+		  height="100%"
+		  creationComplete="initMap()" xmlns:components="components.*">
+	
+	<Map id="fxMap" width="100%" height="100%" 
+		 resolution="0.0804262234744723" center="-97.18811511815088,41.07050388806316"
+		 maxExtent="-180,-90,180,90" projection="EPSG:900913">
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
+		
+		
+		<KeyBoardHandler id="keyboardHandler" />
+		<DragHandler id="dragHandler" />
+		<WheelHandler id="wheelHandler" />
+		<IIPImageViewer id="gwi"
+								   server="http://merovingio.c2rmf.cnrs.fr/fcgi-bin/iipsrv.fcgi"
+								   image="hs-2007-16-a-full_tif.tif"
+								   right="50" bottom="50" 
+								   width="500" height="400">
+			<s:Group id="control" bottom="10">
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>
+				<s:Group id="controlBar1">
+					<s:layout>
+						<s:HorizontalLayout paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" />
+					</s:layout>
+					<s:Button id="overviewButton" label="Toggle overview" click="{gwi.overview=!gwi.overview}" />
+					<s:Button id="panupButton" label="Pan up" click="{gwi.panUp();}" />
+					<s:Button id="pandownButton" label="Pan Down" click="{gwi.panDown();}" />
+					<s:Button id="panrightButton" label="Pan Right" click="{gwi.panRight();}" />
+					<s:Button id="panleftButton" label="Pan Left" click="{gwi.panLeft();}" />
+				</s:Group>
+				<s:Group id="controlBar2">
+					<s:layout>
+						<s:HorizontalLayout paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5" />
+					</s:layout>
+					<s:Button id="zoominButton" label="Zoom in" click="{gwi.zoomIn();}" />	
+					<s:Button id="zoomoutButton" label="Zoom out" click="{gwi.zoomOut();}" />	
+					<s:Button id="maxextentButton" label="Zoom to max extent" click="{gwi.zoomToMaxExtent();}" />	
+					<s:Button id="fullscreenButton" label="Full Screen" click="{gwi.toggleFullScreen();}" />
+				</s:Group>
+			</s:Group>
+			
+		</IIPImageViewer>
+		
+	</Map>
+	<components:toolbar fxMap="{fxMap}" />
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.format.DCFormat;
+			import org.openscales.core.format.csw.CSWGetRecordsFormat;
+			import org.openscales.core.popup.Anchored;
+			import org.openscales.core.request.csw.GetRecordByIdRequest;
+			import org.openscales.core.request.csw.GetRecordsRequest;
+			import org.openscales.core.style.Style;
+			import org.openscales.core.utils.Trace;
+			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			//private var popup:Anchored
+			private var fxpopup:FxPopup;
+			
+			
+			private function initMap():void {			
+				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				
+				var req:GetRecordsRequest = new GetRecordsRequest("http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/geoportail/csw",onOk, onNoOk);
+				req.startPosition = 1;
+				req.maxRecords = 10;
+				req.send();
+				
+				var req2:GetRecordByIdRequest = new GetRecordByIdRequest("http://qlf-gpp3-wxs-ign-fr.aw.atosorigin.com/inspire/csw", onOk2, onNoOk2);
+				req2.recordId = "IGNF_BDORTHOr_RVB_0M50_TIF_LAMB93_D75-2008.xml";
+				req2.elementSetName = "summary";
+				req2.send();
+				
+				
+			}
+			
+			public function onOk2(evt:Event):void
+			{
+				var plop:int =  1;
+				/*var format:CSWGetRecordsFormat = new CSWGetRecordsFormat();
+				var loader:URLLoader = evt.target as URLLoader;
+				var data:HashMap = (format.read(loader.data) as HashMap);*/
+			}
+			
+			public function onNoOk2(value:Event):void
+			{
+				var plop2:int = 1;
+			}
+			
+			public function onOk(evt:Event):void
+			{
+				var plop:int = 1;
+				var format:CSWGetRecordsFormat = new CSWGetRecordsFormat();
+				format.responseFormat = new DCFormat();
+				var loader:URLLoader = evt.target as URLLoader;
+				var data:HashMap = (format.read(loader.data) as HashMap);
+			}
+			
+			public function onNoOk(value:Event):void
+			{
+				var plop2:int = 1;
+			}
+			
+			private function onFeatureClick(event:FeatureEvent):void {
+				if(fxpopup){
+					fxpopup.destroy();
+				}
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+				
+				var content:String="";
+				
+				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				
+				fxpopup.feature = event.feature;
+				var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(event.feature.lonlat);
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+				fxpopup.position = px;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				if(event.feature.attributes["STATE_NAME"]){
+					fxpopupRenderer.titleContent = event.feature.attributes["STATE_NAME"] + " (" + event.feature.attributes["STATE_ABBR"] + ")";
+				}
+				for(var attribute:String in event.feature.attributes) {
+					if((attribute != "STATE_NAME") && (attribute != "STATE_ABBR") && (attribute != "coordinates")) 
+						content = content + "<b>" + attribute + "</b> : " + event.feature.attributes[attribute] + "<br />";
+				}
+				fxpopupRenderer.content = content;
+				
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
+				
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:VGroup>
