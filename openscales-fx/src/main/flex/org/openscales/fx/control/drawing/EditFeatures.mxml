@@ -33,8 +33,10 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
+			import org.openscales.core.style.font.Font;
 			import org.openscales.core.style.symbolizer.LineSymbolizer;
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+			import org.openscales.core.style.symbolizer.TextSymbolizer;
 			import org.openscales.fx.control.drawing.popup.EditLabel;
 			import org.openscales.geometry.basetypes.Pixel;
 			
@@ -240,8 +242,6 @@
 				this._map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
 				this._map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
 				this._map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
-				this.map.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-				this.map.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				
 				_alpha = 1;
 			}
@@ -283,23 +283,9 @@
 					this._map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, onFeatureUnselected);
 					this._map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
 					this._map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
-					this._map.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
-					this._map.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				}
 				
 				_alpha = 0.3;
-			}
-			
-			public function onMouseDown(evt:MouseEvent):void
-			{
-				this._map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onFeatureOver);
-				this._map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onFeatureOut);
-			}
-			
-			public function onMouseUp(evt:MouseEvent):void
-			{
-				this._map.addEventListener(FeatureEvent.FEATURE_OVER, this.onFeatureOver);
-				this._map.addEventListener(FeatureEvent.FEATURE_OUT, this.onFeatureOut);
 			}
 			
 			/**
@@ -451,14 +437,23 @@
 				{
 					evt.feature.originalStyle = evt.feature.style;
 					
-					if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+					if (evt.feature is LabelFeature) {
+						if(evt.feature.style.rules[0]
+							&& evt.feature.style.rules[0].symbolizers[0]
+							&& evt.feature.style.rules[0].symbolizers[0] is TextSymbolizer)
+						{
+							var ts:TextSymbolizer = evt.feature.style.rules[0].symbolizers[0] as TextSymbolizer;
+							evt.feature.style = Style.getDefinedLabelStyle(ts.font.family,
+								ts.font.size,
+								(0xFFFFFF-ts.font.color),
+								(ts.font.weight==org.openscales.core.style.font.Font.BOLD),
+								(ts.font.style==org.openscales.core.style.font.Font.ITALIC));
+						}
+					} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
 						//evt.feature.style = Style.getDefaultSelectedPointStyle();
 					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 						evt.feature.style = Style.getDefaultSelectedLineStyle();
 						(evt.feature.style.rules[0].symbolizers[0] as LineSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as LineSymbolizer).stroke.width;
-					} else if (evt.feature is LabelFeature) {
-						evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-							0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
 					} else {
 						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
 						(evt.feature.style.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width;
@@ -482,13 +477,22 @@
 					if(evt.feature.originalStyle != null) {
 						evt.feature.style = evt.feature.originalStyle;
 					} else {
-						if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+						if (evt.feature is LabelFeature) {
+							if(evt.feature.style.rules[0]
+								&& evt.feature.style.rules[0].symbolizers[0]
+								&& evt.feature.style.rules[0].symbolizers[0] is TextSymbolizer)
+							{
+								var ts:TextSymbolizer = evt.feature.style.rules[0].symbolizers[0] as TextSymbolizer;
+								evt.feature.style = Style.getDefinedLabelStyle(ts.font.family,
+									ts.font.size,
+									(0xFFFFFF-ts.font.color),
+									(ts.font.weight==org.openscales.core.style.font.Font.BOLD),
+									(ts.font.style==org.openscales.core.style.font.Font.ITALIC));
+							}
+						} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
 							//evt.feature.style = Style.getDefaultPointStyle();
 						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 							evt.feature.style = Style.getDefaultLineStyle();
-						} else if (evt.feature is LabelFeature) {
-							//evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-							//	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
 						} else {
 							evt.feature.style = Style.getDefaultPolygonStyle();
 						}
