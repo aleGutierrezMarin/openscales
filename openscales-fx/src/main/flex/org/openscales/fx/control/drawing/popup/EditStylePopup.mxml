@@ -615,6 +615,18 @@
 				this.lineArrowLabel.text = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowLabel");
 				this.leftArrowCheckBox.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowLeftLabel");
 				this.rightArrowCheckBox.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowRightLabel");
+				
+				// label editor
+				this.titleLabelColor.text = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.titleLabelColor");
+				this.titleLabelHalo.text = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.titleLabelHalo");
+				this.titleFontLabelStyle.text = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.titleFontLabelStyle");
+				this.titleFont.text = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.titleFont");
+				this.titleFontStyle.text = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.titleFontStyle");
+				this.titleFontSize.text = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.titleFontSize");
+				this.labelApplyTo.text = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.labelApplyTo");
+				this.applyAllLabel.label = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.applyAllLabel");
+				this.applyOnlyThisLabel.label = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.applyOnlyThisLabel");
+				this.applySimilarLabel.label = Catalog.getLocalizationForKey("editStyle.labelStyleEdition.applySimilarLabel");
 			}
 			
 			// Getter Setter
@@ -1108,7 +1120,7 @@
 					</s:layout>
 					
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label id="titleColor" text="Couleur" color="black"/>
+					<s:Label id="titleLabelColor" text="" color="black"/>
 				</s:Group>
 				
 				<s:Group id="labelBorder" width="170" >
@@ -1134,7 +1146,7 @@
 					</s:layout>
 					
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Fond" color="black"/>
+					<s:Label id="titleLabelHalo" text="" color="black"/>
 				</s:Group>
 				<s:Group id="labelFill" width="156" >
 					<s:layout >
@@ -1159,13 +1171,13 @@
 					</s:layout>
 					
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Label" color="black"/>
+					<s:Label id="titleFontStyle" text="" color="black"/>
 					<s:Group>
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
 						
-						<s:Label paddingTop="5" text="police" width="45" color="black"/>
+						<s:Label id="titleFont" paddingTop="5" text="" width="45" color="black"/>
 						<s:DropDownList width="90" id="labelFonts" dataProvider="{this._fonts}" selectedItem="@{this._fontFamily}" change="onLabelFontChange();"/>
 					</s:Group>
 					<s:Group>
@@ -1173,7 +1185,7 @@
 							<s:HorizontalLayout/>
 						</s:layout>
 						
-						<s:Label paddingTop="5" text="style" width="45" color="black"/>
+						<s:Label  id="titleFontStyle" paddingTop="5" text="" width="45" color="black"/>
 						<s:ToggleButton width="30" id="labelBold" label="B" selected="@{this._fontBold}" change="onLabelFontChange();"/>
 						<s:ToggleButton width="30" id="labelItalic" label="I" selected="@{this._fontItalic}" change="onLabelFontChange();" />
 					</s:Group>
@@ -1181,7 +1193,7 @@
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
-						<s:Label paddingTop="5" text="taille" width="45" color="black"/>
+						<s:Label id="titleFontSize" paddingTop="5" text="" width="45" color="black"/>
 						<s:NumericStepper id="labelFontSize" value="@{this._fontSize}" minimum="1" maximum="92" stepSize="0.5" change="onLabelFontChange();"/>
 					</s:Group>
 				</s:Group>
@@ -1191,10 +1203,10 @@
 						<s:VerticalLayout paddingLeft="2"/>
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Appliquer à : "/>
-					<s:RadioButton selected="@{this._allMode}" groupName="labelPreviewMode" label="Les labels de même style"/>
-					<s:RadioButton selected="@{this._selectedMode}" groupName="labelPreviewMode" label="Ce label"/>
-					<s:RadioButton selected="@{this._typeSelectedMode}" groupName="labelPreviewMode" label="Tous les labels"/>
+					<s:Label id="labelApplyTo" text=""/>
+					<s:RadioButton id="applyAllLabel" selected="@{this._allMode}" groupName="labelPreviewMode" label=""/>
+					<s:RadioButton id="applyOnlyThisLabel" selected="@{this._selectedMode}" groupName="labelPreviewMode" label=""/>
+					<s:RadioButton id="applySimilarLabel" selected="@{this._typeSelectedMode}" groupName="labelPreviewMode" label=""/>
 				</s:Group>
 			</s:Group>
 		</s:Group>
