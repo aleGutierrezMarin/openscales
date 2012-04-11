@@ -180,7 +180,16 @@
    "editStyle.polyStyleEdition.labelText" : "Appliquer à : ",
    "editStyle.polyStyleEdition.previewModeAll" : "Les polygones de même style",
    "editStyle.polyStyleEdition.previewModeSelected" : "Ce polygone seulement",
-   "editStyle.polyStyleEdition.previewModeTypeSelected" : "Tous les polygones"
+   "editStyle.polyStyleEdition.previewModeTypeSelected" : "Tous les polygones",
    
-   
+   "editStyle.labelStyleEdition.titleLabelColor":"Texte",
+   "editStyle.labelStyleEdition.titleLabelHalo":"Fond",
+   "editStyle.labelStyleEdition.titleFontLabelStyle":"Style du texte",
+   "editStyle.labelStyleEdition.titleFont":"Police",
+   "editStyle.labelStyleEdition.titleFontStyle":"Style",
+   "editStyle.labelStyleEdition.titleFontSize":"Taille",
+   "editStyle.labelStyleEdition.labelApplyTo":"Appliquer à :",
+   "editStyle.labelStyleEdition.applyAllLabel":"Les labels du même style",
+   "editStyle.labelStyleEdition.applyOnlyThisLabel":"Uniquement ce label",
+   "editStyle.labelStyleEdition.applySimilarLabel":"Tous les labels"
  }
