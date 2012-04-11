@@ -2,6 +2,7 @@ package org.openscales.core.style.symbolizer
 {
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.GlowFilter;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -83,6 +84,7 @@ package org.openscales.core.style.symbolizer
 			label.selectable = true;
 			label.mouseEnabled = false;
 			label.autoSize = TextFieldAutoSize.LEFT;
+			label.antiAliasType = AntiAliasType.ADVANCED;
 			label.text = text;
 			if(font) {
 				var textFormat:TextFormat = new TextFormat();
@@ -93,6 +95,9 @@ package org.openscales.core.style.symbolizer
 				}
 				if(this._font.style == Font.ITALIC) {
 					textFormat.italic = true;
+				}
+				if(this._font.family) {
+					textFormat.font = this._font.family;
 				}
 				label.alpha = this._font.opacity;
 				label.setTextFormat(textFormat);
