@@ -969,17 +969,7 @@ package org.openscales.core.handler.feature
 			var opacity:Number = 0.5;
 			var borderThin:int = 2;
 			if (feature is LabelFeature) {
-				if(!feature.style.rules[0]
-					|| !feature.style.rules[0].symbolizers[0]
-					|| !feature.style.rules[0].symbolizers[0] is TextSymbolizer)
-					return feature.style;
-				var ts:TextSymbolizer = feature.style.rules[0].symbolizers[0] as TextSymbolizer;
-				selectedStyle = Style.getDefinedLabelStyle(ts.font.family,
-					ts.font.size,
-					(0xFFFFFF-ts.font.color),
-					(ts.font.weight==Font.BOLD),
-					(ts.font.style==Font.ITALIC));
-				return selectedStyle;
+				return Style.getNegativeLabelStyle(feature.style);
 			} else if (feature is PointFeature || feature is MultiPointFeature) {
 				return Style.getDefaultSelectedPointStyle();
 			} else if (feature is LineStringFeature || feature is MultiLineStringFeature) {

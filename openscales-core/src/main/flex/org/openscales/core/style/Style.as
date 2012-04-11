@@ -390,6 +390,18 @@ package org.openscales.core.style {
 			return style;
 		}
 		
+		public static function getNegativeLabelStyle(style:Style):Style{
+			var s:Style = style.clone();
+			if(s.rules[0] && s.rules[0].symbolizers[0] && s.rules[0].symbolizers[0] is TextSymbolizer) {
+				var ts:TextSymbolizer = s.rules[0].symbolizers[0] as TextSymbolizer;
+				if(ts.halo)
+					ts.halo.color = 0xFFFFFF-ts.halo.color;
+				if(ts.font)
+					ts.font.color = 0xFFFFFF-ts.font.color;
+			}
+			return s;
+		}
+		
 		/*Default Styles*/
 		public static function getDefaultStyle():Style{
 			

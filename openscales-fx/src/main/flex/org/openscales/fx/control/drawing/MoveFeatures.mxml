@@ -200,17 +200,7 @@
 						evt.feature.originalStyle = evt.feature.style;
 					}
 					if (evt.feature is LabelFeature) {
-						if(evt.feature.style.rules[0]
-							&& evt.feature.style.rules[0].symbolizers[0]
-							&& evt.feature.style.rules[0].symbolizers[0] is TextSymbolizer)
-						{
-							var ts:TextSymbolizer = evt.feature.style.rules[0].symbolizers[0] as TextSymbolizer;
-							evt.feature.style = Style.getDefinedLabelStyle(ts.font.family,
-								ts.font.size,
-								(0xFFFFFF-ts.font.color),
-								(ts.font.weight==org.openscales.core.style.font.Font.BOLD),
-								(ts.font.style==org.openscales.core.style.font.Font.ITALIC));
-						}
+						evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
 					} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
 						//evt.feature.style = Style.getDefaultSelectedPointStyle();
 					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
@@ -241,17 +231,7 @@
 						evt.feature.style = evt.feature.originalStyle;
 					} else {
 						if (evt.feature is LabelFeature) {
-							if(evt.feature.style.rules[0]
-								&& evt.feature.style.rules[0].symbolizers[0]
-								&& evt.feature.style.rules[0].symbolizers[0] is TextSymbolizer)
-							{
-								var ts:TextSymbolizer = evt.feature.style.rules[0].symbolizers[0] as TextSymbolizer;
-								evt.feature.style = Style.getDefinedLabelStyle(ts.font.family,
-									ts.font.size,
-									(0xFFFFFF-ts.font.color),
-									(ts.font.weight==org.openscales.core.style.font.Font.BOLD),
-									(ts.font.style==org.openscales.core.style.font.Font.ITALIC));
-							}
+							evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
 						} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
 							//evt.feature.style = Style.getDefaultPointStyle();
 						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
