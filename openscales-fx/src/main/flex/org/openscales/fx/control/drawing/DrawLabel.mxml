@@ -31,7 +31,6 @@
 			import org.openscales.core.style.Style;
 			import org.openscales.core.style.symbolizer.TextSymbolizer;
 			import org.openscales.fx.control.drawing.popup.EditLabel;
-			import org.openscales.geometry.LabelPoint;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
 			
@@ -127,8 +126,6 @@
 				{
 					var pixel:Pixel = px;
 					var labelLocation:Location = this._map.getLocationFromMapPx(pixel);
-					var pt:LabelPoint = new LabelPoint(null, labelLocation.x, labelLocation.y);
-					pt.projection = this.map.projection;
 					_feature = LabelFeature.createLabelFeature(labelLocation,null);
 					_feature.style=Style.getDefaultLabelStyle()
 					_feature.layer = this.target;
