@@ -23,6 +23,7 @@ package org.openscales.core
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.events.SearchEvent;
 	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.i18n.Catalog;
@@ -1264,6 +1265,7 @@ package org.openscales.core
 				}
 				this.centerAtLocation(latitude, longitude, Geometry.DEFAULT_SRS_CODE, resolution);
 			}
+			this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
 		}
 		
 		private function centerAtLocation(latitude:Number, longitude:Number, projection:String, resolution:Number): void {

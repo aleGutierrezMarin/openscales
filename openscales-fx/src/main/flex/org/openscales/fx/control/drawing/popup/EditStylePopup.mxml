@@ -18,6 +18,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
 			
+			import org.openscales.core.control.ui.Arrow;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
@@ -31,13 +32,17 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.font.Font;
+			import org.openscales.core.style.marker.ArrowMarker;
 			import org.openscales.core.style.marker.CustomMarker;
 			import org.openscales.core.style.marker.WellKnownMarker;
 			import org.openscales.core.style.stroke.Stroke;
+			import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 			import org.openscales.core.style.symbolizer.LineSymbolizer;
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.core.style.symbolizer.TextSymbolizer;
 			import org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin;
 			
 			[Embed(source="/assets/images/defaut.png")]
@@ -69,6 +74,9 @@
 			
 			[Bindable]
 			private var _isLine:Boolean = false;
+			
+			[Bindable]
+			private var _isArrow:Boolean = false;
 			
 			[Bindable]
 			private var _isLabelPoint:Boolean = false;
@@ -132,8 +140,25 @@
 			[Bindable]
 			private var _paintingAlpha:Number = 1;
 			
+			private var _arrowMarkerType:String = ArrowMarker.AM_THIN;
 			
+			[Bindable]
+			private var _leftArrowActivated:Boolean = false;
 			
+			[Bindable]
+			private var _rightArrowActivated:Boolean = false;
+			
+			[Bindable]
+			private var _fontWeight:String = null;
+			
+			[Bindable]
+			private var _fontSize:String = "10";
+			
+			[Bindable]
+			private var _fontOpacity:Number = 100;
+			
+			[Bindable]
+			private var _fontColor:Number = 0x000000;
 			
 			/**
 			 * Toggle style picking
@@ -182,7 +207,90 @@
 			
 			//Callback
 			
+			/**
+			 *  Method to handle the left arrow checkbox on line style edition
+			 */
+			private function onLeftArrowChange():void
+			{
+				var am:ArrowMarker;
+				if (this._leftArrowActivated)
+				{
+					var arrowSymb:ArrowSymbolizer = this._editedSymbolize as ArrowSymbolizer
+					if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
+						am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
+					else
+						am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
+					
+					
+					if (this._editedSymbolize is ArrowSymbolizer)
+					{
+						(this._editedSymbolize as ArrowSymbolizer).leftMarker = am;
+					}else{
+						if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
+							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
+						else
+							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
+						
+						arrowSymb = new ArrowSymbolizer((this._editedSymbolize as LineSymbolizer).stroke, am, null);
+						this._editedSymbolize = arrowSymb;
+						this.editStyleHandler.replaceSymbolizer(arrowSymb);
+						this._isArrow = true;
+					}
+				}else{
+					if (this._rightArrowActivated)
+					{
+						(this._editedSymbolize as ArrowSymbolizer).leftMarker = null;
+					}else{
+						var linSymb:LineSymbolizer = new LineSymbolizer((this._editedSymbolize as ArrowSymbolizer).stroke);
+						this._editedSymbolize = linSymb;
+						this.editStyleHandler.replaceSymbolizer(linSymb);
+						this._isArrow = false;
+					}
+				}
+				this.editStyleHandler.actualizeFeature();
+			}
 			
+			/**
+			 *  Method to handle the right arrow checkbox on line style edition
+			 */
+			private function onRightArrowChange():void
+			{
+				var am:ArrowMarker;
+				if (this._rightArrowActivated)
+				{
+					var arrowSymb:ArrowSymbolizer = this._editedSymbolize as ArrowSymbolizer
+					if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
+						am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
+					else
+						am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
+					
+					if (this._editedSymbolize is ArrowSymbolizer)
+					{
+						(this._editedSymbolize as ArrowSymbolizer).rightMarker = am;
+					}else{
+						if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
+							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
+						else
+							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
+						
+						arrowSymb = new ArrowSymbolizer((this._editedSymbolize as LineSymbolizer).stroke, null, am);
+						this._editedSymbolize = arrowSymb;
+						this.editStyleHandler.replaceSymbolizer(arrowSymb);
+						this._isArrow = true;
+					}	
+				}else{
+					if (this._leftArrowActivated)
+					{
+						(this._editedSymbolize as ArrowSymbolizer).rightMarker = null;
+					}else{
+						var linSymb:LineSymbolizer = new LineSymbolizer((this._editedSymbolize as ArrowSymbolizer).stroke);
+						this._editedSymbolize = linSymb;
+						this.editStyleHandler.replaceSymbolizer(linSymb);
+						this._isArrow = false;
+					}
+				}
+				this.editStyleHandler.actualizeFeature();
+			}
 			
 			/**
 			 * Method to handle the icon mode change on pointEdition
@@ -255,6 +363,17 @@
 			{
 				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
 				stroke.color = this._lineColor;
+				if (this._isArrow)
+				{
+					if ((this._editedSymbolize as ArrowSymbolizer).leftMarker)
+					{
+						((this._editedSymbolize as ArrowSymbolizer).leftMarker as ArrowMarker).stroke.color = this._lineColor;
+					}
+					if ((this._editedSymbolize as ArrowSymbolizer).rightMarker)
+					{
+						((this._editedSymbolize as ArrowSymbolizer).rightMarker as ArrowMarker).stroke.color = this._lineColor;
+					}
+				}
 				this.editStyleHandler.actualizeFeature();
 			}
 			
@@ -265,6 +384,17 @@
 			{
 				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
 				stroke.opacity = this._lineBorderOpacity/100;
+				if (this._isArrow)
+				{
+					if ((this._editedSymbolize as ArrowSymbolizer).leftMarker)
+					{
+						((this._editedSymbolize as ArrowSymbolizer).leftMarker as ArrowMarker).stroke.opacity = this._lineBorderOpacity/100;
+					}
+					if ((this._editedSymbolize as ArrowSymbolizer).rightMarker)
+					{
+						((this._editedSymbolize as ArrowSymbolizer).rightMarker as ArrowMarker).stroke.opacity = this._lineBorderOpacity/100;
+					}
+				}
 				this.editStyleHandler.actualizeFeature();
 			}
 			
@@ -275,6 +405,32 @@
 			{
 				var stroke:Stroke = (this._editedSymbolize as LineSymbolizer).stroke;
 				stroke.width = int(this._lineWidth);
+				if (this._isArrow)
+				{
+					var am:ArrowMarker;
+					if ((this._editedSymbolize as ArrowSymbolizer).leftMarker)
+					{
+						((this._editedSymbolize as ArrowSymbolizer).leftMarker as ArrowMarker).stroke.width = int(this._lineWidth);
+						am = ((this._editedSymbolize as ArrowSymbolizer).leftMarker as ArrowMarker);
+						if (am.stroke.width < 3)
+							am = new ArrowMarker(am.arrowMarker, am.fill, am.stroke, 12, am.opacity, am.rotation);
+						else
+							am = new ArrowMarker(am.arrowMarker, am.fill, am.stroke, am.stroke.width*4, am.opacity, am.rotation);
+							
+						(this._editedSymbolize as ArrowSymbolizer).leftMarker = am;
+					}
+					if ((this._editedSymbolize as ArrowSymbolizer).rightMarker)
+					{
+						((this._editedSymbolize as ArrowSymbolizer).rightMarker as ArrowMarker).stroke.width = int(this._lineWidth);
+						am = ((this._editedSymbolize as ArrowSymbolizer).rightMarker as ArrowMarker);
+						if (am.stroke.width < 3)
+							am = new ArrowMarker(am.arrowMarker, am.fill, am.stroke, 12, am.opacity, am.rotation);
+						else
+							am = new ArrowMarker(am.arrowMarker, am.fill, am.stroke, am.stroke.width*4, am.opacity, am.rotation);
+						
+						(this._editedSymbolize as ArrowSymbolizer).rightMarker = am;
+					}
+				}
 				this.editStyleHandler.actualizeFeature();
 			}
 			
@@ -360,6 +516,38 @@
 				this.editStyleHandler.actualizeFeature();
 			}
 			
+			private function onLabelOpacityChange():void {
+				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s.font)
+					s.font = new org.openscales.core.style.font.Font();
+				s.font.opacity = labelFillControlOpacity.value/100;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			private function onLabelColorChange():void {
+				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s.font)
+					s.font = new org.openscales.core.style.font.Font();
+				s.font.color = labelColorPicker.selectedColor;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			private function onLabelFontChange():void {
+				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s.font)
+					s.font = new org.openscales.core.style.font.Font();
+				s.font.family = _fonts[labelFonts.selectedIndex].label;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
+			private function onLabelSizeChange():void {
+				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s.font)
+					s.font = new org.openscales.core.style.font.Font();
+				s.font.size = Number(labelFontSize.text);
+				this.editStyleHandler.actualizeFeature();
+			}
+			
 			/***
 			 * Cancel styles changes mades on the opened popup
 			 */
@@ -401,6 +589,9 @@
 				this.polyPreviewModeAll.label = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.previewModeAll");
 				this.polyPreviewModeSelected.label = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.previewModeSelected");
 				this.polyPreviewModeTypeSelected.label = Catalog.getLocalizationForKey("editStyle.polyStyleEdition.previewModeTypeSelected");
+				this.lineArrowLabel.text = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowLabel");
+				this.leftArrowCheckBox.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowLeftLabel");
+				this.rightArrowCheckBox.label = Catalog.getLocalizationForKey("editStyle.lineStyleEdition.lineArrowRightLabel");
 			}
 			
 			// Getter Setter
@@ -500,14 +691,16 @@
 					this._isLabelPoint = true;
 					this._isPolygon = false;
 					this._isLine = false;
+					this._isArrow = false;
+					_editedSymbolize = _targetFeature.style.rules[0].symbolizers[0];
 				}
 				else if (_targetFeature is PointFeature || _targetFeature is MultiPointFeature)
 				{
-					// If labelSymbolizer?
 					this._isPoint = true;
 					this._isLabelPoint = false;
 					this._isPolygon = false;
 					this._isLine = false;
+					this._isArrow = false;
 					if (_targetFeature.style.rules)
 					{
 						rule = _targetFeature.style.rules[0];
@@ -553,6 +746,7 @@
 					this._isLabelPoint = false;
 					this._isPolygon = true;
 					this._isLine = false;
+					this._isArrow = false;
 					if (_targetFeature.style.rules)
 					{
 						rule = _targetFeature.style.rules[0];
@@ -579,6 +773,9 @@
 					this._isLabelPoint = false;
 					this._isPolygon = false;
 					this._isLine = true;
+					this._isArrow = false;
+					
+					
 					
 					if (_targetFeature.style.rules)
 					{
@@ -586,12 +783,43 @@
 						symbLength = rule.symbolizers.length;
 						for (i = 0; i< symbLength; ++i)
 						{
-							if (rule.symbolizers[i] is LineSymbolizer)
+							if (rule.symbolizers[i] is TextSymbolizer) {
+								var textSymb:TextSymbolizer = rule.symbolizers[i] as TextSymbolizer;
+								if(textSymb.font) {
+									this._fontColor = textSymb.font.color;
+									this._fontOpacity = textSymb.font.opacity*100;
+									this._fontWeight = textSymb.font.weight;
+									this._fontSize = textSymb.font.size.toString();
+								}
+								_editedSymbolize = textSymb;
+								return;
+							}
+							else if (rule.symbolizers[i] is LineSymbolizer)
 							{
+								
+								if (rule.symbolizers[i] is ArrowSymbolizer)
+								{
+									this._isArrow = true;
+								} else{
+									this._isArrow = false;
+								}
 								var lineSymb:LineSymbolizer = rule.symbolizers[i] as LineSymbolizer;
 								this._lineColor = lineSymb.stroke.color;
 								this._lineBorderOpacity = lineSymb.stroke.opacity*100;
 								this._lineWidth = lineSymb.stroke.width.toString();
+								this._rightArrowActivated = false;
+								this._leftArrowActivated = false;
+								if (_isArrow)
+								{
+									if ((rule.symbolizers[i] as ArrowSymbolizer).leftMarker)
+									{
+										this._leftArrowActivated = true;
+									}
+									if ((rule.symbolizers[i] as ArrowSymbolizer).rightMarker)
+									{
+										this._rightArrowActivated = true;
+									}
+								}
 								_editedSymbolize = lineSymb;
 								return;
 							}
@@ -708,6 +936,46 @@
 					<s:TextInput id="lineWidth" restrict="0-9" maxChars="3" left="5" height="20" width="20" text="@{this._lineWidth}" change="onLineWidthChanged()" />
 					<s:Label paddingTop="5" text="px" color="black"/>
 				</s:Group>
+				
+				
+				
+				<s:Group width="156" >
+					<s:layout >
+						<s:VerticalLayout paddingLeft="5" paddingTop="10" gap="10"/>
+					</s:layout>
+					
+					<mx:Image left="5" source="{Line}"/>
+					<s:Label id="lineArrowLabel" color="black"/>
+				</s:Group>
+				
+				<s:Group id="arrows" width="170" >
+					<s:layout >
+						<s:HorizontalLayout paddingLeft="5" gap="5"/>
+					</s:layout>
+				
+					<s:Group width="50%">
+						<s:layout >
+							<s:HorizontalLayout />
+						</s:layout>
+						
+						<s:Label id="lineArrowLeftLabel" color="black" />
+						<s:CheckBox id="leftArrowCheckBox" selected="@{this._leftArrowActivated}" change="this.onLeftArrowChange()"/>
+						<!--s:DropDownList id="leftArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer" dataProvider="{this._arrowChoice}"  selectedIndex="@{this._leftArrowIndex}" change="onIconChanged()" top="1" left="1" width="40"/-->
+
+					</s:Group>
+					
+					<s:Group width="50%">
+						<s:layout >
+							<s:HorizontalLayout/>
+						</s:layout>
+						
+						<s:Label id="lineArrowRightLabel" color="black" />
+						<s:CheckBox id="rightArrowCheckBox" selected="@{this._rightArrowActivated}" change="this.onRightArrowChange()"/>
+
+						<!--s:DropDownList  id="rightArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer" dataProvider="{this._arrowChoice}"  selectedIndex="@{this._rightArrowIndex}" change="onIconChanged()" top="1" left="1" width="40"/-->
+					</s:Group>
+				</s:Group>
+				
 				<s:Group>
 					<s:layout >
 						<s:VerticalLayout paddingLeft="2"/>
@@ -812,14 +1080,14 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="labelColorPicker" />
+						<mx:ColorPicker id="labelColorPicker" selectedColor="@{this._fontColor}" change="onLabelColorChange();"/>
 					</s:Graphic>
 					<s:Group >
 						<s:layout >
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="labelBorderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+						<s:HSlider id="labelBorderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="@{this._fontOpacity}" change="onLabelOpacityChange();"/>
 					</s:Group>
 				</s:Group>
 				
@@ -861,7 +1129,7 @@
 						</s:layout>
 						
 						<s:Label paddingTop="5" text="police" width="45" color="black"/>
-						<s:DropDownList width="90" id="fonts" dataProvider="{this._fonts}"/>
+						<s:DropDownList width="90" id="labelFonts" dataProvider="{this._fonts}" change="onLabelFontChange();"/>
 					</s:Group>
 					<s:Group>
 						<s:layout>
@@ -875,7 +1143,7 @@
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
-						<s:Label paddingTop="5" text="taille" width="45" color="black"/><s:TextInput width="30" text="12" restrict="0-9" maxChars="3"/>
+						<s:Label paddingTop="5" text="taille" width="45" color="black"/><s:TextInput id="labelFontSize" width="30" text="@{this._fontSize}" restrict="0-9" maxChars="2" change="onLabelSizeChange();"/>
 					</s:Group>
 				</s:Group>
 				

@@ -153,9 +153,6 @@ package org.openscales.geometry
 			if (geom is Point) {
 				return this.containsPoint(geom as Point);
 			}
-			else if (geom is LabelPoint) {
-				return this.bounds.intersectsBounds(geom.bounds,false);
-			}
 			else if ((geom is LinearRing) || (geom is LineString)) {
 				// LinearRing should be tested before LineString if a different
 				//   action should be made for each case..

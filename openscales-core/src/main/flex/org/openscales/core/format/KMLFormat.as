@@ -21,17 +21,18 @@ package org.openscales.core.format
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.Marker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiLineString;
@@ -39,14 +40,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
-	import org.openscales.core.basetypes.maps.HashMap;
-	import org.openscales.core.feature.Feature;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.symbolizer.LineSymbolizer;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
-	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-	import org.openscales.core.style.symbolizer.Symbolizer;
 	
 	use namespace os_internal;
 	
@@ -88,6 +82,8 @@ package org.openscales.core.format
 		 */
 		public function readName(data:Object):String {
 			var dataXML:XML = data as XML;
+			if(!dataXML)
+				return null;
 			
 			use namespace google;
 			use namespace opengis;
@@ -214,9 +210,7 @@ package org.openscales.core.format
 								yUnit = hotSpot[0].@yunits;
 						}
 						currentRule.symbolizers.push(new PointSymbolizer(new CustomMarker(href, 1, xOffSet, xUnit, yOffSet, yUnit)));	
-					}
-
-					else
+					} else
 					{
 						var iconColor:Number;
 						var iconAlpha:Number = 1;
@@ -258,8 +252,46 @@ package org.openscales.core.format
 					{
 						Lwidth = parseInt(lineWidth[0].toString());
 					}
-					currentRule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
-					outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					
+					
+					var extensionLine:XMLList = styleList[i]..*::ListStyleSimpleExtensionGroup;
+					var leftArrowMarker:String;
+					var rightArrowMarker:String;
+					var isArrow:Boolean = false;
+					if (extensionLine.length() > 0)
+					{
+						leftArrowMarker = extensionLine[0].@leftArrow;
+						rightArrowMarker = extensionLine[0].@rightArrow;
+						isArrow = true;
+					}
+					
+					if (isArrow)
+					{
+						
+						var leftMarker:ArrowMarker;
+						var rightMarker:ArrowMarker;
+						
+						if (leftArrowMarker != "none")
+						{
+							if (Lwidth < 3)
+								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							else
+								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+						}
+						
+						if (rightArrowMarker != "none")
+						{
+							if (Lwidth < 3)
+								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							else
+								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+						}
+						currentRule.symbolizers.push(new ArrowSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha), leftMarker, rightMarker));
+						outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					}else{
+						currentRule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
+						outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					}
 				}
 				
 				if(styleList[i].localName() == "PolyStyle") 
@@ -534,8 +566,6 @@ package org.openscales.core.format
 							iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));	
 					}
 				}
-				//Points
-				// rotation is not supported yet
 				else if(placemark.Point != undefined)
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
@@ -552,8 +582,10 @@ package org.openscales.core.format
 					}
 					
 					if(isLabel) {
-						var l:LabelPoint = new LabelPoint(textLabel,coordinates[0], coordinates[1]);
-						labelfeatures.push(new LabelFeature(l,attributes));
+						var loc:Location = new Location(coordinates[0], coordinates[1]);
+						var lf:LabelFeature = LabelFeature.createLabelFeature(loc, attributes);
+						lf.text = textLabel;
+						labelfeatures.push(lf);
 					} else {
 						point = new Point(coordinates[0], coordinates[1]);
 						if (this.internalProjection != null, this.externalProjection != null) 
@@ -876,7 +908,7 @@ package org.openscales.core.format
 			else if(feature is LabelFeature)
 			{
 				pointNode = new XML("<Point></Point>");
-				var label:LabelPoint = (feature as LabelFeature).labelPoint;
+				var label:Point = (feature as LabelFeature).geometry as Point;
 				pointNode.appendChild(new XML("<coordinates>" + label.x + "," + label.y + "</coordinates>"));
 				placemark.appendChild(pointNode);
 			}
@@ -929,14 +961,14 @@ package org.openscales.core.format
 					
 					//if feature is a Label, register the value
 					if(feature is LabelFeature) {
-						var l:LabelPoint = (feature as LabelFeature).labelPoint;
+						var l:Point = (feature as LabelFeature).geometry as Point;
 						data = new XML("<Data name=\"label\"></Data>");
-						value = new XML("<value>" + l.label.text + "</value>");
+						value = new XML("<value>" + (feature as LabelFeature).text + "</value>");
 						data.appendChild(value);
 						extendedData.appendChild(data);
 						
 						data = new XML("<Data name=\"rotationZ\"></Data>");
-						value = new XML("<value>" + l.label.rotationZ + "</value>");
+						value = new XML("<value>" + (feature as LabelFeature).rotationZ + "</value>");
 						data.appendChild(value);
 						extendedData.appendChild(data);
 					}
@@ -1073,6 +1105,24 @@ package org.openscales.core.format
 						styleNode.width = width;
 						placemarkStyle.appendChild(styleNode);
 						strokeExported = true;
+						
+						if (symb is ArrowSymbolizer)
+						{
+							var extensionNode:XML = new XML("<ListStyleSimpleExtensionGroup></ListStyleSimpleExtensionGroup>");
+							if ((symb as ArrowSymbolizer).leftMarker)
+							{
+								extensionNode.@leftArrow = ((symb as ArrowSymbolizer).leftMarker as ArrowMarker).arrowMarker;
+							}else{
+								extensionNode.@leftArrow = "none"
+							}
+							if ((symb as ArrowSymbolizer).rightMarker)
+							{
+								extensionNode.@rightArrow = ((symb as ArrowSymbolizer).rightMarker as ArrowMarker).arrowMarker;
+							}else{
+								extensionNode.@rightArrow = "none"
+							}
+							styleNode.appendChild(extensionNode);
+						}
 					}
 				}else if (symb is PolygonSymbolizer)
 				{
