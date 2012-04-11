@@ -7,7 +7,6 @@ package org.openscales.core.layer
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;

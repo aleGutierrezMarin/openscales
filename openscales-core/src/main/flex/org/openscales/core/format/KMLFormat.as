@@ -33,7 +33,6 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiLineString;

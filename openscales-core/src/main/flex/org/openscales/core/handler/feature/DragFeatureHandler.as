@@ -16,7 +16,6 @@
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
-	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
