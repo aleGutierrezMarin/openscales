@@ -5,7 +5,7 @@ import org.openscales.geometry.basetypes.Bounds;
 /**
  * @private
  */
-class HistoryItem {
+public class HistoryItem {
 
     private var _resolution:Resolution;
     private var _bounds:Bounds;

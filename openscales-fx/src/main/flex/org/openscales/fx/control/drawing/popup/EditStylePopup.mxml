@@ -1171,7 +1171,7 @@
 					</s:layout>
 					
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label id="titleFontStyle" text="" color="black"/>
+					<s:Label id="titleFontLabelStyle" text="" color="black"/>
 					<s:Group>
 						<s:layout>
 							<s:HorizontalLayout/>

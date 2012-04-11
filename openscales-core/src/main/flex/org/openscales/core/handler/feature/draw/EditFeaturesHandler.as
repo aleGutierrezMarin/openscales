@@ -1007,18 +1007,7 @@ package org.openscales.core.handler.feature.draw
 				selectedStyle = Style.getDefaultPolygonStyle();
 				symbolizer = new LineSymbolizer(new Stroke(color, borderThin));
 			} else if (feature is LabelFeature) {
-				if(!feature.style.rules[0]
-					|| !feature.style.rules[0].symbolizers[0]
-					|| !feature.style.rules[0].symbolizers[0] is TextSymbolizer)
-					selectedStyle = feature.style.clone();
-				else {
-					var ts:TextSymbolizer = feature.style.rules[0].symbolizers[0] as TextSymbolizer;
-					selectedStyle = Style.getDefinedLabelStyle(ts.font.family,
-						ts.font.size,
-						(0xFFFFFF-ts.font.color),
-						(ts.font.weight==Font.BOLD),
-						(ts.font.style==Font.ITALIC));
-				}
+				feature.style = Style.getNegativeLabelStyle(feature.style);
 			} else { //if (feature is PolygonFeature || feature is MultiPolygonFeature) {
 				selectedStyle = Style.getDefaultPolygonStyle();
 				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));
