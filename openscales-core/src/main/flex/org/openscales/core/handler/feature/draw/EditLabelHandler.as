@@ -42,8 +42,6 @@ package org.openscales.core.handler.feature.draw
 	 */
 	public class EditLabelHandler extends AbstractEditHandler
 	{
-		private var _labelFeature:LabelFeature;
-		
 		/**
 		 * EditLabelHandler
 		 * This handler is used for edition on selected label such operation as modifying, dragging or deleting
@@ -98,23 +96,6 @@ package org.openscales.core.handler.feature.draw
 			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
 			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,feature));
 			this._layerToEdit.redraw();
-		}
-		
-		/**
-		 * Callback
-		 */
-		protected function updateLabel(str:String):void
-		{
-			if(str != null)
-			{
-				this._labelFeature.text = str;
-				this._labelFeature.draw();
-			}
-			else
-			{
-				this._layerToEdit.removeFeature(this._labelFeature);
-				this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DELETING,this._labelFeature));
-			}
 		}
 	}
 }
