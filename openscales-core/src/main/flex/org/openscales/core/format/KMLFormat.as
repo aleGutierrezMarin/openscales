@@ -120,7 +120,6 @@ package org.openscales.core.format
 			return readPlacemarks(placemarks);
 	
 		}
-			
 		
 		/**
 		 * return the RGB color of a kml:color
@@ -711,42 +710,10 @@ package org.openscales.core.format
 		private function getPointFeature(point:Point, objStyle:Style, attributes:Object):Feature {
 			if(!objStyle)
 				return null;
-			/*var loc:Location;
-			if(objStyle["icon"]!=null) 
-			{ // style with icon
-				var _icon:String = objStyle["icon"];
-				var pointFeature = PointFeature;
-				var customMarker:CustomMarker;
-				/*if(_images[_icon]!=null) 
-				{ // image not loaded so we will wait for it
-					var _img:Sprite = new Sprite();
-					_images[_icon].push(_img);
-					loc = new Location(point.x,point.y);
-					customMarker = CustomMarker.createDisplayObjectMarker(_img,loc,attributes,0,0);
-				}
-				else if(_externalImages[_icon]!=null) 
-				{ // image already loaded, we copy the loader content
-					var Image:Bitmap = new Bitmap(new Bitmap(_externalImages[_icon].loader.content).bitmapData.clone());
-					Image.y = -Image.height;
-					Image.x = -Image.width/2;
-					customMarker = CustomMarker.createDisplayObjectMarker(Image,new Location(point.x,point.y),attributes,0,0);
-				}
-				else 
-				{ // image failed to load
-					var _marker:Bitmap = new _defaultImage();
-					_marker.y = -_marker.height;
-					_marker.x = -_marker.width/2;
-					customMarker = CustomMarker.createDisplayObjectMarker(_marker,new Location(point.x,point.y),attributes,0,0);
-				}
-				return customMarker;
-			}
-			else 
-			{ */// style without icon
-				if(this.userDefinedStyle)
-					return new PointFeature(point, attributes,this.userDefinedStyle);
-				else
-					return new PointFeature(point, attributes, objStyle);
-			//}
+			if(this.userDefinedStyle)
+				return new PointFeature(point, attributes,this.userDefinedStyle);
+			else
+				return new PointFeature(point, attributes, objStyle);
 		}
 		
 		private function readStyleUrlId(styleUrlXMLList:XMLList):String{
@@ -1305,102 +1272,6 @@ package org.openscales.core.format
 					//Not supported symbolizer
 				}
 			}
-			
-			
-			
-			
-			
-			
-			
-		/*	//if(feature is LineStringFeature || feature is MultiLineStringFeature)
-			//{
-				//for lines, we will not store the outline style (the contour of the line)				
-				//var lineF:LineStringFeature = feature as LineStringFeature;
-				styleNode = new XML("<LineStyle></LineStyle>");
-				if(symbolizers.length > 0)
-				{
-					var lSym:LineSymbolizer = symbolizers[0] as LineSymbolizer;
-					stroke = lSym.stroke;
-					color = stroke.color;
-					opacity = stroke.opacity;
-					width = stroke.width;
-					styleNode.appendChild(this.buildColorNode(color,opacity));
-					styleNode.colorMode = "normal";
-					styleNode.width = width;
-					placemarkStyle.appendChild(styleNode);				
-				}
-			//}
-			else if(feature is LabelFeature)
-			{	
-				styleNode = new XML("<LabelStyle></LabelStyle>");
-				styleNode.color = "000000";
-				styleNode.colorMode = "normal";
-				styleNode.scale = "1";
-				placemarkStyle.appendChild(styleNode);
-			}
-			else if(feature is PolygonFeature || feature is MultiPolygonFeature)
-			{
-				//for polygons, we can store both the polygon style and the outline 
-				var polyF:PolygonFeature = feature as PolygonFeature;
-				styleNode = new XML("<PolyStyle></PolyStyle>");
-				
-				if(symbolizers.length > 1)
-				{
-					//the second symbolizer is the outline style (fill - null and color of the outline)
-					styleNode.outline = "1";
-					var styleNode2:XML = new XML("<LineStyle></LineStyle>");
-					var polySym2:PolygonSymbolizer = symbolizers[1] as PolygonSymbolizer;
-					var stroke2:Stroke = polySym2.stroke;
-					color = stroke2.color;
-					opacity = stroke2.opacity;
-					styleNode2.appendChild(this.buildColorNode(color,opacity));
-					styleNode2.width = stroke2.width;
-					placemarkStyle.appendChild(styleNode2);	
-				}		
-				
-				if(symbolizers.length > 0)
-				{
-					//the first symbolizer is the polygon style (fill and color)
-					var polySym:PolygonSymbolizer = symbolizers[0] as PolygonSymbolizer;
-					var fill:Fill = polySym.fill;
-					stroke = polySym.stroke;
-					color = stroke.color;
-					if(fill is SolidFill)
-					{
-						styleNode.fill = "1";
-						opacity = (fill as SolidFill).opacity;	
-						color = (fill as SolidFill).color as uint;
-					}
-						
-					else
-					{
-						styleNode.fill = "0";
-						opacity = 0;
-					}
-					styleNode.appendChild(this.buildColorNode(color,opacity));
-					styleNode.colorMode = "normal";	
-					placemarkStyle.appendChild(styleNode);		
-				}			
-			}
-			else if(feature is PointFeature || feature is MultiPointFeature)
-			//the style with icon is not implemented meaning the .kmz format is not supported	
-			{
-				var pointFeat:PointFeature = feature as PointFeature;
-				styleNode = new XML("<IconStyle></IconStyle>");
-				if(symbolizers.length > 0)
-				{
-					var pointSym:PointSymbolizer = symbolizers[0] as PointSymbolizer;
-					var graphic:Marker = pointSym.graphic;
-					if(graphic is WellKnownMarker)
-					{//we can build the color node
-						var wkm:WellKnownMarker = graphic as WellKnownMarker;
-						var solidFill:SolidFill = wkm.fill;
-						styleNode.appendChild(this.buildColorNode(solidFill.color as uint, solidFill.opacity));
-						styleNode.colorMode = "normal";
-					}
-				}
-				placemarkStyle.appendChild(styleNode);	
-			}*/
 			return placemarkStyle;
 		}
 		
