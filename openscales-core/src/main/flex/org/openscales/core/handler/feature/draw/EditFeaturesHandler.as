@@ -21,12 +21,14 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -1005,8 +1007,18 @@ package org.openscales.core.handler.feature.draw
 				selectedStyle = Style.getDefaultPolygonStyle();
 				symbolizer = new LineSymbolizer(new Stroke(color, borderThin));
 			} else if (feature is LabelFeature) {
-				selectedStyle = Style.getDefinedLabelStyle(feature.style.textFormat.font,(feature.style.textFormat.size as Number),
-					0x0000FF,feature.style.textFormat.bold,feature.style.textFormat.italic);
+				if(!feature.style.rules[0]
+					|| !feature.style.rules[0].symbolizers[0]
+					|| !feature.style.rules[0].symbolizers[0] is TextSymbolizer)
+					selectedStyle = feature.style.clone();
+				else {
+					var ts:TextSymbolizer = feature.style.rules[0].symbolizers[0] as TextSymbolizer;
+					selectedStyle = Style.getDefinedLabelStyle(ts.font.family,
+						ts.font.size,
+						(0xFFFFFF-ts.font.color),
+						(ts.font.weight==Font.BOLD),
+						(ts.font.style==Font.ITALIC));
+				}
 			} else { //if (feature is PolygonFeature || feature is MultiPolygonFeature) {
 				selectedStyle = Style.getDefaultPolygonStyle();
 				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));
