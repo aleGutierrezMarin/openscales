@@ -77,7 +77,7 @@ package org.openscales.core.format
 			for (i = 0; i < 3; i++)
 			{
 				Assert.assertEquals("The styleUrl of this feature is incorrect",
-					"#feature"+i.toString(), styleUrl[i].toString());
+					"#Default line style", styleUrl[i].toString());
 			}
 			
 		}
