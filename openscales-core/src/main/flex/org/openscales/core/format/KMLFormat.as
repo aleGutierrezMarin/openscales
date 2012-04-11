@@ -82,6 +82,8 @@ package org.openscales.core.format
 		 */
 		public function readName(data:Object):String {
 			var dataXML:XML = data as XML;
+			if(!dataXML)
+				return null;
 			
 			use namespace google;
 			use namespace opengis;
