@@ -64,17 +64,18 @@ package org.openscales.core.style.symbolizer
 		/**
 		 * 
 		 */
-		public function drawTextField(f:Feature):void {
-			var text:String = null;
+		public function drawTextField(f:Feature, text:String = null):void {
+
 			if(this._propertyName && f.attributes && f.attributes[this._propertyName]) {
 				text = f.attributes[this._propertyName];
-			} else {
+			} else if(!text){
 				return;
 			}
+			
 			var label:TextField = new TextField();
 			label.selectable = true;
 			label.mouseEnabled = false;
-			label.autoSize = TextFieldAutoSize.CENTER;
+			//label.autoSize = TextFieldAutoSize.CENTER;
 			label.text = text;
 			if(font) {
 				var textFormat:TextFormat = new TextFormat();

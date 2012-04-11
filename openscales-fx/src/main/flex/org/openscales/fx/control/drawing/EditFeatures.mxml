@@ -385,7 +385,7 @@
 				if(evt.feature.layer == this.target && (evt.feature is LabelFeature)){
 					_labelFeature = evt.feature as LabelFeature;
 					_popup = EditLabel(PopUpManager.createPopUp(this, EditLabel));
-					_popup.input.text = _labelFeature.labelPoint.label.text;
+					_popup.input.text = _labelFeature.text;
 					_popup.map = this.map;
 					_popup.okButton.addEventListener(MouseEvent.CLICK,updateLabelFeature);
 				}else{
@@ -413,8 +413,8 @@
 			 * Callback method to EditLabel popup. It updates feature l
 			 */ 
 			private function updateLabelFeature(evt:MouseEvent):void{
-				if(_popup.input.text != _labelFeature.labelPoint.label.text){
-					_labelFeature.labelPoint.label.text = _popup.input.text;
+				if(_popup.input.text != _labelFeature.text){
+					_labelFeature.text = _popup.input.text;
 					_labelFeature.draw();
 				}
 			}
