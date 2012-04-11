@@ -1,20 +1,18 @@
-/**
- * Created with IntelliJ IDEA.
- * User: a505816
- * Date: 11/04/12
- * Time: 14:37
- * To change this template use File | Settings | File Templates.
- */
 package org.openscales.core.history {
 import org.openscales.core.basetypes.Resolution;
 import org.openscales.geometry.basetypes.Bounds;
 
-public class HistoryItem {
+/**
+ * @private
+ */
+class HistoryItem {
 
     private var _resolution:Resolution;
     private var _bounds:Bounds;
 
-    public function HistoryItem() {
+    public function HistoryItem(resolution:Resolution, bounds:Bounds) {
+        _resolution = resolution;
+        _bounds = bounds;
     }
 
     public function get resolution():Resolution {

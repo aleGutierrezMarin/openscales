@@ -140,6 +140,8 @@
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.ZoomBoxHandler"/>
+    <classEntry path="org.openscales.core.history.HistoryItem"/>
+    <classEntry path="org.openscales.core.history.NavigationHistoryLogger"/>
     <classEntry path="org.openscales.core.i18n.Catalog"/>
     <classEntry path="org.openscales.core.i18n.Locale"/>
     <classEntry path="org.openscales.core.i18n.provider.I18nJSONProvider"/>
@@ -232,6 +234,7 @@
     <classEntry path="org.openscales.core.style.fill.BitmapFill"/>
     <classEntry path="org.openscales.core.style.fill.Fill"/>
     <classEntry path="org.openscales.core.style.fill.SolidFill"/>
+    <classEntry path="org.openscales.core.style.font.Font"/>
     <classEntry path="org.openscales.core.style.marker.ArrowMarker"/>
     <classEntry path="org.openscales.core.style.marker.CustomMarker"/>
     <classEntry path="org.openscales.core.style.marker.DisplayObjectMarker"/>
@@ -245,6 +248,7 @@
     <classEntry path="org.openscales.core.style.symbolizer.PointSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.PolygonSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.Symbolizer"/>
+    <classEntry path="org.openscales.core.style.symbolizer.TextSymbolizer"/>
     <classEntry path="org.openscales.core.tile.ImageTile"/>
     <classEntry path="org.openscales.core.tile.Tile"/>
     <classEntry path="org.openscales.core.utils.BrowserInfo"/>
@@ -303,8 +307,6 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.style.symbolizer.TextSymbolizer"/>
-    <classEntry path="org.openscales.core.style.font.Font"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
