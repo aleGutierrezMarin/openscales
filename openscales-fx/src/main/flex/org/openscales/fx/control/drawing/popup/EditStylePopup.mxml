@@ -524,6 +524,14 @@
 				this.editStyleHandler.actualizeFeature();
 			}
 			
+			private function onLabelColorChange():void {
+				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s.font)
+					s.font = new org.openscales.core.style.font.Font();
+				s.font.color = labelColorPicker.selectedColor;
+				this.editStyleHandler.actualizeFeature();
+			}
+			
 			private function onLabelFontChange():void {
 				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
 				if(!s.font)
@@ -684,10 +692,10 @@
 					this._isPolygon = false;
 					this._isLine = false;
 					this._isArrow = false;
+					_editedSymbolize = _targetFeature.style.rules[0].symbolizers[0];
 				}
 				else if (_targetFeature is PointFeature || _targetFeature is MultiPointFeature)
 				{
-					// If labelSymbolizer?
 					this._isPoint = true;
 					this._isLabelPoint = false;
 					this._isPolygon = false;
@@ -1072,14 +1080,14 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="labelColorPicker" />
+						<mx:ColorPicker id="labelColorPicker" selectedColor="@{this._fontColor}" change="onLabelColorChange();"/>
 					</s:Graphic>
 					<s:Group >
 						<s:layout >
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="labelBorderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+						<s:HSlider id="labelBorderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="@{this._fontOpacity}" change="onLabelOpacityChange();"/>
 					</s:Group>
 				</s:Group>
 				
@@ -1104,7 +1112,7 @@
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="labelFillControlOpacity" height="11" width="100" minimum="0" maximum="100" value="@{this._fontOpacity}" change="onLabelOpacityChange();"/>
+						<s:HSlider id="labelFillControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
 					</s:Group>
 				</s:Group>
 				

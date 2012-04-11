@@ -209,9 +209,7 @@ package org.openscales.core.format
 								yUnit = hotSpot[0].@yunits;
 						}
 						currentRule.symbolizers.push(new PointSymbolizer(new CustomMarker(href, 1, xOffSet, xUnit, yOffSet, yUnit)));	
-					}
-
-					else
+					} else
 					{
 						var iconColor:Number;
 						var iconAlpha:Number = 1;
@@ -583,8 +581,10 @@ package org.openscales.core.format
 					}
 					
 					if(isLabel) {
-						var l:LabelPoint = new LabelPoint(textLabel,coordinates[0], coordinates[1]);
-						labelfeatures.push(new LabelFeature(l,attributes));
+						var loc:Location = new Location(coordinates[0], coordinates[1]);
+						var lf:LabelFeature = LabelFeature.createLabelFeature(loc, attributes);
+						lf.text = textLabel;
+						labelfeatures.push(lf);
 					} else {
 						point = new Point(coordinates[0], coordinates[1]);
 						if (this.internalProjection != null, this.externalProjection != null) 
@@ -907,7 +907,7 @@ package org.openscales.core.format
 			else if(feature is LabelFeature)
 			{
 				pointNode = new XML("<Point></Point>");
-				var label:LabelPoint = (feature as LabelFeature).labelPoint;
+				var label:Point = (feature as LabelFeature).geometry as Point;
 				pointNode.appendChild(new XML("<coordinates>" + label.x + "," + label.y + "</coordinates>"));
 				placemark.appendChild(pointNode);
 			}
@@ -960,14 +960,14 @@ package org.openscales.core.format
 					
 					//if feature is a Label, register the value
 					if(feature is LabelFeature) {
-						var l:LabelPoint = (feature as LabelFeature).labelPoint;
+						var l:Point = (feature as LabelFeature).geometry as Point;
 						data = new XML("<Data name=\"label\"></Data>");
-						value = new XML("<value>" + l.label.text + "</value>");
+						value = new XML("<value>" + (feature as LabelFeature).text + "</value>");
 						data.appendChild(value);
 						extendedData.appendChild(data);
 						
 						data = new XML("<Data name=\"rotationZ\"></Data>");
-						value = new XML("<value>" + l.label.rotationZ + "</value>");
+						value = new XML("<value>" + (feature as LabelFeature).rotationZ + "</value>");
 						data.appendChild(value);
 						extendedData.appendChild(data);
 					}

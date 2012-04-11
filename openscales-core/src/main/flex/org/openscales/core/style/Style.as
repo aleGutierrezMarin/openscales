@@ -183,6 +183,17 @@ package org.openscales.core.style {
 		}
 		
 		/**
+		 * Returns the default style for a LineStringFeature
+		 */
+		public static function getDefaultLabelStyle():Style {
+			
+			var style:Style = new Style();
+			style.name = "Default label style";
+			style.rules.push(getLabelRule());
+			return style;
+		}
+		
+		/**
 		 * Returns the rule to apply for the default LineStringFeature style
 		 */
 		protected static function getLineRule():Rule{
@@ -190,6 +201,18 @@ package org.openscales.core.style {
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x3F9FCD, 3)));
+			
+			return rule;
+		}
+		
+		/**
+		 * Returns the rule to apply for the default LineStringFeature style
+		 */
+		protected static function getLabelRule():Rule{
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			rule.symbolizers.push(new TextSymbolizer());
 			
 			return rule;
 		}
@@ -354,7 +377,14 @@ package org.openscales.core.style {
 			
 			var style:Style = new Style();
 			style.name = "Default graticule label style";
-			style._textFormat = new TextFormat("Arial",12,0xFFFFFF,true,false);
+			var ts:TextSymbolizer = new TextSymbolizer();
+			ts.font = new Font();
+			ts.font.family = "Arial";
+			ts.font.size = 12;
+			ts.font.color = 0xFFFFFF;
+			ts.font.weight = Font.BOLD;
+			style.rules.push(new Rule());
+			style.rules[0].symbolizers[0] = ts;
 			return style;
 		}
 		
