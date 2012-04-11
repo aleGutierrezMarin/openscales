@@ -187,7 +187,6 @@ package org.openscales.core.feature {
 			this._lonlat = null;
 			this._geometry = null;
 			this._originGeometry = null;
-			this.unregisterListeners();
 		}
 
 		/**
@@ -428,6 +427,9 @@ package org.openscales.core.feature {
 		 * @private
 		 */
 		public function set layer(value:VectorLayer):void {
+			if(this._layer) {
+				unregisterListeners();
+			}
 			this._layer = value;
 			if (this._layer != null) {
 				registerListeners();

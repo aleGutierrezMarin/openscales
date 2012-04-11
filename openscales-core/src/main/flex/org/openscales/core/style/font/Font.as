@@ -26,9 +26,12 @@ package org.openscales.core.style.font
 				this._style = style;
 			if(weight)
 				this._weight = weight;
-			this._size = size;
-			this._color = color;
-			this._opacity = opacity;
+			if(!!isNaN(size))
+				this._size = size;
+			if(!isNaN(color))
+				this._color = color;
+			if(!isNaN(opacity))
+				this._opacity = opacity;
 			
 		}
 

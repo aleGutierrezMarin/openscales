@@ -305,6 +305,7 @@
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.core.style.symbolizer.TextSymbolizer"/>
     <classEntry path="org.openscales.core.style.font.Font"/>
+    <classEntry path="org.openscales.core.style.halo.Halo"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
