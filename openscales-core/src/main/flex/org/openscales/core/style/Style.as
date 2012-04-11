@@ -8,6 +8,7 @@ package org.openscales.core.style {
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.halo.Halo;
 	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.WellKnownMarker;
@@ -95,15 +96,6 @@ package org.openscales.core.style {
 			var symbolizer:PointSymbolizer = new PointSymbolizer(new CustomMarker("http://openscales.org/img/pictos/openscalesDefaultPicto.png"));
 			rule.symbolizers.push(symbolizer);
 			
-			/*var fill:SolidFill = new SolidFill(0x0F6BFF, 0.7);
-			var stroke:Stroke = new Stroke(0x3F9FCD, 2);
-			
-			var symbolizer:PointSymbolizer = new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke, 8));
-			
-			var rule:Rule = new Rule();
-			rule.name = "Default rule";
-			rule.symbolizers.push(symbolizer);*/
-			
 			return rule;
 		}
 		
@@ -186,11 +178,7 @@ package org.openscales.core.style {
 		 * Returns the default style for a LineStringFeature
 		 */
 		public static function getDefaultLabelStyle():Style {
-			
-			var style:Style = new Style();
-			style.name = "Default label style";
-			style.rules.push(getLabelRule());
-			return style;
+			return Style.getDefinedLabelStyle(null,12,0xFFFFFF,false,false);
 		}
 		
 		/**
@@ -201,18 +189,6 @@ package org.openscales.core.style {
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x3F9FCD, 3)));
-			
-			return rule;
-		}
-		
-		/**
-		 * Returns the rule to apply for the default LineStringFeature style
-		 */
-		protected static function getLabelRule():Rule{
-			
-			var rule:Rule = new Rule();
-			rule.name = "Default rule";
-			rule.symbolizers.push(new TextSymbolizer());
 			
 			return rule;
 		}
@@ -383,6 +359,7 @@ package org.openscales.core.style {
 			ts.font.size = 12;
 			ts.font.color = 0xFFFFFF;
 			ts.font.weight = Font.BOLD;
+			ts.halo = new Halo(0x000000);
 			style.rules.push(new Rule());
 			style.rules[0].symbolizers[0] = ts;
 			return style;
@@ -403,6 +380,12 @@ package org.openscales.core.style {
 			
 			var style:Style = new Style();
 			style.name = "Defined label style";
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			var f:Font = new Font(size,color,1,font,(italic?Font.ITALIC:Font.NORMAL),(bold?Font.BOLD:Font.NORMAL));
+			var h:Halo = new Halo((0xFFFFFF-color));
+			rule.symbolizers.push(new TextSymbolizer(null,f,h));
+			style.rules.push(rule);
 			style._textFormat = new TextFormat(font,size,color,bold,italic);
 			return style;
 		}
