@@ -9,7 +9,7 @@ package org.openscales.core.style.halo
 		private var _color:Number = 0xffffff;
 		private var _radius:Number = 2;
 		private var _opacity:Number = 1;
-		private var _quality:int = BitmapFilterQuality.MEDIUM;
+		private var _quality:int = BitmapFilterQuality.HIGH;
 		
 		public function Halo(color:Number = 0xffffff, radius:Number = 2, opacity:Number = 1)
 		{
