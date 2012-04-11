@@ -3,7 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   close="close()" xmlns:openscales="http://openscales.org"
-			   creationComplete="localize()">
+			   creationComplete="creationComplete()">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 		<s:RadioButtonGroup id="pointPreviewMode" itemClick="this.changeMode()" />
@@ -33,6 +33,7 @@
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.fill.SolidFill;
 			import org.openscales.core.style.font.Font;
+			import org.openscales.core.style.halo.Halo;
 			import org.openscales.core.style.marker.ArrowMarker;
 			import org.openscales.core.style.marker.CustomMarker;
 			import org.openscales.core.style.marker.WellKnownMarker;
@@ -58,10 +59,8 @@
 			[Embed(source="/assets/images/icons/Icons-03.png")]
 			private const Point:Class;
 			[Bindable]
-			private var _fonts:ArrayCollection = new ArrayCollection ([{label:"Verdana", data:"0"},{label:"Tahoma", data:"1"}]);
-			[Bindable]
-			private var _fontStyles:ArrayCollection = new ArrayCollection ([{label:"Regular", data:"0"},{label:"Bold", data:"1"},{label:"Italic", data:"2"}]);	
-		
+			private var _fonts:ArrayCollection = new ArrayCollection (["Times New Roman","Arial","Verdana","Tahoma"]);
+
 			private var _targetFeature:Feature;
 			
 			private var _editedSymbolize:Symbolizer;
@@ -149,16 +148,28 @@
 			private var _rightArrowActivated:Boolean = false;
 			
 			[Bindable]
-			private var _fontWeight:String = null;
+			private var _fontBold:Boolean = false;
 			
 			[Bindable]
-			private var _fontSize:String = "10";
+			private var _fontItalic:Boolean = false;
+			
+			[Bindable]
+			private var _fontSize:Number = 10;
+			
+			[Bindable]
+			private var _fontFamily:String = "Arial";
 			
 			[Bindable]
 			private var _fontOpacity:Number = 100;
 			
 			[Bindable]
 			private var _fontColor:Number = 0x000000;
+			
+			[Bindable]
+			private var _haloRadius:Number = 0;
+			
+			[Bindable]
+			private var _haloColor:Number = 0xFFFFFF;
 			
 			/**
 			 * Toggle style picking
@@ -516,35 +527,35 @@
 				this.editStyleHandler.actualizeFeature();
 			}
 			
-			private function onLabelOpacityChange():void {
-				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
-				if(!s.font)
-					s.font = new org.openscales.core.style.font.Font();
-				s.font.opacity = labelFillControlOpacity.value/100;
-				this.editStyleHandler.actualizeFeature();
-			}
-			
-			private function onLabelColorChange():void {
-				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
-				if(!s.font)
-					s.font = new org.openscales.core.style.font.Font();
-				s.font.color = labelColorPicker.selectedColor;
-				this.editStyleHandler.actualizeFeature();
-			}
-			
 			private function onLabelFontChange():void {
 				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
+				if(!s)
+					return;
 				if(!s.font)
 					s.font = new org.openscales.core.style.font.Font();
-				s.font.family = _fonts[labelFonts.selectedIndex].label;
+
+				s.font.opacity = this._fontOpacity/100;
+				s.font.color = this._fontColor;
+				s.font.weight = this._fontBold?org.openscales.core.style.font.Font.BOLD:org.openscales.core.style.font.Font.NORMAL;
+				s.font.style = this._fontItalic?org.openscales.core.style.font.Font.ITALIC:org.openscales.core.style.font.Font.NORMAL;
+				s.font.family = this._fontFamily;
+				s.font.size = this._fontSize;
 				this.editStyleHandler.actualizeFeature();
 			}
 			
-			private function onLabelSizeChange():void {
+			private function onLabelHaloChange():void {
 				var s:TextSymbolizer = this._editedSymbolize as TextSymbolizer;
-				if(!s.font)
-					s.font = new org.openscales.core.style.font.Font();
-				s.font.size = Number(labelFontSize.text);
+				if(!s)
+					return;
+				if(this._haloRadius==0)
+					s.halo=null;
+				else {
+					if(!s.halo)
+						s.halo = new Halo();
+					s.halo.radius = this._haloRadius;
+					s.halo.color = this._haloColor;
+				}
+				
 				this.editStyleHandler.actualizeFeature();
 			}
 			
@@ -561,6 +572,18 @@
 			{
 				this._editStyleHandler.applyDefaultStyle();
 				this.targetFeature = this._editStyleHandler.selectedFeature;
+			}
+			
+			
+			protected function creationComplete():void {
+				//_fonts
+				var allFonts:Array = flash.text.Font.enumerateFonts(true);
+				allFonts.sortOn("fontName", Array.CASEINSENSITIVE);
+				this._fonts = new ArrayCollection();
+				for each (var f:* in allFonts) {
+					this._fonts.addItem(f.fontName);
+				}
+				this.localize();
 			}
 			
 			/**
@@ -693,6 +716,31 @@
 					this._isLine = false;
 					this._isArrow = false;
 					_editedSymbolize = _targetFeature.style.rules[0].symbolizers[0];
+					
+					this._fontColor = 0x000000;
+					this._fontOpacity = 100;
+					this._fontBold = false;
+					this._fontItalic = false;
+					this._fontSize = 10;
+					this._haloColor = 0xFFFFFF;
+					this._haloRadius = 0;
+					this._fontFamily = null;
+					
+					var ts:TextSymbolizer =_editedSymbolize as TextSymbolizer;
+					if(ts) {
+						if(ts.font) {
+							this._fontColor = ts.font.color;
+							this._fontOpacity = ts.font.opacity*100;
+							this._fontBold = ts.font.weight==org.openscales.core.style.font.Font.BOLD;
+							this._fontItalic = ts.font.style==org.openscales.core.style.font.Font.ITALIC;
+							this._fontSize = ts.font.size;
+							this._fontFamily = ts.font.family;
+						}
+						if(ts.halo) {
+							this._haloColor = ts.halo.color;
+							this._haloRadius = ts.halo.radius;
+						}
+					}
 				}
 				else if (_targetFeature is PointFeature || _targetFeature is MultiPointFeature)
 				{
@@ -783,18 +831,7 @@
 						symbLength = rule.symbolizers.length;
 						for (i = 0; i< symbLength; ++i)
 						{
-							if (rule.symbolizers[i] is TextSymbolizer) {
-								var textSymb:TextSymbolizer = rule.symbolizers[i] as TextSymbolizer;
-								if(textSymb.font) {
-									this._fontColor = textSymb.font.color;
-									this._fontOpacity = textSymb.font.opacity*100;
-									this._fontWeight = textSymb.font.weight;
-									this._fontSize = textSymb.font.size.toString();
-								}
-								_editedSymbolize = textSymb;
-								return;
-							}
-							else if (rule.symbolizers[i] is LineSymbolizer)
+							if (rule.symbolizers[i] is LineSymbolizer)
 							{
 								
 								if (rule.symbolizers[i] is ArrowSymbolizer)
@@ -1071,7 +1108,7 @@
 					</s:layout>
 					
 					<mx:Image left="5" source="{Line}"/>
-					<s:Label text="Couleur" color="black"/>
+					<s:Label id="titleColor" text="Couleur" color="black"/>
 				</s:Group>
 				
 				<s:Group id="labelBorder" width="170" >
@@ -1080,14 +1117,14 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="labelColorPicker" selectedColor="@{this._fontColor}" change="onLabelColorChange();"/>
+						<mx:ColorPicker id="labelColorPicker" selectedColor="@{this._fontColor}" change="onLabelFontChange();"/>
 					</s:Graphic>
 					<s:Group >
 						<s:layout >
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="labelBorderControlOpacity" height="11" width="100" minimum="0" maximum="100" value="@{this._fontOpacity}" change="onLabelOpacityChange();"/>
+						<s:HSlider id="labelOpacity" height="11" width="100" minimum="0" maximum="100" value="@{this._fontOpacity}" change="onLabelFontChange();"/>
 					</s:Group>
 				</s:Group>
 				
@@ -1105,14 +1142,14 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="labelFillColorPicker" />
+						<mx:ColorPicker id="labelHaloColorPicker" selectedColor="@{this._haloColor}" change="onLabelHaloChange();"/>
 					</s:Graphic>
 					<s:Group >
 						<s:layout >
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="labelFillControlOpacity" height="11" width="100" minimum="0" maximum="100" value="70"/>
+						<s:HSlider id="labelHaloRadius" height="11" width="100" minimum="0" maximum="10" value="@{this._haloRadius}" change="onLabelHaloChange();"/>
 					</s:Group>
 				</s:Group>
 				
@@ -1129,7 +1166,7 @@
 						</s:layout>
 						
 						<s:Label paddingTop="5" text="police" width="45" color="black"/>
-						<s:DropDownList width="90" id="labelFonts" dataProvider="{this._fonts}" change="onLabelFontChange();"/>
+						<s:DropDownList width="90" id="labelFonts" dataProvider="{this._fonts}" selectedItem="@{this._fontFamily}" change="onLabelFontChange();"/>
 					</s:Group>
 					<s:Group>
 						<s:layout>
@@ -1137,13 +1174,15 @@
 						</s:layout>
 						
 						<s:Label paddingTop="5" text="style" width="45" color="black"/>
-						<s:DropDownList width="90" id="fontStyles" dataProvider="{this._fontStyles}"/>
+						<s:ToggleButton width="30" id="labelBold" label="B" selected="@{this._fontBold}" change="onLabelFontChange();"/>
+						<s:ToggleButton width="30" id="labelItalic" label="I" selected="@{this._fontItalic}" change="onLabelFontChange();" />
 					</s:Group>
 					<s:Group>
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
-						<s:Label paddingTop="5" text="taille" width="45" color="black"/><s:TextInput id="labelFontSize" width="30" text="@{this._fontSize}" restrict="0-9" maxChars="2" change="onLabelSizeChange();"/>
+						<s:Label paddingTop="5" text="taille" width="45" color="black"/>
+						<s:NumericStepper id="labelFontSize" value="@{this._fontSize}" minimum="1" maximum="92" stepSize="0.5" change="onLabelFontChange();"/>
 					</s:Group>
 				</s:Group>
 				

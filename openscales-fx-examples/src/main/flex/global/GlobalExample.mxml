@@ -49,6 +49,7 @@
 			import org.openscales.core.request.csw.GetRecordsRequest;
 			import org.openscales.core.style.Style;
 			import org.openscales.core.style.font.Font;
+			import org.openscales.core.style.halo.Halo;
 			import org.openscales.core.style.symbolizer.TextSymbolizer;
 			import org.openscales.core.utils.Trace;
 			import org.openscales.fx.popup.FxPopup;

@@ -21,12 +21,14 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -966,38 +968,24 @@ package org.openscales.core.handler.feature
 			var color:uint = 0xFFFF00;
 			var opacity:Number = 0.5;
 			var borderThin:int = 2;
-			if (feature is PointFeature || feature is MultiPointFeature) {
-				
-				/*var markType:String = WellKnownMarker.WKN_SQUARE;
-				var markSize:Number = 12;
-				var currentMarkSymbolizer:Symbolizer = null; //feature.style.rules[0].symbolizers[0];
-				if (currentMarkSymbolizer && (currentMarkSymbolizer is PointSymbolizer)) {
-					var currentMark:WellKnownMarker = (currentMarkSymbolizer as PointSymbolizer).graphic as WellKnownMarker; // FixMe : How can we be sure at this point that graphic is a WellKnownMarker ?
-					markType = currentMark.wellKnownName;
-					markSize = currentMark.size as Number;
-				}
-				selectedStyle = Style.getDefaultPointStyle();
-				symbolizer = new PointSymbolizer(new WellKnownMarker(markType, new SolidFill(color, opacity), new Stroke(color, borderThin), markSize));*/
+			if (feature is LabelFeature) {
+				if(!feature.style.rules[0]
+					|| !feature.style.rules[0].symbolizers[0]
+					|| !feature.style.rules[0].symbolizers[0] is TextSymbolizer)
+					return feature.style;
+				var ts:TextSymbolizer = feature.style.rules[0].symbolizers[0] as TextSymbolizer;
+				selectedStyle = Style.getDefinedLabelStyle(ts.font.family,
+					ts.font.size,
+					(0xFFFFFF-ts.font.color),
+					(ts.font.weight==Font.BOLD),
+					(ts.font.style==Font.ITALIC));
+				return selectedStyle;
+			} else if (feature is PointFeature || feature is MultiPointFeature) {
 				return Style.getDefaultSelectedPointStyle();
 			} else if (feature is LineStringFeature || feature is MultiLineStringFeature) {
-				/*selectedStyle = Style.getDefaultPolygonStyle();
-				symbolizerBorder = new LineSymbolizer(new Stroke(0xD87529, 7));
-				symbolizer = new LineSymbolizer(new Stroke(color,1,1,Stroke.LINECAP_BUTT))*/
 				return Style.getDefaultSelectedLineStyle();
 
-			} else if (feature is LabelFeature) {
-				selectedStyle = Style.getDefinedLabelStyle(feature.style.textFormat.font,(feature.style.textFormat.size as Number),
-					0x0000FF,feature.style.textFormat.bold,feature.style.textFormat.italic);
-				selectedStyle.rules[0] = new Rule();
-				if(symbolizerBorder){
-					selectedStyle.rules[0].symbolizers.push(symbolizerBorder);
-				}
-				selectedStyle.rules[0].symbolizers.push(symbolizer);
-				return selectedStyle;
-			} else { //if (feature is PolygonFeature || feature is MultiPolygonFeature) {
-				/*selectedStyle = Style.getDefaultPolygonStyle();
-				symbolizer = new PolygonSymbolizer(new SolidFill(color, opacity), new Stroke(color, borderThin));*/
-				
+			} else {
 				return Style.getDefaultSelectedPolygonStyle();
 			}
 		}
