@@ -102,21 +102,7 @@ package org.openscales.core.layer
 				this._featureVector = this._kmlFormat.read(this.data) as Vector.<Feature>;
 				var i:uint;
 				var vectorLength:uint = this._featureVector.length;
-				for (i = 0; i < vectorLength; i++){
-					//If feature is a Label, update bounds of it
-					if(this._featureVector[i] is LabelFeature) {
-						var middlePixel:Pixel = this.map.getMapPxFromLocation(new Location((this._featureVector[i] as LabelFeature).labelPoint.x, (this._featureVector[i] as LabelFeature).labelPoint.y, this.map.projection));
-						var leftPixel:Pixel = new Pixel();
-						var rightPixel:Pixel = new Pixel();
-						leftPixel.x = middlePixel.x - (this._featureVector[i] as LabelFeature).labelPoint.label.width / 2;
-						leftPixel.y = middlePixel.y + (this._featureVector[i] as LabelFeature).labelPoint.label.height / 2;
-						rightPixel.x = middlePixel.x + (this._featureVector[i] as LabelFeature).labelPoint.label.width / 2;
-						rightPixel.y = middlePixel.y - (this._featureVector[i] as LabelFeature).labelPoint.label.height / 2;
-						var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
-						var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
-						(this._featureVector[i] as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
-					}
-					
+				for (i = 0; i < vectorLength; i++){					
 					this.addFeature(this._featureVector[i],true,true);
 				}
 			}

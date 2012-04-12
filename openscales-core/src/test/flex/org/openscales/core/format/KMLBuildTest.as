@@ -69,17 +69,17 @@ package org.openscales.core.format
 			var lineStyle2:XML = styleNodes[2]..*::LineStyle[0];
 			var colorNode2:XML = lineStyle2..*::color[0];
 			Assert.assertTrue("The color tag of this line should be 7fff00ff",
-				colorNode1.toString() == "7fff00ff");
+				colorNode1.toString() == "ffcd9f3f");
 			Assert.assertTrue("The color tag of this line should be 7fff00ff",
-				colorNode2.toString() == "7f00ffff");
+				colorNode2.toString() == "7fff00ff");
 			//check the style reference in the placemarks
 			var styleUrl:XMLList = buildedFile..*::styleUrl;
-			for (i = 0; i < 3; i++)
-			{
-				Assert.assertEquals("The styleUrl of this feature is incorrect",
-					"#feature"+i.toString(), styleUrl[i].toString());
-			}
-			
+			Assert.assertEquals("The styleUrl of this feature is incorrect",
+				"#Default line style", styleUrl[0].toString());
+			Assert.assertEquals("The styleUrl of this feature is incorrect",
+				"#transPurpleLineGreenPoly", styleUrl[1].toString());
+			Assert.assertEquals("The styleUrl of this feature is incorrect",
+				"#yellowLineGreenPoly", styleUrl[2].toString());
 		}
 		
 		[Test]

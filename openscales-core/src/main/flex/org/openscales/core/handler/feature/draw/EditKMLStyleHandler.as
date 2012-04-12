@@ -21,6 +21,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.geometry.MultiLineString;
 	
 	public class EditKMLStyleHandler extends Handler
@@ -90,6 +91,11 @@ package org.openscales.core.handler.feature.draw
 		private var _defaultPolygonStyle:Style = Style.getDefaultPolygonStyle();
 		
 		/**
+		 * The default arrow style to apply to features
+		 */
+		private var _defaultArrowStyle:Style = Style.getDefaultArrowStyle();
+		
+		/**
 		 * Flag that says if color picking is activated
 		 */
 		private var _colorPickingActivated:Boolean = false;
@@ -122,6 +128,25 @@ package org.openscales.core.handler.feature.draw
 		public function applyNewStyle():void
 		{
 			
+		}
+		
+		/**
+		 *Replace the current style symbolizer with the given one according to the feature edition mode selected
+		 */
+		public function replaceSymbolizer(newSymb:Symbolizer):void
+		{
+			if (this._targetFeatures == "selected")
+			{
+				this._feature.style.rules[0].symbolizers[0] = newSymb;
+			}
+			else if (this._targetFeatures == "typeselected")
+			{
+				this._feature.style.rules[0].symbolizers[0] = newSymb;
+			}
+			else if (this._targetFeatures == "all")
+			{
+				this._feature.style.rules[0].symbolizers[0] = newSymb;
+			}
 		}
 
 		
@@ -316,6 +341,7 @@ package org.openscales.core.handler.feature.draw
 				return;
 			
 			if ((this._feature.style == this._defaultLineStyle||
+				this._feature.style == this._defaultArrowStyle ||
 				this._feature.style == this._defaultPointStyle ||
 				this._feature.style == this._defaultPolygonStyle) && styleChanged)
 			{
@@ -647,10 +673,10 @@ package org.openscales.core.handler.feature.draw
 					return;
 				}
 				
-				if (tmpFeature is LabelFeature)
+				/*if (tmpFeature is LabelFeature)
 				{
 					return;
-				}
+				}*/
 				this.validateChanges();
 				this._feature = tmpFeature;
 				this._savedOriginStyle = this._feature.style.clone();

@@ -1,158 +1,82 @@
 package org.openscales.core.feature
 {
-	import flash.display.DisplayObject;
-	import flash.net.LocalConnection;
-	import flash.text.TextFormat;
-	
 	import org.openscales.core.style.Style;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LabelPoint;
+	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
-	public class LabelFeature extends Feature
+	public class LabelFeature extends PointFeature
 	{
-		private var _font:String = "Arial";
-		private var _size:Number = 12;
-		private var _bold:Boolean = false;
-		private var _italic:Boolean = false;
-		private var _color:uint = 0x000000;
+		private var _text:String = "";
 		
 		/**
 		 * Constructor class
 		 * 
 		 * @param geom
 		 * @param data
-		 * @param style
-		 * @param isEditable
 		 */
-		public function LabelFeature(geom:LabelPoint=null, data:Object=null, style:Style=null, isEditable:Boolean=false)
+		public function LabelFeature(geom:Point=null, data:Object=null)
 		{
-			super(geom, data, style, isEditable);
-			if (!style){
-				this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
-			}
+			super(geom,data,Style.getDefaultLabelStyle());
 		}
 		
-		/**
-		 * @inherits
-		 */
-		override public function get lonlat():Location{
-			var value:Location = null;
-			if(this.labelPoint != null){
-				value = new Location(this.labelPoint.x, this.labelPoint.y, this.labelPoint.projection);
-			}
-			return value;
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is TextSymbolizer)
+				return true;
+			else
+				return false;
 		}
 		
-		/**
-		 * 
-		 */
-		public function set lonlat(value:Location):void{
-			this.labelPoint.x = value.x;
-			this.labelPoint.y = value.y;
-			this.labelPoint.projection = value.projection;
-		}
-		
-		/**
-		 * @inherits
-		 */
-		override public function destroy():void{
-			super.destroy();
-		}
-		
-		/**
-		 * @inherits
-		 */
-		override public function draw():void{
-			var x:Number;
-			var y:Number;
-			var resolution:Number = this.layer.map.resolution.value;
-			var pointLocation:Location = new Location(labelPoint.x, labelPoint.y, this.labelPoint.projection);
-			//pointLocation = pointLocation.reprojectTo(this.layer.map.projection);
-			var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(pointLocation.x, pointLocation.y, pointLocation.projection));
-			x = px.x;
-			y = px.y;
-			this.x = 0;
-			this.y = 0;
-			
-			this.labelPoint.label.x = x - this.labelPoint.label.width / 2;
-			this.labelPoint.label.y = y - this.labelPoint.label.height / 2;
-			this.labelPoint.label.setTextFormat(this.style.textFormat);
-			this.addChild(this.labelPoint.label);
-		}
-		
-		/**
-		 * To get the geometry (the LabelPoint) of the LabelFeature
-		 */
-		public function get labelPoint():LabelPoint{
-			return this.geometry as LabelPoint;
-		}
-		
-		/**
-		 * The font of the label
-		 */
-		public function get font():String{
-			return this._font;
-		}
-		public function set font(value:String):void{
-			this._font = value;
-			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
-		}
-		
-		/**
-		 * The size of the label
-		 */
-		public function get size():Number{
-			return this._size;
-		}
-		public function set size(value:Number):void{
-			this._size = value;
-			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
-		}
-		
-		/**
-		 * To define if the label is bold or not
-		 */
-		public function get bold():Boolean{
-			return this._bold;
-		}
-		public function set bold(value:Boolean):void{
-			this._bold = value;
-			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
-		}
-		
-		/**
-		 * To define if the label is italic or not
-		 */
-		public function get italic():Boolean{
-			return this._italic;
-		}
-		public function set italic(value:Boolean):void{
-			this._italic = value;
-			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
-		}
-		
-		/**
-		 * To define the color of the label
-		 */
-		public function get color():uint{
-			return this._color;
-		}
-		public function set color(value:uint):void{
-			this._color = value;
-			this.style = Style.getDefinedLabelStyle(this._font,this._size,this._color,this._bold,this._italic);
+		public static function createLabelFeature(loc:Location, data:Object=null):LabelFeature {
+			var pt:Point = new Point(loc.lon,loc.lat);
+			pt.projection = loc.projection;
+			return new LabelFeature(pt, data);
 		}
 		
 		override public function clone():Feature
 		{
 			var geometryClone:Geometry = this.geometry.clone();
-			var LabelFeatureClone:LabelFeature = new LabelFeature(geometryClone as LabelPoint, this.data, this.style, this.isEditable);
-			LabelFeatureClone._originGeometry = this._originGeometry;
-			LabelFeatureClone.layer = this.layer;
+			var LabelFeatureClone:LabelFeature = new LabelFeature(this._originGeometry as Point, this.data);
+			LabelFeatureClone.style = this.style.clone();
+			LabelFeatureClone.text = this._text;
 			return LabelFeatureClone;
 		}
+
+		public function get text():String
+		{
+			return _text;
+		}
+
+		public function set text(value:String):void
+		{
+			_text = value;
+		}
+		
+		/**
+		 * @inheritdoc
+		 */
+		override protected function executeDrawing(symbolizer:Symbolizer):void {
+			var x:Number;
+			var y:Number;
+			if(!this.layer || !this.layer.map)
+				return;
+			var resolution:Number = this.layer.map.resolution.value;
+			this.x = 0;
+			this.y = 0;
+			var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(this.point.x, this.point.y, this.projection));
+			x = px.x;
+			y = px.y;
+			this.graphics.drawRect(x, y, 5, 5);
+			this.graphics.endFill();
+			
+			if (symbolizer is TextSymbolizer) {
+				(symbolizer as TextSymbolizer).drawTextField(this, this._text);
+			}
+		}
+
 	}
 }

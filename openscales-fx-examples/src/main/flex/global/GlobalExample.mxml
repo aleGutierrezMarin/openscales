@@ -48,6 +48,9 @@
 			import org.openscales.core.request.csw.GetRecordByIdRequest;
 			import org.openscales.core.request.csw.GetRecordsRequest;
 			import org.openscales.core.style.Style;
+			import org.openscales.core.style.font.Font;
+			import org.openscales.core.style.halo.Halo;
+			import org.openscales.core.style.symbolizer.TextSymbolizer;
 			import org.openscales.core.utils.Trace;
 			import org.openscales.fx.popup.FxPopup;
 			import org.openscales.fx.popup.renderer.FxPopupRenderer;
@@ -59,9 +62,6 @@
 			
 			private function initMap():void {			
 				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
-				
-				
-				
 			}
 			
 			private function onFeatureClick(event:FeatureEvent):void {

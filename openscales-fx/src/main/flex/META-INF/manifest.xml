@@ -52,6 +52,8 @@
 	
 	<component id="FeatureInfoDisplay" class="org.openscales.fx.control.FeatureInfoDisplay" />
 	
+	<component id="NavigationHistoryBrowser" class="org.openscales.fx.control.history.NavigationHistoryBrowser" />
+	
 	<!-- LayerManager -->
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
 	<component id="DefaultLayerManagerItemRenderer" class="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer" />

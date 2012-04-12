@@ -121,7 +121,7 @@ package org.openscales.core.format
 			//2 symbolyzers inside, the first for the fill of the poly
 			var polySym:Symbolizer = rule.symbolizers[0];
 			var fill:SolidFill = (polySym as PolygonSymbolizer).fill as SolidFill;
-			Assert.assertEquals("The color of the first polygon should be 4210880",4210880,fill.color);
+			Assert.assertEquals("The color of the first polygon should be 1010687",1010687,fill.color);
 		}
 	}
 
