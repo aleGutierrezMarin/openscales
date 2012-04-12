@@ -494,7 +494,7 @@ package org.openscales.core.layer
 				_realMatrixTranform.tx += deltaX + (_tileWidthErrorPerPixel*deltaX);
 				_realMatrixTranform.ty += deltaY + (_tileHeightErrorPerPixel*deltaY);
 				
-				// Round the scale value tu avoid white seams between tiles
+				// Round the scale value to avoid white seams between tiles
 				var temporaryScaleX:Number = scale;
 				var temporaryScaleY:Number = scale;
 				var temporaryWidth:Number = this.tileWidth * temporaryScaleX * this.grid[0][0].scaleX;

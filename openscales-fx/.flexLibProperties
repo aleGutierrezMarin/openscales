@@ -164,6 +164,7 @@
     <classEntry path="org.openscales.fx.control.drawing.DrawRectangle"/>
     <classEntry path="org.openscales.fx.control.drawing.EditStyle"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin"/>
+    <classEntry path="org.openscales.fx.control.skin.NavigationHistoryBrowserDefaultSkin"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>

@@ -21,17 +21,20 @@ package org.openscales.core.format
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.Marker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.halo.Halo;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiLineString;
@@ -39,14 +42,8 @@ package org.openscales.core.format
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
-	import org.openscales.core.basetypes.maps.HashMap;
-	import org.openscales.core.feature.Feature;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.symbolizer.LineSymbolizer;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
-	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	
 	use namespace os_internal;
 	
@@ -88,6 +85,8 @@ package org.openscales.core.format
 		 */
 		public function readName(data:Object):String {
 			var dataXML:XML = data as XML;
+			if(!dataXML)
+				return null;
 			
 			use namespace google;
 			use namespace opengis;
@@ -123,7 +122,6 @@ package org.openscales.core.format
 			return readPlacemarks(placemarks);
 	
 		}
-			
 		
 		/**
 		 * return the RGB color of a kml:color
@@ -217,7 +215,6 @@ package org.openscales.core.format
 						}
 						currentRule.symbolizers.push(new PointSymbolizer(new CustomMarker(href, 1, xOffSet, xUnit, yOffSet, yUnit)));	
 					}
-
 					else
 					{
 						var iconColor:Number;
@@ -242,7 +239,7 @@ package org.openscales.core.format
 						currentRule.symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE,iconFill,null,6, iconAlpha, iconRotation)));
 					}
 				}
-				if(styleList[i].localName() == "LineStyle") 
+				else if(styleList[i].localName() == "LineStyle") 
 				{
 					var Lcolor:Number = 0x96A621;
 					var Lalpha:Number = 1;
@@ -260,11 +257,104 @@ package org.openscales.core.format
 					{
 						Lwidth = parseInt(lineWidth[0].toString());
 					}
-					currentRule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
-					outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					
+					
+					var extensionLine:XMLList = styleList[i]..*::ListStyleSimpleExtensionGroup;
+					var leftArrowMarker:String;
+					var rightArrowMarker:String;
+					var isArrow:Boolean = false;
+					if (extensionLine.length() > 0)
+					{
+						leftArrowMarker = extensionLine[0].@leftArrow;
+						rightArrowMarker = extensionLine[0].@rightArrow;
+						isArrow = true;
+					}
+					
+					if (isArrow)
+					{
+						
+						var leftMarker:ArrowMarker;
+						var rightMarker:ArrowMarker;
+						
+						if (leftArrowMarker != "none")
+						{
+							if (Lwidth < 3)
+								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							else
+								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+						}
+						
+						if (rightArrowMarker != "none")
+						{
+							if (Lwidth < 3)
+								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							else
+								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+						}
+						currentRule.symbolizers.push(new ArrowSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha), leftMarker, rightMarker));
+						outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					}else{
+						currentRule.symbolizers.push(new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha)));
+						outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
+					}
 				}
-				
-				if(styleList[i].localName() == "PolyStyle") 
+				else if(styleList[i].localName() == "LabelStyle") 
+				{
+					var ts:TextSymbolizer = new TextSymbolizer();
+					ts.font = new Font();
+					ts.halo = new Halo();
+					ts.halo.radius = 0;
+
+					var _Lwidth:Number = 1;
+					
+					var subNode:XMLList = styleList[i]..*::color;
+					if(subNode.length() > 0) 
+					{
+						ts.font.color = KMLColorsToRGB(subNode[0].toString());
+						ts.font.opacity = KMLColorsToAlpha(subNode[0].toString());
+					}
+					subNode = styleList[i]..*::scale;
+					if(subNode.length() > 0 && !isNaN(Number(subNode[0].toString()))) 
+					{
+						ts.font.size = Number(subNode[0].toString())*10;
+					}
+					
+					var extensionLabel:XMLList = styleList[i]..*::LabelStyleSimpleExtensionGroup;
+					var tmpString:String;
+					if (extensionLabel.length() > 0)
+					{
+						tmpString = extensionLabel[0].@propertyName;
+						if(tmpString && tmpString!="")
+							ts.propertyName = tmpString;
+						
+						tmpString = extensionLabel[0].@fontFamily;
+						if(tmpString && tmpString!="")
+							ts.font.family = tmpString;
+						
+						tmpString = extensionLabel[0].@bold;
+						if(tmpString && tmpString!="")
+							ts.font.weight = tmpString;
+						
+						tmpString = extensionLabel[0].@italic;
+						if(tmpString && tmpString!="")
+							ts.font.style = tmpString;
+						
+						tmpString = extensionLabel[0].@haloColor;
+						if(tmpString && tmpString!="")
+							ts.halo.color = Number(tmpString);
+						
+						tmpString = extensionLabel[0].@haloRadius;
+						if(tmpString && tmpString!="")
+							ts.halo.radius = Number(tmpString);
+						
+						tmpString = extensionLabel[0].@haloOpacity;
+						if(tmpString && tmpString!="")
+							ts.halo.opacity = Number(tmpString);
+					}
+					currentRule.symbolizers.push(ts);
+					outLineSymbolizer = null;
+				}
+				else if(styleList[i].localName() == "PolyStyle") 
 				{
 					var pColor:Number;
 					var pAlpha:Number;
@@ -536,8 +626,6 @@ package org.openscales.core.format
 							iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));	
 					}
 				}
-				//Points
-				// rotation is not supported yet
 				else if(placemark.Point != undefined)
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
@@ -550,12 +638,37 @@ package org.openscales.core.format
 						if(extData.@name == "label") {
 							isLabel = true
 							textLabel = extData.value.text();
+							break;
 						}
 					}
 					
 					if(isLabel) {
-						var l:LabelPoint = new LabelPoint(textLabel,coordinates[0], coordinates[1]);
-						labelfeatures.push(new LabelFeature(l,attributes));
+						var loc:Location = new Location(coordinates[0], coordinates[1]);
+						var lf:LabelFeature = LabelFeature.createLabelFeature(loc, attributes);
+						lf.text = textLabel;
+						if(this.userDefinedStyle) {
+							lf.style = this.userDefinedStyle;
+						} 
+						else if(placemark.styleUrl != undefined || localStyle) 
+						{
+							var labelStyle:Style = null;
+							if(localStyle) 
+							{
+								labelStyle = localStyle;
+							} 
+							else 
+							{
+								_id = readStyleUrlId(placemark.styleUrl);
+								if(_styleList.getValue(_id))
+									labelStyle = _styleList.getValue(_id);
+							}
+							
+							if(labelStyle) 
+							{ // style
+								lf.style = labelStyle;
+							}
+						}
+						labelfeatures.push(lf);
 					} else {
 						point = new Point(coordinates[0], coordinates[1]);
 						if (this.internalProjection != null, this.externalProjection != null) 
@@ -599,42 +712,10 @@ package org.openscales.core.format
 		private function getPointFeature(point:Point, objStyle:Style, attributes:Object):Feature {
 			if(!objStyle)
 				return null;
-			/*var loc:Location;
-			if(objStyle["icon"]!=null) 
-			{ // style with icon
-				var _icon:String = objStyle["icon"];
-				var pointFeature = PointFeature;
-				var customMarker:CustomMarker;
-				/*if(_images[_icon]!=null) 
-				{ // image not loaded so we will wait for it
-					var _img:Sprite = new Sprite();
-					_images[_icon].push(_img);
-					loc = new Location(point.x,point.y);
-					customMarker = CustomMarker.createDisplayObjectMarker(_img,loc,attributes,0,0);
-				}
-				else if(_externalImages[_icon]!=null) 
-				{ // image already loaded, we copy the loader content
-					var Image:Bitmap = new Bitmap(new Bitmap(_externalImages[_icon].loader.content).bitmapData.clone());
-					Image.y = -Image.height;
-					Image.x = -Image.width/2;
-					customMarker = CustomMarker.createDisplayObjectMarker(Image,new Location(point.x,point.y),attributes,0,0);
-				}
-				else 
-				{ // image failed to load
-					var _marker:Bitmap = new _defaultImage();
-					_marker.y = -_marker.height;
-					_marker.x = -_marker.width/2;
-					customMarker = CustomMarker.createDisplayObjectMarker(_marker,new Location(point.x,point.y),attributes,0,0);
-				}
-				return customMarker;
-			}
-			else 
-			{ */// style without icon
-				if(this.userDefinedStyle)
-					return new PointFeature(point, attributes,this.userDefinedStyle);
-				else
-					return new PointFeature(point, attributes, objStyle);
-			//}
+			if(this.userDefinedStyle)
+				return new PointFeature(point, attributes,this.userDefinedStyle);
+			else
+				return new PointFeature(point, attributes, objStyle);
 		}
 		
 		private function readStyleUrlId(styleUrlXMLList:XMLList):String{
@@ -875,13 +956,6 @@ package org.openscales.core.format
 				pointNode.appendChild(new XML("<coordinates>" + point.x + "," + point.y + "</coordinates>"));
 				placemark.appendChild(pointNode);
 			}
-			else if(feature is LabelFeature)
-			{
-				pointNode = new XML("<Point></Point>");
-				var label:LabelPoint = (feature as LabelFeature).labelPoint;
-				pointNode.appendChild(new XML("<coordinates>" + label.x + "," + label.y + "</coordinates>"));
-				placemark.appendChild(pointNode);
-			}
 			else if(feature is MultiPointFeature || feature is MultiLineStringFeature || feature is MultiPolygonFeature)
 			{
 				var multiGNode:XML = new XML("<MultiGeometry></MultiGeometry>");
@@ -916,43 +990,36 @@ package org.openscales.core.format
 					
 				}
 				placemark.appendChild(multiGNode);
-				
-				
 			}
 			
 			//Donnees attributaires
 			var data:XML;
 			var displayName:XML;
 			var value:XML;
-			if(feature.layer) {
-				var j:uint = feature.layer.attributesId.length;
-				if(j>0) {
-					extendedData =	new XML("<ExtendedData></ExtendedData>");
-					
-					//if feature is a Label, register the value
-					if(feature is LabelFeature) {
-						var l:LabelPoint = (feature as LabelFeature).labelPoint;
-						data = new XML("<Data name=\"label\"></Data>");
-						value = new XML("<value>" + l.label.text + "</value>");
-						data.appendChild(value);
-						extendedData.appendChild(data);
+			if(feature.layer || feature is LabelFeature) {
+				extendedData =	new XML("<ExtendedData></ExtendedData>");
+				if(feature is LabelFeature) {
+					var l:Point = (feature as LabelFeature).geometry as Point;
+					data = new XML("<Data name=\"label\"></Data>");
+					value = new XML("<value>" + (feature as LabelFeature).text + "</value>");
+					data.appendChild(value);
+					extendedData.appendChild(data);
+				}
+				if(feature.layer) {
+					var j:uint = feature.layer.attributesId.length;
+					if(j>0 || feature is LabelFeature) {
 						
-						data = new XML("<Data name=\"rotationZ\"></Data>");
-						value = new XML("<value>" + l.label.rotationZ + "</value>");
-						data.appendChild(value);
-						extendedData.appendChild(data);
-					}
-					
-					for(var i:uint = 0 ;i<j;++i) {
-						var key:String = feature.layer.attributesId[i];
-						//everything except name and description
-						if(excludeFromExtendedData.indexOf(key) <0 ) {
-							data = new XML("<Data name=\"attribute" + i + "\"></Data>");
-							displayName = new XML("<displayName>" + key + "</displayName>");
-							value = new XML("<value>" + att[key] + "</value>");
-							data.appendChild(displayName);
-							data.appendChild(value);
-							extendedData.appendChild(data);
+						for(var i:uint = 0 ;i<j;++i) {
+							var key:String = feature.layer.attributesId[i];
+							//everything except name and description
+							if(excludeFromExtendedData.indexOf(key) <0 ) {
+								data = new XML("<Data name=\"attribute" + i + "\"></Data>");
+								displayName = new XML("<displayName>" + key + "</displayName>");
+								value = new XML("<value>" + att[key] + "</value>");
+								data.appendChild(displayName);
+								data.appendChild(value);
+								extendedData.appendChild(data);
+							}
 						}
 					}
 				}
@@ -1052,6 +1119,7 @@ package org.openscales.core.format
 				return null;
 			
 			var styleNode:XML = null;
+			var extensionNode:XML=null;
 			var symbLength:Number =symbolizers.length;
 			
 			// Boolean that track if a stroke style has been exported 
@@ -1060,7 +1128,42 @@ package org.openscales.core.format
 			for (var i:int = 0; i < symbLength; ++i)
 			{
 				var symb:Symbolizer = symbolizers[i];
-				if (symb is LineSymbolizer)
+				if (symb is TextSymbolizer) {
+					styleNode = new XML("<LabelStyle></LabelStyle>");
+					var ts:TextSymbolizer = symb as TextSymbolizer;
+					extensionNode = new XML("<LabelStyleSimpleExtensionGroup></LabelStyleSimpleExtensionGroup>");
+					var addExtension:Boolean = false;
+					if(ts.propertyName) {
+						addExtension = true;
+						extensionNode.@propertyName = ts.propertyName;
+					}
+					if(ts.font) {
+						addExtension = true;
+						styleNode.appendChild(this.buildColorNode(ts.font.color,ts.font.opacity));
+						styleNode.colorMode = "normal";
+						styleNode.scale = ts.font.size/10;
+						if(ts.font.family) {
+							extensionNode.@fontFamily = ts.font.family;
+						}
+						if(ts.font.weight == Font.BOLD) {
+							extensionNode.@bold = Font.BOLD;
+						}
+						if(ts.font.style == Font.ITALIC) {
+							extensionNode.@italic = Font.ITALIC;
+						}
+					}
+					if (ts.halo)
+					{
+						addExtension = true;
+						extensionNode.@haloColor = ts.halo.color;
+						extensionNode.@haloRadius = ts.halo.radius;
+						extensionNode.@haloOpacity = ts.halo.opacity;
+					}
+					if(addExtension)
+						styleNode.appendChild(extensionNode);
+					placemarkStyle.appendChild(styleNode);
+				}
+				else if (symb is LineSymbolizer)
 				{
 					if (!strokeExported)
 					{
@@ -1075,6 +1178,24 @@ package org.openscales.core.format
 						styleNode.width = width;
 						placemarkStyle.appendChild(styleNode);
 						strokeExported = true;
+						
+						if (symb is ArrowSymbolizer)
+						{
+							extensionNode = new XML("<ListStyleSimpleExtensionGroup></ListStyleSimpleExtensionGroup>");
+							if ((symb as ArrowSymbolizer).leftMarker)
+							{
+								extensionNode.@leftArrow = ((symb as ArrowSymbolizer).leftMarker as ArrowMarker).arrowMarker;
+							}else{
+								extensionNode.@leftArrow = "none"
+							}
+							if ((symb as ArrowSymbolizer).rightMarker)
+							{
+								extensionNode.@rightArrow = ((symb as ArrowSymbolizer).rightMarker as ArrowMarker).arrowMarker;
+							}else{
+								extensionNode.@rightArrow = "none"
+							}
+							styleNode.appendChild(extensionNode);
+						}
 					}
 				}else if (symb is PolygonSymbolizer)
 				{
@@ -1153,102 +1274,6 @@ package org.openscales.core.format
 					//Not supported symbolizer
 				}
 			}
-			
-			
-			
-			
-			
-			
-			
-		/*	//if(feature is LineStringFeature || feature is MultiLineStringFeature)
-			//{
-				//for lines, we will not store the outline style (the contour of the line)				
-				//var lineF:LineStringFeature = feature as LineStringFeature;
-				styleNode = new XML("<LineStyle></LineStyle>");
-				if(symbolizers.length > 0)
-				{
-					var lSym:LineSymbolizer = symbolizers[0] as LineSymbolizer;
-					stroke = lSym.stroke;
-					color = stroke.color;
-					opacity = stroke.opacity;
-					width = stroke.width;
-					styleNode.appendChild(this.buildColorNode(color,opacity));
-					styleNode.colorMode = "normal";
-					styleNode.width = width;
-					placemarkStyle.appendChild(styleNode);				
-				}
-			//}
-			else if(feature is LabelFeature)
-			{	
-				styleNode = new XML("<LabelStyle></LabelStyle>");
-				styleNode.color = "000000";
-				styleNode.colorMode = "normal";
-				styleNode.scale = "1";
-				placemarkStyle.appendChild(styleNode);
-			}
-			else if(feature is PolygonFeature || feature is MultiPolygonFeature)
-			{
-				//for polygons, we can store both the polygon style and the outline 
-				var polyF:PolygonFeature = feature as PolygonFeature;
-				styleNode = new XML("<PolyStyle></PolyStyle>");
-				
-				if(symbolizers.length > 1)
-				{
-					//the second symbolizer is the outline style (fill - null and color of the outline)
-					styleNode.outline = "1";
-					var styleNode2:XML = new XML("<LineStyle></LineStyle>");
-					var polySym2:PolygonSymbolizer = symbolizers[1] as PolygonSymbolizer;
-					var stroke2:Stroke = polySym2.stroke;
-					color = stroke2.color;
-					opacity = stroke2.opacity;
-					styleNode2.appendChild(this.buildColorNode(color,opacity));
-					styleNode2.width = stroke2.width;
-					placemarkStyle.appendChild(styleNode2);	
-				}		
-				
-				if(symbolizers.length > 0)
-				{
-					//the first symbolizer is the polygon style (fill and color)
-					var polySym:PolygonSymbolizer = symbolizers[0] as PolygonSymbolizer;
-					var fill:Fill = polySym.fill;
-					stroke = polySym.stroke;
-					color = stroke.color;
-					if(fill is SolidFill)
-					{
-						styleNode.fill = "1";
-						opacity = (fill as SolidFill).opacity;	
-						color = (fill as SolidFill).color as uint;
-					}
-						
-					else
-					{
-						styleNode.fill = "0";
-						opacity = 0;
-					}
-					styleNode.appendChild(this.buildColorNode(color,opacity));
-					styleNode.colorMode = "normal";	
-					placemarkStyle.appendChild(styleNode);		
-				}			
-			}
-			else if(feature is PointFeature || feature is MultiPointFeature)
-			//the style with icon is not implemented meaning the .kmz format is not supported	
-			{
-				var pointFeat:PointFeature = feature as PointFeature;
-				styleNode = new XML("<IconStyle></IconStyle>");
-				if(symbolizers.length > 0)
-				{
-					var pointSym:PointSymbolizer = symbolizers[0] as PointSymbolizer;
-					var graphic:Marker = pointSym.graphic;
-					if(graphic is WellKnownMarker)
-					{//we can build the color node
-						var wkm:WellKnownMarker = graphic as WellKnownMarker;
-						var solidFill:SolidFill = wkm.fill;
-						styleNode.appendChild(this.buildColorNode(solidFill.color as uint, solidFill.opacity));
-						styleNode.colorMode = "normal";
-					}
-				}
-				placemarkStyle.appendChild(styleNode);	
-			}*/
 			return placemarkStyle;
 		}
 		

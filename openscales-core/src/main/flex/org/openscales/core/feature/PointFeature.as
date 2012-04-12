@@ -1,14 +1,18 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
@@ -68,7 +72,7 @@ package org.openscales.core.feature {
 		 */
 		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
 		{
-			if (symbolizer is PointSymbolizer)
+			if (symbolizer is PointSymbolizer || symbolizer is TextSymbolizer)
 				return true;
 			else
 				return false;
@@ -99,6 +103,8 @@ package org.openscales.core.feature {
 					render.y += y;
 					this.addChild(render);
 				}
+			} else if (symbolizer is TextSymbolizer) {
+				(symbolizer as TextSymbolizer).drawTextField(this);
 			}
 		}
 

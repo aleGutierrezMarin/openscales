@@ -6,6 +6,7 @@ package org.openscales.core.feature {
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiPolygon;
@@ -31,7 +32,7 @@ package org.openscales.core.feature {
 		 */
 		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
 		{
-			if (symbolizer is PolygonSymbolizer)
+			if (symbolizer is PolygonSymbolizer || symbolizer is TextSymbolizer)
 				return true;
 			else
 				return false;
@@ -43,8 +44,9 @@ package org.openscales.core.feature {
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 
 			if (symbolizer is PointSymbolizer) {
-
 				this.renderPointSymbolizer(symbolizer as PointSymbolizer);
+			} else if (symbolizer is TextSymbolizer) {
+				(symbolizer as TextSymbolizer).drawTextField(this);
 			} else {
 				// Variable declaration before for loop to improve performances 
 				var polygon:Polygon = null;

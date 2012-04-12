@@ -16,7 +16,6 @@
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
-	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
@@ -237,7 +236,7 @@
 			var px:Pixel;
 			var i:uint;
 			
-			if(feature is PointFeature){
+			if(feature is PointFeature || feature is LabelFeature){
 				for each(targetFeature in this.layerToMove.features){
 					if(targetFeature == feature){
 						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
@@ -245,26 +244,6 @@
 						loc.reprojectTo(feature.projection);
 						targetFeature.geometry = new Point(loc.lon,loc.lat);
 						targetFeature.geometry.projection = loc.projection;
-						targetFeature.x = 0;
-						targetFeature.y = 0;
-					}
-				}
-			}
-			else if (feature is LabelFeature){
-				for each(targetFeature in this.layerToMove.features){
-					if (targetFeature == feature){
-						loc = this.map.getLocationFromMapPx(_stopPixel);
-						loc.reprojectTo(feature.projection);
-						(targetFeature as LabelFeature).lonlat = loc;
-						var leftPixel:Pixel = new Pixel();
-						var rightPixel:Pixel = new Pixel();
-						leftPixel.x = _stopPixel.x - (targetFeature as LabelFeature).labelPoint.label.width / 2;
-						leftPixel.y = _stopPixel.y + (targetFeature as LabelFeature).labelPoint.label.height / 2;
-						rightPixel.x = _stopPixel.x + (targetFeature as LabelFeature).labelPoint.label.width / 2;
-						rightPixel.y = _stopPixel.y - (targetFeature as LabelFeature).labelPoint.label.height / 2;
-						var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
-						var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
-						(targetFeature as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
 						targetFeature.x = 0;
 						targetFeature.y = 0;
 					}

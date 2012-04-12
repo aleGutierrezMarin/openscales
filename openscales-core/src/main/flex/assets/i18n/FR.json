@@ -179,6 +179,9 @@
    "editStyle.pointStyleEdition.previewModeSelected" : "Ce point seulement",
    "editStyle.pointStyleEdition.previewModeTypeSelected" : "Tous les points",
    "editStyle.lineStyleEdition.fillLabelText" : "Remplissage",
+   "editStyle.lineStyleEdition.lineArrowLabel" : "Embouts de ligne",
+   "editStyle.lineStyleEdition.lineArrowLeftLabel" : "Début",
+   "editStyle.lineStyleEdition.lineArrowRightLabel" : "Fin",
    "editStyle.lineStyleEdition.labelText" : "Appliquer à : ",
    "editStyle.lineStyleEdition.previewModeAll" : "Les lignes de même style",
    "editStyle.lineStyleEdition.previewModeSelected" : "Cette ligne seulement",
@@ -188,7 +191,16 @@
    "editStyle.polyStyleEdition.labelText" : "Appliquer à : ",
    "editStyle.polyStyleEdition.previewModeAll" : "Les polygones de même style",
    "editStyle.polyStyleEdition.previewModeSelected" : "Ce polygone seulement",
-   "editStyle.polyStyleEdition.previewModeTypeSelected" : "Tous les polygones"
+   "editStyle.polyStyleEdition.previewModeTypeSelected" : "Tous les polygones",
    
-   
+   "editStyle.labelStyleEdition.titleLabelColor":"Texte",
+   "editStyle.labelStyleEdition.titleLabelHalo":"Fond",
+   "editStyle.labelStyleEdition.titleFontLabelStyle":"Style du texte",
+   "editStyle.labelStyleEdition.titleFont":"Police",
+   "editStyle.labelStyleEdition.titleFontStyle":"Style",
+   "editStyle.labelStyleEdition.titleFontSize":"Taille",
+   "editStyle.labelStyleEdition.labelApplyTo":"Appliquer à :",
+   "editStyle.labelStyleEdition.applyAllLabel":"Les labels du même style",
+   "editStyle.labelStyleEdition.applyOnlyThisLabel":"Uniquement ce label",
+   "editStyle.labelStyleEdition.applySimilarLabel":"Tous les labels"
  }
