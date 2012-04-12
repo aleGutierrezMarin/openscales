@@ -2,10 +2,7 @@ package org.openscales.fx.control.history {
 import flash.events.Event;
 import flash.events.MouseEvent;
 
-import mx.events.FlexEvent;
-
 import org.openscales.core.Map;
-
 import org.openscales.core.history.NavigationHistoryLogger;
 import org.openscales.fx.control.Control;
 
@@ -27,6 +24,10 @@ public class NavigationHistoryBrowser extends Control {
 
     private var _historyLogger:NavigationHistoryLogger;
     private var _size:uint = 10;
+
+    public function NavigationHistoryBrowser() {
+
+    }
 
     protected function onForwardButtonClick(event:MouseEvent):void {
         _historyLogger.stepForward();
