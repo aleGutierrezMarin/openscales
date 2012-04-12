@@ -79,11 +79,29 @@
 			[Bindable]
 			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
 			
+			[Bindable]
+			private var _displaySimpleSearch:Boolean = true;
+			[Bindable]
+			private var _displayAdvancedSearch:Boolean = true;
+			[Bindable]
+			private var _displayReverseSearch:Boolean = true;
+			[Bindable]
+			private var _displayBoundFilter:Boolean = false;
+			[Bindable]
+			private var _displayFrenchTerritoryFilter:Boolean = false;
+			
+			[Bindable]
+			private var _placeTypes:ArrayCollection = new ArrayCollection([
+				{label:"Adresse", data:"Default"}
+			]);
+			
 			public static const MODE_SIMPLE:uint = 1;
 			public static const MODE_ADVANCED:uint = 2;
 			public static const MODE_REVERSE:uint = 3;
 			[Bindable]
 			private var _currentMode:uint = MODE_SIMPLE;
+			[Bindable]
+			private var _advancedMode:String = "Default";
 			[Bindable]
 			private var _reverseMode:String = "point";
 			[Bindable]
@@ -115,6 +133,10 @@
 			[Bindable]
 			private var _reverseSearchButtonLabel:String = Catalog.getLocalizationForKey("openLSSearch.ok");
 			[Bindable]
+			private var _advancedSearchTypeLabel:String = Catalog.getLocalizationForKey("openLSSearch.typeOfPlace");
+			[Bindable]
+			private var _advancedSearchBoundFilterLabel:String = Catalog.getLocalizationForKey("openLSSearch.restrictToCurrentBounds");
+			[Bindable]
 			private var _numberLabel:String = Catalog.getLocalizationForKey("openLSSearch.number");
 			[Bindable]
 			private var _streetLabel:String = Catalog.getLocalizationForKey("openLSSearch.street");
@@ -134,6 +156,26 @@
 			private var _cityHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
 			[Bindable]
 			private var _countryCodeHeaderLabel:String = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+			[Bindable]
+			private var _poiNameLabel:String = Catalog.getLocalizationForKey("openLSSearch.poiName");
+			[Bindable]
+			private var _poiNatureLabel:String = Catalog.getLocalizationForKey("openLSSearch.poiNature");
+			[Bindable]
+			private var _geodeticNameLabel:String = Catalog.getLocalizationForKey("openLSSearch.geodeticName");
+			[Bindable]
+			private var _geodeticNumberLabel:String = Catalog.getLocalizationForKey("openLSSearch.geodeticNumber");
+			[Bindable]
+			private var _prefixLabel:String = Catalog.getLocalizationForKey("openLSSearch.prefix");
+			[Bindable]
+			private var _sectionLabel:String = Catalog.getLocalizationForKey("openLSSearch.section");
+			[Bindable]
+			private var _parcelLabel:String = Catalog.getLocalizationForKey("openLSSearch.parcel");
+			[Bindable]
+			private var _reverseSearchPlaceLabel:String = Catalog.getLocalizationForKey("openLSSearch.typeOfPlace");
+			[Bindable]
+			private var _reverseSearchAddressTypeLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseSearchAddressType");
+			[Bindable]
+			private var _reverseSearchPOITypeLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseSearchPOIType");
 			[Bindable]
 			private var _reverseSearchTypeLabel:String = Catalog.getLocalizationForKey("openLSSearch.reverseSearchType");
 			[Bindable]
@@ -205,6 +247,16 @@
 			}
 			
 			/**
+			 * Getter and setter of advanced mode
+			 */
+			public function get advancedMode():String {
+				return this._advancedMode;
+			}			
+			public function set advancedMode(value:String):void {	
+				this._advancedMode = value;
+			}
+			
+			/**
 			 * Getter and setter of reverse mode
 			 */
 			public function get reverseMode():String {
@@ -237,6 +289,14 @@
 					return this._resultsProvider.length;
 				else
 					return 0;
+			}
+			
+			public function get placeTypes():ArrayCollection {
+				return this._placeTypes;
+			}
+			
+			public function set placeTypes(value:ArrayCollection):void {
+				this._placeTypes = value;
 			}
 			
 			public function getCompletionResults():ArrayCollection {
@@ -433,7 +493,12 @@
 				}
 			}
 			
-			public function advancedSearch(numberQuery:String, streetQuery:String, postalCodeQuery:String, cityQuery:String, countryCodeQuery:String):void {
+			private function advancedSearchChanged(event:Event):void {
+				this.hideResults();
+				this.advancedMode = event.currentTarget.selectedItem.data;
+			}
+			
+			public function advancedSearch(numberQuery:String, streetQuery:String, postalCodeQuery:String, cityQuery:String, countryCodeQuery:String, restrictBoundsQuery:Boolean = false, territoireQuery:String = "", regionQuery:String = "", departementQuery:String = ""):void {
 				if(!this.map)
 					return;
 				
@@ -449,7 +514,160 @@
 				if (this.map != null) {
 					if (!countryCodeQuery || countryCodeQuery=="")
 						countryCodeQuery=this.defaultCountryCode;
-					_request.defineAdvancedSearch(requestId, numberQuery, streetQuery, postalCodeQuery, cityQuery, countryCodeQuery, this.projection, this.maximumGeocodeResponses, this.version);
+					_request.defineAdvancedSearch(requestId, numberQuery, streetQuery, postalCodeQuery, cityQuery, null, countryCodeQuery, this.projection, this.maximumGeocodeResponses, this.version);
+					if (restrictBoundsQuery) {
+						_request.envelopeSrsName = this.map.extent.projection.srsCode;
+						_request.envelopeBounds = this.map.extent;
+					}
+					if (territoireQuery && territoireQuery!="") {
+						_request.addPlaceFilter("Territoire", territoireQuery);
+					}
+					if (regionQuery && regionQuery!="") {
+						_request.addPlaceFilter("Region", regionQuery);
+					}
+					if (departementQuery && departementQuery!="") {
+						_request.addPlaceFilter("Departement", departementQuery);
+					}
+					_request.send();
+				}
+			}
+			
+			public function advancedAddressSearch(numberQuery:String, streetQuery:String, postalCodeQuery:String, cityQuery:String, restrictBoundsQuery:Boolean = false, territoireQuery:String = "", regionQuery:String = "", departementQuery:String = ""):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault, this.geocodeServiceSecurity);
+				if (this.map != null) {
+					_request.defineAdvancedSearch(requestId, numberQuery, streetQuery, postalCodeQuery, cityQuery, null, "StreetAddress", this.projection, this.maximumGeocodeResponses, this.version);
+					if (restrictBoundsQuery) {
+						_request.envelopeSrsName = this.map.extent.projection.srsCode;
+						_request.envelopeBounds = this.map.extent;
+					}
+					if (territoireQuery && territoireQuery!="") {
+						_request.addPlaceFilter("Territoire", territoireQuery);
+					}
+					if (regionQuery && regionQuery!="") {
+						_request.addPlaceFilter("Region", regionQuery);
+					}
+					if (departementQuery && departementQuery!="") {
+						_request.addPlaceFilter("Departement", departementQuery);
+					}
+					_request.send();
+				}
+			}
+			
+			public function advancedPOISearch(nameQuery:String, natureQuery:String, restrictBoundsQuery:Boolean = false, territoireQuery:String = "", regionQuery:String = "", departementQuery:String = ""):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault, this.geocodeServiceSecurity);
+				if (this.map != null) {
+					_request.defineSimpleSearch(requestId, nameQuery, "PositionOfInterest", this.projection, this.maximumGeocodeResponses, this.version);
+					if (restrictBoundsQuery) {
+						_request.envelopeSrsName = this.map.extent.projection.srsCode;
+						_request.envelopeBounds = this.map.extent;
+					}
+					if (territoireQuery && territoireQuery!="") {
+						_request.addPlaceFilter("Territoire", territoireQuery);
+					}
+					if (regionQuery && regionQuery!="") {
+						_request.addPlaceFilter("Region", regionQuery);
+					}
+					if (departementQuery && departementQuery!="") {
+						_request.addPlaceFilter("Departement", departementQuery);
+					}
+					if (natureQuery && natureQuery!="") {
+						_request.addPlaceFilter("nature", natureQuery);
+					}
+					_request.send();
+				}
+			}
+			
+			public function advancedParcelSearch(prefixQuery:String, sectionQuery:String, numberQuery:String, restrictBoundsQuery:Boolean = false, territoireQuery:String = "", regionQuery:String = "", departementQuery:String = ""):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault, this.geocodeServiceSecurity);
+				if (this.map != null) {
+					_request.defineSimpleSearch(requestId, numberQuery, "CadastralParcel", this.projection, this.maximumGeocodeResponses, this.version);
+					if (restrictBoundsQuery) {
+						_request.envelopeSrsName = this.map.extent.projection.srsCode;
+						_request.envelopeBounds = this.map.extent;
+					}
+					if (territoireQuery && territoireQuery!="") {
+						_request.addPlaceFilter("Territoire", territoireQuery);
+					}
+					if (regionQuery && regionQuery!="") {
+						_request.addPlaceFilter("Region", regionQuery);
+					}
+					if (departementQuery && departementQuery!="") {
+						_request.addPlaceFilter("Departement", departementQuery);
+					}
+					if (prefixQuery && prefixQuery!="") {
+						_request.addPlaceFilter("Feuille", prefixQuery);
+					}
+					if (sectionQuery && sectionQuery!="") {
+						_request.addPlaceFilter("Section", sectionQuery);
+					}
+					_request.send();
+				}
+			}
+			
+			public function advancedGeodeticSearch(nameQuery:String, numberQuery:String, restrictBoundsQuery:Boolean = false, territoireQuery:String = "", regionQuery:String = "", departementQuery:String = ""):void {
+				if(!this.map)
+					return;
+				
+				this._resultLayer = this.map.resultLayer;
+				this._resultLayer.removeFeatures(this._resultLayer.features);
+				this.map.removeLayer(this._resultLayer);
+				
+				this.hideResults();
+				
+				if(_request)
+					_request.destroy();
+				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault, this.geocodeServiceSecurity);
+				if (this.map != null) {
+					_request.defineSimpleSearch(requestId, nameQuery, "GeodeticFixedPoint", this.projection, this.maximumGeocodeResponses, this.version);
+					if (restrictBoundsQuery) {
+						_request.envelopeSrsName = this.map.extent.projection.srsCode;
+						_request.envelopeBounds = this.map.extent;
+					}
+					if (territoireQuery && territoireQuery!="") {
+						_request.addPlaceFilter("Territoire", territoireQuery);
+					}
+					if (regionQuery && regionQuery!="") {
+						_request.addPlaceFilter("Region", regionQuery);
+					}
+					if (departementQuery && departementQuery!="") {
+						_request.addPlaceFilter("Departement", departementQuery);
+					}
+					if (numberQuery && numberQuery!="") {
+						_request.addPlaceFilter("GeodeticNumber", numberQuery);
+					}
 					_request.send();
 				}
 			}
@@ -474,7 +692,12 @@
 				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault, this.reverseGeocodeServiceSecurity);
 				if (this.map != null) {
 					var location:Location = new Location(new Number(lon), new Number(lat));
-					_request.defineReverseSearch(requestId, location, this.projection, this.maximumGeocodeResponses, this.version);
+					var reversePreferences:Vector.<String> = new Vector.<String>;
+					if (this.reverseSearchAddressType.selected)
+						reversePreferences.push("StreetAddress");
+					if (this.reverseSearchPOIType.selected)
+						reversePreferences.push("PositionOfInterest");
+					_request.defineReverseSearch(requestId, reversePreferences, location, this.projection, this.maximumGeocodeResponses, this.version);
 					_request.send();
 				}
 			}
@@ -494,7 +717,12 @@
 				_request = new OpenLSRequest(this.reverseGeocodeServiceUrl, onServiceResult, onServiceFault, this.reverseGeocodeServiceSecurity);
 				if (this.map != null) {
 					var location:Location = new Location(new Number(lon), new Number(lat));
-					_request.defineReverseSearchInCircle(requestId, location, location, new Number(radius), this.projection, this.maximumGeocodeResponses, this.version);
+					var reversePreferences:Vector.<String> = new Vector.<String>;
+					if (this.reverseSearchAddressType.selected)
+						reversePreferences.push("StreetAddress");
+					if (this.reverseSearchPOIType.selected)
+						reversePreferences.push("PositionOfInterest");
+					_request.defineReverseSearchInCircle(requestId, reversePreferences, location, location, new Number(radius), this.projection, this.maximumGeocodeResponses, this.version);
 					_request.send();
 				}
 			}
@@ -515,7 +743,12 @@
 				if (this.map != null) {
 					var bounds:Bounds = new Bounds(new Number(leftB), new Number(bottomB), new Number(rightB), new Number(topB));
 					var location:Location = bounds.center;
-					_request.defineReverseSearchInBounds(requestId, location, bounds, this.projection, this.maximumGeocodeResponses, this.version);
+					var reversePreferences:Vector.<String> = new Vector.<String>;
+					if (this.reverseSearchAddressType.selected)
+						reversePreferences.push("StreetAddress");
+					if (this.reverseSearchPOIType.selected)
+						reversePreferences.push("PositionOfInterest");
+					_request.defineReverseSearchInBounds(requestId, reversePreferences, location, bounds, this.projection, this.maximumGeocodeResponses, this.version);
 					_request.send();
 				}
 			}
@@ -785,6 +1018,8 @@
 				_simpleSearchLabel = Catalog.getLocalizationForKey("openLSSearch.simpleSearch");
 				_advancedSearchLabel = Catalog.getLocalizationForKey("openLSSearch.advancedSearch");
 				_reverseSearchLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearch");
+				_advancedSearchTypeLabel = Catalog.getLocalizationForKey("openLSSearch.typeOfPlace");
+				_advancedSearchBoundFilterLabel = Catalog.getLocalizationForKey("openLSSearch.restrictToCurrentBounds");
 				_numberLabel = Catalog.getLocalizationForKey("openLSSearch.number");
 				_streetLabel = Catalog.getLocalizationForKey("openLSSearch.street");
 				_postalCodeLabel = Catalog.getLocalizationForKey("openLSSearch.postalCode");
@@ -795,6 +1030,16 @@
 				_postalCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.postalCodeHeader");
 				_cityHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.cityHeader");
 				_countryCodeHeaderLabel = Catalog.getLocalizationForKey("openLSSearch.countryCodeHeader");
+				_poiNameLabel = Catalog.getLocalizationForKey("openLSSearch.poiName");
+				_poiNatureLabel = Catalog.getLocalizationForKey("openLSSearch.poiNature");
+				_geodeticNameLabel = Catalog.getLocalizationForKey("openLSSearch.geodeticName");
+				_geodeticNumberLabel = Catalog.getLocalizationForKey("openLSSearch.geodeticNumber");
+				_prefixLabel = Catalog.getLocalizationForKey("openLSSearch.prefix");
+				_sectionLabel = Catalog.getLocalizationForKey("openLSSearch.section");
+				_parcelLabel = Catalog.getLocalizationForKey("openLSSearch.parcel");
+				_reverseSearchPlaceLabel = Catalog.getLocalizationForKey("openLSSearch.typeOfPlace");
+				_reverseSearchAddressTypeLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearchAddressType");
+				_reverseSearchPOITypeLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearchPOIType");
 				_reverseSearchTypeLabel = Catalog.getLocalizationForKey("openLSSearch.reverseSearchType");
 				if (reverseSearchChoice)
 					var myType:int = reverseSearchChoice.selectedIndex;
@@ -834,6 +1079,57 @@
 				newEvent.componentIconified = this._isReduced;
 				this._map.dispatchEvent(newEvent);
 			}
+
+			public function get displaySimpleSearch():Boolean
+			{
+				return _displaySimpleSearch;
+			}
+
+			public function set displaySimpleSearch(value:Boolean):void
+			{
+				_displaySimpleSearch = value;
+			}
+
+			public function get displayAdvancedSearch():Boolean
+			{
+				return _displayAdvancedSearch;
+			}
+
+			public function set displayAdvancedSearch(value:Boolean):void
+			{
+				_displayAdvancedSearch = value;
+			}
+
+			public function get displayReverseSearch():Boolean
+			{
+				return _displayReverseSearch;
+			}
+
+			public function set displayReverseSearch(value:Boolean):void
+			{
+				_displayReverseSearch = value;
+			}
+			
+			public function get displayBoundFilter():Boolean
+			{
+				return _displayBoundFilter;
+			}
+			
+			public function set displayBoundFilter(value:Boolean):void
+			{
+				_displayBoundFilter = value;
+			}
+			
+			public function get displayFrenchTerritoryFilter():Boolean
+			{
+				return _displayFrenchTerritoryFilter;
+			}
+			
+			public function set displayFrenchTerritoryFilter(value:Boolean):void
+			{
+				_displayFrenchTerritoryFilter = value;
+			}
+
 			
 		]]>
 	</fx:Script>
@@ -851,18 +1147,18 @@
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
 				
-				<mx:Form id="searchType" width="100%" height="22" paddingTop="0" paddingBottom="0">
+				<mx:Form id="searchType" width="100%" height="25" paddingTop="5" paddingBottom="0">
 					<s:SkinnableContainer id="searchTypeContainer" width="100%" height="100%" styleName="horizontalLayout">
 						<s:layout>
 							<s:HorizontalLayout />
 						</s:layout>
-						<mx:RadioButton id="simpleSearchSelectionButton" label="{this._simpleSearchLabel}" selected="true" click="onSimpleSearchClick()"/>
-						<mx:RadioButton id="advancedSearchSelectionButton" label="{this._advancedSearchLabel}" selected="false" click="onAdvancedSearchClick()"/>
-						<mx:RadioButton id="reverseSearchSelectionButton" label="{this._reverseSearchLabel}" selected="false" click="onReverseSearchClick()"/>
+						<mx:RadioButton id="simpleSearchSelectionButton" label="{this._simpleSearchLabel}" selected="true" click="onSimpleSearchClick()" visible="{this._displaySimpleSearch}" includeInLayout="{this._displaySimpleSearch}"/>
+						<mx:RadioButton id="advancedSearchSelectionButton" label="{this._advancedSearchLabel}" selected="false" click="onAdvancedSearchClick()" visible="{this._displayAdvancedSearch}" includeInLayout="{this._displayAdvancedSearch}"/>
+						<mx:RadioButton id="reverseSearchSelectionButton" label="{this._reverseSearchLabel}" selected="false" click="onReverseSearchClick()" visible="{this._displayReverseSearch}" includeInLayout="{this._displayReverseSearch}"/>
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<mx:Form id="simpleSearchForm" width="100%" height="{_currentMode==MODE_SIMPLE?35:0}" paddingTop="5" paddingBottom="0" visible="{_currentMode==MODE_SIMPLE}">
+				<mx:Form id="simpleSearchForm" width="100%" height="35" paddingTop="5" paddingBottom="0" visible="{_currentMode==MODE_SIMPLE}" includeInLayout="{_currentMode==MODE_SIMPLE}">
 					<s:SkinnableContainer id="simpleSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout/>
@@ -874,8 +1170,174 @@
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<mx:Form id="advancedSearchForm" width="100%" height="{_currentMode==MODE_ADVANCED?160:0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED}">
-					<s:SkinnableContainer id="advancedSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
+				<mx:Form id="advancedSearchForm" width="100%" height="{40+this._displayBoundFilter*25+this._displayFrenchTerritoryFilter*25}" paddingTop="5" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED}" includeInLayout="{_currentMode==MODE_ADVANCED}">
+					<s:SkinnableContainer id="advancedSearchFormContainer" styleName="verticalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:VerticalLayout gap="5"/>
+						</s:layout>
+						<mx:FormItem label="{this._advancedSearchTypeLabel}" visible="{this._placeTypes.length>1}" includeInLayout="{this._placeTypes.length>1}">
+							<mx:ComboBox id="advancedSearchChoice" change="advancedSearchChanged(event)" dataProvider="{this._placeTypes}"/>
+						</mx:FormItem>
+						<mx:CheckBox id="boundFilter" label="{this._advancedSearchBoundFilterLabel}" selected="false" visible="{this._displayBoundFilter}" includeInLayout="{this._displayBoundFilter}"/>
+						<s:HGroup visible="{this._displayFrenchTerritoryFilter}" includeInLayout="{this._displayFrenchTerritoryFilter}">
+							<mx:ComboBox id="territoireFilter">
+								<mx:ArrayCollection>
+									<fx:Object label="Territoire..." data=""/>
+									<fx:Object label="France métropolitaine" data="FXX"/>
+									<fx:Object label="Guadeloupe" data="GLP"/>
+									<fx:Object label="Guyane Française" data="GUF"/>
+									<fx:Object label="Iles Crozet" data="CRZ"/>
+									<fx:Object label="Iles Kerguelen" data="KER"/>
+									<fx:Object label="Martinique" data="MTQ"/>
+									<fx:Object label="Mayotte" data="MYT"/>
+									<fx:Object label="Nouvelle Calédonie" data="NCL"/>
+									<fx:Object label="Polynésie Française" data="PYF"/>
+									<fx:Object label="Réunion" data="REU"/>
+									<fx:Object label="Saint Barthélemy" data="SBA"/>
+									<fx:Object label="Saint Martin" data="SMA"/>
+									<fx:Object label="Saint Pierre et Miquelon" data="SPM"/>
+									<fx:Object label="Wallis et Futuna" data="WLF"/>
+								</mx:ArrayCollection>
+							</mx:ComboBox>
+							<mx:ComboBox id="regionFilter" visible="{this.territoireFilter.selectedIndex==1}" includeInLayout="{this.territoireFilter.selectedIndex==1}">
+								<mx:ArrayCollection>
+									<fx:Object label="Région..." data=""/>
+									<fx:Object label="Alsace" data="42"/>
+									<fx:Object label="Aquitaine" data="72"/>
+									<fx:Object label="Auvergne" data="83"/>
+									<fx:Object label="Basse-Normandie" data="25"/>
+									<fx:Object label="Bourgogne" data="26"/>
+									<fx:Object label="Bretagne" data="53"/>
+									<fx:Object label="Centre" data="24"/>
+									<fx:Object label="Champagne-Ardenne" data="21"/>
+									<fx:Object label="Corse" data="94"/>
+									<fx:Object label="Franche-Comté" data="43"/>
+									<fx:Object label="Haute-Normandie" data="23"/>
+									<fx:Object label="Île-de-France" data="11"/>
+									<fx:Object label="Languedoc-Roussillon" data="91"/>
+									<fx:Object label="Limousin" data="74"/>
+									<fx:Object label="Lorraine" data="41"/>
+									<fx:Object label="Midi-Pyrénées" data="73"/>
+									<fx:Object label="Nord-Pas-de-Calais" data="31"/>
+									<fx:Object label="Pays de la Loire" data="52"/>
+									<fx:Object label="Picardie" data="22"/>
+									<fx:Object label="Poitou-Charentes" data="54"/>
+									<fx:Object label="Provence-Alpes-Côte d'Azur" data="93"/>
+									<fx:Object label="Rhône-Alpes" data="82"/>
+								</mx:ArrayCollection>
+							</mx:ComboBox>
+							<mx:ComboBox id="departementFilter" visible="{this.territoireFilter.selectedIndex==1}" includeInLayout="{this.territoireFilter.selectedIndex==1}">
+								<mx:ArrayCollection>
+									<fx:Object label="Département..." data=""/>
+									<fx:Object label="01 - Ain" data="01"/>
+									<fx:Object label="02 - Aisne" data="02"/>
+									<fx:Object label="03 - Allier" data="03"/>
+									<fx:Object label="04 - Alpes de Hautes-Provence" data="04"/>
+									<fx:Object label="05 - Hautes-Alpes" data="05"/>
+									<fx:Object label="06 - Alpes-Maritimes" data="06"/>
+									<fx:Object label="07 - Ardèche" data="07"/>
+									<fx:Object label="08 - Ardennes" data="08"/>
+									<fx:Object label="09 - Ariège" data="09"/>
+									<fx:Object label="10 - Aube" data="10"/>
+									<fx:Object label="11 - Aude" data="11"/>
+									<fx:Object label="12 - Aveyron" data="12"/>
+									<fx:Object label="13 - Bouches-du-Rhône" data="13"/>
+									<fx:Object label="14 - Calvados" data="14"/>
+									<fx:Object label="15 - Cantal" data="15"/>
+									<fx:Object label="16 - Charente" data="16"/>
+									<fx:Object label="17 - Charente-Maritime" data="17"/>
+									<fx:Object label="18 - Cher" data="18"/>
+									<fx:Object label="19 - Corrèze" data="19"/>
+									<fx:Object label="2A - Corse-du-Sud" data="2A"/>
+									<fx:Object label="2B - Haute-Corse" data="2B"/>
+									<fx:Object label="21 - Côte-d'Or" data="21"/>
+									<fx:Object label="22 - Côtes d'Armor" data="22"/>
+									<fx:Object label="23 - Creuse" data="23"/>
+									<fx:Object label="24 - Dordogne" data="24"/>
+									<fx:Object label="25 - Doubs" data="25"/>
+									<fx:Object label="26 - Drôme" data="26"/>
+									<fx:Object label="27 - Eure" data="27"/>
+									<fx:Object label="28 - Eure-et-Loir" data="28"/>
+									<fx:Object label="29 - Finistère" data="29"/>
+									<fx:Object label="30 - Gard" data="30"/>
+									<fx:Object label="31 - Haute-Garonne" data="31"/>
+									<fx:Object label="32 - Gers" data="32"/>
+									<fx:Object label="33 - Gironde" data="33"/>
+									<fx:Object label="34 - Hérault" data="34"/>
+									<fx:Object label="35 - Ille-et-Vilaine" data="35"/>
+									<fx:Object label="36 - Indre" data="36"/>
+									<fx:Object label="37 - Indre-et-Loire" data="37"/>
+									<fx:Object label="38 - Isère" data="38"/>
+									<fx:Object label="39 - Jura" data="39"/>
+									<fx:Object label="40 - Landes" data="40"/>
+									<fx:Object label="41 - Loir-et-Cher" data="41"/>
+									<fx:Object label="42 - Loire" data="42"/>
+									<fx:Object label="43 - Haute-Loire" data="43"/>
+									<fx:Object label="44 - Loire-Atlantique" data="44"/>
+									<fx:Object label="45 - Loiret" data="45"/>
+									<fx:Object label="46 - Lot" data="46"/>
+									<fx:Object label="47 - Lot-et-Garonne" data="47"/>
+									<fx:Object label="48 - Lozère" data="48"/>
+									<fx:Object label="49 - Maine-et-Loire" data="49"/>
+									<fx:Object label="50 - Manche" data="50"/>
+									<fx:Object label="51 - Marne" data="51"/>
+									<fx:Object label="52 - Haute-Marne" data="52"/>
+									<fx:Object label="53 - Mayenne" data="53"/>
+									<fx:Object label="54 - Meurthe-et-Moselle" data="54"/>
+									<fx:Object label="55 - Meuse" data="55"/>
+									<fx:Object label="56 - Morbihan" data="56"/>
+									<fx:Object label="57 - Moselle" data="57"/>
+									<fx:Object label="58 - Nièvre" data="58"/>
+									<fx:Object label="59 - Nord" data="59"/>
+									<fx:Object label="60 - Oise" data="60"/>
+									<fx:Object label="61 - Orne" data="61"/>
+									<fx:Object label="62 - Pas-de-Calais" data="62"/>
+									<fx:Object label="63 - Puy-de-Dôme" data="63"/>
+									<fx:Object label="64 - Pyrénées-Atlantiques" data="64"/>
+									<fx:Object label="65 - Hautes-Pyrénées" data="65"/>
+									<fx:Object label="66 - Pyrénées-Orientales" data="66"/>
+									<fx:Object label="67 - Bas-Rhin" data="67"/>
+									<fx:Object label="68 - Haut-Rhin" data="68"/>
+									<fx:Object label="69 - Rhône" data="69"/>
+									<fx:Object label="70 - Haute-Saône" data="70"/>
+									<fx:Object label="71 - Saône-et-Loire" data="71"/>
+									<fx:Object label="72 - Sarthe" data="72"/>
+									<fx:Object label="73 - Savoie" data="73"/>
+									<fx:Object label="74 - Haute-Savoie" data="74"/>
+									<fx:Object label="75 - Paris" data="75"/>
+									<fx:Object label="76 - Seine-Maritime" data="76"/>
+									<fx:Object label="77 - Seine-et-Marne" data="77"/>
+									<fx:Object label="78 - Yvelines" data="78"/>
+									<fx:Object label="79 - Deux-Sèvres" data="79"/>
+									<fx:Object label="80 - Somme" data="80"/>
+									<fx:Object label="81 - Tarn" data="81"/>
+									<fx:Object label="82 - Tarn-et-Garonne" data="82"/>
+									<fx:Object label="83 - Var" data="83"/>
+									<fx:Object label="84 - Vaucluse" data="84"/>
+									<fx:Object label="85 - Vendée" data="85"/>
+									<fx:Object label="86 - Vienne" data="86"/>
+									<fx:Object label="87 - Haute-Vienne" data="87"/>
+									<fx:Object label="88 - Vosges" data="88"/>
+									<fx:Object label="89 - Yonne" data="89"/>
+									<fx:Object label="90 - Territoire-de-Belfort" data="90"/>
+									<fx:Object label="91 - Essonne" data="91"/>
+									<fx:Object label="92 - Hauts-de-Seine" data="92"/>
+									<fx:Object label="93 - Seine-Saint-Denis" data="93"/>
+									<fx:Object label="94 - Val-de-Marne" data="94"/>
+									<fx:Object label="95 - Val-d'Oise" data="95"/>
+								</mx:ArrayCollection>
+							</mx:ComboBox>
+						</s:HGroup>
+						<s:Line xFrom="5" xTo="498" yFrom="5" yTo="5" visible="{this._placeTypes.length>1 || this._displayBoundFilter || this._displayFrenchTerritoryFilter}" includeInLayout="{this._placeTypes.length>1 || this._displayBoundFilter || this._displayFrenchTerritoryFilter}">
+							<s:stroke>
+								<s:SolidColorStroke color="0x000000" weight="1" caps="square"/>
+							</s:stroke>
+						</s:Line>
+					</s:SkinnableContainer>
+				</mx:Form>
+
+				<mx:Form id="advancedDefaultSearchForm" width="100%" height="165" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED?(_advancedMode=='Default'?true:false):false}" includeInLayout="{_currentMode==MODE_ADVANCED?(_advancedMode=='Default'?true:false):false}">
+					<s:SkinnableContainer id="advancedDefaultSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout />
 						</s:layout>
@@ -909,19 +1371,144 @@
 							<mx:FormItem label="" defaultButton="{advancedSearchButton}" width="100%">
 								<s:TextInput id="countryCode" width="100%" text="{this._defaultCountryCode}" />
 							</mx:FormItem>
-							<s:HGroup gap="252">
+							<s:HGroup gap="250">
 								<mx:Label text=""/>
-								<s:Button id="advancedSearchButton" label="{this._advancedSearchButtonLabel}" click="advancedSearch(number.text, street.text, postalCode.text, city.text, countryCode.text)"/>
+								<s:Button id="advancedSearchButton" label="{this._advancedSearchButtonLabel}" click="advancedSearch(number.text, street.text, postalCode.text, city.text, countryCode.text, boundFilter.selected, territoireFilter.selectedItem.data, regionFilter.selectedItem.data, departementFilter.selectedItem.data)"/>
 							</s:HGroup>
 						</s:SkinnableContainer>
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<mx:Form id="reverseSearchForm" width="100%" height="{_currentMode==MODE_REVERSE?35:0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE}">
+				<mx:Form id="advancedAddressSearchForm" width="100%" height="140" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED?(_advancedMode=='StreetAddress'?true:false):false}" includeInLayout="{_currentMode==MODE_ADVANCED?(_advancedMode=='StreetAddress'?true:false):false}">
+					<s:SkinnableContainer id="advancedAddressSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<s:SkinnableContainer styleName="verticalLayout"  width="30%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="7"/>
+							</s:layout>
+							<mx:Label id="numberAddressLabel" text="{this._numberLabel}"/>
+							<mx:Label id="streetAddressLabel" text="{this._streetLabel}"/>
+							<mx:Label id="postalCodeAddressLabel" text="{this._postalCodeLabel}"/>
+							<mx:Label id="cityAddressLabel" text="{this._cityLabel}"/>
+							<mx:Label text=""/>
+						</s:SkinnableContainer>
+						<s:SkinnableContainer styleName="verticalLayout"  width="70%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:FormItem label="" defaultButton="{advancedAddressSearchButton}" width="100%">
+								<s:TextInput id="numberAddress" width="40" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedAddressSearchButton}" width="100%">
+								<s:TextInput id="streetAddress" width="100%" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedAddressSearchButton}" width="100%">
+								<s:TextInput id="postalCodeAddress" width="50" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedAddressSearchButton}" width="100%">
+								<s:TextInput id="cityAddress" width="100%" text="" />
+							</mx:FormItem>
+							<s:HGroup gap="250">
+								<mx:Label text=""/>
+								<s:Button id="advancedAddressSearchButton" label="{this._advancedSearchButtonLabel}" click="advancedAddressSearch(numberAddress.text, streetAddress.text, postalCodeAddress.text, cityAddress.text, boundFilter.selected, territoireFilter.selectedItem.data, regionFilter.selectedItem.data, departementFilter.selectedItem.data)"/>
+							</s:HGroup>
+						</s:SkinnableContainer>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="advancedPOISearchForm" width="100%" height="30" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED?(_advancedMode=='PositionOfInterest'?true:false):false}" includeInLayout="{_currentMode==MODE_ADVANCED?(_advancedMode=='PositionOfInterest'?true:false):false}">
+					<s:SkinnableContainer id="advancedPOISearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout gap="5"/>
+						</s:layout>
+						<mx:FormItem label="{this._poiNameLabel}" defaultButton="{advancedPOISearchButton}" width="100%">
+							<s:TextInput id="poi" width="100" text="" />
+						</mx:FormItem>
+						<mx:FormItem label="{this._poiNatureLabel}" defaultButton="{advancedPOISearchButton}" width="100%">
+							<s:TextInput id="nature" width="100" text="" />
+						</mx:FormItem>
+						<s:Button id="advancedPOISearchButton" label="{this._advancedSearchButtonLabel}" click="advancedPOISearch(poi.text, nature.text, boundFilter.selected, territoireFilter.selectedItem.data, regionFilter.selectedItem.data, departementFilter.selectedItem.data)"/>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="advancedParcelSearchForm" width="100%" height="110" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED?(_advancedMode=='CadastralParcel'?true:false):false}" includeInLayout="{_currentMode==MODE_ADVANCED?(_advancedMode=='CadastralParcel'?true:false):false}">
+					<s:SkinnableContainer id="advancedParcelSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<s:SkinnableContainer styleName="verticalLayout"  width="50%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="7"/>
+							</s:layout>
+							<mx:Label id="prefixLabel" text="{this._prefixLabel}"/>
+							<mx:Label id="sectionLabel" text="{this._sectionLabel}"/>
+							<mx:Label id="parcelLabel" text="{this._parcelLabel}"/>
+							<mx:Label text=""/>
+						</s:SkinnableContainer>
+						<s:SkinnableContainer styleName="verticalLayout"  width="50%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:FormItem label="" defaultButton="{advancedAddressSearchButton}" width="100%">
+								<s:TextInput id="prefix" width="100" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedAddressSearchButton}" width="100%">
+								<s:TextInput id="section" width="100" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedAddressSearchButton}" width="100%">
+								<s:TextInput id="parcel" width="100" text="" />
+							</mx:FormItem>
+							<s:HGroup gap="25">
+								<mx:Label text=""/>
+								<s:Button id="advancedParcelSearchButton" label="{this._advancedSearchButtonLabel}" click="advancedParcelSearch(prefix.text, section.text, parcel.text, boundFilter.selected, territoireFilter.selectedItem.data, regionFilter.selectedItem.data, departementFilter.selectedItem.data)"/>
+							</s:HGroup>
+						</s:SkinnableContainer>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="advancedGeodeticSearchForm" width="100%" height="85" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_ADVANCED?(_advancedMode=='GeodeticFixedPoint'?true:false):false}" includeInLayout="{_currentMode==MODE_ADVANCED?(_advancedMode=='GeodeticFixedPoint'?true:false):false}">
+					<s:SkinnableContainer id="advancedGeodeticSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
+						<s:layout>
+							<s:HorizontalLayout />
+						</s:layout>
+						<s:SkinnableContainer styleName="verticalLayout"  width="50%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="7"/>
+							</s:layout>
+							<mx:Label id="geodeticNameLabel" text="{this._geodeticNameLabel}"/>
+							<mx:Label id="geodeticNumberLabel" text="{this._geodeticNumberLabel}"/>
+							<mx:Label text=""/>
+						</s:SkinnableContainer>
+						<s:SkinnableContainer styleName="verticalLayout"  width="50%" height="100%">
+							<s:layout>
+								<s:VerticalLayout gap="5"/>
+							</s:layout>
+							<mx:FormItem label="" defaultButton="{advancedGeodeticSearchButton}" width="100%">
+								<s:TextInput id="geodeticName" width="100" text="" />
+							</mx:FormItem>
+							<mx:FormItem label="" defaultButton="{advancedGeodeticSearchButton}" width="100%">
+								<s:TextInput id="geodeticNumber" width="100" text="" />
+							</mx:FormItem>
+							<s:HGroup gap="25">
+								<mx:Label text=""/>
+								<s:Button id="advancedGeodeticSearchButton" label="{this._advancedSearchButtonLabel}" click="advancedGeodeticSearch(geodeticName.text, geodeticNumber.text, boundFilter.selected, territoireFilter.selectedItem.data, regionFilter.selectedItem.data, departementFilter.selectedItem.data)"/>
+							</s:HGroup>
+						</s:SkinnableContainer>
+					</s:SkinnableContainer>
+				</mx:Form>
+				
+				<mx:Form id="reverseSearchForm" width="100%" height="65" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE}" includeInLayout="{_currentMode==MODE_REVERSE}">
 					<s:SkinnableContainer id="reverseSearchFormContainer" styleName="verticalLayout"  width="100%" height="100%">
 						<s:layout>
-							<s:VerticalLayout/>
+							<s:VerticalLayout gap="5"/>
 						</s:layout>
+						<s:HGroup>
+							<mx:Label text="{this._reverseSearchPlaceLabel}"/>
+							<mx:CheckBox id="reverseSearchAddressType" label="{this._reverseSearchAddressTypeLabel}" selected="true"/>
+							<mx:CheckBox id="reverseSearchPOIType" label="{this._reverseSearchPOITypeLabel}" selected="true"/>	
+						</s:HGroup>
 						<mx:FormItem label="{this._reverseSearchTypeLabel}">
 							<mx:ComboBox id="reverseSearchChoice" change="reverseSearchChanged(event)">
 								<mx:ArrayCollection>
@@ -939,7 +1526,7 @@
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<mx:Form id="reversePointSearchForm" width="100%" height="{_currentMode==MODE_REVERSE?(_reverseMode=='point'?30:0):0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='point'?true:false):false}">
+				<mx:Form id="reversePointSearchForm" width="100%" height="30" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='point'?true:false):false}" includeInLayout="{_currentMode==MODE_REVERSE?(_reverseMode=='point'?true:false):false}">
 					<s:SkinnableContainer id="reversePointSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout />
@@ -954,7 +1541,7 @@
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<mx:Form id="reverseCircleSearchForm" width="100%" height="{_currentMode==MODE_REVERSE?(_reverseMode=='circle'?55:0):0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='circle'?true:false):false}">
+				<mx:Form id="reverseCircleSearchForm" width="100%" height="55" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='circle'?true:false):false}" includeInLayout="{_currentMode==MODE_REVERSE?(_reverseMode=='circle'?true:false):false}">
 					<s:SkinnableContainer id="reverseCircleSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout />
@@ -988,7 +1575,7 @@
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<mx:Form id="reverseBoundsSearchForm" width="100%" height="{_currentMode==MODE_REVERSE?(_reverseMode=='bounds'?80:0):0}" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='bounds'?true:false):false}">
+				<mx:Form id="reverseBoundsSearchForm" width="100%" height="80" paddingTop="0" paddingBottom="0" visible="{_currentMode==MODE_REVERSE?(_reverseMode=='bounds'?true:false):false}" includeInLayout="{_currentMode==MODE_REVERSE?(_reverseMode=='bounds'?true:false):false}">
 					<s:SkinnableContainer id = "reverseBoundsSearchFormContainer" styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout />
@@ -1031,7 +1618,7 @@
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<mx:Form id="results" width="100%" height="{this._showResults?55+25*this.searchResult.rowCount:0}" paddingTop="0" paddingBottom="5" visible="{this._showResults}">
+				<mx:Form id="results" width="100%" height="{55+25*this._resultsProvider.length}" paddingTop="0" paddingBottom="5" visible="{this._showResults}" includeInLayout="{this._showResults}">
 					<s:SkinnableContainer id="resultsContainer" styleName="verticalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:VerticalLayout gap="0"/>
@@ -1060,7 +1647,7 @@
 					</s:SkinnableContainer>
 				</mx:Form>
 				
-				<mx:Form id="noResults" width="100%" height="{_showNoResultMsg?30:0}" paddingTop="0" paddingBottom="5" visible="{this._showNoResultMsg}">
+				<mx:Form id="noResults" width="100%" height="30" paddingTop="0" paddingBottom="5" visible="{this._showNoResultMsg}" includeInLayout="{this._showNoResultMsg}">
 					<s:SkinnableContainer id="noResultsContainer" styleName="horizontalLayout"  width="100%" height="100%">
 						<s:layout>
 							<s:HorizontalLayout gap="0"/>
