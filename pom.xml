@@ -23,6 +23,7 @@
         <sonar.surefire.reportspath>target\surefire-reports</sonar.surefire.reportspath>
         <sonar.skippedModules>openscales-core-flash-10.1,openscales-as-examples,openscales-fx-examples,openscales-viewer</sonar.skippedModules>
 		<env>local</env>
+		<weeklyRelease>false</weeklyRelease>
 	</properties>
 	<profiles>
 		<profile>
@@ -51,6 +52,22 @@
 				<mvn.site>file:///WEBS/pht/openscales.org/docs/mvn-site</mvn.site>
 				<openscales.host>localhost</openscales.host>
 			</properties>
+		</profile>
+		<profile>
+			<id>weekly-release</id>
+			<activation>
+				<property>
+					<name>weeklyRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<distributionManagement>
+				<repository>
+					<id>openscales-weekly</id>
+					<name>OpenScales Release repository</name>
+					<url>http://${openscales.host}/nexus/content/repositories/openscales-weekly</url>
+				</repository>
+			</distributionManagement>
 		</profile>
 	</profiles>
 	<modules>
