@@ -48,10 +48,10 @@
 					<value>dev</value>
 				</property>
 			</activation>
-			<!--<properties>
-				<mvn.site>file:///WEBS/pht/openscales.org/docs/mvn-site</mvn.site>
+			<properties>
+				<!--<mvn.site>file:///WEBS/pht/openscales.org/docs/mvn-site</mvn.site>-->
 				<openscales.host>localhost</openscales.host>
-			</properties>-->
+			</properties>
 		</profile>
 		<profile>
 			<id>weekly-release</id>
@@ -68,6 +68,13 @@
 					<url>http://${openscales.host}/nexus/content/repositories/openscales-weekly</url>
 				</repository>
 			</distributionManagement>
+			<properties>
+				<env>dev</env>
+				<remoteTagging>false</remoteTagging>
+				<suppressCommitBeforeTag>true</suppressCommitBeforeTag>
+				<maven.test.skip>true</maven.test.skip>
+				<tagNameFormat>-lf @{project.version}</tagNameFormat>
+			</properties>
 		</profile>
 	</profiles>
 	<modules>
