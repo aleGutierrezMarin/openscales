@@ -49,6 +49,7 @@
 				</property>
 			</activation>
 			<properties>
+				<mvn.site>file:///tmp</mvn.site>
 				<!--<mvn.site>file:///WEBS/pht/openscales.org/docs/mvn-site</mvn.site>-->
 				<openscales.host>localhost</openscales.host>
 			</properties>
@@ -73,7 +74,7 @@
 				<remoteTagging>false</remoteTagging>
 				<suppressCommitBeforeTag>true</suppressCommitBeforeTag>
 				<maven.test.skip>true</maven.test.skip>
-				<tagNameFormat>-lf @{project.version}</tagNameFormat>
+				<tagNameFormat>-f @{project.version}</tagNameFormat>
 			</properties>
 		</profile>
 	</profiles>
