@@ -70,7 +70,7 @@
 				</repository>
 			</distributionManagement>
 			<properties>
-				<goals>site deploy</goal>
+				<goals>site deploy</goals>
 				<remoteTagging>false</remoteTagging>
 				<suppressCommitBeforeTag>true</suppressCommitBeforeTag>
 				<maven.test.skip>true</maven.test.skip>
