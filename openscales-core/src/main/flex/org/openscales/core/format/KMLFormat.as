@@ -91,7 +91,9 @@ package org.openscales.core.format
 			use namespace google;
 			use namespace opengis;
 			
-			var name:String = dataXML..Name.toString();
+			var name:String = "";
+			if (dataXML && dataXML..Name)
+				name = dataXML..Name.toString();
 			return name;
 			
 		}
