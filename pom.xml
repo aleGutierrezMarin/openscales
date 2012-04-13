@@ -48,10 +48,10 @@
 					<value>dev</value>
 				</property>
 			</activation>
-			<properties>
+			<!--<properties>
 				<mvn.site>file:///WEBS/pht/openscales.org/docs/mvn-site</mvn.site>
 				<openscales.host>localhost</openscales.host>
-			</properties>
+			</properties>-->
 		</profile>
 		<profile>
 			<id>weekly-release</id>
