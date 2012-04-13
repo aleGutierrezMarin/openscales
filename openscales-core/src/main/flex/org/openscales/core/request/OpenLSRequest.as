@@ -30,7 +30,13 @@ package org.openscales.core.request
 		private var _circleRadius:Number = 0;
 		private var _bounds:Bounds = null;
 		private var _reverseMode:String = "point";
-
+		private var _reverseGeocodePreferences:Vector.<String> = new Vector.<String>;
+		
+		private var _envelopeSrsName:String = null;
+		private var _envelopeBounds:Bounds = null;
+		
+		private var _placeFilters:Vector.<Array> = new Vector.<Array>;
+		
 		private var _isValidPostalCode:Function = null;
 		
 		/**
@@ -175,6 +181,7 @@ package org.openscales.core.request
 		}
 		public function set city(value:String):void {
 			this._city = (value) ? value : "";
+			this.addPlaceFilter("Municipality", value);
 			// Update the content of the request
 			this.postContent = this.createContent();
 		}
@@ -199,6 +206,26 @@ package org.openscales.core.request
 		}
 		public function set reverseMode(value:String):void {
 			this._reverseMode = value;
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		
+		/**
+		 * Getter and setter of reverse geocode preferences.
+		 */
+		public function get reverseGeocodePreferences():Vector.<String>
+		{
+			return _reverseGeocodePreferences;
+		}
+		public function resetReverseGeocodePreferences():void
+		{
+			_reverseGeocodePreferences = new Vector.<String>;
+			// Update the content of the request
+			this.postContent = this.createReverseContent();
+		}
+		public function addReverseGeocodePreference(value:String):void
+		{
+			_reverseGeocodePreferences.push(value);
 			// Update the content of the request
 			this.postContent = this.createReverseContent();
 		}
@@ -255,6 +282,51 @@ package org.openscales.core.request
 		}
 		
 		/**
+		 * Getter and setter of the envelope SRS name.
+		 * Filter by envelope is an extension of OpenLS standard, use only if service supports it.
+		 */
+		public function get envelopeSrsName():String {
+			return this._envelopeSrsName;
+		}
+		public function set envelopeSrsName(value:String):void {
+			this._envelopeSrsName = (value) ? value : "";
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
+		 * Getter and setter of envelope bounds.
+		 * Filter by envelope is an extension of OpenLS standard, use only if service supports it.
+		 */
+		public function get envelopeBounds():Bounds {
+			return this._envelopeBounds;
+		}
+		public function set envelopeBounds(value:Bounds):void {
+			this._envelopeBounds = value;
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
+		 * Getter and setter of place filters.
+		 * City search generates automatically a "Municipality" place filter.
+		 */
+		public function get placeFilters():Vector.<Array>
+		{
+			return _placeFilters;
+		}
+		public function resetPlaceFilters():void {
+			this._placeFilters = new Vector.<Array>;
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		public function addPlaceFilter(type:String, value:String):void {
+			this._placeFilters.push(new Array(type, value));
+			// Update the content of the request
+			this.postContent = this.createContent();
+		}
+		
+		/**
 		 * Define quickly all the fields of an OpenLS request.
 		 * @param id
 		 * @param freeFormAddress
@@ -269,7 +341,7 @@ package org.openscales.core.request
 		 */
 		public function defineSearch(id:String, freeFormAddress:String, number:String, street:String, postalCode:String, city:String, countryCode:String, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
-			this.freeFormAddress =freeFormAddress;
+			this.freeFormAddress = freeFormAddress;
 			this.number = number;
 			this.street = street;
 			this.postalCode = postalCode;
@@ -293,7 +365,7 @@ package org.openscales.core.request
 		 */
 		public function defineSimpleSearch(id:String, freeFormAddress:String, countryCode:String, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
-			this.freeFormAddress =freeFormAddress;
+			this.freeFormAddress = freeFormAddress;
 			this.countryCode = countryCode;
 			this.srsName = srsName;
 			this.maximumResponses = maximumResponses;
@@ -305,22 +377,30 @@ package org.openscales.core.request
 		/**
 		 * Define quickly the fields of an advanced OpenLS request.
 		 * @param id
-		 * @param freeFormAddress
 		 * @param number
 		 * @param street
 		 * @param postalCode
 		 * @param city
+		 * @param additionnalPlaceFilters
 		 * @param countryCode
 		 * @param srsName
 		 * @param maximumResponses
 		 * @param version
 		 */
-		public function defineAdvancedSearch(id:String, number:String, street:String, postalCode:String, city:String, countryCode:String, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
+		public function defineAdvancedSearch(id:String, number:String, street:String, postalCode:String, city:String, additionnalPlaceFilters:Vector.<Array>, countryCode:String, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
 			this.number = number;
 			this.street = street;
 			this.postalCode = postalCode;
+			this.resetPlaceFilters();
 			this.city = city;
+			if (additionnalPlaceFilters) {
+				var length:int = additionnalPlaceFilters.length;
+				for (var i:int = 0; i < length; i++) {
+					var filter:Array = additionnalPlaceFilters[i];
+					this.addPlaceFilter(filter[0], filter[1]);				
+				}
+			}
 			this.countryCode = countryCode;
 			this.srsName = srsName;
 			this.maximumResponses = maximumResponses;
@@ -332,13 +412,21 @@ package org.openscales.core.request
 		/**
 		 * Define quickly the fields of a reverse OpenLS request.
 		 * @param id
+		 * @param reverseGeocodePreferences
 		 * @param location
 		 * @param srsName
 		 * @param maximumResponses
 		 * @param version
 		 */
-		public function defineReverseSearch(id:String, location:Location, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
+		public function defineReverseSearch(id:String, reverseGeocodePreferences:Vector.<String>, location:Location, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
+			this.resetReverseGeocodePreferences();
+			if (reverseGeocodePreferences) {
+				var length:int = reverseGeocodePreferences.length;
+				for (var i:int = 0; i < length; i++) {
+					this.addReverseGeocodePreference(reverseGeocodePreferences[i]);				
+				}
+			}
 			this.location = location;
 			this.srsName = srsName;
 			this.maximumResponses = maximumResponses;
@@ -350,6 +438,7 @@ package org.openscales.core.request
 		/**
 		 * Define quickly the fields of a reverse OpenLS request, with a circle constraint.
 		 * @param id
+		 * @param reverseGeocodePreferences
 		 * @param location
 		 * @param circleCenter
 		 * @param circleRadius
@@ -357,8 +446,15 @@ package org.openscales.core.request
 		 * @param maximumResponses
 		 * @param version
 		 */
-		public function defineReverseSearchInCircle(id:String, location:Location, circleCenter:Location, circleRadius:Number, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
+		public function defineReverseSearchInCircle(id:String, reverseGeocodePreferences:Vector.<String>, location:Location, circleCenter:Location, circleRadius:Number, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
+			this.resetReverseGeocodePreferences();
+			if (reverseGeocodePreferences) {
+				var length:int = reverseGeocodePreferences.length;
+				for (var i:int = 0; i < length; i++) {
+					this.addReverseGeocodePreference(reverseGeocodePreferences[i]);				
+				}
+			}
 			this.location = location;
 			this.circleCenter = circleCenter;
 			this.circleRadius = circleRadius;
@@ -372,14 +468,22 @@ package org.openscales.core.request
 		/**
 		 * Define quickly the fields of a reverse OpenLS request, with a bounds constraint.
 		 * @param id
+		 * @param reverseGeocodePreferences
 		 * @param location
 		 * @param bounds
 		 * @param srsName
 		 * @param maximumResponses
 		 * @param version
 		 */
-		public function defineReverseSearchInBounds(id:String, location:Location, bounds:Bounds, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
+		public function defineReverseSearchInBounds(id:String, reverseGeocodePreferences:Vector.<String>, location:Location, bounds:Bounds, srsName:String, maximumResponses:uint, version:String = "1.2"):void {
 			this.id = id;
+			this.resetReverseGeocodePreferences();
+			if (reverseGeocodePreferences) {
+				var length:int = reverseGeocodePreferences.length;
+				for (var i:int = 0; i < length; i++) {
+					this.addReverseGeocodePreference(reverseGeocodePreferences[i]);				
+				}
+			}
 			this.location = location;
 			this.bounds = bounds;
 			this.srsName = srsName;
@@ -404,17 +508,44 @@ package org.openscales.core.request
 			if (this.freeFormAddress) {
 				request += '<Address countryCode="' + this.countryCode + '">';
 				request += '<freeFormAddress>' + this.freeFormAddress + '</freeFormAddress>';
+				request += this.createEnvelopeContent();
+				request += this.createPlaceFiltersContent();
 				request += '</Address>';
 			}
 			else {
 				request += '<Address countryCode="' + this.countryCode + '">';
 				request += '<StreetAddress><Building number="' + this.number  + '"/>'; 
 				request += '<Street>' + this.street + '</Street></StreetAddress>';
-				request += '<Place type="Municipality">' + this.city + '</Place>';
+				request += this.createEnvelopeContent();
+				request += this.createPlaceFiltersContent();
 				request += '<PostalCode>' + this.postalCode + '</PostalCode></Address>';				
 			}
 			request += '</GeocodeRequest></Request></XLS>';
 			return request;
+		}
+		
+		private function createEnvelopeContent():String {
+			var content:String = "";
+			if (this.envelopeBounds) {
+				content += '<gml:envelope';
+				if (this.envelopeSrsName && this.envelopeSrsName!="")
+					content += ' srsName="' + this.envelopeSrsName + '"';
+				content += '>';
+				content += '<gml:pos>'+this.envelopeBounds.bottom+' '+this.envelopeBounds.left+'</gml:pos>';
+				content += '<gml:pos>'+this.envelopeBounds.top+' '+this.envelopeBounds.right+'</gml:pos>';
+				content += '</gml:envelope>';
+			}
+			return content;
+		}
+		
+		private function createPlaceFiltersContent():String {
+			var content:String = "";
+			var length:int = _placeFilters.length;
+			for (var i:int = 0; i < length; i++) {
+				var filter:Array = _placeFilters[i];
+				content += '<Place type="'+filter[0]+'">'+filter[1]+'</Place>';
+			}
+			return content;
 		}
 		
 		/**
@@ -427,8 +558,14 @@ package org.openscales.core.request
 			}
 			var request:String = this.createRequestHeader();
 			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="ReverseGeocodeRequest" requestID="'+this.id+'" version="'+this._version+'">';
-			request += '<ReverseGeocodeRequest><ReverseGeocodePreference>StreetAddress</ReverseGeocodePreference>';
-			request += '<Position><gml:Point><gml:pos>'+this._location.lat+' '+this._location.lon+'</gml:pos></gml:Point>';
+			request += '<ReverseGeocodeRequest>';
+			var length:int = _reverseGeocodePreferences.length;
+			for (var i:int = 0; i < length; i++) {
+				request += '<ReverseGeocodePreference>'+this._reverseGeocodePreferences[i]+'</ReverseGeocodePreference>';
+			}
+			request += '<Position>';
+			if (this._location)
+				request += '<gml:Point><gml:pos>'+this._location.lat+' '+this._location.lon+'</gml:pos></gml:Point>';
 			
 			switch (this._reverseMode) {
 				case "point":
@@ -647,7 +784,7 @@ package org.openscales.core.request
 			super.send();
 			this.id = "";
 		}
-		
+
 	}
 	
 }
