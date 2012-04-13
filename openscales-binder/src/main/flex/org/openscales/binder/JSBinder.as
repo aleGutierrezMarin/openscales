@@ -251,7 +251,7 @@ package org.openscales.binder
 		/**
 		 * This function changes the opacity of a layer
 		 * @param name:String - The name of the layer
-		 * @param value:Number - The new opacity of this layer (0 <= value <= 1)
+		 * @param value:Number - The new opacity of this layer (0 &gt;= value &gt;= 1)
 		 */
 		protected function setLayerOpacity(name:String, value:Number):void{
 			if(!this._map)
