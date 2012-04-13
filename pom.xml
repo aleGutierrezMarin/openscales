@@ -70,7 +70,6 @@
 				</repository>
 			</distributionManagement>
 			<properties>
-				<env>dev</env>
 				<remoteTagging>false</remoteTagging>
 				<suppressCommitBeforeTag>true</suppressCommitBeforeTag>
 				<maven.test.skip>true</maven.test.skip>
@@ -458,9 +457,5 @@
 				<name>OpenScales Snapshot Repository</name>
 				<url>http://openscales.org/nexus/content/repositories/snapshots</url>
 			</snapshotRepository>
-			<site>
-					<id>openscales.org</id>
-					<url>${mvn.site}</url>
-			</site>
 	</distributionManagement>
 </project>
