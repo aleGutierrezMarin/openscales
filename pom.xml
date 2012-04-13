@@ -66,7 +66,7 @@
 				<repository>
 					<id>openscales-weekly</id>
 					<name>OpenScales Release repository</name>
-					<url>http://${openscales.host}/nexus/content/repositories/openscales-weekly</url>
+					<url>http://openscales.org/nexus/content/repositories/openscales-weekly</url>
 				</repository>
 			</distributionManagement>
 			<properties>
@@ -424,11 +424,11 @@
 	<repositories>
 		<repository>
 			<id>central</id>
-			<url>http://${openscales.host}/nexus/content/groups/public</url>
+			<url>http://openscales.org/nexus/content/groups/public</url>
 		</repository>
 		<repository>
 			<id>snapshot</id>
-			<url>http://${openscales.host}/nexus/content/groups/public-snapshots</url>
+			<url>http://openscales.org/nexus/content/groups/public-snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -437,11 +437,11 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>central</id>
-			<url>http://${openscales.host}/nexus/content/groups/public</url>
+			<url>http://openscales.org/nexus/content/groups/public</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>snapshot</id>
-			<url>http://${openscales.host}/nexus/content/groups/public-snapshots</url>
+			<url>http://openscales.org/nexus/content/groups/public-snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -451,12 +451,12 @@
 			<repository>
 				<id>openscales-repo</id>
 				<name>OpenScales Release repository</name>
-				<url>http://${openscales.host}/nexus/content/repositories/releases</url>
+				<url>http://openscales.org/nexus/content/repositories/releases</url>
 			</repository>
 			<snapshotRepository>
 				<id>openscales-repo-snapshot</id>
 				<name>OpenScales Snapshot Repository</name>
-				<url>http://${openscales.host}/nexus/content/repositories/snapshots</url>
+				<url>http://openscales.org/nexus/content/repositories/snapshots</url>
 			</snapshotRepository>
 			<site>
 					<id>openscales.org</id>
