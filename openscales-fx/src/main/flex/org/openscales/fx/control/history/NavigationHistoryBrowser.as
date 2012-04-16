@@ -3,6 +3,7 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 
 import org.openscales.core.Map;
+import org.openscales.core.events.MapEvent;
 import org.openscales.core.history.NavigationHistoryLogger;
 import org.openscales.fx.control.Control;
 
@@ -50,10 +51,10 @@ public class NavigationHistoryBrowser extends Control {
         super.partAdded(partName, instance);
         if(instance == forwardButton){
             forwardButton.addEventListener(MouseEvent.CLICK, onForwardButtonClick);
-			//forwardButton.enabled = false;
+			forwardButton.enabled = false;
         }else if(instance == backwardButton){
             backwardButton.addEventListener(MouseEvent.CLICK, onBackwardButtonClick);
-			//backwardButton.enabled = false;
+			backwardButton.enabled = false;
         }
     }
 
@@ -61,6 +62,11 @@ public class NavigationHistoryBrowser extends Control {
         super.partRemoved(partName, instance);
     }
 
+	protected function onMapReload(event:MapEvent):void{
+		backwardButton.enabled = !_historyLogger.isAtBeginning();
+		forwardButton.enabled = !_historyLogger.isAtEnd();
+	}
+	
     private function initializeLogger():void {
         _historyLogger = new NavigationHistoryLogger(_size);
 		
@@ -90,8 +96,11 @@ public class NavigationHistoryBrowser extends Control {
     }
 
     override public function set map(value:Map):void {
+        if(_map)_map.removeEventListener(MapEvent.RELOAD, onMapReload);
         super.map = value;
         if(_historyLogger)_historyLogger.map = value;
+		if(_map)_map.addEventListener(MapEvent.RELOAD, onMapReload);
+
     }
 }
 }

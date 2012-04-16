@@ -140,7 +140,6 @@
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.ZoomBoxHandler"/>
-    <classEntry path="org.openscales.core.history.HistoryItem"/>
     <classEntry path="org.openscales.core.history.NavigationHistoryLogger"/>
     <classEntry path="org.openscales.core.i18n.Catalog"/>
     <classEntry path="org.openscales.core.i18n.Locale"/>
@@ -307,7 +306,6 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.style.halo.Halo"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
