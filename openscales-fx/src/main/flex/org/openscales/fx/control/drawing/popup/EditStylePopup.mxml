@@ -3,6 +3,7 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   close="close()" xmlns:openscales="http://openscales.org"
+			   xmlns="http://openscales.org"
 			   creationComplete="creationComplete()">
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
@@ -65,6 +66,9 @@
 			
 			private var _editedSymbolize:Symbolizer;
 			
+			[Bindable]
+			public var formFocusColor:uint = 0x6699FF; 
+				
 			[Bindable]
 			private var _isPoint:Boolean = false;
 			
@@ -310,15 +314,15 @@
 			{
 				if (this._pointIconMode)
 				{
-					var customMarker:CustomMarker = new CustomMarker((this.iconDropDownList.selectedItem as String));
+					var customMarker:CustomMarker = new CustomMarker((this.iconURLArray[this._iconSelectedIndex] as String));
 					(this._editedSymbolize as PointSymbolizer).graphic = customMarker;
 					this.editStyleHandler.actualizeFeature();
 				}
 				else
 				{
 					var fill:SolidFill = new SolidFill();
-					fill.color = this.pointColorPicker.selectedColor;
-					fill.opacity = this.pointFillOpacity.value/100;
+					fill.color = this._pointColor;
+					fill.opacity = this._pointOpacity/100;
 					var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
 					var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
 					ptsym.graphic = wkm;
@@ -354,7 +358,7 @@
 			/**
 			 * Method to close the title window
 			 */
-			private function close():void
+			public function close():void
 			{
 				this._editStyleHandler.validateChanges();
 				PopUpManager.removePopUp(this);
@@ -500,7 +504,8 @@
 			 */
 			private function onIconChanged():void
 			{
-				var customMarker:CustomMarker = new CustomMarker((this.iconDropDownList.selectedItem as String));
+				
+				var customMarker:CustomMarker = new CustomMarker((this.iconURLArray[this._iconSelectedIndex] as String));
 				(this._editedSymbolize as PointSymbolizer).graphic = customMarker;
 				this.editStyleHandler.actualizeFeature();
 			}
@@ -508,8 +513,8 @@
 			private function onPointColorChanged():void
 			{
 				var fill:SolidFill = new SolidFill();
-				fill.color = this.pointColorPicker.selectedColor;
-				fill.opacity = this.pointFillOpacity.value/100;
+				fill.color = this._pointColor;
+				fill.opacity = this._pointOpacity/100;
 				var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
 				ptsym.graphic = wkm;
@@ -519,8 +524,8 @@
 			private function onPointOpacityChanged():void
 			{
 				var fill:SolidFill = new SolidFill();
-				fill.color = this.pointColorPicker.selectedColor;
-				fill.opacity = this.pointFillOpacity.value/100;
+				fill.color = this._pointColor;
+				fill.opacity = this._pointOpacity/100;
 				var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
 				ptsym.graphic = wkm;
@@ -892,10 +897,10 @@
 					<s:HorizontalLayout paddingLeft="40" paddingTop="10" gap="10"/>
 				</s:layout>
 				
-				<openscales:IconButton id="cancelButton" icon="{Annuler}" useHandCursor="true" click="{cancelChanges()}"/>
-				<openscales:IconButton id="setDefaultButton" icon="{Default}" useHandCursor="true" click="{applyDefaultStyle()}"/>
-				<openscales:IconButton id="stylePicking" icon="{Pipette}"  alpha="@{this._pickingAlpha}" useHandCursor="true" click="{toggleStylePicking()}"/>
-				<openscales:IconButton id="stylePainting" icon="{Pot}" alpha="@{this._paintingAlpha}" useHandCursor="true" click="{toggleStylePainting()}"/>
+				<openscales:IconButton focusColor="{this.formFocusColor}" id="cancelButton" icon="{Annuler}" useHandCursor="true" click="{cancelChanges()}"/>
+				<openscales:IconButton focusColor="{this.formFocusColor}" id="setDefaultButton" icon="{Default}" useHandCursor="true" click="{applyDefaultStyle()}"/>
+				<openscales:IconButton focusColor="{this.formFocusColor}" id="stylePicking" icon="{Pipette}"  alpha="@{this._pickingAlpha}" useHandCursor="true" click="{toggleStylePicking()}"/>
+				<openscales:IconButton focusColor="{this.formFocusColor}" id="stylePainting" icon="{Pot}" alpha="@{this._paintingAlpha}" useHandCursor="true" click="{toggleStylePainting()}"/>
 			</s:Group>
 			
 			<!--Point-->
@@ -919,24 +924,24 @@
 							<s:layout >
 								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 							</s:layout>
-							<s:RadioButton id="dropdownPointModeRB" selected="@{this._pointIconMode}" groupName="pointIconMode" />
-							<s:DropDownList enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
+							<s:RadioButton focusColor="{this.formFocusColor}" id="dropdownPointModeRB" selected="@{this._pointIconMode}" groupName="pointIconMode" />
+							<s:DropDownList focusColor="{this.formFocusColor}" enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
 						</s:Group>
 						
 						<s:Group>
 							<s:layout >
 								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 							</s:layout>
-							<s:RadioButton id="colorPointModeRB" selected="@{this._pointColorMode}" groupName="pointIconMode" />
+							<s:RadioButton focusColor="{this.formFocusColor}" id="colorPointModeRB" selected="@{this._pointColorMode}" groupName="pointIconMode" />
 							<s:Group>
 								<s:layout >
 									<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 								</s:layout>
 								
 								<s:Graphic x="0" y="0">
-									<mx:ColorPicker id="pointColorPicker" enabled="{this._pointColorMode}" selectedColor="@{this._pointColor}" change="onPointColorChanged()"/>
+									<mx:ColorPicker focusColor="{this.formFocusColor}" id="pointColorPicker" enabled="{this._pointColorMode}" selectedColor="@{this._pointColor}" change="onPointColorChanged()"/>
 								</s:Graphic>
-								<s:HSlider id="pointFillOpacity" enabled="{this._pointColorMode}"  value="@{this._pointOpacity}" dataTipFormatFunction="percentageTipFunc" change="onPointOpacityChanged()" height="11" width="70" minimum="0" maximum="100"/>
+								<s:HSlider focusColor="{this.formFocusColor}" id="pointFillOpacity" enabled="{this._pointColorMode}"  value="@{this._pointOpacity}" dataTipFormatFunction="percentageTipFunc" change="onPointOpacityChanged()" height="11" width="70" minimum="0" maximum="100"/>
 							</s:Group>
 						</s:Group>
 					</s:Group>
@@ -947,9 +952,9 @@
 						<s:VerticalLayout paddingLeft="2"/>
 					</s:layout>
 					<s:Label id="pointApplyTo" />
-					<s:RadioButton id="pointPreviewModeAll" selected="@{this._allMode}" groupName="pointPreviewMode"/>
-					<s:RadioButton id="pointPreviewModeSelected" selected="@{this._selectedMode}" groupName="pointPreviewMode"/>
-					<s:RadioButton id="pointPreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="pointPreviewMode"/>
+					<s:RadioButton focusColor="{this.formFocusColor}" id="pointPreviewModeAll" selected="@{this._allMode}" groupName="pointPreviewMode"/>
+					<s:RadioButton focusColor="{this.formFocusColor}" id="pointPreviewModeSelected" selected="@{this._selectedMode}" groupName="pointPreviewMode"/>
+					<s:RadioButton focusColor="{this.formFocusColor}" id="pointPreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="pointPreviewMode"/>
 				</s:Group>
 			</s:Group>
 			
@@ -974,15 +979,15 @@
 						<s:HorizontalLayout paddingLeft="5" gap="5"/>
 					</s:layout>
 					
-					<mx:ColorPicker id="lineColorPicker" selectedColor="@{this._lineColor}" change="onLineColorChanged()"/>
+					<mx:ColorPicker focusColor="{this.formFocusColor}" id="lineColorPicker" selectedColor="@{this._lineColor}" change="onLineColorChanged()"/>
 					<s:Group>
 						<s:layout >
 							<s:HorizontalLayout paddingTop="5"/>
 						</s:layout>
 						
-						<s:HSlider id="borderControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._lineBorderOpacity}" change="onLineOpacityChanged()"/>
+						<s:HSlider focusColor="{this.formFocusColor}" id="borderControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._lineBorderOpacity}" change="onLineOpacityChanged()"/>
 					</s:Group>
-					<s:TextInput id="lineWidth" restrict="0-9" maxChars="3" left="5" height="20" width="20" text="@{this._lineWidth}" change="onLineWidthChanged()" />
+					<s:TextInput focusColor="{this.formFocusColor}" id="lineWidth" restrict="0-9" maxChars="3" left="5" height="20" width="20" text="@{this._lineWidth}" change="onLineWidthChanged()" />
 					<s:Label paddingTop="5" text="px" color="black"/>
 				</s:Group>
 				
@@ -1008,7 +1013,7 @@
 						</s:layout>
 						
 						<s:Label id="lineArrowLeftLabel" color="black" />
-						<s:CheckBox id="leftArrowCheckBox" selected="@{this._leftArrowActivated}" change="this.onLeftArrowChange()"/>
+						<s:CheckBox focusColor="{this.formFocusColor}" id="leftArrowCheckBox" selected="@{this._leftArrowActivated}" change="this.onLeftArrowChange()"/>
 						<!--s:DropDownList id="leftArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer" dataProvider="{this._arrowChoice}"  selectedIndex="@{this._leftArrowIndex}" change="onIconChanged()" top="1" left="1" width="40"/-->
 
 					</s:Group>
@@ -1019,7 +1024,7 @@
 						</s:layout>
 						
 						<s:Label id="lineArrowRightLabel" color="black" />
-						<s:CheckBox id="rightArrowCheckBox" selected="@{this._rightArrowActivated}" change="this.onRightArrowChange()"/>
+						<s:CheckBox focusColor="{this.formFocusColor}" id="rightArrowCheckBox" selected="@{this._rightArrowActivated}" change="this.onRightArrowChange()"/>
 
 						<!--s:DropDownList  id="rightArrowDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer" dataProvider="{this._arrowChoice}"  selectedIndex="@{this._rightArrowIndex}" change="onIconChanged()" top="1" left="1" width="40"/-->
 					</s:Group>
@@ -1031,9 +1036,9 @@
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
 					<s:Label id="lineApplyTo"/>
-					<s:RadioButton id="linePreviewModeAll" selected="@{this._allMode}" groupName="linePreviewMode" />
-					<s:RadioButton id="linePreviewModeSelected" selected="@{this._selectedMode}" groupName="linePreviewMode" />
-					<s:RadioButton id="linePreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="linePreviewMode"/>
+					<s:RadioButton focusColor="{this.formFocusColor}" id="linePreviewModeAll" selected="@{this._allMode}" groupName="linePreviewMode" />
+					<s:RadioButton focusColor="{this.formFocusColor}" id="linePreviewModeSelected" selected="@{this._selectedMode}" groupName="linePreviewMode" />
+					<s:RadioButton focusColor="{this.formFocusColor}" id="linePreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="linePreviewMode"/>
 				</s:Group>
 			</s:Group>
 			
@@ -1057,16 +1062,16 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="polygonStrokeColorPicker" selectedColor="@{this._polygonLineColor}" change="onPolygonLineColorChanged()"/>
+						<mx:ColorPicker focusColor="{this.formFocusColor}" id="polygonStrokeColorPicker" selectedColor="@{this._polygonLineColor}" change="onPolygonLineColorChanged()"/>
 					</s:Graphic>
 					<s:Group>
 						<s:layout >
 							<s:HorizontalLayout paddingTop="5"/>
 						</s:layout>
 						
-						<s:HSlider id="polygonBorderControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._polygonLineBorderOpacity}" change="onPolygonLineOpacityChanged()"/>
+						<s:HSlider focusColor="{this.formFocusColor}" id="polygonBorderControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._polygonLineBorderOpacity}" change="onPolygonLineOpacityChanged()"/>
 					</s:Group>
-					<s:TextInput left="5" height="20" width="20" restrict="0-9" maxChars="3" text="@{this._polygonLineWidth}" change="onPolygonLineWidthChanged()"/>
+					<s:TextInput focusColor="{this.formFocusColor}" left="5" height="20" width="20" restrict="0-9" maxChars="3" text="@{this._polygonLineWidth}" change="onPolygonLineWidthChanged()"/>
 					<s:Label paddingTop="5" text="px" color="black"/>
 				</s:Group>
 				
@@ -1084,14 +1089,14 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="polygonFillColorPicker" selectedColor="@{this._polygonFillColor}" change="onPolygonFillColorChanged()"/>
+						<mx:ColorPicker focusColor="{this.formFocusColor}" id="polygonFillColorPicker" selectedColor="@{this._polygonFillColor}" change="onPolygonFillColorChanged()"/>
 					</s:Graphic>
 					<s:Group>
 						<s:layout >
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="polygonFillControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._polygonFillOpacity}" change="onPolygonFillOpacityChanged()"/>
+						<s:HSlider focusColor="{this.formFocusColor}" id="polygonFillControlOpacity" dataTipFormatFunction="percentageTipFunc" height="11" width="100" minimum="0" maximum="100" value="@{this._polygonFillOpacity}" change="onPolygonFillOpacityChanged()"/>
 					</s:Group>
 				</s:Group>
 				<s:Group >
@@ -1100,9 +1105,9 @@
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
 					<s:Label id="polyApplyTo"/>
-					<s:RadioButton id="polyPreviewModeAll" selected="@{this._allMode}" groupName="polygonPreviewMode"/>
-					<s:RadioButton id="polyPreviewModeSelected" selected="@{this._selectedMode}" groupName="polygonPreviewMode"/>
-					<s:RadioButton id="polyPreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="polygonPreviewMode"/>
+					<s:RadioButton focusColor="{this.formFocusColor}" id="polyPreviewModeAll" selected="@{this._allMode}" groupName="polygonPreviewMode"/>
+					<s:RadioButton focusColor="{this.formFocusColor}" id="polyPreviewModeSelected" selected="@{this._selectedMode}" groupName="polygonPreviewMode"/>
+					<s:RadioButton focusColor="{this.formFocusColor}" id="polyPreviewModeTypeSelected" selected="@{this._typeSelectedMode}" groupName="polygonPreviewMode"/>
 				</s:Group>
 			</s:Group>
 				
@@ -1129,14 +1134,14 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="labelColorPicker" selectedColor="@{this._fontColor}" change="onLabelFontChange();"/>
+						<mx:ColorPicker focusColor="{this.formFocusColor}" id="labelColorPicker" selectedColor="@{this._fontColor}" change="onLabelFontChange();"/>
 					</s:Graphic>
 					<s:Group >
 						<s:layout >
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="labelOpacity" height="11" width="100" minimum="0" maximum="100" value="@{this._fontOpacity}" change="onLabelFontChange();"/>
+						<s:HSlider focusColor="{this.formFocusColor}" id="labelOpacity" height="11" width="100" minimum="0" maximum="100" value="@{this._fontOpacity}" change="onLabelFontChange();"/>
 					</s:Group>
 				</s:Group>
 				
@@ -1154,14 +1159,14 @@
 					</s:layout>
 					
 					<s:Graphic x="0" y="0">
-						<mx:ColorPicker id="labelHaloColorPicker" selectedColor="@{this._haloColor}" change="onLabelHaloChange();"/>
+						<mx:ColorPicker focusColor="{this.formFocusColor}" id="labelHaloColorPicker" selectedColor="@{this._haloColor}" change="onLabelHaloChange();"/>
 					</s:Graphic>
 					<s:Group >
 						<s:layout >
 							<s:HorizontalLayout paddingTop="3"/>
 						</s:layout>
 						
-						<s:HSlider id="labelHaloRadius" height="11" width="100" minimum="0" maximum="10" value="@{this._haloRadius}" change="onLabelHaloChange();"/>
+						<s:HSlider focusColor="{this.formFocusColor}" id="labelHaloRadius" height="11" width="100" minimum="0" maximum="10" value="@{this._haloRadius}" change="onLabelHaloChange();"/>
 					</s:Group>
 				</s:Group>
 				
@@ -1178,7 +1183,7 @@
 						</s:layout>
 						
 						<s:Label id="titleFont" paddingTop="5" text="" width="45" color="black"/>
-						<s:DropDownList width="90" id="labelFonts" dataProvider="{this._fonts}" selectedItem="@{this._fontFamily}" change="onLabelFontChange();"/>
+						<s:DropDownList focusColor="{this.formFocusColor}" width="90" id="labelFonts" dataProvider="{this._fonts}" selectedItem="@{this._fontFamily}" change="onLabelFontChange();"/>
 					</s:Group>
 					<s:Group>
 						<s:layout>
@@ -1186,15 +1191,15 @@
 						</s:layout>
 						
 						<s:Label  id="titleFontStyle" paddingTop="5" text="" width="45" color="black"/>
-						<s:ToggleButton width="30" id="labelBold" label="B" selected="@{this._fontBold}" change="onLabelFontChange();"/>
-						<s:ToggleButton width="30" id="labelItalic" label="I" selected="@{this._fontItalic}" change="onLabelFontChange();" />
+						<s:ToggleButton focusColor="{this.formFocusColor}" width="30" id="labelBold" label="B" selected="@{this._fontBold}" change="onLabelFontChange();"/>
+						<s:ToggleButton focusColor="{this.formFocusColor}" width="30" id="labelItalic" label="I" selected="@{this._fontItalic}" change="onLabelFontChange();" />
 					</s:Group>
 					<s:Group>
 						<s:layout>
 							<s:HorizontalLayout/>
 						</s:layout>
 						<s:Label id="titleFontSize" paddingTop="5" text="" width="45" color="black"/>
-						<s:NumericStepper id="labelFontSize" value="@{this._fontSize}" minimum="1" maximum="92" stepSize="0.5" change="onLabelFontChange();"/>
+						<s:NumericStepper focusColor="{this.formFocusColor}" id="labelFontSize" value="@{this._fontSize}" minimum="1" maximum="92" stepSize="0.5" change="onLabelFontChange();"/>
 					</s:Group>
 				</s:Group>
 				
@@ -1204,9 +1209,9 @@
 					</s:layout>
 					<mx:Image left="5" source="{Line}"/>
 					<s:Label id="labelApplyTo" text=""/>
-					<s:RadioButton id="applyAllLabel" selected="@{this._allMode}" groupName="labelPreviewMode" label=""/>
-					<s:RadioButton id="applyOnlyThisLabel" selected="@{this._selectedMode}" groupName="labelPreviewMode" label=""/>
-					<s:RadioButton id="applySimilarLabel" selected="@{this._typeSelectedMode}" groupName="labelPreviewMode" label=""/>
+					<s:RadioButton id="applyAllLabel" focusColor="{this.formFocusColor}" selected="@{this._allMode}" groupName="labelPreviewMode" label=""/>
+					<s:RadioButton id="applyOnlyThisLabel" focusColor="{this.formFocusColor}" selected="@{this._selectedMode}" groupName="labelPreviewMode" label=""/>
+					<s:RadioButton id="applySimilarLabel" focusColor="{this.formFocusColor}" selected="@{this._typeSelectedMode}" groupName="labelPreviewMode" label=""/>
 				</s:Group>
 			</s:Group>
 		</s:Group>
