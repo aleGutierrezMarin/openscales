@@ -1,6 +1,7 @@
 package org.openscales.core.history {
 import org.openscales.core.Map;
 import org.openscales.core.events.MapEvent;
+import org.openscales.core.ns.os_internal;
 
 /**
  * This class can hold navigation history in the map. History can be browsed backward and forward.
@@ -20,9 +21,9 @@ public class NavigationHistoryLogger {
     /**
      * Class constructor. History won't start before its <code>map</code> is set.
      *
-     * @param size The size of the history. this value can not be changed after.
+     * @param size The  biffersize of the history. This value can not be changed after.
      */
-    public function NavigationHistoryLogger(size:uint = 20) {
+    public function NavigationHistoryLogger(size:uint = 10) {
         _maxItems = size > 0 ? size : 0;
     }
 
@@ -109,6 +110,20 @@ public class NavigationHistoryLogger {
         _current = 0;
 
     }
+	
+	/**
+	 * Buffer size of this history logger
+	 */ 
+	public function get size():Number{
+		return _maxItems;
+	}
+	
+	/**
+	 * @private
+	 */
+	os_internal function get history():Vector.<HistoryItem>{
+		return _history;
+	}
 
 }
 }
