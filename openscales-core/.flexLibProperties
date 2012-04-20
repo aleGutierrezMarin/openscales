@@ -306,6 +306,7 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.history.NavigationHistoryLoggerTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

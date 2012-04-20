@@ -3,12 +3,13 @@ Changelog
 
 Changes between 2.1.1 and 2.1.2
 -------------------------------
-* defaults.css includes components default skins (only SearchDefaultSkin for now)
+* defaults.css includes components default skins (only new component for now)
 * Fix bug from Shane StClair (FxMap.zoomToExtent)
 * Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
 * Adding a blinkMarker parameter to activate a blink animation on the marker of OpenLSSearch component.
 * Add abstract property to Layer
 * Add IIPImage client (cf IIPImageViewer)
+* Add navigation history logging (see the core class NavigationHistoryLogger and the control NavigationHistoryBrowser)
 
 Changes between 2.1.0 and 2.1.1
 -------------------------------
