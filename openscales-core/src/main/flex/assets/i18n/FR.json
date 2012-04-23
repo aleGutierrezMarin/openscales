@@ -46,6 +46,7 @@
    "layercontrol.changevisibility": "Changer la visibilité de la couche",
    "layercontrol.reducemaximize": "Reduire ou agrandir l'élément",
    "layercontrol.legend": "Afficher la légende",
+   "layercontrol.abstract": "Afficher la description",
    "layercontrol.zoomToExtent": "Zoomer sur l'emprise de la couche",
    
    "layerswitcher.title": "Couches",
