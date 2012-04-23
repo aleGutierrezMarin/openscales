@@ -46,6 +46,7 @@
    "layercontrol.changevisibility": "Change the layer visibility",
    "layercontrol.reducemaximize": "Reduce or maximize this item",
    "layercontrol.legend": "Display the legend",
+   "layercontrol.abstract": "Display the description",
    "layercontrol.zoomToExtent": "Zoom to the max extent of this layer",
 
    "layerswitcher.title": "Layers",
