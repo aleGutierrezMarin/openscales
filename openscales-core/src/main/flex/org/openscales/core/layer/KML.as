@@ -3,6 +3,7 @@ package org.openscales.core.layer
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.format.KMLFormat;
@@ -121,6 +122,8 @@ package org.openscales.core.layer
 			try {
 				this.data = new XML(loader.data);
 				this.drawFeatures();
+				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_LOAD_END, this);
+				this.dispatchEvent(evt);
 				/*if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
 					this._kmlFormat.externalProjection = this.projection;
 					this._kmlFormat.internalProjection = this.map.projection;
@@ -165,6 +168,21 @@ package org.openscales.core.layer
 		public function get kmlFormat():KMLFormat
 		{
 			return _kmlFormat;
+		}
+		
+		/**
+		 * Set a style to every features of the KML layer
+		 * Be carefull, this will override  other styles and will take effect on all the features
+		 */
+		override public function set style(value:Style):void
+		{
+			super.style = value;
+			var featureLength:Number = this.features.length - 1;
+			for (;featureLength >= 0; --featureLength)
+			{
+				this.features[featureLength].style = value;
+				this.features[featureLength].draw();
+			}
 		}
 		
 		public function get acceptedFileExtensions():Vector.<String>{
