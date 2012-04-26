@@ -175,7 +175,7 @@ package org.openscales.core.layer.originator
 		 * indicates the unique key of the originator
 		 */
 		public function get key():String {
-			return this._name+this._url+this._pictureUrl;
+			return this._name;
 		}
 
 		/**
