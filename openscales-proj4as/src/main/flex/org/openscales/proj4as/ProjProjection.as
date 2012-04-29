@@ -68,7 +68,7 @@ package org.openscales.proj4as {
 			'IGNF:GEOPORTALWLF': "+title=Geoportail - Wallis et Futuna +proj=eqc +nadgrids=null +towgs84=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.000000 +a=6378137.0000 +rf=298.2572221010000 +lat_0=0.000000000 +lon_0=0.000000000 +lat_ts=-14.000000000 +x_0=0.000 +y_0=0.000 +units=m +no_defs",
 			
 			//DGR 2010-02-10 :
-			'IGNF:RGF93G': "+title=Reseau geodesique francais 1993 +proj=longlat +towgs84=0.0000,0.0000,0.0000 +a=6378137.0000 +rf=298.2572221010000 +units=m +no_defs",
+			'IGNF:RGF93G': "+title=Réseau geodesique francais 1993 +proj=longlat +towgs84=0.0000,0.0000,0.0000 +a=6378137.0000 +rf=298.2572221010000 +units=m +no_defs",
 			'IGNF:LAMB93': "+title=Lambert 93 +proj=lcc +towgs84=0.0000,0.0000,0.0000 +a=6378137.0000 +rf=298.2572221010000 +lat_0=46.500000000 +lon_0=3.000000000 +lat_1=44.000000000 +lat_2=49.000000000 +x_0=700000.000 +y_0=6600000.000 +units=m +no_defs",
 			
 			'CRS:84': "+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=degrees"
@@ -446,6 +446,10 @@ package org.openscales.proj4as {
 				return "urn:ogc:def:crs:"+this.srsCode.toUpperCase().replace(":","::");
 			else
 				return ProjProjection.urns[this.srsCode];
+		}
+		
+		public function get title():String {
+			return this.projParams.title as String;
 		}
 		
 		/**
