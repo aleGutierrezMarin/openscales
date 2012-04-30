@@ -3,6 +3,7 @@ Changelog
 
 Changes between 2.1.1 and 2.1.2
 -------------------------------
+* Javascript API to control swf from your HTML pages
 * defaults.css includes components default skins (only new component for now)
 * Fix bug from Shane StClair (FxMap.zoomToExtent)
 * Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
