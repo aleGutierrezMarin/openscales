@@ -175,6 +175,9 @@
 			[Bindable]
 			private var _haloColor:Number = 0xFFFFFF;
 			
+			[Bindable]
+			private var _activateArrowForm:Boolean = true;
+			
 			/**
 			 * Toggle style picking
 			 */
@@ -840,6 +843,7 @@
 					this._isLine = true;
 					this._isArrow = false;
 					
+					this._activateArrowForm = (_targetFeature as LineStringFeature).canHaveArrow;
 					
 					
 					if (_targetFeature.style.rules)
@@ -993,7 +997,7 @@
 				
 				
 				
-				<s:Group width="156" >
+				<s:Group width="156" visible="{this._activateArrowForm}" includeInLayout="{this._activateArrowForm}">
 					<s:layout >
 						<s:VerticalLayout paddingLeft="5" paddingTop="10" gap="10"/>
 					</s:layout>
@@ -1002,7 +1006,7 @@
 					<s:Label id="lineArrowLabel" color="black"/>
 				</s:Group>
 				
-				<s:Group id="arrows" width="170" >
+				<s:Group id="arrows" width="170" visible="{this._activateArrowForm}" includeInLayout="{this._activateArrowForm}" >
 					<s:layout >
 						<s:HorizontalLayout paddingLeft="5" gap="5"/>
 					</s:layout>
