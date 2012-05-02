@@ -423,7 +423,8 @@ package org.openscales.core.handler.feature.draw
 				if (this._targetFeatures == "selected")
 				{
 					this._feature.style = _referenceToSharedStyle;
-					this._referenceToSharedStyle = null;
+					this.enableSelectedMode();
+					//this._referenceToSharedStyle = null;
 				}
 				else if (this._targetFeatures == "all")
 				{
@@ -431,10 +432,12 @@ package org.openscales.core.handler.feature.draw
 					if(this._savedOriginStyle && this._savedOriginStyle.rules != null && this._savedOriginStyle.rules[0] != null){
 						this._feature.style.rules[0]  = this._savedOriginStyle.rules[0].clone();
 					}
+					this.enableAllMode();
 				}
 				else if (this._targetFeatures == "typeselected")
 				{
 					this.restoreTypeSelectedMode();
+					this.enableTypeSelectedMode();
 				}
 				this.actualizeFeature();
 				this._styleChanged = false;
@@ -496,6 +499,8 @@ package org.openscales.core.handler.feature.draw
 			var featureLength:Number;
 			var i:int;
 			this._featuresStyleStorage = new HashMap();
+			var savedFeatureStyle:Style = this._feature.style;
+			this._feature.style = this._feature.style.clone();
 			if (this._feature is PointFeature || this._feature is MultiPointFeature)
 			{
 				featureLength = this._drawLayer.features.length;
@@ -503,8 +508,14 @@ package org.openscales.core.handler.feature.draw
 				{
 					if (this._drawLayer.features[i] is PointFeature || this._drawLayer.features[i] is MultiPointFeature)
 					{
-						this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
-						this._drawLayer.features[i].style = this._feature.style;
+						if (this._drawLayer.features[i] == this._feature)
+						{
+							this._featuresStyleStorage.put(this._drawLayer.features[i], savedFeatureStyle);
+						}else
+						{
+							this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
+							this._drawLayer.features[i].style = this._feature.style;
+						}
 					}
 				}
 			}
@@ -515,8 +526,14 @@ package org.openscales.core.handler.feature.draw
 				{
 					if (this._drawLayer.features[i] is LineStringFeature || this._drawLayer.features[i] is MultiLineStringFeature)
 					{
-						this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
-						this._drawLayer.features[i].style = this._feature.style;
+						if (this._drawLayer.features[i] == this._feature)
+						{
+							this._featuresStyleStorage.put(this._drawLayer.features[i], savedFeatureStyle);
+						}else
+						{
+							this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
+							this._drawLayer.features[i].style = this._feature.style;
+						}
 					}
 				}
 			}
@@ -527,8 +544,14 @@ package org.openscales.core.handler.feature.draw
 				{
 					if (this._drawLayer.features[i] is PolygonFeature || this._drawLayer.features[i] is MultiPolygonFeature)
 					{
-						this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
-						this._drawLayer.features[i].style = this._feature.style;
+						if (this._drawLayer.features[i] == this._feature)
+						{
+							this._featuresStyleStorage.put(this._drawLayer.features[i], savedFeatureStyle);
+						}else
+						{
+							this._featuresStyleStorage.put(this._drawLayer.features[i], this._drawLayer.features[i].style);
+							this._drawLayer.features[i].style = this._feature.style;
+						}
 					}
 				}
 			}

@@ -884,6 +884,7 @@
 						}
 					}
 				}
+				//this.editStyleHandler.styleChanged = false;
 			}
 			
 			
