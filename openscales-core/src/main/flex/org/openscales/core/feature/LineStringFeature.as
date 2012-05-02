@@ -21,6 +21,11 @@ package org.openscales.core.feature
 	 */
 	public class LineStringFeature extends Feature
 	{
+		
+		private var _canHaveArrow:Boolean = true;
+		
+		
+		
 		public function LineStringFeature(geom:LineString=null, data:Object=null, style:Style=null,isEditable:Boolean=false) 
 		{
 			super(geom, data, style,isEditable);
@@ -59,7 +64,7 @@ package org.openscales.core.feature
 			var coords:Vector.<Number> = this.lineString.getcomponentsClone();
 			var commands:Vector.<int> = new Vector.<int>();
 			var arrowSymb:Boolean = false;
-			if (symbolizer is ArrowSymbolizer)
+			if (symbolizer is ArrowSymbolizer && this._canHaveArrow)
 			{
 				var px1:Pixel;
 				var px2:Pixel;
@@ -147,6 +152,7 @@ package org.openscales.core.feature
 			var lineStringFeatureClone:LineStringFeature=new LineStringFeature(geometryClone as LineString,null,style,this.isEditable);
 			lineStringFeatureClone._originGeometry = this._originGeometry;
 			lineStringFeatureClone.layer = this.layer;
+			lineStringFeatureClone.canHaveArrow = this.canHaveArrow;
 			return lineStringFeatureClone;
 			
 		}
@@ -181,6 +187,23 @@ package org.openscales.core.feature
 				this.graphics.moveTo(tempPixel.x, tempPixel.y);
 				dist -= pWhiteSize;
 			}
+		}
+		
+		/**
+		 * Flag that define if an arrow can be drawn for this lineString.
+		 * default to true
+		 */
+		public function get canHaveArrow():Boolean
+		{
+			return this._canHaveArrow;
+		}
+		
+		/**
+		 * @private 
+		 */
+		public function set canHaveArrow(value:Boolean):void
+		{
+			this._canHaveArrow = value;
 		}
 	}
 }
