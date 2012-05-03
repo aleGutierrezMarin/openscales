@@ -320,7 +320,7 @@ package org.openscales.core.layer
 						if (drawnWidth * drawnHeight < 16777215)
 						{
 							// Draw the current scene into a Bitmap
-							BMD = new BitmapData(drawnWidth, drawnHeight, false, this.map.backTileColor);
+							BMD = new BitmapData(drawnWidth, drawnHeight, true, this.map.backTileColor);
 							BMD.draw(this, this.transform.matrix, null, null, null, true);
 							var fullBitmap:Bitmap = new Bitmap(BMD, PixelSnapping.NEVER, true);
 							var deltaMatrix:Matrix = this._defaultMatrixTranform.clone();
