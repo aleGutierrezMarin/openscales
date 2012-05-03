@@ -326,6 +326,7 @@ class MouseWheelEnabler_JavaScript
 										}//MouseWheel
 
 										//set up listeners
+										swf.onfocus = mws.addScrollListeners;
 										swf.onmouseover = mws.addScrollListeners;
 										swf.onmouseout = mws.removeScrollListeners;
 								}//Should Add

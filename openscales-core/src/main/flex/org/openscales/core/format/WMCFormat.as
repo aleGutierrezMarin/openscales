@@ -282,7 +282,8 @@ package org.openscales.core.format
 						{
 							var layer:XML = listOfLayers[i];
 							var layerToAdd:Layer = this.parseLayer(layer);
-							layers.push(layerToAdd);
+							if (layerToAdd)
+								layers.push(layerToAdd);
 						}
 					}
 				}
