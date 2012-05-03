@@ -17,7 +17,7 @@ package org.openscales.core.layer
 	 */ 
 	public class Bing extends TMS
 	{
-		public static const resolutions:Array = new Array(156543.03390625,
+		public static const resolutionsArray:Array = new Array(156543.03390625,
 			78271.516953125,
 			39135.7584765625,
 			19567.87923828125,
@@ -168,9 +168,12 @@ package org.openscales.core.layer
 				
 				var zoomMin:Number = res["zoomMin"] as Number;
 				var zoomMax:Number = res["zoomMax"] as Number;
-				var minRes:Number = Bing.resolutions[zoomMin-1];
+				var minRes:Number = Bing.resolutionsArray[zoomMin-1];
 				
 				this.generateResolutions((zoomMax+1-zoomMin),minRes);
+				this.minResolution = new Resolution(resolutions[resolutionsArray.length-1], this.projection);
+				this.maxResolution = new Resolution(resolutions[0], this.projection);
+				
 
 				this.originators.push(new DataOriginator("Bing",
 					"http://www.bing.com/maps/",

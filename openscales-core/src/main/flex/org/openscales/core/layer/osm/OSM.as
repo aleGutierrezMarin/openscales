@@ -29,6 +29,9 @@ package org.openscales.core.layer.osm
 			super(identifier, url,displayedName);
 
 			this.projection = "EPSG:900913";
+			this.generateResolutions(21, 156543.0339);
+			this.minResolution = new Resolution(this.resolutions[this.resolutions.length -1], this.projection);
+			this.maxResolution = new Resolution(this.resolutions[0], this.projection);
 			// Use the projection to access to the unit
 			/* this.units = Unit.METER; */
 			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projection);
