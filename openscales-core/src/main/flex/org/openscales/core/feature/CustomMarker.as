@@ -94,6 +94,11 @@ package org.openscales.core.feature
 		
 		public function loadUrl(url:String):void {
 			this._req = new DataRequest(url,onSuccess, onFailure);
+			if(this.layer.map) {
+				this._req.proxy = this.layer.map.getProxy(url);
+			} else {
+				this._req.proxy = this.layer.proxy;
+			}
 			this._req.send();
 		}
 		
