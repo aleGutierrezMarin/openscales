@@ -1237,6 +1237,7 @@ package org.openscales.core
 				
 				
 				this.dispatchEvent(event);
+				this.dispatchEvent(new MapEvent(MapEvent.RELOAD,this));
 				
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
