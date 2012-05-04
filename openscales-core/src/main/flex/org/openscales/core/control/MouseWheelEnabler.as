@@ -321,18 +321,43 @@ class MouseWheelEnabler_JavaScript
 												{//stop default action (IE)
 														return false;
 												}//stop default action (IE)
+		
+		
 														
 												return true;
 										}//MouseWheel
+		
+										mws.addScrollListeners();
 
 										//set up listeners
-										swf.onfocus = mws.addScrollListeners;
+										//swf.onfocus = mws.addScrollListeners;
 										swf.onmouseover = mws.addScrollListeners;
 										swf.onmouseout = mws.removeScrollListeners;
 								}//Should Add
 										
 						}//InitMouseWheelSupport
+		
+						// Verify if the mouse is inside the flash div
 						
+						
+						var posX = 0;
+						var posY = 0;
+						
+						var posSwfX = $('#the-map-flash-container').position().left;
+						var posSwfY = $('#the-map-flash-container').position().top;
+						var swfWidth = $('#the-map-flash-container').width();
+						var swfHeight = $('#the-map-flash-container').height();
+		
+						document.onmousemove = function(event) {
+							if (posX == 0 && posY == 0) {
+								posX = event.pageX;
+								posY = event.pageY;
+								if (posX < posSwfX || posX > posSwfX + swfWidth ||
+										posY < posSwfY || posY > posSwfY + swfHeight) {
+									mws.removeScrollListeners();
+								}
+							}
+						};
 				}
 		]]></script>;
 }

@@ -20,7 +20,7 @@
    "drawing.export": "Export",
    "drawing.label": "Add a label",
    "drawing.point": "Add a point",
-   "drawing.shape": "Draw a shape",
+   "drawing.shape": "Draw freehand",
    "drawing.path": "Draw a path",
    "drawing.polygon": "Draw a polygon",
    "drawing.select": "Select",
@@ -37,7 +37,7 @@
    "drawing.addvectorlayer": "Add a vector layer",
    "drawing.addvectorlayer.input.errormessage": "Name must not be empty",
    "drawing.nameerror": "Change name (can't be empty or equal to another layer)",
-   "editskin.point" : "Style editor",
+   "editskin.point" : "Manage styles",
    
    "layercontrol.movefront": "Move front",
    "layercontrol.moveback": "Move back",
