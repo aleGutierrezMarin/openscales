@@ -888,7 +888,7 @@ package org.openscales.core.layer {
 		 */
 		public function get proxy():String {
 			if (this._proxy == null && map && map.proxy) {
-				return map.proxy;
+				return map.getProxy(this.url);
 			}
 			return this._proxy;
 		}

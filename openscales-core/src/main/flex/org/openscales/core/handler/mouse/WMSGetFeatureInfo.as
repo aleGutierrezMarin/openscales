@@ -316,7 +316,7 @@ package org.openscales.core.handler.mouse
 					_request.destroy();
 				}
 				_request = new XMLRequest(req[i], this.handleResponse);
-				_request.proxy = map.proxy;
+				_request.proxy = map.getProxy(req[i]);
 				_request.send();
 			}
 		}

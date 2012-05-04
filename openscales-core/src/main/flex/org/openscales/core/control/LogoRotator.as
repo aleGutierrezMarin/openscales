@@ -59,6 +59,7 @@ package org.openscales.core.control
 		public function addUrlLogo(url:String):void {
 			var _req:DataRequest;
 			_req = new DataRequest(url, updateImages);
+			_req.proxy = this.map.getProxy(url);
 			_req.send();
 		}
 		

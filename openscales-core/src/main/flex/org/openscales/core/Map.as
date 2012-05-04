@@ -8,7 +8,6 @@ package org.openscales.core
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
-	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.ui.ContextMenu;
@@ -23,8 +22,6 @@ package org.openscales.core
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
-	import org.openscales.core.events.SearchEvent;
-	import org.openscales.core.feature.CustomMarker;
 	import org.openscales.core.handler.IHandler;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
@@ -33,7 +30,6 @@ package org.openscales.core
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.popup.Popup;
-	import org.openscales.core.request.OpenLSRequest;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
@@ -214,6 +210,9 @@ package org.openscales.core
 		private var _destroying:Boolean = false;
 		
 		private var _proxy:String = null;
+		// list of domains that does'nt require proxy
+		private var _noProxyDomains:Array = new Array();
+		
 		private var _configuration:IConfiguration;
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
@@ -226,20 +225,6 @@ package org.openscales.core
 		
 		// Layer used for OpenLS search and for geolocation
 		private var _resultLayer:VectorLayer = new VectorLayer("Search results");
-		// Request for OpenLS search
-		private var _openlsRequest:OpenLSRequest = null;
-		private var _geocodeServiceUrl:String=null;
-		// Default resolutions for OpenLS search and geolocation
-		private var _streetResolution:Number = 0.0000107288360595703;
-		private var _cityResolution:Number = 0.0000858306884765625;
-		// Marker for OpenLS search
-		[Embed(source="/assets/images/marker-blue.png")]
-		private var _placeIcon:Class;
-		private var _xOffset:Number = 0;
-		private var _yOffset:Number = -12.5;
-		// Marker for Geolocation
-		[Embed(source="/assets/images/picto_localize.png")]
-		private var _geolocationIcon:Class;
 		
 		/**
 		 * @private
@@ -913,66 +898,6 @@ package org.openscales.core
 		}
 		
 		/**
-		 * Offsets in pixels for place icon
-		 */
-		public function setPlaceIconOffsets(x:Number, y:Number): void {
-			this._xOffset = x;
-			this._yOffset = y;
-		}
-		
-		/**
-		 * Change the center of the map to the location which adress or name is given as parameter.
-		 * If the name or adress match with severals possibilities the first one is choosed
-		 * If there is no result the center is not changed	
-		 * To use this functionnality your api keys need to allow geocoding
-		 * If your api keys not allow geocoding the center is not changed
-		 */
-		public function setCenterAtLocation(location:String):void{
-			this._resultLayer.removeFeatures(this._resultLayer.features);
-			this.removeLayer(this._resultLayer);
-			if(_openlsRequest)
-				_openlsRequest.destroy();
-			_openlsRequest = new OpenLSRequest(this._geocodeServiceUrl, onOpenLSServiceResult, onOpenLSServiceFault);
-			_openlsRequest.defineSimpleSearch(null, location, "FR", Geometry.DEFAULT_SRS_CODE, 1, "1.2");
-			_openlsRequest.send();
-		}
-		
-		/**
-		 * Change the center of the map to the location of the user.
-		 * The user browser must support geolocation, if not the center is not changed
-		 * 
-		 * @param latitude
-		 * @param longitude
-		 * @param accuracy
-		 * @param projection
-		 * 
-		 */
-		public function setCenterFromGeolocation(latitude:Number, longitude:Number, accuracy:Number = NaN, projection:*=null):void{
-			this._resultLayer.removeFeatures(this._resultLayer.features);
-			this.removeLayer(this._resultLayer);
-			if (! (isNaN(latitude) || isNaN(longitude)) ) {
-				var proj:ProjProjection = ProjProjection.getProjProjection(projection);
-				if(!proj)
-					proj=ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
-				var pos:Location = new Location(longitude,latitude,proj);
-				if(this.projection!=pos.projection)
-					pos=pos.reprojectTo(this.projection);
-				this.center = pos;
-				if(accuracy) {
-					if(accuracy<20000)
-						this.resolution = new Resolution(this._streetResolution);
-					else
-						this.resolution = new Resolution(this._cityResolution);
-				}
-				this.addLayer(this._resultLayer);
-				//var point:PointFeature = new PointFeature(new Point(pos.x,pos.y),null,Style.getDefaultCircleStyle());
-				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _geolocationIcon(), pos, null, 0, 0);
-				marker.useHandCursor = false;
-				this._resultLayer.addFeature(marker,true,false);
-			}
-		}
-		
-		/**
 		 * This method will hide all visual controls of the map
 		 * 
 		 * <p>Control won't be desactivated, their <code>visible</code> property will only be set to false</p>
@@ -1244,65 +1169,12 @@ package org.openscales.core
 			}
 		}
 		
-		private function onOpenLSServiceFault(event:Event):void {
-			Trace.error("OpenLS ERROR: request fault");
-		}
-		
-		private function onOpenLSServiceResult(event:Event):void {
-			var xmlString:String = (event.target as URLLoader).data as String;
-			var xml:XML = new XML(xmlString);
-			var results:Array = OpenLSRequest.resultsListtoArray(OpenLSRequest.resultsList(xml), "1.2");
-			if (results.length == 0) {
-				// no result, do nothing
-			}
-			else {
-				// takes first result (there should be only one)
-				var latitude:Number = parseFloat(results[0].lat);
-				var longitude:Number = parseFloat(results[0].lon);
-				var resolution:Number = _cityResolution;
-				if (results[0].street && results[0].street!="") {
-					resolution = _streetResolution;
-				}
-				this.centerAtLocation(latitude, longitude, Geometry.DEFAULT_SRS_CODE, resolution);
-			}
-			this.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_END));
-		}
-		
-		private function centerAtLocation(latitude:Number, longitude:Number, projection:String, resolution:Number): void {
-			if (! (isNaN(latitude) || isNaN(longitude)) ) {
-				var pos:Location = new Location(longitude,latitude,projection);
-				if(this.projection!=pos.projection)
-					pos=pos.reprojectTo(this.projection);
-				this.center = pos;
-				this.resolution = new Resolution(resolution);
-				this.addLayer(this._resultLayer);
-				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _placeIcon(), pos, null, _xOffset, _yOffset);
-				marker.useHandCursor = false;
-				this._resultLayer.addFeature(marker,true,false);
-			}
-		}
-		
 		/**
 		 * Default layer used for search results
 		 */
 		public function get resultLayer():VectorLayer
 		{
 			return _resultLayer;
-		}
-		
-		/**
-		 *  URL of geocode service used for OpenLS requests
-		 */
-		public function get geocodeServiceUrl():String
-		{
-			return _geocodeServiceUrl;
-		}
-		/**
-		 * @private
-		 */
-		public function set geocodeServiceUrl(value:String):void
-		{
-			_geocodeServiceUrl = value;
 		}
 		
 		/**
@@ -1370,17 +1242,7 @@ package org.openscales.core
 				Trace.error("Map - size not changed since the value is not valid");
 			}
 		}
-		/**
-		 * Getter and setter of place icon
-		 */
-		public function get placeIcon():Class {
-			return this._placeIcon;
-		}			
-		public function set placeIcon(value:Class):void {				
-			this._placeIcon = (value) ? value : null;
-			this._xOffset = 0;
-			this._yOffset = 0;
-		}
+		
 		/**
 		 * back tile color
 		 */
@@ -1555,6 +1417,19 @@ package org.openscales.core
 		 */
 		public function set proxy(value:String):void {
 			this._proxy = value;
+		}
+		
+		/**
+		 * In case of proxy definition, this allow to define domains that do not require proxy.
+		 */
+		public function get noProxyDomains():Array {
+			return this._noProxyDomains;
+		}
+		/**
+		 * @private
+		 */
+		public function set noProxyDomains(value:Array):void {
+			this._noProxyDomains = value;
 		}
 		
 		/**
@@ -1998,6 +1873,18 @@ package org.openscales.core
 				identifierList.push(this.layers[i].identifier)
 			}
 			return identifierList;
+		}
+		
+		public function getProxy(value:String):String {
+			if(!value)
+				return null;
+			if(this._proxy)
+				return this._proxy;
+			for(var domain:String in this._noProxyDomains) {
+				if(value.indexOf(domain)!=-1)
+					return null;
+			}
+			return this._proxy;
 		}
 	}
 }
