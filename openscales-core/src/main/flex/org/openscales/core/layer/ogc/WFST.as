@@ -192,6 +192,7 @@ package org.openscales.core.layer.ogc
 				+ this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
 			_xmlRequestTransaction.postContent = this._wfsFormat.write(featureArray);
 			_xmlRequestTransaction.postContentType = "application/xml";
+			_xmlRequestTransaction.proxy = this.map.getProxy(this.url);
 			_xmlRequestTransaction.send();
 			
 			
@@ -207,6 +208,7 @@ package org.openscales.core.layer.ogc
 				+ this.typename+"&request=transaction&version=1.0.0&service=WFS", onSuccessTransaction, onFailureTransaction);
 			_xmlRequestTransaction.postContent = this._wfsFormat.write(features);
 			_xmlRequestTransaction.postContentType = "application/xml"; 
+			_xmlRequestTransaction.proxy = this.map.getProxy(this.url);
 			_xmlRequestTransaction.send();
 			
 		}
@@ -252,10 +254,11 @@ package org.openscales.core.layer.ogc
 		 **/
 		public function getDescribeFeatureInfo(callback:Function = null):void{
 			
-			_xmlRequestDescribeFeatureInfo = 
+			_request = 
 				new XMLRequest(this._wfsFormat.describeFeatureType, onSuccessDescribeFeature, onFailureDescribeFeature);
 			this._callbackDescribeFeatureInfo = callback;
-			_xmlRequestDescribeFeatureInfo.send();
+			_request.proxy = this.proxy;
+			_request.send();
 			
 		}
 		

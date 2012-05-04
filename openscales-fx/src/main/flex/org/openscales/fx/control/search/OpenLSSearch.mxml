@@ -487,6 +487,7 @@
 				if(_request)
 					_request.destroy();
 				_request = new OpenLSRequest(this.geocodeServiceUrl, onServiceResult, onServiceFault,this.geocodeServiceSecurity);
+				_request.proxy = this.map.getProxy(this.geocodeServiceUrl);
 				if (this.map != null) {
 					_request.defineSimpleSearch(requestId, query, this.defaultCountryCode, this.projection, this.maximumGeocodeResponses, this.version);
 					_request.send();
@@ -528,6 +529,7 @@
 					if (departementQuery && departementQuery!="") {
 						_request.addPlaceFilter("Departement", departementQuery);
 					}
+					this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
 				}
 			}
@@ -560,6 +562,7 @@
 					if (departementQuery && departementQuery!="") {
 						_request.addPlaceFilter("Departement", departementQuery);
 					}
+					_request.proxy = this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
 				}
 			}
@@ -595,6 +598,7 @@
 					if (natureQuery && natureQuery!="") {
 						_request.addPlaceFilter("nature", natureQuery);
 					}
+					this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
 				}
 			}
@@ -633,6 +637,7 @@
 					if (sectionQuery && sectionQuery!="") {
 						_request.addPlaceFilter("Section", sectionQuery);
 					}
+					_request.proxy = this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
 				}
 			}
@@ -668,6 +673,7 @@
 					if (numberQuery && numberQuery!="") {
 						_request.addPlaceFilter("GeodeticNumber", numberQuery);
 					}
+					_request.proxy = this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
 				}
 			}
@@ -698,6 +704,7 @@
 					if (this.reverseSearchPOIType.selected)
 						reversePreferences.push("PositionOfInterest");
 					_request.defineReverseSearch(requestId, reversePreferences, location, this.projection, this.maximumGeocodeResponses, this.version);
+					_request.proxy = this.map.getProxy(this.reverseGeocodeServiceUrl);
 					_request.send();
 				}
 			}
@@ -723,6 +730,7 @@
 					if (this.reverseSearchPOIType.selected)
 						reversePreferences.push("PositionOfInterest");
 					_request.defineReverseSearchInCircle(requestId, reversePreferences, location, location, new Number(radius), this.projection, this.maximumGeocodeResponses, this.version);
+					_request.proxy = this.map.getProxy(this.reverseGeocodeServiceUrl);
 					_request.send();
 				}
 			}
@@ -749,6 +757,7 @@
 					if (this.reverseSearchPOIType.selected)
 						reversePreferences.push("PositionOfInterest");
 					_request.defineReverseSearchInBounds(requestId, reversePreferences, location, bounds, this.projection, this.maximumGeocodeResponses, this.version);
+					_request.proxy = this.map.getProxy(this.reverseGeocodeServiceUrl);
 					_request.send();
 				}
 			}
