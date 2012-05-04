@@ -106,7 +106,7 @@
 			 */
 			public function onMapLanguageChange(event:I18NEvent):void{
 				
-				this.tooltip = Catalog.getLocalizationForKey('drawing.point');
+				this.tooltip = Catalog.getLocalizationForKey('editskin.point');
 			}
 			
 			/**
@@ -177,7 +177,7 @@
 					} else {
 						this.buttonMode = true;
 						this.useHandCursor = true;
-						this.toolTip = Catalog.getLocalizationForKey('drawing.point');
+						this.toolTip = Catalog.getLocalizationForKey('editskin.point');
 					}
 				}
 			}
