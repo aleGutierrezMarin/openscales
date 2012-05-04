@@ -249,6 +249,8 @@ package org.openscales.core.format
 					layerToAdd = new Layer(name);
 					layerToAdd.displayedName = title;
 					layerToAdd.abstract = abstract;
+					layerToAdd.url = url;
+					layerToAdd.name = name;
 					layerToAdd.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd.maxResolution= new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd.projection = srs;
