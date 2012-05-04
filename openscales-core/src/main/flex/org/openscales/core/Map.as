@@ -2021,7 +2021,7 @@ package org.openscales.core
 				return null;
 			if(this._proxy)
 				return this._proxy;
-			for(var domain:String in this._noProxyList) {
+			for(var domain:String in this._noProxyDomains) {
 				if(value.indexOf(domain)!=-1)
 					return null;
 			}
