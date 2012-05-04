@@ -214,6 +214,9 @@ package org.openscales.core
 		private var _destroying:Boolean = false;
 		
 		private var _proxy:String = null;
+		// list of domains that does'nt require proxy
+		private var _noProxyDomains:Array = new Array();
+		
 		private var _configuration:IConfiguration;
 		
 		private var _securities:Vector.<ISecurity>=new Vector.<ISecurity>();
@@ -1558,6 +1561,19 @@ package org.openscales.core
 		}
 		
 		/**
+		 * In case of proxy definition, this allow to define domains that do not require proxy.
+		 */
+		public function get noProxyDomains():Array {
+			return this._noProxyDomains;
+		}
+		/**
+		 * @private
+		 */
+		public function set noProxyDomains(value:Array):void {
+			this._noProxyDomains = value;
+		}
+		
+		/**
 		 * Set the configuration implementation, for example Configuration or FxConfiguration,
 		 * used to parse xml configuration files.
 		 */
@@ -1998,6 +2014,18 @@ package org.openscales.core
 				identifierList.push(this.layers[i].identifier)
 			}
 			return identifierList;
+		}
+		
+		public function getProxy(value:String):String {
+			if(!value)
+				return null;
+			if(this._proxy)
+				return this._proxy;
+			for(var domain:String in this._noProxyList) {
+				if(value.indexOf(domain)!=-1)
+					return null;
+			}
+			return this._proxy;
 		}
 	}
 }
