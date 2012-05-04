@@ -20,7 +20,7 @@
    "drawing.export": "Exporter",
    "drawing.label": "Ajouter un libellé",
    "drawing.point": "Ajouter un point",
-   "drawing.shape": "Dessiner une forme",
+   "drawing.shape": "Dessiner à main levée",
    "drawing.path": "Dessiner une ligne",
    "drawing.polygon": "Dessiner un polygone",
    "drawing.select": "Sélectionner",
@@ -37,7 +37,7 @@
    "drawing.addvectorlayer": "Ajouter une couche de croquis",
    "drawing.addvectorlayer.input.errormessage":"Le nom ne doit pas être vide",
    "drawing.nameerror": "Modifier le nom (non vide et non identique à un autre nom de couche)",
-   "editskin.point" : "Editeur de style",
+   "editskin.point" : "Gérer les styles",
    
    "layercontrol.movefront": "Déplacer vers l'avant plan",
    "layercontrol.moveback": "Déplacer vers l'arrière plan",
