@@ -42,8 +42,8 @@ This control allows to display and browse an image served by an IIPImage server.
 			 */ 
 			protected function onInitialize(event:FlexEvent):void
 			{
-				this.addEventListener(Event.ADDED , onAddedToStage);
-				this.addEventListener(Event.REMOVED , onRemovedFromStage);
+				this.addEventListener(Event.ADDED_TO_STAGE , onAddedToStage);
+				this.addEventListener(Event.REMOVED_FROM_STAGE , onRemovedFromStage);
 			}
 			
 			/**
