@@ -317,7 +317,9 @@
 			{
 				if (this._pointIconMode)
 				{
-					var customMarker:CustomMarker = new CustomMarker((this.iconURLArray[this._iconSelectedIndex] as String));
+					var url:String = (this.iconURLArray[this._iconSelectedIndex] as String);
+					var proxy:String = this.editStyleHandler.map.getProxy(url);
+					var customMarker:CustomMarker = new CustomMarker(url,1,0.5,"fraction",0.5,"fraction",proxy);
 					(this._editedSymbolize as PointSymbolizer).graphic = customMarker;
 					this.editStyleHandler.actualizeFeature();
 				}
@@ -507,8 +509,9 @@
 			 */
 			private function onIconChanged():void
 			{
-				
-				var customMarker:CustomMarker = new CustomMarker((this.iconURLArray[this._iconSelectedIndex] as String));
+				var url:String = (this.iconURLArray[this._iconSelectedIndex] as String);
+				var proxy:String = this.editStyleHandler.map.getProxy(url);
+				var customMarker:CustomMarker = new CustomMarker(url,1,0.5,"fraction",0.5,"fraction",proxy);
 				(this._editedSymbolize as PointSymbolizer).graphic = customMarker;
 				this.editStyleHandler.actualizeFeature();
 			}

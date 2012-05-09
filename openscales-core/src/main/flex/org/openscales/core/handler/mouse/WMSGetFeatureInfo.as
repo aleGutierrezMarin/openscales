@@ -327,12 +327,18 @@ package org.openscales.core.handler.mouse
 		 */
 		private function handleResponse(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
-			var gmlformat:GMLFormat = new GMLFormat(null,new HashMap());
-			
-			gmlformat.version = "2.1.1";
-			gmlformat.asyncLoading = false;
-			var ret:Object = gmlformat.read(loader.data);
-			var feature:Vector.<Feature> = (ret as Vector.<Feature>);
+			var ret:Object;
+			if (this._infoFormat == "application/vnd.ogc.gml")
+			{
+				var gmlformat:GMLFormat = new GMLFormat(null,new HashMap());
+				
+				gmlformat.version = "2.1.1";
+				gmlformat.asyncLoading = false;
+				ret = gmlformat.read(loader.data);
+				var feature:Vector.<Feature> = (ret as Vector.<Feature>);
+			}else{
+				ret = loader.data;
+			}
 			
 			this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret));
 		}
