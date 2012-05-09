@@ -200,7 +200,7 @@
 						evt.feature.originalStyle = evt.feature.style;
 					}
 					if (evt.feature is LabelFeature) {
-						evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+						//evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
 					} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
 						//evt.feature.style = Style.getDefaultSelectedPointStyle();
 					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
@@ -231,7 +231,7 @@
 						evt.feature.style = evt.feature.originalStyle;
 					} else {
 						if (evt.feature is LabelFeature) {
-							evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+							//evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
 						} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
 							//evt.feature.style = Style.getDefaultPointStyle();
 						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
