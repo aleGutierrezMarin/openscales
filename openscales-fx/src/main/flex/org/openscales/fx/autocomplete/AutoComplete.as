@@ -51,6 +51,8 @@ package org.openscales.fx.autocomplete
 		public var prefixOnly:Boolean = true;
 		public var requireSelection:Boolean = false;
 		
+		private var _mouseClickListCallback:Function = temporaryClickCallback;
+		
 		[SkinPart(required="true",type="spark.components.Group")]
 		public var dropDown:Group;
 		[SkinPart(required="true",type="spark.components.PopUpAnchor")]
@@ -59,6 +61,16 @@ package org.openscales.fx.autocomplete
 		public var list:List;
 		[SkinPart(required="true",type="spark.components.TextInput")]
 		public var inputTxt:TextInput;
+		
+		public function set mouseClickListCallback(value:Function):void
+		{
+			this._mouseClickListCallback = value;
+		}
+		
+		public function get mouseClickListCallback():Function
+		{
+			return this._mouseClickListCallback;
+		}
 		
 		override protected function partAdded(partName:String, instance:Object) : void{
 			super.partAdded(partName, instance)
@@ -75,10 +87,10 @@ package org.openscales.fx.autocomplete
 			if (instance==list){
 				list.dataProvider = collection;
 				list.labelField = labelField;
-				list.labelFunction = labelFunction
-				list.addEventListener(FlexEvent.CREATION_COMPLETE, addClickListener)
+				list.labelFunction = labelFunction;
+				list.addEventListener(FlexEvent.CREATION_COMPLETE, addClickListener);
 				list.focusEnabled = false;
-				list.requireSelection = requireSelection
+				list.requireSelection = requireSelection;
 			}
 			if (instance==dropDown){
 				dropDown.addEventListener(FlexMouseEvent.MOUSE_DOWN_OUTSIDE, mouseOutsideHandler);	
@@ -170,7 +182,7 @@ package org.openscales.fx.autocomplete
 			customSort.compareFunction = sortFunction;
 			collection.sort = customSort;
 			collection.refresh();*/
-			if ((text=="" || collection.length==0) && !forceOpen ){
+			if ((text=="" || collection.length==0 || _text.length < 3) && !forceOpen ){
 				popUp.displayPopUp = false
 			}
 			else {
@@ -297,8 +309,7 @@ package org.openscales.fx.autocomplete
 				inputTxt.selectRange(inputTxt.text.length, inputTxt.text.length)
 				
 				var e:AutoCompleteEvent = new AutoCompleteEvent("select", _selectedItem)
-				dispatchEvent(e)
-				
+				this.dispatchEvent(e)
 			}
 			else {
 				_selectedIndex = list.selectedIndex = -1
@@ -347,6 +358,12 @@ package org.openscales.fx.autocomplete
 		{
 			acceptCompletion();
 			event.stopPropagation();
+			this._mouseClickListCallback.apply();
+		}
+		
+		public function temporaryClickCallback():void
+		{
+			
 		}
 		
 		override public function set enabled(value:Boolean) : void{
