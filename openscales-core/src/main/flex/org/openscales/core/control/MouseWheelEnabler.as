@@ -59,7 +59,8 @@ package org.openscales.core.control
 				ExternalInterface.addCallback(id, function():void{});
 				ExternalInterface.call(MouseWheelEnabler_JavaScript.CODE);
 				ExternalInterface.call("mws.InitMouseWheelSupport", id);
-				ExternalInterface.addCallback('externalMouseEvent', handleExternalMouseEvent);  
+				ExternalInterface.addCallback('flashMouseEvent', handleExternalMouseEvent);
+				  
 			}
 		}
 		
@@ -311,7 +312,7 @@ class MouseWheelEnabler_JavaScript
 												}//don't scale
 												
 												//Call into the swf to fire a mouse event
-												swf.externalMouseEvent(rawDelta, scaledDelta);
+												swf.flashMouseEvent(rawDelta, scaledDelta);
 												
 												if(event.preventDefault)        
 												{//Stop default action
@@ -330,7 +331,6 @@ class MouseWheelEnabler_JavaScript
 										mws.addScrollListeners();
 
 										//set up listeners
-										//swf.onfocus = mws.addScrollListeners;
 										swf.onmouseover = mws.addScrollListeners;
 										swf.onmouseout = mws.removeScrollListeners;
 								}//Should Add
@@ -350,8 +350,16 @@ class MouseWheelEnabler_JavaScript
 		
 						document.onmousemove = function(event) {
 							if (posX == 0 && posY == 0) {
-								posX = event.pageX;
-								posY = event.pageY;
+								if (mws.browser.msie) {
+									var ev = event || window.event;
+									posX = ev.clientX + document.body.scrollLeft - document.documentElement.clientLeft;
+									posY = ev.clientY + document.body.scrollTop - document.documentElement.clientTop;
+								}
+								else if (event.pageX || event.pageY) {
+									posX = event.pageX;
+									posY = event.pageY;
+								} 
+		
 								if (posX < posSwfX || posX > posSwfX + swfWidth ||
 										posY < posSwfY || posY > posSwfY + swfHeight) {
 									mws.removeScrollListeners();
