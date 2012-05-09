@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Control xmlns="http://openscales.org"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="400" height="600" xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.TextFlow;
+			
+			import mx.collections.ArrayCollection;
+			
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.GetFeatureInfoEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.utils.TextFlowUtil;
+			
+			/**
+			 * Title value for the Panel
+			 */
+			[Bindable]
+			public var panelTitle:String = Catalog.getLocalizationForKey('featureInfoDisplay.title');
+			
+			private var _data:String;
+			
+			[Bindable]
+			private var _textFlow:TextFlow;
+			
+			/**
+			 * The dataProvider use for the list.
+			 */
+			[Bindable]
+			public function get data():String
+			{
+				return _data;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set data(value:String):void
+			{
+				_data = value;
+				this._textFlow = TextConverter.importToFlow(_data, TextConverter.TEXT_FIELD_HTML_FORMAT);
+			}
+			
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				if(this._map)
+				{
+					this.map.addEventListener(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA,onFeaturesReceived);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{	
+				super.desactivate();
+				if(this._map)
+				{
+					this.map.removeEventListener(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA,onFeaturesReceived);
+				}
+			}
+			
+			/**
+			 * Catch the getFeatureInfoEvent and display its content in the panel
+			 * 
+			 * @param event Event catched by the method 
+			 */
+			public function onFeaturesReceived(event:GetFeatureInfoEvent):void{
+				
+				if ((event.data as String) != "")
+				{
+					this._data = event.data as String;
+					this._textFlow = TextConverter.importToFlow(_data, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				}
+				
+				/*var results:Vector.<Feature>= (event.data) as Vector.<Feature>;
+				var resultsLength:Number = results.length;
+				
+				if(resultsLength>0){
+					for (var i:Number=0; i<length; ++i){
+						var feat:Feature = results[i];
+						this._data.addItemAt(feat.name,0);
+						
+						var attr:Object = (feat.attributes);
+						for (var name:String in attr) 
+						{ 
+							if(name != "coordinates"){
+								data.addItem(name + ": " + attr[name]); 
+							}
+						} 
+						
+						data.addItem("------------------"); 
+					}
+				}*/
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:Panel id="featureInfoPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" >
+		
+		<s:RichText id="featureInfoList" 
+					 width="100%"
+					 textFlow="{this._textFlow}"
+					 height="100%"
+					 x="0"
+					 y="0"/>
+	</s:Panel>
+</Control>

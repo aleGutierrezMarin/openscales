@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---
+
+This control allows to display and browse an image served by an IIPImage server.
+
+
+
+@see http://iipimage.sourceforge.net/
+
+-->
+<Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
+					  xmlns="http://openscales.org"
+					  initialize="onInitialize(event)"
+					  creationComplete="onCreationComplete(event);"
+					  backgroundColor="#1a1a1a">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openzoom.flash.utils.FullScreenUtil;
+			
+			import spark.core.SpriteVisualElement;
+			
+			private var _iipzoom:IIPZoom = new IIPZoom();; 
+			private var _container:SpriteVisualElement = new SpriteVisualElement();
+			private var _tmpOverview:Boolean = false; 
+			private var _widthSave:Number;
+			private var _heightSave:Number;
+			private var _topSave:String;
+			private var _bottomSave:String;
+			private var _leftSave:String;
+			private var _rightSave:String;
+			
+			/**
+			 * @private
+			 */ 
+			protected function onInitialize(event:FlexEvent):void
+			{
+				this.addEventListener(Event.ADDED , onAddedToStage);
+				this.addEventListener(Event.REMOVED , onRemovedFromStage);
+			}
+			
+			/**
+			 * @private
+			 */ 
+			override protected function onCreationComplete(event:Event):void {
+				super.onCreationComplete(event);
+				this.addElementAt(_container, 0);
+				_container.width = this.width;
+				_container.height = this.height;
+				_container.addChild(this._iipzoom);
+				this._iipzoom.navigationEnabled = _tmpOverview;
+				
+				
+			}
+			
+			/**
+			 * Zoom in the displayed image
+			 * 
+			 * @param coef The zoom in coefficient
+			 */ 
+			public function zoomIn(coef:Number=1.6):void{
+				_iipzoom.zoomIn(coef);
+			}
+			
+			/**
+			 * Zoom out the displayed image
+			 * 
+			 * @param coef The zoom out coefficient
+			 */ 
+			public function zoomOut(coef:Number=0.3):void{
+				_iipzoom.zoomOut(coef);
+			}
+			
+			/**
+			 * Zoom the image to it's full extent
+			 */ 
+			public function zoomToMaxExtent():void{
+				_iipzoom.showAll();
+			}
+			
+			/**
+			 * Pan the image up
+			 * 
+			 * @param factor The factor of pan (0.1 means 10 percents of image height)
+			 */ 
+			public function panUp(factor:Number=0.1):void{
+				_iipzoom.panUp(factor);
+			}
+			
+			/**
+			 * Pan the image down
+			 * 
+			 * @param factor The factor of pan (0.1 means 10 percents of image height)
+			 */ 
+			public function panDown(factor:Number=0.1):void{
+				_iipzoom.panDown(factor);
+			}
+			
+			/**
+			 * Pan the image right 
+			 * 
+			 * @param factor The factor of pan (0.1 means 10 percents of image width)
+			 */ 
+			public function panRight(factor:Number=0.1):void{
+				_iipzoom.panRight(factor);
+			}
+			
+			/**
+			 * Pan the image left 
+			 * 
+			 * @param factor The factor of pan (0.1 means 10 percents of image width)
+			 */ 
+			public function panLeft(factor:Number=0.1):void{
+				_iipzoom.panLeft(factor);
+			}
+			
+			/**
+			 * Toggle full screen mode on the image.
+			 * 
+			 * <p>
+			 * Call this method to display the image in full screen. Call it again to restore the image normal display
+			 * </p>
+			 */ 
+			public function toggleFullScreen():void{
+				if(stage.displayState == StageDisplayState.NORMAL)_fxMap.hideAllControls();
+				else _fxMap.showAllControls();
+				this.visible = true;
+				FullScreenUtil.toggleFullScreen(stage);
+			}
+			
+			/**
+			 * @private
+			 */ 
+			protected function onFullScreenEvent(event:FullScreenEvent):void{
+				if(event.fullScreen){
+					_heightSave = this.height;
+					_widthSave = this.width;
+					_topSave = getStyle("top");
+					_rightSave = getStyle("right");
+					_leftSave = getStyle("left");
+					_bottomSave = getStyle("bottom");
+
+					this.height = stage.fullScreenHeight;
+					this.width = stage.fullScreenWidth;
+					setStyle("top",0);
+					setStyle("right",0);
+					setStyle("left",0);
+					setStyle("bottom",0);
+				}else{
+					this.height = _heightSave;
+					this.width =_widthSave;
+					setStyle("top",_topSave);
+					setStyle("right",_rightSave);
+					setStyle("left",_leftSave);
+					setStyle("bottom",_bottomSave);
+				}
+				_iipzoom.layout();
+			}
+			
+			/**
+			 * @private
+			 */ 
+			protected function onAddedToStage(event:Event):void{
+				stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenEvent);
+			}
+			
+			/**
+			 * @private
+			 */
+			protected function onRemovedFromStage(event:Event):void{
+				stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenEvent);
+			}
+			
+			/**
+			 * Toggle the overview of the image. The overview will be displayed at top right corner.
+			 * 
+			 * @default false
+			 */ 
+			public function get overview():Boolean{
+				return _iipzoom.navigationEnabled;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set overview(value:Boolean):void{
+				_tmpOverview = value;
+				_iipzoom.navigationEnabled = value;
+			}		
+			
+			/**
+			 * @inheritDoc
+			 */ 
+			override public function get width():Number{
+				return super.width;
+			}
+			
+			/**
+			 * @private
+			 */
+			override public function set width(value:Number):void {
+				super.width = value;
+				_container.width = value;
+				_iipzoom.width = value;
+			}
+			
+			/**
+			 * @inheritDoc
+			 */ 
+			override public function get height():Number{
+				return super.height;
+			}
+			
+			/**
+			 * @private
+			 */
+			override public function set height(value:Number):void {
+				super.height = value;
+				_container.height = value;
+				_iipzoom.height = value;
+			}
+
+			/**
+			 * The displayed image file name 
+			 */
+			public function get image():String
+			{
+				return _iipzoom.im;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set image(value:String):void
+			{
+				_iipzoom.im = value;
+			}
+
+			/**
+			 * The IIPImage server URL where the image is located
+			 */
+			public function get server():String
+			{
+				return _iipzoom.server;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set server(value:String):void
+			{
+				_iipzoom.server = value;
+			}
+		]]>
+	</fx:Script>	
+</Control>
