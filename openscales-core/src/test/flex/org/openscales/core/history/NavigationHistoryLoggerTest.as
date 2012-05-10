@@ -49,7 +49,7 @@ package org.openscales.core.history
 		[Test]
 		public function shouldLogMapInitialPosition():void{
 			_instance.map = _map;
-			assertFalse("Logger should not be at beginning", _instance.isAtBeginning());
+			assertTrue("Logger should be at beginning", _instance.isAtBeginning());
 			assertTrue("Logger should be at end", _instance.isAtEnd());	
 		}
 		
