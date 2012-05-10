@@ -1879,10 +1879,12 @@ package org.openscales.core
 		public function getProxy(value:String):String {
 			if(!value)
 				return null;
-			var i:uint = this._noProxyDomains.length;
-			for(;i>0;--i) {
-				if(value.indexOf(this._noProxyDomains[i-1])!=-1)
-					return null;
+			if(this._noProxyDomains) {
+				var i:uint = this._noProxyDomains.length;
+				for(;i>0;--i) {
+					if(value.indexOf(this._noProxyDomains[i-1])!=-1)
+						return null;
+				}
 			}
 			return this._proxy;
 		}
