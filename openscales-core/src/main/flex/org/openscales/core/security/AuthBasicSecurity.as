@@ -31,6 +31,10 @@ package org.openscales.core.security
 			this._loginPass = value;
 		}
 		
+		override public function get proxy():String {
+			return null;
+		}
+		
 		override public function getFinalUrl(baseUrl:String):String {
 			//No need to change URL for an AuthBasic Security
 			var _finalUrl:String = baseUrl;
