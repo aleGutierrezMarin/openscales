@@ -300,6 +300,7 @@
 	</developers>
 	<scm>
 		<connection>scm:hg:https://bitbucket.org/gis/openscales</connection>
+		<developerConnection>scm:hg:https://bitbucket.org/gis/openscales</developerConnection>
 		<url>http://bitbucket.org/gis/openscales/src/</url>
 	</scm>
 	<ciManagement>
