@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
+			   title="{this.popupTitle}"
+			   close="">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.utils.TextFlowUtil;
+			import mx.managers.PopUpManager;
+			
+			/**
+			 * Title value for the Panel
+			 */
+			[Bindable]
+			public var popupTitle:String = Catalog.getLocalizationForKey('featureInfoDisplay.title');
+			
+			[Bindable]
+			private var _textFlow:TextFlow;
+			
+			/**
+			 * The textFlow that will be displayed in the HTMLpopup
+			 */
+			public function get textFlow():TextFlow
+			{
+				return this._textFlow;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set textFlox(value:TextFlox):void
+			{
+				this._textFlow = value;
+			}
+			
+			/**
+			 * callback to close the popup
+			 */
+			private function close():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:RichText id="featureInfoList" 
+				width="100%"
+				textFlow="{this._textFlow}"
+				height="100%"
+				x="0"
+				y="0"/>
+</s:TitleWindow>
