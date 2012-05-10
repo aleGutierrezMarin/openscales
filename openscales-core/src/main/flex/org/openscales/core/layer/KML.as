@@ -39,8 +39,8 @@ package org.openscales.core.layer
 			this.maxExtent = bounds;
 			this._kmlFormat = new KMLFormat();
 			this._kmlFormat.userDefinedStyle = style;
-			//var name:String = this._kmlFormat.readName(data);
-			var name:String = identifier;
+			var name:String = this._kmlFormat.readName(data);
+			
 			if (name && name!="")
 				this.displayedName = name;
 		}
