@@ -77,9 +77,6 @@ package org.openscales.core.layer.ogc
 				
 			}
 			
-			if (name && name!="")
-				this.displayedName = name;
-			
 		}
 		
 		public function onSuccess(event:Event):void
