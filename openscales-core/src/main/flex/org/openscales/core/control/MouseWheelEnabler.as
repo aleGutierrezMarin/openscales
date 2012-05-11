@@ -59,6 +59,7 @@ package org.openscales.core.control
 				ExternalInterface.addCallback(id, function():void{});
 				ExternalInterface.call(MouseWheelEnabler_JavaScript.CODE);
 				ExternalInterface.call("mws.InitMouseWheelSupport", id);
+				ExternalInterface.call("mws.verifyMousePosition", id);
 				ExternalInterface.addCallback('flashMouseEvent', handleExternalMouseEvent);
 				  
 			}
@@ -257,6 +258,7 @@ class MouseWheelEnabler_JavaScript
 								//see if we can add the mouse listeners
 								var shouldAdd = mws.shouldAddHandler( swf );
 								
+		
 								if( shouldAdd ) 
 								{
 										/// Mousewheel support
@@ -337,35 +339,55 @@ class MouseWheelEnabler_JavaScript
 										
 						}//InitMouseWheelSupport
 		
-						// Verify if the mouse is inside the flash div
-						
-						
-						var posX = 0;
-						var posY = 0;
-						
-						var posSwfX = $('#the-map-flash-container').position().left;
-						var posSwfY = $('#the-map-flash-container').position().top;
-						var swfWidth = $('#the-map-flash-container').width();
-						var swfHeight = $('#the-map-flash-container').height();
+		mws.verifyMousePosition = function(id)
+		{//verifyMousePosition
+		// Verify if the mouse is inside the flash div
 		
-						document.onmousemove = function(event) {
-							if (posX == 0 && posY == 0) {
-								if (mws.browser.msie) {
-									var ev = event || window.event;
-									posX = ev.clientX + document.body.scrollLeft - document.documentElement.clientLeft;
-									posY = ev.clientY + document.body.scrollTop - document.documentElement.clientTop;
-								}
-								else if (event.pageX || event.pageY) {
-									posX = event.pageX;
-									posY = event.pageY;
-								} 
+		var objectId = '';
+		var flashObject = mws.findSwf(id);
 		
-								if (posX < posSwfX || posX > posSwfX + swfWidth ||
-										posY < posSwfY || posY > posSwfY + swfHeight) {
-									mws.removeScrollListeners();
-								}
-							}
-						};
+		var posX = 0;
+		var posY = 0;
+		
+		if (typeof(flashObject.id) != 'undefined') {
+		objectId = '#' + flashObject.id;
+		}
+		else {
+		if (typeof(flashObject.className) != 'undefined') {
+		objectId = '.' + flashObject.className;
+		}
+		else {
+		flashObject.className = 'openScalesClass';
+		objectId = '.' + flashObject.className;
+		}
+		}
+		
+		var posSwfX = $(objectId).position().left;
+		var posSwfY = $(objectId).position().top;
+		var swfWidth = $(objectId).width();
+		var swfHeight = $(objectId).height();
+		
+		document.onmousemove = function(event) {
+		if (posX == 0 && posY == 0) {
+		if (mws.browser.msie) {
+		var ev = event || window.event;
+		posX = ev.clientX + document.body.scrollLeft - document.documentElement.clientLeft;
+		posY = ev.clientY + document.body.scrollTop - document.documentElement.clientTop;
+		}
+		else if (event.pageX || event.pageY) {
+		posX = event.pageX;
+		posY = event.pageY;
+		} 
+		
+		if (posX < posSwfX || posX > posSwfX + swfWidth ||
+		posY < posSwfY || posY > posSwfY + swfHeight) {
+		mws.removeScrollListeners();
+		}
+		}
+		};
+		}//verifyMousePosition
+		
+						
 				}
 		]]></script>;
 }
