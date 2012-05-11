@@ -339,53 +339,53 @@ class MouseWheelEnabler_JavaScript
 										
 						}//InitMouseWheelSupport
 		
-		mws.verifyMousePosition = function(id)
-		{//verifyMousePosition
-		// Verify if the mouse is inside the flash div
+						mws.verifyMousePosition = function(id)
+						{//verifyMousePosition
+							// Verify if the mouse is inside the flash div
 		
-		var objectId = '';
-		var flashObject = mws.findSwf(id);
+							var objectId = '';
+							var flashObject = mws.findSwf(id);
 		
-		var posX = 0;
-		var posY = 0;
+							var posX = 0;
+							var posY = 0;
 		
-		if (typeof(flashObject.id) != 'undefined') {
-		objectId = '#' + flashObject.id;
-		}
-		else {
-		if (typeof(flashObject.className) != 'undefined') {
-		objectId = '.' + flashObject.className;
-		}
-		else {
-		flashObject.className = 'openScalesClass';
-		objectId = '.' + flashObject.className;
-		}
-		}
+							if (typeof(flashObject.id) != 'undefined') {
+								objectId = '#' + flashObject.id;
+							}
+							else {
+								if (typeof(flashObject.className) != 'undefined') {
+									objectId = '.' + flashObject.className;
+								}
+								else {
+									flashObject.className = 'openScalesClass';
+									objectId = '.' + flashObject.className;
+								}
+							}
 		
-		var posSwfX = $(objectId).position().left;
-		var posSwfY = $(objectId).position().top;
-		var swfWidth = $(objectId).width();
-		var swfHeight = $(objectId).height();
+							var posSwfX = $(objectId).position().left;
+							var posSwfY = $(objectId).position().top;
+							var swfWidth = $(objectId).width();
+							var swfHeight = $(objectId).height();
 		
-		document.onmousemove = function(event) {
-		if (posX == 0 && posY == 0) {
-		if (mws.browser.msie) {
-		var ev = event || window.event;
-		posX = ev.clientX + document.body.scrollLeft - document.documentElement.clientLeft;
-		posY = ev.clientY + document.body.scrollTop - document.documentElement.clientTop;
-		}
-		else if (event.pageX || event.pageY) {
-		posX = event.pageX;
-		posY = event.pageY;
-		} 
+							document.onmousemove = function(event) {
+								if (posX == 0 && posY == 0) {
+									if (mws.browser.msie) {
+										var ev = event || window.event;
+										posX = ev.clientX + document.body.scrollLeft - document.documentElement.clientLeft;
+										posY = ev.clientY + document.body.scrollTop - document.documentElement.clientTop;
+									}
+									else if (event.pageX || event.pageY) {
+										posX = event.pageX;
+										posY = event.pageY;
+									} 
 		
-		if (posX < posSwfX || posX > posSwfX + swfWidth ||
-		posY < posSwfY || posY > posSwfY + swfHeight) {
-		mws.removeScrollListeners();
-		}
-		}
-		};
-		}//verifyMousePosition
+									if (posX < posSwfX || posX > posSwfX + swfWidth ||
+											posY < posSwfY || posY > posSwfY + swfHeight) {
+										mws.removeScrollListeners();
+									}
+								}
+							};
+						}//verifyMousePosition
 		
 						
 				}
