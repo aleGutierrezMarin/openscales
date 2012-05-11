@@ -35,6 +35,7 @@
 				<artifactId>openscales-fx</artifactId>
 				<version>${project.version}</version>
 				<type>swc</type>
+				<scope>merged</scope>
 			</dependency>
 		</dependencies>
 </project>

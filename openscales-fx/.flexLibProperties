@@ -39,7 +39,6 @@
     <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.control.HTMLFeatureInfoDisplay"/>
-    <classEntry path="org.openscales.fx.control.HTMLFeatureInfoDisplayPopup"/>
     <classEntry path="org.openscales.fx.control.IconButton"/>
     <classEntry path="org.openscales.fx.control.LanguageSwitcher"/>
     <classEntry path="org.openscales.fx.control.LayerCatalog"/>

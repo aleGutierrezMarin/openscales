@@ -21,24 +21,28 @@
 			<artifactId>openscales-geometry</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openscales</groupId>
 			<artifactId>openscales-proj4as</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.gskinner</groupId>
 			<artifactId>gtween</artifactId>
 			<version>2.0.1</version>
 			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.adobe</groupId>
 			<artifactId>as3corelib</artifactId>
 			<version>0.92.1</version>
 			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
 	</dependencies>
 	

@@ -57,12 +57,14 @@
 			<artifactId>openscales-fx</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
         <dependency>
 			<groupId>org.openzoom</groupId>
 			<artifactId>sdk</artifactId>
 			<version>0.4.3-patched</version>
 			<type>swc</type>
+			<scope>merged</scope>
 		</dependency>
 	</dependencies>
 </project>
