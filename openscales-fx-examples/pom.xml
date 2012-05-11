@@ -29,6 +29,13 @@
 	</build>
 	
 	<dependencies>
+		<dependency>
+			<groupId>org.openscales</groupId>
+			<artifactId>openscales-core</artifactId>
+			<version>${project.version}</version>
+			<type>swc</type>
+			<scope>merged</scope>
+		</dependency>
 	  	<dependency>
 			<groupId>org.openscales</groupId>
 			<artifactId>openscales-fx</artifactId>
