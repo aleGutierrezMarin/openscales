@@ -2,18 +2,20 @@
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
-			   title="{this.popupTitle}"
-			   close="">
+			   >
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.elements.TextFlow;
+			
+			import mx.managers.PopUpManager;
+			
 			import org.openscales.core.i18n.Catalog;
 			
 			import spark.utils.TextFlowUtil;
-			import mx.managers.PopUpManager;
 			
 			/**
 			 * Title value for the Panel
@@ -35,26 +37,27 @@
 			/**
 			 * @private
 			 */
-			public function set textFlox(value:TextFlox):void
+			public function set textFlow(value:TextFlow):void
 			{
 				this._textFlow = value;
 			}
 			
-			/**
-			 * callback to close the popup
-			 */
-			private function close():void
-			{
-				PopUpManager.removePopUp(this);
-			}
+			
 			
 		]]>
 	</fx:Script>
+	<s:Scroller>
+		<s:RichEditableText id="featureInfoList" 
+							editable="false"
+					width="370"
+					height="300"
+					minHeight="0"
+					textFlow="{this._textFlow}"
+					paddingLeft="5"
+					paddingTop="5"
+					paddingBottom="5"
+					paddingRight="5"
+					/>
+	</s:Scroller>
 	
-	<s:RichText id="featureInfoList" 
-				width="100%"
-				textFlow="{this._textFlow}"
-				height="100%"
-				x="0"
-				y="0"/>
 </s:TitleWindow>

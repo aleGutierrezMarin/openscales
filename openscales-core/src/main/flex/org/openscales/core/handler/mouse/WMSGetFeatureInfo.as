@@ -315,17 +315,25 @@ package org.openscales.core.handler.mouse
 				if(_request) {
 					_request.destroy();
 				}
-				_request = new XMLRequest(req[i], this.handleResponse);
+				_request = new XMLRequest(req[i], this.handleSuccess, this.handleFailure);
 				_request.proxy = map.getProxy(req[i]);
 				_request.send();
 			}
 		}
 		
 		/**
-		 * Read the incoming response from the server
-		 * 
+		 * @private
+		 * Handle the failure of the sent request sent
 		 */
-		private function handleResponse(event:Event):void {
+		private function handleFailure(event:Event):void{
+			
+		}
+		
+		/**
+		 * @private
+		 * Read the incoming response from the server
+		 */
+		private function handleSuccess(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
 			var ret:Object;
 			if (this._infoFormat == "application/vnd.ogc.gml")
