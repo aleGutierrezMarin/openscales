@@ -38,6 +38,8 @@
     <classEntry path="org.openscales.fx.control.FxDefaultCapabilitiesItemRenderer"/>
     <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
+    <classEntry path="org.openscales.fx.control.HTMLFeatureInfoDisplay"/>
+    <classEntry path="org.openscales.fx.control.HTMLFeatureInfoDisplayPopup"/>
     <classEntry path="org.openscales.fx.control.IconButton"/>
     <classEntry path="org.openscales.fx.control.LanguageSwitcher"/>
     <classEntry path="org.openscales.fx.control.LayerCatalog"/>
@@ -57,9 +59,11 @@
     <classEntry path="org.openscales.fx.control.drawing.DrawPath"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPoint"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawPolygon"/>
+    <classEntry path="org.openscales.fx.control.drawing.DrawRectangle"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawShape"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawingToolbar"/>
     <classEntry path="org.openscales.fx.control.drawing.EditFeatures"/>
+    <classEntry path="org.openscales.fx.control.drawing.EditStyle"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeature"/>
     <classEntry path="org.openscales.fx.control.drawing.ExportFeatureForm"/>
     <classEntry path="org.openscales.fx.control.drawing.ImportFeature"/>
@@ -67,14 +71,19 @@
     <classEntry path="org.openscales.fx.control.drawing.ManageAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.MoveFeatures"/>
     <classEntry path="org.openscales.fx.control.drawing.SelectFeatures"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.ArrowListItemRenderer"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeatureAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditFeaturesPopupRenderer"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.EditLabel"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.EditStylePopup"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.IconListItemRenderer"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.LabelPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ManageLayerAttributes"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.SingleInputPopup"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.ViewFeatureAttributes"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin"/>
     <classEntry path="org.openscales.fx.control.drawing.popup.skin.EditLabelSkin"/>
+    <classEntry path="org.openscales.fx.control.history.NavigationHistoryBrowser"/>
     <classEntry path="org.openscales.fx.control.layer.AddLayerButton"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerAlpha"/>
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerPosition"/>
@@ -98,6 +107,7 @@
     <classEntry path="org.openscales.fx.control.search.engine.FxBingSearch"/>
     <classEntry path="org.openscales.fx.control.search.engine.FxSearchEngine"/>
     <classEntry path="org.openscales.fx.control.skin.IconButtonSkin"/>
+    <classEntry path="org.openscales.fx.control.skin.NavigationHistoryBrowserDefaultSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanNorthSkin"/>
     <classEntry path="org.openscales.fx.control.skin.PanSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ScrollableContainerSkin"/>
@@ -161,12 +171,6 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.control.drawing.DrawRectangle"/>
-    <classEntry path="org.openscales.fx.control.drawing.EditStyle"/>
-    <classEntry path="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin"/>
-    <classEntry path="org.openscales.fx.control.skin.NavigationHistoryBrowserDefaultSkin"/>
-    <classEntry path="org.openscales.fx.control.HTMLFeatureInfoDisplay"/>
-    <classEntry path="org.openscales.fx.control.HTMLFeatureInfoDisplayPopup"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
