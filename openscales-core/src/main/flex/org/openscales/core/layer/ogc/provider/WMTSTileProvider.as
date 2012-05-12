@@ -233,8 +233,8 @@ package org.openscales.core.layer.ogc.provider
 				var tm:TileMatrix = i as TileMatrix;
 				resolutions.push(Unit.getResolutionFromScaleDenominator(tm.scaleDenominator,units));
 				++j;
-				if(j>=numZoomLevels)
-					break;
+				/*if(j>=numZoomLevels)
+					break;*/
 			}
 			return resolutions;
 		}

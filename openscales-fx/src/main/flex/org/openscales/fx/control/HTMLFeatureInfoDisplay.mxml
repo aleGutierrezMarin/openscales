@@ -2,35 +2,42 @@
 <Control xmlns="http://openscales.org"
 		 xmlns:fx="http://ns.adobe.com/mxml/2009"
 		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 width="400" height="600" xmlns:mx="library://ns.adobe.com/flex/mx">
-	<fx:Declarations>
-		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
-	</fx:Declarations>
-	
+		 width="0" height="0" xmlns:mx="library://ns.adobe.com/flex/mx"
+		 visible="false"
+		 includeInLayout="false">
+
 	<fx:Script>
 		<![CDATA[
 			import flashx.textLayout.conversion.TextConverter;
 			import flashx.textLayout.elements.TextFlow;
 			
-			import mx.collections.ArrayCollection;
+			import mx.core.IChildList;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.managers.PopUpManagerChildList;
 			
-			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.Map;
 			import org.openscales.core.events.GetFeatureInfoEvent;
-			import org.openscales.core.feature.Feature;
+			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			
-			import spark.utils.TextFlowUtil;
-			
-			/**
-			 * Title value for the Panel
-			 */
-			[Bindable]
-			public var panelTitle:String = Catalog.getLocalizationForKey('featureInfoDisplay.title');
-			
 			private var _data:String;
+			private var _popupX:int;
+			private var _popupY:int;
 			
 			[Bindable]
 			private var _textFlow:TextFlow;
+			
+			private var _popup:HTMLFeatureInfoDisplayPopup = new HTMLFeatureInfoDisplayPopup();
+			
+			override protected function onCreationComplete(event:Event):void{
+				_popup.addEventListener(CloseEvent.CLOSE,closePopup);
+			}
+			
+			override public function onMapLanguageChange(event:I18NEvent):void{
+				super.onMapLanguageChange(event);
+				_popup.title = Catalog.getLocalizationForKey('featureInfoDisplay.title');
+			}
 			
 			/**
 			 * The dataProvider use for the list.
@@ -50,9 +57,24 @@
 				this._textFlow = TextConverter.importToFlow(_data, TextConverter.TEXT_FIELD_HTML_FORMAT);
 			}
 			
+			/**
+			 * @inheritDoc
+			 */
+			override public function get map():Map{
+				return super.map;
+			}
+			
+			
+			override public function set map(value:Map):void{
+				super.map = value;
+				if(_map){
+					_popupX = _map.width/2 - _popup.width/2;
+					_popupY = _map.height/2 - _popup.height/2;
+				}
+			} 
 			
 			/**
-			 * @inherit
+			 * @inheritDoc
 			 */
 			override public function activate():void 
 			{
@@ -64,7 +86,7 @@
 			}
 			
 			/**
-			 * @inherit
+			 * @inheritDoc
 			 */
 			override public function desactivate():void 
 			{	
@@ -82,11 +104,36 @@
 			 */
 			public function onFeaturesReceived(event:GetFeatureInfoEvent):void{
 				
-				if ((event.data as String) != "")
-				{
-					this._data = event.data as String;
-					this._textFlow = TextConverter.importToFlow(_data, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				if ((event.data as String) == "" || !shouldPopupBeDisplayed(event.data as String)){
+					closePopup(null);
+					return;
 				}
+				
+				
+				this._data = event.data as String;
+				this._textFlow = TextConverter.importToFlow(_data, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				_popup.textFlow = this._textFlow;
+				_popup.title = Catalog.getLocalizationForKey('featureInfoDisplay.title');;
+				
+				var found:Boolean = false;
+				var numberOfPopupsInApplication:int = systemManager.popUpChildren.numChildren
+				if(numberOfPopupsInApplication > 0){
+					var list:IChildList = systemManager.popUpChildren;
+					var i:int = 0;
+					for(i;i<numberOfPopupsInApplication;++i){
+						if(systemManager.popUpChildren.getChildAt(0) == _popup){
+							found = true;
+							break;
+						}
+					} 
+					
+				}
+				if(!found){
+					PopUpManager.addPopUp(_popup,_map,false,PopUpManagerChildList.POPUP);
+					_popup.x = _popupX;
+					_popup.y = _popupY;
+				}
+				
 				
 				/*var results:Vector.<Feature>= (event.data) as Vector.<Feature>;
 				var resultsLength:Number = results.length;
@@ -109,11 +156,41 @@
 				}*/
 			}
 			
+			protected function closePopup(event:CloseEvent):void{
+				_popupX = _popup.x;
+				_popupY = _popup.y;
+				PopUpManager.removePopUp(_popup);
+			}
+			
+			
+			/**
+			 * This method provides a way to customize when popup should be hidden or not. Override this method with your own tests.
+			 * <p>This method called internally after GetFeatureInfo responded</p>
+			 * <p>By default it simply verify that HTML body content is not empty</p>
+			 * 
+			 * @param data Data that were returned by GetFeatureInfo
+			 */ 
+			protected function shouldPopupBeDisplayed(data:String):Boolean{
+				return !isHTMLBodyContentEmpty(data);
+			}
+			
+			private function isHTMLBodyContentEmpty(data:String):Boolean{
+				data = data.replace(/\n/gi,"");
+				data = data.replace(/\t/gi,"");
+				data = data.replace(/<html><body>/gi,"");
+				data = data.replace(/<(\/html)>/gi,"");
+				data = data.replace(/<(\/body)>/gi,"");
+				if(data == "") return true;
+				return false;
+				
+			}
+			
+			
 			
 		]]>
 	</fx:Script>
 	
-	<s:Panel id="featureInfoPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" >
+	<!--<s:TitleWindow id="featureInfoPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" >
 		
 		<s:RichText id="featureInfoList" 
 					 width="100%"
@@ -121,5 +198,5 @@
 					 height="100%"
 					 x="0"
 					 y="0"/>
-	</s:Panel>
+	</s:TitleWindow>-->
 </Control>
