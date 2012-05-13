@@ -2,6 +2,7 @@ package org.openscales.core.request
 {
 	import com.adobe.serialization.json.JSON;
 	
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.UID;
@@ -707,8 +708,16 @@ package org.openscales.core.request
 				var places:XMLList = gr.xls::Address..xls::Place;
 				for each (var node:XML in places) {
 					if(node.@type=="Municipality") {
-						result.city = node.toString();
-						break;
+						result.municipality = node.toString();
+					}
+					if(node.@type=="Feuille") {
+						result.feuille = node.toString();
+					}
+					if(node.@type=="Section") {
+						result.section = node.toString();
+					}
+					if(node.@type=="Numero") {
+						result.numero = node.toString();
 					}
 				}
 				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
@@ -753,7 +762,7 @@ package org.openscales.core.request
 				var places:XMLList = gr.xls::Address..xls::Place;
 				for each (var node:XML in places) {
 					if(node.@type=="Municipality") {
-						result.city = node.toString();
+						result.municipality = node.toString();
 						break;
 					}
 				}
