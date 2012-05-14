@@ -54,7 +54,7 @@ package org.openscales.core.layer
 			super.destroy();
 		}
 		
-		override public function redraw(fullRedraw:Boolean = true):void {
+		override public function redraw(fullRedraw:Boolean = false):void {
 			
 			if (this.map == null)
 				return;
@@ -79,7 +79,7 @@ package org.openscales.core.layer
 			}
 			else if (this.data)
 			{	
-				this.drawFeatures();
+				this.drawFeatures(fullRedraw);
 			}
 			else
 			{
@@ -89,7 +89,7 @@ package org.openscales.core.layer
 			this._initialized = true;
 		}
 		
-		public function drawFeatures():void{
+		public function drawFeatures(fullRedraw:Boolean = false):void{
 			
 			if(this._featureVector == null) 
 			{
@@ -109,8 +109,9 @@ package org.openscales.core.layer
 				}
 			}
 			else {
-				this.clear();
-				this.draw();
+				//this.clear();
+				//this.draw();
+				super.redraw(fullRedraw);
 			}			
 		}
 		
@@ -122,7 +123,7 @@ package org.openscales.core.layer
 			// To avoid errors if the server is dead
 			try {
 				this.data = new XML(loader.data);
-				this.drawFeatures();
+				this.drawFeatures(true);
 				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_LOAD_END, this);
 				this.dispatchEvent(evt);
 				/*if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
