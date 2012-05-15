@@ -14,6 +14,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Label;
+			
 			import org.openscales.core.Map;
 			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
@@ -54,6 +56,7 @@
 			private var _isClick:Boolean = false;
 			private var _drawingMode:String;
 			private var _draging:Boolean = false;
+			private var _labelOver:Boolean = false;
 			
 			/**
 			 * Indicates for Drawing mode
@@ -182,6 +185,13 @@
 			
 			public function toogleDrag(evt:FeatureEvent):void {
 				this._draging = !this._draging;
+				
+				if (!this._draging && evt.feature is LabelFeature && this._labelOver)
+				{
+					this._labelOver = false;
+					evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+					evt.feature.draw();
+				}
 			}
 			
 			/**
@@ -190,8 +200,12 @@
 			 */
 			private function onFeatureOver(evt:FeatureEvent):void
 			{
-				if(this._draging)
+				if(this._draging) {
+					if (evt.feature is LabelFeature) {
+						this._labelOver = false;
+					}
 					return;
+				}
 				
 				if(evt.feature.layer == this.target)
 				{
@@ -200,7 +214,7 @@
 						evt.feature.originalStyle = evt.feature.style;
 					}
 					if (evt.feature is LabelFeature) {
-						//evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+						evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
 					} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
 						//evt.feature.style = Style.getDefaultSelectedPointStyle();
 					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
@@ -222,8 +236,12 @@
 			 */
 			private function onFeatureOut(evt:FeatureEvent):void
 			{
-				if(this._draging)
+				if(this._draging) {
+					if (evt.feature is LabelFeature) {
+						this._labelOver = true;
+					}
 					return;
+				}
 				
 				if(evt.feature.layer == this.target)
 				{	
@@ -231,7 +249,7 @@
 						evt.feature.style = evt.feature.originalStyle;
 					} else {
 						if (evt.feature is LabelFeature) {
-							//evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+							evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
 						} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
 							//evt.feature.style = Style.getDefaultPointStyle();
 						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
