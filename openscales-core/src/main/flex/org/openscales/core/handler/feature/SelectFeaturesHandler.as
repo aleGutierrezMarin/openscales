@@ -450,6 +450,7 @@ package org.openscales.core.handler.feature
 				this.map.addEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
 				this.map.addEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
 				this.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
+				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEDOWN, this.onDownFeature);
 				this.map.addEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.addEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
 				this.map.addEventListener(MapEvent.ACTIVATE_HANDLER, this.onActivateHandler);
@@ -507,6 +508,8 @@ package org.openscales.core.handler.feature
 				this.map.removeEventListener(FeatureEvent.FEATURE_OVER, this.onOver);
 				this.map.removeEventListener(FeatureEvent.FEATURE_OUT, this.onOut);
 				this.map.removeEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
+				this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEDOWN, this.onDownFeature);
+				this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEUP, this.onUpFeature);
 				this.map.removeEventListener(FeatureEvent.FEATURE_SELECTED, this.onSelected);
 				this.map.removeEventListener(FeatureEvent.FEATURE_UNSELECTED, this.onUnselected);
 				this.map.removeEventListener(MapEvent.ACTIVATE_HANDLER, this.onActivateHandler);
@@ -514,6 +517,21 @@ package org.openscales.core.handler.feature
 			}
 			// Listeners of the super class
 			super.unregisterListeners();
+		}
+		
+		private function onDownFeature(evt:FeatureEvent):void
+		{
+			this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEDOWN, this.onDownFeature);
+			this.map.removeEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
+			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEUP, this.onUpFeature);
+		}
+		
+		private function onUpFeature(evt:FeatureEvent):void
+		{
+			this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEUP, this.onUpFeature);
+			this.onClickFeature(evt);
+			this.map.addEventListener(FeatureEvent.FEATURE_MOUSEDOWN, this.onDownFeature);
+			this.map.addEventListener(FeatureEvent.FEATURE_CLICK, this.onClickFeature);
 		}
 
 		/**
