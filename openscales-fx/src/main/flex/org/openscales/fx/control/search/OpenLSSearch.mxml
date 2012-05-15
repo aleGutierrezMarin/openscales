@@ -1201,7 +1201,7 @@
 					this._showNoResultMsg = true;
 				}
 				else {
-					if (_resultsProvider.length == 1) {
+					if (_resultsProvider.length == 1 || _resultsProvider[0].accuracy==1) {
 						// only one result, so center at location automatically
 						var latitude:Number = parseFloat(_resultsProvider[0].lat);
 						var longitude:Number = parseFloat(_resultsProvider[0].lon);
