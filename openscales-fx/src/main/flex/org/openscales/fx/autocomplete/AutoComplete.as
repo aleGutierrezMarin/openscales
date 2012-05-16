@@ -50,6 +50,7 @@ package org.openscales.fx.autocomplete
 		public var minChars:Number = 1;
 		public var prefixOnly:Boolean = true;
 		public var requireSelection:Boolean = false;
+		public var countryCodeSelected:String = "";
 		
 		private var _mouseClickListCallback:Function = temporaryClickCallback;
 		
@@ -163,7 +164,7 @@ package org.openscales.fx.autocomplete
 		
 		private function onChange(event:TextOperationEvent):void{
 			_text = inputTxt.text;
-			
+			this.countryCodeSelected = "";
 			filterData()
 			
 			if (text.length>=minChars) filterData();
@@ -226,7 +227,7 @@ package org.openscales.fx.autocomplete
 			else if (labelField && item[labelField])
 				return item[labelField];
 			else
-				return item.toString();
+				return item[0].toString();
 		}
 		
 		private function returnFunction(item:Object):String{
@@ -305,7 +306,7 @@ package org.openscales.fx.autocomplete
 				_selectedItem = collection.getItemAt(_selectedIndex)
 				
 				text = returnFunction(_selectedItem)
-				
+				countryCodeSelected = _selectedItem[1];
 				inputTxt.selectRange(inputTxt.text.length, inputTxt.text.length)
 				
 				var e:AutoCompleteEvent = new AutoCompleteEvent("select", _selectedItem)

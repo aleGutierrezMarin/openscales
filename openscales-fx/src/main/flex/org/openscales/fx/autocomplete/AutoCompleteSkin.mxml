@@ -34,7 +34,7 @@
         
         <s:Group id="dropDown" minHeight="22" width="100%">
         
-			<components:ListAutoComplete id="list" width="100%" minWidth="22" />
+			<components:ListAutoComplete id="list" width="100%" minWidth="22" itemRenderer="org.openscales.fx.autocomplete.AutoCompleteListItemRenderer"/>
 			
         </s:Group>
 		

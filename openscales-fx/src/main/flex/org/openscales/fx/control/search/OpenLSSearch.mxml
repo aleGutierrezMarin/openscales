@@ -74,6 +74,8 @@
 			
 			private var _blinkMarker:Boolean = false;
 			
+			public var autocompleteCountrycode:String = "";
+			
 			[Bindable]
 			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
 			
@@ -1580,6 +1582,21 @@
 			{
 				simpleSearch(queryInput.text)
 			}
+			
+			public function onAutocompleteSelect(query:String, countryCode:String):void
+			{
+				if (countryCode == "")
+				{
+					autocompleteCountrycode = "";
+					simpleSearch(query);
+				}
+				else
+				{
+					autocompleteCountrycode = countryCode;
+					simpleSearchWithFilters(query, countryCode, null);
+					
+				}
+			}
 
 			
 		]]>
@@ -1617,7 +1634,7 @@
 						<mx:FormItem id="simpleSearchFormItem" label="" defaultButton="{simpleSearchButton}" width="100%">
 							<autocomplete:AutoComplete id="queryInput" addedToStage="initAutoComplete()" dataProvider="{this._completionProvider}" width="100%" text="" keyUp="onKeyUp(event, queryInput.text)" />
 						</mx:FormItem>
-						<s:Button id="simpleSearchButton" label="{this._simpleSearchButtonLabel}" click="simpleSearch(queryInput.text)"/>
+						<s:Button id="simpleSearchButton" label="{this._simpleSearchButtonLabel}" click="onAutocompleteSelect(queryInput.text, queryInput.countryCodeSelected)"/>
 					</s:SkinnableContainer>
 				</mx:Form>
 				
