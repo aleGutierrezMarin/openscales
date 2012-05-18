@@ -1116,7 +1116,7 @@
 			private function onServiceFault(event:Event):void {
 			}
 			
-			private function onServiceResult(event:Event):void {
+			protected function onServiceResult(event:Event):void {
 				var xmlString:String = (event.target as URLLoader).data as String;
 				var xml:XML = new XML(xmlString);
 				var xmlList:XMLList = OpenLSRequest.resultsList(xml);
