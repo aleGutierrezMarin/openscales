@@ -8,10 +8,12 @@
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.events.LayerEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Unit;
+			import org.openscales.proj4as.ProjConstants;
 			import org.openscales.proj4as.ProjProjection;
 			
 			/**
@@ -38,13 +40,33 @@
 			 */
 			private var _dpi:Number = DEFAUL_DPI;
 
-
 			/**
 			 * The current value of the scale Label
 			 * @default "1 / 1"
 			 */
 			[Bindable]
 			public var scaleLabel: String = "1 / 1";
+			
+			/**
+			 * The current visibility of the numeric scale text input.
+			 * @default false
+			 */
+			[Bindable]
+			private var textInputVisibility:Boolean = false;
+			
+			/**
+			 * The current visibility of the numeric scale label.
+			 * @default true
+			 */
+			[Bindable]
+			private var labelVisibility:Boolean = true;
+			
+			/**
+			 * The current value of the numeric scale text input.
+			 * @default ""
+			 */
+			[Bindable]
+			private var textInputText:String = "";
 				
 			override public function set map(value:Map):void
 			{
@@ -114,6 +136,53 @@
 			}
 			
 			/**
+			 * Called when the user click on the numeric scale.
+			 * He is also allowed to change his value in order to change the map resolution.
+			 * 
+			 * @param event The event received if the function is called when the user click
+			 * on the numeric scale.
+			 */
+			private function onClick(event:MouseEvent):void
+			{
+				this.labelVisibility = false;
+				this.textInputVisibility = true;
+				
+				this.textInputText = this._value.toString();
+			}
+			
+			/**
+			 * Called when the user pressed a keyboard key.
+			 * If the key is enter, then we can update the scale value and the map resolution.
+			 * 
+			 * @param event The event received if the function is called when the user pressed
+			 * a keyboard key.
+			 */
+			private function onEnterPressed(event:KeyboardEvent):void
+			{
+				// If the pressed key is "Enter"
+				if (event.keyCode == 13)
+				{
+					var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
+					var resolutionAtCenter:Number = Unit.getResolutionOnCenter(this._map.resolution.value, this._map.center, projection);
+					
+					var unit:String = ProjProjection.getProjProjection(this._map.projection).projParams.units;
+					
+					if(projection.projName  == "longlat")
+						unit = Unit.METER;
+					
+					
+					var scale:Number = Number(this.textInputText);
+					var resolutionValue:Number = Unit.getResolutionFromScale(scale, unit, this._dpi);
+					
+					this._map.resolution = new Resolution(resolutionValue, projection);
+					
+					this.labelVisibility = true;
+					
+					this.textInputVisibility = false;
+				}
+			}
+			
+			/**
 			 * The value of the current numeric scale
 			 */
 			[Bindable]
@@ -152,6 +221,19 @@
 			  paddingTop="5" 
 			  paddingLeft="5" 
 			  paddingRight="5"
-			  text="{this.scaleLabel}"/>
+			  text="{this.scaleLabel}" 
+			  click="onClick(event)" />
+	
+	<s:TextInput id="numericScaleTextInput"
+				 width="{this.numericScaleLabel.width}"
+				 height="25"
+				 paddingTop="5"
+				 paddingLeft="5"
+				 paddingRight="5"
+				 visible="{this.textInputVisibility}"
+				 includeInLayout="{this.textInputVisibility}"
+				 text="@{this.textInputText}"
+				 keyDown="onEnterPressed(event)"
+				 />
 	
 </Control>
