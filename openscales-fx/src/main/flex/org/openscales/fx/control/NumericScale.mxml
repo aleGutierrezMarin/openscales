@@ -62,6 +62,13 @@
 			private var labelVisibility:Boolean = true;
 			
 			/**
+			 * The current visibility of the numeric scale input label.
+			 * @default false
+			 */
+			[Bindable]
+			private var inputLabelVisibility:Boolean = false;
+			
+			/**
 			 * The current value of the numeric scale text input.
 			 * @default ""
 			 */
@@ -145,6 +152,7 @@
 			private function onClick(event:MouseEvent):void
 			{
 				this.labelVisibility = false;
+				this.inputLabelVisibility = true;
 				this.textInputVisibility = true;
 				
 				this.textInputText = this._value.toString();
@@ -162,23 +170,31 @@
 				// If the pressed key is "Enter"
 				if (event.keyCode == 13)
 				{
-					var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
-					var resolutionAtCenter:Number = Unit.getResolutionOnCenter(this._map.resolution.value, this._map.center, projection);
+					this.changeResolution(Number(this.textInputText));
 					
+					this.textInputVisibility = false;
+					this.inputLabelVisibility = false;
+					this.labelVisibility = true;
+				}
+			}
+			
+			/**
+			 * Change the map resolution with the given scale.
+			 * 
+			 * @param number The scale denominator given from user input.
+			 */
+			public function changeResolution(scale:Number):void
+			{
+				if (!isNaN(scale))
+				{
+					var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
 					var unit:String = ProjProjection.getProjProjection(this._map.projection).projParams.units;
 					
 					if(projection.projName  == "longlat")
 						unit = Unit.METER;
 					
-					
-					var scale:Number = Number(this.textInputText);
 					var resolutionValue:Number = Unit.getResolutionFromScale(scale, unit, this._dpi);
-					
 					this._map.resolution = new Resolution(resolutionValue, projection);
-					
-					this.labelVisibility = true;
-					
-					this.textInputVisibility = false;
 				}
 			}
 			
@@ -222,18 +238,32 @@
 			  paddingLeft="5" 
 			  paddingRight="5"
 			  text="{this.scaleLabel}" 
-			  click="onClick(event)" />
-	
-	<s:TextInput id="numericScaleTextInput"
-				 width="{this.numericScaleLabel.width}"
-				 height="25"
+			  click="onClick(event)"
+			  visible="{this.labelVisibility}"
+			  includeInLayout="{this.labelVisibility}" />
+		
+	<s:Group height="25" width="100%" visible="{this.inputLabelVisibility}"
+			 includeInLayout="{this.inputLabelVisibility}">
+		<s:layout>
+			<s:HorizontalLayout horizontalAlign="center" gap="0" />
+		</s:layout>
+		<s:Label id="numericScaleInputLabel"
+				 height="{this.numericScaleLabel.height}"
+				 backgroundColor="0xFFFFFF"
+				 text="1 / "
 				 paddingTop="5"
 				 paddingLeft="5"
-				 paddingRight="5"
-				 visible="{this.textInputVisibility}"
-				 includeInLayout="{this.textInputVisibility}"
-				 text="@{this.textInputText}"
-				 keyDown="onEnterPressed(event)"
-				 />
-	
+				 visible="{this.inputLabelVisibility}"
+				 includeInLayout="{this.inputLabelVisibility}" />
+		
+		<s:TextInput id="numericScaleTextInput"
+					 width="{this.numericScaleLabel.width - this.numericScaleInputLabel.width}"
+					 height="25"
+					 paddingTop="5"
+					 visible="{this.textInputVisibility}"
+					 includeInLayout="{this.textInputVisibility}"
+					 text="@{this.textInputText}"
+					 keyDown="onEnterPressed(event)"
+					 />
+	</s:Group>
 </Control>
