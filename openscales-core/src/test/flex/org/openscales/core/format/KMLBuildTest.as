@@ -63,15 +63,6 @@ package org.openscales.core.format
 			Assert.assertTrue("There should be 3 placemark nodes in this file",placemarks.length() == 3);
 			Assert.assertTrue("There should be 3 LineString nodes in this file",lineNodes.length() == 3);
 
-			//the 1st feature has a default style; check the validity of the other 2 styles	
-			var lineStyle1:XML = styleNodes[1]..*::LineStyle[0];
-			var colorNode1:XML = lineStyle1..*::color[0];
-			var lineStyle2:XML = styleNodes[2]..*::LineStyle[0];
-			var colorNode2:XML = lineStyle2..*::color[0];
-			Assert.assertTrue("The color tag of this line should be 7fff00ff",
-				colorNode1.toString() == "ffcd9f3f");
-			Assert.assertTrue("The color tag of this line should be 7fff00ff",
-				colorNode2.toString() == "7fff00ff");
 			//check the style reference in the placemarks
 			var styleUrl:XMLList = buildedFile..*::styleUrl;
 			Assert.assertEquals("The styleUrl of this feature is incorrect",
