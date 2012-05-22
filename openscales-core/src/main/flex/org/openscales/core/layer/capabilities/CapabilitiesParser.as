@@ -1,6 +1,7 @@
 package org.openscales.core.layer.capabilities
 {
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Layer;
 
 	/**
 	 * Generic class for GetCapabilities parsers.
@@ -36,6 +37,15 @@ package org.openscales.core.layer.capabilities
 			return this._capabilities;
 		}
 
+		/**
+		 * Instanciate a layer contained in the capabilities. 
+		 * <p>This method should be called after having <code>read</code> the capabilities. If it is not the case, or if the layer name does not match any of the capabilities, the method will return <code>null</code></p>.
+		 * 
+		 * @param name The name of the layer to be instanciated
+		 */ 
+		public function instanciate(name:String):Layer{
+			return null;
+		}		
 
 		public function get version():String {
 			return _version;
