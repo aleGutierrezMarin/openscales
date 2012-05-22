@@ -98,8 +98,7 @@
 				_popup.editStyleHandler = this._handler;
 				_popup.targetFeature = feature;
 				PopUpManager.addPopUp(_popup, this.map);
-				_popup.x = this.map.width - 200;
-				_popup.y = 20;
+				
 			}
 			
 			/**
@@ -107,7 +106,7 @@
 			 */
 			public function onMapLanguageChange(event:I18NEvent):void{
 				
-				this.tooltip = Catalog.getLocalizationForKey('drawing.point');
+				this.tooltip = Catalog.getLocalizationForKey('editskin.point');
 			}
 			
 			/**
@@ -178,7 +177,7 @@
 					} else {
 						this.buttonMode = true;
 						this.useHandCursor = true;
-						this.toolTip = Catalog.getLocalizationForKey('drawing.point');
+						this.toolTip = Catalog.getLocalizationForKey('editskin.point');
 					}
 				}
 			}
@@ -299,6 +298,8 @@
 				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				_handler.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				_popup.x = this.map.width - 200;
+				_popup.y = 20;
 			}
 			
 			/**

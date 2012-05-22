@@ -10,12 +10,15 @@ package {
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
@@ -55,45 +58,50 @@ package {
 			blackStyle.rules.push(new Rule());
 			blackStyle.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0x000000,2),12)));
 			blackStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),new Stroke(0x000000,2)));
-			blackStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x000000,2)));
-
+			var wnmk:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12);
+			blackStyle.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),wnmk,wnmk));
+			blackStyle.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.7,null,Font.ITALIC,Font.BOLD)));
+			
 			var markerStyle:Style = new Style();
 			markerStyle.rules.push(new Rule());
 			markerStyle.rules[0].symbolizers.push(new PointSymbolizer(new CustomMarker("http://maps.google.com/mapfiles/kml/pal3/icon19.png")));
+			markerStyle.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.8,null,null,Font.BOLD)));
 			
 			// Add some (black) objects for the tests of inclusion with all the
 			// features added below.
-			//style = new Style();
-			//style.rules.push(new Rule());
-			//style.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0x000000,2),12)));
+			style = new Style();
+			style.rules.push(new Rule());
+			style.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFFFFFF,2),12)));
+			style.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.5,null,Font.ITALIC)));
 			
 			// A point inside of the MultiPolygon (its first polygon).
 			point = new org.openscales.geometry.Point(4.649002075147177, 45.78235984585472);
-			layer.addFeature(new PointFeature(point,null,markerStyle));
+			layer.addFeature(new PointFeature(point,{'name':"toto1"},markerStyle));
 			
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPoint1";
 			// A point outside of the MultiPolygon but inside an excessive hole
 			// of its third polygon.
-			/*point = new org.openscales.geometry.Point(4.63114929194725, 45.692262077956364);
-			layer.addFeature(new PointFeature(point,null,blackStyle));
+			point = new org.openscales.geometry.Point(4.63114929194725, 45.692262077956364);
+			layer.addFeature(new PointFeature(point,{'name':"toto2"},style));
 			
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPoint2";
 			// A point outside of the blue Polygon but inside its BBOX.
 			point = new org.openscales.geometry.Point(4.910228209414947, 45.73119410607873);
-			layer.addFeature(new PointFeature(point,null,blackStyle));
+			layer.addFeature(new PointFeature(point,{'name':"toto3"},blackStyle));
 			//(layer.features[layer.features.length-1] as Feature).id = "blackPoint2";
 			// A LineString intersecting all the other objects.
 			
 			
-			//style = new Style();
-			//style.rules.push(new Rule());
-			//style.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),new Stroke(0x000000,2)));
+			style = new Style();
+			style.rules.push(new Rule());
+			style.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),new Stroke(0x000000,2)));
+			style.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(13,0xFFFFFF,0.6,null,Font.ITALIC,Font.BOLD)));
 			arrayComponents = new Vector.<Number>(4);
 			arrayComponents[0]=4.5714111327782625;
 			arrayComponents[1]=45.76368130194846;
 			arrayComponents[2]=5.117294311391419;
 			arrayComponents[3]=45.69513978441103;
-			layer.addFeature(new LineStringFeature(new LineString(arrayComponents),null,blackStyle));
+			layer.addFeature(new LineStringFeature(new LineString(arrayComponents),{'name':"toto4"},style));
 			
 			
 			//(layer.features[layer.features.length-1] as Feature).id = "blackLineString";
@@ -159,7 +167,6 @@ package {
 			layer.addFeature(new MultiPointFeature(new MultiPoint(arrayComponents),null,multiColorStyle));
 			//(layer.features[layer.features.length-1] as Feature).id = "MultiPoint";
 			
-			
 			// Add a LineString.
 			//style = new Style();
 			//style.rules.push(new Rule());
@@ -186,7 +193,7 @@ package {
 				45.77182400046717,
 				4.9483795164998,
 				45.790499817491956);
-			layer.addFeature(new LineStringFeature(new LineString(arrayComponents),null,multiColorStyle));
+			layer.addFeature(new LineStringFeature(new LineString(arrayComponents),{'name':"toto5"},blackStyle));
 			//(layer.features[layer.features.length-1] as Feature).id = "LineString";
 			
 			// Add a MultiLineString.
@@ -224,7 +231,7 @@ package {
 				4.915420532130705,
 				45.645718608921435);
 			arrayVertices.push(new LineString(arrayComponents));
-			layer.addFeature(new MultiLineStringFeature(new MultiLineString(arrayVertices),null,biColorStyle));
+			layer.addFeature(new MultiLineStringFeature(new MultiLineString(arrayVertices),{'name':"toto6"},biColorStyle));
 			//(layer.features[layer.features.length-1] as Feature).id = "MultiLineString";
 			
 			// Add a Polygon.
@@ -280,7 +287,7 @@ package {
 				4.844696044838685,
 				45.74403813868174);
 			arrayVertices.push(new LinearRing(arrayComponents));
-			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),null,multiColorStyle));
+			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),{'name':"toto7"},biColorStyle));
 			//(layer.features[layer.features.length-1] as Feature).id = "Polygon";
 			
 			// Add a MultiPolygon.
@@ -384,11 +391,11 @@ package {
 			arrayVertices.push(new LinearRing(arrayComponents));
 			polygonArray.push(new Polygon(arrayVertices));
 			// feature
-			layer.addFeature(new MultiPolygonFeature(new MultiPolygon(polygonArray),null,style));
+			layer.addFeature(new MultiPolygonFeature(new MultiPolygon(polygonArray),{'name':"toto8"},style));
 			//(layer.features[layer.features.length-1] as Feature).id = "MultiPolygon";
 			
 			// Add some (black) objects for more tests of intersection.
-			/*style = new Style();
+			style = new Style();
 			style.rules.push(new Rule());
 			style.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),new Stroke(0x000000,2)));
 			//
@@ -416,9 +423,9 @@ package {
 				4.886581420807746,
 				45.75218370397337);
 			arrayVertices.push(new LinearRing(arrayComponents));
-			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),null,style));
+			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),{'name':"toto"},style));
 
-			// return the vector layer*/
+			// return the vector layer
 			return layer;
 		}
 		

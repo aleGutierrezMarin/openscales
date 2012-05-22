@@ -171,10 +171,7 @@ package org.openscales.core.layer.ogc.provider
 			var resolutions:Array = tp.generateResolutions(0);
 			
 			assertEquals(null,resolutions);
-			
-			resolutions = tp.generateResolutions(1);
-			assertEquals(1,resolutions.length);
-			
+
 			resolutions = tp.generateResolutions(22);
 			assertEquals(22,resolutions.length);
 			

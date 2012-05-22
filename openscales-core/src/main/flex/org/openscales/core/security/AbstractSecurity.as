@@ -85,10 +85,9 @@ package org.openscales.core.security
 		 *  - proxy is null => use the proxy of the map
 		 */
 		public function get proxy():String {
-			var p:String = this._proxy;
-			if(!p && map && map.proxy)
-				p = map.proxy;
-			return p;
+			if(!this._proxy && map && map.proxy)
+				return this.map.proxy;
+			return this._proxy;
 		}
 		
 		public function set proxy(value:String):void {

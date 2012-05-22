@@ -8,6 +8,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
 	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	
@@ -41,8 +42,6 @@ package org.openscales.core.handler.feature.draw
 	 */
 	public class EditLabelHandler extends AbstractEditHandler
 	{
-		private var _labelFeature:LabelFeature;
-		
 		/**
 		 * EditLabelHandler
 		 * This handler is used for edition on selected label such operation as modifying, dragging or deleting
@@ -88,39 +87,15 @@ package org.openscales.core.handler.feature.draw
 		{
 			feature.stopDrag();
 			var px:Pixel = new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
-			var lonlat:Location = this.map.getLocationFromMapPx(px);
-			(feature as LabelFeature).lonlat = lonlat;
-			var leftPixel:Pixel = new Pixel();
-			var rightPixel:Pixel = new Pixel();
-			leftPixel.x = px.x - (feature as LabelFeature).labelPoint.label.width / 2;
-			leftPixel.y = px.y + (feature as LabelFeature).labelPoint.label.height / 2;
-			rightPixel.x = px.x + (feature as LabelFeature).labelPoint.label.width / 2;
-			rightPixel.y = px.y - (feature as LabelFeature).labelPoint.label.height / 2;
-			var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
-			var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
-			(feature as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
+			var loc:Location = this.map.getLocationFromMapPx(px);
+			loc.reprojectTo(feature.projection);
+			feature.geometry = new Point(loc.lon,loc.lat);
+			feature.geometry.projection = loc.projection;
 			feature.x = 0;
 			feature.y = 0;
 			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,feature));
 			this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,feature));
 			this._layerToEdit.redraw();
-		}
-		
-		/**
-		 * Callback
-		 */
-		protected function updateLabel(str:String):void
-		{
-			if(str != null)
-			{
-				this._labelFeature.labelPoint.label.text = str;
-				this._labelFeature.draw();
-			}
-			else
-			{
-				this._layerToEdit.removeFeature(this._labelFeature);
-				this._layerToEdit.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DELETING,this._labelFeature));
-			}
 		}
 	}
 }

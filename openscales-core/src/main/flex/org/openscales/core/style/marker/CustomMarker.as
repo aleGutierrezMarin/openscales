@@ -55,6 +55,8 @@ package org.openscales.core.style.marker
 		 */
 		private var _url:String;
 		
+		private var _proxy:String = null;
+		
 		/**
 		 * A vector that stores a reference to all the returned temporary display object
 		 * to actualize them when the requested marker will be loaded 
@@ -67,13 +69,20 @@ package org.openscales.core.style.marker
 		[Embed(source="/assets/images/marker-blue.png")]
 		private var _defaultImage:Class;
 		
-		public function CustomMarker(url:String = null, opacity:Number=1, xOffset:Number=0.5, xUnit:String="fraction", yOffset:Number=0.5, yUnit:String="fraction")
+		public function CustomMarker(url:String = null,
+									 opacity:Number=1,
+									 xOffset:Number=0.5,
+									 xUnit:String="fraction",
+									 yOffset:Number=0.5,
+									 yUnit:String="fraction",
+									 proxy:String = null)
 		{
 			super(6, opacity, 0);
 			this._xOffset = xOffset;
 			this._yOffset = yOffset;
 			this._givenTemporaryMarker = new Vector.<DisplayObject>();
 			this._url = url;
+			this._proxy = proxy;
 			if (url)
 			{
 				this.loadUrl(url);
@@ -85,6 +94,7 @@ package org.openscales.core.style.marker
 		 */
 		public function loadUrl(url:String):void {
 			this._req = new DataRequest(url,onSuccess, onFailure);
+			this._req.proxy = this._proxy;
 			this._req.send();
 		}
 		
@@ -128,7 +138,7 @@ package org.openscales.core.style.marker
 		
 		override public function clone():Marker
 		{
-			var cm:CustomMarker = new CustomMarker(this._url, this.opacity, this.xOffset, this.xUnit, this.yOffset, this.yUnit);
+			var cm:CustomMarker = new CustomMarker(this._url, this.opacity, this.xOffset, this.xUnit, this.yOffset, this.yUnit,this._proxy);
 			return cm;
 		}
 		
@@ -297,5 +307,22 @@ package org.openscales.core.style.marker
 		{
 			this._yUnit = value;
 		}
+
+		/**
+		 * Proxy
+		 */
+		public function get proxy():String
+		{
+			return _proxy;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set proxy(value:String):void
+		{
+			_proxy = value;
+		}
+
 	}
 }

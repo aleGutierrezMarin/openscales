@@ -7,9 +7,9 @@ package org.openscales.core.layer
 	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.LabelPoint;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
 	
 	use namespace os_internal;
@@ -130,8 +130,8 @@ package org.openscales.core.layer
 					this.addFeature(lineFeature);
 					// labels
 					var degreeLabel:String = getFormattedLabel(currentX, interval);
-					var labelPoint:LabelPoint = new LabelPoint(degreeLabel, currentX+2*offset, ymin+2*offset);
-					var labelFeature:LabelFeature = new LabelFeature(labelPoint);
+					var labelFeature:LabelFeature = LabelFeature.createLabelFeature(new Location(currentX+2*offset, ymin+2*offset));
+					labelFeature.text = degreeLabel;
 					labelFeature.style = labelStyle;
 					this.addFeature(labelFeature);
 					// iterates
@@ -156,8 +156,8 @@ package org.openscales.core.layer
 					this.addFeature(lineFeature);
 					// labels
 					degreeLabel = getFormattedLabel(currentY, interval);
-					labelPoint = new LabelPoint(degreeLabel, xmin+3*offset, currentY+offset);
-					labelFeature = new LabelFeature(labelPoint);
+					labelFeature = LabelFeature.createLabelFeature(new Location(xmin+3*offset, currentY+offset));
+					labelFeature.text = degreeLabel;
 					labelFeature.style = labelStyle;
 					this.addFeature(labelFeature);
 					// iterates

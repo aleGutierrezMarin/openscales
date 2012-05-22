@@ -1,8 +1,13 @@
 package org.openscales.core.feature {
+	import flash.text.TextField;
+	import flash.text.TextFormat;
+	
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
@@ -27,7 +32,7 @@ package org.openscales.core.feature {
 		 */
 		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
 		{
-			if (symbolizer is PolygonSymbolizer)
+			if (symbolizer is PolygonSymbolizer || symbolizer is TextSymbolizer)
 				return true;
 			else
 				return false;
@@ -39,8 +44,9 @@ package org.openscales.core.feature {
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 
 			if (symbolizer is PointSymbolizer) {
-
 				this.renderPointSymbolizer(symbolizer as PointSymbolizer);
+			} else if (symbolizer is TextSymbolizer) {
+				(symbolizer as TextSymbolizer).drawTextField(this);
 			} else if(this.layer.map) {
 				// Variable declaration before for loop to improve performances
 				var p:Point = null;

@@ -238,9 +238,9 @@ package org.openscales.core.format
 					if (srs != "")
 					{
 						wmts.projection = srs;
-						wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
-						wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					}
+					wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
+					wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					wmts.format = format;
 					layerToAdd = wmts;
 					break;
@@ -249,6 +249,8 @@ package org.openscales.core.format
 					layerToAdd = new Layer(name);
 					layerToAdd.displayedName = title;
 					layerToAdd.abstract = abstract;
+					layerToAdd.url = url;
+					layerToAdd.name = name;
 					layerToAdd.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd.maxResolution= new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd.projection = srs;
@@ -282,7 +284,8 @@ package org.openscales.core.format
 						{
 							var layer:XML = listOfLayers[i];
 							var layerToAdd:Layer = this.parseLayer(layer);
-							layers.push(layerToAdd);
+							if (layerToAdd)
+								layers.push(layerToAdd);
 						}
 					}
 				}

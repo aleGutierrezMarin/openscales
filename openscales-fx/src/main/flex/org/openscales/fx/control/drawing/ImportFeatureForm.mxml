@@ -375,6 +375,7 @@
 							if(selectedSource == 1)
 							{
 								kml = new KML(name, url);
+								kml.displayedName = name;
 								kml.selected = true;
 								kml.editable = true;
 								this.importFeature.map.addLayer(kml);
@@ -384,6 +385,7 @@
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								kml = new KML(name, null, xml);
+								kml.displayedName = name;
 								kml.selected = true;
 								kml.editable = true;
 								this.importFeature.map.addLayer(kml);
@@ -460,6 +462,7 @@
 							if(selectedSource == 1)
 							{
 								gml = new GML(name, version, this.importFeature.map.projection, url);
+								gml.displayedName = name;
 								gml.selected = true;
 								gml.editable = true;
 								this.importFeature.map.addLayer(gml);
@@ -468,6 +471,7 @@
 							{
 								xml = new XML(_datasFile.readUTFBytes(_datasFile.bytesAvailable));
 								gml = new GML(name, version, this.importFeature.map.projection, null, xml);
+								gml.displayedName = name;
 								gml.selected = true;
 								gml.editable = true;
 								this.importFeature.map.addLayer(gml);
