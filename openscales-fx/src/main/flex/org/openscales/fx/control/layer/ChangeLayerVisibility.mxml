@@ -70,7 +70,7 @@
 				// If the layer was uncheck from the beggining, he hadn't load yet so we need
 				// to redraw it to load it.
 				if(layer.visible){
-					layer.redraw();
+					layer.redraw(true);
 				}
 			} 
 		]]>

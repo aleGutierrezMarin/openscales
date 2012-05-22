@@ -63,23 +63,14 @@ package org.openscales.core.format
 			Assert.assertTrue("There should be 3 placemark nodes in this file",placemarks.length() == 3);
 			Assert.assertTrue("There should be 3 LineString nodes in this file",lineNodes.length() == 3);
 
-			//the 1st feature has a default style; check the validity of the other 2 styles	
-			var lineStyle1:XML = styleNodes[1]..*::LineStyle[0];
-			var colorNode1:XML = lineStyle1..*::color[0];
-			var lineStyle2:XML = styleNodes[2]..*::LineStyle[0];
-			var colorNode2:XML = lineStyle2..*::color[0];
-			Assert.assertTrue("The color tag of this line should be 7fff00ff",
-				colorNode1.toString() == "7fff00ff");
-			Assert.assertTrue("The color tag of this line should be 7fff00ff",
-				colorNode2.toString() == "7f00ffff");
 			//check the style reference in the placemarks
 			var styleUrl:XMLList = buildedFile..*::styleUrl;
-			for (i = 0; i < 3; i++)
-			{
-				Assert.assertEquals("The styleUrl of this feature is incorrect",
-					"#feature"+i.toString(), styleUrl[i].toString());
-			}
-			
+			Assert.assertEquals("The styleUrl of this feature is incorrect",
+				"#Default line style", styleUrl[0].toString());
+			Assert.assertEquals("The styleUrl of this feature is incorrect",
+				"#transPurpleLineGreenPoly", styleUrl[1].toString());
+			Assert.assertEquals("The styleUrl of this feature is incorrect",
+				"#yellowLineGreenPoly", styleUrl[2].toString());
 		}
 		
 		[Test]

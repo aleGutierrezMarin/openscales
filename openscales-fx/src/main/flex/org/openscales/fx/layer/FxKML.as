@@ -1,6 +1,7 @@
 package org.openscales.fx.layer
 {
 	import org.openscales.core.layer.KML;
+	import org.openscales.core.style.Style;
 
 	/**
 	 * <p>KML Flex wrapper.</p>
@@ -37,6 +38,17 @@ package org.openscales.fx.layer
 		public function set srs(value:String):void {
 			if (this._layer != null) {
 				this._layer.projection = value;
+			}
+		}
+		
+		/**
+		 * Set a style to every features of the KML layer
+		 * Be carefull, this will override  other styles and will take effect on all the features
+		 */
+		override public function set style(value:Style):void
+		{
+			if (this._layer != null) {
+				(this._layer as KML).style = value;
 			}
 		}
 		

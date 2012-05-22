@@ -7,13 +7,18 @@ package org.openscales.core.style {
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.halo.Halo;
+	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.MultiPoint;
@@ -91,15 +96,6 @@ package org.openscales.core.style {
 			var symbolizer:PointSymbolizer = new PointSymbolizer(new CustomMarker("http://openscales.org/img/pictos/openscalesDefaultPicto.png"));
 			rule.symbolizers.push(symbolizer);
 			
-			/*var fill:SolidFill = new SolidFill(0x0F6BFF, 0.7);
-			var stroke:Stroke = new Stroke(0x3F9FCD, 2);
-			
-			var symbolizer:PointSymbolizer = new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke, 8));
-			
-			var rule:Rule = new Rule();
-			rule.name = "Default rule";
-			rule.symbolizers.push(symbolizer);*/
-			
 			return rule;
 		}
 		
@@ -153,6 +149,21 @@ package org.openscales.core.style {
 		}
 		
 		/**
+		 * Returns the default style for a arrowed LineStringFeature
+		 */
+		public static function getDefaultArrowStyle():Style {
+			
+			var style:Style = new Style();
+			style.name = "Default arrow style";
+			style.rules.push(getLineRule());
+			
+			var am:ArrowMarker = new ArrowMarker(ArrowMarker.AM_NARROW_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12)
+			style.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),am,am));
+			return style;
+		}
+		
+		
+		/**
 		 * Returns the default style for a LineStringFeature when the feature is selected
 		 */
 		public static function getDefaultSelectedLineStyle():Style {
@@ -164,6 +175,13 @@ package org.openscales.core.style {
 		}
 		
 		/**
+		 * Returns the default style for a LineStringFeature
+		 */
+		public static function getDefaultLabelStyle():Style {
+			return Style.getDefinedLabelStyle(null,12,0xFFFFFF,false,false);
+		}
+		
+		/**
 		 * Returns the rule to apply for the default LineStringFeature style
 		 */
 		protected static function getLineRule():Rule{
@@ -171,6 +189,19 @@ package org.openscales.core.style {
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
 			rule.symbolizers.push(new LineSymbolizer(new Stroke(0x3F9FCD, 3)));
+			
+			return rule;
+		}
+		
+		/**
+		 * Returns the rule to apply for the default arrow LineStringFeature style
+		 */
+		protected static function getArrowRule():Rule{
+			
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			var am:ArrowMarker = new ArrowMarker(ArrowMarker.AM_THIN	,new SolidFill(0x3F9FCD,0.5),new Stroke(0x3F9FCD,3),12)
+			rule.symbolizers.push(new ArrowSymbolizer(new Stroke(0x3F9FCD, 3), am, am));
 			
 			return rule;
 		}
@@ -322,7 +353,15 @@ package org.openscales.core.style {
 			
 			var style:Style = new Style();
 			style.name = "Default graticule label style";
-			style._textFormat = new TextFormat("Arial",12,0xFFFFFF,true,false);
+			var ts:TextSymbolizer = new TextSymbolizer();
+			ts.font = new Font();
+			ts.font.family = "Arial";
+			ts.font.size = 12;
+			ts.font.color = 0xFFFFFF;
+			ts.font.weight = Font.BOLD;
+			ts.halo = new Halo(0x000000);
+			style.rules.push(new Rule());
+			style.rules[0].symbolizers[0] = ts;
 			return style;
 		}
 		
@@ -341,8 +380,26 @@ package org.openscales.core.style {
 			
 			var style:Style = new Style();
 			style.name = "Defined label style";
+			var rule:Rule = new Rule();
+			rule.name = "Default rule";
+			var f:Font = new Font(size,color,1,font,(italic?Font.ITALIC:Font.NORMAL),(bold?Font.BOLD:Font.NORMAL));
+			var h:Halo = new Halo((0xFFFFFF-color));
+			rule.symbolizers.push(new TextSymbolizer(null,f,h));
+			style.rules.push(rule);
 			style._textFormat = new TextFormat(font,size,color,bold,italic);
 			return style;
+		}
+		
+		public static function getNegativeLabelStyle(style:Style):Style{
+			var s:Style = style.clone();
+			if(s.rules[0] && s.rules[0].symbolizers[0] && s.rules[0].symbolizers[0] is TextSymbolizer) {
+				var ts:TextSymbolizer = s.rules[0].symbolizers[0] as TextSymbolizer;
+				if(ts.halo)
+					ts.halo.color = 0xFFFFFF-ts.halo.color;
+				if(ts.font)
+					ts.font.color = 0xFFFFFF-ts.font.color;
+			}
+			return s;
 		}
 		
 		/*Default Styles*/

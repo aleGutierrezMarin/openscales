@@ -187,7 +187,6 @@ package org.openscales.core.feature {
 			this._lonlat = null;
 			this._geometry = null;
 			this._originGeometry = null;
-			this.unregisterListeners();
 		}
 
 		/**
@@ -346,7 +345,10 @@ package org.openscales.core.feature {
 		 * Callback that dispatch the FEATURE_CLICK event
 		 */
 		public function onMouseClick(pevt:MouseEvent):void {
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_CLICK, this, pevt.ctrlKey));
+			if(pevt)
+				this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_CLICK, this, pevt.ctrlKey));
+			else
+				this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_CLICK, this, false));
 		}
 
 		/**
@@ -367,7 +369,10 @@ package org.openscales.core.feature {
 		 * Callback that dispatch the FEATURE_MOUSEUP event
 		 */
 		public function onMouseUp(pevt:MouseEvent):void {
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
+			if(pevt)
+				this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
+			else
+				this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, false));
 		}
 		
 		// Getter Setters
@@ -428,6 +433,9 @@ package org.openscales.core.feature {
 		 * @private
 		 */
 		public function set layer(value:VectorLayer):void {
+			if(this._layer) {
+				unregisterListeners();
+			}
 			this._layer = value;
 			if (this._layer != null) {
 				registerListeners();

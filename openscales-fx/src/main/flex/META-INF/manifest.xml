@@ -52,6 +52,8 @@
 	
 	<component id="FeatureInfoDisplay" class="org.openscales.fx.control.FeatureInfoDisplay" />
 	
+	<component id="NavigationHistoryBrowser" class="org.openscales.fx.control.history.NavigationHistoryBrowser" />
+	
 	<!-- LayerManager -->
 	<component id="LayerManager" class="org.openscales.fx.control.layer.LayerManager" />
 	<component id="DefaultLayerManagerItemRenderer" class="org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer" />
@@ -117,5 +119,8 @@
 	<component id="DrawingToolbar" class="org.openscales.fx.control.drawing.DrawingToolbar" />
 	<component id="AddVectorLayer" class="org.openscales.fx.control.drawing.AddVectorLayer" />
 	<component id="EditLabel" class="org.openscales.fx.control.drawing.popup.EditLabel" />
+	
+	<component id="HTMLFeatureInfoDisplay" class="org.openscales.fx.control.HTMLFeatureInfoDisplay" />
+	<component id="HTMLFeatureInfoDisplayPopup" class="org.openscales.fx.control.HTMLFeatureInfoDisplayPopup" />
 	
 </componentPackage>

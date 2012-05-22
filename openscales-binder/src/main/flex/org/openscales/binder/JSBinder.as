@@ -184,7 +184,7 @@ package org.openscales.binder
 		 * @param lat:Number - The latitude of the new center
 		 * @param proj:String - The projection code associated to coordinates, default Geometry.DEFAULT_SRS_CODE
 		 */
-		private function setCenter(lon:Number, lat:Number, proj:String=null):void{
+		protected function setCenter(lon:Number, lat:Number, proj:String=null):void{
 			if(!this._map)
 				return;
 			if(!proj)
@@ -201,7 +201,7 @@ package org.openscales.binder
 		 * @param value:Number - The resolution
 		 * @param proj:String - The projection code associated to resolution, default Geometry.DEFAULT_SRS_CODE
 		 */
-		private function setResolution(value:Number, proj:String=null):void
+		protected function setResolution(value:Number, proj:String=null):void
 		{
 			if(!proj)
 				proj = Geometry.DEFAULT_SRS_CODE;
@@ -219,7 +219,7 @@ package org.openscales.binder
 		 * @param latMax:Number - The latitude of the top left corner
 		 * @param proj:String - The projection code associated to coordinates
 		 */
-		private function zoomToExtent(lonMin:Number,latMin:Number,lonMax:Number,latMax:Number, proj:String=null):void {
+		protected function zoomToExtent(lonMin:Number,latMin:Number,lonMax:Number,latMax:Number, proj:String=null):void {
 			if(!this._map)
 				return;
 			if(!proj)
@@ -235,7 +235,7 @@ package org.openscales.binder
 		 * @param name:String - The name of the layer
 		 * @param bool:Boolean - The new visibility of this layer (true = visible or false = unvisible)
 		 */
-		private function setLayerVisibility(name:String, bool:Boolean):void{
+		protected function setLayerVisibility(name:String, bool:Boolean):void{
 			if(!this._map)
 				return;
 			var lay:Layer = this._map.getLayerByIdentifier(name);
@@ -251,9 +251,9 @@ package org.openscales.binder
 		/**
 		 * This function changes the opacity of a layer
 		 * @param name:String - The name of the layer
-		 * @param value:Number - The new opacity of this layer (0 <= value <= 1)
+		 * @param value:Number - The new opacity of this layer (0 &gt;= value &gt;= 1)
 		 */
-		private function setLayerOpacity(name:String, value:Number):void{
+		protected function setLayerOpacity(name:String, value:Number):void{
 			if(!this._map)
 				return;
 			var lay:Layer = this._map.getLayerByIdentifier(name);
@@ -267,7 +267,7 @@ package org.openscales.binder
 		 * @param name:String - The name of the layer
 		 * @param direction:String - "UP" to move up the layer ou "DOWN" to move it down
 		 */
-		private function moveLayer(name:String, direction:String):void{
+		protected function moveLayer(name:String, direction:String):void{
 			if(!this._map)
 				return;
 			var lay:Layer = this._map.getLayerByIdentifier(name);
@@ -295,7 +295,7 @@ package org.openscales.binder
 		 * This function removes a layer from the map
 		 * @param name:String - The name of the layer to remove
 		 */
-		private function removeLayer(name:String):void{
+		protected function removeLayer(name:String):void{
 			if(!this._map)
 				return;
 			var lay:Layer = this._map.getLayerByIdentifier(name);
@@ -307,7 +307,7 @@ package org.openscales.binder
 		/**
 		 * Return the displayed map Extent in EPSG:4326
 		 */
-		private function getBounds():Object
+		protected function getBounds():Object
 		{
 			var obj:Object = new Object();
 			var mapExtent:Bounds = this.map.extent.reprojectTo(ProjProjection.getProjProjection("EPSG:4326"));
@@ -321,7 +321,7 @@ package org.openscales.binder
 		/**
 		 * Return the resolution of the map in decimal degrees
 		 */
-		private function getResolution():Number
+		protected function getResolution():Number
 		{
 			var mapRes:Resolution = this.map.resolution.reprojectTo(ProjProjection.getProjProjection("EPSG:4326"));
 			return mapRes.value;
@@ -332,7 +332,7 @@ package org.openscales.binder
 		 * @param dx:int - The horizontal pixel offset
 		 * @param dy:int - The vertical pixel offset
 		 */
-		private function pan(dx:int, dy:int):void {
+		protected function pan(dx:int, dy:int):void {
 			if(!this._map)
 				return;
 			this._map.pan(dx, dy);
@@ -341,7 +341,7 @@ package org.openscales.binder
 		/**
 		 * This function increases the zoom level of the map by one
 		 */
-		private function zoomIn():void{
+		protected function zoomIn():void{
 			if(!this._map)
 				return;
 			this._map.zoomIn();
@@ -350,7 +350,7 @@ package org.openscales.binder
 		/**
 		 * This function decreases the zoom level of the map by one
 		 */
-		private function zoomOut():void{
+		protected function zoomOut():void{
 			if(!this._map)
 				return;
 			this._map.zoomOut();
@@ -360,7 +360,7 @@ package org.openscales.binder
 		 * This function changes the language of the map
 		 * @param language:String - The new language for the map in IETF 4646
 		 */
-		private function setLanguage(language:String):void{
+		protected function setLanguage(language:String):void{
 			if(!this._map)
 				return;
 			this._map.locale = language;
@@ -371,7 +371,7 @@ package org.openscales.binder
 		 * @param width:Number - The new width of the map
 		 * @param height:Number - The new height of the map
 		 */
-		private function setSize(width:Number, height:Number):void{
+		protected function setSize(width:Number, height:Number):void{
 			if(!this._map)
 				return;
 			this._map.size = new Size(width, height);
@@ -393,7 +393,7 @@ package org.openscales.binder
 		 * 		- LayerEdited : true if the layer has beed edited, false otherwise
 		 * 		- LayerEditable : true if the layer is editable, false otherwise
 		 */
-		private function onLayerChanged(event:LayerEvent):void
+		protected function onLayerChanged(event:LayerEvent):void
 		{
 			var obj:Object = new Object();
 			obj.eventName = "layerchanged";
@@ -424,7 +424,7 @@ package org.openscales.binder
 		 *		- eventName : the name of the event occured on the map ('layeradded','layerremoved')
 		 *		- layerName : the name of the layer
 		 */
-		private function onLayerAddedOrRemoved(event:LayerEvent):void
+		protected function onLayerAddedOrRemoved(event:LayerEvent):void
 		{
 			var obj:Object = new Object();
 			obj.eventName = (event.type == LayerEvent.LAYER_ADDED) ? "layeradded" : "layerremoved";

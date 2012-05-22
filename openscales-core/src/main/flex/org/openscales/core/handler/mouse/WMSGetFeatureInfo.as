@@ -315,24 +315,38 @@ package org.openscales.core.handler.mouse
 				if(_request) {
 					_request.destroy();
 				}
-				_request = new XMLRequest(req[i], this.handleResponse);
-				_request.proxy = map.proxy;
+				_request = new XMLRequest(req[i], this.handleSuccess, this.handleFailure);
+				_request.proxy = map.getProxy(req[i]);
 				_request.send();
 			}
 		}
 		
 		/**
-		 * Read the incoming response from the server
-		 * 
+		 * @private
+		 * Handle the failure of the sent request sent
 		 */
-		private function handleResponse(event:Event):void {
-			var loader:URLLoader = event.target as URLLoader;
-			var gmlformat:GMLFormat = new GMLFormat(null,new HashMap());
+		private function handleFailure(event:Event):void{
 			
-			gmlformat.version = "2.1.1";
-			gmlformat.asyncLoading = false;
-			var ret:Object = gmlformat.read(loader.data);
-			var feature:Vector.<Feature> = (ret as Vector.<Feature>);
+		}
+		
+		/**
+		 * @private
+		 * Read the incoming response from the server
+		 */
+		private function handleSuccess(event:Event):void {
+			var loader:URLLoader = event.target as URLLoader;
+			var ret:Object;
+			if (this._infoFormat == "application/vnd.ogc.gml")
+			{
+				var gmlformat:GMLFormat = new GMLFormat(null,new HashMap());
+				
+				gmlformat.version = "2.1.1";
+				gmlformat.asyncLoading = false;
+				ret = gmlformat.read(loader.data);
+				var feature:Vector.<Feature> = (ret as Vector.<Feature>);
+			}else{
+				ret = loader.data;
+			}
 			
 			this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret));
 		}

@@ -386,7 +386,7 @@
 				var xml:XML = null;
 				
 				if(format == "WMS" || format == "WMTS" || format == "WFS"){
-					var getCapapbilities:GetCapabilities = new GetCapabilities(format, url, this.displayResult, version);
+					var getCapapbilities:GetCapabilities = new GetCapabilities(format, url, this.displayResult, version,this.map.getProxy(url));
 					this.currentState = 'searching';
 				}else{
 					if(_selectedSource == 1) {

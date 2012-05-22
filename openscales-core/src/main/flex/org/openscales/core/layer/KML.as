@@ -3,6 +3,7 @@ package org.openscales.core.layer
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.format.KMLFormat;
@@ -39,6 +40,7 @@ package org.openscales.core.layer
 			this._kmlFormat = new KMLFormat();
 			this._kmlFormat.userDefinedStyle = style;
 			var name:String = this._kmlFormat.readName(data);
+			
 			if (name && name!="")
 				this.displayedName = name;
 		}
@@ -52,7 +54,7 @@ package org.openscales.core.layer
 			super.destroy();
 		}
 		
-		override public function redraw(fullRedraw:Boolean = true):void {
+		override public function redraw(fullRedraw:Boolean = false):void {
 			
 			if (this.map == null)
 				return;
@@ -77,7 +79,7 @@ package org.openscales.core.layer
 			}
 			else if (this.data)
 			{	
-				this.drawFeatures();
+				this.drawFeatures(fullRedraw);
 			}
 			else
 			{
@@ -87,7 +89,7 @@ package org.openscales.core.layer
 			this._initialized = true;
 		}
 		
-		public function drawFeatures():void{
+		public function drawFeatures(fullRedraw:Boolean = false):void{
 			
 			if(this._featureVector == null) 
 			{
@@ -102,27 +104,14 @@ package org.openscales.core.layer
 				this._featureVector = this._kmlFormat.read(this.data) as Vector.<Feature>;
 				var i:uint;
 				var vectorLength:uint = this._featureVector.length;
-				for (i = 0; i < vectorLength; i++){
-					//If feature is a Label, update bounds of it
-					if(this._featureVector[i] is LabelFeature) {
-						var middlePixel:Pixel = this.map.getMapPxFromLocation(new Location((this._featureVector[i] as LabelFeature).labelPoint.x, (this._featureVector[i] as LabelFeature).labelPoint.y, this.map.projection));
-						var leftPixel:Pixel = new Pixel();
-						var rightPixel:Pixel = new Pixel();
-						leftPixel.x = middlePixel.x - (this._featureVector[i] as LabelFeature).labelPoint.label.width / 2;
-						leftPixel.y = middlePixel.y + (this._featureVector[i] as LabelFeature).labelPoint.label.height / 2;
-						rightPixel.x = middlePixel.x + (this._featureVector[i] as LabelFeature).labelPoint.label.width / 2;
-						rightPixel.y = middlePixel.y - (this._featureVector[i] as LabelFeature).labelPoint.label.height / 2;
-						var rightLoc:Location = this.map.getLocationFromMapPx(rightPixel);
-						var leftLoc:Location = this.map.getLocationFromMapPx(leftPixel);
-						(this._featureVector[i] as LabelFeature).labelPoint.updateBounds(leftLoc.x,leftLoc.y,rightLoc.x,rightLoc.y,this.map.projection);
-					}
-					
+				for (i = 0; i < vectorLength; i++){					
 					this.addFeature(this._featureVector[i],true,true);
 				}
 			}
 			else {
-				this.clear();
-				this.draw();
+				//this.clear();
+				//this.draw();
+				super.redraw(fullRedraw);
 			}			
 		}
 		
@@ -134,7 +123,9 @@ package org.openscales.core.layer
 			// To avoid errors if the server is dead
 			try {
 				this.data = new XML(loader.data);
-				this.drawFeatures();
+				this.drawFeatures(true);
+				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_LOAD_END, this);
+				this.dispatchEvent(evt);
 				/*if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
 					this._kmlFormat.externalProjection = this.projection;
 					this._kmlFormat.internalProjection = this.map.projection;
@@ -179,6 +170,21 @@ package org.openscales.core.layer
 		public function get kmlFormat():KMLFormat
 		{
 			return _kmlFormat;
+		}
+		
+		/**
+		 * Set a style to every features of the KML layer
+		 * Be carefull, this will override  other styles and will take effect on all the features
+		 */
+		override public function set style(value:Style):void
+		{
+			super.style = value;
+			var featureLength:Number = this.features.length - 1;
+			for (;featureLength >= 0; --featureLength)
+			{
+				this.features[featureLength].style = value;
+				this.features[featureLength].draw();
+			}
 		}
 		
 		public function get acceptedFileExtensions():Vector.<String>{

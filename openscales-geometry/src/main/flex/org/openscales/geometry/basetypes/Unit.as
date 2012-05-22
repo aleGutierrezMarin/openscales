@@ -83,18 +83,23 @@ package org.openscales.geometry.basetypes
 		 * 
 		 * @param the scale
 		 * @param the unit, if not specified Unit.DEGREE is used
+		 * @param the screen dpi, if not specified  Unit.DOTS_PER_INCH is used
 		 * @return the resolution
 		 */
-		public static function getResolutionFromScale(scale:Number, units:String = null):Number {
+		public static function getResolutionFromScale(scale:Number, units:String = null, dpi:Number = NaN):Number {
 			
 			if (units == null) {
 				units = Unit.DEGREE;
+			}
+			if (isNaN(dpi))
+			{
+				dpi = Unit.DOTS_PER_INCH;
 			}
 			
 			var normScale:Number = UtilGeometry.normalizeScale(scale);
 			
 			var resolution:Number = 1 / (normScale * Unit.getInchesPerUnit(units)
-				* Unit.DOTS_PER_INCH);
+				* dpi);
 			return resolution;
 		}
 		
@@ -103,11 +108,16 @@ package org.openscales.geometry.basetypes
 		 * 
 		 * @param the resolution
 		 * @param the unit, if not specified Unit.DEGREE is used
+		 * @param the screen dpi, if not specified  Unit.DOTS_PER_INCH is used
 		 * @return the scale
 		 */
-		public static function getScaleFromResolution(resolution:Number, units:String, dpi:Number):Number {
+		public static function getScaleFromResolution(resolution:Number, units:String = null, dpi:Number = NaN):Number {
 			if (units == null) {
 				units = Unit.DEGREE;
+			}
+			if (isNaN(dpi))
+			{
+				dpi = Unit.DOTS_PER_INCH;
 			}
 			
 			var scale:Number = resolution * Unit.getInchesPerUnit(units) * dpi;

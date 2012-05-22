@@ -381,6 +381,13 @@ package org.openscales.fx
 		}
 		
 		/**
+		 * @private
+		 */ 
+		public function get center():Location{
+			return _map.center;
+		}
+		
+		/**
 		 * Width MXML setter
 		 */
 		override public function set width(value:Number):void {

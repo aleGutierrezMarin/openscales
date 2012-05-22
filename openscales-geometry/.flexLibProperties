@@ -4,7 +4,6 @@
     <classEntry path="org.openscales.geometry.Collection"/>
     <classEntry path="org.openscales.geometry.Geometry"/>
     <classEntry path="org.openscales.geometry.ICollection"/>
-    <classEntry path="org.openscales.geometry.LabelPoint"/>
     <classEntry path="org.openscales.geometry.LineString"/>
     <classEntry path="org.openscales.geometry.LinearRing"/>
     <classEntry path="org.openscales.geometry.MultiLineString"/>

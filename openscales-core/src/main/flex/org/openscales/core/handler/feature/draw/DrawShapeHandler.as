@@ -155,6 +155,7 @@ package org.openscales.core.handler.feature.draw
 				//the current drawn linestringfeature
 				this._currentLineStringFeature= new LineStringFeature(_lineString,null, Style.getDefaultSelectedLineStyle(),true);
 				this._currentLineStringFeature.name = "path." + drawLayer.idPath.toString();
+				this._currentLineStringFeature.canHaveArrow = false;
 				drawLayer.idPath++;
 				drawLayer.addFeature(_currentLineStringFeature);
 				
