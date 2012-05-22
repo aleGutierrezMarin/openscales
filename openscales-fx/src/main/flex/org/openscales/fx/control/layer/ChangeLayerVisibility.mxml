@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="org.openscales.fx.control.layer.*"
+		 xmlns:os="org.openscales.fx.control.*" 
+		>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.Layer;
+			
+			/**
+			 * Tooltip^for change visibility button
+			 */
+			[Bindable]
+			public var tooltipChangeVisibility:String =  Catalog.getLocalizationForKey('layercontrol.changevisibility');
+			
+			private var _layer:Layer;
+			
+			public function get layer():Layer{
+				return _layer;
+			}
+						
+			/**
+			 * @inherit
+			 * Set the first value of the checkbox
+			 */
+			public function set layer(value:Layer):void
+			{
+				this._layer = value;
+				if(_layer){
+					this.layerSwitcherCheckBox.selected = this._layer.visible;
+					
+					if(this._layer.map)
+					{
+						this._layer.map.removeEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+						this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+						
+						this._layer.map.removeEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, onLayerVisibilityChange);
+						this._layer.map.addEventListener(LayerEvent.LAYER_VISIBLE_CHANGED, onLayerVisibilityChange);
+					}
+				}
+			}
+			
+			public function onLayerVisibilityChange(event:LayerEvent):void{
+				if(this._layer && this._layer == event.layer){
+					this.layerSwitcherCheckBox.selected = this._layer.visible;
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				this.tooltipChangeVisibility = Catalog.getLocalizationForKey('layercontrol.changevisibility');	
+			}
+			
+			/**
+			* Change the layer visibility
+			* @param event Change event
+			*/
+			public function changeLayerVisibility(event:MouseEvent):void{
+				this._layer.visible = !this._layer.visible;
+				// If the layer was uncheck from the beggining, he hadn't load yet so we need
+				// to redraw it to load it.
+				if(layer.visible){
+					layer.redraw();
+				}
+			} 
+		]]>
+	</fx:Script>
+	
+
+		<s:CheckBox id="layerSwitcherCheckBox" click="changeLayerVisibility(event)" toolTip="{this.tooltipChangeVisibility}" />
+</s:Group>
