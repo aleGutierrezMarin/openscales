@@ -124,7 +124,7 @@
 			[Bindable]
 			private var _showGeodeticResults:Boolean = false;
 			[Bindable]
-			private var _showNoResultMsg:Boolean = false;
+			public var _showNoResultMsg:Boolean = false;
 			
 			[Bindable]
 			private var _resultsProvider:ArrayCollection = new ArrayCollection();
