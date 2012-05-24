@@ -1,6 +1,8 @@
 // ActionScript file
 package org.openscales.core.layer.capabilities
 {
+	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 
@@ -83,11 +85,13 @@ package org.openscales.core.layer.capabilities
 				layerCapabilities.put("Title", value);
 
 				value = layer.Format.toString();
-				while (value.search(" ") > 0) {
-					value = value.replace(" ",",");
+				if(value && value != ""){
+					while (value.search(" ") > 0) {
+						value = value.replace(" ",",");
+					}
+					layerCapabilities.put("Format", value);
+					this._format = value;
 				}
-				layerCapabilities.put("Format", value);
-				this._format = value;
 				
 				var srsNodes:XMLList = layer.CRS;
 				var csSrsList:String = "";
@@ -107,10 +111,10 @@ package org.openscales.core.layer.capabilities
 				value = layer.KeywordList;
 				layerCapabilities.put("KeywordList", value);
 				
-				left = new Number(layer.BoundingBox.westBoundLongitude);
-				bottom = new Number(layer.BoundingBox.southBoundLatitude);
-				right = new Number(layer.BoundingBox.eastBoundLongitude);
-				top = new Number(layer.BoundingBox.northBoundLatitude);
+				left = new Number(layer.EX_GeographicBoundingBox.westBoundLongitude);
+				bottom = new Number(layer.EX_GeographicBoundingBox.southBoundLatitude);
+				right = new Number(layer.EX_GeographicBoundingBox.eastBoundLongitude);
+				top = new Number(layer.EX_GeographicBoundingBox.northBoundLatitude);
 				
 				// in decimal degrees => Geometry.DEFAULT_SRS_CODE
 				layerCapabilities.put("EX_GeographicBoundingBox", new Bounds(left,bottom,right,top,Geometry.DEFAULT_SRS_CODE));
@@ -132,6 +136,34 @@ package org.openscales.core.layer.capabilities
 			return this._capabilities;
 		}
 
+		/**
+		 * This method instanciate the layer listed in capabilities whose Name tag match the <code>name</code> parameter. Be aware that the <code>Layer.url</code> property won't be set since this information is not hold by capabilities.
+		 * 
+		 * @param The layer name as contained in capabilities
+		 * @return A WMS instance where format is image/png or the first capabilities format if image/png is not supported. Also projection is EPSG:4326 or first projection supported if 4326 is not in capabilities. 
+		 */ 
+		override public function instanciate(name:String):Layer{
+			if(!_capabilities) return null;
+			var layerData:HashMap = _capabilities.getValue(name);
+			if(!layerData)return null;
+			var identifier:String = layerData.getValue("Name");
+			var formats:String = layerData.getValue("Format")
+			var format:String = formats.match(/image(\/png)/gi).length > 0 ? "image/png" : formats.split(",")[0];
+			var crss:String = layerData.getValue("CRS");
+			var crs:String = crss.match(/EPSG:4326/gi).length > 0 ? "EPSG:4326" : crss.split(",")[0];
+			
+			var wmsLayer:WMS = new WMS(identifier,"",identifier,"",format);
+			wmsLayer.displayedName = layerData.getValue("Title");
+			wmsLayer.version = "1.3.0";
+			wmsLayer.format = format;
+			wmsLayer.projection = crs;
+			wmsLayer.abstract = layerData.getValue("Abstract");
+			wmsLayer.maxExtent = layerData.getValue("EX_GeographicBoundingBox");
+			wmsLayer.transparent = true;
+			return wmsLayer;
+			
+		}
+		
 		/**
 		 * Method to remove the additional namespaces of the XML capabilities file.
 		 *
