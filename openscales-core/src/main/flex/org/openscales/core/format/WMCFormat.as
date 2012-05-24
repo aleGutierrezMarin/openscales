@@ -262,7 +262,8 @@ package org.openscales.core.format
 			{
 				layerToAdd = this.parseLayerExtension(layer.*::Extension[0], layerToAdd, service);
 			}
-			layerToAdd.visible = !hidden;
+			if (layerToAdd)
+				layerToAdd.visible = !hidden;
 			return layerToAdd;
 		}
 		

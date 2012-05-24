@@ -47,7 +47,7 @@ package org.openscales.fx.autocomplete
 		}
 		
 		public var maxRows:Number = 6;
-		public var minChars:Number = 1;
+		public var minChars:Number = 3;
 		public var prefixOnly:Boolean = true;
 		public var requireSelection:Boolean = false;
 		public var countryCodeSelected:String = "";
