@@ -638,6 +638,11 @@
 				this._completionProvider = results;
 				this.dispatchEvent(new SearchEvent(SearchEvent.AUTOCOMPLETE_END));
 			}
+			
+			protected function resetCompletionResults():void
+			{
+				this._completionProvider = new ArrayCollection();
+			}
 				
 			public function getSearchResults():ArrayCollection {
 				return this._resultsProvider;
