@@ -80,6 +80,8 @@ package org.openscales.core.style.marker
 			super(6, opacity, 0);
 			this._xOffset = xOffset;
 			this._yOffset = yOffset;
+			this._xUnit = xUnit;
+			this._yUnit = yUnit;
 			this._givenTemporaryMarker = new Vector.<DisplayObject>();
 			this._url = url;
 			this._proxy = proxy;
