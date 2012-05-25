@@ -1,4 +1,5 @@
 package org.openscales.core.feature {
+	import flash.display.DisplayObject;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
@@ -32,7 +33,7 @@ package org.openscales.core.feature {
 		 */
 		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
 		{
-			if (symbolizer is PolygonSymbolizer || symbolizer is TextSymbolizer)
+			if (symbolizer is PolygonSymbolizer || symbolizer is TextSymbolizer || symbolizer is PointSymbolizer)
 				return true;
 			else
 				return false;
@@ -101,8 +102,10 @@ package org.openscales.core.feature {
 			y = dY - this.geometry.bounds.center.y / resolution;
 
 			if (symbolizer.graphic) {
-
-				this.addChild(symbolizer.graphic.getDisplayObject(this));
+				var o:DisplayObject = symbolizer.graphic.getDisplayObject(this);
+				o.x = x;
+				o.y = y;
+				this.addChild(o);
 			}
 		}
 

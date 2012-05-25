@@ -14,11 +14,17 @@
 			import org.openscales.core.events.SearchEvent;
 			import org.openscales.core.feature.CustomMarker;
 			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.request.OpenLSRequest;
 			import org.openscales.core.security.ISecurity;
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.Style;
+			import org.openscales.core.style.marker.CustomMarker;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
 			import org.openscales.fx.autocomplete.event.AutoCompleteEvent;
+			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.geometry.basetypes.Location;
 			
@@ -118,7 +124,7 @@
 			[Bindable]
 			private var _showGeodeticResults:Boolean = false;
 			[Bindable]
-			private var _showNoResultMsg:Boolean = false;
+			public var _showNoResultMsg:Boolean = false;
 			
 			[Bindable]
 			private var _resultsProvider:ArrayCollection = new ArrayCollection();
@@ -631,6 +637,11 @@
 			protected function setCompletionResults(results:ArrayCollection):void {
 				this._completionProvider = results;
 				this.dispatchEvent(new SearchEvent(SearchEvent.AUTOCOMPLETE_END));
+			}
+			
+			protected function resetCompletionResults():void
+			{
+				this._completionProvider = new ArrayCollection();
 			}
 				
 			public function getSearchResults():ArrayCollection {
@@ -1203,7 +1214,7 @@
 					this._showNoResultMsg = true;
 				}
 				else {
-					if (_resultsProvider.length == 1 || _resultsProvider[0].accuracy>=0.85) {
+					if (_resultsProvider.length == 1 || _resultsProvider[0].accuracy>=0.9) {
 						// only one result, so center at location automatically
 						var latitude:Number = parseFloat(_resultsProvider[0].lat);
 						var longitude:Number = parseFloat(_resultsProvider[0].lon);
@@ -1349,18 +1360,30 @@
 			}
 			
 			private function addMarker(pos:Location):void {
-				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _markerIcon(), pos, null, _xOffset, _yOffset);
-				marker.useHandCursor = false;
-				this._resultLayer.addFeature(marker,true,false);
+				var style:Style = new Style();
+				style.name = "OpenLS Result Style";
+				var rule:Rule = new Rule();
+				rule.name = "OpenLS Result rule";
+				var cm:org.openscales.core.style.marker.CustomMarker = new org.openscales.core.style.marker.CustomMarker();
+				cm.clip = new _markerIcon();
+				var symbolizer:PointSymbolizer = new PointSymbolizer(cm);
+				rule.symbolizers.push(symbolizer);
+				style.rules.push(rule);
+				
+				var pointFeature:PointFeature = new PointFeature(new org.openscales.geometry.Point(pos.x, pos.y, pos.projection),null, style)
+				//var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _markerIcon(), pos, null, _xOffset, _yOffset);
+				//marker.useHandCursor = false;
+				pointFeature.useHandCursor = false;
+				this._resultLayer.addFeature(pointFeature,true,false);
 
 				if (_blinkMarker)
 				{
-					var animate:Animate = new Animate(marker);
+					var animate:Animate = new Animate(pointFeature);
 					animate.repeatCount = 10;
 					animate.repeatBehavior = "reverse";
 					animate.duration = 200;
 					var motion:MotionPath = new MotionPath("alpha");
-					var initAlpha:Number = marker.clip.alpha;
+					var initAlpha:Number = pointFeature.alpha;
 					var keyframe1:Keyframe =  new Keyframe(0,initAlpha);
 					var keyframe2:Keyframe =  new Keyframe(100,0);
 					var keyFrames:Vector.<Keyframe> = new Vector.<Keyframe>();
@@ -1375,14 +1398,14 @@
 			}
 			
 			private function addReverseMarker(pos:Location, index:uint):void {
-				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _reverseMarkerIcon(), pos, null, _xOffset, _yOffset); 
+				var marker:org.openscales.core.feature.CustomMarker = org.openscales.core.feature.CustomMarker.createDisplayObjectMarker(new _reverseMarkerIcon(), pos, null, _xOffset, _yOffset); 
 				this._resultsProvider[index].feature = marker;
 				this._resultsProvider[index].selected = false;
 				this._resultLayer.addFeature(marker,true,false);
 			}
 			
 			private function addSelectedMarker(pos:Location, index:uint):void {
-				var marker:CustomMarker = CustomMarker.createDisplayObjectMarker(new _selectedMarkerIcon(), pos, null, _xSelectedOffset, _ySelectedOffset); 
+				var marker:org.openscales.core.feature.CustomMarker = org.openscales.core.feature.CustomMarker.createDisplayObjectMarker(new _selectedMarkerIcon(), pos, null, _xSelectedOffset, _ySelectedOffset); 
 				this._resultsProvider[index].feature = marker;
 				this._resultsProvider[index].selected = true;
 				this._resultLayer.addFeature(marker,true,false);
