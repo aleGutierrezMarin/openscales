@@ -168,14 +168,16 @@ This control allows to display and browse an image served by an IIPImage server.
 			 * @private
 			 */ 
 			protected function onAddedToStage(event:Event):void{
-				stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenEvent);
+				if (stage)
+					stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenEvent);
 			}
 			
 			/**
 			 * @private
 			 */
 			protected function onRemovedFromStage(event:Event):void{
-				stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenEvent);
+				if (stage)
+					stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenEvent);
 			}
 			
 			/**
