@@ -8,6 +8,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
 			
 			import org.openscales.core.Map;
 			import org.openscales.core.events.I18NEvent;
@@ -47,7 +48,7 @@
 			 * 
 			 * Units of the _displayProjection
 			 */ 
-			private var _srsUnits:String;
+			public var srsUnits:String;
 			
 		
 			private var _prefix:String = "";
@@ -168,7 +169,7 @@
 				}
 				
 				this.selectedIndexCrs = selectedIndex;
-				_srsUnits = ProjProjection.getProjProjection(_displayProjection).projParams.units;
+				srsUnits = ProjProjection.getProjProjection(_displayProjection).projParams.units;
 
 				this._init = true;
 				
@@ -195,11 +196,12 @@
 				if(!_displayProjection)
 					_displayProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 				// Getting units for this SRS
-				_srsUnits = _displayProjection.projParams.units;
+				srsUnits = _displayProjection.projParams.units;
 				
 				// Feeding units combo box
 				feedUnitsComboBox();
 				this.mousePositionLabel = "";
+				this.dispatchEvent(new Event(Event.CHANGE));
 			}
 			
 			/**
@@ -254,7 +256,7 @@
 			{
 				var items:ArrayCollection;
 				
-				switch(_srsUnits){
+				switch(srsUnits){
 					case Unit.METER:
 						items = new ArrayCollection([
 							{data:Unit.KILOMETER,label:Catalog.getLocalizationForKey("mouseposition.kilometers")},
@@ -320,7 +322,7 @@
 					}
 					
 					
-					if(_srsUnits == "dd" || _srsUnits == Unit.DEGREE)
+					if(srsUnits == "dd" || srsUnits == Unit.DEGREE)
 					{
 						if (this._useDMS) {
 							_displayMetricUnits == Unit.SEXAGESIMAL;
@@ -332,7 +334,7 @@
 							this.latitude = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
 						}
 					}
-					else if(_srsUnits == "m")
+					else if(srsUnits == "m")
 					{
 						this.longitude = this.roundCoordinates(lonLat.lon,"lon").toFixed(this._digitsLon);
 						this.latitude = this.roundCoordinates(lonLat.lat,"lat").toFixed(this._digitsLat);
@@ -575,7 +577,7 @@
 						if(value == (tmp[i] as String))
 						{
 							this._displayProjection = proj;
-							this._srsUnits = proj.projParams.units;
+							this.srsUnits = proj.projParams.units;
 							this.selectedIndexCrs = i;
 							this.feedUnitsComboBox();
 							displayProjectionInList = true;

@@ -171,6 +171,10 @@ package org.openscales.core.layer
 			
 			if (centerChangedCache)
 			{
+				if (!this._previousCenter)
+				{
+					this._previousCenter = this.map.center.clone();
+				}
 				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
 				var deltaLat:Number = this.map.center.lat - this._previousCenter.lat;
 				var deltaX:Number = deltaLon/this.map.resolution.value;
