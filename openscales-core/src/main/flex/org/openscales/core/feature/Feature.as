@@ -60,6 +60,8 @@ package org.openscales.core.feature {
 		private var _originalStyle:Style = null;
 		private var _selectable:Boolean = true;
 		
+		private var _mouseDown:Boolean = false;
+		
 		//GAB
 		private var _dateCreation:String="";
 		//End GAB
@@ -157,7 +159,7 @@ package org.openscales.core.feature {
 		public function registerListeners():void {
 			this.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseHover);
 			this.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
-			this.addEventListener(MouseEvent.CLICK, this.onMouseClick);
+			//this.addEventListener(MouseEvent.CLICK, this.onMouseClick);
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, this.onMouseDoubleClick);
 			this.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 			this.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
@@ -170,7 +172,7 @@ package org.openscales.core.feature {
 		public function unregisterListeners():void {
 			this.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseHover);
 			this.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
-			this.removeEventListener(MouseEvent.CLICK, this.onMouseClick);
+			//this.removeEventListener(MouseEvent.CLICK, this.onMouseClick);
 			this.removeEventListener(MouseEvent.DOUBLE_CLICK, this.onMouseDoubleClick);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 			this.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
@@ -363,6 +365,7 @@ package org.openscales.core.feature {
 		 */
 		public function onMouseDown(pevt:MouseEvent):void {
 			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEDOWN, this));
+			this._mouseDown = true;
 		}
 
 		/**
@@ -370,7 +373,19 @@ package org.openscales.core.feature {
 		 */
 		public function onMouseUp(pevt:MouseEvent):void {
 			if(pevt)
-				this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
+			{
+				if (this._mouseDown)
+				{
+					this._mouseDown = false;
+					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
+					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_CLICK, this, pevt.ctrlKey));
+				}
+				else
+				{
+					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
+				}
+			}
+				
 			else
 				this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, false));
 		}
