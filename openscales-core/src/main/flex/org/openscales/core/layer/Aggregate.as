@@ -49,8 +49,8 @@ package org.openscales.core.layer
 			if(!layer)return false;
 			if(!this.map)return false;
 			if(!this.visible)return false;
-			if(this.minResolution && resolution.value<this.minResolution.value)return false;
-			if(this.maxResolution && resolution.value>this.maxResolution.value)return false;
+			if(this.minResolution && resolution.value<this.minResolution.reprojectTo(resolution.projection).value)return false;
+			if(this.maxResolution && resolution.value>this.maxResolution.reprojectTo(resolution.projection).value)return false;
 			if(!layer.isAvailableForBounds(this.maxExtent,resolution))return false;		
 			return true;
 		}
@@ -156,7 +156,7 @@ package org.openscales.core.layer
 		 * That method is called before a layer is added to the Aggregate. By default, it sets layers's displayInLayerManager property to false
 		 */ 
 		protected function prepareLayer(layer:Layer):void{
-			layer.displayInLayerManager = false;
+			//layer.displayInLayerManager = false;
 		}
 		
 		/**
