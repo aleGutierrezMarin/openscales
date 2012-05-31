@@ -7,6 +7,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.events.IndexChangedEvent;
 			
 			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.events.I18NEvent;
@@ -33,6 +34,7 @@
 			import spark.effects.animation.Keyframe;
 			import spark.effects.animation.MotionPath;
 			import spark.effects.interpolation.NumberInterpolator;
+			import spark.events.IndexChangeEvent;
 			
 			[Embed(source="/assets/images/marker-blue.png")]
 			private var _markerIcon:Class;
@@ -1214,7 +1216,7 @@
 					this._showNoResultMsg = true;
 				}
 				else {
-					if (_resultsProvider.length == 1 || _resultsProvider[0].accuracy>=0.9) {
+					if (_resultsProvider.length == 1 || _resultsProvider[1].accuracy < 0.9) {
 						// only one result, so center at location automatically
 						var latitude:Number = parseFloat(_resultsProvider[0].lat);
 						var longitude:Number = parseFloat(_resultsProvider[0].lon);
@@ -1620,6 +1622,36 @@
 					
 				}
 			}
+			
+			[Bindable]
+			private var _regionSelectedIndex:int = 0;
+			
+			private function onDepartmentChange(event:IndexChangeEvent):void
+			{
+				// If we select a department without a region
+				if (this._regionSelectedIndex == 0)
+				{
+					var currentDepartments:ArrayCollection = this.frenchDepartements.getItemAt(0) as ArrayCollection;
+					var currentDepartment:Object = currentDepartments.getItemAt(event.newIndex);
+					
+					// Find the correct List for this department
+					var i:int = 1;
+					
+					while (i < this.frenchDepartements.length)
+					{
+						for each (var dept:Object in this.frenchDepartements.getItemAt(i))
+						{
+							if (dept.label == currentDepartment.label &&
+									dept.data == currentDepartment.data)
+							{
+								this._regionSelectedIndex = i;
+								
+							}
+						}
+						i++;
+					}
+				}
+			}
 
 			
 		]]>
@@ -1676,7 +1708,8 @@
 											requireSelection="true"/>
 							<s:DropDownList id="regionFilter" visible="{this.territoireFilter.selectedIndex==1}" includeInLayout="{this.territoireFilter.selectedIndex==1}"
 											dataProvider="{this.frenchRegions}"
-											requireSelection="true"/>
+											requireSelection="true"
+											/>
 							<s:DropDownList id="departementFilter" visible="{this.territoireFilter.selectedIndex==1}" includeInLayout="{this.territoireFilter.selectedIndex==1}"
 											dataProvider="{this.frenchDepartements.getItemAt(this.regionFilter.selectedIndex)}"
 											requireSelection="true"/>
