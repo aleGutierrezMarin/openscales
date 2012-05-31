@@ -237,39 +237,38 @@
 			[Bindable]
 			public var frenchTerritoires:ArrayCollection = new ArrayCollection (
 				[	{label:"Territoire...", data:"ALL"},
-					{label:"France métropolitaine", data:"FXX"},
-					{label:"Guadeloupe", data:"GLP"},
-					{label:"Guyane Française", data:"GUF"},
-					{label:"Martinique", data:"MTQ"},
-					{label:"Mayotte", data:"MYT"},
-					{label:"Réunion", data:"REU"},
-					{label:"Saint Pierre et Miquelon", data:"SPM"}]);
+					{label:"France métropolitaine", data:"67;68;24;33;40;47;64;03;15;43;63;14;50;61;21;58;71;89;22;29;35;56;18;28;36;37;41;45;08;10;51;52;2A;2B;25;39;70;90;27;76;75;77;78;91;92;93;94;95;11;30;34;48;66;19;23;87;54;55;57;88;09;12;31;32;46;65;81;82;59;62;44;49;53;72;85;02;60;80;16;17;79;86;04;05;06;13;83;84;01;07;26;38;42;69;73;74"},
+					{label:"Guadeloupe", data:"971"},
+					{label:"Guyane Française", data:"973"},
+					{label:"Martinique", data:"972"},
+					{label:"Mayotte", data:"976"},
+					{label:"Réunion", data:"974"}]);
 			
 			[Bindable]
 			public var frenchRegions:ArrayCollection = new ArrayCollection (
 				[	{label:"Région...", data:"ALL"},
-					{label:"Alsace", data:"42"},
-					{label:"Aquitaine", data:"72"},
-					{label:"Auvergne", data:"83"},
-					{label:"Basse-Normandie", data:"25"},
-					{label:"Bourgogne", data:"26"},
-					{label:"Bretagne", data:"53"},
-					{label:"Centre", data:"24"},
-					{label:"Champagne-Ardenne", data:"21"},
-					{label:"Corse", data:"94"},
-					{label:"Franche-Comté", data:"43"},
-					{label:"Haute-Normandie", data:"23"},
-					{label:"Île-de-France", data:"11"},
-					{label:"Languedoc-Roussillon", data:"91"},
-					{label:"Limousin", data:"74"},
-					{label:"Lorraine", data:"41"},
-					{label:"Midi-Pyrénées", data:"73"},
-					{label:"Nord-Pas-de-Calais", data:"31"},
-					{label:"Pays de la Loire", data:"52"},
-					{label:"Picardie", data:"22"},
-					{label:"Poitou-Charentes", data:"54"},
-					{label:"Provence-Alpes-Côte d'Azur", data:"93"},
-					{label:"Rhône-Alpes", data:"82"}]);
+					{label:"Alsace", data:"67;68"},
+					{label:"Aquitaine", data:"24;33;40;47;64"},
+					{label:"Auvergne", data:"03;15;43;63"},
+					{label:"Basse-Normandie", data:"14;50;61"},
+					{label:"Bourgogne", data:"21;58;71;89"},
+					{label:"Bretagne", data:"22;29;35;56"},
+					{label:"Centre", data:"18;28;36;37;41;45"},
+					{label:"Champagne-Ardenne", data:"08;10;51;52"},
+					{label:"Corse", data:"2A;2B"},
+					{label:"Franche-Comté", data:"25;39;70;90"},
+					{label:"Haute-Normandie", data:"27;76"},
+					{label:"Île-de-France", data:"75;77;78;91;92;93;94;95"},
+					{label:"Languedoc-Roussillon", data:"11;30;34;48;66"},
+					{label:"Limousin", data:"19;23;87"},
+					{label:"Lorraine", data:"54;55;57;88"},
+					{label:"Midi-Pyrénées", data:"09;12;31;32;46;65;81;82"},
+					{label:"Nord-Pas-de-Calais", data:"59;62"},
+					{label:"Pays de la Loire", data:"44;49;53;72;85"},
+					{label:"Picardie", data:"02;60;80"},
+					{label:"Poitou-Charentes", data:"16;17;79;86"},
+					{label:"Provence-Alpes-Côte d'Azur", data:"04;05;06;13;83;84"},
+					{label:"Rhône-Alpes", data:"01;07;26;38;42;69;73;74"}]);
 			
 			[Bindable]
 			public var frenchDepartements:ArrayCollection = new ArrayCollection([
@@ -851,7 +850,7 @@
 					if (filters) {
 						for (var i:int=0; i<filters.length; i++) {
 							var filter:Array = filters[i];
-							_request.addPlaceFilter(filter[0], filter[1]);
+							//_request.addPlaceFilter(filter[0], filter[1]);
 						}
 					}
 					_request.send();
@@ -885,13 +884,13 @@
 						_request.envelopeBounds = this.map.extent;
 					}
 					if (territoireQuery && territoireQuery!="ALL") {
-						_request.addPlaceFilter("Territoire", territoireQuery);
+						//_request.addPlaceFilter("Territoire", territoireQuery);
 					}
 					if (regionQuery && regionQuery!="ALL") {
-						_request.addPlaceFilter("Region", regionQuery);
+						//_request.addPlaceFilter("Region", regionQuery);
 					}
 					if (departementQuery && departementQuery!="ALL") {
-						_request.addPlaceFilter("Departement", departementQuery);
+						//_request.addPlaceFilter("Departement", departementQuery);
 					}
 					this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
@@ -918,13 +917,13 @@
 						_request.envelopeBounds = this.map.extent;
 					}
 					if (territoireQuery && territoireQuery!="ALL") {
-						_request.addPlaceFilter("Territoire", territoireQuery);
+						//_request.addPlaceFilter("Territoire", territoireQuery);
 					}
 					if (regionQuery && regionQuery!="ALL") {
-						_request.addPlaceFilter("Region", regionQuery);
+						//_request.addPlaceFilter("Region", regionQuery);
 					}
 					if (departementQuery && departementQuery!="ALL") {
-						_request.addPlaceFilter("Departement", departementQuery);
+						//_request.addPlaceFilter("Departement", departementQuery);
 					}
 					_request.proxy = this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
@@ -951,16 +950,16 @@
 						_request.envelopeBounds = this.map.extent;
 					}
 					if (territoireQuery && territoireQuery!="ALL") {
-						_request.addPlaceFilter("Territoire", territoireQuery);
+						//_request.addPlaceFilter("Territoire", territoireQuery);
 					}
 					if (regionQuery && regionQuery!="ALL") {
-						_request.addPlaceFilter("Region", regionQuery);
+						//_request.addPlaceFilter("Region", regionQuery);
 					}
 					if (departementQuery && departementQuery!="ALL") {
-						_request.addPlaceFilter("Departement", departementQuery);
+						//_request.addPlaceFilter("Departement", departementQuery);
 					}
 					if (natureQuery && natureQuery!="") {
-						_request.addPlaceFilter("nature", natureQuery);
+						//_request.addPlaceFilter("nature", natureQuery);
 					}
 					this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
@@ -987,19 +986,19 @@
 						_request.envelopeBounds = this.map.extent;
 					}
 					if (territoireQuery && territoireQuery!="ALL") {
-						_request.addPlaceFilter("Territoire", territoireQuery);
+						//_request.addPlaceFilter("Territoire", territoireQuery);
 					}
 					if (regionQuery && regionQuery!="ALL") {
-						_request.addPlaceFilter("Region", regionQuery);
+						//_request.addPlaceFilter("Region", regionQuery);
 					}
 					if (departementQuery && departementQuery!="ALL") {
-						_request.addPlaceFilter("Departement", departementQuery);
+						//_request.addPlaceFilter("Departement", departementQuery);
 					}
 					if (prefixQuery && prefixQuery!="") {
-						_request.addPlaceFilter("Feuille", prefixQuery);
+						//_request.addPlaceFilter("Feuille", prefixQuery);
 					}
 					if (sectionQuery && sectionQuery!="") {
-						_request.addPlaceFilter("Section", sectionQuery);
+						//_request.addPlaceFilter("Section", sectionQuery);
 					}
 					_request.proxy = this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
@@ -1026,16 +1025,16 @@
 						_request.envelopeBounds = this.map.extent;
 					}
 					if (territoireQuery && territoireQuery!="ALL") {
-						_request.addPlaceFilter("Territoire", territoireQuery);
+						//_request.addPlaceFilter("Territoire", territoireQuery);
 					}
 					if (regionQuery && regionQuery!="ALL") {
-						_request.addPlaceFilter("Region", regionQuery);
+						//_request.addPlaceFilter("Region", regionQuery);
 					}
 					if (departementQuery && departementQuery!="ALL") {
-						_request.addPlaceFilter("Departement", departementQuery);
+						//_request.addPlaceFilter("Departement", departementQuery);
 					}
 					if (numberQuery && numberQuery!="") {
-						_request.addPlaceFilter("GeodeticNumber", numberQuery);
+						//_request.addPlaceFilter("GeodeticNumber", numberQuery);
 					}
 					_request.proxy = this.map.getProxy(this.geocodeServiceUrl);
 					_request.send();
