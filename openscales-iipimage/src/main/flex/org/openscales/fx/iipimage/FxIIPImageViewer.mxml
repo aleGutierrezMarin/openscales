@@ -230,7 +230,7 @@ This control allows to display and browse an image served by an IIPImage server.
 			}
 
 			/**
-			 * The displayed image file name 
+			 * Full path to the image on the server 
 			 */
 			public function get image():String
 			{
