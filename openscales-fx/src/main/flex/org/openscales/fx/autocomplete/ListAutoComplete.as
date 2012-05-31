@@ -12,6 +12,12 @@ package org.openscales.fx.autocomplete
 	public class ListAutoComplete extends List
 	{
 		
+		public function ListAutoComplete()
+		{
+			super();
+			super.setStyle('horizontalScrollPolicy', 'ScrollPolicy.OFF');
+		}
+		
 		override protected function keyDownHandler(event:KeyboardEvent):void {
 			
 			super.keyDownHandler(event);
