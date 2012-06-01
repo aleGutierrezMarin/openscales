@@ -399,6 +399,7 @@
 				]),
 				new ArrayCollection ([
 					{label:"Département...", data:"ALL"},
+					{label:"21 - Côte-d'Or", data:"21"},
 					{label:"58 - Nièvre", data:"58"},
 					{label:"71 - Saône-et-Loire", data:"71"},
 					{label:"89 - Yonne", data:"89"}
