@@ -17,10 +17,13 @@
 		<s:State name="showdesc"/>
 	</s:states>
 	
-	<s:Label color="#5E5E5E"
+	<s:Label id="labelRenderer" 
+			 color="#5E5E5E"
 			 color.selected="#5E5E5E"
 			 color.hovered="#000000"
 			 left="4" right="0" top="4" bottom="4" 
-			 text="{(data as ArrayCollection).getItemAt(0)}"/>
+			 text="{(data as ArrayCollection).getItemAt(0)}"
+			 width="380"
+			 maxDisplayedLines="1"/>
 	
 </s:ItemRenderer>
