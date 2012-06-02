@@ -109,6 +109,10 @@ package org.openscales.core.format
 			{
 				hidden = true;
 			}
+			if(layer.@queryable.length() > 0 && layer.@queryable == "0")
+			{
+				return null;
+			}
 			if (layer.*::Server.length() > 0)
 			{
 				var server:XML = layer.*::Server[0];
