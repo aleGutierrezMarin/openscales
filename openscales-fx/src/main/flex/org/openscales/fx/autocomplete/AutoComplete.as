@@ -348,6 +348,7 @@ package org.openscales.fx.autocomplete
 		}
 		
 		private function close(event:Event):void{
+			this.collection.removeAll();
 			popUp.displayPopUp = false;
 		}
 		
