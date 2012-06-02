@@ -1472,6 +1472,8 @@
 				this._showParcelResults = false;
 				this._showGeodeticResults = false;
 				this._showNoResultMsg = false;
+				if(this._request)
+					this._request.destroy();
 			}
 			
 			override public function onMapLanguageChange(event:I18NEvent):void {
