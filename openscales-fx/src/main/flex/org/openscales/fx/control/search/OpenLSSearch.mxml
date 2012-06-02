@@ -1617,8 +1617,13 @@
 				}
 				else
 				{
+					
+					autocompleteCountrycode = "";
+					simpleSearch(query);
+					/*
 					autocompleteCountrycode = countryCode;
-					simpleSearchWithFilters(query, countryCode, null);
+					simpleSearchWithFilters(query, countryCode, null);*/
+					
 					
 				}
 			}
