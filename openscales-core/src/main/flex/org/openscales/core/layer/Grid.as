@@ -539,6 +539,8 @@ package org.openscales.core.layer
 				newTransMatrix.ty += (offSet.y );
 				this.transform.matrix = newTransMatrix.clone();
 			}
+			this.x = this.x;
+			this.y = this.y;
 		}
 		
 		/**
@@ -887,8 +889,8 @@ package org.openscales.core.layer
 			tileoffsety *= stretchedHeight/this.tileHeight;
 			
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
-			this.x += tileoffsetx;
-			this.y += tileoffsety;
+			this.x += Math.round(tileoffsetx);
+			this.y += Math.round(tileoffsety);
 			tileoffsetx = 0;
 			tileoffsety = 0;
 			var startX:Number = tileoffsetx; 

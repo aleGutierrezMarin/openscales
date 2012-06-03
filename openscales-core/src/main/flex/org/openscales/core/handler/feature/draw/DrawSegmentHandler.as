@@ -14,6 +14,7 @@ package org.openscales.core.handler.feature.draw
 	
 	public class DrawSegmentHandler extends DrawPathHandler
 	{
+		
 		public function DrawSegmentHandler(map:Map=null, active:Boolean=false, drawLayer:VectorLayer=null)
 		{
 			super(map, active, drawLayer);
@@ -21,6 +22,7 @@ package org.openscales.core.handler.feature.draw
 		
 		
 		override protected function drawLine(event:MapEvent=null):void{
+			
 			this._dblClickHandler.active = false;
 			drawLayer.scaleX=1;
 			drawLayer.scaleY=1;
