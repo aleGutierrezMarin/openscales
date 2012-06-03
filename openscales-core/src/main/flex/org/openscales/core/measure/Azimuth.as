@@ -32,7 +32,7 @@ package org.openscales.core.measure
 		private var _lastUnit:String = null;
 		
 		private var _accuracies:HashMap;
-		
+		private var _lastClick:Pixel;
 		/**
 		 * Constructor
 		 */
@@ -81,6 +81,11 @@ package org.openscales.core.measure
 			}
 		}
 		override protected function drawLine(event:MapEvent=null):void {
+			
+			if (_lastClick && _lastClick.x == this.map.mouseX && _lastClick.y == this.map.mouseY)
+				return;
+			_lastClick = new Pixel(this.map.mouseX, this.map.mouseY);
+			
 			this.clearFeature();
 			super.drawLine(event);
 			var mEvent:MeasureEvent = null;
