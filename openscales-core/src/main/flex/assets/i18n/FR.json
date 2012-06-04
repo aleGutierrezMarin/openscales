@@ -7,6 +7,8 @@
    "cancel":"Annuler",
    "yes":"Oui",
    "no":"Non",
+   "close":"Fermer",
+   "validate":"Valider",
    
    "component.iconify": "Iconifier",
    "component.toggle": "Agrandir",

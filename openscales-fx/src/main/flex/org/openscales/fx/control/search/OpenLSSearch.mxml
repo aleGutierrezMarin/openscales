@@ -1129,6 +1129,7 @@
 			}
 			
 			private function onServiceFault(event:Event):void {
+				this.map.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_ERROR));
 			}
 			
 			protected function onServiceResult(event:Event):void {
@@ -1255,9 +1256,6 @@
 							}
 						}
 					}
-					
-					
-					
 					
 					// If we have one result or if the first result only is > betterAccuracy
 					if (go) 
