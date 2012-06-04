@@ -851,7 +851,7 @@
 					if (filters) {
 						for (var i:int=0; i<filters.length; i++) {
 							var filter:Array = filters[i];
-							//_request.addPlaceFilter(filter[0], filter[1]);
+							_request.addPlaceFilter(filter[0], filter[1]);
 						}
 					}
 					_request.send();
