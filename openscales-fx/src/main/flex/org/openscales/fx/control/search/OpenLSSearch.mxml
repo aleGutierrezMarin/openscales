@@ -239,7 +239,7 @@
 			[Bindable]
 			public var frenchTerritoires:ArrayCollection = new ArrayCollection (
 				[	{label:"Territoire...", data:"ALL"},
-					{label:"France métropolitaine", data:"67;68;24;33;40;47;64;03;15;43;63;14;50;61;21;58;71;89;22;29;35;56;18;28;36;37;41;45;08;10;51;52;2A;2B;25;39;70;90;27;76;75;77;78;91;92;93;94;95;11;30;34;48;66;19;23;87;54;55;57;88;09;12;31;32;46;65;81;82;59;62;44;49;53;72;85;02;60;80;16;17;79;86;04;05;06;13;83;84;01;07;26;38;42;69;73;74"},
+					{label:"France Métropolitaine", data:"67;68;24;33;40;47;64;03;15;43;63;14;50;61;21;58;71;89;22;29;35;56;18;28;36;37;41;45;08;10;51;52;2A;2B;25;39;70;90;27;76;75;77;78;91;92;93;94;95;11;30;34;48;66;19;23;87;54;55;57;88;09;12;31;32;46;65;81;82;59;62;44;49;53;72;85;02;60;80;16;17;79;86;04;05;06;13;83;84;01;07;26;38;42;69;73;74"},
 					{label:"Guadeloupe", data:"971"},
 					{label:"Guyane Française", data:"973"},
 					{label:"Martinique", data:"972"},
@@ -853,7 +853,7 @@
 					if (filters) {
 						for (var i:int=0; i<filters.length; i++) {
 							var filter:Array = filters[i];
-							//_request.addPlaceFilter(filter[0], filter[1]);
+							_request.addPlaceFilter(filter[0], filter[1]);
 						}
 					}
 					_request.send();
@@ -1666,10 +1666,10 @@
 				{
 					
 					autocompleteCountrycode = "";
-					simpleSearch(query);
-					/*
-					autocompleteCountrycode = countryCode;
-					simpleSearchWithFilters(query, countryCode, null);*/
+					//simpleSearch(query);
+					
+					//autocompleteCountrycode = countryCode;
+					simpleSearchWithFilters(query, countryCode, null);
 					
 					
 				}
