@@ -1621,10 +1621,10 @@
 				{
 					
 					autocompleteCountrycode = "";
-					simpleSearch(query);
-					/*
-					autocompleteCountrycode = countryCode;
-					simpleSearchWithFilters(query, countryCode, null);*/
+					//simpleSearch(query);
+					
+					//autocompleteCountrycode = countryCode;
+					simpleSearchWithFilters(query, countryCode, null);
 					
 					
 				}
