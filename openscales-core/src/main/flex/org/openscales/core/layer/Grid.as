@@ -152,9 +152,9 @@ package org.openscales.core.layer
 			}
 			var ratio:Number;
 			
-			var bounds:Bounds = this.map.extent.clone();
-			var tilesBounds:Bounds = this.getTilesBounds();  
-			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw || !tilesBounds;
+			
+			//var tilesBounds:Bounds = this.getTilesBounds();  
+			var forceReTile:Boolean = this._grid==null || !this._grid.length || fullRedraw// || !tilesBounds;
 			
 			if (this.loadComplete)
 			{
@@ -167,7 +167,6 @@ package org.openscales.core.layer
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 				resolutionChangedCache = false;
 			}
-			
 			if (centerChangedCache && _initialized)
 			{
 				var deltaLon:Number = this.map.center.lon - this._previousCenter.lon;
@@ -180,9 +179,10 @@ package org.openscales.core.layer
 				this._previousCenter = this.map.center;
 				centerChangedCache = false;
 			}
-			
 			if (mapReloadCache || forceReTile || !_initialized)
 			{
+				var bounds:Bounds = this.map.extent.clone();
+				var tilesBounds:Bounds = this.getTilesBounds();  
 				actualizeGrid(bounds, (forceReTile || !tilesBounds.intersectsBounds(bounds)));
 				resolutionChangedCache = false;
 				centerChangedCache = false;
@@ -539,6 +539,8 @@ package org.openscales.core.layer
 				newTransMatrix.ty += (offSet.y );
 				this.transform.matrix = newTransMatrix.clone();
 			}
+			this.x = this.x;
+			this.y = this.y;
 		}
 		
 		/**
@@ -887,8 +889,8 @@ package org.openscales.core.layer
 			tileoffsety *= stretchedHeight/this.tileHeight;
 			
 			this._origin = new Pixel(tileoffsetx, tileoffsety);
-			this.x += tileoffsetx;
-			this.y += tileoffsety;
+			this.x += Math.round(tileoffsetx);
+			this.y += Math.round(tileoffsety);
 			tileoffsetx = 0;
 			tileoffsety = 0;
 			var startX:Number = tileoffsetx; 

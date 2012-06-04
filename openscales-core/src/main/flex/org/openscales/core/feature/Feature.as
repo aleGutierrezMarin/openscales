@@ -340,7 +340,8 @@ package org.openscales.core.feature {
 		 */
 		public function onMouseOut(pevt:MouseEvent):void {
 			this.buttonMode = false;
-			this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_OUT, this));
+			if (_layer)
+				this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_OUT, this));
 		}
 
 		/**

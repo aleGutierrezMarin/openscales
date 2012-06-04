@@ -125,6 +125,7 @@ package org.openscales.core.handler.feature.draw
 				
 				//this._lastPointPixel= new Pixel(map.mouseX ,map.mouseY);
 				var lonlat:Location = this.map.getLocationFromMapPx(pixel);
+				
 				this._lastPointLocation = lonlat;
 				var point:Point = new Point(lonlat.lon,lonlat.lat);
 				var lring:LinearRing=null;
