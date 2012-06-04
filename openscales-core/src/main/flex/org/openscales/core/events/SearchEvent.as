@@ -17,6 +17,11 @@ package org.openscales.core.events
 		 */
 		public static const SEARCH_END:String="openscales.openlssearch";
 		
+		/**
+		 * Event type dispatched when an OpenLS search is finished.
+		 */
+		public static const SEARCH_ERROR:String="openscales.openlssearcherror";
+		
 		
 		public function SearchEvent(type:String, bubbles:Boolean=false,cancelable:Boolean=false)
 		{
