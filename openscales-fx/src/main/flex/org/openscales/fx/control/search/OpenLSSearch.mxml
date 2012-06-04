@@ -6,6 +6,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.formats.Float;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.IndexChangedEvent;
 			
@@ -1397,6 +1399,34 @@
 					if(this._adaptResolution)
 					{
 						this.map.resolution = new Resolution(resolution);
+						
+						if(this.map.layers && this.map.layers.length > 0)
+						{
+							var minRes:Resolution = this.map.layers[0].minResolution;
+							minRes.reprojectTo(this.map.resolution);
+							var maxRes:Resolution = this.map.layers[0].maxResolution;
+							maxRes.reprojectTo(this.map.resolution);
+							var res:Resolution;
+							var i:uint;
+							for(i=1; i<this.map.layers.length; i++)
+							{
+								if(this.map.layers[i].minResolution.reprojectTo(this.map.resolution) < minRes)
+								{
+									minRes = this.map.layers[i].minResolution;
+									minRes.reprojectTo(this.map.resolution);
+								}
+								if(this.map.layers[i].maxResolution.reprojectTo(this.map.resolution) > maxRes)
+								{
+									maxRes = this.map.layers[i].maxResolution;
+									maxRes.reprojectTo(this.map.resolution);
+								}
+							}
+							
+							if(this.map.resolution.value < minRes.value)
+								this.map.resolution = new Resolution(Math.ceil(minRes.value), this.map.resolution.projection);
+							else if(this.map.resolution.value > maxRes.value)
+								this.map.resolution = new Resolution(Math.floor(maxRes.value), this.map.resolution.projection);
+						}
 					}
 					this.map.addLayer(this._resultLayer);
 					if(this._displayMarker)
