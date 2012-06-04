@@ -3,6 +3,8 @@ package org.openscales.fx.autocomplete
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
 	
+	import flashx.textLayout.container.ScrollPolicy;
+	
 	import spark.components.List;
 	
 	/**
@@ -11,13 +13,6 @@ package org.openscales.fx.autocomplete
 	 */	
 	public class ListAutoComplete extends List
 	{
-		
-		public function ListAutoComplete()
-		{
-			super();
-			super.setStyle('horizontalScrollPolicy', 'ScrollPolicy.OFF');
-		}
-		
 		override protected function keyDownHandler(event:KeyboardEvent):void {
 			
 			super.keyDownHandler(event);
