@@ -7,6 +7,7 @@
 	<fx:Script>
 		<![CDATA[
 			import flashx.textLayout.formats.WhiteSpaceCollapse;
+			import flashx.textLayout.formats.Float;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.IndexChangedEvent;
@@ -241,7 +242,7 @@
 			[Bindable]
 			public var frenchTerritoires:ArrayCollection = new ArrayCollection (
 				[	{label:"Territoire...", data:"ALL"},
-					{label:"France Métropolitaine", data:"67;68;24;33;40;47;64;03;15;43;63;14;50;61;21;58;71;89;22;29;35;56;18;28;36;37;41;45;08;10;51;52;2A;2B;25;39;70;90;27;76;75;77;78;91;92;93;94;95;11;30;34;48;66;19;23;87;54;55;57;88;09;12;31;32;46;65;81;82;59;62;44;49;53;72;85;02;60;80;16;17;79;86;04;05;06;13;83;84;01;07;26;38;42;69;73;74"},
+					{label:"France métropolitaine", trigram:"FXX", data:"67;68;24;33;40;47;64;03;15;43;63;14;50;61;21;58;71;89;22;29;35;56;18;28;36;37;41;45;08;10;51;52;2A;2B;25;39;70;90;27;76;75;77;78;91;92;93;94;95;11;30;34;48;66;19;23;87;54;55;57;88;09;12;31;32;46;65;81;82;59;62;44;49;53;72;85;02;60;80;16;17;79;86;04;05;06;13;83;84;01;07;26;38;42;69;73;74"},
 					{label:"Guadeloupe", data:"971"},
 					{label:"Guyane Française", data:"973"},
 					{label:"Martinique", data:"972"},
@@ -251,28 +252,28 @@
 			[Bindable]
 			public var frenchRegions:ArrayCollection = new ArrayCollection (
 				[	{label:"Région...", data:"ALL"},
-					{label:"Alsace", data:"67;68"},
-					{label:"Aquitaine", data:"24;33;40;47;64"},
-					{label:"Auvergne", data:"03;15;43;63"},
-					{label:"Basse-Normandie", data:"14;50;61"},
-					{label:"Bourgogne", data:"21;58;71;89"},
-					{label:"Bretagne", data:"22;29;35;56"},
-					{label:"Centre", data:"18;28;36;37;41;45"},
-					{label:"Champagne-Ardenne", data:"08;10;51;52"},
-					{label:"Corse", data:"2A;2B"},
-					{label:"Franche-Comté", data:"25;39;70;90"},
-					{label:"Haute-Normandie", data:"27;76"},
-					{label:"Île-de-France", data:"75;77;78;91;92;93;94;95"},
-					{label:"Languedoc-Roussillon", data:"11;30;34;48;66"},
-					{label:"Limousin", data:"19;23;87"},
-					{label:"Lorraine", data:"54;55;57;88"},
-					{label:"Midi-Pyrénées", data:"09;12;31;32;46;65;81;82"},
-					{label:"Nord-Pas-de-Calais", data:"59;62"},
-					{label:"Pays de la Loire", data:"44;49;53;72;85"},
-					{label:"Picardie", data:"02;60;80"},
-					{label:"Poitou-Charentes", data:"16;17;79;86"},
-					{label:"Provence-Alpes-Côte d'Azur", data:"04;05;06;13;83;84"},
-					{label:"Rhône-Alpes", data:"01;07;26;38;42;69;73;74"}]);
+					{label:"Alsace", data:"67;68", name:"ALSACE"},
+					{label:"Aquitaine", data:"24;33;40;47;64", name:"AQUITAINE"},
+					{label:"Auvergne", data:"03;15;43;63", name:"AUVERGNE"},
+					{label:"Basse-Normandie", data:"14;50;61", name:"BASSE-NORMANDIE"},
+					{label:"Bourgogne", data:"21;58;71;89", name:"BOURGOGNE"},
+					{label:"Bretagne", data:"22;29;35;56", name:"BRETAGNE"},
+					{label:"Centre", data:"18;28;36;37;41;45", name:"CENTRE"},
+					{label:"Champagne-Ardenne", data:"08;10;51;52", name:"CHAMPAGNE-ARDENNE"},
+					{label:"Corse", data:"2A;2B", name:"CORSE"},
+					{label:"Franche-Comté", data:"25;39;70;90", name:"FRANCHE-COMPTE"},
+					{label:"Haute-Normandie", data:"27;76", name:"HAUTE-NORMANDIE"},
+					{label:"Île-de-France", data:"75;77;78;91;92;93;94;95", name:"ILE-DE-FRANCE"},
+					{label:"Languedoc-Roussillon", data:"11;30;34;48;66", name:"LANGUEDOC-ROUSSILLON"},
+					{label:"Limousin", data:"19;23;87", name:"LIMOUSIN"},
+					{label:"Lorraine", data:"54;55;57;88", name:"LORRAINE"},
+					{label:"Midi-Pyrénées", data:"09;12;31;32;46;65;81;82", name:"MIDI-PYRENEES"},
+					{label:"Nord-Pas-de-Calais", data:"59;62", name:"NORD-PAS-DE-CALAIS"},
+					{label:"Pays de la Loire", data:"44;49;53;72;85", name:"PAYS DE LA LOIRE"},
+					{label:"Picardie", data:"02;60;80", name:"PICARDIE"},
+					{label:"Poitou-Charentes", data:"16;17;79;86", name:"POITOU-CHARENTES"},
+					{label:"Provence-Alpes-Côte d'Azur", data:"04;05;06;13;83;84", name:"PROVENCE-ALPES-COTE D'AZUR"},
+					{label:"Rhône-Alpes", data:"01;07;26;38;42;69;73;74", name:"RHONE-ALPES"}]);
 			
 			[Bindable]
 			public var frenchDepartements:ArrayCollection = new ArrayCollection([
@@ -1136,6 +1137,7 @@
 			}
 			
 			private function onServiceFault(event:Event):void {
+				this.map.dispatchEvent(new SearchEvent(SearchEvent.SEARCH_ERROR));
 			}
 			
 			protected function onServiceResult(event:Event):void {
@@ -1262,9 +1264,6 @@
 							}
 						}
 					}
-					
-					
-					
 					
 					// If we have one result or if the first result only is > betterAccuracy
 					if (go) 
@@ -1404,6 +1403,34 @@
 					if(this._adaptResolution)
 					{
 						this.map.resolution = new Resolution(resolution);
+						
+						if(this.map.layers && this.map.layers.length > 0)
+						{
+							var minRes:Resolution = this.map.layers[0].minResolution;
+							minRes.reprojectTo(this.map.resolution);
+							var maxRes:Resolution = this.map.layers[0].maxResolution;
+							maxRes.reprojectTo(this.map.resolution);
+							var res:Resolution;
+							var i:uint;
+							for(i=1; i<this.map.layers.length; i++)
+							{
+								if(this.map.layers[i].minResolution.reprojectTo(this.map.resolution) < minRes)
+								{
+									minRes = this.map.layers[i].minResolution;
+									minRes.reprojectTo(this.map.resolution);
+								}
+								if(this.map.layers[i].maxResolution.reprojectTo(this.map.resolution) > maxRes)
+								{
+									maxRes = this.map.layers[i].maxResolution;
+									maxRes.reprojectTo(this.map.resolution);
+								}
+							}
+							
+							if(this.map.resolution.value < minRes.value)
+								this.map.resolution = new Resolution(Math.ceil(minRes.value), this.map.resolution.projection);
+							else if(this.map.resolution.value > maxRes.value)
+								this.map.resolution = new Resolution(Math.floor(maxRes.value), this.map.resolution.projection);
+						}
 					}
 					this.map.addLayer(this._resultLayer);
 					if(this._displayMarker)

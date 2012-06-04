@@ -387,8 +387,15 @@ package org.openscales.core
 			 */
 			this.addChildAt(layer,this._layers.length);
 			this._layers.push(layer);
-			
 			layer.map = this;
+
+			//If a search layer has been added, we force it to be on top
+			var resultIndex:int = this.layers.indexOf(this.resultLayer);
+			if(resultIndex != -1)
+			{
+				this.changeLayerIndex(this.resultLayer, this._layers.length -1);
+			}
+			
 			if (redraw){
 				layer.redraw(redraw);	
 			}

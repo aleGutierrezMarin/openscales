@@ -171,6 +171,7 @@
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.autocomplete.AutoCompleteListItemRenderer"/>
+    <classEntry path="org.openscales.fx.control.search.FxAddLayer"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
