@@ -6,6 +6,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.formats.WhiteSpaceCollapse;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.IndexChangedEvent;
 			
@@ -818,6 +820,8 @@
 				if(!this.map)
 					return;
 				
+				query = query.replace(',','');
+				
 				this._resultLayer = this.map.resultLayer;
 				this._resultLayer.removeFeatures(this._resultLayer.features);
 				this.map.removeLayer(this._resultLayer);
@@ -838,6 +842,9 @@
 				if(!this.map)
 					return;
 				
+				
+
+				query = query.replace(',','');
 				this._resultLayer = this.map.resultLayer;
 				this._resultLayer.removeFeatures(this._resultLayer.features);
 				this.map.removeLayer(this._resultLayer);

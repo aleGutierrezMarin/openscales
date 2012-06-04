@@ -341,8 +341,8 @@
 						
 						if(_displayMetricUnits == Unit.CENTIMETER)
 						{
-							this.longitude = String(Number(this.longitude)*100);
-							this.latitude = String(Number(this.latitude)*100);
+							this.longitude = String(int(Number(this.longitude)*100));
+							this.latitude = String(int(Number(this.latitude)*100));
 						}
 						else if(_displayMetricUnits == Unit.KILOMETER)
 						{
