@@ -719,6 +719,9 @@ package org.openscales.core.request
 					if(node.@type=="Numero") {
 						result.numero = node.toString();
 					}
+					if(node.@type=="Nom de la commune") {
+						result.cityName = node.toString();
+					}
 				}
 				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
 				result.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
