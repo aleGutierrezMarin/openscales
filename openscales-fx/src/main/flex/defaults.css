@@ -15,3 +15,7 @@ os|Search {
 os|NavigationHistoryBrowser{
     skin-class: ClassReference("org.openscales.fx.control.skin.NavigationHistoryBrowserDefaultSkin");
 }
+
+os|LayerManager{
+	skin-class: ClassReference("org.openscales.fx.control.skin.LayerManagerDefaultSkin")
+}

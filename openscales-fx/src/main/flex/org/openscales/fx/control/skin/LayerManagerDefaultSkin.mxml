@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:openscales="http://openscales.org"
+		creationComplete="skin1_creationCompleteHandler(event)">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.fx.control.layer.LayerManager")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.binding.utils.ChangeWatcher;
+			import mx.events.FlexEvent;
+			import mx.events.PropertyChangeEvent;
+			
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.fx.control.layer.itemrenderer.DefaultLayerManagerItemRenderer;
+
+			/**
+			 * Title value for the Panel
+			 */
+			[Bindable]
+			public var panelTitle:String = Catalog.getLocalizationForKey('layerswitcher.title');
+			
+			[Bindable]
+			protected var _displayDrawing:Boolean = false;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icon-minus.gif")]
+			private var _btnMinus:Class;
+			
+			[Bindable]
+			[Embed(source="/assets/images/icon-plus.gif")]
+			private var _btnPlus:Class;
+			
+			[Bindable]
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			
+			[Bindable]
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
+			
+			
+			/**
+			 * @private
+			 * The itemRenderer class for display item of the LayerMananger list
+			 * @default DefaultLayerRenderer
+			 */
+			private var _itemRenderer:Class = DefaultLayerManagerItemRenderer;
+			
+			protected function skin1_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+				ChangeWatcher.watch(this.hostComponent, "map", onMapChange);
+				
+				var factory:ClassFactory = new ClassFactory(this._itemRenderer) 
+				
+				// only define params for itemRenderer taht are or inherit from DefaultLayerManagerItemRenderer
+				var instance:Object = new this._itemRenderer();
+				
+				if(instance is DefaultLayerManagerItemRenderer)
+				{
+					factory.properties = {
+						rendererOptions: this.hostComponent.rendererOptions,
+							layerManager: this.hostComponent
+					}
+					
+					if(this.hostComponent.rendererOptions && this.hostComponent.rendererOptions['displayDrawing'])
+						this._displayDrawing = true;
+					else
+						this._displayDrawing = false;
+				}
+				
+				layerList.itemRenderer = factory;
+			}
+			
+			protected function onMapChange(event:PropertyChangeEvent):void{
+				if(this.hostComponent.map){
+					this.hostComponent.map.addEventListener(I18NEvent.LOCALE_CHANGED, localize);
+				}
+			}
+			
+			protected function localize(event:I18NEvent=null):void{
+				panelTitle = Catalog.getLocalizationForKey('layerswitcher.title');
+				_iconify = Catalog.getLocalizationForKey('component.iconify');
+				_toggle = Catalog.getLocalizationForKey('component.toggle');
+			}
+
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				// Redraws all the layers
+				if(this.layerList){
+					var rendererBackup:IFactory = this.layerList.itemRenderer;
+					this.layerList.itemRenderer = null;
+					this.layerList.itemRenderer = rendererBackup;
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="disabled" />
+		<s:State name="normal" />
+	</s:states>
+	
+	<s:Group visible="{this.hostComponent.isReduced}" includeInLayout="{this.hostComponent.isReduced}">
+		<s:Button label="+" click="{this.hostComponent.toggleDisplay()}" toolTip="{this._toggle}" width="30" />
+	</s:Group>
+	<s:Group visible="{!this.hostComponent.isReduced}" includeInLayout="{!this.hostComponent.isReduced}">
+		<s:layout>
+			<s:HorizontalLayout gap="-35" />
+		</s:layout>
+		
+		<s:Panel id="layerPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}"> 
+			
+			<s:Group height="{this.height-35}" width="{this.width}" >
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>	
+				<s:Group visible="{this._displayDrawing}" includeInLayout="{this._displayDrawing}">
+					<openscales:AddVectorLayer map="{this.hostComponent.map}" />
+					<openscales:ImportFeature map="{this.hostComponent.map}" x="150" />
+				</s:Group>
+				<s:List id="layerList" 
+						dropEnabled="false"
+						dragEnabled="false"
+						dragMoveEnabled="false"
+						dataProvider="{this.hostComponent.layers}"
+						width="{this.width-5}"
+						height="100%"
+						x="0"
+						y="0"
+						borderVisible="false"
+						useVirtualLayout="false">
+					<s:layout>
+						<s:VerticalLayout horizontalAlign="justify"
+										  variableRowHeight="true"
+										  requestedRowCount="4" />
+					</s:layout>
+				</s:List>
+			</s:Group>
+			
+		</s:Panel>
+		<s:Group>
+			<s:Button label="-" click="{this.hostComponent.toggleDisplay()}" toolTip="{this._iconify}"
+					  width="30" y="5" />
+		</s:Group>
+	</s:Group>
+</s:Skin>

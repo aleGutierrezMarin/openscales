@@ -89,7 +89,6 @@
     <classEntry path="org.openscales.fx.control.layer.ChangeLayerVisibility"/>
     <classEntry path="org.openscales.fx.control.layer.DeleteLayer"/>
     <classEntry path="org.openscales.fx.control.layer.LayerLegend"/>
-    <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
     <classEntry path="org.openscales.fx.control.layer.LayerMetadata"/>
     <classEntry path="org.openscales.fx.control.layer.LayerZoomToExtent"/>
     <classEntry path="org.openscales.fx.control.layer.MapSyncSort"/>
@@ -172,6 +171,9 @@
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.autocomplete.AutoCompleteListItemRenderer"/>
     <classEntry path="org.openscales.fx.control.search.FxAddLayer"/>
+    <classEntry path="org.openscales.fx.control.layer.LM"/>
+    <classEntry path="org.openscales.fx.control.layer.LayerManager"/>
+    <classEntry path="org.openscales.fx.control.skin.LayerManagerDefaultSkin"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
