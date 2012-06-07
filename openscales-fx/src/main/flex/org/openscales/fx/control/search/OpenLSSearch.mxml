@@ -6,8 +6,8 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import flashx.textLayout.formats.WhiteSpaceCollapse;
 			import flashx.textLayout.formats.Float;
+			import flashx.textLayout.formats.WhiteSpaceCollapse;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.IndexChangedEvent;
@@ -1392,7 +1392,7 @@
 				}
 			}
 			
-			private function centerAtLocation(latitude:Number, longitude:Number, projection:String, resolution:Number): void {
+			protected function centerAtLocation(latitude:Number, longitude:Number, projection:String, resolution:Number): void {
 				if (! (isNaN(latitude) || isNaN(longitude)) ) {
 					var pos:Location = new Location(longitude,latitude,projection);
 					if(this.map.projection!=pos.projection)
@@ -1429,6 +1429,10 @@
 							else if(this.map.resolution.value > maxRes.value)
 								this.map.resolution = new Resolution(Math.floor(maxRes.value), this.map.resolution.projection);
 						}
+					}
+					if (!this._resultLayer)
+					{
+						this._resultLayer = this.map.resultLayer;
 					}
 					this.map.addLayer(this._resultLayer);
 					if(this._displayMarker)
