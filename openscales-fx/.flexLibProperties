@@ -18,6 +18,7 @@
     <classEntry path="org.openscales.fx.FxMap"/>
     <classEntry path="org.openscales.fx.FxMaxExtent"/>
     <classEntry path="org.openscales.fx.autocomplete.AutoComplete"/>
+    <classEntry path="org.openscales.fx.autocomplete.AutoCompleteListItemRenderer"/>
     <classEntry path="org.openscales.fx.autocomplete.AutoCompleteSkin"/>
     <classEntry path="org.openscales.fx.autocomplete.ListAutoComplete"/>
     <classEntry path="org.openscales.fx.autocomplete.event.AutoCompleteEvent"/>
@@ -39,6 +40,7 @@
     <classEntry path="org.openscales.fx.control.FxOverviewMap"/>
     <classEntry path="org.openscales.fx.control.FxSpinner"/>
     <classEntry path="org.openscales.fx.control.HTMLFeatureInfoDisplay"/>
+    <classEntry path="org.openscales.fx.control.HTMLFeatureInfoDisplayPopup"/>
     <classEntry path="org.openscales.fx.control.IconButton"/>
     <classEntry path="org.openscales.fx.control.LanguageSwitcher"/>
     <classEntry path="org.openscales.fx.control.LayerCatalog"/>
@@ -101,6 +103,8 @@
     <classEntry path="org.openscales.fx.control.measure.MeasurePath"/>
     <classEntry path="org.openscales.fx.control.measure.MeasureSurface"/>
     <classEntry path="org.openscales.fx.control.routing.SampleRoutingControl"/>
+    <classEntry path="org.openscales.fx.control.search.FxAddLayer"/>
+    <classEntry path="org.openscales.fx.control.search.FxDefaultAddLayerItemRenderer"/>
     <classEntry path="org.openscales.fx.control.search.OpenLSSearch"/>
     <classEntry path="org.openscales.fx.control.search.Search"/>
     <classEntry path="org.openscales.fx.control.search.engine.FxBingSearch"/>
@@ -170,8 +174,6 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.fx.autocomplete.AutoCompleteListItemRenderer"/>
-    <classEntry path="org.openscales.fx.control.search.FxAddLayer"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>

@@ -8,6 +8,7 @@
 				xmlns:d="http://ns.adobe.com/fxg/2008/dt"
 				xmlns:os="org.openscales.fx.control.*"
 				width="100%"
+				
 				xmlns:fxg="assets.fxg.*"
 				autoDrawBackground="false"
 				implements="org.openscales.fx.control.layer.itemrenderer.ILayerManagerItemRenderer"
@@ -488,7 +489,7 @@
 	</s:layout>
 	
 	<s:SkinnableContainer width="100%"
-						  height="25"
+						 
 						  id="hgroup" backgroundColor="{_color}" >
 		<s:layout>
 			<s:HorizontalLayout 
@@ -517,18 +518,18 @@
 	</s:SkinnableContainer>
 	
 	
-	<s:SkinnableContainer id="layerManagerAdditionnalDisplay" height="20" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}">
+	<s:SkinnableContainer id="layerManagerAdditionnalDisplay"  visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}" >  
 		<ChangeLayerAlpha id="layerControlOpacity" layer="{_layer}" />
 	</s:SkinnableContainer>
 	
-	<s:SkinnableContainer height="60" width="100%" id="layerManagerDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
+	<s:SkinnableContainer width="100%" id="layerManagerDrawingTools" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}" >
 		
 		<s:layout>
 			<s:VerticalLayout />
 		</s:layout>
 		
 		
-		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">		
+		<s:SkinnableContainer  width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">		
 			<s:layout>
 				<s:HorizontalLayout gap="0"/>
 			</s:layout>
@@ -540,7 +541,7 @@
 			<drawing:EditStyle id="editStyle" map="{this._layer.map}" defaultLineStyle="{this._drawingToolbar.pathStyle}" defaultPointStyle="{this._drawingToolbar.pointStyle}" defaultPolygonStyle="{this._drawingToolbar.polygonStyle}" target="{this._layer as VectorLayer}" />
 		</s:SkinnableContainer>
 		
-		<s:SkinnableContainer height="30" width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
+		<s:SkinnableContainer  width="100%" visible="{this.isDisplayedDrawingTools}" includeInLayout="{this.isDisplayedDrawingTools}">
 			
 			<s:layout>
 				<s:HorizontalLayout gap="0"/>
@@ -556,7 +557,7 @@
 		
 	</s:SkinnableContainer>
 	
-	<s:SkinnableContainer height="30" width="100%" id="layerManagerOptionnalDisplay" visible="{!this.isMinimized}" includeInLayout="{!this.isMinimized}"  >
+	<s:SkinnableContainer  width="100%" id="layerManagerOptionnalDisplay" visible="{!this.isMinimized &amp;&amp; (_displayZoomToExtent || _displayMetadatas) }" includeInLayout="{!this.isMinimized &amp;&amp; (_displayZoomToExtent || _displayMetadatas)}" >
 		<LayerZoomToExtent id="layerControlZoomToExtent" visible="{_displayZoomToExtent}" layer="{_layer}" />
 		<LayerMetadata x="40" id="layerControlMetadatas" visible="{_displayMetadatas}" />
 	</s:SkinnableContainer>
