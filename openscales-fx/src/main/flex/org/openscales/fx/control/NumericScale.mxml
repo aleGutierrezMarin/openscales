@@ -17,6 +17,13 @@
 			import org.openscales.proj4as.ProjProjection;
 			
 			/**
+			 * If <code>false</code>, the scale won't be changeable by clicking on the component
+			 * 
+			 * @default true
+			 */ 
+			public var changeScaleEnabled:Boolean=true;
+			
+			/**
 			 * The default fixed round for scale precision
 			 */
 			public static var DEFAULT_FIXED_ROUND:uint=0;
@@ -151,6 +158,8 @@
 			 */
 			private function onClick(event:MouseEvent):void
 			{
+				if(!changeScaleEnabled)return;
+				
 				this.labelVisibility = false;
 				this.inputLabelVisibility = true;
 				this.textInputVisibility = true;
