@@ -161,6 +161,10 @@ package org.openscales.core.layer
 			
 			if (resolutionChangedCache)
 			{
+				if (!this._previousResolution)
+				{
+					this._previousResolution = this.map.resolution;
+				}
 				this.cacheAsBitmap = false;
 				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
