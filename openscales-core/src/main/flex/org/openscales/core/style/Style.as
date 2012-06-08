@@ -245,7 +245,7 @@ package org.openscales.core.style {
 		 */
 		public static function getDefaultPolygonStyle():Style {
 			var style:Style = new Style();
-			style.name = "Surface Style";
+			style.name = "Surface_Style";
 			style.rules.push(getDefaultPolygonRule());
 			return style;
 		}
@@ -311,7 +311,7 @@ package org.openscales.core.style {
 			rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
 			
 			var style:Style = new Style();
-			style.name = "Defined surface style";
+			style.name = "Defined_surface_style";
 			style.rules.push(rule);
 			
 			return style;
@@ -492,6 +492,10 @@ package org.openscales.core.style {
 		
 		public function set name(value:String):void {
 			
+			while(value.indexOf(' ') != -1)
+			{
+				value.replace(' ','_');
+			}
 			this._name = value;
 		}
 		
