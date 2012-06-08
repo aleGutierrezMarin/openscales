@@ -494,7 +494,7 @@ package org.openscales.core.style {
 			
 			while(value.indexOf(' ') != -1)
 			{
-				value.replace(' ','_');
+				value=value.replace(' ','_');
 			}
 			this._name = value;
 		}
