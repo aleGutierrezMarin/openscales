@@ -92,8 +92,8 @@ package org.openscales.core.format
 			use namespace opengis;
 			
 			var name:String = "";
-			if (dataXML && dataXML..Name)
-				name = dataXML..Name.toString();
+			if (dataXML && dataXML..name)
+				name = dataXML..name.toString();
 			return name;
 			
 		}
@@ -875,7 +875,7 @@ package org.openscales.core.format
 			var numberOfFeat:uint = listOfFeatures.length;
 			if (numberOfFeat > 0 && listOfFeatures[0].layer)
 			{
-				var name:XML = new XML("<Name>"+listOfFeatures[0].layer.displayedName+"</Name>");
+				var name:XML = new XML("<name>"+listOfFeatures[0].layer.displayedName+"</name>");
 				doc.appendChild(name);
 			}
 			// gather Style list
