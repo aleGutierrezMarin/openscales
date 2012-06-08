@@ -49,7 +49,7 @@ package org.openscales.core.request
 		 */
 		public function OpenLSRequest(url:String, onComplete:Function, onFailure:Function=null, security:ISecurity=null) {
 			super(url, onComplete, onFailure);
-			this.postContentType = "text/plain";
+			super.postContentType = "application/xml";
 			this.security = security;
 		}
 		/**
