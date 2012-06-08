@@ -92,8 +92,8 @@ package org.openscales.core.format
 			use namespace opengis;
 			
 			var name:String = "";
-			if (dataXML && dataXML..name)
-				name = dataXML..name.toString();
+			if (dataXML && dataXML.name)
+				name = dataXML.name.toString();
 			return name;
 			
 		}
