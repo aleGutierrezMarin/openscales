@@ -226,5 +226,12 @@
    "addExternalLayer.noresLabel.text":"Aucunes couches trouvées",
    "addExternalLayer.loadingLabel.text":"Chargement...",
    "addExternalLayer.cancelButton.label":"Annuler",
-   "addExternalLayer.submitButton.label":"Ajouter"
+   "addExternalLayer.submitButton.label":"Ajouter",
+   "addExternalLayer.otherURLSourceFormItem.label":"Source",
+   "addExternalLayer.otherURLSourceFormItem.toolTip":"Source des données",
+   "addExternalLayer.URLSourceRadioButton.label":"URL",
+   "addExternalLayer.localeSourceRadioButton.label":"Fich. local",
+   "addExternalLayer.chooseLocalFileButton.label":"Parcourir...",
+   "addExternalLayer.otherLayerNameFormItem.label":"Nom",
+   "addExternalLayer.otherLayerNameFormItem.toolTip":"Un nom pour la couche"
  }

@@ -2,14 +2,22 @@ package org.openscales.fx.control.search
 {
 	import flash.events.Event;
 	import flash.events.FocusEvent;
+	import flash.events.IOErrorEvent;
+	import flash.events.MouseEvent;
+	import flash.net.FileReference;
+	import flash.utils.ByteArray;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
+	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.KML;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
+	import org.openscales.core.layer.ogc.GPX;
+	import org.openscales.core.layer.ogc.GeoRss;
 	import org.openscales.fx.control.Control;
 	
 	import spark.components.Button;
@@ -22,6 +30,8 @@ package org.openscales.fx.control.search
 	[SkinState("isresults")]
 	[SkinState("noresults")]
 	[SkinState("loading")]
+	[SkinState("URLSource")]
+	[SkinState("localFileSource")]
 	
 	public class AddExternalLayer extends Control
 	{
@@ -62,11 +72,24 @@ package org.openscales.fx.control.search
 		[SkinPart(required="true")]
 		public var versionsList:List;
 		
+		[SkinPart]
+		public var otherURLSourceTextInput:TextInput;
+		
+		[SkinPart]
+		public var chooseLocalFileButton:Button
+		
+		[SkinPart(required="true")]
+		public var otherLayerNameTextInput:TextInput;
+		
 		private var _supportedFormats:HashMap;
 		private var isResults:Boolean = false;
 		private var noResults:Boolean = false;
+		private var urlNotEmpty:Boolean =false;
+		private var localeFile:Boolean = false;
 		private var loading:Boolean = false;
 		private var _capabilities:GetCapabilities;
+		private var fileReference:FileReference;
+		private var _localData:ByteArray;
 		
 		public function AddExternalLayer()
 		{
@@ -93,16 +116,73 @@ package org.openscales.fx.control.search
 			if(instance == protocolsList){
 				protocolsList.dataProvider = new ArrayCollection(_supportedFormats.getKeys().sort());
 			}
-			if(instance == submitButton){
-			
-			}
-			if(instance == resultList){
-				
-			}
-			if(instance == urlTextInput){
-				
+			if(instance == otherLayerNameTextInput){
+				otherLayerNameTextInput.addEventListener(Event.CHANGE, function (event:Event):void{invalidateSkinState();});
 			}
 			
+			if(instance == otherURLSourceTextInput){
+				otherURLSourceTextInput.addEventListener(Event.CHANGE, onURLSourceTextInputChange);
+			}
+			if(instance == chooseLocalFileButton){
+				chooseLocalFileButton.addEventListener(MouseEvent.CLICK,generateFileReference);
+			}
+			
+		}
+		
+		protected function onURLSourceTextInputChange(event:Event):void{
+			if (otherURLSourceTextInput.text != "" )urlNotEmpty = true;
+			else urlNotEmpty = false;
+			invalidateSkinState();
+		}
+		
+		protected function generateFileReference(event:MouseEvent):void{
+			localeFile = false;
+			invalidateSkinState();
+			//create the FileReference instance
+			fileReference = new FileReference();
+			
+			//listen for when they select a file
+			fileReference.addEventListener(Event.SELECT, onFileSelect);
+			
+			//listen for when then cancel out of the browse dialog
+			fileReference.addEventListener(Event.CANCEL,onCancel);
+			
+			//open a native browse dialog that filters for text files
+			fileReference.browse();
+		}
+		
+		/**
+		 * Called when a file is selected on 
+		 */
+		protected function onFileSelect(e:Event):void
+		{
+			//listen for when the file has loaded
+			fileReference.addEventListener(Event.COMPLETE, onLoadComplete);
+			
+			//load the content of the file
+			fileReference.load();
+		}
+		
+		/**
+		 * private
+		 * called when the file has completed loading
+		 */
+		private function onLoadComplete(e:Event):void
+		{
+			//get the data from the file as a ByteArray
+			_localData = fileReference.data;
+			localeFile = true;
+			invalidateSkinState();
+			//clean up the FileReference instance
+			fileReference = null;
+		}
+	
+		/**
+		 * Called when the user cancel the browse process
+		 */
+		protected function onCancel(e:Event):void				
+		{
+			fileReference = null;
 		}
 		
 		override protected function getCurrentSkinState():String{
@@ -113,7 +193,11 @@ package org.openscales.fx.control.search
 				if(isResults)return "isresults";
 				if(loading)return "loading";
 				return "ogc";
-			}else return "other";
+			}else {
+				if(urlNotEmpty && otherLayerNameTextInput && otherLayerNameTextInput.text != "") return "URLSource";
+				if(localeFile && otherLayerNameTextInput && otherLayerNameTextInput.text != "") return "localFileSource";
+				return "other";
+			}
 			
 		}
 		
@@ -122,11 +206,14 @@ package org.openscales.fx.control.search
 			noResults = false;
 			isResults = false;
 			loading = false;
+			
 			var prot:String = (protocolsList.selectedItem as String).replace(/\s/g,"");
 			var vers:String = (versionsList.selectedItem as String).replace(/\s/g,"");
 			var url:String = (urlTextInput.text).replace(/\s/g,"");
-			_capabilities = new GetCapabilities(prot, url, onGetCapSuccess, vers,this.map.getProxy(url));
-			loading = true;
+			if(url && url != ""){
+				_capabilities = new GetCapabilities(prot, url, onGetCapSuccess, vers,this.map.getProxy(url));
+				loading = true;
+			}
 			invalidateSkinState();
 		}
 		
@@ -140,6 +227,49 @@ package org.openscales.fx.control.search
 				return _map.addLayer(layer);
 			}
 			return false;
+		}
+		
+		/**
+		 * @param source 0 for url, 1 for local file system
+		 */ 
+		public function addOtherLayer(source:uint):Boolean{
+			
+			var prot:String = protocolsList.selectedItem as String;
+			var name:String = otherLayerNameTextInput.text;
+			var url:String = otherURLSourceTextInput.text;
+			var vers:String = versionsList.selectedItem as String;
+			var xml:XML;
+			if(name == "")return false;
+			var layer:Layer;
+			switch(prot){
+				case "KML":
+					if(source == 0) {
+						layer = new KML(name, url);
+					} else {
+						xml = new XML(_localData.readUTFBytes(_localData.bytesAvailable));
+						layer = new KML(name, null, xml);
+					}
+					break;
+				
+				case "GPX":
+					if(source == 0) {
+						layer = new GPX(name, vers, url);
+					} else {
+						xml = new XML(_localData.readUTFBytes(_localData.bytesAvailable));
+						layer = new GPX(name, vers, null, xml);
+					}
+					break;
+				
+				case "GeoRSS":
+					if(source == 0) {
+						layer = new GeoRss(name,url);
+					} else {
+					}
+					break;
+			}
+			if(!layer) return false;
+			return map.addLayer(layer);
+			
 		}
 		
 		protected function onGetCapSuccess(getCapabilities:GetCapabilities):void{

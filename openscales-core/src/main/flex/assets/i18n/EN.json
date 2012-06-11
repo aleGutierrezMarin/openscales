@@ -225,5 +225,15 @@
    "addExternalLayer.noresLabel.text":"Nothing on this server",
    "addExternalLayer.loadingLabel.text":"Loading...",
    "addExternalLayer.cancelButton.label":"Cancel",
-   "addExternalLayer.submitButton.label":"Add to map"
+   "addExternalLayer.submitButton.label":"Add to map",
+   "addExternalLayer.otherURLSourceFormItem.label":"Source",
+   "addExternalLayer.otherURLSourceFormItem.toolTip":"Source where to get data",
+   "addExternalLayer.URLSourceRadioButton.label":"URL",
+   "addExternalLayer.localeSourceRadioButton.label":"Local FS",
+   "addExternalLayer.chooseLocalFileButton.label":"Browse...",
+   "addExternalLayer.otherLayerNameFormItem.label":"Name",
+   "addExternalLayer.otherLayerNameFormItem.toolTip":"A name to give to the layer"
+   
+   
+   
  }

@@ -7,6 +7,11 @@
 	<fx:Metadata>
 		[HostComponent("org.openscales.fx.control.search.AddExternalLayer")]
 	</fx:Metadata>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="one" selectedValue="0" />
+	</fx:Declarations>
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.binding.utils.ChangeWatcher;
@@ -21,6 +26,8 @@
 			
 			import spark.events.IndexChangeEvent;
 
+			private var fileReference:FileReference;
+			
 			protected function resultList_changeHandler(event:IndexChangeEvent):void
 			{
 				if(resultList.selectedIndex >= 0){
@@ -42,6 +49,10 @@
 						var layerName:String = (resultList.selectedItem as HashMap).getValue("Name");
 						hostComponent.addOGCLayer(layerName);
 						break;
+					case "KML":
+					case "GeoRSS":
+					case "GPX":
+							hostComponent.addOtherLayer(one.selectedValue as uint);
 				}
 			}
 
@@ -96,6 +107,16 @@
 				this.cancelButton.label = Catalog.getLocalizationForKey("addExternalLayer.cancelButton.label");
 				this.submitButton.label = Catalog.getLocalizationForKey("addExternalLayer.submitButton.label");
 			
+				this.otherURLSourceFormItem.label = Catalog.getLocalizationForKey("addExternalLayer.otherURLSourceFormItem.label");
+				this.otherURLSourceFormItem.toolTip = Catalog.getLocalizationForKey("addExternalLayer.otherURLSourceFormItem.toolTip");
+				
+				this.URLSourceRadioButton.label = Catalog.getLocalizationForKey("addExternalLayer.URLSourceRadioButton.label");
+				this.localeSourceRadioButton.label = Catalog.getLocalizationForKey("addExternalLayer.localeSourceRadioButton.label");
+				
+				this.chooseLocalFileButton.label = Catalog.getLocalizationForKey("addExternalLayer.chooseLocalFileButton.label");
+				
+				this.otherLayerNameFormItem.label = Catalog.getLocalizationForKey("addExternalLayer.otherLayerNameFormItem.label");
+				this.otherLayerNameFormItem.toolTip = Catalog.getLocalizationForKey("addExternalLayer.otherLayerNameFormItem.toolTip");
 				
 			}
 
@@ -103,6 +124,7 @@
 				super.updateDisplayList(unscaledWidth,unscaledHeight);
 				localize(null);
 			}
+			
 			
 			
 		]]>
@@ -115,8 +137,11 @@
 		<s:State name="ogc" />
 		<s:State name="other" />
 		<s:State name="isresults" />
-		<s:State name="noresults" />
+		<s:State name="noresults" >
+		</s:State>
 		<s:State name="loading" />
+		<s:State name="localFileSource" />
+		<s:State name="URLSource" />
 	</s:states>
 	
 	<s:Group width="100%">
@@ -131,24 +156,20 @@
 				<s:DropDownList id="versionsList" width="100%" />
 			</mx:FormItem>
 			
-			<mx:FormItem 
-						 id="urlLabel"
-						 
+			<mx:FormItem id="urlLabel"
 						 width="100%"
-						 includeIn="ogc,isresults,noresults,normal"
+						 includeIn="ogc,isresults,noresults"
 						 direction="horizontal">
 				<s:TextInput id="urlTextInput" width="80%"/>
 				<s:Button id="lookForGetCapButton" click="{this.hostComponent.lookForGetCap()}"  />
 			</mx:FormItem>
-			<mx:FormItem 
-						 id="resultListLabel"
+			<mx:FormItem id="resultListLabel"
 						 width="100%"
-						 
-						 includeIn="ogc,isresults,noresults,normal,loading">
+						 includeIn="ogc,isresults,noresults,loading">
 				
 				<s:List id="resultList" width="100%" enabled.isresults="true" 
 						enabled="false" 
-						includeIn="ogc,isresults,normal" 
+						includeIn="ogc,isresults" 
 						itemRenderer="org.openscales.fx.control.search.itemrenderer.AddExternalLayerOGCItemRenderer"
 						change="resultList_changeHandler(event)">
 					<s:layout>
@@ -159,10 +180,28 @@
 				<s:Label id="noresLabel" color="red"  includeIn="noresults" />
 				<s:Label id="loadingLabel" includeIn="loading"  />
 			</mx:FormItem>
-			
+			<mx:FormItem id="otherURLSourceFormItem" 
+						 direction="horizontal" 
+						 includeIn="other,URLSource,localFileSource" 
+						 width="100%">
+				<s:RadioButton id="URLSourceRadioButton" 
+							  
+							   value="0" group="{one}"/>
+				<s:TextInput id="otherURLSourceTextInput" width="100%" enabled="{URLSourceRadioButton.selected}"/>
+			</mx:FormItem>
+			<mx:FormItem id="otherLocalSourceFormItem" direction="horizontal"  width="100%" 
+						 includeIn="other,URLSource,localFileSource">
+				<s:RadioButton id="localeSourceRadioButton" 
+							   
+							   value="1" group="{one}"/>
+				<s:Button id="chooseLocalFileButton"  enabled="{localeSourceRadioButton.selected}" />
+			</mx:FormItem>
+			<mx:FormItem id="otherLayerNameFormItem"  width="100%" includeIn="other,URLSource,localFileSource">
+				<s:TextInput id="otherLayerNameTextInput" width="100%" />
+			</mx:FormItem>
 			<mx:FormItem direction="horizontal" horizontalAlign="right" paddingTop="20">
 				<s:Button id="cancelButton"  />
-				<s:Button id="submitButton"  enabled="false" enabled.noresults="false" enabled.loading="false" click="submitButton_clickHandler(event)" />
+				<s:Button id="submitButton"  enabled="false" enabled.noresults="false" enabled.loading="false" enabled.URLSource="true" enabled.localFileSource="true" click="submitButton_clickHandler(event)" />
 			</mx:FormItem>
 				
 		</mx:Form>
