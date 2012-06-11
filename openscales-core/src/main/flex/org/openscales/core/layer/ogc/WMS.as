@@ -1,7 +1,10 @@
 package org.openscales.core.layer.ogc
 {
 
+	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Grid;
+	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.ogc.provider.WMSTileProvider;
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.core.tile.ImageTile;
@@ -23,6 +26,17 @@ package org.openscales.core.layer.ogc
 		 * Layer name in the layer switcher
 		 */ 
 		protected var _layerName:String;
+		
+		/**
+		 * @private
+		 * An HashMap containing the capabilities of the layer.
+		 */
+		private var _capabilities:HashMap = null;
+		/**
+		 * @private
+		 * Do we use get capabilities?
+		 */
+		private var _useCapabilities:Boolean = false;
 		
 		/**
 		 * @private
@@ -138,11 +152,25 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
+		 * @inheritDoc
+		 */
+		override public function set map(map:Map):void {
+			super.map = map;
+			// GetCapabilities request made here in order to have the proxy set 
+			if (url != null && url != "" && this.capabilities == null && useCapabilities == true) {
+				var getCap:GetCapabilities = new GetCapabilities("wms", url, this.capabilitiesGetter,
+					version, this.proxy, this.security);
+			}
+		}
+		
+		/**
 		 * Override method used to update the wms tile displayed when using the zoom control
 		 * 
 		 */
 		override public function redraw(fullRedraw:Boolean = false):void {
 			if (this.map == null)
+				return;
+			if(this._useCapabilities && !this._capabilities)
 				return;
 			(_tileProvider as WMSTileProvider).width = this.tileWidth;
 			(_tileProvider as WMSTileProvider).height = this.tileHeight;
@@ -402,6 +430,68 @@ package org.openscales.core.layer.ogc
 		override public function set tileOrigin(value:Location):void
 		{
 			super.tileOrigin = value;
+		}
+		
+		/**
+		 * Indicates the capabilities result
+		 */
+		public function get capabilities():HashMap {
+			return this._capabilities;
+		}
+		/**
+		 * @private
+		 */
+		public function set capabilities(value:HashMap):void {
+			this._capabilities = value;
+		}
+		
+		/**
+		 * Indicates if capabilities should be used.
+		 * Default false
+		 */
+		public function get useCapabilities():Boolean {
+			return this._useCapabilities;
+		}
+		/**
+		 * @private
+		 */
+		public function set useCapabilities(value:Boolean):void {
+			this._useCapabilities = value;
+			this.available = this.checkAvailability();
+		}
+		
+		/**
+		 * Callback method called by the capabilities retriever.
+		 *
+		 * @param the GetCapabilities instance which call it.
+		 */
+		public function capabilitiesGetter(caller:GetCapabilities):void {
+			this._capabilities = caller.getLayerCapabilities(this.layers);
+			if ((this._capabilities != null) && (this.projection == null || this.useCapabilities)) {
+				var projs:String = this._capabilities.getValue("SRS");
+				var aProj:Vector.<String> = new Vector.<String>();
+				if(projs) {
+					var projsArray:Array = projs.split(",");
+					for each(var oSrs:String in projsArray) {
+						if(oSrs && oSrs.length>0)
+							aProj.push(oSrs);
+					}
+				}
+				//this.projection = this._capabilities.getValue("SRS");
+				//Setting availableProjections
+				
+				/*aProj.push(this._capabilities.getValue("SRS"));
+				var otherSRS:Vector.<String> = (this._capabilities.getValue("OtherSRS") as Vector.<String>);
+				for each(var oSrs:String in otherSRS) {
+					if(aProj.indexOf(oSrs) < 0) {
+						aProj.push(oSrs);
+					}
+				}*/
+				this.availableProjections = aProj;
+				
+				if(this.map)
+					this.redraw(true);
+			}
 		}
 	}
 }
