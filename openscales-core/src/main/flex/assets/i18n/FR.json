@@ -212,5 +212,19 @@
    "editStyle.labelStyleEdition.labelApplyTo":"Appliquer à :",
    "editStyle.labelStyleEdition.applyAllLabel":"Les labels du même style",
    "editStyle.labelStyleEdition.applyOnlyThisLabel":"Uniquement ce label",
-   "editStyle.labelStyleEdition.applySimilarLabel":"Tous les labels"
+   "editStyle.labelStyleEdition.applySimilarLabel":"Tous les labels",
+   
+   "addExternalLayer.protocolLabel.label":"Protocole",
+   "addExternalLayer.protocolLabel.toolTip":"",
+   "addExternalLayer.versionLabel.label":"Version",
+   "addExternalLayer.versionLabel.toolTip":"Version du protocole",
+   "addExternalLayer.urlLabel.label":"URL",
+   "addExternalLayer.urlLabel.toolTip":"URL du service web",
+   "addExternalLayer.lookForGetCapButton.label":"OK",
+   "addExternalLayer.resultListLabel.label":"Couches disp.",
+   "addExternalLayer.resultListLabel.toolTip":"Couches disponibles sur ce service",
+   "addExternalLayer.noresLabel.text":"Aucunes couches trouvées",
+   "addExternalLayer.loadingLabel.text":"Chargement...",
+   "addExternalLayer.cancelButton.label":"Annuler",
+   "addExternalLayer.submitButton.label":"Ajouter"
  }

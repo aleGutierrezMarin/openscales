@@ -1,11 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx">
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		creationComplete="skin1_creationCompleteHandler(event)">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("org.openscales.fx.control.search.AddExternalLayer")]
 	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import mx.binding.utils.ChangeWatcher;
+			import mx.events.FlexEvent;
+			import mx.events.PropertyChangeEvent;
+			import mx.states.OverrideBase;
+			
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.fx.control.search.itemrenderer.AddExternalLayerOGCItemRenderer;
+			
+			import spark.events.IndexChangeEvent;
+
+			protected function resultList_changeHandler(event:IndexChangeEvent):void
+			{
+				if(resultList.selectedIndex >= 0){
+					submitButton.enabled = true;
+				}else{
+					submitButton.enabled = false;
+				}
+			}
+
+
+			protected function submitButton_clickHandler(event:MouseEvent):void
+			{
+				var prot:String = protocolsList.selectedItem as String;
+				
+				switch(prot){
+					case "WMS":
+					case "WFS":
+					case "WMTS":
+						var layerName:String = (resultList.selectedItem as HashMap).getValue("Name");
+						hostComponent.addOGCLayer(layerName);
+						break;
+				}
+			}
+
+
+			protected function skin1_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(hostComponent.map) localize(null);
+				ChangeWatcher.watch(this.hostComponent, "map", onMapChange);
+			}
+			
+			/**
+			 * @private
+			 */ 
+			protected function onMapChange(event:PropertyChangeEvent):void{
+				if(this.hostComponent.map){
+					this.hostComponent.map.addEventListener(I18NEvent.LOCALE_CHANGED, localize);
+					localize(null);
+				}
+			}
+			
+			/**
+			 * @private
+			 */ 
+			protected function localize(event:I18NEvent=null):void{
+				this.protocolLabel.label = Catalog.getLocalizationForKey("addExternalLayer.protocolLabel.label");
+				//this.protocolLabel.toolTip = Catalog.getLocalizationForKey("addExternalLayer.protocolLabel.toolTip");
+				this.versionLabel.label = Catalog.getLocalizationForKey("addExternalLayer.versionLabel.label");
+				this.versionLabel.toolTip = Catalog.getLocalizationForKey("addExternalLayer.versionLabel.toolTip");
+				
+				if(this.urlLabel){
+					this.urlLabel.label = Catalog.getLocalizationForKey("addExternalLayer.urlLabel.label");
+					this.urlLabel.toolTip = Catalog.getLocalizationForKey("addExternalLayer.urlLabel.toolTip");
+				}
+				
+				if(this.resultListLabel){
+					this.resultListLabel.label = Catalog.getLocalizationForKey("addExternalLayer.resultListLabel.label");
+					this.resultListLabel.toolTip = Catalog.getLocalizationForKey("addExternalLayer.resultListLabel.toolTip")
+				}
+				
+				if(this.lookForGetCapButton){
+					this.lookForGetCapButton.label = Catalog.getLocalizationForKey("addExternalLayer.lookForGetCapButton.label");
+				}
+				
+				if(this.noresLabel){
+					this.noresLabel.text = Catalog.getLocalizationForKey("addExternalLayer.noresLabel.text");
+				}
+				
+				if(this.loadingLabel){
+					this.loadingLabel.text = Catalog.getLocalizationForKey("addExternalLayer.loadingLabel.text");
+				}
+				
+				this.cancelButton.label = Catalog.getLocalizationForKey("addExternalLayer.cancelButton.label");
+				this.submitButton.label = Catalog.getLocalizationForKey("addExternalLayer.submitButton.label");
+			
+				
+			}
+
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				localize(null);
+			}
+			
+			
+		]]>
+	</fx:Script>
 	
 	<!-- states -->
 	<s:states>
@@ -15,6 +116,7 @@
 		<s:State name="other" />
 		<s:State name="isresults" />
 		<s:State name="noresults" />
+		<s:State name="loading" />
 	</s:states>
 	
 	<s:Group width="100%">
@@ -22,33 +124,45 @@
 			<s:VerticalLayout paddingLeft="10" paddingRight="10"/>
 		</s:layout>
 		<mx:Form defaultButton="{submitButton}" width="100%" >
-			<mx:FormItem label="Protocole" width="100%">
+			<mx:FormItem id="protocolLabel" width="100%">
 				<s:DropDownList id="protocolsList" width="100%"/>
 			</mx:FormItem>
-			<mx:FormItem label="Version" width="100%" toolTip="{'Version du protocole '+protocolsList.selectedItem as String }">
+			<mx:FormItem  id="versionLabel"  width="100%" >
 				<s:DropDownList id="versionsList" width="100%" />
 			</mx:FormItem>
 			
-			<mx:FormItem label="URL" 
-						 toolTip="{'URL du service '+protocolsList.selectedItem as String }" 
+			<mx:FormItem 
+						 id="urlLabel"
+						 
 						 width="100%"
-						 includeIn="ogc">
-				<s:TextInput id="urlTextInput" width="100%"/>
+						 includeIn="ogc,isresults,noresults,normal"
+						 direction="horizontal">
+				<s:TextInput id="urlTextInput" width="80%"/>
+				<s:Button id="lookForGetCapButton" click="{this.hostComponent.lookForGetCap()}"  />
 			</mx:FormItem>
-			<mx:FormItem label="Couches disp." 
+			<mx:FormItem 
+						 id="resultListLabel"
 						 width="100%"
-						 toolTip="Couches disponibles sur le serveur "
-						 includeIn="ogc">
-				<s:List id="resultList" width="100%">
+						 
+						 includeIn="ogc,isresults,noresults,normal,loading">
+				
+				<s:List id="resultList" width="100%" enabled.isresults="true" 
+						enabled="false" 
+						includeIn="ogc,isresults,normal" 
+						itemRenderer="org.openscales.fx.control.search.itemrenderer.AddExternalLayerOGCItemRenderer"
+						change="resultList_changeHandler(event)">
 					<s:layout>
-						<s:VerticalLayout requestedMinRowCount="5" />
+						<s:VerticalLayout requestedMinRowCount="5"
+										  requestedRowCount="7"/>
 					</s:layout>
 				</s:List>	
+				<s:Label id="noresLabel" color="red"  includeIn="noresults" />
+				<s:Label id="loadingLabel" includeIn="loading"  />
 			</mx:FormItem>
 			
 			<mx:FormItem direction="horizontal" horizontalAlign="right" paddingTop="20">
-				<s:Button id="cancelButton" label="Annuler" />
-				<s:Button id="submitButton" label="Ajouter" />
+				<s:Button id="cancelButton"  />
+				<s:Button id="submitButton"  enabled="false" enabled.noresults="false" enabled.loading="false" click="submitButton_clickHandler(event)" />
 			</mx:FormItem>
 				
 		</mx:Form>

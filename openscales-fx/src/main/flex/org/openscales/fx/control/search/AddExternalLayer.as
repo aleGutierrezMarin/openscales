@@ -8,6 +8,7 @@ package org.openscales.fx.control.search
 	import mx.events.ListEvent;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.fx.control.Control;
 	
@@ -20,6 +21,7 @@ package org.openscales.fx.control.search
 	[SkinState("other")]
 	[SkinState("isresults")]
 	[SkinState("noresults")]
+	[SkinState("loading")]
 	
 	public class AddExternalLayer extends Control
 	{
@@ -63,6 +65,8 @@ package org.openscales.fx.control.search
 		private var _supportedFormats:HashMap;
 		private var isResults:Boolean = false;
 		private var noResults:Boolean = false;
+		private var loading:Boolean = false;
+		private var _capabilities:GetCapabilities;
 		
 		public function AddExternalLayer()
 		{
@@ -85,17 +89,18 @@ package org.openscales.fx.control.search
 		}
 		
 		override protected function partAdded(partName:String, instance:Object):void{
+			super.partAdded(partName,instance);
 			if(instance == protocolsList){
 				protocolsList.dataProvider = new ArrayCollection(_supportedFormats.getKeys().sort());
 			}
 			if(instance == submitButton){
-				submitButton.enabled = false;
+			
 			}
 			if(instance == resultList){
-				resultList.enabled = false;
+				
 			}
 			if(instance == urlTextInput){
-				urlTextInput.addEventListener(FocusEvent.FOCUS_OUT, onURLTextInputFocusOut);
+				
 			}
 			
 		}
@@ -104,20 +109,37 @@ package org.openscales.fx.control.search
 			var prot:String = protocolsList.selectedItem as String
 			if(super.getCurrentSkinState() == "disabled") return super.getCurrentSkinState();	
 			if(prot == "WMS" || prot == "WFS" || prot == "WMTS"){
-				if(noResults) return "noresult";
-				if(isResults)return "isresults"
+				if(noResults) return "noresults";
+				if(isResults)return "isresults";
+				if(loading)return "loading";
 				return "ogc";
 			}else return "other";
 			
 		}
 		
-		protected function onURLTextInputFocusOut(event:FocusEvent):void{
+		public function lookForGetCap():void{
+			resultList.dataProvider = null;
 			noResults = false;
 			isResults = false;
+			loading = false;
 			var prot:String = (protocolsList.selectedItem as String).replace(/\s/g,"");
 			var vers:String = (versionsList.selectedItem as String).replace(/\s/g,"");
 			var url:String = (urlTextInput.text).replace(/\s/g,"");
-			var getCapapbilities:GetCapabilities = new GetCapabilities(prot, url, onGetCapSuccess, vers,this.map.getProxy(url));
+			_capabilities = new GetCapabilities(prot, url, onGetCapSuccess, vers,this.map.getProxy(url));
+			loading = true;
+			invalidateSkinState();
+		}
+		
+		public function addOGCLayer(name:String):Boolean{
+			if(_capabilities && _map){
+				var layer:Layer = _capabilities.instanciateLayer(name);
+				if(!layer)return false;
+				layer.url = urlTextInput.text;
+				layer.projection = _map.projection;
+				layer.maxExtent = _map.maxExtent;
+				return _map.addLayer(layer);
+			}
+			return false;
 		}
 		
 		protected function onGetCapSuccess(getCapabilities:GetCapabilities):void{
@@ -128,7 +150,8 @@ package org.openscales.fx.control.search
 				return;
 			}else{
 				isResults = true;
-				var layerArray:ArrayCollection = new ArrayCollection(cap.getKeys().sort());
+				var layerArray:ArrayCollection = new ArrayCollection(cap.getValues());
+				//layerArray.sort = new Sort();
 				resultList.dataProvider = layerArray;
 				invalidateSkinState();
 			}

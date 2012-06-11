@@ -211,5 +211,19 @@
    "editStyle.labelStyleEdition.labelApplyTo":"Apply to:",
    "editStyle.labelStyleEdition.applyAllLabel":"Labels with same style",
    "editStyle.labelStyleEdition.applyOnlyThisLabel":"This label only",
-   "editStyle.labelStyleEdition.applySimilarLabel":"All labels"
+   "editStyle.labelStyleEdition.applySimilarLabel":"All labels",
+   
+   "addExternalLayer.protocolLabel.label":"Protocol",
+   "addExternalLayer.protocolLabel.toolTip":"",
+   "addExternalLayer.versionLabel.label":"Version",
+   "addExternalLayer.versionLabel.toolTip":"Protocol version",
+   "addExternalLayer.urlLabel.label":"URL",
+   "addExternalLayer.urlLabel.toolTip":"Web service URL",
+   "addExternalLayer.lookForGetCapButton.label":"OK",
+   "addExternalLayer.resultListLabel.label":"Avail. layers",
+   "addExternalLayer.resultListLabel.toolTip":"Available layers on this server",
+   "addExternalLayer.noresLabel.text":"Nothing on this server",
+   "addExternalLayer.loadingLabel.text":"Loading...",
+   "addExternalLayer.cancelButton.label":"Cancel",
+   "addExternalLayer.submitButton.label":"Add to map"
  }

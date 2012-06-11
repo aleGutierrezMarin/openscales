@@ -176,6 +176,7 @@
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.control.search.AddExternalLayer"/>
     <classEntry path="org.openscales.fx.control.skin.AddExternalLayerDefaultSkin"/>
+    <classEntry path="org.openscales.fx.control.search.itemrenderer.AddExternalLayerOGCItemRenderer"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
