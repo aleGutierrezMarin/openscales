@@ -71,7 +71,7 @@ package org.openscales.core.request
 				if (this._onFailure == null)
 					this._onFailure = onFailure;
 				
-				this._onFailure;
+				this._onFailure.apply(this,[event]);
 			});
 			
 			this.url = url;
