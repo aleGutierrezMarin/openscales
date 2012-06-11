@@ -12,6 +12,10 @@ os|Search {
 	skin-class: ClassReference("org.openscales.fx.control.skin.SearchDefaultSkin");
 }
 
+os|AddExternalLayer{
+	skin-class: ClassReference("org.openscales.fx.control.skin.AddExternalLayerDefaultSkin");
+}
+
 os|NavigationHistoryBrowser{
     skin-class: ClassReference("org.openscales.fx.control.skin.NavigationHistoryBrowserDefaultSkin");
 }

@@ -675,16 +675,19 @@
 		]]>
 	</fx:Script>
 	<s:SkinnableContainer styleName="verticalLayout" id="mousePositionMainGroup">
+		<!--- The label that displays the mouse position coordinates -->
 		<s:Label id="mousePositionCoordinates" backgroundColor="0xFFFFFF" 
 				 text="{this.mousePositionLabel}"
 				 width="200"
 				 paddingTop="5" paddingBottom="5" paddingLeft="5" paddingRight="5"> 
 		</s:Label>
 		<s:SkinnableContainer styleName="horizontalLayout" id="mousePositionChoiceGroup" width="100%" top="25">
+			<!--- The dropdown list that contains available projections-->
 			<s:DropDownList id="mousePositionCrsComboBox" 
 							change="crsChanged(event);"
 							dataProvider="{this.crsDataProvider}"
 							selectedIndex="{this.selectedIndexCrs}" />
+			<!--- The dropdown list that contains available units for the current projection-->
 			<s:DropDownList id="mousePositionUnitsComboBox" labelField="label" 
 							change="unitsChanged(event)" 
 							dataProvider="{this.unitDataProvider}"

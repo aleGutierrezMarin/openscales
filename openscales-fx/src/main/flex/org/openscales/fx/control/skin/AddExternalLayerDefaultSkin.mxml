@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.fx.control.search.AddExternalLayer")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="disabled" />
+		<s:State name="normal" />
+		<s:State name="ogc" />
+		<s:State name="other" />
+		<s:State name="isresults" />
+		<s:State name="noresults" />
+	</s:states>
+	
+	<s:Group width="100%">
+		<s:layout>
+			<s:VerticalLayout paddingLeft="10" paddingRight="10"/>
+		</s:layout>
+		<mx:Form defaultButton="{submitButton}" width="100%" >
+			<mx:FormItem label="Protocole" width="100%">
+				<s:DropDownList id="protocolsList" width="100%"/>
+			</mx:FormItem>
+			<mx:FormItem label="Version" width="100%" toolTip="{'Version du protocole '+protocolsList.selectedItem as String }">
+				<s:DropDownList id="versionsList" width="100%" />
+			</mx:FormItem>
+			
+			<mx:FormItem label="URL" 
+						 toolTip="{'URL du service '+protocolsList.selectedItem as String }" 
+						 width="100%"
+						 includeIn="ogc">
+				<s:TextInput id="urlTextInput" width="100%"/>
+			</mx:FormItem>
+			<mx:FormItem label="Couches disp." 
+						 width="100%"
+						 toolTip="Couches disponibles sur le serveur "
+						 includeIn="ogc">
+				<s:List id="resultList" width="100%">
+					<s:layout>
+						<s:VerticalLayout requestedMinRowCount="5" />
+					</s:layout>
+				</s:List>	
+			</mx:FormItem>
+			
+			<mx:FormItem direction="horizontal" horizontalAlign="right" paddingTop="20">
+				<s:Button id="cancelButton" label="Annuler" />
+				<s:Button id="submitButton" label="Ajouter" />
+			</mx:FormItem>
+				
+		</mx:Form>
+	</s:Group>
+	
+	<!-- SkinParts
+	name=versionsList, type=spark.components.List, required=true
+	name=protocolsList, type=spark.components.List, required=true
+	name=contentGroup, type=spark.components.Group, required=false
+	-->
+</s:Skin>
