@@ -5,6 +5,7 @@ package org.openscales.core.layer.capabilities
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
@@ -182,7 +183,14 @@ package org.openscales.core.layer.capabilities
 				this._cbkFunc.call(this,this);
 			}
 		}
-
+		
+		/**
+		 * Call the <code>instanciate</code> method of current parser
+		 */ 
+		public function instanciateLayer(layerName:String):Layer{
+			return _parser.instanciate(layerName);
+		}
+		
 		/**
 		 * Returns the capabilities HashMap representation of the specified layer name
 		 *

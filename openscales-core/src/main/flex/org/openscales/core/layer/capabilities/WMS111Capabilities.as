@@ -1,6 +1,8 @@
 // ActionScript file
 package org.openscales.core.layer.capabilities
 {
+	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 
@@ -118,6 +120,28 @@ package org.openscales.core.layer.capabilities
 			return this._capabilities;
 		}
 
+		override public function instanciate(name:String):Layer{
+			if(!_capabilities) return null;
+			var layerData:HashMap = _capabilities.getValue(name);
+			if(!layerData)return null;
+			var identifier:String = layerData.getValue("Name");
+			var formats:String = layerData.getValue("Format")
+			var format:String = formats.match(/image(\/png)/gi).length > 0 ? "image/png" : formats.split(",")[0];
+			var srss:String = layerData.getValue("SRS");
+			var srs:String = srss.match(/EPSG:4326/gi).length > 0 ? "EPSG:4326" : srss.split(",")[0];
+			
+			var wmsLayer:WMS = new WMS(identifier,"",identifier,"",format);
+			wmsLayer.displayedName = layerData.getValue("Title");
+			wmsLayer.version = "1.1.1";
+			wmsLayer.format = format;
+			wmsLayer.projection = srs;
+			wmsLayer.abstract = layerData.getValue("Abstract");
+			wmsLayer.maxExtent = layerData.getValue("EX_GeographicBoundingBox");
+			wmsLayer.transparent = true;
+			wmsLayer.availableProjections = new Vector.<String>(srss.split(","));
+			return wmsLayer;
+		}
+		
 		/**
 		 * Method to remove the additional namespaces of the XML capabilities file.
 		 *
