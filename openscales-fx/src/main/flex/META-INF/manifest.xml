@@ -77,7 +77,8 @@
 	<component id="FeatureDrawing" class="org.openscales.fx.control.FeatureDrawing"/>
 	<component id="FeatureInfo" class="org.openscales.fx.control.FeatureInfo" />
 	<component id="Search" class="org.openscales.fx.control.search.Search" />
-	<component id="AddExternalLayer" class="org.openscales.fx.control.search.FxAddLayer" />
+	<component id="AddLayer" class="org.openscales.fx.control.search.FxAddLayer" />
+	<component id="AddExternalLayer" class="org.openscales.fx.control.search.AddExternalLayer" />
 	<component id="BingSearch" class="org.openscales.fx.control.search.engine.FxBingSearch" />
 	<component id="OpenLSSearch" class="org.openscales.fx.control.search.OpenLSSearch" />
 	<component id="TraceInfo" class="org.openscales.fx.control.TraceInfo" />
