@@ -1,0 +1,21 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace os "http://openscales.org";
+@namespace popup "org.openscales.fx.control.drawing.popup.*";
+
+popup|EditLabel{
+	skin-class: ClassReference("org.openscales.fx.control.drawing.popup.skin.EditLabelSkin");
+}
+
+os|Search {
+	skin-class: ClassReference("org.openscales.fx.control.skin.SearchDefaultSkin");
+}
+
+os|AddExternalLayer{
+	skin-class: ClassReference("org.openscales.fx.control.skin.AddExternalLayerDefaultSkin");
+}
+
+os|NavigationHistoryBrowser{
+    skin-class: ClassReference("org.openscales.fx.control.skin.NavigationHistoryBrowserDefaultSkin");
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				width="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.basetypes.maps.HashMap;
+			
+			private var _title:String = "";
+			private var _abs:String = "";
+			private var _name:String = "";
+			
+			[Bindable]
+			override public function get data():Object{
+				return super.data;	
+			}
+			
+			override public function set data(value:Object):void{
+				super.data = value;
+				
+				if(!(data is HashMap)) return;
+				
+				_title = (data as HashMap).getValue("Title");
+				_abs = (data as HashMap).getValue("Abstract");
+				_name = (data as HashMap).getValue("Name");
+				
+				if(_abs && _abs != ""){
+					this.toolTip = _abs;
+				}
+				
+				if(!_title || _title == ""){
+					_title = _name;
+				}
+				
+				titleLabel.text = _title;
+				
+				nameLabel.text = "("+_name+")";
+				
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:HorizontalLayout gap="5" paddingTop="5" />
+	</s:layout>
+	<s:Label id="titleLabel"/>
+	<s:Label id="nameLabel" color="0xAAAAAA" />
+	
+</s:ItemRenderer>
