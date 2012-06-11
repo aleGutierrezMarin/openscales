@@ -1714,6 +1714,9 @@
 			[Bindable]
 			private var _regionSelectedIndex:int = 0;
 			
+			[Bindable]
+			private var _departmentSelectedIndex:int = 0;
+			
 			private function onDepartmentChange(event:IndexChangeEvent):void
 			{
 				// If we select a department without a region
@@ -1738,6 +1741,18 @@
 						}
 						i++;
 					}
+					
+					// Then, updating the selected department index
+					i = 0;
+					for each (dept in this.frenchDepartements.getItemAt(this._regionSelectedIndex))
+					{
+						if (dept.label == currentDepartment.label && dept.data == currentDepartment.data)
+						{
+							this._departmentSelectedIndex = i;
+						}
+						i++;
+					}
+					
 				}
 			}
 
@@ -1797,10 +1812,13 @@
 							<s:DropDownList id="regionFilter" visible="{this.territoireFilter.selectedIndex==1}" includeInLayout="{this.territoireFilter.selectedIndex==1}"
 											dataProvider="{this.frenchRegions}"
 											requireSelection="true"
+											selectedIndex="@{this._regionSelectedIndex}"
 											/>
 							<s:DropDownList id="departementFilter" visible="{this.territoireFilter.selectedIndex==1}" includeInLayout="{this.territoireFilter.selectedIndex==1}"
-											dataProvider="{this.frenchDepartements.getItemAt(this.regionFilter.selectedIndex)}"
-											requireSelection="true"/>
+											dataProvider="{this.frenchDepartements.getItemAt(this._regionSelectedIndex)}"
+											requireSelection="true"
+											selectedIndex="@{this._departmentSelectedIndex}"
+											change="onDepartmentChange(event)"/>
 						</s:HGroup>
 						<s:Line xFrom="5" xTo="498" yFrom="5" yTo="5" visible="{this._placeTypes.length>1 || this._displayBoundFilter || this._displayFrenchTerritoryFilter}" includeInLayout="{this._placeTypes.length>1 || this._displayBoundFilter || this._displayFrenchTerritoryFilter}">
 							<s:stroke>
