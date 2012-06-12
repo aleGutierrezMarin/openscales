@@ -1,6 +1,12 @@
 package org.openscales.geometry
 {
+	
+	
+	import flash.geom.Point;
+	
+	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.proj4as.ProjCalculus;
 	import org.openscales.proj4as.ProjProjection;
 
 	/**
@@ -25,19 +31,19 @@ package org.openscales.geometry
 		 * @param index the index of the attended vertex
 		 * @return the vertex requested or null for an invalid index
 		 */
-		public function getPointAt(index:Number):Point {
+		public function getPointAt(index:Number):org.openscales.geometry.Point {
 			// Return null for an invalid request
 			var realIndex:uint = index * 2;
 			if ((realIndex<0) || (realIndex>=this._components.length)) {
 				return null;
 			}
-			return new Point(this._components[realIndex],this._components[realIndex + 1]);
+			return new org.openscales.geometry.Point(this._components[realIndex],this._components[realIndex + 1]);
 		}
 		
 		/**
 		 * @return the last vertex of the LineString
 		 */
-		public function getLastPoint():Point {
+		public function getLastPoint():org.openscales.geometry.Point {
 			return this.getPointAt(this.componentsLength - 1);
 		}
 		
@@ -59,6 +65,36 @@ package org.openscales.geometry
 			}
 			return length;
 		}
+		
+		/**
+		 * Calculate the approximate length of the geometry were it projected onto
+		 *     the earth.
+		 * 
+		 * Returns:
+		 * {Float} The appoximate geodesic length of the geometry in meters.
+		 */
+		public function get geodesicLength():Number
+		{
+			var geom:LineString = this;  // so we can work with a clone if needed
+			var lonlatProj:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
+			if(lonlatProj != this.projection) {
+				geom = this.clone() as LineString;
+				geom.transform(lonlatProj);
+			}
+			var length:Number = 0;
+			if(geom.components && (geom.components.length >= 4)) {
+				var p1:flash.geom.Point;
+				var p2:flash.geom.Point;
+				for(var i:int=3, len:int=geom.components.length; i<len; i=i+2) {
+					p1 = new flash.geom.Point(geom.components[i-3], geom.components[i-2]);
+					p2 =  new flash.geom.Point(geom.components[i-1], geom.components[i]);
+					// this returns km and requires lon/lat properties
+					length += ProjCalculus.distVincenty(p1,p2);
+				}
+			}
+			// convert to m
+			return length * 1000;
+		}
 		/**
      	 * Test for instersection between this LineString and a geometry.
      	 * 
@@ -74,7 +110,7 @@ package org.openscales.geometry
 		override public function intersects(geom:Geometry):Boolean {
 			// Treat the geometry as a collection if it is not a simple point,
 			// a simple polyline or a simple polygon
-			if ( ! ((geom is Point) || (geom is LinearRing) || (geom is LineString)) ) {
+			if ( ! ((geom is org.openscales.geometry.Point) || (geom is LinearRing) || (geom is LineString)) ) {
 				 // LinearRing should be tested before LineString if a different
 				 // action should be made for each case
 				return (geom as Collection).intersects(this);
@@ -91,12 +127,12 @@ package org.openscales.geometry
 			//   line string and the geometry in segments. The segments are
 			//   oriented so that x1 <= x2 (but we does not known if y1 <= y2
 			//   or not).
-			var segs1:Vector.<Vector.<Point>> = this.getXsortedSegments();
+			var segs1:Vector.<Vector.<org.openscales.geometry.Point>> = this.getXsortedSegments();
 				
-			var segs2:Vector.<Vector.<Point>> = (geom is Point) ? new Vector.<Point>[new <Point>[(geom as Point),(geom as Point)]] : (geom as LineString).getXsortedSegments();
+			var segs2:Vector.<Vector.<org.openscales.geometry.Point>> = (geom is org.openscales.geometry.Point) ? new Vector.<org.openscales.geometry.Point>[new <org.openscales.geometry.Point>[(geom as org.openscales.geometry.Point),(geom as org.openscales.geometry.Point)]] : (geom as LineString).getXsortedSegments();
 			
-			var seg1:Vector.<Point>, seg1y0:Number, seg1y1:Number, seg1yMin:Number, seg1yMax:Number;
-			var seg2:Vector.<Point>, seg2y0:Number, seg2y1:Number, seg2yMin:Number, seg2yMax:Number;
+			var seg1:Vector.<org.openscales.geometry.Point>, seg1y0:Number, seg1y1:Number, seg1yMin:Number, seg1yMax:Number;
+			var seg2:Vector.<org.openscales.geometry.Point>, seg2y0:Number, seg2y1:Number, seg2yMin:Number, seg2yMax:Number;
 			// Loop over each segment of this LineString
     		for(var i:int=0; i<segs1.length; ++i) {
 				seg1 = segs1[i];
@@ -108,21 +144,21 @@ package org.openscales.geometry
 					seg2 = segs2[j];
 					// If the most left vertex of seg2 is at the right of the
 					//   most right vertex of seg1, there is no intersection
-					if ((seg2[0] as Point).x > (seg1[1] as Point).x) {
+					if ((seg2[0] as org.openscales.geometry.Point).x > (seg1[1] as org.openscales.geometry.Point).x) {
                 		continue;
             		}
 					// If the most right vertex of seg2 is at the left of the
 					//   most left vertex of seg1, there is no intersection
-            		if ((seg2[1] as Point).x < (seg1[0] as Point).x) {
+            		if ((seg2[1] as org.openscales.geometry.Point).x < (seg1[0] as org.openscales.geometry.Point).x) {
             		    // seg2 still left of seg1
             		    continue;
            		 	}
            		 	// To perform similar tests along Y-axis, it is necessary to
            		 	//   order the vertices of each segment
-					seg1y0 = (seg1[0] as Point).y;
-					seg1y1 = (seg1[1] as Point).y;
-          		  	seg2y0 = (seg2[0] as Point).y;
-          		  	seg2y1 = (seg2[1] as Point).y;
+					seg1y0 = (seg1[0] as org.openscales.geometry.Point).y;
+					seg1y1 = (seg1[1] as org.openscales.geometry.Point).y;
+          		  	seg2y0 = (seg2[0] as org.openscales.geometry.Point).y;
+          		  	seg2y1 = (seg2[1] as org.openscales.geometry.Point).y;
           		  	seg1yMin = Math.min(seg1y0, seg1y1);
           		  	seg1yMax = Math.max(seg1y0, seg1y1);
           		  	seg2yMin = Math.min(seg2y0, seg2y1);
@@ -160,14 +196,14 @@ package org.openscales.geometry
 		 * 
 		 * @return Array of X-sorted segments
 		 */
-		private function getXsortedSegments():Vector.<Vector.<Point>> {
-			var point1:Point, point2:Point;
+		private function getXsortedSegments():Vector.<Vector.<org.openscales.geometry.Point>> {
+			var point1:org.openscales.geometry.Point, point2:org.openscales.geometry.Point;
 			var numSegs:int = this._components.length-3;
-			var segments:Vector.<Vector.<Point>> = new Vector.<Vector.<Point>>(numSegs);
+			var segments:Vector.<Vector.<org.openscales.geometry.Point>> = new Vector.<Vector.<org.openscales.geometry.Point>>(numSegs);
 			for(var i:int=0; i<numSegs; ++i) {
-				point1 = new Point(this._components[i],this._components[i+1])
-				point2 = new Point(this._components[i + 2],this._components[i + 3])
-				segments[i] = (this._components[i+2] < this._components[i]) ? new <Point>[point2,point1] :  new <Point>[point1,point2];
+				point1 = new org.openscales.geometry.Point(this._components[i],this._components[i+1])
+				point2 = new org.openscales.geometry.Point(this._components[i + 2],this._components[i + 3])
+				segments[i] = (this._components[i+2] < this._components[i]) ? new <org.openscales.geometry.Point>[point2,point1] :  new <org.openscales.geometry.Point>[point1,point2];
 			}
 			return segments;
 		}

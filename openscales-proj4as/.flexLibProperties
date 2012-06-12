@@ -33,6 +33,7 @@
     <classEntry path="org.openscales.proj4as.proj.ProjUtm"/>
     <classEntry path="org.openscales.proj4as.proj.ProjVandg"/>
     <classEntry path="org.openscales.proj4as.projections.ProjectionTest"/>
+    <classEntry path="org.openscales.proj4as.ProjCalculus"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
