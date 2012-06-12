@@ -5,7 +5,8 @@
 
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
 	xmlns:controls="controls.*"
-    alpha.disabled=".5" xmlns:components="org.openscales.fx.autocomplete.*" > 
+    alpha.disabled=".5" xmlns:components="org.openscales.fx.autocomplete.*"
+	creationComplete="onCreationComplete(event)"> 
 
     <!-- host component -->
     <fx:Metadata>
@@ -14,8 +15,21 @@
      * @copy spark.skins.spark.ApplicationSkin#hostComponent
      */
         [HostComponent("org.openscales.fx.autocomplete.AutoComplete")]
+	
     ]]>
     </fx:Metadata> 
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.ScrollPolicy;
+			
+			private function onCreationComplete(event:Event):void
+			{
+				this.list.setStyle('horizontalScrollPolicy', ScrollPolicy.OFF);
+			}
+			
+		]]>
+	</fx:Script>
 
     <s:states>
         <s:State name="normal" />
@@ -34,7 +48,7 @@
         
         <s:Group id="dropDown" minHeight="22" width="100%">
         
-			<components:ListAutoComplete id="list" width="100%" minWidth="22" itemRenderer="org.openscales.fx.autocomplete.AutoCompleteListItemRenderer"/>
+			<components:ListAutoComplete id="list" width="100%" minWidth="400" maxWidth="400" itemRenderer="org.openscales.fx.autocomplete.AutoCompleteListItemRenderer"/>
 			
         </s:Group>
 		

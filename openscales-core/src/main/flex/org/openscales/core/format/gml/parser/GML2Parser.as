@@ -170,7 +170,7 @@ package org.openscales.core.format.gml.parser
 		 *
 		 * @return A polygon geometry.
 		 */
-		private function parsePolygonNode(polygonNode:Object, proj:ProjProjection):Polygon {
+		public function parsePolygonNode(polygonNode:Object, proj:ProjProjection):Polygon {
 			var linearRings:XMLList = polygonNode..*::LinearRing;
 			// Optimize by specifying the array size
 			var j:int = linearRings.length();

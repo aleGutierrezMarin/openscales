@@ -237,7 +237,7 @@ package org.openscales.core.format.gml.parser
 		 *
 		 * @return A polygon geometry.
 		 */
-		private function parsePolygonNode(polygonNode:Object, proj:ProjProjection, lonlat:Boolean):Polygon {
+		public function parsePolygonNode(polygonNode:Object, proj:ProjProjection, lonlat:Boolean):Polygon {
 			var exterior:XMLList = polygonNode..*::exterior;
 			if(exterior.length()!=1)
 				return null;
