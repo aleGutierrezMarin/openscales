@@ -115,38 +115,34 @@ package org.openscales.core.measure
 			
 			switch (_displaySystem.toLowerCase()) {
 				case "km":
-					inPerDisplayUnit = Unit.getInchesPerUnit(Unit.KILOMETER)
-					if(inPerDisplayUnit) {
-						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
-						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+					area = this.getGeodesicArea();
+					
+						area=area/1000000;
 						_lastUnit = "km²";
 						this._result= this.trunc(area,_accuracies.getValue(Unit.KILOMETER));
-					}
+
 					break;
 				
 				case Unit.METER :
-					inPerDisplayUnit = Unit.getInchesPerUnit(Unit.METER);
-					if(inPerDisplayUnit) {
-						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
-						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+					area = this.getGeodesicArea();
+				
+
 						_lastUnit = "m²";
 						this._result= this.trunc(area,_accuracies.getValue(Unit.METER));
-					}
+
 					break;
 				
 				case "metric":
-					inPerDisplayUnit = Unit.getInchesPerUnit(Unit.KILOMETER)
-					if(inPerDisplayUnit) {
-						inPerMapUnit = Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
-						area *= Math.pow((inPerMapUnit / inPerDisplayUnit), 2);
+					area = this.getGeodesicArea();
+
+
+						area=area/1000000;
 						_lastUnit = "km²";
 						this._result= this.trunc(area,_accuracies.getValue(Unit.KILOMETER));
 						
 						if(area<1){
-							area=area*1000000;
 							_lastUnit = "m²";
 							this._result= this.trunc(area,_accuracies.getValue(Unit.METER));
-						}
 					}
 					
 					break;
@@ -175,6 +171,23 @@ package org.openscales.core.measure
 				((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).units = ProjProjection.getProjProjection(drawLayer.projection).projParams.units;
 				
 				area = ((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).area;
+				area = Math.abs(area);
+				
+			}
+			
+			
+			return area;
+		}
+		
+		private function getGeodesicArea():Number{
+			var area:Number = 0;
+			
+			if(_polygonFeature && (this._polygonFeature.geometry as Polygon).componentsLength == 1
+				&& ((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).componentsLength>2){
+				
+				((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).units = ProjProjection.getProjProjection(drawLayer.projection).projParams.units;
+				
+				area = ((this._polygonFeature.geometry as Polygon).componentByIndex(0) as LinearRing).geodesicArea;
 				area = Math.abs(area);
 				
 			}

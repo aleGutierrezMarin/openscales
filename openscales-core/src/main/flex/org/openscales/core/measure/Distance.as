@@ -118,19 +118,23 @@ package org.openscales.core.measure
 				tmpDist *= Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 				switch (_displaySystem.toLowerCase()) {					
 					case Unit.METER:
-						tmpDist/=Unit.getInchesPerUnit(Unit.METER);
+						tmpDist = (_currentLineStringFeature.geometry as LineString).geodesicLength;
+						//tmpDist/=Unit.getInchesPerUnit(Unit.METER);
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.METER));
 						_lastUnit = Unit.METER;
 						break;
 					
 					case Unit.KILOMETER:
-						tmpDist/=Unit.getInchesPerUnit(Unit.KILOMETER);
+						tmpDist = (_currentLineStringFeature.geometry as LineString).geodesicLength;
+						//tmpDist/=Unit.getInchesPerUnit(Unit.KILOMETER);
+						tmpDist /= 1000;
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.KILOMETER));
 						_lastUnit = Unit.KILOMETER;
 						break;
 					
 					case "metric":			
-						tmpDist/=Unit.getInchesPerUnit(Unit.METER);
+						tmpDist = (_currentLineStringFeature.geometry as LineString).geodesicLength;
+						//tmpDist/=Unit.getInchesPerUnit(Unit.METER);
 						_result= Util.truncate(tmpDist,_accuracies.getValue(Unit.METER));
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.METER));
 						_lastUnit = Unit.METER;

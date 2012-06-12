@@ -2,7 +2,8 @@ package org.openscales.core.utils
 {
 	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
-	import flash.geom.Point;
+	
+	import org.openscales.geometry.Point;
 	
 	/**
 	 * Util classes inherited for OpenLayers, less and less used.
@@ -10,6 +11,7 @@ package org.openscales.core.utils
 	public class Util
 	{
 
+		
 		public function Util() {
 
 		}
@@ -314,7 +316,7 @@ package org.openscales.core.utils
 			return val*180/Math.PI;
 		}
 		
+		
 	}
-
 }
 
