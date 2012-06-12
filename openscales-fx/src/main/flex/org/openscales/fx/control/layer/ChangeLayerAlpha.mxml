@@ -85,7 +85,7 @@
 	</fx:Script>
 	
 
-	<s:SkinnableContainer height="20" width="100%" >
+	<s:SkinnableContainer id="mainContainer" height="20" width="100%">
 		<s:layout>
 			<s:HorizontalLayout 
 				   paddingLeft="2"
