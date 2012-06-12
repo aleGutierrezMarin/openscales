@@ -141,6 +141,7 @@ package org.openscales.core.measure
 						this._result= this.trunc(area,_accuracies.getValue(Unit.KILOMETER));
 						
 						if(area<1){
+							area=area*1000000;
 							_lastUnit = "m²";
 							this._result= this.trunc(area,_accuracies.getValue(Unit.METER));
 					}
