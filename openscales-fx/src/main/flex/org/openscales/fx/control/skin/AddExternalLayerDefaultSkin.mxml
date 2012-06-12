@@ -42,11 +42,16 @@
 			{
 				var prot:String = protocolsList.selectedItem as String;
 				
+				var layerName:String;
+				
 				switch(prot){
 					case "WMS":
 					case "WFS":
+						layerName = (resultList.selectedItem as HashMap).getValue("Name");
+						hostComponent.addOGCLayer(layerName);
+						break;
 					case "WMTS":
-						var layerName:String = (resultList.selectedItem as HashMap).getValue("Name");
+						layerName = (resultList.selectedItem as HashMap).getValue("Identifier");
 						hostComponent.addOGCLayer(layerName);
 						break;
 					case "KML":
@@ -125,6 +130,12 @@
 				localize(null);
 			}
 			
+			private function selectOGCItemRenderer(item:Object):IFactory{
+				var prot:String = protocolsList.selectedItem;
+				var fact:ClassFactory = new ClassFactory(AddExternalLayerOGCItemRenderer);
+				fact.properties = {protocol:prot}
+				return fact;
+			}
 			
 			
 		]]>
@@ -170,7 +181,7 @@
 				<s:List id="resultList" width="100%" enabled.isresults="true" 
 						enabled="false" 
 						includeIn="ogc,isresults" 
-						itemRenderer="org.openscales.fx.control.search.itemrenderer.AddExternalLayerOGCItemRenderer"
+						itemRendererFunction="{selectOGCItemRenderer}"
 						change="resultList_changeHandler(event)">
 					<s:layout>
 						<s:VerticalLayout requestedMinRowCount="5"
