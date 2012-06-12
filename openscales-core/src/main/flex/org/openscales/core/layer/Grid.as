@@ -789,7 +789,7 @@ package org.openscales.core.layer
 				
 				for (i; i < len; ++i)
 				{
-					if (this.resolutions[i] <= targetResolution.value)
+					if (this.resolutions[i] < targetResolution.value)
 					{
 						ratioSeeker =  targetResolution.value -this.resolutions[i];
 					}
