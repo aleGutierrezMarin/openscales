@@ -144,10 +144,12 @@ package org.openscales.core.layer.ogc
 		}
 		
 		public function get exception():String {
+			if(!params)return null;
 			return (this.params as WMSParams).exceptions;
 		}
 		
 		public function set exception(value:String):void {
+			if(!params)return;
 			(this.params as WMSParams).exceptions = value;
 		}
 		
