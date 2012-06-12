@@ -56,6 +56,7 @@ package org.openscales.core.request.csw.getrecords
 			var dctns:Namespace = new Namespace("dct", "http://purl.org/dc/terms/");
 			var xsins:Namespace = new Namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 			var localNS:Namespace = new Namespace(null, "http://www.opengis.net/cat/csw/2.0.2");
+			var gmdns:Namespace = new Namespace("gmd", "http://www.isotc211.org/2005/gmd");
 
 			post.addNamespace(ogcns);
 			post.addNamespace(cswns);
@@ -64,6 +65,7 @@ package org.openscales.core.request.csw.getrecords
 			post.addNamespace(dcns);
 			post.addNamespace(dctns);
 			post.addNamespace(xsins);
+			post.addNamespace(gmdns);
 			post.setNamespace(cswns);
 			
 			post.@service = _service;
@@ -75,7 +77,8 @@ package org.openscales.core.request.csw.getrecords
 			post.@outputSchema = _outputSchema;
 			
 			var query:XML = new XML("<Query></Query>")
-			query.@typeNames = "csw:Record";
+			//query.@typeNames = "csw:Record";
+			query.@typeNames = "gmd:MD_Metadata";
 			post.appendChild(query);
 			
 			
