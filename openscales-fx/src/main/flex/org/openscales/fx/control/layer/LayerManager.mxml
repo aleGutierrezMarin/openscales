@@ -282,8 +282,10 @@
 			 * @param event Drag event
 			 */
 			public function changeLayerOrder(event:DragEvent):void{
-				var layer:Layer = layerList.selectedItem as Layer;
-				this.map.changeLayerIndex(layer,layerList.selectedIndex);
+				var index:uint = _map.layers.length - layerList.selectedIndex - 1;
+				var layerToMove:Layer = layerList.selectedItem as Layer;
+				if(!layerToMove)return;
+				_map.changeLayerIndex(layerToMove,index);
 			}
 			
 			// getter / setter
