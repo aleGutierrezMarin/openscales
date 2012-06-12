@@ -2,6 +2,8 @@ package org.openscales.core.layer.capabilities
 {
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.geometry.basetypes.Location;
@@ -282,6 +284,23 @@ package org.openscales.core.layer.capabilities
 			for each (var ns:String in namespaces) {
 				doc.removeNamespace(new Namespace(ns));
 			}
+		}
+		
+		override public function instanciate(name:String):Layer{
+			if(!_capabilities)return null;
+			var layerData:HashMap = _capabilities.getValue(name);
+			if(!layerData)return null;
+			
+			var identifier:String = layerData.getValue("Identifier") as String;
+			
+			var tmss:Array = (layerData.getValue("TileMatrixSets") as HashMap).getKeys().sort();
+			
+			if(tmss.length ==0)return null;
+			
+			var defStyle:String = layerData.getValue("DefaultStyle") as String;
+			var wmts:WMTS = new WMTS(identifier,"",identifier,tmss[0],(layerData.getValue("TileMatrixSets") as HashMap),defStyle);
+			
+			return wmts;
 		}
 	}
 }
