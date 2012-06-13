@@ -49,6 +49,8 @@ package org.openscales.core.layer
 		private var _tileWidthErrorPerPixel:Number = 0;
 		private var _tileHeightErrorPerPixel:Number = 0;
 		private var _isStretched:Boolean = false;
+		
+		private var _finest:Boolean = true;
 
 		
 		private var _realMatrixTranform:Matrix;
@@ -770,7 +772,7 @@ package org.openscales.core.layer
 		 * Return the closest requestable resolution to the targetResolution given as parameter.
 		 * The parameter finest says if we always return the smaller resolution
 		 */
-		public function getSupportedResolution(targetResolution:Resolution, finest:Boolean = true):Resolution
+		public function getSupportedResolution(targetResolution:Resolution):Resolution
 		{
 			var bestResolution:Number;
 			var bestRatio:Number;
@@ -1522,6 +1524,17 @@ package org.openscales.core.layer
 				}
 			}
 		}
+
+		public function get finest():Boolean
+		{
+			return _finest;
+		}
+
+		public function set finest(value:Boolean):void
+		{
+			_finest = value;
+		}
+
 	}
 }
 
