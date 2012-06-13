@@ -64,18 +64,10 @@
 
 			protected function skin1_creationCompleteHandler(event:FlexEvent):void
 			{
-				if(hostComponent.map) localize(null);
-				ChangeWatcher.watch(this.hostComponent, "map", onMapChange);
-			}
-			
-			/**
-			 * @private
-			 */ 
-			protected function onMapChange(event:PropertyChangeEvent):void{
-				if(this.hostComponent.map){
-					this.hostComponent.map.addEventListener(I18NEvent.LOCALE_CHANGED, localize);
-					localize(null);
-				}
+				
+				
+				Catalog.catalog.addEventListener(I18NEvent.LOCALE_CHANGED, localize);
+				localize(null);
 			}
 			
 			/**
