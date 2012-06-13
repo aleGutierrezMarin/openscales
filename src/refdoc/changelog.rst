@@ -11,6 +11,8 @@ Changes between 2.1.1 and 2.1.2
 * Add abstract property to Layer
 * Add IIPImage client (cf IIPImageViewer)
 * Add navigation history logging (see the core class NavigationHistoryLogger and the control NavigationHistoryBrowser)
+* New control: AddExternalLayer (and its default skin AddExternalLayerDefaultSkin) which allows to add OGC WxS using a GetCap query on any valide server. Add of KML/GPX & GeoRSS layers is also supported (from local file system or URL)
+* Refactor i18n: Catalog now dispatches event when active locale changes .This allows to listen for locale changes without having access to the Map. For backward compatibility, Map instances still dispatche LOCALE_CHANGED events.
 
 Changes between 2.1.0 and 2.1.1
 -------------------------------

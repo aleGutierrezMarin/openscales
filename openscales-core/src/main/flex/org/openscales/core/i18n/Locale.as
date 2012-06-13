@@ -1,8 +1,10 @@
 package org.openscales.core.i18n
 {
+	import flash.events.EventDispatcher;
 	import flash.system.Capabilities;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.I18NEvent;
 	
 	/**
 	 * This class defines the available languages for components in OS.
@@ -117,7 +119,7 @@ package org.openscales.core.i18n
 		}
 		
 		/**
-		 * Indicates the active locale
+		 * Indicates the active locale. Changing this value will dispatch an I18NEvent.LOCALE_CHANGE on the Catalog singleton instance.
 		 */
 		static public function get activeLocale():Locale {
 			if(!Locale._activeLocale) {
@@ -136,6 +138,7 @@ package org.openscales.core.i18n
 				
 			}
 			Locale._activeLocale = value;
+			Catalog.catalog.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,_activeLocale));
 		}
 		
 		/**
