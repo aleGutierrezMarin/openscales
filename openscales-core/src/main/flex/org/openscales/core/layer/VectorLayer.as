@@ -199,6 +199,8 @@ package org.openscales.core.layer
 			var extent:Bounds = null;
 			var lonlat:Location;
 			var res:Resolution;
+			if (!map && this.map.projection)
+				return null;
 			if (this._lastReloadedCenter)
 				lonlat = this._lastReloadedCenter.clone();
 			else
@@ -210,7 +212,7 @@ package org.openscales.core.layer
 			if (lonlat != null) {
 				if(lonlat.projection != this.map.projection)
 					lonlat = lonlat.reprojectTo(this.map.projection);
-				if (res != null)
+				if (res != null && this.map.size)
 				{
 					if (res.projection != this.map.projection)
 						res = res.reprojectTo(this.map.projection);
