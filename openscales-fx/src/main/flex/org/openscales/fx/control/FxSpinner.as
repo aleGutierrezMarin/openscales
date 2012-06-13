@@ -1,9 +1,11 @@
 package org.openscales.fx.control
 {
-	import org.openscales.core.control.Spinner;
+	import mx.events.FlexEvent;
+	
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.core.control.Spinner;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	/**
 	 * <p>Spinner Flex wrapper</p>
@@ -14,14 +16,30 @@ package org.openscales.fx.control
 		private var slices:int = 12;
 		private var radius:int = 6;
 		private var rotationspeed:int = 80;
-		private var color:uint = 0x000000;
+		private var _color:uint = 0x000000;
 		
 		public function FxSpinner()	{
+			super();
+			this.addEventListener(FlexEvent.CREATION_COMPLETE, onCreationComplete);
+			
+		}
+
+		protected function onCreationComplete(event:FlexEvent):void{
 			if (x >= 0 && y>= 0) {
 				this.control = new Spinner(slices, radius, rotationspeed, color, new Pixel(x,y));
 			}	
 			this.control.active = true;		
-			super();
 		}
+		
+		public function get color():uint
+		{
+			return _color;
+		}
+
+		public function set color(value:uint):void
+		{
+			_color = value;
+		}
+
 	}
 }
