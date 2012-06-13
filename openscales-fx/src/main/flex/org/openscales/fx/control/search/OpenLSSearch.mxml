@@ -1433,6 +1433,9 @@
 					if (!this._resultLayer)
 					{
 						this._resultLayer = this.map.resultLayer;
+					}else
+					{
+						this._resultLayer.reset();
 					}
 					this.map.addLayer(this._resultLayer);
 					if(this._displayMarker)
