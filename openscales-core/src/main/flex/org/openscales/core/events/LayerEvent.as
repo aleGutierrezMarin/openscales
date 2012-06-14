@@ -141,6 +141,12 @@ package org.openscales.core.events
 		 */ 
 		public static const LAYER_AVAILABILITY_CHANGED:String="openscales.layeravailabilitychanged";
 		
+		/**
+		 * Event type dispatched when an external layer is added to the map.
+		 * 
+		 */ 
+		public static const EXT_LAYER_ADDED:String="extLayerAdded";
+		
 		
 		public function LayerEvent(type:String, layer:Layer, bubbles:Boolean=false,cancelable:Boolean=false)
 		{

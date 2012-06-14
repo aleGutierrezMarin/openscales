@@ -297,9 +297,13 @@ package org.openscales.core.layer.capabilities
 			
 			if(tmss.length ==0)return null;
 			
+			var formats:Array = (layerData.getValue("Formats") as Array).sort();
+			
+			var format:String = formats.length > 0? formats[0]:WMTS.WMTS_DEFAULT_FORMAT;
+			
 			var defStyle:String = layerData.getValue("DefaultStyle") as String;
 			var wmts:WMTS = new WMTS(identifier,"",identifier,tmss[0],(layerData.getValue("TileMatrixSets") as HashMap),defStyle);
-			
+			wmts.format = format;
 			return wmts;
 		}
 	}

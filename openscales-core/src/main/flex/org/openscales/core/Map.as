@@ -1571,7 +1571,7 @@ package org.openscales.core
 				var locale:Locale = Locale.getLocaleByKey(value);
 				if(locale) {
 					Locale.activeLocale = locale;
-					this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,locale));
+					this.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED,locale));// kept for backward compatibility 
 				}
 			}
 		}

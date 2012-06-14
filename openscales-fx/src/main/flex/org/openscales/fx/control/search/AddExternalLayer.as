@@ -13,6 +13,7 @@ package org.openscales.fx.control.search
 	import mx.events.ListEvent;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.KML;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.GetCapabilities;
@@ -35,6 +36,7 @@ package org.openscales.fx.control.search
 	
 	public class AddExternalLayer extends Control
 	{
+		
 		/**
 		 * List of supported protocols
 		 */ 
@@ -224,7 +226,9 @@ package org.openscales.fx.control.search
 				layer.url = urlTextInput.text;
 				layer.projection = _map.projection;
 				layer.maxExtent = _map.maxExtent;
-				return _map.addLayer(layer);
+				var ret:Boolean = _map.addLayer(layer);
+				if(ret)this.dispatchEvent(new LayerEvent(LayerEvent.EXT_LAYER_ADDED,layer));
+				return ret;
 			}
 			return false;
 		}
@@ -268,7 +272,9 @@ package org.openscales.fx.control.search
 					break;
 			}
 			if(!layer) return false;
-			return map.addLayer(layer);
+			var ret:Boolean = _map.addLayer(layer);
+			if(ret)this.dispatchEvent(new LayerEvent(LayerEvent.EXT_LAYER_ADDED,layer));
+			return ret;
 			
 		}
 		
