@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Move or zoom the map tand see the modification on the overview map.
+Click on the overview to change the center of the main map.
+Draw a rectangle on the overview to define a new extent for the main map.-->
+<s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="resizeMap()"
+		 width="100%" height="100%" resize="resizeMap()" xmlns:components="components.*">
+	
+	<Map id="fxMap" width="100%" height="100%" center="4.833,45.767" 
+		 resolution="{new Resolution(0.01)}" projection="EPSG:900913">
+		
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
+		
+		<DragHandler/>
+		<WheelHandler/>
+
+		<OverviewMapRatio bottom="10" right="10" ratio ="4" id="miniMap" 
+						  width="200" height="200" projection="EPSG:900913">
+			<Mapnik name="mapnik overwiew" minResolution="5,EPSG:900913" />
+		</OverviewMapRatio>		
+		<Zoom x="{fxMap.width-135}" y="10" />
+		
+		<DataOriginatorsDisplay x="10" y="{height-90}" />
+	</Map>
+	<components:toolbar fxMap="{fxMap}" />	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.basetypes.Resolution;
+			
+			private function resizeMap():void {
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:VGroup>
