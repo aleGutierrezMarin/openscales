@@ -75,7 +75,8 @@
 			private var _geocodeServiceSecurity:ISecurity = null;
 			private var _reverseGeocodeServiceSecurity:ISecurity = null;
 			
-			private var _streetResolution:Number = 0.0000107288360595703;
+			//private var _streetResolution:Number = 0.0000107288360595703;
+			private var _streetResolution:Number = 0.000112290;
 			
 			//private var _cityResolution:Number = 0.0000858306884765625;
 			private var _cityResolution:Number = 0.000112290;
