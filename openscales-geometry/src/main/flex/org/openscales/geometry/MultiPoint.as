@@ -138,7 +138,7 @@ package org.openscales.geometry
 			var strings:Vector.<String> = new Vector.<String>(this.componentsLength);
 			var length:uint = this.componentsLength;
 			var realIndex:uint;
-			for(var i:int = 0; i < this.length; ++i) {
+			for(var i:int = 0; i < length; ++i) {
 				realIndex= i*2;
 				strings[i]= this._components[realIndex] + ", " + this._components[realIndex+1];
 			}
