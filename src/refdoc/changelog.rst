@@ -15,7 +15,8 @@ Changes between 2.1.1 and 2.1.2
 * Refactor i18n: Catalog now dispatches event when active locale changes .This allows to listen for locale changes without having access to the Map. For backward compatibility, Map instances still dispatche LOCALE_CHANGED events.
 * Issue fix: 435 https://bitbucket.org/gis/openscales/issue/458/static-cont-string-is-spelled-wrong
 * Issue fix: 467 https://bitbucket.org/gis/openscales/issue/467/solid-backgrid-for-transparent-tiles-on
-* Issue fix 438 https://bitbucket.org/gis/openscales/issue/438/multipoint-componentsstring-function#comment-1558055
+* Issue fix: 438 https://bitbucket.org/gis/openscales/issue/438/multipoint-componentsstring-function
+* Issue fix: 461 https://bitbucket.org/gis/openscales/issue/461/scale-line-when-zoomed-in-shows-incorrect
 
 Changes between 2.1.0 and 2.1.1
 -------------------------------

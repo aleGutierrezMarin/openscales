@@ -240,7 +240,7 @@
 				} else {
 					this.topCurrentUnit = this._topInUnits;
 					topUnitKey = "scaleline.m"
-					this.bottomCurrentUnit =  this._bottomOutUnits;
+					this.bottomCurrentUnit =  this._bottomInUnits;
 					bottomUnitKey = "scaleline.ft"
 				}
 				
