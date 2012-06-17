@@ -108,7 +108,7 @@ Use the top-right button to switch the style of the rendering. -->
 							break;
 						}
 						default:  {
-							legendType = Rule.LEGENT_POLYGON;
+							legendType = Rule.LEGEND_POLYGON;
 						}
 					}
 					
