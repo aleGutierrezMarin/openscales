@@ -16,7 +16,7 @@ package org.openscales.core.style {
 
 		public static const LEGEND_POINT:String = "Point";
 
-		public static const LEGENT_POLYGON:String = "Polygon";
+		public static const LEGEND_POLYGON:String = "Polygon";
 
 		private var _name:String = "";
 
