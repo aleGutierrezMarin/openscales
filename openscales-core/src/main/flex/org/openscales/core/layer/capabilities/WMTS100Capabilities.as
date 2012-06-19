@@ -358,7 +358,7 @@ package org.openscales.core.layer.capabilities
 			wmts.format = format;
 			wmts.displayedName = layerData.getValue("Title");
 			wmts.abstract = layerData.getValue("Abstract");
-			wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
+			//wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
 			return wmts;
 		}
 	}
