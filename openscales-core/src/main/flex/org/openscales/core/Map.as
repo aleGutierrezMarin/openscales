@@ -698,6 +698,9 @@ package org.openscales.core
 		 * pixels by the current base layer
 		 */
 		public function getMapPxFromLocation(lonlat:Location, res:Resolution = null, extent:Bounds = null):Pixel {
+			if (!lonlat)
+				return null;
+			
 			if (!res)
 			{
 				res = this.resolution;

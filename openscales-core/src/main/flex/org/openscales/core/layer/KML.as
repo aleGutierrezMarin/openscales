@@ -190,5 +190,13 @@ package org.openscales.core.layer
 		public function get acceptedFileExtensions():Vector.<String>{
 			return ACCEPTED_FILE_EXTENSIONS;
 		}
+		
+		/**
+		 * Return the kml name stored in the kml data
+		 */
+		public function getDataName():String
+		{
+			return this._kmlFormat.readName(this.data);
+		}
 	}
 }
