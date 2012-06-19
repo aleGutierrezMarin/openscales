@@ -24,6 +24,7 @@ package org.openscales.core.layer.capabilities
 	 * 		<li>Layer.Format</li>
 	 * 		<li>Layer.TileMatrixSetLink</li>
 	 * 		<li>Layer.TileMatrixSetLink.TileMatrixSet</li>
+	 * 		<li>Layer.TileMatrixSetLink.TileMatrixSetLimits</li>
 	 * 		<li>TileMatrixSet</li>
 	 * 		<li>TileMatrixSet.Identifier</li>
 	 * 		<li>TileMatrixSet.SupportedCRS</li>
@@ -59,12 +60,13 @@ package org.openscales.core.layer.capabilities
 		 * 
 		 * <p>
 		 * for WMTS the returned value is an HashMap as follows:
-		 * 
+		 * <br/>
 		 * "TileMatrixSets" ==> HashMap(String ==> TileMatrixSet)<br/>
-		 * "Formats" ==> Array(String)
-		 * "Styles" ==> Array(String)
-		 * "Identifier" ==> String
-		 * "Title" ==> String
+		 * "TileMatrixSetsLimits" ==> HashMap(String ==> TileMatrixSetLimits) (see doc of <code>parseLimits</code>) <br/>
+		 * "Formats" ==> Array(String)<br/>
+		 * "Styles" ==> Array(String)<br/>
+		 * "Identifier" ==> String<br/>
+		 * "Title" ==> String<br/>
 		 * "DefaultStyle" ==> String
 		 * </p> 
 		 */
@@ -199,12 +201,14 @@ package org.openscales.core.layer.capabilities
 			//Variables needed for parsing layers tag
 			var layerCapabilities:HashMap; // map containing all data about a layer
 			var linkedTileMatrixSets:HashMap; // map containing all linked tilematrix set for the layer
+			var tileMatrixSetLimits:HashMap; // map containing all tms limits
 			var styles:Array; // array containg available styles for the layer
 			var formats:Array; // array containing available formats for the layer
 			
 			var title:String; // The layer Title
 			var layerIdentifier:String; // Identifier of the layer
 			var tileMatrixSetId:String; // Identifier of a tilematrixSet
+			
 			var style:String;
 			var defaultStyle:String;
 			var format:String;
@@ -218,6 +222,7 @@ package org.openscales.core.layer.capabilities
 					
 					layerCapabilities = new HashMap();
 					linkedTileMatrixSets = new HashMap();
+					tileMatrixSetLimits = new HashMap();
 					styles = new Array();
 					formats = new Array();
 					
@@ -232,13 +237,25 @@ package org.openscales.core.layer.capabilities
 					{
 						tileMatrixSetId = XMLTileMatrixSet.TileMatrixSet;
 						
+						
+						
+						if(node.*::TileMatrixSetLink[0].*::TileMatrixSetLimits.length() > 0){
+							var XMLTileMatrixSetLimits:XML = node.*::TileMatrixSetLink[0].*::TileMatrixSetLimits[0];
+							tileMatrixSetLimits.put(tileMatrixSetId, parseLimits(XMLTileMatrixSetLimits));
+						}
+						
 						if(matrixSets.containsKey(tileMatrixSetId))
 						{
-							linkedTileMatrixSets.put(tileMatrixSetId, matrixSets.getValue(tileMatrixSetId))
+							linkedTileMatrixSets.put(tileMatrixSetId, matrixSets.getValue(tileMatrixSetId));
 						}
+						
 					}
 					
+					
+					
+					
 					layerCapabilities.put("TileMatrixSets", linkedTileMatrixSets);
+					layerCapabilities.put("TileMatrixSetsLimits", tileMatrixSetLimits);
 					
 					// Parsing Format tags
 					for each (var XMLFormat:XML in node.Format)
@@ -275,6 +292,41 @@ package org.openscales.core.layer.capabilities
 		}
 		
 		/**
+		 * Parse a TileMatrixSetLimits XML node and transform it to an HashMap (each XML tag being a key)
+		 * 
+		 * @param TileMatrixSetLimits An XML code representing a TileMatrixSetLimits as specified by OGC
+		 */
+		public function parseLimits(TileMatrixSetLimits:XML):HashMap{
+			var res:HashMap = new HashMap();
+			var limitsHashMap:HashMap;
+			var limits:XMLList = TileMatrixSetLimits.*::TileMatrixLimits;
+			var tileMatrix:String;
+			var minTileRow:String;
+			var maxTileRow:String;
+			var minTileCol:String;
+			var maxTileCol:String;
+			
+			for each (var limitXML:XML in limits){
+				tileMatrix  = minTileRow = maxTileRow = minTileCol = maxTileCol = "";
+				limitsHashMap = new HashMap();
+				tileMatrix = limitXML.*::TileMatrix[0];
+				if(tileMatrix == "") continue;
+				
+				minTileRow = limitXML.*::MinTileRow[0];
+				maxTileRow = limitXML.*::MaxTileRow[0];
+				minTileCol = limitXML.*::MinTileCol[0];
+				maxTileCol = limitXML.*::MaxTileCol[0];
+				
+				limitsHashMap.put("MinTileRow", minTileRow);
+				limitsHashMap.put("MaxTileRow", maxTileRow);
+				limitsHashMap.put("MinTileCol", minTileCol);
+				limitsHashMap.put("MaxTileCol", maxTileCol);
+				res.put(tileMatrix, limitsHashMap);
+			}
+			return res;
+		}
+		
+		/**
 		 * Method to remove the additional namespaces of the XML capabilities file.
 		 *
 		 * @param doc The XML file
@@ -304,6 +356,9 @@ package org.openscales.core.layer.capabilities
 			var defStyle:String = layerData.getValue("DefaultStyle") as String;
 			var wmts:WMTS = new WMTS(identifier,"",identifier,tmss[0],(layerData.getValue("TileMatrixSets") as HashMap),defStyle);
 			wmts.format = format;
+			wmts.displayedName = layerData.getValue("Title");
+			wmts.abstract = layerData.getValue("Abstract");
+			wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
 			return wmts;
 		}
 	}
