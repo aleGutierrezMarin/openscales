@@ -2,6 +2,10 @@ package org.openscales.core.layer.capabilities
 {
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WFS;
+	import org.openscales.proj4as.ProjProjection;
+
 
 	/**
 	 * WFS 2.0.0 capabilities parser
@@ -94,9 +98,33 @@ package org.openscales.core.layer.capabilities
 				featureCapabilities = new HashMap();
 			}
 
+
 			return this._capabilities;
 		}
 
+		override public function instanciate(name:String):Layer{
+			
+			if(!_capabilities)return null;
+			var layerData:HashMap = _capabilities.getValue(name);
+			if(!layerData)return null;
+			
+			var wfs:WFS;
+			
+			var identifier:String = layerData.getValue("Name");
+			var title:String = layerData.getValue("Title");
+			var srs:String= layerData.getValue("SRS");
+			var abs:String = layerData.getValue("Abstract");
+			var maxExtent:String = layerData.getValue("Extent");
+			
+			wfs = new WFS(identifier,"",identifier,"2.0.0");
+			wfs.displayedName = title;
+			wfs.projection = ProjProjection.getProjProjection(srs);
+			wfs.abstract = abs;
+			wfs.maxExtent = maxExtent;
+			
+			return wfs;
+		} 
+		
 		/**
 		 * Method to remove the additional namespaces of the XML capabilities file.
 		 *
