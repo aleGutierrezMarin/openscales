@@ -214,7 +214,7 @@ package org.openscales.core.layer.ogc.provider
 				"TILEROW" : row,
 				"TILEMATRIX" : tileMatrix.identifier
 			};
-			if(col>-1 && row>-1 /*&& isInsideLimits(col,row,tileMatrix.identifier,_tileMatrixSet)*/)
+			if(col>-1 && row>-1 && isInsideLimits(col,row,tileMatrix.identifier,_tileMatrixSet))
 				imageTile.url = buildGETQuery(bounds,params);
 			else
 				imageTile.url=null;
