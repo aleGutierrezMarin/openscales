@@ -1236,10 +1236,10 @@
 					}
 					else
 					{
-						// If the first result is > betterAccuracy
+						// If the first result is >= betterAccuracy
 						if (_resultsProvider.length > 1 && _resultsProvider[0].accuracy >= this._betterAccuracy)
 						{
-							// If the first result is the only > betterAccuracy
+							// If the first result is the only >= betterAccuracy
 							if (_resultsProvider[1].accuracy < this._betterAccuracy)
 							{
 								go = true;
