@@ -68,6 +68,8 @@
 			private var _displayMarker:Boolean = true;
 			
 			private var _betterAccuracy:int = 0.9;
+			private var _lowerAccuracy:int = 0.5;
+			private var _goToBestResult:Boolean = true;
 			
 			private var _geocodeServiceUrl:String=null;
 			private var _reverseGeocodeServiceUrl:String=null;
@@ -819,10 +821,11 @@
 				this._reverseGeocodeServiceSecurity = value;
 			}
 			
-			public function simpleSearch(query:String):void {
+			public function simpleSearch(query:String, goToBestResult:Boolean = true):void {
 				if(!this.map)
 					return;
 				
+				this._goToBestResult = goToBestResult;
 				query = query.replace(',','');
 				
 				this._resultLayer = this.map.resultLayer;
@@ -841,10 +844,11 @@
 				}
 			}
 			
-			public function simpleSearchWithFilters(query:String, countryCode:String, filters:Vector.<Array>):void {
+			public function simpleSearchWithFilters(query:String, countryCode:String, filters:Vector.<Array>, goToBestResult:Boolean = true):void {
 				if(!this.map)
 					return;
 				
+				this._goToBestResult = goToBestResult;
 				query = query.replace(',','');
 				this._resultLayer = this.map.resultLayer;
 				this._resultLayer.removeFeatures(this._resultLayer.features);
@@ -1251,7 +1255,7 @@
 									go = true;
 									// We can search if the first is the only StreetAdress result
 									var i:int = 1;
-									while (i < _resultsProvider.length && _resultsProvider[i].accuracy >= this._betterAccuracy)
+									while (i < _resultsProvider.length && _resultsProvider[i].accuracy >= this._lowerAccuracy)
 									{
 										if (_resultsProvider[i].countryCode == "StreetAddress")
 										{
@@ -1266,7 +1270,7 @@
 					}
 					
 					// If we have one result or if the first result only is > betterAccuracy
-					if (go) 
+					if (go && this._goToBestResult) 
 					{
 						// only one result, so center at location automatically
 						var latitude:Number = parseFloat(_resultsProvider[0].lat);
