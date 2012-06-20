@@ -206,6 +206,19 @@ package org.openscales.core.format
 					wms.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator),  ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd = wms;
 					break;
+				case "OGC:WMSC":
+					var wmsc:WMS = new WMS(title,url,name,"",format);
+					wmsc.version = version;
+					wmsc.projection = srs;
+					wmsc.abstract = (abstract && abstract.length>0) ? abstract : null;
+					wmsc.availableProjections = availableProjections;
+					wmsc.transparent = true;
+					wmsc.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
+					wmsc.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator),  ProjProjection.getProjProjection("EPSG:4326"));
+					wmsc.generateResolutions(21, wmsc.maxResolution.value);
+					wmsc.tiled = true;
+					layerToAdd = wmsc;
+					break;
 				case "OGC:WFS":
 					var wfs:WFS = new WFS(title,url,name,version);
 					wfs.projection = srs;
