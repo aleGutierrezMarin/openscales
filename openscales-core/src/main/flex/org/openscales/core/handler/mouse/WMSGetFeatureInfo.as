@@ -7,6 +7,7 @@ package org.openscales.core.handler.mouse
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.GetFeatureInfoEvent;
+	import org.openscales.core.events.RequestEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.gml.GMLFormat;
 	import org.openscales.core.format.gml.parser.GMLParser;
@@ -347,8 +348,10 @@ package org.openscales.core.handler.mouse
 			}else{
 				ret = loader.data;
 			}
-			
-			this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret));
+			if(event is RequestEvent)
+				this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, (event as RequestEvent).url));
+			else
+				this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, null));
 		}
 		
 		
