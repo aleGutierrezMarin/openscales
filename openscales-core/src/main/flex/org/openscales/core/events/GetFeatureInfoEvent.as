@@ -10,14 +10,16 @@ package org.openscales.core.events{
 		 * Data returned by the WMSGetFeatureInfo request
 		 */
 		private var _data:Object = null;
+		private var _url:String = null;
 
 		/**
 		 * Event type dispatched when the get feature info response has been received.
 		 */
 		public static const GET_FEATURE_INFO_DATA:String="openscales.getfeatureinfodata";
 
-		public function GetFeatureInfoEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false){
+		public function GetFeatureInfoEvent(type:String, data:Object, url:String, bubbles:Boolean = false, cancelable:Boolean = false){
 			this._data = data;
+			this._url = url;
 			super(type, bubbles, cancelable);
 		}
 
@@ -28,6 +30,12 @@ package org.openscales.core.events{
 		public function set data(data:Object):void {
 			this._data = data;	
 		}
+
+		public function get url():String
+		{
+			return _url;
+		}
+
 	}
 }
 

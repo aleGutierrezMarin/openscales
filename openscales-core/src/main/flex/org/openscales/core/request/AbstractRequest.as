@@ -11,6 +11,7 @@ package org.openscales.core.request
 	import flash.net.URLVariables;
 	import flash.system.LoaderContext;
 	
+	import org.openscales.core.events.RequestEvent;
 	import org.openscales.core.security.ISecurity;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.core.utils.UID;
@@ -113,9 +114,9 @@ package org.openscales.core.request
 				this.loaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this._loadEnd, false, int.MAX_VALUE, true);
 				// SecurityErrorEvent.SECURITY_ERROR must be listened for the cross domain errors
 				
-				if (this._onComplete != null) {
+				/*if (this._onComplete != null) {
 					this.loaderInfo.addEventListener(Event.COMPLETE, this._onComplete);
-				}
+				}*/
 				
 				if (this._onFailure != null) {
 					this.loaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this._onFailure);
@@ -135,9 +136,9 @@ package org.openscales.core.request
 				this.loaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, this._loadEnd);
 				this.loaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this._loadEnd);
 				
-				if (this._onComplete != null) {
+				/*if (this._onComplete != null) {
 					this.loaderInfo.removeEventListener(Event.COMPLETE, this._onComplete);
-				}
+				}*/
 				
 				if (this._onFailure != null) {
 					this.loaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, this._onFailure);
@@ -163,6 +164,9 @@ package org.openscales.core.request
 			} else {
 				if (event.type == Event.COMPLETE) {
 					this._isCompleted = true;
+					if (this._onComplete != null) {
+						this._onComplete(new RequestEvent(event.type,this.url,event.target,event.bubbles,event.cancelable));
+					}
 				}
 				else if (this._onFailure == null) {
 					switch (event.type) {
