@@ -5,7 +5,8 @@ Changes between 2.1.1 and 2.1.2
 -------------------------------
 * Javascript API to control swf from your HTML pages
 * defaults.css includes components default skins (only new component for now)
-* Fix bug from Shane StClair (FxMap.zoomToExtent)
+* Bug fix from Shane StClair (FxMap.zoomToExtent)
+* Support of OGC's TileMAtrixSetLimits on WMTS layers (automatic when using getCapabilities, use WMTS.tileMatrixSetsLimits property in other cases).
 * Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
 * Adding a blinkMarker parameter to activate a blink animation on the marker of OpenLSSearch component.
 * Add abstract property to Layer
