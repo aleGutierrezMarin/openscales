@@ -156,7 +156,7 @@ package org.openscales.core.layer.capabilities
 			wmsLayer.displayedName = layerData.getValue("Title");
 			wmsLayer.version = "1.3.0";
 			wmsLayer.format = format;
-			wmsLayer.projection = crs;
+			wmsLayer.projection = crs!=""?crs:Layer.DEFAULT_PROJECTION;
 			wmsLayer.abstract = layerData.getValue("Abstract");
 			wmsLayer.maxExtent = layerData.getValue("EX_GeographicBoundingBox");
 			wmsLayer.transparent = true;
