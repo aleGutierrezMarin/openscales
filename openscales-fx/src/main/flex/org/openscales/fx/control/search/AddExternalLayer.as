@@ -224,7 +224,7 @@ package org.openscales.fx.control.search
 				var layer:Layer = _capabilities.instanciateLayer(name);
 				if(!layer)return false;
 				layer.url = urlTextInput.text;
-				//layer.projection = _map.projection;
+				if(!layer.projection) layer.projection = _map.projection;
 				//layer.maxExtent = _map.maxExtent;
 				var ret:Boolean = _map.addLayer(layer);
 				if(ret)this.dispatchEvent(new LayerEvent(LayerEvent.EXT_LAYER_ADDED,layer));
