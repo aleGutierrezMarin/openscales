@@ -208,6 +208,7 @@ package org.openscales.core.layer.capabilities
 			var title:String; // The layer Title
 			var layerIdentifier:String; // Identifier of the layer
 			var tileMatrixSetId:String; // Identifier of a tilematrixSet
+			var layerAbstract:String; // Abstract of the layer
 			
 			var style:String;
 			var defaultStyle:String;
@@ -215,6 +216,8 @@ package org.openscales.core.layer.capabilities
 			
 			for each (node in layersNodes){
 				if(node.parent().localName()=="Contents") {
+					
+					layerAbstract = node._owsns::Abstract;
 					
 					layerIdentifier  = node._owsns::Identifier;
 					// layerIdentifier must be a non null non empty string because it will be an hash map key
@@ -228,6 +231,8 @@ package org.openscales.core.layer.capabilities
 					
 					// Identifier
 					layerCapabilities.put("Identifier", layerIdentifier);
+					
+					layerCapabilities.put("Abstract", layerAbstract?layerAbstract:"");
 					
 					// Title
 					title = node._owsns::Title;
@@ -347,6 +352,10 @@ package org.openscales.core.layer.capabilities
 			
 			var tmss:Array = (layerData.getValue("TileMatrixSets") as HashMap).getKeys().sort();
 			
+			var tms:TileMatrixSet = (layerData.getValue("TileMatrixSets") as HashMap).getValue(tmss[0]);
+			var crs:String;
+			if(tms) crs = tms.supportedCRS;
+			
 			if(tmss.length ==0)return null;
 			
 			var formats:Array = (layerData.getValue("Formats") as Array).sort();
@@ -356,6 +365,7 @@ package org.openscales.core.layer.capabilities
 			var defStyle:String = layerData.getValue("DefaultStyle") as String;
 			var wmts:WMTS = new WMTS(identifier,"",identifier,tmss[0],(layerData.getValue("TileMatrixSets") as HashMap),defStyle);
 			wmts.format = format;
+			wmts.projection = crs;
 			wmts.displayedName = layerData.getValue("Title");
 			wmts.abstract = layerData.getValue("Abstract");
 			//wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");

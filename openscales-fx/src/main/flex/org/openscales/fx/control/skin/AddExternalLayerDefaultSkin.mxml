@@ -86,7 +86,7 @@
 				
 				if(this.resultListLabel){
 					this.resultListLabel.label = Catalog.getLocalizationForKey("addExternalLayer.resultListLabel.label");
-					this.resultListLabel.toolTip = Catalog.getLocalizationForKey("addExternalLayer.resultListLabel.toolTip")
+					//this.resultListLabel.toolTip = Catalog.getLocalizationForKey("addExternalLayer.resultListLabel.toolTip")
 				}
 				
 				if(this.lookForGetCapButton){
