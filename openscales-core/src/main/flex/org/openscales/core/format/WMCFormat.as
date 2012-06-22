@@ -206,7 +206,7 @@ package org.openscales.core.format
 					wms.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator),  ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd = wms;
 					break;
-				case "OGC:WMSC":
+				case "OGC:WMS;Cached":
 					var wmsc:WMS = new WMS(title,url,name,"",format);
 					wmsc.version = version;
 					wmsc.projection = srs;
