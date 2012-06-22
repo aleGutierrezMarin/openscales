@@ -47,12 +47,15 @@
 			 */
 			private var _dpi:Number = DEFAUL_DPI;
 
+			private var _separator:String = ":";
+			
+			
 			/**
 			 * The current value of the scale Label
-			 * @default "1 / 1"
+			 * @default "1 <code>separator</code> 1"
 			 */
 			[Bindable]
-			public var scaleLabel: String = "1 / 1";
+			public var scaleLabel: String;
 			
 			/**
 			 * The current visibility of the numeric scale text input.
@@ -81,7 +84,30 @@
 			 */
 			[Bindable]
 			private var textInputText:String = "";
-				
+			
+			/**
+			 * The character that will be inserted between "1" and the scale value.
+			 * 
+			 * @default ":"
+			 */
+			public function get separator():String
+			{
+				return _separator;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set separator(value:String):void
+			{
+				_separator = value;
+			}
+
+			override protected function onCreationComplete(event:Event):void{
+				super.onCreationComplete(event);
+				scaleLabel = "1 "+_separator+" 1";
+			}
+			
 			override public function set map(value:Map):void
 			{
 				super.map = value;
@@ -145,8 +171,38 @@
 				this.value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._dpi));
 				//this.value = Math.round(Unit.getScaleDenominatorFromResolution(resolutionAtCenter,unit));
 				
+				
+				
 				// update the label :
-				this.scaleLabel = "1 / "+this._value;
+				this.scaleLabel = "1 "+_separator+" "+formatScale(value);
+			}
+			
+			/**
+			 * This function formats the scale value in a human friendly way. Starting from the end of the number, every three digits, a white space is inserted.
+			 * <p>For instance the number 2107201 will be returned as the following String "2 107 201" </p>
+			 * 
+			 * <p>This method is called internally, override it to implement a custom behavior</p>
+			 * 
+			 * @param number The number to format
+			 * @return The formatted number as a String
+			 */
+			protected function formatScale(number:Number):String{
+				var string:String = number.toString();
+				var res:String = "";
+				var endIndex:uint = string.length-1;
+				var step:uint = 0;
+				//var char:String;
+				for(var i:uint = endIndex; i >= 0; i--){
+					res = string.charAt(i)+res;
+					++step;
+					if(step==3 && i!=0){
+						step=0;
+						res = " "+res;
+					}
+					if(i==0)break;
+				}
+				
+				return res;
 			}
 			
 			/**
