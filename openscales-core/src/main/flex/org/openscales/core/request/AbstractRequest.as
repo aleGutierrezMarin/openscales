@@ -315,8 +315,14 @@ package org.openscales.core.request
 			}
 
 			if ((this.proxy != null)) {
-				_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
+				if(this.proxy.charAt(this.proxy.length-1) == '/')
+				{
+					_finalUrl = this.proxy + _finalUrl;
+				}else{
+					_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
+				}
 			}
+			
 			if (!this._cache){
 				_finalUrl += "&timestamp=" + new Date().getTime();
 			}
