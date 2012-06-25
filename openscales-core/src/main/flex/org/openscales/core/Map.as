@@ -38,6 +38,7 @@ package org.openscales.core
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.proj4as.ProjProjection;
+	import org.osmf.events.TimeEvent;
 	
 	use namespace os_internal;
 
@@ -222,6 +223,7 @@ package org.openscales.core
 		private var _initialized:Boolean = false;
 		private var _backTileColor:uint = 0xFFFFFF;
 		private var _timer:Timer;
+		private var _resizeTimer:Timer;
 		
 		// Layer used for OpenLS search and for geolocation
 		private var _resultLayer:VectorLayer = new VectorLayer("Search results");
@@ -302,6 +304,8 @@ package org.openscales.core
 			Catalog.catalog.addEventListener(I18NEvent.LOCALE_CHANGED, this.localeChanged);
 			this._timer = new Timer(200,1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			this._resizeTimer = new Timer(100,1);
+			this._resizeTimer.addEventListener(TimerEvent.TIMER, this.applyResize);
 			this.projection = projection;
 			this.size = new Size(width, height);
 			// It is necessary to draw something before to define the size...
@@ -1232,26 +1236,35 @@ package org.openscales.core
 		 */
 		public function set size(value:Size):void {
 			if (value) {
-				var event:MapEvent = new MapEvent(MapEvent.RESIZE, this);
-				event.oldSize = _size;
-				event.newSize = value;
+				var theEvent:MapEvent = new MapEvent(MapEvent.RESIZE, this);
+				theEvent.oldSize = this._size;
+				theEvent.newSize = value;
 				_size = value;
-				
-				
-				
-				this.graphics.clear();
-				this.graphics.beginFill(_backTileColor);
-				this.graphics.drawRect(0,0,this.size.w,this.size.h);
-				this.graphics.endFill();
-				this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
-				
-				
-				this.dispatchEvent(event);
-				this.dispatchEvent(new MapEvent(MapEvent.RELOAD,this));
+				this._resizeTimer.reset();
+				this._resizeTimer.start();
+				this.dispatchEvent(theEvent);
+				//this.dispatchEvent(new MapEvent(MapEvent.RELOAD,this));
 				
 			} else {
 				Trace.error("Map - size not changed since the value is not valid");
 			}
+		}
+		
+		/**
+		 * Callback that will apply the mapResize.
+		 * We use a timer to handle resize to avoid the flashplayer to use CPU during smooth resizing 
+		 * of the flashContainer.
+		 * Using too much CPU may result in flash player kill in some browsers.
+		 */
+		private function applyResize(event:TimerEvent):void
+		{
+			
+			this.graphics.clear();
+			this.graphics.beginFill(_backTileColor);
+			this.graphics.drawRect(0,0,this.size.w,this.size.h);
+			this.graphics.endFill();
+			this.scrollRect = new Rectangle(0,0,this.size.w,this.size.h);
+			this.dispatchEvent(new MapEvent(MapEvent.RELOAD,this))
 		}
 		
 		/**
