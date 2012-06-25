@@ -1490,11 +1490,11 @@ package org.openscales.core.layer
 			var deltaH:Number = event.newSize.h - event.oldSize.h;
 			this.x += deltaW/2;
 			this.y += deltaH/2;
-			if (this._grid != null)
+			/*if (this._grid != null)
 			{
 				this.moveGriddedTiles(this.map.extent);
 				this.actualizeGridSize(this.map.extent);
-			}
+			}*/
 		}
 		
 		/**
