@@ -582,9 +582,10 @@ package org.openscales.core.layer
 			if(bounds.width / this.map.resolution.reprojectTo(this.projection).value > (this._grid[0].length - buffer) * this.tileWidth * ratio + tlViewPort.x * ratio)
 			{	
 				var gridRowLength:Number = this._grid[0].length;
-				var gridRightBound:Number = this.grid[0][gridRowLength-1].bounds.right;
-				
-				var deltaLon:Number = bounds.right - gridRightBound;
+				//var gridRightBound:Number = this.grid[0][gridRowLength-1].bounds.right;
+				var deltaWidth:Number = (bounds.width / this.map.resolution.reprojectTo(this.projection).value) - ((this._grid[0].length - buffer) * this.tileWidth * ratio + tlViewPort.x * ratio);
+					
+				var deltaLon:Number = deltaWidth * this.requestedResolution.value; // bounds.right - gridRightBound;
 				tileLon = this.tileWidth * this.requestedResolution.value;
 				tileLat = this.tileHeight * this.requestedResolution.value;
 				nbTileToAdd = deltaLon / tileLon;
@@ -620,9 +621,13 @@ package org.openscales.core.layer
 			if(bounds.height / this.map.resolution.reprojectTo(this.projection).value > (this._grid.length - buffer) * this.tileHeight * ratio + tlViewPort.y * ratio)
 			{
 				var gridColLength:Number = this._grid.length;
-				var gridBottomBound:Number = this.grid[gridColLength-1][0].bounds.bottom;
-				var deltaLat:Number = bounds.bottom - gridBottomBound;
+				//var gridBottomBound:Number = this.grid[gridColLength-1][0].bounds.bottom;
+				
+				var deltaHeight:Number = (bounds.height / this.map.resolution.reprojectTo(this.projection).value) - ((this._grid.length - buffer) * this.tileHeight * ratio + tlViewPort.y * ratio);
+				var deltaLat:Number =deltaHeight* this.requestedResolution.value;//bounds.bottom - gridBottomBound;
 				var stretchingScaleY:Number = 1;
+				
+				
 				tileLon = this.tileWidth * this.requestedResolution.value;
 				tileLat = this.tileHeight * this.requestedResolution.value;
 				nbTileToAdd = deltaLat / tileLat;
