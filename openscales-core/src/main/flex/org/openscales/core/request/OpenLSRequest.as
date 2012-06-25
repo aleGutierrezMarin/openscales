@@ -719,7 +719,7 @@ package org.openscales.core.request
 					if(node.@type=="Numero") {
 						result.numero = node.toString();
 					}
-					if(node.@type=="nom commune") {
+					if(node.@type=="Commune") {
 						result.cityName = node.toString();
 					}
 				}
