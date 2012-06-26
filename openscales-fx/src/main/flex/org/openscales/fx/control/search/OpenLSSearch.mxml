@@ -1237,6 +1237,7 @@
 					if (_resultsProvider.length == 1)
 					{
 						go = true; 
+						this._goToBestResult = true;
 					}
 					else
 					{
