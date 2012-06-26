@@ -40,6 +40,7 @@ package org.openscales.core.handler.mouse
 		private var _drillDown:Boolean=false;
 		private var _infoFormat:String="application/vnd.ogc.gml";
 		private var _layers:String=null;
+		private var _buffer:Number = 15;
 		
 		public function WMSGetFeatureInfo(target:Map=null, active:Boolean = false)
 		{
@@ -278,7 +279,8 @@ package org.openscales.core.handler.mouse
 					
 					//mandatory query layers parameter
 					request += "QUERY_LAYERS=" + layerVec[i].layers+ "&";
-					request += "LAYERS=" + layerVec[i].layers;
+					request += "LAYERS=" + layerVec[i].layers+ "&";
+					request += "BUFFER=" + this._buffer;
 					
 					requestList.push(request);
 				}
@@ -412,5 +414,22 @@ package org.openscales.core.handler.mouse
 		{
 			_layers = value;
 		}	
+		
+		/**
+		 * The buffer in pixel to specify to the server.
+		 * @default 15
+		 */
+		public function get buffer():Number
+		{
+			return this._buffer;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set buffer(value:Number):void
+		{
+			this.buffer = value;
+		}
 	}
 }
