@@ -220,6 +220,12 @@
 			}
 			public function disactivate():void{
 				
+				if (this._map)
+				{
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DRAW_HANDLER_DESACTIVATED);
+					this._map.dispatchEvent(evt);
+				}
+				
 				this._drawingActivated = false;
 				_clickHandler.active = false;
 				_alpha = 0.3;

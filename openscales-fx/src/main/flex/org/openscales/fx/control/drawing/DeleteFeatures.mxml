@@ -250,6 +250,9 @@
 				_alpha = 0.3;
 				
 				if(this.map) {
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DELETE_HANDLER_DESACTIVATED);
+					this._map.dispatchEvent(evt);
+					
 					this._map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
 					this._map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
 				}

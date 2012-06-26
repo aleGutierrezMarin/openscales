@@ -171,6 +171,10 @@
 					_handler.active = false;
 					
 					if(_handler.map) {
+						
+						var evt:DrawingEvent = new DrawingEvent(DrawingEvent.MOVE_HANDLER_DESACTIVATED);
+						_handler.map.dispatchEvent(evt);
+						
 						_handler.map.removeEventListener(FeatureEvent.FEATURE_DRAG_START, toogleDrag);
 						_handler.map.removeEventListener(FeatureEvent.FEATURE_DRAG_STOP, toogleDrag);
 						_handler.map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
@@ -274,6 +278,7 @@
 				// Disactive this component
 				var evt:DrawingEvent;
 				if(this._handler.active){
+					
 					disactivate();
 					return;
 				}
