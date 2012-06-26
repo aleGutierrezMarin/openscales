@@ -22,8 +22,8 @@
 			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
-			import org.openscales.core.handler.feature.draw.DrawShapeHandler;
 			import org.openscales.core.handler.feature.draw.DrawPathHandler;
+			import org.openscales.core.handler.feature.draw.DrawShapeHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
@@ -149,6 +149,12 @@
 			}
 			public function disactivate():void{
 				
+				if (_handler && _handler.map)
+				{
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DRAW_HANDLER_DESACTIVATED);
+					_handler.map.dispatchEvent(evt);
+				}
+				
 				_handler.active = false;
 				_alpha = 0.3;
 			}
@@ -166,6 +172,7 @@
 				if(this._handler.active){
 					if(!(this._handler as DrawShapeHandler).newFeature)
 						(this._handler as DrawShapeHandler).endShape();
+					
 					disactivate();
 					_handler.map.doubleclickZoomEnabled = true;
 					return;
