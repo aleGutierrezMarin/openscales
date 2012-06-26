@@ -26,10 +26,13 @@ package org.openscales.core.events
 		 * 
 		 */
 		public static const DRAW_HANDLER_ACTIVATED:String = "openscales.drawing.draw_handler_activated";
+		public static const DRAW_HANDLER_DESACTIVATED:String = "openscales.drawing.draw_handler_desactivated";
 		public static const EDIT_HANDLER_ACTIVATED:String = "openscales.drawing.edit_handler_activated";
 		public static const EDIT_HANDLER_DESACTIVATED:String = "openscales.drawing.edit_handler_deactivated";
 		public static const MOVE_HANDLER_ACTIVATED:String = "openscales.drawing.move_handler_activated";
+		public static const MOVE_HANDLER_DESACTIVATED:String = "openscales.drawing.move_handler_desactivated";
 		public static const DELETE_HANDLER_ACTIVATED:String = "openscales.drawing.delete_handler_activated";
+		public static const DELETE_HANDLER_DESACTIVATED:String = "openscales.drawing.delete_handler_desactivated";
 		public static const SELECT_HANDLER_ACTIVATED:String = "openscales.drawing.select_handler_activated";
 		public static const SELECT_HANDLER_DESACTIVATED:String = "openscales.drawing.select_handler_desactivated";
 		public static const ATTRIBUTES_HANDLER_ACTIVATED:String = "openscales.drawing.attributes_handler_activated";

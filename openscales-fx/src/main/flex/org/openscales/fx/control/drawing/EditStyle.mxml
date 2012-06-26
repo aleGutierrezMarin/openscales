@@ -84,6 +84,12 @@
 			}
 			public function disactivate():void
 			{
+				if (_handler && _handler.map)
+				{
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_DESACTIVATED);
+					_handler.map.dispatchEvent(evt);
+				}
+				
 				this._handler.validateChanges();
 				PopUpManager.removePopUp(_popup);
 				_handler.active = false;
@@ -120,6 +126,7 @@
 				// Disactive this component
 				var evt:DrawingEvent;
 				if(this._handler.active){
+					
 					disactivate();
 					_handler.map.doubleclickZoomEnabled = true;
 					return;

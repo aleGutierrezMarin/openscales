@@ -23,14 +23,13 @@
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
 			import org.openscales.core.handler.feature.draw.DrawPointHandler;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.control.layer.LayerManager;
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
-			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.i18n.Catalog;
 			
 			[Bindable]
 			private var _alpha:Number = 0.3;
@@ -152,6 +151,12 @@
 				_handler.map.keyboardNavigationEnabled = false;*/
 			}
 			public function disactivate():void{
+				
+				if (_handler && _handler.map)
+				{
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DRAW_HANDLER_DESACTIVATED);
+					_handler.map.dispatchEvent(evt);
+				}
 				
 				_handler.active = false;
 				_alpha = 0.3;

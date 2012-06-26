@@ -149,6 +149,12 @@
 			}
 			public function disactivate():void{
 				
+				if (_handler && _handler.map)
+				{
+					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.DRAW_HANDLER_DESACTIVATED);
+					_handler.map.dispatchEvent(evt);
+				}
+				
 				_handler.active = false;
 				_alpha = 0.3;
 			}
@@ -166,6 +172,7 @@
 				if(this._handler.active){
 					if(!(this._handler as DrawPathHandler).newFeature)
 						(this._handler as DrawPathHandler).drawFinalPath();
+					
 					disactivate();
 					_handler.map.doubleclickZoomEnabled = true;
 					return;
