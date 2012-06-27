@@ -1,4 +1,4 @@
-package org.openscales.core.search
+package org.openscales.core.search.engine
 {
 	import com.adobe.serialization.json.JSON;
 	
@@ -17,7 +17,7 @@ package org.openscales.core.search
 	 * 
 	 * @see http://developer.yahoo.com/geo/placefinder/
 	*/
-	public class YahooPlaceFinder extends SearchEngine
+	public class YahooPlaceFinderEngine extends SearchEngine
 	{
 		private var _url:String = "http://where.yahooapis.com/geocode";
 		private var _appID:String;
@@ -28,7 +28,7 @@ package org.openscales.core.search
 		/**
 		 * @param appID Your Yahoo application ID touse with the PlaceFinder API
 		 */ 
-		public function YahooPlaceFinder(appID:String="")
+		public function YahooPlaceFinderEngine(appID:String="")
 		{
 			super();
 			this._appID = appID;

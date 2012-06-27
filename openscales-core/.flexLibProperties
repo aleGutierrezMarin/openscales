@@ -217,9 +217,9 @@
     <classEntry path="org.openscales.core.routing.AbstractRouting"/>
     <classEntry path="org.openscales.core.routing.IRouting"/>
     <classEntry path="org.openscales.core.routing.SampleRouting"/>
-    <classEntry path="org.openscales.core.search.BingSearch"/>
-    <classEntry path="org.openscales.core.search.SearchEngine"/>
-    <classEntry path="org.openscales.core.search.YahooPlaceFinder"/>
+    <classEntry path="org.openscales.core.search.engine.BingSearchEngine"/>
+    <classEntry path="org.openscales.core.search.engine.SearchEngine"/>
+    <classEntry path="org.openscales.core.search.engine.YahooPlaceFinderEngine"/>
     <classEntry path="org.openscales.core.search.result.Address"/>
     <classEntry path="org.openscales.core.search.result.Confidence"/>
     <classEntry path="org.openscales.core.security.AbstractSecurity"/>
@@ -307,6 +307,7 @@
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.core.history.NavigationHistoryLoggerTest"/>
+    <classEntry path="org.openscales.core.search.engine.OpenLsSearchEngine"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

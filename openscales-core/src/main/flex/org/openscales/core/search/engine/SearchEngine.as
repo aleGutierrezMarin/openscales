@@ -1,6 +1,7 @@
-package org.openscales.core.search
+package org.openscales.core.search.engine
 {
 	import org.openscales.core.search.result.Address;
+	import org.openscales.core.security.ISecurity;
 	import org.openscales.geometry.basetypes.Location;
 
 	/**
@@ -14,6 +15,12 @@ package org.openscales.core.search
 		 * maximum number of resluts
 		 */
 		private var _maxResults:int = 5;
+		
+		/**
+		 * @private
+		 * security module to use for a request
+		 */
+		private var _security:ISecurity = null;
 		
 		/**
 		 * constructor
@@ -58,5 +65,18 @@ package org.openscales.core.search
 			_maxResults = value;
 		}
 
+		/**
+		 * Getter and setter of the security module to use for a request.
+		 * Default value is null.
+		 */
+		public function get security():ISecurity {
+			return this._security;
+		}
+		/**
+		 * @private
+		 */
+		public function set security(value:ISecurity):void {
+			this._security = value;
+		}
 	}
 }

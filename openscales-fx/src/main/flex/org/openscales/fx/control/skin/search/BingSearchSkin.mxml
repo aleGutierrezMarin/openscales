@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		xmlns:s="library://ns.adobe.com/flex/spark" 
-		xmlns:mx="library://ns.adobe.com/flex/mx" width="314" height="200" contentBackgroundColor="#FFFFFF">
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		width="314"
+		height="200"
+		contentBackgroundColor="#FFFFFF">
 	<!-- host component -->
 	<fx:Metadata>
 		[HostComponent("org.openscales.fx.control.search.Search")]
 	</fx:Metadata>
 	
-	<s:Panel x="0" y="0" width="100%" height="100%" title="Search" mouseDown="handleDown(event);" mouseUp="handleUp(event);">
-		<s:TextInput id="searchText" x="10" y="10" width="294"/>
-		<mx:DataGrid x="10" y="40" height="113" width="294" dataProvider="{searchResult}" itemClick="onItemClick(event);">
-			<mx:columns>
-				<mx:DataGridColumn headerText="Adresse" dataField="formattedAddress"/>
-				<mx:DataGridColumn headerText="Code postal" dataField="postalCode"/>
-				<mx:DataGridColumn headerText="Ville" dataField="locality"/>
-				<mx:DataGridColumn headerText="Pays" dataField="countryRegion"/>
-			</mx:columns>
-		</mx:DataGrid>
-		<s:ToggleButton x="239" y="-26" label="reverse" width="63" id="reverse" click="reverseToggle();"/>
+	<!-- SkinParts
+	name=searchText, type=spark.components.TextInput, required=true
+	name=searchResult, type=mx.collections.ArrayCollection, required=true
+	-->
+	
+	<s:Panel id="searchPannel"
+			 width="100%"
+			 title="Bing location"
+			 mouseDown="handleDown(event);"
+			 mouseUp="handleUp(event);">
+		<s:ToggleButton right="10" y="-26" label="reverse" width="63" id="reverse" click="reverseToggle();"/>
+		<s:VGroup left="10" right="10" top="10" bottom="10" gap="5">
+			<s:TextInput id="searchText" width="100%"/>
+			<mx:DataGrid width="100%" dataProvider="{searchResult}" itemClick="onItemClick(event);">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Adresse" dataField="formattedAddress"/>
+					<mx:DataGridColumn headerText="Code postal" dataField="postalCode"/>
+					<mx:DataGridColumn headerText="Ville" dataField="locality"/>
+					<mx:DataGridColumn headerText="Pays" dataField="countryRegion"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:Image source="http://dev.virtualearth.net/Branding/logo_powered_by.png" right="0"/>
+		</s:VGroup>
 	</s:Panel>
 	
 	<fx:Script>
@@ -36,7 +51,7 @@
 			public var searchResult:ArrayCollection = new ArrayCollection();
 			
 			private var _handler:ClickHandler = new ClickHandler(null,false);
-			
+
 			/**
 			 * @private
 			 * method called when user click on a result
@@ -79,7 +94,8 @@
 			 * @param e the mouse event
 			 */
 			private function handleDown(e:MouseEvent):void{
-				this.startDrag();
+				if(e.target == searchPannel.titleDisplay)
+					this.startDrag();
 			}
 			/**
 			 * @private
@@ -93,5 +109,4 @@
 			}
 		]]>
 	</fx:Script>
-	
 </s:Skin>
