@@ -10,15 +10,18 @@ Otherwise, double-click on one of the results to center the map. -->
 		 height="100%" 
 		 resolution="0.021972656" 
 		 center="4.833,45.767" 
-		 projection="EPSG:900913"
-		 minResolution="1.279089053741418,EPSG:900913">
+		 projection="EPSG:900913" >
 		
 		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
 		
 		<DragHandler />
 		<WheelHandler />
 		
-		<Search id="search" left="10" top="10" />
+		<Search id="search"
+				left="10"
+				top="10"
+				skinClass="org.openscales.fx.control.skin.search.YahooPlaceFinderSearchSkin"
+				/>
 		
 		<Zoom x="{fxMap.width-135}" y="10" />
 		
@@ -29,18 +32,14 @@ Otherwise, double-click on one of the results to center the map. -->
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.basetypes.Resolution;
-			import org.openscales.core.search.BingSearch;
-			import org.openscales.core.search.YahooPlaceFinder;
-			import org.openscales.core.utils.Trace;
+			import org.openscales.core.search.engine.YahooPlaceFinderEngine;
 			
 			private var res:Resolution = new Resolution(0);
 			
 			private function init():void {
-				search.searchEngine = new YahooPlaceFinder();
-			
+				search.searchEngine = new YahooPlaceFinderEngine();
+				search.autocompleteEngine = search.searchEngine;
 			}
-
-			
 
 		]]>
 	</fx:Script>
