@@ -1,13 +1,13 @@
 package org.openscales.fx.control.search.engine
 {
-	import org.openscales.core.search.BingSearch;
-	import org.openscales.core.search.SearchEngine;
+	import org.openscales.core.search.engine.BingSearchEngine;
+	import org.openscales.core.search.engine.SearchEngine;
 	
-	public class FxBingSearch extends FxSearchEngine
+	public class FxBingSearchEngine extends FxSearchEngine
 	{
 		private var _key:String = null;
 		
-		public function FxBingSearch()
+		public function FxBingSearchEngine()
 		{
 			super();
 		}
@@ -29,7 +29,7 @@ package org.openscales.fx.control.search.engine
 		 * @inheritDoc
 		 */
 		override public function get searchEngine():SearchEngine {
-			return new BingSearch(this._key);
+			return new BingSearchEngine(this._key);
 		}
 	}
 }
