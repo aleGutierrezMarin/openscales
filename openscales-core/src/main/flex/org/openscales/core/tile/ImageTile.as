@@ -61,6 +61,8 @@ package org.openscales.core.tile
 			}
 			if (this.url == null) {
 				this.url = this.layer.getURL(this.bounds);
+				if(this.layer.security)
+					this.url = this.layer.security.getFinalUrl(this.url);
 			}
 			if(this.url==null) {
 				if (_request) {
