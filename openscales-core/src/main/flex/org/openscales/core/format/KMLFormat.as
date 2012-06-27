@@ -825,7 +825,7 @@ package org.openscales.core.format
 		 */ 
 		private function loadPolygonData(_Pdata:String):LinearRing
 		{
-			_Pdata = _Pdata.split("\n").join("");
+			_Pdata = _Pdata.split("\n").join(" ");
 			_Pdata = _Pdata.replace(/^\s*(.*?)\s*$/g, "$1");
 			var coordinates:Array = _Pdata.split(" ");
 			var Ppoints:Vector.<Number> = new Vector.<Number>();
