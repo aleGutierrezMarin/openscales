@@ -1,4 +1,4 @@
-package org.openscales.core.search
+package org.openscales.core.search.engine
 {
 	import com.adobe.serialization.json.JSON;
 	
@@ -15,7 +15,7 @@ package org.openscales.core.search
 	 * Bing location api suuport
 	 * based on http://msdn.microsoft.com/en-us/library/ff701715.aspx
 	 */
-	public class BingSearch extends SearchEngine
+	public class BingSearchEngine extends SearchEngine
 	{
 		private static var APIURL:String = "http://dev.virtualearth.net/REST/v1/";
 		
@@ -27,7 +27,7 @@ package org.openscales.core.search
 		 * Constructor
 		 * @param key the bing api key
 		 */
-		public function BingSearch(key:String)
+		public function BingSearchEngine(key:String)
 		{
 			this._key = key;
 			super();
