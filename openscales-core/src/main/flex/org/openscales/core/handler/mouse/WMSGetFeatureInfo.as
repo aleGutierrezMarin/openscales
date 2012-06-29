@@ -429,7 +429,7 @@ package org.openscales.core.handler.mouse
 		 */
 		public function set buffer(value:Number):void
 		{
-			this.buffer = value;
+			this._buffer = value;
 		}
 	}
 }
