@@ -73,8 +73,9 @@ package org.openscales.core.layer
 					this._request.security = this.security;
 					this._request.send();
 				} else {
-					this.clear();
-					this.draw();
+					//this.clear();
+					//this.draw();
+					super.redraw(fullRedraw);
 				}
 			}
 			else if (this.data)
@@ -83,8 +84,9 @@ package org.openscales.core.layer
 			}
 			else
 			{
-				this.clear();
-				this.draw();
+				//this.clear();
+				//this.draw();
+				super.redraw(fullRedraw);
 			}
 			this._initialized = true;
 		}
