@@ -60,6 +60,7 @@
     <classEntry path="org.openscales.core.events.MeasureEvent"/>
     <classEntry path="org.openscales.core.events.OpenScalesEvent"/>
     <classEntry path="org.openscales.core.events.OriginatorEvent"/>
+    <classEntry path="org.openscales.core.events.RequestEvent"/>
     <classEntry path="org.openscales.core.events.SearchEvent"/>
     <classEntry path="org.openscales.core.events.TileEvent"/>
     <classEntry path="org.openscales.core.events.TraceEvent"/>
@@ -140,6 +141,7 @@
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.ZoomBoxHandler"/>
+    <classEntry path="org.openscales.core.history.HistoryItem"/>
     <classEntry path="org.openscales.core.history.NavigationHistoryLogger"/>
     <classEntry path="org.openscales.core.i18n.Catalog"/>
     <classEntry path="org.openscales.core.i18n.Locale"/>
@@ -218,6 +220,7 @@
     <classEntry path="org.openscales.core.routing.IRouting"/>
     <classEntry path="org.openscales.core.routing.SampleRouting"/>
     <classEntry path="org.openscales.core.search.engine.BingSearchEngine"/>
+    <classEntry path="org.openscales.core.search.engine.OpenLsSearchEngine"/>
     <classEntry path="org.openscales.core.search.engine.SearchEngine"/>
     <classEntry path="org.openscales.core.search.engine.YahooPlaceFinderEngine"/>
     <classEntry path="org.openscales.core.search.result.Address"/>
@@ -234,6 +237,7 @@
     <classEntry path="org.openscales.core.style.fill.Fill"/>
     <classEntry path="org.openscales.core.style.fill.SolidFill"/>
     <classEntry path="org.openscales.core.style.font.Font"/>
+    <classEntry path="org.openscales.core.style.halo.Halo"/>
     <classEntry path="org.openscales.core.style.marker.ArrowMarker"/>
     <classEntry path="org.openscales.core.style.marker.CustomMarker"/>
     <classEntry path="org.openscales.core.style.marker.DisplayObjectMarker"/>
@@ -279,6 +283,7 @@
     <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
     <classEntry path="org.openscales.core.handler.mouse.MouseHandlerTest"/>
+    <classEntry path="org.openscales.core.history.NavigationHistoryLoggerTest"/>
     <classEntry path="org.openscales.core.i18n.CatalogTest"/>
     <classEntry path="org.openscales.core.i18n.LocaleTest"/>
     <classEntry path="org.openscales.core.i18n.i18nTest"/>
@@ -306,8 +311,6 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.history.NavigationHistoryLoggerTest"/>
-    <classEntry path="org.openscales.core.search.engine.OpenLsSearchEngine"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
