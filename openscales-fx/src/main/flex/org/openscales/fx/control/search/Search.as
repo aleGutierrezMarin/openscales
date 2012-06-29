@@ -14,7 +14,7 @@ package org.openscales.fx.control.search
 	import org.openscales.core.search.engine.SearchEngine;
 	import org.openscales.core.search.result.Address;
 	import org.openscales.fx.control.search.engine.FxSearchEngine;
-	import skins.search.SearchDefaultSkin;
+	import org.openscales.fx.control.skin.SearchDefaultSkin;
 	import org.openscales.geometry.basetypes.Location;
 	
 	import spark.components.TextInput;
@@ -59,6 +59,7 @@ package org.openscales.fx.control.search
 			super();
 			this._timer = new Timer(_minAutoCompleteInterval,1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			this.setStyle("skinClass","org.openscales.fx.control.skin.SearchDefaultSkin");
 		}
 		
 		/**
