@@ -14,7 +14,7 @@ package org.openscales.fx.control.search
 	import org.openscales.core.search.engine.SearchEngine;
 	import org.openscales.core.search.result.Address;
 	import org.openscales.fx.control.search.engine.FxSearchEngine;
-	import org.openscales.fx.control.skin.search.SearchDefaultSkin;
+	import skins.search.SearchDefaultSkin;
 	import org.openscales.geometry.basetypes.Location;
 	
 	import spark.components.TextInput;

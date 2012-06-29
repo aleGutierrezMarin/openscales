@@ -19,7 +19,7 @@
 		<Search id="search"
 				left="10"
 				top="10"
-				skinClass="org.openscales.fx.control.skin.search.BingSearchSkin"
+				skinClass="skins.search.BingSearchSkin"
 				/>
 		
 		<Zoom x="{fxMap.width-135}" y="10" />
@@ -32,7 +32,7 @@
 		<![CDATA[
 			import org.openscales.core.search.engine.BingSearchEngine;
 			import org.openscales.core.search.engine.OpenLsSearchEngine;
-			import org.openscales.fx.control.skin.search.BingSearchSkin;
+			import skins.search.BingSearchSkin;
 			private function init():void {
 				search.searchEngine = new BingSearchEngine("Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk");
 				search.autocompleteEngine = search.searchEngine;

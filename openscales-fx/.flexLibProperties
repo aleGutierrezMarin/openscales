@@ -120,9 +120,6 @@
     <classEntry path="org.openscales.fx.control.skin.ZoomSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomThumbSkin"/>
     <classEntry path="org.openscales.fx.control.skin.ZoomTrackSkin"/>
-    <classEntry path="org.openscales.fx.control.skin.search.BingSearchSkin"/>
-    <classEntry path="org.openscales.fx.control.skin.search.SearchDefaultSkin"/>
-    <classEntry path="org.openscales.fx.control.skin.search.YahooPlaceFinderSearchSkin"/>
     <classEntry path="org.openscales.fx.feature.FxStyle"/>
     <classEntry path="org.openscales.fx.handler.FxHandler"/>
     <classEntry path="org.openscales.fx.handler.FxKeyboardHandler"/>
@@ -179,6 +176,7 @@
     <classEntry path="org.openscales.fx.control.layer.MapSyncSortTest"/>
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
+    <classEntry path="org.openscales.fx.control.skin.SearchDefaultSkin"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>

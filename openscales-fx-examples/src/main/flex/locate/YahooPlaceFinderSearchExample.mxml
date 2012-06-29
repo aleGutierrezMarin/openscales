@@ -20,7 +20,7 @@ Otherwise, double-click on one of the results to center the map. -->
 		<Search id="search"
 				left="10"
 				top="10"
-				skinClass="org.openscales.fx.control.skin.search.YahooPlaceFinderSearchSkin"
+				skinClass="skins.search.YahooPlaceFinderSearchSkin"
 				/>
 		
 		<Zoom x="{fxMap.width-135}" y="10" />
