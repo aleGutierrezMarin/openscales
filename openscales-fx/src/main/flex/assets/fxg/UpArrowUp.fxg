@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version="2.0" viewHeight="1000" viewWidth="1024" ATE:version="1.0.0" flm:version="1.0.0" d:using="" xmlns="http://ns.adobe.com/fxg/2008" xmlns:ATE="http://ns.adobe.com/ate/2009" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:flm="http://ns.adobe.com/flame/2008">
+	<Group>
+    	<Group d:type="layer" d:userLabel="Calque 1">
+   	        	<Path data="M8.1 4.1 5.45 4.1 5.45 7.3 2.6 7.3 2.6 4.1 0 4.1 4.2 0 8.1 4.1">
+            	<fill>
+              		<SolidColor color="#9FADB8"/>
+            	</fill>
+          	</Path>
+
+        </Group>
+	</Group>
+</Graphic>
