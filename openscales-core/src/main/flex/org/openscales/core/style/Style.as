@@ -55,6 +55,7 @@ package org.openscales.core.style {
 		private var _isFilled:Boolean;
 		private var _isStroked:Boolean;
 		private var _isSelectedStyle:Boolean = false;
+		public static var defaultPointPictoURL:String = "http://openscales.org/img/pictos/openscalesDefaultPicto.png";
 		
 
 		public static function getDefaultSelectedColor():uint {
@@ -93,7 +94,7 @@ package org.openscales.core.style {
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
-			var symbolizer:PointSymbolizer = new PointSymbolizer(new CustomMarker("http://openscales.org/img/pictos/openscalesDefaultPicto.png"));
+			var symbolizer:PointSymbolizer = new PointSymbolizer(new CustomMarker(defaultPointPictoURL));
 			rule.symbolizers.push(symbolizer);
 			
 			return rule;
