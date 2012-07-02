@@ -317,6 +317,7 @@ package org.openscales.core.request
 			if ((this.proxy != null)) {
 				if(this.proxy.charAt(this.proxy.length-1) == '/')
 				{
+					_finalUrl = _finalUrl.replace("http://", "http:/");
 					_finalUrl = this.proxy + _finalUrl;
 				}else{
 					_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
