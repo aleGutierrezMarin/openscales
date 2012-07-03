@@ -6,6 +6,7 @@ package org.openscales.core.layer
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
+	import org.openscales.core.format.Format;
 	import org.openscales.core.format.KMLFormat;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.style.Style;
@@ -207,6 +208,8 @@ package org.openscales.core.layer
 		public function get acceptedFileExtensions():Vector.<String>{
 			return ACCEPTED_FILE_EXTENSIONS;
 		}
+		
+		
 		
 		/**
 		 * Return the kml name stored in the kml data
