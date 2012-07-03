@@ -43,6 +43,17 @@ package org.openscales.core.layer
 			
 			if (name && name!="")
 				this.displayedName = name;
+			
+			if (url)
+			{
+				if (! this._request) {
+					this.loading = true;
+					this._request = new XMLRequest(url, onSuccess, onFailure);
+					this._request.proxy = this.proxy;
+					this._request.security = this.security;
+					this._request.send();
+				}
+			}
 		}
 		
 		override public function destroy():void {
@@ -104,6 +115,9 @@ package org.openscales.core.layer
 				this._kmlFormat.proxy = this.proxy;
 				
 				this._featureVector = this._kmlFormat.read(this.data) as Vector.<Feature>;
+				var name:String = this._kmlFormat.readName(this.data);
+				if (name && name!="")
+					this.displayedName = name;
 				var i:uint;
 				var vectorLength:uint = this._featureVector.length;
 				for (i = 0; i < vectorLength; i++){					
@@ -125,9 +139,10 @@ package org.openscales.core.layer
 			// To avoid errors if the server is dead
 			try {
 				this.data = new XML(loader.data);
-				this.drawFeatures(true);
 				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_LOAD_END, this);
 				this.dispatchEvent(evt);
+				this.drawFeatures(true);
+				
 				/*if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
 					this._kmlFormat.externalProjection = this.projection;
 					this._kmlFormat.internalProjection = this.map.projection;

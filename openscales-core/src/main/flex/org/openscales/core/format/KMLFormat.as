@@ -21,6 +21,8 @@ package org.openscales.core.format
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.halo.Halo;
 	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
 	import org.openscales.core.style.marker.Marker;
@@ -31,8 +33,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
-	import org.openscales.core.style.halo.Halo;
-	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -43,7 +44,6 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	
 	use namespace os_internal;
 	
@@ -92,8 +92,17 @@ package org.openscales.core.format
 			use namespace opengis;
 			
 			var name:String = "";
-			if (dataXML && dataXML.name)
-				name = dataXML.name.toString();
+			if (dataXML && dataXML.name[0])
+				name = dataXML.name[0].toString();
+			else {
+				if (dataXML)
+				{
+					var document:XML = dataXML.Document[0];
+					if (document.name[0])
+						name = dataXML.Document[0].name[0].toString();
+				}
+			}
+			
 			return name;
 			
 		}
@@ -870,7 +879,7 @@ package org.openscales.core.format
 			
 			var doc:XML = new XML("<Document></Document>"); 
 			kmlFile.appendChild(doc);
-
+			
 			var listOfFeatures:Vector.<Feature> = features as Vector.<Feature>;
 			var numberOfFeat:uint = listOfFeatures.length;
 			if (numberOfFeat > 0 && listOfFeatures[0].layer)
