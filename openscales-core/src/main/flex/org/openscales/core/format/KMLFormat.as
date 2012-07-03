@@ -860,6 +860,22 @@ package org.openscales.core.format
 		}
 		
 		/**
+		 * Write empty file with specified document Name
+		 */
+		public function writeEmptyKmlFil(kmlName:String):Object
+		{
+			var kmlns:Namespace = new Namespace("kml","http://www.opengis.net/kml/2.2");
+			var kmlFile:XML = new XML("<kml></kml>");
+			kmlFile.addNamespace(kmlns);
+			
+			var doc:XML = new XML("<Document></Document>"); 
+			kmlFile.appendChild(doc);
+			var name:XML = new XML("<name>"+kmlName+"</name>");
+			doc.appendChild(name);
+			return kmlFile; 
+		}
+		
+		/**
 		 * Write data
 		 *
 		 * @param features the features to build into a KML file

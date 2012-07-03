@@ -6,6 +6,7 @@
 				autoDrawBackground="false">
 	
 	<mx:Image source="{_pictureUrl}"
+			  id = "theOrigImage"
 			  name="{_name}"
 			  width="50" 
 			  height="50" 
@@ -24,11 +25,18 @@
 				private var _name:String="";
 				
 				
-				
 				override public function set data(value:Object):void{
 					
 					super.data = value;
-					this._pictureUrl = data.pictureUrl;
+					
+					if (!data)
+						return;
+					var loaderContext:LoaderContext = new LoaderContext(); 
+					loaderContext.checkPolicyFile = true; 
+					theOrigImage.loaderContext = loaderContext; 
+					theOrigImage.load(data.pictureUrl); 
+					
+					//this._pictureUrl = data.pictureUrl;
 					this._name = data.name;
 				}
 				

@@ -15,6 +15,7 @@ package org.openscales.core.layer
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.Format;
+	import org.openscales.core.format.KMLFormat;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -693,6 +694,10 @@ package org.openscales.core.layer
 		 */
 		public function getFormatExport(format:Format, exProj:ProjProjection = null):Object
 		{
+			if (this.features.length == 0 && format is KMLFormat)
+			{
+				return (format as KMLFormat).writeEmptyKmlFil(this.displayedName);
+			}
 			if (!exProj)
 			{
 				return format.write(this.features);
