@@ -27,10 +27,15 @@
 				
 				override public function set data(value:Object):void{
 					
+					if (!value)
+						return;
+					
+					if (data && value.pictureUrl == this.data.pictureUrl)
+						return;
+					
 					super.data = value;
 					
-					if (!data)
-						return;
+					
 					var loaderContext:LoaderContext = new LoaderContext(); 
 					loaderContext.checkPolicyFile = true; 
 					theOrigImage.loaderContext = loaderContext; 
