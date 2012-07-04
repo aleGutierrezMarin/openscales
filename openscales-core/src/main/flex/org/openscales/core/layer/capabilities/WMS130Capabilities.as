@@ -108,8 +108,9 @@ package org.openscales.core.layer.capabilities
 				value = layer.Abstract;
 				layerCapabilities.put("Abstract", value);
 
-				value = layer.KeywordList;
-				layerCapabilities.put("KeywordList", value);
+				var keywords:Vector.<String> = parseKeywordList(layer.KeywordList);
+
+				layerCapabilities.put("KeywordList", keywords);
 				
 				left = new Number(layer.EX_GeographicBoundingBox.westBoundLongitude);
 				bottom = new Number(layer.EX_GeographicBoundingBox.southBoundLatitude);
@@ -136,6 +137,19 @@ package org.openscales.core.layer.capabilities
 			return this._capabilities;
 		}
 
+		/**
+		 * @param a KeywordList XMLList
+		 */ 
+		public function parseKeywordList(keywordListXMLList:XMLList):Vector.<String>{
+			var vec:Vector.<String>
+			
+			for each(var keyword:XML in keywordListXMLList.children()){
+				if(!vec)vec = new Vector.<String>();
+				vec.push(keyword.toString());
+			}
+			return vec;
+		}
+		
 		/**
 		 * This method instanciate the layer listed in capabilities whose Name tag match the <code>name</code> parameter. Be aware that the <code>Layer.url</code> property won't be set since this information is not hold by capabilities.
 		 * 
