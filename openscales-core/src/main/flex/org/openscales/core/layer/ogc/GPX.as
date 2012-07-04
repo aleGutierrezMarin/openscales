@@ -171,6 +171,9 @@ package org.openscales.core.layer.ogc
 				}
 				this.addFeatures(lineStringFeatureVector);
 				this.addFeatures(pointFeatureVector);
+				
+				this.maxExtent = this.featuresBbox;
+				
 				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_CHANGED, this);
 				this.map.dispatchEvent(evt);
 				

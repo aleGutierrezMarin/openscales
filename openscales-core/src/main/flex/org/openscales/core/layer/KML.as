@@ -124,6 +124,8 @@ package org.openscales.core.layer
 				for (i = 0; i < vectorLength; i++){					
 					this.addFeature(this._featureVector[i],true,true);
 				}
+				this.maxExtent = featuresBbox;
+				
 			}
 			else {
 				//this.clear();
