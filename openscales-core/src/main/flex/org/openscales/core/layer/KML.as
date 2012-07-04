@@ -126,6 +126,8 @@ package org.openscales.core.layer
 				}
 				this.maxExtent = featuresBbox;
 				
+				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_CHANGED, this);
+				this.map.dispatchEvent(evt);
 			}
 			else {
 				//this.clear();
