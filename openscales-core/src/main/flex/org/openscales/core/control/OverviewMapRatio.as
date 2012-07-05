@@ -111,6 +111,7 @@ package org.openscales.core.control
 		 */
 		public override function draw():void {
 			this.addChild(this._overviewMap);
+			this.mapChanged();
 		}
 		
 		/**
@@ -121,8 +122,14 @@ package org.openscales.core.control
 			if (this._centerIcon) {
 				// Use icon
 				if (this._centerPoint) {
-					this.removeChild(this._centerPoint);
+					this._overviewMap.removeChild(this._centerPoint);
 					this._centerPoint = null;
+				}
+				
+				if (this._centerBitmap)
+				{
+					this.removeChild(this._centerBitmap);
+					this._centerBitmap = null;
 				}
 				_centerBitmap = new _centerIcon;
 				_centerBitmap.x = this.width/2 - _centerBitmap.width/2;
@@ -134,6 +141,11 @@ package org.openscales.core.control
 				if (this._centerPoint == null)
 				{
 					_centerPoint = new Shape();
+				}
+				if (this._centerBitmap)
+				{
+					this.removeChild(this._centerBitmap);
+					this._centerBitmap = null;
 				}
 				_centerPoint.graphics.clear();
 				_centerPoint.graphics.lineStyle(1, 0xFF0000);
