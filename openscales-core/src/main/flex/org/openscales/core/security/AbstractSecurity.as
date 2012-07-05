@@ -124,10 +124,12 @@ package org.openscales.core.security
 		
 		public function getFinalUrl(baseUrl:String):String {
 			var _finalUrl:String = baseUrl;
-			_finalUrl += (_finalUrl.indexOf("?") == -1) ? "?" : "&"; // If there is no "?" in the url, we will have to add it, else we will have to add "&"
-			if(this.securityParameter!=null)
-				_finalUrl += this.securityParameter;
-			
+			if (_finalUrl)
+			{
+				_finalUrl += (_finalUrl.indexOf("?") == -1) ? "?" : "&"; // If there is no "?" in the url, we will have to add it, else we will have to add "&"
+				if(this.securityParameter!=null)
+					_finalUrl += this.securityParameter;
+			}
 			return _finalUrl;
 		}
 		
