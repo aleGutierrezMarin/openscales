@@ -66,7 +66,7 @@ package org.openscales.core.format
 			//check the style reference in the placemarks
 			var styleUrl:XMLList = buildedFile..*::styleUrl;
 			Assert.assertEquals("The styleUrl of this feature is incorrect",
-				"#Default line style", styleUrl[0].toString());
+				"#Default_line_style", styleUrl[0].toString());
 			Assert.assertEquals("The styleUrl of this feature is incorrect",
 				"#transPurpleLineGreenPoly", styleUrl[1].toString());
 			Assert.assertEquals("The styleUrl of this feature is incorrect",
