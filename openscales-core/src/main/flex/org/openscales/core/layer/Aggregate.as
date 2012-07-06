@@ -156,7 +156,7 @@ package org.openscales.core.layer
 		 * That method is called before a layer is added to the Aggregate. By default, it sets layers's displayInLayerManager property to false
 		 */ 
 		protected function prepareLayer(layer:Layer):void{
-			//layer.displayInLayerManager = false;
+			layer.displayInLayerManager = false;
 		}
 		
 		/**
