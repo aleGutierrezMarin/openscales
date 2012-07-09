@@ -242,8 +242,8 @@
 						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
 						loc = this.map.getLocationFromMapPx(_stopPixel);
 						loc.reprojectTo(feature.projection);
-						targetFeature.geometry = new Point(loc.lon,loc.lat);
-						targetFeature.geometry.projection = loc.projection;
+						targetFeature.geometry = new Point(loc.lon,loc.lat, loc.projection);
+						//targetFeature.geometry.projection = loc.projection;
 						targetFeature.x = 0;
 						targetFeature.y = 0;
 					}
