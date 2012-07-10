@@ -1,22 +1,24 @@
 Changelog
 =========
 
-Changes between 2.1.1 and 2.1.2
+Changes between 2.1.1 and 2.2
 -------------------------------
 * Javascript API to control swf from your HTML pages
 * defaults.css includes components default skins (only new component for now)
-* Fix bug from Shane StClair (FxMap.zoomToExtent)
+* Pull request from Shane StClair (FxMap.zoomToExtent)
 * Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
 * Adding a blinkMarker parameter to activate a blink animation on the marker of OpenLSSearch component.
 * Add abstract property to Layer
 * Add IIPImage client (cf IIPImageViewer)
 * Add navigation history logging (see the core class NavigationHistoryLogger and the control NavigationHistoryBrowser)
-* New control: AddExternalLayer (and its default skin AddExternalLayerDefaultSkin) which allows to add OGC WxS using a GetCap query on any valide server. Add of KML/GPX & GeoRSS layers is also supported (from local file system or URL)
+* Refactor control: AddExternalLayer (and its default skin AddExternalLayerDefaultSkin) which allows to add OGC WxS using a GetCap query on any valide server. Add of KML/GPX & GeoRSS layers is also supported (from local file system or URL)
 * Refactor i18n: Catalog now dispatches event when active locale changes .This allows to listen for locale changes without having access to the Map. For backward compatibility, Map instances still dispatche LOCALE_CHANGED events.
 * Issue fix: 435 https://bitbucket.org/gis/openscales/issue/458/static-cont-string-is-spelled-wrong
 * Issue fix: 467 https://bitbucket.org/gis/openscales/issue/467/solid-backgrid-for-transparent-tiles-on
 * Issue fix: 438 https://bitbucket.org/gis/openscales/issue/438/multipoint-componentsstring-function
 * Issue fix: 461 https://bitbucket.org/gis/openscales/issue/461/scale-line-when-zoomed-in-shows-incorrect
+* Add generic search component
+* Add search engines (Bing, Yahoo!, OpenLs)
 
 Changes between 2.1.0 and 2.1.1
 -------------------------------
