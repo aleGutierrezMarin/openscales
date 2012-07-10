@@ -18,6 +18,7 @@ package org.openscales.core.search.engine
 		private var _countryCode:String = null;
 		private var _srsName:String = null;
 		private var _req:OpenLSRequest = null;
+		private var _placeFilters:Vector.<Vector.<String>> = null;
 		
 		public function OpenLsSearchEngine(serviceUrl:String, countryCode:String, srsName:String="epsg:4326", version:String="1.2")
 		{
@@ -46,6 +47,7 @@ package org.openscales.core.search.engine
 				}
 			});
 			this._req.defineReverseSearch(UID.gen_uid(), new Vector.<String>, loc.reprojectTo("EPSG:4326"), this._srsName, this.maxResults, this.version);
+			this.setFilters();
 			this._req.security = this.security;
 			this._req.send();
 		}
@@ -67,8 +69,19 @@ package org.openscales.core.search.engine
 				}
 			});
 			this._req.defineSimpleSearch(UID.gen_uid(),queryString,this._countryCode, this._srsName, this.maxResults, this.version);
+			this.setFilters();
 			this._req.security = this.security;
 			this._req.send();
+		}
+		
+		private function setFilters():void {
+			if(this._placeFilters && this._req) {
+				for (var i:int=filters.length; i>0; --i) {
+					var filter:Vector.<String> = this._placeFilters[i-1];
+					if(filter.length==2)
+						this._req.addPlaceFilter(filter[0], filter[1]);
+				}
+			}
 		}
 		
 		private function parseResponse(xml:XML):Vector.<Address> {
@@ -152,6 +165,22 @@ package org.openscales.core.search.engine
 		{
 			_srsName = value;
 		}
+
+		/**
+		 * place filters
+		 */
+		public function get placeFilters():Vector.<Vector.<String>>
+		{
+			return _placeFilters;
+		}
+		/**
+		 * @private
+		 */
+		public function set placeFilters(value:Vector.<Vector.<String>>):void
+		{
+			_placeFilters = value;
+		}
+
 
 	}
 }
