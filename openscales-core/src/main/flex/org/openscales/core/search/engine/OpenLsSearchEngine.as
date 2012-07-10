@@ -76,7 +76,7 @@ package org.openscales.core.search.engine
 		
 		private function setFilters():void {
 			if(this._placeFilters && this._req) {
-				for (var i:int=filters.length; i>0; --i) {
+				for (var i:int=this._placeFilters.length; i>0; --i) {
 					var filter:Vector.<String> = this._placeFilters[i-1];
 					if(filter.length==2)
 						this._req.addPlaceFilter(filter[0], filter[1]);
