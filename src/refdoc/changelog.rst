@@ -1,7 +1,13 @@
 Changelog
 =========
 
-Changes between 2.1.1 and 2.1.2
+Changes between 2.2 and 2.3.0
+-----------------------------
+
+
+
+
+Changes between 2.1.1 and 2.2
 -------------------------------
 * Javascript API to control swf from your HTML pages
 * defaults.css includes components default skins (only new component for now)
