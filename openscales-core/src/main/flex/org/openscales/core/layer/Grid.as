@@ -775,7 +775,6 @@ package org.openscales.core.layer
 		
 		/**
 		 * Return the closest requestable resolution to the targetResolution given as parameter.
-		 * The parameter finest says if we always return the smaller resolution
 		 */
 		public function getSupportedResolution(targetResolution:Resolution):Resolution
 		{
