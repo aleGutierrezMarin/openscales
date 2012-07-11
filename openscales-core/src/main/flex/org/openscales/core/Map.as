@@ -182,11 +182,16 @@ package org.openscales.core
 		/**
 		 * Default zoomIn factor
 		 */
-		public static const DEFAULT_ZOOM_IN_FACTOR:Number = 0.9;
+		public static const DEFAULT_ZOOM_IN_FACTOR:Number = 0.75;
 		/**
 		 * Default zoomIn factor
 		 */
-		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.11;
+		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.33;
+		
+		/**
+		 * DEfault map reload timeout in ms
+		 */
+		public static const DEFAULT_MAP_RELOAD_TIMEOUT:Number = 25;
 		
 		/**
 		 * Number of attempt for downloading an image tile
@@ -302,7 +307,7 @@ package org.openscales.core
 			I18nJSONProvider.addTranslation(FRLocale);
 			
 			Catalog.catalog.addEventListener(I18NEvent.LOCALE_CHANGED, this.localeChanged);
-			this._timer = new Timer(200,1);
+			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT,1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._resizeTimer = new Timer(100,1);
 			this._resizeTimer.addEventListener(TimerEvent.TIMER, this.applyResize);

@@ -26,6 +26,7 @@ package org.openscales.core.handler.mouse
 		private var _firstDrag:Boolean = true;
 		private var _dragging:Boolean = false;
 		private var _previousMapPosition:Pixel = new Pixel(0,0);
+		private var _startDragPosition:Pixel;
 		
 		/**
 		 * Used to store the center when we reach the limit of the max extend.
@@ -115,6 +116,16 @@ package org.openscales.core.handler.mouse
 			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_END, this.map));
 			this.map.buttonMode=false;
 			this.dragging=false;
+			/*var deltaX:Number = (this.map.stage.mouseX - this._startDragPosition.x) * 0.25;
+			var deltaY:Number = (this.map.stage.mouseY - this._startDragPosition.y) * 0.25;
+			
+			var max:Number = Math.max(deltaX, deltaY);
+			deltaX /= max;
+			deltaY /= max;
+			for (var i:int=0; i<Math.ceil(max); ++i)
+			{
+				map.pan(deltaX, deltaY);
+			}*/
 		}
 		
 		/**
@@ -131,6 +142,7 @@ package org.openscales.core.handler.mouse
 			
 			this.dragging=true;
 			this._previousMapPosition = new Pixel(this.map.stage.mouseX, this.map.stage.mouseY);
+			this._startDragPosition = new Pixel(this.map.stage.mouseX, this.map.stage.mouseY);
 			
 		}
 			
