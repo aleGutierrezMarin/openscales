@@ -4,6 +4,7 @@ Changelog
 Changes between 2.2 and 2.3.0
 -----------------------------
 
+* Support of TileMatrixSetLimits in WMTS GetCapabilities. No more tiles will be request outside those limits
 
 
 
