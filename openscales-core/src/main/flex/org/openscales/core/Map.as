@@ -191,7 +191,7 @@ package org.openscales.core
 		/**
 		 * DEfault map reload timeout in ms for setCenter
 		 */
-		public static const DEFAULT_MAP_RELOAD_TIMEOUT_CENTER:Number = 25;
+		public static const DEFAULT_MAP_RELOAD_TIMEOUT_CENTER:Number = 50;
 		
 		/**
 		 * DEfault map reload timeout in ms for setResolution
