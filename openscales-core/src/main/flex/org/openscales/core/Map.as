@@ -189,9 +189,14 @@ package org.openscales.core
 		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.33;
 		
 		/**
-		 * DEfault map reload timeout in ms
+		 * DEfault map reload timeout in ms for setCenter
 		 */
-		public static const DEFAULT_MAP_RELOAD_TIMEOUT:Number = 25;
+		public static const DEFAULT_MAP_RELOAD_TIMEOUT_CENTER:Number = 25;
+		
+		/**
+		 * DEfault map reload timeout in ms for setResolution
+		 */
+		public static const DEFAULT_MAP_RELOAD_TIMEOUT_RES:Number = 300;
 		
 		/**
 		 * Number of attempt for downloading an image tile
@@ -307,7 +312,7 @@ package org.openscales.core
 			I18nJSONProvider.addTranslation(FRLocale);
 			
 			Catalog.catalog.addEventListener(I18NEvent.LOCALE_CHANGED, this.localeChanged);
-			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT,1);
+			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT_CENTER,1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._resizeTimer = new Timer(100,1);
 			this._resizeTimer.addEventListener(TimerEvent.TIMER, this.applyResize);
@@ -1686,6 +1691,9 @@ package org.openscales.core
 						
 			this.dispatchEvent(event);
 			this._timer.reset();
+			this._timer.removeEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT_RES, 1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._timer.start();
 		}	
 		
@@ -1844,6 +1852,9 @@ package org.openscales.core
 		private function onTimerEnd(event:TimerEvent):void
 		{
 			this._timer.stop();
+			this._timer.removeEventListener(TimerEvent.TIMER, this.onTimerEnd)
+			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT_CENTER, 1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			var mapevent:MapEvent = new MapEvent(MapEvent.RELOAD, this);
 			this.dispatchEvent(mapevent);
 		}

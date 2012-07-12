@@ -5,6 +5,8 @@ package org.openscales.core.control
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	import mx.controls.Image;
 	
@@ -63,6 +65,12 @@ package org.openscales.core.control
 		protected var _centerBitmap:Bitmap;
 		
 		/**
+		 * @private
+		 * The timer used to refresh the overviewMap while moving the map
+		 */
+		protected var _timer:Timer;
+		
+		/**
 		 * Constructor of the overview map
 		 * 
 		 * @param position Position of the overview map
@@ -74,6 +82,8 @@ package org.openscales.core.control
 			this._overviewMap = new Map();
 			this._overviewMap.size = new Size(100, 100);
 			this.layer = layer;
+			this._timer = new Timer(300, 1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.actualizeLayer);
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -180,6 +190,7 @@ package org.openscales.core.control
 				this.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
 				this.map.removeEventListener(MapEvent.RESIZE, mapChanged);
 				this.map.removeEventListener(MapEvent.MAP_LOADED, mapChanged);
+				this.map.removeEventListener(MapEvent.RELOAD, mapReload);
 				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			}
 			super.map = map;	
@@ -190,12 +201,28 @@ package org.openscales.core.control
 				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
 				this.map.addEventListener(MapEvent.RESIZE, mapChanged);
 				this.map.addEventListener(MapEvent.MAP_LOADED, mapChanged);
+				this.map.addEventListener(MapEvent.RELOAD, mapReload);
 				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
 				this._overviewMap.maxExtent = this._map.maxExtent.preciseReprojectBounds(this.overviewMap.projection);
 				this._overviewMap.backTileColor = this._map.backTileColor;
 				this.mapChanged();
 			}
 		}
+		
+		protected function mapReload(event:Event = null):void
+		{
+			this._timer.reset();
+			this._timer.start();
+		}
+		
+		private function actualizeLayer(event:Event = null):void
+		{
+			if (this.layer)
+			{
+				this.layer.redraw(true);
+			}	
+		}
+		
 		/**
 		 * @private
 		 * Callback to recompute the zoom level of the overview when the zoom level of the map
@@ -271,7 +298,10 @@ package org.openscales.core.control
 		 */
 		public function get layer():Layer
 		{
-			return _overviewMap.layers[0];
+			if (_overviewMap && _overviewMap.layers && _overviewMap.layers.length >0)
+				return _overviewMap.layers[0];
+			else
+				return null;
 		}
 		
 		/**
