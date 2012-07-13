@@ -7,9 +7,11 @@
 	<fx:Script>
 		<![CDATA[
 			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.Resolution;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.events.MapEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Unit;
 			import org.openscales.proj4as.ProjProjection;
 			
@@ -219,10 +221,24 @@
 				
 				// get the current units of the map
 				var currentMapUnits:String = ProjProjection.getProjProjection(this.map.projection).projParams.units;
-				
 				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
-				var centerResolution:Number = Unit.getResolutionOnCenter(this._map.resolution.value, this._map.center, projection);
 				
+				var projectionChanged:Boolean = false;
+				var center:Location;
+				var res:Resolution;
+				if (projection.projName != "longlat")
+				{
+					res = this._map.resolution.reprojectTo(ProjProjection.getProjProjection("EPSG:4326"));
+					center = this._map.center.reprojectTo(ProjProjection.getProjProjection("EPSG:4326"));
+					projectionChanged = true;
+				}
+				else
+				{
+					res = this._map.resolution;
+					center = this._map.center;
+				}
+				
+				var centerResolution:Number = Unit.getResolutionOnCenter(res.value, center, res.projection);
 				
 				if(projection.projName  == "longlat")
 					currentMapUnits = Unit.METER;
