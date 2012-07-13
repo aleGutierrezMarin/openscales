@@ -1,12 +1,14 @@
 package org.openscales.core
 {
 	import flash.display.DisplayObject;
+	import flash.display.Shader;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.ContextMenuEvent;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
+	import flash.filters.ShaderFilter;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
@@ -265,6 +267,10 @@ package org.openscales.core
 		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _layers:Vector.<Layer> = new Vector.<Layer>();
 		
+		//We have a container for all layers
+		// => DO NOT USER FOR DRAG, PAN ...
+		private var _layersContainer:Sprite;
+		
 		private var _mouseNavigationEnabled:Boolean = true;
 		private var _backGround:Shape;
 		private var _panNavigationEnabled:Boolean = true;
@@ -286,6 +292,11 @@ package org.openscales.core
 		[Embed(source="/assets/i18n/FR.json", mimeType="application/octet-stream")]
 		private const FRLocale:Class;
 		
+		[Embed(source="/assets/tone_mapping.pbj", mimeType="application/octet-stream")]
+		public const toneMappingFilterClass:Class;	
+		private var _toneMappingFilter:ShaderFilter;
+		private var _toneMappingActive:Boolean;
+
 		/**
 		 * Map constructor
 		 *
@@ -341,6 +352,18 @@ package org.openscales.core
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START, onLayerLoadStart);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
+			
+			//Init the layers container
+			this._layersContainer = new Sprite();
+//			this._layersContainer.width = this.width;
+//			this._layersContainer.height = this.height;
+			this.addChildAt(this._layersContainer, 0);
+			
+			var shader:Shader = new Shader(new toneMappingFilterClass() );
+			this._toneMappingFilter = new ShaderFilter( shader );
+			this._layersContainer.filters = [];
+			this._toneMappingActive = false;
+			
 			this._initialized = true;
 			//this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			
@@ -399,10 +422,10 @@ package org.openscales.core
 			 * _layer vector correspond to the first index not used
 			 * by a layer!
 			 */
-			this.addChildAt(layer,this._layers.length);
+			this._layersContainer.addChildAt(layer,this._layers.length);
 			this._layers.push(layer);
 			layer.map = this;
-
+			
 			//If a search layer has been added, we force it to be on top
 			var resultIndex:int = this.layers.indexOf(this.resultLayer);
 			if(resultIndex != -1)
@@ -470,7 +493,7 @@ package org.openscales.core
 				this._loadingLayers.splice(j,1);
 			
 			layer.map = null;
-			this.removeChild(layer);
+			this._layersContainer.removeChild(layer);
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
 			
@@ -509,7 +532,7 @@ package org.openscales.core
 			if(currentIndex==-1 || delta==0 || newIndex<0 || newIndex>=this._layers.length)
 				return;
 			
-			this.setChildIndex(layer,newIndex);
+			this._layersContainer.setChildIndex(layer,newIndex);
 			
 			if(delta>0) {
 				this._layers.splice(currentIndex,1);
@@ -1926,6 +1949,23 @@ package org.openscales.core
 				}
 			}
 			return this._proxy;
+		}
+		
+		/**
+		 * Toggle the activation of the tone mapping filter
+		 */
+		public function toggleToneMapping():void
+		{
+			if(this._toneMappingActive)
+			{
+				this._layersContainer.filters = [];
+				this._toneMappingActive = false;
+			}
+			else
+			{
+				this._layersContainer.filters = [this._toneMappingFilter];
+				this._toneMappingActive = true;
+			}
 		}
 	}
 }
