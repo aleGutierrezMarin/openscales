@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Numeric scale display a scale ratio -->
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.basetypes.Resolution;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Unit;
+			import org.openscales.proj4as.ProjConstants;
+			import org.openscales.proj4as.ProjProjection;
+			
+			/**
+			 * If <code>false</code>, the scale won't be changeable by clicking on the component
+			 * 
+			 * @default true
+			 */ 
+			public var changeScaleEnabled:Boolean=true;
+			
+			/**
+			 * The default fixed round for scale precision
+			 */
+			public static var DEFAULT_FIXED_ROUND:uint=0;
+			
+			
+			/**
+			 * The default dpi value to use
+			 */
+			public static const DEFAUL_DPI:Number = 101.6;
+			
+			/**
+			 * @private
+			 * The value of the current numeric scale
+			 * @default 1
+			 */
+			private var _value:Number = 1;
+			
+			/**
+			 * @private
+			 * The dpi to use for the scale calculation
+			 */
+			private var _dpi:Number = DEFAUL_DPI;
+
+			private var _separator:String = ":";
+			
+			
+			/**
+			 * The current value of the scale Label
+			 * @default "1 <code>separator</code> 1"
+			 */
+			[Bindable]
+			public var scaleLabel: String;
+			
+			/**
+			 * The current visibility of the numeric scale text input.
+			 * @default false
+			 */
+			[Bindable]
+			private var textInputVisibility:Boolean = false;
+			
+			/**
+			 * The current visibility of the numeric scale label.
+			 * @default true
+			 */
+			[Bindable]
+			private var labelVisibility:Boolean = true;
+			
+			/**
+			 * The current visibility of the numeric scale input label.
+			 * @default false
+			 */
+			[Bindable]
+			private var inputLabelVisibility:Boolean = false;
+			
+			/**
+			 * The current value of the numeric scale text input.
+			 * @default ""
+			 */
+			[Bindable]
+			private var textInputText:String = "";
+			
+			/**
+			 * The character that will be inserted between "1" and the scale value.
+			 * 
+			 * @default ":"
+			 */
+			public function get separator():String
+			{
+				return _separator;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set separator(value:String):void
+			{
+				_separator = value;
+			}
+
+			override protected function onCreationComplete(event:Event):void{
+				super.onCreationComplete(event);
+				scaleLabel = "1 "+_separator+" 1";
+			}
+			
+			override public function set map(value:Map):void
+			{
+				super.map = value;
+				this.updateScale();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				// add listener to the map
+				if(this._map)
+				{
+					this._map.addEventListener(MapEvent.PROJECTION_CHANGED,this.updateScale);
+					this._map.addEventListener(MapEvent.CENTER_CHANGED,this.updateScale);
+					this._map.addEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				// add listener to the map
+				if(this._map)
+				{
+					this._map.removeEventListener(MapEvent.PROJECTION_CHANGED,this.updateScale);
+					this._map.removeEventListener(MapEvent.CENTER_CHANGED,this.updateScale);
+					this._map.removeEventListener(MapEvent.RESOLUTION_CHANGED,this.updateScale);
+				}
+			}
+			
+			/**
+			 * Update the value of the numeric scale.
+			 * The new numeric scale is obtain by Unit.getScaleFrom resolution with the current resolution and the current map projection unit.
+			 * 
+			 * @param event The event received if the function is called 
+			 * when a zoom occur or when the map projection is changed.
+			 */
+			public function updateScale(MapEvent:Event=null):void
+			{
+				if(this._map == null)
+					return;
+				
+				// Calculate the scale according to the current center resolution
+				var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
+				var resolutionAtCenter:Number = Unit.getResolutionOnCenter(this._map.resolution.value, this._map.center, projection);
+				
+				var unit:String = ProjProjection.getProjProjection(this._map.projection).projParams.units;
+				
+				if(projection.projName  == "longlat")
+					unit = Unit.METER;
+				
+				// screen dpi flash.system.Capabilities.screenDPI
+				this.value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._dpi));
+				//this.value = Math.round(Unit.getScaleDenominatorFromResolution(resolutionAtCenter,unit));
+				
+				
+				
+				// update the label :
+				this.scaleLabel = "1 "+_separator+" "+formatScale(value);
+			}
+			
+			/**
+			 * This function formats the scale value in a human friendly way. Starting from the end of the number, every three digits, a white space is inserted.
+			 * <p>For instance the number 2107201 will be returned as the following String "2 107 201" </p>
+			 * 
+			 * <p>This method is called internally, override it to implement a custom behavior</p>
+			 * 
+			 * @param number The number to format
+			 * @return The formatted number as a String
+			 */
+			protected function formatScale(number:Number):String{
+				var string:String = number.toString();
+				var res:String = "";
+				var endIndex:uint = string.length-1;
+				var step:uint = 0;
+				//var char:String;
+				for(var i:uint = endIndex; i >= 0; i--){
+					res = string.charAt(i)+res;
+					++step;
+					if(step==3 && i!=0){
+						step=0;
+						res = " "+res;
+					}
+					if(i==0)break;
+				}
+				
+				return res;
+			}
+			
+			/**
+			 * Called when the user click on the numeric scale.
+			 * He is also allowed to change his value in order to change the map resolution.
+			 * 
+			 * @param event The event received if the function is called when the user click
+			 * on the numeric scale.
+			 */
+			private function onClick(event:MouseEvent):void
+			{
+				if(!changeScaleEnabled)return;
+				
+				this.labelVisibility = false;
+				this.inputLabelVisibility = true;
+				this.textInputVisibility = true;
+				
+				this.textInputText = this._value.toString();
+			}
+			
+			/**
+			 * Called when the user pressed a keyboard key.
+			 * If the key is enter, then we can update the scale value and the map resolution.
+			 * 
+			 * @param event The event received if the function is called when the user pressed
+			 * a keyboard key.
+			 */
+			private function onEnterPressed(event:KeyboardEvent):void
+			{
+				// If the pressed key is "Enter"
+				if (event.keyCode == 13)
+				{
+					this.changeResolution(Number(this.textInputText));
+					
+					this.textInputVisibility = false;
+					this.inputLabelVisibility = false;
+					this.labelVisibility = true;
+				}
+			}
+			
+			/**
+			 * Change the map resolution with the given scale.
+			 * 
+			 * @param number The scale denominator given from user input.
+			 */
+			public function changeResolution(scale:Number):void
+			{
+				if (!isNaN(scale))
+				{
+					var projection:ProjProjection = ProjProjection.getProjProjection(this._map.projection);
+					var unit:String = ProjProjection.getProjProjection(this._map.projection).projParams.units;
+					
+					if(projection.projName  == "longlat")
+						unit = Unit.METER;
+					
+					var resolutionValue:Number = Unit.getResolutionFromScale(scale, unit, this._dpi);
+					this._map.resolution = new Resolution(resolutionValue, projection);
+				}
+			}
+			
+			/**
+			 * The value of the current numeric scale
+			 */
+			[Bindable]
+			public function get value():Number
+			{
+				return this._value;
+			}
+			
+			public function set value(value:Number):void
+			{
+				this._value = value;
+			}
+			
+			/**
+			 * The dpi to use for the scale calculation
+			 */
+			public function get dpi():Number
+			{
+				return _dpi;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set dpi(value:Number):void
+			{
+				_dpi = value;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Label id="numericScaleLabel"
+			  width="100%"
+			  height="25"
+			  backgroundColor="0xFFFFFF" 
+			  paddingTop="5" 
+			  paddingLeft="5" 
+			  paddingRight="5"
+			  text="{this.scaleLabel}" 
+			  click="onClick(event)"
+			  visible="{this.labelVisibility}"
+			  includeInLayout="{this.labelVisibility}" />
+		
+	<s:Group height="25" width="100%" visible="{this.inputLabelVisibility}"
+			 includeInLayout="{this.inputLabelVisibility}">
+		<s:layout>
+			<s:HorizontalLayout horizontalAlign="center" gap="0" />
+		</s:layout>
+		<s:Label id="numericScaleInputLabel"
+				 height="{this.numericScaleLabel.height}"
+				 backgroundColor="0xFFFFFF"
+				 text="1 / "
+				 paddingTop="5"
+				 paddingLeft="5"
+				 visible="{this.inputLabelVisibility}"
+				 includeInLayout="{this.inputLabelVisibility}" />
+		
+		<s:TextInput id="numericScaleTextInput"
+					 width="{this.numericScaleLabel.width - this.numericScaleInputLabel.width}"
+					 height="25"
+					 paddingTop="5"
+					 visible="{this.textInputVisibility}"
+					 includeInLayout="{this.textInputVisibility}"
+					 text="@{this.textInputText}"
+					 keyDown="onEnterPressed(event)"
+					 />
+	</s:Group>
+</Control>
