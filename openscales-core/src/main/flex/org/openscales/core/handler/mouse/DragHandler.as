@@ -41,7 +41,7 @@ package org.openscales.core.handler.mouse
 		private var _deltaDistanceInTimerTimeX:Number;
 		private var _deltaDistanceInTimerTimeY:Number;
 		
-		private var _activateTweenEffect:Boolean = false;
+		private var _activateTweenEffect:Boolean = true;
 		
 		/**
 		 * Used to store the center when we reach the limit of the max extend.
