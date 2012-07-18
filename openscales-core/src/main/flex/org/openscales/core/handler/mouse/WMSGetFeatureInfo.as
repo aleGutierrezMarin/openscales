@@ -77,7 +77,7 @@ package org.openscales.core.handler.mouse
 				hm = new HashMap();
 				
 				for (i=0; i<mapLayersLength; ++i){
-					if (mapLayers[i].visible){ //the request is made for the first visible wms layer
+					if (mapLayers[i].visible && mapLayers[i].available){ //the request is made for the first visible wms layer
 						if(mapLayers[i] is WMS){
 							tmp = (mapLayers[i] as WMS);
 							if(_layers.indexOf(tmp.identifier) != -1){
@@ -117,7 +117,7 @@ package org.openscales.core.handler.mouse
 					hm = new HashMap();
 					
 					for (i=0; i<mapLayersLength; ++i){
-						if (mapLayers[i].visible){ //the request is made for the first visible wms layer
+						if (mapLayers[i].visible && mapLayers[i].available){ //the request is made for the first visible wms layer
 							if(mapLayers[i] is WMS){
 								tmp = (mapLayers[i] as WMS);
 								//put the found layer in a vector to generate the request
@@ -276,11 +276,11 @@ package org.openscales.core.handler.mouse
 						//mandatory j pixel coordinate
 						request += "Y=" + pix.y + "&";
 					}
-					
+					request += "BUFFER=" + this._buffer + "&";
 					//mandatory query layers parameter
 					request += "QUERY_LAYERS=" + layerVec[i].layers+ "&";
-					request += "LAYERS=" + layerVec[i].layers+ "&";
-					request += "BUFFER=" + this._buffer;
+					request += "LAYERS=" + layerVec[i].layers;
+					
 					
 					requestList.push(request);
 				}
