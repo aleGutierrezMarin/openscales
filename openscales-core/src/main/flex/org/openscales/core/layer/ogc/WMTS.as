@@ -187,7 +187,9 @@ package org.openscales.core.layer.ogc
 			
 			if (!_formatSetted)
 			this.format = (layer.getValue("Formats") as Array)[0];
-				
+			
+			this._tileProvider.tileMatrixSetsLimits = layer.getValue("TileMatrixSetsLimits") as HashMap;
+			
 			//Setting available projections
 			//Not really needed for WMTS as different projections are in the tileMatrixSets
 			/*if(!this.availableProjections) {
@@ -406,6 +408,21 @@ package org.openscales.core.layer.ogc
 			this._tileProvider.tileMatrixSets = value;
 			this.tileMatrixSet = this.tileMatrixSet;
 			this._tmssProvided = true;
+		}
+		
+		/**
+		 * Limits fo each supported tileMatrixSets (format is specified in <code>WMTS00Capabilities.read</code> documentation).
+		 * 
+		 */
+		public function get tileMatrixSetsLimits():HashMap{
+			return _tileProvider.tileMatrixSetsLimits;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		public function set tileMatrixSetsLimits(value:HashMap):void{
+			this._tileProvider.tileMatrixSetsLimits = value;
 		}
 		
 		/**

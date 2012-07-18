@@ -176,6 +176,8 @@ package org.openscales.core.layer
 				var deltaXCenter:Number = deltaLon/this.map.resolution.value;
 				var deltaYCenter:Number = deltaLat/this.map.resolution.value;
 				
+				//this._realMatrixTranform.tx -= deltaXCenter;
+				//this._realMatrixTranform.ty += deltaYCenter;
 				this.x = this.transform.matrix.tx - deltaXCenter
 				this.y = this.transform.matrix.ty + deltaYCenter
 				this._previousCenter = this.map.center;
@@ -775,7 +777,6 @@ package org.openscales.core.layer
 		
 		/**
 		 * Return the closest requestable resolution to the targetResolution given as parameter.
-		 * The parameter finest says if we always return the smaller resolution
 		 */
 		public function getSupportedResolution(targetResolution:Resolution):Resolution
 		{

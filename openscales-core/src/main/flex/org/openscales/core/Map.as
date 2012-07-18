@@ -1,12 +1,14 @@
 package org.openscales.core
 {
 	import flash.display.DisplayObject;
+	import flash.display.Shader;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.ContextMenuEvent;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
+	import flash.filters.ShaderFilter;
 	import flash.geom.Rectangle;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
@@ -182,11 +184,21 @@ package org.openscales.core
 		/**
 		 * Default zoomIn factor
 		 */
-		public static const DEFAULT_ZOOM_IN_FACTOR:Number = 0.9;
+		public static const DEFAULT_ZOOM_IN_FACTOR:Number = 0.75;
 		/**
 		 * Default zoomIn factor
 		 */
-		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.11;
+		public static const DEFAULT_ZOOM_OUT_FACTOR:Number = 1.33;
+		
+		/**
+		 * DEfault map reload timeout in ms for setCenter
+		 */
+		public static const DEFAULT_MAP_RELOAD_TIMEOUT_CENTER:Number = 50;
+		
+		/**
+		 * DEfault map reload timeout in ms for setResolution
+		 */
+		public static const DEFAULT_MAP_RELOAD_TIMEOUT_RES:Number = 300;
 		
 		/**
 		 * Number of attempt for downloading an image tile
@@ -255,6 +267,10 @@ package org.openscales.core
 		private var _controls:Vector.<IHandler> = new Vector.<IHandler>();
 		private var _layers:Vector.<Layer> = new Vector.<Layer>();
 		
+		//We have a container for all layers
+		// => DO NOT USER FOR DRAG, PAN ...
+		private var _layersContainer:Sprite;
+		
 		private var _mouseNavigationEnabled:Boolean = true;
 		private var _backGround:Shape;
 		private var _panNavigationEnabled:Boolean = true;
@@ -276,6 +292,13 @@ package org.openscales.core
 		[Embed(source="/assets/i18n/FR.json", mimeType="application/octet-stream")]
 		private const FRLocale:Class;
 		
+		[Embed(source="/assets/tone_mapping.pbj", mimeType="application/octet-stream")]
+		public const toneMappingFilterClass:Class;	
+		private var _toneMappingFilter:ShaderFilter;
+		private var _toneMappingActive:Boolean;
+		
+		private var _toneMappingBuffer:Array;
+
 		/**
 		 * Map constructor
 		 *
@@ -302,7 +325,7 @@ package org.openscales.core
 			I18nJSONProvider.addTranslation(FRLocale);
 			
 			Catalog.catalog.addEventListener(I18NEvent.LOCALE_CHANGED, this.localeChanged);
-			this._timer = new Timer(200,1);
+			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT_CENTER,1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._resizeTimer = new Timer(100,1);
 			this._resizeTimer.addEventListener(TimerEvent.TIMER, this.applyResize);
@@ -331,6 +354,18 @@ package org.openscales.core
 			
 			this.addEventListener(LayerEvent.LAYER_LOAD_START, onLayerLoadStart);
 			this.addEventListener(LayerEvent.LAYER_LOAD_END, onLayerLoadEnd);
+			
+			//Init the layers container
+			this._layersContainer = new Sprite();
+//			this._layersContainer.width = this.width;
+//			this._layersContainer.height = this.height;
+			this.addChildAt(this._layersContainer, 0);
+			
+			var shader:Shader = new Shader(new toneMappingFilterClass() );
+			this._toneMappingFilter = new ShaderFilter( shader );
+			this._layersContainer.filters = [];
+			this._toneMappingActive = false;
+			
 			this._initialized = true;
 			//this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			
@@ -353,7 +388,7 @@ package org.openscales.core
 			}
 			
 		}*/
-		
+
 		/**
 		 * Reset all layers, handlers and controls
 		 */
@@ -389,10 +424,10 @@ package org.openscales.core
 			 * _layer vector correspond to the first index not used
 			 * by a layer!
 			 */
-			this.addChildAt(layer,this._layers.length);
+			this._layersContainer.addChildAt(layer,this._layers.length);
 			this._layers.push(layer);
 			layer.map = this;
-
+			
 			//If a search layer has been added, we force it to be on top
 			var resultIndex:int = this.layers.indexOf(this.resultLayer);
 			if(resultIndex != -1)
@@ -460,7 +495,7 @@ package org.openscales.core
 				this._loadingLayers.splice(j,1);
 			
 			layer.map = null;
-			this.removeChild(layer);
+			this._layersContainer.removeChild(layer);
 			
 			this.dispatchEvent(new LayerEvent(LayerEvent.LAYER_REMOVED, layer));
 			
@@ -499,7 +534,7 @@ package org.openscales.core
 			if(currentIndex==-1 || delta==0 || newIndex<0 || newIndex>=this._layers.length)
 				return;
 			
-			this.setChildIndex(layer,newIndex);
+			this._layersContainer.setChildIndex(layer,newIndex);
 			
 			if(delta>0) {
 				this._layers.splice(currentIndex,1);
@@ -962,7 +997,6 @@ package org.openscales.core
 				this._loading = false;
 				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_END, this));
 			}
-			
 		}
 		
 		private function openLink(e:ContextMenuEvent):void{
@@ -1220,6 +1254,11 @@ package org.openscales.core
 				this._center = newCenter;
 				this._timer.reset();
 				this._timer.start();
+				if(!this._toneMappingBuffer && this._layersContainer)
+				{
+					this._toneMappingBuffer = this._layersContainer.filters;
+					this._layersContainer.filters = [];
+				}
 				this.dispatchEvent(event);
 			}
 			
@@ -1632,6 +1671,11 @@ package org.openscales.core
 			this._minResolution = this._minResolution.reprojectTo(event.newProjection);
 			this._timer.reset();
 			this._timer.start();
+			if(!this._toneMappingBuffer && this._layersContainer)
+			{
+				this._toneMappingBuffer = this._layersContainer.filters;
+				this._layersContainer.filters = [];
+			}
 			this.dispatchEvent(event);
 		}
 		
@@ -1681,7 +1725,15 @@ package org.openscales.core
 						
 			this.dispatchEvent(event);
 			this._timer.reset();
+			this._timer.removeEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT_RES, 1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._timer.start();
+			if(!this._toneMappingBuffer && this._layersContainer)
+			{
+				this._toneMappingBuffer = this._layersContainer.filters;
+				this._layersContainer.filters = [];
+			}
 		}	
 		
 		/**
@@ -1839,8 +1891,16 @@ package org.openscales.core
 		private function onTimerEnd(event:TimerEvent):void
 		{
 			this._timer.stop();
+			this._timer.removeEventListener(TimerEvent.TIMER, this.onTimerEnd)
+			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT_CENTER, 1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			var mapevent:MapEvent = new MapEvent(MapEvent.RELOAD, this);
 			this.dispatchEvent(mapevent);
+			if(this._toneMappingBuffer && this._layersContainer)
+			{
+				this._layersContainer.filters = this._toneMappingBuffer;
+				this._toneMappingBuffer = null;
+			}
 		}
 		
 		/**
@@ -1910,6 +1970,34 @@ package org.openscales.core
 				}
 			}
 			return this._proxy;
+		}
+		
+		/**
+		 * Toggle the activation of the tone mapping filter
+		 */
+		public function toggleToneMapping():void
+		{
+			if(this._toneMappingActive)
+			{
+				this._layersContainer.filters = [];
+				this._toneMappingActive = false;
+			}
+			else
+			{
+				this._layersContainer.filters = [this._toneMappingFilter];
+				this._toneMappingActive = true;
+			}
+		}
+		
+		
+		public function get toneMappingActive():Boolean
+		{
+			return _toneMappingActive;
+		}
+		
+		public function set toneMappingActive(value:Boolean):void
+		{
+			_toneMappingActive = value;
 		}
 	}
 }

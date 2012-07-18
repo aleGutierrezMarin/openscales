@@ -1,6 +1,11 @@
 package org.openscales.core.handler.mouse
 {
+	import fl.transitions.*;
+	import fl.transitions.easing.*;
+	
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.events.MapEvent;
@@ -26,6 +31,17 @@ package org.openscales.core.handler.mouse
 		private var _firstDrag:Boolean = true;
 		private var _dragging:Boolean = false;
 		private var _previousMapPosition:Pixel = new Pixel(0,0);
+		private var _startDragPosition:Pixel;
+		private var _tweenerX:Tween;
+		private var _tweenerY:Tween;
+		private var _previousX:Number = 0;
+		private var _previousY:Number = 0;
+		private var _timer:Timer;
+		private var _previousCenter:Pixel = new Pixel(0,0);
+		private var _deltaDistanceInTimerTimeX:Number;
+		private var _deltaDistanceInTimerTimeY:Number;
+		
+		private var _activateTweenEffect:Boolean = true;
 		
 		/**
 		 * Used to store the center when we reach the limit of the max extend.
@@ -47,6 +63,17 @@ package org.openscales.core.handler.mouse
 		public function DragHandler(map:Map=null,active:Boolean=true)
 		{
 			super(map,active);
+			this._timer = new Timer(50,1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+		}
+		
+		public function onTimerEnd(event:TimerEvent):void
+		{
+			this._deltaDistanceInTimerTimeX = this.map.stage.mouseX - this._previousCenter.x;
+			this._deltaDistanceInTimerTimeY = this.map.stage.mouseY - this._previousCenter.y;
+			this._previousCenter = new Pixel(this.map.stage.mouseX, this.map.stage.mouseY);
+			this._timer.reset();
+			this._timer.start();
 		}
 		
 		override protected function registerListeners():void
@@ -76,11 +103,29 @@ package org.openscales.core.handler.mouse
 		 */
 		protected function onMouseDown(event:MouseEvent):void
 		{
+			if (this._tweenerX)
+			{
+				this._tweenerX.removeEventListener(TweenEvent.MOTION_FINISH, onTweenFinish);
+				this._tweenerX.stop();
+			}
+			if (this._tweenerY)
+				this._tweenerY.stop();
+			
+			this.dragging=false;
 			if(event.shiftKey) return;
 			if(!this.map.mouseNavigationEnabled) return;
 			
+			this._previousX = 0;
+			this._previousY = 0;
 			this.startDrag();
-			
+			if (_activateTweenEffect)
+			{
+				this._timer.start();
+				this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
+				this._previousCenter = new Pixel(this.map.stage.mouseX, this.map.stage.mouseY)
+				this._previousMapPosition.x = this.map.stage.mouseX;
+				this._previousMapPosition.y = this.map.stage.mouseY;
+			}
 			if(this.onstart != null && event)
 				this.onstart(event as MouseEvent);
 		}
@@ -110,11 +155,46 @@ package org.openscales.core.handler.mouse
 			
 			if((!this.map) || (!this.map.stage))
 				return;
+			this._timer.removeEventListener(TimerEvent.TIMER, this.onTimerEnd);
+			this._timer.reset();
 			
 			this.map.removeEventListener(MouseEvent.MOUSE_MOVE,this.onMouseMove);
 			this.map.dispatchEvent(new MapEvent(MapEvent.DRAG_END, this.map));
 			this.map.buttonMode=false;
+			
+			
+			if (_activateTweenEffect)
+			{
+				var vX:Number = Math.abs(this._deltaDistanceInTimerTimeX/0.1);
+				var vY:Number = Math.abs(this._deltaDistanceInTimerTimeY/0.1);
+				
+				var deltaX:Number = (this.map.stage.mouseX - this._startDragPosition.x)*(Math.min(vX, 900)/900);
+				var deltaY:Number = (this.map.stage.mouseY - this._startDragPosition.y)*(Math.min(vY, 900)/900);
+				
+	
+				this._tweenerX =new Tween(this, "mapX", Regular.easeOut, 0, -deltaX, 0.5, true);
+				this._tweenerY =new Tween(this, "mapY", Regular.easeOut, 0, -deltaY, 0.5, true);
+				this._tweenerX.addEventListener(TweenEvent.MOTION_FINISH,onTweenFinish);
+			}
+		}
+		
+		public function onTweenFinish(event:TweenEvent):void
+		{
 			this.dragging=false;
+		}
+		
+		public function set mapX(value:Number):void
+		{
+			var delta:Number = value - this._previousX;
+			this._previousX = value;
+			this.map.pan(delta, 0);
+		}
+		
+		public function set mapY(value:Number):void
+		{
+			var delta:Number = value - this._previousY;
+			this._previousY = value;
+			this.map.pan(0, delta);
 		}
 		
 		/**
@@ -131,6 +211,7 @@ package org.openscales.core.handler.mouse
 			
 			this.dragging=true;
 			this._previousMapPosition = new Pixel(this.map.stage.mouseX, this.map.stage.mouseY);
+			this._startDragPosition = new Pixel(this.map.stage.mouseX, this.map.stage.mouseY);
 			
 		}
 			
@@ -168,6 +249,19 @@ package org.openscales.core.handler.mouse
 		public function get onstart():Function
 		{
 			return this._onStart;
+		}
+		
+		/**
+		 * Activate or not the tween effect while moving
+		 * defualt to true
+		 */
+		public function set activateTweenEffect(value:Boolean):void
+		{
+			this._activateTweenEffect = value;
+		}
+		public function get activateTweenEffect():Boolean
+		{
+			return this._activateTweenEffect;
 		}
 		/**
 		 * Stop's callback this function is call when the drag ends

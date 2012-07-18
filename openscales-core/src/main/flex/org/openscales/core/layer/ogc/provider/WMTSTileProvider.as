@@ -46,6 +46,9 @@ package org.openscales.core.layer.ogc.provider
 		
 		private var _tileMatrixSets:HashMap = null;
 		
+		private var _tileMatrixSetsLimits:HashMap = null;
+		
+		
 		private var _maxExtents:HashMap = null;
 		
 		/**
@@ -74,6 +77,22 @@ package org.openscales.core.layer.ogc.provider
 			this.generateMaxExtents();
 		}
 		
+		/**
+		 * An HashMap of limits which will be applied to current <code>tileMatrixSet</code>. The strucuture of the HashMap is explicited in <code>WMTS100Capabilities.read</code> documentation
+		 */
+		public function get tileMatrixSetsLimits():HashMap
+		{
+			return _tileMatrixSetsLimits;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set tileMatrixSetsLimits(value:HashMap):void
+		{
+			_tileMatrixSetsLimits = value;
+		}
+
 		/**
 		 * @Private
 		 * calculates maxExtent of each TileMatrixSet
@@ -195,12 +214,49 @@ package org.openscales.core.layer.ogc.provider
 				"TILEROW" : row,
 				"TILEMATRIX" : tileMatrix.identifier
 			};
-			if(col>-1 && row>-1)
+			if(col>-1 && row>-1 && isInsideLimits(col,row,tileMatrix.identifier,_tileMatrixSet))
 				imageTile.url = buildGETQuery(bounds,params);
 			else
 				imageTile.url=null;
 			
 			return imageTile;
+		}
+		
+		/**
+		 * <p>This method is used internally before any WMTS request is sent.</p>
+		 * 
+		 * This method checks if the given <code>tileCol</code>, <code>tileRow</code> pair is contained inside TileMatrixSetLimits for the given <code>tileMatrix</code> and <code>tileMatrixSet</code>.
+		 * 
+		 * <p>Be aware that this method will return true in following cases (in addition to nominal case):
+		 * <ul>
+		 * <li><code>tileMatrixSetsLimits</code> property is not defined</li>
+		 * <li>The is no reference to the given <code>tileMatrixSet</code> inside the <code>tileMatrixSetsLimits</code> property</li>
+		 * <li>There are no limits referenced for the given <code>tileMatrix</code> inside the <code>tileMatrixSetsLimits</code> property</li>
+		 * </ul>
+		 * </p>
+		 * 
+		 * <p>Thus, this method returns <code>false</code> only when limits are defined but given <code>tileRow</code> and <code>tileCol</code> are not within those limits.</p>
+		 * 
+		 * @param tileCol a WMTS matrix column identifier
+		 * @param tileRow a WMTS matrix row identifier
+		 * @param tileMatrix a WMTS matrix identifier
+		 * @param tileMatrixSet a WMTS matrix set identifier
+		 * @return <code>true</code> or <code>false</code>. See above for more information.
+		 */ 
+		public function isInsideLimits(tileCol:Number,tileRow:Number,tileMatrix:String,tileMatrixSet:String):Boolean{
+			if(!_tileMatrixSetsLimits || !_tileMatrixSetsLimits.getValue(tileMatrixSet)) return true;
+			
+			var limits:HashMap = (_tileMatrixSetsLimits.getValue(tileMatrixSet) as HashMap).getValue(tileMatrix) as HashMap;
+			if(!limits) return true;
+			var minTileCol:Number =  new Number(limits.getValue("MinTileCol"));
+			var maxTileCol:Number =  new Number(limits.getValue("MaxTileCol"));
+			var minTileRow:Number =  new Number(limits.getValue("MinTileRow"));
+			var maxTileRow:Number =  new Number(limits.getValue("MaxTileRow"));
+			
+			if(minTileRow <= tileRow && tileRow <= maxTileRow &&
+				minTileCol <= tileCol && tileCol <= maxTileCol) return true;
+			
+			return false;
 		}
 		
 		/**

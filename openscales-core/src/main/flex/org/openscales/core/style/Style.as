@@ -1,6 +1,5 @@
 package org.openscales.core.style {
 	
-	import flash.geom.Point;
 	import flash.sampler.NewObjectSample;
 	import flash.text.TextFormat;
 	
@@ -23,6 +22,7 @@ package org.openscales.core.style {
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.MultiPolygon;
+	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	
 	/**
