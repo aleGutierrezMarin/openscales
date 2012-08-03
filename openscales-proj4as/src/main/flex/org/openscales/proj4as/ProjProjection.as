@@ -106,7 +106,7 @@ package org.openscales.proj4as {
 		static public const projAxisOrder:Object={
 			'EPSG:900913': ProjProjection.AXIS_ORDER_EN,
 			'WGS84': ProjProjection.AXIS_ORDER_NE,
-			'IGNF:WGS84G': ProjProjection.AXIS_ORDER_NE,
+			'IGNF:WGS84G': ProjProjection.AXIS_ORDER_EN,
 			'EPSG:4326': ProjProjection.AXIS_ORDER_NE,
 			'EPSG:4269': ProjProjection.AXIS_ORDER_NE,
 			'EPSG:27700': ProjProjection.AXIS_ORDER_EN,
