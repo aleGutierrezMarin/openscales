@@ -94,7 +94,7 @@ package {
 			
 		}
 		
-		public function changeDisplayInLayerManager(event:Event):void
+		public function changeDisplayInLayerManager(e:Event):void
 		{
 			_ign.displayInLayerManager = !_ign.displayInLayerManager;
 		}

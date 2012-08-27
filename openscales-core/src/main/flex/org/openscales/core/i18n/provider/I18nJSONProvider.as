@@ -1,6 +1,5 @@
 package org.openscales.core.i18n.provider
 {
-	import com.adobe.serialization.json.JSON;
 	
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;
@@ -24,7 +23,7 @@ package org.openscales.core.i18n.provider
 		static public function addTranslation(jsonSource:Class):void {
 			try {
 				var text:String = new jsonSource();
-				var obj:Object = JSON.decode(text) as Object;
+				var obj:Object = JSON.parse(text) as Object;
 				if(!obj["locale.key"]
 					|| obj["locale.key"] == ''
 					|| !obj["locale.name"]
