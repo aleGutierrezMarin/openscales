@@ -14,7 +14,6 @@ package org.openscales.core.layer
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.geometry.basetypes.Bounds;
-	import org.osmf.layout.AbsoluteLayoutFacet;
 	
 	/**
 	 * Tests the Aggregate class

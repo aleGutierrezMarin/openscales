@@ -10,6 +10,8 @@
 	<!-- states -->
 	<s:states>
 		<s:State name="inactiveWithControlBar" />
+		<s:State name="disabledWithControlBar" />
+		<s:State name="normalWithControlBar" />
 		<s:State name="inactive" />
 		<s:State name="disabled" />
 		<s:State name="normal" />

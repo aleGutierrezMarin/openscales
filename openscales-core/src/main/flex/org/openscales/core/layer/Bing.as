@@ -1,6 +1,5 @@
 package org.openscales.core.layer
 {
-	import com.adobe.serialization.json.JSON;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -151,7 +150,7 @@ package org.openscales.core.layer
 		private function onSuccess(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
 			try {
-				_metadata = JSON.decode(loader.data as String) as Object;
+				_metadata = JSON.parse(loader.data as String) as Object;
 				this._request.destroy();
 				this._request = null;
 				var res:Object = _metadata["resourceSets"][0]["resources"][0];
