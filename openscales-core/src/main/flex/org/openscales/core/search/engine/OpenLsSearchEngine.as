@@ -29,7 +29,7 @@ package org.openscales.core.search.engine
 			this._countryCode = countryCode;
 			this._srsName = srsName;
 		}
-		
+
 		/**
 		 * reverse geocode a location
 		 * 
@@ -84,7 +84,7 @@ package org.openscales.core.search.engine
 			}
 		}
 		
-		private function parseResponse(xml:XML):Vector.<Address> {
+		protected function parseResponse(xml:XML):Vector.<Address> {
 			var results:Vector.<Address> = new Vector.<Address>();
 			if(xml) {
 				var xmlList:XMLList = OpenLSRequest.resultsList(xml);
@@ -181,6 +181,19 @@ package org.openscales.core.search.engine
 			_placeFilters = value;
 		}
 
-
+		/**
+		 * country code
+		 */
+		public function get countryCode():String
+		{
+			return _countryCode;
+		}
+		/**
+		 * @private
+		 */
+		public function set countryCode(value:String):void
+		{
+			_countryCode = value;
+		}
 	}
 }

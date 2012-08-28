@@ -3,6 +3,7 @@
 @namespace mx "library://ns.adobe.com/flex/mx";
 @namespace os "http://openscales.org";
 @namespace popup "org.openscales.fx.control.drawing.popup.*";
+@namespace autocomplete "org.openscales.fx.autocomplete.*";
 
 popup|EditLabel{
 	skin-class: ClassReference("org.openscales.fx.control.drawing.popup.skin.EditLabelSkin");
@@ -18,4 +19,8 @@ os|AddExternalLayer{
 
 os|NavigationHistoryBrowser{
     skin-class: ClassReference("org.openscales.fx.control.skin.NavigationHistoryBrowserDefaultSkin");
+}
+
+autocomplete|AutoComplete{
+	skin-class: ClassReference("org.openscales.fx.autocomplete.AutoCompleteSkin");
 }
