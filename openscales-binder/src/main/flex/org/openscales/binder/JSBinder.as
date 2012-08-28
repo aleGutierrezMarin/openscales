@@ -1,7 +1,5 @@
 package org.openscales.binder
 {
-	import com.adobe.serialization.json.JSON;
-	
 	import flash.external.ExternalInterface;
 	import flash.system.Security;
 	import flash.utils.ByteArray;
@@ -96,7 +94,7 @@ package org.openscales.binder
 				//Inject javascript
 				var interfaceViewer:String = (new _interfaceViewer() as ByteArray).toString();
 				interfaceViewer = interfaceViewer.replace("UID",ExternalInterface.objectID);
-				viewerid = "OpenScales"+new Date().getTime().toString();
+				viewerid = "OpenScales"+new Date().time.toString();
 				interfaceViewer = interfaceViewer.replace("VIEWERID",viewerid);
 				interfaceViewer = interfaceViewer.replace("VIEWERID",viewerid);
 				ExternalInterface.call("function(){"+interfaceViewer+"}");
@@ -133,7 +131,7 @@ package org.openscales.binder
 		 * @param obj object to send. It should contains at least an "eventName" property
 		 */
 		public function sendEvent(obj:Object):void {
-			var jsonString:String = JSON.encode(obj);
+			var jsonString:String = JSON.stringify(obj);
 			ExternalInterface.call(viewerid+".dispatch", obj.eventName, jsonString, ExternalInterface.objectID);
 		}
 		
