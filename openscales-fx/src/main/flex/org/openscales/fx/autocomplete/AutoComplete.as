@@ -40,7 +40,6 @@ package org.openscales.fx.autocomplete
 		{
 			super();
 			this.mouseEnabled = true;
-			this.setStyle("skinClass", Class(AutoCompleteSkin));
 			this.addEventListener(MouseEvent.MOUSE_OUT, onMouseOut)
 			collection.addEventListener(CollectionEvent.COLLECTION_CHANGE, collectionChange)
 			
@@ -146,6 +145,13 @@ package org.openscales.fx.autocomplete
 		public function get labelFunction() : Function	{ return _labelFunction; }
 		
 		private var _labelFunction:Function;
+		
+		public function set countryCodeFunction(func:Function) : void	{
+			_countryCodeFunction = func; 
+		}
+		public function get countryCodeFunction() : Function	{ return _countryCodeFunction; }
+		
+		private var _countryCodeFunction:Function;
 		
 		public var returnField:String;
 		
@@ -302,19 +308,24 @@ package org.openscales.fx.autocomplete
 			if (list.selectedIndex >= 0 && collection.length>0)
 			{
 				
-				_selectedIndex = list.selectedIndex
-				_selectedItem = collection.getItemAt(_selectedIndex)
+				_selectedIndex = list.selectedIndex;
+				_selectedItem = collection.getItemAt(_selectedIndex);
 				
-				text = returnFunction(_selectedItem)
-				countryCodeSelected = _selectedItem[1];
-				inputTxt.selectRange(inputTxt.text.length, inputTxt.text.length)
+				text = returnFunction(_selectedItem);
+					
+				if(this.countryCodeFunction != null)
+					countryCodeSelected = this.countryCodeFunction(_selectedItem);
+				else
+					countryCodeSelected = _selectedItem[1];
 				
-				var e:AutoCompleteEvent = new AutoCompleteEvent("select", _selectedItem)
-				this.dispatchEvent(e)
+				inputTxt.selectRange(inputTxt.text.length, inputTxt.text.length);
+				
+				var e:AutoCompleteEvent = new AutoCompleteEvent("select", _selectedItem);
+				this.dispatchEvent(e);
 			}
 			else {
-				_selectedIndex = list.selectedIndex = -1
-				_selectedItem = null
+				_selectedIndex = list.selectedIndex = -1;
+				_selectedItem = null;
 			}
 			
 			popUp.displayPopUp = false
