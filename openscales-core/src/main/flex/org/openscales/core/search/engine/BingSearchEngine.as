@@ -1,6 +1,5 @@
 package org.openscales.core.search.engine
 {
-	import com.adobe.serialization.json.JSON;
 	
 	import flash.events.Event;
 	import flash.net.URLLoader;
@@ -65,7 +64,7 @@ package org.openscales.core.search.engine
 		 */
 		private function onSuccess(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
-			var obj:Object = JSON.decode(loader.data as String) as Object;
+			var obj:Object = JSON.parse(loader.data as String) as Object;
 			var results:Vector.<Address> = new Vector.<Address>();
 			if(obj["resourceSets"] && obj["resourceSets"][0]["resources"]) {
 				var ressources:Array = obj["resourceSets"][0]["resources"] as Array;

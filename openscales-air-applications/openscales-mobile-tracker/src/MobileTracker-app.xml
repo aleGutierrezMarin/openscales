@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<application xmlns="http://ns.adobe.com/air/application/2.5" minimumPatchLevel="0">
+<application xmlns="http://ns.adobe.com/air/application/3.1" minimumPatchLevel="0">
 
 	<id>org.openscales.MobileTracker</id>
 	<filename>MobileTracker</filename>
