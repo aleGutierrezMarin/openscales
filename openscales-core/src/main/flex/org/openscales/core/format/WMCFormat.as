@@ -42,9 +42,9 @@ package org.openscales.core.format
 		
 		public function WMCFormat()
 		{
-			this.wmcNS = new Namespace("", "http://www. opengeospatial.net/context");						
+			this.wmcNS = new Namespace("", "http://www.opengeospatial.net/context");						
 			this.xlinkNS = new Namespace("xlink","http://www.w3.org/1999/xlink");
-			this.sldNS = new Namespace("sld","http://www. opengeospatial.net/sld");
+			this.sldNS = new Namespace("sld","http://www.opengeospatial.net/sld");
 		}
 		
 		

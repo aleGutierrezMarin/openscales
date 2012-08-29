@@ -120,7 +120,7 @@ package org.openscales.core.format
 			var xml:XML = (format.write(context)) as XML;
 			
 			var xmlResult:XML = 
-				<ViewContext id="mon id" version="1.1.0" xmlns="http://www. opengeospatial.net/context" xmlns:sld="http://www. opengeospatial.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink">
+				<ViewContext id="mon id" version="1.1.0" xmlns="http://www.opengeospatial.net/context" xmlns:sld="http://www.opengeospatial.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink">
 					<General>
 						<BoundingBox SRS="EPSG:4326" minx="-3.865620727418123" miny="43.37558618172125" maxx="7.865620727418123" maxy="51.19641381827875"/>
 						<Title>
@@ -183,7 +183,7 @@ package org.openscales.core.format
 			
 			var xml:XML = format.buildViewContextNode("eos_data_gateways");
 			
-			var xmlResult:XML = <ViewContext id="eos_data_gateways" version="1.1.0" xmlns="http://www. opengeospatial.net/context" xmlns:sld="http://www. opengeospatial.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"/>;
+			var xmlResult:XML = <ViewContext id="eos_data_gateways" version="1.1.0" xmlns="http://www.opengeospatial.net/context" xmlns:sld="http://www.opengeospatial.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink"/>;
 			
 			Assert.assertTrue(xml == xmlResult);		
 		}
