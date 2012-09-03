@@ -6,11 +6,17 @@ package org.openscales.core.tile
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.display.PixelSnapping;
+	import flash.display.Shader;
+	import flash.display.ShaderJob;
+	import flash.display.ShaderPrecision;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.events.ShaderEvent;
+	import flash.filters.ShaderFilter;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
+	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.utils.Trace;
@@ -32,6 +38,13 @@ package org.openscales.core.tile
 		
 		private var _method:String = null;
 		
+		private var _toneMappingFilter:Shader;
+		private var _toneMappingActive:Boolean;
+		
+		private var _toneMappingBuffer:Array;
+		private var _shaderJob:ShaderJob;
+		private var _backBuffer:BitmapData;
+		
 		/**
 		 * No Data tile
 		 */
@@ -46,6 +59,10 @@ package org.openscales.core.tile
 
 		public function ImageTile(layer:Layer, position:Pixel, bounds:Bounds, url:String, size:Size) {
 			super(layer, position, bounds, url, size);
+			if (size)
+				this._backBuffer = new BitmapData(size.w, size.h);
+			if (this.layer && this.layer is Grid && (this.layer as Grid).shaderFilter)
+				this._toneMappingFilter = (this.layer as Grid).shaderFilter;
 			// otherwise you'll get seams between tiles :(
 			//this.cacheAsBitmap = true;
 
@@ -107,7 +124,29 @@ package org.openscales.core.tile
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
 			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
-			drawLoader(loader.name, bitmap);
+			
+			// Filter the tile if the shaderActivated switch is on
+			if (this.layer is Grid && (this.layer as Grid).shaderActivated && (this.layer as Grid).shaderFilter)
+				this.filterTile(Bitmap(loader.content).bitmapData);
+			else
+				drawLoader(loader.name, bitmap);
+		}
+		
+		
+		/**
+		 * Filter the given bitmapData with the <b>shaderFilter</b> of the <b>Grid</b> with will display the 
+		 * tile and replace the BitmapData of the tile by the filtered version of the given BitmapData
+		 */
+		public function filterTile(bmpData:BitmapData):void{
+			if (bmpData && this._backBuffer)
+			{
+				this._toneMappingFilter.data.src.input = bmpData;
+				this._toneMappingFilter.precisionHint = ShaderPrecision.FAST;
+				_shaderJob = new ShaderJob(this._toneMappingFilter, this._backBuffer, this.width, this.height);
+				_shaderJob.start(true);
+				var bitmap:Bitmap = new Bitmap(this._backBuffer,PixelSnapping.NEVER,true);
+				drawLoader("null", bitmap);
+			}
 		}
 
 		/**
@@ -176,6 +215,11 @@ package org.openscales.core.tile
 				_request.destroy();
 			}
 			
+			if (this._shaderJob)
+			{
+				this._shaderJob.cancel();
+			}
+			
 			var i:int = this.numChildren;
 			for(i;i>0;--i) {
 				removeChildAt(0);
@@ -199,6 +243,13 @@ package org.openscales.core.tile
 		public function set method(value:String):void {
 			this._method = value;
 			
+		}
+		
+		override public function set size(value:Size):void
+		{
+			super.size = value;
+			if (value)
+				this._backBuffer = new BitmapData(value.w, value.h);
 		}
 	}
 }
