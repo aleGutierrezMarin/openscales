@@ -1254,7 +1254,7 @@ package org.openscales.core
 				this._center = newCenter;
 				this._timer.reset();
 				this._timer.start();
-				if(!this._toneMappingBuffer && this._layersContainer)
+				if(this._toneMappingActive && !this._toneMappingBuffer && this._layersContainer)
 				{
 					this._toneMappingBuffer = this._layersContainer.filters;
 					this._layersContainer.filters = [];
@@ -1671,7 +1671,7 @@ package org.openscales.core
 			this._minResolution = this._minResolution.reprojectTo(event.newProjection);
 			this._timer.reset();
 			this._timer.start();
-			if(!this._toneMappingBuffer && this._layersContainer)
+			if(this._toneMappingActive && !this._toneMappingBuffer && this._layersContainer)
 			{
 				this._toneMappingBuffer = this._layersContainer.filters;
 				this._layersContainer.filters = [];
@@ -1729,7 +1729,7 @@ package org.openscales.core
 			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT_RES, 1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._timer.start();
-			if(!this._toneMappingBuffer && this._layersContainer)
+			if(this._toneMappingActive && !this._toneMappingBuffer && this._layersContainer)
 			{
 				this._toneMappingBuffer = this._layersContainer.filters;
 				this._layersContainer.filters = [];
@@ -1898,8 +1898,13 @@ package org.openscales.core
 			this.dispatchEvent(mapevent);
 			if(this._toneMappingBuffer && this._layersContainer)
 			{
-				this._layersContainer.filters = this._toneMappingBuffer;
-				this._toneMappingBuffer = null;
+				if(this._toneMappingBuffer.length == 0)
+					this._toneMappingBuffer = null
+				else
+				{
+					this._layersContainer.filters = this._toneMappingBuffer;
+					this._toneMappingBuffer = null;
+				}
 			}
 		}
 		

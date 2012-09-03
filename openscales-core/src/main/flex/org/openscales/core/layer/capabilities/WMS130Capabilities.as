@@ -174,7 +174,7 @@ package org.openscales.core.layer.capabilities
 			wmsLayer.abstract = layerData.getValue("Abstract");
 			wmsLayer.maxExtent = layerData.getValue("EX_GeographicBoundingBox");
 			wmsLayer.transparent = true;
-			wmsLayer.availableProjections = new Vector.<String>(crss.split(","));
+			wmsLayer.availableProjections = Vector.<String>(crss.split(","));
 			return wmsLayer;
 			
 		}
