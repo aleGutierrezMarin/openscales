@@ -1,6 +1,5 @@
 package org.openscales.core.request
 {
-	import com.adobe.serialization.json.JSON;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.security.ISecurity;
@@ -786,7 +785,7 @@ package org.openscales.core.request
 		 * @return a JSON string
 		 */
 		static public function resultsListtoJSON(resultsList:XMLList, version:String = "1.2"):String {
-			return JSON.encode(OpenLSRequest.resultsListtoArray(resultsList, version));
+			return JSON.stringify(OpenLSRequest.resultsListtoArray(resultsList, version));
 		}
 		
 		/**

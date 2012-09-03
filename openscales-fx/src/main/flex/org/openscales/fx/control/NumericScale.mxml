@@ -16,6 +16,8 @@
 			import org.openscales.proj4as.ProjConstants;
 			import org.openscales.proj4as.ProjProjection;
 			
+			import spark.components.Application;
+			
 			/**
 			 * If <code>false</code>, the scale won't be changeable by clicking on the component
 			 * 
@@ -166,9 +168,8 @@
 				
 				if(projection.projName  == "longlat")
 					unit = Unit.METER;
-				
 				// screen dpi flash.system.Capabilities.screenDPI
-				this.value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,this._dpi));
+				this.value = Math.round(Unit.getScaleFromResolution(resolutionAtCenter,unit,Capabilities.screenDPI));
 				//this.value = Math.round(Unit.getScaleDenominatorFromResolution(resolutionAtCenter,unit));
 				
 				
@@ -258,7 +259,7 @@
 					if(projection.projName  == "longlat")
 						unit = Unit.METER;
 					
-					var resolutionValue:Number = Unit.getResolutionFromScale(scale, unit, this._dpi);
+					var resolutionValue:Number = Unit.getResolutionFromScale(scale, unit, Capabilities.screenDPI);
 					this._map.resolution = new Resolution(resolutionValue, projection);
 				}
 			}

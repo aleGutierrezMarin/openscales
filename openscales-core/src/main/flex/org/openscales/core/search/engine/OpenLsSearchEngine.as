@@ -18,6 +18,8 @@ package org.openscales.core.search.engine
 		private var _countryCode:String = null;
 		private var _srsName:String = null;
 		private var _req:OpenLSRequest = null;
+
+		private var _reqFailureCallback:Function = null;
 		private var _placeFilters:Vector.<Vector.<String>> = null;
 		
 		public function OpenLsSearchEngine(serviceUrl:String, countryCode:String, srsName:String="epsg:4326", version:String="1.2")
@@ -29,7 +31,7 @@ package org.openscales.core.search.engine
 			this._countryCode = countryCode;
 			this._srsName = srsName;
 		}
-		
+
 		/**
 		 * reverse geocode a location
 		 * 
@@ -67,7 +69,7 @@ package org.openscales.core.search.engine
 				if(callback!=null) {
 					callback(parseResponse(new XML((event.target as URLLoader).data)));
 				}
-			});
+			}, this._reqFailureCallback);
 			this._req.defineSimpleSearch(UID.gen_uid(),queryString,this._countryCode, this._srsName, this.maxResults, this.version);
 			this.setFilters();
 			this._req.security = this.security;
@@ -84,7 +86,7 @@ package org.openscales.core.search.engine
 			}
 		}
 		
-		private function parseResponse(xml:XML):Vector.<Address> {
+		protected function parseResponse(xml:XML):Vector.<Address> {
 			var results:Vector.<Address> = new Vector.<Address>();
 			if(xml) {
 				var xmlList:XMLList = OpenLSRequest.resultsList(xml);
@@ -181,6 +183,34 @@ package org.openscales.core.search.engine
 			_placeFilters = value;
 		}
 
-
+		/**
+		 * country code
+		 */
+		public function get countryCode():String
+		{
+			return _countryCode;
+		}
+		/**
+		 * @private
+		 */
+		public function set countryCode(value:String):void
+		{
+			_countryCode = value;
+		}
+		
+		/**
+		 * function to be called on service failure
+		 */
+		public function get reqFailureCallback():Function
+		{
+			return _reqFailureCallback;
+		}
+		/**
+		 * @private
+		 */
+		public function set reqFailureCallback(value:Function):void
+		{
+			_reqFailureCallback = value;
+		}
 	}
 }
