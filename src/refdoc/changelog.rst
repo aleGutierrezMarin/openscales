@@ -7,6 +7,7 @@ Changes between 2.2 and 2.3.0
 * Support of TileMatrixSetLimits in WMTS GetCapabilities. No more tiles will be request outside those limits
 * Adding a nodata Tile that will be displayed instead of the tile when the server is not responding.
 * Fixing an issue in the numeric scale component due to DPI problem.
+* Add map context save using WMC standard (See WMC110Format.write)
 
 
 
