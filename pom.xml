@@ -12,10 +12,10 @@
 	<url>http://openscales.org/</url>-->
 	
 	<properties>
-		<flex.sdk.version>4.1.0.16076</flex.sdk.version>
+		<flex.sdk.version>4.6.b.23201</flex.sdk.version>
 		<flexmojos.version>4.0-RC2</flexmojos.version>
-		<flex.player.version.major>10</flex.player.version.major>
-		<flex.player.version.minor>0</flex.player.version.minor>
+		<flex.player.version.major>11</flex.player.version.major>
+		<flex.player.version.minor>1</flex.player.version.minor>
 		<flex.player.version.revision>0</flex.player.version.revision>
 		<flexpmd.version>1.2</flexpmd.version>
         <sonar.language>flex</sonar.language>

@@ -2,6 +2,7 @@ package org.openscales.core.tile
 {
 	
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.display.PixelSnapping;
@@ -30,6 +31,18 @@ package org.openscales.core.tile
 		private var _request:DataRequest = null;
 		
 		private var _method:String = null;
+		
+		/**
+		 * No Data tile
+		 */
+		[Embed(source="/assets/images/noData.png")]
+		private var _noData:Class;
+		
+		/**
+		 * No Data transparent tile
+		 */
+		[Embed(source="/assets/images/noDataTransp.png")]
+		private var _noDataTransp:Class;
 
 		public function ImageTile(layer:Layer, position:Pixel, bounds:Bounds, url:String, size:Size) {
 			super(layer, position, bounds, url, size);
@@ -132,12 +145,23 @@ package org.openscales.core.tile
 		public function onTileLoadError(event:IOErrorEvent):void {
 			if (this.layer && this.layer.map && ++this._attempt <= this.layer.map.IMAGE_RELOAD_ATTEMPTS) {
 				// Retry loading
-				Trace.log("ImageTile - onTileLoadError: Error while loading tile " + this.url+" ; retry #" + this._attempt);
+				//Trace.log("ImageTile - onTileLoadError: Error while loading tile " + this.url+" ; retry #" + this._attempt);
 				this.draw();
 			} else {
 				// Maximum number of tries reached
-				Trace.error("ImageTile - onTileLoadError: Error while loading tile " + this.url);
+				//Trace.error("ImageTile - onTileLoadError: Error while loading tile " + this.url);
 				this.loading = false;
+				
+				// Display the no data Tile
+				var bmdata:BitmapData = new BitmapData(256,256);
+				if (this.url.match("TRANSPARENT=TRUE"))
+				{
+					this.drawLoader("", new _noDataTransp());
+					bmdata.draw(new _noDataTransp());
+				}else{
+					this.drawLoader("", new _noData());
+					bmdata.draw(new _noData());
+				}
 				
 			}
 		}

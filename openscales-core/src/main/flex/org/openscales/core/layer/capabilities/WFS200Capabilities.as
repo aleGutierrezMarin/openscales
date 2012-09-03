@@ -5,6 +5,8 @@ package org.openscales.core.layer.capabilities
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.core.style.Style;
+	import org.openscales.core.basetypes.maps.HashMap;
 
 
 	/**
@@ -12,7 +14,7 @@ package org.openscales.core.layer.capabilities
 	 */
 	public class WFS200Capabilities extends CapabilitiesParser
 	{
-		import org.openscales.core.basetypes.maps.HashMap;
+		
 		private namespace _wfsns = "http://www.opengis.net/wfs/2.0";
 		private namespace _owsns = "http://www.opengis.net/ows/1.1";
 
@@ -99,6 +101,7 @@ package org.openscales.core.layer.capabilities
 			}
 
 
+
 			return this._capabilities;
 		}
 
@@ -121,6 +124,7 @@ package org.openscales.core.layer.capabilities
 			wfs.projection = ProjProjection.getProjProjection(srs);
 			wfs.abstract = abs;
 			wfs.maxExtent = maxExtent;
+			wfs.style = Style.getDefaultStyle();
 			
 			return wfs;
 		} 

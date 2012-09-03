@@ -346,8 +346,13 @@
 						}
 						else if(_displayMetricUnits == Unit.KILOMETER)
 						{
-							this.longitude = String(Number(this.longitude)/1000);
-							this.latitude = String(Number(this.latitude)/1000);
+							this.longitude = (Number(this.longitude)/1000).toFixed(3);
+							this.latitude = (Number(this.latitude)/1000).toFixed(3);
+						}
+						else
+						{
+							this.longitude = (Number(this.longitude)).toFixed(2);
+							this.latitude = (Number(this.latitude)).toFixed(2);
 						}
 					}
 					if(this.longitude == "NaN" || this.latitude == "NaN")
