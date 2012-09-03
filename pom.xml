@@ -18,6 +18,7 @@
 		<flex.player.version.major>11</flex.player.version.major>
 		<flex.player.version.minor>1</flex.player.version.minor>
 		<flex.player.version.revision>0</flex.player.version.revision>
+		<flashplayer.version.swf>13</flashplayer.version.swf>
 		<flexpmd.version>1.2</flexpmd.version>
         <sonar.language>flex</sonar.language>
         <sonar.dynamicanalysis>reuseReports</sonar.dynamicanalysis>
@@ -337,6 +338,7 @@
 				<configuration>
                     <coverage>true</coverage>
                     <coverageOutputDirectory>target\site\cobertura</coverageOutputDirectory>
+					<swfVersion>${flashplayer.version.swf}</swfVersion>
                     <coverageReportFormat>
                         <param>xml</param>
 					</coverageReportFormat>
