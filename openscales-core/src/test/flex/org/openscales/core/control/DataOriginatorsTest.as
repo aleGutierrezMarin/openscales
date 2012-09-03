@@ -1,6 +1,6 @@
 package org.openscales.core.control
 {
-	import com.adobe.protocols.dict.Database;
+
 	
 	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertEquals;
