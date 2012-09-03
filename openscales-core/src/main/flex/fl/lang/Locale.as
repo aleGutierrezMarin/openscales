@@ -294,7 +294,7 @@ public class Locale extends flash.events.EventDispatcher
      * @helpid 
      * @category Method
      */
-	public static function addDelayedInstance(instance:Object, stringID:String) {
+	public static function addDelayedInstance(instance:Object, stringID:String):void {
 		delayedInstanceArray.push({inst : instance, strID : stringID});
 		var len:Number = delayedInstanceArray.length;
 	}
@@ -359,7 +359,7 @@ public class Locale extends flash.events.EventDispatcher
      * @helpid 
      * @category Method
      */
-    public static function setLoadCallback(loadCallback:Function) {
+    public static function setLoadCallback(loadCallback:Function):void {
 		callback = loadCallback;
 	}
 
@@ -553,7 +553,7 @@ public class Locale extends flash.events.EventDispatcher
 	//* private methods
 	//******************************************/
 
-	private static function loadXML(langCode:String) {
+	private static function loadXML(langCode:String):void {
 		var xmlURL:String = xmlMap[langCode][0];
 		var myLoader:URLLoader = new URLLoader(new URLRequest(xmlURL));
 		myLoader.addEventListener("complete", onXMLLoad);
@@ -561,7 +561,7 @@ public class Locale extends flash.events.EventDispatcher
 	 
 	 
 	 
-	private static function onXMLLoad(eventObj:Event) {
+	private static function onXMLLoad(eventObj:Event):void {
 		_xmlLoaded = true;
 		var theLoader:URLLoader = eventObj.target as URLLoader;
 		var loadedXMLText:String = theLoader.data;
