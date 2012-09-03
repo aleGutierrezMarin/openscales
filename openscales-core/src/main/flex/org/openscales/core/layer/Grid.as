@@ -4,6 +4,7 @@ package org.openscales.core.layer
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
 	import flash.display.PixelSnapping;
+	import flash.display.Shader;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -55,6 +56,11 @@ package org.openscales.core.layer
 		
 		private var _realMatrixTranform:Matrix;
 		private var _initialRoundedMatrixTransform:Matrix;
+		
+		
+		private var _shaderFilter:Shader;
+		private var _shaderActivated:Boolean = false;
+		
 		
 		
 		/**
@@ -1531,14 +1537,79 @@ package org.openscales.core.layer
 			}
 		}
 
+		/**
+		 * <p>This parameter specify if the tiles of the layer will be requested using the next level 
+		 * of the resolution's pyramid or the previous level</p>
+		 * 
+		 * <p>If you set <b>finest</b> to <b>true</b> with a default tile size of 256px the final size of your
+		 * tiles will be from 128px to 256px and you will increase the quality of the data. But you will
+		 * also increase the number of tiles requested to fill the map and so decreasing the rapidity of 
+		 * navigation</p>
+		 * 
+		 * <p>If you set <b>finest</b> to <b>false</b> with a default tile size of 256px the final size of your
+		 * tiles will be from 256px to 512px and you will decrease the quality of the data. But you will
+		 * also decrease the number of tiles requested to fill the map and so increasing the rapidity of 
+		 * navigation</p>
+		 */
 		public function get finest():Boolean
 		{
 			return _finest;
 		}
 
+		/**
+		 * @private
+		 */
 		public function set finest(value:Boolean):void
 		{
 			_finest = value;
+		}
+		
+		/**
+		 * <p>Activate of deactivate the shader of the layer.</p>
+		 * 
+		 * <p>The shader filter will be applied to every received tile.
+		 * each tile received on this layer will be filtered with the given Shader
+		 * and replace the BitmapData of the tile with the filtered one.</p>
+		 */
+		public function get shaderActivated():Boolean
+		{
+			return this._shaderActivated;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set shaderActivated(value:Boolean):void
+		{
+			if (value != this._shaderActivated)
+			{
+				this._shaderActivated = value;
+				this.redraw(true);
+			}
+		}
+		
+		/**
+		 * <p>
+		 * The shader filter that will be applied to every received tile
+		 * If the <b>shaderActivated</b> property is setted to <b>true<b> each tile received
+		 * on this layer will be filtered with the given Shader and replace the BitmapData
+		 * of the tile with the filtered one.
+		 * </p>
+		 * <p>
+		 * When deactivating the shader by setting <b>shaderActivated</b> to <b>false</b>
+		 * </p>
+		 */
+		public function get shaderFilter():Shader
+		{
+			return this._shaderFilter;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set shaderFilter(value:Shader):void
+		{
+			this._shaderFilter = value;
 		}
 
 	}

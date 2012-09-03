@@ -292,13 +292,6 @@ package org.openscales.core
 		[Embed(source="/assets/i18n/FR.json", mimeType="application/octet-stream")]
 		private const FRLocale:Class;
 		
-		[Embed(source="/assets/tone_mapping.pbj", mimeType="application/octet-stream")]
-		public const toneMappingFilterClass:Class;	
-		private var _toneMappingFilter:ShaderFilter;
-		private var _toneMappingActive:Boolean;
-		
-		private var _toneMappingBuffer:Array;
-
 		/**
 		 * Map constructor
 		 *
@@ -361,10 +354,6 @@ package org.openscales.core
 //			this._layersContainer.height = this.height;
 			this.addChildAt(this._layersContainer, 0);
 			
-			var shader:Shader = new Shader(new toneMappingFilterClass() );
-			this._toneMappingFilter = new ShaderFilter( shader );
-			this._layersContainer.filters = [];
-			this._toneMappingActive = false;
 			
 			this._initialized = true;
 			//this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
@@ -1254,11 +1243,6 @@ package org.openscales.core
 				this._center = newCenter;
 				this._timer.reset();
 				this._timer.start();
-				if(this._toneMappingActive && !this._toneMappingBuffer && this._layersContainer)
-				{
-					this._toneMappingBuffer = this._layersContainer.filters;
-					this._layersContainer.filters = [];
-				}
 				this.dispatchEvent(event);
 			}
 			
@@ -1671,11 +1655,6 @@ package org.openscales.core
 			this._minResolution = this._minResolution.reprojectTo(event.newProjection);
 			this._timer.reset();
 			this._timer.start();
-			if(this._toneMappingActive && !this._toneMappingBuffer && this._layersContainer)
-			{
-				this._toneMappingBuffer = this._layersContainer.filters;
-				this._layersContainer.filters = [];
-			}
 			this.dispatchEvent(event);
 		}
 		
@@ -1729,11 +1708,6 @@ package org.openscales.core
 			this._timer = new Timer(DEFAULT_MAP_RELOAD_TIMEOUT_RES, 1);
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._timer.start();
-			if(this._toneMappingActive && !this._toneMappingBuffer && this._layersContainer)
-			{
-				this._toneMappingBuffer = this._layersContainer.filters;
-				this._layersContainer.filters = [];
-			}
 		}	
 		
 		/**
@@ -1896,16 +1870,6 @@ package org.openscales.core
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			var mapevent:MapEvent = new MapEvent(MapEvent.RELOAD, this);
 			this.dispatchEvent(mapevent);
-			if(this._toneMappingBuffer && this._layersContainer)
-			{
-				if(this._toneMappingBuffer.length == 0)
-					this._toneMappingBuffer = null
-				else
-				{
-					this._layersContainer.filters = this._toneMappingBuffer;
-					this._toneMappingBuffer = null;
-				}
-			}
 		}
 		
 		/**
@@ -1975,34 +1939,6 @@ package org.openscales.core
 				}
 			}
 			return this._proxy;
-		}
-		
-		/**
-		 * Toggle the activation of the tone mapping filter
-		 */
-		public function toggleToneMapping():void
-		{
-			if(this._toneMappingActive)
-			{
-				this._layersContainer.filters = [];
-				this._toneMappingActive = false;
-			}
-			else
-			{
-				this._layersContainer.filters = [this._toneMappingFilter];
-				this._toneMappingActive = true;
-			}
-		}
-		
-		
-		public function get toneMappingActive():Boolean
-		{
-			return _toneMappingActive;
-		}
-		
-		public function set toneMappingActive(value:Boolean):void
-		{
-			_toneMappingActive = value;
 		}
 	}
 }

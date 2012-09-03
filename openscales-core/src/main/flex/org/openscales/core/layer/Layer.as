@@ -1,5 +1,6 @@
 package org.openscales.core.layer {
 	
+	import flash.display.Shader;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
@@ -96,7 +97,6 @@ package org.openscales.core.layer {
 		protected var _projectionChanged:Boolean = false;
 		protected var _mapReload:Boolean = false;
 		private var _available:Boolean = false;
-		
 				
 		/**
 		 * Layer constructor
@@ -1153,8 +1153,6 @@ package org.openscales.core.layer {
 		{
 			_abstract = value;
 		}
-
-
 	}
 }
 
