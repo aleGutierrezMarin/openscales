@@ -294,7 +294,7 @@ public class Locale extends flash.events.EventDispatcher
      * @helpid 
      * @category Method
      */
-	public static function addDelayedInstance(instance:Object, stringID:String) {
+	public static function addDelayedInstance(instance:Object, stringID:String):void {
 		delayedInstanceArray.push({inst : instance, strID : stringID});
 		var len:Number = delayedInstanceArray.length;
 	}

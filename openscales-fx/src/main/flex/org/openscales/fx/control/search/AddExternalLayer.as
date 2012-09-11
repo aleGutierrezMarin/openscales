@@ -33,6 +33,7 @@ package org.openscales.fx.control.search
 	[SkinState("loading")]
 	[SkinState("URLSource")]
 	[SkinState("localFileSource")]
+	[SkinState("protocolsNotLoaded")]
 	
 	public class AddExternalLayer extends Control
 	{
@@ -188,6 +189,9 @@ package org.openscales.fx.control.search
 		}
 		
 		override protected function getCurrentSkinState():String{
+			if(!protocolsList){
+				return "protocolsNotLoaded";
+			}
 			var prot:String = protocolsList.selectedItem as String
 			if(super.getCurrentSkinState() == "disabled") return super.getCurrentSkinState();	
 			if(prot == "WMS" || prot == "WFS" || prot == "WMTS"){
