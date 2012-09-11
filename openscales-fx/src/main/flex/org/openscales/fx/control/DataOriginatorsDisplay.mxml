@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- DataOriginatorsDisplay control to display all logo originators -->
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="configure()">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.control.DataOriginators;
+			import org.openscales.core.events.OriginatorEvent;
+			
+			
+			/**
+			 * The default value of time between two changes.
+			 */
+			public static var DEFAULT_TIME_CYCLE:uint=10000;
+			
+			/**
+			 * The default logo displayed number.
+			 */
+			public static var DEFAULT_LOGO_NUMBER:uint=3;
+			
+			/**
+			 * The default spacing value between two logos.
+			 */
+			public static var DEFAULT_SPACING:uint = 2;
+			
+			/**
+			 * @private
+			 * The data list of current originators to display (use to synchronise with display).
+			 * @default null
+			 */
+			protected var _dataOriginators:DataOriginators = null;
+
+			/**
+			 * @private
+			 * The timer to control the delay between two displays.
+			 * @default null
+			 */
+			private var _timer:Timer = null;
+			
+			/**
+			 * @private
+			 * The time between two display changes.
+			 * @default DataOriginatorsDisplay.DEFAULT_ROTATION_CYCLE
+			 */
+			private var _delay:Number = DataOriginatorsDisplay.DEFAULT_TIME_CYCLE;
+			
+			
+			/**
+			 * @private
+			 * The spacing between two displayed logos
+			 * @default DataOriginatorsDisplay.DEFAULT_SPACING
+			 */
+			[Bindable]
+			private var _spacing:Number = DataOriginatorsDisplay.DEFAULT_SPACING;
+			
+			/**
+			 * @private
+			 * The array data containing the logos list.
+			 */
+			[Bindable]
+			private var _originator:ArrayList = new ArrayList();
+			
+			
+			/**
+			 * @private 
+			 * The number of logos displayed at the same time
+			 * @default DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER
+			 */
+			private var _logoNumber:Number = DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER;
+			
+			
+			/**
+			 * @private
+			 * The current position in the dataOriginators.originators list
+			 * corresponding to the next logo to be displayed.
+			 * @default -1
+			 */
+			[Bindable]
+			private var _currentOriginator:Number = -1;
+
+
+			/**
+			 * @private
+			 * The itemRenderer class for display item of the Logo list
+			 * @default DataOriginatorsRenderer
+			 */
+			private var _itemRenderer:Class = DataOriginatorsRenderer;
+		
+
+			/**
+			 * Configure component after the creationComplete event
+			 */
+			public function  configure():void
+			{
+				if(this._dataOriginators == null)
+				{
+					this._dataOriginators = new DataOriginators();
+				}
+				
+				logoNumber = _dataOriginators.originators.length;
+			}
+			
+			/**
+			 * Start the timer use to change the display.
+			 */
+			public function startTimer():void
+			{	
+				if(this._timer!=null)
+					return;
+				
+				this._timer = new Timer(this._delay,0);
+				
+				// change the display when the delay is spent
+				this._timer.addEventListener(TimerEvent.TIMER,this.changeDisplay);
+				this._timer.start();
+			}	
+			
+			/**
+			 * Stop the timer use to change the display.
+			 */
+			public function stopTimer():void
+			{	
+				if(this._timer)
+				{
+					this._timer.removeEventListener(TimerEvent.TIMER,this.changeDisplay);
+					this._timer.stop();
+				}
+			}	
+				
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				
+				if(this._dataOriginators == null)
+					this.configure();
+				
+				// add the DataOriginators as a control in the map
+				if(this._map)
+					this._map.addControl(this._dataOriginators);
+				
+				// add listener to add / remove Originators	
+				this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
+				this._dataOriginators.addEventListener(OriginatorEvent.ORIGINATOR_ADDED, this.changeDisplay);
+				this.startTimer();
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{
+				super.desactivate();
+				
+				
+				// add the DataOriginators as a control in the map
+				if(this._map)
+					this._map.removeControl(this._dataOriginators);
+				
+				// add listener to add / remove Originators	
+				if(this._dataOriginators)
+				{
+					this._dataOriginators.removeEventListener(OriginatorEvent.ORIGINATOR_REMOVED, this.onOriginatorRemoved);
+					this._dataOriginators.removeEventListener(OriginatorEvent.ORIGINATOR_ADDED, this.changeDisplay);
+				}
+				this.stopTimer();
+			}
+			/**
+			 * @inherit
+			 */
+			override public function set map(value:Map):void 
+			{
+				super.map = value;
+			}
+			
+			/**
+			 * Return the following originator of the originator given.
+			 * If the originator is the last one return the first one.
+			 * 
+			 * @param originator The originator to get the following one
+			 * @return the following originator or the same one if the list contains one DataOriginator
+			 */
+			public function getFollowing(originator:Number):Number
+			{
+				var size:Number = this._dataOriginators.originators.length;
+				
+				if( size > 1 )
+				{
+					++originator; // the following one
+							
+					if( originator==size )
+					{
+						originator = 0; // go back to the begining
+					}
+				}
+				return originator;
+			}
+			
+			/**
+			 * Return the previous originator of the originator given.
+			 * If the originator is the first one return the last one.
+			 * 
+			 * @param originator The originator to get the following one
+			 * @return the following originator or the same one if the list contains one DataOriginator
+			 */
+			public function getPrevious(originator:Number):Number
+			{
+				var size:Number = this._dataOriginators.originators.length;
+				
+				if( size > 1 )
+				{
+					--originator; // the previous one
+							
+					if( originator<0 )
+					{
+						originator = (size-1); // go back to the end
+					}
+				}
+				return originator;
+			}
+			
+			/**
+			 * Change the logos display (because delay betewen two changes is spent)
+			 * 
+			 * @param event The event received.
+			 */
+			private function changeDisplay(event:Event):void
+			{
+				logoNumber = _dataOriginators.originators.length;
+				var listSize:Number = this._dataOriginators.originators.length;
+				// remove current logo from the scene
+				this._originator.removeAll();
+				
+				if(listSize>0) 
+				{		
+					var i:uint = 0;
+					// if enought logo display logoNumber, else display the number max of logo in the list		
+					var j:uint = (listSize < this._logoNumber) ? listSize : this._logoNumber;
+					
+					// first time : first init
+					if(this._currentOriginator == -1)
+					{
+						// start at the first originator
+						this._currentOriginator = 0;
+
+						// add new logos to display
+						i = 0;
+						for (; i<j; ++i) 
+						{
+							this._originator.addItem(this._dataOriginators.originators[this._currentOriginator]);
+							this._currentOriginator = getFollowing(this._currentOriginator);
+						}
+					}
+					else
+					{
+						// add new logos to display
+						i = 0;		
+						for (; i<j; ++i) 
+						{
+							if(this._dataOriginators.originators.length > this._currentOriginator)
+							{
+								this._originator.addItem(this._dataOriginators.originators[this._currentOriginator]);
+								this._currentOriginator = getFollowing(this._currentOriginator);
+							}
+						}
+					}	
+				}
+			}
+			
+			
+			
+			/**
+			 * @private
+			 * Call when an originatorEvent.ORIGINATOR_REMOVED occur.
+			 * If the removed originator was the current display, change it.
+			 * 
+			 * @param event The OriginatorEvent received.
+			 */
+			private function onOriginatorRemoved(event:OriginatorEvent):void
+			{
+				logoNumber = _dataOriginators.originators.length;
+				
+				// the position of the originator removed in the previous list :
+				var id:Number = event.position;
+				
+				// if the deleted one was before the current
+				if( id < this._currentOriginator )
+				{
+					--this._currentOriginator;
+				}
+				if( this._currentOriginator >= this._dataOriginators.originators.length )
+				{
+					this._currentOriginator = 0; // back to the begining
+				}
+				this.changeDisplay(null);
+				
+			}
+			
+			// getter / setter :
+
+			/**
+			 * The data list of current originators to display (use to synchronise with display).
+			 * @default null
+			 */
+			public function get dataOriginators():DataOriginators
+			{
+				return this._dataOriginators;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set dataOriginators(value:DataOriginators):void
+			{
+				this._dataOriginators = value;
+			}
+
+			/**
+			 * The timer to control the delay between two displays.
+			 * @default null
+			 */
+			public function get timer():Timer
+			{
+				return this._timer;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set timer(value:Timer):void
+			{
+				this._timer = value;
+			}
+
+
+			/**
+			 * The time between two display changes.
+			 * @default DataOriginatorsDisplay.DEFAULT_ROTATION_CYCLE
+			 */
+			public function get delay():Number
+			{
+				return this._delay;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set delay(value:Number):void
+			{
+				this._delay = value;
+			}
+			
+			/**
+			* The spacing between two displayed logos
+			* @default DataOriginatorsDisplay.DEFAULT_SPACING
+			*/
+			public function get spacing():Number
+			{
+				return this._spacing;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set spacing(value:Number):void
+			{
+				this._spacing = value;
+			}
+
+
+			/**
+			 * The current position in the dataOriginators.originators list
+			 * corresponding to the next logo to be displayed.
+			 * @default -1
+			 */
+			public function get currentOriginator():Number
+			{
+				return this._currentOriginator;
+			}
+
+			public function set currentOriginator(value:Number):void
+			{
+				this._currentOriginator = value;
+			}
+			
+			
+			/**
+			 * The array data containing the logos list.
+			 * @default null
+			 */
+			public function get originator():ArrayList
+			{
+				return this._originator;
+			}
+			
+			public function set originator(value:ArrayList):void
+			{
+				this._originator = value;
+			}
+
+			
+			/**
+			 * The number of logos displayed at the same time
+			 * @default DataOriginatorsDisplay.DEFAULT_LOGO_NUMBER
+			 */
+			[Bindable]
+			public function get logoNumber():Number
+			{
+				return this._logoNumber;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set logoNumber(value:Number):void
+			{
+				this._logoNumber = value;
+			}
+			
+			/**
+			 * The itemRenderer for the list contains by the Logo list
+			 */
+			[Bindable]
+			public function get itemRenderer():Class
+			{
+				return this._itemRenderer;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set itemRenderer(value:Class):void
+			{
+				this._itemRenderer=value;
+			}
+			
+		]]>
+	</fx:Script>
+	
+
+		<s:List id="originatorsList" height="60"
+				horizontalCenter="0" verticalCenter="0" dataProvider="{_originator}"
+				itemRenderer="{new ClassFactory(this.itemRenderer)}"
+				contentBackgroundAlpha="0"
+				borderVisible="false" >
+			<s:layout>
+				<s:HorizontalLayout 
+					id="originatorsHorizontalLayout" 
+					requestedColumnCount="{this.logoNumber}"
+					gap="{this._spacing}"
+					paddingLeft="{this._spacing}"
+					paddingRight="{this._spacing}"
+					paddingBottom="{this._spacing}"
+					paddingTop="{this._spacing}"/>
+			</s:layout>
+		</s:List>
+
+</Control>
