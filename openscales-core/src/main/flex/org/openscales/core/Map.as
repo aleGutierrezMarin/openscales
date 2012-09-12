@@ -1787,11 +1787,11 @@ package org.openscales.core
 		}
 		
 		override public function set contextMenu(cm:ContextMenu):void {
-			if(!cm) {
-				cm = new ContextMenu();
-				cm.hideBuiltInItems();
-			}
 			try {
+				if(!cm) {
+					cm = new ContextMenu();
+					cm.hideBuiltInItems();
+				}
 				if(cm.customItems.indexOf(this.notice)==-1)
 					cm.customItems.push(notice);
 				super.contextMenu = cm;
