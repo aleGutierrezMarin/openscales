@@ -1790,7 +1790,7 @@ package org.openscales.core
 			try {
 				if(cm.customItems.indexOf(this.notice)==-1)
 					cm.customItems.push(notice);
-				contextMenu = cm;
+				super.contextMenu = cm;
 			} catch(e:Error) {
 				// if mobile, no contextmenu
 			}
