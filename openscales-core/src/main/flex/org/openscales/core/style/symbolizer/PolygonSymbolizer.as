@@ -1,6 +1,6 @@
 package org.openscales.core.style.symbolizer {
 	import flash.display.Graphics;
-
+	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.stroke.Stroke;
@@ -66,6 +66,27 @@ package org.openscales.core.style.symbolizer {
 			clonePolygonSymbolizer.stroke = this._stroke == null ? null : this._stroke.clone();
 			clonePolygonSymbolizer.geometry = this.geometry;
 			return clonePolygonSymbolizer;
+		}
+		
+		override public function get sld():String {
+			var res:String = "<sld:PolygonSymbolizer>\n";
+			var tmp:String;
+			if(this.fill) {
+				tmp = this.fill.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			if(this.stroke) {
+				tmp = this.stroke.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			res+="</sld:PolygonSymbolizer>";
+			return res;
+		}
+		
+		override public function set sld(sldRule:String):void {
+			// parse sld
 		}
 	}
 }

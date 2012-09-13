@@ -32,5 +32,11 @@ package org.openscales.core.filter
 			return new GeometryTypeFilter(this._types);
 			
 		}
+		
+		public function get sld():String {
+			return null;
+		}
+		public function set sld(sld:String):void {
+		}
 	}
 }

@@ -8,6 +8,8 @@ package org.openscales.core.style.symbolizer
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.style.fill.Fill;
+	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.halo.Halo;
 	import org.openscales.geometry.basetypes.Location;
@@ -129,6 +131,42 @@ package org.openscales.core.style.symbolizer
 		{
 			_halo = value;
 		}
-
+		
+		override public function get sld():String {
+			var res:String = "<sld:TextSymbolizer>\n";
+			res+="<sld:Label>\n";
+			res+="<ogc:PropertyName>"+this.propertyName+"</ogc:PropertyName>\n";
+			res+="</sld:Label>\n";
+			var fill:Fill;
+			if(this._font) {
+				res+="<sld:Font>\n";
+				res+="<sld:CssParameter name=\"font-family\">"+font.family+"</sld:CssParameter>\n";
+				if(font.weight == Font.BOLD) {
+					res+="<sld:CssParameter name=\"font-weight\">bold</sld:CssParameter>\n";
+				}
+				if(font.style == Font.ITALIC) {
+					res+="<sld:CssParameter name=\"font-style\">italic</sld:CssParameter>\n";
+				}
+				res+="</sld:Font>\n";
+			}
+			if(this._halo) {
+				res+="<sld:Halo>\n";
+				fill = new SolidFill(halo.color,halo.opacity);
+				res+=fill.sld+"\n";
+				res+="</sld:Halo>\n";
+			}
+			if(this._font) {
+				fill = new SolidFill(font.color,font.opacity);
+				res+=fill.sld+"\n";
+			}
+			//TODO : LabelPlacement
+			
+			res+="</sld:TextSymbolizer>";
+			return res;
+		}
+		
+		override public function set sld(sldRule:String):void {
+			// parse sld
+		}
 	}
 }

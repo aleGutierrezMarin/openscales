@@ -525,5 +525,37 @@ package org.openscales.core.style {
 		{
 			_isSelectedStyle = value;
 		}
+		
+		public function get sld():String {
+			var res:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			res+="<sld:StyledLayerDescriptor version=\"1.0.0\" \n"; 
+			res+="xsi:schemaLocation=\"http://www.opengis.net/sld StyledLayerDescriptor.xsd\" \n";
+			res+="xmlns=\"http://www.opengis.net/sld\" \n";
+			res+="xmlns:sld=\"http://www.opengis.net/sld\" \n"; 
+			res+="xmlns:ogc=\"http://www.opengis.net/ogc\" \n"; 
+			res+="xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n";
+			res+="xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
+			res+="<sld:NamedLayer>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			res+="<sld:UserStyle>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			res+="<sld:FeatureTypeStyle>\n";
+			var tmp:String;
+			for each (var rule:Rule in this.rules) {
+				tmp = rule.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			res+="</sld:FeatureTypeStyle>\n";
+			res+="</sld:UserStyle>\n";
+			res+="</sld:NamedLayer>\n";
+			res+="</sld:StyledLayerDescriptor>";
+			return res;
+		}
+		public function set sld(sld:String):void {
+			
+		}
 	}
 }

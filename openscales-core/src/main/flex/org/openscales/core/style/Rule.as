@@ -1,6 +1,7 @@
 package org.openscales.core.style {
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.EventDispatcher;
 	
 	import org.openscales.core.filter.IFilter;
 	import org.openscales.core.style.marker.WellKnownMarker;
@@ -10,7 +11,7 @@ package org.openscales.core.style {
 	/**
 	 * Rule based style, in order to use different styles based on parameters like current scale
 	 */
-	public class Rule {
+	public class Rule extends EventDispatcher {
 
 		public static const LEGEND_LINE:String = "Line";
 
@@ -183,6 +184,41 @@ package org.openscales.core.style {
 			}
 
 			return result;
+		}
+		
+		public function get sld():String {
+			// gen sld
+			var res:String = "<sld:Rule>\n";
+			
+			if(this.title)
+				res+="<sld:Title>"+this.title+"</sld:Title>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			if(this.abstract)
+				res+="<sld:Abstract>"+this.abstract+"</sld:Abstract>\n";
+			if(!isNaN(this.minScaleDenominator)) {
+				res+="<sld:MinScaleDenominator>"+this.minScaleDenominator+"</sld:MinScaleDenominator>\n";
+			}
+			if(!isNaN(this.maxScaleDenominator)) {
+				res+="<sld:MaxScaleDenominator>"+this.maxScaleDenominator+"</sld:MaxScaleDenominator>\n";
+			}
+			var tmp:String;
+			for each (var symbolizer:Symbolizer in this.symbolizers) {
+				tmp = symbolizer.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			if(this.filter) {
+				tmp = this.filter.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			res+="</sld:Rule>";
+			return res;
+		}
+		
+		public function set sld(sldRule:String):void {
+			// parse sld
 		}
 
 		private function drawLine(symbolizer:Symbolizer, canvas:Sprite):void {

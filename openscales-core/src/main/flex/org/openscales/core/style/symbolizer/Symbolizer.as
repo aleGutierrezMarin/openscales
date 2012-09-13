@@ -38,6 +38,15 @@ package org.openscales.core.style.symbolizer {
 			symbolizer.geometry = this._geometry;
 			return symbolizer;
 		}
+		
+		public function get sld():String {
+			// gen sld
+			return null;
+		}
+		
+		public function set sld(sldRule:String):void {
+			// parse sld
+		}
 
 	}
 }

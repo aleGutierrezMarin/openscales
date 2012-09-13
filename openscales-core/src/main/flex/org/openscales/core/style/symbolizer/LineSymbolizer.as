@@ -35,5 +35,21 @@ package org.openscales.core.style.symbolizer {
 			lineSymbolizer.geometry = this.geometry;
 			return lineSymbolizer;
 		}
+		
+		override public function get sld():String {
+			var res:String = "<sld:LineSymbolizer>\n";
+			var tmp:String;
+			if(this.stroke) {
+				tmp = this.stroke.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			res+="</sld:LineSymbolizer>";
+			return res;
+		}
+		
+		override public function set sld(sldRule:String):void {
+			// parse sld
+		}
 	}
 }

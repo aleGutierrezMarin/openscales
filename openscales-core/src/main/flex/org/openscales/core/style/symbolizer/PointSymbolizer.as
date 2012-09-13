@@ -26,6 +26,20 @@ package org.openscales.core.style.symbolizer
 			pointSymbolizer.geometry = this.geometry;
 			return pointSymbolizer;
 		}
-
+		
+		override public function get sld():String {
+			var res:String = "<sld:PointSymbolizer>\n";
+			if(this.graphic) {
+				var sld:String = this.graphic.sld;
+				if(sld)
+					res+=sld+"\n";
+			}
+			res+="</sld:PointSymbolizer>";
+			return res;
+		}
+		
+		override public function set sld(sldRule:String):void {
+			// parse sld
+		}
 	}
 }

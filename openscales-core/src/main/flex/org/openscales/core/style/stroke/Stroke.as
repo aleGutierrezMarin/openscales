@@ -38,8 +38,9 @@ package org.openscales.core.style.stroke
 		
 		private var _pWhiteSize:uint = 0;
 		private var _pDottedSize:uint = 0;
+		private var _dashoffset:uint = 0;
 		
-		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, pWhiteSize:uint = 0, pDottedSize:uint = 0)
+		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, pWhiteSize:uint = 0, pDottedSize:uint = 0, dashoffset:uint = 0)
 		{
 			this._color = color;
 			this._width = width;
@@ -47,7 +48,7 @@ package org.openscales.core.style.stroke
 			this._linecap = linecap;
 			this._linejoin = linejoin;
 			this._pWhiteSize = pWhiteSize;
-			this._pDottedSize = pDottedSize;
+			this._dashoffset = dashoffset;
 		}
 		
 		/**
@@ -133,6 +134,18 @@ package org.openscales.core.style.stroke
 			this._pDottedSize = value;
 		}
 		
+		/**
+		 * The dots offeset
+		 */
+		public function get dashoffset():uint{
+			
+			return this._dashoffset;
+		}
+		public function set dashoffset(value:uint):void{
+			
+			this._dashoffset = value;
+		}
+		
 		public function configureGraphics(graphics:Graphics):void{
 			
 				var linecap:String;
@@ -172,7 +185,48 @@ package org.openscales.core.style.stroke
 			cloneStroke.linejoin = this._linejoin;			
 			cloneStroke.pWhiteSize = this._pWhiteSize;
 			cloneStroke.pDottedSize = this._pDottedSize;
+			cloneStroke.dashoffset = this._dashoffset;
 			return cloneStroke;
+		}
+		
+		public function get sld():String {
+			var res:String = "<sld:Stroke>\n";
+			if(this.color) {
+				var stringColor:String = this.color.toString(16);
+				var spareStringColor:String = "";
+				for (var i:uint = 0; i < (6 - stringColor.length); i++)
+				{
+					spareStringColor += "0";
+				}
+				spareStringColor += stringColor;
+				
+				if(stringColor.length < 6)
+					stringColor = spareStringColor;
+				res+="<sld:CssParameter name=\"stroke\">#"+stringColor+"</sld:CssParameter>\n";
+			}
+			if(this.opacity) {
+				res+="<sld:CssParameter name=\"stroke-opacity\">"+this.opacity+"</sld:CssParameter>\n";
+			}
+			if(this.width) {
+				res+="<sld:CssParameter name=\"stroke-width\">"+this.width+"</sld:CssParameter>\n";
+			}
+			if(this.linecap) {
+				res+="<sld:CssParameter name=\"stroke-linecap\">"+this.linecap+"</sld:CssParameter>\n";
+			}
+			if(this.linejoin) {
+				res+="<sld:CssParameter name=\"stroke-linejoin\">"+this.linejoin+"</sld:CssParameter>\n";
+			}
+			if(this.pDottedSize>0 && this.pWhiteSize>0) {
+				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.pDottedSize+" "+this.pWhiteSize+"</sld:CssParameter>";
+				if(this.dashoffset) {
+					res+="<sld:CssParameter name=\"stroke-dashoffset\">"+this.dashoffset+"</sld:CssParameter>";
+				}
+			}
+			res+="</sld:Stroke>"
+			return res;
+		}
+		public function set sld(sld:String):void {
+			
 		}
 	}
 }
