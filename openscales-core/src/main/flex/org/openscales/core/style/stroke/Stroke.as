@@ -36,18 +36,17 @@ package org.openscales.core.style.stroke
 		
 		private var _linejoin:String;
 		
-		private var _pWhiteSize:uint = 0;
-		private var _pDottedSize:uint = 0;
+		private var _dashArray:Array = null;
 		private var _dashoffset:uint = 0;
 		
-		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, pWhiteSize:uint = 0, pDottedSize:uint = 0, dashoffset:uint = 0)
+		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, dashArray:Array = null, dashoffset:uint = 0)
 		{
 			this._color = color;
 			this._width = width;
 			this._opacity = opacity;
 			this._linecap = linecap;
 			this._linejoin = linejoin;
-			this._pWhiteSize = pWhiteSize;
+			this._dashArray = dashArray;
 			this._dashoffset = dashoffset;
 		}
 		
@@ -111,27 +110,15 @@ package org.openscales.core.style.stroke
 		}
 		
 		/**
-		 * The size of the space between dots
+		 * The dashArray
 		 */
-		public function get pWhiteSize():uint{
+		public function get dashArray():Array{
 			
-			return this._pWhiteSize;
+			return this._dashArray;
 		}
-		public function set pWhiteSize(value:uint):void{
+		public function set dashArray(value:Array):void{
 			
-			this._pWhiteSize = value;
-		}
-		
-		/**
-		 * The size of the dots
-		 */
-		public function get pDottedSize():uint{
-			
-			return this._pDottedSize;
-		}
-		public function set pDottedSize(value:uint):void{
-			
-			this._pDottedSize = value;
+			this._dashArray = value;
 		}
 		
 		/**
@@ -183,8 +170,7 @@ package org.openscales.core.style.stroke
 			cloneStroke.opacity = this._opacity;
 			cloneStroke.linecap = this._linecap;
 			cloneStroke.linejoin = this._linejoin;			
-			cloneStroke.pWhiteSize = this._pWhiteSize;
-			cloneStroke.pDottedSize = this._pDottedSize;
+			cloneStroke.dashArray = this._dashArray;
 			cloneStroke.dashoffset = this._dashoffset;
 			return cloneStroke;
 		}
@@ -216,8 +202,8 @@ package org.openscales.core.style.stroke
 			if(this.linejoin) {
 				res+="<sld:CssParameter name=\"stroke-linejoin\">"+this.linejoin+"</sld:CssParameter>\n";
 			}
-			if(this.pDottedSize>0 && this.pWhiteSize>0) {
-				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.pDottedSize+" "+this.pWhiteSize+"</sld:CssParameter>";
+			if(this.dashArray && this.dashArray.length>0) {
+				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.dashArray.join(" ")+"</sld:CssParameter>";
 				if(this.dashoffset) {
 					res+="<sld:CssParameter name=\"stroke-dashoffset\">"+this.dashoffset+"</sld:CssParameter>";
 				}

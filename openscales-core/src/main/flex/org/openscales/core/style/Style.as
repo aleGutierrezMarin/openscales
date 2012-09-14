@@ -222,11 +222,11 @@ package org.openscales.core.style {
 		}
 		
 		/**
-		 * This method allows to define a style with custom parameters : color, width, whiteSize and dottedSize
+		 * This method allows to define a style with custom parameters : color, width, dashArray and dashOffset
 		 */
-		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, whiteSize:uint, dottedSize:uint):Style
+		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, dashArray:Array=null, dashoffset:uint=0):Style
 		{
-			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,whiteSize,dottedSize);
+			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,dashArray,dashoffset);
 			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
 			
 			var rule:Rule = new Rule();

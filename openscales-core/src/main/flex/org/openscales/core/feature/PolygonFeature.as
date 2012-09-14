@@ -1,5 +1,6 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
+	import flash.display.GraphicsPathCommand;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
@@ -73,16 +74,16 @@ package org.openscales.core.feature {
 						coords[j] = px.x; 
 						coords[j+1] = px.y;
 						if (j==0) {
-							commands.push(1);
+							commands.push(GraphicsPathCommand.MOVE_TO);
 						} else {
-							commands.push(2); 
+							commands.push(GraphicsPathCommand.LINE_TO); 
 						}
 					}
 					// Draw the last line of the polygon, as Flash won't render it if there is no fill for the polygon
 					if (linearRing.componentsLength > 0) {
 						coords.push(coords[0]); 
 						coords.push(coords[1]);
-						commands.push(2);
+						commands.push(GraphicsPathCommand.LINE_TO);
 					}
 					this.graphics.drawPath(commands, coords);
 					
