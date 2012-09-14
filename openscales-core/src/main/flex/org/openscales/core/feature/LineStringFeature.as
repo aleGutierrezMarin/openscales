@@ -159,61 +159,6 @@ package org.openscales.core.feature
 			
 		}
 		
-		
-		//test
-		public function dottedTo(px1:Pixel, px2:Pixel, stroke:Stroke):void
-		{
-			var dx:Number = px2.x - px1.x;
-			var dy:Number = px2.y - px1.y;
-			var dist:Number = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
-			var angle:Number = Math.atan2(dy, dx) * 180 / Math.PI;
-			
-			var tempPixel:Pixel = px1.clone();
-			this.graphics.moveTo(tempPixel.x, tempPixel.y);
-			var cos:Number = Math.cos(angle / 180 * Math.PI);
-			var sin:Number = Math.sin(angle / 180 * Math.PI);
-			var num:uint = stroke.dashArray.length;
-			var i:uint = 0;
-			var l:Number;
-			var dcap:Number = 0;
-			if(stroke.linecap==Stroke.LINECAP_ROUND||stroke.linecap==Stroke.LINECAP_SQUARE) {
-				dcap = stroke.width;
-			}
-			var move:Boolean;
-			while (dist > 0)
-			{
-				move=(i%2==1);
-				l = Math.abs(stroke.dashArray[i]);
-				dist -= l;
-				if(!move) {
-					if(l>dcap) {
-						l-=dcap;
-					} else if (l==dcap) {
-						l=1;
-						dist-=1;
-					} else {
-						move=true;
-					}
-				}
-				if (dist < 0){
-					tempPixel.x = px2.x;
-					tempPixel.y = px2.y;
-				}
-				else{
-					tempPixel.x += (l * cos);
-					tempPixel.y += (l * sin);
-				}
-				if(move) {
-					this.graphics.moveTo(tempPixel.x, tempPixel.y);
-				} else {
-					this.graphics.lineTo(tempPixel.x, tempPixel.y);
-					tempPixel.x += (dcap * cos);
-					tempPixel.y += (dcap * sin);
-				}
-				i=(i+1)%num;
-			}
-		}
-		
 		/**
 		 * Flag that define if an arrow can be drawn for this lineString.
 		 * default to true
