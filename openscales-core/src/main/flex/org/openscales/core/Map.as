@@ -299,6 +299,7 @@ package org.openscales.core
 		
 		private var _toneMappingBuffer:Array;
 
+		private var notice:ContextMenuItem = null;
 		/**
 		 * Map constructor
 		 *
@@ -312,13 +313,17 @@ package org.openscales.core
 			/**
 			 * Contextual informations
 			 */
-			var menu:ContextMenu = new ContextMenu();
-			menu.hideBuiltInItems();
-			var notice:ContextMenuItem = new ContextMenuItem("Powered by OpenScales");
-			notice.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openLink);
-			menu.customItems.push(notice);
-			contextMenu = menu;
-			
+			try {
+				var menu:ContextMenu = new ContextMenu();
+				menu.hideBuiltInItems();
+				notice = new ContextMenuItem("Powered by OpenScales");
+				notice.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openLink);
+				menu.customItems.push(notice);
+				contextMenu = menu;
+			}
+			catch(e:Error) {
+				// if mobile, no contextmenu
+			}
 			
 			//load i18n module
 			I18nJSONProvider.addTranslation(ENLocale);
@@ -388,7 +393,7 @@ package org.openscales.core
 			}
 			
 		}*/
-
+		
 		/**
 		 * Reset all layers, handlers and controls
 		 */
@@ -1779,6 +1784,20 @@ package org.openscales.core
 			}
 			
 			this._defaultZoomOutFactor = value;
+		}
+		
+		override public function set contextMenu(cm:ContextMenu):void {
+			try {
+				if(!cm) {
+					cm = new ContextMenu();
+					cm.hideBuiltInItems();
+				}
+				if(cm.customItems.indexOf(this.notice)==-1)
+					cm.customItems.push(notice);
+				super.contextMenu = cm;
+			} catch(e:Error) {
+				// if mobile, no contextmenu
+			}
 		}
 		
 		/**

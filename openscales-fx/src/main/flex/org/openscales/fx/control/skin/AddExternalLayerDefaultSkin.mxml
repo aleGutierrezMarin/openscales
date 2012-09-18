@@ -145,6 +145,7 @@
 		<s:State name="loading" />
 		<s:State name="localFileSource" />
 		<s:State name="URLSource" />
+		<s:State name="protocolsNotLoaded" />
 	</s:states>
 	
 	<s:Group width="100%">
