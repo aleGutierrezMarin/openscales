@@ -179,7 +179,7 @@ package org.openscales.fx.control.search
 			//clean up the FileReference instance
 			fileReference = null;
 		}
-	
+		
 		/**
 		 * Called when the user cancel the browse process
 		 */
