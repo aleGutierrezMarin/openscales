@@ -282,6 +282,18 @@ package org.openscales.fx.control.search
 			
 		}
 		
+		public function abortLoading():void{
+			if(!loading)return;
+			if(!_capabilities)return;
+			_capabilities.abort();
+			resultList.dataProvider = null;
+			noResults = false;
+			isResults = false;
+			loading = false;
+			invalidateSkinState();
+			
+		}
+		
 		protected function onGetCapSuccess(getCapabilities:GetCapabilities):void{
 			var cap:HashMap = getCapabilities.getAllCapabilities();
 			if(cap.size() <=0){
