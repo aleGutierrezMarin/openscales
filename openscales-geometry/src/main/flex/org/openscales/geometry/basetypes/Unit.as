@@ -52,7 +52,7 @@ package org.openscales.geometry.basetypes
 					return 39370.0787;
 					break;
 				case Unit.DEGREE:
-					return 4374754;
+					return 4374754; // circumference of the earth * number of degrees on the earth = 40000 * 360 = 111.111 km = 4374754 inches 
 					break;
 				default:
 					return 0;

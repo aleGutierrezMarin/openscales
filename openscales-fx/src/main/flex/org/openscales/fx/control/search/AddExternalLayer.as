@@ -179,7 +179,7 @@ package org.openscales.fx.control.search
 			//clean up the FileReference instance
 			fileReference = null;
 		}
-	
+		
 		/**
 		 * Called when the user cancel the browse process
 		 */
@@ -208,7 +208,7 @@ package org.openscales.fx.control.search
 		}
 		
 		public function lookForGetCap():void{
-			resultList.dataProvider = null;
+			if(resultList)resultList.dataProvider = null;
 			noResults = false;
 			isResults = false;
 			loading = false;
@@ -279,6 +279,18 @@ package org.openscales.fx.control.search
 			var ret:Boolean = _map.addLayer(layer);
 			if(ret)this.dispatchEvent(new LayerEvent(LayerEvent.EXT_LAYER_ADDED,layer));
 			return ret;
+			
+		}
+		
+		public function abortLoading():void{
+			if(!loading)return;
+			if(!_capabilities)return;
+			_capabilities.abort();
+			resultList.dataProvider = null;
+			noResults = false;
+			isResults = false;
+			loading = false;
+			invalidateSkinState();
 			
 		}
 		
