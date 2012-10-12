@@ -208,7 +208,7 @@ package org.openscales.fx.control.search
 		}
 		
 		public function lookForGetCap():void{
-			resultList.dataProvider = null;
+			if(resultList)resultList.dataProvider = null;
 			noResults = false;
 			isResults = false;
 			loading = false;
