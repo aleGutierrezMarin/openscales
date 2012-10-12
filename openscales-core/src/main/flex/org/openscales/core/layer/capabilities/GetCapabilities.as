@@ -24,6 +24,7 @@ package org.openscales.core.layer.capabilities
 		private var _proxy:String = null;
 		private var _security:ISecurity = null;
 		private var _parser:CapabilitiesParser = null;
+		private var _req:XMLRequest;
 		
 		private var _capabilities:HashMap = null;
 
@@ -69,6 +70,13 @@ package org.openscales.core.layer.capabilities
 		}
 
 		/**
+		 * If a get cap query is running, calling this method will abort it.
+		 */ 
+		public function abort():void{
+			_req.destroy();
+		}
+		
+		/**
 		 * Method which will request the capabilities
 		 *
 		 * @param failedVersion The last WFS version protocol requested unsuported by the server
@@ -86,7 +94,7 @@ package org.openscales.core.layer.capabilities
 			
 			var urlRequest:String = this.buildRequestUrl(); 
 
-			var _req:XMLRequest = new XMLRequest(urlRequest, this.parseResult, this.onFailure);
+			_req = new XMLRequest(urlRequest, this.parseResult, this.onFailure);
 			_req.security = this._security;
 			_req.proxy = this._proxy;
 			//_req.security = null; //FixMe: should the security be managed here ?

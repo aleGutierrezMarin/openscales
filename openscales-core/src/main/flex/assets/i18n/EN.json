@@ -232,8 +232,8 @@
    "addExternalLayer.localeSourceRadioButton.label":"Local FS",
    "addExternalLayer.chooseLocalFileButton.label":"Browse...",
    "addExternalLayer.otherLayerNameFormItem.label":"Name",
-   "addExternalLayer.otherLayerNameFormItem.toolTip":"A name to give to the layer"
-   
+   "addExternalLayer.otherLayerNameFormItem.toolTip":"A name to give to the layer",
+   "addExternalLayer.abortLoadingButton.label":"Abort"
    
    
  }
