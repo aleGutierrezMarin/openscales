@@ -23,5 +23,17 @@ package org.openscales.core.layer.grid.provider
 		 * @return an ImageTile representing the tile
 		 */ 
 		function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile;
+		
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */ 
+		function get useNoDataTile():Boolean;
+		
+		/**
+		 * @private
+		 */ 
+		function set useNoDataTile(value:Boolean):void;
 	}
 }

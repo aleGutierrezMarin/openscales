@@ -47,6 +47,7 @@ package org.openscales.core.layer.ogc
 		private var _loadingCapabilities:Boolean = false;
 		private var _req:XMLRequest = null;
 		private var _formatSetted:Boolean = false;
+		
 		/**
 		 * Constructor
 		 * 
@@ -480,6 +481,25 @@ package org.openscales.core.layer.ogc
 			super.url = value;
 			this._tileProvider.url = value;
 		}
+		
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get useNoDataTile():Boolean
+		{
+			return _tileProvider.useNoDataTile;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set useNoDataTile(value:Boolean):void
+		{
+			_tileProvider.useNoDataTile = value;
+		}
+
 		
 	}
 	

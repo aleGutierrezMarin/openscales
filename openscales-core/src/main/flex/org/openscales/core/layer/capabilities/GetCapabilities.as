@@ -195,10 +195,12 @@ package org.openscales.core.layer.capabilities
 		}
 		
 		/**
-		 * Call the <code>instanciate</code> method of current parser
+		 * Call the <code>instanciate</code> method of current parser and set the <code>url</code> property of the instanciated layer
 		 */ 
 		public function instanciateLayer(layerName:String):Layer{
-			return _parser.instanciate(layerName);
+			var layer:Layer = _parser.instanciate(layerName);
+			if(layer) layer.url = this._url;
+			return layer;
 		}
 		
 		/**
