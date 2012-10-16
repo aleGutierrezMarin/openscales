@@ -32,6 +32,8 @@ package org.openscales.core.tile
 		
 		private var _method:String = null;
 		
+		private var _useNoDataTile:Boolean = true;
+		
 		/**
 		 * No Data tile
 		 */
@@ -154,14 +156,16 @@ package org.openscales.core.tile
 				
 				// Display the no data Tile
 				var bmdata:BitmapData = new BitmapData(256,256);
-				if (this.url.match("TRANSPARENT=TRUE"))
-				{
-					this.drawLoader("", new _noDataTransp());
-					bmdata.draw(new _noDataTransp());
-				}else{
-					this.drawLoader("", new _noData());
-					bmdata.draw(new _noData());
+				if(_useNoDataTile){
+					if (this.url.match("TRANSPARENT=TRUE")){
+						this.drawLoader("", new _noDataTransp());
+						bmdata.draw(new _noDataTransp());
+					}else{
+						this.drawLoader("", new _noData());
+						bmdata.draw(new _noData());
+					}
 				}
+				
 				
 			}
 		}
@@ -200,6 +204,25 @@ package org.openscales.core.tile
 			this._method = value;
 			
 		}
+
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get useNoDataTile():Boolean
+		{
+			return _useNoDataTile;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set useNoDataTile(value:Boolean):void
+		{
+			_useNoDataTile = value;
+		}
+
 	}
 }
 

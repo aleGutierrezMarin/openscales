@@ -178,6 +178,7 @@ package org.openscales.core.layer.ogc.provider
 		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
+			imageTile.useNoDataTile = _useNoDataTile;
 			if(this._tileMatrixSets==null || layer == null || !(layer is WMTS) || layer.map == null)
 				return imageTile;
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
