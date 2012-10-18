@@ -5,6 +5,8 @@ package org.openscales.core.style.symbolizer {
 	import org.openscales.core.style.stroke.Stroke;
 
 	public class LineSymbolizer extends Symbolizer implements IStrokeSymbolizer {
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		private var _stroke:Stroke;
 
 		public function LineSymbolizer(stroke:Stroke=null) {

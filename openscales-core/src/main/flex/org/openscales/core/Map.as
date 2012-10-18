@@ -718,23 +718,23 @@ package org.openscales.core
 		 *	by the current base layer
 		 */
 		public function getLocationFromMapPx(px:Pixel, res:Resolution = null):Location {
-			var lonlat:Location = null;
+			var _lonlat:Location = null;
 			if (px != null) {
-				var size:Size = this.size;
-				var center:Location = this.center;
-				if (center) {
+				var _size:Size = this.size;
+				var _center:Location = this.center;
+				if (_center) {
 					if (!res)
 					{
 						res = this.resolution;
 					}
 					
-					var delta_x:Number = px.x - (size.w / 2);
-					var delta_y:Number = px.y - (size.h / 2);
+					var delta_x:Number = px.x - (_size.w / 2);
+					var delta_y:Number = px.y - (_size.h / 2);
 					
-					lonlat = new Location(center.lon + delta_x * res.value, center.lat - delta_y * res.value, this.projection);
+					_lonlat = new Location(_center.lon + delta_x * res.value, _center.lat - delta_y * res.value, this.projection);
 				}
 			}
-			return lonlat;
+			return _lonlat;
 		}
 		
 		/**
