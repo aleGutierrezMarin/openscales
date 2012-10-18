@@ -3,6 +3,7 @@ package org.openscales.core.style {
 	import flash.sampler.NewObjectSample;
 	import flash.text.TextFormat;
 	
+	import org.openscales.core.feature.Feature;
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
@@ -29,6 +30,8 @@ package org.openscales.core.style {
 	 * Style describe graphical attributes used to render vectors.
 	 */
 	public class Style {
+		
+		private namespace sldns="http://www.opengis.net/sld";
 		
 		private var _name:String = "Default";
 		
@@ -554,8 +557,33 @@ package org.openscales.core.style {
 			res+="</sld:StyledLayerDescriptor>";
 			return res;
 		}
-		public function set sld(sld:String):void {
-			
+
+		public function set sld(value:String):void {
+			use namespace sldns;
+			var dataXML:XML = new XML(value);
+			var list:XMLList;
+			list = dataXML..NamedLayer;
+			dataXML = list[0];
+			if(dataXML.name[0])
+				this.name = dataXML.Name[0];
+			list = dataXML..Rule;
+			var i:uint = 0;
+			var rule:Rule;
+			if(list) {
+				for each(dataXML in list) {
+					if(this._rules.length>i) {
+						this._rules[i].sld = list[i].toString();
+					} else {
+						rule = new Rule();
+						rule.sld = list[i].toString();
+						this._rules.push(rule);
+					}
+					++i;
+				}
+			}
+			while(this._rules.length>i) {
+				this._rules.pop();
+			}
 		}
 	}
 }

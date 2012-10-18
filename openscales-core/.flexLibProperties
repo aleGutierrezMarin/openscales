@@ -312,6 +312,13 @@
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.core.style.fill.HatchingFill"/>
     <classEntry path="com.foxaweb.utils.Raster"/>
+    <classEntry path="org.openscales.core.json.GENERICJSON"/>
+    <classEntry path="org.openscales.core.json.JSONParseError"/>
+    <classEntry path="org.openscales.core.json.JSONDecoder"/>
+    <classEntry path="org.openscales.core.json.JSONEncoder"/>
+    <classEntry path="org.openscales.core.json.JSONToken"/>
+    <classEntry path="org.openscales.core.json.JSONTokenType"/>
+    <classEntry path="org.openscales.core.json.JSONTokenizer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
