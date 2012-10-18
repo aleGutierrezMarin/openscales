@@ -3,9 +3,14 @@ package org.openscales.core.style.symbolizer {
 
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.fill.Fill;
+	import org.openscales.core.style.fill.HatchingFill;
+	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.stroke.Stroke;
 
 	public class PolygonSymbolizer extends Symbolizer implements IFillSymbolizer, IStrokeSymbolizer {
+		
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		private var _stroke:Stroke;
 
 		private var _fill:Fill;

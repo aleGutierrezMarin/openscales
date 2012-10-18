@@ -4,6 +4,8 @@ package org.openscales.core.style.symbolizer
 	
 	public class PointSymbolizer extends Symbolizer
 	{
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		private var _graphic:Marker;
 		
 		public function PointSymbolizer(graphic:Marker = null)

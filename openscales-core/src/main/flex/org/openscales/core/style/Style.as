@@ -3,6 +3,7 @@ package org.openscales.core.style {
 	import flash.sampler.NewObjectSample;
 	import flash.text.TextFormat;
 	
+	import org.openscales.core.feature.Feature;
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
@@ -29,6 +30,8 @@ package org.openscales.core.style {
 	 * Style describe graphical attributes used to render vectors.
 	 */
 	public class Style {
+		
+		private namespace sldns="http://www.opengis.net/sld";
 		
 		private var _name:String = "Default";
 		
