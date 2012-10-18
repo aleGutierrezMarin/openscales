@@ -5,6 +5,8 @@ package org.openscales.core.style.symbolizer {
 	import org.openscales.core.style.stroke.Stroke;
 
 	public class LineSymbolizer extends Symbolizer implements IStrokeSymbolizer {
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		private var _stroke:Stroke;
 
 		public function LineSymbolizer(stroke:Stroke=null) {
@@ -49,7 +51,15 @@ package org.openscales.core.style.symbolizer {
 		}
 		
 		override public function set sld(sldRule:String):void {
-			// parse sld
+			use namespace sldns;
+			var dataXML:XML = new XML(sldRule);
+			if(this._stroke)
+				this._stroke = null;
+			var childs:XMLList = dataXML.Stroke;
+			if(childs[0]) {
+				this.stroke = new Stroke();
+				this.stroke.sld = childs[0].toString();
+			}
 		}
 	}
 }

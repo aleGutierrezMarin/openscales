@@ -3,9 +3,14 @@ package org.openscales.core.style.symbolizer {
 	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.fill.Fill;
+	import org.openscales.core.style.fill.HatchingFill;
+	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.stroke.Stroke;
 
 	public class PolygonSymbolizer extends Symbolizer implements IFillSymbolizer, IStrokeSymbolizer {
+		
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		private var _stroke:Stroke;
 
 		private var _fill:Fill;
@@ -86,7 +91,26 @@ package org.openscales.core.style.symbolizer {
 		}
 		
 		override public function set sld(sldRule:String):void {
-			// parse sld
+			use namespace sldns;
+			var dataXML:XML = new XML(sldRule);
+			if(this._stroke)
+				this._stroke = null;
+			if(this._fill)
+				this._fill = null;
+			var childs:XMLList = dataXML.Fill;
+			if(childs[0]) {
+				if(childs[0].GraphicFill) {
+					this.fill = new HatchingFill();
+				} else { // solidfill
+					this.fill = new SolidFill();
+				}
+				this.fill.sld = childs[0].toString();
+			}
+			childs = dataXML.Stroke;
+			if(childs[0]) {
+				this.stroke = new Stroke();
+				this.stroke.sld = childs[0].toString();
+			}
 		}
 	}
 }

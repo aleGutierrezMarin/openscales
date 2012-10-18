@@ -22,7 +22,8 @@ Use the top-right button to switch the style of the rendering. -->
 		<WFS id="ignGeoplaRegion" name="IGN - Geopla (Region)"
 				url="http://openscales.org/geoserver/wfs" typename="pg:simplif_dept"
 				projection="EPSG:2154" version="1.0.0" style="{this.createBitmapStyle()}"
-				maxExtent="-142057.542842283,6038798.675807986,1512391.727425894,7306294.234914808,EPSG:2154"/>
+				maxExtent="-142057.542842283,6038798.675807986,1512391.727425894,7306294.234914808,EPSG:2154"
+				visible="false"/>
 
 		<SelectFeaturesHandler id="selectFeatureHandler" active="true"/>
 				
@@ -253,6 +254,7 @@ Use the top-right button to switch the style of the rendering. -->
 				fill.type = HatchingFill.BACKSLASH;
 				fill.opacity = 1;
 				stroke = new Stroke(0xECF2BA, 2);
+				stroke.dashArray = new Array(5,2,7,3);
 				rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
 				
 				style.rules.push(rule);
