@@ -1,7 +1,8 @@
 package org.openscales.core.json
 {
 	import flash.system.ApplicationDomain;
-	
+	import flash.utils.getDefinitionByName;
+
 	public final class GENERICJSON
 	{
 		/**
@@ -16,7 +17,8 @@ package org.openscales.core.json
 		public static function encode( o:Object ):String
 		{
 			if ( ApplicationDomain.currentDomain.hasDefinition("JSON") ) {
-				return JSON.stringify(o);
+				return (getDefinitionByName("JSON") as Class).stringify(o);
+				//return JSON.stringify(o);
 			}
 			return new JSONEncoder(o).getString();
 		}
@@ -52,7 +54,7 @@ package org.openscales.core.json
 		public static function decode( s:String, strict:Boolean = true ):*
 		{
 			if ( ApplicationDomain.currentDomain.hasDefinition("JSON") ) {
-				return JSON.parse(s);
+				return (getDefinitionByName("JSON") as Class).parse(s);
 			}
 			return new JSONDecoder( s, strict ).getValue();
 		}

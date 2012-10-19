@@ -9,6 +9,7 @@ package org.openscales.core.search.engine
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.core.json.GENERICJSON;
 
 	/**
 	 * Bing location api suuport
@@ -64,7 +65,7 @@ package org.openscales.core.search.engine
 		 */
 		private function onSuccess(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
-			var obj:Object = JSON.parse(loader.data as String) as Object;
+			var obj:Object = GENERICJSON.parse(loader.data as String) as Object;
 			var results:Vector.<Address> = new Vector.<Address>();
 			if(obj["resourceSets"] && obj["resourceSets"][0]["resources"]) {
 				var ressources:Array = obj["resourceSets"][0]["resources"] as Array;
