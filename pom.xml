@@ -14,7 +14,7 @@
 	<properties>
 		<flex.sdk.version>4.6.b.23201</flex.sdk.version>
 		<flexmojos.version>4.0-RC2</flexmojos.version>
-		<flashplayer.version.swf>11</flashplayer.version.swf>
+		<flashplayer.version.swf>10</flashplayer.version.swf>
 		<flex.player.version.major>10</flex.player.version.major>
 		<flex.player.version.minor>0</flex.player.version.minor>
 		<flex.player.version.revision>0</flex.player.version.revision>
