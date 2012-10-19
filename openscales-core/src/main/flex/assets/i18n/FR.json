@@ -233,5 +233,6 @@
    "addExternalLayer.localeSourceRadioButton.label":"Fich. local",
    "addExternalLayer.chooseLocalFileButton.label":"Parcourir...",
    "addExternalLayer.otherLayerNameFormItem.label":"Nom",
-   "addExternalLayer.otherLayerNameFormItem.toolTip":"Un nom pour la couche"
+   "addExternalLayer.otherLayerNameFormItem.toolTip":"Un nom pour la couche",
+   "addExternalLayer.abortLoadingButton.label":"Arrêter"
  }

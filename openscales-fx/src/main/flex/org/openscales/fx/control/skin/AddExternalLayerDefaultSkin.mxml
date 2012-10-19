@@ -100,6 +100,9 @@
 				if(this.loadingLabel){
 					this.loadingLabel.text = Catalog.getLocalizationForKey("addExternalLayer.loadingLabel.text");
 				}
+				if(this.abortLoadingButton){
+					this.abortLoadingButton.label = Catalog.getLocalizationForKey("addExternalLayer.abortLoadingButton.label");
+				}
 				
 				this.cancelButton.label = Catalog.getLocalizationForKey("addExternalLayer.cancelButton.label");
 				this.submitButton.label = Catalog.getLocalizationForKey("addExternalLayer.submitButton.label");
@@ -115,6 +118,8 @@
 				this.otherLayerNameFormItem.label = Catalog.getLocalizationForKey("addExternalLayer.otherLayerNameFormItem.label");
 				this.otherLayerNameFormItem.toolTip = Catalog.getLocalizationForKey("addExternalLayer.otherLayerNameFormItem.toolTip");
 				
+				
+				
 			}
 
 			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
@@ -129,6 +134,11 @@
 				return fact;
 			}
 			
+			
+			protected function abortLoading_clickHandler(event:MouseEvent):void
+			{
+				this.hostComponent.abortLoading();
+			}
 			
 		]]>
 	</fx:Script>
@@ -182,7 +192,14 @@
 					</s:layout>
 				</s:List>	
 				<s:Label id="noresLabel" color="red"  includeIn="noresults" />
-				<s:Label id="loadingLabel" includeIn="loading"  />
+				<s:Group includeIn="loading">
+					<s:layout>
+						<s:HorizontalLayout />
+					</s:layout>
+						<s:Label id="loadingLabel" verticalAlign="middle" height="100%" />
+						<s:Button id="abortLoadingButton" click="abortLoading_clickHandler(event)" />
+				</s:Group>
+				
 			</mx:FormItem>
 			<mx:FormItem id="otherURLSourceFormItem" 
 						 direction="horizontal" 

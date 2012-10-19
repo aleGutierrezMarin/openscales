@@ -6,6 +6,7 @@ package org.openscales.core.layer.capabilities
 	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.ProjProjection;
@@ -209,6 +210,8 @@ package org.openscales.core.layer.capabilities
 			var layerIdentifier:String; // Identifier of the layer
 			var tileMatrixSetId:String; // Identifier of a tilematrixSet
 			var layerAbstract:String; // Abstract of the layer
+			var lowerCornerArray:Array; // Array containing lower corner coordinates of wgs bbox
+			var upperCornerArray:Array; // Array containing upper corner coordinates of wgs bbox
 			
 			var style:String;
 			var defaultStyle:String;
@@ -285,6 +288,13 @@ package org.openscales.core.layer.capabilities
 					
 					layerCapabilities.put("Styles", styles);
 					layerCapabilities.put("DefaultStyle", defaultStyle);
+					
+					//Parsing WGS84BoundingBox
+					for each(var XMLWGS84BoundingBox:XML in node.WGS84BoundingBox){
+						lowerCornerArray = XMLWGS84BoundingBox.LowerCorner.split(" ");
+						upperCornerArray = XMLWGS84BoundingBox.UpperCorner.split(" ");
+						layerCapabilities.put("WGS84BoundingBox",new Bounds(lowerCornerArray[0],lowerCornerArray[1],upperCornerArray[0],upperCornerArray[1],"EPSG:4326"));
+					}
 					
 				}
 				
@@ -369,6 +379,7 @@ package org.openscales.core.layer.capabilities
 			wmts.displayedName = layerData.getValue("Title");
 			wmts.abstract = layerData.getValue("Abstract");
 			//wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
+			wmts.maxExtent = layerData.getValue("WGS84BoundingBox");
 			return wmts;
 		}
 	}

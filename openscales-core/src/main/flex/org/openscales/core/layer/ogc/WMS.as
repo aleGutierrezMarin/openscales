@@ -87,8 +87,6 @@ package org.openscales.core.layer.ogc
 		 */
 		protected var _layers:String;
 		
-		
-		
 		/**
 		 * @private
 		 * Indicate if the map is reprojected
@@ -495,6 +493,25 @@ package org.openscales.core.layer.ogc
 					this.redraw(true);
 			}
 		}
+
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get useNoDataTile():Boolean
+		{
+			return _tileProvider.useNoDataTile;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set useNoDataTile(value:Boolean):void
+		{
+			_tileProvider.useNoDataTile = value;
+		}
+
 	}
 }
 
