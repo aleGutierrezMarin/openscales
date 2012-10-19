@@ -69,6 +69,13 @@ package org.openscales.core.style.marker {
 
 			this._size = value;
 		}
+		
+		public function get sld():String {
+			return null;
+		}
+		public function set sld(sld:String):void {
+			
+		}
 
 		/**
 		 * Evaluates the size value for given feature

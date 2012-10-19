@@ -64,5 +64,11 @@ package org.openscales.core.filter {
 			return new IntersectsFilter(this.geometry,this.projection);
 		}
 		
+		public function get sld():String {
+			return null;
+		}
+		public function set sld(sld:String):void {
+		}
+		
 	}
 }

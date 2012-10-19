@@ -14,5 +14,11 @@ package org.openscales.core.filter {
 			var elseFilter:ElseFilter = new ElseFilter();
 			return elseFilter;
 		}
+		
+		public function get sld():String {
+			return null;
+		}
+		public function set sld(sld:String):void {
+		}
 	}
 }

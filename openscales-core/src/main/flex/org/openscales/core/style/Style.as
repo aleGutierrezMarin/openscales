@@ -3,6 +3,7 @@ package org.openscales.core.style {
 	import flash.sampler.NewObjectSample;
 	import flash.text.TextFormat;
 	
+	import org.openscales.core.feature.Feature;
 	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
@@ -29,6 +30,8 @@ package org.openscales.core.style {
 	 * Style describe graphical attributes used to render vectors.
 	 */
 	public class Style {
+		
+		private namespace sldns="http://www.opengis.net/sld";
 		
 		private var _name:String = "Default";
 		
@@ -222,11 +225,11 @@ package org.openscales.core.style {
 		}
 		
 		/**
-		 * This method allows to define a style with custom parameters : color, width, whiteSize and dottedSize
+		 * This method allows to define a style with custom parameters : color, width, dashArray and dashOffset
 		 */
-		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, whiteSize:uint, dottedSize:uint):Style
+		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, dashArray:Array=null, dashoffset:uint=0):Style
 		{
-			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,whiteSize,dottedSize);
+			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,dashArray,dashoffset);
 			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
 			
 			var rule:Rule = new Rule();
@@ -524,6 +527,63 @@ package org.openscales.core.style {
 		public function set isSelectedStyle(value:Boolean):void
 		{
 			_isSelectedStyle = value;
+		}
+		
+		public function get sld():String {
+			var res:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			res+="<sld:StyledLayerDescriptor version=\"1.0.0\" \n"; 
+			res+="xsi:schemaLocation=\"http://www.opengis.net/sld StyledLayerDescriptor.xsd\" \n";
+			res+="xmlns=\"http://www.opengis.net/sld\" \n";
+			res+="xmlns:sld=\"http://www.opengis.net/sld\" \n"; 
+			res+="xmlns:ogc=\"http://www.opengis.net/ogc\" \n"; 
+			res+="xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n";
+			res+="xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
+			res+="<sld:NamedLayer>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			res+="<sld:UserStyle>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			res+="<sld:FeatureTypeStyle>\n";
+			var tmp:String;
+			for each (var rule:Rule in this.rules) {
+				tmp = rule.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			res+="</sld:FeatureTypeStyle>\n";
+			res+="</sld:UserStyle>\n";
+			res+="</sld:NamedLayer>\n";
+			res+="</sld:StyledLayerDescriptor>";
+			return res;
+		}
+
+		public function set sld(value:String):void {
+			use namespace sldns;
+			var dataXML:XML = new XML(value);
+			var list:XMLList;
+			list = dataXML..NamedLayer;
+			dataXML = list[0];
+			if(dataXML.name[0])
+				this.name = dataXML.Name[0];
+			list = dataXML..Rule;
+			var i:uint = 0;
+			var rule:Rule;
+			if(list) {
+				for each(dataXML in list) {
+					if(this._rules.length>i) {
+						this._rules[i].sld = list[i].toString();
+					} else {
+						rule = new Rule();
+						rule.sld = list[i].toString();
+						this._rules.push(rule);
+					}
+					++i;
+				}
+			}
+			while(this._rules.length>i) {
+				this._rules.pop();
+			}
 		}
 	}
 }
