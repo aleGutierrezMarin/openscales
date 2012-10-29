@@ -1,8 +1,8 @@
 package org.openscales.proj4as.proj {
 
-	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
+	import org.openscales.proj4as.ProjConstants;
+	import org.openscales.proj4as.ProjPoint;
 
 	/**
 	 <p>VAN DER GRINTEN projection</p>
@@ -37,7 +37,8 @@ package org.openscales.proj4as.proj {
 		}
 
 		override public function init():void {
-			this.R=6370997.0; //Radius of earth
+			//this.R=6370997.0; //Radius of earth
+			this.R=this.a;
 		}
 
 		override public function forward(p:ProjPoint):ProjPoint {
@@ -77,11 +78,15 @@ package org.openscales.proj4as.proj {
 				con=-con;
 			}
 			x=this.xZero + con;
-			con=Math.abs(con / (ProjConstants.PI * this.R));
+			//con=Math.abs(con / (ProjConstants.PI * this.R));
+			var q:Number = asq+g;
+			con=ProjConstants.PI*this.R*(m*q-al*Math.sqrt((msq+asq)*(asq+1.0)-q*q))/(msq+asq);
 			if (lat >= 0) {
-				y=this.yZero + ProjConstants.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+				//y=this.yZero + ProjConstants.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+				y=this.yZero + con;
 			} else {
-				y=this.yZero - ProjConstants.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+				//y=this.yZero - ProjConstants.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+				y=this.yZero - con;
 			}
 			p.x=x;
 			p.y=y;
@@ -125,13 +130,14 @@ package org.openscales.proj4as.proj {
 			if (p.y >= 0) {
 				lat=(-mOne * Math.cos(thOne + ProjConstants.PI / 3.0) - c2 / 3.0 / c3) * ProjConstants.PI;
 			} else {
-				lat=-(-mOne * Math.cos(thOne + Math.PI / 3.0) - c2 / 3.0 / c3) * ProjConstants.PI;
+				lat=-(-mOne * Math.cos(thOne + ProjConstants.PI / 3.0) - c2 / 3.0 / c3) * ProjConstants.PI;
 			}
 
 			if (Math.abs(xx) < ProjConstants.EPSLN) {
 				lon=this.longZero;
+			} else {
+				lon=ProjConstants.adjust_lon(this.longZero + ProjConstants.PI * (xys - 1.0 + Math.sqrt(1.0 + 2.0 * (xx * xx - yy * yy) + xys * xys)) / 2.0 / xx);
 			}
-			lon=ProjConstants.adjust_lon(this.longZero + ProjConstants.PI * (xys - 1.0 + Math.sqrt(1.0 + 2.0 * (xx * xx - yy * yy) + xys * xys)) / 2.0 / xx);
 
 			p.x=lon;
 			p.y=lat;

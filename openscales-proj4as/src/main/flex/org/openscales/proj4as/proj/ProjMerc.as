@@ -1,8 +1,8 @@
 package org.openscales.proj4as.proj {
 
-	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
+	import org.openscales.proj4as.ProjConstants;
+	import org.openscales.proj4as.ProjPoint;
 
 	/**
 	 <p>MERCATOR projection</p>
@@ -28,17 +28,29 @@ package org.openscales.proj4as.proj {
 		}
 
 		override public function init():void {
+			trace("---init merc---");
 			//?this.temp = this.r_minor / this.r_major;
-			//this.temp = this.b / this.a;
-			//this.es = 1.0 - Math.sqrt(this.temp);
-			//this.e = Math.sqrt( this.es );
+			var con:Number= this.b / this.a;
+			this.es = 1.0 - con*con;
+			this.e = Math.sqrt( this.es );
 			//?this.m1 = Math.cos(this.lat_origin) / (Math.sqrt( 1.0 - this.es * Math.sin(this.lat_origin) * Math.sin(this.lat_origin)));
 			//this.m1 = Math.cos(0.0) / (Math.sqrt( 1.0 - this.es * Math.sin(0.0) * Math.sin(0.0)));
+			
+
+			
 			if (this.lat_ts) {
 				if (this.sphere) {
 					this.kZero=Math.cos(this.lat_ts);
 				} else {
-					this.kZero=ProjConstants.msfnz(this.es, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
+					this.kZero=ProjConstants.msfnz(this.e, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
+				}
+			} else {
+				if (!this.kZero){
+					if (this.k){
+						this.kZero=this.k;
+					} else {
+						this.kZero=1.0;
+					}
 				}
 			}
 		}
@@ -51,7 +63,7 @@ package org.openscales.proj4as.proj {
 			var lon:Number=p.x;
 			var lat:Number=p.y;
 			// convert to radians
-			if (lat * ProjConstants.R2D > 90.0 && lat * ProjConstants.R2D < -90.0 && lon * ProjConstants.R2D > 180.0 && lon * ProjConstants.R2D < -180.0) {
+			if (lat * ProjConstants.R2D > 90.0 || lat * ProjConstants.R2D < -90.0 || lon * ProjConstants.R2D > 180.0 || lon * ProjConstants.R2D < -180.0) {
 				trace("merc:forward: llInputOutOfRange: " + lon + " : " + lat);
 				return null;
 			}
@@ -64,11 +76,12 @@ package org.openscales.proj4as.proj {
 				if (this.sphere) {
 					x=this.xZero + this.a * this.kZero * ProjConstants.adjust_lon(lon - this.longZero);
 					y=this.yZero + this.a * this.kZero * Math.log(Math.tan(ProjConstants.FORTPI + 0.5 * lat));
+					
 				} else {
+					trace(String('lon0=').concat(this.longZero.toString()));
 					var sinphi:Number=Math.sin(lat);
-					var ts:Number=ProjConstants.tsfnz(this.e, lat, sinphi);
 					x=this.xZero + this.a * this.kZero * ProjConstants.adjust_lon(lon - this.longZero);
-					y=this.yZero - this.a * this.kZero * Math.log(ts);
+					y=this.yZero + this.a * this.kZero * ProjConstants.latiso(this.e,lat,sinphi);
 				}
 				p.x=x;
 				p.y=y;
@@ -85,14 +98,19 @@ package org.openscales.proj4as.proj {
 			var lon:Number, lat:Number;
 
 			if (this.sphere) {
-				lat=ProjConstants.HALF_PI - 2.0 * Math.atan(Math.exp(-y / this.a * this.kZero));
+				lat=ProjConstants.HALF_PI - 2.0 * Math.atan(Math.exp(-y / (this.a * this.kZero)));
 			} else {
-				var ts:Number=Math.exp(-y / (this.a * this.kZero));
-				lat=ProjConstants.phi2z(this.e, ts);
+				//var ts:Number=Math.exp(-y / (this.a * this.kZero));
+				//lat=ProjConstants.phi2z(this.e, ts);
+				
+				var ts:Number=y / (this.a * this.kZero);
+				lat=ProjConstants.invlatiso(this.e,ts);
+				
 				if (lat == -9999) {
 					trace("merc:inverse: lat = -9999");
 					return null;
 				}
+				
 			}
 			lon=ProjConstants.adjust_lon(this.longZero + x / (this.a * this.kZero));
 
