@@ -236,17 +236,6 @@ package org.openscales.proj4as {
 		static public function imlfn(ml:Number, e0:Number, e1:Number, e2:Number, e3:Number):Number {
 			var phi:Number;
 			var dphi:Number;
-			/*
-			phi=ml;
-			for (var i:int=0; i < 15; i++) {
-			dphi=(ml + e1 * Math.sin(2.0 * phi) - e2 * Math.sin(4.0 * phi) + e3 * Math.sin(6.0 * phi)) / e0 - phi;
-			phi+=dphi;
-			if (Math.abs(dphi) <= .0000000001) {
-			return phi;
-			}
-			}
-			*/		
-			
 			
 			phi=ml/e0;
 			for (var i:int=0;i<15;i++){

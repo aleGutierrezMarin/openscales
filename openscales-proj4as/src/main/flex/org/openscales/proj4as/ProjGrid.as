@@ -1,10 +1,7 @@
 package org.openscales.proj4as {
 	
 	import org.openscales.proj4as.grid.*;
-	
-	/**
-	 * Define a projection in Proj4as, provided with builtin projection definitions.
-	 */
+
 	public class ProjGrid {
 
 		static public function get(gridname:String):Object{
