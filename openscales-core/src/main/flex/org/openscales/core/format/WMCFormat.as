@@ -117,9 +117,9 @@ package org.openscales.core.format
 			var version:String = "";
 			var url:String = "";
 			var hidden:Boolean = false;
-			if(layer.@hidden.length() > 0 && layer.@hidden == "1")
+			if(layer.@hidden.length() > 0)
 			{
-				hidden = true;
+				hidden = layer.@hidden == "true" || layer.@hidden == "1";
 			}
 			/*if(layer.@queryable.length() > 0 && layer.@queryable == "0")
 			{
@@ -291,8 +291,7 @@ package org.openscales.core.format
 			{
 				layerToAdd = this.parseLayerExtension(layer.*::Extension[0], layerToAdd, service);
 			}
-			if (layerToAdd)
-				layerToAdd.visible = !hidden;
+			if (layerToAdd) layerToAdd.visible = !hidden;
 			return layerToAdd;
 		}
 		
