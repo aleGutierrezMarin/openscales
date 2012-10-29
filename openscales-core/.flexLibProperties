@@ -1,54 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
   <includeClasses>
-    <classEntry path="fl.lang.Locale"/>
-    <classEntry path="fl.livepreview.LivePreviewParent"/>
-    <classEntry path="fl.motion.Animator"/>
-    <classEntry path="fl.motion.BezierEase"/>
-    <classEntry path="fl.motion.BezierSegment"/>
-    <classEntry path="fl.motion.Color"/>
-    <classEntry path="fl.motion.CustomEase"/>
-    <classEntry path="fl.motion.FunctionEase"/>
-    <classEntry path="fl.motion.ITween"/>
-    <classEntry path="fl.motion.Keyframe"/>
-    <classEntry path="fl.motion.MatrixTransformer"/>
-    <classEntry path="fl.motion.Motion"/>
-    <classEntry path="fl.motion.MotionEvent"/>
-    <classEntry path="fl.motion.RotateDirection"/>
-    <classEntry path="fl.motion.SimpleEase"/>
-    <classEntry path="fl.motion.Source"/>
-    <classEntry path="fl.motion.Tweenables"/>
-    <classEntry path="fl.motion.easing.Back"/>
-    <classEntry path="fl.motion.easing.Bounce"/>
-    <classEntry path="fl.motion.easing.Circular"/>
-    <classEntry path="fl.motion.easing.Cubic"/>
-    <classEntry path="fl.motion.easing.Elastic"/>
-    <classEntry path="fl.motion.easing.Exponential"/>
-    <classEntry path="fl.motion.easing.Linear"/>
-    <classEntry path="fl.motion.easing.Quadratic"/>
-    <classEntry path="fl.motion.easing.Quartic"/>
-    <classEntry path="fl.motion.easing.Quintic"/>
-    <classEntry path="fl.motion.easing.Sine"/>
-    <classEntry path="fl.transitions.Blinds"/>
-    <classEntry path="fl.transitions.Fade"/>
-    <classEntry path="fl.transitions.Fly"/>
-    <classEntry path="fl.transitions.Iris"/>
-    <classEntry path="fl.transitions.Photo"/>
-    <classEntry path="fl.transitions.PixelDissolve"/>
-    <classEntry path="fl.transitions.Rotate"/>
-    <classEntry path="fl.transitions.Squeeze"/>
-    <classEntry path="fl.transitions.Transition"/>
-    <classEntry path="fl.transitions.TransitionManager"/>
-    <classEntry path="fl.transitions.Tween"/>
-    <classEntry path="fl.transitions.TweenEvent"/>
-    <classEntry path="fl.transitions.Wipe"/>
-    <classEntry path="fl.transitions.Zoom"/>
-    <classEntry path="fl.transitions.easing.Back"/>
-    <classEntry path="fl.transitions.easing.Bounce"/>
-    <classEntry path="fl.transitions.easing.Elastic"/>
-    <classEntry path="fl.transitions.easing.None"/>
-    <classEntry path="fl.transitions.easing.Regular"/>
-    <classEntry path="fl.transitions.easing.Strong"/>
     <classEntry path="org.openscales.core.Map"/>
     <classEntry path="org.openscales.core.basetypes.Resolution"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.AbstractLinkedListNode"/>
@@ -280,7 +232,6 @@
     <classEntry path="org.openscales.core.security.events.SecurityEvent"/>
     <classEntry path="org.openscales.core.security.ign.IGNGeoRMSecurity"/>
     <classEntry path="org.openscales.core.style.Rule"/>
-    <classEntry path="org.openscales.core.style.Style"/>
     <classEntry path="org.openscales.core.style.fill.BitmapFill"/>
     <classEntry path="org.openscales.core.style.fill.Fill"/>
     <classEntry path="org.openscales.core.style.fill.SolidFill"/>
@@ -359,6 +310,15 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.style.fill.HatchingFill"/>
+    <classEntry path="com.foxaweb.utils.Raster"/>
+    <classEntry path="org.openscales.core.json.GENERICJSON"/>
+    <classEntry path="org.openscales.core.json.JSONParseError"/>
+    <classEntry path="org.openscales.core.json.JSONDecoder"/>
+    <classEntry path="org.openscales.core.json.JSONEncoder"/>
+    <classEntry path="org.openscales.core.json.JSONToken"/>
+    <classEntry path="org.openscales.core.json.JSONTokenType"/>
+    <classEntry path="org.openscales.core.json.JSONTokenizer"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -10,6 +10,7 @@ package org.openscales.core.layer
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.core.json.GENERICJSON;
 
 	/**
 	 * This class is used to display BingMaps.
@@ -150,7 +151,7 @@ package org.openscales.core.layer
 		private function onSuccess(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
 			try {
-				_metadata = JSON.parse(loader.data as String) as Object;
+				_metadata = GENERICJSON.parse(loader.data as String) as Object;
 				this._request.destroy();
 				this._request = null;
 				var res:Object = _metadata["resourceSets"][0]["resources"][0];

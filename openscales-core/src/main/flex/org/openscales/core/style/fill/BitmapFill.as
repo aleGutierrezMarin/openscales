@@ -74,6 +74,14 @@ package org.openscales.core.style.fill {
 
 			this._smooth = value;
 		}
+		
+		public function get sld():String {
+			return null;
+		}
+		
+		public function set sld(sld:String): void {
+			
+		}
 
 		public function configureGraphics(graphics:Graphics, feature:Feature):void {
 

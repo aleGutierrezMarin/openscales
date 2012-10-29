@@ -36,18 +36,18 @@ package org.openscales.core.style.stroke
 		
 		private var _linejoin:String;
 		
-		private var _pWhiteSize:uint = 0;
-		private var _pDottedSize:uint = 0;
+		private var _dashArray:Array = null;
+		private var _dashoffset:uint = 0;
 		
-		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, pWhiteSize:uint = 0, pDottedSize:uint = 0)
+		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, dashArray:Array = null, dashoffset:uint = 0)
 		{
 			this._color = color;
 			this._width = width;
 			this._opacity = opacity;
 			this._linecap = linecap;
 			this._linejoin = linejoin;
-			this._pWhiteSize = pWhiteSize;
-			this._pDottedSize = pDottedSize;
+			this._dashArray = dashArray;
+			this._dashoffset = dashoffset;
 		}
 		
 		/**
@@ -110,27 +110,27 @@ package org.openscales.core.style.stroke
 		}
 		
 		/**
-		 * The size of the space between dots
+		 * The dashArray
 		 */
-		public function get pWhiteSize():uint{
+		public function get dashArray():Array{
 			
-			return this._pWhiteSize;
+			return this._dashArray;
 		}
-		public function set pWhiteSize(value:uint):void{
+		public function set dashArray(value:Array):void{
 			
-			this._pWhiteSize = value;
+			this._dashArray = value;
 		}
 		
 		/**
-		 * The size of the dots
+		 * The dots offeset
 		 */
-		public function get pDottedSize():uint{
+		public function get dashoffset():uint{
 			
-			return this._pDottedSize;
+			return this._dashoffset;
 		}
-		public function set pDottedSize(value:uint):void{
+		public function set dashoffset(value:uint):void{
 			
-			this._pDottedSize = value;
+			this._dashoffset = value;
 		}
 		
 		public function configureGraphics(graphics:Graphics):void{
@@ -170,9 +170,49 @@ package org.openscales.core.style.stroke
 			cloneStroke.opacity = this._opacity;
 			cloneStroke.linecap = this._linecap;
 			cloneStroke.linejoin = this._linejoin;			
-			cloneStroke.pWhiteSize = this._pWhiteSize;
-			cloneStroke.pDottedSize = this._pDottedSize;
+			cloneStroke.dashArray = this._dashArray;
+			cloneStroke.dashoffset = this._dashoffset;
 			return cloneStroke;
+		}
+		
+		public function get sld():String {
+			var res:String = "<sld:Stroke>\n";
+			if(this.color) {
+				var stringColor:String = this.color.toString(16);
+				var spareStringColor:String = "";
+				for (var i:uint = 0; i < (6 - stringColor.length); i++)
+				{
+					spareStringColor += "0";
+				}
+				spareStringColor += stringColor;
+				
+				if(stringColor.length < 6)
+					stringColor = spareStringColor;
+				res+="<sld:CssParameter name=\"stroke\">#"+stringColor+"</sld:CssParameter>\n";
+			}
+			if(this.opacity) {
+				res+="<sld:CssParameter name=\"stroke-opacity\">"+this.opacity+"</sld:CssParameter>\n";
+			}
+			if(this.width) {
+				res+="<sld:CssParameter name=\"stroke-width\">"+this.width+"</sld:CssParameter>\n";
+			}
+			if(this.linecap) {
+				res+="<sld:CssParameter name=\"stroke-linecap\">"+this.linecap+"</sld:CssParameter>\n";
+			}
+			if(this.linejoin) {
+				res+="<sld:CssParameter name=\"stroke-linejoin\">"+this.linejoin+"</sld:CssParameter>\n";
+			}
+			if(this.dashArray && this.dashArray.length>0) {
+				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.dashArray.join(" ")+"</sld:CssParameter>";
+				if(this.dashoffset) {
+					res+="<sld:CssParameter name=\"stroke-dashoffset\">"+this.dashoffset+"</sld:CssParameter>";
+				}
+			}
+			res+="</sld:Stroke>"
+			return res;
+		}
+		public function set sld(sld:String):void {
+			
 		}
 	}
 }

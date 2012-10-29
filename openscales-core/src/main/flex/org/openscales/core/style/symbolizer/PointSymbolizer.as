@@ -4,6 +4,8 @@ package org.openscales.core.style.symbolizer
 	
 	public class PointSymbolizer extends Symbolizer
 	{
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		private var _graphic:Marker;
 		
 		public function PointSymbolizer(graphic:Marker = null)
@@ -26,6 +28,24 @@ package org.openscales.core.style.symbolizer
 			pointSymbolizer.geometry = this.geometry;
 			return pointSymbolizer;
 		}
-
+		
+		override public function get sld():String {
+			var res:String = "<sld:PointSymbolizer>\n";
+			if(this.graphic) {
+				var sld:String = this.graphic.sld;
+				if(sld)
+					res+=sld+"\n";
+			}
+			res+="</sld:PointSymbolizer>";
+			return res;
+		}
+		
+		override public function set sld(sldRule:String):void {
+			use namespace sldns;
+			var dataXML:XML = new XML(sldRule);
+			if(this._graphic)
+				this._graphic = null;
+			// TODO
+		}
 	}
 }
