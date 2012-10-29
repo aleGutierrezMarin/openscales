@@ -27,7 +27,8 @@ package org.openscales.proj4as {
 		static public const PJD_WGS84:int=4; // WGS84 or equivalent
 		static public const PJD_NODATUM:int=5; // WGS84 or equivalent
 		static public const SRS_WGS84_SEMIMAJOR:int=6378137; // only used in grid shift transforms
-
+		static public const SRS_WGS84_ESQUARED:Number=0.0066943799901413165;
+		
 		// ellipoid pj_set_ell.c
 		static public const SIXTH:Number=0.1666666666666666667; /* 1/6 */
 		static public const RA4:Number=0.04722222222222222222; /* 17/360 */
@@ -52,9 +53,63 @@ package org.openscales.proj4as {
 				"oslo": 10.722916666667 //"10d43'22.5\"E"
 			};
 
-		static public const Ellipsoid:Object={"MERIT": {a: 6378137.0, rf: 298.257, ellipseName: "MERIT 1983"}, "SGS85": {a: 6378136.0, rf: 298.257, ellipseName: "Soviet Geodetic System 85"}, "GRS80": {a: 6378137.0, rf: 298.257222101, ellipseName: "GRS 1980(IUGG, 1980)"}, "IAU76": {a: 6378140.0, rf: 298.257, ellipseName: "IAU 1976"}, "airy": {a: 6377563.396, b: 6356256.910, ellipseName: "Airy 1830"}, "APL4.": {a: 6378137, rf: 298.25, ellipseName: "Appl. Physics. 1965"}, "NWL9D": {a: 6378145.0, rf: 298.25, ellipseName: "Naval Weapons Lab., 1965"}, "mod_airy": {a: 6377340.189, b: 6356034.446, ellipseName: "Modified Airy"}, "andrae": {a: 6377104.43, rf: 300.0, ellipseName: "Andrae 1876 (Den., Iclnd.)"}, "aust_SA": {a: 6378160.0, rf: 298.25, ellipseName: "Australian Natl & S. Amer. 1969"}, "GRS67": {a: 6378160.0, rf: 298.2471674270, ellipseName: "GRS 67(IUGG 1967)"}, "bessel": {a: 6377397.155, rf: 299.1528128, ellipseName: "Bessel 1841"}, "bess_nam": {a: 6377483.865, rf: 299.1528128, ellipseName: "Bessel 1841 (Namibia)"}, "clrk66": {a: 6378206.4, b: 6356583.8, ellipseName: "Clarke 1866"}, "clrk80": {a: 6378249.145, rf: 293.4663, ellipseName: "Clarke 1880 mod."}, "CPM": {a: 6375738.7, rf: 334.29, ellipseName: "Comm. des Poids et Mesures 1799"}, "delmbr": {a: 6376428.0, rf: 311.5, ellipseName: "Delambre 1810 (Belgium)"}, "engelis": {a: 6378136.05, rf: 298.2566, ellipseName: "Engelis 1985"}, "evrst30": {a: 6377276.345, rf: 300.8017, ellipseName: "Everest 1830"}, "evrst48": {a: 6377304.063, rf: 300.8017, ellipseName: "Everest 1948"}, "evrst56": {a: 6377301.243, rf: 300.8017, ellipseName: "Everest 1956"}, "evrst69": {a: 6377295.664, rf: 300.8017, ellipseName: "Everest 1969"}, "evrstSS": {a: 6377298.556, rf: 300.8017, ellipseName: "Everest (Sabah & Sarawak)"}, "fschr60": {a: 6378166.0, rf: 298.3, ellipseName: "Fischer (Mercury Datum) 1960"}, "fschr60m": {a: 6378155.0, rf: 298.3, ellipseName: "Fischer 1960"}, "fschr68": {a: 6378150.0, rf: 298.3, ellipseName: "Fischer 1968"}, "helmert": {a: 6378200.0, rf: 298.3, ellipseName: "Helmert 1906"}, "hough": {a: 6378270.0, rf: 297.0, ellipseName: "Hough"}, "intl": {a: 6378388.0, rf: 297.0, ellipseName: "International 1909 (Hayford)"}, "kaula": {a: 6378163.0, rf: 298.24, ellipseName: "Kaula 1961"}, "lerch": {a: 6378139.0, rf: 298.257, ellipseName: "Lerch 1979"}, "mprts": {a: 6397300.0, rf: 191.0, ellipseName: "Maupertius 1738"}, "new_intl": {a: 6378157.5, b: 6356772.2, ellipseName: "New International 1967"}, "plessis": {a: 6376523.0, rf: 6355863.0, ellipseName: "Plessis 1817 (France)"}, "krass": {a: 6378245.0, rf: 298.3, ellipseName: "Krassovsky, 1942"}, "SEasia": {a: 6378155.0, b: 6356773.3205, ellipseName: "Southeast Asia"}, "walbeck": {a: 6376896.0, b: 6355834.8467, ellipseName: "Walbeck"}, "WGS60": {a: 6378165.0, rf: 298.3, ellipseName: "WGS 60"}, "WGS66": {a: 6378145.0, rf: 298.25, ellipseName: "WGS 66"}, "WGS72": {a: 6378135.0, rf: 298.26, ellipseName: "WGS 72"}, "WGS84": {a: 6378137.0, rf: 298.257223563, ellipseName: "WGS 84"}, "sphere": {a: 6370997.0, b: 6370997.0, ellipseName: "Normal Sphere (r=6370997)"}};
+		static public const Ellipsoid:Object={
+				"MERIT": {a: 6378137.0, rf: 298.257, ellipseName: "MERIT 1983"},
+				"SGS85": {a: 6378136.0, rf: 298.257, ellipseName: "Soviet Geodetic System 85"},
+				"GRS80": {a: 6378137.0, rf: 298.257222101, ellipseName: "GRS 1980(IUGG, 1980)"},
+				"IAU76": {a: 6378140.0, rf: 298.257, ellipseName: "IAU 1976"},
+				"airy": {a: 6377563.396, b: 6356256.910, ellipseName: "Airy 1830"},
+				"APL4.": {a: 6378137, rf: 298.25, ellipseName: "Appl. Physics. 1965"},
+				"NWL9D": {a: 6378145.0, rf: 298.25, ellipseName: "Naval Weapons Lab., 1965"},
+				"mod_airy": {a: 6377340.189, b: 6356034.446, ellipseName: "Modified Airy"},
+				"andrae": {a: 6377104.43, rf: 300.0, ellipseName: "Andrae 1876 (Den., Iclnd.)"},
+				"aust_SA": {a: 6378160.0, rf: 298.25, ellipseName: "Australian Natl & S. Amer. 1969"},
+				"GRS67": {a: 6378160.0, rf: 298.2471674270, ellipseName: "GRS 67(IUGG 1967)"},
+				"bessel": {a: 6377397.155, rf: 299.1528128, ellipseName: "Bessel 1841"},
+				"bess_nam": {a: 6377483.865, rf: 299.1528128, ellipseName: "Bessel 1841 (Namibia)"},
+				"clrk66": {a: 6378206.4, b: 6356583.8, ellipseName: "Clarke 1866"},
+				"clrk80": {a: 6378249.145, rf: 293.4663, ellipseName: "Clarke 1880 mod."},
+				"CPM": {a: 6375738.7, rf: 334.29, ellipseName: "Comm. des Poids et Mesures 1799"},
+				"delmbr": {a: 6376428.0, rf: 311.5, ellipseName: "Delambre 1810 (Belgium)"},
+				"engelis": {a: 6378136.05, rf: 298.2566, ellipseName: "Engelis 1985"},
+				"evrst30": {a: 6377276.345, rf: 300.8017, ellipseName: "Everest 1830"},
+				"evrst48": {a: 6377304.063, rf: 300.8017, ellipseName: "Everest 1948"},
+				"evrst56": {a: 6377301.243, rf: 300.8017, ellipseName: "Everest 1956"},
+				"evrst69": {a: 6377295.664, rf: 300.8017, ellipseName: "Everest 1969"},
+				"evrstSS": {a: 6377298.556, rf: 300.8017, ellipseName: "Everest (Sabah & Sarawak)"},
+				"fschr60": {a: 6378166.0, rf: 298.3, ellipseName: "Fischer (Mercury Datum) 1960"},
+				"fschr60m": {a: 6378155.0, rf: 298.3, ellipseName: "Fischer 1960"},
+				"fschr68": {a: 6378150.0, rf: 298.3, ellipseName: "Fischer 1968"},
+				"helmert": {a: 6378200.0, rf: 298.3, ellipseName: "Helmert 1906"},
+				"hough": {a: 6378270.0, rf: 297.0, ellipseName: "Hough"},
+				"intl": {a: 6378388.0, rf: 297.0, ellipseName: "International 1909 (Hayford)"},
+				"kaula": {a: 6378163.0, rf: 298.24, ellipseName: "Kaula 1961"},
+				"lerch": {a: 6378139.0, rf: 298.257, ellipseName: "Lerch 1979"},
+				"mprts": {a: 6397300.0, rf: 191.0, ellipseName: "Maupertius 1738"},
+				"new_intl": {a: 6378157.5, b: 6356772.2, ellipseName: "New International 1967"},
+				"plessis": {a: 6376523.0, rf: 6355863.0, ellipseName: "Plessis 1817 (France)"},
+				"krass": {a: 6378245.0, rf: 298.3, ellipseName: "Krassovsky, 1942"},
+				"SEasia": {a: 6378155.0, b: 6356773.3205, ellipseName: "Southeast Asia"},
+				"walbeck": {a: 6376896.0, b: 6355834.8467, ellipseName: "Walbeck"},
+				"WGS60": {a: 6378165.0, rf: 298.3, ellipseName: "WGS 60"},
+				"WGS66": {a: 6378145.0, rf: 298.25, ellipseName: "WGS 66"},
+				"WGS72": {a: 6378135.0, rf: 298.26, ellipseName: "WGS 72"},
+				"WGS84": {a: 6378137.0, rf: 298.257223563, ellipseName: "WGS 84"},
+				"sphere": {a: 6370997.0, b: 6370997.0, ellipseName: "Normal Sphere (r=6370997)"}
+		};
 
-		static public const Datum:Object={"WGS84": {towgs84: "0,0,0", ellipse: "WGS84", datumName: "WGS84"}, "GGRS87": {towgs84: "-199.87,74.79,246.62", ellipse: "GRS80", datumName: "Greek_Geodetic_Reference_System_1987"}, "NAD83": {towgs84: "0,0,0", ellipse: "GRS80", datumName: "North_American_Datum_1983"}, "NAD27": {nadgrids: "@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat", ellipse: "clrk66", datumName: "North_American_Datum_1927"}, "potsdam": {towgs84: "606.0,23.0,413.0", ellipse: "bessel", datumName: "Potsdam Rauenberg 1950 DHDN"}, "carthage": {towgs84: "-263.0,6.0,431.0", ellipse: "clark80", datumName: "Carthage 1934 Tunisia"}, "hermannskogel": {towgs84: "653.0,-212.0,449.0", ellipse: "bessel", datumName: "Hermannskogel"}, "ire65": {towgs84: "482.530,-130.596,564.557,-1.042,-0.214,-0.631,8.15", ellipse: "mod_airy", datumName: "Ireland 1965"}, "nzgd49": {towgs84: "59.47,-5.04,187.44,0.47,-0.1,1.024,-4.5993", ellipse: "intl", datumName: "New Zealand Geodetic Datum 1949"}, "OSGB36": {towgs84: "446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894", ellipse: "airy", datumName: "Airy 1830"}};
+		static public const Datum:Object={
+				"WGS84": {towgs84: "0,0,0", ellipse: "WGS84", datumName: "WGS84"},
+				"GGRS87": {towgs84: "-199.87,74.79,246.62", ellipse: "GRS80", datumName: "Greek_Geodetic_Reference_System_1987"},
+				"NAD83": {towgs84: "0,0,0", ellipse: "GRS80", datumName: "North_American_Datum_1983"},
+				"NAD27": {nadgrids: "@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat", ellipse: "clrk66", datumName: "North_American_Datum_1927"},
+				"potsdam": {towgs84: "606.0,23.0,413.0", ellipse: "bessel", datumName: "Potsdam Rauenberg 1950 DHDN"},
+				"carthage": {towgs84: "-263.0,6.0,431.0", ellipse: "clark80", datumName: "Carthage 1934 Tunisia"},
+				"hermannskogel": {towgs84: "653.0,-212.0,449.0", ellipse: "bessel", datumName: "Hermannskogel"},
+				"ire65": {towgs84: "482.530,-130.596,564.557,-1.042,-0.214,-0.631,8.15", ellipse: "mod_airy", datumName: "Ireland 1965"},
+				"nzgd49": {towgs84: "59.47,-5.04,187.44,0.47,-0.1,1.024,-4.5993", ellipse: "intl", datumName: "New Zealand Geodetic Datum 1949"},
+				"OSGB36": {towgs84: "446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894", ellipse: "airy", datumName: "Airy 1830"}
+		};
 
 
 
@@ -112,6 +167,39 @@ package org.openscales.proj4as {
 				return 2.0 * sinphi;
 			}
 		}
+		
+		/** Function to compute the inverse of qsfnz
+		 */
+		static public function iqsfnz(eccent:Number, q:Number):Number {
+			var temp:Number = 1.0-(1.0-eccent*eccent)/(2.0*eccent)*Math.log((1-eccent)/(1+eccent));
+			if (Math.abs(Math.abs(q)-temp)<1.0E-6){
+				if (q<0.0){
+					return (-1.0*ProjConstants.HALF_PI);
+				} else {
+					return ProjConstants.HALF_PI;
+				}
+			}
+			//var phi:Number = 0.5* q/(1-eccent*eccent);
+			var phi:Number = Math.asin(0.5*q);
+			var dphi:Number;
+			var sin_phi:Number;
+			var cos_phi:Number;
+			var con:Number;
+			for (var i:int=0;i<30;i++){
+				sin_phi = Math.sin(phi);
+				cos_phi = Math.cos(phi);
+				con = eccent*sin_phi;
+				dphi=Math.pow(1.0-con*con,2.0)/(2.0*cos_phi)*(q/(1-eccent*eccent)-sin_phi/(1.0-con*con)+0.5/eccent*Math.log((1.0-con)/(1.0+con)));
+				phi+=dphi;
+				if (Math.abs(dphi) <= .0000000001) {
+					return phi;
+				}
+			}
+			
+			
+			trace("IQSFN-CONV:Latitude failed to converge after 15 iterations");
+			return NaN;
+		}
 
 		/** Function to eliminate roundoff errors in asin
 		 */
@@ -143,6 +231,36 @@ package org.openscales.proj4as {
 		static public function mlfn(e0:Number, e1:Number, e2:Number, e3:Number, phi:Number):Number {
 			return (e0 * phi - e1 * Math.sin(2.0 * phi) + e2 * Math.sin(4.0 * phi) - e3 * Math.sin(6.0 * phi));
 		}
+		/* Function to compute the inverse of mlfn 
+		-----------------------------------------------------------------*/
+		static public function imlfn(ml:Number, e0:Number, e1:Number, e2:Number, e3:Number):Number {
+			var phi:Number;
+			var dphi:Number;
+			/*
+			phi=ml;
+			for (var i:int=0; i < 15; i++) {
+			dphi=(ml + e1 * Math.sin(2.0 * phi) - e2 * Math.sin(4.0 * phi) + e3 * Math.sin(6.0 * phi)) / e0 - phi;
+			phi+=dphi;
+			if (Math.abs(dphi) <= .0000000001) {
+			return phi;
+			}
+			}
+			*/		
+			
+			
+			phi=ml/e0;
+			for (var i:int=0;i<15;i++){
+				dphi=(ml-(e0*phi-e1*Math.sin(2.0*phi)+e2*Math.sin(4.0*phi)-e3*Math.sin(6.0*phi)))/(e0-2.0*e1*Math.cos(2.0*phi)+4.0*e2*Math.cos(4.0*phi)-6.0*e3*Math.cos(6.0*phi));
+				phi+=dphi;
+				if (Math.abs(dphi) <= .0000000001) {
+					return phi;
+				}
+			}
+			
+			
+			trace("IMLFN-CONV:Latitude failed to converge after 15 iterations");
+			return NaN;
+		}
 
 		static public function srat(esinp:Number, exp:Number):Number {
 			return (Math.pow((1.0 - esinp) / (1.0 + esinp), exp));
@@ -152,9 +270,9 @@ package org.openscales.proj4as {
 		 */
 		static public function sign(x:Number):Number {
 			if (x < 0.0)
-				return (-1);
+				return (-1.0);
 			else
-				return (1);
+				return (1.0);
 		}
 
 		/** Function to adjust longitude to -180 to 180; input in radians
@@ -197,12 +315,15 @@ package org.openscales.proj4as {
 			var phi:Number=ProjConstants.fL(1.0, ts);
 			var Iphi:Number=0.0;
 			var con:Number=0.0;
-			do {
+			for (var i:int=0;i<15;i++){
 				Iphi=phi;
 				con=eccent * Math.sin(Iphi);
-				phi=ProjConstants.fL(Math.exp(eccent * Math.log((1.0 + con) / (1.0 - con)) / 2.0), ts)
-			} while (Math.abs(phi - Iphi) > 1.0e-12);
-			return phi;
+				phi=ProjConstants.fL(Math.exp(eccent * Math.log((1.0 + con) / (1.0 - con)) / 2.0), ts);
+				if (Math.abs(phi - Iphi) <= 1.0e-12){
+					return phi;
+				}
+			} 
+			return NaN;
 		}
 
 		/** Needed for Gauss Laborde
@@ -246,6 +367,105 @@ package org.openscales.proj4as {
 		static public function gN(a:Number, e:Number, sinphi:Number):Number {
 			var temp:Number=e * sinphi;
 			return a / Math.sqrt(1.0 - temp * temp);
+		}
+		
+		static public function nad_intr(pin:Object,ct:Object):Object{
+			// force computation by decreasing by 1e-7 to be as closed as possible
+			// from computation under C:C++ by leveraging rounding problems ...
+			var t:Object= {"x":(pin.x-1.0e-7)/ct.del[0],"y":(pin.y-1.0e-7)/ct.del[1]};
+			var indx:Object= {"x":Math.floor(t.x),"y":Math.floor(t.y)};
+			var frct:Object= {"x":t.x-1.0*indx.x,"y":t.y-1.0*indx.y};
+			var val:Object= {"x":Number.NaN,"y":Number.NaN};
+			var inx:Number;
+			if (indx.x<0) {
+				if (!(indx.x==-1 && frct.x>0.99999999999)) {
+					return val;
+				}
+				++indx.x;
+				frct.x= 0.0;
+			} else {
+				inx= indx.x+1;
+				if (inx>=ct.lim[0]) {
+					if (!(inx==ct.lim[0] && frct.x<1e-11)) {
+						return val;
+					}
+					--indx.x;
+					frct.x= 1.0;
+				}
+			}
+			if (indx.y<0) {
+				if (!(indx.y==-1 && frct.y>0.99999999999)) {
+					return val;
+				}
+				++indx.y;
+				frct.y= 0.0;
+			} else {
+				inx= indx.y+1;
+				if (inx>=ct.lim[1]) {
+					if (!(inx==ct.lim[1] && frct.y<1e-11)) {
+						return val;
+					}
+					--indx.y;
+					frct.y= 1.0;
+				}
+			}
+			inx= (indx.y*ct.lim[0])+indx.x;
+			var f00:Object= {"x":ct.cvs[inx][0], "y":ct.cvs[inx][1]};
+			inx++;
+			var f10:Object= {"x":ct.cvs[inx][0], "y":ct.cvs[inx][1]};
+			inx+= ct.lim[0];
+			var f11:Object= {"x":ct.cvs[inx][0], "y":ct.cvs[inx][1]};
+			inx--;
+			var f01:Object= {"x":ct.cvs[inx][0], "y":ct.cvs[inx][1]};
+			var m11:Number= frct.x*frct.y;
+			var m10:Number= frct.x*(1.0-frct.y);
+			var m00:Number= (1.0-frct.x)*(1.0-frct.y);
+			var m01:Number= (1.0-frct.x)*frct.y;
+			val.x= (m00*f00.x + m10*f10.x + m01*f01.x + m11*f11.x);
+			val.y= (m00*f00.y + m10*f10.y + m01*f01.y + m11*f11.y);
+			return val;
+		}
+		
+		static public function nad_cvt(pin:Object,inverse:Boolean,ct:Object):Object{
+			var val:Object= {"x":Number.NaN, "y":Number.NaN};
+			if (isNaN(pin.x)) { return val; }
+			var tb:Object= {"x":pin.x, "y":pin.y};
+			tb.x-= ct.ll[0];
+			tb.y-= ct.ll[1];
+			tb.x= ProjConstants.adjust_lon(tb.x - ProjConstants.PI) + ProjConstants.PI;
+			var t:Object= ProjConstants.nad_intr(tb,ct);
+			if (inverse) {
+				if (isNaN(t.x)) {
+					return val;
+				}
+				t.x= tb.x + t.x;
+				t.y= tb.y - t.y;
+				var i:Number= 9
+				var tol:Number= 1e-12;
+				var dif:Object, del:Object;
+				do {
+					del= ProjConstants.nad_intr(t,ct);
+					if (isNaN(del.x)) {
+						trace("Inverse grid shift iteration failed, presumably at grid edge.  Using first approximation.");
+						break;
+					}
+					dif= {"x":t.x-del.x-tb.x, "y":t.y+del.y-tb.y};
+					t.x-= dif.x;
+					t.y-= dif.y;
+				} while (i-- && Math.abs(dif.x)>tol && Math.abs(dif.y)>tol);
+				if (i<0) {
+					trace("Inverse grid shift iterator failed to converge.");
+					return val;
+				}
+				val.x= ProjConstants.adjust_lon(t.x+ct.ll[0]);
+				val.y= t.y+ct.ll[1];
+			} else {
+				if (!isNaN(t.x)) {
+					val.x= pin.x - t.x;
+					val.y= pin.y + t.y;
+				}
+			}
+			return val;
 		}
 
 

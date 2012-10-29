@@ -1,10 +1,11 @@
 package org.openscales.proj4as {
+	import org.openscales.proj4as.ProjGrid;
 	import org.openscales.proj4as.proj.*;
 	
 	/**
 	 * Define a projection in Proj4as, provided with builtin projection definitions.
 	 */
-	public class ProjProjection {
+	public class ProjProjection extends ProjCatalogue {
 		/**
 		 * Property: readyToUse
 		 * Flag to indicate if initialization is complete for this Proj object
@@ -21,8 +22,8 @@ package org.openscales.proj4as {
 		static public const stretchableDefs:Vector.<String> = new <String>["WGS84,IGNF:WGS84G,EPSG:4326,CRS:84,EPSG:900913,EPSG:3857"]; 
 		
 		static public const defs:Object={
-			'EPSG:900913': "+title=Google Mercator EPSG:900913 +proj=merc +ellps=WGS84 +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs",
-			'WGS84': "+title=long/lat:WGS84 +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees",
+			'EPSG:900913': "+title=Google SMercator EPSG:900913 +proj=merc +ellps=WGS84 +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs",
+			'WGS84':"+title=long/lat:WGS84 +proj=longlat +ellps=WGS84 +datum=WGS84 +units=m", 
 			'IGNF:WGS84G': "+title=World Geodetic System 1984 +proj=longlat +towgs84=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.000000 +a=6378137.0000 +rf=298.2572221010000 +units=degrees +no_defs",
 			'EPSG:4326': "+title=long/lat:WGS84 +proj=longlat +a=6378137.0 +b=6356752.31424518 +ellps=WGS84 +datum=WGS84 +units=degrees",
 			'EPSG:4269': "+title=long/lat:NAD83 +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees",
@@ -73,6 +74,10 @@ package org.openscales.proj4as {
 			
 			'CRS:84': "+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +units=degrees"
 		};
+
+		
+		
+	
 		
 		static public const urns:Object={
 			'WGS84': "urn:ogc:def:crs:EPSG::4326",
@@ -171,6 +176,7 @@ package org.openscales.proj4as {
 		 * @return ProjProjection the ProjProjection
 		 */
 		public static function getProjProjection(proj:*):ProjProjection {
+			ProjCatalogue.loadCatalogue();
 			if(proj==null)
 				return null;
 			
@@ -502,6 +508,12 @@ package org.openscales.proj4as {
 				case "aeqd":
 					this.proj=new ProjAeqd(this.projParams);
 					break;
+				case "cass":
+					this.proj=new ProjCass(this.projParams);
+					break;
+				case "cea":
+					this.proj=new ProjCea(this.projParams);
+					break;
 				case "eqc":
 					this.proj=new ProjEqc(this.projParams);
 					break;
@@ -513,6 +525,9 @@ package org.openscales.proj4as {
 					break;
 				case "gauss":
 					this.proj=new ProjGauss(this.projParams);
+					break;
+				case "gnom":
+					this.proj=new ProjGnom(this.projParams);
 					break;
 				case "gstmerc":
 					this.proj=new ProjGstmerc(this.projParams);
@@ -540,6 +555,12 @@ package org.openscales.proj4as {
 					break;
 				case "omerc":
 					this.proj=new ProjOmerc(this.projParams);
+					break;
+				case "poly":
+					this.proj=new ProjPoly(this.projParams);
+					break;
+				case "somerc":
+					this.proj=new ProjSoMerc(this.projParams);
 					break;
 				case "ortho":
 					this.proj=new ProjOrtho(this.projParams);
@@ -596,7 +617,7 @@ package org.openscales.proj4as {
 						this.projParams.datumCode=paramVal.replace(/\s/gi, "");
 						break;
 					case "nadgrids":
-						this.projParams.nagrids=paramVal.replace(/\s/gi, "");
+						this.projParams.nadgrids=paramVal.replace(/\s/gi, "");
 						break;
 					case "ellps":
 						this.projParams.ellps=paramVal.replace(/\s/gi, "");
@@ -625,6 +646,12 @@ package org.openscales.proj4as {
 						break; // used in merc and eqc
 					case "lon_0":
 						this.projParams.longZero=parseFloat(paramVal) * ProjConstants.D2R;
+						break; // lam0, central longitude
+					case "lon_1":
+						this.projParams.longOne=parseFloat(paramVal) * ProjConstants.D2R;
+						break; // lam0, central longitude
+					case "lon_2":
+						this.projParams.longTwo=parseFloat(paramVal) * ProjConstants.D2R;
 						break; // lam0, central longitude
 					case "alpha":
 						this.projParams.alpha=parseFloat(paramVal) * ProjConstants.D2R;
@@ -671,6 +698,12 @@ package org.openscales.proj4as {
 						break;
 					case "no_defs":
 						break;
+					case "no_off":
+						this.projParams.no_off=true;
+						break; // no offset parameter in omerc
+					case "no_rot":
+						this.projParams.no_rot=true;
+						break; // no rotation parameter in omerc
 					default:
 						trace("Unrecognized parameter: " + paramName);
 						break;
@@ -680,8 +713,32 @@ package org.openscales.proj4as {
 		}
 		
 		private function deriveConstants():void {
-			if (this.projParams.nagrids == '@null')
+			if (this.projParams.nadgrids == '@null')
 				this.projParams.datumCode='none';
+			
+			if (this.projParams.nadgrids) {
+				if (this.projParams.nadgrids == '@null' && !this.projParams.datum_params) {
+					this.projParams.datumCode = 'none';
+				} else {
+					this.projParams.grids= this.projParams.nadgrids.split(",");
+					var g:Object= null;
+					for (var i:Number= 0; i<this.projParams.grids.length; i++) {
+						g= this.projParams.grids[i];
+						var fg:Object= g.split("@");
+						this.projParams.grids[i]= {
+							mandatory: fg.length==1,//@=> optional grid (no error if not found)
+								name:fg[fg.length-1],
+								grid: ProjGrid.get(fg[fg.length-1])//FIXME: grids loading ...
+						};
+						if (this.projParams.grids[i].mandatory && !this.projParams.grids[i].grid) {
+							trace("Missing '"+this.projParams.grids[i].name+"'");
+						}
+					}
+				}
+				// DGR, 2011-03-20: grids is an array of objects that hold
+				// the loaded grids, its name and the mandatory informations of it.
+			}
+			
 			if (this.projParams.datumCode && this.projParams.datumCode != 'none') {
 				var datumDef:Object=ProjConstants.Datum[this.projParams.datumCode];
 				if (datumDef) {
@@ -743,6 +800,7 @@ package org.openscales.proj4as {
 			}
 			return p;
 		}
+		
 		
 	}
 }
