@@ -9,6 +9,7 @@ package org.openscales.core.request
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.core.json.GENERICJSON;
 	
 	/**
 	 * OpenLSRequest
@@ -785,7 +786,7 @@ package org.openscales.core.request
 		 * @return a JSON string
 		 */
 		static public function resultsListtoJSON(resultsList:XMLList, version:String = "1.2"):String {
-			return JSON.stringify(OpenLSRequest.resultsListtoArray(resultsList, version));
+			return GENERICJSON.stringify(OpenLSRequest.resultsListtoArray(resultsList, version));
 		}
 		
 		/**

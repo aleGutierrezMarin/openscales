@@ -4,6 +4,7 @@ package org.openscales.core.i18n.provider
 	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
+	import org.openscales.core.json.GENERICJSON;
 	import org.openscales.core.utils.Trace;
 
 	public class I18nJSONProvider implements Ii18nProvider
@@ -23,7 +24,7 @@ package org.openscales.core.i18n.provider
 		static public function addTranslation(jsonSource:Class):void {
 			try {
 				var text:String = new jsonSource();
-				var obj:Object = JSON.parse(text) as Object;
+				var obj:Object = GENERICJSON.decode(text) as Object;
 				if(!obj["locale.key"]
 					|| obj["locale.key"] == ''
 					|| !obj["locale.name"]

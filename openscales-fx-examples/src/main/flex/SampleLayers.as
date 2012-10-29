@@ -54,10 +54,13 @@ package {
 			var arrayVertices:Vector.<Geometry>;
 			var point:org.openscales.geometry.Point;
 			
+			var stroke:Stroke = new Stroke(0x000000,2);
+			stroke.dashArray = new Array(5,2,7,3);
+			
 			var blackStyle:Style =  new Style();
 			blackStyle.rules.push(new Rule());
 			blackStyle.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0x000000,2),12)));
-			blackStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),new Stroke(0x000000,2)));
+			blackStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),stroke));
 			var wnmk:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12);
 			blackStyle.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),wnmk,wnmk));
 			blackStyle.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.7,null,Font.ITALIC,Font.BOLD)));
@@ -199,7 +202,9 @@ package {
 			// Add a MultiLineString.
 			var biColorStyle:Style = new Style();
 			biColorStyle.rules.push(new Rule());
-			(biColorStyle.rules[0] as Rule).symbolizers.push(new LineSymbolizer(new Stroke(0xFF3300,5)));
+			stroke = new Stroke(0xFF3300,5);
+			stroke.dashArray = new Array(5,2,7,3);
+			(biColorStyle.rules[0] as Rule).symbolizers.push(new LineSymbolizer(stroke));
 			(biColorStyle.rules[0] as Rule).symbolizers.push(new LineSymbolizer(new Stroke(0xFFFFFF,2)));
 			
 			arrayVertices = new Vector.<Geometry>();
@@ -424,7 +429,7 @@ package {
 				45.75218370397337);
 			arrayVertices.push(new LinearRing(arrayComponents));
 			layer.addFeature(new PolygonFeature(new Polygon(arrayVertices),{'name':"toto"},style));
-
+			
 			// return the vector layer
 			return layer;
 		}

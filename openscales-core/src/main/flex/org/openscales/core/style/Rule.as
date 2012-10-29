@@ -1,16 +1,22 @@
 package org.openscales.core.style {
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.EventDispatcher;
 	
 	import org.openscales.core.filter.IFilter;
 	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 
 	/**
 	 * Rule based style, in order to use different styles based on parameters like current scale
 	 */
-	public class Rule {
+	public class Rule extends EventDispatcher {
+		
+		private namespace sldns="http://www.opengis.net/sld";
 
 		public static const LEGEND_LINE:String = "Line";
 
@@ -183,6 +189,94 @@ package org.openscales.core.style {
 			}
 
 			return result;
+		}
+		
+		public function get sld():String {
+			// gen sld
+			var res:String = "<sld:Rule>\n";
+			
+			if(this.title)
+				res+="<sld:Title>"+this.title+"</sld:Title>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			if(this.abstract)
+				res+="<sld:Abstract>"+this.abstract+"</sld:Abstract>\n";
+			if(!isNaN(this.minScaleDenominator)) {
+				res+="<sld:MinScaleDenominator>"+this.minScaleDenominator+"</sld:MinScaleDenominator>\n";
+			}
+			if(!isNaN(this.maxScaleDenominator)) {
+				res+="<sld:MaxScaleDenominator>"+this.maxScaleDenominator+"</sld:MaxScaleDenominator>\n";
+			}
+			var tmp:String;
+			for each (var symbolizer:Symbolizer in this.symbolizers) {
+				tmp = symbolizer.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			if(this.filter) {
+				tmp = this.filter.sld;
+				if(tmp)
+					res+=tmp+"\n";
+			}
+			res+="</sld:Rule>";
+			return res;
+		}
+		
+		public function set sld(sldRule:String):void {
+			use namespace sldns;
+			var dataXML:XML = new XML(sldRule);
+			this.title = null;
+			this.name = null;
+			this.abstract = null;
+			this.minScaleDenominator = NaN;
+			this.maxScaleDenominator = NaN;
+			if(!this.symbolizers)
+				this.symbolizers = new Vector.<Symbolizer>();
+			while(this.symbolizers.length>0) {
+				this.symbolizers.pop();
+			}
+			if(this._filter)
+				this._filter = null;
+			
+			//title
+			if(dataXML.Title[0])
+				this.title = dataXML.Title[0];
+			//name
+			if(dataXML.Name[0])
+				this.name = dataXML.Name[0];
+			//astract
+			if(dataXML.Abstract[0])
+				this.abstract = dataXML.Abstract[0];
+			//minScaleDenominator
+			if(dataXML.MinScaleDenominator[0])
+				this.minScaleDenominator = Number(dataXML.MinScaleDenominator[0]);
+			//maxScaleDenominator
+			if(dataXML.MaxScaleDenominator[0])
+				this.maxScaleDenominator = Number(dataXML.MaxScaleDenominator[0]);
+			var childs:XMLList = dataXML.children();
+			var symb:Symbolizer = null;
+			for each(dataXML in childs) {
+				switch (dataXML.localName()) {
+					case "PolygonSymbolizer":
+						symb = new PolygonSymbolizer();
+						break;
+					case "PointSymbolizer":
+						symb = new PointSymbolizer();
+						break;
+					case "LineSymbolizer":
+						symb = new LineSymbolizer();
+						break;
+					case "TextSymbolizer":
+						symb = new TextSymbolizer();
+						break;
+					//TODO filters
+				}
+				if(symb) {
+					symb.sld = dataXML.toString();
+					this.symbolizers.push(symb);
+					symb = null;
+				}
+			}
 		}
 
 		private function drawLine(symbolizer:Symbolizer, canvas:Sprite):void {

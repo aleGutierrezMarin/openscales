@@ -47,6 +47,32 @@ package org.openscales.core.style.fill {
 
 			this._opacity = value;
 		}
+		
+		public function get sld():String {
+			var res:String = "<sld:Fill>\n";
+			if(this.color is uint) {
+				var stringColor:String = (this.color as uint).toString(16);
+				var spareStringColor:String = "";
+				for (var i:uint = 0; i < (6 - stringColor.length); i++)
+				{
+					spareStringColor += "0";
+				}
+				spareStringColor += stringColor;
+				
+				if(stringColor.length < 6)
+					stringColor = spareStringColor;
+				res+="<sld:CssParameter name=\"fill\">#"+stringColor+"</sld:CssParameter>\n";
+			}
+			if(this.opacity) {
+				res+="<sld:CssParameter name=\"fill-opacity\">"+this.opacity+"</sld:CssParameter>\n";
+			}
+			res+="</sld:Fill>"
+			return res;
+		}
+		
+		public function set sld(sld:String): void {
+			
+		}
 
 		public function configureGraphics(graphics:Graphics, feature:Feature):void {
 

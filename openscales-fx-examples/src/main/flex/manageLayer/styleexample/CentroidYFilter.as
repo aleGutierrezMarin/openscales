@@ -22,5 +22,13 @@ package manageLayer.styleexample {
 			return centroidYFilter;
 		}
 		
+		public function get sld():String {
+			return null;
+		}
+		
+		public function set sld(value:String):void {
+			
+		}
+		
 	}
 }
