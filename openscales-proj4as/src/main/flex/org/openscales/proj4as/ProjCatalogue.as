@@ -1,13 +1,9 @@
-package org.openscales.proj4as
+=package org.openscales.proj4as
 {
 	
 	public class ProjCatalogue
 	{
 		static public function loadCatalogue():void{
-		   	////////////////////////////////////////////////////////////////
-			// add Projection from Maps.as in API-Librairies/Geoportal-core
-			////////////////////////////////////////////////////////////////
-			// add Geoportal projections
 			ProjProjection.defs['EPSG:4171']="+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_ProjProjection.defs";
 			ProjProjection.addStretchableProjection("EPSG:3857","EPSG:4171");
 			ProjProjection.defs['EPSG:2975']="+proj=utm +zone=40 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_ProjProjection.defs";
@@ -92,9 +88,6 @@ package org.openscales.proj4as
 			ProjProjection.defs['IGNF:UTM37ETRS89']="+title=Europe - de 36d a 42d Est +proj=tmerc +towgs84=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.000000 +a=6378137.0000 +rf=298.2572221010000 +lat_0=0.000000000 +lon_0=39.000000000 +k_0=0.99960000 +x_0=500000.000 +y_0=0.000 +units=m +no_ProjProjection.defs";
 			ProjProjection.defs['IGNF:UTM38ETRS89']="+title=Europe - de 42d a 48d Est +proj=tmerc +towgs84=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.000000 +a=6378137.0000 +rf=298.2572221010000 +lat_0=0.000000000 +lon_0=45.000000000 +k_0=0.99960000 +x_0=500000.000 +y_0=0.000 +units=m +no_ProjProjection.defs";
 			ProjProjection.defs['IGNF:UTM39ETRS89']="+title=Europe - de 48d a 54d Est +proj=tmerc +towgs84=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.000000 +a=6378137.0000 +rf=298.2572221010000 +lat_0=0.000000000 +lon_0=51.000000000 +k_0=0.99960000 +x_0=500000.000 +y_0=0.000 +units=m +no_ProjProjection.defs";
-			////////////////////////////////////////////////////////////////
-			// add Projection from the JS lib in api-js
-			////////////////////////////////////////////////////////////////
 			ProjProjection.defs['GOOGLE']=ProjProjection.defs['EPSG:3857'];
 			ProjProjection.defs['EPSG:3785']=ProjProjection.defs['EPSG:3857'];
 			ProjProjection.defs['EPSG:102113']=ProjProjection.defs['EPSG:3857'];
@@ -114,9 +107,6 @@ package org.openscales.proj4as
 			ProjProjection.defs["EPSG:42304"]="+title=Atlas of Canada, LCC +proj=lcc +lat_1=49 +lat_2=77 +lat_0=49 +lon_0=-95 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_ProjProjection.defs";
 			ProjProjection.defs["EPSG:4272"] = "+title=NZGD49 +proj=longlat +ellps=intl +datum=nzgd49 +no_ProjProjection.defs ";
 			ProjProjection.defs["EPSG:4302"] = "+title=Trinidad 1903 EPSG:4302 (7 param datum shift) +proj=longlat +a=6378293.63683822 +b=6356617.979337744 +towgs84=-61.702,284.488,472.052,0,0,0,0";
-			////////////////////////////////////////////////////////////////
-			// add Projection from the JS lib in api-js (definitions in test script)
-			////////////////////////////////////////////////////////////////
 			ProjProjection.defs["EPSG:54003"] = "+proj=mill +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +R_A +ellps=WGS84 +datum=WGS84 +units=m +no_ProjProjection.defs";
 			ProjProjection.defs["EPSG:54008"] = "+proj=sinu +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m  no_ProjProjection.defs";
 			ProjProjection.defs["EPSG:54029"] = "+proj=vandg +lon_0=0 +x_0=0 +y_0=0 +R_A +ellps=WGS84 +datum=WGS84 +units=m +no_ProjProjection.defs";
@@ -131,8 +121,6 @@ package org.openscales.proj4as
 			ProjProjection.defs["EPSG:102067"] = "+title=Krovak +proj=krovak +lat_0=49.5 +lon_0=42.5 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +pm=ferro +units=m +towgs84=570.8,85.7,462.8,4.998,1.587,5.261,3.56 +czech +no_ProjProjection.defs";
 			ProjProjection.defs["EPSG:21781"] = "+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_ProjProjection.defs";
 			ProjProjection.defs["EPSG:2154"] = "+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_ProjProjection.defs";
-			
-			//add Projection from api-js catalogue
 			ProjProjection.defs["CRS:84"]="+title=WGS 84 longitude-latitude +proj=longlat +ellps=WGS84 +datum=WGS84 +no_ProjProjection.defs ";
 			ProjProjection.defs["EPSG:2056"]="+title=CH1903+ / LV95 +proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_ProjProjection.defs ";
 			ProjProjection.defs["EPSG:2154"]="+title=RGF93 / Lambert-93 +proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_ProjProjection.defs ";

@@ -131,11 +131,7 @@ package org.openscales.proj4as.proj {
 							lon=ProjConstants.adjust_lon(this.longZero + Math.atan2(p.x, p.y));
 						}
 					} else {
-						/*con=cosz - this.sin_pTwelve * Math.sin(lat);
-						if((Math.abs(con) >= ProjConstants.EPSLN) || (Math.abs(p.x) >= ProjConstants.EPSLN)) {
-							var temp:Number=Math.atan2((p.x * sinz * this.cos_pTwelve), (con * rh));
-							lon=ProjConstants.adjust_lon(this.longZero + Math.atan2((p.x * sinz * this.cos_pTwelve), (con * rh)));
-						}*/
+					
 						lon=ProjConstants.adjust_lon(this.longZero+Math.atan2(p.x*sinz,rh*this.cos_pTwelve*cosz-p.y*this.sin_pTwelve*sinz));
 					}
 				}

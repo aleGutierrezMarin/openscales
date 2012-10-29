@@ -11,6 +11,7 @@ package org.openscales.proj4as {
 		 * Flag to indicate if initialization is complete for this Proj object
 		 */
 		public var readyToUse:Boolean=false;
+		private var catalogueLoaded:Boolean=false;
 		
 		/**
 		 * Property: title
@@ -176,7 +177,10 @@ package org.openscales.proj4as {
 		 * @return ProjProjection the ProjProjection
 		 */
 		public static function getProjProjection(proj:*):ProjProjection {
-			ProjCatalogue.loadCatalogue();
+                       if (!this.catalogueLoaded){
+                                ProjCatalogue.loadCatalogue();
+                                this.catalogueLoaded=true;
+                       }
 			if(proj==null)
 				return null;
 			

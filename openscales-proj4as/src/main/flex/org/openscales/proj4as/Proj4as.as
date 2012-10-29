@@ -37,12 +37,7 @@ package org.openscales.proj4as {
 				return point;
 			}
 			
-			
-			/* Didier: Why? EPSG:4171 (longlat) -> EPSG:2154 (lcc)
-             * source.datum==dest.datum !! no transfo
-             * if (source.datum == dest.datum)
-			 *  return point; // no need to transform
-             */			 
+			 
 			 
 			// Workaround for Spherical Mercator
 			if ((source.srsProjNumber == "900913" && dest.datumCode != "WGS84") || (dest.srsProjNumber == "900913" && source.datumCode != "WGS84")) {
@@ -205,11 +200,7 @@ package org.openscales.proj4as {
 					ct.ll[0]+(ct.lim[0]-1)*ct.del[0]+epsilon<input.x ) {
 					continue;
 				}
-				/* If we have child nodes, check to see if any of them apply. */
-				/* TODO : only plain grid has implemented ... */
-				/* we found a more refined child node to use */
-				/* load the grid shift info if we don't have it. */
-				/* TODO : Proj4js.grids pre-loaded (as they can be huge ...) */
+				
 				output= ProjConstants.nad_cvt(input, inverse, ct);
 				if (!isNaN(output.x)) {
 					break;
