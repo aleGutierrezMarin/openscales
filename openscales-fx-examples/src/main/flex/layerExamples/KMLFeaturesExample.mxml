@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Another KML example -->
+<s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%"
+		 creationComplete="initMap()" xmlns:components="components.*">
+	
+	<Map id="fxMap"
+		 width="100%" height="100%"
+		 resolution="0.02197265625"
+		 center="-116.953,37.267"
+		 projection="EPSG:900913">
+		
+		<Bing key="Ar3-LKk-acyISMevsF2bqH70h21mzr_FN9AhHfi7pS26F5hMH1DmpI7PBK1VCLBk" imagerySet="Aerial" />
+		
+		
+		<!--KML url="https://developers.google.com/kml/documentation/KML_Samples.kml"
+			 proxy="http://openscales.org/proxy.php?url=" numZoomLevels="20"
+			 style="{Style.getDefaultLineStyle()}"/-->
+		
+		<DragHandler/>
+		<WheelHandler/>
+		
+		<Zoom x="{fxMap.width-135}" y="10" />
+		<DataOriginatorsDisplay x="10" y="{height-90}" />
+		<s:Button click="export()" label="plop"/>
+	</Map>
+	<components:toolbar fxMap="{fxMap}" />
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.format.KMLFormat;
+			import org.openscales.core.layer.KML;
+			import org.openscales.core.popup.Anchored;
+			import org.openscales.core.style.Style;
+			import org.openscales.fx.popup.FxPopup;
+			import org.openscales.fx.popup.renderer.FxPopupRenderer;
+			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.proj4as.ProjProjection;
+			
+			
+			[Embed(source="/assets/KML_Samples.kml",mimeType="application/octet-stream")]
+			private const kmlSample:Class;
+			
+			private var kmlLayer:KML; 
+
+			//private var popup:Anchored;
+			private var fxpopup:FxPopup;
+			
+			private function export():void{
+				this.kmlLayer.saveFormatExport(new KMLFormat(), kmlLayer.displayedName+'.kml', ProjProjection.getProjProjection('EPSG:4326'))
+			}
+			
+			private function initMap():void {
+				fxMap.map.addEventListener(FeatureEvent.FEATURE_CLICK, onFeatureClick);
+				
+				var sample:XML = new XML(new kmlSample());
+				
+				// Crée une couche KML avec les paramètres nécessaires
+				kmlLayer = new KML("Test Google",null,sample);
+				
+				// Ajoute le layer à la carte
+				fxMap.map.addLayer(kmlLayer);
+				
+			}
+			
+			private function onFeatureClick(event:FeatureEvent):void {
+				if(fxpopup){
+					fxpopup.destroy();
+				}
+				fxpopup = null;
+				fxpopup = new FxPopup();
+				fxpopup.fxmap = fxMap;
+				
+				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();
+				fxpopup.popupRenderer = fxpopupRenderer;
+				
+				fxpopup.feature = event.feature;
+				var px:Pixel = fxpopup.fxmap.map.getMapPxFromLocation(event.feature.lonlat);
+				fxpopup.relativePosition = fxpopup.calculateRelativePosition(px);
+				fxpopup.position = px;
+				fxpopup.setCurrentState(fxpopup.relativePosition,false);
+				fxpopupRenderer.content = event.feature.data.popupContentHTML;
+				
+				fxMap.addFxPopup(fxpopup,true);
+				fxpopup.visible = true;
+			}
+		]]>
+	</fx:Script>
+	
+</s:VGroup>
