@@ -248,7 +248,7 @@ package org.openscales.core.layer.ogc.provider
 			if(!_tileMatrixSetsLimits || !_tileMatrixSetsLimits.getValue(tileMatrixSet)) return true;
 			
 			var limits:HashMap = (_tileMatrixSetsLimits.getValue(tileMatrixSet) as HashMap).getValue(tileMatrix) as HashMap;
-			if(!limits) return true;
+			if(!limits) return false;
 			var minTileCol:Number =  new Number(limits.getValue("MinTileCol"));
 			var maxTileCol:Number =  new Number(limits.getValue("MaxTileCol"));
 			var minTileRow:Number =  new Number(limits.getValue("MinTileRow"));
