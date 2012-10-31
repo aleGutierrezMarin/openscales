@@ -1,0 +1,11 @@
+ {
+   "locale.key": "TEST",
+   "locale.name": "Test",
+   "locale.localizedName": "Test",
+   
+   "newlocale.translateone": "One",
+   "newlocale.translatetwo": "Two",
+   "newlocale.translatethree": "Three",
+   "newlocale.translatefour": "Four",
+   "newlocale.translatefive": "Five"
+ }
