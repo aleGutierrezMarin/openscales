@@ -506,20 +506,30 @@ package org.openscales.core.request
 			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="GeocodeRequest" requestID="'+this.id+'" version="'+this._version+'">';
 			request += '<GeocodeRequest>';
 			
-			if (this.freeFormAddress) {
+			if (this.freeFormAddress) 
+			{
 				request += '<Address countryCode="' + this.countryCode + '">';
 				request += '<freeFormAddress>' + this.freeFormAddress + '</freeFormAddress>';
 				request += this.createEnvelopeContent();
 				request += this.createPlaceFiltersContent();
 				request += '</Address>';
 			}
-			else {
+			else if (this.number || this.street || this.postalCode) 
+			{
 				request += '<Address countryCode="' + this.countryCode + '">';
 				request += '<StreetAddress><Building number="' + this.number  + '"/>'; 
 				request += '<Street>' + this.street + '</Street></StreetAddress>';
 				request += this.createEnvelopeContent();
 				request += this.createPlaceFiltersContent();
 				request += '<PostalCode>' + this.postalCode + '</PostalCode></Address>';				
+			}
+			else
+			{
+				request += '<Address countryCode="' + this.countryCode + '">';
+				request += '<freeFormAddress></freeFormAddress>';
+				request += this.createEnvelopeContent();
+				request += this.createPlaceFiltersContent();
+				request += '</Address>';
 			}
 			request += '</GeocodeRequest></Request></XLS>';
 			return request;
