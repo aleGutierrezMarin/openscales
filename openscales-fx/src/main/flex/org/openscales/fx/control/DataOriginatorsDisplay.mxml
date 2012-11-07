@@ -451,6 +451,7 @@
 				horizontalCenter="0" verticalCenter="0" dataProvider="{_originator}"
 				itemRenderer="{new ClassFactory(this.itemRenderer)}"
 				contentBackgroundAlpha="0"
+				minWidth="50"
 				borderVisible="false" >
 			<s:layout>
 				<s:HorizontalLayout 
