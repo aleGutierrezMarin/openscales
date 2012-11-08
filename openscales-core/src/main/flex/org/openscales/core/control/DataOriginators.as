@@ -254,9 +254,7 @@ package org.openscales.core.control
 		 or increment the number of layers for the existing originator.
 		 */
 		public function updateOriginators():void
-		{
-			this.removeAll();
-			
+		{			
 			this._layers = this._map.layers;
 			var i:uint = 0;
 			var j:uint = this._layers.length;
