@@ -263,14 +263,14 @@ package org.openscales.core.format
 					}
 					var wmts:WMTS = new WMTS(title,url,name,"");
 					wmts.abstract = (abstract && abstract.length>0) ? abstract : null;
-					wmts.style = style;
+					if(style) wmts.style = style;
 					if (srs != "")
 					{
 						wmts.projection = srs;
 					}
 					wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
-					wmts.format = format;
+					if(format)wmts.format = format;
 					layerToAdd = wmts;
 					break;
 				default:
@@ -364,19 +364,19 @@ package org.openscales.core.format
 				var layerNode:XML;
 				
 				if (layer is WMS){
-					layerNode = buildLayerNode((layer as WMS).available, (layer as WMS).visible, 
+					layerNode = buildLayerNode((layer as WMS).available, !(layer as WMS).visible, 
 						(layer as WMS).name, (layer as WMS).displayedName, (layer as WMS).url, 
 						"OGC:WMS", (layer as WMS).version);
 				}
 				if (layer is WFS){
-					layerNode = buildLayerNode((layer as WFS).available, (layer as WFS).visible, 
+					layerNode = buildLayerNode((layer as WFS).available, !(layer as WFS).visible, 
 						(layer as WFS).name, (layer as WFS).displayedName, (layer as WFS).url, 
 						"OGC:WFS", (layer as WFS).version);
 				}
 				if (layer is WMTS){
-					layerNode = buildLayerNode((layer as WMTS).available, (layer as WMTS).visible, 
-						(layer as WMTS).name, (layer as WMTS).displayedName, (layer as WMTS).url, 
-						"WMTS", "1.0.0");
+					layerNode = buildLayerNode((layer as WMTS).available, !(layer as WMTS).visible, 
+						(layer as WMTS).layer, (layer as WMTS).displayedName, (layer as WMTS).url, 
+						"OGC:WMTS", "1.0.0");
 				}
 				
 				layerList.appendChild(layerNode);
