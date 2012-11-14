@@ -362,7 +362,7 @@ package org.openscales.core.format
 			
 			for each (var layer:Layer in context["map"].layers){
 				var layerNode:XML;
-				
+				if(!layer.displayInLayerManager)continue;
 				if (layer is WMS){
 					layerNode = buildLayerNode((layer as WMS).available, !(layer as WMS).visible, 
 						(layer as WMS).name, (layer as WMS).displayedName, (layer as WMS).url, 
@@ -377,6 +377,8 @@ package org.openscales.core.format
 					layerNode = buildLayerNode((layer as WMTS).available, !(layer as WMTS).visible, 
 						(layer as WMTS).layer, (layer as WMTS).displayedName, (layer as WMTS).url, 
 						"OGC:WMTS", "1.0.0");
+					var f:XML = buildFormatListLayerNode([{"current":true,"value":(layer as WMTS).format}]);
+					if(f)layerNode.appendChild(f);
 				}
 				
 				layerList.appendChild(layerNode);
