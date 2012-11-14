@@ -8,6 +8,9 @@ package org.openscales.core.style.fill {
 	 * Class defining a solid fill, which is characterized by its color and opacity
 	 */
 	public class SolidFill implements Fill {
+		
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		private var _color:Object;
 
 		private var _opacity:Number;
@@ -71,7 +74,17 @@ package org.openscales.core.style.fill {
 		}
 		
 		public function set sld(sld:String): void {
-			
+			use namespace sldns;
+			var dataXML:XML = new XML(sld);
+			var childs:XMLList = dataXML.CssParameter;
+			this.color = 0;
+			for each(var node:XML in childs) {
+				if(node.@name == "fill") {
+					this.color = parseInt(node[0].toString().replace("#",""),16);
+				} else if(node.@name == "fill-opacity") {
+					this.opacity = Number(node[0].toString());
+				}
+			}
 		}
 
 		public function configureGraphics(graphics:Graphics, feature:Feature):void {

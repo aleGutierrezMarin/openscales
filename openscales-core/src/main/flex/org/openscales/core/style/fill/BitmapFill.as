@@ -13,12 +13,27 @@ package org.openscales.core.style.fill {
 		private var _matrix:Matrix;
 		private var _repeat:Boolean;
 		private var _smooth:Boolean;
+		private var _bitmapurl:String;
 
 		public function BitmapFill(bitmap:BitmapData, matrix:Matrix=null, repeat:Boolean=true, smooth:Boolean=false) {
 			this._bitmap = bitmap;
 			this._matrix = matrix;
 			this._repeat = repeat;
 			this._smooth = smooth;
+		}
+
+		/**
+		 * The bitmap url
+		 */
+		public function get bitmapurl():String
+		{
+			return _bitmapurl;
+		}
+
+		public function set bitmapurl(value:String):void
+		{
+			_bitmapurl = value;
+			// get bitmapdata
 		}
 
 		/**
@@ -76,11 +91,22 @@ package org.openscales.core.style.fill {
 		}
 		
 		public function get sld():String {
-			return null;
+			var res:String = "<sld:Fill>\n";
+			res+="<sld:GraphicFill>\n";
+			res+="<sld:Graphic>\n";
+			res+="<sld:ExternalGraphic>\n";
+			res+="<sld:OnlineResource xlink:type=\"simple\" xlink:href=\""+_bitmapurl+"\" />\n";
+			res+="<sld:Format>"+"image/png"+"</sld:Format>\n";
+			res+="</sld:ExternalGraphic>\n";
+			res+="<sld:size>100</sld:size>\n";
+			res+="</sld:Graphic>\n";
+			res+="</sld:GraphicFill>\n";
+			res+="</sld:Fill>\n";
+			return res;
 		}
 		
 		public function set sld(sld:String): void {
-			
+			//TODO
 		}
 
 		public function configureGraphics(graphics:Graphics, feature:Feature):void {

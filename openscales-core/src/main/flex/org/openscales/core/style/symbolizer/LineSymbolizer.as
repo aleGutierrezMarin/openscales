@@ -33,7 +33,11 @@ package org.openscales.core.style.symbolizer {
 		}
 		
 		override public function clone():Symbolizer{
-			var lineSymbolizer:LineSymbolizer = new LineSymbolizer(this._stroke.clone());
+			var lineSymbolizer:LineSymbolizer;
+			if(this._stroke)
+				lineSymbolizer = new LineSymbolizer(this._stroke.clone());
+			else
+				lineSymbolizer = new LineSymbolizer();
 			lineSymbolizer.geometry = this.geometry;
 			return lineSymbolizer;
 		}

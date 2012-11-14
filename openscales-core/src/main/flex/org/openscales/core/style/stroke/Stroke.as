@@ -12,6 +12,8 @@ package org.openscales.core.style.stroke
 	 */
 	public class Stroke
 	{
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		/**
 		 * Possible values for the linejoin of the stroke, i.e. how two segments of a line are connected
 		 */
@@ -212,7 +214,35 @@ package org.openscales.core.style.stroke
 			return res;
 		}
 		public function set sld(sld:String):void {
+			this.color = 0;
+			this.opacity = 1;
+			this.width = 1;
+			this.linecap = LINECAP_ROUND;
+			this._linejoin = LINEJOIN_ROUND;
+			this._dashArray = null;
+			this._dashoffset = 0;
 			
+			use namespace sldns;
+			var dataXML:XML = new XML(sld);
+			var childs:XMLList = dataXML.CssParameter;
+			
+			for each(var node:XML in childs) {
+				if(node.@name == "stroke") {
+					this._color = parseInt(node[0].toString().replace("#",""),16);
+				} else if(node.@name == "stroke-opacity") {
+					this._opacity = Number(node[0].toString());
+				} else if(node.@name == "stroke-width") {
+					this._width = Number(node[0].toString());
+				}else if(node.@name == "stroke-linecap") {
+					this._linecap = node[0].toString();
+				} else if(node.@name == "stroke-linejoin") {
+					this._linejoin = node[0].toString();
+				} else if(node.@name == "stroke-dasharray") {
+					this._dashArray = node[0].toString().split(" ");
+				} else if(node.@name == "stroke-dashoffset") {
+					this._dashoffset = Number(node[0].toString());
+				}
+			}
 		}
 	}
 }

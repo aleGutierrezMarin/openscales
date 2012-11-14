@@ -37,6 +37,7 @@ package org.openscales.core.filter
 			return null;
 		}
 		public function set sld(sld:String):void {
+			//TODO
 		}
 	}
 }

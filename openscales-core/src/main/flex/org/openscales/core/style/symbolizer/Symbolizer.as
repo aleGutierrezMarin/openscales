@@ -1,12 +1,13 @@
 package org.openscales.core.style.symbolizer {
 	import flash.display.Graphics;
+	import flash.events.EventDispatcher;
 	
 	import org.openscales.core.feature.Feature;
 
 	/**
 	 * Make an abstraction layer for feature rendering
 	 */
-	public class Symbolizer {
+	public class Symbolizer extends EventDispatcher {
 		
 		private var _geometry:String;
 
@@ -40,12 +41,10 @@ package org.openscales.core.style.symbolizer {
 		}
 		
 		public function get sld():String {
-			// gen sld
 			return null;
 		}
 		
 		public function set sld(sldRule:String):void {
-			// parse sld
 		}
 
 	}

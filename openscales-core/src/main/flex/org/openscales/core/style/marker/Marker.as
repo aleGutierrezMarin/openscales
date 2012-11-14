@@ -74,7 +74,7 @@ package org.openscales.core.style.marker {
 			return null;
 		}
 		public function set sld(sld:String):void {
-			
+			//TODO
 		}
 
 		/**

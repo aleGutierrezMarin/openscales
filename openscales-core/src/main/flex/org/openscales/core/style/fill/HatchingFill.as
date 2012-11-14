@@ -10,6 +10,7 @@ package org.openscales.core.style.fill
 	
 	public class HatchingFill implements Fill
 	{
+		private namespace sldns="http://www.opengis.net/sld";
 		
 		public static const VERTLINE:String = "shape://vertline";
 		public static const HORLINE:String = "shape://horline";
@@ -142,6 +143,46 @@ package org.openscales.core.style.fill
 		
 		public function set sld(sld:String):void
 		{
+			//TODO check
+			use namespace sldns;
+			var dataXML:XML = new XML(sld);
+			var childs:XMLList = dataXML..WellKnownName;
+			if(childs.length()>0){
+				if(childs[0]==VERTLINE) {
+					this._type = VERTLINE;
+				}
+				else if(childs[0]==HORLINE) {
+					this._type = HORLINE;
+				}
+				else if(childs[0]==PLUS) {
+					this._type = PLUS;
+				}
+				else if(childs[0]==SLASH) {
+					this._type = SLASH;
+				}
+				else if(childs[0]==BACKSLASH) {
+					this._type = BACKSLASH;
+				}
+				else if(childs[0]==TIMES) {
+					this._type = TIMES;
+				}
+				else {
+					this._type = SLASH;
+				}
+			}
+			this.color = 0;
+			this.opacity = 1;
+			this.width = 1;
+			childs = dataXML..CssParameter;
+			for each(var node:XML in childs) {
+				if(node.@name == "stroke") {
+					this.color = parseInt(node[0].toString().replace("#",""),16);
+				} else if(node.@name == "stroke-opacity") {
+					this.opacity = Number(node[0].toString());
+				} else if(node.@name == "stroke-width") {
+					this.width = Number(node[0].toString());
+				}
+			}
 		}
 		
 		public function get type():String
