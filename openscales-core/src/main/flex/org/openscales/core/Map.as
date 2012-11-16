@@ -496,8 +496,13 @@ package org.openscales.core
 			
 			this._layers.splice(i,1);
 			
-			if(j==-1)
-				this._loadingLayers.splice(j,1);
+			if(j!=-1) this._loadingLayers.splice(j,1);
+			if(this._loadingLayers.length == 0)
+			{
+				this._loading = false;
+				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_END, this));
+			}
+			
 			
 			layer.map = null;
 			this._layersContainer.removeChild(layer);

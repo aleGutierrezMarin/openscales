@@ -12,7 +12,8 @@
 			  height="50" 
 			  useHandCursor="true"
 			  buttonMode="true" 
-			  click="onClick(event)"/>
+			  click="onClick(event)"
+			  smoothBitmapContent="true"/>
 	
 		
 		<fx:Script>
