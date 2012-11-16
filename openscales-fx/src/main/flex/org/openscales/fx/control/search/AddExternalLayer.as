@@ -317,5 +317,23 @@ package org.openscales.fx.control.search
 			invalidateSkinState();
 			
 		}
+
+		/**
+		 * Hashmap of supported format with procotol name as key and array of version as value
+		 */
+		public function get supportedFormats():HashMap
+		{
+			return _supportedFormats;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set supportedFormats(value:HashMap):void
+		{
+			_supportedFormats = value;
+			updateProtocolsSelectedItem(null);
+		}
+
 	}
 }
