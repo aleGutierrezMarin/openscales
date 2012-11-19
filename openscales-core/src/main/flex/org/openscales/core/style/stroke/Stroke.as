@@ -43,8 +43,6 @@ package org.openscales.core.style.stroke
 		private var _dashArray:Array = null;
 		private var _dashoffset:uint = 0;
 		
-		private var _graphicStroke:Graphic = null;
-		
 		/**
 		 * A "Stroke" specifies the appearance of a linear geometry.
 		 * The following parameters may be used: color, opacity, width, linejoin, linecap, dasharray, and dashoffset.

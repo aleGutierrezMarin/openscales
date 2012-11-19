@@ -1,6 +1,6 @@
 package org.openscales.core.style.symbolizer {
 	import flash.display.Graphics;
-
+	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.stroke.Stroke;
 
@@ -38,12 +38,15 @@ package org.openscales.core.style.symbolizer {
 				lineSymbolizer = new LineSymbolizer(this._stroke.clone());
 			else
 				lineSymbolizer = new LineSymbolizer();
-			lineSymbolizer.geometry = this.geometry;
+			lineSymbolizer.geometry = this.geometry == null ? null : this.geometry.clone();
 			return lineSymbolizer;
 		}
 		
 		override public function get sld():String {
 			var res:String = "<sld:LineSymbolizer>\n";
+			if(this.geometry) {
+				res += this.geometry.sld;
+			}
 			var tmp:String;
 			if(this.stroke) {
 				tmp = this.stroke.sld;
@@ -56,6 +59,7 @@ package org.openscales.core.style.symbolizer {
 		
 		override public function set sld(sldRule:String):void {
 			use namespace sldns;
+			super.sld = sldRule;
 			var dataXML:XML = new XML(sldRule);
 			if(this._stroke)
 				this._stroke = null;

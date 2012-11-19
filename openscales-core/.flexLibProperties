@@ -323,6 +323,7 @@
     <classEntry path="org.openscales.core.style.graphic.Graphic"/>
     <classEntry path="org.openscales.core.style.graphic.ExternalGraphic"/>
     <classEntry path="org.openscales.core.style.graphic.WellKnownGraphic"/>
+    <classEntry path="org.openscales.core.style.symbolizer.Geometry"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
