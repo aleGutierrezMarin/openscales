@@ -7,6 +7,9 @@ package org.openscales.core.style.symbolizer {
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.stroke.Stroke;
 
+	/**
+	 * A "PolygonSymbolizer" specifies the rendering of a polygon or area geometry, including its interior fill and border stroke.
+	 */
 	public class PolygonSymbolizer extends Symbolizer implements IFillSymbolizer, IStrokeSymbolizer {
 		
 		private namespace sldns="http://www.opengis.net/sld";

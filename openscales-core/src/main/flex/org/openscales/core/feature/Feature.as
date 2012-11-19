@@ -16,6 +16,7 @@ package org.openscales.core.feature {
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.ProjProjection;
 
 	/** 
@@ -224,7 +225,10 @@ package org.openscales.core.feature {
 			while (this.numChildren > 0) {
 				this.removeChildAt(0);
 			}
-
+			
+			if(!this.layer || !this.layer.map)
+				return;
+			
 			var style:Style;
 			if (this._style == null) {
 				// FIXME : Ugly thing done here
@@ -236,8 +240,16 @@ package org.openscales.core.feature {
 			// Storage variables to handle the rules to render if no rule applied to the feature
 			var rendered:Boolean = false;
 			var elseRules:Array = [];
-
+			
+			var scaleDem:Number = Unit.getScaleDenominatorFromResolution(this.layer.map.resolution.value,this.layer.map.resolution.projection.projParams.units);
+			
 			for each (var rule:Rule in style.rules) {
+				if(!isNaN(rule.minScaleDenominator) && rule.minScaleDenominator>scaleDem) {
+					continue;
+				}
+				if(!isNaN(rule.maxScaleDenominator) && rule.maxScaleDenominator<scaleDem) {
+					continue;
+				}
 				// If a filter is set and no rule matches the filter skip the rule
 				if (rule.filter != null) {
 					if (rule.filter is ElseFilter) {

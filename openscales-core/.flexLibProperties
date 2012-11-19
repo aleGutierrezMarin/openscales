@@ -319,6 +319,10 @@
     <classEntry path="org.openscales.core.json.JSONToken"/>
     <classEntry path="org.openscales.core.json.JSONTokenType"/>
     <classEntry path="org.openscales.core.json.JSONTokenizer"/>
+    <classEntry path="org.openscales.core.style.fill.GraphicFill"/>
+    <classEntry path="org.openscales.core.style.graphic.Graphic"/>
+    <classEntry path="org.openscales.core.style.graphic.ExternalGraphic"/>
+    <classEntry path="org.openscales.core.style.graphic.WellKnownGraphic"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

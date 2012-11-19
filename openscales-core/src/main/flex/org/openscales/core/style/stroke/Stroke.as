@@ -7,6 +7,8 @@ package org.openscales.core.style.stroke
 	
 	import mx.graphics.Stroke;
 	
+	import org.openscales.core.style.graphic.Graphic;
+	
 	/**
 	 * Class defining how a stroke is rendered
 	 */
@@ -40,6 +42,13 @@ package org.openscales.core.style.stroke
 		
 		private var _dashArray:Array = null;
 		private var _dashoffset:uint = 0;
+		
+		private var _graphicStroke:Graphic = null;
+		
+		/**
+		 * A "Stroke" specifies the appearance of a linear geometry.
+		 * The following parameters may be used: color, opacity, width, linejoin, linecap, dasharray, and dashoffset.
+		 */
 		
 		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, dashArray:Array = null, dashoffset:uint = 0)
 		{
