@@ -35,6 +35,7 @@ package org.openscales.core.style.symbolizer
 		private var _displacementX:int = 0;
 		private var _displacementY:int = 0;
 		private var _labelPlacement:uint = PointPlacementLabel;
+		private var _perpendicularOffset:int = 0;
 		
 		public function TextSymbolizer(propertyName:String=null,font:Font = null, halo:Halo = null)
 		{
@@ -44,6 +45,18 @@ package org.openscales.core.style.symbolizer
 			this._halo = halo;
 		}
 		
+		/**
+		 * Indicates the perpendicular offset used by LinePlacement
+		 */
+		public function get perpendicularOffset():int
+		{
+			return _perpendicularOffset;
+		}
+		
+		public function set perpendicularOffset(value:int):void
+		{
+			_perpendicularOffset = value;
+		}
 		
 		/**
 		 * Indicates the type of label placement
@@ -259,12 +272,11 @@ package org.openscales.core.style.symbolizer
 			} else if(_labelPlacement==LinePlacementLabel) {
 				res+="<sld:LabelPlacement>\n";
 				res+="<sld:LinePlacement>\n";
-				res+="<sld:PerpendicularOffset>0</sld:PerpendicularOffset>\n";
+				res+="<sld:PerpendicularOffset>"+this._perpendicularOffset+"</sld:PerpendicularOffset>\n";
 				res+="</sld:LinePlacement>\n";
 				res+="</sld:LabelPlacement>\n";
 			}
-			
-			var fill:Fill;
+
 			if(this._font) {
 				res+="<sld:Font>\n";
 				res+="<sld:CssParameter name=\"font-family\">"+font.family+"</sld:CssParameter>\n";
@@ -278,17 +290,12 @@ package org.openscales.core.style.symbolizer
 				res+="</sld:Font>\n";
 			}
 			if(this._halo) {
-				res+="<sld:Halo>\n";
-				res+="<sld:Radius><ogc:Literal>"+this._halo.radius+"</ogc:Literal><sld:Radius>\n";
-				fill = new SolidFill(halo.color,halo.opacity);
-				res+=fill.sld+"\n";
-				res+="</sld:Halo>\n";
+				res+=this._halo.sld;
 			}
 			if(this._font) {
-				fill = new SolidFill(font.color,font.opacity);
+				var fill:SolidFill = new SolidFill(font.color,font.opacity);
 				res+=fill.sld+"\n";
 			}
-			
 			res+="</sld:TextSymbolizer>";
 			return res;
 		}
@@ -312,26 +319,29 @@ package org.openscales.core.style.symbolizer
 			if(childs.length()>0) {
 				this.propertyName = childs[0];
 			}
+			
 			childs = dataXML.Font;
 			var node:XML;
 			if(childs.length()>0) {
 				node = childs[0];
-				childs = node.CssParameter;
-				for each(node in childs) {
-					if(node.@name == "font-family") {
-						this._font.family = node[0].toString();
-					} else if(node.@name == "font-weight") {
-						if(node[0].toString().toLowerCase()=="bold")
-							this._font.weight = Font.BOLD;
-					}
-					else if(node.@name == "font-style") {
-						if(node[0].toString().toLowerCase()=="italic")
-							this._font.style = Font.ITALIC;
-					}
-					else if(node.@name == "font-size") {
-						this._font.size = node[0].toString();
-					}
-				}
+				this._font.sld = node.toString();
+			}
+
+			childs = dataXML.Fill;
+			var sFill:SolidFill = null;
+			if(childs.length()>0) {
+				node = childs[0];
+				sFill = new SolidFill();
+				sFill.sld = node.toString();
+				this._font.color = sFill.color as Number;
+				this._font.opacity = sFill.opacity;
+			}
+			
+			childs = dataXML.Halo;
+			if(childs.length()>0) {
+				this._halo = new Halo();
+				node = childs[0];
+				this._halo = node.toString();
 			}
 			
 			childs = dataXML.LabelPlacement;
@@ -367,30 +377,10 @@ package org.openscales.core.style.symbolizer
 					childs = node.LinePlacement;
 					if(childs.length()>0) {
 						this._labelPlacement = LinePlacementLabel;
-					}
-				}
-			}
-			
-			childs = dataXML.Halo;
-			if(childs.length()>0) {
-				this._halo = new Halo();
-				dataXML = childs[0];
-				childs = dataXML.Radius;
-				if(childs.length()>0) {
-					node = childs[0];
-					childs = node.Literal;
-					if(childs.length()>0)
-						this._halo.radius = Number(childs[0]);
-				}
-				childs = dataXML.Fill;
-				if(childs.length()>0) {
-					dataXML = childs[0];
-					childs = dataXML.CssParameter;
-					for each(node in childs) {
-						if(node.@name == "fill") {
-							this._halo.color = parseInt(node[0].toString().replace("#",""),16);
-						} else if(node.@name == "fill-opacity") {
-							this._halo.opacity = Number(node[0].toString());
+						subNode = childs[0];
+						childs = subNode.PerpendicularOffset;
+						if(childs.length()>0) {
+							this._perpendicularOffset = Number(childs[0][0]);
 						}
 					}
 				}
