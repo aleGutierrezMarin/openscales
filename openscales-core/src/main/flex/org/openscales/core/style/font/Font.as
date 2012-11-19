@@ -135,6 +135,7 @@ package org.openscales.core.style.font
 			f.size = this._size;
 			f.style = this._style;
 			f.weight = this._weight;
+			f.opacity = this.opacity;
 			return f;
 		}
 		

@@ -72,12 +72,15 @@ package org.openscales.core.style.symbolizer {
 			var clonePolygonSymbolizer:PolygonSymbolizer = new PolygonSymbolizer();
 			clonePolygonSymbolizer.fill = this._fill == null ? null : this._fill.clone();
 			clonePolygonSymbolizer.stroke = this._stroke == null ? null : this._stroke.clone();
-			clonePolygonSymbolizer.geometry = this.geometry;
+			clonePolygonSymbolizer.geometry = this.geometry == null ? null : this.geometry.clone();
 			return clonePolygonSymbolizer;
 		}
 		
 		override public function get sld():String {
 			var res:String = "<sld:PolygonSymbolizer>\n";
+			if(this.geometry) {
+				res += this.geometry.sld;
+			}
 			var tmp:String;
 			if(this.fill) {
 				tmp = this.fill.sld;
@@ -95,6 +98,7 @@ package org.openscales.core.style.symbolizer {
 		
 		override public function set sld(sldRule:String):void {
 			use namespace sldns;
+			super.sld = sldRule;
 			var dataXML:XML = new XML(sldRule);
 			if(this._stroke)
 				this._stroke = null;

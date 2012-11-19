@@ -112,7 +112,7 @@ package org.openscales.core.style.symbolizer
 			return _anchorPointY;
 		}
 		
-		public function set anchorPointYX(value:Number):void
+		public function set anchorPointY(value:Number):void
 		{
 			_anchorPointY = value;
 		}
@@ -168,6 +168,16 @@ package org.openscales.core.style.symbolizer
 				s.font = this._font.clone();
 			if(this._halo)
 				s.halo = this._halo.clone();
+			if(this.geometry)
+				s.geometry = this.geometry.clone();
+			s.anchorPointX = this.anchorPointX;
+			s.anchorPointY = this.anchorPointY;
+			s.displacementX = this.displacementX;
+			s.displacementY = this.displacementY;
+			s.labelPlacement = this.labelPlacement;
+			s.perpendicularOffset = this.perpendicularOffset;
+			s.propertyName = this.propertyName;
+			s.rotation = this.rotation;
 			return s;
 		}
 		
@@ -251,6 +261,9 @@ package org.openscales.core.style.symbolizer
 		
 		override public function get sld():String {
 			var res:String = "<sld:TextSymbolizer>\n";
+			if(this.geometry) {
+				res += this.geometry.sld;
+			}
 			res+="<sld:Label>\n";
 			res+="<ogc:PropertyName>"+this.propertyName+"</ogc:PropertyName>\n";
 			res+="</sld:Label>\n";
@@ -278,16 +291,7 @@ package org.openscales.core.style.symbolizer
 			}
 
 			if(this._font) {
-				res+="<sld:Font>\n";
-				res+="<sld:CssParameter name=\"font-family\">"+font.family+"</sld:CssParameter>\n";
-				res+="<sld:CssParameter name=\"font-size\">"+font.size+"</sld:CssParameter>\n";
-				if(font.weight == Font.BOLD) {
-					res+="<sld:CssParameter name=\"font-weight\">bold</sld:CssParameter>\n";
-				}
-				if(font.style == Font.ITALIC) {
-					res+="<sld:CssParameter name=\"font-style\">italic</sld:CssParameter>\n";
-				}
-				res+="</sld:Font>\n";
+				res+=this.font.sld;
 			}
 			if(this._halo) {
 				res+=this._halo.sld;
@@ -303,6 +307,7 @@ package org.openscales.core.style.symbolizer
 		override public function set sld(sldRule:String):void {
 			use namespace sldns;
 			use namespace ogcns;
+			super.sld = sldRule;
 			
 			this._font = new Font();
 			this._halo = null;

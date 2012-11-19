@@ -25,12 +25,15 @@ package org.openscales.core.style.symbolizer
 		
 		override public function clone():Symbolizer{
 			var pointSymbolizer:PointSymbolizer = new PointSymbolizer(this._graphic.clone());
-			pointSymbolizer.geometry = this.geometry;
+			pointSymbolizer.geometry = this.geometry == null ? null : this.geometry.clone();
 			return pointSymbolizer;
 		}
 		
 		override public function get sld():String {
 			var res:String = "<sld:PointSymbolizer>\n";
+			if(this.geometry) {
+				res += this.geometry.sld;
+			}
 			if(this.graphic) {
 				var sld:String = this.graphic.sld;
 				if(sld)
@@ -42,10 +45,12 @@ package org.openscales.core.style.symbolizer
 		
 		override public function set sld(sldRule:String):void {
 			use namespace sldns;
+			super.sld = sldRule;
 			var dataXML:XML = new XML(sldRule);
 			if(this._graphic)
 				this._graphic = null;
 			// TODO
+			
 		}
 	}
 }
