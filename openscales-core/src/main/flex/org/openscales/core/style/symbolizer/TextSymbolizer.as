@@ -21,6 +21,8 @@ package org.openscales.core.style.symbolizer
 		private var _font:Font = null;
 		private var _halo:Halo = null;
 		private var _propertyName:String = null;
+		private var _xOffset:Number = 0;
+		private var _yOffset:Number = 0;
 		
 		public function TextSymbolizer(propertyName:String=null,font:Font = null, halo:Halo = null)
 		{
@@ -113,8 +115,8 @@ package org.openscales.core.style.symbolizer
 			var loc:Location = f.geometry.bounds.center;
 			//var px:Pixel = f.layer.map.getMapPxFromLocation(loc);
 			var px:Pixel = f.layer.getLayerPxForLastReloadedStateFromLocation(loc);
-			label.x += px.x-label.textWidth/2;
-			label.y += px.y-label.textHeight/2;
+			label.x += px.x-label.textWidth/2 + this._xOffset;
+			label.y += px.y-label.textHeight/2 + this._yOffset;
 			f.addChild(label);
 		}
 		/**
@@ -167,6 +169,38 @@ package org.openscales.core.style.symbolizer
 		
 		override public function set sld(sldRule:String):void {
 			// parse sld
+		}
+		
+		/**
+		 * Offset that will be applied to the label display
+		 */
+		public function get xOffset():Number
+		{
+			return this._xOffset;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set xOffset(value:Number):void
+		{
+			this._xOffset = value;
+		}
+		
+		/**
+		 * Offset that will be applied to the label display
+		 */
+		public function get yOffset():Number
+		{
+			return this._yOffset;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set yOffset(value:Number):void
+		{
+			this._yOffset = value;
 		}
 	}
 }
