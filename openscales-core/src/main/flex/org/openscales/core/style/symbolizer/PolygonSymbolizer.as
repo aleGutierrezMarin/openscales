@@ -106,6 +106,7 @@ package org.openscales.core.style.symbolizer {
 				this._fill = null;
 			var childs:XMLList = dataXML.Fill;
 			if(childs[0]) {
+				//TODO supporter les autres type de "fill"
 				if(childs[0].GraphicFill.length()>0) {
 					this.fill = new HatchingFill();
 				} else { // solidfill

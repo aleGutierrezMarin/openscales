@@ -36,7 +36,7 @@ package org.openscales.core.style.symbolizer {
 		
 		public function clone():Symbolizer{
 			var symbolizer:Symbolizer = new Symbolizer();
-			symbolizer.geometry = this._geometry;
+			symbolizer.geometry = this._geometry.clone();
 			return symbolizer;
 		}
 		

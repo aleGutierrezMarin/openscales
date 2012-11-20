@@ -22,6 +22,9 @@ package org.openscales.core.format
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.Graphic;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
 	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
@@ -44,6 +47,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.core.style.graphic.IGraphic;
 	
 	use namespace os_internal;
 	
@@ -222,7 +226,17 @@ package org.openscales.core.format
 							if (hotSpot[0].@yunits.length() > 0)
 								yUnit = hotSpot[0].@yunits;
 						}
-						currentRule.symbolizers.push(new PointSymbolizer(new CustomMarker(href, 1, xOffSet, xUnit, yOffSet, yUnit)));	
+						var psym:PointSymbolizer = new PointSymbolizer(new Graphic());
+						var link:String = href.toString();
+						var extGraph:ExternalGraphic = new ExternalGraphic(link);
+						if(link.indexOf(".jpg",link.length-5) || link.indexOf(".jpeg",link.length-6))
+							extGraph.format = "image/jpg";
+						extGraph.xOffset = xOffSet;
+						extGraph.xUnit = xUnit;
+						extGraph.yOffset = yOffSet;
+						extGraph.yUnit = yUnit;
+						psym.graphic.graphics.push(extGraph);
+						currentRule.symbolizers.push(psym);
 					}
 					else
 					{
@@ -245,7 +259,12 @@ package org.openscales.core.format
 						if(headingStyle.length() > 0) //0 to 360°
 							iconRotation = Number(headingStyle[0].toString());
 						// TODO implement offset support + rotation effect
-						currentRule.symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE,iconFill,null,6, iconAlpha, iconRotation)));
+						var psym2:PointSymbolizer = new PointSymbolizer();
+						psym2.graphic.size = 6;
+						psym2.graphic.opacity = iconAlpha;
+						psym2.graphic.rotation = iconRotation;
+						psym2.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,iconFill));
+						currentRule.symbolizers.push(psym2);
 					}
 				}
 				else if(styleList[i].localName() == "LineStyle") 
@@ -748,9 +767,9 @@ package org.openscales.core.format
 			{
 				var _fill:SolidFill = new SolidFill(style["color"], style["alpha"]);
 				var _stroke:Stroke = new Stroke(style["color"], style["alpha"]);
-				var _mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, _fill, _stroke);//the color of its stroke is the kml color
 				var _symbolizer:PointSymbolizer = new PointSymbolizer();
-				_symbolizer.graphic = _mark;
+				_symbolizer.graphic.graphics.push(new Mark(Mark.WKN_SQUARE, _fill, _stroke));
+				//_symbolizer.graphic = _mark;
 				var _rule:Rule = new Rule();
 				_rule.symbolizers.push(_symbolizer);
 				pointStyle = new Style();
@@ -1264,21 +1283,28 @@ package org.openscales.core.format
 				{
 					styleNode = new XML("<IconStyle></IconStyle>");
 					var pointSym:PointSymbolizer = symb as PointSymbolizer;
-					var graphic:Marker = pointSym.graphic;
+					var graphic:Graphic = pointSym.graphic;
+					if(!graphic || graphic.graphics.length==0)
+						continue;
+					var mark:IGraphic = graphic.graphics[0];
 					
 					// Switch between marker types
-					if(graphic is WellKnownMarker)
+					if(mark is Mark)
 					{
-						var wkm:WellKnownMarker = graphic as WellKnownMarker;
-						var solidFill:SolidFill = wkm.fill;
+						var wkm:Mark = graphic as Mark;
+						var solidFill:SolidFill
+						if(wkm.fill is SolidFill)
+							solidFill = wkm.fill as SolidFill;
+						else
+							solidFill = new SolidFill();
 						styleNode.appendChild(this.buildColorNode(solidFill.color as uint, solidFill.opacity));
 						styleNode.colorMode = "normal";
-					}else if (graphic is CustomMarker)
+					}else if (mark is ExternalGraphic)
 					{
 						var iconNode:XML = new XML("<Icon></Icon>");
 						
-						var cm:CustomMarker = graphic as CustomMarker;
-						var href:String = cm.url;
+						var cm:ExternalGraphic = graphic as ExternalGraphic;
+						var href:String = cm.onlineResource;
 						iconNode.href = href;
 						
 						var hotSpotNode:XML = new XML("<hotSpot/>");
