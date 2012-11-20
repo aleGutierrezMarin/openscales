@@ -1,11 +1,14 @@
 package org.openscales.core.style.graphic
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.request.DataRequest;
@@ -185,11 +188,14 @@ package org.openscales.core.style.graphic
 			this._req.destroy();
 			this._req = null;
 			var markerLength:Number = this._givenTemporaryMarker.length;
+			
+			var result:DisplayObject = new _defaultImage();
+			this._clip = getImage(result);
 			for (var i:int = 0; i < markerLength; ++i)
 			{
 				var sprite:Sprite = this._givenTemporaryMarker[i].sprite;
 				var size:Number = this._givenTemporaryMarker[i].size;
-				var result:DisplayObject = new _defaultImage();
+				result = new Bitmap(_clip.bitmapData);
 				result.width = size;
 				result.height = size;
 				result.x += - size/2;
@@ -198,6 +204,30 @@ package org.openscales.core.style.graphic
 				result.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			}
 		}
+		
+		private function getImage( source:DisplayObject, area:Rectangle = null ):Bitmap
+		{
+			var bitmapData:BitmapData;
+			var matrix:Matrix;
+			
+			if ( area != null ) {
+				matrix = new Matrix( 1, 0, 0, 1 , Math.abs( area.x ) , Math.abs( area.y ) );
+				
+				if ( area.width > 0 && area.height > 0 )
+					bitmapData = new BitmapData( area.width, area.height, true, 0x0 );
+				else
+					bitmapData = new BitmapData( source.width, source.height, true, 0x0 );
+			} else {
+				
+				bitmapData = new BitmapData( source.width , source.height , true, 0x0 );
+			}
+			
+			bitmapData.draw( source, matrix, null, null, area, true );
+			
+			var bitmap:Bitmap = new Bitmap( bitmapData );
+			return bitmap;
+		}
+
 		
 		/**
 		 * Callback to transfere the click event from the sprite to the feature
