@@ -22,6 +22,7 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -1002,7 +1003,9 @@ package org.openscales.core.handler.feature.draw
 					markSize = currentMark.size as Number;
 				}
 				selectedStyle = Style.getDefaultPointStyle();
-				symbolizer = new PointSymbolizer(new WellKnownMarker(markType, new SolidFill(color, opacity), new Stroke(color, borderThin), markSize));
+				symbolizer = new PointSymbolizer();
+				(symbolizer as PointSymbolizer).graphic.graphics.push(new Mark(markType, new SolidFill(color, opacity), new Stroke(color, borderThin)));
+				(symbolizer as PointSymbolizer).graphic.size = markSize;
 			} else if (feature is LineStringFeature || feature is MultiLineStringFeature) {
 				selectedStyle = Style.getDefaultPolygonStyle();
 				symbolizer = new LineSymbolizer(new Stroke(color, borderThin));

@@ -34,6 +34,8 @@
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.fill.SolidFill;
 			import org.openscales.core.style.font.Font;
+			import org.openscales.core.style.graphic.ExternalGraphic;
+			import org.openscales.core.style.graphic.Mark;
 			import org.openscales.core.style.halo.Halo;
 			import org.openscales.core.style.marker.ArrowMarker;
 			import org.openscales.core.style.marker.CustomMarker;
@@ -315,12 +317,18 @@
 			 */
 			private function changePointMode():void
 			{
+				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
+				ptsym.graphic.graphics.pop();
 				if (this._pointIconMode)
 				{
 					var url:String = (this.iconURLArray[this._iconSelectedIndex] as String);
-					var proxy:String = this.editStyleHandler.map.getProxy(url);
-					var customMarker:CustomMarker = new CustomMarker(url,1,0.5,"fraction",0.5,"fraction",proxy);
-					(this._editedSymbolize as PointSymbolizer).graphic = customMarker;
+					var mark:ExternalGraphic = new ExternalGraphic(url);
+					mark.xOffset = 0.5;
+					mark.xUnit = "fraction";
+					mark.yOffset = 0.5;
+					mark.yUnit = "fraction";
+					mark.proxy = this.editStyleHandler.map.getProxy(url);
+					ptsym.graphic.graphics.push(mark);
 					this.editStyleHandler.actualizeFeature();
 				}
 				else
@@ -328,9 +336,7 @@
 					var fill:SolidFill = new SolidFill();
 					fill.color = this._pointColor;
 					fill.opacity = this._pointOpacity/100;
-					var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
-					var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
-					ptsym.graphic = wkm;
+					ptsym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill));
 					this.editStyleHandler.actualizeFeature();
 				}
 			}
@@ -511,8 +517,17 @@
 			{
 				var url:String = (this.iconURLArray[this._iconSelectedIndex] as String);
 				var proxy:String = this.editStyleHandler.map.getProxy(url);
-				var customMarker:CustomMarker = new CustomMarker(url,1,0.5,"fraction",0.5,"fraction",proxy);
-				(this._editedSymbolize as PointSymbolizer).graphic = customMarker;
+				
+				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
+				ptsym.graphic.graphics.pop();
+				var mark:ExternalGraphic = new ExternalGraphic(url);
+				mark.xOffset = 0.5;
+				mark.xUnit = "fraction";
+				mark.yOffset = 0.5;
+				mark.yUnit = "fraction";
+				mark.proxy = this.editStyleHandler.map.getProxy(url);
+				ptsym.graphic.graphics.push(mark);
+				
 				this.editStyleHandler.actualizeFeature();
 			}
 			
@@ -523,7 +538,8 @@
 				fill.opacity = this._pointOpacity/100;
 				var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
-				ptsym.graphic = wkm;
+				ptsym.graphic.graphics.pop();
+				ptsym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill));
 				this.editStyleHandler.actualizeFeature();
 			}
 			
@@ -532,9 +548,9 @@
 				var fill:SolidFill = new SolidFill();
 				fill.color = this._pointColor;
 				fill.opacity = this._pointOpacity/100;
-				var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
-				ptsym.graphic = wkm;
+				ptsym.graphic.graphics.pop();
+				ptsym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill));
 				this.editStyleHandler.actualizeFeature();
 			}
 			

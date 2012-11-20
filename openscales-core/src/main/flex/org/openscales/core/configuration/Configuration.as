@@ -32,6 +32,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.marker.Marker;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
@@ -537,12 +538,15 @@ package org.openscales.core.configuration
 						stroke = new Stroke(fillAndStroke.@color,fillAndStroke.@width,fillAndStroke.@opacity,fillAndStroke.@linecap,fillAndStroke.@linejoin);
 					}
 				}
-				marker = new WellKnownMarker(xmlMakers.@wellKnowName,null,null,Number(xmlMakers.@size),xmlMakers.@opacity,xmlMakers.@rotation);
-				poinSymbolizer = new PointSymbolizer(marker);
+				poinSymbolizer = new PointSymbolizer();
+				poinSymbolizer.graphic.graphics.push(new Mark(xmlMakers.@wellKnowName,fill,stroke));
+				poinSymbolizer.graphic.opacity = xmlMakers.@opacity;
+				poinSymbolizer.graphic.rotation = xmlMakers.@rotation;
 				
 			}else if(xmlMakers.name() =="Marker"){
-				marker = new Marker(Number(xmlMakers.@size),xmlMakers.@opacity,xmlMakers.@rotation);
-				poinSymbolizer = new PointSymbolizer(marker);
+				poinSymbolizer.graphic.graphics.push(new Mark(Mark.WKN_SQUARE));
+				poinSymbolizer.graphic.opacity = xmlMakers.@opacity;
+				poinSymbolizer.graphic.rotation = xmlMakers.@rotation;
 			}
 			return poinSymbolizer;
 		}

@@ -8,6 +8,8 @@ package org.openscales.core.style {
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.graphic.Graphic;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
 	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.marker.CustomMarker;
@@ -93,11 +95,16 @@ package org.openscales.core.style {
 		 * Returns the rule to apply for the default PointFeature style
 		 */
 		protected static function getPointRule():Rule{
-			
-			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
-			var symbolizer:PointSymbolizer = new PointSymbolizer(new CustomMarker(defaultPointPictoURL));
+			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
+			var stroke:Stroke = new Stroke(0xA6430A, 1);
+			
+			var mark:Mark = new Mark(Mark.WKN_CIRCLE, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = new Graphic();
+			symbolizer.graphic.graphics.push(mark);
 			rule.symbolizers.push(symbolizer);
 			
 			return rule;
@@ -111,7 +118,11 @@ package org.openscales.core.style {
 			var fill:SolidFill = new SolidFill(0xF1960A, 0.5);
 			var stroke:Stroke = new Stroke(0xF1960A, 2);
 			
-			var symbolizer:Symbolizer = new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke, 8));
+			var mark:Mark = new Mark(Mark.WKN_SQUARE, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = new Graphic(8);
+			symbolizer.graphic.graphics.push(mark);
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default selected point rule";
@@ -127,10 +138,15 @@ package org.openscales.core.style {
 		{
 			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
 			var stroke:Stroke = new Stroke(0xA6430A, 1);
-			var mark:WellKnownMarker = new WellKnownMarker(marker, fill, stroke, 6, 1, rotation);
+			
+			var mark:Mark = new Mark(marker, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = new Graphic(6,1,rotation);
+			symbolizer.graphic.graphics.push(mark);
 			
 			var rule:Rule = new Rule();
-			rule.symbolizers.push(new PointSymbolizer(mark));
+			rule.symbolizers.push(symbolizer);
 			
 			var style:Style = new Style();
 			style.name = "Defined point style";
@@ -330,10 +346,11 @@ package org.openscales.core.style {
 			var fill:SolidFill = new SolidFill(0xFF2819, 0.7);
 			var stroke:Stroke = new Stroke(0xFF2819, 1);
 			
-			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_CIRCLE, fill, stroke);
+			var mark:Mark = new Mark(Mark.WKN_CIRCLE, fill, stroke);
 			
 			var symbolizer:PointSymbolizer = new PointSymbolizer();
-			symbolizer.graphic = mark;
+			symbolizer.graphic = new Graphic();
+			symbolizer.graphic.graphics.push(mark);
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";

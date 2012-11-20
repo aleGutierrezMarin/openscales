@@ -160,10 +160,6 @@ package org.openscales.core.layer.ogc
 				var pointStyle:Style = Style.getDefaultPointStyle();
 				var lineStyle:Style = Style.getDefaultLineStyle();
 				var surfStyle:Style = Style.getDefaultPolygonStyle();
-				pointStyle.rules.push(new Rule());
-				lineStyle.rules.push(new Rule());
-				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
-				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,3,1,Stroke.LINECAP_BUTT)));
 				
 				this._featureVector = this.georssFormat.read(this.data) as Vector.<Feature>;
 				if(this._useFeedTitle)

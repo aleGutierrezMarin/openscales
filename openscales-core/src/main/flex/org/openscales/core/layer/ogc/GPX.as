@@ -13,6 +13,7 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.marker.Marker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -143,11 +144,6 @@ package org.openscales.core.layer.ogc
 				
 				var lineStringFeatureVector:Vector.<Feature>= new Vector.<Feature>(); 
 				var pointFeatureVector:Vector.<Feature> = new Vector.<Feature>();
-				
-				pointStyle.rules.push(new Rule());
-				lineStyle.rules.push(new Rule());
-				pointStyle.rules[0].symbolizers.push(new PointSymbolizer(new Marker(7, 3,2)));
-				lineStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x008800,1,1,Stroke.LINECAP_BUTT)));
 				
 				this._featureVector = this.gpxFormat.read(this.data) as Vector.<Feature>;
 				var i:uint;
