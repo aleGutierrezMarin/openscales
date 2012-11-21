@@ -85,7 +85,7 @@ package {
 			markerStyle.rules.push(new Rule());
 			mark = new Mark(Mark.WKN_CROSS,new SolidFill(0x999999,0.5),new Stroke(0x000000,2));
 			psym = new PointSymbolizer();
-			var extMark:ExternalGraphic = new ExternalGraphic("http://openscales.org/assets/red.png");
+			var extMark:ExternalGraphic = new ExternalGraphic("http://openscales.org/assets/redeuh.png");
 			//psym.graphic.graphics.push(mark);
 			psym.graphic.graphics.push(extMark);
 			//psym.graphic.graphics.push(mark);
