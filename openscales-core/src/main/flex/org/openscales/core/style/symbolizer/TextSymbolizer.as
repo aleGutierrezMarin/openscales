@@ -234,7 +234,7 @@ package org.openscales.core.style.symbolizer
 					//fix rotation without embeded fonts!
 				}
 				label.x = px.x-label.textWidth*_anchorPointX+_displacementX;
-				label.y = px.y-label.textHeight*_anchorPointY+_displacementY;
+				label.y = px.y-label.textHeight*(1-_anchorPointY)+_displacementY;
 			} else {
 				label.x = px.x-label.textWidth/2;
 				label.y = px.y-label.textHeight/2;

@@ -127,7 +127,7 @@ package org.openscales.core.feature
 			}
 			
 			var lineSym:LineSymbolizer = (symbolizer as LineSymbolizer);
-			if(lineSym != null && lineSym.stroke.dashArray && lineSym.stroke.dashArray.length>0)
+			if(lineSym != null && lineSym.stroke && lineSym.stroke.dashArray && lineSym.stroke.dashArray.length>0)
 			{
 				var size:uint = coords.length;
 				for(var k:uint = 0; k + 2 < size; k = k + 2){

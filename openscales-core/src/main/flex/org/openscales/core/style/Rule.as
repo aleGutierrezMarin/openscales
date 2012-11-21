@@ -297,6 +297,7 @@ package org.openscales.core.style {
 				var pointSymbolizer:PointSymbolizer = (symbolizer as PointSymbolizer);
 				if (pointSymbolizer.graphic) {
 					if (pointSymbolizer.graphic) {
+						canvas.alpha = pointSymbolizer.graphic.opacity;
 						var size:Number = pointSymbolizer.graphic.getSizeValue();
 						for each(var mark:Object in pointSymbolizer.graphic.graphics) {
 							if(mark is Mark) {
@@ -314,8 +315,6 @@ package org.openscales.core.style {
 			} else if(symbolizer is TextSymbolizer) {
 				var ts:TextSymbolizer = symbolizer as TextSymbolizer;
 				canvas.addChild(ts.getTextField("Text",new Pixel(15,15)));
-				//canvas.x+=15;
-				//canvas.y+=15;
 			}
 		}
 
@@ -330,7 +329,6 @@ package org.openscales.core.style {
 		}
 
 		private function drawPolygon(symbolizer:Symbolizer, canvas:Sprite):void {
-
 			canvas.graphics.moveTo(5, 5);
 			canvas.graphics.lineTo(25, 5);
 			canvas.graphics.lineTo(25, 25);
