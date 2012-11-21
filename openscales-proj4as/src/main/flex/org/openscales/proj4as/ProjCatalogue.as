@@ -1,4 +1,4 @@
-=package org.openscales.proj4as
+package org.openscales.proj4as
 {
 	
 	public class ProjCatalogue
