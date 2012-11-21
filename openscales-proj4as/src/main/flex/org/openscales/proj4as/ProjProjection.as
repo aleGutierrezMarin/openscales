@@ -169,6 +169,8 @@ package org.openscales.proj4as {
 		
 		protected var proj:IProjection;
 		
+		static public var catalogueLoaded:Boolean = false;
+		
 		private var _lonlat:Boolean = true;
 
 		/**
@@ -177,10 +179,10 @@ package org.openscales.proj4as {
 		 * @return ProjProjection the ProjProjection
 		 */
 		public static function getProjProjection(proj:*):ProjProjection {
-                       if (!this.catalogueLoaded){
-                                ProjCatalogue.loadCatalogue();
-                                this.catalogueLoaded=true;
-                       }
+               if (!catalogueLoaded){
+                        ProjCatalogue.loadCatalogue();
+                        catalogueLoaded=true;
+               }
 			if(proj==null)
 				return null;
 			
