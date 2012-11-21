@@ -86,12 +86,12 @@ package org.openscales.core.style.symbolizer {
 			if(this.fill) {
 				tmp = this.fill.sld;
 				if(tmp)
-					res+=tmp+"\n";
+					res+=tmp;
 			}
 			if(this.stroke) {
 				tmp = this.stroke.sld;
 				if(tmp)
-					res+=tmp+"\n";
+					res+=tmp;
 			}
 			res+="</sld:PolygonSymbolizer>\n";
 			return res;

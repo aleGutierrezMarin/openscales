@@ -294,7 +294,7 @@ package org.openscales.core.style {
 		}
 
 		private function drawPoint(symbolizer:Symbolizer, canvas:Sprite):void {
-
+			var _do:DisplayObject;
 			if (symbolizer is PointSymbolizer) {
 
 				var pointSymbolizer:PointSymbolizer = (symbolizer as PointSymbolizer);
@@ -309,7 +309,7 @@ package org.openscales.core.style {
 								this.drawMark(mark as Mark, layer, size);
 							}
 							else if(mark is ExternalGraphic) {
-								var _do:DisplayObject = (mark as ExternalGraphic).getDisplayObject(null,size,false);
+								_do = (mark as ExternalGraphic).getDisplayObject(null,size,false);
 								_do.x+=15;
 								_do.y+=15;
 								canvas.addChild(_do);
@@ -320,7 +320,10 @@ package org.openscales.core.style {
 				}
 			} else if(symbolizer is TextSymbolizer) {
 				var ts:TextSymbolizer = symbolizer as TextSymbolizer;
-				canvas.addChild(ts.getTextField("Text",new Pixel(15,15)));
+				_do = ts.getTextField("Text",new Pixel(0,0));
+				_do.x=2;
+				_do.y=5;
+				canvas.addChild(_do);
 			}
 		}
 

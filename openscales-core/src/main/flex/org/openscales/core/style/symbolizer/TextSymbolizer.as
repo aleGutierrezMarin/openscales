@@ -224,14 +224,14 @@ package org.openscales.core.style.symbolizer
 				label.setTextFormat(textFormat);
 			}
 			
-			if(this._halo) {
+			if(this._halo && this._halo.radius>0) {
 				label.filters=[this._halo.getFilter()];
 			}
 			
 			if(_labelPlacement==PointPlacementLabel) {
 				// rotation
 				if(_rotation!=0) {
-					//fix rotation without embeded fonts!
+					//TODO : fix rotation without embeded fonts!
 				}
 				label.x = px.x-label.textWidth*_anchorPointX+_displacementX;
 				label.y = px.y-label.textHeight*(1-_anchorPointY)+_displacementY;
