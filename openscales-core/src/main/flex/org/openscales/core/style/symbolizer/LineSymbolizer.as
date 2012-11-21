@@ -51,7 +51,7 @@ package org.openscales.core.style.symbolizer {
 			if(this.stroke) {
 				tmp = this.stroke.sld;
 				if(tmp)
-					res+=tmp+"\n";
+					res+=tmp;
 			}
 			res+="</sld:LineSymbolizer>\n";
 			return res;
