@@ -58,9 +58,9 @@ Use the top-right button to switch the style of the rendering. -->
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.Style;
-			import org.openscales.core.style.fill.BitmapFill;
-			import org.openscales.core.style.fill.HatchingFill;
+			import org.openscales.core.style.fill.GraphicFill;
 			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.graphic.Mark;
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
@@ -238,24 +238,21 @@ Use the top-right button to switch the style of the rendering. -->
 				rule = new Rule();
 				rule.name = "France";
 				
-				var fill:HatchingFill = new HatchingFill();
-				fill.color = 0xFFFFFF;
-				fill.size = 20;
-				fill.width = 9;
-				fill.type = HatchingFill.BACKSLASH;
-				fill.opacity = 1;
-
-				rule.symbolizers.push(new PolygonSymbolizer(fill, null));
 				
-				fill = new HatchingFill();
-				fill.color = 0xFF0000;
-				fill.size = 20;
-				fill.width = 5;
-				fill.type = HatchingFill.BACKSLASH;
-				fill.opacity = 1;
+				var graphicFill:GraphicFill = new GraphicFill();
+				var mark:Mark = new Mark(Mark.SLASH,null,new Stroke(0xffffff,9));
+				graphicFill.graphic.graphics.push(mark);
+				graphicFill.graphic.size = 20;
+
+				rule.symbolizers.push(new PolygonSymbolizer(graphicFill, null));
+				
+				graphicFill = new GraphicFill();
+				mark = new Mark(Mark.SLASH,null,new Stroke(0xff0000,5));
+				graphicFill.graphic.graphics.push(mark);
+				graphicFill.graphic.size = 20;
 				stroke = new Stroke(0xECF2BA, 2);
 				stroke.dashArray = new Array(5,2,7,3);
-				rule.symbolizers.push(new PolygonSymbolizer(fill, stroke));
+				rule.symbolizers.push(new PolygonSymbolizer(graphicFill, stroke));
 				
 				style.rules.push(rule);
 				

@@ -232,7 +232,6 @@
     <classEntry path="org.openscales.core.security.events.SecurityEvent"/>
     <classEntry path="org.openscales.core.security.ign.IGNGeoRMSecurity"/>
     <classEntry path="org.openscales.core.style.Rule"/>
-    <classEntry path="org.openscales.core.style.fill.BitmapFill"/>
     <classEntry path="org.openscales.core.style.fill.Fill"/>
     <classEntry path="org.openscales.core.style.fill.SolidFill"/>
     <classEntry path="org.openscales.core.style.font.Font"/>
@@ -310,7 +309,6 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.style.fill.HatchingFill"/>
     <classEntry path="com.foxaweb.utils.Raster"/>
     <classEntry path="org.openscales.core.json.GENERICJSON"/>
     <classEntry path="org.openscales.core.json.JSONParseError"/>

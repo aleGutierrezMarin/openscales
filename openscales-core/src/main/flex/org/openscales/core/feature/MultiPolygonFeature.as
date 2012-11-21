@@ -70,7 +70,7 @@ package org.openscales.core.feature {
 				var commands:Vector.<int> = new Vector.<int>();
 				var polySym:PolygonSymbolizer = (symbolizer as PolygonSymbolizer);
 				var stroke:Stroke;
-				if(polySym && polySym.stroke.dashArray && polySym.stroke.dashArray.length>0) {
+				if(polySym && polySym.stroke && polySym.stroke.dashArray && polySym.stroke.dashArray.length>0) {
 					stroke = polySym.stroke.clone();
 					stroke.opacity=0;
 				}
