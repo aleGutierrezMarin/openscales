@@ -84,7 +84,7 @@ package org.openscales.core.style.graphic
 			ret+="<sld:Size>"+getSizeValue()+"</sld:Size>\n";
 			ret+="<sld:Rotation>"+this._rotation+"</sld:Rotation>\n";
 			ret+="<sld:Opacity>"+this._opacity+"</sld:Opacity>\n";
-			ret+="</sldGraphic>\n";
+			ret+="</sld:Graphic>\n";
 			return ret;
 		}
 		public function set sld(value:String):void {

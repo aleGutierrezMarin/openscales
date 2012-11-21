@@ -77,9 +77,9 @@ package org.openscales.core.style.halo
 		
 		public function get sld():String {
 			var res:String="<sld:Halo>\n";
-			res+="<sld:Radius><ogc:Literal>"+this.radius+"</ogc:Literal><sld:Radius>\n";
+			res+="<sld:Radius><ogc:Literal>"+this.radius+"</ogc:Literal></sld:Radius>\n";
 			var fill:SolidFill = new SolidFill(this.color,this.opacity);
-			res+=fill.sld+"\n";
+			res+=fill.sld;
 			res+="</sld:Halo>\n";
 			return res;
 		}

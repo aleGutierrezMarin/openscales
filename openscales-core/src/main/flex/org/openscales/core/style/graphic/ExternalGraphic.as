@@ -245,8 +245,8 @@ package org.openscales.core.style.graphic
 			if(!this._onlineResource)
 				return null;
 			var res:String = "<sld:ExternalGraphic>\n";
-			res+= "<sld:OnlineResource xlink:type=\"simple\" xlink:href=\""+this._onlineResource+"\"/>";
-			res+= "<sld:Format>"+this._format+"</sld:Format>";
+			res+= "<sld:OnlineResource xlink:type=\"simple\" xlink:href=\""+this._onlineResource+"\"/>\n";
+			res+= "<sld:Format>"+this._format+"</sld:Format>\n";
 			res+= "</sld:ExternalGraphic>\n";
 			return res;
 		}

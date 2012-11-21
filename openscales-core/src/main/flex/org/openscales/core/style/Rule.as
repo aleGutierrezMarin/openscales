@@ -202,10 +202,13 @@ package org.openscales.core.style {
 			
 			if(this.title)
 				res+="<sld:Title>"+this.title+"</sld:Title>\n";
-			if(this.name)
-				res+="<sld:Name>"+this.name+"</sld:Name>\n";
 			if(this.abstract)
 				res+="<sld:Abstract>"+this.abstract+"</sld:Abstract>\n";
+			else
+				res+="<sld:Abstract></sld:Abstract>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			
 			if(!isNaN(this.minScaleDenominator)) {
 				res+="<sld:MinScaleDenominator>"+this.minScaleDenominator+"</sld:MinScaleDenominator>\n";
 			}
@@ -306,7 +309,10 @@ package org.openscales.core.style {
 								this.drawMark(mark as Mark, layer, size);
 							}
 							else if(mark is ExternalGraphic) {
-								canvas.addChild((mark as ExternalGraphic).getDisplayObject(null,size,false));
+								var _do:DisplayObject = (mark as ExternalGraphic).getDisplayObject(null,size,false);
+								_do.x+=15;
+								_do.y+=15;
+								canvas.addChild(_do);
 							}
 						}
 								
