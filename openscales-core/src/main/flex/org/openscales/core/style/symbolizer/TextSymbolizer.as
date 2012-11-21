@@ -306,9 +306,9 @@ package org.openscales.core.style.symbolizer
 			}
 			if(this._font) {
 				var fill:SolidFill = new SolidFill(font.color,font.opacity);
-				res+=fill.sld+"\n";
+				res+=fill.sld;
 			}
-			res+="</sld:TextSymbolizer>";
+			res+="</sld:TextSymbolizer>\n";
 			return res;
 		}
 		

@@ -219,14 +219,14 @@ package org.openscales.core.style {
 			for each (var symbolizer:Symbolizer in this.symbolizers) {
 				tmp = symbolizer.sld;
 				if(tmp)
-					res+=tmp+"\n";
+					res+=tmp;
 			}
 			if(this.filter) {
 				tmp = this.filter.sld;
 				if(tmp)
-					res+=tmp+"\n";
+					res+=tmp;
 			}
-			res+="</sld:Rule>";
+			res+="</sld:Rule>\n";
 			return res;
 		}
 		

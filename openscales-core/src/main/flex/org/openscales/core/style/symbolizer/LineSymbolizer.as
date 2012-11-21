@@ -53,7 +53,7 @@ package org.openscales.core.style.symbolizer {
 				if(tmp)
 					res+=tmp+"\n";
 			}
-			res+="</sld:LineSymbolizer>";
+			res+="</sld:LineSymbolizer>\n";
 			return res;
 		}
 		

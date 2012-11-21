@@ -93,7 +93,7 @@ package org.openscales.core.style.symbolizer {
 				if(tmp)
 					res+=tmp+"\n";
 			}
-			res+="</sld:PolygonSymbolizer>";
+			res+="</sld:PolygonSymbolizer>\n";
 			return res;
 		}
 		

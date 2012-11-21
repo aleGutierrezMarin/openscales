@@ -220,7 +220,6 @@ package org.openscales.core.style.graphic
 					shape.graphics.lineTo(-size/2,-size/2);
 					break;
 				}
-					// TODO : Add support for other well known names
 			}
 			shape.graphics.endFill();
 		}

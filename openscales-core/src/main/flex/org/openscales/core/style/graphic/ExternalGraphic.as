@@ -83,8 +83,15 @@ package org.openscales.core.style.graphic
 		}
 		
 		public function clone():IGraphic {
-			//TODO clone ALL !!!
-			return new ExternalGraphic(this._onlineResource,this._format);
+			var res:ExternalGraphic = new ExternalGraphic(this._onlineResource,this._format);
+			res.yOffset = this._yOffset;
+			res.yUnit = this._yUnit;
+			res.xOffset = this._xOffset;
+			res.xUnit = this._xUnit;
+			res.proxy = this._proxy;
+			if (this._clip)
+				res.clip = new Bitmap(_clip.bitmapData);
+			return res;
 		}
 		
 		public function getDisplayObject(feature:Feature, size:Number, isFill:Boolean):DisplayObject {
@@ -264,8 +271,11 @@ package org.openscales.core.style.graphic
 				this._clip = null;
 			this._format = "image/png";
 			this._onlineResource = null;
-			//TODO finish reset
-			
+			this._clip = null;
+			this._xOffset = 0.5;
+			this._xUnit = "fraction";
+			this._yOffset = 0.5;
+			this._yUnit = "fraction";
 			var childs:XMLList = dataXML.Format;
 			if(childs[0]) {
 				this.format = childs[0].toString();
