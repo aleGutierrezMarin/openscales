@@ -4,6 +4,7 @@ package org.openscales.core.style.symbolizer
 	import flash.filters.GlowFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -192,6 +193,14 @@ package org.openscales.core.style.symbolizer
 				return;
 			}
 			
+			// let's compute the center of the label
+			var loc:Location = f.geometry.bounds.center;
+			var px:Pixel = f.layer.getLayerPxForLastReloadedStateFromLocation(loc);
+			
+			f.addChild(getTextField(text,px));
+		}
+		
+		public function getTextField(text:String,px:Pixel):TextField {
 			var label:TextField = new TextField();
 			label.selectable = true;
 			label.mouseEnabled = false;
@@ -219,31 +228,21 @@ package org.openscales.core.style.symbolizer
 				label.filters=[this._halo.getFilter()];
 			}
 			
-			// on calcul le centre et on place le label
-			var loc:Location = f.geometry.bounds.center;
-			//var px:Pixel = f.layer.map.getMapPxFromLocation(loc);
-			var px:Pixel = f.layer.getLayerPxForLastReloadedStateFromLocation(loc);
-			label.x += px.x-label.textWidth*_anchorPointX+_displacementX;
-			label.y += px.y-label.textHeight*_anchorPointY+_displacementY;
-			
 			if(_labelPlacement==PointPlacementLabel) {
-				label.x += px.x-label.textWidth*_anchorPointX+_displacementX;
-				label.y += px.y-label.textHeight*_anchorPointY+_displacementY;
 				// rotation
 				if(_rotation!=0) {
-					var point:Point = new Point(label.x+label.textWidth/2,label.y+label.textHeight/2);
-					var m:Matrix=label.transform.matrix;
-					m.tx -= point.x;
-					m.ty -= point.y;
-					m.rotate (45*(Math.PI/180));
-					m.tx += point.x;
-					m.ty += point.y;
-					label.transform.matrix=m;
+					//fix rotation without embeded fonts!
 				}
+				label.x = px.x-label.textWidth*_anchorPointX+_displacementX;
+				label.y = px.y-label.textHeight*_anchorPointY+_displacementY;
+			} else {
+				label.x = px.x-label.textWidth/2;
+				label.y = px.y-label.textHeight/2;
+				
 			}
-			
-			f.addChild(label);
+			return label;
 		}
+		
 		/**
 		 * halo
 		 */
@@ -346,7 +345,7 @@ package org.openscales.core.style.symbolizer
 			if(childs.length()>0) {
 				this._halo = new Halo();
 				node = childs[0];
-				this._halo = node.toString();
+				this._halo.sld = node.toString();
 			}
 			
 			childs = dataXML.LabelPlacement;
@@ -366,17 +365,21 @@ package org.openscales.core.style.symbolizer
 					if(childs.length()>0) {
 						subNode = childs[0];
 						childs = subNode.AnchorPointX;
-						this._anchorPointX = Number(childs[0][0]);
+						if(childs.length()>0)
+							this._anchorPointX = Number(childs[0][0]);
 						childs = subNode.AnchorPointY;
-						this._anchorPointY = Number(childs[0][0]);
+						if(childs.length()>0)
+							this._anchorPointY = Number(childs[0][0]);
 					}
-					childs = node.AnchorPoint;
+					childs = node.Displacement;
 					if(childs.length()>0) {
 						subNode = childs[0];
 						childs = subNode.DisplacementX;
-						this._displacementX = Number(childs[0][0]);
+						if(childs.length()>0)
+							this._displacementX = Number(childs[0][0]);
 						childs = subNode.DisplacementY;
-						this._displacementY = Number(childs[0][0]);
+						if(childs.length()>0)
+							this._displacementY = Number(childs[0][0]);
 					}
 				} else {
 					childs = node.LinePlacement;

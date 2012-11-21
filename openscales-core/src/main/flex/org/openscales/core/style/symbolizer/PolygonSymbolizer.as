@@ -3,8 +3,9 @@ package org.openscales.core.style.symbolizer {
 	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.fill.Fill;
-	import org.openscales.core.style.fill.HatchingFill;
+	import org.openscales.core.style.fill.GraphicFill;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.graphic.ExternalGraphic;
 	import org.openscales.core.style.stroke.Stroke;
 
 	/**
@@ -106,9 +107,9 @@ package org.openscales.core.style.symbolizer {
 				this._fill = null;
 			var childs:XMLList = dataXML.Fill;
 			if(childs[0]) {
-				//TODO supporter les autres type de "fill"
+				// external ressource
 				if(childs[0].GraphicFill.length()>0) {
-					this.fill = new HatchingFill();
+					this.fill = new GraphicFill();
 				} else { // solidfill
 					this.fill = new SolidFill();
 				}

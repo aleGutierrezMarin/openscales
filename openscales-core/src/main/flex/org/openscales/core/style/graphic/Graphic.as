@@ -10,6 +10,7 @@ package org.openscales.core.style.graphic
 	public class Graphic
 	{
 		private namespace sldns="http://www.opengis.net/sld";
+		private namespace ogcns="http://www.opengis.net/ogc";
 		
 		private var _size:Object;
 		private var _opacity:Number;
@@ -34,13 +35,15 @@ package org.openscales.core.style.graphic
 			}
 			return ret;
 		}
-		public function getDisplayObject(feature:Feature):DisplayObject {
+		public function getDisplayObject(feature:Feature, isFill:Boolean = false):DisplayObject {
 			var ret:Sprite = new Sprite();
 			if(this._graphics) {
+				var size:Number = this.getSizeValue(feature);
 				for each(var igraph:IGraphic in this._graphics) {
-					var mark:DisplayObject = igraph.getDisplayObject(feature,this.getSizeValue(feature));
-					if(mark)
+					var mark:DisplayObject = igraph.getDisplayObject(feature, size, isFill);
+					if(mark) {
 						ret.addChild(mark);
+					}
 				}
 			}
 			ret.alpha = this.opacity;
@@ -63,7 +66,8 @@ package org.openscales.core.style.graphic
 					return (this._size as Number);
 				}
 			}
-			
+			if(this._size is Number)
+				return this._size as Number;
 			return 6;
 		}
 		
@@ -85,6 +89,7 @@ package org.openscales.core.style.graphic
 		}
 		public function set sld(value:String):void {
 			use namespace sldns;
+			use namespace ogcns;
 			var dataXML:XML = new XML(value);
 			this._opacity = 1;
 			this._size = 6;
@@ -94,16 +99,10 @@ package org.openscales.core.style.graphic
 			else
 				for(var i:uint = 0;i<this._graphics.length;++i)
 					this._graphics.pop();
-			
-			if(dataXML.Size[0])
-				this.size = Number(dataXML.size[0].toString());
-			if(dataXML.Opacity[0])
-				this.opacity = Number(dataXML.Opacity[0].toString());
-			if(dataXML.Rotation[0])
-				this.rotation = Number(dataXML.Rotation[0].toString());
-			
+
 			var childs:XMLList = dataXML.children();
 			var graph:IGraphic = null;
+			var val:String;
 			for each(dataXML in childs) {
 				switch (dataXML.localName()) {
 					case "Mark":
@@ -111,6 +110,18 @@ package org.openscales.core.style.graphic
 						break;
 					case "ExternalGraphic":
 						graph = new ExternalGraphic();
+						break;
+					case "Size":
+						val = dataXML.children()[0].toString()
+						this.size = Number(val);
+						break;
+					case "Opacity":
+						val = dataXML.children()[0].toString()
+						this.opacity = Number(val);
+						break;
+					case "Rotation":
+						val = dataXML.children()[0].toString()
+						this.rotation = Number(val);
 						break;
 				}
 				if(graph) {

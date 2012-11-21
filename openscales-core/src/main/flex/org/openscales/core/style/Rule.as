@@ -4,12 +4,16 @@ package org.openscales.core.style {
 	import flash.events.EventDispatcher;
 	
 	import org.openscales.core.filter.IFilter;
+	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.IGraphic;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Rule based style, in order to use different styles based on parameters like current scale
@@ -183,9 +187,10 @@ package org.openscales.core.style {
 			}
 
 			for each (var symbolizer:Symbolizer in this.symbolizers) {
-
-				symbolizer.configureGraphics(result.graphics, null);
-				drawMethod.apply(this, [symbolizer, result]);
+				var layer:Sprite = new Sprite();
+				result.addChild(layer);
+				symbolizer.configureGraphics(layer.graphics, null);
+				drawMethod.apply(this, [symbolizer, layer]);
 			}
 
 			return result;
@@ -280,7 +285,6 @@ package org.openscales.core.style {
 		}
 
 		private function drawLine(symbolizer:Symbolizer, canvas:Sprite):void {
-
 			canvas.graphics.moveTo(5, 25);
 			canvas.graphics.curveTo(5, 15, 15, 15);
 			canvas.graphics.curveTo(25, 15, 25, 5);
@@ -292,42 +296,37 @@ package org.openscales.core.style {
 
 				var pointSymbolizer:PointSymbolizer = (symbolizer as PointSymbolizer);
 				if (pointSymbolizer.graphic) {
-					if (pointSymbolizer.graphic is WellKnownMarker) {
-
-						this.drawMark(pointSymbolizer.graphic as WellKnownMarker, canvas);
+					if (pointSymbolizer.graphic) {
+						var size:Number = pointSymbolizer.graphic.getSizeValue();
+						for each(var mark:Object in pointSymbolizer.graphic.graphics) {
+							if(mark is Mark) {
+								var layer:Sprite = new Sprite();
+								canvas.addChild(layer);
+								this.drawMark(mark as Mark, layer, size);
+							}
+							else if(mark is ExternalGraphic) {
+								canvas.addChild((mark as ExternalGraphic).getDisplayObject(null,size,false));
+							}
+						}
+								
 					}
 				}
+			} else if(symbolizer is TextSymbolizer) {
+				var ts:TextSymbolizer = symbolizer as TextSymbolizer;
+				canvas.addChild(ts.getTextField("Text",new Pixel(15,15)));
+				//canvas.x+=15;
+				//canvas.y+=15;
 			}
 		}
 
-		protected function drawMark(mark:WellKnownMarker, canvas:Sprite):void {
-
-			mark.fill.configureGraphics(canvas.graphics, null);
-			mark.stroke.configureGraphics(canvas.graphics);
-
-			var size:Number = mark.getSizeValue(null);
-
-			switch (mark.wellKnownName) {
-
-				case WellKnownMarker.WKN_SQUARE:  {
-					canvas.graphics.drawRect(15 - size / 2, 15 - size / 2, size, size);
-					break;
-				}
-				case WellKnownMarker.WKN_CIRCLE:  {
-					canvas.graphics.drawCircle(15, 15, size / 2);
-					break;
-				}
-				case WellKnownMarker.WKN_TRIANGLE:  {
-					// TODO : Check for the drawing of the triangles
-					canvas.graphics.moveTo(0, (size / 2));
-					canvas.graphics.lineTo(size, size);
-					canvas.graphics.lineTo(0, size);
-					canvas.graphics.lineTo(0, (size / 2));
-					break;
-				}
-				// TODO : Implement other well known names and take into account opacity, rotation of the mark
-			}
-			canvas.graphics.endFill();
+		protected function drawMark(mark:Mark, shape:Sprite, size:Number):void {
+			if(mark.fill)
+				mark.fill.configureGraphics(shape.graphics, null);
+			if(mark.stroke)
+				mark.stroke.configureGraphics(shape.graphics);
+			mark.drawMark(shape,size);
+			shape.x+=15;
+			shape.y+=15;
 		}
 
 		private function drawPolygon(symbolizer:Symbolizer, canvas:Sprite):void {

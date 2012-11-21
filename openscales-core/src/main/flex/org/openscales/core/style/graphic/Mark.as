@@ -1,15 +1,21 @@
 package org.openscales.core.style.graphic
 {
+	import com.foxaweb.utils.Raster;
+	
+	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
+	import flash.display.Sprite;
 	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.style.fill.Fill;
+	import org.openscales.core.style.fill.GraphicFill;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.stroke.Stroke;
 
 	public class Mark implements IGraphic
 	{
+		private namespace sldns="http://www.opengis.net/sld";
 		// A square
 		public static const WKN_SQUARE:String = "square";
 		// A circle
@@ -63,12 +69,33 @@ package org.openscales.core.style.graphic
 			return ret;
 		}
 		
-		public function getDisplayObject(feature:Feature, size:Number):DisplayObject {
+		public function getDisplayObject(feature:Feature, size:Number, isFill:Boolean):DisplayObject {
 			if(!this._fill && !this._stroke)
 				return null;
 			
-			var shape:Shape = new Shape();
+			if(isFill) {
+				if(!this._stroke) {
+					return new Shape();
+				}
+				switch (this._wellKnownGraphicName) {
+					case VERTLINE:
+					case HORLINE:
+					case PLUS:
+					case SLASH:
+					case BACKSLASH:
+					case TIMES: {
+						return this.getBitmapData(size);
+						break;
+					}
+				}
+			}
 			
+			var shape:Sprite = new Sprite();
+			
+			if(isFill) {
+				shape.x=size/2;
+				shape.y=size/2;
+			}
 			// Configure fill and stroke for drawing
 			if (this._fill) {		
 				this._fill.configureGraphics(shape.graphics, feature);
@@ -77,6 +104,12 @@ package org.openscales.core.style.graphic
 				this._stroke.configureGraphics(shape.graphics);
 			}
 			
+			drawMark(shape, size);
+			
+			return shape;
+		}
+		
+		public function drawMark(shape:Sprite, size:Number): void {
 			switch (this._wellKnownGraphicName) {
 				case WKN_SQUARE:  {
 					shape.graphics.drawRect(-(size / 2), -(size / 2), size, size);
@@ -150,7 +183,7 @@ package org.openscales.core.style.graphic
 					break;
 				}
 				case PLUS: {
-					shape.graphics.moveTo(0,size/2);
+					shape.graphics.moveTo(0,-size/2);
 					shape.graphics.lineTo(0,size/2);
 					shape.graphics.moveTo(-size/2, 0);
 					shape.graphics.lineTo(size/2, 0);
@@ -159,13 +192,11 @@ package org.openscales.core.style.graphic
 				case SLASH: {
 					shape.graphics.moveTo(-size/2,size/2);
 					shape.graphics.lineTo(size/2,-size/2);
-					//TODO check if angles are OK
 					break;
 				}
 				case BACKSLASH: {
 					shape.graphics.moveTo(-size/2,-size/2);
 					shape.graphics.lineTo(size/2,size/2);
-					//TODO check if angles are OK
 					break;
 				}
 				case TIMES: {
@@ -189,10 +220,66 @@ package org.openscales.core.style.graphic
 					shape.graphics.lineTo(-size/2,-size/2);
 					break;
 				}
-				// TODO : Add support for other well known names
+					// TODO : Add support for other well known names
 			}
 			shape.graphics.endFill();
-			return shape;
+		}
+		
+		private function getBitmapData(size:Number):Bitmap {
+			
+			var alpha:int = (this._stroke.opacity*255);
+			alpha*=0x1000000;
+			var color:Number = this._stroke.color+alpha;
+			
+			// create bitmapData
+			var bitmapData:Raster = new Raster(size,size,true,NaN);
+			var middle:int = Math.round(size/2)-1;
+			var delta:int = Math.floor((this._stroke.width-1)/2);
+			var i:uint;
+			var corner:Boolean = (this._wellKnownGraphicName != TIMES);
+			if(this._wellKnownGraphicName==VERTLINE || this._wellKnownGraphicName == PLUS) {
+				bitmapData.line(middle,0,middle,size-1,color);
+				for(i = delta; i>0 ;--i) {
+					bitmapData.line(middle+i,0,middle+i,size-1,color);
+					bitmapData.line(middle-i,0,middle-i,size-1,color);
+				}
+			}
+			if(this._wellKnownGraphicName==HORLINE || this._wellKnownGraphicName == PLUS) {
+				bitmapData.line(0,middle,size-1,middle,color);
+				for(i = delta; i>0 ;--i) {
+					bitmapData.line(0,middle+i,size-1,middle+i,color);
+					bitmapData.line(0,middle-i,size-1,middle-i,color);
+				}
+			}
+			if(this._wellKnownGraphicName==SLASH || this._wellKnownGraphicName == TIMES) {
+				bitmapData.line(0,size-1,size-1,0,color);
+				for(i = delta; i>0 ;--i) {
+					//main line
+					bitmapData.line(0,size-i,size-i,0,color);
+					bitmapData.line(i-1,size-1,size-1,i-1,color);
+					if(corner) {
+						//top left corner
+						bitmapData.line(0,i-2,i-2,0,color);
+						// bottom right corner
+						bitmapData.line(size-i+1,size-1,size-1,size-i+1,color);
+					}
+				}
+			}
+			if(this._wellKnownGraphicName==BACKSLASH || this._wellKnownGraphicName == TIMES) {
+				bitmapData.line(0,0,size-1,size-1,color);
+				for(i = delta; i>0 ;--i) {
+					//main line
+					bitmapData.line(0,i-1,size-i,size-1,color);
+					bitmapData.line(i-1,0,size-1,size-i,color);
+					if(corner) {
+						//top rigth corner
+						bitmapData.line(size-i+1,0,size-1,i-2,color);
+						// bottom left corner
+						bitmapData.line(0,size-i+1,i-2,size-1,color);
+					}
+				}
+			}
+			return new Bitmap(bitmapData);
 		}
 		
 		public function get sld():String
@@ -209,7 +296,31 @@ package org.openscales.core.style.graphic
 		
 		public function set sld(value:String):void
 		{
-			//TODO
+			use namespace sldns;
+			var dataXML:XML = new XML(value);
+			if(this._stroke)
+				this._stroke = null;
+			if(this._fill)
+				this._fill = null;
+			this._wellKnownGraphicName = WKN_SQUARE;
+			if(dataXML.WellKnownName.length()>0)
+				this._wellKnownGraphicName = dataXML.WellKnownName[0].toString();
+			
+			var childs:XMLList = dataXML.Fill;
+			if(childs[0]) {
+				// external ressource
+				if(childs[0].GraphicFill.length()>0) {
+					this.fill = new GraphicFill();
+				} else { // solidfill
+					this.fill = new SolidFill();
+				}
+				this.fill.sld = childs[0].toString();
+			}
+			childs = dataXML.Stroke;
+			if(childs[0]) {
+				this.stroke = new Stroke();
+				this.stroke.sld = childs[0].toString();
+			}
 		}
 
 		public function get wellKnownGraphicName():String

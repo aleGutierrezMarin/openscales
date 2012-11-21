@@ -31,7 +31,7 @@ package org.openscales.core.style.font
 				this._style = style;
 			if(weight)
 				this._weight = weight;
-			if(!!isNaN(size))
+			if(!isNaN(size))
 				this._size = size;
 			if(!isNaN(color))
 				this._color = color;

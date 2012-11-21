@@ -87,7 +87,7 @@ package org.openscales.core.style.graphic
 			return new ExternalGraphic(this._onlineResource,this._format);
 		}
 		
-		public function getDisplayObject(feature:Feature,size:Number):DisplayObject {
+		public function getDisplayObject(feature:Feature, size:Number, isFill:Boolean):DisplayObject {
 			var resultContainer:Sprite = new Sprite();
 			var result:DisplayObject;
 			if (this._clip)
