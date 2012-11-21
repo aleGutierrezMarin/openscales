@@ -66,12 +66,12 @@ package org.openscales.core.style.symbolizer
 		{
 			return _labelPlacement;
 		}
-
+		
 		public function set labelPlacement(value:uint):void
 		{
 			_labelPlacement = value;
 		}
-
+		
 		public function get displacementX():int
 		{
 			return _displacementX;
@@ -86,12 +86,12 @@ package org.openscales.core.style.symbolizer
 		{
 			return _displacementY;
 		}
-
+		
 		public function set displacementY(value:int):void
 		{
 			_displacementY = value;
 		}
-
+		
 		/**
 		 * Indicates X positionning of the label. It should be a value in [0,1]. Default, 0.5 (centered)
 		 */
@@ -99,7 +99,7 @@ package org.openscales.core.style.symbolizer
 		{
 			return _anchorPointX;
 		}
-
+		
 		public function set anchorPointX(value:Number):void
 		{
 			_anchorPointX = value;
@@ -117,7 +117,7 @@ package org.openscales.core.style.symbolizer
 		{
 			_anchorPointY = value;
 		}
-
+		
 		/**
 		 * Indicates the rotation of the label.
 		 */ 
@@ -125,12 +125,12 @@ package org.openscales.core.style.symbolizer
 		{
 			return _rotation;
 		}
-
+		
 		public function set rotation(value:Number):void
 		{
 			_rotation = value;
 		}
-
+		
 		/**
 		 * font style
 		 */
@@ -186,7 +186,7 @@ package org.openscales.core.style.symbolizer
 		 * 
 		 */
 		public function drawTextField(f:Feature, text:String = null):void {
-
+			
 			if(this._propertyName && f.attributes && f.attributes[this._propertyName]) {
 				text = f.attributes[this._propertyName];
 			} else if(!text){
@@ -270,15 +270,24 @@ package org.openscales.core.style.symbolizer
 			if(_labelPlacement==PointPlacementLabel) {
 				res+="<sld:LabelPlacement>\n";
 				res+="<sld:PointPlacement>\n";
-				res+="<sld:Rotation>"+this._rotation+"</sld:Rotation>\n";
-				res+="<sld:Displacement>\n";
-				res+="<sld:DisplacementX>"+this._displacementX+"</sld:DisplacementX>\n";
-				res+="<sld:DisplacementY>"+this._displacementY+"</sld:DisplacementY>\n";
-				res+="</sld:Displacement>\n";
-				res+="<sld:AnchorPoint>\n";
-				res+="<sld:AnchorPointX>"+this._anchorPointX+"</sld:AnchorPointX>\n";
-				res+="<sld:AnchorPointX>"+this._anchorPointY+"</sld:AnchorPointX>\n";
-				res+="</sld:AnchorPoint>\n";
+				if(this._rotation &&this._rotation!=0)
+					res+="<sld:Rotation>"+this._rotation+"</sld:Rotation>\n";
+				if(this._displacementX || this._displacementY) {
+					res+="<sld:Displacement>\n";
+					if(this._displacementX)
+						res+="<sld:DisplacementX>"+this._displacementX+"</sld:DisplacementX>\n";
+					if(this._displacementY)
+						res+="<sld:DisplacementY>"+this._displacementY+"</sld:DisplacementY>\n";
+					res+="</sld:Displacement>\n";
+				}
+				if(this._anchorPointX || this._anchorPointY) {
+					res+="<sld:AnchorPoint>\n";
+					if(this._anchorPointX)
+						res+="<sld:AnchorPointX>"+this._anchorPointX+"</sld:AnchorPointX>\n";
+					if(this._anchorPointY)
+						res+="<sld:AnchorPointX>"+this._anchorPointY+"</sld:AnchorPointX>\n";
+					res+="</sld:AnchorPoint>\n";
+				}
 				res+="</sld:PointPlacement>\n";
 				res+="</sld:LabelPlacement>\n";
 			} else if(_labelPlacement==LinePlacementLabel) {
@@ -288,7 +297,7 @@ package org.openscales.core.style.symbolizer
 				res+="</sld:LinePlacement>\n";
 				res+="</sld:LabelPlacement>\n";
 			}
-
+			
 			if(this._font) {
 				res+=this.font.sld;
 			}
@@ -330,7 +339,7 @@ package org.openscales.core.style.symbolizer
 				node = childs[0];
 				this._font.sld = node.toString();
 			}
-
+			
 			childs = dataXML.Fill;
 			var sFill:SolidFill = null;
 			if(childs.length()>0) {

@@ -218,7 +218,7 @@ package org.openscales.core.style.stroke
 					res+="<sld:CssParameter name=\"stroke-dashoffset\">"+this.dashoffset+"</sld:CssParameter>";
 				}
 			}
-			res+="</sld:Stroke>"
+			res+="</sld:Stroke>\n"
 			return res;
 		}
 		public function set sld(sld:String):void {

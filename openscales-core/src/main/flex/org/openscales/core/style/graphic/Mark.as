@@ -290,7 +290,7 @@ package org.openscales.core.style.graphic
 				ret+=this._fill.sld;
 			if(this._stroke)
 				ret+=this._stroke.sld;
-			ret+="<sld:Mark>\n";
+			ret+="</sld:Mark>\n";
 			return ret;
 		}
 		
