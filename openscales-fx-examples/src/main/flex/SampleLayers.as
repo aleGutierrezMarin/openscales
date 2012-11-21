@@ -72,10 +72,17 @@ package {
 			psym.graphic.rotation = 0;
 			psym.graphic.opacity = 0.7;
 			blackStyle.rules[0].symbolizers.push(psym);
+			
+			var graphicFill2:GraphicFill = new GraphicFill();
+			mark = new Mark(Mark.WKN_STAR,new SolidFill(0xc6c6c6,0.5),new Stroke(0x000000,2));
+			graphicFill2.graphic.graphics.push(mark);
+			graphicFill2.graphic.size = 20;
+			
 			var graphicFill:GraphicFill = new GraphicFill();
-			mark = new Mark(Mark.WKN_STAR,new SolidFill(0x999999,0.5),new Stroke(0x000000,2));
+			mark = new Mark(Mark.WKN_CIRCLE,graphicFill2,new Stroke(0x000000,2));
 			graphicFill.graphic.graphics.push(mark);
-			graphicFill.graphic.size = 20;
+			graphicFill.graphic.size = 40;
+			
 			blackStyle.rules[0].symbolizers.push(new PolygonSymbolizer(graphicFill,stroke));
 			var wnmk:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12);
 			blackStyle.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),wnmk,wnmk));
@@ -85,7 +92,7 @@ package {
 			markerStyle.rules.push(new Rule());
 			mark = new Mark(Mark.WKN_CROSS,new SolidFill(0x999999,0.5),new Stroke(0x000000,2));
 			psym = new PointSymbolizer();
-			var extMark:ExternalGraphic = new ExternalGraphic("http://openscales.org/assets/redeuh.png");
+			var extMark:ExternalGraphic = new ExternalGraphic("http://openscales.org/assets/red.png");
 			//psym.graphic.graphics.push(mark);
 			psym.graphic.graphics.push(extMark);
 			//psym.graphic.graphics.push(mark);

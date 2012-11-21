@@ -213,7 +213,7 @@ package org.openscales.core.style.stroke
 				res+="<sld:CssParameter name=\"stroke-linejoin\">"+this.linejoin+"</sld:CssParameter>\n";
 			}
 			if(this.dashArray && this.dashArray.length>0) {
-				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.dashArray.join(" ")+"</sld:CssParameter>";
+				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.dashArray.join(" ").replace(".0","")+"</sld:CssParameter>";
 				if(this.dashoffset) {
 					res+="<sld:CssParameter name=\"stroke-dashoffset\">"+this.dashoffset+"</sld:CssParameter>";
 				}
