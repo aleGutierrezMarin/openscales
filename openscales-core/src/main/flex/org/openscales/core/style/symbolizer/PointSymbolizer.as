@@ -41,7 +41,7 @@ package org.openscales.core.style.symbolizer
 			if(this.graphic) {
 				res += this.graphic.sld;
 			}
-			res+="</sld:PointSymbolizer>";
+			res+="</sld:PointSymbolizer>\n";
 			return res;
 		}
 		

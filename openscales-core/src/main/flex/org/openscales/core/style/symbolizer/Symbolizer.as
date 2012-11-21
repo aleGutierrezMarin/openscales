@@ -41,7 +41,7 @@ package org.openscales.core.style.symbolizer {
 		}
 		
 		public function get sld():String {
-			return null;
+			return "";
 		}
 		
 		public function set sld(sldRule:String):void {

@@ -560,7 +560,7 @@ package org.openscales.core.style {
 			for each (var rule:Rule in this.rules) {
 				tmp = rule.sld;
 				if(tmp)
-					res+=tmp+"\n";
+					res+=tmp;
 			}
 			res+="</sld:FeatureTypeStyle>\n";
 			res+="</sld:UserStyle>\n";
