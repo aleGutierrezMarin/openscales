@@ -69,7 +69,7 @@ package org.openscales.core.style.fill {
 			if(this.opacity) {
 				res+="<sld:CssParameter name=\"fill-opacity\">"+this.opacity+"</sld:CssParameter>\n";
 			}
-			res+="</sld:Fill>"
+			res+="</sld:Fill>\n";
 			return res;
 		}
 		

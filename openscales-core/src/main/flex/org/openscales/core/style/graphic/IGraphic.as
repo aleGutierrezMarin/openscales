@@ -8,7 +8,7 @@ package org.openscales.core.style.graphic
 	{
 		function get sld():String;
 		function set sld(value:String):void;
-		function getDisplayObject(feature:Feature, size:Number):DisplayObject;
+		function getDisplayObject(feature:Feature, size:Number, isFill:Boolean):DisplayObject;
 		function clone():IGraphic;
 	}
 }

@@ -1,10 +1,7 @@
 package org.openscales.core.style {
 	
-	import flash.sampler.NewObjectSample;
 	import flash.text.TextFormat;
 	
-	import org.openscales.core.feature.Feature;
-	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
@@ -12,14 +9,11 @@ package org.openscales.core.style {
 	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
 	import org.openscales.core.style.marker.ArrowMarker;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
