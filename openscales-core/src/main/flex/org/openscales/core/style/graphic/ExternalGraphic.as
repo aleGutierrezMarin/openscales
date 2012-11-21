@@ -294,6 +294,8 @@ package org.openscales.core.style.graphic
 		public function set onlineResource(value:String):void
 		{
 			_onlineResource = value;
+			if(value)
+				this.load();
 		}
 		
 		/**

@@ -5,6 +5,8 @@ package org.openscales.core.style.symbolizer
 		private var _functionName:String = null;
 		private var _propertyName:String = null;
 		
+		// see : http://docs.geoserver.org/stable/en/user/filter/function_reference.html#filter-function-reference
+		
 		public function Geometry(propertyName:String=null,functionName:String=null)
 		{
 			this._propertyName = propertyName;

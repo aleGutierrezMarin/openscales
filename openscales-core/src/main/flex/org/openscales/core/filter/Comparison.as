@@ -1,5 +1,6 @@
 package org.openscales.core.filter
 {
+	import org.openscales.core.feature.Feature;
 	
 	/**
 	 * A comparison operator is used to form expressions that evaluate 
@@ -10,7 +11,7 @@ package org.openscales.core.filter
 	
 	
 	
-	public class Comparison
+	public class Comparison implements IFilter
 	{
 		/**
 	      * PropertyType: type
@@ -32,10 +33,201 @@ package org.openscales.core.filter
 		public static var LESS_THAN_OR_EQUAL_TO:String = "PropertyIsLessThanOrEqualTo";
 		public static var GREATER_THAN_OR_EQUAL_TO:String = "PropertyIsGreaterThanOrEqualTo";
 		public static var LIKE:String = "PropertyIsLike";
-		public static var NULL:String = "PropertyIsNull";
+		public static var IS_NULL:String = "PropertyIsNull";
 		public static var BETWEEN:String = "PropertyIsBetween";
-		public static var WITHIN:String = "Within";
+		public static var WITHIN:String = "in";
 		
+		private var _type:String;
 		
+		private var _property:String;
+		
+		private var _value:Object;
+		
+		private var _matchCase:Boolean = true;
+		
+		private var _lowerBoundary:Object = null;
+
+		private var _upperBoundary:Object = null;
+		
+		public function Comparison(property:String, type:String) {
+			
+		}
+		
+		public function matches(feature:Feature):Boolean {
+			var result:Boolean = false;
+			var got:Object = feature.attributes[this.property];
+			var exp:Object;
+			switch(this.type) {
+				case EQUAL_TO:
+					exp = this.value;
+					if(!this.matchCase &&
+						got is String && exp is String) {
+						result = (got.toUpperCase() == exp.toUpperCase());
+					} else {
+						result = (got == exp);
+					}
+					break;
+				case NOT_EQUAL_TO:
+					exp = this.value;
+					if(!this.matchCase &&
+						got is String && exp is String) {
+						result = (got.toUpperCase() != exp.toUpperCase());
+					} else {
+						result = (got != exp);
+					}
+					break;
+				case LESS_THAN:
+					result = got < this.value;
+					break;
+				case GREATER_THAN:
+					result = got > this.value;
+					break;
+				case LESS_THAN_OR_EQUAL_TO:
+					result = got <= this.value;
+					break;
+				case GREATER_THAN_OR_EQUAL_TO:
+					result = got >= this.value;
+					break;
+				case BETWEEN:
+					result = (got >= this.lowerBoundary) &&
+					(got <= this.upperBoundary);
+					break;
+				case LIKE:
+					var regexp:RegExp = new RegExp(this.value, "gi");
+					result = regexp.test(got.toString());
+					break;
+				case IS_NULL:
+					result = (got === null);
+					break;
+			}
+			return result;
+		}
+		
+		public function clone():IFilter {
+			//TODO
+			return null;
+		}
+		
+		public function get sld():String {
+			//TODO
+			return null;
+		}
+		public function set sld(sld:String):void {
+			//TODO
+		}
+
+		/**
+		 * type of the comparison.
+		 */
+		public function get type():String
+		{
+			return _type;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set type(value:String):void
+		{
+			_type = value;
+		}
+
+		/**
+		 * name of the context property to compare
+		 */
+		public function get property():String
+		{
+			return _property;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set property(value:String):void
+		{
+			_property = value;
+		}
+
+		
+		/**
+		 * comparison value for binary comparisons. In the case of a String, this
+		 * can be a combination of text and propertyNames in the form
+		 * "literal ${propertyName}"
+		 */
+		/**
+		 * name of the context property to compare
+		 */
+		public function get value():Object
+		{
+			return _value;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set value(value:Object):void
+		{
+			_value = value;
+		}
+		
+		/**
+		 * Force case sensitive searches for EQUAL_TO and NOT_EQUAL_TO
+		 * comparisons.  The Filter Encoding 1.1 specification added a matchCase
+		 * attribute to ogc:PropertyIsEqualTo and ogc:PropertyIsNotEqualTo
+		 * elements.  This property will be serialized with those elements only
+		 * if using the v1.1.0 filter format. However, when evaluating filters
+		 * here, the matchCase property will always be respected (for EQUAL_TO
+		 * and NOT_EQUAL_TO).  Default is true. 
+		 */
+		public function get matchCase():Boolean
+		{
+			return _matchCase;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set matchCase(value:Boolean):void
+		{
+			_matchCase = value;
+		}
+
+		/**
+		 * Number or String
+		 * lower boundary for between comparisons. In the case of a String, this
+		 * can be a combination of text and propertyNames in the form
+		 * "literal ${propertyName}"
+		 */
+		public function get lowerBoundary():Object
+		{
+			return _lowerBoundary;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set lowerBoundary(value:Object):void
+		{
+			_lowerBoundary = value;
+		}
+		
+		/**
+		 * {Number} or {String}
+		 * upper boundary for between comparisons. In the case of a String, this
+		 * can be a combination of text and propertyNames in the form
+		 * "literal ${propertyName}"
+		 */
+		public function get upperBoundary():Object
+		{
+			return _upperBoundary;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set upperBoundary(value:Object):void
+		{
+			_upperBoundary = value;
+		}
 	}
 }

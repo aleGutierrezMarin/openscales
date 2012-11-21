@@ -143,7 +143,7 @@ package org.openscales.core.style.stroke
 		}
 		
 		public function configureGraphics(graphics:Graphics):void{
-			
+			if(this.width>0) {
 				var linecap:String;
 				var linejoin:String;
 				switch (this.linecap) {
@@ -169,6 +169,7 @@ package org.openscales.core.style.stroke
 				}
 
 				graphics.lineStyle(this.width, this.color, this.opacity, false, LineScaleMode.NORMAL, linecap, linejoin);
+			}
 		}
 		
 		public function clone():Stroke
