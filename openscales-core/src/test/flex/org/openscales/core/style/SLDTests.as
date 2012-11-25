@@ -676,5 +676,37 @@ package org.openscales.core.style
 			
 			Assert.assertEquals(xml,stroke.sld);
 		}
+		
+		/**
+		 * PointSymbolizer test
+		 */
+		[Test]
+		public function test11PointSymbolizer():void{
+			Assert.assertTrue(false);
+		}
+		
+		/**
+		 * LineSymbolizer test
+		 */
+		[Test]
+		public function test12LineSymbolizer():void{
+			Assert.assertTrue(false);
+		}
+		
+		/**
+		 * PolygonSymbolizer test
+		 */
+		[Test]
+		public function test13PolygonSymbolizer():void{
+			Assert.assertTrue(false);
+		}
+		
+		/**
+		 * Text test
+		 */
+		[Test]
+		public function test14TextSymbolizer():void{
+			Assert.assertTrue(false);
+		}
 	}
 }
