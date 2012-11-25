@@ -250,7 +250,11 @@ package org.openscales.core.handler.mouse
 					request += "WIDTH=" + this.map.width + "&";
 					request += "HEIGHT=" + this.map.height + "&";
 					
-					request += "BBOX=" + this.map.extent.toString() + "&";			
+					if(version=="1.3.0" && !this.map.projection.lonlat){
+						request += "BBOX=" + this.map.extent.bottom+","+ this.map.extent.left +","+ this.map.extent.top +","+ this.map.extent.right+"&";
+					}else {
+						request += "BBOX=" + this.map.extent.left+","+ this.map.extent.bottom +","+ this.map.extent.right +","+ this.map.extent.top+"&";
+					}		
 					
 					//info format is mandatory for 1.1.1 not for 1.3.0
 					if(this._infoFormat != null || version == "1.3.0"){

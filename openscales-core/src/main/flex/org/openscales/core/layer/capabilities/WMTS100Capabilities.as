@@ -1,6 +1,7 @@
 package org.openscales.core.layer.capabilities
 {
 	
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
@@ -363,6 +364,16 @@ package org.openscales.core.layer.capabilities
 			var tmss:Array = (layerData.getValue("TileMatrixSets") as HashMap).getKeys().sort();
 			
 			var tms:TileMatrixSet = (layerData.getValue("TileMatrixSets") as HashMap).getValue(tmss[0]);
+			
+			var minScaleDenom:Number = Number.POSITIVE_INFINITY;
+			var maxScaleDenom:Number = 0;
+			var tmKeys:Array = tms.tileMatrices.getKeys();
+			for each(var tmKey:String in tmKeys){
+				var tm:TileMatrix = tms.tileMatrices.getValue(tmKey);
+				if(minScaleDenom > tm.scaleDenominator) minScaleDenom = tm.scaleDenominator;
+				if(maxScaleDenom < tm.scaleDenominator) maxScaleDenom = tm.scaleDenominator;
+			}
+			
 			var crs:String;
 			if(tms) crs = tms.supportedCRS;
 			
@@ -380,6 +391,9 @@ package org.openscales.core.layer.capabilities
 			wmts.abstract = layerData.getValue("Abstract");
 			//wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
 			wmts.maxExtent = layerData.getValue("WGS84BoundingBox");
+			wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenom,wmts.projection.projParams.units),wmts.projection);
+			wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenom,wmts.projection.projParams.units),wmts.projection);
+			wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
 			return wmts;
 		}
 	}
