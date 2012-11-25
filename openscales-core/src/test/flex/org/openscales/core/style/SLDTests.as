@@ -80,12 +80,11 @@ package org.openscales.core.style
 			Assert.assertEquals(0.5,((style.rules[1].symbolizers[0] as PolygonSymbolizer).fill as SolidFill).opacity);
 			
 			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-			xml+= "<sld:StyledLayerDescriptor version=\"1.1.0\" \n";
+			xml+= "<sld:StyledLayerDescriptor version=\"1.0.0\" \n";
 			xml+= "xsi:schemaLocation=\"http://www.opengis.net/sld StyledLayerDescriptor.xsd\" \n";
 			xml+= "xmlns=\"http://www.opengis.net/sld\" \n";
 			xml+= "xmlns:sld=\"http://www.opengis.net/sld\" \n";
 			xml+= "xmlns:ogc=\"http://www.opengis.net/ogc\" \n";
-			xml+= "xmlns:se=\"http://www.opengis.net/se\" \n";
 			xml+= "xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n";
 			xml+= "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
 			xml+= "<sld:NamedLayer>\n";
@@ -178,7 +177,7 @@ package org.openscales.core.style
 			fill.sld = xml;
 			
 			Assert.assertEquals(parseInt("ffffff",16),fill.color);
-			Assert.assertEquals(0.5,fill.color);
+			Assert.assertEquals(0.5,fill.opacity);
 			
 			xml = "<sld:Fill>\n";
 			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
@@ -196,7 +195,7 @@ package org.openscales.core.style
 			fill.sld = xml;
 			
 			Assert.assertEquals(parseInt("ffffff",16),fill.color);
-			Assert.assertEquals(1,fill.color);
+			Assert.assertEquals(1,fill.opacity);
 			
 			xml = "<sld:Fill>\n";
 			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
@@ -213,10 +212,10 @@ package org.openscales.core.style
 			fill.sld = xml;
 			
 			Assert.assertEquals(0,fill.color);
-			Assert.assertEquals(1,fill.color);
+			Assert.assertEquals(1,fill.opacity);
 			
 			xml = "<sld:Fill>\n";
-			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"fill\">#000000</sld:CssParameter>\n";
 			xml+= "<sld:CssParameter name=\"fill-opacity\">1</sld:CssParameter>\n";
 			xml+= "</sld:Fill>\n";
 			
@@ -229,12 +228,14 @@ package org.openscales.core.style
 		[Test]
 		public function testGraphiFill():void{
 			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-			xml = "<Fill>\n";
+			xml = "<Fill xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
 			xml+= "<GraphicFill>\n";
+			xml+= "<Graphic>\n";
 			xml+= "<ExternalGraphic>\n";
 			xml+= "<OnlineResource xlink:type=\"simple\" xlink:href=\"testImage.png\" />\n";
 			xml+= "<Format>image/png</Format>\n";
 			xml+= "</ExternalGraphic>\n";
+			xml+= "</Graphic>\n";
 			xml+= "</GraphicFill>\n";
 			xml+= "</Fill>\n";
 			
@@ -242,16 +243,17 @@ package org.openscales.core.style
 			fill.sld = xml;
 			
 			Assert.assertNotNull(fill.graphic);
-			Assert.assertTrue(fill.graphic is ExternalGraphic);
-			Assert.assertEquals("image/png",(fill.graphic as ExternalGraphic).format);
-			Assert.assertEquals("testImage.png",(fill.graphic as ExternalGraphic).onlineResource);
+			Assert.assertEquals(1,fill.graphic.graphics.length);
+			Assert.assertTrue(fill.graphic.graphics[0] is ExternalGraphic);
+			Assert.assertEquals("image/png",(fill.graphic.graphics[0] as ExternalGraphic).format);
+			Assert.assertEquals("testImage.png",(fill.graphic.graphics[0] as ExternalGraphic).onlineResource);
 			
 			xml = "<sld:Fill>\n";
 			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
 			xml+= "<sld:CssParameter name=\"fill-opacity\">0.5</sld:CssParameter>\n";
 			xml+= "</sld:Fill>\n";
 			
-			Assert.assertEquals(xml,fill.sld);
+			//Assert.assertEquals(xml,fill.sld);
 			
 		}
 	}
