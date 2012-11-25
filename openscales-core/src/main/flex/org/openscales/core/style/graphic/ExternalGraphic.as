@@ -252,9 +252,8 @@ package org.openscales.core.style.graphic
 		
 		public function get sld():String
 		{
-			//xmlns:xlink="http://www.w3.org/1999/xlink"
 			if(!this._onlineResource)
-				return null;
+				return "";
 			var res:String = "<sld:ExternalGraphic>\n";
 			res+= "<sld:OnlineResource xlink:type=\"simple\" xlink:href=\""+this._onlineResource+"\"/>\n";
 			res+= "<sld:Format>"+this._format+"</sld:Format>\n";

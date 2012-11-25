@@ -6,6 +6,7 @@ package org.openscales.core.style
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.Graphic;
 	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	
@@ -308,7 +309,7 @@ package org.openscales.core.style
 		}
 		
 		/**
-		 * GraphicFill test
+		 * Font test
 		 */
 		[Test]
 		public function test5Font():void{
@@ -387,6 +388,13 @@ package org.openscales.core.style
 			xml+= "</sld:ExternalGraphic>\n";
 			
 			Assert.assertEquals(xml,graphic.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<ExternalGraphic />\n";
+			
+			graphic = new ExternalGraphic();
+			graphic.sld = xml;
+			Assert.assertEquals("",graphic.sld);
 		}
 		
 		/**
@@ -441,6 +449,65 @@ package org.openscales.core.style
 			xml+= "</sld:Mark>\n";
 			
 			Assert.assertEquals(xml,graphic.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Mark />\n";
+			
+			graphic = new Mark();
+			graphic.sld = xml;
+			Assert.assertEquals("",graphic.sld);
+		}
+		
+		/**
+		 * Font test
+		 */
+		[Test]
+		public function test6Graphic():void{
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Graphic>\n";
+			xml+= "<Size>10</Size>\n";
+			xml+= "<Rotation>45</Rotation>\n";
+			xml+= "<Opacity>0.5</Opacity>\n";
+			xml+= "</Graphic>\n";
+			
+			var graphic:Graphic = new Graphic();
+			graphic.sld = xml;
+			
+			Assert.assertEquals(10,graphic.size);
+			Assert.assertEquals(45,graphic.rotation);
+			Assert.assertEquals(0.5,graphic.opacity);
+			Assert.assertEquals(0,graphic.graphics.length);
+			
+			xml = "<sld:Graphic>\n";
+			xml+= "<sld:Size>10</sld:Size>\n";
+			xml+= "<sld:Rotation>45</sld:Rotation>\n";
+			xml+= "<sld:Opacity>0.5</sld:Opacity>\n";
+			xml+= "</sld:Graphic>\n";
+			
+			Assert.assertEquals(xml,graphic.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Graphic>\n";
+			xml+= "<Size>10</Size>\n";
+			xml+= "<Rotation>45</Rotation>\n";
+			xml+= "<Opacity>0.5</Opacity>\n";
+			xml+= "<ExternalGraphic />\n";
+			xml+= "<ExternalGraphic />\n";
+			xml+= "<Mark />\n";
+			xml+= "<Mark />\n";
+			xml+= "</Graphic>\n";
+			
+			graphic = new Graphic();
+			graphic.sld = xml;
+			
+			Assert.assertEquals(10,graphic.size);
+			Assert.assertEquals(45,graphic.rotation);
+			Assert.assertEquals(0.5,graphic.opacity);
+			Assert.assertEquals(4,graphic.graphics.length);
+			Assert.assertTrue(graphic.graphics[0] is ExternalGraphic);
+			Assert.assertTrue(graphic.graphics[1] is ExternalGraphic);
+			Assert.assertTrue(graphic.graphics[2] is Mark);
+			Assert.assertTrue(graphic.graphics[3] is Mark);
 		}
 	}
 }

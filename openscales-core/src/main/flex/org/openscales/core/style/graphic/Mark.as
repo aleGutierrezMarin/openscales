@@ -283,6 +283,8 @@ package org.openscales.core.style.graphic
 		
 		public function get sld():String
 		{
+			if(!this._wellKnownGraphicName)
+				return "";
 			var ret:String="<sld:Mark>\n";
 			ret+="<sld:WellKnownName>"+this._wellKnownGraphicName+"</sld:WellKnownName>\n";
 			if(this._fill)
@@ -301,7 +303,7 @@ package org.openscales.core.style.graphic
 				this._stroke = null;
 			if(this._fill)
 				this._fill = null;
-			this._wellKnownGraphicName = WKN_SQUARE;
+			this._wellKnownGraphicName = null;
 			if(dataXML.WellKnownName.length()>0)
 				this._wellKnownGraphicName = dataXML.WellKnownName[0].toString();
 			
