@@ -56,7 +56,7 @@ package org.openscales.core.style.symbolizer
 			use namespace sldns;
 			this._functionName = null;
 			this._propertyName = null;
-			var dataXML:XML = new XML(sld);
+			var dataXML:XML = new XML(value);
 			var childs:XMLList = dataXML..*::PropertyName;
 			var node:XML;
 			if(childs.length()>0) {
@@ -66,7 +66,7 @@ package org.openscales.core.style.symbolizer
 			childs = dataXML..*::Function;
 			if(childs.length()>0) {
 				node = childs[0];
-				this._functionName = node;
+				this._functionName = node.@name;
 			}
 		}
 	}

@@ -21,6 +21,7 @@ package org.openscales.core.style {
 	public class Rule extends EventDispatcher {
 		
 		private namespace sldns="http://www.opengis.net/sld";
+		private namespace ogcns="http://www.opengis.net/ogc";
 
 		public static const LEGEND_LINE:String = "Line";
 
@@ -232,6 +233,7 @@ package org.openscales.core.style {
 		
 		public function set sld(sldRule:String):void {
 			use namespace sldns;
+			use namespace ogcns;
 			var dataXML:XML = new XML(sldRule);
 			this.title = null;
 			this.name = null;

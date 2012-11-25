@@ -74,9 +74,9 @@ package {
 			blackStyle.rules[0].symbolizers.push(psym);
 			
 			var graphicFill2:GraphicFill = new GraphicFill();
-			mark = new Mark(Mark.WKN_STAR,new SolidFill(0xc6c6c6,0.5),new Stroke(0x000000,2));
+			mark = new Mark(Mark.SLASH,new SolidFill(0xc6c6c6,0.5),new Stroke(0x000000,5));
 			graphicFill2.graphic.graphics.push(mark);
-			graphicFill2.graphic.size = 20;
+			graphicFill2.graphic.size = 10;
 			
 			var graphicFill:GraphicFill = new GraphicFill();
 			mark = new Mark(Mark.WKN_CIRCLE,graphicFill2,new Stroke(0x000000,2));

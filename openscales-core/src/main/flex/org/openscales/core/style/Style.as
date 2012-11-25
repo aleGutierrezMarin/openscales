@@ -28,6 +28,7 @@ package org.openscales.core.style {
 	public class Style {
 		
 		private namespace sldns="http://www.opengis.net/sld";
+		private namespace ogcns="http://www.opengis.net/ogc";
 		
 		private var _name:String = "Default";
 		
@@ -545,8 +546,8 @@ package org.openscales.core.style {
 			res+="<sld:StyledLayerDescriptor version=\"1.0.0\" \n"; 
 			res+="xsi:schemaLocation=\"http://www.opengis.net/sld StyledLayerDescriptor.xsd\" \n";
 			res+="xmlns=\"http://www.opengis.net/sld\" \n";
-			res+="xmlns:sld=\"http://www.opengis.net/sld\" \n"; 
-			res+="xmlns:ogc=\"http://www.opengis.net/ogc\" \n"; 
+			res+="xmlns:sld=\"http://www.opengis.net/sld\" \n";
+			res+="xmlns:ogc=\"http://www.opengis.net/ogc\" \n";
 			res+="xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n";
 			res+="xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
 			res+="<sld:NamedLayer>\n";
@@ -571,22 +572,36 @@ package org.openscales.core.style {
 
 		public function set sld(value:String):void {
 			use namespace sldns;
+			use namespace ogcns;
 			var dataXML:XML = new XML(value);
+			var xmlLiteral:RegExp = new RegExp("<(/)?ogc:Literal(\s*xmlns[^\"]*\"[^\"]*\")*\s*>", "gi");
+			
 			var list:XMLList;
-			list = dataXML..NamedLayer;
-			dataXML = list[0];
-			if(dataXML.name[0])
+			
+			if(dataXML.localName()!="UserStyle") {
+				list = dataXML..NamedLayer;
+				if(list.length()==0) {
+					if(dataXML.Name[0])
+						this.name = dataXML.Name[0];
+					return;
+				} else {
+					dataXML = list[0];
+				}
+			}
+			if(dataXML.Name[0]) {
 				this.name = dataXML.Name[0];
+			}
+			
 			list = dataXML..Rule;
 			var i:uint = 0;
 			var rule:Rule;
 			if(list) {
 				for each(dataXML in list) {
 					if(this._rules.length>i) {
-						this._rules[i].sld = list[i].toString();
+						this._rules[i].sld = list[i].toString().replace(xmlLiteral,"");
 					} else {
 						rule = new Rule();
-						rule.sld = list[i].toString();
+						rule.sld = list[i].toString().replace(xmlLiteral,"");
 						this._rules.push(rule);
 					}
 					++i;
