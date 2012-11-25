@@ -35,7 +35,7 @@
 			public static const EDITSTYLE:String="style";
 			
 			[Bindable]
-			private var _layer:VectorLayer;
+			public var _layer:VectorLayer;
 			private var _labelStyle:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
 			private var _pointStyle:Style = Style.getDefaultPointStyle();
 			private var _pathStyle:Style = Style.getDefaultLineStyle();
@@ -55,7 +55,7 @@
 			
 			
 			[Bindable]
-			private var title:String = Catalog.getLocalizationForKey('drawing.toolbar');
+			public var title:String = Catalog.getLocalizationForKey('drawing.toolbar');
 			
 			
 			private function configure():void{

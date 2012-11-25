@@ -527,6 +527,10 @@ package org.openscales.core.style {
 			this._rules = value;
 		}
 		
+		public function set textFormat(value:TextFormat):void{
+			this._textFormat = value;
+		}
+		
 		public function get textFormat():TextFormat{
 			return this._textFormat;
 		}

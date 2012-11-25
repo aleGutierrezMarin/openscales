@@ -54,6 +54,10 @@ package org.openscales.core.measure
 			this._accuracies.put(Unit.METER,0);
 		}
 		
+		
+		/**
+		 * Enable or disable the drawing tool of the measure tool
+		 */
 		override public function set active(value:Boolean):void {
 			if(value == this.active)
 				return;
@@ -72,6 +76,10 @@ package org.openscales.core.measure
 				}
 			}
 		}
+		
+		/**
+		 * Erase all the features of the measure layer
+		 */
 		private function clearFeature():void {
 			if(newFeature && _currentLineStringFeature){
 				this.drawLayer.removeFeature(_currentLineStringFeature);
