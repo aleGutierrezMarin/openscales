@@ -56,10 +56,14 @@ package org.openscales.core.style.fill
 			if(this._graphic)
 				this._graphic = null;
 			var dataXML:XML = new XML(sld);
-			var childs:XMLList = dataXML.Graphic;
+			var childs:XMLList = dataXML.GraphicFill;
 			if(childs[0]) {
-				this._graphic = new Graphic();
-				this._graphic.sld = childs[0].toString();
+				dataXML = childs[0];
+				childs = dataXML.Graphic;
+				if(childs[0]) {
+					this._graphic = new Graphic();
+					this._graphic.sld = childs[0].toString();
+				}
 			}
 		}
 

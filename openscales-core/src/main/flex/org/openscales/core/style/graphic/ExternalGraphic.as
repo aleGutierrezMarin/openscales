@@ -16,6 +16,7 @@ package org.openscales.core.style.graphic
 	public class ExternalGraphic implements IGraphic
 	{
 		private namespace sldns="http://www.opengis.net/sld";
+		private namespace xlinkns="http://www.w3.org/1999/xlink";
 		
 		private var _format:String;
 		private var _onlineResource:String;
@@ -194,6 +195,8 @@ package org.openscales.core.style.graphic
 		{
 			this._req.destroy();
 			this._req = null;
+			if(!this._givenTemporaryMarker)
+				return;
 			var markerLength:Number = this._givenTemporaryMarker.length;
 			
 			var result:DisplayObject = new _defaultImage();
@@ -249,6 +252,7 @@ package org.openscales.core.style.graphic
 		
 		public function get sld():String
 		{
+			//xmlns:xlink="http://www.w3.org/1999/xlink"
 			if(!this._onlineResource)
 				return null;
 			var res:String = "<sld:ExternalGraphic>\n";
@@ -261,6 +265,7 @@ package org.openscales.core.style.graphic
 		public function set sld(value:String):void
 		{
 			use namespace sldns;
+			use namespace xlinkns;
 			var dataXML:XML = new XML(value);
 			
 			if(this._req) {
@@ -282,7 +287,7 @@ package org.openscales.core.style.graphic
 			}
 			childs = dataXML.OnlineResource;
 			if(childs[0]) {
-				this.onlineResource = childs[0].toString();
+				this.onlineResource = childs[0].@href;
 			}
 		}
 
