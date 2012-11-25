@@ -10,6 +10,7 @@ package org.openscales.core.style
 	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	
 	/**
@@ -682,7 +683,36 @@ package org.openscales.core.style
 		 */
 		[Test]
 		public function test11PointSymbolizer():void{
-			Assert.assertTrue(false);
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<PointSymbolizer/>\n";
+			var sym:PointSymbolizer = new PointSymbolizer();
+			sym.sld = xml;
+			Assert.assertNull(sym.geometry);
+			Assert.assertNull(sym.graphic);
+			xml = "<sld:PointSymbolizer>\n";
+			xml+= "</sld:PointSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<PointSymbolizer>\n";
+			xml+= "<Geometry>\n";
+			xml+= "<PropertyName>testProperty</PropertyName>\n";
+			xml+= "</Geometry>\n";
+			xml+= "<Graphic />\n";
+			xml+= "</PointSymbolizer>\n";
+			sym = new PointSymbolizer();
+			sym.sld = xml;
+			Assert.assertNotNull(sym.geometry);
+			Assert.assertNotNull(sym.graphic);
+			xml = "<sld:PointSymbolizer>\n";
+			xml+= "<sld:Geometry>\n";
+			xml+= "<ogc:PropertyName>testProperty</ogc:PropertyName>\n";
+			xml+= "</sld:Geometry>\n";
+			xml+= "<sld:Graphic>\n";
+			xml+="<sld:Size>6</sld:Size>\n";
+			xml+= "</sld:Graphic>\n";
+			xml+= "</sld:PointSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
 		}
 		
 		/**
