@@ -871,6 +871,34 @@ package org.openscales.core.style
 			Assert.assertEquals(0.5,sym.font.opacity);
 			Assert.assertEquals(TextSymbolizer.LinePlacementLabel,sym.labelPlacement);
 			Assert.assertEquals(10,sym.perpendicularOffset);
+			
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<TextSymbolizer>\n";
+			xml+= "<Geometry/>\n";
+			xml+= "<Label>\n";
+			xml+= "<PropertyName>test</PropertyName>\n";
+			xml+= "</Label>\n";
+			xml+="<LabelPlacement>\n";
+			xml+="<PointPlacement>\n";
+			xml+="<Displacement>\n";
+			xml+="<DisplacementX>10</DisplacementX>\n";
+			xml+="<DisplacementY>10</DisplacementY>\n";
+			xml+="</Displacement>\n";
+			xml+="<AnchorPoint>\n";
+			xml+="<AnchorPointX>1</AnchorPointX>\n";
+			xml+="<AnchorPointY>1</AnchorPointY>\n";
+			xml+="</AnchorPoint>\n";
+			xml+="</PointPlacement>\n";
+			xml+="</LabelPlacement>\n";
+			xml+= "</TextSymbolizer>\n";
+			sym = new TextSymbolizer();
+			sym.sld = xml;
+			Assert.assertEquals(TextSymbolizer.PointPlacementLabel,sym.labelPlacement);
+			Assert.assertEquals(10,sym.displacementX);
+			Assert.assertEquals(10,sym.displacementY);
+			Assert.assertEquals(1,sym.anchorPointX);
+			Assert.assertEquals(1,sym.anchorPointX);
 		}
 	}
 }
