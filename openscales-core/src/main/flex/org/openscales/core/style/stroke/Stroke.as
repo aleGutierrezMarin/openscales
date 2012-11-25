@@ -215,9 +215,9 @@ package org.openscales.core.style.stroke
 				res+="<sld:CssParameter name=\"stroke-linejoin\">"+this.linejoin+"</sld:CssParameter>\n";
 			}
 			if(this.dashArray && this.dashArray.length>0) {
-				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.dashArray.join(" ").replace(".0","")+"</sld:CssParameter>";
+				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.dashArray.join(" ").replace(".0","")+"</sld:CssParameter>\n";
 				if(this.dashoffset) {
-					res+="<sld:CssParameter name=\"stroke-dashoffset\">"+this.dashoffset+"</sld:CssParameter>";
+					res+="<sld:CssParameter name=\"stroke-dashoffset\">"+this.dashoffset+"</sld:CssParameter>\n";
 				}
 			}
 			res+="</sld:Stroke>\n"
@@ -227,8 +227,8 @@ package org.openscales.core.style.stroke
 			this.color = 0;
 			this.opacity = 1;
 			this.width = 1;
-			this.linecap = LINECAP_ROUND;
-			this._linejoin = LINEJOIN_ROUND;
+			this._linecap = null;
+			this._linejoin = null;
 			this._dashArray = null;
 			this._dashoffset = 0;
 			
