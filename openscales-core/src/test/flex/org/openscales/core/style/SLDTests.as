@@ -10,6 +10,7 @@ package org.openscales.core.style
 	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
 	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	
@@ -720,7 +721,37 @@ package org.openscales.core.style
 		 */
 		[Test]
 		public function test12LineSymbolizer():void{
-			Assert.assertTrue(false);
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<LineSymbolizer/>\n";
+			var sym:LineSymbolizer = new LineSymbolizer();
+			sym.sld = xml;
+			Assert.assertNull(sym.geometry);
+			Assert.assertNull(sym.stroke);
+			xml = "<sld:LineSymbolizer>\n";
+			xml+= "</sld:LineSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<LineSymbolizer>\n";
+			xml+= "<Geometry>\n";
+			xml+= "<PropertyName>testProperty</PropertyName>\n";
+			xml+= "</Geometry>\n";
+			xml+= "<Stroke />\n";
+			xml+= "</LineSymbolizer>\n";
+			sym = new LineSymbolizer();
+			sym.sld = xml;
+			Assert.assertNotNull(sym.geometry);
+			Assert.assertNotNull(sym.stroke);
+			xml = "<sld:LineSymbolizer>\n";
+			xml+= "<sld:Geometry>\n";
+			xml+= "<ogc:PropertyName>testProperty</ogc:PropertyName>\n";
+			xml+= "</sld:Geometry>\n";
+			xml+= "<sld:Stroke>\n";
+			xml+="<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+="<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			xml+= "</sld:LineSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
 		}
 		
 		/**
