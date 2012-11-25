@@ -4,6 +4,7 @@ package org.openscales.core.style
 	import org.flexunit.Assert;
 	import org.openscales.core.style.fill.GraphicFill;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.graphic.ExternalGraphic;
 	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
@@ -15,7 +16,7 @@ package org.openscales.core.style
 		 * simple parsing test
 		 */
 		[Test]
-		public function testSimpleSLD():void{
+		public function test1SimpleSLD():void{
 			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 			xml+= "<StyledLayerDescriptor version=\"1.0.0\" xsi:schemaLocation=\"http://www.opengis.net/sld StyledLayerDescriptor.xsd\" xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
 			xml+= "<NamedLayer>\n";
@@ -133,7 +134,7 @@ package org.openscales.core.style
 		 * rule test
 		 */
 		[Test]
-		public function testRule():void{
+		public function test2Rule():void{
 			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 			xml+= "<Rule>\n";
 			xml+= "<Name>testRuleName</Name>\n";
@@ -167,9 +168,9 @@ package org.openscales.core.style
 		 * SolidFill test
 		 */
 		[Test]
-		public function testSolidFill():void{
+		public function test3SolidFill():void{
 			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-			xml = "<Fill>\n";
+			xml+= "<Fill>\n";
 			xml+= "<CssParameter name=\"fill\">#ffffff</CssParameter>\n";
 			xml+= "<CssParameter name=\"fill-opacity\">0.5</CssParameter>\n";
 			xml+= "</Fill>\n";
@@ -188,7 +189,7 @@ package org.openscales.core.style
 			Assert.assertEquals(xml,fill.sld);
 			
 			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-			xml = "<Fill>\n";
+			xml+= "<Fill>\n";
 			xml+= "<CssParameter name=\"fill\">#ffffff</CssParameter>\n";
 			xml+= "</Fill>\n";
 			
@@ -206,7 +207,7 @@ package org.openscales.core.style
 			Assert.assertEquals(xml,fill.sld);
 			
 			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-			xml = "<Fill>\n";
+			xml+= "<Fill>\n";
 			xml+= "</Fill>\n";
 			
 			fill = new SolidFill();
@@ -224,12 +225,12 @@ package org.openscales.core.style
 		}
 		
 		/**
-		 * SolidFill test
+		 * GraphicFill test
 		 */
 		[Test]
-		public function testGraphiFill():void{
+		public function test4GraphiFill():void{
 			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-			xml = "<Fill xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
+			xml+= "<Fill xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
 			xml+= "<GraphicFill>\n";
 			xml+= "<Graphic>\n";
 			xml+= "<ExternalGraphic>\n";
@@ -265,7 +266,7 @@ package org.openscales.core.style
 			
 			
 			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-			xml = "<Fill xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
+			xml = "<Fill>\n";
 			xml+= "<GraphicFill>\n";
 			xml+= "<Graphic>\n";
 			xml+= "<Mark>\n";
@@ -307,7 +308,63 @@ package org.openscales.core.style
 			xml+= "</sld:GraphicFill>\n";
 			xml+= "</sld:Fill>\n";
 			Assert.assertEquals(xml,fill.sld);
+		}
+		
+		/**
+		 * GraphicFill test
+		 */
+		[Test]
+		public function test5Font():void{
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Font>\n";
+			xml+= "<CssParameter name=\"font-family\">Arial</CssParameter>\n";
+			xml+= "<CssParameter name=\"font-size\">42</CssParameter>\n";
+			xml+= "</Font>\n";
 			
+			var font:Font = new Font();
+			font.sld = xml;
+
+			Assert.assertEquals(parseInt("000000",16),font.color);
+			Assert.assertEquals(1,font.opacity);
+			Assert.assertEquals(42,font.size);
+			Assert.assertEquals(Font.NORMAL,font.weight);
+			Assert.assertEquals(Font.NORMAL,font.style);
+			Assert.assertEquals("Arial",font.family);
+			
+			xml = "<sld:Font>\n";
+			xml+= "<sld:CssParameter name=\"font-family\">Arial</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"font-size\">42</sld:CssParameter>\n";
+			xml+= "</sld:Font>\n";
+			
+			Assert.assertEquals(xml,font.sld);
+			
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Font>\n";
+			xml+= "<CssParameter name=\"font-family\">Times</CssParameter>\n";
+			xml+= "<CssParameter name=\"font-size\">10</CssParameter>\n";
+			xml+= "<CssParameter name=\"font-weight\">bold</CssParameter>\n";
+			xml+= "<CssParameter name=\"font-style\">italic</CssParameter>\n";
+			xml+= "</Font>\n";
+			
+			font = new Font();
+			font.sld = xml;
+			
+			Assert.assertEquals(parseInt("000000",16),font.color);
+			Assert.assertEquals(1,font.opacity);
+			Assert.assertEquals(10,font.size);
+			Assert.assertEquals(Font.BOLD,font.weight);
+			Assert.assertEquals(Font.ITALIC,font.style);
+			Assert.assertEquals("Times",font.family);
+			
+			xml = "<sld:Font>\n";
+			xml+= "<sld:CssParameter name=\"font-family\">Times</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"font-size\">10</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"font-weight\">bold</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"font-style\">italic</sld:CssParameter>\n";
+			xml+= "</sld:Font>\n";
+			
+			Assert.assertEquals(xml,font.sld);
 		}
 	}
 }
