@@ -843,7 +843,6 @@ package org.openscales.core.style
 			Assert.assertNull(sym.geometry);
 			Assert.assertEquals("",sym.sld);
 			
-			
 			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 			xml+= "<TextSymbolizer>\n";
 			xml+= "<Geometry/>\n";
@@ -871,7 +870,31 @@ package org.openscales.core.style
 			Assert.assertEquals(0.5,sym.font.opacity);
 			Assert.assertEquals(TextSymbolizer.LinePlacementLabel,sym.labelPlacement);
 			Assert.assertEquals(10,sym.perpendicularOffset);
-			
+			xml = "<sld:TextSymbolizer>\n";
+			xml+= "<sld:Label>\n";
+			xml+= "<ogc:PropertyName>test</ogc:PropertyName>\n";
+			xml+= "</sld:Label>\n";
+			xml+= "<sld:LabelPlacement>\n";
+			xml+= "<sld:LinePlacement>\n";
+			xml+= "<sld:PerpendicularOffset>10</sld:PerpendicularOffset>\n";
+			xml+= "</sld:LinePlacement>\n";
+			xml+= "</sld:LabelPlacement>\n";
+			xml+= "<sld:Font>\n";
+			xml+= "<sld:CssParameter name=\"font-family\">null</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"font-size\">10</sld:CssParameter>\n";
+			xml+= "</sld:Font>\n";
+			xml+= "<sld:Halo>\n";
+			xml+= "<sld:Radius>2</sld:Radius>\n";
+			xml+= "<sld:Fill>\n";
+			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
+			xml+= "</sld:Fill>\n";
+			xml+= "</sld:Halo>\n";
+			xml+= "<sld:Fill>\n";
+			xml+= "<sld:CssParameter name=\"fill\">#c9c9c9</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"fill-opacity\">0.5</sld:CssParameter>\n";
+			xml+= "</sld:Fill>\n";
+			xml+= "</sld:TextSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
 			
 			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 			xml+= "<TextSymbolizer>\n";
@@ -899,6 +922,24 @@ package org.openscales.core.style
 			Assert.assertEquals(10,sym.displacementY);
 			Assert.assertEquals(1,sym.anchorPointX);
 			Assert.assertEquals(1,sym.anchorPointX);
+			xml = "<sld:TextSymbolizer>\n";
+			xml+= "<sld:Label>\n";
+			xml+= "<ogc:PropertyName>test</ogc:PropertyName>\n";
+			xml+= "</sld:Label>\n";
+			xml+= "<sld:LabelPlacement>\n";
+			xml+= "<sld:PointPlacement>\n";
+			xml+= "<sld:Displacement>\n";
+			xml+= "<sld:DisplacementX>10</sld:DisplacementX>\n";
+			xml+= "<sld:DisplacementY>10</sld:DisplacementY>\n";
+			xml+= "</sld:Displacement>\n";
+			xml+= "<sld:AnchorPoint>\n";
+			xml+= "<sld:AnchorPointX>1</sld:AnchorPointX>\n";
+			xml+= "<sld:AnchorPointY>1</sld:AnchorPointY>\n";
+			xml+= "</sld:AnchorPoint>\n";
+			xml+= "</sld:PointPlacement>\n";
+			xml+= "</sld:LabelPlacement>\n";
+			xml+= "</sld:TextSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
 		}
 	}
 }
