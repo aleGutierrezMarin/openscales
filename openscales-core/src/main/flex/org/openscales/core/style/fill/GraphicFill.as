@@ -42,8 +42,10 @@ package org.openscales.core.style.fill
 		public function get sld():String
 		{
 			var res:String = "<sld:Fill>\n";
+			res+="<sld:GraphicFill>\n";
 			if(this._graphic)
 				res+=this._graphic.sld;
+			res+="</sld:GraphicFill>\n";
 			res+="</sld:Fill>\n";
 			return res;
 		}

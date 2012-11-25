@@ -62,7 +62,8 @@ package org.openscales.core.style.halo
 
 		public function set opacity(value:Number):void
 		{
-			_opacity = value;
+			if(value)
+				_opacity = value;
 		}
 
 		public function get quality():int
@@ -77,7 +78,7 @@ package org.openscales.core.style.halo
 		
 		public function get sld():String {
 			var res:String="<sld:Halo>\n";
-			res+="<sld:Radius><ogc:Literal>"+this.radius+"</ogc:Literal></sld:Radius>\n";
+			res+="<sld:Radius>"+this.radius+"</sld:Radius>\n";
 			var fill:SolidFill = new SolidFill(this.color,this.opacity);
 			res+=fill.sld;
 			res+="</sld:Halo>\n";
@@ -103,7 +104,10 @@ package org.openscales.core.style.halo
 					if(node.@name == "fill") {
 						this._color = parseInt(node[0].toString().replace("#",""),16);
 					} else if(node.@name == "fill-opacity") {
-						this._opacity = Number(node[0].toString());
+						var val:Number = Number(node[0].toString());
+						if(!val)
+							continue;
+						this._opacity = val;
 					}
 				}
 			}

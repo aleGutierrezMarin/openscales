@@ -259,6 +259,8 @@ package org.openscales.core.style.symbolizer
 		}
 		
 		override public function get sld():String {
+			if(!propertyName)
+				return "";
 			var res:String = "<sld:TextSymbolizer>\n";
 			if(this.geometry) {
 				res += this.geometry.sld;
@@ -267,30 +269,42 @@ package org.openscales.core.style.symbolizer
 			res+="<ogc:PropertyName>"+this.propertyName+"</ogc:PropertyName>\n";
 			res+="</sld:Label>\n";
 			
-			if(_labelPlacement==PointPlacementLabel) {
+			if(_labelPlacement==PointPlacementLabel
+				&& ((this._rotation && this._rotation!=0)
+					|| this._displacementX || this._displacementY
+					|| this._anchorPointX || this._anchorPointY)) {
+				
 				res+="<sld:LabelPlacement>\n";
 				res+="<sld:PointPlacement>\n";
-				if(this._rotation &&this._rotation!=0)
+				if(this._rotation && this._rotation!=0)
 					res+="<sld:Rotation>"+this._rotation+"</sld:Rotation>\n";
 				if(this._displacementX || this._displacementY) {
 					res+="<sld:Displacement>\n";
 					if(this._displacementX)
 						res+="<sld:DisplacementX>"+this._displacementX+"</sld:DisplacementX>\n";
+					else
+						res+="<sld:DisplacementX>0</sld:DisplacementX>\n";
 					if(this._displacementY)
 						res+="<sld:DisplacementY>"+this._displacementY+"</sld:DisplacementY>\n";
+					else
+						res+="<sld:DisplacementY>0</sld:DisplacementY>\n";
 					res+="</sld:Displacement>\n";
 				}
 				if(this._anchorPointX || this._anchorPointY) {
 					res+="<sld:AnchorPoint>\n";
 					if(this._anchorPointX)
 						res+="<sld:AnchorPointX>"+this._anchorPointX+"</sld:AnchorPointX>\n";
+					else
+						res+="<sld:AnchorPointX>0.5</sld:AnchorPointX>\n";
 					if(this._anchorPointY)
-						res+="<sld:AnchorPointX>"+this._anchorPointY+"</sld:AnchorPointX>\n";
+						res+="<sld:AnchorPointY>"+this._anchorPointY+"</sld:AnchorPointY>\n";
+					else
+						res+="<sld:AnchorPointY>0.5</sld:AnchorPointY>\n";
 					res+="</sld:AnchorPoint>\n";
 				}
 				res+="</sld:PointPlacement>\n";
 				res+="</sld:LabelPlacement>\n";
-			} else if(_labelPlacement==LinePlacementLabel) {
+			} else if(_labelPlacement==LinePlacementLabel && this._perpendicularOffset) {
 				res+="<sld:LabelPlacement>\n";
 				res+="<sld:LinePlacement>\n";
 				res+="<sld:PerpendicularOffset>"+this._perpendicularOffset+"</sld:PerpendicularOffset>\n";
@@ -325,6 +339,7 @@ package org.openscales.core.style.symbolizer
 			this._anchorPointY = 0;
 			this._displacementX = 0;
 			this._displacementY = 0;
+			this.propertyName = "";
 			
 			var dataXML:XML = new XML(sldRule);
 			var childs:XMLList = dataXML..*::PropertyName;
