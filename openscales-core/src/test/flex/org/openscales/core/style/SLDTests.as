@@ -8,8 +8,13 @@ package org.openscales.core.style
 	import org.openscales.core.style.graphic.ExternalGraphic;
 	import org.openscales.core.style.graphic.Graphic;
 	import org.openscales.core.style.graphic.Mark;
+	import org.openscales.core.style.halo.Halo;
+	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	
+	/**
+	 * this class allow testing of sld import/export
+	 */
 	public class SLDTests
 	{
 		
@@ -297,8 +302,6 @@ package org.openscales.core.style
 			xml+= "<sld:Stroke>\n";
 			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
 			xml+= "<sld:CssParameter name=\"stroke-width\">42</sld:CssParameter>\n";
-			xml+= "<sld:CssParameter name=\"stroke-linecap\">round</sld:CssParameter>\n";
-			xml+= "<sld:CssParameter name=\"stroke-linejoin\">round</sld:CssParameter>\n";
 			xml+= "</sld:Stroke>\n";
 			xml+= "</sld:Mark>\n";
 			xml+= "<sld:Size>6</sld:Size>\n";
@@ -443,8 +446,6 @@ package org.openscales.core.style
 			xml+= "<sld:Stroke>\n";
 			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
 			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
-			xml+= "<sld:CssParameter name=\"stroke-linecap\">round</sld:CssParameter>\n";
-			xml+= "<sld:CssParameter name=\"stroke-linejoin\">round</sld:CssParameter>\n";
 			xml+= "</sld:Stroke>\n";
 			xml+= "</sld:Mark>\n";
 			
@@ -462,7 +463,7 @@ package org.openscales.core.style
 		 * Font test
 		 */
 		[Test]
-		public function test6Graphic():void{
+		public function test8Graphic():void{
 			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 			xml+= "<Graphic>\n";
 			xml+= "<Size>10</Size>\n";
@@ -508,6 +509,172 @@ package org.openscales.core.style
 			Assert.assertTrue(graphic.graphics[1] is ExternalGraphic);
 			Assert.assertTrue(graphic.graphics[2] is Mark);
 			Assert.assertTrue(graphic.graphics[3] is Mark);
+		}
+		
+		/**
+		 * Halo test
+		 */
+		[Test]
+		public function test9Halo():void{
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Halo>\n";
+			xml+= "<Radius>1</Radius>\n";
+			xml+= "</Halo>\n";
+			
+			var halo:Halo = new Halo();
+			halo.sld = xml;
+			
+			Assert.assertEquals(1,halo.radius);
+			
+			xml = "<sld:Halo>\n";
+			xml+= "<sld:Radius>1</sld:Radius>\n";
+			xml+= "<sld:Fill>\n";
+			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
+			xml+= "</sld:Fill>\n";
+			xml+= "</sld:Halo>\n";
+			
+			Assert.assertEquals(xml,halo.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Halo>\n";
+			xml+= "<Radius>10</Radius>\n";
+			xml+= "<Fill>\n";
+			xml+= "<CssParameter name=\"fill\">#000000</CssParameter>\n";
+			xml+= "<CssParameter name=\"fill-opacity\">0.5</CssParameter>\n";
+			xml+= "</Fill>\n";
+			xml+= "</Halo>\n";
+			
+			halo = new Halo();
+			halo.sld = xml;
+			
+			Assert.assertEquals(10,halo.radius);
+			Assert.assertEquals(parseInt("000000",16),halo.color);
+			Assert.assertEquals(0.5,halo.opacity);
+			
+			xml = "<sld:Halo>\n";
+			xml+= "<sld:Radius>10</sld:Radius>\n";
+			xml+= "<sld:Fill>\n";
+			xml+= "<sld:CssParameter name=\"fill\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"fill-opacity\">0.5</sld:CssParameter>\n";
+			xml+= "</sld:Fill>\n";
+			xml+= "</sld:Halo>\n";
+			
+			Assert.assertEquals(xml,halo.sld);
+		}
+		
+		/**
+		 * Stroke test
+		 */
+		[Test]
+		public function test10Stroke():void{
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Stroke/>\n";
+			
+			var stroke:Stroke = new Stroke();
+			stroke.sld = xml;
+			
+			Assert.assertEquals(parseInt("000000",16),stroke.color);
+			Assert.assertEquals(1,stroke.width);
+			Assert.assertEquals(1,stroke.opacity);
+			Assert.assertNull(stroke.linecap);
+			Assert.assertNull(stroke.linejoin);
+			Assert.assertNull(stroke.dashArray);
+			
+			xml = "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			
+			Assert.assertEquals(xml,stroke.sld);
+			
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Stroke>\n";
+			xml+="<CssParameter name=\"stroke\">#ffffff</CssParameter>\n";
+			xml+="<CssParameter name=\"stroke-opacity\">0.5</CssParameter>\n";
+			xml+="<CssParameter name=\"stroke-width\">10</CssParameter>\n";
+			xml+="<CssParameter name=\"stroke-linecap\">round</CssParameter>\n";
+			xml+="<CssParameter name=\"stroke-linejoin\">round</CssParameter>\n";
+			xml+= "</Stroke>\n";
+			
+			stroke = new Stroke();
+			stroke.sld = xml;
+			
+			Assert.assertEquals(parseInt("ffffff",16),stroke.color);
+			Assert.assertEquals(10,stroke.width);
+			Assert.assertEquals(0.5,stroke.opacity);
+			Assert.assertEquals("round",stroke.linecap);
+			Assert.assertEquals("round",stroke.linejoin);
+			Assert.assertNull(stroke.dashArray);
+			Assert.assertEquals(0,stroke.dashoffset);
+			
+			xml = "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#ffffff</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-opacity\">0.5</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">10</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-linecap\">round</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-linejoin\">round</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			
+			Assert.assertEquals(xml,stroke.sld);
+			
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Stroke>\n";
+			xml+= "<CssParameter name=\"stroke-dasharray\">4 4</CssParameter>\n";
+			xml+= "<CssParameter name=\"stroke-dashoffset\">10</CssParameter>\n";
+			xml+= "</Stroke>\n";
+			
+			stroke = new Stroke();
+			stroke.sld = xml;
+			
+			Assert.assertNotNull(stroke.dashArray);
+			Assert.assertTrue(2, stroke.dashArray.length);
+			Assert.assertTrue(10,stroke.dashoffset);
+			
+			xml = "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-dasharray\">4 4</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-dashoffset\">10</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			
+			Assert.assertEquals(xml,stroke.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Stroke>\n";
+			xml+= "<CssParameter name=\"stroke-dasharray\">4 4</CssParameter>\n";
+			xml+= "</Stroke>\n";
+			
+			stroke = new Stroke();
+			stroke.sld = xml;
+			
+			Assert.assertNotNull(stroke.dashArray);
+			Assert.assertEquals(0,stroke.dashoffset);
+			
+			xml = "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-dasharray\">4 4</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			
+			Assert.assertEquals(xml,stroke.sld);
+			
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Stroke>\n";
+			xml+= "<CssParameter name=\"stroke-dashoffset\">10</CssParameter>\n";
+			xml+= "</Stroke>\n";
+			
+			stroke = new Stroke();
+			stroke.sld = xml;
+			
+			xml = "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			
+			Assert.assertEquals(xml,stroke.sld);
 		}
 	}
 }

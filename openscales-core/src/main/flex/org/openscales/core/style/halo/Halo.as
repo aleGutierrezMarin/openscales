@@ -91,10 +91,7 @@ package org.openscales.core.style.halo
 			var childs:XMLList = dataXML.Radius;
 			var node:XML;
 			if(childs.length()>0) {
-				node = childs[0];
-				childs = node.Literal;
-				if(childs.length()>0)
-					this._radius = Number(childs[0]);
+				this._radius = Number(childs[0]);
 			}
 			childs = dataXML.Fill;
 			if(childs.length()>0) {
