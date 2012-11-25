@@ -68,7 +68,7 @@ package org.openscales.core.style.fill {
 					stringColor = spareStringColor;
 				res+="<sld:CssParameter name=\"fill\">#"+stringColor+"</sld:CssParameter>\n";
 			}
-			if(this.opacity) {
+			if(this.opacity!=1) {
 				res+="<sld:CssParameter name=\"fill-opacity\">"+this.opacity+"</sld:CssParameter>\n";
 			}
 			res+="</sld:Fill>\n";

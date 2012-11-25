@@ -103,7 +103,6 @@ package org.openscales.core.style
 			xml+= "</sld:Geometry>\n";
 			xml+= "<sld:Fill>\n";
 			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
-			xml+= "<sld:CssParameter name=\"fill-opacity\">1</sld:CssParameter>\n";
 			xml+= "</sld:Fill>\n";
 			xml+= "</sld:PolygonSymbolizer>\n";
 			xml+= "</sld:Rule>\n";
@@ -201,7 +200,6 @@ package org.openscales.core.style
 			
 			xml = "<sld:Fill>\n";
 			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
-			xml+= "<sld:CssParameter name=\"fill-opacity\">1</sld:CssParameter>\n";
 			xml+= "</sld:Fill>\n";
 			
 			Assert.assertEquals(xml,fill.sld);
@@ -218,7 +216,6 @@ package org.openscales.core.style
 			
 			xml = "<sld:Fill>\n";
 			xml+= "<sld:CssParameter name=\"fill\">#000000</sld:CssParameter>\n";
-			xml+= "<sld:CssParameter name=\"fill-opacity\">1</sld:CssParameter>\n";
 			xml+= "</sld:Fill>\n";
 			
 			Assert.assertEquals(xml,fill.sld);
@@ -365,6 +362,85 @@ package org.openscales.core.style
 			xml+= "</sld:Font>\n";
 			
 			Assert.assertEquals(xml,font.sld);
+		}
+		
+		/**
+		 * ExternalGraphic test
+		 */
+		[Test]
+		public function test6ExternalGraphic():void{
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<ExternalGraphic xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
+			xml+= "<OnlineResource xlink:type=\"simple\" xlink:href=\"testImage.png\" />\n";
+			xml+= "<Format>image/jpeg</Format>\n";
+			xml+= "</ExternalGraphic>\n";
+			
+			var graphic:ExternalGraphic = new ExternalGraphic();
+			graphic.sld = xml;
+			
+			Assert.assertEquals("testImage.png",graphic.onlineResource);
+			Assert.assertEquals("image/jpeg",graphic.format);
+			
+			xml = "<sld:ExternalGraphic>\n";
+			xml+= "<sld:OnlineResource xlink:type=\"simple\" xlink:href=\"testImage.png\"/>\n";
+			xml+= "<sld:Format>image/jpeg</sld:Format>\n";
+			xml+= "</sld:ExternalGraphic>\n";
+			
+			Assert.assertEquals(xml,graphic.sld);
+		}
+		
+		/**
+		 * ExternalGraphic test
+		 */
+		[Test]
+		public function test7Mark():void{
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Mark>\n";
+			xml+= "<WellKnownName>testMarker</WellKnownName>\n";
+			xml+= "</Mark>\n";
+			
+			var graphic:Mark = new Mark();
+			graphic.sld = xml;
+			
+			Assert.assertEquals("testMarker",graphic.wellKnownGraphicName);
+			Assert.assertNull(graphic.stroke);
+			Assert.assertNull(graphic.fill);
+			
+			xml = "<sld:Mark>\n";
+			xml+= "<sld:WellKnownName>testMarker</sld:WellKnownName>\n";
+			xml+= "</sld:Mark>\n";
+			
+			Assert.assertEquals(xml,graphic.sld);
+			
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<Mark>\n";
+			xml+= "<WellKnownName>testMarker</WellKnownName>\n";
+			xml+= "<Stroke></Stroke>";
+			xml+= "<Fill></Fill>";
+			xml+= "</Mark>\n";
+			
+			graphic = new Mark();
+			graphic.sld = xml;
+			
+			Assert.assertEquals("testMarker",graphic.wellKnownGraphicName);
+			Assert.assertNotNull(graphic.stroke);
+			Assert.assertNotNull(graphic.fill);
+			
+			xml = "<sld:Mark>\n";
+			xml+= "<sld:WellKnownName>testMarker</sld:WellKnownName>\n";
+			xml+= "<sld:Fill>\n";
+			xml+= "<sld:CssParameter name=\"fill\">#000000</sld:CssParameter>\n";
+			xml+= "</sld:Fill>\n";
+			xml+= "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-linecap\">round</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-linejoin\">round</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			xml+= "</sld:Mark>\n";
+			
+			Assert.assertEquals(xml,graphic.sld);
 		}
 	}
 }
