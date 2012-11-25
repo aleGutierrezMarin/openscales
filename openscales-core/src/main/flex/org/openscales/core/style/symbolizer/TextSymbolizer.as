@@ -331,7 +331,7 @@ package org.openscales.core.style.symbolizer
 			use namespace ogcns;
 			super.sld = sldRule;
 			
-			this._font = new Font();
+			this._font = null;
 			this._halo = null;
 			this._labelPlacement=NoLabelPlacement;
 			this._rotation = 0;
@@ -352,6 +352,7 @@ package org.openscales.core.style.symbolizer
 			var node:XML;
 			if(childs.length()>0) {
 				node = childs[0];
+				this._font = new Font();
 				this._font.sld = node.toString();
 			}
 			
@@ -361,6 +362,8 @@ package org.openscales.core.style.symbolizer
 				node = childs[0];
 				sFill = new SolidFill();
 				sFill.sld = node.toString();
+				if(!this._font)
+					this._font = new Font();
 				this._font.color = sFill.color as Number;
 				this._font.opacity = sFill.opacity;
 			}

@@ -13,6 +13,7 @@ package org.openscales.core.style
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	
 	/**
 	 * this class allow testing of sld import/export
@@ -747,8 +748,8 @@ package org.openscales.core.style
 			xml+= "<ogc:PropertyName>testProperty</ogc:PropertyName>\n";
 			xml+= "</sld:Geometry>\n";
 			xml+= "<sld:Stroke>\n";
-			xml+="<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
-			xml+="<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
 			xml+= "</sld:Stroke>\n";
 			xml+= "</sld:LineSymbolizer>\n";
 			Assert.assertEquals(xml,sym.sld);
@@ -759,7 +760,75 @@ package org.openscales.core.style
 		 */
 		[Test]
 		public function test13PolygonSymbolizer():void{
-			Assert.assertTrue(false);
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<PolygonSymbolizer/>\n";
+			var sym:PolygonSymbolizer = new PolygonSymbolizer();
+			sym.sld = xml;
+			Assert.assertNull(sym.geometry);
+			Assert.assertNull(sym.stroke);
+			Assert.assertNull(sym.fill);
+			xml = "<sld:PolygonSymbolizer>\n";
+			xml+= "</sld:PolygonSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<PolygonSymbolizer>\n";
+			xml+= "<Geometry>\n";
+			xml+= "<PropertyName>testProperty</PropertyName>\n";
+			xml+= "</Geometry>\n";
+			xml+= "<Stroke />\n";
+			xml+= "<Fill />\n";
+			xml+= "</PolygonSymbolizer>\n";
+			sym = new PolygonSymbolizer();
+			sym.sld = xml;
+			Assert.assertNotNull(sym.geometry);
+			Assert.assertNotNull(sym.stroke);
+			Assert.assertNotNull(sym.fill);
+			Assert.assertTrue(sym.fill is SolidFill);
+			xml = "<sld:PolygonSymbolizer>\n";
+			xml+= "<sld:Geometry>\n";
+			xml+= "<ogc:PropertyName>testProperty</ogc:PropertyName>\n";
+			xml+= "</sld:Geometry>\n";
+			xml+= "<sld:Fill>\n";
+			xml+= "<sld:CssParameter name=\"fill\">#000000</sld:CssParameter>\n";
+			xml+= "</sld:Fill>\n";
+			xml+= "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			xml+= "</sld:PolygonSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<PolygonSymbolizer>\n";
+			xml+= "<Geometry>\n";
+			xml+= "<PropertyName>testProperty</PropertyName>\n";
+			xml+= "</Geometry>\n";
+			xml+= "<Stroke />\n";
+			xml+= "<Fill>\n";
+			xml+= "<GraphicFill />\n";
+			xml+= "</Fill>\n";
+			xml+= "</PolygonSymbolizer>\n";
+			sym = new PolygonSymbolizer();
+			sym.sld = xml;
+			Assert.assertNotNull(sym.geometry);
+			Assert.assertNotNull(sym.stroke);
+			Assert.assertNotNull(sym.fill);
+			Assert.assertTrue(sym.fill is GraphicFill);
+			xml = "<sld:PolygonSymbolizer>\n";
+			xml+= "<sld:Geometry>\n";
+			xml+= "<ogc:PropertyName>testProperty</ogc:PropertyName>\n";
+			xml+= "</sld:Geometry>\n";
+			xml+= "<sld:Fill>\n";
+			xml+= "<sld:GraphicFill>\n";
+			xml+= "</sld:GraphicFill>\n";
+			xml+= "</sld:Fill>\n";
+			xml+= "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">1</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			xml+= "</sld:PolygonSymbolizer>\n";
+			Assert.assertEquals(xml,sym.sld);
 		}
 		
 		/**
@@ -767,7 +836,41 @@ package org.openscales.core.style
 		 */
 		[Test]
 		public function test14TextSymbolizer():void{
-			Assert.assertTrue(false);
+			var xml:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<TextSymbolizer/>\n";
+			var sym:TextSymbolizer = new TextSymbolizer();
+			sym.sld = xml;
+			Assert.assertNull(sym.geometry);
+			Assert.assertEquals("",sym.sld);
+			
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml+= "<TextSymbolizer>\n";
+			xml+= "<Geometry/>\n";
+			xml+= "<Label>\n";
+			xml+= "<PropertyName>test</PropertyName>\n";
+			xml+= "</Label>\n";
+			xml+= "<Fill>";
+			xml+="<CssParameter name=\"fill\">#c9c9c9</CssParameter>\n";
+			xml+="<CssParameter name=\"fill-opacity\">0.5</CssParameter>\n";
+			xml+= "</Fill>";
+			xml+= "<Font />";
+			xml+= "<Halo />";
+			xml+="<LabelPlacement>\n";
+			xml+="<LinePlacement>\n";
+			xml+="<PerpendicularOffset>10</PerpendicularOffset>\n";
+			xml+="</LinePlacement>\n";
+			xml+="</LabelPlacement>\n";
+			xml+= "</TextSymbolizer>\n";
+			sym = new TextSymbolizer();
+			sym.sld = xml;
+			Assert.assertNotNull(sym.geometry);
+			Assert.assertNotNull(sym.font);
+			Assert.assertNotNull(sym.halo);
+			Assert.assertEquals(parseInt("c9c9c9",16),sym.font.color);
+			Assert.assertEquals(0.5,sym.font.opacity);
+			Assert.assertEquals(TextSymbolizer.LinePlacementLabel,sym.labelPlacement);
+			Assert.assertEquals(10,sym.perpendicularOffset);
 		}
 	}
 }
