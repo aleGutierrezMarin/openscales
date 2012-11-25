@@ -199,8 +199,10 @@ package org.openscales.core.style.stroke
 				if(stringColor.length < 6)
 					stringColor = spareStringColor;
 				res+="<sld:CssParameter name=\"stroke\">#"+stringColor+"</sld:CssParameter>\n";
+			} else {
+				res+="<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
 			}
-			if(this.opacity) {
+			if(this.opacity!=1) {
 				res+="<sld:CssParameter name=\"stroke-opacity\">"+this.opacity+"</sld:CssParameter>\n";
 			}
 			if(this.width) {

@@ -5,6 +5,7 @@ package org.openscales.core.style
 	import org.openscales.core.style.fill.GraphicFill;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	
 	public class SLDTests
@@ -249,11 +250,63 @@ package org.openscales.core.style
 			Assert.assertEquals("testImage.png",(fill.graphic.graphics[0] as ExternalGraphic).onlineResource);
 			
 			xml = "<sld:Fill>\n";
-			xml+= "<sld:CssParameter name=\"fill\">#ffffff</sld:CssParameter>\n";
-			xml+= "<sld:CssParameter name=\"fill-opacity\">0.5</sld:CssParameter>\n";
+			xml+= "<sld:GraphicFill>\n";
+			xml+= "<sld:Graphic>\n";
+			xml+= "<sld:ExternalGraphic>\n";
+			xml+= "<sld:OnlineResource xlink:type=\"simple\" xlink:href=\"testImage.png\"/>\n";
+			xml+= "<sld:Format>image/png</sld:Format>\n";
+			xml+= "</sld:ExternalGraphic>\n";
+			xml+= "<sld:Size>6</sld:Size>\n";
+			xml+= "</sld:Graphic>\n";
+			xml+= "</sld:GraphicFill>\n";
 			xml+= "</sld:Fill>\n";
 			
-			//Assert.assertEquals(xml,fill.sld);
+			Assert.assertEquals(xml,fill.sld);
+			
+			
+			xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			xml = "<Fill xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
+			xml+= "<GraphicFill>\n";
+			xml+= "<Graphic>\n";
+			xml+= "<Mark>\n";
+			xml+= "<WellKnownName>shape://times</WellKnownName>\n";
+			xml+= "<Stroke>\n";
+			xml+= "<CssParameter name=\"stroke\">#000000</CssParameter>\n";
+			xml+= "<CssParameter name=\"stroke-width\">42</CssParameter>\n";
+			xml+= "</Stroke>\n";
+			xml+= "</Mark>\n";
+			xml+= "</Graphic>\n";
+			xml+= "</GraphicFill>\n";
+			xml+= "</Fill>\n";
+			
+			fill = new GraphicFill();
+			fill.sld = xml;
+			
+			Assert.assertNotNull(fill.graphic);
+			Assert.assertEquals(1,fill.graphic.graphics.length);
+			Assert.assertTrue(fill.graphic.graphics[0] is Mark);
+			Assert.assertEquals("shape://times",(fill.graphic.graphics[0] as Mark).wellKnownGraphicName);
+			Assert.assertNotNull((fill.graphic.graphics[0] as Mark).stroke);
+			Assert.assertEquals(42,(fill.graphic.graphics[0] as Mark).stroke.width);
+			Assert.assertEquals(parseInt("000000",16),(fill.graphic.graphics[0] as Mark).stroke.color);
+			
+			xml = "<sld:Fill>\n";
+			xml+= "<sld:GraphicFill>\n";
+			xml+= "<sld:Graphic>\n";
+			xml+= "<sld:Mark>\n";
+			xml+= "<sld:WellKnownName>shape://times</sld:WellKnownName>\n";
+			xml+= "<sld:Stroke>\n";
+			xml+= "<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-width\">42</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-linecap\">round</sld:CssParameter>\n";
+			xml+= "<sld:CssParameter name=\"stroke-linejoin\">round</sld:CssParameter>\n";
+			xml+= "</sld:Stroke>\n";
+			xml+= "</sld:Mark>\n";
+			xml+= "<sld:Size>6</sld:Size>\n";
+			xml+= "</sld:Graphic>\n";
+			xml+= "</sld:GraphicFill>\n";
+			xml+= "</sld:Fill>\n";
+			Assert.assertEquals(xml,fill.sld);
 			
 		}
 	}
