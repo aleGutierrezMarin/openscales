@@ -35,11 +35,10 @@
 			import org.openscales.core.style.fill.SolidFill;
 			import org.openscales.core.style.font.Font;
 			import org.openscales.core.style.graphic.ExternalGraphic;
+			import org.openscales.core.style.graphic.Graphic;
+			import org.openscales.core.style.graphic.IGraphic;
 			import org.openscales.core.style.graphic.Mark;
 			import org.openscales.core.style.halo.Halo;
-			import org.openscales.core.style.marker.ArrowMarker;
-			import org.openscales.core.style.marker.CustomMarker;
-			import org.openscales.core.style.marker.WellKnownMarker;
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 			import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -145,7 +144,7 @@
 			[Bindable]
 			private var _paintingAlpha:Number = 1;
 			
-			private var _arrowMarkerType:String = ArrowMarker.AM_THIN;
+			private var _arrowMarkerType:String = Mark.CARROW;
 			
 			[Bindable]
 			private var _leftArrowActivated:Boolean = false;
@@ -232,36 +231,40 @@
 			 */
 			private function onLeftArrowChange():void
 			{
-				var am:ArrowMarker;
+				var am:org.openscales.core.style.graphic.Graphic;
 				if (this._leftArrowActivated)
 				{
-					var arrowSymb:ArrowSymbolizer = this._editedSymbolize as ArrowSymbolizer
-					if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
-						am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
-					else
-						am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
-					
-					
-					if (this._editedSymbolize is ArrowSymbolizer)
-					{
-						(this._editedSymbolize as ArrowSymbolizer).leftMarker = am;
-					}else{
-						if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
-							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
-						else
-							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
-						
-						arrowSymb = new ArrowSymbolizer((this._editedSymbolize as LineSymbolizer).stroke, am, null);
+					var arrowSymb:ArrowSymbolizer = this._editedSymbolize as ArrowSymbolizer;
+					if(!arrowSymb) {
+						arrowSymb = new ArrowSymbolizer();
+						if(this._editedSymbolize is LineSymbolizer) {
+							arrowSymb.stroke = (this._editedSymbolize as LineSymbolizer).stroke;
+						}
 						this._editedSymbolize = arrowSymb;
 						this.editStyleHandler.replaceSymbolizer(arrowSymb);
 						this._isArrow = true;
 					}
+					if(!arrowSymb.stroke)
+						arrowSymb.stroke = new Stroke();
+					if(!arrowSymb.leftGraphic
+						|| arrowSymb.leftGraphic.graphics
+						|| arrowSymb.leftGraphic.graphics.length != 1
+						|| !(arrowSymb.leftGraphic.graphics[0] is Mark)) {
+						arrowSymb.leftGraphic = new org.openscales.core.style.graphic.Graphic();
+						arrowSymb.leftGraphic.graphics.push(new Mark(this._arrowMarkerType,null,arrowSymb.stroke));
+					} else {
+						(arrowSymb.leftGraphic.graphics[0] as Mark).wellKnownGraphicName = this._arrowMarkerType;
+					}
+					if(arrowSymb.stroke.width<3)
+						arrowSymb.leftGraphic.size = 12;
+					else
+						arrowSymb.leftGraphic.size = arrowSymb.stroke.width*4;
 				}else{
 					if (this._rightArrowActivated)
 					{
-						(this._editedSymbolize as ArrowSymbolizer).leftMarker = null;
+						(this._editedSymbolize as ArrowSymbolizer).leftGraphic = null;
 					}else{
-						var linSymb:LineSymbolizer = new LineSymbolizer((this._editedSymbolize as ArrowSymbolizer).stroke);
+						var linSymb:LineSymbolizer = new LineSymbolizer(arrowSymb.stroke);
 						this._editedSymbolize = linSymb;
 						this.editStyleHandler.replaceSymbolizer(linSymb);
 						this._isArrow = false;
@@ -275,35 +278,40 @@
 			 */
 			private function onRightArrowChange():void
 			{
-				var am:ArrowMarker;
+				var am:org.openscales.core.style.graphic.Graphic;
 				if (this._rightArrowActivated)
 				{
-					var arrowSymb:ArrowSymbolizer = this._editedSymbolize as ArrowSymbolizer
-					if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
-						am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
-					else
-						am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
-					
-					if (this._editedSymbolize is ArrowSymbolizer)
-					{
-						(this._editedSymbolize as ArrowSymbolizer).rightMarker = am;
-					}else{
-						if ((this._editedSymbolize as LineSymbolizer).stroke.width < 3)
-							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, 12);
-						else
-							am = new ArrowMarker(this._arrowMarkerType, null, (this._editedSymbolize as LineSymbolizer).stroke, (this._editedSymbolize as LineSymbolizer).stroke.width*4);
-						
-						arrowSymb = new ArrowSymbolizer((this._editedSymbolize as LineSymbolizer).stroke, null, am);
+					var arrowSymb:ArrowSymbolizer = this._editedSymbolize as ArrowSymbolizer;
+					if(!arrowSymb) {
+						arrowSymb = new ArrowSymbolizer();
+						if(this._editedSymbolize is LineSymbolizer) {
+							arrowSymb.stroke = (this._editedSymbolize as LineSymbolizer).stroke;
+						}
 						this._editedSymbolize = arrowSymb;
 						this.editStyleHandler.replaceSymbolizer(arrowSymb);
 						this._isArrow = true;
-					}	
+					}
+					if(!arrowSymb.stroke)
+						arrowSymb.stroke = new Stroke();
+					if(!arrowSymb.rightGraphic
+						|| arrowSymb.rightGraphic.graphics
+						|| arrowSymb.rightGraphic.graphics.length != 1
+						|| !(arrowSymb.rightGraphic.graphics[0] is Mark)) {
+						arrowSymb.rightGraphic = new org.openscales.core.style.graphic.Graphic();
+						arrowSymb.rightGraphic.graphics.push(new Mark(this._arrowMarkerType,null,arrowSymb.stroke));
+					} else {
+						(arrowSymb.rightGraphic.graphics[0] as Mark).wellKnownGraphicName = this._arrowMarkerType;
+					}
+					if(arrowSymb.stroke.width<3)
+						arrowSymb.rightGraphic.size = 12;
+					else
+						arrowSymb.rightGraphic.size = arrowSymb.stroke.width*4;
 				}else{
 					if (this._leftArrowActivated)
 					{
-						(this._editedSymbolize as ArrowSymbolizer).rightMarker = null;
+						(this._editedSymbolize as ArrowSymbolizer).rightGraphic = null;
 					}else{
-						var linSymb:LineSymbolizer = new LineSymbolizer((this._editedSymbolize as ArrowSymbolizer).stroke);
+						var linSymb:LineSymbolizer = new LineSymbolizer(arrowSymb.stroke);
 						this._editedSymbolize = linSymb;
 						this.editStyleHandler.replaceSymbolizer(linSymb);
 						this._isArrow = false;
@@ -391,13 +399,19 @@
 				stroke.color = this._lineColor;
 				if (this._isArrow)
 				{
-					if ((this._editedSymbolize as ArrowSymbolizer).leftMarker)
+					if ((this._editedSymbolize as ArrowSymbolizer).leftGraphic
+						&& (this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics
+						&& (this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics.length>0
+						&& (this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics[0] is Mark)
 					{
-						((this._editedSymbolize as ArrowSymbolizer).leftMarker as ArrowMarker).stroke.color = this._lineColor;
+						((this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics[0] as Mark).stroke.color = this._lineColor;
 					}
-					if ((this._editedSymbolize as ArrowSymbolizer).rightMarker)
+					if ((this._editedSymbolize as ArrowSymbolizer).rightGraphic
+						&& (this._editedSymbolize as ArrowSymbolizer).rightGraphic.graphics
+						&& (this._editedSymbolize as ArrowSymbolizer).rightGraphic.graphics.length>0
+						&& (this._editedSymbolize as ArrowSymbolizer).rightGraphic.graphics[0] is Mark)
 					{
-						((this._editedSymbolize as ArrowSymbolizer).rightMarker as ArrowMarker).stroke.color = this._lineColor;
+						((this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics[0] as Mark).stroke.color = this._lineColor;
 					}
 				}
 				this.editStyleHandler.actualizeFeature();
@@ -412,13 +426,19 @@
 				stroke.opacity = this._lineBorderOpacity/100;
 				if (this._isArrow)
 				{
-					if ((this._editedSymbolize as ArrowSymbolizer).leftMarker)
+					if ((this._editedSymbolize as ArrowSymbolizer).leftGraphic
+						&& (this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics
+						&& (this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics.length>0
+						&& (this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics[0] is Mark)
 					{
-						((this._editedSymbolize as ArrowSymbolizer).leftMarker as ArrowMarker).stroke.opacity = this._lineBorderOpacity/100;
+						((this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics[0] as Mark).stroke.opacity = this._lineBorderOpacity/100;
 					}
-					if ((this._editedSymbolize as ArrowSymbolizer).rightMarker)
+					if ((this._editedSymbolize as ArrowSymbolizer).rightGraphic
+						&& (this._editedSymbolize as ArrowSymbolizer).rightGraphic.graphics
+						&& (this._editedSymbolize as ArrowSymbolizer).rightGraphic.graphics.length>0
+						&& (this._editedSymbolize as ArrowSymbolizer).rightGraphic.graphics[0] is Mark)
 					{
-						((this._editedSymbolize as ArrowSymbolizer).rightMarker as ArrowMarker).stroke.opacity = this._lineBorderOpacity/100;
+						((this._editedSymbolize as ArrowSymbolizer).leftGraphic.graphics[0] as Mark).stroke.opacity = this._lineBorderOpacity/100;
 					}
 				}
 				this.editStyleHandler.actualizeFeature();
@@ -433,28 +453,37 @@
 				stroke.width = int(this._lineWidth);
 				if (this._isArrow)
 				{
-					var am:ArrowMarker;
-					if ((this._editedSymbolize as ArrowSymbolizer).leftMarker)
+					var am:org.openscales.core.style.graphic.Graphic;
+					
+					if ((this._editedSymbolize as ArrowSymbolizer).leftGraphic)
 					{
-						((this._editedSymbolize as ArrowSymbolizer).leftMarker as ArrowMarker).stroke.width = int(this._lineWidth);
-						am = ((this._editedSymbolize as ArrowSymbolizer).leftMarker as ArrowMarker);
-						if (am.stroke.width < 3)
-							am = new ArrowMarker(am.arrowMarker, am.fill, am.stroke, 12, am.opacity, am.rotation);
-						else
-							am = new ArrowMarker(am.arrowMarker, am.fill, am.stroke, am.stroke.width*4, am.opacity, am.rotation);
-							
-						(this._editedSymbolize as ArrowSymbolizer).leftMarker = am;
+						am = (this._editedSymbolize as ArrowSymbolizer).leftGraphic;
+						if(am.graphics
+							&& am.graphics.length == 1
+							&& am.graphics[0] is Mark) {
+							if(!(am.graphics[0] as Mark).stroke)
+								(am.graphics[0] as Mark).stroke = new Stroke();
+							(am.graphics[0] as Mark).stroke.width = int(this._lineWidth);
+							if((am.graphics[0] as Mark).stroke.width<3)
+								am.size = 12;
+							else
+								am.size = (am.graphics[0] as Mark).stroke.width*4;
+						}
 					}
-					if ((this._editedSymbolize as ArrowSymbolizer).rightMarker)
+					if ((this._editedSymbolize as ArrowSymbolizer).rightGraphic)
 					{
-						((this._editedSymbolize as ArrowSymbolizer).rightMarker as ArrowMarker).stroke.width = int(this._lineWidth);
-						am = ((this._editedSymbolize as ArrowSymbolizer).rightMarker as ArrowMarker);
-						if (am.stroke.width < 3)
-							am = new ArrowMarker(am.arrowMarker, am.fill, am.stroke, 12, am.opacity, am.rotation);
-						else
-							am = new ArrowMarker(am.arrowMarker, am.fill, am.stroke, am.stroke.width*4, am.opacity, am.rotation);
-						
-						(this._editedSymbolize as ArrowSymbolizer).rightMarker = am;
+						am = (this._editedSymbolize as ArrowSymbolizer).rightGraphic;
+						if(am.graphics
+							&& am.graphics.length == 1
+							&& am.graphics[0] is Mark) {
+							if(!(am.graphics[0] as Mark).stroke)
+								(am.graphics[0] as Mark).stroke = new Stroke();
+							(am.graphics[0] as Mark).stroke.width = int(this._lineWidth);
+							if((am.graphics[0] as Mark).stroke.width<3)
+								am.size = 12;
+							else
+								am.size = (am.graphics[0] as Mark).stroke.width*4;
+						}
 					}
 				}
 				this.editStyleHandler.actualizeFeature();
@@ -536,7 +565,6 @@
 				var fill:SolidFill = new SolidFill();
 				fill.color = this._pointColor;
 				fill.opacity = this._pointOpacity/100;
-				var wkm:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill)
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
 				ptsym.graphic.graphics.pop();
 				ptsym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill));
@@ -797,25 +825,33 @@
 							if (rule.symbolizers[i] is PointSymbolizer)
 							{
 								var ptSymb:PointSymbolizer = rule.symbolizers[i] as PointSymbolizer;
-								if (ptSymb.graphic is CustomMarker)
-								{
-									var cm:CustomMarker = ptSymb.graphic as CustomMarker;
-									if(this.iconURLArray.getItemIndex(cm.url) == -1)
-									{
-										this.iconURLArray.addItem(cm.url);
+								if(ptSymb.graphic.graphics && ptSymb.graphic.graphics.length==1) {
+									var graph:IGraphic = ptSymb.graphic.graphics[0];
+									if(graph is Mark) {
+										var mark:Mark = graph as Mark;
+										if(mark.fill && mark.fill is SolidFill) {
+											this._pointColor = (mark.fill as SolidFill).color as uint;
+											this._pointOpacity = (mark.fill as SolidFill).opacity*100;
+										}
+										this._pointColorMode = true;
+										this._pointIconMode = false;
+									} else if(graph is ExternalGraphic) {
+										var extGraph:ExternalGraphic = graph as ExternalGraphic;
+										if(this.iconURLArray.getItemIndex(extGraph.onlineResource) == -1)
+										{
+											this.iconURLArray.addItem(extGraph.onlineResource);
+										}
+										var itemIndex:int = this.iconURLArray.getItemIndex(extGraph.onlineResource);
+										this._iconSelectedIndex = itemIndex;
+										this._pointColorMode = false;
+										this._pointIconMode = true;
 									}
-									var itemIndex:int = this.iconURLArray.getItemIndex(cm.url);
-									this._iconSelectedIndex = itemIndex;
-									this._pointColorMode = false;
-									this._pointIconMode = true;
-								}
-								else if (ptSymb.graphic is WellKnownMarker)
-								{
-									var wkm:WellKnownMarker = ptSymb.graphic as WellKnownMarker;
-									this._pointColor = wkm.fill.color as uint;
-									this._pointOpacity = wkm.fill.opacity*100;
-									this._pointColorMode = true;
-									this._pointIconMode = false;
+								} else {
+									if(!ptSymb.graphic.graphics)
+										ptSymb.graphic.graphics = new Vector.<IGraphic>();
+									for(var j:uint = ptSymb.graphic.graphics.length;j>0;--j)
+										ptSymb.graphic.graphics.pop();
+									ptSymb.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,new SolidFill(), new Stroke()));
 								}
 								_editedSymbolize = ptSymb;
 								return;
@@ -888,11 +924,11 @@
 								this._leftArrowActivated = false;
 								if (_isArrow)
 								{
-									if ((rule.symbolizers[i] as ArrowSymbolizer).leftMarker)
+									if ((rule.symbolizers[i] as ArrowSymbolizer).leftGraphic)
 									{
 										this._leftArrowActivated = true;
 									}
-									if ((rule.symbolizers[i] as ArrowSymbolizer).rightMarker)
+									if ((rule.symbolizers[i] as ArrowSymbolizer).rightGraphic)
 									{
 										this._rightArrowActivated = true;
 									}

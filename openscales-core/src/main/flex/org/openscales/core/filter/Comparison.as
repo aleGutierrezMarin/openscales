@@ -13,6 +13,7 @@ package org.openscales.core.filter
 	
 	public class Comparison implements IFilter
 	{
+		private namespace ogcns="http://www.opengis.net/ogc";
 		/**
 	      * PropertyType: type
 	      * {String} type: type of the comparison. This is one of
@@ -41,13 +42,17 @@ package org.openscales.core.filter
 		
 		private var _property:String;
 		
-		private var _value:Object;
+		private var _value:Object = null;
 		
 		private var _matchCase:Boolean = true;
 		
 		private var _lowerBoundary:Object = null;
 
 		private var _upperBoundary:Object = null;
+		
+		private var _wildCard:String = null;
+		private var _singleChar:String = null;
+		private var _escapeChar:String = null;
 		
 		public function Comparison(property:String, type:String) {
 			
@@ -93,7 +98,20 @@ package org.openscales.core.filter
 					(got <= this.upperBoundary);
 					break;
 				case LIKE:
-					var regexp:RegExp = new RegExp(this.value, "gi");
+					var value:String = this.value.toString();
+					if(this._escapeChar) {
+						value.replace("\\","\\\\");
+						value.replace(this._escapeChar,"\\");
+					}
+					if(this._singleChar) {
+						value.replace("?","\\?");
+						value.replace(this._singleChar,"?");
+					}
+					if(this._wildCard) {
+						value.replace("\.","\\.");
+						value.replace(this._wildCard,"?");
+					}
+					var regexp:RegExp = new RegExp(value, "gi");
 					result = regexp.test(got.toString());
 					break;
 				case IS_NULL:
@@ -104,16 +122,74 @@ package org.openscales.core.filter
 		}
 		
 		public function clone():IFilter {
-			//TODO
-			return null;
+			var res:Comparison = new Comparison(this._property,this._type);
+			res._lowerBoundary = this._lowerBoundary;
+			res._matchCase = this._matchCase;
+			res._upperBoundary = this._upperBoundary;
+			res._value = this._value;
+			return res;
 		}
 		
 		public function get sld():String {
-			//TODO
-			return null;
+			if(!this._type || !this._property)
+				return "";
+			var res:String = "<Filter>\n";
+			res+= "<ogc:"+this._type;
+			if(this._escapeChar == "\\")
+				res+= " escapeChar=\"\\\"";
+			else if(this._escapeChar)
+				res+= " escapeChar=\""+this._escapeChar+"\"";
+			
+			if(this._wildCard == "\\")
+				res+= " wildChar=\"\\\"";
+			else if(this._wildCard)
+				res+= " wildChar=\""+this._wildCard+"\"";
+			
+			if(this._singleChar == "\\")
+				res+= " singleChar=\"\\\"";
+			else if(this._singleChar)
+				res+= " singleChar=\""+this._singleChar+"\"";
+			
+			res+">\n";
+			res+= "<ogc:PropertyName>"+this._property+"</ogc:PropertyName>\n";
+			if(this._value)
+				res+= "<ogc:Literal>"+this._value+"</ogc:Literal>\n";
+			if(this._lowerBoundary)
+				res+= "<ogc:LowerBoundary>"+this._lowerBoundary+"</<ogc:LowerBoundary>\n";
+			if(this._upperBoundary)
+				res+= "<ogc:UpperBoundary>"+this._upperBoundary+"</<ogc:UpperBoundary>\n";
+			res+= "</ocg:"+this._type+">\n";
+			res+= "</Filter>\n";
+			return res;
 		}
 		public function set sld(sld:String):void {
-			//TODO
+			use namespace ogcns;
+			this._type = null;
+			this._property = null;
+			this._value = null;
+			this._matchCase = true;
+			this._lowerBoundary = null;
+			this._upperBoundary = null;
+			this._wildCard = null;
+			this._singleChar = null;
+			this._escapeChar = null;
+			
+			var dataXML:XML = new XML(sld);
+			var filter:XMLList = dataXML.children();
+			if(filter.length()==0)
+				return;
+			dataXML = filter[0];
+			this._type = dataXML.localName();
+			
+			var childs:XMLList = dataXML.PropertyName;
+			if(childs.length()>0) {
+				this._property = childs[0];
+			}
+			childs = dataXML.Literal;
+			if(childs.length()>0) {
+				this._value = childs[0];
+			}
+			//todo support isbetween and in
 		}
 
 		/**

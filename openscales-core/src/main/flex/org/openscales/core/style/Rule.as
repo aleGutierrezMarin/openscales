@@ -3,6 +3,7 @@ package org.openscales.core.style {
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
 	
+	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.filter.IFilter;
 	import org.openscales.core.style.graphic.ExternalGraphic;
 	import org.openscales.core.style.graphic.IGraphic;
@@ -278,7 +279,31 @@ package org.openscales.core.style {
 					case "TextSymbolizer":
 						symb = new TextSymbolizer();
 						break;
-					//TODO filters
+					case "Filter":
+						if(this._filter)
+							continue;
+						var filter:XMLList = dataXML.children();
+						var node:XML;
+						if(filter.length()==0)
+							continue;
+						node = filter[0];
+						switch (node.localName()) {
+							case "PropertyIsEqualTo":
+							case "PropertyIsNotEqualTo":
+							case "PropertyIsLessThan":
+							case "PropertyIsGreaterThan":
+							case "PropertyIsLessThanOrEqualTo":
+							case "PropertyIsGreaterThanOrEqualTo":
+							case "PropertyIsLike":
+							case "PropertyIsNull":
+							case "PropertyIsBetween":
+								this._filter = new Comparison(null,null);
+								break;
+						}
+						if(this._filter)
+							this._filter.sld = dataXML;
+						break;
+					//TODO other filters
 				}
 				if(symb) {
 					symb.sld = dataXML.toString();
