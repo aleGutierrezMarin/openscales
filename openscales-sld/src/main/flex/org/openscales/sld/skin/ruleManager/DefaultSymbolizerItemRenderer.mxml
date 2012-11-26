@@ -18,11 +18,11 @@
 			
 			<s:Label id="type" text="" width="98"/>
 			
-			<s:Image source="@Embed(source='assets/deleteSymbolizer.png')"
+			<s:Image source="@Embed(source='/assets/deleteSymbolizer.png')"
 					 height="30" width="30"
 					 click="removeSymbolizer()"
 					 toolTip="Remove"/>
-			<s:Image source="@Embed(source='assets/cloneSymbolizer.png')"
+			<s:Image source="@Embed(source='/assets/cloneSymbolizer.png')"
 					 height="30" width="30"
 					 click="cloneSymbolizer()"
 					 toolTip="Clone"
