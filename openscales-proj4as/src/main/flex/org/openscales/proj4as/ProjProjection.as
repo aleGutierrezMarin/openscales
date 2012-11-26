@@ -714,7 +714,12 @@ package org.openscales.proj4as {
 						trace("Unrecognized parameter: " + paramName);
 						break;
 				} // switch()
+				if(!this.projParams.units)this.projParams.units = "degrees";
 			} // for paramArray
+			
+			
+			
+			
 			this.deriveConstants();
 		}
 		
