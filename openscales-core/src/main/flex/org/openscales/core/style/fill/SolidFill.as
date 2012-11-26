@@ -8,6 +8,10 @@ package org.openscales.core.style.fill {
 	 * Class defining a solid fill, which is characterized by its color and opacity
 	 */
 	public class SolidFill implements Fill {
+		
+		private namespace sldns="http://www.opengis.net/sld";
+		private namespace ogcns="http://www.opengis.net/ogc";
+		
 		private var _color:Object;
 
 		private var _opacity:Number;
@@ -26,7 +30,8 @@ package org.openscales.core.style.fill {
 		}
 
 		public function set color(value:Object):void {
-
+			if(value==null)
+				return;
 			if (!(value is uint || value is IExpression)) {
 
 				throw ArgumentError("color attribute must be either a uint or a IExpression");
@@ -44,8 +49,8 @@ package org.openscales.core.style.fill {
 		}
 
 		public function set opacity(value:Number):void {
-
-			this._opacity = value;
+			if(value)
+				this._opacity = value;
 		}
 		
 		public function get sld():String {
@@ -63,15 +68,30 @@ package org.openscales.core.style.fill {
 					stringColor = spareStringColor;
 				res+="<sld:CssParameter name=\"fill\">#"+stringColor+"</sld:CssParameter>\n";
 			}
-			if(this.opacity) {
+			if(this.opacity!=1) {
 				res+="<sld:CssParameter name=\"fill-opacity\">"+this.opacity+"</sld:CssParameter>\n";
 			}
-			res+="</sld:Fill>"
+			res+="</sld:Fill>\n";
 			return res;
 		}
 		
 		public function set sld(sld:String): void {
-			
+			use namespace sldns;
+			use namespace ogcns;
+			var dataXML:XML = new XML(sld);
+			var childs:XMLList = dataXML.CssParameter;
+			this.color = 0;
+			this.opacity = 1;
+			for each(var node:XML in childs) {
+				if(node.@name == "fill") {
+					this.color = parseInt(node[0].toString().replace("#",""),16);
+				} else if(node.@name == "fill-opacity") {
+					var val:Number = Number(node[0].toString());
+					if(!val)
+						continue;
+					this.opacity = val;
+				}
+			}
 		}
 
 		public function configureGraphics(graphics:Graphics, feature:Feature):void {

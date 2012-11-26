@@ -232,16 +232,10 @@
     <classEntry path="org.openscales.core.security.events.SecurityEvent"/>
     <classEntry path="org.openscales.core.security.ign.IGNGeoRMSecurity"/>
     <classEntry path="org.openscales.core.style.Rule"/>
-    <classEntry path="org.openscales.core.style.fill.BitmapFill"/>
     <classEntry path="org.openscales.core.style.fill.Fill"/>
     <classEntry path="org.openscales.core.style.fill.SolidFill"/>
     <classEntry path="org.openscales.core.style.font.Font"/>
     <classEntry path="org.openscales.core.style.halo.Halo"/>
-    <classEntry path="org.openscales.core.style.marker.ArrowMarker"/>
-    <classEntry path="org.openscales.core.style.marker.CustomMarker"/>
-    <classEntry path="org.openscales.core.style.marker.DisplayObjectMarker"/>
-    <classEntry path="org.openscales.core.style.marker.Marker"/>
-    <classEntry path="org.openscales.core.style.marker.WellKnownMarker"/>
     <classEntry path="org.openscales.core.style.stroke.Stroke"/>
     <classEntry path="org.openscales.core.style.symbolizer.ArrowSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.IFillSymbolizer"/>
@@ -310,7 +304,6 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.style.fill.HatchingFill"/>
     <classEntry path="com.foxaweb.utils.Raster"/>
     <classEntry path="org.openscales.core.json.GENERICJSON"/>
     <classEntry path="org.openscales.core.json.JSONParseError"/>
@@ -319,6 +312,16 @@
     <classEntry path="org.openscales.core.json.JSONToken"/>
     <classEntry path="org.openscales.core.json.JSONTokenType"/>
     <classEntry path="org.openscales.core.json.JSONTokenizer"/>
+    <classEntry path="org.openscales.core.style.fill.GraphicFill"/>
+    <classEntry path="org.openscales.core.style.graphic.Graphic"/>
+    <classEntry path="org.openscales.core.style.graphic.ExternalGraphic"/>
+    <classEntry path="org.openscales.core.style.graphic.Mark"/>
+    <classEntry path="org.openscales.core.style.symbolizer.Geometry"/>
+    <classEntry path="org.openscales.core.style.graphic.IGraphic"/>
+    <classEntry path="org.openscales.core.style.graphic.WaitingRendering"/>
+    <classEntry path="org.openscales.core.filter.FeatureId"/>
+    <classEntry path="org.openscales.core.filter.Logical"/>
+    <classEntry path="org.openscales.core.filter.Spatial"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
