@@ -22,7 +22,7 @@
 			<s:layout>
 				<s:HorizontalLayout horizontalAlign="right" />
 			</s:layout>
-			<!--<s:Image source="@Embed(source='assets/addRule.png')"
+			<!--<s:Image source="@Embed(source='/assets/addRule.png')"
 					 height="30" width="30"
 					 click="createRule()"
 					 toolTip="Add rule"/>-->
