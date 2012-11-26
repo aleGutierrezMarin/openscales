@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.sld.ui.AddSymbolizerManager")]
+	</fx:Metadata>
+	
+	<s:Group width="100%"
+			 height="100%">
+		<s:Rect width="100%"
+				height="100%">
+			<s:fill>
+				<s:SolidColor color="#CCCCCC" />
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<s:Group top="10"
+			 left="10"
+			 right="10"
+			 bottom="10">
+		<s:layout>
+			<s:VerticalLayout gap="15" />
+		</s:layout>
+		<s:Label text="Veuillez sélectionner le type de symbologie :" />
+		<s:DropDownList id="rendererTypePicker" width="300">
+			<mx:ArrayCollection>
+				<fx:String>Pontuel</fx:String>
+				<fx:String>Linéaire</fx:String>
+				<fx:String>Polygonnal</fx:String>
+				<fx:String>Textuel</fx:String>
+			</mx:ArrayCollection>
+		</s:DropDownList>
+		<s:Group width="100%">
+			<s:layout>
+				<s:HorizontalLayout horizontalAlign="right"/>
+			</s:layout>
+			<s:Button label="Ajouter"
+					  visible="{rendererTypePicker.selectedItem!=null}"
+					  click="this.addRule()"
+					  />
+			<s:Button label="Annuler"
+					  click="{PopUpManager.removePopUp(this.hostComponent);}"/>
+		</s:Group>
+	</s:Group>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.symbolizer.LineSymbolizer;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
+			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.core.style.symbolizer.TextSymbolizer;
+			
+			private function addRule():void {
+				if(this.hostComponent.onSymbolizerAdd!=null) {
+					var sym:Symbolizer;
+					switch(this.rendererTypePicker.selectedIndex) {
+						case 0:
+							sym = new PointSymbolizer();
+							break;
+						case 1:
+							sym = new LineSymbolizer();
+							break;
+						case 2:
+							sym = new PolygonSymbolizer();
+							break;
+						case 3:
+							sym = new TextSymbolizer();
+							break;
+						default:
+							return;
+					}
+					this.hostComponent.onSymbolizerAdd(sym);
+				}
+				PopUpManager.removePopUp(this.hostComponent);
+			}
+		]]>
+	</fx:Script>
+</s:Skin>

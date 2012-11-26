@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<handler:AbstractRuleHandler xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							 xmlns:s="library://ns.adobe.com/flex/spark" 
+							 xmlns:mx="library://ns.adobe.com/flex/mx"
+							 xmlns:handler="org.openscales.sld.handler.*"
+							 creationComplete="init()"
+							 width="100%"
+							 name="Affichage des labels">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+		<s:RadioButtonGroup id="anchorPoint" itemClick="updateRule(event)" />
+	</fx:Declarations>
+	
+	<s:VGroup width="100%">
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Label text="Attribut :" width="120"/>
+			<s:DropDownList id="attribute"
+							dataProvider="{attributes}"
+							requireSelection="true"
+							change="updateRule(event)"
+							width="200"/>
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Label text="Police :" width="120"/>
+			<s:DropDownList id="fontFamilly"
+							dataProvider="{fonts}"
+							requireSelection="true"
+							change="updateRule(event)"
+							width="200"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Label text="Taille :" width="120"/>
+			<s:NumericStepper id="fontSize"
+							  minimum="1"
+							  maximum="72"
+							  change="updateRule(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Label text="Gras :" width="120"/>
+			<s:CheckBox id="bold" change="updateRule(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Label text="Italic :" width="120"/>
+			<s:CheckBox id="italic"
+						change="updateRule(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Label text="Couleur :" width="120"/>
+			<mx:ColorPicker id="textColor"
+							change="updateRule(event)" />
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Label text="Opacité :" width="120"/>
+			<s:HSlider id="textOpacity"
+					   minimum="0"
+					   maximum="110"
+					   changeEnd="updateRule(event)"/>
+		</s:HGroup>
+		<s:Spacer height="10" />
+		<s:Label text="Halo"
+				 fontWeight="bold"
+				 visible="{labelStyle}"
+				 includeInLayout="{labelStyle}"/>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Spacer width="5" />
+			<s:Label text="Epaisseur :" width="110"/>
+			<s:NumericStepper id="haloWidth"
+							  minimum="0"
+							  maximum="100" change="updateRule(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Spacer width="5" />
+			<s:Label text="Couleur :" width="110"/>
+			<mx:ColorPicker id="haloColor"
+							change="updateRule(event)" />
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Spacer width="5" />
+			<s:Label text="Opacité :" width="110"/>
+			<s:HSlider id="haloOpacity"
+					   minimum="0"
+					   maximum="100"
+					   changeEnd="updateRule(event)"/>
+		</s:HGroup>
+		<s:Spacer height="10" />
+		<s:Label text="Point d'ancrage"
+				 fontWeight="bold"
+				 visible="{labelStyle}"
+				 includeInLayout="{labelStyle}"/>
+		<s:HGroup verticalAlign="middle"
+				  visible="{labelStyle}"
+				  includeInLayout="{labelStyle}">
+			<s:Spacer width="5" />
+			<s:Label text="" width="110"/>
+			<s:VGroup width="150">
+				<s:HGroup>
+					<s:RadioButton groupName="anchorPoint" value="TL" />
+					<s:RadioButton groupName="anchorPoint" value="T" />
+					<s:RadioButton groupName="anchorPoint" value="TR" />
+				</s:HGroup>
+				<s:HGroup>
+					<s:RadioButton groupName="anchorPoint" value="ML" />
+					<s:RadioButton groupName="anchorPoint" value="M" />
+					<s:RadioButton groupName="anchorPoint" value="MR" />
+				</s:HGroup>
+				<s:HGroup>
+					<s:RadioButton groupName="anchorPoint" value="BL" />
+					<s:RadioButton groupName="anchorPoint" value="B" />
+					<s:RadioButton groupName="anchorPoint" value="BR" />
+				</s:HGroup>
+			</s:VGroup>
+		</s:HGroup>
+
+	</s:VGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.sld.events.SLDEvent;
+			
+			import flashx.textLayout.conversion.TextConverter;
+			
+			import mx.collections.ArrayCollection;
+			
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.font.Font;
+			import org.openscales.core.style.halo.Halo;
+			import org.openscales.core.style.stroke.Stroke;
+			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.core.style.symbolizer.TextSymbolizer;
+			
+			private static var supportedSymbolizer:Vector.<Class> = new <Class>[TextSymbolizer];
+			
+			[Bindable]
+			private var labelStyle:Boolean = true;
+			
+			private var _fonts:ArrayCollection = new ArrayCollection(["Arial","Courier New","Times New Roman","Verdana"]);
+			private var _attributes:ArrayCollection = null;
+
+			[Bindable]
+			public function get attributes():ArrayCollection
+			{
+				return _attributes;
+			}
+
+			public function set attributes(value:ArrayCollection):void
+			{
+				_attributes = value;
+			}
+
+
+			[Bindable]
+			public function get fonts():ArrayCollection
+			{
+				return _fonts;
+			}
+
+			public function set fonts(value:ArrayCollection):void
+			{
+				_fonts = value;
+			}
+
+			
+			override public function set currentSymbolizer(value:Symbolizer):void {
+				super.currentSymbolizer = value;
+				this.onCurrentSymbolizer();
+			}
+			
+			override public function get supportedSymbolizers():Vector.<Class> {
+				return supportedSymbolizer;
+			}
+			
+			private function init():void {
+				this.onCurrentSymbolizer();
+			}
+			
+			private function updateRule(e:Event):void {
+				if(!this.currentSymbolizer || !(this.currentSymbolizer is TextSymbolizer))
+					return;
+				var symbolizer:TextSymbolizer = this.currentSymbolizer as TextSymbolizer;
+				
+				var anchor:String = anchorPoint.selectedValue as String;
+				if(anchor.indexOf("T"))
+					symbolizer.anchorPointY = 1;
+				else if(anchor.indexOf("B"))
+					symbolizer.anchorPointY = 0;
+				else
+					symbolizer.anchorPointY = 0.5;
+				if(anchor.indexOf("L"))
+					symbolizer.anchorPointX = 0;
+				else if(anchor.indexOf("R"))
+					symbolizer.anchorPointX = 1;
+				else
+					symbolizer.anchorPointX = 0.5;
+				
+				if(!symbolizer.font)
+					symbolizer.font = new org.openscales.core.style.font.Font();
+				if(!symbolizer.halo)
+					symbolizer.halo = new Halo();
+				switch(e.target) {
+					case attribute:
+						symbolizer.propertyName = attribute.selectedItem.realname as String;
+						break;
+					case fontFamilly:
+						symbolizer.font.family = fontFamilly.selectedItem as String;
+						break;
+					case fontSize:
+						symbolizer.font.size = fontSize.value;
+						break;
+					case bold:
+						symbolizer.font.weight = bold.selected?org.openscales.core.style.font.Font.BOLD:org.openscales.core.style.font.Font.NORMAL;
+						break;
+					case italic:
+						symbolizer.font.style = italic.selected?org.openscales.core.style.font.Font.ITALIC:org.openscales.core.style.font.Font.NORMAL;
+						break;
+					case textColor:
+						symbolizer.font.color = textColor.selectedColor;
+						break;
+					case textOpacity:
+						symbolizer.font.opacity = textOpacity.value/100;
+						break;
+					case haloWidth:
+						symbolizer.halo.radius = haloWidth.value;
+						break;
+					case haloColor:
+						symbolizer.halo.color = haloColor.selectedColor;
+						break;
+					case haloOpacity:
+						symbolizer.halo.opacity = haloOpacity.value/100;
+						break;
+				}
+				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.RULE_UPDATED,null,this.currentSymbolizer,true));
+			}
+			
+			private function toogleLabelMode():void {
+				if(!this.currentSymbolizer || !(this.currentSymbolizer is TextSymbolizer))
+					return;
+				var symbolizer:TextSymbolizer = this.currentSymbolizer as TextSymbolizer;
+				if(this.labelStyle) {
+					this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.REMOVE_SYMBOLIZER,null,this.currentSymbolizer,true));
+				} else {
+					if(!symbolizer.font)
+						symbolizer.font = new org.openscales.core.style.font.Font();
+					if(!symbolizer.halo)
+						symbolizer.halo = new Halo();
+					var found:Boolean = false;
+				}
+				this.onCurrentSymbolizer();
+			}
+			
+			private function onCurrentSymbolizer():void {
+				if(!this.currentSymbolizer || !(this.currentSymbolizer is TextSymbolizer))
+					return;
+				var symbolizer:TextSymbolizer = this.currentSymbolizer as TextSymbolizer;
+				if(!symbolizer.font)
+					symbolizer.font = new org.openscales.core.style.font.Font();
+				if(!symbolizer.halo)
+					symbolizer.halo = new Halo();
+				
+				var col:String="";
+				var row:String="M";
+				if(symbolizer.anchorPointX == 0)
+					col="L";
+				else if(symbolizer.anchorPointX == 1)
+					col="R";
+				if(symbolizer.anchorPointY == 0)
+					col="B";
+				else if(symbolizer.anchorPointY == 1)
+					col="T";
+				anchorPoint.selectedValue=row+col;
+				
+				attribute.selectedItem = null;
+				var i:uint = attributes.length;
+				for(;i>0;--i) {
+					if(attributes.getItemAt(i-1).realname == symbolizer.propertyName) {
+						attribute.selectedItem = attributes.getItemAt(i-1);
+						break;
+					}
+				}
+				
+				if(fonts.getItemIndex(symbolizer.font.family)!=-1)
+					fontFamilly.selectedItem = symbolizer.font.family;
+				else if(fonts.length>0) {
+					fontFamilly.selectedItem = fonts.getItemAt(0);
+					symbolizer.font.family = fonts.getItemAt(0) as String;
+				}
+				fontSize.value = symbolizer.font.size;
+				bold.selected = (symbolizer.font.weight==org.openscales.core.style.font.Font.BOLD);
+				italic.selected = (symbolizer.font.style==org.openscales.core.style.font.Font.ITALIC);
+				
+				textColor.selectedColor = symbolizer.font.color;
+				textOpacity.value = symbolizer.font.opacity*100;
+				haloWidth.value = symbolizer.halo.radius<=haloWidth.maximum?symbolizer.halo.radius:haloWidth.maximum;
+				symbolizer.halo.radius = haloWidth.value;
+				haloColor.selectedColor = symbolizer.halo.color;
+				haloOpacity.value = symbolizer.halo.opacity*100;
+			}
+		]]>
+	</fx:Script>
+</handler:AbstractRuleHandler>
