@@ -1,21 +1,23 @@
 package org.openscales.core.routing
 {
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.core.events.FeatureEvent;
-	import org.openscales.core.feature.Marker;
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 	
 	public class AbstractRouting extends Handler implements IRouting 
 	{
@@ -26,15 +28,18 @@ package org.openscales.core.routing
 		 /**
 		 * @private
 		 **/
-		 private var _startPoint:Marker=null;
+		 private var _startPoint:PointFeature=null;
+		 private var _startStyle:Style = null;
 		 /**
 		 * @private 
 		 * */
-		 private var _endPoint:Marker=null;
+		 private var _endPoint:PointFeature=null;
+		 private var _endStyle:Style = null;
 		 /**
 		 * @private
 		 * */
 		 private var _intermedPoints:Vector.<PointFeature> = new Vector.<PointFeature>();
+		 private var _intermedStyle:Style = null;
 		 /**
 		 * @private
 		 * */
@@ -165,17 +170,17 @@ package org.openscales.core.routing
 			//we determine the point where the user clicked
 			if(_resultsLayer!=null){
 				var lonlat:Location = this.map.getLocationFromMapPx(px);//this.map.getLocationFromLayerPx(px);
-				var featureAdded:Marker=new Marker(new Point(lonlat.lon,lonlat.lat));
+				var featureAdded:PointFeature = new PointFeature(new Point(lonlat.lon,lonlat.lat));
 				featureAdded.isEditable=true;
 				if(!_startPoint || _forceStartPointDrawing)
 				{	
 					if(_startPoint) resultsLayer.removeFeature(_startPoint);	
 					_startPoint=featureAdded;
-					_startPoint.image=_startPointclass;
+					featureAdded.style=this.startPointStyle;
 				}
 				else {
 					_intermedPoints.push(featureAdded);
-					featureAdded.image=_intermedPointClass;
+					featureAdded.style=this.intermedPointStyle;
 				}
 			}
 			refreshRouting();
@@ -189,8 +194,8 @@ package org.openscales.core.routing
 			var lonlat:Location = this.map.getLocationFromMapPx(px);// this.map.getLocationFromLayerPx(px);
 			if(!_endPoint)
 			{
-				_endPoint=new Marker(new Point(lonlat.lon,lonlat.lat));
-				_endPoint.image=_endPointClass;
+				_endPoint=new PointFeature(new Point(lonlat.lon,lonlat.lat));
+				_endPoint.style=this.endPointStyle;
 				_endPoint.isEditable=true;
 			}
 			else _endPoint.geometry=new Point(lonlat.lon,lonlat.lat);
@@ -240,8 +245,8 @@ package org.openscales.core.routing
 			refreshRouting();
 		}
 		 
-		public function  getIntermediaryPointByIndex(index:int):Marker{
-			if(index>=0 && index<_intermedPoints.length) return  _intermedPoints[index] as Marker;
+		public function  getIntermediaryPointByIndex(index:int):PointFeature{
+			if(index>=0 && index<_intermedPoints.length) return  _intermedPoints[index] as PointFeature;
 			return null;
 		}
 		 /**
@@ -255,9 +260,9 @@ package org.openscales.core.routing
 		 public function editItinerary(event:FeatureEvent):void{
 			if(event.feature is PointFeature){
 		 		if(!(event.feature==_startPoint || _intermedPoints.indexOf(event.feature)!=-1 || event.feature==_endPoint)){	 
-		 			var intermedPoint:Marker=new Marker(event.feature.geometry as Point);
+		 			var intermedPoint:PointFeature=new PointFeature(event.feature.geometry as Point);
 		 			intermedPoint.isEditable=true;		
-		 			intermedPoint.image=_intermedPointClass;
+		 			intermedPoint.style=this.intermedPointStyle;
 		 			_intermedPoints.push(intermedPoint);
 		 		}
 		 		refreshRouting();
@@ -317,13 +322,13 @@ package org.openscales.core.routing
 		/**
 		 * the routing start point 
 		 * */
-		 public function get startPoint():Marker{
+		 public function get startPoint():PointFeature{
 		 	return this._startPoint;
 		 }
 		 /**
 		 * @private
 		 * */
-		 public function set startPoint(value:Marker):void{
+		 public function set startPoint(value:PointFeature):void{
 		 	if(value!=_startPoint){
 		 		this._startPoint=value;
 		 		this._startPoint.style=Style.getDefaultPointStyle();
@@ -333,13 +338,13 @@ package org.openscales.core.routing
 		 /**
 		 *The routing end point
 		 **/
-		 public function get endPoint():Marker{
+		 public function get endPoint():PointFeature{
 		 	return this._endPoint;
 		 }
 		 /**
 		 * @private
 		 **/
-		 public function set endPoint(value:Marker):void{
+		 public function set endPoint(value:PointFeature):void{
 		 	if(value!=_endPoint){
 		 		this._endPoint=value;
 		 		refreshRouting();
@@ -376,6 +381,88 @@ package org.openscales.core.routing
 		 * */
 		 public function set intermedPointClass(value:Class):void{
 		 	if(value)_intermedPointClass=value;
+		 }
+		 
+		 
+		 /**
+		  *The routing start point Style
+		  **/
+		 public function get startPointStyle():Style{
+			 if(!this._startStyle) {
+				 this._startStyle = new Style();
+				 var rule:Rule = new Rule();
+				 var symbolizer:PointSymbolizer = new PointSymbolizer();
+				 var extGraphic:ExternalGraphic = new ExternalGraphic();
+				 extGraphic.clip =  new this._startPointclass();
+				 extGraphic.xOffset = -11;
+				 extGraphic.yOffset = -25;
+				 symbolizer.graphic.size = 16;
+				 symbolizer.graphic.graphics.push(extGraphic);
+				 rule.symbolizers.push(symbolizer);
+				 this._startStyle.rules.push(rule);
+			 }
+			 return this._startStyle;
+		 }
+		 
+		 /**
+		  * @private
+		  **/
+		 public function set startPointStyle(value:Style):void{
+			 this._startStyle = value;
+		 }
+		 
+		 /**
+		  *The routing middle point Style
+		  **/
+		 public function get intermedPointStyle():Style{
+			 if(!this._intermedStyle) {
+				 this._intermedStyle = new Style();
+				 var rule:Rule = new Rule();
+				 var symbolizer:PointSymbolizer = new PointSymbolizer();
+				 var extGraphic:ExternalGraphic = new ExternalGraphic();
+				 extGraphic.clip =  new this._intermedPointClass();
+				 extGraphic.xOffset = -11;
+				 extGraphic.yOffset = -25;
+				 symbolizer.graphic.size = 16;
+				 symbolizer.graphic.graphics.push(extGraphic);
+				 rule.symbolizers.push(symbolizer);
+				 this._intermedStyle.rules.push(rule);
+			 }
+			 return this._intermedStyle;
+		 }
+		 
+		 /**
+		  * @private
+		  **/
+		 public function set endMiddleStyle(value:Style):void{
+			 this._intermedStyle = value;
+		 }
+		 
+		 /**
+		  *The routing end point Style
+		  **/
+		 public function get endPointStyle():Style{
+			 if(!this._endStyle) {
+				 this._endStyle = new Style();
+				 var rule:Rule = new Rule();
+				 var symbolizer:PointSymbolizer = new PointSymbolizer();
+				 var extGraphic:ExternalGraphic = new ExternalGraphic();
+				 extGraphic.clip =  new this._endPointClass();
+				 extGraphic.xOffset = -11;
+				 extGraphic.yOffset = -25;
+				 symbolizer.graphic.size = 16;
+				 symbolizer.graphic.graphics.push(extGraphic);
+				 rule.symbolizers.push(symbolizer);
+				 this._endStyle.rules.push(rule);
+			 }
+			 return this._endStyle;
+		 }
+		 
+		 /**
+		  * @private
+		  **/
+		 public function set endPointStyle(value:Style):void{
+			 this._endStyle = value;
 		 }
 	}
 }

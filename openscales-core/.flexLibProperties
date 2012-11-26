@@ -236,11 +236,6 @@
     <classEntry path="org.openscales.core.style.fill.SolidFill"/>
     <classEntry path="org.openscales.core.style.font.Font"/>
     <classEntry path="org.openscales.core.style.halo.Halo"/>
-    <classEntry path="org.openscales.core.style.marker.ArrowMarker"/>
-    <classEntry path="org.openscales.core.style.marker.CustomMarker"/>
-    <classEntry path="org.openscales.core.style.marker.DisplayObjectMarker"/>
-    <classEntry path="org.openscales.core.style.marker.Marker"/>
-    <classEntry path="org.openscales.core.style.marker.WellKnownMarker"/>
     <classEntry path="org.openscales.core.style.stroke.Stroke"/>
     <classEntry path="org.openscales.core.style.symbolizer.ArrowSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.IFillSymbolizer"/>

@@ -24,12 +24,9 @@ package org.openscales.core.format
 	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.graphic.ExternalGraphic;
 	import org.openscales.core.style.graphic.Graphic;
+	import org.openscales.core.style.graphic.IGraphic;
 	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
-	import org.openscales.core.style.marker.ArrowMarker;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.marker.Marker;
-	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -47,7 +44,6 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.core.style.graphic.IGraphic;
 	
 	use namespace os_internal;
 	
@@ -80,6 +76,86 @@ package org.openscales.core.format
 		private var _excludeFromExtendedData:Array = new Array("id", "name", "description", "popupContentHTML", "label");
 		
 		public function KMLFormat() {}
+		
+		/**
+		 * Getters and Setters
+		 */ 
+		public function get proxy():String
+		{
+			return _proxy;
+		}
+		
+		public function get excludeFromExtendedData():Array
+		{
+			return _excludeFromExtendedData;
+		}
+		
+		public function set proxy(value:String):void
+		{
+			_proxy = value;
+		}
+		
+		
+		public function get userDefinedStyle():Style
+		{
+			return _userDefinedStyle;
+		}
+		
+		public function set userDefinedStyle(value:Style):void
+		{
+			_userDefinedStyle = value;
+		}
+		
+		/**
+		 * @private
+		 * Polygon styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get polygonStyles():Object
+		{
+			return null;
+		}
+		
+		/**
+		 * @private
+		 * Point styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get pointStyles():Object
+		{
+			return null;
+		}
+		
+		/**
+		 * @private
+		 * Line styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get lineStyles():Object
+		{
+			return null;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set polygonStyles(value:Object):void
+		{
+			
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set pointStyles(value:Object):void
+		{
+			
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set lineStyles(value:Object):void
+		{
+			
+		}
 		
 		/**
 		 * Read name
@@ -301,23 +377,35 @@ package org.openscales.core.format
 					if (isArrow)
 					{
 						
-						var leftMarker:ArrowMarker;
-						var rightMarker:ArrowMarker;
+						var leftMarker:Graphic;
+						var rightMarker:Graphic;
 						
 						if (leftArrowMarker != "none")
 						{
-							if (Lwidth < 3)
-								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							leftMarker = new Graphic();
+							var mark:Mark = new Mark();
+							mark.wellKnownGraphicName = leftArrowMarker;
+							mark.stroke = new Stroke(Lcolor, Lwidth, Lalpha);
+							leftMarker.graphics.push(mark);
+							if (Lwidth < 3) {
+								leftMarker.size = 12;
+							}
 							else
-								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+								leftMarker.size = 4*Lwidth;
 						}
 						
 						if (rightArrowMarker != "none")
 						{
-							if (Lwidth < 3)
-								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							rightMarker = new Graphic();
+							var mark:Mark = new Mark();
+							mark.wellKnownGraphicName = leftArrowMarker;
+							mark.stroke = new Stroke(Lcolor, Lwidth, Lalpha);
+							rightMarker.graphics.push(mark);
+							if (Lwidth < 3) {
+								rightMarker.size = 12;
+							}
 							else
-								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+								rightMarker.size = 4*Lwidth;
 						}
 						currentRule.symbolizers.push(new ArrowSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha), leftMarker, rightMarker));
 						outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
@@ -654,6 +742,7 @@ package org.openscales.core.format
 							iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));	
 					}
 				}
+
 				else if(placemark.Point != undefined)
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
@@ -1226,15 +1315,29 @@ package org.openscales.core.format
 						if (symb is ArrowSymbolizer)
 						{
 							extensionNode = new XML("<ListStyleSimpleExtensionGroup></ListStyleSimpleExtensionGroup>");
-							if ((symb as ArrowSymbolizer).leftMarker)
+							if ((symb as ArrowSymbolizer).leftGraphic)
 							{
-								extensionNode.@leftArrow = ((symb as ArrowSymbolizer).leftMarker as ArrowMarker).arrowMarker;
+								var leftMarker:Graphic = (symb as ArrowSymbolizer).leftGraphic;
+								if(leftMarker.graphics
+									&& leftMarker.graphics[0] is Mark)
+								{
+									extensionNode.@leftArrow = (leftMarker.graphics[0] as Mark).wellKnownGraphicName;
+								} else {
+									extensionNode.@leftArrow = "none";
+								}
 							}else{
-								extensionNode.@leftArrow = "none"
+								extensionNode.@leftArrow = "none";
 							}
-							if ((symb as ArrowSymbolizer).rightMarker)
+							if ((symb as ArrowSymbolizer).rightGraphic)
 							{
-								extensionNode.@rightArrow = ((symb as ArrowSymbolizer).rightMarker as ArrowMarker).arrowMarker;
+								var rightMarker:Graphic = (symb as ArrowSymbolizer).leftGraphic;
+								if(rightMarker.graphics.length > 0
+									&& rightMarker.graphics[0] is Mark)
+								{
+									extensionNode.@rightArrow = (rightMarker.graphics[0] as Mark).wellKnownGraphicName;
+								} else {
+									extensionNode.@rightArrow = "none";
+								}
 							}else{
 								extensionNode.@rightArrow = "none"
 							}
@@ -1354,86 +1457,6 @@ package org.openscales.core.format
 				+ stringColor.substr(2,2)+stringColor.substr(0,2);
 			colorNode.appendChild(KMLcolor);
 			return colorNode;
-		} 
-		
-		/**
-		 * Getters and Setters
-		 */ 
-		public function get proxy():String
-		{
-			return _proxy;
-		}
-		
-		public function get excludeFromExtendedData():Array
-		{
-			return _excludeFromExtendedData;
-		}
-		
-		public function set proxy(value:String):void
-		{
-			_proxy = value;
-		}
-		
-		
-		public function get userDefinedStyle():Style
-		{
-			return _userDefinedStyle;
-		}
-		
-		public function set userDefinedStyle(value:Style):void
-		{
-			_userDefinedStyle = value;
-		}
-		
-		/**
-		 * @private
-		 * Polygon styles read from KML (hashmap with style's id as key)
-		 */ 
-		os_internal function get polygonStyles():Object
-		{
-			return null;
-		}
-		
-		/**
-		 * @private
-		 * Point styles read from KML (hashmap with style's id as key)
-		 */ 
-		os_internal function get pointStyles():Object
-		{
-			return null;
-		}
-		
-		/**
-		 * @private
-		 * Line styles read from KML (hashmap with style's id as key)
-		 */ 
-		os_internal function get lineStyles():Object
-		{
-			return null;
-		}
-		
-		/**
-		 * @private
-		 */ 
-		os_internal function set polygonStyles(value:Object):void
-		{
-			
-		}
-		
-		/**
-		 * @private
-		 */ 
-		os_internal function set pointStyles(value:Object):void
-		{
-			
-		}
-		
-		/**
-		 * @private
-		 */ 
-		os_internal function set lineStyles(value:Object):void
-		{
-			
 		}
 
 	}

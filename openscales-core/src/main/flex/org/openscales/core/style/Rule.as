@@ -7,7 +7,6 @@ package org.openscales.core.style {
 	import org.openscales.core.style.graphic.ExternalGraphic;
 	import org.openscales.core.style.graphic.IGraphic;
 	import org.openscales.core.style.graphic.Mark;
-	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;

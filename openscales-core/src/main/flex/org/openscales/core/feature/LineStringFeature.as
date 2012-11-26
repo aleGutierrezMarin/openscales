@@ -72,7 +72,7 @@ package org.openscales.core.feature
 				var alpha:Number;
 				var dispObject:DisplayObject;
 				// Draw arrows
-				if ((symbolizer as ArrowSymbolizer).leftMarker)
+				if ((symbolizer as ArrowSymbolizer).leftGraphic)
 				{
 					if (coords.length <4)
 						return;
@@ -85,13 +85,13 @@ package org.openscales.core.feature
 						alpha -= 90;
 					else 
 						alpha += 90;
-					dispObject = (symbolizer as ArrowSymbolizer).leftMarker.getDisplayObject(this);
+					dispObject = (symbolizer as ArrowSymbolizer).leftGraphic.getDisplayObject(this);
 					dispObject.rotation = alpha;
 					dispObject.x = px1.x;
 					dispObject.y = px1.y;
 					this.addChild(dispObject);
 				}
-				if ((symbolizer as ArrowSymbolizer).rightMarker)
+				if ((symbolizer as ArrowSymbolizer).rightGraphic)
 				{
 					if (coords.length <4)
 						return;
@@ -105,7 +105,7 @@ package org.openscales.core.feature
 						alpha += 90;
 					else 
 						alpha -= 90;
-					dispObject = (symbolizer as ArrowSymbolizer).rightMarker.getDisplayObject(this);
+					dispObject = (symbolizer as ArrowSymbolizer).rightGraphic.getDisplayObject(this);
 					dispObject.rotation = alpha;
 					dispObject.x = px2.x;
 					dispObject.y = px2.y;
