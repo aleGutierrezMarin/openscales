@@ -25,22 +25,22 @@
 				<s:HorizontalLayout verticalAlign="middle" />
 			</s:layout>
 			<s:Spacer width="5" />
-			<s:Image source="@Embed(source='assets/deleteRule.png')"
+			<s:Image source="@Embed(source='/assets/deleteRule.png')"
 					 height="30" width="30"
 					 click="removeRule()"
 					 toolTip="Remove rule and children styles"/>
 			<s:Label id="ruleName" width="128"/>
-			<s:Image source="@Embed(source='assets/advanced.png')"
+			<s:Image source="@Embed(source='/assets/advanced.png')"
 					 height="30" width="30"
 					 click="onAdvanced()"
 					 toolTip="Advanced"
 					 />
-			<s:Image source="@Embed(source='assets/clone.png')"
+			<s:Image source="@Embed(source='/assets/clone.png')"
 					 height="30" width="30"
 					 click="cloneRule()"
 					 toolTip="Clone"
 					 />
-			<s:Image source="@Embed(source='assets/addSymbolizer.png')"
+			<s:Image source="@Embed(source='/assets/addSymbolizer.png')"
 					 height="30" width="30"
 					 click="onAddSymboliser()"
 					 toolTip="Add symbolizer"
