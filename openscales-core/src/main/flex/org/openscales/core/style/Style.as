@@ -8,7 +8,6 @@ package org.openscales.core.style {
 	import org.openscales.core.style.graphic.Graphic;
 	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
-	import org.openscales.core.style.marker.ArrowMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -172,8 +171,15 @@ package org.openscales.core.style {
 			style.name = "Default arrow style";
 			style.rules.push(getLineRule());
 			
-			var am:ArrowMarker = new ArrowMarker(ArrowMarker.AM_NARROW_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12)
-			style.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),am,am));
+			var marker:Graphic = new Graphic();
+			var mark:Mark = new Mark();
+			mark.wellKnownGraphicName = Mark.CARROW;
+			mark.stroke = new Stroke(0xFF0000,2);
+			mark.fill = new SolidFill(0x999999,0.5);
+			marker.size = 12;
+			marker.graphics.push(mark);
+			
+			style.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),marker,marker));
 			return style;
 		}
 		
@@ -212,11 +218,17 @@ package org.openscales.core.style {
 		 * Returns the rule to apply for the default arrow LineStringFeature style
 		 */
 		protected static function getArrowRule():Rule{
+			var marker:Graphic = new Graphic();
+			var mark:Mark = new Mark();
+			mark.wellKnownGraphicName = Mark.CARROW;
+			mark.stroke = new Stroke(0xFF0000,2);
+			mark.fill = new SolidFill(0x999999,0.5);
+			marker.size = 12;
+			marker.graphics.push(mark);
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
-			var am:ArrowMarker = new ArrowMarker(ArrowMarker.AM_THIN	,new SolidFill(0x3F9FCD,0.5),new Stroke(0x3F9FCD,3),12)
-			rule.symbolizers.push(new ArrowSymbolizer(new Stroke(0x3F9FCD, 3), am, am));
+			rule.symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),marker,marker));
 			
 			return rule;
 		}

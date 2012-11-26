@@ -4,7 +4,6 @@ package org.openscales.core.feature {
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.graphic.ExternalGraphic;
-	import org.openscales.core.style.marker.DisplayObjectMarker;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.Point;
