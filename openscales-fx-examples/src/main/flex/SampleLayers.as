@@ -13,10 +13,9 @@ package {
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
 	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.Graphic;
 	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -84,8 +83,9 @@ package {
 			graphicFill.graphic.size = 40;
 			
 			blackStyle.rules[0].symbolizers.push(new PolygonSymbolizer(graphicFill,stroke));
-			var wnmk:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12);
-			blackStyle.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),wnmk,wnmk));
+			var graph:Graphic = new Graphic(12);
+			graph.graphics.push(new Mark(Mark.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2)));
+			blackStyle.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),graph,graph));
 			blackStyle.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.7,null,Font.ITALIC,Font.BOLD),new Halo(0x000000,2,0.7)));
 			
 			var markerStyle:Style = new Style();
