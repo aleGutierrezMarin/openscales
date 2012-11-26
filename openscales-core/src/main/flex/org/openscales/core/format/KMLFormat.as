@@ -379,11 +379,11 @@ package org.openscales.core.format
 						
 						var leftMarker:Graphic;
 						var rightMarker:Graphic;
-						
+						var mark:Mark;
 						if (leftArrowMarker != "none")
 						{
 							leftMarker = new Graphic();
-							var mark:Mark = new Mark();
+							mark = new Mark();
 							mark.wellKnownGraphicName = leftArrowMarker;
 							mark.stroke = new Stroke(Lcolor, Lwidth, Lalpha);
 							leftMarker.graphics.push(mark);
@@ -397,7 +397,7 @@ package org.openscales.core.format
 						if (rightArrowMarker != "none")
 						{
 							rightMarker = new Graphic();
-							var mark:Mark = new Mark();
+							mark = new Mark();
 							mark.wellKnownGraphicName = leftArrowMarker;
 							mark.stroke = new Stroke(Lcolor, Lwidth, Lalpha);
 							rightMarker.graphics.push(mark);
