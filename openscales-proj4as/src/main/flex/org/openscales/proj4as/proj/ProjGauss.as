@@ -4,6 +4,13 @@ package org.openscales.proj4as.proj {
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
 
+	/*
+	*	Projection from ellipsoid to conformal sphere
+	*
+	*
+	*/
+	
+	
 	public class ProjGauss extends AbstractProjProjection {
 
 		protected var phicZero:Number;

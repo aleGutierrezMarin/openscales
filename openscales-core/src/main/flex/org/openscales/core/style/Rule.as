@@ -3,13 +3,17 @@ package org.openscales.core.style {
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
 	
+	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.filter.IFilter;
-	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.IGraphic;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Rule based style, in order to use different styles based on parameters like current scale
@@ -17,6 +21,7 @@ package org.openscales.core.style {
 	public class Rule extends EventDispatcher {
 		
 		private namespace sldns="http://www.opengis.net/sld";
+		private namespace ogcns="http://www.opengis.net/ogc";
 
 		public static const LEGEND_LINE:String = "Line";
 
@@ -183,9 +188,10 @@ package org.openscales.core.style {
 			}
 
 			for each (var symbolizer:Symbolizer in this.symbolizers) {
-
-				symbolizer.configureGraphics(result.graphics, null);
-				drawMethod.apply(this, [symbolizer, result]);
+				var layer:Sprite = new Sprite();
+				result.addChild(layer);
+				symbolizer.configureGraphics(layer.graphics, null);
+				drawMethod.apply(this, [symbolizer, layer]);
 			}
 
 			return result;
@@ -197,10 +203,13 @@ package org.openscales.core.style {
 			
 			if(this.title)
 				res+="<sld:Title>"+this.title+"</sld:Title>\n";
-			if(this.name)
-				res+="<sld:Name>"+this.name+"</sld:Name>\n";
 			if(this.abstract)
 				res+="<sld:Abstract>"+this.abstract+"</sld:Abstract>\n";
+			else
+				res+="<sld:Abstract></sld:Abstract>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			
 			if(!isNaN(this.minScaleDenominator)) {
 				res+="<sld:MinScaleDenominator>"+this.minScaleDenominator+"</sld:MinScaleDenominator>\n";
 			}
@@ -211,19 +220,20 @@ package org.openscales.core.style {
 			for each (var symbolizer:Symbolizer in this.symbolizers) {
 				tmp = symbolizer.sld;
 				if(tmp)
-					res+=tmp+"\n";
+					res+=tmp;
 			}
 			if(this.filter) {
 				tmp = this.filter.sld;
 				if(tmp)
-					res+=tmp+"\n";
+					res+=tmp;
 			}
-			res+="</sld:Rule>";
+			res+="</sld:Rule>\n";
 			return res;
 		}
 		
 		public function set sld(sldRule:String):void {
 			use namespace sldns;
+			use namespace ogcns;
 			var dataXML:XML = new XML(sldRule);
 			this.title = null;
 			this.name = null;
@@ -269,7 +279,31 @@ package org.openscales.core.style {
 					case "TextSymbolizer":
 						symb = new TextSymbolizer();
 						break;
-					//TODO filters
+					case "Filter":
+						if(this._filter)
+							continue;
+						var filter:XMLList = dataXML.children();
+						var node:XML;
+						if(filter.length()==0)
+							continue;
+						node = filter[0];
+						switch (node.localName()) {
+							case "PropertyIsEqualTo":
+							case "PropertyIsNotEqualTo":
+							case "PropertyIsLessThan":
+							case "PropertyIsGreaterThan":
+							case "PropertyIsLessThanOrEqualTo":
+							case "PropertyIsGreaterThanOrEqualTo":
+							case "PropertyIsLike":
+							case "PropertyIsNull":
+							case "PropertyIsBetween":
+								this._filter = new Comparison(null,null);
+								break;
+						}
+						if(this._filter)
+							this._filter.sld = dataXML;
+						break;
+					//TODO other filters
 				}
 				if(symb) {
 					symb.sld = dataXML.toString();
@@ -280,58 +314,56 @@ package org.openscales.core.style {
 		}
 
 		private function drawLine(symbolizer:Symbolizer, canvas:Sprite):void {
-
 			canvas.graphics.moveTo(5, 25);
 			canvas.graphics.curveTo(5, 15, 15, 15);
 			canvas.graphics.curveTo(25, 15, 25, 5);
 		}
 
 		private function drawPoint(symbolizer:Symbolizer, canvas:Sprite):void {
-
+			var _do:DisplayObject;
 			if (symbolizer is PointSymbolizer) {
 
 				var pointSymbolizer:PointSymbolizer = (symbolizer as PointSymbolizer);
 				if (pointSymbolizer.graphic) {
-					if (pointSymbolizer.graphic is WellKnownMarker) {
-
-						this.drawMark(pointSymbolizer.graphic as WellKnownMarker, canvas);
+					if (pointSymbolizer.graphic) {
+						canvas.alpha = pointSymbolizer.graphic.opacity;
+						var size:Number = pointSymbolizer.graphic.getSizeValue();
+						for each(var mark:Object in pointSymbolizer.graphic.graphics) {
+							if(mark is Mark) {
+								var layer:Sprite = new Sprite();
+								canvas.addChild(layer);
+								this.drawMark(mark as Mark, layer, size);
+							}
+							else if(mark is ExternalGraphic) {
+								_do = (mark as ExternalGraphic).getDisplayObject(null,size,false);
+								_do.x+=15;
+								_do.y+=15;
+								canvas.addChild(_do);
+							}
+						}
+								
 					}
 				}
+			} else if(symbolizer is TextSymbolizer) {
+				var ts:TextSymbolizer = symbolizer as TextSymbolizer;
+				_do = ts.getTextField("Text",new Pixel(0,0));
+				_do.x=2;
+				_do.y=5;
+				canvas.addChild(_do);
 			}
 		}
 
-		protected function drawMark(mark:WellKnownMarker, canvas:Sprite):void {
-
-			mark.fill.configureGraphics(canvas.graphics, null);
-			mark.stroke.configureGraphics(canvas.graphics);
-
-			var size:Number = mark.getSizeValue(null);
-
-			switch (mark.wellKnownName) {
-
-				case WellKnownMarker.WKN_SQUARE:  {
-					canvas.graphics.drawRect(15 - size / 2, 15 - size / 2, size, size);
-					break;
-				}
-				case WellKnownMarker.WKN_CIRCLE:  {
-					canvas.graphics.drawCircle(15, 15, size / 2);
-					break;
-				}
-				case WellKnownMarker.WKN_TRIANGLE:  {
-					// TODO : Check for the drawing of the triangles
-					canvas.graphics.moveTo(0, (size / 2));
-					canvas.graphics.lineTo(size, size);
-					canvas.graphics.lineTo(0, size);
-					canvas.graphics.lineTo(0, (size / 2));
-					break;
-				}
-				// TODO : Implement other well known names and take into account opacity, rotation of the mark
-			}
-			canvas.graphics.endFill();
+		protected function drawMark(mark:Mark, shape:Sprite, size:Number):void {
+			if(mark.fill)
+				mark.fill.configureGraphics(shape.graphics, null);
+			if(mark.stroke)
+				mark.stroke.configureGraphics(shape.graphics);
+			mark.drawMark(shape,size);
+			shape.x+=15;
+			shape.y+=15;
 		}
 
 		private function drawPolygon(symbolizer:Symbolizer, canvas:Sprite):void {
-
 			canvas.graphics.moveTo(5, 5);
 			canvas.graphics.lineTo(25, 5);
 			canvas.graphics.lineTo(25, 25);

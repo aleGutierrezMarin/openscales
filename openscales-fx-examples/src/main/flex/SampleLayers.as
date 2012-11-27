@@ -9,10 +9,13 @@ package {
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.fill.GraphicFill;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.Graphic;
+	import org.openscales.core.style.graphic.Mark;
+	import org.openscales.core.style.halo.Halo;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -45,6 +48,8 @@ package {
 		 * Returns a sample layer of drawn features
 		 */
 		static public function features():VectorLayer {
+			var mark:Mark;
+			var psym:PointSymbolizer;
 			// Create the drawings layer and some useful variables
 			var layer:VectorLayer = new VectorLayer("Drawing samples");
 			layer.projection = "EPSG:4326";
@@ -59,23 +64,58 @@ package {
 			
 			var blackStyle:Style =  new Style();
 			blackStyle.rules.push(new Rule());
-			blackStyle.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0x000000,2),12)));
-			blackStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),stroke));
-			var wnmk:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12);
-			blackStyle.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),wnmk,wnmk));
-			blackStyle.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.7,null,Font.ITALIC,Font.BOLD)));
+			mark = new Mark(Mark.WKN_STAR,new SolidFill(0x999999,0.5),new Stroke(0x000000,2));
+			psym = new PointSymbolizer();
+			psym.graphic.graphics.push(mark);
+			psym.graphic.size = 24;
+			psym.graphic.rotation = 0;
+			psym.graphic.opacity = 0.7;
+			blackStyle.rules[0].symbolizers.push(psym);
+			
+			var graphicFill2:GraphicFill = new GraphicFill();
+			mark = new Mark(Mark.SLASH,new SolidFill(0xc6c6c6,0.5),new Stroke(0x000000,5));
+			graphicFill2.graphic.graphics.push(mark);
+			graphicFill2.graphic.size = 10;
+			
+			var graphicFill:GraphicFill = new GraphicFill();
+			mark = new Mark(Mark.WKN_CIRCLE,graphicFill2,new Stroke(0x000000,2));
+			graphicFill.graphic.graphics.push(mark);
+			graphicFill.graphic.size = 40;
+			
+			blackStyle.rules[0].symbolizers.push(new PolygonSymbolizer(graphicFill,stroke));
+			var graph:Graphic = new Graphic(12);
+			graph.graphics.push(new Mark(Mark.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2)));
+			blackStyle.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),graph,graph));
+			blackStyle.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.7,null,Font.ITALIC,Font.BOLD),new Halo(0x000000,2,0.7)));
 			
 			var markerStyle:Style = new Style();
 			markerStyle.rules.push(new Rule());
-			markerStyle.rules[0].symbolizers.push(new PointSymbolizer(new CustomMarker("http://maps.google.com/mapfiles/kml/pal3/icon19.png")));
-			markerStyle.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.8,null,null,Font.BOLD)));
+			mark = new Mark(Mark.WKN_CROSS,new SolidFill(0x999999,0.5),new Stroke(0x000000,2));
+			psym = new PointSymbolizer();
+			var extMark:ExternalGraphic = new ExternalGraphic("http://openscales.org/assets/red.png");
+			//psym.graphic.graphics.push(mark);
+			psym.graphic.graphics.push(extMark);
+			//psym.graphic.graphics.push(mark);
+			psym.graphic.size = 12;
+			markerStyle.rules[0].symbolizers.push(psym);
+			var ts:TextSymbolizer = new TextSymbolizer("name", new Font(30,0xFFFFFF,0.8,null,Font.ITALIC,Font.BOLD),new Halo(0x000000,2,0.8));
+			markerStyle.rules[0].symbolizers.push(ts);
+			ts = new TextSymbolizer("name", new Font(30,0xFFFFFF,0.8,null,Font.ITALIC,Font.BOLD),new Halo(0x000000,2,0.8));
+			ts.rotation = 45;
+			ts.displacementY = -15;
+			markerStyle.rules[0].symbolizers.push(ts);
+			//markerStyle.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(20,0xFFFFFF,0.8,null,null,Font.BOLD),new Halo(0x000000,2,0.8)));
 			
 			// Add some (black) objects for the tests of inclusion with all the
 			// features added below.
 			style = new Style();
 			style.rules.push(new Rule());
-			style.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFFFFFF,2),12)));
-			style.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.5,null,Font.ITALIC)));
+			mark = new Mark(Mark.WKN_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFFFFFF,2));
+			psym = new PointSymbolizer();
+			psym.graphic.graphics.push(mark);
+			psym.graphic.size = 12;
+			style.rules[0].symbolizers.push(psym);
+			style.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(15,0xFFFFFF,0.5,null,Font.ITALIC),new Halo(0x000000,2,0.5)));
 			
 			// A point inside of the MultiPolygon (its first polygon).
 			point = new org.openscales.geometry.Point(4.649002075147177, 45.78235984585472);
@@ -98,7 +138,7 @@ package {
 			style = new Style();
 			style.rules.push(new Rule());
 			style.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x999999,0.5),new Stroke(0x000000,2)));
-			style.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(13,0xFFFFFF,0.6,null,Font.ITALIC,Font.BOLD)));
+			style.rules[0].symbolizers.push(new TextSymbolizer("name", new Font(13,0xFFFFFF,0.6,null,Font.ITALIC,Font.BOLD),new Halo(0x000000,2,0.6)));
 			arrayComponents = new Vector.<Number>(4);
 			arrayComponents[0]=4.5714111327782625;
 			arrayComponents[1]=45.76368130194846;
@@ -126,7 +166,11 @@ package {
 			
 			var multiColorStyle:Style = new Style();
 			multiColorStyle.rules.push(new Rule());
-			multiColorStyle.rules[0].symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_CIRCLE,new SolidFill(0xFF0000,0.5),new Stroke(0xFF0000,2),10)));
+			mark = new Mark(Mark.WKN_CIRCLE,new SolidFill(0xFF0000,0.5),new Stroke(0xFF0000,2));
+			psym = new PointSymbolizer();
+			psym.graphic.graphics.push(mark);
+			psym.graphic.size = 10;
+			multiColorStyle.rules[0].symbolizers.push(psym);
 			multiColorStyle.rules[0].symbolizers.push(new LineSymbolizer(new Stroke(0x33FF00,3)));
 			multiColorStyle.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0x0033FF,0.5),new Stroke(0x0033FF,2)));
 			// Add a Point.
@@ -143,7 +187,11 @@ package {
 			// Add a MultiPoint.
 			style = new Style();
 			style.rules.push(new Rule());
-			(style.rules[0] as Rule).symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE,new SolidFill(0xFF9900,0.5),new Stroke(0xFF9900,2),10)));
+			mark = new Mark(Mark.WKN_SQUARE,new SolidFill(0xFF9900,0.5),new Stroke(0xFF9900,2));
+			psym = new PointSymbolizer();
+			psym.graphic.graphics.push(mark);
+			psym.graphic.size = 10;
+			(style.rules[0] as Rule).symbolizers.push(psym);
 			arrayComponents = new Vector.<Number>();
 			arrayComponents.push(4.841262817300238,
 				45.790978602336864,
@@ -299,7 +347,11 @@ package {
 			var polygonArray:Vector.<Geometry>= new Vector.<Geometry>(3);
 			style = new Style();
 			style.rules.push(new Rule());
-			style.rules[0].symbolizers.push(new PolygonSymbolizer(new SolidFill(0xFF0055,0.5),new Stroke(0xAA0055,2)));
+			graphicFill = new GraphicFill();
+			mark = new Mark(Mark.WKN_STAR,new SolidFill(0xFF0055,0.5),new Stroke(0xAA0055,2));
+			//graphicFill.graphic.graphics.push(mark);
+			graphicFill.graphic.size = 20;			
+			style.rules[0].symbolizers.push(new PolygonSymbolizer(graphicFill,new Stroke(0xAA0055,2)));
 			// 1st polygon
 			arrayComponents = new Vector.<Number>();
 			arrayVertices = new Vector.<Geometry>();

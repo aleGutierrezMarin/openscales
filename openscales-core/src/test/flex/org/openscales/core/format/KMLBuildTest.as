@@ -10,8 +10,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
-	import org.openscales.core.style.marker.Marker;
-	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
@@ -108,7 +107,9 @@ package org.openscales.core.format
 			var rule:Rule = new Rule();
 			var stroke:Stroke = new Stroke();
 			var fill:SolidFill = new SolidFill(9872929,0.23);
-			var sym:PointSymbolizer = new PointSymbolizer(new WellKnownMarker("square",fill,stroke,0.23));
+			var sym:PointSymbolizer = new PointSymbolizer();
+			sym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill,stroke));
+			sym.graphic.size = 0.23;
 			rule.symbolizers.push(sym);
 			style.rules.push(rule);
 			

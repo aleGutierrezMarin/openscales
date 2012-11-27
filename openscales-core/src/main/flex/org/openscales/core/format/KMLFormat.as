@@ -22,11 +22,11 @@ package org.openscales.core.format
 	import org.openscales.core.style.fill.Fill;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.Graphic;
+	import org.openscales.core.style.graphic.IGraphic;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
-	import org.openscales.core.style.marker.ArrowMarker;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.marker.Marker;
-	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
@@ -76,6 +76,86 @@ package org.openscales.core.format
 		private var _excludeFromExtendedData:Array = new Array("id", "name", "description", "popupContentHTML", "label");
 		
 		public function KMLFormat() {}
+		
+		/**
+		 * Getters and Setters
+		 */ 
+		public function get proxy():String
+		{
+			return _proxy;
+		}
+		
+		public function get excludeFromExtendedData():Array
+		{
+			return _excludeFromExtendedData;
+		}
+		
+		public function set proxy(value:String):void
+		{
+			_proxy = value;
+		}
+		
+		
+		public function get userDefinedStyle():Style
+		{
+			return _userDefinedStyle;
+		}
+		
+		public function set userDefinedStyle(value:Style):void
+		{
+			_userDefinedStyle = value;
+		}
+		
+		/**
+		 * @private
+		 * Polygon styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get polygonStyles():Object
+		{
+			return null;
+		}
+		
+		/**
+		 * @private
+		 * Point styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get pointStyles():Object
+		{
+			return null;
+		}
+		
+		/**
+		 * @private
+		 * Line styles read from KML (hashmap with style's id as key)
+		 */ 
+		os_internal function get lineStyles():Object
+		{
+			return null;
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set polygonStyles(value:Object):void
+		{
+			
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set pointStyles(value:Object):void
+		{
+			
+		}
+		
+		/**
+		 * @private
+		 */ 
+		os_internal function set lineStyles(value:Object):void
+		{
+			
+		}
 		
 		/**
 		 * Read name
@@ -222,7 +302,17 @@ package org.openscales.core.format
 							if (hotSpot[0].@yunits.length() > 0)
 								yUnit = hotSpot[0].@yunits;
 						}
-						currentRule.symbolizers.push(new PointSymbolizer(new CustomMarker(href, 1, xOffSet, xUnit, yOffSet, yUnit)));	
+						var psym:PointSymbolizer = new PointSymbolizer(new Graphic());
+						var link:String = href.toString();
+						var extGraph:ExternalGraphic = new ExternalGraphic(link);
+						if(link.indexOf(".jpg",link.length-5) || link.indexOf(".jpeg",link.length-6))
+							extGraph.format = "image/jpg";
+						extGraph.xOffset = xOffSet;
+						extGraph.xUnit = xUnit;
+						extGraph.yOffset = yOffSet;
+						extGraph.yUnit = yUnit;
+						psym.graphic.graphics.push(extGraph);
+						currentRule.symbolizers.push(psym);
 					}
 					else
 					{
@@ -245,7 +335,12 @@ package org.openscales.core.format
 						if(headingStyle.length() > 0) //0 to 360°
 							iconRotation = Number(headingStyle[0].toString());
 						// TODO implement offset support + rotation effect
-						currentRule.symbolizers.push(new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE,iconFill,null,6, iconAlpha, iconRotation)));
+						var psym2:PointSymbolizer = new PointSymbolizer();
+						psym2.graphic.size = 6;
+						psym2.graphic.opacity = iconAlpha;
+						psym2.graphic.rotation = iconRotation;
+						psym2.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,iconFill));
+						currentRule.symbolizers.push(psym2);
 					}
 				}
 				else if(styleList[i].localName() == "LineStyle") 
@@ -282,23 +377,35 @@ package org.openscales.core.format
 					if (isArrow)
 					{
 						
-						var leftMarker:ArrowMarker;
-						var rightMarker:ArrowMarker;
-						
+						var leftMarker:Graphic;
+						var rightMarker:Graphic;
+						var mark:Mark;
 						if (leftArrowMarker != "none")
 						{
-							if (Lwidth < 3)
-								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							leftMarker = new Graphic();
+							mark = new Mark();
+							mark.wellKnownGraphicName = leftArrowMarker;
+							mark.stroke = new Stroke(Lcolor, Lwidth, Lalpha);
+							leftMarker.graphics.push(mark);
+							if (Lwidth < 3) {
+								leftMarker.size = 12;
+							}
 							else
-								leftMarker = new ArrowMarker(leftArrowMarker, null,new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+								leftMarker.size = 4*Lwidth;
 						}
 						
 						if (rightArrowMarker != "none")
 						{
-							if (Lwidth < 3)
-								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 12);
+							rightMarker = new Graphic();
+							mark = new Mark();
+							mark.wellKnownGraphicName = leftArrowMarker;
+							mark.stroke = new Stroke(Lcolor, Lwidth, Lalpha);
+							rightMarker.graphics.push(mark);
+							if (Lwidth < 3) {
+								rightMarker.size = 12;
+							}
 							else
-								rightMarker = new ArrowMarker(rightArrowMarker, null, new Stroke(Lcolor, Lwidth, Lalpha), 4*Lwidth);
+								rightMarker.size = 4*Lwidth;
 						}
 						currentRule.symbolizers.push(new ArrowSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha), leftMarker, rightMarker));
 						outLineSymbolizer = new LineSymbolizer(new Stroke(Lcolor, Lwidth, Lalpha));
@@ -635,6 +742,7 @@ package org.openscales.core.format
 							iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));	
 					}
 				}
+
 				else if(placemark.Point != undefined)
 				{
 					coordinates = placemark.Point.coordinates.text().split(",");
@@ -748,9 +856,9 @@ package org.openscales.core.format
 			{
 				var _fill:SolidFill = new SolidFill(style["color"], style["alpha"]);
 				var _stroke:Stroke = new Stroke(style["color"], style["alpha"]);
-				var _mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_SQUARE, _fill, _stroke);//the color of its stroke is the kml color
 				var _symbolizer:PointSymbolizer = new PointSymbolizer();
-				_symbolizer.graphic = _mark;
+				_symbolizer.graphic.graphics.push(new Mark(Mark.WKN_SQUARE, _fill, _stroke));
+				//_symbolizer.graphic = _mark;
 				var _rule:Rule = new Rule();
 				_rule.symbolizers.push(_symbolizer);
 				pointStyle = new Style();
@@ -1207,15 +1315,29 @@ package org.openscales.core.format
 						if (symb is ArrowSymbolizer)
 						{
 							extensionNode = new XML("<ListStyleSimpleExtensionGroup></ListStyleSimpleExtensionGroup>");
-							if ((symb as ArrowSymbolizer).leftMarker)
+							if ((symb as ArrowSymbolizer).leftGraphic)
 							{
-								extensionNode.@leftArrow = ((symb as ArrowSymbolizer).leftMarker as ArrowMarker).arrowMarker;
+								var leftMarker:Graphic = (symb as ArrowSymbolizer).leftGraphic;
+								if(leftMarker.graphics
+									&& leftMarker.graphics[0] is Mark)
+								{
+									extensionNode.@leftArrow = (leftMarker.graphics[0] as Mark).wellKnownGraphicName;
+								} else {
+									extensionNode.@leftArrow = "none";
+								}
 							}else{
-								extensionNode.@leftArrow = "none"
+								extensionNode.@leftArrow = "none";
 							}
-							if ((symb as ArrowSymbolizer).rightMarker)
+							if ((symb as ArrowSymbolizer).rightGraphic)
 							{
-								extensionNode.@rightArrow = ((symb as ArrowSymbolizer).rightMarker as ArrowMarker).arrowMarker;
+								var rightMarker:Graphic = (symb as ArrowSymbolizer).leftGraphic;
+								if(rightMarker.graphics.length > 0
+									&& rightMarker.graphics[0] is Mark)
+								{
+									extensionNode.@rightArrow = (rightMarker.graphics[0] as Mark).wellKnownGraphicName;
+								} else {
+									extensionNode.@rightArrow = "none";
+								}
 							}else{
 								extensionNode.@rightArrow = "none"
 							}
@@ -1264,21 +1386,28 @@ package org.openscales.core.format
 				{
 					styleNode = new XML("<IconStyle></IconStyle>");
 					var pointSym:PointSymbolizer = symb as PointSymbolizer;
-					var graphic:Marker = pointSym.graphic;
+					var graphic:Graphic = pointSym.graphic;
+					if(!graphic || graphic.graphics.length==0)
+						continue;
+					var mark:IGraphic = graphic.graphics[0];
 					
 					// Switch between marker types
-					if(graphic is WellKnownMarker)
+					if(mark is Mark)
 					{
-						var wkm:WellKnownMarker = graphic as WellKnownMarker;
-						var solidFill:SolidFill = wkm.fill;
+						var wkm:Mark = graphic as Mark;
+						var solidFill:SolidFill
+						if(wkm.fill is SolidFill)
+							solidFill = wkm.fill as SolidFill;
+						else
+							solidFill = new SolidFill();
 						styleNode.appendChild(this.buildColorNode(solidFill.color as uint, solidFill.opacity));
 						styleNode.colorMode = "normal";
-					}else if (graphic is CustomMarker)
+					}else if (mark is ExternalGraphic)
 					{
 						var iconNode:XML = new XML("<Icon></Icon>");
 						
-						var cm:CustomMarker = graphic as CustomMarker;
-						var href:String = cm.url;
+						var cm:ExternalGraphic = graphic as ExternalGraphic;
+						var href:String = cm.onlineResource;
 						iconNode.href = href;
 						
 						var hotSpotNode:XML = new XML("<hotSpot/>");
@@ -1328,86 +1457,6 @@ package org.openscales.core.format
 				+ stringColor.substr(2,2)+stringColor.substr(0,2);
 			colorNode.appendChild(KMLcolor);
 			return colorNode;
-		} 
-		
-		/**
-		 * Getters and Setters
-		 */ 
-		public function get proxy():String
-		{
-			return _proxy;
-		}
-		
-		public function get excludeFromExtendedData():Array
-		{
-			return _excludeFromExtendedData;
-		}
-		
-		public function set proxy(value:String):void
-		{
-			_proxy = value;
-		}
-		
-		
-		public function get userDefinedStyle():Style
-		{
-			return _userDefinedStyle;
-		}
-		
-		public function set userDefinedStyle(value:Style):void
-		{
-			_userDefinedStyle = value;
-		}
-		
-		/**
-		 * @private
-		 * Polygon styles read from KML (hashmap with style's id as key)
-		 */ 
-		os_internal function get polygonStyles():Object
-		{
-			return null;
-		}
-		
-		/**
-		 * @private
-		 * Point styles read from KML (hashmap with style's id as key)
-		 */ 
-		os_internal function get pointStyles():Object
-		{
-			return null;
-		}
-		
-		/**
-		 * @private
-		 * Line styles read from KML (hashmap with style's id as key)
-		 */ 
-		os_internal function get lineStyles():Object
-		{
-			return null;
-		}
-		
-		/**
-		 * @private
-		 */ 
-		os_internal function set polygonStyles(value:Object):void
-		{
-			
-		}
-		
-		/**
-		 * @private
-		 */ 
-		os_internal function set pointStyles(value:Object):void
-		{
-			
-		}
-		
-		/**
-		 * @private
-		 */ 
-		os_internal function set lineStyles(value:Object):void
-		{
-			
 		}
 
 	}

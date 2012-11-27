@@ -40,13 +40,13 @@
 			
 			[Bindable]
 			[Embed(source="/assets/images/icons/Icons-12.png")]
-			private var _btnPath:Class;
+			public var _btnPath:Class;
 			
 			[Bindable]
-			private var panelTitle:String = Catalog.getLocalizationForKey('MeasureBar.title');
+			public var panelTitle:String = Catalog.getLocalizationForKey('MeasureBar.title');
 			
 			[Bindable]
-			private var _exitToolTip:String = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
+			public var _exitToolTip:String = Catalog.getLocalizationForKey('MeasureBar.exittooltip');
 			
 			[Bindable]
 			public var _result:String = "N/A";
