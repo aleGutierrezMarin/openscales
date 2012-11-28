@@ -68,7 +68,7 @@
 			<s:Label text="Opacité :" width="120"/>
 			<s:HSlider id="textOpacity"
 					   minimum="0"
-					   maximum="110"
+					   maximum="100"
 					   changeEnd="updateRule(event)"/>
 		</s:HGroup>
 		<s:Spacer height="10" />
@@ -200,18 +200,20 @@
 				var symbolizer:TextSymbolizer = this.currentSymbolizer as TextSymbolizer;
 				
 				var anchor:String = anchorPoint.selectedValue as String;
-				if(anchor.indexOf("T"))
-					symbolizer.anchorPointY = 1;
-				else if(anchor.indexOf("B"))
-					symbolizer.anchorPointY = 0;
-				else
-					symbolizer.anchorPointY = 0.5;
-				if(anchor.indexOf("L"))
-					symbolizer.anchorPointX = 0;
-				else if(anchor.indexOf("R"))
-					symbolizer.anchorPointX = 1;
-				else
-					symbolizer.anchorPointX = 0.5;
+				if(anchor) {
+					if(anchor.indexOf("T"))
+						symbolizer.anchorPointY = 1;
+					else if(anchor.indexOf("B"))
+						symbolizer.anchorPointY = 0;
+					else
+						symbolizer.anchorPointY = 0.5;
+					if(anchor.indexOf("L"))
+						symbolizer.anchorPointX = 0;
+					else if(anchor.indexOf("R"))
+						symbolizer.anchorPointX = 1;
+					else
+						symbolizer.anchorPointX = 0.5;
+				}
 				
 				if(!symbolizer.font)
 					symbolizer.font = new org.openscales.core.style.font.Font();
