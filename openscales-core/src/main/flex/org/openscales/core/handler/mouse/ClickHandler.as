@@ -280,18 +280,6 @@ package org.openscales.core.handler.mouse
 		}
 		
 		/**
-		 * Call back method for doubleclick events
-		 */ 
-		private function onDoubleClick():void
-		{
-			// TODO refactor double click
-			// If the handler is configured to zoom on mouse position
-			if(this.doubleClickZoomOnMousePosition && this.map.mouseNavigationEnabled && this.map.doubleclickZoomEnabled){
-				this.map.zoomBy(0.5, new Pixel(this.map.mouseX, this.map.mouseY));
-			}
-		}
-
-		/**
 		 * boolean specifying if zoom on double click should be made toward mouse position or not.
 		 * Default is true.
 		 */
