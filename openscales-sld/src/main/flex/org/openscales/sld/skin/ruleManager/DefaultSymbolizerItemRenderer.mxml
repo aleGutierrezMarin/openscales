@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	
+	<s:Group>
+		<s:layout>
+			<s:VerticalLayout verticalAlign="middle" />
+		</s:layout>
+		<s:Group>
+			<s:layout>
+				<s:HorizontalLayout verticalAlign="middle" />
+			</s:layout>
+			<s:SpriteVisualElement id="legend" width="30" height="30" />
+			
+			<s:Label id="type" text="" width="98"/>
+			
+			<s:Image source="@Embed(source='/assets/deleteSymbolizer.png')"
+					 height="30" width="30"
+					 click="removeSymbolizer()"
+					 toolTip="Remove"/>
+			<s:Image source="@Embed(source='/assets/cloneSymbolizer.png')"
+					 height="30" width="30"
+					 click="cloneSymbolizer()"
+					 toolTip="Clone"
+					 />
+		</s:Group>
+	</s:Group>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.sld.events.SLDEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.symbolizer.ArrowSymbolizer;
+			import org.openscales.core.style.symbolizer.LineSymbolizer;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
+			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.core.style.symbolizer.TextSymbolizer;
+			
+			private var rule:Rule = new Rule();
+			
+			override public function set data(value:Object):void {
+				while(rule.symbolizers.length>0)
+					rule.symbolizers.pop();
+				if(this.data && this.data is Symbolizer)
+					(this.data as Symbolizer).removeEventListener(SLDEvent.SYMBOLIZER_UPDATED,refreshLegend);
+				super.data = value;
+				if(value is Symbolizer) {
+					rule.symbolizers.push(value as Symbolizer);
+					(this.data as Symbolizer).addEventListener(SLDEvent.SYMBOLIZER_UPDATED,refreshLegend);
+					if(value is TextSymbolizer) {
+						type.text="Label style";
+					} else if(value is PolygonSymbolizer) {
+						type.text="Polygon style";
+					} else if(value is LineSymbolizer) {
+						type.text="Line style";
+					} else if(value is PointSymbolizer) {
+						type.text="Point style";
+					} else if(value is ArrowSymbolizer) {
+						type.text="Arrow style";
+					} else {
+						type.text="???";
+					}
+				}
+				this.refreshLegend();
+			}
+			
+			private function refreshLegend(e:Event=null):void {
+				while(this.legend.numChildren>0) {
+					this.legend.removeChildren();
+				}
+				if(rule.symbolizers.length==0)
+					return;
+
+				var sym:Symbolizer = rule.symbolizers[0];
+				var type:String = null;
+				if(sym is PolygonSymbolizer)
+					type = Rule.LEGEND_POLYGON;
+				else if(sym is PointSymbolizer || sym is TextSymbolizer)
+					type = Rule.LEGEND_POINT;
+				else if(sym is LineSymbolizer)
+					type = Rule.LEGEND_LINE;
+				else
+					return;
+				this.legend.addChild(rule.getLegendGraphic(type));
+			}
+			
+			private function removeSymbolizer():void {
+				var alert:Alert = Alert.show("Supprimer la symbologie ?",
+					"", Alert.OK | Alert.CANCEL, null,null,null,Alert.CANCEL);
+				
+				alert.addEventListener(CloseEvent.CLOSE, alert_close);
+				
+			}
+			
+			private function alert_close(evt:CloseEvent):void {
+				if(evt.detail == Alert.OK) {
+					if(this.data && this.data is Symbolizer) {
+						this.dispatchEvent(new SLDEvent(SLDEvent.REMOVE_SYMBOLIZER,null,this.data as Symbolizer,true));
+					}
+				}
+			}
+			
+			private function cloneSymbolizer():void {
+				if(this.data && this.data is Symbolizer) {
+					var sym:Symbolizer = (this.data as Symbolizer).clone();
+					this.dispatchEvent(new SLDEvent(SLDEvent.ADD_SYMBOLIZER,null,sym,true));
+				}
+			}
+		]]>
+	</fx:Script>
+</s:ItemRenderer>

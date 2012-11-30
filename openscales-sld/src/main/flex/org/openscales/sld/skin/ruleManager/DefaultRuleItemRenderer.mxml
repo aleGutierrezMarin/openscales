@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				creationComplete="init()">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="#cccccc" />
+		</s:fill>
+	</s:Rect>
+	<s:Rect width="100%" height="1" bottom="0">
+		<s:fill>
+			<s:SolidColor color="#666666" />
+		</s:fill>
+	</s:Rect>
+	<s:Group width="100%">
+		<s:layout>
+			<s:VerticalLayout verticalAlign="middle" paddingTop="10" paddingBottom="10"/>
+		</s:layout>
+		<s:Group left="10" right="10">
+			<s:layout>
+				<s:HorizontalLayout verticalAlign="middle" />
+			</s:layout>
+			<s:Spacer width="5" />
+			<s:Image source="@Embed(source='/assets/deleteRule.png')"
+					 height="30" width="30"
+					 click="removeRule()"
+					 toolTip="Remove rule and children styles"/>
+			<s:Label id="ruleName" width="128"/>
+			<s:Image source="@Embed(source='/assets/advanced.png')"
+					 height="30" width="30"
+					 click="onAdvanced()"
+					 toolTip="Advanced"
+					 />
+			<s:Image source="@Embed(source='/assets/clone.png')"
+					 height="30" width="30"
+					 click="cloneRule()"
+					 toolTip="Clone"
+					 />
+			<s:Image source="@Embed(source='/assets/addSymbolizer.png')"
+					 height="30" width="30"
+					 click="onAddSymboliser()"
+					 toolTip="Add symbolizer"
+					 />
+		</s:Group>
+		<s:Group left="10" right="10">
+			<s:layout>
+				<s:HorizontalLayout verticalAlign="middle" />
+			</s:layout>
+			<s:Spacer width="35" />
+			<s:List id="symbolizerList"
+					borderVisible="false"
+					dataProvider="{_symbolizers}"
+					height="{_symbolizers.length*30}"
+					itemRenderer="org.openscales.sld.skin.ruleManager.DefaultSymbolizerItemRenderer"
+					change="onChange(event)"
+					dragComplete="onDrag(event)"
+					/>
+			<!--
+			dragMoveEnabled="true"
+			dragEnabled="true"
+			dropEnabled="true"
+			-->
+		</s:Group>
+	</s:Group>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.sld.events.SLDEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
+			import mx.events.DragEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.core.utils.Trace;
+			
+			import spark.components.Application;
+			
+			import org.openscales.sld.ui.AddSymbolizerManager;
+			import org.openscales.sld.ui.RuleManager;
+			
+			[Bindable]
+			private var _symbolizers:ArrayCollection = new ArrayCollection();
+			
+			private var _rule:Rule = null;
+			private var _addSymbolizerManager:AddSymbolizerManager = new AddSymbolizerManager();
+			
+			private function init():void {
+				this.symbolizerList.addEventListener(SLDEvent.ADD_SYMBOLIZER,onSymbolizerListAction);
+				this.symbolizerList.addEventListener(SLDEvent.REMOVE_SYMBOLIZER,onSymbolizerListAction);
+			}
+			
+			override public function set data(value:Object):void {
+				_symbolizers.removeAll();
+				if(_rule) {
+					_rule.removeEventListener(SLDEvent.RULE_UPDATED,this.refresh);
+				}
+				_rule = null;
+				super.data = value;
+				if(value && this.data is Rule) {
+					_rule = (this.data as Rule);
+					_rule.addEventListener(SLDEvent.RULE_UPDATED,this.refresh);
+					this.ruleName.text = _rule.name;
+					for each(var sym:Symbolizer in _rule.symbolizers) {
+						_symbolizers.addItem(sym);
+					}
+				}
+				else
+					this.ruleName.text = "";
+			}
+			
+			private function refresh(e:SLDEvent):void {
+				this.ruleName.text = _rule.name;
+			}
+			
+			private function onChange(e:Event):void {
+				if(symbolizerList.selectedItem && (symbolizerList.selectedItem is Symbolizer)) {
+					this.dispatchEvent(new SLDEvent(SLDEvent.CURRENT_SYMBOLIZER_CHANGED,null,symbolizerList.selectedItem as Symbolizer,true));
+				}
+			}
+			
+			private function onDrag(e:DragEvent):void {
+				if(!this._rule)
+					return;
+				if(e.relatedObject && e.relatedObject != e.currentTarget) {
+					e.relatedObject.dispatchEvent(new SLDEvent(SLDEvent.REMOVE_SYMBOLIZER,null,(e.relatedObject as List).selectedItem as Symbolizer));
+				}
+				while(_rule.symbolizers.length>0)
+					_rule.symbolizers.pop();
+				for each(var sym:Symbolizer in _symbolizers) {
+					_rule.symbolizers.push(sym);
+				}
+				this.dispatchEvent(new SLDEvent(SLDEvent.RULE_UPDATED,_rule,null,true));
+			}
+			
+			
+			private function removeRule():void {
+				var alert:Alert = Alert.show("Supprimer la règle ?",
+											 "", Alert.OK | Alert.CANCEL, null,null,null,Alert.CANCEL);
+				
+				alert.addEventListener(CloseEvent.CLOSE, alert_close);
+				
+			}
+			
+			private function alert_close(evt:CloseEvent):void {
+				if(evt.detail == Alert.OK) {
+					if(this.data && this.data is Rule) {
+						var rule:Rule = this.data as Rule;
+						this.dispatchEvent(new SLDEvent(SLDEvent.REMOVE_RULE,rule,null,true));
+					}
+				}
+			}
+			
+			private function cloneRule():void {
+				if(this.data && this.data is Rule) {
+					var rule:Rule = (this.data as Rule).clone();
+					this.dispatchEvent(new SLDEvent(SLDEvent.ADD_RULE,rule,null,true));
+				}
+			}
+			
+			private function onAddSymboliser():void {
+				_addSymbolizerManager.onSymbolizerAdd = this.addSymboliser;
+				_addSymbolizerManager.width=400;
+				_addSymbolizerManager.height=100;
+				PopUpManager.addPopUp(_addSymbolizerManager,FlexGlobals.topLevelApplication as Application,true);
+				PopUpManager.centerPopUp(_addSymbolizerManager);
+			}
+			
+			private function onAdvanced():void {
+				var _ruleManager:RuleManager = new RuleManager();
+				_ruleManager.width=400;
+				_ruleManager.height=420;
+				_ruleManager.rule = this._rule;
+				PopUpManager.addPopUp(_ruleManager,FlexGlobals.topLevelApplication as Application,true);
+				PopUpManager.centerPopUp(_ruleManager);
+			}
+			
+			private function onSymbolizerListAction(e:SLDEvent):void {
+				e.stopImmediatePropagation();
+				if(!this.data || !(this.data is Rule))
+					return;
+				
+				if(e.type==SLDEvent.ADD_SYMBOLIZER) {
+					this.addSymboliser(e.symbolizer);
+				} else if(e.type == SLDEvent.REMOVE_SYMBOLIZER) {
+					var rule:Rule = (this.data as Rule);
+					var i:int = rule.symbolizers.indexOf(e.symbolizer);
+					if(i>=0)
+						rule.symbolizers.splice(i,1);
+					this.data=this.data;
+					this.dispatchEvent(new SLDEvent(SLDEvent.CURRENT_SYMBOLIZER_CHANGED,null,null,true));
+				}
+			}
+			
+			private function addSymboliser(sym:Symbolizer):void {
+				if(!sym)
+					return;
+				if(this.data && this.data is Rule) {
+					(this.data as Rule).symbolizers.push(sym);
+				}
+				this.dispatchEvent(new SLDEvent(SLDEvent.ADD_SYMBOLIZER,null,sym,true));
+				this.dispatchEvent(new SLDEvent(SLDEvent.CURRENT_SYMBOLIZER_CHANGED,null,sym,true));
+				this.data=this.data;
+				this.symbolizerList.selectedItem = sym;
+			}
+			
+			private function nameChange():void {
+				(this.data as Rule).name = ruleName.text;
+			}
+		]]>
+	</fx:Script>
+</s:ItemRenderer>
