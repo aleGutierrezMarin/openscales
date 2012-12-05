@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<handler:AbstractRuleHandler xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							  xmlns:s="library://ns.adobe.com/flex/spark" 
+							  xmlns:mx="library://ns.adobe.com/flex/mx"
+							  xmlns:handler="org.openscales.sld.handler.*"
+							  creationComplete="init()"
+							  name="Remplissage"
+							  width="100%">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+
+	<s:VGroup width="100%">
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="Style :" width="100"/>
+			<s:DropDownList id="style"
+							change="updateSymbolizer()"
+							dataProvider="{styles}"
+							labelField="text"
+							requireSelection="true"
+							width="200"/>
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{!this.native}"
+				  visible="{!this.native}">
+			<s:Label text="Url :" width="100"/>
+			<s:TextInput id="url"
+						 focusOut="updateSymbolizer(event)"/>
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{this.native}"
+				  visible="{this.native}">
+			<s:Label text="Marker :" width="100"/>
+			<s:DropDownList id="marker"
+							change="updateSymbolizer(event)"
+							dataProvider="{markers}"
+							labelField="text"
+							requireSelection="true"
+							width="200"/>
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="Taille :" width="100"/>
+			<s:NumericStepper id="size"
+							  minimum="1"
+							  maximum="30"
+							  change="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="Opacité :" width="100"/>
+			<s:HSlider id="gOpacity"
+					   minimum="0"
+					   maximum="100"
+					   changeEnd="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:Label text="Contour"
+				 fontWeight="bold"
+				 includeInLayout="{this.native}"
+				 visible="{this.native}"/>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{this.native}"
+				  visible="{this.native}">
+			<s:Label text="Couleur :" width="100"/>
+			<mx:ColorPicker id="strokeColor" change="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{this.native}"
+				  visible="{this.native}">
+			<s:Label text="Epaisseur :" width="100"/>
+			<s:NumericStepper id="strokeWidth"
+							  minimum="0"
+							  maximum="100" change="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{this.native}"
+				  visible="{this.native}">
+			<s:Label text="Opacité :" width="100"/>
+			<s:HSlider id="strokeOpacity"
+					   minimum="0"
+					   maximum="100"
+					   changeEnd="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:Label text="Remplissage"
+				 fontWeight="bold"
+				 includeInLayout="{this.native}"
+				 visible="{this.native}"/>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{this.native}"
+				  visible="{this.native}">
+			<s:Label text="Couleur :" width="100"/>
+			<mx:ColorPicker id="fillColor" change="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{this.native}"
+				  visible="{this.native}">
+			<s:Label text="Opacité :" width="100"/>
+			<s:HSlider id="fillOpacity"
+					   minimum="0"
+					   maximum="100"
+					   changeEnd="updateSymbolizer(event)"/>
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.sld.events.SLDEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.graphics.SolidColor;
+			
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.fill.Fill;
+			import org.openscales.core.style.fill.GraphicFill;
+			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.graphic.ExternalGraphic;
+			import org.openscales.core.style.graphic.Graphic;
+			import org.openscales.core.style.graphic.IGraphic;
+			import org.openscales.core.style.graphic.Mark;
+			import org.openscales.core.style.stroke.Stroke;
+			import org.openscales.core.style.symbolizer.IFillSymbolizer;
+			import org.openscales.core.style.symbolizer.LineSymbolizer;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
+			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+			import org.openscales.core.style.symbolizer.Symbolizer;
+
+			private static var supportedSymbolizer:Vector.<Class> = new <Class>[PointSymbolizer];
+			
+			[Bindable]
+			private var native:Boolean = true;
+			private var lastSelected:String = null;
+
+			[Bindable]
+			private var styles:ArrayCollection = new ArrayCollection(
+			[
+				{id:"native", text:"Natif"},
+				{id:"extern", text:"Ressource externe"}
+			]);
+			
+			[Bindable]
+			private var markers:ArrayCollection = new ArrayCollection(
+				[
+					{id:"square", text:"Carré"},
+					{id:"circle", text:"Cercle"},
+					{id:"triangle", text:"Triangle"},
+					{id:"star", text:"Etoile"},
+					{id:"cross", text:"Signe plus"},
+					{id:"x", text:"Signe multiplier"},
+					{id:"oarrow", text:"Flèche ouverte"},
+					{id:"carrow", text:"Flèche fermée"}
+				]);
+			
+			override public function get supportedSymbolizers():Vector.<Class> {
+				return supportedSymbolizer;
+			}
+			
+			private function init():void {
+				this.onCurrentSymbolizer();
+			}
+			
+			private function updateSymbolizer(e:Event=null):void {
+				if(!this.currentSymbolizer || !(this.currentSymbolizer is PointSymbolizer))
+					return
+				var sym:PointSymbolizer = (this.currentSymbolizer as PointSymbolizer);
+				if(!sym.graphic)
+					sym.graphic=new Graphic();
+				if(!sym.graphic.graphics)
+					sym.graphic.graphics = new Vector.<IGraphic>();
+				sym.graphic.opacity = gOpacity.value/100;
+				sym.graphic.size = size.value;
+				var i:uint;
+				if(this.style.selectedItem.id == "native") {
+					native = true;
+					for(i = sym.graphic.graphics.length; i>0; --i) {
+						if(!(sym.graphic.graphics[i-1] is Mark))
+							sym.graphic.graphics.splice(i-1,1);
+					}
+					if(sym.graphic.graphics.length==0)
+						sym.graphic.graphics.push(new Mark());
+					var mark:Mark = sym.graphic.graphics[0] as Mark;
+					mark.wellKnownGraphicName = this.marker.selectedItem.id;
+					if(!mark.stroke)
+						mark.stroke = new Stroke();
+					mark.stroke.color = this.strokeColor.selectedColor;
+					mark.stroke.opacity = this.strokeOpacity.value/100;
+					mark.stroke.width = this.strokeWidth.value;
+					if(!mark.fill || !(mark.fill is SolidFill)) {
+						mark.fill = new SolidFill();
+					}
+					(mark.fill as SolidFill).color = this.fillColor.selectedColor;
+					(mark.fill as SolidFill).opacity = this.fillOpacity.value;
+					
+				} else {
+					native = false;
+					for(i = sym.graphic.graphics.length; i>0; --i) {
+						if(!(sym.graphic.graphics[i-1] is ExternalGraphic))
+							sym.graphic.graphics.splice(i-1,1);
+					}
+					if(sym.graphic.graphics.length==0)
+						sym.graphic.graphics.push(new ExternalGraphic());
+					var extMark:ExternalGraphic = sym.graphic.graphics[0] as ExternalGraphic;
+					extMark.onlineResource = this.url.text;
+				}
+				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.SYMBOLIZER_UPDATED,null,this.currentSymbolizer,true));
+				this.lastSelected = style.selectedItem.id;
+				this.onCurrentSymbolizer();
+			}
+			
+			override public function set currentSymbolizer(value:Symbolizer):void {
+				super.currentSymbolizer = value;
+				this.onCurrentSymbolizer();
+			}
+			
+			private function onCurrentSymbolizer():void {
+				if(this.currentSymbolizer && (this.currentSymbolizer is PointSymbolizer)) {
+					var sym:PointSymbolizer = (this.currentSymbolizer as PointSymbolizer);
+					if(!sym.graphic)
+						sym.graphic=new Graphic();
+					this.size.value = sym.graphic.getSizeValue();
+					this.gOpacity.value = sym.graphic.opacity;
+					if(!sym.graphic.graphics)
+						sym.graphic.graphics = new Vector.<IGraphic>();
+					if(sym.graphic.graphics.length==0) {
+						sym.graphic.graphics.push(new Mark());
+					}
+					this.gOpacity.value = sym.graphic.opacity*100;
+					this.size.value = sym.graphic.getSizeValue();
+					if(sym.graphic.graphics[0] is Mark) {
+						native = true;
+						this.style.selectedIndex = 0;
+						var mark:Mark = sym.graphic.graphics[0] as Mark;
+						switch(mark.wellKnownGraphicName) {
+							case Mark.WKN_SQUARE:
+								this.marker.selectedIndex = 0;
+								break;
+							case Mark.WKN_CIRCLE:
+								this.marker.selectedIndex = 1;
+								break;
+							case Mark.WKN_TRIANGLE:
+								this.marker.selectedIndex = 2;
+								break;
+							case Mark.WKN_STAR:
+								this.marker.selectedIndex = 3;
+								break;
+							case Mark.WKN_CROSS:
+								this.marker.selectedIndex = 4;
+								break;
+							case Mark.WKN_X:
+								this.marker.selectedIndex = 5;
+								break;
+							case Mark.OARROW:
+								this.marker.selectedIndex = 6;
+								break;
+							case Mark.CARROW:
+							default:
+								this.marker.selectedIndex = 7;
+								break;
+						}
+						
+						if(!mark.stroke)
+							mark.stroke = new Stroke();
+						this.strokeColor.selectedColor = mark.stroke.color;
+						this.strokeOpacity.value = mark.stroke.opacity*100;
+						this.strokeWidth.value = mark.stroke.width;
+						if(!mark.fill || !(mark.fill is SolidFill)) {
+							mark.fill = new SolidFill();
+						}
+						this.fillColor.selectedColor = (mark.fill as SolidFill).color as uint;
+						this.fillOpacity.value = (mark.fill as SolidFill).opacity*100;
+						this.url.text = "";
+					} else {
+						native = false;
+						this.style.selectedIndex = 1;
+						var extMark:ExternalGraphic = sym.graphic.graphics[0] as ExternalGraphic;
+						this.url.text = extMark.onlineResource;
+						this.marker.selectedIndex = 0;
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+</handler:AbstractRuleHandler>
