@@ -15,6 +15,7 @@ package org.openscales.core.handler.mouse
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.security.ISecurity;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.osmf.utils.Version;
@@ -41,6 +42,7 @@ package org.openscales.core.handler.mouse
 		private var _infoFormat:String="application/vnd.ogc.gml";
 		private var _layers:String=null;
 		private var _buffer:Number = 15;
+		private var _security:ISecurity;
 		
 		public function WMSGetFeatureInfo(target:Map=null, active:Boolean = false)
 		{
@@ -324,6 +326,8 @@ package org.openscales.core.handler.mouse
 				}
 				_request = new XMLRequest(req[i], this.handleSuccess, this.handleFailure);
 				_request.proxy = map.getProxy(req[i]);
+				if (this._security)
+					_request.security = this._security;
 				_request.send();
 			}
 		}
@@ -387,6 +391,22 @@ package org.openscales.core.handler.mouse
 		public function set drillDown(value:Boolean):void
 		{
 			_drillDown = value;
+		}
+		
+		/**
+		 * The security that will be used to send the getFeatureInfo request
+		 */
+		public function get security():ISecurity
+		{
+			return this._security;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set security(value:ISecurity):void
+		{
+			this._security = value;
 		}
 		
 		/**
