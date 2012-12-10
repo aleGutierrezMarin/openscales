@@ -216,6 +216,9 @@ package org.openscales.fx.control.search
 			var prot:String = (protocolsList.selectedItem as String).replace(/\s/g,"");
 			var vers:String = (versionsList.selectedItem as String).replace(/\s/g,"");
 			var url:String = (urlTextInput.text).replace(/\s/g,"");
+			if(url.lastIndexOf("?")!=-1){
+				url = url.substring(0,url.lastIndexOf("?"));
+			}
 			if(url && url != ""){
 				_capabilities = new GetCapabilities(prot, url, onGetCapSuccess, vers,this.map.getProxy(url));
 				loading = true;
