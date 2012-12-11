@@ -177,8 +177,8 @@
 			
 			private function onAdvanced():void {
 				var _ruleManager:RuleManager = new RuleManager();
-				_ruleManager.width=400;
-				_ruleManager.height=420;
+				_ruleManager.width=800;
+				_ruleManager.height=600;
 				_ruleManager.rule = this._rule;
 				PopUpManager.addPopUp(_ruleManager,FlexGlobals.topLevelApplication as Application,true);
 				PopUpManager.centerPopUp(_ruleManager);
