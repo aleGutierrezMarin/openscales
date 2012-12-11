@@ -122,20 +122,21 @@
 				if(!this.currentSymbolizer || !(this.currentSymbolizer is IStrokeSymbolizer)) {
 					return;
 				}
+				this.dashed = false;
 				var symbolizer:IStrokeSymbolizer = this.currentSymbolizer as IStrokeSymbolizer;
 				if(this.style.selectedIndex==0) {
 					this.borderStyle=false;
-					this.dashed = false;
 					symbolizer.stroke = null;
 				} else {
-					if(this.lastSelected<1) {
+					if(this.lastSelected==0) {
 						if(!symbolizer.stroke)
 							symbolizer.stroke = new Stroke();
 					}
 					this.borderStyle=true;
 					if(this.style.selectedIndex==2) {
-						if(!symbolizer.stroke.dashArray)
-							symbolizer.stroke.dashArray = new Array();
+						if(!symbolizer.stroke.dashArray) {
+							symbolizer.stroke.dashArray = new Array(4,4);
+						}
 						var array:Array = symbolizer.stroke.dashArray;
 						for each(var i:int in array) {
 							if(!isNaN(i)) {
@@ -143,11 +144,13 @@
 							}
 						}
 						if(dashedArray.text.length>0)
-							dashedArray.text=dashedArray.text.substring(0,dashedArray.text.length-1);
+							dashedArray.text=dashedArray.text.substring(0,dashedArray.text.length-2);
 						this.dashed = true;
 					}
-					else
+					else {
+						symbolizer.stroke.dashArray = null;
 						this.dashed = false;
+					}
 				}
 				this.lastSelected = style.selectedIndex;
 				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.SYMBOLIZER_UPDATED,null,this.currentSymbolizer,true));

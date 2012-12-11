@@ -8,9 +8,6 @@ package org.openscales.sld.ui
 	import mx.events.FlexEvent;
 
 	import org.openscales.core.style.symbolizer.Symbolizer;
-	import org.openscales.core.utils.Trace;
-	
-	import org.openscales.sld.skin.DefaultHandlersManagerSkin;
 	
 	import spark.components.SkinnableContainer;
 	
@@ -39,7 +36,6 @@ package org.openscales.sld.ui
 		public function HandlersManager()
 		{
 			super();
-			this.setStyle("skinClass",DefaultHandlersManagerSkin);
 			this.refresh();
 		}
 

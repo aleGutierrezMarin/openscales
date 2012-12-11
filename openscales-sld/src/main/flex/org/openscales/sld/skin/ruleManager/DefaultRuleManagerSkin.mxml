@@ -5,6 +5,8 @@
 		xmlns:ui="org.openscales.sld.ui.*"
 		addedToStage="onAdded()"
 		creationComplete="onCreated()"
+		width="800"
+		height="600"
 		>
 	<fx:Metadata>
 		[HostComponent("org.openscales.sld.ui.RuleManager")]
@@ -182,7 +184,7 @@
 		<s:Rect width="100%"
 				height="100%">
 			<s:fill>
-				<s:SolidColor color="#CCCCCC" />
+				<s:SolidColor id="fillColor" color="#CCCCCC" />
 			</s:fill>
 		</s:Rect>
 	</s:Group>
