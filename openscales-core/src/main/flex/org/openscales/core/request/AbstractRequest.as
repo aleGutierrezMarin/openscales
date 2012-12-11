@@ -156,7 +156,7 @@ package org.openscales.core.request
 				if (event.type == Event.COMPLETE) {
 					this._isCompleted = true;
 					if (this._onComplete != null) {
-						this._onComplete(new RequestEvent(event.type,this.url,event.target,event.bubbles,event.cancelable));
+						this._onComplete(new RequestEvent(event.type,this.finalUrl,event.target,event.bubbles,event.cancelable));
 					}
 				}
 				else if (this._onFailure == null) {
