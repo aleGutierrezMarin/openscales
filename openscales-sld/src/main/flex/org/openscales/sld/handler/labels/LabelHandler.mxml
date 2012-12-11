@@ -213,44 +213,27 @@
 						symbolizer.anchorPointX = 1;
 					else
 						symbolizer.anchorPointX = 0.5;
+				} else {
+					symbolizer.anchorPointY = 0.5;
+					symbolizer.anchorPointX = 0.5;
+					anchorPoint.selectedValue = "M";
 				}
+				
 				
 				if(!symbolizer.font)
 					symbolizer.font = new org.openscales.core.style.font.Font();
 				if(!symbolizer.halo)
 					symbolizer.halo = new Halo();
-				switch(e.target) {
-					case attribute:
-						symbolizer.propertyName = attribute.selectedItem.realname as String;
-						break;
-					case fontFamilly:
-						symbolizer.font.family = fontFamilly.selectedItem as String;
-						break;
-					case fontSize:
-						symbolizer.font.size = fontSize.value;
-						break;
-					case bold:
-						symbolizer.font.weight = bold.selected?org.openscales.core.style.font.Font.BOLD:org.openscales.core.style.font.Font.NORMAL;
-						break;
-					case italic:
-						symbolizer.font.style = italic.selected?org.openscales.core.style.font.Font.ITALIC:org.openscales.core.style.font.Font.NORMAL;
-						break;
-					case textColor:
-						symbolizer.font.color = textColor.selectedColor;
-						break;
-					case textOpacity:
-						symbolizer.font.opacity = textOpacity.value/100;
-						break;
-					case haloWidth:
-						symbolizer.halo.radius = haloWidth.value;
-						break;
-					case haloColor:
-						symbolizer.halo.color = haloColor.selectedColor;
-						break;
-					case haloOpacity:
-						symbolizer.halo.opacity = haloOpacity.value/100;
-						break;
-				}
+				symbolizer.propertyName = attribute.selectedItem.realname as String;
+				symbolizer.font.family = fontFamilly.selectedItem as String;
+				symbolizer.font.size = fontSize.value;
+				symbolizer.font.weight = bold.selected?org.openscales.core.style.font.Font.BOLD:org.openscales.core.style.font.Font.NORMAL;
+				symbolizer.font.style = italic.selected?org.openscales.core.style.font.Font.ITALIC:org.openscales.core.style.font.Font.NORMAL;
+				symbolizer.font.color = textColor.selectedColor;
+				symbolizer.font.opacity = textOpacity.value/100;
+				symbolizer.halo.radius = haloWidth.value;
+				symbolizer.halo.color = haloColor.selectedColor;
+				symbolizer.halo.opacity = haloOpacity.value/100;
 				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.RULE_UPDATED,null,this.currentSymbolizer,true));
 			}
 			
