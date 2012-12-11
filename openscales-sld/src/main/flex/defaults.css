@@ -1,2 +1,20 @@
 /* CSS file */
 @namespace s "library://ns.adobe.com/flex/spark";
+@namespace ns "org.openscales.sld.skin.*";
+@namespace ns2 "org.openscales.sld.skin.ruleManager.*";
+
+ns|RulesManager {
+	skinClass: ClassReference("org.openscales.sld.skin.DefaultRulesManagerSkin");
+}
+ns|HandlersManager {
+	skinClass: ClassReference("org.openscales.sld.skin.DefaultHandlersManagerSkin");
+}
+ns2|RuleManager {
+	skinClass: ClassReference("org.openscales.sld.skin.ruleManager.DefaultRuleManagerSkin");
+}
+ns2|RuleTree {
+	skinClass: ClassReference("org.openscales.sld.skin.ruleManager.DefaultRuleTree");
+}
+ns2|AddSymbolizerManager {
+	skinClass: ClassReference("org.openscales.sld.skin.ruleManager.DefaultAddSymbolizerManagerSkin");
+}

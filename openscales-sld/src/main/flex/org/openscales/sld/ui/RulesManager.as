@@ -6,7 +6,6 @@ package org.openscales.sld.ui
 	
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.symbolizer.Symbolizer;
-	import org.openscales.sld.skin.DefaultRulesManagerSkin;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	
@@ -22,7 +21,6 @@ package org.openscales.sld.ui
 			super();
 			this.addEventListener(SLDEvent.REMOVE_RULE,this.removeRule);
 			this.addEventListener(SLDEvent.ADD_RULE,this.addRule);
-			this.setStyle("skinClass",DefaultRulesManagerSkin);
 		}
 		
 		public function removeRule(e:SLDEvent):void {

@@ -115,19 +115,19 @@
 			<s:Label text="" width="110"/>
 			<s:VGroup width="150">
 				<s:HGroup>
-					<s:RadioButton groupName="anchorPoint" value="TL" />
-					<s:RadioButton groupName="anchorPoint" value="T" />
-					<s:RadioButton groupName="anchorPoint" value="TR" />
+					<s:RadioButton groupName="anchorPoint" value="TL" id="TL"/>
+					<s:RadioButton groupName="anchorPoint" value="T" id="T"/>
+					<s:RadioButton groupName="anchorPoint" value="TR" id="TR"/>
 				</s:HGroup>
 				<s:HGroup>
-					<s:RadioButton groupName="anchorPoint" value="ML" />
-					<s:RadioButton groupName="anchorPoint" value="M" />
-					<s:RadioButton groupName="anchorPoint" value="MR" />
+					<s:RadioButton groupName="anchorPoint" value="ML" id="ML"/>
+					<s:RadioButton groupName="anchorPoint" value="M" id="M"/>
+					<s:RadioButton groupName="anchorPoint" value="MR" id="MR"/>
 				</s:HGroup>
 				<s:HGroup>
-					<s:RadioButton groupName="anchorPoint" value="BL" />
-					<s:RadioButton groupName="anchorPoint" value="B" />
-					<s:RadioButton groupName="anchorPoint" value="BR" />
+					<s:RadioButton groupName="anchorPoint" value="BL" id="BL"/>
+					<s:RadioButton groupName="anchorPoint" value="B" id="B"/>
+					<s:RadioButton groupName="anchorPoint" value="BR" id="BR"/>
 				</s:HGroup>
 			</s:VGroup>
 		</s:HGroup>
@@ -261,18 +261,30 @@
 					symbolizer.font = new org.openscales.core.style.font.Font();
 				if(!symbolizer.halo)
 					symbolizer.halo = new Halo();
-				
-				var col:String="";
-				var row:String="M";
-				if(symbolizer.anchorPointX == 0)
-					col="L";
-				else if(symbolizer.anchorPointX == 1)
-					col="R";
-				if(symbolizer.anchorPointY == 0)
-					col="B";
-				else if(symbolizer.anchorPointY == 1)
-					col="T";
-				anchorPoint.selectedValue=row+col;
+
+				if(symbolizer.anchorPointX == 0) {
+					if(symbolizer.anchorPointY == 0)
+						this.BL.selected = true;
+					else if(symbolizer.anchorPointY == 1)
+						this.TL.selected = true;
+					else
+						this.ML.selected = true;
+						
+				} else if(symbolizer.anchorPointX == 1) {
+					if(symbolizer.anchorPointY == 0)
+						this.BR.selected = true;
+					else if(symbolizer.anchorPointY == 1)
+						this.TR.selected = true;
+					else
+						this.MR.selected = true;
+				} else {
+					if(symbolizer.anchorPointY == 0)
+						this.B.selected = true;
+					else if(symbolizer.anchorPointY == 1)
+						this.M.selected = true;
+					else
+						this.T.selected = true;
+				}
 				
 				attribute.selectedItem = null;
 				var i:uint = attributes.length;

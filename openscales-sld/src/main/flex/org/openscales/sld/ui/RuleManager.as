@@ -5,8 +5,6 @@ package org.openscales.sld.ui
 	
 	import org.openscales.core.style.Rule;
 	
-	import org.openscales.sld.skin.ruleManager.DefaultRuleManagerSkin;
-	
 	import spark.components.supportClasses.SkinnableComponent;
 	
 	public class RuleManager extends SkinnableComponent implements IFocusManagerContainer
@@ -16,7 +14,6 @@ package org.openscales.sld.ui
 		public function RuleManager()
 		{
 			super();
-			this.setStyle("skinClass",DefaultRuleManagerSkin);
 		}
 		
 		public function get defaultButton():IFlexDisplayObject
