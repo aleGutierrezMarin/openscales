@@ -46,12 +46,6 @@ package org.openscales.core.tile
 		[Embed(source="/assets/images/noDataTransp.png")]
 		private var _noDataTransp:Class;
 
-		/**
-		 * Totally transparent tile
-		 */ 
-		[Embed(source="/assets/images/fullTransparentImage.png")]
-		private var _fullTransparentImage:Class;
-		
 		public function ImageTile(layer:Layer, position:Pixel, bounds:Bounds, url:String, size:Size) {
 			super(layer, position, bounds, url, size);
 			// otherwise you'll get seams between tiles :(
@@ -170,9 +164,6 @@ package org.openscales.core.tile
 						this.drawLoader("", new _noData());
 						bmdata.draw(new _noData());
 					}
-				}else{
-					this.drawLoader("",new _fullTransparentImage());
-					bmdata.draw(new _fullTransparentImage());
 				}
 				
 				
