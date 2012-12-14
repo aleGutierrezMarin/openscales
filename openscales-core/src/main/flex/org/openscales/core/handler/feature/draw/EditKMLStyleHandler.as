@@ -678,19 +678,23 @@ package org.openscales.core.handler.feature.draw
 			if (this._colorPaintingActivated || this._colorPickingActivated)
 				return;
 			
-			if(event.target is Feature || event.target.parent is Feature)
+			if(event.target is Feature || event.target.parent is Feature || event.target.parent.parent is Feature)
 			{
 				var tmpFeature:Feature;
 				if (event.target is Feature)
 				{
 					tmpFeature = event.target as Feature;
 				}
-				else
+				else if (event.target.parent is Feature)
 				{
 					tmpFeature = event.target.parent as Feature;
 				}
+				else
+				{
+					tmpFeature = event.target.parent.parent as Feature;
+				}
 				
-				if (tmpFeature.layer != this._drawLayer)
+				if (!tmpFeature || tmpFeature.layer != this._drawLayer)
 				{
 					this._feature = null;
 					return;

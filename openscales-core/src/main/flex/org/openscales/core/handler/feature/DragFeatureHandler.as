@@ -85,6 +85,9 @@
 				}else if(event.target.parent is CustomMarker || event.target.parent is PointFeature)
 				{
 					feature = event.target.parent as Feature;
+				}else if(event.target.parent.parent is CustomMarker || event.target.parent.parent is PointFeature)
+				{
+					feature = event.target.parent.parent as Feature;
 				}
 				else
 					feature = event.target as Feature;
