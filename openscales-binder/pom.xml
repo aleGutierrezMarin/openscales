@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openscales</groupId>
 	<artifactId>openscales-binder</artifactId>
-	<version>2.3.0-2012-51</version>
+	<version>2.3.0-SNAPSHOT</version>
 	<packaging>swc</packaging>
 	<name>Binder</name>
 	<description>binder modules that contains binders like JSBinder ...</description>
@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.openscales</groupId>
 		<artifactId>openscales</artifactId>
-		<version>2.3.0-2012-51</version>
+		<version>2.3.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 		
