@@ -76,7 +76,8 @@
 			
 			private function refreshLegend(e:Event=null):void {
 				while(this.legend.numChildren>0) {
-					this.legend.removeChildren();
+					this.legend.removeChildAt(0);
+					//this.legend.removeChildren();
 				}
 				if(rule.symbolizers.length==0)
 					return;

@@ -1,10 +1,12 @@
 // ActionScript file
 package org.openscales.core.layer.capabilities
 {
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Unit;
 
 	/**
 	 * WFS 1.1.1 capabilities parser
@@ -127,6 +129,12 @@ package org.openscales.core.layer.capabilities
     						
 				layerCapabilities.put("BoundingBox", new Bounds(left,bottom,right,top,csSrsList));
 				
+				var minScaleDenominator:Number = layer.MinScaleDenominator[0];
+				var maxScaleDenominator:Number = layer.MaxScaleDenominator[0];
+				
+				if(minScaleDenominator)layerCapabilities.put("minScaleDenominator",minScaleDenominator);
+				if(maxScaleDenominator)layerCapabilities.put("maxScaleDenominator",maxScaleDenominator);
+				
 				if (name != "")
 					this._capabilities.put(name, layerCapabilities);
 
@@ -175,6 +183,16 @@ package org.openscales.core.layer.capabilities
 			wmsLayer.maxExtent = layerData.getValue("EX_GeographicBoundingBox");
 			wmsLayer.transparent = true;
 			wmsLayer.availableProjections = Vector.<String>(crss.split(","));
+			/*if(layerData.getValue("minScaleDenominator")){
+				wmsLayer.minResolution = new Resolution(
+						Unit.getResolutionFromScaleDenominator(layerData.getValue("minScaleDenominator"),wmsLayer.projection.projParams.units),
+						wmsLayer.projection);
+			}
+			if(layerData.getValue("maxScaleDenominator")){
+				wmsLayer.maxResolution = new Resolution(
+					Unit.getResolutionFromScaleDenominator(layerData.getValue("maxScaleDenominator"),wmsLayer.projection.projParams.units),
+					wmsLayer.projection);
+			}*/
 			return wmsLayer;
 			
 		}

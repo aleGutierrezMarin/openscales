@@ -115,19 +115,19 @@
 			<s:Label text="" width="110"/>
 			<s:VGroup width="150">
 				<s:HGroup>
-					<s:RadioButton groupName="anchorPoint" value="TL" />
-					<s:RadioButton groupName="anchorPoint" value="T" />
-					<s:RadioButton groupName="anchorPoint" value="TR" />
+					<s:RadioButton groupName="anchorPoint" value="TL" id="TL"/>
+					<s:RadioButton groupName="anchorPoint" value="T" id="T"/>
+					<s:RadioButton groupName="anchorPoint" value="TR" id="TR"/>
 				</s:HGroup>
 				<s:HGroup>
-					<s:RadioButton groupName="anchorPoint" value="ML" />
-					<s:RadioButton groupName="anchorPoint" value="M" />
-					<s:RadioButton groupName="anchorPoint" value="MR" />
+					<s:RadioButton groupName="anchorPoint" value="ML" id="ML"/>
+					<s:RadioButton groupName="anchorPoint" value="M" id="M"/>
+					<s:RadioButton groupName="anchorPoint" value="MR" id="MR"/>
 				</s:HGroup>
 				<s:HGroup>
-					<s:RadioButton groupName="anchorPoint" value="BL" />
-					<s:RadioButton groupName="anchorPoint" value="B" />
-					<s:RadioButton groupName="anchorPoint" value="BR" />
+					<s:RadioButton groupName="anchorPoint" value="BL" id="BL"/>
+					<s:RadioButton groupName="anchorPoint" value="B" id="B"/>
+					<s:RadioButton groupName="anchorPoint" value="BR" id="BR"/>
 				</s:HGroup>
 			</s:VGroup>
 		</s:HGroup>
@@ -213,44 +213,27 @@
 						symbolizer.anchorPointX = 1;
 					else
 						symbolizer.anchorPointX = 0.5;
+				} else {
+					symbolizer.anchorPointY = 0.5;
+					symbolizer.anchorPointX = 0.5;
+					anchorPoint.selectedValue = "M";
 				}
+				
 				
 				if(!symbolizer.font)
 					symbolizer.font = new org.openscales.core.style.font.Font();
 				if(!symbolizer.halo)
 					symbolizer.halo = new Halo();
-				switch(e.target) {
-					case attribute:
-						symbolizer.propertyName = attribute.selectedItem.realname as String;
-						break;
-					case fontFamilly:
-						symbolizer.font.family = fontFamilly.selectedItem as String;
-						break;
-					case fontSize:
-						symbolizer.font.size = fontSize.value;
-						break;
-					case bold:
-						symbolizer.font.weight = bold.selected?org.openscales.core.style.font.Font.BOLD:org.openscales.core.style.font.Font.NORMAL;
-						break;
-					case italic:
-						symbolizer.font.style = italic.selected?org.openscales.core.style.font.Font.ITALIC:org.openscales.core.style.font.Font.NORMAL;
-						break;
-					case textColor:
-						symbolizer.font.color = textColor.selectedColor;
-						break;
-					case textOpacity:
-						symbolizer.font.opacity = textOpacity.value/100;
-						break;
-					case haloWidth:
-						symbolizer.halo.radius = haloWidth.value;
-						break;
-					case haloColor:
-						symbolizer.halo.color = haloColor.selectedColor;
-						break;
-					case haloOpacity:
-						symbolizer.halo.opacity = haloOpacity.value/100;
-						break;
-				}
+				symbolizer.propertyName = attribute.selectedItem.realname as String;
+				symbolizer.font.family = fontFamilly.selectedItem as String;
+				symbolizer.font.size = fontSize.value;
+				symbolizer.font.weight = bold.selected?org.openscales.core.style.font.Font.BOLD:org.openscales.core.style.font.Font.NORMAL;
+				symbolizer.font.style = italic.selected?org.openscales.core.style.font.Font.ITALIC:org.openscales.core.style.font.Font.NORMAL;
+				symbolizer.font.color = textColor.selectedColor;
+				symbolizer.font.opacity = textOpacity.value/100;
+				symbolizer.halo.radius = haloWidth.value;
+				symbolizer.halo.color = haloColor.selectedColor;
+				symbolizer.halo.opacity = haloOpacity.value/100;
 				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.RULE_UPDATED,null,this.currentSymbolizer,true));
 			}
 			
@@ -278,18 +261,30 @@
 					symbolizer.font = new org.openscales.core.style.font.Font();
 				if(!symbolizer.halo)
 					symbolizer.halo = new Halo();
-				
-				var col:String="";
-				var row:String="M";
-				if(symbolizer.anchorPointX == 0)
-					col="L";
-				else if(symbolizer.anchorPointX == 1)
-					col="R";
-				if(symbolizer.anchorPointY == 0)
-					col="B";
-				else if(symbolizer.anchorPointY == 1)
-					col="T";
-				anchorPoint.selectedValue=row+col;
+
+				if(symbolizer.anchorPointX == 0) {
+					if(symbolizer.anchorPointY == 0)
+						this.BL.selected = true;
+					else if(symbolizer.anchorPointY == 1)
+						this.TL.selected = true;
+					else
+						this.ML.selected = true;
+						
+				} else if(symbolizer.anchorPointX == 1) {
+					if(symbolizer.anchorPointY == 0)
+						this.BR.selected = true;
+					else if(symbolizer.anchorPointY == 1)
+						this.TR.selected = true;
+					else
+						this.MR.selected = true;
+				} else {
+					if(symbolizer.anchorPointY == 0)
+						this.B.selected = true;
+					else if(symbolizer.anchorPointY == 1)
+						this.M.selected = true;
+					else
+						this.T.selected = true;
+				}
 				
 				attribute.selectedItem = null;
 				var i:uint = attributes.length;
