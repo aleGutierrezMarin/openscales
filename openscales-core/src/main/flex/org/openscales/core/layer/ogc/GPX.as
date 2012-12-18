@@ -164,8 +164,12 @@ package org.openscales.core.layer.ogc
 						}
 					}
 				}
-				this.addFeatures(lineStringFeatureVector);
-				this.addFeatures(pointFeatureVector);
+				if (this.style){
+					this.addFeatures(this._featureVector);	
+				} else {
+					this.addFeatures(lineStringFeatureVector);
+					this.addFeatures(pointFeatureVector);
+				}
 				
 				this.maxExtent = this.featuresBbox;
 				
