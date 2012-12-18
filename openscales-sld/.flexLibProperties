@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
-  <includeClasses/>
+  <includeClasses>
+    <classEntry path="org.openscales.sld.events.SLDEvent"/>
+    <classEntry path="org.openscales.sld.handler.AbstractRuleHandler"/>
+    <classEntry path="org.openscales.sld.handler.FillHandler"/>
+    <classEntry path="org.openscales.sld.handler.GraphicHandler"/>
+    <classEntry path="org.openscales.sld.handler.StrokeHandler"/>
+    <classEntry path="org.openscales.sld.handler.labels.LabelHandler"/>
+    <classEntry path="org.openscales.sld.skin.DefaultHandlerItemRenderer"/>
+    <classEntry path="org.openscales.sld.skin.DefaultHandlersManagerSkin"/>
+    <classEntry path="org.openscales.sld.skin.DefaultRulesManagerSkin"/>
+    <classEntry path="org.openscales.sld.skin.ruleManager.DefaultAddSymbolizerManagerSkin"/>
+    <classEntry path="org.openscales.sld.skin.ruleManager.DefaultRuleItemRenderer"/>
+    <classEntry path="org.openscales.sld.skin.ruleManager.DefaultRuleManagerSkin"/>
+    <classEntry path="org.openscales.sld.skin.ruleManager.DefaultRuleTree"/>
+    <classEntry path="org.openscales.sld.skin.ruleManager.DefaultSymbolizerItemRenderer"/>
+    <classEntry path="org.openscales.sld.ui.AddSymbolizerManager"/>
+    <classEntry path="org.openscales.sld.ui.HandlersManager"/>
+    <classEntry path="org.openscales.sld.ui.RuleManager"/>
+    <classEntry path="org.openscales.sld.ui.RulesManager"/>
+    <classEntry path="org.openscales.sld.ui.ruleManager.RuleTree"/>
+  </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
   </includeResources>

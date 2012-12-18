@@ -5,8 +5,6 @@ package org.openscales.sld.ui.ruleManager
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	
-	import org.openscales.sld.skin.ruleManager.DefaultRuleTree;
-	
 	import spark.components.supportClasses.SkinnableComponent;
 	
 	public class RuleTree extends SkinnableComponent
@@ -18,7 +16,6 @@ package org.openscales.sld.ui.ruleManager
 		public function RuleTree()
 		{
 			super();
-			this.setStyle("skinClass",DefaultRuleTree);
 		}
 		
 		[Bindable]
