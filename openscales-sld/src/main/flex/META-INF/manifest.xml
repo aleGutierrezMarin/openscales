@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <componentPackage>
-	<component id="RulesManager" class="org.openscales.sld.ui.RulesManager" />
+  <component id="RulesManager" class="org.openscales.sld.ui.RulesManager" />
   <component id="RuleManager" class="org.openscales.sld.ui.RuleManager" />
   <component id="HandlersManager" class="org.openscales.sld.ui.HandlersManager" />
   <component id="AddSymbolizerManager" class="org.openscales.sld.ui.AddSymbolizerManager" />

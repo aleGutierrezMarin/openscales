@@ -55,7 +55,8 @@ package org.openscales.core.filter
 		private var _escapeChar:String = null;
 		
 		public function Comparison(property:String, type:String) {
-			
+			this._property = property;
+			this._type = type;
 		}
 		
 		public function matches(feature:Feature):Boolean {
