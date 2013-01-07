@@ -58,7 +58,7 @@ package org.openscales.core.format
 		
 		//private namespace opengis="http://www.opengis.net/kml/2.2";
 		//private namespace google="http://earth.google.com/kml/2.0";
-		//private var _proxy:String;
+		private var _proxy:String;
 		private var _kmlns:Namespace = new Namespace("http://earth.google.com/kml/2.0");
                 private var _internalns:Namespace = null;
 		private var _externalImages:Object = {};
