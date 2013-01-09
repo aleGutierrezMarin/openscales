@@ -230,7 +230,10 @@ package org.openscales.fx.control.search
 			if(_capabilities && _map){
 				var layer:Layer = _capabilities.instanciateLayer(name);
 				if(!layer)return false;
-				layer.url = urlTextInput.text;
+				if(urlTextInput.text.lastIndexOf("?")!=-1){
+					layer.url = urlTextInput.text.substring(0,urlTextInput.text.lastIndexOf("?"));
+				}
+				else layer.url = urlTextInput.text;
 				if(!layer.projection) layer.projection = _map.projection;
 				//layer.maxExtent = _map.maxExtent;
 				var ret:Boolean = _map.addLayer(layer);
