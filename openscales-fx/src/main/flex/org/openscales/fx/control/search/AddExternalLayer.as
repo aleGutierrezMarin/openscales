@@ -263,6 +263,7 @@ package org.openscales.fx.control.search
 						xml = new XML(_localData.readUTFBytes(_localData.bytesAvailable));
 						layer = new KML(name, null, xml);
 					}
+					layer.displayedName = name;
 					break;
 				
 				case "GPX":

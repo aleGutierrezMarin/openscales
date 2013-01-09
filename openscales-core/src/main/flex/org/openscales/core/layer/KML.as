@@ -1,6 +1,8 @@
 package org.openscales.core.layer
 {
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.events.LayerEvent;
@@ -117,7 +119,7 @@ package org.openscales.core.layer
 				
 				this._featureVector = this._kmlFormat.read(this.data) as Vector.<Feature>;
 				var name:String = this._kmlFormat.readName(this.data);
-				if (name && name!="")
+				if (name && name!="" && (!displayedName || displayedName==""))
 					this.displayedName = name;
 				var i:uint;
 				var vectorLength:uint = this._featureVector.length;
@@ -166,7 +168,7 @@ package org.openscales.core.layer
 		
 		protected function onFailure(event:Event):void {
 			this.loading = false;
-			Trace.error("Error when loading kml " + this.url);			
+			Trace.error("Error when loading kml " + this.url + " " + event.toString());
 		}
 
 		override public function getURL(bounds:Bounds):String {

@@ -785,7 +785,7 @@ package org.openscales.core.layer
 			var i:int;
 			var len:int;
 			var ratioSeeker:Number;
-			if (finest)
+			if (_finest)
 			{
 				if(!this.resolutions)
 					return new Resolution(0);
@@ -1531,6 +1531,11 @@ package org.openscales.core.layer
 			}
 		}
 
+		/**
+		 * Used to decide which resolution to request among available resolutions array. If <code>true</code>, finest resolution will be requested. 
+		 * 
+		 * @default true
+		 */ 
 		public function get finest():Boolean
 		{
 			return _finest;

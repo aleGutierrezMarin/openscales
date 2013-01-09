@@ -151,6 +151,12 @@ package org.openscales.core.layer.ogc
 					
 					if(this.style){
 						this._featureVector[i].style = this.style;
+						if(this._featureVector[i] is PointFeature) {
+                                                        pointFeatureVector.push(this._featureVector[i]);
+                                                }
+                                                else{ // feature is linestring or multilinestring
+                                                        lineStringFeatureVector.push(this._featureVector[i]);
+                                                }
 					}
 					else//default style
 					{
@@ -164,8 +170,10 @@ package org.openscales.core.layer.ogc
 						}
 					}
 				}
+
 				this.addFeatures(lineStringFeatureVector);
 				this.addFeatures(pointFeatureVector);
+
 				
 				this.maxExtent = this.featuresBbox;
 				
