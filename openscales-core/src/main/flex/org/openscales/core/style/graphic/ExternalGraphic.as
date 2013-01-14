@@ -155,7 +155,14 @@ package org.openscales.core.style.graphic
 			this._clip.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			this._req.destroy();
 			this._req = null;
-			var markerLength:Number = this._givenTemporaryMarker.length;
+			
+			var markerLength:Number;
+			
+			if(!this._givenTemporaryMarker)
+				markerLength = 0;
+			else
+				markerLength = this._givenTemporaryMarker.length;
+			
 			for (var i:int = 0; i < markerLength; ++i)
 			{
 				var sprite:Sprite = this._givenTemporaryMarker[i].sprite;

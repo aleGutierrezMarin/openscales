@@ -6,6 +6,8 @@ package org.openscales.core.format
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
+	import mx.utils.XMLUtil;
+	
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
@@ -45,7 +47,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
 	
-	//use namespace os_internal;
+	use namespace os_internal;
 	
 	/**
 	 * Read KML 2.0 and 2.2 file format.
@@ -541,38 +543,44 @@ package org.openscales.core.format
 				{
 					localStyle = this.getStyle(localStyles[0]);
 				}
-				if(placemark.name != undefined) 
+				if(placemark.name != null) 
 				{
-					attributes["name"] = placemark.*::name.text();
+					var name:String = "toto";
+					name = placemark.*::name[0].text();
+					attributes["name"] = name;
 					htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";   
 				}
-				if(placemark.description != undefined) 
+				if(placemark.description != null) 
 				{
 					attributes["description"] = placemark.*::description.text();
 					htmlContent = htmlContent + placemark.*::description.text() + "<br />";
 				}
 				
-				if(placemark.id != undefined) 
+				if(placemark.id != null) 
 				{
 					attributes["id"] = placemark.*::id.text();
 					htmlContent = htmlContent + placemark.*::description.text() + "<br />";
 				}
-				
-				for each(var extendedData:XML in placemark.ExtendedData.Data) 
-				{	
-					if(extendedData.*::displayName.text() != undefined) {
-						attributeName = extendedData.*::displayName.text();
-						if(excludeFromExtendedData.indexOf(attributeName) < 0) {
-							attributes[attributeName] = extendedData.value.text();
+				var tmp:XMLList = placemark.*::ExtendedData;
+				if(placemark.*::ExtendedData[0] != null)
+				{
+					for each(var extendedData:XML in placemark.*::ExtendedData[0].*::Data) 
+					{	
+						var displayName:XMLList = extendedData.*::displayName.text();
+						if(displayName != null && displayName.length() > 0) {
+							attributeName = extendedData.*::displayName.text();
+							if(excludeFromExtendedData.indexOf(attributeName) < 0) {
+								attributes[attributeName] = extendedData.*::value.text();
+							}
+						} else {
+							attributeName = extendedData.@*::name;
+							if(excludeFromExtendedData.indexOf(attributeName) < 0) {
+								attributes[attributeName] = extendedData.*::value.text();
+							}
 						}
-					} else {
-						attributeName = extendedData.@*::name;
-						if(excludeFromExtendedData.indexOf(attributeName) < 0) {
-							attributes[attributeName] = extendedData.value.text();
-						}
+						
+						htmlContent = htmlContent + "<b>" + attributeName + "</b> : " + extendedData.value.text() + "<br />";
 					}
-					
-					htmlContent = htmlContent + "<b>" + attributeName + "</b> : " + extendedData.value.text() + "<br />";
 				}
 				
 				for each(var simpleExtendedData:XML in placemark.*::ExtendedData.*::SchemaData.*::SimpleData) 
@@ -589,8 +597,13 @@ package org.openscales.core.format
 				
 				var localns:Namespace = this._internalns;
 				
+				var lineList:XMLList = placemark.localns::LineString;
+				var polygonList:XMLList = placemark.localns::Polygon;
+				var multiGeomList:XMLList = placemark.localns::MultiGeometry;
+				var pointList:XMLList = placemark.localns::Point;
+				
 				// LineStrings
-				if(placemark.localns::LineString != undefined)
+				if(lineList != null && lineList.length() > 0)
 				{
 					var _Lstyle:Style = null;
 					if(this.userDefinedStyle)
@@ -604,7 +617,7 @@ package org.openscales.core.format
 						{
 							_Lstyle = localStyle;
 						}
-						else if(placemark.localns::styleUrl != undefined)
+						else if(placemark.localns::styleUrl != null)
 						{
 							_id = placemark.localns::styleUrl.text();
 							if(_styleList.getValue(_id))
@@ -614,7 +627,7 @@ package org.openscales.core.format
 					linesfeatures.push(new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle));
 				}
 				// Polygons
-				else if(placemark.localns::Polygon != undefined) 
+				else if(polygonList != null && polygonList.length() > 0) 
 				{
 					var _pStyle:Style = null;
 					if(this.userDefinedStyle)
@@ -628,7 +641,7 @@ package org.openscales.core.format
 						{
 							_pStyle = localStyle;
 						}
-						else if(placemark.*::styleUrl != undefined)
+						else if(placemark.*::styleUrl != null)
 						{
 							_id = readStyleUrlId(placemark.*::styleUrl);
 							if(_styleList.getValue(_id))
@@ -639,7 +652,7 @@ package org.openscales.core.format
 				}
 				
 				//MultiGeometry  
-				else if (placemark.localns::MultiGeometry != undefined)
+				else if (multiGeomList != null && multiGeomList.length() > 0)
 				{
 					var numberOfGeom:uint;
 					var i:uint;
@@ -670,7 +683,7 @@ package org.openscales.core.format
 							if(localStyle) {
 								geomStyle = localStyle;
 							}
-							else if(placemark.*::styleUrl != undefined)
+							else if(placemark.*::styleUrl != null)
 							{
 								_id = readStyleUrlId(placemark.*::styleUrl);
 								if(_styleList.getValue(_id))
@@ -700,7 +713,7 @@ package org.openscales.core.format
 							if(localStyle) {
 								geomStyle = localStyle;
 							}
-							else if(placemark.*::styleUrl != undefined)
+							else if(placemark.*::styleUrl != null)
 							{
 								_id = readStyleUrlId(placemark.*::styleUrl);
 								if(_styleList.getValue(_id))
@@ -732,7 +745,7 @@ package org.openscales.core.format
 							//iconsfeatures.push(getPointFeature(point,hmLocalStyle.getValue("PointStyle"),attributes));
 							iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,localStyle));
 						}
-						else if(placemark.*::styleUrl != undefined) 
+						else if(placemark.*::styleUrl != null) 
 						{
 							_id = readStyleUrlId(placemark.*::styleUrl);
 							if(_styleList.getValue(_id))
@@ -749,7 +762,7 @@ package org.openscales.core.format
 					}
 				}
 
-				else if(placemark.localns::Point != undefined)
+				else if(pointList != null && pointList.length() > 0)
 				{
 					coordinates = placemark.localns::Point.localns::coordinates.text().split(",");
 					
@@ -772,7 +785,7 @@ package org.openscales.core.format
 						if(this.userDefinedStyle) {
 							lf.style = this.userDefinedStyle;
 						} 
-						else if(placemark.*::styleUrl != undefined || localStyle) 
+						else if(placemark.*::styleUrl != null || localStyle) 
 						{
 							var labelStyle:Style = null;
 							if(localStyle) 
@@ -802,7 +815,7 @@ package org.openscales.core.format
 						if(this.userDefinedStyle) {
 							iconsfeatures.push(new PointFeature(point, attributes, this.userDefinedStyle));
 						} 
-						else if(placemark.*::styleUrl != undefined || localStyle) 
+						else if(placemark.*::styleUrl != null || localStyle) 
 						{
 							var objStyle:Style = null;
 							if(localStyle) 
@@ -858,7 +871,7 @@ package org.openscales.core.format
 			var pointStyle:Style;
 			pointStyle = Style.getDefaultPointStyle();
 			
-			if(style["color"] != undefined)
+			if(style["color"] != null)
 			{
 				var _fill:SolidFill = new SolidFill(style["color"], style["alpha"]);
 				var _stroke:Stroke = new Stroke(style["color"], style["alpha"]);
@@ -1045,7 +1058,7 @@ package org.openscales.core.format
 			{
 				doc.appendChild(this.buildPlacemarkNode(listOfFeatures[i],i));
 			}
-			return "<?xml version='1.0' encoding='UTF-8'?>"+kmlFile.toString(); 
+			return new XML("<?xml version='1.0' encoding='UTF-8'?>"+kmlFile.toString()); 
 		}
 		
 		/**
@@ -1403,7 +1416,7 @@ package org.openscales.core.format
 					// Switch between marker types
 					if(mark is Mark)
 					{
-						var wkm:Mark = graphic as Mark;
+						var wkm:Mark = graphic.graphics[0] as Mark;
 						var solidFill:SolidFill
 						if(wkm.fill is SolidFill)
 							solidFill = wkm.fill as SolidFill;
