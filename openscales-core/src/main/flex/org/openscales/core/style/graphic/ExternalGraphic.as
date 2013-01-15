@@ -156,12 +156,10 @@ package org.openscales.core.style.graphic
 			this._req.destroy();
 			this._req = null;
 			
-			var markerLength:Number;
-			
 			if(!this._givenTemporaryMarker)
-				markerLength = 0;
-			else
-				markerLength = this._givenTemporaryMarker.length;
+				this._givenTemporaryMarker = new Vector.<WaitingRendering>();
+			
+			var markerLength:Number = this._givenTemporaryMarker.length;
 			
 			for (var i:int = 0; i < markerLength; ++i)
 			{
