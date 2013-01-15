@@ -306,7 +306,7 @@ package org.openscales.core.format
 							if (hotSpot[0].@*::yunits.length() > 0)
 								yUnit = hotSpot[0].@*::yunits;
 						}
-						var psym:PointSymbolizer = new PointSymbolizer(new Graphic());
+						var psym:PointSymbolizer = new PointSymbolizer(new Graphic(-1));
 						var link:String = href.toString();
 						var extGraph:ExternalGraphic = new ExternalGraphic(link);
 						if(link.indexOf(".jpg",link.length-5) || link.indexOf(".jpeg",link.length-6))
