@@ -222,7 +222,7 @@
    "addExternalLayer.lookForGetCapButton.label":"OK",
    "addExternalLayer.resultListLabel.label":"Avail. layers",
    "addExternalLayer.resultListLabel.toolTip":"Available layers on this server",
-   "addExternalLayer.noresLabel.text":"Nothing on this server",
+   "addExternalLayer.noresLabel.text":"No layers found",
    "addExternalLayer.loadingLabel.text":"Loading...",
    "addExternalLayer.cancelButton.label":"Close",
    "addExternalLayer.submitButton.label":"Add to map",

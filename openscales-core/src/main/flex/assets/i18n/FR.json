@@ -223,7 +223,7 @@
    "addExternalLayer.lookForGetCapButton.label":"OK",
    "addExternalLayer.resultListLabel.label":"Couches disp.",
    "addExternalLayer.resultListLabel.toolTip":"Couches disponibles sur ce service",
-   "addExternalLayer.noresLabel.text":"Aucunes couches trouvées",
+   "addExternalLayer.noresLabel.text":"Aucune couche trouvée",
    "addExternalLayer.loadingLabel.text":"Chargement...",
    "addExternalLayer.cancelButton.label":"Fermer",
    "addExternalLayer.submitButton.label":"Ajouter",
