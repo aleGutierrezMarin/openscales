@@ -28,6 +28,10 @@ package org.openscales.core.style.graphic
 		public static const WKN_CROSS:String = "cross";
 		// A square X with space around (not suitable for hatch fills)
 		public static const WKN_X:String = "x";
+		// An open arrow
+		public static const WKN_OARROW:String = "oarrow";
+		// A complete arrow
+		public static const WKN_CARROW:String = "carrow";
 		
 		//Shapes intended to be hatch generators
 		// vertline

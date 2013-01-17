@@ -250,10 +250,10 @@
 							case Mark.WKN_X:
 								this.marker.selectedIndex = 5;
 								break;
-							case Mark.OARROW:
+							case Mark.WKN_OARROW:
 								this.marker.selectedIndex = 6;
 								break;
-							case Mark.CARROW:
+							case Mark.WKN_CARROW:
 							default:
 								this.marker.selectedIndex = 7;
 								break;
