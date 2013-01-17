@@ -1,0 +1,11 @@
+ {
+   "locale.key": "en",
+   "locale.name": "English",
+   "locale.localizedName": "English",
+   
+   "test.translateone": "One",
+   "test.translatetwo": "Two",
+   "test.translatethree": "Three",
+   "test.translatefour": "Four",
+   "test.translatefive": "Five"
+ }
