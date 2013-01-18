@@ -321,7 +321,7 @@ package org.openscales.core.request
 					_finalUrl = _finalUrl.replace("https://", "https:/");
 					_finalUrl = this.proxy + _finalUrl;
 				}else{
-					_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
+					_finalUrl = this.proxy + _finalUrl;
 				}
 			}
 			
