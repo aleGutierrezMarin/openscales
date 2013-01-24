@@ -26,7 +26,7 @@
 				  visible="{!this.native}">
 			<s:Label text="Url :" width="100"/>
 			<s:TextInput id="url"
-						 focusOut="updateSymbolizer(event)"/>
+						 focusOut="updateSymbolizer(event)" width="200"/>
 		</s:HGroup>
 		
 		<s:HGroup verticalAlign="middle"
