@@ -201,15 +201,15 @@
 				
 				var anchor:String = anchorPoint.selectedValue as String;
 				if(anchor) {
-					if(anchor.indexOf("T"))
+					if(anchor.indexOf("T") == 0)
 						symbolizer.anchorPointY = 1;
-					else if(anchor.indexOf("B"))
+					else if(anchor.indexOf("B") == 0)
 						symbolizer.anchorPointY = 0;
 					else
 						symbolizer.anchorPointY = 0.5;
-					if(anchor.indexOf("L"))
+					if(anchor.indexOf("L") == 1)
 						symbolizer.anchorPointX = 0;
-					else if(anchor.indexOf("R"))
+					else if(anchor.indexOf("R") == 1)
 						symbolizer.anchorPointX = 1;
 					else
 						symbolizer.anchorPointX = 0.5;
@@ -281,9 +281,9 @@
 					if(symbolizer.anchorPointY == 0)
 						this.B.selected = true;
 					else if(symbolizer.anchorPointY == 1)
-						this.M.selected = true;
-					else
 						this.T.selected = true;
+					else
+						this.M.selected = true;
 				}
 				
 				attribute.selectedItem = null;
