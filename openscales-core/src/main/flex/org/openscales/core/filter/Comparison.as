@@ -151,7 +151,7 @@ package org.openscales.core.filter
 			else if(this._singleChar)
 				res+= " singleChar=\""+this._singleChar+"\"";
 			
-			res+">\n";
+			res+=">\n";
 			res+= "<ogc:PropertyName>"+this._property+"</ogc:PropertyName>\n";
 			if(this._value)
 				res+= "<ogc:Literal>"+this._value+"</ogc:Literal>\n";
