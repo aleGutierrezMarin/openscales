@@ -134,7 +134,7 @@ package org.openscales.core.filter
 		public function get sld():String {
 			if(!this._type || !this._property)
 				return "";
-			var res:String = "<Filter>\n";
+			var res:String = "<ogc:Filter>\n";
 			res+= "<ogc:"+this._type;
 			if(this._escapeChar == "\\")
 				res+= " escapeChar=\"\\\"";
@@ -159,8 +159,8 @@ package org.openscales.core.filter
 				res+= "<ogc:LowerBoundary>"+this._lowerBoundary+"</<ogc:LowerBoundary>\n";
 			if(this._upperBoundary)
 				res+= "<ogc:UpperBoundary>"+this._upperBoundary+"</<ogc:UpperBoundary>\n";
-			res+= "</ocg:"+this._type+">\n";
-			res+= "</Filter>\n";
+			res+= "</ogc:"+this._type+">\n";
+			res+= "</ogc:Filter>\n";
 			return res;
 		}
 		public function set sld(sld:String):void {
