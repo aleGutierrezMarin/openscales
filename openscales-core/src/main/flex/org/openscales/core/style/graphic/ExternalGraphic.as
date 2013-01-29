@@ -260,7 +260,7 @@ package org.openscales.core.style.graphic
 			if(!this._onlineResource)
 				return "";
 			var res:String = "<sld:ExternalGraphic>\n";
-			res+= "<sld:OnlineResource xlink:type=\"simple\" xlink:href=\""+this._onlineResource+"\"/>\n";
+			res+= "<sld:OnlineResource xlink:type=\"simple\" xlink:href=\""+this._onlineResource.replace('&','&amp;')+"\"/>\n";
 			res+= "<sld:Format>"+this._format+"</sld:Format>\n";
 			res+= "</sld:ExternalGraphic>\n";
 			return res;
@@ -292,6 +292,7 @@ package org.openscales.core.style.graphic
 			childs = dataXML.OnlineResource;
 			if(childs[0]) {
 				this.onlineResource = childs[0].@href;
+				this.onlineResource = this.onlineResource.replace('&amp;','&');
 			}
 		}
 
