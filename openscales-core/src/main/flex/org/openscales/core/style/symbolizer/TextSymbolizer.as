@@ -290,18 +290,12 @@ package org.openscales.core.style.symbolizer
 						res+="<sld:DisplacementY>0</sld:DisplacementY>\n";
 					res+="</sld:Displacement>\n";
 				}
-				if(this._anchorPointX || this._anchorPointY) {
-					res+="<sld:AnchorPoint>\n";
-					if(this._anchorPointX)
-						res+="<sld:AnchorPointX>"+this._anchorPointX+"</sld:AnchorPointX>\n";
-					else
-						res+="<sld:AnchorPointX>0.5</sld:AnchorPointX>\n";
-					if(this._anchorPointY)
-						res+="<sld:AnchorPointY>"+this._anchorPointY+"</sld:AnchorPointY>\n";
-					else
-						res+="<sld:AnchorPointY>0.5</sld:AnchorPointY>\n";
-					res+="</sld:AnchorPoint>\n";
-				}
+				
+				res+="<sld:AnchorPoint>\n";
+				res+="<sld:AnchorPointX>"+this._anchorPointX+"</sld:AnchorPointX>\n";
+				res+="<sld:AnchorPointY>"+this._anchorPointY+"</sld:AnchorPointY>\n";
+				res+="</sld:AnchorPoint>\n";
+				
 				res+="</sld:PointPlacement>\n";
 				res+="</sld:LabelPlacement>\n";
 			} else if(_labelPlacement==LinePlacementLabel && this._perpendicularOffset) {
