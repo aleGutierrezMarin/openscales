@@ -103,7 +103,8 @@ package org.openscales.core.style.graphic
 				result = new Bitmap(_clip.bitmapData);
 				if (_xUnit == "fraction")
 				{
-					result.x += -result.width*_xOffset;
+					//result.x += -result.width*_xOffset;
+					result.x -= size / 2;
 				}else if (_xUnit == "pixels")
 				{
 					result.x += -_xOffset
@@ -111,7 +112,8 @@ package org.openscales.core.style.graphic
 				
 				if (_yUnit == "fraction")
 				{
-					result.y += -result.height*_yOffset;
+					//result.y += -result.height*_yOffset;
+					result.y -= size / 2;
 				}else if (_yUnit == "pixels")
 				{
 					result.y += -_yOffset
