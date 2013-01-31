@@ -186,9 +186,9 @@ package org.openscales.core.filter
 			if(childs.length()>0) {
 				this._property = childs[0];
 			}
-			childs = dataXML.Literal;
-			if(childs.length()>0) {
-				this._value = childs[0];
+			filter = dataXML.children();
+			if(filter.length()>1) {
+				this._value = filter[1];
 			}
 			//todo support isbetween and in
 		}
