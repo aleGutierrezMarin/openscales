@@ -1,11 +1,11 @@
 package org.openscales.sld.ui
 {
-	import org.openscales.sld.events.SLDEvent;
-	
 	import mx.collections.ArrayCollection;
 	
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.sld.events.SLDEvent;
 	
 	import spark.components.supportClasses.SkinnableComponent;
 	
@@ -15,6 +15,10 @@ package org.openscales.sld.ui
 		private var _rules:ArrayCollection = null;
 		private var _currentRule:Rule = null;
 		private var _currentSymbolizer:Symbolizer = null;
+		[Bindable]
+		private var _attributesParamOnly:ArrayCollection = null;
+		[Bindable]
+		private var _paramTables:HashMap = null;
 		
 		public function RulesManager()
 		{
@@ -83,6 +87,26 @@ package org.openscales.sld.ui
 		{
 			_currentSymbolizer = value;
 			this.dispatchEvent(new SLDEvent(SLDEvent.CURRENT_SYMBOLIZER_CHANGED,null,_currentSymbolizer));
+		}
+		
+		public function get attributesParamOnly():ArrayCollection
+		{
+			return this._attributesParamOnly;
+		}
+		
+		public function set attributesParamOnly(value:ArrayCollection):void
+		{
+			this._attributesParamOnly = value;
+		}
+		
+		public function get paramTables():HashMap
+		{
+			return this._paramTables;
+		}
+		
+		public function set paramTables(value:HashMap):void
+		{
+			this._paramTables = value;
 		}
 
 	}
