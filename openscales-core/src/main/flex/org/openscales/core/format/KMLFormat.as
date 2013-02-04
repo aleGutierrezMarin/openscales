@@ -440,7 +440,7 @@ package org.openscales.core.format
 				{
 					localStyle = this.getStyle(localStyles[0]);
 				}
-				if(placemark.*::name != null) 
+				if(placemark.*::name != null && placemark.*::name[0] != null) 
 				{
 					var name:String = "";
 					name = placemark.*::name[0].text();
