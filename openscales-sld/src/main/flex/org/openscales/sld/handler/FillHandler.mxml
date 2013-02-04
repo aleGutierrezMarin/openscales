@@ -97,7 +97,7 @@
 				{id:Mark.BACKSLASH, text:"hachures à gauche"},
 				{id:Mark.TIMES, text:"hachures obliques"},
 				{id:Mark.VERTLINE, text:"hachures verticales"},
-				{id:Mark.HORLINE, text:"hachures horizontas"},
+				{id:Mark.HORLINE, text:"hachures horizontales"},
 				{id:Mark.PLUS, text:"hachures croisées"}
 			]);
 			
