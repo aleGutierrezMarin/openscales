@@ -51,7 +51,7 @@
 		<s:HGroup verticalAlign="middle"
 				  visible="{labelStyle}"
 				  includeInLayout="{labelStyle}">
-			<s:Label text="Italic :" width="120"/>
+			<s:Label text="Italique :" width="120"/>
 			<s:CheckBox id="italic"
 						change="updateRule(event)"/>
 		</s:HGroup>
