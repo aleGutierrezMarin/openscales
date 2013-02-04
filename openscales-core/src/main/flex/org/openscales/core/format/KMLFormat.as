@@ -901,7 +901,7 @@ package org.openscales.core.format
 			kmlFile.appendChild(doc);
 			var name:XML = new XML("<name>"+kmlName+"</name>");
 			doc.appendChild(name);
-			return kmlFile.toString();  
+			return "<?xml version='1.0' encoding='UTF-8'?> \n" + kmlFile.toString();  
 		}
 		
 		/**
@@ -958,7 +958,7 @@ package org.openscales.core.format
 				doc.appendChild(this.buildPlacemarkNode(listOfFeatures[i],i));
 			}
 			
-			return kmlFile.toString(); 
+			return "<?xml version='1.0' encoding='UTF-8'?> \n" + kmlFile.toString(); 
 		}
 		
 		/**
