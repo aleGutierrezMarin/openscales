@@ -54,7 +54,7 @@ package org.openscales.core.format
 			var i:uint;
 			var file:XML = new XML(new KMLLINES());
 			var features:Vector.<Feature> = this.format.read(file) as Vector.<Feature>;
-			var buildedFile:XML = this.format.write(features) as XML;
+			var buildedFile:XML = new XML(this.format.write(features));
 			
 			var styleNodes:XMLList = buildedFile..*::Style;
 			var placemarks:XMLList = buildedFile..*::Placemark;
@@ -80,7 +80,7 @@ package org.openscales.core.format
 			//each poly is defined by only one linear ring (there are no innerBoundaries)
 			var file:XML = new XML(new KMLPOLY());
 			var features:Vector.<Feature> = this.format.read(file) as Vector.<Feature>;
-			var buildedFile:XML = this.format.write(features) as XML;
+			var buildedFile:XML = new XML(this.format.write(features));
 			
 			var styleNodes:XMLList = buildedFile..*::Style;
 			var placemarks:XMLList = buildedFile..*::Placemark;
@@ -115,7 +115,7 @@ package org.openscales.core.format
 			var pointF:PointFeature = new PointFeature(new Point(42.4555,2.559999901),null,style);
 			var features:Vector.<Feature> = new Vector.<Feature>();
 			features.push(pointF);
-			var buildedFile:XML = this.format.write(features) as XML;
+			var buildedFile:XML = new XML(this.format.write(features));
 			
 			var styleNodes:XMLList = buildedFile..*::Style;
 			var placemarks:XMLList = buildedFile..*::Placemark;
@@ -163,7 +163,7 @@ package org.openscales.core.format
 			var feature:MultiLineStringFeature = new MultiLineStringFeature(multiLine,null,style);
 			features.push(feature);
 			
-			var file:XML = this.format.write(features) as XML;
+			var file:XML = new XML(this.format.write(features));
 			var geomNode:XML  = file..*::MultiGeometry[0];
 			var lines:XMLList = geomNode..*::LineString;
 			var lineStyles:XMLList = file..*::LineStyle;
