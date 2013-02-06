@@ -17,7 +17,7 @@ package org.openscales.core.style.fill
 		public function GraphicFill(graphic:Graphic = null)
 		{
 			if(graphic)
-				this._graphic = _graphic;
+				this._graphic = graphic;
 			else
 				this._graphic = new Graphic();
 		}
@@ -36,7 +36,8 @@ package org.openscales.core.style.fill
 		
 		public function clone():Fill
 		{
-			return new GraphicFill(this._graphic.clone());
+			var clone:Graphic = this._graphic.clone();
+			return new GraphicFill(clone);
 		}
 		
 		public function get sld():String
