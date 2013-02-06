@@ -49,9 +49,18 @@ package org.openscales.core.style.fill {
 		}
 
 		public function set opacity(value:Number):void {
+			
 			if(value)
+				
 				this._opacity = value;
+			
+			if(this._opacity && this._opacity > 1)
+				
+				this._opacity = this._opacity/100;
+			
 		}
+		
+
 		
 		public function get sld():String {
 			var res:String = "<sld:Fill>\n";
