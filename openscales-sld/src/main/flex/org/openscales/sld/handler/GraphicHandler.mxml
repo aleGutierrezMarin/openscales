@@ -190,7 +190,7 @@
 						mark.fill = new SolidFill();
 					}
 					(mark.fill as SolidFill).color = this.fillColor.selectedColor;
-					(mark.fill as SolidFill).opacity = this.fillOpacity.value;
+					(mark.fill as SolidFill).opacity = this.fillOpacity.value/100;
 					
 				} else {
 					native = false;
