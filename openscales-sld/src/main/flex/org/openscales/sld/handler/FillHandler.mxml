@@ -40,7 +40,7 @@
 				  visible="{hatching}">
 			<s:Label text="Epaisseur des hachures :" width="100"/>
 			<s:NumericStepper id="hatchingWidth"
-							  minimum="0"
+							  minimum="1"
 							  change="updateRule(event)"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle"
