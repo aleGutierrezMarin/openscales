@@ -254,8 +254,10 @@
 								this.marker.selectedIndex = 6;
 								break;
 							case Mark.WKN_CARROW:
-							default:
 								this.marker.selectedIndex = 7;
+								break;
+							default:
+								this.marker.selectedIndex = 0;
 								break;
 						}
 						

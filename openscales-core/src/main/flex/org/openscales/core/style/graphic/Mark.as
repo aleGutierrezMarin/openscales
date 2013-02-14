@@ -115,10 +115,7 @@ package org.openscales.core.style.graphic
 		
 		public function drawMark(shape:Sprite, size:Number): void {
 			switch (this._wellKnownGraphicName) {
-				case WKN_SQUARE:  {
-					shape.graphics.drawRect(-(size / 2), -(size / 2), size, size);
-					break;
-				}
+				
 				case WKN_CIRCLE:
 				case DOT: {
 					shape.graphics.drawCircle(0, 0, size / 2);
@@ -176,6 +173,20 @@ package org.openscales.core.style.graphic
 					shape.graphics.lineTo(-1+size/2,1-size/2);
 					break;
 				}
+				case WKN_OARROW: {
+					shape.graphics.endFill();
+					shape.graphics.moveTo(-size/2,-size/2);
+					shape.graphics.lineTo(size/2,0);
+					shape.graphics.lineTo(-size/2,size/2);
+					break;
+				}
+				case WKN_CARROW: {
+					shape.graphics.moveTo(-size/2,-size/2);
+					shape.graphics.lineTo(size/2,0);
+					shape.graphics.lineTo(-size/2,size/2);
+					shape.graphics.lineTo(-size/2,-size/2);
+					break;
+				}
 				case VERTLINE: {
 					shape.graphics.moveTo(0,-size/2);
 					shape.graphics.lineTo(0,size/2);
@@ -222,6 +233,11 @@ package org.openscales.core.style.graphic
 					shape.graphics.lineTo(size/2,0);
 					shape.graphics.lineTo(-size/2,size/2);
 					shape.graphics.lineTo(-size/2,-size/2);
+					break;
+				}
+				case WKN_SQUARE:
+				default: {
+					shape.graphics.drawRect(-(size / 2), -(size / 2), size, size);
 					break;
 				}
 			}
