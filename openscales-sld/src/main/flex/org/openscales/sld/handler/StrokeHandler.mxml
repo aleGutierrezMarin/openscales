@@ -7,7 +7,13 @@
 							  width="100%"
 							  name="Bordure/Ligne">
 	<fx:Declarations>
-		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+		<mx:RegExpValidator id="regExpV" 
+							source="{dashedArray}" property="text" 
+							expression="{regexp}" 
+							flags="g"
+							noMatchError="Valeur incorrecte"
+							valid="handleResult(event);" 
+							invalid="handleResult(event);"/>
 	</fx:Declarations>
 
 	<s:VGroup width="100%">
@@ -50,14 +56,35 @@
 				  includeInLayout="{dashed}"
 				  visible="{dashed}">
 			<s:Label text="Tirets :" width="100"/>
-			<s:TextInput id="dashedArray"
-						 focusOut="updateSymbolizer(event)"/>
+			<s:TextInput id="dashedArray" errorString="Valeur incorrecte" showErrorTip="true"
+						 focusOut="{regExpV.validate()}" width="100"/>
 		</s:HGroup>
+		<s:RichText
+			whiteSpaceCollapse="preserve"
+			visible="{dashed}">
+Pour les tirets, veuillez renseigner un entier suivi d’un 
+espace suivi d’un entier.
+
+Le premier nombre correspond au nombre de pixels qui
+vont se suivre.
+Le second nombre correspond au nombre de pixels vides 
+qui vont se suivre.
+Vous pouvez répéter la séquence plusieurs fois pour varier 
+les tirets.
+
+Par exemple, la valeur "4 4" correspond à : 
+    ....    ....    ....    ....    Répété en boucle, 
+la valeur "4 4 10 4" correspond à : 
+    ....    ..........    ....    .......... Répété en boucle.
+		</s:RichText>
 	</s:VGroup>
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.RegExpValidationResult;
+			import mx.validators.ValidationResult;
 			
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.stroke.Stroke;
@@ -76,6 +103,9 @@
 			[Bindable]
 			private var dashed:Boolean = false;
 			private var lastSelected:int = -1;
+			
+			[Bindable]
+			private var regexp:String = "^(([0-9][0-9]?)\\s([0-9][0-9]?))(\\s([0-9][0-9]?)\\s([0-9][0-9]?))*$";
 			
 			[Bindable]
 			private var styles:ArrayCollection = new ArrayCollection(
@@ -209,6 +239,17 @@
 			public function parseStepperValue(value:String):Number { 
 				return formatter.parseNumber(value); 
 			} 
+			
+			private function handleResult(event:ValidationResultEvent):void {
+				if (event.type == "valid")
+				{
+					dashedArray.errorString = "";
+					updateSymbolizer(event);
+				} else
+				{
+					dashedArray.errorString = "Valeur incorrecte";     
+				}  
+			}
 		]]>
 	</fx:Script>
 </handler:AbstractRuleHandler>
