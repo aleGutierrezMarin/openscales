@@ -253,7 +253,7 @@ package org.openscales.core.style.graphic
 			// create bitmapData
 			var bitmapData:Raster = new Raster(size,size,true,NaN);
 			var middle:int = Math.round(size/2)-1;
-			var delta:int = Math.floor((this._stroke.width-1)/2);
+			var delta:int = Math.floor((this._stroke.width)/2);
 			var i:uint;
 			var corner:Boolean = (this._wellKnownGraphicName != TIMES);
 			if(this._wellKnownGraphicName==VERTLINE || this._wellKnownGraphicName == PLUS) {
@@ -286,15 +286,17 @@ package org.openscales.core.style.graphic
 			}
 			if(this._wellKnownGraphicName==BACKSLASH || this._wellKnownGraphicName == TIMES) {
 				bitmapData.line(0,0,size-1,size-1,color);
-				for(i = delta; i>0 ;--i) {
-					//main line
-					bitmapData.line(0,i-1,size-i,size-1,color);
-					bitmapData.line(i-1,0,size-1,size-i,color);
-					if(corner) {
-						//top rigth corner
-						bitmapData.line(size-i+1,0,size-1,i-2,color);
-						// bottom left corner
-						bitmapData.line(0,size-i+1,i-2,size-1,color);
+				if(delta > 0){
+					for(i = delta; i>0 ;--i) {
+						//main line
+						bitmapData.line(0,i-1,size-i,size-1,color);
+						bitmapData.line(i-1,0,size-1,size-i,color);
+						if(corner) {
+							//top rigth corner
+							bitmapData.line(size-i+1,0,size-1,i-2,color);
+							// bottom left corner
+							bitmapData.line(0,size-i+1,i-2,size-1,color);
+						}
 					}
 				}
 			}
