@@ -42,6 +42,9 @@ package org.openscales.core.style {
 		private var _filter:IFilter = null;
 
 		private var _symbolizers:Vector.<Symbolizer> = new Vector.<Symbolizer>();
+		
+		private var _maxWidth:Number = -1;
+		private var _maxHeight:Number = -1;
 
 		public function Rule() {
 		}
@@ -163,9 +166,11 @@ package org.openscales.core.style {
 		/**
 		 * Renders the legend for the rule on given DisplayObject
 		 */
-		public function getLegendGraphic(type:String):DisplayObject {
+		public function getLegendGraphic(type:String, maxWidth:Number = -1, maxHeight:Number = -1):DisplayObject {
 
 			var result:Sprite = new Sprite();
+			this._maxWidth = maxWidth;
+			this._maxHeight = maxHeight;
 
 			var drawMethod:Function;
 			switch (type) {
@@ -317,6 +322,13 @@ package org.openscales.core.style {
 			canvas.graphics.moveTo(5, 25);
 			canvas.graphics.curveTo(5, 15, 15, 15);
 			canvas.graphics.curveTo(25, 15, 25, 5);
+			if(_maxWidth > 0){
+				canvas.width = _maxWidth;
+			}
+			if(_maxHeight > 0){
+				canvas.height = _maxHeight;
+			}
+			
 		}
 
 		private function drawPoint(symbolizer:Symbolizer, canvas:Sprite):void {
@@ -332,6 +344,12 @@ package org.openscales.core.style {
 							if(mark is Mark) {
 								var layer:Sprite = new Sprite();
 								canvas.addChild(layer);
+								if(_maxWidth > 0){
+									canvas.width = _maxWidth;
+								}
+								if(_maxHeight > 0){
+									canvas.height = _maxHeight;
+								}
 								this.drawMark(mark as Mark, layer, size);
 							}
 							else if(mark is ExternalGraphic) {
@@ -339,6 +357,12 @@ package org.openscales.core.style {
 								_do.x+=15;
 								_do.y+=15;
 								canvas.addChild(_do);
+								if(_maxWidth > 0){
+									canvas.width = _maxWidth;
+								}
+								if(_maxHeight > 0){
+									canvas.height = _maxHeight;
+								}
 							}
 						}
 								
@@ -350,6 +374,12 @@ package org.openscales.core.style {
 				_do.x=2;
 				_do.y=5;
 				canvas.addChild(_do);
+				if(_maxWidth > 0){
+					canvas.width = _maxWidth;
+				}
+				if(_maxHeight > 0){
+					canvas.height = _maxHeight;
+				}
 			}
 		}
 
@@ -369,6 +399,12 @@ package org.openscales.core.style {
 			canvas.graphics.lineTo(25, 25);
 			canvas.graphics.lineTo(5, 25);
 			canvas.graphics.lineTo(5, 5);
+			if(_maxWidth > 0){
+				canvas.width = _maxWidth;
+			}
+			if(_maxHeight > 0){
+				canvas.height = _maxHeight;
+			}
 		}
 	}
 }
