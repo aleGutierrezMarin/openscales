@@ -155,8 +155,8 @@
 					{id:"star", text:"Etoile"},
 					{id:"cross", text:"Signe plus"},
 					{id:"x", text:"Signe multiplier"},
-					{id:"oarrow", text:"Flèche ouverte"},
-					{id:"carrow", text:"Flèche fermée"}
+					{id:"shape://oarrow", text:"Flèche ouverte"},
+					{id:"shape://carrow", text:"Flèche fermée"}
 				]);
 			
 			override public function get supportedSymbolizers():Vector.<Class> {
@@ -257,10 +257,10 @@
 							case Mark.WKN_X:
 								this.marker.selectedIndex = 5;
 								break;
-							case Mark.WKN_OARROW:
+							case Mark.OARROW:
 								this.marker.selectedIndex = 6;
 								break;
-							case Mark.WKN_CARROW:
+							case Mark.CARROW:
 								this.marker.selectedIndex = 7;
 								break;
 							default:
