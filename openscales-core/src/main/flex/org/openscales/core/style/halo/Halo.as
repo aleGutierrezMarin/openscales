@@ -62,7 +62,6 @@ package org.openscales.core.style.halo
 
 		public function set opacity(value:Number):void
 		{
-			if(value)
 				_opacity = value;
 		}
 
@@ -102,8 +101,8 @@ package org.openscales.core.style.halo
 						this._color = parseInt(node[0].toString().replace("#",""),16);
 					} else if(node.@name == "fill-opacity") {
 						var val:Number = Number(node[0].toString());
-						if(!val)
-							continue;
+						//if(!val)
+							//continue;
 						this._opacity = val;
 					}
 				}
