@@ -53,7 +53,7 @@
 			<s:Label text="Espacement des hachures :" width="100"/>
 			<s:NumericStepper id="hatchingSpacing"
 							  minimum="0"
-							  maximum="1000"
+							  maximum="100"
 							  change="updateRule(event)"/>
 		</s:HGroup>
 	</s:VGroup>
