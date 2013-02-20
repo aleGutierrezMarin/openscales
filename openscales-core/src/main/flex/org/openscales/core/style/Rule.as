@@ -344,12 +344,6 @@ package org.openscales.core.style {
 							if(mark is Mark) {
 								var layer:Sprite = new Sprite();
 								canvas.addChild(layer);
-								if(_maxWidth > 0){
-									canvas.width = _maxWidth;
-								}
-								if(_maxHeight > 0){
-									canvas.height = _maxHeight;
-								}
 								this.drawMark(mark as Mark, layer, size);
 							}
 							else if(mark is ExternalGraphic) {
@@ -357,13 +351,13 @@ package org.openscales.core.style {
 								_do.x+=15;
 								_do.y+=15;
 								canvas.addChild(_do);
-								if(_maxWidth > 0){
-									canvas.width = _maxWidth;
-								}
-								if(_maxHeight > 0){
-									canvas.height = _maxHeight;
-								}
 							}
+						}
+						if(_maxWidth > 0 && _maxWidth < canvas.width){
+							canvas.width = _maxWidth;
+						}
+						if(_maxHeight > 0 && _maxHeight < canvas.height){
+							canvas.height = _maxHeight;
 						}
 								
 					}
