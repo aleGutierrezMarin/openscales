@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.fx.control.drawing.popup.EditLabel")]
+	</fx:Metadata>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="inactiveWithControlBar" />
+		<s:State name="disabledWithControlBar" />
+		<s:State name="normalWithControlBar" />
+		<s:State name="inactive" />
+		<s:State name="disabled" />
+		<s:State name="normal" />
+	</s:states>
+	
+	<s:Rect id="background" left="1" top="1" right="1" bottom="1">
+		<s:fill>
+			<!--- Defines the TitleWindowSkin class's background fill. The default color is 0xFFFFFF. -->
+			<s:SolidColor id="backgroundFill" color="#FFFFFF"/>
+		</s:fill>
+	</s:Rect>
+	<s:Group left="1" right="1" top="1" bottom="1" id="contents">
+		<s:layout>
+			<s:VerticalLayout gap="0" horizontalAlign="justify" />
+		</s:layout>
+		<s:Group id="topGroup">
+			
+			<!--- layer 0: title bar fill @private -->
+			<s:Rect id="tbFill" left="0" right="0" top="0" bottom="1">
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:GradientEntry color="0xD2D2D2"
+										 color.inactive="0xEAEAEA"/>
+						<s:GradientEntry color="0x9A9A9A"
+										 color.inactive="0xCECECE"/>
+					</s:LinearGradient>
+				</s:fill>
+			</s:Rect>
+			
+			<!--- layer 1: title bar highlight @private -->
+			<s:Rect id="tbHilite" left="0" right="0" top="0" bottom="0">
+				<s:stroke>
+					<s:LinearGradientStroke rotation="90" weight="1">
+						<s:GradientEntry color="0xE6E6E6" />
+						<s:GradientEntry color="0xFFFFFF" alpha="0.22"/>
+					</s:LinearGradientStroke>
+				</s:stroke>
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:GradientEntry color="0xFFFFFF" alpha="0.15" />
+						<s:GradientEntry color="0xFFFFFF" alpha="0.15" ratio="0.44"/>
+						<s:GradientEntry color="0xFFFFFF" alpha="0" ratio="0.4401"/>
+					</s:LinearGradient>
+				</s:fill>
+			</s:Rect>
+			
+			<!--- layer 2: title bar divider @private -->
+			<s:Rect id="tbDiv" left="0" right="0" height="1" bottom="0">
+				<s:fill>
+					<s:SolidColor color="0x000000" alpha="0.75" />
+				</s:fill>
+			</s:Rect>
+			
+			<!-- layer 3: text -->
+			<!--- @copy spark.components.Panel#titleDisplay -->
+			<s:Label id="titleDisplay" maxDisplayedLines="1"
+					 left="9" right="36" top="1" bottom="0" minHeight="30"
+					 verticalAlign="middle" fontWeight="bold" />
+			
+			<!-- layer 4: moveArea -->
+			<!--- @copy spark.components.TitleWindow#moveArea -->
+			<s:Group id="moveArea" left="0" right="0" top="0" bottom="0" />
+		</s:Group>
+		<s:Group id="contentGroup">
+			<s:layout>
+				<s:HorizontalLayout paddingLeft="10" paddingRight="10" paddingTop="7" paddingBottom="7" />
+			</s:layout>
+			<s:Label id="inputLabel" />
+			<s:TextInput id="input" />
+		</s:Group>	
+		<s:Group id="controlBarGroup">
+			<s:layout>
+				<s:HorizontalLayout paddingLeft="10" paddingRight="10" paddingTop="7" paddingBottom="7" gap="10" />
+			</s:layout>
+			<s:Button id="cancelButton" />
+			<s:Button id="okButton" />
+		</s:Group>
+		
+	</s:Group>
+	
+	<!-- SkinParts
+	name=cancelButton, type=spark.components.Button, required=false
+	name=inputLabel, type=spark.components.Label, required=false
+	name=okButton, type=spark.components.Button, required=true
+	name=input, type=spark.components.TextInput, required=true
+	name=closeButton, type=spark.components.Button, required=false
+	name=moveArea, type=flash.display.InteractiveObject, required=false
+	name=titleDisplay, type=spark.components.supportClasses.TextBase, required=false
+	name=controlBarGroup, type=spark.components.Group, required=false
+	name=contentGroup, type=spark.components.Group, required=false
+	-->
+</s:Skin>

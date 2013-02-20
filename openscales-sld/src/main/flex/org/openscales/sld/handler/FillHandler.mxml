@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<handler:AbstractRuleHandler xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							  xmlns:s="library://ns.adobe.com/flex/spark" 
+							  xmlns:mx="library://ns.adobe.com/flex/mx"
+							  xmlns:handler="org.openscales.sld.handler.*"
+							  creationComplete="init()"
+							  name="Remplissage"
+							  width="100%">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+	</fx:Declarations>
+
+	<s:VGroup width="100%">
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="Style :" width="100"/>
+			<s:DropDownList id="style"
+							change="styleChange()"
+							dataProvider="{styles}"
+							labelField="text"
+							requireSelection="true"
+							width="200"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{fillStyle}"
+				  visible="{fillStyle}">
+			<s:Label text="Couleur :" width="100"/>
+			<mx:ColorPicker id="fillColor" change="updateRule(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{fillStyle}"
+				  visible="{fillStyle}">
+			<s:Label text="Opacité :" width="100"/>
+			<s:HSlider id="fillOpacity"
+					   minimum="0"
+					   maximum="100"
+					   changeEnd="updateRule(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{hatching}"
+				  visible="{hatching}">
+			<s:Label text="Epaisseur des hachures :" width="100"/>
+			<s:NumericStepper id="hatchingWidth"
+							  minimum="0.1"
+							  maximum="10"
+							  stepSize="0.1"
+							  valueFormatFunction="formatStepperValue"
+							  valueParseFunction="parseStepperValue"
+							  change="updateRule(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{hatching}"
+				  visible="{hatching}">
+			<s:Label text="Espacement des hachures :" width="100"/>
+			<s:NumericStepper id="hatchingSpacing"
+							  minimum="0"
+							  maximum="100"
+							  change="updateRule(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.graphics.SolidColor;
+			
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.fill.Fill;
+			import org.openscales.core.style.fill.GraphicFill;
+			import org.openscales.core.style.fill.SolidFill;
+			import org.openscales.core.style.graphic.Graphic;
+			import org.openscales.core.style.graphic.IGraphic;
+			import org.openscales.core.style.graphic.Mark;
+			import org.openscales.core.style.stroke.Stroke;
+			import org.openscales.core.style.symbolizer.IFillSymbolizer;
+			import org.openscales.core.style.symbolizer.LineSymbolizer;
+			import org.openscales.core.style.symbolizer.PointSymbolizer;
+			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.sld.events.SLDEvent;
+			
+			import spark.formatters.NumberFormatter;
+
+			private static var supportedSymbolizer:Vector.<Class> = new <Class>[IFillSymbolizer];
+			
+			[Bindable]
+			private var fillStyle:Boolean = true;
+			[Bindable]
+			private var hatching:Boolean = false;
+			private var lastSelected:String = null;
+			//public static const VERTLINE:String = "shape://vertline";
+			public static const HORLINE:String = "shape://horline";
+			public static const PLUS:String = "shape://plus";
+			public static const SLASH:String = "shape://slash";
+			public static const BACKSLASH:String = "shape://backslash";
+			public static const TIMES:String = "shape://times";
+			[Bindable]
+			private var styles:ArrayCollection = new ArrayCollection(
+			[
+				{id:"no", text:"aucun"},
+				{id:"solid", text:"fond uni"},
+				{id:Mark.SLASH, text:"hachures à droite"},
+				{id:Mark.BACKSLASH, text:"hachures à gauche"},
+				{id:Mark.TIMES, text:"hachures obliques"},
+				{id:Mark.VERTLINE, text:"hachures verticales"},
+				{id:Mark.HORLINE, text:"hachures horizontales"},
+				{id:Mark.PLUS, text:"hachures croisées"}
+			]);
+			
+			private var formatter:NumberFormatter = new NumberFormatter(); 
+
+			
+			override public function get supportedSymbolizers():Vector.<Class> {
+				return supportedSymbolizer;
+			}
+			
+			private function init():void {
+				this.onCurrentSymbolizer();
+			}
+			
+			private function updateRule(e:Event):void {
+				
+				if(!(this.currentSymbolizer is PolygonSymbolizer))
+					return
+				var polygonsymbolizer:PolygonSymbolizer = (this.currentSymbolizer as PolygonSymbolizer);
+				switch(e.target) {
+					case fillColor:
+						if(polygonsymbolizer.fill is SolidFill)
+							(polygonsymbolizer.fill as SolidFill).color = fillColor.selectedColor;
+						else if(polygonsymbolizer.fill is GraphicFill)
+							((polygonsymbolizer.fill as GraphicFill).graphic.graphics[0] as Mark).stroke.color = fillColor.selectedColor;
+						break;
+					case fillOpacity:
+						if(polygonsymbolizer.fill is SolidFill)
+							(polygonsymbolizer.fill as SolidFill).opacity = fillOpacity.value/100;
+						else if(polygonsymbolizer.fill is GraphicFill)
+							(polygonsymbolizer.fill as GraphicFill).graphic.opacity = fillOpacity.value/100;
+						break;
+					case hatchingWidth:
+						if(polygonsymbolizer.fill is GraphicFill)
+							((polygonsymbolizer.fill as GraphicFill).graphic.graphics[0] as Mark).stroke.width = hatchingWidth.value;
+						break;
+					case hatchingSpacing:
+						if(polygonsymbolizer.fill is GraphicFill)
+							(polygonsymbolizer.fill as GraphicFill).graphic.size = hatchingSpacing.value;
+						break;
+				}
+				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.SYMBOLIZER_UPDATED,null,this.currentSymbolizer,true));
+			}
+			
+			private function styleChange():void {
+				if(!this.currentSymbolizer || !(this.currentSymbolizer is IFillSymbolizer))
+					return
+				var symbolizer:IFillSymbolizer = (this.currentSymbolizer as IFillSymbolizer);
+				if(this.style.selectedItem.id!="no") {
+					this.fillStyle = true;
+					if(this.style.selectedItem.id=="solid") {
+						this.hatching=false;
+						if(!symbolizer.fill || !(symbolizer.fill is SolidFill))
+							symbolizer.fill = new SolidFill(0x000000);
+					} else {
+						this.fillStyle = true;
+						this.hatching=true;
+						var gf:GraphicFill;
+						if(!symbolizer.fill || !(symbolizer.fill is GraphicFill)) {
+							gf = new GraphicFill();
+							symbolizer.fill = gf;
+							gf.graphic.graphics.push(new Mark(this.style.selectedItem.id,null,new Stroke()));
+						} else {
+							gf = symbolizer.fill as GraphicFill;
+						}
+						if((gf.graphic.graphics[0] as Mark).wellKnownGraphicName!=this.style.selectedItem.id)
+							(gf.graphic.graphics[0] as Mark).wellKnownGraphicName=this.style.selectedItem.id;
+					}
+						
+				} else {
+					this.fillStyle = false;
+					this.hatching = false;
+					if(symbolizer && symbolizer.fill) {
+						symbolizer.fill = null;
+					}
+				}
+				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.SYMBOLIZER_UPDATED,null,this.currentSymbolizer,true));
+				this.lastSelected = style.selectedItem.id;
+				this.onCurrentSymbolizer();
+			}
+			
+			override public function set currentSymbolizer(value:Symbolizer):void {
+				super.currentSymbolizer = value;
+				this.onCurrentSymbolizer();
+			}
+			
+			private function onCurrentSymbolizer():void {
+				if(this.currentSymbolizer && (this.currentSymbolizer is IFillSymbolizer)) {
+					this.fillStyle=false;
+					this.hatching=false;
+					this.style.selectedIndex=0;
+					var symbolizer:IFillSymbolizer = (this.currentSymbolizer as IFillSymbolizer);
+					if(symbolizer.fill) {
+						this.fillStyle=true;
+						if(symbolizer.fill is SolidFill) {
+							this.fillColor.selectedColor=(symbolizer.fill as SolidFill).color as uint;
+							this.fillOpacity.value=(symbolizer.fill as SolidFill).opacity*100;
+							this.style.selectedIndex=1;
+						} else if (symbolizer.fill is GraphicFill) {
+							var gf:GraphicFill = (symbolizer.fill as GraphicFill);
+							if(!gf.graphic)
+								gf.graphic = new Graphic();
+							if(!gf.graphic.graphics)
+								gf.graphic.graphics = new Vector.<IGraphic>();
+							if(gf.graphic.graphics.length!=1 || !(gf.graphic.graphics[0] is Mark)) {
+								for(var i:uint = gf.graphic.graphics.length; i>0; --i) {
+									if(gf.graphic.graphics[0] is Mark)
+										break;
+									gf.graphic.graphics.shift();
+								}
+								if(gf.graphic.graphics.length==0) {
+									gf.graphic.graphics.push(new Mark(Mark.SLASH,null,new Stroke()));
+								}
+							}
+							if((gf.graphic.graphics[0] as Mark).stroke==null) {
+								(gf.graphic.graphics[0] as Mark).stroke = new Stroke();
+							}
+							this.hatching = true;
+							this.fillColor.selectedColor=(gf.graphic.graphics[0] as Mark).stroke.color as uint;
+							this.fillOpacity.value=gf.graphic.opacity*100;
+							this.hatchingWidth.value = (gf.graphic.graphics[0] as Mark).stroke.width;
+							this.hatchingSpacing.value = gf.graphic.getSizeValue();
+							switch((gf.graphic.graphics[0] as Mark).wellKnownGraphicName) {
+								case Mark.SLASH:GraphicFill
+									this.style.selectedIndex=2;
+									break;
+								case Mark.BACKSLASH:
+									this.style.selectedIndex=3;
+									break
+								case Mark.TIMES:
+									this.style.selectedIndex=4;
+									break
+								case Mark.VERTLINE:
+									this.style.selectedIndex=5;
+									break
+								case Mark.HORLINE:
+									this.style.selectedIndex=6;
+									break
+								case Mark.PLUS:
+									this.style.selectedIndex=7;
+									break
+							}
+						}
+					}
+					this.lastSelected = style.selectedItem.id;
+				}
+			}
+			
+			public function formatStepperValue(value:Number):String { 
+				if (isNaN(value)) { 
+					return ''; 
+				} else { 
+					return formatter.format(value); 
+				} 
+			} 
+			
+			public function parseStepperValue(value:String):Number { 
+				return formatter.parseNumber(value); 
+			} 
+			
+
+		]]>
+	</fx:Script>
+</handler:AbstractRuleHandler>
