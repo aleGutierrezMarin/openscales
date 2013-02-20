@@ -55,6 +55,14 @@
 					   maximum="100"
 					   changeEnd="updateSymbolizer(event)"/>
 		</s:HGroup>
+		<s:RichText whiteSpaceCollapse="preserve" visible="{!this.native}" includeInLayout="{!this.native}">
+Un point définit en tant que Ressource Externe permet de
+définir un point à partir d’une image externe accessible
+via une URL. L’URL vers l’image doit contenir la même base
+que l’URL de l’application (Par exemple, si l’on est sur
+www.vnf.fr, l’URL de l’image doit commencer par www.vnf.fr).
+L’interface http permet d’ajouter de nouvelles images.
+		</s:RichText>
 		<s:Label text="Contour"
 				 fontWeight="bold"
 				 includeInLayout="{this.native}"
