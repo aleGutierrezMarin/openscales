@@ -132,8 +132,10 @@
 					case fillOpacity:
 						if(polygonsymbolizer.fill is SolidFill)
 							(polygonsymbolizer.fill as SolidFill).opacity = fillOpacity.value/100;
-						else if(polygonsymbolizer.fill is GraphicFill)
+						else if(polygonsymbolizer.fill is GraphicFill){
 							(polygonsymbolizer.fill as GraphicFill).graphic.opacity = fillOpacity.value/100;
+							((polygonsymbolizer.fill as GraphicFill).graphic.graphics[0] as Mark).stroke.opacity = fillOpacity.value/100;
+						}
 						break;
 					case hatchingWidth:
 						if(polygonsymbolizer.fill is GraphicFill)
