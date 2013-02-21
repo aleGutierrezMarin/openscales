@@ -211,6 +211,11 @@ package org.openscales.core.layer
 			else
 				res = this.map.resolution;
 			if (lonlat != null) {
+				var reprojectedLocation:Location; 
+				if(loc.projection != this.map.projection){
+					reprojectedLocation = loc.reprojectTo(this.map.projection); 
+				}
+				else reprojectedLocation = loc.clone();
 				if(lonlat.projection != this.map.projection)
 					lonlat = lonlat.reprojectTo(this.map.projection);
 				if (res != null && this.map.size)
@@ -229,7 +234,7 @@ package org.openscales.core.layer
 				}
 			}			
 			var px:Pixel = null;
-			px = new Pixel((loc.lon - extent.left) / res.value, (extent.top - loc.lat) / res.value);	
+			px = new Pixel((reprojectedLocation.lon - extent.left) / res.value, (extent.top - reprojectedLocation.lat) / res.value);	
 			return px;
 			
 			
