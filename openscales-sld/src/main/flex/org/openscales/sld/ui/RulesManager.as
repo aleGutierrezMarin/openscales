@@ -19,6 +19,8 @@ package org.openscales.sld.ui
 		private var _attributesParamOnly:ArrayCollection = null;
 		[Bindable]
 		private var _paramTables:HashMap = null;
+		[Bindable]
+		private var _layerName:String = "";
 		
 		public function RulesManager()
 		{
@@ -107,6 +109,16 @@ package org.openscales.sld.ui
 		public function set paramTables(value:HashMap):void
 		{
 			this._paramTables = value;
+		}
+		[Bindable]
+		public function get layerName():String
+		{
+			return _layerName;
+		}
+		
+		public function set layerName(value:String):void
+		{
+			_layerName = value;
 		}
 
 	}
