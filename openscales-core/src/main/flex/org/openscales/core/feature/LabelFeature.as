@@ -40,7 +40,7 @@ package org.openscales.core.feature
 		override public function clone():Feature
 		{
 			var geometryClone:Geometry = this.geometry.clone();
-			var LabelFeatureClone:LabelFeature = new LabelFeature(this._originGeometry as Point, this.data);
+			var LabelFeatureClone:LabelFeature = new LabelFeature(geometryClone as Point, this.data);
 			LabelFeatureClone.style = this.style.clone();
 			LabelFeatureClone.text = this._text;
 			return LabelFeatureClone;

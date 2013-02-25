@@ -668,12 +668,17 @@ package org.openscales.core.format
 					//Maybe it is a label
 					var isLabel:Boolean = false;
 					var textLabel:String = "";
-					for each(var extData:XML in placemark.*::ExtendedData.Data) 
-					{       
-						if(extData.@*::name == "label") {
-							isLabel = true
-							textLabel = extData.value.text();
-							break;
+					
+					tmp = placemark.*::ExtendedData;
+					if(placemark.*::ExtendedData[0] != null)
+					{
+						for each(var extData:XML in placemark.*::ExtendedData[0].*::Data) 
+						{       
+							if(extData.@*::name == "label") {
+								isLabel = true
+								textLabel = extData.*::value.text();
+								break;
+							}
 						}
 					}
 					
