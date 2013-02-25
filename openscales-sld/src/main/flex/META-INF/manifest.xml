@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<componentPackage>
+  <component id="RulesManager" class="org.openscales.sld.ui.RulesManager" />
+  <component id="RuleManager" class="org.openscales.sld.ui.RuleManager" />
+  <component id="HandlersManager" class="org.openscales.sld.ui.HandlersManager" />
+  <component id="AddSymbolizerManager" class="org.openscales.sld.ui.AddSymbolizerManager" />
+  <component id="RuleTree" class="org.openscales.sld.ui.ruleManager.RuleTree" />
+  <component id="StrokeHandler" class="org.openscales.sld.handler.StrokeHandler" />
+  <component id="GraphicHandler" class="org.openscales.sld.handler.GraphicHandler" />
+  <component id="AbstractRuleHandler" class="org.openscales.sld.handler.AbstractRuleHandler" />
+  <component id="FillHandler" class="org.openscales.sld.handler.FillHandler" />
+  <component id="LabelHandler" class="org.openscales.sld.handler.labels.LabelHandler" />
+</componentPackage>
