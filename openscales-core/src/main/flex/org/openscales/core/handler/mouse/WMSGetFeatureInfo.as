@@ -234,6 +234,9 @@ package org.openscales.core.handler.mouse
 					request = "";
 					request = layerVec[i].url+"?";
 					
+					//service is WMS
+					request += "SERVICE=WMS&";
+					
 					//mandatory version parameter
 					request += "VERSION=" + version + "&";
 					
