@@ -1,5 +1,6 @@
 package org.openscales.core.style {
 	import flash.display.DisplayObject;
+	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
 	
@@ -319,9 +320,30 @@ package org.openscales.core.style {
 		}
 
 		private function drawLine(symbolizer:Symbolizer, canvas:Sprite):void {
-			canvas.graphics.moveTo(5, 25);
-			canvas.graphics.curveTo(5, 15, 15, 15);
-			canvas.graphics.curveTo(25, 15, 25, 5);
+			
+			var delta:Number = -1;
+			
+			if (symbolizer && (symbolizer as LineSymbolizer).stroke)
+			{
+				delta = Math.round((symbolizer as LineSymbolizer).stroke.width);
+				
+				if (delta > 19) {
+					delta = 19;
+				}
+				
+				canvas.graphics.lineStyle(delta, (symbolizer as LineSymbolizer).stroke.color, 
+					(symbolizer as LineSymbolizer).stroke.opacity, false, 
+					LineScaleMode.NORMAL, (symbolizer as LineSymbolizer).stroke.linecap, 
+					(symbolizer as LineSymbolizer).stroke.linejoin);
+			}
+			
+			var res:Number = 0;
+			if (delta >= 1)
+				res = Math.round(delta) / 2;
+			
+			canvas.graphics.moveTo(5 + res, 25 - res);
+			canvas.graphics.curveTo(5 + res, 15, 15, 15);
+			canvas.graphics.curveTo(25 - res, 15, 25 - res, 5 + res);
 			if(_maxWidth > 0){
 				canvas.width = _maxWidth;
 			}
@@ -364,9 +386,12 @@ package org.openscales.core.style {
 				}
 			} else if(symbolizer is TextSymbolizer) {
 				var ts:TextSymbolizer = symbolizer as TextSymbolizer;
+				ts.labelPlacement = TextSymbolizer.NoLabelPlacement;
+				var tempSize:Number = ts.font.size;
+				ts.font.size = 3;
 				_do = ts.getTextField("Text",new Pixel(0,0));
-				_do.x=2;
-				_do.y=5;
+				_do.x= 0;//10 - _do.width / 2;
+				_do.y= 0;//10;
 				canvas.addChild(_do);
 				if(_maxWidth > 0){
 					canvas.width = _maxWidth;
@@ -374,31 +399,80 @@ package org.openscales.core.style {
 				if(_maxHeight > 0){
 					canvas.height = _maxHeight;
 				}
+				ts.font.size = tempSize;
 			}
 		}
 
 		protected function drawMark(mark:Mark, shape:Sprite, size:Number):void {
+			
+			var strokeWidth:Number = 0;
+			
+			if (size > 20)
+				size = 20;
+			
+			if (mark && mark.stroke) 
+			{
+				strokeWidth = mark.stroke.width;
+				if (strokeWidth > 10) 
+				{
+					strokeWidth = 10;
+				}
+			}
+			
+			if (strokeWidth + size > 20)
+			{
+				size = size - ((strokeWidth + size) - 20);
+			}
+			
 			if(mark.fill)
 				mark.fill.configureGraphics(shape.graphics, null);
 			if(mark.stroke)
-				mark.stroke.configureGraphics(shape.graphics);
+				shape.graphics.lineStyle(strokeWidth, mark.stroke.color, 
+					mark.stroke.opacity, false, 
+					LineScaleMode.NORMAL, mark.stroke.linecap, 
+					mark.stroke.linejoin);
+			
+			
+			
 			mark.drawMark(shape,size);
 			shape.x+=15;
 			shape.y+=15;
 		}
 
 		private function drawPolygon(symbolizer:Symbolizer, canvas:Sprite):void {
-			canvas.graphics.moveTo(5, 5);
-			canvas.graphics.lineTo(25, 5);
-			canvas.graphics.lineTo(25, 25);
-			canvas.graphics.lineTo(5, 25);
-			canvas.graphics.lineTo(5, 5);
+			
+			var delta:Number = -1;
+			
+			if (symbolizer && (symbolizer as PolygonSymbolizer).stroke)
+			{
+				delta = Math.round((symbolizer as PolygonSymbolizer).stroke.width);
+				
+				if (delta > 10) {
+					delta = 10;
+				}
+				
+				canvas.graphics.lineStyle(delta, (symbolizer as PolygonSymbolizer).stroke.color, 
+					(symbolizer as PolygonSymbolizer).stroke.opacity, false, 
+					LineScaleMode.NORMAL, (symbolizer as PolygonSymbolizer).stroke.linecap, 
+					(symbolizer as PolygonSymbolizer).stroke.linejoin);
+			}
+
+			var res:Number = 0;
+			if (delta >= 1)
+				res = Math.round(delta) / 2;
+			
+			canvas.graphics.moveTo(5 + res, 5 + res);
+			canvas.graphics.lineTo(25 - res, 5 + res);
+			canvas.graphics.lineTo(25 - res, 25 - res);
+			canvas.graphics.lineTo(5 + res, 25 - res);
+			canvas.graphics.lineTo(5 + res, 5 + res);
 			if(_maxWidth > 0){
 				canvas.width = _maxWidth;
 			}
 			if(_maxHeight > 0){
 				canvas.height = _maxHeight;
 			}
+			
 		}
 	}
 }
