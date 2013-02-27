@@ -4,6 +4,7 @@ package org.openscales.core.style.graphic
 	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
+	import flash.display.LineScaleMode;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	
@@ -174,10 +175,14 @@ package org.openscales.core.style.graphic
 					break;
 				}
 				case WKN_OARROW: {
-					shape.graphics.endFill();
 					shape.graphics.moveTo(-size/2,-size/2);
 					shape.graphics.lineTo(size/2,0);
 					shape.graphics.lineTo(-size/2,size/2);
+					shape.graphics.lineStyle(1, 255, 
+						0, false, 
+						LineScaleMode.NORMAL, "round", 
+						"round");
+					shape.graphics.lineTo(-size/2,-size/2);
 					break;
 				}
 				case WKN_CARROW: {
@@ -222,10 +227,14 @@ package org.openscales.core.style.graphic
 					break;
 				}
 				case OARROW: {
-					shape.graphics.endFill();
 					shape.graphics.moveTo(-size/2,-size/2);
 					shape.graphics.lineTo(size/2,0);
 					shape.graphics.lineTo(-size/2,size/2);
+					shape.graphics.lineStyle(1, 255, 
+						0, false, 
+						LineScaleMode.NORMAL, "round", 
+						"round");
+					shape.graphics.lineTo(-size/2,-size/2);
 					break;
 				}
 				case CARROW: {
