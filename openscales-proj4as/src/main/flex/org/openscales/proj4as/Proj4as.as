@@ -10,6 +10,7 @@ package org.openscales.proj4as {
 		static public const WGS84:ProjProjection = new ProjProjection('WGS84');
 
 
+
 		public function Proj4as() {
 		}
 
@@ -36,12 +37,7 @@ package org.openscales.proj4as {
 				return point;
 			}
 			
-			
-			/* Didier: Why? EPSG:4171 (longlat) -> EPSG:2154 (lcc)
-             * source.datum==dest.datum !! no transfo
-             * if (source.datum == dest.datum)
-			 *  return point; // no need to transform
-             */			 
+			 
 			 
 			// Workaround for Spherical Mercator
 			if ((source.srsProjNumber == "900913" && dest.datumCode != "WGS84") || (dest.srsProjNumber == "900913" && source.datumCode != "WGS84")) {
@@ -101,30 +97,47 @@ package org.openscales.proj4as {
 			if (source.datum_type == ProjConstants.PJD_NODATUM || dest.datum_type == ProjConstants.PJD_NODATUM) {
 				return point;
 			}
-
+            var src_a:Number = source.a;
+            var src_es:Number = source.es;
+            var dst_a:Number = dest.a;
+            var dst_es:Number = dest.es;
+                        
+			var fallback:Number= source.datum_type;
 			// If this datum requires grid shifts, then apply it to geodetic coordinates.
-			if (source.datum_type == ProjConstants.PJD_GRIDSHIFT) {
-				trace("ERROR: Grid shift transformations are not implemented yet.");
-				/*
-				   pj_apply_gridshift( pj_param(source.params,"snadgrids").s, 0,
-				   point_count, point_offset, x, y, z );
-				   CHECK_RETURN;
-
-				   src_a = SRS_WGS84_SEMIMAJOR;
-				   src_es = 0.006694379990;
-				 */
+			if  (fallback == ProjConstants.PJD_GRIDSHIFT) {
+				if (apply_gridshift(source, false, point )==0) {
+					source.a = ProjConstants.SRS_WGS84_SEMIMAJOR;
+					source.es = ProjConstants.SRS_WGS84_ESQUARED;
+				} else {
+					
+					// try 3 or 7 params transformation or nothing ?
+					if (!source.datum_params) {
+						return point;
+					}
+					var wp:Number= 1.0;
+					for (var i:Number= 0; i<source.datum_params.length; i++) {
+						wp*= source.datum_params[i];
+					}
+					if (wp==0.0) {
+						return point;
+					}
+					if (source.datum_params.length>3){
+						fallback=ProjConstants.PJD_7PARAM;
+					} else {
+						fallback=ProjConstants.PJD_3PARAM;
+					}
+					 
+					// CHECK_RETURN;
+				}
 			}
 
 			if (dest.datum_type == ProjConstants.PJD_GRIDSHIFT) {
-				trace("ERROR: Grid shift transformations are not implemented yet.");
-				/*
-				   dst_a = ;
-				   dst_es = 0.006694379990;
-				 */
+				dest.a = ProjConstants.SRS_WGS84_SEMIMAJOR;
+				dest.es = ProjConstants.SRS_WGS84_ESQUARED;
 			}
 
 			// Do we need to go through geocentric coordinates?
-			if (source.es != dest.es || source.a != dest.a || source.datum_type == ProjConstants.PJD_3PARAM || source.datum_type == ProjConstants.PJD_7PARAM || dest.datum_type == ProjConstants.PJD_3PARAM || dest.datum_type == ProjConstants.PJD_7PARAM) {
+			if (source.es != dest.es || source.a != dest.a || fallback == ProjConstants.PJD_3PARAM || fallback == ProjConstants.PJD_7PARAM || dest.datum_type == ProjConstants.PJD_3PARAM || dest.datum_type == ProjConstants.PJD_7PARAM) {
 
 				// Convert to geocentric coordinates.
 				source.geodetic_to_geocentric(point);
@@ -148,8 +161,7 @@ package org.openscales.proj4as {
 
 			// Apply grid shift to destination if required
 			if (dest.datum_type == ProjConstants.PJD_GRIDSHIFT) {
-				trace("ERROR: Grid shift transformations are not implemented yet.");
-					// pj_apply_gridshift( pj_param(dest.params,"snadgrids").s, 1, point);
+					apply_gridshift( dest, true, point);
 					// CHECK_RETURN;
 			}
 			return point;
@@ -160,6 +172,54 @@ package org.openscales.proj4as {
 		 * done pragmatically, so it basicaly works in OpenScales core use cases, but there may be some
 		 * remaining issues. 
 		 */
+		
+		public static function apply_gridshift(srs:Datum,inverse:Boolean,point:ProjPoint):Number{
+			
+			if (srs.grids==null || srs.grids.length==0) {
+				return -38;
+			}
+			var input:Object= {"x":point.x, "y":point.y};
+			var output:Object= {"x":Number.NaN, "y":Number.NaN};
+			/* keep trying till we find a table that works */
+			var onlyMandatoryGrids:Boolean= false;
+			for (var i:Number= 0; i<srs.grids.length; i++) {
+				var gi:Object= srs.grids[i];
+				onlyMandatoryGrids= gi.mandatory;
+				var ct:Object= gi.grid;
+				if (ct==null) {
+					if (gi.mandatory) {
+						trace("unable to find '"+gi.name+"' grid.");
+						return -48;
+					}
+					continue;//optional grid
+				} 
+				/* skip tables that don't match our point at all.  */
+				var epsilon:Number= (Math.abs(ct.del[1])+Math.abs(ct.del[0]))/10000.0;
+				if( ct.ll[1]-epsilon>input.y || ct.ll[0]-epsilon>input.x ||
+					ct.ll[1]+(ct.lim[1]-1)*ct.del[1]+epsilon<input.y ||
+					ct.ll[0]+(ct.lim[0]-1)*ct.del[0]+epsilon<input.x ) {
+					continue;
+				}
+				
+				output= ProjConstants.nad_cvt(input, inverse, ct);
+				if (!isNaN(output.x)) {
+					break;
+				}
+			}
+			if (isNaN(output.x)) {
+				if (!onlyMandatoryGrids) {
+					trace("failed to find a grid shift table for location '"+
+						input.x*ProjConstants.R2D+" "+input.y*ProjConstants.R2D+
+						" tried: '"+srs.nadgrids+"'");
+					return -48;
+				}
+				return -1;//FIXME: no shift applied ...
+			}
+			point.x= output.x;
+			point.y= output.y;
+			return 0;
+			
+		}
 		public static function unit_transform(source:ProjProjection, dest:ProjProjection, value:Number):Number {
 			if (source == null || dest == null || isNaN(value)) {
 				//trace("Parameters not created!");

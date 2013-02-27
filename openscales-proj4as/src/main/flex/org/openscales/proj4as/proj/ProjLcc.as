@@ -1,8 +1,8 @@
 package org.openscales.proj4as.proj {
 	
-	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
+	import org.openscales.proj4as.ProjConstants;
+	import org.openscales.proj4as.ProjPoint;
 
 	/**
 	 <p>LAMBERT CONFORMAL CONIC projection</p>
@@ -40,7 +40,7 @@ package org.openscales.proj4as.proj {
 			//double false_north;             /* y offset in meters                   */
 
 			if (!this.latTwo) {
-				this.latTwo=this.latZero;
+				this.latTwo=this.latOne;
 			} //if lat2 is not defined
 			if (!this.kZero)
 				this.kZero=1.0;
@@ -65,7 +65,8 @@ package org.openscales.proj4as.proj {
 			var ts2:Number=ProjConstants.tsfnz(this.e, this.latTwo, sin2);
 
 			var ts0:Number=ProjConstants.tsfnz(this.e, this.latZero, Math.sin(this.latZero));
-
+			
+			
 			if (Math.abs(this.latOne - this.latTwo) > ProjConstants.EPSLN) {
 				this.ns=Math.log(ms1 / ms2) / Math.log(ts1 / ts2);
 			} else {
@@ -73,6 +74,9 @@ package org.openscales.proj4as.proj {
 			}
 			this.f0=ms1 / (this.ns * Math.pow(ts1, this.ns));
 			this.rh=this.a * this.f0 * Math.pow(ts0, this.ns);
+			
+			
+			
 			if (!this.title)
 				this.title="Lambert Conformal Conic";
 		}

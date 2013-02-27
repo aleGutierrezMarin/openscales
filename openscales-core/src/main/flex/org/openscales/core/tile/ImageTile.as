@@ -32,6 +32,8 @@ package org.openscales.core.tile
 		
 		private var _method:String = null;
 		
+		private var _useNoDataTile:Boolean = true;
+		
 		/**
 		 * No Data tile
 		 */
@@ -44,6 +46,12 @@ package org.openscales.core.tile
 		[Embed(source="/assets/images/noDataTransp.png")]
 		private var _noDataTransp:Class;
 
+		/**
+		 * Totally transparent tile
+		 */ 
+		[Embed(source="/assets/images/fullTransparentImage.png")]
+		private var _fullTransparentImage:Class;
+		
 		public function ImageTile(layer:Layer, position:Pixel, bounds:Bounds, url:String, size:Size) {
 			super(layer, position, bounds, url, size);
 			// otherwise you'll get seams between tiles :(
@@ -154,14 +162,19 @@ package org.openscales.core.tile
 				
 				// Display the no data Tile
 				var bmdata:BitmapData = new BitmapData(256,256);
-				if (this.url.match("TRANSPARENT=TRUE"))
-				{
-					this.drawLoader("", new _noDataTransp());
-					bmdata.draw(new _noDataTransp());
+				if(_useNoDataTile){
+					if (this.url.match("TRANSPARENT=TRUE")){
+						this.drawLoader("", new _noDataTransp());
+						bmdata.draw(new _noDataTransp());
+					}else{
+						this.drawLoader("", new _noData());
+						bmdata.draw(new _noData());
+					}
 				}else{
-					this.drawLoader("", new _noData());
-					bmdata.draw(new _noData());
+					this.drawLoader("",new _fullTransparentImage());
+					bmdata.draw(new _fullTransparentImage());
 				}
+				
 				
 			}
 		}
@@ -200,6 +213,25 @@ package org.openscales.core.tile
 			this._method = value;
 			
 		}
+
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get useNoDataTile():Boolean
+		{
+			return _useNoDataTile;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set useNoDataTile(value:Boolean):void
+		{
+			_useNoDataTile = value;
+		}
+
 	}
 }
 

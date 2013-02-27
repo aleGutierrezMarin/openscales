@@ -17,7 +17,7 @@ package org.openscales.core.search.engine
 		private var _version:String = null;
 		private var _countryCode:String = null;
 		private var _srsName:String = null;
-		private var _req:OpenLSRequest = null;
+		protected var _req:OpenLSRequest = null;
 
 		private var _reqFailureCallback:Function = null;
 		private var _placeFilters:Vector.<Vector.<String>> = null;
@@ -76,7 +76,7 @@ package org.openscales.core.search.engine
 			this._req.send();
 		}
 		
-		private function setFilters():void {
+		protected function setFilters():void {
 			if(this._placeFilters && this._req) {
 				for (var i:int=this._placeFilters.length; i>0; --i) {
 					var filter:Vector.<String> = this._placeFilters[i-1];

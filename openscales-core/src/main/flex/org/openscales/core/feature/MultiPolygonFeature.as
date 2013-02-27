@@ -3,6 +3,8 @@ package org.openscales.core.feature {
 	import flash.sampler.getMemberNames;
 	
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
@@ -66,6 +68,12 @@ package org.openscales.core.feature {
 				var y:Number;
 				var coords:Vector.<Number>;
 				var commands:Vector.<int> = new Vector.<int>();
+				var polySym:PolygonSymbolizer = (symbolizer as PolygonSymbolizer);
+				var stroke:Stroke;
+				if(polySym && polySym.stroke && polySym.stroke.dashArray && polySym.stroke.dashArray.length>0) {
+					stroke = polySym.stroke.clone();
+					stroke.opacity=0;
+				}
 				for (m = 0; m < n; ++m) {
 					polygon = (this.polygons.componentByIndex(m) as Polygon);
 					k= polygon.componentsLength;
@@ -91,7 +99,21 @@ package org.openscales.core.feature {
 							coords.push(coords[1]);
 							commands.push(2);
 						}
-						this.graphics.drawPath(commands, coords);
+						
+						if(stroke)
+						{
+							stroke.configureGraphics(this.graphics);
+							this.graphics.drawPath(commands, coords);
+							polySym.stroke.configureGraphics(this.graphics);
+							var size:uint = coords.length;
+							for(j = 0; j + 2 < size; j = j + 2){
+								this.dottedTo(new Pixel(coords[j],coords[j+1]),
+									new Pixel(coords[j+2],coords[j+3]),
+									polySym.stroke);
+							}
+						}
+						else
+							this.graphics.drawPath(commands, coords);
 					}
 				}
 				this.graphics.endFill();

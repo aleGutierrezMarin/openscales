@@ -49,7 +49,7 @@ Main Flex example application
 			
 			private function init():void {
 				data['about'] = new AboutOpenScales();
-				example.addElement(getState('about'));
+				example.addElement(getState('testfeatures'));
 			}
 			
 			private function getState(id:String):IVisualElement {

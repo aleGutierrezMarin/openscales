@@ -64,7 +64,7 @@ package org.openscales.proj4as.proj {
 			g=this.sin_pFourteen * sinphi + this.cos_pFourteen * cosphi * coslon;
 			ksp=1.0;
 			if ((g > 0) || (Math.abs(g) <= ProjConstants.EPSLN)) {
-				x=this.a * ksp * cosphi * Math.sin(dlon);
+				x=this.xZero + this.a * ksp * cosphi * Math.sin(dlon);
 				y=this.yZero + this.a * ksp * (this.cos_pFourteen * sinphi - this.sin_pFourteen * cosphi * coslon);
 			} else {
 				trace("orthoFwdPointError");
@@ -76,11 +76,11 @@ package org.openscales.proj4as.proj {
 
 
 		override public function inverse(p:ProjPoint):ProjPoint {
-			var rh:Number; /* height above ellipsoid			*/
-			var x:Number, y:Number, z:Number; /* angle					*/
-			var sinz:Number, cosz:Number, cosi:Number; /* sin of z and cos of z			*/
+			var rh:Number; /* height above ellipsoid			*/	
+			var sinz:Number, cosz:Number; /* sin of z and cos of z			*/
 			var con:Number;
 			var lon:Number, lat:Number;
+			var z:Number;
 			/* Inverse equations
 			 -----------------*/
 			p.x-=this.xZero;
@@ -92,13 +92,16 @@ package org.openscales.proj4as.proj {
 			z=ProjConstants.asinz(rh / this.a);
 
 			sinz=Math.sin(z);
-			cosi=Math.cos(z);
+			cosz=Math.cos(z);
 
 			lon=this.longZero;
 			if (Math.abs(rh) <= ProjConstants.EPSLN) {
 				lat=this.latZero;
+				p.x=lon;
+				p.y=lat;
+				return p;
 			}
-			lat=ProjConstants.asinz(cosz * this.sin_pFourteen + (y * sinz * this.cos_pFourteen) / rh);
+			lat=ProjConstants.asinz(cosz * this.sin_pFourteen + (p.y * sinz * this.cos_pFourteen) / rh);
 			con=Math.abs(latZero) - ProjConstants.HALF_PI;
 			if (Math.abs(con) <= ProjConstants.EPSLN) {
 				if (this.latZero >= 0) {
@@ -106,11 +109,14 @@ package org.openscales.proj4as.proj {
 				} else {
 					lon=ProjConstants.adjust_lon(this.longZero - Math.atan2(-p.x, p.y));
 				}
+				p.x=lon;
+				p.y=lat;
+				return p;
 			}
-			con=cosz - this.sin_pFourteen * Math.sin(lat);
-			if ((Math.abs(con) >= ProjConstants.EPSLN) || (Math.abs(x) >= ProjConstants.EPSLN)) {
-				lon=ProjConstants.adjust_lon(this.longZero + Math.atan2((p.x * sinz * this.cos_pFourteen), (con * rh)));
-			}
+			
+			
+			lon=ProjConstants.adjust_lon(this.longZero + Math.atan2((p.x * sinz ), rh*this.cos_pFourteen*cosz-p.y*this.sin_pFourteen*sinz));
+			
 			p.x=lon;
 			p.y=lat;
 			return p;
