@@ -22,7 +22,6 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
-	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
@@ -716,7 +715,7 @@ package org.openscales.core.handler.feature
 		 */
 		private function selectByGeometry(geom:Geometry, additiveMode:Boolean=false, substractiveMode:Boolean=false):void {
 			// Look for all the features that intersect the selection geometry
-			/*var featuresToSelect:Vector.<Feature> = new Vector.<Feature>();
+			var featuresToSelect:Vector.<Feature> = new Vector.<Feature>();
 			if (geom) {
 				var layersToTest:Vector.<VectorLayer> = (this.layers.length > 0) ? this.layers : this.map.featureLayers;
 				var layer:VectorLayer, layersTmp:Vector.<VectorLayer> = new Vector.<VectorLayer>();
@@ -758,7 +757,7 @@ package org.openscales.core.handler.feature
 				this.unselect(featuresToSelect);
 			} else {
 				this.select(featuresToSelect, additiveMode);
-			}*/
+			}
 		}
 
 		/**

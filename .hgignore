@@ -15,3 +15,5 @@ target
 *.versionsBackup
 *.releaseBackup
 release.properties
+*.prefs
+*.project

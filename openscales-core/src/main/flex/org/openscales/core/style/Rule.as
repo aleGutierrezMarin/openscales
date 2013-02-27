@@ -1,16 +1,28 @@
 package org.openscales.core.style {
 	import flash.display.DisplayObject;
+	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
+	import flash.events.EventDispatcher;
 	
+	import org.openscales.core.filter.Comparison;
 	import org.openscales.core.filter.IFilter;
-	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.IGraphic;
+	import org.openscales.core.style.graphic.Mark;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Rule based style, in order to use different styles based on parameters like current scale
 	 */
-	public class Rule {
+	public class Rule extends EventDispatcher {
+		
+		private namespace sldns="http://www.opengis.net/sld";
+		private namespace ogcns="http://www.opengis.net/ogc";
 
 		public static const LEGEND_LINE:String = "Line";
 
@@ -31,6 +43,9 @@ package org.openscales.core.style {
 		private var _filter:IFilter = null;
 
 		private var _symbolizers:Vector.<Symbolizer> = new Vector.<Symbolizer>();
+		
+		private var _maxWidth:Number = -1;
+		private var _maxHeight:Number = -1;
 
 		public function Rule() {
 		}
@@ -152,9 +167,11 @@ package org.openscales.core.style {
 		/**
 		 * Renders the legend for the rule on given DisplayObject
 		 */
-		public function getLegendGraphic(type:String):DisplayObject {
+		public function getLegendGraphic(type:String, maxWidth:Number = -1, maxHeight:Number = -1):DisplayObject {
 
 			var result:Sprite = new Sprite();
+			this._maxWidth = maxWidth;
+			this._maxHeight = maxHeight;
 
 			var drawMethod:Function;
 			switch (type) {
@@ -177,72 +194,285 @@ package org.openscales.core.style {
 			}
 
 			for each (var symbolizer:Symbolizer in this.symbolizers) {
-
-				symbolizer.configureGraphics(result.graphics, null);
-				drawMethod.apply(this, [symbolizer, result]);
+				var layer:Sprite = new Sprite();
+				result.addChild(layer);
+				symbolizer.configureGraphics(layer.graphics, null);
+				drawMethod.apply(this, [symbolizer, layer]);
 			}
 
 			return result;
 		}
+		
+		public function get sld():String {
+			// gen sld
+			var res:String = "<sld:Rule>\n";
+			
+			if(this.title)
+				res+="<sld:Title>"+this.title+"</sld:Title>\n";
+			if(this.abstract)
+				res+="<sld:Abstract>"+this.abstract+"</sld:Abstract>\n";
+			else
+				res+="<sld:Abstract></sld:Abstract>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			
+			if(!isNaN(this.minScaleDenominator)) {
+				res+="<sld:MinScaleDenominator>"+this.minScaleDenominator+"</sld:MinScaleDenominator>\n";
+			}
+			if(!isNaN(this.maxScaleDenominator)) {
+				res+="<sld:MaxScaleDenominator>"+this.maxScaleDenominator+"</sld:MaxScaleDenominator>\n";
+			}
+			var tmp:String;
+			for each (var symbolizer:Symbolizer in this.symbolizers) {
+				tmp = symbolizer.sld;
+				if(tmp)
+					res+=tmp;
+			}
+			if(this.filter) {
+				tmp = this.filter.sld;
+				if(tmp)
+					res+=tmp;
+			}
+			res+="</sld:Rule>\n";
+			return res;
+		}
+		
+		public function set sld(sldRule:String):void {
+			use namespace sldns;
+			use namespace ogcns;
+			var dataXML:XML = new XML(sldRule);
+			this.title = null;
+			this.name = null;
+			this.abstract = null;
+			this.minScaleDenominator = NaN;
+			this.maxScaleDenominator = NaN;
+			if(!this.symbolizers)
+				this.symbolizers = new Vector.<Symbolizer>();
+			while(this.symbolizers.length>0) {
+				this.symbolizers.pop();
+			}
+			if(this._filter)
+				this._filter = null;
+			
+			//title
+			if(dataXML.Title[0])
+				this.title = dataXML.Title[0];
+			//name
+			if(dataXML.Name[0])
+				this.name = dataXML.Name[0];
+			//astract
+			if(dataXML.Abstract[0])
+				this.abstract = dataXML.Abstract[0];
+			//minScaleDenominator
+			if(dataXML.MinScaleDenominator[0])
+				this.minScaleDenominator = Number(dataXML.MinScaleDenominator[0]);
+			//maxScaleDenominator
+			if(dataXML.MaxScaleDenominator[0])
+				this.maxScaleDenominator = Number(dataXML.MaxScaleDenominator[0]);
+			var childs:XMLList = dataXML.children();
+			var symb:Symbolizer = null;
+			for each(dataXML in childs) {
+				switch (dataXML.localName()) {
+					case "PolygonSymbolizer":
+						symb = new PolygonSymbolizer();
+						break;
+					case "PointSymbolizer":
+						symb = new PointSymbolizer();
+						break;
+					case "LineSymbolizer":
+						symb = new LineSymbolizer();
+						break;
+					case "TextSymbolizer":
+						symb = new TextSymbolizer();
+						break;
+					case "Filter":
+						if(this._filter)
+							continue;
+						var filter:XMLList = dataXML.children();
+						var node:XML;
+						if(filter.length()==0)
+							continue;
+						node = filter[0];
+						switch (node.localName()) {
+							case "PropertyIsEqualTo":
+							case "PropertyIsNotEqualTo":
+							case "PropertyIsLessThan":
+							case "PropertyIsGreaterThan":
+							case "PropertyIsLessThanOrEqualTo":
+							case "PropertyIsGreaterThanOrEqualTo":
+							case "PropertyIsLike":
+							case "PropertyIsNull":
+							case "PropertyIsBetween":
+								this._filter = new Comparison(null,null);
+								break;
+						}
+						if(this._filter)
+							this._filter.sld = dataXML;
+						break;
+					//TODO other filters
+				}
+				if(symb) {
+					symb.sld = dataXML.toString();
+					this.symbolizers.push(symb);
+					symb = null;
+				}
+			}
+		}
 
 		private function drawLine(symbolizer:Symbolizer, canvas:Sprite):void {
-
-			canvas.graphics.moveTo(5, 25);
-			canvas.graphics.curveTo(5, 15, 15, 15);
-			canvas.graphics.curveTo(25, 15, 25, 5);
+			
+			var delta:Number = -1;
+			
+			if (symbolizer && (symbolizer as LineSymbolizer).stroke)
+			{
+				delta = Math.round((symbolizer as LineSymbolizer).stroke.width);
+				
+				if (delta > 19) {
+					delta = 19;
+				}
+				
+				canvas.graphics.lineStyle(delta, (symbolizer as LineSymbolizer).stroke.color, 
+					(symbolizer as LineSymbolizer).stroke.opacity, false, 
+					LineScaleMode.NORMAL, (symbolizer as LineSymbolizer).stroke.linecap, 
+					(symbolizer as LineSymbolizer).stroke.linejoin);
+			}
+			
+			var res:Number = 0;
+			if (delta >= 1)
+				res = Math.round(delta) / 2;
+			
+			canvas.graphics.moveTo(5 + res, 25 - res);
+			canvas.graphics.curveTo(5 + res, 15, 15, 15);
+			canvas.graphics.curveTo(25 - res, 15, 25 - res, 5 + res);
+			if(_maxWidth > 0){
+				canvas.width = _maxWidth;
+			}
+			if(_maxHeight > 0){
+				canvas.height = _maxHeight;
+			}
+			
 		}
 
 		private function drawPoint(symbolizer:Symbolizer, canvas:Sprite):void {
-
+			var _do:DisplayObject;
 			if (symbolizer is PointSymbolizer) {
 
 				var pointSymbolizer:PointSymbolizer = (symbolizer as PointSymbolizer);
 				if (pointSymbolizer.graphic) {
-					if (pointSymbolizer.graphic is WellKnownMarker) {
-
-						this.drawMark(pointSymbolizer.graphic as WellKnownMarker, canvas);
+					if (pointSymbolizer.graphic) {
+						canvas.alpha = pointSymbolizer.graphic.opacity;
+						var size:Number = pointSymbolizer.graphic.getSizeValue();
+						for each(var mark:Object in pointSymbolizer.graphic.graphics) {
+							if(mark is Mark) {
+								var layer:Sprite = new Sprite();
+								canvas.addChild(layer);
+								this.drawMark(mark as Mark, layer, size);
+							}
+							else if(mark is ExternalGraphic) {
+								_do = (mark as ExternalGraphic).getDisplayObject(null,size,false);
+								_do.x+=15;
+								_do.y+=15;
+								canvas.addChild(_do);
+							}
+						}
+						if(_maxWidth > 0 && _maxWidth < canvas.width){
+							canvas.width = _maxWidth;
+						}
+						if(_maxHeight > 0 && _maxHeight < canvas.height){
+							canvas.height = _maxHeight;
+						}
+								
 					}
 				}
+			} else if(symbolizer is TextSymbolizer) {
+				var ts:TextSymbolizer = symbolizer as TextSymbolizer;
+				ts.labelPlacement = TextSymbolizer.NoLabelPlacement;
+				var tempSize:Number = ts.font.size;
+				ts.font.size = 3;
+				_do = ts.getTextField("Text",new Pixel(0,0));
+				_do.x= 0;//10 - _do.width / 2;
+				_do.y= 0;//10;
+				canvas.addChild(_do);
+				if(_maxWidth > 0){
+					canvas.width = _maxWidth;
+				}
+				if(_maxHeight > 0){
+					canvas.height = _maxHeight;
+				}
+				ts.font.size = tempSize;
 			}
 		}
 
-		protected function drawMark(mark:WellKnownMarker, canvas:Sprite):void {
-
-			mark.fill.configureGraphics(canvas.graphics, null);
-			mark.stroke.configureGraphics(canvas.graphics);
-
-			var size:Number = mark.getSizeValue(null);
-
-			switch (mark.wellKnownName) {
-
-				case WellKnownMarker.WKN_SQUARE:  {
-					canvas.graphics.drawRect(15 - size / 2, 15 - size / 2, size, size);
-					break;
+		protected function drawMark(mark:Mark, shape:Sprite, size:Number):void {
+			
+			var strokeWidth:Number = 0;
+			
+			if (size > 20)
+				size = 20;
+			
+			if (mark && mark.stroke) 
+			{
+				strokeWidth = mark.stroke.width;
+				if (strokeWidth > 10) 
+				{
+					strokeWidth = 10;
 				}
-				case WellKnownMarker.WKN_CIRCLE:  {
-					canvas.graphics.drawCircle(15, 15, size / 2);
-					break;
-				}
-				case WellKnownMarker.WKN_TRIANGLE:  {
-					// TODO : Check for the drawing of the triangles
-					canvas.graphics.moveTo(0, (size / 2));
-					canvas.graphics.lineTo(size, size);
-					canvas.graphics.lineTo(0, size);
-					canvas.graphics.lineTo(0, (size / 2));
-					break;
-				}
-				// TODO : Implement other well known names and take into account opacity, rotation of the mark
 			}
-			canvas.graphics.endFill();
+			
+			if (strokeWidth + size > 20)
+			{
+				size = size - ((strokeWidth + size) - 20);
+			}
+			
+			if(mark.fill)
+				mark.fill.configureGraphics(shape.graphics, null);
+			if(mark.stroke)
+				shape.graphics.lineStyle(strokeWidth, mark.stroke.color, 
+					mark.stroke.opacity, false, 
+					LineScaleMode.NORMAL, mark.stroke.linecap, 
+					mark.stroke.linejoin);
+			
+			
+			
+			mark.drawMark(shape,size);
+			shape.x+=15;
+			shape.y+=15;
 		}
 
 		private function drawPolygon(symbolizer:Symbolizer, canvas:Sprite):void {
+			
+			var delta:Number = -1;
+			
+			if (symbolizer && (symbolizer as PolygonSymbolizer).stroke)
+			{
+				delta = Math.round((symbolizer as PolygonSymbolizer).stroke.width);
+				
+				if (delta > 10) {
+					delta = 10;
+				}
+				
+				canvas.graphics.lineStyle(delta, (symbolizer as PolygonSymbolizer).stroke.color, 
+					(symbolizer as PolygonSymbolizer).stroke.opacity, false, 
+					LineScaleMode.NORMAL, (symbolizer as PolygonSymbolizer).stroke.linecap, 
+					(symbolizer as PolygonSymbolizer).stroke.linejoin);
+			}
 
-			canvas.graphics.moveTo(5, 5);
-			canvas.graphics.lineTo(25, 5);
-			canvas.graphics.lineTo(25, 25);
-			canvas.graphics.lineTo(5, 25);
-			canvas.graphics.lineTo(5, 5);
+			var res:Number = 0;
+			if (delta >= 1)
+				res = Math.round(delta) / 2;
+			
+			canvas.graphics.moveTo(5 + res, 5 + res);
+			canvas.graphics.lineTo(25 - res, 5 + res);
+			canvas.graphics.lineTo(25 - res, 25 - res);
+			canvas.graphics.lineTo(5 + res, 25 - res);
+			canvas.graphics.lineTo(5 + res, 5 + res);
+			if(_maxWidth > 0){
+				canvas.width = _maxWidth;
+			}
+			if(_maxHeight > 0){
+				canvas.height = _maxHeight;
+			}
+			
 		}
 	}
 }

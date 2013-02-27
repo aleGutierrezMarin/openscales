@@ -14,15 +14,15 @@
 	<properties>
 		<flex.sdk.version>4.6.b.23201</flex.sdk.version>
 		<flexmojos.version>4.0-RC2</flexmojos.version>
-		<flashplayer.version.swf>13</flashplayer.version.swf>
+		<flashplayer.version.swf>11</flashplayer.version.swf>
 		<flex.player.version.major>11</flex.player.version.major>
-		<flex.player.version.minor>1</flex.player.version.minor>
+		<flex.player.version.minor>0</flex.player.version.minor>
 		<flex.player.version.revision>0</flex.player.version.revision>
 		<flexpmd.version>1.2</flexpmd.version>
-        <sonar.language>flex</sonar.language>
-        <sonar.dynamicanalysis>reuseReports</sonar.dynamicanalysis>
-        <sonar.surefire.reportspath>target\surefire-reports</sonar.surefire.reportspath>
-        <sonar.skippedModules>openscales-core-flash-10.1,openscales-as-examples,openscales-fx-examples,openscales-viewer</sonar.skippedModules>
+		<sonar.language>flex</sonar.language>
+		<sonar.dynamicanalysis>reuseReports</sonar.dynamicanalysis>
+		<sonar.surefire.reportspath>target\surefire-reports</sonar.surefire.reportspath>
+		<sonar.skippedModules>openscales-core-flash-10.1,openscales-as-examples,openscales-fx-examples,openscales-viewer</sonar.skippedModules>
 		<env>local</env>
 		<weeklyRelease>false</weeklyRelease>
 	</properties>
@@ -80,7 +80,7 @@
 		</profile>
 	</profiles>
 	<modules>
-        <module>openscales-proj4as</module>
+		<module>openscales-proj4as</module>
 		<module>openscales-geometry</module>
 		<module>openscales-core</module>
 		<module>openscales-core-flash-10.1</module>
@@ -88,8 +88,9 @@
 		<module>openscales-fx-examples</module>
 		<module>openscales-fx</module>
 		<module>openscales-viewer</module>
-        <module>openscales-iipimage</module>
+		<module>openscales-iipimage</module>
 		<module>openscales-binder</module>
+		<module>openscales-sld</module>
 	</modules>
 	<issueManagement>
 		<system>Bitbucket Issue management</system>
@@ -238,7 +239,7 @@
 			<organizationUrl>http://www.atosworldline.com/</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
-        <developer>
+				<developer>
 			<id>mviry</id>
 			<name>Maxime Viry</name>
 			<organization>Atos Worldline</organization>
@@ -309,12 +310,12 @@
 		<url>http://openscales.org/jenkins/job/openscales-develop</url>
 	</ciManagement>
 	<licenses>
-	 	<license>
+		 <license>
 			<name>LGPL with some exceptions / clarifications</name>
 			<url>http://openscales.org/license.html</url>
 			<distribution>repo</distribution>
 		</license>
- 	</licenses>
+	 </licenses>
 	
 	<build>
 		<sourceDirectory>src/main/flex</sourceDirectory>
@@ -326,7 +327,7 @@
 				<version>${flexmojos.version}</version>
 				<extensions>true</extensions>
 				<dependencies>
-		  			<dependency>
+						<dependency>
 						<groupId>com.adobe.flex</groupId>
 						<artifactId>compiler</artifactId>
 						<version>${flex.sdk.version}</version>
@@ -335,20 +336,20 @@
 				</dependencies>
 
 				<configuration>
-                    <coverage>true</coverage>
-                    <coverageOutputDirectory>target\site\cobertura</coverageOutputDirectory>
+					<coverage>true</coverage>
+					<coverageOutputDirectory>target\site\cobertura</coverageOutputDirectory>
 					<swfVersion>${flashplayer.version.swf}</swfVersion>
-                    <coverageReportFormat>
-                        <param>xml</param>
+					<coverageReportFormat>
+						<param>xml</param>
 					</coverageReportFormat>
-                    <testFailureIgnore>true</testFailureIgnore>
+					<testFailureIgnore>true</testFailureIgnore>
 					<targetPlayer>${flex.player.version.major}.${flex.player.version.minor}.${flex.player.version.revision}</targetPlayer>
 					<swfVersion>${flashplayer.version.swf}</swfVersion>
 					<outputDirectory>${project.build.directory}/site/asdoc</outputDirectory>
 					<testTimeout>200000</testTimeout>
 					<excludeTestFiles> 
-                        <param>OpenScalesTest.as</param> 
-                    </excludeTestFiles> 
+						<param>OpenScalesTest.as</param> 
+					</excludeTestFiles> 
 				</configuration>
 			</plugin>
 			<plugin>
@@ -394,11 +395,7 @@
 			<artifactId>flex-framework</artifactId>
 			<version>${flex.sdk.version}</version>
 			<type>pom</type>
-			
 		</dependency>
-		
-
-		
 		<dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
@@ -415,7 +412,7 @@
 				<version>2.4.3</version>
 			</plugin>
 		</plugins>
-  	</reporting>
+	</reporting>
 	<repositories>
 		<repository>
 			<id>central</id>

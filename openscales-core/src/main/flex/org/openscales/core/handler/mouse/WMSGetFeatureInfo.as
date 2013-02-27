@@ -30,10 +30,10 @@ package org.openscales.core.handler.mouse
 	public class WMSGetFeatureInfo extends Handler
 	{
 		
-		private var _clickHandler:ClickHandler;
+		protected var _clickHandler:ClickHandler;
 		
 		
-		private var _request:XMLRequest;
+		protected var _request:XMLRequest;
 		
 		
 		private var _maxFeatures:Number;
@@ -250,7 +250,11 @@ package org.openscales.core.handler.mouse
 					request += "WIDTH=" + this.map.width + "&";
 					request += "HEIGHT=" + this.map.height + "&";
 					
-					request += "BBOX=" + this.map.extent.toString() + "&";			
+					if(version=="1.3.0" && !this.map.projection.lonlat){
+						request += "BBOX=" + this.map.extent.bottom+","+ this.map.extent.left +","+ this.map.extent.top +","+ this.map.extent.right+"&";
+					}else {
+						request += "BBOX=" + this.map.extent.left+","+ this.map.extent.bottom +","+ this.map.extent.right +","+ this.map.extent.top+"&";
+					}		
 					
 					//info format is mandatory for 1.1.1 not for 1.3.0
 					if(this._infoFormat != null || version == "1.3.0"){
@@ -308,7 +312,7 @@ package org.openscales.core.handler.mouse
 		 * @param p Position of the mouse cursor when the user clicked
 		 * 
 		 */
-		private function getInfoForClick(p:Pixel):void {
+		protected function getInfoForClick(p:Pixel):void {
 			//build the request string
 			var req:Vector.<String> = this.prepareRequest(p);
 			var reqLength:Number = req.length;
@@ -328,7 +332,7 @@ package org.openscales.core.handler.mouse
 		 * @private
 		 * Handle the failure of the sent request sent
 		 */
-		private function handleFailure(event:Event):void{
+		protected function handleFailure(event:Event):void{
 			
 		}
 		
@@ -336,7 +340,7 @@ package org.openscales.core.handler.mouse
 		 * @private
 		 * Read the incoming response from the server
 		 */
-		private function handleSuccess(event:Event):void {
+		protected function handleSuccess(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
 			var ret:Object;
 			if (this._infoFormat == "application/vnd.ogc.gml")

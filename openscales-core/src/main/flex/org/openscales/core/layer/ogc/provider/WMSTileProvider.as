@@ -126,6 +126,7 @@ package org.openscales.core.layer.ogc.provider
 		{
 			var url:String = this.buildGETQuery(bounds, null);
 			var img:ImageTile = new ImageTile(layer, center, bounds, url, new Size(this._width, this._height));
+			img.useNoDataTile = _useNoDataTile;
 			if(layer is WMS && (layer as WMS).method != null)
 				img.method = (layer as WMS).method;
 			return img;

@@ -9,5 +9,8 @@ package org.openscales.core.filter {
 		function matches(feature:Feature):Boolean;
 		
 		function clone():IFilter;
+		
+		function get sld():String;
+		function set sld(sld:String):void;
 	}
 }

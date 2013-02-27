@@ -1,16 +1,25 @@
-package org.openscales.core.style.marker
+package org.openscales.core.style.graphic
 {
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 	
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.request.DataRequest;
 
-	public class CustomMarker extends Marker
+	public class ExternalGraphic implements IGraphic
 	{
+		private namespace sldns="http://www.opengis.net/sld";
+		private namespace xlinkns="http://www.w3.org/1999/xlink";
+		
+		private var _format:String;
+		private var _onlineResource:String;
 		
 		/**
 		 * The X offset where the point will be positioned in the image in xUnit
@@ -51,17 +60,12 @@ package org.openscales.core.style.marker
 		private var _clip:Bitmap;
 		
 		/**
-		 * The image URL
-		 */
-		private var _url:String;
-		
-		private var _proxy:String = null;
-		
-		/**
 		 * A vector that stores a reference to all the returned temporary display object
 		 * to actualize them when the requested marker will be loaded 
 		 */
-		private var _givenTemporaryMarker:Vector.<DisplayObject>;
+		private var _givenTemporaryMarker:Vector.<WaitingRendering>;
+		
+		private var _proxy:String = null;
 		
 		/**
 		 * Default image applied when waiting for the request response
@@ -69,41 +73,29 @@ package org.openscales.core.style.marker
 		[Embed(source="/assets/images/marker-blue.png")]
 		private var _defaultImage:Class;
 		
-		public function CustomMarker(url:String = null,
-									 opacity:Number=1,
-									 xOffset:Number=0.5,
-									 xUnit:String="fraction",
-									 yOffset:Number=0.5,
-									 yUnit:String="fraction",
-									 proxy:String = null)
+		public function ExternalGraphic(onlineResource:String=null,format:String="image/png")
 		{
-			super(6, opacity, 0);
-			this._xOffset = xOffset;
-			this._yOffset = yOffset;
-			this._xUnit = xUnit;
-			this._yUnit = yUnit;
-			this._givenTemporaryMarker = new Vector.<DisplayObject>();
-			this._url = url;
-			this._proxy = proxy;
-			if (url)
+			this._onlineResource = onlineResource;
+			this._format = format;
+			if (this._onlineResource)
 			{
-				this.loadUrl(url);
+				this.load();
 			}
 		}
 		
-		/**
-		 * Load the image at the given URL
-		 */
-		public function loadUrl(url:String):void {
-			this._req = new DataRequest(url,onSuccess, onFailure);
-			this._req.proxy = this._proxy;
-			this._req.send();
+		public function clone():IGraphic {
+			var res:ExternalGraphic = new ExternalGraphic(this._onlineResource,this._format);
+			res.yOffset = this._yOffset;
+			res.yUnit = this._yUnit;
+			res.xOffset = this._xOffset;
+			res.xUnit = this._xUnit;
+			res.proxy = this._proxy;
+			if (this._clip)
+				res.clip = new Bitmap(_clip.bitmapData);
+			return res;
 		}
 		
-		/**
-		 * Returns an instance of the DisplayObject that contains the graphic.
-		 */
-		override public function getDisplayObject(feature:Feature):DisplayObject {
+		public function getDisplayObject(feature:Feature, size:Number, isFill:Boolean):DisplayObject {
 			var resultContainer:Sprite = new Sprite();
 			var result:DisplayObject;
 			if (this._clip)
@@ -111,7 +103,8 @@ package org.openscales.core.style.marker
 				result = new Bitmap(_clip.bitmapData);
 				if (_xUnit == "fraction")
 				{
-					result.x += -result.width*_xOffset;
+					//result.x += -result.width*_xOffset;
+					result.x -= size / 2;
 				}else if (_xUnit == "pixels")
 				{
 					result.x += -_xOffset
@@ -119,32 +112,39 @@ package org.openscales.core.style.marker
 				
 				if (_yUnit == "fraction")
 				{
-					result.y += -result.height*_yOffset;
+					//result.y += -result.height*_yOffset;
+					result.y -= size / 2;
 				}else if (_yUnit == "pixels")
 				{
 					result.y += -_yOffset
 				}
-				
+				try {
+					result.width = size;
+					result.height = size;
+				} catch(e:Error) {
+					
+				}
+				resultContainer.addChild(result);
 			}else
 			{
-				this._givenTemporaryMarker.push(resultContainer);
-				result = new _defaultImage();
-				result.x += - result.width/2;
-				result.y += - result.height;
+				if(!this._givenTemporaryMarker)
+					this._givenTemporaryMarker = new Vector.<WaitingRendering>();
+				this._givenTemporaryMarker.push(new WaitingRendering(resultContainer,size));
 			}
-			result.alpha = this.opacity;
-			result.rotation = this.rotation;	
-			resultContainer.addChild(result);
 			return resultContainer;
 		}
 		
-		override public function clone():Marker
-		{
-			var cm:CustomMarker = new CustomMarker(this._url, this.opacity, this.xOffset, this.xUnit, this.yOffset, this.yUnit,this._proxy);
-			return cm;
+		/**
+		 * Load the image at the given URL
+		 */
+		public function load():void {
+			if(this._req || !this._onlineResource)
+				return;
+			this._req = new DataRequest(this._onlineResource,onSuccess, onFailure);
+			this._req.proxy = this._proxy;
+			this._req.send();
 		}
 		
-		//Callback
 		/**
 		 * Callback on image request sucess
 		 */
@@ -157,17 +157,26 @@ package org.openscales.core.style.marker
 			this._clip.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			this._req.destroy();
 			this._req = null;
+			
+			if(!this._givenTemporaryMarker)
+				this._givenTemporaryMarker = new Vector.<WaitingRendering>();
+			
 			var markerLength:Number = this._givenTemporaryMarker.length;
+			
 			for (var i:int = 0; i < markerLength; ++i)
 			{
-				var sprite:Sprite = this._givenTemporaryMarker[i] as Sprite;
-				
-				sprite.removeChildAt(0);
+				var sprite:Sprite = this._givenTemporaryMarker[i].sprite;
+				var size:Number = this._givenTemporaryMarker[i].size;
+
 				var result:DisplayObject;
 				result = new Bitmap(_clip.bitmapData);
+				
+				result.width = size;
+				result.height = size;
+				
 				if (_xUnit == "fraction")
 				{
-					result.x += -result.width*_xOffset;
+					result.x += -size*_xOffset;
 				}else if (_xUnit == "pixels")
 				{
 					result.x += -_xOffset
@@ -175,7 +184,7 @@ package org.openscales.core.style.marker
 				
 				if (_yUnit == "fraction")
 				{
-					result.y += -result.height*_yOffset;
+					result.y += -size*_yOffset;
 				}else if (_yUnit == "pixels")
 				{
 					result.y += -_yOffset
@@ -183,7 +192,7 @@ package org.openscales.core.style.marker
 				sprite.addChild(result);
 				result.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			}
-			this._givenTemporaryMarker = new Vector.<DisplayObject>();
+			this._givenTemporaryMarker = new Vector.<WaitingRendering>();
 		}
 		
 		/**
@@ -193,7 +202,49 @@ package org.openscales.core.style.marker
 		{
 			this._req.destroy();
 			this._req = null;
+			if(!this._givenTemporaryMarker)
+				return;
+			var markerLength:Number = this._givenTemporaryMarker.length;
+			
+			var result:DisplayObject = new _defaultImage();
+			this._clip = getImage(result);
+			for (var i:int = 0; i < markerLength; ++i)
+			{
+				var sprite:Sprite = this._givenTemporaryMarker[i].sprite;
+				var size:Number = this._givenTemporaryMarker[i].size;
+				result = new Bitmap(_clip.bitmapData);
+				result.width = size;
+				result.height = size;
+				result.x += - size/2;
+				result.y += - size;
+				sprite.addChild(result);
+				result.addEventListener(MouseEvent.CLICK, onMarkerClick);
+			}
 		}
+		
+		private function getImage( source:DisplayObject, area:Rectangle = null ):Bitmap
+		{
+			var bitmapData:BitmapData;
+			var matrix:Matrix;
+			
+			if ( area != null ) {
+				matrix = new Matrix( 1, 0, 0, 1 , Math.abs( area.x ) , Math.abs( area.y ) );
+				
+				if ( area.width > 0 && area.height > 0 )
+					bitmapData = new BitmapData( area.width, area.height, true, 0x0 );
+				else
+					bitmapData = new BitmapData( source.width, source.height, true, 0x0 );
+			} else {
+				
+				bitmapData = new BitmapData( source.width , source.height , true, 0x0 );
+			}
+			
+			bitmapData.draw( source, matrix, null, null, area, true );
+			
+			var bitmap:Bitmap = new Bitmap( bitmapData );
+			return bitmap;
+		}
+
 		
 		/**
 		 * Callback to transfere the click event from the sprite to the feature
@@ -206,22 +257,67 @@ package org.openscales.core.style.marker
 			}
 		}
 		
-		//Getter Setter
-		
-		/**
-		 * The url of the requested image
-		 */
-		public function get url():String
+		public function get sld():String
 		{
-			return this._url;
+			if(!this._onlineResource)
+				return "";
+			var res:String = "<sld:ExternalGraphic>\n";
+			res+= "<sld:OnlineResource xlink:type=\"simple\" xlink:href=\""+this._onlineResource.replace('&','&amp;')+"\"/>\n";
+			res+= "<sld:Format>"+this._format+"</sld:Format>\n";
+			res+= "</sld:ExternalGraphic>\n";
+			return res;
 		}
 		
-		/**
-		 * @private
-		 */
-		public function set url(value:String):void
+		public function set sld(value:String):void
 		{
-			this._url = value;
+			use namespace sldns;
+			use namespace xlinkns;
+			var dataXML:XML = new XML(value);
+			
+			if(this._req) {
+				this._req.destroy();
+				this._req = null;
+			}
+			if(this._clip)
+				this._clip = null;
+			this._format = "image/png";
+			this._onlineResource = null;
+			this._clip = null;
+			this._xOffset = 0.5;
+			this._xUnit = "fraction";
+			this._yOffset = 0.5;
+			this._yUnit = "fraction";
+			var childs:XMLList = dataXML.Format;
+			if(childs[0]) {
+				this.format = childs[0].toString();
+			}
+			childs = dataXML.OnlineResource;
+			if(childs[0]) {
+				this.onlineResource = childs[0].@href;
+				this.onlineResource = this.onlineResource.replace('&amp;','&');
+			}
+		}
+
+		public function get format():String
+		{
+			return _format;
+		}
+
+		public function set format(value:String):void
+		{
+			_format = value;
+		}
+
+		public function get onlineResource():String
+		{
+			return _onlineResource;
+		}
+
+		public function set onlineResource(value:String):void
+		{
+			_onlineResource = value;
+			if(value)
+				this.load();
 		}
 		
 		/**
@@ -309,7 +405,7 @@ package org.openscales.core.style.marker
 		{
 			this._yUnit = value;
 		}
-
+		
 		/**
 		 * Proxy
 		 */
@@ -317,7 +413,7 @@ package org.openscales.core.style.marker
 		{
 			return _proxy;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -325,6 +421,5 @@ package org.openscales.core.style.marker
 		{
 			_proxy = value;
 		}
-
 	}
 }

@@ -1,11 +1,13 @@
 package org.openscales.core.layer.capabilities
 {
 	
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
+	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.ProjProjection;
@@ -209,6 +211,8 @@ package org.openscales.core.layer.capabilities
 			var layerIdentifier:String; // Identifier of the layer
 			var tileMatrixSetId:String; // Identifier of a tilematrixSet
 			var layerAbstract:String; // Abstract of the layer
+			var lowerCornerArray:Array; // Array containing lower corner coordinates of wgs bbox
+			var upperCornerArray:Array; // Array containing upper corner coordinates of wgs bbox
 			
 			var style:String;
 			var defaultStyle:String;
@@ -286,6 +290,13 @@ package org.openscales.core.layer.capabilities
 					layerCapabilities.put("Styles", styles);
 					layerCapabilities.put("DefaultStyle", defaultStyle);
 					
+					//Parsing WGS84BoundingBox
+					for each(var XMLWGS84BoundingBox:XML in node.WGS84BoundingBox){
+						lowerCornerArray = XMLWGS84BoundingBox.LowerCorner.split(" ");
+						upperCornerArray = XMLWGS84BoundingBox.UpperCorner.split(" ");
+						layerCapabilities.put("WGS84BoundingBox",new Bounds(lowerCornerArray[0],lowerCornerArray[1],upperCornerArray[0],upperCornerArray[1],"EPSG:4326"));
+					}
+					
 				}
 				
 				this._capabilities.put(layerIdentifier, layerCapabilities);
@@ -353,6 +364,16 @@ package org.openscales.core.layer.capabilities
 			var tmss:Array = (layerData.getValue("TileMatrixSets") as HashMap).getKeys().sort();
 			
 			var tms:TileMatrixSet = (layerData.getValue("TileMatrixSets") as HashMap).getValue(tmss[0]);
+			
+			var minScaleDenom:Number = Number.POSITIVE_INFINITY;
+			var maxScaleDenom:Number = 0;
+			var tmKeys:Array = tms.tileMatrices.getKeys();
+			for each(var tmKey:String in tmKeys){
+				var tm:TileMatrix = tms.tileMatrices.getValue(tmKey);
+				if(minScaleDenom > tm.scaleDenominator) minScaleDenom = tm.scaleDenominator;
+				if(maxScaleDenom < tm.scaleDenominator) maxScaleDenom = tm.scaleDenominator;
+			}
+			
 			var crs:String;
 			if(tms) crs = tms.supportedCRS;
 			
@@ -369,6 +390,10 @@ package org.openscales.core.layer.capabilities
 			wmts.displayedName = layerData.getValue("Title");
 			wmts.abstract = layerData.getValue("Abstract");
 			//wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
+			wmts.maxExtent = layerData.getValue("WGS84BoundingBox");
+			wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenom,wmts.projection.projParams.units),wmts.projection);
+			wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenom,wmts.projection.projParams.units),wmts.projection);
+			wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
 			return wmts;
 		}
 	}

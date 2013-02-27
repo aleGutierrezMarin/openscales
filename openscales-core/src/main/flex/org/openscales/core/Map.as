@@ -299,6 +299,7 @@ package org.openscales.core
 		
 		private var _toneMappingBuffer:Array;
 
+		private var notice:ContextMenuItem = null;
 		/**
 		 * Map constructor
 		 *
@@ -312,13 +313,17 @@ package org.openscales.core
 			/**
 			 * Contextual informations
 			 */
-			var menu:ContextMenu = new ContextMenu();
-			menu.hideBuiltInItems();
-			var notice:ContextMenuItem = new ContextMenuItem("Powered by OpenScales");
-			notice.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openLink);
-			menu.customItems.push(notice);
-			contextMenu = menu;
-			
+			try {
+				var menu:ContextMenu = new ContextMenu();
+				menu.hideBuiltInItems();
+				notice = new ContextMenuItem("Powered by OpenScales");
+				notice.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openLink);
+				menu.customItems.push(notice);
+				contextMenu = menu;
+			}
+			catch(e:Error) {
+				// if mobile, no contextmenu
+			}
 			
 			//load i18n module
 			I18nJSONProvider.addTranslation(ENLocale);
@@ -388,7 +393,7 @@ package org.openscales.core
 			}
 			
 		}*/
-
+		
 		/**
 		 * Reset all layers, handlers and controls
 		 */
@@ -491,8 +496,13 @@ package org.openscales.core
 			
 			this._layers.splice(i,1);
 			
-			if(j==-1)
-				this._loadingLayers.splice(j,1);
+			if(j!=-1) this._loadingLayers.splice(j,1);
+			if(this._loadingLayers.length == 0)
+			{
+				this._loading = false;
+				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_END, this));
+			}
+			
 			
 			layer.map = null;
 			this._layersContainer.removeChild(layer);
@@ -713,23 +723,23 @@ package org.openscales.core
 		 *	by the current base layer
 		 */
 		public function getLocationFromMapPx(px:Pixel, res:Resolution = null):Location {
-			var lonlat:Location = null;
+			var _lonlat:Location = null;
 			if (px != null) {
-				var size:Size = this.size;
-				var center:Location = this.center;
-				if (center) {
+				var _size:Size = this.size;
+				var _center:Location = this.center;
+				if (_center) {
 					if (!res)
 					{
 						res = this.resolution;
 					}
 					
-					var delta_x:Number = px.x - (size.w / 2);
-					var delta_y:Number = px.y - (size.h / 2);
+					var delta_x:Number = px.x - (_size.w / 2);
+					var delta_y:Number = px.y - (_size.h / 2);
 					
-					lonlat = new Location(center.lon + delta_x * res.value, center.lat - delta_y * res.value, this.projection);
+					_lonlat = new Location(_center.lon + delta_x * res.value, _center.lat - delta_y * res.value, this.projection);
 				}
 			}
-			return lonlat;
+			return _lonlat;
 		}
 		
 		/**
@@ -1779,6 +1789,20 @@ package org.openscales.core
 			}
 			
 			this._defaultZoomOutFactor = value;
+		}
+		
+		override public function set contextMenu(cm:ContextMenu):void {
+			try {
+				if(!cm) {
+					cm = new ContextMenu();
+					cm.hideBuiltInItems();
+				}
+				if(cm.customItems.indexOf(this.notice)==-1)
+					cm.customItems.push(notice);
+				super.contextMenu = cm;
+			} catch(e:Error) {
+				// if mobile, no contextmenu
+			}
 		}
 		
 		/**

@@ -178,6 +178,7 @@ package org.openscales.core.layer.ogc.provider
 		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
 		{
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
+			imageTile.useNoDataTile = _useNoDataTile;
 			if(this._tileMatrixSets==null || layer == null || !(layer is WMTS) || layer.map == null)
 				return imageTile;
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
@@ -247,7 +248,7 @@ package org.openscales.core.layer.ogc.provider
 			if(!_tileMatrixSetsLimits || !_tileMatrixSetsLimits.getValue(tileMatrixSet)) return true;
 			
 			var limits:HashMap = (_tileMatrixSetsLimits.getValue(tileMatrixSet) as HashMap).getValue(tileMatrix) as HashMap;
-			if(!limits) return true;
+			if(!limits) return false;
 			var minTileCol:Number =  new Number(limits.getValue("MinTileCol"));
 			var maxTileCol:Number =  new Number(limits.getValue("MaxTileCol"));
 			var minTileRow:Number =  new Number(limits.getValue("MinTileRow"));

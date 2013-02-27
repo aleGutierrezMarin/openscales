@@ -66,7 +66,7 @@ package org.openscales.core.format
 			Assert.assertEquals("Bordeaux", firstFeature.attributes["name"]);
 			Assert.assertEquals("Where I was born", firstFeature.attributes["description"]);
 			Assert.assertEquals("15/06/1981", firstFeature.attributes["Date"]);
-			
+			Assert.assertEquals("France", firstFeature.attributes["Pays"]);
 		}
 		
 		[Test]

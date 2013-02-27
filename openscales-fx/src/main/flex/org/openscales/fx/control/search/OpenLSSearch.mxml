@@ -25,7 +25,7 @@
 			import org.openscales.core.security.ISecurity;
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.Style;
-			import org.openscales.core.style.marker.CustomMarker;
+			import org.openscales.core.style.graphic.ExternalGraphic;
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
 			import org.openscales.fx.autocomplete.event.AutoCompleteEvent;
 			import org.openscales.geometry.Point;
@@ -1457,9 +1457,11 @@
 				style.name = "OpenLS Result Style";
 				var rule:Rule = new Rule();
 				rule.name = "OpenLS Result rule";
-				var cm:org.openscales.core.style.marker.CustomMarker = new org.openscales.core.style.marker.CustomMarker();
-				cm.clip = new _markerIcon();
-				var symbolizer:PointSymbolizer = new PointSymbolizer(cm);
+				
+				var mark:ExternalGraphic = new ExternalGraphic();
+				mark.clip = new _markerIcon();
+				var symbolizer:PointSymbolizer = new PointSymbolizer();
+				symbolizer.graphic.graphics.push(mark);
 				rule.symbolizers.push(symbolizer);
 				style.rules.push(rule);
 				

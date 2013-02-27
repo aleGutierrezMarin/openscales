@@ -34,8 +34,7 @@
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.Style;
 			import org.openscales.core.style.fill.SolidFill;
-			import org.openscales.core.style.marker.Marker;
-			import org.openscales.core.style.marker.WellKnownMarker;
+			import org.openscales.core.style.graphic.Mark;
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.PointSymbolizer;
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
@@ -65,9 +64,11 @@
 				rule = new Rule();
 				rule.name = "Population sized circles";
 				var exp:IExpression = new CircleSizeExpression(5, 20, 74000, 2560000);
-				var marker:Marker = new WellKnownMarker(WellKnownMarker.WKN_CIRCLE, new SolidFill(0x84BF7A, .8), new Stroke(0x233321, 2), exp);
-				symbolizer = new PointSymbolizer(marker);
-				rule.symbolizers.push(symbolizer);
+				var mark:Mark = new Mark(Mark.WKN_CIRCLE,new SolidFill(0x84BF7A, .8), new Stroke(0x233321, 2));
+				var psym:PointSymbolizer = new PointSymbolizer();
+				psym.graphic.graphics.push(mark);
+				psym.graphic.size = exp;
+				rule.symbolizers.push(psym);
 				style.rules.push(rule);
 				
 				this.styles.push(style);

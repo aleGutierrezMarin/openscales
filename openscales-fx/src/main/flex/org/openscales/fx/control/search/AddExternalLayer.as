@@ -33,6 +33,7 @@ package org.openscales.fx.control.search
 	[SkinState("loading")]
 	[SkinState("URLSource")]
 	[SkinState("localFileSource")]
+	[SkinState("protocolsNotLoaded")]
 	
 	public class AddExternalLayer extends Control
 	{
@@ -178,7 +179,7 @@ package org.openscales.fx.control.search
 			//clean up the FileReference instance
 			fileReference = null;
 		}
-	
+		
 		/**
 		 * Called when the user cancel the browse process
 		 */
@@ -188,6 +189,9 @@ package org.openscales.fx.control.search
 		}
 		
 		override protected function getCurrentSkinState():String{
+			if(!protocolsList){
+				return "protocolsNotLoaded";
+			}
 			var prot:String = protocolsList.selectedItem as String
 			if(super.getCurrentSkinState() == "disabled") return super.getCurrentSkinState();	
 			if(prot == "WMS" || prot == "WFS" || prot == "WMTS"){
@@ -204,7 +208,7 @@ package org.openscales.fx.control.search
 		}
 		
 		public function lookForGetCap():void{
-			resultList.dataProvider = null;
+			if(resultList)resultList.dataProvider = null;
 			noResults = false;
 			isResults = false;
 			loading = false;
@@ -212,6 +216,9 @@ package org.openscales.fx.control.search
 			var prot:String = (protocolsList.selectedItem as String).replace(/\s/g,"");
 			var vers:String = (versionsList.selectedItem as String).replace(/\s/g,"");
 			var url:String = (urlTextInput.text).replace(/\s/g,"");
+			if(url.lastIndexOf("?")!=-1){
+				url = url.substring(0,url.lastIndexOf("?"));
+			}
 			if(url && url != ""){
 				_capabilities = new GetCapabilities(prot, url, onGetCapSuccess, vers,this.map.getProxy(url));
 				loading = true;
@@ -223,7 +230,10 @@ package org.openscales.fx.control.search
 			if(_capabilities && _map){
 				var layer:Layer = _capabilities.instanciateLayer(name);
 				if(!layer)return false;
-				layer.url = urlTextInput.text;
+				if(urlTextInput.text.lastIndexOf("?")!=-1){
+					layer.url = urlTextInput.text.substring(0,urlTextInput.text.lastIndexOf("?"));
+				}
+				else layer.url = urlTextInput.text;
 				if(!layer.projection) layer.projection = _map.projection;
 				//layer.maxExtent = _map.maxExtent;
 				var ret:Boolean = _map.addLayer(layer);
@@ -253,6 +263,7 @@ package org.openscales.fx.control.search
 						xml = new XML(_localData.readUTFBytes(_localData.bytesAvailable));
 						layer = new KML(name, null, xml);
 					}
+					layer.displayedName = name;
 					break;
 				
 				case "GPX":
@@ -275,6 +286,18 @@ package org.openscales.fx.control.search
 			var ret:Boolean = _map.addLayer(layer);
 			if(ret)this.dispatchEvent(new LayerEvent(LayerEvent.EXT_LAYER_ADDED,layer));
 			return ret;
+			
+		}
+		
+		public function abortLoading():void{
+			if(!loading)return;
+			if(!_capabilities)return;
+			_capabilities.abort();
+			resultList.dataProvider = null;
+			noResults = false;
+			isResults = false;
+			loading = false;
+			invalidateSkinState();
 			
 		}
 		
@@ -301,5 +324,23 @@ package org.openscales.fx.control.search
 			invalidateSkinState();
 			
 		}
+
+		/**
+		 * Hashmap of supported format with procotol name as key and array of version as value
+		 */
+		public function get supportedFormats():HashMap
+		{
+			return _supportedFormats;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set supportedFormats(value:HashMap):void
+		{
+			_supportedFormats = value;
+			updateProtocolsSelectedItem(null);
+		}
+
 	}
 }

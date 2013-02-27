@@ -318,6 +318,7 @@ package org.openscales.core.request
 				if(this.proxy.charAt(this.proxy.length-1) == '/')
 				{
 					_finalUrl = _finalUrl.replace("http://", "http:/");
+					_finalUrl = _finalUrl.replace("https://", "https:/");
 					_finalUrl = this.proxy + _finalUrl;
 				}else{
 					_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
@@ -388,7 +389,7 @@ package org.openscales.core.request
 					(this.loader as Loader).load(urlRequest, loaderContext);
 				} else {
 					// Send the request
-					(this.loader as URLLoader).load(urlRequest);
+ 					(this.loader as URLLoader).load(urlRequest);
 				}
 			} catch (e:Error) {
 				this._loadEnd(null);

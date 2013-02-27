@@ -16,6 +16,8 @@
 	</parent>
 	
 	<properties>
+    <flex.sdk.version>4.1.0.16076</flex.sdk.version>
+    <flex.player.version.major>10</flex.player.version.major>
 		<flex.player.version.minor>1</flex.player.version.minor>
 	</properties>
 	

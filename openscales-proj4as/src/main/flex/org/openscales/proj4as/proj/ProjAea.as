@@ -1,8 +1,8 @@
 package org.openscales.proj4as.proj {
 
+	import org.openscales.proj4as.Datum;
 	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.Datum;
 
 	public class ProjAea extends AbstractProjProjection {
 		public function ProjAea(data:ProjParams) {
@@ -28,21 +28,32 @@ package org.openscales.proj4as.proj {
 			this.sin_po=Math.sin(this.latTwo);
 			this.cos_po=Math.cos(this.latTwo);
 			this.tTwo=this.sin_po;
-			this.msTwo=ProjConstants.msfnz(this.eThree, this.sin_po, this.cos_po);
-			this.qsTwo=ProjConstants.qsfnz(this.eThree, this.sin_po, this.cos_po);
-
-			this.sin_po=Math.sin(this.latZero);
-			this.cos_po=Math.cos(this.latZero);
-			this.tThree=this.sin_po;
-			this.qsZero=ProjConstants.qsfnz(this.eThree, this.sin_po, this.cos_po);
-
-			if (Math.abs(this.latOne - this.latTwo) > ProjConstants.EPSLN) {
-				this.nsZero=(this.msOne * this.msOne - this.msTwo * this.msTwo) / (this.qsTwo - this.qsOne);
+			
+			if (this.sphere){
+				if (Math.abs(this.latOne - this.latTwo) > ProjConstants.EPSLN) {
+					this.nsZero=(this.tOne+this.tTwo)/2.0;
+				} else {
+					this.nsZero=this.tOne;
+				}
+				this.c=Math.pow(Math.cos(this.latOne),2.0)+2.0*this.nsZero*this.tOne;
+				this.rh=this.a*Math.sqrt(this.c-2.0*this.nsZero*Math.sin(this.latZero))/this.nsZero;
 			} else {
-				this.nsZero=this.con;
+				this.msTwo=ProjConstants.msfnz(this.eThree, this.sin_po, this.cos_po);
+				this.qsTwo=ProjConstants.qsfnz(this.eThree, this.sin_po, this.cos_po);
+	
+				this.sin_po=Math.sin(this.latZero);
+				this.cos_po=Math.cos(this.latZero);
+				this.tThree=this.sin_po;
+				this.qsZero=ProjConstants.qsfnz(this.eThree, this.sin_po, this.cos_po);
+
+				if (Math.abs(this.latOne - this.latTwo) > ProjConstants.EPSLN) {
+					this.nsZero=(this.msOne * this.msOne - this.msTwo * this.msTwo) / (this.qsTwo - this.qsOne);
+				} else {
+					this.nsZero=this.con;
+				}
+				this.c=this.msOne * this.msOne + this.nsZero * this.qsOne;
+				this.rh=this.a * Math.sqrt(this.c - this.nsZero * this.qsZero) / this.nsZero;
 			}
-			this.c=this.msOne * this.msOne + this.nsZero * this.qsOne;
-			this.rh=this.a * Math.sqrt(this.c - this.nsZero * this.qsZero) / this.nsZero;
 		}
 
 		/* Albers Conical Equal Area forward equations--mapping lat,long to x,y
@@ -53,16 +64,24 @@ package org.openscales.proj4as.proj {
 
 			this.sin_phi=Math.sin(lat);
 			this.cos_phi=Math.cos(lat);
-
-			var qs:Number=ProjConstants.qsfnz(this.eThree, this.sin_phi, this.cos_phi);
-			var rh1:Number=this.a * Math.sqrt(this.c - this.nsZero * qs) / this.nsZero;
-			var theta:Number=this.nsZero * ProjConstants.adjust_lon(lon - this.longZero);
+			
+			var rh1:Number;
+			var theta:Number;
+			if (this.sphere){
+				rh1=this.a*Math.sqrt(this.c-2.0*this.nsZero*Math.sin(lat))/this.nsZero;
+			} else {
+				var qs:Number=ProjConstants.qsfnz(this.eThree, this.sin_phi, this.cos_phi);
+				rh1=this.a * Math.sqrt(this.c - this.nsZero * qs) / this.nsZero;
+			}
+			theta=this.nsZero * ProjConstants.adjust_lon(lon - this.longZero);
 			var x:Number=rh1 * Math.sin(theta) + this.xZero;
 			var y:Number=this.rh - rh1 * Math.cos(theta) + this.yZero;
-
+			
 			p.x=x;
 			p.y=y;
 			return p;
+
+			
 		}
 
 
@@ -87,23 +106,13 @@ package org.openscales.proj4as.proj {
 			if (rh1 != 0.0) {
 				theta=Math.atan2(con * p.x, con * p.y);
 			}
-			con=rh1 * this.nsZero / this.a;
-			qs=(this.c - con * con) / this.nsZero;
-			if (this.eThree >= 1e-10) {
-				con=1 - .5 * (1.0 - this.es) * Math.log((1.0 - this.eThree) / (1.0 + this.eThree)) / this.eThree;
-				if (Math.abs(Math.abs(con) - Math.abs(qs)) > .0000000001) {
-					lat=this.phi1z(this.eThree, qs);
-				} else {
-					if (qs >= 0) {
-						lat=.5 * Math.PI;
-					} else {
-						lat=-.5 * Math.PI;
-					}
-				}
+			con=rh1*this.nsZero/this.a;
+			if (this.sphere){
+				lat=Math.asin((this.c-con*con)/(2.0*this.nsZero));
 			} else {
-				lat=this.phi1z(eThree, qs);
+				qs=(this.c - con*con)/this.nsZero;
+				lat= ProjConstants.iqsfnz(this.eThree, qs);
 			}
-
 			lon=ProjConstants.adjust_lon(theta / this.nsZero + this.longZero);
 			p.x=lon;
 			p.y=lat;

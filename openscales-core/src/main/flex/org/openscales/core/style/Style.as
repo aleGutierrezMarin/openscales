@@ -1,22 +1,18 @@
 package org.openscales.core.style {
 	
-	import flash.sampler.NewObjectSample;
 	import flash.text.TextFormat;
 	
-	import org.openscales.core.filter.ElseFilter;
 	import org.openscales.core.filter.GeometryTypeFilter;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.graphic.Graphic;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.halo.Halo;
-	import org.openscales.core.style.marker.ArrowMarker;
-	import org.openscales.core.style.marker.CustomMarker;
-	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.ArrowSymbolizer;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
@@ -29,6 +25,9 @@ package org.openscales.core.style {
 	 * Style describe graphical attributes used to render vectors.
 	 */
 	public class Style {
+		
+		private namespace sldns="http://www.opengis.net/sld";
+		private namespace ogcns="http://www.opengis.net/ogc";
 		
 		private var _name:String = "Default";
 		
@@ -90,11 +89,16 @@ package org.openscales.core.style {
 		 * Returns the rule to apply for the default PointFeature style
 		 */
 		protected static function getPointRule():Rule{
-			
-			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
-			var symbolizer:PointSymbolizer = new PointSymbolizer(new CustomMarker(defaultPointPictoURL));
+			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
+			var stroke:Stroke = new Stroke(0xA6430A, 1);
+			
+			var mark:Mark = new Mark(Mark.WKN_CIRCLE, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = new Graphic();
+			symbolizer.graphic.graphics.push(mark);
 			rule.symbolizers.push(symbolizer);
 			
 			return rule;
@@ -108,7 +112,11 @@ package org.openscales.core.style {
 			var fill:SolidFill = new SolidFill(0xF1960A, 0.5);
 			var stroke:Stroke = new Stroke(0xF1960A, 2);
 			
-			var symbolizer:Symbolizer = new PointSymbolizer(new WellKnownMarker(WellKnownMarker.WKN_SQUARE, fill, stroke, 8));
+			var mark:Mark = new Mark(Mark.WKN_SQUARE, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = new Graphic(8);
+			symbolizer.graphic.graphics.push(mark);
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default selected point rule";
@@ -124,10 +132,15 @@ package org.openscales.core.style {
 		{
 			var fill:SolidFill = new SolidFill(0xF2620F, 0.7);
 			var stroke:Stroke = new Stroke(0xA6430A, 1);
-			var mark:WellKnownMarker = new WellKnownMarker(marker, fill, stroke, 6, 1, rotation);
+			
+			var mark:Mark = new Mark(marker, fill, stroke);
+			
+			var symbolizer:PointSymbolizer = new PointSymbolizer();
+			symbolizer.graphic = new Graphic(6,1,rotation);
+			symbolizer.graphic.graphics.push(mark);
 			
 			var rule:Rule = new Rule();
-			rule.symbolizers.push(new PointSymbolizer(mark));
+			rule.symbolizers.push(symbolizer);
 			
 			var style:Style = new Style();
 			style.name = "Defined point style";
@@ -158,8 +171,15 @@ package org.openscales.core.style {
 			style.name = "Default arrow style";
 			style.rules.push(getLineRule());
 			
-			var am:ArrowMarker = new ArrowMarker(ArrowMarker.AM_NARROW_TRIANGLE,new SolidFill(0x999999,0.5),new Stroke(0xFF0000,2),12)
-			style.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),am,am));
+			var marker:Graphic = new Graphic();
+			var mark:Mark = new Mark();
+			mark.wellKnownGraphicName = Mark.CARROW;
+			mark.stroke = new Stroke(0xFF0000,2);
+			mark.fill = new SolidFill(0x999999,0.5);
+			marker.size = 12;
+			marker.graphics.push(mark);
+			
+			style.rules[0].symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),marker,marker));
 			return style;
 		}
 		
@@ -198,11 +218,17 @@ package org.openscales.core.style {
 		 * Returns the rule to apply for the default arrow LineStringFeature style
 		 */
 		protected static function getArrowRule():Rule{
+			var marker:Graphic = new Graphic();
+			var mark:Mark = new Mark();
+			mark.wellKnownGraphicName = Mark.CARROW;
+			mark.stroke = new Stroke(0xFF0000,2);
+			mark.fill = new SolidFill(0x999999,0.5);
+			marker.size = 12;
+			marker.graphics.push(mark);
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
-			var am:ArrowMarker = new ArrowMarker(ArrowMarker.AM_THIN	,new SolidFill(0x3F9FCD,0.5),new Stroke(0x3F9FCD,3),12)
-			rule.symbolizers.push(new ArrowSymbolizer(new Stroke(0x3F9FCD, 3), am, am));
+			rule.symbolizers.push(new ArrowSymbolizer(new Stroke(0x000000,2),marker,marker));
 			
 			return rule;
 		}
@@ -222,11 +248,11 @@ package org.openscales.core.style {
 		}
 		
 		/**
-		 * This method allows to define a style with custom parameters : color, width, whiteSize and dottedSize
+		 * This method allows to define a style with custom parameters : color, width, dashArray and dashOffset
 		 */
-		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, whiteSize:uint, dottedSize:uint):Style
+		public static function getDefinedLineStyle(color:uint, width:Number, opacity:Number, dashArray:Array=null, dashoffset:uint=0):Style
 		{
-			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,whiteSize,dottedSize);
+			var stroke:Stroke = new Stroke(color,width,opacity,Stroke.LINECAP_ROUND,Stroke.LINEJOIN_ROUND,dashArray,dashoffset);
 			var symbolizer:LineSymbolizer = new LineSymbolizer(stroke);
 			
 			var rule:Rule = new Rule();
@@ -327,10 +353,11 @@ package org.openscales.core.style {
 			var fill:SolidFill = new SolidFill(0xFF2819, 0.7);
 			var stroke:Stroke = new Stroke(0xFF2819, 1);
 			
-			var mark:WellKnownMarker = new WellKnownMarker(WellKnownMarker.WKN_CIRCLE, fill, stroke);
+			var mark:Mark = new Mark(Mark.WKN_CIRCLE, fill, stroke);
 			
 			var symbolizer:PointSymbolizer = new PointSymbolizer();
-			symbolizer.graphic = mark;
+			symbolizer.graphic = new Graphic();
+			symbolizer.graphic.graphics.push(mark);
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default rule";
@@ -512,6 +539,10 @@ package org.openscales.core.style {
 			this._rules = value;
 		}
 		
+		public function set textFormat(value:TextFormat):void{
+			this._textFormat = value;
+		}
+		
 		public function get textFormat():TextFormat{
 			return this._textFormat;
 		}
@@ -524,6 +555,77 @@ package org.openscales.core.style {
 		public function set isSelectedStyle(value:Boolean):void
 		{
 			_isSelectedStyle = value;
+		}
+		
+		public function get sld():String {
+			var res:String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+			res+="<sld:StyledLayerDescriptor version=\"1.0.0\" \n"; 
+			res+="xsi:schemaLocation=\"http://www.opengis.net/sld StyledLayerDescriptor.xsd\" \n";
+			res+="xmlns=\"http://www.opengis.net/sld\" \n";
+			res+="xmlns:sld=\"http://www.opengis.net/sld\" \n";
+			res+="xmlns:ogc=\"http://www.opengis.net/ogc\" \n";
+			res+="xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n";
+			res+="xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n";
+			res+="<sld:NamedLayer>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			res+="<sld:UserStyle>\n";
+			if(this.name)
+				res+="<sld:Name>"+this.name+"</sld:Name>\n";
+			res+="<sld:FeatureTypeStyle>\n";
+			var tmp:String;
+			for each (var rule:Rule in this.rules) {
+				tmp = rule.sld;
+				if(tmp)
+					res+=tmp;
+			}
+			res+="</sld:FeatureTypeStyle>\n";
+			res+="</sld:UserStyle>\n";
+			res+="</sld:NamedLayer>\n";
+			res+="</sld:StyledLayerDescriptor>";
+			return res;
+		}
+
+		public function set sld(value:String):void {
+			use namespace sldns;
+			use namespace ogcns;
+			var dataXML:XML = new XML(value);
+			var xmlLiteral:RegExp = new RegExp("<(/)?ogc:Literal(\s*xmlns[^\"]*\"[^\"]*\")*\s*>", "gi");
+			
+			var list:XMLList;
+			
+			if(dataXML.localName()!="UserStyle") {
+				list = dataXML..NamedLayer;
+				if(list.length()==0) {
+					if(dataXML.Name[0])
+						this.name = dataXML.Name[0];
+					return;
+				} else {
+					dataXML = list[0];
+				}
+			}
+			if(dataXML.Name[0]) {
+				this.name = dataXML.Name[0];
+			}
+			
+			list = dataXML..Rule;
+			var i:uint = 0;
+			var rule:Rule;
+			if(list) {
+				for each(dataXML in list) {
+					if(this._rules.length>i) {
+						this._rules[i].sld = list[i].toString().replace(xmlLiteral,"");
+					} else {
+						rule = new Rule();
+						rule.sld = list[i].toString().replace(xmlLiteral,"");
+						this._rules.push(rule);
+					}
+					++i;
+				}
+			}
+			while(this._rules.length>i) {
+				this._rules.pop();
+			}
 		}
 	}
 }
