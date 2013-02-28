@@ -108,6 +108,7 @@ package org.openscales.core.handler.feature.draw
 				var yInBetween:Number = ((this._editionFeatureArray[0][0].geometry as Point).y + (this._editionFeatureArray[_editionFeatureArray.length-1][0].geometry as Point).y)/2;
 				var inbetweenPoint:Point = new Point(xInBetween, yInBetween, (this._editionFeatureArray[0][0].geometry as Point).projection);
 				var EditionVertice:PointFeature = new PointFeature(inbetweenPoint, null, this._inbetweenStyle);
+				EditionVertice.selectable = false;
 				//We fill the array with the virtual vertice
 				var v:Vector.<Feature> = new Vector.<Feature>();
 				v[0]=EditionVertice;
