@@ -566,8 +566,14 @@
 				fill.color = this._pointColor;
 				fill.opacity = this._pointOpacity/100;
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
-				ptsym.graphic.graphics.pop();
-				ptsym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill));
+				var graphics:IGraphic = ptsym.graphic.graphics.pop();
+				if((graphics as Object).hasOwnProperty("fill")){
+					var clone:IGraphic = graphics.clone();
+					(clone as Object).fill = fill;
+					ptsym.graphic.graphics.push(clone);
+				}else{
+					ptsym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill));
+				}
 				this.editStyleHandler.actualizeFeature();
 			}
 			
@@ -577,8 +583,14 @@
 				fill.color = this._pointColor;
 				fill.opacity = this._pointOpacity/100;
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
-				ptsym.graphic.graphics.pop();
-				ptsym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill));
+				var graphics:IGraphic = ptsym.graphic.graphics.pop();
+				if((graphics as Object).hasOwnProperty("fill")){
+					var clone:IGraphic = graphics.clone();
+					(clone as Object).fill = fill;
+					ptsym.graphic.graphics.push(clone);
+				}else{
+					ptsym.graphic.graphics.push(new Mark(Mark.WKN_SQUARE,fill));
+				}
 				this.editStyleHandler.actualizeFeature();
 			}
 			
