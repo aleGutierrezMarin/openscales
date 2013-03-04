@@ -152,6 +152,7 @@ package org.openscales.core.events
 		 * Feature concerned by the event. If the event concerns multiple features, the first one is returned.
 		 */
 		public function get feature():Feature{
+			if(!_features || _features.length == 0) return null;
 			return this._features[0];
 		}
 		public function set feature(value:Feature):void{
