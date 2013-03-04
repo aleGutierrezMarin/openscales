@@ -4,6 +4,7 @@ package org.openscales.core.style.graphic
 	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
+	import flash.display.LineScaleMode;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	
@@ -160,24 +161,57 @@ package org.openscales.core.style.graphic
 					break;
 				}
 				case WKN_CROSS: {
-					shape.graphics.moveTo(1-size/2, 0);
-					shape.graphics.lineTo(-1+size/2, 0);
-					shape.graphics.moveTo(0, 1-size/2);
-					shape.graphics.lineTo(0,-1+size/2);
+					
+					var pan:Number = (size / 5) / 2;
+					
+					shape.graphics.moveTo(1-size/2, pan);
+					shape.graphics.lineTo(1-size/2, -pan);
+					
+					shape.graphics.lineTo(-pan, -pan);
+					shape.graphics.lineTo(-pan, 1-size/2);
+					shape.graphics.lineTo(pan, 1-size/2);
+					shape.graphics.lineTo(pan, -pan);
+					shape.graphics.lineTo(-1+size/2, -pan);
+					shape.graphics.lineTo(-1+size/2, pan);
+					shape.graphics.lineTo(pan, pan);
+					shape.graphics.lineTo(pan, -1+size/2);
+					shape.graphics.lineTo(-pan, -1+size/2);
+					shape.graphics.lineTo(-pan, pan);
+					shape.graphics.lineTo(1-size/2, pan);
 					break;
 				}
 				case WKN_X: {
-					shape.graphics.moveTo(1-size/2,1-size/2);
-					shape.graphics.lineTo(-1+size/2,-1+size/2);
-					shape.graphics.moveTo(1-size/2,-1+size/2);
-					shape.graphics.lineTo(-1+size/2,1-size/2);
+					
+					// For better preview rendering
+					if (size > 16)
+						size = 16;
+					
+					pan = (size / 5) / 2;
+					
+					shape.graphics.moveTo(1-size/2-pan, 1-size/2+pan);
+					shape.graphics.lineTo(1-size/2+pan, 1-size/2-pan);
+					shape.graphics.lineTo(0, -2*pan);
+					shape.graphics.lineTo(-1+size/2-pan, 1-size/2-pan);
+					shape.graphics.lineTo(-1+size/2+pan, 1-size/2+pan);
+					shape.graphics.lineTo(2*pan, 0);
+					shape.graphics.lineTo(-1+size/2+pan, -1+size/2-pan);
+					shape.graphics.lineTo(-1+size/2-pan, -1+size/2+pan);
+					shape.graphics.lineTo(0, 2*pan);
+					shape.graphics.lineTo(1-size/2+pan, -1+size/2+pan);
+					shape.graphics.lineTo(1-size/2-pan, -1+size/2-pan);
+					shape.graphics.lineTo(-2*pan, 0);
+					shape.graphics.lineTo(1-size/2-pan, 1-size/2+pan);
 					break;
 				}
 				case WKN_OARROW: {
-					shape.graphics.endFill();
 					shape.graphics.moveTo(-size/2,-size/2);
 					shape.graphics.lineTo(size/2,0);
 					shape.graphics.lineTo(-size/2,size/2);
+					shape.graphics.lineStyle(1, 255, 
+						0, false, 
+						LineScaleMode.NORMAL, "round", 
+						"round");
+					shape.graphics.lineTo(-size/2,-size/2);
 					break;
 				}
 				case WKN_CARROW: {
@@ -222,10 +256,14 @@ package org.openscales.core.style.graphic
 					break;
 				}
 				case OARROW: {
-					shape.graphics.endFill();
 					shape.graphics.moveTo(-size/2,-size/2);
 					shape.graphics.lineTo(size/2,0);
 					shape.graphics.lineTo(-size/2,size/2);
+					shape.graphics.lineStyle(1, 255, 
+						0, false, 
+						LineScaleMode.NORMAL, "round", 
+						"round");
+					shape.graphics.lineTo(-size/2,-size/2);
 					break;
 				}
 				case CARROW: {

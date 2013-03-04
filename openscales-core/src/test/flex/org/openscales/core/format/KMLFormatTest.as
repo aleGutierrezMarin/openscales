@@ -4,6 +4,7 @@ package org.openscales.core.format
 	import flash.utils.ByteArray;
 	
 	import org.flexunit.Assert;
+	import org.flexunit.asserts.assertNull;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiPointFeature;
@@ -94,6 +95,20 @@ package org.openscales.core.format
 			Assert.assertEquals(46,firstFeature.lineString.componentsLength);
 			
 			Assert.assertEquals("LineStringTests", firstFeature.attributes["name"]);
+		}
+		
+		[Test]
+		public function testReadWithNullParamater():void{
+			var kmlFormat:KMLFormat = new KMLFormat();
+			var features:Object = kmlFormat.read(null);
+			assertNull("When given a null parameter, read() should return null",features);
+		}
+		
+		[Test]
+		public function testReadWithNotXMLParamater():void{
+			var kmlFormat:KMLFormat = new KMLFormat();
+			var features:Object = kmlFormat.read(new Object());
+			assertNull("When given a non XML parameter, read() should return null",features);
 		}
 		
 		[Test]

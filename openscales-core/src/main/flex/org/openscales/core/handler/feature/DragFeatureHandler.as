@@ -1,4 +1,4 @@
- package org.openscales.core.handler.feature
+package org.openscales.core.handler.feature
 {
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
@@ -51,24 +51,24 @@
 		private var _offsetCenter:Pixel;
 		private var _layerToMove:VectorLayer;
 		/**
-		* The feature currently dragged
-		* */
+		 * The feature currently dragged
+		 * */
 		private var _featureCurrentlyDragged:Feature=null;
 		/**
 		 * Array of features which are undraggabled and belongs to a
 		 * draggable layers 
-	 	* */	 
-		 private var _undraggableFeatures:Vector.<Feature> = new Vector.<Feature>();	
-		 /**
+		 * */	 
+		private var _undraggableFeatures:Vector.<Feature> = new Vector.<Feature>();	
+		/**
 		 * Array of layers which allow dragging
 		 * */
-		 private var _draggableLayers:Vector.<Layer> = new Vector.<Layer>();
-	 	/**
-	 	 * Constructor class
-	 	 * 
-	 	 * @param map:Map Object 
-	 	 * @param active:Boolean to active or deactivate the handler
-	 	 * */
+		private var _draggableLayers:Vector.<Layer> = new Vector.<Layer>();
+		/**
+		 * Constructor class
+		 * 
+		 * @param map:Map Object 
+		 * @param active:Boolean to active or deactivate the handler
+		 * */
 		public function DragFeatureHandler(map:Map=null, active:Boolean=false)
 		{
 			super(map, active);
@@ -82,12 +82,9 @@
 				var feature:Feature;
 				if (event.target is TextField){
 					feature = (event.target as TextField).parent as Feature;
-				}else if(event.target.parent is CustomMarker || event.target.parent is PointFeature)
-				{
-					feature = event.target.parent as Feature;
-				}
-				else
+				}else if(event.target is Feature){
 					feature = event.target as Feature;
+				}else feature = getMeMyParentFeature(event.target) as Feature;
 				
 				if (feature != null && feature.layer == this._layerToMove){
 					this.map.mouseNavigationEnabled = false;
@@ -138,17 +135,17 @@
 				this._layerToMove.redraw();
 				_featureCurrentlyDragged = null;
 			}
-		 }
+		}
 		
-		 /**
+		/**
 		 * This function is used to add an array of undraggable feature which belong to a draggable layer
 		 * @param features:Array Array of feature to make undraggable
 		 * */
-		 public function addUndraggableFeatures(features:Array):void{
-		 	for(var i:int=0;i<features.length;i++){
-		 		addUndraggableFeature(features[i] as Feature);
-		 	}
-		 }
+		public function addUndraggableFeatures(features:Array):void{
+			for(var i:int=0;i<features.length;i++){
+				addUndraggableFeature(features[i] as Feature);
+			}
+		}
 		/**
 		 * This function is used to add an undraggable feature which belong to a draggable layer
 		 * @param feature:Feature The feature to add
@@ -157,16 +154,16 @@
 			var addFeature:Boolean=false;
 			if(feature!=null){
 				/*for each(var featureLayer:VectorLayer in _draggableLayers){
-					//The feature belongs to a draggable layers
-					if(featureLayer.features.indexOf(feature)!=-1){
-						addFeature=true;	
-						break;
-					}
+				//The feature belongs to a draggable layers
+				if(featureLayer.features.indexOf(feature)!=-1){
+				addFeature=true;	
+				break;
+				}
 				}*/
 				//if(addFeature){
-					if(_undraggableFeatures.indexOf(feature)==-1){
-						_undraggableFeatures.push(feature);
-					}
+				if(_undraggableFeatures.indexOf(feature)==-1){
+					_undraggableFeatures.push(feature);
+				}
 				//}
 			}
 		}
@@ -309,5 +306,12 @@
 				}
 			}
 		}
+		
+		private function getMeMyParentFeature(object:Object):Object{
+			if(!object) return null;
+			if(object is Feature) return object;
+			return getMeMyParentFeature(object.parent);
+		}
+		
 	}
 }

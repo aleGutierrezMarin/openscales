@@ -201,7 +201,7 @@ package org.openscales.core.format
 		 */
 		override public function read(data:Object):Object {
 			var dataXML:XML = data as XML;
-			
+			if(!dataXML) return null;
 			//use namespace google;
 			//use namespace opengis;
 			
