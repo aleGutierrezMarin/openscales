@@ -2,6 +2,7 @@ package org.openscales.core.layer
 {
 	import org.openscales.core.Map;
 	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.ns.os_internal;
@@ -93,6 +94,9 @@ package org.openscales.core.layer
 			if(this.features)
 				this.removeFeatures(this.features);
 			
+			// A variable to stock every label features
+			var labelFeatures:Vector.<Feature> = new Vector.<Feature>();
+			
 			// gets bounds in geographical coordinates
 			var intersection:Bounds = this.map.maxExtent.getIntersection(this.map.extent);
 			intersection = intersection.reprojectTo(this.projection);
@@ -131,7 +135,8 @@ package org.openscales.core.layer
 					var labelFeature:LabelFeature = LabelFeature.createLabelFeature(new Location(currentX+2*offset, ymin+2*offset));
 					labelFeature.text = degreeLabel;
 					labelFeature.style = style;
-					this.addFeature(labelFeature);
+					// Differing label feature addition to the layer
+					labelFeatures.push(labelFeature);
 					// iterates
 					currentX = currentX+interval;
 				}
@@ -157,10 +162,13 @@ package org.openscales.core.layer
 					labelFeature = LabelFeature.createLabelFeature(new Location(xmin+3*offset, currentY+offset));
 					labelFeature.text = degreeLabel;
 					labelFeature.style = style;
-					this.addFeature(labelFeature);
+					// Differing label feature addition to the layer
+					labelFeatures.push(labelFeature);
 					// iterates
 					currentY = currentY+interval;
 				}
+				// Now we are sur that labels will be on top of lines
+				addFeatures(labelFeatures);
 			}
 		}
 		
