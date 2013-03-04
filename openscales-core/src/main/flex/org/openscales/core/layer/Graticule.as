@@ -25,6 +25,14 @@ package org.openscales.core.layer
 	 */
 	public class Graticule extends VectorLayer
 	{
+		private var _latitudeLabelsAlign:String = "left";
+		
+		private var _longitudeLabelsAlign:String = "bottom";
+		
+		private var _longitudeLabelsPadding:Number = 3;
+		
+		private var _latitudeLabelsPadding:Number = 3;
+		
 		/**
 		 * @private
 		 * Array of possible graticule widths in degrees, from biggest to smallest.
@@ -113,7 +121,10 @@ package org.openscales.core.layer
 				
 				// offset for labels
 				var offset:Number = interval/10;
-							
+				
+				// location relative to alignement
+				var alignValue:Number;
+				
 				//
 				// draw vertical lines
 				//
@@ -132,7 +143,13 @@ package org.openscales.core.layer
 					this.addFeature(lineFeature);
 					// labels
 					var degreeLabel:String = getFormattedLabel(currentX, interval);
-					var labelFeature:LabelFeature = LabelFeature.createLabelFeature(new Location(currentX+2*offset, ymin+2*offset));
+					
+					
+					if(_longitudeLabelsAlign == "top") alignValue = ymax-_longitudeLabelsPadding*offset;
+					else if(_longitudeLabelsAlign == "center") alignValue = (ymin+ymax)/2 + _longitudeLabelsPadding*offset;
+					else alignValue = ymin + _longitudeLabelsPadding*offset;
+					
+					var labelFeature:LabelFeature = LabelFeature.createLabelFeature(new Location(currentX+2*offset, alignValue));
 					labelFeature.text = degreeLabel;
 					labelFeature.style = style;
 					// Differing label feature addition to the layer
@@ -159,7 +176,12 @@ package org.openscales.core.layer
 					this.addFeature(lineFeature);
 					// labels
 					degreeLabel = getFormattedLabel(currentY, interval);
-					labelFeature = LabelFeature.createLabelFeature(new Location(xmin+3*offset, currentY+offset));
+					
+					if(_latitudeLabelsAlign == "right") alignValue = xmax-_latitudeLabelsPadding*offset
+					else if(_latitudeLabelsAlign == "center") alignValue = (xmin+xmax)/2 + _latitudeLabelsPadding*offset;
+					else alignValue = xmin+_latitudeLabelsPadding*offset;
+					
+					labelFeature = LabelFeature.createLabelFeature(new Location(alignValue, currentY+offset));
 					labelFeature.text = degreeLabel;
 					labelFeature.style = style;
 					// Differing label feature addition to the layer
@@ -240,6 +262,39 @@ package org.openscales.core.layer
 		}
 		
 		/**
+		 * The alignement for latitude labels. Can be top, center or bottom (default is bottom)
+		 */
+		public function get longitudeLabelsAlign():String
+		{
+			return _longitudeLabelsAlign;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set longitudeLabelsAlign(value:String):void
+		{
+			_longitudeLabelsAlign = value;
+		}
+		
+		/**
+		 * The alignement for longitude labels. Can be left, center or right (default is left)
+		 */
+		public function get latitudeLabelsAlign():String
+		{
+			return _latitudeLabelsAlign;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set latitudeLabelsAlign(value:String):void
+		{
+			_latitudeLabelsAlign = value;
+		}
+
+		
+		/**
 		 * Array of possible graticule widths in degrees, from biggest to smallest.
 		 */
 		public function get intervals():Array
@@ -272,5 +327,39 @@ package org.openscales.core.layer
 		{
 			_minNumberOfLines = value;
 		}
+
+		/**
+		 * Padding coef added to longitude label location (default is 3)
+		 */
+		public function get longitudeLabelsPadding():Number
+		{
+			return _longitudeLabelsPadding;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set longitudeLabelsPadding(value:Number):void
+		{
+			_longitudeLabelsPadding = value;
+		}
+
+		/**
+		 *  Padding coef added to latitude label location (default is 3)
+		 */
+		public function get latitudeLabelsPadding():Number
+		{
+			return _latitudeLabelsPadding;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set latitudeLabelsPadding(value:Number):void
+		{
+			_latitudeLabelsPadding = value;
+		}
+
+
 	}
 }
