@@ -19,6 +19,7 @@ package org.openscales.core.layer
 	 * Displays a grid on the map, based on geographical coordinates.
 	 * The possible intervals are defined by default, but can be overrided by the developper.
 	 * The graticule layer appears in the layer switcher.
+	 * The style property should contain rules with TextSymbolizer and LineSymbolizer
 	 * @author xlaprete
 	 */
 	public class Graticule extends VectorLayer
@@ -108,10 +109,7 @@ package org.openscales.core.layer
 				
 				// offset for labels
 				var offset:Number = interval/10;
-				
-				// style for labels
-				var labelStyle:Style = Style.getDefaultGraticuleLabelStyle();
-				
+							
 				//
 				// draw vertical lines
 				//
@@ -132,7 +130,7 @@ package org.openscales.core.layer
 					var degreeLabel:String = getFormattedLabel(currentX, interval);
 					var labelFeature:LabelFeature = LabelFeature.createLabelFeature(new Location(currentX+2*offset, ymin+2*offset));
 					labelFeature.text = degreeLabel;
-					labelFeature.style = labelStyle;
+					labelFeature.style = style;
 					this.addFeature(labelFeature);
 					// iterates
 					currentX = currentX+interval;
@@ -158,7 +156,7 @@ package org.openscales.core.layer
 					degreeLabel = getFormattedLabel(currentY, interval);
 					labelFeature = LabelFeature.createLabelFeature(new Location(xmin+3*offset, currentY+offset));
 					labelFeature.text = degreeLabel;
-					labelFeature.style = labelStyle;
+					labelFeature.style = style;
 					this.addFeature(labelFeature);
 					// iterates
 					currentY = currentY+interval;
