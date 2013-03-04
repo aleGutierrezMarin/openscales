@@ -305,10 +305,11 @@ package org.openscales.core.style.graphic
 		
 		public function get sld():String
 		{
-			if(!this._wellKnownGraphicName)
-				return "";
+			//if(!this._wellKnownGraphicName)
+				//return "";
 			var ret:String="<sld:Mark>\n";
-			ret+="<sld:WellKnownName>"+this._wellKnownGraphicName+"</sld:WellKnownName>\n";
+			if(this._wellKnownGraphicName)
+				ret+="<sld:WellKnownName>"+this._wellKnownGraphicName+"</sld:WellKnownName>\n";
 			if(this._fill)
 				ret+=this._fill.sld;
 			if(this._stroke)
