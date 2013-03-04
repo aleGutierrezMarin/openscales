@@ -213,7 +213,7 @@
 				
 				if(evt.feature.layer == this.target)
 				{
-					if (!evt.feature.originalStyle || evt.feature.style == evt.feature.originalStyle)
+					if (!evt.feature.originalStyle || evt.feature.style != evt.feature.originalStyle)
 					{
 						evt.feature.originalStyle = evt.feature.style;
 					}
