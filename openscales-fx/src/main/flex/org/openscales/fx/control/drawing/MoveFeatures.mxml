@@ -223,11 +223,11 @@
 						//evt.feature.style = Style.getDefaultSelectedPointStyle();
 					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 						evt.feature.style = Style.getDefaultSelectedLineStyle();
-						(evt.feature.style.rules[0].symbolizers[0] as LineSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as LineSymbolizer).stroke.width;
+						//(evt.feature.style.rules[0].symbolizers[0] as LineSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as LineSymbolizer).stroke.width;
 
 					} else {
 						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
-						(evt.feature.style.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width;
+						//(evt.feature.style.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width;
 					}
 					
 					evt.feature.draw();
