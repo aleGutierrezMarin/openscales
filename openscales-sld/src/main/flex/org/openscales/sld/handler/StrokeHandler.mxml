@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<handler:AbstractRuleHandler xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							  xmlns:s="library://ns.adobe.com/flex/spark" 
+							  xmlns:mx="library://ns.adobe.com/flex/mx"
+							  xmlns:handler="org.openscales.sld.handler.*"
+							  creationComplete="init()"
+							  width="100%"
+							  name="Bordure/Ligne">
+	<fx:Declarations>
+		<mx:RegExpValidator id="regExpV" 
+							source="{dashedArray}" property="text" 
+							expression="{regexp}" 
+							flags="g"
+							noMatchError="Valeur incorrecte"
+							valid="handleResult(event);" 
+							invalid="handleResult(event);"/>
+	</fx:Declarations>
+
+	<s:VGroup width="100%">
+		<s:HGroup verticalAlign="middle">
+			<s:Label text="Style :" width="100"/>
+			<s:DropDownList id="style"
+							change="styleChange()"
+							dataProvider="{styles}"
+							labelField="text"
+							requireSelection="true"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{borderStyle}"
+				  visible="{borderStyle}">
+			<s:Label text="Couleur :" width="100"/>
+			<mx:ColorPicker id="strokeColor" change="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{borderStyle}"
+				  visible="{borderStyle}">
+			<s:Label text="Epaisseur :" width="100"/>
+			<s:NumericStepper id="strokeWidth"
+							  minimum="0.1"
+							  maximum="100"
+							  stepSize="0.1"
+							  valueFormatFunction="formatStepperValue"
+							  valueParseFunction="parseStepperValue"
+							  change="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{borderStyle}"
+				  visible="{borderStyle}">
+			<s:Label text="Opacité :" width="100"/>
+			<s:HSlider id="strokeOpacity"
+					   minimum="0"
+					   maximum="100"
+					   changeEnd="updateSymbolizer(event)"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle"
+				  includeInLayout="{dashed}"
+				  visible="{dashed}">
+			<s:Label text="Tirets :" width="100"/>
+			<s:TextInput id="dashedArray" errorString="Valeur incorrecte" showErrorTip="true"
+						 focusOut="{regExpV.validate()}" width="100"/>
+		</s:HGroup>
+		<s:RichText
+			whiteSpaceCollapse="preserve"
+			visible="{dashed}">
+Pour les tirets, veuillez renseigner un entier suivi d’un 
+espace suivi d’un entier.
+
+Le premier nombre correspond au nombre de pixels qui
+vont se suivre.
+Le second nombre correspond au nombre de pixels vides 
+qui vont se suivre.
+Vous pouvez répéter la séquence plusieurs fois pour varier 
+les tirets.
+
+Par exemple, la valeur "4 4" correspond à : 
+    ....    ....    ....    ....    Répété en boucle, 
+la valeur "4 4 10 4" correspond à : 
+    ....    ..........    ....    .......... Répété en boucle.
+		</s:RichText>
+	</s:VGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.RegExpValidationResult;
+			import mx.validators.ValidationResult;
+			
+			import org.openscales.core.style.Rule;
+			import org.openscales.core.style.stroke.Stroke;
+			import org.openscales.core.style.symbolizer.IStrokeSymbolizer;
+			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.sld.events.SLDEvent;
+			
+			import spark.formatters.NumberFormatter;
+
+			private static var supportedSymbolizer:Vector.<Class> = new <Class>[IStrokeSymbolizer];
+			
+			private var formatter:NumberFormatter = new NumberFormatter(); 
+			
+			[Bindable]
+			private var borderStyle:Boolean = true;
+			[Bindable]
+			private var dashed:Boolean = false;
+			private var lastSelected:int = -1;
+			
+			[Bindable]
+			private var regexp:String = "^(([0-9][0-9]?)\\s([0-9][0-9]?))(\\s([0-9][0-9]?)\\s([0-9][0-9]?))*$";
+			
+			[Bindable]
+			private var styles:ArrayCollection = new ArrayCollection(
+			[
+				{id:"noStyle", text:"aucune ligne"},
+				{id:"solid", text:"continue"},
+				{id:"dashed", text:"tirets"}/*,
+				/*{id:"longDashed", text:"longs tirets"},
+				{id:"dotted", text:"pointillés"},
+				{id:"dashedDotted", text:"tirets - pointillés"},
+				{id:"longDashedDotted", text:"long tirest - pointillés"}*/
+			]);
+			
+			override public function get supportedSymbolizers():Vector.<Class> {
+				return supportedSymbolizer;
+			}
+			
+			private function init():void {
+				this.onCurrentRule();
+			}
+			
+			private function updateSymbolizer(e:Event):void {
+				if(!this.currentSymbolizer || !(this.currentSymbolizer is IStrokeSymbolizer)) {
+					return;
+				}
+				var sym:IStrokeSymbolizer = this.currentSymbolizer as IStrokeSymbolizer;
+				switch(e.target) {
+					case strokeColor:
+						sym.stroke.color = strokeColor.selectedColor;
+						break;
+					case strokeWidth:
+						sym.stroke.width = strokeWidth.value;
+						break;
+					case strokeOpacity:
+						sym.stroke.opacity = strokeOpacity.value/100;
+						break;
+					default:
+						var array:Array = dashedArray.text.replace(","," ").split(" ");
+						sym.stroke.dashArray = new Array();
+						for each(var i:int in array) {
+							if(!isNaN(i)) {
+								sym.stroke.dashArray.push(i);
+							}
+						}
+						break;
+				}
+				
+				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.SYMBOLIZER_UPDATED,null,this.currentSymbolizer,true));
+			}
+			
+			private function styleChange():void {
+				if(!this.currentSymbolizer || !(this.currentSymbolizer is IStrokeSymbolizer)) {
+					return;
+				}
+				this.dashed = false;
+				var symbolizer:IStrokeSymbolizer = this.currentSymbolizer as IStrokeSymbolizer;
+				if(this.style.selectedIndex==0) {
+					this.borderStyle=false;
+					symbolizer.stroke = null;
+				} else {
+					if(!symbolizer.stroke)
+						symbolizer.stroke = new Stroke();
+					this.borderStyle=true;
+					if(this.style.selectedIndex==2) {
+						if(!symbolizer.stroke.dashArray) {
+							symbolizer.stroke.dashArray = new Array(4,4);
+						}
+						var array:Array = symbolizer.stroke.dashArray;
+						for each(var i:int in array) {
+							if(!isNaN(i)) {
+								dashedArray.text+=i+" ";
+							}
+						}
+						if(dashedArray.text.length>0)
+							dashedArray.text=dashedArray.text.substring(0,dashedArray.text.length-2);
+						this.dashed = true;
+					}
+					else {
+						if (symbolizer && symbolizer.stroke)
+							symbolizer.stroke.dashArray = null;
+						this.dashed = false;
+					}
+				}
+				this.lastSelected = style.selectedIndex;
+				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.SYMBOLIZER_UPDATED,null,this.currentSymbolizer,true));
+				this.onCurrentRule();
+			}
+			
+			override public function set currentSymbolizer(value:Symbolizer):void {
+				super.currentSymbolizer = value;
+				this.onCurrentRule();
+			}
+			
+			private function onCurrentRule():void {
+				if(this.currentSymbolizer && this.currentSymbolizer is IStrokeSymbolizer) {
+					this.borderStyle=false;
+					this.style.selectedIndex=0;
+					var symbolizer:IStrokeSymbolizer = this.currentSymbolizer as IStrokeSymbolizer;
+					if(symbolizer.stroke) {
+						this.borderStyle=true;
+						this.strokeColor.selectedColor=symbolizer.stroke.color;
+						this.strokeWidth.value=symbolizer.stroke.width;
+						this.strokeOpacity.value=symbolizer.stroke.opacity*100;
+						if(symbolizer.stroke.dashArray && symbolizer.stroke.dashArray.length>0) {
+							this.style.selectedIndex=2;
+							this.dashed = true;
+							this.dashedArray.text = "";
+							var array:Array = symbolizer.stroke.dashArray;
+							for each(var i:int in array) {
+								if(!isNaN(i)) {
+									dashedArray.text+=i+" ";
+								}
+							}
+							if(dashedArray.text.length>0)
+								dashedArray.text=dashedArray.text.substring(0,dashedArray.text.length-1);
+						} else {
+							this.style.selectedIndex=1;
+						}
+					}
+				}
+			}
+			
+			public function formatStepperValue(value:Number):String { 
+				if (isNaN(value)) { 
+					return ''; 
+				} else { 
+					return formatter.format(value); 
+				} 
+			} 
+			
+			public function parseStepperValue(value:String):Number { 
+				return formatter.parseNumber(value); 
+			} 
+			
+			private function handleResult(event:ValidationResultEvent):void {
+				if (event.type == "valid")
+				{
+					dashedArray.errorString = "";
+					updateSymbolizer(event);
+				} else
+				{
+					dashedArray.errorString = "Valeur incorrecte";     
+				}  
+			}
+		]]>
+	</fx:Script>
+</handler:AbstractRuleHandler>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Simple about screen -->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" horizontalAlign="center" creationComplete="init();">
+
+	<fx:Script>
+		<![CDATA[
+			private function init():void {
+				var text:String;
+				text = "\n<b>OpenScales.org 2.3.0</b>";
+				text += "\n\n\n";
+				text += "OpenScales is an open source (LGPL) mapping framework written in ActionScript 3 and Flex that enables developers to build Rich Internet Mapping Applications.";
+				text += "\n\n";
+				text += "It allows to manipulate spatial data: geographic raster viewing, data-vector editing, management of smooth transitions between scales and positions, ...";
+				text += "\n\n";
+				text += "Visit our <b><a href=\"http://openscales.org\" target=\"_new\">website</a></b>, join the community and come discuss with us on <b><a href=\"http://groups.google.com/group/openscales-dev\" target=\"_new\">OpenScales Discussion Group</a></b>.";
+				OSdescription.htmlText = text;
+			}
+		]]>
+	</fx:Script>
+	
+	<mx:Image source="@Embed('../assets/images/OpenScales-logo.png')"/>
+	<mx:RichTextEditor id="OSdescription"
+					   width="100%"
+					   height="100%"
+					   borderStyle="none"
+					   showControlBar="false"/>
+</s:VGroup>
