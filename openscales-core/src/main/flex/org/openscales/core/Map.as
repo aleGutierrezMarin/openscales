@@ -606,6 +606,7 @@ package org.openscales.core
 				var newCenterLocation:Location = this.center.add(dx*this.resolution.value, -dy*this.resolution.value);
 				if(isValidExtentWithRestrictedExtent(newCenterLocation, this.resolution))
 					this.center = newCenterLocation;
+				newCenterLocation = null;
 			}
 		}
 		
@@ -755,8 +756,10 @@ package org.openscales.core
 				res = this.resolution;
 			}
 			
-			if(!ProjProjection.isEquivalentProjection(lonlat.projection, this.projection)) {
-				lonlat.reprojectTo(this.projection);
+			var loc:Location = lonlat;
+			
+			if(!ProjProjection.isEquivalentProjection(loc.projection, this.projection)) {
+				loc = loc.reprojectTo(this.projection);
 			}
 			
 			var px:Pixel = null;
@@ -764,10 +767,13 @@ package org.openscales.core
 			if (extent)
 				b = extent;
 			
-			if (lonlat != null && b) {
+			if (loc != null && b) {
 				
-				px = new Pixel((lonlat.lon - b.left) / res.value, (b.top - lonlat.lat) / res.value);
+				px = new Pixel((loc.lon - b.left) / res.value, (b.top - loc.lat) / res.value);
 			}	
+			
+			loc = null;
+			
 			return px;
 		}
 		
