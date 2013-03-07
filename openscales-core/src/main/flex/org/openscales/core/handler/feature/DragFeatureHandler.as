@@ -6,6 +6,7 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.CustomMarker;
+	import org.openscales.core.feature.DiscreteCircleFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -271,6 +272,14 @@ package org.openscales.core.handler.feature
 				feature.y = 0;
 			}
 			else if(feature is PolygonFeature){
+				if(feature is DiscreteCircleFeature){
+					px = this.map.getMapPxFromLocation((feature as DiscreteCircleFeature).center);
+					loc = this.map.getLocationFromMapPx(
+						new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y)
+					);
+					(feature as DiscreteCircleFeature).center = loc;
+					return;
+				}
 				var linearRing:LinearRing;
 				var polygon:Polygon;
 				var tpLR:LinearRing = (feature.geometry as Polygon).componentByIndex(0) as LinearRing;
