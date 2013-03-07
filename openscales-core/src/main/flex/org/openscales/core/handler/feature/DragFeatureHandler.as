@@ -22,6 +22,7 @@ package org.openscales.core.handler.feature
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/** 
 	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DRAG_START
@@ -286,9 +287,11 @@ package org.openscales.core.handler.feature
 							// TODO : getMapPxFromLocation?
 							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projection));
 							// TODO : getLocationFromMapPx
-							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
-							pt = new Point(loc.lon,loc.lat);
-							pt.projection = loc.projection;
+							loc = this.map.getLocationFromMapPx(
+								new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y)
+								).reprojectTo(pt.projection);
+							pt = new Point(loc.lon,loc.lat,pt.projection);
+							
 							if(i == 0){
 								linearRing = new LinearRing(new <Number>[pt.x,pt.y]);
 								linearRing.projection = pt.projection;
