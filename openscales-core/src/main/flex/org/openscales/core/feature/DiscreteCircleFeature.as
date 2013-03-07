@@ -5,19 +5,22 @@ package org.openscales.core.feature
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * A discrete circle feature wich will respect projection deformation.
 	 */ 
 	public class DiscreteCircleFeature extends PolygonFeature
 	{
+		private static var _usedProjection:ProjProjection = ProjProjection.getProjProjection("EPSG:2154");
+		
 		/**
 		 * @param center expressed in EPSG:3857
 		 * @param radius expressed in meters
 		 */ 
 		public function DiscreteCircleFeature(center:Location, radius:Number, data:Object=null, style:Style=null, isEditable:Boolean=false)
 		{
-			_center = center.reprojectTo("EPSG:3857");
+			_center = center.reprojectTo(_usedProjection);
 			_radius = radius;
 			calculateGeometry();
 			super(polygon, data, style, isEditable);
@@ -45,8 +48,7 @@ package org.openscales.core.feature
 		
 		
 		private function calculateGeometry():void{
-			center = center.reprojectTo("EPSG:3857");
-			var circleLinearRing:LinearRing = new LinearRing(null,center.projection);
+			var circleLinearRing:LinearRing = new LinearRing(null,_center.projection);
 			
 			var discretizationAngle:Number = 360/discretization;
 			
@@ -55,9 +57,9 @@ package org.openscales.core.feature
 				//trace("Angle :"+angle);
 				var radian:Number = angle*Math.PI/180;
 				
-				var x:Number = center.x + (_radius * Math.cos(radian));
-				var y:Number = center.y + (_radius * Math.sin(radian));
-				var point:org.openscales.geometry.Point = new org.openscales.geometry.Point(x,y,center.projection);
+				var x:Number = _center.x + (_radius * Math.cos(radian));
+				var y:Number = _center.y + (_radius * Math.sin(radian));
+				var point:org.openscales.geometry.Point = new org.openscales.geometry.Point(x,y,_center.projection);
 				circleLinearRing.addComponent(point);
 			}
 			
@@ -119,7 +121,7 @@ package org.openscales.core.feature
 		public function set center(value:Location):void
 		{
 			_center = value;
-			if(_center) _center = _center.reprojectTo("EPSG:3857");
+			if(_center) _center = _center.reprojectTo(_usedProjection);
 			_recalculateGeometry = true;
 		}
 
