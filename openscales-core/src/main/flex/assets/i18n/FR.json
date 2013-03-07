@@ -24,6 +24,7 @@
    "drawing.point": "Ajouter un point",
    "drawing.shape": "Dessiner à main levée",
    "drawing.path": "Dessiner une ligne",
+   "drawing.circle": "Dessiner un cercle",
    "drawing.polygon": "Dessiner un polygone",
    "drawing.select": "Sélectionner",
    "drawing.edit": "Modifier",

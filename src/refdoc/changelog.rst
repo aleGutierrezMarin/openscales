@@ -8,7 +8,7 @@ Changes between 2.2 and 2.3.0
 * Adding a nodata Tile that will be displayed instead of the tile when the server is not responding.
 * Fixing an issue in the numeric scale component due to DPI problem.
 * Add map context save using WMC standard (See WMC110Format.write)
-
+* Add possibility to draw circles with a given radius (in meters)
 
 
 Changes between 2.1.1 and 2.2
