@@ -9,6 +9,7 @@ Changes between 2.2 and 2.3.0
 * Fixing an issue in the numeric scale component due to DPI problem.
 * Add map context save using WMC standard (See WMC110Format.write)
 * Add possibility to draw circles with a given radius (in meters)
+* Graticule layer is more customizable
 
 
 Changes between 2.1.1 and 2.2
