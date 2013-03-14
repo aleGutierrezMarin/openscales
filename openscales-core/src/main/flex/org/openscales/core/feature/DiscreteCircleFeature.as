@@ -1,8 +1,11 @@
 package org.openscales.core.feature
 {
+	import flash.geom.Point;
+	
 	import org.openscales.core.style.Style;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
@@ -12,7 +15,7 @@ package org.openscales.core.feature
 	 */ 
 	public class DiscreteCircleFeature extends PolygonFeature
 	{
-		private static var _usedProjection:ProjProjection = ProjProjection.getProjProjection("EPSG:2154");
+		private static var _usedProjection:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
 		
 		/**
 		 * @param center expressed in EPSG:3857
@@ -50,16 +53,8 @@ package org.openscales.core.feature
 		private function calculateGeometry():void{
 			var circleLinearRing:LinearRing = new LinearRing(null,_center.projection);
 			
-			var discretizationAngle:Number = 360/discretization;
-			
-			for(var i:uint=0;i<discretization;++i){
-				var angle:Number = discretizationAngle*i;
-				//trace("Angle :"+angle);
-				var radian:Number = angle*Math.PI/180;
-				
-				var x:Number = _center.x + (_radius * Math.cos(radian));
-				var y:Number = _center.y + (_radius * Math.sin(radian));
-				var point:org.openscales.geometry.Point = new org.openscales.geometry.Point(x,y,_center.projection);
+			for (var i:uint=0; i <=discretization; i++) {
+				var point:org.openscales.geometry.Point = destination(center.lat,center.lon,this.radius,i*2*Math.PI/discretization);
 				circleLinearRing.addComponent(point);
 			}
 			
@@ -67,6 +62,20 @@ package org.openscales.core.feature
 			super.geometry = new Polygon(new <Geometry>[circleLinearRing],circleLinearRing.projection);
 		}
 
+		private function destination(lata:Number,lona:Number,dist:Number,brng:Number):org.openscales.geometry.Point { // destination along great circle.  returns values in degrees
+			var latSrc:Number =  lata * Math.PI/180;
+			var lonSrc:Number = lona * Math.PI/180;
+			
+			var latRes:Number = Math.asin(Math.sin(latSrc)*Math.cos(dist/6371) + Math.cos(latSrc)*Math.sin(dist/6371)*Math.cos(brng));
+			var lonRes:Number = lonSrc+Math.atan2(Math.sin(brng)*Math.sin(dist/6371)*Math.cos(latSrc), Math.cos(dist/6371)-Math.sin(latSrc)*Math.sin(latRes));
+			
+			/*lonRes = lonRes * 180/Math.PI;
+			latRes = latRes * 180/Math.PI;
+			*/
+			return new org.openscales.geometry.Point(lonRes,latRes,ProjProjection.getProjProjection("EPSG:4326"));
+			
+		}
+		
 		private var _recalculateGeometry:Boolean = false;
 
 		/**
