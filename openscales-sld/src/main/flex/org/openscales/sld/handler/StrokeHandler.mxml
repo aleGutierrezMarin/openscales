@@ -7,7 +7,13 @@
 							  width="100%"
 							  name="Bordure/Ligne">
 	<fx:Declarations>
-		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+		<mx:RegExpValidator id="regExpV" 
+							source="{dashedArray}" property="text" 
+							expression="{regexp}" 
+							flags="g"
+							noMatchError="Valeur incorrecte"
+							valid="handleResult(event);" 
+							invalid="handleResult(event);"/>
 	</fx:Declarations>
 
 	<s:VGroup width="100%">
@@ -30,8 +36,12 @@
 				  visible="{borderStyle}">
 			<s:Label text="Epaisseur :" width="100"/>
 			<s:NumericStepper id="strokeWidth"
-							  minimum="0"
-							  maximum="100" change="updateSymbolizer(event)"/>
+							  minimum="0.1"
+							  maximum="100"
+							  stepSize="0.1"
+							  valueFormatFunction="formatStepperValue"
+							  valueParseFunction="parseStepperValue"
+							  change="updateSymbolizer(event)"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle"
 				  includeInLayout="{borderStyle}"
@@ -46,29 +56,56 @@
 				  includeInLayout="{dashed}"
 				  visible="{dashed}">
 			<s:Label text="Tirets :" width="100"/>
-			<s:TextInput id="dashedArray"
-						 focusOut="updateSymbolizer(event)"/>
+			<s:TextInput id="dashedArray" errorString="Valeur incorrecte" showErrorTip="true"
+						 focusOut="{regExpV.validate()}" width="100"/>
 		</s:HGroup>
+		<s:RichText
+			whiteSpaceCollapse="preserve"
+			visible="{dashed}">
+Pour les tirets, veuillez renseigner un entier suivi d’un 
+espace suivi d’un entier.
+
+Le premier nombre correspond au nombre de pixels qui
+vont se suivre.
+Le second nombre correspond au nombre de pixels vides 
+qui vont se suivre.
+Vous pouvez répéter la séquence plusieurs fois pour varier 
+les tirets.
+
+Par exemple, la valeur "4 4" correspond à : 
+    ....    ....    ....    ....    Répété en boucle, 
+la valeur "4 4 10 4" correspond à : 
+    ....    ..........    ....    .......... Répété en boucle.
+		</s:RichText>
 	</s:VGroup>
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.sld.events.SLDEvent;
-			
 			import mx.collections.ArrayCollection;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.RegExpValidationResult;
+			import mx.validators.ValidationResult;
 			
 			import org.openscales.core.style.Rule;
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.IStrokeSymbolizer;
 			import org.openscales.core.style.symbolizer.Symbolizer;
+			import org.openscales.sld.events.SLDEvent;
+			
+			import spark.formatters.NumberFormatter;
 
 			private static var supportedSymbolizer:Vector.<Class> = new <Class>[IStrokeSymbolizer];
+			
+			private var formatter:NumberFormatter = new NumberFormatter(); 
 			
 			[Bindable]
 			private var borderStyle:Boolean = true;
 			[Bindable]
 			private var dashed:Boolean = false;
 			private var lastSelected:int = -1;
+			
+			[Bindable]
+			private var regexp:String = "^(([0-9][0-9]?)\\s([0-9][0-9]?))(\\s([0-9][0-9]?)\\s([0-9][0-9]?))*$";
 			
 			[Bindable]
 			private var styles:ArrayCollection = new ArrayCollection(
@@ -115,6 +152,7 @@
 						}
 						break;
 				}
+				
 				this.currentSymbolizer.dispatchEvent(new SLDEvent(SLDEvent.SYMBOLIZER_UPDATED,null,this.currentSymbolizer,true));
 			}
 			
@@ -128,10 +166,8 @@
 					this.borderStyle=false;
 					symbolizer.stroke = null;
 				} else {
-					if(this.lastSelected==0) {
-						if(!symbolizer.stroke)
-							symbolizer.stroke = new Stroke();
-					}
+					if(!symbolizer.stroke)
+						symbolizer.stroke = new Stroke();
 					this.borderStyle=true;
 					if(this.style.selectedIndex==2) {
 						if(!symbolizer.stroke.dashArray) {
@@ -148,7 +184,8 @@
 						this.dashed = true;
 					}
 					else {
-						symbolizer.stroke.dashArray = null;
+						if (symbolizer && symbolizer.stroke)
+							symbolizer.stroke.dashArray = null;
 						this.dashed = false;
 					}
 				}
@@ -189,6 +226,29 @@
 						}
 					}
 				}
+			}
+			
+			public function formatStepperValue(value:Number):String { 
+				if (isNaN(value)) { 
+					return ''; 
+				} else { 
+					return formatter.format(value); 
+				} 
+			} 
+			
+			public function parseStepperValue(value:String):Number { 
+				return formatter.parseNumber(value); 
+			} 
+			
+			private function handleResult(event:ValidationResultEvent):void {
+				if (event.type == "valid")
+				{
+					dashedArray.errorString = "";
+					updateSymbolizer(event);
+				} else
+				{
+					dashedArray.errorString = "Valeur incorrecte";     
+				}  
 			}
 		]]>
 	</fx:Script>

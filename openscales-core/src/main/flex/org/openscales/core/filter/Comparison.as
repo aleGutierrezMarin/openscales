@@ -134,7 +134,7 @@ package org.openscales.core.filter
 		public function get sld():String {
 			if(!this._type || !this._property)
 				return "";
-			var res:String = "<Filter>\n";
+			var res:String = "<ogc:Filter>\n";
 			res+= "<ogc:"+this._type;
 			if(this._escapeChar == "\\")
 				res+= " escapeChar=\"\\\"";
@@ -151,7 +151,7 @@ package org.openscales.core.filter
 			else if(this._singleChar)
 				res+= " singleChar=\""+this._singleChar+"\"";
 			
-			res+">\n";
+			res+=">\n";
 			res+= "<ogc:PropertyName>"+this._property+"</ogc:PropertyName>\n";
 			if(this._value)
 				res+= "<ogc:Literal>"+this._value+"</ogc:Literal>\n";
@@ -159,8 +159,8 @@ package org.openscales.core.filter
 				res+= "<ogc:LowerBoundary>"+this._lowerBoundary+"</<ogc:LowerBoundary>\n";
 			if(this._upperBoundary)
 				res+= "<ogc:UpperBoundary>"+this._upperBoundary+"</<ogc:UpperBoundary>\n";
-			res+= "</ocg:"+this._type+">\n";
-			res+= "</Filter>\n";
+			res+= "</ogc:"+this._type+">\n";
+			res+= "</ogc:Filter>\n";
 			return res;
 		}
 		public function set sld(sld:String):void {
@@ -186,9 +186,9 @@ package org.openscales.core.filter
 			if(childs.length()>0) {
 				this._property = childs[0];
 			}
-			childs = dataXML.Literal;
-			if(childs.length()>0) {
-				this._value = childs[0];
+			filter = dataXML.children();
+			if(filter.length()>1) {
+				this._value = filter[1];
 			}
 			//todo support isbetween and in
 		}

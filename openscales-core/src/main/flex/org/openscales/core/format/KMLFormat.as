@@ -201,7 +201,7 @@ package org.openscales.core.format
 		 */
 		override public function read(data:Object):Object {
 			var dataXML:XML = data as XML;
-			
+			if(!dataXML) return null;
 			//use namespace google;
 			//use namespace opengis;
 			
@@ -1428,7 +1428,7 @@ package org.openscales.core.format
 					{
 						var iconNode:XML = new XML("<Icon></Icon>");
 						
-						var cm:ExternalGraphic = graphic as ExternalGraphic;
+						var cm:ExternalGraphic = mark as ExternalGraphic;
 						var href:String = cm.onlineResource;
 						iconNode.href = href;
 						

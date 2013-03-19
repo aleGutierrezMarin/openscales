@@ -373,14 +373,15 @@ package org.openscales.core.style {
 		public static function getDefaultGraticuleStyle():Style {
 			var style:Style = new Style();
 			style.name = "Default graticule style";
-			style.rules.push(getGraticuleRule());
+			style.rules.push(getGraticuleLinesRule());
+			style.rules.push(getGraticuleLabelsRule());
+			
+			
 			return style;
 		}
 		
-		public static function getDefaultGraticuleLabelStyle():Style{
-			
-			var style:Style = new Style();
-			style.name = "Default graticule label style";
+		protected static function getGraticuleLabelsRule():Rule{
+			var rule:Rule = new Rule();
 			var ts:TextSymbolizer = new TextSymbolizer();
 			ts.font = new Font();
 			ts.font.family = "Arial";
@@ -388,12 +389,11 @@ package org.openscales.core.style {
 			ts.font.color = 0xFFFFFF;
 			ts.font.weight = Font.BOLD;
 			ts.halo = new Halo(0x000000);
-			style.rules.push(new Rule());
-			style.rules[0].symbolizers[0] = ts;
-			return style;
+			rule.symbolizers.push(ts);
+			return rule;
 		}
 		
-		protected static function getGraticuleRule():Rule{
+		protected static function getGraticuleLinesRule():Rule{
 			
 			var rule:Rule = new Rule();
 			rule.name = "Default graticule rule";

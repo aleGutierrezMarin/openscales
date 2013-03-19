@@ -44,14 +44,16 @@ package org.openscales.core.style.fill {
 		 * The opacity of the fill
 		 */
 		public function get opacity():Number {
-
 			return this._opacity;
 		}
 
 		public function set opacity(value:Number):void {
-			if(value)
-				this._opacity = value;
+			this._opacity = value;
+			if(this._opacity && this._opacity > 1)
+				this._opacity = this._opacity/100;
 		}
+		
+
 		
 		public function get sld():String {
 			var res:String = "<sld:Fill>\n";
@@ -87,8 +89,8 @@ package org.openscales.core.style.fill {
 					this.color = parseInt(node[0].toString().replace("#",""),16);
 				} else if(node.@name == "fill-opacity") {
 					var val:Number = Number(node[0].toString());
-					if(!val)
-						continue;
+					//if(!val)
+						//continue;
 					this.opacity = val;
 				}
 			}

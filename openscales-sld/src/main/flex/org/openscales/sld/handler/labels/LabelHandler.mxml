@@ -51,7 +51,7 @@
 		<s:HGroup verticalAlign="middle"
 				  visible="{labelStyle}"
 				  includeInLayout="{labelStyle}">
-			<s:Label text="Italic :" width="120"/>
+			<s:Label text="Italique :" width="120"/>
 			<s:CheckBox id="italic"
 						change="updateRule(event)"/>
 		</s:HGroup>
@@ -82,8 +82,12 @@
 			<s:Spacer width="5" />
 			<s:Label text="Epaisseur :" width="110"/>
 			<s:NumericStepper id="haloWidth"
-							  minimum="0"
-							  maximum="100" change="updateRule(event)"/>
+							  minimum="0.1"
+							  maximum="100"
+							  stepSize="0.1"
+							  valueFormatFunction="formatStepperValue"
+							  valueParseFunction="parseStepperValue" 
+							  change="updateRule(event)"/>
 		</s:HGroup>
 		<s:HGroup verticalAlign="middle"
 				  visible="{labelStyle}"
@@ -136,8 +140,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.sld.events.SLDEvent;
-			
 			import flashx.textLayout.conversion.TextConverter;
 			
 			import mx.collections.ArrayCollection;
@@ -148,8 +150,13 @@
 			import org.openscales.core.style.stroke.Stroke;
 			import org.openscales.core.style.symbolizer.Symbolizer;
 			import org.openscales.core.style.symbolizer.TextSymbolizer;
+			import org.openscales.sld.events.SLDEvent;
+			
+			import spark.formatters.NumberFormatter;
 			
 			private static var supportedSymbolizer:Vector.<Class> = new <Class>[TextSymbolizer];
+			
+			private var formatter:NumberFormatter = new NumberFormatter(); 
 			
 			[Bindable]
 			private var labelStyle:Boolean = true;
@@ -201,15 +208,15 @@
 				
 				var anchor:String = anchorPoint.selectedValue as String;
 				if(anchor) {
-					if(anchor.indexOf("T"))
+					if(anchor.indexOf("T") == 0)
 						symbolizer.anchorPointY = 1;
-					else if(anchor.indexOf("B"))
+					else if(anchor.indexOf("B") == 0)
 						symbolizer.anchorPointY = 0;
 					else
 						symbolizer.anchorPointY = 0.5;
-					if(anchor.indexOf("L"))
+					if(anchor.indexOf("L") == 1)
 						symbolizer.anchorPointX = 0;
-					else if(anchor.indexOf("R"))
+					else if(anchor.indexOf("R") == 1)
 						symbolizer.anchorPointX = 1;
 					else
 						symbolizer.anchorPointX = 0.5;
@@ -281,9 +288,9 @@
 					if(symbolizer.anchorPointY == 0)
 						this.B.selected = true;
 					else if(symbolizer.anchorPointY == 1)
-						this.M.selected = true;
-					else
 						this.T.selected = true;
+					else
+						this.M.selected = true;
 				}
 				
 				attribute.selectedItem = null;
@@ -311,6 +318,18 @@
 				symbolizer.halo.radius = haloWidth.value;
 				haloColor.selectedColor = symbolizer.halo.color;
 				haloOpacity.value = symbolizer.halo.opacity*100;
+			}
+			
+			public function formatStepperValue(value:Number):String { 
+				if (isNaN(value)) { 
+					return ''; 
+				} else { 
+					return formatter.format(value); 
+				} 
+			} 
+			
+			public function parseStepperValue(value:String):Number { 
+				return formatter.parseNumber(value); 
 			}
 		]]>
 	</fx:Script>

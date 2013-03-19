@@ -4,6 +4,7 @@ package org.openscales.core.style.graphic
 	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
+	import flash.display.LineScaleMode;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	
@@ -115,10 +116,7 @@ package org.openscales.core.style.graphic
 		
 		public function drawMark(shape:Sprite, size:Number): void {
 			switch (this._wellKnownGraphicName) {
-				case WKN_SQUARE:  {
-					shape.graphics.drawRect(-(size / 2), -(size / 2), size, size);
-					break;
-				}
+				
 				case WKN_CIRCLE:
 				case DOT: {
 					shape.graphics.drawCircle(0, 0, size / 2);
@@ -163,17 +161,64 @@ package org.openscales.core.style.graphic
 					break;
 				}
 				case WKN_CROSS: {
-					shape.graphics.moveTo(1-size/2, 0);
-					shape.graphics.lineTo(-1+size/2, 0);
-					shape.graphics.moveTo(0, 1-size/2);
-					shape.graphics.lineTo(0,-1+size/2);
+					
+					var pan:Number = (size / 5) / 2;
+					
+					shape.graphics.moveTo(1-size/2, pan);
+					shape.graphics.lineTo(1-size/2, -pan);
+					
+					shape.graphics.lineTo(-pan, -pan);
+					shape.graphics.lineTo(-pan, 1-size/2);
+					shape.graphics.lineTo(pan, 1-size/2);
+					shape.graphics.lineTo(pan, -pan);
+					shape.graphics.lineTo(-1+size/2, -pan);
+					shape.graphics.lineTo(-1+size/2, pan);
+					shape.graphics.lineTo(pan, pan);
+					shape.graphics.lineTo(pan, -1+size/2);
+					shape.graphics.lineTo(-pan, -1+size/2);
+					shape.graphics.lineTo(-pan, pan);
+					shape.graphics.lineTo(1-size/2, pan);
 					break;
 				}
 				case WKN_X: {
-					shape.graphics.moveTo(1-size/2,1-size/2);
-					shape.graphics.lineTo(-1+size/2,-1+size/2);
-					shape.graphics.moveTo(1-size/2,-1+size/2);
-					shape.graphics.lineTo(-1+size/2,1-size/2);
+					
+					// For better preview rendering
+					if (size > 16)
+						size = 16;
+					
+					pan = (size / 5) / 2;
+					
+					shape.graphics.moveTo(1-size/2-pan, 1-size/2+pan);
+					shape.graphics.lineTo(1-size/2+pan, 1-size/2-pan);
+					shape.graphics.lineTo(0, -2*pan);
+					shape.graphics.lineTo(-1+size/2-pan, 1-size/2-pan);
+					shape.graphics.lineTo(-1+size/2+pan, 1-size/2+pan);
+					shape.graphics.lineTo(2*pan, 0);
+					shape.graphics.lineTo(-1+size/2+pan, -1+size/2-pan);
+					shape.graphics.lineTo(-1+size/2-pan, -1+size/2+pan);
+					shape.graphics.lineTo(0, 2*pan);
+					shape.graphics.lineTo(1-size/2+pan, -1+size/2+pan);
+					shape.graphics.lineTo(1-size/2-pan, -1+size/2-pan);
+					shape.graphics.lineTo(-2*pan, 0);
+					shape.graphics.lineTo(1-size/2-pan, 1-size/2+pan);
+					break;
+				}
+				case WKN_OARROW: {
+					shape.graphics.moveTo(-size/2,-size/2);
+					shape.graphics.lineTo(size/2,0);
+					shape.graphics.lineTo(-size/2,size/2);
+					shape.graphics.lineStyle(1, 255, 
+						0, false, 
+						LineScaleMode.NORMAL, "round", 
+						"round");
+					shape.graphics.lineTo(-size/2,-size/2);
+					break;
+				}
+				case WKN_CARROW: {
+					shape.graphics.moveTo(-size/2,-size/2);
+					shape.graphics.lineTo(size/2,0);
+					shape.graphics.lineTo(-size/2,size/2);
+					shape.graphics.lineTo(-size/2,-size/2);
 					break;
 				}
 				case VERTLINE: {
@@ -211,10 +256,14 @@ package org.openscales.core.style.graphic
 					break;
 				}
 				case OARROW: {
-					shape.graphics.endFill();
 					shape.graphics.moveTo(-size/2,-size/2);
 					shape.graphics.lineTo(size/2,0);
 					shape.graphics.lineTo(-size/2,size/2);
+					shape.graphics.lineStyle(1, 255, 
+						0, false, 
+						LineScaleMode.NORMAL, "round", 
+						"round");
+					shape.graphics.lineTo(-size/2,-size/2);
 					break;
 				}
 				case CARROW: {
@@ -222,6 +271,11 @@ package org.openscales.core.style.graphic
 					shape.graphics.lineTo(size/2,0);
 					shape.graphics.lineTo(-size/2,size/2);
 					shape.graphics.lineTo(-size/2,-size/2);
+					break;
+				}
+				case WKN_SQUARE:
+				default: {
+					shape.graphics.drawRect(-(size / 2), -(size / 2), size, size);
 					break;
 				}
 			}
@@ -237,7 +291,7 @@ package org.openscales.core.style.graphic
 			// create bitmapData
 			var bitmapData:Raster = new Raster(size,size,true,NaN);
 			var middle:int = Math.round(size/2)-1;
-			var delta:int = Math.floor((this._stroke.width-1)/2);
+			var delta:int = Math.floor((this._stroke.width)/2);
 			var i:uint;
 			var corner:Boolean = (this._wellKnownGraphicName != TIMES);
 			if(this._wellKnownGraphicName==VERTLINE || this._wellKnownGraphicName == PLUS) {
@@ -270,15 +324,17 @@ package org.openscales.core.style.graphic
 			}
 			if(this._wellKnownGraphicName==BACKSLASH || this._wellKnownGraphicName == TIMES) {
 				bitmapData.line(0,0,size-1,size-1,color);
-				for(i = delta; i>0 ;--i) {
-					//main line
-					bitmapData.line(0,i-1,size-i,size-1,color);
-					bitmapData.line(i-1,0,size-1,size-i,color);
-					if(corner) {
-						//top rigth corner
-						bitmapData.line(size-i+1,0,size-1,i-2,color);
-						// bottom left corner
-						bitmapData.line(0,size-i+1,i-2,size-1,color);
+				if(delta > 0){
+					for(i = delta; i>0 ;--i) {
+						//main line
+						bitmapData.line(0,i-1,size-i,size-1,color);
+						bitmapData.line(i-1,0,size-1,size-i,color);
+						if(corner) {
+							//top rigth corner
+							bitmapData.line(size-i+1,0,size-1,i-2,color);
+							// bottom left corner
+							bitmapData.line(0,size-i+1,i-2,size-1,color);
+						}
 					}
 				}
 			}
@@ -287,10 +343,11 @@ package org.openscales.core.style.graphic
 		
 		public function get sld():String
 		{
-			if(!this._wellKnownGraphicName)
-				return "";
+			//if(!this._wellKnownGraphicName)
+				//return "";
 			var ret:String="<sld:Mark>\n";
-			ret+="<sld:WellKnownName>"+this._wellKnownGraphicName+"</sld:WellKnownName>\n";
+			if(this._wellKnownGraphicName)
+				ret+="<sld:WellKnownName>"+this._wellKnownGraphicName+"</sld:WellKnownName>\n";
 			if(this._fill)
 				ret+=this._fill.sld;
 			if(this._stroke)

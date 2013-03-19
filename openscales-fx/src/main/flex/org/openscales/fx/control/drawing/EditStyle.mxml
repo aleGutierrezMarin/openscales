@@ -24,18 +24,12 @@
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
-			import org.openscales.core.feature.PointFeature;
-			import org.openscales.core.handler.IHandler;
-			import org.openscales.core.handler.feature.draw.AbstractDrawHandler;
-			import org.openscales.core.handler.feature.draw.DrawPointHandler;
 			import org.openscales.core.handler.feature.draw.EditKMLStyleHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
 			import org.openscales.fx.control.drawing.popup.EditStylePopup;
-			import org.openscales.fx.control.layer.LayerManager;
-			import org.openscales.geometry.Point;
-			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.fx.control.drawing.popup.SingleInputPopup;
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			[Bindable]
@@ -53,6 +47,7 @@
 			private var _drawingMode:String;
 			private var _handler:EditKMLStyleHandler = new EditKMLStyleHandler();
 			private var _popup:EditStylePopup = new EditStylePopup();
+			private var _popupParent:DisplayObject;
 			
 			/**
 			 * The default point style to apply to the features
@@ -103,8 +98,7 @@
 				PopUpManager.removePopUp(_popup);
 				_popup.editStyleHandler = this._handler;
 				_popup.targetFeature = feature;
-				PopUpManager.addPopUp(_popup, this.map);
-				
+				PopUpManager.addPopUp(_popup, _popupParent?_popupParent:this.map);
 			}
 			
 			/**
@@ -400,6 +394,23 @@
 			{
 				this._handler = value;
 			}
+
+			/**
+			 * The DisplayObject to which is added the popup. By defaut it is the <code>map</code>
+			 */
+			public function get popupParent():DisplayObject
+			{
+				return _popupParent;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set popupParent(value:DisplayObject):void
+			{
+				_popupParent = value;
+			}
+
 		]]>
 	</fx:Script>			
 </os:IconButton>

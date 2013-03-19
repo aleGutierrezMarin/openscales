@@ -568,6 +568,15 @@ package org.openscales.core.handler.feature.draw
 			}
 		}
 
+		/**
+		 * Look recursively for a Feature in an object parenthood
+		 */ 
+		private function getMeMyParentFeature(object:Object):Object{
+			if(!object) return null;
+			if(object is Feature) return object;
+			return getMeMyParentFeature(object.parent);
+		}
+		
 		// Callback
 		
 		/**
@@ -677,18 +686,9 @@ package org.openscales.core.handler.feature.draw
 		{
 			if (this._colorPaintingActivated || this._colorPickingActivated)
 				return;
-			
-			if(event.target is Feature || event.target.parent is Feature)
+			var tmpFeature:Feature = getMeMyParentFeature(event.target) as Feature;
+			if(tmpFeature)
 			{
-				var tmpFeature:Feature;
-				if (event.target is Feature)
-				{
-					tmpFeature = event.target as Feature;
-				}
-				else
-				{
-					tmpFeature = event.target.parent as Feature;
-				}
 				
 				if (tmpFeature.layer != this._drawLayer)
 				{
