@@ -33,10 +33,8 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
-			import org.openscales.core.style.font.Font;
 			import org.openscales.core.style.symbolizer.LineSymbolizer;
 			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-			import org.openscales.core.style.symbolizer.TextSymbolizer;
 			import org.openscales.fx.control.drawing.popup.EditLabel;
 			import org.openscales.geometry.basetypes.Pixel;
 			

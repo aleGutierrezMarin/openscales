@@ -14,31 +14,20 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Label;
-			
 			import org.openscales.core.Map;
 			import org.openscales.core.control.IControl;
 			import org.openscales.core.events.DrawingEvent;
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.feature.Feature;
 			import org.openscales.core.feature.LabelFeature;
 			import org.openscales.core.feature.LineStringFeature;
 			import org.openscales.core.feature.MultiLineStringFeature;
 			import org.openscales.core.feature.MultiPointFeature;
 			import org.openscales.core.feature.PointFeature;
-			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.DragFeatureHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
-			import org.openscales.core.style.font.Font;
-			import org.openscales.core.style.symbolizer.LineSymbolizer;
-			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
-			import org.openscales.core.style.symbolizer.TextSymbolizer;
-			import org.openscales.fx.control.layer.LayerManager;
-			import org.openscales.geometry.Point;
-			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			[Bindable]
