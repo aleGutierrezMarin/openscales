@@ -6,6 +6,7 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.Map;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.feature.CustomMarker;
+	import org.openscales.core.feature.DiscreteCircleFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -22,6 +23,7 @@ package org.openscales.core.handler.feature
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/** 
 	 * @eventType org.openscales.core.events.FeatureEvent.FEATURE_DRAG_START
@@ -227,84 +229,85 @@ package org.openscales.core.handler.feature
 		 */
 		private function updateFeature(feature:Feature):void{
 			
-			var targetFeature:Feature;
 			var loc:Location;
 			var pt:Point;
 			var px:Pixel;
 			var i:uint;
+			if(this.layerToMove.features.indexOf(feature)<0)return;
+			
+			
 			
 			if(feature is PointFeature || feature is LabelFeature){
-				for each(targetFeature in this.layerToMove.features){
-					if(targetFeature == feature){
-						// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
-						loc = this.map.getLocationFromMapPx(_stopPixel);
-						loc.reprojectTo(feature.projection);
-						targetFeature.geometry = new Point(loc.lon,loc.lat, loc.projection);
-						//targetFeature.geometry.projection = loc.projection;
-						targetFeature.x = 0;
-						targetFeature.y = 0;
-					}
-				}
+				// TODO : getLocationFromMapPx? create getLocationFromLayerPx?
+				loc = this.map.getLocationFromMapPx(_stopPixel);
+				loc.reprojectTo(feature.projection);
+				feature.geometry = new Point(loc.lon,loc.lat, loc.projection);
+				//feature.geometry.projection = loc.projection;
+				feature.x = 0;
+				feature.y = 0;
 			}
 			else if(feature is LineStringFeature){
-				for each(targetFeature in this.layerToMove.features){
-					if(targetFeature == feature){
-						var lineString:LineString;
-						var tpIC:ICollection = targetFeature.geometry as ICollection;
-						for(i=0; i<tpIC.componentsLength; i++){
-							pt = tpIC.componentByIndex(i) as Point;
-							// TODO getMapPxFromLocation
-							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projection));
-							// TODO getLocationFromMapPx?
-							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
-							loc.reprojectTo(feature.projection);
-							pt = new Point(loc.lon,loc.lat);
-							pt.projection = loc.projection;
-							if(i == 0)
-							{
-								lineString = new LineString(new <Number>[pt.x,pt.y]);
-								lineString.projection = pt.projection;
-							}
-							else{
-								lineString.addPoint(pt.x,pt.y);
-							}
-						}
-						targetFeature.geometry = lineString;
-						targetFeature.x = 0;
-						targetFeature.y = 0;
+				var lineString:LineString;
+				var tpIC:ICollection = feature.geometry as ICollection;
+				for(i=0; i<tpIC.componentsLength; i++){
+					pt = tpIC.componentByIndex(i) as Point;
+					// TODO getMapPxFromLocation
+					px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projection));
+					// TODO getLocationFromMapPx?
+					loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
+					loc.reprojectTo(feature.projection);
+					pt = new Point(loc.lon,loc.lat);
+					pt.projection = loc.projection;
+					if(i == 0)
+					{
+						lineString = new LineString(new <Number>[pt.x,pt.y]);
+						lineString.projection = pt.projection;
+					}
+					else{
+						lineString.addPoint(pt.x,pt.y);
 					}
 				}
+				feature.geometry = lineString;
+				feature.x = 0;
+				feature.y = 0;
 			}
 			else if(feature is PolygonFeature){
-				for each(targetFeature in this.layerToMove.features){
-					if(targetFeature == feature){
-						var linearRing:LinearRing;
-						var polygon:Polygon;
-						var tpLR:LinearRing = (targetFeature.geometry as Polygon).componentByIndex(0) as LinearRing;
-						for(i=0; i<tpLR.componentsLength; i++){
-							pt = tpLR.componentByIndex(i) as Point;
-							// TODO : getMapPxFromLocation?
-							px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projection));
-							// TODO : getLocationFromMapPx
-							loc = this.map.getLocationFromMapPx(new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y));
-							pt = new Point(loc.lon,loc.lat);
-							pt.projection = loc.projection;
-							if(i == 0){
-								linearRing = new LinearRing(new <Number>[pt.x,pt.y]);
-								linearRing.projection = pt.projection;
-								polygon = new Polygon(new <Geometry>[linearRing]);
-								polygon.projection = pt.projection;
-							}
-							else{
-								linearRing.addPoint(pt.x,pt.y);
-							}
-						}
-						targetFeature.geometry = polygon;
-						targetFeature.x = 0;
-						targetFeature.y = 0;
+				if(feature is DiscreteCircleFeature){
+					px = this.map.getMapPxFromLocation((feature as DiscreteCircleFeature).center);
+					loc = this.map.getLocationFromMapPx(
+						new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y)
+					);
+					(feature as DiscreteCircleFeature).center = loc;
+					return;
+				}
+				var linearRing:LinearRing;
+				var polygon:Polygon;
+				var tpLR:LinearRing = (feature.geometry as Polygon).componentByIndex(0) as LinearRing;
+				for(i=0; i<tpLR.componentsLength; i++){
+					pt = tpLR.componentByIndex(i) as Point;
+					// TODO : getMapPxFromLocation?
+					px = this.map.getMapPxFromLocation(new Location(pt.x, pt.y, pt.projection));
+					// TODO : getLocationFromMapPx
+					loc = this.map.getLocationFromMapPx(
+						new Pixel(px.x + _stopPixel.x - _startPixel.x, px.y + _stopPixel.y - _startPixel.y)
+						).reprojectTo(pt.projection);
+					pt = new Point(loc.lon,loc.lat,pt.projection);
+					
+					if(i == 0){
+						linearRing = new LinearRing(new <Number>[pt.x,pt.y]);
+						linearRing.projection = pt.projection;
+						polygon = new Polygon(new <Geometry>[linearRing]);
+						polygon.projection = pt.projection;
+					}
+					else{
+						linearRing.addPoint(pt.x,pt.y);
 					}
 				}
+				feature.geometry = polygon;
+				feature.x = 0;
+				feature.y = 0;
 			}
+			
 		}
 		
 		private function getMeMyParentFeature(object:Object):Object{

@@ -22,6 +22,7 @@
    "drawing.export": "Export",
    "drawing.label": "Add a label",
    "drawing.point": "Add a point",
+   "drawing.circle": "Add a circle",
    "drawing.shape": "Draw freehand",
    "drawing.path": "Draw a path",
    "drawing.polygon": "Draw a polygon",

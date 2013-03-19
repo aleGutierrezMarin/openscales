@@ -25,13 +25,13 @@ package org.openscales.core.layer
 	 */
 	public class Graticule extends VectorLayer
 	{
-		private var _longitudeLabelsAlign:String = "left";
+		private var _latitudeLabelsAlign:String = "left";
 		
-		private var _latitudeLabelsAlign:String = "bottom";
+		private var _longitudeLabelsAlign:String = "bottom";
 		
 		private var _longitudeLabelsPadding:Number = 3;
 		
-		private var _latitudeLabelsPadding:Number = 2;
+		private var _latitudeLabelsPadding:Number = 3;
 		
 		/**
 		 * @private
@@ -145,9 +145,9 @@ package org.openscales.core.layer
 					var degreeLabel:String = getFormattedLabel(currentX, interval);
 					
 					
-					if(_latitudeLabelsAlign == "top") alignValue = ymax-_latitudeLabelsPadding*offset;
-					else if(_latitudeLabelsAlign == "center") alignValue = (ymin+ymax)/2 + _latitudeLabelsPadding*offset;
-					else alignValue = ymin + _latitudeLabelsPadding*offset;
+					if(_longitudeLabelsAlign == "top") alignValue = ymax-_longitudeLabelsPadding*offset;
+					else if(_longitudeLabelsAlign == "center") alignValue = (ymin+ymax)/2 + _longitudeLabelsPadding*offset;
+					else alignValue = ymin + _longitudeLabelsPadding*offset;
 					
 					var labelFeature:LabelFeature = LabelFeature.createLabelFeature(new Location(currentX+2*offset, alignValue));
 					labelFeature.text = degreeLabel;
@@ -177,9 +177,9 @@ package org.openscales.core.layer
 					// labels
 					degreeLabel = getFormattedLabel(currentY, interval);
 					
-					if(_longitudeLabelsAlign == "right") alignValue = xmax-_longitudeLabelsPadding*offset
-					else if(_longitudeLabelsAlign == "center") alignValue = (xmin+xmax)/2 + _longitudeLabelsPadding*offset;
-					else alignValue = xmin+_longitudeLabelsPadding*offset;
+					if(_latitudeLabelsAlign == "right") alignValue = xmax-_latitudeLabelsPadding*offset
+					else if(_latitudeLabelsAlign == "center") alignValue = (xmin+xmax)/2 + _latitudeLabelsPadding*offset;
+					else alignValue = xmin+_latitudeLabelsPadding*offset;
 					
 					labelFeature = LabelFeature.createLabelFeature(new Location(alignValue, currentY+offset));
 					labelFeature.text = degreeLabel;
@@ -264,22 +264,6 @@ package org.openscales.core.layer
 		/**
 		 * The alignement for latitude labels. Can be top, center or bottom (default is bottom)
 		 */
-		public function get latitudeLabelsAlign():String
-		{
-			return _latitudeLabelsAlign;
-		}
-		
-		/**
-		 * @private
-		 */
-		public function set latitudeLabelsAlign(value:String):void
-		{
-			_latitudeLabelsAlign = value;
-		}
-		
-		/**
-		 * The alignement for longitude labels. Can be left, center or right (default is left)
-		 */
 		public function get longitudeLabelsAlign():String
 		{
 			return _longitudeLabelsAlign;
@@ -291,6 +275,22 @@ package org.openscales.core.layer
 		public function set longitudeLabelsAlign(value:String):void
 		{
 			_longitudeLabelsAlign = value;
+		}
+		
+		/**
+		 * The alignement for longitude labels. Can be left, center or right (default is left)
+		 */
+		public function get latitudeLabelsAlign():String
+		{
+			return _latitudeLabelsAlign;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set latitudeLabelsAlign(value:String):void
+		{
+			_latitudeLabelsAlign = value;
 		}
 
 		
@@ -345,7 +345,7 @@ package org.openscales.core.layer
 		}
 
 		/**
-		 *  Padding coef added to latitude label location (default is 2)
+		 *  Padding coef added to latitude label location (default is 3)
 		 */
 		public function get latitudeLabelsPadding():Number
 		{
