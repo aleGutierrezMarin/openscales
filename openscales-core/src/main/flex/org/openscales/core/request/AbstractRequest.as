@@ -65,22 +65,13 @@ package org.openscales.core.request
 			this._uid = UID.gen_uid();
 			// Create a loader for a SWF or an image (Loader), or for an URL (URLLoader)
 			this._loader = (SWForImage) ? new Loader() : new URLLoader();
-
-			_loader.addEventListener(IOErrorEvent.IO_ERROR,function(event:Event):void{
-				event.stopImmediatePropagation();
-				
-				if (this._onFailure == null)
-					this._onFailure = onFailure;
-				if(this._onFailure)
-					this._onFailure.apply(this,[event]);
-			});
 			
 			this.url = url;
 			this._onComplete = onComplete;
 			this._onFailure = onFailure;
 			this._addListeners();
 		}
-
+		
 		/**
 		 * Destroy the request.
 		 */
@@ -145,7 +136,7 @@ package org.openscales.core.request
 					this.loaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this._onFailure);
 				}
 			} catch (e:Error) {
-				// Empty catch is evil, but here it's fair.
+				trace("unexcpeeted error");
 			}
 		}
 		

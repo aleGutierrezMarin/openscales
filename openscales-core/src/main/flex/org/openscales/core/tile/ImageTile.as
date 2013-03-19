@@ -78,6 +78,7 @@ package org.openscales.core.tile
 		 */
 		override public function draw():Boolean {
 			if(!super.draw()) {
+				if(_request)_request.destroy();
 				return false;    
 			}
 			if (this.url == null) {
