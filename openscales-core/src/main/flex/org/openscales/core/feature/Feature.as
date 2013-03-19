@@ -160,8 +160,8 @@ package org.openscales.core.feature {
 		 * Register all the events used in this class
 		 */
 		public function registerListeners():void {
-			this.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseHover);
-			this.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+			this.addEventListener(MouseEvent.ROLL_OVER, this.onMouseHover);
+			this.addEventListener(MouseEvent.ROLL_OUT, this.onMouseOut);
 			//this.addEventListener(MouseEvent.CLICK, this.onMouseClick);
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, this.onMouseDoubleClick);
 			this.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
@@ -173,8 +173,8 @@ package org.openscales.core.feature {
 		 * Unregister all the events used in this class
 		 */
 		public function unregisterListeners():void {
-			this.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseHover);
-			this.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+			this.removeEventListener(MouseEvent.ROLL_OVER, this.onMouseHover);
+			this.removeEventListener(MouseEvent.ROLL_OUT, this.onMouseOut);
 			//this.removeEventListener(MouseEvent.CLICK, this.onMouseClick);
 			this.removeEventListener(MouseEvent.DOUBLE_CLICK, this.onMouseDoubleClick);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
