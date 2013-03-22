@@ -46,6 +46,7 @@ package org.openscales.proj4as {
 			
 			if (proj.projParams.grids){
                           this.datum_type = ProjConstants.PJD_GRIDSHIFT;  
+                          this.nadgrids = proj.projParams.nadgrids;
 			} else {
                             this.datum_type;
 			}
