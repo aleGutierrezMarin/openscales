@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<componentPackage>
+	<component id="IIPImageViewer" class="org.openscales.fx.iipimage.FxIIPImageViewer" />
+</componentPackage>

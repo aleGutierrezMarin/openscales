@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   creationComplete="init();"
+			   removedFromStage="destroy();"
+			   close="close();">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.core.LayoutDirection;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.Map;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.components.Application;
+			import spark.components.HGroup;
+			import spark.components.Label;
+			import spark.components.Scroller;
+			import spark.components.VGroup;
+			import spark.layouts.HorizontalLayout;
+			
+			private var _init:Boolean = false;
+			private var _feature:Feature = null;
+			protected var _vgroup:VGroup = null;
+			private var scroller:Scroller;
+			
+			private static var DEFAULT_W:Number = 300;
+			private static var DEFAULT_H:Number = 200;
+			
+			/**
+			 * feature associated to the popup
+			 */
+			public function get feature():Feature
+			{
+				return _feature;
+			}
+			/**
+			 * @private
+			 */
+			public function set feature(value:Feature):void
+			{
+				_feature = value;
+				if(this._feature) {
+					if(!_vgroup) {
+						_vgroup = new VGroup();
+						_vgroup.gap = 10;
+						_vgroup.top = 5;
+						//_vgroup.width = DEFAULT_W;
+						//minus 33 because of title bar size
+						_vgroup.height = DEFAULT_H - 33;
+						this.addElement(_vgroup);
+					}
+					
+					if(this._feature.layer && this._feature.layer.map && this._feature.layer.attributesId.length>0)
+						this._feature.layer.map.addEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+					
+					this.drawContent();
+					this.localize();
+					
+					scroller = new Scroller();
+					scroller.percentWidth = 100;
+					scroller.viewport = _vgroup;
+					this.addElement(scroller);
+					
+					PopUpManager.addPopUp(this, (FlexGlobals.topLevelApplication as Application), true);
+				}
+			}
+			
+			protected function drawContent():void {
+				var j:uint = this._feature.layer.attributesId.length;
+				for(var i:uint = 0;i<j;++i) {
+					var key:String = this._feature.layer.attributesId[i];
+					var group:HGroup = new HGroup();
+					group.gap = 10;
+					_vgroup.addElement(group);
+					var lb:Label = new Label();
+					lb.width = 100;
+					lb.text = key;
+					group.addElement(lb);
+					lb = new Label();
+					lb.width = 120;
+					if(this._feature.attributes[key])
+						lb.text = this._feature.attributes[key];
+					else
+						lb.text = "";
+					group.addElement(lb);
+					_vgroup.addElement(group);
+				}
+			}
+			
+			protected function localize(e:I18NEvent=null):void {
+				this.title = Catalog.getLocalizationForKey("viewfeatureattributes.title");
+			}
+			
+			protected function init():void {
+				this.x = (parent.width-this.width)/2;
+				this.y = (parent.height-this.height)/2;
+				this.resize(null);
+				parent.addEventListener(Event.RESIZE,this.resize);
+				this._init = true;
+				
+			}
+			
+			public function discardPopup():void {
+				if(this._feature.layer && this._feature.layer.map)
+					this._feature.layer.map.removeEventListener(I18NEvent.LOCALE_CHANGED,this.localize);
+				if(_vgroup)
+					_vgroup.removeAllElements();
+				if(this._init)
+					PopUpManager.removePopUp(this);
+			}
+			
+			protected function destroy():void {
+				if(parent)
+					parent.removeEventListener(Event.RESIZE,this.resize);
+				
+				this.discardPopup();
+			}
+			
+			private function resize(e:Event):void {
+				this.x = (parent.width-this.width)/2;
+				this.y = (parent.height-this.height)/2;
+				this.width = DEFAULT_W;
+				this.height = DEFAULT_H;
+				if(this.width > parent.width) {
+					this.width = parent.width;
+				}
+				if(this.height > parent.height) {
+					this.height = parent.height;
+				}
+			}
+			
+			private function close():void
+			{
+				this.discardPopup();
+			}
+			
+		]]>
+	</fx:Script>
+</s:TitleWindow>

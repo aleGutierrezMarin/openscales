@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.sld.ui.ruleManager.RuleTree")]
+	</fx:Metadata>
+	<s:List id="rules"
+			width="100%"
+			focusAlpha="0"
+			contentBackgroundAlpha="0"
+			height="{this.height-30}"
+			dataProvider="{this.hostComponent.rules}"
+			itemRenderer="org.openscales.sld.skin.ruleManager.DefaultRuleItemRenderer"
+			selectedItem="@{this.hostComponent.currentRule}"
+			selectionColor="#ffffff"/>
+	
+</s:Skin>
