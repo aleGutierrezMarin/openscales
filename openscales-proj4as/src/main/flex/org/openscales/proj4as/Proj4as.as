@@ -195,11 +195,6 @@ package org.openscales.proj4as {
 			var onlyMandatoryGrids:Boolean= false;
 			for (var i:Number= 0; i<srs.grids.length; i++) {
 				var gi:Object= srs.grids[i];
-				if (gi.name && gi.name=="null"){
-					//TC 2013-03-27 to skip numerical computing error when grid null
-					//null grid=> nothing to do
-					return 0;
-				}
 				onlyMandatoryGrids= gi.mandatory;
 				var ct:Object= gi.grid;
 				if (ct==null) {
@@ -216,8 +211,14 @@ package org.openscales.proj4as {
 					ct.ll[0]+(ct.lim[0]-1)*ct.del[0]+epsilon<input.x ) {
 					continue;
 				}
-				
-				output= ProjConstants.nad_cvt(input, inverse, ct);
+				//TC 2013-03-27
+				// skip numerical computing error when "null" grid (identity grid)			
+				if (gi.name=="null"){
+					output.x = input.x;
+					output.y = input.y;
+				} else {
+					output= ProjConstants.nad_cvt(input, inverse, ct);
+				}
 				if (!isNaN(output.x)) {
 					break;
 				}
