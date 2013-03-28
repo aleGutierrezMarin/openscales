@@ -31,13 +31,15 @@ package org.openscales.core.layer
 							url:String = null,
 							data:XML = null,
 							style:Style = null,
-							bounds:Bounds = null) 
+							bounds:Bounds = null,
+							proxy:String = null ) 
 		{
 			super(identifier);
 			this.editable = true;
 			this.url = url;
 			this.data = data;
 			this.maxExtent = bounds;
+			this.proxy = proxy;
 			this._kmlFormat = new KMLFormat();
 			this._kmlFormat.userDefinedStyle = style;
 			var name:String = this._kmlFormat.readName(data);
