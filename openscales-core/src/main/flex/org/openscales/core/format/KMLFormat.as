@@ -9,6 +9,7 @@ package org.openscales.core.format
 	import mx.utils.XMLUtil;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.feature.DiscreteCircleFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -36,6 +37,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
+	import org.openscales.core.utils.StringUtils;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -46,7 +48,6 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.core.utils.StringUtils;
 	
 	use namespace os_internal;
 	
@@ -649,7 +650,18 @@ package org.openscales.core.format
 								_pStyle = _styleList.getValue(_id);
 						}
 					}
-					polygonsfeatures.push(new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle));
+					if(attributes.radius && attributes.center && 
+						attributes.center.split(" ") &&  attributes.center.split(" ").length == 2 &&
+						!isNaN(parseFloat(attributes.radius))) {
+						var coords:Array = attributes.center.split(" ");
+						var r:Number = parseFloat(attributes.radius);
+						if(coords.length == 2 && r)
+							polygonsfeatures.push(
+								new DiscreteCircleFeature(
+									new Location(coords[0],coords[1],"EPSG:4326"),
+									r,attributes,_pStyle));
+					}
+					else polygonsfeatures.push(new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle));
 				}
 				
 				//MultiGeometry  
