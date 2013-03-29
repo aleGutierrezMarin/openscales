@@ -2,7 +2,11 @@ package org.openscales.core.feature
 {
 	import flash.geom.Point;
 	
+	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.core.ns.os_internal;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
@@ -12,26 +16,29 @@ package org.openscales.core.feature
 	
 	/**
 	 * A discrete circle feature wich will respect projection deformation.
+	 * 
+	 * You can change the discrization value, the greater the better will the circle look. Beware of performance.
+	 * 
 	 */ 
 	public class DiscreteCircleFeature extends PolygonFeature
 	{
 		private static var _usedProjection:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
 		
 		/**
-		 * @param center expressed in EPSG:3857
-		 * @param radius expressed in meters
+		 * @param center Center of the circle will be reprojected in ESPG:4326
+		 * @param radius Radius of the circle, expressed in meters
 		 */ 
 		public function DiscreteCircleFeature(center:Location, radius:Number, data:Object=null, style:Style=null, isEditable:Boolean=false)
 		{
 			_center = center.reprojectTo(_usedProjection);
 			_radius = radius;
-			calculateGeometry();
+			os_internal::calculateGeometry();
 			super(polygon, data, style, isEditable);
 		}
 		
 		/**
-		 * To obtain feature clone
-		 * */
+		 * To obtain a feature clone 
+		 */
 		override public function clone():Feature {
 			var geometryClone:Geometry = this.geometry.clone();
 			var clone:DiscreteCircleFeature = new DiscreteCircleFeature(_center, _radius, data, this.style, this.isEditable);
@@ -43,41 +50,34 @@ package org.openscales.core.feature
 		
 		override public function draw():void
 		{
-			if(_recalculateGeometry) calculateGeometry();
+			if(_recalculateGeometry) os_internal::calculateGeometry();
 			_recalculateGeometry = false;
 			super.draw();
 		}
 		
 		
 		
-		private function calculateGeometry():void{
+		os_internal function calculateGeometry():void{
 			var circleLinearRing:LinearRing = new LinearRing(null,_center.projection);
 			
-			for (var i:uint=0; i <=discretization; i++) {
-				var point:org.openscales.geometry.Point = destination(center.lat,center.lon,this.radius,i*2*Math.PI/discretization);
-				circleLinearRing.addComponent(point);
+			var angleStep:Number = 2*Math.PI/_discretization;
+			var angle:Number = 0;
+			var theta:Number = Util.degtoRad(center.x);
+			var phi:Number =  Util.degtoRad(center.y);
+			var coords:Array;
+			
+			while(angle < Math.PI*2){
+				angle += angleStep;
+				coords = Util.greatCircleDestination(phi,theta,radius,angle);
+				circleLinearRing.addComponent(new org.openscales.geometry.Point(Util.radtoDeg(coords[1]),Util.radtoDeg(coords[0]),_usedProjection));
 			}
 			
 			if(super.geometry)super.geometry.destroy();
-			super.geometry = new Polygon(new <Geometry>[circleLinearRing],circleLinearRing.projection);
-		}
-
-		private function destination(lata:Number,lona:Number,dist:Number,brng:Number):org.openscales.geometry.Point { // destination along great circle.  returns values in degrees
-			var latSrc:Number =  lata * Math.PI/180;
-			var lonSrc:Number = lona * Math.PI/180;
-			
-			var latRes:Number = Math.asin(Math.sin(latSrc)*Math.cos(dist/6371) + Math.cos(latSrc)*Math.sin(dist/6371)*Math.cos(brng));
-			var lonRes:Number = lonSrc+Math.atan2(Math.sin(brng)*Math.sin(dist/6371)*Math.cos(latSrc), Math.cos(dist/6371)-Math.sin(latSrc)*Math.sin(latRes));
-			
-			/*lonRes = lonRes * 180/Math.PI;
-			latRes = latRes * 180/Math.PI;
-			*/
-			return new org.openscales.geometry.Point(lonRes,latRes,ProjProjection.getProjProjection("EPSG:4326"));
-			
+			super.geometry = new Polygon(new <Geometry>[circleLinearRing]);
 		}
 		
 		private var _recalculateGeometry:Boolean = false;
-
+		
 		/**
 		 * Flag to recalculate the geomtry on next redraw
 		 */
@@ -85,7 +85,7 @@ package org.openscales.core.feature
 		{
 			return _recalculateGeometry;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -93,18 +93,21 @@ package org.openscales.core.feature
 		{
 			_recalculateGeometry = value;
 		}
-
 		
-		private static var _discretization:Number = 48;
-
+		
+		private static var _discretization:Number = 32;
+		
 		/**
-		 * The discretization number for drawing the circle. The greater, the nicest will look the circle. Default is 48.
+		 * The discretization number for drawing the circle (ie the number of Point instances). 
+		 * 
+		 * <p>The greater, the nicest will look the circle. Default is 32.</p>
+		 * 
 		 */
 		public static function get discretization():Number
 		{
 			return _discretization;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -112,10 +115,10 @@ package org.openscales.core.feature
 		{
 			_discretization = value;
 		}
-
+		
 		
 		private var _center:Location;
-
+		
 		/**
 		 * Center of the circle. Is expressed in EPSG:3857
 		 */
@@ -123,7 +126,7 @@ package org.openscales.core.feature
 		{
 			return _center;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -133,10 +136,10 @@ package org.openscales.core.feature
 			if(_center) _center = _center.reprojectTo(_usedProjection);
 			_recalculateGeometry = true;
 		}
-
+		
 		
 		private var _radius:Number;
-
+		
 		/**
 		 * Radius of the circle. Is expressed in meter
 		 */
@@ -144,7 +147,7 @@ package org.openscales.core.feature
 		{
 			return _radius;
 		}
-
+		
 		/**
 		 * @private
 		 */
@@ -153,6 +156,6 @@ package org.openscales.core.feature
 			_radius = value;
 			_recalculateGeometry = true;
 		}
-
+		
 	}
 }

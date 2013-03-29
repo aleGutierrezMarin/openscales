@@ -9,6 +9,13 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 
+	/**
+	 * Add DiscreteFeature instance inside the specified Layer
+	 * 
+	 * <p>You can change the default radius</p>
+	 * 
+	 * <p>This class disptaches <code>FeatureEvent.FEATURE_DRAWING_START</code> and <code>FeatureEvent.FEATURE_DRAWING_END</code></p>
+	 */ 
 	public class DrawDiscreteCircleHandler extends AbstractDrawHandler
 	{		
 		/**
@@ -16,17 +23,12 @@ package org.openscales.core.handler.feature.draw
 		 */
 		private var _drawLayer:VectorLayer = null;
 		
-		/**
-		 * Single ID for point
-		 */		
-		private var id:Number = 0;
-		
 		private var _clickHandler:ClickHandler = new ClickHandler(null, true);
 		
 		/**
-		 * 
+		 * A style to apply to the drawn circle. If null, no style will be applied;
 		 */
-		private var _style:Style = Style.getDefaultPointStyle();
+		private var _style:Style;
 		
 		/**
 		 * Default radius for the drawn circle (default in 3000 meter)
@@ -38,40 +40,44 @@ package org.openscales.core.handler.feature.draw
 		public function DrawDiscreteCircleHandler(map:Map=null, active:Boolean=false, drawLayer:org.openscales.core.layer.VectorLayer=null)
 		{
 			super(map, active, drawLayer);
+			_clickHandler.click = this.drawCircle;
 		}
 		
 		override protected function registerListeners():void{
 			if (this.map) {
-				//this.map.addEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
 				_clickHandler.map = this.map;
 				_clickHandler.active = true;
-				_clickHandler.click = this.drawCircle;
 			}
 		}
 		
 		override protected function unregisterListeners():void{
 			if (this.map) {
-				//this.map.removeEventListener(MapEvent.MOUSE_CLICK, this.drawPoint);
 				_clickHandler.active = false;
 			}
 		}
 		
 	
 		/**
-		 * Create a point and draw it
+		 * Create a circle and draw it
 		 */		
 		protected function drawCircle(px:Pixel = null):void {
-			//We draw the point
+			
 			if (drawLayer != null){
+				var center:Location = map.getLocationFromMapPx(px);	
+				var circleFeature:DiscreteCircleFeature = new DiscreteCircleFeature(center,circleRadius);
 				
+				var evt:FeatureEvent = new FeatureEvent(FeatureEvent.FEATURE_DRAWING_START,circleFeature);
+				this.map.dispatchEvent(evt); // For backward compatibility				
+				this.dispatchEvent(evt)
+			
 				drawLayer.scaleX=1;
 				drawLayer.scaleY=1;
-
-				var center:Location = map.getLocationFromMapPx(px);		
-				
-				var circleFeature:DiscreteCircleFeature = new DiscreteCircleFeature(center,circleRadius);
+				if(_style) circleFeature.style = style;	
 				drawLayer.addFeature(circleFeature);
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,circleFeature));
+				
+				evt = new FeatureEvent(FeatureEvent.FEATURE_DRAWING_END,circleFeature);
+				this.map.dispatchEvent(evt); // For backward compatibility
+				this.dispatchEvent(evt);
 			}
 		}
 		
