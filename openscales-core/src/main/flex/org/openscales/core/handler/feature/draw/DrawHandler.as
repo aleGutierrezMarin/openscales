@@ -307,7 +307,7 @@ package org.openscales.core.handler.feature.draw
 							(drawLayerFeatures[last] as LineStringFeature).lineString.removePoint(pointToDelete);
 							pathHandler.lastPoint = (drawLayerFeatures[last] as LineStringFeature).lineString.getLastPoint();
 							//update the starting point of the temporary line
-							var loc:Location = new Location(pathHandler.lastPoint.x, pathHandler.lastPoint.y);
+							var loc:Location = new Location(pathHandler.lastPoint.x, pathHandler.lastPoint.y,pathHandler.lastPoint.projection);
 							pathHandler.startLocation = loc;
 						} else {
 							drawLayer.removeFeature(drawLayerFeatures[last]);

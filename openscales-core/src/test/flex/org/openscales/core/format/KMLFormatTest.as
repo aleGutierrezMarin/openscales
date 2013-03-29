@@ -4,6 +4,7 @@ package org.openscales.core.format
 	import flash.utils.ByteArray;
 	
 	import org.flexunit.Assert;
+	import org.flexunit.asserts.assertEquals;
 	import org.flexunit.asserts.assertNull;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -137,6 +138,33 @@ package org.openscales.core.format
 			var polySym:Symbolizer = rule.symbolizers[0];
 			var fill:SolidFill = (polySym as PolygonSymbolizer).fill as SolidFill;
 			Assert.assertEquals("The color of the first polygon should be 1010687",1010687,fill.color);
+		}
+		
+		[Test]
+		public function shouldBuildCoordsAsStringWithValidVectorParameter():void{
+			var kmlFormat:KMLFormat = new KMLFormat();
+			var vect:Vector.<Number> = new <Number>[4.523,5.12,45.2,15.3];
+			var expected:String = "4.523,5.12 45.2,15.3";
+			var res:String = kmlFormat.buildCoordsAsString(vect);
+			assertEquals("A valid coord vector should be correctly read as String",expected,res)
+		}
+		
+		[Test]
+		public function shouldBuildCoordsAsStringWithUnevenVectorParameter():void{
+			var kmlFormat:KMLFormat = new KMLFormat();
+			var vect:Vector.<Number> = new <Number>[4.523,5.12,45.2,15.3,7.8];
+			var expected:String = "4.523,5.12 45.2,15.3";
+			var res:String = kmlFormat.buildCoordsAsString(vect);
+			assertEquals("A valid coord vector should be correctly read as String",expected,res)
+		}
+		
+		[Test]
+		public function shouldBuildCoordsAsStringAndRepeatFirstCoords():void{
+			var kmlFormat:KMLFormat = new KMLFormat();
+			var vect:Vector.<Number> = new <Number>[4.523,5.12,45.2,15.3];
+			var expected:String = "4.523,5.12 45.2,15.3 4.523,5.12";
+			var res:String = kmlFormat.buildCoordsAsString(vect,true);
+			assertEquals("A valid coord vector should be correctly read as String",expected,res)
 		}
 	}
 
