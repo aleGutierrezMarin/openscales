@@ -28,7 +28,7 @@ package org.openscales.core.handler.feature.draw
 	 * */
 	public class EditPolygonHandler extends AbstractEditCollectionHandler
 	{
-		public function EditPolygonHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null,virtualStyle:Style = null)
+		public function EditPolygonHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null,virtualStyle:Style = null,inBetweenStyle:Style = null)
 		{
 			this.featureClickHandler = featureClickHandler;
 			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
@@ -37,6 +37,9 @@ package org.openscales.core.handler.feature.draw
 				this.virtualStyle = Style.getDefaultPointStyle();
 			else
 				this.virtualStyle = virtualStyle;
+			if(inBetweenStyle){
+				_inbetweenStyle = inBetweenStyle;
+			}
 		}
 	
 		 /**
@@ -199,8 +202,8 @@ package org.openscales.core.handler.feature.draw
 			}
 			//We draw the temporaries lines of the polygon
 			if(point1!=null && point2!=null){
-				point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y));
-				point2Px=this.map.getMapPxFromLocation(new Location(point2.x,point2.y));
+				point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y,point1.projection));
+				point2Px=this.map.getMapPxFromLocation(new Location(point2.x,point2.y,point1.projection));
 				
 		 		_drawContainer.graphics.clear();
 		 		_drawContainer.graphics.lineStyle(1, 0xFF00BB);	 

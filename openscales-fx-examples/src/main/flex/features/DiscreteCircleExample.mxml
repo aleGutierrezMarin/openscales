@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns="http://openscales.org" 
+		  xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  width="100%" height="100%" xmlns:components="components.*"
+		  creationComplete="init()">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.events.FeatureEvent;
+			import org.openscales.core.feature.DiscreteCircleFeature;
+			import org.openscales.core.handler.feature.draw.DrawDiscreteCircleHandler;
+			import org.openscales.core.layer.Bing;
+			import org.openscales.core.layer.DrawingsLayer;
+			import org.openscales.core.layer.originator.DataOriginator;
+			import org.openscales.core.style.Style;
+			
+			import spark.events.IndexChangeEvent;
+			
+			public function init():void
+			{
+				shom.originators.push(new DataOriginator("SHOM",
+					"http://www.shom.fr",
+					"http://services.data.shom.fr/static/logo/SHOM/SHOM.gif"));
+				originators.dataOriginators.updateOriginators();
+				
+				// Setting map background color
+				fxMap.map.backTileColor = 0xFAFAFA;
+				
+				// Setting a Style for our layer
+				drawingLayer.style = Style.getDefaultStyle();
+				
+				// Instianciating a drawing handler and adding it to the Map
+				var handler:DrawDiscreteCircleHandler = new DrawDiscreteCircleHandler(fxMap.map,true,(drawingLayer.nativeLayer) as DrawingsLayer);
+				fxMap.map.addControl(handler);
+				
+				// We want some random radius
+				handler.addEventListener(FeatureEvent.FEATURE_DRAWING_START,beforeFeatureDraw);
+			}
+			
+			protected function beforeFeatureDraw(event:FeatureEvent):void{
+				if(event.feature){
+					(event.feature as DiscreteCircleFeature).radius = randomRadius(10000,50000);
+				}
+			}
+			
+			protected function randomRadius(min:Number, max:Number):Number{
+				return min + (Math.random() * (max + min)); 
+			}
+			
+			protected function buttonbar1_changeHandler(event:IndexChangeEvent):void
+			{
+				if(event.newIndex == 1) fxMap.projection = "EPSG:3857";
+				else fxMap.projection = "EPSG:4326";
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<Map id="fxMap" width="100%" height="100%" 
+		 resolution="0.018398940223618158" 
+		 center="2.0348771486450348,47.037382066308375"
+		 projection="EPSG:4326">
+		
+		<WMS id="shom" url="http://services.data.shom.fr/INSPIRE/wms/r" layers="TCH-LINE_PYR-PNG_WLD_WGS84G_WMS" version="1.3.0" />
+		<DrawingsLayer id="drawingLayer" identifier="drawing layer 1"/>
+		<DragHandler />
+		<WheelHandler />	
+		<DataOriginatorsDisplay id="originators" right="30" bottom="20" />
+	</Map>
+	
+	
+	<s:TextArea text="Discrete circles&#13;You can click the map to draw circles with random radii. Note that circles respect projection deformation (Plate Carrée in that case) and thus looks distorded. In the case of a projection that respect shapes (such as Mercator), circles will look fine." 
+			 paddingTop="5"
+			 paddingLeft="5"
+			 paddingRight="5"
+			 paddingBottom="5"
+			 borderColor="black"
+			 editable="false"
+			 horizontalCenter="0" left="5" top="5" right="5" 
+			 width="100%"
+			 height="55"/>
+	
+	<s:ButtonBar selectedIndex="0" change="buttonbar1_changeHandler(event)" horizontalCenter="0" bottom="20">
+		<s:ArrayCollection>
+			<fx:String>Plate Carrée</fx:String> 
+			<fx:String>Mercator</fx:String> 
+		</s:ArrayCollection>
+	</s:ButtonBar>
+</s:Group>
