@@ -30,10 +30,12 @@ package org.openscales.core.feature
 		 */ 
 		public function DiscreteCircleFeature(center:Location, radius:Number, data:Object=null, style:Style=null, isEditable:Boolean=false)
 		{
+			super(polygon, data, style, isEditable);
 			_center = center.reprojectTo(_usedProjection);
 			_radius = radius;
 			os_internal::calculateGeometry();
-			super(polygon, data, style, isEditable);
+			setAttributes();
+			
 		}
 		
 		/**
@@ -74,6 +76,11 @@ package org.openscales.core.feature
 			
 			if(super.geometry)super.geometry.destroy();
 			super.geometry = new Polygon(new <Geometry>[circleLinearRing]);
+		}
+		
+		private function setAttributes():void{
+			attributes.center = _center.x+" "+_center.y; 
+			attributes.radius = _radius;
 		}
 		
 		private var _recalculateGeometry:Boolean = false;
@@ -134,6 +141,7 @@ package org.openscales.core.feature
 		{
 			_center = value;
 			if(_center) _center = _center.reprojectTo(_usedProjection);
+			setAttributes();
 			_recalculateGeometry = true;
 		}
 		
@@ -154,6 +162,7 @@ package org.openscales.core.feature
 		public function set radius(value:Number):void
 		{
 			_radius = value;
+			setAttributes();
 			_recalculateGeometry = true;
 		}
 		
