@@ -28,7 +28,7 @@ package org.openscales.core.handler.feature.draw
 	 * */
 	public class EditPolygonHandler extends AbstractEditCollectionHandler
 	{
-		public function EditPolygonHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null,virtualStyle:Style = null)
+		public function EditPolygonHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null,virtualStyle:Style = null,inBetweenStyle:Style = null)
 		{
 			this.featureClickHandler = featureClickHandler;
 			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
@@ -37,6 +37,9 @@ package org.openscales.core.handler.feature.draw
 				this.virtualStyle = Style.getDefaultPointStyle();
 			else
 				this.virtualStyle = virtualStyle;
+			if(inBetweenStyle){
+				_inbetweenStyle = inBetweenStyle;
+			}
 		}
 	
 		 /**
