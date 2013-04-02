@@ -155,7 +155,7 @@ package org.openscales.core.handler.feature.draw
 					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;
 				}
 		 	}
-		 	if(point1!=null)point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y));
+		 	if(point1!=null)point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y,point1.projection));
 		 	
 		 	//We draw the temporaries lines
 		 	if(point2==null && point1!=null){
@@ -166,7 +166,7 @@ package org.openscales.core.handler.feature.draw
 		 		_drawContainer.graphics.endFill();
 		 	}
 		 	else if (point2!=null && point1!=null){
-		 		point2Px=this.map.getMapPxFromLocation(new Location(point2.x,point2.y));
+		 		point2Px=this.map.getMapPxFromLocation(new Location(point2.x,point2.y,point2.projection));
 		 		_drawContainer.graphics.clear();
 		 		_drawContainer.graphics.lineStyle(1, 0xFF00BB);	 
 		 		_drawContainer.graphics.moveTo(point1Px.x,point1Px.y);
