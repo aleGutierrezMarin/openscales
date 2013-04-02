@@ -218,6 +218,12 @@
 					this.selectedIndexUnit = list.selectedIndex;
 				}	
 				
+				if(this.unitDataProvider == null) {
+					this.unitDataProvider = new ArrayCollection();
+					this.feedUnitsComboBox();
+					return;
+				}
+				
 				var item:String = (this.unitDataProvider.getItemAt(this.selectedIndexUnit).data as String);
 					
 				switch(item)
