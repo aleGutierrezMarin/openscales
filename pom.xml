@@ -394,7 +394,6 @@
 			<artifactId>flex-framework</artifactId>
 			<version>${flex.sdk.version}</version>
 			<type>pom</type>
-			
 		</dependency>
 		
 		<dependency>
