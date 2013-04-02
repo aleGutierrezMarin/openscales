@@ -395,7 +395,6 @@
 			<version>${flex.sdk.version}</version>
 			<type>pom</type>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
