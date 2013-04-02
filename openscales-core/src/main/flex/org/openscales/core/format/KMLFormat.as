@@ -9,6 +9,7 @@ package org.openscales.core.format
 	import mx.utils.XMLUtil;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.feature.DiscreteCircleFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -36,6 +37,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
+	import org.openscales.core.utils.StringUtils;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -648,7 +650,18 @@ package org.openscales.core.format
 								_pStyle = _styleList.getValue(_id);
 						}
 					}
-					polygonsfeatures.push(new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle));
+					if(attributes.radius && attributes.center && 
+						attributes.center.split(" ") &&  attributes.center.split(" ").length == 2 &&
+						!isNaN(parseFloat(attributes.radius))) {
+						var coords:Array = attributes.center.split(" ");
+						var r:Number = parseFloat(attributes.radius);
+						if(coords.length == 2 && r)
+							polygonsfeatures.push(
+								new DiscreteCircleFeature(
+									new Location(coords[0],coords[1],"EPSG:4326"),
+									r,attributes,_pStyle));
+					}
+					else polygonsfeatures.push(new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle));
 				}
 				
 				//MultiGeometry  
@@ -934,7 +947,7 @@ package org.openscales.core.format
 		 */ 
 		private function loadPolygon(placemark:XML):Polygon
 		{
-                        var localns:Namespace = this._internalns;
+            var localns:Namespace = this._internalns;
 			var polygon:XML = placemark..localns::Polygon[0];
 			
 			//exterior ring
@@ -967,6 +980,8 @@ package org.openscales.core.format
 			_Pdata = _Pdata.split("\n").join(" ");
 			_Pdata = _Pdata.replace(/^\s*(.*?)\s*$/g, "$1");
 			var coordinates:Array = _Pdata.split(" ");
+			if(coordinates[0] == coordinates[coordinates.length-1])
+				coordinates.pop(); // Removing last coordinates that are duplicates of first one
 			var Ppoints:Vector.<Number> = new Vector.<Number>();
 			var Pcoords:String;
 			var _Pcoords:Array;
@@ -1200,7 +1215,7 @@ package org.openscales.core.format
 			
 			var ringList:Vector.<Geometry> = poly.getcomponentsClone();
 			var extRing:LinearRing = ringList[0] as LinearRing;
-			coords = this.buildCoordsAsString(extRing.getcomponentsClone());
+			coords = this.buildCoordsAsString(extRing.getcomponentsClone(),true);
 			if(coords.length != 0)
 				extRingNode.appendChild(new XML("<coordinates>" + coords + "</coordinates>"));
 			
@@ -1216,7 +1231,7 @@ package org.openscales.core.format
 					innerBoundary.appendChild(intRingNode);
 					polyNode.appendChild(innerBoundary);
 					
-					coords = this.buildCoordsAsString(intRing.getcomponentsClone());
+					coords = this.buildCoordsAsString(intRing.getcomponentsClone(),true);
 					if(coords.length != 0)
 						intRingNode.appendChild(new XML("<coordinates>" + coords + "</coordinates>"));
 				}
@@ -1229,20 +1244,23 @@ package org.openscales.core.format
 		 * @param the vector of coordinates of the geometry
 		 * @return the coordinates as a string
 		 * in kml coordinates are tuples consisting of longitude, latitude and altitude (optional)
-		 * the geometries must be in 2D; the altitude is not supported    	
+		 * the geometries must be in 2D; the altitude is not supported    
+		 * 
+		 * @param coords A vector of Number. Numbers will be read two by two (first is lon, second is lat)
+		 * @param repeatFirstOne true if you want the first coord to be repeated at the end	
 		 */
-		
-		public function buildCoordsAsString(coords:Vector.<Number>):String
+		public function buildCoordsAsString(coords:Vector.<Number>, repeatFirstOne:Boolean=false):String
 		{
 			var i:uint;
 			var stringCoords:String = "";
 			var numberOfPoints:uint = coords.length;
-			for(i = 0; i < numberOfPoints; i += 2){
+			for(i = 0; i < numberOfPoints-1; i += 2){
 				stringCoords += String(coords[i])+",";
 				stringCoords += String(coords[i+1]);
-				if( i != (numberOfPoints -2))
-					stringCoords += " ";
+				stringCoords += " ";
 			}
+			stringCoords = StringUtils.trim(stringCoords);
+			if(repeatFirstOne) stringCoords += " "+coords[0]+","+coords[1]; 
 			return stringCoords;
 		}
 		

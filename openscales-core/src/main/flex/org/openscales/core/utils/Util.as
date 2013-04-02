@@ -316,6 +316,26 @@ package org.openscales.core.utils
 			return val*180/Math.PI;
 		}
 		
+		/**
+		 * Great circle destination. Calculates a point located at <code>dist</code> radian from the <code>originLat</code>,<code>originLon</code> point by follonwing an Earth great circle
+		 * The great circle is defined by a direction expressed in radian and the <code>originLat</code>,<code>originLon</code> point.
+		 * <p>The method assume the Earth is a sphere of radius 6371000 meters</p>
+		 * <p>
+		 * Code adapted from http://www.barnabu.co.uk/geapi/polyplot/
+		 * </p>
+		 * 
+		 * @param originLat The latitude of the origin point, expressed in radian
+		 * @param originLon The longitude of the origin point, expressed in radian
+		 * @param dist The distance to travel along the great circle, expressed in meters
+		 * @param direction The direction of the great circle.
+		 * @return an Array containing the result point latitude and longitude. Values are expressed in radian.
+		 * */ 
+		public static function greatCircleDestination(originLat:Number,originLon:Number,dist:Number,direction:Number):Array { // destination along great circle.  returns values in degrees				
+			var earthRadius:Number = 6371000;
+			var latb:Number = Math.asin(Math.sin(originLat)*Math.cos(dist/earthRadius) + Math.cos(originLat)*Math.sin(dist/earthRadius)*Math.cos(direction));
+			var lonb:Number = originLon+Math.atan2(Math.sin(direction)*Math.sin(dist/earthRadius)*Math.cos(originLat), Math.cos(dist/earthRadius)-Math.sin(originLat)*Math.sin(latb));
+			return [latb, lonb];	
+		}
 		
 	}
 }

@@ -727,18 +727,17 @@ package org.openscales.core.handler.feature
 				}
 				layersToTest = layersTmp;
 				// 
+				var layerFeatures:Vector.<Feature>;
 				for each (layer in layersToTest) {
-					for(var i:uint = layer.features.length; i > 0; i--){
-						if (geom.intersects(layer.features[i-1].geometry)) {
-							if(_unselectableFeatures.indexOf(layer.features[i-1])==-1){
-								if (layer.features[i-1].selectable)
-								{
-									featuresToSelect.push(layer.features[i-1]);
-									if(!this._enableMultipleSelection)
-										break;
-								}
-							}
-						}
+					layerFeatures = layer.features;
+					for each(var candidate:Feature in layerFeatures){
+						if(!candidate.selectable)continue;
+						if(_unselectableFeatures.indexOf(candidate) != -1) continue;
+						if(!geom.intersects(candidate.geometry))continue;
+						featuresToSelect.push(candidate);
+						if(!this._enableMultipleSelection)
+							break;	
+						
 					}
 				}
 			}

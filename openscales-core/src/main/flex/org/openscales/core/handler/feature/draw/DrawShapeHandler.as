@@ -229,7 +229,7 @@ package org.openscales.core.handler.feature.draw
 			if(evt.zoomChanged) {
 				//we update the pixel of the last point which has changed
 				var tempPoint:Point = _lineString.getLastPoint();
-				_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y));
+				_startPoint = this.map.getMapPxFromLocation(new Location(tempPoint.x, tempPoint.y,tempPoint.projection));
 			}
 		}
 		
