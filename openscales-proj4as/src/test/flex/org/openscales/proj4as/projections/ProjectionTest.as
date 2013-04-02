@@ -151,6 +151,57 @@ package org.openscales.proj4as.projections
 			Assert.assertEquals("LAMBE->WebMercator", true, (Math.abs(en2xy.x - xy.x)<=xyEPSLN) && (Math.abs(en2xy.y - xy.y)<=xyEPSLN));
 			Assert.assertEquals("WebMercator->LAMBE", true, (Math.abs(xy2en.x - en.x)<=xyEPSLN) && (Math.abs(xy2en.y - en.y)<=xyEPSLN));
 		}
+		
+		/**
+		 * Test 5 : IGNF:LAMB93 <-> EPSG:3857
+		 */
+		[Test]
+		public function testLAMB93_3857():void {
+			var merc:ProjProjection = ProjProjection.getProjProjection("EPSG:3857");
+			var lamb:ProjProjection = ProjProjection.getProjProjection("IGNF:LAMB93");
+			var en:ProjPoint = new ProjPoint(669710.330,6860190.913);//en for LAMB93, xy for EPSG:3857
+			var xy:ProjPoint = new ProjPoint(288017.78,6247934.64)
+			var en2xy:ProjPoint = en.clone();
+			en2xy= Proj4as.transform(lamb,merc,en2xy);
+			var xy2en:ProjPoint = xy.clone();
+			xy2en= Proj4as.transform(merc,lamb,xy2en);
+			Assert.assertEquals("LAMB93->WebMercator", true, (Math.abs(en2xy.x - xy.x)<=xyEPSLN) && (Math.abs(en2xy.y - xy.y)<=xyEPSLN));
+			Assert.assertEquals("WebMercator->LAMB93", true, (Math.abs(xy2en.x - en.x)<=xyEPSLN) && (Math.abs(xy2en.y - en.y)<=xyEPSLN));
+		}
+		
+		/**
+		 * Test 6 : IGNF:LAMB93 <-> IGNF:LAMBE
+		 */
+		[Test]
+		public function testLAMB93_LAMBE():void {
+			var ntf:ProjProjection = ProjProjection.getProjProjection("IGNF:LAMBE");
+			var lamb:ProjProjection = ProjProjection.getProjProjection("IGNF:LAMB93");
+			var en:ProjPoint = new ProjPoint(669710.330,6860190.913);//en for LAMB93, xy for LAMBE
+			var xy:ProjPoint = new ProjPoint(618418.104,2426995.169)
+			var en2xy:ProjPoint = en.clone();
+			en2xy= Proj4as.transform(lamb,ntf,en2xy);
+			var xy2en:ProjPoint = xy.clone();
+			xy2en= Proj4as.transform(ntf,lamb,xy2en);
+			Assert.assertEquals("LAMB93->LAMBE", true, (Math.abs(en2xy.x - xy.x)<=xyEPSLN) && (Math.abs(en2xy.y - xy.y)<=xyEPSLN));
+			Assert.assertEquals("LAMBE->LAMB93", true, (Math.abs(xy2en.x - en.x)<=xyEPSLN) && (Math.abs(xy2en.y - en.y)<=xyEPSLN));
+		}
+		
+		/**
+		 * Test 7 : IGNF:LAMBE <-> EPSG:3857
+		 */
+		[Test]
+		public function testLAMBE_3857():void {
+			var merc:ProjProjection = ProjProjection.getProjProjection("EPSG:3857");
+			var ntf:ProjProjection = ProjProjection.getProjProjection("IGNF:LAMBE");
+			var en:ProjPoint = new ProjPoint(618418.104,2426995.169);//en for LAMBE, xy for 3857
+			var xy:ProjPoint = new ProjPoint(288017.78,6247934.64)
+			var en2xy:ProjPoint = en.clone();
+			en2xy= Proj4as.transform(ntf,merc,en2xy);
+			var xy2en:ProjPoint = xy.clone();
+			xy2en= Proj4as.transform(merc,ntf,xy2en);
+			Assert.assertEquals("LAMBE->WebMercator", true, (Math.abs(en2xy.x - xy.x)<=xyEPSLN) && (Math.abs(en2xy.y - xy.y)<=xyEPSLN));
+			Assert.assertEquals("WebMercator->LAMBE", true, (Math.abs(xy2en.x - en.x)<=xyEPSLN) && (Math.abs(xy2en.y - en.y)<=xyEPSLN));
+		}
 
 	}
 }
