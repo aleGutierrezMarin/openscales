@@ -97,10 +97,11 @@ package org.openscales.proj4as {
 			if (source.datum_type == ProjConstants.PJD_NODATUM || dest.datum_type == ProjConstants.PJD_NODATUM) {
 				return point;
 			}
-            var src_a:Number = source.a;
-            var src_es:Number = source.es;
-            var dst_a:Number = dest.a;
-            var dst_es:Number = dest.es;
+			
+			var src_a:Number = source.a;
+			var src_es:Number = source.es;
+			var dst_a:Number = dest.a;
+			var dst_es:Number = dest.es;
                         
 			var fallback:Number= source.datum_type;
 			// If this datum requires grid shifts, then apply it to geodetic coordinates.
@@ -112,6 +113,8 @@ package org.openscales.proj4as {
 					
 					// try 3 or 7 params transformation or nothing ?
 					if (!source.datum_params) {
+						source.a = src_a;
+						source.es = source.es;
 						return point;
 					}
 					var wp:Number= 1.0;
@@ -119,6 +122,8 @@ package org.openscales.proj4as {
 						wp*= source.datum_params[i];
 					}
 					if (wp==0.0) {
+						source.a = src_a;
+						source.es = source.es;
 						return point;
 					}
 					if (source.datum_params.length>3){
@@ -164,6 +169,12 @@ package org.openscales.proj4as {
 					apply_gridshift( dest, true, point);
 					// CHECK_RETURN;
 			}
+			
+			source.a = src_a;
+			source.es = src_es;
+			dest.a = dst_a;
+			dest.es = dst_es;
+      
 			return point;
 		}
 
@@ -200,8 +211,14 @@ package org.openscales.proj4as {
 					ct.ll[0]+(ct.lim[0]-1)*ct.del[0]+epsilon<input.x ) {
 					continue;
 				}
-				
-				output= ProjConstants.nad_cvt(input, inverse, ct);
+				//TC 2013-03-27
+				// skip numerical computing error when "null" grid (identity grid)			
+				if (gi.name=="null"){
+					output.x = input.x;
+					output.y = input.y;
+				} else {
+					output= ProjConstants.nad_cvt(input, inverse, ct);
+				}
 				if (!isNaN(output.x)) {
 					break;
 				}

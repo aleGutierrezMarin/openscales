@@ -724,28 +724,27 @@ package org.openscales.proj4as {
 		}
 		
 		private function deriveConstants():void {
-			if (this.projParams.nadgrids == '@null')
-				this.projParams.datumCode='none';
 			
 			if (this.projParams.nadgrids) {
-				if (this.projParams.nadgrids == '@null' && !this.projParams.datum_params) {
-					this.projParams.datumCode = 'none';
-				} else {
-					this.projParams.grids= this.projParams.nadgrids.split(",");
-					var g:Object= null;
-					for (var i:Number= 0; i<this.projParams.grids.length; i++) {
-						g= this.projParams.grids[i];
-						var fg:Object= g.split("@");
-						this.projParams.grids[i]= {
-							mandatory: fg.length==1,//@=> optional grid (no error if not found)
-								name:fg[fg.length-1],
-								grid: ProjGrid.get(fg[fg.length-1])//FIXME: grids loading ...
-						};
-						if (this.projParams.grids[i].mandatory && !this.projParams.grids[i].grid) {
-							trace("Missing '"+this.projParams.grids[i].name+"'");
-						}
+				this.projParams.grids= this.projParams.nadgrids.split(",");
+				var g:Object= null;
+				for (var i:Number= 0; i<this.projParams.grids.length; i++) {
+					g= this.projParams.grids[i];
+					var fg:Object= g.split("@");
+					if (fg[fg.length-1]==""){
+						trace("nadgrids syntax error '"+this.projParams.nadgrids+"' : empty grid found");
+						continue;
+					}
+					this.projParams.grids[i]= {
+						mandatory: fg.length==1,//@=> optional grid (no error if not found)
+							name:fg[fg.length-1],
+							grid: ProjGrid.get(fg[fg.length-1])//FIXME: grids loading ...
+					};
+					if (this.projParams.grids[i].mandatory && !this.projParams.grids[i].grid) {
+						trace("Missing '"+this.projParams.grids[i].name+"'");
 					}
 				}
+				
 				// DGR, 2011-03-20: grids is an array of objects that hold
 				// the loaded grids, its name and the mandatory informations of it.
 			}
