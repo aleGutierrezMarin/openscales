@@ -156,9 +156,9 @@ package org.openscales.core.filter
 			if(this._value)
 				res+= "<ogc:Literal>"+this._value+"</ogc:Literal>\n";
 			if(this._lowerBoundary)
-				res+= "<ogc:LowerBoundary>"+this._lowerBoundary+"</ogc:LowerBoundary>\n";
+				res+= "<ogc:LowerBoundary><ogc:Literal>"+this._lowerBoundary+"</ogc:Literal></ogc:LowerBoundary>\n";
 			if(this._upperBoundary)
-				res+= "<ogc:UpperBoundary>"+this._upperBoundary+"</ogc:UpperBoundary>\n";
+				res+= "<ogc:UpperBoundary><ogc:Literal>"+this._upperBoundary+"</ogc:Literal></ogc:UpperBoundary>\n";
 			res+= "</ogc:"+this._type+">\n";
 			res+= "</ogc:Filter>\n";
 			return res;
