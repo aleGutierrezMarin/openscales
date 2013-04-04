@@ -314,5 +314,37 @@ package org.openscales.core.filter
 		{
 			_upperBoundary = value;
 		}
+
+		public function get wildCard():String
+		{
+			return _wildCard;
+		}
+
+		public function set wildCard(value:String):void
+		{
+			_wildCard = value;
+		}
+
+		public function get singleChar():String
+		{
+			return _singleChar;
+		}
+
+		public function set singleChar(value:String):void
+		{
+			_singleChar = value;
+		}
+
+		public function get escapeChar():String
+		{
+			return _escapeChar;
+		}
+
+		public function set escapeChar(value:String):void
+		{
+			_escapeChar = value;
+		}
+
+
 	}
 }
