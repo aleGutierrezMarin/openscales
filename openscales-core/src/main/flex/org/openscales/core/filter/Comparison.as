@@ -187,8 +187,16 @@ package org.openscales.core.filter
 				this._property = childs[0];
 			}
 			filter = dataXML.children();
-			if(filter.length()>1) {
-				this._value = filter[1];
+			if("PropertyIsBetween" == this._type){
+				if(filter.length()>2) {
+					this._lowerBoundary = filter[1];
+					this._upperBoundary = filter[2];
+				}
+			}
+			else{
+				if(filter.length()>1) {
+					this._value = filter[1];
+				}
 			}
 			//todo support isbetween and in
 		}
