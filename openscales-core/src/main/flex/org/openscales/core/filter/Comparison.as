@@ -128,6 +128,9 @@ package org.openscales.core.filter
 			res._matchCase = this._matchCase;
 			res._upperBoundary = this._upperBoundary;
 			res._value = this._value;
+			res._escapeChar = this._escapeChar;
+			res._wildCard = this._wildCard;
+			res._escapeChar = this._escapeChar;
 			return res;
 		}
 		
@@ -137,14 +140,14 @@ package org.openscales.core.filter
 			var res:String = "<ogc:Filter>\n";
 			res+= "<ogc:"+this._type;
 			if(this._escapeChar == "\\")
-				res+= " escapeChar=\"\\\"";
+				res+= " escape=\"\\\"";
 			else if(this._escapeChar)
-				res+= " escapeChar=\""+this._escapeChar+"\"";
+				res+= " escape=\""+this._escapeChar+"\"";
 			
 			if(this._wildCard == "\\")
-				res+= " wildChar=\"\\\"";
+				res+= " wildCard=\"\\\"";
 			else if(this._wildCard)
-				res+= " wildChar=\""+this._wildCard+"\"";
+				res+= " wildCard=\""+this._wildCard+"\"";
 			
 			if(this._singleChar == "\\")
 				res+= " singleChar=\"\\\"";
