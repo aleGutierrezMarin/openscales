@@ -348,7 +348,7 @@ package org.openscales.core.layer
 		 * @param feature The feature to add
 		 */
 		public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
-			if (this._featuresID.indexOf(feature.name)!=-1) {
+			if (this._featuresID.indexOf(feature.name)!=-1 || this.contains(feature)) {
 				return;
 			}
 			this._featuresID.push(feature.name);
@@ -465,10 +465,10 @@ package org.openscales.core.layer
 				return;
 			}
 			var i:int = this._featuresID.indexOf(feature.name);
-			if (i == -1) {
+			if (i == -1 && !this.contains(feature)) {
 				return;
 			}
-			this._featuresID.splice(i,1);
+			if(i!=-1) this._featuresID.splice(i,1);
 			
 			var j:int = this.numChildren;
 			for(i=0; i<j; ++i) {
