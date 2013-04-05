@@ -130,7 +130,7 @@ package org.openscales.core.filter
 			res._value = this._value;
 			res._escapeChar = this._escapeChar;
 			res._wildCard = this._wildCard;
-			res._escapeChar = this._escapeChar;
+			res._singleChar = this._singleChar;
 			return res;
 		}
 		
