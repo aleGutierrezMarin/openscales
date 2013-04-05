@@ -48,6 +48,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
+
 	
 	use namespace os_internal;
 	
@@ -626,7 +627,9 @@ package org.openscales.core.format
 								_Lstyle = _styleList.getValue(_id);
 						}
 					}
-					linesfeatures.push(new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle));
+					var lineFeature:LineStringFeature = new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle);
+					lineFeature.name = name;	
+					linesfeatures.push(lineFeature);
 				}
 				// Polygons
 				else if(polygonList != null && polygonList.length() > 0) 
@@ -656,15 +659,18 @@ package org.openscales.core.format
 						var coords:Array = attributes.center.split(" ");
 						var r:Number = parseFloat(attributes.radius);
 						if(coords.length == 2 && r)
-							polygonsfeatures.push(
-								new DiscreteCircleFeature(
-									new Location(coords[0],coords[1],"EPSG:4326"),
-									r,attributes,_pStyle));
+							var circleFeature:DiscreteCircleFeature = new DiscreteCircleFeature(
+								new Location(coords[0],coords[1],"EPSG:4326"),
+								r,attributes,_pStyle);
+							circleFeature.name = name;
+							polygonsfeatures.push(circleFeature);
+					} else {
+						
+						var polyFeature:PolygonFeature = new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle);
+						polyFeature.name = name;
+						polygonsfeatures.push(polyFeature);
 					}
-					else polygonsfeatures.push(new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle));
 				}
-				
-				//MultiGeometry  
 				else if (multiGeomList != null && multiGeomList.length() > 0)
 				{
 					var numberOfGeom:uint;
@@ -703,8 +709,10 @@ package org.openscales.core.format
 									geomStyle = _styleList.getValue(_id);
 							}
 						}
-						linesfeatures.push(new MultiLineStringFeature(new MultiLineString(components),
-						attributes,geomStyle));
+						var multiLineFeature:MultiLineStringFeature = new MultiLineStringFeature(new MultiLineString(components),
+							attributes,geomStyle);
+						multiLineFeature.name = name;
+						linesfeatures.push(multiLineFeature);
 					}
 
 					//multiPolygon
@@ -733,9 +741,10 @@ package org.openscales.core.format
 									geomStyle = _styleList.getValue(_id);
 							}
 						}
-						
-						polygonsfeatures.push(new MultiPolygonFeature(new MultiPolygon(components),
-						attributes,geomStyle));
+						var multiPolyFeature:MultiPolygonFeature = new MultiPolygonFeature(new MultiPolygon(components),
+							attributes,geomStyle);
+						multiPolyFeature.name = name;
+						polygonsfeatures.push(multiPolyFeature);
 					}
 					//multiPoint
 					//only one icon can be referenced in an IconStyle so icons are not supported for multipoints
@@ -750,31 +759,28 @@ package org.openscales.core.format
 							pointCoords.push(Number(coordinates[1]));
 						}
 						var multiPoint:MultiPoint = new MultiPoint(pointCoords);
-						
-						if(this.userDefinedStyle)
-							iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,this.userDefinedStyle));
-						else if(localStyle) 
-						{	
-							//iconsfeatures.push(getPointFeature(point,hmLocalStyle.getValue("PointStyle"),attributes));
-							iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,localStyle));
-						}
+						var multiPointFeature:MultiPointFeature;
+						var style:Style;
+						if(this.userDefinedStyle) style = userDefinedStyle
+						else if(localStyle) style = localStyle;
 						else if(placemark.*::styleUrl != null) 
 						{
 							_id = readStyleUrlId(placemark.*::styleUrl);
 							if(_styleList.getValue(_id))
 							{
-								//iconsfeatures.push(getPointFeature(point,pointStyles[_id],attributes));
-								iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,geomStyle = _styleList.getValue(_id)));
+								style = _styleList.getValue(_id);
 							} else 
 							{
-								iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));
+								style = Style.getDefaultPointStyle();
 							}
 						}
 						else
-							iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));	
+							style = Style.getDefaultPointStyle();
+						multiPointFeature = new MultiPointFeature(multiPoint,attributes,style);
+						multiPointFeature.name = name;	
+						iconsfeatures.push(multiPointFeature);
 					}
 				}
-
 				else if(pointList != null && pointList.length() > 0)
 				{
 					coordinates = placemark.localns::Point.localns::coordinates.text().split(",");
@@ -817,6 +823,7 @@ package org.openscales.core.format
 								lf.style = labelStyle;
 							}
 						}
+						lf.name = name;
 						labelfeatures.push(lf);
 					} else {
 						point = new Point(coordinates[0], coordinates[1]);
@@ -825,8 +832,11 @@ package org.openscales.core.format
 							point.projection = this.externalProjection;
 							point.transform(this.internalProjection);
 						}
+						var pointFeature:PointFeature;
 						if(this.userDefinedStyle) {
-							iconsfeatures.push(new PointFeature(point, attributes, this.userDefinedStyle));
+							pointFeature = new PointFeature(point, attributes, this.userDefinedStyle);
+							pointFeature.name = name;
+							iconsfeatures.push(pointFeature);
 						} 
 						else if(placemark.*::styleUrl != null || localStyle) 
 						{
@@ -844,13 +854,21 @@ package org.openscales.core.format
 							
 							if(objStyle) 
 							{ // style
-								iconsfeatures.push(getPointFeature(point,objStyle,attributes));
+								pointFeature = getPointFeature(point,objStyle,attributes) as PointFeature;
+								pointFeature.name = name;
+								iconsfeatures.push(pointFeature);
 							}
-							else // no matching style
-								iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
+							else {// no matching style
+								pointFeature =new PointFeature(point, attributes, Style.getDefaultPointStyle());
+								pointFeature.name = name;
+								iconsfeatures.push(pointFeature);
+							}
 						}
-						else // no style
-							iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
+						else {// no style
+							pointFeature =new PointFeature(point, attributes, Style.getDefaultPointStyle());
+							pointFeature.name = name;
+							iconsfeatures.push(pointFeature);
+						}	
 					}
 				}
 			}
