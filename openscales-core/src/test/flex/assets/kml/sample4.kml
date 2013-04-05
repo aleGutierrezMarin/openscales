@@ -1,0 +1,87 @@
+<kml>
+  <Document>
+    <name>null</name>
+    <Style id="Polygon_style">
+      <LineStyle>
+        <color>ff000000</color>
+        <colorMode>normal</colorMode>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <outline>1</outline>
+        <fill>1</fill>
+        <color>66ff6b0f</color>
+        <colorMode>normal</colorMode>
+      </PolyStyle>
+    </Style>
+    <Style id="Line_style">
+      <LineStyle>
+        <color>ff000000</color>
+        <colorMode>normal</colorMode>
+        <width>3</width>
+      </LineStyle>
+    </Style>
+    <Placemark>
+      <id>1365163846204</id>
+      <name>1365163846204</name>
+      <styleUrl>#Line_style</styleUrl>
+      <LineString>
+        <coordinates>-4.529480569427598,48.34024271274503 -4.520881363528241,48.39234378378231 -4.5031771160883896,48.38956168775604 -4.463216100438439,48.35516486415862 -4.497107088394726,48.32936724646055</coordinates>
+      </LineString>
+      <ExtendedData>
+        <Data name="attribute3">
+          <displayName>center</displayName>
+          <value>undefined</value>
+        </Data>
+        <Data name="attribute4">
+          <displayName>radius</displayName>
+          <value>undefined</value>
+        </Data>
+      </ExtendedData>
+    </Placemark>
+    <Placemark>
+      <id>1365163848785</id>
+      <name>1365163848785</name>
+      <styleUrl>#Polygon_style</styleUrl>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>-4.596756709699034,48.33670186325706 -4.593721695852202,48.36983409775164 -4.562865721742747,48.351876932491216 -4.548449405970296,48.32228554748461 -4.587904585979108,48.29648792978654 -4.606873422521806,48.308375067353296 -4.596756709699034,48.33670186325706</coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+      <ExtendedData>
+        <Data name="attribute3">
+          <displayName>center</displayName>
+          <value>undefined</value>
+        </Data>
+        <Data name="attribute4">
+          <displayName>radius</displayName>
+          <value>undefined</value>
+        </Data>
+      </ExtendedData>
+    </Placemark>
+    <Placemark>
+      <id>1365163850248</id>
+      <name>1365163850248</name>
+      <styleUrl>#Polygon_style</styleUrl>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>-4.489906894032488,48.392276581714185 -4.464505541495025,48.38715032031316 -4.441105361194668,48.378826823402804 -4.420608550283435,48.3676274286052 -4.4038038077839765,48.35398425447237 -4.391335872912069,48.33842332946646 -4.3836809139039055,48.32154411310417 -4.381128686278615,48.3039962366516 -4.383772074775915,48.28645439101932 -4.391504316398034,48.26959234899459 -4.404023890114022,48.25405712724107 -4.420846766076202,48.24044427222309 -4.441325444255138,48.22927519660681 -4.464673986013965,48.220977403109295 -4.489998055634921,48.2158683162063 -4.516328842757994,48.214143303811746 -4.542659629881066,48.2158683162063 -4.5679836995020215,48.220977403109295 -4.591332241260848,48.22927519660681 -4.611810919439785,48.24044427222309 -4.6286337954019645,48.25405712724107 -4.641153369117953,48.26959234899459 -4.648885610740072,48.28645439101932 -4.651528999237373,48.3039962366516 -4.648976771612081,48.32154411310417 -4.641321812603918,48.33842332946646 -4.628853877732011,48.35398425447237 -4.612049135232551,48.3676274286052 -4.591552324321318,48.378826823402804 -4.568152144020962,48.38715032031316 -4.542750791483499,48.392276581714185 -4.516328842757993,48.39400762499548 -4.489906894032488,48.392276581714185</coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+      <ExtendedData>
+        <Data name="attribute3">
+          <displayName>center</displayName>
+          <value>-4.516328842757994 48.30407546440362</value>
+        </Data>
+        <Data name="attribute4">
+          <displayName>radius</displayName>
+          <value>10000</value>
+        </Data>
+      </ExtendedData>
+    </Placemark>
+  </Document>
+</kml>
