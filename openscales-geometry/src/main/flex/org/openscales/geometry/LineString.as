@@ -199,6 +199,7 @@ package org.openscales.geometry
 		private function getXsortedSegments():Vector.<Vector.<org.openscales.geometry.Point>> {
 			var point1:org.openscales.geometry.Point, point2:org.openscales.geometry.Point;
 			var numSegs:int = this._components.length-3;
+			if(numSegs<0)numSegs=0;
 			var segments:Vector.<Vector.<org.openscales.geometry.Point>> = new Vector.<Vector.<org.openscales.geometry.Point>>(numSegs);
 			for(var i:int=0; i<numSegs; ++i) {
 				point1 = new org.openscales.geometry.Point(this._components[i],this._components[i+1])
