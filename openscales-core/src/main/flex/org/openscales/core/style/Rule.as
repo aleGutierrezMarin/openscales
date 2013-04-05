@@ -29,6 +29,8 @@ package org.openscales.core.style {
 		public static const LEGEND_POINT:String = "Point";
 
 		public static const LEGEND_POLYGON:String = "Polygon";
+		
+		public static const LEGEND_CIRCLE:String = "Circle";
 
 		private var _name:String = "";
 
@@ -186,6 +188,9 @@ package org.openscales.core.style {
 					drawMethod = this.drawLine;
 					break;
 				}
+				case LEGEND_CIRCLE:
+					drawMethod = this.drawCircle;
+					break;
 				default:  {
 
 					drawMethod = this.drawPolygon;
@@ -473,6 +478,41 @@ package org.openscales.core.style {
 				canvas.height = _maxHeight;
 			}
 			
+		}
+		
+		private function drawCircle(symbolizer:Symbolizer,canvas:Sprite):void{
+			var delta:Number = -1;
+			
+			if (symbolizer && (symbolizer as PolygonSymbolizer).stroke)
+			{
+				delta = Math.round((symbolizer as PolygonSymbolizer).stroke.width);
+				
+				if (delta > 10) {
+					delta = 10;
+				}
+				
+				canvas.graphics.lineStyle(delta, (symbolizer as PolygonSymbolizer).stroke.color, 
+					(symbolizer as PolygonSymbolizer).stroke.opacity, false, 
+					LineScaleMode.NORMAL, (symbolizer as PolygonSymbolizer).stroke.linecap, 
+					(symbolizer as PolygonSymbolizer).stroke.linejoin);
+			}
+			
+			var res:Number = 0;
+			if (delta >= 1)
+				res = Math.round(delta) / 2;
+			
+			canvas.graphics.moveTo(5 + res, 15);
+			canvas.graphics.curveTo(5+res+1, 5+res+1, 15, 5+res);
+			canvas.graphics.curveTo(25-res-1, 5+res+1, 25-res, 15);
+			canvas.graphics.curveTo(25-res-1, 25-res-1, 15, 25-res);
+			canvas.graphics.curveTo(5+res+1, 25-res-1, 5+res, 15);
+			
+			if(_maxWidth > 0){
+				canvas.width = _maxWidth;
+			}
+			if(_maxHeight > 0){
+				canvas.height = _maxHeight;
+			}
 		}
 	}
 }
