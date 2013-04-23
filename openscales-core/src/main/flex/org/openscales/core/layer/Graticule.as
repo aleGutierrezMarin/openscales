@@ -33,6 +33,8 @@ package org.openscales.core.layer
 		
 		private var _latitudeLabelsPadding:Number = 3;
 		
+		private var _labelFormatter:IGraticuleLabelFormatter = new DefaultGraticuleLabelFormatter();
+		
 		/**
 		 * @private
 		 * Array of possible graticule widths in degrees, from biggest to smallest.
@@ -142,7 +144,7 @@ package org.openscales.core.layer
 					var lineFeature:LineStringFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
 					// labels
-					var degreeLabel:String = getFormattedLabel(currentX, interval);
+					var degreeLabel:String = _labelFormatter.format(currentX,interval,"X");
 					
 					
 					if(_longitudeLabelsAlign == "top") alignValue = ymax-_longitudeLabelsPadding*offset;
@@ -175,7 +177,7 @@ package org.openscales.core.layer
 					lineFeature = new LineStringFeature(line,null,this.style);
 					this.addFeature(lineFeature);
 					// labels
-					degreeLabel = getFormattedLabel(currentY, interval);
+					degreeLabel = _labelFormatter.format(currentY,interval,"Y");
 					
 					if(_latitudeLabelsAlign == "right") alignValue = xmax-_latitudeLabelsPadding*offset
 					else if(_latitudeLabelsAlign == "center") alignValue = (xmin+xmax)/2 + _latitudeLabelsPadding*offset;
@@ -225,32 +227,6 @@ package org.openscales.core.layer
 		os_internal function getFirstCoordinateForGraticule(firstCoordinateOfMap:Number, interval:Number):Number {
 			var firstCoordinate:Number = interval*Math.floor(firstCoordinateOfMap/interval)+interval;
 			return firstCoordinate;
-		}
-		
-		/**
-		 * Gets formatted label to display on the map.
-		 * @param coordinate coordinate to display.
-		 * @param interval Interval used for the graticule.
-		 * @return The formatted label to display on the map.
-		 */
-		os_internal function getFormattedLabel(coordinate:Number, interval:Number):String {
-			var result:String = null;
-			var precision:uint = 4;
-			if (interval < 0.01) {
-				precision = 5;
-			}
-			if (coordinate > 10 || coordinate < -10) {
-				result = coordinate.toPrecision(precision) + " °";
-			}
-			else {
-				if (coordinate >= 1 || coordinate <= -1) {
-					result = coordinate.toPrecision(precision-1) + " °";
-				}
-				else {
-					result = coordinate.toPrecision(precision-2) + " °";
-				}
-			}
-			return result;
 		}
 		
 		/**
@@ -358,6 +334,22 @@ package org.openscales.core.layer
 		public function set latitudeLabelsPadding(value:Number):void
 		{
 			_latitudeLabelsPadding = value;
+		}
+
+		/**
+		 * A formmatter for the labels (default is DefaultGraticuleLabelFormatter). Do not concern style, only format.
+		 */
+		public function get labelFormatter():IGraticuleLabelFormatter
+		{
+			return _labelFormatter;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set labelFormatter(value:IGraticuleLabelFormatter):void
+		{
+			_labelFormatter = value;
 		}
 
 
