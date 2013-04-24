@@ -220,7 +220,7 @@ package org.openscales.core.feature {
 		 * Inherited Feature classes usually override this function.
 		 */
 		public function draw():void {
-
+			
 			this.graphics.clear();
 			while (this.numChildren > 0) {
 				this.removeChildAt(0);
