@@ -111,7 +111,6 @@ package org.openscales.core.handler.feature
 		 * This function is launched when the Mouse is up
 		 */
 		override protected function onMouseUp(event:MouseEvent):void{
-			
 			this.map.mouseNavigationEnabled = true;
 			this.map.panNavigationEnabled = true;
 			this.map.zoomNavigationEnabled = true;
@@ -130,9 +129,11 @@ package org.openscales.core.handler.feature
 				_featureCurrentlyDragged.stopDrag();
 				if (_featureCurrentlyDragged.originalStyle && !(this._featureCurrentlyDragged is PointFeature))
 					_featureCurrentlyDragged.style = _featureCurrentlyDragged.originalStyle;
+				
 				updateFeature(_featureCurrentlyDragged);
 				_featureCurrentlyDragged.draw();
 				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_DRAG_STOP,_featureCurrentlyDragged));
+				
 				this._layerToMove.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,_featureCurrentlyDragged));
 				this._layerToMove.redraw();
 				_featureCurrentlyDragged = null;
