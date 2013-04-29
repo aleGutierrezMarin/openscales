@@ -27,7 +27,7 @@ package org.openscales.proj4as {
 		static public const PJD_WGS84:int=4; // WGS84 or equivalent
 		static public const PJD_NODATUM:int=5; // WGS84 or equivalent
 		static public const SRS_WGS84_SEMIMAJOR:int=6378137; // only used in grid shift transforms
-		static public const SRS_WGS84_ESQUARED:Number=0.0066943799901413165;
+		static public const SRS_WGS84_ESQUARED:Number=0.006694379990141316;
 		
 		// ellipoid pj_set_ell.c
 		static public const SIXTH:Number=0.1666666666666666667; /* 1/6 */

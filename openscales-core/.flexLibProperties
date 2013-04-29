@@ -325,6 +325,9 @@
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.core.feature.DiscreteCircleFeature"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawDiscreteCircleHandler"/>
+    <classEntry path="org.openscales.core.feature.DiscreteCircleFeatureTest"/>
+    <classEntry path="org.openscales.core.layer.IGraticuleLabelFormatter"/>
+    <classEntry path="org.openscales.core.layer.DefaultGraticuleLabelFormatter"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -198,7 +198,7 @@ package org.openscales.core.handler.feature.draw
 				_drawContainer.graphics.clear();
 				//we update the pixel of the last point which has changed
 				var tempPoint:Point = _lineString.getLastPoint();
-				_startLocation = new Location(tempPoint.x, tempPoint.y);
+				_startLocation = new Location(tempPoint.x, tempPoint.y,tempPoint.projection);
 			}
 		}
 		

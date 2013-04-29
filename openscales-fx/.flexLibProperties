@@ -128,7 +128,6 @@
     <classEntry path="org.openscales.fx.handler.feature.FxSelectFeaturesHandler"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxBorderPanHandler"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxClickHandler"/>
-    <classEntry path="org.openscales.fx.handler.mouse.FxDragHandler"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxWMSGetFeatureInfo"/>
     <classEntry path="org.openscales.fx.handler.mouse.FxWheelHandler"/>
     <classEntry path="org.openscales.fx.layer.FxAggregate"/>

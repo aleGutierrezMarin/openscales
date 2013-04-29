@@ -60,7 +60,7 @@ package org.openscales.core.feature {
 		protected var _originGeometry:Geometry = null;
 		private var _state:String = null;
 		private var _style:Style = null;
-		private var _originalStyle:Style = null;
+		protected var _originalStyle:Style = null;
 		private var _selectable:Boolean = true;
 		
 		private var _mouseDown:Boolean = false;
@@ -162,7 +162,7 @@ package org.openscales.core.feature {
 		public function registerListeners():void {
 			this.addEventListener(MouseEvent.ROLL_OVER, this.onMouseHover);
 			this.addEventListener(MouseEvent.ROLL_OUT, this.onMouseOut);
-			//this.addEventListener(MouseEvent.CLICK, this.onMouseClick);
+			this.addEventListener(MouseEvent.CLICK, this.onMouseClick);
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, this.onMouseDoubleClick);
 			this.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 			this.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
@@ -175,7 +175,7 @@ package org.openscales.core.feature {
 		public function unregisterListeners():void {
 			this.removeEventListener(MouseEvent.ROLL_OVER, this.onMouseHover);
 			this.removeEventListener(MouseEvent.ROLL_OUT, this.onMouseOut);
-			//this.removeEventListener(MouseEvent.CLICK, this.onMouseClick);
+			this.removeEventListener(MouseEvent.CLICK, this.onMouseClick);
 			this.removeEventListener(MouseEvent.DOUBLE_CLICK, this.onMouseDoubleClick);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 			this.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
@@ -220,7 +220,7 @@ package org.openscales.core.feature {
 		 * Inherited Feature classes usually override this function.
 		 */
 		public function draw():void {
-
+			
 			this.graphics.clear();
 			while (this.numChildren > 0) {
 				this.removeChildAt(0);
@@ -441,16 +441,16 @@ package org.openscales.core.feature {
 		public function onMouseUp(pevt:MouseEvent):void {
 			if(pevt)
 			{
-				if (this._mouseDown)
+				/*if (this._mouseDown)
 				{
 					this._mouseDown = false;
 					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
 					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_CLICK, this, pevt.ctrlKey));
 				}
 				else
-				{
+				{*/
 					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
-				}
+				//}
 			}
 				
 			else
