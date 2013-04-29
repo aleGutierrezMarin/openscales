@@ -9,6 +9,7 @@ package org.openscales.core.format
 	import mx.utils.XMLUtil;
 	
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.feature.DiscreteCircleFeature;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LabelFeature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -36,6 +37,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
+	import org.openscales.core.utils.StringUtils;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -46,6 +48,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
+
 	
 	use namespace os_internal;
 	
@@ -624,7 +627,9 @@ package org.openscales.core.format
 								_Lstyle = _styleList.getValue(_id);
 						}
 					}
-					linesfeatures.push(new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle));
+					var lineFeature:LineStringFeature = new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle);
+					lineFeature.name = name;	
+					linesfeatures.push(lineFeature);
 				}
 				// Polygons
 				else if(polygonList != null && polygonList.length() > 0) 
@@ -648,10 +653,24 @@ package org.openscales.core.format
 								_pStyle = _styleList.getValue(_id);
 						}
 					}
-					polygonsfeatures.push(new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle));
+					if(attributes.radius && attributes.center && 
+						attributes.center.split(" ") &&  attributes.center.split(" ").length == 2 &&
+						!isNaN(parseFloat(attributes.radius))) {
+						var coords:Array = attributes.center.split(" ");
+						var r:Number = parseFloat(attributes.radius);
+						if(coords.length == 2 && r)
+							var circleFeature:DiscreteCircleFeature = new DiscreteCircleFeature(
+								new Location(coords[0],coords[1],"EPSG:4326"),
+								r,attributes,_pStyle);
+							circleFeature.name = name;
+							polygonsfeatures.push(circleFeature);
+					} else {
+						
+						var polyFeature:PolygonFeature = new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle);
+						polyFeature.name = name;
+						polygonsfeatures.push(polyFeature);
+					}
 				}
-				
-				//MultiGeometry  
 				else if (multiGeomList != null && multiGeomList.length() > 0)
 				{
 					var numberOfGeom:uint;
@@ -690,8 +709,10 @@ package org.openscales.core.format
 									geomStyle = _styleList.getValue(_id);
 							}
 						}
-						linesfeatures.push(new MultiLineStringFeature(new MultiLineString(components),
-						attributes,geomStyle));
+						var multiLineFeature:MultiLineStringFeature = new MultiLineStringFeature(new MultiLineString(components),
+							attributes,geomStyle);
+						multiLineFeature.name = name;
+						linesfeatures.push(multiLineFeature);
 					}
 
 					//multiPolygon
@@ -720,9 +741,10 @@ package org.openscales.core.format
 									geomStyle = _styleList.getValue(_id);
 							}
 						}
-						
-						polygonsfeatures.push(new MultiPolygonFeature(new MultiPolygon(components),
-						attributes,geomStyle));
+						var multiPolyFeature:MultiPolygonFeature = new MultiPolygonFeature(new MultiPolygon(components),
+							attributes,geomStyle);
+						multiPolyFeature.name = name;
+						polygonsfeatures.push(multiPolyFeature);
 					}
 					//multiPoint
 					//only one icon can be referenced in an IconStyle so icons are not supported for multipoints
@@ -737,31 +759,28 @@ package org.openscales.core.format
 							pointCoords.push(Number(coordinates[1]));
 						}
 						var multiPoint:MultiPoint = new MultiPoint(pointCoords);
-						
-						if(this.userDefinedStyle)
-							iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,this.userDefinedStyle));
-						else if(localStyle) 
-						{	
-							//iconsfeatures.push(getPointFeature(point,hmLocalStyle.getValue("PointStyle"),attributes));
-							iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,localStyle));
-						}
+						var multiPointFeature:MultiPointFeature;
+						var style:Style;
+						if(this.userDefinedStyle) style = userDefinedStyle
+						else if(localStyle) style = localStyle;
 						else if(placemark.*::styleUrl != null) 
 						{
 							_id = readStyleUrlId(placemark.*::styleUrl);
 							if(_styleList.getValue(_id))
 							{
-								//iconsfeatures.push(getPointFeature(point,pointStyles[_id],attributes));
-								iconsfeatures.push(new MultiPointFeature(multiPoint,attributes,geomStyle = _styleList.getValue(_id)));
+								style = _styleList.getValue(_id);
 							} else 
 							{
-								iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));
+								style = Style.getDefaultPointStyle();
 							}
 						}
 						else
-							iconsfeatures.push(new MultiPointFeature(multiPoint, attributes, Style.getDefaultPointStyle()));	
+							style = Style.getDefaultPointStyle();
+						multiPointFeature = new MultiPointFeature(multiPoint,attributes,style);
+						multiPointFeature.name = name;	
+						iconsfeatures.push(multiPointFeature);
 					}
 				}
-
 				else if(pointList != null && pointList.length() > 0)
 				{
 					coordinates = placemark.localns::Point.localns::coordinates.text().split(",");
@@ -804,6 +823,7 @@ package org.openscales.core.format
 								lf.style = labelStyle;
 							}
 						}
+						lf.name = name;
 						labelfeatures.push(lf);
 					} else {
 						point = new Point(coordinates[0], coordinates[1]);
@@ -812,8 +832,11 @@ package org.openscales.core.format
 							point.projection = this.externalProjection;
 							point.transform(this.internalProjection);
 						}
+						var pointFeature:PointFeature;
 						if(this.userDefinedStyle) {
-							iconsfeatures.push(new PointFeature(point, attributes, this.userDefinedStyle));
+							pointFeature = new PointFeature(point, attributes, this.userDefinedStyle);
+							pointFeature.name = name;
+							iconsfeatures.push(pointFeature);
 						} 
 						else if(placemark.*::styleUrl != null || localStyle) 
 						{
@@ -831,13 +854,21 @@ package org.openscales.core.format
 							
 							if(objStyle) 
 							{ // style
-								iconsfeatures.push(getPointFeature(point,objStyle,attributes));
+								pointFeature = getPointFeature(point,objStyle,attributes) as PointFeature;
+								pointFeature.name = name;
+								iconsfeatures.push(pointFeature);
 							}
-							else // no matching style
-								iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
+							else {// no matching style
+								pointFeature =new PointFeature(point, attributes, Style.getDefaultPointStyle());
+								pointFeature.name = name;
+								iconsfeatures.push(pointFeature);
+							}
 						}
-						else // no style
-							iconsfeatures.push(new PointFeature(point, attributes, Style.getDefaultPointStyle()));
+						else {// no style
+							pointFeature =new PointFeature(point, attributes, Style.getDefaultPointStyle());
+							pointFeature.name = name;
+							iconsfeatures.push(pointFeature);
+						}	
 					}
 				}
 			}
@@ -934,7 +965,7 @@ package org.openscales.core.format
 		 */ 
 		private function loadPolygon(placemark:XML):Polygon
 		{
-                        var localns:Namespace = this._internalns;
+            var localns:Namespace = this._internalns;
 			var polygon:XML = placemark..localns::Polygon[0];
 			
 			//exterior ring
@@ -967,6 +998,8 @@ package org.openscales.core.format
 			_Pdata = _Pdata.split("\n").join(" ");
 			_Pdata = _Pdata.replace(/^\s*(.*?)\s*$/g, "$1");
 			var coordinates:Array = _Pdata.split(" ");
+			if(coordinates[0] == coordinates[coordinates.length-1])
+				coordinates.pop(); // Removing last coordinates that are duplicates of first one
 			var Ppoints:Vector.<Number> = new Vector.<Number>();
 			var Pcoords:String;
 			var _Pcoords:Array;
@@ -1200,7 +1233,7 @@ package org.openscales.core.format
 			
 			var ringList:Vector.<Geometry> = poly.getcomponentsClone();
 			var extRing:LinearRing = ringList[0] as LinearRing;
-			coords = this.buildCoordsAsString(extRing.getcomponentsClone());
+			coords = this.buildCoordsAsString(extRing.getcomponentsClone(),true);
 			if(coords.length != 0)
 				extRingNode.appendChild(new XML("<coordinates>" + coords + "</coordinates>"));
 			
@@ -1216,7 +1249,7 @@ package org.openscales.core.format
 					innerBoundary.appendChild(intRingNode);
 					polyNode.appendChild(innerBoundary);
 					
-					coords = this.buildCoordsAsString(intRing.getcomponentsClone());
+					coords = this.buildCoordsAsString(intRing.getcomponentsClone(),true);
 					if(coords.length != 0)
 						intRingNode.appendChild(new XML("<coordinates>" + coords + "</coordinates>"));
 				}
@@ -1229,20 +1262,23 @@ package org.openscales.core.format
 		 * @param the vector of coordinates of the geometry
 		 * @return the coordinates as a string
 		 * in kml coordinates are tuples consisting of longitude, latitude and altitude (optional)
-		 * the geometries must be in 2D; the altitude is not supported    	
+		 * the geometries must be in 2D; the altitude is not supported    
+		 * 
+		 * @param coords A vector of Number. Numbers will be read two by two (first is lon, second is lat)
+		 * @param repeatFirstOne true if you want the first coord to be repeated at the end	
 		 */
-		
-		public function buildCoordsAsString(coords:Vector.<Number>):String
+		public function buildCoordsAsString(coords:Vector.<Number>, repeatFirstOne:Boolean=false):String
 		{
 			var i:uint;
 			var stringCoords:String = "";
 			var numberOfPoints:uint = coords.length;
-			for(i = 0; i < numberOfPoints; i += 2){
+			for(i = 0; i < numberOfPoints-1; i += 2){
 				stringCoords += String(coords[i])+",";
 				stringCoords += String(coords[i+1]);
-				if( i != (numberOfPoints -2))
-					stringCoords += " ";
+				stringCoords += " ";
 			}
+			stringCoords = StringUtils.trim(stringCoords);
+			if(repeatFirstOne) stringCoords += " "+coords[0]+","+coords[1]; 
 			return stringCoords;
 		}
 		

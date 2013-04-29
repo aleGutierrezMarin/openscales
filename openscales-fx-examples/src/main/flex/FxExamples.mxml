@@ -11,6 +11,7 @@ Main Flex example application
 		<![CDATA[
 			import extra.IIPImageExample;
 			
+			import features.DiscreteCircleExample;
 			import features.DrawingExample;
 			import features.FeaturesExample;
 			import features.InfoExample;
@@ -49,7 +50,7 @@ Main Flex example application
 			
 			private function init():void {
 				data['about'] = new AboutOpenScales();
-				example.addElement(getState('testfeatures'));
+				example.addElement(getState('basic'));
 			}
 			
 			private function getState(id:String):IVisualElement {
@@ -141,6 +142,9 @@ Main Flex example application
 					case "iipimage":
 						state = new IIPImageExample();
 						break;
+					case "discreteCircle":
+						state = new DiscreteCircleExample();
+						break;
 					default:
 						state = data['basic'];
 						break;
@@ -195,6 +199,7 @@ Main Flex example application
 				<s:layout>
 					<s:VerticalLayout paddingTop="10" paddingLeft="5" paddingRight="5"/>
 				</s:layout>
+				<s:Button id="discreteCircle" label="Draw circles" click="changeState(event)" width="100%" />
 				<s:Button id="drawedit" label="Draw and edit features" click="changeState(event)" width="100%"/>
 				<s:Button id="testfeatures" label="Select and test features" click="changeState(event)" width="100%"/>
 				<s:Button id="getfeatureinfo" label="WMS GetFeatureInfo" click="changeState(event)" width="100%"/>

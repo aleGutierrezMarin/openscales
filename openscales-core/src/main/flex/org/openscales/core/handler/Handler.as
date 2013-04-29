@@ -1,11 +1,13 @@
 package org.openscales.core.handler
 {
+	import flash.events.EventDispatcher;
+	
 	import org.openscales.core.Map;
 
 	/**
 	 * Handler base class
 	 */
-	public class Handler implements IHandler
+	public class Handler extends EventDispatcher implements IHandler
 	{
 		/**
 		 * Map associated to the handler

@@ -954,7 +954,24 @@
 				//this.editStyleHandler.styleChanged = false;
 			}
 			
+			/**
+			 * @private 
+			 * This method is needed to avoid NaN value when increasing/decreasing NumericStepper value
+			 */ 
+			private function myFormatFunc(val:Number):String 
+			{ 
+				return val.toString().replace(".",","); 
+			} 
 			
+			/**
+			 * @private 
+			 * This method is needed to avoid NaN value when increasing/decreasing NumericStepper value
+			 */ 
+			private function myParseFunc(val:String):Number 
+			{ 
+				var stringVal:String = val.replace(",","."); 
+				return Number(stringVal);     
+			} 
 		
 		]]>        
 	</fx:Script>
@@ -1271,7 +1288,7 @@
 							<s:HorizontalLayout/>
 						</s:layout>
 						<s:Label id="titleFontSize" paddingTop="5" text="" width="45" color="black"/>
-						<s:NumericStepper focusColor="{this.formFocusColor}" id="labelFontSize" value="@{this._fontSize}" minimum="1" maximum="92" stepSize="0.5" change="onLabelFontChange();"/>
+						<s:NumericStepper focusColor="{this.formFocusColor}" id="labelFontSize" value="@{this._fontSize}" minimum="1" maximum="92" stepSize="0.5" change="onLabelFontChange();" valueFormatFunction="myFormatFunc" valueParseFunction="myParseFunc"/>
 					</s:Group>
 				</s:Group>
 				

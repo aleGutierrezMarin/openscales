@@ -183,7 +183,7 @@
    "editStyle.defaultButton.tooltip" : "Défaut",
    "editStyle.stylePicking.tooltip" : "Récupérer le style",
    "editStyle.stylePainting.tooltip" : "Appliquer le style",
-   "editStyle.pointStyleEdition.dropDownMode" : "Icone :",
+   "editStyle.pointStyleEdition.dropDownMode" : "Icône :",
    "editStyle.pointStyleEdition.colorMode" : "Couleur :",
    "editStyle.pointStyleEdition.labelText" : "Appliquer à : ",
    "editStyle.pointStyleEdition.previewModeAll" : "Les points de même style",
