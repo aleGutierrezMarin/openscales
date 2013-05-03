@@ -6,14 +6,16 @@ package org.openscales.core.style.graphic
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
+	import org.openscales.core.events.StyleEvent;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.request.DataRequest;
 
-	public class ExternalGraphic implements IGraphic
+	public class ExternalGraphic extends EventDispatcher implements IGraphic
 	{
 		private namespace sldns="http://www.opengis.net/sld";
 		private namespace xlinkns="http://www.w3.org/1999/xlink";
@@ -193,6 +195,8 @@ package org.openscales.core.style.graphic
 				result.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			}
 			this._givenTemporaryMarker = new Vector.<WaitingRendering>();
+			
+			this.dispatchEvent(new StyleEvent(StyleEvent.EXTERNAL_GRAPHIC_LOADED));
 		}
 		
 		/**
