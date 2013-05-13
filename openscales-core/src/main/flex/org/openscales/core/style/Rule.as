@@ -391,7 +391,6 @@ package org.openscales.core.style {
 				}
 			} else if(symbolizer is TextSymbolizer) {
 				var ts:TextSymbolizer = symbolizer as TextSymbolizer;
-				ts.labelPlacement = TextSymbolizer.NoLabelPlacement;
 				var tempSize:Number = ts.font.size;
 				ts.font.size = 3;
 				_do = ts.getTextField("Text",new Pixel(0,0));
