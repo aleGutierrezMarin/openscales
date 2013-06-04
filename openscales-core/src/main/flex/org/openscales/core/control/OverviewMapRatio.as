@@ -70,6 +70,13 @@ package org.openscales.core.control
 		 */
 		protected var _timer:Timer;
 		
+		
+		/**
+		 * @private
+		 * The color of the OverviewMapRatio's cross can be changed. 
+		 */		
+		protected var _colorCross:uint=0xFF0000;
+		
 		/**
 		 * Constructor of the overview map
 		 * 
@@ -158,7 +165,7 @@ package org.openscales.core.control
 					this._centerBitmap = null;
 				}
 				_centerPoint.graphics.clear();
-				_centerPoint.graphics.lineStyle(1, 0xFF0000);
+				_centerPoint.graphics.lineStyle(1, this._colorCross);
 				_centerPoint.graphics.moveTo(this.width/2 - 5, this.height/2);
 				_centerPoint.graphics.lineTo(this.width/2 + 5, this.height/2);
 				_centerPoint.graphics.moveTo(this.width/2, this.height/2 - 5);
@@ -407,5 +414,23 @@ package org.openscales.core.control
 		{
 			this._overviewMap.minResolution = value;
 		}
+		
+		/**
+		 * The actual color of the cross
+		 */
+		public function get colorCross():uint
+		{
+			return this._colorCross;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set colorCross(value:uint):void
+		{
+			this._colorCross=value;
+		}
+		
+		
 	}
 }
