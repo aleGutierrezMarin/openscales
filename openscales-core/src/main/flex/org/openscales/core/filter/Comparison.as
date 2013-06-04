@@ -128,6 +128,9 @@ package org.openscales.core.filter
 			res._matchCase = this._matchCase;
 			res._upperBoundary = this._upperBoundary;
 			res._value = this._value;
+			res._escapeChar = this._escapeChar;
+			res._wildCard = this._wildCard;
+			res._singleChar = this._singleChar;
 			return res;
 		}
 		
@@ -137,14 +140,14 @@ package org.openscales.core.filter
 			var res:String = "<ogc:Filter>\n";
 			res+= "<ogc:"+this._type;
 			if(this._escapeChar == "\\")
-				res+= " escapeChar=\"\\\"";
+				res+= " escape=\"\\\"";
 			else if(this._escapeChar)
-				res+= " escapeChar=\""+this._escapeChar+"\"";
+				res+= " escape=\""+this._escapeChar+"\"";
 			
 			if(this._wildCard == "\\")
-				res+= " wildChar=\"\\\"";
+				res+= " wildCard=\"\\\"";
 			else if(this._wildCard)
-				res+= " wildChar=\""+this._wildCard+"\"";
+				res+= " wildCard=\""+this._wildCard+"\"";
 			
 			if(this._singleChar == "\\")
 				res+= " singleChar=\"\\\"";
@@ -156,9 +159,9 @@ package org.openscales.core.filter
 			if(this._value)
 				res+= "<ogc:Literal>"+this._value+"</ogc:Literal>\n";
 			if(this._lowerBoundary)
-				res+= "<ogc:LowerBoundary>"+this._lowerBoundary+"</<ogc:LowerBoundary>\n";
+				res+= "<ogc:LowerBoundary><ogc:Literal>"+this._lowerBoundary+"</ogc:Literal></ogc:LowerBoundary>\n";
 			if(this._upperBoundary)
-				res+= "<ogc:UpperBoundary>"+this._upperBoundary+"</<ogc:UpperBoundary>\n";
+				res+= "<ogc:UpperBoundary><ogc:Literal>"+this._upperBoundary+"</ogc:Literal></ogc:UpperBoundary>\n";
 			res+= "</ogc:"+this._type+">\n";
 			res+= "</ogc:Filter>\n";
 			return res;
@@ -187,8 +190,16 @@ package org.openscales.core.filter
 				this._property = childs[0];
 			}
 			filter = dataXML.children();
-			if(filter.length()>1) {
-				this._value = filter[1];
+			if("PropertyIsBetween" == this._type){
+				if(filter.length()>2) {
+					this._lowerBoundary = filter[1];
+					this._upperBoundary = filter[2];
+				}
+			}
+			else{
+				if(filter.length()>1) {
+					this._value = filter[1];
+				}
 			}
 			//todo support isbetween and in
 		}
@@ -306,5 +317,37 @@ package org.openscales.core.filter
 		{
 			_upperBoundary = value;
 		}
+
+		public function get wildCard():String
+		{
+			return _wildCard;
+		}
+
+		public function set wildCard(value:String):void
+		{
+			_wildCard = value;
+		}
+
+		public function get singleChar():String
+		{
+			return _singleChar;
+		}
+
+		public function set singleChar(value:String):void
+		{
+			_singleChar = value;
+		}
+
+		public function get escapeChar():String
+		{
+			return _escapeChar;
+		}
+
+		public function set escapeChar(value:String):void
+		{
+			_escapeChar = value;
+		}
+
+
 	}
 }
