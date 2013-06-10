@@ -546,11 +546,12 @@ package org.openscales.core.format
 				{
 					localStyle = this.getStyle(localStyles[0]);
 				}
-				if(placemark.name != null) 
+				if(placemark.name != null && placemark.*::name[0] != null) 
 				{
-					var name:String = "toto";
+					var name:String = "";
 					name = placemark.*::name[0].text();
 					attributes["name"] = name;
+					attributes["name"] = placemark.*::name.text();
 					htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";   
 				}
 				if(placemark.description != null) 
