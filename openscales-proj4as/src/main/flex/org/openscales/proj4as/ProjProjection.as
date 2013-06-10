@@ -731,10 +731,6 @@ package org.openscales.proj4as {
 				for (var i:Number= 0; i<this.projParams.grids.length; i++) {
 					g= this.projParams.grids[i];
 					var fg:Object= g.split("@");
-					if (fg[fg.length-1]==""){
-						trace("nadgrids syntax error '"+this.projParams.nadgrids+"' : empty grid found");
-						continue;
-					}
 					this.projParams.grids[i]= {
 						mandatory: fg.length==1,//@=> optional grid (no error if not found)
 							name:fg[fg.length-1],

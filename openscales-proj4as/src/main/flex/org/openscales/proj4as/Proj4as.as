@@ -195,6 +195,11 @@ package org.openscales.proj4as {
 			var onlyMandatoryGrids:Boolean= false;
 			for (var i:Number= 0; i<srs.grids.length; i++) {
 				var gi:Object= srs.grids[i];
+				if (gi.name && gi.name=="null"){
+					//TC 2013-03-27 to skip numerical computing error when grid null
+					//null grid=> nothing to do
+					return 0;
+				}
 				onlyMandatoryGrids= gi.mandatory;
 				var ct:Object= gi.grid;
 				if (ct==null) {
