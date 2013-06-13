@@ -31,7 +31,7 @@ package org.openscales.core.format
 			return this._internalProjection;
 		}
 		
-		public function set internalProjection(value:*):void {
+		public function set internalProjection(value:ProjProjection):void {
 			if(value is ProjProjection)
 				this._internalProjection = value as ProjProjection;
 			else if(value is String)
@@ -44,7 +44,7 @@ package org.openscales.core.format
 			return this._externalProjection;
 		}
 		
-		public function set externalProjection(value:*):void {
+		public function set externalProjection(value:ProjProjection):void {
 			if(value is ProjProjection)
 				this._externalProjection = value as ProjProjection;
 			else if(value is String)
