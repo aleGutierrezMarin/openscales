@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1"
+      xmlns:gpx="http://www.topografix.com/GPX/1/1"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
+       version="1.1"
+       creator="CREATOR">
+    <metadata>
+      <name>GPX file name</name>
+      <desc>GPX file description</desc>
+      <author>
+        <name>Somebody's name</name>   
+        <email id="somebody" domain="@atos.net"></email>       
+        <link href="HREF">
+          <text>TEXT</text>
+          <type>MIME</type>
+        </link>
+      </author>
+      <copyright author="AUTHOR">
+        <year>YEAR</year>
+        <license>URL</license>
+      </copyright>
+      <link href="http://someAddress">                               
+        <text>TEXT</text>                            
+        <type>MIME</type>
+      </link>
+      <time>GPX file creation time</time>
+      <keywords>GPX file keywords (comma separated)</keywords>
+      <bounds minlat="-90.0" minlon="-180.0" maxlat="90.0" maxlon="180.0"/>
+    </metadata>
+    <wpt lat="-20.23" lon="15.0">
+      <ele>19.9</ele>
+      <time>TIME</time>
+      <magvar>0.33</magvar>
+      <geoidheight>0.0</geoidheight>
+      <name>Point001</name>
+      <cmt>this is a waypoint</cmt>
+      <desc>point001 description</desc>
+      <src>the source of this point: "Garmin eTrex", "Map", etc</src>	
+      <link href="URL">                                
+        <text>TEXT</text>                              
+        <type>MIME</type>
+      </link>
+      <sym>URL</sym>
+      <type>TYPE</type>
+      <fix>none|2d|3d|dgps|pps</fix>
+      <sat>0</sat>
+      <hdop>0.0</hdop>
+      <vdop>0.0</vdop>
+      <pdop>0.0</pdop>
+      <ageofdgpsdata>0.0</ageofdgpsdata>
+      <dgpsid>[0..1023]</dgpsid>
+      <extensions></extensions>
+    </wpt>
+    <rte>
+      <name>Route001</name>
+      <cmt>this is a route</cmt>
+      <desc>route001 description</desc>
+      <src>the source of this data: "Garmin eTrex", "Map", etc</src>
+      <link href="URL">                                
+        <text>TEXT</text>                           
+        <type>MIME</type>
+      </link>
+      <number>GPS route001</number>
+      <type>TYPE</type>
+      <extensions></extensions>
+      <rtept lat="38.917522434" lon="-121.060409557">
+ 			<time>2003-02-05T18:08:15Z</time>
+ 			<name>LINCOLNWAY</name>
+ 			<desc>LINCOLNWAY</desc>
+ 			<sym>Waypoint</sym>
+ 			<type>Waypoint</type>
+	  </rtept>
+	   <rtept lat="38.915805820" lon="-121.061010372">
+ 			<time>2003-02-05T18:08:15Z</time>
+ 			<name>LINCOLNWY1</name>
+			<desc>LINCOLNWY1</desc>
+ 			<sym>Waypoint</sym>
+ 			<type>Waypoint</type>
+	  </rtept>
+	  <rtept lat="38.916149143" lon="-121.057147991">
+ 			 <time>2003-02-05T18:08:15Z</time>
+ 			 <name>RUSSELL RD</name>
+			 <desc>RUSSELL RD</desc>
+			 <sym>Waypoint</sym>
+ 			<type>Waypoint</type>
+	  </rtept>
+      
+    </rte>
+    <trk>
+      <name>Route001</name>
+      <cmt>this is a track</cmt>
+      <desc>track001 description</desc>
+      <src>the source of this data: "Garmin eTrex", "Map", etc</src>
+      <link href="URL">                               
+        <text>TEXT</text>                              
+        <type>MIME</type>
+      </link>
+      <number>GPS track number</number>
+      <type>TYPE</type>
+      <trkseg>
+        <trkpt lat="33.33" lon="-33.01">
+          <ele>33.0</ele>
+          <time>TIME</time>
+          <name>NAME</name>
+          <cmt>CMT</cmt>
+          <desc>DESC</desc>
+          <type>TYPE</type>
+        </trkpt>
+      </trkseg>
+      <trkseg>
+        <trkpt lat="133.0" lon="23.23">
+          <ele>0.023</ele>
+          <time>TIME</time>
+          <name>NAME</name>
+          <cmt>CMT</cmt>
+          <desc>DESC</desc>
+          <type>TYPE</type>
+        </trkpt>
+        <trkpt lat="100.33" lon="3.23">
+          <ele>0.0</ele>
+          <time>TIME</time>
+          <name>NAME</name>
+          <cmt>CMT</cmt>
+          <desc>DESC</desc>
+          <type>TYPE</type>
+        </trkpt>
+      </trkseg>
+    </trk>
+    <trk>
+    <name>Track002</name>
+    <cmt>this is a track</cmt>
+    <desc>track002 description</desc>
+    <src>the source of this data: "Garmin eTrex", "Map", etc</src>
+    <trkseg>
+      <trkpt lat="47.644548" lon="-122.326897">
+        <ele>4.46</ele>
+        <time>2009-10-17T18:37:26Z</time>
+      </trkpt>
+      <trkpt lat="47.644548" lon="-122.326897">
+        <ele>4.94</ele>
+        <time>2009-10-17T18:37:31Z</time>
+      </trkpt>
+      <trkpt lat="47.644548" lon="-122.326897">
+        <ele>6.87</ele>
+        <time>2009-10-17T18:37:34Z</time>
+      </trkpt>
+    </trkseg>
+    
+    <trkseg>
+      <trkpt lat="47.644548" lon="-122.326897">
+        <ele>6.87</ele>
+        <time>2009-10-17T18:37:34Z</time>
+      </trkpt>
+    </trkseg>
+    
+ 	 </trk>
+    <extensions></extensions>
+  </gpx>
