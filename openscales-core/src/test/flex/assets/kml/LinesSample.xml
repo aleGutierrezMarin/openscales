@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>KML Samples</name>
+    <open>1</open>
+	
+	<Style id="transPurpleLineGreenPoly">
+      <LineStyle>
+        <color>7fff00ff</color>
+        <width>4</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>
+    
+    <Style id="yellowLineGreenPoly">
+      <LineStyle>
+        <color>7f00ffff</color>
+        <width>4</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>
+	
+	<Placemark>
+        <name>Untessellated</name>
+        <visibility>0</visibility>
+        <description><![CDATA[If the <tessellate> tag has a value of 0, the line follow a simple straight-line path from point to point]]></description>
+        <LookAt>
+          <longitude>-112.0822680013139</longitude>
+          <latitude>36.09825589333556</latitude>
+          <altitude>0</altitude>
+          <heading>103.8120432044965</heading>
+          <tilt>62.04855796276328</tilt>
+          <range>2889.145007690472</range>
+        </LookAt>
+        <LineString>
+          <tessellate>0</tessellate>
+          <coordinates> -112.080622229595,36.10673460007995,0
+            -112.085242575315,36.09049598612422,0 </coordinates>
+        </LineString>
+    </Placemark>
+    
+    <Placemark>
+        <name>Absolute</name>
+        <visibility>0</visibility>
+        <description>Transparent purple line</description>
+        <LookAt>
+          <longitude>-112.2719329043177</longitude>
+          <latitude>36.08890633450894</latitude>
+          <altitude>0</altitude>
+          <heading>-106.8161545998597</heading>
+          <tilt>44.60763714063257</tilt>
+          <range>2569.386744398339</range>
+        </LookAt>
+        <styleUrl>#transPurpleLineGreenPoly</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <altitudeMode>absolute</altitudeMode>
+          <coordinates> -112.265654928602,36.09447672602546,2357
+            -112.2660384528238,36.09342608838671,2357
+            -112.2668139013453,36.09251058776881,2357
+            -112.2677826834445,36.09189827357996,2357
+            -112.2688557510952,36.0913137941187,2357
+            -112.2694810717219,36.0903677207521,2357
+            -112.2695268555611,36.08932171487285,2357
+            -112.2690144567276,36.08850916060472,2357
+            -112.2681528815339,36.08753813597956,2357
+            -112.2670588176031,36.08682685262568,2357
+            -112.2657374587321,36.08646312301303,2357 </coordinates>
+        </LineString>
+    </Placemark>
+      
+    <Placemark>
+        <name>Absolute Extruded</name>
+        <visibility>0</visibility>
+        <description>Transparent green wall with yellow outlines</description>
+        <LookAt>
+          <longitude>-112.2643334742529</longitude>
+          <latitude>36.08563154742419</latitude>
+          <altitude>0</altitude>
+          <heading>-125.7518698668815</heading>
+          <tilt>44.61038665812578</tilt>
+          <range>4451.842204068102</range>
+        </LookAt>
+        <styleUrl>#yellowLineGreenPoly</styleUrl>
+        <LineString>
+          <extrude>1</extrude>
+          <tessellate>1</tessellate>
+          <altitudeMode>absolute</altitudeMode>
+          <coordinates> -112.2550785337791,36.07954952145647,2357
+            -112.2549277039738,36.08117083492122,2357
+            -112.2552505069063,36.08260761307279,2357
+            -112.2564540158376,36.08395660588506,2357
+            -112.2580238976449,36.08511401044813,2357
+            -112.2595218489022,36.08584355239394,2357
+            -112.2608216347552,36.08612634548589,2357
+            -112.262073428656,36.08626019085147,2357
+            -112.2633204928495,36.08621519860091,2357
+            -112.2644963846444,36.08627897945274,2357
+            -112.2656969554589,36.08649599090644,2357 </coordinates>
+        </LineString>
+    </Placemark>
+	  
+</Document>
+</kml>
