@@ -30,6 +30,7 @@
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.format.Format;
 			import org.openscales.core.format.GPXFormat;
+			import org.openscales.core.format.GeoJSONFormat;
 			import org.openscales.core.format.GeoRssFormat;
 			import org.openscales.core.format.KMLFormat;
 			import org.openscales.core.handler.IHandler;
@@ -95,6 +96,7 @@
 					// init all available formats
 					this.supportedFormat = new Array();
 					this.supportedFormat[0] = "KML";
+					this.supportedFormat[1] = "GeoJSON";
 					/*
 					this.supportedFormat[1] = "GPX";
 					this.supportedFormat[2] = "GeoRSS";
@@ -208,6 +210,10 @@
 					case "GeoRss":
 						fileName += ".xml";
 						writeFormat = new GeoRssFormat();
+						break;
+					case "GeoJSON":
+						fileName += ".json";
+						writeFormat = new GeoJSONFormat();
 						break;
 					
 					/*case "GML":
