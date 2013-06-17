@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- FeatureInfoDisplay Flex control, used to change layer order or visbility -->
+<Control xmlns="http://openscales.org"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="250" height="200">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import org.openscales.core.basetypes.maps.HashMap;
+			import org.openscales.core.events.GetFeatureInfoEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.i18n.Catalog;
+			
+			/**
+			 * Title value for the Panel
+			 */
+			[Bindable]
+			public var panelTitle:String = Catalog.getLocalizationForKey('featureInfoDisplay.title');
+		
+			private var _data:ArrayCollection = new ArrayCollection();
+
+			/**
+			 * The dataProvider use for the list.
+			 */
+			[Bindable]
+			public function get data():ArrayCollection
+			{
+				return _data;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set data(value:ArrayCollection):void
+			{
+				_data = value;
+			}
+
+			
+			/**
+			 * @inherit
+			 */
+			override public function activate():void 
+			{
+				super.activate();
+				if(this._map)
+				{
+					this.map.addEventListener(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA,onFeaturesReceived);
+				}
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function desactivate():void 
+			{	
+				super.desactivate();
+				if(this._map)
+				{
+					this.map.removeEventListener(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA,onFeaturesReceived);
+				}
+			}
+			
+			/**
+			 * Catch the getFeatureInfoEvent and display its content in the panel
+			 * 
+			 * @param event Event catched by the method 
+			 */
+			public function onFeaturesReceived(event:GetFeatureInfoEvent):void{
+				
+				this._data.removeAll();
+				
+				var results:Vector.<Feature>= (event.data) as Vector.<Feature>;
+				var resultsLength:Number = results.length;
+				
+				if(resultsLength>0){
+					for (var i:Number=0; i<length; ++i){
+						var feat:Feature = results[i];
+						this._data.addItemAt(feat.name,0);
+						
+						var attr:Object = (feat.attributes);
+						for (var name:String in attr) 
+						{ 
+							if(name != "coordinates"){
+								data.addItem(name + ": " + attr[name]); 
+							}
+						} 
+						
+						data.addItem("------------------"); 
+					}
+				}
+			}
+			
+
+		]]>
+	</fx:Script>
+	
+	<s:Panel id="featureInfoPanel" title="{this.panelTitle}" height="{this.height}" width="{this.width}" >
+		
+		<s:List id="featureInfoList" 
+				dropEnabled="false"
+				dragEnabled="false"
+				dragMoveEnabled="false"
+				dataProvider="{this.data}"
+				width="100%"
+				height="{(this.height-35)}"
+				x="0"
+				y="0"
+				borderVisible="false">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="justify"
+								  variableRowHeight="true"
+								  requestedRowCount="4" />
+			</s:layout>
+		</s:List>
+		
+		
+	</s:Panel>
+	
+</Control>
