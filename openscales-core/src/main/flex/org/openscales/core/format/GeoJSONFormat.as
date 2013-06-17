@@ -1,12 +1,13 @@
 package org.openscales.core.format
 {
-	import org.hamcrest.object.nullValue;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.json.GENERICJSON;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.utils.StringUtils;
@@ -43,7 +44,7 @@ package org.openscales.core.format
 			geojson.features = featureArray;
 			
 			
-			return GENERICJSON.encode(geojson);
+			return geojson;
 		}
 		
 		private function getGeometryFromFeature(feature:Feature):Object
@@ -53,9 +54,12 @@ package org.openscales.core.format
 			if (feature is PointFeature)
 			{
 				var point:Point = (feature as PointFeature).point;
+				var coord:Array = new Array();
+				coord.push(point.x);
+				coord.push(point.y);
 				
 				featureJson.type = "Point";
-				featureJson.coordinates = "[" + point.x + "," + point.y + "]";
+				featureJson.coordinates = coord;
 			}
 			else if (feature is LineStringFeature)
 			{
@@ -63,7 +67,7 @@ package org.openscales.core.format
 				
 				featureJson.type = "LineString";
 				
-				var coords:String = this.buildCoordsAsString(line.getcomponentsClone());
+				var coords:Array = this.buildCoordsAsString(line.getcomponentsClone());
 				if(coords.length != 0)
 				{
 					featureJson.coordinates = coords;
@@ -76,11 +80,18 @@ package org.openscales.core.format
 				
 				featureJson.type = "LinearRing";
 				
-				//var coords:String = this.buildCoordsAsString(poly.getcomponentsClone());
-				//if(coords.length != 0)
-				//{
-				//	featureJson.coordinates = coords;
-				//}
+				var geomList:Vector.<Geometry> = poly.getcomponentsClone();
+				var coordPoly:Array = new Array();
+				
+				for (var i:int = 0; i < geomList.length; i++)
+				{
+					coordPoly.push(this.buildCoordsAsString((geomList[i] as LinearRing).getcomponentsClone()));
+				}
+				
+				if(coordPoly.length != 0)
+				{
+					featureJson.coordinates = coordPoly;
+				}
 			}
 			
 			return featureJson;
@@ -107,30 +118,30 @@ package org.openscales.core.format
 		 * @param coords A vector of Number. Numbers will be read two by two (first is lon, second is lat)
 		 * @param repeatFirstOne true if you want the first coord to be repeated at the end	
 		 */
-		public function buildCoordsAsString(coords:Vector.<Number>, repeatFirstOne:Boolean=false):String
+		public function buildCoordsAsString(coords:Vector.<Number>, repeatFirstOne:Boolean=false):Array
 		{
 			var i:uint;
-			var stringCoords:String = "";
+			var coordArray:Array = new Array();
 			var numberOfPoints:uint = coords.length;
 			for(i = 0; i < numberOfPoints-1; i += 2){
-				if (stringCoords == "")
-				{
-					stringCoords += "[";
-				}
-				else
-				{
-					stringCoords += ",[";
-				}
-				stringCoords += String(coords[i])+",";
-				stringCoords += String(coords[i+1]);
-				stringCoords += "]";
+				
+				var featureCoord:Array = new Array();
+				featureCoord.push(coords[i]);
+				featureCoord.push(coords[i+1]);
+				
+				coordArray.push(featureCoord);
 			}
-			stringCoords = StringUtils.trim(stringCoords);
-			if(repeatFirstOne) stringCoords += ",["+coords[0]+","+coords[1]+"]";
+
+			if(repeatFirstOne) 
+			{
+				var featureCoordFirst:Array = new Array();
+				featureCoordFirst.push(coords[0]);
+				featureCoordFirst.push(coords[1]);
+				
+				coordArray.push(featureCoordFirst);
+			}
 			
-			stringCoords = "[" + stringCoords + "]";
-			
-			return stringCoords;
+			return coordArray;
 		}
 	}
 }
