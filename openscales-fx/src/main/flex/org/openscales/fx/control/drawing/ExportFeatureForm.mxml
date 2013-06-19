@@ -30,9 +30,10 @@
 			import org.openscales.core.feature.Feature;
 			import org.openscales.core.format.Format;
 			import org.openscales.core.format.GPXFormat;
-			import org.openscales.core.format.GeoJSONFormat;
 			import org.openscales.core.format.GeoRssFormat;
 			import org.openscales.core.format.KMLFormat;
+			import org.openscales.core.format.geojson.GeoJSONFormat;
+			import org.openscales.core.format.geojson.mapfish.MapFishGeoJSONFormat;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.EditFeaturesHandler;
@@ -213,7 +214,7 @@
 						break;
 					case "GeoJSON":
 						fileName += ".json";
-						writeFormat = new GeoJSONFormat();
+						writeFormat = new MapFishGeoJSONFormat(this.exportFeature.layer);
 						break;
 					
 					/*case "GML":

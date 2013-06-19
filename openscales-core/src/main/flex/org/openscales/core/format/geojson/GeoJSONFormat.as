@@ -1,4 +1,4 @@
-package org.openscales.core.format
+package org.openscales.core.format.geojson
 {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
@@ -13,6 +13,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.utils.StringUtils;
 	
 	import spark.primitives.Line;
+	import org.openscales.core.format.Format;
 
 	public class GeoJSONFormat extends Format
 	{
@@ -23,7 +24,7 @@ package org.openscales.core.format
 		
 		override public function write(features:Object):Object
 		{
-			// Convert the features objet
+			// Convert the features object
 			var listOfFeatures:Vector.<Feature> = features as Vector.<Feature>;
 			var numberOfFeatures:uint = listOfFeatures.length;
 			
@@ -47,6 +48,12 @@ package org.openscales.core.format
 			return geojson;
 		}
 		
+		/**
+		 * Construct the JSON objet wich represent the given feature in the GeoJSON format.
+		 * 
+		 * @param feature The feature to transform as a GeoJSON object.
+		 * @return An object wich represent the given feature in GeoJSON format.
+		 */
 		private function getGeometryFromFeature(feature:Feature):Object
 		{
 			var featureJson:Object = new Object();
@@ -67,7 +74,7 @@ package org.openscales.core.format
 				
 				featureJson.type = "LineString";
 				
-				var coords:Array = this.buildCoordsAsString(line.getcomponentsClone());
+				var coords:Array = this.buildCoordsAsArray(line.getcomponentsClone());
 				if(coords.length != 0)
 				{
 					featureJson.coordinates = coords;
@@ -85,7 +92,7 @@ package org.openscales.core.format
 				
 				for (var i:int = 0; i < geomList.length; i++)
 				{
-					coordPoly.push(this.buildCoordsAsString((geomList[i] as LinearRing).getcomponentsClone()));
+					coordPoly.push(this.buildCoordsAsArray((geomList[i] as LinearRing).getcomponentsClone()));
 				}
 				
 				if(coordPoly.length != 0)
@@ -97,28 +104,35 @@ package org.openscales.core.format
 			return featureJson;
 		}
 		
+		/**
+		 * Get the feature's properties as a JSON format.
+		 * 
+		 * @param feature The feature from wich the properties comes from.
+		 * @return An object wich contain the feature's properties as a JSON formatted object.
+		 */
 		private function getPropertiesFromFeature(feature:Feature):Object
 		{
 			var properties:Object = new Object();
 			
 			if (feature.attributes != null)
 			{
-				properties.name = feature.attributes;
-				return properties
+				properties = feature.attributes;
+				return properties;
 			}
 			
 			return null;
 		}
 		
 		/**
-		 * @param the vector of coordinates of the geometry
-		 * @return the coordinates as a string
-		 * the geometries must be in 2D; the altitude is not supported    
+		 * @param the vector of coordinates of the gemetry
+		 * @return the coordinates as an array
+		 * The geometries must be in 2D.
+		 * This function return an Array wich is dedicated to be used with JSON objects.
 		 * 
 		 * @param coords A vector of Number. Numbers will be read two by two (first is lon, second is lat)
-		 * @param repeatFirstOne true if you want the first coord to be repeated at the end	
+		 * @param repeatFirstOne true if you want the first coord to be repeated at the end
 		 */
-		public function buildCoordsAsString(coords:Vector.<Number>, repeatFirstOne:Boolean=false):Array
+		public function buildCoordsAsArray(coords:Vector.<Number>, repeatFirstOne:Boolean=false):Array
 		{
 			var i:uint;
 			var coordArray:Array = new Array();
