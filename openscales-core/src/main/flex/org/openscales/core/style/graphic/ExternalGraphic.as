@@ -75,10 +75,11 @@ package org.openscales.core.style.graphic
 		[Embed(source="/assets/images/marker-blue.png")]
 		private var _defaultImage:Class;
 		
-		public function ExternalGraphic(onlineResource:String=null,format:String="image/png")
+		public function ExternalGraphic(onlineResource:String=null,format:String="image/png",proxy:String = null)
 		{
 			this._onlineResource = onlineResource;
 			this._format = format;
+			this._proxy = proxy;
 			if (this._onlineResource)
 			{
 				this.load();
