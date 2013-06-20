@@ -9,7 +9,12 @@ package org.openscales.core.format.geojson.mapfish
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.graphic.ExternalGraphic;
+	import org.openscales.core.style.graphic.Graphic;
+	import org.openscales.core.style.graphic.IGraphic;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
@@ -68,7 +73,7 @@ package org.openscales.core.format.geojson.mapfish
 			geojsonObject.styles = styles;
 			geojsonObject.styleProperty = "_style";
 			
-			return GENERICJSON.encode(geojsonObject);
+			return geojsonObject;
 		}
 		
 		private function getStyleFromFeature(feature:Feature):Object
@@ -105,13 +110,17 @@ package org.openscales.core.format.geojson.mapfish
 						objectStyle.fontColor = ts.font.color;
 						objectStyle.fontOpacity = ts.font.opacity;
 						objectStyle.fontFamily = ts.font.family;
-						objectStyle.fontSize = ts.font.size;
+						// Hack for mapfish wich resize texte 2px more
+						if (ts.font.size > 2)
+							objectStyle.fontSize = ts.font.size - 2;
+						else
+							objectStyle.fontSize = ts.font.size;
 						objectStyle.fontStyle = ts.font.style;
 						objectStyle.fontWeight = ts.font.weight;
 					}
 					if (ts.halo)
 					{
-						objectStyle.labelOutlineColor = ts.halo.color;
+						objectStyle.labelOutlineColorr = ts.halo.color;
 						objectStyle.labelOutlineWidth = ts.halo.radius;
 						objectStyle.labelOutlineOpacity = ts.halo.opacity;
 					}
@@ -142,6 +151,58 @@ package org.openscales.core.format.geojson.mapfish
 					objectStyle.strokeLinecap = "round";
 					objectStyle.strokeDashstyle = "solid";
 					
+				}
+				else if (symb is PointSymbolizer)
+				{
+					var s:PointSymbolizer = symb as PointSymbolizer;
+					var graphic:Graphic = s.graphic;
+					
+					objectStyle.pointRadius = ((s.graphic.size as Number) / 2) - 1;
+					
+					if(!graphic || graphic.graphics.length==0)
+						continue;
+					
+					var mark:IGraphic = graphic.graphics[0];
+					
+					if(mark is Mark)
+					{
+						var wkm:Mark = graphic.graphics[0] as Mark;
+						var solidFill:SolidFill = null
+						if(wkm.fill is SolidFill)
+							solidFill = wkm.fill as SolidFill;
+						else
+							solidFill = new SolidFill();
+						
+						if (solidFill)
+						{
+							objectStyle.fillColor = solidFill.color;
+							objectStyle.fillOpacity = solidFill.opacity;
+						}
+						else
+						{
+							objectStyle.fillOpacity = 0;
+						}
+						
+						if (wkm.stroke)
+						{
+							objectStyle.strokeColor = wkm.stroke.color;
+							objectStyle.strokeOpacity = wkm.stroke.opacity;
+							objectStyle.strokeWidth = wkm.stroke.width;
+							objectStyle.strokeLinecap = "round";
+							objectStyle.strokeDashstyle = "solid";
+						}
+						else 
+						{
+							objectStyle.strokeOpacity = 0;
+						}
+					}
+					else if (mark is ExternalGraphic)
+					{
+						
+						var cm:ExternalGraphic = mark as ExternalGraphic;
+						
+						objectStyle.externalGraphic = cm.onlineResource;
+					}				
 				}
 			}
 			
