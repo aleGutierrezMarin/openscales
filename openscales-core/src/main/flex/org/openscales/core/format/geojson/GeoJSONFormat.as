@@ -85,14 +85,14 @@ package org.openscales.core.format.geojson
 			{
 				var poly:Polygon = (feature as PolygonFeature).polygon;
 				
-				featureJson.type = "LinearRing";
+				featureJson.type = "Polygon";
 				
 				var geomList:Vector.<Geometry> = poly.getcomponentsClone();
 				var coordPoly:Array = new Array();
 				
 				for (var i:int = 0; i < geomList.length; i++)
 				{
-					coordPoly.push(this.buildCoordsAsArray((geomList[i] as LinearRing).getcomponentsClone()));
+					coordPoly.push(this.buildCoordsAsArray((geomList[i] as LinearRing).getcomponentsClone(), true));
 				}
 				
 				if(coordPoly.length != 0)
@@ -117,10 +117,11 @@ package org.openscales.core.format.geojson
 			if (feature.attributes != null)
 			{
 				properties = feature.attributes;
-				return properties;
 			}
 			
-			return null;
+			properties["_style"] = feature.style.name;
+			
+			return properties;
 		}
 		
 		/**

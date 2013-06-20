@@ -32,13 +32,12 @@
 			import org.openscales.core.format.GPXFormat;
 			import org.openscales.core.format.GeoRssFormat;
 			import org.openscales.core.format.KMLFormat;
-			import org.openscales.core.format.geojson.GeoJSONFormat;
-			import org.openscales.core.format.geojson.mapfish.MapFishGeoJSONFormat;
 			import org.openscales.core.handler.IHandler;
 			import org.openscales.core.handler.feature.SelectFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.EditFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.format.geojson.mapfish.MapFishGeoJSONFormat;
 			import org.openscales.geometry.Geometry;
 			import org.openscales.proj4as.ProjProjection;
 			
