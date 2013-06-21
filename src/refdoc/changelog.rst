@@ -10,6 +10,7 @@ Changes between 2.2 and 2.3.0
 * Add map context save using WMC standard (See WMC110Format.write)
 * Add possibility to draw circles with a given radius (in meters)
 * Graticule layer is more customizable
+* Using mockolate/hamcrest for unit test
 
 
 Changes between 2.1.1 and 2.2
