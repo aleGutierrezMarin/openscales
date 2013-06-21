@@ -3,7 +3,6 @@ package org.openscales.core.style.graphic
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
-	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -143,9 +142,16 @@ package org.openscales.core.style.graphic
 		public function load():void {
 			if(this._req || !this._onlineResource)
 				return;
-			this._req = new DataRequest(this._onlineResource,onSuccess, onFailure);
+			this._req = buildRequest(this._onlineResource,onSuccess, onFailure);
 			this._req.proxy = this._proxy;
 			this._req.send();
+		}
+		
+		/**
+		 * This method is in charge of building the request object
+		 */ 
+		protected function buildRequest(url:String,onSuccess:Function,onFailure:Function):DataRequest{
+			return new DataRequest(url,onSuccess,onFailure);
 		}
 		
 		/**
@@ -426,5 +432,6 @@ package org.openscales.core.style.graphic
 		{
 			_proxy = value;
 		}
+
 	}
 }
