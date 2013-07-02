@@ -78,7 +78,6 @@ package org.openscales.core.format
 				this._description = channel.*::description[0].toString();
 				this._link = channel.*::link[0].toString();
 			}
-import org.openscales.core.format.gml.parser.GML311Parser;
 			
 			var items:XMLList = _rssFile..*::item;
 			var itemNumber:uint = items.length();
