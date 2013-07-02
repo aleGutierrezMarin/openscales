@@ -1,10 +1,12 @@
 package org.openscales.core.control
 {
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.OriginatorEvent;
+	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.originator.DataOriginator;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -163,6 +165,12 @@ package org.openscales.core.control
 					// else check if the current extent fit with  the originator constraint
 					else if(mapExtent &&  originator.isCoveredArea(mapExtent, this._map.resolution))
 						addOriginator(originator);
+					else if (layer is Grid) {
+							//if scale denominators are discrete, check the closests supported resolution
+							var r:Resolution = (layer as Grid).getSupportedResolution(this._map.resolution);
+							if(mapExtent &&  originator.isCoveredArea(mapExtent, r))
+								addOriginator(originator);
+					}
 				}
 			}
 		}

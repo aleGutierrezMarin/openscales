@@ -546,11 +546,12 @@ package org.openscales.core.format
 				{
 					localStyle = this.getStyle(localStyles[0]);
 				}
-				if(placemark.name != null) 
+				if(placemark.name != null && placemark.*::name[0] != null) 
 				{
-					var name:String = "toto";
+					var name:String = "";
 					name = placemark.*::name[0].text();
 					attributes["name"] = name;
+					attributes["name"] = placemark.*::name.text();
 					htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";   
 				}
 				if(placemark.description != null) 
@@ -788,12 +789,14 @@ package org.openscales.core.format
 					//Maybe it is a label
 					var isLabel:Boolean = false;
 					var textLabel:String = "";
-					for each(var extData:XML in placemark.*::ExtendedData.Data) 
-					{	
-						if(extData.@*::name == "label") {
-							isLabel = true
-							textLabel = extData.value.text();
-							break;
+					tmp = placemark.*::ExtendedData;
+					if(placemark.*::ExtendedData[0] != null){
+						for each(var extData:XML in placemark.*::ExtendedData[0].*::Data) {
+							if(extData.@*::name == "label") {
+								isLabel = true;
+								textLabel = extData.*::value.text();
+								break;
+							}
 						}
 					}
 					
@@ -1035,7 +1038,7 @@ package org.openscales.core.format
 			kmlFile.appendChild(doc);
 			var name:XML = new XML("<name>"+kmlName+"</name>");
 			doc.appendChild(name);
-			return "<?xml version='1.0' encoding='UTF-8'?>"+kmlFile.toString(); 
+			return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+kmlFile.toString(); 
 		}
 		
 		/**
@@ -1091,7 +1094,7 @@ package org.openscales.core.format
 			{
 				doc.appendChild(this.buildPlacemarkNode(listOfFeatures[i],i));
 			}
-			return new XML("<?xml version='1.0' encoding='UTF-8'?>"+kmlFile.toString()); 
+			return "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n" + kmlFile.toString();
 		}
 		
 		/**
