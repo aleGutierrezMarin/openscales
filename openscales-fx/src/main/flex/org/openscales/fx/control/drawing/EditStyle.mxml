@@ -299,6 +299,8 @@
 				_handler.map.addEventListener(DrawingEvent.SELECT_HANDLER_ACTIVATED, onChangeActiveHandler);
 				_handler.map.addEventListener(DrawingEvent.CHANGE_ACTIVE_LAYER, onChangeActiveLayer);
 				_handler.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				
+				// Default position for the popup
 				_popup.x = this.map.width - 200;
 				_popup.y = 20;
 			}
@@ -409,6 +411,22 @@
 			public function set popupParent(value:DisplayObject):void
 			{
 				_popupParent = value;
+			}
+			
+			/**
+			 * The popup wich allow to modify the features styles.
+			 */
+			public function get editStylePopup():EditStylePopup
+			{
+				return this._popup;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set editStylePopup(value:EditStylePopup):void
+			{
+				this._popup = value;
 			}
 
 		]]>

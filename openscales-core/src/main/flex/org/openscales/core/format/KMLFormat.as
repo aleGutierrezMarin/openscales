@@ -311,7 +311,7 @@ package org.openscales.core.format
 						}
 						var psym:PointSymbolizer = new PointSymbolizer(new Graphic(-1));
 						var link:String = href.toString();
-						var extGraph:ExternalGraphic = new ExternalGraphic(link);
+						var extGraph:ExternalGraphic = new ExternalGraphic(link,"image/png",_proxy);
 						if(link.indexOf(".jpg",link.length-5) || link.indexOf(".jpeg",link.length-6))
 							extGraph.format = "image/jpg";
 						extGraph.xOffset = xOffSet;
