@@ -38,18 +38,6 @@ package org.openscales.core.layer.ogc
 			assertEquals("Setting refresh does not work", 5, _instance.refreshDelay);
 		}
 		
-		[Test]
-		public function shouldSetPopUpWidth():void{
-			_instance.popUpWidth = 500;
-			assertEquals("Setting popup width does not work", 500, _instance.popUpWidth);
-		}
-		
-		[Test]
-		public function shouldSetPopUpHeight():void{
-			_instance.popUpHeight = 500;
-			assertEquals("Setting popup height does not work", 500, _instance.popUpHeight);
-		}
-		
 		/*
 		common layers tests
 		*/
