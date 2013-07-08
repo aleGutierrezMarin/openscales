@@ -719,6 +719,8 @@ package org.openscales.core.handler.feature.draw
 					feature.style = Style.getDefaultPolygonStyle().clone();
 				}
 			}
+			
+			feature.draw();
 		}
 		
 		
