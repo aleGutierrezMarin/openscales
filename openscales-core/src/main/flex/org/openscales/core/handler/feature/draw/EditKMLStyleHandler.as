@@ -72,6 +72,11 @@ package org.openscales.core.handler.feature.draw
 		private var _styleChanged:Boolean = false;
 		
 		/**
+		 * The default label style to apply to the features
+		 */
+		private var _defaultLabelStyle:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
+		
+		/**
 		 * The default point style to apply to the features
 		 */
 		private var _defaultPointStyle:Style = Style.getDefaultPointStyle();
@@ -283,7 +288,9 @@ package org.openscales.core.handler.feature.draw
 			this.validateChanges();
 			if (this.targetFeatures == "selected")
 			{
-				if (this._feature is PointFeature || this._feature is MultiPointFeature)
+				if (this._feature is LabelFeature)
+					this._feature.style = this.defaultLabelStyle;
+				else if (this._feature is PointFeature || this._feature is MultiPointFeature)
 					this._feature.style = this.defaultPointStyle;
 				else if (this._feature is LineStringFeature || this._feature is MultiLineStringFeature)
 					this._feature.style = this.defaultLineStyle;
@@ -300,7 +307,9 @@ package org.openscales.core.handler.feature.draw
 				{
 					if (this.drawLayer.features[i].style == compStyle)
 					{
-						if (this.drawLayer.features[i] is PointFeature || this.drawLayer.features[i] is MultiPointFeature)
+						if (this.drawLayer.features[i] is LabelFeature)
+							this.drawLayer.features[i].style = this.defaultLabelStyle;
+						else if (this.drawLayer.features[i] is PointFeature || this.drawLayer.features[i] is MultiPointFeature)
 							this.drawLayer.features[i].style = this.defaultPointStyle;
 						else if (this.drawLayer.features[i] is LineStringFeature || this.drawLayer.features[i] is MultiLineStringFeature)
 							this.drawLayer.features[i].style = this.defaultLineStyle;
@@ -318,7 +327,9 @@ package org.openscales.core.handler.feature.draw
 				
 				for (i = 0; i < arrayLength; ++i)
 				{
-					if (array[i] is PointFeature || array[i] is MultiPointFeature)
+					if (array[i] is LabelFeature)
+						(array[i] as Feature).style = this.defaultLabelStyle;
+					else if (array[i] is PointFeature || array[i] is MultiPointFeature)
 						(array[i] as Feature).style = this.defaultPointStyle;
 					else if (array[i] is LineStringFeature || array[i] is MultiLineStringFeature)
 						(array[i] as Feature).style = this.defaultLineStyle;
@@ -344,6 +355,7 @@ package org.openscales.core.handler.feature.draw
 			if ((this._feature.style == this._defaultLineStyle||
 				this._feature.style == this._defaultArrowStyle ||
 				this._feature.style == this._defaultPointStyle ||
+				this._feature.style == this._defaultLabelStyle ||
 				this._feature.style == this._defaultPolygonStyle) && styleChanged)
 			{
 				var i:int;
@@ -843,6 +855,22 @@ package org.openscales.core.handler.feature.draw
 		public function set defaultPointStyle(value:Style):void
 		{
 			this._defaultPointStyle = value;
+		}
+		
+		/**
+		 * The default label style to apply to the feautures
+		 */
+		public function get defaultLabelStyle():Style
+		{
+			return this._defaultLabelStyle;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set defaultLabelStyle(value:Style):void
+		{
+			this._defaultLabelStyle = value;
 		}
 		
 		/**
