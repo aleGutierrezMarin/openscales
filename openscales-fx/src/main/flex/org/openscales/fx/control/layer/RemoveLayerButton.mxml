@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Button for removing a layer from a given map -->
+<s:Button xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 click="this.removeLayerFromMap()"
+		 label="{Catalog.getLocalizationForKey(I18N_LABEL_KEY)}" >
+		
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.core.Map;
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.LayerEvent;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.Layer;
+			
+			private var _map:Map;
+			
+			private var _layer:Layer;
+			
+			public static const I18N_LABEL_KEY:String = 'removeLayerButton.label';
+			
+			/**
+			 * The map the layer will be removed from
+			 */
+			public function get map():Map{
+				return _map;
+			}
+			
+			public function set map(value:Map):void{
+				
+				this._map = value;
+				
+				if(this._map){
+					
+					this._map.addEventListener(I18NEvent.LOCALE_CHANGED,this.onLocaleChanged);
+					this._map.addEventListener(LayerEvent.LAYER_ADDED,this.onLayerAdded);
+				}
+			}
+			
+			/**
+			 * The layer to remove from the map
+			 */
+			public function get layer():Layer{
+				
+				return _layer;
+			}
+			
+			public function set layer(value:Layer):void{
+				
+				_layer = value;
+			}
+			
+			protected function onLocaleChanged(event:I18NEvent):void{
+				
+				this.label = Catalog.getLocalizationForKey(I18N_LABEL_KEY);
+			}
+			
+			protected function onLayerAdded(event:LayerEvent):void{
+				
+				if(event.layer == _layer){
+					this.enabled = true;
+				}
+			}
+			
+			public function removeLayerFromMap():void{
+				
+				_map.removeLayer(_layer);
+				this.enabled = false;
+			}
+		]]>
+	</fx:Script>
+</s:Button>

@@ -1,0 +1,19 @@
+syntax: glob
+*.orig
+*/bin-release
+*/bin-debug
+*/bin
+target
+*/target
+*.DS_Store
+*/_build
+*/.FlexUnitSettings
+*/Thumbs.db
+*FlexUnitApplication.mxml
+.idea
+*.iml
+*.versionsBackup
+*.releaseBackup
+release.properties
+*.prefs
+*.project

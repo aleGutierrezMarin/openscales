@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Terms Of Service control to display a label and a link to Terms of service explanations page  -->
+<Control xmlns="http://openscales.org" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.PropertyChangeEvent;
+			
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.i18n.Catalog;
+			
+			import spark.utils.TextFlowUtil;
+			
+
+			public static const LABEL_CHANGE:String = 'labelChanged';
+			
+			/**
+			 * @private
+			 * Label displayed for the Terms of service link.
+			 * @default Label
+			 */
+			private var _label:String = "tos.label";
+			private var _url:String = "";
+			
+			/**
+			 * Label displayed for the Terms of service link.
+			 * @return The string value of the label (default : "Terms of Service")
+			 */
+			[Bindable(event="labelChanged")]
+			public function get label():String{
+				return Catalog.getLocalizationForKey(this._label);
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set label(value:String):void{
+				this._label = value;
+				dispatchEvent(new PropertyChangeEvent(LABEL_CHANGE));
+			}
+			
+			/**
+			 * The url to the page where terms of Service are explained.
+			 * @return The string value of the url
+			 */
+			public function get url():String{
+				return this._url;
+			}
+			
+			public function set url(value:String):void{
+				this._url = value;
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void {
+				dispatchEvent(new Event(LABEL_CHANGE));
+			}
+			
+			/**
+			 * Function called on click
+			 * 
+			 * @param event The click mouse event received
+			 */
+			public function onClick(event:Event):void
+			{
+				// open a new page with the originator url
+				var targetURL:URLRequest = new URLRequest(this._url);
+				navigateToURL(targetURL);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Label id="termsOfServiceText"
+			 buttonMode="true"
+			 useHandCursor="true"
+			 click="onClick(event)"
+			 width="100%"
+			 height="100%"
+			 text="{this.label}" />
+	
+</Control>
