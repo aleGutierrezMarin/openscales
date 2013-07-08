@@ -328,7 +328,6 @@
     <classEntry path="org.openscales.core.feature.DiscreteCircleFeatureTest"/>
     <classEntry path="org.openscales.core.layer.IGraticuleLabelFormatter"/>
     <classEntry path="org.openscales.core.layer.DefaultGraticuleLabelFormatter"/>
-    <classEntry path="org.openscales.core.format.FormatTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
