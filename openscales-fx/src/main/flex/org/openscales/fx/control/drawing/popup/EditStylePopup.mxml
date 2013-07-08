@@ -264,6 +264,7 @@
 					{
 						(this._editedSymbolize as ArrowSymbolizer).leftGraphic = null;
 					}else{
+						arrowSymb = this._editedSymbolize as ArrowSymbolizer;
 						var linSymb:LineSymbolizer = new LineSymbolizer(arrowSymb.stroke);
 						this._editedSymbolize = linSymb;
 						this.editStyleHandler.replaceSymbolizer(linSymb);
@@ -311,6 +312,7 @@
 					{
 						(this._editedSymbolize as ArrowSymbolizer).rightGraphic = null;
 					}else{
+						arrowSymb = this._editedSymbolize as ArrowSymbolizer;
 						var linSymb:LineSymbolizer = new LineSymbolizer(arrowSymb.stroke);
 						this._editedSymbolize = linSymb;
 						this.editStyleHandler.replaceSymbolizer(linSymb);
@@ -379,6 +381,7 @@
 			 */
 			public function close():void
 			{
+				this._editStyleHandler.onEditStyle = false;
 				this._editStyleHandler.validateChanges();
 				PopUpManager.removePopUp(this);
 			}
