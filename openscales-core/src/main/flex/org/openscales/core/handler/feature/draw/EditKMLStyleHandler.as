@@ -3,7 +3,6 @@ package org.openscales.core.handler.feature.draw
 	import flash.events.MouseEvent;
 	
 	import mx.collections.ArrayCollection;
-	import mx.logging.targets.LineFormattedTarget;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
@@ -18,11 +17,8 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.layer.VectorLayer;
-	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
-	import org.openscales.geometry.MultiLineString;
 	
 	public class EditKMLStyleHandler extends Handler
 	{
@@ -104,6 +100,11 @@ package org.openscales.core.handler.feature.draw
 		 * Flag that says if color painting is activated
 		 */
 		private var _colorPaintingActivated:Boolean = false;
+		
+		/**
+		 * Flag that says if we are in style edition mode
+		 */
+		private var _onEditStyle:Boolean = false;
 		
 		/**
 		 * URLS of the defaults icons to use in the style editor 
@@ -678,6 +679,36 @@ package org.openscales.core.handler.feature.draw
 			}
 		}
 		
+		/**
+		 * Delete the overred style and restore the feature style before edit it. 
+		 */
+		private function restoreFeatureStyleAfterOver(feature:Feature):void
+		{
+			if(feature.originalStyle != null) 
+			{
+				feature.style = feature.originalStyle.clone();
+			} 
+			else 
+			{
+				if (feature is LabelFeature) 
+				{
+					feature.style = Style.getNegativeLabelStyle(feature.style).clone();
+				} 
+				else if(feature is PointFeature || feature is MultiPointFeature) 
+				{
+					//evt.feature.style = Style.getDefaultPointStyle();
+				} 
+				else if (feature is LineStringFeature || feature is MultiLineStringFeature) 
+				{
+					feature.style = Style.getDefaultLineStyle().clone();
+				} 
+				else 
+				{
+					feature.style = Style.getDefaultPolygonStyle().clone();
+				}
+			}
+		}
+		
 		
 		/**
 		 * Callback for feature selection
@@ -690,11 +721,15 @@ package org.openscales.core.handler.feature.draw
 			if(tmpFeature)
 			{
 				
+				this._onEditStyle = true;
+				
 				if (tmpFeature.layer != this._drawLayer)
 				{
 					this._feature = null;
 					return;
 				}
+				
+				restoreFeatureStyleAfterOver(tmpFeature);
 				
 				/*if (tmpFeature is LabelFeature)
 				{
@@ -888,6 +923,16 @@ package org.openscales.core.handler.feature.draw
 		public function set iconURLArray(value:ArrayCollection):void
 		{
 			this._iconURLArray = value;
+		}
+		
+		public function get onEditStyle():Boolean
+		{
+			return this._onEditStyle;
+		}
+		
+		public function set onEditStyle(value:Boolean):void
+		{
+			this._onEditStyle = value;
 		}
 	}
 }
