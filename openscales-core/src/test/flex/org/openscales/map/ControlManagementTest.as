@@ -187,7 +187,7 @@ package org.openscales.map{
 			this._map = new Map();
 			this._map.size = new Size(300,300);
 			this._map.center = new Location(0,0);
-			this._map.projection = "EPSG:4326";
+			this._map.setProjection("EPSG:4326");
 			this._map.center = new Location(0,0,"EPSG:4326");
 			this._map.resolution = new Resolution(this._startResolution,"EPSG:4326");
 			
@@ -218,7 +218,7 @@ package org.openscales.map{
 			// Given a map with a KeyboardNavigation
 			this._map = new Map();
 			this._map.size = new Size(300,300);
-			this._map.projection = "EPSG:4326";
+			this._map.setProjection("EPSG:4326");
 			this._map.center = new Location(0,0,"EPSG:4326");
 			this._map.resolution = new Resolution(this._startResolution,"EPSG:4326");
 			

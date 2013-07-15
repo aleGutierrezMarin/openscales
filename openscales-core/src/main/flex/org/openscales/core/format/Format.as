@@ -35,10 +35,11 @@ package org.openscales.core.format
 		}
 		
 		/**
-		*setter for internalProjection
-		* @param a String or a ProjProjection as an Object
-		*it set the projection if it is a String or a ProjProjection, and it set the projection to
+		 * Setter for internalProjection
+		 * 
+		 * It set the projection if it is a String or a ProjProjection, and it set the projection to
 		 * null otherwise
+		 * @param a String or a ProjProjection as an Object
 		*/
 		public function setInternalProjection(value:Object):void {
 			if(value is ProjProjection)
@@ -49,18 +50,19 @@ package org.openscales.core.format
 				this._internalProjection = null;
 		}
 		/**
-		 *getter for externalProjection
+		 * The external projection
 		 * use setExternalProjection in order to set the projection
 		 */
 		public function get externalProjection():ProjProjection {
 			return this._externalProjection;
 		}
 		/**
-		 *setter for externalProjection
-		* @param a String or a ProjProjection as an Object
-		*it set the projection if it is a String or a ProjProjection, and it set the projection to
+		 * Setter for externalProjection
+		 * 
+		 * It set the projection if it is a String or a ProjProjection, and it set the projection to
 		 * null otherwise
-		*
+		 * 
+		 * @param a String or a ProjProjection as an Object
 		 */	
 		public function setExternalProjection(value:Object):void {
 			if(value is ProjProjection)

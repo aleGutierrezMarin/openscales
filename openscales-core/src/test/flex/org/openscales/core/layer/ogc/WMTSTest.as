@@ -136,7 +136,7 @@ package org.openscales.core.layer.ogc {
 			// Given a map of 256x256px, centered on 0,12000000
 			this._map = new Map();
 			this._map.size = new Size(256,256);
-			this._map.projection = "IGNF:LAMB93";
+			this._map.setProjection("IGNF:LAMB93");
 			//this._map.projection = "EPSG:4326";
 			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
 			this._map.maxExtent = new Bounds(-8.38, 38.14, 14.11, 55.92, "EPSG:4326");
@@ -295,7 +295,7 @@ package org.openscales.core.layer.ogc {
 			// Given a map of 256x256px, centered on 0,12000000
 			this._map = new Map();
 			this._map.size = new Size(256,256);
-			this._map.projection = "IGNF:LAMB93";
+			this._map.setProjection("IGNF:LAMB93");
 			//this._map.projection = "EPSG:4326";
 			this._map.center = new Location(0,12000000,"IGNF:LAMB93");
 			this._map.maxExtent = new Bounds(-8.38, 38.14, 14.11, 55.92, "EPSG:4326");

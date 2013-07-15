@@ -47,7 +47,7 @@ package org.openscales.map
 			_map.minResolution = new Resolution(2, "EPSG:4326");
 			
 			// When I change the projection of the map.
-			_map.projection = "EPSG:2154"
+			_map.setProjection("EPSG:2154");
 				
 			// Then the projection of resolution, maxResolution and minResolution is changed and their value are reprojected
 			assertEquals("The resolution is not in the proper projection", ProjProjection.getProjProjection("EPSG:2154").srsCode, _map.resolution.projection.srsCode);
