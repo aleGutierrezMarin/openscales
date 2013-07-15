@@ -261,7 +261,7 @@ package org.openscales.core.control
 			this.addChild(this._overviewMap);
 			if(this._overviewMap.layers.length==0) {
 				var layer:Layer = new Mapnik("defaultbaselayer");
-				this._overviewMap.projection=layer.projection;
+				this._overviewMap.setProjection(layer.projection);
 				this._overviewMap.maxExtent = layer.maxExtent;
 				this._overviewMap.minResolution = layer.minResolution;
 				this._overviewMap.maxResolution = layer.maxResolution;
@@ -307,7 +307,7 @@ package org.openscales.core.control
 		 */
 		public function set projection(value:*):void
 		{
-			this._overviewMap.projection = value;
+			this._overviewMap.setProjection(value);
 		}
 		
 		/**

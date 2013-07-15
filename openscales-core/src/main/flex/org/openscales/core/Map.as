@@ -307,7 +307,7 @@ package org.openscales.core
 		 * @param height the map's height in pixels
 		 * @param projection the map's projection
 		 */
-		public function Map(width:Number=600, height:Number=400, projection:*=null) {
+		public function Map(width:Number=600, height:Number=400, projection:Object=null) {
 			super();
 			
 			/**
@@ -334,7 +334,7 @@ package org.openscales.core
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._resizeTimer = new Timer(100,1);
 			this._resizeTimer.addEventListener(TimerEvent.TIMER, this.applyResize);
-			this.projection = projection;
+			this.setProjection(projection);
 			this.size = new Size(width, height);
 			// It is necessary to draw something before to define the size...
 			this.graphics.beginFill(_backTileColor,0);
@@ -1313,7 +1313,7 @@ package org.openscales.core
 		 */
 		private function applyResize(event:TimerEvent):void
 		{
-			
+			if(!this.graphics)return;
 			this.graphics.clear();
 			this.graphics.beginFill(_backTileColor);
 			this.graphics.drawRect(0,0,this.size.w,this.size.h);
@@ -1659,6 +1659,8 @@ package org.openscales.core
 		 * If a layer is not in the same projection as the projection of the map
 		 * he will not be displayed. 
 		 * 
+		 * To define the projection use the setProjection method
+		 * 
 		 * @default Geometry.DEFAULT_SRS_CODE
 		 */
 		public function get projection():ProjProjection
@@ -1666,9 +1668,11 @@ package org.openscales.core
 			return this._projection;
 		}
 		/**
-		 * @private
+		 * Defines the projection of the map. It will conditionnate every layer on the map
+		 * 
+		 * @param value A ProjProjection object or a String representing the SRS code of the projection (eg.: "EPSG:4326")
 		 */
-		public function set projection(value:*):void
+		public function setProjection(value:Object):void
 		{
 			var proj:ProjProjection = null;
 			proj = ProjProjection.getProjProjection(value);
