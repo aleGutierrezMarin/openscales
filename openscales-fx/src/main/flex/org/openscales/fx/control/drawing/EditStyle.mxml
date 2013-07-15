@@ -105,6 +105,7 @@
 				}
 				
 				this._handler.validateChanges();
+				this._handler.onEditStyle = false;
 				PopUpManager.removePopUp(_popup);
 				_handler.active = false;
 				_alpha = 0.3;
