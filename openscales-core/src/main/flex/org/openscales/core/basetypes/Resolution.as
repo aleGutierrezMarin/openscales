@@ -13,8 +13,12 @@ package org.openscales.core.basetypes
 		
 		private var _projection:ProjProjection;
 		private var _value:Number; 
-			
-		public function Resolution(resolutionValue:Number, projection:* = null)
+		
+		/**
+		 * @param resolutionValue Numeric value of the resolution (must be consistent with projection's units)
+		 * @param projection The projection in which this value is expressed
+		 */ 
+		public function Resolution(resolutionValue:Number, projection:Object = null)
 		{
 			this._projection = ProjProjection.getProjProjection(projection);
 			if(this._projection == null)
@@ -24,8 +28,10 @@ package org.openscales.core.basetypes
 		
 		/**
 		 * Reproject the resolution to the given projection and return the result
+		 * 
+		 * @param a ProjProjection object or a String representing the SRS code of the projection (eg.: EPSG:4326) 
 		 */
-		public function reprojectTo(newProjection:*):Resolution
+		public function reprojectTo(newProjection:Object):Resolution
 		{
 			var proj:ProjProjection = ProjProjection.getProjProjection(newProjection);
 			if(proj == null)
