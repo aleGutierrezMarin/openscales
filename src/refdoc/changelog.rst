@@ -1,9 +1,12 @@
 Changelog
 =========
 
-Changes between 2.2 and 2.3.0
+Changes between 2.2 and 3.0.0
 -----------------------------
 
+* API break in Map (projection is now read-only, use setProjection instead)
+* API break in Layer (maxExtent is now read-only, use setMaxExtent instead)
+* API break in Layer (projection is now read-only, use setProjection instead)
 * Support of TileMatrixSetLimits in WMTS GetCapabilities. No more tiles will be request outside those limits
 * Adding a nodata Tile that will be displayed instead of the tile when the server is not responding.
 * Fixing an issue in the numeric scale component due to DPI problem.
