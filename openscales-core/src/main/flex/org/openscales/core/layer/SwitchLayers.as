@@ -17,10 +17,10 @@ package org.openscales.core.layer
 		
 		private var _isFirstLayer:Boolean;
 		
-		override public function set maxExtent(value:*):void {
-			super.maxExtent = value;
-			this._firstLayer.maxExtent = value as Bounds;
-			this._lastLayer.maxExtent = value as Bounds;
+		override public function setMaxExtent(value:Object):void {
+			super.setMaxExtent(value);
+			this._firstLayer.setMaxExtent(value);
+			this._lastLayer.setMaxExtent(value);
 		}
 		
 		override public function set map(map:Map):void {

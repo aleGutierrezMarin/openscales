@@ -74,9 +74,9 @@ package org.openscales.core.layer
 				this.map.addLayer(layer,false);
 			}
 			if(this._layers.length==1){
-				this.maxExtent = layer.maxExtent;// Taking layer maxExtent as base for aggregate maxExtent
+				this.setMaxExtent(layer.maxExtent);// Taking layer maxExtent as base for aggregate maxExtent
 			}else if(this.maxExtent){
-				this.maxExtent = this.maxExtent.extendFromBounds(layer.maxExtent);
+				this.setMaxExtent(this.maxExtent.extendFromBounds(layer.maxExtent));
 			}
 			return true;
 		}
@@ -133,12 +133,12 @@ package org.openscales.core.layer
 			this._layers.splice(index,1);
 			
 			if(this._layers.length>0){
-				this.maxExtent = this._layers[0].maxExtent;
+				this.setMaxExtent(this._layers[0].maxExtent);
 				var lgth:Number = this._layers.length;
 				var i:int = 1;
 				for(i; i<lgth;++i){
-					if(!this.maxExtent) this.maxExtent = this._layers[i].maxExtent;
-					else this.maxExtent = this.maxExtent.extendFromBounds(this._layers[i].maxExtent);	
+					if(!this.maxExtent) this.setMaxExtent(this._layers[i].maxExtent);
+					else this.setMaxExtent(this.maxExtent.extendFromBounds(this._layers[i].maxExtent));	
 				}			
 			}
 			
@@ -252,10 +252,7 @@ package org.openscales.core.layer
 			return super.minResolution;
 		}
 		
-		/**
-		 * @private
-		 */
-		override public function set minResolution(value:*):void 
+		override public function set minResolution(value:Resolution):void 
 		{
 			super.minResolution = value;
 		}
@@ -270,9 +267,9 @@ package org.openscales.core.layer
 		}
 		
 		/**
-		 * @private
+		 * @inheritDoc
 		 */
-		override public function set maxResolution(value:*):void 
+		override public function set maxResolution(value:Resolution):void 
 		{
 			super.maxResolution = value;
 		}
@@ -285,12 +282,9 @@ package org.openscales.core.layer
 			return super.maxExtent;
 		}
 		
-		/**
-		 * @private
-		 */
-		override public function set maxExtent(value:*):void 
+		override public function setMaxExtent(value:Object):void 
 		{
-			super.maxExtent = value;
+			super.setMaxExtent(value);
 		}
 		
 		override public function set visible(value:Boolean):void{

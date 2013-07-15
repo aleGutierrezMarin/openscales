@@ -230,7 +230,7 @@ package org.openscales.core.layer
 			availableProj.push("ESPG:4326");
 			availableProj.push(null);
 			var l:Layer=new Layer("test");
-			l.availableProjections = availableProj;
+			l.setAvailableProjections(availableProj);
 			
 			assertEquals("Should contain one projection",1, l.availableProjections.length);
 			assertEquals("Should contain one projection","ESPG:4326", l.availableProjections[0]);

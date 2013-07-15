@@ -564,7 +564,7 @@
 						availableProjections = (data.getValue(projection) as String).split(",");
 						
 						//Setting availableProjections for layer
-						(newLayer as WMS).availableProjections = (data.getValue(projection) as String).toUpperCase();
+						(newLayer as WMS).setAvailableProjections((data.getValue(projection) as String).toUpperCase());
 						
 						if(this.map.projection)
 						{
@@ -573,13 +573,13 @@
 								if(this.map.projection == ProjProjection.getProjProjection(val))
 								{
 									newProjection = val;
-									(newLayer as WMS).projection = val;
+									(newLayer as WMS).setProjection(val);
 									break;
 								}	
 							}
 						}
 						if(!newProjection)
-							(newLayer as WMS).projection = availableProjections[0];
+							(newLayer as WMS).setProjection(availableProjections[0]);
 						
 						break;
 					
@@ -595,7 +595,7 @@
 						break;
 					case "WFS":
 						newLayer = new WFS(name, url, data.getValue("Name"), version);
-						newLayer.maxExtent = data.getValue("Extent");
+						newLayer.setMaxExtent(data.getValue("Extent"));
 						//Setting availableProjections for layer
 						var aProj:Vector.<String> = new Vector.<String>();
 						if(version == "1.0.0") {
@@ -610,7 +610,7 @@
 							}
 						}
 						
-						(newLayer as WFS).availableProjections = aProj;
+						(newLayer as WFS).setAvailableProjections(aProj);
 						break;
 				}
 				this.map.addLayer(newLayer);
