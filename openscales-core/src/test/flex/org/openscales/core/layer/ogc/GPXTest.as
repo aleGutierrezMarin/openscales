@@ -98,7 +98,7 @@ package org.openscales.core.layer.ogc
 		public function shouldHaveLayerMaxExtentIfNoFeatures():void
 		{
 			var layer:GPX = new GPX("layer", "1.0");
-			layer.maxExtent = "-150,-20,160,10,EPSG:4326";
+			layer.setMaxExtent("-150,-20,160,10,EPSG:4326");
 			var map:Map = new Map();
 			map.addLayer(layer);
 			
@@ -121,14 +121,14 @@ package org.openscales.core.layer.ogc
 		
 		[Test]
 		public function shouldSetMaxExtentFromString():void{
-			_instance.maxExtent="-4.0,30.0,10.5,60.0,WGS84";
+			_instance.setMaxExtent("-4.0,30.0,10.5,60.0,WGS84");
 			assertTrue("Setting max extent from Bounds failed", _instance.maxExtent.projection== _instance.projection);
 		}
 		
 		[Test]
 		public function shouldSetMaxExtentFromBounds():void{
 			var bounds:Bounds = new Bounds(-4.0,30.0,10.5,60.0,"WGS84");
-			_instance.maxExtent=bounds;
+			_instance.setMaxExtent(bounds);
 			assertTrue("Setting max extent from Bounds failed", _instance.maxExtent.projection == _instance.projection);
 		}
 		

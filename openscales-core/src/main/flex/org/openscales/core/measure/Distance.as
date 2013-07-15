@@ -65,7 +65,7 @@ package org.openscales.core.measure
 			super.active = value;
 			if(this.map) {
 				if(value) {
-					this.drawLayer.projection = map.projection;
+					this.drawLayer.setProjection(map.projection);
 					this.drawLayer.minResolution = this.map.minResolution;
 					this.drawLayer.maxResolution = this.map.maxResolution;
 					this.map.addLayer(this.drawLayer);

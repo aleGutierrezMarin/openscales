@@ -210,9 +210,9 @@ package org.openscales.core.format
 				case "OGC:WMS":
 					var wms:WMS = new WMS(title,url,name,"",format);
 					wms.version = version;
-					wms.projection = srs;
+					wms.setProjection(srs);
 					wms.abstract = (abstract && abstract.length>0) ? abstract : null;
-					wms.availableProjections = availableProjections;
+					wms.setAvailableProjections(availableProjections);
 					wms.transparent = true;
 					wms.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					wms.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator),  ProjProjection.getProjProjection("EPSG:4326"));
@@ -221,9 +221,9 @@ package org.openscales.core.format
 				case "OGC:WMS;Cached":
 					var wmsc:WMS = new WMS(title,url,name,"",format);
 					wmsc.version = version;
-					wmsc.projection = srs;
+					wmsc.setProjection(srs);
 					wmsc.abstract = (abstract && abstract.length>0) ? abstract : null;
-					wmsc.availableProjections = availableProjections;
+					wmsc.setAvailableProjections(availableProjections);
 					wmsc.transparent = true;
 					wmsc.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					wmsc.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator),  ProjProjection.getProjProjection("EPSG:4326"));
@@ -233,9 +233,9 @@ package org.openscales.core.format
 					break;
 				case "OGC:WFS":
 					var wfs:WFS = new WFS(title,url,name,version);
-					wfs.projection = srs;
+					wfs.setProjection(srs);
 					wfs.abstract = (abstract && abstract.length>0) ? abstract : null;
-					wfs.availableProjections = availableProjections;
+					wfs.setAvailableProjections(availableProjections);
 					wfs.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					wfs.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd = wfs;
@@ -266,7 +266,7 @@ package org.openscales.core.format
 					if(style) wmts.style = style;
 					if (srs != "")
 					{
-						wmts.projection = srs;
+						wmts.setProjection(srs);
 					}
 					wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
@@ -282,8 +282,8 @@ package org.openscales.core.format
 					layerToAdd.name = name;
 					layerToAdd.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
 					layerToAdd.maxResolution= new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenominator), ProjProjection.getProjProjection("EPSG:4326"));
-					layerToAdd.projection = srs;
-					layerToAdd.availableProjections = availableProjections;
+					layerToAdd.setProjection(srs);
+					layerToAdd.setAvailableProjections(availableProjections);
 					break;
 			}
 			

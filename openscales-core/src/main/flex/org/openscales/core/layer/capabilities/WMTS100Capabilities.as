@@ -386,11 +386,11 @@ package org.openscales.core.layer.capabilities
 			var defStyle:String = layerData.getValue("DefaultStyle") as String;
 			var wmts:WMTS = new WMTS(identifier,"",identifier,tmss[0],(layerData.getValue("TileMatrixSets") as HashMap),defStyle);
 			wmts.format = format;
-			wmts.projection = crs;
+			wmts.setProjection(crs);
 			wmts.displayedName = layerData.getValue("Title");
 			wmts.abstract = layerData.getValue("Abstract");
 			//wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");
-			wmts.maxExtent = layerData.getValue("WGS84BoundingBox");
+			wmts.setMaxExtent(layerData.getValue("WGS84BoundingBox"));
 			wmts.minResolution = new Resolution(Unit.getResolutionFromScaleDenominator(minScaleDenom,wmts.projection.projParams.units),wmts.projection);
 			wmts.maxResolution = new Resolution(Unit.getResolutionFromScaleDenominator(maxScaleDenom,wmts.projection.projParams.units),wmts.projection);
 			wmts.tileMatrixSetsLimits = layerData.getValue("TileMatrixSetsLimits");

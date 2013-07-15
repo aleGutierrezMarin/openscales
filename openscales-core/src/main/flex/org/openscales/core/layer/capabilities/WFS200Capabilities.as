@@ -121,9 +121,9 @@ package org.openscales.core.layer.capabilities
 			
 			wfs = new WFS(identifier,"",identifier,"2.0.0");
 			wfs.displayedName = title;
-			wfs.projection = ProjProjection.getProjProjection(srs);
+			wfs.setProjection(ProjProjection.getProjProjection(srs));
 			wfs.abstract = abs;
-			wfs.maxExtent = maxExtent;
+			wfs.setMaxExtent(maxExtent);
 			wfs.style = Style.getDefaultStyle();
 			
 			return wfs;
