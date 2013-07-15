@@ -50,5 +50,21 @@ package org.openscales.fx.layer
 		{
 			(this._layer as Graticule).minNumberOfLines = value;
 		}
+		
+		/**
+		 * The alignement for longitude labels. Can be left, center or right (default is left)
+		 */
+		public function get latitudeLabelsAlign():String
+		{
+			return (this._layer as Graticule).latitudeLabelsAlign;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set latitudeLabelsAlign(value:String):void
+		{
+			(this._layer as Graticule).latitudeLabelsAlign = value;
+		}
 	}
 }

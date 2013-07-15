@@ -830,7 +830,7 @@ package org.openscales.core.format
 						labelfeatures.push(lf);
 					} else {
 						point = new Point(coordinates[0], coordinates[1]);
-						if (this.internalProjection != null, this.externalProjection != null) 
+						if (this.internalProjection != null && this.externalProjection != null) 
 						{
 							point.projection = this.externalProjection;
 							point.transform(this.internalProjection);
@@ -950,7 +950,7 @@ package org.openscales.core.format
 					continue;
 				point = new Point(_coords[0].toString(),
 					_coords[1].toString());
-				if (this.internalProjection != null, this.externalProjection != null) 
+				if (this.internalProjection != null && this.externalProjection != null) 
 				{
 					point.projection = this.externalProjection;
 					point.transform(this.internalProjection);
@@ -1013,7 +1013,7 @@ package org.openscales.core.format
 				if(_Pcoords.length<2)
 					continue;
 				point = new Point(_Pcoords[0].toString(),_Pcoords[1].toString());
-				if (this.internalProjection != null, this.externalProjection != null) 
+				if (this.internalProjection != null && this.externalProjection != null) 
 				{
 					point.projection = this.externalProjection;
 					point.transform(this.internalProjection);
