@@ -114,8 +114,8 @@ package org.openscales.core.layer
 				
 				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
 					// KML reference documentation specify that format projection is EPSG:4326
-					this._kmlFormat.externalProjection = ProjProjection.getProjProjection("EPSG:4326");
-					this._kmlFormat.internalProjection = this.projection;
+					this._kmlFormat.setExternalProjection ( ProjProjection.getProjProjection("EPSG:4326"));
+					this._kmlFormat.setInternalProjection( this.projection);
 				}
 				this._kmlFormat.proxy = this.proxy;
 				
