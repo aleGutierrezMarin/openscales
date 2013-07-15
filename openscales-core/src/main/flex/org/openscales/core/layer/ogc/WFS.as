@@ -434,8 +434,8 @@ package org.openscales.core.layer.ogc
 		 * @param the xml corresponding to the wfs response
 		 */
 		public function parseResponse(wfsResponse:String):void{
-			this._gmlFormat.externalProjection = this.projection;
-			this._gmlFormat.internalProjection = this.projection;
+			this._gmlFormat.setExternalProjection( this.projection);
+			this._gmlFormat.setInternalProjection(this.projection);
 			this._gmlFormat.read(wfsResponse);
 			//this._wfsFormat.read(wfsResponse);
 		}
