@@ -20,13 +20,13 @@ package {
 		public function OpenscalesApplication() {
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			_map.projection = "EPSG:900913";
+			_map.setProjection("EPSG:900913");
 			_map.center = new Location(2,48, "EPSG:4326");
 			_map.resolution = new Resolution(100000.0339, "EPSG:900913");
 			_map.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,"EPSG:900913");
 			
 			var mapnik:Mapnik=new Mapnik("Mapnik");
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);
+			mapnik.setMaxExtent(new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection));
 			mapnik.alpha = 0.4;
 			//_map.addLayer(mapnik);
 			

@@ -35,7 +35,7 @@ package
 			
 			// Add a base layer to the map
 			var wmsclayer:WMSC = new WMSC("nasa","http://openscales.org/geoserver/ows","bluemarble");
-			wmsclayer.projection = "EPSG:4326";
+			wmsclayer.setProjection("EPSG:4326");
 			wmsclayer.format = "image/jpeg";
 			wmsclayer.version = "1.1.1";
 			this._map.addLayer(wmsclayer);

@@ -39,9 +39,9 @@ package
 			//Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			_map.projection = "EPSG:4326";
+			_map.setProjection("EPSG:4326");
 			
-			this._map.projection="EPSG:900913";
+			this._map.setProjection("EPSG:900913");
 			// Add a base layer to the map	
 			this._map.addLayer(new Mapnik("OpenStreetMap"));
 			
