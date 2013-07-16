@@ -40,7 +40,7 @@ package org.openscales.core.layer
 			this.editable = true;
 			this.url = url;
 			this.data = data;
-			this.maxExtent = bounds;
+			this.setMaxExtent(bounds);
 			this.proxy = proxy;
 			this._kmlFormat = new KMLFormat();
 			this._kmlFormat.userDefinedStyle = style;
@@ -114,8 +114,8 @@ package org.openscales.core.layer
 				
 				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
 					// KML reference documentation specify that format projection is EPSG:4326
-					this._kmlFormat.externalProjection = ProjProjection.getProjProjection("EPSG:4326");
-					this._kmlFormat.internalProjection = this.projection;
+					this._kmlFormat.setExternalProjection ( ProjProjection.getProjProjection("EPSG:4326"));
+					this._kmlFormat.setInternalProjection( this.projection);
 				}
 				this._kmlFormat.proxy = this.proxy;
 				
@@ -128,7 +128,7 @@ package org.openscales.core.layer
 				for (i = 0; i < vectorLength; i++){					
 					this.addFeature(this._featureVector[i],true,true);
 				}
-				this.maxExtent = featuresBbox;
+				this.setMaxExtent(featuresBbox);
 				
 				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_CHANGED, this);
 				this.map.dispatchEvent(evt);
@@ -189,7 +189,7 @@ package org.openscales.core.layer
 		/**
 		 * Getters and Setters
 		 */
-		override public function set projection(value:*):void {
+		override public function setProjection(value:Object):void {
 			// KML must be in EPSG:4326
 		}
 		

@@ -85,8 +85,8 @@ package org.openscales.core.layer
 			if(imagerySet)
 				this._imagerySet = imagerySet;
 			
-			this.projection = "EPSG:900913";
-			this.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projection);
+			this.setProjection("EPSG:900913");
+			this.setMaxExtent(new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,this.projection));
 			
 		}
 		

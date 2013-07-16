@@ -37,7 +37,7 @@ package org.openscales.fx.control.layer
 			_layer1 = new Layer("layer1");
 			_map.addLayer(_layer1);
 			_layer2 = new Layer("layer2");
-			_layer2.maxExtent = new Bounds(-10,-10,10,10);
+			_layer2.setMaxExtent(new Bounds(-10,-10,10,10));
 			_map.addLayer(_layer2);
 			_zoom = new LayerZoomToExtent();
 			_zoom.layer = _layer2;

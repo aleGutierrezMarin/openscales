@@ -234,7 +234,7 @@ package org.openscales.fx.control.search
 					layer.url = urlTextInput.text.substring(0,urlTextInput.text.lastIndexOf("?"));
 				}
 				else layer.url = urlTextInput.text;
-				if(!layer.projection) layer.projection = _map.projection;
+				if(!layer.projection) layer.setProjection(_map.projection);
 				//layer.maxExtent = _map.maxExtent;
 				var ret:Boolean = _map.addLayer(layer);
 				if(ret)this.dispatchEvent(new LayerEvent(LayerEvent.EXT_LAYER_ADDED,layer));

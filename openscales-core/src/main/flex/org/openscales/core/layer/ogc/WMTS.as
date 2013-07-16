@@ -235,7 +235,7 @@ package org.openscales.core.layer.ogc
 			return super.checkAvailability();
 		}
 		
-		override public function supportsProjection(compareProj:*):Boolean
+		override public function supportsProjection(compareProj:Object):Boolean
 		{
 			var proj:ProjProjection = ProjProjection.getProjProjection(compareProj);
 			if(!proj)
@@ -358,7 +358,7 @@ package org.openscales.core.layer.ogc
 					var tms:TileMatrixSet = this._tileProvider.tileMatrixSets.getValue(value) as TileMatrixSet;
 					
 					if(tms) {
-						this.projection = tms.supportedCRS;
+						this.setProjection(tms.supportedCRS);
 						event = new LayerEvent(LayerEvent.LAYER_PROJECTION_CHANGED, this);
 					}
 				}

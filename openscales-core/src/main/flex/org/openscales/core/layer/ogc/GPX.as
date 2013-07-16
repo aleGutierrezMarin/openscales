@@ -178,7 +178,7 @@ package org.openscales.core.layer.ogc
 					this.addFeatures(pointFeatureVector);
 				}
 				
-				this.maxExtent = this.featuresBbox;
+				this.setMaxExtent(this.featuresBbox);
 				
 				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_CHANGED, this);
 				this.map.dispatchEvent(evt);
@@ -227,7 +227,7 @@ package org.openscales.core.layer.ogc
 			_version = value;
 		}
 		
-		override public function set projection(value:*):void {
+		override public function setProjection(value:Object):void {
 			// SRS code cannot be overriden. Graticule is always built in WGS84
 			// and then reprojected to the projection of the map.
 		}
