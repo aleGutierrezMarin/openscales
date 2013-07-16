@@ -342,7 +342,6 @@
 					<coverageReportFormat>
 						<param>xml</param>
 					</coverageReportFormat>
-					<testFailureIgnore>true</testFailureIgnore>
 					<targetPlayer>${flex.player.version.major}.${flex.player.version.minor}.${flex.player.version.revision}</targetPlayer>
 					<swfVersion>${flashplayer.version.swf}</swfVersion>
 					<outputDirectory>${project.build.directory}/site/asdoc</outputDirectory>
