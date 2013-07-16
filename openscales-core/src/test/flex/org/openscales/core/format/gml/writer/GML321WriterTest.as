@@ -187,7 +187,7 @@ package org.openscales.core.format.gml.writer
 		Assert.assertEquals("There should be 16 LineStrings in this collection",16,lineCollection.length());
 		
 		var sixteenthMember:XML = buildCollection..*::tasmania_roads[15];
-		Assert.assertEquals("The ID of this member is incorrect", "tasmania_roads.162", sixteenthMember.attributes()[0].toString());
+		Assert.assertEquals("The ID of this member is incorrect", "tasmania_roads.16", sixteenthMember.attributes()[0].toString());
 		}
 		
 		
