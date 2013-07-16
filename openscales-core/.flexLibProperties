@@ -107,7 +107,6 @@
     <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordsParser202"/>
     <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordByIdParser"/>
     <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordsParser"/>
-    <classEntry path="org.openscales.core.format.geojson.GeoJSONFormat"/>
     <classEntry path="org.openscales.core.format.gml.GMLFormat"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML2Parser"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML311Parser"/>
