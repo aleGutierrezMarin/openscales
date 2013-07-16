@@ -53,7 +53,7 @@ package org.openscales.core.format
 			var i:uint;
 			var file:XML = new XML(new KMLLINES());
 			var features:Vector.<Feature> = this.format.read(file) as Vector.<Feature>;
-			var buildedFile:XML = this.format.write(features) as XML;
+			var buildedFile:XML = new XML(this.format.write(features));
 			
 			var styleNodes:XMLList = buildedFile..*::Style;
 			var placemarks:XMLList = buildedFile..*::Placemark;
@@ -79,7 +79,7 @@ package org.openscales.core.format
 			//each poly is defined by only one linear ring (there are no innerBoundaries)
 			var file:XML = new XML(new KMLPOLY());
 			var features:Vector.<Feature> = this.format.read(file) as Vector.<Feature>;
-			var buildedFile:XML = this.format.write(features) as XML;
+			var buildedFile:XML = new XML(this.format.write(features));
 			
 			var styleNodes:XMLList = buildedFile..*::Style;
 			var placemarks:XMLList = buildedFile..*::Placemark;
@@ -92,7 +92,7 @@ package org.openscales.core.format
 			Assert.assertTrue("There should be 3 ring nodes in this file",linearRings.length() == 3);
 			
 			//check the coordinates of the 1st polygon; altitude not supported
-			var coords:String = "-122.0848938459612,37.42257124044786 -122.0849580979198,37.42211922626856 -122.0847469573047,37.42207183952619 -122.0845725380962,37.42209006729676 -122.0845954886723,37.42215932700895 -122.0838521118269,37.42227278564371 -122.083792243335,37.42203539112084 -122.0835076656616,37.42209006957106 -122.0834709464152,37.42200987395161 -122.0831221085748,37.4221046494946 -122.0829247374572,37.42226503990386 -122.0829339169385,37.42231242843094 -122.0833837359737,37.42225046087618 -122.0833607854248,37.42234159228745 -122.0834204551642,37.42237075460644 -122.083659133885,37.42251292011001 -122.0839758438952,37.42265873093781 -122.0842374743331,37.42265143972521 -122.0845036949503,37.4226514386435 -122.0848020460801,37.42261133916315 -122.0847882750515,37.42256395055121 -122.0848938459612,37.42257124044786";
+			var coords:String = "-122.0848938459612,37.42257124044786 -122.0849580979198,37.42211922626856 -122.0847469573047,37.42207183952619 -122.0845725380962,37.42209006729676 -122.0845954886723,37.42215932700895 -122.0838521118269,37.42227278564371 -122.083792243335,37.42203539112084 -122.0835076656616,37.42209006957106 -122.0834709464152,37.42200987395161 -122.0831221085748,37.4221046494946 -122.0829247374572,37.42226503990386 -122.0829339169385,37.42231242843094 -122.0833837359737,37.42225046087618 -122.0833607854248,37.42234159228745 -122.0834204551642,37.42237075460644 -122.083659133885,37.42251292011001 -122.0839758438952,37.42265873093781 -122.0842374743331,37.42265143972521 -122.0845036949503,37.4226514386435 -122.0848020460801,37.42261133916315 -122.0847882750515,37.42256395055121 -122.0848938459612,37.42257124044786 -122.0848938459612,37.42257124044786";
 			var fileCoords:XML = linearRings[0]..*::coordinates[0]; 
 			Assert.assertEquals("The coordonates of the 1st polygon are incorrect", coords, fileCoords.toString());
 
@@ -116,7 +116,7 @@ package org.openscales.core.format
 			var pointF:PointFeature = new PointFeature(new Point(42.4555,2.559999901),null,style);
 			var features:Vector.<Feature> = new Vector.<Feature>();
 			features.push(pointF);
-			var buildedFile:XML = this.format.write(features) as XML;
+			var buildedFile:XML = new XML(this.format.write(features));
 			
 			var styleNodes:XMLList = buildedFile..*::Style;
 			var placemarks:XMLList = buildedFile..*::Placemark;
@@ -164,7 +164,7 @@ package org.openscales.core.format
 			var feature:MultiLineStringFeature = new MultiLineStringFeature(multiLine,null,style);
 			features.push(feature);
 			
-			var file:XML = this.format.write(features) as XML;
+			var file:XML = new XML(this.format.write(features));
 			var geomNode:XML  = file..*::MultiGeometry[0];
 			var lines:XMLList = geomNode..*::LineString;
 			var lineStyles:XMLList = file..*::LineStyle;
