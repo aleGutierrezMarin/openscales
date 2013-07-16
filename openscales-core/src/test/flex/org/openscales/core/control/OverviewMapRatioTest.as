@@ -32,7 +32,7 @@ package org.openscales.core.control
 			_map.size=new Size(1200, 700);
 			
 			// Main map creation
-			var IGN:WMSC = new WMSC("OrthoPhoto", "http://wxs.ign.fr/geoportail/wmsc", "ORTHOIMAGERY.ORTHOPHOTOS");
+			/*var IGN:WMSC = new WMSC("OrthoPhoto", "http://wxs.ign.fr/geoportail/wmsc", "ORTHOIMAGERY.ORTHOPHOTOS");
 			IGN.setProjection("IGNF:GEOPORTALFXX");
 			var resoArray:Array = new Array(39135.75,19567.875,9783.9375,4891.96875,2445.984375,2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125,0.0625);
 			IGN.resolutions = resoArray;
@@ -42,7 +42,7 @@ package org.openscales.core.control
 			IGN.setMaxExtent(new Bounds(-1048576,3670016,2097152,6815744, "IGNF:GEOPORTALFXX"));
 			var securityIGN:IGNGeoRMSecurity = new IGNGeoRMSecurity(_map, "1905042184761803857", "http://www.openscales.org/proxy.php?url=", "http://jeton-api.ign.fr", "POST");
 			IGN.security = securityIGN;
-			_map.addLayer(IGN);
+			_map.addLayer(IGN);*/
 			
 			
 			// Overview map Creation

@@ -52,7 +52,7 @@ package {
 			var psym:PointSymbolizer;
 			// Create the drawings layer and some useful variables
 			var layer:VectorLayer = new VectorLayer("Drawing samples");
-			layer.projection = "EPSG:4326";
+			layer.setProjection("EPSG:4326");
 			var style:Style;
 			var rule:Rule;
 			var arrayComponents:Vector.<Number>;
