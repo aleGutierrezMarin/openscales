@@ -2,10 +2,10 @@ package org.openscales.geometry
 {
 	
 	
-	import flash.geom.Point;
 	
-	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.utils.IDistanceCalculator;
 	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.geometry.utils.VincentyDistance;
 	import org.openscales.proj4as.ProjCalculus;
 	import org.openscales.proj4as.ProjProjection;
 
@@ -13,8 +13,15 @@ package org.openscales.geometry
 	 * A LineString is a MultiPoint (2 vertices min), whose points are
 	 * assumed to be connected.
 	 */
+	
+	
 	public class LineString extends MultiPoint
 	{
+		/**
+		 * This parameter is used in order to choose if you want to calculate the distance between two points with vicenty technic or with the great circle distance. 
+		 */
+		private var _distanceCalculator:IDistanceCalculator=new VincentyDistance();
+		
 		/**
 		 * LineString constructor
 		 * 
@@ -83,17 +90,17 @@ package org.openscales.geometry
 			}
 			var length:Number = 0;
 			if(geom.components && (geom.components.length >= 4)) {
-				var p1:flash.geom.Point;
-				var p2:flash.geom.Point;
+				var p1:Point;
+				var p2:Point;
 				for(var i:int=3, len:int=geom.components.length; i<len; i=i+2) {
-					p1 = new flash.geom.Point(geom.components[i-3], geom.components[i-2]);
-					p2 =  new flash.geom.Point(geom.components[i-1], geom.components[i]);
+					p1 = new Point(geom.components[i-3], geom.components[i-2]);
+					p2 =  new Point(geom.components[i-1], geom.components[i]);
 					// this returns km and requires lon/lat properties
-					length += ProjCalculus.distVincenty(p1,p2);
+					length += _distanceCalculator.calculateDistanceBetweenTwoPoints(p1,p2);
 				}
 			}
 			// convert to m
-			return length * 1000;
+			return length;
 		}
 		/**
      	 * Test for instersection between this LineString and a geometry.
@@ -218,6 +225,15 @@ package org.openscales.geometry
 			lineStringClone._bounds = this._bounds;
 			lineStringClone.addPoints(component);
 			return lineStringClone;
+		}
+		
+		public function set distanceCalculator(value :IDistanceCalculator):void{
+			
+			_distanceCalculator=value;
+		}
+		
+		public function get distanceCalculator():IDistanceCalculator{
+			return _distanceCalculator;
 		}
 	}
 }
