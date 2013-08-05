@@ -39,6 +39,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.core.utils.StringUtils;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
