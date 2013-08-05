@@ -546,14 +546,18 @@ package org.openscales.core.format
 				{
 					localStyle = this.getStyle(localStyles[0]);
 				}
+		
+				var name:String = null;
 				if(placemark.name != null && placemark.*::name[0] != null) 
 				{
-					var name:String = "";
 					name = placemark.*::name[0].text();
-					attributes["name"] = name;
-					attributes["name"] = placemark.*::name.text();
-					htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";   
+					//					attributes["name"] = placemark.*::name.text();
 				}
+				//We need a name wich is not null
+				name = (name == null) ? UID.gen_uid() : name;
+				attributes["name"] = name;
+				htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";
+				
 				if(placemark.description != null) 
 				{
 					attributes["description"] = placemark.*::description.text();
