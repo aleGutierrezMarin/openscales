@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" width="30" height="30">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[  
+			import org.openscales.core.feature.LineStringFeature;
+			import org.openscales.core.style.marker.ArrowMarker;
+			
+			[Bindable]
+			private var feature:LineStringFeature = new LineStringFeature();
+		]]>        
+	</fx:Script>
+	<mx:Image source="{(this.data as ArrowMarker).getDisplayObject(feature)}" height="20" width="20" x="{this.x + 12}"/>
+</s:ItemRenderer>
