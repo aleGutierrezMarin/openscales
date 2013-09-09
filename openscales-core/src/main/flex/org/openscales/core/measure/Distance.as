@@ -274,8 +274,10 @@ package org.openscales.core.measure
 		
 		public function set distanceCalculator(value:IDistanceCalculator):void
 		{
-			if(_currentLineStringFeature.geometry)
-			(_currentLineStringFeature.geometry as LineString).distanceCalculator = value;
+			if(_currentLineStringFeature){
+				if(_currentLineStringFeature.geometry )
+				(_currentLineStringFeature.geometry as LineString).distanceCalculator = value;
+			}
 		}
 		
 		
