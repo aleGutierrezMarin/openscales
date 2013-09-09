@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:ui="org.openscales.sld.ui.*"
+		addedToStage="onAdded()"
+		creationComplete="onCreated()"
+		width="800"
+		height="600"
+		>
+	<fx:Metadata>
+		[HostComponent("org.openscales.sld.ui.RuleManager")]
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.filter.Comparison;
+			import org.openscales.sld.events.SLDEvent;
+			
+			private var created:Boolean = false;
+			
+			[Bindable]
+			public var attributes:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			public var operators:ArrayCollection = new ArrayCollection(
+				[ {label:"=", value:"PropertyIsEqualTo"},
+					{label:"<>", value:"PropertyIsNotEqualTo"},
+					{label:"<", value:"PropertyIsLessThan"},
+					{label:">", value:"PropertyIsGreaterThan"},
+					{label:"<=", value:"PropertyIsLessThanOrEqualTo"},
+					{label:">=", value:"PropertyIsGreaterThanOrEqualTo"},
+					{label:"LIKE", value:"PropertyIsLike"},
+					{label:"BETWEEN", value:"PropertyIsBetween"},
+					{label:"IS NULL", value:"PropertyIsNull"} ]);
+			
+			private function validate():void {
+				this.hostComponent.rule.name = this.ruleName.text;
+				this.hostComponent.rule.title = this.title.text;
+				this.hostComponent.rule.abstract = this.abstract.text;
+				if(this.minScale.text!="")
+					this.hostComponent.rule.minScaleDenominator = Number(this.minScale.text);
+				if(this.maxScale.text!="")
+					this.hostComponent.rule.maxScaleDenominator = Number(this.maxScale.text);
+				this.hostComponent.rule.dispatchEvent(new SLDEvent(SLDEvent.RULE_UPDATED,this.hostComponent.rule,null,true));
+				this.hostComponent.rule = null;
+				PopUpManager.removePopUp(this.hostComponent);
+				if(this.enableFilter.selected && this.filterAttribute.selectedItem) {
+					var filter:Comparison;
+					if(this.filterAttribute.selectedItem is String)
+						filter = new Comparison(this.filterAttribute.selectedItem.realname,this.filterOperator.selectedItem.value);
+					else
+						filter = new Comparison(this.filterAttribute.selectedItem.realname,this.filterOperator.selectedItem.value);
+					switch(filterOperator.selectedIndex) {
+						case 0:
+						case 1:
+						case 2:
+						case 3:
+						case 4:
+						case 5:
+						case 6:
+							filter.value = this.filterValue.text;
+							break;
+						case 7:
+							filter.lowerBoundary = this.lower.text;
+							filter.upperBoundary = this.upper.text;
+							break;
+						case 8:
+							break;
+					}
+					this.hostComponent.rule.filter = filter;
+				} else {
+					this.hostComponent.rule.filter = null;
+				}
+			}
+			
+			private function onCreated():void {
+				created = true;
+				onAdded();
+			}
+			
+			private function onFilterOperatorChange():void {
+				switch(filterOperator.selectedIndex) {
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+					case 6:
+						beetweenFilter.visible = false;
+						beetweenFilter.includeInLayout = false;
+						filterValue.visible = true;
+						filterValue.includeInLayout = true;
+						break;
+					case 7:
+						beetweenFilter.visible = true;
+						beetweenFilter.includeInLayout = true;
+					case 8:
+						filterValue.visible = false;
+						filterValue.includeInLayout = false;
+						break;
+				}
+			}
+			
+			private function onAdded():void {
+				if(!created || !this.hostComponent.rule)
+					return;
+				this.ruleName.text = this.hostComponent.rule.name;
+				this.title.text = this.hostComponent.rule.title;
+				this.abstract.text = this.hostComponent.rule.abstract;
+				if(!isNaN(this.hostComponent.rule.minScaleDenominator))
+					this.minScale.text = this.hostComponent.rule.minScaleDenominator.toString();
+				else
+					this.minScale.text = "";
+				if(!isNaN(this.hostComponent.rule.maxScaleDenominator))
+					this.maxScale.text = this.hostComponent.rule.maxScaleDenominator.toString();
+				else
+					this.maxScale.text = "";
+				if(this.hostComponent.rule.filter
+					&& this.hostComponent.rule.filter is Comparison
+					&& this.attributes
+					&& this.attributes.length>0) {
+					// search filter attribute !
+					this.enableFilter.selected = true;
+					var filter:Comparison = this.hostComponent.rule.filter as Comparison;
+					
+					if(filter.value)
+						this.filterValue = filter.value.toString();
+					if(filter.lowerBoundary)
+						this.lower = filter.lowerBoundary.toString();
+					if(filter.upperBoundary)
+						this.upper = filter.upperBoundary.toString();
+					
+					beetweenFilter.visible = false;
+					beetweenFilter.includeInLayout = false;
+					switch(filter.type) {
+						case Comparison.EQUAL_TO:
+							filterOperator.selectedIndex = 0;
+							break;
+						case Comparison.NOT_EQUAL_TO:
+							filterOperator.selectedIndex = 1;
+							break;
+						case Comparison.LESS_THAN:
+							filterOperator.selectedIndex = 2;
+							break;
+						case Comparison.GREATER_THAN:
+							filterOperator.selectedIndex = 3;
+							break;
+						case Comparison.LESS_THAN_OR_EQUAL_TO:
+							filterOperator.selectedIndex = 4;
+							break;
+						case Comparison.GREATER_THAN_OR_EQUAL_TO:
+							filterOperator.selectedIndex = 5;
+							break;
+						case Comparison.LIKE:
+							filterOperator.selectedIndex = 6;
+							break;
+						case Comparison.BETWEEN:
+							filterOperator.selectedIndex = 7;
+							beetweenFilter.visible = true;
+							beetweenFilter.includeInLayout = true;
+							filterValue.visible = false;
+							filterValue.includeInLayout = false;
+							break;
+						case Comparison.IS_NULL:
+							filterOperator.selectedIndex = 8;
+							filterValue.visible = false;
+							filterValue.includeInLayout = false;
+							break;
+					}
+				} else {
+					this.enableFilter.selected = false;
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Group width="100%"
+			 height="100%">
+		<s:Rect width="100%"
+				height="100%">
+			<s:fill>
+				<s:SolidColor id="fillColor" color="#CCCCCC" />
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<s:Group top="10" right="10" bottom="10" left="10">
+		<s:layout>
+			<s:VerticalLayout />
+		</s:layout>
+		<s:Label text="Paramétrage basiques"
+				 fontWeight="bold"/>
+		<s:HGroup verticalAlign="middle">
+			<s:Spacer width="5" />
+			<s:Label text="Nom :" width="110"/>
+			<s:TextInput id="ruleName" />
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle">
+			<s:Spacer width="5" />
+			<s:Label text="Titre :" width="110"/>
+			<s:TextInput id="title" />
+		</s:HGroup>
+		<s:HGroup verticalAlign="top">
+			<s:Spacer width="5" />
+			<s:Label text="Résumé :" width="110"/>
+			<s:TextArea id="abstract" />
+		</s:HGroup>
+		<s:Spacer height="10" />
+		<s:Label text="Echelles d'affichage"
+				 fontWeight="bold"/>
+		<s:HGroup verticalAlign="middle">
+			<s:Spacer width="5" />
+			<s:Label text="Echèle min : 1/" width="110"/>
+			<s:TextInput id="minScale" restrict="0-9"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="middle">
+			<s:Spacer width="5" />
+			<s:Label text="Echèle max : 1/" width="110"/>
+			<s:TextInput id="maxScale" restrict="0-9"/>
+		</s:HGroup>
+		<s:Spacer height="10" />
+		<s:Label text="Filtre"
+				 fontWeight="bold"/>
+		<s:HGroup verticalAlign="middle">
+			<s:Spacer width="5" />
+			<s:VGroup>
+				<s:CheckBox id="enableFilter" />
+				<s:HGroup visible="{enableFilter.selected}"
+						  includeInLayout="{enableFilter.selected}"
+						  verticalAlign="middle">
+					<s:DropDownList id="filterAttribute" dataProvider="{attributes}"/>
+					<s:DropDownList id="filterOperator" dataProvider="{operators}" change="onFilterOperatorChange()"/>
+					<s:TextInput id="filterValue" />
+					<s:HGroup id="beetweenFilter">
+						<s:TextInput id="lower" />
+						<s:Label text="and" />
+						<s:TextInput id="upper" />
+					</s:HGroup>
+				</s:HGroup>
+			</s:VGroup>
+		</s:HGroup>
+		<s:Spacer height="10" />
+		<s:Group width="100%">
+			<s:layout>
+				<s:HorizontalLayout horizontalAlign="right"/>
+			</s:layout>
+			<s:Button label="Valider"
+					  click="validate()"
+					  />
+			<s:Button label="Annuler"
+					  click="{PopUpManager.removePopUp(this.hostComponent);}"/>
+		</s:Group>
+	</s:Group>
+	
+	
+	
+</s:Skin>
