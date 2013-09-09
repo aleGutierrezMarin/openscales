@@ -62,7 +62,7 @@ package org.openscales.geometry.utils
 				var deltaSigma:Number = B*sinSigma*(cos2SigmaM+B/4*(cosSigma*(-1+2*cos2SigmaM*cos2SigmaM)-
 					B/6*cos2SigmaM*(-3+4*sinSigma*sinSigma)*(-3+4*cos2SigmaM*cos2SigmaM)));
 				var s:Number = b*A*(sigma-deltaSigma);
-				var d:Number = Number(s.toFixed(3))/1000; // round to 1mm precision
+				var d:Number = Number(s.toFixed(3)); // round to 1mm precision
 				return d;
 			
 		}
