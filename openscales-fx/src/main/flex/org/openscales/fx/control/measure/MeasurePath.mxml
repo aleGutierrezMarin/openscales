@@ -32,6 +32,7 @@
 			import org.openscales.geometry.Point;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.geometry.utils.IDistanceCalculator;
 			
 			[Bindable]
 			public var toolTitle:String = Catalog.getLocalizationForKey('MeasureBar.distancetooltip');
@@ -90,6 +91,14 @@
 				return _active;
 			}
 			
+			public function get distanceCalculator():IDistanceCalculator{
+				return _handler.distanceCalculator;
+			}
+			
+			public function set distanceCalculator(value:IDistanceCalculator):void{
+				if(value)
+				_handler.distanceCalculator=value;
+			}
 			public function set active(value:Boolean):void{
 				if(_active == value)
 					return;
@@ -125,6 +134,8 @@
 					y = value.y;
 				}
 			}
+			
+		
 			
 			/**
 			 * On button click, dispatch a DrawingEvent.CHANGE_ACTIVE_HANDLER event
@@ -185,8 +196,11 @@
 			private function disactivate():void{
 				
 				_handler.active = false;
+				_handler.map.doubleclickZoomEnabled = true;
 				_alpha = 0.3;
 			}
+			
+			
 		]]>
 	</fx:Script>			
 </os:IconButton>
