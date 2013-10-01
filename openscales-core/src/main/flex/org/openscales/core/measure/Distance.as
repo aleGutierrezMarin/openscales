@@ -18,6 +18,7 @@ package org.openscales.core.measure
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.geometry.utils.IDistanceCalculator;
 	import org.openscales.proj4as.ProjProjection;
 	
 	public class Distance extends DrawPathHandler implements IMeasure
@@ -111,7 +112,7 @@ package org.openscales.core.measure
 				return _result;
 			
 			if(_currentLineStringFeature && (_currentLineStringFeature.geometry as MultiPoint).components.length>1) {
-				tmpDist = (_currentLineStringFeature.geometry as LineString).length;
+				tmpDist = (_currentLineStringFeature.geometry as LineString).geodesicLength;
 				
 				
 				
@@ -123,17 +124,17 @@ package org.openscales.core.measure
 
 				
 				
-				tmpDist *= Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
+				//tmpDist *= Unit.getInchesPerUnit(ProjProjection.getProjProjection(drawLayer.projection).projParams.units);
 				switch (_displaySystem.toLowerCase()) {					
 					case Unit.METER:
-						tmpDist = (_currentLineStringFeature.geometry as LineString).geodesicLength;
+						//tmpDist = (_currentLineStringFeature.geometry as LineString).geodesicLength;
 						//tmpDist/=Unit.getInchesPerUnit(Unit.METER);
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.METER));
 						_lastUnit = Unit.METER;
 						break;
 					
 					case Unit.KILOMETER:
-						tmpDist = (_currentLineStringFeature.geometry as LineString).geodesicLength;
+						//tmpDist = (_currentLineStringFeature.geometry as LineString).geodesicLength;
 						//tmpDist/=Unit.getInchesPerUnit(Unit.KILOMETER);
 						tmpDist /= 1000;
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.KILOMETER));
@@ -154,15 +155,26 @@ package org.openscales.core.measure
 						}
 						break;
 					
+					case Unit.NAUTIC_MILE:
+						tmpDist/=1000;
+						tmpDist/=1.852;
+						
+						_lastUnit = Unit.NAUTIC_MILE;
+						_result= Util.truncate(tmpDist,3);
+						break;
+					
 					case Unit.DEGREE:
+						tmpDist*=39.3700787; // converting meters in inches
 						tmpDist/=Unit.getInchesPerUnit(Unit.DEGREE);
 						_lastUnit = Unit.DEGREE;
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.DEGREE));
 						break;
 					
 					case Unit.SEXAGESIMAL:
+						tmpDist*=39.3700787;
 						tmpDist/=Unit.getInchesPerUnit(Unit.DEGREE);
 						_lastUnit = "";
+						
 						var acc:Number=this._accuracies.getValue(Unit.SEXAGESIMAL);
 						if(!acc){
 							acc=2;
@@ -171,24 +183,28 @@ package org.openscales.core.measure
 						break;
 					
 					case Unit.FOOT:
+						tmpDist*=39.3700787;
 						tmpDist/=Unit.getInchesPerUnit(Unit.FOOT);
 						_lastUnit = Unit.FOOT;
 						_result= this.trunc(tmpDist,_accuracies.getValue("ft"));
 						break;
 					
 					case Unit.INCH:
+						tmpDist*=39.3700787;
 						tmpDist/=Unit.getInchesPerUnit(Unit.INCH);
 						_lastUnit = Unit.INCH;
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.INCH));
 						break;
 					
 					case Unit.MILE:
+						tmpDist*=39.3700787;
 						tmpDist/=Unit.getInchesPerUnit(Unit.MILE);
 						_lastUnit = Unit.MILE;
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.MILE));
 						break;
 					
 					case "english":
+						tmpDist*=39.3700787;
 						tmpDist/=Unit.getInchesPerUnit(Unit.FOOT);
 						_lastUnit = Unit.FOOT;
 						_result= this.trunc(tmpDist,_accuracies.getValue(Unit.FOOT));
@@ -250,6 +266,21 @@ package org.openscales.core.measure
 		{
 			_accuracies = value;
 		}
+		
+		public function get distanceCalculator():IDistanceCalculator
+		{
+			return (_currentLineStringFeature.geometry as LineString).distanceCalculator;
+		}
+		
+		public function set distanceCalculator(value:IDistanceCalculator):void
+		{
+			if(_currentLineStringFeature){
+				if(_currentLineStringFeature.geometry )
+				(_currentLineStringFeature.geometry as LineString).distanceCalculator = value;
+			}
+		}
+		
+		
 
 		
 	}
