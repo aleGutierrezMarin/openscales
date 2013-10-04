@@ -147,7 +147,7 @@ package org.openscales.core.format.geojson
 				coordArray.push(featureCoord);
 			}
 
-			if(repeatFirstOne) 
+			if(repeatFirstOne || coordArray.length == 1) 
 			{
 				var featureCoordFirst:Array = new Array();
 				featureCoordFirst.push(coords[0]);
