@@ -2,18 +2,20 @@ package org.openscales.core.format.geojson
 {
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.core.format.Format;
 	import org.openscales.core.json.GENERICJSON;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
+	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.utils.StringUtils;
 	
 	import spark.primitives.Line;
-	import org.openscales.core.format.Format;
 
 	public class GeoJSONFormat extends Format
 	{
@@ -98,6 +100,35 @@ package org.openscales.core.format.geojson
 				if(coordPoly.length != 0)
 				{
 					featureJson.coordinates = coordPoly;
+				}
+			}
+			else if (feature is MultiPolygonFeature)
+			{
+				var multipoly:MultiPolygon = (feature as MultiPolygonFeature).polygons;
+				
+				featureJson.type = "MultiPolygon";
+				
+				var multigeomList:Vector.<Geometry> = multipoly.getcomponentsClone();
+				var multicoordPoly:Array = new Array();
+				
+				for (var j:int = 0; j < multigeomList.length; j++)
+				{
+					var simplepoly:Polygon = multigeomList[j] as Polygon;
+					
+					var simplegeomList:Vector.<Geometry> = simplepoly.getcomponentsClone();
+					
+					var coordPolyTemp:Array = new Array();
+					for (var k:int = 0; k < simplegeomList.length; k++)
+					{
+						coordPolyTemp.push(this.buildCoordsAsArray((simplegeomList[k] as LinearRing).getcomponentsClone(), true));
+					}
+					multicoordPoly.push(coordPolyTemp);
+				}
+				
+				
+				if(multicoordPoly.length != 0)
+				{
+					featureJson.coordinates = multicoordPoly;
 				}
 			}
 			
