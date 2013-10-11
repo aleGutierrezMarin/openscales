@@ -100,7 +100,7 @@ package org.openscales.core.format.geojson.mapfish
 			for (var i:int = 0; i < symbLength; i++)
 			{
 				var symb:Symbolizer = symbolizers[i];
-				if (symb is TextSymbolizer)
+				if (symb is TextSymbolizer && feature is LabelFeature)
 				{
 					var ts:TextSymbolizer = symb as TextSymbolizer;
 					objectStyle.label = (feature as LabelFeature).text;
@@ -203,6 +203,11 @@ package org.openscales.core.format.geojson.mapfish
 						
 						objectStyle.externalGraphic = cm.onlineResource;
 					}				
+				}
+				else
+				{
+					objectStyle.strokeOpacity = 0;
+					objectStyle.fillOpacity = 0;
 				}
 			}
 			
