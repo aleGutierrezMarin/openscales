@@ -19,6 +19,8 @@
 			import mx.events.PropertyChangeEvent;
 			import mx.states.OverrideBase;
 			
+			import mx.core.IFactory;
+			
 			import org.openscales.core.basetypes.maps.HashMap;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
