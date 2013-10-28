@@ -67,7 +67,7 @@ package org.openscales.core.format.geojson.mapfish
 			for (var i:int = 0; i < numberOfFeatures; i++)
 			{
 				var f:Feature = features[i] as Feature;
-				styles["" + f.style.name] = getStyleFromFeature(f);
+				styles["" + f.style.name + f.name] = getStyleFromFeature(f);
 			}
 			
 			geojsonObject.styles = styles;
