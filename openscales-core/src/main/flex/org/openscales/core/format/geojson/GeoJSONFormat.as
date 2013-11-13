@@ -56,7 +56,7 @@ package org.openscales.core.format.geojson
 		 * @param feature The feature to transform as a GeoJSON object.
 		 * @return An object wich represent the given feature in GeoJSON format.
 		 */
-		private function getGeometryFromFeature(feature:Feature):Object
+		public function getGeometryFromFeature(feature:Feature):Object
 		{
 			var featureJson:Object = new Object();
 			
@@ -141,7 +141,7 @@ package org.openscales.core.format.geojson
 		 * @param feature The feature from wich the properties comes from.
 		 * @return An object wich contain the feature's properties as a JSON formatted object.
 		 */
-		private function getPropertiesFromFeature(feature:Feature):Object
+		public function getPropertiesFromFeature(feature:Feature):Object
 		{
 			var properties:Object = new Object();
 			
