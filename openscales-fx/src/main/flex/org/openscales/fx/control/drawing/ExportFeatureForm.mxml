@@ -96,12 +96,12 @@
 					// init all available formats
 					this.supportedFormat = new Array();
 					this.supportedFormat[0] = "KML";
-					this.supportedFormat[1] = "GeoJSON";
 					/*
-					this.supportedFormat[1] = "GPX";
-					this.supportedFormat[2] = "GeoRSS";
-					this.supportedFormat[3] = "OSM";
-					this.supportedFormat[4] = "GML";
+					this.supportedFormat[1] = "GeoJSON";
+					this.supportedFormat[2] = "GPX";
+					this.supportedFormat[3] = "GeoRSS";
+					this.supportedFormat[4] = "OSM";
+					this.supportedFormat[5] = "GML";
 					*/
 					
 					this.selectedFormat = 0;
