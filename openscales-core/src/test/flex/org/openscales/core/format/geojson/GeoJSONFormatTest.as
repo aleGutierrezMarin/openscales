@@ -3,9 +3,14 @@ package org.openscales.core.format.geojson
 	import org.flexunit.Assert;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.MultiPolygonFeature;
 	import org.openscales.core.feature.PointFeature;
+	import org.openscales.core.feature.PolygonFeature;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.Polygon;
 
 	public class GeoJSONFormatTest
 	{
@@ -69,9 +74,53 @@ package org.openscales.core.format.geojson
 		{
 			var geoJsonFormat:GeoJSONFormat = new GeoJSONFormat();
 			
-			var pointFeature:PointFeature = new PointFeature(new Point(1,2));
-			var lineFeature:LineStringFeature = new LineStringFeature(new LineString([[1,2],[3,4]]));
+			var lineCoords:Vector.<Number> = new Vector.<Number>();
+			lineCoords.push(1);
+			lineCoords.push(2);
+			lineCoords.push(3);
+			lineCoords.push(4);
 			
+			
+			var pointFeature:PointFeature = new PointFeature(new Point(1,2));
+			var lineString:LineString = new LineString(lineCoords)
+			var lineFeature:LineStringFeature = new LineStringFeature(lineString);
+			var polyCoords:Vector.<Geometry> = new Vector.<Geometry>();
+			polyCoords.push(lineString);
+			var pol:Polygon = new Polygon(polyCoords);
+			var polygonFeature:PolygonFeature = new PolygonFeature(pol);
+			var multiVector:Vector.<Geometry> = new Vector.<Geometry>();
+			multiVector.push(pol);
+			var multiPolygonFeature:MultiPolygonFeature = new MultiPolygonFeature(new MultiPolygon(multiVector));
+			var emptyFeature:Feature = new Feature();
+			
+			var result:Object = geoJsonFormat.getGeometryFromFeature(pointFeature);
+			
+			Assert.assertNotNull("Feature's object should not be null", result);
+			Assert.assertEquals("There should be the sames properties that used as attributes for the feature", "Point", result.type);
+			Assert.assertNotNull("There should be a coordinates property added", result["_coordinates"]);
+			
+			result = geoJsonFormat.getGeometryFromFeature(lineFeature);
+			
+			Assert.assertNotNull("Feature's object should not be null", result);
+			Assert.assertEquals("There should be the sames properties that used as attributes for the feature", "LineString", result.type);
+			Assert.assertNotNull("There should be a coordinates property added", result["_coordinates"]);
+			
+			result = geoJsonFormat.getGeometryFromFeature(polygonFeature);
+			
+			Assert.assertNotNull("Feature's object should not be null", result);
+			Assert.assertEquals("There should be the sames properties that used as attributes for the feature", "Polygon", result.type);
+			Assert.assertNotNull("There should be a coordinates property added", result["_coordinates"]);
+			
+			result = geoJsonFormat.getGeometryFromFeature(multiPolygonFeature);
+			
+			Assert.assertNotNull("Feature's object should not be null", result);
+			Assert.assertEquals("There should be the sames properties that used as attributes for the feature", "MultiPolygon", result.type);
+			Assert.assertNotNull("There should be a coordinates property added", result["_coordinates"]);
+			
+			result = geoJsonFormat.getGeometryFromFeature(emptyFeature);
+			
+			Assert.assertNotNull("Feature's object should not be null", result);
+			Assert.assertNull("There should not be a coordinates property added", result["_coordinates"]);
 		}
 	}
 }
