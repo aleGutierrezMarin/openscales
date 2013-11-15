@@ -70,6 +70,7 @@
     <classEntry path="org.openscales.core.events.ZoomBoxEvent"/>
     <classEntry path="org.openscales.core.feature.CustomMarker"/>
     <classEntry path="org.openscales.core.feature.DescribeFeature"/>
+    <classEntry path="org.openscales.core.feature.DiscreteCircleFeature"/>
     <classEntry path="org.openscales.core.feature.Feature"/>
     <classEntry path="org.openscales.core.feature.LabelFeature"/>
     <classEntry path="org.openscales.core.feature.LineStringFeature"/>
@@ -106,6 +107,7 @@
     <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordsParser202"/>
     <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordByIdParser"/>
     <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordsParser"/>
+    <classEntry path="org.openscales.core.format.geojson.mapfish.MapFishGeoJSONFormat"/>
     <classEntry path="org.openscales.core.format.gml.GMLFormat"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML2Parser"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML311Parser"/>
@@ -121,6 +123,7 @@
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractDrawHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractEditCollectionHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractEditHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawDiscreteCircleHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawMultiHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPathHandler"/>
@@ -161,12 +164,14 @@
     <classEntry path="org.openscales.core.layer.Aggregate"/>
     <classEntry path="org.openscales.core.layer.Bing"/>
     <classEntry path="org.openscales.core.layer.Constraint"/>
+    <classEntry path="org.openscales.core.layer.DefaultGraticuleLabelFormatter"/>
     <classEntry path="org.openscales.core.layer.DrawingsLayer"/>
     <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
     <classEntry path="org.openscales.core.layer.HTTPRequest"/>
     <classEntry path="org.openscales.core.layer.IFileUser"/>
+    <classEntry path="org.openscales.core.layer.IGraticuleLabelFormatter"/>
     <classEntry path="org.openscales.core.layer.ImageLayer"/>
     <classEntry path="org.openscales.core.layer.KML"/>
     <classEntry path="org.openscales.core.layer.Layer"/>
@@ -284,6 +289,7 @@
     <classEntry path="org.openscales.core.control.OverviewMapRatioTest"/>
     <classEntry path="org.openscales.core.control.TermsOfServiceTest"/>
     <classEntry path="org.openscales.core.events.MapEventTest"/>
+    <classEntry path="org.openscales.core.feature.DiscreteCircleFeatureTest"/>
     <classEntry path="org.openscales.core.filter.GeometryTypeFilterTest"/>
     <classEntry path="org.openscales.core.format.GPXFormatTest"/>
     <classEntry path="org.openscales.core.format.GeoRssFormatTest"/>
@@ -323,11 +329,7 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.feature.DiscreteCircleFeature"/>
-    <classEntry path="org.openscales.core.handler.feature.draw.DrawDiscreteCircleHandler"/>
-    <classEntry path="org.openscales.core.feature.DiscreteCircleFeatureTest"/>
-    <classEntry path="org.openscales.core.layer.IGraticuleLabelFormatter"/>
-    <classEntry path="org.openscales.core.layer.DefaultGraticuleLabelFormatter"/>
+    <classEntry path="org.openscales.core.format.FormatTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

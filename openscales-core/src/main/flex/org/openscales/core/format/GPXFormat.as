@@ -8,6 +8,7 @@ package org.openscales.core.format
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.UID;
 	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
@@ -162,7 +163,7 @@ package org.openscales.core.format
 				if(featureName)
 				{
 					if(this._featuresids && this._featuresids.containsKey(featureName.toString()))
-						return null; 
+						featureName = null;
 				}
 
 				if (featureNode.localName() == "wpt" && this._extractWaypoints)
@@ -201,7 +202,9 @@ package org.openscales.core.format
 			
 				if(feature && featureName){
 					feature.name = featureName.toString();
-				}
+				} else if(feature && !featureName){
+					feature.name = UID.gen_uid();
+				} 
 				
 				if(feature && this._extractAttributes){
 					feature.attributes = this.parseAttributes(featureNode);

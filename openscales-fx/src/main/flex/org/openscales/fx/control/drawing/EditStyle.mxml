@@ -24,12 +24,18 @@
 			import org.openscales.core.events.FeatureEvent;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.feature.Feature;
+			import org.openscales.core.feature.LabelFeature;
+			import org.openscales.core.feature.LineStringFeature;
+			import org.openscales.core.feature.MultiLineStringFeature;
+			import org.openscales.core.feature.MultiPointFeature;
+			import org.openscales.core.feature.PointFeature;
 			import org.openscales.core.handler.feature.draw.EditKMLStyleHandler;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.VectorLayer;
 			import org.openscales.core.style.Style;
+			import org.openscales.core.style.symbolizer.LineSymbolizer;
+			import org.openscales.core.style.symbolizer.PolygonSymbolizer;
 			import org.openscales.fx.control.drawing.popup.EditStylePopup;
-			import org.openscales.fx.control.drawing.popup.SingleInputPopup;
 			import org.openscales.geometry.basetypes.Pixel;
 			
 			[Bindable]
@@ -48,6 +54,11 @@
 			private var _handler:EditKMLStyleHandler = new EditKMLStyleHandler();
 			private var _popup:EditStylePopup = new EditStylePopup();
 			private var _popupParent:DisplayObject;
+			
+			private var _isHovered:Boolean = false;
+			
+			[Bindable]
+			private var _map:Map;
 			
 			/**
 			 * The default point style to apply to the features
@@ -76,6 +87,11 @@
 				_handler.styleSelectionCallback = this.popupCallback;
 				_alpha = 1;
 				_handler.map.doubleclickZoomEnabled = false;
+				
+				if(this._map) {
+					this._map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
+					this._map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+				}
 			}
 			public function disactivate():void
 			{
@@ -83,9 +99,13 @@
 				{
 					var evt:DrawingEvent = new DrawingEvent(DrawingEvent.EDIT_HANDLER_DESACTIVATED);
 					_handler.map.dispatchEvent(evt);
+					
+					this._map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
+					this._map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
 				}
 				
 				this._handler.validateChanges();
+				this._handler.onEditStyle = false;
 				PopUpManager.removePopUp(_popup);
 				_handler.active = false;
 				_alpha = 0.3;
@@ -190,25 +210,26 @@
 			 */
 			private function onFeatureOut(evt:FeatureEvent):void
 			{
-			/*	if(evt.feature.layer == this.target)
+				if(evt.feature.layer == this.target && this._isHovered && !this._handler.onEditStyle)
 				{	
 					if(evt.feature.originalStyle != null) {
 						evt.feature.style = evt.feature.originalStyle;
 					} else {
-						if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-							evt.feature.style = Style.getDefaultPointStyle();
+						if (evt.feature is LabelFeature) {
+							evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+						} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+							//evt.feature.style = Style.getDefaultPointStyle();
 						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
 							evt.feature.style = Style.getDefaultLineStyle();
-						} else if (evt.feature is LabelFeature) {
-							evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-								0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
 						} else {
 							evt.feature.style = Style.getDefaultPolygonStyle();
 						}
 					}
 					
 					evt.feature.draw();
-				}*/
+					
+					this._isHovered = false;
+				}
 			}
 			
 			/**
@@ -217,26 +238,26 @@
 			 */
 			private function onFeatureOver(evt:FeatureEvent):void
 			{
-				/*if(evt.feature.layer == this.target)
+				if(evt.feature.layer == this.target && !this._handler.onEditStyle)
 				{
-					if (!evt.feature.originalStyle || evt.feature.style == evt.feature.originalStyle)
-					{
-						evt.feature.originalStyle = evt.feature.style;
-						
-						if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-							evt.feature.style = Style.getDefaultSelectedPointStyle();
-						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
-							evt.feature.style = Style.getDefaultSelectedLineStyle();
-						} else if (evt.feature is LabelFeature) {
-							evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
-								0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
-						} else {
-							evt.feature.style = Style.getDefaultSelectedPolygonStyle();
-						}
-						
-						evt.feature.draw();
+					this._isHovered = true;
+					
+					evt.feature.originalStyle = evt.feature.style;
+					
+					if (evt.feature is LabelFeature) {
+						evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+					} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+						//evt.feature.style = Style.getDefaultSelectedPointStyle();
+					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+						evt.feature.style = Style.getDefaultSelectedLineStyle();
+						(evt.feature.style.rules[0].symbolizers[0] as LineSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as LineSymbolizer).stroke.width;
+					} else {
+						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+						(evt.feature.style.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width;
 					}
-				}*/
+					
+					evt.feature.draw();
+				}
 			}
 			
 			// Unused functions
@@ -286,7 +307,9 @@
 				
 				return this._handler.map;
 			}
-			public function set map(value:Map):void{
+			public function set map(value:Map):void
+			{
+				this._map = value;
 				
 				//Set the map to the popup
 				_handler.map = value;

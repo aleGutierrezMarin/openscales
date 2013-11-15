@@ -39,9 +39,9 @@ package org.openscales.core.layer
 		[Test] 
 		public function shouldTakeFirstLayerMaxExtentAsOwnMaxExtent():void{
 			_instance = new Aggregate("test");
-			_instance.projection = "EPSG:4326";
+			_instance.setProjection("EPSG:4326");
 			_l1 = new Layer("myLayer1");
-			_l1.maxExtent = new Bounds(-40, 0,40,50, "EPSG:4326");
+			_l1.setMaxExtent(new Bounds(-40, 0,40,50, "EPSG:4326"));
 			
 			assertNull("At init, maxExtent should be null", _instance.maxExtent);
 			_instance.addLayer(_l1);
@@ -58,11 +58,11 @@ package org.openscales.core.layer
 		[Test] 
 		public function shouldExtendMaxExtentWhenLayersAreAdded():void{
 			_instance = new Aggregate("test");
-			_instance.projection = "EPSG:4326";
+			_instance.setProjection("EPSG:4326");
 			_l1 = new Layer("myLayer1");
-			_l1.maxExtent = new Bounds(-40, 0,40,50, "EPSG:4326");
+			_l1.setMaxExtent(new Bounds(-40, 0,40,50, "EPSG:4326"));
 			_l2 = new Layer("myLayer2");
-			_l2.maxExtent = new Bounds(-45,10,10,55, "EPSG:4326");
+			_l2.setMaxExtent(new Bounds(-45,10,10,55, "EPSG:4326"));
 			
 			
 			assertNull("At init, maxExtent should be null", _instance.maxExtent);
@@ -81,13 +81,13 @@ package org.openscales.core.layer
 		[Test]
 		public function shouldReduceMaxExtentWhenLayersAreRemoved():void{
 			_instance = new Aggregate("test");
-			_instance.projection = "EPSG:4326";
+			_instance.setProjection("EPSG:4326");
 			_l1 = new Layer("myLayer1");
-			_l1.maxExtent = new Bounds(-40, 0,40,50, "EPSG:4326");
+			_l1.setMaxExtent(new Bounds(-40, 0,40,50, "EPSG:4326"));
 			_l2 = new Layer("myLayer2");
-			_l2.maxExtent = new Bounds(-45,10,10,55, "EPSG:4326");
+			_l2.setMaxExtent(new Bounds(-45,10,10,55, "EPSG:4326"));
 			var l3:Layer = new Layer("myLayer3");
-			l3.maxExtent = new Bounds(-30,5,45,30, "ESPG:4326");
+			l3.setMaxExtent(new Bounds(-30,5,45,30, "ESPG:4326"));
 			
 			assertNull("At init, maxExtent should be null", _instance.maxExtent);
 			_instance.addLayer(_l1);
@@ -150,8 +150,8 @@ package org.openscales.core.layer
 		 */ 
 		[Test]
 		public function shouldNotInterfereWithContainedLayersProjection():void{
-			_l1.projection = "WGS84";
-			_instance.projection = "EPSG:2154";
+			_l1.setProjection("WGS84");
+			_instance.setProjection("EPSG:2154");
 			
 			assertTrue("Aggregate projection is passed on to contained layers", _l1.projection!=_instance.projection);
 		}
@@ -253,14 +253,14 @@ package org.openscales.core.layer
 		
 		[Test]
 		public function shouldSetMaxExtentFromString():void{
-			_instance.maxExtent="-4.0,30.0,10.5,60.0,WGS84";
+			_instance.setMaxExtent("-4.0,30.0,10.5,60.0,WGS84");
 			assertTrue("Setting max extent from Bounds failed", _instance.maxExtent.projection== _instance.projection);
 		}
 		
 		[Test]
 		public function shouldSetMaxExtentFromBounds():void{
 			var bounds:Bounds = new Bounds(-4.0,30.0,10.5,60.0,"WGS84");
-			_instance.maxExtent=bounds;
+			_instance.setMaxExtent(bounds);
 			assertTrue("Setting max extent from Bounds failed", _instance.maxExtent.projection == _instance.projection);
 		}
 		

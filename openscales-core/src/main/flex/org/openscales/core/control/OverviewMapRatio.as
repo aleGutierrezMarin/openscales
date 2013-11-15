@@ -292,7 +292,7 @@ package org.openscales.core.control
 				_overviewMap.removeAllLayers();
 				_overviewMap.addLayer(layer, true);
 				
-				_overviewMap.projection = layer.projection;
+				_overviewMap.setProjection(layer.projection);
 				_overviewMap.maxExtent = layer.maxExtent;
 				_overviewMap.minResolution = layer.minResolution;
 				_overviewMap.maxResolution = layer.maxResolution;
@@ -372,7 +372,7 @@ package org.openscales.core.control
 		 */
 		public function set projection(value:*):void
 		{
-			this._overviewMap.projection = value;
+			this._overviewMap.setProjection(value);
 		}
 		
 		/**

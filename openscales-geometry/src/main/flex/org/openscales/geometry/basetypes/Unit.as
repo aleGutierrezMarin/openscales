@@ -21,7 +21,7 @@ package org.openscales.geometry.basetypes
 		public static var MILE:String = "mi";
 		public static var INCH:String = "inch";
 		public static var RADIAN:String = "rad";
-		
+		public static var NAUTIC_MILE:String = "nmi";
 		public static var PIXEL_SIZE:Number = 0.00028;
 		
 		public static var DOTS_PER_INCH:Number = Capabilities.screenDPI;

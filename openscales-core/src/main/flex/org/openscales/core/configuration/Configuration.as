@@ -328,9 +328,9 @@ package org.openscales.core.configuration
 						// We create the WMSC Layer with all params
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
 						wmscLayer.visible=visible;
-						wmscLayer.projection = projection;
+						wmscLayer.setProjection(projection);
 						if (String(config.@maxExtent) != "")
-							wmscLayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projection);
+							wmscLayer.setMaxExtent(Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projection));
 						wmscLayer.params = paramsWms;
 						layer = wmscLayer;
 						if (method!=null) {
@@ -344,9 +344,9 @@ package org.openscales.core.configuration
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
 						wmslayer.visible = visible;
-						wmslayer.projection = projection;  
+						wmslayer.setProjection(projection);  
 						if (String(config.@maxExtent) != "")
-							wmslayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projection);
+							wmslayer.setMaxExtent(Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projection));
 						wmslayer.params = paramsWms;
 						layer=wmslayer;
 						break;
@@ -393,7 +393,7 @@ package org.openscales.core.configuration
 				wfsLayer.visible = visible;
 				wfsLayer.useCapabilities = useCapabilities;
 				wfsLayer.capabilities = capabilities;
-				wfsLayer.projection = projection;
+				wfsLayer.setProjection(projection);
 				
 				if(String(xmlNode.@style) !="")
 				{
@@ -434,7 +434,7 @@ package org.openscales.core.configuration
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					mapnik.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+mapnik.projection);
+					mapnik.setMaxExtent(Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+mapnik.projection));
 				layer=mapnik;
 			}
 			else if(xmlNode.name() == "CycleMap"){
@@ -442,13 +442,13 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var cycleMap:CycleMap=new CycleMap(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					cycleMap.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projection);
+					cycleMap.setMaxExtent(Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projection));
 				layer=cycleMap;
 			}
 			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
 				var featurelayer:VectorLayer = new VectorLayer(name);
-				featurelayer.projection = projection;
+				featurelayer.setProjection(projection);
 				layer = featurelayer;
 			} else {
 				// Case when the layer is unknown

@@ -1468,7 +1468,7 @@ package org.openscales.core.layer
 					if(ProjProjection.isEquivalentProjection(proj,this.map.projection)) {
 						if(!ProjProjection.isEquivalentProjection(this.projection, proj)) {
 							//Changing layer projection
-							this.projection = proj;
+							this.setProjection(proj);
 							return true;
 						} else {
 							//Layer projection is already Map projection
@@ -1486,7 +1486,7 @@ package org.openscales.core.layer
 				// If no compatible projection was found BUT a stretchable projection is available,
 				// we return this one
 				if (stretchableProjection != null && !ProjProjection.isEquivalentProjection(this.projection, stretchableProjection) ) {
-					this.projection = stretchableProjection;
+					this.setProjection(stretchableProjection);
 					return true;
 				}
 				
