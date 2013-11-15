@@ -107,7 +107,6 @@
     <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordsParser202"/>
     <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordByIdParser"/>
     <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordsParser"/>
-    <classEntry path="org.openscales.core.format.geojson.GeoJSONFormat"/>
     <classEntry path="org.openscales.core.format.geojson.mapfish.MapFishGeoJSONFormat"/>
     <classEntry path="org.openscales.core.format.gml.GMLFormat"/>
     <classEntry path="org.openscales.core.format.gml.parser.GML2Parser"/>
@@ -330,8 +329,7 @@
     <classEntry path="org.openscales.map.MapResolutionTest"/>
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
-    <classEntry path="org.openscales.core.style.graphic.ExternalGraphicTest"/>
-    <classEntry path="org.openscales.SuperTest"/>
+    <classEntry path="org.openscales.core.format.FormatTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

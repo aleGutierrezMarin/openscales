@@ -44,6 +44,9 @@ package org.openscales.core.format
 		[Embed(source="/assets/kml/sample4.kml", mimeType="application/octet-stream")]
 		protected const Sample4KML:Class;
 		
+		[Embed(source="/assets/kml/sample5.kml", mimeType="application/octet-stream")]
+		protected const Sample5KML:Class;
+		
 		public function KMLFormatTest() {}
 		
 		protected function sample1KML():XML {
@@ -63,6 +66,11 @@ package org.openscales.core.format
 		
 		protected function sample4KML():XML{
 			var ba : ByteArray = (new Sample4KML()) as ByteArray;
+			return new XML(ba.readUTFBytes( ba.length ));
+		}
+		
+		protected function sample5KML():XML{
+			var ba : ByteArray = (new Sample5KML()) as ByteArray;
 			return new XML(ba.readUTFBytes( ba.length ));
 		}
 		
@@ -204,6 +212,16 @@ package org.openscales.core.format
 			var expected:String = "4.523,5.12 45.2,15.3 4.523,5.12";
 			var res:String = kmlFormat.buildCoordsAsString(vect,true);
 			assertEquals("A valid coord vector should be correctly read as String",expected,res)
+		}
+		
+		[Test]
+		public function souldParseKmlWithNoNameInPlacemark() : void {
+			var kmlFormat:KMLFormat = new KMLFormat();
+			var features:Vector.<Feature> = kmlFormat.read(this.sample5KML()) as Vector.<Feature>;
+			
+			Assert.assertNotNull("Features vector should be not null", features);
+			Assert.assertEquals("There should be 7 features",7, features.length);
+			
 		}
 	}
 

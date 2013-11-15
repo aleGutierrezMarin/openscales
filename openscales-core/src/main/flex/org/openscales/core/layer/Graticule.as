@@ -70,7 +70,7 @@ package org.openscales.core.layer
 			
 			// puts layer in geographical coordinates
 			this._projection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
-			this.maxExtent = new Bounds(-180,-90,180,90,Geometry.DEFAULT_SRS_CODE);
+			this.setMaxExtent(new Bounds(-180,-90,180,90,Geometry.DEFAULT_SRS_CODE));
 			
 			// hides layer in LayerManager
 			this.displayInLayerManager = false;
@@ -232,7 +232,7 @@ package org.openscales.core.layer
 		/**
 		 * @inheritDoc
 		 */
-		override public function set projection(value:*):void {
+		override public function setProjection(value:Object):void {
 			// SRS code cannot be overriden. Graticule is always built in EPSG:4326
 			// and then reprojected to the projection of the map.
 		}

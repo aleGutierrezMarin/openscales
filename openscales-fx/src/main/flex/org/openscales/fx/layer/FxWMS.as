@@ -39,7 +39,7 @@ package org.openscales.fx.layer
 			super.projection = value;
 			if(this._layer != null) {
 				//((this.layer as WMS).params as WMSParams).srs = value;
-				(this._layer as WMS).projection=this.projection;
+				(this._layer as WMS).setProjection(this.projection);
 			}
 		}
 

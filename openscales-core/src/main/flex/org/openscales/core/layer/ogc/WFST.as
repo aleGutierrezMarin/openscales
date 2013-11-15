@@ -107,8 +107,8 @@ package org.openscales.core.layer.ogc
 			
 			
 			if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
-				this._wfsFormat.externalProjection = this.projection;
-				this._wfsFormat.internalProjection = this.map.projection;
+				this._wfsFormat.setExternalProjection ( this.projection);
+				this._wfsFormat.setInternalProjection( this.map.projection);
 			}
 			super.onSuccess(event);
 		}

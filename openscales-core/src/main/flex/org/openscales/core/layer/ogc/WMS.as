@@ -363,9 +363,9 @@ package org.openscales.core.layer.ogc
 		/**
 		 * @private
 		 */
-		override public function set projection (value:*):void
+		override public function setProjection(value:Object):void
 		{
-			super.projection = value;
+			super.setProjection(value);
 			
 			// Update the tileProvider projection at the same time
 			if(this._tileProvider != null){
@@ -487,7 +487,7 @@ package org.openscales.core.layer.ogc
 						aProj.push(oSrs);
 					}
 				}*/
-				this.availableProjections = aProj;
+				this.setAvailableProjections(aProj);
 				
 				if(this.map)
 					this.redraw(true);

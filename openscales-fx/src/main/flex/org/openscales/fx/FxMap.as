@@ -648,7 +648,7 @@ package org.openscales.fx
 		 */
 		public function set projection(value:*):void
 		{
-			(this._map as Map).projection = value;
+			_map.setProjection(value);
 		}
 		
 		/**

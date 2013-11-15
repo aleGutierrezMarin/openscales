@@ -39,7 +39,7 @@ package org.openscales.map
 			this._map.addEventListener(MapEvent.PROJECTION_CHANGED,Async.asyncHandler(this,this.assertProjectionEventDispatched,2000,null,this.onTimeOut));
 			
 			// When you set a new projection
-			this._map.projection = "EPSG:4326";
+			this._map.setProjection("EPSG:4326");
 			
 		}
 		
@@ -66,7 +66,7 @@ package org.openscales.map
 			this._map.addEventListener(MapEvent.PROJECTION_CHANGED, Async.asyncHandler(this, this.assertMapVariablesProjectionChanged, 2000, this._map, this.onTimeOut));
 			
 			// When you set a new projection
-			this._map.projection = "EPSG:4326";
+			this._map.setProjection("EPSG:4326");
 		}
 		
 		private function assertMapVariablesProjectionChanged(event:MapEvent, passThroughtData:Object):void

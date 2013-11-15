@@ -39,6 +39,7 @@ package org.openscales.core.format
 	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.core.utils.StringUtils;
 	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
@@ -546,14 +547,18 @@ package org.openscales.core.format
 				{
 					localStyle = this.getStyle(localStyles[0]);
 				}
+		
+				var name:String = null;
 				if(placemark.name != null && placemark.*::name[0] != null) 
 				{
-					var name:String = "";
 					name = placemark.*::name[0].text();
-					attributes["name"] = name;
-					attributes["name"] = placemark.*::name.text();
-					htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";   
+					//					attributes["name"] = placemark.*::name.text();
 				}
+				//We need a name wich is not null
+				name = (name == null) ? UID.gen_uid() : name;
+				attributes["name"] = name;
+				htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";
+				
 				if(placemark.description != null) 
 				{
 					attributes["description"] = placemark.*::description.text();
@@ -830,7 +835,7 @@ package org.openscales.core.format
 						labelfeatures.push(lf);
 					} else {
 						point = new Point(coordinates[0], coordinates[1]);
-						if (this.internalProjection != null, this.externalProjection != null) 
+						if (this.internalProjection != null && this.externalProjection != null) 
 						{
 							point.projection = this.externalProjection;
 							point.transform(this.internalProjection);
@@ -950,7 +955,7 @@ package org.openscales.core.format
 					continue;
 				point = new Point(_coords[0].toString(),
 					_coords[1].toString());
-				if (this.internalProjection != null, this.externalProjection != null) 
+				if (this.internalProjection != null && this.externalProjection != null) 
 				{
 					point.projection = this.externalProjection;
 					point.transform(this.internalProjection);
@@ -1013,7 +1018,7 @@ package org.openscales.core.format
 				if(_Pcoords.length<2)
 					continue;
 				point = new Point(_Pcoords[0].toString(),_Pcoords[1].toString());
-				if (this.internalProjection != null, this.externalProjection != null) 
+				if (this.internalProjection != null && this.externalProjection != null) 
 				{
 					point.projection = this.externalProjection;
 					point.transform(this.internalProjection);
