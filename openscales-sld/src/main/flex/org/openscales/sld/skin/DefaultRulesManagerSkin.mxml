@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:ruleManager="org.openscales.sld.ui.ruleManager.*"
+		creationComplete="init()">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.sld.ui.RulesManager")]
+	</fx:Metadata>
+	<s:Group width="100%"
+			 height="100%">
+		<s:layout>
+			<s:VerticalLayout gap="5" />
+		</s:layout>
+		<ruleManager:RuleTree id="rules"
+							  width="100%"
+							  height="{this.height-30}"
+							  rules="{this.hostComponent.rules}"
+							  />
+		<s:Group width="100%">
+			<s:layout>
+				<s:HorizontalLayout horizontalAlign="right" />
+			</s:layout>
+			<!--<s:Image source="@Embed(source='/assets/addRule.png')"
+					 height="30" width="30"
+					 click="createRule()"
+					 toolTip="Add rule"/>-->
+			<s:Button click="createRule()" label="Add" />
+		</s:Group>
+		
+	</s:Group>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.openscales.sld.events.SLDEvent;
+			
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.style.Rule;
+			
+			import spark.components.Application;
+
+			private function createRule():void {
+				this.hostComponent.rules.addItem(new Rule());
+			}
+			
+			private function onSelectionChange(e:SLDEvent):void {
+				if(e.type==SLDEvent.CURRENT_SYMBOLIZER_CHANGED)
+					this.hostComponent.currentSymbolizer = e.symbolizer;
+			}
+			
+			private function init():void {
+				this.addEventListener(SLDEvent.CURRENT_SYMBOLIZER_CHANGED,this.onSelectionChange);
+				
+				
+				if(this.hostComponent.rules && this.hostComponent.rules.length>0)
+					this.hostComponent.currentRule=this.hostComponent.rules.getItemAt(0) as Rule;
+				else
+					this.hostComponent.currentRule=null;
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:Skin>

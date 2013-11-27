@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Skin for the button to pan the map East -->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+             xmlns:fb="http://ns.adobe.com/flashbuilder/2009" minWidth="21" minHeight="21" alpha.disabled="0.5">
+    
+    <!-- host component -->
+    <fx:Metadata>
+        [HostComponent("spark.components.Button")]
+    </fx:Metadata>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+		<s:State name="up" />
+		<s:State name="over" />
+		<s:State name="down" />
+	</s:states>
+
+	<s:Group x="-60" y="-17" >
+		<s:Path data="M13.4 -67.3 13.4 -65.1 10.75 -65.1 10.75 -62.5 8.55 -62.5 8.55 -65.1 5.9 -65.1 5.9 -67.3 8.55 -67.3 8.55 -69.95 10.75 -69.95 10.75 -67.3 13.4 -67.3">
+			<s:fill>
+				<s:SolidColor color="#FFFF00"/>
+			</s:fill>
+		</s:Path>
+	</s:Group>
+   
+</s:SparkSkin>
