@@ -223,6 +223,48 @@ package org.openscales.core.layer.ogc.provider
 			return imageTile;
 		}
 		
+		public function refreshTile(imageTile:ImageTile, bounds:Bounds):ImageTile {
+			var layer:WMTS = imageTile.layer as WMTS;
+//			var tileBounds:Bounds = imageTile.bounds;
+			
+			
+			if(layer == null)
+				return imageTile;
+			
+			var resolution:Resolution = layer.getUpperResolution(layer.map.resolution.reprojectTo(layer.projection), imageTile.digUpAttempt);
+			
+			var tileMatrixSet:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
+			if(tileMatrixSet==null)
+				return imageTile;
+			
+			var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution.value);
+			
+			var tileWidth:Number = tileMatrix.tileWidth;
+			var tileHeight:Number = tileMatrix.tileHeight;
+			
+			var tileSpanX:Number = tileWidth * resolution.value;
+			var tileSpanY:Number = tileHeight * resolution.value;
+			
+			var location:Location = bounds.center;
+			var tileOrigin:Location = tileMatrix.topLeftCorner;
+			if(location.projection!=tileOrigin.projection)
+				location = location.reprojectTo(tileOrigin.projection);
+			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
+			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
+			
+			var params:Object = {
+				"TILECOL" : col,
+				"TILEROW" : row,
+				"TILEMATRIX" : tileMatrix.identifier
+			};
+			if(col>-1 && row>-1 && isInsideLimits(col,row,tileMatrix.identifier,_tileMatrixSet))
+				imageTile.url = buildGETQuery(bounds,params);
+			else
+				imageTile.url=null;
+			
+			return imageTile;
+		}
+		
 		/**
 		 * <p>This method is used internally before any WMTS request is sent.</p>
 		 * 
