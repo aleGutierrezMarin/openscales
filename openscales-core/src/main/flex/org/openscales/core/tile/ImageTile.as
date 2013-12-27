@@ -8,9 +8,13 @@ package org.openscales.core.tile
 	import flash.display.PixelSnapping;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
+	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.utils.Trace;
@@ -25,6 +29,8 @@ package org.openscales.core.tile
 	public class ImageTile extends Tile
 	{
 		private var _attempt:Number = 0;
+		
+		private var _digUpAttempts:Number = 0;
 
 		private var _queued:Boolean = false;
 
@@ -33,6 +39,10 @@ package org.openscales.core.tile
 		private var _method:String = null;
 		
 		private var _useNoDataTile:Boolean = true;
+		
+		public var dx:Number = -1;
+		
+		public var dy:Number = -1;
 		
 		/**
 		 * No Data tile
@@ -116,7 +126,30 @@ package org.openscales.core.tile
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
 			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
-			drawLoader(loader.name, bitmap);
+
+			dx=0;
+			dy=0;
+			if (this._digUpAttempts > 0 && this.dx >= 0 && this.dy >= 0)  {
+				var bitmapData:BitmapData = bitmap.bitmapData;
+				var newWidth:Number=bitmapData.width / 2;
+				var newHeight:Number=bitmapData.height / 2;
+				
+				var xOffset:Number = newWidth * dx;
+				var yOffset:Number = newHeight * dy;
+				
+				var region:Rectangle= new Rectangle(xOffset , yOffset , xOffset + newWidth, yOffset + newHeight);
+				var bmd:BitmapData = new BitmapData(newWidth,newHeight);
+				bmd.copyPixels(bitmapData,region,new Point());
+				this._digUpAttempts = 0;
+				this.clear();
+				
+//				drawLoader(loader.name, new Bitmap(bmd,PixelSnapping.NEVER,true));
+//				this.scaleX = 0.5;
+//				this.scaleY = 0.5;
+				drawLoader(loader.name, bitmap);
+			} else {
+				drawLoader(loader.name, bitmap);
+			}
 		}
 
 		/**
@@ -156,9 +189,13 @@ package org.openscales.core.tile
 				// Retry loading
 				//Trace.log("ImageTile - onTileLoadError: Error while loading tile " + this.url+" ; retry #" + this._attempt);
 				this.draw();
+			} else if (this.layer && this.layer.map && ++this._digUpAttempts <= this.layer.map.DIG_BACK_MAX_DEPTH) {
+//				this._attempt = 0;
+				this.layer.dispatchEvent(new TileEvent(TileEvent.TILE_LOAD_ERROR,this));
 			} else {
 				// Maximum number of tries reached
 				//Trace.error("ImageTile - onTileLoadError: Error while loading tile " + this.url);
+				this.clear();
 				this.loading = false;
 				
 				// Display the no data Tile
@@ -232,6 +269,27 @@ package org.openscales.core.tile
 		{
 			_useNoDataTile = value;
 		}
+		
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get digUpAttempt():Number
+		{
+			return _digUpAttempts;
+		}
+		
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function set digUpAttempt(value:Number):void
+		{
+			this._digUpAttempts = value;
+		}
+
 
 	}
 }

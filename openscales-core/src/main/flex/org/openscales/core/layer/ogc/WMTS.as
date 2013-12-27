@@ -3,9 +3,12 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
+	import mx.collections.ArrayCollection;
+	
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.WMTS100Capabilities;
@@ -15,7 +18,9 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -283,7 +288,195 @@ package org.openscales.core.layer.ogc
 		override public function addTile(bounds:Bounds, center:Pixel):ImageTile
 		{	
 			// using the provider to get a tile from its bounds
-			return _tileProvider.getTile(bounds, center, this);
+			var tile:ImageTile = _tileProvider.getTile(bounds, center, this);
+			this.addEventListener(TileEvent.TILE_LOAD_ERROR, onTileloadError);
+			return tile;
+		}
+		
+		private function onTileloadError(event:TileEvent):void {
+			var tile:ImageTile = event.tile as ImageTile;
+			if (tile == null)
+				return;
+			
+			if(this.grid == null) 
+				tile.draw();
+
+			tile = _tileProvider.refreshTile(tile, this.getUpperBounds(tile)); 
+
+			var upperBounds:Bounds = this.getUpperBounds(tile);
+			upperBounds.reprojectTo(tile.bounds.projection);
+			tile.dx = Math.round((upperBounds.left - tile.bounds.left) / upperBounds.width*1000)/1000;
+			tile.dy = Math.round((upperBounds.top - tile.bounds.top) / upperBounds.height*1000)/1000;
+			
+			tile.clear();
+			tile.draw();
+		}
+		
+		private function getUpperBounds(tile:ImageTile):Bounds {
+			
+			var oldBounds:Bounds = tile.bounds;
+			
+			var latLength:Number = this.grid.length;
+			
+			if(latLength <= 0)
+				return tile.bounds;
+			
+			
+			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(oldBounds.projection);
+			this.requestedResolution = this.getUpperResolution(this.map.resolution.reprojectTo(this.projection), tile.digUpAttempt);
+			var reprojectedBoundWidth:Number = (oldBounds.reprojectTo(this.map.projection).width/requestedResolution.reprojectTo(this.map.projection).value);
+			var reprojectedBoundHeight:Number = (oldBounds.reprojectTo(this.map.projection).height/requestedResolution.reprojectTo(this.map.projection).value);
+			var nativeBoundWidth:Number = (oldBounds.width/requestedResolution.value);
+			var nativeBoundHeight:Number = (oldBounds.height/requestedResolution.value);
+			
+			
+			var resolutionValue:Number = this.requestedResolution.value;
+			var viewSize:Size = new Size(nativeBoundWidth, nativeBoundHeight);
+			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + Math.max(1, 2 * this.buffer);
+			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) + Math.max(1, 2 * this.buffer);
+			var tilelon:Number = resolutionValue * this.tileWidth;
+			var tilelat:Number = resolutionValue * this.tileHeight;
+			
+			// Longitude
+			var offsetlon:Number = oldBounds.left - projectedTileOrigin.lon;
+			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
+			var tilecolremain:Number = offsetlon/tilelon - tilecol;
+			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
+			var tileoffsetlon:Number = projectedTileOrigin.lon + tilecol * tilelon;
+			
+			// Latitude
+			var offsetlat:Number = oldBounds.top - (projectedTileOrigin.lat + tilelat);  
+			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
+			var tilerowremain:Number = tilerow - offsetlat/tilelat;
+			var tileoffsety:Number = -tilerowremain * this.tileHeight;
+			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
+			
+			// Offset stretching 
+			var upRigth:Location = new Location(tileoffsetlon + tilelon, tileoffsetlat + tilelat, this.projection);
+			upRigth = upRigth.reprojectTo(this.map.projection);
+			
+			var bottomLeft:Location = new Location(tileoffsetlon, tileoffsetlat, this.projection);
+			bottomLeft = bottomLeft.reprojectTo(this.map.projection);
+			
+			var stretchedHeight:Number = (upRigth.lat - bottomLeft.lat) / this.requestedResolution.reprojectTo(this.map.projection).value;
+			var stretchedWidth:Number = (upRigth.lon-bottomLeft.lon) / this.requestedResolution.reprojectTo(this.map.projection).value;
+			
+			tileoffsetx *= stretchedWidth/this.tileWidth;
+			tileoffsety *= stretchedHeight/this.tileHeight;
+			
+			tileoffsetx = 0;
+			tileoffsety = 0;
+			var startX:Number = tileoffsetx; 
+			var startLon:Number = tileoffsetlon;
+			var rowidx:int = 0;
+			
+			
+			// Build the tiles
+			do {
+
+				tileoffsetlon = startLon;
+				tileoffsetx = startX;
+				var colidx:int = 0;
+				do {
+					var tileBounds:Bounds = new Bounds(tileoffsetlon, 
+						tileoffsetlat, 
+						tileoffsetlon + tilelon,
+						tileoffsetlat + tilelat,
+						this.projection);
+					
+					var x:Number = tileoffsetx;
+					var y:Number = tileoffsety;
+					var px:Pixel = new Pixel(x, y);			
+					var t:ImageTile = this.grid[rowidx][colidx];
+					
+
+					
+					
+					// Stretch the tile
+					upRigth = new Location(tileBounds.right, tileBounds.top, tileBounds.projection);
+					upRigth = upRigth.reprojectTo(this.map.projection);
+					bottomLeft = new Location(tileBounds.left, tileBounds.bottom, tileBounds.projection);
+					bottomLeft = bottomLeft.reprojectTo(this.map.projection);
+					stretchedWidth = (upRigth.lon-bottomLeft.lon)/this.requestedResolution.reprojectTo(this.map.projection).value;
+					stretchedHeight = (upRigth.lat-bottomLeft.lat)/this.requestedResolution.reprojectTo(this.map.projection).value;
+					
+					var stretchingScaleX:Number = stretchedWidth/this.tileWidth;
+					var stretchingScaleY:Number = stretchedHeight/this.tileHeight;
+					var roundedWidth:Number = Math.round(stretchedWidth);
+					var roundedHeight:Number = Math.round(stretchedHeight);
+					
+					stretchingScaleX = roundedWidth / this.tileWidth;
+					stretchingScaleY = roundedHeight / this.tileHeight;
+					stretchedWidth = roundedWidth;
+					stretchedHeight = roundedHeight;
+					
+					
+					if(t == tile) {
+//						tile.scaleX = stretchingScaleX;
+//						tile.scaleY = stretchingScaleY;
+						return tileBounds;	
+					}
+					
+					colidx=++colidx;
+					
+					tileoffsetlon += tilelon;       
+					tileoffsetx += stretchedWidth;
+					
+				} while ((tileoffsetlon <= oldBounds.right + tilelon * this.buffer) && colidx < this.grid[rowidx].length)  
+
+				++rowidx;
+				tileoffsetlat -= tilelat;
+				tileoffsety += stretchedHeight;
+			} while((tileoffsetlat >= oldBounds.bottom - tilelat * this.buffer) && rowidx < this.grid.length)
+			
+			
+			
+			return tile.bounds;
+		}
+		
+		public function getUpperResolution(targetResolution:Resolution, up:Number):Resolution {
+			if(up <= 0 || up > this.resolutions.length)
+				return this.getSupportedResolution(targetResolution);
+			
+			var bestIndex:Number;
+			var bestRatio:Number;
+			var i:int;
+			var len:int;
+			var ratioSeeker:Number;
+			
+			if(!this.resolutions)
+				return new Resolution(0);
+			
+			var sortedResolutions:Array = this.resolutions.concat();
+			sortedResolutions.sort(Array.NUMERIC);
+			sortedResolutions.reverse();
+			// Find the best resotion to fit the target resolution
+			bestIndex = 0;
+			bestRatio = Number.POSITIVE_INFINITY;
+			i = 0;
+			len = sortedResolutions.length;
+			
+			for (i; i < len; ++i)
+			{
+				if (sortedResolutions[i] < targetResolution.value)
+				{
+					ratioSeeker =  targetResolution.value -sortedResolutions[i];
+				}
+				
+				if ( ratioSeeker < bestRatio){
+					bestRatio = ratioSeeker;
+					bestIndex = i;
+				}
+				if (bestIndex == 0)
+				{
+					bestIndex = sortedResolutions.length - 1;
+				}
+			}
+			
+			bestIndex = Math.min(sortedResolutions.length - 1, bestIndex - up);
+			bestIndex = Math.max(0, bestIndex);
+			
+			return new Resolution(sortedResolutions[bestIndex], targetResolution.projection);
 		}
 		
 		/**
