@@ -91,6 +91,10 @@ package org.openscales.core.tile
 				if(_request)_request.destroy();
 				return false;    
 			}
+			return this.generateAndSendRequest();
+		}
+		
+		public function generateAndSendRequest():Boolean {
 			if (this.url == null) {
 				this.url = this.layer.getURL(this.bounds);
 				if(this.layer.security)
@@ -127,15 +131,13 @@ package org.openscales.core.tile
 			var loader:Loader = loaderInfo.loader as Loader;
 			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
 
-			dx=0;
-			dy=0;
-			if (this._digUpAttempts > 0 && this.dx >= 0 && this.dy >= 0)  {
+			if (this._digUpAttempts > 0 && this.dx < 1 && this.dy < 1)  {
 				var bitmapData:BitmapData = bitmap.bitmapData;
-				var newWidth:Number=bitmapData.width / 2;
-				var newHeight:Number=bitmapData.height / 2;
+				var newWidth:Number=bitmapData.width / Math.pow(2, this._digUpAttempts);
+				var newHeight:Number=bitmapData.height / Math.pow(2, this._digUpAttempts);
 				
-				var xOffset:Number = newWidth * dx;
-				var yOffset:Number = newHeight * dy;
+				var xOffset:Number = bitmapData.width * dx;
+				var yOffset:Number = bitmapData.height * dy;
 				
 				var region:Rectangle= new Rectangle(xOffset , yOffset , xOffset + newWidth, yOffset + newHeight);
 				var bmd:BitmapData = new BitmapData(newWidth,newHeight);
@@ -143,10 +145,7 @@ package org.openscales.core.tile
 				this._digUpAttempts = 0;
 				this.clear();
 				
-//				drawLoader(loader.name, new Bitmap(bmd,PixelSnapping.NEVER,true));
-//				this.scaleX = 0.5;
-//				this.scaleY = 0.5;
-				drawLoader(loader.name, bitmap);
+				drawLoader(loader.name, new Bitmap(bmd,PixelSnapping.NEVER,true));
 			} else {
 				drawLoader(loader.name, bitmap);
 			}
