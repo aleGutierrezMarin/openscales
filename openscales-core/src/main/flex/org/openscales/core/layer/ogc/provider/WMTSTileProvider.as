@@ -225,8 +225,6 @@ package org.openscales.core.layer.ogc.provider
 		
 		public function refreshTile(imageTile:ImageTile, bounds:Bounds):ImageTile {
 			var layer:WMTS = imageTile.layer as WMTS;
-//			var tileBounds:Bounds = imageTile.bounds;
-			
 			
 			if(layer == null)
 				return imageTile;
