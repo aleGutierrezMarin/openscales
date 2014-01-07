@@ -95,6 +95,9 @@ package org.openscales.core.tile
 		}
 		
 		public function generateAndSendRequest():Boolean {
+			if (_request) {
+				_request.destroy();
+			}
 			if (this.url == null) {
 				this.url = this.layer.getURL(this.bounds);
 				if(this.layer.security)
@@ -142,6 +145,7 @@ package org.openscales.core.tile
 				var region:Rectangle= new Rectangle(xOffset , yOffset , xOffset + newWidth, yOffset + newHeight);
 				var bmd:BitmapData = new BitmapData(newWidth,newHeight);
 				bmd.copyPixels(bitmapData,region,new Point());
+				this._attempt = 0;
 				this._digUpAttempts = 0;
 				this.clear();
 				
@@ -210,9 +214,7 @@ package org.openscales.core.tile
 				}else{
 					this.drawLoader("",new _fullTransparentImage());
 					bmdata.draw(new _fullTransparentImage());
-				}
-				
-				
+				}				
 			}
 		}
 
@@ -221,6 +223,9 @@ package org.openscales.core.tile
 		 */
 		override public function clear():void {
 			super.clear();
+			
+			this._attempt = 0;
+			this._digUpAttempts = 0;
 
 			if(this._request) {
 				_request.destroy();
