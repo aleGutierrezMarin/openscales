@@ -1,5 +1,7 @@
 package org.openscales.core.layer.ogc.provider
 {
+	import mx.containers.Tile;
+	
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Grid;
@@ -175,10 +177,21 @@ package org.openscales.core.layer.ogc.provider
 		/**
 		 * @inheritDoc
 		 */ 
-		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
-		{
+		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile {
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
 			imageTile.useNoDataTile = _useNoDataTile;
+				
+			return initializeTile(imageTile, layer, bounds, false);
+		}
+		
+
+		public function refreshTile(imageTile:ImageTile, bounds:Bounds):ImageTile {
+			var layer:WMTS = imageTile.layer as WMTS;
+			return initializeTile(imageTile, layer, bounds, false);
+		}
+		
+		private function initializeTile(tile:ImageTile, layer:Layer, bounds:Bounds, refresh:Boolean=true):ImageTile {
+			var imageTile:ImageTile = tile;
 			if(this._tileMatrixSets==null || layer == null || !(layer is WMTS) || layer.map == null)
 				return imageTile;
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
@@ -186,19 +199,23 @@ package org.openscales.core.layer.ogc.provider
 			var tileMatrixSet:TileMatrixSet = this._tileMatrixSets.getValue(this._tileMatrixSet);
 			if(tileMatrixSet==null)
 				return imageTile;
+			
 			var proj:ProjProjection = ProjProjection.getProjProjection(tileMatrixSet.supportedCRS);
 			if(proj != bounds.projection) {
 				bounds = bounds.reprojectTo(proj);
 			}
 			
 			//tileMatrix are referenced by their resolutions
-			var resolution:Resolution = (layer as Grid).getSupportedResolution(layer.map.resolution.reprojectTo(layer.projection));
+			var resolution:Resolution = (layer as WMTS).getUpperResolution(layer.map.resolution.reprojectTo(layer.projection), imageTile.digUpAttempt);
 			var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution.value);
+			
 			
 			var tileWidth:Number = tileMatrix.tileWidth;
 			var tileHeight:Number = tileMatrix.tileHeight;
 			
-			imageTile.size = new Size(tileWidth,tileHeight);
+			if(!refresh) {
+				imageTile.size = new Size(tileWidth,tileHeight);
+			}
 			
 			var tileSpanX:Number = tileWidth * resolution.value;
 			var tileSpanY:Number = tileHeight * resolution.value;
@@ -207,6 +224,7 @@ package org.openscales.core.layer.ogc.provider
 			var tileOrigin:Location = tileMatrix.topLeftCorner;
 			if(location.projection!=tileOrigin.projection)
 				location = location.reprojectTo(tileOrigin.projection);
+			
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
 			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
 			
@@ -218,7 +236,7 @@ package org.openscales.core.layer.ogc.provider
 			if(col>-1 && row>-1 && isInsideLimits(col,row,tileMatrix.identifier,_tileMatrixSet))
 				imageTile.url = buildGETQuery(bounds,params);
 			else
-				imageTile.url=null;
+				imageTile.url = null;
 			
 			return imageTile;
 		}

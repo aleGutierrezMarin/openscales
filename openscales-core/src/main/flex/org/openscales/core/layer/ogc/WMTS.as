@@ -3,9 +3,14 @@ package org.openscales.core.layer.ogc
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
+	import mx.charts.chartClasses.BoundedValue;
+	import mx.collections.ArrayCollection;
+	
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.capabilities.WMTS100Capabilities;
@@ -13,9 +18,12 @@ package org.openscales.core.layer.ogc
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.style.symbolizer.Geometry;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Size;
 	import org.openscales.proj4as.ProjProjection;
 	
 	/**
@@ -48,6 +56,9 @@ package org.openscales.core.layer.ogc
 		private var _req:XMLRequest = null;
 		private var _formatSetted:Boolean = false;
 		
+		private var _boundsGrid:Vector.<Vector.<Bounds>> = null;
+		private var _boundsGridResolution:Resolution = null;
+		
 		/**
 		 * Constructor
 		 * 
@@ -64,7 +75,7 @@ package org.openscales.core.layer.ogc
 							 tileMatrixSet:String,
 							 tileMatrixSets:HashMap = null,
 							 style:String = null
-							 )
+		)
 		{
 			
 			_styleProvided = true;
@@ -107,6 +118,7 @@ package org.openscales.core.layer.ogc
 				var tileMatrixSet:TileMatrixSet = tms.getValue(this.tileMatrixSet);
 				var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
 				this._tileOrigin = tileMatrix.topLeftCorner.clone();
+				
 				super.actualizeGrid(bounds, forceReTile);
 			}
 		}
@@ -187,21 +199,21 @@ package org.openscales.core.layer.ogc
 				this.style = layer.getValue("DefaultStyle") as String;
 			
 			if (!_formatSetted)
-			this.format = (layer.getValue("Formats") as Array)[0];
+				this.format = (layer.getValue("Formats") as Array)[0];
 			
 			this._tileProvider.tileMatrixSetsLimits = layer.getValue("TileMatrixSetsLimits") as HashMap;
 			
 			//Setting available projections
 			//Not really needed for WMTS as different projections are in the tileMatrixSets
 			/*if(!this.availableProjections) {
-				var aProj:Vector.<String> = new Vector.<String>();
-				var arr:Array = this.tileMatrixSets.getKeys();
-				
-				for(var i:uint = 0 ; i < arr.length ; i++) {
-					var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
-					aProj.push(tms.supportedCRS);
-				}
-				this.availableProjections = aProj;
+			var aProj:Vector.<String> = new Vector.<String>();
+			var arr:Array = this.tileMatrixSets.getKeys();
+			
+			for(var i:uint = 0 ; i < arr.length ; i++) {
+			var tms:TileMatrixSet = (this.tileMatrixSets.getValue(arr[i]) as TileMatrixSet);
+			aProj.push(tms.supportedCRS);
+			}
+			this.availableProjections = aProj;
 			}*/
 			
 			this._loadingCapabilities = false;
@@ -283,7 +295,282 @@ package org.openscales.core.layer.ogc
 		override public function addTile(bounds:Bounds, center:Pixel):ImageTile
 		{	
 			// using the provider to get a tile from its bounds
-			return _tileProvider.getTile(bounds, center, this);
+			var tile:ImageTile = _tileProvider.getTile(bounds, center, this);
+			this.addEventListener(TileEvent.TILE_LOAD_ERROR, onTileloadError);
+			return tile;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */ 
+		override public function refreshTile(tile:ImageTile):void {
+			tile.digUpAttempt = 0;
+		}
+		
+		/**
+		 * Function called when a tile load has failed (normally only status 404)
+		 * 
+		 * @param event The event received
+		 */
+		private function onTileloadError(event:TileEvent):void {
+			var tile:ImageTile = event.tile as ImageTile;
+			
+			if (tile == null)
+				return;
+			if(this.grid == null) { 
+				tile.draw();
+				return;
+			}
+			
+			//compute the bounds of the "mother" tile
+			var upperBounds:Bounds = this.getUpperBounds(tile);
+			if(upperBounds == null) {
+				tile.draw();
+				return;
+			}
+			upperBounds.reprojectTo(tile.bounds.projection);
+			
+			//Get the delta (in %) of the offset
+			tile.dx = Math.round((tile.bounds.left - upperBounds.left) / upperBounds.width*1000)/1000;
+			tile.dy = Math.round((upperBounds.top - tile.bounds.top) / upperBounds.height*1000)/1000;
+			
+			//refresh the tile
+			tile = _tileProvider.refreshTile(tile, upperBounds); 
+			tile.generateAndSendRequest();
+		}
+		
+		/**
+		 * Function computing the bounds corresponding to the mother tile of a tile
+		 * 
+		 * @param tile the source tile
+		 * @return the upper bounds of the tile
+		 */
+		private function getUpperBounds(tile:ImageTile):Bounds {
+			
+			var upperResolution:Resolution = this.getUpperResolution(this.map.resolution.reprojectTo(this.projection), tile.digUpAttempt);
+
+			//Refresh the upper bounds grid if needed
+			if(this._boundsGrid == null || this._boundsGridResolution == null || upperResolution.equals(this._boundsGridResolution) != 0)
+				this.computeUpperGrid(tile.digUpAttempt, upperResolution);
+			
+			var row:Vector.<Bounds>;
+			var i:Number;
+			var j:Number;
+			for (i=0; i < this._boundsGrid.length; i++){
+				row = this._boundsGrid[i];
+				for (j=0; j < row.length; j++){
+					if (this.containsBounds(row[j], tile.bounds))
+						return row[j];
+				}
+			}
+			return null;
+		}
+		
+		/**
+		 * Function computing a grid of bounds corresponding to the upper level of tm for the map resolution
+		 * 
+		 * @param tile the source tile
+		 * @param targetResolution the upper resolution corresponding to the tms of the bounds to construct
+		 */
+		private function computeUpperGrid(digUpAttempt:Number, targetResolution:Resolution):void {
+			var row:Vector.<Bounds>;
+			var bounds:Bounds = this.map.extent.clone();
+			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projection);
+//			var reprojectedBoundWidth:Number = (bounds.reprojectTo(this.map.projection).width/targetResolution.reprojectTo(this.map.projection).value);
+//			var reprojectedBoundHeight:Number = (bounds.reprojectTo(this.map.projection).height/targetResolution.reprojectTo(this.map.projection).value);
+			var nativeBoundWidth:Number = (bounds.width/targetResolution.value);
+			var nativeBoundHeight:Number = (bounds.height/targetResolution.value);
+			
+//			var resquestResolutionValue:Number = targetResolution.value;
+			var viewSize:Size = new Size(nativeBoundWidth, nativeBoundHeight);
+			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + Math.max(1, 2 * this.buffer);
+			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) + Math.max(1, 2 * this.buffer);
+			var tilelon:Number = targetResolution.value * this.tileWidth;
+			var tilelat:Number = targetResolution.value * this.tileHeight;
+			
+			// Longitude
+			var offsetlon:Number = bounds.left - projectedTileOrigin.lon;
+			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
+			var tilecolremain:Number = offsetlon/tilelon - tilecol;
+//			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
+			var tileoffsetlon:Number = projectedTileOrigin.lon + tilecol * tilelon;
+			
+			// Latitude
+			var offsetlat:Number = bounds.top - (projectedTileOrigin.lat + tilelat);  
+			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
+			var tilerowremain:Number = tilerow - offsetlat/tilelat;
+//			var tileoffsety:Number = -tilerowremain * this.tileHeight;
+			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
+			
+			// Offset stretching 
+			var upRigth:Location = new Location(tileoffsetlon + tilelon, tileoffsetlat + tilelat, this.projection);
+			upRigth = upRigth.reprojectTo(this.map.projection);
+			
+			var bottomLeft:Location = new Location(tileoffsetlon, tileoffsetlat, this.projection);
+			bottomLeft = bottomLeft.reprojectTo(this.map.projection);
+			
+			var stretchedHeight:Number = (upRigth.lat - bottomLeft.lat) / targetResolution.reprojectTo(this.map.projection).value;
+			var stretchedWidth:Number = (upRigth.lon-bottomLeft.lon) / targetResolution.reprojectTo(this.map.projection).value;
+			
+//			tileoffsetx *= stretchedWidth/this.tileWidth;
+//			tileoffsety *= stretchedHeight/this.tileHeight;
+			
+			var tileoffsetx:Number = 0;
+			var tileoffsety:Number = 0;
+			var startX:Number = tileoffsetx; 
+			var startLon:Number = tileoffsetlon;
+			var rowidx:int = 0;
+			
+			this._boundsGrid = new Vector.<Vector.<Bounds>>();
+			this._boundsGridResolution = targetResolution;
+			
+			// Build the bounds
+			do {
+				if(this._boundsGrid.length==rowidx) {
+					row = new Vector.<Bounds>;
+					this._boundsGrid.push(row);
+				} else {
+					row = this._boundsGrid[rowidx];
+				}
+				++rowidx;
+				
+				tileoffsetlon = startLon;
+				tileoffsetx = startX;
+				var colidx:int = 0;
+				do {
+					var tileBounds:Bounds = new Bounds(tileoffsetlon, tileoffsetlat, tileoffsetlon + tilelon, tileoffsetlat + tilelat, this.projection);
+					
+					upRigth = new Location(tileBounds.right, tileBounds.top, tileBounds.projection);
+					upRigth = upRigth.reprojectTo(this.map.projection);
+					bottomLeft = new Location(tileBounds.left, tileBounds.bottom, tileBounds.projection);
+					bottomLeft = bottomLeft.reprojectTo(this.map.projection);
+					
+					stretchedWidth = Math.round((upRigth.lon-bottomLeft.lon)/targetResolution.reprojectTo(this.map.projection).value);
+					stretchedHeight = Math.round((upRigth.lat-bottomLeft.lat)/targetResolution.reprojectTo(this.map.projection).value);
+					
+					if(row.length==colidx) {
+						row.push(tileBounds);
+					} else {
+						tileBounds = row[colidx];
+					}
+					
+					colidx=++colidx;
+					tileoffsetlon += tilelon;       
+					tileoffsetx += stretchedWidth;
+				} while ((tileoffsetlon <= bounds.right + tilelon * this.buffer) || colidx < minCols)  
+				
+				tileoffsetlat -= tilelat;
+				tileoffsety += stretchedHeight;
+			} while((tileoffsetlat >= bounds.bottom - tilelat * this.buffer) || rowidx < minRows)
+		}
+		
+		/**
+		 * Function resetting the grid of bounds when map center has changed
+		 * 
+		 * @param event the event onmapcenterchanged
+		 */
+		override protected function onMapCenterChanged(event:MapEvent):void {
+			this._boundsGrid = null;
+			this._boundsGridResolution = null
+			super.onMapCenterChanged(event);
+		}
+		
+		/**
+		 * Function resetting the grid of bounds when map resolution has changed
+		 * 
+		 * @param event the event onmapresolutionchanged
+		 */
+		override protected function onMapResolutionChanged(event:MapEvent):void {
+			this._boundsGrid = null;
+			this._boundsGridResolution = null
+			super.onMapResolutionChanged(event);
+		}
+		
+		/**
+		 * Function overriding the standard bounds inclusion test
+		 * it takes into account the fact that buonds are too precise some times and only takes 5 decimals
+		 * 
+		 * @param boundsBig the bounds including
+		 * @param boundsSmall the bounds included
+		 * @return true if boundsSmall is included in boundsBig, false otherwise
+		 */
+		private function containsBounds(boundsBig:Bounds, boundsSmall:Bounds, dec:Number=5):Boolean {
+			
+			dec = Math.round(dec);
+			var tmpBounds:Bounds = boundsSmall;
+			var tmpThis:Bounds = boundsBig;
+			
+			var inLeft:Boolean =   (round(tmpBounds.left, dec)   >= round(tmpThis.left, dec))   && (round(tmpBounds.left, dec)   <= round(tmpThis.right, dec));
+			var inTop:Boolean =    (round(tmpBounds.top, dec)    >= round(tmpThis.bottom, dec)) && (round(tmpBounds.top, dec)    <= round(tmpThis.top, dec));
+			var inRight:Boolean=   (round(tmpBounds.right, dec)  >= round(tmpThis.left, dec))   && (round(tmpBounds.right, dec)  <= round(tmpThis.right, dec));
+			var inBottom:Boolean = (round(tmpBounds.bottom, dec) >= round(tmpThis.bottom, dec)) && (round(tmpBounds.bottom, dec) <= round(tmpThis.top, dec));
+			
+			return inTop && inLeft && inBottom && inRight;
+		}
+		
+		/**
+		 * Function overriding the standard rounding Math function to take a number of decimals into account
+		 * 
+		 * @param value the number to round
+ 		 * @param dec the number of decimals to keep
+		 * @return the rounded number
+		 */		
+		private function round(value:Number, dec:Number):Number {
+			var fact:Number = Math.pow(10, dec);
+			return Math.round(value * fact)/fact;
+		}
+		
+		
+		/**
+		 * Function returning the superior resolution of the target one
+		 * 
+		 * @param targetResolution the requested resolution
+		 * @param up the number of level to go up
+		 * @return the upper resolution
+		 */	
+		public function getUpperResolution(targetResolution:Resolution, up:Number):Resolution {
+			if(up <= 0 || up > this.resolutions.length)
+				return this.getSupportedResolution(targetResolution);
+			
+			var bestIndex:Number;
+			var bestRatio:Number;
+			var i:int;
+			var len:int;
+			var ratioSeeker:Number;
+			
+			if(!this.resolutions)
+				return new Resolution(0);
+			
+			var sortedResolutions:Array = this.resolutions.concat();
+			sortedResolutions.sort(Array.NUMERIC);
+			sortedResolutions.reverse();
+			// Find the best resotion to fit the target resolution
+			bestIndex = 0;
+			bestRatio = Number.POSITIVE_INFINITY;
+			i = 0;
+			len = sortedResolutions.length;
+			
+			for (i; i < len; ++i)
+			{
+				if (sortedResolutions[i] < targetResolution.value)
+				{
+					ratioSeeker =  targetResolution.value -sortedResolutions[i];
+				}
+				
+				if ( ratioSeeker < bestRatio){
+					bestRatio = ratioSeeker;
+					bestIndex = i;
+				}
+				if (bestIndex == 0)
+				{
+					bestIndex = sortedResolutions.length - 1;
+				}
+			}
+			
+			bestIndex = Math.min(sortedResolutions.length - 1, bestIndex - up);
+			bestIndex = Math.max(0, bestIndex);
+			
+			return new Resolution(sortedResolutions[bestIndex], targetResolution.projection);
 		}
 		
 		/**
@@ -305,7 +592,7 @@ package org.openscales.core.layer.ogc
 		override public function getURL(bounds:Bounds):String {
 			return this._tileProvider.getTile(bounds,null,this).url;
 		}
-
+		
 		/**
 		 * Indicates tile mimetype
 		 */
@@ -499,7 +786,7 @@ package org.openscales.core.layer.ogc
 		{
 			_tileProvider.useNoDataTile = value;
 		}
-
+		
 		
 	}
 	
