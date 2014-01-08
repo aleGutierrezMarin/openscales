@@ -459,7 +459,7 @@ package org.openscales.core.style
 			
 			graphic = new Mark();
 			graphic.sld = xml;
-			Assert.assertEquals("",graphic.sld);
+			Assert.assertEquals("<sld:Mark></sld:Mark>",graphic.sld.split(" ").join("").split("\n").join(""));
 		}
 		
 		/**
