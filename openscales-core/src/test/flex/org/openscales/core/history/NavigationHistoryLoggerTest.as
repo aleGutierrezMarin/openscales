@@ -13,6 +13,8 @@ package org.openscales.core.history
 		private var _instance:NavigationHistoryLogger;
 		private var _map:Map;
 		
+		public function NavigationHistoryLoggerTest() {}
+		
 		[Before]
 		public function setUp():void
 		{

@@ -467,6 +467,7 @@ package org.openscales.core.layer
 									_backGrid[i][j].scaleX *= 1/(this.scaleX * this.grid[i][j].scaleX);
 									this.grid[i][j].addChildAt(_backGrid[i][j], 0);
 									this.grid[i][j].drawn = true;
+									this.refreshTile(this.grid[i][j]);
 									this.addChild(grid[i][j]);
 									}
 								}
@@ -477,7 +478,14 @@ package org.openscales.core.layer
 				this.moveGriddedTiles(bounds);
 				this.actualizeGridSize(bounds);
 			} 
-			
+		}
+		
+		/**
+		 * Method to refresh a tile on actualize.
+		 * Each layer format need to override this method to refresh it depending on its needs
+		 */
+		public function refreshTile(tile:ImageTile):void {
+			return;
 		}
 		
 		/**

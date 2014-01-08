@@ -13,6 +13,9 @@ package org.openscales.core.format
 		public var intProj:ProjProjection;
 		public var extProj:ProjProjection;
 		public var texte: String;
+		
+		public function FormatTest() {}
+		
 		[Before]
 		public function setUp():void
 		{
