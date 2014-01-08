@@ -94,10 +94,13 @@ package org.openscales.core.tile
 			return this.generateAndSendRequest();
 		}
 		
+		
+		/**
+		 * takes all tile parameters to build request and send it
+		 *
+		 * @return Always returns true.
+		 */
 		public function generateAndSendRequest():Boolean {
-			if (_request) {
-				_request.destroy();
-			}
 			if (this.url == null) {
 				this.url = this.layer.getURL(this.bounds);
 				if(this.layer.security)
@@ -128,12 +131,17 @@ package org.openscales.core.tile
 			}
 			return true;
 		}
-
+		
+		/**
+		 * On request success, when bitmap is loaded
+		 * If needed, cuts and stretches the bitmap
+		 *
+		 * @param event on load complete
+		 */
 		public function onTileLoadEnd(event:Event):void {
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
 			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
-
 			if (this._digUpAttempts > 0 && this.dx < 1 && this.dy < 1)  {
 				var bitmapData:BitmapData = bitmap.bitmapData;
 				var newWidth:Number=bitmapData.width / Math.pow(2, this._digUpAttempts);
@@ -145,12 +153,13 @@ package org.openscales.core.tile
 				var region:Rectangle= new Rectangle(xOffset , yOffset , xOffset + newWidth, yOffset + newHeight);
 				var bmd:BitmapData = new BitmapData(newWidth,newHeight);
 				bmd.copyPixels(bitmapData,region,new Point());
-				this._attempt = 0;
-				this._digUpAttempts = 0;
 				this.clear();
-				
+				this._digUpAttempts = 0;
+
 				drawLoader(loader.name, new Bitmap(bmd,PixelSnapping.NEVER,true));
 			} else {
+				this._digUpAttempts = 0;
+				this.clear();
 				drawLoader(loader.name, bitmap);
 			}
 		}
@@ -224,9 +233,6 @@ package org.openscales.core.tile
 		override public function clear():void {
 			super.clear();
 			
-			this._attempt = 0;
-			this._digUpAttempts = 0;
-
 			if(this._request) {
 				_request.destroy();
 			}

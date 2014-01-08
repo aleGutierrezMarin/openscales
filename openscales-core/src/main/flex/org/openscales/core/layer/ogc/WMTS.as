@@ -118,6 +118,7 @@ package org.openscales.core.layer.ogc
 				var tileMatrixSet:TileMatrixSet = tms.getValue(this.tileMatrixSet);
 				var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
 				this._tileOrigin = tileMatrix.topLeftCorner.clone();
+				
 				super.actualizeGrid(bounds, forceReTile);
 			}
 		}
@@ -299,41 +300,58 @@ package org.openscales.core.layer.ogc
 			return tile;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */ 
+		override public function refreshTile(tile:ImageTile):void {
+			tile.digUpAttempt = 0;
+		}
+		
+		/**
+		 * Function called when a tile load has failed (normally only status 404)
+		 * 
+		 * @param event The event received
+		 */
 		private function onTileloadError(event:TileEvent):void {
 			var tile:ImageTile = event.tile as ImageTile;
+			
 			if (tile == null)
 				return;
-			
 			if(this.grid == null) { 
 				tile.draw();
 				return;
 			}
 			
+			//compute the bounds of the "mother" tile
 			var upperBounds:Bounds = this.getUpperBounds(tile);
-			
 			if(upperBounds == null) {
 				tile.draw();
 				return;
 			}
-				
 			upperBounds.reprojectTo(tile.bounds.projection);
 			
+			//Get the delta (in %) of the offset
 			tile.dx = Math.round((tile.bounds.left - upperBounds.left) / upperBounds.width*1000)/1000;
 			tile.dy = Math.round((upperBounds.top - tile.bounds.top) / upperBounds.height*1000)/1000;
 			
-			
+			//refresh the tile
 			tile = _tileProvider.refreshTile(tile, upperBounds); 
-			
-//			tile.clear();
 			tile.generateAndSendRequest();
 		}
 		
+		/**
+		 * Function computing the bounds corresponding to the mother tile of a tile
+		 * 
+		 * @param tile the source tile
+		 * @return the upper bounds of the tile
+		 */
 		private function getUpperBounds(tile:ImageTile):Bounds {
 			
-			var targetResolution:Resolution = this.getUpperResolution(this.map.resolution.reprojectTo(this.projection), tile.digUpAttempt);
+			var upperResolution:Resolution = this.getUpperResolution(this.map.resolution.reprojectTo(this.projection), tile.digUpAttempt);
 
-			if(this._boundsGrid == null || this._boundsGridResolution == null || targetResolution.equals(this._boundsGridResolution) != 0)
-				this.computeUpperGrid(tile.digUpAttempt, targetResolution);
+			//Refresh the upper bounds grid if needed
+			if(this._boundsGrid == null || this._boundsGridResolution == null || upperResolution.equals(this._boundsGridResolution) != 0)
+				this.computeUpperGrid(tile.digUpAttempt, upperResolution);
 			
 			var row:Vector.<Bounds>;
 			var i:Number;
@@ -345,39 +363,43 @@ package org.openscales.core.layer.ogc
 						return row[j];
 				}
 			}
-			
 			return null;
 		}
 		
+		/**
+		 * Function computing a grid of bounds corresponding to the upper level of tm for the map resolution
+		 * 
+		 * @param tile the source tile
+		 * @param targetResolution the upper resolution corresponding to the tms of the bounds to construct
+		 */
 		private function computeUpperGrid(digUpAttempt:Number, targetResolution:Resolution):void {
-			var bounds:Bounds = this.map.extent.clone();
 			var row:Vector.<Bounds>;
+			var bounds:Bounds = this.map.extent.clone();
 			var projectedTileOrigin:Location = this._tileOrigin.reprojectTo(bounds.projection);
-			var reprojectedBoundWidth:Number = (bounds.reprojectTo(this.map.projection).width/targetResolution.reprojectTo(this.map.projection).value);
-			var reprojectedBoundHeight:Number = (bounds.reprojectTo(this.map.projection).height/targetResolution.reprojectTo(this.map.projection).value);
+//			var reprojectedBoundWidth:Number = (bounds.reprojectTo(this.map.projection).width/targetResolution.reprojectTo(this.map.projection).value);
+//			var reprojectedBoundHeight:Number = (bounds.reprojectTo(this.map.projection).height/targetResolution.reprojectTo(this.map.projection).value);
 			var nativeBoundWidth:Number = (bounds.width/targetResolution.value);
 			var nativeBoundHeight:Number = (bounds.height/targetResolution.value);
 			
-			
-			var resquestResolutionValue:Number = targetResolution.value;
+//			var resquestResolutionValue:Number = targetResolution.value;
 			var viewSize:Size = new Size(nativeBoundWidth, nativeBoundHeight);
 			var minRows:Number = Math.ceil(viewSize.h/this.tileHeight) + Math.max(1, 2 * this.buffer);
 			var minCols:Number = Math.ceil(viewSize.w/this.tileWidth) + Math.max(1, 2 * this.buffer);
-			var tilelon:Number = resquestResolutionValue * this.tileWidth;
-			var tilelat:Number = resquestResolutionValue * this.tileHeight;
+			var tilelon:Number = targetResolution.value * this.tileWidth;
+			var tilelat:Number = targetResolution.value * this.tileHeight;
 			
 			// Longitude
 			var offsetlon:Number = bounds.left - projectedTileOrigin.lon;
 			var tilecol:Number = Math.floor(offsetlon/tilelon) - this.buffer;
 			var tilecolremain:Number = offsetlon/tilelon - tilecol;
-			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
+//			var tileoffsetx:Number = -tilecolremain * this.tileWidth;
 			var tileoffsetlon:Number = projectedTileOrigin.lon + tilecol * tilelon;
 			
 			// Latitude
 			var offsetlat:Number = bounds.top - (projectedTileOrigin.lat + tilelat);  
 			var tilerow:Number = Math.ceil(offsetlat/tilelat) + this.buffer;
 			var tilerowremain:Number = tilerow - offsetlat/tilelat;
-			var tileoffsety:Number = -tilerowremain * this.tileHeight;
+//			var tileoffsety:Number = -tilerowremain * this.tileHeight;
 			var tileoffsetlat:Number = projectedTileOrigin.lat + tilerow * tilelat;
 			
 			// Offset stretching 
@@ -390,11 +412,11 @@ package org.openscales.core.layer.ogc
 			var stretchedHeight:Number = (upRigth.lat - bottomLeft.lat) / targetResolution.reprojectTo(this.map.projection).value;
 			var stretchedWidth:Number = (upRigth.lon-bottomLeft.lon) / targetResolution.reprojectTo(this.map.projection).value;
 			
-			tileoffsetx *= stretchedWidth/this.tileWidth;
-			tileoffsety *= stretchedHeight/this.tileHeight;
+//			tileoffsetx *= stretchedWidth/this.tileWidth;
+//			tileoffsety *= stretchedHeight/this.tileHeight;
 			
-			tileoffsetx = 0;
-			tileoffsety = 0;
+			var tileoffsetx:Number = 0;
+			var tileoffsety:Number = 0;
 			var startX:Number = tileoffsetx; 
 			var startLon:Number = tileoffsetlon;
 			var rowidx:int = 0;
@@ -402,7 +424,7 @@ package org.openscales.core.layer.ogc
 			this._boundsGrid = new Vector.<Vector.<Bounds>>();
 			this._boundsGridResolution = targetResolution;
 			
-			// Build the tiles
+			// Build the bounds
 			do {
 				if(this._boundsGrid.length==rowidx) {
 					row = new Vector.<Bounds>;
@@ -442,43 +464,70 @@ package org.openscales.core.layer.ogc
 			} while((tileoffsetlat >= bounds.bottom - tilelat * this.buffer) || rowidx < minRows)
 		}
 		
+		/**
+		 * Function resetting the grid of bounds when map center has changed
+		 * 
+		 * @param event the event onmapcenterchanged
+		 */
 		override protected function onMapCenterChanged(event:MapEvent):void {
 			this._boundsGrid = null;
 			this._boundsGridResolution = null
 			super.onMapCenterChanged(event);
 		}
 		
+		/**
+		 * Function resetting the grid of bounds when map resolution has changed
+		 * 
+		 * @param event the event onmapresolutionchanged
+		 */
 		override protected function onMapResolutionChanged(event:MapEvent):void {
 			this._boundsGrid = null;
 			this._boundsGridResolution = null
 			super.onMapResolutionChanged(event);
 		}
 		
-		
-		private function containsBounds(boundsBig:Bounds, boundsSmall:Bounds):Boolean {
+		/**
+		 * Function overriding the standard bounds inclusion test
+		 * it takes into account the fact that buonds are too precise some times and only takes 5 decimals
+		 * 
+		 * @param boundsBig the bounds including
+		 * @param boundsSmall the bounds included
+		 * @return true if boundsSmall is included in boundsBig, false otherwise
+		 */
+		private function containsBounds(boundsBig:Bounds, boundsSmall:Bounds, dec:Number=5):Boolean {
 			
+			dec = Math.round(dec);
 			var tmpBounds:Bounds = boundsSmall;
 			var tmpThis:Bounds = boundsBig;
 			
-			var inLeft:Boolean;
-			var inTop:Boolean;
-			var inRight:Boolean;
-			var inBottom:Boolean;
-			
-			
-			inLeft =   (round(tmpBounds.left, 5)   >= round(tmpThis.left, 5))   && (round(tmpBounds.left, 5)   <= round(tmpThis.right, 5));
-			inTop =    (round(tmpBounds.top, 5)    >= round(tmpThis.bottom, 5)) && (round(tmpBounds.top, 5)    <= round(tmpThis.top, 5));
-			inRight=   (round(tmpBounds.right, 5)  >= round(tmpThis.left, 5))   && (round(tmpBounds.right, 5)  <= round(tmpThis.right, 5));
-			inBottom = (round(tmpBounds.bottom, 5) >= round(tmpThis.bottom, 5)) && (round(tmpBounds.bottom, 5) <= round(tmpThis.top, 5));
+			var inLeft:Boolean =   (round(tmpBounds.left, dec)   >= round(tmpThis.left, dec))   && (round(tmpBounds.left, dec)   <= round(tmpThis.right, dec));
+			var inTop:Boolean =    (round(tmpBounds.top, dec)    >= round(tmpThis.bottom, dec)) && (round(tmpBounds.top, dec)    <= round(tmpThis.top, dec));
+			var inRight:Boolean=   (round(tmpBounds.right, dec)  >= round(tmpThis.left, dec))   && (round(tmpBounds.right, dec)  <= round(tmpThis.right, dec));
+			var inBottom:Boolean = (round(tmpBounds.bottom, dec) >= round(tmpThis.bottom, dec)) && (round(tmpBounds.bottom, dec) <= round(tmpThis.top, dec));
 			
 			return inTop && inLeft && inBottom && inRight;
 		}
 		
+		/**
+		 * Function overriding the standard rounding Math function to take a number of decimals into account
+		 * 
+		 * @param value the number to round
+ 		 * @param dec the number of decimals to keep
+		 * @return the rounded number
+		 */		
 		private function round(value:Number, dec:Number):Number {
 			var fact:Number = Math.pow(10, dec);
 			return Math.round(value * fact)/fact;
 		}
 		
+		
+		/**
+		 * Function returning the superior resolution of the target one
+		 * 
+		 * @param targetResolution the requested resolution
+		 * @param up the number of level to go up
+		 * @return the upper resolution
+		 */	
 		public function getUpperResolution(targetResolution:Resolution, up:Number):Resolution {
 			if(up <= 0 || up > this.resolutions.length)
 				return this.getSupportedResolution(targetResolution);
