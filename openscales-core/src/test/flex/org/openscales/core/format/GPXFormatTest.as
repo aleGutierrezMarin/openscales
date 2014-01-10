@@ -54,13 +54,13 @@ package org.openscales.core.format
 			//adding two features with identical IDs is not allowed
 			//total of features: 4 points and 2 multiLineStrings
 			
-			Assert.assertEquals("There should be 6 valid features in this vector",6, features.length);
-			for (i = 0; i < 4; i++)
-				Assert.assertTrue("The first 4 components should be PointFeatures", features[i] is PointFeature);
-			for(i = 4; i < 6; i++)
+			Assert.assertEquals("There should be 7 valid features in this vector",7, features.length);
+			for (i = 0; i < 5; i++)
+				Assert.assertTrue("The first 5 components should be PointFeatures", features[i] is PointFeature);
+			for(i = 5; i < 7; i++)
 				Assert.assertTrue("The last two components should be MultiLineStringFeatures", features[i] is MultiLineStringFeature);
 			
-			var multiLine:MultiLineString = (features[4] as MultiLineStringFeature).lineStrings;
+			var multiLine:MultiLineString = (features[5] as MultiLineStringFeature).lineStrings;
 			var line:Vector.<Geometry> = multiLine.getcomponentsClone();
 	
 			Assert.assertEquals("There should be one lineString in the first multiLine", 1, line.length);

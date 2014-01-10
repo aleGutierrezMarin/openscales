@@ -205,6 +205,11 @@ package org.openscales.core
 		 * Number of attempt for downloading an image tile
 		 */
 		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
+		
+		/**
+		 * Number of back digging attempts on tms
+		 */
+		public var DIG_BACK_MAX_DEPTH:Number = 3;
 		/**
 		 * The url to the default Theme (OpenscalesTheme)
 		 * TODO : fix and set the real path to  the default theme

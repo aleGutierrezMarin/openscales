@@ -21,6 +21,11 @@ package org.openscales.core.events
 		 * Event type dispatched when tile has been loaded.
 		 */ 
 		public static const TILE_LOAD_END:String="openscales.tileloadend";
+		
+		/**
+		 * Event type dispatched when an error has occured on tile load.
+		 */ 
+		public static const TILE_LOAD_ERROR:String="openscales.tileloaderror";
 
 
 		public function TileEvent(type:String, tile:Tile, bubbles:Boolean=false, cancelable:Boolean=false)
