@@ -150,7 +150,13 @@ package org.openscales.core.format.geojson
 				properties = feature.attributes;
 			}
 			
-			properties["_style"] = feature.style.name + feature.name;
+			var styleName:String = "";
+			if (feature.style)
+			{
+				styleName = feature.style.name;
+			}
+			
+			properties["_style"] = styleName + feature.name;
 			
 			return properties;
 		}

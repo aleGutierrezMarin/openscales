@@ -8,9 +8,13 @@ package org.openscales.core.tile
 	import flash.display.PixelSnapping;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
+	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.utils.Trace;
@@ -25,6 +29,8 @@ package org.openscales.core.tile
 	public class ImageTile extends Tile
 	{
 		private var _attempt:Number = 0;
+		
+		private var _digUpAttempts:Number = 0;
 
 		private var _queued:Boolean = false;
 
@@ -33,6 +39,10 @@ package org.openscales.core.tile
 		private var _method:String = null;
 		
 		private var _useNoDataTile:Boolean = true;
+		
+		public var dx:Number = -1;
+		
+		public var dy:Number = -1;
 		
 		/**
 		 * No Data tile
@@ -81,6 +91,16 @@ package org.openscales.core.tile
 				if(_request)_request.destroy();
 				return false;    
 			}
+			return this.generateAndSendRequest();
+		}
+		
+		
+		/**
+		 * takes all tile parameters to build request and send it
+		 *
+		 * @return Always returns true.
+		 */
+		public function generateAndSendRequest():Boolean {
 			if (this.url == null) {
 				this.url = this.layer.getURL(this.bounds);
 				if(this.layer.security)
@@ -111,12 +131,37 @@ package org.openscales.core.tile
 			}
 			return true;
 		}
-
+		
+		/**
+		 * On request success, when bitmap is loaded
+		 * If needed, cuts and stretches the bitmap
+		 *
+		 * @param event on load complete
+		 */
 		public function onTileLoadEnd(event:Event):void {
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
 			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
-			drawLoader(loader.name, bitmap);
+			if (this._digUpAttempts > 0 && this.dx < 1 && this.dy < 1)  {
+				var bitmapData:BitmapData = bitmap.bitmapData;
+				var newWidth:Number=bitmapData.width / Math.pow(2, this._digUpAttempts);
+				var newHeight:Number=bitmapData.height / Math.pow(2, this._digUpAttempts);
+				
+				var xOffset:Number = bitmapData.width * dx;
+				var yOffset:Number = bitmapData.height * dy;
+				
+				var region:Rectangle= new Rectangle(xOffset , yOffset , xOffset + newWidth, yOffset + newHeight);
+				var bmd:BitmapData = new BitmapData(newWidth,newHeight);
+				bmd.copyPixels(bitmapData,region,new Point());
+				this.clear();
+				this._digUpAttempts = 0;
+
+				drawLoader(loader.name, new Bitmap(bmd,PixelSnapping.NEVER,true));
+			} else {
+				this._digUpAttempts = 0;
+				this.clear();
+				drawLoader(loader.name, bitmap);
+			}
 		}
 
 		/**
@@ -156,9 +201,13 @@ package org.openscales.core.tile
 				// Retry loading
 				//Trace.log("ImageTile - onTileLoadError: Error while loading tile " + this.url+" ; retry #" + this._attempt);
 				this.draw();
+			} else if (this.layer && this.layer.map && ++this._digUpAttempts <= this.layer.map.DIG_BACK_MAX_DEPTH) {
+//				this._attempt = 0;
+				this.layer.dispatchEvent(new TileEvent(TileEvent.TILE_LOAD_ERROR,this));
 			} else {
 				// Maximum number of tries reached
 				//Trace.error("ImageTile - onTileLoadError: Error while loading tile " + this.url);
+				this.clear();
 				this.loading = false;
 				
 				// Display the no data Tile
@@ -174,9 +223,7 @@ package org.openscales.core.tile
 				}else{
 					this.drawLoader("",new _fullTransparentImage());
 					bmdata.draw(new _fullTransparentImage());
-				}
-				
-				
+				}				
 			}
 		}
 
@@ -185,7 +232,7 @@ package org.openscales.core.tile
 		 */
 		override public function clear():void {
 			super.clear();
-
+			
 			if(this._request) {
 				_request.destroy();
 			}
@@ -232,6 +279,27 @@ package org.openscales.core.tile
 		{
 			_useNoDataTile = value;
 		}
+		
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get digUpAttempt():Number
+		{
+			return _digUpAttempts;
+		}
+		
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function set digUpAttempt(value:Number):void
+		{
+			this._digUpAttempts = value;
+		}
+
 
 	}
 }

@@ -12,6 +12,9 @@ package org.openscales.core.style.graphic
 
 	public class ExternalGraphicTest extends SuperTest
 	{		
+		
+		public function ExternalGraphicTest() {}
+		
 		[Mock]
 		public var mockRequest:DataRequest;
 		
