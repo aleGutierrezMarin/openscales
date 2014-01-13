@@ -8,6 +8,7 @@ package org.openscales.core.format.geojson
 	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
+	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
@@ -82,10 +83,11 @@ package org.openscales.core.format.geojson
 			
 			
 			var pointFeature:PointFeature = new PointFeature(new Point(1,2));
-			var lineString:LineString = new LineString(lineCoords)
+			var lineString:LineString = new LineString(lineCoords);
+			var linearRing:LinearRing = new LinearRing(lineCoords);
 			var lineFeature:LineStringFeature = new LineStringFeature(lineString);
 			var polyCoords:Vector.<Geometry> = new Vector.<Geometry>();
-			polyCoords.push(lineString);
+			polyCoords.push(linearRing);
 			var pol:Polygon = new Polygon(polyCoords);
 			var polygonFeature:PolygonFeature = new PolygonFeature(pol);
 			var multiVector:Vector.<Geometry> = new Vector.<Geometry>();
@@ -97,30 +99,30 @@ package org.openscales.core.format.geojson
 			
 			Assert.assertNotNull("Feature's object should not be null", result);
 			Assert.assertEquals("There should be the sames properties that used as attributes for the feature", "Point", result.type);
-			Assert.assertNotNull("There should be a coordinates property added", result["_coordinates"]);
+			Assert.assertNotNull("There should be a coordinates property added", result["coordinates"]);
 			
 			result = geoJsonFormat.getGeometryFromFeature(lineFeature);
 			
 			Assert.assertNotNull("Feature's object should not be null", result);
 			Assert.assertEquals("There should be the sames properties that used as attributes for the feature", "LineString", result.type);
-			Assert.assertNotNull("There should be a coordinates property added", result["_coordinates"]);
+			Assert.assertNotNull("There should be a coordinates property added", result["coordinates"]);
 			
 			result = geoJsonFormat.getGeometryFromFeature(polygonFeature);
 			
 			Assert.assertNotNull("Feature's object should not be null", result);
 			Assert.assertEquals("There should be the sames properties that used as attributes for the feature", "Polygon", result.type);
-			Assert.assertNotNull("There should be a coordinates property added", result["_coordinates"]);
+			Assert.assertNotNull("There should be a coordinates property added", result["coordinates"]);
 			
 			result = geoJsonFormat.getGeometryFromFeature(multiPolygonFeature);
 			
 			Assert.assertNotNull("Feature's object should not be null", result);
 			Assert.assertEquals("There should be the sames properties that used as attributes for the feature", "MultiPolygon", result.type);
-			Assert.assertNotNull("There should be a coordinates property added", result["_coordinates"]);
+			Assert.assertNotNull("There should be a coordinates property added", result["coordinates"]);
 			
 			result = geoJsonFormat.getGeometryFromFeature(emptyFeature);
 			
 			Assert.assertNotNull("Feature's object should not be null", result);
-			Assert.assertNull("There should not be a coordinates property added", result["_coordinates"]);
+			Assert.assertNull("There should not be a coordinates property added", result["coordinates"]);
 		}
 	}
 }
