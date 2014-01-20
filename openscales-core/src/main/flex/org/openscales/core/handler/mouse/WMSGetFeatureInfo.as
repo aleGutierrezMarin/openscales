@@ -34,7 +34,7 @@ package org.openscales.core.handler.mouse
 		
 		private var _maxFeatures:Number;
 		private var _drillDown:Boolean=false;
-		private var _defaultInfoFormat:String = "text/xml";
+		private var _infoFormat:String = "text/xml";
 		private var _layers:String=null;
 		private var _buffer:Number = 15;
 		private var _security:ISecurity;
@@ -263,10 +263,10 @@ package org.openscales.core.handler.mouse
 					{
 						format = (layerVec[i] as WMS).getFeatureInfoFormat;
 					}
-					else if ((this._defaultInfoFormat != null &&
-						this._defaultInfoFormat != ""))
+					else if ((this._infoFormat != null &&
+						this._infoFormat != ""))
 					{
-						format = this._defaultInfoFormat;
+						format = this._infoFormat;
 					}
 					
 					if ((format != null && format != "") || version == "1.3.0")
@@ -437,16 +437,16 @@ package org.openscales.core.handler.mouse
 		/**
 		 * get the default value of the Info_format paramater of the getFeatureInfo request 
 		 */
-		public function get defaultInfoFormat():String
+		public function get infoFormat():String
 		{
-			return _defaultInfoFormat;
+			return _infoFormat;
 		}
 		/**
 		 * @private
 		 */
-		public function set defaultInfoFormat(value:String):void
+		public function set infoFormat(value:String):void
 		{
-			_defaultInfoFormat = value;
+			_infoFormat = value;
 		}
 		
 		/**
