@@ -277,7 +277,7 @@ package org.openscales.core.handler.mouse
 					//optional feature count parameter
 					if ((layerVec[i] as WMS).getFeatureInfoFeatureCount != 0)
 					{
-						request += "FEATURE_COUNT=" + this._maxFeatures + "&";
+						request += "FEATURE_COUNT=" + (layerVec[i] as WMS).getFeatureInfoFeatureCount + "&";
 					}
 					else if(!isNaN(this.maxFeatures)){
 						request += "FEATURE_COUNT=" + this._maxFeatures + "&";
@@ -383,10 +383,21 @@ package org.openscales.core.handler.mouse
 			{
 				ret = loader.data;
 			}
+			
+			var fie:GetFeatureInfoEvent;
 			if(event is RequestEvent)
-				this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, (event as RequestEvent).url));
+			{
+				fie = new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, (event as RequestEvent).url);
+				fie.infoFormat = infoFormat;
+				this.map.dispatchEvent(fie);
+			}
 			else
-				this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, null));
+			{
+				fie = new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, null);
+				fie.infoFormat = infoFormat;
+				this.map.dispatchEvent(fie);
+			}
+				
 		}
 		
 		
