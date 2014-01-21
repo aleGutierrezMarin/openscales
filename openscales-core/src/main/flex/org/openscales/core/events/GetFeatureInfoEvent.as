@@ -11,6 +11,13 @@ package org.openscales.core.events{
 		 */
 		private var _data:Object = null;
 		private var _url:String = null;
+		
+		/**
+		 * Determine the Data return format
+		 * 
+		 * @default text/xml Due to OGC definition
+		 */
+		private var _infoFormat:String = "text/xml";
 
 		/**
 		 * Event type dispatched when the get feature info response has been received.
@@ -34,6 +41,16 @@ package org.openscales.core.events{
 		public function get url():String
 		{
 			return _url;
+		}
+		
+		public function set infoFormat(value:String):void
+		{
+			this._infoFormat = value;
+		}
+		
+		public function get infoFormat():String
+		{
+			return this._infoFormat;
 		}
 
 	}
