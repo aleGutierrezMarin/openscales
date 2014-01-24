@@ -371,6 +371,16 @@ package org.openscales.core.handler.mouse
 			var ret:Object;
 			
 			var infoFormat:String = (((event as RequestEvent).url as String).split("INFO_FORMAT=")[1] as String).split("&")[0];
+			var layers:String = (((event as RequestEvent).url as String).split("QUERY_LAYERS=")[1] as String).split("&")[0];
+			var wms:Layer;
+			
+			for each (var l:Layer in this.map.layers)
+			{
+				if (l is WMS && (l as WMS).layers == layers)
+				{
+					wms = l;
+				}
+			}
 			
 			if (infoFormat == "application/vnd.ogc.gml")
 			{
@@ -389,12 +399,20 @@ package org.openscales.core.handler.mouse
 			{
 				fie = new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, (event as RequestEvent).url);
 				fie.infoFormat = infoFormat;
+				if (wms)
+				{
+					fie.layer = wms;
+				}
 				this.map.dispatchEvent(fie);
 			}
 			else
 			{
 				fie = new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, null);
 				fie.infoFormat = infoFormat;
+				if (wms)
+				{
+					fie.layer = wms;
+				}
 				this.map.dispatchEvent(fie);
 			}
 				

@@ -1,4 +1,5 @@
 package org.openscales.core.events{
+	import org.openscales.core.layer.Layer;
 
 	/**
 	 * Event allowing to get information about a WMS feature when we click on it.
@@ -11,6 +12,7 @@ package org.openscales.core.events{
 		 */
 		private var _data:Object = null;
 		private var _url:String = null;
+		private var _layer:Layer = null;
 		
 		/**
 		 * Determine the Data return format
@@ -53,6 +55,15 @@ package org.openscales.core.events{
 			return this._infoFormat;
 		}
 
+		public function set layer(value:Layer):void
+		{
+			this._layer = value;
+		}
+		
+		public function get layer():Layer
+		{
+			return this._layer;
+		}
 	}
 }
 
