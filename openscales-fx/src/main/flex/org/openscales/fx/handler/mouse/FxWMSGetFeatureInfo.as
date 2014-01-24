@@ -24,7 +24,7 @@ package org.openscales.fx.handler.mouse
 			(this.handler as WMSGetFeatureInfo).drillDown = drillDown;
 		}
 		
-		public function set format(infoFormat:String):void {
+		public function set infoFormat(infoFormat:String):void {
 			(this.handler as WMSGetFeatureInfo).infoFormat = infoFormat;
 		}
 		

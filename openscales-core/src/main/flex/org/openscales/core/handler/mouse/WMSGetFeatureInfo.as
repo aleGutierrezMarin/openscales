@@ -1,24 +1,19 @@
 package org.openscales.core.handler.mouse
 {
 	import flash.events.Event;
-	import flash.geom.Point;
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.events.GetFeatureInfoEvent;
 	import org.openscales.core.events.RequestEvent;
-	import org.openscales.core.feature.Feature;
 	import org.openscales.core.format.gml.GMLFormat;
-	import org.openscales.core.format.gml.parser.GMLParser;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.security.ISecurity;
-	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
-	import org.osmf.utils.Version;
 
 	/** 
 	 * @eventType org.openscales.core.events.GetFeatureInfoEvent.GET_FEATURE_INFO_DATA
@@ -39,7 +34,7 @@ package org.openscales.core.handler.mouse
 		
 		private var _maxFeatures:Number;
 		private var _drillDown:Boolean=false;
-		private var _infoFormat:String="application/vnd.ogc.gml";
+		private var _infoFormat:String = "text/xml";
 		private var _layers:String=null;
 		private var _buffer:Number = 15;
 		private var _security:ISecurity;
@@ -246,30 +241,54 @@ package org.openscales.core.handler.mouse
 					//mandatory map request part parameter
 					//some parameter of the map should be know -> bbox / width / height / projection
 					if(version == "1.3.0"){
-						request += "CRS=" + this.map.projection.srsCode + "&";
+						request += "CRS=" + layerVec[i].projection.srsCode + "&";
 					}
 					else{
-						request += "SRS=" + this.map.projection.srsCode + "&";
+						request += "SRS=" + layerVec[i].projection.srsCode + "&";
 					}
 					
 					request += "WIDTH=" + this.map.width + "&";
 					request += "HEIGHT=" + this.map.height + "&";
 					
-					if(version=="1.3.0" && !this.map.projection.lonlat){
-						request += "BBOX=" + this.map.extent.bottom+","+ this.map.extent.left +","+ this.map.extent.top +","+ this.map.extent.right+"&";
+					if(version=="1.3.0" && !layerVec[i].projection.lonlat){
+						request += "BBOX=" + layerVec[i].extent.reprojectTo(layerVec[i].projection.srsCode).bottom+","+ layerVec[i].extent.reprojectTo(layerVec[i].projection.srsCode).left +","+ layerVec[i].extent.reprojectTo(layerVec[i].projection.srsCode).top +","+ layerVec[i].extent.reprojectTo(layerVec[i].projection.srsCode).right+"&";
 					}else {
-						request += "BBOX=" + this.map.extent.left+","+ this.map.extent.bottom +","+ this.map.extent.right +","+ this.map.extent.top+"&";
+						request += "BBOX=" + layerVec[i].extent.reprojectTo(layerVec[i].projection.srsCode).left+","+ layerVec[i].extent.reprojectTo(layerVec[i].projection.srsCode).bottom +","+ layerVec[i].extent.reprojectTo(layerVec[i].projection.srsCode).right +","+ layerVec[i].extent.reprojectTo(layerVec[i].projection.srsCode).top+"&";
 					}		
 					
 					//info format is mandatory for 1.1.1 not for 1.3.0
-					if(this._infoFormat != null || version == "1.3.0"){
-						request += "INFO_FORMAT=" + this._infoFormat+"&";
+					var format:String = "";
+					if(((layerVec[i] as WMS).getFeatureInfoFormat != null &&
+						(layerVec[i] as WMS).getFeatureInfoFormat != ""))
+					{
+						format = (layerVec[i] as WMS).getFeatureInfoFormat;
+					}
+					else if ((this._infoFormat != null &&
+						this._infoFormat != ""))
+					{
+						format = this._infoFormat;
 					}
 					
-					//mandatory feature count parameter
-					if(!isNaN(this.maxFeatures)){
+					if ((format != null && format != "") || version == "1.3.0")
+					{
+						request += "INFO_FORMAT=" + format + "&";
+					}
+					
+					//optional feature count parameter
+					if ((layerVec[i] as WMS).getFeatureInfoFeatureCount != 0)
+					{
+						request += "FEATURE_COUNT=" + (layerVec[i] as WMS).getFeatureInfoFeatureCount + "&";
+					}
+					else if(!isNaN(this.maxFeatures)){
 						request += "FEATURE_COUNT=" + this._maxFeatures + "&";
 					}
+					
+					if ((layerVec[i] as WMS).getFeatureInfoExceptionFormat != null &&
+						(layerVec[i] as WMS).getFeatureInfoExceptionFormat != "")
+					{
+						request += "EXCEPTIONS=" + (layerVec[i] as WMS).getFeatureInfoExceptionFormat + "&";
+					}
+					
 					//pix = pix.add(-map.x,-map.y);
 
 					if(version == "1.3.0"){
@@ -350,21 +369,53 @@ package org.openscales.core.handler.mouse
 		protected function handleSuccess(event:Event):void {
 			var loader:URLLoader = event.target as URLLoader;
 			var ret:Object;
-			if (this._infoFormat == "application/vnd.ogc.gml")
+			
+			var infoFormat:String = (((event as RequestEvent).url as String).split("INFO_FORMAT=")[1] as String).split("&")[0];
+			var layers:String = (((event as RequestEvent).url as String).split("QUERY_LAYERS=")[1] as String).split("&")[0];
+			var wms:Layer;
+			
+			for each (var l:Layer in this.map.layers)
+			{
+				if (l is WMS && (l as WMS).layers == layers)
+				{
+					wms = l;
+				}
+			}
+			
+			if (infoFormat == "application/vnd.ogc.gml")
 			{
 				var gmlformat:GMLFormat = new GMLFormat(null,new HashMap());
 				
-				gmlformat.version = "2.1.1";
 				gmlformat.asyncLoading = false;
 				ret = gmlformat.read(loader.data);
-				var feature:Vector.<Feature> = (ret as Vector.<Feature>);
-			}else{
+			}
+			else
+			{
 				ret = loader.data;
 			}
+			
+			var fie:GetFeatureInfoEvent;
 			if(event is RequestEvent)
-				this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, (event as RequestEvent).url));
+			{
+				fie = new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, (event as RequestEvent).url);
+				fie.infoFormat = infoFormat;
+				if (wms)
+				{
+					fie.layer = wms;
+				}
+				this.map.dispatchEvent(fie);
+			}
 			else
-				this.map.dispatchEvent(new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, null));
+			{
+				fie = new GetFeatureInfoEvent(GetFeatureInfoEvent.GET_FEATURE_INFO_DATA, ret, null);
+				fie.infoFormat = infoFormat;
+				if (wms)
+				{
+					fie.layer = wms;
+				}
+				this.map.dispatchEvent(fie);
+			}
+				
 		}
 		
 		
@@ -413,7 +464,7 @@ package org.openscales.core.handler.mouse
 		}
 		
 		/**
-		 * get the value of the Info_format paramater of the getFeatureInfo request 
+		 * get the default value of the Info_format paramater of the getFeatureInfo request 
 		 */
 		public function get infoFormat():String
 		{
