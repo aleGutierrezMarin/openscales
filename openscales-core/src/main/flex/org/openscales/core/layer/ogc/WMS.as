@@ -92,6 +92,24 @@ package org.openscales.core.layer.ogc
 		 * Indicate if the map is reprojected
 		 */
 		private var _reproject:Boolean = true;
+		
+		/**
+		 * @private
+		 * INFO_FORMAT parameter for GetFeatureInfo request.
+		 */
+		private var _getFeatureInfoFormat:String;
+		
+		/**
+		 * @private
+		 * EXCEPTIONS optional parameter for GetFeatureInfo request
+		 */
+		private var _getFeatureInfoExceptionFormat:String;
+		
+		/**
+		 * @private
+		 * FEATURE_COUNT optional parameter for GetFeatureInfo request
+		 */
+		private var _getFeatureInfoFeatureCount:int = 0;
 
 		/**
 		 * Constructor of the class
@@ -510,6 +528,39 @@ package org.openscales.core.layer.ogc
 		public function set useNoDataTile(value:Boolean):void
 		{
 			_tileProvider.useNoDataTile = value;
+		}
+		
+		/**
+		 * Get INFO_FORMAT parameter.
+		 */
+		public function get getFeatureInfoFormat():String
+		{
+			return _getFeatureInfoFormat;
+		}
+		
+		public function set getFeatureInfoFormat(value:String):void
+		{
+			this._getFeatureInfoFormat = value;
+		}
+		
+		public function get getFeatureInfoExceptionFormat():String
+		{
+			return _getFeatureInfoExceptionFormat;
+		}
+		
+		public function set getFeatureInfoExceptionFormat(value:String):void
+		{
+			this._getFeatureInfoExceptionFormat = value;
+		}
+		
+		public function get getFeatureInfoFeatureCount():int
+		{
+			return _getFeatureInfoFeatureCount;
+		}
+		
+		public function set getFeatureInfoFeatureCount(value:int):void
+		{
+			this._getFeatureInfoFeatureCount = value;
 		}
 
 	}
