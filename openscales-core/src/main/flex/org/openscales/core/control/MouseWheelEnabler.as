@@ -23,13 +23,13 @@ package org.openscales.core.control
 		static public var useRawValues:Boolean;
 		static public var eventTimeout:Number = 50;             //in milliseconds
 		
-		public static function init(stage:Stage, useRawDelta:Boolean = false ):void
+		public static function init(stage:Stage, useRawDelta:Boolean = false, JSCode:XML = null):void
 		{
 			if( !initialised )
 			{
 				initialised = true;
 				registerListenerForMouseMove( stage );
-				registerJS();
+				registerJS(JSCode);
 			}
 			
 			useRawValues = useRawDelta;
@@ -51,13 +51,13 @@ package org.openscales.core.control
 		}
 		
 		
-		private static function registerJS() : void
+		private static function registerJS(JSCode:XML = null) : void
 		{
 			if( ExternalInterface.available )
 			{
 				var id:String = 'mws_' + Math.floor(Math.random()*1000000);
 				ExternalInterface.addCallback(id, function():void{});
-				ExternalInterface.call(MouseWheelEnabler_JavaScript.CODE);
+				ExternalInterface.call(JSCode != null ? JSCode : MouseWheelEnabler_JavaScript.CODE);
 				ExternalInterface.call("mws.InitMouseWheelSupport", id);
 				ExternalInterface.call("mws.verifyMousePosition", id);
 				ExternalInterface.addCallback('flashMouseEvent', handleExternalMouseEvent);
