@@ -17,3 +17,4 @@ target
 release.properties
 *.prefs
 *.project
+.metadata
