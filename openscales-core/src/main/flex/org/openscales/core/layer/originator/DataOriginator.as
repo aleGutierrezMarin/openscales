@@ -114,27 +114,45 @@ package org.openscales.core.layer.originator
 		 * 
 		 * @param extent The extent at which the coverage is checked
 		 * @param resolution The resolution at which the coverage is checked
+		 * @param round Boolean allowing or not resolution check with rounding (true = rounding activated)
 		 */
-		public function isCoveredArea(extent:Bounds, resolution:Resolution):Boolean
+		public function isCoveredArea(extent:Bounds, resolution:Resolution, round:Boolean=false):Boolean
 		{
-			var i:uint = 0;
 			var j:uint = this._constraints.length;
 			var constraint:ConstraintOriginator = null;
 			var minRes:Resolution = null;
 			var maxRes:Resolution = null;
+			var delta:Number = 100;
 			// check for each constraint
-			for (; i<j; ++i) 
+			for (var i:Number = 0; i<j; i++) 
 			{
 				constraint = this._constraints[i];
 				minRes = constraint.minResolution.reprojectTo(resolution.projection);
 				maxRes = constraint.maxResolution.reprojectTo(resolution.projection);
 				
-				// if extent and resolution contain given extent and resolution : covered
-				if( constraint.extent.intersectsBounds(extent,false) &&
-					minRes.value <= resolution.value &&
-					maxRes.value >= resolution.value)
-				{
-					return true;
+				//First check if we are in the bounding box
+				if( constraint.extent.intersectsBounds(extent,false) ) {
+					//if rounded check is activated, 2 possible cases
+					if ( round ) {
+						// Interval is 0 => minres = maxres
+						if (minRes.value == maxRes.value)
+						{
+							// We build an interval and use it
+							var d:Number = minRes.value * 0.05;
+							if( minRes.value + d >= resolution.value && minRes.value - d <= resolution.value)
+								return true;
+								
+						} else {
+							//We got an interval, we roud resolutions to n decimals with delta
+							if ( Math.round(minRes.value * delta) / delta <= Math.round(resolution.value * delta) / delta 
+								&& Math.round(maxRes.value * delta) / delta >= Math.round(resolution.value * delta) / delta )
+								return true;
+						}
+					} else {
+						// if extent and resolution contain given extent and resolution : covered
+						if ( minRes.value <= resolution.value && maxRes.value >= resolution.value )
+							return true;
+					}
 				}
 			}
 			return false;
