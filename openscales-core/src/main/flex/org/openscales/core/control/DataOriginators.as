@@ -168,7 +168,8 @@ package org.openscales.core.control
 					else if (layer is Grid) {
 							//if scale denominators are discrete, check the closests supported resolution
 							var r:Resolution = (layer as Grid).getSupportedResolution(this._map.resolution);
-							if(mapExtent &&  originator.isCoveredArea(mapExtent, r))
+							//use rounding because it may be an interval of 0 (ie minres = maxres)
+							if(mapExtent &&  originator.isCoveredArea(mapExtent, r, true))
 								addOriginator(originator);
 					}
 				}
