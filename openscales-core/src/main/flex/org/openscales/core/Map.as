@@ -1119,6 +1119,10 @@ package org.openscales.core
 					this.resolution = targetResolution;
 				}
 				
+				deltaLon = deltaX*this.resolution.value;
+				deltaLat = deltaY*this.resolution.value;
+				newCenter = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projection);
+				
 				
 				if (! zoomTargetLoc.equals(this.center))
 				{
