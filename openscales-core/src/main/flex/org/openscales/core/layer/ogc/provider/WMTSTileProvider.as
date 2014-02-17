@@ -179,7 +179,7 @@ package org.openscales.core.layer.ogc.provider
 		 */ 
 		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile {
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
-			imageTile.useNoDataTile = _useNoDataTile;
+			//imageTile.useNoDataTile = _useNoDataTile;
 				
 			return initializeTile(imageTile, layer, bounds, false);
 		}
