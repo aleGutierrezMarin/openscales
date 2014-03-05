@@ -21,37 +21,37 @@ package org.openscales.core.control
 		/**
 		 * Texfield wich displays coordinates
 		 */
-		private var _label:TextField = null;
+		protected var _label:TextField = null;
 		
 		/**
 		 * Text before coordinates in the label, which doesn't change.
 		 */
-		private var _prefix:String = "";
+		protected var _prefix:String = "";
 		
 		/**
 		 * the caracter between the lon and the lat
 		 */
-		private var _separator:String = ", ";
+		protected var _separator:String = ", ";
 		
 		/**
 		 * Text after coordinates in the label, which doesn't change.
 		 */
-		private var _suffix:String = "";
+		protected var _suffix:String = "";
 		
-		private var _numdigits:Number = 5;
+		protected var _numdigits:Number = 5;
 		
-		private var _granularity:int = 10;
+		protected var _granularity:int = 10;
 		
-		private var _lastXy:Pixel = null;
+		protected var _lastXy:Pixel = null;
 		
-		private var _useDMS:Boolean = true;
-		private var _localNSEW:String = "NSEW";
+		protected var _useDMS:Boolean = true;
+		protected var _localNSEW:String = "NSEW";
 		
 		/**
 		 * The projection display in the label
 		 */
 		[Bindable]
-		private var _displayProjection:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
+		protected var _displayProjection:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 		
 		/**
 		 * MousePosition constructor

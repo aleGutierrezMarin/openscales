@@ -59,7 +59,7 @@ package org.openscales.fx.popup.renderer
 			
 			var title:RichText = new RichText();
 			title.width = _fxpopup.WIDTH - 28;
-			title.height = 13;
+			title.height = 14;
 			title.setStyle("lineBreak","toFit");
 			title.maxDisplayedLines=1;
 			title.setStyle("backgroundAlpha",0);

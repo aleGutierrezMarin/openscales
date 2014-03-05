@@ -24,6 +24,7 @@
    "drawing.point": "Ajouter un point",
    "drawing.shape": "Dessiner à main levée",
    "drawing.path": "Dessiner une ligne",
+   "drawing.circle": "Dessiner un cercle",
    "drawing.polygon": "Dessiner un polygone",
    "drawing.select": "Sélectionner",
    "drawing.edit": "Modifier",
@@ -182,7 +183,7 @@
    "editStyle.defaultButton.tooltip" : "Défaut",
    "editStyle.stylePicking.tooltip" : "Récupérer le style",
    "editStyle.stylePainting.tooltip" : "Appliquer le style",
-   "editStyle.pointStyleEdition.dropDownMode" : "Icone :",
+   "editStyle.pointStyleEdition.dropDownMode" : "Icône :",
    "editStyle.pointStyleEdition.colorMode" : "Couleur :",
    "editStyle.pointStyleEdition.labelText" : "Appliquer à : ",
    "editStyle.pointStyleEdition.previewModeAll" : "Les points de même style",
@@ -223,7 +224,7 @@
    "addExternalLayer.lookForGetCapButton.label":"OK",
    "addExternalLayer.resultListLabel.label":"Couches disp.",
    "addExternalLayer.resultListLabel.toolTip":"Couches disponibles sur ce service",
-   "addExternalLayer.noresLabel.text":"Aucunes couches trouvées",
+   "addExternalLayer.noresLabel.text":"Aucune couche trouvée",
    "addExternalLayer.loadingLabel.text":"Chargement...",
    "addExternalLayer.cancelButton.label":"Fermer",
    "addExternalLayer.submitButton.label":"Ajouter",
@@ -233,5 +234,6 @@
    "addExternalLayer.localeSourceRadioButton.label":"Fich. local",
    "addExternalLayer.chooseLocalFileButton.label":"Parcourir...",
    "addExternalLayer.otherLayerNameFormItem.label":"Nom",
-   "addExternalLayer.otherLayerNameFormItem.toolTip":"Un nom pour la couche"
+   "addExternalLayer.otherLayerNameFormItem.toolTip":"Un nom pour la couche",
+   "addExternalLayer.abortLoadingButton.label":"Arrêter"
  }

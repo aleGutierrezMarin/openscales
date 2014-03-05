@@ -121,48 +121,53 @@ package org.openscales.core.format
 			
 			var xmlResult:XML = 
 				<ViewContext id="mon id" version="1.1.0" xmlns="http://www.opengeospatial.net/context" xmlns:sld="http://www.opengeospatial.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink">
-					<General>
-						<BoundingBox SRS="EPSG:4326" minx="-3.865620727418123" miny="43.37558618172125" maxx="7.865620727418123" maxy="51.19641381827875"/>
-						<Title>
-							mon titre
-						</Title>
-						<Window width="600" height="400"/>
-					</General>
-					<LayerList>
-						<Layer queryable="1" hidden="1">
-							<Server service="OGC:WMS" version="1.1.1">
-								<OnlineResource xlink:type="simple" xlink:href="urlWMS"/>
-							</Server>
-							<Name>
-								layerNameWMS
-							</Name>
-							<Title>
-								displayedNameWMS
-							</Title>
-						</Layer>
-						<Layer queryable="1" hidden="1">
-							<Server service="OGC:WFS" version="2.0.0">
-								<OnlineResource xlink:type="simple" xlink:href="urlWFS"/>
-							</Server>
-							<Name>
-								layerNameWFS
-							</Name>
-							<Title>
-								displayedNameWFS
-							</Title>
-						</Layer>
-						<Layer queryable="1" hidden="1">
-							<Server service="WMTS" version="1.0.0">
-								<OnlineResource xlink:type="simple" xlink:href="urlWMTS"/>
-							</Server>
-							<Name>
-								layerNameWMTS
-							</Name>
-							<Title>
-								displayedNameWTMS
-							</Title>
-						</Layer>
-					</LayerList>
+				  <General>
+					<BoundingBox SRS="EPSG:4326" minx="-3.865620727418123" miny="43.37558618172125" maxx="7.865620727418123" maxy="51.19641381827875"/>
+					<Title>
+					  mon titre
+					</Title>
+					<Window width="600" height="400"/>
+				  </General>
+				  <LayerList>
+					<Layer queryable="1" hidden="0">
+					  <Server service="OGC:WMS" version="1.1.1">
+						<OnlineResource xlink:type="simple" xlink:href="urlWMS"/>
+					  </Server>
+					  <Name>
+						layerNameWMS
+					  </Name>
+					  <Title>
+						displayedNameWMS
+					  </Title>
+					</Layer>
+					<Layer queryable="1" hidden="0">
+					  <Server service="OGC:WFS" version="2.0.0">
+						<OnlineResource xlink:type="simple" xlink:href="urlWFS"/>
+					  </Server>
+					  <Name>
+						layerNameWFS
+					  </Name>
+					  <Title>
+						displayedNameWFS
+					  </Title>
+					</Layer>
+					<Layer queryable="1" hidden="0">
+					  <Server service="OGC:WMTS" version="1.0.0">
+						<OnlineResource xlink:type="simple" xlink:href="urlWMTS"/>
+					  </Server>
+					  <Name>
+						layerWMTS
+					  </Name>
+					  <Title>
+						displayedNameWTMS
+					  </Title>
+					  <FormatList>
+						<Format current="1">
+						  image/jpeg
+						</Format>
+					  </FormatList>
+					</Layer>
+				  </LayerList>
 				</ViewContext>
 				;
 			

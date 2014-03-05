@@ -195,8 +195,10 @@ package org.openscales.core.layer {
 		/**
 		 * This method tells if the layer supports a projection given in parameter according to the availableProjections
 		 * set for this layer.
+		 * 
+		 * @param compareProj A ProjProjection object or a String representing the SRS code of the projection (eg.: "EPSG:4326")
 		 */ 
-		public function supportsProjection(compareProj:*):Boolean {
+		public function supportsProjection(compareProj:Object):Boolean {
 			var proj1:ProjProjection = ProjProjection.getProjProjection(compareProj);
 			if(!proj1)
 				return false;
@@ -208,7 +210,7 @@ package org.openscales.core.layer {
 					if(ProjProjection.isEquivalentProjection(proj1,proj2)) {
 						if(!ProjProjection.isEquivalentProjection(this.projection, proj1)) {
 							//Changing layer projection
-							this.projection = proj2;
+							this.setProjection(proj2);
 							return true;
 						} else {
 							//Layer projection is already Map projection
@@ -219,7 +221,7 @@ package org.openscales.core.layer {
 			} else {
 				//Available projections is not set for this layer
 				//try simple comparison
-				if(ProjProjection.isEquivalentProjection(this.projection,compareProj)) {
+				if(ProjProjection.isEquivalentProjection(this.projection,proj1)) {
 					return true;
 				}
 			}
@@ -266,7 +268,7 @@ package org.openscales.core.layer {
 					}
 					else
 					{
-						this.projection = Layer.DEFAULT_PROJECTION;
+						setProjection(Layer.DEFAULT_PROJECTION);
 						nominalResolution = Layer.DEFAULT_NOMINAL_RESOLUTION.value;
 					}
 				}
@@ -361,7 +363,7 @@ package org.openscales.core.layer {
 				this.map.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 				this.map.addEventListener(MapEvent.MAX_EXTENT_CHANGED, onMapMaxExtentChanged);
 				if (! this.maxExtent) {
-					this.maxExtent = this.map.maxExtent;
+					this.setMaxExtent(this.map.maxExtent);
 				}
 			}
 			this.available = this.checkAvailability();
@@ -665,7 +667,7 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * Minimal valid resolution for this layer
+		 * Minimal valid resolution for this layer.
 		 */
 		public function get minResolution():Resolution {
 			
@@ -681,7 +683,10 @@ package org.openscales.core.layer {
 			return this._minResolution;
 		}
 		
-		public function set minResolution(value:*):void {
+		/**
+		 * @private
+		 */ 
+		public function set minResolution(value:Resolution):void {
 			
 			value = (value as Resolution);
 			
@@ -691,12 +696,12 @@ package org.openscales.core.layer {
 					value = value.reprojectTo(this.projection);
 			}
 			
-			this._minResolution = value;
+			this._minResolution = value as Resolution;
 			this.available = this.checkAvailability();
 		}
 		
 		/**
-		 * Maximal valid resolution for this layer
+		 * Maximal valid resolution for this layer.
 		 */
 		public function get maxResolution():Resolution {
 			
@@ -713,7 +718,10 @@ package org.openscales.core.layer {
 			return this._maxResolution;
 		}
 		
-		public function set maxResolution(value:*):void {
+		/**
+		 * @private
+		 */ 
+		public function set maxResolution(value:Resolution):void {
 			
 			value = (value as Resolution);
 			
@@ -722,7 +730,7 @@ package org.openscales.core.layer {
 				if(value.projection!=this.projection)
 					value = value.reprojectTo(this.projection);
 			}
-			this._maxResolution = value;
+			this._maxResolution = value as Resolution;
 			this.available = this.checkAvailability();
 		}
 		
@@ -734,13 +742,19 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * Maximum extent for this layer. No data outside the extent will be displayed
+		 * Maximum extent for this layer. No data outside the extent will be displayed. To define this value, use the setMaxExtent method.
 		 */
 		public function get maxExtent():Bounds {
 			return this._maxExtent;
 		}
 		
-		public function set maxExtent(value:*):void {
+		/**
+		 * Defines the maximal extent of the layer
+		 * 
+		 * @param value A Bounds object or a String representing bounds (the format is defined in the Bounds.getBoundsFromString doc)
+		 * @see Bounds.getBoundsFromString
+		 */ 
+		public function setMaxExtent(value:Object):void {
 			var bounds:Bounds = null;
 			if(value is String) {
 				bounds = Bounds.getBoundsFromString(value as String);
@@ -783,15 +797,20 @@ package org.openscales.core.layer {
 		 * If a layer is not in the same projection as the projection of the map
 		 * he will not be displayed. 
 		 * 
+		 * To set this value, use the setProjection method
+		 * 
 		 * @default Geometry.DEFAULT_SRS_CODE
 		 */
 		public function get projection():ProjProjection {
 			return this._projection;
 		}
+		
 		/**
-		 * @private
+		 * Defines the projection of the layer.
+		 * 
+		 * @param value A ProjProjection object or a String representing the SRS code of the projection (eg.: "EPSG:4326")
 		 */
-		public function set projection(value:*):void {
+		public function setProjection(value:Object):void {
 			var event:LayerEvent = null;
 			if(value != null){
 				var proj:ProjProjection = ProjProjection.getProjProjection(value);
@@ -831,13 +850,18 @@ package org.openscales.core.layer {
 		}
 		
 		/**
-		 * Define the layer available projections by its SRS codes.
+		 * Define the layer available projections by its SRS codes. To defines this value use the setAvailableProjections method
 		 */
 		public function get availableProjections():Vector.<String> {
 			return this._availableProjections;
 		}
 		
-		public function set availableProjections(value:*):void {
+		/**
+		 * Defines the availables projection of the layer.
+		 * 
+		 * @param value a Vector of String or a comma separated list of projection SRS codes
+		 */ 
+		public function setAvailableProjections(value:Object):void {
 			
 			var projections:Vector.<String> = new Vector.<String>();
 			

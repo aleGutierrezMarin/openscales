@@ -26,12 +26,22 @@ package org.openscales.core.format
 			Trace.warn("Write not implemented.");
 			return null;
 		}
-		
+		/**
+		 *getter for internalProjection
+		 * use setInternalProjection in order to set the projection
+		 */
 		public function get internalProjection():ProjProjection {
 			return this._internalProjection;
 		}
 		
-		public function set internalProjection(value:*):void {
+		/**
+		 * Setter for internalProjection
+		 * 
+		 * It set the projection if it is a String or a ProjProjection, and it set the projection to
+		 * null otherwise
+		 * @param a String or a ProjProjection as an Object
+		*/
+		public function setInternalProjection(value:Object):void {
 			if(value is ProjProjection)
 				this._internalProjection = value as ProjProjection;
 			else if(value is String)
@@ -39,12 +49,22 @@ package org.openscales.core.format
 			else
 				this._internalProjection = null;
 		}
-		
+		/**
+		 * The external projection
+		 * use setExternalProjection in order to set the projection
+		 */
 		public function get externalProjection():ProjProjection {
 			return this._externalProjection;
 		}
-		
-		public function set externalProjection(value:*):void {
+		/**
+		 * Setter for externalProjection
+		 * 
+		 * It set the projection if it is a String or a ProjProjection, and it set the projection to
+		 * null otherwise
+		 * 
+		 * @param a String or a ProjProjection as an Object
+		 */	
+		public function setExternalProjection(value:Object):void {
 			if(value is ProjProjection)
 				this._externalProjection = value as ProjProjection;
 			else if(value is String)

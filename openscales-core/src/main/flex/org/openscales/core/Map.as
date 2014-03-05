@@ -204,6 +204,11 @@ package org.openscales.core
 		 * Number of attempt for downloading an image tile
 		 */
 		public var IMAGE_RELOAD_ATTEMPTS:Number = 0;
+		
+		/**
+		 * Number of back digging attempts on tms
+		 */
+		public var DIG_BACK_MAX_DEPTH:Number = 3;
 		/**
 		 * The url to the default Theme (OpenscalesTheme)
 		 * TODO : fix and set the real path to  the default theme
@@ -299,6 +304,7 @@ package org.openscales.core
 		
 		private var _toneMappingBuffer:Array;
 
+		private var notice:ContextMenuItem = null;
 		/**
 		 * Map constructor
 		 *
@@ -306,19 +312,23 @@ package org.openscales.core
 		 * @param height the map's height in pixels
 		 * @param projection the map's projection
 		 */
-		public function Map(width:Number=600, height:Number=400, projection:*=null) {
+		public function Map(width:Number=600, height:Number=400, projection:Object=null) {
 			super();
 			
 			/**
 			 * Contextual informations
 			 */
-			var menu:ContextMenu = new ContextMenu();
-			menu.hideBuiltInItems();
-			var notice:ContextMenuItem = new ContextMenuItem("Powered by OpenScales");
-			notice.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openLink);
-			menu.customItems.push(notice);
-			contextMenu = menu;
-			
+			try {
+				var menu:ContextMenu = new ContextMenu();
+				menu.hideBuiltInItems();
+				notice = new ContextMenuItem("Powered by OpenScales");
+				notice.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openLink);
+				menu.customItems.push(notice);
+				contextMenu = menu;
+			}
+			catch(e:Error) {
+				// if mobile, no contextmenu
+			}
 			
 			//load i18n module
 			I18nJSONProvider.addTranslation(ENLocale);
@@ -329,7 +339,7 @@ package org.openscales.core
 			this._timer.addEventListener(TimerEvent.TIMER, this.onTimerEnd);
 			this._resizeTimer = new Timer(100,1);
 			this._resizeTimer.addEventListener(TimerEvent.TIMER, this.applyResize);
-			this.projection = projection;
+			this.setProjection(projection);
 			this.size = new Size(width, height);
 			// It is necessary to draw something before to define the size...
 			this.graphics.beginFill(_backTileColor,0);
@@ -388,7 +398,7 @@ package org.openscales.core
 			}
 			
 		}*/
-
+		
 		/**
 		 * Reset all layers, handlers and controls
 		 */
@@ -491,8 +501,13 @@ package org.openscales.core
 			
 			this._layers.splice(i,1);
 			
-			if(j==-1)
-				this._loadingLayers.splice(j,1);
+			if(j!=-1) this._loadingLayers.splice(j,1);
+			if(this._loadingLayers.length == 0)
+			{
+				this._loading = false;
+				this.dispatchEvent(new MapEvent(MapEvent.LAYERS_LOAD_END, this));
+			}
+			
 			
 			layer.map = null;
 			this._layersContainer.removeChild(layer);
@@ -596,6 +611,7 @@ package org.openscales.core
 				var newCenterLocation:Location = this.center.add(dx*this.resolution.value, -dy*this.resolution.value);
 				if(isValidExtentWithRestrictedExtent(newCenterLocation, this.resolution))
 					this.center = newCenterLocation;
+				newCenterLocation = null;
 			}
 		}
 		
@@ -713,23 +729,23 @@ package org.openscales.core
 		 *	by the current base layer
 		 */
 		public function getLocationFromMapPx(px:Pixel, res:Resolution = null):Location {
-			var lonlat:Location = null;
+			var _lonlat:Location = null;
 			if (px != null) {
-				var size:Size = this.size;
-				var center:Location = this.center;
-				if (center) {
+				var _size:Size = this.size;
+				var _center:Location = this.center;
+				if (_center) {
 					if (!res)
 					{
 						res = this.resolution;
 					}
 					
-					var delta_x:Number = px.x - (size.w / 2);
-					var delta_y:Number = px.y - (size.h / 2);
+					var delta_x:Number = px.x - (_size.w / 2);
+					var delta_y:Number = px.y - (_size.h / 2);
 					
-					lonlat = new Location(center.lon + delta_x * res.value, center.lat - delta_y * res.value, this.projection);
+					_lonlat = new Location(_center.lon + delta_x * res.value, _center.lat - delta_y * res.value, this.projection);
 				}
 			}
-			return lonlat;
+			return _lonlat;
 		}
 		
 		/**
@@ -745,8 +761,10 @@ package org.openscales.core
 				res = this.resolution;
 			}
 			
-			if(!ProjProjection.isEquivalentProjection(lonlat.projection, this.projection)) {
-				lonlat.reprojectTo(this.projection);
+			var loc:Location = lonlat;
+			
+			if(!ProjProjection.isEquivalentProjection(loc.projection, this.projection)) {
+				loc = loc.reprojectTo(this.projection);
 			}
 			
 			var px:Pixel = null;
@@ -754,10 +772,13 @@ package org.openscales.core
 			if (extent)
 				b = extent;
 			
-			if (lonlat != null && b) {
+			if (loc != null && b) {
 				
-				px = new Pixel((lonlat.lon - b.left) / res.value, (b.top - lonlat.lat) / res.value);
+				px = new Pixel((loc.lon - b.left) / res.value, (b.top - loc.lat) / res.value);
 			}	
+			
+			loc = null;
+			
 			return px;
 		}
 		
@@ -1098,6 +1119,10 @@ package org.openscales.core
 					this.resolution = targetResolution;
 				}
 				
+				// Compute newCenter using resolution effectively set (in case set resolution has been overrided)
+				deltaLon = deltaX*this.resolution.value;
+				deltaLat = deltaY*this.resolution.value;
+				newCenter = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projection);
 				
 				if (! zoomTargetLoc.equals(this.center))
 				{
@@ -1297,7 +1322,7 @@ package org.openscales.core
 		 */
 		private function applyResize(event:TimerEvent):void
 		{
-			
+			if(!this.graphics)return;
 			this.graphics.clear();
 			this.graphics.beginFill(_backTileColor);
 			this.graphics.drawRect(0,0,this.size.w,this.size.h);
@@ -1643,6 +1668,8 @@ package org.openscales.core
 		 * If a layer is not in the same projection as the projection of the map
 		 * he will not be displayed. 
 		 * 
+		 * To define the projection use the setProjection method
+		 * 
 		 * @default Geometry.DEFAULT_SRS_CODE
 		 */
 		public function get projection():ProjProjection
@@ -1650,9 +1677,11 @@ package org.openscales.core
 			return this._projection;
 		}
 		/**
-		 * @private
+		 * Defines the projection of the map. It will conditionnate every layer on the map
+		 * 
+		 * @param value A ProjProjection object or a String representing the SRS code of the projection (eg.: "EPSG:4326")
 		 */
-		public function set projection(value:*):void
+		public function setProjection(value:Object):void
 		{
 			var proj:ProjProjection = null;
 			proj = ProjProjection.getProjProjection(value);
@@ -1779,6 +1808,20 @@ package org.openscales.core
 			}
 			
 			this._defaultZoomOutFactor = value;
+		}
+		
+		override public function set contextMenu(cm:ContextMenu):void {
+			try {
+				if(!cm) {
+					cm = new ContextMenu();
+					cm.hideBuiltInItems();
+				}
+				if(cm.customItems.indexOf(this.notice)==-1)
+					cm.customItems.push(notice);
+				super.contextMenu = cm;
+			} catch(e:Error) {
+				// if mobile, no contextmenu
+			}
 		}
 		
 		/**

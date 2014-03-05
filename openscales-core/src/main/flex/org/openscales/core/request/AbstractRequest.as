@@ -65,22 +65,13 @@ package org.openscales.core.request
 			this._uid = UID.gen_uid();
 			// Create a loader for a SWF or an image (Loader), or for an URL (URLLoader)
 			this._loader = (SWForImage) ? new Loader() : new URLLoader();
-
-			_loader.addEventListener(IOErrorEvent.IO_ERROR,function(event:Event):void{
-				event.stopImmediatePropagation();
-				
-				if (this._onFailure == null)
-					this._onFailure = onFailure;
-				if(this._onFailure)
-					this._onFailure.apply(this,[event]);
-			});
 			
 			this.url = url;
 			this._onComplete = onComplete;
 			this._onFailure = onFailure;
 			this._addListeners();
 		}
-
+		
 		/**
 		 * Destroy the request.
 		 */
@@ -145,7 +136,7 @@ package org.openscales.core.request
 					this.loaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this._onFailure);
 				}
 			} catch (e:Error) {
-				// Empty catch is evil, but here it's fair.
+				trace("unexcpeeted error");
 			}
 		}
 		
@@ -165,7 +156,7 @@ package org.openscales.core.request
 				if (event.type == Event.COMPLETE) {
 					this._isCompleted = true;
 					if (this._onComplete != null) {
-						this._onComplete(new RequestEvent(event.type,this.url,event.target,event.bubbles,event.cancelable));
+						this._onComplete(new RequestEvent(event.type,this.finalUrl,event.target,event.bubbles,event.cancelable));
 					}
 				}
 				else if (this._onFailure == null) {
@@ -318,6 +309,7 @@ package org.openscales.core.request
 				if(this.proxy.charAt(this.proxy.length-1) == '/')
 				{
 					_finalUrl = _finalUrl.replace("http://", "http:/");
+					_finalUrl = _finalUrl.replace("https://", "https:/");
 					_finalUrl = this.proxy + _finalUrl;
 				}else{
 					_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
@@ -388,7 +380,7 @@ package org.openscales.core.request
 					(this.loader as Loader).load(urlRequest, loaderContext);
 				} else {
 					// Send the request
-					(this.loader as URLLoader).load(urlRequest);
+ 					(this.loader as URLLoader).load(urlRequest);
 				}
 			} catch (e:Error) {
 				this._loadEnd(null);

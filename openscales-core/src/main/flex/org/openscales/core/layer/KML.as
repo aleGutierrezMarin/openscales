@@ -1,6 +1,8 @@
 package org.openscales.core.layer
 {
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	
 	import org.openscales.core.events.LayerEvent;
@@ -31,13 +33,15 @@ package org.openscales.core.layer
 							url:String = null,
 							data:XML = null,
 							style:Style = null,
-							bounds:Bounds = null) 
+							bounds:Bounds = null,
+							proxy:String = null ) 
 		{
 			super(identifier);
 			this.editable = true;
 			this.url = url;
 			this.data = data;
-			this.maxExtent = bounds;
+			this.setMaxExtent(bounds);
+			this.proxy = proxy;
 			this._kmlFormat = new KMLFormat();
 			this._kmlFormat.userDefinedStyle = style;
 			var name:String = this._kmlFormat.readName(data);
@@ -110,21 +114,21 @@ package org.openscales.core.layer
 				
 				if (this.map.projection != null && this.projection != null && this.projection != this.map.projection) {
 					// KML reference documentation specify that format projection is EPSG:4326
-					this._kmlFormat.externalProjection = ProjProjection.getProjProjection("EPSG:4326");
-					this._kmlFormat.internalProjection = this.projection;
+					this._kmlFormat.setExternalProjection ( ProjProjection.getProjProjection("EPSG:4326"));
+					this._kmlFormat.setInternalProjection( this.projection);
 				}
 				this._kmlFormat.proxy = this.proxy;
 				
 				this._featureVector = this._kmlFormat.read(this.data) as Vector.<Feature>;
 				var name:String = this._kmlFormat.readName(this.data);
-				if (name && name!="")
+				if (name && name!="" && (!displayedName || displayedName==""))
 					this.displayedName = name;
 				var i:uint;
 				var vectorLength:uint = this._featureVector.length;
 				for (i = 0; i < vectorLength; i++){					
 					this.addFeature(this._featureVector[i],true,true);
 				}
-				this.maxExtent = featuresBbox;
+				this.setMaxExtent(featuresBbox);
 				
 				var evt:LayerEvent = new LayerEvent(LayerEvent.LAYER_CHANGED, this);
 				this.map.dispatchEvent(evt);
@@ -166,7 +170,7 @@ package org.openscales.core.layer
 		
 		protected function onFailure(event:Event):void {
 			this.loading = false;
-			Trace.error("Error when loading kml " + this.url);			
+			Trace.error("Error when loading kml " + this.url + " " + event.toString());
 		}
 
 		override public function getURL(bounds:Bounds):String {
@@ -185,7 +189,7 @@ package org.openscales.core.layer
 		/**
 		 * Getters and Setters
 		 */
-		override public function set projection(value:*):void {
+		override public function setProjection(value:Object):void {
 			// KML must be in EPSG:4326
 		}
 		

@@ -100,7 +100,7 @@ package org.openscales.core.layer
 			this.cacheAsBitmap = true;
 		}
 		
-		override public function supportsProjection(compareProj:*):Boolean
+		override public function supportsProjection(compareProj:Object):Boolean
 		{
 			//A Vector Layer is able to be reprojected in any projection. So, it supports all projections
 			return true;
@@ -211,6 +211,11 @@ package org.openscales.core.layer
 			else
 				res = this.map.resolution;
 			if (lonlat != null) {
+				var reprojectedLocation:Location; 
+				if(loc.projection != this.map.projection){
+					reprojectedLocation = loc.reprojectTo(this.map.projection); 
+				}
+				else reprojectedLocation = loc.clone();
 				if(lonlat.projection != this.map.projection)
 					lonlat = lonlat.reprojectTo(this.map.projection);
 				if (res != null && this.map.size)
@@ -229,7 +234,7 @@ package org.openscales.core.layer
 				}
 			}			
 			var px:Pixel = null;
-			px = new Pixel((loc.lon - extent.left) / res.value, (extent.top - loc.lat) / res.value);	
+			px = new Pixel((reprojectedLocation.lon - extent.left) / res.value, (extent.top - reprojectedLocation.lat) / res.value);	
 			return px;
 			
 			
@@ -343,7 +348,7 @@ package org.openscales.core.layer
 		 * @param feature The feature to add
 		 */
 		public function addFeature(feature:Feature, dispatchFeatureEvent:Boolean=true, reproject:Boolean=true):void {
-			if (this._featuresID.indexOf(feature.name)!=-1) {
+			if (this._featuresID.indexOf(feature.name)!=-1 || this.contains(feature)) {
 				return;
 			}
 			this._featuresID.push(feature.name);
@@ -460,10 +465,10 @@ package org.openscales.core.layer
 				return;
 			}
 			var i:int = this._featuresID.indexOf(feature.name);
-			if (i == -1) {
+			if (i == -1 && !this.contains(feature)) {
 				return;
 			}
-			this._featuresID.splice(i,1);
+			if(i!=-1) this._featuresID.splice(i,1);
 			
 			var j:int = this.numChildren;
 			for(i=0; i<j; ++i) {

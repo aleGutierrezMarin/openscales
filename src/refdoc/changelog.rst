@@ -1,14 +1,19 @@
 Changelog
 =========
 
-Changes between 2.2 and 2.3.0
+Changes between 2.2 and 3.0.0
 -----------------------------
 
+* API break in Map (projection is now read-only, use setProjection instead)
+* API break in Layer (maxExtent is now read-only, use setMaxExtent instead)
+* API break in Layer (projection is now read-only, use setProjection instead)
 * Support of TileMatrixSetLimits in WMTS GetCapabilities. No more tiles will be request outside those limits
 * Adding a nodata Tile that will be displayed instead of the tile when the server is not responding.
 * Fixing an issue in the numeric scale component due to DPI problem.
 * Add map context save using WMC standard (See WMC110Format.write)
-
+* Add possibility to draw circles with a given radius (in meters)
+* Graticule layer is more customizable
+* Using mockolate/hamcrest for unit test
 
 
 Changes between 2.1.1 and 2.2

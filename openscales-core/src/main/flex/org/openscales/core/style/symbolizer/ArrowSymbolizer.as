@@ -1,77 +1,77 @@
 package org.openscales.core.style.symbolizer
 {
-	import org.openscales.core.style.marker.ArrowMarker;
-	import org.openscales.core.style.marker.Marker;
+	import org.openscales.core.style.Style;
+	import org.openscales.core.style.graphic.Graphic;
 	import org.openscales.core.style.stroke.Stroke;
 	
 	public class ArrowSymbolizer extends LineSymbolizer
 	{
 		
 		/**
-		 * The marker that will be drawn at the left side of the line
+		 * The Style that will be drawn at the left side of the line
 		 */
-		private var _leftMarker:Marker;
+		private var _leftGraphic:Graphic;
 		
 		/**
-		 * The marker that will be drawn at the right side of the line
+		 * The Style that will be drawn at the right side of the line
 		 */
-		private var _rightMarker:Marker;
+		private var _rightGraphic:Graphic;
 		
-		public function ArrowSymbolizer(stroke:Stroke=null, leftMarker:Marker = null, rigthMarker:Marker = null)
+		public function ArrowSymbolizer(stroke:Stroke=null, leftGraphic:Graphic = null, rigthGraphic:Graphic = null)
 		{
-			this._leftMarker = leftMarker;
-			this._rightMarker = rigthMarker;
+			this._leftGraphic = leftGraphic;
+			this._rightGraphic = rigthGraphic;
 			super(stroke);
 		}
 		
 		/**
-		 * The marker that will be drawn at the left side of the line
+		 * The Style that will be drawn at the left side of the line
 		 * If you want your arrow in the continuity of the line be sure that 
-		 * the marker has the sharp part of the arrow oriented to the top
+		 * the Style has the sharp part of the arrow oriented to the top
 		 */
-		public function get leftMarker():Marker
+		public function get leftGraphic():Graphic
 		{
-			return this._leftMarker;
+			return this._leftGraphic;
 		}
 		
 		/**
 		 * @private
 		 */
-		public function set leftMarker(value:Marker):void
+		public function set leftGraphic(value:Graphic):void
 		{
-			this._leftMarker = value;
+			this._leftGraphic = value;
 		}
 		
 		/**
-		 * The marker that will be drawn at the right side of the line
+		 * The Style that will be drawn at the right side of the line
 		 * If you want your arrow in the continuity of the line be sure that 
-		 * the marker has the sharp part of the arrow oriented to the top
+		 * the Style has the sharp part of the arrow oriented to the top
 		 */
-		public function get rightMarker(): Marker
+		public function get rightGraphic(): Graphic
 		{
-			return this._rightMarker;
+			return this._rightGraphic;
 		}
 		
 		/**
 		 * @private
 		 */
-		public function set rightMarker(value:Marker):void
+		public function set rightGraphic(value:Graphic):void
 		{
-			this._rightMarker = value;
+			this._rightGraphic = value;
 		}
 		
 		override public function clone():Symbolizer{
-			var leftMarker:ArrowMarker;
-			var rightMarker:ArrowMarker;
-			if (this.leftMarker)
+			var leftGraphic:Graphic;
+			var rightGraphic:Graphic;
+			if (this.leftGraphic)
 			{
-				leftMarker = this.leftMarker.clone() as ArrowMarker;	
+				leftGraphic = this.leftGraphic.clone();	
 			}
-			if (this.rightMarker)
+			if (this.rightGraphic)
 			{
-				rightMarker = this.rightMarker.clone() as ArrowMarker;
+				rightGraphic = this.rightGraphic.clone();
 			}
-			var arrowSymb:ArrowSymbolizer = new ArrowSymbolizer(this.stroke.clone(), leftMarker,rightMarker);
+			var arrowSymb:ArrowSymbolizer = new ArrowSymbolizer(this.stroke.clone(), leftGraphic,rightGraphic);
 			arrowSymb.geometry = this.geometry;
 			return arrowSymb;
 		}

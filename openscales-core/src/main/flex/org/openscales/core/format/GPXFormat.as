@@ -2,13 +2,14 @@ package org.openscales.core.format
 {
 	import flash.utils.getQualifiedClassName;
 	
-	import org.openscales.core.utils.Util;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.core.feature.LineStringFeature;
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.UID;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.MultiLineString;
@@ -162,7 +163,7 @@ package org.openscales.core.format
 				if(featureName)
 				{
 					if(this._featuresids && this._featuresids.containsKey(featureName.toString()))
-						return null; 
+						featureName = null;
 				}
 
 				if (featureNode.localName() == "wpt" && this._extractWaypoints)
@@ -201,7 +202,9 @@ package org.openscales.core.format
 			
 				if(feature && featureName){
 					feature.name = featureName.toString();
-				}
+				} else if(feature && !featureName){
+					feature.name = UID.gen_uid();
+				} 
 				
 				if(feature && this._extractAttributes){
 					feature.attributes = this.parseAttributes(featureNode);
@@ -272,9 +275,15 @@ package org.openscales.core.format
 				else if (nodes[i].localName() == "desc")
 					this._description = nodes[i].toString();
 				else if(nodes[i].localName() == "author"){
-					this._author = nodes[i]..*::name[0].toString();
-					var emailNode:XML = nodes[i]..*::email[0];
-					this._authorEmail = String(emailNode..@id) + String(emailNode..@domain);
+					var nodess:XMLList = nodes[i].children();
+					for (var j:uint;j<nodess.length();j++){
+						if (nodess[j].localName() == "name"){
+							this._author = nodess[j].toString();
+						} else if (nodess[j].localName() == "email"){
+							this._authorEmail = String(nodess[j].@id) + String(nodess[j].@domain);
+						}
+					}
+
 				}
 				else if(nodes[i].localName() == "link")
 					this._fileURL = String(nodes[i]..@href);

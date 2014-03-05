@@ -134,11 +134,11 @@ package org.openscales.core.layer.capabilities
 			wmsLayer.displayedName = layerData.getValue("Title");
 			wmsLayer.version = "1.1.1";
 			wmsLayer.format = format;
-			wmsLayer.projection = srs;
+			wmsLayer.setProjection(srs);
 			wmsLayer.abstract = layerData.getValue("Abstract");
-			wmsLayer.maxExtent = layerData.getValue("EX_GeographicBoundingBox");
+			wmsLayer.setMaxExtent(layerData.getValue("EX_GeographicBoundingBox"));
 			wmsLayer.transparent = true;
-			wmsLayer.availableProjections = Vector.<String>(srss.split(","));
+			wmsLayer.setAvailableProjections(Vector.<String>(srss.split(",")));
 			return wmsLayer;
 		}
 		

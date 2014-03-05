@@ -180,6 +180,10 @@ package org.openscales.geometry
 				{
 					this._bounds = tmpBounds.reprojectTo(this._bounds.projection);
 				}
+				else
+				{
+					this._bounds = tmpBounds;
+				}
 			}
 		}
 		

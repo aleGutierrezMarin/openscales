@@ -114,6 +114,11 @@ package org.openscales.core.events
 		 public static const FEATURE_SHOW_INFORMATIONS:String="openscales.feature.showinformations";
 		 
 		 /**
+		  * Event type dispatched before a feature is drawn
+		  */
+		 public static const FEATURE_DRAWING_START:String="openscales.feature.drawingstart";
+		 
+		 /**
 		  * Event type dispatched when a feature is finished to be drawn
 		  */
 		 public static const FEATURE_DRAWING_END:String="openscales.feature.drawingend";
@@ -152,6 +157,7 @@ package org.openscales.core.events
 		 * Feature concerned by the event. If the event concerns multiple features, the first one is returned.
 		 */
 		public function get feature():Feature{
+			if(!_features || _features.length == 0) return null;
 			return this._features[0];
 		}
 		public function set feature(value:Feature):void{

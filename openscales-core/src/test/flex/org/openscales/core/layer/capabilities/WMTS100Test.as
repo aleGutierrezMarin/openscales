@@ -37,7 +37,8 @@ package org.openscales.core.layer.capabilities
 			assertTrue(layerCapabilities.containsKey("DefaultStyle"));
 			assertTrue(layerCapabilities.containsKey("TileMatrixSetsLimits"));
 			assertTrue(layerCapabilities.containsKey("Abstract"));
-			assertEquals(8,layerCapabilities.size());
+			assertTrue(layerCapabilities.containsKey("WGS84BoundingBox"));
+			assertEquals(9,layerCapabilities.size());
 			
 			//Getting tile matrix sets hashmap
 			var tileMatrixSets:HashMap = layerCapabilities.getValue("TileMatrixSets");

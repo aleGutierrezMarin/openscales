@@ -32,7 +32,7 @@ package org.openscales.core.layer
 	    						  bounds:Bounds
 								  ) {
 	        this.url = url;
-	        this.maxExtent = bounds;
+	        this.setMaxExtent(bounds);
 						
 	        super(name);
 			
