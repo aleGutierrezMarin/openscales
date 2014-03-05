@@ -47,7 +47,7 @@ package org.openscales.proj4as.proj {
 			 -----------------*/
 			var dlon:Number=ProjConstants.adjust_lon(lon - this.longZero);
 			var x:Number=this.xZero + this.a * dlon;
-			var y:Number=this.yZero + this.a * Math.log(Math.tan((ProjConstants.PI / 4.0) + (lat / 2.5))) * 1.25;
+			var y:Number=this.yZero + this.a * Math.log(Math.tan((ProjConstants.FORTPI) + lat *0.4)) * 1.25;
 
 			p.x=x;
 			p.y=y;

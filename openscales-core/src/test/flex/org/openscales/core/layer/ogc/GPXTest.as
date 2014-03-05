@@ -62,14 +62,14 @@ package org.openscales.core.layer.ogc
 			//adding two features with identical IDs is not allowed
 			//total of features: 4 points and 2 multiLineStrings
 			
-			Assert.assertEquals("There should be 6 valid features in this vector",6, features.length);
-			for (i = 0; i < 4; i++)
-				Assert.assertTrue("The first 4 components should be PointFeatures", features[i] is PointFeature);
-			for(i = 4; i < 6; i++)
+			Assert.assertEquals("There should be 7 valid features in this vector",7, features.length);
+			for (i = 0; i < 5; i++)
+				Assert.assertTrue("The first 5 components should be PointFeatures", features[i] is PointFeature);
+			for(i = 5; i < 7; i++)
 				Assert.assertTrue("The last 2 components should be MultiLineStringFeatures", features[i] is MultiLineStringFeature);
 			
 			
-			var multiLine:MultiLineString = (features[4] as MultiLineStringFeature).lineStrings;
+			var multiLine:MultiLineString = (features[5] as MultiLineStringFeature).lineStrings;
 			var line:Vector.<Geometry> = multiLine.getcomponentsClone();
 			
 			Assert.assertEquals("There should be one lineString in the first multiLine", 1, line.length);
@@ -98,7 +98,7 @@ package org.openscales.core.layer.ogc
 		public function shouldHaveLayerMaxExtentIfNoFeatures():void
 		{
 			var layer:GPX = new GPX("layer", "1.0");
-			layer.maxExtent = "-150,-20,160,10,EPSG:4326";
+			layer.setMaxExtent("-150,-20,160,10,EPSG:4326");
 			var map:Map = new Map();
 			map.addLayer(layer);
 			
@@ -121,14 +121,14 @@ package org.openscales.core.layer.ogc
 		
 		[Test]
 		public function shouldSetMaxExtentFromString():void{
-			_instance.maxExtent="-4.0,30.0,10.5,60.0,WGS84";
+			_instance.setMaxExtent("-4.0,30.0,10.5,60.0,WGS84");
 			assertTrue("Setting max extent from Bounds failed", _instance.maxExtent.projection== _instance.projection);
 		}
 		
 		[Test]
 		public function shouldSetMaxExtentFromBounds():void{
 			var bounds:Bounds = new Bounds(-4.0,30.0,10.5,60.0,"WGS84");
-			_instance.maxExtent=bounds;
+			_instance.setMaxExtent(bounds);
 			assertTrue("Setting max extent from Bounds failed", _instance.maxExtent.projection == _instance.projection);
 		}
 		

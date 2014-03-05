@@ -9,6 +9,7 @@ package org.openscales.core.request
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.proj4as.ProjProjection;
+	import org.openscales.core.json.GENERICJSON;
 	
 	/**
 	 * OpenLSRequest
@@ -505,20 +506,30 @@ package org.openscales.core.request
 			request += '<Request maximumResponses="'+this.maximumResponses+'" methodName="GeocodeRequest" requestID="'+this.id+'" version="'+this._version+'">';
 			request += '<GeocodeRequest>';
 			
-			if (this.freeFormAddress) {
+			if (this.freeFormAddress) 
+			{
 				request += '<Address countryCode="' + this.countryCode + '">';
 				request += '<freeFormAddress>' + this.freeFormAddress + '</freeFormAddress>';
 				request += this.createEnvelopeContent();
 				request += this.createPlaceFiltersContent();
 				request += '</Address>';
 			}
-			else {
+			else if (this.number || this.street || this.postalCode) 
+			{
 				request += '<Address countryCode="' + this.countryCode + '">';
 				request += '<StreetAddress><Building number="' + this.number  + '"/>'; 
 				request += '<Street>' + this.street + '</Street></StreetAddress>';
 				request += this.createEnvelopeContent();
 				request += this.createPlaceFiltersContent();
 				request += '<PostalCode>' + this.postalCode + '</PostalCode></Address>';				
+			}
+			else
+			{
+				request += '<Address countryCode="' + this.countryCode + '">';
+				request += '<freeFormAddress></freeFormAddress>';
+				request += this.createEnvelopeContent();
+				request += this.createPlaceFiltersContent();
+				request += '</Address>';
 			}
 			request += '</GeocodeRequest></Request></XLS>';
 			return request;
@@ -785,7 +796,7 @@ package org.openscales.core.request
 		 * @return a JSON string
 		 */
 		static public function resultsListtoJSON(resultsList:XMLList, version:String = "1.2"):String {
-			return JSON.stringify(OpenLSRequest.resultsListtoArray(resultsList, version));
+			return GENERICJSON.stringify(OpenLSRequest.resultsListtoArray(resultsList, version));
 		}
 		
 		/**

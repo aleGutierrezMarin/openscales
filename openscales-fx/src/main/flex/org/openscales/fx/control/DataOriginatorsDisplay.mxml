@@ -18,7 +18,7 @@
 			/**
 			 * The default value of time between two changes.
 			 */
-			public static var DEFAULT_TIME_CYCLE:uint=10000;
+			public static var DEFAULT_TIME_CYCLE:uint=1000;
 			
 			/**
 			 * The default logo displayed number.
@@ -451,6 +451,7 @@
 				horizontalCenter="0" verticalCenter="0" dataProvider="{_originator}"
 				itemRenderer="{new ClassFactory(this.itemRenderer)}"
 				contentBackgroundAlpha="0"
+				minWidth="50"
 				borderVisible="false" >
 			<s:layout>
 				<s:HorizontalLayout 

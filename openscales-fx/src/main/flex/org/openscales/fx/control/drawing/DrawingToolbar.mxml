@@ -24,6 +24,7 @@
 			public static const DRAWSHAPE:String="shape";
 			public static const DRAWPATH:String="path";
 			public static const DRAWPOLYGON:String="polygon";
+			public static const DRAWCIRCLE:String="circle";
 			public static const DRAWSELECT:String="select";
 			public static const DRAWDELETE:String="delete";
 			public static const DRAWEDIT:String="edit";
@@ -35,7 +36,7 @@
 			public static const EDITSTYLE:String="style";
 			
 			[Bindable]
-			private var _layer:VectorLayer;
+			public var _layer:VectorLayer;
 			private var _labelStyle:Style = Style.getDefinedLabelStyle("Arial",12,0,false,false);
 			private var _pointStyle:Style = Style.getDefaultPointStyle();
 			private var _pathStyle:Style = Style.getDefaultLineStyle();
@@ -55,7 +56,7 @@
 			
 			
 			[Bindable]
-			private var title:String = Catalog.getLocalizationForKey('drawing.toolbar');
+			public var title:String = Catalog.getLocalizationForKey('drawing.toolbar');
 			
 			
 			private function configure():void{
@@ -104,6 +105,10 @@
 					this.drawPolygon.buttonMode = false;
 					this.drawPolygon.useHandCursor = false;
 					this.drawPolygon.toolTip = Catalog.getLocalizationForKey('drawing.selectDrawingLayer');
+					
+					this.drawCircle.buttonMode = false;
+					this.drawCircle.useHandCursor = false;
+					this.drawCircle.toolTip = Catalog.getLocalizationForKey('drawing.selectDrawingLayer');
 					
 					this.selectFeatures.buttonMode = false;
 					this.selectFeatures.useHandCursor = false;
@@ -185,6 +190,8 @@
 						myComponent = this.drawPath;break;
 					case DRAWPOLYGON:
 						myComponent = this.drawPolygon;break;
+					case DRAWCIRCLE:
+						myComponent = this.drawCircle;break;
 					case DRAWSELECT:
 						myComponent = this.selectFeatures;break;
 					case DRAWDELETE:
@@ -464,6 +471,7 @@
 		<osDraw:DrawShape style="{this.shapeStyle}" map="{this.map}" id="drawShape" drawingMode="{this.mode}"/>
 		<osDraw:DrawPath style="{this.pathStyle}" map="{this.map}" id="drawPath" drawingMode="{this.mode}"/>
 		<osDraw:DrawPolygon style="{this.polygonStyle}" map="{this.map}" id="drawPolygon" drawingMode="{this.mode}"/>
+		<osDraw:DrawCircle style="{this.polygonStyle}" map="{this.map}" id="drawCircle" drawingMode="{this.mode}"/>
 		<osDraw:SelectFeatures fxMap="{this.fxMap}" map="{this.map}" clickout="{this.clickout}" hover="{this.hover}" toggle="{this.toggle}" id="selectFeatures" drawingMode="{this.mode}"/>
 		<osDraw:DeleteFeatures map="{this.map}" id="deleteFeatures" drawingMode="{this.mode}"/>
 		<osDraw:EditFeatures virtualStyle="{this.virtualStyle}" map="{this.map}" id="editFeatures" drawingMode="{this.mode}"/>

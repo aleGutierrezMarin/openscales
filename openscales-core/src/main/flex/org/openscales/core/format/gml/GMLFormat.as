@@ -2,29 +2,16 @@ package org.openscales.core.format.gml
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.utils.clearInterval;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.getTimer;
-	import flash.utils.setInterval;
-	import flash.xml.XMLNode;
 	
-	import org.openscales.core.utils.Util;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.feature.Feature;
-	import org.openscales.core.feature.LineStringFeature;
-	import org.openscales.core.feature.MultiLineStringFeature;
-	import org.openscales.core.feature.MultiPointFeature;
-	import org.openscales.core.feature.MultiPolygonFeature;
-	import org.openscales.core.feature.PointFeature;
-	import org.openscales.core.feature.PolygonFeature;
 	import org.openscales.core.format.Format;
 	import org.openscales.core.format.gml.parser.GML2Parser;
 	import org.openscales.core.format.gml.parser.GML311Parser;
 	import org.openscales.core.format.gml.parser.GML321Parser;
 	import org.openscales.core.format.gml.parser.GMLParser;
-	import org.openscales.geometry.Geometry;
-	import org.openscales.geometry.ICollection;
-	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiLineString;
 	import org.openscales.geometry.MultiPoint;
@@ -34,7 +21,6 @@ package org.openscales.core.format.gml
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjProjection;
 	
 	
 	/**
@@ -58,7 +44,7 @@ package org.openscales.core.format.gml
 		
 		private var projectionxml:String = "srsName=\"http://www.opengis.net/gml/srs/epsg.xml#4326\"";
 		
-		private var _version:String = "2.1.1";
+		private var _version:String = "";
 		
 		private var _gmlParser:GMLParser = null;
 		
@@ -93,21 +79,38 @@ package org.openscales.core.format.gml
 		}
 		
 		/**
-		 * Read data
+		 * Read data.
+		 * If the version parameter is not specified, this method define this parameter from the given data.
 		 *
 		 * @param data data to read/parse.
 		 *
 		 * @return features.
 		 */
-		override public function read(data:Object):Object {
-			if(!this._asyncLoading || this._version!="2.1.1") {
+		override public function read(data:Object):Object 
+		{
+			if (this._version == null || this._version == "")
+			{
+				var tempXML:XML = new XML(data);
+				if ((tempXML..*::featureMember as XMLList).length() > 0)
+					this._version = "2.1.1";
+				else if ((tempXML..*::featureMembers as XMLList).length() > 0)
+					this._version = "3.1.1";
+				else if ((tempXML..*::member as XMLList).length() > 0)
+					this._version = "3.1.2";
+				else if (tempXML.localName() == "msGMLOutput")
+					return this.read_msGMLOutput(data);
+			}
+			
+			if(!this._asyncLoading || this._version!="2.1.1") 
+			{
 				var dataXML:XML = new XML(data);
 				var features:XMLList;
 			}
 			
 			var lonlat:Boolean = true;
 			
-			switch (this._version) {
+			switch (this._version) 
+			{
 				case "2.1.1":
 					if(!this._gmlParser || !(this._gmlParser is GML2Parser))
 						this._gmlParser = new GML2Parser();
@@ -168,6 +171,62 @@ package org.openscales.core.format.gml
 			}
 			
 			return retFeatures;
+		}
+		
+		public function read_msGMLOutput(data:Object):Vector.<Feature>
+		{
+			var retFeatures:Vector.<Feature> = new Vector.<Feature>();
+			var dataXML:XML = new XML(data);
+			var layerListXML:XMLList = null;
+			
+			if (dataXML)
+			{
+				layerListXML = dataXML.children();
+				
+				if (layerListXML)
+				{
+					// Iterate on layers
+					for (var i:int = 0; i < layerListXML.length(); i++)
+					{
+						var xmlNodeLayer:XML = layerListXML[i];
+						var featureListXML:XMLList = xmlNodeLayer.children();
+						if (featureListXML)
+						{
+							// Iterate on features
+							for (var j:int = 0; j < featureListXML.length(); j++)
+							{
+								var feature:Feature = new Feature();
+								var xmlNodeFeature:XML = featureListXML[j];
+								feature.name = (xmlNodeFeature.localName() as String).split("_feature")[0];
+								feature.attributes = parseAttributes_msGMLOutput(xmlNodeFeature);
+								retFeatures.push(feature);
+							}
+						}
+					}
+				}
+			}
+			
+			return retFeatures;
+			
+		}
+		
+		private function parseAttributes_msGMLOutput(node:XML):Object
+		{
+			var attributes:Object = new Object();
+			var attrListXML:XMLList = node.children();
+			if (attrListXML)
+			{
+				for (var i:int = 0; i < attrListXML.length(); i++)
+				{
+					var attrXML:XML = attrListXML[i];
+					if (attrXML.name().toString().indexOf("gml:") == -1)
+					{
+						attributes[attrXML.localName()] = attrXML.toString();
+					}
+				}
+			}
+			
+			return attributes;
 		}
 		
 		

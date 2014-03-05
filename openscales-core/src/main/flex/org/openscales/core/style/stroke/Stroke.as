@@ -7,11 +7,15 @@ package org.openscales.core.style.stroke
 	
 	import mx.graphics.Stroke;
 	
+	import org.openscales.core.style.graphic.Graphic;
+	
 	/**
 	 * Class defining how a stroke is rendered
 	 */
 	public class Stroke
 	{
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		/**
 		 * Possible values for the linejoin of the stroke, i.e. how two segments of a line are connected
 		 */
@@ -36,18 +40,23 @@ package org.openscales.core.style.stroke
 		
 		private var _linejoin:String;
 		
-		private var _pWhiteSize:uint = 0;
-		private var _pDottedSize:uint = 0;
+		private var _dashArray:Array = null;
+		private var _dashoffset:uint = 0;
 		
-		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, pWhiteSize:uint = 0, pDottedSize:uint = 0)
+		/**
+		 * A "Stroke" specifies the appearance of a linear geometry.
+		 * The following parameters may be used: color, opacity, width, linejoin, linecap, dasharray, and dashoffset.
+		 */
+		
+		public function Stroke(color:uint = 0x000000, width:Number = 1, opacity:Number = 1, linecap:String = LINECAP_ROUND, linejoin:String = LINEJOIN_ROUND, dashArray:Array = null, dashoffset:uint = 0)
 		{
 			this._color = color;
 			this._width = width;
 			this._opacity = opacity;
 			this._linecap = linecap;
 			this._linejoin = linejoin;
-			this._pWhiteSize = pWhiteSize;
-			this._pDottedSize = pDottedSize;
+			this._dashArray = dashArray;
+			this._dashoffset = dashoffset;
 		}
 		
 		/**
@@ -110,31 +119,31 @@ package org.openscales.core.style.stroke
 		}
 		
 		/**
-		 * The size of the space between dots
+		 * The dashArray
 		 */
-		public function get pWhiteSize():uint{
+		public function get dashArray():Array{
 			
-			return this._pWhiteSize;
+			return this._dashArray;
 		}
-		public function set pWhiteSize(value:uint):void{
+		public function set dashArray(value:Array):void{
 			
-			this._pWhiteSize = value;
+			this._dashArray = value;
 		}
 		
 		/**
-		 * The size of the dots
+		 * The dots offeset
 		 */
-		public function get pDottedSize():uint{
+		public function get dashoffset():uint{
 			
-			return this._pDottedSize;
+			return this._dashoffset;
 		}
-		public function set pDottedSize(value:uint):void{
+		public function set dashoffset(value:uint):void{
 			
-			this._pDottedSize = value;
+			this._dashoffset = value;
 		}
 		
 		public function configureGraphics(graphics:Graphics):void{
-			
+			if(this.width>0) {
 				var linecap:String;
 				var linejoin:String;
 				switch (this.linecap) {
@@ -160,6 +169,7 @@ package org.openscales.core.style.stroke
 				}
 
 				graphics.lineStyle(this.width, this.color, this.opacity, false, LineScaleMode.NORMAL, linecap, linejoin);
+			}
 		}
 		
 		public function clone():Stroke
@@ -170,9 +180,79 @@ package org.openscales.core.style.stroke
 			cloneStroke.opacity = this._opacity;
 			cloneStroke.linecap = this._linecap;
 			cloneStroke.linejoin = this._linejoin;			
-			cloneStroke.pWhiteSize = this._pWhiteSize;
-			cloneStroke.pDottedSize = this._pDottedSize;
+			cloneStroke.dashArray = this._dashArray;
+			cloneStroke.dashoffset = this._dashoffset;
 			return cloneStroke;
+		}
+		
+		public function get sld():String {
+			var res:String = "<sld:Stroke>\n";
+			if(this.color) {
+				var stringColor:String = this.color.toString(16);
+				var spareStringColor:String = "";
+				for (var i:uint = 0; i < (6 - stringColor.length); i++)
+				{
+					spareStringColor += "0";
+				}
+				spareStringColor += stringColor;
+				
+				if(stringColor.length < 6)
+					stringColor = spareStringColor;
+				res+="<sld:CssParameter name=\"stroke\">#"+stringColor+"</sld:CssParameter>\n";
+			} else {
+				res+="<sld:CssParameter name=\"stroke\">#000000</sld:CssParameter>\n";
+			}
+			if(this.opacity!=1) {
+				res+="<sld:CssParameter name=\"stroke-opacity\">"+this.opacity+"</sld:CssParameter>\n";
+			}
+			if(this.width) {
+				res+="<sld:CssParameter name=\"stroke-width\">"+this.width+"</sld:CssParameter>\n";
+			}
+			if(this.linecap) {
+				res+="<sld:CssParameter name=\"stroke-linecap\">"+this.linecap+"</sld:CssParameter>\n";
+			}
+			if(this.linejoin) {
+				res+="<sld:CssParameter name=\"stroke-linejoin\">"+this.linejoin+"</sld:CssParameter>\n";
+			}
+			if(this.dashArray && this.dashArray.length>0) {
+				res+="<sld:CssParameter name=\"stroke-dasharray\">"+this.dashArray.join(" ").replace(".0","")+"</sld:CssParameter>\n";
+				if(this.dashoffset) {
+					res+="<sld:CssParameter name=\"stroke-dashoffset\">"+this.dashoffset+"</sld:CssParameter>\n";
+				}
+			}
+			res+="</sld:Stroke>\n"
+			return res;
+		}
+		public function set sld(sld:String):void {
+			this.color = 0;
+			this.opacity = 1;
+			this.width = 1;
+			this._linecap = null;
+			this._linejoin = null;
+			this._dashArray = null;
+			this._dashoffset = 0;
+			
+			use namespace sldns;
+			var dataXML:XML = new XML(sld);
+			var childs:XMLList = dataXML.CssParameter;
+			
+			for each(var node:XML in childs) {
+				if(node.@name == "stroke") {
+					this._color = parseInt(node[0].toString().replace("#",""),16);
+				} else if(node.@name == "stroke-opacity") {
+					this._opacity = Number(node[0].toString());
+				} else if(node.@name == "stroke-width") {
+					this._width = Number(node[0].toString());
+				}else if(node.@name == "stroke-linecap") {
+					this._linecap = node[0].toString();
+				} else if(node.@name == "stroke-linejoin") {
+					this._linejoin = node[0].toString();
+				} else if(node.@name == "stroke-dasharray") {
+					this._dashArray = node[0].toString().split(" ");
+				} else if(node.@name == "stroke-dashoffset") {
+					this._dashoffset = Number(node[0].toString());
+				}
+			}
 		}
 	}
 }

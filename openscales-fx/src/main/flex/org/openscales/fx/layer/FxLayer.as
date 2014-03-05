@@ -60,7 +60,7 @@ package org.openscales.fx.layer
 		public function configureLayer():Layer {
 			
 			if(this._projection)
-				this._layer.projection = this._projection;
+				this._layer.setProjection(this._projection);
 			
 			this.generateResolutions();
 			
@@ -86,7 +86,7 @@ package org.openscales.fx.layer
 				this._layer.maxResolution = this.maxResolution;
 			
 			if(this._maxExtent) {
-				this._layer.maxExtent = this._maxExtent;
+				this._layer.setMaxExtent(this._maxExtent);
 				this._maxExtent = null;
 			}
 			
@@ -261,14 +261,14 @@ package org.openscales.fx.layer
 				if(value is Bounds) {
 					this._maxExtent = value as Bounds;
 					if(this._layer)
-						this._layer.maxExtent = this._maxExtent;
+						this._layer.setMaxExtent(this._maxExtent);
 				} else if (value is String) {
 					var length:Number = (value.split(",")).length;
 					var newExtent:Bounds;
 					if(length == 4)
 					{
 						if(this._layer)
-							this._layer.maxExtent = Bounds.getBoundsFromString(value+",EPSG:4326");
+							this._layer.setMaxExtent(Bounds.getBoundsFromString(value+",EPSG:4326"));
 						else if(this._projection)
 							this._maxExtent = Bounds.getBoundsFromString(value+",EPSG:4326");
 					}
@@ -277,7 +277,7 @@ package org.openscales.fx.layer
 						this._maxExtent = Bounds.getBoundsFromString(value);
 						
 						if(this._layer)
-							this._layer.maxExtent = this._maxExtent;
+							this._layer.setMaxExtent(this._maxExtent);
 					}
 				}
 			}
@@ -447,7 +447,7 @@ package org.openscales.fx.layer
 			
 			this._projection = ProjProjection.getProjProjection(value);
 			if(this._layer) {
-				this._layer.projection = this._projection;
+				this._layer.setProjection(this._projection);
 			}
 		}
 		
@@ -465,7 +465,7 @@ package org.openscales.fx.layer
 		public function set availableProjections(value:*):void {
 		
 			if(this._layer) {
-				this._layer.availableProjections = value;
+				this._layer.setAvailableProjections(value);
 			}
 		}
 		

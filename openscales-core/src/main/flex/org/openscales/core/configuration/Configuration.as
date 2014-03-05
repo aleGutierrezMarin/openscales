@@ -32,8 +32,7 @@ package org.openscales.core.configuration
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
-	import org.openscales.core.style.marker.Marker;
-	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
@@ -329,9 +328,9 @@ package org.openscales.core.configuration
 						// We create the WMSC Layer with all params
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
 						wmscLayer.visible=visible;
-						wmscLayer.projection = projection;
+						wmscLayer.setProjection(projection);
 						if (String(config.@maxExtent) != "")
-							wmscLayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projection);
+							wmscLayer.setMaxExtent(Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projection));
 						wmscLayer.params = paramsWms;
 						layer = wmscLayer;
 						if (method!=null) {
@@ -345,9 +344,9 @@ package org.openscales.core.configuration
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
 						wmslayer.visible = visible;
-						wmslayer.projection = projection;  
+						wmslayer.setProjection(projection);  
 						if (String(config.@maxExtent) != "")
-							wmslayer.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projection);
+							wmslayer.setMaxExtent(Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projection));
 						wmslayer.params = paramsWms;
 						layer=wmslayer;
 						break;
@@ -394,7 +393,7 @@ package org.openscales.core.configuration
 				wfsLayer.visible = visible;
 				wfsLayer.useCapabilities = useCapabilities;
 				wfsLayer.capabilities = capabilities;
-				wfsLayer.projection = projection;
+				wfsLayer.setProjection(projection);
 				
 				if(String(xmlNode.@style) !="")
 				{
@@ -435,7 +434,7 @@ package org.openscales.core.configuration
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					mapnik.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+mapnik.projection);
+					mapnik.setMaxExtent(Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+mapnik.projection));
 				layer=mapnik;
 			}
 			else if(xmlNode.name() == "CycleMap"){
@@ -443,13 +442,13 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var cycleMap:CycleMap=new CycleMap(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					cycleMap.maxExtent = Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projection);
+					cycleMap.setMaxExtent(Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projection));
 				layer=cycleMap;
 			}
 			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
 				var featurelayer:VectorLayer = new VectorLayer(name);
-				featurelayer.projection = projection;
+				featurelayer.setProjection(projection);
 				layer = featurelayer;
 			} else {
 				// Case when the layer is unknown
@@ -525,7 +524,6 @@ package org.openscales.core.configuration
 			
 			var xmlMakers:XMLList = xmlSymbolizer.*;
 			var poinSymbolizer:PointSymbolizer;
-			var marker:Marker;
 			
 			if(xmlMakers.name() =="WellKnownMarker"){
 				var fill:SolidFill = null;
@@ -537,12 +535,15 @@ package org.openscales.core.configuration
 						stroke = new Stroke(fillAndStroke.@color,fillAndStroke.@width,fillAndStroke.@opacity,fillAndStroke.@linecap,fillAndStroke.@linejoin);
 					}
 				}
-				marker = new WellKnownMarker(xmlMakers.@wellKnowName,null,null,Number(xmlMakers.@size),xmlMakers.@opacity,xmlMakers.@rotation);
-				poinSymbolizer = new PointSymbolizer(marker);
+				poinSymbolizer = new PointSymbolizer();
+				poinSymbolizer.graphic.graphics.push(new Mark(xmlMakers.@wellKnowName,fill,stroke));
+				poinSymbolizer.graphic.opacity = xmlMakers.@opacity;
+				poinSymbolizer.graphic.rotation = xmlMakers.@rotation;
 				
 			}else if(xmlMakers.name() =="Marker"){
-				marker = new Marker(Number(xmlMakers.@size),xmlMakers.@opacity,xmlMakers.@rotation);
-				poinSymbolizer = new PointSymbolizer(marker);
+				poinSymbolizer.graphic.graphics.push(new Mark(Mark.WKN_SQUARE));
+				poinSymbolizer.graphic.opacity = xmlMakers.@opacity;
+				poinSymbolizer.graphic.rotation = xmlMakers.@rotation;
 			}
 			return poinSymbolizer;
 		}

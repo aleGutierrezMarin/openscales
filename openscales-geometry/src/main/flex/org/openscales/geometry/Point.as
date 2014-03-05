@@ -33,7 +33,10 @@ package org.openscales.geometry
 		 * */
 		override public function clone():Geometry{
 			var returnedValue:Point = new Point(this._x,this._y, this.projection);
-			returnedValue._bounds = this._bounds;
+			if(this._bounds)
+				returnedValue._bounds = this._bounds.clone();
+			else 
+				returnedValue._bounds = null;
 			return returnedValue;
 		}
 		

@@ -110,13 +110,14 @@ package org.openscales.core.events
 		{
 			// Given a map
 			this._map = new Map();
+			this._map.DIG_BACK_MAX_DEPTH = 0;
 			
 			_layer1 = new WMS("Layer 1", URL, LAYERS, "", FORMAT);
 			_layer2 = new WMS("Layer 2", URL, LAYERS, "", FORMAT);
 			_layer3 = new WMS("Layer 3", URL, LAYERS, "", FORMAT);
 			
 			this._handler = Async.asyncHandler(this,assertDispatchLayersLoadEndWhenLayersStopLoading,
-				15000,null,noEventReceived);
+				60000,null,noEventReceived);
 			
 			// When the LAYERS_LOAD_START is dispatched
 			this._map.addEventListener(MapEvent.LAYERS_LOAD_END,this._handler);

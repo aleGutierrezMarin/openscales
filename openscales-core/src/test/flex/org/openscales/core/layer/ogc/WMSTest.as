@@ -112,7 +112,7 @@ package org.openscales.core.layer.ogc
 			_map.center = new Location(0,0);
 			_map.resolution =  new Resolution(1.40625,"EPSG:4326");
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
-			_wms.maxExtent = MAXEXTENT;
+			_wms.setMaxExtent(MAXEXTENT);
 			_wms.version = VERSION;
 			_wms.tiled = true;
 			
@@ -183,7 +183,7 @@ package org.openscales.core.layer.ogc
 			_map.resolution = new Resolution(1.40625,"EPSG:4326");
 			
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
-			_wms.maxExtent = MAXEXTENT;
+			_wms.setMaxExtent(MAXEXTENT);
 			_wms.version = VERSION;
 			_wms.tiled = true;
 			
@@ -259,15 +259,15 @@ package org.openscales.core.layer.ogc
 			_map.resolution = new Resolution(1.40625,"EPSG:4326");
 			
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
-			_wms.maxExtent = MAXEXTENT;
+			_wms.setMaxExtent(MAXEXTENT);
 			_wms.version = VERSION;
 			_wms.tiled = true;
-			_wms.projection = "EPSG:3857";
+			_wms.setProjection("EPSG:3857");
 			
 			var aProj:Vector.<String> = new Vector.<String>();
 			aProj.push("EPSG:3857");
 			aProj.push("EPSG:4326");
-			_wms.availableProjections = aProj;
+			_wms.setAvailableProjections(aProj);
 			
 			_map.addLayer(_wms);
 			
@@ -289,7 +289,7 @@ package org.openscales.core.layer.ogc
 			_map.center = new Location(5, 2);
 			_map.maxExtent = new Bounds(-180, -90, 10, 10, "EPSG:4326");
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
-			_wms.maxExtent = new Bounds(-10, -10, 180, 90, "EPSG:4326");
+			_wms.setMaxExtent(new Bounds(-10, -10, 180, 90, "EPSG:4326"));
 			_wms.version = VERSION;
 			_wms.tiled = false;
 
@@ -332,7 +332,7 @@ package org.openscales.core.layer.ogc
 			_map.addLayer(_dummyMaxExtent);*/
 			
 			_wms = new WMS(NAME, URL, LAYERS, "", FORMAT);
-			_wms.maxExtent = new Bounds(-180, -90, 180, 90, "EPSG:4326");
+			_wms.setMaxExtent(new Bounds(-180, -90, 180, 90, "EPSG:4326"));
 			_wms.version = VERSION;
 			_wms.tiled = false;
 			

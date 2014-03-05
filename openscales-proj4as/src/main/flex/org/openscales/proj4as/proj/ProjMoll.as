@@ -1,8 +1,8 @@
 package org.openscales.proj4as.proj {
 
-	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
+	import org.openscales.proj4as.ProjConstants;
+	import org.openscales.proj4as.ProjPoint;
 
 	/**
 	 <p>MOLLWEIDE projection</p>
@@ -77,29 +77,30 @@ package org.openscales.proj4as.proj {
 			/* Inverse equations
 			 -----------------*/
 			p.x-=this.xZero;
-			//~ p.y -= this.y0;
+			p.y-= this.yZero;
 			arg=p.y / (1.4142135623731 * this.a);
 
 			/* Because of division by zero problems, 'arg' can not be 1.0.  Therefore
 			   a number very close to one is used instead.
 			 -------------------------------------------------------------------*/
-			if (Math.abs(arg) > 0.999999999999)
-				arg=0.999999999999;
-			theta=Math.asin(arg);
-			var lon:Number=ProjConstants.adjust_lon(this.longZero + (p.x / (0.900316316158 * this.a * Math.cos(theta))));
-			if (lon < (-ProjConstants.PI))
-				lon=-ProjConstants.PI;
-			if (lon > ProjConstants.PI)
-				lon=ProjConstants.PI;
-			arg=(2.0 * theta + Math.sin(2.0 * theta)) / ProjConstants.PI;
-			if (Math.abs(arg) > 1.0)
-				arg=1.0;
-			var lat:Number=Math.asin(arg);
-			//return(OK);
+			//if (Math.abs(arg) > 0.999999999999)
+			//	arg=0.999999999999;
+			if (Math.abs(arg-1.0)<ProjConstants.EPSLN) {
+				p.x=this.longZero;
+				p.y=ProjConstants.HALF_PI;
+				return p;
+			} else if (Math.abs(arg+1.0)<ProjConstants.EPSLN) {
+				p.x=this.longZero;
+				p.y=-1.0*ProjConstants.HALF_PI;
+				return p;
+			} else {
+				theta=Math.asin(arg);
+				p.x=ProjConstants.adjust_lon(this.longZero + (p.x / (0.900316316158 * this.a * Math.cos(theta))));
+				arg=(2.0 * theta + Math.sin(2.0 * theta)) / ProjConstants.PI;
+				p.y=Math.asin(arg);
+				return p;
+			}
 
-			p.x=lon;
-			p.y=lat;
-			return p;
 		}
 
 	}

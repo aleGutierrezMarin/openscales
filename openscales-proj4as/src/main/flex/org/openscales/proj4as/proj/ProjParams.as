@@ -32,7 +32,8 @@ package org.openscales.proj4as.proj {
 		
 		public var datumCode:String;
 		public var datumName:String;
-		public var nagrids:String;
+		public var nadgrids:String;
+		public var grids:Object;
 		public var ellps:String;
 		public var a:Number;
 		public var b:Number;
@@ -43,15 +44,17 @@ package org.openscales.proj4as.proj {
 		public var epTwo:Number;
 		public var rf:Number;
 		public var longZero:Number;
+		public var longOne:Number;
+		public var longTwo:Number;
 		public var latZero:Number;
 		public var latOne:Number;
 		public var latTwo:Number;
 		public var lat_ts:Number;
 		public var alpha:Number;
 		public var longc:Number;
-		public var xZero:Number;
-		public var yZero:Number;
-		public var kZero:Number;
+		public var xZero:Number=0.0;
+		public var yZero:Number=0.0;
+		public var kZero:Number=1.0;
 		public var k:Number;
 		public var R_A:Boolean=false;
 		public var zone:int;
@@ -61,6 +64,9 @@ package org.openscales.proj4as.proj {
 		public var datum_params:Array;
 		public var sphere:Boolean=false;
 		public var ellipseName:String;
+		public var no_rot:Boolean=false;
+		public var gamma:Number;
+		public var no_off:Boolean=false;
 
 		public var srsCode:String;
 		public var srsAuth:String;

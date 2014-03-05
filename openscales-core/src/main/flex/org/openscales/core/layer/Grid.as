@@ -14,6 +14,7 @@ package org.openscales.core.layer
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.params.IHttpParams;
 	import org.openscales.core.tile.ImageTile;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -131,7 +132,7 @@ package org.openscales.core.layer
 			if (!this.map.mapInitialized)
 				return;
 
-			if (!available || !this.visible)
+			if (!available || !this.visible || !this.displayed )
 			{
 				this.clear();
 				this._initialized = false;
@@ -466,6 +467,7 @@ package org.openscales.core.layer
 									_backGrid[i][j].scaleX *= 1/(this.scaleX * this.grid[i][j].scaleX);
 									this.grid[i][j].addChildAt(_backGrid[i][j], 0);
 									this.grid[i][j].drawn = true;
+									this.refreshTile(this.grid[i][j]);
 									this.addChild(grid[i][j]);
 									}
 								}
@@ -476,7 +478,14 @@ package org.openscales.core.layer
 				this.moveGriddedTiles(bounds);
 				this.actualizeGridSize(bounds);
 			} 
-			
+		}
+		
+		/**
+		 * Method to refresh a tile on actualize.
+		 * Each layer format need to override this method to refresh it depending on its needs
+		 */
+		public function refreshTile(tile:ImageTile):void {
+			return;
 		}
 		
 		/**
@@ -785,7 +794,7 @@ package org.openscales.core.layer
 			var i:int;
 			var len:int;
 			var ratioSeeker:Number;
-			if (finest)
+			if (_finest)
 			{
 				if(!this.resolutions)
 					return new Resolution(0);
@@ -1448,31 +1457,53 @@ package org.openscales.core.layer
 		 */
 		override protected function checkAvailability():Boolean
 		{
+
 			if(!super.checkAvailability()) {
 				return false;
 			}
+			
 			//Parsing available projections for the layer
 			if(this.availableProjections) {
+				
 				var proj:ProjProjection;
+				
+				var stretchableProjection:ProjProjection = null;
+				
 				for each(var projCode:String in this.availableProjections) {
-					proj=ProjProjection.getProjProjection(projCode);
+					
+					proj = ProjProjection.getProjProjection(projCode);
+					
 					if(ProjProjection.isEquivalentProjection(proj,this.map.projection)) {
 						if(!ProjProjection.isEquivalentProjection(this.projection, proj)) {
 							//Changing layer projection
-							this.projection = proj;
+							this.setProjection(proj);
 							return true;
 						} else {
 							//Layer projection is already Map projection
 							return true;
 						}
 					}
+					
+					if (ProjProjection.isStretchable(proj, this.map.projection)) {
+						
+						stretchableProjection = proj;
+					}
+					
 				}
-			} else {
-				//Available projections is not set for this layer
-				//try simple comparison
-				if(ProjProjection.isEquivalentProjection(this.projection,this.map.projection)) {
+				
+				// If no compatible projection was found BUT a stretchable projection is available,
+				// we return this one
+				if (stretchableProjection != null && !ProjProjection.isEquivalentProjection(this.projection, stretchableProjection) ) {
+					this.setProjection(stretchableProjection);
 					return true;
 				}
+				
+			}
+			
+			//Available projections is not set for this layer
+			//try simple comparison
+			if(ProjProjection.isEquivalentProjection(this.projection,this.map.projection)) {
+				return true;
 			}
 			
 			//Otherwise, try to stretch the layer
@@ -1531,6 +1562,11 @@ package org.openscales.core.layer
 			}
 		}
 
+		/**
+		 * Used to decide which resolution to request among available resolutions array. If <code>true</code>, finest resolution will be requested. 
+		 * 
+		 * @default true
+		 */ 
 		public function get finest():Boolean
 		{
 			return _finest;

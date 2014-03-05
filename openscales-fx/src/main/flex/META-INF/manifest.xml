@@ -104,6 +104,7 @@
 	<component id="RemoveLayerButton" class="org.openscales.fx.control.layer.RemoveLayerButton" />
 	
 	<!-- Drawing tools -->
+	<component id="DrawCircle" class="org.openscales.fx.control.drawing.DrawCircle" />
 	<component id="DrawLabel" class="org.openscales.fx.control.drawing.DrawLabel" />
 	<component id="DrawPoint" class="org.openscales.fx.control.drawing.DrawPoint" />
 	<component id="DrawPath" class="org.openscales.fx.control.drawing.DrawPath" />

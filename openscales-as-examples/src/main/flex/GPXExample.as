@@ -34,11 +34,11 @@ package
 			//Trace.useFireBugConsole = true;
 			_map=new Map();
 			_map.size=new Size(1200, 700);
-			_map.projection = "EPSG:4326";
+			_map.setProjection("EPSG:4326");
 			
 			// Add layers to map
 			var mapnik:Mapnik=new Mapnik("Mapnik"); // a base layer
-			mapnik.maxExtent = new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection);		
+			mapnik.setMaxExtent(new Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34,mapnik.projection));		
 			_map.addLayer(mapnik);
 			
 			

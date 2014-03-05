@@ -67,7 +67,7 @@ package org.openscales.proj4as.proj {
 			this.datum=source.datum;
 			this.datumCode=source.datumCode;
 			this.datumName=source.datumName;
-			this.nagrids=source.nagrids;
+			this.nadgrids=source.nadgrids;
 			this.ellps=source.ellps;
 			this.a=source.a;
 			this.b=source.b;
@@ -78,6 +78,8 @@ package org.openscales.proj4as.proj {
 			this.epTwo=source.epTwo;
 			this.rf=source.rf;
 			this.longZero=source.longZero;
+			this.longOne=source.longOne;
+			this.longTwo=source.longTwo;
 			this.latZero=source.latZero;
 			this.latOne=source.latOne;
 			this.latTwo=source.latTwo;
@@ -96,6 +98,8 @@ package org.openscales.proj4as.proj {
 			this.datum_params=source.datum_params;
 			this.sphere=source.sphere;
 			this.ellipseName=source.ellipseName;
+			this.no_rot=source.no_rot;
+			this.no_off=source.no_off;
 
 			this.srsCode=source.srsCode;
 			this.srsAuth=source.srsAuth;

@@ -28,9 +28,7 @@ package org.openscales.core.security
 
 		public function AbstractSecurity(map:Map)
 		{
-			this._map = map;
-			this._map.addSecurity(this);
-			this.initialize();
+			this.map = map;
 		}
 
 		public function destroy():void {
@@ -74,6 +72,10 @@ package org.openscales.core.security
 
 		public function set map(value:Map):void {
 			this._map = value;
+			if(this._map) {
+				this._map.addSecurity(this);
+				this.initialize();
+			}
 		}
 		
 		/**

@@ -14,5 +14,8 @@ package org.openscales.core.style.fill {
 		function configureGraphics(graphics:Graphics, feature:Feature):void;
 		
 		function clone():Fill;
+		
+		function get sld():String;
+		function set sld(sld:String):void;
 	}
 }

@@ -372,7 +372,7 @@ package org.openscales.core.layer.ogc
 				this._capabilities = caller.getLayerCapabilities(this.params.typename);
 			}
 			if ((this._capabilities != null) && (this.projection == null || this.useCapabilities)) {
-				this.projection = this._capabilities.getValue("SRS");
+				this.setProjection(this._capabilities.getValue("SRS"));
 				//Setting availableProjections
 				var aProj:Vector.<String> = new Vector.<String>();
 				aProj.push(this._capabilities.getValue("SRS"));
@@ -382,7 +382,7 @@ package org.openscales.core.layer.ogc
 						aProj.push(oSrs);
 					}
 				}
-				this.availableProjections = aProj;
+				this.setAvailableProjections(aProj);
 				
 				if(this.map)
 					this.redraw(true);
@@ -434,8 +434,8 @@ package org.openscales.core.layer.ogc
 		 * @param the xml corresponding to the wfs response
 		 */
 		public function parseResponse(wfsResponse:String):void{
-			this._gmlFormat.externalProjection = this.projection;
-			this._gmlFormat.internalProjection = this.projection;
+			this._gmlFormat.setExternalProjection( this.projection);
+			this._gmlFormat.setInternalProjection(this.projection);
 			this._gmlFormat.read(wfsResponse);
 			//this._wfsFormat.read(wfsResponse);
 		}
@@ -519,7 +519,7 @@ package org.openscales.core.layer.ogc
 		public function set useCapabilities(value:Boolean):void {
 			this._useCapabilities = value;
 			if (value)
-				this.projection = null;
+				this.setProjection(null);
 			this.available = this.checkAvailability();
 		}
 		

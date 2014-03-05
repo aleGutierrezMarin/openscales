@@ -13,6 +13,11 @@ package org.openscales.core.events
 		public static const AUTOCOMPLETE_END:String="openscales.autocompletesearch";
 		
 		/**
+		 * Event type dispatched when a geocode with completion search is finished.
+		 */ 
+		public static const GEOCODE_AUTOCOMPLETE_END:String="openscales.autocompletesearch";
+		
+		/**
 		 * Event type dispatched when an OpenLS search is finished.
 		 */
 		public static const SEARCH_END:String="openscales.openlssearch";

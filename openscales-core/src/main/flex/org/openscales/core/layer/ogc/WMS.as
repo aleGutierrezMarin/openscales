@@ -87,13 +87,29 @@ package org.openscales.core.layer.ogc
 		 */
 		protected var _layers:String;
 		
-		
-		
 		/**
 		 * @private
 		 * Indicate if the map is reprojected
 		 */
 		private var _reproject:Boolean = true;
+		
+		/**
+		 * @private
+		 * INFO_FORMAT parameter for GetFeatureInfo request.
+		 */
+		private var _getFeatureInfoFormat:String;
+		
+		/**
+		 * @private
+		 * EXCEPTIONS optional parameter for GetFeatureInfo request
+		 */
+		private var _getFeatureInfoExceptionFormat:String;
+		
+		/**
+		 * @private
+		 * FEATURE_COUNT optional parameter for GetFeatureInfo request
+		 */
+		private var _getFeatureInfoFeatureCount:int = 0;
 
 		/**
 		 * Constructor of the class
@@ -365,9 +381,9 @@ package org.openscales.core.layer.ogc
 		/**
 		 * @private
 		 */
-		override public function set projection (value:*):void
+		override public function setProjection(value:Object):void
 		{
-			super.projection = value;
+			super.setProjection(value);
 			
 			// Update the tileProvider projection at the same time
 			if(this._tileProvider != null){
@@ -489,12 +505,64 @@ package org.openscales.core.layer.ogc
 						aProj.push(oSrs);
 					}
 				}*/
-				this.availableProjections = aProj;
+				this.setAvailableProjections(aProj);
 				
 				if(this.map)
 					this.redraw(true);
 			}
 		}
+
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get useNoDataTile():Boolean
+		{
+			return _tileProvider.useNoDataTile;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set useNoDataTile(value:Boolean):void
+		{
+			_tileProvider.useNoDataTile = value;
+		}
+		
+		/**
+		 * Get INFO_FORMAT parameter.
+		 */
+		public function get getFeatureInfoFormat():String
+		{
+			return _getFeatureInfoFormat;
+		}
+		
+		public function set getFeatureInfoFormat(value:String):void
+		{
+			this._getFeatureInfoFormat = value;
+		}
+		
+		public function get getFeatureInfoExceptionFormat():String
+		{
+			return _getFeatureInfoExceptionFormat;
+		}
+		
+		public function set getFeatureInfoExceptionFormat(value:String):void
+		{
+			this._getFeatureInfoExceptionFormat = value;
+		}
+		
+		public function get getFeatureInfoFeatureCount():int
+		{
+			return _getFeatureInfoFeatureCount;
+		}
+		
+		public function set getFeatureInfoFeatureCount(value:int):void
+		{
+			this._getFeatureInfoFeatureCount = value;
+		}
+
 	}
 }
 

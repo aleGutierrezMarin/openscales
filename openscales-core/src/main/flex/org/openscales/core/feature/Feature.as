@@ -9,11 +9,14 @@ package org.openscales.core.feature {
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.Symbolizer;
 	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.ProjProjection;
 
 	/** 
@@ -57,7 +60,7 @@ package org.openscales.core.feature {
 		protected var _originGeometry:Geometry = null;
 		private var _state:String = null;
 		private var _style:Style = null;
-		private var _originalStyle:Style = null;
+		protected var _originalStyle:Style = null;
 		private var _selectable:Boolean = true;
 		
 		private var _mouseDown:Boolean = false;
@@ -157,9 +160,9 @@ package org.openscales.core.feature {
 		 * Register all the events used in this class
 		 */
 		public function registerListeners():void {
-			this.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseHover);
-			this.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
-			//this.addEventListener(MouseEvent.CLICK, this.onMouseClick);
+			this.addEventListener(MouseEvent.ROLL_OVER, this.onMouseHover);
+			this.addEventListener(MouseEvent.ROLL_OUT, this.onMouseOut);
+			this.addEventListener(MouseEvent.CLICK, this.onMouseClick);
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, this.onMouseDoubleClick);
 			this.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 			this.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
@@ -170,9 +173,9 @@ package org.openscales.core.feature {
 		 * Unregister all the events used in this class
 		 */
 		public function unregisterListeners():void {
-			this.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseHover);
-			this.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
-			//this.removeEventListener(MouseEvent.CLICK, this.onMouseClick);
+			this.removeEventListener(MouseEvent.ROLL_OVER, this.onMouseHover);
+			this.removeEventListener(MouseEvent.ROLL_OUT, this.onMouseOut);
+			this.removeEventListener(MouseEvent.CLICK, this.onMouseClick);
 			this.removeEventListener(MouseEvent.DOUBLE_CLICK, this.onMouseDoubleClick);
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 			this.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
@@ -217,12 +220,15 @@ package org.openscales.core.feature {
 		 * Inherited Feature classes usually override this function.
 		 */
 		public function draw():void {
-
+			
 			this.graphics.clear();
 			while (this.numChildren > 0) {
 				this.removeChildAt(0);
 			}
-
+			
+			if(!this.layer || !this.layer.map)
+				return;
+			
 			var style:Style;
 			if (this._style == null) {
 				// FIXME : Ugly thing done here
@@ -234,8 +240,16 @@ package org.openscales.core.feature {
 			// Storage variables to handle the rules to render if no rule applied to the feature
 			var rendered:Boolean = false;
 			var elseRules:Array = [];
-
+			
+			var scaleDem:Number = Unit.getScaleDenominatorFromResolution(this.layer.map.resolution.value,this.layer.map.resolution.projection.projParams.units);
+			
 			for each (var rule:Rule in style.rules) {
+				if(!isNaN(rule.minScaleDenominator) && rule.minScaleDenominator>scaleDem) {
+					continue;
+				}
+				if(!isNaN(rule.maxScaleDenominator) && rule.maxScaleDenominator<scaleDem) {
+					continue;
+				}
 				// If a filter is set and no rule matches the filter skip the rule
 				if (rule.filter != null) {
 					if (rule.filter is ElseFilter) {
@@ -317,6 +331,58 @@ package org.openscales.core.feature {
 		protected function executeDrawing(symbolizer:Symbolizer):void {
 		}
 
+		protected function dottedTo(px1:Pixel, px2:Pixel, stroke:Stroke):void
+		{
+			var dx:Number = px2.x - px1.x;
+			var dy:Number = px2.y - px1.y;
+			var dist:Number = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+			var angle:Number = Math.atan2(dy, dx) * 180 / Math.PI;
+			
+			var tempPixel:Pixel = px1.clone();
+			this.graphics.moveTo(tempPixel.x, tempPixel.y);
+			var cos:Number = Math.cos(angle / 180 * Math.PI);
+			var sin:Number = Math.sin(angle / 180 * Math.PI);
+			var num:uint = stroke.dashArray.length;
+			var i:uint = 0;
+			var l:Number;
+			var dcap:Number = 0;
+			if(stroke.linecap==Stroke.LINECAP_ROUND||stroke.linecap==Stroke.LINECAP_SQUARE) {
+				dcap = stroke.width;
+			}
+			var move:Boolean;
+			while (dist > 0)
+			{
+				move=(i%2==1);
+				l = Math.abs(stroke.dashArray[i]);
+				dist -= l;
+				if(!move) {
+					if(l>dcap) {
+						l-=dcap;
+					} else if (l==dcap) {
+						l=1;
+						dist-=1;
+					} else {
+						move=true;
+					}
+				}
+				if (dist < 0){
+					tempPixel.x = px2.x;
+					tempPixel.y = px2.y;
+				}
+				else{
+					tempPixel.x += (l * cos);
+					tempPixel.y += (l * sin);
+				}
+				if(move) {
+					this.graphics.moveTo(tempPixel.x, tempPixel.y);
+				} else {
+					this.graphics.lineTo(tempPixel.x, tempPixel.y);
+					tempPixel.x += (dcap * cos);
+					tempPixel.y += (dcap * sin);
+				}
+				i=(i+1)%num;
+			}
+		}
 		
 		// Callbacks
 		
@@ -375,16 +441,16 @@ package org.openscales.core.feature {
 		public function onMouseUp(pevt:MouseEvent):void {
 			if(pevt)
 			{
-				if (this._mouseDown)
+				/*if (this._mouseDown)
 				{
 					this._mouseDown = false;
 					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
 					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_CLICK, this, pevt.ctrlKey));
 				}
 				else
-				{
+				{*/
 					this._layer.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_MOUSEUP, this, pevt.ctrlKey));
-				}
+				//}
 			}
 				
 			else

@@ -3,9 +3,13 @@ package org.openscales.core.style.halo
 	import flash.filters.BitmapFilter;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.GlowFilter;
+	
+	import org.openscales.core.style.fill.SolidFill;
 
 	public class Halo
 	{
+		private namespace sldns="http://www.opengis.net/sld";
+		
 		private var _color:Number = 0xffffff;
 		private var _radius:Number = 2;
 		private var _opacity:Number = 1;
@@ -58,7 +62,7 @@ package org.openscales.core.style.halo
 
 		public function set opacity(value:Number):void
 		{
-			_opacity = value;
+				_opacity = value;
 		}
 
 		public function get quality():int
@@ -70,7 +74,39 @@ package org.openscales.core.style.halo
 		{
 			_quality = value;
 		}
-
-
+		
+		public function get sld():String {
+			var res:String="<sld:Halo>\n";
+			res+="<sld:Radius>"+this.radius+"</sld:Radius>\n";
+			var fill:SolidFill = new SolidFill(this.color,this.opacity);
+			res+=fill.sld;
+			res+="</sld:Halo>\n";
+			return res;
+		}
+		
+		public function set sld(sld:String):void {
+			use namespace sldns;
+			var dataXML:XML = new XML(sld);
+			var childs:XMLList = dataXML.Radius;
+			var node:XML;
+			if(childs.length()>0) {
+				this._radius = Number(childs[0]);
+			}
+			childs = dataXML.Fill;
+			if(childs.length()>0) {
+				dataXML = childs[0];
+				childs = dataXML.CssParameter;
+				for each(node in childs) {
+					if(node.@name == "fill") {
+						this._color = parseInt(node[0].toString().replace("#",""),16);
+					} else if(node.@name == "fill-opacity") {
+						var val:Number = Number(node[0].toString());
+						//if(!val)
+							//continue;
+						this._opacity = val;
+					}
+				}
+			}
+		}
 	}
 }

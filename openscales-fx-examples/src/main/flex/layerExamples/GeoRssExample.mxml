@@ -48,8 +48,6 @@
 				fxpopup = null;
 				fxpopup = new FxPopup();
 				fxpopup.fxmap = fxMap;
-				fxpopup.HEIGHT = rsslayer.popUpHeight;
-				fxpopup.WIDTH = rsslayer.popUpWidth;
 				var content:String="";
 				
 				var fxpopupRenderer:FxPopupRenderer = new FxPopupRenderer();

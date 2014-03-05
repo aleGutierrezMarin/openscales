@@ -8,6 +8,8 @@ package org.openscales.core.layer.grid.provider
 	
 	public class HTTPTileProvider implements ITileProvider
 	{
+		protected var _useNoDataTile:Boolean = true;
+		
 		/**
 		 * @protected 
 		 * Service url
@@ -45,5 +47,22 @@ package org.openscales.core.layer.grid.provider
 		{
 			_url = value;
 		}
+
+		/**
+		 * @inheritDoc
+		 */ 
+		public function get useNoDataTile():Boolean
+		{
+			return _useNoDataTile;
+		}
+
+		/**
+		 * @private
+		 */ 
+		public function set useNoDataTile(value:Boolean):void
+		{
+			_useNoDataTile = value;
+		}
+
 	}
 }

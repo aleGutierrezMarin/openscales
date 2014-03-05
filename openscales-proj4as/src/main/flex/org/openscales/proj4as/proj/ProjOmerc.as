@@ -1,8 +1,8 @@
 package org.openscales.proj4as.proj {
 
-	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
+	import org.openscales.proj4as.ProjConstants;
+	import org.openscales.proj4as.ProjPoint;
 
 	/**
 	 <p>OBLIQUE MERCATOR (HOTINE) projection</p>
@@ -23,32 +23,13 @@ package org.openscales.proj4as.proj {
 	 Printing Office, Washington D.C., 1989.</p>
 	 **/
 	public class ProjOmerc extends AbstractProjProjection {
-		private var d:Number;
-		private var f:Number;
-		private var h:Number;
-		private var j:Number;
-		private var l:Number;
-		private var p:Number;
-		private var u:Number;
-		private var dlon:Number;
+		
 		private var al:Number;
 		private var bl:Number;
 		private var el:Number;
-		private var com:Number;
-		private var cos_p20:Number;
-		private var cosaz:Number;
-		private var cosgam:Number;
-		private var at1:Number;
-		private var gam:Number;
-		private var gama:Number;
-		private var lon1:Number;
-		private var lon2:Number;
-		private var sin_p20:Number;
-		private var sinaz:Number;
-		private var singam:Number;
-		private var ts:Number;
-		private var ts1:Number;
-		private var ts2:Number;
+		private var uc:Number;
+		private var gammaZero:Number;
+		
 
 		public function ProjOmerc(data:ProjParams) {
 			super(data);
@@ -56,232 +37,155 @@ package org.openscales.proj4as.proj {
 
 
 		override public function init():void {
-			if (!this.mode)
-				this.mode=0;
-			if (!this.lon1) {
-				this.lon1=0;
-				this.mode=1;
-			}
-			if (!this.lon2)
-				this.lon2=0;
-			if (!this.latTwo)
-				this.latTwo=0;
+			trace('omerc:start init');
+			if (isNaN(this.kZero))
+				this.kZero=1.0;
+			var sinlat:Number = Math.sin(this.latZero);
+			var coslat:Number = Math.cos(this.latZero);
+			var con:Number = this.e*sinlat;
 
-			/* Place parameters in static storage for common use
-			 -------------------------------------------------*/
-			var temp:Number=this.b / this.a;
-			var es:Number=1.0 - Math.pow(temp, 2);
-			var e:Number=Math.sqrt(es);
-
-			this.sin_p20=Math.sin(this.latZero);
-			this.cos_p20=Math.cos(this.latZero);
-
-			this.con=1.0 - this.es * this.sin_p20 * this.sin_p20;
-			this.com=Math.sqrt(1.0 - es);
-			this.bl=Math.sqrt(1.0 + this.es * Math.pow(this.cos_p20, 4.0) / (1.0 - es));
-			this.al=this.a * this.bl * this.kZero * this.com / this.con;
-			if (Math.abs(this.latZero) < ProjConstants.EPSLN) {
-				this.ts=1.0;
-				this.d=1.0;
-				this.el=1.0;
+		    this.bl=Math.sqrt(1.0+this.es/(1.0-this.es)*Math.pow(coslat,4.0));
+			this.al= this.a*this.bl*this.kZero*Math.sqrt(1-this.es)/(1-con*con);
+			var tZero:Number = ProjConstants.tsfnz(this.e,this.latZero,sinlat);
+			var dl:Number = this.bl/coslat*Math.sqrt((1-this.es)/(1-con*con));
+			if (dl*dl<1.0)
+				dl=1.0;
+			var fl:Number;
+			var gl:Number;
+			if (!isNaN(this.longc)){
+				//Central point and azimuth method
+				trace("central point and azimuth");
+				//trace(String("g=").concat(this.gamma.toString()));
+				//trace(String("alpha=").concat(this.alpha.toString()));
+				
+				if (this.latZero>=0.0){
+					fl = dl+Math.sqrt(dl*dl-1.0);
+				} else {
+					fl = dl-Math.sqrt(dl*dl-1.0);
+				}
+				this.el = fl*Math.pow(tZero,this.bl);
+				gl = 0.5*(fl-1.0/fl);
+				this.gammaZero=Math.asin(Math.sin(this.alpha)/dl);
+				this.longZero = this.longc-Math.asin(gl*Math.tan(this.gammaZero))/this.bl;
+				
 			} else {
-				this.ts=ProjConstants.tsfnz(this.e, this.latZero, this.sin_p20);
-				this.con=Math.sqrt(this.con);
-				this.d=this.bl * this.com / (this.cos_p20 * this.con);
-				if ((this.d * this.d - 1.0) > 0.0) {
-					if (this.latZero >= 0.0) {
-						this.f=this.d + Math.sqrt(this.d * this.d - 1.0);
-					} else {
-						this.f=this.d - Math.sqrt(this.d * this.d - 1.0);
-					}
+				//Two points method
+				trace("two points method");
+				var tOne:Number = ProjConstants.tsfnz(this.e,this.latOne,Math.sin(this.latOne));
+				var tTwo:Number = ProjConstants.tsfnz(this.e,this.latTwo,Math.sin(this.latTwo));
+				if (this.latZero>=0.0){
+					this.el = (dl+Math.sqrt(dl*dl-1.0))*Math.pow(tZero,this.bl);
 				} else {
-					this.f=this.d;
+					this.el = (dl-Math.sqrt(dl*dl-1.0))*Math.pow(tZero,this.bl);
 				}
-				this.el=this.f * Math.pow(this.ts, this.bl);
+				var hl:Number = Math.pow(tOne,this.bl);
+				var ll:Number = Math.pow(tTwo,this.bl);
+				fl = this.el/hl;
+				gl = 0.5*(fl-1.0/fl);
+				var jl:Number = (this.el*this.el-ll*hl)/(this.el*this.el+ll*hl);
+				var pl:Number = (ll-hl)/(ll+hl);
+				var dlon12:Number=ProjConstants.adjust_lon(this.longOne-this.longTwo);
+				this.longZero=0.5*(this.longOne+this.longTwo)-Math.atan(jl*Math.tan(0.5*this.bl*(dlon12))/pl)/this.bl;
+				this.longZero=ProjConstants.adjust_lon(this.longZero);
+				var dlon10:Number=ProjConstants.adjust_lon(this.longOne-this.longZero);
+				this.gammaZero = Math.atan(Math.sin(this.bl*(dlon10))/gl);
+				this.alpha = Math.asin(dl*Math.sin(this.gammaZero));
 			}
-
-			//this.longc=52.60353916666667;
-
-			if (this.mode != 0) {
-				this.g=.5 * (this.f - 1.0 / this.f);
-				this.gama=ProjConstants.asinz(Math.sin(this.alpha) / this.d);
-				this.longc=this.longc - ProjConstants.asinz(this.g * Math.tan(this.gama)) / this.bl;
-
-				/* Report parameters common to format B
-				 -------------------------------------*/
-				//genrpt(azimuth * R2D,"Azimuth of Central Line:    ");
-				//cenlon(lon_origin);
-				// cenlat(lat_origin);
-
-				this.con=Math.abs(this.latZero);
-				if ((this.con > ProjConstants.EPSLN) && (Math.abs(this.con - ProjConstants.HALF_PI) > ProjConstants.EPSLN)) {
-					this.singam=Math.sin(this.gama);
-					this.cosgam=Math.cos(this.gama);
-
-					this.sinaz=Math.sin(this.alpha);
-					this.cosaz=Math.cos(this.alpha);
-
-					if (this.latZero >= 0) {
-						this.u=(this.al / this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0) / this.cosaz);
-					} else {
-						this.u=-(this.al / this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0) / this.cosaz);
-					}
-				} else {
-					trace("omerc:Init:DataError");
-				}
+			
+			if (this.no_off){
+				this.uc=0.0;
 			} else {
-				this.sinphi=Math.sin(this.at1);
-				this.ts1=ProjConstants.tsfnz(this.e, this.latOne, this.sinphi);
-				this.sinphi=Math.sin(this.latTwo);
-				this.ts2=ProjConstants.tsfnz(this.e, this.latTwo, this.sinphi);
-				this.h=Math.pow(this.ts1, this.bl);
-				this.l=Math.pow(this.ts2, this.bl);
-				this.f=this.el / this.h;
-				this.g=.5 * (this.f - 1.0 / this.f);
-				this.j=(this.el * this.el - this.l * this.h) / (this.el * this.el + this.l * this.h);
-				this.p=(this.l - this.h) / (this.l + this.h);
-				this.dlon=this.lon1 - this.lon2;
-				if (this.dlon < -ProjConstants.PI)
-					this.lon2=this.lon2 - 2.0 * ProjConstants.PI;
-				if (this.dlon > ProjConstants.PI)
-					this.lon2=this.lon2 + 2.0 * ProjConstants.PI;
-				this.dlon=this.lon1 - this.lon2;
-				this.longc=.5 * (this.lon1 + this.lon2) - Math.atan(this.j * Math.tan(.5 * this.bl * this.dlon) / this.p) / this.bl;
-				this.dlon=ProjConstants.adjust_lon(this.lon1 - this.longc);
-				this.gama=Math.atan(Math.sin(this.bl * this.dlon) / this.g);
-				this.alpha=ProjConstants.asinz(this.d * Math.sin(this.gama));
-
-				/* Report parameters common to format A
-				 -------------------------------------*/
-
-				if (Math.abs(this.latOne - this.latTwo) <= ProjConstants.EPSLN) {
-					trace("omercInitDataError");
-						//return(202);
+				if (this.latZero>=0.0) {
+					this.uc=this.al/this.bl*Math.atan2(Math.sqrt(dl*dl-1.0),Math.cos(this.alpha));
 				} else {
-					this.con=Math.abs(this.latOne);
-				}
-				if ((this.con <= ProjConstants.EPSLN) || (Math.abs(this.con - ProjConstants.HALF_PI) <= ProjConstants.EPSLN)) {
-					trace("omercInitDataError");
-						//return(202);
-				} else {
-					if (Math.abs(Math.abs(this.latZero) - ProjConstants.HALF_PI) <= ProjConstants.EPSLN) {
-						trace("omercInitDataError");
-							//return(202);
-					}
-				}
-
-				this.singam=Math.sin(this.gam);
-				this.cosgam=Math.cos(this.gam);
-
-				this.sinaz=Math.sin(this.alpha);
-				this.cosaz=Math.cos(this.alpha);
-
-
-				if (this.latZero >= 0) {
-					this.u=(this.al / this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0) / this.cosaz);
-				} else {
-					this.u=-(this.al / this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0) / this.cosaz);
+					this.uc=-1.0*this.al/this.bl*Math.atan2(Math.sqrt(dl*dl-1.0),Math.cos(this.alpha));
 				}
 			}
+			
 		}
 
 
 		/* Oblique Mercator forward equations--mapping lat,long to x,y
 		 ----------------------------------------------------------*/
 		override public function forward(p:ProjPoint):ProjPoint {
-			var sin_phi:Number; /* sin value				*/
-			var t:Number; /* temporary value				*/
-			var con:Number; /* cone constant, small m			*/
-			var q:Number, us:Number, vl:Number;
-			var ul:Number, vs:Number;
-			var s:Number;
-			var dlon:Number;
-			var ts1:Number;
-
-			var lon:Number=p.x;
-			var lat:Number=p.y;
-			/* Forward equations
-			 -----------------*/
-			sin_phi=Math.sin(lat);
-			dlon=ProjConstants.adjust_lon(lon - this.longc);
-			vl=Math.sin(this.bl * dlon);
-			if (Math.abs(Math.abs(lat) - ProjConstants.HALF_PI) > ProjConstants.EPSLN) {
-				ts1=ProjConstants.tsfnz(this.e, lat, sin_phi);
-				q=this.el / (Math.pow(ts1, this.bl));
-				s=.5 * (q - 1.0 / q);
-				t=.5 * (q + 1.0 / q);
-				ul=(s * this.singam - vl * this.cosgam) / t;
-				con=Math.cos(this.bl * dlon);
-				if (Math.abs(con) < .0000001) {
-					us=this.al * this.bl * dlon;
+			trace('omerc:start forward');
+			var lon:Number = p.x;
+			var lat:Number = p.y;
+			var dlon:Number=ProjConstants.adjust_lon(lon-this.longZero);
+			var us:Number, vs:Number;
+			var con:Number;
+			if (Math.abs(Math.abs(lat)-ProjConstants.HALF_PI)<=ProjConstants.EPSLN){
+				if (lat>0.0){
+					trace("exception : north pole");
+					con=-1.0;
 				} else {
-					us=this.al * Math.atan((s * this.cosgam + vl * this.singam) / con) / this.bl;
-					if (con < 0)
-						us=us + ProjConstants.PI * this.al / this.bl;
+					trace("exception : south pole");
+					con=1.0;
 				}
+				vs=this.al/this.bl*Math.log(Math.tan(ProjConstants.FORTPI+con*this.gammaZero*0.5));
+				us=-1.0*con*ProjConstants.HALF_PI*this.al/this.bl;
 			} else {
-				if (lat >= 0) {
-					ul=this.singam;
+				var t:Number = ProjConstants.tsfnz(this.e,lat,Math.sin(lat));
+				var ql:Number = this.el/Math.pow(t,this.bl);
+				var sl:Number = 0.5*(ql-1.0/ql);
+				var tl:Number = 0.5*(ql+1.0/ql);
+				var vl:Number=Math.sin(this.bl*(dlon));
+				var ul:Number=(sl*Math.sin(this.gammaZero)-vl*Math.cos(this.gammaZero))/tl;
+				if (Math.abs(Math.abs(ul)-1.0)<=ProjConstants.EPSLN) {
+					trace("exception : U=+/-1");
+					vs=Number.POSITIVE_INFINITY;
 				} else {
-					ul=-this.singam;
+					vs=0.5*this.al*Math.log((1.0-ul)/(1.0+ul))/this.bl;
 				}
-				us=this.al * lat / this.bl;
+				if (Math.abs(Math.cos(this.bl*(dlon)))<=ProjConstants.EPSLN) {
+					trace("exception : cos(b*dlon)=0");
+					us=this.al*this.bl*(dlon);
+				} else {
+					us=this.al*Math.atan2(sl*Math.cos(this.gammaZero)+vl*Math.sin(this.gammaZero),Math.cos(this.bl*dlon))/this.bl;
+				}
+				
 			}
-			if (Math.abs(Math.abs(ul) - 1.0) <= ProjConstants.EPSLN) {
-				//alert("Point projects into infinity","omer-for");
-				trace("omercFwdInfinity");
-					//return(205);
+			
+ 
+			if (this.no_rot){
+				p.x=this.xZero+us;
+				p.y=this.yZero+vs;
+			} else {
+				us-=this.uc;
+				p.x=this.xZero+vs*Math.cos(this.alpha)+us*Math.sin(this.alpha);
+				p.y=this.yZero+us*Math.cos(this.alpha)-vs*Math.sin(this.alpha);
 			}
-			vs=.5 * this.al * Math.log((1.0 - ul) / (1.0 + ul)) / this.bl;
-			us=us - this.u;
-			var x:Number=this.xZero + vs * this.cosaz + us * this.sinaz;
-			var y:Number=this.yZero + us * this.cosaz - vs * this.sinaz;
-
-			p.x=x;
-			p.y=y;
+			trace(p.toString());
+			trace('omerc:finish forward');
 			return p;
 		}
 
 		override public function inverse(p:ProjPoint):ProjPoint {
-			var theta:Number; /* angle					*/
-			var t:Number; /* temporary value				*/
-			var con:Number; /* cone constant, small m			*/
-			var vs:Number, us:Number, q:Number, s:Number, ts1:Number;
-			var vl:Number, ul:Number;
-			var flag:Number;
-
-			/* Inverse equations
-			 -----------------*/
-			p.x-=this.xZero;
-			p.y-=this.yZero;
-			flag=0;
-			vs=p.x * this.cosaz - p.y * this.sinaz;
-			us=p.y * this.cosaz + p.x * this.sinaz;
-			us=us + this.u;
-			q=Math.exp(-this.bl * vs / this.al);
-			s=.5 * (q - 1.0 / q);
-			t=.5 * (q + 1.0 / q);
-			vl=Math.sin(this.bl * us / this.al);
-			ul=(vl * this.cosgam + s * this.singam) / t;
-			if (Math.abs(Math.abs(ul) - 1.0) <= ProjConstants.EPSLN) {
-				var lon:Number=this.longc;
-				if (ul >= 0.0) {
-					var lat:Number=ProjConstants.HALF_PI;
-				} else {
-					lat=-ProjConstants.HALF_PI;
-				}
+			var us:Number, vs:Number;
+			if (this.no_rot){
+				vs=p.y-this.yZero;
+				us=p.x-this.xZero;
 			} else {
-				con=1.0 / this.bl;
-				ts1=Math.pow((this.el / Math.sqrt((1.0 + ul) / (1.0 - ul))), con);
-				lat=ProjConstants.phi2z(this.e, ts1);
-				//if (flag != 0)
-				//return(flag);
-				//~ con = Math.cos(this.bl * us /al);
-				theta=this.longc - Math.atan2((s * this.cosgam - vl * this.singam), con) / this.bl;
-				lon=ProjConstants.adjust_lon(theta);
+				vs=(p.x-this.xZero)*Math.cos(this.alpha)-(p.y-this.yZero)*Math.sin(this.alpha);
+				us=(p.y-this.yZero)*Math.cos(this.alpha)+(p.x-this.xZero)*Math.sin(this.alpha);
+				us+=this.uc;
 			}
-			p.x=lon;
-			p.y=lat;
+			var qp:Number = Math.exp(-1.0*this.bl*vs/this.al);
+			var sp:Number=0.5*(qp-1.0/qp);
+			var tp:Number = 0.5*(qp+1.0/qp);
+			var vp:Number = Math.sin(this.bl*us/this.al);
+			var up:Number = (vp*Math.cos(this.gammaZero)+sp*Math.sin(this.gammaZero))/tp;
+			var ts:Number = Math.pow(this.el/Math.sqrt((1.0+up)/(1.0-up)),1.0/this.bl);
+			if (Math.abs(up-1.0)<ProjConstants.EPSLN){
+				p.x=this.longZero;
+				p.y=ProjConstants.HALF_PI;
+			} else if (Math.abs(up+1.0)<ProjConstants.EPSLN){
+				p.x=this.longZero;
+				p.y=-1.0*ProjConstants.HALF_PI;
+			} else {
+				p.y=ProjConstants.phi2z(this.e, ts);
+				p.x=ProjConstants.adjust_lon(this.longZero-Math.atan2(sp*Math.cos(this.gammaZero)-vp*Math.sin(this.gammaZero),Math.cos(this.bl*us/this.al))/this.bl);
+			}
 			return p;
 		}
 

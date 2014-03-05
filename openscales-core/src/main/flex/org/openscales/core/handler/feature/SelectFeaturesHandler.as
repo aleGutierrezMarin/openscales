@@ -22,7 +22,6 @@ package org.openscales.core.handler.feature
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
 	import org.openscales.core.style.font.Font;
-	import org.openscales.core.style.marker.WellKnownMarker;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
@@ -716,7 +715,7 @@ package org.openscales.core.handler.feature
 		 */
 		private function selectByGeometry(geom:Geometry, additiveMode:Boolean=false, substractiveMode:Boolean=false):void {
 			// Look for all the features that intersect the selection geometry
-			/*var featuresToSelect:Vector.<Feature> = new Vector.<Feature>();
+			var featuresToSelect:Vector.<Feature> = new Vector.<Feature>();
 			if (geom) {
 				var layersToTest:Vector.<VectorLayer> = (this.layers.length > 0) ? this.layers : this.map.featureLayers;
 				var layer:VectorLayer, layersTmp:Vector.<VectorLayer> = new Vector.<VectorLayer>();
@@ -728,18 +727,17 @@ package org.openscales.core.handler.feature
 				}
 				layersToTest = layersTmp;
 				// 
+				var layerFeatures:Vector.<Feature>;
 				for each (layer in layersToTest) {
-					for(var i:uint = layer.features.length; i > 0; i--){
-						if (geom.intersects(layer.features[i-1].geometry)) {
-							if(_unselectableFeatures.indexOf(layer.features[i-1])==-1){
-								if (layer.features[i-1].selectable)
-								{
-									featuresToSelect.push(layer.features[i-1]);
-									if(!this._enableMultipleSelection)
-										break;
-								}
-							}
-						}
+					layerFeatures = layer.features;
+					for each(var candidate:Feature in layerFeatures){
+						if(!candidate.selectable)continue;
+						if(_unselectableFeatures.indexOf(candidate) != -1) continue;
+						if(!geom.intersects(candidate.geometry))continue;
+						featuresToSelect.push(candidate);
+						if(!this._enableMultipleSelection)
+							break;	
+						
 					}
 				}
 			}
@@ -758,7 +756,7 @@ package org.openscales.core.handler.feature
 				this.unselect(featuresToSelect);
 			} else {
 				this.select(featuresToSelect, additiveMode);
-			}*/
+			}
 		}
 
 		/**

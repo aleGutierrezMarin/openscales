@@ -8,6 +8,7 @@ package org.openscales.binder
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.json.GENERICJSON;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.utils.Util;
@@ -131,7 +132,7 @@ package org.openscales.binder
 		 * @param obj object to send. It should contains at least an "eventName" property
 		 */
 		public function sendEvent(obj:Object):void {
-			var jsonString:String = JSON.stringify(obj);
+			var jsonString:String = GENERICJSON.stringify(obj);
 			ExternalInterface.call(viewerid+".dispatch", obj.eventName, jsonString, ExternalInterface.objectID);
 		}
 		
