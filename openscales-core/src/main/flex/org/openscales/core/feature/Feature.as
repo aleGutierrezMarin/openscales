@@ -153,7 +153,7 @@ package org.openscales.core.feature {
 			this._style = style ? style : null;
 
 			this._isEditable = isEditable;
-			this.cacheAsBitmap = true;
+			this.cacheAsBitmap = false;
 		}
 
 		/**
