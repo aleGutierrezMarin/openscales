@@ -37,6 +37,7 @@
 			import org.openscales.core.handler.feature.draw.EditFeaturesHandler;
 			import org.openscales.core.handler.feature.draw.FeatureLayerEditionHandler;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.format.geojson.mapfish.MapFishGeoJSONFormat;
 			import org.openscales.geometry.Geometry;
 			import org.openscales.proj4as.ProjProjection;
 			
@@ -96,10 +97,11 @@
 					this.supportedFormat = new Array();
 					this.supportedFormat[0] = "KML";
 					/*
-					this.supportedFormat[1] = "GPX";
-					this.supportedFormat[2] = "GeoRSS";
-					this.supportedFormat[3] = "OSM";
-					this.supportedFormat[4] = "GML";
+					this.supportedFormat[1] = "GeoJSON";
+					this.supportedFormat[2] = "GPX";
+					this.supportedFormat[3] = "GeoRSS";
+					this.supportedFormat[4] = "OSM";
+					this.supportedFormat[5] = "GML";
 					*/
 					
 					this.selectedFormat = 0;
@@ -208,6 +210,10 @@
 					case "GeoRss":
 						fileName += ".xml";
 						writeFormat = new GeoRssFormat();
+						break;
+					case "GeoJSON":
+						fileName += ".json";
+						writeFormat = new MapFishGeoJSONFormat(this.exportFeature.layer);
 						break;
 					
 					/*case "GML":
