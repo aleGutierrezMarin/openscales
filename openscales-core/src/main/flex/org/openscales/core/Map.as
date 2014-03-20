@@ -1130,7 +1130,7 @@ package org.openscales.core
 				deltaLat = deltaY*this.resolution.value;
 				newCenter = new Location(zoomTargetLoc.lon - deltaLon, zoomTargetLoc.lat + deltaLat, this.center.projection);
 
-				if (! zoomTargetLoc.equals(this.center))
+				if (!zoomTargetLoc.equals(this.center))
 				{
 					if(!this.maxExtent.containsLocation(zoomTargetLoc) || !this.maxExtent.containsLocation(newCenter)){
 						this.center = new Location(this.width/2,this.height/2,this.center.projection);
@@ -1140,6 +1140,7 @@ package org.openscales.core
 					}
 				}
 
+				//Dispatch event
 				mapEvent = new MapEvent(MapEvent.MOVE_END, this);
 				this.dispatchEvent(mapEvent);
 			}
