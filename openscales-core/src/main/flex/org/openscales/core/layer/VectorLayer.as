@@ -97,7 +97,7 @@ package org.openscales.core.layer
 			this.maxResolution = new Resolution(Infinity,this.projection);
 			
 			// Make drag smooth even with a lot of points
-			this.cacheAsBitmap = true;
+			this.cacheAsBitmap = false;
 		}
 		
 		override public function supportsProjection(compareProj:Object):Boolean
@@ -166,12 +166,12 @@ package org.openscales.core.layer
 				{
 					this._previousResolution = this.map.resolution;
 				}
-				this.cacheAsBitmap = false;
+//				this.cacheAsBitmap = false;
 				var ratio:Number = this._previousResolution.value / this.map.resolution.value;
 				this.scaleLayer(ratio, new Pixel(this.map.size.w/2, this.map.size.h/2));
 				this._previousResolution = this.map.resolution;
 				resolutionChangedCache = false;
-				this.cacheAsBitmap = true;
+//				this.cacheAsBitmap = true;
 			}
 			
 			if (centerChangedCache)
