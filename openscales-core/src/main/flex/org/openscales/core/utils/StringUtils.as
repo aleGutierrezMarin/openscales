@@ -390,6 +390,18 @@ package org.openscales.core.utils {
 					}
 				});
 		}
+		
+		
+		/**
+		 * Simply checking if a given string is null or empty (= "")
+		 *
+		 * @param value string to check
+		 *
+		 * @return true if string is empty or null, false otherwise
+		 */
+		public static function isEmpty(value:String):Boolean {
+			return (value == null || value.length == 0);
+		}
 
 	}
 
