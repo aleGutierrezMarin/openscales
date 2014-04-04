@@ -214,6 +214,10 @@
    "editStyle.labelStyleEdition.applyOnlyThisLabel":"This label only",
    "editStyle.labelStyleEdition.applySimilarLabel":"All labels",
    
+   "editPopup.title":"Edit feature attributes",
+   "editPopup.titlePrompt":"Enter feature title ...",
+   "editPopup.descriptionPrompt":"Fill with feature description here ...",
+   
    "addExternalLayer.protocolLabel.label":"Protocol",
    "addExternalLayer.protocolLabel.toolTip":"",
    "addExternalLayer.versionLabel.label":"Version",

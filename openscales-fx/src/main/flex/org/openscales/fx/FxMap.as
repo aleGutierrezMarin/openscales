@@ -122,11 +122,11 @@ package org.openscales.fx
 			return this.map.resolution;
 		}
 		
-		private function onMoveStart(event:MapEvent):void{
+		protected function onMoveStart(event:MapEvent):void{
 			_flexOverlay.visible = false;
 		}
 		
-		private function onMoveEnd(event:MapEvent):void{
+		protected function onMoveEnd(event:MapEvent):void{
 			_flexOverlay.visible = true;
 			var j:uint = _flexOverlay.numElements;
 			var element:IVisualElement;
