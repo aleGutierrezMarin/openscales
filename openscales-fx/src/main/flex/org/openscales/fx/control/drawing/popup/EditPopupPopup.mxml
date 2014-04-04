@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="close()" xmlns:openscales="http://openscales.org"
+			   xmlns="http://openscales.org"
+			   creationComplete="creationComplete()">
+	<fx:Declarations>
+		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[  
+			import mx.managers.PopUpManager;
+			
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.feature.Feature;
+			import org.openscales.core.handler.feature.draw.EditKMLPopupHandler;
+			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.utils.StringUtils;
+			
+
+			private var _targetFeature:Feature;
+			
+			private var _handler:EditKMLPopupHandler;
+			
+			private var _titleBaseText:String = "";
+			private var _descriptionBaseText:String = "";
+
+
+			
+			/**
+			 * Method to close the title window
+			 */
+			public function close():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			protected function creationComplete():void {
+				//_fonts
+				var allFonts:Array = flash.text.Font.enumerateFonts(true);
+				allFonts.sortOn("fontName", Array.CASEINSENSITIVE);
+				this.localize();
+			}
+			
+			/**
+			 * @private
+			 */ 
+			protected function localize(event:I18NEvent=null):void{
+				// label editor
+				this.title = Catalog.getLocalizationForKey("editPopup.title");
+				this._titleBaseText = Catalog.getLocalizationForKey("editPopup.titlePrompt");
+				this._descriptionBaseText = Catalog.getLocalizationForKey("editPopup.descriptionPrompt");
+			}
+			
+			/**
+			 * Feature holding the style to edit
+			 */
+			public function get targetFeature():Feature
+			{
+				return this._targetFeature;
+				
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set targetFeature(value:Feature):void
+			{
+				this._targetFeature = value;
+				if (this._handler)
+					this._handler.selectedFeature = this._targetFeature;
+			}
+			
+			/**
+			 * The editKMLStyleHandler that provide methods to manipulate style edition
+			 */
+			public function get handler():EditKMLPopupHandler
+			{
+				return this._handler;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set handler(value:EditKMLPopupHandler):void
+			{
+				this._handler = value;
+				this._handler.selectedFeature = this._targetFeature;
+				localize();
+				if(this._handler.map){
+					this._handler.map.addEventListener(I18NEvent.LOCALE_CHANGED, localize);
+				}
+			}
+			
+			private function onSaveClick(event:Event=null):void {
+				if(!isEmpty(this.titleInput.text) && !isEmpty(this.descriptionInput.text)) {  
+					this._handler.saveFeatureAttributes(this.titleInput.text, this.descriptionInput.text);
+					this.close();
+				}
+			}
+			
+			private function isEmpty(string:String):Boolean {
+				return StringUtils.isEmpty(string);
+			}
+			
+		]]>        
+	</fx:Script>
+		<s:Group id="global" width="350" height="200" >
+			<s:Rect height="100%" width="100%">
+				<s:fill>
+					<s:SolidColor color="#FFFFFF"/>
+				</s:fill>
+			</s:Rect>
+			<s:VGroup top="15">
+				<s:HGroup>
+					<s:Label text="Title : " width="80"/>
+					<s:TextInput id="titleInput" prompt="{isEmpty(this._targetFeature.data.title) ? this._titleBaseText : this._targetFeature.data.title}" />
+				</s:HGroup>
+				<s:HGroup>
+					<s:Label text="Description :" width="80"/>			
+					<s:TextArea id="descriptionInput" prompt="{isEmpty(this._targetFeature.data.description) ? this._descriptionBaseText : this._targetFeature.data.description}" />
+				</s:HGroup>
+				<s:Button id="saveButton" click="onSaveClick(event)" label="Save" />
+			</s:VGroup>
+		</s:Group>
+</s:TitleWindow>

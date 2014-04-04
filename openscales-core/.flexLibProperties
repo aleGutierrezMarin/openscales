@@ -330,6 +330,7 @@
     <classEntry path="org.openscales.map.PositioningTest"/>
     <classEntry path="org.openscales.map.ProjectionTest"/>
     <classEntry path="org.openscales.core.format.FormatTest"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditKMLPopupHandler"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

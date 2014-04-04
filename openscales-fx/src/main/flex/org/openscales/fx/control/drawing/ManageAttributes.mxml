@@ -196,7 +196,7 @@
 			/**
 			 * This function is called when the icon button is clicked
 			 */
-			private function onClick():void{
+			public function onClick():void{
 				
 				if(!this.target)
 					return;
