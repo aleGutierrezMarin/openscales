@@ -34,6 +34,7 @@
 			public static const DRAWIMPORT:String="import";
 			public static const DRAWEXPORT:String="export";
 			public static const EDITSTYLE:String="style";
+			public static const EDITPOPUP:String="popup";
 			
 			[Bindable]
 			public var _layer:VectorLayer;
@@ -130,6 +131,9 @@
 					this.editFeatureStyle.useHandCursor = false;
 					this.editFeatureStyle.toolTip = Catalog.getLocalizationForKey('drawing.selectDrawingLayer');
 					
+					this.editFeaturePopup.buttonMode = false;
+					this.editFeaturePopup.useHandCursor = false;
+					this.editFeaturePopup.toolTip = "Edit Feature PopUp Attributes";//Catalog.getLocalizationForKey('drawing.selectDrawingLayer');
 					
 					this.manageAttributes.buttonMode = false;
 					this.manageAttributes.useHandCursor = false;
@@ -210,6 +214,8 @@
 						myComponent = this.exportFeature;break;
 					case EDITSTYLE:
 						myComponent = this.editFeatureStyle;break;
+					case EDITPOPUP:
+						myComponent = this.editFeaturePopup;break;
 				}
 				
 				return myComponent;
@@ -481,5 +487,7 @@
 		<osDraw:ImportFeature id="importFeature" map="{this.map}" drawingMode="{this.mode}"/>
 		<osDraw:ExportFeature id="exportFeature" map="{this.map}" layer="{this._layer}" drawingMode="{this.mode}"/>
 		<osDraw:EditStyle id="editFeatureStyle" map="{this.map}" target="{this._layer}" drawingMode="{this.mode}" defaultLineStyle="{this.pathStyle}" defaultPointStyle="{this.pointStyle}" defaultPolygonStyle="{this.polygonStyle}"/>
+		<osDraw:EditPopup id="editFeaturePopup" map="{this.map}" drawingMode="{this.mode}" />
+
 	</s:Panel>
 </os:Control>

@@ -41,6 +41,7 @@
    "drawing.addvectorlayer.input.errormessage":"Le nom ne doit pas être vide",
    "drawing.nameerror": "Modifier le nom (non vide et non identique à un autre nom de couche)",
    "editskin.point" : "Gérer les styles",
+   "editpopup.point" : "Gérer les attributs",
    
    "layercontrol.movefront": "Déplacer vers l'avant plan",
    "layercontrol.moveback": "Déplacer vers l'arrière plan",
@@ -214,6 +215,10 @@
    "editStyle.labelStyleEdition.applyAllLabel":"Les labels du même style",
    "editStyle.labelStyleEdition.applyOnlyThisLabel":"Uniquement ce label",
    "editStyle.labelStyleEdition.applySimilarLabel":"Tous les labels",
+   
+   "editPopup.title":"Modifier les attributs de la feature",
+   "editPopup.titlePrompt":"Entrez votre titre...",
+   "editPopup.descriptionPrompt":"Entrez votre description ici...",
    
    "addExternalLayer.protocolLabel.label":"Protocole",
    "addExternalLayer.protocolLabel.toolTip":"",

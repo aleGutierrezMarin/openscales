@@ -84,6 +84,9 @@ package org.openscales.core.layer
 		
 		protected var _previousResolution:Resolution = null;
 
+		// Boolean to indicate if the layer's features will display a popup on click or not
+		protected var _displayPopup:Boolean;
+		
 		public function VectorLayer(identifier:String)
 		{
 			super(identifier);
@@ -98,8 +101,11 @@ package org.openscales.core.layer
 			
 			// Make drag smooth even with a lot of points
 			this.cacheAsBitmap = false;
+			
+			// Don't display popup by default, can be overrided in child classes
+			this.displayPopup = false;
 		}
-		
+
 		override public function supportsProjection(compareProj:Object):Boolean
 		{
 			//A Vector Layer is able to be reprojected in any projection. So, it supports all projections
@@ -778,7 +784,17 @@ package org.openscales.core.layer
 		{
 			Trace.info("Error Saving File : " + e.text);
 		}
-
 		
+		
+		public function get displayPopup():Boolean
+		{
+			return _displayPopup;
+		}
+		
+		public function set displayPopup(value:Boolean):void
+		{
+			_displayPopup = value;
+		}
+	
 	}
 }
