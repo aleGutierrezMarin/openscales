@@ -543,47 +543,42 @@ package org.openscales.core.format
 				
 				//there can be a Style defined inside the Placemark element
 				//in this case, there is no styleUrl element and the Style element doesn't have an ID
-				if(localStyles.length()== 1) 
-				{
+				if (localStyles.length()== 1) {
 					localStyle = this.getStyle(localStyles[0]);
 				}
 		
 				var name:String = null;
-				if(placemark.name != null && placemark.*::name[0] != null) 
-				{
+				if (placemark.name != null && placemark.*::name[0] != null) {
 					name = placemark.*::name[0].text();
-					//					attributes["name"] = placemark.*::name.text();
+					//attributes["name"] = placemark.*::name.text();
 				}
 				//We need a name wich is not null
 				name = (name == null) ? UID.gen_uid() : name;
 				attributes["name"] = name;
 				htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";
 				
-				if(placemark.description != null) 
-				{
+				if (placemark.description != null) {
 					attributes["description"] = placemark.*::description.text();
 					htmlContent = htmlContent + placemark.*::description.text() + "<br />";
 				}
 				
-				if(placemark.id != null) 
-				{
+				if (placemark.id != null) {
 					attributes["id"] = placemark.*::id.text();
 					htmlContent = htmlContent + placemark.*::description.text() + "<br />";
 				}
+				
 				var tmp:XMLList = placemark.*::ExtendedData;
-				if(placemark.*::ExtendedData[0] != null)
-				{
-					for each(var extendedData:XML in placemark.*::ExtendedData[0].*::Data) 
-					{	
+				if (placemark.*::ExtendedData[0] != null) {
+					for each(var extendedData:XML in placemark.*::ExtendedData[0].*::Data) {	
 						var displayName:XMLList = extendedData.*::displayName.text();
-						if(displayName != null && displayName.length() > 0) {
+						if (displayName != null && displayName.length() > 0) {
 							attributeName = extendedData.*::displayName.text();
-							if(excludeFromExtendedData.indexOf(attributeName) < 0) {
+							if (excludeFromExtendedData.indexOf(attributeName) < 0) {
 								attributes[attributeName] = extendedData.*::value.text();
 							}
 						} else {
 							attributeName = extendedData.@*::name;
-							if(excludeFromExtendedData.indexOf(attributeName) < 0) {
+							if (excludeFromExtendedData.indexOf(attributeName) < 0) {
 								attributes[attributeName] = extendedData.*::value.text();
 							}
 						}
@@ -595,7 +590,7 @@ package org.openscales.core.format
 				for each(var simpleExtendedData:XML in placemark.*::ExtendedData.*::SchemaData.*::SimpleData) 
 				{	
 					attributeName = simpleExtendedData.@*::name;
-					if(excludeFromExtendedData.indexOf(attributeName) < 0) {
+					if (excludeFromExtendedData.indexOf(attributeName) < 0) {
 						attributes[attributeName] = simpleExtendedData.text();
 					}
 					
@@ -616,22 +611,15 @@ package org.openscales.core.format
 				var pointList:XMLList = placemark.localns::Point;
 				
 				// LineStrings
-				if(lineList != null && lineList.length() > 0)
-				{
+				if(lineList != null && lineList.length() > 0) {
 					var _Lstyle:Style = null;
-					if(this.userDefinedStyle)
-					{
+					if(this.userDefinedStyle) {
 						_Lstyle = this.userDefinedStyle;	
-					}
-					else
-					{
+					} else {
 						_Lstyle = Style.getDefaultLineStyle();
-						if(localStyle) 
-						{
+						if(localStyle) {
 							_Lstyle = localStyle;
-						}
-						else if(placemark.localns::styleUrl != null)
-						{
+						} else if(placemark.localns::styleUrl != null) {
 							_id = placemark.localns::styleUrl.text();
 							if(_styleList.getValue(_id))
 								_Lstyle = _styleList.getValue(_id);
@@ -640,24 +628,17 @@ package org.openscales.core.format
 					var lineFeature:LineStringFeature = new LineStringFeature(this.loadLineString(placemark),attributes,_Lstyle);
 					lineFeature.name = name;	
 					linesfeatures.push(lineFeature);
-				}
-				// Polygons
-				else if(polygonList != null && polygonList.length() > 0) 
-				{
+				} else if(polygonList != null && polygonList.length() > 0) {
+					// Polygons
 					var _pStyle:Style = null;
-					if(this.userDefinedStyle)
-					{
+					if(this.userDefinedStyle) {
 						_pStyle = this.userDefinedStyle;
-					}
-					else 
-					{
+					} else {
 						_pStyle = Style.getDefaultPolygonStyle();
-						if(localStyle)
-						{
+						if(localStyle) {
 							_pStyle = localStyle;
 						}
-						else if(placemark.*::styleUrl != null)
-						{
+						else if(placemark.*::styleUrl != null) {
 							_id = readStyleUrlId(placemark.*::styleUrl);
 							if(_styleList.getValue(_id))
 								_pStyle = _styleList.getValue(_id);
@@ -675,14 +656,11 @@ package org.openscales.core.format
 							circleFeature.name = name;
 							polygonsfeatures.push(circleFeature);
 					} else {
-						
 						var polyFeature:PolygonFeature = new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle);
 						polyFeature.name = name;
 						polygonsfeatures.push(polyFeature);
 					}
-				}
-				else if (multiGeomList != null && multiGeomList.length() > 0)
-				{
+				} else if (multiGeomList != null && multiGeomList.length() > 0) {
 					var numberOfGeom:uint;
 					var i:uint;
 					var components:Vector.<Geometry>;
@@ -694,26 +672,21 @@ package org.openscales.core.format
 					var points:XMLList = multiG..*::Point;
 					
 					//multiLineString
-					if(lines.length() > 0)
-					{
+					if(lines.length() > 0) {
 						numberOfGeom = lines.length();
 						components = new Vector.<Geometry>;
-						for(i = 0; i < numberOfGeom; i++)
-						{
+						for(i = 0; i < numberOfGeom; i++) {
 							var LineCont:XML = new XML("<container></container>");
 							LineCont.appendChild(lines[i]);
 							components.push(this.loadLineString(LineCont));	
 						}
-						if(this.userDefinedStyle)
-						{
+						if(this.userDefinedStyle) {
 							geomStyle = this.userDefinedStyle;	
 						} else {
 							geomStyle = Style.getDefaultLineStyle();
 							if(localStyle) {
 								geomStyle = localStyle;
-							}
-							else if(placemark.*::styleUrl != null)
-							{
+							} else if(placemark.*::styleUrl != null) {
 								_id = readStyleUrlId(placemark.*::styleUrl);
 								if(_styleList.getValue(_id))
 									geomStyle = _styleList.getValue(_id);
@@ -726,26 +699,21 @@ package org.openscales.core.format
 					}
 
 					//multiPolygon
-					if(polygons.length() > 0)	
-					{
+					if(polygons.length() > 0) {
 						numberOfGeom = polygons.length();
 						components = new Vector.<Geometry>;
-						for(i = 0; i < numberOfGeom; i++)
-						{
+						for(i = 0; i < numberOfGeom; i++) {
 							var PolyCont:XML = new XML("<container></container>");
 							PolyCont.appendChild(polygons[i]);
 							components.push(this.loadPolygon(PolyCont));	
 						}
-						if(this.userDefinedStyle)
-						{
+						if(this.userDefinedStyle) {
 							geomStyle = this.userDefinedStyle;	
 						} else {
 							geomStyle = Style.getDefaultPolygonStyle();
 							if(localStyle) {
 								geomStyle = localStyle;
-							}
-							else if(placemark.*::styleUrl != null)
-							{
+							} else if(placemark.*::styleUrl != null) {
 								_id = readStyleUrlId(placemark.*::styleUrl);
 								if(_styleList.getValue(_id))
 									geomStyle = _styleList.getValue(_id);
@@ -758,34 +726,34 @@ package org.openscales.core.format
 					}
 					//multiPoint
 					//only one icon can be referenced in an IconStyle so icons are not supported for multipoints
-					if(points.length() > 0)
-					{
+					if(points.length() > 0) {
 						var pointCoords:Vector.<Number> = new Vector.<Number>;
 						numberOfGeom = points.length();
-						for(i = 0; i < numberOfGeom; i++)
-						{
-							coordinates = points[i]..*::coordinates.toString().split(",");
+						for (i = 0; i < numberOfGeom; i++) {
+							// Multiple lines parsing to avoid bad flex interpretation by ide
+							var o:Object = points[i]..*::coordinates
+							var tmpString:String = o.toString(); 
+							coordinates = tmpString.split(",");
 							pointCoords.push(Number(coordinates[0]));
 							pointCoords.push(Number(coordinates[1]));
 						}
 						var multiPoint:MultiPoint = new MultiPoint(pointCoords);
 						var multiPointFeature:MultiPointFeature;
 						var style:Style;
-						if(this.userDefinedStyle) style = userDefinedStyle
-						else if(localStyle) style = localStyle;
-						else if(placemark.*::styleUrl != null) 
-						{
+						if(this.userDefinedStyle) {
+							style = userDefinedStyle
+						} else if(localStyle) {
+							style = localStyle;
+						} else if(placemark.*::styleUrl != null) {
 							_id = readStyleUrlId(placemark.*::styleUrl);
-							if(_styleList.getValue(_id))
-							{
+							if(_styleList.getValue(_id)) {
 								style = _styleList.getValue(_id);
-							} else 
-							{
+							} else {
 								style = Style.getDefaultPointStyle();
 							}
-						}
-						else
+						} else {
 							style = Style.getDefaultPointStyle();
+						}
 						multiPointFeature = new MultiPointFeature(multiPoint,attributes,style);
 						multiPointFeature.name = name;	
 						iconsfeatures.push(multiPointFeature);
@@ -1205,12 +1173,16 @@ package org.openscales.core.format
 					data.appendChild(value);
 					extendedData.appendChild(data);
 				}
+				
+				var j:uint;
+				var i:uint;
+				var key:String;
 				if(feature.layer) {
-					var j:uint = feature.layer.attributesId.length;
+					j = feature.layer.attributesId.length
 					if(j>0 || feature is LabelFeature) {
 						
-						for(var i:uint = 0 ;i<j;++i) {
-							var key:String = feature.layer.attributesId[i];
+						for(i = 0 ;i<j;++i) {
+							key = feature.layer.attributesId[i];
 							//everything except name and description
 							if(excludeFromExtendedData.indexOf(key) <0 ) {
 								data = new XML("<Data name=\"attribute" + i + "\"></Data>");
@@ -1220,6 +1192,20 @@ package org.openscales.core.format
 								data.appendChild(value);
 								extendedData.appendChild(data);
 							}
+						}
+					}
+				}
+				if(feature.attributes) {
+					for (var property:String in feature.attributes) {
+						key = feature.attributes[property];
+						//everything except name and description
+						if(excludeFromExtendedData.indexOf(property) <0 ) {
+							data = new XML("<Data name=\"attribute" + property + "\"></Data>");
+							displayName = new XML("<displayName>" + property + "</displayName>");
+							value = new XML("<value>" + feature.attributes[property] + "</value>");
+							data.appendChild(displayName);
+							data.appendChild(value);
+							extendedData.appendChild(data);
 						}
 					}
 				}
@@ -1531,4 +1517,5 @@ package org.openscales.core.format
 
 	}
 }
+	
 
