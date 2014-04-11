@@ -177,6 +177,8 @@
     <classEntry path="org.openscales.fx.control.layer.RemoveLayerButtonTest"/>
     <classEntry path="org.openscales.fx.map.ControlManagementTest"/>
     <classEntry path="org.openscales.fx.control.drawing.DrawCircle"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.EditPopupPopup"/>
+    <classEntry path="org.openscales.fx.control.drawing.popup.skin.EditPopupPopupSkin"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
