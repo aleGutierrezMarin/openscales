@@ -46,8 +46,8 @@ package org.openscales.core.handler.feature.draw
 		
 		public function saveFeatureAttributes(title:String, description:String):void {
 			if(this._feature != null) {
-				this._feature.data.title = title;
-				this._feature.data.description = description;
+				this._feature.attributes["title"] = title;
+				this._feature.attributes["description"] = description;
 			}
 		}
 		

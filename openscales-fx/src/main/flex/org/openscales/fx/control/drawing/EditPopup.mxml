@@ -8,6 +8,7 @@
 			   icon="{_btnStyle}"
 			   width="25"
 			   height="25"
+			   alpha="{_alpha}"
 			   click="onClick()"
 			   enabled="{active}">
 	<fx:Declarations>
@@ -45,6 +46,9 @@
 			[Embed(source="/assets/images/icons/Icons-22.png")]
 			private var _btnStyle:Class;
 			
+			[Bindable]
+			private var _alpha:Number = 0.3;
+			
 			private var _handler:EditKMLPopupHandler = new EditKMLPopupHandler();
 			private var _drawingMode:String;
 			private var _popup:EditPopupPopup = new EditPopupPopup();
@@ -64,6 +68,7 @@
 			public function activate():void
 			{
 				_handler.active = true;
+				_alpha = 1;
 				if(this._map) {
 					this._map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
 					this._map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
@@ -83,6 +88,7 @@
 				}
 				_handler.active = false;
 				_handler.onEditStyle = false;
+				_alpha = 0.3;
 				PopUpManager.removePopUp(_popup);
 			}
 			
@@ -101,6 +107,7 @@
 			public function addPopup(feature:Feature):void
 			{
 				PopUpManager.removePopUp(_popup);
+				_popup = new EditPopupPopup();
 				_popup.targetFeature = feature;
 				_popup.handler = this._handler;
 				PopUpManager.addPopUp(_popup, _popupParent?_popupParent:this.map);
@@ -186,21 +193,24 @@
 			 */
 			private function onFeatureOut(evt:FeatureEvent):void
 			{
-				if(evt.feature.originalStyle != null) {
-					evt.feature.style = evt.feature.originalStyle;
-				} else {
-					if (evt.feature is LabelFeature) {
-						evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
-					} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-						//evt.feature.style = Style.getDefaultPointStyle();
-					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
-						evt.feature.style = Style.getDefaultLineStyle();
+				if(evt.feature.layer == this._target)
+				{
+					if(evt.feature.originalStyle != null) {
+						evt.feature.style = evt.feature.originalStyle;
 					} else {
-						evt.feature.style = Style.getDefaultPolygonStyle();
+						if (evt.feature is LabelFeature) {
+							evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+						} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+							//evt.feature.style = Style.getDefaultPointStyle();
+						} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+							evt.feature.style = Style.getDefaultLineStyle();
+						} else {
+							evt.feature.style = Style.getDefaultPolygonStyle();
+						}
 					}
+					
+					evt.feature.draw();
 				}
-				
-				evt.feature.draw();
 			}
 			
 			/**
@@ -209,21 +219,24 @@
 			 */
 			private function onFeatureOver(evt:FeatureEvent):void
 			{
-				evt.feature.originalStyle = evt.feature.style;
-				
-				if (evt.feature is LabelFeature) {
-					evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
-				} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
-					//evt.feature.style = Style.getDefaultSelectedPointStyle();
-				} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
-					evt.feature.style = Style.getDefaultSelectedLineStyle();
-					(evt.feature.style.rules[0].symbolizers[0] as LineSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as LineSymbolizer).stroke.width;
-				} else {
-					evt.feature.style = Style.getDefaultSelectedPolygonStyle();
-					(evt.feature.style.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width;
+				if(evt.feature.layer == this._target)
+				{
+					evt.feature.originalStyle = evt.feature.style;
+					
+					if (evt.feature is LabelFeature) {
+						evt.feature.style = Style.getNegativeLabelStyle(evt.feature.style);
+					} else if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+						//evt.feature.style = Style.getDefaultSelectedPointStyle();
+					} else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+						evt.feature.style = Style.getDefaultSelectedLineStyle();
+						(evt.feature.style.rules[0].symbolizers[0] as LineSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as LineSymbolizer).stroke.width;
+					} else {
+						evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+						(evt.feature.style.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width = (evt.feature.originalStyle.rules[0].symbolizers[0] as PolygonSymbolizer).stroke.width;
+					}
+					
+					evt.feature.draw();
 				}
-				
-				evt.feature.draw();
 			}
 			
 			// Unused functions
