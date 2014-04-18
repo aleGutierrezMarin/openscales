@@ -1,6 +1,7 @@
 package org.openscales.fx.control.drawing.popup
 {
 	import flash.events.Event;
+	import flash.events.FocusEvent;
 	import flash.events.MouseEvent;
 	
 	import mx.events.FlexEvent;
@@ -52,6 +53,8 @@ package org.openscales.fx.control.drawing.popup
 			if(this.titleInput && this.descriptionInput) {
 				this.titleInput.prompt = this.getTitlePrompt();
 				this.descriptionInput.prompt = this.getDescriptionPrompt();
+				this.titleInput.text = this.getTitleText();
+				this.descriptionInput.text = this.getDescriptionText();
 			}
 		}
 		
@@ -63,6 +66,14 @@ package org.openscales.fx.control.drawing.popup
 			return (this._targetFeature == null ||isEmpty(this._targetFeature.attributes["description"])) ? this._descriptionBaseText : this._targetFeature.attributes["description"];
 		}
 		
+		public function getTitleText():String {
+			return (this._targetFeature == null || isEmpty(this._targetFeature.attributes["title"])) ? "" : this._targetFeature.attributes["title"];
+		}
+		
+		public function getDescriptionText():String {
+			return (this._targetFeature == null ||isEmpty(this._targetFeature.attributes["description"])) ? "" : this._targetFeature.attributes["description"];
+		}
+		
 		/**
 		 * @inheritDoc
 		 */ 
@@ -70,14 +81,33 @@ package org.openscales.fx.control.drawing.popup
 			super.partAdded(partName, instance);
 			if(instance == titleInput){
 				titleInput.prompt = this.getTitlePrompt();
+				titleInput.addEventListener(FocusEvent.FOCUS_IN, onInputFocusIn);
+				titleInput.addEventListener(FocusEvent.FOCUS_OUT, onInputFocusOut);
 			}
 			else if(instance == descriptionInput){
 				descriptionInput.prompt = this.getDescriptionPrompt();
+				descriptionInput.addEventListener(FocusEvent.FOCUS_IN, onInputFocusIn);
+				descriptionInput.addEventListener(FocusEvent.FOCUS_OUT, onInputFocusOut);
 			}
 			else if(instance == saveButton){
 				this.saveButton.addEventListener(MouseEvent.CLICK, onSaveClick);
 			}
 		}
+		
+		/**
+		 * Method called when the autocomplete has the focus : We disable map keyboard navigation
+		 */
+		private function onInputFocusIn(event:Event):void {
+			this.map.keyboardNavigationEnabled = false;
+		}
+		/**
+		 * When autocomplete loses focus, enable keyboard navigation
+		 */
+		private function onInputFocusOut(event:Event):void {
+			this.map.keyboardNavigationEnabled = true;
+		}
+		
+		
 		
 		/**
 		 * Feature holding the style to edit
