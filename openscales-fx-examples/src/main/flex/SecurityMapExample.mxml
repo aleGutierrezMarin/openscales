@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Access to IGN layers with GeoRM. More information on https://api.ign.fr/geoportail/ -->
+<s:VGroup xmlns="http://openscales.org" xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" xmlns:components="components.*" >
+	
+	<Map id="fxMap"
+		 width="100%"
+		 height="100%"
+		 resolution="0.043945313"
+		 center="4.833,45.767"
+		 projection="IGNF:GEOPORTALFXX"
+		 maxExtent="-1048576,3670016,2097152,6815744,IGNF:GEOPORTALFXX"
+		 minResolution="0.5,IGNF:GEOPORTALFXX" maxResolution="2048,IGNF:GEOPORTALFXX">
+		
+		<IGNGeoRMSecurity key="1905042184761803857"
+						  method="POST"
+						  layers="ORTHOPHOTOS"/>
+		
+		<WMSC id="ortho" name="ORTHOPHOTOS" url="http://wxs.ign.fr/geoportail/wmsc"
+				 layers="ORTHOIMAGERY.ORTHOPHOTOS" format="image/jpeg"
+				 resolutions="39135.75,19567.875,9783.9375,4891.96875,2445.984375,2048,1024,512,256,128,64,32,16,8,4,2,1,0.5,0.25,0.125,0.0625"
+				 projection="IGNF:GEOPORTALFXX" 
+				 maxExtent="-1048576,3670016,2097152,6815744,IGNF:GEOPORTALFXX" exceptions="text/xml" method="POST"
+				 version="1.1.1"
+				 minResolution="0.5,IGNF:GEOPORTALFXX" maxResolution="2048,IGNF:GEOPORTALFXX" />
+		
+		<DragHandler/>
+		<WheelHandler/>
+		<Zoom x="{fxMap.width-135}" y="10" />
+	</Map>
+	<components:toolbar fxMap="{fxMap}" />
+	
+</s:VGroup>
